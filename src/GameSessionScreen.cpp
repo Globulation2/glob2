@@ -9,11 +9,16 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
+#include <ApplicationHost.h>
 
 namespace
 {
 // Milliseconds of extra ticks a frame may run while a turn game catches up.
 constexpr Uint64 CATCH_UP_FRAME_BUDGET_MS = 30;
+#ifdef __EMSCRIPTEN__
+constexpr Uint32 BROWSER_TICK_BUDGET_MS = 6;
+constexpr Uint64 PAUSED_REDRAW_INTERVAL_MS = 40;
+#endif
 } // namespace
 
 GameSessionScreen::GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr<Engine> engine)
@@ -55,6 +60,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 {
 	if (!isExecutionRunning() || finished)
 		return;
+	presentationDirty |= !input.events().empty();
 	if (!started)
 	{
 		clock = lastTick = tick;
@@ -98,26 +104,38 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	}
 	else
 	{
-		if (clock < nextTick)
-		{
-			// A turn game reads its relay connection between steps.
-			engine->pollTurnSession(clock);
-			return;
-		}
-		running = engine->stepSession(clock, input.events());
-		input.clear();
-		// Catching up in a turn game: the host calls this once per frame, so one tick per
-		// call caps the replay at the frame rate (in the browser, below real time on slow
-		// devices: the client falls further behind). Run more ticks within a frame
-		// budget; none of them is drawn (the catch-up draw ratio) and the frame still
-		// returns to the host in time for input and the card.
-		if (running && engine->turnFastForwarding())
-		{
-			const Uint64 deadline = SDL_GetTicks() + CATCH_UP_FRAME_BUDGET_MS;
-			while (running && engine->turnFastForwarding() && SDL_GetTicks() < deadline)
-				running = engine->stepSession(clock, {});
-		}
-		nextTick = clock + engine->sessionDelay(clock);
+#ifdef __EMSCRIPTEN__
+        if (!engine->turnLockstep())
+        {
+            // Local matches service input every display frame and batch due ticks.
+            try { running = engine->serialClientFrame(clock, input.events(), BROWSER_TICK_BUDGET_MS); }
+            catch (...) { engine->abortSession(); throw; }
+            input.clear();
+        }
+        else
+#endif
+        {
+			if (clock < nextTick)
+			{
+				// A turn game reads its relay connection between steps.
+				engine->pollTurnSession(clock);
+				return;
+			}
+			running = engine->stepSession(clock, input.events());
+			input.clear();
+			// Catching up in a turn game: the host calls this once per frame, so one tick per
+			// call caps the replay at the frame rate (in the browser, below real time on slow
+			// devices: the client falls further behind). Run more ticks within a frame
+			// budget; none of them is drawn (the catch-up draw ratio) and the frame still
+			// returns to the host in time for input and the card.
+			if (running && engine->turnFastForwarding())
+			{
+				const Uint64 deadline = SDL_GetTicks() + CATCH_UP_FRAME_BUDGET_MS;
+				while (running && engine->turnFastForwarding() && SDL_GetTicks() < deadline)
+					running = engine->stepSession(clock, {});
+			}
+			nextTick = clock + engine->sessionDelay(clock);
+        }
 	}
 	// Disk completion is only one stage: retain the dialog for queued capture,
 	// browser persistence, and retry/export after a persistence failure.
@@ -191,13 +209,33 @@ void GameSessionScreen::drawExecution()
 	// The engine owns presentation, including nextFrame; don't also present
 	// through Screen::dispatchPaint.
 	if (started && !finished && isExecutionRunning())
-		engine->drawSession();
+    {
+#ifdef __EMSCRIPTEN__
+        // Keep input responsive while paused, without continuously redrawing
+        // a stationary map at display rate. Timed UI changes still repaint.
+        const auto now = SDL_GetTicks();
+        if (engine->presentationPaused() && !presentationDirty && now - lastDraw < PAUSED_REDRAW_INTERVAL_MS)
+            return;
+        lastDraw = now;
+#endif
+#ifdef __EMSCRIPTEN__
+        engine->drawSession(true);
+#else
+        engine->drawSession();
+#endif
+        presentationDirty = false;
+    }
 }
 
 Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
 {
 	if (!started || finished)
 		return 0;
+#ifdef __EMSCRIPTEN__
+    // Relay matches retain their polling/catch-up cadence. Local matches use
+    // display pacing; ordinary zero-delay loading jobs still use timers.
+    if (!engine->turnLockstep()) return GAGCore::ApplicationHost::AnimationFrameDelay;
+#endif
 	// Threaded: draw at display rate (presentation paces with vsync where enabled);
 	// cap at about 120 frames per second otherwise, counting the frame's own time.
 	if (engine->simulationThreaded())
@@ -221,6 +259,7 @@ void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, 
 		engine->viewportResized(oldWidth, oldHeight, width, height);
 	input.clear();
 	resetClock = true;
+	presentationDirty = true;
 }
 
 void GameSessionScreen::suspendExecution()

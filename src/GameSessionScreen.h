@@ -40,6 +40,8 @@ class GameSessionScreen : public GAGGUI::Screen
 	bool started = false, finished = false, resetClock = false;
 	// Once simulation ends, keep the save dialog alive through durable persistence.
 	bool finishingSession = false;
+	bool presentationDirty = true;
+	Uint64 lastDraw = 0;
 	Uint32 lastTick = 0;
 	//! Host tick at which the last threaded frame started (frame-rate cap).
 	Uint32 frameStarted = 0;

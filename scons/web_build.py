@@ -86,6 +86,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
         '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/runtime.js'] + PORTS)
+    if arguments.get('web_profile') == '1':
+        # Preserve function names for browser CPU profiles without changing optimization.
+        env.Append(LINKFLAGS=['--profiling-funcs'])
     # Export during the build, not while evaluating SCons or during dry runs.
     sys_path = __import__('sys').path
     if str(root) not in sys_path: sys_path.insert(0, str(root))
