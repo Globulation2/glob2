@@ -9,6 +9,8 @@
 #   deploy/build-web-client.sh <output-dir> [scons arguments...]
 #
 # Extra arguments go to scons, e.g. official_instance=https://play.example.org.
+# With GLOB2_WEB_INSTALL=0 the client is only built (build/emscripten/client/release)
+# and not installed; deploy/update-host.sh installs it after the new stack is up.
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
 output=${1:?usage: deploy/build-web-client.sh <output-dir> [scons arguments...]}
@@ -37,4 +39,6 @@ docker run --rm \
 		chown -R "$OWNER" build/emscripten
 	' sh "$@"
 
-python3 "$root/deploy/install-web-client.py" "$root/build/emscripten/client/release" "$output"
+if [ "${GLOB2_WEB_INSTALL:-1}" != 0 ]; then
+	python3 "$root/deploy/install-web-client.py" "$root/build/emscripten/client/release" "$output"
+fi

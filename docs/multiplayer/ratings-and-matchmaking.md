@@ -128,8 +128,17 @@ in-game end screen applies the same rule (`WinningConditions` `isGameDrawn`).
 5. A scheduler sweep (`applyPendingRatings`, every 30 s) settles any match whose
    verification is known but whose ratings are still pending.
 
-A verify job that fails after its retries leaves the match `pending` for an operator
-to re-run.
+A verify job that fails after its retries (or that the stale-job sweep gives up:
+its queue job was lost, ran out of attempts, or no agent serves its sim version)
+marks the match's verification `failed`; the rating note becomes
+`verification_failed` and nothing is rated. The worker logs it at error level. An
+administrator re-runs it with `platform matches reverify <match id>` (or `POST
+/api/v1/admin/matches/:id/reverify`, audited), which puts the match back to
+`pending` and submits a new verify job in one transaction; `platform matches
+failed` lists candidates. Re-verification is refused for verified or rated
+matches, and while a verify job is queued unless forced. At most one verify job
+per match is queued at a time (a partial unique index), so concurrent end-report
+retries submit one job.
 
 ### AI rating entities
 
@@ -210,8 +219,11 @@ leader lock, a Postgres advisory lock. All state is in Postgres, so a new leader
 continues where the old one stopped.
 
 A dead leader may notice that it lost its session a moment after the new leader
-starts. During that overlap both may tick. Every step therefore moves rows only from
-an expected status, inside a transaction, and the match starter must be idempotent.
+starts. Every step therefore moves rows only from an expected status, inside a
+transaction, and the match starter must be idempotent. On top of that the leader
+connection uses keepalive and re-checks its lock, and every matchmaker transaction
+checks the scheduler's leader epoch first (`assertLease`), so an old leader's
+writes fail once a new leader holds the lease.
 
 Each tick:
 
@@ -259,7 +271,11 @@ Each tick:
      region and every seat: name, rating, AI id and accept answer, with `you` on
      the receiver's seat (`proposalView.ts`). After each `queue.respond` the API
      sends it again to everyone in the proposal, so the prompt shows who accepted.
-4. **Starts** `starting` proposals through `MatchStarter`.
+4. **Starts** `starting` proposals through `MatchStarter`, in the background:
+   a start may wait up to a minute for on-demand map generation, which must not
+   hold up proposals, grouping or progress for every queue. Each proposal has at
+   most one start in flight (up to 8 at once); a tick waits 250 ms for them and
+   counts the rest when they finish.
    - On success, the tickets become `matched` and each human gets
      `queue.matchFound`.
    - After three failed attempts the proposal fails and the players wait again

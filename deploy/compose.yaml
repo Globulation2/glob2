@@ -169,7 +169,8 @@ services:
       target: relay
       args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
     environment:
-      # Each replica registers wss://<origin host>/relay/<container id>.
+      # Each replica registers wss://<origin host>/relay/<container id> under a
+      # stable relay id relay-<n> claimed on the spool volume (relay-entrypoint.sh).
       GLOB2_PUBLIC_ORIGIN: ${GLOB2_PUBLIC_ORIGIN:-https://localhost:8443}
       GLOB2_RELAY_PLATFORM_URL: http://platform-api:8080
       # Fetch ticket keys on the backend network, not from the public jwksUrl

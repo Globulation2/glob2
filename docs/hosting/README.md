@@ -47,14 +47,14 @@ Volumes (Compose project `glob2-platform`, so named `glob2-platform_<volume>`):
 | `blobs` | Maps, saves, previews, match records, replays (content-addressed) | Yes |
 | `signing-keys` | Ed25519 private keys (`<kid>.pem`) for access tokens and match tickets | Yes, encrypted |
 | `relay-secret` | `relay.key`, the bearer key relays use on `/internal` | Yes, encrypted (or regenerate) |
-| `relay-spool` | Match records a relay has not uploaded yet, one directory per relay id | Optional |
+| `relay-spool` | Match records a relay has not uploaded yet, one directory per relay id (`relay-1`, `relay-2`, …), and the relays' slot locks | Optional |
 | `caddy-data`, `caddy-config` | Certificates, ACME account, local CA | Optional (Caddy re-issues) |
 
 All services except Postgres run as UID/GID 10001 with a read-only root
 filesystem, all capabilities dropped and `no-new-privileges`; Postgres runs as its
 own UID 70 under the same restrictions. Health checks: `platform-api` `/readyz`
-(database reachable), `relay` `/readyz` (ticket keys loaded, not draining), Caddy
-`/livez`, Postgres `pg_isready`.
+(database reachable and the realtime LISTEN connection up), `relay` `/readyz`
+(ticket keys loaded, not draining), Caddy `/livez`, Postgres `pg_isready`.
 
 ## Requirements
 
@@ -289,7 +289,8 @@ its default.
 | `POSTGRES_PASSWORD` | required | Database password (letters and digits) |
 | `GLOB2_API_REPLICAS`, `GLOB2_WORKER_REPLICAS`, `GLOB2_ENGINE_AGENT_REPLICAS`, `GLOB2_RELAY_REPLICAS` | `2`, `1`, `1`, `1` | Replica counts |
 | `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE` | `1`, `1g` | Jobs per agent, and its scratch tmpfs |
-| `WARM_MAPS_PER_ENTRY` | `1` | Pre-generated quick-match maps per map pool entry (0: off) |
+| `WARM_MAPS_PER_ENTRY`, `WARM_MAPS_MAX_PER_ENTRY` | `2`, `8` | Pre-generated quick-match maps per map pool entry (0: off), and the ceiling the pool rises to while an entry is busy |
+| `GLOB2_BACKUP_DIR`, `GLOB2_BACKUP_KEEP` | `backups/` beside the env file's directory, `5` | Where `deploy/update-host.sh` keeps its pre-upgrade backups, and how many |
 | `GLOB2_RELAY_REGION` | `default` | Region these relays report |
 | `GLOB2_RELAY_MAX_MATCHES` | `200` | Matches per relay |
 | `GLOB2_RELAY_DRAIN_SECONDS`, `GLOB2_RELAY_STOP_GRACE` | `1800`, `31m` | Longest relay drain, and Compose's stop timeout (keep it longer) |
@@ -431,9 +432,16 @@ Change the replica counts in `.env` and run `docker compose up -d`.
   Each engine process may use up to 4-8 GB of address space
   (`ENGINE_MEMORY_MB`), so size concurrency by memory.
 - **relay**: each replica registers its own URL, `wss://<host>/relay/<container id>`,
-  derived from `GLOB2_PUBLIC_ORIGIN` and its container's host name. Adding replicas
-  is immediate. Removing one ends its matches unless it is drained first; use the
-  [relay drain procedure](#draining-relays) rather than lowering the count.
+  derived from `GLOB2_PUBLIC_ORIGIN` and its container's host name, under a stable
+  relay id: the first free slot `relay-1`, `relay-2`, … it claims (with `flock`) on
+  the `relay-spool` volume for as long as it runs (`deploy/relay-entrypoint.sh`).
+  A recreated relay therefore gets an id from the same set and re-submits what it
+  had spooled, and pinned keys (`relay-1:<key>`) keep matching. At start-up a
+  relay also adopts spooled matches of directories no running relay holds (after
+  a scale-down, or from before stable ids); the platform accepts repeated uploads.
+  Adding replicas is immediate. Removing one ends its matches unless it is drained
+  first; use the [relay drain procedure](#draining-relays) rather than lowering the
+  count.
 
 Relays on other hosts (to be closer to players) are not part of this file. Such a
 relay needs its own TLS or proxy and public URL (`GLOB2_RELAY_PUBLIC_URL`), the relay
@@ -472,7 +480,8 @@ before relying on it.
 ## Upgrades
 
 Before every upgrade, take a [backup](#backups-and-restore) and read the release
-notes for migrations and sim-version changes.
+notes for migrations and sim-version changes. `deploy/update-host.sh` (below)
+takes the database dump and a copy of the served web client itself.
 
 ```sh
 git pull                       # or set new GLOB2_*_IMAGE digests in .env
@@ -481,10 +490,33 @@ docker compose up -d --wait
 ```
 
 On a single host, `deploy/update-host.sh <env-file> [git-ref]` does all of this in
-one command: it checks out the revision (when given), builds the WebAssembly client
-into `GLOB2_WEB_CLIENT_DIR` with `deploy/build-web-client.sh` (Emscripten runs in a
-container, so the host needs only Docker), builds the images with the checkout's
-sim version, and starts the stack, waiting until every service is healthy.
+one command, in an order that never leaves a half-upgraded instance:
+
+1. **Backup.** A `pg_dump` and an archive of `GLOB2_WEB_CLIENT_DIR` go to
+   `GLOB2_BACKUP_DIR/<UTC time>/` with the running revision; the newest
+   `GLOB2_BACKUP_KEEP` are kept.
+2. **Build**, while the old stack keeps serving: the WebAssembly client (with
+   `deploy/build-web-client.sh`; Emscripten runs in a container, so the host needs
+   only Docker) into the build tree, and every image with the checkout's sim
+   version. The running images are first tagged `:previous`. A failed build
+   changes nothing that runs.
+3. **Swap:** `up --wait` (migrations run first, in `init`).
+4. **Web client last:** only once the new stack is healthy is the new client
+   installed at `/play/`, so browsers never load a client newer than the platform
+   and engine agents behind it.
+
+If the new stack does not become healthy, the script starts the `:previous`
+images of the previous revision again and leaves the web client as it was. It
+does not restore the database: migrations are forward-only and must keep the
+previous release working (expand, then contract in a later release), so the
+previous release normally runs on the new schema. When it does not, restore the
+dump the script took; it prints the `pg_restore` command.
+
+Migration numbers: parallel branches reserve ranges (a branch adds its files after
+the highest number on the integration branch and leaves a gap for the others), so
+files are applied in number order on a fresh database. Kysely's migrator refuses a
+database that has a later migration applied but not an earlier one, so deploy
+branches that add migrations in number order.
 
 `up` runs `init` first, which applies new migrations (forward only, each in a
 transaction) before the new API and worker start. `platform-api` and
@@ -507,8 +539,8 @@ docker compose up -d relay     # back to GLOB2_RELAY_REPLICAS, all on the new im
 
 While draining, a relay reports `draining` in its heartbeat so the platform stops
 allocating matches to it, and still accepts reconnects to its running matches.
-Records not yet uploaded stay in `relay-spool` under the relay's id; to re-send
-them later, start a relay with `GLOB2_RELAY_ID=<that id>`.
+Records not yet uploaded stay in `relay-spool` under the relay's id; the next relay
+that starts with that id, or that finds the directory unclaimed, re-sends them.
 
 ### Sim versions and engine agents
 
@@ -589,6 +621,33 @@ GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…
   network (not public).
 - Admin CLI: `docker compose run --rm --no-deps platform-api platform admin grant|revoke|ban|delete …`
   ([what deleting keeps and removes](../multiplayer/identity.md#administration)).
+- Failed verifications: a match whose verify job failed or was lost is marked
+  `failed` and not rated, and the worker logs `match verification failed` at error
+  level (alert on it). List them with `platform matches failed` and re-run one with
+  `platform matches reverify <match id>` (`--force` replaces a queued job), or
+  `POST /api/v1/admin/matches/<id>/reverify` as an administrator
+  ([details](../multiplayer/ratings-and-matchmaking.md#applying-a-verdict-exactly-once)).
+
+### Retention
+
+The worker leader deletes old rows every minute (`apps/worker/src/maintenance.ts`,
+at most 1000 rows per table and run) and collects blobs every six hours:
+
+| Data | Kept |
+| --- | --- |
+| Refresh tokens | rotated or revoked: 7 days (reuse detection); expired: 30 days after expiry |
+| Web sessions, provider sign-in flows | 30 days after expiry or revocation; 24 hours after expiry |
+| Browser sign-in attempts | 7 days once finished |
+| Guest accounts | deleted when unused for 90 days (no sign-in or realtime session, no device use) and they never played a match, host no open room and own no catalog map |
+| Room chat | 30 days |
+| Engine jobs | 30 days after completion; each match's latest succeeded verify job stays |
+| Match proposals, finished queue tickets | 30 days |
+| Engine agents not seen | 7 days |
+| Spilled NOTIFY payloads | 1 hour |
+| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated or warm map, or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
+
+Matches, participants, ratings, rating history, catalog maps and the audit log
+are kept.
 - Migrations: `docker compose run --rm --no-deps init node packages/db/src/cli.ts status`.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.
@@ -701,7 +760,9 @@ everything: delete the VM, the address, the firewall rule and the DNS records.
 ## Limits
 
 - One host. Postgres, the blob volume and Caddy are single instances; S3-compatible
-  blob storage is not implemented yet (`BLOB_STORE=s3`).
+  blob storage is not implemented yet (`BLOB_STORE=s3`; the `BlobStore` interface
+  includes the optional `list()` the blob collector uses for stored files no row
+  names).
 - Relays on other hosts need manual setup (above).
 - Until the engine reports its own data hash (`glob2 --sim-version`), the
   engine-agent image passes the hash computed by `deploy/sim_version.py` at build

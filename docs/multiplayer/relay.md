@@ -75,7 +75,7 @@ secrets.
 | `GLOB2_RELAY_PLATFORM_URL` | unset | Platform origin for `/internal/v1` calls; unset disables them |
 | `GLOB2_RELAY_PLATFORM_CA` | system store | Extra trust anchors for HTTPS calls to the platform |
 | `GLOB2_RELAY_KEY` (`_FILE`) | required with a platform | Bearer token for `/internal/v1` calls |
-| `GLOB2_RELAY_ID` | host name | `relayId`, `[A-Za-z0-9._-]{1,64}` |
+| `GLOB2_RELAY_ID` | host name | `relayId`, `[A-Za-z0-9._-]{1,64}`; the compose image's entrypoint sets a stable `relay-<n>` claimed on the spool volume ([hosting](../hosting/README.md#scaling)) |
 | `GLOB2_RELAY_PUBLIC_URL` | required with a platform | The `wss://` URL clients use, sent at registration |
 | `GLOB2_RELAY_REGION` | `default` | Region id, `^[a-z0-9][a-z0-9-]{0,31}$` |
 | `GLOB2_RELAY_SPOOL_DIR` | unset | Directory where records wait until they are uploaded |

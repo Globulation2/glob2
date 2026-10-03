@@ -504,9 +504,13 @@ class Smoke:
                   'registered': registered}
         lines = [l.split('|', 1)[-1].strip() for l in logs.splitlines() if 'regist' in l.lower()]
         detail['registrationLog'] = lines[-4:]
-        expected = sorted(f'{r} {u}' for r, u in zip(relay_ids, detail['publicUrls']))
-        if sorted(registered) != expected:
-            raise Failure(f'relays registered as {registered}, expected {expected}; log: {lines[-4:]}')
+        # Stable ids (relay-1..N, slots on the spool volume) with URLs routed by host name.
+        expected_ids = sorted(f'relay-{n}' for n in range(1, len(relay_ids) + 1))
+        got_ids = sorted(r.split(' ', 1)[0] for r in registered)
+        got_urls = sorted(r.split(' ', 1)[-1] for r in registered)
+        if got_ids != expected_ids or got_urls != sorted(detail['publicUrls']):
+            raise Failure(f'relays registered as {registered}, expected ids {expected_ids} '
+                          f'with URLs {sorted(detail["publicUrls"])}; log: {lines[-4:]}')
         return detail
 
     def engine_job(self):

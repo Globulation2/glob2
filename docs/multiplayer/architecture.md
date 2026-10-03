@@ -206,17 +206,33 @@ are text with CHECK constraints so they can grow without type migrations.
 - **Job queue.** graphile-worker tables in the same database. Engine jobs use
   the task identifier `engine:<kind>:<simVersionKey>`, so an agent only ever
   receives jobs for its own version. `submitEngineJob()` records the job in
-  `engine_jobs` and enqueues it; the agent enqueues its result under
+  `engine_jobs` and enqueues it (`graphile_worker.add_job`) in the same
+  transaction, so neither exists without the other; the agent enqueues its result under
   `platform:engine-job-result`; the worker validates it against the kind's result
   schema and completes the row (a result that breaks the contract is recorded as
   a failure). Deterministic engine failures are reported, other errors retry.
+  A scheduler sweep (`play/jobSweep.ts`) gives up queued jobs whose queue job was
+  lost or ran out of attempts without a result, or that no agent of their sim
+  version took for six hours, through the same result path.
 - **Pub/sub.** `PgPubSub` keeps one listening connection per process,
-  reconnects with backoff and re-listens; payloads are limited to 8000 bytes, so
-  publish identifiers and re-read state. Delivery is at most once; `onReconnect`
-  tells subscribers to re-read.
-- **Leader lock.** `LeaderElection` holds a session advisory lock; if the leader
-  dies Postgres releases the lock and another replica takes over within the
-  retry interval.
+  reconnects with backoff and re-listens. Every NOTIFY goes through `notify()`
+  (`packages/db/src/notify.ts`; a test fails on any other `pg_notify`): a payload
+  over Postgres' 8000-byte limit is stored in `notification_payloads` and the
+  notification carries only its id, which `PgPubSub` reads back before
+  dispatching, in order. Still publish identifiers and re-read state. Delivery is
+  at most once: after a reconnect, reconnect listeners re-read what may have been
+  missed. The API re-sends `room.state` of its sockets' rooms, `match.start` for
+  their starting and running matches, accept prompts and recent `match.updated`,
+  and re-checks pending browser sign-ins (`RealtimeHub.resync`); `/readyz` fails
+  while the listener is down.
+- **Leader lock.** `LeaderElection` holds a session advisory lock on a
+  connection with TCP keepalive and a query timeout; if the leader dies Postgres
+  releases the lock and another replica takes over within the retry interval.
+  The leader re-checks every 5 s, and before each scheduler task run, that its
+  session still holds the lock. With `fencing`, every new leader bumps an epoch
+  in `leader_leases`, and the matchmaker's transactions call `assertLease()`,
+  which share-locks the lease row: a stale leader that has not yet noticed its
+  lost session cannot commit proposals or starts once a newer leader exists.
 
 ## Configuration and operation
 
@@ -355,9 +371,10 @@ last 90 days:
 The worker leader runs `WarmMapPool.refill()` every 10 seconds. A sim version
 counts as served when an agent running `generate-map` was seen in the last five
 minutes. For each queue, served sim version and map pool entry, the pool keeps
-`WARM_MAPS_PER_ENTRY` maps (default 1, 0 turns the pool off) in `warm_maps`,
-either ready or still generating. It submits generate-map jobs with fresh seeds
-for any shortfall.
+`WARM_MAPS_PER_ENTRY` maps (default 2, 0 turns the pool off) in `warm_maps`,
+either ready or still generating, and more while an entry is busy: as many as
+were taken in the last 15 minutes, up to `WARM_MAPS_MAX_PER_ENTRY` (default 8).
+It submits generate-map jobs with fresh seeds for any shortfall.
 
 - An entry that fails three times in ten minutes waits for the window to pass.
   This happens, for example, when the configured revision is not the binary's.
