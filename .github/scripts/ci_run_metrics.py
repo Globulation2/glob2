@@ -50,10 +50,15 @@ def measure(run, jobs, observations):
     starts = [s['started_at'] for j in jobs for s in j.get('steps', []) if s.get('started_at')]
     ends = [j['completed_at'] for j in jobs if j.get('completed_at')]
     selection = next((o for o in observations if 'selection' in o), {})
+    import hashlib
+    inventories = sorted({json.dumps({'family': o.get('family'), 'profile': o.get('profile'), 'binary': o.get('binary'), 'eligible': o['eligible']}, sort_keys=True) for o in observations if 'eligible' in o})
+    coverage_fingerprint = hashlib.sha256(json.dumps([selection.get('inventory_fingerprint'), inventories], sort_keys=True).encode()).hexdigest() if selection.get('inventory_fingerprint') else None
     span = seconds(min(starts), max(ends)) if starts and ends else None
     active = active_seconds(jobs) if starts else None
-    return {'metrics_schema': 2, 'run_id': run['id'], 'sha': run['head_sha'], 'event': run['event'],
+    return {'metrics_schema': 3, 'run_id': run['id'], 'sha': run['head_sha'], 'event': run['event'],
             'conclusion': run.get('conclusion'), 'selection': selection.get('selection'),
+            'inventory_fingerprint': coverage_fingerprint,
+            'draft': selection.get('draft', False),
             'queue_seconds': seconds(run['created_at'], min(starts)) if starts else None,
             'execution_seconds': active, 'execution_span_seconds': span,
             'idle_after_start_seconds': max(0, span - active) if span is not None else None,
@@ -68,9 +73,9 @@ def compare(before, after):
     cohorts = {}
     for side, runs in [('before', before), ('after', after)]:
         for run in runs:
-            if run.get('conclusion') != 'success' or run.get('selection') is None:
+            if run.get('conclusion') != 'success' or run.get('selection') is None or not run.get('inventory_fingerprint'):
                 continue
-            key = json.dumps([run.get('metrics_schema'), run['event'], run['selection']], sort_keys=True)
+            key = json.dumps([run.get('metrics_schema'), run['event'], run.get('inventory_fingerprint'), run['selection']], sort_keys=True)
             cohorts.setdefault(key, {'before': [], 'after': []})[side].append(run)
     result = []
     for key, group in cohorts.items():
@@ -81,6 +86,28 @@ def compare(before, after):
                    for side, runs in group.items()}
         result.append({'cohort': json.loads(key), 'samples_per_side': 10, 'medians': medians})
     return result
+
+
+def feedback(runs):
+    """Report ordinary PR feedback by exact coverage; small cohorts stay explicit."""
+    import math
+    cohorts = {}
+    for run in runs:
+        if (run.get('event') != 'pull_request' or run.get('conclusion') != 'success'
+                or run.get('draft') or not run.get('inventory_fingerprint')):
+            continue
+        cohorts.setdefault(run['inventory_fingerprint'], []).append(run)
+    report = []
+    for identity, rows in sorted(cohorts.items()):
+        rows = sorted(rows, key=lambda row: int(row['run_id']))[-10:]
+        percentiles = {}
+        for metric in ('queue_seconds', 'execution_seconds', 'runner_minutes', 'time_to_result_seconds'):
+            values = sorted(row[metric] for row in rows if row.get(metric) is not None)
+            percentiles[metric] = values[math.ceil(len(values) * .9) - 1] if len(values) == 10 else None
+        report.append(dict(inventory_fingerprint=identity, samples=len(rows), p90=percentiles,
+                           targets_met=(percentiles['queue_seconds'] < 120 and percentiles['time_to_result_seconds'] < 900)
+                           if percentiles['queue_seconds'] is not None and percentiles['time_to_result_seconds'] is not None else None))
+    return report
 
 
 def api(path, token, binary=False):

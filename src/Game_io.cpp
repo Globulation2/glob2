@@ -27,6 +27,7 @@
 #include "DatasetWriter.h"
 #include "FileFormatVersions.h"
 #include "Game.h"
+#include <DeferredStream.h>
 #include "GameUtilities.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -337,7 +338,23 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 			throw std::runtime_error("Invalid script generation team-slot count");
 		const unsigned savedPlaneSize = savedTeamSlots * SCRIPT_ENTITY_SLOTS_PER_TEAM;
 		scriptGenerations.fill(0);
-		for (unsigned i = 0; i < SCRIPT_ENTITY_KINDS * savedPlaneSize; ++i)
+        if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && !text)
+        {
+            const auto count=stream->readCount("nonzero",SCRIPT_ENTITY_KINDS*savedPlaneSize);
+            Uint32 previous=0;
+            for(Uint32 n=0;n<count;++n)
+            {
+                const auto i=stream->readUint32("index");
+                const auto value=stream->readUint32("value");
+                if(i>=SCRIPT_ENTITY_KINDS*savedPlaneSize || (n && i<=previous) || !value)
+                    throw std::runtime_error("Invalid sparse script generations");
+                previous=i;
+                const unsigned inPlane=i%savedPlaneSize;
+                scriptGenerations[scriptGenerationIndex(i>=savedPlaneSize,
+                    inPlane/SCRIPT_ENTITY_SLOTS_PER_TEAM,inPlane%SCRIPT_ENTITY_SLOTS_PER_TEAM)]=value;
+            }
+        }
+        else for (unsigned i = 0; i < SCRIPT_ENTITY_KINDS * savedPlaneSize; ++i)
 		{
 			const unsigned inPlane = i % savedPlaneSize;
 			const unsigned destination = scriptGenerationIndex(i >= savedPlaneSize,
@@ -591,16 +608,19 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 		MapHeader &header;
 		std::string savedMapName;
 		bool savedIsSavedGame;
-		MapHeaderRestoreGuard(MapHeader &h)
-			: header(h), savedMapName(h.getMapName()), savedIsSavedGame(h.getIsSavedGame()) {}
+        Uint32 savedMapOffset;
+        bool restoreOffset;
+		MapHeaderRestoreGuard(MapHeader &h,bool restoreOffset)
+			: header(h), savedMapName(h.getMapName()), savedIsSavedGame(h.getIsSavedGame()), savedMapOffset(h.getMapOffset()), restoreOffset(restoreOffset) {}
 		MapHeaderRestoreGuard(const MapHeaderRestoreGuard &) = delete;
 		MapHeaderRestoreGuard &operator=(const MapHeaderRestoreGuard &) = delete;
 		~MapHeaderRestoreGuard()
 		{
 			header.setMapName(savedMapName);
 			header.setIsSavedGame(savedIsSavedGame);
+            if(restoreOffset) header.setMapOffset(savedMapOffset);
 		}
-	} mapHeaderRestore(mapHeader);
+	} mapHeaderRestore(mapHeader,dynamic_cast<GAGCore::DeferredStream*>(stream)!=nullptr);
 
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
@@ -704,7 +724,18 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 	stream->writeEnterSection("scriptGenerations");
 	stream->writeUint32(Team::MAX_COUNT, "teamSlots");
-	for (unsigned i = 0; i < scriptGenerations.size(); ++i)
+    if(binary)
+    {
+        Uint32 count=0;
+        for(auto value:scriptGenerations) if(value) ++count;
+        stream->writeUint32(count,"nonzero");
+        for(unsigned i=0;i<scriptGenerations.size();++i) if(scriptGenerations[i])
+        {
+            stream->writeUint32(i,"index");
+            stream->writeUint32(scriptGenerations[i],"value");
+        }
+    }
+    else for (unsigned i = 0; i < scriptGenerations.size(); ++i)
 	{
 		stream->writeEnterSection(i);
 		stream->writeUint32(scriptGenerations[i], "value");

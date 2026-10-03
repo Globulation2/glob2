@@ -114,6 +114,6 @@ class Sink
 };
 void capture(Team *team, bool retain, bool output, bool final = false);
 void save(GAGCore::OutputStream *stream, const std::vector<std::shared_ptr<Series>> &series);
-void load(GAGCore::InputStream *stream, std::vector<std::shared_ptr<Series>> &series);
+void load(GAGCore::InputStream *stream, std::vector<std::shared_ptr<Series>> &series, int versionMinor);
 void emit(Series &series, int team, bool final, bool describe = true);
 } // namespace AITelemetry

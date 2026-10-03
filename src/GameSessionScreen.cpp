@@ -56,6 +56,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		engine->beginSession(clock);
 		nextTick = clock;
 		started = true;
+		finishingSession = false;
 		// The simulation runs on its own thread where threads exist; otherwise
 		// (the browser build, thread creation failure) this host steps it serially.
 		engine->startSimulationThread(clock);
@@ -71,8 +72,15 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		clock += static_cast<Uint32>(tick - lastTick);
 		lastTick = tick;
 	}
-	bool running;
-	if (engine->simulationThreaded())
+	bool running = false;
+	if (finishingSession)
+	{
+		frameStarted = tick;
+		const bool pending = engine->advancePendingSave(input.events());
+		input.clear();
+		if (pending) return;
+	}
+	else if (engine->simulationThreaded())
 	{
 		// Input and GUI logic every frame, with the simulation parked between ticks;
 		// the simulation thread paces itself.
@@ -89,6 +97,13 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 		running = engine->stepSession(clock, input.events());
 		input.clear();
 		nextTick = clock + engine->sessionDelay(clock);
+	}
+	// Disk completion is only one stage: retain the dialog for queued capture,
+	// browser persistence, and retry/export after a persistence failure.
+	if (!running && !finishingSession)
+	{
+		finishingSession = true;
+		if (engine->advancePendingSave({})) return;
 	}
 	if (!running)
 	{
