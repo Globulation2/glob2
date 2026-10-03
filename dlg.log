@@ -1,0 +1,9 @@
+PASS GUIInteractionCoverage/desktop building menu clicks queue authoritative worker and priority orders [display] (3.5s)
+PASS GUIInteractionCoverage/home keyboard action wraps the camera and script messages preserve history [display] (3.8s)
+PASS GUIInteractionCoverage/unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts] (3.9s)
+PASS GUIInteractionCoverage/configured keyboard actions toggle presentation and queue pause without changing simulation [display] (4.3s)
+PASS GUIInteractionCoverage/match dialogs accept return and distinguish continuing from ending a game [display] (4.4s)
+PASS GUIInteractionCoverage/match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts] (4.9s)
+
+6 passed, 0 failed, 0 skipped (24.8s of test time)
+[run_tests] JUnit report: /home/bradley/glob2-claude/.claude/worktrees/pr-229-sprite-sheets-refresh-78d56e/artifacts/tests/junit.xml (6 cases)

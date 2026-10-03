@@ -1,0 +1,8 @@
+BUILD 0
+FAIL WinProbability/enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts] (0.1s)
+FAIL EngineSession/incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences] (1.8s)
+FAIL MapRenderResize/repeated map copies; settings and credits after resizing in software rendering (8.3s)
+FAIL MapRenderResize/repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200] (14.7s)
+7 passed, 4 failed, 0 skipped (29.6s of test time)
+
+[exited with code 0]
