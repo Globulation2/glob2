@@ -369,8 +369,8 @@ change to the engine's command line or output files changes only that module
 
 - Input problems (`bad_request`) and contract breaks (`internal`) are reported at
   once.
-- Timeouts, crashes and store errors are thrown, and graphile-worker retries
-  them.
+- Timeouts, crashes and transfer errors give the job back (released with a
+  backoff of 5 s, 10 s, 20 s …) for another lease.
 - On a job's last attempt, any remaining error is reported as `internal`, so the
   platform is never left waiting for a result.
 
