@@ -127,6 +127,7 @@ static void compare(TeamStats& expected, TeamStats& actual)
 			"new measurement totals and snapshots survive loading");
 	require(expected.coverageStartTick == actual.coverageStartTick &&
 				expected.extendedCoverageStartTick == actual.extendedCoverageStartTick &&
+				expected.labourCoverageStartTick == actual.labourCoverageStartTick &&
 				expected.coverageBuildingTick == actual.coverageBuildingTick &&
 				expected.coverageBuildingGeneration == actual.coverageBuildingGeneration &&
 				expected.coverageBuildings == actual.coverageBuildings &&
@@ -517,6 +518,9 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture::medical(victim);
 		require(w.game.teams[1]->stats.measurements.deaths[WORKER][Measurements::COMBAT] == 1,
 				"death counted once and starvation cannot overwrite cause");
+		require(w.game.teams[1]->stats.measurements.combatDeathPlace[WORKER][Measurements::FIELD] == 1 &&
+					w.game.teams[1]->stats.measurements.combatDeathAssignment[WORKER][Measurements::UNASSIGNED] == 1,
+				"a real combat death is attributed once by place and assignment");
 	}
 	{
 		TeamStatsMeasurementFixture w;
