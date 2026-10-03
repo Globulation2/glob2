@@ -31,6 +31,12 @@ Mobile settings omit desktop window sizes, renderer selection and OpenGL-only
 options because the operating system manages the viewport and the mobile build
 uses the portable renderer.
 
+Tapping a resource in the touch HUD opens a compact information card with its
+localized name, resource sprite and current/maximum amount for granular resources.
+It sits opposite the selected thumb. Close dismisses it and restores the previous
+palette; choosing Build, Flags or Tools replaces it with that toolbox. A depleted
+resource closes its inspector. Resource cards do not dispatch tactical commands.
+
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
 alliances and the session menu. The minimap is a separate top-right HUD component.
 Tapping it centres the camera there; dragging keeps steering the camera and clamps
