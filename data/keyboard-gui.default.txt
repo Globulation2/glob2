@@ -42,6 +42,7 @@
 <a>-<d>=switch to removing areas
 <a>-<f>=select place forbidden area
 <a>-<g>=select place guard area
+<a>-<w>=select place farm area
 <b>-<a>=select construct swarm
 <b>-<b>=select construct barracks
 <b>-<d>=select construct defencetower

@@ -47,9 +47,11 @@ class OrderModifyFlag;
 class OrderModifyClearingFlag;
 class OrderModifyMinLevelToFlag;
 class OrderMoveFlag;
+class OrderAlterArea;
 class OrderAlterForbidden;
 class OrderAlterGuardArea;
 class OrderAlterClearArea;
+class OrderAlterFarmArea;
 class OrderModifySwarm;
 class OrderDelete;
 class OrderChangePriority;
@@ -331,6 +333,9 @@ private:
 	void executeAlterForbidden(const OrderAlterForbidden& order, int localPlayer);
 	void executeAlterGuardArea(const OrderAlterGuardArea& order, int localPlayer);
 	void executeAlterClearArea(const OrderAlterClearArea& order, int localPlayer);
+	void executeAlterFarmArea(const OrderAlterFarmArea& order, int localPlayer);
+	/// The team exists and the brush mode is add or delete; shared by the area orders.
+	bool isValidAlterArea(const OrderAlterArea& order) const;
 	void executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
 	/// Delete-building. Bypasses the team-alive gate: dead-team buildings
 	/// can still be torn down.

@@ -424,6 +424,10 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				case GameGUIKeyActions::SelectPlaceClearingArea:
 					handleKeySelectPlaceArea(GameGUIToolManager::Clearing);
 					break;
+				case GameGUIKeyActions::SelectPlaceFarmArea:
+					if (toolManager.farmAreasAvailable())
+						handleKeySelectPlaceArea(GameGUIToolManager::Farm);
+					break;
 				case GameGUIKeyActions::SwitchToAddingAreas:
 				{
 					if(selectionMode != BRUSH_SELECTION)

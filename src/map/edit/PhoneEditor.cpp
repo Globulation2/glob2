@@ -340,7 +340,7 @@ void PhoneEditor::paintStroke()
 		const auto &now = map.getTile(snapshot.cells[i].first, snapshot.cells[i].second);
 		const auto &was = snapshot.tiles[i];
 		changed = now.forbidden != was.forbidden || now.guardArea != was.guardArea ||
-				  now.clearArea != was.clearArea || now.scriptAreas != was.scriptAreas ||
+				  now.clearArea != was.clearArea || now.farmArea != was.farmArea || now.scriptAreas != was.scriptAreas ||
 				  now.canResourcesGrow != was.canResourcesGrow;
 	}
 	if (changed)

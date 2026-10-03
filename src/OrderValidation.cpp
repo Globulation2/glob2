@@ -254,6 +254,12 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 	case ORDER_ALTER_CLEAR_AREA:
 		return checkAlterArea(c, static_cast<OrderAlterArea&>(order));
 
+	case ORDER_ALTER_FARM_AREA:
+		// Only a game carrying the farm-areas experiment shows the farm brush.
+		if (!game.gameHeader.hasExperiment(ExperimentId::FarmAreas))
+			return rejected(Reason::NotPermitted);
+		return checkAlterArea(c, static_cast<OrderAlterArea&>(order));
+
 	case ORDER_TEXT_MESSAGE:
 	{
 		// GameGUI::executeOrder asserts on any other type; the text itself was checked

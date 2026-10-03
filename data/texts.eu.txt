@@ -204,6 +204,8 @@ Aukeratu partida
 Aukeratu mapa
 [clear area]
 Garbiketa zonaldea
+[farm area]
+Labore zonaldea
 [Clearing:]
 Garbitu:
 [clearingflag explanation 2]
@@ -760,6 +762,8 @@ Ostatua aukeratu
 Merkatua aukeratu
 [select place clearing area]
 Jarri eremua: Garbiketa zonaldea
+[select place farm area]
+Jarri eremua: Labore zonaldea
 [select place clearingflag]
 Jarri bandera: Garbiketa bandera
 [select place explorationflag]
@@ -3132,6 +3136,8 @@ Debekatua
 Zaindu
 [Clear]
 Garbitu
+[Farm]
+Laborea
 [Paint]
 Margotu
 [Erase]
@@ -3302,6 +3308,10 @@ Esperimentuak
 Zaintza-eremuen oreka
 [experiment guard-area-balancing help]
 Gerlari libreak margotutako zaintza-eremuen artean banatzen dira, guztiak hurbilenera joan beharrean: eremu handiago batek gehiago jasotzen ditu, eta gainezka dagoen eremu bat pixkanaka husten da besteetara.
+[experiment farm-areas]
+Labore zonaldeak
+[experiment farm-areas help]
+Labore zonaldea gehitzen die eremu-pintzelei. Barruan biltzen duten langileek konektatutako soroaren lauki helduenetik hartzen dute eta lauki bakoitzean ale bat uzten dute, soroa berriz hazi dadin ertzetik jan beharrean. Barrura hazten den egurra garbitzen da.
 [settings Touch scrolling]
 Ukipen bidezko korritzea
 [settings List momentum]

@@ -204,6 +204,8 @@ Vyber si hru
 Vyber si mapu
 [clear area]
 Čistenie
+[farm area]
+Pestovanie
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]
@@ -758,6 +760,8 @@ Vybrať budovu: Jedáleň
 Vybrať budovu: Trhovisko
 [select place clearing area]
 Umiestniť oblasť: Čistenie
+[select place farm area]
+Umiestniť oblasť: Pestovanie
 [select place clearingflag]
 Umiestniť vlajku: Vlajka čistenia
 [select place explorationflag]
@@ -3130,6 +3134,8 @@ Zakázané
 Strážiť
 [Clear]
 Vyčistiť
+[Farm]
+Pole
 [Paint]
 Maľovať
 [Erase]
@@ -3300,6 +3306,10 @@ Experimenty
 Vyvažovanie strážnych oblastí
 [experiment guard-area-balancing help]
 Voľní bojovníci sa rozdelia medzi vyznačené strážne oblasti namiesto toho, aby všetci išli do najbližšej: väčšia oblasť ich dostane viac a preplnená oblasť sa postupne vyprázdni do ostatných.
+[experiment farm-areas]
+Oblasti pestovania
+[experiment farm-areas help]
+Pridá k zónovým štetcom oblasť pestovania. Robotníci, ktorí v nej zbierajú úrodu, berú z najzrelšieho políčka prepojeného poľa a na každom políčku nechajú jedno zrno, takže pole znova dorastie namiesto toho, aby bolo vyjedené od okraja. Drevo, ktoré do oblasti prerastie, sa vyrúbe.
 [settings Touch scrolling]
 Dotykové posúvanie
 [settings List momentum]

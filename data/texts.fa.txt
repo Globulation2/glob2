@@ -198,6 +198,8 @@ caps lock
 یک نقشه انتخاب کن
 [clear area]
 منطقه‌ی پاکسازی
+[farm area]
+منطقه‌ی کشاورزی
 [Clearing:]
 درحال پاکسازی:
 [clearingflag explanation 2]
@@ -752,6 +754,8 @@ scroll lock
 انتخاب بازار
 [select place clearing area]
 تعیین منطقهٔ پاکسازی
+[select place farm area]
+تعیین منطقهٔ کشاورزی
 [select place clearingflag]
 انتخاب ابزار پرچم پاکسازی
 [select place explorationflag]
@@ -3120,6 +3124,8 @@ Emoji
 نگهبانی
 [Clear]
 پاک‌سازی
+[Farm]
+کشاورزی
 [Paint]
 رسم
 [Erase]
@@ -3290,6 +3296,10 @@ Emoji
 توازن مناطق نگهبانی
 [experiment guard-area-balancing help]
 جنگجویان آزاد به جای اینکه همه به نزدیک‌ترین منطقه بروند، بین مناطق نگهبانی رنگ‌شده پخش می‌شوند: منطقهٔ بزرگ‌تر تعداد بیشتری می‌گیرد و منطقهٔ بیش از حد پر به‌تدریج به مناطق دیگر خالی می‌شود.
+[experiment farm-areas]
+مناطق کشاورزی
+[experiment farm-areas help]
+یک منطقهٔ کشاورزی به قلم‌موهای منطقه اضافه می‌کند. کارگرانی که درون آن برداشت می‌کنند از رسیده‌ترین خانهٔ مزرعهٔ پیوسته برمی‌دارند و در هر خانه یک دانه باقی می‌گذارند، تا مزرعه به‌جای خورده شدن از لبه دوباره رشد کند. چوبی که درون مزرعه می‌روید پاک‌سازی می‌شود.
 [settings Touch scrolling]
 پیمایش لمسی
 [settings List momentum]

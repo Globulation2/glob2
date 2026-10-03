@@ -35,6 +35,13 @@ void GameGUIToolManager::activateBuildingTool(const std::string& nbuilding)
 
 
 
+bool GameGUIToolManager::farmAreasAvailable() const
+{
+	return game.gameHeader.hasExperiment(ExperimentId::FarmAreas);
+}
+
+
+
 void GameGUIToolManager::activateZoneTool(ZoneType type)
 {
 	mode = PlaceZone;
@@ -104,7 +111,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			areas as of 2007-04-29.  If those .png files are
 			updated with different colors, then the following
 			code should change accordingly. */
-		switch(zoneType) {
+		switch(getZoneType()) {
 		case Forbidden:
 			c = Color(255,0,0);
 			break;
@@ -113,6 +120,9 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			break;
 		case Clearing:
 			c = Color(251,206,0);
+			break;
+		case Farm:
+			c = Color(0,200,80);
 			break;
 		}
 		/* Instead of using a dimmer intensity to indicate
@@ -149,7 +159,9 @@ std::string GameGUIToolManager::getBuildingName() const
 
 GameGUIToolManager::ZoneType GameGUIToolManager::getZoneType() const
 {
-	return zoneType;
+	// The farm zone of a game without the experiment (asked for by a key, or
+	// left over from an earlier game) falls back to the first zone.
+	return int(zoneType) < zoneTypeCount() ? zoneType : Forbidden;
 }
 
 
@@ -266,13 +278,21 @@ void GameGUIToolManager::handleZonePlacement(int mouseX, int mouseY, int localte
 	if (brushMode == BrushTool::MODE_ADD || brushMode == BrushTool::MODE_DEL)
 	{
 		const bool value = (brushMode == BrushTool::MODE_ADD);
-		Utilities::BitArray& view = displayedViewForZone(zoneType);
+		const ZoneType zone = getZoneType();
+		Utilities::BitArray& view = displayedViewForZone(zone);
+		// The farm brush does not paint ground nothing can grow on. The order
+		// refuses those tiles anyway; skipping them here too keeps the overlay
+		// the player sees from disagreeing with what actually lands.
+		const bool honourFarmTerrain = (zone == Farm) && value;
 		for (int y=startY; y<startY+height; y++)
 		{
 			for (int x=startX; x<startX+width; x++)
 			{
-				if (BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
-					view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
+				if (!BrushTool::getBrushValue(fig, x-startX, y-startY, mapX, mapY, firstX, firstY))
+					continue;
+				if (honourFarmTerrain && !game.map.canPaintFarmArea(x, y))
+					continue;
+				view.set(game.map.w*(y&game.map.hMask)+(x&game.map.wMask), value);
 			}
 		}
 	}
@@ -296,9 +316,44 @@ Utilities::BitArray& GameGUIToolManager::displayedViewForZone(ZoneType type)
 		return game.map.displayedGuardAreaView;
 	case Clearing:
 		return game.map.displayedClearAreaView;
+	case Farm:
+		return game.map.displayedFarmAreaView;
 	}
 	assert(false);
 	return game.map.displayedForbiddenView;
+}
+
+
+
+namespace
+{
+	// One order class per zone type, built from whatever OrderAlterArea's
+	// constructors accept (a brush accumulator, or a box and mask).
+	template <typename... Args>
+	std::shared_ptr<Order> zoneOrder(GameGUIToolManager::ZoneType type, Args&&... args)
+	{
+		switch (type)
+		{
+		case GameGUIToolManager::Forbidden:
+			return std::make_shared<OrderAlterForbidden>(std::forward<Args>(args)...);
+		case GameGUIToolManager::Guard:
+			return std::make_shared<OrderAlterGuardArea>(std::forward<Args>(args)...);
+		case GameGUIToolManager::Clearing:
+			return std::make_shared<OrderAlterClearArea>(std::forward<Args>(args)...);
+		case GameGUIToolManager::Farm:
+			return std::make_shared<OrderAlterFarmArea>(std::forward<Args>(args)...);
+		}
+		assert(false);
+		return nullptr;
+	}
+}
+
+
+
+std::shared_ptr<Order> GameGUIToolManager::makeZoneOrder(ZoneType type, Uint8 team, Uint8 mode,
+	Sint16 left, Sint16 top, Sint16 width, Sint16 height, const Utilities::BitArray& mask)
+{
+	return zoneOrder(type, team, mode, left, top, width, height, mask);
 }
 
 
@@ -307,20 +362,7 @@ void GameGUIToolManager::flushBrushOrders(int localteam)
 {
 	if (brushAccumulator.getApplicationCount() > 0)
 	{
-		if (zoneType == Forbidden)
-		{
-			orders.push(std::shared_ptr<Order>(new OrderAlterForbidden(localteam, brush.getType(), &brushAccumulator, &game.map)));
-		}
-		else if (zoneType == Guard)
-		{
-			orders.push(std::shared_ptr<Order>(new OrderAlterGuardArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
-		}
-		else if (zoneType == Clearing)
-		{
-			orders.push(std::shared_ptr<Order>(new OrderAlterClearArea(localteam, brush.getType(), &brushAccumulator, &game.map)));
-		}
-		else
-			assert(false);
+		orders.push(zoneOrder(getZoneType(), Uint8(localteam), Uint8(brush.getType()), &brushAccumulator, &game.map));
 		brushAccumulator.clear();
 	}
 }
