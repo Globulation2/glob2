@@ -2,7 +2,7 @@
 // through the engine-job result task (applyEngineJobResult);
 // handleEngineJobResult records it (outcomes, team statistics and timelines,
 // match artifacts) and applies ratings in the same transaction; it also
-// completes warm-map generation jobs. applyMatchRatings is idempotent on its own (matches.rating_status leaves 'pending' exactly once,
+// completes map generation jobs. applyMatchRatings is idempotent on its own (matches.rating_status leaves 'pending' exactly once,
 // under a row lock), so a re-delivered verdict or a sweep never applies a
 // rating change twice.
 import { sql, type Kysely, type Transaction } from 'kysely';
@@ -20,7 +20,6 @@ import {
 } from './outcome.ts';
 import { ensureAccountEntity, ensureAiEntity, ensureRating, type RatedAi } from './entities.ts';
 import { displayRating, rateSides } from './scale.ts';
-import { recordWarmMapResult } from '../warmMaps.ts';
 
 type Db = Kysely<Database>;
 
@@ -71,8 +70,8 @@ export async function handleEngineJobResult(
           'match verification failed; re-run it with: platform matches reverify <match id>',
         );
       }
-      await recordWarmMapResult(trx, jobId);
-      // Generated maps and uploads (no-op for verify-match jobs).
+      // Generated maps (rooms, on-demand starts and the warm pool) and
+      // uploads; a no-op for verify-match jobs.
       await applyMapJobResult(trx, jobId);
     }
     return applied;

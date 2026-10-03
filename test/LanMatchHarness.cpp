@@ -688,6 +688,75 @@ TEST_SUITE("LanMatchHarness")
 		}
 	}
 
+	// A short name: the case name is part of the artifact path, and the guest's map
+	// cache below it must stay under Windows' 260-character path limit.
+	GLOB2_TEST_CASE("an idle LAN host sleeps and wakes at once for guests and the host", "[network][artifacts]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		LanMatch m;
+		m.directory = glob2test::artifactDir() / "wait";
+		fs::remove_all(m.directory);
+		fs::create_directories(m.directory);
+		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(3), m.directory), 301));
+		const std::string endpoint = m.host().room->shareText();
+		m.players.push_back(std::make_unique<LanPlayer>("Guest", guestRoom(endpoint, "Guest", m.directory / "cache"), 302));
+		auto& host = m.hostSide();
+		REQUIRE(host.threaded());
+		auto* guest = m.players[1]->room->guestSide();
+		REQUIRE(m.runUntil(15000, [&] { return host.state().members.size() == 2 && guest->hasMap(); }));
+
+		// Idle room: the worker no longer wakes every millisecond (1000 per second),
+		// only for its idle bound and the guest's keep-alives.
+		m.runFor(300);
+		const std::uint64_t before = host.workerWakeups();
+		m.runFor(1000);
+		const std::uint64_t idle = host.workerWakeups() - before;
+		MESSAGE("LAN host worker wake-ups in one idle second: " << idle);
+#ifndef _WIN32
+		// Windows sockets complete through completion ports, which a readiness poll
+		// cannot see: there the worker keeps polling every millisecond (NetWait.h).
+		CHECK(idle < 60);
+#endif
+
+		// A guest's message wakes the host at once, and so does the host's own action
+		// made on another thread (its change reaches the guest). Best of three, so a
+		// scheduling hiccup on a loaded machine does not decide it.
+		using Clock = std::chrono::steady_clock;
+		const auto elapsedMs = [](Clock::time_point since) {
+			return static_cast<long long>(
+				std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - since).count());
+		};
+		const int guestSeat = host.state().members.at(1).seat;
+		REQUIRE(guestSeat > 0);
+		long long guestToHost = 1 << 30, hostToGuest = 1 << 30;
+		const AI::ImplementationID castor = static_cast<AI::ImplementationID>(AINames::parseAIName("castor"));
+		for (int attempt = 0; attempt < 3; ++attempt)
+		{
+			const int team = host.state().setup.seats.at(guestSeat).team == 1 ? 2 : 1;
+			auto started = Clock::now();
+			m.players[1]->room->changeTeam(guestSeat, team);
+			REQUIRE(m.runUntil(5000, [&] { return host.state().setup.seats.at(guestSeat).team == team; }));
+			guestToHost = std::min(guestToHost, elapsedMs(started));
+
+			const std::size_t seats = guest->state()->setup.seats.size();
+			started = Clock::now();
+			host.addAI(castor);
+			REQUIRE(m.runUntil(5000, [&] {
+				return guest->state()->setup.seats.size() == seats + 1 && !guest->state()->setup.seats.back().human;
+			}));
+			hostToGuest = std::min(hostToGuest, elapsedMs(started));
+			started = Clock::now();
+			host.kickSeat(static_cast<int>(seats));
+			REQUIRE(m.runUntil(5000, [&] { return guest->state()->setup.seats.size() == seats; }));
+			hostToGuest = std::min(hostToGuest, elapsedMs(started));
+		}
+		MESSAGE("guest to host: " << guestToHost << " ms, host to guest: " << hostToGuest << " ms (best of three)");
+		// Far below the 100 ms idle bound: they did not wait for a timer.
+		CHECK(guestToHost < 50);
+		CHECK(hostToGuest < 50);
+	}
+
 	GLOB2_TEST_CASE("LAN input delay on loopback and on emulated slower links", "[network][slow][benchmark][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
@@ -730,7 +799,9 @@ TEST_SUITE("LanMatchHarness")
 				p->trace.measuring = true;
 				before.push_back(p->session().stallStats());
 			}
+			const std::uint64_t wakeupsBefore = m.hostSide().workerWakeups();
 			m.runFor(25000);
+			const double wakeupsPerSecond = (m.hostSide().workerWakeups() - wakeupsBefore) / 25.0;
 			std::vector<const LanPlayer*> all;
 			for (auto& p : m.players)
 				all.push_back(p.get());
@@ -749,6 +820,8 @@ TEST_SUITE("LanMatchHarness")
 				stages << int(bundle) << " | " << oneWayMs << " ms | " << p->name << " | "
 				       << turntest::LatencyTrace::row(p->trace.breakdown()) << "\n";
 			}
+			table << int(bundle) << " | " << oneWayMs << " ms | host relay thread wake-ups per second: " << wakeupsPerSecond
+			      << "\n";
 			for (auto& p : m.players)
 			{
 				RngScope scope(p->rng);

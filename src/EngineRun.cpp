@@ -9,6 +9,7 @@
 #include "AINames.h"
 #include "AIThreading.h"
 #include "ChecksumSidecar.h"
+#include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include <utility>

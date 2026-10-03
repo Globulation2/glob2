@@ -45,7 +45,6 @@ export async function collectBlobs(
         AND NOT EXISTS (SELECT 1 FROM match_artifacts a WHERE a.blob_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM map_uploads u WHERE u.blob_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM generated_maps g WHERE g.map_hash = c.sha256)
-        AND NOT EXISTS (SELECT 1 FROM warm_maps w WHERE w.map_hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM matches m WHERE m.map_hash = c.sha256)
       ORDER BY c.created_at
       LIMIT ${options.batch ?? BLOB_GC_BATCH}

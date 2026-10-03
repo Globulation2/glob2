@@ -89,6 +89,7 @@ ENGINE_TESTS = [
     'OnlineResultTest.cpp',
     ('online/OnlineScreenLifetimeTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'online/PlatformRoomTest.cpp',
+    'online/OnlineServicesTest.cpp',
     ('WssBackpressureTest.cpp', dict(require={'wss'})),
     ('MapRenderResizeHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('PointBarRenderTest.cpp', dict(cxxflags=['-fno-access-control'])),

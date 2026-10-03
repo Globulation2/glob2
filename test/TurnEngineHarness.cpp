@@ -1108,7 +1108,8 @@ TEST_SUITE("TurnEngineHarness")
 		CHECK(leaver.stopped);
 		auto& winner = *m.clients[0];
 		REQUIRE_FALSE(winner.stopped);
-		const ConnectionSnapshot snapshot = winner.engine->turnConnectionSnapshot();
+		REQUIRE(winner.engine->gui.connectionOverlay);
+		const ConnectionSnapshot snapshot = winner.engine->gui.connectionOverlay->source();
 		const auto row = std::find_if(snapshot.rows.begin(), snapshot.rows.end(), [](const ConnectionRow& r) { return r.seat == 1; });
 		REQUIRE(row != snapshot.rows.end());
 		CHECK(row->state == ConnectionRow::State::Left);

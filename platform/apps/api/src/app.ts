@@ -40,6 +40,7 @@ import { pageAssetRoutes } from './web/pages.ts';
 import { Assignments } from './play/assignments.ts';
 import { PlayRealtime } from './play/realtime.ts';
 import { RoomService } from './play/rooms.ts';
+import { ReplicaPresence } from './realtime/presence.ts';
 import { MAX_FRAME_BYTES, realtimeRoutes, type RealtimeOptions } from './realtime/server.ts';
 
 export type { ApiServices } from './services.ts';
@@ -56,6 +57,8 @@ export interface BuildOptions {
   realtime?: RealtimeOptions;
   /** Room sweep interval in ms (default 30 s; 0 disables, for tests). */
   roomSweepMs?: number;
+  /** Realtime presence heartbeat (default PRESENCE_HEARTBEAT_MS); 0 disables the timer. */
+  presenceHeartbeatMs?: number;
 }
 
 function errorBodyFor(
@@ -201,8 +204,15 @@ export async function buildApp(
     };
   });
 
+  const presence = new ReplicaPresence(services.db, {
+    logger: services.logger,
+    ...(options.presenceHeartbeatMs === undefined
+      ? {}
+      : { heartbeatMs: options.presenceHeartbeatMs }),
+  });
   const rooms = new RoomService({
     db: services.db,
+    presence,
     jobs: services.jobs,
     access: services.access,
     origin: services.config.publicOrigin,
@@ -222,6 +232,7 @@ export async function buildApp(
     hub: identity.hub,
     rooms,
     assignments,
+    presence,
     logger: services.logger,
     ...(options.roomSweepMs === undefined ? {} : { sweepMs: options.roomSweepMs }),
   });

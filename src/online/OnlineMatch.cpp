@@ -8,7 +8,6 @@
 #include "Engine.h"
 #include "MapCache.h"
 #include "MatchSetup.h"
-#include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "RelayTransport.h"
 #include "Team.h"
@@ -253,8 +252,8 @@ const char *stepName(OnlineMatch::Step step)
 	return "?";
 }
 
-OnlineMatch::OnlineMatch(PlatformClient &client, Json assignment, Context context)
-	: client(client), calls(client), assignment(std::move(assignment)), ctx(std::move(context))
+OnlineMatch::OnlineMatch(PlatformClient &client, MapCache &maps, Json assignment, Context context)
+	: client(client), maps(maps), calls(client), assignment(std::move(assignment)), ctx(std::move(context))
 {
 	makeTransport = [](const std::string &url) { return std::make_shared<RelayTransport>(url); };
 	parseAssignment();
@@ -326,7 +325,6 @@ void OnlineMatch::startMap()
 {
 	run = std::make_unique<Running>();
 	const std::string hash = setupJson["map"].value("hash", "");
-	auto &maps = services().maps;
 	cachedMap = maps.contains(hash);
 	HttpFetch::Headers headers;
 	if (!client.accessToken().empty())

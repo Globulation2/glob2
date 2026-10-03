@@ -21,7 +21,6 @@
 #include "NetEngine.h"
 #include "TurnSession.h"
 #include "ChecksumSidecar.h"
-#include "ConnectionOverlay.h"
 
 
 class SimulationRunner;
@@ -29,6 +28,7 @@ namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 namespace Turn { class TurnLockstepSession; }
 namespace Online { class OnlineMatchResult; }
+class TurnMatchPresenter;
 
 using std::shared_ptr;
 
@@ -124,8 +124,6 @@ public:
 	/// several ticks per frame (GameSessionScreen), rendering none of them.
 	bool turnFastForwarding();
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
-	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
-	std::vector<std::string> turnConnectionNotice();
 	/// Online matches: what the results screen shows (outcome, verification, rating).
 	/// The results card of an online match; also tells the in-game menu what leaving costs.
 	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
@@ -327,16 +325,9 @@ private:
 	/// Turn games: pumps the session each frame and handles its requests (reload,
 	/// desync flag). Called first in stepSessionImpl.
 	void pumpTurnSession(Uint64 now);
-	/// What the connection HUD shows (ConnectionOverlay), from the turn session.
-	ConnectionSnapshot turnConnectionSnapshot();
 	Uint64 turnNowMicros = 0;
-	std::uint32_t catchupFrom = 0;
-	bool catchupActive = false;
-	Uint64 connectionLostMicros = 0;
-	Uint64 catchupStartedMicros = 0;
-	/// Catch-up progress sampled every few seconds: whether the gap to the relay
-	/// shrinks (CatchUpPace in ConnectionOverlay.h).
-	CatchUpPace catchupPace;
+	/// Builds the connection HUD of a turn game from its session (gui layer).
+	std::unique_ptr<TurnMatchPresenter> turnPresenter;
 	/// Reloads the turn game's initial state in place, keeping the session, after
 	/// TurnSession::needsReload(); the session then replays the log from tick 0.
 	void reloadTurnInitialState();
