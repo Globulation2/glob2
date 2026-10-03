@@ -1416,7 +1416,7 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.platform == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     services:
       postgres:
         image: postgres:16
@@ -1466,6 +1466,35 @@ jobs:
         run: |
           npm run migrate -- latest
           npm run migrate -- status
+      # The web app's browser suites (apps/web/e2e: page smoke tests and axe
+      # accessibility checks, desktop and phone) against a seeded API.
+      - name: Restore the Playwright browser
+        id: restore_playwright_browser
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('platform/package-lock.json') }}
+      - name: Install the Playwright browser
+        id: install_playwright_browser
+        run: npx playwright install --with-deps chromium
+      - uses: actions/cache/save@v4
+        if: ${{ steps.restore_playwright_browser.outputs.cache-hit != 'true' }}
+        id: save_playwright_browser
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('platform/package-lock.json') }}
+      - name: Run the web app browser and accessibility suites
+        id: run_web_app_browser_suites
+        env:
+          CI: 'true'
+        run: npm run e2e -w @glob2/web
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        id: upload_web_app_test_results
+        with:
+          name: web-app-e2e
+          path: artifacts/web-app/test-results
+          if-no-files-found: ignore
 
   platform-stack:
     name: self-hosted platform stack
@@ -1476,17 +1505,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
-      - name: Build the images and smoke-test deploy/compose.yaml
+      # The engine and relay compile inside BuildKit cache mounts; carrying them
+      # between runs makes the image build incremental (tests/deployment/buildkit_cache.py).
+      - name: Restore the image build caches
+        id: restore_image_build_caches
+        uses: actions/cache/restore@v4
+        with:
+          path: artifacts/buildkit-cache
+          key: platform-stack-buildkit-v1-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: platform-stack-buildkit-v1-${{ runner.arch }}-
+      - name: Load the image build caches
+        id: load_image_build_caches
+        run: python3 tests/deployment/buildkit_cache.py load artifacts/buildkit-cache
+      # Gating: a failed check fails the job (and the aggregate) here. Then a
+      # rated quick match end to end: two headless clients through a relay,
+      # record upload, verify-match and the rating update.
+      - name: Build the images, smoke-test deploy/compose.yaml and play a rated match
         id: smoke_test_the_platform_stack
-        continue-on-error: true
-        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
+        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack --match-e2e
+      - name: Save the image build caches
+        id: save_image_build_caches
+        if: ${{ success() }}
+        run: python3 tests/deployment/buildkit_cache.py save artifacts/buildkit-cache
+      - uses: actions/cache/save@v4
+        if: ${{ success() }}
+        id: save_image_build_cache_archive
+        with:
+          path: artifacts/buildkit-cache
+          key: platform-stack-buildkit-v1-${{ runner.arch }}-${{ github.run_id }}-${{ github.run_attempt }}
       - uses: actions/upload-artifact@v4
         if: always()
         id: upload_platform_stack_logs
         continue-on-error: true
         with:
           name: platform-stack-smoke
-          path: artifacts/platform-stack
+          path: |
+            artifacts/platform-stack
+            !artifacts/platform-stack/match-e2e/run/*.map*
           if-no-files-found: ignore
       - name: Summarize CI failures
         if: always()

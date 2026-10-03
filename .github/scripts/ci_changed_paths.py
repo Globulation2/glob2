@@ -10,13 +10,19 @@ import sys
 
 
 JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack")
-# Paths whose changes rebuild and smoke-test the whole self-hosted stack
-# (deploy/compose.yaml). Its images compile the engine, so other engine changes
-# leave it to full CI rather than adding a second client build to every PR.
+# Paths whose changes rebuild the whole self-hosted stack (deploy/compose.yaml),
+# smoke-test it and play a rated quick match through it (relay, record upload,
+# verification, ratings). That covers the deployment itself, the platform's
+# server code and the engine's online match path (turn protocol, relay client,
+# headless turn client, verifier). The images compile the engine, so other
+# engine changes leave the stack to full CI rather than adding a second client
+# build to every PR; platform tests and the web app have the platform job.
 PLATFORM_STACK_PATHS = (
     "deploy/", "tests/deployment/", "src/relay/", "platform/package-lock.json",
-    "platform/packages/db/migrations/", "platform/apps/api/src/main.ts",
-    "platform/apps/worker/src/main.ts", "platform/apps/engine-agent/src/main.ts",
+    "platform/packages/db/", "platform/packages/core/src/", "platform/packages/play/src/",
+    "platform/packages/protocol/src/", "platform/apps/api/src/", "platform/apps/worker/src/",
+    "platform/apps/engine-agent/src/",
+    "src/net/turn/", "src/online/", "src/TurnClientCommand.cpp", "src/VerifyMatch.", "src/EngineTurnTelemetry.cpp",
 )
 
 # Implementation-only drawing changes retain native, browser, and equivalence

@@ -625,8 +625,8 @@ token's `kid`; each relay registered with the platform under its public URL,
 reachable at `/relay/<id>`, and unknown ids refused; and a `generate-map` job run by the engine agent
 with the real binary, applied by the worker and stored as a blob. It then removes
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
-leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
-`src/relay/`, migrations or platform dependencies change, and on full runs.
+leaves the stack running. `--match-e2e` also plays a rated quick match through
+the stack (below).
 
 On a running deployment, the same checks run against the public origin with a
 publicly trusted certificate, the deployed web client and the replica counts in
@@ -650,6 +650,45 @@ python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \
     --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
     --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
 ```
+
+`--mode queue --queue <id>` plays a rated quick match instead: two new local
+accounts (the instance needs local sign-in) join a rated 1v1 queue, accept the
+ranked prompt and play. Player A quits first and player B 30 s later, so the
+verified match is rated as an abandonment; with `--psql` the script also checks
+that both players' ratings on the queue's ladder changed. `--engine-command`
+replaces `--glob2` with a command prefix, for example a `docker run` of the
+engine-agent image, and `--ca-file` trusts a private CA.
+
+### CI for the deployed stack
+
+The `platform-stack` job of `.github/workflows/build.yml` gates every pull
+request that changes the deployment (`deploy/`, `tests/deployment/`), the
+platform's server code or schema, platform dependencies, the relay, or the
+engine's online match path (turn protocol, online client, turn client,
+verifier); full runs always include it. It is part of the "Relevant checks
+passed" aggregate, and any failed check fails it. It runs
+
+```sh
+python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack --match-e2e
+```
+
+which builds the images, runs the smoke checks above, and then
+`live_match_e2e.py --mode queue` against the fresh stack: a small rated queue
+(`e2e-ranked`, one 128×128 generated map) on an instance with local sign-in, two
+headless clients run from the engine-agent image (so client, relay and verifier
+share one build and sim version) over the stack's relay, the record upload and
+end report, the verify-match job, and the rating update. Compose logs, the
+smoke results, the clients' logs and results, and the e2e `results.json` are
+uploaded as the `platform-stack-smoke` artifact.
+
+The engine and relay compile inside BuildKit cache mounts. The job restores them
+from the GitHub Actions cache before the build and saves them after a successful
+run (`tests/deployment/buildkit_cache.py`), so later builds are incremental. A
+missing or broken cache only makes the build cold again.
+
+The web app's browser suites (`platform/apps/web/e2e`: page smoke tests and axe
+accessibility checks on desktop and phone) run in the `platform` job against a
+seeded API.
 
 ## Example: one virtual machine on Google Cloud
 

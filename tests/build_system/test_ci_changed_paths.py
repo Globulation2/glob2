@@ -41,6 +41,26 @@ class ChangedPathsTest(unittest.TestCase):
             map_generators=False, deployment=False, cross_platform=False, platform=True,
             platform_stack=True,
         )
+        # The stack's end-to-end match covers the platform's server code...
+        for path in ("platform/packages/play/src/ratings/apply.ts", "platform/apps/worker/src/main.ts",
+                     "platform/packages/protocol/src/matchSetup.ts"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=False, map_generators=False,
+                    deployment=False, cross_platform=False, platform=True, platform_stack=True,
+                )
+        # ...but not platform tests or the web app, which the platform job runs.
+        for path in ("platform/packages/play/test/stored.test.ts", "platform/apps/web/src/App.tsx"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=False, map_generators=False,
+                    deployment=False, cross_platform=False, platform=True, platform_stack=False,
+                )
+        # ...and the engine's online match path.
+        self.assert_jobs(
+            ["src/net/turn/TurnSequencer.cpp"], native=True, browser=True, map_generators=False,
+            deployment=True, cross_platform=True, platform=False, platform_stack=True,
+        )
         # Engine changes rely on full CI for the stack, not every pull request.
         self.assert_jobs(
             ["src/map/Map.cpp", "deploy/Caddyfile"], native=True, browser=True, map_generators=True,
