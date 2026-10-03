@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <string>
 #include <set>
 #include <cmath>
@@ -379,6 +380,8 @@ namespace
 {
 void highResolution(bool software)
 {
+	// This fixture exercises the desktop sidebar's controls and hit coordinates.
+	glob2test::ScopedEnvironment desktopUI("GLOB2_MOBILE_UI", "0");
 	std::filesystem::create_directories(glob2test::artifactDir() / "runtime-check");
 	std::filesystem::create_directories(glob2test::artifactDir() / "replay-fixture/replays");
 	glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 1024, .height = 768,
