@@ -21,3 +21,14 @@ Display runs unset DISPLAY/WAYLAND_DISPLAY and use the runner's private Xvfb plu
 The concurrent display report preserves three stalls: the portable icon case timed out at 600 seconds, and two portable renderer cases were stopped after their unchanged isolated runs passed (1.0 and 2.9 seconds). The separate rerun reports cover all three; assertions were unchanged. Other nonpassing cases, if present, must be resolved before merge. This is not a claim that the initial concurrent run was wholly green.
 
 Final UI sweeps select the map repetition fixture in all six viewports. Earlier complete all-screen sweeps passed at `b7f89e595` and are retained separately; they are not represented as final-head executions. Native Linux software/OpenGL/portable paths were exercised locally. Physical Android/iOS devices, Windows, browser execution and cross-platform per-tick checksum comparisons were not performed locally. Hosted checks were queued; the maintainer explicitly authorized merge based on passing relevant local tests.
+
+## Final author metadata
+
+The final PR head `0c7ff8380` changes only the author to credit Leo Wandersleb. Its Git tree is identical to the full-suite revision; see `author-only-amendment.json`. Test provenance was rebuilt with the same compiler, flags and dependencies. Six copying/save/checksum cases and the real touch dialog case passed again on this final head; their reports and provenance are retained separately.
+
+The unchanged isolated graphics reruns used the same display environment, `-j1 --display-jobs 1 --timeout 120 --keep-profiles`, and these filters:
+
+```sh
+--filter 'DrawableSurfaceBlend/portable icon*'
+--filter 'PortableRenderer/each accelerated*' --filter 'PortableRenderer/zone boundaries*'
+```

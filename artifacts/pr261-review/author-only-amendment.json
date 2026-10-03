@@ -1,0 +1,8 @@
+{
+  "full_suite_revision": "7369a24dd81ea70f18a6e02c7b6aaaa5dd32b710",
+  "final_author_only_revision": "0c7ff83803482a3520d9650d9b7ac55d55f69e56",
+  "identical_git_tree": "95adfbdcf8a2ce3b60d6df4a075f223968c7f5bc",
+  "focused_headless_cases_passed": 6,
+  "focused_touch_cases_passed": 1,
+  "merged_commit": "ce56e207835f7f8c98dcad60addb80130d3c4b6b"
+}
