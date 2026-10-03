@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:2787635) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/shutdown-storage.spec.js:23:1 › quit waits for final persistence through resize and escape (20.8s)
+  ✓  2 [chromium] › browser/tests/shutdown-storage.spec.js:45:1 › quit offers visible retry after a failed final save (20.0s)
+  ✓  3 [chromium] › browser/tests/shutdown-storage.spec.js:58:1 › failed final save requires an explicit quit without saving (18.7s)
+
+  3 passed (1.0m)

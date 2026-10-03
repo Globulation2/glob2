@@ -1,0 +1,23 @@
+==================
+WARNING: ThreadSanitizer: data race (pid=2773833)
+  Read of size 8 at 0x720c00001350 by thread T1 (mutexes: write M0):
+    #0 pthread_cond_wait ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1326 (libtsan.so.2+0x8d619) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 SDL_WaitConditionTimeoutNS <null> (libSDL3.so.0+0x2d497c) (BuildId: 0f0bdac3fed429649894bdba56f1f4fdd545d41b)
+
+  Previous write of size 8 at 0x720c00001350 by main thread:
+    #0 pthread_cond_destroy ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1386 (libtsan.so.2+0x8ddec) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 SDL_DestroyCondition_REAL <null> (libSDL3.so.0+0x2d4816) (BuildId: 0f0bdac3fed429649894bdba56f1f4fdd545d41b)
+    #2 __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59 (libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)
+
+  Mutex M0 (0x720c00001320) created at:
+    #0 pthread_mutex_init ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1398 (libtsan.so.2+0x5b908) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 SDL_CreateMutex_REAL <null> (libSDL3.so.0+0x2d46b3) (BuildId: 0f0bdac3fed429649894bdba56f1f4fdd545d41b)
+    #2 __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59 (libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)
+
+  Thread T1 'SDLNetRslv0' (tid=2773835, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:1078 (libtsan.so.2+0x5cb02) (BuildId: 66d37dc704b813df6c813b77217284deb43a0042)
+    #1 SDL_SYS_CreateThread <null> (libSDL3.so.0+0x2d42ef) (BuildId: 0f0bdac3fed429649894bdba56f1f4fdd545d41b)
+    #2 __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:59 (libc.so.6+0x2a600) (BuildId: 066527e430a32768d82741e00b81eebb1a872294)
+
+SUMMARY: ThreadSanitizer: data race (/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/sdk/lib/libSDL3.so.0+0x2d497c) (BuildId: 0f0bdac3fed429649894bdba56f1f4fdd545d41b) in SDL_WaitConditionTimeoutNS
+==================
