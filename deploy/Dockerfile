@@ -104,7 +104,11 @@ COPY platform/package.json platform/package-lock.json ./
 COPY platform/packages/protocol/package.json packages/protocol/
 COPY platform/packages/db/package.json packages/db/
 COPY platform/packages/core/package.json packages/core/
+COPY platform/packages/engine/package.json packages/engine/
 COPY platform/packages/hive/package.json packages/hive/
+COPY platform/packages/billing/package.json packages/billing/
+COPY platform/packages/map-studio/package.json packages/map-studio/
+COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
 COPY platform/apps/api/package.json apps/api/
 COPY platform/apps/worker/package.json apps/worker/
 COPY platform/apps/engine-agent/package.json apps/engine-agent/
@@ -127,6 +131,7 @@ COPY platform/packages packages
 COPY platform/apps/api apps/api
 COPY platform/apps/worker apps/worker
 COPY platform/apps/engine-agent apps/engine-agent
+COPY platform/apps/ai-map-worker apps/ai-map-worker
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -199,6 +204,17 @@ WORKDIR /app/platform
 USER 10001:10001
 ENTRYPOINT ["/usr/local/bin/glob2-engine-agent-entrypoint"]
 CMD ["node", "apps/engine-agent/src/main.ts"]
+
+# Optional authoring service. Sources/descriptions and binary come from the same engine context.
+FROM engine-agent AS ai-map-worker
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pil \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=engine-source /src/map/generator/generators /opt/glob2/share/src/map/generator/generators
+COPY --from=engine-source /.agents/skills/glob2-map-design/references /opt/glob2/share/.agents/skills/glob2-map-design/references
+ENV GLOB2_SOURCE_DIR=/opt/glob2/share
+USER 10001:10001
+CMD ["node", "apps/ai-map-worker/src/main.ts"]
 
 # Legacy YOG proxy (until M9) and base of the new one.
 FROM ${CADDY_IMAGE} AS proxy
