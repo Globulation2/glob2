@@ -312,7 +312,8 @@ class RelayMatchTest(unittest.TestCase):
         # Seat 1's link drops; seat 0 leaves claiming the game is over.
         resume_at = clients[1].horizon()
         clients[1].kill()
-        clients[0].wait_for(lambda c: c.of('presence')[-1].get(1) == RECONNECTING, what='seat 1 reconnecting')
+        clients[0].wait_for(lambda c: c.of('presence') and c.of('presence')[-1].get(1) == RECONNECTING,
+                            what='seat 1 reconnecting')
         clients[0].send(quit_message(1))
         clients[0].wait_closed()
         time.sleep(1.0)
