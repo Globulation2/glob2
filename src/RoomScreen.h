@@ -90,6 +90,7 @@ class RoomScreen : public Glob2UI::Screen
 	std::vector<std::optional<std::array<std::uint8_t, 3>>> seatColours;
 
 	void handle(const RoomBackend::Event &event);
+	void noteMatchOver();
 	void launch();
 	void finish(int code, const std::string &message);
 	void leave();

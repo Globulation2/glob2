@@ -129,8 +129,20 @@ textarea {
   width: 100%;
   min-height: 96px;
 }
+/* Our own chevron: Safari on iPhone draws native selects at a fixed 28 px
+   height and ignores min-height, which fails the 44 px touch target. */
 select {
   padding-right: 32px;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
+    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) 50%,
+    calc(100% - 13px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
 }
 label.field {
   display: grid;

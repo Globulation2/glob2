@@ -835,7 +835,10 @@ speed, through pause and hard pause, and plays the recorded replay back at 1x,
 maximum and fast-forward. The last case captures the engine's per-run checksums
 and requires the first four (speed and pause) and the last three (playback) to
 agree. `python3 test/run_tests.py --filter 'GameSpeed/settings*'` runs the settings
-case alone.
+case alone. That case also clicks the top bar's speed chevrons. The `GameSpeedControl`
+suite (`test/GameSpeedControlTest.cpp`, unit binary) covers the chevron presets and
+the tick-rate readout's window, one-second refresh, stall decay and formatting with
+explicit times.
 
 ## Pre-game map preview regression
 

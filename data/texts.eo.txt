@@ -3448,6 +3448,8 @@ Inercio de la mapo
 
 [conn connections]
 
+[conn connection]
+
 [conn delay explanation %0 %1]
 
 [conn fair]
@@ -3847,6 +3849,10 @@ Inercio de la mapo
 [room uploaded map]
 
 [room waiting for %0]
+
+[room waiting for you]
+
+[room match over]
 
 [room waiting for host]
 
@@ -4554,6 +4560,8 @@ Inercio de la mapo
 
 [online %0 s]
 
+[online %0 min %1 s]
+
 [qm ai opponent %0]
 
 [match relay connected]
@@ -4605,8 +4613,6 @@ Inercio de la mapo
 [room map ready unnamed]
 
 [room map ready body]
-
-[device busy %0]
 
 [game draw]
 

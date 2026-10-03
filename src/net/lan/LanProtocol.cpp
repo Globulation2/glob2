@@ -123,7 +123,7 @@ void LanLink::close()
 	outbox.clear();
 	outboxBytes = 0;
 	frames.clear();
-	pending.clear();
+	reader.clear();
 }
 
 std::string LanLink::error() const
@@ -148,11 +148,7 @@ bool LanLink::send(const std::vector<std::uint8_t>& payload)
 		close();
 		return false;
 	}
-	std::vector<std::uint8_t> frame;
-	frame.reserve(payload.size() + 2);
-	frame.push_back(static_cast<std::uint8_t>(payload.size() >> 8));
-	frame.push_back(static_cast<std::uint8_t>(payload.size() & 255));
-	frame.insert(frame.end(), payload.begin(), payload.end());
+	std::vector<std::uint8_t> frame = NetFrame::encode(payload);
 	outboxBytes += frame.size();
 	outbox.push_back(std::move(frame));
 	flush();
@@ -195,33 +191,35 @@ void LanLink::pump()
 		return;
 	flush();
 	std::vector<std::uint8_t> bytes;
-	std::size_t offset = 0;
 	while (transport->receive(bytes))
 	{
-		if (bytes.size() > NetTransport::queueLimit - std::min(pending.size(), NetTransport::queueLimit))
+		if (!reader.append(bytes.data(), bytes.size(), NetTransport::queueLimit))
 		{
 			failure = "LAN input overflow";
 			close();
 			return;
 		}
-		pending.insert(pending.end(), bytes.begin(), bytes.end());
-		while (pending.size() - offset >= 2)
+		std::vector<std::uint8_t> payload;
+		while (reader.next(payload))
 		{
-			const std::size_t length = (std::size_t(pending[offset]) << 8) | pending[offset + 1];
-			if (!length)
+			if (payload.empty())
 			{
 				failure = "Empty LAN frame";
 				close();
 				return;
 			}
-			if (pending.size() - offset - 2 < length)
-				break;
-			frames.emplace_back(pending.begin() + offset + 2, pending.begin() + offset + 2 + length);
-			offset += length + 2;
+			frames.push_back(std::move(payload));
 		}
-		pending.erase(pending.begin(), pending.begin() + offset);
-		offset = 0;
 	}
+}
+
+NetWaitStatus LanLink::waitHandles(std::vector<NetWaitHandle>& handles) const
+{
+	if (failed || !transport)
+		return NetWaitStatus::Idle;
+	if (!frames.empty())
+		return NetWaitStatus::Ready;
+	return transport->waitHandles(handles);
 }
 
 bool LanLink::receive(std::vector<std::uint8_t>& payload)

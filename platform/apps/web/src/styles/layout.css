@@ -285,6 +285,13 @@ main:focus {
   align-items: center;
   min-height: 32px;
 }
+/* Finger-sized links on touch screens (WCAG 2.5.5 / the app's 44px rule). */
+@media (pointer: coarse) {
+  .site-bar a,
+  .site-footer li a {
+    min-height: var(--target);
+  }
+}
 .site-footer a {
   color: var(--on-grass);
   text-decoration-color: rgba(249, 232, 187, 0.5);

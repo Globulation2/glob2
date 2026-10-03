@@ -131,7 +131,7 @@ class PlatformClient
 	// Closes the socket and fails outstanding requests with "cancelled".
 	void stop();
 	// Tests: stops the client and swaps its side effects (fake sockets, HTTP and
-	// clock for the process-wide client of Online::services()).
+	// clock for the client of Online::services()).
 	void replaceEnvironment(ClientEnvironment environment);
 	void update();
 
@@ -360,8 +360,8 @@ class PlatformClient
 // update(). Every object that captures itself in a PlatformClient callback
 // owns one of these as a member instead of calling the client directly.
 //
-// The client must outlive the scope (Online::services() lives for the whole
-// process; tests declare the client first).
+// The client must outlive the scope (the Application's Online::services() outlive
+// every screen; tests declare the client first).
 class PlatformScope
 {
   public:

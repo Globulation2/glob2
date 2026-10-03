@@ -79,10 +79,11 @@ Element InGameMainScreen::build(const Presentation &p)
 	if (files)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
-	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
 	if (GAGCore::Recording::supported())
 		buttons.push_back(fe::recordingControls());
+	// Leaving ends the list, away from the everyday choices (it asks first).
+	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),

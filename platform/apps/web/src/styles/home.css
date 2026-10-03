@@ -1,8 +1,11 @@
 /* Home page: the colony hero and the sections under it. */
 
-.site.home .site-header {
+/* The website strip and the header float over the hero's colony; the hero
+   keeps its content below them (App.tsx measures --site-top-height). */
+.site.home .site-top {
   position: absolute;
   inset: 0 0 auto;
+  z-index: 6;
 }
 .site.home .world-band {
   display: none;
@@ -39,7 +42,7 @@
 }
 .hero-inner {
   width: 100%;
-  padding-top: 112px;
+  padding-top: calc(var(--site-top-height, 72px) + 40px);
   padding-bottom: 88px;
 }
 
@@ -373,7 +376,7 @@
     align-items: flex-start;
   }
   .hero-inner {
-    padding-top: 136px;
+    padding-top: calc(var(--site-top-height, 120px) + 16px);
     padding-bottom: 72px;
   }
   .hero-art > img {

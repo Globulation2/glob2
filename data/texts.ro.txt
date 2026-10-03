@@ -3450,6 +3450,8 @@ Inerția hărții
 
 [conn connections]
 
+[conn connection]
+
 [conn delay explanation %0 %1]
 
 [conn fair]
@@ -3849,6 +3851,10 @@ Inerția hărții
 [room uploaded map]
 
 [room waiting for %0]
+
+[room waiting for you]
+
+[room match over]
 
 [room waiting for host]
 
@@ -4556,6 +4562,8 @@ Inerția hărții
 
 [online %0 s]
 
+[online %0 min %1 s]
+
 [qm ai opponent %0]
 
 [match relay connected]
@@ -4607,8 +4615,6 @@ Inerția hărții
 [room map ready unnamed]
 
 [room map ready body]
-
-[device busy %0]
 
 [game draw]
 

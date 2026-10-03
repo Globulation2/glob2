@@ -447,7 +447,7 @@ int Glob2::run(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDL_GetError());
 		exit(1);
 	}
-	atexit(NET_Quit);
+	globalContainer->networkInitialized = true;
 #endif
 
 

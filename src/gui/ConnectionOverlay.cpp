@@ -431,7 +431,9 @@ void ConnectionOverlay::drawPanel(bool touch, SDL_Rect area, double unit)
 	gfx->drawRect(panelRect.x, panelRect.y, panelRect.w, panelRect.h, colors.edge);
 	int cy = y + pad;
 	textAt(x + pad, cy, small, text("[conn players]"), colors.muted);
-	textRight(x + width - pad, cy, small, text("[conn ping]"), colors.muted);
+	// The column shows each player's worst signal (ping, or how far behind), so it
+	// is headed "Connection", not "Ping" above "Behind 1.2 s".
+	textRight(x + width - pad, cy, small, text("[conn connection]"), colors.muted);
 	cy += header;
 	for (const auto &row : snapshot.rows)
 	{

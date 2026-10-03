@@ -1,3 +1,6 @@
+#ifndef __EMSCRIPTEN__
+#include <SDL3_net/SDL_net.h>
+#endif
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -106,6 +109,13 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
+
+	// SDL_net owns resolver threads and conditions. Join them before the
+	// graphics backend calls SDL_Quit and destroys SDL thread resources.
+#ifndef __EMSCRIPTEN__
+	if (networkInitialized)
+		NET_Quit();
+#endif
 
 	// release resources
 	Toolkit::close();
