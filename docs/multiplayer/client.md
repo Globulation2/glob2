@@ -19,9 +19,15 @@ from `onTimer` or register listeners.
 
 ## PlatformClient
 
-`Online::services()` (`OnlineServices.h`) creates the shared `InstanceConfig`,
-`PlatformClient` and `MapCache` on first use. The client is not started until a
-screen calls `client.start(origin)`.
+`Online::Services` (`OnlineServices.h`) holds the shared `InstanceConfig`,
+`PlatformClient`, `MapCache` and quick-match search. `Application` owns one for the
+run (`Online::ServicesOwner`, its first member, so the services outlive every screen):
+`Online::services()` creates them on first use, and they are destroyed when the game
+exits, which closes the connection. Tools and test harnesses that run without an
+`Application` get process-lifetime services instead. Online objects take what they
+need explicitly: `OnlineMatch` and `PlatformRoom` receive the map cache, and
+`QuickMatch` the client. `Services::addHook` returns an id for `removeHook`. The client
+is not started until a screen calls `client.start(origin)`.
 
 | Call | Effect |
 | --- | --- |
