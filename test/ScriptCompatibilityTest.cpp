@@ -94,11 +94,11 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 TEST_CASE("Current clients enforce network protocol acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
-	CHECK(NET_PROTOCOL_VERSION == 50);
-	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 50);
+	CHECK(NET_PROTOCOL_VERSION == 51);
+	CHECK(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION == 51);
 	// Exercise the production client handshake branch; transport remains
 	// disconnected, and only the server-information message is injected.
-	for (Uint16 version : {49, 50, 51})
+	for (Uint16 version : {50, 51, 52})
 	{
 		CAPTURE(version);
 		YOGClient client;
@@ -165,13 +165,13 @@ TEST_CASE("Team-capacity change rejects released replays and enforces acceptance
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 127);
-	CHECK(VERSION_MINOR == 127);
+	CHECK(VERSION_MINOR == 128);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	for (Uint16 version : {122, 123, 124, 125, 126, 127, 128})
+	for (Uint16 version : {122, 123, 124, 125, 126, 127, 128, 129})
 	{
 		CAPTURE(version);
 		auto *memory = new GAGCore::MemoryStreamBackend;
