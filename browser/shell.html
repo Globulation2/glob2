@@ -95,7 +95,7 @@ function wasmName(url) {
   if (url !== undefined) return /(?:^|\/)threaded\/[^/]*\.wasm(?:[?#]|$)/.test(url) ? 'threaded/index.wasm' : 'index.wasm';
   return Module?.executionMode === 'threaded' ? 'threaded/index.wasm' : 'index.wasm';
 }
-const download = {started:performance.now(), wasm:0, wasmTotal:0, wasmKnown:false, core:0, coreTotal:0, failed:false};
+const download = {started:performance.now(), wasm:0, wasmTotal:0, wasmKnown:false, core:0, coreTotal:0, packages:{}, failed:false};
 const loadingProgress = document.getElementById('loading-progress');
 const loadingBar = document.getElementById('loading-bar');
 const loadingDetail = document.getElementById('loading-detail');
@@ -211,9 +211,14 @@ var Module = {
   },
   glob2WireSize: wireSize,
   glob2AssetProgress(name, loaded, total) {
-    if (name !== 'core') return;
-    download.core = loaded;
-    download.coreTotal = total;
+    // Until the menu is up every download is a startup package (core; the full
+    // translations for an interface not in English; the full font for Chinese,
+    // Japanese or Korean).
+    if (document.body.classList.contains('ready')) return;
+    download.packages[name] = {loaded, total};
+    const packages = Object.values(download.packages);
+    download.core = packages.reduce((sum, entry) => sum + entry.loaded, 0);
+    download.coreTotal = packages.reduce((sum, entry) => sum + entry.total, 0);
     showDownload();
   },
   glob2AssetError(error) {
@@ -246,8 +251,16 @@ var Module = {
       Module.storageRestore = err ? 'failed' : 'ready';
       Module.storage.restored(err);
       if (err) Module.printErr('Save restore failed: ' + err);
+      // The core package's font covers every interface language except Chinese,
+      // Japanese and Korean; those need the full font before any text is drawn.
+      // Core has English and, of the other languages, only their names.
+      const language = savedPreference('language');
+      if (language && language !== 'en') Module.glob2RequireAsset?.('translations');
+      if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
       removeRunDependency('browser-saves');
     });
+    // A watched replay opens straight into the game, which needs its sprites.
+    if (watchReplay && watchReplay.bytes) Module.glob2RequireAsset?.('game');
     if (watchReplay && watchReplay.bytes) {
       addRunDependency('watch-replay');
       Module.setStatus('Downloading replay…');
@@ -293,44 +306,69 @@ var Module = {
         Module.storage.changed();
       }
     }
+    // Startup packages were in place before main(); only later ones are news.
+    Module.glob2Assets?.takeInstalled();
     Module.start(args).catch(error => Module.onAbort(String(error)));
   },
   onApplicationStarted() {
     document.body.classList.add('ready');
     loading.setAttribute('aria-hidden','true');
-    loadOptionalAssets(Module.renderer === 'webgl2');
+    loadStagedAssets(Module.renderer === 'webgl2');
   },
   onGameExit(code) {
     Module.print('Game exited with code ' + code + '. Reload the page to restart.');
   },
   onAbort(reason) { Module.printErr('Game stopped: ' + reason); }
 };
-// In-game music and high-resolution artwork download in the background once the
-// menu is up. The game reads them again when a match starts, so a first match on
-// a new device may still use the original artwork. Downloads pause during matches
-// (to leave the connection to the game) and are skipped in data-saver mode; the
-// artwork only when this device renders with WebGL2 and the setting is on.
-function loadOptionalAssets(gpu) {
+const preferencesPath = '/home/web_user/.glob2/preferences.txt';
+function savedPreference(name) {
+  try {
+    if (!FS.analyzePath(preferencesPath).exists) return null;
+    const match = new RegExp('^' + name + '=(.*)$', 'm').exec(FS.readFile(preferencesPath, {encoding:'utf8'}));
+    return match ? match[1].trim() : null;
+  } catch (_) { return null; }
+}
+function cjkInterface() { return /^(zh|ja|ko)\b/.test(savedPreference('language') || ''); }
+// After the menu is up, the rest of the game data downloads in the background,
+// most needed first (scons/web_assets.py):
+// - game: the in-game sprites. Every match and the editor wait for it ("Loading
+//   game graphics"); the menu shows the colony still image until it arrives.
+// - menu-music, then font-cjk: the full font, so Chinese, Japanese and Korean
+//   player names and chat get their glyphs, then the other languages' full
+//   translations (English stands in for a language chosen before they arrive).
+// - music and hd: in-game music and high-resolution artwork. The game reads them
+//   again when a match starts, so a first match on a new device may still use the
+//   original artwork.
+// Optional packages pause during matches (to leave the connection to the game) and
+// are skipped in data-saver mode; the artwork only when this device renders with
+// WebGL2 and the setting is on. Packages the game needs are retried until they arrive.
+function loadStagedAssets(gpu) {
   const assets = Module.glob2Assets;
   if (!assets) return;
   const saveData = navigator.connection?.saveData === true;
-  const preferences = '/home/web_user/.glob2/preferences.txt';
-  const artworkOff = FS.analyzePath(preferences).exists &&
-    /^highResolutionArtwork=0$/m.test(FS.readFile(preferences, {encoding:'utf8'}));
+  const artworkOff = savedPreference('highResolutionArtwork') === '0';
+  const required = new Set(['game', 'font-cjk', 'translations']);
   const wanted = [];
-  for (const name of ['music', 'hd']) {
-    if (!assets.manifest.packages.some(entry => entry.name === name)) continue;
-    if (saveData || (name === 'hd' && (!gpu || artworkOff))) assets.states[name] = 'skipped';
+  for (const name of ['game', 'menu-music', 'font-cjk', 'translations', 'music', 'hd']) {
+    if (!assets.manifest.packages.some(entry => entry.name === name) || assets.states[name] === 'ready') continue;
+    if (!required.has(name) && (saveData || (name === 'hd' && (!gpu || artworkOff)))) assets.states[name] = 'skipped';
     else wanted.push(name);
   }
   const outsideMatch = () => new Promise(resolve => {
     const check = () => Module.glob2Screen === 'match' ? setTimeout(check, 2000) : resolve();
     check();
   });
+  const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
   (async () => {
     for (const name of wanted) {
-      try { await assets.load(name, outsideMatch); }
-      catch (error) { Module.printErr('Optional game data unavailable (' + name + '): ' + (error?.message || error)); }
+      for (let attempt = 0; ; ++attempt) {
+        try { await assets.load(name, name === 'game' ? undefined : outsideMatch); break; }
+        catch (error) {
+          Module.printErr('Game data unavailable (' + name + '): ' + (error?.message || error));
+          if (!required.has(name)) break;
+          await pause(Math.min(60000, 5000 * 2 ** attempt));
+        }
+      }
     }
   })();
 }

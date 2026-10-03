@@ -36,7 +36,8 @@ dated reports and pull-request artifacts do not belong here.
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
-- **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
+- **Online multiplayer:** [Hive Mind commander](multiplayer/hive-mind.md),
+  [platform architecture](multiplayer/architecture.md),
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),

@@ -213,25 +213,27 @@ static void resolveUpgradeReferences()
 void BuildingsTypes::init()
 {
 	resolveUpgradeReferences();
+	checkIntegrity();
+}
 
+void BuildingsTypes::loadSprites()
+{
 	// Resolve sprite pointers, replacing the lazy load that happened inside
 	// the old loadFromConfigFile. Skips the "null" default block (not in
 	// this table) and skips on headless runs, same as the original loader.
-	if (!globalContainer->runNoX)
+	// GlobalContainer loads them with the rest of the game graphics.
+	if (globalContainer->runNoX)
+		return;
+	const std::size_t count = entryCount();
+	for (std::size_t i = 0; i < count; ++i)
 	{
-		const std::size_t count = entryCount();
-		for (std::size_t i = 0; i < count; ++i)
-		{
-			BuildingType *bt = entry(i);
-			if (bt->type == "null")
-				continue;
-			bt->gameSpritePtr = Toolkit::getSprite(bt->gameSprite.c_str());
-			if (bt->miniSpriteImage >= 0)
-				bt->miniSpritePtr = Toolkit::getSprite(bt->miniSprite.c_str());
-		}
+		BuildingType *bt = entry(i);
+		if (bt->type == "null")
+			continue;
+		bt->gameSpritePtr = Toolkit::getSprite(bt->gameSprite.c_str());
+		if (bt->miniSpriteImage >= 0)
+			bt->miniSpritePtr = Toolkit::getSprite(bt->miniSprite.c_str());
 	}
-
-	checkIntegrity();
 }
 
 BuildingType *BuildingsTypes::get(std::size_t id)
