@@ -13,7 +13,7 @@ test('unskinned menu and match never request the optional mesh package', async (
   page.on('pageerror', error => errors.push(String(error)));
   let shell = fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8')
     .replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>');
-  shell = shell.replace('<head>', `<head><script>history.replaceState(null,'',location.pathname+'?renderer=webgl2&threads=${executionMode}');</script>`);
+  shell = shell.replace('<head>', `<head><script>history.replaceState(null,'',location.pathname+'?renderer=webgl2&gl-errors=1&threads=${executionMode}');</script>`);
   await openRuntimeHost(page, shell);
   const state = () => page.evaluate(() => glob2Diagnostics.snapshot());
   await expect.poll(async () => (await state()).screen, {timeout:120000}).toContain('MainMenuScreen');

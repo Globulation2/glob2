@@ -32,7 +32,7 @@ test('online replay uses fresh signed match appearance without a preview overrid
   const shell = fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8')
     .replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>');
   await page.route(/\/play\/\?replay=/, route => route.fulfill({contentType:'text/html', body:shell}));
-  await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=webgl2&threads=serial`);
+  await page.goto(`/play/?replay=${encodeURIComponent(`/api/v1/matches/${seed.featuredMatch}/artifacts/replay`)}&renderer=webgl2&gl-errors=1&threads=serial`);
   await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().watchReplay), {timeout:120000}).toBe('ready');
   await expect.poll(() => page.evaluate(() => globalThis.replaySkinDraws), {timeout:120000}).toBeGreaterThan(5);
   expect(seen).toContain(`/api/v1/matches/${seed.featuredMatch}/skins`);

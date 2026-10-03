@@ -92,7 +92,7 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   // packaging index.html otherwise waits for the threaded runtime too.
   let shell = fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8')
     .replace('{{{ SCRIPT }}}', '<script src="loader.js"></script>');
-  shell = shell.replace('<head>', `<head><script>history.replaceState(null,'',location.pathname+'?renderer=webgl2&threads=${executionMode}');</script>`);
+  shell = shell.replace('<head>', `<head><script>history.replaceState(null,'',location.pathname+'?renderer=webgl2&gl-errors=1&threads=${executionMode}');</script>`);
   shell = shell.replace('preRun: [function() {', `preRun: [function() {
     ENV.GLOB2_SKIN_PREVIEW_DIR='/data/skins/colony-v1';
     FS.mkdirTree('/data/skins/colony-v1');
