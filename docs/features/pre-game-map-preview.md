@@ -66,9 +66,12 @@ previous image exists, the placeholder follows the requested map proportions.
 Generation failures still display their error message.
 
 The landscape-selection grid uses the same `MapPreview` widget as the lobby and
-online screens, including terrain, centered colony markers, aspect fitting,
-toroidal dragging, and cursor-anchored zoom. Its old images and map
-metadata remain visible during regeneration, without loading-text flashes. Grid
+online screens for terrain, centered colony markers, and aspect fitting. Its
+images are passive: swipes and the mouse wheel scroll the grid, including when
+the gesture starts over an image. Tapping an image uses the same selection and
+confirmation behavior as the rest of its card. The main custom-game preview
+keeps its drag and zoom controls. Old images and map metadata remain visible
+during regeneration, without loading-text flashes. Grid
 images appear immediately, without fades, including when scrolling to a map that
 finished generating off-screen. Completed off-screen results retain CPU pixels;
 rendering surfaces are created only when their cards enter the viewport. Only
