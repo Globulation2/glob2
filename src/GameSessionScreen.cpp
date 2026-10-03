@@ -60,7 +60,9 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 {
 	if (!isExecutionRunning() || finished)
 		return;
+#ifdef __EMSCRIPTEN__
 	presentationDirty |= !input.events().empty();
+#endif
 	if (!started)
 	{
 		clock = lastTick = tick;
@@ -221,10 +223,10 @@ void GameSessionScreen::drawExecution()
 #endif
 #ifdef __EMSCRIPTEN__
         engine->drawSession(true);
+        presentationDirty = false;
 #else
         engine->drawSession();
 #endif
-        presentationDirty = false;
     }
 }
 
@@ -260,7 +262,9 @@ void GameSessionScreen::viewportResized(int oldWidth, int oldHeight, int width, 
 		engine->viewportResized(oldWidth, oldHeight, width, height);
 	input.clear();
 	resetClock = true;
+#ifdef __EMSCRIPTEN__
 	presentationDirty = true;
+#endif
 }
 
 void GameSessionScreen::suspendExecution()

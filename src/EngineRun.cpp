@@ -936,7 +936,7 @@ bool Engine::presentationPaused() const { return gui.gamePaused || gui.hardPause
 
 bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events, Uint32 budget)
 {
-    return guardedSessionStep(*this, [&] {
+    return guardedSessionStep(*this, [&]() -> bool {
         if (!session) throw std::logic_error("No active engine session");
         const Uint64 started = SDL_GetTicks();
         clientStep(events);
