@@ -23,9 +23,6 @@
 #include "Sha256.h"
 #include "SimVersion.h"
 
-#include <FileManager.h>
-#include <Toolkit.h>
-
 #include <chrono>
 #include <cstdio>
 #include <filesystem>
@@ -37,18 +34,6 @@
 
 using namespace Online;
 namespace fs = std::filesystem;
-
-// The probe has no game data: SimVersion::local() sees no file manager and the
-// sim version comes from --sim (the instance's supported key). These stand in
-// for the libgag parts SimVersion.cpp references.
-namespace GAGCore
-{
-FileManager *Toolkit::fileManager = nullptr;
-StreamBackend *FileManager::openInputStreamBackend(const std::string)
-{
-	return nullptr;
-}
-} // namespace GAGCore
 
 namespace
 {
