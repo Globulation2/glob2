@@ -120,7 +120,7 @@ def main():
             result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream, stderr=subprocess.STDOUT)
         return result.returncode
 
-    flags = f'-g -O{args.optimization} -fprofile-instr-generate -fcoverage-mapping'
+    flags = f'-g -O{args.optimization} -fprofile-instr-generate -fcoverage-mapping -DGLOB2_TEST_COVERAGE'
     command = ['scons', f'-j{args.jobs}', 'release=0', 'server=0', f'--build={build}', 'tests',
                f'CC={args.cc}', f'CXX={args.cxx}', f'CFLAGS={flags}', f'CXXFLAGS={flags}',
                'LINKFLAGS=-g -fprofile-instr-generate']

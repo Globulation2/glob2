@@ -93,7 +93,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -172,7 +172,7 @@ jobs:
           mkdir -p artifacts/ci-native
           python3 .github/scripts/ci_build_provenance.py write --compiler '${{ inputs.compiler }}'
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --output artifacts/ci-native/runtime-packages.txt
-          find build/linux/client/release build/sdl3-ci/prefix/lib -path 'build/linux/client/release/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0 |
+          find build/linux/client/release build/sdl3-ci/prefix/lib -path '*/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0 |
             tar --null -czf artifacts/ci-native/linux-test-programs.tar.gz -T -
       - uses: actions/upload-artifact@v4
         id: upload_linux_test_programs
@@ -396,7 +396,7 @@ jobs:
         run: |
           if [ "${{ inputs.runtime_packages }}" = true ]; then
             xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-            sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils
+            sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
             python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
           else
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -405,7 +405,7 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
           fi
 
       - name: Plan native and auxiliary shard workloads
@@ -651,7 +651,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
 
       - name: Check secondary-platform golden rows
@@ -665,7 +665,9 @@ jobs:
         run: |
           # The two jobs divide the four independent sweep shards between runners.
           # Run golden rows alongside the first pair of shards.
-          golden() { log=$1; shift; timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
+          # Concurrent sweeps exceeded 600 s without a failing combination. Keep
+          # both complete inventories and allow each shard enough CPU time.
+          golden() { log=$1; shift; timeout 1200s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
           if [ '${{ matrix.suite }}' = sweep-a ]; then
             golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
             shards=(0 1)

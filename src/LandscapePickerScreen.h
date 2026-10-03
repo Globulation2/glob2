@@ -25,6 +25,7 @@ class LandscapePickerScreen : public Glob2UI::Screen
 	friend struct MobileGallerySetup;
 
   public:
+	const char *recordingId() const override { return "landscape_picker"; }
 	enum
 	{
 		CANCEL = -2

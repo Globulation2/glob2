@@ -1,5 +1,11 @@
 [AI strategy]
 Stratégia AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Vyvažuje udržateľný rast a výcvik a potom zhromažďuje armády do vĺn.
 [AIMaxima-Profile]

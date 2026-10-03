@@ -5,6 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from PIL import Image
+from tools import package_assets
 from tools.package_assets import export_assets, include_asset
 
 
@@ -175,6 +176,105 @@ class AssetExportTests(unittest.TestCase):
             .tobytes(),
             Image.open(wordmark).convert("RGBA").tobytes(),
         )
+
+
+class SpriteSheetExportTests(unittest.TestCase):
+    """Optimized exports pack data/gfx/unit's frames into sheets for Sprite::load."""
+
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name) / "source"
+        self.gfx = self.root / "data/gfx"
+        self.gfx.mkdir(parents=True)
+        self.output = Path(self.temp.name) / "output"
+        self.cache = Path(self.temp.name) / "cache"
+        self.frames = {}
+        # Frames 0-4 recolorable at 3x3 and 5-6 at 4x4; shadows on 2-3 only.
+        for index in range(7):
+            for suffix in ["r"] + ([""] if index in (2, 3) else []):
+                size = 3 if index < 5 else 4
+                pixels = bytes((index * 37 + len(suffix) * 11 + p) % 256 for p in range(size * size * 4))
+                name = "unit%d%s.png" % (index, suffix)
+                Image.frombytes("RGBA", (size, size), pixels).save(self.gfx / name)
+                self.frames[name] = pixels
+        Image.new("RGBA", (5, 5)).save(self.gfx / "unitmini0.png")
+
+    def export(self, **kwargs):
+        return export_assets(self.root, self.output, cache=self.cache, **kwargs)
+
+    def unpack(self):
+        """{frame name: RGBA bytes} cut out of the exported sheets like Sprite::load."""
+        frames = {}
+        index = (self.output / "data/gfx/unit.sheet").read_text()
+        for line in index.splitlines():
+            if not line or line.startswith("#"):
+                continue
+            name, layer, first, count, width, height = line.split()
+            first, count, width, height = int(first), int(count), int(width), int(height)
+            sheet = next((self.output / "data/gfx").glob(Path(name).stem + ".*"))
+            with Image.open(sheet) as image:
+                image = image.convert("RGBA")
+                self.assertEqual(image.width % width, 0)
+                columns = image.width // width
+                for i in range(count):
+                    left, top = (i % columns) * width, (i // columns) * height
+                    tile = image.crop((left, top, left + width, top + height))
+                    key = "unit%d%s.png" % (first + i, "r" if layer == "rotated" else "")
+                    self.assertNotIn(key, frames)
+                    frames[key] = tile.tobytes()
+        return frames
+
+    def test_sheets_hold_every_frame_exactly_and_replace_the_frames(self):
+        audit = self.export()
+        self.assertEqual(self.unpack(), self.frames)
+        shipped = {p.name for p in (self.output / "data/gfx").iterdir()}
+        self.assertFalse(any(name.startswith("unit") and name[4].isdigit() for name in shipped))
+        self.assertTrue(any(name.startswith("unitmini0.") for name in shipped))
+        packed = [item for item in audit["files"] if "packed_from" in item]
+        self.assertEqual(
+            sorted(f["source"] for item in packed for f in item["packed_from"]),
+            sorted("data/gfx/" + name for name in self.frames),
+        )
+        self.assertEqual(audit["source_bytes"], sum(p.stat().st_size for p in self.gfx.iterdir()))
+
+    def test_runs_split_by_layer_size_and_sheet_capacity(self):
+        with patch.object(package_assets, "SHEET_FRAMES", 2):
+            self.export()
+            self.assertEqual(self.unpack(), self.frames)
+        lines = [
+            line.split()[1:]
+            for line in (self.output / "data/gfx/unit.sheet").read_text().splitlines()
+            if line and not line.startswith("#")
+        ]
+        self.assertEqual(
+            lines,
+            [
+                ["image", "2", "2", "3", "3"],
+                ["rotated", "0", "2", "3", "3"],
+                ["rotated", "2", "2", "3", "3"],
+                ["rotated", "4", "1", "3", "3"],
+                ["rotated", "5", "2", "4", "4"],
+            ],
+        )
+
+    def test_cached_export_is_repeatable(self):
+        first = self.export()
+        self.assertEqual(first, self.export())
+        Image.new("RGBA", (3, 3), (1, 2, 3, 4)).save(self.gfx / "unit1r.png")
+        self.frames["unit1r.png"] = bytes((1, 2, 3, 4)) * 9
+        self.assertNotEqual(first, self.export())
+        self.assertEqual(self.unpack(), self.frames)
+
+    def test_original_profile_keeps_the_frames(self):
+        self.export(optimized=False)
+        self.assertFalse((self.output / "data/gfx/unit.sheet").exists())
+        self.assertEqual((self.output / "data/gfx/unit5r.png").read_bytes(), (self.gfx / "unit5r.png").read_bytes())
+
+    def test_frames_behind_a_gap_are_rejected(self):
+        Image.new("RGBA", (4, 4)).save(self.gfx / "unit8r.png")
+        with self.assertRaises(ValueError):
+            self.export()
 
 
 if __name__ == "__main__":

@@ -52,3 +52,27 @@ class RuntimePackagesTest(unittest.TestCase):
                 path.chmod(0o755)
             self.assertEqual(list(m.runtime_binaries(root)),
                              [root / 'lib/libproject.so', root / 'src/glob2'])
+    def test_cached_configure_probes_are_not_runtime_programs(self):
+        import tempfile
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            probe = root / 'configure' / 'conftest'
+            program = root / 'src' / 'glob2'
+            for path in (probe, program):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'\x7fELF')
+                path.chmod(0o755)
+            output = root / 'runtime-packages.txt'
+            with patch('sys.argv', ['runtime_packages', str(root), '--output', str(output)]), \
+                 patch.object(m, 'packages_for', return_value={'libc6:amd64'}) as packages:
+                m.main()
+                packages.assert_called_once_with(program)
+            import json
+            self.assertEqual(json.loads(output.with_suffix('.json').read_text())['binaries'],
+                             [str(program)])
+            with patch('sys.argv', ['runtime_packages', str(root), '--verify']), \
+                 patch.object(m.subprocess, 'check_output', return_value='') as linked:
+                m.main()
+                linked.assert_called_once_with(['ldd', str(program)], text=True,
+                                              stderr=subprocess.STDOUT)

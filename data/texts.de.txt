@@ -1,5 +1,11 @@
 [AI strategy]
 KI-Strategie
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balanciert nachhaltiges Wachstum und Ausbildung und sammelt Armeen dann zu Wellen.
 [AIMaxima-Profile]

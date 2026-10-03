@@ -104,6 +104,10 @@ class UpdateHostTests(unittest.TestCase):
         self.assertIn('glob2-platform:development glob2-platform:previous', '\n'.join(self.calls()))
 
     def test_keeps_only_the_newest_backups(self):
+        # Force three updates into the same timestamp, even on a slow runner.
+        date = self.dir / "bin" / "date"
+        date.write_text("#!/bin/sh\nprintf '20260101T000000Z\\n'\n")
+        date.chmod(date.stat().st_mode | stat.S_IEXEC)
         for _ in range(3):
             self.assertEqual(self.run_script().returncode, 0)
         self.assertEqual(len(self.backups()), 2)

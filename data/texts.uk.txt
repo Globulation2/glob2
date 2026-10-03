@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегія ШІ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Урівноважує стійке зростання й навчання, а потім збирає армії у хвилі.
 [AIMaxima-Profile]

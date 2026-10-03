@@ -28,6 +28,8 @@ ENGINE_TESTS = [
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     'ScreenExecutionHarness.cpp',
     ('AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
+
+    ('GameplayRecordingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('GUIInteractionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('GUIOrderCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('EditorActionCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -141,6 +143,8 @@ UNIT_TESTS = [
     'PackedArrayTest.cpp',
     'EventQueueTest.cpp',
     'MapGeneratorGoldenCoverageTest.cpp',
+
+    'GameplayRecordingTest.cpp',
     'USLCoverageTest.cpp',
     'SurfaceCoverageTest.cpp',
     'ImageAssetTest.cpp',
@@ -150,6 +154,7 @@ UNIT_TESTS = [
     ('UnitDrawBatchTest.cpp', dict(require={'opengl'})),
     ('MapGeometryCacheTest.cpp', dict(require={'opengl'})),
     ('SpriteDrawBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('SpriteSheetTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('OpaqueRectangleBatchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
@@ -349,6 +354,8 @@ UNIT_STUBS = [
 # transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
 PROGRAMS = [
     ('SaveSizeHarness', 'SaveSizeHarness.cpp', 'save-size-harness', 'tools'),
+
+    ('recording-multiplayer-peer', 'RecordingMultiplayerPeer.cpp', 'recording-multiplayer-test', 'tools'),
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),

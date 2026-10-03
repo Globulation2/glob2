@@ -1,5 +1,11 @@
 [AI strategy]
 Strategia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Echilibrează creșterea sustenabilă și instruirea, apoi adună armatele în valuri.
 [AIMaxima-Profile]

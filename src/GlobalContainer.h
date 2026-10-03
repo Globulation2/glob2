@@ -99,8 +99,11 @@ public:
 	BuildingsTypes buildingsTypes;
 	ResourcesTypes resourcesTypes;
 
-	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
+	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
+	std::string recordingPath;
 	bool runNoX;
+	//! The application owns this SDL_net reference and releases it before SDL.
+	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
 	// Zero selects the bounded hardware/AI-count default. Structured

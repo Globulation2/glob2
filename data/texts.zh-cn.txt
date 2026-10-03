@@ -1,5 +1,11 @@
 [AI strategy]
 AI 战术
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 平衡可持续发展与训练，然后集结军队发动波次进攻。
 [AIMaxima-Profile]

@@ -59,7 +59,12 @@ void provisionLanIdentity(NetworkConfig &config)
 	boost::asio::ip::tcp::resolver resolver(io);
 	boost::system::error_code error;
 	for (const auto &entry : resolver.resolve(boost::asio::ip::host_name(), "0", error))
-		addresses.insert(entry.endpoint().address().to_string());
+	{
+		// Scoped IPv6 addresses are valid endpoints but not X.509 IP SANs.
+		const auto address = entry.endpoint().address().to_string();
+		if (address.find('%') == std::string::npos)
+			addresses.insert(address);
+	}
 #endif
 	std::string host = "127.0.0.1";
 	for (const auto &address : addresses)

@@ -7,6 +7,7 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -19,6 +20,17 @@ WEBP_VERSION = "1.6.0"
 POLICY = "runtime-assets-v1"
 # Only this illustration may use lossy RGB. Wordmarks and game sprites stay exact.
 LOSSY_BACKGROUND = "data/gfx/menu-colony.png"
+# Sprites whose frames optimized exports pack into sheets. Opening thousands of
+# small files dominated loading them; GAGCore::Sprite::load reads <name>.sheet
+# in place of <name><i>.png and <name><i>r.png when it exists.
+SPRITE_SHEETS = ("data/gfx/unit",)
+SHEET_COLUMNS = 16
+SHEET_FRAMES = 256
+SHEET_HEADER = """\
+# Sprite sheet index, written by tools/package_assets.py, read by GAGCore::Sprite::load.
+# One line per sheet: <file> <image|rotated> <first frame> <frames> <tile width> <tile height>
+# Tiles are packed row-major; the column count follows from the sheet's width.
+"""
 
 
 def include_asset(relative, platform="generic"):
@@ -244,6 +256,103 @@ def encode_image(source, relative, cache, lossy):
     return blob, record
 
 
+def sheet_plan(files, root):
+    """{sprite: [sheet]} for the SPRITE_SHEETS frames among files.
+
+    Each sheet holds a run of consecutive frames of one layer and one size, at
+    most SHEET_FRAMES of them, so the loader can cut equally sized tiles."""
+    from PIL import Image
+
+    plans = {}
+    for sprite in SPRITE_SHEETS:
+        directory, name = sprite.rsplit("/", 1)
+        pattern = re.compile(re.escape(name) + r"(\d+)(r?)\.png")
+        frames = {}
+        for source in files:
+            relative = source.relative_to(root)
+            match = pattern.fullmatch(relative.name)
+            if relative.parent.as_posix() == directory and match:
+                frames[(int(match.group(1)), match.group(2) == "r")] = source
+        if not frames:
+            continue
+        count = 1 + max(index for index, _ in frames)
+        # Sprite::load stops at the first frame with neither layer; a sheet
+        # would make frames behind such a gap appear.
+        if any((i, False) not in frames and (i, True) not in frames for i in range(count)):
+            raise ValueError("Sprite frames are not consecutive: " + sprite)
+        sheets = []
+        for rotated in (False, True):
+            run = None
+            for index in range(count):
+                source = frames.get((index, rotated))
+                if source is None:
+                    run = None
+                    continue
+                raw = source.read_bytes()
+                if raw[24] > 8:
+                    raise ValueError("Sprite sheets are 8-bit: " + str(source))
+                size = Image.open(io.BytesIO(raw)).size
+                if run is None or run["size"] != size or len(run["frames"]) == SHEET_FRAMES:
+                    run = dict(rotated=rotated, first=index, size=size, frames=[])
+                    sheets.append(run)
+                run["frames"].append(source)
+        for number, sheet in enumerate(sheets):
+            sheet["name"] = "%s-sheet-%d.png" % (name, number)
+        plans[sprite] = sheets
+    return plans
+
+
+def pack_sheet(sheet, root, cache):
+    """Return a cached PNG of the sheet, every tile verified against its frame."""
+    from PIL import Image
+
+    width, height = sheet["size"]
+    layout = dict(
+        policy=POLICY,
+        pillow=Image.__version__,
+        columns=SHEET_COLUMNS,
+        frames=[
+            [f.relative_to(root).as_posix(), hashlib.sha256(f.read_bytes()).hexdigest()]
+            for f in sheet["frames"]
+        ],
+    )
+    key = hashlib.sha256(json.dumps(layout, sort_keys=True).encode()).hexdigest()
+    packed = cache / ("sheet-" + key) / sheet["name"]
+    if packed.is_file():
+        return packed
+    rows = -(-len(sheet["frames"]) // SHEET_COLUMNS)
+    image = Image.new("RGBA", (SHEET_COLUMNS * width, rows * height), (0, 0, 0, 0))
+    for index, source in enumerate(sheet["frames"]):
+        frame = Image.open(source).convert("RGBA")
+        box = ((index % SHEET_COLUMNS) * width, (index // SHEET_COLUMNS) * height)
+        # Pasting without a mask replaces alpha too, keeping the frame's exact pixels.
+        image.paste(frame, box)
+        if image.crop(box + (box[0] + width, box[1] + height)).tobytes() != frame.tobytes():
+            raise ValueError("Sheet tile differs from its frame: " + str(source))
+    packed.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(dir=packed.parent, delete=False) as f:
+        image.save(f, format="PNG")
+        temp = Path(f.name)
+    os.replace(temp, packed)
+    return packed
+
+
+def sheet_index(sheets):
+    lines = [
+        "%s %s %d %d %d %d"
+        % (
+            sheet["name"],
+            "rotated" if sheet["rotated"] else "image",
+            sheet["first"],
+            len(sheet["frames"]),
+            sheet["size"][0],
+            sheet["size"][1],
+        )
+        for sheet in sheets
+    ]
+    return (SHEET_HEADER + "\n".join(lines) + "\n").encode()
+
+
 def _export_assets(
     root,
     output,
@@ -303,11 +412,16 @@ def _export_assets(
     output.parent.mkdir(parents=True, exist_ok=True)
     records = []
     destinations = set()
+    files = list(source_files(root, platform))
+    sheets = sheet_plan(files, root) if optimized else {}
+    packed = {f for plan in sheets.values() for sheet in plan for f in sheet["frames"]}
     with tempfile.TemporaryDirectory(
         prefix=output.name + "-staging-", dir=output.parent
     ) as temporary:
         stage = Path(temporary)
-        for source in source_files(root, platform):
+        for source in files:
+            if source in packed:
+                continue
             relative = source.relative_to(root)
             blob = source
             record = dict(lossy=False)
@@ -338,6 +452,56 @@ def _export_assets(
                     output_bytes=target.stat().st_size,
                     lossy=record["lossy"],
                     recipe=record.get("recipe"),
+                )
+            )
+        for sprite, plan in sheets.items():
+            for sheet in plan:
+                relative = Path(sprite).parent / sheet["name"]
+                source = pack_sheet(sheet, root, cache)
+                blob, record = encode_image(source, relative.as_posix(), cache, lossy)
+                destination = relative.with_suffix(record["suffix"])
+                if destination in destinations:
+                    raise ValueError("Duplicate exported path: " + str(destination))
+                destinations.add(destination)
+                target = stage / destination
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(blob, target)
+                records.append(
+                    dict(
+                        source=relative.as_posix(),
+                        output=destination.as_posix(),
+                        source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
+                        output_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
+                        source_bytes=sum(f.stat().st_size for f in sheet["frames"]),
+                        output_bytes=target.stat().st_size,
+                        lossy=record["lossy"],
+                        recipe=record.get("recipe"),
+                        packed_from=[
+                            dict(
+                                source=f.relative_to(root).as_posix(),
+                                sha256=hashlib.sha256(f.read_bytes()).hexdigest(),
+                            )
+                            for f in sheet["frames"]
+                        ],
+                    )
+                )
+            index = Path(sprite + ".sheet")
+            if index in destinations:
+                raise ValueError("Duplicate exported path: " + str(index))
+            destinations.add(index)
+            data = sheet_index(plan)
+            (stage / index).write_bytes(data)
+            digest = hashlib.sha256(data).hexdigest()
+            records.append(
+                dict(
+                    source=index.as_posix(),
+                    output=index.as_posix(),
+                    source_sha256=digest,
+                    output_sha256=digest,
+                    source_bytes=0,
+                    output_bytes=len(data),
+                    lossy=False,
+                    recipe=None,
                 )
             )
         audit = dict(

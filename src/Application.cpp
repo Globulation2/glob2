@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <GameplayRecording.h>
 #include "Application.h"
 #include "FrontendTheme.h"
 #include <Toolkit.h>
@@ -96,7 +97,8 @@ class ShutdownScreen : public Glob2UI::Screen
 		// (bounded by Online::LINGER_MS).
 		if (closing)
 		{
-			if (Online::lingeringRelayConnections() > 0)
+			if (Online::lingeringRelayConnections() > 0 ||
+				GAGCore::Recording::recorder().status().state == GAGCore::Recording::State::Finalizing)
 				return;
 			endExecute(0);
 			return;
@@ -254,6 +256,20 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	}
 	const auto &events = *delivered;
 	Online::pump();
+	auto filtered = events;
+	std::erase_if(filtered,
+				  [](const SDL_Event &event)
+				  {
+					  if ((event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) &&
+						  event.key.key == SDLK_R && (event.key.mod & SDL_KMOD_CTRL) &&
+						  (event.key.mod & SDL_KMOD_SHIFT) && GAGCore::Recording::supported())
+					  {
+						  if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat)
+							  GAGCore::Recording::toggle();
+						  return true;
+					  }
+					  return false;
+				  });
 	if (GAGCore::ApplicationHost::takeVisibilityChange(hidden))
 		screens.suspendExecution();
 	if (hidden)
@@ -274,13 +290,13 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	{
 		// Repeated window-close events must not bypass a pending write or its
 		// explicit failure decision. Closing a browser tab remains abrupt.
-		auto input = events;
+		auto input = filtered;
 		std::erase_if(input, [](const SDL_Event &event) { return event.type == SDL_EVENT_QUIT; });
 		shutdownScreens.frame(tick, input);
 		return shutdownScreens.running();
 	}
 	installStagedAssets();
-	screens.frame(tick, events);
+	screens.frame(tick, filtered);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	// An invite link (at launch or while running) opens the online hub from the
 	// main menu; the hub consumes it.
@@ -307,6 +323,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 	{
 		if (screens.result() == GAGGUI::Screen::QUIT_APPLICATION)
 		{
+			GAGCore::Recording::recorder().stop();
 			quitting = true;
 			shutdownScreens.push(std::make_unique<ShutdownScreen>());
 			return true;

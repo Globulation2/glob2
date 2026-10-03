@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategie
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balanceert duurzame groei en training en verzamelt legers daarna in golven.
 [AIMaxima-Profile]

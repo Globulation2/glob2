@@ -25,6 +25,7 @@ env:
 jobs:
   preflight:
     if: >-
+      github.repository == 'genixpro/glob2-release' &&
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
       github.triggering_actor == 'genixpro' &&

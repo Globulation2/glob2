@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategio
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Ekvilibrigas daŭrigeblajn kreskon kaj trejnadon, poste kolektas armeojn en ondojn.
 [AIMaxima-Profile]

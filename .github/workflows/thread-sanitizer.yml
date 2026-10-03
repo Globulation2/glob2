@@ -93,6 +93,11 @@ jobs:
           # Mesa/llvmpipe worker threads. GPU rendering has separate coverage.
           SDL_RENDER_DRIVER: software
           SDL_FRAMEBUFFER_ACCELERATION: '0'
+          # Mesa llvmpipe is uninstrumented and can report internal worker
+          # races at presentation. Render it synchronously while retaining
+          # the game's simulation, input, audio and presentation threads.
+          # https://docs.mesa3d.org/envvars.html#envvar-LP_NUM_THREADS
+          LP_NUM_THREADS: '0'
           # SDL3 leaves threads it created during startup unjoined at exit; that
           # is not a race between the game's threads, so thread leaks are not reported.
           TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp
