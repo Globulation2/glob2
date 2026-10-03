@@ -92,7 +92,7 @@ type ReportRow = {
 
 export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
   const { services } = app;
-  const { db, blobs, jobs } = services;
+  const { db, blobs } = services;
   const origin = services.config.publicOrigin;
   const created = new WindowCounter(CATALOG_RULES.mapsPerHour, 3_600_000);
   const uploads = new WindowCounter(CATALOG_RULES.versionsPerHour, 3_600_000);
@@ -497,7 +497,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       // Jobs are submitted after the row names them, so a fast result always
       // finds the version it completes.
       if (!same && !checked) {
-        await submitEngineJob(db, jobs, {
+        await submitEngineJob(db, {
           kind: 'validate-map',
           simVersion,
           payload: { blobHash: stored.sha256, format: 'map' },
@@ -505,7 +505,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
         });
       }
       if (!reusePreview) {
-        await submitEngineJob(db, jobs, {
+        await submitEngineJob(db, {
           kind: 'render-preview',
           simVersion,
           payload: { mapHash: stored.sha256, maxSizePx: CATALOG_RULES.previewSizePx },

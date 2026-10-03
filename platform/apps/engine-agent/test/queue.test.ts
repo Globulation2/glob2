@@ -75,7 +75,7 @@ describe('engine jobs through the queue', () => {
   it('generates, validates and previews a pool map', async () => {
     const entry = defaultMapPool('2v2').find((e) => e.generatorId === 'symmetric-arena')!;
     const generate = await completed(
-      await submitEngineJob(database.db, queue, {
+      await submitEngineJob(database.db, {
         kind: 'generate-map',
         simVersion: SIM,
         payload: { generator: { ...entry, seed: 5 } },
@@ -87,12 +87,12 @@ describe('engine jobs through the queue', () => {
     expect(generate.result).toMatchObject({ map: { width: 128, height: 128, teamCount: 4 } });
 
     const [validate, preview] = await Promise.all([
-      submitEngineJob(database.db, queue, {
+      submitEngineJob(database.db, {
         kind: 'validate-map',
         simVersion: SIM,
         payload: { blobHash: mapHash, format: 'map' },
       }).then(completed),
-      submitEngineJob(database.db, queue, {
+      submitEngineJob(database.db, {
         kind: 'render-preview',
         simVersion: SIM,
         payload: { mapHash, maxSizePx: 512 },
@@ -105,7 +105,7 @@ describe('engine jobs through the queue', () => {
   it('records deterministic failures without retrying', async () => {
     const entry = defaultMapPool('1v1').find((e) => e.generatorId === 'symmetric-arena')!;
     const failed = await completed(
-      await submitEngineJob(database.db, queue, {
+      await submitEngineJob(database.db, {
         kind: 'generate-map',
         simVersion: SIM,
         payload: { generator: { ...entry, revision: 77, seed: 1 } },

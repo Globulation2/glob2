@@ -100,7 +100,7 @@ describe('engine jobs', () => {
       }),
     );
 
-    const jobId = await submitEngineJob(database.db, queue, {
+    const jobId = await submitEngineJob(database.db, {
       kind: 'generate-map',
       simVersion: SIM_A,
       payload: {
@@ -136,14 +136,14 @@ describe('engine jobs', () => {
 
   it('rejects invalid jobs before enqueueing and records contract-breaking results as failures', async () => {
     await expect(
-      submitEngineJob(database.db, queue, {
+      submitEngineJob(database.db, {
         kind: 'render-preview',
         simVersion: SIM_A,
         payload: { mapHash: 'nope', maxSizePx: 512 },
       }),
     ).rejects.toThrow(/invalid render-preview job/);
 
-    const jobId = await submitEngineJob(database.db, queue, {
+    const jobId = await submitEngineJob(database.db, {
       kind: 'render-preview',
       simVersion: SIM_B,
       payload: { mapHash: MAP_HASH, maxSizePx: 512 },

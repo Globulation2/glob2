@@ -6,8 +6,8 @@
 // under a row lock), so a re-delivered verdict or a sweep never applies a
 // rating change twice.
 import { sql, type Kysely, type Transaction } from 'kysely';
-import { applyEngineJobResult } from '@glob2/core';
-import type { Database } from '@glob2/db';
+import { applyEngineJobResult, type Logger } from '@glob2/core';
+import { notify, type Database } from '@glob2/db';
 import { applyMapJobResult } from '../play/maps.ts';
 import type { MatchSetup, VerifyVerdict } from '@glob2/protocol';
 import {
@@ -35,7 +35,7 @@ async function inTransaction<T>(
 }
 
 async function notifyMatch(db: Db, matchId: string): Promise<void> {
-  await sql`SELECT pg_notify(${MATCH_UPDATES_CHANNEL}, ${JSON.stringify({ matchId })})`.execute(db);
+  await notify(db, MATCH_UPDATES_CHANNEL, { matchId });
 }
 
 /**
@@ -45,12 +45,31 @@ async function notifyMatch(db: Db, matchId: string): Promise<void> {
  * Returns false when the job was unknown or already completed (a duplicate
  * delivery), in which case nothing changes.
  */
-export async function handleEngineJobResult(db: Db, payload: unknown): Promise<boolean> {
+export async function handleEngineJobResult(
+  db: Db,
+  payload: unknown,
+  options: { logger?: Pick<Logger, 'error'> } = {},
+): Promise<boolean> {
   return inTransaction(db, async (trx) => {
     const applied = await applyEngineJobResult(trx, payload);
     if (applied) {
       const jobId = (payload as { jobId: string }).jobId;
-      await recordVerification(trx, jobId);
+      const verification = await recordVerification(trx, jobId);
+      if (
+        !verification.recorded &&
+        verification.reason === 'job_failed' &&
+        verification.markedFailed
+      ) {
+        // Operator alert: the match stays unrated until verification is re-run.
+        options.logger?.error(
+          {
+            match: verification.matchId,
+            job: jobId,
+            error: (payload as { error?: unknown }).error,
+          },
+          'match verification failed; re-run it with: platform matches reverify <match id>',
+        );
+      }
       await recordWarmMapResult(trx, jobId);
       // Generated maps and uploads (no-op for verify-match jobs).
       await applyMapJobResult(trx, jobId);
@@ -62,15 +81,18 @@ export async function handleEngineJobResult(db: Db, payload: unknown): Promise<b
 export type VerificationRecord =
   | {
       recorded: false;
-      reason: 'not_verify_job' | 'job_failed' | 'match_missing' | 'already_recorded';
+      reason: 'not_verify_job' | 'match_missing' | 'already_recorded';
     }
+  /** The job failed (agent error after retries, or lost): the match is marked 'failed'. */
+  | { recorded: false; reason: 'job_failed'; matchId: string; markedFailed: boolean }
   | { recorded: true; matchId: string; verdict: VerifyVerdict['verdict']; rating: RatingResult };
 
 /**
  * Stores a completed verify-match job's verdict on its match: the verification
  * status, per-team outcomes and participant outcomes, then applies ratings.
- * A failed job (agent error after retries) leaves the match pending for an
- * operator to re-run.
+ * A failed job (agent error after retries, or a job the stale-job sweep gave
+ * up on) marks a pending match's verification 'failed', which is not rated;
+ * an operator can re-run it (reverifyMatch).
  */
 export async function recordVerification(db: Db, jobId: string): Promise<VerificationRecord> {
   return inTransaction(db, async (trx) => {
@@ -80,8 +102,21 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
       .where('id', '=', jobId)
       .executeTakeFirst();
     if (!job || job.kind !== 'verify-match') return { recorded: false, reason: 'not_verify_job' };
-    if (job.status !== 'succeeded') return { recorded: false, reason: 'job_failed' };
     const matchId = (job.payload as { matchId: string }).matchId;
+    if (job.status !== 'succeeded') {
+      const marked = await trx
+        .updateTable('matches')
+        .set({ verification: 'failed' })
+        .where('id', '=', matchId)
+        .where('verification', '=', 'pending')
+        .executeTakeFirst();
+      const markedFailed = marked.numUpdatedRows > 0n;
+      if (markedFailed) {
+        await applyMatchRatings(trx, matchId);
+        await notifyMatch(trx, matchId);
+      }
+      return { recorded: false, reason: 'job_failed', matchId, markedFailed };
+    }
     const verdict = job.result as unknown as VerifyVerdict;
 
     const match = await trx

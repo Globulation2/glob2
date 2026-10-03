@@ -1,8 +1,8 @@
 // Queue events for clients. The worker has no client sockets: it NOTIFYs the
 // API replicas, which forward each event to the account's realtime sockets
 // as the protocol event of the same name.
-import { sql, type Kysely } from 'kysely';
-import type { Database } from '@glob2/db';
+import type { Kysely } from 'kysely';
+import { notify, type Database } from '@glob2/db';
 import type { RealtimeEventData } from '@glob2/protocol';
 
 export type QueueEventName =
@@ -38,7 +38,7 @@ export class PgQueueNotifier implements QueueNotifier {
     data: RealtimeEventData<E>,
   ): Promise<void> {
     const payload: QueueNotification<E> = { accountId, event, data };
-    await sql`SELECT pg_notify(${QUEUE_EVENTS_CHANNEL}, ${JSON.stringify(payload)})`.execute(db);
+    await notify(db, QUEUE_EVENTS_CHANNEL, payload);
   }
 }
 

@@ -64,6 +64,8 @@ export interface RefreshTokensTable {
   expires_at: RequiredTimestamp;
   rotated_at: NullableTimestamp;
   revoked_at: NullableTimestamp;
+  replaced_by: Nullable<string>;
+  grace_uses: Defaulted<number>;
 }
 
 export interface SigninAttemptsTable {
@@ -175,6 +177,8 @@ export interface EngineJobsTable {
   agent_id: Nullable<string>;
   created_at: Timestamp;
   completed_at: NullableTimestamp;
+  /** The match a verify-match job checks (from its payload). */
+  match_id: Nullable<string>;
 }
 
 export interface MapsTable {
@@ -262,6 +266,8 @@ export interface RoomsTable {
   created_at: Timestamp;
   updated_at: Timestamp;
   closed_at: NullableTimestamp;
+  starting_since: NullableTimestamp;
+  notice: Nullable<string>;
 }
 
 export interface RoomKicksTable {
@@ -301,6 +307,9 @@ export interface RoomChatMessagesTable {
   sent_at: Timestamp;
 }
 
+export type MatchVerification =
+  'pending' | 'verified' | 'diverged' | 'unverifiable' | 'not_applicable' | 'failed';
+
 export interface MatchesTable {
   id: Generated<string>;
   sim_version: string;
@@ -309,7 +318,7 @@ export interface MatchesTable {
   queue_id: Nullable<string>;
   rated: Defaulted<boolean>;
   status: Defaulted<'starting' | 'running' | 'ended' | 'cancelled'>;
-  verification: Defaulted<'pending' | 'verified' | 'diverged' | 'unverifiable' | 'not_applicable'>;
+  verification: Defaulted<MatchVerification>;
   setup: Json<JsonValue>;
   seed: number;
   map_hash: string;
@@ -591,6 +600,21 @@ export interface AccountEconomyCurvesView {
   games_at_tick: View<number>;
 }
 
+export interface LeaderLeasesTable {
+  name: string;
+  epoch: number;
+  holder: string;
+  acquired_at: Timestamp;
+  renewed_at: Timestamp;
+}
+
+export interface NotificationPayloadsTable {
+  id: Generated<string>;
+  channel: string;
+  payload: Json<JsonValue>;
+  created_at: Timestamp;
+}
+
 export interface Database {
   accounts: AccountsTable;
   identities: IdentitiesTable;
@@ -629,6 +653,8 @@ export interface Database {
   map_uploads: MapUploadsTable;
   generated_maps: GeneratedMapsTable;
   warm_maps: WarmMapsTable;
+  leader_leases: LeaderLeasesTable;
+  notification_payloads: NotificationPayloadsTable;
   match_results_view: MatchResultsView;
   recent_win_rates_view: RecentWinRatesView;
   recent_game_lengths_view: RecentGameLengthsView;

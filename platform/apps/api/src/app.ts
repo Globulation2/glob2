@@ -162,9 +162,12 @@ export async function buildApp(
   // Liveness: the process is up.
   app.get('/healthz', { config: { rateLimit: false } }, async () => ({ status: 'ok' }));
 
-  // Readiness: the database answers. Load balancers route only to ready replicas.
+  // Readiness: the database answers and realtime fan-out is listening (a
+  // replica whose LISTEN connection is down would miss notifications for its
+  // sockets). Load balancers route only to ready replicas.
   app.get('/readyz', { config: { rateLimit: false } }, async (_request, reply) => {
     try {
+      if (!services.pubsub.connected) throw new Error('pub/sub listener is reconnecting');
       await sql`SELECT 1`.execute(services.db);
       return { status: 'ready' };
     } catch (error) {

@@ -1,8 +1,12 @@
 // Engine jobs end to end: the platform records and enqueues a job for one sim
 // version; an engine agent of that version runs it and enqueues the result;
 // apps/worker applies the result. See the protocol package's jobs.ts.
+//
+// The engine_jobs row and its graphile-worker job are written in one
+// transaction (graphile_worker.add_job in SQL), so a job is never recorded
+// without being queued or queued without being recorded.
 import { randomUUID } from 'node:crypto';
-import type { Kysely } from 'kysely';
+import { sql, type Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
 import {
   ENGINE_RESULT_TASK,
@@ -30,10 +34,20 @@ export interface SubmitEngineJob<K extends EngineJobKind> {
   jobId?: string;
 }
 
-/** Records and enqueues an engine job; returns its id. */
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/** The match a job payload names (verify-match), for engine_jobs.match_id. */
+function payloadMatchId(payload: unknown): string | null {
+  const id = (payload as { matchId?: unknown } | null)?.matchId;
+  return typeof id === 'string' && UUID_PATTERN.test(id) ? id : null;
+}
+
+/**
+ * Records and enqueues an engine job atomically; returns its id. With a
+ * transaction as `db`, both commit (or roll back) with it.
+ */
 export async function submitEngineJob<K extends EngineJobKind>(
   db: Kysely<Database>,
-  queue: JobQueue,
   request: SubmitEngineJob<K>,
 ): Promise<string> {
   const job = {
@@ -48,19 +62,26 @@ export async function submitEngineJob<K extends EngineJobKind>(
       `invalid ${request.kind} job: ${check.issues.map((i) => `${i.path} ${i.message}`).join('; ')}`,
     );
   }
-  await db
-    .insertInto('engine_jobs')
-    .values({
-      id: job.jobId,
-      kind: request.kind,
-      sim_version: simVersionKey(request.simVersion),
-      payload: JSON.stringify(request.payload),
-    })
-    .execute();
-  await queue.enqueue(engineTaskIdentifier(request.kind, request.simVersion), job, {
-    jobKey: job.jobId,
-    maxAttempts: request.maxAttempts ?? 3,
-  });
+  const write = async (trx: Kysely<Database>) => {
+    await trx
+      .insertInto('engine_jobs')
+      .values({
+        id: job.jobId,
+        kind: request.kind,
+        sim_version: simVersionKey(request.simVersion),
+        payload: JSON.stringify(request.payload),
+        match_id: payloadMatchId(request.payload),
+      })
+      .execute();
+    await sql`SELECT graphile_worker.add_job(
+        identifier => ${engineTaskIdentifier(request.kind, request.simVersion)}::text,
+        payload => ${JSON.stringify(job)}::json,
+        max_attempts => ${request.maxAttempts ?? 3}::int,
+        job_key => ${job.jobId}::text
+      )`.execute(trx);
+  };
+  if (db.isTransaction) await write(db);
+  else await db.transaction().execute(write);
   return job.jobId;
 }
 

@@ -112,6 +112,8 @@ export function VerificationBadge({ match }: { match: MatchSummary }) {
       return <span className="badge bad">diverged</span>;
     case 'unverifiable':
       return <span className="badge warn">unverifiable</span>;
+    case 'failed':
+      return <span className="badge warn">not checked</span>;
     default:
       return null;
   }

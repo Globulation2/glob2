@@ -2,8 +2,8 @@
 // in the API and in the worker; whichever process commits a change publishes
 // it, and every API replica delivers it to the sockets it holds. Payloads carry
 // ids only (NOTIFY payloads are small); receivers re-read the state.
-import { sql, type Kysely } from 'kysely';
-import type { Database } from '@glob2/db';
+import type { Kysely } from 'kysely';
+import { notify, type Database } from '@glob2/db';
 
 type Db = Kysely<Database>;
 
@@ -30,7 +30,7 @@ export type PlayFanout =
 
 /** Publishes after the surrounding transaction commits (NOTIFY is transactional). */
 export async function publishPlay(db: Db, message: PlayFanout): Promise<void> {
-  await sql`SELECT pg_notify(${REALTIME_CHANNEL}, ${JSON.stringify(message)})`.execute(db);
+  await notify(db, REALTIME_CHANNEL, message);
 }
 
 export interface MapJobNotification {
@@ -39,5 +39,5 @@ export interface MapJobNotification {
 }
 
 export async function notifyMapJob(db: Db, message: MapJobNotification): Promise<void> {
-  await sql`SELECT pg_notify(${MAP_JOBS_CHANNEL}, ${JSON.stringify(message)})`.execute(db);
+  await notify(db, MAP_JOBS_CHANNEL, message);
 }

@@ -95,14 +95,15 @@ describe('maintenance', () => {
       ])
       .execute();
 
-    expect(await runMaintenance(db)).toEqual({
+    expect(await runMaintenance(db)).toMatchObject({
       expiredSigninAttempts: 1,
       expiredQueueTickets: 1,
       deletedRefreshTokens: 1,
       deletedAuthFlows: 1,
       deletedWebSessions: 1,
+      deletedGuests: 0,
     });
-    expect(await runMaintenance(db)).toEqual({
+    expect(await runMaintenance(db)).toMatchObject({
       expiredSigninAttempts: 0,
       expiredQueueTickets: 0,
       deletedRefreshTokens: 0,

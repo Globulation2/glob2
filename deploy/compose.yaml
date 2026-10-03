@@ -117,7 +117,8 @@ services:
     command: [node, apps/worker/src/main.ts]
     environment:
       <<: *platform-environment
-      WARM_MAPS_PER_ENTRY: ${WARM_MAPS_PER_ENTRY:-1}
+      WARM_MAPS_PER_ENTRY: ${WARM_MAPS_PER_ENTRY:-2}
+      WARM_MAPS_MAX_PER_ENTRY: ${WARM_MAPS_MAX_PER_ENTRY:-8}
       # Only platform-api checks relay keys.
       RELAY_KEYS_FILE: ''
     volumes:

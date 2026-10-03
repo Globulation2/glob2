@@ -74,7 +74,17 @@ export const ROOM_RULES = {
   codeLength: 10,
   /** A kicked player cannot rejoin the room for this long. */
   kickBanSeconds: 600,
+  /**
+   * A room still 'starting' after this long was left there by a crash between
+   * the start steps: the sweep resumes it (its match exists) or reopens it.
+   * Longer than any start: createMatch waits up to a minute for a relay.
+   */
+  startingTimeoutSeconds: 120,
 } as const;
+
+/** RoomState.notice after the sweep reopened a room whose start was interrupted. */
+export const START_INTERRUPTED_NOTICE =
+  'The match could not be started because the server was interrupted. Start it again.';
 
 /** Unambiguous code alphabet (no 0/O, 1/I). */
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -281,6 +291,7 @@ export class RoomService {
         ...(seatOf.has(m.account_id) ? { seat: must(seatOf.get(m.account_id), 'seat') } : {}),
       })),
       ...(room.match_id ? { matchId: room.match_id } : {}),
+      ...(room.notice && room.status === 'open' ? { notice: room.notice } : {}),
       revision: room.revision,
       createdAt: room.created_at.toISOString(),
     };
@@ -1327,7 +1338,11 @@ export class RoomService {
           seats: unready.map((s) => s.seat),
         });
       }
-      await trx.updateTable('rooms').set({ status: 'starting' }).where('id', '=', roomId).execute();
+      await trx
+        .updateTable('rooms')
+        .set({ status: 'starting', starting_since: sql<Date>`now()`, notice: null })
+        .where('id', '=', roomId)
+        .execute();
       await this.bump(trx, roomId);
       return { room, settings, seats };
     });
@@ -1403,7 +1418,7 @@ export class RoomService {
       await this.db.transaction().execute(async (trx) => {
         await trx
           .updateTable('rooms')
-          .set({ status: 'in_match', match_id: created.matchId })
+          .set({ status: 'in_match', match_id: created.matchId, starting_since: null })
           .where('id', '=', roomId)
           .where('status', '=', 'starting')
           .execute();
@@ -1419,7 +1434,15 @@ export class RoomService {
       await this.db.transaction().execute(async (trx) => {
         const reverted = await trx
           .updateTable('rooms')
-          .set({ status: 'open' })
+          .set({
+            status: 'open',
+            starting_since: null,
+            // Players see why; access and readiness problems go to the host.
+            notice:
+              error instanceof StartError
+                ? null
+                : 'The match could not be started. Try again in a moment.',
+          })
           .where('id', '=', roomId)
           .where('status', '=', 'starting')
           .executeTakeFirst();
@@ -1464,7 +1487,8 @@ export class RoomService {
    * and removes long-disconnected members. Guarded updates make it safe on
    * every replica at once.
    */
-  async sweep(): Promise<{ closed: number; removed: number }> {
+  async sweep(): Promise<{ closed: number; removed: number; recovered: number }> {
+    const recovered = await this.recoverStarting();
     const stale = await this.db
       .selectFrom('rooms as r')
       .leftJoin('room_members as h', (join) =>
@@ -1541,7 +1565,65 @@ export class RoomService {
       .deleteFrom('room_kicks')
       .where('until', '<=', sql<Date>`now()`)
       .execute();
-    return { closed, removed: gone.length };
+    return { closed, removed: gone.length, recovered };
+  }
+
+  /**
+   * Rooms stuck in 'starting' (the process running the start died between
+   * its steps): a room whose match was created since it started is resumed
+   * (in_match, players get match.start again, idempotently); any other is
+   * reopened with a notice. Guarded by the room lock, safe on every replica.
+   */
+  async recoverStarting(
+    timeoutSeconds: number = ROOM_RULES.startingTimeoutSeconds,
+  ): Promise<number> {
+    const stuck = await this.db
+      .selectFrom('rooms')
+      .select('id')
+      .where('status', '=', 'starting')
+      .where(
+        sql<Date>`COALESCE(starting_since, updated_at)`,
+        '<',
+        sql<Date>`now() - make_interval(secs => ${timeoutSeconds})`,
+      )
+      .execute();
+    let recovered = 0;
+    for (const { id } of stuck) {
+      const outcome = await this.db.transaction().execute(async (trx) => {
+        const room = await this.lock(trx, id);
+        if (room.status !== 'starting') return undefined;
+        const since = room.starting_since ?? room.updated_at;
+        const match = await trx
+          .selectFrom('matches')
+          .select('id')
+          .where('room_id', '=', id)
+          .where('status', 'in', ['starting', 'running'])
+          .where('created_at', '>=', since)
+          .orderBy('created_at', 'desc')
+          .executeTakeFirst();
+        if (match) {
+          await trx
+            .updateTable('rooms')
+            .set({ status: 'in_match', match_id: match.id, starting_since: null })
+            .where('id', '=', id)
+            .execute();
+          await this.bump(trx, id);
+          await publishPlay(trx, { t: 'matchStart', matchId: match.id });
+          return { resumed: match.id };
+        }
+        await trx
+          .updateTable('rooms')
+          .set({ status: 'open', starting_since: null, notice: START_INTERRUPTED_NOTICE })
+          .where('id', '=', id)
+          .execute();
+        await this.bump(trx, id);
+        return { reopened: true };
+      });
+      if (!outcome) continue;
+      recovered++;
+      this.logger.warn({ room: id, ...outcome }, 'recovered a room stuck starting');
+    }
+    return recovered;
   }
 }
 
