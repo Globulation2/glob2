@@ -5,7 +5,7 @@
 
 #include <Stream.h>
 #include <StreamBackend.h>
-#include "../../gnupg/sha1.h"
+#include "Sha1.h"
 
 namespace GAGCore
 {

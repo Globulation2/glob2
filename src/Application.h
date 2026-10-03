@@ -3,6 +3,7 @@
 #include <ApplicationHost.h>
 #include <ScreenStack.h>
 #include "SinglePlayerFlow.h"
+#include "OnlineServices.h"
 
 class FrontendTheme;
 
@@ -16,6 +17,9 @@ class Application : public GAGCore::ApplicationHost::Loop
 	std::uint32_t delay(std::uint32_t now) override;
 
   private:
+	// The online services of this run (Online::services()). Declared first so they
+	// outlive every screen: screens and their requests hold the platform client.
+	Online::ServicesOwner online;
 	std::unique_ptr<FrontendTheme> frontend;
 	GAGGUI::ScreenStack screens;
 	GAGGUI::ScreenStack shutdownScreens;

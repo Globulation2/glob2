@@ -6,9 +6,8 @@ ratings and history. This guide covers setting it up from nothing, operating it,
 upgrading it. The design behind the services is in the
 [platform architecture](../multiplayer/architecture.md).
 
-Until the YOG cutover (milestone M9), the old lobby and router keep running from
-their own stack, `deploy/compose.legacy.yaml`, described in
-[deploy/README.md](../../deploy/README.md). See [Legacy YOG](#legacy-yog-until-the-cutover).
+This stack replaced the YOG lobby and router at the M9 cutover, with no data
+import (see [the former YOG lobby](#the-former-yog-lobby)).
 
 ## The stack
 
@@ -474,7 +473,12 @@ sed -i '/^RELAY_KEYS=/d' .env && docker compose up -d platform-api
 Change the replica counts in `.env` and run `docker compose up -d`.
 
 - **platform-api** is stateless; Caddy re-resolves the replicas every few seconds.
-  Realtime sockets on a removed replica reconnect to another.
+  Realtime sockets on a removed replica reconnect to another. Room presence is
+  shared: each replica registers in `api_replicas`, heartbeats every 10 seconds and
+  records its sockets' accounts in `realtime_presence`, so a player counts as
+  connected while any replica holds a socket of theirs. A replica that stops
+  heartbeating for 45 seconds (crashed, or cut off from the database) is expired by
+  the others, and its players are marked disconnected in their rooms.
 - **platform-worker** can run several replicas: every replica applies job results,
   one at a time holds the scheduler (matchmaker, ratings, warm maps).
 - **engine-agent** replicas lease jobs from the same queue (`engine_jobs`, through
@@ -686,8 +690,7 @@ live agent. Remove the service when the version is retired.
 
 The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
 `relay` and `caddy` (Caddy with the built web app). A `server-v*` tag runs
-`.github/workflows/server-image.yml`, which publishes all of them (with the legacy
-`server` and `proxy`) for linux/amd64 and linux/arm64 to
+`.github/workflows/server-image.yml`, which publishes all of them for linux/amd64 and linux/arm64 to
 `ghcr.io/<owner>/<repository>-<target>`, tagged with the Git tag and commit; engine
 agents are also tagged `simver-<sim version>` and labelled
 `org.glob2.sim-version`. Pin digests in production:
@@ -730,7 +733,7 @@ at most 1000 rows per table and run) and collects blobs every six hours:
 | Match proposals, finished queue tickets | 30 days |
 | Engine agents not seen | 7 days |
 | Spilled NOTIFY payloads | 1 hour |
-| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated or warm map, or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
+| Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
 Matches, participants, ratings, rating history, catalog maps and the audit log
 are kept.
@@ -738,21 +741,14 @@ are kept.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.
 
-## Legacy YOG until the cutover
+## The former YOG lobby
 
-The YOG lobby and router keep their own stack and documentation in
-[deploy/README.md](../../deploy/README.md):
-
-```sh
-docker compose -f deploy/compose.legacy.yaml up -d --wait
-```
-
-Its Compose project is still `glob2`, so existing volumes and secrets carry over
-unchanged. Both stacks publish ports through their own Caddy, so on one host give
-them different ports or (better) different hosts or IP addresses. Released clients
-keep using YOG until the clients that speak to the new platform ship; at the M9
-cutover the legacy stack, `compose.legacy.yaml`, `Caddyfile.legacy`,
-`provision_tls.py` and `healthcheck.py` are deleted.
+The YOG lobby and router, and their stack (`compose.legacy.yaml`), were removed
+at the M9 cutover. Nothing is migrated from a YOG deployment: accounts, ratings,
+match history and the map catalog start fresh on the platform. Archive the old
+`lobby-data` and `router-data` volumes if you want to keep them; this stack never
+reads them. Released clients that only speak YOG can no longer play online until
+they are updated.
 
 ## Testing a deployment
 

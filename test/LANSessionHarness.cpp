@@ -7,7 +7,6 @@
 #include "LANFindScreen.h"
 #include "LANSessionScreen.h"
 #include <optional>
-#include "MultiplayerGameScreen.h"
 #include "LanRoom.h"
 #include "MapCache.h"
 #include "OnlineServices.h"

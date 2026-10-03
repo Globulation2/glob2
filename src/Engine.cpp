@@ -7,6 +7,7 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "TurnMatchPresenter.h"
 #include "sim/SimulationRunner.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
@@ -30,7 +31,6 @@ Engine::~Engine()
         // In-game options may have persisted the temporary match speed.
         globalContainer->settings.save();
     }
-    if (multiplayer) multiplayer->setNetEngine(nullptr);
 	// Closing the window stops every screen without finishing the session: a turn
 	// match still says goodbye, and its relay connection lingers until the Quit is
 	// written (RelayTransport).

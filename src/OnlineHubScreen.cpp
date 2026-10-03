@@ -21,8 +21,6 @@
 #include "RoomScreen.h"
 #include "SettingsScreen.h"
 #include "SimVersion.h"
-#include "YOGClient.h"
-#include "YOGLoginScreen.h"
 #include "gui/ThumbSide.h"
 #include "ui/OnlineUI.h"
 #include <ApplicationHost.h>
@@ -145,7 +143,7 @@ OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : s
 			startMatch(assignment.raw.is_object() ? assignment.raw : Json());
 		});
 		Online::setRematchHandler([this](const Online::RematchRequest &request) {
-			rematchRoom = Online::PlatformRoom::rematch(client(), request.matchId);
+			rematchRoom = Online::PlatformRoom::rematch(client(), Online::services().maps, request.matchId);
 		});
 		syncFromClient();
 		refresh(true);
@@ -183,7 +181,7 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 		context.rated = queue->rated;
 		context.ladder = queue->id;
 	}
-	auto match = std::make_shared<Online::OnlineMatch>(client(), assignment, context);
+	auto match = std::make_shared<Online::OnlineMatch>(client(), Online::services().maps, assignment, context);
 	screens.push(std::make_unique<MatchStartScreen>(screens, match), [this](GAGGUI::Screen &, int) {
 		// Rematch from the results screen: its room opens once the match has closed.
 		if (auto room = std::move(rematchRoom))
@@ -396,7 +394,7 @@ void OnlineHubScreen::createRoom()
 	// colonies when more people join, until the host chooses a map.
 	const auto setup = Online::defaultRoomSetup(2, std::random_device{}());
 	const std::string name = formatted("[hub room name %0]", data.displayName);
-	enterRoom(Online::PlatformRoom::create(client(), name, false, setup, true));
+	enterRoom(Online::PlatformRoom::create(client(), Online::services().maps, name, false, setup, true));
 }
 
 void OnlineHubScreen::joinByCode(const std::string &codeOrLink)
@@ -419,7 +417,7 @@ void OnlineHubScreen::joinByCode(const std::string &codeOrLink)
 	}
 	joinDraft.clear();
 	joinField = false;
-	enterRoom(Online::PlatformRoom::join(client(), invite->code));
+	enterRoom(Online::PlatformRoom::join(client(), Online::services().maps, invite->code));
 }
 
 void OnlineHubScreen::acceptInvite(const std::string &origin, const std::string &code)
@@ -552,11 +550,6 @@ void OnlineHubScreen::openSettings()
 		data.instanceName.clear();
 		refresh(true);
 	});
-}
-
-void OnlineHubScreen::openLegacyServer()
-{
-	screens.push(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()));
 }
 
 void OnlineHubScreen::onEscape()
@@ -961,10 +954,9 @@ Element OnlineHubScreen::build(const Presentation &p)
 			return row({expanded(scroll("hub/scroll", left), 3), expanded(scroll("hub/side", right), 2)}, {ctx.presentation.pt(18), CrossAlign::Stretch});
 		});
 	std::vector<MenuAction> buttons{{"settings", tr("[hub online settings]"), [this] { openSettings(); }},
-									{"legacy", tr("[hub legacy server]"), [this] { openLegacyServer(); }},
 									{"back", tr("[Back]"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
 	// The game version identifies the build; the simulation version is for Settings.
-	// Where the three buttons and the version do not share a line (a portrait tablet
+	// Where the two buttons and the version do not share a line (a portrait tablet
 	// with large text), the version goes above the buttons.
 	auto footerRow = adaptive([version = caption(instance + " · " + PACKAGE_VERSION),
 							   footerActions = actions(std::move(buttons), p, ActionStyle::Compact)](const LayoutContext &ctx, Size available) -> Element {

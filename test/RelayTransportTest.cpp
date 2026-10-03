@@ -6,9 +6,11 @@
 
 #include "Glob2Test.h"
 
+#include <algorithm>
 #include <deque>
 #include <memory>
 
+#include "NetFrame.h"
 #include "NetTransport.h"
 #include "RelayTransport.h"
 #include "TurnMessages.h"
@@ -192,5 +194,64 @@ TEST_SUITE("RelayTransport")
 		CHECK_THROWS(NetEndpoint::parse("wss://play.example.org/relay/a.b"));
 		CHECK_THROWS(NetEndpoint::parse("wss://play.example.org/relay/a/b"));
 		CHECK_THROWS(NetEndpoint::parse("wss://play.example.org/other"));
+	}
+}
+
+TEST_SUITE("NetFrame")
+{
+	TEST_CASE("the reader refuses bytes beyond its limit and keeps what it had")
+	{
+		NetFrame::Reader reader;
+		const std::vector<uint8_t> frame = NetFrame::encode(std::vector<uint8_t>(10, 3));
+		REQUIRE(frame.size() == 12);
+		CHECK(reader.append(frame.data(), 5, 12));
+		CHECK_FALSE(reader.append(frame.data() + 5, 8, 12)); // 5 + 8 > 12
+		CHECK(reader.buffered() == 5);
+		CHECK(reader.append(frame.data() + 5, 7, 12));
+		std::vector<uint8_t> out;
+		REQUIRE(reader.next(out));
+		CHECK(out == std::vector<uint8_t>(10, 3));
+		CHECK(reader.buffered() == 0);
+	}
+
+	TEST_CASE("the reader hands out frames in place and stays bounded over a long stream")
+	{
+		NetFrame::Reader reader;
+		std::vector<uint8_t> stream;
+		for (int i = 0; i < 5000; ++i)
+		{
+			const std::vector<uint8_t> payload(1 + i % 200, static_cast<uint8_t>(i));
+			REQUIRE(NetFrame::append(stream, payload.data(), payload.size()));
+		}
+		std::size_t frames = 0, peak = 0;
+		for (std::size_t at = 0; at < stream.size(); at += 997)
+		{
+			const std::size_t chunk = std::min<std::size_t>(997, stream.size() - at);
+			REQUIRE(reader.append(stream.data() + at, chunk, NetTransport::queueLimit));
+			const uint8_t* data = nullptr;
+			std::size_t size = 0;
+			while (reader.next(data, size))
+			{
+				CHECK(size == 1 + frames % 200);
+				CHECK(data[0] == static_cast<uint8_t>(frames));
+				++frames;
+			}
+			peak = std::max(peak, reader.buffered());
+		}
+		CHECK(frames == 5000);
+		CHECK(peak < 2 * 202);
+		CHECK(reader.buffered() == 0);
+	}
+
+	TEST_CASE("frames carry at most 65535 bytes")
+	{
+		std::vector<uint8_t> out;
+		CHECK(NetFrame::append(out, std::vector<uint8_t>(65535).data(), 65535));
+		CHECK(out.size() == 65537);
+		CHECK(out[0] == 0xFF);
+		CHECK(out[1] == 0xFF);
+		CHECK_FALSE(NetFrame::append(out, std::vector<uint8_t>(65536).data(), 65536));
+		CHECK(out.size() == 65537);
+		CHECK(NetFrame::encode(std::vector<uint8_t>(65536)).empty());
 	}
 }

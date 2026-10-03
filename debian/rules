@@ -33,11 +33,7 @@ build-stamp: patch
 	python3 scons/sdl3_dependencies.py --prefix "$(GLOB2_SDL3_PREFIX)" --work build/sdl3/sources
 	dh_testdir
 
-#	Building without optimization.
-#	Build server binary first.
-	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=yes
-	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no -c
-	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true server=no
+	scons -j3 release=1 INSTALLDIR=/usr/share/games/glob2 BINDIR=/usr/games/ --portaudio=true
 
 	touch build-stamp
 
@@ -49,8 +45,7 @@ clean: unpatch
 	dh_clean
 
 	rm -rf .sconf_temp/ .sconsign.dblite options_cache.py config.log config.h
-	scons server=yes -c
-	scons server=no -c
+	scons -c
 
 install:
 	dh_testdir

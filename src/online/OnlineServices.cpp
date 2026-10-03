@@ -5,6 +5,7 @@
 #include "MapCache.h"
 #include "OnlineStorage.h"
 #include "PlatformClient.h"
+#include "QuickMatch.h"
 #include "RelayTransport.h"
 
 #ifdef HAVE_CONFIG_H
@@ -12,6 +13,7 @@
 #endif
 
 #include <SDL3/SDL.h>
+#include <algorithm>
 #include <memory>
 #include <vector>
 
@@ -48,18 +50,9 @@ Local &localFiles()
 	}
 	return *local;
 }
-struct Owned
-{
-	std::unique_ptr<InstanceConfig> config;
-	std::unique_ptr<PlatformClient> client;
-	std::unique_ptr<Services> view;
-};
-Owned *owned = nullptr;
-std::vector<std::function<void()>> &hooks()
-{
-	static std::vector<std::function<void()>> value;
-	return value;
-}
+// Services for tools and harnesses that run without an Application (process lifetime).
+Services *fallback = nullptr;
+ServicesOwner *currentOwner = nullptr;
 Uint64 lastPlatformPoll = 0;
 
 #ifdef __ANDROID__
@@ -115,20 +108,109 @@ void pollPlatformLinks()
 }
 } // namespace
 
-Services &services()
+namespace
+{
+std::unique_ptr<InstanceConfig> loadedConfig(OnlineStorage &storage)
+{
+	auto config = std::make_unique<InstanceConfig>(storage);
+	config->load();
+	return config;
+}
+} // namespace
+
+Services::Services(OnlineStorage &storage, MapCache &maps)
+	: ownedConfig(loadedConfig(storage)), ownedClient(std::make_unique<PlatformClient>(*ownedConfig)),
+	  storage(storage), config(*ownedConfig), client(*ownedClient), maps(maps)
+{
+}
+
+// The search and the hooks go first (they use the client), then the client
+// (closing its connection), then the instance list.
+Services::~Services()
+{
+	hooks.clear();
+	search.reset();
+}
+
+QuickMatch &Services::quickMatch()
+{
+	if (!search)
+		search = std::make_unique<QuickMatch>(client, QuickMatch::Environment::native());
+	return *search;
+}
+
+void Services::update()
+{
+	client.update();
+	if (search)
+		search->update();
+	// A hook may add or remove hooks: iterate over a snapshot of the ids.
+	std::vector<HookId> ids;
+	ids.reserve(hooks.size());
+	for (const auto &hook : hooks)
+		ids.push_back(hook.first);
+	for (HookId id : ids)
+	{
+		auto it = std::find_if(hooks.begin(), hooks.end(), [id](const auto &h) { return h.first == id; });
+		if (it != hooks.end())
+		{
+			auto run = it->second;
+			run();
+		}
+	}
+}
+
+Services::HookId Services::addHook(std::function<void()> hook)
+{
+	const HookId id = nextHook++;
+	hooks.emplace_back(id, std::move(hook));
+	return id;
+}
+
+void Services::removeHook(HookId id)
+{
+	hooks.erase(std::remove_if(hooks.begin(), hooks.end(), [id](const auto &h) { return h.first == id; }),
+				hooks.end());
+}
+
+ServicesOwner::ServicesOwner(std::function<std::unique_ptr<Services>()> make)
+	: make(std::move(make)), previous(currentOwner)
+{
+	currentOwner = this;
+}
+
+ServicesOwner::~ServicesOwner()
+{
+	owned.reset();
+	if (currentOwner == this)
+		currentOwner = previous;
+}
+
+Services &ServicesOwner::get()
 {
 	if (!owned)
 	{
-		auto &files = localFiles();
-		auto created = std::make_unique<Owned>();
-		created->config = std::make_unique<InstanceConfig>(*files.storage);
-		created->config->load();
-		created->client = std::make_unique<PlatformClient>(*created->config);
-		created->view = std::make_unique<Services>(
-			Services{*files.storage, *created->config, *created->client, *files.maps});
-		owned = created.release();
+		if (make)
+			owned = make();
+		else
+		{
+			auto &files = localFiles();
+			owned = std::make_unique<Services>(*files.storage, *files.maps);
+		}
 	}
-	return *owned->view;
+	return *owned;
+}
+
+Services &services()
+{
+	if (currentOwner)
+		return currentOwner->get();
+	if (!fallback)
+	{
+		auto &files = localFiles();
+		fallback = new Services(*files.storage, *files.maps);
+	}
+	return *fallback;
 }
 
 MapCache &sharedMapCache()
@@ -138,23 +220,20 @@ MapCache &sharedMapCache()
 
 bool servicesCreated()
 {
-	return owned != nullptr;
+	return currentOwner ? currentOwner->created() : fallback != nullptr;
 }
 
 void pump()
 {
 	pollPlatformLinks();
 	pumpLingeringRelayConnections();
-	if (!owned)
-		return;
-	owned->client->update();
-	for (auto &hook : hooks())
-		hook();
+	if (servicesCreated())
+		services().update();
 }
 
-void addPumpHook(std::function<void()> hook)
+Services::HookId addPumpHook(std::function<void()> hook)
 {
-	hooks().push_back(std::move(hook));
+	return services().addHook(std::move(hook));
 }
 
 bool acceptDroppedText(const std::string &text)

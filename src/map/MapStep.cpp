@@ -10,9 +10,7 @@
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "MapInternal.h"
-#ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
-#endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
 #include <tuple>
@@ -247,11 +245,7 @@ void Map::setGradientWorkerCount(unsigned workers) { gradientRuntime->pipeline.s
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
-#ifdef YOG_SERVER_ONLY
-	workers=0;
-#endif
 	gradientRuntime->pipeline.configure(workers, delay, size, [this](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-#ifndef YOG_SERVER_ONLY
 		const gradient_kernel::GradientGeometry geometry{size, wMask, hMask, wDec};
 		if (!job.water)
 			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
@@ -262,13 +256,9 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 			gradient_kernel::propagateField(job.data.get(), job.swim, GRADIENT_COST_LIMIT,
 				geometry, scratch, [water](size_t i) { return water[i] != 0; });
 		}
-#else
-		throw std::logic_error("The server does not simulate gradients");
-#endif
 	});
 }
 
-#ifndef YOG_SERVER_ONLY
 void Map::syncStep(Uint32 stepCounter)
 {
 	PERF_SCOPE_TIME(Map);
@@ -388,7 +378,6 @@ void Map::syncStep(Uint32 stepCounter)
 			}
 	}
 }
-#endif  // !YOG_SERVER_ONLY
 
 void Map::switchFogOfWar(void)
 {

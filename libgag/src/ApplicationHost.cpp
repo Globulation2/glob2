@@ -2,9 +2,7 @@
 #include <ApplicationHost.h>
 #include <EventQueue.h>
 #include <BrowserTextInput.h>
-#ifndef YOG_SERVER_ONLY
 #include <GraphicContext.h>
-#endif
 #include <SDL3/SDL.h>
 #include <filesystem>
 #include <fstream>
@@ -26,11 +24,7 @@ void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 	{
 		GAGCore::EventQueue events;
 		SDL_Event event;
-#ifdef YOG_SERVER_ONLY
-		while (SDL_PollEvent(&event))
-#else
 		while (GraphicContext::pollEvent(&event))
-#endif
 			events.push_back(event);
 		if (!loop->frame(SDL_GetTicks(), events.events()))
 			break;

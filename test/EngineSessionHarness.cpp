@@ -19,7 +19,6 @@
 #include "GameSessionScreen.h"
 #include "GameUtilities.h"
 #include "MapEdit.h"
-#include "YOGLoginScreen.h"
 #include "SettingsScreen.h"
 #include "ChooseMapScreen.h"
 #include "GUIMapPreview.h"
@@ -27,12 +26,11 @@
 #include <FileManager.h>
 #include <Toolkit.h>
 #include "Application.h"
-#include "YOGClient.h"
-#include "YOGClientEvent.h"
-#include "GameLaunchMessages.h"
+#include "OnlineServices.h"
+#include "PlatformClient.h"
+#include "QuickMatch.h"
 #include "gui/LoadSaveDialog.h"
 #include "gui/GameGUIDialog.h"
-#include "SessionTabsScreen.h"
 #include "FertilityCalculator.h"
 #include "FertilityScreen.h"
 #include "EditorLoadScreen.h"
@@ -275,72 +273,27 @@ TEST_SUITE("EngineSession")
 		        std::cout << "PASS application quit waits for final persistence" << std::endl;
 		    }
 		    {
-		        struct LoginProbe : YOGLoginScreen {
-		            using YOGLoginScreen::YOGLoginScreen;
-		            std::string statusText() { return status; }
-		        };
-		        GAGGUI::ScreenStack screens(*globalContainer->gfx);
-		        LoginProbe login(screens, std::make_shared<YOGClient>());
-		        login.beginExecution(globalContainer->gfx);
-		        static_cast<YOGClientEventListener&>(login).handleYOGClientEvent(std::make_shared<YOGLoginRefusedEvent>(YOGClientVersionTooOld));
-		        require(login.statusText().find("same Glob2 release") != std::string::npos,
-		                "Protocol rejection must provide a translated actionable status");
-		        login.drawExecution();
-		        std::cout << "PASS protocol rejection provides an actionable translated status" << std::endl;
-		        login.endExecute(0); login.finishExecution();
+		        // The application owns its online services: created on first use while it
+		        // runs, connecting, and released (connection closed) when it goes. Earlier
+		        // cases may have created the harness-wide fallback services.
+		        const bool fallback = Online::servicesCreated();
+		        {
+		            Application application;
+		            require(!Online::servicesCreated(), "A new application must not create online services");
+		            Online::Services& online = Online::services();
+		            require(Online::servicesCreated() && &Online::services() == &online, "services() must return the application's");
+		            online.client.start("https://127.0.0.1:9");
+		            Online::quickMatch();
+		            for (int i = 0; i < 20; ++i)
+		                Online::pump();
+		            SDL_Event quit{};
+		            quit.type = SDL_EVENT_QUIT;
+		            while (application.frame(SDL_GetTicks(), {quit}))
+		                Online::pump();
+		        }
+		        require(Online::servicesCreated() == fallback, "The application must release its online services");
+		        std::cout << "PASS the application owns and releases its online services" << std::endl;
 		    }
-
-		    {
-		        struct StartProbe : MultiplayerGame {
-		            using MultiplayerGame::MultiplayerGame;
-		            using MultiplayerGame::receiveMessage;
-		        };
-		        auto client = std::make_shared<YOGClient>();
-		        auto game = std::make_shared<StartProbe>(client);
-		        require(!game->takeStartRequest(), "A room cannot start before the server request");
-		        game->receiveMessage(std::make_shared<NetStartGame>());
-		        require(game->takeStartRequest() && !game->takeStartRequest(),
-		                "Network dispatch must defer launch and the host must consume it once");
-		        require(game->isWaitingForEngine(), "Router orders must remain queued after the host consumes launch");
-		        game->sessionEnded(false);
-		        require(!game->isWaitingForEngine(), "Cancelled initialization must release the router queue hold");
-		        Engine engine;
-		        require(!engine.initMultiplayerTask(game, client, -1).run(),
-		                "Multiplayer initialization must reject a missing local player");
-		        std::cout << "PASS deferred multiplayer launch and invalid local-player rejection" << std::endl;
-		    }
-
-		    {
-		        struct TabProbe : SessionTab {
-		            std::string name;
-		            explicit TabProbe(std::string name) : name(std::move(name)) {}
-		            std::string title() const override { return name; }
-		            Glob2UI::Element build(const Glob2UI::Presentation&) override { return Glob2UI::label(name); }
-		        };
-		        SessionTabsScreen tabs;
-		        auto first = std::make_unique<TabProbe>("First");
-		        TabProbe remaining("Remaining");
-		        tabs.addTab(first.get(), false);
-		        tabs.addTab(&remaining, true);
-		        tabs.beginExecution(globalContainer->gfx);
-		        first->finish(7);
-		        tabs.onTimer(SDL_GetTicks());
-		        require(tabs.isExecutionRunning() && first->returnCode() == 7,
-		                "Completing an owned tab must not end the session");
-		        tabs.removeTab(first.get());
-		        first.reset();
-		        tabs.onTimer(SDL_GetTicks());
-		        require(tabs.isExecutionRunning() && remaining.isActivated() && tabs.activeTab() == &remaining,
-		                "Destroying a completed tab must activate the surviving tab");
-		        tabs.drawExecution();
-		        remaining.finish(0);
-		        tabs.onTimer(SDL_GetTicks());
-		        require(!tabs.isExecutionRunning(), "The primary tab ends the session");
-		        tabs.removeTab(&remaining);
-		        tabs.finishExecution();
-		        std::cout << "PASS owned tab destruction preserves surviving tabs" << std::endl;
-		    }
-
 		    {
 		        auto& gfx = *globalContainer->gfx;
 		        SDL_Window* window = nullptr;

@@ -37,6 +37,7 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await database.db.deleteFrom('warm_maps').execute();
+  await database.db.deleteFrom('generated_maps').execute();
   await database.db.deleteFrom('engine_jobs').execute();
   await database.db.deleteFrom('engine_agents').execute();
 });
@@ -65,14 +66,23 @@ async function queuedJobs(): Promise<string[]> {
   return rows.map((r) => `${r.kind}:${r.sim_version}`);
 }
 
+/** Untaken pool maps joined to their generated maps, oldest first. */
+function poolMaps() {
+  return database.db
+    .selectFrom('warm_maps as w')
+    .innerJoin('generated_maps as g', (join) =>
+      join
+        .onRef('g.descriptor_hash', '=', 'w.descriptor_hash')
+        .onRef('g.sim_version', '=', 'w.sim_version'),
+    )
+    .select(['w.entry_key', 'g.job_id', 'g.status', 'g.failure'])
+    .where('w.taken_at', 'is', null)
+    .orderBy('w.created_at');
+}
+
 /** Completes every generating warm map as the engine agent and worker would. */
 async function completeAll(ok: (index: number) => boolean = () => true) {
-  const rows = await database.db
-    .selectFrom('warm_maps')
-    .select(['job_id', 'generator'])
-    .where('status', '=', 'generating')
-    .orderBy('created_at')
-    .execute();
+  const rows = await poolMaps().where('g.status', '=', 'pending').execute();
   let index = 0;
   for (const row of rows) {
     const success = ok(index++);
@@ -152,8 +162,16 @@ describe('WarmMapPool', () => {
       .selectAll()
       .where('id', '=', taken!.id)
       .executeTakeFirstOrThrow();
-    expect(row.status).toBe('taken');
+    expect(row.taken_at).not.toBeNull();
     expect(row.entry_key).toBe(poolEntryKey(arena));
+    // The map is a generated map: the same row rooms and on-demand starts use.
+    const generated = await database.db
+      .selectFrom('generated_maps')
+      .select(['status', 'map_hash'])
+      .where('descriptor_hash', '=', row.descriptor_hash!)
+      .where('sim_version', '=', SIM_A)
+      .executeTakeFirstOrThrow();
+    expect(generated).toEqual({ status: 'ready', map_hash: taken!.mapHash });
 
     expect((await pool.refill()).submitted).toBe(1); // replaces the one taken
   });
@@ -181,19 +199,10 @@ describe('WarmMapPool', () => {
     for (let round = 0; round < WARM_MAP_FAILURE_LIMIT; round++) {
       await pool.refill();
       // Arena always fails (e.g. a revision this sim version does not have).
-      const rows = await database.db
-        .selectFrom('warm_maps')
-        .select(['entry_key'])
-        .where('status', '=', 'generating')
-        .orderBy('created_at')
-        .execute();
+      const rows = await poolMaps().where('g.status', '=', 'pending').execute();
       await completeAll((i) => rows[i]!.entry_key !== arenaKey);
     }
-    const failed = await database.db
-      .selectFrom('warm_maps')
-      .select(['failure'])
-      .where('status', '=', 'failed')
-      .execute();
+    const failed = await poolMaps().where('g.status', '=', 'failed').execute();
     expect(failed).toHaveLength(WARM_MAP_FAILURE_LIMIT);
     expect(failed[0]!.failure).toMatch(/revision 3/);
     expect((await pool.refill()).submitted).toBe(0); // arena backs off, even-ground is ready
@@ -211,6 +220,8 @@ describe('WarmMapPool', () => {
     });
     expect((await shrunk.refill()).deleted).toBe(1);
     expect(await takeWarmMap(database.db, q.id, SIM_A)).toBeUndefined();
+    // Its generated map went with it, so the blob becomes collectable.
+    expect(await poolMaps().where('g.status', '=', 'ready').execute()).toHaveLength(0);
   });
 
   it('expires generation jobs that never report', async () => {
@@ -229,6 +240,34 @@ describe('WarmMapPool', () => {
     const result = await pool.refill();
     expect(result.expired).toBe(2);
     expect(result.submitted).toBe(2);
+  });
+
+  it('keeps a taken map generated, and drops old failed maps with their generated maps', async () => {
+    await agent('a1', SIM_A);
+    const q = twoEntries();
+    const pool = new WarmMapPool({ db: database.db, queues: [q], perEntry: 1, logger });
+    await pool.refill();
+    const arenaKey = poolEntryKey(q.mapPool.find((e) => e.generatorId === 'symmetric-arena')!);
+    const rows = await poolMaps().where('g.status', '=', 'pending').execute();
+    await completeAll((i) => rows[i]!.entry_key !== arenaKey); // arena fails, even ground is ready
+    const taken = await takeWarmMap(database.db, q.id, SIM_A);
+    expect(taken).toBeDefined();
+
+    // A day later: taken and failed rows leave the pool.
+    await database.db
+      .updateTable('warm_maps')
+      .set({ created_at: new Date(Date.now() - 25 * 3600 * 1000) })
+      .execute();
+    const result = await pool.refill();
+    expect(result.deleted).toBe(2);
+    const generated = await database.db
+      .selectFrom('generated_maps')
+      .select(['status', 'map_hash'])
+      .where('status', '!=', 'pending')
+      .execute();
+    // The played map's generated map stays (its size shows on the match page);
+    // the failed one is gone.
+    expect(generated).toEqual([{ status: 'ready', map_hash: taken!.mapHash }]);
   });
 
   it('does nothing when disabled or when no agent serves a version', async () => {

@@ -20,17 +20,15 @@
 #include "MatchSetup.h"
 #include "NetEngine.h"
 #include "TurnSession.h"
-#include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
-#include "ConnectionOverlay.h"
 
 
-class MultiplayersJoin;
 class SimulationRunner;
 namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 namespace Turn { class TurnLockstepSession; }
 namespace Online { class OnlineMatchResult; }
+class TurnMatchPresenter;
 
 using std::shared_ptr;
 
@@ -89,10 +87,6 @@ public:
 
 
 
-	/// Initiate a game with the given MultiplayerGame
-	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
-	GAGCore::CooperativeTask initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
-
 	/// Everything a client needs to start a game on the turn protocol (online and LAN):
 	/// the validated setup, the map file whose content hash matches setup.map.hash
 	/// (Online::resolveMatchMap), the seat this client plays, and an open or opening
@@ -130,8 +124,6 @@ public:
 	/// several ticks per frame (GameSessionScreen), rendering none of them.
 	bool turnFastForwarding();
 	Turn::TurnLockstepSession* turnLockstep() { return turn; }
-	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
-	std::vector<std::string> turnConnectionNotice();
 	/// Online matches: what the results screen shows (outcome, verification, rating).
 	/// The results card of an online match; also tells the in-game menu what leaving costs.
 	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result);
@@ -332,16 +324,9 @@ private:
 	/// Turn games: pumps the session each frame and handles its requests (reload,
 	/// desync flag). Called first in stepSessionImpl.
 	void pumpTurnSession(Uint64 now);
-	/// What the connection HUD shows (ConnectionOverlay), from the turn session.
-	ConnectionSnapshot turnConnectionSnapshot();
 	Uint64 turnNowMicros = 0;
-	std::uint32_t catchupFrom = 0;
-	bool catchupActive = false;
-	Uint64 connectionLostMicros = 0;
-	Uint64 catchupStartedMicros = 0;
-	/// Catch-up progress sampled every few seconds: whether the gap to the relay
-	/// shrinks (CatchUpPace in ConnectionOverlay.h).
-	CatchUpPace catchupPace;
+	/// Builds the connection HUD of a turn game from its session (gui layer).
+	std::unique_ptr<TurnMatchPresenter> turnPresenter;
 	/// Reloads the turn game's initial state in place, keeping the session, after
 	/// TurnSession::needsReload(); the session then replays the log from tick 0.
 	void reloadTurnInitialState();
@@ -391,26 +376,21 @@ private:
 	/// prestige and forces. Gated by GLOB2_TEAM_RESULTS; tools/map_fairness_tournament.py scrapes it.
 	void printTeamResults();
 
-	/// Tell the YOG multiplayer session how this match ended (won, lost,
-	/// quit). Caller checks `multiplayer` is non-null.
-	void reportMultiplayerResult();
-
 	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
-	/// + multiplayer state. The Engine itself stays alive for a possible
+	/// session. The Engine itself stays alive for a possible
 	/// reload (see finishSessionForHost).
 	void teardownSession();
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The lockstep session: queues, exchanges and dispatches orders. A
-	//! NetEngine for single player, replays and legacy YOG/LAN games.
+	//! NetEngine for single player and replays; a turn-protocol session for
+	//! online and LAN games.
 	std::unique_ptr<LockstepSession> net;
 	//! Checksum sidecar writer for cross-replay debugging. Destroying it
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.
 	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
-	//! The MultiplayerGame, receives orders from across a network
-	shared_ptr<MultiplayerGame> multiplayer;
 	//! Non-owning view of `net` when it is a turn-protocol session; null otherwise.
 	Turn::TurnLockstepSession* turn = nullptr;
 	//! What a turn game reloads after TurnSession::needsReload().

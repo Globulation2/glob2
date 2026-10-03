@@ -24,8 +24,6 @@
 %0 units too low level
 [%0% Uploaded]
 %0% uploaded
-[%0's game]
-%0's Game
 [%0's team unit got converted to your team]
 A unit from %0's team has joined your team
 [abreaviation explanation A]
@@ -42,8 +40,6 @@ V: Show vision for all buildings
 Add map
 [add shortcut]
 Add Shortcut
-[Add]
-Add
 [AI Descriptions]
 AI Descriptions
 [AI]
@@ -126,8 +122,6 @@ Audio
 Auto save
 [available lan games]
 Available local games
-[awaiting players]
-Awaiting players
 [away:]
 away:
 [Back]
@@ -142,8 +136,6 @@ Improves the fighting
 Barracks
 [beach size]
 beach size
-[Blocked Players]
-Blocked Players
 [break]
 break
 [briefing]
@@ -174,8 +166,6 @@ Campaign
 Can't connect, can't find host
 [Can't host game, port %0 in use]
 Can't host game, port %0 in use
-[Can't join game, game doesn't exist]
-Can't join game, game doesn't exist
 [Can't join game, game has started]
 Can't join game, game has started
 [Can't join game, game is full]
@@ -242,8 +232,6 @@ Wheat
 crater count
 [crater lakes terrain]
 Crater Lakes
-[create game]
-Create game
 [create map]
 Create map
 [credits]
@@ -294,14 +282,6 @@ Do Nothing
 Not carrying anything
 [down]
 down
-[Download Map]
-Download Map
-[Download Maps]
-Download Maps
-[downloaded %0]
-downloaded %0
-[downloading map]
-Downloading Map
 [edit map]
 Edit Map
 [editing map]
@@ -312,10 +292,6 @@ Editor Shortcuts
 Editor
 [end]
 end
-[Enter your nickname :]
-Enter your nickname:
-[Enter your password :]
-Enter your password:
 [enter]
 enter
 [equals]
@@ -478,12 +454,8 @@ Iterate to Next Selection
 jobs
 [join a game]
 Join a game
-[join]
-Join
 [keyboard settings]
 Keyboard Settings
-[kick]
-Kick
 [lan]
 LAN Game
 [language incomplete]
@@ -494,8 +466,6 @@ en
 Language
 [language]
 English
-[Leave Game]
-Leave Game
 [left meta]
 left meta
 [left super]
@@ -520,12 +490,6 @@ Load Replay
 Load Script
 [load]
 Load
-[loading map list]
-Loading Map List...
-[Lobby]
-Lobby
-[login]
-Login
 [look around]
 Look around
 [Lost : %0 has more prestige than you]
@@ -544,30 +508,14 @@ Ground dmg.
 Description
 [Map Discovered]
 Map Discovered
-[Map download failure: lost connection]
-Map Download Failed: Connection to YOG lost
-[Map name: %0]
-Map name: %0.
 [map name]
 Name
-[map rated]
-Map Rated
 [map script]
 Map Script
 [map size x]
 Map width
 [map size y]
 Map height
-[Map upload failure: connection lost]
-Map upload failed: Connection to YOG lost
-[Map upload failure: map name in use]
-Map upload failed. Map name is in use.
-[Map upload failure: unknown reason]
-Map upload failed. Unknown reason.
-[Map Upload: Author Name]
-Author Name
-[Map Upload: Waiting for reply]
-Waiting for reply
 [mark map]
 Mark Map For Allies
 [market explanation 2]
@@ -594,8 +542,6 @@ mute
 New Campaign
 [new map]
 New Map
-[nick taken]
-We are very sorry, but the name you chose is already taken on freenode; you will only be able to talk through YOG.
 [no fullscreen]
 * only in windowed mode
 [No Hints]
@@ -608,16 +554,8 @@ No Objectives
 No Growth Areas
 [No]
 No
-[Not Enough Ratings]
-Not Enough Ratings
-[not ready]
-not ready
 [Number Of Buildings]
 Number Of Buildings
-[number of players: %0 (%1 AI)]
-%0 players (%1 AI)
-[number of teams: %0]
-%0 teams
 [number of teams]
 number of teams
 [Number Of Units]
@@ -676,8 +614,6 @@ pause
 Paused
 [player name]
 Player name
-[player rating %0]
-Player Rating: %0
 [players]
 Players
 [please wait]
@@ -716,34 +652,20 @@ Improves the walking
 Racetrack
 [range]
 Range
-[Rated %0]
-Rated %0
 [ratios]
 Proportions
-[ready?]
-ready?
-[refresh map list]
-Refresh Map List
-[Register]
-Register
 [remember unit]
 Remember unit counts
-[Remember YOG password localy]
-Remember the password locally.
 [remove map]
 Remove Map
 [remove shortcut]
 Remove Shortcut
-[Remove]
-Remove
 [repair building]
 Start/Stop Repair
 [repair]
 Repair
 [repeat area]
 times the same landscape
-[Repeat your password :]
-Repeat your password:
 [replay ended]
 Replay Ended
 [restore default shortcuts]
@@ -876,14 +798,6 @@ Show Main Menu
 Display
 [smoothing]
 Smoothing
-[sort by name]
-Name
-[sort by rating]
-Rating
-[sort by size]
-Size
-[Sort By]
-Sort By
 [space]
 space
 [start mission]
@@ -916,8 +830,6 @@ element
 Passive defense
 [stonewall]
 Stone Wall
-[submit rating]
-Submit Rating
 [svr hostname]
 Server hostname
 [swamp terrain]
@@ -1014,10 +926,6 @@ Maps
 The market is finished.
 [the market is under attack]
 The market is under attack.
-[The player %0 has joined YOG]
-%0 has joined YOG.
-[The player %0 has left YOG]
-%0 has left YOG.
 [the racetrack is finished]
 The racetrack is finished.
 [the racetrack is under attack]
@@ -1106,10 +1014,6 @@ Start/Stop Upgrade
 Upgrade Defaults
 [upgrade]
 Upgrade
-[Upload Map]
-Upload Map
-[upload map]
-Upload Map
 [username]
 Username
 [Version]
@@ -1122,8 +1026,6 @@ Volume (voice)
 Waiting for %0
 [waiting for key]
 waiting for key...
-[Waiting]
-Waiting
 [Walk]
 Walk
 [warflag explanation 2]
@@ -1170,50 +1072,8 @@ Working
 wounded
 [Yes]
 Yes
-[YESTS_CONNECTING]
-Establishing the connection to the YOG metaserver...
-[YESTS_CONNECTION_LOST]
-The connection to YOG has been lost.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-The YOG metaserver has refused connection because this username has already been registered.  If this username is yours, deactivate the option "Register a new YOG user with a password".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-The YOG metaserver has refused connection because the supplied password was incorrect.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-The YOG metaserver has refused connection because this username has no password yet. You probably want to register your username with this password. Therefore, activate the option "Register a new YOG user with password" before connecting. You'll need to activate this option only once.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-The YOG metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-The YOG metaserver has refused the connection without explanation!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-The YOG metaserver has refused the connection because your username is already used by someone else.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-The YOG metaserver has refused the connection because this username is banned. Please contact the administrators.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-The YOG metaserver has refused the connection because the username given is invalid. Usernames can only contain letters, numbers, and underscores.
-[YESTS_CREATED]
-The connection system is ready to contact the YOG metaserver for connection.
-[YESTS_PASSWORDS_DONT_MATCH]
-The provided passwords don't match. Please retype them.
-[YESTS_UNABLE_TO_CONNECT]
-Unable to connect. Apparently, the YOG metaserver is down.
-[yog block command help]
-/block <playername>    Blocks a player; you will no longer see their text.
-[yog block command player %0 already blocked]
-Player %0 already blocked
-[yog block command player %0 blocked]
-Player %0 blocked
-[yog block command player %0 not found]
-Player %0 not found
-[yog command header]
-The current list of YOG Client Commands are:
-[yog command unknown]
-Unknown Command.
-[yog help command help]
-/help    Shows this help message
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 You have lost!
 [you have won]
@@ -1222,12 +1082,8 @@ You have won!
 You were kicked from the game
 [Your %0 are under attack]
 Your %0 is under attack
-[Your IP address was temporarily banned]
-Your IP address was temporarily banned. Please wait patiently until it is unbanned or contact the administrators.
 [Your unit got converted to %0's team]
 Your unit has joined %0's team
-[Your username was banned]
-Your username was banned. Please contact the administrators to have this changed.
 [game speed help]
 Single-player and replays only. Multiplayer runs at 1x.
 [maximum game speed]
@@ -3048,8 +2904,6 @@ Campaign progress not saved. Retry or export a backup.
 Leave without saving
 [campaign import failed]
 Invalid progress file or different campaign version
-[network release mismatch]
-Client and server protocols differ. Install the same Glob2 release as the server.
 [settings continue]
 Continue
 [settings save failed]
@@ -3412,8 +3266,6 @@ Ok: %0
 %0 %1
 [resume game]
 Resume game
-[games]
-Games
 [Add AI]
 Add AI
 [settings Experiments]
@@ -3524,16 +3376,10 @@ Select a host, then paste its pairing string to verify its identity.
 LAN discovery is unavailable. Check local network permission or paste a host pairing string.
 [lan discovered host %0]
 Discovered host %0 — pair to view games
-[lan share pairing]
-Share this pairing string with guests to verify this LAN session:
-[lan copy pairing]
-Copy pairing string
 [lan connection unavailable]
 Unable to reach the LAN host. Check local network permission and the host pairing string.
 [lan connection verification failed %0]
 Unable to verify or connect to the LAN host: %0
-[network start refused]
-The server refused to start this game. Check player readiness or reconnect after the server update.
 [lan lobby endpoint required]
 Use the host lobby endpoint
 [turn reconnecting]
@@ -3686,8 +3532,6 @@ Join code
 Join
 [hub leaderboard]
 Leaderboard
-[hub legacy server]
-Classic lobby
 [hub linked %0]
 Linked accounts · %0
 [hub linked accounts]

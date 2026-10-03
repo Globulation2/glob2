@@ -158,11 +158,11 @@
 // version 104 adds the custom-game sudden-death timer win condition (a new winning-condition
 //             type in the existing list; no new GameHeader field)
 
-//This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
-//NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
+//This must be updated when there are changes to MapHeader, GameHeader, BasePlayer, BaseTeam,
+//NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
+//the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
+//(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
 #define NET_PROTOCOL_VERSION 51
-//Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 51
 // version 51 requires readers of compact version-128 map snapshots.
 // version 50 requires clients that understand all sixteen team/controller slots.
 // version 49 requires native WSS endpoints and versioned mutual-TLS router registration.

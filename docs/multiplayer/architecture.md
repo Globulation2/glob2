@@ -11,8 +11,9 @@ quick-match queues and ratings in
 between clients and relays is owned by the turn-netcode work and documented in
 `docs/multiplayer/turn-protocol.md`.
 
-The legacy YOG lobby, router and LAN code keep working unchanged until the
-cutover milestone (M9), when they are deleted. There is no data import from YOG.
+The platform replaced the legacy YOG lobby, router and IRC chat, which were
+deleted at the cutover milestone (M9). There is no data import from YOG: accounts,
+ratings and history start fresh.
 
 ## Components
 
@@ -197,7 +198,7 @@ database in tests.
 | Area | Tables |
 | --- | --- |
 | Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log` |
-| Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs`, `warm_maps` (pre-generated quick-match maps) |
+| Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs`, `warm_maps` (the quick-match pool over `generated_maps`) |
 | Rooms | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages`, `room_kicks` |
 | Map sources | `map_uploads` (private uploads and their validation), `generated_maps` (one generation per descriptor and sim version) |
 | Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay and placement attempts, verification, the relay's end report), `match_participants`, `match_team_stats`, `match_artifacts` |
@@ -406,8 +407,8 @@ The worker's `platform:engine-job-result` handler completes the `engine_jobs`
 row. For `verify-match` it also records the verdict and applies ratings in the
 same transaction, and stores team statistics and timelines in `match_team_stats`.
 It links the record, replay and result blobs in `match_artifacts`, but only blobs
-registered in `blobs`. For a warm-map generation job, it marks the map ready or
-failed.
+registered in `blobs`. For a generate-map job, it marks the generated map ready or
+failed, whether a room, an on-demand queue start or the warm pool asked for it.
 
 The aggregate views from migration 0004 cover verified, ended matches of the
 last 90 days:
@@ -425,15 +426,26 @@ last 90 days:
 The worker leader runs `WarmMapPool.refill()` every 10 seconds. A sim version
 counts as served when an agent running `generate-map` was seen in the last five
 minutes. For each queue, served sim version and map pool entry, the pool keeps
-`WARM_MAPS_PER_ENTRY` maps (default 2, 0 turns the pool off) in `warm_maps`,
-either ready or still generating, and more while an entry is busy: as many as
-were taken in the last 15 minutes, up to `WARM_MAPS_MAX_PER_ENTRY` (default 8).
-It submits generate-map jobs with fresh seeds for any shortfall.
+`WARM_MAPS_PER_ENTRY` untaken maps (default 2, 0 turns the pool off), either
+ready or still generating, and more while an entry is busy: as many as were taken
+in the last 15 minutes, up to `WARM_MAPS_MAX_PER_ENTRY` (default 8). For any
+shortfall it requests generated maps with fresh seeds.
+
+The pool is a layer over `generated_maps`, not a second generation cache. Each
+warm map is a `generated_maps` row requested ahead of time through the same
+`requestGeneration` call, and completed by the same `applyMapJobResult`, as room
+maps and on-demand queue starts. `warm_maps` holds only the pool bookkeeping:
+the queue, the pool entry, the generated map's descriptor hash, and when and for
+which match it was taken. Readiness, the job, the map hash and any failure are
+read from `generated_maps`.
 
 - An entry that fails three times in ten minutes waits for the window to pass.
   This happens, for example, when the configured revision is not the binary's.
-- Jobs with no result after 30 minutes are expired.
+- Maps still generating after 30 minutes are given up and replaced.
 - Maps of entries removed from `instance.yaml` are dropped.
+- A pool map dropped before it was taken is deleted with its generated map, so
+  its blob is collected. A taken map keeps its generated map, like any map a
+  match was played on; taken rows are deleted from `warm_maps` after 24 hours.
 
 `takeWarmMap(db, queueId, simVersionKey, { entry?, matchId? })` (exported by
 `@glob2/play`) gives a match starter the oldest ready map, using
@@ -441,21 +453,9 @@ It submits generate-map jobs with fresh seeds for any shortfall.
 `map.generator`), the map hash (`map.hash`) and the generation result, or
 `undefined` if none is ready. The next refill replaces a taken map.
 
-**Two map tables, two jobs.** Both submit generate-map jobs, but they answer
-different questions and have one owner each:
-
-| | `warm_maps` (`packages/play/src/warmMaps.ts`) | `generated_maps` (`packages/play/src/play/maps.ts`) |
-| --- | --- | --- |
-| Question | "Give me *a* ready map for this queue entry, now." | "Give me *the* map for this exact descriptor." |
-| Key | queue, pool entry, sim version; one row per map, a fresh seed each | descriptor hash (seed included) and sim version |
-| Lifetime | consumed once by `takeWarmMap`, then replaced; taken and failed rows deleted after 24 h | kept: a cache shared by every room and match that asks for the descriptor |
-| Written by | the scheduler leader (`WarmMapPool.refill`) | room map selection and the on-demand path of `PlatformMatchStarter` |
-| Failure policy | back off an entry after 3 failures in 10 min; expire jobs after 30 min | retry a failed descriptor after 60 s |
-
-Results reach both through `handleEngineJobResult` (`recordWarmMapResult`, then
-`applyMapJobResult`); each ignores jobs it did not submit. Engine agent freshness
-(`ENGINE_AGENT_FRESH_SECONDS`, `freshAgentSimVersions` in `@glob2/core`) is the
-one definition both this pool and the API's served-version list use.
+Engine agent freshness (`ENGINE_AGENT_FRESH_SECONDS`, `freshAgentSimVersions` in
+`@glob2/core`) is the one definition the pool, the API's served-version list and
+the stale engine-job sweep use.
 
 ### Scaling and operation
 
@@ -617,7 +617,7 @@ own one-command test; see
 
 ## Delivery milestones
 
-Each milestone is one or more reviewable pull requests; YOG keeps working until M9.
+Each milestone is one or more reviewable pull requests; YOG kept working until M9.
 
 | | Milestone | Content |
 | --- | --- | --- |
@@ -630,7 +630,7 @@ Each milestone is one or more reviewable pull requests; YOG keeps working until 
 | M6 | Quick match | Queue config, matchmaker, region probes, AI backfill, warm map pool |
 | M7 | Map catalog | Upload, browse, previews, moderation |
 | M8 | Admin and polish | Admin pages, connection HUD, phone layouts |
-| M9 | Cutover | Delete YOG, IRC and the router role; update docs |
+| M9 | Cutover | Delete YOG, IRC and the server and router roles; update docs (done) |
 
 The original plan referred to `src/net/gateway/` for server patterns; that
 directory was removed when transport moved to native WSS, and its equivalents now

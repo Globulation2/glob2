@@ -16,7 +16,14 @@ import {
   waitUntil,
   type Player,
 } from './playSupport.ts';
-import { SIM, createHarness, json, type Harness, type Instance } from './support.ts';
+import {
+  RealtimeClient,
+  SIM,
+  createHarness,
+  json,
+  type Harness,
+  type Instance,
+} from './support.ts';
 
 const ORIGIN = 'http://play.test';
 const GENERATOR = {
@@ -38,8 +45,10 @@ beforeAll(async () => {
   harness = await createHarness();
   await serveSim(harness.database.db);
   const relayKeys = [{ key: RELAY_KEY }];
-  a = await harness.start({ origin: ORIGIN, relayKeys });
-  b = await harness.start({ origin: ORIGIN, relayKeys });
+  // Fast presence heartbeats, so expiry and re-registration show within a test.
+  const build = { presenceHeartbeatMs: 100 };
+  a = await harness.start({ origin: ORIGIN, relayKeys, build });
+  b = await harness.start({ origin: ORIGIN, relayKeys, build });
   engine = new FakeEngine(harness.database.db, harness.blobs);
 });
 
@@ -650,4 +659,100 @@ describe('presence and sweeps', () => {
       ),
     );
   });
+
+  it('keeps a member connected while it has a socket on another replica', async () => {
+    const host = await player(a);
+    const room = (await host.client.ok('room.create', { name: 'Two sockets', visibility: 'link' }))[
+      'room'
+    ] as Room;
+    const guest = await player(a);
+    await guest.client.ok('room.join', { code: room.code });
+    const second = await RealtimeClient.connect(b.url);
+    players.push({ ...guest, client: second });
+    await second.hello(guest.accessToken);
+    await waitUntil(async () => (await presenceRows(guest.accountId)) === 2);
+
+    // The socket on A closes; B still holds one, so the guest stays connected.
+    guest.client.close();
+    await waitUntil(async () => (await presenceRows(guest.accountId)) === 1);
+    expect(await memberConnected(room.id, guest.accountId)).toBe(true);
+
+    // The last socket closes: now the guest is disconnected.
+    second.close();
+    await waitUntil(async () => !(await memberConnected(room.id, guest.accountId)));
+    expect(await presenceRows(guest.accountId)).toBe(0);
+  });
+
+  it('disconnects the members whose sockets were on a replica that stopped heartbeating', async () => {
+    const host = await player(a);
+    const room = (await host.client.ok('room.create', { name: 'Crashed', visibility: 'link' }))[
+      'room'
+    ] as Room;
+    const guest = await player(b);
+    await guest.client.ok('room.join', { code: room.code });
+    guest.client.close();
+    await waitUntil(async () => !(await memberConnected(room.id, guest.accountId)));
+
+    // A replica that crashed while it held the guest's socket: its last
+    // heartbeat is old, its presence row and the member's flag remain.
+    const db = harness.database.db;
+    await db
+      .insertInto('api_replicas')
+      .values({ id: 'crashed-replica', heartbeat_at: new Date(Date.now() - 3_600_000) })
+      .execute();
+    await db
+      .insertInto('realtime_presence')
+      .values({ account_id: guest.accountId, replica_id: 'crashed-replica' })
+      .execute();
+    await db
+      .updateTable('room_members')
+      .set({ connected: true })
+      .where('room_id', '=', room.id)
+      .where('account_id', '=', guest.accountId)
+      .execute();
+
+    // A live replica's heartbeat expires it and re-evaluates the guest.
+    await waitUntil(async () => !(await memberConnected(room.id, guest.accountId)));
+    const left = await db
+      .selectFrom('api_replicas')
+      .select('id')
+      .where('id', '=', 'crashed-replica')
+      .execute();
+    expect(left).toHaveLength(0);
+    expect(await presenceRows(guest.accountId)).toBe(0);
+  });
+
+  it('records its sockets again when its own registration expired', async () => {
+    const host = await player(a);
+    await host.client.ok('room.create', { name: 'Revived', visibility: 'link' });
+    const db = harness.database.db;
+    const own = await db
+      .selectFrom('realtime_presence')
+      .select('replica_id')
+      .where('account_id', '=', host.accountId)
+      .executeTakeFirstOrThrow();
+    // Another replica judged this one dead (e.g. it lost the database for a while).
+    await db.deleteFrom('api_replicas').where('id', '=', own.replica_id).execute();
+    expect(await presenceRows(host.accountId)).toBe(0);
+    await waitUntil(async () => (await presenceRows(host.accountId)) === 1);
+  });
 });
+
+async function presenceRows(accountId: string): Promise<number> {
+  const rows = await harness.database.db
+    .selectFrom('realtime_presence')
+    .select('replica_id')
+    .where('account_id', '=', accountId)
+    .execute();
+  return rows.length;
+}
+
+async function memberConnected(roomId: string, accountId: string): Promise<boolean> {
+  const row = await harness.database.db
+    .selectFrom('room_members')
+    .select('connected')
+    .where('room_id', '=', roomId)
+    .where('account_id', '=', accountId)
+    .executeTakeFirst();
+  return row?.connected === true;
+}

@@ -30,8 +30,6 @@ Enote predaleč od surovine: %0
 Enote s prenizko stopnjo: %0
 [%0% Uploaded]
 Naloženo: %0 %
-[%0's game]
-Igra igralca %0
 [%0's team unit got converted to your team]
 Enota ekipe %0 je prestopila na vašo stran
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: Deli pogled vseh zgradb
 Dodaj zemljevid
 [add shortcut]
 Dodaj bližnjico
-[Add]
-Dodaj
 [AI Descriptions]
 Opisi umetne inteligence
 [AI]
@@ -124,8 +120,6 @@ Zvok
 Samodejno shrani
 [available lan games]
 Razpoložljive omrežne igre
-[awaiting players]
-Čakam igralce
 [away:]
 odsoten:
 [Back]
@@ -140,8 +134,6 @@ Izboljša bojno raven
 Vojašnica
 [beach size]
 velikost obal
-[Blocked Players]
-Blokirani igralci
 [break]
 Break
 [briefing]
@@ -172,8 +164,6 @@ Kampanja
 Povezava ni mogoča, gostitelja ni mogoče najti
 [Can't host game, port %0 in use]
 Igre ni mogoče gostiti, vrata %0 so zasedena
-[Can't join game, game doesn't exist]
-Pridružitev ni mogoča, igra ne obstaja
 [Can't join game, game has started]
 Pridružitev ni mogoča, igra se je že začela
 [Can't join game, game is full]
@@ -240,8 +230,6 @@ Pšenica
 število kraterjev
 [crater lakes terrain]
 Kraterska jezera
-[create game]
-Ustvari igro
 [create map]
 Ustvari mapo
 [credits]
@@ -290,14 +278,6 @@ Ne naredi ničesar
 Ne nosi ničesar
 [down]
 dol
-[Download Map]
-Prenesi zemljevid
-[Download Maps]
-Prenesi zemljevide
-[downloaded %0]
-preneseno: %0
-[downloading map]
-Prenašanje zemljevida
 [edit map]
 Uredi zemljevid
 [editing map]
@@ -308,10 +288,6 @@ Za urejevalnik
 Urejevalnik
 [end]
 End
-[Enter your nickname :]
-Vnesi svoj vzdevek :
-[Enter your password :]
-Vnesi svoje geslo :
 [enter]
 Enter
 [equals]
@@ -466,12 +442,8 @@ Izberi naslednji predmet
 opravila
 [join a game]
 Vključi se v igro
-[join]
-Vključi se
 [keyboard settings]
 Nastavitve tipkovnice
-[kick]
-Izključi
 [lan]
 LAN Igra
 [language incomplete]
@@ -482,8 +454,6 @@ si
 Jezik
 [language]
 Slovenščina
-[Leave Game]
-Zapusti igro
 [left meta]
 levi Meta
 [left super]
@@ -506,12 +476,6 @@ Naloži posnetek igre
 Naloži skript
 [load]
 Naloži
-[loading map list]
-Nalaganje seznama zemljevidov...
-[Lobby]
-Čakalnica
-[login]
-Prijava
 [look around]
 Ozri se naokrog
 [Lost : %0 has more prestige than you]
@@ -530,30 +494,14 @@ Nizka kakovost
 Opis
 [Map Discovered]
 Zemljevid razkrit
-[Map download failure: lost connection]
-Prenos zemljevida ni uspel: povezava z YOG je prekinjena
-[Map name: %0]
-Ime mape: %0.
 [map name]
 Ime
-[map rated]
-Zemljevid ocenjen
 [map script]
 Skript zemljevida
 [map size x]
 Širina mape
 [map size y]
 Višina mape
-[Map upload failure: connection lost]
-Nalaganje zemljevida ni uspelo: povezava z YOG je prekinjena
-[Map upload failure: map name in use]
-Nalaganje zemljevida ni uspelo. Ime zemljevida je že v uporabi.
-[Map upload failure: unknown reason]
-Nalaganje zemljevida ni uspelo. Razlog ni znan.
-[Map Upload: Author Name]
-Ime avtorja
-[Map Upload: Waiting for reply]
-Čakanje na odgovor
 [mark map]
 Označi mesto za zaveznike
 [market explanation 2]
@@ -580,8 +528,6 @@ utišaj
 Nova kampanja
 [new map]
 Nova
-[nick taken]
-Opravičujemo se, a tvoj vzdevek je že zaseden na freenode-u lahko boš govoril samo na YOG-u
 [no fullscreen]
 * samo v okenskem načinu
 [No Hints]
@@ -594,18 +540,10 @@ Ni ciljev
 Brez rasti
 [No]
 Ne
-[Not Enough Ratings]
-Premalo ocen
-[not ready]
-ni pripravljen
 [Number Of Buildings]
 Število zgradb
-[number of players: %0 (%1 AI)]
-Število igralcev: %0 (od tega %1 UI)
 [number of players: %0]
 Število igralcev: %0
-[number of teams: %0]
-%0 ekip.
 [number of teams]
 Število ekip
 [Number Of Units]
@@ -664,8 +602,6 @@ Pause
 Ustavljeno
 [player name]
 Ime igralca
-[player rating %0]
-Ocena igralca: %0
 [players]
 Igralci
 [please wait]
@@ -704,36 +640,22 @@ Izboljša hitrost hoje
 Tekaška steza
 [range]
 Domet
-[Rated %0]
-Ocena: %0
 [ratios]
 Razmerja
-[ready?]
-pripravljen?
-[refresh map list]
-Osveži seznam zemljevidov
 [Register a new YOG user with password]
 Prijavi novega YOG uporabnika z geslom. (Ni varno!)
-[Register]
-Registracija
 [remember unit]
 Zapomni si število enot
-[Remember YOG password localy]
-Zapomni si YOG geslo lokalno. (Ni varno)
 [remove map]
 Odstrani zemljevid
 [remove shortcut]
 Odstrani bližnjico
-[Remove]
-Odstrani
 [repair building]
 Začni/ustavi popravilo
 [repair]
 Popravi
 [repeat area]
 ponovitev iste pokrajine
-[Repeat your password :]
-Ponovite geslo:
 [replay ended]
 Predvajanje končano
 [restore default shortcuts]
@@ -866,14 +788,6 @@ Prikaži glavni meni
 Prikaz
 [smoothing]
 Glajenje
-[sort by name]
-Ime
-[sort by rating]
-Ocena
-[sort by size]
-Velikost
-[Sort By]
-Razvrsti po
 [space]
 preslednica
 [start mission]
@@ -906,8 +820,6 @@ obrambni sistem
 Pasiven
 [stonewall]
 Kamniti zid
-[submit rating]
-Pošlji oceno
 [svr hostname]
 Strežnikovo ime
 [swamp terrain]
@@ -1004,10 +916,6 @@ Zemljevidi
 Tržnica je zgrajena
 [the market is under attack]
 Tržnica je napadena
-[The player %0 has joined YOG]
-%0 se je pridružil YOG.
-[The player %0 has left YOG]
-%0 je zapustil YOG metastrežnik.
 [the racetrack is finished]
 Tekaška steza je zgrajena
 [the racetrack is under attack]
@@ -1096,10 +1004,6 @@ Začni/ustavi nadgradnjo
 Privzete nastavitve nadgradenj
 [upgrade]
 Nadgradi
-[Upload Map]
-Naloži zemljevid
-[upload map]
-Naloži zemljevid
 [username]
 Uporabniško ime
 [Version]
@@ -1112,8 +1016,6 @@ Glasnost govora
 Čakam %0
 [waiting for key]
 čakanje na tipko...
-[Waiting]
-Čakanje
 [Walk]
 Hoja
 [warflag explanation 2]
@@ -1160,50 +1062,8 @@ Delajo
 ranjen
 [Yes]
 Da
-[YESTS_CONNECTING]
-Vzpostavljanje povezave z metastrežnikom YOG...
-[YESTS_CONNECTION_LOST]
-Povezava z YOG metastrežnikom je bila izgubljena.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metastrežnik je zavrnil povezavo, ker je bilo tvoje uporabniško ime že registrirano. Če je to uporabniško ime tvoje, potem onemogoči možnost "Registriraj novega YOG uporabnika s tem geslom".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metastrežnik je zavrnil povezavo, ker je vpisano geslo napačno.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metastrežnik je zavrnil povezavo ker tvoje uporabniško ime nima določenega gesla. Gotovo hočeš registrirati to uporabniško ime zato poskusi aktivirati možnost "Registriraj novega YOG uporabnika s tem geslom". To možnost moraš aktivirati le enkrat.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Metastrežnik YOG je zavrnil povezavo, ker je ta naslov IP začasno blokiran. Počakajte na odblokiranje ali se obrnite na skrbnike.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Metastrežnik YOG je zavrnil povezavo brez obrazložitve!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metastrežnik je zavrnil povezavo ker je tvoje uporabniško ime zasedeno.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Metastrežnik YOG je zavrnil povezavo, ker je to uporabniško ime blokirano. Obrnite se na skrbnike.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Metastrežnik YOG je zavrnil povezavo, ker je vneseno uporabniško ime neveljavno. Ime sme vsebovati le črke, številke in podčrtaje.
-[YESTS_CREATED]
-Povezovalni sistem je pripravljen, da vzpostavi povezavo z YOG metastrežnikom.
-[YESTS_PASSWORDS_DONT_MATCH]
-Vneseni gesli se ne ujemata. Vnesite ju znova.
-[YESTS_UNABLE_TO_CONNECT]
-Ni se možno povezati. Izgleda da YOG metastrežnik ne dela.
-[yog block command help]
-/block <playername>    Blokira igralca; njegovih sporočil ne boste več videli.
-[yog block command player %0 already blocked]
-Igralec %0 je že blokiran
-[yog block command player %0 blocked]
-Igralec %0 je blokiran
-[yog block command player %0 not found]
-Igralca %0 ni mogoče najti
-[yog command header]
-Seznam ukazov odjemalca YOG:
-[yog command unknown]
-Neznan ukaz.
-[yog help command help]
-/help    Prikaže to pomoč
-[yog]
-Ysagoon medmrežno igranje
 [you have lost]
 Izgubil si!
 [you have won]
@@ -1212,12 +1072,8 @@ Zmagal si!
 Izključeni ste bili iz igre
 [Your %0 are under attack]
 Napadena je vaša enota: %0
-[Your IP address was temporarily banned]
-Vaš naslov IP je začasno blokiran. Počakajte na odblokiranje ali se obrnite na skrbnike.
 [Your unit got converted to %0's team]
 Vaša enota je prestopila v ekipo igralca %0
-[Your username was banned]
-Vaše uporabniško ime je blokirano. Za odblokiranje se obrnite na skrbnike.
 [game speed]
 Hitrost igre
 [decrease game speed]
@@ -3050,8 +2906,6 @@ Napredek pohoda ni bil shranjen. Poskusite znova ali izvozite varnostno kopijo.
 Izhod brez shranjevanja
 [campaign import failed]
 Neveljavna datoteka napredka ali druga različica pohoda
-[network release mismatch]
-Protokola odjemalca in strežnika se razlikujeta. Namestite enako različico Glob2 kot strežnik.
 [settings continue]
 Nadaljuj
 [settings save failed]
@@ -3414,8 +3268,6 @@ Potrdi: %0
 %0 %1
 [resume game]
 Nadaljuj igro
-[games]
-Igre
 [Add AI]
 Dodaj UI
 [settings Experiments]
@@ -3464,15 +3316,9 @@ Odboj seznamov
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3685,8 +3531,6 @@ Zagon zemljevida
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

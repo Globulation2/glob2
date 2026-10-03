@@ -9,6 +9,7 @@
 #include "AINames.h"
 #include "AIThreading.h"
 #include "ChecksumSidecar.h"
+#include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include <utility>
@@ -108,8 +109,8 @@ void Engine::pollAutomaticEndingConditions(Uint64 now)
 		endGame("gui.game.isGameEnded");
 }
 
-// Push this tick's local + AI orders into the network layer. AI poll,
-// setWaitingOnMask, and multiplayer->update() always run; the "previous tick
+// Push this tick's local + AI orders into the network layer. AI poll and
+// setWaitingOnMask always run; the "previous tick
 // committed" branches (syncStep, addLocalOrder, advanceStep, sidecar) only
 // fire when wasReadyLastTick — otherwise we're still waiting on a remote peer
 // and must not advance.
@@ -195,9 +196,6 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 			}
 		}
 	}
-
-	if (multiplayer)
-		multiplayer->update();
 
 	if (wasReadyLastTick)
 	{
@@ -686,42 +684,8 @@ void Engine::printTeamTimeline()
 	}
 }
 
-// Tell the YOG multiplayer session how this match ended (won, lost, quit) so
-// it can update ratings. Caller must check `multiplayer` is non-null first.
-void Engine::reportMultiplayerResult()
-{
-	if (gui.game.totalPrestigeReached)
-	{
-		Team *t = gui.game.getTeamWithMostPrestige();
-		assert(t);
-		if (t == gui.getLocalTeam())
-		{
-			multiplayer->setGameResult(YOGGameResultWonGame);
-		}
-		else
-		{
-			if ((t->allies) & (gui.getLocalTeam()->me))
-				multiplayer->setGameResult(YOGGameResultWonGame);
-			else
-				multiplayer->setGameResult(YOGGameResultLostGame);
-		}
-	}
-	else if (gui.getLocalTeam()->hasWon)
-	{
-		multiplayer->setGameResult(YOGGameResultWonGame);
-	}
-	else if (!gui.getLocalTeam()->isAlive)
-	{
-		multiplayer->setGameResult(YOGGameResultLostGame);
-	}
-	else if (!gui.game.isGameEnded)
-	{
-		multiplayer->setGameResult(YOGGameResultQuitGame);
-	}
-}
-
 // Finish writing the last autosave, close cross-replay debug sinks (sidecar,
-// dataset) and tear down the network + multiplayer session. The Engine itself
+// dataset) and tear down the network session. The Engine itself
 // stays alive for a possible reload.
 void Engine::teardownSession()
 {
@@ -741,14 +705,12 @@ void Engine::teardownSession()
 		globalContainer->datasetWriter.reset();
 	}
 
-	if (multiplayer) multiplayer->setNetEngine(nullptr);
 	leaveTurnMatch();
 	gui.connectionOverlay.reset();
 	exportTurnTelemetry();
 	turn = nullptr;
 	turnMatch.reset();
 	net.reset();
-	multiplayer.reset();
 }
 
 void Engine::leaveTurnMatch()
@@ -927,25 +889,11 @@ void Engine::abortSession() noexcept
     try { stopSimulationThread(); } catch (...) {}
     gui.isRunning = false;
     gui.toLoadGameFileName.clear();
-    if (multiplayer)
-    {
-        try
-        {
-            multiplayer->setGameResult(YOGGameResultQuitGame);
-            multiplayer->leaveGame();
-        }
-        catch (...)
-        {
-            std::cerr << "Failed to send multiplayer termination; closing local session\n";
-        }
-    }
     try { teardownSession(); }
     catch (...)
     {
         std::cerr << "Failure while closing game resources; session cannot continue\n";
-        if (multiplayer) multiplayer->setNetEngine(nullptr);
         net.reset();
-        multiplayer.reset();
         checksumSidecar.reset();
         globalContainer->datasetWriter.reset();
     }
@@ -1040,8 +988,6 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     pumpTurnSession(now);
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
-        if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
-            gui.isRunning = false;
         gatherAndAdvanceOrders(st.wasReadyLastTick);
         readyNow = net->tickReady();
         const Uint32 tickBefore = gui.game.stepCounter;
@@ -1103,7 +1049,6 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
-    if (multiplayer) reportMultiplayerResult();
     teardownSession();
     auto &perf = PerformanceTelemetry::collector();
 	// Structured runs may still write their requested final save after run().

@@ -5,10 +5,8 @@
 
 #include "FileFormatVersions.h"
 #include <Stream.h>
-#ifndef YOG_SERVER_ONLY
 #include <StringTable.h>
 #include <Toolkit.h>
-#endif
 
 #include <iostream>
 #include <sstream>
@@ -131,7 +129,6 @@ bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	return true;
 }
 
-#ifndef YOG_SERVER_ONLY
 std::string experimentLabelList(const ExperimentSet &set)
 {
 	std::string text;
@@ -143,4 +140,3 @@ std::string experimentLabelList(const ExperimentSet &set)
 	}
 	return text;
 }
-#endif

@@ -33,6 +33,7 @@ const queueNotifier = new PgQueueNotifier();
 import { SharedLimit } from '../http/rateLimits.ts';
 import type { RealtimeConnection, MethodHandler } from '../realtime/connection.ts';
 import type { RealtimeHub } from '../realtime/hub.ts';
+import type { ReplicaPresence } from '../realtime/presence.ts';
 import type { Assignments } from './assignments.ts';
 import type { RoomService } from './rooms.ts';
 
@@ -45,6 +46,11 @@ export interface PlayRealtimeOptions {
   rooms: RoomService;
   assignments: Assignments;
   logger: Logger;
+  /**
+   * Socket presence across replicas (also given to `rooms`). Started and
+   * stopped with this service.
+   */
+  presence?: ReplicaPresence;
   /** Room sweep interval (default 30 s); 0 disables it. */
   sweepMs?: number;
 }
@@ -66,6 +72,7 @@ export class PlayRealtime {
   private readonly chatLimit: SharedLimit;
   private readonly unsubscribe: (() => Promise<void>)[] = [];
   private sweepTimer: NodeJS.Timeout | undefined;
+  private stopped = false;
 
   constructor(options: PlayRealtimeOptions) {
     this.codeFailures = new SharedLimit(
@@ -80,13 +87,27 @@ export class PlayRealtime {
   }
 
   async start(): Promise<void> {
-    const { hub, pubsub, rooms, logger } = this.options;
+    const { hub, pubsub, rooms, logger, presence } = this.options;
+    if (presence) {
+      presence.onExpired = (accountIds) => this.presenceExpired(accountIds);
+      presence.onRevived = () => this.presenceRevived();
+      await presence.start();
+    }
     hub.onPlay = (message) => this.background(this.deliver(message), 'play delivery');
     hub.onResync = (accountIds) => this.resync(accountIds);
-    hub.onAccountHere = (accountId) =>
+    hub.onAccountHere = (accountId) => {
+      if (this.stopped) return;
       this.background(rooms.markConnected(accountId), 'room presence');
-    hub.onAccountGone = (accountId) =>
-      this.background(rooms.markDisconnected(accountId), 'room presence');
+    };
+    hub.onAccountGone = (accountId) => {
+      if (this.stopped) return;
+      this.background(
+        rooms.markDisconnected(accountId, {
+          stillHere: () => hub.connectionsOf(accountId).length > 0,
+        }),
+        'room presence',
+      );
+    };
     this.unsubscribe.push(
       await pubsub.subscribe(QUEUE_EVENTS_CHANNEL, (payload) =>
         this.background(this.queueEvent(payload as QueueNotification), 'queue event'),
@@ -117,8 +138,36 @@ export class PlayRealtime {
   }
 
   async stop(): Promise<void> {
+    this.stopped = true;
     clearInterval(this.sweepTimer);
     for (const off of this.unsubscribe.splice(0)) await off();
+    const { presence, rooms, logger } = this.options;
+    if (presence) {
+      // Deregister, then re-evaluate the accounts this replica held: those
+      // without a socket on another replica are disconnected now rather than
+      // when the others notice this replica stopped heartbeating.
+      try {
+        for (const accountId of await presence.stop()) await rooms.markDisconnected(accountId);
+      } catch (error) {
+        logger.warn({ err: error }, 'realtime presence shutdown failed');
+      }
+    }
+  }
+
+  /** Another replica expired: re-evaluate the accounts it held sockets of. */
+  private async presenceExpired(accountIds: string[]): Promise<void> {
+    const { hub, rooms } = this.options;
+    for (const accountId of accountIds) {
+      await rooms.markDisconnected(accountId, {
+        stillHere: () => hub.connectionsOf(accountId).length > 0,
+      });
+    }
+  }
+
+  /** This replica's registration had expired: record its sockets again. */
+  private async presenceRevived(): Promise<void> {
+    const { hub, rooms } = this.options;
+    for (const accountId of hub.accountIds()) await rooms.markConnected(accountId);
   }
 
   private background(work: Promise<unknown>, what: string): void {

@@ -18,7 +18,7 @@ The code lives in `src/relay/`. The turn core it hosts lives in `src/net/turn/`.
 | `MatchDirectory.*` | Admission bookkeeping: live matches, agreement, tombstones |
 | `PlatformLink.*` | Registration, heartbeat, setup lookup, record upload, spool |
 | `MatchReport.*` | JSON bodies sent to the platform |
-| `HttpClient.*` | Asynchronous HTTP/1.1 and HTTPS client for platform calls |
+| `HttpClient.*` | Platform calls over HTTP/1.1 and HTTPS: the relay's front end of `NetHttp::Request` (`src/net/HttpExchange.h`), the request code the game's `HttpFetch` also uses |
 | `RelayMetrics.*` | Counters rendered at `/metrics` |
 
 ## Building and running

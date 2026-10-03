@@ -14,24 +14,15 @@
 #include <string>
 #include <vector>
 
+#include "NetFrame.h"
 #include "NetTransport.h"
 #include "TurnSession.h"
 
 namespace Online
 {
-	/// Splits the relay byte stream into frame payloads. Pure, for tests.
-	class RelayFrameReader
-	{
-	public:
-		void append(const std::uint8_t* data, std::size_t size);
-		/// The next complete frame payload, if one has arrived.
-		bool next(std::vector<std::uint8_t>& payload);
-		void clear() { buffer.clear(); offset = 0; }
-
-	private:
-		std::vector<std::uint8_t> buffer;
-		std::size_t offset = 0;
-	};
+	/// Splits the relay byte stream into frame payloads (NetFrame, as every
+	/// u16-framed stream does). Pure, for tests.
+	using RelayFrameReader = NetFrame::Reader;
 
 	/// Length prefix plus payload; empty if the payload exceeds 65535 bytes.
 	std::vector<std::uint8_t> relayFrame(const std::vector<std::uint8_t>& payload);
