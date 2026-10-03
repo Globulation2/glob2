@@ -4,6 +4,7 @@
 // left out (so a new table cannot silently escape the export).
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
+import { createHash, randomUUID } from 'node:crypto';
 import { DEFAULT_INSTANCE_CONFIG } from '@glob2/core';
 import { ACCOUNT_EXPORT_FORMAT, AccountExport, schemaIssues } from '@glob2/protocol';
 import { EXPORTED_ACCOUNT_COLUMNS, UNEXPORTED_ACCOUNT_COLUMNS } from '../src/auth/accountExport.ts';
@@ -197,6 +198,102 @@ async function seed(owner: Player, other: Player) {
       details: JSON.stringify({ minutes: 10 }),
     })
     .execute();
+  const draftImage = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZQmcAAAAASUVORK5CYII=',
+    'base64',
+  );
+  for (const player of [owner, other]) {
+    const hash = createHash('sha256').update(player.accountId).digest('hex');
+    await db
+      .insertInto('blobs')
+      .values({
+        sha256: hash,
+        size: draftImage.length,
+        content_type: 'image/png',
+        storage_key: `sha256/${hash}`,
+      })
+      .execute();
+    const skin = await db
+      .insertInto('colony_skins')
+      .values({
+        kind: 'custom',
+        owner_account_id: player.accountId,
+        name: `${player.displayName} paint`,
+        entitlement: 'skins:designer',
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const version = await db
+      .insertInto('colony_skin_versions')
+      .values({
+        skin_id: skin.id,
+        texture_sha256: hash,
+        layout: 'colony-v1',
+        building_color: 0x123456,
+        manifest_sha256: createHash('sha256').update(`${hash}:manifest`).digest('hex'),
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('colony_skin_equipment')
+      .values({ account_id: player.accountId, version_id: version.id, building_color: 0x654321 })
+      .execute();
+    await db
+      .insertInto('colony_skin_drafts')
+      .values({
+        account_id: player.accountId,
+        revision: randomUUID(),
+        skin_id: skin.id,
+        name: 'Private draft',
+        building_color: 0x112233,
+        image: draftImage,
+      })
+      .execute();
+    await db
+      .insertInto('match_colony_skins')
+      .values({
+        match_id: match.id,
+        team_index: player === owner ? 0 : 1,
+        account_id: player.accountId,
+        version_id: version.id,
+        building_color: 0x654321,
+        assertion: 'private-signed-appearance',
+      })
+      .execute();
+    const purchase = await db
+      .insertInto('skin_purchases')
+      .values({
+        account_id: player.accountId,
+        request_id: randomUUID(),
+        sku: 'designer',
+        entitlement: 'skins:designer',
+        price_id: 'price_designer',
+        status: 'paid',
+        recovery_cursor: 'private-recovery-cursor',
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('skin_payment_events')
+      .values({
+        id: `evt_export_${player.accountId}`,
+        event_type: 'checkout.session.completed',
+        purchase_id: purchase.id,
+      })
+      .execute();
+    await db
+      .insertInto('colony_skin_reports')
+      .values({
+        version_id: version.id,
+        reporter_account_id: player.accountId,
+        reason: 'My report',
+        resolution: 'dismissed',
+        resolved_at: new Date(),
+        resolved_by_account_id: other.accountId,
+        resolution_reason: 'Reviewed',
+      })
+      .execute();
+  }
   return { matchId: match.id, roomId: room.id, mapId: map.id };
 }
 
@@ -284,6 +381,38 @@ describe('downloading my data', () => {
     expect(data.maps.downloads).toEqual([
       { mapId, day: expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/) },
     ]);
+
+    const skins = data.skins!;
+    expect(skins.published).toEqual([
+      expect.objectContaining({
+        name: `${owner.displayName} paint`,
+        versions: [expect.objectContaining({ layout: 'colony-v1', buildingColor: 0x123456 })],
+      }),
+    ]);
+    expect(skins.equipment).toEqual([expect.objectContaining({ buildingColor: 0x654321 })]);
+    expect(skins.drafts).toEqual([
+      expect.objectContaining({
+        name: 'Private draft',
+        contentType: 'image/png',
+        imageBase64: expect.any(String),
+      }),
+    ]);
+    expect(
+      Buffer.from(skins.drafts[0]!['imageBase64'] as string, 'base64')
+        .subarray(1, 4)
+        .toString(),
+    ).toBe('PNG');
+    expect(skins.matches).toEqual([expect.objectContaining({ matchId, teamIndex: 0 })]);
+    expect(skins.purchases).toEqual([expect.objectContaining({ sku: 'designer', status: 'paid' })]);
+    expect(skins.paymentEvents).toEqual([
+      expect.objectContaining({ eventType: 'checkout.session.completed' }),
+    ]);
+    expect(skins.reports).toEqual([
+      expect.objectContaining({ reason: 'My report', resolutionReason: 'Reviewed' }),
+    ]);
+    expect(text).not.toContain('private-signed-appearance');
+    expect(text).not.toContain('private-recovery-cursor');
+    expect(text).not.toContain(`${other.displayName} paint`);
 
     // Nothing secret, and nothing that belongs to the other player.
     const db = harness.database.db;

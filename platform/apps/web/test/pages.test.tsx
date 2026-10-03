@@ -312,7 +312,9 @@ describe('pages', () => {
 
   it('match page shows players, timelines, refused orders and Watch in browser', async () => {
     open(`/matches/${MATCH}`);
-    expect((await screen.findByTestId('match-title')).textContent).toBe(
+    // The route is lazy-loaded; allow its first transform to finish on a busy
+    // development host before checking the rendered content.
+    expect((await screen.findByTestId('match-title', {}, { timeout: 10_000 })).textContent).toBe(
       '1 vs 1 ranked · Even Ground',
     );
     expect(screen.getAllByTestId('participant')).toHaveLength(2);

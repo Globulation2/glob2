@@ -31,6 +31,12 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   queue_tickets: ['account_id'],
   queue_cooldowns: ['account_id'],
   match_proposal_seats: ['account_id'],
+  colony_skins: ['owner_account_id'],
+  colony_skin_equipment: ['account_id'],
+  colony_skin_drafts: ['account_id'],
+  match_colony_skins: ['account_id'],
+  skin_purchases: ['account_id'],
+  colony_skin_reports: ['reporter_account_id'],
   maps: ['owner_account_id'],
   map_likes: ['account_id'],
   map_reports: ['reporter_account_id'],
@@ -45,7 +51,8 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
  */
 export const UNEXPORTED_ACCOUNT_COLUMNS: Record<string, string> = {
   'admin_audit_log.actor_account_id': 'the moderator who acted, not the account',
-  'blobs.owner_account_id': 'the files are listed through maps and uploads',
+  'blobs.owner_account_id': 'the files are listed through maps, uploads and skins',
+  'colony_skin_reports.resolved_by_account_id': 'the moderator who resolved a report',
   'map_reports.resolved_by_account_id': 'the moderator who resolved a report',
   'maps.hidden_by_account_id': 'the moderator who hid a map',
   'map_versions.uploader_account_id': 'versions are listed under the owner’s maps',
@@ -381,6 +388,74 @@ export async function exportAccount(
         .orderBy('day')
         .execute();
 
+      const skins = await tx
+        .selectFrom('colony_skins')
+        .select(['id', 'kind', 'name', 'entitlement', 'disabled_at', 'created_at'])
+        .where('owner_account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const skinVersions = await tx
+        .selectFrom('colony_skin_versions as v')
+        .innerJoin('colony_skins as s', 's.id', 'v.skin_id')
+        .selectAll('v')
+        .where('s.owner_account_id', '=', id)
+        .orderBy('v.created_at')
+        .execute();
+      const skinEquipment = await tx
+        .selectFrom('colony_skin_equipment')
+        .select(['version_id', 'building_color', 'updated_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const skinDrafts = await tx
+        .selectFrom('colony_skin_drafts')
+        .select(['revision', 'skin_id', 'name', 'building_color', 'image', 'updated_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const skinMatches = await tx
+        .selectFrom('match_colony_skins')
+        .select(['match_id', 'team_index', 'version_id', 'building_color', 'created_at'])
+        .where('account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const skinPurchases = await tx
+        .selectFrom('skin_purchases')
+        .select([
+          'id',
+          'sku',
+          'entitlement',
+          'price_id',
+          'status',
+          'entitlement_id',
+          'checkout_id',
+          'payment_intent_id',
+          'created_at',
+          'updated_at',
+        ])
+        .where('account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const skinPaymentEvents = await tx
+        .selectFrom('skin_payment_events as e')
+        .innerJoin('skin_purchases as p', 'p.id', 'e.purchase_id')
+        .select(['e.id', 'e.event_type', 'e.purchase_id', 'e.processed_at'])
+        .where('p.account_id', '=', id)
+        .orderBy('e.processed_at')
+        .execute();
+      const skinReports = await tx
+        .selectFrom('colony_skin_reports')
+        .select([
+          'id',
+          'version_id',
+          'reason',
+          'created_at',
+          'resolution',
+          'resolved_at',
+          'resolution_reason',
+        ])
+        .where('reporter_account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+
       return {
         format: ACCOUNT_EXPORT_FORMAT,
         exportedAt: new Date().toISOString(),
@@ -402,6 +477,22 @@ export async function exportAccount(
           refreshTokens: rows(refreshTokens),
           webSessions: rows(webSessions),
           signInAttempts: rows(signInAttempts),
+        },
+        skins: {
+          published: skins.map((skin) => ({
+            ...clean(skin),
+            versions: rows(skinVersions.filter((version) => version.skin_id === skin.id)),
+          })),
+          equipment: rows(skinEquipment),
+          drafts: skinDrafts.map(({ image, ...draft }) => ({
+            ...clean(draft),
+            imageBase64: image.toString('base64'),
+            contentType: 'image/png',
+          })),
+          matches: rows(skinMatches),
+          purchases: rows(skinPurchases),
+          paymentEvents: rows(skinPaymentEvents),
+          reports: rows(skinReports),
         },
         entitlements: rows(entitlements),
         moderation: rows(moderation),

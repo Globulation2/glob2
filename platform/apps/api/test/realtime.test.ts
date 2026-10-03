@@ -81,7 +81,6 @@ beforeAll(async () => {
     origin: ORIGIN,
     instance: instanceConfig(),
     secrets,
-    build: { realtime: { heartbeatMs: 200 } },
   });
   b = await harness.start({ origin: ORIGIN, instance: instanceConfig(), secrets });
 });
@@ -249,7 +248,10 @@ describe('realtime envelope', () => {
   });
 
   it('drops sockets that stop answering pings', async () => {
-    const socket = new WebSocket(`${a.url.replace('http', 'ws')}/realtime`, { autoPong: false });
+    // Only this case needs an accelerated heartbeat. Keep ordinary requests
+    // on production timing so a busy test host cannot reap healthy sockets.
+    const fast = await harness.start({ build: { realtime: { heartbeatMs: 200 } } });
+    const socket = new WebSocket(`${fast.url.replace('http', 'ws')}/realtime`, { autoPong: false });
     const closed = new Promise<number>((resolve) => socket.on('close', (code) => resolve(code)));
     await new Promise((resolve) => socket.once('open', resolve));
     expect(await closed).toBe(1006);
