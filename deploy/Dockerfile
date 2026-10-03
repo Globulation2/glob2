@@ -104,7 +104,6 @@ COPY platform/package.json platform/package-lock.json ./
 COPY platform/packages/protocol/package.json packages/protocol/
 COPY platform/packages/db/package.json packages/db/
 COPY platform/packages/core/package.json packages/core/
-COPY platform/packages/hive/package.json packages/hive/
 COPY platform/apps/api/package.json apps/api/
 COPY platform/apps/worker/package.json apps/worker/
 COPY platform/apps/engine-agent/package.json apps/engine-agent/

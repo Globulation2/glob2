@@ -1,4 +1,3 @@
-import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
 // catalog and moderation. Client routes the game links to must stay stable:
 // /players/<id>, /matches/<id>, /maps/<id>, /leaderboard/<queueId>. Invite
@@ -33,12 +32,6 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
-  {
-    pattern: '/commander',
-    section: 'commander',
-    title: 'Hive Mind',
-    render: () => <CommanderCredits />,
-  },
   { pattern: '/', section: 'home', title: '', render: () => <Home /> },
   {
     pattern: '/leaderboard',
