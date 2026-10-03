@@ -26,6 +26,7 @@ CI_WORKFLOWS = {
     '.github/workflows/mac-app-store.yml',
     '.github/workflows/mobile.yml',
     '.github/workflows/steam-windows-package.yml',
+    '.github/workflows/thread-sanitizer.yml',
 }
 CANCELLABLE_EVENTS = {'pull_request', 'push'}
 DEFAULT_BRANCH_EVENTS = {'push', 'schedule'}
