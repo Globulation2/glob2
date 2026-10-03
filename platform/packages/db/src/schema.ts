@@ -537,15 +537,10 @@ export interface WarmMapsTable {
   queue_id: string;
   sim_version: string;
   entry_key: string;
-  generator: Json<JsonValue>;
-  status: Defaulted<'generating' | 'ready' | 'taken' | 'failed'>;
-  job_id: Nullable<string>;
-  map_hash: Nullable<string>;
-  map_facts: NullableJson<JsonValue>;
-  failure: Nullable<string>;
+  /** The generated map (generated_maps, with sim_version); null only on rows taken before 0019. */
+  descriptor_hash: Nullable<string>;
   match_id: Nullable<string>;
   created_at: Timestamp;
-  ready_at: NullableTimestamp;
   taken_at: NullableTimestamp;
 }
 
