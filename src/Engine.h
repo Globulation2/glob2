@@ -20,12 +20,10 @@
 #include "MatchSetup.h"
 #include "NetEngine.h"
 #include "TurnSession.h"
-#include "MultiplayerGame.h"
 #include "ChecksumSidecar.h"
 #include "ConnectionOverlay.h"
 
 
-class MultiplayersJoin;
 class SimulationRunner;
 namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
@@ -88,10 +86,6 @@ public:
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
 
 
-
-	/// Initiate a game with the given MultiplayerGame
-	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
-	GAGCore::CooperativeTask initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
 
 	/// Everything a client needs to start a game on the turn protocol (online and LAN):
 	/// the validated setup, the map file whose content hash matches setup.map.hash
@@ -392,26 +386,21 @@ private:
 	/// prestige and forces. Gated by GLOB2_TEAM_RESULTS; tools/map_fairness_tournament.py scrapes it.
 	void printTeamResults();
 
-	/// Tell the YOG multiplayer session how this match ended (won, lost,
-	/// quit). Caller checks `multiplayer` is non-null.
-	void reportMultiplayerResult();
-
 	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
-	/// + multiplayer state. The Engine itself stays alive for a possible
+	/// session. The Engine itself stays alive for a possible
 	/// reload (see finishSessionForHost).
 	void teardownSession();
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
 	//! The lockstep session: queues, exchanges and dispatches orders. A
-	//! NetEngine for single player, replays and legacy YOG/LAN games.
+	//! NetEngine for single player and replays; a turn-protocol session for
+	//! online and LAN games.
 	std::unique_ptr<LockstepSession> net;
 	//! Checksum sidecar writer for cross-replay debugging. Destroying it
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.
 	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
-	//! The MultiplayerGame, receives orders from across a network
-	shared_ptr<MultiplayerGame> multiplayer;
 	//! Non-owning view of `net` when it is a turn-protocol session; null otherwise.
 	Turn::TurnLockstepSession* turn = nullptr;
 	//! What a turn game reloads after TurnSession::needsReload().

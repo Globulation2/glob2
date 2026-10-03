@@ -21,9 +21,12 @@ def build_identity(arguments, host=None):
         raise ValueError('size_optimization experiments require a native release build')
     if target not in ('native', 'web', 'android', 'ios'):
         raise ValueError('target must be native, web, android, or ios')
-    role = arguments.get('role', 'server' if enabled(arguments.get('server', 0)) else 'client')
-    if role not in ('client', 'server', 'router', 'relay'):
-        raise ValueError('role must be client, server, router, or relay')
+    # server=0 is still accepted so existing client commands keep working.
+    if enabled(arguments.get('server', 0)):
+        raise ValueError('server=1 (the YOG lobby server) was removed; build role=client or role=relay')
+    role = arguments.get('role', 'client')
+    if role not in ('client', 'relay'):
+        raise ValueError('role must be client or relay')
     china = enabled(arguments.get('china', 0))
     if china and (target == 'web' or role != 'client'):
         raise ValueError('china=1 supports native and mobile clients only')

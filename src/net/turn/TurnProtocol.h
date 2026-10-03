@@ -25,8 +25,8 @@ namespace Turn
 		return version >= MIN_PROTOCOL_VERSION && version <= PROTOCOL_VERSION;
 	}
 
-	/// Message ids. The 0xA0-0xBF range is reserved for the turn protocol in
-	/// NetMessageType.h so YOG message churn never renumbers it.
+	/// Message ids, in the 0xA0-0xBF range NetMessageType.h reserves for the turn
+	/// protocol.
 	enum MessageId : std::uint8_t
 	{
 		MSG_HELLO = 0xA0,

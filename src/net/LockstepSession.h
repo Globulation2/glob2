@@ -13,8 +13,8 @@ class Order;
 /// tick may be executed. Every client must hand back identical orders at
 /// identical ticks, so implementations decide which tick an order runs at.
 ///
-/// NetEngine implements this for single player, replays and the legacy YOG and
-/// LAN games. The engine calls these methods only from its own thread, in the
+/// NetEngine implements this for single player and replays; the turn protocol
+/// (Turn::TurnLockstepSession) for online and LAN games. The engine calls these methods only from its own thread, in the
 /// order documented on each method (see Engine::gatherAndAdvanceOrders and
 /// Engine::executeOrdersAndStep in EngineRun.cpp).
 class LockstepSession

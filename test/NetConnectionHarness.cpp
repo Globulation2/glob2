@@ -10,12 +10,8 @@
 #include <exception>
 #include "NetListener.h"
 #include "NetworkConfig.h"
-#include "message/AuthMessages.h"
-#include "message/FileTransferMessages.h"
-#include "message/RegistrationMessages.h"
-#include "message/RouterAdminMessages.h"
+#include "message/OrderMessages.h"
 #include "GlobalContainer.h"
-#include "YOGServer.h"
 #include "Version.h"
 #include "Order.h"
 #include <deque>
@@ -58,6 +54,18 @@ void checkLanDatagrams()
     NET_DestroyDatagramSocket(sender);
     NET_UnrefAddress(loopback);
 }
+// An opaque payload of any size, to exercise the frame and queue limits.
+class BlobMessage : public NetMessage {
+public:
+    explicit BlobMessage(size_t size) : bytes(size, 'x') {}
+    Uint8 getMessageType() const override { return MNetSendOrder; }
+    void encodeData(GAGCore::OutputStream* stream) const override { stream->write(bytes.data(), bytes.size(), "bytes"); }
+    void decodeData(GAGCore::InputStream*) override {}
+    std::string format() const override { return "BlobMessage"; }
+    bool operator==(const NetMessage& rhs) const override { return &rhs == this; }
+private:
+    std::string bytes;
+};
 class FakeTransport : public NetTransport {
 public:
     State current = State::Closed;
@@ -75,38 +83,16 @@ public:
 }
 int main(int argc, char** argv) {
     try {
-        if (argc == 3 && std::string(argv[1]) == "--serve") {
-            require(SDL_Init(0) && NET_Init(), "SDL network init failed");
-            globalContainer = new GlobalContainer(argv[2]);
-            YOGServer server(YOGRequirePassword, YOGMultipleGames);
-            require(server.isListening(), "YOG test port is already occupied");
-            for (const auto* name : {"transportplayer", "transportguest"})
-                require(server.registerInformation(name, "fixture-only", "127.0.0.1", NET_PROTOCOL_VERSION)
-                        == YOGLoginSuccessful, "Could not create isolated test account");
-            for (Uint16 version : {Uint16(NET_PROTOCOL_VERSION-1), Uint16(NET_PROTOCOL_VERSION+1)}) {
-                require(server.verifyLoginInformation("transportplayer", "fixture-only", "127.0.0.1", version)
-                        == YOGClientVersionTooOld, "Incompatible version passed account verification");
-                require(server.registerInformation("incompatibleregistration", "fixture-only", "127.0.0.1", version)
-                        == YOGClientVersionTooOld, "Incompatible version created an account");
-            }
-            std::cout << "YOG test server ready" << std::endl;
-            for (;;) { server.update(); SDL_Delay(10); }
-        }
-        const std::string secret = "must-not-appear-in-logs";
-        require(NetAttemptLogin("test", secret).format().find(secret) == std::string::npos &&
-                NetRegistrationRequest("test", secret).format().find(secret) == std::string::npos &&
-                NetRouterAdministratorLogin(secret).format().find(secret) == std::string::npos,
-                "Credential message formatting exposed a password");
         auto selected = std::make_unique<FakeTransport>();
         auto& wire = *selected;
         NetConnection connection(std::move(selected));
-        auto original = std::make_shared<NetSendClientInformation>();
+        auto original = std::make_shared<NetSendOrder>(std::make_shared<NullOrder>());
         connection.openConnection("unused", 0);
         connection.sendMessage(original);
-        require(wire.output.empty(), "Connecting must retain, not send, greeting");
+        require(wire.output.empty(), "Connecting must retain, not send, the first message");
         wire.current = NetTransport::State::Connected;
         connection.update();
-        require(wire.output.size() == 1, "Greeting lost while connecting");
+        require(wire.output.size() == 1, "Message queued while connecting was lost");
         const auto frame = wire.output.front();
         // Split at every possible byte boundary, including the length prefix.
         for (size_t cut = 1; cut < frame.size(); ++cut) {
@@ -116,14 +102,6 @@ int main(int argc, char** argv) {
             const auto decoded = connection.getMessage();
             require(decoded && *decoded == *original, "Fragmented frame changed the message");
         }
-        const auto serverInfo = std::make_shared<NetSendServerInformation>(YOGRequirePassword, YOGMultipleGames, 17);
-        connection.sendMessage(serverInfo);
-        wire.input.push_back(wire.output.back());
-        const auto decodedInfo = connection.getMessage();
-        require(decodedInfo && *decodedInfo == *serverInfo, "Server version or player identity lost in greeting");
-        wire.input.push_back({0,5,MNetSendServerInformation,YOGRequirePassword,YOGMultipleGames,0,17});
-        const auto legacyInfo = std::dynamic_pointer_cast<NetSendServerInformation>(connection.getMessage());
-        require(legacyInfo && legacyInfo->getNetVersion() == 0, "Legacy greeting must advertise incompatible version zero");
         auto joined = frame;
         joined.insert(joined.end(), frame.begin(), frame.end());
         wire.input.push_back(joined);
@@ -135,37 +113,12 @@ int main(int argc, char** argv) {
             {0, 5, MNetSendOrder, 0, 16, 0, 1},
             {0, 5, MNetSendOrder, 0, 0, 0, 1},
             {0, 6, MNetSendOrder, 0, 0, 0, 1, ORDER_NULL},
-            {0, 13, MNetSendMapHeader, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 124},
-            {0, 5, MNetSendGamePlayerInfo, 0, 0, 0, 33},
-            {0, 5, MNetAttemptLogin, 255, 255, 255, 255},
-            {0, 5, MNetDownloadableMapInfos, 255, 255, 255, 255},
-            {0, 5, MNetDownloadableMapInfos, 0, 0, 0, 1}, {0, 1, original->getMessageType()},
-            {0, 4, original->getMessageType(), 0, 1, 0},
-            {0, 6, MNetSendServerInformation, YOGRequirePassword, YOGMultipleGames, 0, 17, 0}}) {
+            // Retired YOG lobby opcodes are unknown now and close the peer too.
+            {0, 5, 2, 255, 255, 255, 255}, {0, 1, original->getMessageType()},
+            {0, 4, original->getMessageType(), 0, 1, 0}}) {
             connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
             wire.input.push_back(invalid); connection.update();
             require(!connection.isConnected(), "Malformed message did not close the connection");
-        }
-        std::vector<uint8_t> invalidGame{0, 44, MNetSendGameHeader, 0, 0, 0, 0, 6};
-        invalidGame.insert(invalidGame.end(), 32, 0);
-        invalidGame.insert(invalidGame.end(), {0, 0, 0, 0, 1, 255});
-        connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
-        wire.input.push_back(std::move(invalidGame)); connection.update();
-        require(!connection.isConnected(), "Invalid winning condition was accepted");
-        // Supply the entire oversized payload: truncation checks alone cannot protect
-        // the fixed chunk buffer. The exact 4096-byte capacity must still work.
-        for (unsigned size : {4096u, 4097u}) {
-            const unsigned length = 1 + 4 + size + 2;
-            std::vector<uint8_t> chunk{uint8_t(length >> 8), uint8_t(length),
-                MNetSendFileChunk, 0, 0, uint8_t(size >> 8), uint8_t(size)};
-            chunk.insert(chunk.end(), size, 0x5a);
-            chunk.insert(chunk.end(), {0, 17});
-            connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
-            wire.input.push_back(std::move(chunk)); connection.update();
-            if (size == 4096)
-                require(connection.isConnected() && connection.getMessage(), "Maximum valid file chunk was rejected");
-            else
-                require(!connection.isConnected(), "Oversized complete file chunk was accepted");
         }
         connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
         joined.clear();
@@ -173,13 +126,13 @@ int main(int argc, char** argv) {
         wire.input.push_back(joined); connection.update();
         require(!connection.isConnected() && !connection.getMessage(), "Inbound queue was not bounded");
         connection.openConnection("unused", 0);
-        auto large = std::make_shared<NetAttemptLogin>(std::string(20000, 'x'), "");
+        auto large = std::make_shared<BlobMessage>(20000);
         for (unsigned i = 0; i < 100 && connection.isConnecting(); ++i) connection.sendMessage(large);
         require(!connection.isConnecting(), "Connecting output queue was not bounded");
         connection.openConnection("unused", 0); wire.current = NetTransport::State::Connected;
-        connection.sendMessage(std::make_shared<NetAttemptLogin>(std::string(70000, 'x'), ""));
+        connection.sendMessage(std::make_shared<BlobMessage>(70000));
         require(!connection.isConnected(), "Oversized frame length was truncated");
-        if (argc == 2 || (argc == 3 && std::string(argv[1]) != "--serve")) {
+        if (argc == 2 || argc == 3) {
             require(SDL_Init(0) && NET_Init(), "SDL network init failed");
             {
                 auto config = makeNetworkConfig(true); config.lobby.bindAddress = "::";
@@ -242,7 +195,7 @@ int main(int argc, char** argv) {
                 }
                 require(accepted, "TCP accept failed");
                 // The address must be available on return, without waiting for
-                // the transport worker: YOG logging and bans read it immediately.
+                // the transport worker: callers log and check it immediately.
                 require(server.getIPAddress() == "127.0.0.1" || server.getIPAddress() == "::1",
                     "Accepted TCP peer was empty or an uncanonicalized mapped address");
             }
@@ -276,6 +229,6 @@ int main(int argc, char** argv) {
             checkLanDatagrams();
             NET_Quit(); SDL_Quit();
         }
-        std::cout << "PASS: shared framing, malformed input, queue limits, queued greeting and WSS round trip\n";
+        std::cout << "PASS: shared framing, malformed input, queue limits, queued first message and WSS round trip\n";
     } catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
 }

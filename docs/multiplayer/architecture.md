@@ -11,8 +11,9 @@ quick-match queues and ratings in
 between clients and relays is owned by the turn-netcode work and documented in
 `docs/multiplayer/turn-protocol.md`.
 
-The legacy YOG lobby, router and LAN code keep working unchanged until the
-cutover milestone (M9), when they are deleted. There is no data import from YOG.
+The platform replaced the legacy YOG lobby, router and IRC chat, which were
+deleted at the cutover milestone (M9). There is no data import from YOG: accounts,
+ratings and history start fresh.
 
 ## Components
 
@@ -687,7 +688,7 @@ own one-command test; see
 
 ## Delivery milestones
 
-Each milestone is one or more reviewable pull requests; YOG keeps working until M9.
+Each milestone is one or more reviewable pull requests; YOG kept working until M9.
 
 | | Milestone | Content |
 | --- | --- | --- |
@@ -700,7 +701,7 @@ Each milestone is one or more reviewable pull requests; YOG keeps working until 
 | M6 | Quick match | Queue config, matchmaker, region probes, AI backfill, warm map pool |
 | M7 | Map catalog | Upload, browse, previews, moderation |
 | M8 | Admin and polish | Admin pages, connection HUD, phone layouts |
-| M9 | Cutover | Delete YOG, IRC and the router role; update docs |
+| M9 | Cutover | Delete YOG, IRC and the server and router roles; update docs (done) |
 
 The original plan referred to `src/net/gateway/` for server patterns; that
 directory was removed when transport moved to native WSS, and its equivalents now

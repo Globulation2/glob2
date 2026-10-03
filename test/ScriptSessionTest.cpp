@@ -35,7 +35,6 @@ TEST_CASE("JavaScript fatal failure tears down a live engine session" *
 	CHECK_THROWS_AS(engine.stepSession(40, {}), Script::HostFailure);
 	CHECK_FALSE(engine.gui.isRunning);
 	CHECK_FALSE(engine.net);
-	CHECK_FALSE(engine.multiplayer);
 	CHECK_FALSE(engine.session);
 	CHECK(engine.gui.game.stepCounter == tick);
 	CHECK_THROWS_AS(engine.stepSession(80, {}), std::logic_error);

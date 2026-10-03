@@ -11,9 +11,7 @@
 #include "Unit.h"
 #include "RessourceType.h"
 
-#ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
-#endif  // !YOG_SERVER_ONLY
 
 #include <algorithm>
 #include <stdexcept>
@@ -166,13 +164,11 @@ try
 	assert(sectors == NULL);
 	sectors = new Sector[sizeSector];
 
-#ifndef YOG_SERVER_ONLY
 	// Map::setGame is bypassed on the loaded-game path (Game::load uses
 	// Map::load directly and the game pointer is set inline above), so
 	// the per-sector render buckets must be sized here too.
 	if (game)
 		game->animations->resize(sizeSector);
-#endif  // !YOG_SERVER_ONLY
 
 	arraysBuilt = true;
 

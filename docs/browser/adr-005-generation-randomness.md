@@ -49,6 +49,6 @@ and staged fertility publication against master's `Fertility::Field`.
 Native/WebAssembly simulation checks use the same retained saved-game bytes and
 compare per-tick checksums. This does not prove that every generator produces
 bit-identical maps across platforms: floating-point terrain generation needs
-separate qualification. YOG distributes the host's selected map file rather than
-asking clients to independently regenerate it, so all clients start with the same
-map bytes.
+separate qualification. Online rooms and LAN hosts distribute the selected map file (checked by its hash)
+rather than asking clients to independently regenerate it, so all clients start
+with the same map bytes.

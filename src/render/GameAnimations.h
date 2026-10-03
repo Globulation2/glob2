@@ -3,7 +3,6 @@
 
 #pragma once
 
-#ifndef YOG_SERVER_ONLY
 
 #include <list>
 #include <vector>
@@ -86,4 +85,3 @@ private:
 	std::vector<std::list<UnitDeathAnimation *>> sectorDeathAnimations;
 };
 
-#endif  // !YOG_SERVER_ONLY

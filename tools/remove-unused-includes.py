@@ -12,8 +12,9 @@ go while the load-bearing one stays.
 Why the gate is essential: misc-include-cleaner reports per translation unit and
 flags a header as "not used directly" even when it is the sole transitive provider
 of a symbol the file uses. Deleting that header fails to compile. The gate also
-runs every file that compiles under -DYOG_SERVER_ONLY through that config, so
-includes used only by the server build survive.
+runs every file that compiles under -DGLOB2_ORDER_CODEC_ONLY (the order codec the
+unit tests build without the client's brush and map surfaces) through that config,
+so includes only that build needs survive.
 
 The IWYU-style "no header providing Y is directly included" insertions are turned
 off at the source (MissingIncludes: false) — adding direct includes is churn with
@@ -30,7 +31,7 @@ Usage:
   tools/remove-unused-includes.py [--jobs N] [--only REGEX] [--dry-run]
 
 Afterwards:
-  scons -j16 && scons server=1 -j16 && scons server=0 -j16
+  scons -j16 && scons -j16 tests
   then Workflow 1 in ../docs/replay-verification.md (G2 plus the gradient corpus).
   Replay equality is the only check that catches the one risk -fsyntax-only misses:
   a removed header's static-initializer side effect.
@@ -58,7 +59,7 @@ CHECK_CONFIG = (
     "misc-include-cleaner.MissingIncludes: false, "
     "misc-include-cleaner.IgnoreHeaders: 'config\\.h;SDL\\.h'}}"
 )
-SERVER_DEFINE = "-DYOG_SERVER_ONLY"
+SERVER_DEFINE = "-DGLOB2_ORDER_CODEC_ONLY"
 
 
 def find_llvm_bin(explicit):

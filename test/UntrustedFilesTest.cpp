@@ -4,7 +4,6 @@
 #include "AI.h"
 #include "AICabino.h"
 #include "NetEngine.h"
-#include "FileTransferMessages.h"
 #include "shared_runtime/Runtime.h"
 #include "Order.h"
 #include "FileFormatVersions.h"
@@ -106,17 +105,15 @@ TEST_CASE("untrusted names cannot escape the map output directory") {
     }
     CHECK(glob2NameToFilename("maps","CON","map")=="maps/_CON.map");
 }
-TEST_CASE("network state rejects invalid slots and rates before queue indexing") {
-    CHECK_THROWS_AS(NetEngine(-1,0,1,{}), std::runtime_error);
-    CHECK_THROWS_AS(NetEngine(1,1,1,{}), std::runtime_error);
-    CHECK_THROWS_AS(NetEngine(1,0,0,{}), std::runtime_error);
-    NetEngine engine(1,0,1,{});
+TEST_CASE("network state rejects invalid slots before queue indexing") {
+    CHECK_THROWS_AS(NetEngine(-1,0), std::runtime_error);
+    CHECK_THROWS_AS(NetEngine(1,1), std::runtime_error);
+    NetEngine engine(1,0);
     engine.pushOrder(std::make_shared<NullOrder>(),99,false);
     CHECK_FALSE(engine.orderReceived(99));
     CHECK_FALSE(engine.retrieveOrder(99));
     CHECK_FALSE(engine.allOrdersReceived());
     CHECK_NOTHROW(engine.clearTopOrders());
-    CHECK_THROWS_AS(engine.prepareForLatency(0,0x7fffffff),std::runtime_error);
     engine.pushOrder(std::make_shared<NullOrder>(),0,false);
     CHECK(engine.allOrdersReceived());
     engine.clearTopOrders();
@@ -170,17 +167,6 @@ TEST_CASE("compressed file size is checked before allocation") {
     std::filesystem::resize_file(path, GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES + 1);
     std::unique_ptr<GAGCore::StreamBackend> stream(GAGCore::openInflatingFileStreamBackend(path.string()));
     CHECK_FALSE(stream->isValid());
-}
-TEST_CASE("network file announcements reject empty and oversized payloads") {
-    for (Uint32 announced : {0u, static_cast<Uint32>(GAGCore::MAX_COMPRESSED_GAME_FILE_BYTES + 1)}) {
-        auto* backend = new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream output(backend);
-        output.writeUint32(announced, "size");
-        output.writeUint16(7, "fileID");
-        auto stream = input(backend->takeContents());
-        NetSendFileInformation message;
-        CHECK_THROWS_AS(message.decodeData(stream.get()), std::runtime_error);
-    }
 }
 TEST_CASE("complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]") {
     glob2test::HeadlessGlobals globals;

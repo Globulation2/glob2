@@ -15,11 +15,11 @@ alone is not a safe job limit. The commands below leave concurrency unspecified.
 
 ```sh
 scons                        # default client: debug information, no optimization
-scons release=1 server=0       # optimized client, including headless runs
-scons release=1 server=1       # server with the correct stripped library
+scons release=1                # optimized client, including headless runs
+scons role=relay release=1 relay # the match relay and its tests (docs/multiplayer/relay.md)
 scons release=1 package        # macOS signed app bundle and DMG
 scons release=1 bundle         # macOS app bundle without the DMG
-scons release=1 server=0 tests # glob2-engine-tests and glob2-unit-tests
+scons release=1 tests          # glob2-engine-tests and glob2-unit-tests
 python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 ```
 
@@ -30,8 +30,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 - Options are explicit on each invocation; there is no cross-invocation
   `options.py`. Outputs and generated configuration are isolated under
   `build/<toolchain>/<role>/<mode>`: `darwin`, `linux`, or `mingw` for native
-  toolchains; `client`, `server`, or `router` for the role. Use `server=1`
-  to enable `YOG_SERVER_ONLY`. Use `release=1` for headless
+  toolchains; `client` or `relay` for the role. The YOG lobby `server` and
+  `router` roles were removed at the M9 cutover: `role=server`, `role=router` and
+  `server=1` are refused, and `server=0` is accepted as a no-op so existing client
+  commands keep working. Use `release=1` for headless
   measurements: the unoptimized build can be substantially slower. Use `release=0`
   for debugging. `scons -c` cleans; `--build=/tmp/out` selects an out-of-source
   build directory; `BINDIR=/path/bin INSTALLDIR=/path/share` selects installation
@@ -74,7 +76,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
 - Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
-  zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client, server, router and relay) require OpenSSL and the header-only
+  zlib, fribidi and pcre; PortAudio is optional. All native multiplayer builds (client and relay) require OpenSSL and the header-only
   Boost.Beast and Boost.Asio; nothing else uses Boost. `role=relay` builds only
   `glob2-relay` and its tests and links no SDL library (it still needs SDL3's headers);
   see [the relay guide](../multiplayer/relay.md).
@@ -107,7 +109,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   release mirror supplies the Mac distribution identities and provisioning
   profile, then makes a signed `.pkg` beside the app. The existing `package`
   target remains the direct distribution DMG path. Test saves, map import, LAN
-  hosting and YOG connections in the sandboxed app before upload; local testing
+  hosting and online play in the sandboxed app before upload; local testing
   alone does not establish App Store acceptance. See the
   [Mac App Store release process](mac-app-store.md) for the mirror-only manual
   workflow and required signing credentials.
@@ -613,13 +615,13 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   for a historical serialized length. Save floor 58 remains unchanged.
   Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
   Empty slots fall through to normal decisions, preserving smaller-match timing.
-  Replay floor 127 gates the new capacity; network/YOG protocol 51 additionally
+  Replay floor 127 gates the new capacity; network protocol 51 additionally
   requires the format-128 compact save reader. Older saves load into the current
   simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
-  games, update replay acceptance and `NET_PROTOCOL_VERSION`/YOG minimums as needed.
+  games, update replay acceptance, `NET_PROTOCOL_VERSION` and `SIM_REVISION` as needed.
   Test acceptance/rejection at the version boundaries; unchanged saved bytes do not
   establish replay or network compatibility.
 - `.map`/`.game` files are gzip level 6 by default (`FileManager::writeGzipAtomic`/
@@ -633,9 +635,8 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   file with no `.gz` sibling still loads unchanged. `glob2PreferGzipReadPath`/
   `glob2GzipWritePath`/`glob2ListMapOrSaveFiles` (`src/map/io/MapHeader.cpp`) are
   the read/write path-resolution helpers most call sites should use rather than
-  hand-rolling the `.gz` suffix logic. Replays and YOG/network protocol gates are
-  unaffected; the YOG map-transfer wire payload was already a single gzip layer
-  and now skips re-gzipping a locally-compressed map.
+  hand-rolling the `.gz` suffix logic. Replays and network protocol gates are
+  unaffected.
 - Intentional bug fixes or gameplay changes may change old outcomes. Explain the
   difference and test the intended behavior rather than claiming old/new equivalence.
 - Before parallelizing gradients, inspect scratch ownership and input lifetimes in
@@ -672,16 +673,14 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   separate program (two processes, a golden-table tool) gets a `PROGRAMS` entry
   and one step that only runs it: a separate `scons` call per step re-reads the
   whole build and compiles one file at a time. Builds that need other options
-  (`server=1`, `opengl=0`) belong in
+  (`role=relay`, `opengl=0`) belong in
   the `linux variants` job, and long CPU-bound checks in a job of their own, as the
   golden-map sweep does; its four sweep shards are split between two jobs per
   toolchain, alongside a job for telemetry and generator defaults. These jobs reuse
   the main Linux build artifacts when native checks are selected; map-only diffs
   build the required programs themselves. Tests run in parallel after the shared
-  build. The Linux variants matrix owns the YOG server build on both supported
-  toolchains; the main
-  Linux jobs do not repeat that build. On Windows the `windows server` job owns it
-  for the same reason.
+  build. The Linux variants matrix owns the relay build; the main Linux jobs do
+  not repeat it.
   Browser checks follow the same rule: build once per job, pass outputs to the
   test jobs as artifacts, and shard long suites rather than lengthening one job.
 - A map generator's `revision` is enforced by `MapGeneratorGoldenTest`: a seed's map changing
@@ -1263,7 +1262,7 @@ uses 64 KiB input/output steps. Neither flushes at input-block boundaries.
 Optional level-zero compression retains the legacy whole-buffer path to preserve
 zlib's stored-block byte layout; it is outside the normal-save memory bound.
 Background finalization does not add a wire-format change beyond compact format
-128 (save floor 58, replay floor 127, network/YOG protocol 51).
+128 (save floor 58, replay floor 127, network protocol 51).
 
 For the 45,000-tick large-map fixture, the native macOS arm64 comparison measured
 1.93 GiB peak RSS for combined loading and saving, down from 3.96 GiB in the

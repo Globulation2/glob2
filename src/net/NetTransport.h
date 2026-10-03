@@ -101,4 +101,3 @@ std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig &tls = {},
 											   NetMessageMode mode = NetMessageMode::Binary);
 std::unique_ptr<NetTransportListener> makeNetTransportListener(const NetListenConfig &config);
 
-std::string configuredYogEndpoint(const std::string &defaultEndpoint);

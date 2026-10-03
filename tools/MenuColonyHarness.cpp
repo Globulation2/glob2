@@ -30,9 +30,6 @@
 #include "CampaignSelectorScreen.h"
 #include "NewMapScreen.h"
 #include "LANFindScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGRegisterScreen.h"
-#include "YOGClient.h"
 #include "ReplayWriter.h"
 #include "DatasetWriter.h"
 #include <filesystem>
@@ -347,18 +344,6 @@ void capture(const std::string &name, const std::string &path)
 	else if (name == "lan-find")
 	{
 		Preview<LANFindScreen> s(screens);
-		s.render();
-		s.checkBounds();
-	}
-	else if (name == "login")
-	{
-		Preview<YOGLoginScreen> s(screens, std::make_shared<YOGClient>());
-		s.render();
-		s.checkBounds();
-	}
-	else if (name == "register")
-	{
-		Preview<YOGRegisterScreen> s(std::make_shared<YOGClient>());
 		s.render();
 		s.checkBounds();
 	}
@@ -794,8 +779,6 @@ int main(int argc, char **argv)
 		navigate(std::make_unique<NewMapScreen>(), "new map exits");
 		navigate(std::make_unique<LANMenuScreen>(screens), "lan menu exits");
 		navigate(std::make_unique<LANFindScreen>(screens), "lan find exits");
-		navigate(std::make_unique<YOGLoginScreen>(screens, std::make_shared<YOGClient>()), "login exits");
-		navigate(std::make_unique<YOGRegisterScreen>(std::make_shared<YOGClient>()), "register exits");
 		navigate(std::make_unique<CreditScreen>(), "credits exit");
 		std::cout << "PASS: actual screen loops, keyboard exits, theme restoration\n";
 		return 0;

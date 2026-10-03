@@ -30,8 +30,6 @@ Kerna strategio: Traktas nutraĵon, laboristojn, naskiĝojn, trejnadon, konstrua
 %0 da globuloj havas tre malgrandajn nivelojn
 [%0% Uploaded]
 %0% jam alŝutita
-[%0's game]
-Ludo de %0
 [%0's team unit got converted to your team]
 Vi konvertigis globulon de teamo %0 al via.
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V (Vision): Doni Vidon al ĉiuj konstruaĵoj
 Aldoni Karton
 [add shortcut]
 Aldoni Taskklavon
-[Add]
-Aldoni
 [AI Descriptions]
 Priskriboj de AI-oj
 [AI]
@@ -124,8 +120,6 @@ Aŭdaĵo
 Memkonservita
 [available lan games]
 Lokaj ludoj disponeblaj
-[awaiting players]
-Ludantoj atendantaj
 [away:]
 fora(j):
 [Back]
@@ -140,8 +134,6 @@ Tiu konstruaĵo plibonigas la
 Militistejo
 [beach size]
 Larĝeco de Marbordo
-[Blocked Players]
-Blokigitaj Ludantoj
 [break]
 rompklavo
 [briefing]
@@ -172,8 +164,6 @@ Kampanjo
 Ne eblas kontakti: Gastiganto ne troviĝis!
 [Can't host game, port %0 in use]
 Ne eblas gastigi ludon: La konektejo %0 jam estas uzata!
-[Can't join game, game doesn't exist]
-Ne eblas aliĝi ludon: La ludo ne ekzistas!
 [Can't join game, game has started]
 Ne eblas aliĝi ludon: La ludo jam komencis!
 [Can't join game, game is full]
@@ -240,8 +230,6 @@ Tritiko
 Nombro de Krateroj
 [crater lakes terrain]
 Kraterlagoj
-[create game]
-Krei ludon
 [create map]
 Fari Karton
 [credits]
@@ -290,14 +278,6 @@ Nenion fari
 Portante nenion
 [down]
 malsuprenklavo
-[Download Map]
-Elŝuti karton
-[Download Maps]
-Elŝuti kartojn
-[downloaded %0]
-jam elŝutis %0
-[downloading map]
-Elŝutante karton...
 [edit map]
 Redakti Karton
 [editing map]
@@ -308,10 +288,6 @@ Redaktilo
 Redaktilo
 [end]
 finklavo
-[Enter your nickname :]
-Enigu vian kromnomon:
-[Enter your password :]
-Enigu vian pasvorton:
 [enter]
 enigklavo de numerklavaro
 [equals]
@@ -468,12 +444,8 @@ Pasi al la sekva elekto
 laboroj
 [join a game]
 Aliĝi Ludon
-[join]
-Aliĝi
 [keyboard settings]
 Klavaro
-[kick]
-Elĵeti
 [lan]
 Loka Ludo
 [language incomplete]
@@ -484,8 +456,6 @@ eo
 Lingvo
 [language]
 Esperanto
-[Leave Game]
-Forlasi la Ludon
 [left meta]
 maldekstra metaklavo
 [left super]
@@ -510,12 +480,6 @@ Niveloj
 Ŝargi Skripton
 [load]
 Ŝargi
-[loading map list]
-Ŝargante la Kartliston...
-[Lobby]
-Atendejo
-[login]
-Eniri
 [look around]
 Ĉirkaŭrigardi
 [Lost : %0 has more prestige than you]
@@ -534,30 +498,14 @@ Altera Difekto
 Priskribo
 [Map Discovered]
 Karto esti Malkovrita
-[Map download failure: lost connection]
-Elŝuto de karto malsukcesis: Konekto al YOG perdiĝis!
-[Map name: %0]
-Titolo de Karto: %0.
 [map name]
 Titolo
-[map rated]
-Karto taksiĝis.
 [map script]
 Kartskripto
 [map size x]
 Larĝeco de Karto
 [map size y]
 Alteco de Karto
-[Map upload failure: connection lost]
-Alŝuto de karto malsukcesis: Konekto al YOG perdiĝis!
-[Map upload failure: map name in use]
-Alŝuto de karto malsukcesis: La titolo de karto jam estas uzita!
-[Map upload failure: unknown reason]
-Alŝuto de karto malsukcesis: Kialo nekonata!
-[Map Upload: Author Name]
-Verkisto
-[Map Upload: Waiting for reply]
-Atendante respondon...
 [mark map]
 Marki karton por kunpacanoj
 [market explanation 2]
@@ -584,8 +532,6 @@ Silenta
 Novan Kampanjon
 [new map]
 Novan Karton
-[nick taken]
-Pardonu! Sed la nomo kiun vi elektis estas jam prenita ĉe freenode. Vi nur povas bablili en YOG.
 [no fullscreen]
 * Nur kiel fenestro
 [No Hints]
@@ -598,16 +544,8 @@ Neniu Celtabulo
 Malfekundaj Areoj
 [No]
 Ne
-[Not Enough Ratings]
-Taksigoj ne sufiĉas!
-[not ready]
-ne preta
 [Number Of Buildings]
 Nombro de Konstruaĵoj
-[number of players: %0 (%1 AI)]
-%0 da ludantoj (%1 da AI-oj)
-[number of teams: %0]
-%0 da teamoj
 [number of teams]
 Nombro de Teamoj
 [Number Of Units]
@@ -666,8 +604,6 @@ paŭzklavo
 Paŭzita
 [player name]
 Ludantnomo
-[player rating %0]
-Taksigo de Ludanto: %0
 [players]
 Ludantoj
 [please wait]
@@ -706,34 +642,20 @@ Tiu konstruaĵo plibonigas la
 Kuregejo
 [range]
 Atingopovo
-[Rated %0]
-Taksigita %0
 [ratios]
 Rilatumoj
-[ready?]
-preta?
-[refresh map list]
-Refreŝigi Kartliston
-[Register]
-Enskribi
 [remember unit]
 Memori unuokvantojn
-[Remember YOG password localy]
-Memori la pasvorton enloke.
 [remove map]
 Viŝi Karton
 [remove shortcut]
 Viŝi Taskklavon
-[Remove]
-Viŝi
 [repair building]
 Komenci/halti je rebonigo
 [repair]
 Rebonigi
 [repeat area]
 -oble la saman pejzaĝon
-[Repeat your password :]
-Reenigu vian pasvorton:
 [replay ended]
 Replay Finiĝis
 [restore default shortcuts]
@@ -866,14 +788,6 @@ Montri ĉefmenuon
 Vidaĵo
 [smoothing]
 Glatigi
-[sort by name]
-Titolo
-[sort by rating]
-Taksigo
-[sort by size]
-Grandeco
-[Sort By]
-Ordigi laŭ
 [space]
 spacklavo
 [start mission]
@@ -906,8 +820,6 @@ defendas vian teritorion
 Tiu konstruaĵo paceme
 [stonewall]
 Ŝtonmuro
-[submit rating]
-Sendi Taksigon
 [svr hostname]
 Gastigantnomo de Servilo
 [swamp terrain]
@@ -1004,10 +916,6 @@ Kartoj
 La komercejo ĵus finiĝis.
 [the market is under attack]
 La komercejo estas atakata!
-[The player %0 has joined YOG]
-%0 Aliĝis je YOG.
-[The player %0 has left YOG]
-%0 Eliris je YOG.
 [the racetrack is finished]
 La kuregejo ĵus finiĝis.
 [the racetrack is under attack]
@@ -1096,10 +1004,6 @@ Komenci/halti je plibonigo
 Antaŭemetaĵoj pri Plibonigado
 [upgrade]
 Plibonigi
-[Upload Map]
-Alŝuti Karton
-[upload map]
-Alŝuti Karton
 [username]
 Uzulnomo
 [Version]
@@ -1112,8 +1016,6 @@ Laŭteco de Voĉo
 Atendante je %0
 [waiting for key]
 Atendante klavon...
-[Waiting]
-Atendante...
 [Walk]
 Movado
 [warflag explanation 2]
@@ -1160,50 +1062,8 @@ Laboranta(j)
 vundita
 [Yes]
 Jes
-[YESTS_CONNECTING]
-Establante konekton al YOG-superservilon...
-[YESTS_CONNECTION_LOST]
-La konekto al YOG perdiĝis.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam estas enskribita. Se tiu uzulnomo estas via, provu malaktivigi la elektaĵon na "Enskribi" (aŭ na "Enskribi novan YOG-uzulon kun pasvorton").
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-La YOG-superservilo malakceptis la konekton, ĉar la pasvorto enigita estis malĝusta.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo ankoraŭ ne havas pasvorton. Por registri la uzulnomon kun ĉi tiu pasvorto, aktivigu la elekton „Registri novan YOG-uzulon kun pasvorto“ antaŭ ol konektiĝi. Necesas fari tion nur unufoje.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-La YOG-superservilo malakceptis la konekton, ĉar tiu IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus aŭ kontakti la administristojn.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 La YOG-superservilo malakceptis la konekton, ĉar via Globulation2-kliento estas tro malnova. Bv. preni la plej novan version el www.globulation2.org por ke vi povus ludi surrete.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-La YOG-superservilo malakceptis la konekton sen klarigo!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo jam estas uzata per alia persono.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-La YOG-superservilo malakceptis la konekton, ĉar tiu uzulnomo estas malpermesata. Bv. kontakti la administristojn.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-La YOG-superservilo malakceptis la konekton, ĉar la uzulnomo enigita ne estas akceptebla. Uzulnomoj nur povas enhavi literojn, numerojn, kaj la substrekon.
-[YESTS_CREATED]
-La kontaktsistemo pretas por kontakti al YOG-superservilon por konekto.
-[YESTS_PASSWORDS_DONT_MATCH]
-La pasvortoj enigitaj ne estas samaj. Bv. reenigi tiujn.
-[YESTS_UNABLE_TO_CONNECT]
-Ne eblas kontakti. Ŝajne la YOG-superservilo estas malaktiva.
-[yog block command help]
-/block <ludantnomo>    Blokigas ludanton, kaj vi ne plu vidos riajn tekstojn.
-[yog block command player %0 already blocked]
-Ludanto %0 jam blokiĝis!
-[yog block command player %0 blocked]
-Ludanto %0 blokiĝis.
-[yog block command player %0 not found]
-Ludanto %0 ne troviĝis!
-[yog command header]
-La nuna listo de komandoj de YOG-kliento estas kiel:
-[yog command unknown]
-Komando Nekonata!
-[yog help command help]
-/help    Montras ĉi tiun helppaĝon.
-[yog]
-Surreta Ludo ĉe Ysagoon
 [you have lost]
 Vi malgajnis!
 [you have won]
@@ -1212,12 +1072,8 @@ Vi gajnis!
 Vi ĵetiĝis el la ludo.
 [Your %0 are under attack]
 Via %0 estas atakata!
-[Your IP address was temporarily banned]
-Via IP-adreso estas portempe malpermesata. Bv. atendi ĝis kiam ĝi permesiĝus aŭ kontakti la administristojn.
 [Your unit got converted to %0's team]
 Teamo %0 konvertigis globulon de vi al sia!
-[Your username was banned]
-Via uzulnomo estas malpermesata. Bv. kontakti la administristojn.
 [game speed]
 Ludrapido
 [decrease game speed]
@@ -3048,8 +2904,6 @@ Kampanja progreso ne konservita. Reprovu aŭ eksportu sekurkopion.
 Eliri sen konservi
 [campaign import failed]
 Nevalida progresa dosiero aŭ malsama kampanja versio
-[network release mismatch]
-La protokoloj de kliento kaj servilo malsamas. Instalu la saman version de Glob2 kiel la servilo.
 [settings continue]
 Daŭrigi
 [settings save failed]
@@ -3412,8 +3266,6 @@ Bone!: %0
 %0 %1
 [resume game]
 Daŭrigi ludon
-[games]
-Ludoj
 [Add AI]
 Aldoni AI
 [settings Experiments]
@@ -3462,15 +3314,9 @@ Resalto de listoj
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3683,8 +3529,6 @@ Inercio de la mapo
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

@@ -8,22 +8,16 @@
 #include <memory>
 #include <vector>
 #include <queue>
-#include "NetConnection.h"
 
-///The purpose of this class is to sort Orders, and hand them out in
-///the correct time slot. It serves partially to hide latency, Orders
-///are set to execute a fixed number of ticks ahead, and this class
-///handles that discrepancy. It is used always, local or net games,
-///as the central message pump for Orders. The engine drives it through the
-///LockstepSession interface.
+///The local order queue for single player and replay playback: it sorts
+///Orders and hands them out in the correct time slot. The engine drives it
+///through the LockstepSession interface; online and LAN games use the turn
+///protocol session instead.
 class NetEngine : public LockstepSession
 {
 public:
 	///Constructs the NetEngine
-	NetEngine(int numberOfPlayers, int localPlayer, int networkOrderRate = 1, std::shared_ptr<NetConnection> router = std::shared_ptr<NetConnection>());
-
-	///Sets the network game info
-	void setNetworkInfo(int networkOrderRate, std::shared_ptr<NetConnection> client);
+	NetEngine(int numberOfPlayers, int localPlayer);
 
 	///Advances the step
 	void advanceStep(Uint32 checksum) override;
@@ -31,13 +25,13 @@ public:
 	///Clears all the orders at the top of the queues
 	void clearTopOrders() override;
 
-	//Pushes an order to the NetEngine. AI's are special because they don't have padding around orders
+	//Pushes an order to the NetEngine
 	void pushOrder(std::shared_ptr<Order> order, int playerNumber, bool isAI) override;
 	
 	///Retrieves the order for the given player for this turn
 	std::shared_ptr<Order> retrieveOrder(int playerNumber) override;
 
-	///Adds a order from the local player, which will be queued and sent across the network when needed
+	///Adds a order from the local player, queued for its turn
 	void addLocalOrder(std::shared_ptr<Order> order) override;
 	
 	///Tells whether the network is ready at the current tick. For
@@ -51,13 +45,8 @@ public:
 	///Returns the current step number
 	int getStep();
 
-	///Sends all pending orders across the network without a checksum. This is used if the game has to end immediately
+	///Queues all pending local orders without a checksum. This is used if the game has to end immediately
 	void flushAllOrders() override;
-	
-	///Adds padding for the player for the given latency,
-	///this is used because with latency, there aren't any
-	///orders for the first few frames
-	void prepareForLatency(int playerNumber, int latency);
 	
 	///Returns true if the given player has provided an order and is ready to go
 	bool orderReceived(int playerNumber) override;
@@ -70,9 +59,6 @@ public:
 	///returns false if they don't match
 	bool matchCheckSums() override;
 
-	///This sends an order through the network that causes the latency adjustment to be increased
-	void increaseLatencyAdjustment();
-	
 	///Set the localPlayer, only necessary in replays
 	void setLocalPlayer(int player) override;
 	
@@ -85,11 +71,9 @@ private:
 	std::queue<std::shared_ptr<Order> > outgoing;
 	int step;
 	int numberOfPlayers;
-	///This count-downs steps until an order is sent across the network
-	int localOrderSendCountdown;
 	int localPlayer;
-	std::shared_ptr<NetConnection> router;
-	int networkOrderRate;
+	///Latency of the recorded legacy network game, which AdjustLatency
+	///orders in old replays change
 	int currentLatency;
 };
 

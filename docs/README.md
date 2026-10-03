@@ -46,8 +46,7 @@ dated reports and pull-request artifacts do not belong here.
   [match relay](multiplayer/relay.md) that hosts it, [LAN games](multiplayer/lan.md)
   and the [LAN playtest guide](multiplayer/lan-playtest.md).
 - **Hosting:** [self-hosting an online instance](hosting/README.md) with the
-  Compose stack in `deploy/`; the legacy YOG deployment is in
-  [deploy/README.md](../deploy/README.md) until the cutover.
+  Compose stack in `deploy/` (file index: [deploy/README.md](../deploy/README.md)).
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
@@ -59,7 +58,7 @@ dated reports and pull-request artifacts do not belong here.
 
 - **Browser platform:** [build and play](../browser/README.md),
   [architecture](browser/implementation.md), [storage](browser/storage.md),
-  [viewport](browser/viewport.md), and [YOG deployment](browser/gateway.md).
+  [viewport](browser/viewport.md), and [secure network transports](browser/gateway.md).
 
 ## Temporary work
 

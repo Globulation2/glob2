@@ -30,8 +30,6 @@ Oinarrizko estrategia: Janaria, langileak, jaiotzak, entrenamendua, eraikuntza e
 %0 unitateren maila baxuegia da
 [%0% Uploaded]
 %0% igota
-[%0's game]
-%0 jokalariaren partida
 [%0's team unit got converted to your team]
 %0(r)en unitatea zure taldera pasatu da
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: Bistaratu eraikuntza guztien ikuspegia
 Gehitu mapa
 [add shortcut]
 Gehitu laster-tekla
-[Add]
-Gehitu
 [AI Descriptions]
 AI moten deskribapenak
 [AI]
@@ -124,8 +120,6 @@ Soinua
 Gordeketa automatikoa
 [available lan games]
 Partida lokal eskuragarriak
-[awaiting players]
-Jokalarien zain
 [away:]
 kanpoan:
 [Back]
@@ -140,8 +134,6 @@ Soldaduen borroka
 Barrakoia
 [beach size]
 hondartzaren tamaina
-[Blocked Players]
-Blokeatutako jokalariak
 [break]
 eten
 [briefing]
@@ -172,8 +164,6 @@ Kanpaina
 Ezin da konektatu: ez da ostalaria aurkitu
 [Can't host game, port %0 in use]
 Ezin da partida sortu: %0 ataka erabileran dago
-[Can't join game, game doesn't exist]
-Ezin da sartu: partida ez da existitzen
 [Can't join game, game has started]
 Ezin da sartu: partida hasi da
 [Can't join game, game is full]
@@ -246,8 +236,6 @@ Garia
 krater zenbaketa
 [crater lakes terrain]
 Krater Lakuak
-[create game]
-Sortu partida
 [create map]
 Sortu mapa
 [credits]
@@ -296,14 +284,6 @@ Ez egin ezer
 Ez darama ezer
 [down]
 behera
-[Download Map]
-Deskargatu mapa
-[Download Maps]
-Deskargatu mapak
-[downloaded %0]
-%0 deskargatuta
-[downloading map]
-Mapa deskargatzen
 [edit map]
 Editatu mapa
 [editing map]
@@ -314,10 +294,6 @@ Editore teklak
 Editorea
 [end]
 amaiera
-[Enter your nickname :]
-Ezizena sartu:
-[Enter your password :]
-Pasahitza sartu:
 [enter]
 sartu
 [equals]
@@ -472,12 +448,8 @@ Joan hurrengo hautapenera
 lanak
 [join a game]
 Partidara bat egin
-[join]
-Bat egin
 [keyboard settings]
 Teklatu ezarpenak
-[kick]
-Kanporatu
 [lan]
 LAN partida
 [language incomplete]
@@ -488,8 +460,6 @@ eu
 Hizkuntza
 [language]
 Euskara
-[Leave Game]
-Utzi partida
 [left meta]
 ezkerreko meta
 [left super]
@@ -512,12 +482,6 @@ Kargatu errepikapena
 Kargatu scripta
 [load]
 Kargatu
-[loading map list]
-Mapen zerrenda kargatzen...
-[Lobby]
-Itxarongela
-[login]
-Saioa hasi
 [look around]
 Begiratu ingurura
 [Lost : %0 has more prestige than you]
@@ -536,30 +500,14 @@ Kaltea lurrean
 Deskribapena
 [Map Discovered]
 Mapa ezagututa
-[Map download failure: lost connection]
-Ezin izan da mapa deskargatu: YOG konexioa galdu da
-[Map name: %0]
-Mapa izena: %0.
 [map name]
 Izena
-[map rated]
-Mapa baloratuta
 [map script]
 Maparen scripta
 [map size x]
 Maparen zabalera
 [map size y]
 Maparen altuera
-[Map upload failure: connection lost]
-Ezin izan da mapa igo: YOG konexioa galdu da
-[Map upload failure: map name in use]
-Ezin izan da mapa igo: izena erabilita dago.
-[Map upload failure: unknown reason]
-Ezin izan da mapa igo. Arrazoi ezezaguna.
-[Map Upload: Author Name]
-Egilearen izena
-[Map Upload: Waiting for reply]
-Erantzunaren zain
 [maps available]
 Mapa eskuragarriak
 [mark map]
@@ -588,8 +536,6 @@ Isilik
 Kanpaina berria
 [new map]
 Berria
-[nick taken]
-Sentitzen dugu, aukeratu duzun izena hartuta dago jada freenode-n, soilik YOG bidez hitzegin ahal izango duzu
 [no fullscreen]
 * leiho-moduan soilik
 [No Hints]
@@ -602,18 +548,10 @@ Helbururik ez
 Hazkunderik gabe
 [No]
 Ez
-[Not Enough Ratings]
-Ez dago nahikoa balorazio
-[not ready]
-ez dago prest
 [Number Of Buildings]
 Eraikin kopurua
-[number of players: %0 (%1 AI)]
-%0 jokalari (%1 AI)
 [number of players: %0]
 %0 jokalari daude bertan.
-[number of teams: %0]
-%0 talde.
 [number of teams]
 talde kopurua
 [Number Of Units]
@@ -672,8 +610,6 @@ pausa
 Geldituta
 [player name]
 Jokalari izena
-[player rating %0]
-Jokalariaren balorazioa: %0
 [players]
 Jokalariak
 [please wait]
@@ -712,36 +648,22 @@ Unitateen ibiltzeko
 Zirkuitoa
 [range]
 Hedadura
-[Rated %0]
-Balorazioa: %0
 [ratios]
 Proportzioak
-[ready?]
-prest?
-[refresh map list]
-Eguneratu mapen zerrenda
 [Register a new YOG user with password]
 YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
-[Register]
-Erregistratu
 [remember unit]
 Gogoratu esleipenak
-[Remember YOG password localy]
-Pasahitza gogoratu ordenagailu honetan. (ez segurua)
 [remove map]
 Ezabatu mapa
 [remove shortcut]
 Kendu laster-tekla
-[Remove]
-Kendu
 [repair building]
 Konponketa hasi/gelditu
 [repair]
 Konpondu
 [repeat area]
 aldiz lurzoru bera
-[Repeat your password :]
-Errepikatu pasahitza:
 [replay ended]
 Errepikapena amaituta
 [restore default shortcuts]
@@ -874,14 +796,6 @@ Erakutsi menu nagusia
 Bistaratzea
 [smoothing]
 Suabetzea
-[sort by name]
-Izena
-[sort by rating]
-Balorazioa
-[sort by size]
-Tamaina
-[Sort By]
-Ordenatu honen arabera
 [space]
 zuriunea
 [start mission]
@@ -914,8 +828,6 @@ elementua
 Defentsa pasiboko
 [stonewall]
 Harrizko orma
-[submit rating]
-Bidali balorazioa
 [svr hostname]
 Zerbitzari izena
 [swamp terrain]
@@ -1012,10 +924,6 @@ Mapak
 Merkatua bukatuta dago
 [the market is under attack]
 Merkatua erasopean dago
-[The player %0 has joined YOG]
-%0 YOGera sartu da.
-[The player %0 has left YOG]
-%0(e)k  YOG utzi du.
 [the racetrack is finished]
 Zirkuitoa bukatuta dago
 [the racetrack is under attack]
@@ -1104,10 +1012,6 @@ Eguneraketa hasi/gelditu
 Hobekuntzen lehenespenak
 [upgrade]
 Eguneratu
-[Upload Map]
-Igo mapa
-[upload map]
-Igo mapa
 [username]
 Erabiltzaile izena
 [Version]
@@ -1120,8 +1024,6 @@ Ahotsaren bolumena
 %0(r)i itxaroten
 [waiting for key]
 teklaren zain...
-[Waiting]
-Zain
 [Walk]
 Ibili
 [warflag explanation 2]
@@ -1170,50 +1072,8 @@ Lanean
 zauritu
 [Yes]
 Bai
-[YESTS_CONNECTING]
-YOG metazerbitzarira konektatzen...
-[YESTS_CONNECTION_LOST]
-YOG zerbitzarira esteka galdu da.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metazerbitzariak estekatzea ukatu du erabiltzaile izen hau jada hartuta dagoelako. Erabiltzaile izen hau zurea bada, desmarkatu "YOG erabiltzaile gisa izena eman pasahitza barne" aukera.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metazerbitzariak estekatzea ukatu du zure pasahitza gaizki dagoelako.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metazerbitzariak konexioa ukatu du, erabiltzaile-izen honek oraindik ez duelako pasahitzik. Izena pasahitz honekin erregistratzeko, aktibatu YOG erabiltzaile berria pasahitzarekin erregistratzeko aukera konektatu aurretik. Aukera hau behin bakarrik aktibatu behar da.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-YOG metazerbitzariak konexioa ukatu du, IP helbide hau aldi baterako debekatuta dagoelako. Itxaron debekua kendu arte edo jarri harremanetan administratzaileekin.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG metazerbitzariak konexioa ukatu du, zure Globulation 2 bezeroa zaharkituta dagoelako. Deskargatu azken bertsioa www.globulation2.org webgunetik sarean jokatzeko.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG metazerbitzariak estekatzea ukatu du inolako azalpenik eman gabe!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metazerbitzariak estekatzea ukatu du zure erabiltzaile izena beste batek duelako.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG metazerbitzariak konexioa ukatu du, erabiltzaile-izen hau debekatuta dagoelako. Jarri harremanetan administratzaileekin.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG metazerbitzariak konexioa ukatu du, erabiltzaile-izena baliogabea delako. Erabiltzaile-izenek letrak, zenbakiak eta azpimarrak soilik izan ditzakete.
-[YESTS_CREATED]
-Konektatze sistema prest dago YOG metazerbitzarira konektatzeko.
-[YESTS_PASSWORDS_DONT_MATCH]
-Pasahitzak ez datoz bat. Idatzi berriro.
-[YESTS_UNABLE_TO_CONNECT]
-Ezin da konektatu. Antza YOG metazerbitzaria bertan behera dago.
-[yog block command help]
-/block <jokalariaren_izena>    Jokalaria blokeatzen du; ez dituzu haren mezuak ikusiko.
-[yog block command player %0 already blocked]
-%0 jokalaria blokeatuta dago jada
-[yog block command player %0 blocked]
-%0 jokalaria blokeatu da
-[yog block command player %0 not found]
-Ez da %0 jokalaria aurkitu
-[yog command header]
-YOG bezeroaren komando erabilgarriak:
-[yog command unknown]
-Komando ezezaguna.
-[yog help command help]
-/help    Laguntza-mezu hau erakusten du
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Galdu duzu!
 [you have won]
@@ -1222,12 +1082,8 @@ Irabazi duzu!
 Partidatik kanporatu zaituzte
 [Your %0 are under attack]
 Zure %0 erasopean dago
-[Your IP address was temporarily banned]
-Zure IP helbidea aldi baterako debekatu dute. Itxaron debekua kendu arte edo jarri harremanetan administratzaileekin.
 [Your unit got converted to %0's team]
 Zure unitatea %0(r)en taldera pasatu da
-[Your username was banned]
-Zure erabiltzaile-izena debekatu dute. Jarri harremanetan administratzaileekin hori aldatzeko.
 [game speed]
 Jokoaren abiadura
 [decrease game speed]
@@ -3060,8 +2916,6 @@ Kanpainaren aurrerapena ez da gorde. Saiatu berriro edo esportatu babeskopia bat
 Irten gorde gabe
 [campaign import failed]
 Aurrerapen fitxategi baliogabea edo kanpaina bertsio desberdina
-[network release mismatch]
-Bezeroaren eta zerbitzariaren protokoloak desberdinak dira. Instalatu zerbitzariak duen Glob2 bertsio bera.
 [settings continue]
 Jarraitu
 [settings save failed]
@@ -3424,8 +3278,6 @@ Ados: %0
 %0 %1
 [resume game]
 Jarraitu partida
-[games]
-Partidak
 [Add AI]
 Gehitu AI
 [settings Experiments]
@@ -3474,15 +3326,9 @@ Zerrenden errebotea
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3695,8 +3541,6 @@ Maparen inertzia
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 
