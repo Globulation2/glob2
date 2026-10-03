@@ -1,0 +1,61 @@
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:35] "GET / HTTP/1.1" 200 -
+
+Running 6 tests using 1 worker
+
+(node:1903841) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:36] "GET /test-host-03a7fe7c-8e70-4850-bc40-accbb7106057.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:36] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:36] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:36] "GET /assets/core.86cdbfe41d972f7c.data HTTP/1.1" 200 -
+  ✓  1 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (4.1s)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /test-host-26c66af7-6eba-466b-ac57-f3b50c015703.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:40] "GET /assets/core.86cdbfe41d972f7c.data HTTP/1.1" 200 -
+  ✓  2 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (4.7s)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /test-host-0a7438db-2a9c-40b9-b9f5-03aaf60fadf2.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:45] "GET /assets/core.86cdbfe41d972f7c.data HTTP/1.1" 200 -
+  ✓  3 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (5.0s)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /test-host-0472c024-a3ab-465a-b9de-09f7b831e513.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:50] "GET /assets/core.86cdbfe41d972f7c.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:53] "GET /threaded/index.js HTTP/1.1" 304 -
+  ✓  4 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (5.0s)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:55] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:55] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:55] "GET /assets/core.86cdbfe41d972f7c.data HTTP/1.1" 200 -
+  ✓  5 [chromium] › tests/determinism.spec.js:62:1 › WebAssembly verifies the committed match record (3.9s)
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [02/Oct/2026 21:59:59] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+  ✓  6 [chromium] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (701ms)
+
+  6 passed (24.7s)

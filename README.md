@@ -1,3 +1,5 @@
+> Superseded UI and version-1 evaluation: see [review revision evidence](revision/README.md) for current screenshots, production-harness evaluations and validation.
+
 # Hive Mind validation evidence
 
 Source: [Hive Mind stack 45f90bd81](https://github.com/Globulation2/glob2/commit/45f90bd813fa9ba10f99be5b440279d1aedba9f8).

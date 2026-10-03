@@ -1,0 +1,42 @@
+{
+  "selected": "gpt-6-luna",
+  "permissionGate": "Requires the independent native/browser boundary tests; these gameplay evaluations are not a security proof.",
+  "candidates": [
+    {
+      "model": "gpt-6-luna",
+      "source": "https://developers.openai.com/api/docs/models/gpt-6-luna",
+      "contractSha256": "6831aabeecf84540d06ce6528ed80b316c03895a9dd088322a2b38bad74b8515",
+      "firstAttemptValidity": 1,
+      "completion": 1,
+      "repairs": 0,
+      "estimatedUsd": 0.01284197,
+      "upperEstimatedUsd": 0.013414869999999999,
+      "medianLatencyMs": 9483,
+      "qualifies": true
+    },
+    {
+      "model": "gpt-6.1-sol",
+      "source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+      "contractSha256": "6831aabeecf84540d06ce6528ed80b316c03895a9dd088322a2b38bad74b8515",
+      "firstAttemptValidity": 1,
+      "completion": 0.95,
+      "repairs": 0,
+      "estimatedUsd": 0.1591009,
+      "upperEstimatedUsd": 0.1704329,
+      "medianLatencyMs": 11669,
+      "qualifies": true
+    },
+    {
+      "model": "gpt-6-astra",
+      "source": "https://developers.openai.com/api/docs/models/gpt-6-astra",
+      "contractSha256": "6831aabeecf84540d06ce6528ed80b316c03895a9dd088322a2b38bad74b8515",
+      "firstAttemptValidity": 1,
+      "completion": 0.95,
+      "repairs": 0,
+      "estimatedUsd": 0.988618,
+      "upperEstimatedUsd": 1.0412379999999999,
+      "medianLatencyMs": 11367,
+      "qualifies": true
+    }
+  ]
+}

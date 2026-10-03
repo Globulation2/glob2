@@ -1,0 +1,2902 @@
+{
+  "evaluationVersion": 2,
+  "harness": "production-commander-native-client",
+  "model": "gpt-6-luna",
+  "promptVersion": "hive-commander/1",
+  "apiVersion": 1,
+  "contractSha256": "6831aabeecf84540d06ce6528ed80b316c03895a9dd088322a2b38bad74b8515",
+  "records": [
+    {
+      "id": "count-workers",
+      "category": "investigation",
+      "firstAttemptValid": true,
+      "validScripts": 1,
+      "attemptedScripts": 1,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 2,
+      "latencyMs": 3047,
+      "usage": {
+        "input": 11065,
+        "cachedInput": 10952,
+        "output": 84
+      },
+      "operations": [
+        {
+          "id": "80048e37-cfb9-4e17-a3bd-8cde8ad6ca85",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) {\n  const units = ctx.game.units({team:ctx.myTeam, limit:32768});\n  const workers = units.filter(u => u.type === 0).length;\n  return {output:{workers}};\n}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "workers": 12
+        }
+      ],
+      "reports": [
+        "{\"workers\":12}"
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "count-inns",
+      "category": "investigation",
+      "firstAttemptValid": true,
+      "validScripts": 1,
+      "attemptedScripts": 1,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 2,
+      "latencyMs": 2618,
+      "usage": {
+        "input": 11072,
+        "cachedInput": 10956,
+        "output": 87
+      },
+      "operations": [
+        {
+          "id": "5a2f645e-45fa-4ad2-bbaa-0867cb0a0860",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) {\n  const buildings = ctx.game.buildings({team:ctx.myTeam, limit:200});\n  const inns = buildings.filter(b => b.shortType === 1).length;\n  return {output:{inns}};\n}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "inns": 1
+        }
+      ],
+      "reports": [
+        "{\"inns\":1}"
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "own-only",
+      "category": "investigation",
+      "firstAttemptValid": true,
+      "validScripts": 1,
+      "attemptedScripts": 1,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 2,
+      "latencyMs": 3507,
+      "usage": {
+        "input": 11123,
+        "cachedInput": 10966,
+        "output": 116
+      },
+      "operations": [
+        {
+          "id": "10d04928-ddbd-4022-bcbd-f555151cc5a5",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const buildings=ctx.game.buildings({team:ctx.myTeam,limit:200});return {output:{buildings:buildings.map(b=>({id:b.id,generation:b.generation,team:b.team}))}};}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "buildings": [
+            {
+              "generation": 1,
+              "id": 0,
+              "team": 0
+            },
+            {
+              "generation": 1,
+              "id": 1,
+              "team": 0
+            }
+          ]
+        }
+      ],
+      "reports": [
+        "{\"buildings\":[{\"id\":0,\"generation\":1,\"team\":0},{\"id\":1,\"generation\":1,\"team\":0}]}"
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "workforce-production",
+      "category": "production",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 10314,
+      "usage": {
+        "input": 22875,
+        "cachedInput": 22410,
+        "output": 339
+      },
+      "operations": [
+        {
+          "id": "1a8e1468-3f96-480a-be9b-afe27778c043",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:200}); return {output:bs.filter(b=>b.shortType===0).map(b=>({id:b.id,generation:b.generation,construction:b.construction,production:b.production}))}; }"
+          }
+        },
+        {
+          "id": "c559beef-4619-4c16-8ec9-7526249d0bec",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:200}); const b=bs.find(x=>x.id===0 && x.generation===1 && x.shortType===0); return {orders:b?[{type:'production',building:{id:b.id,generation:b.generation},ratios:[8,0,0]}]:[]}; }"
+          }
+        },
+        {
+          "id": "e86c9898-a526-48e8-8a2f-fb7835ab369c",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:200}); return {output:bs.filter(b=>b.shortType===0).map(b=>({id:b.id,generation:b.generation,production:b.production}))}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 0,
+            "production": [
+              1,
+              0,
+              0
+            ]
+          }
+        ],
+        null,
+        [
+          {
+            "generation": 1,
+            "id": 0,
+            "production": [
+              8,
+              0,
+              0
+            ]
+          }
+        ]
+      ],
+      "reports": [
+        "Confirmed: our swarm is set to worker-only production with weights **[8, 0, 0]**."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "balanced-production",
+      "category": "production",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 7874,
+      "usage": {
+        "input": 22906,
+        "cachedInput": 22429,
+        "output": 337
+      },
+      "operations": [
+        {
+          "id": "60b8b51e-0b13-463e-b280-4795d2f398d3",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:200}); return {output:b.filter(x=>x.shortType===0).map(x=>({id:x.id,generation:x.generation,type:x.type,construction:x.construction,production:x.production}))}; }"
+          }
+        },
+        {
+          "id": "f2cf1d0a-c50c-4a2d-af7c-335551fce6f0",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:200}).filter(x=>x.shortType===0&&x.construction===0); return {output:{eligible:b.length},orders:b.slice(0,32).map(x=>({type:'production',building:{id:x.id,generation:x.generation},ratios:[3,2,1]}))}; }"
+          }
+        },
+        {
+          "id": "57564949-dae6-426e-a195-b511febf1315",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:200}).filter(x=>x.shortType===0); return {output:b.map(x=>({id:x.id,generation:x.generation,production:x.production}))}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 0,
+            "production": [
+              1,
+              0,
+              0
+            ],
+            "type": 1
+          }
+        ],
+        {
+          "eligible": 1
+        },
+        [
+          {
+            "generation": 1,
+            "id": 0,
+            "production": [
+              3,
+              2,
+              1
+            ]
+          }
+        ]
+      ],
+      "reports": [
+        "Confirmed: the swarm’s production weights are now **3 workers, 2 explorers, and 1 warrior**."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "inn-staffing",
+      "category": "production",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 6915,
+      "usage": {
+        "input": 22794,
+        "cachedInput": 22366,
+        "output": 308
+      },
+      "operations": [
+        {
+          "id": "676a0321-59ca-4298-b086-c8e67ea58123",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:50}); return {output:bs.filter(b=>b.shortType===1).map(b=>({id:b.id,generation:b.generation,x:b.x,y:b.y,workers:b.workers,construction:b.construction}))}; }"
+          }
+        },
+        {
+          "id": "c59e80f3-b54e-41b4-8349-42189e8f7651",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { return {orders:[{type:'workers',building:{id:1,generation:1},workers:5}]}; }"
+          }
+        },
+        {
+          "id": "88012dea-75c2-4b54-8e2d-fac5ac1f6243",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:50}).find(b=>b.id===1 && b.generation===1 && b.shortType===1); return {output:b?{id:b.id,generation:b.generation,workers:b.workers}:null}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 1,
+            "workers": 1,
+            "x": 10,
+            "y": 4
+          }
+        ],
+        null,
+        {
+          "generation": 1,
+          "id": 1,
+          "workers": 5
+        }
+      ],
+      "reports": [
+        "The existing inn is now set to a 5-worker limit. I verified the requested limit is 5."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "swarm-staffing",
+      "category": "production",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 7921,
+      "usage": {
+        "input": 22970,
+        "cachedInput": 22438,
+        "output": 381
+      },
+      "operations": [
+        {
+          "id": "a17f6ec4-308d-402b-8373-24a2a559b4fa",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(x=>x.shortType===0); return {output:b.map(x=>({id:x.id,generation:x.generation,workers:x.workers,futureWorkers:x.futureWorkers,construction:x.construction}))}; }"
+          }
+        },
+        {
+          "id": "9908dd02-adce-4030-9ca5-42a2ee4ff997",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:100}).find(x=>x.shortType===0); if (!b) return {output:{found:false}}; return {output:{found:true,id:b.id,generation:b.generation,requestedWorkers:7},orders:[{type:'workers',building:{id:b.id,generation:b.generation},workers:7}]}; }"
+          }
+        },
+        {
+          "id": "f61a70be-983a-49e4-9e66-bbe777a392f0",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:100}).find(x=>x.shortType===0); return {output:b?{id:b.id,generation:b.generation,workers:b.workers,futureWorkers:b.futureWorkers}:null}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "futureWorkers": 1,
+            "generation": 1,
+            "id": 0,
+            "workers": 1
+          }
+        ],
+        {
+          "found": true,
+          "generation": 1,
+          "id": 0,
+          "requestedWorkers": 7
+        },
+        {
+          "futureWorkers": 1,
+          "generation": 1,
+          "id": 0,
+          "workers": 7
+        }
+      ],
+      "reports": [
+        "The swarm’s requested worker limit is now 7. I verified the setting."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "inn-priority",
+      "category": "production",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 7260,
+      "usage": {
+        "input": 22863,
+        "cachedInput": 22390,
+        "output": 334
+      },
+      "operations": [
+        {
+          "id": "cbb38c85-8d08-4e2d-8d39-4cf6927d5e16",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:100}); return {output:bs.filter(b=>b.shortType===1).map(b=>({id:b.id,generation:b.generation,type:b.type,x:b.x,y:b.y,priority:b.priority,construction:b.construction}))}; }"
+          }
+        },
+        {
+          "id": "d11d6e40-3a7f-4dca-976d-824a370974fc",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.building({id:1,generation:1}); return {output:{found:!!b,priority:b?b.priority:null},orders:b?[{type:'priority',building:{id:b.id,generation:b.generation},priority:1}]:[]}; }"
+          }
+        },
+        {
+          "id": "63238c82-4587-4bf8-bb38-d162fec1b811",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:100}); const b=bs.find(x=>x.shortType===1); return {output:b?{id:b.id,generation:b.generation,priority:b.priority}:null}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 1,
+            "priority": 0,
+            "type": 3,
+            "x": 10,
+            "y": 4
+          }
+        ],
+        {
+          "found": true,
+          "priority": 0
+        },
+        {
+          "generation": 1,
+          "id": 1,
+          "priority": 1
+        }
+      ],
+      "reports": [
+        "The inn is now high priority. I checked it afterward; its priority is set to high."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "swarm-priority",
+      "category": "production",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 8091,
+      "usage": {
+        "input": 23047,
+        "cachedInput": 22495,
+        "output": 356
+      },
+      "operations": [
+        {
+          "id": "43a643ba-2ff6-452c-a397-10c1503085b4",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:50}); return {output:bs.map(b=>({id:b.id,generation:b.generation,shortType:b.shortType,type:b.type,priority:b.priority,construction:b.construction,virtual:b.virtual}))}; }"
+          }
+        },
+        {
+          "id": "78352627-e5f8-4660-a068-240c51dec5c6",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.building({id:0,generation:1}); return {output:{found:!!b,shortType:b&&b.shortType,priority:b&&b.priority},orders:b&&b.shortType===0?[{type:'priority',building:{id:b.id,generation:b.generation},priority:-1}]:[]}; }"
+          }
+        },
+        {
+          "id": "dba25c1f-c959-4285-91e7-4f1eb61107b6",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:20}); const b=bs.find(x=>x.shortType===0); return {output:b?{id:b.id,generation:b.generation,priority:b.priority,construction:b.construction}:null}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 0,
+            "priority": 0,
+            "shortType": 0,
+            "type": 1,
+            "virtual": false
+          },
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 1,
+            "priority": 0,
+            "shortType": 1,
+            "type": 3,
+            "virtual": false
+          }
+        ],
+        {
+          "found": true,
+          "priority": 0,
+          "shortType": 0
+        },
+        {
+          "construction": 0,
+          "generation": 1,
+          "id": 0,
+          "priority": -1
+        }
+      ],
+      "reports": [
+        "Our existing swarm is now at low priority (`-1`), confirmed by observation."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "start-inn",
+      "category": "construction",
+      "firstAttemptValid": true,
+      "validScripts": 6,
+      "attemptedScripts": 6,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 7,
+      "latencyMs": 27535,
+      "usage": {
+        "input": 55562,
+        "cachedInput": 51465,
+        "output": 1587
+      },
+      "operations": [
+        {
+          "id": "dcefd8d6-8773-4f0c-bfd4-4edec69674ca",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const bs=ctx.game.buildings({team:ctx.myTeam,limit:100});const ts=ctx.game.buildingTypes().filter(t=>t.name==='inn');return {output:{tick:ctx.tick,map:{width:ctx.game.map.width,height:ctx.game.map.height},innTypes:ts,buildings:bs.map(b=>({id:b.id,generation:b.generation,type:b.type,shortType:b.shortType,x:b.x,y:b.y,construction:b.construction,workers:b.workers,hp:b.hp,resources:b.resources})),teams:ctx.game.teams().filter(t=>t.id===ctx.myTeam)}}}"
+          }
+        },
+        {
+          "id": "accf4fcc-1f2a-4824-8fed-60f11a882e55",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const a=ctx.game.map.region(0,0,16,16);return {output:a.filter(t=>t.visible).map(t=>({x:t.x,y:t.y,terrain:t.terrain,r:t.resource,b:t.building,g:t.groundUnit,forbidden:t.forbidden}))}}"
+          }
+        },
+        {
+          "id": "b5f9dcfb-82eb-4b3c-858d-6c8dc70b916d",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const us=ctx.game.units({team:ctx.myTeam,limit:100});const a=ctx.game.map.region(0,0,12,12);return {output:{units:us.map(u=>({id:u.id,generation:u.generation,type:u.type,x:u.x,y:u.y,activity:u.activity})),tiles:a.slice(0,24)}}}"
+          }
+        },
+        {
+          "id": "9a377dd3-ee2b-495e-ae9d-cb0d5f7b279f",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const a=ctx.game.map.region(0,9,18,8);return {output:a.filter(t=>t.explored).map(t=>({x:t.x,y:t.y,v:t.visible,terrain:t.terrain,r:t.resource,b:t.building,g:t.groundUnit}))}}"
+          }
+        },
+        {
+          "id": "be656452-7711-4858-836d-5caa6370c744",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const site=ctx.game.buildingTypes().find(t=>t.name==='inn'&&t.level===0&&t.site&&!t.virtual);return {output:{candidate:{x:13,y:4,siteType:site.id,footprint:{width:site.width,height:site.height}},nearby:ctx.game.buildings({team:ctx.myTeam,limit:20}).map(b=>({id:b.id,generation:b.generation,x:b.x,y:b.y,shortType:b.shortType}))},orders:[{type:'create',buildingType:site.id,x:13,y:4,workers:1,futureWorkers:1}]}}"
+          }
+        },
+        {
+          "id": "69e63683-99e3-4d96-b4b5-c8926ac97c0c",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {output:{tick:ctx.tick,buildings:ctx.game.buildings({team:ctx.myTeam,limit:20}).map(b=>({id:b.id,generation:b.generation,x:b.x,y:b.y,shortType:b.shortType,construction:b.construction}))}}}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "buildings": [
+            {
+              "construction": 0,
+              "generation": 1,
+              "hp": 700,
+              "id": 0,
+              "resources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 0,
+              "type": 1,
+              "workers": 1,
+              "x": 4,
+              "y": 4
+            },
+            {
+              "construction": 0,
+              "generation": 1,
+              "hp": 200,
+              "id": 1,
+              "resources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "type": 3,
+              "workers": 1,
+              "x": 10,
+              "y": 4
+            }
+          ],
+          "innTypes": [
+            {
+              "height": 2,
+              "id": 2,
+              "level": 0,
+              "maxHp": 200,
+              "maxWorkers": 1,
+              "name": "inn",
+              "resourceCapacity": [
+                3,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "site": true,
+              "virtual": false,
+              "width": 2
+            },
+            {
+              "height": 2,
+              "id": 3,
+              "level": 0,
+              "maxHp": 200,
+              "maxWorkers": 1,
+              "name": "inn",
+              "resourceCapacity": [
+                0,
+                10,
+                0,
+                0,
+                0,
+                40,
+                40,
+                40,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "site": false,
+              "virtual": false,
+              "width": 2
+            },
+            {
+              "height": 2,
+              "id": 4,
+              "level": 1,
+              "maxHp": 500,
+              "maxWorkers": 1,
+              "name": "inn",
+              "resourceCapacity": [
+                8,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "site": true,
+              "virtual": false,
+              "width": 2
+            },
+            {
+              "height": 2,
+              "id": 5,
+              "level": 1,
+              "maxHp": 500,
+              "maxWorkers": 1,
+              "name": "inn",
+              "resourceCapacity": [
+                0,
+                30,
+                0,
+                0,
+                0,
+                80,
+                80,
+                80,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "site": false,
+              "virtual": false,
+              "width": 2
+            },
+            {
+              "height": 3,
+              "id": 6,
+              "level": 2,
+              "maxHp": 700,
+              "maxWorkers": 1,
+              "name": "inn",
+              "resourceCapacity": [
+                7,
+                0,
+                0,
+                5,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "site": true,
+              "virtual": false,
+              "width": 3
+            },
+            {
+              "height": 3,
+              "id": 7,
+              "level": 2,
+              "maxHp": 700,
+              "maxWorkers": 1,
+              "name": "inn",
+              "resourceCapacity": [
+                0,
+                50,
+                0,
+                0,
+                0,
+                200,
+                200,
+                200,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "shortType": 1,
+              "site": false,
+              "virtual": false,
+              "width": 3
+            }
+          ],
+          "map": {
+            "height": 32,
+            "width": 32
+          },
+          "teams": [
+            {
+              "alive": true,
+              "allies": 1,
+              "id": 0,
+              "resources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "tick": 100
+        },
+        [],
+        {
+          "tiles": [
+            {
+              "explored": false,
+              "visible": false,
+              "x": 0,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 1,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 2,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 3,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 4,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 5,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 6,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 7,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 8,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 9,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 10,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 11,
+              "y": 0
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 0,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 2,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 3,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 4,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 5,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 6,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 7,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 8,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 9,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 10,
+              "y": 1
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 11,
+              "y": 1
+            }
+          ],
+          "units": [
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 0,
+              "type": 0,
+              "x": 3,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 1,
+              "type": 0,
+              "x": 4,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 2,
+              "type": 0,
+              "x": 5,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 3,
+              "type": 0,
+              "x": 6,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 4,
+              "type": 0,
+              "x": 7,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 5,
+              "type": 0,
+              "x": 8,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 6,
+              "type": 0,
+              "x": 9,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 7,
+              "type": 0,
+              "x": 10,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 8,
+              "type": 0,
+              "x": 11,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 9,
+              "type": 0,
+              "x": 12,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 10,
+              "type": 0,
+              "x": 13,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 11,
+              "type": 0,
+              "x": 14,
+              "y": 12
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 12,
+              "type": 2,
+              "x": 4,
+              "y": 15
+            },
+            {
+              "activity": 0,
+              "generation": 1,
+              "id": 13,
+              "type": 1,
+              "x": 5,
+              "y": 15
+            }
+          ]
+        },
+        [],
+        {
+          "candidate": {
+            "footprint": {
+              "height": 2,
+              "width": 2
+            },
+            "siteType": 2,
+            "x": 13,
+            "y": 4
+          },
+          "nearby": [
+            {
+              "generation": 1,
+              "id": 0,
+              "shortType": 0,
+              "x": 4,
+              "y": 4
+            },
+            {
+              "generation": 1,
+              "id": 1,
+              "shortType": 1,
+              "x": 10,
+              "y": 4
+            }
+          ]
+        },
+        {
+          "buildings": [
+            {
+              "construction": 0,
+              "generation": 1,
+              "id": 0,
+              "shortType": 0,
+              "x": 4,
+              "y": 4
+            },
+            {
+              "construction": 0,
+              "generation": 1,
+              "id": 1,
+              "shortType": 1,
+              "x": 10,
+              "y": 4
+            },
+            {
+              "construction": 1,
+              "generation": 1,
+              "id": 2,
+              "shortType": 1,
+              "x": 13,
+              "y": 4
+            }
+          ],
+          "tick": 100
+        }
+      ],
+      "reports": [
+        "The inn construction site is established at **(13, 4)**, one tile clear of the existing inn. Work has been ordered with one worker. The site is now visible in the colony as an active construction."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "start-school",
+      "category": "construction",
+      "firstAttemptValid": true,
+      "validScripts": 4,
+      "attemptedScripts": 4,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 5,
+      "latencyMs": 12768,
+      "usage": {
+        "input": 32041,
+        "cachedInput": 30588,
+        "output": 524
+      },
+      "operations": [
+        {
+          "id": "c4bc1ed3-d874-48fa-adcb-d9e7f9464afb",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const t=ctx.game.buildingTypes().filter(x=>x.name==='school'); return {output:t}; }"
+          }
+        },
+        {
+          "id": "af233cfc-c433-48f9-a253-d7ed8397cc0c",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:200}); return {output:{width:ctx.game.map.width,height:ctx.game.map.height,at:bs.filter(b=>b.x>=16&&b.x<=19&&b.y>=8&&b.y<=12).map(b=>({id:b.id,generation:b.generation,type:b.type,x:b.x,y:b.y,construction:b.construction}))}}; }"
+          }
+        },
+        {
+          "id": "c50537e4-85fe-4548-96dc-69b5ecdf4af0",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { return {output:{requested:'level-zero school site at (18,10)',tick:ctx.tick},orders:[{type:'create',buildingType:32,x:18,y:10,workers:2,futureWorkers:1}]}; }"
+          }
+        },
+        {
+          "id": "c963df06-5a67-4ab9-813b-0c671245adff",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:200}); const b=bs.find(x=>x.x===18&&x.y===10&&x.shortType===6&&x.level===0); return {output:{tick:ctx.tick,exists:!!b,building:b?{id:b.id,generation:b.generation,type:b.type,x:b.x,y:b.y,construction:b.construction,workers:b.workers,futureWorkers:b.futureWorkers}:null}}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "height": 2,
+            "id": 32,
+            "level": 0,
+            "maxHp": 360,
+            "maxWorkers": 1,
+            "name": "school",
+            "resourceCapacity": [
+              7,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 6,
+            "site": true,
+            "virtual": false,
+            "width": 2
+          },
+          {
+            "height": 2,
+            "id": 33,
+            "level": 0,
+            "maxHp": 360,
+            "maxWorkers": 0,
+            "name": "school",
+            "resourceCapacity": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 6,
+            "site": false,
+            "virtual": false,
+            "width": 2
+          },
+          {
+            "height": 2,
+            "id": 34,
+            "level": 1,
+            "maxHp": 520,
+            "maxWorkers": 1,
+            "name": "school",
+            "resourceCapacity": [
+              5,
+              0,
+              0,
+              5,
+              12,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 6,
+            "site": true,
+            "virtual": false,
+            "width": 2
+          },
+          {
+            "height": 2,
+            "id": 35,
+            "level": 1,
+            "maxHp": 520,
+            "maxWorkers": 0,
+            "name": "school",
+            "resourceCapacity": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 6,
+            "site": false,
+            "virtual": false,
+            "width": 2
+          },
+          {
+            "height": 2,
+            "id": 36,
+            "level": 2,
+            "maxHp": 700,
+            "maxWorkers": 1,
+            "name": "school",
+            "resourceCapacity": [
+              7,
+              4,
+              0,
+              12,
+              10,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 6,
+            "site": true,
+            "virtual": false,
+            "width": 2
+          },
+          {
+            "height": 2,
+            "id": 37,
+            "level": 2,
+            "maxHp": 700,
+            "maxWorkers": 0,
+            "name": "school",
+            "resourceCapacity": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 6,
+            "site": false,
+            "virtual": false,
+            "width": 2
+          }
+        ],
+        {
+          "at": [],
+          "height": 32,
+          "width": 32
+        },
+        {
+          "requested": "level-zero school site at (18,10)",
+          "tick": 100
+        },
+        {
+          "building": {
+            "construction": 1,
+            "futureWorkers": 1,
+            "generation": 1,
+            "id": 2,
+            "type": 32,
+            "workers": 2,
+            "x": 18,
+            "y": 10
+          },
+          "exists": true,
+          "tick": 100
+        }
+      ],
+      "reports": [
+        "The level-zero school site exists at (18,10), with 2 construction workers and 1 future worker."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "start-tower",
+      "category": "defence",
+      "firstAttemptValid": true,
+      "validScripts": 4,
+      "attemptedScripts": 4,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 5,
+      "latencyMs": 14517,
+      "usage": {
+        "input": 31978,
+        "cachedInput": 30397,
+        "output": 501
+      },
+      "operations": [
+        {
+          "id": "c6f9d9eb-33f5-456f-9442-3068ae50f3b8",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const t=ctx.game.buildingTypes().filter(x=>x.name==='defencetower' && x.level===0); return {output:t}; }"
+          }
+        },
+        {
+          "id": "9eed0258-c11e-4951-b9f2-12456af24d12",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:200}); const t=ctx.game.map.region(18,18,2,2); return {output:{buildings:b.filter(x=>!x.virtual&&x.x<20&&x.y<20),tiles:t}}; }"
+          }
+        },
+        {
+          "id": "14742592-0652-456c-a67d-4eea4269f22d",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { return {orders:[{type:'create',buildingType:38,x:18,y:18,workers:2,futureWorkers:1}]}; }"
+          }
+        },
+        {
+          "id": "568fee9b-5e69-4612-b886-e25f74148dc8",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const b=ctx.game.buildings({team:ctx.myTeam,limit:200}); return {output:{tick:ctx.tick,sites:b.filter(x=>x.shortType===7).map(x=>({id:x.id,generation:x.generation,type:x.type,x:x.x,y:x.y,construction:x.construction,workers:x.workers,futureWorkers:x.futureWorkers}))}}; }"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "height": 2,
+            "id": 38,
+            "level": 0,
+            "maxHp": 480,
+            "maxWorkers": 1,
+            "name": "defencetower",
+            "resourceCapacity": [
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 7,
+            "site": true,
+            "virtual": false,
+            "width": 2
+          },
+          {
+            "height": 2,
+            "id": 39,
+            "level": 0,
+            "maxHp": 480,
+            "maxWorkers": 1,
+            "name": "defencetower",
+            "resourceCapacity": [
+              0,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 7,
+            "site": false,
+            "virtual": false,
+            "width": 2
+          }
+        ],
+        {
+          "buildings": [
+            {
+              "bullets": 0,
+              "clearingResources": [
+                true,
+                true,
+                true,
+                false,
+                true
+              ],
+              "construction": 0,
+              "futureWorkers": 1,
+              "generation": 1,
+              "hp": 700,
+              "id": 0,
+              "level": 0,
+              "maxHp": 700,
+              "minimumLevel": 0,
+              "priority": 0,
+              "production": [
+                1,
+                0,
+                0
+              ],
+              "productionTimeout": 150,
+              "range": 0,
+              "receiveMask": 0,
+              "resources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "sendMask": 0,
+              "shortType": 0,
+              "team": 0,
+              "type": 1,
+              "virtual": false,
+              "wishedResources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "workers": 1,
+              "x": 4,
+              "y": 4
+            },
+            {
+              "bullets": 0,
+              "clearingResources": [
+                true,
+                true,
+                true,
+                false,
+                true
+              ],
+              "construction": 0,
+              "futureWorkers": 1,
+              "generation": 1,
+              "hp": 200,
+              "id": 1,
+              "level": 0,
+              "maxHp": 200,
+              "minimumLevel": 0,
+              "priority": 0,
+              "production": [
+                1,
+                0,
+                0
+              ],
+              "productionTimeout": 0,
+              "range": 0,
+              "receiveMask": 0,
+              "resources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "sendMask": 0,
+              "shortType": 1,
+              "team": 0,
+              "type": 3,
+              "virtual": false,
+              "wishedResources": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "workers": 1,
+              "x": 10,
+              "y": 4
+            }
+          ],
+          "tiles": [
+            {
+              "explored": false,
+              "visible": false,
+              "x": 18,
+              "y": 18
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 19,
+              "y": 18
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 18,
+              "y": 19
+            },
+            {
+              "explored": false,
+              "visible": false,
+              "x": 19,
+              "y": 19
+            }
+          ]
+        },
+        null,
+        {
+          "sites": [
+            {
+              "construction": 1,
+              "futureWorkers": 1,
+              "generation": 1,
+              "id": 2,
+              "type": 38,
+              "workers": 2,
+              "x": 18,
+              "y": 18
+            }
+          ],
+          "tick": 100
+        }
+      ],
+      "reports": [
+        "Confirmed: the level-zero defence-tower site is at (18,18), with 2 construction workers and 1 future worker."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "explore-east",
+      "category": "exploration",
+      "firstAttemptValid": true,
+      "validScripts": 4,
+      "attemptedScripts": 4,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 5,
+      "latencyMs": 11573,
+      "usage": {
+        "input": 29112,
+        "cachedInput": 28441,
+        "output": 504
+      },
+      "operations": [
+        {
+          "id": "e27dd181-6c89-4c46-ba40-28b9c0ada63a",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const types=ctx.game.buildingTypes(); const f=types.find(t=>t.virtual&&t.shortType===8); const bs=ctx.game.buildings({team:ctx.myTeam,limit:200}); return {output:{tick:ctx.tick,flagType:f?{id:f.id,name:f.name}:null,existingFlags:bs.filter(b=>b.virtual&&b.shortType===8).map(b=>({id:b.id,generation:b.generation,x:b.x,y:b.y,range:b.range,workers:b.workers}))}};}"
+          }
+        },
+        {
+          "id": "c064ed08-21f2-42fe-a474-541da7e96738",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {output:{width:ctx.game.map.width,height:ctx.game.map.height}};}"
+          }
+        },
+        {
+          "id": "7cecfd46-810c-4d28-8747-96db74b23fde",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {orders:[{type:'create',buildingType:44,x:20,y:8,workers:2,futureWorkers:2,range:4}]};}"
+          }
+        },
+        {
+          "id": "a171179a-6e28-47ef-bd4d-ad942f5fdd67",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const bs=ctx.game.buildings({team:ctx.myTeam,limit:200});return {output:{tick:ctx.tick,flags:bs.filter(b=>b.virtual&&b.shortType===8&&b.x===20&&b.y===8).map(b=>({id:b.id,generation:b.generation,range:b.range,workers:b.workers,futureWorkers:b.futureWorkers}))}};}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "existingFlags": [],
+          "flagType": {
+            "id": 44,
+            "name": "explorationflag"
+          },
+          "tick": 100
+        },
+        {
+          "height": 32,
+          "width": 32
+        },
+        null,
+        {
+          "flags": [
+            {
+              "futureWorkers": 2,
+              "generation": 1,
+              "id": 2,
+              "range": 4,
+              "workers": 2
+            }
+          ],
+          "tick": 100
+        }
+      ],
+      "reports": [
+        "The exploration flag is in place at (20, 8), with range 4 and a limit of 2 explorers. I verified it exists."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "explore-north",
+      "category": "exploration",
+      "firstAttemptValid": true,
+      "validScripts": 4,
+      "attemptedScripts": 4,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 5,
+      "latencyMs": 10192,
+      "usage": {
+        "input": 29629,
+        "cachedInput": 28840,
+        "output": 591
+      },
+      "operations": [
+        {
+          "id": "7114762b-be10-4d6f-ab4c-860dc05e5a69",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const t=ctx.game.buildingTypes().filter(x=>x.virtual&&x.shortType===8);const b=ctx.game.buildings({team:ctx.myTeam,limit:100});const tile=ctx.game.map.tile(15,2);return {output:{flags:t.map(x=>({id:x.id,name:x.name,level:x.level,site:x.site})),nearby:b.filter(x=>Math.abs(x.x-15)<3&&Math.abs(x.y-2)<3).map(x=>({id:x.id,generation:x.generation,type:x.type,x:x.x,y:x.y,virtual:x.virtual})),tile}}}"
+          }
+        },
+        {
+          "id": "27fb4d48-bf37-4e94-bb0a-5b1858e1f100",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {output:{width:ctx.game.map.width,height:ctx.game.map.height}}}"
+          }
+        },
+        {
+          "id": "29ade660-9ae9-4b49-b3bf-9811aae11e43",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {orders:[{type:'create',buildingType:44,x:15,y:2,workers:1,futureWorkers:1,range:6}]}}"
+          }
+        },
+        {
+          "id": "d62fdea8-081c-4ef1-a82a-480dbfd29da5",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const b=ctx.game.buildings({team:ctx.myTeam,limit:200}).filter(x=>x.virtual&&x.shortType===8&&x.x===15&&x.y===2);return {output:{flags:b.map(x=>({id:x.id,generation:x.generation,range:x.range,workers:x.workers,minimumLevel:x.minimumLevel}))}}}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "flags": [
+            {
+              "id": 44,
+              "level": 0,
+              "name": "explorationflag",
+              "site": false
+            }
+          ],
+          "nearby": [],
+          "tile": {
+            "explored": false,
+            "visible": false,
+            "x": 15,
+            "y": 2
+          }
+        },
+        {
+          "height": 32,
+          "width": 32
+        },
+        null,
+        {
+          "flags": [
+            {
+              "generation": 1,
+              "id": 2,
+              "minimumLevel": 0,
+              "range": 6,
+              "workers": 1
+            }
+          ]
+        }
+      ],
+      "reports": [
+        "The exploration flag exists at (15, 2), with range 6 and 1 worker."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "rally-defence",
+      "category": "defence",
+      "firstAttemptValid": true,
+      "validScripts": 3,
+      "attemptedScripts": 3,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 9483,
+      "usage": {
+        "input": 23463,
+        "cachedInput": 22720,
+        "output": 600
+      },
+      "operations": [
+        {
+          "id": "b34b76c5-402b-42ce-8057-5f3bd6d0770a",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const types=ctx.game.buildingTypes().filter(t=>t.virtual&&t.shortType===9);const buildings=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.virtual);return {output:{types:types.map(t=>({id:t.id,name:t.name,level:t.level,site:t.site})),flags:buildings.map(b=>({id:b.id,generation:b.generation,type:b.type,shortType:b.shortType,x:b.x,y:b.y,range:b.range,minimumLevel:b.minimumLevel}))}};}"
+          }
+        },
+        {
+          "id": "f2f1fe2e-458d-4000-901d-fff47159f469",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {orders:[{type:'create',buildingType:45,x:16,y:16,workers:3,futureWorkers:3,range:5}]};}"
+          }
+        },
+        {
+          "id": "defc53ce-9aaa-4538-92bf-767045c603ae",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const flags=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.virtual&&b.shortType===9);return {output:flags.map(b=>({id:b.id,generation:b.generation,x:b.x,y:b.y,range:b.range,workers:b.workers,futureWorkers:b.futureWorkers,minimumLevel:b.minimumLevel}))};}"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "flags": [],
+          "types": [
+            {
+              "id": 45,
+              "level": 0,
+              "name": "warflag",
+              "site": false
+            }
+          ]
+        },
+        null,
+        [
+          {
+            "futureWorkers": 3,
+            "generation": 1,
+            "id": 2,
+            "minimumLevel": 0,
+            "range": 5,
+            "workers": 3,
+            "x": 16,
+            "y": 16
+          }
+        ]
+      ],
+      "reports": [
+        "War flag verified at **(16,16)** with **radius 5** and a **3-warrior limit**."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "rally-south",
+      "category": "defence",
+      "firstAttemptValid": true,
+      "validScripts": 4,
+      "attemptedScripts": 4,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 9773,
+      "usage": {
+        "input": 25955,
+        "cachedInput": 23913,
+        "output": 513
+      },
+      "operations": [
+        {
+          "id": "c7a27834-0f0c-4b3a-9532-292283caacd7",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){const t=ctx.game.buildingTypes().filter(x=>x.virtual&&x.shortType===9);return {output:t};}"
+          }
+        },
+        {
+          "id": "dee968ad-ab8d-450d-afc6-384733e7e8c0",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {output:ctx.game.buildings({team:ctx.myTeam,limit:100})};}"
+          }
+        },
+        {
+          "id": "132c5da8-7cec-4099-92fd-d86113549730",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {orders:[{type:'create',buildingType:45,x:8,y:20,workers:1,futureWorkers:1,range:3}]};}"
+          }
+        },
+        {
+          "id": "1258b7f7-5614-4990-a82e-a53d45e982f5",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx){return {output:ctx.game.buildings({team:ctx.myTeam,limit:100})};}"
+          }
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "height": 1,
+            "id": 45,
+            "level": 0,
+            "maxHp": 0,
+            "maxWorkers": 1,
+            "name": "warflag",
+            "resourceCapacity": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "shortType": 9,
+            "site": false,
+            "virtual": true,
+            "width": 1
+          }
+        ],
+        [
+          {
+            "bullets": 0,
+            "clearingResources": [
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "construction": 0,
+            "futureWorkers": 1,
+            "generation": 1,
+            "hp": 700,
+            "id": 0,
+            "level": 0,
+            "maxHp": 700,
+            "minimumLevel": 0,
+            "priority": 0,
+            "production": [
+              1,
+              0,
+              0
+            ],
+            "productionTimeout": 150,
+            "range": 0,
+            "receiveMask": 0,
+            "resources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sendMask": 0,
+            "shortType": 0,
+            "team": 0,
+            "type": 1,
+            "virtual": false,
+            "wishedResources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "workers": 1,
+            "x": 4,
+            "y": 4
+          },
+          {
+            "bullets": 0,
+            "clearingResources": [
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "construction": 0,
+            "futureWorkers": 1,
+            "generation": 1,
+            "hp": 200,
+            "id": 1,
+            "level": 0,
+            "maxHp": 200,
+            "minimumLevel": 0,
+            "priority": 0,
+            "production": [
+              1,
+              0,
+              0
+            ],
+            "productionTimeout": 0,
+            "range": 0,
+            "receiveMask": 0,
+            "resources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sendMask": 0,
+            "shortType": 1,
+            "team": 0,
+            "type": 3,
+            "virtual": false,
+            "wishedResources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "workers": 1,
+            "x": 10,
+            "y": 4
+          }
+        ],
+        null,
+        [
+          {
+            "bullets": 0,
+            "clearingResources": [
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "construction": 0,
+            "futureWorkers": 1,
+            "generation": 1,
+            "hp": 700,
+            "id": 0,
+            "level": 0,
+            "maxHp": 700,
+            "minimumLevel": 0,
+            "priority": 0,
+            "production": [
+              1,
+              0,
+              0
+            ],
+            "productionTimeout": 150,
+            "range": 0,
+            "receiveMask": 0,
+            "resources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sendMask": 0,
+            "shortType": 0,
+            "team": 0,
+            "type": 1,
+            "virtual": false,
+            "wishedResources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "workers": 1,
+            "x": 4,
+            "y": 4
+          },
+          {
+            "bullets": 0,
+            "clearingResources": [
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "construction": 0,
+            "futureWorkers": 1,
+            "generation": 1,
+            "hp": 200,
+            "id": 1,
+            "level": 0,
+            "maxHp": 200,
+            "minimumLevel": 0,
+            "priority": 0,
+            "production": [
+              1,
+              0,
+              0
+            ],
+            "productionTimeout": 0,
+            "range": 0,
+            "receiveMask": 0,
+            "resources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sendMask": 0,
+            "shortType": 1,
+            "team": 0,
+            "type": 3,
+            "virtual": false,
+            "wishedResources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "workers": 1,
+            "x": 10,
+            "y": 4
+          },
+          {
+            "bullets": 0,
+            "clearingResources": [
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "construction": 0,
+            "futureWorkers": 1,
+            "generation": 1,
+            "hp": 0,
+            "id": 2,
+            "level": 0,
+            "maxHp": 0,
+            "minimumLevel": 0,
+            "priority": 0,
+            "production": [
+              1,
+              0,
+              0
+            ],
+            "productionTimeout": 0,
+            "range": 3,
+            "receiveMask": 0,
+            "resources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "sendMask": 0,
+            "shortType": 9,
+            "team": 0,
+            "type": 45,
+            "virtual": true,
+            "wishedResources": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "workers": 1,
+            "x": 8,
+            "y": 20
+          }
+        ]
+      ],
+      "reports": [
+        "War flag confirmed at (8,20), radius 3, with its limit set to 1."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "standing-workers",
+      "category": "recurring",
+      "firstAttemptValid": true,
+      "validScripts": 2,
+      "attemptedScripts": 2,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 3,
+      "latencyMs": 6906,
+      "usage": {
+        "input": 17212,
+        "cachedInput": 16652,
+        "output": 442
+      },
+      "operations": [
+        {
+          "id": "372044e9-a843-4ff0-93d1-bfe54b5c49c8",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const bs=ctx.game.buildings({team:ctx.myTeam,limit:50}); return {output:bs.map(b=>({id:b.id,generation:b.generation,shortType:b.shortType,type:b.type,workers:b.workers,construction:b.construction,virtual:b.virtual}))}; }"
+          }
+        },
+        {
+          "id": "56687b09-f235-4081-9440-9e0e2fce0b49",
+          "request": {
+            "kind": "install",
+            "program": {
+              "id": "29d3b56a-4ddb-462f-916b-3fb2de279933",
+              "name": "Inn staffing",
+              "source": "function step(ctx) { const inns=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.shortType===1 && !b.virtual); const orders=[]; for(const b of inns) if(b.workers!==4 && orders.length<32) orders.push({type:'workers',building:{id:b.id,generation:b.generation},workers:4}); return {output:{inns:inns.length,staffing:inns.map(b=>({id:b.id,workers:b.workers})),ordersQueued:orders.length},orders}; }",
+              "revision": 1,
+              "description": "Maintain four workers assigned to our inn.",
+              "intervalTicks": 25
+            }
+          }
+        },
+        {
+          "manual": {
+            "type": "workers",
+            "building": {
+              "id": 1,
+              "generation": 1
+            },
+            "workers": 1
+          }
+        },
+        {
+          "advance": 100
+        }
+      ],
+      "outputs": [
+        [
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 0,
+            "shortType": 0,
+            "type": 1,
+            "virtual": false,
+            "workers": 1
+          },
+          {
+            "construction": 0,
+            "generation": 1,
+            "id": 1,
+            "shortType": 1,
+            "type": 3,
+            "virtual": false,
+            "workers": 1
+          }
+        ],
+        {
+          "inns": 1,
+          "ordersQueued": 1,
+          "staffing": [
+            {
+              "id": 1,
+              "workers": 1
+            }
+          ]
+        }
+      ],
+      "reports": [
+        "Standing order installed to keep four workers assigned to your inn. It found one inn staffed at 1 and queued the change; execution is not yet confirmed."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "standing-production",
+      "category": "recurring",
+      "firstAttemptValid": true,
+      "validScripts": 2,
+      "attemptedScripts": 2,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 0,
+      "repairs": 0,
+      "calls": 4,
+      "latencyMs": 9480,
+      "usage": {
+        "input": 23189,
+        "cachedInput": 22495,
+        "output": 599
+      },
+      "operations": [
+        {
+          "id": "4a44f308-8a6d-42be-8f9f-ebc159899d12",
+          "request": {
+            "kind": "list"
+          }
+        },
+        {
+          "id": "abde3dc5-0a46-486e-b0d2-8f747bbb3cd6",
+          "request": {
+            "kind": "install",
+            "program": {
+              "id": "2f410839-3c50-4d89-9dbe-817229812606",
+              "name": "Worker-Heavy Swarm Production",
+              "source": "function step(ctx) {\n  const swarms = ctx.game.buildings({team:ctx.myTeam,limit:200}).filter(b => b.shortType===0 && b.construction===0);\n  const orders = swarms.filter(b => !Array.isArray(b.production) || b.production[0]!==5 || b.production[1]!==1 || b.production[2]!==2).slice(0,32).map(b => ({type:'production',building:{id:b.id,generation:b.generation},ratios:[5,1,2]}));\n  return {output:{swarms:swarms.length,settingsQueued:orders.length},orders};\n}\n",
+              "revision": 1,
+              "description": "Maintain swarm production weights at five workers per explorer and two warriors per explorer.",
+              "intervalTicks": 100
+            }
+          }
+        },
+        {
+          "id": "6a4b514c-7bce-4606-9fd5-a6835dcf627f",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) {\n  const swarms = ctx.game.buildings({team:ctx.myTeam,limit:200}).filter(b => b.shortType===0 && b.construction===0);\n  return {output:swarms.map(b=>({id:b.id,generation:b.generation,production:b.production}))};\n}"
+          }
+        },
+        {
+          "manual": {
+            "type": "production",
+            "building": {
+              "id": 0,
+              "generation": 1
+            },
+            "ratios": [
+              1,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "advance": 100
+        }
+      ],
+      "outputs": [
+        [],
+        {
+          "settingsQueued": 1,
+          "swarms": 1
+        },
+        [
+          {
+            "generation": 1,
+            "id": 0,
+            "production": [
+              5,
+              1,
+              2
+            ]
+          }
+        ]
+      ],
+      "reports": [
+        "The standing order is installed. I observed the swarm set to **5 workers : 1 explorer : 2 warriors**. It will correct future changes to the production setting."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "population-trigger",
+      "category": "trigger",
+      "firstAttemptValid": true,
+      "validScripts": 2,
+      "attemptedScripts": 2,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 4,
+      "repairs": 0,
+      "calls": 7,
+      "latencyMs": 23112,
+      "usage": {
+        "input": 48361,
+        "cachedInput": 44249,
+        "output": 1400
+      },
+      "operations": [
+        {
+          "id": "1ef1830a-b54e-4c3c-9a39-d250fdf035da",
+          "request": {
+            "kind": "list"
+          }
+        },
+        {
+          "id": "241384b0-7f81-46b7-b8c2-0f0efb3bf6b8",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) {\n const units=ctx.game.units({team:ctx.myTeam,limit:200});\n const buildings=ctx.game.buildings({team:ctx.myTeam,limit:100});\n return {output:{tick:ctx.tick,workers:units.filter(u=>u.type===0).length,swarms:buildings.filter(b=>b.shortType===0).map(b=>({id:b.id,generation:b.generation,construction:b.construction,production:b.production}))}};\n}"
+          }
+        },
+        {
+          "id": "ffa2da72-abfc-4646-835e-15cb11588d5c",
+          "request": {
+            "kind": "install",
+            "program": {
+              "id": "7f0f6ec2-36ae-4e47-9dbe-2beff1130001",
+              "name": "Warrior workforce threshold watch",
+              "source": "let pending=false, done=false, lastOrderTick=-100000;\nfunction step(ctx) {\n if(done) return {output:{status:'complete'}};\n const units=ctx.game.units({team:ctx.myTeam,limit:200});\n const workers=units.filter(u=>u.type===0).length;\n if(workers<16) return {output:{workers,threshold:16,status:'watching'}};\n const swarms=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.shortType===0 && b.construction===0);\n if(!swarms.length) return {output:{workers,threshold:16,status:'threshold-met-no-active-swarm'}};\n const target=swarms.every(b=>Array.isArray(b.production) && b.production[0]===0 && b.production[1]===0 && b.production[2]>0);\n if(target) {\n  done=true;\n  if(pending) ctx.wakeAgent({key:'warrior-production-ready',reason:'The worker threshold is met and warrior-only swarm production is observed.',data:{tick:ctx.tick,workers,swarms:swarms.map(b=>({id:b.id,generation:b.generation,production:b.production}))}});\n  return {output:{workers,status:'warrior-only-observed'}};\n }\n const orders=[];\n if(!pending || ctx.tick-lastOrderTick>=100) {\n  for(const b of swarms.slice(0,32)) orders.push({type:'production',building:{id:b.id,generation:b.generation},ratios:[0,0,1]});\n  pending=true; lastOrderTick=ctx.tick;\n }\n return {output:{workers,status:pending?'production-order-pending':'threshold-met'},orders};\n}",
+              "revision": 1,
+              "description": "When the colony has at least 16 workers, set active swarms to warrior-only production and notify command after the setting is observed.",
+              "intervalTicks": 25
+            }
+          }
+        },
+        {
+          "addWorkers": 5
+        },
+        {
+          "advance": 100
+        },
+        {
+          "advance": 100
+        },
+        {
+          "id": "140b7b9d-1db7-4924-a185-ff13626241b9",
+          "request": {
+            "kind": "list"
+          }
+        },
+        {
+          "id": "e3627c8b-478b-4b03-afb9-d6047c764bda",
+          "request": {
+            "kind": "pause",
+            "programId": "7f0f6ec2-36ae-4e47-9dbe-2beff1130001",
+            "expectedRevision": 1
+          }
+        },
+        {
+          "id": "9af83d70-4517-416c-95d7-5179f02cb3c4",
+          "request": {
+            "kind": "list"
+          }
+        }
+      ],
+      "outputs": [
+        [],
+        {
+          "swarms": [
+            {
+              "construction": 0,
+              "generation": 1,
+              "id": 0,
+              "production": [
+                1,
+                0,
+                0
+              ]
+            }
+          ],
+          "tick": 100,
+          "workers": 12
+        },
+        {
+          "status": "watching",
+          "threshold": 16,
+          "workers": 12
+        },
+        [
+          {
+            "definition": {
+              "description": "When the colony has at least 16 workers, set active swarms to warrior-only production and notify command after the setting is observed.",
+              "id": "7f0f6ec2-36ae-4e47-9dbe-2beff1130001",
+              "intervalTicks": 25,
+              "name": "Warrior workforce threshold watch",
+              "revision": 1,
+              "source": "let pending=false, done=false, lastOrderTick=-100000;\nfunction step(ctx) {\n if(done) return {output:{status:'complete'}};\n const units=ctx.game.units({team:ctx.myTeam,limit:200});\n const workers=units.filter(u=>u.type===0).length;\n if(workers<16) return {output:{workers,threshold:16,status:'watching'}};\n const swarms=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.shortType===0 && b.construction===0);\n if(!swarms.length) return {output:{workers,threshold:16,status:'threshold-met-no-active-swarm'}};\n const target=swarms.every(b=>Array.isArray(b.production) && b.production[0]===0 && b.production[1]===0 && b.production[2]>0);\n if(target) {\n  done=true;\n  if(pending) ctx.wakeAgent({key:'warrior-production-ready',reason:'The worker threshold is met and warrior-only swarm production is observed.',data:{tick:ctx.tick,workers,swarms:swarms.map(b=>({id:b.id,generation:b.generation,production:b.production}))}});\n  return {output:{workers,status:'warrior-only-observed'}};\n }\n const orders=[];\n if(!pending || ctx.tick-lastOrderTick>=100) {\n  for(const b of swarms.slice(0,32)) orders.push({type:'production',building:{id:b.id,generation:b.generation},ratios:[0,0,1]});\n  pending=true; lastOrderTick=ctx.tick;\n }\n return {output:{workers,status:pending?'production-order-pending':'threshold-met'},orders};\n}"
+            },
+            "nextTick": 325,
+            "recentResult": {
+              "output": {
+                "status": "warrior-only-observed",
+                "workers": 17
+              },
+              "tick": 300
+            },
+            "status": "active"
+          }
+        ],
+        [
+          {
+            "controlStatus": "",
+            "description": "When the colony has at least 16 workers, set active swarms to warrior-only production and notify command after the setting is observed.",
+            "id": "7f0f6ec2-36ae-4e47-9dbe-2beff1130001",
+            "missingCheckpoint": false,
+            "name": "Warrior workforce threshold watch",
+            "paused": false,
+            "revision": 1
+          }
+        ],
+        [
+          {
+            "definition": {
+              "description": "When the colony has at least 16 workers, set active swarms to warrior-only production and notify command after the setting is observed.",
+              "id": "7f0f6ec2-36ae-4e47-9dbe-2beff1130001",
+              "intervalTicks": 25,
+              "name": "Warrior workforce threshold watch",
+              "revision": 1,
+              "source": "let pending=false, done=false, lastOrderTick=-100000;\nfunction step(ctx) {\n if(done) return {output:{status:'complete'}};\n const units=ctx.game.units({team:ctx.myTeam,limit:200});\n const workers=units.filter(u=>u.type===0).length;\n if(workers<16) return {output:{workers,threshold:16,status:'watching'}};\n const swarms=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.shortType===0 && b.construction===0);\n if(!swarms.length) return {output:{workers,threshold:16,status:'threshold-met-no-active-swarm'}};\n const target=swarms.every(b=>Array.isArray(b.production) && b.production[0]===0 && b.production[1]===0 && b.production[2]>0);\n if(target) {\n  done=true;\n  if(pending) ctx.wakeAgent({key:'warrior-production-ready',reason:'The worker threshold is met and warrior-only swarm production is observed.',data:{tick:ctx.tick,workers,swarms:swarms.map(b=>({id:b.id,generation:b.generation,production:b.production}))}});\n  return {output:{workers,status:'warrior-only-observed'}};\n }\n const orders=[];\n if(!pending || ctx.tick-lastOrderTick>=100) {\n  for(const b of swarms.slice(0,32)) orders.push({type:'production',building:{id:b.id,generation:b.generation},ratios:[0,0,1]});\n  pending=true; lastOrderTick=ctx.tick;\n }\n return {output:{workers,status:pending?'production-order-pending':'threshold-met'},orders};\n}"
+            },
+            "nextTick": 325,
+            "recentResult": {
+              "output": {
+                "status": "warrior-only-observed",
+                "workers": 17
+              },
+              "tick": 300
+            },
+            "status": "paused"
+          }
+        ]
+      ],
+      "reports": [
+        "We have 12 workers, so the 16-worker threshold hasn’t been reached. A standing order is now watching; once it’s met, it will set active swarms to warrior-only production and notify me after that setting is observed.",
+        "The threshold condition was met: 17 workers, and warrior-only production was observed on the swarm. I’ve paused the standing order; no further monitoring is scheduled."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    },
+    {
+      "id": "inn-trigger",
+      "category": "trigger",
+      "firstAttemptValid": true,
+      "validScripts": 2,
+      "attemptedScripts": 2,
+      "completed": true,
+      "commandWithoutRepair": true,
+      "reportQuality": true,
+      "wakeCalls": 1,
+      "repairs": 0,
+      "calls": 5,
+      "latencyMs": 18817,
+      "usage": {
+        "input": 30686,
+        "cachedInput": 27825,
+        "output": 1598
+      },
+      "operations": [
+        {
+          "id": "938037eb-daa8-4311-a8b3-3c26e5e44edb",
+          "request": {
+            "kind": "list"
+          }
+        },
+        {
+          "id": "c88cd8b3-b45f-4b61-830f-fcdb11e91f70",
+          "request": {
+            "kind": "execute",
+            "source": "function step(ctx) { const units=ctx.game.units({team:ctx.myTeam,limit:200}); const buildings=ctx.game.buildings({team:ctx.myTeam,limit:100}); return {output:{tick:ctx.tick,workers:units.filter(u=>u.type===0).length,inns:buildings.filter(b=>b.shortType===1).map(b=>({id:b.id,generation:b.generation,priority:b.priority,construction:b.construction}))}}; }"
+          }
+        },
+        {
+          "id": "06d3f573-02aa-48c6-ac49-db7ff1f9f42b",
+          "request": {
+            "kind": "install",
+            "program": {
+              "id": "a3d1cc34-8ed5-4c27-98e5-143202cccbb1",
+              "name": "Workforce threshold watch",
+              "source": "let wasAbove=false; let pending=false; function step(ctx) { const units=ctx.game.units({team:ctx.myTeam,limit:200}); const workers=units.filter(u=>u.type===0).length; const above=workers>15; const inns=ctx.game.buildings({team:ctx.myTeam,limit:100}).filter(b=>b.shortType===1 && !b.virtual); const orders=[]; if(pending && inns.some(b=>b.priority===1)) { ctx.wakeAgent({key:'workforce-over-15',reason:'Workforce exceeded 15; inn priority is now high.',data:{tick:ctx.tick,workers}}); pending=false; } if(above && !wasAbove) { const inn=inns[0]; if(inn) { if(inn.priority===1) { ctx.wakeAgent({key:'workforce-over-15',reason:'Workforce exceeded 15; inn was already high priority.',data:{tick:ctx.tick,workers}}); } else { orders.push({type:'priority',building:{id:inn.id,generation:inn.generation},priority:1}); pending=true; } } } wasAbove=above; return {output:{tick:ctx.tick,workers,above15:above,innPriority:inns.length?inns[0].priority:null},orders}; }",
+              "revision": 1,
+              "description": "When the workforce crosses above 15 workers, raise the inn to high priority and report after the priority change is observed.",
+              "intervalTicks": 25
+            }
+          }
+        },
+        {
+          "addWorkers": 5
+        },
+        {
+          "advance": 100
+        },
+        {
+          "advance": 100
+        }
+      ],
+      "outputs": [
+        [],
+        {
+          "inns": [
+            {
+              "construction": 0,
+              "generation": 1,
+              "id": 1,
+              "priority": 0
+            }
+          ],
+          "tick": 100,
+          "workers": 12
+        },
+        {
+          "above15": false,
+          "innPriority": 0,
+          "tick": 100,
+          "workers": 12
+        }
+      ],
+      "reports": [
+        "Standing order installed to monitor the workforce every 25 ticks. You currently have 12 workers, and your inn is at normal priority. If the workforce grows past 15, the order will raise the inn’s priority and report back once the change is observed.",
+        "Workforce is now 17, and the inn’s high priority has been confirmed. The standing order remains active."
+      ],
+      "providerModels": [
+        "gpt-6-luna"
+      ]
+    }
+  ]
+}

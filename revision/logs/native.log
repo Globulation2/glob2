@@ -1,0 +1,8 @@
+PASS HiveMindEvaluation/Hive Mind evaluation gameplay fixture (0.0s)
+PASS glob2-unit-tests HiveMind (5 cases) (0.0s)
+PASS HiveMindIntegration/Hive Mind copies the engine fog boundary and validates ownership (0.0s)
+PASS HiveMindScheduler/Hive Mind cadence replacement cancellation and lost acknowledgements (0.6s)
+PASS HiveMindPresentation/Hive Mind commander panel [display] (1.0s)
+
+5 passed, 0 failed, 0 skipped (1.7s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/tests/junit.xml (9 cases)

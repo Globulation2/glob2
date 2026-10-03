@@ -1,0 +1,94 @@
+{
+  "revision/eval/gpt-6-luna.json": {
+    "bytes": 83686,
+    "sha256": "fa21e85b967350b6abe4d819cc39a7bd9f3bc3688fbe080effd306f502dc92c3"
+  },
+  "revision/eval/gpt-6.1-sol.json": {
+    "bytes": 70827,
+    "sha256": "214835bee9bd801c3d99c8855f6857d9c5a78e64be2afec4e42f433dd735beba"
+  },
+  "revision/eval/gpt-6-astra.json": {
+    "bytes": 62458,
+    "sha256": "b618c9a4a7de255f08c567702a0d75177f6257dd5d0f9bff00cbff3f9576c8da"
+  },
+  "revision/eval/selection.json": {
+    "bytes": 1453,
+    "sha256": "54c49a654f31a5ce56b8af7596f5aa34b29da8f9c6a5cc9775bd32f515a7b76b"
+  },
+  "revision/screenshots/hive-commander-in-match.png": {
+    "bytes": 382057,
+    "sha256": "1b90f75cf0514e9241c3e71b8d795ffb4e93d0ed5a4266e96f46b8972caeda1e"
+  },
+  "revision/screenshots/hive-command-input-in-match.png": {
+    "bytes": 342319,
+    "sha256": "e5c9226d3d8958bee651d69890c457375ff7801c7b82e42c58f91a4ff7f13f54"
+  },
+  "revision/screenshots/credits-desktop-revised.png": {
+    "bytes": 321145,
+    "sha256": "2868df7c31f6364efb2dde3271752b88e50ad5c2548f6441527ed5d4f67b47ea"
+  },
+  "revision/screenshots/credits-mobile-revised.png": {
+    "bytes": 227703,
+    "sha256": "59e7ad91364c47321847db8b22504c65f18918de5a989d4979d9ae9391300a0b"
+  },
+  "revision/screenshots/credits-empty-revised.png": {
+    "bytes": 314075,
+    "sha256": "25eb8e805115458360f07dd3be47b84785264958ce875a6445bbe802fc95fe8d"
+  },
+  "revision/screenshots/settings-online-revised.png": {
+    "bytes": 188853,
+    "sha256": "13ad84253c9f4cf99df13ab42f91b057ddaf0772c34575d891aaefb4fca22374"
+  },
+  "revision/logs/platform.log": {
+    "bytes": 505,
+    "sha256": "d7d8a8dbd23df6993f7756e8c808f985eb6d0eb3c64157ea4b65c3341e4a38b1"
+  },
+  "revision/logs/native.log": {
+    "bytes": 537,
+    "sha256": "6647b5663dc5a8ce2d04247452896bb44192d28424b0f851f4b7debd85628b6c"
+  },
+  "revision/logs/browser.log": {
+    "bytes": 5435,
+    "sha256": "0a332535c9bfc8f0bf07774b4704ebeca557bfc1825fd11c41d1c5d6b378b282"
+  },
+  "revision/logs/desktop-ui.log": {
+    "bytes": 1436,
+    "sha256": "6ee1886ec4b2f63a0b695bf5ca308546ffed4a8f413360188ce9cb2bd1b5e6ec"
+  },
+  "revision/replays/native/native.replay.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "revision/replays/native/verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "de96467a87b046dc6722c9b7d51722f49adfdb84c3cba28beb840cc60aea3302"
+  },
+  "revision/replays/browser/serial-1.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "revision/replays/browser/threaded-1.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "revision/replays/browser/threaded-2.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "revision/replays/browser/threaded-4.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "revision/replays/browser/verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "de96467a87b046dc6722c9b7d51722f49adfdb84c3cba28beb840cc60aea3302"
+  },
+  "revision/replay-comparison.json": {
+    "bytes": 651,
+    "sha256": "d11bda510d2972a2c5ff9d66599bceab63c581488643a768857b79f1fd66bde1"
+  },
+  "revision/README.md": {
+    "bytes": 2932,
+    "sha256": "3824312a4f67829e9f744fda414bbd913a526b7354a44ad5a391d2c511395f7e"
+  }
+}
