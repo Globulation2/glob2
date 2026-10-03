@@ -7,6 +7,7 @@ import importlib.util
 from pathlib import Path
 import re
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKFLOWS = ROOT / '.github/workflows'
@@ -148,6 +149,13 @@ class SelectionTest(unittest.TestCase):
                 run(5, 'old', path='.github/workflows/build.yml@refs/heads/feature')]
         self.assertEqual(self.select(runs, heads), [5])
 
+    def test_legacy_release_pr_runs_are_retired_even_at_the_current_head(self):
+        rows=[run(1,'current',path='.github/workflows/steam-windows-package.yml',status='in_progress'),
+              run(2,'current',path='.github/workflows/mac-app-store.yml'),
+              run(3,'current',path='.github/workflows/steam-windows-package.yml',event='workflow_dispatch'),
+              run(4,'current',path='.github/workflows/mac-app-store.yml',event='workflow_dispatch')]
+        self.assertEqual(self.select(rows,{('pr','o/r','feature'):'current'}),[1,2])
+
     def test_default_branch_is_opt_in_and_keeps_its_newest_run(self):
         runs = [run(1, 'a', branch='master', event='push'), run(2, 'b', branch='master', event='push'),
                 run(3, 'c', branch='master', event='schedule')]
@@ -162,3 +170,25 @@ class SelectionTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class MasterExecutionTest(unittest.TestCase):
+    def test_queued_workflow_with_active_or_completed_job_is_protected(self):
+        row=run(1,'old',branch='master',event='push')
+        for job in [dict(status='in_progress'),dict(status='queued',runner_id=123),
+                    dict(status='completed',steps=[dict(started_at='2026-10-03T04:00:00Z')])]:
+            self.assertTrue(cancel.master_execution_started('o/r',row,read=lambda *args:[job]))
+        self.assertFalse(cancel.master_execution_started('o/r',row,read=lambda *args:[dict(status='queued',runner_id=0),dict(status='completed',conclusion='skipped',steps=[])]))
+        with patch.object(cancel,'master_execution_started',return_value=True):
+            cancel.protect_started_master('o/r',[row],'master')
+        newer=run(2,'new',branch='master',event='push')
+        self.assertEqual(cancel.select_superseded([row,newer],{('branch','o/r','master'):'latest'},repository='o/r',include_default_branch=True),[])
+
+    def test_unknown_execution_is_protected_and_current_attempt_is_queried(self):
+        import subprocess
+        row=dict(run(1,'old',branch='master',event='push'),run_attempt=3)
+        with patch.object(cancel,'gh_pages',side_effect=subprocess.CalledProcessError(1,['gh'])):
+            self.assertTrue(cancel.master_execution_started('o/r',row))
+        with patch.object(cancel,'gh_pages',return_value=[]) as read:
+            self.assertFalse(cancel.master_execution_started('o/r',row))
+            self.assertIn('/attempts/3/jobs',read.call_args.args[0])
