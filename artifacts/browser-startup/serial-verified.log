@@ -1,0 +1,53 @@
+
+Running 8 tests using 1 worker
+
+(node:148462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/asset-loading.spec.js:7:1 › the loading page shows download progress and the game starts with core and game sprites (16.3s)
+  ✓  2 [chromium] › browser/tests/asset-loading.spec.js:38:38 › a failed core download says so and offers to try again (12.7s)
+  ✓  3 [chromium] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again (15.0s)
+  ✓  4 [chromium] › browser/tests/asset-loading.spec.js:50:1 › a second visit starts from the packages cached on the device (19.2s)
+  ✘  5 [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start (56.7s)
+(node:157430) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  6 [chromium] › browser/tests/staged-assets.spec.js:68:1 › later packages arrive in the background and replace the core font (39.3s)
+  ✓  7 [chromium] › browser/tests/staged-assets.spec.js:82:1 › a Chinese interface downloads the full font before the game starts (30.1s)
+  ✓  8 [chromium] › browser/tests/staged-assets.spec.js:102:1 › an interface in another language downloads its translations before the game starts (26.8s)
+
+
+  1) [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 1
+    Received:   0
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      52 |   // This region contains only colony terrain and units. It must animate as
+      53 |   // soon as the menu appears, even while every later package is still held.
+    > 54 |   await expect.poll(async () => (await snapshot(page)).frames).toBeGreaterThan(1);
+         |                                                                ^
+      55 |   const clip = {x:800, y:200, width:350, height:500};
+      56 |   const first = await page.screenshot({clip, animations:'disabled', path:info.outputPath('colony-first.png')});
+      57 |   await expect.poll(async () => (await page.screenshot({clip, animations:'disabled'})).equals(first),
+        at /home/bradley/.codex/worktrees/152b/glob2/browser/tests/staged-assets.spec.js:54:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+  7 passed (4.0m)

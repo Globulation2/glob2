@@ -1,0 +1,595 @@
+
+Running 36 tests using 3 workers
+
+(node:154613) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:154615) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/36] [chromium] › browser/tests/menu-presentation.spec.js:16:1 › custom setup leaves the colony visible around its own panel
+[2/36] [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start
+(node:154611) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/36] [chromium] › browser/tests/asset-loading.spec.js:7:1 › the loading page shows download progress and the game starts with core and game sprites
+[4/36] [chromium] › browser/tests/asset-loading.spec.js:38:38 › a failed core download says so and offers to try again
+[5/36] [chromium] › browser/tests/menu-presentation.spec.js:22:1 › menu presentation survives a match and nested menus
+[6/36] [chromium] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again
+  1) [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 1
+    Received:   0
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      52 |   // This region contains only colony terrain and units. It must animate as
+      53 |   // soon as the menu appears, even while every later package is still held.
+    > 54 |   await expect.poll(async () => (await snapshot(page)).frames).toBeGreaterThan(1);
+         |                                                                ^
+      55 |   const clip = {x:800, y:200, width:350, height:500};
+      56 |   const first = await page.screenshot({clip, animations:'disabled', path:info.outputPath('colony-first.png')});
+      57 |   await expect.poll(async () => (await page.screenshot({clip, animations:'disabled'})).equals(first),
+        at /home/bradley/.codex/worktrees/152b/glob2/browser/tests/staged-assets.spec.js:54:64
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:157997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[7/36] [chromium] › browser/tests/staged-assets.spec.js:68:1 › later packages arrive in the background and replace the core font
+[8/36] [chromium] › browser/tests/asset-loading.spec.js:50:1 › a second visit starts from the packages cached on the device
+[9/36] [chromium] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 1 › browser keeps its system cursor through menus, gameplay and reload
+[10/36] [chromium] › browser/tests/staged-assets.spec.js:82:1 › a Chinese interface downloads the full font before the game starts
+(node:160693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[11/36] [firefox] › browser/tests/asset-loading.spec.js:7:1 › the loading page shows download progress and the game starts with core and game sprites
+[12/36] [chromium] › browser/tests/staged-assets.spec.js:102:1 › an interface in another language downloads its translations before the game starts
+[13/36] [chromium] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 2 › browser keeps its system cursor through menus, gameplay and reload
+[14/36] [firefox] › browser/tests/asset-loading.spec.js:38:38 › a failed core download says so and offers to try again
+[15/36] [firefox] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again
+(node:162774) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[16/36] [firefox] › browser/tests/menu-presentation.spec.js:16:1 › custom setup leaves the colony visible around its own panel
+(node:163459) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[17/36] [firefox] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start
+[18/36] [firefox] › browser/tests/menu-presentation.spec.js:22:1 › menu presentation survives a match and nested menus
+[19/36] [firefox] › browser/tests/staged-assets.spec.js:68:1 › later packages arrive in the background and replace the core font
+[20/36] [firefox] › browser/tests/staged-assets.spec.js:82:1 › a Chinese interface downloads the full font before the game starts
+[21/36] [firefox] › browser/tests/staged-assets.spec.js:102:1 › an interface in another language downloads its translations before the game starts
+(node:165725) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[22/36] [webkit] › browser/tests/asset-loading.spec.js:7:1 › the loading page shows download progress and the game starts with core and game sprites
+  2) [webkit] › browser/tests/asset-loading.spec.js:7:1 › the loading page shows download progress and the game starts with core and game sprites 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=165741
+    [pid=165741][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=165741
+      - [pid=165741][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=165741] <gracefully close start>
+      - [pid=165741] <kill>
+      - [pid=165741] <will force kill>
+      - [pid=165741] exception while trying to kill process: Error: kill ESRCH
+      - [pid=165741] <process did exit: exitCode=127, signal=null>
+      - [pid=165741] starting temporary directories cleanup
+      - [pid=165741] finished temporary directories cleanup
+      - [pid=165741] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/asset-loading-the-loading--7e0e1--with-core-and-game-sprites-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/asset-loading-the-loading--7e0e1--with-core-and-game-sprites-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/asset-loading-the-loading--7e0e1--with-core-and-game-sprites-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:165752) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[23/36] [webkit] › browser/tests/asset-loading.spec.js:38:38 › a failed core download says so and offers to try again
+  3) [webkit] › browser/tests/asset-loading.spec.js:38:38 › a failed core download says so and offers to try again 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=165769
+    [pid=165769][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=165769
+      - [pid=165769][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=165769] <gracefully close start>
+      - [pid=165769] <kill>
+      - [pid=165769] <will force kill>
+      - [pid=165769] exception while trying to kill process: Error: kill ESRCH
+      - [pid=165769] <process did exit: exitCode=127, signal=null>
+      - [pid=165769] starting temporary directories cleanup
+      - [pid=165769] finished temporary directories cleanup
+      - [pid=165769] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/asset-loading-a-failed-cor-8da8f--so-and-offers-to-try-again-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:165779) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[24/36] [webkit] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again
+  4) [webkit] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=165790
+    [pid=165790][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=165790
+      - [pid=165790][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=165790] <gracefully close start>
+      - [pid=165790] <kill>
+      - [pid=165790] <will force kill>
+      - [pid=165790] <process did exit: exitCode=127, signal=null>
+      - [pid=165790] starting temporary directories cleanup
+      - [pid=165790] finished temporary directories cleanup
+      - [pid=165790] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/asset-loading-a-failed-gam-d6847--so-and-offers-to-try-again-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/asset-loading-a-failed-gam-d6847--so-and-offers-to-try-again-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/asset-loading-a-failed-gam-d6847--so-and-offers-to-try-again-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:165799) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[25/36] [webkit] › browser/tests/asset-loading.spec.js:50:1 › a second visit starts from the packages cached on the device
+  5) [webkit] › browser/tests/asset-loading.spec.js:50:1 › a second visit starts from the packages cached on the device 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=165824
+    [pid=165824][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=165824
+      - [pid=165824][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=165824] <gracefully close start>
+      - [pid=165824] <kill>
+      - [pid=165824] <will force kill>
+      - [pid=165824] exception while trying to kill process: Error: kill ESRCH
+      - [pid=165824] <process did exit: exitCode=127, signal=null>
+      - [pid=165824] starting temporary directories cleanup
+      - [pid=165824] finished temporary directories cleanup
+      - [pid=165824] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/asset-loading-a-second-vis-dd269-ckages-cached-on-the-device-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/asset-loading-a-second-vis-dd269-ckages-cached-on-the-device-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/asset-loading-a-second-vis-dd269-ckages-cached-on-the-device-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:165836) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[26/36] [webkit] › browser/tests/menu-presentation.spec.js:16:1 › custom setup leaves the colony visible around its own panel
+  6) [webkit] › browser/tests/menu-presentation.spec.js:16:1 › custom setup leaves the colony visible around its own panel 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=165860
+    [pid=165860][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=165860
+      - [pid=165860][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=165860] <gracefully close start>
+      - [pid=165860] <kill>
+      - [pid=165860] <will force kill>
+      - [pid=165860] exception while trying to kill process: Error: kill ESRCH
+      - [pid=165860] <process did exit: exitCode=127, signal=null>
+      - [pid=165860] starting temporary directories cleanup
+      - [pid=165860] finished temporary directories cleanup
+      - [pid=165860] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/menu-presentation-custom-s-05a7f-isible-around-its-own-panel-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/menu-presentation-custom-s-05a7f-isible-around-its-own-panel-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/menu-presentation-custom-s-05a7f-isible-around-its-own-panel-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:165869) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[27/36] [webkit] › browser/tests/menu-presentation.spec.js:22:1 › menu presentation survives a match and nested menus
+  7) [webkit] › browser/tests/menu-presentation.spec.js:22:1 › menu presentation survives a match and nested menus 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=165888
+    [pid=165888][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=165888
+      - [pid=165888][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=165888] <gracefully close start>
+      - [pid=165888] <kill>
+      - [pid=165888] <will force kill>
+      - [pid=165888] exception while trying to kill process: Error: kill ESRCH
+      - [pid=165888] <process did exit: exitCode=127, signal=null>
+      - [pid=165888] starting temporary directories cleanup
+      - [pid=165888] finished temporary directories cleanup
+      - [pid=165888] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/menu-presentation-menu-pre-1a30b-es-a-match-and-nested-menus-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/menu-presentation-menu-pre-1a30b-es-a-match-and-nested-menus-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/menu-presentation-menu-pre-1a30b-es-a-match-and-nested-menus-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+[28/36] [firefox] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 1 › browser keeps its system cursor through menus, gameplay and reload
+(node:165897) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[29/36] [webkit] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 1 › browser keeps its system cursor through menus, gameplay and reload
+  8) [webkit] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 1 › browser keeps its system cursor through menus, gameplay and reload 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=166003
+    [pid=166003][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=166003
+      - [pid=166003][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=166003] <gracefully close start>
+      - [pid=166003] <kill>
+      - [pid=166003] <will force kill>
+      - [pid=166003] exception while trying to kill process: Error: kill ESRCH
+      - [pid=166003] <process did exit: exitCode=127, signal=null>
+      - [pid=166003] starting temporary directories cleanup
+      - [pid=166003] finished temporary directories cleanup
+      - [pid=166003] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/menu-presentation-cursor-a-8595c-h-menus-gameplay-and-reload-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/menu-presentation-cursor-a-8595c-h-menus-gameplay-and-reload-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/menu-presentation-cursor-a-8595c-h-menus-gameplay-and-reload-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:166023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[30/36] [webkit] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 2 › browser keeps its system cursor through menus, gameplay and reload
+  9) [webkit] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 2 › browser keeps its system cursor through menus, gameplay and reload 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=166052
+    [pid=166052][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=166052
+      - [pid=166052][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=166052] <gracefully close start>
+      - [pid=166052] <kill>
+      - [pid=166052] <will force kill>
+      - [pid=166052] exception while trying to kill process: Error: kill ESRCH
+      - [pid=166052] <process did exit: exitCode=127, signal=null>
+      - [pid=166052] starting temporary directories cleanup
+      - [pid=166052] finished temporary directories cleanup
+      - [pid=166052] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/menu-presentation-cursor-a-03e61-h-menus-gameplay-and-reload-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/menu-presentation-cursor-a-03e61-h-menus-gameplay-and-reload-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/menu-presentation-cursor-a-03e61-h-menus-gameplay-and-reload-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:166061) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[31/36] [webkit] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start
+  10) [webkit] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=166146
+    [pid=166146][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=166146
+      - [pid=166146][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=166146] <gracefully close start>
+      - [pid=166146] <kill>
+      - [pid=166146] <will force kill>
+      - [pid=166146] exception while trying to kill process: Error: kill ESRCH
+      - [pid=166146] <process did exit: exitCode=127, signal=null>
+      - [pid=166146] starting temporary directories cleanup
+      - [pid=166146] finished temporary directories cleanup
+      - [pid=166146] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:166155) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[32/36] [webkit] › browser/tests/staged-assets.spec.js:68:1 › later packages arrive in the background and replace the core font
+  11) [webkit] › browser/tests/staged-assets.spec.js:68:1 › later packages arrive in the background and replace the core font 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=166171
+    [pid=166171][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=166171
+      - [pid=166171][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=166171] <gracefully close start>
+      - [pid=166171] <kill>
+      - [pid=166171] <will force kill>
+      - [pid=166171] exception while trying to kill process: Error: kill ESRCH
+      - [pid=166171] <process did exit: exitCode=127, signal=null>
+      - [pid=166171] starting temporary directories cleanup
+      - [pid=166171] finished temporary directories cleanup
+      - [pid=166171] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/staged-assets-later-packag-11c33-d-and-replace-the-core-font-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/staged-assets-later-packag-11c33-d-and-replace-the-core-font-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/staged-assets-later-packag-11c33-d-and-replace-the-core-font-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:166180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[33/36] [webkit] › browser/tests/staged-assets.spec.js:82:1 › a Chinese interface downloads the full font before the game starts
+  12) [webkit] › browser/tests/staged-assets.spec.js:82:1 › a Chinese interface downloads the full font before the game starts 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=166191
+    [pid=166191][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=166191
+      - [pid=166191][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=166191] <gracefully close start>
+      - [pid=166191] <kill>
+      - [pid=166191] <will force kill>
+      - [pid=166191] exception while trying to kill process: Error: kill ESRCH
+      - [pid=166191] <process did exit: exitCode=127, signal=null>
+      - [pid=166191] starting temporary directories cleanup
+      - [pid=166191] finished temporary directories cleanup
+      - [pid=166191] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/staged-assets-a-Chinese-in-7e09a-font-before-the-game-starts-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/staged-assets-a-Chinese-in-7e09a-font-before-the-game-starts-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/staged-assets-a-Chinese-in-7e09a-font-before-the-game-starts-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:166201) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[34/36] [webkit] › browser/tests/staged-assets.spec.js:102:1 › an interface in another language downloads its translations before the game starts
+  13) [webkit] › browser/tests/staged-assets.spec.js:102:1 › an interface in another language downloads its translations before the game starts 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=166446
+    [pid=166446][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=166446
+      - [pid=166446][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=166446] <gracefully close start>
+      - [pid=166446] <kill>
+      - [pid=166446] <will force kill>
+      - [pid=166446] exception while trying to kill process: Error: kill ESRCH
+      - [pid=166446] <process did exit: exitCode=127, signal=null>
+      - [pid=166446] starting temporary directories cleanup
+      - [pid=166446] finished temporary directories cleanup
+      - [pid=166446] <gracefully close end>
+
+
+    Error Context: artifacts/browser-startup/threaded-results/staged-assets-an-interface-0ee1a-ions-before-the-game-starts-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/staged-assets-an-interface-0ee1a-ions-before-the-game-starts-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/staged-assets-an-interface-0ee1a-ions-before-the-game-starts-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  14) [firefox] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again 
+
+    Error: expect(received).toContain(expected) // indexOf
+
+    Expected substring: "MainMenuScreen"
+    Received string:    "loading"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      45 |   await page.unroute(`**/assets/${name}*.data`);
+      46 |   await page.locator('#loading-retry').click();
+    > 47 |   await expect.poll(async () => (await snapshot(page)).screen, {timeout: 60000}).toContain('MainMenuScreen');
+         |                                                                                  ^
+      48 | });
+      49 |
+      50 | test('a second visit starts from the packages cached on the device', async ({page, browserName}) => {
+        at /home/bradley/.codex/worktrees/152b/glob2/browser/tests/asset-loading.spec.js:47:82
+
+    Error Context: artifacts/browser-startup/threaded-results/asset-loading-a-failed-gam-d6847--so-and-offers-to-try-again-firefox/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/threaded-results/asset-loading-a-failed-gam-d6847--so-and-offers-to-try-again-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/threaded-results/asset-loading-a-failed-gam-d6847--so-and-offers-to-try-again-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:166880) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[35/36] [firefox] › browser/tests/asset-loading.spec.js:50:1 › a second visit starts from the packages cached on the device
+[36/36] [firefox] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 2 › browser keeps its system cursor through menus, gameplay and reload
+  14 failed
+    [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+    [firefox] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again 
+    [webkit] › browser/tests/asset-loading.spec.js:7:1 › the loading page shows download progress and the game starts with core and game sprites 
+    [webkit] › browser/tests/asset-loading.spec.js:38:38 › a failed core download says so and offers to try again 
+    [webkit] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again 
+    [webkit] › browser/tests/asset-loading.spec.js:50:1 › a second visit starts from the packages cached on the device 
+    [webkit] › browser/tests/menu-presentation.spec.js:16:1 › custom setup leaves the colony visible around its own panel 
+    [webkit] › browser/tests/menu-presentation.spec.js:22:1 › menu presentation survives a match and nested menus 
+    [webkit] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 1 › browser keeps its system cursor through menus, gameplay and reload 
+    [webkit] › browser/tests/menu-presentation.spec.js:51:3 › cursor at pixel ratio 2 › browser keeps its system cursor through menus, gameplay and reload 
+    [webkit] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+    [webkit] › browser/tests/staged-assets.spec.js:68:1 › later packages arrive in the background and replace the core font 
+    [webkit] › browser/tests/staged-assets.spec.js:82:1 › a Chinese interface downloads the full font before the game starts 
+    [webkit] › browser/tests/staged-assets.spec.js:102:1 › an interface in another language downloads its translations before the game starts 
+  2 skipped
+  20 passed (4.5m)

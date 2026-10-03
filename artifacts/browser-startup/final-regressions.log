@@ -1,0 +1,16 @@
+
+Running 4 tests using 1 worker
+
+(node:170497) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/4] [chromium] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again
+[2/4] [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start
+(node:171740) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/4] [firefox] › browser/tests/asset-loading.spec.js:38:38 › a failed game download says so and offers to try again
+[4/4] [firefox] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start
+  4 passed (51.5s)

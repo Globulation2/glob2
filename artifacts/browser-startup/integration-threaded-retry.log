@@ -1,0 +1,44 @@
+
+Running 1 test using 1 worker
+
+(node:252842) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start
+  1) [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      57 |   const first = await page.screenshot({clip, animations:'disabled', path:info.outputPath('colony-first.png')});
+      58 |   await expect.poll(async () => (await page.screenshot({clip, animations:'disabled'})).equals(first),
+    > 59 |     {timeout:5000}).toBe(false);
+         |                     ^
+      60 |   await page.screenshot({clip, animations:'disabled', path:info.outputPath('colony-moving.png')});
+      61 |   releaseMusic();
+      62 |   await clickMainMenu(page, 'custom');
+        at /home/bradley/.codex/worktrees/152b/glob2/browser/tests/staged-assets.spec.js:59:21
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/browser-startup/integration-threaded-retry/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/browser-startup/integration-threaded-retry/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/browser-startup/integration-threaded-retry/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/browser-startup/integration-threaded-retry/staged-assets-game-sprites-74d37-til-the-live-menu-can-start-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium] › browser/tests/staged-assets.spec.js:35:1 › game sprites stay under download progress until the live menu can start 

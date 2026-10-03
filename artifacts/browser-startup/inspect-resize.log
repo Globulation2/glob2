@@ -1,0 +1,159 @@
+{
+  hidden: false,
+  opacity: '1',
+  canvas: [ 1200, 900 ],
+  loop: 6,
+  screen: '14MainMenuScreen',
+  mode: 'threaded',
+  renderer: 'software',
+  ctx: 'CanvasRenderingContext2D',
+  ctxSame: true,
+  imageSample: [
+     95,  81, 206, 254,  95,  81,
+    207, 254,  95,  81, 207, 254,
+     95,  81, 207, 254,  95,  81,
+    207, 254
+  ],
+  canvasSample: [
+    0, 0, 0, 0,
+    0, 0, 0, 0
+  ],
+  win: true
+}
+{
+  hidden: false,
+  opacity: '1',
+  canvas: [ 1200, 900 ],
+  loop: 27,
+  screen: '14MainMenuScreen',
+  mode: 'threaded',
+  renderer: 'software',
+  ctx: 'CanvasRenderingContext2D',
+  ctxSame: true,
+  imageSample: [
+     95,  81, 206, 254,  95,  80,
+    206, 254,  95,  80, 207, 254,
+     95,  81, 207, 254,  95,  81,
+    207, 254
+  ],
+  canvasSample: [
+    0, 0, 0, 0,
+    0, 0, 0, 0
+  ],
+  win: true
+}
+{
+  hidden: false,
+  opacity: '1',
+  canvas: [ 1200, 900 ],
+  loop: 49,
+  screen: '14MainMenuScreen',
+  mode: 'threaded',
+  renderer: 'software',
+  ctx: 'CanvasRenderingContext2D',
+  ctxSame: true,
+  imageSample: [
+     98,  83, 210, 254,  98,  84,
+    211, 254,  99,  84, 211, 254,
+     99,  85, 212, 254,  99,  85,
+    212, 254
+  ],
+  canvasSample: [
+    98, 83, 210, 254,
+    98, 84, 211, 254
+  ],
+  win: true
+}
+{ opacity: '1', animations: [] }
+[
+  {
+    key: 'width',
+    v: 1200,
+    stack: 'Error\n' +
+      '    at HTMLCanvasElement.set [as width] (<anonymous>:2:319)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:359298)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:586505)\n' +
+      '    at setCanvasElementSizeMainThread (http://127.0.0.1:8772/threaded/index.js:1:359756)\n' +
+      '    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8772/threaded/index.js:1:332007)\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18165]:0xd7a7c7\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18163]:0xd7a608\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18159]:0xd7a3a6\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18141]:0xd79b0f\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18147]:0xd79d09'
+  },
+  {
+    key: 'height',
+    v: 900,
+    stack: 'Error\n' +
+      '    at HTMLCanvasElement.set [as height] (<anonymous>:2:319)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:359318)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:586505)\n' +
+      '    at setCanvasElementSizeMainThread (http://127.0.0.1:8772/threaded/index.js:1:359756)\n' +
+      '    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8772/threaded/index.js:1:332007)\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18165]:0xd7a7c7\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18163]:0xd7a608\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18159]:0xd7a3a6\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18141]:0xd79b0f\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18147]:0xd79d09'
+  },
+  {
+    key: 'width',
+    v: 1200,
+    stack: 'Error\n' +
+      '    at HTMLCanvasElement.set [as width] (<anonymous>:2:319)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:359298)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:586505)\n' +
+      '    at setCanvasElementSizeMainThread (http://127.0.0.1:8772/threaded/index.js:1:359756)\n' +
+      '    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8772/threaded/index.js:1:332007)\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18165]:0xd7a7c7\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18163]:0xd7a608\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18159]:0xd7a3a6\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18141]:0xd79b0f\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18147]:0xd79d09'
+  },
+  {
+    key: 'height',
+    v: 900,
+    stack: 'Error\n' +
+      '    at HTMLCanvasElement.set [as height] (<anonymous>:2:319)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:359318)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:586505)\n' +
+      '    at setCanvasElementSizeMainThread (http://127.0.0.1:8772/threaded/index.js:1:359756)\n' +
+      '    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8772/threaded/index.js:1:332007)\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18165]:0xd7a7c7\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18163]:0xd7a608\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18159]:0xd7a3a6\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18141]:0xd79b0f\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18147]:0xd79d09'
+  },
+  {
+    key: 'width',
+    v: 1200,
+    stack: 'Error\n' +
+      '    at HTMLCanvasElement.set [as width] (<anonymous>:2:319)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:359298)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:586505)\n' +
+      '    at setCanvasElementSizeMainThread (http://127.0.0.1:8772/threaded/index.js:1:359756)\n' +
+      '    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8772/threaded/index.js:1:332007)\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18165]:0xd7a7c7\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18163]:0xd7a608\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18159]:0xd7a3a6\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18141]:0xd79b0f\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18147]:0xd79d09'
+  },
+  {
+    key: 'height',
+    v: 900,
+    stack: 'Error\n' +
+      '    at HTMLCanvasElement.set [as height] (<anonymous>:2:319)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:359318)\n' +
+      '    at setCanvasElementSizeCallingThread (http://127.0.0.1:8772/threaded/index.js:1:586505)\n' +
+      '    at setCanvasElementSizeMainThread (http://127.0.0.1:8772/threaded/index.js:1:359756)\n' +
+      '    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8772/threaded/index.js:1:332007)\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18165]:0xd7a7c7\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18163]:0xd7a608\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18159]:0xd7a3a6\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18141]:0xd79b0f\n' +
+      '    at http://127.0.0.1:8772/threaded/index.wasm:wasm-function[18147]:0xd79d09'
+  }
+]
