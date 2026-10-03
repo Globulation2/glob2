@@ -26,13 +26,15 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		OPTIONS = 2,
 		RETURN_GAME = 5,
 		QUIT_GAME = 6,
-		PAUSE_GAME = 7
+		PAUSE_GAME = 7,
+		HIVE_MIND = 8
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	/// A networked (turn-protocol) game: no Load or Save, and "Leave match" instead
 	/// of "Quit the game".
 	void setNetworked(bool value) { networked = value; }
+	void setHiveMind(bool value) { hiveMind = value; }
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
@@ -40,7 +42,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
-	bool networked = false;
+	bool networked = false, hiveMind = false;
 };
 
 /// A yes/no question over the game ("Leave match?"), Cancel on Escape.

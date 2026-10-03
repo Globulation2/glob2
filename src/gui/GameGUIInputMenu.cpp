@@ -1,3 +1,4 @@
+#include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -53,6 +54,7 @@ void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
 	menu->setNetworked(networkMatch.active);
+	menu->setHiveMind(hive && hive->available());
 	openDialog(IGM_MAIN, std::move(menu));
 }
 
@@ -131,6 +133,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (result)
 			{
+				case InGameMainScreen::HIVE_MIND:
+					if(hive)openDialog(IGM_HIVE,std::make_unique<Hive::Dialog>(hive));
+					return true;
 				case InGameMainScreen::LOAD_GAME:
 				{
 					if (globalContainer->replaying)
@@ -235,6 +240,8 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			return true;
 		}
 
+		case IGM_HIVE:
+			closeDialog();return true;
 		case IGM_OPTION:
 		{
 			if (result == InGameOptionScreen::OK)

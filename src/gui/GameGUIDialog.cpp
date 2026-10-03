@@ -49,6 +49,7 @@ Element InGameMainScreen::build(const Presentation &p)
 			buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
 		if (files && !replay && canSave)
 			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
+		if(hiveMind)buttons.push_back(classicButton("hive", "Hive Mind", [this]{finish(HIVE_MIND);}));
 		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
 		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
 		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
@@ -68,6 +69,7 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("save", fe::tr("[save game]"), SAVE_GAME));
 	if (files)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
+	if(hiveMind)buttons.push_back(item("hive","Hive Mind",HIVE_MIND));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", fe::tr(paused ? "[resume game]" : "[pause game]"), PAUSE_GAME));

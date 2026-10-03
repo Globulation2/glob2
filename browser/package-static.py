@@ -39,8 +39,11 @@ def package(source, destination):
             files["threaded/" + ext] = (
                 source / "threaded" / ("index." + ext)
             ).read_bytes()
+    hive = {name: (source / name).read_bytes() for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if (source / name).exists()}
+    if hive and len(hive) != 3:
+        raise ValueError("Incomplete Hive Mind runtime")
     version = hashlib.sha256(
-        POLICY + b"".join(files.values()) + b"".join(name.encode() for name in packages)
+        POLICY + b"".join(hive.values()) + b"".join(files.values()) + b"".join(name.encode() for name in packages)
     ).hexdigest()[:16]
     names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm")}
     script = files["js"].decode()
@@ -54,6 +57,7 @@ def package(source, destination):
         names["js"]: script.encode(),
         names["wasm"]: files["wasm"],
         **packages,
+        **hive,
     }
     if threaded:
         loader = f"loader-{version}.js"
@@ -186,6 +190,7 @@ def verify(directory):
     ]
     if not any(name.startswith("assets/") for name in names):
         raise ValueError("Static package lacks game data packages")
+    names += [name for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if name in expected]
     if marker.get("threaded"):
         names += [f"loader-{marker['version']}.js"] + [
             f"threaded/index-{marker['version']}.{ext}" for ext in ("js", "wasm")
