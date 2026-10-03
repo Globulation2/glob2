@@ -70,9 +70,12 @@ it. Spacious layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
 leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
-independent. A completed tap on empty map space dismisses building inspection
-and restores the previous palette state. Tapping another object switches selection;
+independent. A completed tap on empty map space dismisses open toolboxes,
+statistics and inspection together, without reopening a previous palette. An
+outside tap on the map peek likewise dismisses its underlying tools; its explicit
+Done button can return to them. Tapping another object switches selection;
 panning, cancelled gestures and taps inside the inspector do not dismiss it.
+Painting and placement keep their tool-specific map gestures.
 The game is playable with one thumb. A completed map tap arms one-finger zoom for
 the next contact that lands within 300 ms of the release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
@@ -168,7 +171,8 @@ that a drag out of the rail places a building rather than navigating back.
 ### Gameplay responsibilities and action flow
 
 - `GameGUITouch` composes explicit bounds, routes input ownership, presents the HUD,
-  and restores the previous palette after inspection. It never draws the desktop
+  and restores the previous palette after explicit inspector closure (an empty-map
+  tap dismisses both). It never draws the desktop
   sidebar or forwards touch controls to its pixel hit tests.
 - `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
   in the thumb-corner rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
