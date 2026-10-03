@@ -23,6 +23,7 @@ CI_TOOL_TESTS = {
     "tests/build_system/test_ci_changed_paths.py",
     "tests/build_system/test_ci_tiers.py",
     "tests/build_system/test_ci_run_metrics.py",
+    "tests/build_system/test_ci_concurrency.py",
 }
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",

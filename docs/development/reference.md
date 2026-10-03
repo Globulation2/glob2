@@ -139,6 +139,23 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   changes to the runners themselves still select native checks.
   Steam packaging helper/workflow changes retain their packaging and smoke checks;
   editing this reference guide alone does not rebuild the Steam client.
+- CI run cancellation: every CI workflow declares a `concurrency` group keyed on
+  `github.ref` whose `cancel-in-progress` is true for `pull_request` events and
+  for pushes to non-default branches, so a newer revision cancels the older run.
+  Default-branch (master) runs are not cancelled once started; GitHub's
+  concurrency still replaces a pending master run with a newer one, so under
+  load only the newest queued master commit is verified. Release, publication
+  and deployment workflows keep non-cancelling groups. Call-only reusable
+  workflows declare no group (they inherit their caller's cancellation); a
+  reusable workflow that also runs on its own uses a literal group prefix,
+  because `github.workflow` names the caller and a shared group deadlocks it.
+  `.github/workflows/cancel-superseded.yml` covers what concurrency cannot: on
+  each pull request push or close it cancels that branch's runs of other CI
+  workflows (path-filtered ones a newer push no longer triggers, and all runs of
+  a closed PR). Its dispatch, or `.github/scripts/ci_cancel_superseded.py
+  --repo Globulation2/glob2 --dry-run` locally, sweeps every branch.
+  `tests/build_system/test_ci_concurrency.py` enforces these rules; classify a
+  new release workflow there.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
