@@ -4720,3 +4720,13 @@ Inércia do mapa
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[bases]
+bases
+[bases per colony]
+Bases por colónia; uma base é uma equipa do mapa tal como foi desenhado, com os seus edifícios e unidades

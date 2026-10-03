@@ -4712,3 +4712,13 @@ No fields match your search.
 Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.
 [Missing custom AI]
 Missing custom AI
+[Map repetition failed]
+Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[bases]
+bases
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units

@@ -189,3 +189,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+    if not GENERATION_ONLY:
+        from test_game_diagnostics import main as diagnostics_main
+        diagnostics_main(BINARY)

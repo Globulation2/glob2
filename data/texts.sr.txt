@@ -4714,3 +4714,13 @@ Emoji
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Понови мапу водоравно
+[repeat map vertically]
+Понови мапу усправно
+[bases]
+базе
+[bases per colony]
+Базе по колонији; база је једна екипа мапе онако како је нацртана, са својим зградама и јединицама
