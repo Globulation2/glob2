@@ -128,8 +128,9 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	}
 }
 
-void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
+void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene)
 {
+	const SceneMap &sceneMap = scene.map;
 	PERF_SCOPE_TIME(RenderFog);
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
@@ -139,7 +140,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 			{
 				unsigned i0, i1, i2, i3;
 
-				Uint32 visibleTeams = teams[localTeam]->me;
+				Uint32 visibleTeams = scene.entities.teams[localTeam].me;
 				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				// first draw black
@@ -195,7 +196,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 		{
 			for (int x=0; x<width; x++)
 			{
-				Uint32 visibleTeams = teams[localTeam]->me;
+				Uint32 visibleTeams = view.drawnScene().entities.teams[localTeam].me;
 				if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 				int rx=(x+viewportX-1+map.getW())%map.getW();
