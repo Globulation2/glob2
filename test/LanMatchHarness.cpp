@@ -685,13 +685,14 @@ TEST_SUITE("LanMatchHarness")
 		}
 	}
 
-	GLOB2_TEST_CASE("a hosting LAN host sleeps while nothing happens and wakes at once for guests and the host",
-	                "[network][artifacts]")
+	// A short name: the case name is part of the artifact path, and the guest's map
+	// cache below it must stay under Windows' 260-character path limit.
+	GLOB2_TEST_CASE("an idle LAN host sleeps and wakes at once for guests and the host", "[network][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
 		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
 		LanMatch m;
-		m.directory = glob2test::artifactDir() / "lan-host-wait";
+		m.directory = glob2test::artifactDir() / "wait";
 		fs::remove_all(m.directory);
 		fs::create_directories(m.directory);
 		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(3), m.directory), 301));
