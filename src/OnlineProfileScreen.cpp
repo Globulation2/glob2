@@ -81,9 +81,14 @@ void OnlineProfileScreen::summarize()
 						   : Online::summarizeProfile(data.accountId, data.matches);
 }
 
-OnlineProfileScreen::~OnlineProfileScreen()
+// scope (a member) cancels this screen's platform calls.
+OnlineProfileScreen::~OnlineProfileScreen() = default;
+
+Online::PlatformScope &OnlineProfileScreen::calls()
 {
-	*alive = false;
+	if (!scope)
+		scope = std::make_unique<Online::PlatformScope>(Online::services().client);
+	return *scope;
 }
 
 void OnlineProfileScreen::onEscape()
@@ -105,31 +110,30 @@ void OnlineProfileScreen::onTimer(Uint32)
 	if (data.accountId.empty())
 		data.accountId = client.account()->id;
 	data.instance = client.origin();
-	auto alive = this->alive;
-	client.rest(HttpFetch::Method::Get, "/api/v1/instance", Online::Json(),
-				[this, alive](const Online::PlatformClient::Response &response)
-				{
-					if (!*alive || !response.ok)
-						return;
-					for (const auto &queue : Online::queuesFromInstance(response.result))
-						data.ladderNames[queue.id] = queue.name;
-					invalidate();
-				});
-	client.rest(HttpFetch::Method::Get, "/api/v1/players/" + Online::urlEncode(data.accountId), Online::Json(),
-				[this, alive](const Online::PlatformClient::Response &response)
-				{
-					if (!*alive || !response.ok)
-						return;
-					data.profile = Online::PlayerProfile::fromJson(response.result);
-					if (!data.profile)
-						return;
-					data.displayName = data.profile->displayName;
-					data.kind = data.profile->kind;
-					if (data.profile->createdAt)
-						data.since = monthYear(*data.profile->createdAt);
-					summarize();
-					invalidate();
-				});
+	calls().instanceInfo(
+		[this](const Online::PlatformClient::Response &response)
+		{
+			if (!response.ok)
+				return;
+			for (const auto &queue : Online::queuesFromInstance(response.result))
+				data.ladderNames[queue.id] = queue.name;
+			invalidate();
+		});
+	calls().rest(HttpFetch::Method::Get, Online::Api::player(data.accountId), Online::Json(),
+				 [this](const Online::PlatformClient::Response &response)
+				 {
+					 if (!response.ok)
+						 return;
+					 data.profile = Online::PlayerProfile::fromJson(response.result);
+					 if (!data.profile)
+						 return;
+					 data.displayName = data.profile->displayName;
+					 data.kind = data.profile->kind;
+					 if (data.profile->createdAt)
+						 data.since = monthYear(*data.profile->createdAt);
+					 summarize();
+					 invalidate();
+				 });
 	load(false);
 }
 
@@ -139,35 +143,33 @@ void OnlineProfileScreen::load(bool more)
 		return;
 	loading = true;
 	problem.clear();
-	std::string path = "/api/v1/players/" + Online::urlEncode(data.accountId) + "/matches?limit=50";
+	std::string path = Online::Api::playerMatches(data.accountId, 50);
 	if (more && !cursor.empty())
 		path += "&cursor=" + Online::urlEncode(cursor);
-	auto alive = this->alive;
-	Online::services().client.rest(HttpFetch::Method::Get, path, Online::Json(),
-								   [this, alive, more](const Online::PlatformClient::Response &response)
-								   {
-									   if (!*alive)
-										   return;
-									   loading = false;
-									   if (!response.ok)
-									   {
-										   problem = response.error.code == "not_found" || response.error.code == "http_404"
-														 ? tr("[profile history unavailable]")
-														 : (response.error.message.empty() ? tr("[online connection problem]")
-																						   : response.error.message);
-										   invalidate();
-										   return;
-									   }
-									   auto page = Online::parseMatchList(response.result);
-									   if (!more)
-										   data.matches.clear();
-									   for (auto &match : page.items)
-										   data.matches.push_back(std::move(match));
-									   cursor = page.nextCursor;
-									   data.now = wallClockMs();
-									   summarize();
-									   invalidate();
-								   });
+	calls().rest(
+		HttpFetch::Method::Get, path, Online::Json(),
+		[this, more](const Online::PlatformClient::Response &response)
+		{
+			loading = false;
+			if (!response.ok)
+			{
+				problem = response.error.code == "not_found" || response.error.code == "http_404"
+							  ? tr("[profile history unavailable]")
+							  : (response.error.message.empty() ? tr("[online connection problem]")
+																: response.error.message);
+				invalidate();
+				return;
+			}
+			auto page = Online::parseMatchList(response.result);
+			if (!more)
+				data.matches.clear();
+			for (auto &match : page.items)
+				data.matches.push_back(std::move(match));
+			cursor = page.nextCursor;
+			data.now = wallClockMs();
+			summarize();
+			invalidate();
+		});
 	invalidate();
 }
 
@@ -206,14 +208,11 @@ void OnlineProfileScreen::replay(const std::string &matchId)
 		return;
 	status = tr("[profile downloading replay]");
 	invalidate();
-	auto alive = this->alive;
 	// The verified replay the server keeps for the match.
-	Online::services().client.restRaw(
-		HttpFetch::Method::Get, "/api/v1/matches/" + Online::urlEncode(matchId) + "/artifacts/replay", {}, {},
-		[this, alive, matchId](const Online::PlatformClient::Response &file)
+	calls().restRaw(
+		HttpFetch::Method::Get, Online::Api::matchReplay(matchId), {}, {},
+		[this, matchId](const Online::PlatformClient::Response &file)
 		{
-			if (!*alive)
-				return;
 			if (!file.ok || file.body.empty())
 			{
 				status = tr("[profile no replay]");

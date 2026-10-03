@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "MapCache.h"
 #include "OnlineStorage.h"
+#include "PlatformApi.h"
 #include "Sha256.h"
 
 #include <FileManager.h>
@@ -23,7 +24,7 @@ bool isGzip(const std::string &bytes)
 
 std::string MapCache::blobPath(const std::string &hash)
 {
-	return "/api/v1/blobs/maps/" + hash;
+	return Api::mapBlob(hash);
 }
 
 std::string MapCache::fileFor(const std::string &hash, bool save)

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "OnlineResources.h"
+#include "PlatformApi.h"
 #include "PlatformClient.h"
 
 #include <cstdint>
@@ -28,7 +29,7 @@ struct MapQuery
 	// /api/v1/maps?...
 	std::string path() const;
 };
-std::string urlEncode(const std::string &text);
+
 
 // Visibility of a new upload when the player does not choose (Q10).
 inline constexpr const char *DEFAULT_MAP_VISIBILITY = "unlisted";
@@ -71,7 +72,8 @@ class MapShare
 	void upload();
 	void poll();
 
-	PlatformClient &client;
+	// Cancelled with the share (closing the share screen).
+	PlatformScope calls;
 	std::string id;
 	Details details;
 	std::string bytes;
@@ -83,9 +85,5 @@ class MapShare
 	ApiError problem;
 	bool waiting = false;
 	std::int64_t nextPoll = 0;
-	std::shared_ptr<bool> alive = std::make_shared<bool>(true);
-
-  public:
-	~MapShare() { *alive = false; }
 };
 } // namespace Online

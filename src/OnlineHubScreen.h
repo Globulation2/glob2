@@ -2,9 +2,15 @@
 // Copyright (C) 2026 glob2 contributors
 #pragma once
 #include "PlatformProtocol.h"
+
+namespace Online
+{
+class PlatformScope;
+}
 #include "ui/FrontendUI.h"
 #include <ScreenStack.h>
 #include <functional>
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -98,7 +104,9 @@ class OnlineHubScreen : public Glob2UI::Screen
 	int selectedQueue = 0;
 	bool accountMenu = false, joinField = false;
 	Uint32 lastRefresh = 0, toastAt = 0, now = 0;
-	std::uint64_t stateListener = 0, updateListener = 0;
+	// Every platform call and listener of this screen: destroying it with the
+	// screen cancels them, so no callback reaches a closed hub.
+	std::unique_ptr<Online::PlatformScope> calls;
 	// An invite to another instance waiting for the player's answer.
 	struct Invite
 	{
