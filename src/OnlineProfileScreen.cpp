@@ -465,12 +465,12 @@ Element OnlineProfileScreen::build(const Presentation &p)
 		panel.headerRight = button("profile/web", tr("[profile full profile web]"), [this] { openWebProfile(); }, web);
 	panel.body = scroll("profile/body", column(std::move(body), {p.pt(10)}));
 	panel.note = tr("[profile replays note]");
-	panel.actions = {{"back", tr("[goto main menu]"), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};
+	panel.actions = {{"back", tr("[results back to online]"), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};
 	if (phone)
 	{
 		ButtonOptions backOptions;
 		backOptions.icon = uiIcon(UIIcon::Back);
-		backOptions.accessibleLabel = tr("[goto main menu]");
+		backOptions.accessibleLabel = tr("[results back to online]");
 		backOptions.shortcut = SDLK_ESCAPE;
 		Element backButton = width(p.pt(56), button("back", "", [this] { onEscape(); }, backOptions));
 		if (selected >= 0 && selected < int(data.matches.size()))

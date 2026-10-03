@@ -115,8 +115,13 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// A rematch room opened from the results screen; entered once the match's
 	// screens have closed.
 	std::shared_ptr<class RoomBackend> rematchRoom;
+	// A match assigned while the quick-match search screen was in front: that
+	// screen closes first, so the match (and its results) return to this hub.
+	std::optional<Online::Json> deferredMatch;
 
 	Online::PlatformClient &client();
+	// After the quick-match search screen closes (QuickMatchScreen result codes).
+	void quickMatchClosed(int result);
 	void refresh(bool force);
 	void syncFromClient();
 	void showToast(const std::string &text);

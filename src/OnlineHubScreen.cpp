@@ -164,6 +164,14 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 {
 	if (!assignment.is_object())
 		return;
+	// The search screen closes first (quickMatchClosed starts the match), so that
+	// "Back to online" from the results lands here rather than on that screen.
+	if (auto *search = dynamic_cast<QuickMatchScreen *>(screens.top()))
+	{
+		deferredMatch = assignment;
+		search->handOff();
+		return;
+	}
 	Online::OnlineMatch::Context context;
 	context.fromRoom = false;
 	if (const auto &queue = Online::quickMatch().queue())
@@ -468,7 +476,33 @@ void OnlineHubScreen::findMatch(int queueIndex)
 	}
 	auto &search = Online::quickMatch();
 	search.search(*info, search.allowAiOpponent());
-	screens.push(std::make_unique<QuickMatchScreen>(screens), [this](GAGGUI::Screen &, int) { refresh(true); });
+	screens.push(std::make_unique<QuickMatchScreen>(screens), [this](GAGGUI::Screen &, int result) { quickMatchClosed(result); });
+}
+
+void OnlineHubScreen::quickMatchClosed(int result)
+{
+	if (auto match = std::move(deferredMatch))
+	{
+		deferredMatch.reset();
+		startMatch(*match);
+		return;
+	}
+	auto &search = Online::quickMatch();
+	if (result == QuickMatchScreen::SEARCH_ENDED)
+	{
+		const std::string notice = QuickMatchScreen::noticeText(search);
+		search.dismissNotice();
+		if (!notice.empty())
+			showToast(notice);
+	}
+	else if (result == QuickMatchScreen::ACCOUNT)
+	{
+		if (data.accountKind == "registered")
+			openAccountMenu(true);
+		else
+			openSignIn();
+	}
+	refresh(true);
 }
 
 void OnlineHubScreen::openSignIn()

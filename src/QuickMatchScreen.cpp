@@ -7,6 +7,8 @@
 #include "MapCache.h"
 #include "MessageScreen.h"
 #include "OnlineHandoff.h"
+#include "OnlineMapsScreen.h"
+#include "OnlineProfileScreen.h"
 #include "OnlineServices.h"
 #include "PlatformClient.h"
 #include "QuickMatch.h"
@@ -165,6 +167,51 @@ void QuickMatchScreen::back()
 	endExecute(BACK);
 }
 
+void QuickMatchScreen::handOff()
+{
+	endExecute(MATCH_STARTED);
+}
+
+void QuickMatchScreen::openProfile()
+{
+	if (live)
+		screens.push(std::make_unique<OnlineProfileScreen>(screens));
+}
+
+void QuickMatchScreen::openMaps()
+{
+	if (live)
+		screens.push(std::make_unique<OnlineMapsScreen>(screens));
+}
+
+void QuickMatchScreen::openAccount()
+{
+	// Signing in (or out) changes who is searching: the search ends first.
+	if (model.active())
+		model.cancel();
+	endExecute(ACCOUNT);
+}
+
+std::string QuickMatchScreen::noticeText(const QuickMatch &model)
+{
+	switch (model.notice())
+	{
+	case QuickMatch::Notice::None:
+		return {};
+	case QuickMatch::Notice::OpponentDeclined:
+		return model.noticeName().empty() ? tr("[qm opponent declined]")
+										  : std::string(FormattableString(tr("[qm %0 did not accept]")).arg(model.noticeName()));
+	case QuickMatch::Notice::StartFailed:
+		return tr("[qm start failed]");
+	case QuickMatch::Notice::Declined:
+		return tr("[qm you declined]");
+	case QuickMatch::Notice::TimedOut:
+		return tr("[qm you did not answer]");
+	default:
+		return tr("[qm search ended]");
+	}
+}
+
 void QuickMatchScreen::onEscape()
 {
 	if (model.active())
@@ -178,6 +225,16 @@ void QuickMatchScreen::onTimer(Uint32 tick)
 	if (live)
 	{
 		model.update();
+		// This screen shows a search; the hub shows everything else. Once the
+		// search has ended (not failed: the error and Try again stay here), go
+		// back to the hub, which shows the notice.
+		if (model.active())
+			searched = true;
+		else if (searched && model.phase() != QuickMatch::Phase::Failed)
+		{
+			endExecute(SEARCH_ENDED);
+			return;
+		}
 		if (!queuesLoaded && !loadError.empty() && tick - lastLoad > 5000)
 			loadQueues();
 		auto &client = Online::services().client;
@@ -339,26 +396,7 @@ Element QuickMatchScreen::build(const Presentation &p)
 
 	if (model.notice() != QuickMatch::Notice::None)
 	{
-		std::string text;
-		switch (model.notice())
-		{
-		case QuickMatch::Notice::OpponentDeclined:
-			text = model.noticeName().empty() ? tr("[qm opponent declined]")
-											  : std::string(FormattableString(tr("[qm %0 did not accept]")).arg(model.noticeName()));
-			break;
-		case QuickMatch::Notice::StartFailed:
-			text = tr("[qm start failed]");
-			break;
-		case QuickMatch::Notice::Declined:
-			text = tr("[qm you declined]");
-			break;
-		case QuickMatch::Notice::TimedOut:
-			text = tr("[qm you did not answer]");
-			break;
-		default:
-			text = tr("[qm search ended]");
-			break;
-		}
+		const std::string text = noticeText(model);
 		CardOptions toast;
 		toast.color = frontendTheme().palette.ink;
 		toast.shadow = false;
@@ -416,10 +454,15 @@ Element QuickMatchScreen::build(const Presentation &p)
 										   [this, id = queue.id] { find(id); }, options)},
 								   {p.pt(8), CrossAlign::Center}));
 			}
-			rows.push_back(button("back", tr("[goto main menu]"), [this] { back(); }, {.shortcut = SDLK_ESCAPE}));
+			rows.push_back(button("back", tr("[results back to online]"), [this] { back(); }, {.shortcut = SDLK_ESCAPE}));
 			thumb = column(std::move(rows), {p.pt(8)});
 		}
 		body.push_back(paragraph(tr(searching ? "[qm phone searching note]" : "[qm phone intro]"), {FontRole::Support, true}));
+		// What that note promises: Profile and Maps, over the running search.
+		if (searching && live)
+			body.push_back(row({expanded(button("qm/profile", tr("[hub profile history]"), [this] { openProfile(); }, {.icon = uiIcon(UIIcon::Users), .iconSize = 16})),
+								expanded(button("qm/maps", tr("[hub maps]"), [this] { openMaps(); }, {.icon = uiIcon(UIIcon::Map), .iconSize = 16}))},
+							   {p.pt(8)}));
 	}
 
 	OnlinePanel panel;
@@ -427,16 +470,20 @@ Element QuickMatchScreen::build(const Presentation &p)
 	panel.subtitle = originHost(instance);
 	if (!account.empty())
 	{
-		CardOptions chip;
-		chip.shadow = false;
-		chip.border = frontendTheme().palette.line;
-		chip.color = frontendTheme().palette.field;
-		chip.padding = p.pt(6);
-		panel.headerRight = card(row({icon(uiIcon(UIIcon::Player), {20}), label(account)}, {p.pt(6), CrossAlign::Center}), chip);
+		// The account chip, as on the hub: it opens sign-in or the account menu there.
+		ButtonOptions chip;
+		chip.icon = uiIcon(UIIcon::Player);
+		chip.tooltip = tr("[hub account menu]");
+		panel.headerRight = button("qm/account", account, [this] { openAccount(); }, chip);
 	}
 	panel.body = scroll("qm/body", column(std::move(body), {p.pt(10)}));
-	panel.note = tr("[qm keeps running note]");
-	panel.actions = {{"back", tr("[goto main menu]"), [this] { back(); }, false, SDLK_ESCAPE}};
+	if (searching && live)
+	{
+		panel.note = tr("[qm keeps running note]");
+		panel.actions = {{"profile", tr("[hub profile history]"), [this] { openProfile(); }},
+						 {"maps", tr("[hub maps]"), [this] { openMaps(); }}};
+	}
+	panel.actions.push_back({"back", tr("[results back to online]"), [this] { back(); }, false, SDLK_ESCAPE});
 	panel.thumbBlock = thumb;
 	return onlinePanel(std::move(panel), p);
 }
