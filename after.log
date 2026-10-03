@@ -1,0 +1,8 @@
+PASS GameGUITouch/a touch on or near a flag drags the flag; not the map [display] (1.4s)
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (1.5s)
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (1.6s)
+PASS GameGUITouch/unit taps have a zoom independent halo and show unit stats [display][artifacts] (2.4s)
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (14.0s)
+
+5 passed, 0 failed, 0 skipped (20.9s of test time)
+[run_tests] JUnit report: artifacts/unit-touch/evidence/after.xml (5 cases)
