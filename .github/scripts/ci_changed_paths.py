@@ -209,8 +209,7 @@ def main():
     effective = dict(selected, browsers_all=bool(entries and {e['browsers'] for e in entries} == {'chromium','firefox','webkit'}), android_arches=arches)
     policy = fingerprint()
     inventory = {'jobs': selected, 'native_secondary': 'full' if exhaustive else 'compatibility',
-                 'browsers': entries, 'android_arches': arches if selected['android'] else [],
-                 'policy': policy}
+                 'browsers': entries, 'android_arches': arches if selected['android'] else []}
     import hashlib
     inventory_hash = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
     observed_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() if os.environ.get('CI_CALLED_FULL') == 'true' else os.environ.get('GITHUB_SHA')

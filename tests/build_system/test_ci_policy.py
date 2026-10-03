@@ -101,6 +101,14 @@ class PolicyTest(unittest.TestCase):
         self.assertEqual(ready['selection'],forced['selection'])
         self.assertFalse(forced['draft'])
 
+    def test_timing_inventory_does_not_change_for_equivalent_policy_implementation(self):
+        with patch.object(policy, 'fingerprint', return_value='implementation-one'):
+            before, _ = self.exercise('pull_request',['src/Game_sync.cpp'])
+        with patch.object(policy, 'fingerprint', return_value='implementation-two'):
+            after, _ = self.exercise('pull_request',['src/Game_sync.cpp'])
+        self.assertNotEqual(before['policy_fingerprint'],after['policy_fingerprint'])
+        self.assertEqual(before['inventory_fingerprint'],after['inventory_fingerprint'])
+
     def test_master_uses_successful_checkpoint_not_last_push(self):
         report,call=self.exercise('push',['src/Game_sync.cpp'],checkpoint='last-success')
         self.assertEqual(call.args,('last-success',))
