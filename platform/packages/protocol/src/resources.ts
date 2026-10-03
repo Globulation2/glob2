@@ -185,6 +185,18 @@ export const AccountExport = Open(
       cooldowns: ExportRows,
       proposals: ExportRows,
     }),
+    hive: Type.Optional(
+      Open({
+        wallets: ExportRows,
+        ledger: ExportRows,
+        calls: ExportRows,
+        purchases: ExportRows,
+        sessions: ExportRows,
+        events: ExportRows,
+        operations: ExportRows,
+        programs: ExportRows,
+      }),
+    ),
     maps: Open({
       published: ExportRows,
       likes: ExportRows,

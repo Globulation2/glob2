@@ -13,6 +13,52 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  hive_wallets: ['account_id', 'balance', 'reserved'],
+  hive_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  hive_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
+  hive_sessions: [
+    'id',
+    'account_id',
+    'match_id',
+    'seat',
+    'team',
+    'client_id',
+    'lease',
+    'lease_until',
+    'tick',
+    'generation',
+    'supervision',
+    'pending_run',
+    'run_id',
+    'run_until',
+    'last_wake_tick',
+    'wake_window',
+    'wake_count',
+    'created_at',
+  ],
+  hive_events: ['id', 'session_id', 'dedup', 'kind', 'body', 'created_at'],
+  hive_operations: [
+    'supervised',
+    'id',
+    'session_id',
+    'generation',
+    'lease',
+    'status',
+    'request',
+    'result',
+    'created_at',
+  ],
+  hive_programs: ['session_id', 'id', 'revision', 'definition', 'status', 'supervised'],
+  hive_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
   accounts: [
     'id',
     'kind',
@@ -505,6 +551,46 @@ afterAll(async () => {
 });
 
 describe('migrations', () => {
+  it('upgrades the online foundation without replacing account data', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const foundation = await createMigrator(existing.db).migrateTo('0017_retention');
+      expect(foundation.error).toBeUndefined();
+      const account = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Existing commander' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      expect((await migrateToLatest(existing.db)).map((r) => r.migrationName)).toEqual([
+        '0018_realtime_presence',
+        '0019_warm_maps_over_generated',
+        '0020_hive',
+        '0021_hive_supervision',
+      ]);
+      expect(
+        (
+          await existing.db
+            .selectFrom('accounts')
+            .select('display_name')
+            .where('id', '=', account.id)
+            .executeTakeFirstOrThrow()
+        ).display_name,
+      ).toBe('Existing commander');
+      await existing.db.insertInto('hive_wallets').values({ account_id: account.id }).execute();
+      expect(
+        (
+          await existing.db
+            .selectFrom('hive_wallets')
+            .select('balance')
+            .where('account_id', '=', account.id)
+            .executeTakeFirstOrThrow()
+        ).balance,
+      ).toBe(0);
+      expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
+  });
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
     const files = Object.keys(await new SqlFileMigrationProvider().getMigrations());

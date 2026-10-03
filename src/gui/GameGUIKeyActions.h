@@ -66,6 +66,8 @@ namespace GameGUIKeyActions
 		ToggleTorusView,
 		IncreaseGameSpeed,
 		DecreaseGameSpeed,
+		OpenCommander,
+		StopCommander,
 		ActionSize,
 	};
 

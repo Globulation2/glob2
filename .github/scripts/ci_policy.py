@@ -97,6 +97,9 @@ def select(paths, labels=(), known=False):
             add(path, 'native', 'macos')
         elif path.startswith('windows/'):
             add(path, 'native', 'windows')
+        elif path.startswith(('src/hive/', 'test/Hive')):
+            # Sandbox, scheduling and order boundaries span every client target.
+            add(path, *FLAGS)
         elif path.startswith(('src/net/', 'src/yog/', 'tests/transport/')) or Path(path).name in {
             'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
             'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}:

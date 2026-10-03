@@ -41,6 +41,17 @@ class RuntimePackagesTest(unittest.TestCase):
             return 'libc6:amd64: /lib64/ld-linux-x86-64.so.2\nother-libc:amd64: /lib64/ld-linux-x86-64.so.2'
         with self.assertRaises(ValueError): m.packages_for('binary',command)
 
+    def test_runtime_inventory_excludes_cached_configure_probes(self):
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('configure/conftest_stale_sdl2', 'src/glob2', 'lib/libproject.so'):
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'\x7fELFfixture')
+                path.chmod(0o755)
+            self.assertEqual(list(m.runtime_binaries(root)),
+                             [root / 'lib/libproject.so', root / 'src/glob2'])
     def test_cached_configure_probes_are_not_runtime_programs(self):
         import tempfile
         from unittest.mock import patch
