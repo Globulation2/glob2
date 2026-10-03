@@ -1,11 +1,12 @@
-// The match page explains ratings in words, whatever code the worker stored.
+// The match page explains ratings in words, whatever code the worker stored
+// (the rating and intake code lives in @glob2/play).
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { ratingNoteText } from '../src/history/ratingNotes.ts';
 
-const WORKER = join(import.meta.dirname, '../../worker/src/ratings');
-const INTAKE = join(import.meta.dirname, '../../worker/src/play/intake.ts');
+const WORKER = join(import.meta.dirname, '../../../packages/play/src/ratings');
+const INTAKE = join(import.meta.dirname, '../../../packages/play/src/play/intake.ts');
 
 /** Every rating_note the worker writes: finish(...) reasons, decisions and literals. */
 function storedCodes(): string[] {
