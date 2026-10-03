@@ -35,9 +35,21 @@ Turn messages use `0xA0`–`0xBF`; the room uses `0xC0`–`0xCF`, reserved in
 `NetMessageType.h`. `LanLink` frames without `NetConnection`'s 256-message receive cap,
 because a rejoining guest receives the whole turn log at once.
 
-The host services its connections and the relay on its own thread, every millisecond.
-Guests are therefore served at the relay's pace whatever the host's own engine or UI is
-doing. The host's own player reaches the relay through an in-memory transport.
+The host services its connections and the relay on its own thread. Guests are therefore
+served at the relay's pace whatever the host's own engine or UI is doing. The host's own
+player reaches the relay through an in-memory transport.
+
+The thread does not poll on a timer. It blocks (`netWait` in `src/net/NetWait.h`) until one
+of these happens:
+
+- a guest connection or the listening socket is ready (`NetTransport::waitHandles`);
+- the relay's next bundle or timer is due (`TurnSequencer::nextWakeMicros`);
+- another thread queued work for it, such as the host's own player or a room action;
+- 100 ms pass, which bounds the transports' own handshake, write and ping timers.
+
+A running match therefore wakes it about once per tick rather than 1000 times a second.
+Windows sockets complete through I/O completion ports, which a readiness poll cannot see,
+so on Windows (and in the browser) the thread still polls every millisecond.
 
 ## Room messages
 
@@ -96,7 +108,7 @@ with `version`.
 ## In-game connection notice
 
 Turn games replace the "waiting for X" box (`GameGUIDraw.cpp`) with connection lines
-from `Engine::turnConnectionNotice`, whenever there is something to report: the local
+from `TurnMatchPresenter::notice`, whenever there is something to report: the local
 connection being lost or everyone loading, a rejoin or catch-up of more than 25 turns,
 and other players who are reconnecting, lagging, catching up or not yet connected. The
 always-on connection panel of the multiplayer revamp will replace this box.

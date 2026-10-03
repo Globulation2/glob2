@@ -38,6 +38,23 @@ struct NetEndpoint
 	static NetEndpoint parse(const std::string &url);
 };
 
+// What a socket-servicing loop can wait on instead of polling a transport on a
+// timer (see NetWait.h). `socket` is the native descriptor (a SOCKET on Windows).
+struct NetWaitHandle
+{
+	std::intptr_t socket = -1;
+	bool read = false, write = false;
+};
+enum class NetWaitStatus
+{
+	// The transport cannot say when it has work: poll it on a short timer.
+	Unsupported,
+	// Nothing to do until one of the reported sockets is ready or a timer is due.
+	Idle,
+	// Work is pending now (unread messages, queued completions): do not wait.
+	Ready
+};
+
 // TCP and binary WebSocket chunks form an ordered byte stream. NetConnection owns framing.
 // Text-mode (WebSocket only) connections exchange whole text messages instead.
 class NetTransport
@@ -88,6 +105,13 @@ class NetTransport
 	{
 		return {};
 	}
+	// Adds the sockets whose readiness would give this connection work (reads it
+	// waits for, writes it has queued). Its timers (handshake, write and ping
+	// deadlines) only run when it is polled, so waiters bound their wait.
+	virtual NetWaitStatus waitHandles(std::vector<NetWaitHandle> &) const
+	{
+		return NetWaitStatus::Unsupported;
+	}
 };
 class NetTransportListener
 {
@@ -96,6 +120,11 @@ class NetTransportListener
 	virtual std::unique_ptr<NetTransport> accept() = 0;
 	virtual void close() = 0;
 	virtual bool listening() const = 0;
+	// As NetTransport::waitHandles: the listening socket and handshaking connections.
+	virtual NetWaitStatus waitHandles(std::vector<NetWaitHandle> &) const
+	{
+		return NetWaitStatus::Unsupported;
+	}
 };
 std::unique_ptr<NetTransport> makeNetTransport(const NetTlsConfig &tls = {},
 											   NetMessageMode mode = NetMessageMode::Binary);
