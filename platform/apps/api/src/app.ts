@@ -1,3 +1,4 @@
+import { studioRoutes } from './maps/studio.ts';
 import { hiveRoutes } from './hive/routes.ts';
 // The HTTP application, built from injected services so tests can run it
 // against a test database without listening on a port.
@@ -231,6 +232,7 @@ export async function buildApp(
   await authRoutes(app, identity);
   await accountRoutes(app, identity);
   await hiveRoutes(app);
+  await studioRoutes(app, rooms);
   await adminRoutes(app, identity);
   await pageAssetRoutes(app);
   await signinRoutes(app, identity);

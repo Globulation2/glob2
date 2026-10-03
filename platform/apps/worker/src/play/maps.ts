@@ -287,7 +287,7 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
   if (job.kind === 'render-preview') {
     const result = job.result as unknown as RenderPreviewResult | null;
     if (failure === undefined && result) {
-      await insertBlob(db, result.previewHash, null, 'image/png', 'public');
+      await insertBlob(db, result.previewHash, null, 'image/png', 'private');
     }
     await applyCatalogPreview(db, jobId, failure === undefined && result ? result : undefined);
     return true;
