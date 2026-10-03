@@ -6,6 +6,7 @@
 #include "script/ScriptValue.h"
 #include "PerformanceTelemetry.h"
 #include "Engine.h"
+#include "GameDiagnostics.h"
 #include "GlobalContainer.h"
 #include "AINames.h"
 #include "AIThreading.h"
@@ -251,6 +252,18 @@ struct HeadlessRunner
 		const bool benchmark=options.count("--benchmark-warmup")!=0;
 		const auto setupCpuStart=benchmark?processCpuNs():0;
 		const unsigned benchmarkWarmup=integer(one(options,"--benchmark-warmup","0"),0,std::numeric_limits<int>::max());
+		const auto fields = one(options,"--diagnostic-fields");
+		if (!fields.empty() && fields != "maxima") throw std::invalid_argument("Expected --diagnostic-fields maxima");
+		if (fields.empty() && (options.count("--diagnostic-interval") || options.count("--diagnostic-png")))
+			throw std::invalid_argument("Diagnostic options require --diagnostic-fields maxima");
+		const auto diagnosticInterval = unsigned(integer(one(options,"--diagnostic-interval","2500"),1,std::numeric_limits<int>::max()));
+		const auto diagnosticPng = one(options,"--diagnostic-png","false");
+		if (diagnosticPng != "true" && diagnosticPng != "false") throw std::invalid_argument("Expected --diagnostic-png true|false");
+		if (diagnosticPng == "true")
+		{
+			setHeadlessEnvironment("SDL_VIDEODRIVER","dummy");
+			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
+		}
 		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "1"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
@@ -386,6 +399,7 @@ struct HeadlessRunner
 		{
 			auto& script=engine.gui.game.mapscript;script.setMapScriptMode(MapScript::JavaScript);script.setMapScript(Script::readSource(one(options,"--map-script")));if(!script.compileCode())throw std::invalid_argument(script.getError().getMessage());
 		}
+		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const unsigned computeThreads = integer(one(options, "--compute-threads",
 			std::to_string(defaultAIThreadCount(engine.gui.game))), 1, 64);
 		const std::string computeExperiments = one(options, "--compute-experiments", "ai");
@@ -435,6 +449,7 @@ struct HeadlessRunner
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); }
+		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
@@ -536,7 +551,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

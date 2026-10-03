@@ -222,12 +222,12 @@ public:
 		view.selectedBuilding = scene.inn;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game));
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
 		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(gui.game, view));
 		Frame stopped = grab();
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{ SceneMap layers; layers.extract(gui.game.map); gui.game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game));
+		gui.game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(gui.game), nullptr);
 		Game::ViewState none;
 		gui.game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, none, glob2test::sceneOf(gui.game, none));
 		Frame baseline = grab();
@@ -273,7 +273,7 @@ public:
 		std::set<Uint16> visible;
 		gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 		{ SceneMap layers; layers.extract(game.map); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
-		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game));
+		game.drawMapGroundBuildings(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, &visible, nullptr, glob2test::sceneOf(game), nullptr);
 		game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H, 0, 0, 0, Game::DRAW_WHOLE_MAP, view, glob2test::sceneOf(game, view));
 		return grab();
 	};

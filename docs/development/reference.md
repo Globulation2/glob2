@@ -824,7 +824,10 @@ a supported open-file checker and is conservatively skipped there.
 ## Scene renderer
 
 Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
-runs while the simulation advances on another thread.
+runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
+an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
+Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
+bounded software target. Asset loading is shared with normal game startup.
 
 - `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
   only place presentation code reads the game. `GameGUI::drawAll` extracts

@@ -21,10 +21,11 @@ class SceneMap
 public:
 	//! Copy the layers from map. Runs where the map may be read (the simulation side).
 	//! displayW/H: the drawn map area in pixels (a client value, see ClientRequests).
-	void extract(const Map &map, int displayW, int displayH);
+	void extract(const Map &map, int displayW, int displayH, bool includeScriptAreas = false);
 	//! Single-threaded callers (tests, tools): take the drawn area from the map.
 	void extract(const Map &map);
 
+	bool isPointSet(int n, int x, int y) const { return !scriptAreas.empty() && (scriptAreas[coordToIndex(x,y)] & (1 << n)); }
 	int getW() const { return w; }
 	int getH() const { return h; }
 	int getMaskW() const { return wMask; }
@@ -78,7 +79,7 @@ private:
 	Uint64 sourceIdentity = 0;
 	const void *sourceKey = nullptr;
 	int displayViewportW = 0, displayViewportH = 0;
-	std::vector<Uint16> terrain, groundUnits, airUnits, buildings;
+	std::vector<Uint16> terrain, groundUnits, airUnits, buildings, scriptAreas;
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
 	std::vector<Uint32> discovered, fogOfWar;
