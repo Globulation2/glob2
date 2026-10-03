@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/release/test/glob2-engine-tests" errors="0" failures="0" tests="4968" time="1.57659" timestamp="2026-10-03T21:00:08Z" doctest_version="2.4.11">
+    <testcase classname="test/TurnEngineHarness.cpp" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="1.57659" status="run"/>
+  </testsuite>
+</testsuites>

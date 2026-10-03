@@ -1,0 +1,64 @@
+test_a_ratio_cannot_exceed_one (__main__.Arithmetic.test_a_ratio_cannot_exceed_one) ... ok
+test_a_share_of_nothing_is_nothing_rather_than_a_division (__main__.Arithmetic.test_a_share_of_nothing_is_nothing_rather_than_a_division) ... ok
+test_counts_are_clamped_not_wrapped (__main__.Arithmetic.test_counts_are_clamped_not_wrapped) ... ok
+test_roots_carry_their_fractional_bits (__main__.Arithmetic.test_roots_carry_their_fractional_bits) ... ok
+test_shares_are_the_fraction_they_claim (__main__.Arithmetic.test_shares_are_the_fraction_they_claim) ... ok
+test_the_exponential_is_one_at_zero_and_decays_to_zero (__main__.Arithmetic.test_the_exponential_is_one_at_zero_and_decays_to_zero) ... ok
+test_the_fixed_exponential_tracks_libm (__main__.Arithmetic.test_the_fixed_exponential_tracks_libm) ... ok
+test_a_measurement_the_engine_cannot_read_is_refused (__main__.Emission.test_a_measurement_the_engine_cannot_read_is_refused) ... ok
+test_a_transform_without_an_exact_integer_form_is_refused (__main__.Emission.test_a_transform_without_an_exact_integer_form_is_refused) ... ok
+test_the_emitted_header_carries_the_model_and_compiles_shape (__main__.Emission.test_the_emitted_header_carries_the_model_and_compiles_shape) ... ok
+test_the_published_header_is_what_the_emitter_produces (__main__.Emission.test_the_published_header_is_what_the_emitter_produces) ... ok
+test_every_published_term_is_readable_in_the_engine (__main__.Engine.test_every_published_term_is_readable_in_the_engine) ... ok
+test_recorded_engine_output_is_reproduced_exactly (__main__.Engine.test_recorded_engine_output_is_reproduced_exactly) ... ok
+test_the_headers_integers_match_its_own_doubles (__main__.Engine.test_the_headers_integers_match_its_own_doubles) ... ok
+test_the_minimum_decision_tick_agrees_with_the_engine (__main__.Engine.test_the_minimum_decision_tick_agrees_with_the_engine) ... ok
+test_cross_validation_keeps_a_game_whole (__main__.Fit.test_cross_validation_keeps_a_game_whole) ... skipped 'fitting needs numpy and scipy'
+test_the_fit_recovers_an_advantage_it_was_given (__main__.Fit.test_the_fit_recovers_an_advantage_it_was_given) ... skipped 'fitting needs numpy and scipy'
+test_every_term_has_a_phrase_a_player_can_read (__main__.Labels.test_every_term_has_a_phrase_a_player_can_read) ... ok
+test_families_cover_every_measurement_once (__main__.Labels.test_families_cover_every_measurement_once) ... ok
+test_the_published_model_takes_one_term_per_family (__main__.Labels.test_the_published_model_takes_one_term_per_family) ... ok
+test_a_bigger_colony_is_favoured (__main__.Probabilities.test_a_bigger_colony_is_favoured) ... ok
+test_eliminated_sides_are_not_competitors (__main__.Probabilities.test_eliminated_sides_are_not_competitors) ... ok
+test_identical_sides_are_evens (__main__.Probabilities.test_identical_sides_are_evens) ... ok
+test_nobody_left_is_nobody_favoured (__main__.Probabilities.test_nobody_left_is_nobody_favoured) ... ok
+test_probabilities_sum_to_a_whole (__main__.Probabilities.test_probabilities_sum_to_a_whole) ... ok
+test_starvation_counts_against_you (__main__.Probabilities.test_starvation_counts_against_you) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 0.023s
+
+OK (skipped=2)
+test_a_drawn_map_has_room_for_its_colonies (__main__.Drawing.test_a_drawn_map_has_room_for_its_colonies) ... ok
+test_best_of_k_curves_never_fall (__main__.Drawing.test_best_of_k_curves_never_fall) ... ok
+test_draws_are_deterministic_in_seed_and_round (__main__.Drawing.test_draws_are_deterministic_in_seed_and_round) ... ok
+test_a_share_term_sums_over_the_map (__main__.Emission.test_a_share_term_sums_over_the_map) ... ok
+test_derived_composites_are_the_consolidated_four (__main__.Emission.test_derived_composites_are_the_consolidated_four) ... ok
+test_diagnostics_read_absence_as_absence (__main__.Emission.test_diagnostics_read_absence_as_absence) ... ok
+test_every_measurement_the_model_may_use_has_a_cpp_expression (__main__.Emission.test_every_measurement_the_model_may_use_has_a_cpp_expression) ... ok
+test_every_shipped_label_is_a_phrase_not_code (__main__.Emission.test_every_shipped_label_is_a_phrase_not_code) ... ok
+test_header_carries_the_coefficients_and_the_function (__main__.Emission.test_header_carries_the_coefficients_and_the_function) ... ok
+test_labels_read_as_english (__main__.Emission.test_labels_read_as_english) ... ok
+test_the_legacy_factors_and_the_team_index_cannot_enter_the_model (__main__.Emission.test_the_legacy_factors_and_the_team_index_cannot_enter_the_model) ... ok
+test_transforms_all_have_a_cpp_form (__main__.Emission.test_transforms_all_have_a_cpp_form) ... ok
+test_a_single_colony_has_nobody_to_be_unfair_to (__main__.Fairness.test_a_single_colony_has_nobody_to_be_unfair_to) ... ok
+test_equal_chances_are_perfectly_fair (__main__.Fairness.test_equal_chances_are_perfectly_fair) ... ok
+test_fairness_ignores_the_unidentified_offset (__main__.Fairness.test_fairness_ignores_the_unidentified_offset) ... ok
+test_one_colony_taking_everything_is_zero_at_every_count (__main__.Fairness.test_one_colony_taking_everything_is_zero_at_every_count) ... ok
+test_sharper_differences_are_less_fair (__main__.Fairness.test_sharper_differences_are_less_fair) ... ok
+test_softmax_sums_to_one_and_ranks_with_fitness (__main__.Fairness.test_softmax_sums_to_one_and_ranks_with_fitness) ... ok
+test_a_measurement_that_decides_nothing_is_fitted_near_zero (__main__.Likelihood.test_a_measurement_that_decides_nothing_is_fitted_near_zero) ... skipped 'fitting needs numpy and scipy'
+test_cross_validation_keeps_a_map_whole (__main__.Likelihood.test_cross_validation_keeps_a_map_whole) ... skipped 'fitting needs numpy and scipy'
+test_gradient_matches_a_numeric_one (__main__.Likelihood.test_gradient_matches_a_numeric_one) ... skipped 'fitting needs numpy and scipy'
+test_predictions_are_probabilities_of_the_right_shape (__main__.Likelihood.test_predictions_are_probabilities_of_the_right_shape) ... skipped 'fitting needs numpy and scipy'
+test_the_fit_recovers_the_coefficients_it_generated (__main__.Likelihood.test_the_fit_recovers_the_coefficients_it_generated) ... skipped 'fitting needs numpy and scipy'
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.109s
+
+OK (skipped=5)
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.051s
+
+OK
