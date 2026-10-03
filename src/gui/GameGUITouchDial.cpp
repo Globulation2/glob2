@@ -89,8 +89,8 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	}
 	// The identity bar shares the stats column and the minimap's bottom edge.
 	// Allocation geometry above reserves clearance for this shared HUD.
-	const ViewRect head{hud.stats.x / unit, (hud.minimap.y + hud.minimap.h) / unit - header,
-			hud.stats.w / unit, header};
+	const ViewRect head{hud.identity.x / unit, hud.identity.y / unit,
+			hud.identity.w / unit, hud.identity.h / unit};
 	const ViewRect quadrant{left ? safe.x : safe.x + safe.w - radius, bottom - radius, radius, radius};
 	auto scaled = [unit](ViewRect r) { return ViewRect{r.x * unit, r.y * unit, r.w * unit, r.h * unit}; };
 	const double x0 = std::min({quadrant.x, head.x, chips.x}), y0 = std::min({quadrant.y, head.y, chips.y});

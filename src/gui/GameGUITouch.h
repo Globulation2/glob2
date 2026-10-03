@@ -121,7 +121,7 @@ class GameGUITouch
 	std::unique_ptr<Minimap> hudMinimap;
 	struct HudLayout
 	{
-		GAGCore::ViewRect minimap, stats;
+		GAGCore::ViewRect minimap, stats, identity;
 		int columns;
 	};
 	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;

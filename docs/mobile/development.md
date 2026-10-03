@@ -157,9 +157,9 @@ Pause sets all three weights to zero; pressing it again resumes worker-only
 production, or dragging a divider establishes a new mix.
 
 Clearing resources, flag requirements, repair/upgrade and Destroy are action
-chips beside the dial, Destroy lowest. When the dial fits, the read-only identity header sits below
+chips beside the dial, Destroy lowest. The compact read-only identity header sits below
 the stats, matching their width and aligning its bottom with the minimap in both
-orientations. While inspecting a building on short screens with two stat rows,
+orientations, including when controls use scrollable rows. While inspecting a building on short screens with two stat rows,
 the minimap uses its larger size so the header fits without overlap. Rings shrink
 to fit small screens; the map stays visible and is tappable outside the controls. Thin bands retain
 expanded touch areas, with the nearest band winning where targets overlap. `dialRegions()` is the single

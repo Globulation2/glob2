@@ -2278,6 +2278,25 @@ class GameGUITouchHarness
 			gui.touch->actionScroll = 0;
 			gui.orderQueue.clear();
 		};
+		auto checkFallbackHeader = [&] {
+			const auto ui = gui.touch->layout();
+			const auto hud = gui.touch->hudLayout(ui);
+			const auto header = gui.touch->allocationRect();
+			auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+			require(near(header.x, hud.stats.x) && near(header.w, hud.stats.w) &&
+				near(header.y + header.h, hud.minimap.y + hud.minimap.h) &&
+				header.y >= hud.stats.y + hud.stats.h,
+				"Row fallback keeps the compact identity below stats beside the minimap");
+			const auto content = gui.touch->panelContent();
+			require(near(content.y, ui.panel.y) && near(content.h, ui.panel.h),
+				"Fallback rows use their full panel; identity consumes no row space");
+			const GAGCore::ViewPoint close{header.x + header.w - 24 * gfx->logicalUnitsPerPoint(),
+				header.y + header.h / 2};
+			require(gui.touch->interfaceRegion(close) == 38 &&
+				gui.touch->interfaceRegion({header.x + 4, header.y + header.h / 2}) == 3,
+				"The detached fallback title and close button both own their input");
+			return close;
+		};
 		for (auto [width, height] : {std::pair{400, 320}, {320, 568}, {568, 320}, {844, 390}})
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
@@ -2296,6 +2315,7 @@ class GameGUITouchHarness
 				const auto packed = gui.touch->dialChips(gui.touch->dialLayout(gui.touch->layout()));
 				require(!packed.fits && !gui.touch->usesDial(),
 					"Confirmation chips cannot overlap the production legend; use scrolling rows");
+				checkFallbackHeader();
 				const auto rows = gui.touch->buildingActions();
 				require(std::any_of(rows.begin(), rows.end(), [](const auto &r) { return r.kind == 5; }),
 					"The fallback retains the Cancel confirmation action");
@@ -2312,6 +2332,7 @@ class GameGUITouchHarness
 				GAGCore::mobileSafeInsetsForTesting = GAGCore::SafeInsets{24, 20, 24, 20};
 				const auto constrained = gui.touch->layout();
 				require(!gui.touch->usesDial(), "Short safe viewport falls back to the row inspector");
+				const auto fallbackClose = checkFallbackHeader();
 				const auto mini = gui.touch->minimapRect();
 				require(constrained.panel.y >= mini.y + mini.h &&
 					constrained.panel.y + constrained.panel.h <= constrained.actions.y &&
@@ -2324,6 +2345,9 @@ class GameGUITouchHarness
 				gui.drawAll(0);
 				gfx->printScreen("building-header-safe-fallback.bmp");
 				gfx->nextFrame();
+				tap(fallbackClose.x, fallbackClose.y);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(),
+					"The compact fallback title close dismisses without an order");
 				GAGCore::mobileSafeInsetsForTesting = oldInsets;
 				openActions(swarm);
 			}

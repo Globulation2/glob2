@@ -110,7 +110,7 @@ MobileLayout GameGUITouch::layout() const
 		result.panel.x = result.safe.x + result.safe.w - result.panel.w;
 		const double available = std::max(0.0, result.actions.y - minimapBottom);
 		const double height = std::min(available,
-			InGameTouchTheme::inspectorHeader + buildingActionsHeight(result.panel.w));
+			(result.persistentPanel ? InGameTouchTheme::inspectorHeader : 0) + buildingActionsHeight(result.panel.w));
 		result.panel.y = result.persistentPanel ? minimapBottom : result.actions.y - height;
 		result.panel.h = height;
 	}
@@ -388,11 +388,13 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		if (header.contains(point) &&
 			point.x >= header.x + header.w - 48 * globalContainer->gfx->logicalUnitsPerPoint())
 			return 38;
+		if (header.contains(point))
+			return 3;
 		// The dial answers only on its rings, chips and header; the map shows
 		// (and stays tappable) between them.
 		if (inspecting() && usesDial())
 		{
-			if (header.contains(point) || dialRegionAt(point))
+			if (dialRegionAt(point))
 				return 3;
 		}
 		else if (layout().panel.contains(point))

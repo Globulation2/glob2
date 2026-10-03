@@ -455,19 +455,23 @@ const SceneBuildingPanel *GameGUITouch::allocationBuilding() const
 }
 ViewRect GameGUITouch::allocationRect() const
 {
-	auto rect = layout().panel;
+	const auto ui = layout();
+	auto rect = ui.panel;
 	if (!inspecting() || rect.h <= 0)
 		return {};
-	if (usesDial())
-		return dialLayout(layout()).header;
+	// Compact identity stays in the HUD even when its controls need row fallback.
+	if (!ui.persistentPanel)
+		return hudLayout(ui).identity;
 	rect.h = InGameTouchTheme::inspectorHeader * globalContainer->gfx->logicalUnitsPerPoint();
 	return rect;
 }
 ViewRect GameGUITouch::panelContent() const
 {
-	auto rect = layout().panel;
+	const auto ui = layout();
+	auto rect = ui.panel;
 	const double header = gui.selectionMode == GameGUI::UNIT_SELECTION
-		? 48 * globalContainer->gfx->logicalUnitsPerPoint() : allocationRect().h;
+		? 48 * globalContainer->gfx->logicalUnitsPerPoint()
+		: inspecting() && !ui.persistentPanel ? 0 : allocationRect().h;
 	rect.y += header;
 	rect.h = std::max(0.0, rect.h - header);
 	return rect;
@@ -525,7 +529,7 @@ void GameGUITouch::drawAllocation()
 	const int frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	sprite->setBaseColor(building->owner.color);
-	const bool compact = usesDial();
+	const bool compact = !layout().persistentPanel;
 	const double factor = compact ? std::min({unit, 32 * unit / sprite->getW(frame),
 		(rect.h - 8 * unit) / sprite->getH(frame)}) : unit;
 	const double iconY = compact ? (rect.h - sprite->getH(frame) * factor) / 2 : 4 * unit;
@@ -571,6 +575,8 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	const double cell = std::min(120 * unit, available / hud.columns);
 	hud.stats = {ui.world.x + (available - hud.columns * cell) / 2, safe.y + 4 * unit,
 				 std::max(0.0, hud.columns * cell - 3 * unit), (6 / hud.columns * 28 - 4) * unit};
+	const double header = InGameTouchTheme::inspectorHeader * unit;
+	hud.identity = {hud.stats.x, hud.minimap.y + hud.minimap.h - header, hud.stats.w, header};
 	return hud;
 }
 
