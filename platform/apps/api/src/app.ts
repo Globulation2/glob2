@@ -11,7 +11,7 @@ import formbody from '@fastify/formbody';
 import rateLimit from '@fastify/rate-limit';
 import websocket from '@fastify/websocket';
 import { sql, type Kysely } from 'kysely';
-import { readableSize, resolveQueue } from '@glob2/core';
+import { freshAgentSimVersions, readableSize, resolveQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
   MATCH_RECORD_CONTENT_TYPE,
@@ -55,9 +55,6 @@ export interface BuildOptions {
   roomSweepMs?: number;
 }
 
-/** An engine agent counts as available if it was seen this recently. */
-const AGENT_FRESHNESS_SECONDS = 300;
-
 function errorBodyFor(
   error: FastifyError,
   uploadMaxBytes: number,
@@ -91,18 +88,8 @@ function errorBodyFor(
 
 /** Sim versions with a recently seen engine agent: the versions this instance can serve. */
 export async function supportedSimVersions(db: Kysely<Database>): Promise<SimVersion[]> {
-  const rows = await db
-    .selectFrom('engine_agents')
-    .select('sim_version')
-    .distinct()
-    .where(
-      'last_seen_at',
-      '>',
-      sql<Date>`now() - make_interval(secs => ${AGENT_FRESHNESS_SECONDS})`,
-    )
-    .orderBy('sim_version')
-    .execute();
-  return rows.flatMap((row) => parseSimVersionKey(row.sim_version) ?? []);
+  const keys = await freshAgentSimVersions(db);
+  return keys.flatMap((key) => parseSimVersionKey(key) ?? []);
 }
 
 export async function buildApp(

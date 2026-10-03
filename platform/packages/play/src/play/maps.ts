@@ -6,13 +6,13 @@ import { createHash } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import { contentKey, submitEngineJob, type JobQueue, type MapPoolEntry } from '@glob2/core';
 import type { Database } from '@glob2/db';
+import { parseSimVersionKey, type GeneratorDescriptor } from '@glob2/protocol';
 import {
-  parseSimVersionKey,
-  type GenerateMapResult,
-  type GeneratorDescriptor,
-  type ValidateMapResult,
-  type RenderPreviewResult,
-} from '@glob2/protocol';
+  STORED_GENERATE_MAP_RESULT,
+  STORED_RENDER_PREVIEW_RESULT,
+  STORED_VALIDATE_MAP_RESULT,
+  readStoredOrNull,
+} from '../stored.ts';
 import { applyCatalogPreview, applyCatalogValidation } from './catalog.ts';
 import { notifyMapJob } from './notify.ts';
 
@@ -208,7 +208,7 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
 
   if (job.kind === 'generate-map') {
     const generator = (job.payload as { generator: GeneratorDescriptor }).generator;
-    const result = job.result as unknown as GenerateMapResult | null;
+    const result = readStoredOrNull(STORED_GENERATE_MAP_RESULT, job.result);
     const where = {
       descriptor_hash: descriptorHash(generator),
       sim_version: job.sim_version,
@@ -249,7 +249,7 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
 
   if (job.kind === 'validate-map') {
     const payload = job.payload as { blobHash: string; format: 'map' | 'save' };
-    const result = job.result as unknown as ValidateMapResult | null;
+    const result = readStoredOrNull(STORED_VALIDATE_MAP_RESULT, job.result);
     const base = db
       .updateTable('map_uploads')
       .where('blob_sha256', '=', payload.blobHash)
@@ -285,7 +285,7 @@ export async function applyMapJobResult(db: Db, jobId: string): Promise<boolean>
   }
 
   if (job.kind === 'render-preview') {
-    const result = job.result as unknown as RenderPreviewResult | null;
+    const result = readStoredOrNull(STORED_RENDER_PREVIEW_RESULT, job.result);
     if (failure === undefined && result) {
       await insertBlob(db, result.previewHash, null, 'image/png', 'public');
     }

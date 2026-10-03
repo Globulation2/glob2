@@ -16,7 +16,7 @@ import {
   queueMatchSetup,
   type MatchProposal,
   type RelayCandidate,
-} from '@glob2/worker';
+} from '@glob2/play';
 import {
   FakeEngine,
   PINNED_KEY,

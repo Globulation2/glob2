@@ -33,13 +33,18 @@ cutover milestone (M9), when they are deleted. There is no data import from YOG.
 | Part | Code | Role |
 | --- | --- | --- |
 | `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. |
+| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, applying ratings, completing map jobs); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool, relay sweep) on the one replica holding the leader lock. The process code only: the domain logic it runs is in `@glob2/play`. |
 | `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](#engine-agents). |
 | web app | `platform/apps/web` | Home, leaderboards, player and match pages, map catalog, moderation (React + Vite); see [match history and the web app](history-and-web.md). Sign-in and invite pages are rendered by `platform-api`. |
 | relay | `src/relay/` (M2) | Clock and turn sequencing for matches; trusts only signed tickets. |
 | contracts | `platform/packages/protocol` | Every JSON shape, exported as JSON Schema with fixtures for C++. |
 | data | `platform/packages/db` | SQL migrations, typed Kysely access, pub/sub, leader lock. |
-| plumbing | `platform/packages/core` | Configuration, logging, AccessPolicy, blob store, job queue, shutdown. |
+| match domain | `platform/packages/play` | Shared by the API and the worker: ratings, queue tickets and proposals, the match start sequence, relay placement, map sources, match-end intake, catalog job results, the warm map pool and stored-JSON decoding. Test doubles and fixtures are exported as `@glob2/play/testing`. |
+| plumbing | `platform/packages/core` | Configuration, logging, AccessPolicy, blob store, job queue, engine-agent liveness, shutdown. |
+
+Apps depend on packages, never on each other: ESLint rejects imports of an app
+package (`@glob2/api`, `@glob2/worker`, `@glob2/engine-agent`, `@glob2/web`)
+from anywhere else.
 
 ## Principles
 
@@ -200,6 +205,36 @@ database in tests.
 
 Hashes are lowercase hex (`sha256_hex` domain), ids are UUIDs, and enumerations
 are text with CHECK constraints so they can grow without type migrations.
+
+### Stored JSON documents
+
+Document-shaped columns (`matches.setup` and `end_report`, `engine_jobs.result`,
+`rooms.settings`, `region_rtts`, `match_proposals.map`, generator descriptors and
+map facts) are validated against the protocol schemas when they are written, and
+decoded again when they are read: `readStored(format, value)` in
+`platform/packages/play/src/stored.ts`. Rows outlive the code that wrote them, so
+a read
+
+1. takes the document's version from `schemaVersion` (a document without one is
+   version 1);
+2. refuses a version newer than the code knows, which happens when a newer
+   replica wrote the row during a rolling upgrade;
+3. upgrades an older version one step at a time through the format's `upgrades`
+   table; and
+4. checks the result against the current schema and its semantic rules.
+
+A row that cannot be decoded raises `StoredDataError`. Write paths and single-item
+reads fail with it (an internal error, logged with the column and the schema
+issues), rather than act on a misread document. List pages degrade instead: the
+public room list leaves the room out, and match summaries fall back to the
+`sim_version` column. The relay's setup endpoint and verify jobs always receive
+the current MatchSetup version.
+
+To change a stored shape incompatibly, bump the format's version (for MatchSetup,
+`MATCH_SETUP_SCHEMA_VERSION`, which writers stamp into the document), add an
+`upgrades[old]` step, and add a frozen document of the old version under
+`platform/packages/play/test/fixtures/stored/`. That test decodes every frozen
+document of every version, so an old row can never silently stop reading.
 
 ## Coordination
 
@@ -365,10 +400,26 @@ for any shortfall.
 - Maps of entries removed from `instance.yaml` are dropped.
 
 `takeWarmMap(db, queueId, simVersionKey, { entry?, matchId? })` (exported by
-`@glob2/worker`) gives a match starter the oldest ready map, using
+`@glob2/play`) gives a match starter the oldest ready map, using
 `FOR UPDATE SKIP LOCKED`. It returns the descriptor with its seed (MatchSetup
 `map.generator`), the map hash (`map.hash`) and the generation result, or
 `undefined` if none is ready. The next refill replaces a taken map.
+
+**Two map tables, two jobs.** Both submit generate-map jobs, but they answer
+different questions and have one owner each:
+
+| | `warm_maps` (`packages/play/src/warmMaps.ts`) | `generated_maps` (`packages/play/src/play/maps.ts`) |
+| --- | --- | --- |
+| Question | "Give me *a* ready map for this queue entry, now." | "Give me *the* map for this exact descriptor." |
+| Key | queue, pool entry, sim version; one row per map, a fresh seed each | descriptor hash (seed included) and sim version |
+| Lifetime | consumed once by `takeWarmMap`, then replaced; taken and failed rows deleted after 24 h | kept: a cache shared by every room and match that asks for the descriptor |
+| Written by | the scheduler leader (`WarmMapPool.refill`) | room map selection and the on-demand path of `PlatformMatchStarter` |
+| Failure policy | back off an entry after 3 failures in 10 min; expire jobs after 30 min | retry a failed descriptor after 60 s |
+
+Results reach both through `handleEngineJobResult` (`recordWarmMapResult`, then
+`applyMapJobResult`); each ignores jobs it did not submit. Engine agent freshness
+(`ENGINE_AGENT_FRESH_SECONDS`, `freshAgentSimVersions` in `@glob2/core`) is the
+one definition both this pool and the API's served-version list use.
 
 ### Scaling and operation
 
@@ -396,7 +447,7 @@ for any shortfall.
 
 The catalog (milestone M7) keeps shared maps and their versions. The REST routes
 are in `apps/api/src/maps/` (`routes.ts`; rules and views in `catalog.ts`). The
-worker applies engine-job results to versions (`apps/worker/src/play/catalog.ts`).
+worker applies engine-job results to versions (`packages/play/src/play/catalog.ts`).
 Product defaults that are still provisional live in `CATALOG_RULES`.
 
 **Maps and versions.** A map has an owner, a title, a description, a visibility,
@@ -518,7 +569,12 @@ Tests create and drop their own databases on the server named by
 `TEST_DATABASE_URL` (default `postgres://glob2:glob2@127.0.0.1:55432/postgres`).
 CI runs the `platform` job in `.github/workflows/build.yml` against a Postgres
 service whenever `platform/` changes; generated protocol fixtures also select the
-native jobs, which hold the C++ contract tests.
+native jobs, which hold the C++ contract tests. The web app's Playwright suites
+(`apps/web/e2e`: page smoke tests and axe accessibility checks) run locally with
+`npm run build -w @glob2/web && npm run e2e -w @glob2/web` against a seeded API
+on the test Postgres. The whole deployed stack, including a rated match, has its
+own one-command test; see
+[End-to-end test of the stack](../hosting/README.md#end-to-end-test-of-the-stack).
 
 ## Delivery milestones
 

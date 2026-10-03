@@ -12,6 +12,7 @@
 import { createHash, randomInt, randomUUID } from 'node:crypto';
 import { sql, type Kysely } from 'kysely';
 import {
+  freshAgentSimVersions,
   modeSeats,
   submitEngineJob,
   type JobQueue,
@@ -25,11 +26,10 @@ import {
   type GenerateMapResult,
   type GeneratorDescriptor,
 } from '@glob2/protocol';
+import { STORED_GENERATE_MAP_RESULT, STORED_GENERATOR, readStored } from './stored.ts';
 
 type Db = Kysely<Database>;
 
-/** Engine agents seen this recently count as serving their sim version. */
-export const AGENT_FRESH_SECONDS = 300;
 /** A generation job with no result after this long is given up. */
 export const WARM_MAP_GENERATION_TIMEOUT_SECONDS = 1800;
 /** After this many failures within the window, an entry is not retried until the window passes. */
@@ -58,19 +58,8 @@ export function poolEntryKey(entry: MapPoolEntry): string {
 }
 
 /** Sim version keys with a fresh engine agent that runs generate-map. */
-export async function servedSimVersions(
-  db: Db,
-  freshSeconds = AGENT_FRESH_SECONDS,
-): Promise<string[]> {
-  const rows = await db
-    .selectFrom('engine_agents')
-    .select('sim_version')
-    .distinct()
-    .where('last_seen_at', '>', sql<Date>`now() - make_interval(secs => ${freshSeconds})`)
-    .where(sql<boolean>`'generate-map' = ANY(kinds)`)
-    .orderBy('sim_version')
-    .execute();
-  return rows.map((r) => r.sim_version);
+export function servedSimVersions(db: Db): Promise<string[]> {
+  return freshAgentSimVersions(db, { kind: 'generate-map' });
 }
 
 export interface WarmMapPoolOptions {
@@ -250,7 +239,7 @@ export async function recordWarmMapResult(db: Db, jobId: string): Promise<boolea
     .executeTakeFirst();
   if (!job || job.kind !== 'generate-map' || job.status === 'queued') return false;
   if (job.status === 'succeeded') {
-    const result = job.result as unknown as GenerateMapResult;
+    const result = readStored(STORED_GENERATE_MAP_RESULT, job.result);
     const updated = await db
       .updateTable('warm_maps')
       .set({
@@ -330,8 +319,8 @@ export async function takeWarmMap(
     id: row.id,
     queueId: row.queue_id,
     simVersion: row.sim_version,
-    generator: row.generator as unknown as GeneratorDescriptor,
+    generator: readStored(STORED_GENERATOR, row.generator),
     mapHash: row.map_hash,
-    facts: row.map_facts as unknown as GenerateMapResult,
+    facts: readStored(STORED_GENERATE_MAP_RESULT, row.map_facts),
   };
 }

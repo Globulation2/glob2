@@ -4,7 +4,12 @@
 import { sql, type Kysely, type Selectable } from 'kysely';
 import type { Database } from '@glob2/db';
 import type { AiId, MatchSetup, MatchSummary } from '@glob2/protocol';
-import { PROVISIONAL_SIGMA } from '@glob2/worker';
+import {
+  PROVISIONAL_SIGMA,
+  STORED_MATCH_SETUP,
+  storedSimVersion,
+  tryReadStored,
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
 
 type Db = Kysely<Database>;
@@ -105,8 +110,8 @@ export function generatorLabel(id: string): string {
     .join(' ');
 }
 
-export function generatorOf(setup: unknown): string | undefined {
-  const map = (setup as MatchSetup | undefined)?.map;
+export function generatorOf(setup: MatchSetup | undefined): string | undefined {
+  const map = setup?.map;
   return map && map.kind === 'generated' ? map.generator.generatorId : undefined;
 }
 
@@ -150,13 +155,16 @@ export async function summarize(db: Db, rows: readonly MatchRow[]): Promise<Matc
   }
   const ratingOf = new Map(history.map((h) => [`${h.match_id}:${h.seat}`, h]));
   return rows.map((match) => {
-    const setup = match.setup as unknown as MatchSetup;
+    // A list page degrades for a row whose setup no longer decodes: the sim
+    // version comes from its column and the map title from the catalog only.
+    const decoded = tryReadStored(STORED_MATCH_SETUP, match.setup);
+    const setup = decoded.ok ? decoded.value : undefined;
     const generator = generatorOf(setup);
     const title =
       titles.get(match.map_hash)?.title ?? (generator ? generatorLabel(generator) : undefined);
     return {
       id: match.id,
-      simVersion: setup.simVersion,
+      simVersion: setup?.simVersion ?? storedSimVersion(match.sim_version),
       origin: match.origin,
       ...(match.queue_id ? { queueId: match.queue_id } : {}),
       rated: match.rated,
