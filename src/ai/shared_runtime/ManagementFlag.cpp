@@ -55,7 +55,8 @@ namespace
 				runtime.push_order(shared_ptr<Order>(new OrderAlterGuardArea(team, mode, &acc, map)));
 				break;
 			case FarmArea:
-				// No AI paints farm areas (the farm-areas experiment) yet.
+				// Only issued when the game carries the farm-areas experiment.
+				runtime.push_order(shared_ptr<Order>(new OrderAlterFarmArea(team, mode, &acc, map)));
 				break;
 		}
 	}
@@ -288,7 +289,7 @@ bool AddArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 	stream->readEnterSection("AddArea");
 	ManagementOrder::load(stream, player, versionMinor);
 	const Uint32 savedArea=stream->readUint32("area_type");
-	if (savedArea > GuardArea) return false;
+	if (savedArea > FarmArea) return false;
 	areatype=static_cast<AreaType>(savedArea);
 	stream->readEnterSection("locations");
 	Uint32 size=stream->readCount("size");
@@ -362,7 +363,7 @@ bool RemoveArea::load(GAGCore::InputStream *stream, Player *player, Sint32 versi
 	stream->readEnterSection("RemoveArea");
 	ManagementOrder::load(stream, player, versionMinor);
 	const Uint32 savedArea=stream->readUint32("area_type");
-	if (savedArea > GuardArea) return false;
+	if (savedArea > FarmArea) return false;
 	areatype=static_cast<AreaType>(savedArea);
 	stream->readEnterSection("locations");
 	Uint32 size=stream->readCount("size");

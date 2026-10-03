@@ -633,9 +633,15 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	// margin is the AICortex member (the seeded per-game N), == obs.wheatOpenMargin.
 	// In liftAll (wheat-blitz) mode `desired` is forced empty, so only the DEL mask is
 	// non-empty — the whole field is un-forbidden for a one-time food burst.
-	Cortex::WheatReconcile wr =
-		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll);
+	//
+	// With the farm-areas experiment the field is farmed with a farm area instead:
+	// the checkerboard is always lifted (the scan runs in liftAll mode, so any old
+	// paint is removed), and enqueueWheatFarm paints the farm, or erases it for a
+	// wheat blitz.
 	const Map* map = &player->team->game->map;
+	const bool farms = map->farmAreasEnabled();
+	Cortex::WheatReconcile wr =
+		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll || farms);
 	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
 	// DEL first so freeing dead tiles never races the ADD of fresh ones.
 	if (wr.del.getApplicationCount() > 0)
@@ -644,4 +650,17 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	if (wr.add.getApplicationCount() > 0)
 		orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(
 			teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
+	if (farms)
+		enqueueWheatFarm(wr.field, liftAll);
+}
+
+void AICortex::enqueueWheatFarm(const std::vector<int>& field, bool liftAll)
+{
+	Cortex::FarmReconcile fr = Cortex::reconcileWheatFarm(player, field, liftAll, /*buildMasks=*/true);
+	const Map* map = &player->team->game->map;
+	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
+	if (fr.del.getApplicationCount() > 0)
+		orderQueue.push(shared_ptr<Order>(new OrderAlterFarmArea(teamNumber, BrushTool::MODE_DEL, &fr.del, map)));
+	if (fr.add.getApplicationCount() > 0)
+		orderQueue.push(shared_ptr<Order>(new OrderAlterFarmArea(teamNumber, BrushTool::MODE_ADD, &fr.add, map)));
 }

@@ -104,10 +104,21 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Growth.** `Map::growResources` does not read the farm mask.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
-- **The AIs** and the **map editor**. No AI paints farm areas, the
-  editor has no farm brush (it shows and preserves a painted mask). These are follow-ups if the
-  experiment graduates, along with high-resolution frames for the `area-farm`
-  overlay, which renders at classic resolution when HD artwork is on.
+- **The map editor**. It has no farm brush yet (it shows and preserves a painted
+  mask). That is a follow-up, along with high-resolution frames for the
+  `area-farm` overlay, which renders at classic resolution when HD artwork is on.
+
+## AIs
+
+In a game with the experiment, every AI that farms wheat paints a farm area
+instead of its forbidden-zone pattern: Nicowar, Econo, Maxima, Cortex, Cabino and
+Warrush. Each keeps its own idea of which fields to farm (near water, within its
+managed territory) and adds the shared rule `AIFarmAreas::wantsFarm`
+(`src/ai/AIFarmAreas.h`): ground the farm can grow on that holds wheat or touches
+it, so the farm covers the field and the ring it grows into. Forbidden paint stays
+for wood outside farms, and an AI removes its old wheat paint when it switches.
+Cortex erases its farm for a wheat blitz, and Maxima when farming is disabled.
+Without the experiment every AI farms exactly as before.
 
 ## Scripts
 
