@@ -20,13 +20,6 @@ public:
 #ifdef _WIN32
 		if (const char *previous = std::getenv(name))
 			originalCRT = previous;
-		// SDL writes the Windows process environment; CRT readers have their
-		// own cached view, used by the shader and UI-scale test overrides.
-		if (_putenv_s(name, value) != 0)
-		{
-			restore();
-			throw std::runtime_error("Cannot set test CRT environment variable " + this->name);
-		}
 #endif
 		if (GAGCore::setProcessEnvironment(name, value, 1) != 0)
 		{
@@ -47,7 +40,12 @@ private:
 		_putenv_s(name.c_str(), originalCRT ? originalCRT->c_str() : "");
 #endif
 		if (original)
-			GAGCore::setProcessEnvironment(name.c_str(), original->c_str(), 1);
+		{
+			// Restore the OS and SDL copies without replacing a distinct saved
+			// CRT value on Windows.
+			SDL_setenv_unsafe(name.c_str(), original->c_str(), 1);
+			SDL_SetEnvironmentVariable(SDL_GetEnvironment(), name.c_str(), original->c_str(), true);
+		}
 		else
 		{
 #ifdef _WIN32
