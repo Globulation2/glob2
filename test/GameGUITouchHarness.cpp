@@ -3161,6 +3161,31 @@ class GameGUITouchHarness
 		gui.touch->dismissMapPanels();
 		globalContainer->replaying = true;
 		map.setResource(41, 40, WHEAT, 0);
+		for (int inspector = 0; inspector < 3; ++inspector)
+		{
+			gui.touch->dismissMapPanels();
+			if (inspector == 0)
+			{
+				gui.setSelection(GameGUI::BUILDING_SELECTION, inspected);
+				gui.touch->restorePalette = true;
+				gui.touch->previousPanelOpen = false;
+				gui.touch->previousDisplayMode = GameGUI::CONSTRUCTION_VIEW;
+			}
+			else if (inspector == 1)
+				gui.setSelection(GameGUI::UNIT_SELECTION, worker);
+			else
+				gui.setSelection(GameGUI::RESOURCE_SELECTION, unsigned(map.coordToIndex(41, 40)));
+			gui.touch->panelOpen = true;
+			gui.drawAll(0);
+			const auto bar = gui.touch->layout().actions;
+			tap(bar.x + bar.w * 4.5 / 6, bar.y + bar.h / 2);
+			gui.drawAll(0);
+			require(gui.selectionMode == GameGUI::NO_SELECTION && gui.touch->panelOpen &&
+				gui.displayMode == GameGUI::STAT_TEXT_VIEW && !gui.touch->restorePalette &&
+				!gui.touch->readOnlyPanelShown,
+				"Replay statistics replace every inspector and survive the next draw");
+		}
+		gui.touch->dismissMapPanels();
 		gui.touch->select({center.x + 28, center.y});
 		gui.drawAll(0);
 		map.setNoResource(41, 40, 1);
