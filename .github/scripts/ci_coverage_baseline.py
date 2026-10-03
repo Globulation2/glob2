@@ -80,3 +80,23 @@ def master_checkpoint(repo, token, read=api):
     except (OSError, ValueError, KeyError, zipfile.BadZipFile):
         pass
     return None
+
+
+def successful_full_run(repo, sha, token, read=api):
+    """Reuse only available full hosted evidence for the exact revision and policy."""
+    if not repo or not sha or not token:
+        return None
+    try:
+        from ci_policy import FLAGS, fingerprint
+        policy = fingerprint()
+        for run in recent_successes(repo, token, read):
+            if run.get('head_sha') != sha:
+                continue
+            observed = selection_evidence(repo, run, token, read)
+            if (observed and observed.get('full_matrix') is True and
+                    observed.get('policy_fingerprint') == policy and
+                    all(observed.get('selection', {}).get(flag) is True for flag in FLAGS)):
+                return run['id']
+    except (OSError, ValueError, KeyError, TypeError, AttributeError, EOFError, zipfile.BadZipFile):
+        pass
+    return None

@@ -128,15 +128,20 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   Primary GCC 13 programs are published before CLI regressions and consumed by
   both native shards and browser transport checks. Each selected GCC toolchain
   starts its own runtime shards without waiting for Clang. The stable
-  `Relevant checks passed` gate requires every selected check to succeed.
-  Draft PRs defer expensive verification; `ready_for_review` or `ci:run` starts it.
+  `Relevant checks passed` summary requires every selected check to succeed, but
+  is not a merge prerequisite. Cheap-only success does not establish engine
+  verification or acceptance of local PR evidence. Both draft and ready PRs run
+  cheap contracts by default; `ci:run` or `ci:full` requests hosted verification.
   The [risk policy and rollout](#tiered-pull-request-coverage-rollout) controls
-  secondary platforms and cumulative master validation. Unknown inputs select full
+  secondary platforms for explicitly requested PR verification. Retained master
+  pushes always run the full development matrix. Unknown inputs select full
   development coverage. Steam/store release packaging runs only for releases or
   explicit dispatches, including when its helper files change.
 - CI run cancellation: superseded PR revisions cancel through server-side
   concurrency. Master runs finish once started and only the newest pending push
-  remains; nightly and manual runs have separate groups. Call-only workflows
+  remains; nightly and manual runs have separate groups. Nightly skips expensive
+  jobs when available successful full evidence covers its exact master SHA and
+  current coverage policy; otherwise it runs the full matrix. Call-only workflows
   inherit their caller's cancellation. Other callable workflows use a literal
   prefix distinct from their caller to prevent deadlocks. The trusted
   `cancel-superseded.yml` workflow uses `pull_request_target`, checks out only
@@ -1127,18 +1132,19 @@ captures, and report unavailable platform and maintainer-playtesting coverage ex
 
 ### CI timing and retained revisions
 
-Ready pull requests cancel superseded revisions. Master finishes active verification
-and keeps the newest pending push. With tiers enabled, the selector compares its
-checkout to the latest successful ancestor checkpoint with matching policy evidence;
-this includes all changes whose intermediate pending runs were replaced. An absent,
-expired, divergent or invalid checkpoint selects full coverage. Nightly verification
-runs at 06:00 UTC in a separate concurrency group without publication operations.
+Pull requests cancel superseded revisions and run cheap contracts by default.
+Master finishes active full verification and keeps the newest pending push; all
+retained master pushes select the full development matrix. Nightly fallback runs
+at 06:00 UTC in a separate concurrency group without publication operations, and
+skips expensive jobs only with matching available successful full evidence for
+its exact revision and policy.
 Release packaging first runs the full development matrix on the exact candidate
 revision through `build.yml`'s `revision` workflow-call input.
 
 CI measurements batch completed runs hourly using trusted default-branch code and
-inert artifacts. Cancellations do not create measurement workflows, and draft-only
-observations are excluded. Batches retain attempt identities to avoid remeasuring
+inert artifacts. Cancellations do not create measurement workflows, and cheap-only
+observations are excluded. Explicitly requested verification on drafts is included.
+Batches retain attempt identities to avoid remeasuring
 completed runs and attempt at most ten new measurements per batch. `feedback.json` reports p90 after ten successful matching-inventory
 PR samples, with explicit gaps when there are fewer samples. Metrics report queue delay, active execution time, idle
 gaps, aggregate runner minutes, feedback time and cache observations separately.
@@ -1147,9 +1153,10 @@ jobs count once in wall execution time and separately in runner minutes.
 Compare ten successful runs with matching event and exact coverage inventory using
 `python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
 Report workload reductions separately from execution savings. The initial service
-objective is p90 ordinary-PR feedback below 15 minutes and queue delay below two
-minutes; full compatibility changes and releases may take longer. Missing samples
-and missing inventories cannot establish improvements.
+objective for explicitly requested affected-PR verification is p90 feedback below
+15 minutes and queue delay below two minutes; full verification and releases may
+take longer. Cheap-contract feedback is not engine verification feedback. Missing
+samples and missing inventories cannot establish improvements.
 
 ### Linux execution dependencies
 
@@ -1194,36 +1201,98 @@ Only platform-matched jobs with ten successful samples enter a profile. Review t
 resulting diff before shipping it; weights never change during a run. Profiles
 remain empty until measurements are available, rather than using invented data.
 
+### Local and VM PR verification
+
+Relevant local or VM testing is the standard PR verification path. Maintainers
+accept evidence directly, including their own evidence; hosted CI success is not
+a merge prerequisite. Choose tests from the change's actual risks and justify
+coverage and omissions rather than reproducing the CI matrix. A VM supplies
+coverage for its actual OS, architecture and configuration; testing on one platform
+does not establish another platform's compatibility.
+
+Record evidence in a PR comment using this template, with links accessible to
+reviewers. Store generated files under ignored `artifacts/` and temporary narratives
+under `docs/.work/`, then upload or attach evidence for review; local paths alone
+are insufficient. Keep secrets out of uploaded logs.
+
+```markdown
+Local / VM verification
+
+- Tested commit SHA:
+- Base revision and integration state (PR head or merge with base):
+- Environment: OS, architecture, VM/container image if applicable, compiler/runtime versions:
+- Dependencies, build configuration and flags:
+- Coverage rationale: changed behavior and risks addressed:
+- Exact build/test commands and results (including counts and exit status):
+- Omitted checks and why; limitations:
+- Evidence: accessible links to logs and applicable checksums, saves, replays or screenshots:
+- Maintainer acceptance: sufficient evidence for this revision, accepted by <name>:
+```
+
+Evidence must describe the tested source and binaries; reuse built artifacts only
+when source, compiler, flags and dependency inputs match. Refresh evidence when
+later edits affect tested behavior, dependencies or integration. Fetch current
+master before final validation and resolve actual conflicts. Unrelated master
+advancement alone does not invalidate evidence; changes in the same components,
+dependencies or CI configuration require renewed integration assessment.
+
+Focused coverage does not waive affected simulation determinism, save/load,
+replay/network, platform compatibility or simulation-version requirements in
+`AGENTS.md`. Local and hosted results may jointly supply that coverage. Hosted
+checks may be pending or unavailable when merging; known failures introduced by
+the PR still require resolution.
+
+### Hosted verification and regression detection
+
+Draft and ready PRs run the existing cheap contracts by default. Becoming ready
+starts no expensive jobs. `ci:run` requests hosted affected checks; `ci:full`
+requests the complete development matrix, even in draft. `ci:windows`, `ci:android`
+and `ci:browsers` expand requested coverage but do not start verification alone.
+Label changes re-evaluate selection; removing the request labels restores
+cheap-only selection. The aggregate summary rejects missing, failed, cancelled
+and unexpectedly skipped selected jobs, while clearly distinguishing cheap-only
+success from engine verification or acceptance of PR evidence.
+
+Every retained master push runs the full development matrix regardless of tier
+settings. Active runs finish and only the newest pending push remains. Full master
+CI detects regressions asynchronously; existing master failures do not restrict
+PR merges. Retain failure artifacts, prioritize diagnosis and repair, document
+verification in repair PRs and confirm recovery with subsequent full master runs.
+Do not require master to become green before other PRs merge.
+
+Nightly is a fallback with a separate concurrency group. Expensive nightly jobs
+are skipped only when a successful full hosted run already covers the exact master
+SHA under the current coverage policy and its evidence is available. Missing,
+expired, mismatched or inaccessible evidence triggers the full matrix. A skipped
+nightly is not a new full checkpoint. Manual and release verification retain their
+existing behavior. Local evidence never substitutes for a hosted full checkpoint.
+
 ### Tiered pull-request coverage rollout
 
 `.github/scripts/ci_policy.py` records proposed and effective selection, reasons,
-changed paths, checkpoint, policy identity and selected command inventory in
-`ci-selection.json`. Native runners additionally retain exact eligible/assigned
-case inventories. Primary Linux keeps the complete applicable native suite.
-Simulation/save/AI changes add older-GCC and Windows compatibility cases plus
-complete native/browser per-tick and scripting comparisons. Presentation changes
-retain software/WebGL and Firefox/WebKit coverage. Network changes retain real
-transport/server/deployment checks. Android changes retain arm64 builds and x86_64
-emulator smoke. Shared headers, dependency/build configuration and unknown paths
-select the full development matrix. Native coverage is selected nightly/full or
-when its infrastructure changes. `test/ci-compatibility.json` owns repeated native
-compatibility cases; add suites there when introducing a new portability boundary.
+changed paths, policy identity and selected command inventory in `ci-selection.json`.
+The observation also identifies `cheap-contracts`, `affected`, `full` or
+`nightly-reused` verification and the reused run ID when applicable. Native runners
+retain eligible/assigned case inventories. Cheap-only PR runs do not enter ordinary
+verification performance cohorts; requesting tests on a draft does not exclude
+actual verification from those cohorts.
 
-Drafts run contracts only. `ci:run` requests normal affected checks while still
-in draft. `ci:full`, `ci:windows`, `ci:android` and `ci:browsers` expand the minimum;
-use `ci:run` as well to execute an expansion while draft. Ready transitions and
-label changes re-evaluate selection. The aggregate gate rejects missing, failed,
-cancelled and unexpectedly skipped required jobs; draft summaries clearly state
-that expensive verification was deferred.
+For explicitly requested affected PR verification, primary Linux keeps the
+complete applicable native suite. Simulation/save/AI changes add older-GCC and
+Windows compatibility cases plus native/browser per-tick and scripting comparisons.
+Presentation changes retain software/WebGL and Firefox/WebKit coverage. Network
+changes retain transport/server/deployment checks. Android changes retain arm64
+builds and x86_64 emulator smoke. Shared headers, dependency/build configuration
+and unknown paths select the full development matrix.
+`test/ci-compatibility.json` owns repeated native compatibility cases; add suites
+there when introducing a portability boundary.
 
-Reductions start disabled. First validate scheduling and reuse changes with the
-full hosted master/nightly matrix. Then set `CI_TIERED_COVERAGE_ENABLED=true` after
-reviewing shadow-selection evidence. The selector discovers successful full master
-runs with matching source/policy identity and unexpired evidence automatically;
-`CI_TIER_BASELINE_RUN_ID` can specify a preferred baseline. Old-policy evidence
-cannot activate a new selector. Unavailable evidence falls back to conservative
-coverage. Set the flag false to roll back reductions while keeping scheduling and
-reuse improvements. Full nightly and release verification remains mandatory.
+Affected-PR tier reductions remain disabled until a full hosted master/nightly
+matrix validates the current policy. `CI_TIERED_COVERAGE_ENABLED=true` activates
+them with matching available full evidence; `CI_TIER_BASELINE_RUN_ID` may specify
+a preferred baseline. Missing evidence or setting the flag false restores
+conservative affected-PR coverage. These settings never reduce master coverage or
+start expensive PR checks without an explicit request.
 
 ## Untrusted maps, saved games and replays
 

@@ -59,6 +59,7 @@ def measure(run, jobs, observations):
             'conclusion': run.get('conclusion'), 'selection': selection.get('selection'),
             'inventory_fingerprint': coverage_fingerprint,
             'draft': selection.get('draft', False),
+            'verification_mode': selection.get('verification_mode'),
             'queue_seconds': seconds(run['created_at'], min(starts)) if starts else None,
             'execution_seconds': active, 'execution_span_seconds': span,
             'idle_after_start_seconds': max(0, span - active) if span is not None else None,
@@ -73,7 +74,8 @@ def compare(before, after):
     cohorts = {}
     for side, runs in [('before', before), ('after', after)]:
         for run in runs:
-            if run.get('conclusion') != 'success' or run.get('selection') is None or not run.get('inventory_fingerprint'):
+            if (run.get('conclusion') != 'success' or run.get('selection') is None or
+                    not run.get('inventory_fingerprint') or run.get('verification_mode') in ('cheap-contracts', 'nightly-reused')):
                 continue
             key = json.dumps([run.get('metrics_schema'), run['event'], run.get('inventory_fingerprint'), run['selection']], sort_keys=True)
             cohorts.setdefault(key, {'before': [], 'after': []})[side].append(run)
@@ -94,7 +96,9 @@ def feedback(runs):
     cohorts = {}
     for run in runs:
         if (run.get('event') != 'pull_request' or run.get('conclusion') != 'success'
-                or run.get('draft') or not run.get('inventory_fingerprint')):
+                or (run.get('draft') and run.get('verification_mode') is None) or
+                run.get('verification_mode') in ('cheap-contracts', 'nightly-reused') or
+                not run.get('inventory_fingerprint')):
             continue
         cohorts.setdefault(run['inventory_fingerprint'], []).append(run)
     report = []
