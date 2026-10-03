@@ -4,6 +4,7 @@
 #include "GlobalContainer.h"
 #include <algorithm>
 #include <cmath>
+#include <ApplicationHost.h>
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -169,6 +170,15 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
+#if defined(GLOB2_MOBILE) && defined(__ANDROID__)
+			content.push_back(button("menu/privacy", "Privacy policy", [] {
+#if defined(GLOB2_AMAZON_RELEASE)
+				GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/amazon-privacy-policy.md");
+#else
+				GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/privacy-policy.md");
+#endif
+			}, rowStyle));
+#endif
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 			content.push_back(action("[quit]", QUIT, rowStyle));
 #endif
@@ -218,6 +228,15 @@ Element MainMenuScreen::build(const Presentation &p)
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
 								   action("[credits]", CREDITS, utility), action("[quit]", QUIT, utility)};
+#if defined(GLOB2_MOBILE) && defined(__ANDROID__)
+	utilities.push_back(button("menu/privacy", "Privacy policy", [] {
+#if defined(GLOB2_AMAZON_RELEASE)
+		GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/amazon-privacy-policy.md");
+#else
+		GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/privacy-policy.md");
+#endif
+	}, utility));
+#endif
 	WrapOptions grid;
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;
