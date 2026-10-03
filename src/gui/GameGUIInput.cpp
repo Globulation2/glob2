@@ -126,7 +126,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 void GameGUI::processEvent(SDL_Event *event)
 {
     inputState.observe(*event);
-    if(hiveCards && !activeDialog() && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
+    if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||
@@ -160,7 +160,7 @@ void GameGUI::processEvent(SDL_Event *event)
 
     // Commander cancellation must win over the composer's Return submission,
     // including customized stop bindings. Leave the draft open for editing.
-    if (typingCommander && (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP) &&
+    if (typingInputScreen && hive && (event->type == SDL_EVENT_KEY_DOWN || event->type == SDL_EVENT_KEY_UP) &&
         keyboardManager.getAction(KeyPress(event->key, event->type == SDL_EVENT_KEY_DOWN)) == GameGUIKeyActions::StopCommander)
     {
         if (hive) hive->stop();

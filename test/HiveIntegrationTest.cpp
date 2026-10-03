@@ -497,6 +497,23 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	CHECK(stopPosts == 2);
 	CHECK(commandPosts == 0);
 	CHECK(world.gui.typingCommander);
+	// Use actual event routing: visible HUD controls stay usable while typing.
+	screen->invalidate();
+	world.gui.drawAll(0);
+	auto *stopButton = screen->host().find("hive/stop");
+	REQUIRE(stopButton);
+	SDL_Event click{};
+	click.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+	click.button.button = SDL_BUTTON_LEFT;
+	click.button.x = stopButton->bounds.x + stopButton->bounds.w / 2;
+	click.button.y = stopButton->bounds.y + stopButton->bounds.h / 2;
+	world.gui.processEvent(&click);
+	click.type = SDL_EVENT_MOUSE_BUTTON_UP;
+	world.gui.processEvent(&click);
+	CHECK(stopPosts == 3);
+	CHECK(commandPosts == 0);
+	CHECK(world.gui.typingCommander);
+
 	SDL_Event escape{};
 	escape.type = SDL_EVENT_KEY_DOWN;
 	escape.key.key = SDLK_ESCAPE;
@@ -517,7 +534,7 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 		world.gui.drawAll(0);
 	};
 	tap("hive/stop");
-	CHECK(stopPosts == 3);
+	CHECK(stopPosts == 4);
 	CHECK(client->standingOrders().size() == 1); // Stop does not cancel automation.
 	client->reports = {"Earlier attack report", "Latest colony report"};
 	screen->invalidate();
@@ -544,6 +561,26 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	screen->invalidate();
 	world.gui.drawAll(0);
 	CHECK(text().find(std::string(179, 'x') + "…") != std::string::npos);
+	// Stop also wins over modified Return in ordinary team chat: never send
+	// a message when the player intended to stop the commander.
+	SDL_Event enter{};
+	enter.type = SDL_EVENT_KEY_DOWN;
+	enter.key.key = SDLK_RETURN;
+	world.gui.processEvent(&enter);
+	stop.type = SDL_EVENT_KEY_DOWN;
+	stop.key.key = SDLK_RETURN;
+	stop.key.mod = SDL_KMOD_CTRL | SDL_KMOD_SHIFT;
+	world.gui.processEvent(&stop);
+	CHECK(stopPosts == 5);
+	CHECK(commandPosts == 0);
+	CHECK_FALSE(world.gui.typingCommander);
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_NULL);
+	SDL_Event typed{};
+	typed.type = SDL_EVENT_TEXT_INPUT;
+	typed.text.text = "Still editing team chat";
+	world.gui.processEvent(&typed);
+	world.gui.processEvent(&enter);
+	CHECK(world.gui.getOrder()->getOrderType() == ORDER_TEXT_MESSAGE);
 }
 
 TEST_CASE("Hive Mind pending requests preserve drafts and stop feedback" *
