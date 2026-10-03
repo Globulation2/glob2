@@ -336,6 +336,13 @@ added. The values the maintainer supplies:
 | Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
 | Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
 
+The release mirror's **App signing fingerprints** workflow reads these values with
+the release credentials, enables Associated Domains on the App ID when it is
+missing, and ends with a ready-to-paste `appLinks` block
+([signing fingerprints for invite links](../mobile/development.md#signing-fingerprints-for-invite-links)).
+Use the Play App Signing certificate it reports. The upload key and Amazon
+certificates are listed for reference only.
+
 Then add to the deployment's `instance.yaml` and recreate `platform-api`:
 
 ```yaml
