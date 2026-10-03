@@ -12,6 +12,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'.github/scripts'))
 import ci_changed_paths as selector
 import ci_coverage_baseline as guard
+import ci_policy as policy
 
 class TierTest(unittest.TestCase):
     def profile(self,paths,event='pull_request'):
@@ -34,9 +35,10 @@ class TierTest(unittest.TestCase):
         for path in ['test/run_tests.py','test/ci_native_shard_plan.py','test/ci-native-auxiliary.json','test/build_ci_timing_profile.py','test/ci-timings/ubuntu-22.04.json']:
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
 
-    def test_android_metadata_remains_relevant(self):
-        for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt','.github/workflows/mobile.yml']:
-            self.assertTrue(self.profile([path])['android'])
+    def test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant(self):
+        for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt']:
+            self.assertFalse(self.profile([path])['android'])
+        self.assertTrue(self.profile(['.github/workflows/mobile.yml'])['android'])
     def test_ci_contract_tests_do_not_select_mobile_or_compatibility(self):
         for path in selector.CI_TOOL_TESTS:
             with self.subTest(path=path):
@@ -61,11 +63,37 @@ class TierTest(unittest.TestCase):
                          patch('sys.stdout',new_callable=io.StringIO):
                         selector.main()
                     observed=json.loads(Path('artifacts/ci-selection.json').read_text())
-                    self.assertEqual(set(observed['selection'].values()),{event=='push'})
-                    self.assertEqual(observed['full_matrix'],event=='push')
+                    self.assertEqual(observed['selection']['native'],event=='push')
+                    self.assertEqual(observed['selection']['android'],event=='push')
+                    self.assertFalse(observed['full_matrix'])
                     self.assertFalse(observed['tiers_enabled'])
                 finally:
                     os.chdir(old_cwd)
+    def test_draft_pull_requests_defer_every_selected_check(self):
+        paths=['src/Game_sync.cpp','src/gui/GameGUI.h','mobile/android.py']
+        for draft in ['true','false']:
+            with self.subTest(draft=draft),tempfile.TemporaryDirectory() as directory:
+                old_cwd=Path.cwd()
+                try:
+                    os.chdir(directory)
+                    with patch.object(selector,'changed_paths',return_value=paths), \
+                         patch.object(guard,'activated',return_value=False), \
+                         patch.object(sys,'argv',['ci_changed_paths.py','--base','base']), \
+                         patch.dict(os.environ,{'GITHUB_EVENT_NAME':'pull_request','DRAFT':draft,'GITHUB_OUTPUT':str(Path(directory)/'outputs')},clear=True), \
+                         patch('sys.stdout',new_callable=io.StringIO), patch('sys.stderr',new_callable=io.StringIO):
+                        selector.main()
+                    observed=json.loads(Path('artifacts/ci-selection.json').read_text())
+                    outputs=dict(line.split('=',1) for line in Path('outputs').read_text().splitlines())
+                    self.assertEqual(observed['draft'],draft=='true')
+                    self.assertEqual(observed['selection']['native'],draft=='false')
+                    for key in ['native','browser','map_generators','deployment','cross_platform','android','compatibility']:
+                        self.assertEqual(outputs[key],'false' if draft=='true' else 'true',key)
+                finally:
+                    os.chdir(old_cwd)
+        # A draft push is still deferred only for pull requests; master is always full.
+        workflow=(ROOT/'.github/workflows/build.yml').read_text()
+        self.assertIn('types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]',workflow)
+        self.assertIn('DRAFT: ${{ github.event.pull_request.draft }}',workflow)
     def test_complete_browser_inventory_keeps_every_command(self):
         matrix=json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())
         self.assertEqual({x['browsers'] for x in matrix},{'chromium','firefox','webkit'})
@@ -77,7 +105,7 @@ class TierTest(unittest.TestCase):
 class BaselineTest(unittest.TestCase):
     def read(self,run=None,observed=None,expired=False):
         run=run or dict(name='build',head_branch='master',event='push',conclusion='success',head_sha='abc')
-        observed=observed or dict(full_matrix=True,sha='abc',selection={k:True for k in ['native','browser','map_generators','deployment','cross_platform','android']})
+        observed=observed or dict(full_matrix=True,sha='abc',selection=policy.full(),policy_fingerprint=policy.fingerprint())
         archive=io.BytesIO()
         with zipfile.ZipFile(archive,'w') as z:z.writestr('ci-selection.json',json.dumps(observed))
         def read(path,token,binary=False):
@@ -103,8 +131,8 @@ class AggregateGateTest(unittest.TestCase):
         code=workflow.split("          python3 - <<'PY'\n",1)[1].split('\n          PY',1)[0]
         import textwrap
         code=textwrap.dedent(code)
-        jobs=['android','native-coverage','linux','linux-variants','linux-map-generators','windows','windows-server','web-build','web-native','web-deploy','web-test','browser-determinism','platform']
-        selected={k:'true' for k in ['native','browser','map_generators','deployment','cross_platform','android','compatibility','platform']}
+        jobs=['android','macos','tsan','native-coverage','linux','linux-variants','linux-map-generators','windows','windows-server','web-build','web-native','web-deploy','web-test','browser-determinism','platform']
+        selected={k:'true' for k in policy.FLAGS}
         needs={'changes':{'result':'success','outputs':selected},**{job:{'result':'success'} for job in jobs}}
         with patch.dict(os.environ,NEEDS_JSON=json.dumps(needs),GITHUB_EVENT_NAME='push'):
             exec(code,{})

@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <Stream.h>
 #include <BinaryStream.h>
+#include <PackedArray.h>
 #include <limits>
 #include <memory>
 #include <stdexcept>
@@ -36,6 +37,7 @@ try
 	assert(header.getVersionMinor()>=16);
 
 	Sint32 versionMinor = header.getVersionMinor();
+    const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 
 	clear();
     co_await GAGCore::CooperativeTask::checkpoint("[Loading terrain]");
@@ -77,23 +79,42 @@ try
 	memset(immobileUnits, 255, size*sizeof(Uint8));
 
 	// We read what's inside the map:
-	stream->read(undermap, size, "undermap");
+	if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
+    else stream->read(undermap, size, "undermap");
 	for (size_t i = 0; i < size; ++i)
 		if (undermap[i] > GRASS) co_return false;
 	stream->readEnterSection("cases");
+    if(packed)
+    {
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){mapDiscovered[i]=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].terrain=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].building=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.type=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.variety=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.amount=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].resource.animation=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].groundUnit=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].airUnit=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].forbidden=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].guardArea=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){tiles[i].clearArea=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].scriptAreas=v;});
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){tiles[i].canResourcesGrow=v;});
+        GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){tiles[i].fertility=v;});
+    }
 	for (size_t i=0; i<size; i++)
 	{
         if (i % 512 == 0) co_await GAGCore::CooperativeTask::checkpoint();
 		stream->readEnterSection(i);
-		mapDiscovered[i] = stream->readUint32("mapDiscovered");
+		if (!packed) mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
-		tiles[i].terrain = stream->readUint16("terrain");
+		if (!packed) tiles[i].terrain = stream->readUint16("terrain");
 		if (tiles[i].terrain >= 272) co_return false;
-		tiles[i].building = stream->readUint16("building");
+		if (!packed) tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			co_return false;
 
-		stream->read(&(tiles[i].resource), 4, "ressource");
+		if (!packed) stream->read(&(tiles[i].resource), 4, "ressource");
 		if (tiles[i].resource.type != NO_RES_TYPE && tiles[i].resource.type >= MAX_RESOURCES)
 			co_return false;
 		if (tiles[i].resource.type != NO_RES_TYPE)
@@ -103,19 +124,19 @@ try
 			if (resource.variety >= type->varietiesCount || resource.amount > type->sizesCount || (!type->eternal && resource.amount == 0))
 				throw std::runtime_error("Invalid saved resource sprite state: " + std::to_string(resource.type) + "/" + std::to_string(resource.variety) + "/" + std::to_string(resource.amount));
 		}
-		tiles[i].groundUnit = stream->readUint16("groundUnit");
-		tiles[i].airUnit = stream->readUint16("airUnit");
+		if (!packed) tiles[i].groundUnit = stream->readUint16("groundUnit");
+		if (!packed) tiles[i].airUnit = stream->readUint16("airUnit");
 		if ((tiles[i].groundUnit != NOGUID && tiles[i].groundUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()) ||
 			(tiles[i].airUnit != NOGUID && tiles[i].airUnit >= Unit::MAX_COUNT * header.getNumberOfTeams()))
 			co_return false;
-		tiles[i].forbidden = stream->readUint32("forbidden");
-		if(versionMinor < 62)
+		if (!packed) tiles[i].forbidden = stream->readUint32("forbidden");
+		if(!packed && versionMinor < 62)
 			stream->readUint32("hiddenForbidden");
-		tiles[i].guardArea = stream->readUint32("guardArea");
-		tiles[i].clearArea = stream->readUint32("clearArea");
-		tiles[i].scriptAreas = stream->readUint16("scriptAreas");
-		tiles[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
-		if(versionMinor >= 63)
+		if (!packed) tiles[i].guardArea = stream->readUint32("guardArea");
+		if (!packed) tiles[i].clearArea = stream->readUint32("clearArea");
+		if (!packed) tiles[i].scriptAreas = stream->readUint16("scriptAreas");
+		if (!packed) tiles[i].canResourcesGrow = stream->readUint8("canRessourcesGrow");
+		if(!packed && versionMinor >= 63)
 			tiles[i].fertility = stream->readUint16("fertility");
 		fertilityMaximum = std::max(fertilityMaximum, tiles[i].fertility);
 
@@ -132,7 +153,7 @@ try
 
 	const bool restoreExploredArea = header.getIsSavedGame() && versionMinor >= EXPLORED_AREA_SAVED_VERSION_MINOR;
 	if (restoreExploredArea)
-		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL);
+		loadExploredArea(stream, header.getNumberOfTeams(), game != NULL, versionMinor);
 
 	this->game = game;
 
@@ -222,9 +243,28 @@ void Map::save(GAGCore::OutputStream *stream)
 	stream->writeSint32(hDec, "hDec");
 
 	// We write what's inside the map:
-	stream->write(undermap, size, "undermap");
+	if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return undermap[i];});
+    else stream->write(undermap, size, "undermap");
 	stream->writeEnterSection("cases");
-	for (size_t i=0; i<size ;i++)
+    if(GAGCore::PackedArray::binary(stream))
+    {
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return mapDiscovered[i];});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].terrain;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].building;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.type;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.variety;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.amount;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].resource.animation;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].groundUnit;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].airUnit;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].forbidden;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].guardArea;});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return tiles[i].clearArea;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].scriptAreas;});
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return tiles[i].canResourcesGrow;});
+        GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return tiles[i].fertility;});
+    }
+    else for (size_t i=0; i<size ;i++)
 	{
 		stream->writeEnterSection(i);
 		stream->writeUint32(mapDiscovered[i], "mapDiscovered");
@@ -347,18 +387,21 @@ bool loadFlag(GAGCore::InputStream *stream, const char *name)
 }
 void saveGradient(GAGCore::OutputStream *stream, const Uint16 *field, size_t size)
 {
-	stream->writeUint8(field != nullptr, "present");
-	if (field)
-		stream->writeUint16Sections(field, size, "value");
+    stream->writeUint8(field != nullptr, "present");
+    if(field) {
+        if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return field[i];});
+        else stream->writeUint16Sections(field,size,"value");
+    }
 }
-void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size)
+void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, bool packed)
 {
 	const bool present=loadFlag(stream,"present");
 	std::unique_ptr<Uint16[]> restored;
 	if (present)
 	{
 		restored=std::make_unique<Uint16[]>(size);
-		for (size_t i=0; i<size; ++i)
+        if(packed) GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){restored[i]=v;});
+        else for (size_t i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
 			restored[i]=stream->readUint16("value");
@@ -378,7 +421,13 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
 	stream->writeEnterSection("cells");
-	for (size_t i=0; i<size; ++i)
+    if(GAGCore::PackedArray::binary(stream))
+    {
+        GAGCore::PackedArray::write<Uint8>(stream,size,[&](size_t i){return immobileUnits[i];});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return fogOfWarA[i];});
+        GAGCore::PackedArray::write<Uint32>(stream,size,[&](size_t i){return fogOfWarB[i];});
+    }
+    else for (size_t i=0; i<size; ++i)
 	{
 		stream->writeEnterSection(i);
 		stream->writeUint8(immobileUnits[i], "immobileUnit");
@@ -392,7 +441,8 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	{
 		stream->writeEnterSection(t);
 		stream->writeEnterSection("claims");
-		for (size_t i=0; i<size; ++i)
+        if(GAGCore::PackedArray::binary(stream)) GAGCore::PackedArray::write<Uint16>(stream,size,[&](size_t i){return clearingAreaClaims[t][i];});
+        else for (size_t i=0; i<size; ++i)
 		{
 			stream->writeEnterSection(i);
 			stream->writeUint16(clearingAreaClaims[t][i], "claim");
@@ -500,6 +550,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 
 void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
+    const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->pipeline.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
@@ -507,7 +558,13 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		topologyGeneration=stream->readUint32("topologyGeneration");
 	fogOfWar=fogIsA ? fogOfWarA.data() : fogOfWarB.data();
 	stream->readEnterSection("cells");
-	for (size_t i=0; i<size; ++i)
+    if(packed)
+    {
+        GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){immobileUnits[i]=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){fogOfWarA[i]=v;});
+        GAGCore::PackedArray::read<Uint32>(stream,size,[&](size_t i,Uint32 v){fogOfWarB[i]=v;});
+    }
+    else for (size_t i=0; i<size; ++i)
 	{
 		stream->readEnterSection(i);
 		immobileUnits[i]=stream->readUint8("immobileUnit");
@@ -521,7 +578,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	{
 		stream->readEnterSection(t);
 		stream->readEnterSection("claims");
-		for (size_t i=0; i<size; ++i)
+        if(packed) GAGCore::PackedArray::read<Uint16>(stream,size,[&](size_t i,Uint16 v){clearingAreaClaims[t][i]=v;});
+        else for (size_t i=0; i<size; ++i)
 		{
 			stream->readEnterSection(i);
 			clearingAreaClaims[t][i]=stream->readUint16("claim");
@@ -536,20 +594,20 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			for (int r=0; r<MAX_NB_RESOURCES; ++r)
 			{
 				stream->readEnterSection(r);
-				loadGradient(stream, resourcesGradient[t][r][sw], size);
+				loadGradient(stream, resourcesGradient[t][r][sw], size, packed);
 				gradientUpdated[t][r][sw]=loadFlag(stream,"updated");
 				stream->readLeaveSection();
 			}
 			stream->readLeaveSection();
 			stream->readEnterSection("forbidden");
-			loadGradient(stream, forbiddenGradient[t][sw], size);
+			loadGradient(stream, forbiddenGradient[t][sw], size, packed);
 			stream->readLeaveSection();
 			stream->readEnterSection("guard");
-			loadGradient(stream, guardAreasGradient[t][sw], size);
+			loadGradient(stream, guardAreasGradient[t][sw], size, packed);
 			guardGradientUpdated[t][sw]=loadFlag(stream,"updated");
 			stream->readLeaveSection();
 			stream->readEnterSection("clear");
-			loadGradient(stream, clearAreasGradient[t][sw], size);
+			loadGradient(stream, clearAreasGradient[t][sw], size, packed);
 			clearGradientUpdated[t][sw]=loadFlag(stream,"updated");
 			stream->readLeaveSection();
 			stream->readLeaveSection();
@@ -565,7 +623,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				// Existing saves contain complete fields; discard any previous queue
 				// before replacing its buffer, including when reusing a loaded object.
 				building->globalGradientSearch[sw].reset();
-				loadGradient(stream, building->globalGradient[sw], size);
+				loadGradient(stream, building->globalGradient[sw], size, packed);
 				building->dirtyGradient[sw]=loadFlag(stream,"dirty");
 				building->lastGlobalGradientUpdateStepCounter[sw]=stream->readUint32("lastUpdate");
 				// An older save restored its fields as current; keep them so.
@@ -583,7 +641,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					for (int r=0; r<MAX_NB_RESOURCES; ++r)
 					{
 						stream->readEnterSection(r);
-						loadGradient(stream, building->roundTripGradient[r][sw], size);
+						loadGradient(stream, building->roundTripGradient[r][sw], size, packed);
 						building->roundTripGradientStep[r][sw]=stream->readUint32("step");
 						building->roundTripGradientUsedStep[r][sw]=stream->readUint32("usedStep");
 						stream->readLeaveSection();
@@ -625,7 +683,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
 			Uint16 *field=nullptr;
-			loadGradient(stream, field, size);
+			loadGradient(stream, field, size, packed);
 			gradientRuntime->pipeline.restoreCompleted({slot, static_cast<int>(sw), remaining,
 				superseded, std::unique_ptr<Uint16[]>(field)});
 			stream->readLeaveSection();
