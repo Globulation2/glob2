@@ -20,6 +20,8 @@
 #include "Player.h"
 #include "TeamStat.h"
 #include "render/Minimap.h"
+#include "render/UnitMotion.h"
+#include "render/UnitDrawGeometry.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -1378,47 +1380,62 @@ Unit *GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 	const double radius = reachPoints * globalContainer->gfx->logicalUnitsPerPoint() / gui.camera.zoom;
 	double nearestDistance = radius * radius;
 	const int tiles = 1 + int(std::ceil(radius / 32));
-	const auto &map = gui.game.map;
-	const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
-	const Uint32 visible =
-		globalContainer->replaying ? globalContainer->replayVisibleTeams : gui.localTeam->me;
-	const bool wholeMap = globalContainer->replaying && !globalContainer->replayShowFog;
-	// Match draw order: ground units first, then flying units, using their interpolated rectangles.
-	for (bool air : {false, true})
-		for (int y = my - tiles; y <= my + tiles; ++y)
-			for (int x = mx - tiles; x <= mx + tiles; ++x)
-			{
-				const Uint16 gid = air ? map.getAirUnit(x, y) : map.getGroundUnit(x, y);
-				if (gid == NOGUID)
-					continue;
-				auto *unit = gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
-				if (!unit)
-					continue;
-				if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
-					!map.isFOWDiscovered(x - unit->dx, y - unit->dy, visible))
-					continue;
-				int px, py;
-				map.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, gui.viewportX,
-										 gui.viewportY);
-				if (unit->action < BUILD)
+	// Hit the positions presented to the player, including optional between-tick
+	// motion. Input runs with the simulation parked; resolve snapshot identities
+	// before returning so a dead/replaced unit can never be selected.
+	const Scene *scene = gui.view.scene;
+	if (scene && scene->map.identity() != gui.game.map.identity()) scene = nullptr;
+	auto scan = [&](const auto &map)
+	{
+		const int mx = int(point.x) / 32 + gui.viewportX, my = int(point.y) / 32 + gui.viewportY;
+		const Uint32 visible =
+			globalContainer->replaying ? globalContainer->replayVisibleTeams : gui.localTeam->me;
+		const bool wholeMap = globalContainer->replaying && !globalContainer->replayShowFog;
+		// Match draw order: ground units first, then flying units, using their interpolated rectangles.
+		for (bool air : {false, true})
+			for (int y = my - tiles; y <= my + tiles; ++y)
+				for (int x = mx - tiles; x <= mx + tiles; ++x)
 				{
-					px -= (unit->dx * (255 - unit->delta)) >> 3;
-					py -= (unit->dy * (255 - unit->delta)) >> 3;
+					const Uint16 gid = air ? map.getAirUnit(x, y) : map.getGroundUnit(x, y);
+					if (gid == NOGUID)
+						continue;
+					const SceneUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
+					if (scene && !shown) continue;
+					auto *unit = shown ? gui.game.resolveUnit({shown->gid, shown->generation})
+						: gui.game.teams[Unit::GIDtoTeam(gid)]->myUnits[Unit::GIDtoID(gid)];
+					if (!unit)
+						continue;
+					const int ux = shown ? shown->posX : unit->posX, uy = shown ? shown->posY : unit->posY;
+					const int moveX = shown ? shown->dx : unit->dx, moveY = shown ? shown->dy : unit->dy;
+					const int action = shown ? shown->action : unit->action;
+					const int delta = shown ? drawnUnitDelta(*shown, gui.view.render.unitMotion) : unit->delta;
+					if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
+						!map.isFOWDiscovered(x - moveX, y - moveY, visible))
+						continue;
+					int px = unitDrawTile(x - gui.viewportX, gui.viewportX, ux, map.getW()) * 32;
+					int py = unitDrawTile(y - gui.viewportY, gui.viewportY, uy, map.getH()) * 32;
+					if (action < BUILD)
+					{
+						px -= (moveX * (255 - delta)) >> 3;
+						py -= (moveY * (255 - delta)) >> 3;
+					}
+					const double dx = MapCamera::wrap(point.x - px - 16 + map.getW() * 16., map.getW() * 32.) - map.getW() * 16.;
+					const double dy = MapCamera::wrap(point.y - py - 16 + map.getH() * 16., map.getH() * 32.) - map.getH() * 16.;
+					const double distance = dx * dx + dy * dy;
+					if ((wholeMap || map.isFOWDiscovered(x, y, visible) || Unit::GIDtoTeam(gid) == gui.localTeamNo) &&
+						(distance < nearestDistance || (distance == nearestDistance && nearest && gid < nearest->gid)))
+					{
+						nearest = unit;
+						nearestDistance = distance;
+					}
+					if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
+						(wholeMap || map.isFOWDiscovered(x, y, visible) ||
+						 Unit::GIDtoTeam(gid) == gui.localTeamNo))
+						found = unit;
 				}
-				const double dx = MapCamera::wrap(point.x - px - 16 + map.getW() * 16., map.getW() * 32.) - map.getW() * 16.;
-				const double dy = MapCamera::wrap(point.y - py - 16 + map.getH() * 16., map.getH() * 32.) - map.getH() * 16.;
-				const double distance = dx * dx + dy * dy;
-				if ((wholeMap || map.isFOWDiscovered(x, y, visible) || Unit::GIDtoTeam(gid) == gui.localTeamNo) &&
-					(distance < nearestDistance || (distance == nearestDistance && nearest && gid < nearest->gid)))
-				{
-					nearest = unit;
-					nearestDistance = distance;
-				}
-				if (point.x > px && point.x < px + 32 && point.y > py && point.y < py + 32 &&
-					(wholeMap || map.isFOWDiscovered(x, y, visible) ||
-					 Unit::GIDtoTeam(gid) == gui.localTeamNo))
-					found = unit;
-			}
+	};
+	if (scene) scan(scene->map);
+	else scan(gui.game.map); // Before the first frame, no presentation exists yet.
 	return found ? found : nearest;
 }
 
