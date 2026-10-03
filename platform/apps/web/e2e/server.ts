@@ -1,5 +1,6 @@
 // Browser smoke-test server: a fresh test database with a seeded match
-// history (apps/api/test/historySeed.ts), the API, and a front server that
+// history (apps/api/test/historySeed.ts) plus showcase maps and an open room
+// (showcase.ts), the API, and a front server that
 // plays the edge's part (deploy/Caddyfile): platform paths go to the API,
 // /play/ serves the browser game build when one exists, and every other path
 // serves the built web app with an index.html fallback.
@@ -14,6 +15,7 @@ import { createServer, request as httpRequest, type ServerResponse } from 'node:
 import { extname, join, normalize, resolve } from 'node:path';
 import { SEEDED_QUEUES, seedHistory } from '../../api/test/historySeed.ts';
 import { createHarness } from '../../api/test/support.ts';
+import { previewFixture, seedShowcase } from './showcase.ts';
 
 const here = import.meta.dirname;
 const repo = resolve(here, '../../../..');
@@ -31,6 +33,7 @@ const TYPES: Record<string, string> = {
   '.json': 'application/json',
   '.woff2': 'font/woff2',
   '.png': 'image/png',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.data': 'application/octet-stream',
   '.txt': 'text/plain',
@@ -68,6 +71,7 @@ const api = await harness.start({
 const replayFixture = join(repo, 'browser/tests/fixtures/cross-replay.replay');
 const seed = await seedHistory(harness.database.db, harness.blobs, {
   ...(existsSync(replayFixture) ? { replayBytes: readFileSync(replayFixture) } : {}),
+  mapPreview: previewFixture('even-ground'),
 });
 // The test painter owns a designer unlock without contacting a payment provider.
 await harness.database.db
@@ -107,6 +111,7 @@ await harness.database.db
   .set({ skins_frozen_at: new Date() })
   .where('id', '=', seed.featuredMatch)
   .execute();
+await seedShowcase(harness.database.db, harness.blobs, seed);
 if (process.env['SEED_OUT']) writeFileSync(process.env['SEED_OUT'], JSON.stringify(seed, null, 2));
 const apiUrl = new URL(api.url);
 
