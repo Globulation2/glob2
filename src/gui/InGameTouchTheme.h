@@ -53,10 +53,10 @@ inline constexpr double railInset = 12;
 // The compact inspector's thumb dial: quarter rings centred on the thumb corner
 // (outer radius shrinks to fit), swept from along the toolbar (start) to nearly
 // straight up (end), stopping short of the screen edge.
-inline constexpr double dialRadius = 262;
+inline constexpr double dialRadius = 286;
 inline constexpr double dialMinimumRadius = 150;
-inline constexpr double dialRingThickness = 44;
-inline constexpr double dialRingGap = 16;
+inline constexpr double dialRingThickness = 28;
+inline constexpr double dialRingGap = 8;
 inline constexpr double dialSweepStart = 4;
 inline constexpr double dialSweepEnd = 78;
 inline constexpr double dialPad = 44; // Arc length of the −/+ pads at a slider's ends,
@@ -85,13 +85,17 @@ inline constexpr unsigned peekPressMs = 400;
 inline constexpr double peekZoomStep = 1.25;
 inline constexpr double peekButtonColumn = 96; // Landscape: buttons beside the map.
 inline constexpr double dragThreshold = 8;
+// Map release momentum needs more intent than the pan/tap threshold. Screen
+// points keep this independent of both map zoom and display density.
+inline constexpr double mapFlingTravelPoints = 16;
 inline constexpr double fingerLift = 48;
 inline constexpr double edgePanMargin = 24;
 inline constexpr double edgePanPixelsPerSecond = 240;
 // A completed map tap arms one-finger zoom for a second contact this soon
-// and this close; the second contact then drags to zoom or taps to reset 1:1.
+// and this close; the second contact then drags to zoom or taps to zoom in.
 inline constexpr unsigned doubleTapWindowMs = 300;
 inline constexpr double doubleTapRadius = 24;
+inline constexpr double doubleTapZoomFactor = 2;
 // Readouts sit above the finger that is changing their value.
 inline constexpr double readoutLift = 60;
 inline constexpr double readoutHeight = 40;

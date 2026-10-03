@@ -11,6 +11,7 @@
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
 #include "BuildingType.h"
+#include "UnitDisplayNames.h"
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
@@ -34,7 +35,7 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	out.portrait = safe.w <= safe.h;
 	// Portrait puts the read-only header under the minimap and a full-height chip
 	// column on the far side of the dial; landscape puts both beside the dial.
-	double radius = out.portrait ? std::min({InGameTouchTheme::dialRadius, safe.w - chip - 3 * margin,
+	double radius = out.portrait ? std::min({InGameTouchTheme::dialRadius, safe.w - chip - 2 * margin,
 											 bottom - minimapBottom - header - 2 * margin})
 								 : std::min({InGameTouchTheme::dialRadius, bottom - minimapBottom - margin,
 											 safe.w / 2});
@@ -118,14 +119,8 @@ std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
 			regions.push_back(region);
 		}
 	};
-	// Rings are assigned outward-in by presence: workers, then a ratio or range
-	// slider, then priority, so sliders always get the longer outer arcs.
-	auto has = [&](auto test) { return std::any_of(rows.begin(), rows.end(), test); };
-	const int workerRing = has([](const BuildingAction &r) { return r.kind == 6; }) ? 0 : -1;
-	const int sliderRing = has([](const BuildingAction &r) { return r.kind == 0 || r.kind == 8; })
-							   ? workerRing + 1
-							   : -1;
-	const int priorityRing = std::max(workerRing, sliderRing) + 1;
+	// Fixed semantic lanes: optional controls never move workers or priority.
+	constexpr int workerRing = 0, sliderRing = 1, priorityRing = 2;
 	std::vector<BuildingAction> actions, options;
 	for (const auto &row : rows)
 	{
@@ -156,13 +151,21 @@ std::vector<GameGUITouch::DialRegion> GameGUITouch::dialRegions() const
 			slider(sliderRing, row, b->type->maxUnitStayRange);
 		else if (row.kind == 0)
 		{
-			// Unit-type chips choose which ratio the inner ring edits.
-			auto type = row;
-			type.kind = 9;
-			type.selected = row.value == ratioType;
-			options.push_back(type);
-			if (row.value == ratioType)
-				slider(sliderRing, row, MAX_RATIO_RANGE);
+			if (row.value == 0)
+			{
+				DialRegion region;
+				region.part = DialRegion::Proportions;
+				region.action = row;
+				region.ring = sliderRing;
+				region.from = region.sliderFrom = g.sweepStart;
+				region.to = region.sliderTo = g.sweepEnd;
+				region.maximum = MAX_RATIO_RANGE;
+				region.box = boxAt(sliderRing, region.from, region.to);
+				regions.push_back(region);
+				const auto ratios = gui.displayedRatio(*b);
+				options.push_back({Toolkit::getStringTable()->getString("[Pause]"), 10, 0,
+								   ratios[0] + ratios[1] + ratios[2] == 0});
+			}
 		}
 		else if (row.kind >= 3 && row.kind <= 5)
 			actions.push_back(row);
@@ -204,7 +207,8 @@ std::optional<GameGUITouch::DialRegion> GameGUITouch::dialRegionAt(ViewPoint poi
 		return std::nullopt;
 	const auto g = dialLayout(layout()).geometry;
 	const auto polar = TouchDial::polar(g, point);
-	const double tolerance = InGameTouchTheme::dialRingGap / 3;
+	std::optional<DialRegion> nearest;
+	double nearestDistance = InGameTouchTheme::target;
 	for (const auto &region : regions)
 	{
 		if (region.part == DialRegion::Chip)
@@ -216,14 +220,25 @@ std::optional<GameGUITouch::DialRegion> GameGUITouch::dialRegionAt(ViewPoint poi
 		if (!polar)
 			continue;
 		const auto &ring = g.rings[region.ring];
+		const double tolerance = std::max(InGameTouchTheme::dialRingGap / 3,
+			(InGameTouchTheme::target - (ring.outer - ring.inner)) / 2);
 		// Pads reach to the quadrant's edges so a thumb overshooting an end still lands.
-		const double from = region.part == DialRegion::Minus ? 0 : region.from,
-					 to = region.part == DialRegion::Plus ? 90 : region.to;
+		const double from = (region.part == DialRegion::Minus || region.part == DialRegion::Proportions) ? 0 : region.from,
+					 to = (region.part == DialRegion::Plus || region.part == DialRegion::Proportions) ? 90 : region.to;
 		if (polar->radius >= ring.inner - tolerance && polar->radius <= ring.outer + tolerance &&
 			polar->angle >= from && polar->angle <= to)
-			return region;
+		{
+			// Thin visible bands retain forgiving touch targets. Where those
+			// targets overlap, the nearest band wins rather than the outer one.
+			const double distance = std::abs(polar->radius - ring.middle());
+			if (distance < nearestDistance)
+			{
+				nearest = region;
+				nearestDistance = distance;
+			}
+		}
 	}
-	return std::nullopt;
+	return nearest;
 }
 
 ViewPoint GameGUITouch::dialActionPoint(int kind, int value, int side) const
@@ -249,9 +264,11 @@ ViewPoint GameGUITouch::dialActionPoint(int kind, int value, int side) const
 void GameGUITouch::tapDial(Building &b, const DialRegion &region, ViewPoint point)
 {
 	const auto &row = region.action;
-	if (row.kind == 9)
+	if (row.kind == 10)
 	{
-		ratioType = row.value;
+		const auto values = gui.displayedRatio(b);
+		commitRatios(b, values[0] + values[1] + values[2] == 0
+			? std::array<int, 3>{MAX_RATIO_RANGE, 0, 0} : std::array<int, 3>{0, 0, 0});
 		return;
 	}
 	if (row.kind == 7)
@@ -277,6 +294,15 @@ void GameGUITouch::tapDial(Building &b, const DialRegion &region, ViewPoint poin
 		return;
 	}
 	applyDiscreteAction(b, row);
+}
+
+std::array<int, 3> GameGUITouch::dialRatios() const
+{
+	if (allocation && allocation->divider >= 0)
+		return allocation->ratios;
+	if (const auto *b = inspectedBuilding())
+		return gui.displayedRatio(*b);
+	return {};
 }
 
 void GameGUITouch::drawDial()
@@ -334,6 +360,43 @@ void GameGUITouch::drawDial()
 		}
 		const auto &ring = g.rings[region.ring];
 		const auto centre = TouchDial::point(g, ring.middle(), (region.from + region.to) / 2);
+		if (region.part == DialRegion::Proportions)
+		{
+			const auto ratios = dialRatios();
+			const int total = ratios[0] + ratios[1] + ratios[2];
+			const auto percentages = total ? TouchDial::shares(ratios, 100) : std::array<int, 3>{};
+			const Color colors[] = {Color(222, 177, 77), Color(85, 183, 192), Color(202, 117, 165)};
+			double angle = region.from;
+			for (int type = 0; type < 3; ++type)
+			{
+				const double next = angle + (region.to - region.from) * ratios[type] / std::max(1, total);
+				TouchDial::fill(g, ring.inner, ring.outer, angle, next, colors[type]);
+				angle = next;
+				// Read-only legend: every share remains legible, including zero.
+				const auto &area = dial.chips;
+				const double width = area.w / (dial.portrait ? 1 : 3);
+				const ViewRect label{area.x + (dial.portrait ? 0 : type * width),
+					area.y + (dial.portrait ? type * 24 * unit : 0), width, 22 * unit};
+				gfx->drawFilledRect(int(label.x), int(label.y), int(label.w), int(label.h), InGameTouchTheme::readout);
+				gfx->drawFilledRect(int(label.x), int(label.y), int(4 * unit), int(label.h), colors[type]);
+				const auto text = std::string(getUnitName(type)) + " " +
+					std::to_string(percentages[type]) + "%";
+				drawPointLabel(label, text, .70);
+			}
+			// Stagger the two divider grips radially: even a zero-width middle
+			// share leaves both grips visible and independently reachable.
+			for (int divider = 0, sum = 0; divider < 2; ++divider)
+			{
+				sum += ratios[divider];
+				const double at = TouchDial::angleOf(sum, region.from, region.to, std::max(1, total));
+				const auto inside = TouchDial::point(g, ring.inner, at);
+				const auto outside = TouchDial::point(g, ring.outer, at);
+				gfx->drawLine(int(inside.x), int(inside.y), int(outside.x), int(outside.y), InGameTouchTheme::ink);
+				const auto grip = TouchDial::point(g, divider == 0 ? ring.inner + 4 : ring.outer - 4, at);
+				gfx->drawFilledRect(int(grip.x - 4 * unit), int(grip.y - 4 * unit), int(8 * unit), int(8 * unit), InGameTouchTheme::ink);
+			}
+			continue;
+		}
 		if (region.part == DialRegion::Segment)
 		{
 			TouchDial::fill(g, ring.inner, ring.outer, region.from + seam, region.to - seam,
@@ -373,6 +436,6 @@ void GameGUITouch::drawDial()
 		gfx->drawFilledRect(int(caption.x), int(caption.y), int(caption.w), int(caption.h), InGameTouchTheme::readout);
 		drawPointLabel(caption, text, .72);
 	}
-	if (allocation && allocation->polar)
+	if (allocation && allocation->polar && allocation->divider < 0)
 		TouchReadout::draw(allocation->position, std::to_string(allocation->requested), layout().safe);
 }

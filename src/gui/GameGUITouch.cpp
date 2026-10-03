@@ -77,7 +77,7 @@ MobileLayout GameGUITouch::layout() const
 		}
 		else
 		{
-			// A rail rising from the thumb corner; taller palettes scroll.
+			// A rail opposite the thumb corner; taller palettes scroll.
 			const double width = std::min(result.safe.w - InGameTouchTheme::railInset,
 										  columns * stride + InGameTouchTheme::gap);
 			const double height =
@@ -85,7 +85,7 @@ MobileLayout GameGUITouch::layout() const
 						 std::min(rows, double(InGameTouchTheme::railMaximumRows)) * stride +
 							 InGameTouchTheme::gap);
 			result.panel = ThumbSide::corner(result.safe, width, height, InGameTouchTheme::railInset,
-											 result.actions.y, ThumbSide::left());
+											 result.actions.y, ThumbSide::toolboxLeft());
 		}
 	}
 	// Compact inspectors are the thumb dial; its bounds are set once the layout
@@ -431,7 +431,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	else if (inspecting() && usesDial())
 	{
 		for (const auto &region : dialRegions())
-			if (region.part != DialRegion::Arc)
+			if (region.part != DialRegion::Arc && region.part != DialRegion::Proportions)
 				targets.push_back(region.box);
 	}
 	else if (inspecting())
@@ -616,6 +616,8 @@ bool GameGUITouch::process(SDL_Event &event)
 			GAGCore::ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 			mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 			mapMotion.setConfig(mapConfig);
+			mapDragTravel = {};
+			mapFlingArmed = false;
 			const auto hud = fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse();
 			panelAxis.axis.setConfig(hud);
 			actionAxis.axis.setConfig(hud);
@@ -865,23 +867,32 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+			// Accumulate displacement in screen points, not world or raster pixels.
+			// Back-and-forth jitter inside the dead zone cannot arm a fling.
+			mapDragTravel.x += action.point.x;
+			mapDragTravel.y += action.point.y;
+			mapFlingArmed |= std::hypot(mapDragTravel.x, mapDragTravel.y) >= InGameTouchTheme::mapFlingTravelPoints;
 			// The same finger motion feeds the release velocity, in logical pixels.
 			if (!mapMotion.isDragging())
 				mapMotion.beginDrag(action.time);
 			mapMotion.drag(action.time, -point.x, -point.y);
 		}
 		else if (action.kind == TouchActionKind::PanEnd)
+		{
 			mapMotion.endDrag(action.time);
+			if (!mapFlingArmed)
+				mapMotion.interrupt();
+		}
 		else if (action.kind == TouchActionKind::Zoom)
 		{
 			lastMapTapTicks.reset();
 			if (action.factor > 0)
 				gui.zoomMap(std::log(action.factor) / std::log(1.1), int(point.x), int(point.y));
 		}
-		else if (action.kind == TouchActionKind::ZoomReset)
+		else if (action.kind == TouchActionKind::DoubleTap)
 		{
 			// Without a zoomable renderer the second tap still selects, as before.
-			if (!resetZoom(point) && world().contains(point))
+			if (!zoomIn(point) && world().contains(point))
 				select(point);
 		}
 		else if (action.kind == TouchActionKind::Preview && world().contains(point) &&
@@ -936,10 +947,9 @@ bool GameGUITouch::zoomTapArmed(Uint32 ticks, ViewPoint point) const
 		   world().contains(point) && !controls().contains(point);
 }
 
-bool GameGUITouch::resetZoom(ViewPoint point)
+bool GameGUITouch::zoomIn(ViewPoint point)
 {
-	gui.updateCamera();
-	return gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(point.x), int(point.y));
+	return gui.zoomMap(std::log(InGameTouchTheme::doubleTapZoomFactor) / std::log(1.1), int(point.x), int(point.y));
 }
 
 std::string GameGUITouch::zoomReadout() const
@@ -1042,7 +1052,7 @@ BrushHUD::Layout GameGUITouch::brushHUD() const
 	const auto mini = minimapRect();
 	const double top = mini.y + mini.h + 8 * unit, inset = InGameTouchTheme::railInset * unit;
 	return BrushHUD::layout({ui.safe.x + inset, top, ui.safe.w - 2 * inset, ui.actions.y - 8 * unit - top},
-							ThumbSide::left(), unit, true, true, bool(zoneUndo));
+							ThumbSide::toolboxLeft(), unit, true, true, bool(zoneUndo));
 }
 
 // Zone choices then Done, with Done under the thumb.
@@ -1239,7 +1249,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			else if (gui.selectionMode == GameGUI::NO_SELECTION && !globalContainer->isViewingGame() &&
 					 !layout().persistentPanel)
 			{
-				// Compact: Tools opens the lens strip in the thumb corner.
+				// Compact: Tools opens the lens strip opposite the thumb corner.
 				lensOpen = !(lensOpen && !panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW);
 				panelOpen = false;
 				gui.displayMode = GameGUI::STAT_TEXT_VIEW;
@@ -1454,7 +1464,6 @@ void GameGUITouch::prepareDraw()
 	{
 		confirmDestroy = false;
 		actionScroll = 0;
-		ratioType = 0;
 		lastInspectedBuilding = inspected;
 	}
 	if (usesHUD())

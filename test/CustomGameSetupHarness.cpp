@@ -1461,14 +1461,14 @@ struct CustomGameSetupHarness
         e.button.y = y;
         picker.handleExecutionEvent(e);
       };
-      // Tiles are pressed below their preview image, which owns drag and zoom gestures.
+      // Press the preview area too: the entire card shares selection behavior.
       auto pick = [&](const std::string &id) {
         pickerPaint();
         pickerHost.scrollIntoView(id);
         pickerPaint();
         const auto r = pickerHost.bounds(id);
         const bool tile = id.size() > 10 && std::isdigit(static_cast<unsigned char>(id[10]));
-        const int y = tile ? r.y + r.h - 16 : r.y + r.h / 2;
+        const int y = tile ? r.y + 32 : r.y + r.h / 2;
         pickerPointer(r.x + r.w / 2, y, SDL_EVENT_MOUSE_BUTTON_DOWN);
         pickerPointer(r.x + r.w / 2, y, SDL_EVENT_MOUSE_BUTTON_UP);
         pickerPaint();
@@ -1514,34 +1514,51 @@ struct CustomGameSetupHarness
       const int other = (current + 1) % int(shown.size());
       pick("landscape/" + std::to_string(other));
       REQUIRE((picker.selection() == other && picker.returnCode == 0));
-      // Native image gestures inspect without confirming the selected landscape.
+      // Swipes starting on a preview scroll the list without panning or selecting.
       {
         auto *widget = picker.tiles[other].widget;
         REQUIRE(widget);
         pickerHost.scrollIntoView("landscape/" + std::to_string(other));
         pickerPaint();
-        const auto area = widget->mapArea();
-        pickerPointer(area.x + area.w / 3, area.y + area.h / 3, SDL_EVENT_MOUSE_BUTTON_DOWN);
-        SDL_Event e = {};
-        e.type = SDL_EVENT_MOUSE_MOTION;
-        e.motion.state = SDL_BUTTON_LMASK;
-        e.motion.x = area.x + 2 * area.w / 3;
-        e.motion.y = area.y + 2 * area.h / 3;
-        picker.handleExecutionEvent(e);
-        REQUIRE((widget->dragging && widget->view.offsetX > 0 && picker.returnCode == 0));
-        pickerPointer(-20, -20, SDL_EVENT_MOUSE_BUTTON_UP);
-        REQUIRE((!widget->dragging && picker.returnCode == 0));
-        // The picker intentionally reserves the wheel for grid scrolling, even
-        // above a preview. MapPreviewHarness separately checks anchored zoom.
-        e = {};
-        e.type = SDL_EVENT_MOUSE_MOTION;
-        e.motion.x = area.x + area.w / 2;
-        e.motion.y = area.y + area.h / 2;
-        picker.handleExecutionEvent(e);
-        const auto previewZoom = widget->zoom;
-        const auto previewX = widget->view.offsetX, previewY = widget->view.offsetY;
         auto *grid = pickerHost.find("landscape/grid");
         REQUIRE((grid && grid->scrollMaximum() > 0));
+        const auto area = widget->mapArea();
+        const auto previewZoom = widget->zoom;
+        const auto previewX = widget->view.offsetX, previewY = widget->view.offsetY;
+        globalContainer->gfx->printScreen(output + "/landscape-picker-before-swipe.bmp");
+        const int beforeSwipe = grid->scrollOffset();
+        const int distance = beforeSwipe > grid->scrollMaximum() / 2 ? 50 : -50;
+        const int x = area.x + area.w / 2, y = area.y + area.h / 2;
+        auto finger = [&](Uint32 type, int atY) {
+          SDL_Event event{};
+          event.type = type;
+          event.tfinger.touchID = 1;
+          event.tfinger.fingerID = 1;
+          event.tfinger.x = float(x) / pickerHost.presentation().viewport.w;
+          event.tfinger.y = float(atY) / pickerHost.presentation().viewport.h;
+          picker.handleExecutionEvent(event);
+        };
+        finger(SDL_EVENT_FINGER_DOWN, y);
+        finger(SDL_EVENT_FINGER_MOTION, y + distance);
+        finger(SDL_EVENT_FINGER_UP, y + distance);
+        REQUIRE(grid->scrollOffset() != beforeSwipe);
+        std::cout << "PASS preview swipe: grid offset " << beforeSwipe << " -> "
+                  << grid->scrollOffset() << "; preview and selection unchanged\n";
+        REQUIRE((!widget->dragging && widget->zoom == previewZoom &&
+                 widget->view.offsetX == previewX && widget->view.offsetY == previewY &&
+                 picker.selection() == other && picker.returnCode == 0));
+        pickerPaint();
+        globalContainer->gfx->printScreen(output + "/landscape-picker-preview-swipe.bmp");
+        // The picker intentionally reserves the wheel for grid scrolling, even
+        // above a preview. MapPreviewHarness separately checks anchored zoom.
+        pickerHost.scrollIntoView("landscape/" + std::to_string(other));
+        pickerPaint();
+        const auto wheelArea = widget->mapArea();
+        SDL_Event e = {};
+        e.type = SDL_EVENT_MOUSE_MOTION;
+        e.motion.x = wheelArea.x + wheelArea.w / 2;
+        e.motion.y = wheelArea.y + wheelArea.h / 2;
+        picker.handleExecutionEvent(e);
         bool scrolled = false;
         for (int direction : {-1, 1}) {
           const int before = grid->scrollOffset();
