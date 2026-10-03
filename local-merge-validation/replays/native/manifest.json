@@ -1,0 +1,29 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43",
+  "command": [
+    "/home/bradley/.codex/worktrees/f95a/glob2/build/linux/client/release/src/glob2",
+    "--nox",
+    "/home/bradley/.codex/worktrees/f95a/glob2/games/cross-replay.game.gz",
+    "1500",
+    "1"
+  ],
+  "verify_match": {
+    "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "record_sha256": "8d2751b31f641cf22e5c69e369a60b9950dc67f86ec882473d3bca3f0589df3d",
+    "trace_sha256": "b2d3b8277d0915bf6100dbad58fd0157dc63f109bdd19cfbea798da53f439125",
+    "verdict": "verified",
+    "command": [
+      "/home/bradley/.codex/worktrees/f95a/glob2/build/linux/client/release/src/glob2",
+      "--verify-match",
+      "/home/bradley/.codex/worktrees/f95a/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map",
+      "/home/bradley/.codex/worktrees/f95a/glob2/maps/FourSquares1.map.gz",
+      "--out",
+      "/home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/final-native-replay/verify-match"
+    ]
+  }
+}

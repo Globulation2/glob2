@@ -1,3 +1,5 @@
+> Current master integration validation: see [local-merge-validation](local-merge-validation/README.md).
+
 > Current master integration validation: see [master-integration](master-integration/README.md).
 
 > Current final usability and merge validation: see [merge-readiness](merge-readiness/README.md). Older captures and smoke results below are superseded where noted.

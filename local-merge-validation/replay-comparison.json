@@ -1,0 +1,22 @@
+[
+  {
+    "variant": "serial-1",
+    "identical": true,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  {
+    "variant": "threaded-1",
+    "identical": true,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  {
+    "variant": "threaded-2",
+    "identical": true,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  {
+    "variant": "threaded-4",
+    "identical": true,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  }
+]

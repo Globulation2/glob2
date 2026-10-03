@@ -1,0 +1,6 @@
+PASS HiveMindPresentation/Hive Mind commander panel [display] (5.2s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences] (12.4s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences] (49.0s)
+
+3 passed, 0 failed, 0 skipped (66.6s of test time)
+[run_tests] JUnit report: artifacts/hive/ui-check.xml (3 cases)

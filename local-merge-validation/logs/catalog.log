@@ -1,0 +1,4 @@
+PASS MapGeneratorRegistry/catalog generation contracts [slow][map-generators] (959.5s)
+
+1 passed, 0 failed, 0 skipped (959.5s of test time)
+[run_tests] JUnit report: artifacts/hive/catalog-check.xml (1 cases)

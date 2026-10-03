@@ -1,0 +1,8 @@
+Get:1 http://ca.archive.ubuntu.com/ubuntu resolute/universe amd64 libavif16 amd64 1.3.0-1ubuntu4 [119 kB]
+Get:2 http://ca.archive.ubuntu.com/ubuntu resolute-updates/main amd64 libevent-2.1-7t64 amd64 2.1.12-stable-10ubuntu0.2 [145 kB]
+Fetched 264 kB in 1s (455 kB/s)
+Get:1 http://ca.archive.ubuntu.com/ubuntu resolute/universe amd64 libgav1-2 amd64 0.20.0-2build1 [402 kB]
+Get:2 http://ca.archive.ubuntu.com/ubuntu resolute/universe amd64 libmanette-0.2-0 amd64 0.2.13-1 [46.7 kB]
+Fetched 449 kB in 1s (868 kB/s)
+Get:1 http://ca.archive.ubuntu.com/ubuntu resolute/universe amd64 libhidapi-hidraw0 amd64 0.15.0-2 [14.0 kB]
+Fetched 14.0 kB in 0s (54.9 kB/s)

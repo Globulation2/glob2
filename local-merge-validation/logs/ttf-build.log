@@ -1,0 +1,57 @@
+-- The C compiler identification is GNU 15.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring SDL3_ttf 3.2.2
+-- Detecting Target CPU Architecture
+-- Detecting Target CPU Architecture - X64
+-- Looking for __GLIBC__
+-- Looking for __GLIBC__ - found
+-- Performing Test HAVE_WL_NO_UNDEFINED
+-- Performing Test HAVE_WL_NO_UNDEFINED - Success
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT
+-- Performing Test LINKER_SUPPORTS_VERSION_SCRIPT - Success
+-- SDL3_ttf: Using system freetype library
+-- Found Freetype: /usr/lib/x86_64-linux-gnu/libfreetype.so (found version "2.14.2")
+-- Could NOT find plutovg (missing: plutovg_LIBRARY plutovg_INCLUDE_PATH) 
+-- Could NOT find plutosvg (missing: plutosvg_LIBRARY plutosvg_INCLUDE_PATH plutovg_FOUND) 
+-- plutosvg NOT found
+-- SDL3_ttf backends:
+-- - enabled:  freetype
+-- - disabled: harfbuzz plutosvg
+-- Configuring done (4.5s)
+-- Generating done (0.0s)
+CMake Warning:
+  Manually-specified variables were not used by the project:
+
+    SDLTTF_TESTS
+
+
+-- Build files have been written to: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf-build
+[ 14%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_hashtable.c.o
+[ 28%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_renderer_textengine.c.o
+[ 42%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_hashtable_ttf.c.o
+[ 57%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_gpu_textengine.c.o
+[ 71%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_surface_textengine.c.o
+[ 85%] Building C object CMakeFiles/SDL3_ttf-shared.dir/src/SDL_ttf.c.o
+[100%] Linking C shared library libSDL3_ttf.so
+[100%] Built target SDL3_ttf-shared
+-- Install configuration: "Release"
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/libSDL3_ttf.so.0.2.2
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/libSDL3_ttf.so.0
+-- Set non-toolchain portion of runtime path of "/home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/libSDL3_ttf.so.0.2.2" to ""
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/libSDL3_ttf.so
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/include/SDL3_ttf/SDL_textengine.h
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/include/SDL3_ttf/SDL_ttf.h
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/SDL3_ttfConfig.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/SDL3_ttfConfigVersion.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/PkgConfigHelper.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/Findharfbuzz.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/Findplutosvg.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/Findplutovg.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/SDL3_ttf-shared-targets.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/cmake/SDL3_ttf/SDL3_ttf-shared-targets-release.cmake
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/lib/pkgconfig/sdl3-ttf.pc
+-- Installing: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/hive/patched-ttf/share/licenses/SDL3_ttf/LICENSE.txt

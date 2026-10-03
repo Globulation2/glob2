@@ -1,0 +1,102 @@
+{
+  "local-merge-validation/logs/platform.log": {
+    "bytes": 505,
+    "sha256": "6f90d14a05b1416914c3768792bc7fa48588d3ab50fa96fe5bb91ef0227e48dd"
+  },
+  "local-merge-validation/logs/native.log": {
+    "bytes": 48888,
+    "sha256": "71876ab451c24b4d52d0bf64af021194b0c4c0c4712b1a09163c4798504943fb"
+  },
+  "local-merge-validation/logs/ui.log": {
+    "bytes": 525,
+    "sha256": "238b182a55f2ad115b50928f2515eecc278643406a4e73d1d32bd65cb320284b"
+  },
+  "local-merge-validation/logs/browser.log": {
+    "bytes": 13973,
+    "sha256": "1f8a6191731bba02433821e0bf368946af6a9630996bab054b73d5268a432217"
+  },
+  "local-merge-validation/logs/browser-workers.log": {
+    "bytes": 4936,
+    "sha256": "7eed31fb1d10c545451077d22fbe235b7f6a5aab3edc91cdadb336da3e27ff16"
+  },
+  "local-merge-validation/logs/browser-unit.log": {
+    "bytes": 6882,
+    "sha256": "1c272a7fd5d49de913515bb130892b5edbb0a3b6e83941333554e0d8b3dc82a4"
+  },
+  "local-merge-validation/logs/translations.log": {
+    "bytes": 2766,
+    "sha256": "ff84cbe96f8669b220270687e530ec931dd914e14385c491f338b91f2952ff29"
+  },
+  "local-merge-validation/logs/contracts.log": {
+    "bytes": 16199,
+    "sha256": "350b0096e330064f2b35bbe4e1f8e3cfbe51ccd9ff8c8ad82a948e1850323a5b"
+  },
+  "local-merge-validation/logs/native-replay.log": {
+    "bytes": 65,
+    "sha256": "be8d26c9dce2d3a1a82d5d0ac350b2532e9ae330f4afbe457f32c70e06853ee3"
+  },
+  "local-merge-validation/logs/font.log": {
+    "bytes": 353,
+    "sha256": "ebda8cff4952f402957f806cec36d89fe8f406f1af84e4234aa861bb68bcdf23"
+  },
+  "local-merge-validation/logs/ttf-build.log": {
+    "bytes": 3825,
+    "sha256": "94a8f38c5006490f3df3ae5b4578a0f24e76966dd6145e882e7094a5a9fb9abf"
+  },
+  "local-merge-validation/logs/catalog.log": {
+    "bytes": 209,
+    "sha256": "4d29e2c22a3fdbf3d716ea01cd4d4c0a25004fd8212d8e29001599096cf99a85"
+  },
+  "local-merge-validation/logs/webkit.log": {
+    "bytes": 2257,
+    "sha256": "8f92c378b1f0b6d8b212eb9fd0da1c2364e157450f161e883849cb738bc07904"
+  },
+  "local-merge-validation/logs/webkit-deps.log": {
+    "bytes": 656,
+    "sha256": "fead87251b5d062903109a4973d9c57ba5beb9dcfc71658d3927750c3c19797a"
+  },
+  "local-merge-validation/replays/native/native.replay.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "local-merge-validation/replays/native/verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "b2d3b8277d0915bf6100dbad58fd0157dc63f109bdd19cfbea798da53f439125"
+  },
+  "local-merge-validation/replays/native/manifest.json": {
+    "bytes": 1190,
+    "sha256": "2651c1efdadffc49714975a6edd77143f50c34902aa1499d03c517908379acec"
+  },
+  "local-merge-validation/replays/browser/serial-1.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "local-merge-validation/replays/browser/threaded-1.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "local-merge-validation/replays/browser/threaded-2.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "local-merge-validation/replays/browser/threaded-4.checksums": {
+    "bytes": 3647512,
+    "sha256": "4838173acd91d4768a0cd7f3e681cb3ea630de093e27c117994030a8ad31de43"
+  },
+  "local-merge-validation/replays/browser/verify-match.checksums.txt": {
+    "bytes": 9094,
+    "sha256": "b2d3b8277d0915bf6100dbad58fd0157dc63f109bdd19cfbea798da53f439125"
+  },
+  "local-merge-validation/replay-comparison.json": {
+    "bytes": 568,
+    "sha256": "f13f633e37d3ed12dea3eb3b961fe12cab2bf1448fa63759aa632c1ec17d5335"
+  },
+  "local-merge-validation/source.json": {
+    "bytes": 175,
+    "sha256": "d2afb1742ec94525de336bea2906be13e954e47ad37ff8ebc24e2e3aee85a85e"
+  },
+  "local-merge-validation/README.md": {
+    "bytes": 3923,
+    "sha256": "4f2aa1a81089a82a3b740fe98d631ea3f9aa8654ad5430f0ac3a65ef5c55a359"
+  }
+}

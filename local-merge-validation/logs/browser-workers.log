@@ -1,0 +1,67 @@
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:10] "GET / HTTP/1.1" 200 -
+
+Running 2 tests using 1 worker
+
+(node:3635396) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:22] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:22] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:22] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:23] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:23] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:23] "GET /hive-runtime.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:23] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:23] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:23] "GET /hive-runtime.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:24] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:24] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:24] "GET /hive-runtime.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:24] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:24] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:24] "GET /hive-runtime.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:25] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:25] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:25] "GET /hive-runtime.wasm HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:25] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:25] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:50:25] "GET /hive-runtime.wasm HTTP/1.1" 304 -
+  ✓  1 [firefox] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (9.7s)
+(node:3636208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [webkit] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (49ms)
+
+
+  1) [webkit] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=3636367
+    [pid=3636367][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=3636367
+      - [pid=3636367][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=3636367] <gracefully close start>
+      - [pid=3636367] <kill>
+      - [pid=3636367] <will force kill>
+      - [pid=3636367] <process did exit: exitCode=127, signal=null>
+      - [pid=3636367] starting temporary directories cleanup
+      - [pid=3636367] finished temporary directories cleanup
+      - [pid=3636367] <gracefully close end>
+
+
+    Error Context: ../build/browser-test-results/hive-worker-Hive-worker-ma-c3f67-ects-forbidden-capabilities-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../build/browser-test-results/hive-worker-Hive-worker-ma-c3f67-ects-forbidden-capabilities-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace ../build/browser-test-results/hive-worker-Hive-worker-ma-c3f67-ects-forbidden-capabilities-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [webkit] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities 
+  1 passed (23.6s)

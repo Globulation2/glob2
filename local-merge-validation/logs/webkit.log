@@ -1,0 +1,30 @@
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:01] "GET / HTTP/1.1" 200 -
+
+Running 1 test using 1 worker
+
+(node:3645920) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:09] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:09] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:09] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:10] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:10] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:10] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:10] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:10] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:10] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:11] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:11] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:11] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:11] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:11] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:11] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:12] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:12] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:12] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:13] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:13] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 14:54:13] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+  ✓  1 [webkit] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (6.4s)
+
+  1 passed (14.3s)
