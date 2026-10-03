@@ -63,7 +63,8 @@ Sides are the `MatchSetup` alliances (`teams[].alliance`). A side wins if any of
 teams won. An AI side never "leaves". In a 2v2, a side leaves only when its last
 human leaves; one partner quitting while the other plays on is rated by the result.
 Participants marked `abandoned` by match intake count as having left at the final
-tick.
+tick. Intake marks only seats that quit before the end, and a verified winner is
+never left `abandoned` ([match intake](rooms-and-matches.md#internal-api-for-relays)).
 
 `diverged` results are not rated. The verifier's replay is authoritative, but a
 divergence can come from a broken client as easily as from tampering, so applying

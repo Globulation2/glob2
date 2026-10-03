@@ -136,7 +136,13 @@ export async function recordMatchEnded(
           disconnects: seat.disconnects,
           quit_tick: seat.quitTick ?? null,
           ...(seatNetwork ? { network: JSON.stringify(seatNetwork) } : {}),
-          ...(report.reason === 'abandoned' && seat.quitTick !== undefined
+          // Only a seat that left before the game's end abandoned it; one that
+          // left at the end (e.g. the winner leaving while an opponent's
+          // reconnect grace ran out) did not. Verification refines this with
+          // the verified result (recordVerification).
+          ...(report.reason === 'abandoned' &&
+          seat.quitTick !== undefined &&
+          seat.quitTick < report.finalTick
             ? { outcome: 'abandoned' as const }
             : {}),
         })

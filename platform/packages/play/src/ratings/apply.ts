@@ -177,13 +177,25 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
             }),
           )
           .execute();
-        // Participants take their team's outcome unless intake marked them abandoned.
+        // Participants take their team's outcome. A seat intake marked
+        // abandoned keeps that only if its team did not win (or draw) and it
+        // quit before the verified end: verified winners keep `won`, whoever
+        // stayed to the end of the game did not abandon it.
+        const winning = teamOutcome === 'won' || teamOutcome === 'draw';
         await trx
           .updateTable('match_participants')
           .set({ outcome: teamOutcome })
           .where('match_id', '=', matchId)
           .where('team', '=', team.team)
-          .where((eb) => eb.or([eb('outcome', 'is', null), eb('outcome', '!=', 'abandoned')]))
+          .where((eb) =>
+            eb.or([
+              eb('outcome', 'is', null),
+              eb('outcome', '!=', 'abandoned'),
+              ...(winning ? [eb.lit(true)] : []),
+              eb('quit_tick', 'is', null),
+              eb('quit_tick', '>=', outcome.finalTick),
+            ]),
+          )
           .execute();
       }
       await recordMatchArtifacts(trx, matchId, {

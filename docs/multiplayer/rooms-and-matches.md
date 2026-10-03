@@ -297,8 +297,13 @@ the report replaces the abort, and verification and ratings proceed as usual.
   entry of `network` (the relay's `RelayNetworkSummary`) in
   `match_participants.network` (migration 0009). A `network` that does not
   validate is dropped with a warning; it never makes the report fail.
-- When the reason is `abandoned`, every seat with a quit tick gets the outcome
-  `abandoned`.
+- When the reason is `abandoned`, every seat that quit before the report's final
+  tick gets the outcome `abandoned`; a seat that left at the end did not abandon.
+  The verdict refines this (`recordVerification`): seats of a verified winning
+  (or drawing) team keep `won` (`draw`), and a seat that quit at or after the
+  verified final tick takes its team's outcome. Turn protocol 2 reports a game
+  whose loser dropped at the end as `abandoned` once the loser's reconnect grace
+  runs out, after the winner has already left the finished game.
 - It reopens the room and NOTIFYs `match_updates`, so participants get
   `match.updated`.
 - It then submits a `verify-match` job with the setup and the record's hash. A
