@@ -149,7 +149,7 @@ async function seed(owner: Player, other: Player) {
     })
     .execute();
 
-  const blob = 'ef'.repeat(32);
+  const blob = randomUUID().replaceAll('-', '').repeat(2);
   await db
     .insertInto('blobs')
     .values({ sha256: blob, size: 10, content_type: 'application/octet-stream', storage_key: blob })
