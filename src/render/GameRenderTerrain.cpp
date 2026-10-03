@@ -186,7 +186,7 @@ void Game::drawMapWater(int sw, int sh, int viewportX, int viewportY, int time)
 void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
 {
 	PERF_SCOPE_TIME(Terrain);
-	Uint32 visibleTeams = teams[localTeam]->me;
+	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
     if (drawCachedTerrain(sceneMap.cacheKey(), globalContainer->terrain, left, top, right, bot,
@@ -231,7 +231,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 void Game::drawMapResources(int left, int top, int right, int bot, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneMap& sceneMap)
 {
 	PERF_SCOPE_TIME(Resources);
-	Uint32 visibleTeams = teams[localTeam]->me;
+	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
     if ((drawOptions & DRAW_WHOLE_MAP) && drawCachedResources(sceneMap.cacheKey(), sceneMap, left, top,
