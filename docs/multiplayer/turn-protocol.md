@@ -649,8 +649,10 @@ record. `glob2 --sim-version` prints the JSON.
 
 - `versionMinor` is `VERSION_MINOR` and `netProtocol` is `NET_PROTOCOL_VERSION` in
   `src/Version.h`.
-- `dataHash` is the lowercase hex SHA-256 of the simulation data files listed in
-  `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
+- `dataHash` is the lowercase hex SHA-256 of `SIM_REVISION` (`src/SimRevision.h`)
+  followed by the simulation data files. The revision is hashed first as a pseudo-file
+  with path `#sim-revision` and the revision in decimal ASCII as its content. The data
+  files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
   Nicowar tables (`data/nicowar.default.txt`, `data/nicowar.txt`) and the USL runtime
   (`data/usl/*/Runtime/*.usl`), in byte-wise sorted path order. For each file the hash
   takes the path bytes, one zero byte, the content length as a big-endian 64-bit number
@@ -659,9 +661,32 @@ record. `glob2 --sim-version` prints the JSON.
   a zero byte and the length `0xFFFFFFFFFFFFFFFF`. Files are read through the engine's
   file manager, so the browser's packaged file system gives the same value.
 
-A unit test checks that the list covers every file in those directories. Everything
-else the simulation depends on is compiled in: a change to simulation code must bump
-`VERSION_MINOR` or `NET_PROTOCOL_VERSION` to change the sim version.
+A unit test checks that the list covers every file in those directories.
+`deploy/sim_version.py` computes the same key from a source tree (engine-agent images
+are labelled with it).
+
+**Bump `SIM_REVISION` with every simulation change.** Everything else the simulation
+depends on is compiled in, and `VERSION_MINOR` tracks the save format, so nothing else
+moves the sim version when simulation code changes: rules, units, buildings,
+pathfinding, AI code and parameters, order validation, map loading, random number use,
+scripting. Without a bump, builds that simulate differently share rooms, queues, AI
+ratings and verifiers, and their matches desync or fail verification. The revision
+only ever increases. A bump also needs a fresh golden record
+(`test/fixtures/multiplayer/FourSquares1.g2mr`, which carries the sim version) and
+its trace: `python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`.
+
+CI enforces what it can detect:
+
+- `test/check_sim_revision.py` (the change-selection job) fails when the committed
+  record names another sim version than the tree, and when the record or its
+  verification trace changed relative to the base revision while the sim version
+  did not.
+- The browser/native equivalence job fails when Linux, Windows and the browsers agree
+  on a `--verify-match` trace that differs from the committed one: the simulation
+  changed.
+
+The golden match covers only what one short Nicowar/Warrush game reaches, so a passing
+check does not prove the simulation is unchanged; bump whenever a change can matter.
 
 ## Match record
 
@@ -796,5 +821,6 @@ Nicowar and Warrush) with its expected verification trace. The browser/native
 simulation equivalence job verifies it on Linux, Windows and in three browsers and
 requires identical traces (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)). A
-simulation change makes it stale; `python3 test/run_tests.py --update-fixtures --filter
-'TurnEngineHarness/the committed*'` records a fresh match and trace.
+simulation change makes it stale and must bump `SIM_REVISION`; `python3
+test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'`
+records a fresh match and trace.
