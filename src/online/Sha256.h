@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace Online
@@ -22,13 +23,21 @@ namespace Online
 
 		Sha256();
 		void update(const void* data, std::size_t size);
-		void update(const std::string& bytes) { update(bytes.data(), bytes.size()); }
+		void update(std::string_view bytes) { update(bytes.data(), bytes.size()); }
 		/// Finishes the hash; the object must not be updated afterwards.
 		Digest finish();
 
 		static Digest of(const void* data, std::size_t size);
 		static Digest of(const std::string& bytes) { return of(bytes.data(), bytes.size()); }
 		static Digest of(const std::vector<std::uint8_t>& bytes) { return of(bytes.data(), bytes.size()); }
+
+		// Content-addressing helpers used by the online client (map cache, protocol).
+		static Digest digest(std::string_view data) { return of(data.data(), data.size()); }
+		/// 64 lowercase hex digits of the digest of `data`.
+		static std::string hex(std::string_view data);
+		static std::string toHex(const Digest& digest);
+		/// True for exactly 64 lowercase hex digits, the platform's sha256_hex form.
+		static bool isHexDigest(std::string_view text);
 
 	private:
 		void block(const std::uint8_t* data);

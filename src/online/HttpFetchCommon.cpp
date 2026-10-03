@@ -52,6 +52,10 @@ const char *methodName(Method method)
 		return "POST";
 	case Method::Put:
 		return "PUT";
+	case Method::Patch:
+		return "PATCH";
+	case Method::Delete:
+		return "DELETE";
 	}
 	return "GET";
 }

@@ -1,6 +1,7 @@
 // Server-rendered sign-in pages. They are deliberately plain: no scripts, no
 // external resources, a strict Content-Security-Policy, and no Referer, so the
 // attempt id in the URL never leaks to a provider or another site.
+import { randomBytes } from 'node:crypto';
 import type { FastifyReply } from 'fastify';
 
 export function escapeHtml(value: string): string {
@@ -47,12 +48,21 @@ label{display:block;margin:.5rem 0 .25rem}input{width:100%;padding:.6rem;border-
 form.inline{display:flex;gap:.5rem}form.inline button{flex:1}
 `;
 
+export interface PageExtras {
+  /** Extra <head> content (e.g. OpenGraph tags). */
+  head?: Html;
+  /** One inline script, allowed by a per-response CSP nonce. */
+  script?: string;
+}
+
 export function sendPage(
   reply: FastifyReply,
   title: string,
   body: Html,
   status = 200,
+  extras: PageExtras = {},
 ): FastifyReply {
+  const nonce = extras.script ? randomBytes(16).toString('base64') : undefined;
   return reply
     .status(status)
     .header('content-type', 'text/html; charset=utf-8')
@@ -62,7 +72,7 @@ export function sendPage(
     .header('x-content-type-options', 'nosniff')
     .header(
       'content-security-policy',
-      "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'",
+      `default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'${nonce ? `; script-src 'nonce-${nonce}'` : ''}`,
     )
     .send(
       html`<!doctype html>
@@ -71,6 +81,7 @@ export function sendPage(
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width,initial-scale=1" />
             <title>${title}</title>
+            ${extras.head}
             <style>
               ${new Html(STYLE)}
             </style>
@@ -80,6 +91,11 @@ export function sendPage(
               <h1>${title}</h1>
               ${body}
             </main>
+            ${
+              nonce && extras.script
+                ? new Html(`<script nonce="${nonce}">${extras.script}</script>`)
+                : ''
+            }
           </body>
         </html>`.value,
     );

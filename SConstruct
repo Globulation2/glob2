@@ -7,6 +7,7 @@ import atexit
 from pathlib import Path
 sys.path.append( os.path.abspath("scons") )
 import bundle
+import official_instance
 import ccache
 import dmg
 import nsis
@@ -43,6 +44,7 @@ def establish_options(env):
     opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
     opts.Add(BoolVariable("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
+    opts.Add("official_instance", "Origin of the official multiplayer platform instance", official_instance.DEFAULT_ORIGIN)
     Help(opts.GenerateHelpText(env))
     opts.Update(env)
     opts.Save(str(Path(env["BUILDDIR"]) / "options.py"), env)
@@ -323,6 +325,7 @@ def main():
     env['ENV'].update(TMPDIR=temporary, TMP=temporary, TEMP=temporary)
     env["VERSION"] = PACKAGE_VERSION
     establish_options(env)
+    env.Append(CPPDEFINES=[official_instance.cppdefine(official_instance.origin({'official_instance': env['official_instance']}))])
     # SCons treats a command-line flag string as one shell argument unless it
     # is split into a list. Distro RPM macros provide multiple flags at once.
     for flags in ('CXXFLAGS', 'LINKFLAGS'):

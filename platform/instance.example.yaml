@@ -48,8 +48,11 @@ auth:
 
 # Extra browser origins allowed to use /realtime and cookie sessions (the
 # PUBLIC_ORIGIN is always allowed; native clients send no Origin).
+# Invite pages (/j/<code>) link "Play in browser" to the browser build of the
+# game with ?join=<code> (default <PUBLIC_ORIGIN>/play/).
 # web:
 #   allowedOrigins: [https://web.example.org]
+#   browserClientUrl: https://play.example.org/play/
 
 # Per-replica limits (defaults shown).
 # limits:

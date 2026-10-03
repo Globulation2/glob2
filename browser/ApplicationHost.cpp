@@ -199,6 +199,17 @@ bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
     }
     return false;
 }
+bool openUrl(const std::string& url)
+{
+    if (url.rfind("https://", 0) != 0 && url.rfind("http://", 0) != 0)
+        return false;
+    return EM_ASM_INT({
+        const opened = window.open(UTF8ToString($0), '_blank');
+        if (!opened) return 0;
+        try { opened.opener = null; } catch (error) {}
+        return 1;
+    }, url.c_str());
+}
 bool takeViewportSize(int& width, int& height)
 {
     return MAIN_THREAD_EM_ASM_INT({

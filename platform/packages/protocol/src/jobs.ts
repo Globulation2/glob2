@@ -68,6 +68,19 @@ export const ValidateMapResult = Type.Union([
       description: 'Format version the file was saved with.',
     }),
     title: Type.Optional(Type.String({ maxLength: 128 })),
+    players: Type.Optional(
+      Type.Array(
+        Open({
+          name: Type.String({ maxLength: 64 }),
+          team: TeamIndex,
+          kind: Type.Union([Type.Literal('human'), Type.Literal('ai')]),
+        }),
+        {
+          maxItems: 12,
+          description: 'Saves only: the players recorded in the file, for reteaming.',
+        },
+      ),
+    ),
   }),
   Open({ valid: Type.Literal(false), reason: Type.String({ maxLength: 2000 }) }),
 ]);
@@ -93,11 +106,40 @@ export const VerifyMatchPayload = Strict({
   recordHash: Sha256Hex,
 });
 
+/** Maximum timeline samples per team: 4096 × 512 ticks ≈ 23 hours of play. */
+export const MAX_TIMELINE_SAMPLES = 4096;
+
+export const TeamTimelinePoint = Open(
+  {
+    tick: Type.Integer({ minimum: 0 }),
+    units: Type.Integer(),
+    buildings: Type.Integer(),
+    prestige: Type.Integer(),
+    hp: Type.Integer(),
+    attack: Type.Integer(),
+    defense: Type.Integer(),
+  },
+  { description: "One sample of the engine's end-of-game statistics, taken every 512 ticks." },
+);
+
 export const VerifiedTeam = Open({
   team: TeamIndex,
   outcome: Type.Union([Type.Literal('won'), Type.Literal('lost'), Type.Literal('unresolved')]),
   eliminatedTick: Type.Optional(Type.Integer({ minimum: 0 })),
   prestige: Type.Integer(),
+  statistics: Type.Optional(
+    Type.Record(Type.String({ pattern: '^[A-Za-z][A-Za-z0-9]{0,63}$' }), Type.Number(), {
+      maxProperties: 64,
+      description:
+        'Final team counters from the verifier result (units, workers, buildings, totalHp, food, …).',
+    }),
+  ),
+  timeline: Type.Optional(
+    Type.Array(TeamTimelinePoint, {
+      maxItems: MAX_TIMELINE_SAMPLES,
+      description: 'Team history from the verifier result, oldest first.',
+    }),
+  ),
 });
 
 export const VerifiedOutcome = Open(
@@ -209,4 +251,5 @@ export type RenderPreviewPayload = Static<typeof RenderPreviewPayload>;
 export type RenderPreviewResult = Static<typeof RenderPreviewResult>;
 export type VerifyMatchPayload = Static<typeof VerifyMatchPayload>;
 export type VerifiedTeam = Static<typeof VerifiedTeam>;
+export type TeamTimelinePoint = Static<typeof TeamTimelinePoint>;
 export type VerifiedOutcome = Static<typeof VerifiedOutcome>;

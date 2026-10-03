@@ -36,6 +36,12 @@ export class WindowCounter {
     return true;
   }
 
+  /** True if the key has used up its window (without recording an event). */
+  exhausted(key: string, now = Date.now()): boolean {
+    const entry = this.counts.get(key);
+    return !!entry && now - entry.start < this.windowMs && entry.count >= this.max;
+  }
+
   /** Releases one event (e.g. a connection that closed). */
   release(key: string): void {
     const entry = this.counts.get(key);

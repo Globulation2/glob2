@@ -28,11 +28,6 @@ using nlohmann::json;
 
 namespace Online
 {
-MatchSetupError::MatchSetupError(Stage stage, std::string path, const std::string& message)
-	: std::runtime_error((path.empty() ? std::string("/") : path) + ": " + message), stage(stage), path(std::move(path))
-{
-}
-
 bool MatchRules::operator==(const MatchRules& o) const
 {
 	return prestigeVictory == o.prestigeVictory && suddenDeathMinutes == o.suddenDeathMinutes &&

@@ -18,6 +18,17 @@
 	<string>0.9.2</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>NO</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>org.globulation2.glob2.invite</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>glob2</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Globulation 2 discovers and joins multiplayer games hosted on your local network.</string>
 </dict>

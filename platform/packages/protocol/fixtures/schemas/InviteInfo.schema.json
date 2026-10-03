@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:InviteInfo",
+  "title": "InviteInfo",
+  "type": "object",
+  "required": [
+    "code",
+    "status",
+    "roomName",
+    "hostDisplayName",
+    "simVersion",
+    "seatsTotal",
+    "seatsTaken",
+    "inviteUrl"
+  ],
+  "properties": {
+    "code": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]{6,16}$"
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "open"
+        },
+        {
+          "type": "string",
+          "const": "in_match"
+        },
+        {
+          "type": "string",
+          "const": "closed"
+        }
+      ]
+    },
+    "roomName": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "hostDisplayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 32,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+      "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+    },
+    "simVersion": {
+      "type": "object",
+      "required": [
+        "versionMinor",
+        "netProtocol",
+        "dataHash"
+      ],
+      "properties": {
+        "versionMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+        },
+        "netProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "NET_PROTOCOL_VERSION in src/Version.h."
+        },
+        "dataHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity of a deterministic simulation build."
+    },
+    "seatsTotal": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seatsTaken": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "inviteUrl": {
+      "type": "string",
+      "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+      "maxLength": 2048
+    }
+  },
+  "description": "Public summary of the room behind an invite code."
+}

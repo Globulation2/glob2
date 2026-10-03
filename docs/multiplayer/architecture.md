@@ -4,9 +4,12 @@ Globulation 2's online play is being rebuilt on a new foundation: a TypeScript
 platform service for accounts, rooms, matches, ratings and maps, and a C++ relay
 that sequences turns. This guide describes the design, the contracts between the
 parts, and how to work on the platform. Identity is covered in
-[identity](identity.md), and quick-match queues and ratings in
-[ratings and matchmaking](ratings-and-matchmaking.md). The binary turn protocol between clients and relays is
-owned by the turn-netcode work and documented in `docs/multiplayer/turn-protocol.md`.
+[identity](identity.md), rooms, the match start sequence, tickets, relay placement
+and the relays' internal API in [rooms and matches](rooms-and-matches.md), and
+quick-match queues and ratings in
+[ratings and matchmaking](ratings-and-matchmaking.md). The binary turn protocol
+between clients and relays is owned by the turn-netcode work and documented in
+`docs/multiplayer/turn-protocol.md`.
 
 The legacy YOG lobby, router and LAN code keep working unchanged until the
 cutover milestone (M9), when they are deleted. There is no data import from YOG.
@@ -30,8 +33,8 @@ cutover milestone (M9), when they are deleted. There is no data import from YOG.
 | Part | Code | Role |
 | --- | --- | --- |
 | `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
-| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and applying ratings); runs the scheduler (maintenance, matchmaker, rating sweep) on the one replica holding the leader lock. |
-| `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version. |
+| `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and history, and applying ratings); runs the scheduler (maintenance, matchmaker, rating sweep, warm map pool) on the one replica holding the leader lock. |
+| `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version with its glob2 binary; see [Engine agents](#engine-agents). |
 | web app | `platform/apps/web` | Sign-in pages, invite landing, profiles, leaderboards, maps (React + Vite). |
 | relay | `src/relay/` (M2) | Clock and turn sequencing for matches; trusts only signed tickets. |
 | contracts | `platform/packages/protocol` | Every JSON shape, exported as JSON Schema with fixtures for C++. |
@@ -153,13 +156,17 @@ events cover handoff completion, room state and chat, queue progress and
 match start. Room changes fan out to sockets on every API replica through
 NOTIFY (only ids and revisions travel; replicas re-read state).
 
-Implemented so far (M3): the envelope, `session.*` and `auth.handoff.*` (see
-[identity](identity.md#realtime-sessions)); other methods answer `unsupported`
-until their milestones. Each replica indexes its sockets by account, sign-in
-and pending handoff, and listens on one NOTIFY channel (`realtime`); anything
-addressed to a socket (`{t: "event", to: {account | family | connection}, …}`
-or `{t: "handoff", attemptId}`) is published there and delivered by the replica
-holding it (`platform/apps/api/src/realtime/hub.ts`). Malformed frames close
+Implemented: the envelope, `session.*` and `auth.handoff.*` (see
+[identity](identity.md#realtime-sessions)), and `room.*`, `queue.*` and
+`match.reconnect` (see [rooms and matches](rooms-and-matches.md)). Each replica
+indexes its sockets by account, sign-in and pending handoff, and listens on one
+NOTIFY channel (`realtime`). Anything addressed to a socket is published there and
+delivered by the replica holding it (`platform/apps/api/src/realtime/hub.ts`):
+`{t: "event", to: {account | family | connection}, …}`, `{t: "handoff", attemptId}`,
+and the room and match messages `{t: "room" | "roomChat" | "roomClosed" |
+"matchStart", …}`, which carry ids only. Replicas also listen on `queue_events`
+and `match_updates` (from the worker's matchmaker and ratings, and from match-end
+intake) and on `map_jobs` (finished map generations and upload validations). Malformed frames close
 the socket (1007/1008); a request with bad params gets a `bad_request`
 response with the schema issues in `details`.
 
@@ -183,9 +190,10 @@ database in tests.
 | Area | Tables |
 | --- | --- |
 | Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log` |
-| Infrastructure | `blobs`, `relays`, `engine_agents`, `engine_jobs` |
-| Rooms | `rooms` (settings JSON, revision), `room_members`, `room_seats`, `room_chat_messages` |
-| Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay, verification), `match_participants`, `match_team_stats`, `match_artifacts` |
+| Infrastructure | `blobs`, `relays` (registration, load, drain, last heartbeat), `engine_agents`, `engine_jobs`, `warm_maps` (pre-generated quick-match maps) |
+| Rooms | `rooms` (settings JSON, revision), `room_members` (with relay round trips), `room_seats` (with locks), `room_chat_messages` |
+| Map sources | `map_uploads` (private uploads and their validation), `generated_maps` (one generation per descriptor and sim version) |
+| Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay and placement attempts, verification, the relay's end report), `match_participants`, `match_team_stats`, `match_artifacts` |
 | Ratings | `rating_entities` (an account, or an AI at one sim version), `ratings` (OpenSkill μ/σ per ladder, ordinal generated), `rating_history` (per-match change) |
 | Quick match | `queue_tickets` (one active ticket per account), `match_proposals` and `match_proposal_seats` (groups and accept prompts), `queue_cooldowns` |
 | Maps | `maps`, `map_versions` (content hash, size, dimensions, team count, preview), `map_likes`, `map_reports` |
@@ -216,9 +224,171 @@ Each service reads secrets and deployment settings from the environment (or a
 `.env` file; see `platform/.env.example`) and instance settings from
 `instance.yaml` (see `platform/instance.example.yaml`): name, guest access,
 sign-in providers (secrets referenced by environment-variable name), access
-policy and queues. Services log structured JSON to stdout, expose health
+policy, queues, and the browser client URL that invite pages link to. Relays
+authenticate to `/internal` with keys from `RELAY_KEYS` or `RELAY_KEYS_FILE` (see
+[rooms and matches](rooms-and-matches.md#internal-api-for-relays)); upload and
+match-record size limits are `UPLOAD_MAX_BYTES` and `RECORD_MAX_BYTES`. Services
+log structured JSON to stdout, expose health
 endpoints where they serve HTTP, and on SIGTERM stop taking work, finish what is
 running and close connections within `SHUTDOWN_GRACE_SECONDS`.
+
+## Engine agents
+
+An engine agent (`platform/apps/engine-agent`) wraps one glob2 binary and runs
+the jobs that need the engine. It runs each job as a separate headless process
+and exchanges files through the blob store. It never shares the platform's
+database credentials or environment with that process.
+
+### Sim version and partitioning
+
+At startup the agent learns its sim version from the binary rather than from
+configuration, so a mislabelled image cannot serve the wrong version:
+
+- `VERSION_MINOR` and `NET_PROTOCOL_VERSION` come from `glob2 --headless-catalog`
+  (`save_version`, `protocol_version`).
+- The data hash comes from the binary when it reports one: a `data_hash` field in
+  the catalog, or `glob2 --sim-version`, which prints
+  `{"versionMinor","netProtocol","dataHash"}`. Both are being added with the engine
+  integration work. A binary without the flag does not reject it but starts the
+  game, so the agent only runs `--sim-version` when the catalog lists
+  `sim_version` under `commands` (or `ENGINE_PROBE_SIM_VERSION=1`).
+- Until then, `ENGINE_DATA_HASH` (or a full `ENGINE_SIM_VERSION` key) supplies
+  the hash. Any value that disagrees with what the binary reports stops the
+  agent at startup.
+
+The agent then registers in `engine_agents` and listens only on
+`engine:<kind>:<simVersionKey>`. A job can therefore reach only a binary that
+computes the same games. A job that reaches the wrong version anyway is a routing
+bug and fails loudly.
+
+### Job contracts
+
+Payloads and results are the protocol's `engineJobs` schemas. The agent checks
+every result against its kind's schema before reporting it. Maps and saves are
+stored decompressed, so their key is the SHA-256 of the bytes clients load. Every
+blob the agent stores is also registered in `blobs`.
+
+| Kind | Engine command | Result |
+| --- | --- | --- |
+| `generate-map` | `--generate-map --generator <method> --map-seed <seed> --candidates <n> --param k=v… --write-map true --output-dir` (structured; method ids and revisions from the catalog) | map blob hash, size, dimensions, team count, chosen seed, start quality |
+| `validate-map` | `--preview-map <file> --json report.json` (the game's own loader, no simulation) | `valid: true` with the decompressed hash, dimensions, team count and the file's format version, or `valid: false` with a reason |
+| `render-preview` | `--preview-map <file> --output preview.png --preview-size <px>` | PNG blob hash and pixel size |
+| `verify-match` | `--verify-match <record> --map <file> --out <dir>` | `verified`/`diverged` with the outcome, team statistics and timelines, or `unverifiable` |
+
+Before running the generator, the agent checks the descriptor against the
+catalog. An unknown or editor-only generator, a revision this binary does not
+produce, a parameter the generator lacks or a value outside its registered values
+is a `bad_request`. So is a non-zero `startingUnitLevel`, which the structured
+command cannot express yet.
+
+Validation rejects these files, with a reason:
+
+- files that are not maps or saves, and corrupt gzip;
+- files over `ENGINE_MAX_MAP_BYTES` (decompressed, so a gzip bomb stops at the
+  limit);
+- maps written by a newer engine;
+- a map uploaded as a save, or a save uploaded as a map;
+- maps with a side over 512 tiles, or with 0 or more than 12 teams;
+- anything the loader refuses.
+
+Validation reads the file's format version from the first fields of the map
+header, after the engine has loaded the file. This small read in
+`engineCli.ts` is the only binary parsing in the platform. It is needed because
+the map report gives the engine's version, not the file's.
+
+**`--verify-match` output (assumed, being built in M1).** The agent expects:
+
+- `<out>/verdict.json`: `{"verdict":"verified"|"diverged"|"unverifiable","seats"?,"reason"?}`;
+- `<out>/result.json`: the `HeadlessRunner` game result (team outcomes,
+  elimination ticks, prestige, counters and the 512-tick `history`);
+- `<out>/match.replay`.
+
+A `verdict.json` decides the verdict whatever the exit code. Without one, exit 2
+is an invalid request and anything else is an engine failure. The agent stores
+the replay and result.json as blobs (`replayHash`, `resultHash`). Each team in
+the outcome carries the final counters as `statistics` and the history as
+`timeline` points `{tick, units, buildings, prestige, hp, attack, defense}`.
+All parsing of engine output lives in `apps/engine-agent/src/engineCli.ts`; a
+change to the engine's command line or output files changes only that module
+(and its fixtures, which were captured from a real binary).
+
+**Failures.** Failures are handled by how likely they are to repeat:
+
+- Input problems (`bad_request`) and contract breaks (`internal`) are reported at
+  once.
+- Timeouts, crashes and store errors are thrown, and graphile-worker retries
+  them.
+- On a job's last attempt, any remaining error is reported as `internal`, so the
+  platform is never left waiting for a result.
+
+**Process limits.** Each engine process runs in its own scratch directory, which
+is also its `HOME` and `GLOB2_USER_DIR`. It gets a minimal environment, and its
+whole process group is killed at the wall-clock timeout
+(`ENGINE_TIMEOUT_{GENERATE,INSPECT,VERIFY}_S`). It also runs under `ulimit` CPU
+and file-size limits, and on Linux an address-space limit (`ENGINE_MEMORY_MB`).
+Output files are read back only up to a size limit.
+
+### Results on the platform
+
+The worker's `platform:engine-job-result` handler completes the `engine_jobs`
+row. For `verify-match` it also records the verdict and applies ratings in the
+same transaction, and stores team statistics and timelines in `match_team_stats`.
+It links the record, replay and result blobs in `match_artifacts`, but only blobs
+registered in `blobs`. For a warm-map generation job, it marks the map ready or
+failed.
+
+The aggregate views from migration 0004 cover verified, ended matches of the
+last 90 days:
+
+| View | Contents |
+| --- | --- |
+| `match_results_view` | One row per seat of every verified match, with queue, generator and map. |
+| `recent_win_rates_view` | Games, wins and win rate per player, by queue, map or generator. A player is an account, or an AI id at one sim version. |
+| `recent_game_lengths_view` | Mean, median, p90 and maximum length in ticks, by queue and by generator. |
+| `team_timeline_view` | The 512-tick samples of each team as rows. |
+| `account_economy_curves_view` | A player's units, buildings and prestige at each tick of each match, next to their own average at that tick. |
+
+### Warm map pool
+
+The worker leader runs `WarmMapPool.refill()` every 10 seconds. A sim version
+counts as served when an agent running `generate-map` was seen in the last five
+minutes. For each queue, served sim version and map pool entry, the pool keeps
+`WARM_MAPS_PER_ENTRY` maps (default 1, 0 turns the pool off) in `warm_maps`,
+either ready or still generating. It submits generate-map jobs with fresh seeds
+for any shortfall.
+
+- An entry that fails three times in ten minutes waits for the window to pass.
+  This happens, for example, when the configured revision is not the binary's.
+- Jobs with no result after 30 minutes are expired.
+- Maps of entries removed from `instance.yaml` are dropped.
+
+`takeWarmMap(db, queueId, simVersionKey, { entry?, matchId? })` (exported by
+`@glob2/worker`) gives a match starter the oldest ready map, using
+`FOR UPDATE SKIP LOCKED`. It returns the descriptor with its seed (MatchSetup
+`map.generator`), the map hash (`map.hash`) and the generation result, or
+`undefined` if none is ready. The next refill replaces a taken map.
+
+### Scaling and operation
+
+- **More throughput:** run more agents of the same image. They share the
+  version's task identifiers, and each runs `ENGINE_CONCURRENCY` jobs at once.
+  Verification is the costly kind, since it runs whole games, so size
+  `ENGINE_TIMEOUT_VERIFY_S` and the replica count for the longest games played.
+- **An agent dies mid-job:** graphile-worker unlocks the job after its four-hour lock
+  timeout and another agent retries it. Results are applied once, keyed by job
+  id.
+- **Serving an older sim version** (a verifier image for an old version, so its
+  matches can still be verified and its rooms still get maps):
+  1. Build the engine at that version's tag, with the same compiler image and
+     flags as its release. The image must compute byte-identical games, so
+     check it with the replay verification guide
+     (`docs/development/headless-replays.md`).
+  2. Build the agent image from that binary plus this wrapper.
+  3. Set `ENGINE_DATA_HASH` if the old binary cannot report its own hash.
+  4. Run the image next to the current one. Once it registers,
+     `GET /api/v1/instance` lists the version as served, and its jobs flow to it.
+  5. When no agent of a version has been seen for five minutes, clients of that
+     version get `update_required`.
 
 ## Working on the platform
 

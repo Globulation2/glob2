@@ -1,5 +1,16 @@
-// Internal contracts between relays and the platform (/internal/v1/relays/...).
-// Relays authenticate with a bearer relay key configured by the operator.
+// Internal contracts between relays and the platform (/internal/v1/...).
+// Every call carries `Authorization: Bearer <relay key>`: a secret the operator
+// configures on both sides (platform RELAY_KEYS, relay GLOB2_RELAY_KEY). A key
+// may be pinned to one relay id. See docs/multiplayer/architecture.md.
+//
+//   POST /internal/v1/relays/register          RelayRegistration → RelayRegistrationResponse
+//   POST /internal/v1/relays/heartbeat         RelayHeartbeat → RelayHeartbeatResponse (404 or
+//                                              reregister: true → register again)
+//   GET  /internal/v1/matches/{id}/setup       → MatchSetup, byte for byte as stored
+//   PUT  /internal/v1/matches/{id}/record      body: G2MR bytes (MATCH_RECORD_CONTENT_TYPE)
+//                                              → RelayRecordReceipt; repeatable
+//   POST /internal/v1/matches/{id}/end         RelayMatchEnded → RelayMatchEndedResponse;
+//                                              repeatable (only the first report counts)
 import { Type, type Static } from 'typebox';
 import { HttpsOrWssUrl, Open, SeatIndex, Sha256Hex, Strict, Timestamp, Uuid } from './common.ts';
 import { SimVersion } from './simVersion.ts';
@@ -106,3 +117,23 @@ export const RelayMatchEnded = Strict(
 export type RelayMatchEnded = Static<typeof RelayMatchEnded>;
 
 export type RelayRegion = Static<typeof RelayRegion>;
+
+/** Content type of PUT /internal/v1/matches/{matchId}/record (a G2MR match record). */
+export const MATCH_RECORD_CONTENT_TYPE = 'application/vnd.glob2.match-record';
+
+/** Response to PUT /internal/v1/matches/{matchId}/record. */
+export const RelayRecordReceipt = Open({
+  matchId: Uuid,
+  sha256: Sha256Hex,
+  size: Type.Integer({ minimum: 0 }),
+});
+export type RelayRecordReceipt = Static<typeof RelayRecordReceipt>;
+
+/** Response to POST /internal/v1/matches/{matchId}/end. */
+export const RelayMatchEndedResponse = Open({
+  ok: Type.Boolean(),
+  duplicate: Type.Optional(
+    Type.Boolean({ description: 'The match had already been reported; nothing changed.' }),
+  ),
+});
+export type RelayMatchEndedResponse = Static<typeof RelayMatchEndedResponse>;
