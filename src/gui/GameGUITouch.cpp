@@ -605,6 +605,8 @@ bool GameGUITouch::process(SDL_Event &event)
 			GAGCore::ScrollPhysicsConfig mapConfig = ScrollPresets::mapViewport();
 			mapConfig.momentum = mapConfig.momentum && fingerIsTouch;
 			mapMotion.setConfig(mapConfig);
+			mapDragTravel = {};
+			mapFlingArmed = false;
 			const auto hud = fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse();
 			panelAxis.axis.setConfig(hud);
 			actionAxis.axis.setConfig(hud);
@@ -854,13 +856,22 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
 			gui.viewportChanged(oldX, gui.viewportX, oldY, gui.viewportY);
+			// Accumulate displacement in screen points, not world or raster pixels.
+			// Back-and-forth jitter inside the dead zone cannot arm a fling.
+			mapDragTravel.x += action.point.x;
+			mapDragTravel.y += action.point.y;
+			mapFlingArmed |= std::hypot(mapDragTravel.x, mapDragTravel.y) >= InGameTouchTheme::mapFlingTravelPoints;
 			// The same finger motion feeds the release velocity, in logical pixels.
 			if (!mapMotion.isDragging())
 				mapMotion.beginDrag(action.time);
 			mapMotion.drag(action.time, -point.x, -point.y);
 		}
 		else if (action.kind == TouchActionKind::PanEnd)
+		{
 			mapMotion.endDrag(action.time);
+			if (!mapFlingArmed)
+				mapMotion.interrupt();
+		}
 		else if (action.kind == TouchActionKind::Zoom)
 		{
 			lastMapTapTicks.reset();

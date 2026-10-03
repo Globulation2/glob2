@@ -243,6 +243,9 @@ class GameGUITouch
 	// the plain scroll variables in step.
 	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
 	GAGCore::ScrollMotion mapMotion;
+	// Screen-point displacement, separate from the smaller pan/tap slop.
+	GAGCore::ViewPoint mapDragTravel{};
+	bool mapFlingArmed = false;
 	double tutorialMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.
