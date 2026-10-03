@@ -15,7 +15,7 @@
 //
 // Keys, not bit positions, are what saves and the network carry, so retiring
 // an experiment never re-interprets an old file: an unknown key is dropped on
-// load. This header is shared with the YOG server; keep it free of client code.
+// load.
 
 #include "Types.h"
 
@@ -93,8 +93,6 @@ private:
 	std::bitset<COUNT> bits;
 };
 
-#ifndef YOG_SERVER_ONLY
 // The enabled experiments' translated labels, comma-separated, for the lobby
 // footer and the multiplayer options screen.
 std::string experimentLabelList(const ExperimentSet &set);
-#endif

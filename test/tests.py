@@ -200,11 +200,9 @@ UNIT_TESTS = [
     'GameHeaderTextSaveLoadTest.cpp',
     'GameHintsTest.cpp',
     'GameObjectivesTest.cpp',
-    'LocalTimeTest.cpp',
     'MapExploredAreaSaveLoadTest.cpp',
     'MapRenderGeometryTest.cpp',
     'MersenneTwisterTest.cpp',
-    'NetGamePlayerManagerTest.cpp',
     'RuntimeBuildingOrderSaveLoadTest.cpp',
     'TorusGeometryTest.cpp',
     'TorusPickingTest.cpp',
@@ -294,8 +292,6 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/WinningConditions.cpp',
     '#src/ai/shared_runtime/BuildingOrder.cpp',
     '#src/map/io/MapExploredAreaIO.cpp',
-    '#src/net/NetGamePlayerManager.cpp',
-    '#src/net/NetReteamingInformation.cpp',
     '#src/online/HttpFetchCommon.cpp',
     '#src/online/InstanceConfig.cpp',
     '#src/online/InviteLink.cpp',
@@ -324,9 +320,9 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/ReplayReader.cpp',
     '#src/ReplayWriter.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.
-    ('#src/OrderModify.cpp', dict(defines=['YOG_SERVER_ONLY'])),
-    ('#src/OrderBuilding.cpp', dict(defines=['YOG_SERVER_ONLY'])),
-    ('#src/net/message/OrderMessages.cpp', dict(defines=['YOG_SERVER_ONLY'])),
+    ('#src/OrderModify.cpp', dict(defines=['GLOB2_ORDER_CODEC_ONLY'])),
+    ('#src/OrderBuilding.cpp', dict(defines=['GLOB2_ORDER_CODEC_ONLY'])),
+    ('#src/net/message/OrderMessages.cpp', dict(defines=['GLOB2_ORDER_CODEC_ONLY'])),
 ]
 
 # Replacement definitions for production symbols the unit binary does not link.

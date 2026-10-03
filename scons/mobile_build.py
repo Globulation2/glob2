@@ -79,13 +79,13 @@ def build_mobile(directory, identity, arguments):
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
-    files = ['src/' + name for name in CLIENT_SOURCES if name not in ('VoiceRecorder.cpp', 'net/irc/IRCTextMessageHandler.cpp')]
+    files = ['src/' + name for name in CLIENT_SOURCES if name != 'VoiceRecorder.cpp']
     if identity['target'] == 'ios':
         files.remove('src/Glob2.cpp')
         files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm', 'mobile/ios/LaunchLinks.mm', 'mobile/ios/CertificateTrust.cpp']
     files += ['libgag/src/' + name for name in GAG_SOURCES]
     files += ['libusl/src/' + name for name in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/IRCTextMessageHandler.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp', 'mobile/CertificateTrust.cpp', 'mobile/TemporaryFiles.cpp']
+    files += ['browser/VoiceRecorder.cpp', 'mobile/MobilePaths.cpp', 'mobile/Documents.cpp', 'mobile/CertificateTrust.cpp', 'mobile/TemporaryFiles.cpp']
     if identity['target'] == 'android':
         files += ['mobile/android/Documents.cpp', 'mobile/android/CertificateTrust.cpp']
         env.Append(LIBS=['android', 'log', 'dl', 'm'])

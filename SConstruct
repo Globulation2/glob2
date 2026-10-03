@@ -42,7 +42,6 @@ def establish_options(env):
     opts.Add(BoolVariable("mingw", "Build with mingw enabled if not auto-detected", 0))
     opts.Add(BoolVariable("mingwcross", "Cross-compile with mingw for Win32", 0))
     opts.Add("crossroot", "Path to include/ and lib/ containing Win32 files for cross-compiling", "../local")
-    opts.Add(BoolVariable("server", "Build only the YOG server, excluding the game and any GUI/sound components", 0))
     opts.Add("font", "Build the game using an alternative font placed in the data/font folder", "sans.ttf")
     opts.Add("official_instance", "Origin of the official multiplayer platform instance", official_instance.DEFAULT_ORIGIN)
     Help(opts.GenerateHelpText(env))
@@ -336,11 +335,10 @@ def main():
     if env['release'] and not isDarwinPlatform:
         for flags in ('CXXFLAGS', 'LINKFLAGS'):
             env[flags] = [flag for flag in env.Split(env[flags]) if flag != '-g']
-    env["server"] = identity["role"] in ("server", "router", "relay")
+    # "server" means a build without the game client: the match relay.
+    env["server"] = identity["role"] == "relay"
     env["role"] = identity["role"]
     relay = identity["role"] == "relay"
-    if identity["role"] == "router":
-        env.Append(CPPDEFINES=["GLOB2_ROUTER_ONLY"])
 
     # Emit compile_commands.json for clangd / IDE LSPs.
     env.Tool('compilation_db')
@@ -413,10 +411,7 @@ def main():
                 notices = env.Install(str(Path(env['INSTALLDIR']) / 'glob2/licenses' / license.parent.name), str(license))
                 env.Alias('install', notices)
 
-    server_only = False
-    if env['server']:
-        env.Append(CPPDEFINES=["YOG_SERVER_ONLY"])
-        server_only = True
+    server_only = relay
     env.Append(CXXFLAGS=["-std=gnu++20"])
     # Strict C++ mode omits MinGW's nonstandard WIN32 alias. Legacy platform
     # guards rely on it (including disabling the Unix OSS audio backend).

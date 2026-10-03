@@ -3,11 +3,9 @@
 
 #pragma once
 
-// What a multiplayer setup room needs from the network behind it. The room screens
-// (RoomScreen, and MultiplayerGameScreen for the legacy lobby) only talk to this
-// interface. Implementations: PlatformRoom (online rooms on a platform instance),
-// LanRoom (LAN games on the turn protocol) and YogRoom (the legacy YOG lobby, until
-// YOG is removed).
+// What a multiplayer setup room needs from the network behind it. The room screen
+// (RoomScreen) only talks to this interface. Implementations: PlatformRoom (online
+// rooms on a platform instance) and LanRoom (LAN games on the turn protocol).
 //
 // Everything is polled from the UI thread: update() once per timer tick, then
 // takeEvent() until it returns nothing.
@@ -85,7 +83,7 @@ public:
 		std::string author;
 	};
 
-	/// Result codes carried by Finished events (MultiplayerGameScreen's values).
+	/// Result codes carried by Finished events.
 	enum FinishCode
 	{
 		Cancelled,
@@ -154,7 +152,6 @@ public:
 	{
 		Online, ///< a room on a platform instance: invite link, rated history
 		Lan,    ///< hosted on this network, not rated
-		Legacy, ///< the YOG lobby
 	};
 	virtual Kind kind() const { return Kind::Lan; }
 
