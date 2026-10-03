@@ -525,6 +525,21 @@ static void checkCooperativeWriterCompatibility(FileManager& files, const fs::pa
     REQUIRE(gzipDecompress(contents(path), decoded));
     CHECK(decoded == "next");
 
+    // Polling completes the job; the next submission publishes its metrics,
+    // just like the legacy write API, without requiring a teardown wait.
+    const auto completedBefore = PerformanceTelemetry::collector().saved;
+    const auto encode = [](ChunkedBuffer& bytes) -> CooperativeTask {
+        bytes.writeAt(0, "metrics", 7);
+        co_return true;
+    };
+    auto measured = writer.submit(path, encode);
+    for (int i = 0; i < 100 && writer.busy(); ++i) {}
+    REQUIRE(measured->state == BackgroundFileWriter::State::Succeeded);
+    auto following = writer.submit(path, encode);
+    CHECK(PerformanceTelemetry::collector().saved == completedBefore + 1);
+    writer.waitUntilIdle();
+    CHECK(following->state == BackgroundFileWriter::State::Succeeded);
+
     const auto immediate = (directory / "immediate-gzip.game").string();
     // Cross output/input-buffer boundaries, with both repetitive and random data.
     std::string raw(300000, 'x');

@@ -128,6 +128,8 @@ namespace GAGCore
     {
         auto result = std::make_shared<Result>();
         std::unique_lock<std::mutex> lock(mutex);
+        // Match write(): publish the previous job on the submitting thread.
+        publishMetrics();
         if (writing || pending)
         {
             result->state = State::Failed;
