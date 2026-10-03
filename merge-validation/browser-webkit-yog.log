@@ -1,0 +1,78 @@
+
+Running 2 tests using 1 worker
+
+(node:2758854) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [webkit] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (6ms)
+(node:2758896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [webkit] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package (5ms)
+
+
+  1) [webkit] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=2758879
+    [pid=2758879][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=2758879
+      - [pid=2758879][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=2758879] <gracefully close start>
+      - [pid=2758879] <kill>
+      - [pid=2758879] <will force kill>
+      - [pid=2758879] exception while trying to kill process: Error: kill ESRCH
+      - [pid=2758879] <process did exit: exitCode=127, signal=null>
+      - [pid=2758879] starting temporary directories cleanup
+      - [pid=2758879] finished temporary directories cleanup
+      - [pid=2758879] <gracefully close end>
+
+
+    Error Context: artifacts/skins/merge-validation/browser-webkit-yog-results/colony-skins-live-colony-m-60eea-survive-context-restoration-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/browser-webkit-yog-results/colony-skins-live-colony-m-60eea-survive-context-restoration-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/skins/merge-validation/browser-webkit-yog-results/colony-skins-live-colony-m-60eea-survive-context-restoration-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [webkit] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package 
+
+    Error: browserType.launch: Target page, context or browser has been closed
+    Browser logs:
+
+    <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+    <launched> pid=2759111
+    [pid=2759111][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+    Call log:
+      - <launching> /home/bradley/.cache/ms-playwright/webkit-2359/pw_run.sh --inspector-pipe --headless --no-startup-window
+      - <launched> pid=2759111
+      - [pid=2759111][err] /home/bradley/.cache/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser: error while loading shared libraries: libevent-2.1.so.7: cannot open shared object file: No such file or directory
+      - [pid=2759111] <gracefully close start>
+      - [pid=2759111] <kill>
+      - [pid=2759111] <will force kill>
+      - [pid=2759111] exception while trying to kill process: Error: kill ESRCH
+      - [pid=2759111] <process did exit: exitCode=127, signal=null>
+      - [pid=2759111] starting temporary directories cleanup
+      - [pid=2759111] finished temporary directories cleanup
+      - [pid=2759111] <gracefully close end>
+
+
+    Error Context: artifacts/skins/merge-validation/browser-webkit-yog-results/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/skins/merge-validation/browser-webkit-yog-results/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/skins/merge-validation/browser-webkit-yog-results/skin-assets-unskinned-menu-92545-t-the-optional-mesh-package-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [webkit] › browser/tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 
+    [webkit] › browser/tests/skin-assets.spec.js:7:1 › unskinned menu and match never request the optional mesh package 
