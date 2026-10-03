@@ -460,7 +460,8 @@ and checks that every draw preserves simulation checksums and that classic and
 skinned states match. It reports first-frame cost separately from warmed mean,
 p95, draw counts and `render.skins.*` preparation/geometry/raster/composite scopes.
 Set `SKIN_PREVIEW_ZOOM` (0.02–5.0, clamped by the map camera) to exercise adaptive
-zoom detail. When only overview markers and building icons are visible, the
+zoom detail. Set `SKIN_PREVIEW_ADAPTIVE=0` to check skins with adaptive detail
+disabled. When only overview markers and building icons are visible, the
 diagnostic checks that hidden skin meshes are neither prepared nor drawn.
 Frame times include presentation; scope times measure CPU submission and driver
 work, not isolated GPU duration. Preserve the fixture, binaries, build inputs,

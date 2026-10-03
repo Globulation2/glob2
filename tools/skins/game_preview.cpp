@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     {
         globalContainer = new GlobalContainer;
         globalContainer->parseArgs(argc,argv);
-        globalContainer->settings.mute = 1;
+            globalContainer->settings.mute = 1;
         globalContainer->settings.autosaveGames = false;
         globalContainer->load();
         {
@@ -44,6 +44,12 @@ int main(int argc, char **argv)
             gui.localPlayer = gui.localTeamNo = 0;
             gui.adjustLocalTeam();
             gui.adjustInitialViewport();
+            if (const char *adaptive = std::getenv("SKIN_PREVIEW_ADAPTIVE"))
+            {
+                const std::string value(adaptive);
+                if (value != "0" && value != "1") throw std::runtime_error("Invalid adaptive preview setting");
+                globalContainer->settings.adaptiveZoomDetail = value == "1";
+            }
             if (const char *zoom = std::getenv("SKIN_PREVIEW_ZOOM"))
             {
                 const double value = std::stod(zoom);
@@ -164,6 +170,7 @@ int main(int argc, char **argv)
                             if (scopes[scope]["calls"].get<unsigned long>() != 0)
                                 throw std::runtime_error("Overview prepared or drew hidden skin meshes");
                     std::cout << nlohmann::json{{"zoom",gui.camera.zoom},
+                        {"adaptiveZoom",globalContainer->settings.adaptiveZoomDetail},
                         {"unitSprite",gui.view.render.detail.unitSprite},{"buildingSprite",gui.view.render.detail.buildingSprite},
                         {"profile",scopes},{"coldMs",coldMs},{"warmup",warmup},{"mode",skinned?"skinned":"classic"},{"addedUnits",crowd.size()},
                         {"width",globalContainer->gfx->getW()},{"height",globalContainer->gfx->getH()},
