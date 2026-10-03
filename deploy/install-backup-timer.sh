@@ -6,7 +6,7 @@
 # Writes /etc/systemd/system/glob2-backup.{service,timer} from deploy/systemd/,
 # running deploy/backup-to-gcs.sh from this checkout as <user> (default: the
 # owner of the checkout, who must be able to run docker), and enables the timer.
-# The env file must set GLOB2_BACKUP_BUCKET. See docs/hosting/backups.md.
+# The env file must set GLOB2_BACKUP_BUCKET. See docs/hosting/README.md, "Scheduled backups".
 set -eu
 root=$(cd "$(dirname "$0")/.." && pwd)
 env_file=$(cd "$(dirname "${1:?usage: sudo deploy/install-backup-timer.sh <env-file> [user]}")" && pwd)/$(basename "$1")

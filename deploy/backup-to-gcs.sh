@@ -1,6 +1,6 @@
 #!/bin/sh
 # Scheduled database backup of a single-host deployment to Google Cloud Storage
-# (run daily by deploy/systemd/glob2-backup.timer; see docs/hosting/backups.md):
+# (run daily by deploy/systemd/glob2-backup.timer; see docs/hosting/README.md, "Scheduled backups"):
 #
 #   deploy/backup-to-gcs.sh <env-file>
 #

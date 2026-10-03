@@ -1,10 +1,12 @@
 # Globulation 2 Fire tablet privacy policy
 
 This policy applies to the Amazon Appstore edition of Globulation 2
-(`org.globulation2.glob2`) for Fire tablets. For privacy questions, contact
-**[PLACEHOLDER: privacy contact address]**.
+(`org.globulation2.glob2`) for Fire tablets. It is published by Bradley Arsenault,
+a sole proprietor, 349 Wheat Boom Drive, Unit 346, Oakville, Ontario L6H 7X5,
+Canada. For privacy questions, contact **[PLACEHOLDER: privacy contact e-mail
+address]** or write to that address.
 
-Last updated: **[PLACEHOLDER: publication date]**.
+Last updated: 3 October 2026.
 
 ## Data on your tablet
 
@@ -27,8 +29,8 @@ for the Globulation 2 project.
 ## No online play
 
 This edition leaves out online play: it has no online accounts or sign-in, does
-not connect to the Globulation 2 online service at app.glob2online.com or to the
-older YOG lobby, and does not open invite links. The game does not send gameplay
+not connect to the Globulation 2 online service at app.glob2online.com, and does
+not open invite links. The game does not send gameplay
 or diagnostic data to a project-operated server. The online service, and the
 editions that use it, are described in the
 [Globulation 2 privacy policy](privacy-policy.md).

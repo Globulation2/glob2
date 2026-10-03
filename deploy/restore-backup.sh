@@ -1,14 +1,14 @@
 #!/bin/sh
 # Restores a database backup into a NEW database next to the live one, brings
 # it to the checkout's schema, and re-applies every account deletion made since
-# the backup was taken (see docs/hosting/backups.md):
+# the backup was taken (see docs/hosting/README.md, "Scheduled backups"):
 #
 #   deploy/restore-backup.sh <env-file> <backup> <new-database>
 #
 # <backup> is a gs:// object or a local file written by deploy/backup-to-gcs.sh
 # or deploy/update-host.sh (pg_dump custom format). <new-database> must not
 # exist; the script never writes to the live database (`glob2`). To put a
-# restored database into service, follow docs/hosting/backups.md.
+# restored database into service, follow docs/hosting/README.md, "Scheduled backups".
 #
 # Deletions to re-apply: the account ids in the newest *.deleted-accounts.txt
 # in $GLOB2_BACKUP_BUCKET (any tier), plus the live database's deleted accounts

@@ -6,11 +6,12 @@ that they, the desktop game and the browser game use. The Amazon Appstore editio
 Fire tablets has no online play and its own
 [Fire tablet privacy policy](amazon-privacy-policy.md).
 
-The online service is operated by **[PLACEHOLDER: operator's legal name and country]**
-("we"). For privacy questions and requests, contact
-**[PLACEHOLDER: privacy contact address]**.
+The online service is operated by Bradley Arsenault, a sole proprietor, 349 Wheat
+Boom Drive, Unit 346, Oakville, Ontario L6H 7X5, Canada ("we"). For privacy
+questions and requests, contact **[PLACEHOLDER: privacy contact e-mail address]**
+or write to that address.
 
-Last updated: **[PLACEHOLDER: publication date]**.
+Last updated: 3 October 2026.
 
 ## In short
 
@@ -22,10 +23,12 @@ Last updated: **[PLACEHOLDER: publication date]**.
   room chat, maps you upload, and technical data that protects the service.
 - Your display name, ratings, match history, match replays and the maps you publish are
   public.
-- The apps contain no advertising, analytics or crash-reporting services, and we do
-  not sell your data.
-- You can delete your account yourself: in the game, **Settings > Online > Download or
-  delete my data** opens your account page,
+- The apps contain no advertising, analytics or crash-reporting services, nothing
+  tracks you across other apps or sites, and we do not sell your data.
+- The game has no minimum age. Playing online as a guest needs no e-mail address,
+  no real name and no account details at all.
+- You can download a copy of your data and delete your account yourself: in the
+  game, **Settings > Online > Download or delete my data** opens your account page,
   [app.glob2online.com/account](https://app.glob2online.com/account).
 
 ## On your device
@@ -107,7 +110,7 @@ Public leaderboard data is also published on the website
 | Server logs | Overwritten as they rotate (at most 100 MB per service container) |
 | Uploaded files that nothing uses any more | 7 days |
 | Map download counts | Until the map is deleted |
-| Backups | **[PLACEHOLDER: whether backups are taken, where they are stored, and for how long]** |
+| Database backups | Daily backups 7 days, weekly backups about a month (35 days), one backup per month indefinitely (see [Backups](#backups)) |
 
 ### Deleting your account
 
@@ -131,14 +134,42 @@ because they are the verified record of games other people played too, so they s
 contain the name you had in that game and your in-game text chat. Files you uploaded
 stay stored only while matches played on them refer to them.
 
+#### Backups
+
+We back up the service's database every day to Google Cloud Storage in Toronto
+(`northamerica-northeast2`), in a private storage bucket that is never publicly
+accessible. Daily backups are deleted after 7 days and weekly backups after about a month
+(35 days); one backup from each calendar month is kept indefinitely, so that the
+service can be recovered and its match history kept. A backup is a copy of the
+database as it was at that moment. **Data of an account deleted after a backup was
+taken stays in that backup until the backup itself is deleted, which for monthly
+backups means it stays indefinitely.** We do not use backups for anything except
+recovering the service.
+
+If we ever restore a backup, the restore re-applies every account deletion recorded
+in the newest backup and in the live database, so deleted accounts stay deleted.
+The one exception: if the live database were lost as well, a deletion made after
+the newest backup (at most about a day earlier) is recorded nowhere and would be
+undone. If that ever happens, delete the account again, or ask us to.
+
+#### Guest accounts
+
 A guest account has no way to sign in on the web. To delete a guest account yourself,
 link a sign-in method in **Settings > Online** first, then delete the account on the
 account page, or ask us at the contact address. Unused guest accounts are also deleted
 automatically, as described above.
 
-There is no self-service download of your data yet. Your account page shows your
-account and sign-in methods, and your profile page shows your matches.
-**[PLACEHOLDER: decide how to answer requests for a copy of your data, and say so here.]**
+### Getting a copy of your data
+
+On your account page, **Download my data** saves a file (JSON) with everything the
+service stores about your account: your profile, your sign-in methods (without
+passwords or keys), your sessions, your matches with your results and connection
+quality, your ratings and their history, the rooms you hosted or joined and your
+room chat, your matchmaking requests, the maps you published, liked, reported or
+uploaded, and moderation actions about your account. You can also ask us for a
+copy at the contact address. Replays and maps download from their own pages. A
+guest account must first link a sign-in method (see above) to use the account
+page; otherwise ask us.
 
 ### Other choices
 
@@ -153,8 +184,10 @@ on the account page (a registered account keeps at least one), and sign out on a
 - **Sign-in providers.** If you choose to sign in with a provider, you sign in on that
   provider's own page, under its privacy policy, and it tells us its identifier for you
   and, if it shares them, your e-mail address and name. The providers offered are
-  listed on the sign-in page: **[PLACEHOLDER: the providers enabled on
-  app.glob2online.com, e.g. Google, Microsoft, Apple]**.
+  listed on the sign-in page. On app.glob2online.com that is **Google**, besides
+  a username and password kept by the service itself. Google gives us its
+  identifier for you, your e-mail address and your name; Google's
+  [privacy policy](https://policies.google.com/privacy) applies to signing in there.
 - **Your browser.** Signing in, the account page, and links to matches, players and
   maps open in your device's browser, under its own privacy terms. The website
   [glob2online.com](https://glob2online.com/) is a separate static site hosted on
@@ -164,9 +197,38 @@ The service sends your data to no one else.
 
 ## Children
 
-Online play does not ask for your age, and guests do not give an e-mail address.
-**[PLACEHOLDER: minimum age for online play, or how accounts of children are handled,
-and whether parents can ask for a child's account to be deleted.]**
+Globulation 2 is a family-friendly game and has no minimum age. The game and the
+service are built to collect as little as possible from anyone, children included:
+
+- Single-player, the campaign, the map editor and LAN games send nothing to us.
+- Online play works as a guest, which needs no e-mail address, no real name, no
+  birthday and no account details: the game makes up a name such as `Guest-1234`.
+  An account with a username and password needs no e-mail address either. Signing
+  in with Google is optional.
+- There is no advertising, no analytics, no tracking across apps or sites, no
+  in-app purchases, and we never sell data or use it for marketing.
+- Online play does include room chat and in-game text chat with other players,
+  and a registered account chooses its own display name, which is public. Parents
+  may want to tell children not to use their real name as a display name or share
+  personal details in chat. Moderators can mute, rename and ban accounts.
+
+A parent or guardian can download or delete a child's account on the account page
+while signed in to it, or ask us at the contact address. Deletion works exactly as
+described in [Deleting your account](#deleting-your-account), including what it
+keeps and the note about [backups](#backups). For a guest account, which nobody can
+sign in to on the web, tell us the account's display name and roughly when and on
+which kind of device it was used; we may ask for more to make sure the account is
+the child's before we delete it or send a copy. Uninstalling the app also removes
+the guest sign-in from the device, and an unused guest account that never played a
+match is deleted automatically after 90 days.
+
+## Your rights
+
+Depending on where you live (for example under Canada's PIPEDA or the EU and UK
+GDPR), you can ask for access to your data, its correction or its deletion. The
+account page lets you do most of this yourself; otherwise contact us. You can also
+complain to your privacy regulator; in Canada that is the
+[Office of the Privacy Commissioner of Canada](https://www.priv.gc.ca/).
 
 ## Self-hosted instances
 

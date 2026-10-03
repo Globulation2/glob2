@@ -1,6 +1,6 @@
 # Daily database backup to Google Cloud Storage (deploy/backup-to-gcs.sh).
 # Installed by deploy/install-backup-timer.sh, which fills in @USER@, @SOURCE@
-# and @ENV_FILE@; see docs/hosting/backups.md.
+# and @ENV_FILE@; see docs/hosting/README.md, "Scheduled backups".
 [Unit]
 Description=Globulation 2 platform database backup to Cloud Storage
 Wants=network-online.target docker.service
