@@ -8,6 +8,7 @@
 #include "Team.h"
 #include "TeamStat.h"
 #include "GlobalContainer.h"
+#include "ReplayReader.h"
 #include <BinaryStream.h>
 #include <PackedRecords.h>
 #include "FileFormatVersions.h"
@@ -206,6 +207,15 @@ void save(GAGCore::OutputStream *s, const std::vector<std::shared_ptr<Series>> &
 			writeSample(s, r.history[n]);
 			s->writeLeaveSection();
 		}
+		s->writeUint32(r.named.size(), "namedValues");
+		for (const auto &v : r.named)
+		{
+			writeString(s, v.name, "name");
+			writeString(s, v.value, "value");
+			writeString(s, v.unit, "unit");
+			writeString(s, v.meaning, "meaning");
+			s->writeUint32(v.updated, "updated");
+		}
 		s->writeLeaveSection();
 	}
 	s->writeLeaveSection();
@@ -233,7 +243,9 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 		r.active = active;
 		r.playerName = readString(s, "playerName");
 		const auto fields = s->readUint32("fields");
-		require(fields >= Specific && fields <= 4096);
+		const bool presentation = versionMinor >= FILE_FORMAT_VERSION_CUSTOM_AI &&
+								  r.schemaVersion == ReplayPresentationSchema;
+		require(presentation ? fields == 0 : fields >= Specific && fields <= 4096);
 		for (unsigned f = 0; f < fields; ++f)
 		{
 			s->readEnterSection(f);
@@ -271,6 +283,22 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
         if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(s))
             GAGCore::PackedRecords::read(s,samples,8+16*fields,readOne);
         else for(unsigned n=0;n<samples;++n) readOne(s,n);
+		if (versionMinor >= FILE_FORMAT_VERSION_CUSTOM_AI)
+		{
+			auto count = s->readUint32("namedValues");
+			require(count <= (presentation ? MaximumPresentationValues : 132));
+			for (unsigned n = 0; n < count; ++n)
+			{
+				NamedValue v;
+				v.name = readString(s, "name");
+				v.value = readString(s, "value");
+				v.unit = readString(s, "unit");
+				v.meaning = readString(s, "meaning");
+				v.updated = s->readUint32("updated");
+				require(v.updated <= r.current.tick);
+				r.named.push_back(std::move(v));
+			}
+		}
 		for (const auto &prior : loaded)
 			require(prior->player != r.player || prior->generation != r.generation);
 		loaded.push_back(p);
@@ -303,6 +331,16 @@ void emit(Series &r, int team, bool final, bool describe)
 		for (const auto &a : r.history)
 			printSample(r, team, a, "GLOB2_AI_HISTORY");
 	printSample(r, team, r.current, final ? "GLOB2_AI_FINAL" : "GLOB2_AI_SAMPLE");
+	if (r.current.available)
+		for (const auto &value : r.named)
+		{
+			std::cout << "GLOB2_AI_VALUE";
+			identity(r, team);
+			std::cout << " tick=" << r.current.tick << " field=" << quoted(value.name)
+					  << " value=" << quoted(value.value) << " updated=" << value.updated
+					  << " unit=" << quoted(value.unit) << " meaning=" << quoted(value.meaning)
+					  << '\n';
+		}
 	std::cout.precision(precision);
 	std::cout.flags(flags);
 }
@@ -321,10 +359,11 @@ void capture(Team *team, bool retain, bool output, bool final)
 	for (auto &r : team->stats.aiTelemetry)
 	{
 		auto *player = team->game->players[r->player];
-		if (r->active &&
+		if (!replay && r->active &&
 			(!player || !player->ai || player->team != team || player->ai->telemetrySeries != r))
 			r->active = false;
-		if (replay)
+		if (replay &&
+			(!globalContainer->replayReader || !globalContainer->replayReader->hasTelemetry()))
 		{
 			r->current.available = false;
 			r->current.tick = team->game->stepCounter;
@@ -349,3 +388,20 @@ void capture(Team *team, bool retain, bool output, bool final)
 	}
 }
 } // namespace AITelemetry
+
+std::string AITelemetry::displayValue(const Field &field, const Value &value)
+{
+	if (!value.valid)
+		return "Unavailable";
+	if (field.type == Signed)
+		return std::to_string(static_cast<Sint64>(value.bits));
+	if (field.type == Unsigned)
+		return std::to_string(value.bits);
+	double number;
+	std::memcpy(&number, &value.bits, sizeof(number));
+	if (!std::isfinite(number))
+		return "Unavailable";
+	std::ostringstream text;
+	text << std::setprecision(8) << number;
+	return text.str();
+}
