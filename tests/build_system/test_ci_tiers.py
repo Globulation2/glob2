@@ -26,10 +26,48 @@ class TierTest(unittest.TestCase):
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
         self.assertTrue(self.profile(['test/PathGradientHarness.cpp','SConstruct'])['compatibility'])
         self.assertTrue(self.profile([])['android'])
-    def test_master_and_schedule_override_docs(self):
-        for event in ['push','schedule','workflow_dispatch']:
+    def test_schedule_and_dispatch_override_docs_while_master_pushes_follow_paths(self):
+        for event in ['schedule','workflow_dispatch']:
             result=self.profile(['README.md'],event)
             self.assertTrue(result['compatibility']);self.assertTrue(result['android']);self.assertTrue(result['browsers_all'])
+        push=self.profile(['README.md'],'push')
+        self.assertFalse(push['compatibility']);self.assertFalse(push['android']);self.assertFalse(push['browsers_all'])
+        self.assertTrue(self.profile([],'push')['compatibility'])
+    def test_master_push_diffs_from_the_last_completed_master_build(self):
+        runs={'workflow_runs':[
+            {'event':'push','conclusion':None,'head_sha':'pending'},
+            {'event':'push','conclusion':'cancelled','head_sha':'superseded'},
+            {'event':'push','conclusion':'success','head_sha':'current'},
+            {'event':'pull_request','conclusion':'success','head_sha':'pr'},
+            {'event':'push','conclusion':'failure','head_sha':'tested'},
+            {'event':'schedule','conclusion':'success','head_sha':'older'}]}
+        self.assertEqual(selector.last_tested_master('o/r','t','current',read=lambda path,token:runs),'tested')
+        self.assertIsNone(selector.last_tested_master('o/r','t','x',read=lambda path,token:{'workflow_runs':[]}))
+        def outputs(event,base,paths):
+            with tempfile.TemporaryDirectory() as directory:
+                old_cwd=Path.cwd()
+                try:
+                    os.chdir(directory)
+                    with patch.object(selector,'changed_paths',return_value=paths) as diff, \
+                         patch.object(selector,'last_tested_master',return_value=base), \
+                         patch.object(guard,'activated',return_value=False), \
+                         patch.object(sys,'argv',['ci_changed_paths.py']), \
+                         patch.dict(os.environ,{'GITHUB_EVENT_NAME':event,'GITHUB_OUTPUT':str(Path(directory)/'outputs')},clear=True), \
+                         patch('sys.stdout',new_callable=io.StringIO), patch('sys.stderr',new_callable=io.StringIO):
+                        selector.main()
+                    return json.loads(Path('artifacts/ci-selection.json').read_text()),diff.call_args
+                finally:
+                    os.chdir(old_cwd)
+        docs,call=outputs('push','tested',['README.md'])
+        self.assertEqual(call.args,('tested',))
+        self.assertEqual(set(docs['selection'].values()),{False});self.assertFalse(docs['full_matrix'])
+        native,_=outputs('push','tested',['src/map/Map.cpp'])
+        self.assertTrue(native['selection']['native'])
+        # No completed master build (or an API failure): full CI, a valid baseline.
+        full,call=outputs('push',None,['README.md'])
+        self.assertIsNone(call);self.assertTrue(full['full_matrix'])
+        scheduled,call=outputs('schedule','tested',['README.md'])
+        self.assertIsNone(call);self.assertTrue(scheduled['full_matrix'])
     def test_runtime_and_shard_configuration_exercises_both_gcc_platforms(self):
         for path in ['test/run_tests.py','test/ci_native_shard_plan.py','test/ci-native-auxiliary.json','test/build_ci_timing_profile.py','test/ci-timings/ubuntu-22.04.json']:
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
@@ -48,8 +86,8 @@ class TierTest(unittest.TestCase):
                 self.assertTrue(self.profile([path,'SConstruct'])['android'])
     def test_contract_only_selection_is_lightweight_before_tiers_are_enabled(self):
         # Exercise the effective outputs, including the legacy Android fallback,
-        # rather than just the desired profile. Master must remain full coverage.
-        for event in ['pull_request','push']:
+        # rather than just the desired profile. Scheduled runs must remain full coverage.
+        for event in ['pull_request','schedule']:
             with self.subTest(event=event),tempfile.TemporaryDirectory() as directory:
                 old_cwd=Path.cwd()
                 try:
@@ -61,8 +99,8 @@ class TierTest(unittest.TestCase):
                          patch('sys.stdout',new_callable=io.StringIO):
                         selector.main()
                     observed=json.loads(Path('artifacts/ci-selection.json').read_text())
-                    self.assertEqual(set(observed['selection'].values()),{event=='push'})
-                    self.assertEqual(observed['full_matrix'],event=='push')
+                    self.assertEqual(set(observed['selection'].values()),{event=='schedule'})
+                    self.assertEqual(observed['full_matrix'],event=='schedule')
                     self.assertFalse(observed['tiers_enabled'])
                 finally:
                     os.chdir(old_cwd)
