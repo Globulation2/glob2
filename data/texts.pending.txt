@@ -24,6 +24,8 @@
 [settings Decorative interface animation]
 [settings Animate victory artwork. Reduced motion also disables this animation.]
 [settings Text size]
+[settings Smooth unit motion]
+[settings Experimental: move and animate units between game ticks.]
 [settings Enlarge interface text without changing the map scale.]
 [lan pairing field]
 [lan pairing connect]

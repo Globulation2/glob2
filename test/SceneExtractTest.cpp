@@ -4,6 +4,8 @@
 #include "EngineFixtures.h"
 #include "OverlayAreas.h"
 #include "scene/SceneExtract.h"
+#include "render/UnitMotion.h"
+#include "UnitTiming.h"
 
 TEST_SUITE("SceneExtract")
 {
@@ -115,4 +117,42 @@ TEST_SUITE("SceneExtract")
         REQUIRE(scene.entities.unit(gid)); CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(gid)));
     }
 
+
+	TEST_CASE("smooth unit motion advances the drawn delta within the current action only")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world({.teams = 1, .discovered = true, .loadDefaultRace = true});
+		Unit *walker = world.addUnit(WORKER, 10, 10);
+		walker->action = WALK;
+		walker->dx = 1;
+		walker->dy = 1;
+		walker->delta = 100;
+
+		SceneRequest request;
+		request.tickTime = 1000;
+		request.tickInterval = 40;
+		Scene scene;
+		SceneExtractor().extract(world.game, request, scene);
+		CHECK((scene.tickTime == 1000 && scene.tickInterval == 40));
+		const SceneUnit *u = scene.entities.unit(walker->gid);
+		REQUIRE(u);
+		CHECK(u->stepSpeed == unitActionStepSpeed(walker->speed, WALK, 1, 1));
+		REQUIRE(u->stepSpeed > 0);
+
+		// Off (motion 0) draws exactly the simulated delta.
+		CHECK(drawnUnitDelta(*u, 0.f) == 100);
+		CHECK(unitMotionFraction(scene, 1000) == 0.f);
+		CHECK(unitMotionFraction(scene, 1020) == doctest::Approx(0.5f));
+		CHECK(unitMotionFraction(scene, 5000) == 1.f);
+		CHECK(drawnUnitDelta(*u, 0.5f) == 100 + int(0.5f * float(u->stepSpeed)));
+		// A full interval reaches what the next tick computes, without crossing the action.
+		CHECK(drawnUnitDelta(*u, 1.f) == std::min(UNIT_DELTA_MAX, 100 + u->stepSpeed));
+		SceneUnit ending = *u;
+		ending.delta = UNIT_DELTA_MAX - 1;
+		CHECK(drawnUnitDelta(ending, 1.f) == UNIT_DELTA_MAX);
+
+		// Uncapped simulation: no interval, no motion between ticks.
+		scene.tickInterval = 0;
+		CHECK(unitMotionFraction(scene, 1020) == 0.f);
+	}
 }
