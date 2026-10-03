@@ -44,10 +44,10 @@ map lens, opens a map peek: a large minimap over the dimmed map that steers the
 camera while dragged, with Done, zoom out and zoom in (nearest the thumb) below
 it (beside it, zoom in lowest, on landscape screens); a tap outside, Done, focus
 loss or rotation closes it. On compact layouts the
-Tools button opens a lens strip in the thumb corner instead of the tactical list:
+Tools button opens a lens strip opposite the thumb corner instead of the tactical list:
 No overlay and the four overlays (mutually exclusive), health bars, statistics,
 the map peek, message history, map marks and chat, each running the same
-`menuAction` as the list. Once the strip closes, a legend in the far corner names
+`menuAction` as the list. Once the strip closes, a legend in the thumb-side corner names
 the active overlay and shows its intensity ramp (`OverlayArea::colorOf`). The
 statistics lens opens a sheet above the toolbar with the end-of-game chart for the
 player's own team only (opponents' histories stay hidden until the match ends),
@@ -93,13 +93,13 @@ last was. A second finger, focus loss or rotation returns it to where it was
 grabbed and ignores the rest of the touch. Spectators and replays only pan.
 The torus view keeps panning, as its selection has no touch reach.
 On compact layouts the build and flag palettes are a rail rising from the
-bottom corner under the thumb: two columns of buildings in portrait (four in
+bottom corner opposite the thumb: two columns of buildings in portrait (four in
 landscape), flags and zones in one column (one row in landscape), filled
-row by row from the corner so the first choice sits nearest the thumb. The rail
-is inset from the side edge, and a rail taller than its space scrolls toward the
-thumb. The Thumb side setting (right by default) mirrors the rail and the
-placement bar; corner-anchored components mirror through `ThumbSide`, never on
-their own.
+row by row from the toolbox corner. The rail is inset from the side edge, and a
+rail taller than its space reveals higher rows when dragged down. The Thumb side
+setting (right by default) puts these toolboxes on the left for a right thumb and
+on the right for a left thumb. `ThumbSide::toolboxLeft()` supplies that opposite
+side; the radial inspector and placement confirmation remain on the thumb side.
 
 On compact layouts the building inspector is a thumb dial: concentric quarter
 rings centred on the thumb's bottom corner. Their roles never move: workers
@@ -206,7 +206,7 @@ its existing brush operations, while interruption discards it. Completed strokes
 are never undone by leaving the tool. Two fingers navigate instead of painting.
 
 Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear and
-Done (Done under the thumb), and a brush rail on the thumb edge holds the brush
+Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
 sizes as detents (smallest lowest; touching one magnifies it beside the rail and
 the thumb can scrub along it), Paint/Erase at its foot and Pan at its head. Pan
 makes one finger move the map. A stroke held in the 24-point band along a map

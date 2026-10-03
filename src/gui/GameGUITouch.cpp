@@ -77,7 +77,7 @@ MobileLayout GameGUITouch::layout() const
 		}
 		else
 		{
-			// A rail rising from the thumb corner; taller palettes scroll.
+			// A rail opposite the thumb corner; taller palettes scroll.
 			const double width = std::min(result.safe.w - InGameTouchTheme::railInset,
 										  columns * stride + InGameTouchTheme::gap);
 			const double height =
@@ -85,7 +85,7 @@ MobileLayout GameGUITouch::layout() const
 						 std::min(rows, double(InGameTouchTheme::railMaximumRows)) * stride +
 							 InGameTouchTheme::gap);
 			result.panel = ThumbSide::corner(result.safe, width, height, InGameTouchTheme::railInset,
-											 result.actions.y, ThumbSide::left());
+											 result.actions.y, ThumbSide::toolboxLeft());
 		}
 	}
 	// Compact inspectors are the thumb dial; its bounds are set once the layout
@@ -1041,7 +1041,7 @@ BrushHUD::Layout GameGUITouch::brushHUD() const
 	const auto mini = minimapRect();
 	const double top = mini.y + mini.h + 8 * unit, inset = InGameTouchTheme::railInset * unit;
 	return BrushHUD::layout({ui.safe.x + inset, top, ui.safe.w - 2 * inset, ui.actions.y - 8 * unit - top},
-							ThumbSide::left(), unit, true, true, bool(zoneUndo));
+							ThumbSide::toolboxLeft(), unit, true, true, bool(zoneUndo));
 }
 
 // Zone choices then Done, with Done under the thumb.
@@ -1231,7 +1231,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			else if (gui.selectionMode == GameGUI::NO_SELECTION && !globalContainer->isViewingGame() &&
 					 !layout().persistentPanel)
 			{
-				// Compact: Tools opens the lens strip in the thumb corner.
+				// Compact: Tools opens the lens strip opposite the thumb corner.
 				lensOpen = !(lensOpen && !panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW);
 				panelOpen = false;
 				gui.displayMode = GameGUI::STAT_TEXT_VIEW;

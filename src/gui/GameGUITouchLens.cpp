@@ -29,7 +29,7 @@ std::vector<GameGUITouch::Lens> GameGUITouch::lenses() const
 {
 	auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };
 	const bool anyOverlay = gui.showStarvingMap || gui.showDamagedMap || gui.showDefenseMap || gui.showFertilityMap;
-	// Views first (nearest the thumb), then tools.
+	// Views first (nearest the toolbar), then tools.
 	return {{tr("[No overlay]"), -10, !anyOverlay},
 			{tr("[Starvation overlay]"), 20, gui.showStarvingMap},
 			{tr("[Damage overlay]"), 21, gui.showDamagedMap},
@@ -43,8 +43,8 @@ std::vector<GameGUITouch::Lens> GameGUITouch::lenses() const
 			{tr("[Chat]"), 1, false}};
 }
 
-// Column-major from the thumb corner: rows rise from the toolbar, and further
-// columns step away from the thumb. `ui` is in drawable units.
+// Column-major from the toolbox corner: rows rise from the toolbar, and further
+// columns step inward. `ui` is in drawable units.
 std::vector<ViewRect> GameGUITouch::lensRects(const MobileLayout &ui) const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
@@ -53,7 +53,7 @@ std::vector<ViewRect> GameGUITouch::lensRects(const MobileLayout &ui) const
 	const double minimapBottom = ui.safe.y + ((ui.safe.h / unit < 400 ? 72 : 96) + 12) * unit;
 	const double bottom = ui.actions.y - 8 * unit;
 	const int rows = std::max(1, int((bottom - minimapBottom + gap) / (h + gap)));
-	const bool left = ThumbSide::left();
+	const bool left = ThumbSide::toolboxLeft();
 	std::vector<ViewRect> rects;
 	const size_t count = lenses().size();
 	for (size_t i = 0; i < count; ++i)
@@ -81,13 +81,13 @@ void GameGUITouch::drawLenses()
 	}
 }
 
-// On the far side of the toolbar corner, away from the thumb and the lenses.
+// Keep the legend opposite the toolboxes, on the selected thumb side.
 ViewRect GameGUITouch::overlayLegendRect() const
 {
 	const auto ui = layout();
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	const double w = 176 * unit, h = 44 * unit, margin = 8 * unit;
-	return {ThumbSide::left() ? ui.safe.x + ui.safe.w - margin - w : ui.safe.x + margin,
+	return {ThumbSide::toolboxLeft() ? ui.safe.x + ui.safe.w - margin - w : ui.safe.x + margin,
 			ui.actions.y - margin - h, w, h};
 }
 
