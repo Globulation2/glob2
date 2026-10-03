@@ -1,12 +1,13 @@
 {
-  "featureCommit": "d950f38498dba8c2accf079b4a46e869017b65aa",
-  "foundationCommit": "fdec2e7910d49744ee86dfb5b5f2adfbbe2b3feb",
+  "featureCommit": "db2000ebe8dd53569a0ff540d918cdac6e2868f7",
+  "foundationCommit": "6d5be41ede70cc1a183631ee5b8621d0edc798f7",
   "platform": {
     "passed": 412,
     "skipped": 0,
     "files": 57,
     "lint": "passed",
-    "typecheck": "passed"
+    "typecheck": "passed",
+    "log": "artifacts/cutover-platform-check.log"
   },
   "nativeDelivery": {
     "initial": "passed",
@@ -15,7 +16,8 @@
     "workerRole": "glob2_worker",
     "provider": "Deterministic identity reference-image fixture; no paid requests",
     "credits": 2,
-    "private": true
+    "private": true,
+    "artifacts": "artifacts/studio-native/cutover-delivery/"
   },
   "simVersion": {
     "dataHash": "446492266f9626345c402729944b80382878290aaad6d649b9d46e56644ac5f4",
@@ -34,13 +36,14 @@
     "Container startup",
     "Human multiplayer play and competitive balance"
   ],
-  "nativeBuildSource": "d950f38498dba8c2accf079b4a46e869017b65aa",
-  "nativeBuildInputs": "Rebuilt after moving SDL_net resolver-thread shutdown ahead of graphics teardown; no simulation-source changes.",
+  "nativeBuildSource": "db2000ebe8dd53569a0ff540d918cdac6e2868f7",
+  "nativeBuildInputs": "Client and both online probes rebuilt after master M9 cutover; same production sources as the final HEAD.",
   "nativeGeometry": {
     "cases": 63,
     "import": "passed",
     "reload": "passed",
-    "log": "artifacts/merge-shutdown-native-shapes.log"
+    "log": "artifacts/cutover-native-shapes.log",
+    "artifacts": "artifacts/studio-native/cutover-shapes/"
   },
   "navigationRegression": "Mocked profile fetches finish before querying and clicking the current match row; full native-enabled platform suite passes.",
   "nativeShutdown": {
@@ -48,6 +51,18 @@
     "goldenTicks": 701,
     "goldenChecksums": "byte-identical",
     "tsanSuppression": "removed",
-    "hostedTsan": "pending"
+    "hostedTsan": "passed",
+    "hostedRun": 37129352469,
+    "goldenLog": "artifacts/cutover-verify.log",
+    "hostedTsanSource": "31d1535b1 (preceding repair revision); current hosted run pending"
+  },
+  "hostedCurrent": {
+    "foundationRun": 37131402335,
+    "featureRun": 37131887565,
+    "status": "pending"
+  },
+  "nativeClientLifecycle": {
+    "result": "passed",
+    "log": "artifacts/cutover-platform-client.log"
   }
 }

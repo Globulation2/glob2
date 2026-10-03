@@ -1,6 +1,6 @@
 # AI Map Studio review evidence
 
-Current integration is recorded in `integration-verification.json`, `artifacts/merge-native-check.log` (412 passed, no skips), `artifacts/merge-browser.log`, and `artifacts/studio-native/integration-delivery/`. Native delivery uses the rebuilt engine, real HTTP leases and worker-role result application. `artifacts/studio-native/integration-shapes/` repeats all 63 geometry cases against this engine. Current screenshots are in `artifacts/studio-web/integration/`. The original evidence below remains historical, tied to its recorded engine version.
+Current integration is recorded in `integration-verification.json`, `artifacts/cutover-platform-check.log` (412 passed, no skips), `artifacts/merge-browser.log`, and `artifacts/studio-native/cutover-delivery/`. Native delivery uses the rebuilt engine, real HTTP leases and worker-role result application. `artifacts/studio-native/cutover-shapes/` repeats all 63 geometry cases against this engine. Current screenshots are in `artifacts/studio-web/integration/`. The original evidence below remains historical, tied to its recorded engine version.
 
 The feature source is on `codex/ai-map-studio`, stacked on the preserved Hive feature (#605). This branch keeps transient evidence separate from maintained documentation.
 
@@ -15,7 +15,7 @@ The feature source is on `codex/ai-map-studio`, stacked on the preserved Hive fe
 Reproduce from the feature checkout with Node 22.18+ and PostgreSQL 16 on the documented test port, the pinned native SDL dependencies, and Python with Pillow:
 
 ```sh
-GLOB2_SDL3_PREFIX=/path/to/pinned/prefix scons release=1 server=0 -j8 build/darwin/client/release/src/glob2
+GLOB2_SDL3_PREFIX=/path/to/pinned/prefix scons release=1 role=client -j8 build/darwin/client/release/src/glob2
 cd platform
 GLOB2_BINARY=build/darwin/client/release/src/glob2 MAP_PYTHON=/path/to/python GLOB2_EVIDENCE_DIR="$PWD/../artifacts/studio-native/delivery" npm run check
 npm run build -w @glob2/web

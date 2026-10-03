@@ -1,0 +1,33 @@
+{
+  "generated": {
+    "mapHash": "b313ba9d5d41f015c2315af2a67236c3034dc5e9328e3619045696075eadb5ac",
+    "size": 488084,
+    "map": {
+      "width": 128,
+      "height": 128,
+      "teamCount": 2
+    },
+    "chosenSeed": 1828876339,
+    "startQuality": {
+      "fairness": 0.943704,
+      "score": 0.943704
+    }
+  },
+  "validated": {
+    "valid": true,
+    "mapHash": "b313ba9d5d41f015c2315af2a67236c3034dc5e9328e3619045696075eadb5ac",
+    "map": {
+      "width": 128,
+      "height": 128,
+      "teamCount": 2
+    },
+    "versionMinor": 128,
+    "title": "study-60-1234-r0"
+  },
+  "preview": {
+    "previewHash": "1947430a31383c36ab6caa52d74547897481a107ef1db11ccd26f1e75fa26903",
+    "contentType": "image/png",
+    "width": 256,
+    "height": 256
+  }
+}
