@@ -666,6 +666,43 @@ TEST_CASE("JavaScript profile two spatial cache and queued save continuity" *
 }
 
 #include "ReplayTelemetry.h"
+TEST_CASE("JavaScript upgrade dispatch survives tracking record growth" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world;
+	auto &game = world.game;
+	auto *building = game.addBuilding(12, 12,
+		globals.globals.buildingsTypes.getTypeNum("inn", 0, false), 0, 2, 2);
+	REQUIRE(building);
+	Observations observations(game, 0);
+	observations.setProfile(2);
+	observations.observe();
+	Services services(game, 0, observations);
+	services.begin();
+	Value commands = Value::array();
+	commands.items.push_back(Value::object()
+								 .set("type", "construction")
+								 .set("intent", "upgrade")
+								 .set("actionId", 1)
+								 .set("building", Value::object()
+													  .set("id", unsigned(building->gid))
+													  .set("generation", building->scriptIdentity))
+								 .set("workers", 3)
+								 .set("futureWorkers", 2));
+	services.commit(commands, Value::object());
+	auto order = services.dispatch();
+	REQUIRE(order->getOrderType() == ORDER_CONSTRUCTION);
+	auto construction = std::static_pointer_cast<OrderConstruction>(order);
+	CHECK(construction->gid == building->gid);
+	CHECK(construction->unitWorking == 3);
+	building->launchConstruction(construction->unitWorking, construction->unitWorkingFuture);
+	++game.stepCounter;
+	observations.observe();
+	services.begin();
+	CHECK(services.actions().items[0].get("status").text == "constructing");
+}
+
 #include "scene/Scene.h"
 #include "scene/SceneExtract.h"
 TEST_CASE("JavaScript telemetry scene permissions and replay diagnostic roundtrip" *

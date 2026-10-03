@@ -262,7 +262,9 @@ std::shared_ptr<Order> Services::dispatch()
 		{
 			try
 			{
-				const auto &command = r.get("command");
+				// Tracking fields below can grow r.fields and move its child Values.
+				// Keep the command independent until the order has been constructed.
+				const auto command = r.get("command");
 				if (command.get("type").text == "construction")
 				{
 					const auto b = observations.query("building", {command.get("building")});
@@ -287,7 +289,7 @@ std::shared_ptr<Order> Services::dispatch()
 				auto result = order(game, team, command);
 				if (r.get("command").get("type").text == "create")
 				{
-					const auto &c = r.get("command");
+					const auto &c = command;
 					for (const auto &b :
 						 observations.query("buildings", {Value::object().set("team", team)}).items)
 						if (b.get("x").number == c.get("x").number &&
