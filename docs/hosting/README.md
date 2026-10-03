@@ -655,8 +655,8 @@ python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \
 
 `--mode queue --queue <id>` plays a rated quick match instead: two new local
 accounts (the instance needs local sign-in) join a rated 1v1 queue, accept the
-ranked prompt and play. Player A quits first and player B 30 s later, so the
-verified match is rated as an abandonment; with `--psql` the script also checks
+ranked prompt and play. Player A quits first, which leaves B the winner (B
+would quit 30 s later otherwise), so the verified match is rated; with `--psql` the script also checks
 that both players' ratings on the queue's ladder changed. `--engine-command`
 replaces `--glob2` with a command prefix, for example a `docker run` of the
 engine-agent image, and `--ca-file` trusts a private CA.
@@ -681,8 +681,8 @@ fresh stack:
 3. Two headless clients (`glob2 --turn-client`) play the match through a relay. They
    run from the engine-agent image, so client, relay and verifier share one build
    and sim version. Their per-tick checksums must agree.
-4. Player A quits after 40 s and player B 30 s later. The relay uploads the match
-   record and reports the end.
+4. Player A quits after 40 s, so B wins and the game ends (B would quit 30 s later
+   otherwise). The relay uploads the match record and reports the end.
 5. The verify-match job must judge the match `verified`. The worker must then apply
    ratings: `rating_status = applied`, and one won and one lost `rating_history` row
    on the `e2e-ranked` ladder, both with changed μ.

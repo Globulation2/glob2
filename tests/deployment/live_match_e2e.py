@@ -8,8 +8,10 @@ game after a few game minutes. Room matches are unrated.
 
 --mode queue: two new local accounts join a rated 1v1 queue (--queue), accept
 the ranked prompt and get a quick match. Player A quits after
---client-seconds A, player B well after, so the verified match is rated as an
-abandonment and both players' ratings change.
+--client-seconds A. B's colony is then the last one standing and wins; if the
+game went on, B would quit later still and A's early leave would decide the
+rating instead. Either way the verified match is rated and both players'
+ratings change.
 
 Each player's match.start assignment then goes to a headless native client
 (`glob2 --turn-client`), which plays its seat in real time through the
@@ -501,7 +503,7 @@ def main():
     if not arguments.glob2 and not arguments.engine_command:
         parser.error('--glob2 or --engine-command is required')
     if arguments.mode == 'queue' and not arguments.client_seconds:
-        # A leaves first, B 30 s later (far over MUTUAL_LEAVE_TICKS, 10 s): a rated abandonment.
+        # A leaves first, so B wins; B quits 30 s later at the latest (over MUTUAL_LEAVE_TICKS).
         arguments.client_seconds = [40.0, 70.0]
     match = Match(arguments)
     ok = match.run()
