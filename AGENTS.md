@@ -16,7 +16,8 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 | Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
 | AI implementations | `src/ai/`, behind `AIImplementation` |
 | Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; drawing reads only the extracted Scene in `src/scene/`, see [Scene renderer](docs/development/reference.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
-| Network and multiplayer service | `src/net/`, `src/yog/` |
+| Network and multiplayer service | `src/net/` (turn netcode in `src/net/turn/`), `src/yog/`, match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
+| Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
 | Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
@@ -99,6 +100,30 @@ result, verification and limits in the PR.
 
 ## Validation and CI feedback
 
+Keep unfinished PRs in draft: only selection and cheap contracts run automatically.
+Mark a PR ready when hosted verification is useful, and batch small revisions once
+it is ready. `ci:run` requests affected checks while still draft. Expansion labels
+`ci:full`, `ci:windows`, `ci:android` and `ci:browsers` add coverage; none can remove
+automatically selected checks. Require the current ready-PR `Relevant checks passed`
+result before merging. A successful draft selector means verification was deferred,
+not that the engine passed its checks.
+
+The complete primary GCC 13 suite protects ordinary engine changes. The selector
+adds compatibility checks for changed boundaries; unknown/shared build inputs fail
+closed to full development verification. Add new native compatibility suites to
+`test/ci-compatibility.json` and shared boundaries to `.github/scripts/ci_policy.py`.
+Intentional repeats across platforms, browser engines and renderers must remain
+explicit. Release/store packaging, signing, metadata and upload validation belong
+in release workflows, not routine PR or master validation.
+
+Master verification finishes once started, with only the newest pending push kept.
+When risk tiers are enabled, retained pushes cover all changes since the last
+successful ancestor checkpoint; missing evidence selects full coverage. Nightly
+runs use a separate concurrency group and run the full development matrix. Never
+cancel a running master run to clear a merge burst. See the development reference
+for staged activation, baseline evidence and the independent runtime-package gate.
+
+
 Use focused checks while editing, then run the checks selected for the final PR
 revision. Keep every affected platform and compatibility boundary covered; changing
 shared headers, build inputs or test infrastructure can require broader checks than
@@ -119,8 +144,8 @@ regressions or dropping relevant tests.
 For CI speed changes, record queue delay, execution time, runner minutes and time
 to result separately. Preserve the selected-case inventory and compare ten
 successful runs with matching event and coverage before claiming savings. Keep
-projections distinct from measurements; require a complete hosted master pass
-before enabling reduced PR compatibility tiers.
+projections distinct from measurements; require a complete hosted master/nightly pass of the current coverage policy
+before enabling reduced compatibility tiers.
 Reuse artifacts only when source revision, compiler, flags and dependency inputs
 match. Prefer reusing built artifacts and avoiding irrelevant jobs over repeatedly raising
 concurrency or rebuilding the same inputs. Keep repair PRs focused so unrelated

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeRequest",
+  "title": "RealtimeRequest",
+  "type": "object",
+  "required": [
+    "type",
+    "id",
+    "method",
+    "params"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "request"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "method": {
+      "type": "string",
+      "pattern": "^[a-z]+(\\.[A-Za-z]+)+$",
+      "maxLength": 64
+    },
+    "params": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "additionalProperties": false,
+  "description": "Client request envelope."
+}

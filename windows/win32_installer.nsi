@@ -176,6 +176,11 @@ Section "Install"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "UninstallString" '"$INSTDIR\glob2win32-uninst.exe"'
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2" "NoRepair" 1
+  ; Invite links: glob2://join?instance=...&code=...
+  WriteRegStr HKCR "glob2" "" "URL:Globulation 2 invite"
+  WriteRegStr HKCR "glob2" "URL Protocol" ""
+  WriteRegStr HKCR "glob2\DefaultIcon" "" "$INSTDIR\glob2.exe,0"
+  WriteRegStr HKCR "glob2\shell\open\command" "" '"$INSTDIR\glob2.exe" "%1"'
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Globulation 2.lnk" "$INSTDIR\glob2.exe"
@@ -210,4 +215,5 @@ Section "Uninstall"
   Delete "$DESKTOP\Globulation 2.lnk"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Globulation_2"
   DeleteRegKey HKCU "Software\Globulation_2"
+  DeleteRegKey HKCR "glob2"
 SectionEnd

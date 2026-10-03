@@ -1,0 +1,24 @@
+{
+  "name": "@glob2/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Platform web app: sign-in, invite landing pages, profiles, leaderboards and maps.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@glob2/protocol": "0.1.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.2"
+  }
+}

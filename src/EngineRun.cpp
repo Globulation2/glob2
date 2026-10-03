@@ -19,6 +19,7 @@
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include <SDL3/SDL.h>
+#include "TurnLockstep.h"
 #include "team/Team.h"
 #include "TeamStat.h"
 #include "building/IntBuildingType.h"
@@ -34,6 +35,7 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdlib>
+#include <chrono>
 #include "Version.h"
 #include "sim/SimulationRunner.h"
 #include "script/ScriptRuntime.h"
@@ -62,6 +64,16 @@ void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 	{
 		st.speed = GAME_TICK_MS;
 		renderInterval = 1;
+	}
+
+	// Turn games run at the session's pace, even while paused (the relay's clock
+	// keeps going). A zero interval is catch-up: uncapped ticks with rendering
+	// skipped, the replay fast-forward preset.
+	if (turn)
+	{
+		const std::uint64_t interval = turn->turn().tickIntervalMicros();
+		st.speed = interval == 0 ? REPLAY_FAST_FORWARD_MS : static_cast<int>((interval + 500) / 1000);
+		renderInterval = interval == 0 ? REPLAY_FAST_FORWARD_DRAW_RATIO : 1;
 	}
 	if (st.nextGuiStep < 0 || st.nextGuiStep >= renderInterval)
 		st.nextGuiStep = renderInterval - 1;
@@ -192,7 +204,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 	gui.game.setWaitingOnMask(net->getWaitingOnMask());
 }
 
-// Once allOrdersReceived() is true for this tick, commit the tick: validate
+// Once tickReady() is true for this tick, commit the tick: validate
 // checksums (assert on desync), execute the matched orders, pump the replay
 // reader if we're in playback, and run game.syncStep. Called only from inside
 // the !hardPause branch, so the original !gui.hardPause guard on syncStep is
@@ -201,7 +213,10 @@ void Engine::executeOrdersAndStep(bool readyNow)
 {
 	if (readyNow)
 	{
-		if (!net->matchCheckSums())
+		// A turn session never reports a mismatch here: the relay arbitrates the
+		// checksums, and a divergence reaches pumpTurnSession as a reload request
+		// or a flagged match. Single player and legacy games keep the dump.
+		if (!turn && !net->matchCheckSums())
 		{
 			std::cout << "Game desychronized." << std::endl;
 			gui.game.dumpAllData("glob2.world-desynchronization.dump.txt");
@@ -284,8 +299,14 @@ void Engine::drawFrame(MainLoopState& st)
 		PerformanceTelemetry::collector().presented();
 	}
 
+	if (renderedFrame)
+		saveVideoshot(st);
+}
+
+void Engine::saveVideoshot(MainLoopState& st)
+{
 	// if required, save videoshot
-	if (renderedFrame && !(globalContainer->videoshotName.empty()) &&
+	if (!(globalContainer->videoshotName.empty()) &&
 		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
 		)
 	{
@@ -293,7 +314,6 @@ void Engine::drawFrame(MainLoopState& st)
 		printf("printing video shot %s\n", fileName.c_str());
 		globalContainer->gfx->printScreen(fileName.c_str());
 	}
-
 }
 
 void Engine::drawSession()
@@ -310,12 +330,14 @@ void Engine::drawSession()
     if (!scene)
         return;
     gui.setPublishedScene(scene);
+    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
     gui.drawAll(gui.localTeamNo);
     {
         PERF_SCOPE_TIME(Present);
         globalContainer->gfx->nextFrame();
     }
     PerformanceTelemetry::collector().presented();
+    saveVideoshot(*session);
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -345,6 +367,8 @@ void Engine::stopSimulationThread()
 {
     if (!runner) return;
     runner->stop();
+    // The simulation's measurements since the last client frame.
+    PerformanceTelemetry::collector().absorb(runner->telemetry);
     runner.reset();
     gui.simulationThreaded = false;
     gui.setPublishedScene(nullptr);
@@ -358,7 +382,7 @@ bool Engine::threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& event
     publishSessionClock(now);
     runner->rethrowFailure();
     if (gui.isRunning)
-        runner->withGame([&] { clientStep(now, events); });
+        runner->withGame([&] { clientStep(events); absorbSimulationTelemetry(); });
     runner->rethrowFailure();
     return gui.isRunning && !runner->ended();
 }
@@ -392,7 +416,9 @@ void Engine::extractScene(Scene& scene)
 Uint32 Engine::sessionDelay(Uint64 now)
 {
     if (!session) throw std::logic_error("No active engine session");
-    if (globalContainer->runNoX) return 0;
+    // Headless games run uncapped, except turn games: their pace is the relay's
+    // (a headless client must not run ahead of the horizon in a busy loop).
+    if (globalContainer->runNoX && !turn) return 0;
     auto& st = *session;
 	// we compute timing
 
@@ -400,7 +426,9 @@ Uint32 Engine::sessionDelay(Uint64 now)
 	//if we are more than MAX_CATCHUP_MS milliseconds behind where we should be,
 	//then truncate it. This is to avoid playing "catchup" for long
 	//periods of time if Glob2 received allmost no cpu time
-	if ((currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
+	// A turn session catching up runs uncapped, so the cap does not apply.
+	const bool turnCatchingUp = turn && turn->turn().catchingUp();
+	if (!turnCatchingUp && (currentTime - st.needToBeTime) > MAX_CATCHUP_MS)
 		st.needToBeTime = currentTime - MAX_CATCHUP_MS;
 
 	//Any inconsistancies in the delays will be smoothed throughout the following frames,
@@ -682,8 +710,89 @@ void Engine::teardownSession()
 	}
 
 	if (multiplayer) multiplayer->setNetEngine(nullptr);
+	leaveTurnMatch();
+	turn = nullptr;
+	turnMatch.reset();
 	net.reset();
 	multiplayer.reset();
+}
+
+void Engine::leaveTurnMatch()
+{
+	if (!turn)
+		return;
+	Turn::TurnSession& session = turn->turn();
+	if (session.state() == Turn::TurnSession::State::Ended || session.state() == Turn::TurnSession::State::Rejected)
+		return;
+	const bool finished = gui.game.isGameEnded || gui.game.totalPrestigeReached ||
+		(gui.localTeamNo >= 0 && gui.localTeamNo < gui.game.mapHeader.getNumberOfTeams() &&
+		 gui.game.teams[gui.localTeamNo] && (gui.game.teams[gui.localTeamNo]->hasWon || gui.game.teams[gui.localTeamNo]->hasLost));
+	session.quit(finished ? Turn::QuitReason::GameFinished : Turn::QuitReason::PlayerQuit);
+}
+
+void Engine::pumpTurnSession(Uint64 now)
+{
+	if (!turn)
+		return;
+	Turn::TurnSession& session = turn->turn();
+	session.update(now * 1000);
+	if (session.needsReload())
+		reloadTurnInitialState();
+	if (session.desyncFlagged() && turnMatch && !turnMatch->flagReported)
+	{
+		turnMatch->flagReported = true;
+		std::cerr << "Turn session: the relay flagged a desynchronization at or before tick "
+			<< session.executedTick() << "; the match result will be decided by verification" << std::endl;
+	}
+	if (session.state() == Turn::TurnSession::State::Rejected)
+	{
+		std::cerr << "Turn session: the relay refused this client (reason "
+			<< static_cast<int>(session.rejectReason()) << "); leaving the game" << std::endl;
+		gui.isRunning = false;
+	}
+}
+
+void Engine::reloadTurnInitialState()
+{
+	assert(turn && turnMatch);
+	TurnMatchState& state = *turnMatch;
+	const auto started = std::chrono::steady_clock::now();
+	if (!gui.loadFromHeaders(state.map, state.header, true, true, false, state.mapFile))
+	{
+		std::cerr << "Turn session: cannot reload the initial game state" << std::endl;
+		gui.isRunning = false;
+		return;
+	}
+	globalContainer->liveSpectating = false;
+	gui.localPlayer = state.localPlayer;
+	gui.localTeamNo = state.localTeam;
+	gui.game.clearingUncontrolledTeams();
+	finalAdjustments();
+	gui.localPlayer = state.localPlayer;
+	gui.localTeamNo = state.localTeam;
+	if (globalContainer->replayWriter)
+	{
+		// The replay restarts with the state it now describes.
+		globalContainer->replayWriter = std::make_unique<ReplayWriter>();
+		globalContainer->replayWriter->init(state.replayPath, gui);
+	}
+	if (checksumSidecar)
+	{
+		checksumSidecar->close();
+		checksumSidecar = std::make_unique<ChecksumSidecarWriter>();
+		if (!checksumSidecar->open(state.replayPath, gui.game))
+			checksumSidecar.reset();
+	}
+	if (!globalContainer->structuredHeadless)
+		gui.game.map.configureCompute(globalContainer->aiThreads ? globalContainer->aiThreads
+			: defaultAIThreadCount(gui.game), Map::ComputeAI);
+	teamEliminatedTick.clear();
+	if (session)
+		session->wasReadyLastTick = true;
+	turn->turn().reloadDone();
+	std::cerr << "Turn session: reloaded the initial state in "
+		<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - started).count()
+		<< " ms; fast-forwarding" << std::endl;
 }
 
 // Body of the outer "play one game and possibly load another" loop in run().
@@ -696,7 +805,7 @@ void Engine::teardownSession()
 //   2. pollAutomaticEndingConditions - headless end-condition tripwire
 //   3. gui.step                   - GUI input (skipped under --nox / off-cadence)
 //   4. gatherAndAdvanceOrders     - push local+AI orders, advance net (if prev tick committed)
-//   5. (gate flip) readyNow = net->allOrdersReceived()
+//   5. (gate flip) readyNow = net->tickReady()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
 //   8. drawSession / sessionDelay  - draw, videoshot, host pacing
@@ -813,7 +922,9 @@ bool Engine::stepSessionImpl(Uint64 now, const std::vector<SDL_Event>& events)
     for (const auto &event : events) sessionInput.push_back(event);
     return advanceSession(now, [&] {
         if (!globalContainer->runNoX && st.nextGuiStep == 0) {
-            gui.step(sessionInput.events(), now);
+            // Touch event timestamps use SDL time, which keeps advancing while
+            // the session clock is suspended in the background.
+            gui.step(sessionInput.events(), SDL_GetTicks());
             sessionInput.clear();
         }
     }, true);
@@ -827,15 +938,44 @@ bool Engine::simulationStep(Uint64 now)
     return advanceSession(now, [] {}, false);
 }
 
-void Engine::clientStep(Uint64 now, const std::vector<SDL_Event>& events)
+void Engine::clientStep(const std::vector<SDL_Event>& events)
 {
     if (!session) throw std::logic_error("No active engine session");
     // Headless sessions never run the GUI step; they only take the notices.
     if (globalContainer->runNoX)
         gui.consumeClientEvents();
     else
-        gui.threadedClientStep(events, now);
+        // Match SDL input timestamps, not the suspendable simulation clock.
+        gui.threadedClientStep(events, SDL_GetTicks());
     handleExitRequest();
+}
+
+void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf)
+{
+	const bool paused = gui.gamePaused || gui.hardPause;
+	const int renderRatio = paused ? 1
+							: (globalContainer->replaying && globalContainer->replayFastForward)
+								? REPLAY_FAST_FORWARD_DRAW_RATIO
+							: st.adjustableGameSpeed
+								? globalContainer->settings.getGameSpeedRenderInterval()
+								: 1;
+	const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
+	// Threaded drawing presents every display frame; budget it against 60 Hz.
+	const auto frameBudget = gui.simulationThreaded ? 16666667ULL : budget * renderRatio;
+	perf.configure(gui.game.stepCounter, budget, frameBudget,
+				   paused                       ? "paused"
+				   : globalContainer->runNoX    ? "headless"
+				   : globalContainer->replaying ? "replay"
+				   : !st.wasReadyLastTick       ? "waiting"
+												: "live");
+}
+
+void Engine::absorbSimulationTelemetry()
+{
+	auto &perf = PerformanceTelemetry::collector();
+	perf.absorb(runner->telemetry);
+	configureSessionTelemetry(*session, perf);
+	perf.capture(gui.game.stepCounter);
 }
 
 bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork, bool handleExit)
@@ -843,33 +983,27 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     auto& st = *session;
     updateTickSpeedAndDrawCadence(st, now);
     auto &perf = PerformanceTelemetry::collector();
-		const bool paused = gui.gamePaused || gui.hardPause;
-		const int renderRatio = paused ? 1
-								: (globalContainer->replaying && globalContainer->replayFastForward)
-									? REPLAY_FAST_FORWARD_DRAW_RATIO
-								: st.adjustableGameSpeed
-									? globalContainer->settings.getGameSpeedRenderInterval()
-									: 1;
-		const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
-		perf.configure(gui.game.stepCounter, budget, budget * renderRatio,
-					   paused                       ? "paused"
-					   : globalContainer->runNoX    ? "headless"
-					   : globalContainer->replaying ? "replay"
-					   : !st.wasReadyLastTick       ? "waiting"
-													: "live");
+		// Threaded, the main thread configures and captures the session collector
+		// after absorbing this thread's window (absorbSimulationTelemetry).
+		if (!gui.simulationThreaded)
+			configureSessionTelemetry(st, perf);
 		PerformanceTelemetry::Scope loopTime(PerformanceTelemetry::Id::Loop);
 		PerformanceTelemetry::Scope workTime(PerformanceTelemetry::Id::Work);
 
     pollAutomaticEndingConditions(now);
     clientWork();
 
+    pumpTurnSession(now);
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
         if (multiplayer && multiplayer->getMultiplayerMode() == MultiplayerGame::NoMode)
             gui.isRunning = false;
         gatherAndAdvanceOrders(st.wasReadyLastTick);
-        readyNow = net->allOrdersReceived();
+        readyNow = net->tickReady();
+        const Uint32 tickBefore = gui.game.stepCounter;
         executeOrdersAndStep(readyNow);
+        if (gui.game.stepCounter != tickBefore)
+            gui.recordTick(SDL_GetTicks(), Uint32(st.speed));
     }
     if (globalContainer->automaticEndingGame && (int)gui.game.stepCounter == sessionEndingTarget) {
         gui.isRunning = false;
@@ -889,12 +1023,25 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
 		}
 
     st.wasReadyLastTick = readyNow;
-    if (!globalContainer->runNoX) st.needToBeTime += st.speed;
+    // A turn game's budget advances only with executed ticks, so frames spent
+    // waiting for the relay poll quickly instead of sleeping a whole tick.
+    if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speed;
     if (handleExit) handleExitRequest();
     workTime.stop();
     loopTime.stop();
-    perf.capture(gui.game.stepCounter);
+    if (!gui.simulationThreaded)
+        perf.capture(gui.game.stepCounter);
     return gui.isRunning;
+}
+
+bool Engine::advancePendingSave(const std::vector<SDL_Event>& events)
+{
+    // The UI may still need to capture a queued manual save. Stop the producer
+    // before touching that state, and never resume simulation during teardown.
+    stopSimulationThread();
+    // Save/retry dialogs share the SDL input clock, just like active gameplay.
+    if (gui.savePending()) gui.step(events, SDL_GetTicks());
+    return gui.savePending();
 }
 
 std::optional<Engine::PendingLoad> Engine::finishSessionForHost()

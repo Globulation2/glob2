@@ -1,0 +1,35 @@
+{
+  "name": "glob2-platform",
+  "private": true,
+  "type": "module",
+  "description": "Globulation 2 online platform: accounts, rooms, matches, ratings and maps.",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json",
+    "test": "vitest run",
+    "fixtures": "npm run --workspace @glob2/protocol generate",
+    "migrate": "npm run --workspace @glob2/db migrate --",
+    "platform": "node apps/api/src/cli.ts",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.5",
+    "eslint": "^10.11.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vitest": "^5.0.3"
+  }
+}

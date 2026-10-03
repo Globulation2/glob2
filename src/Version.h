@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 127
+#define VERSION_MINOR 128
+// version 128 losslessly packs map, routing, statistics and Maxima save state.
 // version 127 supports 16 teams and counts Maxima opponents and script generation planes.
 // Older saves remain loadable; Warrush probes all sixteen slots within 32 ticks.
 // version 126 preserves Castor boot progress, projects and decision caches on save/load.
@@ -158,9 +159,10 @@
 
 //This must be updated when there are changes to YOG, MapHeader, GameHeader, BasePlayer, BaseTeam,
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above
-#define NET_PROTOCOL_VERSION 50
+#define NET_PROTOCOL_VERSION 51
 //Clients with older versions than this will be rejected
-#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 50
+#define YOG_MIN_CLIENT_NET_PROTOCOL_VERSION 51
+// version 51 requires readers of compact version-128 map snapshots.
 // version 50 requires clients that understand all sixteen team/controller slots.
 // version 49 requires native WSS endpoints and versioned mutual-TLS router registration.
 // Transport-only: save and replay version gates follow the existing simulation formats.

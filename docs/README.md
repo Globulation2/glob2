@@ -35,11 +35,19 @@ dated reports and pull-request artifacts do not belong here.
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
+- **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
+  [identity and sign-in](multiplayer/identity.md),
+  [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md), the
+  [relay-sequenced turn protocol](multiplayer/turn-protocol.md) and the
+  [match relay](multiplayer/relay.md) that hosts it.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
   [Android privacy policy](mobile/privacy-policy.md), and
   [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
+
+- **Online multiplayer:** [online client](multiplayer/client.md): platform
+  connection, sign-in, instances, map cache and invite links.
 
 - **Browser platform:** [build and play](../browser/README.md),
   [architecture](browser/implementation.md), [storage](browser/storage.md),

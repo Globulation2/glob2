@@ -22,10 +22,17 @@ def packages_for(binary, run=subprocess.check_output):
         for candidate in candidates:
             try:
                 output = run(['dpkg-query', '-S', candidate], text=True, stderr=subprocess.STDOUT)
-                owner = output.split(': ', 1)[0]
-                if not re.fullmatch(r'[a-z0-9][a-z0-9+.-]*(?::[a-z0-9-]+)?', owner):
+                # Ubuntu usrmerge can report only diversion metadata for the
+                # loader alias. Resolve its real path instead of treating that
+                # informational row as a package (or dropping the dependency).
+                rows = [line for line in output.splitlines() if line and
+                        not line.startswith(('diversion by ', 'local diversion '))]
+                if not rows:
+                    continue
+                found = {line.split(': ', 1)[0] for line in rows}
+                if len(found) != 1 or any(not re.fullmatch(r'[a-z0-9][a-z0-9+.-]*(?::[a-z0-9-]+)?', owner) for owner in found):
                     raise ValueError(f'ambiguous package owner: {output}')
-                owners.add(owner)
+                owners.update(found)
                 break
             except subprocess.CalledProcessError:
                 continue

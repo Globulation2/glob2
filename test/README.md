@@ -130,6 +130,14 @@ scripts compare full-game traces against retained fixtures and are documented wi
 the harness they accompany below. `tests/` at the repository root tests the build
 system and the browser services.
 
+## Match relay
+
+`scons role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
+doctest binary of its own (the relay role builds no engine or SDL code). Run it
+directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
+tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
+package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
+
 ## Team capacity and format 127
 
 `TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed
@@ -329,6 +337,11 @@ the server image and browser assets. They run an isolated Compose project and
 verify persistence, backup restoration, router-loss readiness, state ownership,
 graceful draining, and forced deadline interruption. Keep capture output from
 `tests/transport/capture_container.py` under ignored `artifacts/`.
+
+The online client's integration test, `tests/online/test_platform_client.py`,
+drives `platform-client-probe` (also built by `transport-test`) against a real
+platform API; it needs a `platform/` checkout and a Postgres role that may
+create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
 
 From the repository root:
 
@@ -1223,6 +1236,25 @@ their historical restart behavior; omitted state cannot be recovered from them.
 New games retain the existing decision sequence. This save change does not raise
 the replay acceptance floor.
 
+## CI coverage ownership
+
+Primary GCC 13 runs the complete applicable native suite. Secondary platforms
+use `python3 test/run_tests.py --coverage-profile compatibility` with the reviewed
+suite inventory in `test/ci-compatibility.json`; full nightly/release verification
+uses `--coverage-profile full`. Map-generator contracts run in their dedicated lane.
+Add new compatibility suites when introducing save, replay, scheduling, scripting
+or platform boundaries. The selector fails closed for shared/unknown inputs.
+
+`--write-inventory PATH` retains exact eligible and assigned cases, excluded cases,
+platform, profile and shard ownership alongside JUnit evidence. CI audits shard
+inventories for missing and duplicated cases. Empty compatibility selection fails
+rather than reporting a successful empty suite. Portable primary regressions need
+not be repeated on every compiler; platform, renderer and thread-count repeats
+must have a named compatibility purpose.
+
+The [development reference](../docs/development/reference.md#tiered-pull-request-coverage-rollout)
+records draft behavior, expansion labels, release-only checks and activation gates.
+
 ## Native coverage workflow
 
 Build and measure the regular native tier with a matching Clang/LLVM toolchain:
@@ -1329,8 +1361,13 @@ ownership and byte-capacity bounds; and compares deferred SHA1 and exact gzip by
 for incompressible input and compression levels zero, one, six and nine. It rejects
 truncated, bad-CRC, trailing and concatenated gzip inputs before game loading,
 injects allocation/finalization exceptions, checks atomic failure cleanup, and
-stalls an autosave writer to verify waiting before the next capture and exact
-saved ticks. The optional level-zero compatibility path retains whole buffers;
+stalls an autosave writer to verify nonblocking deferral and exact saved ticks
+at the later capture. It compares owned snapshot output against ordinary saves
+after mutating the live game, and exercises both native-thread and cooperative
+finalization, including failure and subsequent reuse. It checks mixed snapshot/legacy
+queues, exact cooperative gzip bytes at the default compression level, and manual save
+ordering through delayed capture and persistence, including terminal failures and
+exactly-once success callbacks. The optional level-zero compatibility path retains whole buffers;
 normal save-memory measurements use the default compression level.
 
 Run these alongside the existing placement, continuation and engine lifecycle suites.
@@ -1338,3 +1375,44 @@ For full-game checks, retain identical initial saves, seeds and orders, compare
 per-tick simulation state and replay/save bytes, and test continuation from populated
 checkpoints. The native paired CPU runner and profiling workflow are described in
 [the development reference](../docs/development/reference.md#native-simulation-memory-and-cpu-comparisons).
+
+## Save size measurements
+
+Build `scons release=1 server=0 save-size-harness`, then run:
+
+```sh
+python3 test/measure_save_sizes.py build/darwin/client/release/test/SaveSizeHarness \
+  artifacts/save-size/baseline maps/SmallForTwo.map.gz maps/Holiday_Island_2.map.gz \
+  games/gd-small-2ai.game.gz games/gd-large-4ai.game.gz
+```
+
+Use the native build directory for the host (or the explicit custom build path).
+Repeat with the comparison revision's harness, the same input files and a different
+output directory. Each invocation uses disposable profiles, retains gzip outputs
+and JSON section sizes, and reports median load/serialization/compression times
+from three processes. Input and harness hashes identify the measured inputs.
+Peak RSS is the process high-water mark through serialization/compression, including
+loading; it is not isolated serializer allocation. Independently compressed section
+sizes do not add up exactly to the final gzip size. Run the harness on its emitted
+files as well when comparing load times for the old and new encodings. Keep timing
+runs separate from concurrent builds/tests and compare matching compilers and flags.
+
+`PackedArray` checks all integer widths, wraparound, block boundaries and malformed
+payloads. `Maxima.Continuation` covers legacy and compact arrays, signed limits and
+nested archives. `Maxima.Placement` retains explicit noncanonical neighborhood
+contents. `TeamStatsSave` checks binary measurement/end-game histories and binary/text
+telemetry histories across two 256-sample batch boundaries;
+`TeamLimit`, `JavaScriptCompatibility`, `UntrustedFiles` and `SavegameSafety` cover
+sparse identities, format boundaries, decoded validation and save/load continuation.
+Run these together with the existing AI and gradient continuation suites. An encoding
+change must preserve decoded state and per-tick simulation records; old and new
+serialized bytes and header checksums are expected to differ.
+
+For interactive snapshot capture/finalization measurements, set
+`GLOB2_BENCH_SNAPSHOT=1` when running `test/measure_save_sizes.py`. The report
+separates `capture_ms` from `encode_ms`; `serialize_ms` is their sum. Compare with
+ordinary serialization using the same fixtures and build. Capture timing includes
+the immutable copy and its lightweight in-memory representation; encoding includes
+final array/history packing, offset relocation and hashing. The benchmark flattens
+the finished output for section-independent measurement, so its process peak is
+not an isolated allocation bound for the production writer.

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.env
+/instance.yaml
+/data/
+/keys/
+*.tsbuildinfo
+
+# The repository root ignores SCons config.* files; sources here may use the name.
+!config.*

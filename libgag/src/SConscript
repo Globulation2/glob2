@@ -13,7 +13,7 @@ l2 = env.StaticLibrary("gag_server", libgag_just_server)
 
 if not env['server']:
     Default(l1)
-else:
+elif env.get('role') != 'relay':
     Default(l2)
 
     

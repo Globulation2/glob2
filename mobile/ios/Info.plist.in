@@ -18,4 +18,8 @@
 <key>NSLocalNetworkUsageDescription</key><string>Connect to Globulation 2 games on your local network.</string>
 <key>UIFileSharingEnabled</key><true/>
 <key>LSSupportsOpeningDocumentsInPlace</key><true/>
+<key>CFBundleURLTypes</key><array><dict>
+<key>CFBundleURLName</key><string>org.globulation2.glob2.invite</string>
+<key>CFBundleURLSchemes</key><array><string>glob2</string></array>
+</dict></array>
 </dict></plist>

@@ -3,8 +3,30 @@ source_files = list(CLIENT_SOURCES)
 from sources import SERVER_SOURCES
 server_source_files = list(SERVER_SOURCES)
 Import('env')
+if env.get('role') == 'relay':
+    # The relay role builds glob2-relay and its tests only.
+    from sources import RELAY_SOURCES, RELAY_GAG_SOURCES
+    relay_env = env.Clone()
+    relay_env.Append(CPPPATH=['#src/relay'])
+    relay_env['LIBS'] = [lib for lib in relay_env.get('LIBS', []) if lib in ('ssl', 'crypto', 'pthread')]
+    relay_objects = [relay_env.Object(source) for source in RELAY_SOURCES]
+    relay_objects += [relay_env.Object('relay-gag-' + source.replace('.cpp', '.o'), '#libgag/src/' + source)
+                      for source in RELAY_GAG_SOURCES]
+    relay = relay_env.Program('glob2-relay', relay_objects + [relay_env.Object('relay/RelayMain.cpp')])
+    relay_env.Default(relay)
+    relay_env.Alias('relay', relay)
+    tests_env = relay_env.Clone()
+    tests_env.Append(CPPPATH=['#test/third_party'])
+    tests_env.Append(CPPDEFINES=[('RELAY_FIXTURE_DIR', '\\"%s\\"' % Dir('#test/fixtures/relay-tickets').abspath)])
+    relay_tests = tests_env.Program('glob2-relay-tests', relay_objects + [
+        tests_env.Object('relay-test-' + name + '.o', '#test/relay/' + name + '.cpp')
+        for name in ('RelayTestMain', 'RelayTicketTest', 'RelayAdmissionTest')])
+    tests_env.Alias('relay-tests', relay_tests)
+    tests_env.Alias('relay', relay_tests)
+    Return()
 if not env.get('wss', True):
     source_files.remove('net/WssTransport.cpp')
+    source_files.remove('online/HttpFetch.cpp')
 local = env.Clone()
 platform_trust_sources = []
 if env['PLATFORM'] in ('darwin', 'win32') or env.get('mingw') or env.get('mingwcross'):
@@ -88,6 +110,19 @@ if not env['server']:
             'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
             local.Object('WssListenerHarness.o', '#test/WssListenerHarness.cpp')] + platform_trust_sources)
         local.Alias('transport-test', listener_test)
+        http_test = local.Program('http-fetch-test', [
+            'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp',
+            local.Object('HttpFetchHarness.o', '#test/HttpFetchHarness.cpp')] + platform_trust_sources)
+        local.Alias('transport-test', http_test)
+        platform_probe = local.Program('platform-client-probe', [
+            'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
+            'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
+            'online/SimVersion.cpp', 'online/Sha256.cpp',
+            'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+            local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources
+            # SimVersion::local() hashes the simulation data through libgag's file manager.
+            + ['../libgag/src/libgag.a'])
+        local.Alias('transport-test', platform_probe)
 
 #Add libgag, not as a library, but as an object
 server_source_files.append("../libgag/src/libgag_server.a")

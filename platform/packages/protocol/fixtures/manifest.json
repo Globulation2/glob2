@@ -1,0 +1,662 @@
+{
+  "description": "Contract fixtures generated from packages/protocol (npm run fixtures). Do not edit by hand.",
+  "formatVersion": 1,
+  "schemas": {
+    "AccessTokenClaims": "schemas/AccessTokenClaims.schema.json",
+    "AccessTokenHeader": "schemas/AccessTokenHeader.schema.json",
+    "AdminAccount": "schemas/AdminAccount.schema.json",
+    "AdminAccountList": "schemas/AdminAccountList.schema.json",
+    "AdminBanRequest": "schemas/AdminBanRequest.schema.json",
+    "AdminMuteRequest": "schemas/AdminMuteRequest.schema.json",
+    "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
+    "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
+    "AuthTokens": "schemas/AuthTokens.schema.json",
+    "CreateMapRequest": "schemas/CreateMapRequest.schema.json",
+    "EngineJob": "schemas/EngineJob.schema.json",
+    "EngineJobResult": "schemas/EngineJobResult.schema.json",
+    "ErrorBody": "schemas/ErrorBody.schema.json",
+    "GenerateMapPayload": "schemas/GenerateMapPayload.schema.json",
+    "GenerateMapResult": "schemas/GenerateMapResult.schema.json",
+    "GeneratorDescriptor": "schemas/GeneratorDescriptor.schema.json",
+    "GuestSignInRequest": "schemas/GuestSignInRequest.schema.json",
+    "IdentityConflict": "schemas/IdentityConflict.schema.json",
+    "InstanceInfo": "schemas/InstanceInfo.schema.json",
+    "LeaderboardPage": "schemas/LeaderboardPage.schema.json",
+    "LocalRegisterRequest": "schemas/LocalRegisterRequest.schema.json",
+    "LocalSignInRequest": "schemas/LocalSignInRequest.schema.json",
+    "MapInfo": "schemas/MapInfo.schema.json",
+    "MapList": "schemas/MapList.schema.json",
+    "MapReportRequest": "schemas/MapReportRequest.schema.json",
+    "MapSource": "schemas/MapSource.schema.json",
+    "MapVersionInfo": "schemas/MapVersionInfo.schema.json",
+    "MatchAssignment": "schemas/MatchAssignment.schema.json",
+    "MatchDetail": "schemas/MatchDetail.schema.json",
+    "MatchList": "schemas/MatchList.schema.json",
+    "MatchRules": "schemas/MatchRules.schema.json",
+    "MatchSetup": "schemas/MatchSetup.schema.json",
+    "MatchSummary": "schemas/MatchSummary.schema.json",
+    "MatchTicketClaims": "schemas/MatchTicketClaims.schema.json",
+    "MatchTicketHeader": "schemas/MatchTicketHeader.schema.json",
+    "PlatformJwks": "schemas/PlatformJwks.schema.json",
+    "PublicAccount": "schemas/PublicAccount.schema.json",
+    "RealtimeAuthHandoffBeginParams": "schemas/RealtimeAuthHandoffBeginParams.schema.json",
+    "RealtimeAuthHandoffBeginResult": "schemas/RealtimeAuthHandoffBeginResult.schema.json",
+    "RealtimeAuthHandoffCancelParams": "schemas/RealtimeAuthHandoffCancelParams.schema.json",
+    "RealtimeAuthHandoffCancelResult": "schemas/RealtimeAuthHandoffCancelResult.schema.json",
+    "RealtimeAuthHandoffResumeParams": "schemas/RealtimeAuthHandoffResumeParams.schema.json",
+    "RealtimeAuthHandoffResumeResult": "schemas/RealtimeAuthHandoffResumeResult.schema.json",
+    "RealtimeEvent": "schemas/RealtimeEvent.schema.json",
+    "RealtimeEventAuthHandoffCompleted": "schemas/RealtimeEventAuthHandoffCompleted.schema.json",
+    "RealtimeEventAuthHandoffFailed": "schemas/RealtimeEventAuthHandoffFailed.schema.json",
+    "RealtimeEventMatchStart": "schemas/RealtimeEventMatchStart.schema.json",
+    "RealtimeEventMatchUpdated": "schemas/RealtimeEventMatchUpdated.schema.json",
+    "RealtimeEventQueueMatchFound": "schemas/RealtimeEventQueueMatchFound.schema.json",
+    "RealtimeEventQueueProposal": "schemas/RealtimeEventQueueProposal.schema.json",
+    "RealtimeEventQueueProposalEnded": "schemas/RealtimeEventQueueProposalEnded.schema.json",
+    "RealtimeEventQueueStatus": "schemas/RealtimeEventQueueStatus.schema.json",
+    "RealtimeEventRoomChat": "schemas/RealtimeEventRoomChat.schema.json",
+    "RealtimeEventRoomClosed": "schemas/RealtimeEventRoomClosed.schema.json",
+    "RealtimeEventRoomState": "schemas/RealtimeEventRoomState.schema.json",
+    "RealtimeEventSessionRevoked": "schemas/RealtimeEventSessionRevoked.schema.json",
+    "RealtimeMatchReconnectParams": "schemas/RealtimeMatchReconnectParams.schema.json",
+    "RealtimeMatchReconnectResult": "schemas/RealtimeMatchReconnectResult.schema.json",
+    "RealtimeQueueJoinParams": "schemas/RealtimeQueueJoinParams.schema.json",
+    "RealtimeQueueJoinResult": "schemas/RealtimeQueueJoinResult.schema.json",
+    "RealtimeQueueLeaveParams": "schemas/RealtimeQueueLeaveParams.schema.json",
+    "RealtimeQueueLeaveResult": "schemas/RealtimeQueueLeaveResult.schema.json",
+    "RealtimeQueueRespondParams": "schemas/RealtimeQueueRespondParams.schema.json",
+    "RealtimeQueueRespondResult": "schemas/RealtimeQueueRespondResult.schema.json",
+    "RealtimeRequest": "schemas/RealtimeRequest.schema.json",
+    "RealtimeResponse": "schemas/RealtimeResponse.schema.json",
+    "RealtimeRoomChatParams": "schemas/RealtimeRoomChatParams.schema.json",
+    "RealtimeRoomChatResult": "schemas/RealtimeRoomChatResult.schema.json",
+    "RealtimeRoomCreateParams": "schemas/RealtimeRoomCreateParams.schema.json",
+    "RealtimeRoomCreateResult": "schemas/RealtimeRoomCreateResult.schema.json",
+    "RealtimeRoomJoinParams": "schemas/RealtimeRoomJoinParams.schema.json",
+    "RealtimeRoomJoinResult": "schemas/RealtimeRoomJoinResult.schema.json",
+    "RealtimeRoomLeaveParams": "schemas/RealtimeRoomLeaveParams.schema.json",
+    "RealtimeRoomLeaveResult": "schemas/RealtimeRoomLeaveResult.schema.json",
+    "RealtimeRoomSetReadyParams": "schemas/RealtimeRoomSetReadyParams.schema.json",
+    "RealtimeRoomSetReadyResult": "schemas/RealtimeRoomSetReadyResult.schema.json",
+    "RealtimeRoomSetSeatParams": "schemas/RealtimeRoomSetSeatParams.schema.json",
+    "RealtimeRoomSetSeatResult": "schemas/RealtimeRoomSetSeatResult.schema.json",
+    "RealtimeRoomStartParams": "schemas/RealtimeRoomStartParams.schema.json",
+    "RealtimeRoomStartResult": "schemas/RealtimeRoomStartResult.schema.json",
+    "RealtimeRoomUpdateParams": "schemas/RealtimeRoomUpdateParams.schema.json",
+    "RealtimeRoomUpdateResult": "schemas/RealtimeRoomUpdateResult.schema.json",
+    "RealtimeServerMessage": "schemas/RealtimeServerMessage.schema.json",
+    "RealtimeSessionAuthenticateParams": "schemas/RealtimeSessionAuthenticateParams.schema.json",
+    "RealtimeSessionAuthenticateResult": "schemas/RealtimeSessionAuthenticateResult.schema.json",
+    "RealtimeSessionHelloParams": "schemas/RealtimeSessionHelloParams.schema.json",
+    "RealtimeSessionHelloResult": "schemas/RealtimeSessionHelloResult.schema.json",
+    "RealtimeSessionPingParams": "schemas/RealtimeSessionPingParams.schema.json",
+    "RealtimeSessionPingResult": "schemas/RealtimeSessionPingResult.schema.json",
+    "RefreshRequest": "schemas/RefreshRequest.schema.json",
+    "RelayHeartbeat": "schemas/RelayHeartbeat.schema.json",
+    "RelayHeartbeatResponse": "schemas/RelayHeartbeatResponse.schema.json",
+    "RelayMatchEnded": "schemas/RelayMatchEnded.schema.json",
+    "RelayRegistration": "schemas/RelayRegistration.schema.json",
+    "RelayRegistrationResponse": "schemas/RelayRegistrationResponse.schema.json",
+    "RenderPreviewPayload": "schemas/RenderPreviewPayload.schema.json",
+    "RenderPreviewResult": "schemas/RenderPreviewResult.schema.json",
+    "RoomChatMessage": "schemas/RoomChatMessage.schema.json",
+    "RoomList": "schemas/RoomList.schema.json",
+    "RoomMapSelection": "schemas/RoomMapSelection.schema.json",
+    "RoomState": "schemas/RoomState.schema.json",
+    "SelfAccount": "schemas/SelfAccount.schema.json",
+    "SignInResponse": "schemas/SignInResponse.schema.json",
+    "SignOutRequest": "schemas/SignOutRequest.schema.json",
+    "SimVersion": "schemas/SimVersion.schema.json",
+    "UpdateAccountRequest": "schemas/UpdateAccountRequest.schema.json",
+    "ValidateMapPayload": "schemas/ValidateMapPayload.schema.json",
+    "ValidateMapResult": "schemas/ValidateMapResult.schema.json",
+    "VerifyMatchPayload": "schemas/VerifyMatchPayload.schema.json",
+    "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
+  },
+  "fixtures": [
+    {
+      "file": "valid/SimVersion/current.json",
+      "schema": "SimVersion",
+      "valid": true,
+      "note": "A sim version."
+    },
+    {
+      "file": "invalid/SimVersion/short-data-hash.json",
+      "schema": "SimVersion",
+      "valid": false,
+      "stage": "schema",
+      "note": "dataHash must be 64 lowercase hex digits."
+    },
+    {
+      "file": "valid/MatchSetup/catalog-1v1.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Two humans on a catalog map, standard rules."
+    },
+    {
+      "file": "valid/MatchSetup/generated-human-vs-ais.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "One human against three allied AIs on a generated map; revealed map; AI runtime config."
+    },
+    {
+      "file": "valid/MatchSetup/save-shared-control-all-rules.json",
+      "schema": "MatchSetup",
+      "valid": true,
+      "note": "Uploaded save; human + AI share team 0; every rule non-default; an experiment; non-ASCII name."
+    },
+    {
+      "file": "invalid/MatchSetup/missing-rules.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Every field is required; there are no defaults."
+    },
+    {
+      "file": "invalid/MatchSetup/unknown-ai.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "AI ids are the closed CLI-name set."
+    },
+    {
+      "file": "invalid/MatchSetup/javascript-ai-unsupported.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "JavaScript controllers are not accepted online yet."
+    },
+    {
+      "file": "invalid/MatchSetup/unknown-property.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "MatchSetup rejects unknown properties: an unknown rule must not be silently ignored."
+    },
+    {
+      "file": "invalid/MatchSetup/seed-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "seed is a Uint32."
+    },
+    {
+      "file": "invalid/MatchSetup/uppercase-map-hash.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "Hashes are lowercase hex."
+    },
+    {
+      "file": "invalid/MatchSetup/future-schema-version.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "An unknown schemaVersion must be rejected, not guessed at."
+    },
+    {
+      "file": "invalid/MatchSetup/rule-level-out-of-range.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "glassCannonLevel is 0..2."
+    },
+    {
+      "file": "invalid/MatchSetup/generated-without-hash.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "schema",
+      "note": "A match needs the generated map hash; generation happens before start."
+    },
+    {
+      "file": "invalid/MatchSetup/seats-not-contiguous.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Seats are numbered 0..k-1 in order."
+    },
+    {
+      "file": "invalid/MatchSetup/seat-on-missing-team.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "A seat must reference one of the listed teams."
+    },
+    {
+      "file": "invalid/MatchSetup/teams-out-of-order.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "Teams are listed 0..n-1 in order."
+    },
+    {
+      "file": "invalid/MatchSetup/name-too-long-in-bytes.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "20 characters but 40 UTF-8 bytes; BasePlayer names are limited to 32 bytes."
+    },
+    {
+      "file": "invalid/MatchSetup/account-in-two-seats.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "An account holds at most one seat."
+    },
+    {
+      "file": "invalid/MatchSetup/generator-team-count-mismatch.json",
+      "schema": "MatchSetup",
+      "valid": false,
+      "stage": "semantic",
+      "note": "The generator \"teams\" control must equal the number of setup teams."
+    },
+    {
+      "file": "valid/MatchTicketClaims/player-ticket.json",
+      "schema": "MatchTicketClaims",
+      "valid": true,
+      "note": "Claims of the ticket in fixtures/tickets/valid.jwt."
+    },
+    {
+      "file": "invalid/MatchTicketClaims/missing-match-id.json",
+      "schema": "MatchTicketClaims",
+      "valid": false,
+      "stage": "schema",
+      "note": "matchId is required."
+    },
+    {
+      "file": "invalid/MatchTicketClaims/seat-out-of-range.json",
+      "schema": "MatchTicketClaims",
+      "valid": false,
+      "stage": "schema",
+      "note": "Seats are 0..11."
+    },
+    {
+      "file": "invalid/MatchTicketClaims/wrong-audience.json",
+      "schema": "MatchTicketClaims",
+      "valid": false,
+      "stage": "schema",
+      "note": "aud must be glob2-relay."
+    },
+    {
+      "file": "valid/RelayRegistration/startup.json",
+      "schema": "RelayRegistration",
+      "valid": true,
+      "note": "Relay start-up registration."
+    },
+    {
+      "file": "invalid/RelayRegistration/bad-region.json",
+      "schema": "RelayRegistration",
+      "valid": false,
+      "stage": "schema",
+      "note": "Regions are lowercase ids."
+    },
+    {
+      "file": "valid/RelayHeartbeat/busy.json",
+      "schema": "RelayHeartbeat",
+      "valid": true,
+      "note": "Heartbeat with one active match."
+    },
+    {
+      "file": "valid/RelayMatchEnded/completed.json",
+      "schema": "RelayMatchEnded",
+      "valid": true,
+      "note": "A completed match with one reconnect."
+    },
+    {
+      "file": "invalid/RelayMatchEnded/unknown-reason.json",
+      "schema": "RelayMatchEnded",
+      "valid": false,
+      "stage": "schema",
+      "note": "reason is completed, abandoned or aborted."
+    },
+    {
+      "file": "valid/RealtimeRequest/hello.json",
+      "schema": "RealtimeRequest",
+      "valid": true,
+      "note": "The first frame on a socket."
+    },
+    {
+      "file": "invalid/RealtimeRequest/missing-id.json",
+      "schema": "RealtimeRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Requests need a correlation id."
+    },
+    {
+      "file": "valid/RealtimeResponse/ok.json",
+      "schema": "RealtimeResponse",
+      "valid": true,
+      "note": "Successful response."
+    },
+    {
+      "file": "valid/RealtimeResponse/error.json",
+      "schema": "RealtimeResponse",
+      "valid": true,
+      "note": "Failed response."
+    },
+    {
+      "file": "invalid/RealtimeResponse/unknown-error-code.json",
+      "schema": "RealtimeResponse",
+      "valid": false,
+      "stage": "schema",
+      "note": "Error codes are a closed set."
+    },
+    {
+      "file": "valid/RealtimeServerMessage/room-state-event.json",
+      "schema": "RealtimeServerMessage",
+      "valid": true,
+      "note": "Event frame."
+    },
+    {
+      "file": "valid/RealtimeSessionHelloParams/with-token.json",
+      "schema": "RealtimeSessionHelloParams",
+      "valid": true,
+      "note": "Hello from a signed-in browser client."
+    },
+    {
+      "file": "invalid/RealtimeSessionHelloParams/future-protocol.json",
+      "schema": "RealtimeSessionHelloParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "protocol must be 1."
+    },
+    {
+      "file": "valid/RealtimeSessionHelloResult/guest.json",
+      "schema": "RealtimeSessionHelloResult",
+      "valid": true,
+      "note": "Hello answered for a signed-in guest."
+    },
+    {
+      "file": "valid/RealtimeAuthHandoffBeginResult/attempt.json",
+      "schema": "RealtimeAuthHandoffBeginResult",
+      "valid": true,
+      "note": "Browser sign-in attempt."
+    },
+    {
+      "file": "valid/RealtimeEventAuthHandoffCompleted/completed.json",
+      "schema": "RealtimeEventAuthHandoffCompleted",
+      "valid": true,
+      "note": "Sign-in pushed to the waiting socket, switching to the identity's account."
+    },
+    {
+      "file": "valid/RealtimeRoomJoinParams/by-code.json",
+      "schema": "RealtimeRoomJoinParams",
+      "valid": true,
+      "note": "Join by invite code."
+    },
+    {
+      "file": "invalid/RealtimeRoomJoinParams/code-with-punctuation.json",
+      "schema": "RealtimeRoomJoinParams",
+      "valid": false,
+      "stage": "schema",
+      "note": "Codes are 6-16 letters and digits."
+    },
+    {
+      "file": "valid/RealtimeRoomCreateParams/generated-map.json",
+      "schema": "RealtimeRoomCreateParams",
+      "valid": true,
+      "note": "Create a link-only room on a generated map (hash filled in later)."
+    },
+    {
+      "file": "valid/RealtimeRoomSetSeatParams/add-ai.json",
+      "schema": "RealtimeRoomSetSeatParams",
+      "valid": true,
+      "note": "Host puts an AI in seat 1."
+    },
+    {
+      "file": "valid/RealtimeQueueJoinParams/with-regions.json",
+      "schema": "RealtimeQueueJoinParams",
+      "valid": true,
+      "note": "Join a queue with relay round-trip probes."
+    },
+    {
+      "file": "valid/RealtimeQueueJoinParams/no-ai-opponent.json",
+      "schema": "RealtimeQueueJoinParams",
+      "valid": true,
+      "note": "Join a queue but opt out of AI backfill."
+    },
+    {
+      "file": "valid/RealtimeQueueRespondParams/accept.json",
+      "schema": "RealtimeQueueRespondParams",
+      "valid": true,
+      "note": "Accept a proposed ranked match."
+    },
+    {
+      "file": "valid/RealtimeEventQueueProposal/ranked-accept.json",
+      "schema": "RealtimeEventQueueProposal",
+      "valid": true,
+      "note": "A ranked 1v1 group waiting for both players to accept."
+    },
+    {
+      "file": "valid/RealtimeEventQueueProposalEnded/removed-after-decline.json",
+      "schema": "RealtimeEventQueueProposalEnded",
+      "valid": true,
+      "note": "The client declined and is blocked from queueing for a minute."
+    },
+    {
+      "file": "valid/RealtimeEventMatchStart/assignment.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": true,
+      "note": "match.start pushed to a seated client."
+    },
+    {
+      "file": "invalid/RealtimeEventMatchStart/assignment-with-bad-setup.json",
+      "schema": "RealtimeEventMatchStart",
+      "valid": false,
+      "stage": "semantic",
+      "note": "The embedded setup must pass MatchSetup semantics."
+    },
+    {
+      "file": "valid/GuestSignInRequest/returning-guest.json",
+      "schema": "GuestSignInRequest",
+      "valid": true,
+      "note": "Returning guest presents its device credential."
+    },
+    {
+      "file": "invalid/GuestSignInRequest/short-credential.json",
+      "schema": "GuestSignInRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Device credentials are 256-bit base64url (43 characters)."
+    },
+    {
+      "file": "valid/InstanceInfo/official.json",
+      "schema": "InstanceInfo",
+      "valid": true,
+      "note": "Instance description."
+    },
+    {
+      "file": "valid/RoomState/open-room.json",
+      "schema": "RoomState",
+      "valid": true,
+      "note": "A room."
+    },
+    {
+      "file": "valid/MatchDetail/verified.json",
+      "schema": "MatchDetail",
+      "valid": true,
+      "note": "A verified rated match."
+    },
+    {
+      "file": "valid/LeaderboardPage/with-ai.json",
+      "schema": "LeaderboardPage",
+      "valid": true,
+      "note": "A ladder with a player and an AI entity."
+    },
+    {
+      "file": "valid/AccessTokenClaims/guest.json",
+      "schema": "AccessTokenClaims",
+      "valid": true,
+      "note": "Claims of a guest access token."
+    },
+    {
+      "file": "invalid/AccessTokenClaims/ticket-audience.json",
+      "schema": "AccessTokenClaims",
+      "valid": false,
+      "stage": "schema",
+      "note": "An access token never carries the relay audience."
+    },
+    {
+      "file": "valid/LocalRegisterRequest/upgrade.json",
+      "schema": "LocalRegisterRequest",
+      "valid": true,
+      "note": "A local username and password (only on instances that enable local accounts)."
+    },
+    {
+      "file": "invalid/LocalRegisterRequest/short-password.json",
+      "schema": "LocalRegisterRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Passwords have at least 10 characters."
+    },
+    {
+      "file": "valid/RealtimeEventAuthHandoffCompleted/linked.json",
+      "schema": "RealtimeEventAuthHandoffCompleted",
+      "valid": true,
+      "note": "A guest linked a provider through the browser and is now registered."
+    },
+    {
+      "file": "valid/RealtimeEventAuthHandoffFailed/conflict.json",
+      "schema": "RealtimeEventAuthHandoffFailed",
+      "valid": true,
+      "note": "The identity already belongs to another account; the client may offer to switch."
+    },
+    {
+      "file": "invalid/AdminMuteRequest/too-long.json",
+      "schema": "AdminMuteRequest",
+      "valid": false,
+      "stage": "schema",
+      "note": "Mutes last at most a year."
+    },
+    {
+      "file": "valid/EngineJob/generate-map.json",
+      "schema": "EngineJob",
+      "valid": true,
+      "note": "Generate a map from a descriptor."
+    },
+    {
+      "file": "valid/EngineJob/validate-map.json",
+      "schema": "EngineJob",
+      "valid": true,
+      "note": "Validate an uploaded save."
+    },
+    {
+      "file": "valid/EngineJob/render-preview.json",
+      "schema": "EngineJob",
+      "valid": true,
+      "note": "Render a preview PNG."
+    },
+    {
+      "file": "valid/EngineJob/verify-match.json",
+      "schema": "EngineJob",
+      "valid": true,
+      "note": "Verify a finished match from its record."
+    },
+    {
+      "file": "invalid/EngineJob/payload-of-other-kind.json",
+      "schema": "EngineJob",
+      "valid": false,
+      "stage": "schema",
+      "note": "The payload must match the job kind."
+    },
+    {
+      "file": "invalid/EngineJob/verify-match-bad-setup.json",
+      "schema": "EngineJob",
+      "valid": false,
+      "stage": "semantic",
+      "note": "The setup inside a verify job must pass MatchSetup semantics."
+    },
+    {
+      "file": "valid/EngineJobResult/verified.json",
+      "schema": "EngineJobResult",
+      "valid": true,
+      "note": "An agent reports a verified match."
+    },
+    {
+      "file": "valid/EngineJobResult/failed.json",
+      "schema": "EngineJobResult",
+      "valid": true,
+      "note": "An agent reports a failure."
+    },
+    {
+      "file": "valid/VerifyVerdict/verified.json",
+      "schema": "VerifyVerdict",
+      "valid": true,
+      "note": "Every client agreed with the verifier."
+    },
+    {
+      "file": "valid/VerifyVerdict/diverged.json",
+      "schema": "VerifyVerdict",
+      "valid": true,
+      "note": "Seat 1 reported checksums the verifier did not reproduce."
+    },
+    {
+      "file": "valid/VerifyVerdict/unverifiable.json",
+      "schema": "VerifyVerdict",
+      "valid": true,
+      "note": "No client matched the verifier."
+    },
+    {
+      "file": "invalid/VerifyVerdict/diverged-without-clients.json",
+      "schema": "VerifyVerdict",
+      "valid": false,
+      "stage": "schema",
+      "note": "A diverged verdict names at least one seat."
+    }
+  ],
+  "tickets": {
+    "jwks": "tickets/jwks.json",
+    "verifyAt": 1790000060,
+    "leewaySeconds": 30,
+    "expectedClaims": "valid/MatchTicketClaims/player-ticket.json",
+    "tickets": [
+      {
+        "file": "tickets/valid.jwt",
+        "valid": true,
+        "note": "Correctly signed ticket."
+      },
+      {
+        "file": "tickets/tampered-signature.jwt",
+        "valid": false,
+        "reason": "signature",
+        "note": "Signature bytes changed."
+      },
+      {
+        "file": "tickets/tampered-claims.jwt",
+        "valid": false,
+        "reason": "signature",
+        "note": "Claims changed (seat 1) without re-signing."
+      },
+      {
+        "file": "tickets/alg-none.jwt",
+        "valid": false,
+        "reason": "algorithm",
+        "note": "Unsigned token must be refused."
+      },
+      {
+        "file": "tickets/wrong-type.jwt",
+        "valid": false,
+        "reason": "type",
+        "note": "An access token (typ at+jwt) is not a match ticket."
+      },
+      {
+        "file": "tickets/unknown-kid.jwt",
+        "valid": false,
+        "reason": "key",
+        "note": "kid not in the JWKS."
+      },
+      {
+        "file": "tickets/expired.jwt",
+        "valid": false,
+        "reason": "expired",
+        "note": "exp is an hour before the verification time."
+      },
+      {
+        "file": "tickets/wrong-audience.jwt",
+        "valid": false,
+        "reason": "audience",
+        "note": "aud must be glob2-relay."
+      }
+    ]
+  }
+}

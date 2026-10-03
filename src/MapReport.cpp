@@ -747,8 +747,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 	for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
 	{
 		const auto &p = game.gameHeader.getBasePlayer(i);
-		controllers.push_back(
-			J::object({{"slot", i}, {"team", p.teamNumber}, {"type", int(p.type)}}));
+		controllers.push_back(J::object(
+			{{"slot", i}, {"team", p.teamNumber}, {"type", int(p.type)}, {"name", p.name}}));
 	}
 	const J landRegions = components(map, land, GridNeighbors::Cardinal);
 	const J waterRegions = components(map, water, GridNeighbors::Cardinal);
@@ -776,6 +776,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 									   {"player_slots", game.teamsCount()},
 									   {"controller_count", game.gameHeader.getNumberOfPlayers()},
 									   {"saved_game", game.mapHeader.getIsSavedGame()},
+									   {"format_version_minor", game.mapHeader.getVersionMinor()},
 									   {"tick", game.stepCounter},
 									   {"game_seed", game.gameHeader.getRandomSeed()},
 									   {"colonies", J::array(colonies)},

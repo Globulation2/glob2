@@ -1,0 +1,1123 @@
+// Contract fixtures: documents every implementation must accept (valid) or
+// reject (invalid). Edit this file, then run `npm run fixtures` to regenerate
+// packages/protocol/fixtures/. A test fails if the files are out of date.
+import {
+  MATCH_TICKET_AUDIENCE,
+  STANDARD_RULES,
+  type MatchSetup,
+  type MatchTicketClaims,
+  type SimVersion,
+} from '../src/index.ts';
+
+export interface FixtureCase {
+  schema: string;
+  name: string;
+  valid: boolean;
+  /** For invalid cases: which check rejects it. */
+  stage?: 'schema' | 'semantic';
+  note: string;
+  value: unknown;
+}
+
+export const SIM_VERSION: SimVersion = {
+  versionMinor: 125,
+  netProtocol: 49,
+  dataHash: '3f9a6c1e8b2d47a05e6f1c2b3a4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f',
+};
+
+const HASH_A = 'a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90';
+const HASH_B = 'b0c1d2e3f405162738495a6b7c8d9e0fb0c1d2e3f405162738495a6b7c8d9e0f';
+const HASH_C = 'c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4';
+const HASH_D = 'd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00d';
+const ACCOUNT_1 = '0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b';
+const ACCOUNT_2 = '1c9a7a3f-4d5e-4f60-9bac-1d2e3f4a5b6c';
+const MATCH_ID = '7e3c1d2b-9a8f-4e6d-8c5b-4a3f2e1d0c9b';
+const ROOM_ID = '5d4c3b2a-1f0e-4d9c-8b7a-6f5e4d3c2b1a';
+const JOB_ID = '9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a';
+const NOW = '2026-10-01T12:00:00Z';
+
+/** Two humans, one each on a two-team catalog map. */
+export const SETUP_CATALOG_1V1: MatchSetup = {
+  schemaVersion: 1,
+  simVersion: SIM_VERSION,
+  seed: 2463534242,
+  map: { kind: 'catalog', hash: HASH_A },
+  teams: [
+    { team: 0, alliance: 0 },
+    { team: 1, alliance: 1 },
+  ],
+  seats: [
+    { seat: 0, kind: 'human', team: 0, name: 'Alice', accountId: ACCOUNT_1 },
+    { seat: 1, kind: 'human', team: 1, name: 'Bob', accountId: ACCOUNT_2 },
+  ],
+  rules: STANDARD_RULES,
+  experiments: [],
+};
+
+/** One human against three AIs on a generated four-colony map, human vs all. */
+export const SETUP_GENERATED_FFA: MatchSetup = {
+  schemaVersion: 1,
+  simVersion: SIM_VERSION,
+  seed: 42,
+  map: {
+    kind: 'generated',
+    generator: {
+      generatorId: 'even-ground',
+      revision: 3,
+      params: { width: 7, height: 7, teams: 4, workers: 4, wheat: 100, wood: 120 },
+      seed: 987654321,
+      candidates: 5,
+      startingUnitLevel: 0,
+    },
+    hash: HASH_B,
+  },
+  teams: [
+    { team: 0, alliance: 0 },
+    { team: 1, alliance: 1 },
+    { team: 2, alliance: 1 },
+    { team: 3, alliance: 1 },
+  ],
+  seats: [
+    { seat: 0, kind: 'human', team: 0, name: 'Alice', accountId: ACCOUNT_1 },
+    { seat: 1, kind: 'ai', team: 1, name: 'AI 2', ai: 'nicowar' },
+    { seat: 2, kind: 'ai', team: 2, name: 'AI 3', ai: 'cortex' },
+    { seat: 3, kind: 'ai', team: 3, name: 'AI 4', ai: 'maxima', aiConfig: 'aggression=2' },
+  ],
+  rules: { ...STANDARD_RULES, mapDiscovered: true },
+  experiments: [],
+};
+
+/** A save continued online, a human sharing control with an AI, every rule changed. */
+export const SETUP_SAVE_SHARED: MatchSetup = {
+  schemaVersion: 1,
+  simVersion: SIM_VERSION,
+  seed: 0,
+  map: { kind: 'upload', format: 'save', hash: HASH_C },
+  teams: [
+    { team: 0, alliance: 0 },
+    { team: 1, alliance: 0 },
+    { team: 2, alliance: 2 },
+  ],
+  seats: [
+    { seat: 0, kind: 'human', team: 0, name: 'Zoë the Builder' },
+    { seat: 1, kind: 'ai', team: 0, name: 'AI 1', ai: 'cabino' },
+    { seat: 2, kind: 'human', team: 1, name: 'Bob', accountId: ACCOUNT_2 },
+    { seat: 3, kind: 'ai', team: 2, name: 'AI 3', ai: 'warrush' },
+  ],
+  rules: {
+    prestigeVictory: false,
+    suddenDeathMinutes: 45,
+    mapDiscovered: true,
+    allyTeamsFixed: false,
+    resourceGrowthDisabled: true,
+    resourceScarcityLevel: 3,
+    instantConstruction: true,
+    stockpileStartLevel: 2,
+    hungerDisabled: true,
+    unitUpgradesDisabled: true,
+    glassCannonLevel: 2,
+    unitsFearless: true,
+    permadeathDisabled: true,
+    peacefulMode: true,
+    buildingHpLevel: 1,
+  },
+  experiments: ['guard-area-balancing'],
+};
+
+function edit<T>(value: T, change: (copy: T) => void): T {
+  const copy = structuredClone(value);
+  change(copy);
+  return copy;
+}
+
+type Mutable = Record<string, unknown>;
+
+export const TICKET_CLAIMS: MatchTicketClaims = {
+  iss: 'https://play.example.org',
+  aud: MATCH_TICKET_AUDIENCE,
+  sub: ACCOUNT_1,
+  jti: 'a9b8c7d6-e5f4-4a3b-9c2d-1e0f9a8b7c6d',
+  iat: 1790000000,
+  nbf: 1790000000,
+  exp: 1790000600,
+  matchId: MATCH_ID,
+  seat: 0,
+  accountId: ACCOUNT_1,
+  simVersion: SIM_VERSION,
+  humanSeats: [0, 1],
+  relayUrl: 'wss://relay-eu1.play.example.org/relay',
+  entitlements: [],
+};
+
+const ROOM_STATE = {
+  id: ROOM_ID,
+  code: 'K7QX2M',
+  inviteUrl: 'https://play.example.org/j/K7QX2M',
+  name: "Alice's room",
+  visibility: 'link',
+  status: 'open',
+  hostAccountId: ACCOUNT_1,
+  simVersion: SIM_VERSION,
+  map: { kind: 'catalog', hash: HASH_A },
+  teams: [
+    { team: 0, alliance: 0 },
+    { team: 1, alliance: 1 },
+  ],
+  seats: [
+    {
+      seat: 0,
+      team: 0,
+      occupant: { kind: 'human', accountId: ACCOUNT_1, displayName: 'Alice', ready: true },
+    },
+    { seat: 1, team: 1, occupant: { kind: 'open' } },
+  ],
+  rules: STANDARD_RULES,
+  experiments: [],
+  members: [
+    { accountId: ACCOUNT_1, displayName: 'Alice', kind: 'registered', connected: true, seat: 0 },
+  ],
+  revision: 4,
+  createdAt: NOW,
+};
+
+const SELF_ACCOUNT = {
+  id: ACCOUNT_1,
+  displayName: 'Alice',
+  kind: 'registered',
+  createdAt: NOW,
+  role: 'user',
+  status: 'active',
+  identities: [{ provider: 'google', linkedAt: NOW }],
+  entitlements: [],
+};
+
+const MATCH_ASSIGNMENT = {
+  matchId: MATCH_ID,
+  seat: 0,
+  ticket: 'eyJhbGciOiJFZERTQSJ9.e30.c2ln',
+  ticketExpiresAt: '2026-10-01T12:10:00Z',
+  relayUrl: 'wss://relay-eu1.play.example.org/relay',
+  setup: SETUP_CATALOG_1V1,
+  mapUrl: `https://play.example.org/api/v1/blobs/${HASH_A}`,
+};
+
+const VERIFIED_OUTCOME = {
+  finalTick: 45000,
+  teams: [
+    { team: 0, outcome: 'won', prestige: 210 },
+    { team: 1, outcome: 'lost', eliminatedTick: 44990, prestige: 35 },
+  ],
+  resultHash: HASH_D,
+  replayHash: HASH_C,
+};
+
+export const fixtureCases: FixtureCase[] = [
+  // ------------------------------------------------------------ SimVersion
+  {
+    schema: 'SimVersion',
+    name: 'current',
+    valid: true,
+    note: 'A sim version.',
+    value: SIM_VERSION,
+  },
+  {
+    schema: 'SimVersion',
+    name: 'short-data-hash',
+    valid: false,
+    stage: 'schema',
+    note: 'dataHash must be 64 lowercase hex digits.',
+    value: { ...SIM_VERSION, dataHash: 'abc123' },
+  },
+  // ------------------------------------------------------------ MatchSetup
+  {
+    schema: 'MatchSetup',
+    name: 'catalog-1v1',
+    valid: true,
+    note: 'Two humans on a catalog map, standard rules.',
+    value: SETUP_CATALOG_1V1,
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'generated-human-vs-ais',
+    valid: true,
+    note: 'One human against three allied AIs on a generated map; revealed map; AI runtime config.',
+    value: SETUP_GENERATED_FFA,
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'save-shared-control-all-rules',
+    valid: true,
+    note: 'Uploaded save; human + AI share team 0; every rule non-default; an experiment; non-ASCII name.',
+    value: SETUP_SAVE_SHARED,
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'missing-rules',
+    valid: false,
+    stage: 'schema',
+    note: 'Every field is required; there are no defaults.',
+    value: edit(SETUP_CATALOG_1V1 as unknown as Mutable, (s) => delete s['rules']),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'unknown-ai',
+    valid: false,
+    stage: 'schema',
+    note: 'AI ids are the closed CLI-name set.',
+    value: edit(SETUP_GENERATED_FFA, (s) => {
+      (s.seats[1] as Mutable)['ai'] = 'skynet';
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'javascript-ai-unsupported',
+    valid: false,
+    stage: 'schema',
+    note: 'JavaScript controllers are not accepted online yet.',
+    value: edit(SETUP_GENERATED_FFA, (s) => {
+      (s.seats[1] as Mutable)['ai'] = 'javascript';
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'unknown-property',
+    valid: false,
+    stage: 'schema',
+    note: 'MatchSetup rejects unknown properties: an unknown rule must not be silently ignored.',
+    value: edit(SETUP_CATALOG_1V1 as unknown as Mutable, (s) => {
+      (s['rules'] as Mutable)['lowGravity'] = true;
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'seed-out-of-range',
+    valid: false,
+    stage: 'schema',
+    note: 'seed is a Uint32.',
+    value: { ...SETUP_CATALOG_1V1, seed: 4294967296 },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'uppercase-map-hash',
+    valid: false,
+    stage: 'schema',
+    note: 'Hashes are lowercase hex.',
+    value: { ...SETUP_CATALOG_1V1, map: { kind: 'catalog', hash: HASH_A.toUpperCase() } },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'future-schema-version',
+    valid: false,
+    stage: 'schema',
+    note: 'An unknown schemaVersion must be rejected, not guessed at.',
+    value: { ...SETUP_CATALOG_1V1, schemaVersion: 2 },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'rule-level-out-of-range',
+    valid: false,
+    stage: 'schema',
+    note: 'glassCannonLevel is 0..2.',
+    value: { ...SETUP_CATALOG_1V1, rules: { ...STANDARD_RULES, glassCannonLevel: 3 } },
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'generated-without-hash',
+    valid: false,
+    stage: 'schema',
+    note: 'A match needs the generated map hash; generation happens before start.',
+    value: edit(SETUP_GENERATED_FFA as unknown as Mutable, (s) => {
+      delete (s['map'] as Mutable)['hash'];
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'seats-not-contiguous',
+    valid: false,
+    stage: 'semantic',
+    note: 'Seats are numbered 0..k-1 in order.',
+    value: edit(SETUP_CATALOG_1V1, (s) => {
+      s.seats[1]!.seat = 2;
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'seat-on-missing-team',
+    valid: false,
+    stage: 'semantic',
+    note: 'A seat must reference one of the listed teams.',
+    value: edit(SETUP_CATALOG_1V1, (s) => {
+      s.seats[1]!.team = 5;
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'teams-out-of-order',
+    valid: false,
+    stage: 'semantic',
+    note: 'Teams are listed 0..n-1 in order.',
+    value: edit(SETUP_CATALOG_1V1, (s) => {
+      s.teams = [
+        { team: 1, alliance: 1 },
+        { team: 0, alliance: 0 },
+      ];
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'name-too-long-in-bytes',
+    valid: false,
+    stage: 'semantic',
+    note: '20 characters but 40 UTF-8 bytes; BasePlayer names are limited to 32 bytes.',
+    value: edit(SETUP_CATALOG_1V1, (s) => {
+      s.seats[0]!.name = 'é'.repeat(20);
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'account-in-two-seats',
+    valid: false,
+    stage: 'semantic',
+    note: 'An account holds at most one seat.',
+    value: edit(SETUP_CATALOG_1V1, (s) => {
+      (s.seats[1] as Mutable)['accountId'] = ACCOUNT_1;
+    }),
+  },
+  {
+    schema: 'MatchSetup',
+    name: 'generator-team-count-mismatch',
+    valid: false,
+    stage: 'semantic',
+    note: 'The generator "teams" control must equal the number of setup teams.',
+    value: edit(SETUP_GENERATED_FFA, (s) => {
+      if (s.map.kind === 'generated') s.map.generator.params['teams'] = 3;
+    }),
+  },
+  // ---------------------------------------------------------------- Tickets
+  {
+    schema: 'MatchTicketClaims',
+    name: 'player-ticket',
+    valid: true,
+    note: 'Claims of the ticket in fixtures/tickets/valid.jwt.',
+    value: TICKET_CLAIMS,
+  },
+  {
+    schema: 'MatchTicketClaims',
+    name: 'missing-match-id',
+    valid: false,
+    stage: 'schema',
+    note: 'matchId is required.',
+    value: edit(TICKET_CLAIMS as unknown as Mutable, (c) => delete c['matchId']),
+  },
+  {
+    schema: 'MatchTicketClaims',
+    name: 'seat-out-of-range',
+    valid: false,
+    stage: 'schema',
+    note: 'Seats are 0..11.',
+    value: { ...TICKET_CLAIMS, seat: 12 },
+  },
+  {
+    schema: 'MatchTicketClaims',
+    name: 'wrong-audience',
+    valid: false,
+    stage: 'schema',
+    note: 'aud must be glob2-relay.',
+    value: { ...TICKET_CLAIMS, aud: 'glob2-api' },
+  },
+  // ------------------------------------------------------------------ Relay
+  {
+    schema: 'RelayRegistration',
+    name: 'startup',
+    valid: true,
+    note: 'Relay start-up registration.',
+    value: {
+      relayId: 'relay-eu1-a',
+      publicUrl: 'wss://relay-eu1.play.example.org/relay',
+      region: 'eu-west',
+      build: 'glob2-relay 0.9.25+3f9a6c1',
+      turnProtocol: 1,
+      capacity: { maxMatches: 200 },
+      load: { matches: 0, connections: 0 },
+      draining: false,
+    },
+  },
+  {
+    schema: 'RelayRegistration',
+    name: 'bad-region',
+    valid: false,
+    stage: 'schema',
+    note: 'Regions are lowercase ids.',
+    value: {
+      relayId: 'relay-eu1-a',
+      publicUrl: 'wss://relay-eu1.play.example.org/relay',
+      region: 'EU West',
+      build: 'x',
+      turnProtocol: 1,
+      capacity: { maxMatches: 200 },
+      load: { matches: 0, connections: 0 },
+      draining: false,
+    },
+  },
+  {
+    schema: 'RelayHeartbeat',
+    name: 'busy',
+    valid: true,
+    note: 'Heartbeat with one active match.',
+    value: {
+      relayId: 'relay-eu1-a',
+      load: { matches: 1, connections: 2, cpu: 0.12 },
+      draining: false,
+      activeMatchIds: [MATCH_ID],
+    },
+  },
+  {
+    schema: 'RelayMatchEnded',
+    name: 'completed',
+    valid: true,
+    note: 'A completed match with one reconnect.',
+    value: {
+      matchId: MATCH_ID,
+      relayId: 'relay-eu1-a',
+      simVersion: SIM_VERSION,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:30:05Z',
+      finalTick: 45000,
+      reason: 'completed',
+      seats: [
+        { seat: 0, disconnects: 0, droppedForDesync: false },
+        { seat: 1, disconnects: 1, droppedForDesync: false },
+      ],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: HASH_D, size: 183422, formatVersion: 1 },
+    },
+  },
+  {
+    schema: 'RelayMatchEnded',
+    name: 'unknown-reason',
+    valid: false,
+    stage: 'schema',
+    note: 'reason is completed, abandoned or aborted.',
+    value: {
+      matchId: MATCH_ID,
+      relayId: 'relay-eu1-a',
+      simVersion: SIM_VERSION,
+      startedAt: '2026-10-01T12:00:05Z',
+      endedAt: '2026-10-01T12:30:05Z',
+      finalTick: 45000,
+      reason: 'timeout',
+      seats: [],
+      desync: { flagged: false, minoritySeats: [] },
+      record: { sha256: HASH_D, size: 1, formatVersion: 1 },
+    },
+  },
+  // --------------------------------------------------------------- Realtime
+  {
+    schema: 'RealtimeRequest',
+    name: 'hello',
+    valid: true,
+    note: 'The first frame on a socket.',
+    value: {
+      type: 'request',
+      id: '1',
+      method: 'session.hello',
+      params: {
+        protocol: 1,
+        client: { platform: 'desktop', version: '0.9.25', simVersion: SIM_VERSION },
+      },
+    },
+  },
+  {
+    schema: 'RealtimeRequest',
+    name: 'missing-id',
+    valid: false,
+    stage: 'schema',
+    note: 'Requests need a correlation id.',
+    value: { type: 'request', method: 'room.join', params: { code: 'K7QX2M' } },
+  },
+  {
+    schema: 'RealtimeResponse',
+    name: 'ok',
+    valid: true,
+    note: 'Successful response.',
+    value: { type: 'response', id: '7', ok: true, result: { room: ROOM_STATE } },
+  },
+  {
+    schema: 'RealtimeResponse',
+    name: 'error',
+    valid: true,
+    note: 'Failed response.',
+    value: {
+      type: 'response',
+      id: '7',
+      ok: false,
+      error: { code: 'update_required', message: 'This instance needs a newer game version.' },
+    },
+  },
+  {
+    schema: 'RealtimeResponse',
+    name: 'unknown-error-code',
+    valid: false,
+    stage: 'schema',
+    note: 'Error codes are a closed set.',
+    value: { type: 'response', id: '7', ok: false, error: { code: 'oops', message: 'x' } },
+  },
+  {
+    schema: 'RealtimeServerMessage',
+    name: 'room-state-event',
+    valid: true,
+    note: 'Event frame.',
+    value: { type: 'event', event: 'room.state', data: { room: ROOM_STATE } },
+  },
+  {
+    schema: 'RealtimeSessionHelloParams',
+    name: 'with-token',
+    valid: true,
+    note: 'Hello from a signed-in browser client.',
+    value: {
+      protocol: 1,
+      client: { platform: 'browser', version: '0.9.25', simVersion: SIM_VERSION },
+      accessToken: 'eyJhbGciOiJFZERTQSJ9.e30.c2ln',
+    },
+  },
+  {
+    schema: 'RealtimeSessionHelloParams',
+    name: 'future-protocol',
+    valid: false,
+    stage: 'schema',
+    note: 'protocol must be 1.',
+    value: {
+      protocol: 2,
+      client: { platform: 'browser', version: '0.9.25', simVersion: SIM_VERSION },
+    },
+  },
+  {
+    schema: 'RealtimeSessionHelloResult',
+    name: 'guest',
+    valid: true,
+    note: 'Hello answered for a signed-in guest.',
+    value: {
+      sessionId: '2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d',
+      serverTime: NOW,
+      simSupported: true,
+      account: { ...SELF_ACCOUNT, kind: 'guest', identities: [] },
+    },
+  },
+  {
+    schema: 'RealtimeAuthHandoffBeginResult',
+    name: 'attempt',
+    valid: true,
+    note: 'Browser sign-in attempt.',
+    value: {
+      attemptId: '3b4c5d6e-7f80-4a9b-8c1d-2e3f4a5b6c7d',
+      signInUrl: 'https://play.example.org/signin?attempt=3b4c5d6e-7f80-4a9b-8c1d-2e3f4a5b6c7d',
+      confirmationCode: 'KQ7M2X',
+      expiresAt: '2026-10-01T12:10:00Z',
+      resumeToken: 'Zm9vYmFyYmF6cXV4cXV1eGNvcmdlZ3JhdWx0Z2FycGx',
+    },
+  },
+  {
+    schema: 'RealtimeEventAuthHandoffCompleted',
+    name: 'completed',
+    valid: true,
+    note: "Sign-in pushed to the waiting socket, switching to the identity's account.",
+    value: {
+      attemptId: '3b4c5d6e-7f80-4a9b-8c1d-2e3f4a5b6c7d',
+      linked: false,
+      session: {
+        account: SELF_ACCOUNT,
+        tokens: {
+          tokenType: 'Bearer',
+          accessToken: 'eyJhbGciOiJFZERTQSJ9.e30.c2ln',
+          accessTokenExpiresAt: '2026-10-01T12:15:00Z',
+          refreshToken: 'rt_9Zt2v0Yb8k1mQ3s5u7w9y1A3C5E7G9I1',
+          refreshTokenExpiresAt: '2026-12-30T12:00:00Z',
+        },
+      },
+    },
+  },
+  {
+    schema: 'RealtimeRoomJoinParams',
+    name: 'by-code',
+    valid: true,
+    note: 'Join by invite code.',
+    value: { code: 'K7QX2M' },
+  },
+  {
+    schema: 'RealtimeRoomJoinParams',
+    name: 'code-with-punctuation',
+    valid: false,
+    stage: 'schema',
+    note: 'Codes are 6-16 letters and digits.',
+    value: { code: 'K7-QX2M' },
+  },
+  {
+    schema: 'RealtimeRoomCreateParams',
+    name: 'generated-map',
+    valid: true,
+    note: 'Create a link-only room on a generated map (hash filled in later).',
+    value: {
+      name: "Alice's room",
+      visibility: 'link',
+      map: {
+        kind: 'generated',
+        generator: (SETUP_GENERATED_FFA.map as { generator: unknown }).generator,
+      },
+    },
+  },
+  {
+    schema: 'RealtimeRoomSetSeatParams',
+    name: 'add-ai',
+    valid: true,
+    note: 'Host puts an AI in seat 1.',
+    value: { roomId: ROOM_ID, seat: 1, occupant: { kind: 'ai', ai: 'cortex' } },
+  },
+  {
+    schema: 'RealtimeQueueJoinParams',
+    name: 'with-regions',
+    valid: true,
+    note: 'Join a queue with relay round-trip probes.',
+    value: {
+      queueId: 'ranked-1v1',
+      regions: [
+        { region: 'eu-west', rttMs: 32 },
+        { region: 'us-east', rttMs: 110 },
+      ],
+    },
+  },
+  {
+    schema: 'RealtimeQueueJoinParams',
+    name: 'no-ai-opponent',
+    valid: true,
+    note: 'Join a queue but opt out of AI backfill.',
+    value: {
+      queueId: 'ranked-1v1',
+      regions: [{ region: 'eu-west', rttMs: 32 }],
+      allowAiOpponent: false,
+    },
+  },
+  {
+    schema: 'RealtimeQueueRespondParams',
+    name: 'accept',
+    valid: true,
+    note: 'Accept a proposed ranked match.',
+    value: { proposalId: '0b6a7f6e-8d1c-4a59-9a43-2f0c3d1e5b77', accept: true },
+  },
+  {
+    schema: 'RealtimeEventQueueProposal',
+    name: 'ranked-accept',
+    valid: true,
+    note: 'A ranked 1v1 group waiting for both players to accept.',
+    value: {
+      proposalId: '0b6a7f6e-8d1c-4a59-9a43-2f0c3d1e5b77',
+      ticketId: '5d0f2c43-6a3e-4c8e-b8f1-9e2a7c4d3b10',
+      queueId: 'ranked-1v1',
+      requiresAccept: true,
+      expiresAt: '2026-10-01T12:00:10Z',
+      humans: 2,
+      ais: 0,
+    },
+  },
+  {
+    schema: 'RealtimeEventQueueProposalEnded',
+    name: 'removed-after-decline',
+    valid: true,
+    note: 'The client declined and is blocked from queueing for a minute.',
+    value: {
+      proposalId: '0b6a7f6e-8d1c-4a59-9a43-2f0c3d1e5b77',
+      ticketId: '5d0f2c43-6a3e-4c8e-b8f1-9e2a7c4d3b10',
+      outcome: 'removed',
+      reason: 'declined',
+      cooldownUntil: '2026-10-01T12:01:10Z',
+    },
+  },
+  {
+    schema: 'RealtimeEventMatchStart',
+    name: 'assignment',
+    valid: true,
+    note: 'match.start pushed to a seated client.',
+    value: MATCH_ASSIGNMENT,
+  },
+  {
+    schema: 'RealtimeEventMatchStart',
+    name: 'assignment-with-bad-setup',
+    valid: false,
+    stage: 'semantic',
+    note: 'The embedded setup must pass MatchSetup semantics.',
+    value: edit(MATCH_ASSIGNMENT, (a) => {
+      a.setup = edit(SETUP_CATALOG_1V1, (s) => {
+        s.seats[1]!.team = 5;
+      });
+    }),
+  },
+  // ------------------------------------------------------------------- REST
+  {
+    schema: 'GuestSignInRequest',
+    name: 'returning-guest',
+    valid: true,
+    note: 'Returning guest presents its device credential.',
+    value: { deviceCredential: 'q2Vx0YbZ8k1mQ3s5u7w9y1A3C5E7G9I1K3M5O7Q9S1U', platform: 'android' },
+  },
+  {
+    schema: 'GuestSignInRequest',
+    name: 'short-credential',
+    valid: false,
+    stage: 'schema',
+    note: 'Device credentials are 256-bit base64url (43 characters).',
+    value: { deviceCredential: 'abc', platform: 'android' },
+  },
+  {
+    schema: 'InstanceInfo',
+    name: 'official',
+    valid: true,
+    note: 'Instance description.',
+    value: {
+      name: 'Globulation 2',
+      origin: 'https://play.example.org',
+      realtimeUrl: 'wss://play.example.org/realtime',
+      supportedSimVersions: [SIM_VERSION],
+      authProviders: [
+        { id: 'google', kind: 'oidc', displayName: 'Google' },
+        { id: 'apple', kind: 'apple', displayName: 'Apple' },
+      ],
+      queues: [
+        { id: 'ranked-1v1', name: 'Ranked 1v1', mode: '1v1', rated: true, aiBackfillSeconds: 90 },
+      ],
+      guestsAllowed: true,
+    },
+  },
+  { schema: 'RoomState', name: 'open-room', valid: true, note: 'A room.', value: ROOM_STATE },
+  {
+    schema: 'MatchDetail',
+    name: 'verified',
+    valid: true,
+    note: 'A verified rated match.',
+    value: {
+      match: {
+        id: MATCH_ID,
+        simVersion: SIM_VERSION,
+        origin: 'queue',
+        queueId: 'ranked-1v1',
+        rated: true,
+        status: 'ended',
+        verification: 'verified',
+        mapHash: HASH_A,
+        startedAt: '2026-10-01T12:00:05Z',
+        endedAt: '2026-10-01T12:30:05Z',
+        durationTicks: 45000,
+        participants: [
+          {
+            seat: 0,
+            team: 0,
+            kind: 'human',
+            displayName: 'Alice',
+            accountId: ACCOUNT_1,
+            outcome: 'won',
+            disconnects: 0,
+            rating: { ladder: 'ranked-1v1', before: 1500, after: 1532.4, provisional: true },
+          },
+          {
+            seat: 1,
+            team: 1,
+            kind: 'human',
+            displayName: 'Bob',
+            accountId: ACCOUNT_2,
+            outcome: 'lost',
+            disconnects: 1,
+          },
+        ],
+      },
+      setup: SETUP_CATALOG_1V1,
+      teams: [
+        {
+          team: 0,
+          outcome: 'won',
+          prestige: 210,
+          statistics: { units: 61 },
+          timeline: [[1, 2, 3]],
+        },
+        {
+          team: 1,
+          outcome: 'lost',
+          prestige: 35,
+          eliminatedTick: 44990,
+          statistics: {},
+          timeline: [],
+        },
+      ],
+      artifacts: [
+        {
+          kind: 'replay',
+          url: `https://play.example.org/api/v1/blobs/${HASH_C}`,
+          size: 90211,
+          sha256: HASH_C,
+        },
+      ],
+    },
+  },
+  {
+    schema: 'LeaderboardPage',
+    name: 'with-ai',
+    valid: true,
+    note: 'A ladder with a player and an AI entity.',
+    value: {
+      ladder: 'ranked-1v1',
+      entries: [
+        {
+          rank: 1,
+          entity: {
+            kind: 'account',
+            account: { id: ACCOUNT_1, displayName: 'Alice', kind: 'registered', createdAt: NOW },
+          },
+          rating: 1712,
+          mu: 29.1,
+          sigma: 2.2,
+          games: 48,
+          wins: 31,
+          provisional: false,
+        },
+        {
+          rank: 2,
+          entity: { kind: 'ai', ai: 'maxima', simVersion: SIM_VERSION },
+          rating: 1690,
+          mu: 28.4,
+          sigma: 3.9,
+          games: 12,
+          wins: 7,
+          provisional: true,
+        },
+      ],
+    },
+  },
+  {
+    schema: 'AccessTokenClaims',
+    name: 'guest',
+    valid: true,
+    note: 'Claims of a guest access token.',
+    value: {
+      iss: 'https://play.example.org',
+      aud: 'glob2-platform',
+      sub: ACCOUNT_1,
+      jti: JOB_ID,
+      iat: 1790856000,
+      exp: 1790856600,
+      client_id: 'desktop',
+      sid: ROOM_ID,
+      kind: 'guest',
+      role: 'user',
+    },
+  },
+  {
+    schema: 'AccessTokenClaims',
+    name: 'ticket-audience',
+    valid: false,
+    stage: 'schema',
+    note: 'An access token never carries the relay audience.',
+    value: {
+      iss: 'https://play.example.org',
+      aud: 'glob2-relay',
+      sub: ACCOUNT_1,
+      jti: JOB_ID,
+      iat: 1790856000,
+      exp: 1790856600,
+      client_id: 'desktop',
+      sid: ROOM_ID,
+      kind: 'guest',
+      role: 'user',
+    },
+  },
+  {
+    schema: 'LocalRegisterRequest',
+    name: 'upgrade',
+    valid: true,
+    note: 'A local username and password (only on instances that enable local accounts).',
+    value: { username: 'alice_92', password: 'correct horse battery', platform: 'desktop' },
+  },
+  {
+    schema: 'LocalRegisterRequest',
+    name: 'short-password',
+    valid: false,
+    stage: 'schema',
+    note: 'Passwords have at least 10 characters.',
+    value: { username: 'alice_92', password: 'hunter2', platform: 'desktop' },
+  },
+  {
+    schema: 'RealtimeEventAuthHandoffCompleted',
+    name: 'linked',
+    valid: true,
+    note: 'A guest linked a provider through the browser and is now registered.',
+    value: {
+      attemptId: JOB_ID,
+      linked: true,
+      session: {
+        account: SELF_ACCOUNT,
+        tokens: {
+          tokenType: 'Bearer',
+          accessToken: 'eyJhbGciOiJFZERTQSJ9.e30.c2ln',
+          accessTokenExpiresAt: '2026-10-01T12:10:00Z',
+          refreshToken: 'q2Vx0YbZ8k1mQ3s5u7w9y1A3C5E7G9I1K3M5O7Q9S1U',
+          refreshTokenExpiresAt: '2026-11-30T12:00:00Z',
+        },
+      },
+    },
+  },
+  {
+    schema: 'RealtimeEventAuthHandoffFailed',
+    name: 'conflict',
+    valid: true,
+    note: 'The identity already belongs to another account; the client may offer to switch.',
+    value: {
+      attemptId: JOB_ID,
+      reason: 'conflict',
+      conflict: {
+        reason: 'identity_in_use',
+        provider: 'google',
+        account: { id: ACCOUNT_2, displayName: 'Bob', kind: 'registered', createdAt: NOW },
+      },
+    },
+  },
+  {
+    schema: 'AdminMuteRequest',
+    name: 'too-long',
+    valid: false,
+    stage: 'schema',
+    note: 'Mutes last at most a year.',
+    value: { minutes: 600000 },
+  },
+  // ------------------------------------------------------------------- Jobs
+  {
+    schema: 'EngineJob',
+    name: 'generate-map',
+    valid: true,
+    note: 'Generate a map from a descriptor.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'generate-map',
+      simVersion: SIM_VERSION,
+      payload: { generator: (SETUP_GENERATED_FFA.map as { generator: unknown }).generator },
+    },
+  },
+  {
+    schema: 'EngineJob',
+    name: 'validate-map',
+    valid: true,
+    note: 'Validate an uploaded save.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'validate-map',
+      simVersion: SIM_VERSION,
+      payload: { blobHash: HASH_C, format: 'save' },
+    },
+  },
+  {
+    schema: 'EngineJob',
+    name: 'render-preview',
+    valid: true,
+    note: 'Render a preview PNG.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'render-preview',
+      simVersion: SIM_VERSION,
+      payload: { mapHash: HASH_A, maxSizePx: 512 },
+    },
+  },
+  {
+    schema: 'EngineJob',
+    name: 'verify-match',
+    valid: true,
+    note: 'Verify a finished match from its record.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'verify-match',
+      simVersion: SIM_VERSION,
+      payload: { matchId: MATCH_ID, setup: SETUP_CATALOG_1V1, recordHash: HASH_D },
+    },
+  },
+  {
+    schema: 'EngineJob',
+    name: 'payload-of-other-kind',
+    valid: false,
+    stage: 'schema',
+    note: 'The payload must match the job kind.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'verify-match',
+      simVersion: SIM_VERSION,
+      payload: { mapHash: HASH_A, maxSizePx: 512 },
+    },
+  },
+  {
+    schema: 'EngineJob',
+    name: 'verify-match-bad-setup',
+    valid: false,
+    stage: 'semantic',
+    note: 'The setup inside a verify job must pass MatchSetup semantics.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'verify-match',
+      simVersion: SIM_VERSION,
+      payload: {
+        matchId: MATCH_ID,
+        setup: edit(SETUP_CATALOG_1V1, (s) => {
+          s.seats[1]!.seat = 3;
+        }),
+        recordHash: HASH_D,
+      },
+    },
+  },
+  {
+    schema: 'EngineJobResult',
+    name: 'verified',
+    valid: true,
+    note: 'An agent reports a verified match.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'verify-match',
+      ok: true,
+      result: { verdict: 'verified', outcome: VERIFIED_OUTCOME },
+      agent: 'engine-agent-125-1',
+    },
+  },
+  {
+    schema: 'EngineJobResult',
+    name: 'failed',
+    valid: true,
+    note: 'An agent reports a failure.',
+    value: {
+      jobId: JOB_ID,
+      kind: 'generate-map',
+      ok: false,
+      error: { code: 'internal', message: 'generator refused the parameters' },
+      agent: 'engine-agent-125-1',
+    },
+  },
+  {
+    schema: 'VerifyVerdict',
+    name: 'verified',
+    valid: true,
+    note: 'Every client agreed with the verifier.',
+    value: { verdict: 'verified', outcome: VERIFIED_OUTCOME },
+  },
+  {
+    schema: 'VerifyVerdict',
+    name: 'diverged',
+    valid: true,
+    note: 'Seat 1 reported checksums the verifier did not reproduce.',
+    value: { verdict: 'diverged', clients: [1], outcome: VERIFIED_OUTCOME },
+  },
+  {
+    schema: 'VerifyVerdict',
+    name: 'unverifiable',
+    valid: true,
+    note: 'No client matched the verifier.',
+    value: { verdict: 'unverifiable', reason: 'checksum mismatch at tick 25 for every seat' },
+  },
+  {
+    schema: 'VerifyVerdict',
+    name: 'diverged-without-clients',
+    valid: false,
+    stage: 'schema',
+    note: 'A diverged verdict names at least one seat.',
+    value: { verdict: 'diverged', clients: [], outcome: VERIFIED_OUTCOME },
+  },
+];
