@@ -402,7 +402,33 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 {
 	glob2test::HeadlessGlobals globals(
 		{.display = true, .loadStrings = true, .width = 1000, .height = 800});
-	glob2test::HeadlessGame world({.teams = 1, .loadDefaultRace = true, .header = true});
+	glob2test::HeadlessGame world(
+		{.teams = 1, .discovered = true, .loadDefaultRace = true, .header = true});
+	world.addBuilding("swarm", 12, 7);
+	world.addBuilding("inn", 18, 9);
+	world.addBuilding("school", 20, 14);
+	for (int i = 0; i < 12; i++)
+		world.addUnit(WORKER, 11 + i % 6, 13 + i / 6);
+	world.addUnit(EXPLORER, 18, 16);
+	world.addUnit(WARRIOR, 19, 16);
+	for (int y = 2; y < 16; y++)
+		for (int x = 2; x < 8; x++)
+			if ((x + y) % 3 != 0)
+			{
+				auto &r = world.game.map.getResource(x, y);
+				r.type = WOOD;
+				r.variety = 0;
+				r.amount = 3;
+			}
+	for (int y = 18; y < 25; y++)
+		for (int x = 22; x < 29; x++)
+		{
+			auto &r = world.game.map.getResource(x, y);
+			r.type = WHEAT;
+			r.variety = 0;
+			r.amount = 3;
+		}
+
 	Online::MemoryStorage storage;
 	Online::InstanceConfig config(storage);
 	Online::PlatformClient platform(config);
@@ -440,25 +466,31 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	client->reports = {"Keep our food supply healthy.",
 					   "I have assigned more workers to the inn. I will report if our food supply "
 					   "needs attention."};
-	Hive::Dialog dialog(client);
-	auto *screen = &dialog;
+	world.gui.hive = client;
+	world.gui.hiveCards = std::make_unique<Hive::Dialog>(client);
+	auto *screen = world.gui.hiveCards.get();
+	screen->compose = [&] { world.gui.openCommander(); };
 	screen->attach(*globalContainer->gfx);
-	screen->draw(SDL_GetTicks());
-	screen->draw(SDL_GetTicks() + 40);
+	world.gui.drawAll(0);
 	REQUIRE(screen->host().find("hive/toggle/" + pid) != nullptr);
-	CHECK(screen->host().find("hive/send") == nullptr);
 	CHECK(screen->host().find("hive/credits") == nullptr);
 	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
 									  "/hive-commander.bmp");
-	InGameTextInput composer(true);
-	composer.setText("Build two inns near our colony");
-	composer.attach(*globalContainer->gfx);
-	composer.draw(SDL_GetTicks());
+	client->commandDraft = "Build two inns near our colony";
+	world.gui.openCommander();
+	CHECK(world.gui.typingCommander);
+	world.gui.drawAll(0);
 	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
 									  "/hive-command-input.bmp");
+	SDL_Event escape{};
+	escape.type = SDL_EVENT_KEY_DOWN;
+	escape.key.key = SDLK_ESCAPE;
+	world.gui.processEvent(&escape);
+	CHECK_FALSE(world.gui.typingCommander);
+	CHECK(client->commandDraft == "Build two inns near our colony");
 	SDL_Event outside{};
 	outside.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
 	outside.button.x = 900;
 	outside.button.y = 300;
-	CHECK_FALSE(dialog.handle(outside));
+	CHECK_FALSE(screen->handle(outside));
 }
