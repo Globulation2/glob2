@@ -316,35 +316,46 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
           </button>
         </div>
       </form>
-      <form
-        className="card"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (file) {
-            void run(
-              () => api.uploadVersion(map.id, file, notes),
-              'Uploaded. The server checks the file and draws a preview; this takes a moment.',
-            );
-          }
-        }}
-      >
-        <h3>New version</h3>
-        <label className="field">
-          Map file (.map or .map.gz)
-          <input
-            type="file"
-            accept=".map,.gz,.map.gz"
-            onChange={(e) => setFile(e.target.files?.[0])}
-          />
-        </label>
-        <label className="field">
-          What changed
-          <input value={notes} maxLength={2000} onChange={(e) => setNotes(e.target.value)} />
-        </label>
-        <button type="submit" disabled={!file}>
-          Upload version
-        </button>
-      </form>
+      {map.authoring?.kind === 'ai' ? (
+        <div className="card">
+          <h3>AI generated map</h3>
+          <p>
+            This version keeps its original map. Create a revision in AI Map Studio or upload an
+            edited copy as a new map.
+          </p>
+          <Link to="/map-studio">Open AI Map Studio</Link>
+        </div>
+      ) : (
+        <form
+          className="card"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (file) {
+              void run(
+                () => api.uploadVersion(map.id, file, notes),
+                'Uploaded. The server checks the file and draws a preview; this takes a moment.',
+              );
+            }
+          }}
+        >
+          <h3>New version</h3>
+          <label className="field">
+            Map file (.map or .map.gz)
+            <input
+              type="file"
+              accept=".map,.gz,.map.gz"
+              onChange={(e) => setFile(e.target.files?.[0])}
+            />
+          </label>
+          <label className="field">
+            What changed
+            <input value={notes} maxLength={2000} onChange={(e) => setNotes(e.target.value)} />
+          </label>
+          <button type="submit" disabled={!file}>
+            Upload version
+          </button>
+        </form>
+      )}
       {(message || error) && (
         <div style={{ gridColumn: '1 / -1' }}>
           {message && <div className="notice">{message}</div>}
