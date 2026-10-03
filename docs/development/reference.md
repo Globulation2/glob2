@@ -1013,7 +1013,9 @@ revision through `build.yml`'s `revision` workflow-call input.
 
 CI measurements batch completed runs hourly using trusted default-branch code and
 inert artifacts. Cancellations do not create measurement workflows, and draft-only
-observations are excluded. Metrics report queue delay, active execution time, idle
+observations are excluded. Batches retain attempt identities to avoid remeasuring
+completed runs. `feedback.json` reports p90 after ten successful matching-inventory
+PR samples, with explicit gaps when there are fewer samples. Metrics report queue delay, active execution time, idle
 gaps, aggregate runner minutes, feedback time and cache observations separately.
 Per-job queue timestamps are estimates, not proof of runner saturation. Overlapping
 jobs count once in wall execution time and separately in runner minutes.

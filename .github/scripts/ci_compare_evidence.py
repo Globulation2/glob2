@@ -43,6 +43,7 @@ def main():
     parser.add_argument('--scripting', type=Path, required=True)
     parser.add_argument('--compatibility', choices=['true','false'], required=True)
     parser.add_argument('--variants', choices=['true','false'], required=True)
+    parser.add_argument('--macos', choices=['true','false'], default='false')
     args = parser.parse_args()
     native = ['ubuntu-24.04', 'windows']
     profiles = ['javascript-profile-linux-g++-13', 'javascript-profile-mingw']
@@ -51,6 +52,9 @@ def main():
         profiles.append('javascript-profile-linux-g++-11')
     if args.variants == 'true':
         profiles.append('javascript-profile-linux-clang-18')
+    if args.macos == 'true':
+        native.append('macos')
+        profiles.append('javascript-profile-macos')
     browsers = {'chromium', 'firefox', 'webkit'}
     print(f'{validate_traces(args.traces, native, browsers)} exact native/browser traces match')
     corpora = []

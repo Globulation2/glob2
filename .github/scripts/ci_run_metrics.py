@@ -73,7 +73,7 @@ def compare(before, after):
     cohorts = {}
     for side, runs in [('before', before), ('after', after)]:
         for run in runs:
-            if run.get('conclusion') != 'success' or run.get('selection') is None:
+            if run.get('conclusion') != 'success' or run.get('selection') is None or not run.get('inventory_fingerprint'):
                 continue
             key = json.dumps([run.get('metrics_schema'), run['event'], run.get('inventory_fingerprint'), run['selection']], sort_keys=True)
             cohorts.setdefault(key, {'before': [], 'after': []})[side].append(run)
@@ -86,6 +86,28 @@ def compare(before, after):
                    for side, runs in group.items()}
         result.append({'cohort': json.loads(key), 'samples_per_side': 10, 'medians': medians})
     return result
+
+
+def feedback(runs):
+    """Report ordinary PR feedback by exact coverage; small cohorts stay explicit."""
+    import math
+    cohorts = {}
+    for run in runs:
+        if (run.get('event') != 'pull_request' or run.get('conclusion') != 'success'
+                or run.get('draft') or not run.get('inventory_fingerprint')):
+            continue
+        cohorts.setdefault(run['inventory_fingerprint'], []).append(run)
+    report = []
+    for identity, rows in sorted(cohorts.items()):
+        rows = sorted(rows, key=lambda row: int(row['run_id']))[-10:]
+        percentiles = {}
+        for metric in ('queue_seconds', 'execution_seconds', 'runner_minutes', 'time_to_result_seconds'):
+            values = sorted(row[metric] for row in rows if row.get(metric) is not None)
+            percentiles[metric] = values[math.ceil(len(values) * .9) - 1] if len(values) == 10 else None
+        report.append(dict(inventory_fingerprint=identity, samples=len(rows), p90=percentiles,
+                           targets_met=(percentiles['queue_seconds'] < 120 and percentiles['time_to_result_seconds'] < 900)
+                           if percentiles['queue_seconds'] is not None and percentiles['time_to_result_seconds'] is not None else None))
+    return report
 
 
 def api(path, token, binary=False):

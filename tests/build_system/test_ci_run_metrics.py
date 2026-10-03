@@ -19,7 +19,8 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(result['cancelled_jobs'], 1)
 
     def test_comparison_requires_ten_successes_and_matching_coverage(self):
-        run = dict(event='pull_request', selection={'native': True}, conclusion='success', queue_seconds=10, execution_seconds=20, runner_minutes=30, time_to_result_seconds=40)
+        run = dict(event='pull_request', selection={'native': True}, inventory_fingerprint='exact', conclusion='success', queue_seconds=10, execution_seconds=20, runner_minutes=30, time_to_result_seconds=40)
+        self.assertEqual(m.compare([dict(run, inventory_fingerprint=None)]*10, [dict(run, inventory_fingerprint=None)]*10), [])
         self.assertEqual(m.compare([run]*9, [run]*10), [])
         self.assertEqual(m.compare([run]*10, [dict(run, selection={'native': False})]*10), [])
         self.assertEqual(m.compare([run]*10, [dict(run, conclusion='failure')]*10), [])
@@ -46,3 +47,16 @@ class MetricsTest(unittest.TestCase):
         self.assertEqual(len(list(m.run_artifacts('run','token',read))),101)
         self.assertEqual(len(calls),2)
         self.assertTrue(calls[1].endswith('page=2'))
+
+class FeedbackTest(unittest.TestCase):
+    def test_p90_requires_ten_exact_coverage_samples(self):
+        row = dict(run_id=1, event='pull_request', conclusion='success', draft=False,
+                   inventory_fingerprint='same', queue_seconds=20, execution_seconds=100,
+                   runner_minutes=30, time_to_result_seconds=600)
+        self.assertIsNone(m.feedback([row]*9)[0]['targets_met'])
+        rows = [dict(row, run_id=n, time_to_result_seconds=600+n*50) for n in range(10)]
+        result = m.feedback(rows)[0]
+        self.assertEqual(result['p90']['time_to_result_seconds'],1000)
+        self.assertFalse(result['targets_met'])
+        self.assertTrue(m.feedback([row]*10)[0]['targets_met'])
+        self.assertEqual(m.feedback([dict(row,draft=True)]*10),[])

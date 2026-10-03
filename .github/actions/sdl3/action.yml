@@ -21,9 +21,9 @@ runs:
       with:
         path: build/sdl3-ci/prefix
         key: sdl3-prefix-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.identity.outputs.key }}
-    - shell: bash
+    - shell: ${{ inputs.shell }}
       run: python3 .github/scripts/ci_dependency_cache.py verify --key '${{ steps.identity.outputs.key }}'
-    - shell: bash
+    - shell: ${{ inputs.shell }}
       env:
         CC: ${{ inputs.cc }}
         CXX: ${{ inputs.cxx }}

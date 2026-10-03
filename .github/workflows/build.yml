@@ -27,7 +27,7 @@ on:
 # this run. Default-branch runs finish once started; the newest pending
 # revision replaces older pending work, so not every master commit is verified.
 concurrency:
-  group: build-${{ github.event_name == 'schedule' && 'nightly' || github.event_name == 'workflow_dispatch' && 'manual' || github.ref }}
+  group: build-${{ inputs.revision != '' && format('release-{0}', github.run_id) || github.event_name == 'schedule' && 'nightly' || github.event_name == 'workflow_dispatch' && 'manual' || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
 
 env:
@@ -64,8 +64,6 @@ jobs:
         with:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
-      - name: Test CI selection, coverage gates and measurements
-        run: python3 -m unittest discover -s tests/build_system -p 'test_ci*.py' -v
       - name: Test shared build-system contracts once
         run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v'
       - name: Test CI runners and failure reporting
@@ -163,7 +161,7 @@ jobs:
   linux-gcc11:
     name: Linux GCC 11 build and tests
     needs: changes
-    if: ${{ needs.changes.outputs.windows == 'true' && needs.changes.outputs.compatibility == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
       revision: ${{ inputs.revision || github.sha }}
@@ -332,7 +330,6 @@ jobs:
 
       - uses: ./.github/actions/sdl3
         with:
-          shell: msys2 {0}
           cc: ${{ matrix.compiler == 'g++-11' && 'gcc-11' || 'gcc-13' }}
           cxx: ${{ matrix.compiler }}
       - name: Build the YOG server
@@ -841,6 +838,8 @@ jobs:
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - name: Install build dependencies
         id: install_build_dependencies
@@ -1013,6 +1012,8 @@ jobs:
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
         if: ${{ needs.changes.outputs.native == 'true' }}
@@ -1167,6 +1168,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
         id: download_web_client
@@ -1210,6 +1213,8 @@ jobs:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
@@ -1301,11 +1306,13 @@ jobs:
     name: browser/native simulation equivalence
     env:
       COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
-    needs: [changes, linux, windows, web-test]
-    if: ${{ needs.changes.outputs.cross_platform == 'true' }}
+    needs: [changes, linux, windows, web-test, macos]
+    if: ${{ !cancelled() && needs.changes.outputs.cross_platform == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
@@ -1326,7 +1333,7 @@ jobs:
           path: artifacts/ci-scripting
       - name: Compare selected native and browser evidence
         run: |
-          python3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility '${{ needs.changes.outputs.compatibility }}'             --variants '${{ needs.changes.outputs.variants }}'
+          python3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility '${{ needs.changes.outputs.compatibility }}'             --variants '${{ needs.changes.outputs.variants }}'             --macos '${{ needs.changes.outputs.macos }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

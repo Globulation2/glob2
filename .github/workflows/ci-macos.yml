@@ -41,6 +41,26 @@ jobs:
             --check 'macOS regression cases' 'python3 test/run_tests.py --binary engine --build-dir build/darwin/client/release --coverage-profile ${{ inputs.coverage_profile }} --no-display --junit artifacts/tests/engine-junit.xml --exclude-tag map-generators --write-inventory artifacts/tests/engine.inventory.json' \
             --check 'unit tests' 'python3 test/run_tests.py --binary unit --build-dir build/darwin/client/release --no-display --junit artifacts/tests/unit-junit.xml' \
             --check 'CLI continuation' 'python3 test/test_cli_smoke.py --binary build/darwin/client/release/src/glob2 --artifacts artifacts/cli-smoke'
+      - name: Retain native simulation and scripting evidence
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 test/run-browser-determinism.py build/darwin/client/release/src/glob2 artifacts/browser-determinism
+          python3 test/check_javascript.py build/darwin/client/release/src/glob2 --output artifacts/javascript-profile
+          python3 test/check_javascript_corpus.py --build-dir build/darwin/client/release --output artifacts/javascript-corpus
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-determinism-macos
+          path: artifacts/browser-determinism/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: javascript-profile-macos
+          path: |
+            artifacts/javascript-corpus/
+            artifacts/javascript-profile/
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
