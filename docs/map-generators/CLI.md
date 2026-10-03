@@ -317,6 +317,7 @@ Crop selection keeps complete colony markers and scores resource/terrain seams;
 it is not a playability certificate. Online delivery additionally validates the
 native post-import report. All delivered files remain ordinary maps requiring no
 model or service connection to play.
+
 ## Render a whole game
 
 ```sh
