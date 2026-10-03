@@ -86,6 +86,9 @@ def main():
     info['CFBundleExecutable']=product
     info['CFBundleName']='Glob2 Script Tests' if args.script_tests else info['CFBundleName']
     info['CFBundleVersion']=args.build_number
+    if args.china:
+        # The China edition builds without online play, so it claims no invite links.
+        info.pop('CFBundleURLTypes',None)
     write_if_changed(project/'Info.plist',plistlib.dumps(info).decode())
     manifest=json.loads((prefix/'manifest.json').read_text())
     include=[output/'include',prefix/'include',prefix/'include/SDL3']+[ROOT/p for p in INCLUDE_DIRECTORIES]
@@ -102,9 +105,13 @@ def main():
         'target_link_options(Glob2 PRIVATE -ObjC)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER '+BUNDLE_ID+' XCODE_ATTRIBUTE_INSTALL_PATH /Applications XCODE_ATTRIBUTE_SKIP_INSTALL NO XCODE_ATTRIBUTE_GCC_GENERATE_DEBUGGING_SYMBOLS YES XCODE_ATTRIBUTE_DEBUG_INFORMATION_FORMAT "dwarf-with-dsym")',
         'set_target_properties(Glob2 PROPERTIES MACOSX_BUNDLE_INFO_PLIST '+cmake_quote(project/'Info.plist')+' XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")']
-    # Associated domain of the official instance (scons/official_instance.py).
+    # Associated domain of the official instance (scons/official_instance.py); none
+    # for the China edition, which has no online play.
     entitlements=plistlib.loads((ROOT/'mobile/ios/Glob2.entitlements').read_bytes())
-    entitlements['com.apple.developer.associated-domains']=['applinks:'+official_instance.host(official_instance.origin())]
+    if args.china:
+        entitlements.pop('com.apple.developer.associated-domains',None)
+    else:
+        entitlements['com.apple.developer.associated-domains']=['applinks:'+official_instance.host(official_instance.origin())]
     write_if_changed(project/'Glob2.entitlements',plistlib.dumps(entitlements).decode())
     lines.append('set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS '+cmake_quote(project/'Glob2.entitlements')+')')
     if args.script_tests:

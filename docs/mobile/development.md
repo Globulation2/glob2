@@ -578,6 +578,18 @@ verify its `PAGE_ALIGNMENT_16K` setting, and check startup, gameplay, rotation,
 background/resume and save/load on a real device. Keep the generated `.apks`,
 screenshots, logs and replay checksums under `artifacts/`.
 
+Link the [privacy policy](privacy-policy.md) in the store listing and keep Play's
+Data safety form in step with it. The Play build includes online play, so the form
+must declare what the official instance collects when a player goes online (account
+and display name, optional e-mail address from a sign-in provider, user IDs, in-game
+and room chat, uploaded maps, match and connection-quality data, IP addresses in logs
+and rate limits), that it is sent over TLS, that nothing is used for ads, analytics or
+tracking, and that players can download their data and delete their account at
+`https://app.glob2online.com/account`. Single-player, editor and LAN play collect
+nothing. The game has no minimum age; the Play Console target-audience and content
+answers must match the policy's [children](privacy-policy.md#children) section. Invite links open the app only after the official instance publishes the Play
+app-signing fingerprint ([mobile app links](../hosting/README.md#mobile-app-links)).
+
 ### Automated Google Play internal releases
 
 `.github/workflows/android-play-internal.yml` is public for review, but its
@@ -761,6 +773,12 @@ only to the ephemeral mirror runner, outside the checked-out repository.
 Configure the app's internal TestFlight group for automatic distribution in App
 Store Connect if testers should receive every processed build without another
 manual step.
+
+App Store Connect's App Privacy answers and privacy policy URL follow the same
+[privacy policy](privacy-policy.md) as Play's Data safety form (above). Universal
+links for invites need the Associated Domains capability on the App ID and the
+official instance's `apple-app-site-association` file
+([mobile app links](../hosting/README.md#mobile-app-links)).
 
 The iOS Info.plist declares `ITSAppUsesNonExemptEncryption = NO` for the app's
 standard TLS use. This is the owner's export-compliance determination; revisit it
@@ -947,7 +965,7 @@ The iOS project includes `mobile/ios/Glob2.entitlements` for UDP broadcast LAN
 discovery. Device signing requires a provisioning profile approved for Apple's
 multicast entitlement, in addition to the existing local-network usage
 explanation. Manual pairing remains available when discovery cannot run.
-Android currently targets API 36 and uses INTERNET for LAN connections. A future
+Android currently targets API 36 and uses INTERNET for LAN and online connections. A future
 API 37 target must add ACCESS_LOCAL_NETWORK and request it before LAN access,
 as described by [Android's local-network permission guide](https://developer.android.com/privacy-and-security/local-network-permission).
 Connection failures point players to local-network permission and certificate

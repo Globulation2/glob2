@@ -317,6 +317,52 @@ self-hosted instance leaves `appLinks` out (both files then answer 404) and its
 invites open the game through `glob2://`. Apple caches the file through its CDN;
 after a change, allow a day or reinstall the app.
 
+The apps take the domain from `scons/official_instance.py`: the Android build fills
+the App Link host (`officialInstanceHost` in `AndroidManifest.xml`) from it, and
+`mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both currently
+`app.glob2online.com`. The Amazon and China editions leave online play out, so they
+declare neither invite links nor associated domains.
+
+#### Setting up the official instance
+
+`app.glob2online.com` serves the iOS file already (Team ID `CL2MNNYQX3`, also in
+Apple's CDN); `assetlinks.json` answers 404 until the Play app-signing SHA-256 is
+added. The values the maintainer supplies:
+
+| Value | Where it comes from |
+| --- | --- |
+| Google Play app-signing certificate SHA-256 | Play Console > the app > Test and release > App integrity > App signing key certificate, "SHA-256 certificate fingerprint" (uppercase hex with colons, as the config expects). Play re-signs every installed copy with this key, so it is the one phones check; the upload key is not. |
+| Other Android signing keys (optional) | F-Droid signs its own APKs. Add F-Droid's certificate SHA-256 (`apksigner verify --print-certs <F-Droid APK>`) for F-Droid installs to get verified links; without it they open the invite page, whose "Open in the Globulation 2 app" button still works. Up to eight fingerprints are allowed. |
+| Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
+| Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
+
+Then add to the deployment's `instance.yaml` and recreate `platform-api`:
+
+```yaml
+appLinks:
+  android:
+    packageName: org.globulation2.glob2
+    sha256CertFingerprints:
+      - <Play app-signing SHA-256, AA:BB:… (32 bytes)>
+  ios:
+    appIds: [CL2MNNYQX3.org.globulation2.glob2]
+```
+
+Check the result:
+
+```sh
+curl -s https://app.glob2online.com/.well-known/assetlinks.json
+curl -s https://app.glob2online.com/.well-known/apple-app-site-association
+curl -s https://app-site-association.cdn-apple.com/a/v1/app.glob2online.com   # Apple's cached copy
+curl -s 'https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://app.glob2online.com&relation=delegate_permission/common.handle_all_urls'   # Google's view
+adb shell pm verify-app-links --re-verify org.globulation2.glob2
+adb shell pm get-app-links org.globulation2.glob2   # app.glob2online.com: verified
+```
+
+Android verifies when the app is installed or updated, so reinstall (or re-verify as
+above) after changing the file. Then open an invite link from another app on each
+phone; it should open the game at the room.
+
 ## Configuration
 
 Everything is configured in `deploy/.env` (Compose variables, and the environment of
@@ -338,6 +384,7 @@ its default.
 | `ENGINE_CONCURRENCY`, `GLOB2_ENGINE_SCRATCH_SIZE` | `1`, `1g` | Jobs per agent, and its scratch tmpfs |
 | `WARM_MAPS_PER_ENTRY`, `WARM_MAPS_MAX_PER_ENTRY` | `2`, `8` | Pre-generated quick-match maps per map pool entry (0: off), and the ceiling the pool rises to while an entry is busy |
 | `GLOB2_BACKUP_DIR`, `GLOB2_BACKUP_KEEP` | `backups/` beside the env file's directory, `5` | Where `deploy/update-host.sh` keeps its pre-upgrade backups, and how many |
+| `GLOB2_BACKUP_BUCKET` | unset | Cloud Storage bucket of the [scheduled backups](#scheduled-backups) |
 | `GLOB2_DEPLOYED_REVISION_FILE` | `deployed-revision` beside the env file's directory | Where `deploy/update-host.sh` records the revision of each successful deployment, its rollback target |
 | `GLOB2_RELAY_REGION` | `default` | Region these relays report |
 | `GLOB2_RELAY_MAX_MATCHES` | `200` | Matches per relay |
@@ -378,6 +425,23 @@ auth:
     - {id: google, kind: oidc, preset: google, displayName: Google,
        clientId: 1234-abc.apps.googleusercontent.com, clientSecretEnv: GOOGLE_CLIENT_SECRET}
 ```
+
+On a single host, `deploy/configure-signin.py` makes both edits and restarts the
+services in one step, taking the secret from standard input so that it stays out
+of the command line and the shell history:
+
+```sh
+read -rs GOOGLE_SECRET   # paste the client secret, then Enter
+printf %s "$GOOGLE_SECRET" | python3 deploy/configure-signin.py /path/to/deployment.env \
+    google --client-id 1234-abc.apps.googleusercontent.com --restart
+```
+
+It edits only `auth.providers` in the file `GLOB2_INSTANCE_CONFIG` names (other
+keys and comments stay), checks the result with PyYAML before writing, and writes
+`GOOGLE_CLIENT_SECRET` to the env file. `--remove` takes the provider out again.
+With only the `openid`, `email` and `profile` scopes, which Google counts as
+non-sensitive, the app needs no scope verification; publish it ("In production")
+so that any Google account can sign in, not only listed test users.
 
 **Microsoft.** In the Microsoft Entra admin center, *App registrations → New
 registration*. Choose the account types (personal and work accounts: tenant
@@ -533,6 +597,100 @@ hands them to `glob2_migrator` again, re-applies the grants, then applies any
 migrations newer than the dump. Check the restore on a
 separate host or project (`docker compose -p glob2-restore …` with other ports)
 before relying on it.
+
+### Scheduled backups
+
+`deploy/backup-to-gcs.sh <env-file>` backs the database up to a Google Cloud
+Storage bucket, and a systemd timer runs it every day at 03:17 UTC (plus up to ten
+minutes; a run missed while the host was down happens at the next boot). Each run:
+
+1. takes a `pg_dump -Fc` of the database and checks that `pg_restore` can read it;
+2. lists the ids of deleted accounts (`<name>.deleted-accounts.txt`, for restores,
+   below);
+3. uploads both to `daily/glob2-<UTC time>.*`, and copies them to `weekly/` when the
+   newest weekly backup is seven days old or more, and to `monthly/` when the
+   calendar month (UTC) has none yet.
+
+The bucket's lifecycle rules ([`deploy/gcs-backup-lifecycle.json`](../../deploy/gcs-backup-lifecycle.json))
+do the rotation:
+
+| Tier | Kept |
+| --- | --- |
+| `daily/` | 7 days (lifecycle deletion can lag by up to a day) |
+| `weekly/` | 35 days, so about five weekly backups |
+| `monthly/` | indefinitely, one per calendar month |
+
+Object names are never reused, so the host only creates and lists objects; it
+cannot delete or overwrite a backup. These backups hold the database only. The blob
+volume (replays, records, maps) and the keys still need the manual archives above;
+the blob volume is content-addressed, so an older blob archive plus a newer dump
+restores everything except files added in between.
+
+**Setting up** (once per deployment; the official instance uses the bucket
+`glob2-backups-pharaoh-418820` in `northamerica-northeast2` and the service account
+`glob2-staging-host`):
+
+```sh
+gcloud storage buckets create gs://BUCKET --location REGION --uniform-bucket-level-access \
+    --public-access-prevention --soft-delete-duration 0 \
+    --lifecycle-file deploy/gcs-backup-lifecycle.json
+gcloud iam service-accounts create glob2-host
+for role in roles/storage.objectCreator roles/storage.objectViewer; do
+  gcloud storage buckets add-iam-policy-binding gs://BUCKET \
+      --member serviceAccount:glob2-host@PROJECT.iam.gserviceaccount.com --role $role
+done
+# The VM must run as that account with a scope that allows writing to Cloud
+# Storage (the default scopes are read-only). This needs the VM stopped:
+gcloud compute instances stop glob2-host --zone ZONE
+gcloud compute instances set-service-account glob2-host --zone ZONE \
+    --service-account glob2-host@PROJECT.iam.gserviceaccount.com --scopes cloud-platform
+gcloud compute instances start glob2-host --zone ZONE
+```
+
+The account has no project-wide role, so `cloud-platform` scope gives it nothing
+beyond the bucket. Soft delete is off so that deleted backups are really gone when
+the lifecycle rules remove them. Then, on the host, add
+`GLOB2_BACKUP_BUCKET=BUCKET` to the env file and install the timer:
+
+```sh
+sudo deploy/install-backup-timer.sh /opt/glob2/config/staging.env
+sudo systemctl start glob2-backup.service        # one backup now
+journalctl -u glob2-backup.service -n 20         # its log
+systemctl list-timers glob2-backup.timer         # the next run
+gcloud storage ls -l gs://BUCKET/daily/ gs://BUCKET/weekly/ gs://BUCKET/monthly/
+```
+
+The units run the scripts from the checkout, so a deployment updates them; rerun
+`install-backup-timer.sh` only when `deploy/systemd/` changes.
+
+**Restoring.** `deploy/restore-backup.sh` restores into a new database next to
+the live one and never writes to `glob2`:
+
+```sh
+deploy/restore-backup.sh /opt/glob2/config/staging.env \
+    gs://BUCKET/daily/glob2-20261003T031700Z.dump glob2_restore_20261003
+```
+
+It creates the database, restores the dump into it, applies newer migrations, and
+then **re-applies deletions**: every account listed in the newest
+`*.deleted-accounts.txt` in the bucket, or deleted in the live database if that is
+still running, that is not deleted in the restored copy is deleted there again
+with `platform admin delete`, the same scrub as the original deletion. The one gap
+is a deletion made after the newest backup when the live database is also lost:
+nothing records it, so such an account comes back and has to be deleted again.
+
+Check the restored database (`docker compose exec postgres psql -U glob2 -d
+glob2_restore_20261003`), then drop it, or put it into service:
+
+```sh
+docker compose stop platform-api platform-worker relay engine-agent
+docker compose exec -T postgres psql -U glob2 -d postgres \
+    -c 'ALTER DATABASE glob2 RENAME TO glob2_replaced' \
+    -c 'ALTER DATABASE glob2_restore_20261003 RENAME TO glob2'
+docker compose up -d --wait       # init hands the objects to glob2_migrator and re-grants
+```
+
+Drop `glob2_replaced` once the instance works again.
 
 ## Upgrades
 
@@ -735,8 +893,10 @@ at most 1000 rows per table and run) and collects blobs every six hours:
 | Spilled NOTIFY payloads | 1 hour |
 | Blobs | unreferenced ones (no map version, preview, match artifact, upload, generated map (warm pool maps included), or match played on the map) 7 days after creation; stored files no `blobs` row names, 7 days after they were written |
 
-Matches, participants, ratings, rating history, catalog maps and the audit log
-are kept.
+Matches, participants, ratings, rating history, catalog maps, map download counts
+(by account, or by IP address for downloads without an account) and the audit log
+are kept. The official instance's [privacy policy](../mobile/privacy-policy.md)
+states these periods to players; change it together with `maintenance.ts`.
 - Migrations: `docker compose run --rm --no-deps init node packages/db/src/cli.ts status`.
 - Stopping: `docker compose stop` drains relays (up to `GLOB2_RELAY_STOP_GRACE`);
   `docker compose down` keeps volumes; `down --volumes` deletes all data.
