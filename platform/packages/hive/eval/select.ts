@@ -12,16 +12,22 @@ const rates = [
 ] as const;
 const candidates = rates.map(([model, input, cached, output]) => {
   const evidence = JSON.parse(readFileSync(join(directory, model + '.json'), 'utf8')) as {
+    evaluationVersion: number;
+    harness: string;
     contractSha256: string;
     records: {
       id: string;
       firstAttemptValid: boolean;
+      validScripts: number;
+      attemptedScripts: number;
       completed: boolean;
       repairs: number;
       latencyMs: number;
       usage: { input: number; cachedInput: number; output: number };
     }[];
   };
+  if (evidence.evaluationVersion !== 2 || evidence.harness !== 'production-commander-native-client')
+    throw new Error('Legacy smoke evidence is not eligible for model selection: ' + model);
   if (
     evidence.records.length !== suite.length ||
     new Set(evidence.records.map((r) => r.id)).size !== suite.length
@@ -43,7 +49,11 @@ const candidates = rates.map(([model, input, cached, output]) => {
   const upper = cost + ((tokens.input - tokens.cachedInput) * input * 0.25) / 1e6;
   const latencies = evidence.records.map((r) => r.latencyMs).sort((a, b) => a - b);
   const valid =
-    evidence.records.filter((r) => r.firstAttemptValid).length / evidence.records.length;
+    evidence.records.reduce((n, r) => n + r.validScripts, 0) /
+    Math.max(
+      1,
+      evidence.records.reduce((n, r) => n + r.attemptedScripts, 0),
+    );
   const complete = evidence.records.filter((r) => r.completed).length / evidence.records.length;
   return {
     model,

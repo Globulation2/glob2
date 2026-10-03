@@ -1,3 +1,10 @@
+#include "hive/HiveClient.h"
+#include "online/InstanceConfig.h"
+#include "online/OnlineStorage.h"
+#include "online/PlatformClient.h"
+#include <atomic>
+#include <thread>
+#include <chrono>
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "hive/HiveObservation.h"
@@ -66,6 +73,98 @@ TEST_CASE("Hive Mind evaluation gameplay fixture" * doctest::test_suite("HiveMin
 	std::ifstream stream(input);
 	Json request;
 	stream >> request;
+	if (request.contains("operations"))
+	{
+		world.game.stepCounter = 100;
+		Online::MemoryStorage storage;
+		Online::InstanceConfig config(storage);
+		Online::PlatformClient platform(config);
+		std::uint64_t clock = 1000;
+		Json queued = Json::array(), results = Json::array(), wakes = Json::array();
+		const std::string lease = "12345678-1234-4234-8234-123456789abc";
+		Hive::ClientEnvironment environment;
+		environment.storage = &storage;
+		environment.now = [&] { return clock; };
+		environment.worker = [&](const Json &r)
+		{
+			auto result = Hive::invoke(r);
+			return result;
+		};
+		environment.request = [&](auto, const std::string &path, const Json &body, auto callback)
+		{
+			Online::PlatformClient::Response r;
+			r.ok = true;
+			if (path.ends_with("/account"))
+				r.result = {{"enabled", true}, {"available", 1000000}};
+			else if (path.ends_with("/poll"))
+			{
+				r.result = {{"lease", lease},
+							{"team", 0},
+							{"operations", body.value("caughtUp", false) ? queued : Json::array()},
+							{"programs", Json::array()}};
+				if (body.value("caughtUp", false))
+					queued = Json::array();
+			}
+			else if (path.ends_with("/result"))
+			{
+				results.push_back(body);
+				r.result = {{"accepted", true}};
+			}
+			else if (path.ends_with("/wake"))
+			{
+				wakes.push_back(body.at("wake"));
+				r.result = {{"accepted", true}};
+			}
+			else
+				r.result = {{"events", Json::array()}};
+			callback(r);
+		};
+		Hive::Client client(world.gui, platform, lease, 0, environment);
+		auto pump = [&]
+		{
+			for (int i = 0; i < 60; i++)
+			{
+				clock += 100;
+				client.update(true);
+				while (true)
+				{
+					auto order = world.gui.getOrder();
+					if (order->getOrderType() == ORDER_NULL)
+						break;
+					order->sender = 0;
+					world.game.executeOrder(order, -1);
+				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+		};
+		for (const auto &op : request.at("operations"))
+		{
+			if (op.contains("advance"))
+				world.game.stepCounter += op.at("advance").get<unsigned>();
+			else if (op.contains("addWorkers"))
+			{
+				for (int i = 0; i < op.at("addWorkers").get<int>(); i++)
+					world.addUnit(WORKER, 15 + i, 12);
+			}
+			else if (op.contains("manual"))
+			{
+				auto order = Script::order(world.game, 0, Hive::value(op.at("manual")));
+				order->sender = 0;
+				world.game.executeOrder(order, -1);
+			}
+			else
+				queued.push_back(op);
+			pump();
+		}
+		std::ofstream target(output);
+		target << Json{{"results", results},
+					   {"wakes", wakes},
+					   {"standing", client.standingOrders()},
+					   {"snapshot", Hive::capture(observations, world.game, 0)},
+					   {"checksum", world.checksum()}}
+					  .dump();
+		return;
+	}
 	Json results = Json::array();
 	for (const auto &source : request.value("sources", Json::array()))
 	{
@@ -117,7 +216,11 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 	Online::PlatformClient platform(config);
 	std::uint64_t clock = 1000;
 	std::atomic<int> invocations = 0;
-	bool dropResult = false;
+	bool dropResult = false, delayPoll = false, failCommand = false;
+	Json commandRequests = Json::array();
+	Online::PlatformClient::ResponseHandler heldPoll;
+	Online::PlatformClient::Response heldResponse;
+	Json serverPrograms = Json::array();
 	Json queued = Json::array(), results = Json::array();
 	const std::string lease = "12345678-1234-4234-8234-123456789abc",
 					  id = "12345678-1234-4234-8234-123456789abd";
@@ -141,7 +244,7 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 				{"lease", lease},
 				{"team", 0},
 				{"operations", body.value("caughtUp", false) ? queued : Json::array()},
-				{"programs", Json::array()}};
+				{"programs", serverPrograms}};
 			if (body.value("caughtUp", false))
 				queued = Json::array();
 		}
@@ -159,6 +262,17 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 		}
 		else
 			response.result = {{"events", Json::array()}};
+		if (path.ends_with("/command"))
+		{
+			commandRequests.push_back(body);
+			response.ok = !failCommand;
+		}
+		if (delayPoll && path.ends_with("/poll"))
+		{
+			heldPoll = callback;
+			heldResponse = response;
+			return;
+		}
 		callback(response);
 	};
 	Hive::Client client(world.gui, platform, "12345678-1234-4234-8234-123456789aba", 0,
@@ -210,6 +324,57 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 	CHECK(invocations == 5);
 	CHECK(client.standingOrders()[0]["paused"] == true);
 	CHECK(storage.persisted > 0);
+	// A delayed response must not restart the lease validity window.
+	delayPoll = true;
+	pump();
+	REQUIRE(bool(heldPoll));
+	clock += 14000;
+	heldPoll(heldResponse);
+	heldPoll = {};
+	world.game.stepCounter = 600;
+	pump();
+	CHECK(invocations == 5);
+	// A fresh device sees paused metadata and can remove an order without its globals.
+	delayPoll = false;
+	serverPrograms = Json::array({{{"definition", definition}, {"status", "active"}}});
+	Online::MemoryStorage freshStorage;
+	environment.storage = &freshStorage;
+	Hive::Client fresh(world.gui, platform, "12345678-1234-4234-8234-123456789aba", 0, environment);
+	auto freshPump = [&]
+	{
+		for (int i = 0; i < 40; i++)
+		{
+			clock += 100;
+			fresh.update(true);
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+	};
+	freshPump();
+	REQUIRE(fresh.standingOrders().size() == 1);
+	CHECK(fresh.standingOrders()[0]["missingCheckpoint"] == true);
+	CHECK(fresh.standingOrders()[0]["paused"] == true);
+	queued.push_back(
+		{{"id", lease},
+		 {"request", {{"kind", "resume"}, {"programId", id}, {"expectedRevision", 2}}}});
+	freshPump();
+	CHECK(results.back()["status"] == "failed");
+	CHECK(invocations == 5);
+	serverPrograms = Json::array();
+	queued.push_back(
+		{{"id", lease},
+		 {"request", {{"kind", "remove"}, {"programId", id}, {"expectedRevision", 2}}}});
+	freshPump();
+	CHECK(fresh.standingOrders().empty());
+	failCommand = true;
+	fresh.command("Count workers", false);
+	CHECK(fresh.commandDraft == "Count workers");
+	fresh.command("Count workers", false);
+	CHECK(commandRequests[0]["id"] == commandRequests[1]["id"]);
+	fresh.command("Count workers", true);
+	CHECK(commandRequests[1]["id"] != commandRequests[2]["id"]);
+	failCommand = false;
+	fresh.command("Count workers", true);
+	CHECK(fresh.commandDraft.empty());
 }
 
 #include "hive/HiveDialog.h"
@@ -231,6 +396,26 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 		r.result = {{"enabled", true}, {"available", 12500}};
 		callback(r);
 	};
+	const std::string pid = "12345678-1234-4234-8234-123456789abd";
+	Json def = {{"id", pid},
+				{"revision", 1},
+				{"name", "Keep food supply healthy"},
+				{"description", "Watch our inns and assign workers when food needs attention."},
+				{"source", "function step(){}"},
+				{"intervalTicks", 25}};
+	Json saved = {{"version", 1},
+				  {"origin", platform.origin()},
+				  {"team", world.gui.localTeamNo},
+				  {"uncertain", false},
+				  {"programs", Json::array({{{"definition", def},
+											 {"state", Json::object()},
+											 {"initialized", true},
+											 {"paused", false},
+											 {"nextTick", 25},
+											 {"random", 1}}})}};
+	storage.write("online/hive/12345678-1234-4234-8234-123456789abc-" +
+					  std::to_string(world.gui.localPlayer) + ".json",
+				  saved.dump());
 	auto client = std::make_shared<Hive::Client>(
 		world.gui, platform, "12345678-1234-4234-8234-123456789abc", 0, environment);
 	client->reports = {"Keep our food supply healthy.",
@@ -241,8 +426,20 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	screen->attach(*globalContainer->gfx);
 	screen->draw(SDL_GetTicks());
 	screen->draw(SDL_GetTicks() + 40);
-	REQUIRE(screen->host().find("hive/send") != nullptr);
-	REQUIRE(screen->host().find("hive/stop") != nullptr);
+	REQUIRE(screen->host().find("hive/toggle/" + pid) != nullptr);
+	CHECK(screen->host().find("hive/send") == nullptr);
+	CHECK(screen->host().find("hive/credits") == nullptr);
 	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
 									  "/hive-commander.bmp");
+	InGameTextInput composer(true);
+	composer.setText("Build two inns near our colony");
+	composer.attach(*globalContainer->gfx);
+	composer.draw(SDL_GetTicks());
+	globalContainer->gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() +
+									  "/hive-command-input.bmp");
+	SDL_Event outside{};
+	outside.type = SDL_EVENT_MOUSE_BUTTON_DOWN;
+	outside.button.x = 900;
+	outside.button.y = 300;
+	CHECK_FALSE(dialog.handle(outside));
 }

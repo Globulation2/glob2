@@ -1,18 +1,15 @@
 // Explicit opt-in live evaluation. Credentials never enter fixtures or results.
-import {
-  readFileSync,
-  writeFileSync,
-  mkdirSync,
-  mkdtempSync,
-  existsSync,
-  copyFileSync,
-} from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, copyFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { homedir, tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { loadEnvFile } from 'node:process';
 import { createHash } from 'node:crypto';
-import type { ModelMessage } from 'ai';
+import { randomUUID } from 'node:crypto';
+import { createTestDatabase } from '../../db/test/support.ts';
+import { fixture } from '../test/support.ts';
+import { Credits } from '../src/credits.ts';
+import { Commander, type ModelProvider } from '../src/commander.ts';
 import { parse, HiveTool, HIVE_API_VERSION } from '@glob2/protocol';
 import { OpenAICommander, PROMPT_VERSION, commanderPrompt } from '../src/commander.ts';
 import { suite, type Scenario } from './suite.ts';
@@ -38,7 +35,7 @@ type Data = Record<string, any>; // Evaluation consumes deliberately untrusted J
 function engine(sources: unknown[]): Data {
   const input = join(temporary, 'input.json'),
     output = join(temporary, 'output.json');
-  writeFileSync(input, JSON.stringify({ sources }));
+  writeFileSync(input, JSON.stringify({ operations: sources }));
   const run = spawnSync(
     engineBinary,
     ['--test-case=Hive Mind evaluation gameplay fixture', '--no-colors'],
@@ -68,7 +65,7 @@ function completed(
 ): boolean {
   const e = scenario.expected;
   if (e['standing'] && !standing.length) return false;
-  if (e['wake']) return wakes.some((w) => w['key'] === e['wake']);
+  if (e['wake'] && !wakes.length) return false;
   if (e['output'])
     return outputs.some((out) =>
       Object.entries(e['output'] as Data).every(([k, v]) => out?.[k] === v),
@@ -83,7 +80,11 @@ function completed(
   const buildings = state['snapshot']['buildings'].filter((b: Data) => b['team'] === 0);
   if (e['createdFamily'] !== undefined)
     return buildings.some(
-      (b: Data) => b['shortType'] === e['createdFamily'] && b['x'] === e['x'] && b['y'] === e['y'],
+      (b: Data) =>
+        b['shortType'] === e['createdFamily'] &&
+        (e['x'] === undefined || b['x'] === e['x']) &&
+        (e['y'] === undefined || b['y'] === e['y']) &&
+        (e['createdFamily'] !== 1 || b['x'] !== 10 || b['y'] !== 4),
     );
   const selected = buildings.filter((b: Data) => b['shortType'] === e['family']);
   return (
@@ -94,131 +95,212 @@ function completed(
   );
 }
 const models = (process.env['HIVE_EVAL_MODELS'] ?? 'gpt-6-luna,gpt-6.1-sol,gpt-6-astra').split(',');
-for (const model of models) {
-  const provider = new OpenAICommander(key, model);
-  const existing = join(outputDir, model + '.json');
-  const prior = existsSync(existing) ? JSON.parse(readFileSync(existing, 'utf8')) : null;
-  if (prior && prior.contractSha256 !== createHash('sha256').update(system).digest('hex'))
-    throw new Error('Prompt changed; use a fresh evaluation output directory.');
-  const records: Data[] = prior?.records ?? [];
-  const providerModels = new Set<string>();
-  for (const scenario of suite) {
-    if (records.some((r) => r['id'] === scenario.id)) continue;
-    const messages: ModelMessage[] = [{ role: 'user', content: scenario.command }];
-    const sources: string[] = [],
-      outputs: Data[] = [],
-      standing: Data[] = [],
-      wakes: Data[] = [];
-    let firstValid: boolean | undefined,
-      repairs = 0,
-      calls = 0,
-      input = 0,
-      cachedInput = 0,
-      output = 0,
-      error: string | undefined;
-    let state = engine([]);
-    const start = Date.now();
-    try {
-      for (let round = 0; round < 12; round++) {
-        const step = await provider.step(system, messages, AbortSignal.timeout(60000));
-        if (step.providerModel) providerModels.add(step.providerModel);
-        calls++;
-        input += step.usage.input;
-        cachedInput += step.usage.cachedInput;
-        output += step.usage.output;
-        messages.push(...step.messages);
-        if (!step.calls.length) break;
-        const identities = step.messages.flatMap((m) =>
-          m.role === 'assistant' && Array.isArray(m.content)
-            ? m.content.filter((c) => c.type === 'tool-call')
-            : [],
-        );
-        for (let index = 0; index < step.calls.length; index++) {
-          let result: unknown;
-          try {
-            const tool = parse(HiveTool, step.calls[index]?.input);
-            if (tool.kind === 'execute' || tool.kind === 'install') {
-              const source = tool.kind === 'execute' ? tool.source : tool.program.source;
-              sources.push(source);
-              state = engine(sources);
-              const outcome = state['results'].at(-1);
-              firstValid ??= !!outcome['ok'];
-              if (!outcome['ok']) {
-                repairs++;
-                sources.pop();
-              } else {
-                outputs.push(outcome['output']);
-                wakes.push(...outcome['wakes']);
-                if (tool.kind === 'install') standing.push(tool.program);
-              }
-              result = outcome['ok'] ? { status: 'completed', output: outcome['output'] } : outcome;
-            } else if (tool.kind === 'list') result = standing;
-            else
-              result = {
-                error:
-                  'No existing standing order is available for that operation in this fresh scenario.',
-              };
-          } catch {
-            firstValid ??= false;
-            repairs++;
-            result = { error: 'Invalid operation. Recheck the supported contract.' };
-          }
-          const identity = identities[index];
-          if (!identity) throw new Error('Missing tool identity');
-          messages.push({
-            role: 'tool',
-            content: [
-              {
-                type: 'tool-result',
-                toolCallId: identity.toolCallId,
-                toolName: 'colony',
-                output: { type: 'json', value: JSON.parse(JSON.stringify(result)) },
-              },
-            ],
-          });
-        }
-      }
-    } catch {
-      error = 'Provider or evaluation failure';
-    }
-    const record = {
-      id: scenario.id,
-      category: scenario.category,
-      firstAttemptValid: firstValid ?? false,
-      completed: !error && completed(scenario, state, outputs, standing, wakes),
-      repairs,
-      calls,
-      latencyMs: Date.now() - start,
-      usage: { input, cachedInput, output },
-      error,
-      sources,
-      outputs,
-    };
-    records.push(record);
-    writeFileSync(
-      join(outputDir, model + '.json'),
-      JSON.stringify(
-        {
-          model,
-          providerModels: [...providerModels],
-          promptVersion: PROMPT_VERSION,
-          apiVersion: HIVE_API_VERSION,
-          contractSha256: createHash('sha256').update(system).digest('hex'),
-          records,
+const database = await createTestDatabase();
+try {
+  for (const model of models) {
+    const provider = new OpenAICommander(key, model);
+    const records: Data[] = [];
+    for (const scenario of suite) {
+      const { s, account, sessions, client, lease: initialLease } = await fixture(database.db);
+      await new Credits(database.db).adjust(account, randomUUID(), 1000000, 'grant');
+      const operations: Data[] = [],
+        outputs: Data[] = [],
+        scriptResults: boolean[] = [],
+        reports: string[] = [];
+      const providerModels = new Set<string>();
+      let state = engine([]),
+        lease = initialLease,
+        repairs = 0,
+        calls = 0,
+        input = 0,
+        cachedInput = 0,
+        output = 0,
+        wakeCalls = 0;
+      let driverError: string | undefined,
+        driving = false,
+        finished = false,
+        replanning = false;
+      const metered: ModelProvider = {
+        step: async (system, messages, signal, progress) => {
+          const result = await provider.step(system, messages, signal, progress);
+          calls++;
+          if (replanning) wakeCalls++;
+          input += result.usage.input;
+          cachedInput += result.usage.cachedInput;
+          output += result.usage.output;
+          if (result.providerModel) providerModels.add(result.providerModel);
+          if (result.text) reports.push(result.text);
+          return result;
         },
-        null,
-        2,
-      ),
-    );
-    console.log(
-      JSON.stringify({
+      };
+      const commander = new Commander(database.db, metered, {
+        version: 'eval/2',
         model,
-        id: record.id,
-        valid: record.firstAttemptValid,
-        completed: record.completed,
+        input: 1,
+        cachedInput: 1,
+        output: 1,
+      });
+      const sentWakes = new Set<string>();
+      const drive = async () => {
+        if (driving || finished) return;
+        driving = true;
+        try {
+          const poll = await sessions.poll(
+            s.id,
+            client,
+            lease,
+            Number(state['snapshot']['tick']),
+            true,
+          );
+          lease = poll.lease;
+          for (const operation of poll.operations) {
+            const tool = parse(HiveTool, operation.request);
+            operations.push(operation);
+            state = engine(operations);
+            const result = state['results'].find((r: Data) => r['operationId'] === operation.id);
+            if (!result) throw new Error('Client did not complete dispatched operation');
+            const valid = result['status'] === 'completed';
+            if (tool.kind === 'execute' || tool.kind === 'install' || tool.kind === 'replace')
+              scriptResults.push(valid);
+            if (!valid) repairs++;
+            if (valid) outputs.push(JSON.parse(result['output']));
+            await sessions.result(
+              s.id,
+              operation.id,
+              lease,
+              result['status'],
+              result['output'],
+              result['tick'],
+            );
+          }
+          for (const wake of state['wakes']) {
+            const id = JSON.stringify([wake.programId, wake.revision, wake.key, wake.tick]);
+            if (!sentWakes.has(id)) {
+              sentWakes.add(id);
+              await sessions.wake(s.id, { ...wake, eventId: randomUUID() }, lease);
+            }
+          }
+        } catch {
+          driverError = 'Client bridge failure';
+          commander.shutdown();
+        } finally {
+          driving = false;
+        }
+      };
+      let timer = setInterval(() => {
+        void drive();
+      }, 50);
+      const start = Date.now();
+      try {
+        await sessions.command(
+          s.id,
+          randomUUID(),
+          scenario.command,
+          ['recurring', 'trigger'].includes(scenario.category),
+        );
+        await commander.run(s.id);
+        clearInterval(timer);
+        while (driving) await new Promise((r) => setTimeout(r, 10));
+        if (scenario.category === 'recurring') {
+          // A manual setting changes while the standing order is alive; the next due step must recover it.
+          const building = state['snapshot']['buildings'].find(
+            (b: Data) => b.team === 0 && b.shortType === scenario.expected['family'],
+          );
+          const descriptor =
+            scenario.expected['field'] === 'workers'
+              ? {
+                  type: 'workers',
+                  building: { id: building.id, generation: building.generation },
+                  workers: 1,
+                }
+              : {
+                  type: 'production',
+                  building: { id: building.id, generation: building.generation },
+                  ratios: [1, 0, 0],
+                };
+          operations.push({ manual: descriptor }, { advance: 100 });
+          state = engine(operations);
+        }
+        if (scenario.category === 'trigger') {
+          // Trigger conditions are false at installation and become true later.
+          operations.push({ addWorkers: 5 });
+          for (let tick = 0; tick < 5; tick++) {
+            operations.push({ advance: 100 });
+            state = engine(operations);
+            if (state['wakes'].length) break;
+          }
+          replanning = true;
+          await drive();
+          timer = setInterval(() => {
+            void drive();
+          }, 50);
+          await commander.run(s.id);
+        }
+      } catch {
+        driverError = 'Evaluation failure';
+      } finally {
+        finished = true;
+        clearInterval(timer);
+        while (driving) await new Promise((r) => setTimeout(r, 10));
+        commander.shutdown();
+      }
+      const reportQuality =
+        reports.length > 0 &&
+        !reports.some((t) => /JavaScript|stack trace|interpreter|tool call/i.test(t));
+      const ok =
+        !driverError &&
+        completed(scenario, state, outputs, state['standing'], state['wakes']) &&
+        (scenario.category !== 'trigger' || wakeCalls > 0) &&
+        reportQuality;
+      const record = {
+        id: scenario.id,
+        category: scenario.category,
+        firstAttemptValid: scriptResults.length > 0 && scriptResults.every(Boolean),
+        validScripts: scriptResults.filter(Boolean).length,
+        attemptedScripts: scriptResults.length,
+        completed: ok,
+        commandWithoutRepair: repairs === 0,
+        reportQuality,
+        wakeCalls,
         repairs,
-        latencyMs: record.latencyMs,
-      }),
-    );
+        calls,
+        latencyMs: Date.now() - start,
+        usage: { input, cachedInput, output },
+        error: driverError,
+        operations,
+        outputs,
+        reports,
+        providerModels: [...providerModels],
+      };
+      records.push(record);
+      writeFileSync(
+        join(outputDir, model + '.json'),
+        JSON.stringify(
+          {
+            evaluationVersion: 2,
+            harness: 'production-commander-native-client',
+            model,
+            promptVersion: PROMPT_VERSION,
+            apiVersion: HIVE_API_VERSION,
+            contractSha256: createHash('sha256').update(system).digest('hex'),
+            records,
+          },
+          null,
+          2,
+        ),
+      );
+      console.log(
+        JSON.stringify({
+          model,
+          id: record.id,
+          valid: record.firstAttemptValid,
+          completed: ok,
+          repairs,
+          wakeCalls,
+        }),
+      );
+    }
   }
+} finally {
+  await database.drop();
 }

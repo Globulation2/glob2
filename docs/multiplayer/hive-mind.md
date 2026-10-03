@@ -2,9 +2,13 @@
 
 Hive Mind adds a natural-language commander to online matches, including ranked
 matches, alongside ordinary manual controls. Players give commands, receive reports,
-and manage named standing orders. The game menu opens the commander panel. Stop
-commander ends paid supervision; Pause and Cancel order control existing standing
-orders separately. Installed standing orders continue without credits. Assistance
+and manage named standing orders. Configure Hive Mind under Settings → Online. Ctrl+Enter opens the chat-style
+commander input; Enter sends and closes it, and Escape keeps the draft for later.
+Ctrl+Shift+Enter stops paid supervision. Both shortcuts are configurable under
+Keyboard shortcuts. Named standing-order cards stack at the bottom-left of the
+map and expose Pause, Resume and Cancel separately. The cards do not block manual
+map controls outside their bounds. Settings links to the browser account and
+credits page; no credit configuration appears in the gameplay HUD. Installed standing orders continue without credits. Assistance
 is permitted in ranked play on instances that enable it.
 
 The instance feature flag and sales flag default to off. Enabling the feature is
@@ -68,7 +72,10 @@ missed intervals do not produce catch-up bursts. Replacement is preflighted with
 no effects and requires the expected revision. Failed replacement leaves the old
 program intact. Replacement resets globals unless a validated migration is supplied.
 
-Triggers require ongoing supervision to start new paid work. The server deduplicates
+Triggers require authorization on the originating standing order to start new paid work.
+A bounded command does not revoke existing supervision. Stop revokes supervision
+for existing programs and already-dispatched installations. The Settings default
+applies only to new commands; it does not cancel existing orders. The server deduplicates
 by program revision, key and 25-tick window, limits wake-ups to six per minute,
 and coalesces pending context into the active run. Alerts remain reports when
 credits are exhausted. Stale alerts are not replayed after a top-up.
@@ -85,7 +92,10 @@ Result delivery retries the same operation without executing it again. If an ord
 may have been submitted but completion cannot be proved, the affected automation
 pauses for review. A client restart after gameplay dispatch is deliberately
 conservative: it does not infer execution from queue submission. A replacement
-client without a local checkpoint must not recreate old programs as fresh ones.
+client without a matching local checkpoint restores paused metadata cards using
+the current server revision. It can remove or explicitly replace the order, but
+cannot resume it or migrate missing globals. Lease deadlines are measured from
+the poll request start, so delayed responses cannot extend an old client lease.
 Worker failures pause automation without terminating the match.
 
 ## Credits and purchases
@@ -168,12 +178,18 @@ from `~/reasoningcanvas/server/.env.local` in the evaluation process only. It ne
 writes those credentials or passes them to the native game fixture. Alternatively
 supply `HIVE_OPENAI_API_KEY` directly. Results, generated programs and selection
 summaries go under `artifacts/hive/eval`; use `HIVE_EVAL_OUTPUT` for a fresh run.
-The runner resumes completed records only when the prompt hash matches. Native
-objective checks inspect game state after validated orders, not the model's own
-success claim. Construction cases deliberately ask to establish sites, not finish
+Version 2 evaluates the production Commander and database journals with the real
+client scheduler and order queue inside the native fixture. It records validity
+for every generated program and commands completed without repair separately.
+Recurring scenarios include manual interference; trigger conditions become true
+after installation and must cause a subsequent provider call and verified action.
+The selector rejects legacy smoke results. Native objective checks inspect game
+state after validated orders, not the model's own success claim. Construction cases deliberately ask to establish sites, not finish
 buildings. Longer economic objectives still require live playtests.
 
-The example instance pins `gpt-6-luna`, selected by this suite. The provider
+The example instance uses `gpt-6-luna` for development. The earlier version-1
+smoke result does not establish production model selection; production selection
+requires passing the current stateful suite. The provider
 currently documents that identifier rather than a dated snapshot; retain the
 returned provider model and response IDs in journals and rerun evaluation when
 updating the provider, prompt or API. Cache writes can have a separate rate; when
