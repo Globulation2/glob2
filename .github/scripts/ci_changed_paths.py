@@ -104,9 +104,11 @@ def browser_only(path):
 
 
 def coverage_profile(paths, event, selected):
-    compatibility = event != 'pull_request' or not paths
+    # Pull requests and master pushes are path-selected; schedules and manual runs are full.
+    full = event not in ('pull_request', 'push')
+    compatibility = full or not paths
     browsers_all = compatibility
-    android = event != 'pull_request' or not paths
+    android = full or not paths
     reasons = []
     for path in paths:
         if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS:
@@ -137,6 +139,22 @@ def coverage_profile(paths, event, selected):
             'profile': 'compatibility' if compatibility else ('primary' if any(selected.values()) else 'lightweight'),
             'reasons': reasons or ['known relevant boundaries; primary platforms suffice']}
 
+def last_tested_master(repo, token, current, read=None):
+    """Commit of the newest master build that ran to completion, or None.
+
+    Pending master runs replace each other, so a push's own diff can skip merges
+    whose runs never started; diffing from the last completed run covers them.
+    """
+    if read is None:
+        from ci_run_metrics import api as read
+    runs = read(f'repos/{repo}/actions/workflows/build.yml/runs?branch=master&status=completed&per_page=100', token)
+    for run in runs.get('workflow_runs', []):
+        if run.get('event') in ('push', 'schedule', 'workflow_dispatch') and run.get('conclusion') in ('success', 'failure') \
+                and run.get('head_sha') and run['head_sha'] != current:
+            return run['head_sha']
+    return None
+
+
 def changed_paths(base):
     subprocess.run(
         ["git", "fetch", "--no-tags", "--depth=1", "origin", base],
@@ -157,12 +175,22 @@ def main():
     args = parser.parse_args()
     paths = []
     event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
-    if args.base and event == "pull_request":
+    if event == "push":
+        # Master: everything merged since the last completed master build.
+        try:
+            base = last_tested_master(os.environ.get('GITHUB_REPOSITORY', ''), os.environ.get('GH_TOKEN', ''),
+                                      os.environ.get('GITHUB_SHA', ''))
+        except (OSError, ValueError, KeyError) as error:
+            print(f"Could not find the last tested master commit ({error}); running full CI", file=sys.stderr)
+            base = None
+        args.base = base
+    if args.base and event in ("pull_request", "push"):
         try:
             paths = changed_paths(args.base)
             selected = classify(paths)
         except (OSError, subprocess.CalledProcessError) as error:
             print(f"Could not inspect changed paths ({error}); running full CI", file=sys.stderr)
+            paths = []
             selected = {job: True for job in JOBS}
     else:
         selected = {job: True for job in JOBS}

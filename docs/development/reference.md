@@ -123,8 +123,11 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   compatibility check run separately, so runtime shards do not wait for Clang.
   Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
   build and shard to pass, preserving their merge-blocking status. PRs compare
-  with their base commit; retained master pushes and scheduled runs always select
-  full CI. Unknown paths or unavailable PR diffs also select full CI.
+  with their base commit. Master pushes compare with the commit of the last master
+  build that ran to completion, so merges whose pending runs were superseded are
+  still covered; the nightly schedule and manual dispatch always select full CI and
+  provide the full-matrix baseline. Unknown paths, unavailable diffs or no completed
+  master build also select full CI.
   Draft PRs run only the selector and its contract suites; the aggregate gate
   passes with every check deferred. Marking a PR ready for review
   (`ready_for_review`) runs the selected checks for that commit, so mark a PR ready
@@ -1072,8 +1075,9 @@ platform/build/dependency changes, mixed changes and unknown paths retain full
 compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
 The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
 Android is called by the main build workflow, avoiding duplicate PR APK builds
-and including its selected result in the stable aggregate gate. Master and nightly
-run the complete matrix, including Android.
+and including its selected result in the stable aggregate gate. Nightly and manual
+runs use the complete matrix, including Android; master pushes select by path like
+PRs, keeping full compatibility and browser coverage for the areas they select.
 
 PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
 full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
