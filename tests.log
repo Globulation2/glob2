@@ -1,0 +1,115 @@
+PASS MapPreview/preview geometry (0.1s)
+PASS MapPreview/map database messages and download previews (0.2s)
+PASS MapPreview/thumbnail codec; envelope limits and corrupt input (0.5s)
+PASS MapPreview/native widget events and custom lobby captures [display][artifacts] (1.9s)
+FAIL CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (60.3s)
+
+===== FAIL CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -s -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/colony-skins/glob2/artifacts/skins/sdk/lib -Wl,--enable-new-dtags"}, "revision": "1028826bcdb65befb68dd967392c7f73afae7922", "sourceStatus": [], "sourceTreeSha256": "9e2bfbed11aca400a6153f44995bfc2e01e8c7d95ee801565b35c98e2427d172"}
+libdecor-gtk-WARNING: Failed to initialize GTK
+Failed to load plugin 'libdecor-gtk.so': failed to init
+No plugins found, falling back on no decorations
+PASS preferences round trip, hidden slots, bounds and corrupt-file recovery
+PASS preferences keep every generator option, and older files still load
+PASS landscape picker Random order is a real shuffle drawn once per process run, Alphabetical stays stable
+Landscape preview:  revision 0 seed 3937707402 [validation]: Unknown generator
+Landscape preview:  revision 0 seed 4284903529 [validation]: Unknown generator
+Landscape preview: Could not place every colony
+PASS deferred viewport priority, reprioritization, stable seeds, yielding retries, restart/reroll
+PASS canonical map catalog, selection stability, inline controls, popup cancel, focus preservation and rules
+Map generation: river revision 3 seed 1383457111 [complete]: 
+Map generation: river revision 3 seed 856590776 [complete]: 
+Map generation: river revision 3 seed 2243143247 [complete]: 
+Map generation: river revision 3 seed 2684678428 [complete]: 
+Map generation: river revision 3 seed 2800301485 [complete]: 
+Map generation: river revision 3 seed 1212640762 [complete]: 
+Map generation: river revision 3 seed 148642873 [complete]: 
+Map generation: river revision 3 seed 3730419849 [complete]: 
+Map generation: river revision 3 seed 3528445279 [complete]: 
+Map generation: river revision 3 seed 2757844863 [complete]: 
+Map generation: river revision 3 seed 154227721 [complete]: 
+Map generation: fjord-continent revision 13 seed 773593901 [complete]: 
+Map generation: fjord-continent revision 13 seed 3152832935 [complete]: 
+Map generation: contested-commons revision 3 seed 4287100540 [complete]: 
+Map generation: contested-commons revision 3 seed 1980055748 [complete]: 
+Map generation: contested-commons revision 3 seed 1707955729 [complete]: 
+Map generation: contested-commons revision 3 seed 2921914585 [complete]: 
+Map generation: contested-commons revision 3 seed 3602539190 [complete]: 
+Map generation: contested-commons revision 3 seed 130997934 [complete]: 
+Map generation: contested-commons revision 3 seed 472486840 [complete]: 
+Map generation: contested-commons revision 3 seed 1380127586 [complete]: 
+Map generation: contested-commons revision 3 seed 2889634638 [complete]: 
+Map generation: contested-commons revision 3 seed 3362763045 [complete]: 
+Map generation: contested-commons revision 3 seed 1566705273 [complete]: 
+Map generation: contested-commons revision 3 seed 3426568005 [complete]: 
+Map generation: contested-commons revision 3 seed 2722804184 [complete]: 
+Map generation: contested-commons revision 3 seed 679224898 [complete]: 
+Map generation: contested-commons revision 3 seed 3161728794 [complete]: 
+Map generation: contested-commons revision 3 seed 193208226 [complete]: 
+Map generation: contested-commons revision 3 seed 4035008117 [complete]: 
+Map generation: contested-commons revision 3 seed 1140197113 [complete]: 
+Map generation: contested-commons revision 3 seed 3888184206 [complete]: 
+Map generation: contested-commons revision 3 seed 4242291311 [complete]: 
+PASS rectangular aspect ratios, cropped terrain and colony marker pixels
+PASS preview swipe: grid offset 2680 -> 2630; preview and selection unchanged
+Map generation: rain-shadow revision 4 seed 266618491 [complete]: 
+Map generation: rain-shadow revision 4 seed 1617831173 [complete]: 
+PASS landscape picker: 67 previews on 2 threads, selection, regeneration and the shown map played
+Map generation: river revision 3 seed 1096104670 [complete]: 
+Map generation: river revision 3 seed 3485892930 [complete]: 
+Map generation: river revision 3 seed 3076044174 [complete]: 
+Map generation: river revision 3 seed 2967173419 [complete]: 
+Map generation: river revision 3 seed 1110074256 [complete]: 
+PASS native rendering, snapshot reroll ownership, invalidation, failure recovery, preserved alliances
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+Landscape preview: river revision 3 seed 2185163998 [generator validation]: Colony 3 has only 10 reachable 4x4 building origins; 16 required within 24 steps.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+Landscape preview: crater-lakes revision 3 seed 1562468859 [starting locations]: Could not place the requested map layout
+Landscape preview: islands revision 3 seed 2367850092 [generator validation]: Colony 0 has only 0 reachable 4x4 building origins; 16 required within 24 steps.
+Landscape preview: islands revision 3 seed 3547874804 [starting locations]: Could not place the requested map layout
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+StringTable::getString("[[Start quality]], -1") : error, no such key.
+
+[failure] custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]: 3262 == 18446744073709551615
+test/CustomGameSetupHarness.cpp:2207:
+REQUIRE( output.find("no such key") == std::string::npos ) is NOT correct!
+  values: REQUIRE( 3262 == 18446744073709551615 )
+  logged: a screen asked for a missing translation key
+
+
+4 passed, 1 failed, 0 skipped (63.0s of test time)
+[run_tests] JUnit report: artifacts/landscape-picker/evidence/junit.xml (5 cases)

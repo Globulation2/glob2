@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="5" failures="1" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="60.1528" status="run">
+      <failure message="3262 == 18446744073709551615" type="REQUIRE">
+test/CustomGameSetupHarness.cpp:2207:
+REQUIRE( output.find("no such key") == std::string::npos ) is NOT correct!
+  values: REQUIRE( 3262 == 18446744073709551615 )
+  logged: a screen asked for a missing translation key
+
+      </failure>
+    </testcase>
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="map database messages and download previews" time="0.161621" status="run" />
+  <testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="1.86281" status="run" />
+  <testcase classname="MapPreview" name="preview geometry" time="0.082777" status="run" />
+  <testcase classname="MapPreview" name="thumbnail codec; envelope limits and corrupt input" time="0.408063" status="run" />
+  </testsuite></testsuites>

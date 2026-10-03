@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences]" time="61.965" status="run">
+      <failure message="3271 == 18446744073709551615" type="REQUIRE">
+test/CustomGameSetupHarness.cpp:2190:
+REQUIRE( output.find("no such key") == std::string::npos ) is NOT correct!
+  values: REQUIRE( 3271 == 18446744073709551615 )
+  logged: a screen asked for a missing translation key
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>
