@@ -761,7 +761,8 @@ Element OnlineMapsScreen::build(const Presentation &p)
 
 	OnlinePanel panel;
 	panel.title = tr("[maps title]");
-	panel.headerRight = width(p.pt(phone ? 190 : 300), tabs);
+	// Under the title on a crowded phone (onlinePanel), the tabs take the full width.
+	panel.headerRight = p.points(p.safe.w) < 260 * p.textGrowth ? tabs : width(p.pt(phone ? 190 : 300), tabs);
 	panel.body = scroll("maps/body", column(std::move(body), {p.pt(10)}));
 	panel.note = tab == Tab::Browse
 					 ? std::string(FormattableString(tr("[maps browse note %0]")).arg(originHost(data.instance)))

@@ -4645,6 +4645,7 @@ Zagon zemljevida
 [turn no pauses left]
 
 [turn pause time used %0]
+
 [room seats one person %0 %1]
 
 [room rule resources]

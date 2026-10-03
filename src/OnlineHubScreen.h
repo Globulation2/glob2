@@ -149,5 +149,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	Glob2UI::Element signInPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element trustPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element accountPanel(const Glob2UI::Presentation &p);
-	Glob2UI::Element thumbBlock(const Glob2UI::Presentation &p);
+	// The phone's thumb-reach controls; withQueues false leaves out the queue
+	// picker and Find match (queuePicker), which a crowded portrait page scrolls.
+	Glob2UI::Element thumbBlock(const Glob2UI::Presentation &p, bool withQueues = true);
+	Glob2UI::Element queuePicker(const Glob2UI::Presentation &p, bool stacked = false);
 };

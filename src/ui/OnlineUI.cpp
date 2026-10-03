@@ -33,9 +33,12 @@ Element onlinePanel(OnlinePanel spec, const Presentation &p)
 	if (!spec.subtitle.empty())
 		heading.push_back(caption(spec.subtitle));
 	Element titleBlock = column(std::move(heading), {p.pt(2)});
-	Element header = spec.headerRight
-						 ? row({expanded(titleBlock), spec.headerRight}, {p.pt(8), CrossAlign::Center})
-						 : titleBlock;
+	// A narrow phone at a large text size puts the header's control under the
+	// title instead of squeezing both into one line.
+	const bool crowded = p.points(p.safe.w) < 260 * p.textGrowth;
+	Element header = !spec.headerRight ? titleBlock
+					 : crowded		   ? column({titleBlock, spec.headerRight}, {p.pt(6)})
+									   : row({expanded(titleBlock), spec.headerRight}, {p.pt(8), CrossAlign::Center});
 	const bool phone = p.touch && p.compact();
 	Element actionRow;
 	if (phone && spec.thumbBlock)

@@ -895,11 +895,22 @@ Element RoomScreen::primaryActions(const Presentation &p, bool phone)
 	}
 	if (phone)
 	{
-		std::vector<Element> line;
+		Element invite;
 		if (room->kind() == RoomBackend::Kind::Online)
-			line.push_back(expanded(button("invite/copy-phone", copyLabel("invite/copy-phone", tr("[room invite]")), [this, link = room->inviteLink()] { copy("invite/copy-phone", link); }, {.icon = uiIcon(UIIcon::Share)})));
+			invite = expanded(button("invite/copy-phone", copyLabel("invite/copy-phone", tr("[room invite]")), [this, link = room->inviteLink()] { copy("invite/copy-phone", link); }, {.icon = uiIcon(UIIcon::Share)}));
+		// A narrow phone at a large text size cannot hold three buttons in a line:
+		// the main action takes its own full-width line above Leave and Invite.
+		if (invite && p.points(p.safe.w) < 260 * p.textGrowth)
+		{
+			std::vector<Element> line{leaveButton, invite};
+			if (ThumbSide::left())
+				std::reverse(line.begin(), line.end());
+			return column({main, row(std::move(line), {p.pt(8), CrossAlign::Center})}, {p.pt(6)});
+		}
+		std::vector<Element> line{leaveButton};
+		if (invite)
+			line.push_back(invite);
 		line.push_back(expanded(main));
-		line.insert(line.begin(), leaveButton);
 		if (ThumbSide::left())
 			std::reverse(line.begin(), line.end());
 		return row(std::move(line), {p.pt(8), CrossAlign::Center});
@@ -986,7 +997,13 @@ Element RoomScreen::build(const Presentation &p)
 		}
 		bottom.push_back(row(std::move(bar), {p.pt(4)}));
 		bottom.push_back(primaryActions(p, true));
-		auto page = column({header(p, true), expanded(body), column(std::move(bottom), {p.pt(6)})}, {p.pt(8)});
+		Element top = header(p, true);
+		// A narrow phone at a large text size: the room's name and summary wrap to
+		// many lines; they scroll in a fifth of the height rather than squeezing the
+		// seats and the buttons at the thumb.
+		if (p.points(p.safe.w) < 260 * p.textGrowth)
+			top = constrained({0, 0, Constraints::Unbounded, p.safe.h / 5}, scroll("room/header", top));
+		auto page = column({top, expanded(body), column(std::move(bottom), {p.pt(6)})}, {p.pt(8)});
 		CardOptions options;
 		options.padding = p.pt(10);
 		return padding({p.pt(4), p.pt(4), p.pt(4), p.pt(4)}, card(page, options));

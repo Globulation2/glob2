@@ -597,6 +597,10 @@ void run(const Viewport &viewport)
 						order += key + " ";
 					require(false, label + ": tab never focused a control (order: " + order + ", editing: " + screen->host().editing() + ")");
 				}
+				// The focused control's tooltip is an overlay that may cover its
+				// neighbours (Leave's covers the room's tab bar on a small phone); the
+				// next pass checks the layout, so dismiss it as Escape or a tap would.
+				screen->host().dismissTooltip(screen->host().focused());
 				++checked;
 			}
 			screen->endExecute(0);

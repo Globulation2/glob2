@@ -805,11 +805,35 @@ Element OnlineHubScreen::accountPanel(const Presentation &p)
 	return card(column(std::move(items), {p.pt(4)}), {.padding = p.pt(12)});
 }
 
-Element OnlineHubScreen::thumbBlock(const Presentation &p)
+Element OnlineHubScreen::queuePicker(const Presentation &p, bool stacked)
 {
 	std::vector<std::string> names;
 	for (const auto &queue : data.queues)
 		names.push_back(queue.value("name", queue.value("mode", "")));
+	std::vector<Element> parts;
+	if (!names.empty())
+	{
+		if (!p.landscape())
+			parts.push_back(caption(tr("[hub quick match]")));
+		selectedQueue = std::clamp(selectedQueue, 0, int(names.size()) - 1);
+		if (stacked)
+			// One full-width choice per line: three side by side do not hold their
+			// names on a narrow phone with large text.
+			for (std::size_t i = 0; i < names.size(); ++i)
+			{
+				const int index = int(i);
+				parts.push_back(button("queue/choice/" + std::to_string(i), names[i], [this, index] { selectedQueue = index; invalidate(); },
+									   {.selected = index == selectedQueue}));
+			}
+		else
+			parts.push_back(segments("queue/choice", names, selectedQueue, [this](int v) { selectedQueue = v; invalidate(); }));
+		parts.push_back(button("queue/find", tr("[hub find match]"), [this] { findMatch(selectedQueue); }, {.primary = true, .enabled = canPlay(), .icon = uiIcon(UIIcon::Bolt)}));
+	}
+	return parts.empty() ? nullptr : column(std::move(parts), {p.pt(6)});
+}
+
+Element OnlineHubScreen::thumbBlock(const Presentation &p, bool withQueues)
+{
 	std::vector<Element> parts;
 	if (joinField)
 	{
@@ -821,14 +845,9 @@ Element OnlineHubScreen::thumbBlock(const Presentation &p)
 							 button("join/go", tr("[hub join]"), [this] { joinByCode(joinDraft); }, {.primary = true, .enabled = canPlay()})},
 							{p.pt(6), CrossAlign::Center}));
 	}
-	if (!names.empty())
-	{
-		if (!p.landscape())
-			parts.push_back(caption(tr("[hub quick match]")));
-		selectedQueue = std::clamp(selectedQueue, 0, int(names.size()) - 1);
-		parts.push_back(segments("queue/choice", names, selectedQueue, [this](int v) { selectedQueue = v; invalidate(); }));
-		parts.push_back(button("queue/find", tr("[hub find match]"), [this] { findMatch(selectedQueue); }, {.primary = true, .enabled = canPlay(), .icon = uiIcon(UIIcon::Bolt)}));
-	}
+	if (withQueues)
+		if (auto picker = queuePicker(p))
+			parts.push_back(picker);
 	ButtonOptions back;
 	back.icon = uiIcon(UIIcon::Back);
 	back.accessibleLabel = tr("[Back]");
@@ -864,6 +883,11 @@ Element OnlineHubScreen::build(const Presentation &p)
 		break;
 	}
 	auto headline = row({expanded(column({phone ? heading(tr("[hub online]")) : title(tr("[hub online]")), caption(status)}, {0})), accountChip(p)}, {p.pt(8), CrossAlign::Center});
+	if (p.compact())
+		// A narrow phone (or large text) gives the status line the full width under
+		// the title and account chip, rather than wrapping it word by word beside the
+		// chip and pushing Back off the bottom.
+		headline = column({row({expanded(heading(tr("[hub online]"))), accountChip(p)}, {p.pt(8), CrossAlign::Center}), caption(status)}, {0});
 	// Modal panels take the body: sign-in, the trust prompt and the account menu.
 	Element overlay = trustPrompt ? trustPanel(p) : data.signIn != Model::SignIn::Closed ? signInPanel(p) : accountMenu ? accountPanel(p) : nullptr;
 	std::vector<Element> toast;
@@ -871,9 +895,16 @@ Element OnlineHubScreen::build(const Presentation &p)
 		toast.push_back(card(paragraph(data.toast), {.color = theme().palette.selected, .padding = p.pt(8), .shadow = false}));
 	if (phone)
 	{
+		// A portrait phone too short for its text (a small phone at large text sizes)
+		// scrolls the quick-match picker with the lists, so the fixed thumb row
+		// (Back, Join code, Room) keeps its full height.
+		const bool crowded = !p.landscape() && p.points(p.safe.h) < 500 * p.textGrowth;
 		std::vector<Element> list;
 		if (auto b = banner(p))
 			list.push_back(b);
+		if (crowded)
+			if (auto picker = queuePicker(p, true))
+				list.push_back(picker);
 		list.push_back(roomList(p, true));
 		if (auto recent = recentMatches(p, true))
 			list.push_back(recent);
@@ -892,7 +923,7 @@ Element OnlineHubScreen::build(const Presentation &p)
 		{
 			page.push_back(expanded(body));
 			if (!overlay)
-				page.push_back(thumbBlock(p));
+				page.push_back(thumbBlock(p, !crowded));
 		}
 		return padding({p.pt(4), p.pt(4), p.pt(4), p.pt(4)}, card(column(std::move(page), {p.pt(8)}), {.padding = p.pt(10)}));
 	}
