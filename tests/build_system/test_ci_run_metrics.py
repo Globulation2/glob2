@@ -29,7 +29,7 @@ class MetricsTest(unittest.TestCase):
         workflow = (Path(__file__).resolve().parents[2] / '.github/workflows/build.yml').read_text()
         self.assertIn("cron: '0 6 * * *'", workflow)
         self.assertIn('if [ "$GITHUB_EVENT_NAME" = pull_request ]', workflow)
-        self.assertIn('cancel-in-progress: ${{ github.event_name == \'pull_request\' }}', workflow)
+        self.assertIn('cancel-in-progress: ${{ github.event_name == \'pull_request\' ||', workflow)
 
     def test_idle_gaps_do_not_count_as_execution_and_overlap_is_not_double_counted(self):
         jobs = [dict(steps=[dict(started_at='2026-10-02T00:00:00Z')],completed_at='2026-10-02T00:00:10Z'),

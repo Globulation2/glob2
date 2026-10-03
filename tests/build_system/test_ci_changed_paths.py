@@ -58,6 +58,8 @@ class ChangedPathsTest(unittest.TestCase):
         mobile = (root / ".github/workflows/mobile.yml").read_text()
         self.assertNotIn("android_release.py check", mobile)
         self.assertNotIn("verify-apk", mobile)
+        package = (root / ".github/workflows/steam-windows-package.yml").read_text()
+        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' ||", package)
 
     def test_browser_shell_only(self):
         self.assert_jobs(
