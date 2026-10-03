@@ -21,12 +21,11 @@
 
 #include <string.h>
 
-#include "sha1.h"
+#include "Sha1.h"
 
 #define rol(value, bits) (((value) << (bits)) | ((value) >> (32 - (bits))))
 
-// it should be cleaned: the dependdance from SDL could easily be removed.
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if defined(__BYTE_ORDER__) && __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 #  define WORDS_BIGENDIAN
 #endif
 

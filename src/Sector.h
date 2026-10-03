@@ -40,9 +40,7 @@ public:
 	bool load(GAGCore::InputStream *stream, Game *game, Sint32 versionMinor);
 
 	// Server needs only load and save from this class.
-#ifndef YOG_SERVER_ONLY
 	void step(void);
-#endif  // !YOG_SERVER_ONLY
 private:
 	Map *map;
 	Game *game;

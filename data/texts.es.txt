@@ -36,8 +36,6 @@ Estrategia principal: Trata comida, trabajadores, nacimientos, entrenamiento, co
 %0 unidades sin el nivel necesario
 [%0% Uploaded]
 %0% cargado
-[%0's game]
-Partida de %0
 [%0's team unit got converted to your team]
 Una unidad del equipo de %0 se ha unido a tu equipo
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Mostrar vista de todos los edificios
 Añadir Mapa
 [add shortcut]
 Añadir Atajo
-[Add]
-Añadir
 [AI Descriptions]
 Descripción de la IA
 [AI]
@@ -130,8 +126,6 @@ Sonido
 Auto guardar
 [available lan games]
 Partidas locales disponibles
-[awaiting players]
-Esperando jugadores
 [away:]
 fuera:
 [Back]
@@ -146,8 +140,6 @@ Mejora la fuerza
 Cuarteles
 [beach size]
 tamaño de la playa
-[Blocked Players]
-Jugadores bloqueados
 [break]
 romper
 [briefing]
@@ -178,8 +170,6 @@ Campaña
 No se pudo conectar, no se puede encontrar el anfitrión
 [Can't host game, port %0 in use]
 No se pudo crear partida, el puerto %0 está en uso
-[Can't join game, game doesn't exist]
-No se pudo entrar, la partida no existe.
 [Can't join game, game has started]
 No se pudo entrar, la partida ya ha empezado.
 [Can't join game, game is full]
@@ -246,8 +236,6 @@ Trigo
 Número de cráteres
 [crater lakes terrain]
 Cráteres inundados
-[create game]
-Crear partida
 [create map]
 Crear mapa
 [credits]
@@ -296,14 +284,6 @@ Ocioso
 Sin transportar nada
 [down]
 abajo
-[Download Map]
-Descargar Mapa
-[Download Maps]
-Descargar Mapas
-[downloaded %0]
-descargad %0
-[downloading map]
-Descargando Mapa
 [edit map]
 Editar Mapa
 [editing map]
@@ -314,10 +294,6 @@ Editor de Atajos
 Editor
 [end]
 fin
-[Enter your nickname :]
-Introduzca su sobrenombre:
-[Enter your password :]
-Introduzca su password:
 [enter]
 entrar
 [equals]
@@ -474,12 +450,8 @@ Cambiar a la Siguiente Selección
 trabajo
 [join a game]
 Entrar a una partida
-[join]
-Entrar
 [keyboard settings]
 Teclado
-[kick]
-Expulsar
 [lan]
 Partida en Red Local
 [language incomplete]
@@ -490,8 +462,6 @@ es
 Idioma
 [language]
 Español
-[Leave Game]
-Abandonar Partida
 [left meta]
 abandonar meta
 [left super]
@@ -516,12 +486,6 @@ Cargar repetición
 Cargar Script
 [load]
 Cargar
-[loading map list]
-Cargando Lista de Mapas...
-[Lobby]
-Sala
-[login]
-Conectar
 [look around]
 Mirar alrededor
 [Lost : %0 has more prestige than you]
@@ -540,30 +504,14 @@ Daño cuerpo a cuerpo.
 Descripción
 [Map Discovered]
 Mapa Descubierto
-[Map download failure: lost connection]
-La descarga del mapa falló: Has perdido la conexión con YOG.
-[Map name: %0]
-Nombre del mapa: %0.
 [map name]
 Nombre
-[map rated]
-Mapa Recomendado
 [map script]
 Script para el Mapa
 [map size x]
 Alto del mapa
 [map size y]
 Ancho del mapa
-[Map upload failure: connection lost]
-La subida del mapa falló: Has perdido la conexión con YOG.
-[Map upload failure: map name in use]
-La subida del mapa falló. El nombre del mapa está ya en uso.
-[Map upload failure: unknown reason]
-La subida del mapa falló. Razón desconocida.
-[Map Upload: Author Name]
-Nombre del Autor
-[Map Upload: Waiting for reply]
-Esperando respuesta
 [mark map]
 Marcar Mapa Para Aliados
 [market explanation 2]
@@ -590,8 +538,6 @@ Silencio
 Nueva Campaña
 [new map]
 Nuevo Mapa
-[nick taken]
-Lo sentimos pero su nombre ya está elegido en frenode, solamente podrá hablar a través de YOG
 [no fullscreen]
 * solo en modo ventana
 [No Hints]
@@ -604,16 +550,8 @@ Sin Objetivos
 Área estéril
 [No]
 No
-[Not Enough Ratings]
-No hay suficiente radio
-[not ready]
-no listo
 [Number Of Buildings]
 Número de edificios
-[number of players: %0 (%1 AI)]
-%0 jugadores (%1 AI)
-[number of teams: %0]
-%0 equipos
 [number of teams]
 número de equipos
 [Number Of Units]
@@ -672,8 +610,6 @@ pausar
 Pausado
 [player name]
 Nombre del jugador
-[player rating %0]
-Puntaje del Jugador: %0
 [players]
 Jugadores
 [please wait]
@@ -712,36 +648,22 @@ Mejora la velocidad de
 Circuito de entrenamiento
 [range]
 Rango
-[Rated %0]
-Votado %0
 [ratios]
 Promedios
-[ready?]
-¿Listo?
-[refresh map list]
-Actualizar Lista de Mapas
 [Register a new YOG user with password]
 Registrar un nuevo nombre de usuario YOG.
-[Register]
-Registrarse
 [remember unit]
 Recordar asignaciones
-[Remember YOG password localy]
-Recordar contraseña.
 [remove map]
 Elim. Mapa
 [remove shortcut]
 Eliminar Atajo
-[Remove]
-Eliminar
 [repair building]
 Empezar/Parar Reparación
 [repair]
 Reparar
 [repeat area]
 veces el mismo paisaje
-[Repeat your password :]
-Repite tu contraseña:
 [replay ended]
 Fin de repetición
 [restore default shortcuts]
@@ -874,14 +796,6 @@ Mostrar Menú Principal
 Mostrar
 [smoothing]
 Nivelación
-[sort by name]
-Nombre
-[sort by rating]
-Popularidad
-[sort by size]
-Tamaño
-[Sort By]
-Ordenar Por
 [space]
 espacio
 [start mission]
@@ -914,8 +828,6 @@ pasivo
 Elemento de defensa
 [stonewall]
 Muralla
-[submit rating]
-Votar
 [svr hostname]
 Nombre del servidor
 [swamp terrain]
@@ -1012,10 +924,6 @@ Mapas
 La construcción del mercado ha finalizado
 [the market is under attack]
 El mercado está siendo atacado
-[The player %0 has joined YOG]
-%0 ha entrado en YOG.
-[The player %0 has left YOG]
-%0 ha salido de YOG.
 [the racetrack is finished]
 La construcción del circuito de entrenamiento ha finalizado
 [the racetrack is under attack]
@@ -1104,10 +1012,6 @@ Iniciar/parar Mejora
 Mejoras
 [upgrade]
 Mejorar
-[Upload Map]
-Subir Mapa
-[upload map]
-Subir Mapa
 [username]
 Nombre de usuario:
 [Version]
@@ -1120,8 +1024,6 @@ Volumen (voz)
 Esperando a %0
 [waiting for key]
 esperando la  clave...
-[Waiting]
-Esperando
 [Walk]
 Velocidad de movimiento
 [warflag explanation 2]
@@ -1168,50 +1070,8 @@ Trabajando
 herido
 [Yes]
 Sí
-[YESTS_CONNECTING]
-Estableciendo la conexión con YOG...
-[YESTS_CONNECTION_LOST]
-Se ha perdido la conexión con YOG.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG ha rechazado la conexión por que ese nombre de usuario ya ha sido registrado.  Si el nombre de usuario es tuyo, desactiva la opción "Registrar un nuevo usuario en YOG".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG ha rechazado la conexión por que la contraseña es incorrecta.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG ha rechazado la conexión por que el nombre de usuario elegido no tiene contraseña. Si quieres registrar el nombre de usuario con la contraseña que has escrito selecciona la opción "Registrar un nuevo nombre de usuario YOG" antes de conectar (sólo necesitarás activar la opción una vez)
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-YOG ha rechazado la conexión por que tu IP está temporalmente baneada. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG ha rechazado la conexión por que tu versión de Globulation2 está desactualizada. Por favor, descargua la última versión en www.globulation2.org para poder jugar online.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG ha rechazado la conexión por razones desconocidas.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG ha rechazado la conexión por que el nombre de usuario elegido ya está en uso.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG ha rechazado la conexión por que el nombre de usuaro elegido está baneado. Por favor contacta con los administradores.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG ha rechazado la conexión por que  el nombre de usuario elegido es inválido. Los nombres de usuario solo pueden tener letras, números y barra-baja.
-[YESTS_CREATED]
-El sistema de conexión está preparado.
-[YESTS_PASSWORDS_DONT_MATCH]
-Las contraseñas proporcionadas no coinciden. Vuelve a escribirlas.
-[YESTS_UNABLE_TO_CONNECT]
-No se pudo conectar. Aparentemente el servidor YOG está caido.
-[yog block command help]
-/block <playername>     Bloquea a un jugador, no verás más este texto.
-[yog block command player %0 already blocked]
-El jugador %0 está bloqueado
-[yog block command player %0 blocked]
-Jugador %0 bloqueado
-[yog block command player %0 not found]
-Jugador %0 no encontrado
-[yog command header]
-La lista de comandos del cliente YOG son:
-[yog command unknown]
-Comando Desconocido.
-[yog help command help]
-/help    Muestra este mensaje de ayuda
-[yog]
-Jugar Online con YOG
 [you have lost]
 ¡Has perdido!
 [you have won]
@@ -1220,12 +1080,8 @@ Jugar Online con YOG
 Has sido expulsado de la partida
 [Your %0 are under attack]
 Tu %0 está siendo atacado
-[Your IP address was temporarily banned]
-Tu dirección IP está baneada temporalmente. Espere o contacte con los administradores.
 [Your unit got converted to %0's team]
 Tu unidad se ha unido al equipo de %0
-[Your username was banned]
-Tu nombre de usuario ha sido baneado. Contacte con los administradores.
 [game speed]
 Velocidad del juego
 [decrease game speed]
@@ -3056,8 +2912,6 @@ Progreso de la campaña no guardado. Reintente o exporte una copia de seguridad.
 Salir sin guardar
 [campaign import failed]
 Archivo de progreso inválido o versión de campaña diferente
-[network release mismatch]
-Los protocolos del cliente y del servidor difieren. Instale la misma versión de Glob2 que el servidor.
 [settings continue]
 Continuar
 [settings save failed]
@@ -3420,8 +3274,6 @@ Aceptar: %0
 %0 %1
 [resume game]
 Reanudar partida
-[games]
-Partidas
 [Add AI]
 Añadir IA
 [settings Experiments]
@@ -3470,15 +3322,9 @@ Rebote de las listas
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3691,8 +3537,6 @@ Inercia del mapa
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

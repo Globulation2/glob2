@@ -36,8 +36,6 @@ AIの戦略
 レベルが足りないユニット：%0
 [%0% Uploaded]
 %0% アップロード済み
-[%0's game]
-%0のゲーム
 [%0's team unit got converted to your team]
 %0のチームのユニットが自チームに加わりました
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V：すべての建物周辺の視界を共有
 マップを追加
 [add shortcut]
 キーを追加
-[Add]
-追加
 [AI Descriptions]
 AIの説明
 [AI]
@@ -138,8 +134,6 @@ Alt-%0
 自動保存
 [available lan games]
 参加可能なLANゲーム
-[awaiting players]
-プレイヤーを待っています
 [away:]
 離席中：
 [Back]
@@ -154,8 +148,6 @@ Backspace
 兵舎
 [beach size]
 浜辺の広さ
-[Blocked Players]
-ブロック中のプレイヤー
 [break]
 Break
 [briefing]
@@ -186,8 +178,6 @@ Ctrl＋ドラッグ：直線
 接続できません。ホストが見つかりません
 [Can't host game, port %0 in use]
 ゲームを作成できません。ポート%0は使用中です
-[Can't join game, game doesn't exist]
-参加できません。ゲームが存在しません
 [Can't join game, game has started]
 参加できません。ゲームはすでに始まっています
 [Can't join game, game is full]
@@ -254,8 +244,6 @@ Ctrl-%0
 クレーターの数
 [crater lakes terrain]
 火口湖
-[create game]
-ゲームを作成
 [create map]
 マップを作成
 [credits]
@@ -306,14 +294,6 @@ Ctrl：直線
 何も運んでいません
 [down]
 下
-[Download Map]
-マップをダウンロード
-[Download Maps]
-マップをダウンロード
-[downloaded %0]
-%0 をダウンロード済み
-[downloading map]
-マップをダウンロード中
 [edit map]
 マップを編集
 [editing map]
@@ -324,10 +304,6 @@ Ctrl：直線
 エディター
 [end]
 End
-[Enter your nickname :]
-ニックネーム：
-[Enter your password :]
-パスワード：
 [enter]
 Enter
 [equals]
@@ -492,12 +468,8 @@ Insert
 仕事
 [join a game]
 ゲームに参加
-[join]
-参加
 [keyboard settings]
 キーボード設定
-[kick]
-追放
 [lan]
 LANゲーム
 [language incomplete]
@@ -508,8 +480,6 @@ ja
 言語
 [language]
 日本語
-[Leave Game]
-ゲームから退出
 [left meta]
 左Meta
 [left super]
@@ -532,12 +502,6 @@ ja
 スクリプトを読み込む
 [load]
 読み込む
-[loading map list]
-マップ一覧を読み込み中...
-[Lobby]
-ロビー
-[login]
-ログイン
 [look around]
 見回す
 [Lost : %0 has more prestige than you]
@@ -556,30 +520,14 @@ ja
 説明
 [Map Discovered]
 マップ全体を公開
-[Map download failure: lost connection]
-マップのダウンロード失敗：YOGとの接続が切れました
-[Map name: %0]
-マップ名：%0
 [map name]
 名前
-[map rated]
-マップを評価しました
 [map script]
 マップスクリプト
 [map size x]
 マップの幅
 [map size y]
 マップの高さ
-[Map upload failure: connection lost]
-マップのアップロード失敗：YOGとの接続が切れました
-[Map upload failure: map name in use]
-マップのアップロード失敗：その名前はすでに使われています。
-[Map upload failure: unknown reason]
-マップのアップロード失敗：原因不明。
-[Map Upload: Author Name]
-作者名
-[Map Upload: Waiting for reply]
-応答を待っています
 [mark map]
 味方に場所を知らせる
 [market explanation 2]
@@ -610,8 +558,6 @@ Meta-%0
 新しいキャンペーン
 [new map]
 新しいマップ
-[nick taken]
-申し訳ありませんが、その名前はfreenodeですでに使われています。YOG経由でのみ会話できます。
 [no fullscreen]
 * ウィンドウモードのみ
 [No Hints]
@@ -624,16 +570,8 @@ Meta-%0
 資源成長禁止
 [No]
 いいえ
-[Not Enough Ratings]
-評価数が不足しています
-[not ready]
-準備中
 [Number Of Buildings]
 建物数
-[number of players: %0 (%1 AI)]
-プレイヤー数：%0（AI：%1）
-[number of teams: %0]
-チーム数：%0
 [number of teams]
 チーム数
 [Number Of Units]
@@ -692,8 +630,6 @@ Pause
 一時停止中
 [player name]
 プレイヤー名
-[player rating %0]
-プレイヤー評価：%0
 [players]
 プレイヤー
 [please wait]
@@ -732,34 +668,20 @@ Print Screen
 走路
 [range]
 射程
-[Rated %0]
-評価：%0
 [ratios]
 割合
-[ready?]
-準備完了？
-[refresh map list]
-マップ一覧を更新
-[Register]
-登録
 [remember unit]
 割り当て数を記憶
-[Remember YOG password localy]
-この端末にパスワードを保存する。
 [remove map]
 マップを削除
 [remove shortcut]
 キーを削除
-[Remove]
-削除
 [repair building]
 修理を開始・中止
 [repair]
 修理
 [repeat area]
 地形の繰り返し回数
-[Repeat your password :]
-パスワードを再入力：
 [replay ended]
 リプレイ終了
 [restore default shortcuts]
@@ -892,14 +814,6 @@ V：押している間は音声送信
 画面
 [smoothing]
 平滑化
-[sort by name]
-名前
-[sort by rating]
-評価
-[sort by size]
-大きさ
-[Sort By]
-並べ替え
 [space]
 スペース
 [start mission]
@@ -932,8 +846,6 @@ V：押している間は音声送信
 敵の進路を
 [stonewall]
 石壁
-[submit rating]
-評価を送信
 [svr hostname]
 サーバーのホスト名
 [swamp terrain]
@@ -1030,10 +942,6 @@ Tab
 市場が完成しました。
 [the market is under attack]
 市場が攻撃されています。
-[The player %0 has joined YOG]
-%0がYOGに参加しました。
-[The player %0 has left YOG]
-%0がYOGから退出しました。
 [the racetrack is finished]
 走路が完成しました。
 [the racetrack is under attack]
@@ -1122,10 +1030,6 @@ Globulation 2の基本チュートリアルへようこそ！食堂の建設か�
 改良の既定値
 [upgrade]
 改良
-[Upload Map]
-マップをアップロード
-[upload map]
-マップをアップロード
 [username]
 ユーザー名
 [Version]
@@ -1138,8 +1042,6 @@ Globulation 2の基本チュートリアルへようこそ！食堂の建設か�
 %0を待っています
 [waiting for key]
 キーを押してください...
-[Waiting]
-待機中
 [Walk]
 歩行
 [warflag explanation 2]
@@ -1186,50 +1088,8 @@ Globulation 2の基本チュートリアルへようこそ！食堂の建設か�
 負傷
 [Yes]
 はい
-[YESTS_CONNECTING]
-YOGメタサーバーに接続中...
-[YESTS_CONNECTION_LOST]
-YOGとの接続が切れました。
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-このユーザー名はすでに登録されているため、YOGメタサーバーが接続を拒否しました。ご自分のユーザー名であれば、「パスワード付きの新規YOGユーザーを登録」の設定を無効にしてください。
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-パスワードが正しくないため、YOGメタサーバーが接続を拒否しました。
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-このユーザー名にはまだパスワードがないため、YOGメタサーバーが接続を拒否しました。このパスワードで登録する場合は、接続前に「パスワード付きの新規YOGユーザーを登録」の設定を有効にしてください。この操作は一度だけ必要です。
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-このIPアドレスからの接続が一時的に禁止されているため、YOGメタサーバーが接続を拒否しました。解除されるまで待つか、管理者に連絡してください。
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Globulation 2のバージョンが古いため、YOGメタサーバーが接続を拒否しました。オンラインで遊ぶには、www.globulation2.orgから最新版を入手してください。
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOGメタサーバーが理由を示さずに接続を拒否しました！
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-このユーザー名はほかの人が使用中のため、YOGメタサーバーが接続を拒否しました。
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-このアカウントは利用停止中のため、YOGメタサーバーが接続を拒否しました。管理者に連絡してください。
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-ユーザー名が無効なため、YOGメタサーバーが接続を拒否しました。ユーザー名には文字、数字、アンダースコアのみ使用できます。
-[YESTS_CREATED]
-接続システムはYOGメタサーバーに接続する準備ができました。
-[YESTS_PASSWORDS_DONT_MATCH]
-入力したパスワードが一致しません。もう一度入力してください。
-[YESTS_UNABLE_TO_CONNECT]
-接続できません。YOGメタサーバーが停止しているようです。
-[yog block command help]
-/block <プレイヤー名>    プレイヤーをブロックし、その人のメッセージを非表示にします。
-[yog block command player %0 already blocked]
-%0はすでにブロックされています
-[yog block command player %0 blocked]
-%0をブロックしました
-[yog block command player %0 not found]
-%0が見つかりません
-[yog command header]
-利用可能なYOGクライアントコマンド：
-[yog command unknown]
-不明なコマンドです。
-[yog help command help]
-/help    このヘルプを表示します
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 敗北しました！
 [you have won]
@@ -1238,12 +1098,8 @@ Ysagoon Online Gaming
 ゲームから追放されました
 [Your %0 are under attack]
 味方の%0が攻撃されています
-[Your IP address was temporarily banned]
-あなたのIPアドレスからの接続は一時的に禁止されました。解除されるまで待つか、管理者に連絡してください。
 [Your unit got converted to %0's team]
 味方のユニットが%0のチームに移りました
-[Your username was banned]
-あなたのアカウントは利用停止になりました。解除を希望する場合は管理者に連絡してください。
 [Units still inside: %0]
 建物内：%0体
 [Units still working: %0]
@@ -3052,8 +2908,6 @@ Emoji
 保存せずに終了
 [campaign import failed]
 進行データが無効か、キャンペーンのバージョンが異なります
-[network release mismatch]
-クライアントとサーバーのプロトコルが異なります。サーバーと同じGlob2のバージョンをインストールしてください。
 [settings continue]
 続ける
 [settings save failed]
@@ -3416,8 +3270,6 @@ OK: %0
 %0 %1
 [resume game]
 ゲームを再開
-[games]
-ゲーム
 [Add AI]
 AIを追加
 [settings Experiments]
@@ -3466,15 +3318,9 @@ AIを追加
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3687,8 +3533,6 @@ AIを追加
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

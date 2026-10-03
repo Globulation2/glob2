@@ -1,6 +1,5 @@
 name: Publish deployment images
 # Platform stack (deploy/compose.yaml): platform, engine-agent, relay, caddy.
-# Legacy YOG stack (deploy/compose.legacy.yaml, until M9): server, proxy.
 #
 # Nothing gets a usable tag unless the whole set is good:
 #   1. verify  builds the platform stack from this commit and smoke-tests it
@@ -41,7 +40,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        target: [server, proxy, platform, engine-agent, relay, caddy]
+        target: [platform, engine-agent, relay, caddy]
     steps:
       - uses: actions/checkout@v4
       - name: Read the sim version
@@ -81,7 +80,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        target: [server, proxy, platform, engine-agent, relay, caddy]
+        target: [platform, engine-agent, relay, caddy]
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3

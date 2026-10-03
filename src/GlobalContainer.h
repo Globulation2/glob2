@@ -34,20 +34,17 @@ public:
 	enum { OPTION_LOW_SPEED_GFX=0x1 };
 	enum { OPTION_MAP_EDIT_USE_USL=0x2 };
 
-#ifndef YOG_SERVER_ONLY
 private:
 	void updateLoadProgressScreen(int value);
 	void loadGameGraphics(bool showProgress);
 	bool gameGraphics = false;
 	bool menuMusic = false;
-#endif  // !YOG_SERVER_ONLY
 
 public:
 	explicit GlobalContainer(const char *profileName="glob2");
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
-#ifndef YOG_SERVER_ONLY
 	void loadClient(void);
 	//! Load the in-game sprites (terrain, units, buildings, game interface) if
 	//! they are not loaded yet. Native builds load them in loadClient; the
@@ -62,13 +59,11 @@ public:
 	//! Load the intro and menu tracks if the browser has installed them; see
 	//! ensureGameGraphics. Returns whether they are loaded.
 	bool loadMenuMusic(void);
-#endif  // !YOG_SERVER_ONLY
 	void load(void);
 
 public:
 	FileManager *fileManager; //!< Borrowed from Toolkit; not owned by GlobalContainer.
 
-#ifndef YOG_SERVER_ONLY
 	GraphicContext *gfx; //!< Borrowed from Toolkit; not owned by GlobalContainer.
 	std::unique_ptr<SoundMixer> mix; //!< Owned.
 	std::unique_ptr<VoiceRecorder> voiceRecorder; //!< Owned.
@@ -98,12 +93,9 @@ public:
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;
-#endif  // !YOG_SERVER_ONLY
 	Settings settings;
 
-#ifndef YOG_SERVER_ONLY
 	BuildingsTypes buildingsTypes;
-#endif  // !YOG_SERVER_ONLY
 	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
@@ -159,11 +151,6 @@ public:
 
 	bool runTestMapGeneration; //! runs test map generation
 	
-	bool hostServer;
-	bool hostRouter;
-	bool adminRouter;
-	//! hostname for YOG, can be set by cmd line to override default
-	std::string yogHostName;
 
 	// Variables related to the showing of replays:
 	bool liveSpectating = false; //!< Live AI-only viewing; never replay playback.
@@ -177,11 +164,9 @@ public:
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
 
-#ifndef YOG_SERVER_ONLY
 	std::unique_ptr<ReplayReader> replayReader; //!< Owned. Reads and processes replay files, and outputs orders.
 	std::unique_ptr<ReplayWriter> replayWriter; //!< Owned. Writes orders into replay files.
 	std::unique_ptr<DatasetWriter> datasetWriter; //!< Owned. Writes (state, action) records for AI training (GLOB2_DATASET_PATH).
-#endif  // !YOG_SERVER_ONLY
 
 };
 

@@ -2,7 +2,7 @@
 
 LAN games use the same relay-sequenced turn protocol as online matches
 ([turn protocol](turn-protocol.md)). The host's own game process runs the room and the
-relay core (`TurnSequencer`) in-process; there is no YOG server or router any more. For
+relay core (`TurnSequencer`) in-process; no server or router is involved. For
 how to try it out, see the [LAN playtest guide](lan-playtest.md).
 
 ## Pieces
@@ -15,16 +15,15 @@ how to try it out, see the [LAN playtest guide](lan-playtest.md).
 | Guest | `src/net/lan/LanClient.*` | Joins the room, downloads the map, and hands the engine a turn transport that shares the room connection |
 | Wire format | `src/net/lan/LanProtocol.*` | Framing (`LanLink`), room messages, `RoomState` |
 | Map cache | `src/online/MapCache.*` | The online client's content-addressed cache: `<hash>.map.gz` / `<hash>.game.gz` under `<user dir>/online/maps` |
-| YOG room | `src/yog/YogRoom.*` | `RoomBackend` over the legacy YOG lobby, so the online YOG flow keeps working until YOG is removed |
 
-The existing screens are kept: `LANMenuScreen` hosts (after `ChooseMapScreen`),
-`LANFindScreen` discovers hosts and takes the pairing string, `LANSessionScreen` shows
-progress and owns the room, and `MultiplayerGameScreen` is the room for both LAN
-(`LanRoom`) and YOG (`YogRoom`).
+`LANMenuScreen` hosts (after `ChooseMapScreen`), `LANFindScreen` discovers hosts and
+takes the pairing string, and `LANSessionScreen` shows progress and owns the room,
+which is the shared `RoomScreen` on the `LanRoom` backend.
 
 ## Connection and discovery
 
-The host listens on the pinned WSS endpoint the YOG LAN server used:
+The host listens on a pinned WSS endpoint (the `/yog` path is kept from the former
+YOG LAN server so pairing strings stay compatible):
 `wss://<address>:7489/yog#sha256=<fingerprint>`, with a session-only certificate from
 `provisionLanIdentity`. `GLOB2_LAN_ADDRESS` picks the advertised address. Discovery is
 unchanged: `NetBroadcaster` announces the endpoint without the fingerprint, so a guest

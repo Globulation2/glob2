@@ -36,8 +36,6 @@ Grundstrategi: Behandler mad, arbejdere, fødsler, træning, byggeri og kamp som
 %0 enheder har for lavt niveau
 [%0% Uploaded]
 %0% uploadet
-[%0's game]
-%0s spil
 [%0's team unit got converted to your team]
 En enhed fra %0s hold sluttede sig til dit hold
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Del udsyn ved alle bygninger
 Tilføj kort
 [add shortcut]
 Tilføj genvejstast
-[Add]
-Tilføj
 [AI Descriptions]
 Beskrivelser af AI
 [AI]
@@ -134,8 +130,6 @@ Lyd
 Auto-gem
 [available lan games]
 Tilgængelige lokale spil
-[awaiting players]
-Venter på spillere
 [away:]
 er væk:
 [Back]
@@ -150,8 +144,6 @@ Forbedrer krigernes
 Kaserne
 [beach size]
 Strandstørrelse
-[Blocked Players]
-Blokerede spillere
 [break]
 break
 [briefing]
@@ -230,8 +222,6 @@ Kampagne
 Kan ikke forbinde: værten blev ikke fundet
 [Can't host game, port %0 in use]
 Kan ikke være vært: port %0 er i brug
-[Can't join game, game doesn't exist]
-Kan ikke deltage: spillet findes ikke
 [Can't join game, game has started]
 Kan ikke deltage: spillet er startet
 [Can't join game, game is full]
@@ -304,8 +294,6 @@ Hvede
 Antal kratere
 [crater lakes terrain]
 Kratersøer
-[create game]
-Lav spil
 [create map]
 Lav et kort
 [credits]
@@ -360,14 +348,6 @@ Gør ingenting
 Bærer ikke på noget
 [down]
 ned
-[Download Map]
-Hent kort
-[Download Maps]
-Hent kort
-[downloaded %0]
-%0 hentet
-[downloading map]
-Henter kort
 [edit map]
 Rediger kort
 [editing map]
@@ -378,10 +358,6 @@ Korteditor
 Rediger bane
 [end]
 end
-[Enter your nickname :]
-Skriv dit brugernavn :
-[Enter your password :]
-Skriv din adgangskode :
 [enter]
 enter
 [equals]
@@ -542,12 +518,8 @@ Gå til næste valg
 job
 [join a game]
 Forbind til et spil
-[join]
-Spil med
 [keyboard settings]
 Genvejstaster
-[kick]
-Smid ud
 [lan]
 Lokalt netspil
 [language incomplete]
@@ -558,8 +530,6 @@ dk
 Sprog
 [language]
 Dansk
-[Leave Game]
-Forlad spil
 [left meta]
 venstre meta
 [left super]
@@ -582,12 +552,6 @@ Indlæs genafspilning
 Indlæs script
 [load]
 hent
-[loading map list]
-Indlæser kortliste...
-[Lobby]
-Lobby
-[login]
-Log ind
 [look around]
 Se dig omkring
 [Lost : %0 has more prestige than you]
@@ -606,30 +570,14 @@ Jordskade
 Beskrivelse
 [Map Discovered]
 Kort udforsket
-[Map download failure: lost connection]
-Kortet kunne ikke hentes: forbindelsen til YOG blev afbrudt
-[Map name: %0]
-Kort navn: %0.
 [map name]
 Navn
-[map rated]
-Kort bedømt
 [map script]
 Kortscript
 [map size x]
 Kortbredde
 [map size y]
 Korthøjde
-[Map upload failure: connection lost]
-Kortet kunne ikke uploades: forbindelsen til YOG blev afbrudt
-[Map upload failure: map name in use]
-Kortet kunne ikke uploades: navnet er allerede i brug.
-[Map upload failure: unknown reason]
-Kortet kunne ikke uploades. Ukendt årsag.
-[Map Upload: Author Name]
-Forfatterens navn
-[Map Upload: Waiting for reply]
-Venter på svar
 [maps available]
 Tilgængelige kort
 [mark map]
@@ -658,8 +606,6 @@ Slå lyd fra
 Ny Kampagne
 [new map]
 Ny
-[nick taken]
-Beklager, men det brugernavn du har valgt er allerede taget på freenode, Du vil kun kunne tale gennem YOG.
 [no fullscreen]
 * kun i vinduestilstand
 [No Hints]
@@ -672,18 +618,10 @@ Ingen mål
 Ingen vækst
 [No]
 Nej
-[Not Enough Ratings]
-For få bedømmelser
-[not ready]
-ikke klar
 [Number Of Buildings]
 Antal bygninger
-[number of players: %0 (%1 AI)]
-%0 spillere (%1 AI)
 [number of players: %0]
 %0 antal spillere er tilgængelig
-[number of teams: %0]
-%0 hold.
 [number of teams]
 antal af hold
 [Number Of Units]
@@ -742,8 +680,6 @@ pause
 Pause
 [player name]
 Spillernavn
-[player rating %0]
-Spillerbedømmelse: %0
 [players]
 Spillere
 [please wait]
@@ -782,36 +718,22 @@ ganghastighed
 Træningsbane
 [range]
 Rækkevidde
-[Rated %0]
-Bedømt til %0
 [ratios]
 Proportioner
-[ready?]
-klar?
-[refresh map list]
-Opdater kortliste
 [Register a new YOG user with password]
 Register en ny YOG bruger med adgangskode. (usikker)
-[Register]
-Registrer
 [remember unit]
 Husk enhedstildelinger
-[Remember YOG password localy]
-Husk adgangskoden lokalt. (usikker)
 [remove map]
 Fjern Kort
 [remove shortcut]
 Fjern genvej
-[Remove]
-Fjern
 [repair building]
 Start/Stop Reparation
 [repair]
 Reparere
 [repeat area]
 antal gange det samme landskab
-[Repeat your password :]
-Gentag adgangskoden:
 [replay ended]
 Genafspilning afsluttet
 [restore default shortcuts]
@@ -944,14 +866,6 @@ Vis hovedmenu
 Visning
 [smoothing]
 Udglatning
-[sort by name]
-Navn
-[sort by rating]
-Bedømmelse
-[sort by size]
-Størrelse
-[Sort By]
-Sortér efter
 [space]
 mellemrum
 [start mission]
@@ -984,8 +898,6 @@ forsvarselement
 Passivt
 [stonewall]
 Stenvæg
-[submit rating]
-Indsend bedømmelse
 [svr hostname]
 Serverens maskinnavn
 [swamp terrain]
@@ -1084,10 +996,6 @@ Kort
 Markedet er færdigbygget
 [the market is under attack]
 Markedet er under angreb
-[The player %0 has joined YOG]
-%0 er kommet til YOG.
-[The player %0 has left YOG]
-%0 har forladt YOG.
 [the racetrack is finished]
 Træningsbanen er færdig
 [the racetrack is under attack]
@@ -1176,10 +1084,6 @@ Start/Stop Opgradering
 Standarder for opgraderinger
 [upgrade]
 Opgradere
-[Upload Map]
-Upload kort
-[upload map]
-Upload kort
 [username]
 Brugernavn
 [Version]
@@ -1192,8 +1096,6 @@ Lydstyrke (stemme)
 Venter på %0
 [waiting for key]
 venter på tast...
-[Waiting]
-Venter
 [Walk]
 Gå
 [warflag explanation 2]
@@ -1242,50 +1144,8 @@ Arbejde
 skadet
 [Yes]
 Ja
-[YESTS_CONNECTING]
-Opretter forbindelse til YOG-metaserveren...
-[YESTS_CONNECTION_LOST]
-Forbindelsen til YOG er blevet afbrudt.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG-metaserveren har afvist forbindelsen, fordi dette brugernavn allerede er registreret. Hvis brugernavnet er dit, skal du deaktivere muligheden for at registrere en ny YOG-bruger med adgangskode.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG-metaserveren har afbrudt forbindelsen fordi den indtastede adgangskode er forkert.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG-metaserveren har afvist forbindelsen, fordi dette brugernavn endnu ikke har en adgangskode. For at registrere navnet med denne adgangskode skal du aktivere muligheden for at registrere en ny YOG-bruger med adgangskode, før du forbinder. Dette skal kun gøres én gang.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-YOG-metaserveren har afvist forbindelsen, fordi denne IP-adresse er midlertidigt udelukket. Vent, til udelukkelsen ophæves, eller kontakt administratorerne.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG-metaserveren har afvist forbindelsen, fordi din Globulation 2-klient er forældet. Hent den nyeste version fra www.globulation2.org for at spille på nettet.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG-metaserveren har afbrudt forbindelsen uden en forklaring!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG-metaserveren har afbrudt forbindelsen, fordi dit brugernavn er allerede i brug af en anden.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG-metaserveren har afvist forbindelsen, fordi dette brugernavn er udelukket. Kontakt administratorerne.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG-metaserveren har afvist forbindelsen, fordi brugernavnet er ugyldigt. Brugernavne må kun indeholde bogstaver, tal og understregninger.
-[YESTS_CREATED]
-Forbindelsesystemet er klar til at forbinde til YOG-metaserveren.
-[YESTS_PASSWORDS_DONT_MATCH]
-Adgangskoderne er ikke ens. Indtast dem igen.
-[YESTS_UNABLE_TO_CONNECT]
-Er ikke muligt at forbinde. Muligvis er YOG-metaserveren nede.
-[yog block command help]
-/block <spillernavn>    Blokerer en spiller, så du ikke længere ser deres beskeder.
-[yog block command player %0 already blocked]
-Spilleren %0 er allerede blokeret
-[yog block command player %0 blocked]
-Spilleren %0 er blokeret
-[yog block command player %0 not found]
-Spilleren %0 blev ikke fundet
-[yog command header]
-Tilgængelige YOG-klientkommandoer:
-[yog command unknown]
-Ukendt kommando.
-[yog help command help]
-/help    Viser denne hjælpemeddelelse
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Du har tabt!
 [you have won]
@@ -1294,12 +1154,8 @@ Du har vundet!
 Du blev smidt ud af spillet
 [Your %0 are under attack]
 Din %0 er under angreb
-[Your IP address was temporarily banned]
-Din IP-adresse er midlertidigt udelukket. Vent, til udelukkelsen ophæves, eller kontakt administratorerne.
 [Your unit got converted to %0's team]
 En af dine enheder sluttede sig til %0s hold
-[Your username was banned]
-Dit brugernavn er udelukket. Kontakt administratorerne for at få det ændret.
 [game speed]
 Spilhastighed
 [decrease game speed]
@@ -3132,8 +2988,6 @@ Kampagnens fremskridt blev ikke gemt. Prøv igen, eller eksportér en sikkerheds
 Afslut uden at gemme
 [campaign import failed]
 Ugyldig fremskridtsfil eller anden kampagneversion
-[network release mismatch]
-Klient- og serverprotokoller er forskellige. Installér samme Glob2-version som serveren.
 [settings continue]
 Fortsæt
 [settings save failed]
@@ -3496,8 +3350,6 @@ Ok: %0
 %0 %1
 [resume game]
 Genoptag spillet
-[games]
-Spil
 [Add AI]
 Tilføj AI
 [settings Experiments]
@@ -3546,15 +3398,9 @@ Listers tilbageslag
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3767,8 +3613,6 @@ Kortets fart
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

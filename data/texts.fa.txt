@@ -36,8 +36,6 @@
 رتبه‌ی %0 نفر خیلی پایین است
 [%0% Uploaded]
 %0% فرستاده شده
-[%0's game]
-بازی %0
 [%0's team unit got converted to your team]
 یکی از افراد تیم %0 جزو تیم تو شد.
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V (Vision): نشان دادن محل همه‌ی ساختمانها
 اضافه‌کردن نقشه
 [add shortcut]
 اضافه‌کردن دکمه
-[Add]
-اضافه‌کردن
 [AI Descriptions]
 مشخصات هوشهای مصنوعی
 [AI]
@@ -130,8 +126,6 @@ alt-%0
 -ذخیره‌ی خودبخود-
 [available lan games]
 بازیهای شبکه‌ای موجود
-[awaiting players]
-بازیکنان منتظر
 [away:]
 دور از دسترس:
 [Back]
@@ -146,8 +140,6 @@ backspace
 سربازخانه
 [beach size]
 اندازه‌ی ساحل
-[Blocked Players]
-بازیکنان مسدودشده
 [break]
 break
 [briefing]
@@ -178,8 +170,6 @@ break
 نمیشود وصل شد. میزبان پیدا نشد.
 [Can't host game, port %0 in use]
 نمیشود میزبانی کرد. پورت %0 مشغول است.
-[Can't join game, game doesn't exist]
-نمیشود در بازی شرکت کرد. این بازی وجود ندارد.
 [Can't join game, game has started]
 نمیشود در بازی شرکت کرد. بازی شروع شده است.
 [Can't join game, game is full]
@@ -246,8 +236,6 @@ control-%0
 تعداد دهانه‌ها
 [crater lakes terrain]
 دریاچه
-[create game]
-ساختن بازی
 [create map]
 ساختن نقشه
 [credits]
@@ -296,14 +284,6 @@ Ctrl - خط
 دست خالی
 [down]
 پایین
-[Download Map]
-دانلود نقشه
-[Download Maps]
-دانلود نقشه‌ها
-[downloaded %0]
-%0 دانلود شد
-[downloading map]
-درحال دانلود نقشه
 [edit map]
 ویرایش نقشه
 [editing map]
@@ -314,10 +294,6 @@ Ctrl - خط
 ویرایشگر
 [end]
 end
-[Enter your nickname :]
-نام کاربریت را بنویس:
-[Enter your password :]
-رمزت را بنویس:
 [enter]
 enter
 [equals]
@@ -474,12 +450,8 @@ insert
 کارها:
 [join a game]
 پیوستن به بازی
-[join]
-پیوستن
 [keyboard settings]
 تنظیم دکمه‌ها
-[kick]
-بیرون‌کردن
 [lan]
 بازی شبکه‌ای
 [language incomplete]
@@ -490,8 +462,6 @@ fa
 زبان
 [language]
 فارسی
-[Leave Game]
-بیرون‌رفتن از بازی
 [left meta]
 meta چپ
 [left super]
@@ -516,12 +486,6 @@ windows چپ
 بازکردن برنامه
 [load]
 بازکردن
-[loading map list]
-درحال خواندن لیست نقشه‌ها...
-[Lobby]
-سالن انتظار
-[login]
-واردشدن
 [look around]
 نگاه به اطراف
 [Lost : %0 has more prestige than you]
@@ -540,30 +504,14 @@ windows چپ
 توضیحات
 [Map Discovered]
 همه‌جای نقشه کشف شده‌باشد
-[Map download failure: lost connection]
-نقشه دانلود نشد: ارتباط با ایساگون قطع شد!
-[Map name: %0]
-اسم نقشه: %0.
 [map name]
 اسم
-[map rated]
-نمره‌ی نقشه داده شد
 [map script]
 برنامه‌ی نقشه
 [map size x]
 عرض نقشه
 [map size y]
 ارتفاع نقشه
-[Map upload failure: connection lost]
-نقشه فرستاده نشد: ارتباط با ایساگون قطع شد!
-[Map upload failure: map name in use]
-نقشه فرستاده نشد: این نقشه درحال استفاده است!
-[Map upload failure: unknown reason]
-نقشه فرستاده نشد: دلیل مشخص نیست!
-[Map Upload: Author Name]
-اسم سازنده
-[Map Upload: Waiting for reply]
-منتظر جواب...
 [mark map]
 علامتگذاری نقشه برای متحدها
 [market explanation 2]
@@ -590,8 +538,6 @@ meta-%0
 عملیات جدید
 [new map]
 نقشه‌ی جدید
-[nick taken]
-We are very sorry but the name you chose is already taken on freenode, you will only be able to talk through YOG
 [no fullscreen]
 *فقط در حالت پنجره
 [No Hints]
@@ -604,16 +550,8 @@ We are very sorry but the name you chose is already taken on freenode, you will 
 زمین بایر
 [No]
 نه
-[Not Enough Ratings]
-تعداد نمره‌ها کافی نیست!
-[not ready]
-آماده نیست!
 [Number Of Buildings]
 تعداد ساختمانها
-[number of players: %0 (%1 AI)]
-%0 بازیکن (%1 هوش مصنوعی)
-[number of teams: %0]
-%0 تیم
 [number of teams]
 تعداد تیمها
 [Number Of Units]
@@ -672,8 +610,6 @@ pause
 مکث...
 [player name]
 اسم بازیکن:
-[player rating %0]
-نمره‌ی بازیکن: %0
 [players]
 بازیکنان
 [please wait]
@@ -712,34 +648,20 @@ print screen
 پیست مسابقه
 [range]
 :محدوده
-[Rated %0]
-نمره: %0
 [ratios]
 نسبتها:
-[ready?]
-آماده‌ای؟
-[refresh map list]
-دوباره لیست‌کردن نقشه‌ها
-[Register]
-ثبت‌نام در ایساگون
 [remember unit]
 حفظ تعداد واحدها
-[Remember YOG password localy]
-بخاطر‌سپردن رمز در کامپیوتر
 [remove map]
 پاک‌کردن نقشه
 [remove shortcut]
 پاک‌کردن دکمه
-[Remove]
-پاک‌کردن
 [repair building]
 شروع/توقف تعمیر
 [repair]
 تعمیر
 [repeat area]
 بار تکرار همان چشم‌انداز
-[Repeat your password :]
-رمزت را دوباره بنویس:
 [replay ended]
 بازپخش پایان یافت
 [restore default shortcuts]
@@ -872,14 +794,6 @@ shift-%0
 نمایش
 [smoothing]
 یکنواختی زمین
-[sort by name]
-اسم
-[sort by rating]
-نمره
-[sort by size]
-اندازه
-[Sort By]
-مرتب کردن از روی
 [space]
 کلید فاصله
 [start mission]
@@ -912,8 +826,6 @@ shift-%0
 برای دفاع از قلمرو
 [stonewall]
 دیوار سنگی
-[submit rating]
-نمره‌دادن
 [svr hostname]
 نام میزبان
 [swamp terrain]
@@ -1010,10 +922,6 @@ tab
 ساخت بازار تمام شد.
 [the market is under attack]
 به بازار حمله شده!
-[The player %0 has joined YOG]
-%0 وارد ایساگون شد.
-[The player %0 has left YOG]
-%0 از ایساگون بیرون رفت.
 [the racetrack is finished]
 ساخت پیست مسابقه تمام شد.
 [the racetrack is under attack]
@@ -1102,10 +1010,6 @@ tab
 پیشفرضهای پیشرفت
 [upgrade]
 پیشرفت
-[Upload Map]
-فرستادن نقشه
-[upload map]
-فرستادن نقشه
 [username]
 نام کاربری
 [Version]
@@ -1118,8 +1022,6 @@ tab
 منتظر %0
 [waiting for key]
 منتظر دکمه...
-[Waiting]
-صبر کن...
 [Walk]
 حرکت
 [warflag explanation 2]
@@ -1166,50 +1068,8 @@ tab
 زخمی
 [Yes]
 بله
-[YESTS_CONNECTING]
-درحال برقراری ارتباط با ایساگون...
-[YESTS_CONNECTION_LOST]
-ارتباط با ایساگون قطع شد!
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-ایساگون ارتباط را قبول نکرد، چون این نام‌کاربری قبلا ثبت شده! اگر این نام‌کاربری خودت است، گزینه‌ی «ثبت‌نام در ایساگون» را غیرفعال کن.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-ایساگون ارتباط را قبول نکرد، چون رمز داده‌شده اشتباه بود!
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-ایساگون ارتباط را قبول نکرد، چون این نام‌کاربری هنوز رمزی  ندارد! اگر میخواهی نام‌کاربریت را با این رمز ثبت کنی، گزینه‌ی «ثبت‌نام در ایساگون» را فعال کن. این گزینه فقط یکبار لازمست فعال شود.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-ایساگون ارتباط را قبول نکرد، چون آدرس اینترنتی (IP) این کامپیوتر موقتا تحریم شده! میتوانی منتظر بمانی تا از تحریم دربیاید یا اینکه با مدیران ایساگون تماس بگیری.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 ایساگون ارتباط را قبول نکرد، چون این نسخه از بازی خیلی قدیمی است! برای بازی آنلاین، لطفا آخرین نسخه را از آدرس www.globulation2.org بگیر.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-ایساگون ارتباط را قبول نکرد! توضیحی داده‌نشد.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-ایساگون ارتباط را قبول نکرد، چون قبلا یکنفر با این نام‌کاربری ثبت‌نام کرده‌است!
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-ایساگون ارتباط را قبول نکرد، چون این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-ایساگون ارتباط را قبول نکرد، چون نام‌کاربری واردشده قابل‌قبول نیست! نام‌کاربری فقط باید از حروف، اعداد و زیرخط (ـ) تشکیل شده‌باشد.
-[YESTS_CREATED]
-سیستم اتصال آماده‌ی برقراری ارتباط با ایساگون است.
-[YESTS_PASSWORDS_DONT_MATCH]
-رمزهای واردشده با هم فرق میکنند! لطفا دوباره آنها را وارد کن.
-[YESTS_UNABLE_TO_CONNECT]
-ارتباط ممکن نیست! ظاهرا به اینترنت وصل نیستی یا ایساگون خاموش است.
-[yog block command help]
-/block <نام بازیکن>    برای مسدودکردن یک بازیکن (دیگر نوشته‌های اورا نمیبینی)
-[yog block command player %0 already blocked]
-%0قبلا مسدود شده!
-[yog block command player %0 blocked]
-%0 مسدود شد!
-[yog block command player %0 not found]
-%0 پیدا نشد!
-[yog command header]
-لیست فعلی دستورات ایساگون:
-[yog command unknown]
-این دستور ناشناخته است!
-[yog help command help]
-/help    نشان‌دادن همین پیغام
-[yog]
-بازی آنلاین در ایساگون
 [you have lost]
 تو باختی!
 [you have won]
@@ -1218,12 +1078,8 @@ tab
 تو از بازی بیرون شدی!
 [Your %0 are under attack]
 به %0 تو حمله شده!
-[Your IP address was temporarily banned]
-آدرس اینترنتی (IP) این کامپیوتر موقتا تحریم شده! میتوانی منتظر بمانی تا از تحریم دربیاید یا اینکه با مدیران ایساگون تماس بگیری.
 [Your unit got converted to %0's team]
 یکی از افراد تو جزو تیم %0 شد.
-[Your username was banned]
-این نام‌کاربری تحریم شده! میتوانی با مدیران ایساگون تماس بگیری.
 [game speed]
 سرعت بازی
 [decrease game speed]
@@ -3054,8 +2910,6 @@ Emoji
 خروج بدون ذخیره
 [campaign import failed]
 فایل پیشرفت نامعتبر یا نسخه کمپین متفاوت است
-[network release mismatch]
-پروتکل‌های کلاینت و سرور متفاوت است. همان نسخه Glob2 سرور را نصب کنید.
 [settings continue]
 ادامه
 [settings save failed]
@@ -3418,8 +3272,6 @@ Emoji
 %0 %1
 [resume game]
 ادامه بازی
-[games]
-بازی‌ها
 [Add AI]
 افزودن هوش مصنوعی
 [settings Experiments]
@@ -3468,15 +3320,9 @@ Emoji
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3689,8 +3535,6 @@ Emoji
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

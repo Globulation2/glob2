@@ -2,13 +2,11 @@
 // Two real clients and an embedded anonymous LAN service; optional recording on each.
 #include "GlobalContainer.h"
 #include "Engine.h"
-#include "MultiplayerGame.h"
-#include "MultiplayerGameScreen.h"
-#include "SessionTabsScreen.h"
-#include "EndGameScreen.h"
-#include "YOGClient.h"
-#include "YOGClientGameListManager.h"
-#include "YOGServer.h"
+#include "RoomScreen.h"
+#include "LanRoom.h"
+#include "TurnLockstep.h"
+#include <fstream>
+#include <algorithm>
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <GameplayRecording.h>
@@ -53,83 +51,73 @@ int main(int argc, char **argv)
 				throw std::runtime_error(recorder.status().error);
 		}
 		{
-			auto client = std::make_shared<YOGClient>();
+			std::shared_ptr<Lan::LanRoom> game;
 			if (host)
 			{
-				auto server = std::make_shared<YOGServer>(YOGAnonymousLogin, YOGSingleGame);
-				if (!server->isListening())
-					throw std::runtime_error("LAN service did not start");
-				client->attachGameServer(server);
-				client->connect(server->networkConfig().lobbyEndpoint);
-				std::cout << "PAIRING " << server->networkConfig().lobbyEndpoint << std::endl;
+				Lan::LanHost::Options options;
+				options.hostName = "recording-host";
+				options.mapFile = "maps/FourSquares1.map";
+				options.map = Engine::loadMapHeader(options.mapFile);
+				options.broadcast = false;
+				options.advertisedAddress = "127.0.0.1";
+				game = Lan::LanRoom::host(std::move(options));
+				std::cout << "PAIRING " << game->shareText() << std::endl;
 			}
 			else
-				client->connect(argv[2]);
-			std::shared_ptr<MultiplayerGame> game;
+			{
+				Lan::LanClient::Options options;
+				options.endpoint = argv[2];
+				options.name = "recording-guest";
+				game = Lan::LanRoom::join(std::move(options));
+			}
 			GAGGUI::ScreenStack screens(*globals.gfx);
 			bool ready = false, launch = false;
 			auto deadline = SDL_GetTicks() + 30000;
-			while (SDL_GetTicks() < deadline)
+			while (!launch && SDL_GetTicks() < deadline)
 			{
-				client->update();
-				if (client->getConnectionState() == YOGClient::WaitingForLoginInformation)
-					client->attemptLogin(globals.settings.getUsername());
-				if (!game && client->getConnectionState() == YOGClient::ClientOnStandby &&
-					(host || !client->getGameListManager()->getGameList().empty()))
+				game->update();
+				if (game->lobbyReady() && !ready)
 				{
-					game = std::make_shared<MultiplayerGame>(client);
-					client->setMultiplayerGame(game);
-					if (host)
-					{
-						game->createNewGame("Recording fixture");
-						MapHeader map = Engine::loadMapHeader("maps/FourSquares1.map");
-						game->setMapHeader(map);
-					}
-					else
-						game->joinGame(
-							client->getGameListManager()->getGameList().front().getGameID());
-					auto lobby = std::make_unique<SessionTabsScreen>();
-					// Tab lifetime extends until after its owning stack is stopped below.
-					screens.push(std::move(lobby));
+					game->setReady(true);
+					ready = true;
 				}
-				if (game)
+				const auto slots = game->slots();
+				const auto humans = std::count_if(slots.begin(), slots.end(), [](const auto &slot) {
+					return !slot.open && !slot.ai;
+				});
+				if (host && humans == 2 && game->canStart() && !game->starting())
+					game->start();
+				while (auto event = game->takeEvent())
 				{
-					game->update();
-					if (game->isFullyInGame() && !ready)
-					{
-						game->setHumanReady(true);
-						ready = true;
-					}
-					if (host && game->getGameHeader().getNumberOfPlayers() == 2 &&
-						game->isGameReadyToStart() && !launch)
-					{
-						launch = true;
-						game->startGame();
-					}
-					if (game->takeStartRequest())
-						break;
+					if (event->kind == RoomBackend::Event::Launch) launch = true;
+					if (event->kind == RoomBackend::Event::Finished)
+						throw std::runtime_error(event->text);
 				}
-				GAGCore::Recording::recorder().screen("multiplayer_game");
+				recorder.screen("multiplayer_room");
 				globals.gfx->drawFilledRect(0, 0, 640, 480, GAGCore::Color(30, 25, 40));
 				globals.gfx->nextFrame();
 				SDL_Delay(10);
 			}
-			if (!game || !game->isWaitingForEngine())
-				throw std::runtime_error("Multiplayer launch timed out");
-			// Render the real multiplayer room once initialization is complete.
-			MultiplayerGameScreen room(screens, game, client);
-			auto lobby = std::make_unique<SessionTabsScreen>();
-			lobby->addTab(&room, true);
-			screens.push(std::move(lobby));
+			if (!launch) throw std::runtime_error("Multiplayer launch timed out");
+			// Render the production room once both clients have their match setup.
+			screens.push(std::make_unique<RoomScreen>(screens, game));
 			screens.frame(SDL_GetTicks(), {});
 			Engine engine;
-			if (engine.initMultiplayer(game, client, game->getLocalPlayer()) != Engine::EE_NO_ERROR)
+			if (!game->initGame(engine).run())
 				throw std::runtime_error("Multiplayer initialization failed");
+			// Turn multiplayer has its own match record; capture every executed
+			// checksum directly rather than depending on the legacy replay writer.
+			std::ofstream checksums;
+			if (const char *path = SDL_getenv("GLOB2_REPLAY_PATH"))
+				checksums.open(std::string(path) + ".checksums");
+			engine.turnLockstep()->onChecksum = [&checksums](std::uint32_t tick, Uint32 sum) {
+				checksums << tick << ' ' << sum << '\n';
+			};
 			globals.automaticEndingGame = true;
 			globals.automaticEndingSteps = 120;
 			globals.automaticGameGlobalEndConditions = true;
 			engine.prepareRun();
-			game->sessionStarted();
+			game->gameStarted(true);
 			engine.beginSession(SDL_GetTicks());
 			if (!engine.startSimulationThread(SDL_GetTicks()))
 				throw std::runtime_error("Simulation thread did not start");
@@ -161,10 +149,8 @@ int main(int argc, char **argv)
 			}
 			screens.stop();
 			screens.frame(SDL_GetTicks(), {});
-			game->sessionEnded(false);
-			game->leaveGame();
-			client->setMultiplayerGame({});
-			client->disconnect();
+			game->gameEnded(false);
+			game->leave();
 		}
 		recorder.stop();
 		recorder.shutdown();

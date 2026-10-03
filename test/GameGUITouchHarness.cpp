@@ -3632,8 +3632,13 @@ class GameGUITouchHarness
 			require(gui.touch->flagDrag && gui.touch->flagDrag->dragging, "The flag is carried to the edge");
 			const int beforeEdge = gui.viewportX;
 			const int carriedX = gui.displayedPosX(*flag);
-			gui.touch->flagDrag->lastUpdate = SDL_GetTicks() - 400;
-			gui.touch->prepareDraw();
+			// Edge panning caps each frame at 100 ms. Advance four frames so
+			// the assertion crosses a tile regardless of the initial camera offset.
+			for (int frame = 0; frame < 4; ++frame)
+			{
+				gui.touch->flagDrag->lastUpdate = SDL_GetTicks() - 100;
+				gui.touch->prepareDraw();
+			}
 			require(gui.viewportX != beforeEdge, "Holding a carried flag at the edge pans the map");
 			require(gui.displayedPosX(*flag) != carriedX, "The flag rides along as the map pans");
 			finger(SDL_EVENT_FINGER_UP, 1, edge.x, edge.y);

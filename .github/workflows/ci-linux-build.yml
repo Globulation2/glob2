@@ -665,7 +665,9 @@ jobs:
         run: |
           # The two jobs divide the four independent sweep shards between runners.
           # Run golden rows alongside the first pair of shards.
-          golden() { log=$1; shift; timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
+          # Concurrent sweeps exceeded 600 s without a failing combination. Keep
+          # both complete inventories and allow each shard enough CPU time.
+          golden() { log=$1; shift; timeout 1200s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
           if [ '${{ matrix.suite }}' = sweep-a ]; then
             golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
             shards=(0 1)

@@ -7,21 +7,25 @@ import unittest
 import subprocess
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scons'))
 from build_layout import build_identity, default_directory, prepare_directory, write_if_changed, BuildLock
-from sources import CLIENT_SOURCES, SERVER_SOURCES, GAG_SOURCES, USL_SOURCES, RELAY_SOURCES, RELAY_GAG_SOURCES
+from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, RELAY_SOURCES, RELAY_GAG_SOURCES
 
 
 class BuildLayoutTests(unittest.TestCase):
     def test_all_supported_configurations_have_distinct_directories(self):
         configurations = []
         for release, host in itertools.product(('0','1'), ('darwin','linux','windows')):
-            for role in ('client','server','router','relay'):
+            for role in ('client','relay'):
                 configurations.append(build_identity({'release':release,'role':role}, host))
         configurations += [build_identity({'target':'web','release':release}) for release in ('0','1')]
         directories = [default_directory(c) for c in configurations]
         self.assertEqual(len(directories), len(set(directories)))
 
-    def test_legacy_server_and_mingw_options_select_separate_identities(self):
-        self.assertEqual(build_identity({'server':'1'})['role'], 'server')
+    def test_removed_server_roles_and_mingw_options(self):
+        # The YOG lobby server and router were removed; server=0 stays a no-op.
+        for args in ({'server':'1'}, {'role':'server'}, {'role':'router'}):
+            with self.subTest(args=args), self.assertRaises(ValueError):
+                build_identity(args)
+        self.assertEqual(build_identity({'server':'0'}), build_identity({}))
         self.assertEqual(build_identity({'mingwcross':'1'})['toolchain'], 'mingwcross')
         self.assertEqual(build_identity({})['role'], 'client')
         self.assertTrue(build_identity({})['native_wss'])
@@ -65,7 +69,7 @@ class BuildLayoutTests(unittest.TestCase):
 
     def test_shared_manifests_are_valid_and_unique(self):
         root=Path(__file__).resolve().parents[2]
-        for prefix,files in [('src',CLIENT_SOURCES),('src',SERVER_SOURCES),('libgag/src',GAG_SOURCES),('libusl/src',USL_SOURCES),('src',RELAY_SOURCES),('libgag/src',RELAY_GAG_SOURCES)]:
+        for prefix,files in [('src',CLIENT_SOURCES),('libgag/src',GAG_SOURCES),('libusl/src',USL_SOURCES),('src',RELAY_SOURCES),('libgag/src',RELAY_GAG_SOURCES)]:
             self.assertEqual(len(files),len(set(files)))
             for filename in files:
                 self.assertTrue((root/prefix/filename).is_file(),filename)

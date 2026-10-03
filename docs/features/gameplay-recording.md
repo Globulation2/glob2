@@ -155,8 +155,9 @@ Python media checks inspect codecs, embedded chapters, chronological events, and
 decoded first frames of extracted clips; use the generated `recording-sections-*`
 fixture for its documented palette.
 
-The multiplayer fixture runs two real LAN clients through a threaded match and results,
-retains footage and replays, and compares their full per-tick checksum sidecars.
+The multiplayer fixture runs two real LAN clients on the turn protocol through a
+threaded match and results. It retains both videos and compares every executed
+tick’s checksum, written directly from each client’s lockstep callback.
 Use `--ffmpeg /path/to/ffmpeg` when the encoder is outside `PATH`.
 
 Use the equivalent build path on Linux or Windows. Test recordings and review

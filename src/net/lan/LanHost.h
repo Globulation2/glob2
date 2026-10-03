@@ -5,8 +5,7 @@
 
 // The host side of a LAN game (docs/multiplayer/lan.md): the room (seats, teams,
 // readiness, chat, map transfer) and, once the match starts, the turn relay
-// (TurnSequencer) in-process. Guests connect over the pinned WSS listener the old
-// YOG LAN server used; discovery stays on NetBroadcaster. The host's own player
+// (TurnSequencer) in-process. Guests connect over a pinned WSS listener; discovery stays on NetBroadcaster. The host's own player
 // talks to the relay through an in-memory TurnTransport (localTransport()), which
 // also pumps the host while the host's engine runs.
 //

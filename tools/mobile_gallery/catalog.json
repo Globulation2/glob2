@@ -550,24 +550,6 @@
       "group": "Network entry screens"
     },
     {
-      "id": "online-login",
-      "title": "Online login",
-      "description": "Login form; no authentication is attempted.",
-      "group": "Network entry screens"
-    },
-    {
-      "id": "online-register",
-      "title": "Online registration",
-      "description": "Account registration form; no account is created.",
-      "group": "Network entry screens"
-    },
-    {
-      "id": "map-upload",
-      "title": "Upload map",
-      "description": "Upload details for bundled balanced.map; no upload is submitted.",
-      "group": "Network entry screens"
-    },
-    {
       "id": "quick-match",
       "title": "Quick match",
       "description": "Queue cards before a search; canned instance queues.",
@@ -1013,7 +995,7 @@
   "gaps": [
     {
       "title": "Connected multiplayer",
-      "reason": "Authenticated YOG lobby, multiplayer waiting room, game-connection progress, populated online map browser and transfer progress require controlled network fixtures. No live account or other player was used."
+      "reason": "A live online room, game-connection progress and transfer progress require controlled network fixtures; the online screens are captured on canned data. No live account or other player was used."
     },
     {
       "title": "Loading and failure transitions",

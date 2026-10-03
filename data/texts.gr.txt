@@ -36,8 +36,6 @@
 %0 μονάδες έχουν πολύ χαμηλό επίπεδο
 [%0% Uploaded]
 Απεστάλη το %0%
-[%0's game]
-Παιχνίδι του %0
 [%0's team unit got converted to your team]
 Μια μονάδα της ομάδας του %0 προσχώρησε στην ομάδα σας
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Κοινή χρήση ορατότητας όλων των κτιρίων
 Προσθήκη χάρτη
 [add shortcut]
 Νέα συντόμευση
-[Add]
-Προσθήκη
 [AI Descriptions]
 Περιγραφές ΤΝ
 [AI]
@@ -130,8 +126,6 @@ alt-%0
 Αυτόματη αποθήκευση
 [available lan games]
 Διαθέσιμα τοπικά παιχνίδια
-[awaiting players]
-Αναμένοντας παίκτες
 [away:]
 εκτός:
 [Back]
@@ -146,8 +140,6 @@ backspace
 Στρατώνες
 [beach size]
 μέγεθος παραλίας
-[Blocked Players]
-Αποκλεισμένοι παίκτες
 [break]
 διακοπή
 [briefing]
@@ -226,8 +218,6 @@ Ctrl + σύρσιμο = Γραμμή
 Αδύνατη η σύνδεση: δεν βρέθηκε ο διακομιστής
 [Can't host game, port %0 in use]
 Αδύνατη η φιλοξενία παιχνιδιού: η θύρα %0 χρησιμοποιείται
-[Can't join game, game doesn't exist]
-Αδύνατη η συμμετοχή: το παιχνίδι δεν υπάρχει
 [Can't join game, game has started]
 Αδύνατη η συμμετοχή: το παιχνίδι έχει ξεκινήσει
 [Can't join game, game is full]
@@ -300,8 +290,6 @@ control-%0
 αριθμός κρατήρων
 [crater lakes terrain]
 Λίμνες κρατήρων
-[create game]
-Δημιουργία παιχνιδιού
 [create map]
 Δημιουργία χάρτη
 [credits]
@@ -356,14 +344,6 @@ Ctrl - Γραμμή
 Δεν μεταφέρει τίποτα
 [down]
 κάτω
-[Download Map]
-Λήψη χάρτη
-[Download Maps]
-Λήψη χαρτών
-[downloaded %0]
-λήφθηκαν %0
-[downloading map]
-Λήψη χάρτη
 [edit map]
 Επεξεργασία Χάρτη
 [editing map]
@@ -374,10 +354,6 @@ Ctrl - Γραμμή
 Επεξεργαστής
 [end]
 τέλος
-[Enter your nickname :]
-Δώστε το ψευδώνυμο σας:
-[Enter your password :]
-Δώστε τον κωδικό σας:
 [enter]
 Enter
 [equals]
@@ -538,12 +514,8 @@ HP
 εργασίες
 [join a game]
 Συμμετοχή σε ένα παιχνίδι
-[join]
-Συμμετοχή
 [keyboard settings]
 Ρυθμίσεις Πληκτρολογίου
-[kick]
-Αποβολή
 [lan]
 Παιχνίδι LAN
 [language incomplete]
@@ -554,8 +526,6 @@ gr
 Γλώσσα
 [language]
 Ελληνικά
-[Leave Game]
-Έξοδος από το παιχνίδι
 [left meta]
 αριστερό meta
 [left super]
@@ -578,12 +548,6 @@ gr
 Φόρτωση σεναρίου
 [load]
 Φόρτωση
-[loading map list]
-Φόρτωση λίστας χαρτών...
-[Lobby]
-Προθάλαμος
-[login]
-Σύνδεση
 [look around]
 Περιήγηση
 [Lost : %0 has more prestige than you]
@@ -602,30 +566,14 @@ gr
 Περιγραφή
 [Map Discovered]
 Αποκαλυμμένος χάρτης
-[Map download failure: lost connection]
-Αποτυχία λήψης χάρτη: χάθηκε η σύνδεση με το YOG
-[Map name: %0]
-Όνομα χάρτη: %0.
 [map name]
 Όνομα
-[map rated]
-Ο χάρτης αξιολογήθηκε
 [map script]
 Σενάριο χάρτη
 [map size x]
 Πλάτος χάρτη
 [map size y]
 Μήκος χάρτη
-[Map upload failure: connection lost]
-Αποτυχία αποστολής χάρτη: χάθηκε η σύνδεση με το YOG
-[Map upload failure: map name in use]
-Αποτυχία αποστολής χάρτη. Το όνομα χάρτη χρησιμοποιείται ήδη.
-[Map upload failure: unknown reason]
-Αποτυχία αποστολής χάρτη. Άγνωστη αιτία.
-[Map Upload: Author Name]
-Όνομα δημιουργού
-[Map Upload: Waiting for reply]
-Αναμονή απάντησης
 [maps available]
 Διαθέσιμοι Χάρτες
 [mark map]
@@ -654,8 +602,6 @@ meta-%0
 Νέα Εκστρατεία
 [new map]
 Νέα
-[nick taken]
-Λυπούμαστε πολύ αλλά το όνομα που επιλέξατε υπάρχει ήδη στο freenode, θα έχετε την δυνατότητα να μιλάτε μόνο μέσο YOG
 [no fullscreen]
 * μόνο σε λειτουργία παραθύρου
 [No Hints]
@@ -668,18 +614,10 @@ meta-%0
 Χωρίς ανάπτυξη
 [No]
 Όχι
-[Not Enough Ratings]
-Ανεπαρκείς αξιολογήσεις
-[not ready]
-Μη έτοιμος
 [Number Of Buildings]
 Αριθμός κτιρίων
-[number of players: %0 (%1 AI)]
-%0 παίκτες (%1 ΤΝ)
 [number of players: %0]
 %0 παίκτες είναι παρώντες.
-[number of teams: %0]
-%0 ομάδες.
 [number of teams]
 αριθμός των ομάδων
 [Number Of Units]
@@ -738,8 +676,6 @@ page up
 Σταματημένο
 [player name]
 Όνομα παίκτη
-[player rating %0]
-Αξιολόγηση παίκτη: %0
 [players]
 Παίκτες
 [please wait]
@@ -778,36 +714,22 @@ print screen
 Στίβος
 [range]
 Εύρος
-[Rated %0]
-Βαθμολογία %0
 [ratios]
 Αναλογίες
-[ready?]
-έτοιμος;
-[refresh map list]
-Ανανέωση λίστας χαρτών
 [Register a new YOG user with password]
 Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
-[Register]
-Εγγραφή
 [remember unit]
 Αποθ. πλήθους μονάδων
-[Remember YOG password localy]
-Αποθήκευση του κωδικού τοπικά. (μη ασφαλές)
 [remove map]
 Αφαίρεση Χάρτη
 [remove shortcut]
 Διαγραφή
-[Remove]
-Αφαίρεση
 [repair building]
 Εκκίνηση/Παύση Επιδιόρθωσης
 [repair]
 Επιδιόρθωση
 [repeat area]
 φορές το ίδιο περιβάλλον
-[Repeat your password :]
-Επαναλάβετε τον κωδικό σας:
 [replay ended]
 Η επανάληψη τελείωσε
 [restore default shortcuts]
@@ -940,14 +862,6 @@ V: κρατήστε πατημένο για να μιλήσετε
 Εμφάνιση
 [smoothing]
 Πιο ομαλό
-[sort by name]
-Όνομα
-[sort by rating]
-Βαθμολογία
-[sort by size]
-Μέγεθος
-[Sort By]
-Ταξινόμηση κατά
 [space]
 κενό
 [start mission]
@@ -980,8 +894,6 @@ V: κρατήστε πατημένο για να μιλήσετε
 Στοιχείο
 [stonewall]
 Πέτρινο Τείχος
-[submit rating]
-Υποβολή αξιολόγησης
 [svr hostname]
 Όνομα εξυπηρετητή
 [swamp terrain]
@@ -1080,10 +992,6 @@ tab
 Η αγορά ολοκληρώθηκε
 [the market is under attack]
 Η αγορά δέχεται επίθεση
-[The player %0 has joined YOG]
-Ο %0 συνδέθηκε στο YOG.
-[The player %0 has left YOG]
-%0 έφυγε από το YOG.
 [the racetrack is finished]
 Ο στίβος ολοκληρώθηκε
 [the racetrack is under attack]
@@ -1172,10 +1080,6 @@ tab
 Προεπιλογές αναβάθμισης
 [upgrade]
 Αναβάθμιση
-[Upload Map]
-Αποστολή χάρτη
-[upload map]
-Αποστολή χάρτη
 [username]
 Όνομα Χρήστη
 [Version]
@@ -1188,8 +1092,6 @@ tab
 Αναμονή για %0
 [waiting for key]
 αναμονή για πλήκτρο...
-[Waiting]
-Αναμονή
 [Walk]
 Περπάτα
 [warflag explanation 2]
@@ -1236,50 +1138,8 @@ tab
 πληγωμένος
 [Yes]
 Ναι
-[YESTS_CONNECTING]
-Ξεκινά η σύνδεση με τον YOG metaserver...
-[YESTS_CONNECTION_LOST]
-Η σύνδεση με το YOG χάθηκε.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί αυτό το όνομα χρήστη είναι ήδη καταχωρημένο.  Εαν είναι δικό σας, απενεργοποιήστε την επιλογή "Καταχωρήστε νέου YOG χρήστη με κωδικό".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή ο κωδικός είναι λανθασμένος.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη δεν έχει ακόμα κωδικό. Πιθανόν θέλετε να καταχωρήσετε αυτό το όνομα χρήστη με αυτό τον κωδικό. Γι' αυτό, ενεργοποιήστε την επιλογή "Καταχώρηση νέου YOG χρήστη με κωδικό" πριν συνδεθείτε. Θα πρέπει να ενεργοποιήσετε αυτή την επιλογή μόνο μία φορά.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή αυτή η διεύθυνση IP έχει αποκλειστεί προσωρινά. Περιμένετε να αρθεί ο αποκλεισμός ή επικοινωνήστε με τους διαχειριστές.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το globulation2 client σας είναι παλιό.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Ο YOG metaserver αρνήθηκε την σύνδεση χωρίς εξήγηση!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το όνομα χρήστη είναι ήδη σε χρήση από κάποιον άλλον.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή αυτό το όνομα χρήστη έχει αποκλειστεί. Επικοινωνήστε με τους διαχειριστές.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Ο μεταδιακομιστής YOG απέρριψε τη σύνδεση επειδή το όνομα χρήστη δεν είναι έγκυρο. Επιτρέπονται μόνο γράμματα, αριθμοί και κάτω παύλες.
-[YESTS_CREATED]
-Το σύστημα σύνδεσης είναι έτοιμο για επαφή με τον YOG metaserver για σύνδεση.
-[YESTS_PASSWORDS_DONT_MATCH]
-Οι κωδικοί δεν ταιριάζουν. Πληκτρολογήστε τους ξανά.
-[YESTS_UNABLE_TO_CONNECT]
-Αδύνατη η σύνδεση. Προφανώς ο YOG metaserver δεν λειτουργεί.
-[yog block command help]
-/block <playername>    Αποκλείει έναν παίκτη· δεν θα βλέπετε πλέον τα μηνύματά του.
-[yog block command player %0 already blocked]
-Ο παίκτης %0 είναι ήδη αποκλεισμένος
-[yog block command player %0 blocked]
-Ο παίκτης %0 αποκλείστηκε
-[yog block command player %0 not found]
-Ο παίκτης %0 δεν βρέθηκε
-[yog command header]
-Οι διαθέσιμες εντολές του πελάτη YOG είναι:
-[yog command unknown]
-Άγνωστη εντολή.
-[yog help command help]
-/help    Εμφανίζει αυτό το μήνυμα βοήθειας
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Χάσατε!
 [you have won]
@@ -1288,12 +1148,8 @@ Ysagoon Online Gaming
 Αποβληθήκατε από το παιχνίδι
 [Your %0 are under attack]
 Η μονάδα σας (%0) δέχεται επίθεση
-[Your IP address was temporarily banned]
-Η διεύθυνση IP σας αποκλείστηκε προσωρινά. Περιμένετε να αρθεί ο αποκλεισμός ή επικοινωνήστε με τους διαχειριστές.
 [Your unit got converted to %0's team]
 Η μονάδα σας προσχώρησε στην ομάδα του %0
-[Your username was banned]
-Το όνομα χρήστη σας αποκλείστηκε. Επικοινωνήστε με τους διαχειριστές για να αρθεί ο αποκλεισμός.
 [game speed]
 Ταχύτητα παιχνιδιού
 [decrease game speed]
@@ -3126,8 +2982,6 @@ Emoji
 Έξοδος χωρίς αποθήκευση
 [campaign import failed]
 Μη έγκυρο αρχείο προόδου ή διαφορετική έκδοση εκστρατείας
-[network release mismatch]
-Τα πρωτόκολλα πελάτη και διακομιστή διαφέρουν. Εγκαταστήστε την ίδια έκδοση Glob2 με τον διακομιστή.
 [settings continue]
 Συνέχεια
 [settings save failed]
@@ -3490,8 +3344,6 @@ CPU %0%
 %0 %1
 [resume game]
 Συνέχιση παιχνιδιού
-[games]
-Παιχνίδια
 [Add AI]
 Προσθήκη AI
 [settings Experiments]
@@ -3540,15 +3392,9 @@ CPU %0%
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3761,8 +3607,6 @@ CPU %0%
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

@@ -36,8 +36,6 @@ Temel strateji: Gıda, işçiler, doğumlar, eğitim, inşaat ve savaşı birbir
 %0 birimin seviyesi çok düşük
 [%0% Uploaded]
 %0% yüklendi
-[%0's game]
-%0 adlı oyuncunun oyunu
 [%0's team unit got converted to your team]
 %0 adlı oyuncunun takımından bir birim takımınıza geçti
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Bütün binaların görüşünü paylaş
 Harita ekle
 [add shortcut]
 Kısayol Ekle
-[Add]
-Ekle
 [AI Descriptions]
 Yapay Zekâ Açıklamaları
 [AI]
@@ -130,8 +126,6 @@ Ses
 Otomatik kaydet
 [available lan games]
 Uygun yerel oyunlar
-[awaiting players]
-Oyuncular bekleniyor
 [away:]
 uzakta:
 [Back]
@@ -146,8 +140,6 @@ Savaşçıların dövüş
 Kışla
 [beach size]
 sahil boyutu
-[Blocked Players]
-Engellenen Oyuncular
 [break]
 Break
 [briefing]
@@ -178,8 +170,6 @@ Sefer
 Bağlanılamıyor: sunucu bulunamadı
 [Can't host game, port %0 in use]
 Oyun kurulamıyor: %0 numaralı bağlantı noktası kullanımda
-[Can't join game, game doesn't exist]
-Katılınamıyor: oyun mevcut değil
 [Can't join game, game has started]
 Katılınamıyor: oyun başlamış
 [Can't join game, game is full]
@@ -252,8 +242,6 @@ Buğday
 krater sayısı
 [crater lakes terrain]
 Krater Gölleri
-[create game]
-Yeni oyun
 [create map]
 Yeni harita
 [credits]
@@ -302,14 +290,6 @@ Hiçbir Şey Yapma
 Hiçbir şey taşımıyor
 [down]
 aşağı
-[Download Map]
-Harita İndir
-[Download Maps]
-Harita İndir
-[downloaded %0]
-%0 indirildi
-[downloading map]
-Harita İndiriliyor
 [edit map]
 Haritayı Düzenle
 [editing map]
@@ -320,10 +300,6 @@ Düzenleyici
 Düzenleyici
 [end]
 End
-[Enter your nickname :]
-Takma adınızı girin:
-[Enter your password :]
-Şifrenizi girin:
 [enter]
 Enter
 [equals]
@@ -478,12 +454,8 @@ Sonraki Öğeyi Seç
 işler
 [join a game]
 Oyuna katıl
-[join]
-Katıl
 [keyboard settings]
 Klavye Ayarları
-[kick]
-Oyundan At
 [lan]
 Yerel ağ oyunu
 [language incomplete]
@@ -494,8 +466,6 @@ tr
 Dil
 [language]
 Türkçe
-[Leave Game]
-Oyundan Ayrıl
 [left meta]
 sol Meta
 [left super]
@@ -518,12 +488,6 @@ Tekrar Yükle
 Betik Yükle
 [load]
 Yükle
-[loading map list]
-Harita Listesi Yükleniyor...
-[Lobby]
-Lobi
-[login]
-Giriş
 [look around]
 Etrafa bak
 [Lost : %0 has more prestige than you]
@@ -542,30 +506,14 @@ Yer hasarı
 Açıklama
 [Map Discovered]
 Harita Keşfedilmiş
-[Map download failure: lost connection]
-Harita indirilemedi: YOG bağlantısı kesildi
-[Map name: %0]
-Harita adı: %0.
 [map name]
 Ad
-[map rated]
-Harita Değerlendirildi
 [map script]
 Harita Betiği
 [map size x]
 Harita genişliği
 [map size y]
 Harita yüksekliği
-[Map upload failure: connection lost]
-Harita yüklenemedi: YOG bağlantısı kesildi
-[Map upload failure: map name in use]
-Harita yüklenemedi. Harita adı zaten kullanımda.
-[Map upload failure: unknown reason]
-Harita yüklenemedi. Nedeni bilinmiyor.
-[Map Upload: Author Name]
-Yapımcı Adı
-[Map Upload: Waiting for reply]
-Yanıt bekleniyor
 [mark map]
 Müttefikler İçin İşaretle
 [market explanation 2]
@@ -592,8 +540,6 @@ sessiz
 Yeni Sefer
 [new map]
 Yeni
-[nick taken]
-Üzgünüz, seçtiğiniz ad freenode'da zaten kayıtlı. Yalnızca YOG üzerinden konuşabileceksiniz.
 [no fullscreen]
 * yalnızca pencere kipinde
 [No Hints]
@@ -606,18 +552,10 @@ Hedef Yok
 Büyüme yok
 [No]
 Hayır
-[Not Enough Ratings]
-Yeterli Değerlendirme Yok
-[not ready]
-hazır değil
 [Number Of Buildings]
 Bina Sayısı
-[number of players: %0 (%1 AI)]
-%0 oyuncu (%1 yapay zekâ)
 [number of players: %0]
 %0 oyuncu var.
-[number of teams: %0]
-%0 takım
 [number of teams]
 takım sayısı
 [Number Of Units]
@@ -676,8 +614,6 @@ Pause
 Duraklatıldı
 [player name]
 Oyuncu adı
-[player rating %0]
-Oyuncu Puanı: %0
 [players]
 Oyuncular
 [please wait]
@@ -716,36 +652,22 @@ Birimlerin yürüme
 Koşu Yolu
 [range]
 Menzil
-[Rated %0]
-Puan: %0
 [ratios]
 Oranlar
-[ready?]
-hazır mı?
-[refresh map list]
-Harita Listesini Yenile
 [Register a new YOG user with password]
 Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
-[Register]
-Kaydol
 [remember unit]
 Birim Sayılarını Hatırla
-[Remember YOG password localy]
-Parolayı bu bilgisayarda hatırla.
 [remove map]
 Haritayı Kaldır
 [remove shortcut]
 Kısayolu Kaldır
-[Remove]
-Kaldır
 [repair building]
 Onarımı Başlat/Durdur
 [repair]
 Onar
 [repeat area]
 aynı arazinin tekrar sayısı
-[Repeat your password :]
-Parolanızı tekrar girin:
 [replay ended]
 Tekrar Bitti
 [restore default shortcuts]
@@ -878,14 +800,6 @@ Ana Menüyü Göster
 Görünüm
 [smoothing]
 Düzleştirme
-[sort by name]
-Ad
-[sort by rating]
-Puan
-[sort by size]
-Boyut
-[Sort By]
-Sıralama Ölçütü
 [space]
 boşluk
 [start mission]
@@ -918,8 +832,6 @@ unsuru
 Pasif savunma
 [stonewall]
 Taş duvar
-[submit rating]
-Değerlendirmeyi Gönder
 [svr hostname]
 Sunucu adı
 [swamp terrain]
@@ -1016,10 +928,6 @@ Haritalar
 Market tamamlandı
 [the market is under attack]
 Market saldırı altında
-[The player %0 has joined YOG]
-%0 YOG'a bağlandı.
-[The player %0 has left YOG]
-%0 YOG'dan ayrıldı.
 [the racetrack is finished]
 Koşu yolu tamamlandı
 [the racetrack is under attack]
@@ -1108,10 +1016,6 @@ Geliştirmeyi Başlat/Durdur
 Varsayılan Geliştirme Ayarları
 [upgrade]
 Geliştir
-[Upload Map]
-Harita Yükle
-[upload map]
-Harita Yükle
 [username]
 Kullanıcı adı
 [Version]
@@ -1124,8 +1028,6 @@ Ses düzeyi (konuşma)
 bekleniyor: %0
 [waiting for key]
 tuş bekleniyor...
-[Waiting]
-Bekleniyor
 [Walk]
 Yürü
 [warflag explanation 2]
@@ -1174,50 +1076,8 @@ işçiler
 yaralı
 [Yes]
 Evet
-[YESTS_CONNECTING]
-YOG ana sunucusuna bağlanılıyor...
-[YESTS_CONNECTION_LOST]
-YOG bağlantısı kesildi.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG ana sunucusu bağlantıyı reddetti: bu kullanıcı adı zaten kayıtlı. Bu ad size aitse yeni YOG kullanıcısı kaydetme seçeneğini kapatın.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG ana sunucusu bağlantıyı reddetti: girdiğiniz parola yanlış.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG ana sunucusu bağlantıyı reddetti: bu kullanıcı adının henüz parolası yok. Adınızı bu parolayla kaydetmek istiyorsanız bağlanmadan önce yeni YOG kullanıcısı kaydetme seçeneğini açın. Bunu yalnızca bir kez yapmanız gerekir.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-YOG ana sunucusu bu IP adresi geçici olarak yasaklandığı için bağlantıyı reddetti. Yasağın kalkmasını bekleyin veya yöneticilerle iletişime geçin.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG ana sunucusu bağlantıyı reddetti: oyun sürümünüz çok eski.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG ana sunucusu bağlantıyı bilinmeyen bir nedenle reddetti.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG ana sunucusu bağlantıyı reddetti: bu kullanıcı adı kullanımda.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG ana sunucusu bu kullanıcı adı yasaklandığı için bağlantıyı reddetti. Lütfen yöneticilerle iletişime geçin.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG ana sunucusu verilen kullanıcı adı geçersiz olduğu için bağlantıyı reddetti. Kullanıcı adları yalnızca harf, rakam ve alt çizgi içerebilir.
-[YESTS_CREATED]
-Bağlantı sistemi YOG ana sunucusuyla bağlantı kurmaya hazır.
-[YESTS_PASSWORDS_DONT_MATCH]
-Girilen parolalar eşleşmiyor. Lütfen tekrar girin.
-[YESTS_UNABLE_TO_CONNECT]
-Bağlanılamadı. YOG ana sunucusu şu anda kullanılamıyor olabilir.
-[yog block command help]
-/block <playername>    Bir oyuncuyu engeller; artık mesajlarını görmezsiniz.
-[yog block command player %0 already blocked]
-%0 oyuncusu zaten engellenmiş
-[yog block command player %0 blocked]
-%0 oyuncusu engellendi
-[yog block command player %0 not found]
-%0 oyuncusu bulunamadı
-[yog command header]
-Kullanılabilir YOG istemci komutları:
-[yog command unknown]
-Bilinmeyen Komut.
-[yog help command help]
-/help    Bu yardım mesajını gösterir
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Kaybettiniz!
 [you have won]
@@ -1226,12 +1086,8 @@ Kazandınız!
 Oyundan atıldınız
 [Your %0 are under attack]
 Saldırı altındaki birimleriniz: %0
-[Your IP address was temporarily banned]
-IP adresiniz geçici olarak yasaklandı. Yasağın kalkmasını bekleyin veya yöneticilerle iletişime geçin.
 [Your unit got converted to %0's team]
 Bir biriminiz %0 adlı oyuncunun takımına geçti
-[Your username was banned]
-Kullanıcı adınız yasaklandı. Yasağın kaldırılması için yöneticilerle iletişime geçin.
 [game speed]
 Oyun hızı
 [decrease game speed]
@@ -3064,8 +2920,6 @@ Kampanya ilerlemesi kaydedilmedi. Yeniden deneyin veya bir yedek dışa aktarın
 Kaydetmeden çık
 [campaign import failed]
 Geçersiz ilerleme dosyası veya farklı kampanya sürümü
-[network release mismatch]
-İstemci ve sunucu protokolleri farklı. Sunucuyla aynı Glob2 sürümünü yükleyin.
 [settings continue]
 Devam et
 [settings save failed]
@@ -3428,8 +3282,6 @@ Tamam: %0
 %0 %1
 [resume game]
 Oyuna Devam Et
-[games]
-Oyunlar
 [Add AI]
 Yapay zeka ekle
 [settings Experiments]
@@ -3478,15 +3330,9 @@ Liste sekmesi
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3699,8 +3545,6 @@ Harita ivmesi
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

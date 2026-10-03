@@ -36,8 +36,6 @@ Kernstrategie: Behandelt voedsel, werkers, geboorten, training, bouw en strijd a
 %0 globs hebben te laag niveau
 [%0% Uploaded]
 %0% geüpload
-[%0's game]
-%0's spel
 [%0's team unit got converted to your team]
 Een glob van %0's team is overgelopen naar jou
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Toon alle gebouwen
 Toevoegen
 [add shortcut]
 Sneltoets toevoegen
-[Add]
-Toevoegen
 [AI Descriptions]
 AI beschrijvingen
 [AI]
@@ -130,8 +126,6 @@ Geluid
 Autosave
 [available lan games]
 Beschikbare LAN spellen
-[awaiting players]
-Wacht op spelers
 [away:]
 weg:
 [Back]
@@ -146,8 +140,6 @@ Leert je eenheden
 Kazerne
 [beach size]
 Strandgrootte
-[Blocked Players]
-Geblokkeerde spelers
 [break]
 break
 [briefing]
@@ -178,8 +170,6 @@ Campagne
 Verbinding mislukt: kan de host niet vinden
 [Can't host game, port %0 in use]
 Kan geen spel maken want poort %0 is in gebruik
-[Can't join game, game doesn't exist]
-Kan niet deelnemen aan dit spel want het bestaat niet (meer).
 [Can't join game, game has started]
 Kan niet deelnemen aan dit spel want het is reeds gestart
 [Can't join game, game is full]
@@ -252,8 +242,6 @@ Tarwe
 Krater dichtheid
 [crater lakes terrain]
 Kraters en meren
-[create game]
-Start een spel
 [create map]
 Bewerk speelveld
 [credits]
@@ -308,14 +296,6 @@ doe niets
 Draagt niets
 [down]
 beneden
-[Download Map]
-Download Speelveld
-[Download Maps]
-Speelvelden
-[downloaded %0]
-%0 gedownload
-[downloading map]
-speelveld aan het downloaden
 [edit map]
 Bewerken
 [editing map]
@@ -326,10 +306,6 @@ Kaarteditor
 Bewerk speelvelden
 [end]
 einde
-[Enter your nickname :]
-Voer gebruikersnaam in:
-[Enter your password :]
-Voer wachtwoord in:
 [enter]
 Enter
 [equals]
@@ -492,12 +468,8 @@ Selecteer volgende
 werk
 [join a game]
 Verbind met server
-[join]
-Deelnemen
 [keyboard settings]
 Toetsenbord
-[kick]
-Gooi buiten
 [lan]
 LAN Spel
 [language incomplete]
@@ -508,8 +480,6 @@ nl
 Taal
 [language]
 Nederlands
-[Leave Game]
-Verlaat spel
 [left meta]
 Linker Meta
 [left super]
@@ -532,12 +502,6 @@ Laad herhaling
 Laad script
 [load]
 Laden
-[loading map list]
-Laad speelvelden
-[Lobby]
-Lobby
-[login]
-Aanmelden
 [look around]
 Kijk nog wat rond
 [Lost : %0 has more prestige than you]
@@ -556,30 +520,14 @@ Grondschade
 Beschrijving
 [Map Discovered]
 Speelveld volledig zichtbaar
-[Map download failure: lost connection]
-Kan speelveld niet downloaden: verbinding verbroken
-[Map name: %0]
-Naam speelveld: %0.
 [map name]
 Naam
-[map rated]
-Speelveld beoordeeld
 [map script]
 Script
 [map size x]
 Breedte van speelveld
 [map size y]
 Hoogte van speelveld
-[Map upload failure: connection lost]
-Kan speelveld niet uploaden: verbinding verbroken
-[Map upload failure: map name in use]
-Kan speelveld niet uploaden: een speelveld met deze naam bestaat al!
-[Map upload failure: unknown reason]
-Kan speelveld niet uploaden
-[Map Upload: Author Name]
-Auteur
-[Map Upload: Waiting for reply]
-Verbinden...
 [maps available]
 Beschikbare speelvelden
 [mark map]
@@ -608,8 +556,6 @@ stilte
 Nieuwe campagne
 [new map]
 Nieuw speelveld
-[nick taken]
-Het spijt ons, maar de naam die je gekozen hebt is al geregistreerd bij freenode. Je kan alleen maar praten via YOG
 [no fullscreen]
 * niet in volledig scherm
 [No Hints]
@@ -622,18 +568,10 @@ Geen doelen
 niet-groeigebieden
 [No]
 Nee
-[Not Enough Ratings]
--
-[not ready]
-Niet klaar
 [Number Of Buildings]
 Aantal gebouwen
-[number of players: %0 (%1 AI)]
-%0 spelers (%1 AI)
 [number of players: %0]
 %0 spelers
-[number of teams: %0]
-%0 teams
 [number of teams]
 Aantal teams
 [Number Of Units]
@@ -692,8 +630,6 @@ pauze
 Gepauzeerd
 [player name]
 Naam speler
-[player rating %0]
-Rang %0
 [players]
 Spelers
 [please wait]
@@ -732,36 +668,22 @@ Leert je eenheden
 Racebaan
 [range]
 Bereik
-[Rated %0]
-Beoordeeld %0
 [ratios]
 Afmetingen
-[ready?]
-Klaar?
-[refresh map list]
-Vernieuwen
 [Register a new YOG user with password]
 Registreer nieuwe gebruiker met wachtwoord (onveilig)
-[Register]
-Registreer
 [remember unit]
 Onthoud eenheidsaantal
-[Remember YOG password localy]
-Onthoud wachtwoord (onveilig)
 [remove map]
 Verwijderen
 [remove shortcut]
 Verwijder sneltoets
-[Remove]
-Verwijder
 [repair building]
 Start/Stop repareren
 [repair]
 Repareren
 [repeat area]
 Herhaling van speelveld
-[Repeat your password :]
-Herhaal uw wachtwoord:
 [replay ended]
 Einde van de herhaling
 [restore default shortcuts]
@@ -894,14 +816,6 @@ Toon Hoofdmenu
 Uiterlijk
 [smoothing]
 Egalisering
-[sort by name]
-Naam
-[sort by rating]
-Beoordeling
-[sort by size]
-Grootte
-[Sort By]
-Sorteer op:
 [space]
 Spatie
 [start mission]
@@ -934,8 +848,6 @@ element
 Passief verdedigings-
 [stonewall]
 Muur
-[submit rating]
-Beoordeel
 [svr hostname]
 Servernaam
 [swamp terrain]
@@ -1034,10 +946,6 @@ Speelvelden
 De markt is voltooid
 [the market is under attack]
 De markt wordt aangevallen
-[The player %0 has joined YOG]
-%0 komt YOG binnen.
-[The player %0 has left YOG]
-%0 heeft YOG verlaten.
 [the racetrack is finished]
 De racebaan is voltooid
 [the racetrack is under attack]
@@ -1126,10 +1034,6 @@ Start/Stop verbeteren
 Upgrades
 [upgrade]
 Verbeter
-[Upload Map]
-Upload speelveld
-[upload map]
-upload speelveld
 [username]
 Gebruikersnaam
 [Version]
@@ -1142,8 +1046,6 @@ Volume (spraak)
 Wachten op %0
 [waiting for key]
 Wachten op sleutel
-[Waiting]
-Wachten
 [Walk]
 Lopen
 [warflag explanation 2]
@@ -1192,50 +1094,8 @@ Werkend
 gewond
 [Yes]
 Ja
-[YESTS_CONNECTING]
-Verbinden met de YOG server...
-[YESTS_CONNECTION_LOST]
-De verbinding met YOG is verbroken.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-De verbinding met de YOG server is geweigerd omdat deze gebruikersnaam al eerder is geregistreerd. Als dit jouw gebruikersnaam is, druk dan op "Annuleren", vul uw wachtwoord in en druk daarna op "Aanmelden".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-De verbinding met de YOG server is geweigerd omdat uw wachtwoord onjuist is.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-De verbinding met de YOG server is geweigerd omdat er nog geen wachtwoord is ingesteld voor deze gebruikersnaam. Waarschijnlijk wil je je gebruikersnaam eerst registreren. Om dit te doen druk je op de knop "Registreer". Je hoeft dit slechts één keer te doen.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-De verbinding met de YOG server is geweigerd omdat dit IP-adres tijdelijk verbannen is. Gelieve te wachten tot dit IP-adres weer toegestaan is of neem contact op met de beheerders.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 De verbinding met de YOG is geweigerd omdat uw globulation2 client te oud is.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-De verbinding met de YOG server geweigerd voor onbekende reden. Gelieve contact op te nemen met de beheerders. Onze excuses voor het ongemak.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-De verbinding met de YOG server is geweigerd omdat uw gebruikersnaam al in gebruik is.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-De verbinding met de YOG server is geweigerd omdat deze gebruikersnaam verbannen is. Gelieve contact op te nemen met de beheerders.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-De verbinding met de YOG server is geweigerd omdat de opgegeven gebruikersnaam ongeldig is. Gebruikersnamen mogen alleen bestaan uit letters, cijfers en liggende streepjes.
-[YESTS_CREATED]
-Je kunt nu met de YOG server verbinden. Log in met een reeds geregistreerde gebruikersnaam, of registreer een nieuwe gebruikersnaam door op de knop "Registreer" te drukken.
-[YESTS_PASSWORDS_DONT_MATCH]
-De opgegeven wachtwoorden komen niet overeen. Voor ze opnieuw in a.u.b.
-[YESTS_UNABLE_TO_CONNECT]
-Kan geen verbinding maken. Waarschijnlijk werkt de YOG server momenteel niet. Probeer later eens opnieuw.
-[yog block command help]
-/block <gebruikersnaam>    Geef dit in en je ziet de berichten van deze speler niet meer.
-[yog block command player %0 already blocked]
-Je hebt %0 al geblokkeerd!
-[yog block command player %0 blocked]
-%0 geblokkeerd.
-[yog block command player %0 not found]
-Speler %0 bestaat niet!
-[yog command header]
-Dit zijn momenteel de mogelijke YOG commandos:
-[yog command unknown]
-Ongeldig commando
-[yog help command help]
-/help    Toont dit bericht
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Je hebt verloren!
 [you have won]
@@ -1244,12 +1104,8 @@ Je hebt gewonnen!
 Je werd uit het spel geschopt door de host!
 [Your %0 are under attack]
 Je %0 wordt aangevallen
-[Your IP address was temporarily banned]
-Dit IP-adres werd tijdelijk verbannen. Gelieve te wachten tot dit IP-adres weer toegestaan is of neem contact op met de beheerders.
 [Your unit got converted to %0's team]
 Een van jouw globs is overgelopen naar %0's team
-[Your username was banned]
-Uw username werd verbannen. Neem contact op met de beheerders om dit te veranderen.
 [game speed]
 Spelsnelheid
 [decrease game speed]
@@ -3080,8 +2936,6 @@ Campagnevoortgang niet opgeslagen. Probeer opnieuw of exporteer een back-up.
 Afsluiten zonder op te slaan
 [campaign import failed]
 Ongeldig voortgangsbestand of andere campagneversie
-[network release mismatch]
-Client- en serverprotocol verschillen. Installeer dezelfde Glob2-versie als de server.
 [settings continue]
 Doorgaan
 [settings save failed]
@@ -3444,8 +3298,6 @@ Ok: %0
 %0 %1
 [resume game]
 Hervat het spel
-[games]
-Spellen
 [Add AI]
 AI toevoegen
 [settings Experiments]
@@ -3494,15 +3346,9 @@ Terugvering van lijsten
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3715,8 +3561,6 @@ Vaart van de kaart
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

@@ -21,17 +21,17 @@ class PlatformClient;
 }
 
 // The online hub (multiplayer mock-up 1): the "Play online" entry of the main menu,
-// replacing YOGLoginScreen and YOGSessionScreen. A guest account is created on first
+// replacing the YOG lobby. A guest account is created on first
 // contact, so a player can queue or open a room within one tap. The account chip
 // signs in through the browser handoff (with the confirmation code), quick-match
 // cards come from the instance's queue configuration, Create room / Join by code lead
 // into the Room screen, and public rooms and recent matches are listed. Invite links
 // opened from outside (glob2://, /j/<code>) land here; one for another instance asks
-// first (the trust prompt). The legacy YOG lobby stays reachable through the "Legacy
-// server" link in the footer until the YOG cutover.
+// first (the trust prompt).
 class OnlineHubScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "online_hub"; }
 	// What "Find match" does: the queue screens set this (see OnlineHub::setQuickMatch).
 	using QuickMatch = std::function<void(GAGGUI::ScreenStack &, const Online::Json &queue, bool allowAiOpponent)>;
 	static void setQuickMatch(QuickMatch start);
@@ -87,7 +87,6 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void signOut();
 	void openAccountMenu(bool open);
 	void openSettings();
-	void openLegacyServer();
 	// Invite links (Online::takePendingJoin) and the trust prompt for other instances.
 	void acceptInvite(const std::string &origin, const std::string &code);
 	void answerTrust(bool join);

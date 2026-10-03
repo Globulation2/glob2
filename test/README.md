@@ -350,11 +350,10 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 The direct transport/security checks use `scons release=1 transport-test`,
 `python3 test/run-network-transport-tests.py`,
 `build/darwin/client/release/src/lan-discovery-test` (substitute your platform),
-and `python3 -m unittest discover -s tests/transport -v`. Container lifecycle
-checks use `python3 -m unittest discover -s tests/deployment -v` after building
-the server image and browser assets. They run an isolated Compose project and
-verify persistence, backup restoration, router-loss readiness, state ownership,
-graceful draining, and forced deadline interruption. Keep capture output from
+and `python3 -m unittest discover -s tests/transport -v`. Deployment script
+checks use `python3 -m unittest discover -s tests/deployment -v`; the whole
+platform stack is exercised by `tests/deployment/platform_stack_smoke.py` (see
+`docs/hosting/README.md`). Keep capture output from
 `tests/transport/capture_container.py` under ignored `artifacts/`.
 
 The online client's integration test, `tests/online/test_platform_client.py`,
@@ -410,8 +409,8 @@ SDL_VIDEODRIVER=dummy ./build/native-tests/src/LANSessionHarness join 'HOST_PAIR
 ```
 
 Start the joiner after the host prints `HOST roster=1`, copying its full
-`PAIRING` string. TLS/WebSocket TCP ports 7489 and 7491
-must be reachable; this does not connect to the public YOG service. Omit
+`PAIRING` string. The host's TLS/WebSocket TCP port 7489 must be reachable;
+nothing connects to a public service. Omit
 `SDL_VIDEODRIVER=dummy` to show the real window. Normal game profiles are preserved;
 the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles containing
 only test data. Fixed input timers allow map transfer before leaving; the runner
@@ -862,7 +861,7 @@ the model may select has a C++ expression waiting for it. The fitting checks nee
 and skip without them; the rest is stdlib.
 The `TournamentCompatibility` engine suite (`python3 test/run_tests.py --filter
 'TournamentCompatibility/*'`) covers real per-player Cortex/Maxima and partial
-network-header checks. `python3 test/tournament_cli_integration.py --output DIR`
+game-header round trips. `python3 test/tournament_cli_integration.py --output DIR`
 runs production CLI cases and retains saves, traces and logs. Use a fresh output
 directory. `--initial FILE --ticks N` runs a retained initial state on another platform.
 
@@ -1328,7 +1327,7 @@ profiles, full coverage JSON, weighted implementation summaries and HTML.
 Engine and unit profiles are merged and exported separately: the engine report
 is the implementation baseline, and the unit report supplements it. Never
 average their percentages or merge independently linked copies of the same
-source. Multiplayer (`src/net`, `src/yog` and network-tagged cases), external
+source. Multiplayer (`src/net` and network-tagged cases), external
 libraries and test implementations are excluded from implementation totals.
 Unlinked/platform-specific sources are listed as unmeasured, rather than assigned
 zero coverage. Header coverage remains in the file inventory, apart from the

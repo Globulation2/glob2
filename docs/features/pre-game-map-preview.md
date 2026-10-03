@@ -1,6 +1,6 @@
 # Pre-game map previews
 
-The map chooser, custom-game setup, and YOG map browser/download screens use
+The map chooser, custom-game setup and online room map screens use
 `MapPreview`. Drag with the left mouse button to change the center of the view.
 The terrain wraps horizontally and vertically. Use the wheel to zoom (1x to 4x),
 and right-click or double-click to reset both center and zoom. These operations
@@ -40,19 +40,16 @@ stream containing tightly packed row-major RGB pixels. Legacy `uncompress`
 reads the first stream and ignores the trailing member. New decoders accept
 both legacy-only and extended thumbnails.
 
-The entire compressed field is capped at 60,000 bytes, leaving room for the
-existing 16-bit network frame and message envelope. If detailed pixels do not
-fit, the encoder halves their resolution until they fit, or sends only the
-legacy image. Thus an older server still supplies usable, draggable previews,
-but cannot supply additional detail for zooming. No save, replay, simulation, or
-network-version gate changes are required by this compatible thumbnail extension.
+The entire compressed field is capped at 60,000 bytes, a limit kept from the YOG
+lobby's map-thumbnail message (removed at the M9 cutover). If detailed pixels do
+not fit, the encoder halves their resolution until they fit, or keeps only the
+legacy image. No save, replay or simulation changes are required by this
+compatible thumbnail extension.
 The codec harness exercises the old uncompress call on new payloads.
 
 Decoding uses checked binary reads and bounded allocation, validates dimensions,
 and requires the exact decompressed byte count. A failed map read or decode
 leaves an empty thumbnail with zero dimensions, never uninitialized pixels.
-Server thumbnail caches use a separate `.v2` file and source mtime/size revision;
-old cache files remain untouched. Unreadable caches are regenerated.
 
 ## Responsiveness and online states
 
@@ -100,15 +97,6 @@ writing, and the first uncached Game load also remain synchronous. The picker
 uses the same tightly packed terrain format, with cached viewport rasters for
 both software and OpenGL rendering.
 
-The YOG client retains up to 32 thumbnails (at most 24 MiB of RGB pixels) across
-list refreshes, keyed by map ID plus SHA1, name, dimensions, and download size.
-Least-recently-used entries are evicted. Outstanding requests are deduplicated.
-After eight seconds without a valid image, the preview offers click-to-retry;
-retries cannot flood an outstanding request. Invalid responses show failure,
-and a late valid response can recover a timed-out preview. Empty selection,
-loading, and failure have separate labels. Download dimensions come from map
-metadata, so the download dialog does not initially show `0 x 0`.
-
 ## Regression and visual review
 
 From the repository root:
@@ -124,8 +112,7 @@ captures and selection timings to its artifact directory; the runner opens an Xv
 screen on headless Linux and checks that no case rewrites the profile's
 preferences. Core tests cover positive
 and negative wraparound, rectangular coordinates, legacy/new wire images,
-truncated and corrupt data, noisy-map frame bounds, request deduplication,
-timeout/retry, cache refresh/invalidation and eviction. Linux CI runs the core
+truncated and corrupt data, and noisy-map frame bounds. Linux CI runs the core
 and visual harnesses; Windows CI runs the core harness. The existing custom-game regression checks generated-map
 snapshot continuity and the surrounding setup flow.
 

@@ -341,15 +341,6 @@ jobs:
         with:
           cc: ${{ matrix.compiler == 'g++-11' && 'gcc-11' || 'gcc-13' }}
           cxx: ${{ matrix.compiler }}
-      - name: Build the YOG server
-        id: build_the_yog_server
-        continue-on-error: true
-        run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=1 --build=build-server
-
       - name: Build without OpenGL
         id: build_without_opengl
         continue-on-error: true
@@ -717,107 +708,6 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
-  windows-server:
-    name: windows server (mingw-w64)
-    needs: changes
-    if: ${{ needs.changes.outputs.variants == 'true' }}
-    runs-on: windows-latest
-    env:
-      CCACHE: 1
-      CCACHE_DIR: ${{ github.workspace }}\.ccache
-      CCACHE_COMPILERCHECK: content
-      CCACHE_MAXSIZE: 5G
-    defaults:
-      run:
-        shell: msys2 {0}
-    steps:
-      - uses: msys2/setup-msys2@v2
-        id: msys2_setup_msys2_v2_1
-        with:
-          msystem: MINGW64
-          update: true
-          install: >-
-            git
-            mingw-w64-x86_64-toolchain
-            mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-python
-            mingw-w64-x86_64-scons
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-freetype
-            mingw-w64-x86_64-libvorbis
-            mingw-w64-x86_64-libogg
-            mingw-w64-x86_64-speex
-            mingw-w64-x86_64-zlib
-            mingw-w64-x86_64-fribidi
-            mingw-w64-x86_64-pcre
-            mingw-w64-x86_64-openssl
-            mingw-w64-x86_64-boost
-            mingw-w64-x86_64-libepoxy
-            mingw-w64-x86_64-libsystre
-            mingw-w64-x86_64-ccache
-
-      - uses: actions/checkout@v4
-        id: actions_checkout_v4_1
-        with:
-          ref: ${{ inputs.revision || github.sha }}
-
-      # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
-      # newline handling and reports unchanged CRLF source files as modifications.
-      - name: Align Git newline handling for Windows builds
-        run: git config --local core.autocrlf true
-
-      - name: Restore the compiler cache
-        id: restore_the_compiler_cache
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-winserver-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-winserver-
-
-      - name: Reset the cache statistics
-        id: cache_ready
-        run: |
-          ccache -z
-          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
-
-      # The server shares no objects with the client, so it builds on its own
-      # runner instead of after the client's compile and tests.
-      - uses: ./.github/actions/sdl3
-        with:
-          shell: msys2 {0}
-          cc: gcc
-          cxx: g++
-      - name: Build the YOG server
-        id: build_the_yog_server
-        run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=1 --build=build-server
-
-      - name: Report the cache statistics
-        id: report_the_cache_statistics
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
-        run: ccache -s -v
-
-      # Keep only what this run compiled or reused (a hit refreshes an entry's
-      # timestamp), so a save never carries older commits' objects forward.
-      # Master pushes and authenticated manual runs may retain successful builds.
-      # Ordinary PRs only restore caches; later test failures do not discard objects.
-      - name: Drop cache entries this run did not use
-        id: drop_cache_entries_this_run_did_not_use
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.build_the_yog_server.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
-
-      - name: Save the compiler cache
-        id: save_the_compiler_cache
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.build_the_yog_server.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-winserver-${{ github.run_id }}-${{ github.run_attempt }}
-
   # The browser checks run as parallel jobs. The WebAssembly client and the
   # native programs the browser tests drive are built once each, side by side,
   # and handed to the test jobs as artifacts; the test suites then run on
@@ -1080,26 +970,14 @@ jobs:
         with:
           cc: gcc-13
           cxx: g++-13
-      - name: Build headless server
-        id: build_headless_server
-        continue-on-error: true
-        run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons role=server release=1 -j$(nproc)
-      - name: Build headless router
-        id: build_headless_router
-        continue-on-error: true
-        run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=router release=1 -j$(nproc)
       - name: Build match relay
         id: build_match_relay
         continue-on-error: true
-        run: GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
+        run: |
+          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
+          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=g++-13 role=relay release=1 relay -j$(nproc)
       - name: Test match relay
         id: test_match_relay
         continue-on-error: true
@@ -1114,7 +992,6 @@ jobs:
         run: |
           if [ '${{ needs.changes.outputs.native }}' = true ]; then
             test -x build/linux/client/release/src/net-connection-test
-            test -x build/linux/client/release/src/native-multiplayer-peer
             test -x build/linux/client/release/src/lan-discovery-test
             exit 0
           fi
@@ -1136,15 +1013,13 @@ jobs:
             --check 'compiler cache statistics' 'ccache -s -v'
       - name: Package the programs the browser tests drive
         id: package_the_programs_the_browser_tests_drive
-        if: steps.build_headless_server.outcome == 'success' && steps.build_transport_integration_fixture.outcome == 'success'
+        if: steps.build_transport_integration_fixture.outcome == 'success'
         run: |
           mkdir -p artifacts/ci-native
           python3 .github/scripts/linux_runtime_packages.py build/linux --output artifacts/ci-native/runtime-packages.txt
           tar -czf artifacts/ci-native/web-native.tar.gz \
             build/linux/client/release/src/glob2 \
             build/linux/client/release/src/net-connection-test \
-            build/linux/client/release/src/native-multiplayer-peer \
-            build/linux/server/release/src/glob2-server \
             build/sdl3-ci/prefix/lib
       - name: Save native object tree
         id: save_native_object_tree
@@ -1199,13 +1074,12 @@ jobs:
         with:
           name: web-client
           path: build/emscripten/client/release
-      - name: Test self-hosting with real TLS and persistent volumes
+      - name: Test the web client package and deployment scripts
         id: test_self_hosting_with_real_tls_and_persistent_volumes
         continue-on-error: true
         run: |
           python3 browser/package-static.py
           python3 browser/package-static.py --verify build/browser-static
-          docker compose -f deploy/compose.legacy.yaml build lobby web
           python3 -m unittest discover -s tests/deployment -v
 
       - name: Summarize CI failures
@@ -1488,7 +1362,7 @@ jobs:
 
   ci-result:
     name: Relevant checks passed
-    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack]
+    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, web-build, web-native, web-deploy, web-test, browser-determinism, platform, platform-stack]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1512,7 +1386,6 @@ jobs:
               'linux-variants': selected['native'] == 'true' and selected['variants'] == 'true',
               'linux-map-generators': selected['map_generators'] == 'true',
               'windows': selected['windows'] == 'true',
-              'windows-server': selected['variants'] == 'true',
               'web-build': selected['browser'] == 'true',
               'web-native': selected['browser'] == 'true',
               'web-deploy': selected['deployment'] == 'true',

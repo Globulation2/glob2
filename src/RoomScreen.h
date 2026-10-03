@@ -27,6 +27,7 @@ class MapPreview;
 class RoomScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "multiplayer_room"; }
 	RoomScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<RoomBackend> room);
 	~RoomScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

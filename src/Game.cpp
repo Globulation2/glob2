@@ -35,10 +35,8 @@
 
 #include "ReplayWriter.h"
 
-#ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
 #include "render/SoftwareTerrainCache.h"
-#endif  // !YOG_SERVER_ONLY
 
 #define BULLET_IMGID 0
 
@@ -63,9 +61,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	recordingFailingUnits=BuildingRef();
 	buildProjects.clear();
 
-#ifndef YOG_SERVER_ONLY
 	animations = std::make_unique<GameAnimations>(!globalContainer->runNoX, 0);
-#endif  // !YOG_SERVER_ONLY
 
 	mapHeader.reset();
 	gameHeader.reset();

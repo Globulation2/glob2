@@ -36,8 +36,6 @@ Strategi utama: Menganggap pangan, pekerja, kelahiran, pelatihan, pembangunan, d
 Tingkat %0 unit terlalu rendah
 [%0% Uploaded]
 %0% diunggah
-[%0's game]
-Permainan %0
 [%0's team unit got converted to your team]
 Satu unit dari tim %0 telah bergabung dengan tim Anda
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Bagikan penglihatan di sekitar semua bangunan
 Tambah peta
 [add shortcut]
 Tambah Pintasan
-[Add]
-Tambah
 [AI Descriptions]
 Deskripsi AI
 [AI]
@@ -138,8 +134,6 @@ Audio
 Simpan otomatis
 [available lan games]
 Permainan lokal tersedia
-[awaiting players]
-Menunggu pemain
 [away:]
 tidak di tempat:
 [Back]
@@ -154,8 +148,6 @@ Meningkatkan kemampuan
 Barak
 [beach size]
 ukuran pantai
-[Blocked Players]
-Pemain Diblokir
 [break]
 Break
 [briefing]
@@ -186,8 +178,6 @@ Kampanye
 Tidak dapat terhubung, hos tidak ditemukan
 [Can't host game, port %0 in use]
 Tidak dapat menjadi hos, porta %0 sedang digunakan
-[Can't join game, game doesn't exist]
-Tidak dapat bergabung, permainan tidak ada
 [Can't join game, game has started]
 Tidak dapat bergabung, permainan sudah dimulai
 [Can't join game, game is full]
@@ -254,8 +244,6 @@ Gandum
 jumlah kawah
 [crater lakes terrain]
 Danau Kawah
-[create game]
-Buat permainan
 [create map]
 Buat peta
 [credits]
@@ -306,14 +294,6 @@ Tidak Melakukan Apa Pun
 Tidak membawa apa pun
 [down]
 bawah
-[Download Map]
-Unduh Peta
-[Download Maps]
-Unduh Peta
-[downloaded %0]
-%0 telah diunduh
-[downloading map]
-Mengunduh Peta
 [edit map]
 Edit Peta
 [editing map]
@@ -324,10 +304,6 @@ Pintasan Editor
 Editor
 [end]
 End
-[Enter your nickname :]
-Masukkan nama panggilan Anda:
-[Enter your password :]
-Masukkan kata sandi Anda:
 [enter]
 Enter
 [equals]
@@ -490,12 +466,8 @@ Pilih Objek Berikutnya
 pekerjaan
 [join a game]
 Gabung permainan
-[join]
-Gabung
 [keyboard settings]
 Pengaturan Papan Ketik
-[kick]
-Keluarkan
 [lan]
 Permainan LAN
 [language incomplete]
@@ -506,8 +478,6 @@ id
 Bahasa
 [language]
 Bahasa Indonesia
-[Leave Game]
-Keluar dari Permainan
 [left meta]
 Meta kiri
 [left super]
@@ -530,12 +500,6 @@ Muat Rekaman
 Muat Skrip
 [load]
 Muat
-[loading map list]
-Memuat Daftar Peta...
-[Lobby]
-Lobi
-[login]
-Masuk
 [look around]
 Lihat sekitar
 [Lost : %0 has more prestige than you]
@@ -554,30 +518,14 @@ Dmg. darat
 Deskripsi
 [Map Discovered]
 Buka Seluruh Peta
-[Map download failure: lost connection]
-Gagal Mengunduh Peta: Koneksi ke YOG terputus
-[Map name: %0]
-Nama peta: %0.
 [map name]
 Nama
-[map rated]
-Peta Dinilai
 [map script]
 Skrip Peta
 [map size x]
 Lebar peta
 [map size y]
 Tinggi peta
-[Map upload failure: connection lost]
-Gagal mengunggah peta: Koneksi ke YOG terputus
-[Map upload failure: map name in use]
-Gagal mengunggah peta. Nama peta sudah digunakan.
-[Map upload failure: unknown reason]
-Gagal mengunggah peta. Penyebab tidak diketahui.
-[Map Upload: Author Name]
-Nama Pembuat
-[Map Upload: Waiting for reply]
-Menunggu balasan
 [mark map]
 Tandai Peta untuk Sekutu
 [market explanation 2]
@@ -604,8 +552,6 @@ bisukan
 Kampanye Baru
 [new map]
 Peta Baru
-[nick taken]
-Maaf, nama yang Anda pilih sudah digunakan di freenode; Anda hanya dapat mengobrol melalui YOG.
 [no fullscreen]
 * hanya dalam mode jendela
 [No Hints]
@@ -618,16 +564,8 @@ Tidak Ada Sasaran
 Cegah tumbuh
 [No]
 Tidak
-[Not Enough Ratings]
-Penilaian Belum Cukup
-[not ready]
-belum siap
 [Number Of Buildings]
 Jumlah Bangunan
-[number of players: %0 (%1 AI)]
-%0 pemain (%1 AI)
-[number of teams: %0]
-%0 tim
 [number of teams]
 jumlah tim
 [Number Of Units]
@@ -686,8 +624,6 @@ Pause
 Dijeda
 [player name]
 Nama pemain
-[player rating %0]
-Peringkat Pemain: %0
 [players]
 Pemain
 [please wait]
@@ -726,34 +662,20 @@ Meningkatkan kecepatan
 Lintasan Lari
 [range]
 Jangkauan
-[Rated %0]
-Nilai %0
 [ratios]
 Proporsi
-[ready?]
-siap?
-[refresh map list]
-Segarkan Daftar Peta
-[Register]
-Daftar
 [remember unit]
 Ingat jumlah unit
-[Remember YOG password localy]
-Simpan kata sandi di komputer ini.
 [remove map]
 Hapus Peta
 [remove shortcut]
 Hapus Pintasan
-[Remove]
-Hapus
 [repair building]
 Mulai/Hentikan Perbaikan
 [repair]
 Perbaiki
 [repeat area]
 kali pengulangan medan
-[Repeat your password :]
-Ulangi kata sandi Anda:
 [replay ended]
 Rekaman Selesai
 [restore default shortcuts]
@@ -886,14 +808,6 @@ Tampilkan Menu Utama
 Tampilan
 [smoothing]
 Penghalusan
-[sort by name]
-Nama
-[sort by rating]
-Penilaian
-[sort by size]
-Ukuran
-[Sort By]
-Urutkan Menurut
 [space]
 spasi
 [start mission]
@@ -926,8 +840,6 @@ pasif
 Unsur pertahanan
 [stonewall]
 Tembok Batu
-[submit rating]
-Kirim Penilaian
 [svr hostname]
 Nama hos server
 [swamp terrain]
@@ -1024,10 +936,6 @@ Peta
 Pasar selesai dibangun.
 [the market is under attack]
 Pasar sedang diserang.
-[The player %0 has joined YOG]
-%0 telah bergabung dengan YOG.
-[The player %0 has left YOG]
-%0 telah keluar dari YOG.
 [the racetrack is finished]
 Lintasan Lari selesai dibangun.
 [the racetrack is under attack]
@@ -1116,10 +1024,6 @@ Mulai/Hentikan Peningkatan
 Setelan Baku Peningkatan
 [upgrade]
 Tingkatkan
-[Upload Map]
-Unggah Peta
-[upload map]
-Unggah Peta
 [username]
 Nama pengguna
 [Version]
@@ -1132,8 +1036,6 @@ Volume (suara)
 Menunggu %0
 [waiting for key]
 menunggu tombol...
-[Waiting]
-Menunggu
 [Walk]
 Berjalan
 [warflag explanation 2]
@@ -1180,50 +1082,8 @@ Bekerja
 terluka
 [Yes]
 Ya
-[YESTS_CONNECTING]
-Menghubungkan ke metaserver YOG...
-[YESTS_CONNECTION_LOST]
-Koneksi ke YOG terputus.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Metaserver YOG menolak koneksi karena nama pengguna ini sudah terdaftar. Jika nama ini milik Anda, nonaktifkan opsi "Daftarkan pengguna YOG baru dengan kata sandi".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Metaserver YOG menolak koneksi karena kata sandi yang dimasukkan salah.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Metaserver YOG menolak koneksi karena nama pengguna ini belum memiliki kata sandi. Jika Anda ingin mendaftarkannya dengan kata sandi ini, aktifkan opsi "Daftarkan pengguna YOG baru dengan kata sandi" sebelum menghubungkan. Anda hanya perlu mengaktifkan opsi ini sekali.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Metaserver YOG menolak koneksi karena alamat IP ini diblokir sementara. Tunggu hingga pemblokiran dicabut atau hubungi administrator.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserver YOG menolak koneksi karena versi Globulation 2 Anda sudah usang. Unduh versi terbaru dari www.globulation2.org untuk bermain daring.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Metaserver YOG menolak koneksi tanpa penjelasan!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Metaserver YOG menolak koneksi karena nama pengguna Anda sedang digunakan orang lain.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Metaserver YOG menolak koneksi karena nama pengguna ini diblokir. Hubungi administrator.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Metaserver YOG menolak koneksi karena nama pengguna tidak valid. Nama pengguna hanya boleh berisi huruf, angka, dan garis bawah.
-[YESTS_CREATED]
-Sistem koneksi siap menghubungi metaserver YOG.
-[YESTS_PASSWORDS_DONT_MATCH]
-Kata sandi yang dimasukkan tidak cocok. Ketik ulang keduanya.
-[YESTS_UNABLE_TO_CONNECT]
-Tidak dapat terhubung. Tampaknya metaserver YOG sedang tidak beroperasi.
-[yog block command help]
-/block <namapemain>    Memblokir pemain; pesan mereka tidak akan ditampilkan lagi.
-[yog block command player %0 already blocked]
-Pemain %0 sudah diblokir
-[yog block command player %0 blocked]
-Pemain %0 diblokir
-[yog block command player %0 not found]
-Pemain %0 tidak ditemukan
-[yog command header]
-Daftar perintah klien YOG saat ini:
-[yog command unknown]
-Perintah tidak dikenal.
-[yog help command help]
-/help    Menampilkan pesan bantuan ini
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Anda kalah!
 [you have won]
@@ -1232,12 +1092,8 @@ Anda menang!
 Anda dikeluarkan dari permainan
 [Your %0 are under attack]
 %0 Anda sedang diserang
-[Your IP address was temporarily banned]
-Alamat IP Anda diblokir sementara. Tunggu hingga pemblokiran dicabut atau hubungi administrator.
 [Your unit got converted to %0's team]
 Unit Anda telah bergabung dengan tim %0
-[Your username was banned]
-Nama pengguna Anda diblokir. Hubungi administrator untuk mencabut pemblokiran.
 [game speed help]
 Hanya untuk pemain tunggal dan rekaman. Multipemain berjalan pada 1x.
 [maximum game speed]
@@ -3052,8 +2908,6 @@ Progres kampanye tidak tersimpan. Coba lagi atau ekspor cadangan.
 Keluar tanpa menyimpan
 [campaign import failed]
 Berkas progres tidak valid atau versi kampanye berbeda
-[network release mismatch]
-Protokol klien dan server berbeda. Pasang versi Glob2 yang sama dengan server.
 [settings continue]
 Lanjutkan
 [settings save failed]
@@ -3416,8 +3270,6 @@ Oke: %0
 %0 %1
 [resume game]
 Lanjutkan Permainan
-[games]
-Permainan
 [Add AI]
 Tambah AI
 [settings Experiments]
@@ -3466,15 +3318,9 @@ Pantulan daftar
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3687,8 +3533,6 @@ Momentum peta
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

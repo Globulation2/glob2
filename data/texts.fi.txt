@@ -36,8 +36,6 @@ Perusstrategia: Käsittelee ruokaa, työläisiä, syntymiä, koulutusta, rakenta
 %0:n yksikön taso liian matala
 [%0% Uploaded]
 %0% ladattu
-[%0's game]
-%0:n Peli
 [%0's team unit got converted to your team]
 %0:n joukkueen yksikkö siirtyi sinun joukkueeseesi.
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Näytä kaikki rakennukset
 Lisää kartta
 [add shortcut]
 Lisää pikanäppäin
-[Add]
-Lisää
 [AI Descriptions]
 AI:n kuvaukset
 [AI]
@@ -130,8 +126,6 @@ Audio
 Automaattinen tallennus
 [available lan games]
 Avoimet paikalliset pelit
-[awaiting players]
-Odotetaan pelaajia
 [away:]
 poissa:
 [Back]
@@ -146,8 +140,6 @@ Parantaa sotureittesi
 Parakki
 [beach size]
 rannan koko
-[Blocked Players]
-Estetyt pelaajat
 [break]
 break
 [briefing]
@@ -178,8 +170,6 @@ Kampanja
 Yhdistäminen epäonnistui, pelin aloittajaa ei löydy
 [Can't host game, port %0 in use]
 Pelin luonti epäonnistui, portti %0 käytössä
-[Can't join game, game doesn't exist]
-Liittyminen epäonnistui, peliä ei ole
 [Can't join game, game has started]
 Liittyminen epäonnistui, peli on jo alkanut
 [Can't join game, game is full]
@@ -246,8 +236,6 @@ Vilja
 kraattereiden määrä
 [crater lakes terrain]
 Kraatterijärvet
-[create game]
-Luo peli
 [create map]
 Luo kartta
 [credits]
@@ -296,14 +284,6 @@ Näyttö
 Ei kanna mitään
 [down]
 alas
-[Download Map]
-Lataa kartta
-[Download Maps]
-Lataa karttoja
-[downloaded %0]
-Ladattu %0
-[downloading map]
-Ladataan karttaa
 [edit map]
 Muokkaa
 [editing map]
@@ -314,10 +294,6 @@ Editori
 Editori
 [end]
 end
-[Enter your nickname :]
-Nimimerkkisi:
-[Enter your password :]
-Salasanasi:
 [enter]
 enter
 [equals]
@@ -474,12 +450,8 @@ Siirrä valinta rakennuksesta toiseen
 työt
 [join a game]
 Liity peliin
-[join]
-Liity
 [keyboard settings]
 Näppäimistö
-[kick]
-Poista pelaaja
 [lan]
 LAN-peli
 [language incomplete]
@@ -490,8 +462,6 @@ fi
 Kieli
 [language]
 Suomi
-[Leave Game]
-Poistu pelistä
 [left meta]
 vasen meta
 [left super]
@@ -516,12 +486,6 @@ Lataa toisto
 Avaa skripti
 [load]
 Avaa
-[loading map list]
-Ladataan karttalistaa...
-[Lobby]
-Aula
-[login]
-Kirjaudu sisään
 [look around]
 Katsele ympärillesi
 [Lost : %0 has more prestige than you]
@@ -540,30 +504,14 @@ Hyök. maahan:
 Kuvaus
 [Map Discovered]
 Kartta paljastettu
-[Map download failure: lost connection]
-Kartan lataus epäonnistui: Yhteys YOG:iin menetetty.
-[Map name: %0]
-Kartan nimi: %0.
 [map name]
 Nimi
-[map rated]
-Kartta arvioitu
 [map script]
 Karttaskripti
 [map size x]
 Kartan leveys
 [map size y]
 Kartan korkeus
-[Map upload failure: connection lost]
-Kartan julkaisu epäonnistui: Yhteys YOG:iin menetetty.
-[Map upload failure: map name in use]
-Kartan julkaisu epäonnistui. Kartn nimi jo käytössä.
-[Map upload failure: unknown reason]
-Kartan julkaisu epäonnistui. Tuntematon syy.
-[Map Upload: Author Name]
-Julkaisijan Nimi
-[Map Upload: Waiting for reply]
-Odotetaan vastausta
 [mark map]
 Merkitse kartta liittolaisille
 [market explanation 2]
@@ -590,8 +538,6 @@ mykistä
 Uusi kampanja
 [new map]
 Uusi kartta
-[nick taken]
-Olemme pahoillamme, mutta valitsemasi nimi on jo varattu Freenode-verkossa. Pystyt keskustelemaan vain YOG:n kautta.
 [no fullscreen]
 * vain ikkunatilassa
 [No Hints]
@@ -604,16 +550,8 @@ Ei Tavoitteita
 Ei kasvua
 [No]
 Ei
-[Not Enough Ratings]
-Ei tarpeeksi arvioita
-[not ready]
-ei valmis
 [Number Of Buildings]
 Rakennusten Määrä:
-[number of players: %0 (%1 AI)]
-%0 pelaajaa (%1 AI)
-[number of teams: %0]
-Joukkueiden määrä: %0
 [number of teams]
 joukkueiden määrä
 [Number Of Units]
@@ -672,8 +610,6 @@ pause
 Pysäytetty
 [player name]
 Pelaajan nimi
-[player rating %0]
-Pelaajan Sijoitus: %0
 [players]
 Pelaajat
 [please wait]
@@ -712,34 +648,20 @@ Parantaa yksiköittesi
 Kilparata
 [range]
 Kantama
-[Rated %0]
-Arvio: %0
 [ratios]
 Mittasuhteet
-[ready?]
-valmis?
-[refresh map list]
-Päivitä karttalista
-[Register]
-Rekisteröidy
 [remember unit]
 Muista yksiköiden määrä
-[Remember YOG password localy]
-Muista YOG salasana paikallisesti.
 [remove map]
 Poista kartta
 [remove shortcut]
 Poista pikanäppäin
-[Remove]
-Poista
 [repair building]
 Aloita/Lopeta korjaaminen
 [repair]
 Korjaa
 [repeat area]
 kertaa sama maisema
-[Repeat your password :]
-Toista salasanasi:
 [replay ended]
 Toisto päättyi
 [restore default shortcuts]
@@ -872,14 +794,6 @@ Näytä päävalikko
 Näyttö
 [smoothing]
 tasaisuus
-[sort by name]
-Nimi
-[sort by rating]
-Arvio
-[sort by size]
-Koko
-[Sort By]
-Lajittelu:
 [space]
 välilyönti
 [start mission]
@@ -912,8 +826,6 @@ läpikulun
 Estää
 [stonewall]
 Kivimuuri
-[submit rating]
-Lähetä arvio
 [svr hostname]
 Palvelimen osoite
 [swamp terrain]
@@ -1010,10 +922,6 @@ Kartat
 Kauppa on valmis
 [the market is under attack]
 Kauppasi kimppuun hyökätään
-[The player %0 has joined YOG]
-%0 on liittynyt YOG:iin.
-[The player %0 has left YOG]
-%0 on poistunut YOG:sta.
 [the racetrack is finished]
 Kilparata on valmis
 [the racetrack is under attack]
@@ -1104,10 +1012,6 @@ Aloita/Pysäytä Päivitys
 Päivitysasetukset
 [upgrade]
 Päivitä
-[Upload Map]
-Julkaise kartta
-[upload map]
-Julkaise kartta
 [username]
 Käyttäjänimi
 [Version]
@@ -1120,8 +1024,6 @@ Näytä historia
 Odotetaan %0:ta
 [waiting for key]
 odotetaan näppäintä...
-[Waiting]
-Odotetaan
 [Walk]
 Kävely
 [warflag explanation 2]
@@ -1168,50 +1070,8 @@ Työskentelemässä
 haavoittunut
 [Yes]
 Kyllä
-[YESTS_CONNECTING]
-Otetaan yhteyttä YOG-serveriin...
-[YESTS_CONNECTION_LOST]
-Yhteys YOG:iin katkesi.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG-serveri katkaisi yhteyden, koska tämä käyttäjänimi on jo rekisteröity. Jos tämä käyttäjänimi on sinun, poista valinta vaihtoehdosta "Rekisteröi uusi YOG-käyttäjä salasanan kanssa".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG-serveri katkaisi yhteyden, koska annettu salasana oli väärä.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG serveri katkaisi yhteyden, koska tällä käyttäjänimellä ei ole vielä salasanaa. Haluat luultavasti rekisteröidä käyttäjänimesi tällä salasanalla, joten valitse vaihtoehto "Rekisteröi uusi YOG-käyttäjä salasanan kanssa". Sinun ei tarvitse aktivoida tätä vaihtoehtoa enää myöhemmin.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-The YOG serveri katkaisi yhteyden, koska tämä IP-osoite on väliaikaisesti estetty. Odota kärsivällisesti, kunnes esto poistetaan metaserver has refused the connection because this IP address is temporarily banned. You will have to wait patiently until it is unbanned or contact the administrators.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 The YOG serveri katkaisi yhteyden, koska Globulation 2-pelisi versio on vanhentunut. Uusin versio on ladattavissa osoitteessa www.globulation2.org.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG serveri katkaisi yhteyden selittämättömästä syystä!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG serveri katkaisi yhteyden, koska valitsemasi käyttäjänimi on jo jonkun muun käytössä.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG serveri katkaisi yhteyden, koska käyttäjänimesi on väliaikaisesti estetty. Olkaa hyvä ja ottakaa yhteyttä ylläpitäjiin.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG serveri katkaisi yhteyden, koska käyttäjänimesi on virheellinen. Käyttäjänimi saa sisältää vain kirjaimia, numeroita ja alaviivoja.
-[YESTS_CREATED]
-Järjestelmä on valmis yhdistämään YOG serveriin.
-[YESTS_PASSWORDS_DONT_MATCH]
-Antamasi salasanat eivät täsmää. Ole hyvä ja kirjoita ne uudelleen.
-[YESTS_UNABLE_TO_CONNECT]
-Yhteyttä ei voitu muodostaa. YOG serveri saattaa olla väliaikaisesti poissa käytöstä.
-[yog block command help]
-/block <playername>    Estää pelaajan, et näe enää hänen kirjoituksia
-[yog block command player %0 already blocked]
-Pelaaja %0 on jo estetty
-[yog block command player %0 blocked]
-Pelaaja %0 estetty
-[yog block command player %0 not found]
-Pelaajaa %0 ei löydy
-[yog command header]
-Lista nykyisistä YOGin komennoista on:
-[yog command unknown]
-Tuntematon komento.
-[yog help command help]
-/help    Näyttää tämän apuviestin
-[yog]
-YOG-moninpeliserveri
 [you have lost]
 Olet hävinnyt pelin!
 [you have won]
@@ -1220,12 +1080,8 @@ Olet voittanut pelin!
 Sinut on poistettu pelistä.
 [Your %0 are under attack]
 %0 on hyökkäyksen kohteena
-[Your IP address was temporarily banned]
-IP-osoitteesi on väliaikisesti estetty. Odottakaa kärsivällisesti, kunnes est poistetaan, tai ota yhteyttä ylläpitäjiin.
 [Your unit got converted to %0's team]
 Yksikkösi siirtyi %0:n joukkueeseen.
-[Your username was banned]
-Käyttäjänimesi on estetty. Ota yhteys ylläpitäjiin.
 [game speed]
 Pelinopeus
 [decrease game speed]
@@ -3056,8 +2912,6 @@ Kampanjan edistymistä ei tallennettu. Yritä uudelleen tai vie varmuuskopio.
 Poistu tallentamatta
 [campaign import failed]
 Virheellinen edistymistiedosto tai eri kampanjaversio
-[network release mismatch]
-Asiakkaan ja palvelimen protokollat eroavat. Asenna sama Glob2-versio kuin palvelimella.
 [settings continue]
 Jatka
 [settings save failed]
@@ -3420,8 +3274,6 @@ Ok: %0
 %0 %1
 [resume game]
 Jatka peliä
-[games]
-Pelit
 [Add AI]
 Lisää AI
 [settings Experiments]
@@ -3470,15 +3322,9 @@ Listojen kimmoisuus
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3691,8 +3537,6 @@ Kartan liike-energia
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

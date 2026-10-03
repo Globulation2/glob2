@@ -36,8 +36,6 @@ Alapstratégia: Az élelmet, munkásokat, születéseket, képzést, építkezé
 %0 egység szintje túl alacsony
 [%0% Uploaded]
 %0% feltöltve
-[%0's game]
-%0 játéka
 [%0's team unit got converted to your team]
 %0 csapatának egy egysége átállt hozzád
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Minden épület látóterének megosztása
 Pálya hozzáadása
 [add shortcut]
 Új gyorsbillentyű
-[Add]
-Hozzáadás
 [AI Descriptions]
 MI-leírások
 [AI]
@@ -130,8 +126,6 @@ Audió
 Automatikus mentés
 [available lan games]
 Elérhető hálózati játékok
-[awaiting players]
-Játékosokra várva
 [away:]
 távol van:
 [Back]
@@ -146,8 +140,6 @@ A harcosok harci szintjét
 Laktanya
 [beach size]
 a partok méretei
-[Blocked Players]
-Letiltott játékosok
 [break]
 Break
 [briefing]
@@ -178,8 +170,6 @@ Hadjárat
 Sikertelen csatlakozás: a kiszolgáló nem található
 [Can't host game, port %0 in use]
 Nem indítható játék: a(z) %0 port foglalt
-[Can't join game, game doesn't exist]
-Nem lehet csatlakozni: a játék nem létezik
 [Can't join game, game has started]
 Nem lehet csatlakozni: a játék már elkezdődött
 [Can't join game, game is full]
@@ -246,8 +236,6 @@ Búza
 kráterek száma
 [crater lakes terrain]
 Krátertavak
-[create game]
-Új játék
 [create map]
 Térkép készítése
 [credits]
@@ -296,14 +284,6 @@ Nincs művelet
 Nem szállít semmit
 [down]
 le
-[Download Map]
-Pálya letöltése
-[Download Maps]
-Pályák letöltése
-[downloaded %0]
-letöltve: %0
-[downloading map]
-Pálya letöltése
 [edit map]
 Pálya szerkesztése
 [editing map]
@@ -314,10 +294,6 @@ Szerkesztő
 Editor
 [end]
 End
-[Enter your nickname :]
-Add meg a nevedet :
-[Enter your password :]
-Add meg a jelszavadat :
 [enter]
 Enter
 [equals]
@@ -472,12 +448,8 @@ Következő elem kijelölése
 feladatok
 [join a game]
 Csatlakozás egy játékhoz
-[join]
-Csatlakozás
 [keyboard settings]
 Billentyűzet beállításai
-[kick]
-Eltávolítás
 [lan]
 Játék a helyi hálózaton
 [language incomplete]
@@ -488,8 +460,6 @@ hu
 Nyelv
 [language]
 Magyar
-[Leave Game]
-Játék elhagyása
 [left meta]
 bal Meta
 [left super]
@@ -512,12 +482,6 @@ Visszajátszás betöltése
 Szkript betöltése
 [load]
 Betölt
-[loading map list]
-Pályalista betöltése...
-[Lobby]
-Váróterem
-[login]
-Bejelentkezés
 [look around]
 Körülnézés
 [Lost : %0 has more prestige than you]
@@ -536,30 +500,14 @@ Földi sebzés
 Leírás
 [Map Discovered]
 Felderített pálya
-[Map download failure: lost connection]
-A pálya letöltése sikertelen: megszakadt a kapcsolat a YOG-gal
-[Map name: %0]
-A térkép neve: %0.
 [map name]
 Név
-[map rated]
-Pálya értékelve
 [map script]
 Pályaszkript
 [map size x]
 Térkép szélessége
 [map size y]
 Térkép hosszúsága
-[Map upload failure: connection lost]
-A pálya feltöltése sikertelen: megszakadt a kapcsolat a YOG-gal
-[Map upload failure: map name in use]
-A pálya feltöltése sikertelen. A pályanév már foglalt.
-[Map upload failure: unknown reason]
-A pálya feltöltése sikertelen. Ismeretlen ok.
-[Map Upload: Author Name]
-Készítő neve
-[Map Upload: Waiting for reply]
-Várakozás a válaszra
 [mark map]
 Jelzés a szövetségeseknek
 [market explanation 2]
@@ -586,8 +534,6 @@ némítás
 Új hadjárat
 [new map]
 Új
-[nick taken]
-Sajnáljuk, de a választott nevet már használják a freenode-on; csak a YOG-on keresztül tudsz beszélgetni.
 [no fullscreen]
 * csak ablakos módban
 [No Hints]
@@ -600,18 +546,10 @@ Nincsenek célok
 Nincs növekedés
 [No]
 Nem
-[Not Enough Ratings]
-Nincs elég értékelés
-[not ready]
-nincs készen
 [Number Of Buildings]
 Épületek száma
-[number of players: %0 (%1 AI)]
-%0 játékos (%1 MI)
 [number of players: %0]
 %0 játékos van jelen.
-[number of teams: %0]
-%0 csapat
 [number of teams]
 Csapatok száma
 [Number Of Units]
@@ -670,8 +608,6 @@ Pause
 Szünet
 [player name]
 A játékos neve
-[player rating %0]
-Játékos értékelése: %0
 [players]
 Játékosok
 [please wait]
@@ -710,36 +646,22 @@ Haladási sebesség
 Versenypálya
 [range]
 Hatótávolság
-[Rated %0]
-Értékelés: %0
 [ratios]
 Arányok
-[ready?]
-kész?
-[refresh map list]
-Pályalista frissítése
 [Register a new YOG user with password]
 Regisztráld az új YOG felhasználót jelszóval. (nem biztonságos)
-[Register]
-Regisztráció
 [remember unit]
 Egységszám tárolása
-[Remember YOG password localy]
-Jelszó tárolása ezen a gépen.
 [remove map]
 Pálya eltávolítása
 [remove shortcut]
 Törlés
-[Remove]
-Eltávolítás
 [repair building]
 Javítás indítása/leállítása
 [repair]
 Megjavítani
 [repeat area]
 azonos táj ismétlései
-[Repeat your password :]
-Ismételd meg a jelszavad:
 [replay ended]
 Visszajátszás vége
 [restore default shortcuts]
@@ -872,14 +794,6 @@ Főmenü megjelenítése
 Megjelenítés
 [smoothing]
 Simítás
-[sort by name]
-Név
-[sort by rating]
-Értékelés
-[sort by size]
-Méret
-[Sort By]
-Rendezés
 [space]
 szóköz
 [start mission]
@@ -912,8 +826,6 @@ elem
 Passzív védelmi
 [stonewall]
 Kőfal
-[submit rating]
-Értékelés elküldése
 [svr hostname]
 A játékszerver neve
 [swamp terrain]
@@ -1010,10 +922,6 @@ Térképek
 A piac elkészült
 [the market is under attack]
 Megtámadták a piacot
-[The player %0 has joined YOG]
-A %0 játékos csatlakozott a YOG-hoz.
-[The player %0 has left YOG]
-A %0 játékos kilépett a YOG-ból.
 [the racetrack is finished]
 A versenypálya elkészült
 [the racetrack is under attack]
@@ -1102,10 +1010,6 @@ Fejlesztés indítása/leállítása
 Fejlesztések alapbeállításai
 [upgrade]
 Fejleszteni
-[Upload Map]
-Pálya feltöltése
-[upload map]
-Pálya feltöltése
 [username]
 Felhasználónév
 [Version]
@@ -1118,8 +1022,6 @@ Hangerő (beszéd)
 %0 -ra várva
 [waiting for key]
 billentyűre vár...
-[Waiting]
-Várakozás
 [Walk]
 megy
 [warflag explanation 2]
@@ -1166,50 +1068,8 @@ Dolgozik
 sebesült
 [Yes]
 Igen
-[YESTS_CONNECTING]
-A kapcsolat felvétele a YOG metaszerverrel.
-[YESTS_CONNECTION_LOST]
-A kapcsolat a YOG metaszerverrel megszakadt.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-A YOG metaszerver visszautasította a kapcsolatot, mivel ez a felhasználónév már be lett regisztrálva. Ha ez a felhasználónév a tiéd, akkor kapcsold ki az "Új YOG felhasználó regisztrálása jelszóval" opciót.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-A YOG metaszerver visszautasította a kapcsolatot, mivel helytelen jelszót adtál meg.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-A YOG metaszerver visszautasította a kapcsolatot, mivel ehhez a felhasználónévhez még nem létezik jelszó. Valószínűleg regisztrálni akartad a felhasználónevedet ezzel a jelszóval. Ehhez kapcsold be az "Új YOG felhasználó regisztrálása jelszóval" opciót a kapcsolat felvétele előtt. Ezt az opciót csak egy alkalommal kell bekapcsolni.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-A YOG metakiszolgáló elutasította a kapcsolatot, mert ez az IP-cím ideiglenesen ki van tiltva. Várd meg a tiltás feloldását, vagy lépj kapcsolatba az adminisztrátorokkal.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-A YOG metaszerver ismeretlen okból kifolyólag visszautasította a kapcsolatot.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-A YOG metaszerver visszautasította a kapcsolatot, mivel a felhasználói nevedet már egy másik játékos használja.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-A YOG metakiszolgáló elutasította a kapcsolatot, mert ez a felhasználónév ki van tiltva. Lépj kapcsolatba az adminisztrátorokkal.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-A YOG metakiszolgáló elutasította a kapcsolatot, mert a megadott felhasználónév érvénytelen. A felhasználónevek csak betűket, számokat és aláhúzásjeleket tartalmazhatnak.
-[YESTS_CREATED]
-A kapcsolódó rendszer készen áll a kapcsolat felvételére a YOG metaszerverrel.
-[YESTS_PASSWORDS_DONT_MATCH]
-A megadott jelszavak nem egyeznek. Írd be őket újra.
-[YESTS_UNABLE_TO_CONNECT]
-A kapcsolat nem hozható létre. Úgy tűnik, hogy a YOG metaszerver nem elérhető.
-[yog block command help]
-/block <playername>    Letilt egy játékost; ezután nem látod az üzeneteit.
-[yog block command player %0 already blocked]
-%0 játékos már le van tiltva
-[yog block command player %0 blocked]
-%0 játékos letiltva
-[yog block command player %0 not found]
-%0 játékos nem található
-[yog command header]
-A YOG-kliens elérhető parancsai:
-[yog command unknown]
-Ismeretlen parancs.
-[yog help command help]
-/help    Megjeleníti ezt a súgóüzenetet
-[yog]
-Ysagoon Online Játék
 [you have lost]
 Elvesztetted a játékot!
 [you have won]
@@ -1218,12 +1078,8 @@ Megnyerted a játékot!
 Eltávolítottak a játékból
 [Your %0 are under attack]
 Támadás alatt álló egységed: %0
-[Your IP address was temporarily banned]
-Az IP-címedet ideiglenesen kitiltották. Várd meg a tiltás feloldását, vagy lépj kapcsolatba az adminisztrátorokkal.
 [Your unit got converted to %0's team]
 Egy egységed átállt %0 csapatához
-[Your username was banned]
-A felhasználónevedet kitiltották. A tiltás feloldásához lépj kapcsolatba az adminisztrátorokkal.
 [game speed]
 Játéksebesség
 [decrease game speed]
@@ -3056,8 +2912,6 @@ A hadjárat haladása nem mentődött. Próbálja újra, vagy exportáljon bizto
 Kilépés mentés nélkül
 [campaign import failed]
 Érvénytelen haladásfájl vagy eltérő hadjáratverzió
-[network release mismatch]
-A kliens és a szerver protokollja eltér. Telepítse a szerverrel megegyező Glob2-verziót.
 [settings continue]
 Folytatás
 [settings save failed]
@@ -3420,8 +3274,6 @@ Rendben: %0
 %0 %1
 [resume game]
 Játék folytatása
-[games]
-Játékok
 [Add AI]
 MI hozzáadása
 [settings Experiments]
@@ -3470,15 +3322,9 @@ Listák visszapattanása
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3691,8 +3537,6 @@ Térkép lendülete
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

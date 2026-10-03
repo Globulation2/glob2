@@ -36,8 +36,6 @@ Chiến lược chính: Xem thức ăn, công nhân, sinh sản, huấn luyện,
 %0 đơn vị có cấp quá thấp
 [%0% Uploaded]
 Đã tải lên %0%
-[%0's game]
-Trận đấu của %0
 [%0's team unit got converted to your team]
 Một đơn vị của đội %0 đã gia nhập đội bạn
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Chia sẻ tầm nhìn quanh mọi công trình
 Thêm bản đồ
 [add shortcut]
 Thêm phím tắt
-[Add]
-Thêm
 [AI Descriptions]
 Mô tả AI
 [AI]
@@ -138,8 +134,6 @@ Tấn công
 Tự động lưu
 [available lan games]
 Trận đấu trong mạng nội bộ
-[awaiting players]
-Đang chờ người chơi
 [away:]
 vắng mặt:
 [Back]
@@ -154,8 +148,6 @@ Rèn kỹ năng chiến đấu
 Doanh trại
 [beach size]
 kích thước bãi biển
-[Blocked Players]
-Người chơi đã chặn
 [break]
 Break
 [briefing]
@@ -186,8 +178,6 @@ Chiến dịch
 Không thể kết nối: không tìm thấy máy chủ
 [Can't host game, port %0 in use]
 Không thể tạo trận: cổng %0 đang được dùng
-[Can't join game, game doesn't exist]
-Không thể tham gia: trận đấu không tồn tại
 [Can't join game, game has started]
 Không thể tham gia: trận đấu đã bắt đầu
 [Can't join game, game is full]
@@ -254,8 +244,6 @@ Lúa mì
 số miệng núi lửa
 [crater lakes terrain]
 Hồ miệng núi lửa
-[create game]
-Tạo trận đấu
 [create map]
 Tạo bản đồ
 [credits]
@@ -306,14 +294,6 @@ Không làm gì
 Không mang gì
 [down]
 xuống
-[Download Map]
-Tải bản đồ
-[Download Maps]
-Tải các bản đồ
-[downloaded %0]
-đã tải %0
-[downloading map]
-Đang tải bản đồ
 [edit map]
 Sửa bản đồ
 [editing map]
@@ -324,10 +304,6 @@ Phím tắt biên tập
 Trình biên tập
 [end]
 End
-[Enter your nickname :]
-Nhập biệt danh:
-[Enter your password :]
-Nhập mật khẩu:
 [enter]
 Enter
 [equals]
@@ -490,12 +466,8 @@ Chuyển sang lựa chọn kế tiếp
 việc làm
 [join a game]
 Tham gia trận đấu
-[join]
-Tham gia
 [keyboard settings]
 Thiết lập bàn phím
-[kick]
-Đuổi
 [lan]
 Chơi qua mạng LAN
 [language incomplete]
@@ -506,8 +478,6 @@ vi
 Ngôn ngữ
 [language]
 Tiếng Việt
-[Leave Game]
-Rời trận đấu
 [left meta]
 Meta trái
 [left super]
@@ -530,12 +500,6 @@ Tải bản ghi trận đấu
 Tải kịch bản
 [load]
 Tải
-[loading map list]
-Đang tải danh sách bản đồ...
-[Lobby]
-Phòng chờ
-[login]
-Đăng nhập
 [look around]
 Quan sát xung quanh
 [Lost : %0 has more prestige than you]
@@ -554,30 +518,14 @@ ST mặt đất
 Mô tả
 [Map Discovered]
 Hiện toàn bản đồ
-[Map download failure: lost connection]
-Tải bản đồ thất bại: mất kết nối với YOG
-[Map name: %0]
-Tên bản đồ: %0.
 [map name]
 Tên
-[map rated]
-Đã đánh giá bản đồ
 [map script]
 Kịch bản bản đồ
 [map size x]
 Chiều rộng bản đồ
 [map size y]
 Chiều cao bản đồ
-[Map upload failure: connection lost]
-Tải bản đồ lên thất bại: mất kết nối với YOG
-[Map upload failure: map name in use]
-Tải bản đồ lên thất bại. Tên bản đồ đã được dùng.
-[Map upload failure: unknown reason]
-Tải bản đồ lên thất bại. Không rõ nguyên nhân.
-[Map Upload: Author Name]
-Tên tác giả
-[Map Upload: Waiting for reply]
-Đang chờ phản hồi
 [mark map]
 Đánh dấu bản đồ cho đồng minh
 [market explanation 2]
@@ -604,8 +552,6 @@ tắt tiếng
 Chiến dịch mới
 [new map]
 Bản đồ mới
-[nick taken]
-Rất tiếc, tên bạn chọn đã được dùng trên freenode; bạn chỉ có thể trò chuyện qua YOG.
 [no fullscreen]
 * chỉ ở chế độ cửa sổ
 [No Hints]
@@ -618,16 +564,8 @@ Không có mục tiêu
 Vùng cấm mọc
 [No]
 Không
-[Not Enough Ratings]
-Chưa đủ lượt đánh giá
-[not ready]
-chưa sẵn sàng
 [Number Of Buildings]
 Số công trình
-[number of players: %0 (%1 AI)]
-%0 người chơi (%1 AI)
-[number of teams: %0]
-%0 đội
 [number of teams]
 số đội
 [Number Of Units]
@@ -686,8 +624,6 @@ Pause
 Đã tạm dừng
 [player name]
 Tên người chơi
-[player rating %0]
-Điểm người chơi: %0
 [players]
 Người chơi
 [please wait]
@@ -726,34 +662,20 @@ Tăng tốc độ đi bộ
 Đường chạy
 [range]
 Tầm
-[Rated %0]
-Đánh giá %0
 [ratios]
 Tỷ lệ
-[ready?]
-sẵn sàng?
-[refresh map list]
-Làm mới danh sách bản đồ
-[Register]
-Đăng ký
 [remember unit]
 Nhớ số đơn vị phân công
-[Remember YOG password localy]
-Lưu mật khẩu trên máy này.
 [remove map]
 Xóa bản đồ
 [remove shortcut]
 Xóa phím tắt
-[Remove]
-Xóa
 [repair building]
 Bật/tắt sửa chữa
 [repair]
 Sửa chữa
 [repeat area]
 lần lặp lại cảnh quan
-[Repeat your password :]
-Nhập lại mật khẩu:
 [replay ended]
 Bản ghi đã kết thúc
 [restore default shortcuts]
@@ -886,14 +808,6 @@ Hiện trình đơn chính
 Hiển thị
 [smoothing]
 Làm mượt
-[sort by name]
-Tên
-[sort by rating]
-Điểm đánh giá
-[sort by size]
-Kích thước
-[Sort By]
-Sắp xếp theo
 [space]
 phím cách
 [start mission]
@@ -926,8 +840,6 @@ thụ động
 Công trình phòng thủ
 [stonewall]
 Tường đá
-[submit rating]
-Gửi đánh giá
 [svr hostname]
 Tên máy chủ
 [swamp terrain]
@@ -1024,10 +936,6 @@ Bản đồ
 Chợ đã xây xong.
 [the market is under attack]
 Chợ đang bị tấn công.
-[The player %0 has joined YOG]
-%0 đã vào YOG.
-[The player %0 has left YOG]
-%0 đã rời YOG.
 [the racetrack is finished]
 Đường chạy đã xây xong.
 [the racetrack is under attack]
@@ -1116,10 +1024,6 @@ Bật/tắt nâng cấp
 Mặc định nâng cấp
 [upgrade]
 Nâng cấp
-[Upload Map]
-Tải bản đồ lên
-[upload map]
-Tải bản đồ lên
 [username]
 Tên đăng nhập
 [Version]
@@ -1132,8 +1036,6 @@ Xem lịch sử
 Đang chờ %0
 [waiting for key]
 đang chờ nhấn phím...
-[Waiting]
-Đang chờ
 [Walk]
 Đi bộ
 [warflag explanation 2]
@@ -1180,50 +1082,8 @@ công nhân
 bị thương
 [Yes]
 Có
-[YESTS_CONNECTING]
-Đang thiết lập kết nối với máy chủ YOG...
-[YESTS_CONNECTION_LOST]
-Đã mất kết nối với YOG.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Máy chủ YOG từ chối kết nối vì tên đăng nhập này đã được đăng ký. Nếu đây là tên của bạn, hãy bỏ chọn tùy chọn "Đăng ký người dùng YOG mới bằng mật khẩu".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Máy chủ YOG từ chối kết nối vì mật khẩu không đúng.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Máy chủ YOG từ chối kết nối vì tên đăng nhập này chưa có mật khẩu. Nếu muốn đăng ký tên này với mật khẩu vừa nhập, hãy chọn "Đăng ký người dùng YOG mới bằng mật khẩu" trước khi kết nối. Bạn chỉ cần chọn tùy chọn này một lần.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Máy chủ YOG từ chối kết nối vì địa chỉ IP này bị cấm tạm thời. Hãy đợi đến khi hết lệnh cấm hoặc liên hệ quản trị viên.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Máy chủ YOG từ chối kết nối vì phiên bản Globulation 2 của bạn đã cũ. Hãy tải phiên bản mới nhất từ www.globulation2.org để chơi trực tuyến.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Máy chủ YOG từ chối kết nối mà không nêu lý do!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Máy chủ YOG từ chối kết nối vì người khác đang dùng tên đăng nhập của bạn.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Máy chủ YOG từ chối kết nối vì tên đăng nhập này bị cấm. Hãy liên hệ quản trị viên.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Máy chủ YOG từ chối kết nối vì tên đăng nhập không hợp lệ. Tên đăng nhập chỉ được chứa chữ cái, chữ số và dấu gạch dưới.
-[YESTS_CREATED]
-Hệ thống kết nối đã sẵn sàng liên lạc với máy chủ YOG.
-[YESTS_PASSWORDS_DONT_MATCH]
-Hai mật khẩu không khớp. Vui lòng nhập lại.
-[YESTS_UNABLE_TO_CONNECT]
-Không thể kết nối. Có vẻ máy chủ YOG đang ngừng hoạt động.
-[yog block command help]
-/block <tên_người_chơi>    Chặn người chơi; bạn sẽ không còn thấy tin nhắn của họ.
-[yog block command player %0 already blocked]
-Người chơi %0 đã bị chặn từ trước
-[yog block command player %0 blocked]
-Đã chặn người chơi %0
-[yog block command player %0 not found]
-Không tìm thấy người chơi %0
-[yog command header]
-Các lệnh hiện có của ứng dụng YOG:
-[yog command unknown]
-Lệnh không xác định.
-[yog help command help]
-/help    Hiện hướng dẫn này
-[yog]
-Ysagoon Online Gaming
 [you have lost]
 Bạn đã thua!
 [you have won]
@@ -1232,12 +1092,8 @@ Bạn đã thắng!
 Bạn đã bị đuổi khỏi trận đấu
 [Your %0 are under attack]
 %0 của bạn đang bị tấn công
-[Your IP address was temporarily banned]
-Địa chỉ IP của bạn bị cấm tạm thời. Hãy đợi đến khi hết lệnh cấm hoặc liên hệ quản trị viên.
 [Your unit got converted to %0's team]
 Đơn vị của bạn đã gia nhập đội %0
-[Your username was banned]
-Tên đăng nhập của bạn bị cấm. Hãy liên hệ quản trị viên để được xem xét gỡ cấm.
 [game speed help]
 Chỉ cho chơi đơn và bản ghi. Chơi mạng dùng tốc độ 1x.
 [maximum game speed]
@@ -3052,8 +2908,6 @@ Tiến trình chiến dịch chưa được lưu. Hãy thử lại hoặc xuất
 Thoát mà không lưu
 [campaign import failed]
 Tệp tiến trình không hợp lệ hoặc khác phiên bản chiến dịch
-[network release mismatch]
-Giao thức máy khách và máy chủ khác nhau. Hãy cài phiên bản Glob2 giống với máy chủ.
 [settings continue]
 Tiếp tục
 [settings save failed]
@@ -3416,8 +3270,6 @@ Cấp tối thiểu: %0
 %0 %1
 [resume game]
 Tiếp tục trò chơi
-[games]
-Trò chơi
 [Add AI]
 Thêm trí tuệ nhân tạo
 [settings Experiments]
@@ -3466,15 +3318,9 @@ Nảy của danh sách
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3687,8 +3533,6 @@ Quán tính bản đồ
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

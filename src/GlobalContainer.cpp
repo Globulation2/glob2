@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
-#ifndef YOG_SERVER_ONLY
 #include <GameplayRecording.h>
-#endif
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
@@ -19,17 +17,12 @@
 #include "SoundMixer.h"
 #include "render/UnitSkin.h"
 #include "VoiceRecorder.h"
-#ifndef YOG_SERVER_ONLY
 #include "DatasetWriter.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "ScrollTuning.h"
-#endif  // !YOG_SERVER_ONLY
 
-#include "YOGConsts.h"
-#ifndef YOG_SERVER_ONLY
 #include <ApplicationHost.h>
-#endif
 
 
 /**
@@ -49,8 +42,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	fileManager->addWriteSubdir("campaigns");
 	fileManager->addWriteSubdir("replays");
 	fileManager->addWriteSubdir("thumbnails");
-	fileManager->addWriteSubdir(YOG_SERVER_FOLDER);
-	fileManager->addWriteSubdir(YOG_SERVER_FOLDER+"gamelog");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
@@ -62,17 +53,8 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	// load user preference
 	settings.load();
 
-#ifndef YOG_SERVER_ONLY
 	applyScrollTuning(settings, reducedMotion);
 	runNoX = false;
-	hostServer = false;
-#else
-	runNoX = true;
-	hostServer = true;
-#endif  // !YOG_SERVER_ONLY
-
-	hostRouter = false;
-	adminRouter = false;
 	
 	runTestGames=false;
 	runTestGamesCount=0;
@@ -86,7 +68,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
 
-#ifndef YOG_SERVER_ONLY
 	gfx = NULL;
 
 	terrain = NULL;
@@ -98,7 +79,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	menuFont = NULL;
 	standardFont = NULL;
 	littleFont = NULL;
-#endif  // !YOG_SERVER_ONLY
 
 	automaticGameGlobalEndConditions=false;
 
@@ -115,7 +95,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 
 GlobalContainer::~GlobalContainer(void)
 {
-#ifndef YOG_SERVER_ONLY
 	GAGCore::Recording::recorder().shutdown();
 	// unlink GUI style
 	if (!runNoX)
@@ -127,7 +106,6 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
-#endif  // !YOG_SERVER_ONLY
 
 	// release resources
 	Toolkit::close();
@@ -138,7 +116,6 @@ GlobalContainer::~GlobalContainer(void)
 
 // parseArgs is defined in GlobalContainerArgs.cpp.
 
-#ifndef YOG_SERVER_ONLY
 void GlobalContainer::updateLoadProgressScreen(int value)
 {
 	// The terrain tiles come with the game sprites, which the browser installs
@@ -353,7 +330,6 @@ bool GlobalContainer::loadMenuMusic(void)
 	menuMusic = true;
 	return true;
 }
-#endif  // !YOG_SERVER_ONLY
 
 void GlobalContainer::load(void)
 {
@@ -384,7 +360,5 @@ void GlobalContainer::load(void)
 	// Resource types are now a compile-time const table (see
 	// src/game/entities/resources.cpp); nothing to load here.
 
-#ifndef YOG_SERVER_ONLY
 	loadClient();
-#endif  // !YOG_SERVER_ONLY
 }

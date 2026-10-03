@@ -21,10 +21,6 @@
 #include "LANMenuScreen.h"
 #include "LANFindScreen.h"
 #include "MessageScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGRegisterScreen.h"
-#include "YOGClient.h"
-#include "YOGClientMapUploadScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
 #include "CustomGameOtherOptions.h"
@@ -348,11 +344,6 @@ struct MobileGallerySetup
 			settings->selectCategory(SettingsScreen::Category::Online);
 			screenShot(stack, "settings-online", std::move(settings));
 		}
-		auto client = std::make_shared<YOGClient>();
-		screenShot(stack, "online-login", std::make_unique<YOGLoginScreen>(stack, client));
-		screenShot(stack, "online-register", std::make_unique<YOGRegisterScreen>(client));
-		screenShot(stack, "map-upload",
-				   std::make_unique<YOGClientMapUploadScreen>(stack, client, "maps/balanced.map"));
 		// Online screens on canned data (test/OnlineUIFixtures.h).
 		screenShot(stack, "quick-match", OnlineUIFixtures::quickMatch(stack, false));
 		screenShot(stack, "quick-match-searching", OnlineUIFixtures::quickMatch(stack, true));

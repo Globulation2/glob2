@@ -17,7 +17,7 @@ This compiles the game without packaging or release signing it. On Apple silicon
 the linker may add an ad hoc signature to the raw executable. To produce a sandboxed
 candidate, use a manual run in the release mirror with `upload` off, then download
 that run's app artifact. Check launch, settings, saves, map import, LAN hosting,
-and YOG sign-in and connection. The app's profile data is placed inside its
+and online sign-in and play. The app's profile data is placed inside its
 sandbox container. Existing direct-distribution profiles in `~/.glob2` do not
 migrate automatically, so migration needs a separate user-facing decision before
 release to existing desktop users. The generated Mac icon includes required large

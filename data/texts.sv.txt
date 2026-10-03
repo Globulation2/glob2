@@ -36,8 +36,6 @@ Grundstrategi: Behandlar mat, arbetare, födslar, träning, byggande och strid s
 %0 enheter har för låg nivå
 [%0% Uploaded]
 %0% uppladdat
-[%0's game]
-%0s spel
 [%0's team unit got converted to your team]
 En enhet från %0s lag gick över till ditt lag
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Visa synfält för alla byggnader
 Lägg till karta
 [add shortcut]
 Lägg till genväg
-[Add]
-Lägg till
 [AI Descriptions]
 AI-beskrivningar
 [AI]
@@ -130,8 +126,6 @@ Ljud
 Autospara
 [available lan games]
 Tillgängliga lokala spel
-[awaiting players]
-Väntar på spelare
 [away:]
 borta:
 [Back]
@@ -146,8 +140,6 @@ Förbättrar stridsnivån
 Kasern
 [beach size]
 strandstorlek
-[Blocked Players]
-Blockerade spelare
 [break]
 break
 [briefing]
@@ -178,8 +170,6 @@ Kampanj
 Kan inte ansluta: värden hittades inte
 [Can't host game, port %0 in use]
 Kan inte vara värd: port %0 används
-[Can't join game, game doesn't exist]
-Kan inte gå med: spelet finns inte
 [Can't join game, game has started]
 Kan inte gå med: spelet har börjat
 [Can't join game, game is full]
@@ -252,8 +242,6 @@ Vete
 antal kratrar
 [crater lakes terrain]
 Kratersjöar
-[create game]
-Skapa spel
 [create map]
 Skapa karta
 [credits]
@@ -302,14 +290,6 @@ Gör ingenting
 Bär ingenting
 [down]
 ned
-[Download Map]
-Ladda ner karta
-[Download Maps]
-Ladda ner kartor
-[downloaded %0]
-%0 nedladdat
-[downloading map]
-Laddar ner karta
 [edit map]
 Editera Karta
 [editing map]
@@ -320,10 +300,6 @@ Kartredigerare
 Editor
 [end]
 end
-[Enter your nickname :]
-Skriv in ditt smeknamn:
-[Enter your password :]
-Skriv in ditt lösenord:
 [enter]
 enter
 [equals]
@@ -478,12 +454,8 @@ Växla till nästa val
 arbeten
 [join a game]
 Gå med i ett spel
-[join]
-Gå med
 [keyboard settings]
 Tangentbord
-[kick]
-Sparka ut
 [lan]
 LAN Spel
 [language incomplete]
@@ -494,8 +466,6 @@ sv
 Språk
 [language]
 Svenska
-[Leave Game]
-Lämna spelet
 [left meta]
 vänster meta
 [left super]
@@ -518,12 +488,6 @@ Ladda repris
 Ladda skript
 [load]
 Ladda
-[loading map list]
-Laddar kartlista...
-[Lobby]
-Lobby
-[login]
-Logga in
 [look around]
 Se dig omkring
 [Lost : %0 has more prestige than you]
@@ -542,30 +506,14 @@ Markskada
 Beskrivning
 [Map Discovered]
 Kartan utforskad
-[Map download failure: lost connection]
-Kartan kunde inte laddas ner: anslutningen till YOG bröts
-[Map name: %0]
-Kartnamn: %0.
 [map name]
 Namn
-[map rated]
-Kartan betygsatt
 [map script]
 Kartskript
 [map size x]
 Kartbredd
 [map size y]
 Karthöjd
-[Map upload failure: connection lost]
-Kartan kunde inte laddas upp: anslutningen till YOG bröts
-[Map upload failure: map name in use]
-Kartan kunde inte laddas upp: namnet används redan.
-[Map upload failure: unknown reason]
-Kartan kunde inte laddas upp. Okänd orsak.
-[Map Upload: Author Name]
-Skaparens namn
-[Map Upload: Waiting for reply]
-Väntar på svar
 [maps available]
 Tillgängliga Kartor
 [mark map]
@@ -594,8 +542,6 @@ tyst
 Ny Kampanj
 [new map]
 Ny
-[nick taken]
-Vi är hemskt ledsna, men namnet du valt är redan taget på freenode, du kommer bara kunna prata genom YOG
 [no fullscreen]
 * endast i fönsterläge
 [No Hints]
@@ -608,18 +554,10 @@ Inga mål
 Ingen tillväxt
 [No]
 Nej
-[Not Enough Ratings]
-För få betyg
-[not ready]
-inte redo
 [Number Of Buildings]
 Antal byggnader
-[number of players: %0 (%1 AI)]
-%0 spelare (%1 AI)
 [number of players: %0]
 %0 spelare är närvarande.
-[number of teams: %0]
-%0 lag.
 [number of teams]
 antal lag
 [Number Of Units]
@@ -678,8 +616,6 @@ paus
 Pausat
 [player name]
 Spelarnamn
-[player rating %0]
-Spelarbetyg: %0
 [players]
 Spelare
 [please wait]
@@ -718,36 +654,22 @@ hos dina enheter
 Löparbana
 [range]
 Räckvidd
-[Rated %0]
-Betyg: %0
 [ratios]
 Proportioner
-[ready?]
-redo?
-[refresh map list]
-Uppdatera kartlistan
 [Register a new YOG user with password]
 Registrera en ny YOG-användare med lösenord. (osäkert)
-[Register]
-Registrera
 [remember unit]
 Kom ihåg tilldelningar
-[Remember YOG password localy]
-Kom ihåg mitt lösenord lokalt. (osäkert)
 [remove map]
 Ta Bort Karta
 [remove shortcut]
 Ta bort genväg
-[Remove]
-Ta bort
 [repair building]
 Starta/Stoppa Reparation
 [repair]
 Reparera
 [repeat area]
 gånger samma landskap
-[Repeat your password :]
-Upprepa lösenordet:
 [replay ended]
 Reprisen avslutad
 [restore default shortcuts]
@@ -880,14 +802,6 @@ Visa huvudmenyn
 Visning
 [smoothing]
 Uppmjukning
-[sort by name]
-Namn
-[sort by rating]
-Betyg
-[sort by size]
-Storlek
-[Sort By]
-Sortera efter
 [space]
 mellanslag
 [start mission]
@@ -920,8 +834,6 @@ försvarselement
 Passivt
 [stonewall]
 Stenmur
-[submit rating]
-Skicka betyg
 [svr hostname]
 Server värdnamn
 [swamp terrain]
@@ -1018,10 +930,6 @@ Kartor
 Marknaden är klar
 [the market is under attack]
 Marknaden är under attack
-[The player %0 has joined YOG]
-%0 har anslutit sig till YOG.
-[The player %0 has left YOG]
-%0 har lämnat YOG.
 [the racetrack is finished]
 Löparbanan är färdig
 [the racetrack is under attack]
@@ -1110,10 +1018,6 @@ Starta/Stoppa Uppgradering
 Standardinställningar för uppgraderingar
 [upgrade]
 Uppgradera
-[Upload Map]
-Ladda upp karta
-[upload map]
-Ladda upp karta
 [username]
 Användarnamn
 [Version]
@@ -1126,8 +1030,6 @@ Volym (röst)
 Väntar på %0
 [waiting for key]
 väntar på tangent...
-[Waiting]
-Väntar
 [Walk]
 Gå
 [warflag explanation 2]
@@ -1176,50 +1078,8 @@ Arbetar
 skadade
 [Yes]
 Ja
-[YESTS_CONNECTING]
-Upprättar anslutningen till YOG metaserver...
-[YESTS_CONNECTION_LOST]
-Anslutningen till YOG har brutits.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG metaserver vägrar anslutning därför att användarnamnet redan är registrerat.  Om det här användarnamnet är ditt, avaktivera inställningen "Registrera en ny YOG-användare med lösenord".
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG metaserver låter dig inte ansluta eftersom du har angett ett felaktigt lösenord.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG metaserver vägrar anslutning därför att det här användarnamnet inte har ett lösenord. Du vill förmodligen registrera ditt användarnamn med det här lösenordet. Aktivera därför inställningen "Registrera en ny YOG-användare med lösenord" innan du ansluter. Du måste bara aktivera den inställningen en gång.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-YOG-metaservern nekade anslutningen eftersom denna IP-adress är tillfälligt avstängd. Vänta tills avstängningen hävs eller kontakta administratörerna.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG-metaservern nekade anslutningen eftersom din Globulation 2-klient är föråldrad. Hämta den senaste versionen från www.globulation2.org för att spela på nätet.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG metaserver vägrar anslutning utan att lämna förklaring!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG metaserver vägrar anslutning eftersom ditt användarnamn redan används.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG-metaservern nekade anslutningen eftersom detta användarnamn är avstängt. Kontakta administratörerna.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG-metaservern nekade anslutningen eftersom användarnamnet är ogiltigt. Användarnamn får bara innehålla bokstäver, siffror och understreck.
-[YESTS_CREATED]
-Anslutningssystemet är redo att kontakta YOG metaserver för anslutning.
-[YESTS_PASSWORDS_DONT_MATCH]
-Lösenorden stämmer inte överens. Skriv in dem igen.
-[YESTS_UNABLE_TO_CONNECT]
-Kan inte ansluta. Uppenbarligen är YOG metaserver nere.
-[yog block command help]
-/block <spelarnamn>    Blockerar en spelare så att du inte längre ser deras meddelanden.
-[yog block command player %0 already blocked]
-Spelaren %0 är redan blockerad
-[yog block command player %0 blocked]
-Spelaren %0 är blockerad
-[yog block command player %0 not found]
-Spelaren %0 hittades inte
-[yog command header]
-Tillgängliga kommandon i YOG-klienten:
-[yog command unknown]
-Okänt kommando.
-[yog help command help]
-/help    Visar detta hjälpmeddelande
-[yog]
-Ysagoon Online Spel
 [you have lost]
 Du har förlorat!
 [you have won]
@@ -1228,12 +1088,8 @@ Du har vunnit!
 Du blev utsparkad ur spelet
 [Your %0 are under attack]
 Din %0 är under attack
-[Your IP address was temporarily banned]
-Din IP-adress är tillfälligt avstängd. Vänta tills avstängningen hävs eller kontakta administratörerna.
 [Your unit got converted to %0's team]
 Din enhet blev omvänd till %0s lag
-[Your username was banned]
-Ditt användarnamn är avstängt. Kontakta administratörerna för att få det ändrat.
 [game speed]
 Spelhastighet
 [decrease game speed]
@@ -3066,8 +2922,6 @@ Kampanjförloppet sparades inte. Försök igen eller exportera en säkerhetskopi
 Avsluta utan att spara
 [campaign import failed]
 Ogiltig förloppsfil eller annan kampanjversion
-[network release mismatch]
-Klient- och serverprotokoll skiljer sig åt. Installera samma Glob2-version som servern.
 [settings continue]
 Fortsätt
 [settings save failed]
@@ -3430,8 +3284,6 @@ Ok: %0
 %0 %1
 [resume game]
 Återuppta spelet
-[games]
-Spel
 [Add AI]
 Lägg till AI
 [settings Experiments]
@@ -3480,15 +3332,9 @@ Listornas studs
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3701,8 +3547,6 @@ Kartans fart
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 

@@ -36,8 +36,6 @@ Strategie de bază: Tratează hrana, lucrătorii, nașterile, instruirea, constr
 %0 unități au nivelul prea mic
 [%0% Uploaded]
 %0% încărcat
-[%0's game]
-Jocul lui %0
 [%0's team unit got converted to your team]
 O unitate din echipa lui %0 a trecut de partea voastră
 [abreaviation explanation A]
@@ -54,8 +52,6 @@ V: Partajează câmpul vizual al tuturor clădirilor
 Adaugă o hartă
 [add shortcut]
 Adaugă scurtătură
-[Add]
-Adaugă
 [AI Descriptions]
 Descrieri IA
 [AI]
@@ -130,8 +126,6 @@ Audio
 Salvare automată
 [available lan games]
 Jocuri locale disponibile
-[awaiting players]
-În asteptare de jucători
 [away:]
 absent:
 [Back]
@@ -146,8 +140,6 @@ de luptă al luptătorilor
 Câmp de antrenament
 [beach size]
 mărimea plajei
-[Blocked Players]
-Jucători blocați
 [break]
 Break
 [briefing]
@@ -178,8 +170,6 @@ Campanie
 Conectare imposibilă: gazda nu a fost găsită
 [Can't host game, port %0 in use]
 Jocul nu poate fi găzduit: portul %0 este ocupat
-[Can't join game, game doesn't exist]
-Nu te poți alătura: jocul nu există
 [Can't join game, game has started]
 Nu te poți alătura: jocul a început
 [Can't join game, game is full]
@@ -246,8 +236,6 @@ Grâu
 număr de cratere
 [crater lakes terrain]
 Lacuri de crater
-[create game]
-Creează joc
 [create map]
 Creează hartă
 [credits]
@@ -296,14 +284,6 @@ Nicio acțiune
 Nu transportă nimic
 [down]
 jos
-[Download Map]
-Descarcă harta
-[Download Maps]
-Descarcă hărți
-[downloaded %0]
-descărcat: %0
-[downloading map]
-Se descarcă harta
 [edit map]
 Editează harta
 [editing map]
@@ -314,10 +294,6 @@ Editor
 Editor
 [end]
 End
-[Enter your nickname :]
-Introduceţi pseudonimul dvstră :
-[Enter your password :]
-Introduceţi parola dvstră :
 [enter]
 Enter
 [equals]
@@ -472,12 +448,8 @@ Selectează următorul element
 sarcini
 [join a game]
 Alătură-te unui joc
-[join]
-Alătură-te
 [keyboard settings]
 Setări pentru tastatură
-[kick]
-Dă afară
 [lan]
 Joc in reţea locală LAN
 [language incomplete]
@@ -488,8 +460,6 @@ ro
 Limba
 [language]
 Română
-[Leave Game]
-Părăsește jocul
 [left meta]
 Meta stânga
 [left super]
@@ -512,12 +482,6 @@ Nivele
 Încarcă scriptul
 [load]
 Încarcă
-[loading map list]
-Se încarcă lista de hărți...
-[Lobby]
-Sală de așteptare
-[login]
-Autentificare
 [look around]
 Privește în jur
 [Lost : %0 has more prestige than you]
@@ -536,30 +500,14 @@ Daune terestre
 Descriere
 [Map Discovered]
 Hartă descoperită
-[Map download failure: lost connection]
-Descărcarea hărții a eșuat: conexiunea la YOG s-a pierdut
-[Map name: %0]
-Hartă: %0.
 [map name]
 Nume
-[map rated]
-Hartă evaluată
 [map script]
 Scriptul hărții
 [map size x]
 Lărgimea hărţii
 [map size y]
 Înălţimea hărţii
-[Map upload failure: connection lost]
-Încărcarea hărții a eșuat: conexiunea la YOG s-a pierdut
-[Map upload failure: map name in use]
-Încărcarea hărții a eșuat. Numele hărții este deja folosit.
-[Map upload failure: unknown reason]
-Încărcarea hărții a eșuat. Motiv necunoscut.
-[Map Upload: Author Name]
-Numele autorului
-[Map Upload: Waiting for reply]
-Se așteaptă răspunsul
 [mark map]
 Marchează harta pentru aliați
 [market explanation 2]
@@ -586,8 +534,6 @@ dezactivează sunetul
 Campanie nouă
 [new map]
 Nou
-[nick taken]
-Ne pare rău, dar numele ales este deja folosit pe freenode; veți putea vorbi doar prin YOG.
 [no fullscreen]
 * doar în modul fereastră
 [No Hints]
@@ -600,18 +546,10 @@ Niciun obiectiv
 Fără regenerare
 [No]
 Nu
-[Not Enough Ratings]
-Evaluări insuficiente
-[not ready]
-nu-i gata
 [Number Of Buildings]
 Număr de clădiri
-[number of players: %0 (%1 AI)]
-%0 jucători (%1 IA)
 [number of players: %0]
 %0 jucători prezenţi.
-[number of teams: %0]
-%0 echipe.
 [number of teams]
 numărul echipelor
 [Number Of Units]
@@ -670,8 +608,6 @@ Pause
 Pauză
 [player name]
 Numele jucătorului
-[player rating %0]
-Evaluarea jucătorului: %0
 [players]
 Jucători
 [please wait]
@@ -710,36 +646,22 @@ mers a unităților
 Pistă de alergare
 [range]
 Rază de acțiune
-[Rated %0]
-Evaluare: %0
 [ratios]
 Proportii
-[ready?]
-gata?
-[refresh map list]
-Actualizează lista de hărți
 [Register a new YOG user with password]
 Înregistrează noul jucător YOG cu parola. (nesecurizat)
-[Register]
-Înregistrare
 [remember unit]
 Reține numărul de unități
-[Remember YOG password localy]
-Memorează parola pe acest calculator.
 [remove map]
 Elimină harta
 [remove shortcut]
 Elimină scurtătura
-[Remove]
-Elimină
 [repair building]
 Pornește/oprește reparația
 [repair]
 Repară
 [repeat area]
 repetări ale aceluiași peisaj
-[Repeat your password :]
-Repetă parola:
 [replay ended]
 Reluarea s-a încheiat
 [restore default shortcuts]
@@ -872,14 +794,6 @@ Arată meniul principal
 Afișare
 [smoothing]
 Lisaj
-[sort by name]
-Nume
-[sort by rating]
-Evaluare
-[sort by size]
-Dimensiune
-[Sort By]
-Sortează după
 [space]
 spațiu
 [start mission]
@@ -912,8 +826,6 @@ apărare pasivă
 Element de
 [stonewall]
 Zid de piatră
-[submit rating]
-Trimite evaluarea
 [svr hostname]
 Numele serverului
 [swamp terrain]
@@ -1010,10 +922,6 @@ Hărţi
 Piața este terminată
 [the market is under attack]
 Piața este atacată
-[The player %0 has joined YOG]
-Jucătorul %0 a intrat in YOG.
-[The player %0 has left YOG]
-Jucătorul %0 a iesit din YOG.
 [the racetrack is finished]
 Pista de alergare este terminată
 [the racetrack is under attack]
@@ -1102,10 +1010,6 @@ Pornește/oprește modernizarea
 Valori implicite pentru modernizări
 [upgrade]
 Ameliorează
-[Upload Map]
-Încarcă harta
-[upload map]
-Încarcă harta
 [username]
 Numele utilizatorului
 [Version]
@@ -1118,8 +1022,6 @@ Volum (voce)
 Aşteaptă %0
 [waiting for key]
 se așteaptă o tastă...
-[Waiting]
-În așteptare
 [Walk]
 Merge
 [warflag explanation 2]
@@ -1166,50 +1068,8 @@ Lucrează
 rănite
 [Yes]
 Da
-[YESTS_CONNECTING]
-Stabilirea conexiunii cu metaservărul YOG...
-[YESTS_CONNECTION_LOST]
-Conexiunea la YOG s-a pierdut.
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator este deja înregistrat. Dacă vă aparține, dezactivați opțiunea de înregistrare a unui utilizator YOG nou cu parolă.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-Metaserverul YOG a refuzat conexiunea deoarece parola este incorectă.
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator nu are încă o parolă. Pentru a-l înregistra cu parola introdusă, activați opțiunea de înregistrare a unui utilizator YOG nou cu parolă înainte de conectare. Este necesar să activați această opțiune o singură dată.
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-Metaserverul YOG a refuzat conexiunea deoarece această adresă IP este blocată temporar. Așteaptă ridicarea restricției sau contactează administratorii.
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 Metaserverul YOG a refuzat sa vă conectaţi din motiv că versiunea de globulation2 pe care o folosiţi este prea veche pentru a se putea comunica corect.
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-Metaserverul YOG a refuzat sa vă conectaţi dintr-un motiv necunoscut.
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-Metaserverul YOG a refuzat sa vă conectaţi din motiv că numele vostru de utilizator este deja utilizat de către o altă persoană.
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-Metaserverul YOG a refuzat conexiunea deoarece acest nume de utilizator este blocat. Contactează administratorii.
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-Metaserverul YOG a refuzat conexiunea deoarece numele de utilizator nu este valid. Numele de utilizator pot conține doar litere, cifre și caractere de subliniere.
-[YESTS_CREATED]
-Sistemul de conectare este pregătit să contacteze metaserverul YOG.
-[YESTS_PASSWORDS_DONT_MATCH]
-Parolele introduse nu coincid. Introdu-le din nou.
-[YESTS_UNABLE_TO_CONNECT]
-Imposibilitate de a se conecta. Aparent metaservărul YOG nu este disponibil.
-[yog block command help]
-/block <playername>    Blochează un jucător; nu îi vei mai vedea mesajele.
-[yog block command player %0 already blocked]
-Jucătorul %0 este deja blocat
-[yog block command player %0 blocked]
-Jucătorul %0 a fost blocat
-[yog block command player %0 not found]
-Jucătorul %0 nu a fost găsit
-[yog command header]
-Comenzile disponibile în clientul YOG sunt:
-[yog command unknown]
-Comandă necunoscută.
-[yog help command help]
-/help    Afișează acest mesaj de ajutor
-[yog]
-Jocul în retea prin Ysagoon
 [you have lost]
 Aţi pierdut!
 [you have won]
@@ -1218,12 +1078,8 @@ Aţi câştigat!
 Ai fost dat afară din joc
 [Your %0 are under attack]
 %0 voastre sunt atacate
-[Your IP address was temporarily banned]
-Adresa ta IP a fost blocată temporar. Așteaptă ridicarea restricției sau contactează administratorii.
 [Your unit got converted to %0's team]
 O unitate de-a voastră a trecut în echipa lui %0
-[Your username was banned]
-Numele tău de utilizator a fost blocat. Contactează administratorii pentru ridicarea restricției.
 [game speed]
 Viteza jocului
 [decrease game speed]
@@ -3056,8 +2912,6 @@ Progresul campaniei nu a fost salvat. Reîncercați sau exportați o copie de re
 Ieși fără a salva
 [campaign import failed]
 Fișier de progres nevalid sau versiune de campanie diferită
-[network release mismatch]
-Protocoalele clientului și serverului diferă. Instalați aceeași versiune Glob2 ca serverul.
 [settings continue]
 Continuă
 [settings save failed]
@@ -3420,8 +3274,6 @@ Acceptă: %0
 %0 %1
 [resume game]
 Reia jocul
-[games]
-Jocuri
 [Add AI]
 Adaugă IA
 [settings Experiments]
@@ -3470,15 +3322,9 @@ Reculul listelor
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3691,8 +3537,6 @@ Inerția hărții
 [hub join]
 
 [hub leaderboard]
-
-[hub legacy server]
 
 [hub linked %0]
 
