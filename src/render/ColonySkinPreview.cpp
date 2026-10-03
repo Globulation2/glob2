@@ -2,6 +2,7 @@
 #include "ColonySkinPreview.h"
 #include "UnitConsts.h"
 #include "UnitAnimation.h"
+#include "UnitMotion.h"
 #include "scene/Scene.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
@@ -124,7 +125,7 @@ const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type, int action) const
 }
 void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene,
     int left, int top, int right, int bottom, int viewportX, int viewportY,
-    int localTeam, std::uint32_t visibleTeams, bool wholeMap)
+    int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion)
 {
     std::vector<GAGCore::SkinMeshRequest> requests;
     if (visible && ready)
@@ -143,7 +144,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                         !map.isFOWDiscovered(mx-unit->dx,my-unit->dy,visibleTeams)) continue;
                     const auto *mesh = unitMesh(unit->typeNum,unit->action);
                     if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
-                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,unit->delta)), textures[unit->team].get()});
+                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get()});
                 }
                 const auto *building = entities.building(map.getBuilding(mx,my));
                 if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||

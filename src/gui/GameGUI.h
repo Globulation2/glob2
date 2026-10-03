@@ -129,6 +129,7 @@ public:
 	void syncStep(void);
 	//! Returns once a pending autosave has reached the disk.
 	void waitForAutosave();
+    bool savePending();
 	//! return the local team of the player who is running glob2
 	Team *getLocalTeam(void) { return localTeam; }
 
@@ -261,6 +262,9 @@ public:
 	void threadedClientStep(const std::vector<SDL_Event>& events, Uint64 now);
 	/// True while the simulation runs on its own thread.
 	bool simulationThreaded = false;
+	/// When the latest tick finished and the interval to the next (ms; 0 = uncapped),
+	/// recorded by the engine next to the simulation and copied into extracted Scenes.
+	void recordTick(Uint64 time, Uint32 interval) { lastTickTime = time; tickInterval = interval; }
 	/// Water and cloud animation phase of this GUI's map view (presentation only).
 	int mapAnimationTime() const { return view.render.animationTime; }
 	friend class Game;
@@ -327,6 +331,7 @@ private:
 	void autosave();
 	//! Tick of this session's latest autosave, or -1 before the first.
 	Sint64 lastAutosaveStep;
+    bool autosavePending=false;
 	//! Writes autosaves off the game thread; created by the first autosave.
 	std::unique_ptr<GAGCore::BackgroundFileWriter> autosaveWriter;
 
@@ -763,6 +768,8 @@ private:
 	Game::ViewState view;
 	///The scene drawn this frame, extracted from `game` at the start of drawAll.
 	Scene frameScene;
+	Uint64 lastTickTime = 0;
+	Uint32 tickInterval = 0;
 	///Scene published by the simulation thread, or null when drawAll extracts
 	///frameScene itself (serial execution).
 	const Scene* publishedScene = nullptr;

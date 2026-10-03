@@ -1,4 +1,5 @@
 #include "scene/SceneExtract.h"
+#include "render/UnitMotion.h"
 #include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
@@ -421,7 +422,7 @@ void GameGUI::drawOverlayInfos(void)
 						continue;
 					int px, py;
 					sceneMap.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
-					int deltaLeft=255-unit->delta;
+					int deltaLeft=255-drawnUnitDelta(*unit, view.render.unitMotion);
 					if (unit->action<BUILD)
 					{
 						px-=(unit->dx*deltaLeft)>>3;
@@ -629,6 +630,8 @@ void GameGUI::drawAll(int team)
 		sceneExtractor.extract(game, sceneRequest(), frameScene);
 	const Scene &scene = drawnScene();
 	view.scene = &scene;
+	view.render.unitMotion = globalContainer->settings.unitInterpolation && !gamePaused && !hardPause
+		? unitMotionFraction(scene, SDL_GetTicks()) : 0.f;
 	// Panels, the top bar and the statistics pages draw the scene's copy of the stats.
 	teamStats = scene.panels.localStats.get();
 	toolManager.setDrawnScene(&scene);
@@ -860,6 +863,8 @@ SceneRequest GameGUI::sceneRequest()
 	if (selectionMode == UNIT_SELECTION)
 		if (const UnitRef *u = std::get_if<UnitRef>(&selection))
 			request.selectedUnit = *u;
+	request.tickTime = lastTickTime;
+	request.tickInterval = tickInterval;
 	return request;
 }
 

@@ -27,6 +27,9 @@ struct MapRenderState
 	int animationTime = 0;
 	//! Phase of the animated area (forbidden/guard/clear) markers.
 	int areaAnimationTick = 0;
+	//! How far this frame draws units from their ticked state towards the next tick,
+	//! 0..1 (see UnitMotion.h); 0 draws exactly the simulated positions.
+	float unitMotion = 0;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
 	std::valarray<unsigned char> overlayAlphas;
 	//! Scene this view extracts for itself when drawn without a published one.

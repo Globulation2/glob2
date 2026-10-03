@@ -27,6 +27,7 @@
 #include "UnitDrawGeometry.h"
 #include "UnitAnimation.h"
 #include "ColonySkinPreview.h"
+#include "UnitMotion.h"
 #include <algorithm>
 #include "UnitSkin.h"
 #include "scene/Scene.h"
@@ -76,7 +77,9 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// behind the position (see UnitDrawGeometry.h).
 	int px = unitDrawTile(x, viewportX, unit->posX, map.getW()) * Map::TILE_PX;
 	int py = unitDrawTile(y, viewportY, unit->posY, map.getH()) * Map::TILE_PX;
-	int deltaLeft=255-unit->delta;
+	// Smooth unit motion may draw the unit part of the way to its next tick.
+	const int delta=drawnUnitDelta(*unit, view.render.unitMotion);
+	int deltaLeft=255-delta;
 	if (unit->action<BUILD)
 	{
 		px-=(unit->dx*deltaLeft)>>3;
@@ -88,7 +91,6 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	int dir=unit->direction;
-	int delta=unit->delta;
 	assert(dir>=0);
 	assert(dir<9);
 	assert(delta>=0);
@@ -240,18 +242,18 @@ void Game::drawUnitPathLines(int left, int top, int right, int bot, int sw, int 
 		// Units are extracted team by team in slot order, as the old loop visited them.
 		for (const SceneUnit &unit : entities.units)
 			if (unit.team == localTeam)
-				drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit, scene);
+				drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, unit, scene, view.render.unitMotion);
 	}
 	const SceneUnit *selected = entities.unit(entities.selectedUnit.gid);
 	if (selected && entities.isSelected(*selected))
 	{
-		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, *selected, scene);
+		drawUnitPathLine(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, *selected, scene, view.render.unitMotion);
 	}
 }
 
 
 
-void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& sceneUnit, const Scene& scene)
+void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const SceneUnit& sceneUnit, const Scene& scene, float unitMotion)
 {
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
 	const SceneUnit *unit = &sceneUnit;
@@ -272,8 +274,9 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 			const int targetY = py + dy*32 + 16;
 			if (unit->action < BUILD)
 			{
-				px -= (unit->dx*(255-unit->delta)) >> 3;
-				py -= (unit->dy*(255-unit->delta)) >> 3;
+				const int delta = drawnUnitDelta(*unit, unitMotion);
+				px -= (unit->dx*(255-delta)) >> 3;
+				py -= (unit->dy*(255-delta)) >> 3;
 			}
 			px += 16;
 			py += 16;
@@ -288,14 +291,14 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 
 
 
-void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SceneUnit& sceneUnit, Uint32 drawOptions, const Scene& scene)
+void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int viewportY, const SceneUnit& sceneUnit, Uint32 drawOptions, const Scene& scene, float unitMotion)
 {
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
 	const SceneUnit *unit = &sceneUnit;
 	// Get the direction to the unit
 	int px, py;
 	map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
-	int deltaLeft=255-unit->delta;
+	int deltaLeft=255-drawnUnitDelta(*unit, unitMotion);
 	if (unit->action<BUILD)
 	{
 		px-=(unit->dx*deltaLeft)>>3;
@@ -360,7 +363,7 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	imgid=ut->startImage[unit->action];
 
 	int dir=unit->direction;
-	int delta=unit->delta;
+	int delta=drawnUnitDelta(*unit, unitMotion);
 	assert(dir>=0);
 	assert(dir<9);
 	assert(delta>=0);

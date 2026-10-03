@@ -3504,6 +3504,10 @@ Smooth the moving edges of progress indicators.
 Decorative interface animation
 [settings Animate victory artwork. Reduced motion also disables this animation.]
 Animate victory artwork. Reduced motion also disables this animation.
+[settings Smooth unit motion]
+Smooth unit motion
+[settings Experimental: move and animate units between game ticks.]
+Experimental: move and animate units between game ticks.
 [settings Text size]
 Text size
 [settings Enlarge interface text without changing the map scale.]

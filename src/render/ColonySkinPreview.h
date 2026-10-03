@@ -20,7 +20,7 @@ public:
     void setVisible(bool value) { visible = value; }
     void prepare(GAGCore::GraphicContext &gfx, const Scene &scene, int left, int top,
                  int right, int bottom, int viewportX, int viewportY,
-                 int localTeam, std::uint32_t visibleTeams, bool wholeMap);
+                 int localTeam, std::uint32_t visibleTeams, bool wholeMap, float unitMotion);
     std::optional<std::uint32_t> buildingColor(int team) const;
     bool draw(GAGCore::GraphicContext &gfx, int type, int team, int action,
               int direction, int delta, float x, float y, GAGCore::DrawableSurface *shadow = nullptr);

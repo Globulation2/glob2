@@ -3550,6 +3550,10 @@ Terugvering van lijsten
 
 [settings Animate victory artwork. Reduced motion also disables this animation.]
 
+[settings Smooth unit motion]
+
+[settings Experimental: move and animate units between game ticks.]
+
 [settings Text size]
 
 [settings Enlarge interface text without changing the map scale.]

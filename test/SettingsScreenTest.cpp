@@ -130,7 +130,7 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(GAGCore::ScrollPresets::widget().momentum);
         screen.selectCategory(SettingsScreen::Category::Display);
         s.optionFlags |= 0x80;
-        for (const char* id : {"graphics.skins", "graphics.clouds", "graphics.shadows", "graphics.particles", "graphics.magic", "graphics.panels", "graphics.paths", "graphics.indicators", "graphics.animation"}) {
+        for (const char* id : {"graphics.skins", "graphics.clouds", "graphics.shadows", "graphics.particles", "graphics.magic", "graphics.panels", "graphics.paths", "graphics.indicators", "graphics.animation", "graphics.unitmotion"}) {
             REQUIRE(screen.changeSetting(id,0)); REQUIRE(s.optionFlags==0x80);
             REQUIRE(screen.changeSetting(id,1)); REQUIRE(s.optionFlags==0x80);
         }

@@ -4,6 +4,8 @@ on:
   push:
     branches: [master]
   pull_request:
+    # ready_for_review runs the checks a draft deferred (see ci_changed_paths.py).
+    types: [opened, synchronize, reopened, ready_for_review]
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
@@ -14,11 +16,13 @@ on:
         type: boolean
         default: false
 
-# A new push to a pull request supersedes its running checks. Master runs are
-# finish once started; the newest pending revision replaces older pending work.
+# Superseded runs: see "CI run cancellation" in docs/development/reference.md.
+# A newer revision of the same pull request (or non-default branch) cancels
+# this run. Default-branch runs finish once started; the newest pending
+# revision replaces older pending work, so not every master commit is verified.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
 
 env:
   GLOB2_DEV_MODE: isolated
@@ -57,6 +61,7 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           BROWSER_ONLY: ${{ inputs.browser_only }}
+          DRAFT: ${{ github.event.pull_request.draft }}
           CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
           CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
           GH_TOKEN: ${{ github.token }}

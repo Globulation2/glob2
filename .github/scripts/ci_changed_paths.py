@@ -32,6 +32,7 @@ CI_TOOL_TESTS = {
     "tests/build_system/test_ci_changed_paths.py",
     "tests/build_system/test_ci_tiers.py",
     "tests/build_system/test_ci_run_metrics.py",
+    "tests/build_system/test_ci_concurrency.py",
 }
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
@@ -132,9 +133,11 @@ def browser_only(path):
 
 
 def coverage_profile(paths, event, selected):
-    compatibility = event != 'pull_request' or not paths
+    # Pull requests and master pushes are path-selected; schedules and manual runs are full.
+    full = event not in ('pull_request', 'push')
+    compatibility = full or not paths
     browsers_all = compatibility
-    android = event != 'pull_request' or not paths
+    android = full or not paths
     reasons = []
     for path in paths:
         if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS:
@@ -165,6 +168,22 @@ def coverage_profile(paths, event, selected):
             'profile': 'compatibility' if compatibility else ('primary' if any(selected.values()) else 'lightweight'),
             'reasons': reasons or ['known relevant boundaries; primary platforms suffice']}
 
+def last_tested_master(repo, token, current, read=None):
+    """Commit of the newest master build that ran to completion, or None.
+
+    Pending master runs replace each other, so a push's own diff can skip merges
+    whose runs never started; diffing from the last completed run covers them.
+    """
+    if read is None:
+        from ci_run_metrics import api as read
+    runs = read(f'repos/{repo}/actions/workflows/build.yml/runs?branch=master&status=completed&per_page=100', token)
+    for run in runs.get('workflow_runs', []):
+        if run.get('event') in ('push', 'schedule', 'workflow_dispatch') and run.get('conclusion') in ('success', 'failure') \
+                and run.get('head_sha') and run['head_sha'] != current:
+            return run['head_sha']
+    return None
+
+
 def changed_paths(base):
     subprocess.run(
         ["git", "fetch", "--no-tags", "--depth=1", "origin", base],
@@ -185,12 +204,22 @@ def main():
     args = parser.parse_args()
     paths = []
     event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
-    if args.base and event == "pull_request":
+    if event == "push":
+        # Master: everything merged since the last completed master build.
+        try:
+            base = last_tested_master(os.environ.get('GITHUB_REPOSITORY', ''), os.environ.get('GH_TOKEN', ''),
+                                      os.environ.get('GITHUB_SHA', ''))
+        except (OSError, ValueError, KeyError) as error:
+            print(f"Could not find the last tested master commit ({error}); running full CI", file=sys.stderr)
+            base = None
+        args.base = base
+    if args.base and event in ("pull_request", "push"):
         try:
             paths = changed_paths(args.base)
             selected = classify(paths)
         except (OSError, subprocess.CalledProcessError) as error:
             print(f"Could not inspect changed paths ({error}); running full CI", file=sys.stderr)
+            paths = []
             selected = {job: True for job in JOBS}
     else:
         selected = {job: True for job in JOBS}
@@ -218,9 +247,16 @@ def main():
     if event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true':
         selected['android'] = False
     effective['android'] = selected['android']
+    # Draft pull requests run only this selector and its contract suites; marking
+    # the pull request ready for review starts the selected checks for the same commit.
+    draft = event == 'pull_request' and os.environ.get('DRAFT') == 'true'
+    if draft:
+        print('Draft pull request: checks are deferred until it is ready for review', file=sys.stderr)
+        selected = {job: False for job in selected}
+        effective.update(compatibility=False, browsers_all=False, android=False, android_arches=[])
     artifact = Path('artifacts/ci-selection.json')
     artifact.parent.mkdir(parents=True, exist_ok=True)
-    artifact.write_text(json.dumps({'selection': selected, 'event': event, 'sha': os.environ.get('GITHUB_SHA'), 'full_matrix': event != 'pull_request' and all(selected.values()), 'desired': desired, 'effective': effective, 'tiers_enabled': enabled}, indent=2) + '\n')
+    artifact.write_text(json.dumps({'selection': selected, 'event': event, 'sha': os.environ.get('GITHUB_SHA'), 'full_matrix': event != 'pull_request' and all(selected.values()), 'desired': desired, 'effective': effective, 'tiers_enabled': enabled, 'draft': draft}, indent=2) + '\n')
     output = "".join(f"{job}={str(enabled).lower()}\n" for job, enabled in selected.items())
     output += 'compatibility=' + str(effective['compatibility']).lower() + '\n'
     output += 'browsers_all=' + str(effective['browsers_all']).lower() + '\n'
