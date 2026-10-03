@@ -31,15 +31,13 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
       'AI Map Studio needs text/image models, a pipeline version and a provider-call budget.',
     );
   const checkout =
-    config?.packs?.length &&
-    process.env['MAP_STRIPE_SECRET_KEY'] &&
-    process.env['MAP_STRIPE_WEBHOOK_SECRET']
+    process.env['MAP_STRIPE_SECRET_KEY'] && process.env['MAP_STRIPE_WEBHOOK_SECRET']
       ? new Checkout(
           app.services.db,
           process.env['MAP_STRIPE_SECRET_KEY'] ?? '',
           process.env['MAP_STRIPE_WEBHOOK_SECRET'] ?? '',
           app.services.config.publicOrigin,
-          config.packs,
+          config?.packs ?? [],
           'maps',
         )
       : undefined;

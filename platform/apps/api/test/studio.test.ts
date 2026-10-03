@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { beforeAll, afterAll, it, expect } from 'vitest';
+import { beforeAll, afterAll, it, expect, vi } from 'vitest';
 import { createHarness, postJson, type Harness, type Instance } from './support.ts';
 let harness: Harness, api: Instance;
 beforeAll(async () => {
@@ -160,5 +160,25 @@ it('keeps studio history and previews private while supporting owner download, r
   } finally {
     owner.client.close();
     other.client.close();
+  }
+});
+
+it('retains the signed payment webhook after disabling generation and removing sale packs', async () => {
+  vi.stubEnv('MAP_STRIPE_SECRET_KEY', 'sk_test_fixture');
+  vi.stubEnv('MAP_STRIPE_WEBHOOK_SECRET', 'whsec_fixture');
+  try {
+    const paused = await harness.start({ origin: 'https://studio.example.test' });
+    const response = await fetch(paused.url + '/api/v1/map-studio/stripe', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: '{}',
+    });
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      code: 'bad_request',
+      message: 'Missing payment signature.',
+    });
+  } finally {
+    vi.unstubAllEnvs();
   }
 });
