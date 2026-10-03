@@ -166,7 +166,7 @@ export interface EngineAgentsTable {
 
 export interface EngineJobsTable {
   id: Generated<string>;
-  kind: 'generate-map' | 'validate-map' | 'render-preview' | 'verify-match';
+  kind: 'generate-map' | 'validate-map' | 'render-preview' | 'verify-match' | 'import-ai-map';
   sim_version: string;
   payload: Json<JsonValue>;
   status: Defaulted<'queued' | 'succeeded' | 'failed'>;
@@ -178,6 +178,7 @@ export interface EngineJobsTable {
 }
 
 export interface MapsTable {
+  authoring: NullableJson<JsonValue>;
   id: Generated<string>;
   owner_account_id: string;
   title: string;
@@ -673,7 +674,58 @@ export interface HivePurchasesTable {
   created_at: Timestamp;
 }
 
+export interface StudioThreadsTable {
+  id: Generated<string>;
+  account_id: string;
+  title: string;
+  brief: Defaulted<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface StudioMessagesTable {
+  id: string;
+  thread_id: string;
+  role: 'user' | 'assistant';
+  text: string;
+  created_at: Timestamp;
+}
+export interface StudioRequestsTable {
+  id: string;
+  thread_id: string;
+  account_id: string;
+  kind: 'chat' | 'generate';
+  status: Defaulted<string>;
+  input: Json<JsonValue>;
+  checkpoints: Defaulted<Json<JsonValue>>;
+  lease_until: NullableTimestamp;
+  lease: Nullable<string>;
+  map_id: Nullable<string>;
+  map_hash: Nullable<string>;
+  error: Nullable<string>;
+  charged: Defaulted<boolean>;
+  created_at: Timestamp;
+  completed_at: NullableTimestamp;
+}
+export interface StudioAttemptsTable {
+  id: string;
+  request_id: string;
+  stage: string;
+  model: string;
+  status: string;
+  input: Json<JsonValue>;
+  output: NullableJson<JsonValue>;
+  created_at: Timestamp;
+}
+
 export interface Database {
+  studio_threads: StudioThreadsTable;
+  studio_messages: StudioMessagesTable;
+  studio_requests: StudioRequestsTable;
+  studio_attempts: StudioAttemptsTable;
+  map_wallets: HiveWalletsTable;
+  map_ledger: HiveLedgerTable;
+  map_calls: HiveCallsTable;
+  map_purchases: HivePurchasesTable;
   hive_wallets: HiveWalletsTable;
   hive_ledger: HiveLedgerTable;
   hive_calls: HiveCallsTable;

@@ -1,5 +1,5 @@
 {
-  "name": "@glob2/hive",
+  "name": "@glob2/billing",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -8,11 +8,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@ai-sdk/openai": "4.0.83",
     "@glob2/db": "0.1.0",
-    "@glob2/protocol": "0.1.0",
-    "ai": "7.0.127",
     "kysely": "^0.29.6",
-    "@glob2/billing": "0.1.0"
+    "stripe": "23.0.0"
   }
 }
