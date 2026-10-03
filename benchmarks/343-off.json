@@ -1,0 +1,256 @@
+{
+ "save": "/tmp/claude-1000/-home-bradley-glob2-claude--claude-worktrees-telemetry-prs-360-343-eb28aa/8c40f140-ff21-40ce-86d4-42092e4a9c66/scratchpad/benchsave/final.game.gz",
+ "ticks": 16536,
+ "warmup": 256,
+ "pairs": 12,
+ "telemetry": [],
+ "median_before_ms": 7751.3798155,
+ "median_after_ms": 7857.336909,
+ "median_change_percent": -0.922975628209699,
+ "ci95_change_percent": [
+  -4.131358256032858,
+  3.0797558988154616
+ ],
+ "rows": [
+  {
+   "pair": 0,
+   "variant": "before",
+   "execution_cpu_ns": 12149615127
+  },
+  {
+   "pair": 0,
+   "variant": "after",
+   "execution_cpu_ns": 10944812279
+  },
+  {
+   "pair": 0,
+   "variant": "after",
+   "execution_cpu_ns": 12475783016
+  },
+  {
+   "pair": 0,
+   "variant": "before",
+   "execution_cpu_ns": 11554082686
+  },
+  {
+   "pair": 1,
+   "variant": "after",
+   "execution_cpu_ns": 14041783120
+  },
+  {
+   "pair": 1,
+   "variant": "before",
+   "execution_cpu_ns": 13961093277
+  },
+  {
+   "pair": 1,
+   "variant": "before",
+   "execution_cpu_ns": 14943656120
+  },
+  {
+   "pair": 1,
+   "variant": "after",
+   "execution_cpu_ns": 13502960144
+  },
+  {
+   "pair": 2,
+   "variant": "before",
+   "execution_cpu_ns": 13063913341
+  },
+  {
+   "pair": 2,
+   "variant": "after",
+   "execution_cpu_ns": 11482407947
+  },
+  {
+   "pair": 2,
+   "variant": "after",
+   "execution_cpu_ns": 12530860311
+  },
+  {
+   "pair": 2,
+   "variant": "before",
+   "execution_cpu_ns": 9844531870
+  },
+  {
+   "pair": 3,
+   "variant": "after",
+   "execution_cpu_ns": 10906368465
+  },
+  {
+   "pair": 3,
+   "variant": "before",
+   "execution_cpu_ns": 8217585886
+  },
+  {
+   "pair": 3,
+   "variant": "before",
+   "execution_cpu_ns": 7466459591
+  },
+  {
+   "pair": 3,
+   "variant": "after",
+   "execution_cpu_ns": 8146034731
+  },
+  {
+   "pair": 4,
+   "variant": "before",
+   "execution_cpu_ns": 8634787183
+  },
+  {
+   "pair": 4,
+   "variant": "after",
+   "execution_cpu_ns": 8433628064
+  },
+  {
+   "pair": 4,
+   "variant": "after",
+   "execution_cpu_ns": 8608151951
+  },
+  {
+   "pair": 4,
+   "variant": "before",
+   "execution_cpu_ns": 8518767489
+  },
+  {
+   "pair": 5,
+   "variant": "after",
+   "execution_cpu_ns": 8405847107
+  },
+  {
+   "pair": 5,
+   "variant": "before",
+   "execution_cpu_ns": 8573029770
+  },
+  {
+   "pair": 5,
+   "variant": "before",
+   "execution_cpu_ns": 8177061664
+  },
+  {
+   "pair": 5,
+   "variant": "after",
+   "execution_cpu_ns": 7748345390
+  },
+  {
+   "pair": 6,
+   "variant": "before",
+   "execution_cpu_ns": 7759291661
+  },
+  {
+   "pair": 6,
+   "variant": "after",
+   "execution_cpu_ns": 7590012104
+  },
+  {
+   "pair": 6,
+   "variant": "after",
+   "execution_cpu_ns": 7685143035
+  },
+  {
+   "pair": 6,
+   "variant": "before",
+   "execution_cpu_ns": 7562182124
+  },
+  {
+   "pair": 7,
+   "variant": "after",
+   "execution_cpu_ns": 7423949294
+  },
+  {
+   "pair": 7,
+   "variant": "before",
+   "execution_cpu_ns": 7433054394
+  },
+  {
+   "pair": 7,
+   "variant": "before",
+   "execution_cpu_ns": 7685790742
+  },
+  {
+   "pair": 7,
+   "variant": "after",
+   "execution_cpu_ns": 6121343621
+  },
+  {
+   "pair": 8,
+   "variant": "before",
+   "execution_cpu_ns": 6476015395
+  },
+  {
+   "pair": 8,
+   "variant": "after",
+   "execution_cpu_ns": 6138982221
+  },
+  {
+   "pair": 8,
+   "variant": "after",
+   "execution_cpu_ns": 6374041214
+  },
+  {
+   "pair": 8,
+   "variant": "before",
+   "execution_cpu_ns": 6250440103
+  },
+  {
+   "pair": 9,
+   "variant": "after",
+   "execution_cpu_ns": 6137432141
+  },
+  {
+   "pair": 9,
+   "variant": "before",
+   "execution_cpu_ns": 6641642714
+  },
+  {
+   "pair": 9,
+   "variant": "before",
+   "execution_cpu_ns": 6833868410
+  },
+  {
+   "pair": 9,
+   "variant": "after",
+   "execution_cpu_ns": 6398050680
+  },
+  {
+   "pair": 10,
+   "variant": "before",
+   "execution_cpu_ns": 6474411047
+  },
+  {
+   "pair": 10,
+   "variant": "after",
+   "execution_cpu_ns": 6597065145
+  },
+  {
+   "pair": 10,
+   "variant": "after",
+   "execution_cpu_ns": 6638887016
+  },
+  {
+   "pair": 10,
+   "variant": "before",
+   "execution_cpu_ns": 6586945316
+  },
+  {
+   "pair": 11,
+   "variant": "after",
+   "execution_cpu_ns": 6554923762
+  },
+  {
+   "pair": 11,
+   "variant": "before",
+   "execution_cpu_ns": 6339884518
+  },
+  {
+   "pair": 11,
+   "variant": "before",
+   "execution_cpu_ns": 6392610161
+  },
+  {
+   "pair": 11,
+   "variant": "after",
+   "execution_cpu_ns": 6976192680
+  }
+ ]
+}

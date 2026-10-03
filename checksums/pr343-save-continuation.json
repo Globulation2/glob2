@@ -1,0 +1,20 @@
+[
+ {
+  "scenario": "final.game.gz",
+  "args": [
+   "--load-game",
+   "/tmp/claude-1000/-home-bradley-glob2-claude--claude-worktrees-telemetry-prs-360-343-eb28aa/8c40f140-ff21-40ce-86d4-42092e4a9c66/scratchpad/benchsave/final.game.gz",
+   "--ticks",
+   "18000"
+  ],
+  "identical": true,
+  "sidecar_bytes": 344474244,
+  "sha256": {
+   "base": "88271c097543466c7e329be98903d66cecb3e8fda73b9d3f377fcbfa33dc014c",
+   "base-timeline": "88271c097543466c7e329be98903d66cecb3e8fda73b9d3f377fcbfa33dc014c",
+   "pr": "88271c097543466c7e329be98903d66cecb3e8fda73b9d3f377fcbfa33dc014c",
+   "pr-timeline": "88271c097543466c7e329be98903d66cecb3e8fda73b9d3f377fcbfa33dc014c"
+  },
+  "failures": {}
+ }
+]

@@ -1,0 +1,358 @@
+[
+ {
+  "scenario": "FourSquares1-s11",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/FourSquares1.map.gz",
+   "--game-seed",
+   "11",
+   "--ticks",
+   "15000",
+   "--player",
+   "numbi",
+   "--player",
+   "castor",
+   "--player",
+   "warrush",
+   "--player",
+   "econo"
+  ],
+  "identical": true,
+  "sidecar_bytes": 240374932,
+  "sha256": {
+   "base": "2023d484c45dc3fe97b758a12d8f78d4e21d00555f799d2f348ff64bb5eb39ad",
+   "base-timeline": "2023d484c45dc3fe97b758a12d8f78d4e21d00555f799d2f348ff64bb5eb39ad",
+   "pr": "2023d484c45dc3fe97b758a12d8f78d4e21d00555f799d2f348ff64bb5eb39ad",
+   "pr-timeline": "2023d484c45dc3fe97b758a12d8f78d4e21d00555f799d2f348ff64bb5eb39ad"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "FourSquares1-s4242",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/FourSquares1.map.gz",
+   "--game-seed",
+   "4242",
+   "--ticks",
+   "15000",
+   "--player",
+   "nicowar",
+   "--player",
+   "maxima",
+   "--player",
+   "cortex",
+   "--player",
+   "cabino"
+  ],
+  "identical": true,
+  "sidecar_bytes": 282705380,
+  "sha256": {
+   "base": "65243b4cb5120227251ef80659fadec2b17b93b20d4e4318da76a4771343129c",
+   "base-timeline": "65243b4cb5120227251ef80659fadec2b17b93b20d4e4318da76a4771343129c",
+   "pr": "65243b4cb5120227251ef80659fadec2b17b93b20d4e4318da76a4771343129c",
+   "pr-timeline": "65243b4cb5120227251ef80659fadec2b17b93b20d4e4318da76a4771343129c"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Archipelago-s11",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Archipelago.map.gz",
+   "--game-seed",
+   "11",
+   "--ticks",
+   "15000",
+   "--player",
+   "numbi",
+   "--player",
+   "castor",
+   "--player",
+   "warrush",
+   "--player",
+   "econo",
+   "--player",
+   "nicowar"
+  ],
+  "identical": true,
+  "sidecar_bytes": 206214766,
+  "sha256": {
+   "base": "0dc4f625826611c65e25cb7d2c11da5a248cf67dcd6bae5572184f659e5debed",
+   "base-timeline": "0dc4f625826611c65e25cb7d2c11da5a248cf67dcd6bae5572184f659e5debed",
+   "pr": "0dc4f625826611c65e25cb7d2c11da5a248cf67dcd6bae5572184f659e5debed",
+   "pr-timeline": "0dc4f625826611c65e25cb7d2c11da5a248cf67dcd6bae5572184f659e5debed"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Archipelago-s4242",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Archipelago.map.gz",
+   "--game-seed",
+   "4242",
+   "--ticks",
+   "15000",
+   "--player",
+   "maxima",
+   "--player",
+   "cortex",
+   "--player",
+   "cabino",
+   "--player",
+   "numbi",
+   "--player",
+   "castor"
+  ],
+  "identical": true,
+  "sidecar_bytes": 185692630,
+  "sha256": {
+   "base": "ac8af415f3f7b405a78226dd7da054023d848f0e087cae26ff65aef3219dbf0f",
+   "base-timeline": "ac8af415f3f7b405a78226dd7da054023d848f0e087cae26ff65aef3219dbf0f",
+   "pr": "ac8af415f3f7b405a78226dd7da054023d848f0e087cae26ff65aef3219dbf0f",
+   "pr-timeline": "ac8af415f3f7b405a78226dd7da054023d848f0e087cae26ff65aef3219dbf0f"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Garden_3-s11",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Garden_3.map.gz",
+   "--game-seed",
+   "11",
+   "--ticks",
+   "15000",
+   "--player",
+   "warrush",
+   "--player",
+   "econo",
+   "--player",
+   "nicowar",
+   "--player",
+   "maxima"
+  ],
+  "identical": true,
+  "sidecar_bytes": 442461936,
+  "sha256": {
+   "base": "bcfa6f8d80c4eff2c028ae43e730ad2ded2d6b09b1640f26a6d23cb14ce6be49",
+   "base-timeline": "bcfa6f8d80c4eff2c028ae43e730ad2ded2d6b09b1640f26a6d23cb14ce6be49",
+   "pr": "bcfa6f8d80c4eff2c028ae43e730ad2ded2d6b09b1640f26a6d23cb14ce6be49",
+   "pr-timeline": "bcfa6f8d80c4eff2c028ae43e730ad2ded2d6b09b1640f26a6d23cb14ce6be49"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Garden_3-s4242",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Garden_3.map.gz",
+   "--game-seed",
+   "4242",
+   "--ticks",
+   "15000",
+   "--player",
+   "cortex",
+   "--player",
+   "cabino",
+   "--player",
+   "numbi",
+   "--player",
+   "castor"
+  ],
+  "identical": true,
+  "sidecar_bytes": 406720640,
+  "sha256": {
+   "base": "14a13ee106e20c482ad0a4785fb3d1ba429cf9bb39e9d19eb96f1b8cccb9738d",
+   "base-timeline": "14a13ee106e20c482ad0a4785fb3d1ba429cf9bb39e9d19eb96f1b8cccb9738d",
+   "pr": "14a13ee106e20c482ad0a4785fb3d1ba429cf9bb39e9d19eb96f1b8cccb9738d",
+   "pr-timeline": "14a13ee106e20c482ad0a4785fb3d1ba429cf9bb39e9d19eb96f1b8cccb9738d"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Muka-s11",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Muka.map.gz",
+   "--game-seed",
+   "11",
+   "--ticks",
+   "15000",
+   "--player",
+   "warrush",
+   "--player",
+   "econo"
+  ],
+  "identical": true,
+  "sidecar_bytes": 166332094,
+  "sha256": {
+   "base": "00a60fa33c61c813d07b3c14202a1e03d4af3fbfa286f94b11f99a1ccc597644",
+   "base-timeline": "00a60fa33c61c813d07b3c14202a1e03d4af3fbfa286f94b11f99a1ccc597644",
+   "pr": "00a60fa33c61c813d07b3c14202a1e03d4af3fbfa286f94b11f99a1ccc597644",
+   "pr-timeline": "00a60fa33c61c813d07b3c14202a1e03d4af3fbfa286f94b11f99a1ccc597644"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Muka-s4242",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Muka.map.gz",
+   "--game-seed",
+   "4242",
+   "--ticks",
+   "15000",
+   "--player",
+   "nicowar",
+   "--player",
+   "maxima"
+  ],
+  "identical": true,
+  "sidecar_bytes": 95930256,
+  "sha256": {
+   "base": "e835a994510bd8a2721a7e2ab40cb13420239f801626eda00d1c3cf6b402bebd",
+   "base-timeline": "e835a994510bd8a2721a7e2ab40cb13420239f801626eda00d1c3cf6b402bebd",
+   "pr": "e835a994510bd8a2721a7e2ab40cb13420239f801626eda00d1c3cf6b402bebd",
+   "pr-timeline": "e835a994510bd8a2721a7e2ab40cb13420239f801626eda00d1c3cf6b402bebd"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Triangle-s11",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Triangle.map.gz",
+   "--game-seed",
+   "11",
+   "--ticks",
+   "15000",
+   "--player",
+   "cortex",
+   "--player",
+   "cabino",
+   "--player",
+   "numbi"
+  ],
+  "identical": true,
+  "sidecar_bytes": 349949926,
+  "sha256": {
+   "base": "bf6bcc2a6438ca8bb9b8194158ae9f35799b60422374da4f3387e1fd0395478a",
+   "base-timeline": "bf6bcc2a6438ca8bb9b8194158ae9f35799b60422374da4f3387e1fd0395478a",
+   "pr": "bf6bcc2a6438ca8bb9b8194158ae9f35799b60422374da4f3387e1fd0395478a",
+   "pr-timeline": "bf6bcc2a6438ca8bb9b8194158ae9f35799b60422374da4f3387e1fd0395478a"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Triangle-s4242",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Triangle.map.gz",
+   "--game-seed",
+   "4242",
+   "--ticks",
+   "15000",
+   "--player",
+   "castor",
+   "--player",
+   "warrush",
+   "--player",
+   "econo"
+  ],
+  "identical": true,
+  "sidecar_bytes": 209969914,
+  "sha256": {
+   "base": "22d4592cde5809c154e5928a79c5c12ca63688674fced88b220abc2f7e6ec407",
+   "base-timeline": "22d4592cde5809c154e5928a79c5c12ca63688674fced88b220abc2f7e6ec407",
+   "pr": "22d4592cde5809c154e5928a79c5c12ca63688674fced88b220abc2f7e6ec407",
+   "pr-timeline": "22d4592cde5809c154e5928a79c5c12ca63688674fced88b220abc2f7e6ec407"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Oazis-s11",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Oazis.map.gz",
+   "--game-seed",
+   "11",
+   "--ticks",
+   "15000",
+   "--player",
+   "nicowar",
+   "--player",
+   "maxima",
+   "--player",
+   "cortex",
+   "--player",
+   "cabino",
+   "--player",
+   "numbi",
+   "--player",
+   "castor",
+   "--player",
+   "warrush",
+   "--player",
+   "econo",
+   "--player",
+   "nicowar",
+   "--player",
+   "maxima",
+   "--player",
+   "cortex"
+  ],
+  "identical": true,
+  "sidecar_bytes": 847831342,
+  "sha256": {
+   "base": "6b55f3f9c178ec327a0dc0c141b35dd2ea1bfb2f91764c83c7045ed91307eeb4",
+   "base-timeline": "6b55f3f9c178ec327a0dc0c141b35dd2ea1bfb2f91764c83c7045ed91307eeb4",
+   "pr": "6b55f3f9c178ec327a0dc0c141b35dd2ea1bfb2f91764c83c7045ed91307eeb4",
+   "pr-timeline": "6b55f3f9c178ec327a0dc0c141b35dd2ea1bfb2f91764c83c7045ed91307eeb4"
+  },
+  "failures": {}
+ },
+ {
+  "scenario": "Oazis-s4242",
+  "args": [
+   "--map-file",
+   "/home/bradley/glob2-claude/.claude/worktrees/telemetry-prs-360-343-eb28aa/maps/Oazis.map.gz",
+   "--game-seed",
+   "4242",
+   "--ticks",
+   "15000",
+   "--player",
+   "cabino",
+   "--player",
+   "numbi",
+   "--player",
+   "castor",
+   "--player",
+   "warrush",
+   "--player",
+   "econo",
+   "--player",
+   "nicowar",
+   "--player",
+   "maxima",
+   "--player",
+   "cortex",
+   "--player",
+   "cabino",
+   "--player",
+   "numbi",
+   "--player",
+   "castor"
+  ],
+  "identical": true,
+  "sidecar_bytes": 854867838,
+  "sha256": {
+   "base": "6d12a0db97f21a6144f620c21ab167466c79082bb74fa3c74bc2838dcdcb98e1",
+   "base-timeline": "6d12a0db97f21a6144f620c21ab167466c79082bb74fa3c74bc2838dcdcb98e1",
+   "pr": "6d12a0db97f21a6144f620c21ab167466c79082bb74fa3c74bc2838dcdcb98e1",
+   "pr-timeline": "6d12a0db97f21a6144f620c21ab167466c79082bb74fa3c74bc2838dcdcb98e1"
+  },
+  "failures": {}
+ }
+]

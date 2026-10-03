@@ -1,0 +1,85 @@
+{
+ "save": "/tmp/claude-1000/-home-bradley-glob2-claude--claude-worktrees-telemetry-prs-360-343-eb28aa/8c40f140-ff21-40ce-86d4-42092e4a9c66/scratchpad/benchsave/final.game.gz",
+ "ticks": 16536,
+ "pairs": 5,
+ "rows": [
+  {
+   "pair": 0,
+   "variant": "before",
+   "simulation.tick": 4785273.277994792,
+   "telemetry.capture": 9552.808297821955
+  },
+  {
+   "pair": 0,
+   "variant": "after",
+   "simulation.tick": 4665345.677734376,
+   "telemetry.capture": 11557.52000473484
+  },
+  {
+   "pair": 1,
+   "variant": "after",
+   "simulation.tick": 4323993.605468753,
+   "telemetry.capture": 9322.153527462111
+  },
+  {
+   "pair": 1,
+   "variant": "before",
+   "simulation.tick": 4242135.092447916,
+   "telemetry.capture": 8680.117542613634
+  },
+  {
+   "pair": 2,
+   "variant": "before",
+   "simulation.tick": 4341973.194661459,
+   "telemetry.capture": 9268.241358901512
+  },
+  {
+   "pair": 2,
+   "variant": "after",
+   "simulation.tick": 4268695.237630207,
+   "telemetry.capture": 10083.95709043561
+  },
+  {
+   "pair": 3,
+   "variant": "after",
+   "simulation.tick": 4767045.697916667,
+   "telemetry.capture": 10590.866122159077
+  },
+  {
+   "pair": 3,
+   "variant": "before",
+   "simulation.tick": 4251614.957682293,
+   "telemetry.capture": 8908.946614583348
+  },
+  {
+   "pair": 4,
+   "variant": "before",
+   "simulation.tick": 4934630.906249999,
+   "telemetry.capture": 11634.298058712106
+  },
+  {
+   "pair": 4,
+   "variant": "after",
+   "simulation.tick": 4597906.076171874,
+   "telemetry.capture": 10585.045099431822
+  }
+ ],
+ "telemetry.capture": {
+  "median_before_ns": 9268.241358901512,
+  "median_after_ns": 10585.045099431822,
+  "median_change_percent": 8.801192156596759,
+  "pair_change_percent_range": [
+   -9.018618519013899,
+   20.98557454952761
+  ]
+ },
+ "simulation.tick": {
+  "median_before_ns": 4341973.194661459,
+  "median_after_ns": 4597906.076171874,
+  "median_change_percent": -1.6876648875066458,
+  "pair_change_percent_range": [
+   -6.823708530087702,
+   12.123175437207356
+  ]
+ }
+}

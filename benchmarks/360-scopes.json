@@ -1,0 +1,85 @@
+{
+ "save": "/tmp/claude-1000/-home-bradley-glob2-claude--claude-worktrees-telemetry-prs-360-343-eb28aa/8c40f140-ff21-40ce-86d4-42092e4a9c66/scratchpad/benchsave/final.game.gz",
+ "ticks": 16536,
+ "pairs": 5,
+ "rows": [
+  {
+   "pair": 0,
+   "variant": "before",
+   "simulation.tick": 4058289.481119793,
+   "telemetry.capture": 8282.604936079548
+  },
+  {
+   "pair": 0,
+   "variant": "after",
+   "simulation.tick": 5200476.806640625,
+   "telemetry.capture": 11981.660570549258
+  },
+  {
+   "pair": 1,
+   "variant": "after",
+   "simulation.tick": 6047281.930989585,
+   "telemetry.capture": 13529.001242897722
+  },
+  {
+   "pair": 1,
+   "variant": "before",
+   "simulation.tick": 6970006.083333336,
+   "telemetry.capture": 16242.247987689436
+  },
+  {
+   "pair": 2,
+   "variant": "before",
+   "simulation.tick": 9595062.921874998,
+   "telemetry.capture": 18758.20117187499
+  },
+  {
+   "pair": 2,
+   "variant": "after",
+   "simulation.tick": 6129429.744791667,
+   "telemetry.capture": 13344.989346590897
+  },
+  {
+   "pair": 3,
+   "variant": "after",
+   "simulation.tick": 5136416.512369794,
+   "telemetry.capture": 11714.523910984868
+  },
+  {
+   "pair": 3,
+   "variant": "before",
+   "simulation.tick": 4701494.522135416,
+   "telemetry.capture": 11409.911044034116
+  },
+  {
+   "pair": 4,
+   "variant": "before",
+   "simulation.tick": 4878213.551432294,
+   "telemetry.capture": 9734.993548768934
+  },
+  {
+   "pair": 4,
+   "variant": "after",
+   "simulation.tick": 4366173.473307289,
+   "telemetry.capture": 9019.592921401509
+  }
+ ],
+ "telemetry.capture": {
+  "median_before_ns": 11409.911044034116,
+  "median_after_ns": 11981.660570549258,
+  "median_change_percent": -7.3487529681814046,
+  "pair_change_percent_range": [
+   -28.857840768870535,
+   44.660534493881165
+  ]
+ },
+ "simulation.tick": {
+  "median_before_ns": 4878213.551432294,
+  "median_after_ns": 5200476.806640625,
+  "median_change_percent": -10.496467051440671,
+  "pair_change_percent_range": [
+   -36.118920796051455,
+   28.144550329260177
+  ]
+ }
+}
