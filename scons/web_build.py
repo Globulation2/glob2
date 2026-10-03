@@ -235,7 +235,7 @@ def build_web(directory, identity, arguments):
     # Assistant programs never execute in the live game's WebAssembly memory.
     hive = env.Clone()
     hive['LIBS'] = []
-    hive['LINKFLAGS'] = ['--no-entry', '-sMODULARIZE=1', '-sEXPORT_NAME=createHiveRuntime',
+    hive['LINKFLAGS'] = ['-fwasm-exceptions', '--no-entry', '-sMODULARIZE=1', '-sEXPORT_NAME=createHiveRuntime',
         '-sENVIRONMENT=worker', '-sFILESYSTEM=0', '-sALLOW_MEMORY_GROWTH=1',
         '-sMAXIMUM_MEMORY=268435456', '-sSTACK_SIZE=8388608',
         '-sEXPORTED_FUNCTIONS=["_glob2_hive_invoke","_malloc","_free"]', '-sEXPORTED_RUNTIME_METHODS=["ccall","stringToUTF8","lengthBytesUTF8"]']
