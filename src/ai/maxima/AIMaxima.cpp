@@ -17,6 +17,7 @@
  */
 
 #include "field/UniformTraversal.h"
+#include "GameDiagnostics.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
 #include "AIMaximaWorldHelpers.h"
@@ -4764,6 +4765,7 @@ void Maxima::development_cycle(Context& runtime)
 			development_planner_initialized=true;
 		}
 		refreshedWorld=collect_development_world(runtime,&worldSignature);
+		if (fieldDiagnostics) fieldDiagnostics->capture(refreshedWorld);
 		development_planner.observe(refreshedWorld,worldSignature);
 		// An under-supplied building is a burden whatever its distance from
 		// wheat; with the ledger disabled nothing is retired. Relocation goes

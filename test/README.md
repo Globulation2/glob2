@@ -893,6 +893,18 @@ inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
 and checks invalid settings and preferences.
 See [map CLI documentation](../docs/map-generators/CLI.md).
 
+### Whole-game diagnostics
+
+`python3 test/run_tests.py --filter 'GameDiagnostics/*'` covers release-active
+field parsing, full unsigned food values, capture cadence, shared-team controllers, bounded Scene export,
+repeated graphics lifetimes, checked output failures, and software/portable/GL
+state restoration. Display cases run through the registry's isolated processes.
+`python3 test/test_game_diagnostics.py [client-binary]` exercises the production CLI,
+retaining commands, PNGs, saves and per-tick checksums under `artifacts/map-cli/diagnostics/`.
+It compares disabled/fields/PNG/threaded runs, save continuation, malformed arguments,
+and output failures. The map CLI suite invokes it on
+native platforms; `--generation-only` continues to skip graphics exports.
+
 ### Flat map images
 
 `python3 test/test_map_image.py [client-binary]` tests the optional image importer

@@ -317,3 +317,33 @@ Crop selection keeps complete colony markers and scores resource/terrain seams;
 it is not a playability certificate. Online delivery additionally validates the
 native post-import report. All delivered files remain ordinary maps requiring no
 model or service connection to play.
+## Render a whole game
+
+```sh
+"$GLOB2_BIN" --render-game colony.game.gz --output artifacts/colony.png \
+  --render-max-pixels 2048
+"$GLOB2_BIN" --render-game colony.game.gz --output artifacts/threat.png \
+  --render-field threat.field --field-color 255,40,40
+```
+
+This renders terrain, resources, units and buildings through the shared Scene
+renderer, with fog disabled and animation frozen. It accepts maps and all save
+formats supported by the normal loader. It does not execute ticks or modify the
+input or profile preferences. Game artwork must be available; the command needs
+no display, audio device or OpenGL. Software export follows the software game's
+presentation, including its cloud-layer behavior.
+
+`--render-max-pixels` limits the longest side to 1–8192 pixels (default 4096),
+without upscaling. The final surface is allocated at that size and world geometry
+is scaled directly into it; no full-resolution map canvas is allocated. The
+maximum square output surface is 256 MiB, separate from assets and Scene storage.
+Output replaces the destination only after PNG encoding and close succeed.
+
+A `.field` starts with positive `width height`, then exactly `width * height`
+row-major signed 64-bit integers. Dimensions must match the map; up to 16,777,216
+values are accepted. Positive values use alpha proportional to the maximum,
+capped at 220; zero and negative values are transparent. `--field-color r,g,b`
+accepts components 0–255 and defaults to `0,192,255`. Missing values, extra tokens,
+overflow and invalid dimensions are errors. A separately supplied saved game must
+represent the field's geography; automatic [Maxima field captures](../ai/telemetry.md#maxima-placement-fields)
+retain their own matching Scene for PNG output.

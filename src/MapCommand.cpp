@@ -14,6 +14,8 @@
 #define PRIMARY_FONT "sans.ttf"
 #endif
 #include "Game.h"
+#include "MapRender.h"
+#include "scene/SceneExtract.h"
 #include "GenerationService.h"
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
@@ -222,11 +224,13 @@ bool isMapCommand(const char *arg)
 {
 	const std::string s = arg;
 	return s == "--generate-map" || s == "--preview-map" || s == "--list-map-generators" ||
-		   s == "--export-map-image" || s == "--import-map-image";
+		   s == "--render-game" || s == "--export-map-image" || s == "--import-map-image";
 }
 void printMapCommandHelp()
 {
 	std::cout
+		<< "  --render-game <file.map|file.game> --output file.png [--render-max-pixels 1..8192]\n"
+		   "    [--render-field file.field] [--field-color r,g,b]\n"
 		<< "Map launch modes (put the mode first; no display required):\n"
 		   "  --generate-map <generator> [--output file.map] [--preview file.png] [--json "
 		   "report.json]\n"
@@ -269,11 +273,13 @@ int runMapCommand(int argc, char **argv)
 		}
 		if (argc < 3 || std::string(argv[2]).rfind("--", 0) == 0)
 			throw std::runtime_error("Missing generator or input path; use " + mode + " --help");
+		const bool render = mode == "--render-game";
 		const bool generate = mode == "--generate-map";
 		const bool importing = mode == "--import-map-image";
 		const bool exporting = mode == "--export-map-image";
 		const bool writesMap = generate || importing;
-		std::string output, preview, config, json, mapImage;
+		std::string output, preview, config, json, mapImage, renderField, fieldColor;
+		int renderPixels = MapRender::DefaultPixels;
 		MapSettings overrides, settings;
 		std::vector<std::string> directories;
 		int previewSize = 0, previewScale = 2, imageSeamWidth = -1;
@@ -293,7 +299,11 @@ int runMapCommand(int argc, char **argv)
 				throw std::runtime_error("Missing value for " + arg);
 			if (arg == "--output")
 				output = value;
-			else if (arg == "--json")
+			else if (arg == "--render-max-pixels" && render)
+			{ const auto n = number(value); if (!n || n > MapRender::MaximumPixels) throw std::runtime_error("Render limit must be 1..8192"); renderPixels = int(n); }
+			else if (arg == "--render-field" && render) renderField = value;
+			else if (arg == "--field-color" && render) fieldColor = value;
+			else if (arg == "--json" && !render)
 				json = value;
 			else if (arg == "--preview" && writesMap)
 				preview = value;
@@ -312,7 +322,7 @@ int runMapCommand(int argc, char **argv)
 			else if (writesMap && (arg == "--seed" || arg == "--width" || arg == "--height" ||
 								   arg == "--teams" || arg == "--workers"))
 				overrides[arg.substr(2)] = value;
-			else if (arg == "--preview-scale")
+			else if (arg == "--preview-scale" && !render)
 			{
 				const auto n = number(value);
 				if (n != 2 && n != 4 && n != 8)
@@ -320,7 +330,7 @@ int runMapCommand(int argc, char **argv)
 				previewScale = int(n);
 				scaleSpecified = true;
 			}
-			else if (arg == "--preview-size")
+			else if (arg == "--preview-size" && !render)
 			{
 				const auto n = number(value);
 				if (n < 128 || n > 4096)
@@ -333,7 +343,7 @@ int runMapCommand(int argc, char **argv)
 			else
 				throw std::runtime_error("Unknown option for " + mode + ": " + arg);
 		}
-		if (!writesMap && !exporting)
+		if (!writesMap && !exporting && !render)
 			preview = output;
 		if ((importing || exporting) && output.empty())
 			throw std::runtime_error("Image import/export requires --output");
@@ -344,7 +354,7 @@ int runMapCommand(int argc, char **argv)
 		if (sizeSpecified && scaleSpecified)
 			throw std::runtime_error("Choose --preview-size or --preview-scale, not both");
 		// Compare the actual gzip destination as well as the user-supplied name.
-		std::vector<std::string> paths{output, writesMap ? preview : "", config, json, mapImage};
+		std::vector<std::string> paths{output, writesMap ? preview : "", config, json, mapImage, renderField};
 		if (!generate)
 		{
 			paths.push_back(argv[2]);
@@ -403,6 +413,13 @@ int runMapCommand(int argc, char **argv)
 		{
 			~ClearGlobal() { globalContainer = nullptr; }
 		} clear;
+		if (render)
+		{
+			if (output.empty()) throw std::runtime_error("--render-game requires --output");
+			if (!fieldColor.empty() && renderField.empty()) throw std::runtime_error("--field-color requires --render-field");
+			GAGCore::setProcessEnvironment("SDL_VIDEODRIVER", "dummy", 1);
+			GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
+		}
 		GlobalContainer globals;
 		globalContainer = &globals;
 		globals.runNoX = true;
@@ -455,6 +472,21 @@ int runMapCommand(int argc, char **argv)
 			GAGCore::BinaryInputStream stream(GAGCore::openInflatingFileStreamBackend(inputPath));
 			if (stream.isEndOfStream() || !game.load(&stream))
 				throw std::runtime_error("Cannot load map/save: " + inputPath);
+		}
+		if (render)
+		{
+			MapRender::Field field;
+			if (!renderField.empty()) field = MapRender::readField(renderField);
+			if (!fieldColor.empty())
+			{
+				std::istringstream color(fieldColor); char a=0, b=0;
+				if (!(color >> field.red >> a >> field.green >> b >> field.blue) || a != ',' || b != ',' || !(color >> std::ws).eof())
+					throw std::runtime_error("Expected --field-color r,g,b");
+			}
+			Scene scene; SceneRequest request; request.includePanels = false;
+			extractScene(game, request, scene);
+			MapRender::toPng(scene, output, renderPixels, renderField.empty() ? nullptr : &field);
+			return 0;
 		}
 		// Analyze the original snapshot before any serializer updates its header metadata.
 		std::string report = json.empty() ? ""

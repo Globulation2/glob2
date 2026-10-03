@@ -9,6 +9,24 @@
 
 TEST_SUITE("SceneExtract")
 {
+	TEST_CASE("script area snapshots are opt-in and independent of later map edits")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world;
+		world.game.map.setPoint(8, 3, 4);
+		Scene scene; SceneRequest request;
+		extractScene(world.game, request, scene);
+		CHECK_FALSE(scene.map.isPointSet(8,3,4));
+		request.includeScriptAreas=true;
+		extractScene(world.game, request, scene);
+		world.game.map.unsetPoint(8,3,4);
+		CHECK(scene.map.isPointSet(8,3,4));
+		CHECK_FALSE(scene.map.isPointSet(7,3,4));
+		request.includeScriptAreas=false;
+		extractScene(world.game, request, scene);
+		CHECK_FALSE(scene.map.isPointSet(8,3,4));
+	}
+
 	TEST_CASE("units and buildings resolve by gid with their drawn fields and the selection")
 	{
 		glob2test::HeadlessGlobals globals;
