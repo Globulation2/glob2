@@ -835,7 +835,9 @@ also remains the headless default and the equivalence reference.
   on demand and on pull requests that touch the code the threads share; add paths there
   when new code becomes shared between them. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
-  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  library shutdown races live in `test/tsan.supp`; never suppress game code there.
+  Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
