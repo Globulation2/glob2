@@ -78,8 +78,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 ''')
     include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
     env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)),
-               CXXFLAGS=['-std=gnu++20', '-fexceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
-    env.Append(LINKFLAGS=['-fexceptions', '-O2' if identity['mode']=='release' else '-O0',
+               CXXFLAGS=['-std=gnu++20', '-fwasm-exceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
+    env.Append(LINKFLAGS=['-fwasm-exceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sLEGACY_GL_EMULATION=1', '-sFETCH=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
         '-sALLOW_MEMORY_GROWTH',
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
@@ -109,7 +109,12 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         if not (asset_root / 'data').is_dir():
             env.AlwaysBuild(exported)
         asset_manifest = output / 'asset-manifest.js'
-        assets = env.Command(str(asset_manifest), [exported, 'scons/web_assets.py', 'deploy/sim_version.py'],
+        # The plan also reads the browser copies (browser/derive_assets.py) and the game
+        # sprite names in GlobalContainer::loadGameGraphics and the building tables.
+        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py', 'src/GlobalContainer.cpp']
+        plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
+        plan_inputs += [str(p) for p in Path('src/game/entities').glob('BuildingTypes*.cpp')]
+        assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
     else:
@@ -230,7 +235,7 @@ def build_web(directory, identity, arguments):
     # Assistant programs never execute in the live game's WebAssembly memory.
     hive = env.Clone()
     hive['LIBS'] = []
-    hive['LINKFLAGS'] = ['--no-entry', '-sMODULARIZE=1', '-sEXPORT_NAME=createHiveRuntime',
+    hive['LINKFLAGS'] = ['-fwasm-exceptions', '--no-entry', '-sMODULARIZE=1', '-sEXPORT_NAME=createHiveRuntime',
         '-sENVIRONMENT=worker', '-sFILESYSTEM=0', '-sALLOW_MEMORY_GROWTH=1',
         '-sMAXIMUM_MEMORY=268435456', '-sSTACK_SIZE=8388608',
         '-sEXPORTED_FUNCTIONS=["_glob2_hive_invoke","_malloc","_free"]', '-sEXPORTED_RUNTIME_METHODS=["ccall","stringToUTF8","lengthBytesUTF8"]']

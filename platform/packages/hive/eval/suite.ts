@@ -68,8 +68,8 @@ export const suite: Scenario[] = [
     id: 'start-inn',
     category: 'construction',
     command:
-      'Start one new level-zero inn at tile (18,4), with 3 construction workers and 2 future workers. Stop once the construction site exists.',
-    expected: { createdFamily: 1, x: 18, y: 4 },
+      'Find a suitable place for another inn and establish its construction site. Tell me when work has been ordered.',
+    expected: { createdFamily: 1 },
   },
   {
     id: 'start-school',
@@ -114,27 +114,28 @@ export const suite: Scenario[] = [
   {
     id: 'standing-workers',
     category: 'recurring',
-    command: 'Keep our inn worker limit at 4. Install a standing order checking every 25 ticks.',
+    command: 'Keep four workers assigned to our inn, even if the staffing changes.',
     expected: { standing: true, family: 1, field: 'workers', value: 4 },
   },
   {
     id: 'standing-production',
     category: 'recurring',
-    command: 'Keep swarm production at weights [5,1,2]. Install a standing order every 50 ticks.',
+    command:
+      'Keep producing five workers for every explorer and two warriors, even if production settings change.',
     expected: { standing: true, family: 0, field: 'production', value: [5, 1, 2] },
   },
   {
     id: 'population-trigger',
     category: 'trigger',
     command:
-      'Keep watch over our worker population every 25 ticks. Wake yourself once when we have at least 10 workers, with key population-ready. Install that standing order.',
-    expected: { standing: true, wake: 'population-ready' },
+      'Watch our workforce. When we have at least sixteen workers, switch our swarm to producing only warriors and tell me.',
+    expected: { standing: true, wake: true, family: 0, field: 'production', value: [0, 0, 1] },
   },
   {
     id: 'inn-trigger',
     category: 'trigger',
     command:
-      'Watch for at least one owned inn every 25 ticks. Wake yourself once with key inn-ready when that condition is met. Install the standing order.',
-    expected: { standing: true, wake: 'inn-ready' },
+      'Keep an eye on our workforce. When it grows past fifteen workers, raise our inn to high priority and report back.',
+    expected: { standing: true, wake: true, family: 1, field: 'priority', value: 1 },
   },
 ];

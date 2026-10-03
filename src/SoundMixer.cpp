@@ -348,6 +348,8 @@ SoundMixer::~SoundMixer()
 	
 	for (size_t i=0; i<tracks.size(); i++)
 	{
+		if (!tracks[i])
+			continue;
 		ov_clear(tracks[i]);
 		delete tracks[i];
 	}
@@ -381,8 +383,18 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	SDL_LockAudioStream(audioStream);
 	if (index >= 0 && index< (int)tracks.size())
 	{
-		ov_clear(tracks[index]);
-		delete tracks[index];
+		if (tracks[index])
+		{
+			ov_clear(tracks[index]);
+			delete tracks[index];
+		}
+		tracks[index] = oggFile.release();
+	}
+	else if (index >= 0)
+	{
+		// A slot whose earlier tracks are missing (the browser installs the
+		// menu music after startup) keeps its index; empty slots never play.
+		tracks.resize(index + 1, nullptr);
 		tracks[index] = oggFile.release();
 	}
 	else
@@ -399,7 +411,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 // can resume it when the user unmutes.
 void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 {
-	if (i >= tracks.size())
+	if (i >= tracks.size() || !tracks[i])
 		return;
 
 	bool resume = false;

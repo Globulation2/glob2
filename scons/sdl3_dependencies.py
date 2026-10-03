@@ -101,6 +101,10 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                 'platform': platform.platform(), 'machine': platform.machine(),
                 'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
                                    for patch in SDL_PATCHES}}
+    if emscripten:
+        # The browser runtimes use native WebAssembly exceptions; setjmp/longjmp in
+        # these libraries (FreeType) must use the matching WebAssembly mechanism.
+        identity['exceptions'] = 'wasm'
     manifest = prefix / 'sdl3-manifest.json'
     libraries = ('SDL3', 'SDL3_image', 'SDL3_ttf', 'SDL3_net')
     installed = all(any((prefix / 'lib').glob('*' + name + '*')) for name in libraries)
@@ -158,8 +162,8 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                         '-DFT_DISABLE_ZLIB=ON', '-DFT_DISABLE_BZIP2=ON', '-DFT_DISABLE_PNG=ON',
                         '-DFT_DISABLE_BROTLI=ON', '-DFT_DISABLE_HARFBUZZ=ON',
                         '-DSDL_PTHREADS=' + ('ON' if threaded else 'OFF'),
-                        '-DCMAKE_C_FLAGS=' + ('-pthread' if threaded else ''),
-                        '-DCMAKE_CXX_FLAGS=' + ('-pthread' if threaded else ''),
+                        '-DCMAKE_C_FLAGS=' + ('-pthread ' if threaded else '') + '-sSUPPORT_LONGJMP=wasm',
+                        '-DCMAKE_CXX_FLAGS=' + ('-pthread ' if threaded else '') + '-fwasm-exceptions',
                         '-DBUILD_SHARED_LIBS=OFF', '-DSDL_SHARED=OFF', '-DSDL_STATIC=ON',
                         '-DSDLTTF_VENDORED=OFF', '-DSDLTTF_HARFBUZZ=OFF']
         subprocess.run(command, env=env, check=True)

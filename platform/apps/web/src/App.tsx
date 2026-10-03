@@ -35,7 +35,7 @@ interface Route {
 export const ROUTES: Route[] = [
   {
     pattern: '/commander',
-    section: 'home',
+    section: 'commander',
     title: 'Hive Mind',
     render: () => <CommanderCredits />,
   },

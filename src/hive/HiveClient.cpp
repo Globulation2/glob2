@@ -227,6 +227,8 @@ void Client::execute(const Json &operation)
 			if (it == programs.end() ||
 				it->second.definition.at("revision") != tool.at("expectedRevision"))
 				throw std::runtime_error("Stale standing order");
+			if (kind == "resume" && it->second.missingCheckpoint)
+				throw std::runtime_error("Missing checkpoint; replace the standing order first");
 			finish({{"ok", true}, {"output", standingOrders()}, {"orders", Json::array()}});
 			return;
 		}
@@ -255,6 +257,8 @@ void Client::execute(const Json &operation)
 		Json request = {{"source", source}, {"snapshot", snapshot()}, {"initialized", false}};
 		if (tool.contains("migration"))
 		{
+			if (programs.at(tool.at("program").at("id").get<std::string>()).missingCheckpoint)
+				throw std::runtime_error("Cannot migrate a missing checkpoint");
 			request["migration"] = tool.at("migration");
 			request["previousState"] =
 				programs.at(tool.at("program").at("id").get<std::string>()).state;
@@ -295,6 +299,8 @@ void Client::finish(const Json &r)
 			if (kind == "pause" || kind == "resume" || kind == "remove")
 			{
 				const auto id = current["request"].at("programId").get<std::string>();
+				controlStatus.erase(id);
+				++controlGeneration[id];
 				if (kind == "remove")
 					programs.erase(id);
 				else
@@ -382,6 +388,9 @@ void Client::finish(const Json &r)
 	}
 	if (current.contains("id"))
 	{
+		if (!accepted && current["request"].contains("programId"))
+			controlStatus[current["request"]["programId"].get<std::string>()] =
+				"Update failed; try again";
 		Json payload = {
 			{"operationId", current.at("id")},
 			{"lease", lease},
@@ -461,13 +470,15 @@ void Client::update(bool caughtUp)
 		if (!lease.empty())
 			body["lease"] = lease;
 		rest(HttpFetch::Method::Post, base + "/poll", body,
-			 [this, live, polledTick = gui.game.stepCounter](const auto &r)
+			 [this, live, sentAt = timestamp, polledTick = gui.game.stepCounter](const auto &r)
 			 {
 				 if (!*live)
 					 return;
 				 polling = false;
 				 if (!r.ok)
 					 return;
+				 if (now() - sentAt >= 10000)
+					 return; // Never extend a lease by response transit time.
 				 auto nextLease = r.result.value("lease", "");
 				 if ((!lease.empty() && lease != nextLease) ||
 					 (!pendingResult.empty() && pendingResult.value("lease", "") != nextLease))
@@ -481,7 +492,7 @@ void Client::update(bool caughtUp)
 					 save();
 				 }
 				 lease = nextLease;
-				 lastLeaseAck = now();
+				 lastLeaseAck = sentAt;
 				 if (r.result.value("team", -1) != gui.localTeamNo)
 				 {
 					 lease.clear();
@@ -494,9 +505,22 @@ void Client::update(bool caughtUp)
 					 {
 						 auto it = programs.find(
 							 record.at("definition").at("id").template get<std::string>());
-						 if (it != programs.end() &&
-							 (record.at("status") != "active" ||
-							  it->second.definition != record.at("definition")))
+						 if (it == programs.end() ||
+							 it->second.definition != record.at("definition"))
+						 {
+							 Program missing;
+							 missing.definition = record.at("definition");
+							 missing.paused = true;
+							 missing.missingCheckpoint = true;
+							 programs[missing.definition.at("id").get<std::string>()] =
+								 std::move(missing);
+							 reports.push_back(
+								 "A standing order needs a fresh instruction after reconnecting. "
+								 "You can cancel it or ask the commander to replace it.");
+							 save();
+						 }
+						 else if (record.at("status") != "active" ||
+								  it->second.definition != record.at("definition"))
 							 it->second.paused = true;
 					 }
 				 }
@@ -616,21 +640,60 @@ void Client::command(const std::string &text, bool ongoing)
 {
 	if (text.empty())
 		return;
+	if (commandSending)
+	{
+		commandDraft = text;
+		reports.push_back("Your previous order is still sending. This message has been kept; open "
+						  "the commander to send it again.");
+		return;
+	}
+	commandDraft = text;
+	if (retryCommandText != text || retryCommandOngoing != ongoing || retryCommandId.empty())
+	{
+		retryCommandText = text;
+		retryCommandOngoing = ongoing;
+		retryCommandId = uuid();
+	}
+	commandSending = true;
+	controlStatus.erase("commander");
 	auto live = alive;
 	rest(HttpFetch::Method::Post, base + "/command",
-		 {{"id", uuid()}, {"text", text}, {"ongoing", ongoing}},
-		 [this, live](const auto &r)
+		 {{"id", retryCommandId}, {"text", text}, {"ongoing", ongoing}},
+		 [this, live, text](const auto &r)
 		 {
-			 if (*live && !r.ok)
-				 reports.push_back("Your order could not reach the commander. Check your "
-								   "connection and available credits.");
+			 if (!*live)
+				 return;
+			 commandSending = false;
+			 if (r.ok)
+			 {
+				 if (commandDraft == text)
+					 commandDraft.clear();
+				 retryCommandId.clear();
+				 reports.push_back("Order received: " + text);
+			 }
+			 else
+				 reports.push_back("Order not confirmed. Open the commander to retry; your message "
+								   "has been kept.");
 		 });
 }
 void Client::stop()
 {
+	if (controlStatus["commander"] == "Stopping…")
+		return;
 	if (current.is_object() && current.contains("id"))
 		cancelledOperation = current.at("id");
-	rest(HttpFetch::Method::Post, base + "/stop", Json::object(), [](const auto &) {});
+	auto live = alive;
+	controlStatus["commander"] = "Stopping…";
+	rest(HttpFetch::Method::Post, base + "/stop", Json::object(),
+		 [this, live](const auto &r)
+		 {
+			 if (!*live)
+				 return;
+			 if (r.ok)
+				 progress.clear();
+			 controlStatus["commander"] = r.ok ? "Stopped" : "Stop failed; retry the stop shortcut";
+			 reports.push_back(controlStatus["commander"]);
+		 });
 }
 void Client::change(const std::string &id, const std::string &action)
 {
@@ -645,11 +708,22 @@ void Client::change(const std::string &id, const std::string &action)
 			ready = false;
 	}
 	save();
+	controlStatus[id] = "Updating…";
+	const auto generation = ++controlGeneration[id];
+	auto live = alive;
 	rest(HttpFetch::Method::Post, base + "/standing-orders",
 		 {{"programId", id},
 		  {"expectedRevision", it->second.definition.at("revision")},
 		  {"action", action}},
-		 [](const auto &) {});
+		 [this, live, id, generation](const auto &r)
+		 {
+			 if (!*live || controlGeneration[id] != generation)
+				 return;
+			 controlStatus[id] = r.ok ? "Requested" : "Update failed; try again";
+			 if (!r.ok)
+				 reports.push_back("Standing order update failed. Your order is paused locally; "
+								   "retry the control.");
+		 });
 }
 void Client::buyCredits()
 {
@@ -663,7 +737,9 @@ Json Client::standingOrders() const
 					   {"revision", p.definition.at("revision")},
 					   {"name", p.definition.at("name")},
 					   {"description", p.definition.at("description")},
-					   {"paused", p.paused}});
+					   {"paused", p.paused},
+					   {"missingCheckpoint", p.missingCheckpoint},
+					   {"controlStatus", controlStatus.contains(id) ? controlStatus.at(id) : ""}});
 	return out;
 }
 bool Client::save()
@@ -681,6 +757,7 @@ bool Client::save()
 										 {"state", p.state},
 										 {"initialized", p.initialized},
 										 {"paused", p.paused},
+										 {"missingCheckpoint", p.missingCheckpoint},
 										 {"nextTick", p.nextTick},
 										 {"random", p.random},
 										 {"recent", p.recent}});
@@ -720,7 +797,9 @@ void Client::restore()
 			p.definition = entry.at("definition");
 			p.state = entry.at("state");
 			p.initialized = entry.at("initialized");
-			p.paused = entry.value("paused", true) || saved.value("uncertain", true);
+			p.missingCheckpoint = entry.value("missingCheckpoint", false);
+			p.paused = p.missingCheckpoint || entry.value("paused", true) ||
+					   saved.value("uncertain", true);
 			p.nextTick = entry.at("nextTick");
 			p.random = entry.at("random");
 			p.recent = entry.value("recent", Json(nullptr));

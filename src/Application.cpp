@@ -4,6 +4,9 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
+#include "GameSessionScreen.h"
+#include "MusicTrack.h"
+#include "SoundMixer.h"
 #include "MainMenuScreen.h"
 #include "OnlineMapsScreen.h"
 #include "OnlineProfileScreen.h"
@@ -207,6 +210,51 @@ void Application::choose(int choice)
 	}
 }
 
+// The browser installs some data after the main menu is up (scons/web_assets.py);
+// native hosts never report an installation.
+void Application::installStagedAssets()
+{
+	const bool inMatch = dynamic_cast<GameSessionScreen *>(screens.top()) != nullptr;
+	for (const auto &package : GAGCore::ApplicationHost::takeInstalledAssetPackages())
+	{
+		if (package == "game")
+		{
+			// The menu colony and the settings' building artwork use them at once.
+			globalContainer->ensureGameGraphics();
+		}
+		else if (package == "menu-music")
+		{
+			if (globalContainer->loadMenuMusic() && !inMatch)
+			{
+				globalContainer->mix->setNextTrack(MusicTrack::Intro);
+				globalContainer->mix->setNextTrack(MusicTrack::Menu);
+			}
+		}
+		else if (package == "translations")
+		{
+			// Core had only each language's name and code; English stood in.
+			auto *strings = GAGCore::Toolkit::getStringTable();
+			if (strings->load("data/texts.list.txt"))
+				strings->setLang(strings->getLangCode(globalContainer->settings.language));
+			if (!inMatch)
+			{
+				const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
+				screens.viewportResized(width, height, width, height);
+			}
+		}
+		else if (package == "font-cjk")
+		{
+			// Same Latin glyphs; Chinese, Japanese and Korean text now has glyphs.
+			GAGCore::Toolkit::reloadFonts();
+			if (!inMatch)
+			{
+				const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
+				screens.viewportResized(width, height, width, height);
+			}
+		}
+	}
+}
+
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incoming)
 {
 	lastFrame = tick;
@@ -254,6 +302,7 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		shutdownScreens.frame(tick, input);
 		return shutdownScreens.running();
 	}
+	installStagedAssets();
 	screens.frame(tick, events);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	// An invite link (at launch or while running) opens the online hub from the

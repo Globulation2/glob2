@@ -38,6 +38,7 @@ const typedColumns: ColumnLists = {
   ],
   hive_events: ['id', 'session_id', 'dedup', 'kind', 'body', 'created_at'],
   hive_operations: [
+    'supervised',
     'id',
     'session_id',
     'generation',
@@ -47,7 +48,7 @@ const typedColumns: ColumnLists = {
     'result',
     'created_at',
   ],
-  hive_programs: ['session_id', 'id', 'revision', 'definition', 'status'],
+  hive_programs: ['session_id', 'id', 'revision', 'definition', 'status', 'supervised'],
   hive_purchases: [
     'id',
     'account_id',

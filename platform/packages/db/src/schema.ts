@@ -644,6 +644,7 @@ export interface HiveEventsTable {
   created_at: Timestamp;
 }
 export interface HiveOperationsTable {
+  supervised: Defaulted<boolean>;
   id: string;
   session_id: string;
   generation: number;
@@ -654,6 +655,7 @@ export interface HiveOperationsTable {
   created_at: Timestamp;
 }
 export interface HiveProgramsTable {
+  supervised: Defaulted<boolean>;
   session_id: string;
   id: string;
   revision: number;
