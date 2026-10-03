@@ -125,18 +125,22 @@ GAGCore::CooperativeTask Engine::initMultiplayerTask(std::shared_ptr<Multiplayer
 	const bool loaded = co_await initGameTask(multiplayerGame->getMapHeader(), multiplayerGame->getGameHeader(), true, true);
 	if (!loaded) co_return false;
 
-	multiplayer = multiplayerGame;
-	multiplayer->setNetEngine(net.get());
-
+	// Legacy YOG/LAN games run a NetEngine configured for the router
+	// connection. It replaces the fresh, unconfigured NetEngine initGameTask
+	// created; nothing has used that one yet.
+	auto session = std::make_unique<NetEngine>(gui.game.gameHeader.getNumberOfPlayers(), gui.localPlayer);
 	for (int p=0; p<multiplayerGame->getGameHeader().getNumberOfPlayers(); p++)
 	{
 		if (multiplayerGame->getGameHeader().getBasePlayer(p).type==BasePlayer::P_IP)
 		{
-			net->prepareForLatency(p, multiplayerGame->getGameHeader().getGameLatency());
+			session->prepareForLatency(p, multiplayerGame->getGameHeader().getGameLatency());
 		}
 	}
+	session->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client->getGameConnection());
+	net = std::move(session);
 
-	net->setNetworkInfo(multiplayerGame->getGameHeader().getOrderRate(), client->getGameConnection());
+	multiplayer = multiplayerGame;
+	multiplayer->setNetEngine(net.get());
 
 	co_return true;
 }

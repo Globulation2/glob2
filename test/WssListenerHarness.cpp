@@ -13,6 +13,7 @@ int main(int argc, char** argv) {
         auto c = makeNetworkConfig(std::string(argv[2]) == "lan");
         auto config = std::string(argv[2]) == "register" ? c.registration : c.lobby;
         config.bindAddress = "127.0.0.1"; config.port = std::stoi(argv[1]);
+        if (std::string(argv[2]) == "text") config.messageMode = NetMessageMode::Text;
         auto listener = makeNetTransportListener(config);
         std::signal(SIGTERM, stop); std::signal(SIGINT, stop);
         const auto pin = c.lan ? c.lobbyEndpoint.substr(c.lobbyEndpoint.find('#')) : std::string();
@@ -21,6 +22,8 @@ int main(int argc, char** argv) {
         while (!stopped) {
             while (auto session = listener->accept()) sessions.push_back(std::move(session));
             for (auto& session : sessions) {
+                std::string message;
+                while (session->receiveText(message)) session->sendText(std::move(message));
                 std::vector<uint8_t> bytes;
                 while (session->receive(bytes)) {
                     if (std::string(argv[2]) == "peer") {
