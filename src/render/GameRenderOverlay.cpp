@@ -130,6 +130,42 @@ void Game::drawMapBulletsExplosionsDeathAnimations(int left, int top, int right,
 	}
 }
 
+namespace
+{
+//! Shade one fog square whose four corners are at different fade levels. The
+//! square is drawn at map pixel (x<<5)+16, (y<<5)+16, so its corners are the centres
+//! of four tiles; corner[c] is the level of the tile for bit c of the shade
+//! sprite's frame index, as in the black pass: bit 0 bottom-right, 1 bottom-left,
+//! 2 top-right, 3 top-left.
+//!
+//! The level every corner reaches is a plain fill. Above it, the corners are peeled
+//! into layers by distinct level: from `below` (first the lowest level), `next` is
+//! the smallest corner level above it, and one shade sprite masked to the corners at
+//! or above `next` darkens them from `below` to `next`. Fills and layers compose as
+//! described in FogFade.cpp, so this takes at most three sprites, and corners that
+//! are only clear or fully fogged draw the single full-alpha sprite the binary fog
+//! always drew.
+void drawFogShadeSquare(int x, int y, const unsigned corner[4], unsigned lowest, unsigned highest)
+{
+	if (lowest)
+		globalContainer->gfx->drawMapTileFill((x<<5)+16, (y<<5)+16, (x<<5)+48, (y<<5)+48,
+			GAGCore::Color(0, 0, 0, FogFade::fillAlpha(Uint8(lowest))));
+	for (unsigned below = lowest; below < highest;)
+	{
+		unsigned next = highest, frame = 0;
+		for (unsigned c = 0; c < 4; c++)
+			if (corner[c] > below)
+				next = std::min(next, corner[c]);
+		for (unsigned c = 0; c < 4; c++)
+			if (corner[c] >= next)
+				frame |= 1u << c;
+		globalContainer->gfx->drawMapTileSprite((x<<5)+16, (y<<5)+16, 32, globalContainer->terrainShader,
+			frame, FogFade::layerAlpha(Uint8(next - below)));
+		below = next;
+	}
+}
+}
+
 void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const MapRenderState& render, const Scene& scene)
 {
 	const SceneMap &sceneMap = scene.map;
@@ -140,12 +176,13 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 		Uint32 visibleTeams = scene.entities.teams[localTeam].me;
 		if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 		// How far a tile is into the fog, 0 in sight to FogFade::FOGGED. Without the
-		// smooth fog setting a tile is only ever one or the other, which draws the
+		// smooth fog fade a tile is only ever one or the other, which draws the
 		// shade exactly as single sprites and fills always did.
+		const FogFade &fade = render.fogFade;
 		const auto fogLevel = [&](int mx, int my) -> unsigned
 		{
-			if (render.fogFading)
-				return render.fogFade.level(mx, my, render.fogTime);
+			if (fade.active())
+				return fade.level(mx, my);
 			return sceneMap.isFOWDiscovered(mx, my, visibleTeams) ? 0 : FogFade::FOGGED;
 		};
 		for (int y=top-1; y<=bot; y++)
@@ -188,13 +225,15 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				if (blackValue)
 					globalContainer->gfx->drawMapTileSprite((x<<5)+16, (y<<5)+16, 32, globalContainer->terrainBlack, blackValue);
 
-				// then if it isn't full black, draw shade. The corners take the same
-				// bits as the black sprite's.
+				// then if it isn't full black, draw shade, from the fade level of the
+				// square's four corner tiles in the order of the black sprite's bits.
 				const unsigned corner[4] = {
 					fogLevel(x+viewportX+1, y+viewportY+1), fogLevel(x+viewportX, y+viewportY+1),
 					fogLevel(x+viewportX+1, y+viewportY), fogLevel(x+viewportX, y+viewportY)};
 				const unsigned lowest = std::min(std::min(corner[0], corner[1]), std::min(corner[2], corner[3]));
 				const unsigned highest = std::max(std::max(corner[0], corner[1]), std::max(corner[2], corner[3]));
+				// A uniform square extends the current fill run if it has the same
+				// level; another level ends the run, and level 0 draws nothing.
 				if (lowest == highest)
 				{
 					if (shadeStart != INT_MIN && shadeLevel != lowest)
@@ -207,25 +246,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 					continue;
 				}
 				flushShade(x);
-				// The level every corner reaches is a plain fill; each higher level a
-				// corner reaches adds a shade sprite over the corners reaching it,
-				// darkening them by the difference.
-				if (lowest)
-					globalContainer->gfx->drawMapTileFill((x<<5)+16, (y<<5)+16, (x<<5)+48, (y<<5)+48,
-						GAGCore::Color(0, 0, 0, FogFade::fillAlpha(Uint8(lowest))));
-				for (unsigned below = lowest; below < highest;)
-				{
-					unsigned next = highest, shadeValue = 0;
-					for (unsigned c = 0; c < 4; c++)
-						if (corner[c] > below)
-							next = std::min(next, corner[c]);
-					for (unsigned c = 0; c < 4; c++)
-						if (corner[c] >= next)
-							shadeValue |= 1u << c;
-					globalContainer->gfx->drawMapTileSprite((x<<5)+16, (y<<5)+16, 32, globalContainer->terrainShader,
-						shadeValue, FogFade::layerAlpha(Uint8(next - below)));
-					below = next;
-				}
+				drawFogShadeSquare(x, y, corner, lowest, highest);
 			}
 			flush(blackStart, right+1, black);
 			flushShade(right+1);

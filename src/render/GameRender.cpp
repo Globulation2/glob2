@@ -47,11 +47,8 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	// drawing a status bar must not abort gameplay or spill outside the bar.
 	actLength = std::clamp(actLength, 0, maxLength);
 	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
-	// A bar fading with its entity (opacity below 1) is drawn translucent; a
-	// fully faded one not at all. Queued bars get the same from their anchor.
-	const Uint8 alpha = Uint8(std::lround(std::clamp(opacity, 0.f, 1.f) * 255));
-	if (!alpha)
-		return;
+	// Queued bars take their opacity from the last anchorBars, which already
+	// includes the entity's own.
 	if (drawnRender)
 	{
 		drawnRender->overlays.bar(x, y, orientation==TOP_TO_BOTTOM || orientation==BOTTOM_TO_TOP,
@@ -59,6 +56,11 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 			secondActLength, r, g, b, r2, g2, b2, barWidth);
 		return;
 	}
+	// Drawn directly, a bar fading with its entity (as a unit fading into the fog)
+	// is translucent, and a fully faded one is not drawn at all.
+	const Uint8 alpha = Uint8(std::lround(std::clamp(opacity, 0.f, 1.f) * 255));
+	if (!alpha)
+		return;
 	GAGCore::OpaqueRectangleBatch rectangles(globalContainer->gfx);
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
@@ -250,14 +252,6 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 
 	if (!animationsPaused)
 		time++;
-	view.render.fogFading = globalContainer->settings.smoothFog && (drawOptions & DRAW_WHOLE_MAP) == 0;
-	if (view.render.fogFading)
-	{
-		Uint32 visibleTeams = scene.entities.teams[localTeam].me;
-		if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
-		view.render.fogFade.update(scene.map, visibleTeams, scene.tick);
-		view.render.fogTime = scene.tick + unitMotionFraction(scene, SDL_GetTicks());
-	}
 	view.render.detail = ZoomDetail::forView(globalContainer->gfx->mapTransformScale(),
 		globalContainer->gfx->logicalUnitsPerPoint(), globalContainer->settings.adaptiveZoomDetail,
 		view.render.minimumZoom);
@@ -293,6 +287,16 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 														   : scene.entities.teams[localTeam].me,
 						  !(globalContainer->gfx->getOptionFlags() &
 							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
+	// Smooth fog: follow the drawn Scene's fog once per frame, before any pass reads
+	// it. Fades run in game time; unitMotionFraction is clamped to 1, so a paused
+	// game holds the fade at most one tick ahead, where the next tick resumes it
+	// without a jump. When the fade is not drawn, forget it, so that turning it back
+	// on starts settled rather than fading through every change it missed.
+	if (globalContainer->settings.smoothFog && (drawOptions & DRAW_WHOLE_MAP) == 0)
+		view.render.fogFade.update(scene.map, frame.visibleTeams, scene.tick,
+			scene.tick + unitMotionFraction(scene, SDL_GetTicks()));
+	else if (view.render.fogFade.active())
+		view.render.fogFade.reset();
 	// Prepare coverage before water, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
 	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only

@@ -63,15 +63,17 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	// A unit shows while its tile or the one it comes from is in sight. With the
-	// smooth fog setting it fades with the fog of the clearer of the two instead.
+	// smooth fog fade it fades with the clearer of the two instead. Its opacity is
+	// linear in the fade level, unlike the shade's darkness, so the unit is gone
+	// exactly when its tile is fully fogged.
 	Uint8 fogAlpha = Color::ALPHA_OPAQUE;
 	if ((drawOptions & DRAW_WHOLE_MAP) == 0)
 	{
-		const MapRenderState &render = view.render;
-		if (render.fogFading)
+		const FogFade &fade = view.render.fogFade;
+		if (fade.active())
 		{
-			const Uint8 level = std::min(render.fogFade.level(x+viewportX, y+viewportY, render.fogTime),
-				render.fogFade.level(x+viewportX-dx, y+viewportY-dy, render.fogTime));
+			const Uint8 level = std::min(fade.level(x+viewportX, y+viewportY),
+				fade.level(x+viewportX-dx, y+viewportY-dy));
 			fogAlpha = Uint8(FogFade::FOGGED - level);
 			if (fogAlpha == 0)
 				return;
@@ -79,9 +81,10 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else if ((!map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))&&(!map.isFOWDiscovered(x+viewportX-dx, y+viewportY-dy, visibleTeams)))
 			return;
 	}
-	// Everything drawn for the unit fades with it, its bars and pips included.
-	const auto fade = [fogAlpha](unsigned alpha) { return Uint8(alpha * fogAlpha / 255); };
+	// Everything drawn for the unit fades with it: `opacity` for the bars, pips and
+	// marker, which take a fraction, and faded() for alphas out of 255.
 	const float opacity = fogAlpha / 255.f;
+	const auto faded = [fogAlpha](unsigned alpha) { return Uint8(alpha * fogAlpha / 255); };
 
 	int imgid;
 	assert(unit->action>=0);
@@ -135,7 +138,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		view.render.overlays.marker(*globalContainer->gfx, px+16, py+16,
 			warrior ? MapOverlayQueue::Triangle : explorer ? MapOverlayQueue::Diamond : MapOverlayQueue::Dot,
 			warrior ? 6.f : explorer ? 5.f : 3.f + 2.25f*detail.workerMarkerScale,
-			color.r, color.g, color.b, detail.unitMarker * fogAlpha / 255.f);
+			color.r, color.g, color.b, detail.unitMarker * opacity);
 	}
 
 	// Units the selected building could not hire wear the badge, the same one
@@ -175,7 +178,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		std::ostringstream oss;
 		oss << unit->experienceLevel;
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 242, 131, 14));
-		globalContainer->gfx->drawString(px + 16 - (globalContainer->standardFont->getStringWidth(oss.str().c_str()) >> 1), py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->levelUpAnimation), globalContainer->standardFont, oss.str(), 0, fade((255*unit->levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT));
+		globalContainer->gfx->drawString(px + 16 - (globalContainer->standardFont->getStringWidth(oss.str().c_str()) >> 1), py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->levelUpAnimation), globalContainer->standardFont, oss.str(), 0, faded((255*unit->levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT));
 		globalContainer->standardFont->popStyle();
 	}
 
@@ -188,7 +191,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 		else
 		{
-			unsigned alpha = fade((unit->magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT);
+			unsigned alpha = faded((unit->magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT);
 			if (globalContainer->gfx->canDrawStretchedSprite())
 			{
 				int stretchW = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magiceffect->getW(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
@@ -223,7 +226,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		else if (hungry)
 			drawStatusPip(px+16, py+28, 80, 179, 223, drawnRender, opacity);
 
-		const int carriedAlpha=fade(unsigned(view.render.detail.barAll*255));
+		const int carriedAlpha=faded(unsigned(view.render.detail.barAll*255));
 		if ((unit->performance[HARVEST]) && (unit->carriedResource>=0) && carriedAlpha>0)
 			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedResource, carriedAlpha);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
@@ -237,8 +240,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		int accessH = globalContainer->littleFont->getStringHeight(oss.str().c_str());
 		int accessX = px+((32-accessW)>>1);
 		int accessY = py+((32-accessH)>>1);
-		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, fade(127)));
-		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, fade(127)));
+		globalContainer->gfx->drawFilledRect(accessX-4, accessY, accessW+8, accessH, Color(0, 0, 0, faded(127)));
+		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, faded(127)));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str(), 0, fogAlpha);
 	}
 	if(entities.highlightUnitType & (1<<unit->typeNum))

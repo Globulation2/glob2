@@ -929,23 +929,31 @@ simulation, saves and replays are unaffected.
 
 - `FogFade` (`src/render/FogFade.h`), kept per view in `MapRenderState`, records for each
   tile whether it is fogged, its fade level when that last changed and the tick it changed
-  on. `Game::drawMap` updates it once per frame from the drawn Scene; a tile changing state
-  fades linearly from wherever it had reached, into the fog over `FogFade::DARKEN_TICKS` and
-  out of it over `FogFade::REVEAL_TICKS`. A new map, other visible teams or a jump in ticks
-  settle every tile without fading.
+  on. `Game::drawMap` updates it once per frame from the drawn Scene, and resets it while
+  the fade is not drawn (setting off, or `DRAW_WHOLE_MAP`), so it is `active()` exactly when
+  the frame draws the fog faded. A tile changing state fades linearly from wherever it had
+  reached, into the fog over `FogFade::DARKEN_TICKS` (25) and out of it over
+  `FogFade::REVEAL_TICKS` (4). A new map, other visible teams, a step back in time, a jump
+  forward of more than `FogFade::SETTLE_JUMP_TICKS` (64) or a reset settle every tile
+  without fading.
 - Fades run in game time: the Scene's tick plus the elapsed fraction of the tick interval
   (`unitMotionFraction`), independently of the smooth unit motion setting. They stop while
   paused and follow the game speed.
 - The shade draws each square from its four corner levels. The level all corners reach is
   a fill (`FogFade::fillAlpha`); each higher corner level adds the shade sprite masked to the
   corners reaching it, drawn with `FogFade::layerAlpha` of the difference. The alphas are
-  chosen so the layers compose exactly to the fill of the top level, and fully fogged or
-  fully clear corners draw the same single fill or sprite as with the setting off.
+  chosen so the layers compose to the fill of the top level (within rounding, where the
+  sprite's pixels are at their peak; the derivation is in `FogFade.cpp`), and fully fogged
+  or fully clear corners draw the same single fill or sprite as with the setting off.
 - Enemy units fade with the clearer of their tile and the tile they come from, and so does
-  everything drawn for them: bars and status pips (through `Game::drawnOpacity`, which
-  `drawUnit` sets while it draws the unit), selection circles, the level-up number and magic
-  effect, the carried resource and the accessibility label. Undiscovered black, the minimap
-  and mouse picking keep the binary fog.
+  everything drawn for them: bars and status pips (through the `opacity` parameter of
+  `Game::anchorBars`, `drawStatusPip`, `drawPointBar` and `drawHealthBar`; queued bars take
+  it from their anchor), selection circles, the level-up number and magic effect, the
+  carried resource and the accessibility label. A fading unit's sprite is translucent and so
+  leaves the unit sprite batch; only the few units at the edge of the fog do.
+- Still binary: undiscovered black, the minimap, mouse and touch picking, bullets and
+  explosions, and remembered enemy buildings. Bullets near a fading unit therefore vanish
+  at the fog swap.
 
 ## Adaptive zoom detail
 
