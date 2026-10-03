@@ -1,0 +1,5 @@
+PASS WssTransport/a reader that stops reading resumes with every message in order (0.8s)
+PASS LanMatchHarness/a LAN host and two guests over loopback WSS play with AIs through a drop, a restart and the host leaving, and agree at every tick [network][slow][artifacts] (27.2s)
+
+2 passed, 0 failed, 0 skipped (27.9s of test time)
+[run_tests] JUnit report: artifacts/skins/merge-validation/windows-lan-repair.xml (2 cases)

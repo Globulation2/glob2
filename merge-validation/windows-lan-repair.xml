@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="LanMatchHarness"><testcase classname="LanMatchHarness" name="a LAN host and two guests over loopback WSS play with AIs through a drop, a restart and the host leaving, and agree at every tick [network][slow][artifacts]" time="27.1156" status="run" />
+  </testsuite><testsuite name="WssTransport"><testcase classname="WssTransport" name="a reader that stops reading resumes with every message in order" time="0.741811" status="run" />
+  </testsuite></testsuites>

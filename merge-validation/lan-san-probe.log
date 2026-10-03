@@ -1,0 +1,3 @@
+scoped IPv6 inventory: rejected
+004FE24B02780000:error:11000076:X509 V3 routines:a2i_GENERAL_NAME:bad ip address:../crypto/x509/v3_san.c:549:value=fe80::1%12
+unscoped inventory: valid
