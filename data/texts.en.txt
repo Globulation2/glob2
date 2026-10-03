@@ -3360,6 +3360,10 @@ Animate victory artwork. Reduced motion also disables this animation.
 Smooth unit motion
 [settings Experimental: move and animate units between game ticks.]
 Experimental: move and animate units between game ticks.
+[settings Adaptive zoom detail]
+Adaptive zoom detail
+[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
+Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.
 [settings Text size]
 Text size
 [settings Enlarge interface text without changing the map scale.]

@@ -871,6 +871,78 @@ off by default) draws units between ticks, so threaded play at display rate uses
 - A unit that turns or stops at the next tick can jump back by at most one tick of motion.
   Serial execution draws right after each tick, so the setting has almost no effect there.
 
+## Adaptive zoom detail
+
+The map zooms from the fitted whole map up to 500% (`MapCamera::MAX_ZOOM`). With the
+`adaptiveZoomDetail` graphics setting (default on), map elements change
+representation with the zoom instead of scaling uniformly. Presentation only: none of
+it is saved, checksummed or read by the simulation.
+
+- `ZoomDetail::forView` (`src/render/ZoomDetail.h`) is the single source of the
+  curves. Its input is the size of one tile in screen points
+  (`32 * zoom / logicalUnitsPerPoint()`), so thresholds mean the same on a phone, a
+  high-density display and a desktop. Every threshold is a named constant there; each
+  ramp is a smoothstep between two tile sizes, so representations cross-fade.
+  `Game::drawMap` computes it once per frame into `MapRenderState::detail`.
+  A small map cannot zoom out far enough to reach the strategic view by tile size,
+  so the view's owner sets `MapRenderState::minimumZoom` and `ZoomDetail::rampTile`
+  compresses the far range: fully zoomed out is the full strategic view on a map of
+  any size, and from twice that tile size (at least 20 points) in nothing changes. A
+  map still at 20 points or more per tile when fully zoomed out is left detailed.
+  Overlay sizes always follow the true zoom. Disabled,
+  it returns the values of uniform scaling and the passes take their original paths.
+- `MapOverlayQueue` (`src/render/MapOverlayQueue.h`) holds overlays of constant screen
+  size. Passes queue them at a map position while the map transform is active;
+  `drawMap` flushes once after the air units (under clouds and fog) and once on
+  return (flags), inside one `beginScreenOverlay` scope. Bars therefore draw above
+  every unit and building rather than interleaved with them. `Game::anchorBars` names
+  the map point a bar keeps fixed while its size changes.
+- Bars hold their 100% size from 48 down to 20 points per tile and change slowly
+  outside that. Below 20 points only bars reporting a problem remain (a starving unit
+  or one at 60% health or less; a damaged building, one with under half its workers,
+  an inn without food, a tower without ammunition), then a status pip, then nothing.
+- Zones cross-fade from pattern sprites with an outline to a flat translucent tint
+  without one: an area keeps its shape at any scale where a one-pixel line cannot.
+  `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
+  neighbours tile without seams. The fog-of-war shade draws one fill per horizontal
+  run of whole squares with `drawMapTileFill` and its edge sprites with
+  `drawMapTileSprite`. Both snap to pixels only in the software rasteriser, where
+  truncated coordinates otherwise leave one-pixel gaps between tiles; accelerated
+  renderers place sprites at exact fractions, and a snapped fill beside them
+  leaves hairline seams.
+  The outline stroke stops thickening at two points.
+- Below 12 points per tile `Game::drawMapOverview` fades in one flat colour per tile
+  (terrain, or the resource's minimap colour over it); at 5 points it replaces the
+  water, terrain and resource passes. It is one image, a pixel per visible tile,
+  stretched over the map in a single draw: as per-tile translucent fills it cost
+  more than the terrain it covered during the cross-fade.
+- Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
+  explorer). Bullets, explosions, death animations, the magic effect and the
+  level-up number go with the unit sprites. Below 8 points per tile building sprites cross-fade to chips in the
+  team's colour carrying a white icon of the building's purpose, with a pip per
+  upgrade level and a paler chip for a construction site; flags become discs of
+  constant size; walls become plain team-coloured tiles. Chips are 15 to 26 points
+  and placed in priority order (damaged, flags, towers, hives, the rest); one that a
+  placed chip would cover by more than 15% is left out. The icons are
+  `data/gfx/mapicon*.png`, rasterised at seven pixel sizes from the SVGs in
+  `datasrc/icons/map/` by `python3 tools/icons/export_map_icons.py` (needs
+  `rsvg-convert`); the renderer draws the largest frame that fits, pixel for pixel.
+  Frame order is shared between that script and `MapOverlayQueue.cpp`.
+- In the strategic view (below 6 points per tile) `Game::drawMapTerritory` washes
+  the land around each team's visible buildings in its colour, and an under-attack
+  event raises the same pulsing mark as a player's ping.
+
+When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
+(`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling
+from the same build for a before/after pair. Set it explicitly on every run: the
+benchmark saves preferences, so the last value otherwise carries into the next run.
+`torus-render-benchmark` takes `GLOB2_BENCH_ZOOM`, `GLOB2_BENCH_PAN_X`/`_Y` (the
+camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`,
+`GLOB2_BENCH_FRACTION` (a camera offset in map pixels, which seams need to show) and
+`GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Sprites stay
+opaque while markers and chips fade in over them, since a translucent sprite leaves
+its batch; check draw calls as well as time when changing a cross-fade.
+
 ## Software rendering architecture and profiling
 
 `GraphicContext` remains the drawing facade and retains existing capability queries.

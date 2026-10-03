@@ -647,6 +647,8 @@ void GameGUI::drawAll(int team)
 		sceneExtractor.extract(game, sceneRequest(), frameScene);
 	const Scene &scene = drawnScene();
 	view.scene = &scene;
+	view.render.zonesEmphasised = selectionMode==BRUSH_SELECTION;
+	view.render.minimumZoom = camera.minimumZoom();
 	view.render.unitMotion = globalContainer->settings.unitInterpolation && !gamePaused && !hardPause
 		? unitMotionFraction(scene, SDL_GetTicks()) : 0.f;
 	const Uint64 clock = tickClock;

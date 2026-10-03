@@ -46,6 +46,13 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 	// drawing a status bar must not abort gameplay or spill outside the bar.
 	actLength = std::clamp(actLength, 0, maxLength);
 	secondActLength = std::clamp(secondActLength, 0, maxLength - actLength);
+	if (drawnRender)
+	{
+		drawnRender->overlays.bar(x, y, orientation==TOP_TO_BOTTOM || orientation==BOTTOM_TO_TOP,
+			orientation==RIGHT_TO_LEFT || orientation==BOTTOM_TO_TOP, maxLength, actLength,
+			secondActLength, r, g, b, r2, g2, b2, barWidth);
+		return;
+	}
 	GAGCore::OpaqueRectangleBatch rectangles(globalContainer->gfx);
 
 	if ((orientation==LEFT_TO_RIGHT) || (orientation==RIGHT_TO_LEFT))
@@ -103,6 +110,21 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 }
 
 
+void Game::anchorBars(int x, int y, bool exception)
+{
+	if (drawnRender)
+		drawnRender->overlays.anchor(*globalContainer->gfx, x, y,
+			exception ? drawnRender->detail.barException : drawnRender->detail.barAll);
+}
+
+
+void Game::drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b)
+{
+	if (drawnRender)
+		drawnRender->overlays.pip(*globalContainer->gfx, x, y, r, g, b, drawnRender->detail.statusPip);
+}
+
+
 void Game::drawHealthBar(int x, int y, int maxLength, int actLength, float hpRatio)
 {
 	if (hpRatio > 0.6f)
@@ -119,7 +141,10 @@ void Game::drawBuildingResourceBar(int x, int y, BuildingType* type, int maxValu
 	// Shrink the bar (3px per unit + 1) until it fits within the building's height minus 10px of padding.
 	int bDiv = 1;
 	assert(type->height != 0);
-	while (((maxValue * 3 + 1) / bDiv) > ((type->height * 32) - 10))
+	// A constant-size bar is larger against a zoomed-out building; fit what shows.
+	const double fit = drawnRender
+		? std::min(1.0, globalContainer->gfx->mapTransformScale() / drawnRender->detail.overlayScale) : 1.0;
+	while (((maxValue * 3 + 1) / bDiv) > int(((type->height * 32) - 10) * fit) && bDiv < maxValue)
 		bDiv++;
 	drawPointBar(x, y, BOTTOM_TO_TOP, maxValue / bDiv, currentValue / bDiv, r, g, b, 1 + bDiv);
 }
@@ -206,6 +231,26 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 
 	if (!animationsPaused)
 		time++;
+	view.render.detail = ZoomDetail::forView(globalContainer->gfx->mapTransformScale(),
+		globalContainer->gfx->logicalUnitsPerPoint(), globalContainer->settings.adaptiveZoomDetail,
+		view.render.minimumZoom);
+	// Queue constant-size overlays for this frame, and draw whatever the later
+	// passes queued however drawMap returns.
+	struct OverlayPass
+	{
+		Game &game;
+		MapRenderState &render;
+		OverlayPass(Game &game, MapRenderState &render, bool queue) : game(game), render(render)
+		{
+			game.drawnRender = queue ? &render : nullptr;
+		}
+		void flush() { render.overlays.flush(*globalContainer->gfx, globalContainer->mapIcons, render.detail.overlayScale, globalContainer->gfx->logicalUnitsPerPoint()); }
+		~OverlayPass()
+		{
+			flush();
+			game.drawnRender = nullptr;
+		}
+	} overlayPass(*this, view.render, globalContainer->settings.adaptiveZoomDetail);
 	GameRenderFrame frame{*globalContainer->gfx,
 						  *globalContainer->terrain,
 						  *globalContainer->terrainWater,
@@ -239,7 +284,10 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 		{ /* Keep the uncached renderer available under memory pressure. */
 		}
 	}
-	bool cached =
+	// Far enough out the flat overview covers the terrain completely, so the
+	// detailed water, terrain and resource passes underneath are not drawn.
+	const bool overviewOnly = view.render.detail.terrainOverview >= 1;
+	bool cached = !overviewOnly &&
 		softwareTerrainCache &&
 		softwareTerrainCache->prepare(scene.map, frame.terrain, frame.left, frame.top, frame.right,
 									  frame.bottom, frame.viewportX, frame.viewportY,
@@ -254,9 +302,13 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	{
 		cached = false;
 	}
-	if (!coveredWater)
+	if (overviewOnly)
+		;
+	else if (!coveredWater)
 		drawMapWater(sw, sh, viewportX, viewportY, time);
-	if (cached)
+	if (overviewOnly)
+		;
+	else if (cached)
 	{
 		PERF_SCOPE_TIME(Terrain);
 		softwareTerrainCache->draw(frame.target);
@@ -277,15 +329,23 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						frame.viewportX, frame.viewportY, frame.localTeam, frame.options, state...);
 	};
 
-	tilePass(&Game::drawMapResources, scene.map);
+	if (!overviewOnly)
+		tilePass(&Game::drawMapResources, scene.map);
+	tilePass(&Game::drawMapOverview, scene.map, view.render);
+	tilePass(&Game::drawMapTerritory, scene, view.render.detail.strategic);
 	scenePass(&Game::drawMapGroundUnits, view, scene);
 	scenePass(&Game::drawMapDebugAreas, view);
 	scenePass(&Game::drawMapGroundBuildings, visibleBuildings, buildingGuiState, scene);
 	scenePass(&Game::drawMapAirUnits, view, scene);
+	// Bars sit above every unit and building, and under the fog like them.
+	overlayPass.flush();
 	if ((drawOptions & DRAW_SCRIPT_AREAS) != 0)
 		drawMapScriptAreas(left, top, right, bot, viewportX, viewportY);
 
-	scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
+	// Bullets, explosions and death animations are unit-sized effects, and go
+	// with the unit sprites once units are only markers.
+	if (view.render.detail.unitSprite > 0)
+		scenePass(&Game::drawMapBulletsExplosionsDeathAnimations, scene);
 
 	// Compute once for the independently selected cloud layers.
 	if (globalContainer->settings.cloudShadows || (globalContainer->settings.clouds && !(drawOptions & DRAW_NO_CLOUD_LAYER)))
@@ -376,7 +436,15 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 					// all flags are hued:
 					Sprite *buildingSprite = type->gameSpritePtr;
 					buildingSprite->setBaseColor(entities.teams[team].color);
-					globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+					// A flag is the player's command, so it turns into an icon
+					// of constant size sooner than a building does.
+					const float flagIcon = drawnRender ? view.render.detail.flagIcon : 0.f;
+					if (flagIcon < 1)
+						globalContainer->gfx->drawSprite(x, y, buildingSprite, imgid);
+					if (flagIcon > 0)
+						view.render.overlays.glyph(*globalContainer->gfx, x, y, x+32, y+32,
+							std::clamp(int(building->shortTypeNum), 0, 10), MapOverlayQueue::Disc, 0, false, 180,
+							entities.teams[team].color.r, entities.teams[team].color.g, entities.teams[team].color.b, flagIcon);
 
 					// flag circle:
 					if (((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0) || entities.isSelected(*building))
@@ -391,14 +459,18 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						if (type->hpMax)
 						{
 							float hpRatio=(float)building->hp/(float)building->effectiveMaxHp;
+							anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp);
 							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio);
 						}
 
+						anchorBars(x+type->width*32, y);
 						if (building->maxUnitInside>0)
 							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255);
+						anchorBars(x+type->width*16, y);
 						if (building->maxUnitWorking>0)
 							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255);
 
+						anchorBars(x, y);
 						if ((type->canFeedUnit) || (type->unitProductionTime))
 							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
 					}
