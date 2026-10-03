@@ -314,18 +314,3 @@ int workerMain()
 	}
 }
 } // namespace Hive
-#ifdef __EMSCRIPTEN__
-extern "C" EMSCRIPTEN_KEEPALIVE const char *glob2_hive_invoke(const char *input)
-{
-	static std::string output;
-	try
-	{
-		output = Hive::invoke(Hive::Json::parse(input)).dump();
-	}
-	catch (...)
-	{
-		output = "{\"ok\":false}";
-	}
-	return output.c_str();
-}
-#endif
