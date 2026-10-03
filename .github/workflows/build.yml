@@ -3,7 +3,15 @@ name: build
 on:
   push:
     branches: [master]
+  workflow_call:
+    inputs:
+      revision:
+        description: Exact release candidate revision
+        required: true
+        type: string
   pull_request:
+    # ready_for_review runs the checks a draft deferred (see ci_changed_paths.py).
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft, labeled, unlabeled]
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
@@ -14,11 +22,13 @@ on:
         type: boolean
         default: false
 
-# A new push to a pull request supersedes its running checks. Master runs are
-# finish once started; the newest pending revision replaces older pending work.
+# Superseded runs: see "CI run cancellation" in docs/development/reference.md.
+# A newer revision of the same pull request (or non-default branch) cancels
+# this run. Default-branch runs finish once started; the newest pending
+# revision replaces older pending work, so not every master commit is verified.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: build-${{ inputs.revision != '' && format('release-{0}', github.run_id) || github.event_name == 'schedule' && 'nightly' || github.event_name == 'workflow_dispatch' && 'manual' || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
 
 env:
   GLOB2_DEV_MODE: isolated
@@ -36,25 +46,41 @@ jobs:
       map_generators: ${{ steps.select.outputs.map_generators }}
       deployment: ${{ steps.select.outputs.deployment }}
       cross_platform: ${{ steps.select.outputs.cross_platform }}
+      platform: ${{ steps.select.outputs.platform }}
       compatibility: ${{ steps.select.outputs.compatibility }}
       browsers_all: ${{ steps.select.outputs.browsers_all }}
       android: ${{ steps.select.outputs.android }}
       browser_matrix: ${{ steps.select.outputs.browser_matrix }}
       android_arches: ${{ steps.select.outputs.android_arches }}
+      windows: ${{ steps.select.outputs.windows }}
+      variants: ${{ steps.select.outputs.variants }}
+      coverage: ${{ steps.select.outputs.coverage }}
+      tsan: ${{ steps.select.outputs.tsan }}
+      macos: ${{ steps.select.outputs.macos }}
+      secondary_profile: ${{ steps.select.outputs.secondary_profile }}
+      full_matrix: ${{ steps.select.outputs.full_matrix }}
+      draft: ${{ steps.select.outputs.draft }}
     steps:
       - uses: actions/checkout@v4
-      - name: Test CI selection, coverage gates and measurements
-        run: python3 -m unittest discover -s tests/build_system -p 'test_ci*.py' -v
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+          fetch-depth: 0
+      - name: Test shared build-system contracts once
+        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v'
       - name: Test CI runners and failure reporting
         run: |
           python3 test/ci_run_commands.py \
             --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \
             --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v'
+      - name: Verify pinned scripting vendors once
+        run: python3 tools/javascript/verify-vendor.py
       - name: Select checks for changed paths
         id: select
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           BROWSER_ONLY: ${{ inputs.browser_only }}
+          DRAFT: ${{ github.event.pull_request.draft }}
+          CI_CALLED_FULL: ${{ inputs.revision != '' }}
           CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
           CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
           GH_TOKEN: ${{ github.token }}
@@ -74,16 +100,34 @@ jobs:
     if: ${{ needs.changes.outputs.android == 'true' }}
     uses: ./.github/workflows/mobile.yml
     with:
+      revision: ${{ inputs.revision || github.sha }}
       architectures: ${{ needs.changes.outputs.android_arches }}
+
+  macos:
+    needs: changes
+    if: ${{ needs.changes.outputs.macos == 'true' }}
+    uses: ./.github/workflows/ci-macos.yml
+    with:
+      revision: ${{ inputs.revision || github.sha }}
+      coverage_profile: ${{ needs.changes.outputs.secondary_profile }}
+
+  tsan:
+    needs: changes
+    if: ${{ needs.changes.outputs.tsan == 'true' }}
+    uses: ./.github/workflows/thread-sanitizer.yml
+    with:
+      revision: ${{ inputs.revision || github.sha }}
 
   native-coverage:
     name: Native Clang coverage
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
+    if: ${{ needs.changes.outputs.coverage == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
       - name: Install matching compiler and coverage tools
         run: |
           sudo apt-get update -qq
@@ -93,6 +137,10 @@ jobs:
             libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev libgl1-mesa-dev \
             libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
+      - uses: ./.github/actions/sdl3
+        with:
+          cc: clang-18
+          cxx: clang++-18
       - name: Build pinned SDL3 dependencies
         run: python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
       - name: Verify coverage accounting
@@ -117,24 +165,42 @@ jobs:
     if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
+      revision: ${{ inputs.revision || github.sha }}
       image: ubuntu:22.04
       runner: ubuntu-22.04
       compiler: g++-11
       c_compiler: gcc-11
       run_tests: true
+      coverage_profile: ${{ needs.changes.outputs.secondary_profile }}
       map_generators: ${{ needs.changes.outputs.map_generators == 'true' }}
       runtime_packages: ${{ vars.CI_RUNTIME_PACKAGES_ENABLED == 'true' }}
 
-  linux-gcc13:
-    name: Linux GCC 13 build and tests
+  linux-gcc13-producer:
+    name: Primary Linux programs
     needs: changes
     if: ${{ needs.changes.outputs.native == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
+      revision: ${{ inputs.revision || github.sha }}
       image: ubuntu:24.04
       runner: ubuntu-24.04
       compiler: g++-13
       c_compiler: gcc-13
+      build_only: true
+      web_native: ${{ needs.changes.outputs.browser == 'true' }}
+
+  linux-gcc13:
+    name: Linux GCC 13 build and tests
+    needs: [changes, linux-gcc13-producer]
+    if: ${{ needs.changes.outputs.native == 'true' }}
+    uses: ./.github/workflows/ci-linux-build.yml
+    with:
+      revision: ${{ inputs.revision || github.sha }}
+      image: ubuntu:24.04
+      runner: ubuntu-24.04
+      compiler: g++-13
+      c_compiler: gcc-13
+      reuse_build: true
       run_tests: true
       map_generators: ${{ needs.changes.outputs.map_generators == 'true' }}
       runtime_packages: ${{ vars.CI_RUNTIME_PACKAGES_ENABLED == 'true' }}
@@ -157,9 +223,10 @@ jobs:
   linux-clang:
     name: Linux Clang compatibility
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.variants == 'true' }}
     uses: ./.github/workflows/ci-linux-build.yml
     with:
+      revision: ${{ inputs.revision || github.sha }}
       image: ubuntu:24.04
       runner: ubuntu-24.04
       compiler: clang-18
@@ -178,7 +245,7 @@ jobs:
       - name: Require every Linux build and test shard
         env:
           BUILD_RESULT: ${{ needs.linux-build.result }}
-          COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
+          COMPATIBILITY: ${{ needs.changes.outputs.variants }}
           CLANG_RESULT: ${{ needs.linux-clang.result }}
         run: |
           echo "Linux builds: $BUILD_RESULT; Clang: $CLANG_RESULT"
@@ -189,7 +256,7 @@ jobs:
   linux-variants:
     name: linux variants (${{ matrix.image }})
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
+    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.variants == 'true' }}
     runs-on: ${{ matrix.runner }}
     env:
       CCACHE: 1
@@ -244,6 +311,8 @@ jobs:
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
 
       - name: Restore the compiler cache
         id: restore_the_compiler_cache
@@ -260,6 +329,10 @@ jobs:
           ccache -z
           echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
 
+      - uses: ./.github/actions/sdl3
+        with:
+          cc: ${{ matrix.compiler == 'g++-11' && 'gcc-11' || 'gcc-13' }}
+          cxx: ${{ matrix.compiler }}
       - name: Build the YOG server
         id: build_the_yog_server
         continue-on-error: true
@@ -320,175 +393,31 @@ jobs:
           if-no-files-found: ignore
 
   linux-map-generators-standalone:
-    name: linux map generators (${{ matrix.image }}, ${{ matrix.suite }})
+    name: Golden-only build and checks (${{ matrix.runner }})
     needs: changes
     if: ${{ !cancelled() && needs.changes.outputs.map_generators == 'true' && needs.changes.outputs.native != 'true' }}
-    runs-on: ${{ matrix.runner }}
-    env:
-      CCACHE: 1
-      CCACHE_DIR: /tmp/glob2-ccache
-      # Hash the compiler binary instead of trusting its mtime, so a g++ point
-      # release landing inside the base image cannot reuse the old one's
-      # entries. CCACHE_SLOPPINESS is deliberately left unset: include_file_mtime
-      # and include_file_ctime would make ccache trust timestamps over content,
-      # and time_macros would let it cache the __DATE__/__TIME__ build banner in
-      # GlobalContainerArgs.cpp.
-      CCACHE_COMPILERCHECK: content
-      CCACHE_MAXSIZE: 1G
     strategy:
       fail-fast: false
       matrix:
-        # Both ends of the supported toolchain range: 22.04 is g++ 11 / Boost
-        # 1.74 (catches C++20 features the oldest supported compiler lacks),
-        # 24.04 is g++ 13 / Boost 1.83 (catches new diagnostics and headers
-        # that no longer come in transitively).
         include:
-          - image: ubuntu:22.04
-            runner: ubuntu-22.04
+          - runner: ubuntu-22.04
             compiler: g++-11
-            suite: sweep-a
-          - image: ubuntu:24.04
-            runner: ubuntu-24.04
+            c_compiler: gcc-11
+            image: ubuntu:22.04
+          - runner: ubuntu-24.04
             compiler: g++-13
-            suite: sweep-a
-          - image: ubuntu:22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            suite: sweep-b
-          - image: ubuntu:24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            suite: sweep-b
-          - image: ubuntu:22.04
-            runner: ubuntu-22.04
-            compiler: g++-11
-            suite: telemetry
-          - image: ubuntu:24.04
-            runner: ubuntu-24.04
-            compiler: g++-13
-            suite: telemetry
-    steps:
-      - name: Install dependencies
-        id: install_dependencies
-        timeout-minutes: 15
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          # Fetch immutable package indexes to avoid mirror-sync mismatches,
-          # and bound network stalls without weakening signature verification.
-          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
-          Acquire::By-Hash "force";
-          Acquire::Retries "3";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          EOF
-          sudo apt-get update -qq
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ matrix.compiler }} python3 python3-venv scons pkg-config ccache \
-            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
-            libvorbis-dev libogg-dev libspeex-dev \
-            libboost-dev libssl-dev \
-            zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils
-
-      - uses: actions/checkout@v4
-        id: actions_checkout_v4_1
-
-      # Main builds already include both programs. Reuse the exact binaries;
-      # map-only diffs skip that build and keep the standalone path below.
-      - uses: actions/download-artifact@v4
-        id: download_linux_test_programs
-        if: ${{ false }}
-        with:
-          name: linux-test-programs-${{ matrix.runner }}
-          path: artifacts/ci-native
-      - name: Unpack built Linux test programs
-        id: unpack_linux_test_programs
-        if: ${{ false }}
-        run: tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
-
-      # Reads the main job's cache and never saves on the standalone path.
-      - name: Restore the compiler cache
-        id: restore_the_compiler_cache
-        if: ${{ true }}
-        continue-on-error: true
-        uses: actions/cache/restore@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ccache-main-${{ matrix.runner }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: ccache-main-${{ matrix.runner }}-
-
-      - name: Build the map generator golden test
-        id: build_the_map_generator_golden_test
-        if: ${{ true }}
-        run: |
-          targets=(map-generator-golden-test)
-          if [ '${{ matrix.suite }}' = telemetry ]; then
-            targets+=(engine-tests)
-          fi
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
-          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CXX=${{ matrix.compiler }} -j$(nproc) release=1 server=0 "${targets[@]}"
-
-      - name: Check golden maps and sweep colony counts
-        id: check_golden_maps_and_sweep_colony_counts
-        if: ${{ startsWith(matrix.suite, 'sweep-') }}
-        continue-on-error: true
-        run: |
-          # The two jobs divide the four independent sweep shards between runners.
-          # Run golden rows alongside the first pair of shards.
-          golden() { log=$1; shift; timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest "$@" > "$log" 2>&1; }
-          if [ '${{ matrix.suite }}' = sweep-a ]; then
-            golden /tmp/golden-rows.log glob2-golden-rows --require-rows & rows=$!
-            shards=(0 1)
-          else
-            shards=(2 3)
-          fi
-          sweeps=()
-          for shard in "${shards[@]}"; do
-            golden /tmp/golden-sweep-$shard.log glob2-golden-sweep-$shard --sweep $shard/4 & sweeps+=($!)
-          done
-          status=0
-          if [ '${{ matrix.suite }}' = sweep-a ]; then
-            if ! wait $rows; then
-              status=1
-              golden /tmp/golden-print.log glob2-golden-print --print || true
-              cat /tmp/golden-print.log
-            fi
-            cat /tmp/golden-rows.log
-          fi
-          for i in "${!shards[@]}"; do
-            wait ${sweeps[$i]} || status=1
-            cat /tmp/golden-sweep-${shards[$i]}.log
-          done
-          [ $status = 0 ]
-
-      - name: Check generator telemetry equivalence and cost
-        id: check_generator_telemetry_equivalence_and_cost
-        if: ${{ matrix.suite == 'telemetry' }}
-        continue-on-error: true
-        run: |
-          # These checks use separate profiles and can share the runner's cores.
-          timeout 600s ./build/linux/client/release/src/MapGeneratorGoldenTest glob2-telemetry-ci --telemetry > /tmp/map-telemetry.log 2>&1 & telemetry=$!
-          python3 test/run_tests.py --binary engine --build-dir build/linux/client/release --tag map-generators --junit artifacts/tests/map-generators-junit.xml > /tmp/map-defaults.log 2>&1 & defaults=$!
-          status=0
-          wait "$telemetry" || status=1
-          wait "$defaults" || status=1
-          cat /tmp/map-telemetry.log /tmp/map-defaults.log
-          [ "$status" -eq 0 ]
-
-      - name: Summarize CI failures
-        if: always()
-        env:
-          CI_STEPS_JSON: ${{ toJSON(steps) }}
-        run: python3 test/ci_step_summary.py
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
-          path: artifacts/ci-observation/
-          if-no-files-found: ignore
+            c_compiler: gcc-13
+            image: ubuntu:24.04
+    uses: ./.github/workflows/ci-linux-build.yml
+    with:
+      revision: ${{ inputs.revision || github.sha }}
+      runner: ${{ matrix.runner }}
+      image: ${{ matrix.image }}
+      compiler: ${{ matrix.compiler }}
+      c_compiler: ${{ matrix.c_compiler }}
+      generator_only: true
+      map_generators: true
+      coverage_profile: ${{ matrix.runner == 'ubuntu-24.04' && 'full' || needs.changes.outputs.secondary_profile }}
 
   linux-map-generators:
     needs: [changes, linux-gcc11, linux-gcc13, linux-map-generators-standalone]
@@ -552,6 +481,8 @@ jobs:
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
 
       # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
       # newline handling and reports unchanged CRLF source files as modifications.
@@ -591,6 +522,11 @@ jobs:
           name: windows-source-before-build
           path: artifacts/windows-source/before-build.log
 
+      - uses: ./.github/actions/sdl3
+        with:
+          shell: msys2 {0}
+          cc: gcc
+          cxx: g++
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
@@ -659,7 +595,7 @@ jobs:
         id: run_the_engine_tests
         continue-on-error: true
         # The [map-generators] contract stays on Linux, as before this runner existed.
-        run: python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
+        run: python3 test/run_tests.py --binary engine --coverage-profile ${{ needs.changes.outputs.secondary_profile }} --write-inventory artifacts/tests/engine.inventory.json --build-dir build/mingw/client/release --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml
       - name: Upload native test results
         if: always()
         continue-on-error: true
@@ -670,6 +606,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Test map JSON reports
+        if: ${{ needs.changes.outputs.secondary_profile == 'full' }}
         id: test_map_json_reports
         continue-on-error: true
         run: |
@@ -686,6 +623,7 @@ jobs:
           path: artifacts/map-report/
 
       - name: Test headless map CLI
+        if: ${{ needs.changes.outputs.secondary_profile == 'full' }}
         id: test_headless_map_cli
         continue-on-error: true
         run: |
@@ -774,7 +712,7 @@ jobs:
   windows-server:
     name: windows server (mingw-w64)
     needs: changes
-    if: ${{ needs.changes.outputs.native == 'true' && needs.changes.outputs.compatibility == 'true' }}
+    if: ${{ needs.changes.outputs.variants == 'true' }}
     runs-on: windows-latest
     env:
       CCACHE: 1
@@ -812,6 +750,8 @@ jobs:
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
 
       # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
       # newline handling and reports unchanged CRLF source files as modifications.
@@ -835,6 +775,11 @@ jobs:
 
       # The server shares no objects with the client, so it builds on its own
       # runner instead of after the client's compile and tests.
+      - uses: ./.github/actions/sdl3
+        with:
+          shell: msys2 {0}
+          cc: gcc
+          cxx: g++
       - name: Build the YOG server
         id: build_the_yog_server
         run: |
@@ -894,6 +839,8 @@ jobs:
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - name: Install build dependencies
         id: install_build_dependencies
@@ -907,10 +854,6 @@ jobs:
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
         run: python3 browser/setup.py
-      - name: Test build identities
-        id: test_build_identities
-        continue-on-error: true
-        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v'
       - name: Restore WebAssembly compiler cache
         id: restore_webassembly_compiler_cache
         continue-on-error: true
@@ -934,6 +877,21 @@ jobs:
             build/emscripten/client/release/threaded/identity.json
           key: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: wasm-objects-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json') }}-
+      - name: Restore pinned WebAssembly dependencies
+        id: wasm_dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/emscripten/client/release/sdl3/prefix
+            build/emscripten/client/release/threaded/sdl3/prefix
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+      - name: Verify restored WebAssembly dependency prefixes
+        env:
+          DEPENDENCY_KEY: ${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+        run: |
+          for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
+            python3 .github/scripts/ci_dependency_cache.py verify --prefix "$prefix" --key "$DEPENDENCY_KEY"
+          done
       - name: Build WebAssembly client
         id: build_web
         env:
@@ -947,6 +905,21 @@ jobs:
           rm -f build/emscripten/client/release/obj/src/GlobalContainerArgs.cpp.o build/emscripten/client/release/threaded/obj/src/GlobalContainerArgs.cpp.o
           scons target=web release=1 web-tests build/emscripten/client/release/index.html -j$(nproc)
           ccache -s -v
+      - name: Seal built WebAssembly dependency prefixes
+        env:
+          DEPENDENCY_KEY: ${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
+        run: |
+          for prefix in build/emscripten/client/release/sdl3/prefix build/emscripten/client/release/threaded/sdl3/prefix; do
+            python3 .github/scripts/ci_dependency_cache.py seal --prefix "$prefix" --key "$DEPENDENCY_KEY"
+          done
+      - name: Save pinned WebAssembly dependencies
+        uses: actions/cache/save@v4
+        if: ${{ !cancelled() && steps.build_web.outcome == 'success' && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.wasm_dependencies.outputs.cache-hit != 'true' }}
+        with:
+          path: |
+            build/emscripten/client/release/sdl3/prefix
+            build/emscripten/client/release/threaded/sdl3/prefix
+          key: wasm-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('browser/toolchain.json', 'scons/web_build.py', 'scons/sdl3_dependencies.py', 'scons/sdl3-*.json', 'scons/vcpkg-ports/sdl3/*.patch') }}
       - name: Save WebAssembly object tree
         id: save_webassembly_object_tree
         if: ${{ !cancelled() && steps.build_web.outcome == 'success' && ((github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch') }}
@@ -1029,8 +1002,8 @@ jobs:
 
   web-native:
     name: browser native WSS server, router and transport
-    needs: changes
-    if: ${{ needs.changes.outputs.browser == 'true' }}
+    needs: [changes, linux-gcc13-producer]
+    if: ${{ !cancelled() && needs.changes.outputs.browser == 'true' && (needs.changes.outputs.native != 'true' || needs.linux-gcc13-producer.result == 'success') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
@@ -1040,7 +1013,19 @@ jobs:
       CCACHE_MAXSIZE: 500M
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
+      - uses: actions/download-artifact@v4
+        if: ${{ needs.changes.outputs.native == 'true' }}
+        with:
+          name: linux-test-programs-ubuntu-24.04
+          path: artifacts/ci-native
+      - name: Reuse exact primary client and transport programs
+        if: ${{ needs.changes.outputs.native == 'true' }}
+        run: |
+          tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+          python3 .github/scripts/ci_build_provenance.py verify --compiler g++-13
       - name: Install native build dependencies
         id: install_native_build_dependencies
         run: |
@@ -1081,6 +1066,10 @@ jobs:
           ccache -z
           # Keep the build banner current even when every other object is reused.
           find build/linux -name GlobalContainerArgs.o -delete 2>/dev/null || true
+      - uses: ./.github/actions/sdl3
+        with:
+          cc: gcc-13
+          cxx: g++-13
       - name: Build headless server
         id: build_headless_server
         continue-on-error: true
@@ -1101,6 +1090,12 @@ jobs:
         id: build_transport_integration_fixture
         continue-on-error: true
         run: |
+          if [ '${{ needs.changes.outputs.native }}' = true ]; then
+            test -x build/linux/client/release/src/net-connection-test
+            test -x build/linux/client/release/src/native-multiplayer-peer
+            test -x build/linux/client/release/src/lan-discovery-test
+            exit 0
+          fi
           # The browser's editor tests read the native generator catalog, then
           # navigate the visible picker with real keyboard/pointer events.
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
@@ -1122,6 +1117,7 @@ jobs:
         if: steps.build_headless_server.outcome == 'success' && steps.build_transport_integration_fixture.outcome == 'success'
         run: |
           mkdir -p artifacts/ci-native
+          python3 .github/scripts/linux_runtime_packages.py build/linux --output artifacts/ci-native/runtime-packages.txt
           tar -czf artifacts/ci-native/web-native.tar.gz \
             build/linux/client/release/src/glob2 \
             build/linux/client/release/src/net-connection-test \
@@ -1149,7 +1145,9 @@ jobs:
           name: web-native
           retention-days: 3
           if-no-files-found: error
-          path: artifacts/ci-native/web-native.tar.gz
+          path: |
+            artifacts/ci-native/web-native.tar.gz
+            artifacts/ci-native/runtime-packages.txt
 
       - name: Summarize CI failures
         if: always()
@@ -1171,6 +1169,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
         id: download_web_client
@@ -1214,17 +1214,9 @@ jobs:
       GLOB2_TEST_RENDERER: ${{ matrix.renderer || 'software' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
-      - name: Install the libraries the native programs link against
-        id: install_the_libraries_the_native_programs_link_against
-        run: |
-          # The hosted image adds an unpinned Chrome repository, while this job
-          # installs its pinned browsers through Playwright below.
-          sudo rm -f \
-            /etc/apt/sources.list.d/google-chrome.list \
-            /etc/apt/sources.list.d/google-chrome.sources
-          sudo apt-get update -qq
-          sudo apt-get install -y python3-venv scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev xvfb xauth openbox x11-utils
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
         with:
@@ -1238,18 +1230,35 @@ jobs:
       - name: Unpack the native programs
         id: unpack_the_native_programs
         run: tar -xzf artifacts/ci-native/web-native.tar.gz
+      - name: Install executable runtime libraries
+        run: |
+          sudo apt-get update -qq
+          xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils
+          python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
       - uses: actions/setup-node@v4
         id: actions_setup_node_v4_1
         with:
           node-version: '22'
           cache: npm
           cache-dependency-path: browser/package-lock.json
+      - name: Restore Playwright browser installations
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('browser/package-lock.json') }}
       - name: Install browser test dependencies
         id: install_browser_test_dependencies
         working-directory: browser
         run: |
           npm ci --ignore-scripts
           npx playwright install --with-deps ${{ matrix.browsers }}
+      - name: Save Playwright browser installations
+        uses: actions/cache/save@v4
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && (matrix.name == 'chromium 1/5' || matrix.name == 'firefox' || matrix.name == 'webkit') }}
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.browsers }}-${{ hashFiles('browser/package-lock.json') }}
       # Firefox needs an X display and an audio service. A null sink is silent.
       - name: Start a silent audio service
         id: start_a_silent_audio_service
@@ -1298,11 +1307,13 @@ jobs:
     name: browser/native simulation equivalence
     env:
       COMPATIBILITY: ${{ needs.changes.outputs.compatibility }}
-    needs: [changes, linux, windows, web-test]
-    if: ${{ needs.changes.outputs.cross_platform == 'true' }}
+    needs: [changes, linux, windows, web-test, macos]
+    if: ${{ !cancelled() && needs.changes.outputs.cross_platform == 'true' }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision || github.sha }}
         id: actions_checkout_v4_1
       - uses: actions/download-artifact@v4
         id: actions_download_artifact_v4_1
@@ -1317,22 +1328,6 @@ jobs:
         run: |
           python3 test/check_cli_evidence.py artifacts/cli-platforms --require-platform linux --require-platform windows
 
-      - name: Compare every per-tick trace across Linux, Windows and WebAssembly
-        id: compare_every_per_tick_trace_across_linux_windows_and_w
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          traces = sorted(path for path in Path('artifacts/ci-traces').rglob('*.checksums')
-                          if path.name in {'native.replay.checksums', 'wasm.replay.checksums'})
-          import os
-          expected = 18 if os.environ['COMPATIBILITY'] == 'true' else 17
-          assert len(traces) == expected, f'Expected {expected} selected native/browser traces, got {traces}'
-          reference = traces[0].read_bytes()
-          assert len(reference) > 1000
-          for trace in traces[1:]:
-              assert trace.read_bytes() == reference, f'Simulation differs: {trace}'
-          print('All native, serial browser and threaded browser per-tick traces match')
-          PY
       - name: Compare every --verify-match trace across Linux, Windows and WebAssembly
         id: compare_every_verify_match_trace
         run: |
@@ -1355,26 +1350,9 @@ jobs:
         with:
           pattern: javascript-profile-*
           path: artifacts/ci-scripting
-      - name: Compare shared scripting results across native builds and every browser
+      - name: Compare selected native and browser evidence
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import subprocess
-          native = sorted(Path('artifacts/ci-scripting').glob('*/javascript-corpus'))
-          import os
-          expected_native = 4 if os.environ['COMPATIBILITY'] == 'true' else 2
-          assert len(native) == expected_native, f'Missing selected native scripting evidence: {native}'
-          browsers = sorted(path.parent for path in Path('artifacts/ci-traces').glob('*/script-corpus*/*/manifest.json'))
-          assert any('mingw' in path.parts[-2] for path in native), 'Missing Windows scripting evidence'
-          assert any('linux' in path.parts[-2] for path in native), 'Missing Linux scripting evidence'
-          assert {path.name for path in browsers} == {'chromium', 'firefox', 'webkit'}, browsers
-          assert len(browsers) == 6, f'Expected serial and threaded scripting runs for each browser: {browsers}'
-          reference = native[0]
-          for index, candidate in enumerate(native[1:] + browsers):
-              subprocess.run(['python3', 'test/check_javascript_evidence.py', str(reference),
-                              str(candidate), '--output', f'artifacts/javascript-ci/comparison-{index}.json'],
-                             check=True)
-          PY
+          python3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility '${{ needs.changes.outputs.compatibility }}'             --variants '${{ needs.changes.outputs.variants }}'             --macos '${{ needs.changes.outputs.macos }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -1394,9 +1372,69 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
+  # The TypeScript platform (platform/): lint, type checks, the web build, and
+  # unit and integration tests against a real Postgres.
+  platform:
+    name: platform (TypeScript)
+    needs: changes
+    if: ${{ needs.changes.outputs.platform == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: glob2
+          POSTGRES_PASSWORD: glob2
+          POSTGRES_DB: glob2
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U glob2"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgres://glob2:glob2@localhost:5432/postgres
+    defaults:
+      run:
+        working-directory: platform
+    steps:
+      - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
+      - uses: actions/setup-node@v4
+        id: actions_setup_node_v4_1
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: platform/package-lock.json
+      - name: Install platform dependencies
+        id: install_platform_dependencies
+        run: npm ci
+      - name: Lint and check formatting
+        id: lint_and_check_formatting
+        run: npm run lint
+      - name: Type check
+        id: type_check
+        run: npm run typecheck
+      - name: Build the web app
+        id: build_the_web_app
+        run: npm run build -w @glob2/web
+      - name: Run tests
+        id: run_tests
+        run: npm test
+      - name: Apply migrations with the CLI
+        id: apply_migrations_with_the_cli
+        env:
+          DATABASE_URL: postgres://glob2:glob2@localhost:5432/glob2
+        run: |
+          npm run migrate -- latest
+          npm run migrate -- status
+
   ci-result:
     name: Relevant checks passed
-    needs: [changes, android, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism]
+    needs: [changes, android, macos, tsan, native-coverage, linux, linux-variants, linux-map-generators, windows, windows-server, web-build, web-native, web-deploy, web-test, browser-determinism, platform]
     if: ${{ !cancelled() }}
     runs-on: ubuntu-24.04
     env:
@@ -1413,17 +1451,20 @@ jobs:
           selected = needs['changes']['outputs']
           expected = {
               'android': selected['android'] == 'true',
-              'native-coverage': selected['native'] == 'true' and selected['compatibility'] == 'true',
+              'macos': selected['macos'] == 'true',
+              'tsan': selected['tsan'] == 'true',
+              'native-coverage': selected['coverage'] == 'true',
               'linux': selected['native'] == 'true',
-              'linux-variants': selected['native'] == 'true' and selected['compatibility'] == 'true',
+              'linux-variants': selected['native'] == 'true' and selected['variants'] == 'true',
               'linux-map-generators': selected['map_generators'] == 'true',
-              'windows': selected['native'] == 'true',
-              'windows-server': selected['native'] == 'true' and selected['compatibility'] == 'true',
+              'windows': selected['windows'] == 'true',
+              'windows-server': selected['variants'] == 'true',
               'web-build': selected['browser'] == 'true',
               'web-native': selected['browser'] == 'true',
               'web-deploy': selected['deployment'] == 'true',
               'web-test': selected['browser'] == 'true',
               'browser-determinism': selected['cross_platform'] == 'true',
+              'platform': selected['platform'] == 'true',
           }
           for job, should_run in expected.items():
               required = 'success' if should_run else 'skipped'

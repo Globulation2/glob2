@@ -476,7 +476,7 @@ void PhoneEditor::act(const TouchAction &action)
 		editor.zoomMap(std::log(action.factor) / std::log(1.1), p.x, p.y);
 		return;
 	}
-	if (action.kind == TouchActionKind::ZoomReset && onMap)
+	if (action.kind == TouchActionKind::DoubleTap && onMap)
 	{
 		editor.updateCamera();
 		if (!editor.zoomMap(std::log(1.0 / editor.camera.zoom) / std::log(1.1), p.x, p.y) && !pan &&

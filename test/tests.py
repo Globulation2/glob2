@@ -127,6 +127,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'PackedArrayTest.cpp',
     'EventQueueTest.cpp',
     'MapGeneratorGoldenCoverageTest.cpp',
     'USLCoverageTest.cpp',
@@ -310,6 +311,7 @@ UNIT_STUBS = [
 # CI through their own runners; 'tools' are developer utilities and benchmarks. The
 # transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
 PROGRAMS = [
+    ('SaveSizeHarness', 'SaveSizeHarness.cpp', 'save-size-harness', 'tools'),
     ('MapReportHarness', 'MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', 'maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),

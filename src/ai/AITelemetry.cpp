@@ -9,6 +9,8 @@
 #include "TeamStat.h"
 #include "GlobalContainer.h"
 #include <BinaryStream.h>
+#include <PackedRecords.h>
+#include "FileFormatVersions.h"
 #include <Stream.h>
 #include <iomanip>
 #include <iostream>
@@ -194,6 +196,10 @@ void save(GAGCore::OutputStream *s, const std::vector<std::shared_ptr<Series>> &
 		writeSample(s, r.current);
 		s->writeLeaveSection();
 		s->writeUint32(r.history.size(), "samples");
+        if(GAGCore::PackedArray::binary(s))
+            GAGCore::PackedRecords::write(s,r.history.size(),8+16*r.fields.size(),
+                [&](GAGCore::OutputStream* rows,size_t i){writeSample(rows,r.history[i]);});
+        else
 		for (unsigned n = 0; n < r.history.size(); ++n)
 		{
 			s->writeEnterSection(n);
@@ -204,7 +210,7 @@ void save(GAGCore::OutputStream *s, const std::vector<std::shared_ptr<Series>> &
 	}
 	s->writeLeaveSection();
 }
-void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records)
+void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records, int versionMinor)
 {
 	GAGCore::BinaryInputStream::CheckedReads checked(s);
 	s->readEnterSection("aiTelemetry");
@@ -253,15 +259,18 @@ void load(GAGCore::InputStream *s, std::vector<std::shared_ptr<Series>> &records
 		require(r.current.tick >= r.coverage);
 		const auto samples = s->readUint32("samples");
 		require(samples <= Uint64(r.current.tick) / 512 + 1);
-		for (unsigned n = 0; n < samples; ++n)
-		{
-			s->readEnterSection(n);
-			auto a = readSample(s, fields);
-			s->readLeaveSection();
-			require(a.tick >= r.coverage && a.tick <= r.current.tick && !(a.tick & 511) &&
-					(r.history.empty() || a.tick > r.history.back().tick));
-			r.history.push_back(std::move(a));
-		}
+        const auto readOne=[&](GAGCore::InputStream* source,size_t n)
+        {
+            source->readEnterSection(static_cast<unsigned>(n));
+            auto a=readSample(source,fields);
+            source->readLeaveSection();
+            require(a.tick>=r.coverage && a.tick<=r.current.tick && !(a.tick&511) &&
+                    (r.history.empty() || a.tick>r.history.back().tick));
+            r.history.push_back(std::move(a));
+        };
+        if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(s))
+            GAGCore::PackedRecords::read(s,samples,8+16*fields,readOne);
+        else for(unsigned n=0;n<samples;++n) readOne(s,n);
 		for (const auto &prior : loaded)
 			require(prior->player != r.player || prior->generation != r.generation);
 		loaded.push_back(p);
