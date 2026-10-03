@@ -963,8 +963,13 @@ gcloud iam roles create glob2OnlineDeployInstance --project $P \
     --permissions compute.instances.get,compute.instances.setMetadata
 gcloud compute instances add-iam-policy-binding glob2-staging --zone $Z --project $P \
     --member serviceAccount:$SA --role projects/$P/roles/glob2OnlineDeployInstance
-gcloud iap tcp iam add-iam-policy-binding --resource-type tunnel-instance --instance glob2-staging \
-    --zone $Z --project $P --member serviceAccount:$SA --role roles/iap.tunnelResourceAccessor
+# gcloud has no command for a single instance's IAP tunnel policy, so call the
+# API. This replaces the instance's tunnel policy; read it first with
+# :getIamPolicy and add to it if it already has bindings.
+curl -sS -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json" \
+    -d "{\"policy\":{\"bindings\":[{\"role\":\"roles/iap.tunnelResourceAccessor\",\"members\":[\"serviceAccount:$SA\"]}]}}" \
+    "https://iap.googleapis.com/v1/projects/$P/iap_tunnel/zones/$Z/instances/glob2-staging:setIamPolicy"
 gcloud compute firewall-rules create glob2-staging-iap-ssh --project $P --network default \
     --source-ranges 35.235.240.0/20 --allow tcp:22 --target-tags glob2-staging
 ```
