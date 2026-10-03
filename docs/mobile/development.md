@@ -50,7 +50,13 @@ positioning drags stop on release. This distance is independent of map zoom and
 display density; deliberate swipes retain the configured momentum.
 
 The gameplay toolbar opens build choices, flags/zones, tactical tools, objectives,
-alliances and the session menu. The minimap is a separate top-right HUD component.
+alliances and the session menu. The last cell of the stat grid holds the game-speed
+chevrons and the simulation tick rate: a tap steps through 1x, 2x, 4x, 8x and
+maximum and wraps to 1x (the desktop top bar has the same control, where a right click steps
+back down). The rate is a rolling three-second average refreshed once per second,
+with one decimal below 25, and the cell is outlined when it falls under 75% of the
+speed's target. Network games have a fixed speed, so the cell shows the rate alone.
+The minimap is a separate top-right HUD component.
 Tapping it centres the camera there; dragging keeps steering the camera and clamps
 at the minimap's edge when the finger leaves it. A still 400 ms press on it, or the
 map lens, opens a map peek: a large minimap over the dimmed map that steers the

@@ -649,5 +649,4 @@
 [room map ready title %0]
 [room map ready unnamed]
 [room map ready body]
-[device busy %0]
 [game draw]
