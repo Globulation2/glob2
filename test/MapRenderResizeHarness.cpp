@@ -167,7 +167,7 @@ void run(bool gpu)
 	game.drawMapGroundUnits(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,view, glob2test::sceneOf(game, view));
 	copies(96,96,32,32);
 	clear();
-	game.drawMapGroundBuildings(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,nullptr,nullptr, glob2test::sceneOf(game));
+	game.drawMapGroundBuildings(0,0,52,34,1600,1100,0,0,0,Game::DRAW_WHOLE_MAP,nullptr,nullptr, glob2test::sceneOf(game), nullptr);
 	copies(224,224,96,96);
 	std::cout << "PASS repeated unit/building sprites\n";
 
@@ -296,10 +296,9 @@ void run(bool gpu)
 			fadeView.render.fogTime=fogTime;
 			fadeView.render.overlays.bars.clear();
 			fadeView.render.overlays.pips.clear();
-			game.drawnRender=&fadeView.render;
+			// Adaptive zoom detail queues the bars as overlays, where their alpha shows.
+			globals->settings.adaptiveZoomDetail=true;
 			game.drawMapGroundUnits(0,0,52,34,1600,1100,0,0,0,Game::DRAW_HEALTH_FOOD_BAR,fadeView,fogScene);
-			game.drawnRender=nullptr;
-			REQUIRE(game.drawnOpacity==1.f);
 			return fadeView.render.overlays.bars;
 		};
 		const double unitHalfway=301+FogFade::DARKEN_TICKS/2.0;

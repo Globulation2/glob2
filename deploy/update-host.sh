@@ -83,8 +83,18 @@ backups=$(setting GLOB2_BACKUP_DIR)
 backups=${backups:-$(cd "$(dirname "$env_file")/.." && pwd)/backups}
 keep=$(setting GLOB2_BACKUP_KEEP)
 keep=${keep:-5}
-backup="$backups/$(date -u +%Y%m%dT%H%M%SZ)"
-mkdir -p "$backup"
+# Several updates can start in the same second. Reserve a unique directory so
+# an earlier backup is never overwritten. The timestamp keeps retention ordered.
+mkdir -p "$backups"
+stamp=$(date -u +%Y%m%dT%H%M%SZ)
+sequence=0
+while :; do
+	backup="$backups/$stamp.$(printf '%06d' "$sequence")"
+	if mkdir "$backup" 2>/dev/null; then break; fi
+	# A failure other than a name collision must not spin forever.
+	[ -d "$backup" ] || { echo "Cannot create backup: $backup" >&2; exit 1; }
+	sequence=$((sequence + 1))
+done
 chmod 700 "$backups" "$backup"
 echo "$previous" > "$backup/revision"
 if [ -n "$(compose ps --status running -q postgres 2>/dev/null)" ]; then

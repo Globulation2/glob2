@@ -6,6 +6,7 @@
 
 #include <memory>
 #include "Brush.h"
+#include "Types.h"
 #include <optional>
 #include <string>
 #include <queue>
@@ -37,13 +38,20 @@ public:
 		PlaceZone,
 	};
 	
-	///List of zone types
+	///List of zone types. Order matters: it is the left-to-right order of the
+	///zone strip's buttons, and indexes InGameTouchTheme::zonePreview.
 	enum ZoneType
 	{
 		Forbidden=0,
 		Guard,
 		Clearing,
+		Farm, ///< only in a game carrying the farm-areas experiment
 	};
+
+	///Whether this game offers the farm zone (the farm-areas experiment)
+	bool farmAreasAvailable() const;
+	///Number of zone types this game offers: three, or four with farm areas
+	int zoneTypeCount() const { return farmAreasAvailable() ? 4 : 3; }
 
 	///Activates the building tool with the given building or flag type
 	void activateBuildingTool(const std::string& building);
@@ -84,12 +92,17 @@ public:
 
 	///Returns an order, or shared_ptr() if there are none
 	std::shared_ptr<Order> getOrder();
-private:
-	///Handles placing a zone on the map
-	void handleZonePlacement(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 
 	///Returns the local (display-only) map overlay for the given zone type
 	Utilities::BitArray& displayedViewForZone(ZoneType type);
+
+	///The order that paints (MODE_ADD) or erases (MODE_DEL) a zone type over
+	///the box at (left, top), width x height, wherever mask is set
+	static std::shared_ptr<Order> makeZoneOrder(ZoneType type, Uint8 team, Uint8 mode,
+		Sint16 left, Sint16 top, Sint16 width, Sint16 height, const Utilities::BitArray& mask);
+private:
+	///Handles placing a zone on the map
+	void handleZonePlacement(int mouseX, int mouseY, int localteam, int viewportX, int viewportY);
 
 	///Flushes an order for the current brush accumulator
 	void flushBrushOrders(int localteam);

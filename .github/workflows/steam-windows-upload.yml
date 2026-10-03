@@ -8,14 +8,24 @@ permissions:
 
 jobs:
   package:
-    if: github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.ref == 'refs/heads/master'
     uses: ./.github/workflows/steam-windows-package.yml
     permissions:
       contents: read
 
   upload:
     needs: package
-    if: github.repository == 'genixpro/glob2-release' && github.ref == 'refs/heads/master'
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.ref == 'refs/heads/master'
     runs-on: windows-2022
     environment: steam-release
     permissions:

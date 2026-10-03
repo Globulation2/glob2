@@ -25,6 +25,9 @@ class ScenarioFailure : public SessionFailure
 };
 struct Host
 {
+	// Separate local-assistant host; never set by deterministic AI or map scripts.
+	bool commander = false;
+
 	unsigned profile = 1;
 	unsigned nextAction = 1;
 	unsigned tick = 0;

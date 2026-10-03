@@ -18,6 +18,7 @@ class MapPreview;
 class RoomMapPickerScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "room_map_picker"; }
 	enum Result
 	{
 		Cancelled = 0,

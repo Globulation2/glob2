@@ -134,6 +134,22 @@
                 ],
                 "description": "How the owner says the map was made: in the editor, or by a map generator."
               },
+              "authoring": {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "pipelineVersion"
+                ],
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "ai"
+                  },
+                  "pipelineVersion": {
+                    "type": "string"
+                  }
+                }
+              },
               "generator": {
                 "type": "object",
                 "required": [

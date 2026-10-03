@@ -13,4 +13,22 @@ for (const name of [
   'eglGetCurrentSurface', 'eglGetCurrentDisplay', 'eglSwapBuffers',
   'eglReleaseThread',
 ]) glob2ThreadedEGL[name + '__proxy'] = 'none';
+
+// SDL's asynchronous resize callback can run while the application is suspended
+// for context loss. The pinned SDK indexes getParameter(GL_VIEWPORT) even when
+// that query returns null. Let it update canvas/shared dimensions without GPU
+// queries; the application restores graphics and applies the retained viewport.
+glob2ThreadedEGL.$setCanvasElementSizeCallingThread__postset = `
+  var glob2OriginalCanvasResize = setCanvasElementSizeCallingThread;
+  setCanvasElementSizeCallingThread = (target, width, height) => {
+    var canvas = findCanvasEventTarget(target);
+    canvas = canvas?.offscreenCanvas || canvas;
+    var context = canvas?.GLctxObject;
+    if (!context?.GLctx?.isContextLost())
+      return glob2OriginalCanvasResize(target, width, height);
+    canvas.GLctxObject = null;
+    try { return glob2OriginalCanvasResize(target, width, height); }
+    finally { canvas.GLctxObject = context; }
+  };
+`;
 addToLibrary(glob2ThreadedEGL);

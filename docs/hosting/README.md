@@ -854,9 +854,12 @@ live agent. Remove the service when the version is retired.
 ### Images
 
 The Dockerfile targets are `platform` (API, worker and CLI), `engine-agent`,
-`relay` and `caddy` (Caddy with the built web app). A `server-v*` tag runs
-`.github/workflows/server-image.yml`, which publishes all of them for linux/amd64 and linux/arm64 to
-`ghcr.io/<owner>/<repository>-<target>`, tagged with the Git tag and commit; engine
+`relay` and `caddy` (Caddy with the built web app). A `server-v*` tag pushed by
+the owner to the release mirror `genixpro/glob2-release` runs
+`.github/workflows/server-image.yml` (it skips every job in any other repository; a
+fork or self-hoster builds images with `deploy/compose.yaml` instead), which
+publishes all of them for linux/amd64 and linux/arm64 to
+`ghcr.io/genixpro/glob2-release-<target>`, tagged with the Git tag and commit; engine
 agents are also tagged `simver-<sim version>` and labelled
 `org.glob2.sim-version`. Pin digests in production:
 
@@ -1190,3 +1193,43 @@ everything: delete the VM, the address, the firewall rule and the DNS records.
   (Postgres counters). The general per-address request cap
   (`limits.apiPerMinute`) and the realtime connection and message limits are per
   replica.
+
+### Optional AI Map Studio
+
+AI Map Studio is an authoring service on the app host. It has a separate prepaid
+map wallet; a delivered map or revision costs one map credit. Discussion is
+included, subject to `chatPerHour` and the shared `providerCallsPerDay` operator
+budget. These credits cannot fund Hive Mind. Only registered accounts use it.
+
+Configure `mapStudio` in the instance file with `enabled`, `salesEnabled`, pinned
+`textModel` and `imageModel`, `pipelineVersion`, a positive daily provider-call
+budget, and one-time Stripe packs. Leave both flags false until real provider
+quality/cost qualification and Stripe test-mode checkout/webhook verification
+pass. No production prices are supplied by the repository. The daily call budget
+bounds calls, not a currency amount; also configure a provider project spend cap.
+
+The API uses `MAP_STRIPE_SECRET_KEY` and `MAP_STRIPE_WEBHOOK_SECRET`; the optional
+worker alone uses `MAP_OPENAI_API_KEY`. Run the Compose profile with
+`docker compose --profile ai-maps up -d --build`. The worker image contains Python,
+Pillow, native assets, generator descriptions and a matching engine binary. Its
+sources and binary must come from the same engine build context. Existing engine
+agents consume `import-ai-map` jobs; the platform worker applies their results.
+
+Expose the signed Stripe webhook at `/api/v1/map-studio/stripe`. Checkout return
+pages only refresh account state. Credit fulfillment follows authoritative paid
+sessions and handles delayed payments, refunds and disputes idempotently.
+
+Generation requests are a durable database queue. One request per account may be
+active. Reservations and request creation are transactional; delivery, catalog
+registration and charging are transactional too. Provider attempts are journaled
+before dispatch. Deterministic stages resume from private content-addressed
+checkpoints. Unknown provider outcomes become `uncertain`, hold the credit, and
+block further requests for that account until reconciled. Administrators can
+mark a confirmed unrecoverable request failed using
+`POST /api/v1/admin/map-studio/requests/<id>/fail`; this releases the credit and
+records an audit entry. Never re-dispatch an uncertain paid provider request.
+
+Monitor `studio_requests` status/age, `studio_attempts` usage/model, map-wallet
+reservations, delivery failure rates and queue age. Pause sales or generation via
+the instance flags; retain blobs and payment journals during rollback. Migrations
+are additive and preserve existing Hive tables and historical purchase IDs.

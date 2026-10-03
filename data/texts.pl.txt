@@ -1,5 +1,11 @@
 [AI strategy]
 Strategia SI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Równoważy trwały wzrost i szkolenie, a następnie zbiera armie w fale.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Wybierz grę
 Wybierz mapę
 [clear area]
 Oczyszczany obszar
+[farm area]
+Uprawiany obszar
 [Clearing:]
 Czyszczenie
 [clearingflag explanation 2]
@@ -748,6 +756,8 @@ Wybierz Gospodę
 Wybierz Bazar
 [select place clearing area]
 Wyznacz teren oczyszczania
+[select place farm area]
+Wyznacz teren uprawy
 [select place clearingflag]
 Ustaw flagę oczyszczania
 [select place explorationflag]
@@ -3116,6 +3126,8 @@ Zakaz
 Strzeż
 [Clear]
 Oczyść
+[Farm]
+Uprawa
 [Paint]
 Maluj
 [Erase]
@@ -3286,6 +3298,10 @@ Eksperymenty
 Równoważenie stref straży
 [experiment guard-area-balancing help]
 Wolni wojownicy rozdzielają się między namalowane strefy straży, zamiast wszyscy iść do najbliższej: większa strefa dostaje ich więcej, a przepełniona strefa stopniowo opróżnia się do pozostałych.
+[experiment farm-areas]
+Obszary uprawy
+[experiment farm-areas help]
+Dodaje obszar uprawy do pędzli stref. Robotnicy zbierający w nim plony biorą z najdojrzalszego pola połączonego łanu i zostawiają jedno ziarno na każdym polu, więc łan odrasta zamiast być zjadany od brzegu. Drewno wrastające w obszar jest wycinane.
 [settings Touch scrolling]
 Przewijanie dotykiem
 [settings List momentum]
@@ -4619,6 +4635,26 @@ Rozpęd mapy
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

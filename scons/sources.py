@@ -200,6 +200,8 @@ CLIENT_SOURCES = (
     'GameUtilities.cpp',
     'Glob2.cpp',
     'MapCommand.cpp',
+    'MapRender.cpp',
+    'GameDiagnostics.cpp',
     'MapImage.cpp',
     'MapReport.cpp',
     'ui/FrontendUI.cpp',
@@ -382,6 +384,10 @@ CLIENT_SOURCES = (
     'map/io/MapHeader.cpp',
     'script/ScriptValue.cpp',
     'script/ScriptRuntime.cpp',
+    'hive/HiveWorker.cpp',
+    'hive/HiveClient.cpp',
+    'hive/HiveObservation.cpp',
+    'hive/HiveDialog.cpp',
     'script/ScriptObservations.cpp',
     'script/ScriptOrders.cpp',
     'script/ScriptServices.cpp',
@@ -547,6 +553,9 @@ RELAY_GAG_SOURCES = (
 )
 
 GAG_SOURCES = (
+    'GameplayRecording.cpp',
+    'RecordingMetadata.cpp',
+    'RecordingProcess.cpp',
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'Sha1.cpp',

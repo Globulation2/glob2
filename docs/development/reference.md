@@ -175,8 +175,8 @@ on `master`:
 the public `Globulation2/glob2` repository stores the workflow and build code for
 review, but dispatching it there cannot build, sign, upload or publish a release.
 The owner syncs the public changes into the public release mirror and starts each
-release there manually. Merge public `master` into the mirror's `master` so
-mirror-only release configuration stays in place. The workflow builds the existing MinGW x64
+release there manually. The mirror's `master` tracks public `master` exactly; see
+[the release mirror](releasing.md#the-release-mirror). The workflow builds the existing MinGW x64
 client, stages its runtime DLLs, game assets and GPL license, creates
 `MicrosoftGame.config`, shell logos and a 1920×1080 splash image, then
 uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
@@ -273,6 +273,18 @@ team-color masks and HD frame geometry. Normal source/debug builds use the
 originals. Image lookup searches directories in their existing order, checking a
 logical PNG first and its WebP alternative second within each directory; an
 original PNG override therefore retains precedence.
+
+Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
+(currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
+consecutive frames of one layer and size, sixteen tiles to a row, each encoded like
+any other image. `<name>.sheet` beside them lists each sheet's file, layer
+(`image` or `rotated`), first frame, frame count and tile size. When that index
+exists, `GAGCore::Sprite::load` cuts the tiles out of the sheets and ignores the
+per-frame files; without one, or if any sheet does not match it, the sprite loads
+one file per frame as in the source tree. The exporter checks that every tile is
+byte-identical to its frame, and the audit lists each sheet's frames under
+`packed_from` so release installs can remove per-frame copies left by older
+installs. Opening thousands of small files dominated unit-sprite loading.
 
 Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. This is a build dependency,
@@ -812,7 +824,10 @@ a supported open-file checker and is conservatively skipped there.
 ## Scene renderer
 
 Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
-runs while the simulation advances on another thread.
+runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
+an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
+Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
+bounded software target. Asset loading is shared with normal game startup.
 
 - `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
   only place presentation code reads the game. `GameGUI::drawAll` extracts
@@ -877,7 +892,10 @@ also remains the headless default and the equivalence reference.
   for code shared by threads; add boundaries in `.github/scripts/ci_policy.py`
   when new code becomes shared between them. Drafts defer it. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
-  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
+  The windowed fixture explicitly uses the game's software renderer and disables SDL's accelerated
+  framebuffer presentation, keeping uninstrumented Mesa worker threads out of the sanitizer run.
+  GPU rendering remains covered by the renderer suites. Narrow, explained suppressions for
   library shutdown races live in `test/tsan.supp`; never suppress game code there.
   Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without

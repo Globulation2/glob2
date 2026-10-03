@@ -636,3 +636,49 @@ The original plan referred to `src/net/gateway/` for server patterns; that
 directory was removed when transport moved to native WSS, and its equivalents now
 live in `src/net/NetTransport.cpp`, `src/net/WssTransport.cpp`,
 `src/net/ServerControl.cpp` and `deploy/`.
+
+## AI Map Studio
+
+The optional map studio lives at `/map-studio` on the online app host. The public
+static website can link into it; it does not hold accounts, credits or authoring
+state. The maintained image-authoring modules were ported from the separate
+`Globulation2/glob2-ai-map-generation` prototype (GPL-3.0-or-later, originally
+extracted from Glob2 commit `1888710f5e948013e0b0859c61a6f1588144a213`).
+
+`packages/billing` shares credit arithmetic and hosted-checkout mechanics while
+preserving Hive's durable namespace and adding separate map wallets/purchases.
+`packages/map-studio` owns transactional threads, messages, generation snapshots
+and delivery. `packages/engine` shares the bounded native adapter and blob I/O
+between the engine agent and authoring worker. `apps/ai-map-worker` journals provider attempts and runs bounded
+Python reference/crop processes. Native conversion is an `import-ai-map` engine
+job routed by simulation version. Its map, preview, categorical export and report
+are private blobs. Provider keys never reach Python or engine subprocesses.
+
+REST under `/api/v1/map-studio` provides account state, thread creation/listing,
+messages, explicit generation, and checkout. Per-thread long polling uses the
+existing Postgres pub/sub with timeout refresh for lost notifications. Messages
+cost no map credits. A Generate action reserves one credit; a successful validated
+delivery consumes it and failures return it. Each request snapshots the rolling
+conversation and accumulated design brief, settings, parent version and pipeline
+version. A parent revision retains its dimensions/player count; changing these
+starts a fresh map in the same thread. Previous versions remain immutable; edited downloads must be uploaded as a new
+catalog map instead of replacing an AI artifact.
+
+Delivered versions become independent private catalog entries. Publishing changes
+only the selected map's visibility; conversation and sibling drafts stay private.
+The studio can create a link-only room from a selected catalog version and send
+the player to browser play with its invite. Existing room/match authorization
+permits participants to fetch the map without accessing the authoring thread.
+Private previews are served by catalog authorization, not public blob metadata.
+
+The account’s **Download my data** export includes its Studio threads, messages,
+revision inputs and checkpoints, provider attempts, and separate map-credit wallet,
+ledger, purchases and usage. It includes only the owner’s data and omits internal
+worker lease credentials. Catalog exports also include map authoring metadata.
+
+The supported envelope is independent 128/256/512-cell sides and 2–8 colonies.
+The post-import native report gates valid starts, walking connectivity, nearby
+wheat/timber, buildable ground and fertile grass. These are minimum opening checks,
+not proof of competitive balance, long-term economy or human enjoyment. Qualify
+model outputs with modern-AI games, sustained growth checks and human play review
+before enabling sales. See the hosting guide for flags, credentials and recovery.

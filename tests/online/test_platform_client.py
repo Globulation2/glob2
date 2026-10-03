@@ -18,6 +18,7 @@ certificate for `localhost` exercises the real TLS path), and drives the
 Skipped when the variables are unset.
 """
 import json
+import http.cookiejar
 import os
 from pathlib import Path
 import platform
@@ -266,19 +267,26 @@ class PlatformClientIntegration(unittest.TestCase):
             error.close()
             return error.code
 
-    def browser_sign_in(self, sign_in_url, username):
+    def browser_sign_in(self, sign_in_url, username, code):
         """Registers a local account on the sign-in page, as a browser would."""
         context = ssl.create_default_context(cafile=str(self.cert))
-        with urllib.request.urlopen(sign_in_url, context=context, timeout=20) as page:
+        browser = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()),
+            urllib.request.HTTPSHandler(context=context))
+        with browser.open(sign_in_url, timeout=20) as page:
             body = page.read().decode()
-            cookies = [header.split(';', 1)[0] for header in page.headers.get_all('Set-Cookie') or []]
         attempt = urllib.parse.parse_qs(urllib.parse.urlparse(sign_in_url).query)['attempt'][0]
+        confirm = urllib.request.Request(self.origin + '/signin/confirm',
+            data=urllib.parse.urlencode({'attempt': attempt, 'code': code}).encode(),
+            headers={'Content-Type': 'application/x-www-form-urlencoded', 'Origin': self.origin})
+        with browser.open(confirm, timeout=20) as confirmed:
+            self.assertEqual(confirmed.status, 200)
         form = urllib.parse.urlencode({'attempt': attempt, 'username': username,
                                        'password': 'correct horse battery', 'action': 'register'})
         request = urllib.request.Request(self.origin + '/signin/local', data=form.encode(), method='POST',
                                          headers={'Content-Type': 'application/x-www-form-urlencoded',
-                                                  'Origin': self.origin, 'Cookie': '; '.join(cookies)})
-        with urllib.request.urlopen(request, context=context, timeout=20) as reply:
+                                                  'Origin': self.origin})
+        with browser.open(request, timeout=20) as reply:
             return body, reply.status, reply.read().decode()
 
     def test_client_lifecycle(self):
@@ -318,7 +326,8 @@ class PlatformClientIntegration(unittest.TestCase):
         second = self.probe('returning')['online']
         self.assertEqual((second['auth'], second['accountId']), ('signed-in', account))
         self.assertNotEqual(self.stored()['refreshToken'], before)
-        self.assertEqual(self.refresh_status(before), 401)  # rotated: no longer valid
+        # Concurrent retries are accepted while the new successor is unused.
+        self.assertEqual(self.refresh_status(before), 200)
 
         # 3. Presenting a rotated refresh token revokes its family; the client
         # falls back to the device credential and keeps the same account.
@@ -338,10 +347,11 @@ class PlatformClientIntegration(unittest.TestCase):
         def browser(line):
             if line['event'] == 'handoff-ready':
                 self.proxy.drop_all()
-                pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player')
+                pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player', line['confirmationCode'])
                 pages['code'] = line['confirmationCode']
         linked = self.probe('link', browser)['handoff-finished']
-        self.assertIn(pages['code'], pages['page'])  # the page shows the game's code
+        self.assertIn('Code from the game', pages['page'])
+        self.assertNotIn(pages['code'], pages['page'])  # the browser asks for the code; never supplies it
         self.assertEqual(pages['status'], 200)
         self.assertTrue(linked['completed'], linked)
         self.assertTrue(linked['linked'])

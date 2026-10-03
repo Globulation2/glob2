@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategie
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balanceert duurzame groei en training en verzamelt legers daarna in golven.
 [AIMaxima-Profile]
@@ -198,6 +204,8 @@ Kies een spel
 Kies een speelveld
 [clear area]
 Grondstoffenzone
+[farm area]
+Akkerzone
 [Clearing:]
 ontruimen:
 [clearingflag explanation 2]
@@ -768,6 +776,8 @@ Selecteer herberg
 Selecteer markt
 [select place clearing area]
 Ontruimingsgebied plaatsen
+[select place farm area]
+Akkerzone plaatsen
 [select place clearingflag]
 Ontruimingsvlag plaatsen
 [select place explorationflag]
@@ -3140,6 +3150,8 @@ Verboden
 Bewaken
 [Clear]
 Opruimen
+[Farm]
+Akker
 [Paint]
 Schilderen
 [Erase]
@@ -3310,6 +3322,10 @@ Experimenten
 Balans van bewakingsgebieden
 [experiment guard-area-balancing help]
 Vrije krijgers verdelen zich over de geschilderde bewakingsgebieden in plaats van allemaal het dichtstbijzijnde te kiezen: een groter gebied krijgt er meer, en een overvol gebied loopt langzaam leeg naar de andere.
+[experiment farm-areas]
+Akkerzones
+[experiment farm-areas help]
+Voegt een akkerzone toe aan de zonepenselen. Arbeiders die erin oogsten nemen van het rijpste vak van de aaneengesloten akker en laten op elk vak één korrel staan, zodat de akker teruggroeit in plaats van vanaf de rand te worden opgegeten. Hout dat de akker in groeit, wordt gekapt.
 [settings Touch scrolling]
 Scrollen met aanraking
 [settings List momentum]
@@ -4643,6 +4659,26 @@ Vaart van de kaart
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

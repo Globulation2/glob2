@@ -1,5 +1,11 @@
 [AI strategy]
 AAren taktika
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Hazkunde iraunkorra eta entrenamendua orekatzen ditu, eta gero armadak olatuetan biltzen ditu.
 [AIMaxima-Profile]
@@ -198,6 +204,8 @@ Aukeratu partida
 Aukeratu mapa
 [clear area]
 Garbiketa zonaldea
+[farm area]
+Labore zonaldea
 [Clearing:]
 Garbitu:
 [clearingflag explanation 2]
@@ -754,6 +762,8 @@ Ostatua aukeratu
 Merkatua aukeratu
 [select place clearing area]
 Jarri eremua: Garbiketa zonaldea
+[select place farm area]
+Jarri eremua: Labore zonaldea
 [select place clearingflag]
 Jarri bandera: Garbiketa bandera
 [select place explorationflag]
@@ -3126,6 +3136,8 @@ Debekatua
 Zaindu
 [Clear]
 Garbitu
+[Farm]
+Laborea
 [Paint]
 Margotu
 [Erase]
@@ -3296,6 +3308,10 @@ Esperimentuak
 Zaintza-eremuen oreka
 [experiment guard-area-balancing help]
 Gerlari libreak margotutako zaintza-eremuen artean banatzen dira, guztiak hurbilenera joan beharrean: eremu handiago batek gehiago jasotzen ditu, eta gainezka dagoen eremu bat pixkanaka husten da besteetara.
+[experiment farm-areas]
+Labore zonaldeak
+[experiment farm-areas help]
+Labore zonaldea gehitzen die eremu-pintzelei. Barruan biltzen duten langileek konektatutako soroaren lauki helduenetik hartzen dute eta lauki bakoitzean ale bat uzten dute, soroa berriz hazi dadin ertzetik jan beharrean. Barrura hazten den egurra garbitzen da.
 [settings Touch scrolling]
 Ukipen bidezko korritzea
 [settings List momentum]
@@ -4629,6 +4645,26 @@ Maparen inertzia
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

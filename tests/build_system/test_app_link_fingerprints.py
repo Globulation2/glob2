@@ -183,6 +183,9 @@ class FakeAsc:
             self.posts.append(body)
             self.capabilities.append(body['data']['attributes']['capabilityType'])
             data = {'data': {}}
+        elif '/bundleIds/' in url and 'limit=' in url:
+            # App Store Connect answers 400 PARAMETER_ERROR.ILLEGAL for limit on relationships.
+            raise AssertionError(f'limit is not allowed on a relationship: {url}')
         elif '/bundleIdCapabilities' in url:
             data = {'data': [{'attributes': {'capabilityType': c}} for c in self.capabilities]}
         elif '/profiles' in url:

@@ -5,6 +5,7 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
+#include <GameplayRecording.h>
 
 #ifdef __APPLE__
 #	include <CoreFoundation/CoreFoundation.h>
@@ -32,6 +33,8 @@
 #include "Engine.h"
 #include "Headless.h"
 #include "script/ScriptCommand.h"
+#include "hive/HiveWorker.h"
+#include "hive/HiveClient.h"
 #include "Application.h"
 #include "SinglePlayerFlow.h"
 #include "Game.h"
@@ -395,6 +398,32 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
+	{
+		if (globalContainer->runNoX)
+		{
+			fprintf(stderr, "Video recording requires a rendered session\n");
+			delete globalContainer;
+			return 1;
+		}
+		auto path = globalContainer->recordingPath;
+		if (path.empty())
+		{
+			const auto &name = globalContainer->videoshotName;
+			if (name == "." || name == ".." || name.find_first_of("/\\") != std::string::npos)
+			{
+				fprintf(stderr, "-vs requires a bare recording name\n");
+				delete globalContainer;
+				return 1;
+			}
+			path = globalContainer->fileManager->getDir(0) + "/videoshots/" + name + ".mp4";
+		}
+		if (!GAGCore::Recording::recorder().start(path))
+		{
+			delete globalContainer;
+			return 1;
+		}
+	}
 	// Headless tooling hook (AI wheat-protection sanity check): -dump-resources <map>
 	for (int ai = 1; ai + 1 < argc; ai++)
 		if (strcmp(argv[ai], "-dump-resources") == 0)
@@ -420,7 +449,7 @@ int Glob2::run(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDL_GetError());
 		exit(1);
 	}
-	atexit(NET_Quit);
+	globalContainer->networkInitialized = true;
 #endif
 
 
@@ -457,6 +486,8 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+	if (argc == 2 && std::string(argv[1]) == "--hive-worker") return Hive::workerMain();
+	Hive::setExecutable(argv[0]);
 #ifdef GLOB2_MOBILE
     try { initializeMobilePaths(); }
     catch(const std::exception& error) {

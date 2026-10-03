@@ -1,5 +1,11 @@
 [AI strategy]
 Chiến thuật AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Cân bằng tăng trưởng bền vững và huấn luyện, rồi tập hợp quân thành từng đợt.
 [AIMaxima-Profile]
@@ -200,6 +206,8 @@ Chọn trận đấu
 Chọn bản đồ
 [clear area]
 Vùng khai quang
+[farm area]
+Vùng canh tác
 [Clearing:]
 Đang khai quang:
 [clearingflag explanation 2]
@@ -760,6 +768,8 @@ Chọn quán trọ
 Chọn chợ
 [select place clearing area]
 Chọn tạo vùng khai quang
+[select place farm area]
+Chọn tạo vùng canh tác
 [select place clearingflag]
 Chọn đặt cờ khai quang
 [select place explorationflag]
@@ -3112,6 +3122,8 @@ Cấm
 Canh gác
 [Clear]
 Dọn dẹp
+[Farm]
+Canh tác
 [Paint]
 Vẽ
 [Erase]
@@ -3282,6 +3294,10 @@ Thử nghiệm
 Cân bằng vùng canh gác
 [experiment guard-area-balancing help]
 Chiến binh rảnh rỗi phân bố giữa các vùng canh gác đã vẽ thay vì tất cả đi đến vùng gần nhất: vùng lớn hơn nhận nhiều hơn, và vùng quá đông dần dần vơi sang các vùng khác.
+[experiment farm-areas]
+Vùng canh tác
+[experiment farm-areas help]
+Thêm vùng canh tác vào các cọ vẽ vùng. Công nhân thu hoạch trong vùng sẽ lấy từ ô chín nhất của cánh đồng liền kề và để lại một hạt trên mỗi ô, nhờ vậy cánh đồng mọc lại thay vì bị ăn mòn từ rìa. Gỗ mọc vào vùng canh tác sẽ bị khai quang.
 [settings Touch scrolling]
 Cuộn bằng cảm ứng
 [settings List momentum]
@@ -4615,6 +4631,26 @@ Quán tính bản đồ
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

@@ -7,6 +7,9 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "hive/HiveClient.h"
+#include "OnlineServices.h"
+#include "GameDiagnostics.h"
 #include "TurnMatchPresenter.h"
 #include "sim/SimulationRunner.h"
 #include "EngineTiming.h"
@@ -95,6 +98,7 @@ void Engine::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
     if (onlineResult)
     {
         gui.networkMatch.online = true;
+        gui.hive=std::make_shared<Hive::Client>(gui,Online::services().client,onlineResult->matchId,gui.localPlayer);
         gui.networkMatch.rated = onlineResult->rated;
         gui.networkMatch.fromRoom = onlineResult->fromRoom;
     }

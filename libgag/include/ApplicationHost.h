@@ -10,6 +10,10 @@
 namespace GAGCore { struct ViewportMetrics; struct InputCapabilities; }
 namespace GAGCore::ApplicationHost
 {
+// Browser loops may request the next display callback instead of a timer.
+// Native loops return millisecond delays. Zero remains a cooperative timer.
+inline constexpr std::uint32_t AnimationFrameDelay = UINT32_MAX;
+
 class Loop
 {
   public:

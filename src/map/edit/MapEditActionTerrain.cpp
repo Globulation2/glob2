@@ -309,4 +309,5 @@ void MapEdit::selectActiveTeam(int selected) {
     game.map.computeDisplayedForbidden(team);
     game.map.computeDisplayedClearArea(team);
     game.map.computeDisplayedGuardArea(team);
+    game.map.computeDisplayedFarmArea(team);
 }

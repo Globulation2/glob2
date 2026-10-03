@@ -55,6 +55,8 @@ Settings::Settings()
 	version = 0;
 	
 	scrollWheelEnabled=true;
+	hiveMindEnabled=true;
+	hiveMindSupervision=true;
 	highResolutionArtwork=true;
 	autosaveGames=true;
 	resetDefaultUnitsAssigned();
@@ -171,6 +173,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+		READ_PARSED_INT(hiveMindEnabled);
+		READ_PARSED_INT(hiveMindSupervision);
 		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(autosaveGames);
 		// The file decides the set: absent or empty means nothing enabled, the
@@ -255,6 +259,8 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
+		Utilities::streamprintf(stream, "hiveMindEnabled=%d\n", hiveMindEnabled);
+		Utilities::streamprintf(stream, "hiveMindSupervision=%d\n", hiveMindSupervision);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
 		Utilities::streamprintf(stream, "clouds=%d\n", clouds);
 		Utilities::streamprintf(stream, "cloudShadows=%d\n", cloudShadows);

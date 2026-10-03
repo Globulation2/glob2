@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GameplayRecording.h>
 #include "SoundMixer.h"
 #include "Order.h"
 #include <Toolkit.h>
@@ -270,21 +271,35 @@ static void SDLCALL streamAudio(void *userdata, SDL_AudioStream *stream, int add
     auto *mixer = static_cast<SoundMixer *>(userdata);
     // Bound stack and decoding work; SDL3 may ask for several device buffers.
     alignas(Sint16) std::array<Uint8, DEVICE_FRAME_COUNT * 4> buffer;
-    while (additional > 0) {
+	// New PCM follows any input already queued for playback. One refill may span
+	// several chunks; timestamp it once and advance by samples, never by wall time.
+	constexpr auto bytesPerSecond =
+		GAGCore::Recording::AudioSampleRate * GAGCore::Recording::AudioChannels * sizeof(Sint16);
+	const auto queued = std::max(0, SDL_GetAudioStreamQueued(stream));
+	const auto refillStart =
+		GAGCore::Recording::timestamp() + std::int64_t(queued) * 1000000 / bytesPerSecond;
+	std::int64_t refillFrames = 0;
+	while (additional > 0) {
         const int count = std::min(additional, static_cast<int>(buffer.size()));
         const int aligned = (count + 3) & ~3;
         if (mixer->mode == SoundMixer::MODE_STOPPED || mixer->actTrack < 0)
             std::fill(buffer.begin(), buffer.begin() + aligned, 0);
         else
             mixaudio(mixer, buffer.data(), aligned);
-        if (!SDL_PutAudioStreamData(stream, buffer.data(), aligned)) return;
+		GAGCore::Recording::recorder().audio(
+			reinterpret_cast<const std::int16_t *>(buffer.data()), unsigned(aligned) / 2,
+			refillStart + refillFrames * 1000000 / GAGCore::Recording::AudioSampleRate);
+		refillFrames += aligned / (GAGCore::Recording::AudioChannels * sizeof(Sint16));
+		if (!SDL_PutAudioStreamData(stream, buffer.data(), aligned)) return;
         additional -= aligned;
     }
 }
 
 void SoundMixer::openAudio(void)
 {
-    const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, 44100};
+	// Initialize recording callback storage before the audio device starts.
+	GAGCore::Recording::recorder();
+	const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, 44100};
     audioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, streamAudio, this);
     soundEnabled = audioStream != nullptr;
     if (!soundEnabled) {

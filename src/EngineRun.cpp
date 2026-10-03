@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
 #include <ApplicationHost.h>
@@ -12,6 +13,8 @@
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "hive/HiveClient.h"
+#include "GameDiagnostics.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -44,6 +47,22 @@
 
 using std::shared_ptr;
 
+
+namespace
+{
+// Every host preserves the same failure cleanup and user-facing error contract.
+template<class Step>
+bool guardedSessionStep(Engine& engine, Step&& step)
+{
+    try { return step(); }
+    catch (const Script::SessionFailure&) { engine.abortSession(); throw; }
+    catch (const std::bad_alloc&)
+    {
+        engine.abortSession();
+        throw Script::HostFailure("Native allocation failed during the game session");
+    }
+}
+} // namespace
 
 void Engine::updateTickSpeedAndDrawCadence(MainLoopState& st, Uint64 now)
 {
@@ -144,6 +163,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 			net->addLocalOrder(order);
 	}
 
+	if (diagnostics) diagnostics->beginTick(gui.game);
 	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
 		gui.game.players[orderPlayer]->ai;
 	if (!gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI) &&
@@ -197,6 +217,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		}
 	}
 
+	if (diagnostics) diagnostics->completeTick(gui.game);
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
@@ -299,12 +320,16 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-void Engine::drawFrame(MainLoopState& st)
+void Engine::drawFrame(MainLoopState& st, bool everyFrame, const Scene* scene)
 {
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
-	const bool renderedFrame = st.nextGuiStep == 0;
+	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
+		// A threaded client records the immutable scene it presents, rather than
+		// reading the live simulation's tick or timing from the rendering thread.
+		GAGCore::Recording::recorder().matchFrame(scene ? scene->tick : gui.game.stepCounter,
+				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
 		gui.drawAll(gui.localTeamNo);
 		{
 			PERF_SCOPE_TIME(Present);
@@ -313,31 +338,21 @@ void Engine::drawFrame(MainLoopState& st)
 		PerformanceTelemetry::collector().presented();
 	}
 
-	if (renderedFrame)
-		saveVideoshot(st);
 }
 
-void Engine::saveVideoshot(MainLoopState& st)
-{
-	// if required, save videoshot
-	if (!(globalContainer->videoshotName.empty()) &&
-		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-		)
-	{
-		FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
-		printf("printing video shot %s\n", fileName.c_str());
-		globalContainer->gfx->printScreen(fileName.c_str());
-	}
-}
-
-void Engine::drawSession()
+void Engine::drawSession(bool everyFrame)
 {
     if (!session) throw std::logic_error("No active engine session");
+    if (diagnostics && diagnostics->pending())
+    {
+        const auto drain = [&] { diagnostics->drain(); };
+        if (runner) runner->withGame(drain); else drain();
+    }
     if (globalContainer->runNoX) return;
     if (!runner)
     {
         if (turn && !std::exchange(turnDrawPending, false)) return;
-        drawFrame(*session);
+        drawFrame(*session, everyFrame && !turn);
         return;
     }
     // Threaded: draw the newest scene the simulation published, every frame.
@@ -345,14 +360,7 @@ void Engine::drawSession()
     if (!scene)
         return;
     gui.setPublishedScene(scene);
-    GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
-    gui.drawAll(gui.localTeamNo);
-    {
-        PERF_SCOPE_TIME(Present);
-        globalContainer->gfx->nextFrame();
-    }
-    PerformanceTelemetry::collector().presented();
-    saveVideoshot(*session);
+    drawFrame(*session, true, scene);
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -805,7 +813,7 @@ void Engine::reloadTurnInitialState()
 //   5. (gate flip) readyNow = net->tickReady()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. drawSession / sessionDelay  - draw, videoshot, host pacing
+//   8. drawSession / sessionDelay  - draw, gameplay capture, host pacing
 //   9. handleExitRequest           - drain on exit request
 //
 // Track order readiness separately for the previous and current ticks.
@@ -827,6 +835,10 @@ void Engine::beginSession(Uint64 now)
     session = st;
     randomRequirement.emplace();
     automaticGameStartTick = now;
+	if (!globalContainer->runNoX)
+		GAGCore::Recording::recorder().beginMatch(
+			globalContainer->replaying ? "replay" : (turn ? "multiplayer" : "single_player"),
+			gui.game.mapHeader.getMapName(), gui.localTeamNo, gui.game.stepCounter);
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
 		perf.reset();
@@ -868,13 +880,7 @@ bool Engine::stepSession(Uint64 now)
 
 bool Engine::stepSession(Uint64 now, const std::vector<SDL_Event>& events)
 {
- try { return stepSessionImpl(now,events); }
- catch(const Script::SessionFailure&) { abortSession(); throw; }
- catch(const std::bad_alloc&)
- {
-  abortSession();
-  throw Script::HostFailure("Native allocation failed during the game session");
- }
+    return guardedSessionStep(*this, [&] { return stepSessionImpl(now, events); });
 }
 
 void Engine::abortSession() noexcept
@@ -890,6 +896,7 @@ void Engine::abortSession() noexcept
         checksumSidecar.reset();
         globalContainer->datasetWriter.reset();
     }
+    if (diagnostics) diagnostics->drain();
     session.reset();
     randomRequirement.reset();
     sessionInput.clear();
@@ -921,6 +928,30 @@ bool Engine::simulationStep(Uint64 now)
     if (!gui.isRunning) return false;
     // The client half runs on the main thread (clientStep), with the simulation parked.
     return advanceSession(now, [] {}, false);
+}
+
+bool Engine::presentationPaused() const { return gui.gamePaused || gui.hardPause; }
+
+bool Engine::serialClientFrame(Uint64 now, const std::vector<SDL_Event>& events, Uint32 budget)
+{
+    return guardedSessionStep(*this, [&]() -> bool {
+        if (!session) throw std::logic_error("No active engine session");
+        const Uint64 started = SDL_GetTicks();
+        clientStep(events);
+        // Apply speed/pause input before deciding whether a tick is due.
+        updateTickSpeedAndDrawCadence(*session, now);
+        bool advanced = false;
+        while (gui.isRunning)
+        {
+            const Uint64 elapsed = SDL_GetTicks() - started;
+            const Uint64 current = now + elapsed;
+            // Slow input/layout work must not starve an already due tick.
+            if (sessionDelay(current) != 0 || (advanced && elapsed >= budget)) break;
+            advanceSession(current, [] {}, false);
+            advanced = true;
+        }
+        return gui.isRunning;
+    });
 }
 
 void Engine::clientStep(const std::vector<SDL_Event>& events)
@@ -979,6 +1010,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     clientWork();
 
     pumpTurnSession(now);
+    gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0);
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
         gatherAndAdvanceOrders(st.wasReadyLastTick);
@@ -1051,6 +1083,7 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 		perf.reset();
 	}
 
+    if (diagnostics) diagnostics->drain();
     session.reset();
     randomRequirement.reset();
     sessionInput.clear();
@@ -1090,6 +1123,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
                 break;
             if (globalContainer->runNoX)
             {
+                drawSession();
                 runner->acquireScene();
                 std::this_thread::sleep_for(std::chrono::milliseconds(8));
             }
@@ -1121,3 +1155,5 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
     }
     doRunOnceAgain = finishSession();
 }
+
+bool Engine::diagnosticsPending() const { return diagnostics && diagnostics->pending(); }

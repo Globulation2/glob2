@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "MainMenuScreen.h"
+#include "ui/RecordingControls.h"
 #include "GlobalContainer.h"
 #include <algorithm>
 #include <cmath>
@@ -170,6 +171,8 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
+			if (GAGCore::Recording::supported())
+				content.push_back(recordingControls());
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 			content.push_back(button("menu/privacy", "Privacy policy", [] {
 #if defined(GLOB2_AMAZON_RELEASE)
@@ -241,6 +244,8 @@ Element MainMenuScreen::build(const Presentation &p)
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;
 	content.push_back(wrap(std::move(utilities), grid));
+	if (GAGCore::Recording::supported())
+		content.push_back(recordingControls());
 	cardOptions.padding = p.pt(compact ? 16 : 24);
 	auto panel = sized({panelW, panelH},
 					   card(column({expanded(scroll("menu/scroll", column(std::move(content), {p.pt(compact ? 4 : 6)}))), caption(PACKAGE_VERSION)}, {p.pt(6)}),

@@ -18,6 +18,8 @@ namespace GameGUIKeyActions
 		table.add(IncreaseUnitsWorking, "increase units working");
 		table.add(DecreaseUnitsWorking, "decrease units working");
 		table.add(OpenChatBox, "open chat box");
+		table.add(OpenCommander, "open commander");
+		table.add(StopCommander, "stop commander");
 		table.add(IterateSelection, "iterate selection");
 		table.add(GoToEvent, "go to event");
 		table.add(GoToHome, "go to home");
@@ -47,6 +49,7 @@ namespace GameGUIKeyActions
 		table.add(SelectPlaceForbiddenArea, "select place forbidden area");
 		table.add(SelectPlaceGuardArea, "select place guard area");
 		table.add(SelectPlaceClearingArea, "select place clearing area");
+		table.add(SelectPlaceFarmArea, "select place farm area");
 		table.add(SwitchToAddingAreas, "switch to adding areas");
 		table.add(SwitchToRemovingAreas, "switch to removing areas");
 		table.add(SwitchToAreaBrush1, "switch to area brush 1");

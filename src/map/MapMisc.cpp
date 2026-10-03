@@ -26,6 +26,7 @@ Uint32 Map::checkSum(bool heavy)
 				c.groundUnit +
 				c.airUnit +
 				c.forbidden +
+				c.farmArea + // zero everywhere unless a farm area was painted
 				c.scriptAreas;
 			cs=rotl1(cs);
 		}

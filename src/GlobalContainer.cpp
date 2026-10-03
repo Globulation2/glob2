@@ -1,10 +1,16 @@
+#ifndef __EMSCRIPTEN__
+#include <SDL3_net/SDL_net.h>
+#endif
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include <GameplayRecording.h>
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
+#ifndef __EMSCRIPTEN__
+#include <SDL3_net/SDL_net.h>
+#endif
 
 #include "FileManager.h"
 #include "GameGUIKeyActions.h"
@@ -95,6 +101,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 
 GlobalContainer::~GlobalContainer(void)
 {
+	GAGCore::Recording::recorder().shutdown();
 	// unlink GUI style
 	if (!runNoX)
 		delete Style::style;
@@ -106,7 +113,20 @@ GlobalContainer::~GlobalContainer(void)
 	voiceRecorder.reset();
 	title.reset();
 
+	// SDL_net owns resolver threads and conditions. Join them before the
+	// graphics backend calls SDL_Quit and destroys SDL thread resources.
+#ifndef __EMSCRIPTEN__
+	if (networkInitialized)
+		NET_Quit();
+#endif
+
 	// release resources
+#ifndef __EMSCRIPTEN__
+	// Join SDL_net's resolver threads before GraphicContext calls SDL_Quit().
+	// Waiting until the atexit fallback is too late: SDL has already cleared
+	// its thread registry, so NET_Quit cannot join those threads safely.
+	NET_Quit();
+#endif
 	Toolkit::close();
 
 	// Remaining owned members (replayReader, replayWriter, datasetWriter) are destroyed by the implicit member destruction that
@@ -228,8 +248,7 @@ void GlobalContainer::loadClient(void)
 		std::string fontfile = "data/fonts/";
 		fontfile+=+PRIMARY_FONT;
 		Toolkit::loadFont(fontfile.c_str(), 20, "menu");
-		Toolkit::loadFont(fontfile.c_str(), 13, "standard");
-		Toolkit::loadFont(fontfile.c_str(), 10, "little");
+		loadGameFonts();
         // Separate frontend aliases avoid changing gameplay/editor font metrics.
         Toolkit::loadFont(fontfile.c_str(), 16, "frontend-body");
         Toolkit::loadFont(fontfile.c_str(), 14, "frontend-support");
@@ -256,46 +275,52 @@ void GlobalContainer::loadClient(void)
 
 void GlobalContainer::loadGameGraphics(bool showProgress)
 {
+	const auto sprite = [](const std::string& path) {
+		auto* result = Toolkit::getSprite(path);
+		if (!result) throw std::runtime_error("Cannot load game sprite: " + path);
+		return result;
+	};
 	// load terrain data
 	if (!terrain)
-		terrain = Toolkit::getSprite("data/gfx/terrain");
-	terrainWater = Toolkit::getSprite("data/gfx/water");
-	terrainCloud = Toolkit::getSprite("data/gfx/cloud");
+		terrain = sprite("data/gfx/terrain");
+	terrainWater = sprite("data/gfx/water");
+	terrainCloud = sprite("data/gfx/cloud");
 	
 	// black for unexplored terrain
-	terrainBlack = Toolkit::getSprite("data/gfx/black");
+	terrainBlack = sprite("data/gfx/black");
 
 	// load shader for invisible terrain
-	terrainShader = Toolkit::getSprite("data/gfx/shade");
+	terrainShader = sprite("data/gfx/shade");
 	
 	if (showProgress)
 		updateLoadProgressScreen(60);
 	// load resources
-	resources = Toolkit::getSprite("data/gfx/ressource");
+	resources = sprite("data/gfx/ressource");
 	resources->createTextureAtlas(true);
-	resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
-	mapIcons = Toolkit::getSprite("data/gfx/mapicon");
-	areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
-	areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
-	areaGuard = Toolkit::getSprite("data/gfx/area-guard");
-	bullet = Toolkit::getSprite("data/gfx/bullet");
-	bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
-	deathAnimation = Toolkit::getSprite("data/gfx/death"); 
+	resourceMini = sprite("data/gfx/ressourcemini");
+	mapIcons = sprite("data/gfx/mapicon");
+	areaClearing = sprite("data/gfx/area-clearing");
+	areaForbidden = sprite("data/gfx/area-forbidden");
+	areaGuard = sprite("data/gfx/area-guard");
+	areaFarm = sprite("data/gfx/area-farm");
+	bullet = sprite("data/gfx/bullet");
+	bulletExplosion = sprite("data/gfx/explosion");
+	deathAnimation = sprite("data/gfx/death");
 
 	if (showProgress)
 		updateLoadProgressScreen(70);
 	// load units
-	units = Toolkit::getSprite("data/gfx/unit");
+	units = sprite("data/gfx/unit");
 	initUnitSkins();
 
 	if (showProgress)
 		updateLoadProgressScreen(90);
 	// load graphics for gui
-	unitmini = Toolkit::getSprite("data/gfx/unitmini");
-	gamegui = Toolkit::getSprite("data/gfx/gamegui");
-	brush = Toolkit::getSprite("data/gfx/brush");
-	magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
-	particles = Toolkit::getSprite("data/gfx/particle");
+	unitmini = sprite("data/gfx/unitmini");
+	gamegui = sprite("data/gfx/gamegui");
+	brush = sprite("data/gfx/brush");
+	magiceffect = sprite("data/gfx/magiceffect");
+	particles = sprite("data/gfx/particle");
 
 	// building artwork used by the game, the editor and the settings
 	buildingsTypes.loadSprites();
@@ -361,4 +386,18 @@ void GlobalContainer::load(void)
 	// src/game/entities/resources.cpp); nothing to load here.
 
 	loadClient();
+}
+
+void GlobalContainer::loadGameFonts()
+{
+	const std::string font = std::string("data/fonts/") + PRIMARY_FONT;
+	Toolkit::loadFont(font, 13, "standard");
+	Toolkit::loadFont(font, 10, "little");
+	standardFont = Toolkit::getFont("standard"); littleFont = Toolkit::getFont("little");
+}
+void GlobalContainer::loadOffscreenGraphics()
+{
+	if (!gfx) gfx = Toolkit::initGraphic(640, 480, 0, "Glob2 export", "glob2");
+	if (!standardFont || !littleFont) loadGameFonts();
+	if (!gameGraphics) loadGameGraphics(false);
 }

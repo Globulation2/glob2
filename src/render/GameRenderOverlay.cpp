@@ -237,13 +237,13 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 
 void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
+	const SceneMap& map = view.drawnScene().map;
 	std::valarray<unsigned char> &overlayAlphas = view.render.overlayAlphas;
 	PERF_SCOPE_TIME(Overlay);
 	if(drawOptions & DRAW_OVERLAY)
 	{
 		const OverlayArea* overlays = view.drawnScene().overlay.get();
-		if (!overlays && edit)
-			overlays=&edit->overlay;
+
 		if (!overlays)
 			return;
 		int overlayMax=overlays->getMaximum();
@@ -262,7 +262,7 @@ void Game::drawMapOverlayMaps(int left, int top, int right, int bot, int sw, int
 
 				int rx=(x+viewportX-1+map.getW())%map.getW();
 				int ry=(y+viewportY-1+map.getH())%map.getH();
-				if(!edit && !map.isMapDiscovered(rx, ry, visibleTeams))
+				if(!view.drawnScene().editor && !map.isMapDiscovered(rx, ry, visibleTeams))
 					continue;
 				if(overlays->getValue(rx, ry))
 				{

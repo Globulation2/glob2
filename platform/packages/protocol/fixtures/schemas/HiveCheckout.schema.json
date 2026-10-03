@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:HiveCheckout",
+  "title": "HiveCheckout",
+  "type": "object",
+  "required": [
+    "pack"
+  ],
+  "properties": {
+    "pack": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    }
+  },
+  "additionalProperties": false
+}

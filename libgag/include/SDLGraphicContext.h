@@ -390,6 +390,7 @@ namespace GAGCore
 		float rasterScale(void);
 		//! target pixels per logical pixel while drawing into an offscreen target; 0 while drawing into the window
 		float renderTargetScale = 0.0f;
+		bool offscreenPass = false;
 		bool mapTransformActive=false;
         bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
@@ -428,6 +429,7 @@ namespace GAGCore
 		} frameCache;
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
+		void captureRecordingFrame();
 		void cacheFrame();
         std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
         void prepareDraw() override;
@@ -469,6 +471,8 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
+		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
 
 		// modifiers
@@ -482,7 +486,7 @@ namespace GAGCore
             compactWindowAllowed=allowed;applyWindowMinimumSize();
         }
         bool isResponsiveViewport() const { return responsiveViewport; }
-        bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
+        bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware && !offscreenPass; }
         double logicalUnitsPerPoint() const;
         //! Logical pixels per authored font pixel for text a touch painter sizes in
         //! points: logicalUnitsPerPoint() times the player's text-size preference.
@@ -735,6 +739,8 @@ namespace GAGCore
 
 		friend class DrawableSurface;
 		// Support functions
+		//! Load every frame from the sheets listed in <filename>.sheet, return false and load nothing if there is no usable index
+		bool loadSheets(const std::string &filename);
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise

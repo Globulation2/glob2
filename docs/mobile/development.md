@@ -258,8 +258,8 @@ new confirmation gesture. Painting buffers an unfinished stroke; release applies
 its existing brush operations, while interruption discards it. Completed strokes
 are never undone by leaving the tool. Two fingers navigate instead of painting.
 
-Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear and
-Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
+Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear (plus
+Farm in a game with the farm-areas experiment) and Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
 sizes as detents (smallest lowest; touching one magnifies it beside the rail and
 the thumb can scrub along it), Paint/Erase at its foot and Pan at its head. Pan
 makes one finger move the map. A stroke held in the 24-point band along a map
@@ -673,15 +673,19 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
 
 ```sh
+git fetch origin master
 git fetch upstream master
-git checkout master
-git merge upstream/master
-git push origin master
+git checkout --detach upstream/master
+git merge -s ours --no-edit -m "Merge public glob2 master into release mirror" origin/master
+git diff --exit-code upstream/master   # the tree must equal upstream's
+git push origin HEAD:master
 ```
 
-The release mirror has release-specific commits, so merging may require
-conflict resolution. Inspect the commits and resulting tree before pushing.
-Do not force-push a release branch.
+The merge keeps the mirror's history (so the push is not a force push) while
+taking upstream's files exactly; the release mirror never carries its own
+changes. Make any release-specific change upstream first; see
+[the release mirror](../development/releasing.md#the-release-mirror). Inspect
+the new commits before pushing. Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
 in the mirror. The optional release notes are shown to internal testers. The

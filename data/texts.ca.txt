@@ -1,5 +1,11 @@
 [AI strategy]
 Estratègia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Equilibra creixement sostenible i entrenament, després reuneix exèrcits en onades.
 [AIMaxima-Profile]
@@ -198,6 +204,8 @@ Escull una partida
 Escull un mapa
 [clear area]
 Area de Neteja
+[farm area]
+Area de Conreu
 [Clearing:]
 Netejant
 [clearingflag explanation 2]
@@ -752,6 +760,8 @@ Selecciona edifici: Despensa
 Selecciona edifici: Mercat
 [select place clearing area]
 Col·loca zona de neteja
+[select place farm area]
+Col·loca zona de conreu
 [select place clearingflag]
 Col·loca bandera de neteja
 [select place explorationflag]
@@ -3124,6 +3134,8 @@ Prohibit
 Vigila
 [Clear]
 Neteja
+[Farm]
+Conreu
 [Paint]
 Pinta
 [Erase]
@@ -3294,6 +3306,10 @@ Funcions experimentals
 Equilibri de les zones de guàrdia
 [experiment guard-area-balancing help]
 Els guerrers lliures es reparteixen entre les zones de guàrdia pintades en lloc d'anar tots a la més propera: una zona més gran en rep més, i una zona massa plena es buida a poc a poc cap a les altres.
+[experiment farm-areas]
+Zones de conreu
+[experiment farm-areas help]
+Afegeix una zona de conreu als pinzells de zona. Els treballadors que cullen dins d'una agafen de la casella més madura del camp connectat i deixen un gra a cada casella, de manera que el camp torna a créixer en lloc de ser menjat per les vores. La fusta que hi creix es neteja.
 [settings Touch scrolling]
 Desplaçament tàctil
 [settings List momentum]
@@ -4627,6 +4643,26 @@ Inèrcia del mapa
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

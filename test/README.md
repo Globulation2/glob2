@@ -59,6 +59,12 @@ collects a bounded GDB backtrace before cleanup when available. To opt in when i
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
+Windows CI replays native engine access violations under GDB with a fresh profile
+and separate artifacts. Harnesses retain function names for backtraces; shipped
+programs keep their normal release stripping. Logs appear in
+`artifacts/tests/crash-diagnostics/`. Diagnostic replays are bounded to 180 seconds
+per case and never replace the original failed result.
+
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so
 `build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
@@ -887,6 +893,18 @@ inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
 and checks invalid settings and preferences.
 See [map CLI documentation](../docs/map-generators/CLI.md).
 
+### Whole-game diagnostics
+
+`python3 test/run_tests.py --filter 'GameDiagnostics/*'` covers release-active
+field parsing, full unsigned food values, capture cadence, shared-team controllers, bounded Scene export,
+repeated graphics lifetimes, checked output failures, and software/portable/GL
+state restoration. Display cases run through the registry's isolated processes.
+`python3 test/test_game_diagnostics.py [client-binary]` exercises the production CLI,
+retaining commands, PNGs, saves and per-tick checksums under `artifacts/map-cli/diagnostics/`.
+It compares disabled/fields/PNG/threaded runs, save continuation, malformed arguments,
+and output failures. The map CLI suite invokes it on
+native platforms; `--generation-only` continues to skip graphics exports.
+
 ### Flat map images
 
 `python3 test/test_map_image.py [client-binary]` tests the optional image importer
@@ -1148,6 +1166,15 @@ the default game's per-100-tick checksums with
 `glob2test::GameOptions::experiments`; `GameOptions::header` installs the
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../docs/features/guard-area-balancing.md).
+
+`FarmAreas` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'FarmAreas/*'`) covers the `farm-areas` experiment on the real `Map` and engine:
+the ripest-tile source, empty gaps, exhausted fields, the seed grain, wood and
+algae, another team's area, the original harvest off a farm, clearing targets,
+growth ignoring the mask, the brush refusing ground that cannot grow, the order
+being rejected and a painted mask being inert without the experiment, workers
+keeping every tile of a farmed field alive, and a save/load round trip. Design:
+[farm areas](../docs/features/farm-areas.md).
 
 ## JavaScript
 
@@ -1462,3 +1489,12 @@ the immutable copy and its lightweight in-memory representation; encoding includ
 final array/history packing, offset relocation and hashing. The benchmark flattens
 the finished output for section-independent measurement, so its process peak is
 not an isolated allocation bound for the production writer.
+
+## Gameplay recording
+
+The `GameplayRecording` unit suite checks lifecycle failures, output protection,
+and decoded callback audio bursts. `GameplayRecording.Integration` compares serial
+and threaded recordings against unrecorded per-tick baselines.
+Set `GLOB2_TEST_FFMPEG=ffmpeg` to also encode real video/audio and chapter fixtures.
+Run `python3 test/test_recording_tool.py` for manifest selection and extraction
+argument tests. See [gameplay recording](../docs/features/gameplay-recording.md).

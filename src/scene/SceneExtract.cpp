@@ -2,6 +2,7 @@
 #include "scene/SceneExtract.h"
 
 #include "Building.h"
+#include "map/edit/MapEdit.h"
 #include "BuildingType.h"
 #include "Bullet.h"
 #include "Game.h"
@@ -12,6 +13,7 @@
 #include "UnitTiming.h"
 #include "TeamStat.h"
 #include "Unit.h"
+#include "ai/AITelemetry.h"
 #include "render/GameAnimations.h"
 
 static_assert(Team::MAX_COUNT <= SceneEntities::Teams, "SceneEntities::Teams too small");
@@ -148,6 +150,14 @@ namespace
 		if (const Building *b = game.resolveBuilding(request.selectedBuilding))
 		{
 			selected.ref = request.selectedBuilding;
+			selected.verbose = b->verbose;
+			if (b->verbose == 1 || b->verbose == 2)
+			{
+				int swim = b->verbose == 1 ? 0 : 1;
+				while (b->verbose == 2 && swim < SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
+				if (b->globalGradient[swim])
+					selected.debugGradient.assign(b->globalGradient[swim], b->globalGradient[swim] + size_t(game.map.getW())*game.map.getH());
+			}
 			selected.recordFailingUnits = b->recordFailingUnits;
 			selected.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
 			for (int r = 0; r < SceneSelectedBuilding::FailReasons; ++r)
@@ -327,12 +337,13 @@ namespace
 
 void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
 {
+	scene.editor = game.edit != nullptr;
 	scene.tick = game.stepCounter;
 	scene.tickTime = request.tickTime;
 	scene.tickInterval = request.tickInterval;
-	scene.map.extract(game.map, request.view.displayW, request.view.displayH);
+	scene.map.extract(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
 	extractEntities(game, request, scene.entities);
-	extractPanels(game, request, scene.panels);
+	if (request.includePanels) extractPanels(game, request, scene.panels);
 
 	// Overlay maps refresh every 25 ticks (windows start at ticks 25k+1), and at once
 	// when the client switches overlay or team.
@@ -350,7 +361,7 @@ void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scen
 	overlayType = type;
 	overlayWindow = window;
 	overlayTeam = request.localTeam;
-	scene.overlay = overlay;
+	scene.overlay = game.edit && !overlay ? std::make_shared<OverlayArea>(game.edit->overlay) : overlay;
 }
 
 void extractScene(const Game &game, const SceneRequest &request, Scene &scene)

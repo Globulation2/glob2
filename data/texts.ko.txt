@@ -1,5 +1,11 @@
 [AI strategy]
 AI 전략
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 지속 가능한 성장과 훈련의 균형을 맞춘 뒤 군대를 모아 파상 공격합니다.
 [AIMaxima-Profile]
@@ -200,6 +206,8 @@ Caps Lock
 지도 선택
 [clear area]
 정리 구역
+[farm area]
+경작 구역
 [Clearing:]
 제거 대상:
 [clearingflag explanation 2]
@@ -760,6 +768,8 @@ Scroll Lock
 시장 선택
 [select place clearing area]
 정리 구역 배치 선택
+[select place farm area]
+경작 구역 배치 선택
 [select place clearingflag]
 정리 깃발 배치 선택
 [select place explorationflag]
@@ -3112,6 +3122,8 @@ CPU %0%
 경비
 [Clear]
 정리
+[Farm]
+경작
 [Paint]
 그리기
 [Erase]
@@ -3282,6 +3294,10 @@ AI 추가
 경비 구역 분산
 [experiment guard-area-balancing help]
 자유로운 전사들이 가장 가까운 경비 구역에 모두 몰리는 대신 칠해진 경비 구역들 사이에 나뉘어 배치됩니다. 더 큰 구역이 더 많은 전사를 받고, 너무 붐비는 구역은 다른 구역으로 서서히 빠져나갑니다.
+[experiment farm-areas]
+경작 구역
+[experiment farm-areas help]
+구역 브러시에 경작 구역을 추가합니다. 그 안에서 수확하는 일꾼은 이어진 밭에서 가장 잘 익은 칸에서 가져가고 모든 칸에 한 알씩 남겨 두므로, 밭이 가장자리부터 먹혀 없어지지 않고 다시 자랍니다. 경작 구역으로 자라 들어온 나무는 정리됩니다.
 [settings Touch scrolling]
 터치 스크롤
 [settings List momentum]
@@ -4615,6 +4631,26 @@ AI 추가
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

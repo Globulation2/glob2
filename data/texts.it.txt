@@ -1,5 +1,11 @@
 [AI strategy]
 Strategia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Bilancia crescita sostenibile e addestramento, poi raduna eserciti in ondate.
 [AIMaxima-Profile]
@@ -240,6 +246,8 @@ Seleziona una partita
 Seleziona una mappa
 [clear area]
 Area di raccolta
+[farm area]
+Area di coltura
 [Clearing:]
 Raccolta:
 [clearingflag explanation 2]
@@ -806,6 +814,8 @@ Seleziona Mensa
 Seleziona Mercato
 [select place clearing area]
 Seleziona posiziona area da pulire
+[select place farm area]
+Seleziona posiziona area di coltura
 [select place clearingflag]
 Posiziona bandiera di raccolta
 [select place explorationflag]
@@ -3178,6 +3188,8 @@ Vietato
 Sorveglia
 [Clear]
 Sgombra
+[Farm]
+Coltura
 [Paint]
 Dipingi
 [Erase]
@@ -3348,6 +3360,10 @@ Esperimenti
 Bilanciamento delle zone di guardia
 [experiment guard-area-balancing help]
 I guerrieri liberi si distribuiscono tra le zone di guardia dipinte invece di andare tutti alla più vicina: una zona più grande ne riceve di più, e una zona sovraffollata si svuota gradualmente verso le altre.
+[experiment farm-areas]
+Aree di coltura
+[experiment farm-areas help]
+Aggiunge un'area di coltura ai pennelli di zona. I lavoratori che raccolgono al suo interno prendono dalla casella più matura del campo collegato e lasciano un chicco su ogni casella, così il campo ricresce invece di essere mangiato dai bordi. Il legno che cresce nell'area viene tagliato.
 [settings Touch scrolling]
 Scorrimento tattile
 [settings List momentum]
@@ -4681,6 +4697,26 @@ Inerzia della mappa
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

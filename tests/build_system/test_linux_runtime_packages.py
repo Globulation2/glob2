@@ -40,3 +40,39 @@ class RuntimePackagesTest(unittest.TestCase):
             if args[0]=='ldd': return '/lib64/ld-linux-x86-64.so.2 (0x123)'
             return 'libc6:amd64: /lib64/ld-linux-x86-64.so.2\nother-libc:amd64: /lib64/ld-linux-x86-64.so.2'
         with self.assertRaises(ValueError): m.packages_for('binary',command)
+
+    def test_runtime_inventory_excludes_cached_configure_probes(self):
+        from tempfile import TemporaryDirectory
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('configure/conftest_stale_sdl2', 'src/glob2', 'lib/libproject.so'):
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'\x7fELFfixture')
+                path.chmod(0o755)
+            self.assertEqual(list(m.runtime_binaries(root)),
+                             [root / 'lib/libproject.so', root / 'src/glob2'])
+    def test_cached_configure_probes_are_not_runtime_programs(self):
+        import tempfile
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            probe = root / 'configure' / 'conftest'
+            program = root / 'src' / 'glob2'
+            for path in (probe, program):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b'\x7fELF')
+                path.chmod(0o755)
+            output = root / 'runtime-packages.txt'
+            with patch('sys.argv', ['runtime_packages', str(root), '--output', str(output)]), \
+                 patch.object(m, 'packages_for', return_value={'libc6:amd64'}) as packages:
+                m.main()
+                packages.assert_called_once_with(program)
+            import json
+            self.assertEqual(json.loads(output.with_suffix('.json').read_text())['binaries'],
+                             [str(program)])
+            with patch('sys.argv', ['runtime_packages', str(root), '--verify']), \
+                 patch.object(m.subprocess, 'check_output', return_value='') as linked:
+                m.main()
+                linked.assert_called_once_with(['ldd', str(program)], text=True,
+                                              stderr=subprocess.STDOUT)

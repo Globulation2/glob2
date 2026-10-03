@@ -2,6 +2,7 @@
 // stored row about the account, other people's data and secrets stay out,
 // and every account column in the schema is either exported or deliberately
 // left out (so a new table cannot silently escape the export).
+import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { DEFAULT_INSTANCE_CONFIG } from '@glob2/core';
@@ -148,7 +149,7 @@ async function seed(owner: Player, other: Player) {
     })
     .execute();
 
-  const blob = 'ef'.repeat(32);
+  const blob = randomUUID().replaceAll('-', '').repeat(2);
   await db
     .insertInto('blobs')
     .values({ sha256: blob, size: 10, content_type: 'application/octet-stream', storage_key: blob })
@@ -323,6 +324,131 @@ describe('downloading my data', () => {
     ]);
     expect(theirs.moderation).toEqual([]);
 
+    owner.client.close();
+    other.client.close();
+  });
+
+  it('exports owned Hive credits and sessions without live capabilities', async () => {
+    const owner = await registeredPlayer(api, 'HiveExporter');
+    const other = await registeredPlayer(api, 'OtherHiveExporter');
+    const { matchId } = await seed(owner, other);
+    const leases: string[] = [];
+    for (const [seat, player] of [owner, other].entries()) {
+      const session = randomUUID();
+      const lease = randomUUID();
+      leases.push(lease);
+      await sql`INSERT INTO hive_wallets(account_id,balance,reserved) VALUES(${player.accountId},10,1)`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_ledger(id,account_id,amount,kind) VALUES(${randomUUID()},${player.accountId},10,'grant')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_calls(id,account_id,reserved,status,rate) VALUES(${randomUUID()},${player.accountId},1,'reserved','{}')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_purchases(id,account_id,pack) VALUES(${randomUUID()},${player.accountId},'{}')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_sessions(id,account_id,match_id,seat,team,lease,client_id,run_id) VALUES(${session},${player.accountId},${matchId},${seat},${seat},${lease},${lease},${lease})`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_events(session_id,dedup,kind,body) VALUES(${session},'one','command',${JSON.stringify({ text: player.displayName })}::jsonb)`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_operations(id,session_id,generation,lease,status,request) VALUES(${randomUUID()},${session},0,${lease},'pending','{}')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO hive_programs(session_id,id,revision,definition,status) VALUES(${session},${randomUUID()},1,'{}','active')`.execute(
+        harness.database.db,
+      );
+    }
+    for (const [player, excluded] of [
+      [owner, other],
+      [other, owner],
+    ] as const) {
+      const text = await (await exportOf(player)).text();
+      const data = JSON.parse(text) as AccountExport;
+      expect(schemaIssues(AccountExport, data)).toEqual([]);
+      expect(data.hive).toBeDefined();
+      for (const list of Object.values(data.hive!)) expect(list).toHaveLength(1);
+      expect(data.hive!.wallets).toEqual([{ balance: 10, reserved: 1 }]);
+      expect(data.hive!.events).toEqual([
+        expect.objectContaining({ body: { text: player.displayName } }),
+      ]);
+      expect(text).not.toContain(excluded.accountId);
+      expect(text).not.toContain(excluded.displayName);
+      for (const lease of leases) expect(text).not.toContain(lease);
+      expect(JSON.stringify(data.hive)).not.toMatch(/lease|clientId|runId/);
+    }
+    owner.client.close();
+    other.client.close();
+  });
+
+  it('exports owned Studio conversations, revisions and separate credits without leases', async () => {
+    const owner = await registeredPlayer(api, 'StudioExporter');
+    const other = await registeredPlayer(api, 'OtherStudioExporter');
+    const leases: string[] = [];
+    for (const player of [owner, other]) {
+      const thread = randomUUID();
+      const request = randomUUID();
+      const lease = randomUUID();
+      leases.push(lease);
+      await sql`INSERT INTO map_wallets(account_id,balance,reserved) VALUES(${player.accountId},3,0)`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO map_ledger(id,account_id,amount,kind) VALUES(${randomUUID()},${player.accountId},3,'grant')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO map_calls(id,account_id,reserved,status,rate) VALUES(${randomUUID()},${player.accountId},1,'settled','{}')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO map_purchases(id,account_id,pack) VALUES(${randomUUID()},${player.accountId},'{}')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO studio_threads(id,account_id,title,brief) VALUES(${thread},${player.accountId},${player.displayName},'More rivers')`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO studio_messages(id,thread_id,role,text) VALUES(${randomUUID()},${thread},'user',${player.displayName})`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,status,input,checkpoints,lease,charged) VALUES(${request},${thread},${player.accountId},'generate','ready','{"players":2}','{"version":1}',${lease},true)`.execute(
+        harness.database.db,
+      );
+      await sql`INSERT INTO studio_attempts(id,request_id,stage,model,status,input,output) VALUES(${randomUUID()},${request},'design','fixture','completed','{"feedback":"More rivers"}','{"layout":"rivers"}')`.execute(
+        harness.database.db,
+      );
+    }
+    for (const [player, excluded] of [
+      [owner, other],
+      [other, owner],
+    ] as const) {
+      const text = await (await exportOf(player)).text();
+      const data = JSON.parse(text) as AccountExport;
+      expect(schemaIssues(AccountExport, data)).toEqual([]);
+      for (const list of Object.values(data.mapStudio!)) expect(list).toHaveLength(1);
+      expect(data.mapStudio!.wallets).toEqual([{ balance: 3, reserved: 0 }]);
+      expect(data.hive!.wallets).toEqual([]);
+      expect(data.mapStudio!.messages).toEqual([
+        expect.objectContaining({ text: player.displayName }),
+      ]);
+      expect(data.mapStudio!.requests).toEqual([
+        expect.objectContaining({
+          input: { players: 2 },
+          checkpoints: { version: 1 },
+          charged: true,
+        }),
+      ]);
+      expect(data.mapStudio!.attempts).toEqual([
+        expect.objectContaining({
+          input: { feedback: 'More rivers' },
+          output: { layout: 'rivers' },
+        }),
+      ]);
+      expect(text).not.toContain(excluded.accountId);
+      expect(text).not.toContain(excluded.displayName);
+      for (const lease of leases) expect(text).not.toContain(lease);
+      expect(JSON.stringify(data.mapStudio)).not.toMatch(/lease/);
+    }
     owner.client.close();
     other.client.close();
   });

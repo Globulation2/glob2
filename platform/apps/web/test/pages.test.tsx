@@ -3,7 +3,7 @@
 // the deep links the game uses, leaderboard, profile, match page (charts and
 // Watch in browser), sign-in state and the moderation guard.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { LineChart } from '../src/components/LineChart.tsx';
 import { matchPath } from '../src/router.tsx';
@@ -353,8 +353,13 @@ describe('pages', () => {
   });
 
   it('clicking a match row navigates without reloading', async () => {
-    open(`/players/${ALICE}`);
-    fireEvent.click((await screen.findAllByTestId('match-row'))[0]!);
+    // Flush the mocked fetches: the profile's initial match list is replaced
+    // when its separate history request completes. Clicking a node returned
+    // before that update can dispatch an event on an already detached link.
+    await act(async () => {
+      open(`/players/${ALICE}`);
+    });
+    fireEvent.click(screen.getAllByTestId('match-row')[0]!);
     expect(await screen.findByTestId('match-title')).toBeTruthy();
     expect(window.location.pathname).toBe(`/matches/${MATCH}`);
   });

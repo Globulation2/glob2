@@ -13,7 +13,7 @@ class Map;
 
 //! Immutable copy of the per-tile map layers the renderer reads: terrain,
 //! resources, discovery and fog of war for every team, and the locally displayed
-//! team's forbidden/guard/clear areas. Extracted from the simulation's Map at a
+//! team's forbidden/guard/clear/farm areas. Extracted from the simulation's Map at a
 //! tick boundary; afterwards it is only read, so the renderer can draw it while
 //! the simulation advances. The query functions match Map's exactly.
 class SceneMap
@@ -21,10 +21,11 @@ class SceneMap
 public:
 	//! Copy the layers from map. Runs where the map may be read (the simulation side).
 	//! displayW/H: the drawn map area in pixels (a client value, see ClientRequests).
-	void extract(const Map &map, int displayW, int displayH);
+	void extract(const Map &map, int displayW, int displayH, bool includeScriptAreas = false);
 	//! Single-threaded callers (tests, tools): take the drawn area from the map.
 	void extract(const Map &map);
 
+	bool isPointSet(int n, int x, int y) const { return !scriptAreas.empty() && (scriptAreas[coordToIndex(x,y)] & (1 << n)); }
 	int getW() const { return w; }
 	int getH() const { return h; }
 	int getMaskW() const { return wMask; }
@@ -52,6 +53,7 @@ public:
 	bool isForbiddenInDisplayedView(int x, int y) const { return forbiddenView.get(coordToIndex(x, y)); }
 	bool isGuardAreaInDisplayedView(int x, int y) const { return guardAreaView.get(coordToIndex(x, y)); }
 	bool isClearAreaInDisplayedView(int x, int y) const { return clearAreaView.get(coordToIndex(x, y)); }
+	bool isFarmAreaInDisplayedView(int x, int y) const { return farmAreaView.get(coordToIndex(x, y)); }
 	bool canResourcesGrow(int x, int y) const { return resourcesGrow[coordToIndex(x, y)]; }
 	Uint16 getGroundUnit(int x, int y) const { return groundUnits[coordToIndex(x, y)]; }
 	Uint16 getAirUnit(int x, int y) const { return airUnits[coordToIndex(x, y)]; }
@@ -79,9 +81,9 @@ private:
 	Uint64 sourceIdentity = 0;
 	const void *sourceKey = nullptr;
 	int displayViewportW = 0, displayViewportH = 0;
-	std::vector<Uint16> terrain, groundUnits, airUnits, buildings;
+	std::vector<Uint16> terrain, groundUnits, airUnits, buildings, scriptAreas;
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
 	std::vector<Uint32> discovered, fogOfWar;
-	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView;
+	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
 };

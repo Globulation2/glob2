@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегия ИИ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Уравновешивает устойчивый рост и обучение, затем собирает армии в волны.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ caps lock
 Выбор карты
 [clear area]
 Зона очистки
+[farm area]
+Зона земледелия
 [Clearing:]
 Очистка:
 [clearingflag explanation 2]
@@ -746,6 +754,8 @@ scroll lock
 Выбор Рынка
 [select place clearing area]
 Выбор размещения зоны очистки
+[select place farm area]
+Выбор размещения зоны земледелия
 [select place clearingflag]
 Выбор размещения флага очистки
 [select place explorationflag]
@@ -3114,6 +3124,8 @@ Emoji
 Охрана
 [Clear]
 Расчистка
+[Farm]
+Поле
 [Paint]
 Рисовать
 [Erase]
@@ -3284,6 +3296,10 @@ Emoji
 Балансировка зон охраны
 [experiment guard-area-balancing help]
 Свободные воины распределяются между нарисованными зонами охраны, а не идут все в ближайшую: большая зона получает больше воинов, а переполненная постепенно перетекает в остальные.
+[experiment farm-areas]
+Зоны земледелия
+[experiment farm-areas help]
+Добавляет зону земледелия к кистям зон. Рабочие, собирающие урожай внутри неё, берут с самой спелой клетки связного поля и оставляют на каждой клетке по одному зерну, поэтому поле отрастает, а не съедается с краёв. Деревья, прорастающие в зону, вырубаются.
 [settings Touch scrolling]
 Сенсорная прокрутка
 [settings List momentum]
@@ -4617,6 +4633,26 @@ Emoji
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

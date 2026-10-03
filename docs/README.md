@@ -30,14 +30,16 @@ dated reports and pull-request artifacts do not belong here.
   [network telemetry](development/network-telemetry.md),
   [save continuation](development/savegame-continuation.md), and the
   [historical architecture overview](development/legacy-architecture.txt).
-- **Features:** [custom-game setup](features/custom-game-setup/README.md),
+- **Features:** [gameplay footage and automatic chapters](features/gameplay-recording.md), [custom-game setup](features/custom-game-setup/README.md),
   [experimental features](features/experimental-features.md) and the
-  [guard-area balancing](features/guard-area-balancing.md) experiment,
+  [guard-area balancing](features/guard-area-balancing.md) and
+  [farm areas](features/farm-areas.md) experiments,
   [map previews](features/pre-game-map-preview.md),
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
-- **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
+- **Online multiplayer:** [Hive Mind commander](multiplayer/hive-mind.md),
+  [platform architecture](multiplayer/architecture.md),
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),

@@ -5,7 +5,7 @@
 
 void SceneMap::extract(const Map &map) { extract(map, map.displayViewportW, map.displayViewportH); }
 
-void SceneMap::extract(const Map &map, int displayW, int displayH)
+void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeScriptAreas)
 {
 	w = map.getW();
 	h = map.getH();
@@ -21,6 +21,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH)
 	groundUnits.resize(size);
 	airUnits.resize(size);
 	buildings.resize(size);
+	scriptAreas.resize(includeScriptAreas ? size : 0);
 	for (size_t i = 0; i < size; ++i)
 	{
 		const Tile &tile = map.tiles[i];
@@ -30,6 +31,12 @@ void SceneMap::extract(const Map &map, int displayW, int displayH)
 		groundUnits[i] = tile.groundUnit;
 		airUnits[i] = tile.airUnit;
 		buildings[i] = tile.building;
+		if (includeScriptAreas)
+		{
+			scriptAreas[i] = 0;
+			for (int n=0; n<9; ++n)
+				if (map.isPointSet(n, int(i)&wMask, int(i>>wDec))) scriptAreas[i] |= 1 << n;
+		}
 	}
 	undermap.resize(size);
 	for (size_t i = 0; i < size; ++i)
@@ -45,6 +52,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH)
 	forbiddenView = map.displayedForbiddenView;
 	guardAreaView = map.displayedGuardAreaView;
 	clearAreaView = map.displayedClearAreaView;
+	farmAreaView = map.displayedFarmAreaView;
 }
 
 bool SceneMap::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const

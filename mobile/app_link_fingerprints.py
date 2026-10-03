@@ -310,7 +310,7 @@ def ios_app_id(asc, enable=True):
         raise ValueError(f'Expected one App ID {BUNDLE_ID}, found {len(matches)}')
     bundle = matches[0]
     capabilities = lambda: sorted(item['attributes']['capabilityType'] for item in
-                                  asc.pages(f"/bundleIds/{bundle['id']}/bundleIdCapabilities?limit=200"))
+                                  asc.pages(f"/bundleIds/{bundle['id']}/bundleIdCapabilities"))
     before = capabilities()
     enabled_now = False
     if ASSOCIATED_DOMAINS not in before and enable:
@@ -320,7 +320,7 @@ def ios_app_id(asc, enable=True):
         enabled_now = True
     after = capabilities() if enabled_now else before
     profiles = []
-    for item in asc.pages(f"/bundleIds/{bundle['id']}/profiles?limit=200"):
+    for item in asc.pages(f"/bundleIds/{bundle['id']}/profiles"):
         attributes = item['attributes']
         row = {key: attributes.get(key) for key in ('name', 'profileType', 'profileState', 'expirationDate')}
         try:

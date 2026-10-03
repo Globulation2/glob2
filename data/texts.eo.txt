@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategio
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Ekvilibrigas daŭrigeblajn kreskon kaj trejnadon, poste kolektas armeojn en ondojn.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Elektu ludon
 Elektu karton
 [clear area]
 Elviŝata areo
+[farm area]
+Kultivata areo
 [Clearing:]
 Viŝante na:
 [clearingflag explanation 2]
@@ -746,6 +754,8 @@ Elekti Manĝejon
 Elekti Komercejon
 [select place clearing area]
 Elekti je metado de Elviŝata areo
+[select place farm area]
+Elekti je metado de Kultivata areo
 [select place clearingflag]
 Elekti je metado de Viŝmarkilo
 [select place explorationflag]
@@ -3114,6 +3124,8 @@ Malpermesita
 Gardi
 [Clear]
 Malplenigi
+[Farm]
+Kultivi
 [Paint]
 Pentri
 [Erase]
@@ -3284,6 +3296,10 @@ Eksperimentoj
 Ekvilibrigo de gardozonoj
 [experiment guard-area-balancing help]
 Liberaj militistoj disiĝas inter la pentritaj gardozonoj anstataŭ ĉiuj iri al la plej proksima: pli granda zono ricevas pli da ili, kaj troplena zono iom post iom malpleniĝas al la aliaj.
+[experiment farm-areas]
+Kultivataj areoj
+[experiment farm-areas help]
+Aldonas kultivatan areon al la zonaj penikoj. Laboristoj rikoltantaj en ĝi prenas el la plej matura kahelo de la kunligita kampo kaj lasas unu grenon sur ĉiu kahelo, do la kampo rekreskas anstataŭ esti manĝata de la rando. Ligno kreskanta en la areon estas forigata.
 [settings Touch scrolling]
 Tuŝa rulumado
 [settings List momentum]
@@ -4617,6 +4633,26 @@ Inercio de la mapo
 [room map ready body]
 
 [game draw]
+
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
 
 [File selection is unavailable.]
 

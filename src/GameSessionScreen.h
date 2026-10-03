@@ -14,6 +14,7 @@ class Engine;
 class GameSessionScreen : public GAGGUI::Screen
 {
   public:
+	const char *recordingId() const override { return "game_session"; }
 	GameSessionScreen(GAGGUI::ScreenStack &stack, std::unique_ptr<Engine> engine);
 	~GameSessionScreen() override;
 	void updateExecution(Uint32 tick) override;
@@ -40,6 +41,10 @@ class GameSessionScreen : public GAGGUI::Screen
 	bool started = false, finished = false, resetClock = false;
 	// Once simulation ends, keep the save dialog alive through durable persistence.
 	bool finishingSession = false;
+#ifdef __EMSCRIPTEN__
+	bool presentationDirty = true;
+	Uint64 lastDraw = 0;
+#endif
 	Uint32 lastTick = 0;
 	//! Host tick at which the last threaded frame started (frame-rate cap).
 	Uint32 frameStarted = 0;

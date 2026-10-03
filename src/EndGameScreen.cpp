@@ -3,6 +3,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "EndGameScreen.h"
+#include "ui/RecordingControls.h"
 #include "FrontendTheme.h"
 #include "TeamStatChart.h"
 #include "GlobalContainer.h"
@@ -193,6 +194,7 @@ void EndGameScreen::selectMetric(int metric)
 {
 	if (metric < 0 || metric >= 36)
 		return;
+	GAGCore::Recording::recorder().event("statistics_metric", std::to_string(metric));
 	selectedMetric = metric;
 	sortAndSet(metric);
 	invalidate();
@@ -497,6 +499,8 @@ Element EndGameScreen::build(const Presentation &p)
 						   [this] { rematch(); }});
 	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
 	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
+	if (GAGCore::Recording::supported())
+		parts.push_back(fe::recordingControls());
 	parts.push_back(fe::actions(std::move(actions), p));
 	// A paper card over the colony background, as the Online hub and the room have.
 	fe::CardOptions page;
