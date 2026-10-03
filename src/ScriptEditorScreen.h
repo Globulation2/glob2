@@ -64,8 +64,8 @@ class ScriptEditorScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(CANCEL); }
-	bool fillHeight() const override { return !classic(); }
-	double maxWidth() const override { return classic() ? 580 : 960; }
+	bool fillHeight() const override { return true; }
+	double maxWidth() const override { return 960; }
 	bool onEvent(const SDL_Event &event) override;
 
   private:

@@ -447,6 +447,7 @@ CLIENT_SOURCES = (
     'SettingsScreenBuildings.cpp',
     'SettingsScreenKeyboard.cpp',
     'SettingsScreenOnline.cpp',
+    'SettingsScreenRecording.cpp',
     'sgsl/Lexer.cpp',
     'sgsl/Parser.cpp',
     'sgsl/ParserSummon.cpp',

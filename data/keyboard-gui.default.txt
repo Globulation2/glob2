@@ -59,3 +59,4 @@
 
 <control><return>=open commander
 <control><shift><return>=stop commander
+<control><shift><r>=toggle recording

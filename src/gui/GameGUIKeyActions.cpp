@@ -20,6 +20,7 @@ namespace GameGUIKeyActions
 		table.add(OpenChatBox, "open chat box");
 		table.add(OpenCommander, "open commander");
 		table.add(StopCommander, "stop commander");
+		table.add(ToggleRecording, "toggle recording");
 		table.add(IterateSelection, "iterate selection");
 		table.add(GoToEvent, "go to event");
 		table.add(GoToHome, "go to home");

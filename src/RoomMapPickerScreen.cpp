@@ -363,5 +363,5 @@ Element RoomMapPickerScreen::build(const Presentation &p)
 	if (currentTab != CatalogTab)
 		buttons.push_back(std::move(use));
 	return page(tr("[room picker title]"), column({top, expanded(scroll("picker/body", body))}, {p.pt(10)}),
-				actions(std::move(buttons), p, ActionStyle::Compact), p, 900);
+				actions(std::move(buttons), p), p, 900);
 }
