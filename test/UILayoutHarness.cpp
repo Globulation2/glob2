@@ -538,6 +538,24 @@ void checkTextField()
 	require(f.host.editing().empty(), "escape ends editing");
 }
 
+void checkCopyField()
+{
+	// A failed Copy leaves the text in a field that opens selected and ignores edits.
+	std::string model = "https://app.glob2online.com/j/ABCDEFGHJK";
+	TextFieldOptions options;
+	options.selectForCopy = true;
+	Fixture f([&](const Presentation &) { return textField("copy", model, [&](const std::string &v) { model = v; }, options); }, 400, 100);
+	f.click({20, 20});
+	require(f.host.editing() == "copy", "tapping the copy field starts editing");
+	require(f.host.state("copy").highlight == 1, "the copy field opens with its text selected");
+	SDL_Event text{};
+	text.type = SDL_EVENT_TEXT_INPUT;
+	text.text.text = "x";
+	f.host.event(text);
+	f.key(SDLK_BACKSPACE);
+	require(model == "https://app.glob2online.com/j/ABCDEFGHJK", "typing does not change text shown for copying");
+}
+
 void checkListView()
 {
 	int selected = 0;
@@ -894,6 +912,7 @@ TEST_SUITE("UILayout")
 	TEST_CASE("choice popup") { checkChoicePopup(); }
 	TEST_CASE("text field") { checkTextField(); }
 	TEST_CASE("list view") { checkListView(); }
+	TEST_CASE("copy field") { checkCopyField(); }
 	TEST_CASE("adaptive and field") { checkAdaptiveAndField(); }
 	TEST_CASE("invariants") { checkInvariants(); }
 	TEST_CASE("text stays inside its control at every size") { checkTextStaysInControls(); }

@@ -10,9 +10,7 @@
 #include "Building.h"
 
 #include "Utilities.h"
-#ifndef YOG_SERVER_ONLY
 #include "render/GameAnimations.h"
-#endif  // !YOG_SERVER_ONLY
 #include <set>
 
 void Unit::selectPreferredMovement(void)

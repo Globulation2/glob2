@@ -87,6 +87,13 @@ void MapEdit::delegateMenu(SDL_Event& event)
 				performAction("close menu screen");
 			}
 			break;
+			case MapEditMenuScreen::SHARE_MAP:
+			{
+				// Shares the map as last saved (the file the catalog validates).
+				performAction("close menu screen");
+				pendingShareFilename = game.mapHeader.getFileName();
+			}
+			break;
 			case MapEditMenuScreen::QUIT_EDITOR:
 			{
 				performAction("close menu screen");

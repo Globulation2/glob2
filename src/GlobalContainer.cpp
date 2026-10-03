@@ -17,14 +17,12 @@
 #include "SoundMixer.h"
 #include "render/UnitSkin.h"
 #include "VoiceRecorder.h"
-#ifndef YOG_SERVER_ONLY
 #include "DatasetWriter.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
 #include "ScrollTuning.h"
-#endif  // !YOG_SERVER_ONLY
 
-#include "YOGConsts.h"
+#include <ApplicationHost.h>
 
 
 /**
@@ -44,8 +42,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	fileManager->addWriteSubdir("campaigns");
 	fileManager->addWriteSubdir("replays");
 	fileManager->addWriteSubdir("thumbnails");
-	fileManager->addWriteSubdir(YOG_SERVER_FOLDER);
-	fileManager->addWriteSubdir(YOG_SERVER_FOLDER+"gamelog");
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
@@ -57,17 +53,8 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	// load user preference
 	settings.load();
 
-#ifndef YOG_SERVER_ONLY
 	applyScrollTuning(settings, reducedMotion);
 	runNoX = false;
-	hostServer = false;
-#else
-	runNoX = true;
-	hostServer = true;
-#endif  // !YOG_SERVER_ONLY
-
-	hostRouter = false;
-	adminRouter = false;
 	
 	runTestGames=false;
 	runTestGamesCount=0;
@@ -81,7 +68,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	automaticEndingGame=false;
 	automaticEndingSteps=-1;
 
-#ifndef YOG_SERVER_ONLY
 	gfx = NULL;
 
 	terrain = NULL;
@@ -93,7 +79,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	menuFont = NULL;
 	standardFont = NULL;
 	littleFont = NULL;
-#endif  // !YOG_SERVER_ONLY
 
 	automaticGameGlobalEndConditions=false;
 
@@ -110,7 +95,6 @@ GlobalContainer::GlobalContainer(const char *profileName)
 
 GlobalContainer::~GlobalContainer(void)
 {
-#ifndef YOG_SERVER_ONLY
 	// unlink GUI style
 	if (!runNoX)
 		delete Style::style;
@@ -121,7 +105,6 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
-#endif  // !YOG_SERVER_ONLY
 
 	// release resources
 	Toolkit::close();
@@ -132,26 +115,30 @@ GlobalContainer::~GlobalContainer(void)
 
 // parseArgs is defined in GlobalContainerArgs.cpp.
 
-#ifndef YOG_SERVER_ONLY
 void GlobalContainer::updateLoadProgressScreen(int value)
 {
-	unsigned randomSeed = 1;
-	unsigned columnCount = gfx->getW() / 32;
-	unsigned limit = (value * columnCount) / 100;
-	for (int y = 0; y < gfx->getH(); y += 32)
-		for (int x = 0; x < gfx->getW(); x += 32)
-		{
-			randomSeed = randomSeed * 69069;
-			unsigned index;
-			if (x/32 < (int)limit)
-				index = ((randomSeed >> 16) & 0xF);
-			else if (x/32 == (int)limit)
-				index = ((randomSeed >> 16) & 0x7) + 64;
-			else
-				index = ((randomSeed >> 16) & 0xF) + 128;
-			gfx->drawSprite(x, y, terrain, index);
-		}
-	gfx->finishDrawingSprite(terrain, 255);
+	// The terrain tiles come with the game sprites, which the browser installs
+	// after the main menu. Its canvas is hidden until then anyway.
+	if (terrain)
+	{
+		unsigned randomSeed = 1;
+		unsigned columnCount = gfx->getW() / 32;
+		unsigned limit = (value * columnCount) / 100;
+		for (int y = 0; y < gfx->getH(); y += 32)
+			for (int x = 0; x < gfx->getW(); x += 32)
+			{
+				randomSeed = randomSeed * 69069;
+				unsigned index;
+				if (x/32 < (int)limit)
+					index = ((randomSeed >> 16) & 0xF);
+				else if (x/32 == (int)limit)
+					index = ((randomSeed >> 16) & 0x7) + 64;
+				else
+					index = ((randomSeed >> 16) & 0xF) + 128;
+				gfx->drawSprite(x, y, terrain, index);
+			}
+		gfx->finishDrawingSprite(terrain, 255);
+	}
 	gfx->drawSurface((gfx->getW()-title->getW())>>1, (gfx->getH()-title->getH())>>1, title.get());
 	gfx->nextFrame();
 }
@@ -159,6 +146,9 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 // glob2-client specific actions here.
 void GlobalContainer::loadClient(void)
 {
+	// Native builds have every data package; the browser installs the game
+	// sprites and menu music after the main menu is up (scons/web_assets.py).
+	const bool gameData = GAGCore::ApplicationHost::assetPackageReady("game");
 	if (!runNoX)
 	{
 		// create graphic context
@@ -183,15 +173,15 @@ void GlobalContainer::loadClient(void)
 		
 		// load data required for drawing progress screen
 		title = std::make_unique<DrawableSurface>("data/gfx/loading-wordmark.png");
-		terrain = Toolkit::getSprite("data/gfx/terrain");
+		if (gameData)
+			terrain = Toolkit::getSprite("data/gfx/terrain");
 		updateLoadProgressScreen(0);
 
 		// create mixer
 		mix = std::make_unique<SoundMixer>(settings.musicVolume, settings.voiceVolume, settings.mute);
 		// Track slots must match the MusicTrack enum order. Engine::run may
 		// later overwrite the InGame* slots with a randomly chosen music dir.
-		mix->loadTrack("data/zik/intro.ogg",            MusicTrack::Intro);
-		mix->loadTrack("data/zik/menu.ogg",             MusicTrack::Menu);
+		loadMenuMusic();
 		mix->loadTrack("data/zik/original/a1.ogg",      MusicTrack::InGameDefault);
 		mix->loadTrack("data/zik/original/a2.ogg",      MusicTrack::BuildingEvent);
 		mix->loadTrack("data/zik/original/a3.ogg",      MusicTrack::WarEvent);
@@ -204,8 +194,9 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(15);
 	}
 	
-	// initialize building types: resolve sprite pointers and prev/next-level
-	// links for the static table baked into game/entities/buildings*.cpp.
+	// initialize building types: resolve prev/next-level links for the static
+	// table baked into game/entities/buildings*.cpp (sprites come with the
+	// game graphics below).
 	buildingsTypes.init();
 	IntBuildingType::init();
 	
@@ -253,41 +244,8 @@ void GlobalContainer::loadClient(void)
 		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 
 		updateLoadProgressScreen(50);
-		// load terrain data
-		terrainWater = Toolkit::getSprite("data/gfx/water");
-		terrainCloud = Toolkit::getSprite("data/gfx/cloud");
-		
-		// black for unexplored terrain
-		terrainBlack = Toolkit::getSprite("data/gfx/black");
-
-		// load shader for invisible terrain
-		terrainShader = Toolkit::getSprite("data/gfx/shade");
-		
-		updateLoadProgressScreen(60);
-		// load resources
-		resources = Toolkit::getSprite("data/gfx/ressource");
-		resources->createTextureAtlas(true);
-		resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
-		mapIcons = Toolkit::getSprite("data/gfx/mapicon");
-		areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
-		areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
-		areaGuard = Toolkit::getSprite("data/gfx/area-guard");
-		bullet = Toolkit::getSprite("data/gfx/bullet");
-		bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
-		deathAnimation = Toolkit::getSprite("data/gfx/death"); 
-
-		updateLoadProgressScreen(70);
-		// load units
-		units = Toolkit::getSprite("data/gfx/unit");
-		initUnitSkins();
-
-		updateLoadProgressScreen(90);
-		// load graphics for gui
-		unitmini = Toolkit::getSprite("data/gfx/unitmini");
-		gamegui = Toolkit::getSprite("data/gfx/gamegui");
-		brush = Toolkit::getSprite("data/gfx/brush");
-		magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
-		particles = Toolkit::getSprite("data/gfx/particle");
+		if (gameData)
+			loadGameGraphics(true);
 		
 		// use custom style
 		Style::style = new Glob2Style;
@@ -295,7 +253,83 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(100);
 	}
 }
-#endif  // !YOG_SERVER_ONLY
+
+void GlobalContainer::loadGameGraphics(bool showProgress)
+{
+	// load terrain data
+	if (!terrain)
+		terrain = Toolkit::getSprite("data/gfx/terrain");
+	terrainWater = Toolkit::getSprite("data/gfx/water");
+	terrainCloud = Toolkit::getSprite("data/gfx/cloud");
+	
+	// black for unexplored terrain
+	terrainBlack = Toolkit::getSprite("data/gfx/black");
+
+	// load shader for invisible terrain
+	terrainShader = Toolkit::getSprite("data/gfx/shade");
+	
+	if (showProgress)
+		updateLoadProgressScreen(60);
+	// load resources
+	resources = Toolkit::getSprite("data/gfx/ressource");
+	resources->createTextureAtlas(true);
+	resourceMini = Toolkit::getSprite("data/gfx/ressourcemini");
+	mapIcons = Toolkit::getSprite("data/gfx/mapicon");
+	areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
+	areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
+	areaGuard = Toolkit::getSprite("data/gfx/area-guard");
+	bullet = Toolkit::getSprite("data/gfx/bullet");
+	bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
+	deathAnimation = Toolkit::getSprite("data/gfx/death"); 
+
+	if (showProgress)
+		updateLoadProgressScreen(70);
+	// load units
+	units = Toolkit::getSprite("data/gfx/unit");
+	initUnitSkins();
+
+	if (showProgress)
+		updateLoadProgressScreen(90);
+	// load graphics for gui
+	unitmini = Toolkit::getSprite("data/gfx/unitmini");
+	gamegui = Toolkit::getSprite("data/gfx/gamegui");
+	brush = Toolkit::getSprite("data/gfx/brush");
+	magiceffect = Toolkit::getSprite("data/gfx/magiceffect");
+	particles = Toolkit::getSprite("data/gfx/particle");
+
+	// building artwork used by the game, the editor and the settings
+	buildingsTypes.loadSprites();
+	gameGraphics = true;
+}
+
+bool GlobalContainer::ensureGameGraphics(void)
+{
+	if (runNoX || gameGraphics)
+		return true;
+	if (!GAGCore::ApplicationHost::assetPackageReady("game"))
+		return false;
+	loadGameGraphics(false);
+	return true;
+}
+
+GAGCore::CooperativeTask GlobalContainer::gameGraphicsTask(void)
+{
+	while (!ensureGameGraphics())
+		co_await GAGCore::CooperativeTask::checkpoint("[Loading game graphics]");
+	co_return true;
+}
+
+bool GlobalContainer::loadMenuMusic(void)
+{
+	if (menuMusic)
+		return true;
+	if (!mix || !GAGCore::ApplicationHost::assetPackageReady("menu-music"))
+		return false;
+	mix->loadTrack("data/zik/intro.ogg",            MusicTrack::Intro);
+	mix->loadTrack("data/zik/menu.ogg",             MusicTrack::Menu);
+	menuMusic = true;
+	return true;
+}
 
 void GlobalContainer::load(void)
 {
@@ -326,7 +360,5 @@ void GlobalContainer::load(void)
 	// Resource types are now a compile-time const table (see
 	// src/game/entities/resources.cpp); nothing to load here.
 
-#ifndef YOG_SERVER_ONLY
 	loadClient();
-#endif  // !YOG_SERVER_ONLY
 }

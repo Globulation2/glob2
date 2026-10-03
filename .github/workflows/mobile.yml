@@ -2,6 +2,9 @@ name: mobile foundations
 on:
   workflow_call:
     inputs:
+      revision:
+        type: string
+        default: ""
       architectures:
         type: string
         default: '["arm64-v8a","armeabi-v7a","x86_64"]'
@@ -18,27 +21,7 @@ env:
   GLOB2_DEV_MODE: isolated
 
 jobs:
-  changes:
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      actions: read
-    outputs:
-      architectures: ${{ steps.select.outputs.android_arches }}
-      android: ${{ steps.select.outputs.android }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Select Android compatibility coverage
-        id: select
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          CI_TIERED_COVERAGE_ENABLED: ${{ vars.CI_TIERED_COVERAGE_ENABLED }}
-          CI_TIER_BASELINE_RUN_ID: ${{ vars.CI_TIER_BASELINE_RUN_ID }}
-          GH_TOKEN: ${{ github.token }}
-        run: python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"
   android-release-apk:
-    needs: changes
-    if: ${{ inputs.architectures != '' || needs.changes.outputs.android == 'true' }}
     name: Android release APK (${{ matrix.arch }})
     runs-on: ubuntu-24.04
     env:
@@ -49,18 +32,35 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: ${{ fromJSON(inputs.architectures || needs.changes.outputs.architectures) }}
+        arch: ${{ fromJSON(inputs.architectures || '["arm64-v8a","armeabi-v7a","x86_64"]') }}
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
         with:
+          ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
       - name: Install build utilities
         id: install_build_utilities
         run: sudo apt-get update -qq && sudo apt-get install -y python3-venv scons pkg-config unzip zip autoconf automake libtool ccache
-      - name: Check build isolation and artifact validation
-        id: check_build_isolation
-        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v'
+      - name: Restore checksum-pinned Android build tools
+        id: android_tools
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            build/mobile-tools/android-sdk/ndk
+            build/mobile-tools/android-sdk/cmdline-tools
+            build/mobile-tools/android-sdk/build-tools
+            build/mobile-tools/android-sdk/platforms
+            build/mobile-tools/android-sdk/platform-tools
+            build/mobile-tools/gradle-8.13
+          key: android-tools-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/android-tools.json', 'mobile/setup_ndk.py', 'mobile/setup_tools.py', 'scons/tool_archives.py') }}
+      - name: Verify restored Android tool content
+        env:
+          TOOL_KEY: ${{ hashFiles('mobile/toolchain.json', 'mobile/android-tools.json', 'mobile/setup_ndk.py', 'mobile/setup_tools.py', 'scons/tool_archives.py') }}
+        run: |
+          for prefix in build/mobile-tools/android-sdk/{ndk,cmdline-tools,build-tools,platforms,platform-tools} build/mobile-tools/gradle-8.13; do
+            python3 .github/scripts/ci_dependency_cache.py verify --prefix "$prefix" --key "$TOOL_KEY"
+          done
       - name: Install verified NDK
         id: install_verified_ndk
         run: python3 mobile/setup_ndk.py
@@ -71,9 +71,46 @@ jobs:
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" --licenses < <(yes)
           "$sdk/cmdline-tools/19.0/bin/sdkmanager" --sdk_root="$sdk" \
             'platforms;android-36' 'build-tools;35.0.0' platform-tools
+      - name: Restore pinned Android target dependencies
+        id: android_dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed
+          key: android-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+      - name: Verify restored Android dependency content
+        env:
+          DEPENDENCY_KEY: ${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+        run: python3 .github/scripts/ci_dependency_cache.py verify --prefix 'build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed' --key "$DEPENDENCY_KEY"
       - name: Build pinned target dependencies
         id: build_pinned_target_dependencies
         run: python3 mobile/dependencies.py --arch '${{ matrix.arch }}' --release --jobs 2
+      - name: Seal and save pinned Android dependencies
+        env:
+          DEPENDENCY_KEY: ${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+        run: python3 .github/scripts/ci_dependency_cache.py seal --prefix 'build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed' --key "$DEPENDENCY_KEY"
+      - name: Seal verified Android tools
+        env:
+          TOOL_KEY: ${{ hashFiles('mobile/toolchain.json', 'mobile/android-tools.json', 'mobile/setup_ndk.py', 'mobile/setup_tools.py', 'scons/tool_archives.py') }}
+        run: |
+          for prefix in build/mobile-tools/android-sdk/{ndk,cmdline-tools,build-tools,platforms,platform-tools} build/mobile-tools/gradle-8.13; do
+            python3 .github/scripts/ci_dependency_cache.py seal --prefix "$prefix" --key "$TOOL_KEY"
+          done
+      - uses: actions/cache/save@v4
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.android_dependencies.outputs.cache-hit != 'true' }}
+        with:
+          path: build/android/device/${{ matrix.arch }}/24/client/release/vcpkg-installed
+          key: android-dependencies-v1-${{ runner.os }}-${{ runner.arch }}-${{ matrix.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/vcpkg.json', 'mobile/dependencies.py', 'mobile/triplets/**', 'scons/vcpkg-ports/**', 'scons/mobile_toolchain.py') }}
+      - uses: actions/cache/save@v4
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.arch == 'arm64-v8a' && steps.android_tools.outputs.cache-hit != 'true' }}
+        with:
+          path: |
+            build/mobile-tools/android-sdk/ndk
+            build/mobile-tools/android-sdk/cmdline-tools
+            build/mobile-tools/android-sdk/build-tools
+            build/mobile-tools/android-sdk/platforms
+            build/mobile-tools/android-sdk/platform-tools
+            build/mobile-tools/gradle-8.13
+          key: android-tools-v1-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('mobile/toolchain.json', 'mobile/android-tools.json', 'mobile/setup_ndk.py', 'mobile/setup_tools.py', 'scons/tool_archives.py') }}
       - name: Restore Android compiler cache
         id: restore_android_compiler_cache
         continue-on-error: true
@@ -115,10 +152,10 @@ jobs:
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s
       - name: Keep Android cache entries used by this run
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.compile_and_stage_native_application.outcome == 'success' }}
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.cache_ready.outcome == 'success' && steps.compile_and_stage_native_application.outcome == 'success' }}
         run: ccache --evict-older-than "$(( $(date +%s) - CCACHE_RUN_START + 60 ))s"
       - name: Save Android compiler cache
-        if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' && steps.compile_and_stage_native_application.outcome == 'success' }}
+        if: ${{ !cancelled() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.cache_ready.outcome == 'success' && steps.compile_and_stage_native_application.outcome == 'success' }}
         uses: actions/cache/save@v4
         with:
           path: ${{ env.CCACHE_DIR }}

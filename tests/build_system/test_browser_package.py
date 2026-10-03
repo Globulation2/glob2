@@ -35,17 +35,22 @@ class BrowserPackageTests(unittest.TestCase):
         self.output = self.root / "static"
         for ext, data in {
             "html": b'<script src="index.js"></script>',
-            "js": b'let w="index.wasm",d="index.data";',
+            "js": b'let w="index.wasm",d="assets/core.0123456789abcdef.data";',
             "wasm": b"wasm" * 1000,
-            "data": b"assets" * 1000,
         }.items():
             (self.source / ("index." + ext)).write_bytes(data)
+        # Content-addressed game data (scons/web_assets.py) keeps its name.
+        (self.source / "assets").mkdir()
+        self.package = self.source / "assets/core.0123456789abcdef.data"
+        self.package.write_bytes(b"assets" * 1000)
 
     def test_references_sidecars_and_repeatable_identity(self):
         version = module.package(self.source, self.output)
         module.verify(self.output)
         js = (self.output / f"index-{version}.js").read_text()
-        self.assertIn(f"index-{version}.data", js)
+        self.assertIn(f"index-{version}.wasm", js)
+        self.assertIn("assets/core.0123456789abcdef.data", js)
+        self.assertEqual((self.output / "assets/core.0123456789abcdef.data").read_bytes(), self.package.read_bytes())
         self.assertEqual(version, module.package(self.source, self.output))
         module.verify(self.output)
 
@@ -54,7 +59,7 @@ class BrowserPackageTests(unittest.TestCase):
         (self.source / "loader.js").write_text('/* capability loader */')
         thread = self.source / "threaded"
         thread.mkdir()
-        for ext in ("js", "wasm", "data"):
+        for ext in ("js", "wasm"):
             (thread / ("index." + ext)).write_bytes((self.source / ("index." + ext)).read_bytes())
         return thread
 
@@ -80,14 +85,13 @@ class BrowserPackageTests(unittest.TestCase):
         self.assertIn(f'loader-{version}.js', html)
         js = (self.output / f'threaded/index-{version}.js').read_text()
         self.assertIn(f'index-{version}.wasm', js)
-        self.assertIn(f'index-{version}.data', js)
         self.assertEqual(version, module.package(self.source, self.output))
         (thread / "index.wasm").write_bytes(b"changed worker binary")
         self.assertNotEqual(version, module.package(self.source, self.output))
         module.verify(self.output)
 
-    def test_dual_runtime_rejects_different_assets_and_missing_worker_sidecar(self):
-        thread = self.threaded_source()
+    def test_dual_runtime_rejects_missing_worker_sidecar(self):
+        self.threaded_source()
         version = module.package(self.source, self.output)
         missing = f'threaded/index-{version}.wasm.gz'
         (self.output / missing).unlink()
@@ -96,7 +100,9 @@ class BrowserPackageTests(unittest.TestCase):
                                 if not line.endswith('  '+missing)))
         with self.assertRaises(ValueError):
             module.verify(self.output)
-        (thread / "index.data").write_bytes(b"different assets")
+
+    def test_package_requires_game_data(self):
+        self.package.unlink()
         with self.assertRaises(ValueError):
             module.package(self.source, self.output)
 
@@ -119,10 +125,13 @@ class BrowserPackageTests(unittest.TestCase):
 
     def test_stale_assets_removed(self):
         old = module.package(self.source, self.output)
-        (self.source / "index.data").write_bytes(b"changed")
+        self.package.unlink()
+        (self.source / "assets/core.fedcba9876543210.data").write_bytes(b"changed")
         new = module.package(self.source, self.output)
         self.assertNotEqual(old, new)
-        self.assertFalse((self.output / f"index-{old}.data").exists())
+        self.assertFalse((self.output / f"index-{old}.wasm").exists())
+        self.assertFalse((self.output / "assets/core.0123456789abcdef.data").exists())
+        self.assertTrue((self.output / "assets/core.fedcba9876543210.data").exists())
 
     def test_corrupt_or_missing_sidecar_rejected(self):
         module.package(self.source, self.output)
@@ -150,7 +159,8 @@ class BrowserPackageTests(unittest.TestCase):
         for ext in ("js", "wasm", "data"):
             with self.subTest(extension=ext):
                 version = module.package(self.source, self.output)
-                missing = f"index-{version}.{ext}.gz"
+                missing = (f"index-{version}.{ext}.gz" if ext != "data"
+                           else "assets/core.0123456789abcdef.data.gz")
                 (self.output / missing).unlink()
                 sums = self.output / "SHA256SUMS"
                 sums.write_text(
@@ -166,7 +176,7 @@ class BrowserPackageTests(unittest.TestCase):
 
     def test_failed_directory_swap_keeps_previous_package(self):
         module.package(self.source, self.output)
-        previous = {p.name: p.read_bytes() for p in self.output.iterdir()}
+        previous = {p.relative_to(self.output).as_posix(): p.read_bytes() for p in self.output.rglob("*") if p.is_file()}
         rename = Path.rename
 
         def fail_swap(path, destination):
@@ -178,7 +188,7 @@ class BrowserPackageTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 module.package(self.source, self.output)
         self.assertEqual(
-            {p.name: p.read_bytes() for p in self.output.iterdir()}, previous
+            {p.relative_to(self.output).as_posix(): p.read_bytes() for p in self.output.rglob("*") if p.is_file()}, previous
         )
         module.verify(self.output)
 

@@ -1,0 +1,14 @@
+{
+  "attemptId": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "reason": "conflict",
+  "conflict": {
+    "reason": "identity_in_use",
+    "provider": "google",
+    "account": {
+      "id": "1c9a7a3f-4d5e-4f60-9bac-1d2e3f4a5b6c",
+      "displayName": "Bob",
+      "kind": "registered",
+      "createdAt": "2026-10-01T12:00:00Z"
+    }
+  }
+}

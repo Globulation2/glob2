@@ -130,6 +130,33 @@ scripts compare full-game traces against retained fixtures and are documented wi
 the harness they accompany below. `tests/` at the repository root tests the build
 system and the browser services.
 
+## Match relay
+
+`scons role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
+doctest binary of its own (the relay role builds no engine or SDL code). Run it
+directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
+tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
+package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
+## Online screens and test switches
+
+Release builds have no switch that opens an online screen directly; players reach
+them through the online hub. To look at a screen offline, render its canned states:
+`test/OnlineUIFixtures.h` holds the fixtures (hub, room, match start, quick match,
+profile, maps) for the `UIPresentation` cases and `scons release=1 mobile-gallery`.
+`PlatformClientTest` in the unit binary covers the client's request lifetimes,
+including screens destroyed with requests in flight.
+
+Switches the online and LAN tests use:
+
+- `--instance <origin>`: the instance an invite code given with `--join <code>`
+  belongs to; a `glob2://` or `https://<instance>/j/<code>` argument works too.
+- `--turn-client`, `--verify-match`, `--sim-version`: headless relay client, match
+  verifier and sim version report ([headless replays](../docs/development/headless-replays.md)).
+- `GLOB2_LAN_ADDRESS=<ip>`: the address a LAN host advertises and puts in its
+  certificate, for machines with several interfaces.
+- `GLOB2_LAN_DELAY_BUNDLE=1`: only the one-tick-bundle rows of the LAN input delay
+  benchmark (below).
+
 ## Team capacity and format 127
 
 `TeamLimit` checks all sixteen controller/header slots, entity identifiers, packed
@@ -323,12 +350,16 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 The direct transport/security checks use `scons release=1 transport-test`,
 `python3 test/run-network-transport-tests.py`,
 `build/darwin/client/release/src/lan-discovery-test` (substitute your platform),
-and `python3 -m unittest discover -s tests/transport -v`. Container lifecycle
-checks use `python3 -m unittest discover -s tests/deployment -v` after building
-the server image and browser assets. They run an isolated Compose project and
-verify persistence, backup restoration, router-loss readiness, state ownership,
-graceful draining, and forced deadline interruption. Keep capture output from
+and `python3 -m unittest discover -s tests/transport -v`. Deployment script
+checks use `python3 -m unittest discover -s tests/deployment -v`; the whole
+platform stack is exercised by `tests/deployment/platform_stack_smoke.py` (see
+`docs/hosting/README.md`). Keep capture output from
 `tests/transport/capture_container.py` under ignored `artifacts/`.
+
+The online client's integration test, `tests/online/test_platform_client.py`,
+drives `platform-client-probe` (also built by `transport-test`) against a real
+platform API; it needs a `platform/` checkout and a Postgres role that may
+create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
 
 From the repository root:
 
@@ -337,16 +368,37 @@ scons -j2 release=1 server=0 lan-test
 python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness
 ```
 
-This runs separate host and joining client processes with real SDL lobby widgets,
-YOG anonymous LAN server, game router, and paired WSS connections. The joiner uses the
-actual `LANFindScreen` Pair and connect path with the host session fingerprint. It clicks Ready and Leave Game, then rejoins.
-Both cycles force a map download and compare the downloaded `.gz` bytes against
-the fixture source (`maps/FourSquares1.map.gz`) byte for byte: the host's private
-copy is already gzip-compressed, so the transfer exercises sending a locally
-compressed map without gzipping it again, and a new receiver stores the download
-as `.gz` without unzipping it. The host verifies readiness, roster size, unique
-player IDs, slot masks, and both departures. The map's current size is not hardcoded
-in the test. Linux CI runs this automatically with SDL's dummy video/audio drivers.
+This runs separate host and joining client processes with real SDL lobby widgets, a
+`LanRoom` host (room and in-process turn relay) and paired WSS connections. The joiner
+uses the actual `LANFindScreen` Pair and connect path with the host session fingerprint.
+It clicks Ready and Leave Game, then rejoins. Both cycles download the map into the
+guest's content-addressed map cache and compare its bytes with the fixture source
+(`maps/FourSquares1.map`). The host verifies readiness, roster size, unique names and
+seat numbering, and both departures. Linux CI runs this automatically with SDL's dummy
+video/audio drivers.
+
+`--play SECONDS` plays a real game instead: the host presses Start in the room, both
+processes run their `GameSessionScreen`s, the host quits after SECONDS, and the guest's
+game must end with "host left". The two processes' per-tick checksum sidecars must agree
+on every tick both executed:
+
+```sh
+python3 test/run_lan_session_test.py build/native-tests/src/LANSessionHarness --play 30
+```
+
+`LanMatchHarness` in the engine binary covers the match itself in one process: a host
+and two guests over loopback WSS with real engines, a dropped connection, a guest that
+restarts and rejoins by name, the host leaving, identical per-tick checksums and a
+verified match record. Its `[benchmark]` case measures input delay, per stage and with
+stall counts (`docs/multiplayer/lan-playtest.md`; `GLOB2_LAN_DELAY_BUNDLE=1` runs only
+the one-tick-bundle rows). `TurnHarness` (unit binary) and `TurnEngineHarness` (engine
+binary) have `[benchmark]` cases that measure the same on the simulated network, per
+link profile (`docs/multiplayer/turn-protocol.md#measured-delay`).
+
+`OnlinePlayHarness` (`scons release=1 server=0 online-play-test`) plays an online
+room through the real hub, Room, starting and results screens against a live
+instance in a host and a guest process; see "End-to-end check" in
+[docs/multiplayer/client.md](../docs/multiplayer/client.md).
 
 For two physical machines, run these from each machine's repository root, using
 absolute capture prefixes whose parent directories already exist:
@@ -357,8 +409,8 @@ SDL_VIDEODRIVER=dummy ./build/native-tests/src/LANSessionHarness join 'HOST_PAIR
 ```
 
 Start the joiner after the host prints `HOST roster=1`, copying its full
-`PAIRING` string. TLS/WebSocket TCP ports 7489 and 7491
-must be reachable; this does not connect to the public YOG service. Omit
+`PAIRING` string. The host's TLS/WebSocket TCP port 7489 must be reachable;
+nothing connects to a public service. Omit
 `SDL_VIDEODRIVER=dummy` to show the real window. Normal game profiles are preserved;
 the harness uses `.glob2-lan-test-host` and `.glob2-lan-test-join` profiles containing
 only test data. Fixed input timers allow map transfer before leaving; the runner
@@ -809,7 +861,7 @@ the model may select has a C++ expression waiting for it. The fitting checks nee
 and skip without them; the rest is stdlib.
 The `TournamentCompatibility` engine suite (`python3 test/run_tests.py --filter
 'TournamentCompatibility/*'`) covers real per-player Cortex/Maxima and partial
-network-header checks. `python3 test/tournament_cli_integration.py --output DIR`
+game-header round trips. `python3 test/tournament_cli_integration.py --output DIR`
 runs production CLI cases and retains saves, traces and logs. Use a fresh output
 directory. `--initial FILE --ticks N` runs a retained initial state on another platform.
 
@@ -1227,6 +1279,25 @@ their historical restart behavior; omitted state cannot be recovered from them.
 New games retain the existing decision sequence. This save change does not raise
 the replay acceptance floor.
 
+## CI coverage ownership
+
+Primary GCC 13 runs the complete applicable native suite. Secondary platforms
+use `python3 test/run_tests.py --coverage-profile compatibility` with the reviewed
+suite inventory in `test/ci-compatibility.json`; full nightly/release verification
+uses `--coverage-profile full`. Map-generator contracts run in their dedicated lane.
+Add new compatibility suites when introducing save, replay, scheduling, scripting
+or platform boundaries. The selector fails closed for shared/unknown inputs.
+
+`--write-inventory PATH` retains exact eligible and assigned cases, excluded cases,
+platform, profile and shard ownership alongside JUnit evidence. CI audits shard
+inventories for missing and duplicated cases. Empty compatibility selection fails
+rather than reporting a successful empty suite. Portable primary regressions need
+not be repeated on every compiler; platform, renderer and thread-count repeats
+must have a named compatibility purpose.
+
+The [development reference](../docs/development/reference.md#tiered-pull-request-coverage-rollout)
+records draft behavior, expansion labels, release-only checks and activation gates.
+
 ## Native coverage workflow
 
 Build and measure the regular native tier with a matching Clang/LLVM toolchain:
@@ -1260,7 +1331,7 @@ profiles, full coverage JSON, weighted implementation summaries and HTML.
 Engine and unit profiles are merged and exported separately: the engine report
 is the implementation baseline, and the unit report supplements it. Never
 average their percentages or merge independently linked copies of the same
-source. Multiplayer (`src/net`, `src/yog` and network-tagged cases), external
+source. Multiplayer (`src/net` and network-tagged cases), external
 libraries and test implementations are excluded from implementation totals.
 Unlinked/platform-specific sources are listed as unmeasured, rather than assigned
 zero coverage. Header coverage remains in the file inventory, apart from the

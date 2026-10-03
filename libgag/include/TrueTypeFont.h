@@ -25,6 +25,9 @@ namespace GAGCore
 		TrueTypeFont(const std::string filename, unsigned size);
 		virtual ~TrueTypeFont();
 		bool load(const std::string filename, unsigned size);
+		//! Reopen the font file at the same size, dropping cached text; the object
+		//! and its style stack stay. Returns false (and keeps the font) on failure.
+		bool reload(void);
 		
 		//! Get the width of string with shape. Update cache
 		int getStringWidth(const std::string string);
@@ -32,6 +35,16 @@ namespace GAGCore
 		int getStringHeight(const std::string string);
 		//! Whether every character of this UTF-8 string has a glyph in the loaded font
 		virtual bool hasGlyphsFor(const std::string &utf8Text);
+
+		//! Whether the linked SDL3_ttf moves the pen for kerned pairs. Builds without
+		//! HarfBuzz and without scons/vcpkg-ports/sdl3-ttf/kerning-moves-pen.patch shift
+		//! only the kerned glyph, leaving a gap after it ("Tu torial"). Measured on the
+		//! same font opened with and without kerning; true when the font has no kerning
+		//! to compare.
+		static bool kerningMovesPen(TTF_Font *kerned, TTF_Font *unkerned);
+		//! Open a font the way every TrueTypeFont does, with kerning turned off when the
+		//! linked SDL3_ttf would misplace kerned glyphs (probed once per process).
+		static TTF_Font *openFont(const std::string &filename, unsigned size);
 
 		// Style and color
 		virtual void setStyle(Style style);

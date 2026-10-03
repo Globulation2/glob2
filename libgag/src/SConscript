@@ -1,20 +1,13 @@
 from sources import GAG_SOURCES
 libgag_sources = list(GAG_SOURCES)
 
-from sources import GAG_SERVER_SOURCES
-libgag_just_server = list(GAG_SERVER_SOURCES)
 
     
 Import("env")
 l1 = env.StaticLibrary("gag", libgag_sources)
 
-l2 = env.StaticLibrary("gag_server", libgag_just_server)
-
-
-if not env['server']:
+if env.get('role') != 'relay':
     Default(l1)
-else:
-    Default(l2)
 
     
 Import("env")

@@ -6,6 +6,7 @@
 #include <MapCamera.h>
 
 #include <InputState.h>
+#include <functional>
 #include <atomic>
 #include <memory>
 #include <optional>
@@ -64,9 +65,11 @@ class MapMarkOrder;
 	Handle all user input during game, draw & handle menu.
 */
 class GameGUITouch;
+class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
 {
 	friend struct CustomGameSetupHarness;
+	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;
     friend class TorusRenderIntegrationTest;
     TorusView torusView;
@@ -288,6 +291,45 @@ public:
 	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
 	/// network state and is never checksummed, networked, or saved.
 	int anyPlayerWaitedTimeFor;
+	/// Turn-protocol games: the connection lines to show where the "[waiting for X]"
+	/// notice goes (players reconnecting or lagging, our own reconnect or catch-up).
+	/// Empty function for every other game; an empty result falls back to the
+	/// waiting notice. Presentation only, never simulated or saved.
+	std::function<std::vector<std::string>()> connectionNotice;
+	/// Turn-protocol games: the connection panel and cards (ConnectionOverlay.h) that
+	/// replace the "[waiting for X]" notice. Null for every other game. Presentation
+	/// only, never simulated, networked or saved.
+	std::unique_ptr<ConnectionOverlay> connectionOverlay;
+	/// Turn-protocol games (online or LAN): what the in-game menu offers and what
+	/// leaving costs. Loading and saving have no meaning there, and leaving asks first.
+	/// Presentation only, never simulated, networked or saved.
+	struct NetworkMatch
+	{
+		bool active = false; ///< a turn-protocol game (online or LAN)
+		bool online = false; ///< on a platform instance (else LAN)
+		bool rated = false;
+		bool fromRoom = true; ///< a room match (else a quick match)
+	} networkMatch;
+	/// A one-line notice in the message list (connection changes).
+	void addNotice(const std::string &text);
+	/// Pausing in network matches. Queue matches limit pauses per seat; the turn
+	/// session enforces it deterministically (TurnLockstepSession::setPauseLimit).
+	/// This is what the menus and the Paused label show of it. Presentation only.
+	struct PauseState
+	{
+		bool limited = false;
+		int pausesLeft = -1;  ///< this player's, when limited
+		int secondsLeft = -1; ///< this player's pause time left, when limited
+		int pausedBy = -1;    ///< the player whose pause is running, or -1
+		int pauserSecondsLeft = -1; ///< their pause time left, when limited
+	};
+	/// Set by the engine for turn games; empty elsewhere (pausing is unlimited).
+	std::function<PauseState()> pauseState;
+	/// The pause (or resume) the player asked for; a pause they have none left of
+	/// is not sent, and says so.
+	void requestPause(bool pause);
+	/// Whether the menus offer Pause to this player now.
+	bool pauseAvailable() const;
 private:
 	friend class GameGUISelectionHarness;
 	friend class SavegameSafetyHarness;
@@ -638,7 +680,8 @@ private:
 		IGM_OPTION,
 		IGM_ALLIANCE,
 		IGM_OBJECTIVES,
-		IGM_END_OF_GAME
+		IGM_END_OF_GAME,
+		IGM_CONFIRM_LEAVE
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
@@ -646,6 +689,8 @@ private:
 	void openDialog(InGameMenu menu, std::unique_ptr<Glob2UI::InGameDialog> dialog);
 	void closeDialog();
 	void openMainMenu();
+	/// "Leave match?" with what leaving costs (networkMatch).
+	std::unique_ptr<Glob2UI::InGameDialog> makeLeaveConfirmation() const;
 	void openChat();
 	void closeChat();
 	void toggleHistory();
@@ -659,7 +704,7 @@ private:
 	std::string defaultGameSaveName;
 
 	bool hasEndOfGameDialogBeenShown;
-	
+
 	GameGUIMessageManager messageManager;
 	std::unique_ptr<InGameScrollableHistory> scrollableText;
 

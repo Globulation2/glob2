@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <CooperativeTask.h>
 #include <vector>
 
 #include "BuildingType.h"
@@ -33,61 +34,69 @@ public:
 	enum { OPTION_LOW_SPEED_GFX=0x1 };
 	enum { OPTION_MAP_EDIT_USE_USL=0x2 };
 
-#ifndef YOG_SERVER_ONLY
 private:
 	void updateLoadProgressScreen(int value);
-#endif  // !YOG_SERVER_ONLY
+	void loadGameGraphics(bool showProgress);
+	bool gameGraphics = false;
+	bool menuMusic = false;
 
 public:
 	explicit GlobalContainer(const char *profileName="glob2");
 	virtual ~GlobalContainer(void);
 
 	void parseArgs(int argc, char *argv[]);
-#ifndef YOG_SERVER_ONLY
 	void loadClient(void);
-#endif  // !YOG_SERVER_ONLY
+	//! Load the in-game sprites (terrain, units, buildings, game interface) if
+	//! they are not loaded yet. Native builds load them in loadClient; the
+	//! browser installs them after the main menu is up, so this returns false
+	//! until GAGCore::ApplicationHost::assetPackageReady("game"). Always true
+	//! without graphics (runNoX).
+	bool ensureGameGraphics(void);
+	bool gameGraphicsLoaded(void) const { return gameGraphics; }
+	//! Completes once ensureGameGraphics() succeeds; waits at the
+	//! "[Loading game graphics]" stage. Without waiting it never suspends.
+	GAGCore::CooperativeTask gameGraphicsTask(void);
+	//! Load the intro and menu tracks if the browser has installed them; see
+	//! ensureGameGraphics. Returns whether they are loaded.
+	bool loadMenuMusic(void);
 	void load(void);
 
 public:
 	FileManager *fileManager; //!< Borrowed from Toolkit; not owned by GlobalContainer.
 
-#ifndef YOG_SERVER_ONLY
 	GraphicContext *gfx; //!< Borrowed from Toolkit; not owned by GlobalContainer.
 	std::unique_ptr<SoundMixer> mix; //!< Owned.
 	std::unique_ptr<VoiceRecorder> voiceRecorder; //!< Owned.
 
 	std::unique_ptr<DrawableSurface> title; //!< Owned.
 	
-	Sprite *terrain;
-	Sprite *terrainWater;
-	Sprite *terrainCloud;
-	Sprite *terrainBlack;
-	Sprite *terrainShader;
-	Sprite *resources;
-	Sprite *resourceMini;
-	Sprite *mapIcons; //!< strategic-view building and flag icons; see MapOverlayQueue
-	Sprite *areaClearing;
-	Sprite *areaForbidden;
-	Sprite *areaGuard;
-	Sprite *bullet;
-	Sprite *bulletExplosion;
-	Sprite *deathAnimation;
-	Sprite *units;
-	Sprite *unitmini;
-	Sprite *gamegui;
-	Sprite *brush;
-	Sprite *magiceffect;
-	Sprite *particles;
+	Sprite *terrain = nullptr;
+	Sprite *terrainWater = nullptr;
+	Sprite *terrainCloud = nullptr;
+	Sprite *terrainBlack = nullptr;
+	Sprite *terrainShader = nullptr;
+	Sprite *resources = nullptr;
+	Sprite *resourceMini = nullptr;
+	Sprite *mapIcons = nullptr; //!< strategic-view building and flag icons; see MapOverlayQueue
+	Sprite *areaClearing = nullptr;
+	Sprite *areaForbidden = nullptr;
+	Sprite *areaGuard = nullptr;
+	Sprite *bullet = nullptr;
+	Sprite *bulletExplosion = nullptr;
+	Sprite *deathAnimation = nullptr;
+	Sprite *units = nullptr;
+	Sprite *unitmini = nullptr;
+	Sprite *gamegui = nullptr;
+	Sprite *brush = nullptr;
+	Sprite *magiceffect = nullptr;
+	Sprite *particles = nullptr;
 
 	Font *menuFont;
 	Font *standardFont;
 	Font *littleFont;
-#endif  // !YOG_SERVER_ONLY
 	Settings settings;
 
-#ifndef YOG_SERVER_ONLY
 	BuildingsTypes buildingsTypes;
-#endif  // !YOG_SERVER_ONLY
 	ResourcesTypes resourcesTypes;
 
 	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
@@ -142,11 +151,6 @@ public:
 
 	bool runTestMapGeneration; //! runs test map generation
 	
-	bool hostServer;
-	bool hostRouter;
-	bool adminRouter;
-	//! hostname for YOG, can be set by cmd line to override default
-	std::string yogHostName;
 
 	// Variables related to the showing of replays:
 	bool liveSpectating = false; //!< Live AI-only viewing; never replay playback.
@@ -160,11 +164,9 @@ public:
 	bool replayShowAreas; //!< Show areas of gui.localPlayer or not. Can be edited real-time.
 	bool replayShowFlags; //!< Show all flags or show none. Can be edited real-time.
 
-#ifndef YOG_SERVER_ONLY
 	std::unique_ptr<ReplayReader> replayReader; //!< Owned. Reads and processes replay files, and outputs orders.
 	std::unique_ptr<ReplayWriter> replayWriter; //!< Owned. Writes orders into replay files.
 	std::unique_ptr<DatasetWriter> datasetWriter; //!< Owned. Writes (state, action) records for AI training (GLOB2_DATASET_PATH).
-#endif  // !YOG_SERVER_ONLY
 
 };
 

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeRoomSetSeatParams",
+  "title": "RealtimeRoomSetSeatParams",
+  "type": "object",
+  "required": [
+    "roomId",
+    "seat",
+    "occupant"
+  ],
+  "properties": {
+    "roomId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "seat": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 11
+    },
+    "occupant": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "self"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "open"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind",
+            "ai"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "ai"
+            },
+            "ai": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "none"
+                },
+                {
+                  "type": "string",
+                  "const": "numbi"
+                },
+                {
+                  "type": "string",
+                  "const": "castor"
+                },
+                {
+                  "type": "string",
+                  "const": "warrush"
+                },
+                {
+                  "type": "string",
+                  "const": "econo"
+                },
+                {
+                  "type": "string",
+                  "const": "nicowar"
+                },
+                {
+                  "type": "string",
+                  "const": "cortex"
+                },
+                {
+                  "type": "string",
+                  "const": "maxima"
+                },
+                {
+                  "type": "string",
+                  "const": "cabino"
+                }
+              ],
+              "description": "AI implementation, by its stable CLI name (src/ai/AINames.cpp)."
+            },
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32,
+              "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+              "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "const": "locked"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

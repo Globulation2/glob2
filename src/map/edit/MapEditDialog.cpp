@@ -29,11 +29,12 @@ Element MapEditMenuScreen::build(const Presentation &p)
 	};
 	const Item items[] = {{"return", "[return to editor]", RETURN_EDITOR, true}, {"save", "[save map]", SAVE_MAP, false},
 						  {"load", "[load map]", LOAD_MAP, false},               {"script", "[open scenario editor]", OPEN_SCRIPT_EDITOR, false},
-						  {"teams", "[open teams editor]", OPEN_TEAMS_EDITOR, false}, {"quit", "[quit the editor]", QUIT_EDITOR, false}};
+						  {"teams", "[open teams editor]", OPEN_TEAMS_EDITOR, false}, {"share", "[maps share online]", SHARE_MAP, false},
+						  {"quit", "[quit the editor]", QUIT_EDITOR, false}};
 	std::vector<Element> buttons;
 	if (classic())
 	{
-		// The classic editor menu: six gold buttons, Return first.
+		// The classic editor menu: gold buttons, Return first.
 		for (const auto &item : items)
 		{
 			const int code = item.code;

@@ -1,0 +1,21 @@
+{
+  "name": "@glob2/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared service plumbing: configuration, logging, access policy, blob store, job queue and shutdown.",
+  "license": "GPL-3.0-or-later",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@glob2/db": "0.1.0",
+    "@glob2/protocol": "0.1.0",
+    "graphile-worker": "^0.18.0",
+    "kysely": "^0.29.6",
+    "pg": "^8.23.1",
+    "pino": "^10.3.1",
+    "typebox": "^1.3.34",
+    "yaml": "^2.9.1"
+  }
+}

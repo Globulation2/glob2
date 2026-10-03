@@ -89,6 +89,13 @@ Presentation resolvePresentation(GAGCore::GraphicContext &context, double touchT
 // Offscreen or non-window surfaces have no platform metrics and cannot scale
 // text, so their text stays at the authored size.
 Presentation resolvePresentation(GAGCore::DrawableSurface &surface, double touchTextScale = 1);
+// Big desktop windows at an interface scale of 1: how much larger menus read so
+// helper text is not 11 pixels in the middle of a 1080p screen. 1 for touch hosts,
+// windows up to about 1440x900 points and whenever `followsDesktop` is false (the
+// player chose an interface scale). Quantised to quarter steps, at most 1.5.
+double comfortScale(const Presentation &presentation, bool followsDesktop);
+// Multiplies the presentation's point and text units by `scale`.
+void applyComfortScale(Presentation &presentation, double scale);
 // Fill textGrowth, textScale and textUnit from `unit`, `touch` and the player's
 // preference (GAGCore::userTextScale); resolvePresentation() calls it.
 void applyTextSize(Presentation &presentation, double touchTextScale = 1);

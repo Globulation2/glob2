@@ -106,8 +106,6 @@ void Settings::setTextSizePercent(int percent)
 	textSizePercent = std::clamp(percent, 100, 150);
 	GAGCore::userTextScale = textSizePercent / 100.0;
 }
-std::string Settings::getPasswd() { return password; }
-void Settings::setPasswd(std::string s) { password = s; }
 
 void Settings::load(std::string filename)
 {
@@ -142,7 +140,8 @@ void Settings::load(std::string filename)
 
 		// read values
 		READ_PARSED_STRING(username);
-		READ_PARSED_STRING(password);
+		// "password" (the YOG lobby's remembered password) is no longer read, and
+		// the next save drops it from the file.
 		READ_PARSED_INT(screenWidth);
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
@@ -194,9 +193,7 @@ void Settings::load(std::string filename)
 		thumbSide = std::clamp(thumbSide, int(THUMB_RIGHT), int(THUMB_LEFT));
 		gameSpeed=std::max(static_cast<int>(GAME_SPEED_MINIMUM),
 			std::min(static_cast<int>(GAME_SPEED_MAXIMUM), gameSpeed));
-#ifndef YOG_SERVER_ONLY
 		GAGGUI::Screen::scrollWheelEnabled = scrollWheelEnabled;
-#endif
 
 		for(int n=0; n<IntBuildingType::NB_BUILDING; ++n)
 		{
@@ -244,7 +241,6 @@ bool Settings::save(std::string filename)
 	return Toolkit::getFileManager()->writeAtomically(filename, [this](OutputStream& output) {
 		OutputStream* stream = &output;
 		Utilities::streamprintf(stream, "username=%s\n", username.c_str());
-		Utilities::streamprintf(stream, "password=%s\n", password.c_str());
 		Utilities::streamprintf(stream, "screenWidth=%d\n", screenWidth);
 		Utilities::streamprintf(stream, "screenHeight=%d\n", screenHeight);
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);

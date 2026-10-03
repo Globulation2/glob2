@@ -12,5 +12,6 @@ bool hasBrowserTextInput(const void* owner);
 void beginBrowserTextFrame();
 void endBrowserTextFrame();
 void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const std::string& value,
-    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip=nullptr);
+    bool password,size_t maximum,BrowserTextChange changed,const SDL_Rect* clip=nullptr,
+    bool selectAll=false);
 }

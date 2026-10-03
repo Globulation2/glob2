@@ -1,20 +1,15 @@
 # Browser platform implementation
 
-The browser target provides desktop-browser single-player and existing YOG
-multiplayer: login, lobbies, room setup, joining, browser/browser matches, and
-matching-release browser/native matches. It shares game logic, deterministic
-simulation, save/map formats, and the YOG wire protocol with native builds.
+The browser target provides desktop-browser single-player and online play on a
+platform instance: the same online hub, rooms, quick match and invite links as
+the desktop and mobile clients (see [online client](../multiplayer/client.md)),
+with browser/browser and browser/native matches through the match relay. It
+shares game logic, deterministic simulation, save/map formats and the turn
+protocol with native builds.
 
-Guest identities, private invitations, cloud saves, late joining, backend restart
-recovery, mobile UI, voice chat, and rankings are outside this change. Refreshing
-or disconnecting during a match ends that player's participation.
-
-LAN is compiled out of the WebAssembly client because browser sandboxing cannot
-provide Glob2's direct TCP listener and discovery model. The longer-term browser
-multiplayer direction is a web entry flow over YOG: shareable match links,
-lightweight or guest identity, and instant matchmaking. This PR provides the
-cross-play transport and existing lobby flow; it does not implement that product
-experience or publish a Play button on the project website.
+LAN hosting is compiled out of the WebAssembly client because browser sandboxing
+cannot provide Glob2's listener and discovery model; a browser can join a LAN host
+whose certificate it already trusts (see [secure network transports](gateway.md)).
 
 ## Architecture
 
@@ -41,9 +36,9 @@ experience or publish a Play button on the project website.
   storage path.
 - WebGL2 and software rendering share the renderer interfaces. Context recovery
   rebuilds renderer resources while retaining the current application state.
-- YOG continues to own identities, rooms, and match lifecycle. The WebSocket
-  native WSS transport delivers framed bytes directly and does not participate
-  in simulation.
+- The online platform owns identities, rooms and the match lifecycle; the relay
+  sequences turns. The browser's WebSocket transport delivers framed bytes and
+  does not participate in simulation.
 
 The pinned SDL port creates its WebGL context through EGL. The threaded build
 uses `browser/threaded-egl.js` to keep the SDK's EGL calls and state on the
@@ -83,19 +78,31 @@ builds the desktop client, while `scons target=web release=1` writes the browser
 application to `build/emscripten/client/release`. The compatibility command
 `python3 browser/build.py` delegates to SCons.
 
-Browser and native multiplayer clients must use the same protocol version.
-Update the client and YOG services together. See the
-[protocol contract](protocol.md) and [secure transport guide](gateway.md).
+The served release is `index.html`, `index.js`, `index.wasm` and the
+content-addressed data packages in `assets/` (`<package>[-<part>].<hash>.data`),
+whose file table is compiled into `index.js`. Serve `assets/*.data` as immutable
+and the other files with revalidation. The
+[browser README](../../browser/README.md#game-data-and-loading) describes the core
+and optional packages and how the page loads them.
+
+C++ exceptions use native WebAssembly exception handling (`-fwasm-exceptions`),
+which needs Chrome 95, Firefox 100 or Safari 15.2 or later; it makes the module
+smaller and faster than Emscripten's JavaScript-based handling.
+
+Browser and native clients in one match must have the same sim version; the
+platform and relay check it at admission (see the
+[turn protocol](../multiplayer/turn-protocol.md) and the
+[secure transport guide](gateway.md)).
 
 ## Verification
 
-CI builds native client/server, router, and browser identities. Native
+CI builds native client, relay and browser identities. Native
 harnesses cover screen/session ownership, loading and generation cancellation,
 save safety, transports, and deterministic replay. Chromium runs the complete
 browser behavior suite; Firefox and WebKit run focused startup, gameplay, and
 viewport compatibility checks. Focused Chromium runs cover WebGL2 and real-window
 visibility in addition to the software-renderer suite. Persistence, import/export,
-context recovery, YOG, and browser/native cross-play remain in the complete suite.
+context recovery and online links remain in the complete suite.
 Manual workflow runs accept `browser_only` when a follow-up changes only the web
 host or its tests. Pull requests select native, browser, map-generator, and
 self-hosting deployment jobs from changed paths. AI, GUI, rendering, and networking

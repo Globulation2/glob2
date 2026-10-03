@@ -6,6 +6,7 @@
 #include "CampaignEditor.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
+#include "OnlineMapsScreen.h"
 #include "EditorGenerateScreen.h"
 #include "EditorLoadScreen.h"
 #include "MapEdit.h"
@@ -47,7 +48,9 @@ void EditorMainMenu::newMap()
 
 void EditorMainMenu::loadMap()
 {
-	screens.push(std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false),
+	auto chooser = std::make_unique<ChooseMapScreen>("maps", "map", false, "games", "game", false);
+	chooser->enableSharing([this](const std::string &file) { screens.push(std::make_unique<MapShareScreen>(file)); });
+	screens.push(std::move(chooser),
 		[this](GAGGUI::Screen& screen, int result) {
 			if (result != ChooseMapScreen::OK) return;
 			const auto filename = static_cast<ChooseMapScreen&>(screen).getMapHeader().getFileName();

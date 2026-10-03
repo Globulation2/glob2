@@ -1,0 +1,13 @@
+{
+  "queueId": "ranked-1v1",
+  "regions": [
+    {
+      "region": "eu-west",
+      "rttMs": 32
+    },
+    {
+      "region": "us-east",
+      "rttMs": 110
+    }
+  ]
+}

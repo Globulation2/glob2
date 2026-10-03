@@ -24,5 +24,6 @@ class Application : public GAGCore::ApplicationHost::Loop
 	bool hidden = false;
 	bool quitting = false;
 	void mainMenu();
+	void installStagedAssets();
 	void choose(int choice);
 };

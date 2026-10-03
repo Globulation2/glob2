@@ -39,5 +39,7 @@ public:
 	virtual bool operator==(const NetMessage& rhs) const = 0;
 
 	/// Provided for convenience; derived classes may override for efficiency.
-	virtual bool operator!=(const NetMessage& rhs) const;
+	/// Defined inline so code that only needs the turn messages (the relay) does
+	/// not have to link the legacy message factory.
+	virtual bool operator!=(const NetMessage& rhs) const { return !(*this == rhs); }
 };

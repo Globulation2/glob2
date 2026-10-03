@@ -4,19 +4,73 @@ import importlib.util
 from pathlib import Path
 import re
 import subprocess
+import sys
 from types import SimpleNamespace
 import unittest
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / ".github/scripts/ci_changed_paths.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("ci_changed_paths", SCRIPT)
 ci_changed_paths = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
-    def assert_jobs(self, paths, **expected):
-        self.assertEqual(ci_changed_paths.classify(paths), expected)
+    def assert_jobs(self, paths, platform=None, platform_stack=None, **expected):
+        # The TypeScript platform job runs on platform/ changes and with full CI.
+        if platform is None:
+            platform = all(expected.values())
+        # The self-hosted stack smoke test runs on its own paths and with full CI.
+        if platform_stack is None:
+            platform_stack = not paths
+        self.assertEqual(ci_changed_paths.classify(paths),
+                         {**expected, "platform": platform, "platform_stack": platform_stack})
+
+    def test_platform_stack_paths(self):
+        for path in ("deploy/compose.yaml", "deploy/Caddyfile", "tests/deployment/platform_stack_smoke.py"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=True, map_generators=False,
+                    deployment=True, cross_platform=False, platform_stack=True,
+                )
+        self.assert_jobs(
+            ["src/relay/RelayServer.cpp"], native=False, browser=True, map_generators=False,
+            deployment=False, cross_platform=False, platform_stack=True,
+        )
+        self.assert_jobs(
+            ["platform/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
+            map_generators=False, deployment=False, cross_platform=False, platform=True,
+            platform_stack=True,
+        )
+        # Engine changes rely on full CI for the stack, not every pull request.
+        self.assert_jobs(
+            ["src/map/Map.cpp", "deploy/Caddyfile"], native=True, browser=True, map_generators=True,
+            deployment=True, cross_platform=True, platform_stack=True,
+        )
+
+    def test_platform_only(self):
+        self.assert_jobs(
+            ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=True,
+            # Dependency changes also rebuild the stack's images.
+            platform_stack=True,
+        )
+
+    def test_platform_docs_only(self):
+        self.assert_jobs(
+            ["platform/README.md", "docs/multiplayer/architecture.md"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=False,
+        )
+
+    def test_protocol_fixtures_run_platform_and_native_contract_tests(self):
+        self.assert_jobs(
+            ["platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
+            native=True, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, platform=True,
+        )
 
     def test_documentation_only(self):
         self.assert_jobs(
@@ -44,22 +98,15 @@ class ChangedPathsTest(unittest.TestCase):
         selector = workflow.split("  changes:\n", 1)[1].split("\n  linux-build:", 1)[0]
         for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py"):
             self.assertIn(filename, selector)
-        self.assertIn("-s tests/build_system -p 'test_ci*.py'", selector)
+        self.assertIn("-m unittest discover -s tests/build_system -v", selector)
+        self.assertEqual(selector.count("-m unittest discover -s tests/build_system"), 1)
         for path in ci_changed_paths.CI_TOOL_TESTS:
             if path.startswith("tests/build_system/"):
                 self.assertTrue(Path(path).match("tests/build_system/test_ci*.py"))
-        # Packaging-for-a-store checks are release-only: they run from the release
-        # workflows or by hand, never on pull requests or master pushes.
-        for name in ("steam-windows-package.yml", "mac-app-store.yml"):
-            text = (root / ".github/workflows" / name).read_text()
-            triggers = text.split("\non:\n", 1)[1].split("\n\n", 1)[0]
-            self.assertNotIn("pull_request:", triggers, name)
-            self.assertNotIn("push:", triggers, name)
-        mobile = (root / ".github/workflows/mobile.yml").read_text()
-        self.assertNotIn("android_release.py check", mobile)
-        self.assertNotIn("verify-apk", mobile)
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
-        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' ||", package)
+        self.assertNotIn('  pull_request:', package)
+        self.assertIn('  workflow_call:', package)
+        self.assertIn('cancel-in-progress: false', package)
 
     def test_browser_shell_only(self):
         self.assert_jobs(
@@ -89,6 +136,15 @@ class ChangedPathsTest(unittest.TestCase):
                     deployment=False, cross_platform=True,
                 )
 
+    def test_match_record_fixture_runs_native_browser_and_comparison(self):
+        for path in ("test/fixtures/multiplayer/FourSquares1.g2mr",
+                     "test/fixtures/multiplayer/FourSquares1.verify-trace.txt"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=True, browser=True, map_generators=False,
+                    deployment=False, cross_platform=True,
+                )
+
     def test_golden_table_only_runs_golden_job(self):
         self.assert_jobs(
             ["test/map-generator-golden.txt"],
@@ -103,6 +159,15 @@ class ChangedPathsTest(unittest.TestCase):
                 self.assert_jobs(
                     [path], native=False, browser=True, map_generators=False,
                     deployment=False, cross_platform=False,
+                )
+
+    def test_relay_changes_run_the_relay_job_only(self):
+        for path in ("src/relay/RelayServer.cpp", "tests/relay/test_relay.py", "test/relay/RelayTicketTest.cpp",
+                     "test/fixtures/relay-tickets/valid.jwt"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=False, browser=True, map_generators=False,
+                    deployment=False, cross_platform=False, platform_stack=path.startswith("src/relay/"),
                 )
 
     def test_shared_source_runs_everything(self):
@@ -158,9 +223,9 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_deployment_changes_only_run_browser_and_deployment(self):
         self.assert_jobs(
-            ["deploy/compose.yaml", "tests/deployment/test_compose.py"],
+            ["deploy/compose.legacy.yaml", "tests/deployment/test_compose.py"],
             native=False, browser=True, map_generators=False,
-            deployment=True, cross_platform=False,
+            deployment=True, cross_platform=False, platform_stack=True,
         )
 
     def test_empty_diff_runs_everything(self):
@@ -200,11 +265,8 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_windows_cache_writes_require_authorized_event_and_successful_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
-        for job, build in (("windows", "build_glob2_and_the_regression_harnesses"),
-                           ("windows-server", "build_the_yog_server")):
+        for job, build in (("windows", "build_glob2_and_the_regression_harnesses"),):
             block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
-            if job == "windows":
-                block = block.split("\n  windows-server:", 1)[0]
             for step in ("Drop cache entries this run did not use", "Save the compiler cache"):
                 guard = re.search(r"      - name: " + re.escape(step) +
                                   r"\n.*?        if: \$\{\{ (.*?) \}\}", block, re.S).group(1)
@@ -232,13 +294,18 @@ class ChangedPathsTest(unittest.TestCase):
                         # Evaluate only the exact, asserted expression above.
                         self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
 
+    def test_every_inline_build_checks_out_the_selected_revision(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        checkouts = workflow.split("      - uses: actions/checkout@v4\n")[1:]
+        self.assertTrue(checkouts)
+        for checkout in checkouts:
+            step = checkout.split("\n      - ", 1)[0]
+            self.assertIn("ref: ${{ inputs.revision || github.sha }}", step)
+
     def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
-        for job, build in (("windows", "Build glob2 and the regression harnesses"),
-                           ("windows-server", "Build the YOG server")):
+        for job, build in (("windows", "Build glob2 and the regression harnesses"),):
             block = workflow.split(f"  {job}:\n", 1)[1].split("\n  # The browser checks", 1)[0]
-            if job == "windows":
-                block = block.split("\n  windows-server:", 1)[0]
             with self.subTest(job=job):
                 checkout = block.index("      - uses: actions/checkout@v4")
                 pin = block.index("        run: git config --local core.autocrlf true")
@@ -256,9 +323,9 @@ class ChangedPathsTest(unittest.TestCase):
         for gcc in ('11', '13'):
             block = workflow.split(f'  linux-gcc{gcc}:\n', 1)[1].split('\n  linux-', 1)[0]
             self.assertIn('run_tests: true', block)
-            self.assertIn('needs: changes', block)
+            self.assertIn('needs: changes' if gcc == '11' else 'needs: [changes, linux-gcc13-producer]', block)
         tests = helper.split('  tests:\n', 1)[1]
-        self.assertIn('needs: build', tests)
+        self.assertIn('needs: [build, reuse]', tests)
         self.assertNotIn('linux-clang', tests)
         gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
         self.assertIn('needs: [changes, linux-build, linux-clang]', gate)

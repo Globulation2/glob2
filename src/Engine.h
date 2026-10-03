@@ -16,15 +16,19 @@
 #include "Campaign.h"
 #include "MapHeader.h"
 #include "GameHeader.h"
+#include "LockstepSession.h"
+#include "MatchSetup.h"
 #include "NetEngine.h"
-#include "MultiplayerGame.h"
+#include "TurnSession.h"
 #include "ChecksumSidecar.h"
+#include "ConnectionOverlay.h"
 
 
-class MultiplayersJoin;
 class SimulationRunner;
 namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
+namespace Turn { class TurnLockstepSession; }
+namespace Online { class OnlineMatchResult; }
 
 using std::shared_ptr;
 
@@ -34,6 +38,8 @@ class Engine
 {
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
+	friend struct MatchVerifier;
+	friend struct TurnClient;
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
 	int headlessSaveInterval = 0;
@@ -81,9 +87,58 @@ public:
 
 
 
-	/// Initiate a game with the given MultiplayerGame
-	int initMultiplayer(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
-	GAGCore::CooperativeTask initMultiplayerTask(std::shared_ptr<MultiplayerGame> multiplayerGame, std::shared_ptr<YOGClient> client, int localPlayer);
+	/// Everything a client needs to start a game on the turn protocol (online and LAN):
+	/// the validated setup, the map file whose content hash matches setup.map.hash
+	/// (Online::resolveMatchMap), the seat this client plays, and an open or opening
+	/// transport to the relay. The caller keeps its own reference to the transport and
+	/// closes it after the engine has finished with the session, so frames queued by
+	/// quit() can still be delivered.
+	struct TurnMatchStart
+	{
+		Online::MatchSetup setup;
+		std::string mapFile;
+		/// The seat this client controls. -1 for an observer that sends nothing (the
+		/// verifier); it views the first human seat, or seat 0.
+		int localSeat = -1;
+		std::shared_ptr<Turn::TurnTransport> transport;
+		Turn::TurnSessionConfig config;
+		/// Classifies the connection in the ClientNetworkSummary: "online" or "lan",
+		/// and for online games the relay's id and region when known.
+		std::string networkKind = "online";
+		std::string relayId;
+		std::string relayRegion;
+	};
+
+	/// Starts a turn-protocol game: builds the GameHeader from the setup (every human
+	/// seat P_IP), loads the map, and installs a TurnSession as the lockstep session.
+	/// Then run() (or beginSession/stepSession) plays it: the loop pumps the session,
+	/// paces ticks by TurnSession::tickIntervalMicros(), fast-forwards while it is 0,
+	/// reloads the initial state when the session asks for it, and calls quit() when
+	/// the game is left. Fails, with getInitializationDiagnostic(), if the setup does not
+	/// fit the map.
+	GAGCore::CooperativeTask initTurnMatchTask(TurnMatchStart start);
+	int initTurnMatch(TurnMatchStart start);
+	/// The running turn session, or null for every other kind of game.
+	Turn::TurnSession* turnSession();
+	/// A turn game replaying missed turns with ticks ready to run: the host may run
+	/// several ticks per frame (GameSessionScreen), rendering none of them.
+	bool turnFastForwarding();
+	Turn::TurnLockstepSession* turnLockstep() { return turn; }
+	/// The in-game connection lines for a turn game (GameGUI::connectionNotice).
+	std::vector<std::string> turnConnectionNotice();
+	/// Online matches: what the results screen shows (outcome, verification, rating).
+	/// The results card of an online match; also tells the in-game menu what leaving costs.
+	void setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result);
+	const std::shared_ptr<Online::OnlineMatchResult>& getOnlineResult() const { return onlineResult; }
+	/// A team of the loaded game, or null.
+	Team* gameTeam(int team);
+	/// True while the game loop waits for the network rather than pacing: a turn
+	/// game with its horizon used up, or a legacy game waiting on a peer's orders.
+	/// Hosts time the following wait as pacing.network_sleep instead of pacing.sleep.
+	bool waitingOnNetwork() const;
+	/// The ClientNetworkSummary (docs/development/network-telemetry.md) of the running
+	/// turn game; null when this is not a turn game with a local seat.
+	nlohmann::json turnNetworkSummary(bool includeSeries = true) const;
 
 	//! This function creates a game with a random map and random AI for every team
 	void createRandomGame();
@@ -113,6 +168,11 @@ public:
     void abortSession() noexcept;
     void drawSession();
     Uint32 sessionDelay(Uint64 now);
+    /// Turn games: reads the relay connection between steps (see TURN_POLL_MS), so
+    /// bundles are timed when they arrive rather than at the next frame. Nothing runs.
+    void pollTurnSession(Uint64 now);
+    /// The host's sleep before the next stepSession or pollTurnSession.
+    Uint32 sessionPollDelay(Uint64 now);
 
     // Threaded execution (the default where threads exist): the simulation runs on
     // a SimulationRunner thread; the host calls threadedClientFrame and drawSession
@@ -256,18 +316,44 @@ private:
 	/// Called only from inside the !hardPause branch.
 	void gatherAndAdvanceOrders(bool wasReadyLastTick);
 
-	/// Once allOrdersReceived() is true for this tick, validate checksums,
+	/// Once tickReady() is true for this tick, validate checksums,
 	/// execute the matched orders, pump the replay reader, and run
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
 	void drawFrame(MainLoopState& st);
+
+	/// Turn games: pumps the session each frame and handles its requests (reload,
+	/// desync flag). Called first in stepSessionImpl.
+	void pumpTurnSession(Uint64 now);
+	/// What the connection HUD shows (ConnectionOverlay), from the turn session.
+	ConnectionSnapshot turnConnectionSnapshot();
+	Uint64 turnNowMicros = 0;
+	std::uint32_t catchupFrom = 0;
+	bool catchupActive = false;
+	Uint64 connectionLostMicros = 0;
+	Uint64 catchupStartedMicros = 0;
+	/// Catch-up progress sampled every few seconds: whether the gap to the relay
+	/// shrinks (CatchUpPace in ConnectionOverlay.h).
+	CatchUpPace catchupPace;
+	/// Reloads the turn game's initial state in place, keeping the session, after
+	/// TurnSession::needsReload(); the session then replays the log from tick 0.
+	void reloadTurnInitialState();
+	/// Tells the relay this client is leaving, once.
+	void leaveTurnMatch();
+	/// Network telemetry output (EngineTurnTelemetry.cpp): GLOB2_NET_* records with
+	/// GLOB2_TEAM_TIMELINE, and the ClientNetworkSummary next to the replay.
+	void printTurnTelemetrySession();
+	void printTurnTelemetrySamples();
+	void exportTurnTelemetry();
 	void saveVideoshot(MainLoopState& st);
 	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
 	//! Threaded: fold the simulation thread's measurements into the session collector
 	//! (called with the simulation parked).
 	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
+    /// A turn game draws only after a step: polls between steps change nothing visible.
+    bool turnDrawPending = true;
     std::unique_ptr<SimulationRunner> runner;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
     std::atomic<Sint64> sessionClockOffset{0};
@@ -299,25 +385,44 @@ private:
 	/// prestige and forces. Gated by GLOB2_TEAM_RESULTS; tools/map_fairness_tournament.py scrapes it.
 	void printTeamResults();
 
-	/// Tell the YOG multiplayer session how this match ended (won, lost,
-	/// quit). Caller checks `multiplayer` is non-null.
-	void reportMultiplayerResult();
-
 	/// Close cross-replay sinks (sidecar, dataset) and tear down the network
-	/// + multiplayer state. The Engine itself stays alive for a possible
+	/// session. The Engine itself stays alive for a possible
 	/// reload (see finishSessionForHost).
 	void teardownSession();
 
 	//! The GUI, contains the whole game also
 	GameGUI gui;
-	//! The netGame, take care of order queuing and dispatching
-	std::unique_ptr<NetEngine> net;
+	//! The lockstep session: queues, exchanges and dispatches orders. A
+	//! NetEngine for single player and replays; a turn-protocol session for
+	//! online and LAN games.
+	std::unique_ptr<LockstepSession> net;
 	//! Checksum sidecar writer for cross-replay debugging. Destroying it
 	//! closes the sidecar file (see ~ChecksumSidecarWriter), so the file is
 	//! flushed even when run() is never reached after initGame allocated it.
 	std::unique_ptr<ChecksumSidecarWriter> checksumSidecar;
-	//! The MultiplayerGame, receives orders from across a network
-	shared_ptr<MultiplayerGame> multiplayer;
+	//! Non-owning view of `net` when it is a turn-protocol session; null otherwise.
+	Turn::TurnLockstepSession* turn = nullptr;
+	//! What a turn game reloads after TurnSession::needsReload().
+	struct TurnMatchState
+	{
+		MapHeader map;
+		GameHeader header;
+		std::string mapFile;
+		int localPlayer = 0;
+		int localTeam = 0;
+		std::string replayPath;
+		bool flagReported = false;
+		// Network telemetry context and output progress.
+		int localSeat = -1;
+		std::string simVersion;
+		std::string networkKind;
+		std::string relayId;
+		std::string relayRegion;
+		std::size_t printedNetPoints = 0;
+		bool netExported = false;
+	};
+	std::optional<TurnMatchState> turnMatch;
+	std::shared_ptr<Online::OnlineMatchResult> onlineResult;
 
 	Uint64 automaticGameStartTick, automaticGameEndTick;
 	//! Tick at which each team was eliminated, -1 while alive (see trackTeamEliminations).

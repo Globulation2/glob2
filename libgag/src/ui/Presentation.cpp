@@ -3,6 +3,9 @@
 #include <GraphicContext.h>
 #include <HostViewport.h>
 #include <InterfacePresentation.h>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
 
 namespace GAGGUI::ui
 {
@@ -35,6 +38,24 @@ Presentation resolvePresentation(GAGCore::GraphicContext &context, double touchT
 		p.hover = true;
 	applyTextSize(p, touchTextScale);
 	return p;
+}
+
+double comfortScale(const Presentation &p, bool followsDesktop)
+{
+	if (p.touch || !followsDesktop || p.unit <= 0)
+		return 1;
+	const double w = p.points(p.safe.w), h = p.points(p.safe.h);
+	const double fit = std::min(w / 1440.0, h / 900.0);
+	const double stepped = std::floor(fit * 4 + 0.25) / 4;
+	return std::clamp(stepped, 1.0, 1.5);
+}
+
+void applyComfortScale(Presentation &p, double scale)
+{
+	if (scale <= 1)
+		return;
+	p.unit *= scale;
+	p.textUnit *= scale;
 }
 
 void applyTextSize(Presentation &p, double touchTextScale)

@@ -27,7 +27,6 @@ namespace GAGCore
 		//! Close gag, must be called after any call to GAG
 		static void close(void);
 		
-		#ifndef YOG_SERVER_ONLY
 		//! Initialize the graphic part
 		static GraphicContext *initGraphic(int w, int h, unsigned int flags, const std::string title = "", const std::string icon = "");
 		
@@ -38,13 +37,14 @@ namespace GAGCore
 		static void loadFont(const std::string filename, unsigned size, const std::string name);
 		static Font *getFont(const std::string name);
 		static void releaseFont(const std::string name);
+		//! Reopen every loaded font from its file, keeping the Font objects; used
+		//! when the browser replaces the font file with its CJK version.
+		static void reloadFonts(void);
 		
-		#endif
 		static FileManager *getFileManager(void) { return fileManager; }
 		static StringTable *const getStringTable(void) { return strings; }
 		
 	protected:
-		#ifndef YOG_SERVER_ONLY
 		friend class Sprite;
 		
 		typedef std::map<std::string, Sprite *> SpriteMap;
@@ -56,7 +56,6 @@ namespace GAGCore
 		static FontMap fontMap;
 		//! The actual graphic context
 		static GraphicContext *gc;
-		#endif
 		//! The virtual file system
 		static FileManager *fileManager;
 		//! The table of strings

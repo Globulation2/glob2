@@ -30,8 +30,6 @@ AI 戰術
 %0 個單位等級不足
 [%0% Uploaded]
 已上傳 %0%
-[%0's game]
-%0 的遊戲
 [%0's team unit got converted to your team]
 %0 的單位被你招降
 [abreaviation explanation A]
@@ -48,8 +46,6 @@ V: 分享所有建築物的視野
 新增地圖
 [add shortcut]
 新增快捷鍵
-[Add]
-新增
 [AI Descriptions]
 AI 說明
 [AI]
@@ -124,8 +120,6 @@ alt-%0
 自動儲存
 [available lan games]
 可加入的區域網路遊戲
-[awaiting players]
-等待玩家加入
 [away:]
 暫離：
 [Back]
@@ -140,8 +134,6 @@ alt-%0
 兵營
 [beach size]
 海灘大小
-[Blocked Players]
-已封鎖的玩家
 [break]
 Break 鍵
 [briefing]
@@ -220,8 +212,6 @@ Ctrl + 拖曳 = 直線
 無法連線：找不到主機
 [Can't host game, port %0 in use]
 無法建立遊戲：連接埠 %0 使用中
-[Can't join game, game doesn't exist]
-無法加入：遊戲不存在
 [Can't join game, game has started]
 無法加入：遊戲已開始
 [Can't join game, game is full]
@@ -294,8 +284,6 @@ control-%0
 隕石坑數量
 [crater lakes terrain]
 隕石坑湖泊
-[create game]
-創造遊戲
 [create map]
 創造地圖
 [credits]
@@ -350,14 +338,6 @@ Ctrl - 直線
 沒有在搬運任何東西
 [down]
 下
-[Download Map]
-下載地圖
-[Download Maps]
-下載地圖
-[downloaded %0]
-已下載 %0
-[downloading map]
-正在下載地圖
 [edit map]
 編輯地圖
 [editing map]
@@ -368,10 +348,6 @@ Ctrl - 直線
 編輯器
 [end]
 End 鍵
-[Enter your nickname :]
-輸入你的暱稱:
-[Enter your password :]
-輸入你的密碼:
 [enter]
 Enter 鍵
 [equals]
@@ -532,12 +508,8 @@ Insert 鍵
 工作
 [join a game]
 加入一局遊戲
-[join]
-加入
 [keyboard settings]
 鍵盤設定
-[kick]
-踢出
 [lan]
 LAN 遊戲
 [language incomplete]
@@ -548,8 +520,6 @@ zh-tw
 語言
 [language]
 繁體中文
-[Leave Game]
-離開遊戲
 [left meta]
 左 Meta 鍵
 [left super]
@@ -572,12 +542,6 @@ zh-tw
 載入腳本
 [load]
 載入
-[loading map list]
-正在載入地圖清單⋯
-[Lobby]
-大廳
-[login]
-登入
 [look around]
 環顧四周
 [Lost : %0 has more prestige than you]
@@ -596,30 +560,14 @@ zh-tw
 說明
 [Map Discovered]
 地圖已探索
-[Map download failure: lost connection]
-地圖下載失敗：與 YOG 的連線中斷
-[Map name: %0]
-地圖名稱: %0。
 [map name]
 名稱
-[map rated]
-地圖評分完成
 [map script]
 地圖腳本
 [map size x]
 地圖寬度
 [map size y]
 地圖高度
-[Map upload failure: connection lost]
-地圖上傳失敗：與 YOG 的連線中斷
-[Map upload failure: map name in use]
-地圖上傳失敗。地圖名稱已被使用。
-[Map upload failure: unknown reason]
-地圖上傳失敗。原因不明。
-[Map Upload: Author Name]
-作者名稱
-[Map Upload: Waiting for reply]
-等待回覆
 [maps available]
 可用的地圖
 [mark map]
@@ -648,8 +596,6 @@ meta-%0
 新戰役
 [new map]
 新的
-[nick taken]
-我們非常抱歉但是你的選的名字已經在freenode上被用過，你將只能透過 YOG 交談
 [no fullscreen]
 * 僅適用於視窗模式
 [No Hints]
@@ -662,18 +608,10 @@ meta-%0
 資源禁止生長區
 [No]
 否
-[Not Enough Ratings]
-評分數不足
-[not ready]
-還沒準備好
 [Number Of Buildings]
 建築物數量
-[number of players: %0 (%1 AI)]
-%0 位玩家（%1 個 AI）
 [number of players: %0]
 %0 玩家再線.
-[number of teams: %0]
-%0 隊伍.
 [number of teams]
 隊伍數量
 [Number Of Units]
@@ -732,8 +670,6 @@ Pause 鍵
 暫停
 [player name]
 玩家名稱
-[player rating %0]
-玩家評分：%0
 [players]
 玩家
 [please wait]
@@ -772,36 +708,22 @@ Print Screen 鍵
 跑道
 [range]
 射程
-[Rated %0]
-評分 %0
 [ratios]
 比例
-[ready?]
-準備好了？
-[refresh map list]
-重新整理地圖清單
 [Register a new YOG user with password]
 註冊一個新 YOG 帳號和密碼。 (不穩定)
-[Register]
-註冊
 [remember unit]
 記住單位配置數量
-[Remember YOG password localy]
-在本機記住密碼。
 [remove map]
 移除地圖
 [remove shortcut]
 移除快捷鍵
-[Remove]
-移除
 [repair building]
 開始/停止 修復
 [repair]
 修復
 [repeat area]
 相同地形的重複次數
-[Repeat your password :]
-再次輸入密碼：
 [replay ended]
 重播結束
 [restore default shortcuts]
@@ -934,14 +856,6 @@ V: 按住以使用語音交談
 顯示
 [smoothing]
 平整度
-[sort by name]
-名稱
-[sort by rating]
-評分
-[sort by size]
-大小
-[Sort By]
-排序依據
 [space]
 空白鍵
 [start mission]
@@ -974,8 +888,6 @@ V: 按住以使用語音交談
 用於被動防禦的
 [stonewall]
 石牆
-[submit rating]
-提交評分
 [svr hostname]
 伺服器主機名稱
 [swamp terrain]
@@ -1074,10 +986,6 @@ Tab 鍵
 市場已完成
 [the market is under attack]
 市場正遭受攻擊
-[The player %0 has joined YOG]
-%0 已加入 YOG。
-[The player %0 has left YOG]
-%0 已離開 YOG。
 [the racetrack is finished]
 跑道已完成
 [the racetrack is under attack]
@@ -1166,10 +1074,6 @@ Tab 鍵
 升級預設值
 [upgrade]
 升級
-[Upload Map]
-上傳地圖
-[upload map]
-上傳地圖
 [username]
 用戶名
 [Version]
@@ -1182,8 +1086,6 @@ Tab 鍵
 等待 %0
 [waiting for key]
 等待按鍵⋯
-[Waiting]
-等待中
 [Walk]
 行走
 [warflag explanation 2]
@@ -1232,50 +1134,8 @@ Tab 鍵
 受傷
 [Yes]
 是
-[YESTS_CONNECTING]
-正在連線至 YOG 中繼伺服器⋯
-[YESTS_CONNECTION_LOST]
-與 YOG 的連線已中斷。
-[YESTS_CONNECTION_REFUSED_ALREADY_PASSWORD]
-YOG 中繼伺服器拒絕連線，因為此使用者名稱已經註冊。若這是你的帳號，請取消勾選「註冊新的 YOG 使用者與密碼」。
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD]
-YOG 中繼伺服器拒絕連線，因為密碼錯誤。
-[YESTS_CONNECTION_REFUSED_BAD_PASSWORD_NON_ZERO]
-YOG 中繼伺服器拒絕連線，因為此使用者名稱尚未設定密碼。若要以輸入的密碼註冊，請在連線前勾選「註冊新的 YOG 使用者與密碼」。只需註冊一次。
-[YESTS_CONNECTION_REFUSED_IP_TEMPORARILY_BANNED]
-YOG 中繼伺服器拒絕連線，因為此 IP 位址已遭暫時封禁。請等待封禁解除，或聯絡管理員。
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
-[YESTS_CONNECTION_REFUSED_UNEXPLAINED]
-YOG meta伺服器拒絕連線而沒有任何解釋!!
-[YESTS_CONNECTION_REFUSED_USERNAME_ALLREADY_USED]
-YOG meta伺服器拒絕連線因為你的用戶名已被使用。
-[YESTS_CONNECTION_REFUSED_USERNAME_BANNED]
-YOG 中繼伺服器拒絕連線，因為此使用者名稱已遭封禁。請聯絡管理員。
-[YESTS_CONNECTION_REFUSED_USERNAME_INVALID_SPECIAL_CHARACTERS]
-YOG 中繼伺服器拒絕連線，因為提供的使用者名稱無效。使用者名稱只能包含字母、數字及底線。
-[YESTS_CREATED]
-連線系統已準備連接YOG meta伺服器。
-[YESTS_PASSWORDS_DONT_MATCH]
-輸入的密碼不一致。請重新輸入。
-[YESTS_UNABLE_TO_CONNECT]
-無法連線。YOG 中繼伺服器似乎無法使用。
-[yog block command help]
-/block <playername>    封鎖玩家，之後將不再顯示該玩家的訊息。
-[yog block command player %0 already blocked]
-玩家 %0 已在封鎖名單中
-[yog block command player %0 blocked]
-已封鎖玩家 %0
-[yog block command player %0 not found]
-找不到玩家 %0
-[yog command header]
-目前可用的 YOG 用戶端指令：
-[yog command unknown]
-未知指令。
-[yog help command help]
-/help    顯示這則說明訊息
-[yog]
-Ysagoon 線上遊戲
 [you have lost]
 你輸了!!
 [you have won]
@@ -1284,12 +1144,8 @@ Ysagoon 線上遊戲
 你已被踢出遊戲
 [Your %0 are under attack]
 你的 %0 正遭受攻擊
-[Your IP address was temporarily banned]
-你的 IP 位址已遭暫時封禁。請等待封禁解除，或聯絡管理員。
 [Your unit got converted to %0's team]
 你的單位遭 %0 招降
-[Your username was banned]
-你的使用者名稱已遭封禁。請聯絡管理員解除封禁。
 [game speed]
 遊戲速度
 [decrease game speed]
@@ -3122,8 +2978,6 @@ Emoji
 不儲存離開
 [campaign import failed]
 進度檔案無效或戰役版本不同
-[network release mismatch]
-用戶端與伺服器通訊協定不一致。請安裝與伺服器相同的 Glob2 版本。
 [settings continue]
 繼續
 [settings save failed]
@@ -3486,8 +3340,6 @@ CPU %0%
 %0 %1
 [resume game]
 繼續遊戲
-[games]
-遊戲
 [Add AI]
 新增人工智慧
 [settings Experiments]
@@ -3536,15 +3388,9 @@ CPU %0%
 
 [lan discovered host %0]
 
-[lan share pairing]
-
-[lan copy pairing]
-
 [lan connection unavailable]
 
 [lan connection verification failed %0]
-
-[network start refused]
 
 [lan lobby endpoint required]
 
@@ -3612,3 +3458,1227 @@ CPU %0%
 
 [Map momentum]
 地圖慣性
+[turn reconnecting]
+
+[turn waiting for players]
+
+[turn rejoining]
+
+[turn catching up %0]
+
+[turn player reconnecting %0]
+
+[turn player lagging %0]
+
+[turn player resyncing %0]
+
+[turn player not connected %0]
+
+[lan host left]
+
+[lan host lost]
+
+[lan version mismatch %0]
+
+[lan cannot host %0]
+
+[play online]
+
+[Use in room]
+
+[Custom rules]
+
+[conn ai]
+
+[conn behind %0]
+
+[conn behind explanation %0 %1]
+
+[conn behind]
+
+[conn card catching up]
+
+[conn card colony works]
+
+[conn card desync detail]
+
+[conn card desync]
+
+[conn card grace %0]
+
+[conn card input paused]
+
+[conn card lost]
+
+[conn card progress %0 %1 %2]
+
+[conn card reconnecting %0]
+
+[conn card replaying %0]
+
+[conn card seconds left %0]
+
+[conn connections]
+
+[conn delay explanation %0 %1]
+
+[conn fair]
+
+[conn good]
+
+[conn grid legend]
+
+[conn jitter %0]
+
+[conn leave match]
+
+[conn left]
+
+[conn notice back %0]
+
+[conn notice left %0]
+
+[conn notice lost %0 %1]
+
+[conn ping explanation %0 %1]
+
+[conn ping]
+
+[conn players]
+
+[conn poor]
+
+[conn reconnecting]
+
+[conn relay %0]
+
+[conn resyncing]
+
+[conn slow]
+
+[conn unstable]
+
+[conn waiting]
+
+[conn you %0]
+
+[conn you]
+
+[conn your delay %0]
+
+[hub account menu]
+
+[hub ai joins after %0]
+
+[hub all rooms]
+
+[hub browse maps]
+
+[hub cant reach %0]
+
+[hub change server]
+
+[hub check code]
+
+[hub code placeholder]
+
+[hub connecting to %0]
+
+[hub continue with %0]
+
+[hub create room]
+
+[hub find match]
+
+[hub finish in browser]
+
+[hub free seat]
+
+[hub get update]
+
+[hub guest kept on device]
+
+[hub invalid code]
+
+[hub join by code]
+
+[hub join code]
+
+[hub join]
+
+[hub leaderboard]
+
+[hub linked %0]
+
+[hub linked accounts]
+
+[hub maps]
+
+[hub no queues]
+
+[hub no rooms]
+
+[hub offline at %0]
+
+[hub offline detail %0]
+
+[hub online at %0]
+
+[hub online settings]
+
+[hub online]
+
+[hub open page again]
+
+[hub open rooms]
+
+[hub page opened at %0]
+
+[hub queues unavailable]
+
+[hub quick match unavailable]
+
+[hub quick match]
+
+[hub ranked]
+
+[hub recent matches]
+
+[hub refresh]
+
+[hub retry now]
+
+[hub room match]
+
+[hub room name %0]
+
+[hub room]
+
+[hub seats %0 %1]
+
+[hub server %0]
+
+[hub sign in browser]
+
+[hub sign in conflict]
+
+[hub sign in failed %0]
+
+[hub sign in intro]
+
+[hub sign in]
+
+[hub sign out]
+
+[hub signed in as %0]
+
+[hub signed in on %0]
+
+[hub signing in]
+
+[hub sim %0]
+
+[hub unrated]
+
+[hub update required at %0]
+
+[hub update required detail %0]
+
+[hub update required]
+
+[hub versus %0]
+
+[match ai]
+
+[match downloading map %0]
+
+[match failed]
+
+[match leave]
+
+[match loading]
+
+[Loading game graphics]
+
+[match map cached]
+
+[match map]
+
+[match relay %0]
+
+[match seat confirmed]
+
+[match starting]
+
+[match tip flags]
+
+[match tip input]
+
+[match tip select]
+
+[match waiting for players]
+
+[match you %0]
+
+[match player map]
+
+[match player loading]
+
+[match player connecting]
+
+[match player ready]
+
+[match player left]
+
+[results back to online]
+
+[results back to room]
+
+[results defeat]
+
+[results ladder rating %0]
+
+[results left]
+
+[results match over]
+
+[results match page]
+
+[results minutes %0]
+
+[results no change]
+
+[results ranked]
+
+[results recording]
+
+[results room unrated]
+
+[results saved to history]
+
+[results seconds %0]
+
+[results unverifiable]
+
+[results verified provisional]
+
+[results verified]
+
+[results verifying detail]
+
+[results verifying]
+
+[results victory]
+
+[room address]
+
+[room ai %0]
+
+[room browser pairing]
+
+[room catalog map]
+
+[room change map]
+
+[room change rules]
+
+[room chat]
+
+[room closed seat detail]
+
+[room closed seat]
+
+[room colonies]
+
+[room connecting]
+
+[room copy]
+
+[room disconnected]
+
+[room downloading %0]
+
+[room downloading map]
+
+[room expired]
+
+[room generated on server]
+
+[room guest]
+
+[room host %0]
+
+[room host closed]
+
+[room host]
+
+[room humans vs ai]
+
+[room invite code %0]
+
+[room invite not found]
+
+[room invite only]
+
+[room invite]
+
+[room joining on network]
+
+[room lan badge]
+
+[room lan list hint %0]
+
+[room leave]
+
+[room map changed %0]
+
+[room map failed]
+
+[room match label]
+
+[room member joined %0]
+
+[room member left %0]
+
+[room member ready %0]
+
+[room needs two seats]
+
+[room no map]
+
+[room not ready]
+
+[room open for a person]
+
+[room open seat detail]
+
+[room open seat]
+
+[room person]
+
+[room preparing map]
+
+[room public]
+
+[room ready?]
+
+[room ready]
+
+[room remove from room]
+
+[room rule conquest]
+
+[room rule fixed]
+
+[room rule free]
+
+[room rule hidden]
+
+[room rule off]
+
+[room rule on]
+
+[room rule prestige]
+
+[room rule revealed]
+
+[room rules changed]
+
+[room rules]
+
+[room say something]
+
+[room seat hint]
+
+[room seat options]
+
+[room seats summary %0 %1 %2]
+
+[room seats]
+
+[room seed]
+
+[room send]
+
+[room set by host]
+
+[room share text %0]
+
+[room share]
+
+[room size]
+
+[room starting match]
+
+[room take seat]
+
+[room team %0]
+
+[room update required]
+
+[room uploaded map]
+
+[room waiting for %0]
+
+[room waiting for host]
+
+[room waiting for players %0]
+
+[room who can find it]
+
+[room you created]
+
+[room you joined %0]
+
+[room you were removed]
+
+[room you]
+
+[settings Online]
+
+[settings Another server]
+
+[settings Check]
+
+[settings Checking…]
+
+[settings Choose which server you play on and how you sign in to it.]
+
+[settings Connecting…]
+
+[settings Could not reach this server.]
+
+[settings Display name saved.]
+
+[settings Display name]
+
+[settings Download or delete my data]
+
+[settings Enter an https:// address.]
+
+[settings Finish in your browser. It shows the code %0.]
+
+[settings Forget]
+
+[settings Guests keep a generated name; sign in to choose one.]
+
+[settings Link]
+
+[settings Not a Globulation 2 server.]
+
+[settings Not linked]
+
+[settings Not signed in.]
+
+[settings Open]
+
+[settings Opens your account page on %0.]
+
+[settings Run by a community, a club or yourself. Paste its address.]
+
+[settings Save]
+
+[settings Server]
+
+[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
+
+[settings Sign in with: %0 · queues: %1]
+
+[settings Sign out on this device]
+
+[settings Sign out]
+
+[settings Switch to this server]
+
+[settings The last sign-in method can't be unlinked.]
+
+[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
+
+[settings Unlink]
+
+[settings Unlinking is done on the account page.]
+
+[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
+
+[settings Your account on %0]
+
+[settings compatible with this version]
+
+[settings connected]
+
+[settings connecting…]
+
+[settings guest]
+
+[settings linked]
+
+[settings plays another version]
+
+[settings trusted]
+
+[settings used before]
+
+[settings you were %0 there]
+
+[trust invited to room %0]
+
+[trust join as guest]
+
+[trust not official]
+
+[trust remember]
+
+[trust separate identity %0]
+
+[trust title]
+
+[trust what it sees]
+
+[settings not connected]
+
+[settings Open Play online to connect.]
+
+[hub code]
+
+[results draw]
+
+[qm 2 vs 2]
+
+[qm 1 vs 1]
+
+[qm ping about]
+
+[qm ranked]
+
+[qm casual %0]
+
+[qm rated]
+
+[qm unrated]
+
+[qm solo queue]
+
+[qm ai joins after %0]
+
+[qm fair maps %0]
+
+[qm cooldown %0]
+
+[qm sign in to play ranked]
+
+[online update required]
+
+[qm already searching]
+
+[online connection problem]
+
+[qm find match]
+
+[qm opponents rated %0 to %1]
+
+[qm region %0]
+
+[qm searching]
+
+[qm measuring relays]
+
+[qm joining queue]
+
+[qm waiting for a person]
+
+[qm ai in %0 rated]
+
+[qm ai in %0]
+
+[qm ai after %0]
+
+[qm allow ai short]
+
+[qm allow ai]
+
+[qm cancel]
+
+[qm cancel search]
+
+[qm usual wait %0]
+
+[qm widening]
+
+[qm ais are rated]
+
+[qm opponent declined]
+
+[qm %0 did not accept]
+
+[qm start failed]
+
+[qm you declined]
+
+[qm you did not answer]
+
+[qm search ended]
+
+[qm try again]
+
+[online connecting]
+
+[qm no queues]
+
+[qm quick match]
+
+[qm phone searching note]
+
+[qm phone intro]
+
+[qm online]
+
+[qm keeps running note]
+
+[qm ai]
+
+[qm provisional]
+
+[qm accepted]
+
+[qm declined]
+
+[qm waiting]
+
+[qm ai badge]
+
+[qm match found]
+
+[qm playing an ai]
+
+[qm vs]
+
+[qm ai explanation rated]
+
+[qm ai explanation]
+
+[qm casual explanation]
+
+[qm accepted button]
+
+[qm accept]
+
+[qm decline]
+
+[qm both must accept]
+
+[qm accept explanation]
+
+[qm starting in %0]
+
+[qm preparing match]
+
+[qm match assigned %0 %1]
+
+[online jan]
+
+[online feb]
+
+[online mar]
+
+[online apr]
+
+[online may]
+
+[online jun]
+
+[online jul]
+
+[online aug]
+
+[online sep]
+
+[online oct]
+
+[online nov]
+
+[online dec]
+
+[profile win letter]
+
+[profile loss letter]
+
+[profile draw letter]
+
+[profile history unavailable]
+
+[profile downloading replay]
+
+[profile no replay]
+
+[profile room with %0]
+
+[profile with %0 vs %1]
+
+[profile vs %0]
+
+[profile room]
+
+[profile casual]
+
+[profile ai filled]
+
+[profile provisional %0 games]
+
+[profile unrated]
+
+[profile checking]
+
+[profile %0 min]
+
+[profile match page]
+
+[profile replay]
+
+[profile win rate last %0]
+
+[profile %0 w %1 l %2 d]
+
+[profile typical game]
+
+[profile median length]
+
+[profile best map]
+
+[profile %0 w %1 l]
+
+[profile no rated games]
+
+[profile all]
+
+[profile rooms]
+
+[profile vs ai]
+
+[profile matches]
+
+[online loading]
+
+[profile no matches]
+
+[online load more]
+
+[profile title]
+
+[profile guest]
+
+[profile playing since %0]
+
+[profile full profile web]
+
+[profile replays note]
+
+[profile web profile]
+
+[maps most played]
+
+[maps most liked]
+
+[maps newest]
+
+[maps most downloaded]
+
+[maps any size]
+
+[maps up to 128]
+
+[maps 256]
+
+[maps 512 and larger]
+
+[maps report broken]
+
+[maps report offensive]
+
+[maps report copyright]
+
+[maps report other]
+
+[maps public]
+
+[maps unlisted]
+
+[maps private]
+
+[maps cannot read file]
+
+[maps file too large]
+
+[maps saved for next room]
+
+[maps download failed]
+
+[maps %0 colonies]
+
+[maps version %0]
+
+[maps updated %0]
+
+[maps downloading]
+
+[maps like needs account]
+
+[maps report sent]
+
+[maps select a map]
+
+[maps by %0]
+
+[maps stats %0 %1 %2]
+
+[maps use in room]
+
+[maps liked]
+
+[maps like]
+
+[maps map page]
+
+[maps reported]
+
+[maps report]
+
+[maps report why]
+
+[maps search placeholder]
+
+[maps none found]
+
+[maps any colonies]
+
+[maps checking]
+
+[maps no version yet]
+
+[maps rejected]
+
+[maps did not load %0]
+
+[maps unknown reason]
+
+[maps fix and upload again]
+
+[maps uploaded just now]
+
+[maps loading on server]
+
+[maps %0 plays]
+
+[maps hidden]
+
+[maps upload again]
+
+[maps delete]
+
+[maps update]
+
+[maps upload a map]
+
+[maps upload hint]
+
+[maps no maps yet]
+
+[maps my maps]
+
+[maps my maps %0]
+
+[maps browse]
+
+[maps title]
+
+[maps browse note %0]
+
+[maps visibility note]
+
+[maps use %0]
+
+[maps %0 kb]
+
+[maps field title]
+
+[maps field description]
+
+[maps who can use it]
+
+[maps guests unlisted]
+
+[maps visibility help]
+
+[maps new version of %0]
+
+[maps upload]
+
+[maps uploading]
+
+[maps checking detail]
+
+[maps ready]
+
+[maps ready public]
+
+[maps ready unlisted]
+
+[maps ready private]
+
+[maps upload failed]
+
+[maps server read %0 %1]
+
+[maps continue in background]
+
+[maps upload a map title]
+
+[maps update map title]
+
+[maps upload note]
+
+[online just now]
+
+[online today %0]
+
+[online yesterday]
+
+[online sun]
+
+[online mon]
+
+[online tue]
+
+[online wed]
+
+[online thu]
+
+[online fri]
+
+[online sat]
+
+[online %0 weeks ago]
+
+[online %0 months ago]
+
+[online %0 years ago]
+
+[maps share online]
+
+[maps mine]
+
+[results waiting for players]
+
+[results waiting detail]
+
+[results waiting slow]
+
+[results verifying slow]
+
+[results rematch]
+
+[results join rematch %0]
+
+[hub profile history]
+
+[hub my maps]
+
+[hub leaderboard %0]
+
+[hub leaderboard empty]
+
+[hub guests not ranked]
+
+[hub full leaderboard]
+
+[settings %0 is no longer linked.]
+
+[room map read failed]
+
+[room map upload failed]
+
+[room map upload failed %0]
+
+[room uploading map]
+
+[room premade map shared]
+
+[room take a seat to play]
+
+[room waiting for a seat]
+
+[room not seated]
+
+[room copied]
+
+[room copy failed]
+
+[room closed title]
+
+[room removed title]
+
+[room back to online]
+
+[leave match]
+
+[leave match title]
+
+[leave lan title]
+
+[leave rated body]
+
+[leave casual body]
+
+[leave room body]
+
+[leave lan body]
+
+[leave match confirm]
+
+[keep playing]
+
+[results team]
+
+[results quick unrated]
+
+[conn card cannot keep up]
+
+[conn card cannot keep up body]
+
+[conn card not gaining]
+
+[results reason opponents left]
+
+[results reason victory]
+
+[results reason defeat]
+
+[results reason you left]
+
+[results final after end]
+
+[pause none left]
+
+[pause game left %0]
+
+[pause by %0]
+
+[pause by %0 resumes in %1]
+
+[turn too many actions]
+
+[turn no pauses left]
+
+[turn pause time used %0]
+
+[room seats one person %0 %1]
+
+[room rule resources]
+
+[room rule construction]
+
+[room rule food]
+
+[room rule training]
+
+[room rule retreat]
+
+[room rule unit deaths]
+
+[room rule combat]
+
+[room rules otherwise standard]
+
+[room browser link]
+
+[room browser link hint]
+
+[room browser link code %0]
+
+[room copy link]
+
+[room lan open seat detail]
+
+[room close title]
+
+[room close body one]
+
+[room close body %0]
+
+[room close confirm]
+
+[room stay]
+
+[room colours changed]
+
+[room copy by hand]
+
+[room copy by hand close]
+
+[room copy by hand touch]
+
+[room copy by hand keys]
+
+[room code]
+
+[online under a minute]
+
+[online about %0 min]
+
+[online %0 s]
+
+[qm ai opponent %0]
+
+[match relay connected]
+
+[room picker title]
+
+[room picker for one]
+
+[room picker for %0]
+
+[room picker generated]
+
+[room picker premade]
+
+[room picker catalog]
+
+[room picker size]
+
+[room picker colonies]
+
+[room picker fair]
+
+[room picker does not fit]
+
+[room picker preparing]
+
+[room picker generated note]
+
+[room picker players %0]
+
+[room picker unreadable]
+
+[room picker no premade]
+
+[room picker too small %0]
+
+[room picker pick premade]
+
+[room picker catalog intro]
+
+[room picker browse catalog]
+
+[room picker more options]
+
+[room picker use]
+
+[room map ready title %0]
+
+[room map ready unnamed]
+
+[room map ready body]
+
+[device busy %0]
+
+[game draw]
+

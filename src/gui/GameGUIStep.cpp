@@ -29,6 +29,7 @@
 #include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
+#include "WinningConditions.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -428,7 +429,10 @@ void GameGUI::checkWonConditions(void)
 
     if(globalContainer->liveSpectating) {
         for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
-            openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[Match finished]"), true, game.teams[i]->color, true));
+            // A tie at the top across alliances is a draw, not this team's win.
+            // Empty online seats (idle AI::NONE colonies) never share it.
+            const bool drawn = isGameDrawn(&game, contestedTeamsMask(&game));
+            openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[Match finished]"), true, game.teams[i]->color, !drawn));
             hasEndOfGameDialogBeenShown=true;
             miniMapPushed=false;
             break;
@@ -436,11 +440,23 @@ void GameGUI::checkWonConditions(void)
         return;
     }
 
+	// Turn-protocol matches (online and LAN) decided in this colony's favour go
+	// straight to the results, which say why (an opponent left, prestige, victory)
+	// and carry the rating; the classic "You have won!" dialog is for local games.
+	if (networkMatch.active && localTeam->hasWon)
+	{
+		hasEndOfGameDialogBeenShown = true;
+		if (inGameMenu != IGM_NONE)
+			closeDialog();
+		isRunning = false;
+		return;
+	}
 	if (game.totalPrestigeReached && game.isPrestigeWinCondition())
 	{
 		if (inGameMenu==IGM_NONE)
 		{
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[Total prestige reached]"), true, localTeam->color, localTeam->hasWon));
+			const bool drawn = classifyTeamOutcome(&game, localTeamNo, contestedTeamsMask(&game)) == TeamOutcome::Draw;
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[Total prestige reached]"), true, localTeam->color, localTeam->hasWon && !drawn));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -458,11 +474,14 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
+			// Campaign progression follows the engine's won flag; a draw only
+			// changes the words the player sees.
 			if(campaign!=NULL)
 			{
 				campaign->setCompleted(missionName);
 			}
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[you have won]"), true, localTeam->color, true));
+			const bool drawn = classifyTeamOutcome(&game, localTeamNo, contestedTeamsMask(&game)) == TeamOutcome::Draw;
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[you have won]"), true, localTeam->color, !drawn));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}

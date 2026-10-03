@@ -11,10 +11,8 @@ uses its own build directory. The Android and iOS targets also accept
 `china=1`; see [mobile builds](../mobile/development.md) for toolchains and
 packaging. Pass `--china` to `mobile/dependencies.py` and the matching
 `mobile/android.py` or `mobile/ios.py` command for every mobile stage. The China
-client omits the public YOG menu and refuses connections
-to the project's public YOG host. Offline play and LAN sessions remain
-available. The client does not run public lobby or router services from its
-command-line options. This build mode is a technical release candidate, not
+client omits the main menu's Play online entry and never opens the online hub,
+including from invite links. Offline play and LAN sessions remain available. This build mode is a technical release candidate, not
 proof of approval or completion of required identity and anti-addiction controls.
 
 The publisher and operator must review LAN play, editable maps, scripts, chat,

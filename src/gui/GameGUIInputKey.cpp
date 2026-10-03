@@ -166,6 +166,9 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 						Building* selBuild = selectionBuilding();
 						int typeNum = selBuild->typeNum; //determines type of updated building
 						int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum - 1);
+						// Another team's building can be selected for viewing; its upgrade is not ours to cancel.
+						if (selBuild->owner->teamNumber != localTeamNo)
+							break;
 						if (selBuild->constructionResultState == Building::UPGRADE)
 							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))
@@ -252,7 +255,7 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				break;
 				case GameGUIKeyActions::PauseGame:
                     if(globalContainer->liveSpectating){hardPause=!hardPause;break;}
-					orderQueue.push_back(shared_ptr<Order>(new PauseGameOrder(!gamePaused)));
+					requestPause(!gamePaused);
 					break;
 				case GameGUIKeyActions::HardPause:
 					// Hard-pause freezes this client's entire order/checksum
@@ -297,6 +300,9 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 						Building* selBuild = selectionBuilding();
 						int typeNum = selBuild->typeNum; //determines type of updated building
 						int unitWorking = defaultAssign.getDefaultAssignedUnits(typeNum);
+						// Another team's building can be selected for viewing; its repair is not ours to cancel.
+						if (selBuild->owner->teamNumber != localTeamNo)
+							break;
 						if (selBuild->constructionResultState == Building::REPAIR)
 							orderQueue.push_back(shared_ptr<Order>(new OrderCancelConstruction(selBuild->gid, unitWorking)));
 						else if ((selBuild->constructionResultState==Building::NO_CONSTRUCTION) && (selBuild->buildingState==Building::ALIVE))

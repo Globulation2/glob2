@@ -1,7 +1,7 @@
 # Browser platform development
 
 Globulation 2 runs in a full-page browser client with campaigns, tutorials,
-custom games, map editing, local saves and YOG cross-play.
+custom games, map editing, local saves and online play with desktop and mobile players.
 WebGL2 is the default where the browser accelerates it; otherwise the game uses
 the software renderer. `?renderer=webgl2` or `?renderer=software` forces either
 one. The pinned Emscripten 4.0.15 build
@@ -48,9 +48,9 @@ See [delivery contracts](../docs/browser/implementation.md) for output paths and
 platform boundaries.
 
 The default build packages two runtimes: the root `index.js`/`index.wasm` serial
-fallback and `threaded/index.js`/`threaded/index.wasm`. Both use the root asset
-payload. Keep `index.html`, `loader.js`, both runtime directories and asset
-payloads together when publishing. `python3 browser/package-static.py` produces
+fallback and `threaded/index.js`/`threaded/index.wasm`. Both load the same game
+data packages from `assets/` (see below). Keep `index.html`, `loader.js`, both
+runtime directories and `assets/` together when publishing. `python3 browser/package-static.py` produces
 the versioned release package with verified gzip sidecars for both runtimes. `web-tests` additionally builds serial and
 threaded `script-tests.js` harnesses.
 
@@ -75,6 +75,57 @@ isolation headers before advertising it. `glob2Diagnostics.snapshot()` reports
 threads, excluding the application worker), and worker-owned `renderContext`
 metrics. Browser command-line hosts must await `Module.start(args)` for completion;
 `Module.callMain()` alone does not wait for a threaded command to finish.
+### Game data and loading
+
+The build packs the files the game reads at run time into content-addressed
+packages under `assets/` (`scons/web_assets.py`); build scripts, translation
+tooling, documentation, icons and store screenshots stay out.
+`python3 scons/web_assets.py --report` lists the size of each category and package.
+`browser/asset-loader.js` downloads the `core` package while the WebAssembly
+module streams in, and the game starts once both are ready. `core` holds what
+the menus, the online hub and rooms need: the interface and menu sprites, the
+font, English and every language's own name, maps, campaigns, scripts and every
+simulation data file, so
+the sim version and checksum traces are unchanged. Three of its files are smaller
+browser copies checked in under `browser/assets/` (`browser/derive_assets.py`):
+the font without its Chinese, Japanese and Korean outlines, the menu's still
+backdrop as a JPEG and the wordmark without the area the menu never shows. The
+build uses a copy only while it matches its source; regenerate them after
+changing the font, those images or a language's own name.
+The loading page shows megabytes, a percentage and an estimate of the time left.
+
+The rest follows in the background once the main menu is up, most needed first:
+
+- `game`, the in-game sprites. Until they arrive the menu shows the colony still
+  instead of the live colony, and a match, the editor or a replay waits on its
+  loading screen ("Loading game graphics"; the online match checklist says the
+  same). The menu colony, the settings' building artwork and later matches pick
+  them up when they arrive. A `?replay=` link loads them before the game starts.
+- `menu-music`; the menu music starts when it arrives.
+- `font-cjk`, the full font. The game reopens its fonts when it arrives, so
+  Chinese, Japanese and Korean player names and chat get their glyphs (the core
+  copy already has the characters of every language's own name). With a Chinese,
+  Japanese or Korean interface it is a startup package instead; switching to one
+  before it arrives shows missing glyphs until it does.
+- `translations`, the other languages' full catalogs; English stands in until
+  they arrive. An interface in another language loads them before the game starts.
+- `music` and `hd`: the in-game music and the high-resolution artwork (WebGL2
+  only, and only while that setting is on). The game reads them when a match or
+  the editor starts, so on a first visit a match started before the artwork
+  arrives uses the original artwork; the next match uses the high-resolution set.
+
+Later packages download in parts of about 4 MB. Optional ones (music and
+artwork) pause while a match is running and are skipped when the browser asks to
+save data; `game`, `font-cjk` and `translations` are retried until they arrive. A package becomes
+visible to the game only when complete. Native builds load everything at startup
+as before (`ApplicationHost::assetPackageReady` is always true there).
+`glob2Diagnostics.snapshot().assets` reports each package's state.
+
+Package parts are kept in the browser's Cache Storage, so later visits read them
+from the device. A new build changes only the names of the packages whose
+content changed. `python3 browser/precompress.py` writes Brotli and gzip copies
+of both runtimes' modules and scripts, the loader and the packages for servers that
+serve precompressed files (`deploy/Caddyfile` does).
 
 ## Playing and saving
 
@@ -88,6 +139,9 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
+`?replay=<url>` downloads a replay while the game loads and opens it in the replay
+viewer (the platform's "Watch in browser"; see
+[match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
 With WebGL2, press G in a match for the torus overview. Both rendering paths
 support the flat map camera's zoom and picking. Native HTML text fields handle
 browser keyboard editing, selection, paste, composition and password masking;
@@ -108,17 +162,17 @@ Continue on failure; Continue does not confirm a saved copy.
 ## Scope
 
 The browser client uses mouse and keyboard controls.
-The YOG entry uses native WSS lobby/router listeners. LAN joining requires a certificate trusted by the browser; browser hosting remains unavailable.
-The lobby uses YOG chat; the separate native IRC bridge is unavailable.
-See `docs/browser/gateway.md` for routing. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
+Online play goes through the online hub, as on desktop; matches run over the
+platform's relay. LAN joining requires a certificate trusted by the browser;
+browser hosting remains unavailable. See `docs/browser/gateway.md` for the transports. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
 existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
 on the shared native worker path in threaded builds and one candidate per UI
 timer in the serial fallback; an individual fallback roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
 there is no mobile UI adaptation.
 
-Browser and desktop multiplayer clients and YOG must use the same protocol
-(version 41). Update all components together. See the [admission contract](../docs/browser/protocol.md).
-Guests, invitations and coordinated refresh/reconnect recovery remain unfinished.
+Browser and desktop players in one match must run builds with the same sim
+version; the platform and relay check it (see the
+[turn protocol](../docs/multiplayer/turn-protocol.md)).
 
 ## Compatibility note
 
@@ -131,7 +185,7 @@ roll can pause the UI; see [ADR 005](../docs/browser/adr-005-generation-randomne
 Saved-game compatibility remains durable. Replays must meet the current
 `REPLAY_MINIMUM_VERSION_MINOR`; browser import tests use a separately recorded
 fixture under `browser/tests/fixtures`, without replacing shared determinism
-baselines. YOG distributes the host-selected map bytes to every player.
+baselines. Online and LAN players fetch the room's map by its hash.
 
 ## Automated tests
 

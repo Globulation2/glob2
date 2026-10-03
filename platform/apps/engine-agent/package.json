@@ -1,0 +1,19 @@
+{
+  "name": "@glob2/engine-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Runs engine jobs (map generation, validation, previews, match verification) for one simulation version.",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "@glob2/core": "0.1.0",
+    "@glob2/protocol": "0.1.0"
+  },
+  "devDependencies": {
+    "@glob2/api": "0.1.0",
+    "@glob2/db": "0.1.0"
+  }
+}

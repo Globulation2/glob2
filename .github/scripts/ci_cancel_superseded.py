@@ -28,8 +28,12 @@ CI_WORKFLOWS = {
     '.github/workflows/steam-windows-package.yml',
     '.github/workflows/thread-sanitizer.yml',
 }
+LEGACY_RELEASE_WORKFLOWS = {
+    '.github/workflows/steam-windows-package.yml',
+    '.github/workflows/mac-app-store.yml',
+}
 CANCELLABLE_EVENTS = {'pull_request', 'push'}
-DEFAULT_BRANCH_EVENTS = {'push', 'schedule'}
+DEFAULT_BRANCH_EVENTS = {'push'}
 ACTIVE_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
 
 
@@ -61,10 +65,13 @@ def select_superseded(runs, heads, current_run_id=None, default_branch='master',
             continue
         if workflow_path(run) not in CI_WORKFLOWS:
             continue
+        if workflow_path(run) in LEGACY_RELEASE_WORKFLOWS and run.get('event') == 'pull_request':
+            selected.append(run)
+            continue
         key = head_key(run)
         on_default = key[1:] == (repository, default_branch) and run.get('event') in DEFAULT_BRANCH_EVENTS
         if on_default:
-            if not include_default_branch:
+            if not include_default_branch or (run.get('status') == 'in_progress' or run.get('_execution_started')):
                 continue
             path = workflow_path(run)
             if path not in newest_default or run['id'] > newest_default[path]['id']:
@@ -109,11 +116,33 @@ def active_runs(repo, branch=None):
     return list(runs.values())
 
 
+def master_execution_started(repo, run, read=None):
+    """Run status can say queued while jobs execute; any begun work is protected."""
+    read = read or gh_pages
+    attempt = run.get('run_attempt', 1)
+    try:
+        jobs = read(f'repos/{repo}/actions/runs/{run["id"]}/attempts/{attempt}/jobs', 'jobs')
+        return any(job.get('status') == 'in_progress' or job.get('runner_id') or
+                   any(step.get('started_at') for step in job.get('steps', []))
+                   for job in jobs)
+    except (subprocess.CalledProcessError, OSError, ValueError, KeyError, TypeError):
+        # API failure is not evidence that master has never started.
+        return True
+
+
+def protect_started_master(repo, runs, default_branch):
+    for run in runs:
+        if (workflow_path(run) in CI_WORKFLOWS and run.get('event') == 'push' and
+                head_key(run)[1:] == (repo, default_branch) and run.get('status') != 'completed'):
+            run['_execution_started'] = master_execution_started(repo, run)
+
+
 def branch_head(repo, branch):
     try:
         return gh_json(f'repos/{repo}/branches/{quote(branch, safe="")}')['commit']['sha']
     except subprocess.CalledProcessError:
-        return None  # deleted branch
+        # An unavailable API is not evidence that a branch was deleted.
+        return False
 
 
 def resolve_heads(repo, runs):
@@ -121,7 +150,8 @@ def resolve_heads(repo, runs):
     open_prs = {}
     for pr in gh_pages(f'repos/{repo}/pulls?state=open', None):
         head_repo = (pr['head'].get('repo') or {}).get('full_name')
-        open_prs[('pr', head_repo, pr['head']['ref'])] = pr['head']['sha']
+        key = ('pr', head_repo, pr['head']['ref'])
+        open_prs[key] = pr['head']['sha']
     heads = {}
     for run in runs:
         key = head_key(run)
@@ -130,7 +160,9 @@ def resolve_heads(repo, runs):
         if key[0] == 'pr':
             heads[key] = open_prs.get(key)  # closed or merged PR: nothing current
         elif key[1] == repo:
-            heads[key] = branch_head(repo, key[2])
+            value = branch_head(repo, key[2])
+            if value is not False:
+                heads[key] = value
     return heads
 
 
@@ -148,6 +180,8 @@ def main():
         parser.error('--repo or GITHUB_REPOSITORY is required')
 
     runs = active_runs(args.repo, args.branch)
+    if args.include_default_branch:
+        protect_started_master(args.repo, runs, args.default_branch)
     heads = resolve_heads(args.repo, runs)
     selected = select_superseded(runs, heads, args.current_run_id, args.default_branch, args.repo,
                                  args.include_default_branch)
@@ -156,6 +190,11 @@ def main():
         label = f"{run['id']} {workflow_path(run)} {run['event']} {run['head_branch']}@{run['head_sha'][:9]} ({run['status']})"
         if args.dry_run:
             print(f'would cancel {label}')
+            continue
+        # Recheck just before mutation: allocation may have happened during the sweep.
+        if (run.get('event') == 'push' and head_key(run)[1:] == (args.repo, args.default_branch)
+                and master_execution_started(args.repo, run)):
+            print(f'protected started master {label}')
             continue
         try:
             gh_json('-X', 'POST', f"repos/{args.repo}/actions/runs/{run['id']}/cancel")

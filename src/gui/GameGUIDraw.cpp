@@ -3,6 +3,7 @@
 #include <RenderStateScope.h>
 #include <PerformanceTelemetry.h>
 #include "MapZoomControls.h"
+#include "ConnectionOverlay.h"
 #include "DynamicClouds.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -455,7 +456,18 @@ void GameGUI::drawOverlayInfos(void)
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
 	const SceneHud &hud = drawnScene().panels.hud;
-	if (hud.anyPlayerWaited && hud.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	// Turn games show every player's connection in the panel instead (ConnectionOverlay).
+	const std::vector<std::string> connectionLines = connectionNotice && !connectionOverlay ? connectionNotice() : std::vector<std::string>();
+	if (!connectionLines.empty())
+	{
+		// Same box as the waiting notice below, one line per connection state.
+		const int lines = static_cast<int>(connectionLines.size());
+		globalContainer->gfx->drawFilledRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+lines*20, 0, 0, 140, 127);
+		globalContainer->gfx->drawRect(32, 32, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64, 22+lines*20, 255, 255, 255);
+		for (int i = 0; i < lines; ++i)
+			globalContainer->gfx->drawString(44, 44+i*20, globalContainer->standardFont, connectionLines[i].c_str());
+	}
+	else if (!connectionOverlay && hud.anyPlayerWaited && hud.maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
@@ -485,6 +497,14 @@ void GameGUI::drawOverlayInfos(void)
 	{
 		int ymesg = 32;
 		int yinc = 0;
+		// The connection panel sits at the top left of the map in turn games; the
+		// messages (a departure, chat notices) start below it, not under its header.
+		if (connectionOverlay)
+		{
+			const SDL_Rect panel = connectionOverlay->panelBounds();
+			if (panel.h > 0 && panel.x < 32 + 200)
+				ymesg = std::max(ymesg, panel.y + panel.h + 12);
+		}
 
 		// TODO: die with SGSL
 		// show script text
@@ -688,8 +708,45 @@ void GameGUI::drawAll(int team)
 			s = Toolkit::getStringTable()->getString("[Paused]");
 		}
 
-		int x = (globalContainer->gfx->getW()-sidebar-globalContainer->menuFont->getStringWidth(s))/2;
-		globalContainer->gfx->drawString(x, globalContainer->gfx->getH()-80, globalContainer->menuFont, s);
+		// Network matches say who paused and, with a pause budget, how long is left.
+		std::string detail;
+		if (networkMatch.active && !globalContainer->replaying)
+		{
+			const PauseState state = pauseState ? pauseState() : PauseState();
+			const int holder = state.pausedBy;
+			const std::string name = holder >= 0 && holder < game.gameHeader.getNumberOfPlayers() && game.players[holder]
+										 ? game.players[holder]->name : std::string();
+			if (state.limited && holder >= 0 && state.pauserSecondsLeft >= 0)
+			{
+				const Uint32 left = Uint32(state.pauserSecondsLeft);
+				detail = FormattableString(Toolkit::getStringTable()->getString("[pause by %0 resumes in %1]"))
+							 .arg(name).arg(FormattableString("%0:%1").arg(left / 60).arg(left % 60, 2, 10, '0'));
+			}
+			else if (!name.empty())
+				detail = FormattableString(Toolkit::getStringTable()->getString("[pause by %0]")).arg(name);
+		}
+		// Above whatever covers the bottom of the map: the phone HUD's action bar,
+		// or the classic 80-pixel margin.
+		int bottom = globalContainer->gfx->getH() - 80;
+		int left = 0, width = globalContainer->gfx->getW() - sidebar;
+		if (touch->usesHUD())
+		{
+			const auto ui = touch->hudLayout();
+			left = int(ui.world.x);
+			width = int(ui.world.w);
+			bottom = int(ui.world.y + ui.world.h) - globalContainer->menuFont->getStringHeight(s.c_str()) -
+					 (detail.empty() ? 0 : globalContainer->standardFont->getStringHeight(detail.c_str())) - 16;
+		}
+		const int w = globalContainer->menuFont->getStringWidth(s);
+		const int h = globalContainer->menuFont->getStringHeight(s.c_str());
+		const int dw = detail.empty() ? 0 : globalContainer->standardFont->getStringWidth(detail.c_str());
+		const int dh = detail.empty() ? 0 : globalContainer->standardFont->getStringHeight(detail.c_str());
+		// A dark backing keeps the label readable over bright terrain.
+		const int boxW = std::max(w, dw) + 32;
+		globalContainer->gfx->drawFilledRect(left + (width - boxW) / 2, bottom - 6, boxW, h + dh + 12, 0, 0, 0, 140);
+		globalContainer->gfx->drawString(left + (width - w) / 2, bottom, globalContainer->menuFont, s);
+		if (!detail.empty())
+			globalContainer->gfx->drawString(left + (width - dw) / 2, bottom + h, globalContainer->standardFont, detail);
 	}
 
 	// draw the panel
@@ -710,6 +767,24 @@ void GameGUI::drawAll(int team)
 	globalContainer->gfx->setClipRect();
 	drawOverlayInfos();
     touch->drawHUD();
+	if (connectionOverlay)
+	{
+		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+		SDL_Rect area{0, 16, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH()-16};
+		if (touch->usesHUD())
+		{
+			// Under the status strip, away from the thumb corner (layout is in drawable pixels).
+			const auto ui = touch->hudLayout();
+			area = {int(ui.world.x), int(ui.status.y+ui.status.h), int(ui.world.w), int(ui.world.y+ui.world.h-ui.status.y-ui.status.h)};
+			// Narrow portrait phones wrap the status strip onto a second row.
+			if (ui.world.h > ui.world.w)
+			{
+				area.y += int(28*unit);
+				area.h -= int(28*unit);
+			}
+		}
+		connectionOverlay->draw(touch->usesHUD(), area, unit);
+	}
 
 	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any

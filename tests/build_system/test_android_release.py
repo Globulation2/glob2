@@ -107,8 +107,11 @@ class AndroidReleaseTests(unittest.TestCase):
                     android_release.main()
 
     def test_workflows_keep_publication_preflight_strict(self):
+        # PR/master Android builds skip the release contract (release-only, #604);
+        # the release workflows keep the strict check.
         mobile = (ROOT / ".github/workflows/mobile.yml").read_text()
-        self.assertIn("python3 mobile/android_release.py check --development\n", mobile)
+        self.assertNotIn("android_release.py check", mobile)
+        self.assertNotIn("python3 mobile/android_release.py verify-apk", mobile)
         for name in ("release.yml", "fdroid-release-validation.yml"):
             workflow = (ROOT / ".github/workflows" / name).read_text()
             self.assertIn("python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}\n", workflow)

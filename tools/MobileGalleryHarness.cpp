@@ -21,10 +21,6 @@
 #include "LANMenuScreen.h"
 #include "LANFindScreen.h"
 #include "MessageScreen.h"
-#include "YOGLoginScreen.h"
-#include "YOGRegisterScreen.h"
-#include "YOGClient.h"
-#include "YOGClientMapUploadScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
 #include "CustomGameOtherOptions.h"
@@ -52,8 +48,14 @@
 #include "PhoneEditor.h"
 #include "MapEditDialog.h"
 #include "ScriptEditorScreen.h"
+#include "RoomMapPickerScreen.h"
+#include "RoomSetup.h"
+#include <StringTable.h>
 #include <ScreenStack.h>
 #include <Toolkit.h>
+#include "gui/ConnectionOverlay.h"
+#include "test/OnlineUIFixtures.h"
+#include "SettingsScreen.h"
 #include <SDL3_net/SDL_net.h>
 #include <charconv>
 #include <stdexcept>
@@ -196,7 +198,7 @@ struct MobileGallerySetup
 		else
 			press(stack, *view, "description");
 		stackShot(stack, "campaign-description-editing");
-		SDL_StopTextInput();
+		SDL_StopTextInput(SDL_GetKeyboardFocus());
 		view->endExecute(CampaignMapEntryEditor::CANCEL);
 		frame(stack);
 	}
@@ -276,11 +278,93 @@ struct MobileGallerySetup
 		screenShot(stack, "credits", std::make_unique<CreditScreen>());
 		screenShot(stack, "lan-menu", std::make_unique<LANMenuScreen>(stack));
 		screenShot(stack, "lan-find", std::make_unique<LANFindScreen>(stack));
-		auto client = std::make_shared<YOGClient>();
-		screenShot(stack, "online-login", std::make_unique<YOGLoginScreen>(stack, client));
-		screenShot(stack, "online-register", std::make_unique<YOGRegisterScreen>(client));
-		screenShot(stack, "map-upload",
-				   std::make_unique<YOGClientMapUploadScreen>(stack, client, "maps/balanced.map"));
+		// Online play (fixed models, no network): hub states, rooms, starting a match.
+		screenShot(stack, "online-hub", OnlineUIFixtures::hubFixture(stack));
+		screenShot(stack, "online-hub-signin", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
+					   m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
+					   m.confirmationCode = "KXQ742";
+				   }));
+		screenShot(stack, "online-hub-offline", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
+					   m.link = OnlineHubScreen::Model::Link::Offline;
+					   m.retryInSeconds = 8;
+					   m.displayName = "Bradley";
+					   m.accountKind = "registered";
+					   m.rooms = Online::Json::array();
+				   }));
+		{
+			auto hub = OnlineUIFixtures::hubFixture(stack);
+			static_cast<OnlineHubScreen &>(*hub).acceptInvite("https://play.lanparty.net", "7HD21QABCD");
+			screenShot(stack, "online-hub-trust", std::move(hub));
+		}
+		screenShot(stack, "room-host", std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat())));
+		{
+			auto room = std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::GUEST_ID, OnlineUIFixtures::roomChat()));
+			room->selectTab(RoomScreen::MapTab);
+			screenShot(stack, "room-guest-map", std::move(room));
+		}
+		{
+			auto room = std::make_unique<RoomScreen>(stack, Online::PlatformRoom::preview(OnlineUIFixtures::roomState(), OnlineUIFixtures::HOST_ID, OnlineUIFixtures::roomChat()));
+			room->selectTab(RoomScreen::ChatTab);
+			screenShot(stack, "room-chat", std::move(room));
+		}
+		screenShot(stack, "room-lan", std::make_unique<RoomScreen>(stack, std::make_shared<OnlineUIFixtures::LanRoomFixture>()));
+		{
+			// The room's "Change map…": the simple picker, its previews generated.
+			for (int tab : {RoomMapPickerScreen::GeneratedTab, RoomMapPickerScreen::PremadeTab, RoomMapPickerScreen::CatalogTab})
+			{
+				auto picker = std::make_unique<RoomMapPickerScreen>(2, Online::defaultRoomSetup(2, 0));
+				auto *view = picker.get();
+				view->selectTab(tab);
+				if (tab == RoomMapPickerScreen::PremadeTab)
+					view->selectPremade(2);
+				stack.push(std::move(picker));
+				const Uint32 started = SDL_GetTicks();
+				do
+					frame(stack);
+				while ((view->previewsBusy() || (tab == RoomMapPickerScreen::PremadeTab && !view->premadesLoaded())) &&
+					   SDL_GetTicks() - started < 45000);
+				frame(stack);
+				stackShot(stack, tab == RoomMapPickerScreen::GeneratedTab ? "room-map-picker"
+								 : tab == RoomMapPickerScreen::PremadeTab ? "room-map-picker-premade"
+																		  : "room-map-picker-catalog");
+				view->endExecute(0);
+				frame(stack);
+			}
+			auto close = std::make_unique<MessageScreen>(
+				GAGCore::Toolkit::getStringTable()->getString("[room close title]"),
+				GAGCore::Toolkit::getStringTable()->getString("[room close body one]"),
+				std::vector<std::string>{GAGCore::Toolkit::getStringTable()->getString("[room close confirm]"),
+										 GAGCore::Toolkit::getStringTable()->getString("[room stay]")});
+			close->setPrimary(1);
+			screenShot(stack, "room-host-leave", std::move(close));
+		}
+		screenShot(stack, "match-starting", std::make_unique<MatchStartScreen>(stack, OnlineUIFixtures::startingMatch()));
+		{
+			auto settings = std::make_unique<SettingsScreen>();
+			settings->selectCategory(SettingsScreen::Category::Online);
+			screenShot(stack, "settings-online", std::move(settings));
+		}
+		// Online screens on canned data (test/OnlineUIFixtures.h).
+		screenShot(stack, "quick-match", OnlineUIFixtures::quickMatch(stack, false));
+		screenShot(stack, "quick-match-searching", OnlineUIFixtures::quickMatch(stack, true));
+		{
+			// An unrated search shows no ratings.
+			auto &casual = OnlineUIFixtures::model(9);
+			const auto now = Glob2UI::wallClockMs();
+			auto status = OnlineUIFixtures::status(now);
+			status.queueId = OnlineUIFixtures::queues()[2].id;
+			casual.presentSearching(OnlineUIFixtures::queues()[2], status, now - 65000);
+			screenShot(stack, "quick-match-searching-casual",
+					   std::make_unique<QuickMatchScreen>(stack, casual, OnlineUIFixtures::queues(), "https://app.glob2online.com", "Bradley"));
+		}
+		screenShot(stack, "match-found", OnlineUIFixtures::matchFound(true));
+		screenShot(stack, "match-found-ai", OnlineUIFixtures::matchFound(false));
+		screenShot(stack, "online-profile", OnlineUIFixtures::profile(stack));
+		screenShot(stack, "online-maps", OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Browse, ""));
+		screenShot(stack, "online-my-maps", OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Mine, ""));
+		screenShot(stack, "map-share", OnlineUIFixtures::share(0));
+		screenShot(stack, "map-share-checking", OnlineUIFixtures::share(1));
+		screenShot(stack, "map-share-rejected", OnlineUIFixtures::share(2));
 		screenShot(
 			stack, "confirmation",
 			std::make_unique<MessageScreen>("Save changes before leaving?",
@@ -771,6 +855,23 @@ class MobileGalleryGameplay
 		dialog("game-victory", GameGUI::IGM_END_OF_GAME,
 			   std::make_unique<InGameEndOfGameScreen>("Victory", true, gui.localTeam->color, true));
 		gui.localTeam->hasWon = false;
+		{
+			// Production path: a tie at the top with a non-allied team reads as a draw.
+			Team *rival = nullptr;
+			for (int t = 0; t < gui.game.teamsCount(); ++t)
+				if (t != gui.localTeamNo && !(gui.game.teams[t]->me & gui.localTeam->allies))
+					rival = gui.game.teams[t];
+			if (!rival)
+				throw std::runtime_error("Draw fixture needs a non-allied team");
+			gui.localTeam->hasWon = rival->hasWon = true;
+			gui.checkWonConditions();
+			if (gui.inGameMenu != GameGUI::IGM_END_OF_GAME)
+				throw std::runtime_error("Draw did not open the end-of-game dialog");
+			capture("game-draw");
+			gui.closeDialog();
+			gui.localTeam->hasWon = rival->hasWon = false;
+			gui.hasEndOfGameDialogBeenShown = false;
+		}
 		globalContainer->replayReader = std::make_unique<ReplayReader>();
 		if (!globalContainer->replayReader->loadReplay("replays/gallery-match.replay"))
 			throw std::runtime_error("Replay fixture read failed");
@@ -861,11 +962,109 @@ class MobileGalleryGameplay
 			gui.touch->panelOpen = false;
 		}
 		{
+			// Online play: the connection panel and cards from fixed snapshots. Values sit
+			// on both sides of the shared thresholds (ConnectionQuality.h): Ping good
+			// under 150 ms, Behind good under 1 s, Delay good under 200 ms.
+			ConnectionSnapshot snapshot;
+			auto add = [&](int seat, const std::string &name, int team, ConnectionRow::State state, int pingMs,
+						   int behindMs, bool local = false) {
+				ConnectionRow row;
+				row.seat = seat;
+				row.name = name;
+				row.color = gui.game.teams[team % gui.game.mapHeader.getNumberOfTeams()]->color;
+				row.state = state;
+				row.pingMs = pingMs;
+				row.behindMs = behindMs;
+				row.local = local;
+				snapshot.rows.push_back(row);
+			};
+			add(0, "Amber colony", 0, ConnectionRow::State::Connected, 42, -1, true);
+			add(1, "Violet colony", 1, ConnectionRow::State::Connected, 64, 420);
+			add(2, "Jade colony", 2, ConnectionRow::State::AI, -1, -1);
+			snapshot.inputDelayMs = 171;
+			snapshot.jitterMs = 9;
+			snapshot.relay = "eu-west-2";
+			gui.connectionOverlay = std::make_unique<ConnectionOverlay>();
+			gui.connectionOverlay->source = [&] { return snapshot; };
+			capture("game-connection");
+			snapshot.rows[1].state = ConnectionRow::State::Reconnecting;
+			snapshot.rows[1].graceSeconds = 132;
+			capture("game-connection-trouble");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-details");
+			gui.connectionOverlay->openDetails(false);
+			// Fair Ping on our side, a player falling behind, and a slow one.
+			snapshot.rows[0].pingMs = 240;
+			snapshot.inputDelayMs = 420;
+			snapshot.jitterMs = 85;
+			snapshot.ownUnstable = true;
+			snapshot.rows[1].state = ConnectionRow::State::Connected;
+			snapshot.rows[1].pingMs = 90;
+			snapshot.rows[1].behindMs = 1320;
+			add(3, "Crimson colony", 3, ConnectionRow::State::Slow, 310, 2600);
+			capture("game-connection-own");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-own-details");
+			gui.connectionOverlay->openDetails(false);
+			// Beyond four people phones show markers and numbers.
+			const auto four = snapshot.rows;
+			add(4, "Azure colony", 4, ConnectionRow::State::Connected, 120, 380);
+			add(5, "Ochre colony", 5, ConnectionRow::State::Left, -1, -1);
+			add(6, "Rose colony", 6, ConnectionRow::State::Connected, 35, 250);
+			capture("game-connection-grid");
+			gui.connectionOverlay->openDetails(true);
+			capture("game-connection-grid-details");
+			gui.connectionOverlay->openDetails(false);
+			snapshot.rows = four;
+			snapshot.rows.pop_back();
+			snapshot.card = ConnectionSnapshot::Card::Reconnecting;
+			snapshot.attempt = 2;
+			snapshot.graceSeconds = 161;
+			capture("game-connection-lost");
+			snapshot.card = ConnectionSnapshot::Card::CatchingUp;
+			snapshot.catchupDone = 3456;
+			snapshot.catchupTotal = 5100;
+			snapshot.missedSeconds = 102;
+			snapshot.secondsLeft = 6;
+			capture("game-catching-up");
+			snapshot.card = ConnectionSnapshot::Card::Desync;
+			capture("game-out-of-sync");
+			// Someone left: still listed, as Left, and the notice below the panel.
+			snapshot.card = ConnectionSnapshot::Card::None;
+			snapshot.rows = four;
+			snapshot.rows[1].state = ConnectionRow::State::Left;
+			gui.addNotice("Violet colony left the match.");
+			capture("game-connection-left");
+			// A quick match paused by another player under the pause limit, and the
+			// menu with this player's pauses left.
+			snapshot.rows[1].state = ConnectionRow::State::Connected;
+			gui.networkMatch.active = true;
+			gui.pauseState = [] {
+				GameGUI::PauseState state;
+				state.limited = true;
+				state.pausesLeft = 2;
+				state.secondsLeft = 48;
+				state.pausedBy = 1;
+				state.pauserSecondsLeft = 42;
+				return state;
+			};
+			gui.gamePaused = true;
+			capture("game-paused-online");
+			gui.gamePaused = false;
+			gui.openMainMenu();
+			capture("game-menu-online");
+			gui.closeDialog();
+			gui.pauseState = {};
+			gui.networkMatch.active = false;
+			gui.connectionOverlay.reset();
+		}
+		{
 			class ResultsFixture : public EndGameScreen
 			{
 			  public:
 				using EndGameScreen::EndGameScreen;
 				void showFilters() { showTeamFilters(true); }
+				using EndGameScreen::showTeamFilters;
 				void inspectValue()
 				{
 					showTeamFilters(false);
@@ -882,6 +1081,54 @@ class MobileGalleryGameplay
 			stackShot(stack, "game-results-filters");
 			view->inspectValue();
 			stackShot(stack, "game-results-value");
+			// Online results: the rating card while verifying, verified, and a room match.
+			auto online = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000001", OnlineUIFixtures::HOST_ID);
+			online->label = "1 vs 1 · Ranked";
+			online->mapTitle = "Even Ground 128×128";
+			online->fromRoom = false;
+			online->rated = true;
+			online->ladder = "1 vs 1";
+			online->ratingBefore = 1528;
+			online->ratingExpectedWin = 1543;
+			online->ratingExpectedLoss = 1514;
+			view->showTeamFilters(false);
+			view->setOnlineResult(online);
+			view->setOutcome(EndGameScreen::Outcome::Victory);
+			stackShot(stack, "game-results-verifying");
+			online->verification = Online::OnlineMatchResult::Verification::Verified;
+			online->ratingAfter = 1543;
+			online->outcome = "won";
+			++online->revision;
+			stackShot(stack, "game-results-verified");
+			auto room = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000002", OnlineUIFixtures::HOST_ID);
+			room->label = "Room · Sunday 2v2";
+			room->mapTitle = "Marchland";
+			room->verification = Online::OnlineMatchResult::Verification::NotApplicable;
+			room->outcome = "draw";
+			view->setOnlineResult(room);
+			stackShot(stack, "game-results-room");
+			// The winner of a match the opponent left, before the platform settles
+			// it, and the player who left: their loss at once, the record later.
+			auto opponentLeft = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000003", OnlineUIFixtures::HOST_ID);
+			opponentLeft->label = "Room · Bradley's room";
+			opponentLeft->mapTitle = "balanced for 2";
+			view->setOnlineResult(opponentLeft);
+			view->setOutcome(EndGameScreen::Outcome::Victory);
+			view->setReason("Ana_M left the match.");
+			stackShot(stack, "game-results-opponent-left");
+			auto leaver = std::make_shared<Online::OnlineMatchResult>("https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000004", OnlineUIFixtures::GUEST_ID);
+			leaver->label = "1 vs 1 · Ranked";
+			leaver->mapTitle = "Even Ground 128×128";
+			leaver->fromRoom = false;
+			leaver->rated = true;
+			leaver->ladder = "1 vs 1";
+			leaver->ratingBefore = 1528;
+			leaver->ratingExpectedWin = 1543;
+			leaver->ratingExpectedLoss = 1514;
+			view->setOnlineResult(leaver);
+			view->setOutcome(EndGameScreen::Outcome::Left);
+			view->setReason("You left the match. It counts as a loss.");
+			stackShot(stack, "game-results-left");
 			view->endExecute(0);
 			frame(stack);
 		}

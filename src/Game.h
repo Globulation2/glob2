@@ -22,10 +22,7 @@
 #include "BuildingGuiState.h"
 #include "sim/ClientEvents.h"
 #include "sim/EntityRef.h"
-#ifndef YOG_SERVER_ONLY
 #include "render/MapRenderState.h"
-#endif
-struct MapRenderState;
 
 namespace GAGCore
 {
@@ -61,10 +58,8 @@ class OrderConstruction;
 class OrderCancelConstruction;
 class SetAllianceOrder;
 class PlayerQuitsGameOrder;
-#ifndef YOG_SERVER_ONLY
 class GameAnimations;
 class SoftwareTerrainCache;
-#endif  // !YOG_SERVER_ONLY
 
 // Minimum value of the prestige-victory threshold.
 #define MIN_MAX_PRESTIGE 500
@@ -454,13 +449,11 @@ public:
 	void publishTickEvents();
 	///Building currently recording failing units for the client.
 	BuildingRef recordingFailingUnits;
-#ifndef YOG_SERVER_ONLY
 	//! Render-side container for bullet explosions and unit death
 	//! animations. Always non-null in non-server builds; the runNoX
 	//! gate is internal to GameAnimations. See
 	//! src/render/GameAnimations.h.
 	std::unique_ptr<GameAnimations> animations;
-#endif  // !YOG_SERVER_ONLY
 	std::list<BuildProject> buildProjects;
 
 public:
@@ -485,13 +478,11 @@ public:
 		//! (GameGUI::syncSelectionView); they are only valid for that frame.
 		Unit *selectedUnit = nullptr;
 		Building *selectedBuilding = nullptr;
-#ifndef YOG_SERVER_ONLY
 		MapRenderState render;            //!< This view's animation phases and render caches.
 		//! Scene to draw, published by the simulation; null to extract one from the game.
 		const Scene *scene = nullptr;
 		//! The scene the last drawMap drew: the published one, else the view's own.
 		const Scene &drawnScene() const { return scene ? *scene : render.ownScene; }
-#endif
 	};
 
 	Uint32 stepCounter;

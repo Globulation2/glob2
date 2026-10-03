@@ -1,0 +1,73 @@
+{
+  "verdict": "verified",
+  "outcome": {
+    "finalTick": 45000,
+    "teams": [
+      {
+        "team": 0,
+        "outcome": "won",
+        "prestige": 210,
+        "statistics": {
+          "units": 12,
+          "workers": 9,
+          "buildings": 4,
+          "totalHp": 2400
+        },
+        "timeline": [
+          {
+            "tick": 0,
+            "units": 4,
+            "buildings": 1,
+            "prestige": 0,
+            "hp": 800,
+            "attack": 0,
+            "defense": 0
+          },
+          {
+            "tick": 512,
+            "units": 6,
+            "buildings": 2,
+            "prestige": 0,
+            "hp": 1300,
+            "attack": 40,
+            "defense": 0
+          }
+        ]
+      },
+      {
+        "team": 1,
+        "outcome": "lost",
+        "eliminatedTick": 44990,
+        "prestige": 35,
+        "statistics": {
+          "units": 13,
+          "workers": 9,
+          "buildings": 4,
+          "totalHp": 2400
+        },
+        "timeline": [
+          {
+            "tick": 0,
+            "units": 4,
+            "buildings": 1,
+            "prestige": 0,
+            "hp": 800,
+            "attack": 0,
+            "defense": 0
+          },
+          {
+            "tick": 512,
+            "units": 6,
+            "buildings": 2,
+            "prestige": 0,
+            "hp": 1300,
+            "attack": 40,
+            "defense": 0
+          }
+        ]
+      }
+    ],
+    "resultHash": "d00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00dd00d",
+    "replayHash": "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4"
+  }
+}

@@ -83,7 +83,7 @@ Element MainMenuScreen::build(const Presentation &p)
 			case TUTORIAL:
 				options.icon = uiIcon(UIIcon::Tutorial);
 				break;
-			case MULTIPLAYERS_YOG:
+			case PLAY_ONLINE:
 				options.icon = uiIcon(UIIcon::Online);
 				break;
 			case MULTIPLAYERS_LAN:
@@ -129,6 +129,10 @@ Element MainMenuScreen::build(const Presentation &p)
 		if (!more)
 		{
 			content.push_back(action("[custom game]", CUSTOM, primaryStyle));
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+			// Play online sits on the main card, under Custom game; LAN stays under More.
+			content.push_back(action("[play online]", PLAY_ONLINE, rowStyle));
+#endif
 			const bool landscape = p.landscape() && p.safe.h < p.pt(480);
 			if (landscape)
 			{
@@ -160,9 +164,6 @@ Element MainMenuScreen::build(const Presentation &p)
 			back.shortcut = SDLK_ESCAPE;
 			back.icon = uiIcon(UIIcon::Back);
 			content.push_back(button("menu/back", tr("[Back]"), [this] { showMore(false); }, back));
-#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-			content.push_back(action("[yog]", MULTIPLAYERS_YOG, rowStyle));
-#endif
 #ifndef __EMSCRIPTEN__
 			content.push_back(action("[lan]", MULTIPLAYERS_LAN, rowStyle));
 #endif
@@ -207,7 +208,7 @@ Element MainMenuScreen::build(const Presentation &p)
 	content.push_back(action("[tutorial]", TUTORIAL, launch));
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-	content.push_back(action("[yog]", MULTIPLAYERS_YOG, utility));
+	content.push_back(action("[play online]", PLAY_ONLINE, utility));
 #endif
 #ifndef __EMSCRIPTEN__
 	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));

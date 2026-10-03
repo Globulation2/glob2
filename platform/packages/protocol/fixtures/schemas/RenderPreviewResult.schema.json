@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RenderPreviewResult",
+  "title": "RenderPreviewResult",
+  "type": "object",
+  "required": [
+    "previewHash",
+    "contentType",
+    "width",
+    "height"
+  ],
+  "properties": {
+    "previewHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "contentType": {
+      "type": "string",
+      "const": "image/png"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

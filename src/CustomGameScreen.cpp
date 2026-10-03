@@ -165,10 +165,29 @@ bool CustomGameScreen::interceptEvent(const SDL_Event &event)
 	return false;
 }
 
+void CustomGameScreen::useForRoom(const CustomGameSetup &draft, int tab)
+{
+	forRoom = true;
+	setup = draft;
+	// The editor opens on the room's generated map. A premade or own map chosen here
+	// is uploaded by the room (PlatformRoom::usePremadeMap); a random one is generated
+	// by the platform for everyone.
+	setup.random = true;
+	invalidatePreview();
+	selectTab(tab);
+}
+
 void CustomGameScreen::launch()
 {
 	if (!setup.validation().empty())
 		return;
+	if (forRoom)
+	{
+		if (!setup.random && !validMap)
+			return;
+		endExecute(OK);
+		return;
+	}
 	// A random map still resolving in the background: the disabled Start button
 	// and its "Generating preview..." note explain why, instead of blocking here
 	// on finishPreview()'s busy-wait with no visible feedback.
@@ -799,9 +818,13 @@ Element CustomGameScreen::build(const Presentation &p)
 	const std::string summary = tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " + tr("colonies") + "  /  " +
 								tr(setup.ruleset) + "  /  " + speed.getGameSpeedText();
 	const std::string note = error.empty() ? message : tr(error);
-	const bool ready = error.empty() && (!narrow || (validMap && !previewBusy() && (!setup.random || previewRevision == setup.mapRevision)));
-	const std::string startLabel = !setup.humanColony() ? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
-													  : tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
+	bool ready = error.empty() && (!narrow || (validMap && !previewBusy() && (!setup.random || previewRevision == setup.mapRevision)));
+	if (forRoom)
+		ready = setup.validation().empty() && (setup.random || validMap);
+	std::string startLabel = !setup.humanColony() ? tr(setup.random && !validMap ? "Generate & watch" : "Watch game")
+												: tr(setup.random ? (validMap ? "Play this map" : "Generate & play") : "Start game");
+	if (forRoom)
+		startLabel = tr("Use in room");
 	std::vector<fe::MenuAction> footerActions;
 	if (phoneFlow)
 	{
