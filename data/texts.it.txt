@@ -3836,6 +3836,8 @@ Inerzia della mappa
 
 [match loading]
 
+[Loading game graphics]
+
 [match map cached]
 
 [match map]

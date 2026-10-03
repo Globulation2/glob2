@@ -318,6 +318,13 @@ void OnlineMatch::fail(const std::string &why)
 	std::cerr << "Online match " << id << ": " << why << std::endl;
 }
 
+std::string OnlineMatch::loadStage() const
+{
+	if (current != Step::Load || !run || !run->task)
+		return {};
+	return run->task->stage();
+}
+
 void OnlineMatch::reset()
 {
 	run.reset();

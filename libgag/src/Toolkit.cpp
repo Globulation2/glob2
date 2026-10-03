@@ -115,6 +115,13 @@ namespace GAGCore
 		}
 	}
 	
+	void Toolkit::reloadFonts(void)
+	{
+		for (const auto &[name, font] : fontMap)
+			if (auto *ttf = dynamic_cast<TrueTypeFont *>(font); ttf && !ttf->reload())
+				std::cerr << "GAG : Can't reload font " << name << std::endl;
+	}
+
 	Font *Toolkit::getFont(const std::string name)
 	{
 		assert(name.size());

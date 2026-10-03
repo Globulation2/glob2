@@ -3770,6 +3770,8 @@ AI 추가
 
 [match loading]
 
+[Loading game graphics]
+
 [match map cached]
 
 [match map]
