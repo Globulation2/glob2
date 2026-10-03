@@ -152,9 +152,7 @@ void GameGUI::processEvent(SDL_Event *event)
         event->type == SDL_EVENT_MOUSE_MOTION || event->type == SDL_EVENT_MOUSE_WHEEL)) return;
 
     if (!typingInputScreen && inGameMenu == IGM_NONE && !scrollableText) {
-        int width = globalContainer->gfx->getW()-RIGHT_MENU_WIDTH;
         if (event->type == SDL_EVENT_MOUSE_MOTION) { mouseX=event->motion.x; mouseY=event->motion.y; }
-        if (torusView.event(*event, width)) return;
         if (torusView.active() && handleTorusPointer(*event)) return;
     }
 
@@ -296,8 +294,12 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 {
 	updateCamera();
-    if(mouseEvent.button==SDL_BUTTON_LEFT && clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y,true,true))
-    {viewportX=camera.tileX();viewportY=camera.tileY();zoomControlPushed=true;return;}
+    // On the ring the controls zoom about its focus, as the wheel does there.
+    const bool ring=torusView.enabled();
+    if(mouseEvent.button==SDL_BUTTON_LEFT && (ring || !torusView.active()) &&
+        clickMapZoomControls(camera,mouseEvent.x,mouseEvent.y,true,true,
+            ring ? (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2.0 : -1, ring ? (globalContainer->gfx->getH()+16)/2.0 : -1))
+    {viewportX=camera.tileX();viewportY=camera.tileY();torusView.rebaseViewport(viewportX,viewportY);zoomControlPushed=true;return;}
 	int button=mouseEvent.button;
 
 	// The top bar's speed chevrons: left click speeds up, right click slows down.
