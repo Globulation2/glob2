@@ -23,6 +23,7 @@
 
 class MultiplayersJoin;
 class SimulationRunner;
+namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 
 using std::shared_ptr;
@@ -144,6 +145,8 @@ public:
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
     std::optional<PendingLoad> finishSessionForHost();
+    // Service save UI after simulation has stopped; false means safe to tear down.
+    bool advancePendingSave(Uint64 now, const std::vector<SDL_Event>& events);
     // Synchronous adapter for native command-line/headless hosts.
     bool finishSession();
 
@@ -257,6 +260,11 @@ private:
 	void executeOrdersAndStep(bool readyNow);
 
 	void drawFrame(MainLoopState& st);
+	void saveVideoshot(MainLoopState& st);
+	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
+	//! Threaded: fold the simulation thread's measurements into the session collector
+	//! (called with the simulation parked).
+	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
     std::unique_ptr<SimulationRunner> runner;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
