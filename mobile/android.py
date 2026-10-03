@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -16,6 +17,21 @@ from mobile_artifacts import verify_android_shared_library, verify_android_symbo
 import developer_apk
 from dev_paths import android_sdk, mobile_tools, gradle_home, dependency_prefix
 from asset_bundle import restore_gzip_assets, verify_apk_assets
+
+
+# Intent filters that open invite links (glob2://join and the official App Link),
+# with the comment above each. Editions without online play leave them out.
+INVITE_LINK_FILTER=re.compile(r'(?:[ \t]*<!--(?:(?!-->).)*-->\s*)?[ \t]*<intent-filter[^>]*>'
+                              r'(?:(?!</intent-filter>).)*?android\.intent\.action\.VIEW'
+                              r'(?:(?!</intent-filter>).)*</intent-filter>\n',re.S)
+
+
+def without_invite_links(manifest):
+    """The manifest without invite-link intent filters (Amazon and China editions)."""
+    stripped=INVITE_LINK_FILTER.sub('',manifest)
+    if 'android.intent.action.VIEW' in stripped or 'android.intent.category.LAUNCHER' not in stripped:
+        raise ValueError('Unexpected AndroidManifest.xml layout while removing invite links')
+    return stripped
 
 
 def main():
@@ -130,6 +146,10 @@ def main():
             staged = project/source_tree
             if staged.exists(): shutil.rmtree(staged)
         shutil.copytree(ROOT/'mobile/android',project,dirs_exist_ok=True)
+        if args.amazon_apk or args.china:
+            # These editions build without online play, so they claim no invite links.
+            staged_manifest=project/'app/src/main/AndroidManifest.xml'
+            staged_manifest.write_text(without_invite_links(staged_manifest.read_text()))
         shutil.copy2(LOCK,project/'glob2-toolchain.json')
         native_command=[sys.executable,str(ROOT/'mobile/android.py'),'configure','--arch',args.arch,
             '--android-sdk',str(sdk),'--jobs',str(args.jobs),'--version-code',str(args.version_code)]
