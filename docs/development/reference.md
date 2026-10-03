@@ -924,6 +924,42 @@ off by default) draws units between ticks, so threaded play at display rate uses
 - A unit that turns or stops at the next tick can jump back by at most one tick of motion.
   Serial execution draws right after each tick, so the setting has almost no effect there.
 
+### Smooth fog of war
+
+The simulation's fog of war is binary per tile, and its buffers swap every
+`FOW_SWITCH_TICK_MASK + 1` ticks (`Map::switchFogOfWar`), so every tile that left sight
+during one window darkens on the same tick. The **Smooth fog of war** graphics setting
+(`Settings::smoothFog`, on by default) fades that change in the renderer only; the
+simulation, saves and replays are unaffected.
+
+- `FogFade` (`src/render/FogFade.h`), kept per view in `MapRenderState`, records for each
+  tile whether it is fogged, its fade level when that last changed and the tick it changed
+  on. `Game::drawMap` updates it once per frame from the drawn Scene, and resets it while
+  the fade is not drawn (setting off, or `DRAW_WHOLE_MAP`), so it is `active()` exactly when
+  the frame draws the fog faded. A tile changing state fades linearly from wherever it had
+  reached, into the fog over `FogFade::DARKEN_TICKS` (25) and out of it over
+  `FogFade::REVEAL_TICKS` (4). A new map, other visible teams, a step back in time, a jump
+  forward of more than `FogFade::SETTLE_JUMP_TICKS` (64) or a reset settle every tile
+  without fading.
+- Fades run in game time: the Scene's tick plus the elapsed fraction of the tick interval
+  (`unitMotionFraction`), independently of the smooth unit motion setting. They stop while
+  paused and follow the game speed.
+- The shade draws each square from its four corner levels. The level all corners reach is
+  a fill (`FogFade::fillAlpha`); each higher corner level adds the shade sprite masked to the
+  corners reaching it, drawn with `FogFade::layerAlpha` of the difference. The alphas are
+  chosen so the layers compose to the fill of the top level (within rounding, where the
+  sprite's pixels are at their peak; the derivation is in `FogFade.cpp`), and fully fogged
+  or fully clear corners draw the same single fill or sprite as with the setting off.
+- Enemy units fade with the clearer of their tile and the tile they come from, and so does
+  everything drawn for them: bars and status pips (through the `opacity` parameter of
+  `Game::anchorBars`, `drawStatusPip`, `drawPointBar` and `drawHealthBar`; queued bars take
+  it from their anchor), selection circles, the level-up number and magic effect, the
+  carried resource and the accessibility label. A fading unit's sprite is translucent and so
+  leaves the unit sprite batch; only the few units at the edge of the fog do.
+- Still binary: undiscovered black, the minimap, mouse and touch picking, bullets and
+  explosions, and remembered enemy buildings. Bullets near a fading unit therefore vanish
+  at the fog swap.
+
 ## Adaptive zoom detail
 
 The map zooms from the fitted whole map up to 500% (`MapCamera::MAX_ZOOM`). With the
@@ -958,8 +994,8 @@ it is saved, checksummed or read by the simulation.
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
   neighbours tile without seams. The fog-of-war shade draws one fill per horizontal
-  run of whole squares with `drawMapTileFill` and its edge sprites with
-  `drawMapTileSprite`. Both snap to pixels only in the software rasteriser, where
+  run of whole squares at one fade level with `drawMapTileFill` and its edge sprites
+  with `drawMapTileSprite` (see [Smooth fog of war](#smooth-fog-of-war)). Both snap to pixels only in the software rasteriser, where
   truncated coordinates otherwise leave one-pixel gaps between tiles; accelerated
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
@@ -990,7 +1026,8 @@ When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 from the same build for a before/after pair. Set it explicitly on every run: the
 benchmark saves preferences, so the last value otherwise carries into the next run.
 `torus-render-benchmark` takes `GLOB2_BENCH_ZOOM`, `GLOB2_BENCH_PAN_X`/`_Y` (the
-camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`,
+camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`
+(with `GLOB2_BENCH_SMOOTH_FOG=0|1` for the fade),
 `GLOB2_BENCH_FRACTION` (a camera offset in map pixels, which seams need to show) and
 `GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Sprites stay
 opaque while markers and chips fade in over them, since a translucent sprite leaves

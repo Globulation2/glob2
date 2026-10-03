@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "FogFade.h"
 #include "MapOverlayQueue.h"
 #include "ZoomDetail.h"
 #include "scene/Scene.h"
@@ -32,6 +33,10 @@ struct MapRenderState
 	//! How far this frame draws units from their ticked state towards the next tick,
 	//! 0..1 (see UnitMotion.h); 0 draws exactly the simulated positions.
 	float unitMotion = 0;
+	//! How far each tile has faded into the fog of war, with the smooth fog
+	//! setting. Game::drawMap updates it each frame, and resets it while the fade is
+	//! not drawn, so it is active() exactly when this frame draws the fog faded.
+	FogFade fogFade;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
 	std::valarray<unsigned char> overlayAlphas;
 	//! How this frame's zoom draws each map element; set by Game::drawMap.

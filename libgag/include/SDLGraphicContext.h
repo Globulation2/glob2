@@ -543,7 +543,7 @@ namespace GAGCore
         //! A sprite frame covering the `size`-pixel map square at (x, y), meeting
         //! its neighbours and drawMapTileFill exactly. In the software rasteriser
         //! its edges snap to the same pixels as theirs; elsewhere it is drawSprite.
-        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index);
+        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index, Uint8 alpha = Color::ALPHA_OPAQUE);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
