@@ -137,7 +137,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'net/ServerControl.cpp', 'net/irc/IRCTextMessageHandler.cpp', 'online/HttpFetch.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
+    files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/IRCTextMessageHandler.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
     if threaded:
         files += ['browser/Audio.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
