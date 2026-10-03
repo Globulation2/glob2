@@ -2,7 +2,7 @@
 #
 #   /api/*, /realtime, /signin, /auth/*, /.well-known/*,
 #   /j/<code> (invite pages)                               platform-api (any replica)
-#   /relay/<relay id>                                      that relay's match WebSocket
+#   /relay/<relay host name>                               that relay's match WebSocket
 #   /play/*                                                WebAssembly client (mounted at /srv/play)
 #   everything else                                        apps/web
 #   /internal/*, /healthz, /readyz, /metrics               never served publicly
@@ -47,8 +47,9 @@
 		respond 404
 	}
 
-	# Each relay registers wss://<domain>/relay/<relay id>; the id is its
-	# container name on the backend network. Only single-label names (no dots)
+	# Each relay registers wss://<domain>/relay/<host name>; the label is its
+	# container host name on the backend network (the relay id is separate:
+	# relay-<n>, deploy/relay-entrypoint.sh). Only single-label names (no dots)
 	# match, so this cannot proxy to arbitrary hosts.
 	@relay path_regexp relay ^/relay/([a-z0-9][a-z0-9-]{0,62})$
 	handle @relay {

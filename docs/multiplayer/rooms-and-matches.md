@@ -196,6 +196,16 @@ A match is `starting` until its relay lists it in a heartbeat's `activeMatchIds`
 which makes it `running`. A match still `starting` after 10 minutes is cancelled by
 the worker's scheduler, and its room reopens.
 
+A room start is several transactions (`starting`, then the match, then
+`in_match`). If the API process dies between them, the room sweep
+(`RoomService.recoverStarting`, every 30 s on each replica) finds rooms still
+`starting` after two minutes (`rooms.starting_since`): a room whose match was
+created since it started is resumed (`in_match`, and its players get
+`match.start` again; clients ignore a repeat), any other reopens with
+`RoomState.notice` telling the members to start again. A start that fails for
+any other reason than access or readiness also reopens the room with a notice;
+the next start clears it.
+
 ## Match tickets
 
 Tickets are EdDSA JWTs signed with the same key as access tokens and published in
@@ -287,8 +297,13 @@ the report replaces the abort, and verification and ratings proceed as usual.
   entry of `network` (the relay's `RelayNetworkSummary`) in
   `match_participants.network` (migration 0009). A `network` that does not
   validate is dropped with a warning; it never makes the report fail.
-- When the reason is `abandoned`, every seat with a quit tick gets the outcome
-  `abandoned`.
+- When the reason is `abandoned`, every seat that quit before the report's final
+  tick gets the outcome `abandoned`; a seat that left at the end did not abandon.
+  The verdict refines this (`recordVerification`): seats of a verified winning
+  (or drawing) team keep `won` (`draw`), and a seat that quit at or after the
+  verified final tick takes its team's outcome. Turn protocol 2 reports a game
+  whose loser dropped at the end as `abandoned` once the loser's reconnect grace
+  runs out, after the winner has already left the finished game.
 - It reopens the room and NOTIFYs `match_updates`, so participants get
   `match.updated`.
 - It then submits a `verify-match` job with the setup and the record's hash. A

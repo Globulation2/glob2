@@ -9,8 +9,16 @@
 // All state lives in Postgres, so a new leader continues where the old one
 // stopped; every step re-checks state under row locks, and the API's ticket
 // operations (tickets.ts) may run concurrently.
+//
+// Starts run in the background, one per proposal: a start can wait up to a
+// minute for on-demand map generation, and must not hold up proposals,
+// grouping or status for every other queue. A tick waits briefly
+// (startWaitMs) so fast starts are reported in its summary; slower ones are
+// counted by the tick in which they finish. With `fence`, every leader-only
+// transaction first checks the scheduler lease (assertLease), so a replaced
+// leader cannot commit proposals or starts.
 import { randomInt, randomUUID } from 'node:crypto';
-import { sql, type Kysely, type Transaction } from 'kysely';
+import { sql, type Kysely, type Selectable, type Transaction } from 'kysely';
 import type { Logger, ResolvedQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import {
@@ -56,6 +64,12 @@ export interface MatchmakerOptions {
   statusIntervalSeconds?: number;
   /** Start attempts before a proposal fails and its players wait again (default 3). */
   maxStartAttempts?: number;
+  /** How long a tick waits for the starts it launched (default 250 ms). */
+  startWaitMs?: number;
+  /** Starts in flight at once (default 8); further proposals wait for a slot. */
+  maxConcurrentStarts?: number;
+  /** Leader fencing: called first in every matchmaker transaction; throws when no longer leader. */
+  fence?: (trx: Transaction<Database>) => Promise<void>;
 }
 
 export interface TickSummary {
@@ -77,7 +91,14 @@ export class Matchmaker {
   private readonly logger: MatchmakerOptions['logger'];
   private readonly statusInterval: number;
   private readonly maxStartAttempts: number;
+  private readonly startWaitMs: number;
+  private readonly maxConcurrentStarts: number;
+  private readonly fence: (trx: Transaction<Database>) => Promise<void>;
   private readonly lastStatus = new Map<string, number>();
+  /** Starts in flight, by proposal id. */
+  private readonly starting = new Map<string, Promise<void>>();
+  /** Outcomes of starts that finished since the last tick summary. */
+  private finished = { started: 0, failed: 0 };
 
   constructor(options: MatchmakerOptions) {
     this.db = options.db;
@@ -89,17 +110,38 @@ export class Matchmaker {
     this.logger = options.logger;
     this.statusInterval = options.statusIntervalSeconds ?? 5;
     this.maxStartAttempts = options.maxStartAttempts ?? 3;
+    this.startWaitMs = options.startWaitMs ?? 250;
+    this.maxConcurrentStarts = options.maxConcurrentStarts ?? 8;
+    this.fence = options.fence ?? (async () => undefined);
   }
 
   async tick(): Promise<TickSummary> {
     const summary: TickSummary = { proposed: 0, started: 0, cancelled: 0, failed: 0 };
     summary.cancelled = await this.resolvePending();
     for (const queue of this.queues.values()) summary.proposed += await this.formGroups(queue);
-    const started = await this.startReady();
-    summary.started = started.started;
-    summary.failed = started.failed;
+    await this.launchStarts();
+    await this.waitForStarts(this.startWaitMs);
+    summary.started = this.finished.started;
+    summary.failed = this.finished.failed;
+    this.finished = { started: 0, failed: 0 };
     await this.sendStatus();
     return summary;
+  }
+
+  /** Proposals whose start is running in the background. */
+  get startsInFlight(): number {
+    return this.starting.size;
+  }
+
+  /** Waits until every start in flight has finished (or `timeoutMs` passed). */
+  async waitForStarts(timeoutMs = Number.POSITIVE_INFINITY): Promise<void> {
+    if (this.starting.size === 0 || timeoutMs <= 0) return;
+    let timer: NodeJS.Timeout | undefined;
+    const all = Promise.allSettled([...this.starting.values()]);
+    await (Number.isFinite(timeoutMs)
+      ? Promise.race([all, new Promise((resolve) => (timer = setTimeout(resolve, timeoutMs)))])
+      : all);
+    clearTimeout(timer);
   }
 
   // ------------------------------------------------------------ accepts
@@ -115,6 +157,7 @@ export class Matchmaker {
     let cancelled = 0;
     for (const { id } of pending) {
       const outcome = await this.db.transaction().execute(async (trx) => {
+        await this.fence(trx);
         const proposal = await trx
           .selectFrom('match_proposals')
           .selectAll()
@@ -299,6 +342,7 @@ export class Matchmaker {
     const expiresAt = requiresAccept ? new Date(now.getTime() + queue.acceptSeconds * 1000) : null;
     try {
       await this.db.transaction().execute(async (trx) => {
+        await this.fence(trx);
         await trx
           .insertInto('match_proposals')
           .values({
@@ -362,100 +406,121 @@ export class Matchmaker {
 
   // ------------------------------------------------------------ starting
 
-  private async startReady(): Promise<{ started: number; failed: number }> {
-    const ready = await this.db
+  /** Starts every proposal in 'starting' that is not already being started, in the background. */
+  private async launchStarts(): Promise<void> {
+    const free = this.maxConcurrentStarts - this.starting.size;
+    if (free <= 0) return;
+    let query = this.db
       .selectFrom('match_proposals')
       .selectAll()
       .where('status', '=', 'starting')
       .orderBy('created_at')
-      .execute();
-    let started = 0;
-    let failed = 0;
+      .limit(free);
+    if (this.starting.size > 0) query = query.where('id', 'not in', [...this.starting.keys()]);
+    const ready = await query.execute();
     for (const row of ready) {
-      const seats = await this.db
-        .selectFrom('match_proposal_seats')
-        .selectAll()
-        .where('proposal_id', '=', row.id)
-        .orderBy('slot')
-        .execute();
-      let proposal: MatchProposal;
-      let matchId: string;
-      try {
-        // A proposal whose stored map entry no longer decodes fails like any
-        // other start (retried, then the players are requeued).
-        proposal = {
-          id: row.id,
-          queueId: row.queue_id,
-          rated: row.rated,
-          backfilled: row.backfilled,
-          simVersion: row.sim_version,
-          region: row.region,
-          map: readMapPoolEntry(row.map),
-          seats: seats.map((s): ProposalSeat => ({
-            slot: s.slot,
-            side: s.side,
-            kind: s.kind,
-            ...(s.ticket_id ? { ticketId: s.ticket_id } : {}),
-            ...(s.account_id ? { accountId: s.account_id } : {}),
-            ...(s.ai_id ? { ai: s.ai_id as RatedAi } : {}),
-            ratingEntityId: s.rating_entity_id,
-            mu: s.mu,
-            sigma: s.sigma,
-          })),
-        };
-        ({ matchId } = await this.starter.start(proposal));
-      } catch (error) {
-        const now = this.clock.now();
-        const gaveUp = await this.db.transaction().execute(async (trx) => {
-          const current = await trx
-            .updateTable('match_proposals')
-            .set((eb) => ({ start_attempts: eb('start_attempts', '+', 1) }))
-            .where('id', '=', row.id)
-            .where('status', '=', 'starting')
-            .returning('start_attempts')
-            .executeTakeFirst();
-          if (!current || current.start_attempts < this.maxStartAttempts) return false;
-          await trx
-            .updateTable('match_proposals')
-            .set({ status: 'failed', failure: String(error), resolved_at: now })
-            .where('id', '=', row.id)
-            .execute();
-          for (const seat of seats) {
-            if (!seat.ticket_id || !seat.account_id) continue;
-            await this.requeue(trx, row.id, seat.ticket_id, seat.account_id, 'start_failed', now);
-          }
-          return true;
-        });
-        this.logger?.warn({ err: error, proposal: row.id, gaveUp }, 'match start failed');
-        if (gaveUp) failed++;
-        continue;
-      }
+      const work = this.startOne(row)
+        .then((outcome) => {
+          if (outcome === 'started') this.finished.started++;
+          else if (outcome === 'failed') this.finished.failed++;
+        })
+        .catch((error: unknown) =>
+          this.logger?.error({ err: error, proposal: row.id }, 'match start bookkeeping failed'),
+        )
+        .finally(() => this.starting.delete(row.id));
+      this.starting.set(row.id, work);
+    }
+  }
+
+  /** One proposal's start: 'started', 'failed' (gave up), or 'retry' (a later tick tries again). */
+  private async startOne(
+    row: Selectable<Database['match_proposals']>,
+  ): Promise<'started' | 'failed' | 'retry'> {
+    const seats = await this.db
+      .selectFrom('match_proposal_seats')
+      .selectAll()
+      .where('proposal_id', '=', row.id)
+      .orderBy('slot')
+      .execute();
+    let proposal: MatchProposal;
+    let matchId: string;
+    try {
+      // A proposal whose stored map entry no longer decodes fails like any
+      // other start (retried, then the players are requeued).
+      proposal = {
+        id: row.id,
+        queueId: row.queue_id,
+        rated: row.rated,
+        backfilled: row.backfilled,
+        simVersion: row.sim_version,
+        region: row.region,
+        map: readMapPoolEntry(row.map),
+        seats: seats.map((s): ProposalSeat => ({
+          slot: s.slot,
+          side: s.side,
+          kind: s.kind,
+          ...(s.ticket_id ? { ticketId: s.ticket_id } : {}),
+          ...(s.account_id ? { accountId: s.account_id } : {}),
+          ...(s.ai_id ? { ai: s.ai_id as RatedAi } : {}),
+          ratingEntityId: s.rating_entity_id,
+          mu: s.mu,
+          sigma: s.sigma,
+        })),
+      };
+      ({ matchId } = await this.starter.start(proposal));
+    } catch (error) {
       const now = this.clock.now();
-      await this.db.transaction().execute(async (trx) => {
-        const updated = await trx
+      const gaveUp = await this.db.transaction().execute(async (trx) => {
+        await this.fence(trx);
+        const current = await trx
           .updateTable('match_proposals')
-          .set({ status: 'started', match_id: matchId, resolved_at: now })
+          .set((eb) => ({ start_attempts: eb('start_attempts', '+', 1) }))
           .where('id', '=', row.id)
           .where('status', '=', 'starting')
+          .returning('start_attempts')
           .executeTakeFirst();
-        if (updated.numUpdatedRows === 0n) return;
-        for (const seat of proposal.seats) {
-          if (!seat.ticketId || !seat.accountId) continue;
-          await trx
-            .updateTable('queue_tickets')
-            .set({ status: 'matched', match_id: matchId, updated_at: now })
-            .where('id', '=', seat.ticketId)
-            .execute();
-          await this.notifier.send(trx, seat.accountId, 'queue.matchFound', {
-            ticketId: seat.ticketId,
-            matchId,
-          });
+        if (!current || current.start_attempts < this.maxStartAttempts) return false;
+        await trx
+          .updateTable('match_proposals')
+          .set({ status: 'failed', failure: String(error), resolved_at: now })
+          .where('id', '=', row.id)
+          .execute();
+        for (const seat of seats) {
+          if (!seat.ticket_id || !seat.account_id) continue;
+          await this.requeue(trx, row.id, seat.ticket_id, seat.account_id, 'start_failed', now);
         }
+        return true;
       });
-      this.logger?.info({ proposal: row.id, match: matchId }, 'match started');
-      started++;
+      this.logger?.warn({ err: error, proposal: row.id, gaveUp }, 'match start failed');
+      return gaveUp ? 'failed' : 'retry';
     }
-    return { started, failed };
+    const now = this.clock.now();
+    const recorded = await this.db.transaction().execute(async (trx) => {
+      await this.fence(trx);
+      const updated = await trx
+        .updateTable('match_proposals')
+        .set({ status: 'started', match_id: matchId, resolved_at: now })
+        .where('id', '=', row.id)
+        .where('status', '=', 'starting')
+        .executeTakeFirst();
+      if (updated.numUpdatedRows === 0n) return false;
+      for (const seat of proposal.seats) {
+        if (!seat.ticketId || !seat.accountId) continue;
+        await trx
+          .updateTable('queue_tickets')
+          .set({ status: 'matched', match_id: matchId, updated_at: now })
+          .where('id', '=', seat.ticketId)
+          .execute();
+        await this.notifier.send(trx, seat.accountId, 'queue.matchFound', {
+          ticketId: seat.ticketId,
+          matchId,
+        });
+      }
+      return true;
+    });
+    if (!recorded) return 'retry';
+    this.logger?.info({ proposal: row.id, match: matchId }, 'match started');
+    return 'started';
   }
 
   // ------------------------------------------------------------ progress

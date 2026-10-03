@@ -140,7 +140,7 @@ struct MatchSummary
 	bool rated = false;
 	std::string status;		  // starting | running | ended | cancelled
 	std::string endReason;	  // completed | abandoned | aborted
-	std::string verification; // pending | verified | diverged | unverifiable | not_applicable
+	std::string verification; // pending | verified | diverged | unverifiable | not_applicable | failed
 	std::string mapHash, mapTitle;
 	std::optional<std::int64_t> startedAt, endedAt;
 	std::optional<int> durationTicks;

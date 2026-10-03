@@ -504,6 +504,7 @@ export async function seedHistory(
         kind: 'verify-match',
         sim_version: simVersionKey(sim),
         payload: JSON.stringify({ matchId: match.id }),
+        match_id: match.id,
         status: 'succeeded',
         // A complete verdict: the match page decodes it against VerifyVerdict.
         result: JSON.stringify({

@@ -2,10 +2,15 @@
 // sockets (by account, sign-in family and pending browser sign-in) and listens
 // on one Postgres NOTIFY channel; anything that must reach a socket is
 // published there and delivered by whichever replica holds it. Payloads carry
-// identifiers and small data only (NOTIFY is limited to 8000 bytes); bulky
-// state is re-read from the database by the receiving replica.
-import { sql, type Kysely } from 'kysely';
-import type { Database, PgPubSub } from '@glob2/db';
+// identifiers and small data only (larger payloads are spilled by notify());
+// bulky state is re-read from the database by the receiving replica.
+//
+// NOTIFY is at-most-once: whatever is published while this replica's listener
+// reconnects is lost. After a reconnect the hub re-syncs its sockets from the
+// database: pending browser sign-ins are re-checked here, and resync listeners
+// (play/realtime.ts) re-send room state, match tickets and queue prompts.
+import type { Kysely } from 'kysely';
+import { notify, type Database, type PgPubSub } from '@glob2/db';
 import type { Logger } from '@glob2/core';
 import type { RealtimeEventName } from '@glob2/protocol';
 import { REALTIME_CHANNEL, type PlayFanout } from '@glob2/play';
@@ -36,6 +41,8 @@ export type PlayListener = (message: PlayFanout) => void;
 export type AccountGoneListener = (accountId: string) => void;
 /** An account gained a socket on this replica. */
 export type AccountHereListener = (accountId: string) => void;
+/** The listener reconnected: re-send state to these accounts' sockets on this replica. */
+export type ResyncListener = (accountIds: string[]) => Promise<void>;
 
 export class RealtimeHub {
   private readonly db: Kysely<Database>;
@@ -45,7 +52,10 @@ export class RealtimeHub {
   private readonly byAccount = new Map<string, Set<RealtimeConnection>>();
   private readonly attempts = new Map<string, RealtimeConnection>();
   private unsubscribe: (() => Promise<void>) | undefined;
+  private removeReconnect: (() => void) | undefined;
+  private resyncs = 0;
   onHandoff: HandoffListener | undefined;
+  onResync: ResyncListener | undefined;
   onPlay: PlayListener | undefined;
   onAccountGone: AccountGoneListener | undefined;
   onAccountHere: AccountHereListener | undefined;
@@ -60,9 +70,37 @@ export class RealtimeHub {
     this.unsubscribe = await this.pubsub.subscribe(REALTIME_CHANNEL, (payload) =>
       this.dispatch(payload as FanoutMessage),
     );
+    this.removeReconnect = this.pubsub.addReconnectListener(() => {
+      this.resync().catch((error: unknown) =>
+        this.logger.error({ err: error }, 'realtime resync after reconnect failed'),
+      );
+    });
+  }
+
+  /** Completed resyncs (after listener reconnects), for tests and diagnostics. */
+  get resyncCount(): number {
+    return this.resyncs;
+  }
+
+  /**
+   * Re-delivers what notifications may have carried while the listener was
+   * down: finished browser sign-ins of watched attempts, then (onResync) room,
+   * match and queue state of every account with a socket here.
+   */
+  async resync(): Promise<void> {
+    const accounts = [...this.byAccount.keys()];
+    this.logger.warn(
+      { sockets: this.connections.size, accounts: accounts.length },
+      'realtime listener reconnected; re-syncing sockets',
+    );
+    for (const [attemptId, holder] of [...this.attempts]) this.onHandoff?.(holder, attemptId);
+    await this.onResync?.(accounts);
+    this.resyncs++;
   }
 
   async stop(): Promise<void> {
+    this.removeReconnect?.();
+    this.removeReconnect = undefined;
     await this.unsubscribe?.();
     this.unsubscribe = undefined;
     for (const connection of this.connections.values())
@@ -123,7 +161,7 @@ export class RealtimeHub {
 
   /** Publishes to every replica (including this one), after the surrounding transaction commits. */
   async publish(message: FanoutMessage, db: Kysely<Database> = this.db): Promise<void> {
-    await sql`SELECT pg_notify(${REALTIME_CHANNEL}, ${JSON.stringify(message)})`.execute(db);
+    await notify(db, REALTIME_CHANNEL, message);
   }
 
   /** Sends an event to the sockets of an account on every replica. */

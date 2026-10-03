@@ -307,6 +307,14 @@ void PlatformRoom::systemLinesFor(const Json &previous, const Json &next)
 			map.erase("hash");
 		return map;
 	};
+	// Why the last start did not happen (e.g. the server reopened a room whose
+	// start was interrupted), as the server words it.
+	auto startNotice = [](const Json &room) {
+		return room.contains("notice") && room["notice"].is_string() ? room["notice"].get<std::string>()
+																		: std::string();
+	};
+	if (!startNotice(next).empty() && startNotice(next) != startNotice(previous))
+		notice(startNotice(next));
 	if (choice(previous) != choice(next))
 		notice(formatted("[room map changed %0]", mapName()));
 	else if (previous.value("rules", Json()) != next.value("rules", Json()))

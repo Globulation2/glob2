@@ -33,6 +33,14 @@ export interface SubmitEngineJob<K extends EngineJobKind> {
   jobId?: string;
 }
 
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+/** The match a job payload names (verify-match), for engine_jobs.match_id. */
+function payloadMatchId(payload: unknown): string | null {
+  const id = (payload as { matchId?: unknown } | null)?.matchId;
+  return typeof id === 'string' && UUID_PATTERN.test(id) ? id : null;
+}
+
 /**
  * Records an engine job; an agent of its sim version leases it from there.
  * One insert, so a job submitted inside a transaction exists exactly when the
@@ -62,6 +70,7 @@ export async function submitEngineJob<K extends EngineJobKind>(
       sim_version: simVersionKey(request.simVersion),
       payload: JSON.stringify(request.payload),
       max_attempts: request.maxAttempts ?? 3,
+      match_id: payloadMatchId(request.payload),
     })
     .execute();
   return job.jobId;

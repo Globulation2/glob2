@@ -1,6 +1,7 @@
 // REST identity flows against a real Postgres: guests, tokens and JWKS, local
 // passwords, renames, admin CLI and role checks, rate limits.
-import { createPublicKey, verify } from 'node:crypto';
+import { createHash, createPublicKey, verify } from 'node:crypto';
+import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { checkDocument } from '@glob2/protocol';
 import { runCli } from '../src/cli.ts';
@@ -144,6 +145,50 @@ describe('tokens', () => {
     }
   });
 
+  /** Moves a refresh token's rotation into the past (beyond the reuse grace). */
+  async function ageRotation(token: string, seconds: number) {
+    const hash = createHash('sha256').update(token).digest('hex');
+    await sql`UPDATE refresh_tokens SET rotated_at = rotated_at - make_interval(secs => ${seconds})
+              WHERE token_hash = ${hash}`.execute(harness.database.db);
+  }
+
+  it('accepts concurrent refreshes with the just-rotated token inside the grace', async () => {
+    const session = await newGuest();
+    const first = session.tokens.refreshToken;
+    // Two clients (or a retry) refresh with the same token at once.
+    const [a, b] = await Promise.all([
+      postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first }),
+      postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first }),
+    ]);
+    expect([a.status, b.status]).toEqual([200, 200]);
+    const [ta, tb] = [await json(a), await json(b)];
+    expect(ta['refreshToken']).not.toBe(tb['refreshToken']);
+    expect(decode(ta['accessToken'] as string).claims.sid).toBe(
+      decode(tb['accessToken'] as string).claims.sid,
+    );
+    // Both successors keep working.
+    for (const token of [ta, tb]) {
+      const next = await postJson(`${api.url}/api/v1/auth/refresh`, {
+        refreshToken: token['refreshToken'],
+      });
+      expect(next.status).toBe(200);
+    }
+  });
+
+  it('treats a rotated token as stolen once its successor was used', async () => {
+    const session = await newGuest();
+    const first = session.tokens.refreshToken;
+    const second = (
+      await json(await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first }))
+    )['refreshToken'] as string;
+    const third = await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: second });
+    expect(third.status).toBe(200);
+    // `first` is no longer the immediately previous token: reuse, even inside the grace.
+    const reuse = await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first });
+    expect(reuse.status).toBe(401);
+    expect((await json(reuse))['details']).toEqual({ reason: 'reused' });
+  });
+
   it('rotates refresh tokens and revokes the family when a rotated token is reused', async () => {
     const session = await newGuest();
     const first = session.tokens.refreshToken;
@@ -157,7 +202,8 @@ describe('tokens', () => {
       decode(session.tokens.accessToken).claims.sid,
     );
 
-    // The old token is presented again: theft is assumed, the family dies.
+    // The old token is presented again after the grace: theft is assumed, the family dies.
+    await ageRotation(first, 120);
     const reuse = await postJson(`${api.url}/api/v1/auth/refresh`, { refreshToken: first });
     expect(reuse.status).toBe(401);
     expect((await json(reuse))['details']).toEqual({ reason: 'reused' });

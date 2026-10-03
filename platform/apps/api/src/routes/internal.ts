@@ -47,7 +47,7 @@ export function matchRelayKey(keys: readonly RelayKey[], presented: string): Rel
 
 export async function internalRoutes(app: FastifyInstance): Promise<void> {
   const { services } = app;
-  const { db, blobs, jobs, config } = services;
+  const { db, blobs, config } = services;
   const keys = config.relayKeys ?? [];
   const origin = config.publicOrigin;
 
@@ -189,7 +189,7 @@ export async function internalRoutes(app: FastifyInstance): Promise<void> {
       if (report.matchId !== id) throw apiError('bad_request', 'matchId differs from the path.');
       actAs(key, report.relayId);
       await checkMatchRelay(key, id);
-      const outcome = await recordMatchEnded(db, jobs, report);
+      const outcome = await recordMatchEnded(db, report);
       if (!outcome.ok) {
         switch (outcome.reason) {
           case 'not_found':

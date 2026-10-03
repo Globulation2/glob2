@@ -154,9 +154,14 @@ needs no account, so they are limited per address
   lifetime `auth.refreshTokenDays`, default 60). Each sign-in starts a family;
   presenting an already-rotated token is treated as theft and revokes the whole
   family, including its access tokens, and sockets authenticated with it get
-  `session.revoked`. Sign-out revokes the presented token's family. Clients must
-  therefore serialise refreshes per sign-in. Expired tokens are deleted 30 days
-  after expiry.
+  `session.revoked`. Sign-out revokes the presented token's family.
+  Concurrent refreshes are expected (two sockets, a retry after a timeout): for
+  30 s after a rotation, the token just rotated is accepted again while its
+  successor is still unused, and returns another token of the family (at most
+  five times). Any later use, or a use after the successor was itself rotated,
+  is reuse. Clients should still serialise refreshes per sign-in where they can.
+  Rotated and revoked tokens are deleted after 7 days (until then their reuse is
+  detected), expired ones 30 days after expiry.
 - **Web sessions** (the browser after `/signin`) are a random secret in an
   HttpOnly `SameSite=Lax` cookie (`__Host-glob2_session` over HTTPS), stored
   hashed in `web_sessions` (`auth.webSessionDays`, default 30). Cookie-

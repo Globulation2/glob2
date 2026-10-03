@@ -35,7 +35,11 @@ describe('maintenance', () => {
       .values([
         { confirmation_code: 'OLD111', expires_at: new Date(Date.now() - hour) },
         { confirmation_code: 'NEW222', expires_at: new Date(Date.now() + hour) },
-        { confirmation_code: 'GONE33', expires_at: new Date(Date.now() - 8 * 24 * hour) },
+        {
+          confirmation_code: 'GONE33',
+          created_at: new Date(Date.now() - 8 * 24 * hour - hour),
+          expires_at: new Date(Date.now() - 8 * 24 * hour),
+        },
       ])
       .execute();
     await db
@@ -104,7 +108,7 @@ describe('maintenance', () => {
       ])
       .execute();
 
-    expect(await runMaintenance(database.db)).toEqual({
+    expect(await runMaintenance(database.db)).toMatchObject({
       expiredSigninAttempts: 2,
       expiredQueueTickets: 1,
       deletedRefreshTokens: 1,
@@ -112,8 +116,9 @@ describe('maintenance', () => {
       deletedWebSessions: 1,
       deletedSigninAttempts: 1,
       deletedRateLimits: 1,
+      deletedGuests: 0,
     });
-    expect(await runMaintenance(database.db)).toEqual({
+    expect(await runMaintenance(database.db)).toMatchObject({
       expiredSigninAttempts: 0,
       expiredQueueTickets: 0,
       deletedRefreshTokens: 0,

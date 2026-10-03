@@ -126,6 +126,7 @@ export async function createVerifyJob(db: Db, matchId: string): Promise<string> 
       kind: 'verify-match',
       sim_version: match.sim_version,
       payload: JSON.stringify({ matchId, setup: match.setup, recordHash: HASH }),
+      match_id: matchId,
     })
     .returning('id')
     .executeTakeFirstOrThrow();

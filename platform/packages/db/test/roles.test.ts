@@ -94,9 +94,15 @@ describe('service roles on a fresh database', () => {
 
   it('keep sign-in secrets and the audit log from the worker, and the audit log append-only', async () => {
     const worker = database.urlAs('worker');
-    for (const table of ['identities', 'device_credentials', 'admin_audit_log']) {
+    for (const table of ['identities', 'admin_audit_log']) {
       expect(await attempt(worker, `SELECT count(*) FROM ${table}`)).toBe(DENIED);
     }
+    // Guest retention reads when a device credential was last used, not the credential.
+    expect(await attempt(worker, 'SELECT account_id, last_used_at FROM device_credentials')).toBe(
+      'ok',
+    );
+    expect(await attempt(worker, 'SELECT credential_hash FROM device_credentials')).toBe(DENIED);
+    expect(await attempt(worker, 'DELETE FROM device_credentials')).toBe(DENIED);
     // Retention deletes still work, without reading the token hashes.
     expect(await attempt(worker, 'DELETE FROM refresh_tokens WHERE expires_at < now()')).toBe('ok');
     expect(await attempt(worker, 'SELECT token_hash FROM refresh_tokens')).toBe(DENIED);

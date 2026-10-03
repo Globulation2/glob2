@@ -7,7 +7,8 @@
 //                   DDL; the admin audit log is append-only.
 //   glob2_worker    platform-worker: the same, minus the tables it never
 //                   needs (sign-in identities, device credentials, the audit
-//                   log) and only the columns its retention deletes read.
+//                   log) and only the columns its retention deletes read
+//                   (device credentials: account and last use, no secrets).
 //
 // The engine agent has no database role: it talks to platform-api's internal
 // HTTP API (docs/hosting/README.md, "Database roles").
@@ -39,9 +40,19 @@ const READ_ONLY_TABLES = ['platform_migrations', 'platform_migrations_lock'];
  */
 const WORKER_DENIED_TABLES = ['identities', 'device_credentials', 'admin_audit_log'];
 
+/**
+ * Columns of denied tables the worker may read: guest retention
+ * (apps/worker maintenance.ts) keeps guests whose device credential was used
+ * recently. No secrets (the credential hashes stay unreadable).
+ */
+const WORKER_COLUMN_READS: Record<string, string[]> = {
+  device_credentials: ['account_id', 'last_used_at'],
+};
+
 /** Tables the worker only prunes: DELETE plus SELECT on the columns its WHERE reads. */
 const WORKER_PRUNE_ONLY: Record<string, string[]> = {
-  refresh_tokens: ['expires_at'],
+  // Batched deletes select ids (apps/worker maintenance.ts).
+  refresh_tokens: ['id', 'expires_at', 'rotated_at', 'revoked_at'],
   web_sessions: ['expires_at', 'revoked_at'],
   auth_flows: ['expires_at'],
 };
@@ -241,6 +252,12 @@ export async function applyGrants(client: Queryable): Promise<void> {
   for (const table of WORKER_DENIED_TABLES) {
     if (!tables.has(table)) continue;
     await client.query(`REVOKE ALL ON ${ident(table)} FROM ${ident(worker)}`);
+  }
+  for (const [table, columns] of Object.entries(WORKER_COLUMN_READS)) {
+    if (!tables.has(table)) continue;
+    await client.query(
+      `GRANT SELECT (${columns.map(ident).join(', ')}) ON ${ident(table)} TO ${ident(worker)}`,
+    );
   }
   for (const [table, columns] of Object.entries(WORKER_PRUNE_ONLY)) {
     if (!tables.has(table)) continue;

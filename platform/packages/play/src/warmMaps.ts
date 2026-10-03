@@ -3,8 +3,10 @@
 //
 // - WarmMapPool.refill() runs on the scheduler leader. For every queue, every
 //   sim version some engine agent serves, and every pool entry, it keeps
-//   `perEntry` maps 'ready' or 'generating', submitting generate-map jobs with
-//   fresh seeds for the shortfall. Entries that keep failing back off.
+//   `perEntry` maps 'ready' or 'generating' (more while the entry is busy: as
+//   many as were taken in the last DEMAND_WINDOW_SECONDS, up to
+//   `maxPerEntry`), submitting generate-map jobs with fresh seeds for the
+//   shortfall. Entries that keep failing back off.
 // - recordWarmMapResult() completes a row when its job's result arrives
 //   (called from handleEngineJobResult, in the result's transaction).
 // - takeWarmMap() hands one ready map to a match starter and marks it taken;
@@ -36,6 +38,11 @@ export const WARM_MAP_FAILURE_LIMIT = 3;
 export const WARM_MAP_FAILURE_WINDOW_SECONDS = 600;
 /** Taken and failed rows are kept this long (for diagnosis), then deleted. */
 export const WARM_MAP_RETENTION_HOURS = 24;
+/** Maps taken from an entry within this window raise its target (burst demand). */
+export const DEMAND_WINDOW_SECONDS = 900;
+/** Default maps kept per entry (WARM_MAPS_PER_ENTRY) and the demand-driven ceiling. */
+export const DEFAULT_WARM_MAPS_PER_ENTRY = 2;
+export const DEFAULT_WARM_MAPS_MAX_PER_ENTRY = 8;
 
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
@@ -66,6 +73,8 @@ export interface WarmMapPoolOptions {
   queues: readonly ResolvedQueue[];
   /** Maps kept ready (or generating) per queue, entry and sim version; 0 disables the pool. */
   perEntry: number;
+  /** Ceiling of the demand-driven target (default max(perEntry, 8)). */
+  maxPerEntry?: number;
   logger?: Logger;
   /** Map seed source (uniform uint32); injectable for tests. */
   seed?: () => number;
@@ -97,9 +106,14 @@ export class WarmMapPool {
         const counts = await this.counts(q.id, simKey);
         for (const entry of q.mapPool) {
           const key = poolEntryKey(entry);
-          const count = counts.get(key) ?? { open: 0, recentFailures: 0 };
+          const count = counts.get(key) ?? { open: 0, recentFailures: 0, recentlyTaken: 0 };
           if (count.recentFailures >= WARM_MAP_FAILURE_LIMIT) continue;
-          for (let i = count.open; i < perEntry; i++) {
+          const ceiling = Math.max(
+            perEntry,
+            this.options.maxPerEntry ?? DEFAULT_WARM_MAPS_MAX_PER_ENTRY,
+          );
+          const target = Math.min(ceiling, Math.max(perEntry, count.recentlyTaken));
+          for (let i = count.open; i < target; i++) {
             const jobId = randomUUID();
             // One team per seat, as the on-demand path in play/start.ts generates.
             const generator: GeneratorDescriptor = {
@@ -152,7 +166,7 @@ export class WarmMapPool {
   private async counts(
     queueId: string,
     simKey: string,
-  ): Promise<Map<string, { open: number; recentFailures: number }>> {
+  ): Promise<Map<string, { open: number; recentFailures: number; recentlyTaken: number }>> {
     const rows = await this.options.db
       .selectFrom('warm_maps')
       .select((eb) => [
@@ -171,6 +185,19 @@ export class WarmMapPool {
             ]),
           )
           .as('recent_failures'),
+        eb.fn
+          .count<string>('id')
+          .filterWhere((w) =>
+            w.and([
+              w('status', '=', 'taken'),
+              w(
+                'taken_at',
+                '>',
+                sql<Date>`now() - make_interval(secs => ${DEMAND_WINDOW_SECONDS})`,
+              ),
+            ]),
+          )
+          .as('recently_taken'),
       ])
       .where('queue_id', '=', queueId)
       .where('sim_version', '=', simKey)
@@ -179,7 +206,11 @@ export class WarmMapPool {
     return new Map(
       rows.map((r) => [
         r.entry_key,
-        { open: Number(r.open), recentFailures: Number(r.recent_failures) },
+        {
+          open: Number(r.open),
+          recentFailures: Number(r.recent_failures),
+          recentlyTaken: Number(r.recently_taken),
+        },
       ]),
     );
   }
