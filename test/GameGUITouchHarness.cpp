@@ -733,14 +733,15 @@ class GameGUITouchHarness
 		tap(200, 200);
 		tap(200, 200);
 		touchTickStep = separateTouchStep;
-		require(std::abs(gui.camera.zoom - 1) < 0.001,
-				"Double tap restores 1:1 map zoom");
+		require(std::abs(gui.camera.zoom - MapCamera::MAX_ZOOM) < 0.001,
+				"Double tap zooms in up to the camera limit");
 		const auto restoredAnchor = gui.camera.screenToWorld(200, 200);
 		require(std::abs(MapCamera::wrap(tapAnchor.first, gui.camera.mapWidth) -
 					MapCamera::wrap(restoredAnchor.first, gui.camera.mapWidth)) < 0.001 &&
 					std::abs(MapCamera::wrap(tapAnchor.second, gui.camera.mapHeight) -
 					MapCamera::wrap(restoredAnchor.second, gui.camera.mapHeight)) < 0.001,
 				"Double tap keeps the tapped world position anchored");
+		gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), 200, 200);
 		gui.clearSelection();
 		bool foundEmptyGround = false;
 		for (int y = 80; y < 480 && !foundEmptyGround; y += 32)
@@ -1098,6 +1099,55 @@ class GameGUITouchHarness
 						   std::abs(MapCamera::wrap(a.second, gui.camera.mapHeight) -
 									MapCamera::wrap(b.second, gui.camera.mapHeight)) < 1;
 				};
+				// A completed double tap zooms in around its map point, even at a seam.
+				const auto savedCamera = gui.camera;
+				for (double initial : {0.75, 1.0, 2.0, MapCamera::MAX_ZOOM})
+				{
+					gui.camera = savedCamera;
+					gui.camera.setZoom(initial, spot.x, spot.y);
+					if (initial != 1.0)
+					{
+						gui.camera.originX = gui.camera.mapWidth - 8;
+						gui.camera.originY = gui.camera.mapHeight - 8;
+					}
+					gui.viewportX = gui.camera.tileX();
+					gui.viewportY = gui.camera.tileY();
+					gui.updateCamera();
+					const auto zoomSpot = spot;
+					const double before = gui.camera.zoom;
+					const auto anchor = gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y);
+					if (initial == 1.0)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-double-tap-before-portrait.bmp"
+														: "touch-double-tap-before-landscape.bmp");
+						gfx->nextFrame();
+					}
+					quickTouches();
+					tap(zoomSpot.x, zoomSpot.y);
+					tap(zoomSpot.x, zoomSpot.y);
+					touchTickStep = separateTouchStep;
+					require(std::abs(gui.camera.zoom - std::min(before * 2, MapCamera::MAX_ZOOM)) < 1e-9,
+							"Double tap doubles zoom and stays at the maximum instead of resetting");
+					require(wrapped(anchor, gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y)),
+							"Double tap keeps the tapped world point anchored across map seams");
+					noOrder();
+					std::cout << "PASS double tap " << width << "x" << height << ": " << before
+							  << " -> " << gui.camera.zoom << "; world anchor preserved\n";
+					if (initial == 1.0)
+					{
+						gui.drawAll(0);
+						gfx->printScreen(width < height ? "touch-double-tap-after-portrait.bmp"
+														: "touch-double-tap-after-landscape.bmp");
+						gfx->nextFrame();
+					}
+					gui.clearSelection();
+					gui.touch->panelOpen = false;
+				}
+				gui.camera = savedCamera;
+				gui.viewportX = gui.camera.tileX();
+				gui.viewportY = gui.camera.tileY();
+				gui.updateCamera();
 				auto armedPress = [&]
 				{
 					gui.camera.setZoom(1, spot.x, spot.y);
@@ -1193,11 +1243,12 @@ class GameGUITouchHarness
 				tap(spot.x, spot.y);
 				touchTickStep = separateTouchStep;
 				require(!gui.touch->deferredStroke, "A double tap while painting must not paint");
-				require(std::abs(gui.camera.zoom - 1) < 0.001,
-						("A double tap while painting must reset zoom (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
+				require(std::abs(gui.camera.zoom - 3) < 0.001,
+						("A double tap while painting must zoom in (zoom " + std::to_string(gui.camera.zoom) + ")").c_str());
 				SDL_Delay(InGameTouchTheme::doubleTapWindowMs + 20);
 				gui.touch->prepareDraw();
 				noOrder();
+				gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(spot.x), int(spot.y));
 				gui.brush.setFigure(6); // 3x3, so the footprint capture is legible.
 				finger(SDL_EVENT_FINGER_DOWN, 1, spot.x, spot.y);
 				finger(SDL_EVENT_FINGER_MOTION, 1, spot.x + 40 * unit, spot.y);
@@ -1299,6 +1350,7 @@ class GameGUITouchHarness
 						"The panned stroke paints on release");
 				drain();
 				// Undo reverts exactly the cells the stroke changed.
+				gui.zoomMap(std::log(1.0 / gui.camera.zoom) / std::log(1.1), int(spot.x), int(spot.y));
 				gui.brush.setFigure(6); // 3x3
 				const auto target = emptyGround();
 				auto &map = gui.game.map;
@@ -1695,11 +1747,9 @@ class GameGUITouchHarness
 		{
 			if (gui.touch->usesDial())
 			{
-				// The phone dial: ratios apply to the unit type chosen at its chips.
+				// The phone dial uses the same action regions as rendering.
 				gui.drawAll(0);
 				gfx->nextFrame();
-				if (kind == 0)
-					gui.touch->ratioType = value;
 				const auto p = gui.touch->dialActionPoint(kind, value, side);
 				require(p.x >= 0, "Building action must be on the dial");
 				return p;
@@ -2129,8 +2179,8 @@ class GameGUITouchHarness
 			{
 				const auto ui = gui.touch->layout();
 				const auto regions = gui.touch->dialRegions();
-				require(regions.size() >= 3 + 3 + 3 + NB_UNIT_TYPE,
-						"Swarm dial offers workers, a ratio slider, priority and unit choices");
+				require(regions.size() >= 3 + 1 + 3 + 1,
+						"Swarm dial offers workers, one shared production control, fixed priority and pause");
 				for (const auto &region : regions)
 				{
 					const auto &box = region.box;
@@ -2163,14 +2213,15 @@ class GameGUITouchHarness
 				gfx->nextFrame();
 				globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
 				gui.drawAll(0);
-				// Choosing a unit type at its chip points the ratio slider at it.
-				for (int type = NB_UNIT_TYPE - 1; type >= 0; --type)
+				const auto priority = gui.touch->dialActionPoint(7, 0, 0);
+				for (auto *other : {building, rangeFlag, clearing, exploring})
 				{
-					const auto chip = gui.touch->dialActionPoint(9, type, 0);
-					tap(chip.x, chip.y);
-					require(gui.touch->ratioType == type && gui.orderQueue.empty(),
-							"A unit chip selects the ratio the dial edits, without an order");
+					openActions(other);
+					const auto p = gui.touch->dialActionPoint(7, 0, 0);
+					require(std::hypot(p.x - priority.x, p.y - priority.y) < .01,
+							"Priority stays at the same position for every building");
 				}
+				openActions(swarm);
 			}
 			else
 			{
@@ -2185,34 +2236,89 @@ class GameGUITouchHarness
 			gfx->printScreen(width < height ? "touch-swarm-portrait.bmp"
 											: "touch-swarm-landscape.bmp");
 			const auto checksum = gui.game.checkSum();
-			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+			if (gui.touch->usesDial())
+			for (int thumbSide : {int(Settings::THUMB_RIGHT), int(Settings::THUMB_LEFT)})
 			{
-				const auto before = gui.displayedRatio(*swarm);
-				pressAction(0, type, 1);
-				pressAction(0, type, 1);
-				require(gui.orderQueue.size() == 2,
-						"Rapid production taps queue exactly two orders");
-				for (int delta : {1, 2})
-				{
-					auto order =
-						std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
-					gui.orderQueue.pop_front();
-					require(order && order->gid == swarm->gid,
-							"Production uses the shared order and building");
-					for (int i = 0; i < NB_UNIT_TYPE; ++i)
-						require(order->ratio[i] == before[i] + (i == type ? delta : 0),
-								"Ratio edits preserve other pending values");
-				}
-				auto values = gui.displayedRatio(*swarm);
-				values[type] = MAX_RATIO_RANGE;
-				gui.pendingFor(swarm->gid).pendingRatio = values;
-				pressAction(0, type, 1);
-				require(gui.orderQueue.empty(), "Maximum ratio tap emits no order");
-				values[type] = 0;
-				gui.pendingFor(swarm->gid).pendingRatio = values;
-				pressAction(0, type, -1);
-				require(gui.orderQueue.empty(), "Zero ratio tap emits no order");
+				globalContainer->settings.thumbSide = thumbSide;
+				gui.drawAll(0);
+				require(TouchDial::shares({6, 2, 2}, 16) == std::array<int, 3>{10, 3, 3},
+						"Relative weights round to a complete production budget");
+				require(TouchDial::shares({1, 1, 1}, 100) == std::array<int, 3>{34, 33, 33},
+						"Displayed percentages always total 100");
+				const auto g = gui.touch->dialLayout(gui.touch->layout()).geometry;
+				const auto &ring = g.rings[1];
+				auto at = [&](int value, int divider) {
+					return TouchDial::point(g, divider == 0 ? ring.inner + 4 : ring.outer - 4,
+						TouchDial::angleOf(value, g.sweepStart, g.sweepEnd, 16));
+				};
+				auto drag = [&](int divider, int from, int to, bool cancel = false) {
+					const auto start = at(from, divider), end = at(to, divider);
+					finger(SDL_EVENT_FINGER_DOWN, 1, start.x, start.y);
+					require(gui.touch->allocation && gui.touch->allocation->divider == divider,
+							("Production divider " + std::to_string(divider) + " at " + std::to_string(from) + " picked " + std::to_string(gui.touch->allocation ? gui.touch->allocation->divider : -2)).c_str());
+					finger(SDL_EVENT_FINGER_MOTION, 1, end.x, end.y);
+					require(gui.orderQueue.empty(), "Proportion dragging previews without orders");
+					if (cancel)
+						gui.suspendInput();
+					finger(SDL_EVENT_FINGER_UP, 1, end.x, end.y);
+				};
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				drag(0, 8, 4);
+				require(gui.orderQueue.size() == 1 && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+						"One release transfers production between neighbors in one order");
+				const auto order = std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
+				require(order && order->gid == swarm->gid && order->ratio[0] == 4 && order->ratio[1] == 8 && order->ratio[2] == 4,
+						"Production proportions use the existing swarm order");
+				gui.orderQueue.clear();
+				drag(1, 12, 8, true);
+				require(gui.orderQueue.empty() && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+						"Interrupted production adjustment is discarded");
+				const auto held = at(4, 0), moved = at(8, 0);
+				finger(SDL_EVENT_FINGER_DOWN, 1, held.x, held.y);
+				finger(SDL_EVENT_FINGER_MOTION, 1, moved.x, moved.y);
+				finger(SDL_EVENT_FINGER_DOWN, 2, moved.x, moved.y);
+				finger(SDL_EVENT_FINGER_UP, 1, moved.x, moved.y);
+				finger(SDL_EVENT_FINGER_UP, 2, moved.x, moved.y);
+				require(gui.orderQueue.empty() && !gui.touch->allocation &&
+					gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+					"A second finger cancels production adjustment without changing shares");
+				finger(SDL_EVENT_FINGER_DOWN, 1, held.x, held.y);
+				finger(SDL_EVENT_FINGER_MOTION, 1, moved.x, moved.y);
+				const auto wrongRing = TouchDial::point(g, g.rings[0].middle(), (g.sweepStart + g.sweepEnd) / 2);
+				finger(SDL_EVENT_FINGER_UP, 1, wrongRing.x, wrongRing.y);
+				require(gui.orderQueue.empty() && gui.displayedRatio(*swarm) == std::array<int, 3>{4, 8, 4},
+					"Releasing on a neighboring thin ring cancels the production edit");
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{16, 0, 0};
+				drag(0, 16, 8);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{8, 8, 0}, "A zero middle share can be restored");
+				gui.orderQueue.clear();
+				drag(1, 16, 12);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{8, 4, 4}, "A zero last share can be restored");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{0, 8, 8};
+				drag(0, 0, 4);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{4, 4, 8}, "A zero first share can be restored");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				const auto stationary = at(8, 0);
+				tap(stationary.x, stationary.y);
+				require(gui.orderQueue.empty(), "A stationary production touch is a no-op");
+				pressAction(10, 0);
+				require(gui.displayedRatio(*swarm) == std::array<int, 3>{0, 0, 0}, "Production can still be paused");
+				gui.orderQueue.clear();
+				drag(1, 0, 8);
+				require(gui.orderQueue.size() == 1, "A paused production arc can resume by dragging");
+				gui.orderQueue.clear();
+				gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{8, 4, 4};
+				gui.drawAll(0);
+				gfx->printScreen(thumbSide == Settings::THUMB_LEFT
+					? (width < height ? "touch-proportions-left-portrait.bmp" : "touch-proportions-left-landscape.bmp")
+					: (width < height ? "touch-proportions-portrait.bmp" : "touch-proportions-landscape.bmp"));
+				gfx->nextFrame();
+				std::cout << "PASS fixed priority and unified production proportions " << width << "x" << height << " thumb=" << thumbSide << "\n";
 			}
+			globalContainer->settings.thumbSide = Settings::THUMB_RIGHT;
+
 			require(gui.game.checkSum() == checksum, "Ratio UI does not mutate the simulation");
 			gui.drawAll(0);
 			gfx->printScreen(width < height ? "touch-actions-portrait.bmp"
@@ -2334,6 +2440,37 @@ class GameGUITouchHarness
 			require(gui.touch->layout().persistentPanel && !gui.touch->usesDial() &&
 						gui.touch->buildingActionRect(0).w > 0,
 					"Spacious layouts keep the rectangular inspector");
+			const auto checksum = gui.game.checkSum();
+			gui.pendingFor(swarm->gid).pendingRatio = std::array<int, 3>{6, 2, 2};
+			for (int type = 0; type < NB_UNIT_TYPE; ++type)
+			{
+				const auto before = gui.displayedRatio(*swarm);
+				pressAction(0, type, 1);
+				pressAction(0, type, 1);
+				require(gui.orderQueue.size() == 2,
+						"Rapid production taps queue exactly two orders");
+				for (int delta : {1, 2})
+				{
+					auto order =
+						std::dynamic_pointer_cast<OrderModifySwarm>(gui.orderQueue.front());
+					gui.orderQueue.pop_front();
+					require(order && order->gid == swarm->gid,
+							"Production uses the shared order and building");
+					for (int i = 0; i < NB_UNIT_TYPE; ++i)
+						require(order->ratio[i] == before[i] + (i == type ? delta : 0),
+								"Ratio edits preserve other pending values");
+				}
+				auto values = gui.displayedRatio(*swarm);
+				values[type] = MAX_RATIO_RANGE;
+				gui.pendingFor(swarm->gid).pendingRatio = values;
+				pressAction(0, type, 1);
+				require(gui.orderQueue.empty(), "Maximum ratio tap emits no order");
+				values[type] = 0;
+				gui.pendingFor(swarm->gid).pendingRatio = values;
+				pressAction(0, type, -1);
+				require(gui.orderQueue.empty(), "Zero ratio tap emits no order");
+			}
+			require(gui.game.checkSum() == checksum, "Spacious ratio editing only queues orders");
 			gui.clearSelection();
 			gui.touch->panelOpen = false;
 			GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "1", 1);
