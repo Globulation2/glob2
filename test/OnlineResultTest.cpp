@@ -50,6 +50,12 @@ TEST_SUITE("OnlineResult")
 		CHECK_FALSE(result.slow);
 		CHECK(result.verification == OnlineMatchResult::Verification::Verified);
 
+		// A check the server could not run is final (and unrated) like an unverifiable one.
+		OnlineMatchResult failed("https://play.example.org", "m3", "me");
+		failed.apply(summary("m3", "ended", "failed"));
+		CHECK(failed.phase() == OnlineMatchResult::Phase::Done);
+		CHECK(failed.verification == OnlineMatchResult::Verification::Unverifiable);
+
 		OnlineMatchResult cancelled("https://play.example.org", "m2", "me");
 		cancelled.apply(summary("m2", "cancelled", "not_applicable"));
 		CHECK(cancelled.phase() == OnlineMatchResult::Phase::Done);

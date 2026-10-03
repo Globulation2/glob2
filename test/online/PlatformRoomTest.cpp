@@ -219,6 +219,25 @@ TEST_SUITE("PlatformRoom")
 	// (A generated map gaining its hash when generation finishes is the same choice and is
 	// not announced again; that path downloads the map, so it is covered end to end by
 	// OnlinePlayHarness rather than here.)
+	TEST_CASE("the server's start notice is shown once in the room chat")
+	{
+		Fixture f;
+		Json state = room(3, ME, Json::array({seat(0, ME, "Guest-1234"), seat(1, "", "")}),
+						  Json::array({member(ME, "Guest-1234")}));
+		auto r = f.join(state);
+		f.chat(*r);
+		// The server reopened the room after an interrupted start.
+		state["revision"] = 4;
+		state["notice"] = "The match could not be started because the server was interrupted. Start it again.";
+		f.world.socket().event("room.state", Json{{"room", state}});
+		f.client.update();
+		CHECK(f.chat(*r) == std::vector<std::string>{state["notice"].get<std::string>()});
+		state["revision"] = 5;
+		f.world.socket().event("room.state", Json{{"room", state}});
+		f.client.update();
+		CHECK(f.chat(*r).empty());
+	}
+
 	TEST_CASE("a map change is announced once; a status change is not")
 	{
 		Fixture f;
