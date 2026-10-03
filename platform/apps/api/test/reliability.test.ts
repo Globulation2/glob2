@@ -4,6 +4,7 @@
 import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { allowAllPolicy } from '@glob2/core';
+import { runCli } from '../src/cli.ts';
 import { RoomService, START_INTERRUPTED_NOTICE } from '../src/play/rooms.ts';
 import {
   FakeEngine,
@@ -15,7 +16,8 @@ import {
   waitUntil,
   type Player,
 } from './playSupport.ts';
-import { createHarness, logger, type Harness, type Instance } from './support.ts';
+import { SIM, createHarness, logger, type Harness, type Instance } from './support.ts';
+import { STANDARD_RULES, simVersionKey } from '@glob2/protocol';
 
 const ORIGIN = 'http://reliability.test';
 const GENERATOR = {
@@ -180,5 +182,110 @@ describe('realtime after a pub/sub reconnect', () => {
     });
     const data = (await p.client.event('match.rematchOffered')) as { host: string };
     expect(data.host).toBe(big);
+  });
+});
+
+describe('re-verification', () => {
+  /** An ended match whose verification failed, with a stored record. */
+  async function failedMatch(): Promise<string> {
+    const db = harness.database.db;
+    const hash = 'e1'.repeat(32);
+    await db
+      .insertInto('blobs')
+      .values({ sha256: hash, size: 1, content_type: 'x', storage_key: `sha256/e1/${hash}` })
+      .onConflict((oc) => oc.column('sha256').doNothing())
+      .execute();
+    const setup = {
+      schemaVersion: 1,
+      simVersion: SIM,
+      seed: 1,
+      map: { kind: 'catalog', hash },
+      teams: [
+        { team: 0, alliance: 0 },
+        { team: 1, alliance: 1 },
+      ],
+      seats: [
+        { seat: 0, kind: 'human', team: 0, name: 'A' },
+        { seat: 1, kind: 'human', team: 1, name: 'B' },
+      ],
+      rules: STANDARD_RULES,
+      experiments: [],
+    };
+    const match = await db
+      .insertInto('matches')
+      .values({
+        sim_version: simVersionKey(SIM),
+        origin: 'room',
+        status: 'ended',
+        verification: 'failed',
+        rating_status: 'unchanged',
+        rating_note: 'verification_failed',
+        setup: JSON.stringify(setup),
+        seed: 1,
+        map_hash: hash,
+        ended_at: new Date(),
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('match_artifacts')
+      .values({ match_id: match.id, kind: 'record', blob_sha256: hash })
+      .execute();
+    return match.id;
+  }
+
+  it('lets an administrator list failed verifications and re-run one', async () => {
+    const matchId = await failedMatch();
+    const admin = await player();
+    const user = await player();
+    await harness.database.db
+      .updateTable('accounts')
+      .set({ role: 'admin' })
+      .where('id', '=', admin.accountId)
+      .execute();
+    const post = (who: Player, body: object = {}) =>
+      fetch(`${api.url}/api/v1/admin/matches/${matchId}/reverify`, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${who.accessToken}`, 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    expect((await post(user)).status).toBe(403);
+    const listed = await fetch(`${api.url}/api/v1/admin/matches?verification=failed`, {
+      headers: { authorization: `Bearer ${admin.accessToken}` },
+    });
+    expect(((await listed.json()) as { items: { id: string }[] }).items.map((m) => m.id)).toContain(
+      matchId,
+    );
+    const accepted = await post(admin);
+    expect(accepted.status).toBe(202);
+    expect(await accepted.json()).toMatchObject({ previous: 'failed' });
+    const again = await post(admin);
+    expect(again.status).toBe(409);
+    expect(((await again.json()) as { details: unknown }).details).toEqual({
+      reason: 'in_progress',
+    });
+    expect((await post(admin, { force: true })).status).toBe(202);
+    const audit = await harness.database.db
+      .selectFrom('admin_audit_log')
+      .select(['action', 'actor_account_id'])
+      .where('target_id', '=', matchId)
+      .execute();
+    expect(audit).toEqual([
+      { action: 'reverify-match', actor_account_id: admin.accountId },
+      { action: 'reverify-match', actor_account_id: admin.accountId },
+    ]);
+  });
+
+  it('works from the command line', async () => {
+    const matchId = await failedMatch();
+    const lines: string[] = [];
+    const io = { out: (l: string) => lines.push(l), err: (l: string) => lines.push(l) };
+    const env = { DATABASE_URL: harness.database.url };
+    expect(await runCli(['matches', 'failed'], io, env)).toBe(0);
+    expect(lines.join('\n')).toContain(matchId);
+    expect(await runCli(['matches', 'reverify', matchId], io, env)).toBe(0);
+    expect(lines.at(-1)).toMatch(/re-verifying .* \(was failed\): verify job/);
+    expect(await runCli(['matches', 'reverify', matchId], io, env)).toBe(1);
+    expect(await runCli(['matches', 'reverify', matchId, '--force'], io, env)).toBe(0);
   });
 });

@@ -607,6 +607,7 @@ export class HistoryService {
   async adminMatches(options: {
     q?: string;
     status?: string;
+    verification?: string;
     cursor?: string;
     limit: number;
   }): Promise<MatchList> {
@@ -649,6 +650,19 @@ export class HistoryService {
       const status = statuses.find((s) => s === options.status);
       if (!status) throw apiError('bad_request', 'Unknown status.');
       query = query.where('m.status', '=', status);
+    }
+    if (options.verification) {
+      const states = [
+        'pending',
+        'verified',
+        'diverged',
+        'unverifiable',
+        'not_applicable',
+        'failed',
+      ] as const;
+      const state = states.find((s) => s === options.verification);
+      if (!state) throw apiError('bad_request', 'Unknown verification state.');
+      query = query.where('m.verification', '=', state);
     }
     return this.page(query, options.cursor, options.limit);
   }

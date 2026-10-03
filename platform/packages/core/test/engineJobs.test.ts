@@ -174,4 +174,52 @@ describe('engine jobs', () => {
       }),
     ).toBe(false);
   });
+
+  it('records a job and queues it in one transaction', async () => {
+    const queued = async (id: string) =>
+      (
+        await database.pool.query('SELECT 1 FROM graphile_worker._private_jobs WHERE key = $1', [
+          id,
+        ])
+      ).rowCount;
+    const recorded = async (id: string) =>
+      (await database.db.selectFrom('engine_jobs').select('id').where('id', '=', id).execute())
+        .length;
+    const payload = { mapHash: MAP_HASH, maxSizePx: 256 };
+
+    // Queueing fails (an invalid retry budget): no engine_jobs row is left behind.
+    const refused = crypto.randomUUID();
+    await expect(
+      submitEngineJob(database.db, {
+        kind: 'render-preview',
+        simVersion: SIM_A,
+        payload,
+        jobId: refused,
+        maxAttempts: -1,
+      }),
+    ).rejects.toThrow();
+    expect([await recorded(refused), await queued(refused)]).toEqual([0, 0]);
+
+    // Inside a caller's transaction that rolls back: neither exists.
+    const rolledBack = crypto.randomUUID();
+    await expect(
+      database.db.transaction().execute(async (trx) => {
+        await submitEngineJob(trx, {
+          kind: 'render-preview',
+          simVersion: SIM_A,
+          payload,
+          jobId: rolledBack,
+        });
+        throw new Error('caller failed');
+      }),
+    ).rejects.toThrow('caller failed');
+    expect([await recorded(rolledBack), await queued(rolledBack)]).toEqual([0, 0]);
+
+    const kept = await submitEngineJob(database.db, {
+      kind: 'render-preview',
+      simVersion: SIM_A,
+      payload,
+    });
+    expect([await recorded(kept), await queued(kept)]).toEqual([1, 1]);
+  });
 });
