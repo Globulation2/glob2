@@ -1,9 +1,27 @@
+import { studioSchemas } from './mapStudio.ts';
+import { hiveSchemas } from './hive.ts';
 // Every schema exported as a JSON Schema file for non-TypeScript consumers,
 // by its stable name. Names are part of the contract: C++ tests and other
 // workstreams refer to fixtures/schemas/<Name>.schema.json.
+import {
+  SkinReportInfo,
+  SkinReportList,
+  SkinReportRequest,
+  ResolveSkinReportRequest,
+  ModerateSkinRequest,
+  SaveSkinDraftRequest,
+  SkinDraft,
+  PublishSkinRequest,
+  EquipSkinRequest,
+  ColonySkinVersion,
+  MatchColonySkin,
+  ColonySkinClaims,
+} from './skins.ts';
 import type { TSchema } from 'typebox';
 import { ErrorBody } from './common.ts';
 import {
+  ImportAiMapPayload,
+  ImportAiMapResult,
   EngineJob,
   EngineJobResult,
   GenerateMapPayload,
@@ -45,6 +63,7 @@ import {
   RelayRegistrationResponse,
 } from './relay.ts';
 import {
+  AccountExport,
   AuthTokens,
   CreateMapRequest,
   GuestSignInRequest,
@@ -137,6 +156,20 @@ realtimeEntries[realtimeSchemaName('match.start', 'Event')] = {
 };
 
 export const schemaRegistry: Record<string, RegisteredSchema> = {
+  SkinReportInfo: { schema: SkinReportInfo },
+  SkinReportList: { schema: SkinReportList },
+  SkinReportRequest: { schema: SkinReportRequest },
+  ResolveSkinReportRequest: { schema: ResolveSkinReportRequest },
+  ModerateSkinRequest: { schema: ModerateSkinRequest },
+  SaveSkinDraftRequest: { schema: SaveSkinDraftRequest },
+  SkinDraft: { schema: SkinDraft },
+  PublishSkinRequest: { schema: PublishSkinRequest },
+  EquipSkinRequest: { schema: EquipSkinRequest },
+  ColonySkinVersion: { schema: ColonySkinVersion },
+  MatchColonySkin: { schema: MatchColonySkin },
+  ColonySkinClaims: { schema: ColonySkinClaims },
+  ...Object.fromEntries(Object.entries(studioSchemas).map(([name, schema]) => [name, { schema }])),
+  ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),
   // Simulation and match description
   SimVersion: { schema: SimVersion },
   GeneratorDescriptor: { schema: GeneratorDescriptor },
@@ -177,6 +210,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   InstanceInfo: { schema: InstanceInfo },
   PublicAccount: { schema: PublicAccount },
   SelfAccount: { schema: SelfAccount },
+  AccountExport: { schema: AccountExport },
   AuthTokens: { schema: AuthTokens },
   GuestSignInRequest: { schema: GuestSignInRequest },
   SignInResponse: { schema: SignInResponse },
@@ -219,6 +253,8 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   PlayerProfile: { schema: PlayerProfile },
   InstanceStats: { schema: InstanceStats },
   // Engine-agent jobs
+  ImportAiMapPayload: { schema: ImportAiMapPayload },
+  ImportAiMapResult: { schema: ImportAiMapResult },
   EngineJob: {
     schema: EngineJob,
     semantic: (value) => {

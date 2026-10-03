@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select CI jobs from a PR diff; master checks cover cumulative changes since a successful checkpoint."""
+"""Select opt-in PR verification, full master checks and fallback nightly coverage."""
 
 import argparse
 import json
@@ -26,8 +26,8 @@ CI_TOOL_TESTS = {
     "tests/build_system/test_ci_concurrency.py",
 }
 def platform_stack_changed(paths):
-    from ci_policy import PLATFORM_STACK_PATHS
-    return any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
+    from ci_policy import PLATFORM_STACK_PATHS, cheap_path
+    return any(path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path) for path in paths)
 
 
 TRANSPORT_TESTS = {
@@ -178,9 +178,9 @@ def changed_paths(base):
 
 def main():
     from ci_policy import FLAGS, full, select, browser_matrix, fingerprint
-    from ci_coverage_baseline import activated, master_checkpoint
+    from ci_coverage_baseline import activated, successful_full_run
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base", help="PR base; master uses a successful ancestor checkpoint")
+    parser.add_argument("--base", help="Base revision for reporting changed paths; master always runs full coverage")
     args = parser.parse_args()
     event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
     payload = {}
@@ -188,21 +188,20 @@ def main():
         payload = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
     labels = [label['name'] for label in payload.get('pull_request', {}).get('labels', [])]
     draft = event == 'pull_request' and (os.environ.get('DRAFT') == 'true' or
-            payload.get('pull_request', {}).get('draft') is True) and 'ci:run' not in labels
-    enabled = False if draft else event in ('pull_request', 'push') and activated()
+            payload.get('pull_request', {}).get('draft') is True)
+    requested = event == 'pull_request' and bool({'ci:run', 'ci:full'} & set(labels))
+    cheap_only = event == 'pull_request' and not requested
+    enabled = requested and activated()
     paths, known, checkpoint = [], False, None
-    base = args.base if event == 'pull_request' else None
-    if event == 'push' and enabled:
-        checkpoint = master_checkpoint(os.environ['GITHUB_REPOSITORY'], os.environ['GH_TOKEN'])
-        base = checkpoint
+    base = args.base if event == 'pull_request' else payload.get('before') or os.environ.get('BASE_SHA')
     if base and event in ('pull_request', 'push'):
         try:
             paths = changed_paths(base)
             known = True
         except (OSError, subprocess.CalledProcessError) as error:
-            print(f"Could not inspect changed paths ({error}); running full CI", file=sys.stderr)
+            print(f"Could not inspect changed paths ({error}); hosted verification will use full coverage when requested", file=sys.stderr)
     desired_selection, reasons = select(paths, labels, known)
-    complete = event in ('schedule', 'workflow_dispatch') or 'ci:full' in labels
+    complete = event in ('push', 'schedule', 'workflow_dispatch') or 'ci:full' in labels
     if complete:
         desired_selection = full()
     if os.environ.get('CI_CALLED_FULL') == 'true':
@@ -221,14 +220,19 @@ def main():
         selected.update(compatibility=legacy['native'] or legacy['map_generators'], variants=legacy['native'],
                         coverage=legacy['native'], windows=legacy['native'], macos=False,
                         android=coverage_profile(paths, event, legacy)['android'])
-    if draft:
+    reused_run = None
+    if event == 'schedule':
+        reused_run = successful_full_run(os.environ.get('GITHUB_REPOSITORY', ''),
+                                         os.environ.get('GITHUB_SHA', ''),
+                                         os.environ.get('GH_TOKEN', ''))
+    if cheap_only or reused_run is not None:
         selected = {flag: False for flag in FLAGS}
     browser_only = event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true'
     if browser_only:
         selected = {flag: flag in ('browser', 'deployment') for flag in FLAGS}
-    full_matrix = not draft and not browser_only and all(selected.values())
+    full_matrix = not browser_only and all(selected.values())
     # Unknown/shared boundaries request the complete development matrix.
-    exhaustive = selected['coverage'] or complete or (not enabled and not draft)
+    exhaustive = selected['coverage'] or complete or (not enabled and not cheap_only)
     entries = browser_matrix(selected, paths, exhaustive or 'ci:browsers' in labels)
     arches = ['arm64-v8a', 'armeabi-v7a', 'x86_64'] if exhaustive else ['arm64-v8a', 'x86_64']
     effective = dict(selected, browsers_all=bool(entries and {e['browsers'] for e in entries} == {'chromium','firefox','webkit'}), android_arches=arches)
@@ -238,15 +242,17 @@ def main():
     import hashlib
     inventory_hash = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
     observed_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() if os.environ.get('CI_CALLED_FULL') == 'true' else os.environ.get('GITHUB_SHA')
-    observation = dict(schema=2, selection=selected, event=event, sha=observed_sha,
+    mode = ('nightly-reused' if reused_run is not None else 'full' if full_matrix else
+            'affected' if any(selected.values()) else 'cheap-contracts')
+    observation = dict(schema=3, verification_mode=mode, reused_run_id=reused_run, selection=selected, event=event, sha=observed_sha,
                        full_matrix=full_matrix, desired=desired, effective=effective, tiers_enabled=enabled,
                        draft=draft, paths=paths, checkpoint=checkpoint, policy_fingerprint=policy,
                        inventory=inventory, inventory_fingerprint=inventory_hash,
-                       checkpoint_eligible=event in ('push','schedule','workflow_dispatch') and not browser_only and os.environ.get('CI_CALLED_FULL') != 'true')
+                       checkpoint_eligible=full_matrix and event in ('push','schedule','workflow_dispatch') and os.environ.get('CI_CALLED_FULL') != 'true')
     artifact = Path('artifacts/ci-selection.json')
     artifact.parent.mkdir(parents=True, exist_ok=True)
     artifact.write_text(json.dumps(observation, indent=2) + '\n')
-    outputs = dict(selected, browsers_all=effective['browsers_all'],
+    outputs = dict(selected, verification_mode=mode, browsers_all=effective['browsers_all'],
                    android_arches=json.dumps(arches, separators=(',', ':')),
                    browser_matrix=json.dumps({'include': entries}, separators=(',', ':')),
                    secondary_profile='full' if exhaustive or 'ci:windows' in labels or any(p.startswith(('windows/', 'darwin/')) for p in paths) else 'compatibility', draft=draft,
@@ -260,8 +266,13 @@ def main():
     if summary:
         with open(summary, 'a') as target:
             target.write('## Selected development checks\n')
-            if draft:
-                target.write('Draft: expensive verification deferred; mark ready or add `ci:run`.\n')
+            target.write(f'Verification mode: **{mode}**.\n')
+            if cheap_only:
+                target.write('PR: cheap contracts only; use `ci:run` or `ci:full` to request hosted verification.\n')
+            if reused_run is not None:
+                target.write(f'Nightly full coverage already verified by run {reused_run} for this exact revision and policy.\n')
+            if not any(selected.values()):
+                target.write('Cheap-only success does not establish engine verification or acceptance of PR evidence.\n')
             target.write('```json\n' + json.dumps(observation, indent=2) + '\n```\n')
 
 

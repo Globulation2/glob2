@@ -1,5 +1,11 @@
 [AI strategy]
 Stratégie IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Équilibre croissance durable et entraînement, puis rassemble ses armées en vagues.
 [AIMaxima-Profile]
@@ -168,12 +174,6 @@ Impossible de joindre le jeu, le port %0 est utilisé
 Impossible de joindre le jeu, le jeu a commencer
 [Can't join game, game is full]
 Impossible de joindre le jeu, le jeu est complet
-[Can't join game, missmatching game parameters]
-Ne peut pas joindre le jeu, paramètres de jeu incompatibles
-[Can't join game, timeout]
-Ne peut pas joindre le jeu, délai dépassé
-[Can't join game, wrong game version]
-Ne peut pas joindre le jeu, mauvaise version
 [cancel destroy]
 Annuler destruction
 [cancel repair]
@@ -198,6 +198,8 @@ Choisir une partie
 Choisir une carte
 [clear area]
 Zone de défrichage
+[farm area]
+Zone de culture
 [Clearing:]
 Défrichage de:
 [clearingflag explanation 2]
@@ -510,8 +512,6 @@ Script de la carte
 Largeur de la carte
 [map size y]
 Hauteur de la carte
-[maps available]
-Carte disponible
 [mark map]
 Marquer la carte
 [market explanation 2]
@@ -552,8 +552,6 @@ Sans croissance
 Non
 [Number Of Buildings]
 Nombre de bâtiments
-[number of players: %0]
-%0 joueurs présents.
 [number of teams]
 nombre d'équipes
 [Number Of Units]
@@ -652,8 +650,6 @@ Piste de course
 Portée
 [ratios]
 Proportions
-[Register a new YOG user with password]
-Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [remember unit]
 Mémoriser les affectations
 [remove map]
@@ -756,6 +752,8 @@ Choisir auberge
 Choisir marché
 [select place clearing area]
 Choisir placer une zone de défrichage
+[select place farm area]
+Choisir placer une zone de culture
 [select place clearingflag]
 Placer un drapeau de défrichage
 [select place explorationflag]
@@ -1049,8 +1047,6 @@ Regarde :
 [water]
 Eau
 [Wheat]
-Blé
-[wheat]
 Blé
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
@@ -3072,6 +3068,8 @@ Interdit
 Garder
 [Clear]
 Défricher
+[Farm]
+Culture
 [Paint]
 Peindre
 [Erase]
@@ -3242,6 +3240,10 @@ Expérimentations
 Équilibrage des zones de garde
 [experiment guard-area-balancing help]
 Les guerriers libres se répartissent entre les zones de garde peintes au lieu de tous rejoindre la plus proche : une zone plus grande en reçoit davantage, et une zone surpeuplée se vide peu à peu vers les autres.
+[experiment farm-areas]
+Zones de culture
+[experiment farm-areas help]
+Ajoute une zone de culture aux pinceaux de zone. Les ouvriers qui récoltent à l'intérieur prennent sur la case la plus mûre du champ connexe et laissent un grain sur chaque case, si bien que le champ repousse au lieu d'être mangé par les bords. Le bois qui pousse dans la zone est défriché.
 [settings Touch scrolling]
 Défilement tactile
 [settings List momentum]
@@ -3331,6 +3333,10 @@ Rebond des listes
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4546,6 +4552,102 @@ Rebond des listes
 
 [game draw]
 
+[settings Show colony skins]
+Afficher les apparences des colonies
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Désactivez pour utiliser les unités, les essaims et les couleurs de bâtiments classiques sur cet appareil.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Répéter la carte horizontalement
+[repeat map vertically]
+Répéter la carte verticalement
+[bases]
+bases
+[bases per colony]
+Bases par colonie ; une base est une équipe de la carte telle que dessinée, avec ses bâtiments et ses unités
 [Match]
 
 [Time limit]
@@ -4639,4 +4741,16 @@ Rebond des listes
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

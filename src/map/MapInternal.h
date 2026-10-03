@@ -24,7 +24,7 @@ inline void fill(std::vector<T>& vec, const T& value) {
 	std::fill(vec.begin(), vec.end(), value);
 }
 
-#include "gradient/GradientConstants.h"
+#include "field/GradientConstants.h"
 
 // Guard-area balancing (the "guard-area-balancing" experiment). A painted guard
 // tile is seeded GUARD_CROWD_COST_PER_WARRIOR below the goal for each of the

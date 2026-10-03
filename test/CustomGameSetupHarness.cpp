@@ -23,6 +23,8 @@
 #include "Engine.h"
 #include "FrontendTheme.h"
 #include "EngineFixtures.h"
+#include "TeamStat.h"
+#include <SDL3_image/SDL_image.h>
 #include <cmath>
 #include <cstdlib>
 #include "GlobalContainer.h"
@@ -67,6 +69,27 @@ struct CountingAI : AIImplementation {
 // Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
+    static void probabilityVisual()
+    {
+        glob2test::HeadlessGame world({.teams = Team::MAX_COUNT, .header = true});
+        for (int t = 0; t < Team::MAX_COUNT; ++t)
+        {
+            world.game.players[t]->name = "Long colony name " + std::to_string(t + 1);
+            world.game.teams[t]->stats.getLatestStat()->totalUnit = 10 + t;
+        }
+        Scene scene;
+        world.gui.extractScene(scene);
+        world.gui.setPublishedScene(&scene);
+        world.gui.measurementPage = 3;
+        globalContainer->liveSpectating = true;
+        globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
+        world.gui.drawStatisticsPage(195);
+        const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";
+        REQUIRE(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), path.string().c_str()));
+        globalContainer->liveSpectating = false;
+        world.gui.setPublishedScene(nullptr);
+    }
+
     static void controllerHelp()
     {
         GAGGUI::ScreenStack stack(*globalContainer->gfx);
@@ -107,6 +130,7 @@ struct CustomGameSetupHarness
 		s.glassCannonLevel = s.buildingHpLevel = 2;
 		s.startingUnitLevel = 3;
 		s.suddenDeathMinutes = 90;
+		s.winProbabilityPermille = 970;
 	}
 	static void checkExtraRules(const CustomGameSetup &s)
 	{
@@ -115,6 +139,7 @@ struct CustomGameSetupHarness
 		REQUIRE((s.unitUpgradesDisabled && s.unitsFearless && s.permadeathDisabled && s.peacefulMode));
 		REQUIRE((s.glassCannonLevel == 2 && s.buildingHpLevel == 2));
 		REQUIRE((s.startingUnitLevel == 3 && s.suddenDeathMinutes == 90));
+		REQUIRE(s.winProbabilityPermille == 970);
 	}
 	static void preferencesModel()
 	{
@@ -139,7 +164,8 @@ struct CustomGameSetupHarness
 		setExtraRules(original.setup);
 		original.setup.colonies[11].controller = CustomGameSetup::Closed;
 		REQUIRE(original.setup.setController(3, CustomGameSetup::Shared));
-		original.setup.colonies[3].ai = AI::CORTEX;
+		original.setup.colonies[3].ai = AI::JAVASCRIPT;
+		original.setup.colonies[3].aiLibraryId = "91";
 		original.setup.colonies[11].alliance = 7;
 		original.setup.colonies[11].ai = AI::NICOWAR;
 		CustomGamePreferences restored;
@@ -148,46 +174,80 @@ struct CustomGameSetupHarness
 		checkExtraRules(restored.setup);
 		REQUIRE(restored.setup.mapRevision == 0);
 		REQUIRE(restored.landscapeSortOrder == 1);
-		// All three older formats still load; omitted rules take their normal defaults.
-		for (int version : {1, 2, 3})
+		// Format 5 retains custom AI identities but predates probability victory.
 		{
 			auto old = encoded;
-			auto removeLine = [&](const std::string &prefix) {
+			old.replace(0, std::string("glob2-custom-game 6").size(), "glob2-custom-game 5");
+			const auto at = old.find("probability ");
+			REQUIRE(at != std::string::npos);
+			old.erase(at, old.find('\n', at) - at + 1);
+			CustomGamePreferences fromOld;
+			REQUIRE(fromOld.decode(old));
+			REQUIRE(fromOld.setup.winProbabilityPermille == 0);
+			REQUIRE(fromOld.setup.colonies[3].aiLibraryId == "91");
+		}
+		// Older formats omit library identities; their rules retain their defaults.
+		for (int version : {1, 2, 3, 4})
+		{
+			auto old = encoded;
+			auto removeLine = [&](const std::string &prefix)
+			{
 				const auto at = old.find("\n" + prefix), eol = old.find('\n', at + 1);
 				REQUIRE((at != std::string::npos && eol != std::string::npos));
 				old.erase(at, eol - at);
 			};
-			if (version < 3) removeLine("rules ");
-			if (version == 1) removeLine("picker ");
-			old.replace(0, std::string("glob2-custom-game 5").size(),
-				"glob2-custom-game " + std::to_string(version));
+			removeLine("probability ");
+			if (version < 3)
+				removeLine("rules ");
+			if (version == 1)
+				removeLine("picker ");
+			old.replace(0, std::string("glob2-custom-game 6").size(),
+						"glob2-custom-game " + std::to_string(version));
 			// Reproduce the old twelve-record wire layout, including its draft capacity.
 			const auto coloniesAt = old.find("colonies 16\n");
 			REQUIRE(coloniesAt != std::string::npos);
-			old.replace(coloniesAt, std::string("colonies 16").size(), "colonies");
-			size_t recordsEnd = old.find('\n', coloniesAt) + 1;
-			for (int i = 0; i < 12; ++i) recordsEnd = old.find('\n', recordsEnd) + 1;
-			old.erase(recordsEnd, old.find("end\n", recordsEnd) - recordsEnd);
-			REQUIRE(old.find("setup 1 16") != std::string::npos);
-			old.replace(old.find("setup 1 16"), 10, "setup 1 12");
-			REQUIRE(old.find("nbTeams 16") != std::string::npos);
-			old.replace(old.find("nbTeams 16"), 10, "nbTeams 12");
+			// Formats 1–4 have exactly three numeric columns per colony.
+			size_t rowStart = old.find('\n', coloniesAt) + 1;
+			for (int i = 0; i < Team::MAX_COUNT; ++i)
+			{
+				auto rowEnd = old.find('\n', rowStart);
+				auto suffix = old.find(" \"", rowStart);
+				REQUIRE(suffix < rowEnd);
+				old.erase(suffix, rowEnd - suffix);
+				rowStart = suffix + 1;
+			}
+			if (version < 4)
+			{
+				old.replace(coloniesAt, std::string("colonies 16").size(), "colonies");
+				size_t recordsEnd = old.find('\n', coloniesAt) + 1;
+				for (int i = 0; i < 12; ++i)
+					recordsEnd = old.find('\n', recordsEnd) + 1;
+				old.erase(recordsEnd, old.find("end\n", recordsEnd) - recordsEnd);
+				REQUIRE(old.find("setup 1 16") != std::string::npos);
+				old.replace(old.find("setup 1 16"), 10, "setup 1 12");
+				REQUIRE(old.find("nbTeams 16") != std::string::npos);
+				old.replace(old.find("nbTeams 16"), 10, "nbTeams 12");
+			}
 			CustomGamePreferences fromOld;
 			REQUIRE((fromOld.decode(old) && fromOld.landscapeSortOrder == (version == 1 ? 0 : 1)));
+			REQUIRE(fromOld.setup.winProbabilityPermille == 0);
 			REQUIRE(fromOld.setup.premadeMap == original.setup.premadeMap);
-			REQUIRE((fromOld.setup.unitUpgradesDisabled == (version >= 3) && fromOld.setup.noHunger == (version >= 3)));
-			REQUIRE((fromOld.setup.startingUnitLevel == (version >= 3 ? 3 : 0) && fromOld.setup.suddenDeathMinutes == (version >= 3 ? 90 : 0)));
+			REQUIRE(fromOld.setup.colonies[3].aiLibraryId.empty());
+			REQUIRE((fromOld.setup.unitUpgradesDisabled == (version >= 3) &&
+					 fromOld.setup.noHunger == (version >= 3)));
+			REQUIRE((fromOld.setup.startingUnitLevel == (version >= 3 ? 3 : 0) &&
+					 fromOld.setup.suddenDeathMinutes == (version >= 3 ? 90 : 0)));
 		}
-		// Version 4 stored the ruleset's English name, "Custom" once edited. Both load as the
-		// matching ruleset id, keeping the saved rule values; an id this build lacks loads as
+		// Formats before 7 stored the ruleset's English name, "Custom" once edited. Both load as
+		// the matching ruleset id, keeping the saved rule values; an id this build lacks loads as
 		// Standard instead of rejecting the draft.
 		REQUIRE(restored.setup.rulesetId == "quick-clash");
 		for (const auto &[version, label, id] : std::vector<std::tuple<std::string, std::string, std::string>>{
-				 {"4", "Quick clash", "quick-clash"}, {"4", "Last colony standing", "last-colony-standing"},
-				 {"4", "Custom", "standard"}, {"5", "blitz", "blitz"}, {"5", "no-such-ruleset", "standard"}})
+				 {"6", "Quick clash", "quick-clash"}, {"6", "Last colony standing", "last-colony-standing"},
+				 {"6", "Custom", "standard"}, {"7", "blitz", "blitz"}, {"7", "no-such-ruleset", "standard"}})
 		{
 			auto old = encoded;
-			old.replace(0, std::string("glob2-custom-game 5").size(), "glob2-custom-game " + version);
+			old.replace(0, std::string("glob2-custom-game 7").size(), "glob2-custom-game " + version);
 			const auto at = old.find("\"quick-clash\"");
 			REQUIRE(at != std::string::npos);
 			old.replace(at, std::string("\"quick-clash\"").size(), "\"" + label + "\"");
@@ -201,14 +261,19 @@ struct CustomGameSetupHarness
 			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-			{"glob2-custom-game 5", "glob2-custom-game 6"},
-			{"rules 1 3", "rules 2 3"}, {"rules 1 3", "rules 1 4"},
-			{"2 3 90\nlabels", "2 4 90\nlabels"},
-			{"2 3 90\nlabels", "2 3 31\nlabels"},
-			{"wDec 9", "wDec 31"}, {"nbWorkers 8", "nbWorkers -1"},
-			{"generator 4 5", "generator 0 5"}, {"generator 4 5", "generator 4 100"},
-			{"colonies 16\n1 1 0", "colonies 16\n99 1 0"},
-			{"colonies 16", "colonies 17"}, {"colonies 16", "colonies 0"}})
+				 {"glob2-custom-game 7", "glob2-custom-game 8"},
+				 {"rules 1 3", "rules 2 3"},
+				 {"rules 1 3", "rules 1 4"},
+				 {"2 3 90\nprobability", "2 4 90\nprobability"},
+				 {"2 3 90\nprobability", "2 3 31\nprobability"},
+				 {"probability 970", "probability 500"},
+				 {"wDec 9", "wDec 31"},
+				 {"nbWorkers 8", "nbWorkers -1"},
+				 {"generator 4 5", "generator 0 5"},
+				 {"generator 4 5", "generator 4 100"},
+				 {"colonies 16\n1 1 0", "colonies 16\n99 1 0"},
+				 {"colonies 16", "colonies 17"},
+				 {"colonies 16", "colonies 0"}})
 		{
 			auto corrupt = encoded;
 			auto at = corrupt.find(replacement.first);
@@ -1833,6 +1898,12 @@ struct CustomGameSetupHarness
 		capture("rules-all-changed-1000");
 		screen.selectRuleset("standard");
 		screen.setRulesView(0);
+		screen.setup.winProbabilityPermille = 970;
+		screen.invalidate();
+		paint();
+		REQUIRE(host.find("rule/winProbability"));
+		host.scrollIntoView("rule/winProbability");
+		capture("probability-rule");
 		scrollTo("lobby/rules", node("lobby/rules")->scrollMaximum());
 		capture("rules-scrolled");
 		std::cout << "PASS native rendering, snapshot reroll ownership, "
@@ -2227,6 +2298,12 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
+	TEST_CASE("custom AI library identities and released preferences round trip")
+	{
+		glob2test::HeadlessGlobals globals(setupOptions(false));
+		CustomGameSetupHarness::preferencesModel();
+	}
+
 	TEST_CASE("preferences; landscapes; AI catalogue; snapshot round trip; engine; reload and session replay [slow][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
@@ -2434,6 +2511,12 @@ TEST_SUITE("CustomGameSetup")
 		std::cout << output;
 		REQUIRE_MESSAGE(output.find("no such key") == std::string::npos, "a screen asked for a missing translation key");
 	}
+    TEST_CASE("probability statistics fit sixteen colonies [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals({.display = true, .loadStrings = true});
+        CustomGameSetupHarness::probabilityVisual();
+    }
+
 	TEST_CASE("AI profile captures [display][artifacts][writes-preferences]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(true));

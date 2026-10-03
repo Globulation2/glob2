@@ -1,3 +1,4 @@
+#include "field/UniformTraversal.h"
 #include "AIMaximaDefense.h"
 
 #include <algorithm>
@@ -54,7 +55,7 @@ void computeDistanceField(int width, int height,
 	distances.assign(size, Unreachable);
 	if(width<=0 || height<=0 || int(walkable.size())!=size)
 		return;
-	std::deque<int> queue;
+	field::Frontier queue;
 	for(std::vector<int>::const_iterator source=sources.begin();
 		source!=sources.end(); ++source)
 	{
@@ -64,26 +65,7 @@ void computeDistanceField(int width, int height,
 		distances[*source]=0;
 		queue.push_back(*source);
 	}
-	while(!queue.empty())
-	{
-		const int index=queue.front();
-		queue.pop_front();
-		const int x=index%width;
-		const int y=index/width;
-		for(int dy=-1; dy<=1; ++dy)
-			for(int dx=-1; dx<=1; ++dx)
-			{
-				if(dx==0 && dy==0)
-					continue;
-				const int neighbor=((y+dy+height)%height)*width
-					+((x+dx+width)%width);
-				if(walkable[neighbor] && distances[neighbor]==Unreachable)
-				{
-					distances[neighbor]=distances[index]+1;
-					queue.push_back(neighbor);
-				}
-			}
-	}
+	field::expandDistances(distances,queue,{width,height},field::Surrounding,Unreachable,[&](int next){return walkable[next]!=0;});
 }
 
 bool betterCandidate(const Candidate& left, const Candidate& right)
@@ -236,42 +218,31 @@ ModeResult analyzeMode(const ModeInput& input, const Policy& policy)
 		int delta=2*best.homeDistance
 			-(2*policy.innerDistance+policy.bandWidth);
 		best.bandOffset=delta<0 ? -delta : delta;
-		std::deque<int> component;
+		std::vector<int> component;
 		component.push_back(start);
 		visited[start]=1;
-		while(!component.empty())
-		{
-			const int index=component.front();
-			component.pop_front();
-			Candidate candidate;
-			candidate.mode=input.mode;
-			candidate.index=index;
-			candidate.memberships=result.memberships[index];
-			candidate.crossSection=result.minimumCrossSection[index];
-			candidate.terrainCrossSection=
-				result.minimumTerrainCrossSection[index];
-			candidate.homeDistance=result.homeDistance[index];
-			delta=2*candidate.homeDistance
-				-(2*policy.innerDistance+policy.bandWidth);
-			candidate.bandOffset=delta<0 ? -delta : delta;
-			if(betterCandidate(candidate, best))
-				best=candidate;
-			const int x=index%input.width;
-			const int y=index/input.width;
-			for(int dy=-1; dy<=1; ++dy)
-				for(int dx=-1; dx<=1; ++dx)
-				{
-					if(dx==0 && dy==0)
-						continue;
-					const int neighbor=((y+dy+input.height)%input.height)
-						*input.width+((x+dx+input.width)%input.width);
-					if(result.qualified[neighbor] && !visited[neighbor])
-					{
-						visited[neighbor]=1;
-						component.push_back(neighbor);
-					}
-				}
-		}
+		field::traverse(component,{input.width,input.height},field::Surrounding,
+			[&](int index) {
+				Candidate candidate;
+				candidate.mode=input.mode;
+				candidate.index=index;
+				candidate.memberships=result.memberships[index];
+				candidate.crossSection=result.minimumCrossSection[index];
+				candidate.terrainCrossSection=
+					result.minimumTerrainCrossSection[index];
+				candidate.homeDistance=result.homeDistance[index];
+				delta=2*candidate.homeDistance
+					-(2*policy.innerDistance+policy.bandWidth);
+				candidate.bandOffset=delta<0 ? -delta : delta;
+				if(betterCandidate(candidate, best))
+					best=candidate;
+
+				return field::Visit::Expand;
+			},[&](int,int x,int y) {
+				const int neighbor=((y+input.height)%input.height)*input.width+(x+input.width)%input.width;
+				if(result.qualified[neighbor] && !visited[neighbor])
+				{visited[neighbor]=1;component.push_back(neighbor);}
+			});
 		result.candidates.push_back(best);
 	}
 	std::sort(result.candidates.begin(), result.candidates.end(),
@@ -287,32 +258,18 @@ std::vector<int> buildFootprint(const ModeResult& mode, int center, int radius)
 	   || !mode.walkable[center])
 		return footprint;
 	std::vector<int> distance(size, Unreachable);
-	std::deque<int> queue;
+	std::vector<int> queue;
 	queue.push_back(center);
 	distance[center]=0;
-	while(!queue.empty())
-	{
-		const int index=queue.front();
-		queue.pop_front();
-		footprint.push_back(index);
-		if(distance[index]>=radius)
-			continue;
-		const int x=index%mode.width;
-		const int y=index/mode.width;
-		for(int dy=-1; dy<=1; ++dy)
-			for(int dx=-1; dx<=1; ++dx)
-			{
-				if(dx==0 && dy==0)
-					continue;
-				const int neighbor=((y+dy+mode.height)%mode.height)*mode.width
-					+((x+dx+mode.width)%mode.width);
-				if(mode.walkable[neighbor] && distance[neighbor]==Unreachable)
-				{
-					distance[neighbor]=distance[index]+1;
-					queue.push_back(neighbor);
-				}
-			}
-	}
+	field::traverse(queue,{mode.width,mode.height},field::Surrounding,
+		[&](int index) {
+			footprint.push_back(index);
+			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
+		},[&](int index,int x,int y) {
+			const int neighbor=((y+mode.height)%mode.height)*mode.width+(x+mode.width)%mode.width;
+			if(mode.walkable[neighbor] && distance[neighbor]==Unreachable)
+			{distance[neighbor]=distance[index]+1;queue.push_back(neighbor);}
+		});
 	std::sort(footprint.begin(), footprint.end());
 	return footprint;
 }

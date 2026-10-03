@@ -1,5 +1,11 @@
 [AI strategy]
 تكتيكات AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 يوازن النمو المستدام والتدريب، ثم يجمع الجيوش في موجات.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ caps lock
 ﺍﺧﺘﺮ ﺧﺎﺭﻃﺔ
 [clear area]
 ﻣﻨﻄﻘﺔ ﺗﺼﻔﻴﺔ
+[farm area]
+ﻣﻨﻄﻘﺔ ﻗﻤﺢ
 [Clearing:]
 ﻳﺼﻔﻲ:
 [clearingflag explanation 2]
@@ -462,8 +470,6 @@ ar
 ﻣﻔﺘﺎﺡ ﻭﻳﻨﺪﻭﺯ ﺍﻷﻳﺴﺮ
 [left]
 ﻳﺴﺎﺭ
-[Leo: nur ein erster Test]
-اختبار
 [level]
 ﺍﻟﻤﺴﺘﻮﻯ
 [levels]
@@ -746,6 +752,8 @@ scroll lock
 ﺍﺧﺘﺮ ﺍﻟﺴﻮﻕ
 [select place clearing area]
 ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﺍﻟﺘﺼﻔﻴﺔ
+[select place farm area]
+اختر وضع منطقة الزراعة
 [select place clearingflag]
 ﺍﺧﺘﺮ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
 [select place explorationflag]
@@ -3060,6 +3068,8 @@ Emoji
 حراسة
 [Clear]
 تنظيف
+[Farm]
+زراعة
 [Paint]
 رسم
 [Erase]
@@ -3230,6 +3240,10 @@ Emoji
 موازنة مناطق الحراسة
 [experiment guard-area-balancing help]
 يتوزع المحاربون الأحرار بين مناطق الحراسة المرسومة بدلاً من التوجه جميعاً إلى الأقرب: تحصل المنطقة الأكبر على عدد أكبر منهم، والمنطقة المكتظة تتناقص لصالح المناطق الأخرى.
+[experiment farm-areas]
+مناطق الزراعة
+[experiment farm-areas help]
+تضيف منطقة زراعة إلى فرش المناطق. العمال الذين يحصدون داخلها يأخذون من أنضج مربع في الحقل المتصل ويتركون حبة واحدة في كل مربع، فيعود الحقل للنمو بدل أن يؤكل من أطرافه. يُزال الخشب الذي ينمو داخل المزرعة.
 [settings Touch scrolling]
 التمرير باللمس
 [settings List momentum]
@@ -3319,6 +3333,10 @@ Emoji
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4534,6 +4552,102 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+إظهار مظاهر المستعمرات
+[settings Turn off to use classic units, swarms and building colors on this device.]
+عطّل هذا الخيار لاستخدام الوحدات والأسراب وألوان المباني الكلاسيكية على هذا الجهاز.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+كرر الخريطة أفقيًا
+[repeat map vertically]
+كرر الخريطة عموديًا
+[bases]
+قواعد
+[bases per colony]
+القواعد لكل مستعمرة؛ القاعدة فريق واحد من الخريطة كما رُسمت، بمبانيه ووحداته
 [Match]
 
 [Time limit]
@@ -4627,4 +4741,16 @@ Emoji
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

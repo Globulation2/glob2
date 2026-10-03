@@ -12,7 +12,10 @@ class Game;
 //! What the client wants drawn this frame: whose view, and what it has selected.
 struct SceneRequest
 {
+	bool includeScriptAreas = false;
+	bool includePanels = true;
 	int localTeam = 0;
+	bool spectating = false;
 	ClientRequests::ClientView view;
 	BuildingRef selectedBuilding;
 	UnitRef selectedUnit;

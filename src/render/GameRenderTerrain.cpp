@@ -381,61 +381,21 @@ void Game::drawMapTerritory(int left, int top, int right, int bot, int viewportX
 
 void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view)
 {
-	// Rendering never advances simulation state: these debug views show building
-	// gradients as far as the lazy searches have resolved them (unresolved cells
-	// keep their initial value) rather than finishing the searches here.
-	// We draw debug area:
-	if (DEBUG_RENDER_GRADIENTS)
-	{
-		assert(teams[0]);
-		Building *b=view.selectedBuilding;
-		if (b)
-			for (int y=top-1; y<=bot; y++)
-				for (int x=left-1; x<=right; x++)
-				{
-					//if (map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY)<16)
-					{
-						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.getGradient(0, 6, 1, x+viewportX, y+viewportY));
-						//globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, "%d", map.warpDistMax(b->posX, b->posY, x+viewportX, y+viewportY));
-						if(b->globalGradient[0])
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont, b->globalGradient[0][((x+viewportX)&map.getMaskW()) + ((y+viewportY)&map.getMaskH())*map.w]);
-						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX);
-						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY);
-						//globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, "%d", x+viewportX-b->posX+16);
-						//globalContainer->gfx->drawString((x<<5)+16, (y<<5)+16, globalContainer->littleFont, "%d", y+viewportY-b->posY+16);
-					}
-				}
-	}
-
-	// We draw debug area:
-	if (view.selectedBuilding && view.selectedBuilding->verbose)
-	{
-		Building *b=view.selectedBuilding;
-
-		int w=map.getW();
-		if (b)
-			for (int y=top-1; y<=bot; y++)
-				for (int x=left-1; x<=right; x++)
-				{
-					if (b->verbose==1 || b->verbose==2)
-					{
-						// verbose 1: the walkers' gradient; verbose 2: the first swimmers' gradient in use.
-						int swimClass=1;
-						while (b->verbose==2 && swimClass<SWIM_CLASS_COUNT-1 && !b->globalGradient[swimClass])
-							swimClass++;
-						const Uint16 *gradient=b->globalGradient[b->verbose==1 ? 0 : swimClass];
-						if (gradient)
-							globalContainer->gfx->drawString((x<<5), (y<<5), globalContainer->littleFont,
-								gradient[((x+viewportX)&(map.getMaskW()))+((y+viewportY)&(map.getMaskH()))*w]);
-					}
-
-					globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 192, 192, 192));
-					globalContainer->gfx->drawString((x<<5), (y<<5)+16, globalContainer->littleFont, (x+viewportX+map.getW())&(map.getMaskW()));
-					globalContainer->gfx->drawString((x<<5)+16, (y<<5)+8, globalContainer->littleFont, (y+viewportY+map.getH())&(map.getMaskH()));
-					globalContainer->littleFont->popStyle();
-				}
-
-	}
+	const Scene& scene = view.drawnScene();
+	const SceneMap& map = scene.map;
+	const auto& selected = scene.entities.selectedBuilding;
+	if (!selected.verbose) return;
+	for (int y=top-1; y<=bot; ++y)
+		for (int x=left-1; x<=right; ++x)
+		{
+			if (!selected.debugGradient.empty())
+				globalContainer->gfx->drawString(x*32, y*32, globalContainer->littleFont,
+					selected.debugGradient[map.coordToIndex(x+viewportX, y+viewportY)]);
+			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 192, 192, 192));
+			globalContainer->gfx->drawString(x*32, y*32+16, globalContainer->littleFont, (x+viewportX)&map.getMaskW());
+			globalContainer->gfx->drawString(x*32+16, y*32+8, globalContainer->littleFont, (y+viewportY)&map.getMaskH());
+			globalContainer->littleFont->popStyle();
+		}
 }
 
 /**
@@ -451,6 +411,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render);
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render);
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea, view.render);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isFarmAreaInDisplayedView, areaAnimationTick, FarmArea, view.render);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -493,6 +454,7 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		case ClearingArea: sprite = globalContainer->areaClearing; c = GAGCore::Color(255,255,0); break;
 		case ForbiddenArea: sprite = globalContainer->areaForbidden; c = GAGCore::Color(255,0,0); break;
 		case GuardArea: sprite = globalContainer->areaGuard; c = GAGCore::Color(0,0,255); break;
+		case FarmArea: sprite = globalContainer->areaFarm; c = GAGCore::Color(110,240,120); break;
 		default: assert(false);
 	}
 	// Zoomed out, the pattern is noise and a one-pixel outline is most of a
@@ -543,7 +505,7 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 	globalContainer->gfx->finishDrawingSprite(sprite, patternAlpha);
 }
 
-void Game::drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY)
+void Game::drawMapScriptAreas(int left, int top, int right, int bot, int viewportX, int viewportY, const SceneMap& map)
 {
 	for (int y=top; y<bot; y++)
 		for (int x=left; x<right; x++)

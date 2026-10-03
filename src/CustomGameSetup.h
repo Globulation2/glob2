@@ -30,6 +30,7 @@ struct CustomGameSetup
 	{
 		Controller controller = Computer;
 		AI::ImplementationID ai = AI::NUMBI;
+		std::string aiLibraryId;
 		int alliance = 0;
 	};
 	std::array<Colony, Team::MAX_COUNT> colonies;
@@ -50,6 +51,12 @@ struct CustomGameSetup
 	// matches the first sole prestige leader appeared 13-28 minutes in.
 	static constexpr std::array<int, 5> suddenDeathMinuteChoices = {0, 30, 45, 60, 90};
 	int suddenDeathMinutes = 0;
+	// Confidence at which the fitted win probability model ends the game (0 = off,
+	// the default -- a normal game plays exactly as before). Measured on the AI
+	// tournament, 970 called the eventual winner in over 99% of the games it
+	// ended; 950 ends more of them and is wrong rather more often.
+	static constexpr std::array<int, 4> winProbabilityChoices = {0, 950, 970, 990};
+	int winProbabilityPermille = 0;
 	std::string format = "FFA";
 	// The ruleset the rules started from (data/rulesets.json). Edits do not change it: what
 	// differs from it is derived (rulesetDiff), so undoing an edit makes the ruleset whole again.
@@ -209,5 +216,9 @@ struct CustomGameSetup
 		if (suddenDeathMinutes != 0)
 			endStepTick = static_cast<Uint32>(suddenDeathMinutes) * 60 * GAME_TICKS_PER_SECOND;
 		WinningCondition::setSuddenDeathWinCondition(header.getWinningConditions(), endStepTick);
+		std::optional<Uint32> winProbabilityThreshold;
+		if (winProbabilityPermille != 0)
+			winProbabilityThreshold = static_cast<Uint32>(winProbabilityPermille);
+		WinningCondition::setWinProbabilityWinCondition(header.getWinningConditions(), winProbabilityThreshold);
 	}
 };

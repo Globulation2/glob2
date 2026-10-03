@@ -57,6 +57,7 @@ EXCLUDED_DIRECTORIES = ('data/icons/', 'data/screenshots/')
 # (package, path prefixes) in download order after `game`, which game_files()
 # selects. Files in no other package go to `core`.
 OPTIONAL = (
+    ('skins', ('data/skins/',)),
     ('font-cjk', ('data/fonts/sans.ttf',)),
     ('menu-music', ('data/zik/intro.ogg', 'data/zik/menu.ogg')),
     ('translations', ('data/texts.',)),
@@ -164,14 +165,16 @@ def game_sprites(root):
 
 def game_files(paths, sprites):
     """Frames of these sprites: data/gfx/<name><index>[r].png (or .webp in the runtime
-    export), as Sprite::load reads them."""
+    export), as Sprite::load reads them, or the export's <name>.sheet index and the
+    <name>-sheet-<n>.png sheets it names."""
     files = set()
     for path in paths:
         if not path.startswith('data/gfx/') or '/' in path[len('data/gfx/'):]:
             continue
         # Names may end in digits themselves: inn0b's frames are inn0b0.png, inn0b1.png.
         if any(path.startswith('data/gfx/' + name) and
-               re.fullmatch(r'\d+r?\.(?:png|webp)', path[len('data/gfx/' + name):]) for name in sprites):
+               re.fullmatch(r'(?:\d+r?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len('data/gfx/' + name):])
+               for name in sprites):
             files.add(path)
     return files
 

@@ -40,6 +40,17 @@ std::vector<Rule> makeRules()
 		 {"off", "30", "45", "60", "90"}, {"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"}, false, true, false, false,
 		 [](const S &s) { return minuteIndex(s.suddenDeathMinutes); },
 		 [](S &s, int v) { s.suddenDeathMinutes = S::suddenDeathMinuteChoices[std::size_t(v)]; }},
+		// Rooms do not carry it (MatchRules has no field for it yet), so the room editor hides it.
+		{"winProbability", Group::Match, Kind::Choice, "Probability victory",
+		 "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.",
+		 {"off", "95", "97", "99"}, {"Off (play it out)", "95% sure", "97% sure", "99% sure"}, false, false, true, false,
+		 [](const S &s)
+		 {
+			 const auto &choices = S::winProbabilityChoices;
+			 const auto found = std::find(choices.begin(), choices.end(), s.winProbabilityPermille);
+			 return found == choices.end() ? 0 : int(found - choices.begin());
+		 },
+		 [](S &s, int v) { s.winProbabilityPermille = S::winProbabilityChoices[std::size_t(v)]; }},
 		{"alliancesChange", Group::Match, Kind::Toggle, "Alliances can change", "Choose whether teams can change during the match.",
 		 {"off", "on"}, {"Locked teams", "Can change in game"}, false, true, false, false,
 		 [](const S &s) { return int(!s.locked); }, [](S &s, int v) { s.locked = !v; }},

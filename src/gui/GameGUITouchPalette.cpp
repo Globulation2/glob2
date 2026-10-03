@@ -31,7 +31,7 @@ std::vector<GameGUITouch::PaletteItem> GameGUITouch::paletteItems() const
 	for (size_t i = 0; i < names.size(); ++i)
 		items.push_back({names[i], enabled[i]});
 	if (flags)
-		for (int i = 0; i < 3; ++i)
+		for (int i = 0; i < gui.toolManager.zoneTypeCount(); ++i)
 			items.push_back({"zone:" + std::to_string(i), true});
 	return items;
 }
@@ -112,7 +112,8 @@ void GameGUITouch::drawBuildPalette()
 		{
 			const std::string zones[] = {Toolkit::getStringTable()->getString("[Forbid]"),
 										 Toolkit::getStringTable()->getString("[Guard]"),
-										 Toolkit::getStringTable()->getString("[Clear]")};
+										 Toolkit::getStringTable()->getString("[Clear]"),
+										 Toolkit::getStringTable()->getString("[Farm]")};
 			drawPointLabel(rect, zones[items[i].name.back() - '0'], .75);
 			continue;
 		}

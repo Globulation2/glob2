@@ -59,6 +59,12 @@ collects a bounded GDB backtrace before cleanup when available. To opt in when i
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
+Windows CI replays native engine access violations under GDB with a fresh profile
+and separate artifacts. Harnesses retain function names for backtraces; shipped
+programs keep their normal release stripping. Logs appear in
+`artifacts/tests/crash-diagnostics/`. Diagnostic replays are bounded to 180 seconds
+per case and never replace the original failed result.
+
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so
 `build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
@@ -344,6 +350,20 @@ To poke `cases[i].terrain` directly (`regenerateMap` is protected): grass < 16, 
 - Testing other Map behaviors (`doesUnitTouch*`, `doesPosTouch*`, `setClearingArea*`, `markImmobileUnit`, etc.).
 - Adding regression tests around any Map state mutator before refactoring it.
 - **Don't use** for behaviors that genuinely need real `Game` / `Team` / `Unit` / `Building` wiring (e.g. `doesUnitTouchEnemy` reaches into `game->teams[]->myBuildings[]`) — those need either a different stub set or a refactor to decouple first.
+
+## Map repetition regression
+
+```sh
+scons -j8 release=1 tests
+python3 test/run_tests.py --filter 'MapTiling/*'
+```
+
+The registered engine cases repeat a compressed source map, verify its buildings,
+units, seam-wrapped forbidden/guard/clearing areas and clearing flag settings, and
+write and reload an ordinary map in the profile's `generated/` directory. They
+also cover invalid repeat factors, scripted-map refusal, automatic player counts,
+equal shares and the editor-only 32-tile size. `UIPresentation` includes the
+advanced repetition dialog across desktop/touch viewports, safe insets and text sizes.
 
 ## Real LAN session regression
 
@@ -856,6 +876,12 @@ worker queues, immutable builds and offline statistical policies using stdlib fi
 `python3 test/test_map_fairness_tournament.py` retains the fairness estimator and repeat-selection regressions.
 `python3 test/test_map_generation_study.py` checks structured map-study result classification,
 timeouts, temporary-profile cleanup, catalog lookup and per-subject telemetry preservation.
+It also covers a persistent daemon hot-reloading `host.json` after a `configure` RPC
+(no restart required); `audit`/`reap` cross-host worker discovery and staleness
+flagging (dead daemon, or alive but idle past `--stale-hours`); and `ai_comparison`'s
+`sample_games` mode (a bounded random sample -- each game independently drawing its
+own format/matchup/generator/size via inline generation -- as an alternative to the
+exhaustive cross product, reusing the same Planner and analysis pipeline).
 `python3 test/test_fairness_model.py` checks the fitted [fairness model](../docs/map-generators/FAIRNESS_MODEL.md):
 that the fit recovers coefficients from a tournament simulated out of the model itself, that a
 measurement deciding nothing is fitted near zero, that the fairness definition reads the same at
@@ -886,6 +912,18 @@ inputs/preferences are unchanged. PNGs, command logs and hashes are retained in
 `--generation-only` subset compares serialized maps from config/CLI settings
 and checks invalid settings and preferences.
 See [map CLI documentation](../docs/map-generators/CLI.md).
+
+### Whole-game diagnostics
+
+`python3 test/run_tests.py --filter 'GameDiagnostics/*'` covers release-active
+field parsing, full unsigned food values, capture cadence, shared-team controllers, bounded Scene export,
+repeated graphics lifetimes, checked output failures, and software/portable/GL
+state restoration. Display cases run through the registry's isolated processes.
+`python3 test/test_game_diagnostics.py [client-binary]` exercises the production CLI,
+retaining commands, PNGs, saves and per-tick checksums under `artifacts/map-cli/diagnostics/`.
+It compares disabled/fields/PNG/threaded runs, save continuation, malformed arguments,
+and output failures. The map CLI suite invokes it on
+native platforms; `--generation-only` continues to skip graphics exports.
 
 ### Flat map images
 
@@ -1148,6 +1186,15 @@ the default game's per-100-tick checksums with
 `glob2test::GameOptions::experiments`; `GameOptions::header` installs the
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../docs/features/guard-area-balancing.md).
+
+`FarmAreas` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'FarmAreas/*'`) covers the `farm-areas` experiment on the real `Map` and engine:
+the ripest-tile source, empty gaps, exhausted fields, the seed grain, wood and
+algae, another team's area, the original harvest off a farm, clearing targets,
+growth ignoring the mask, the brush refusing ground that cannot grow, the order
+being rejected and a painted mask being inert without the experiment, workers
+keeping every tile of a farmed field alive, and a save/load round trip. Design:
+[farm areas](../docs/features/farm-areas.md).
 
 ## JavaScript
 
@@ -1462,3 +1509,12 @@ the immutable copy and its lightweight in-memory representation; encoding includ
 final array/history packing, offset relocation and hashing. The benchmark flattens
 the finished output for section-independent measurement, so its process peak is
 not an isolated allocation bound for the production writer.
+
+## Gameplay recording
+
+The `GameplayRecording` unit suite checks lifecycle failures, output protection,
+and decoded callback audio bursts. `GameplayRecording.Integration` compares serial
+and threaded recordings against unrecorded per-tick baselines.
+Set `GLOB2_TEST_FFMPEG=ffmpeg` to also encode real video/audio and chapter fixtures.
+Run `python3 test/test_recording_tool.py` for manifest selection and extraction
+argument tests. See [gameplay recording](../docs/features/gameplay-recording.md).

@@ -23,7 +23,8 @@
         "unitLevel": "veteran",
         "stockpile": "150",
         "instantConstruction": true,
-        "timeLimit": "45"
+        "timeLimit": "45",
+        "winProbability": "97"
       }
     },
     {

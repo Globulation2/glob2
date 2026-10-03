@@ -116,6 +116,12 @@ static constexpr int FILE_FORMAT_VERSION_AI_TELEMETRY = 106;
 //! Sampled blockage, health-band and nearby natural growth diagnostics.
 static constexpr int FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS = 108;
 
+//! The optional win-probability win condition. No new GameHeader field: the
+//! condition serialises itself through the existing winning-condition list, so a
+//! save only carries the new tag when a player enabled the rule. Older saves load
+//! unchanged, and MINIMUM_VERSION_MINOR does not move.
+static constexpr int FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE = 131;
+
 // === Save-file section signatures (4-byte ASCII tags) ===
 // Embedded as four chars at the start of each save section so a corrupted
 // stream fails fast. NEVER change these values — old saves on disk depend
@@ -175,3 +181,10 @@ static constexpr int FILE_FORMAT_VERSION_COUNTED_TEAM_STATE = 127;
 
 //! Lossless packed arrays and histories; existing save readers remain supported.
 static constexpr int FILE_FORMAT_VERSION_COMPACT_STATE = 128;
+
+//! Custom AI profile 2, named telemetry and replay diagnostic trailers.
+static constexpr int FILE_FORMAT_VERSION_CUSTOM_AI = 129;
+
+//! Tile::farmArea joins the per-tile area masks in the map section (MapIO.cpp),
+//! for the farm-areas experiment. Older maps and saves load with no farm painted.
+static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 130;

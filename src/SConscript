@@ -106,19 +106,21 @@ if env.get('wss', True):
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp',
         local.Object('HttpFetchHarness.o', '#test/HttpFetchHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', http_test)
+    probe_file_manager = local.Object('OnlineProbeFileManager.o', '#test/OnlineProbeFileManager.cpp')
     platform_probe = local.Program('platform-client-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
         'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
-        'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + platform_trust_sources)
+        'online/SimVersion.cpp', 'online/Sha256.cpp',
+        'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+        local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + probe_file_manager + platform_trust_sources)
     local.Alias('transport-test', platform_probe)
     screens_probe = local.Program('online-screens-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
         'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
         'online/OnlineResources.cpp', 'online/QuickMatch.cpp', 'online/RelayProbe.cpp',
         'online/MapCatalog.cpp', 'online/SimVersion.cpp', 'online/Sha256.cpp',
-        'net/NetTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('OnlineScreensProbe.o', '#test/OnlineScreensProbe.cpp')] + platform_trust_sources)
+        'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
+        local.Object('OnlineScreensProbe.o', '#test/OnlineScreensProbe.cpp')] + probe_file_manager + platform_trust_sources)
     local.Alias('online-screens-probe', screens_probe)
 
 local.Default(p1)
@@ -141,3 +143,15 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
 gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
 gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
 local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
+
+# Original-derived skin comparison and full game render diagnostics.
+skin_preview = local.Program('skin-preview',
+    local.Object('SkinPreview.o', '#tools/skins/preview.cpp')
+    + ['../libgag/src/libgag.a', '../libusl/src/libusl.a'])
+local.Alias('skin-preview', skin_preview)
+# Diagnostic harness inspects view-owned appearance, as engine render tests do.
+skin_game_env = local.Clone()
+skin_game_env.Append(CXXFLAGS=['-fno-access-control'])
+local.Alias('skin-game-preview', local.Program('skin-game-preview',
+    [skin_game_env.Object('SkinGamePreview.o', '#tools/skins/game_preview.cpp')]
+    + client_objects + client_libs))

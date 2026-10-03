@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегија ВИ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Уравнотежује одржив раст и обуку, а затим окупља војске у таласе.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Caps Lock
 Избор мапе
 [clear area]
 Област чишћења
+[farm area]
+Област узгоја
 [Clearing:]
 Чишћење:
 [clearingflag explanation 2]
@@ -542,8 +550,6 @@ meta-%0
 Не
 [Number Of Buildings]
 Број зграда
-[number of players: %0]
-Број присутних играча: %0.
 [number of teams]
 Број тимова
 [Number Of Units]
@@ -642,8 +648,6 @@ Print Screen
 Домет
 [ratios]
 Односи
-[Register a new YOG user with password]
-Пријави новог корисника на YOG са лозинком. (није шифровано)
 [remember unit]
 Памти број јединица
 [remove map]
@@ -746,6 +750,8 @@ Scroll Lock
 Изабери зграду: Пијаца
 [select place clearing area]
 Постави област: Област чишћења
+[select place farm area]
+Постави област: Област узгоја
 [select place clearingflag]
 Постави заставу чишћења
 [select place explorationflag]
@@ -3062,6 +3068,8 @@ Emoji
 Чувај
 [Clear]
 Очисти
+[Farm]
+Њива
 [Paint]
 Цртај
 [Erase]
@@ -3232,6 +3240,10 @@ Emoji
 Уравнотежење зона страже
 [experiment guard-area-balancing help]
 Слободни ратници се распоређују између обележених зона страже уместо да сви иду у најближу: већа зона добија више ратника, а препуна зона се постепено празни у остале.
+[experiment farm-areas]
+Области узгоја
+[experiment farm-areas help]
+Додаје област узгоја четкицама зона. Радници који жању у њој узимају са најзрелијег поља повезане њиве и на сваком пољу остављају по једно зрно, па њива поново расте уместо да буде поједена од ивице. Дрво које урасте у област се сече.
 [settings Touch scrolling]
 Померање додиром
 [settings List momentum]
@@ -3321,6 +3333,10 @@ Emoji
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4536,6 +4552,102 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+Прикажи изгледе колонија
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Искључите да бисте на овом уређају користили класичне јединице, ројеве и боје зграда.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Понови мапу водоравно
+[repeat map vertically]
+Понови мапу усправно
+[bases]
+базе
+[bases per colony]
+Базе по колонији; база је једна екипа мапе онако како је нацртана, са својим зградама и јединицама
 [Match]
 
 [Time limit]
@@ -4629,4 +4741,16 @@ Emoji
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

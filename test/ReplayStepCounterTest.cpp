@@ -78,9 +78,19 @@ void testWideRoundTrip()
 		for (Uint32 i = 0; i < QUIET_STEPS; i++)
 			writer.advanceStep();
 		writer.pushOrder(std::shared_ptr<Order>(new StepTestOrder()));
+        unsigned observed=0;
+        writer.setSaveObserver([&](const std::string &saved) {
+            CHECK(saved==path);
+            CHECK(std::filesystem::file_size(saved)>0);
+            ++observed;
+            throw std::runtime_error("optional metadata cannot stop recording");
+        });
 		writer.finish();
-		// ~ReplayWriter appends a second terminator; the reader stops at the
-		// first NullOrder, so it is harmless.
+        CHECK(observed==1);
+        writer.finish();
+        CHECK(observed==1);
+        writer.setSaveObserver({});
+		// finish is idempotent, including destruction after an explicit finish.
 	}
 
 	FILE* fp = std::fopen(path.c_str(), "r");
@@ -137,6 +147,8 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uin
 		writeOrderEnvelope(&ostream, order);
 		ostream.writeUint32(finalCounter, "replayStepsSinceLastOrder");
 		writeOrderEnvelope(&ostream, std::shared_ptr<Order>(new NullOrder()));
+		if (versionMinor >= FILE_FORMAT_VERSION_CUSTOM_AI)
+			ReplayTelemetry::Stream().write(&ostream);
 		readBackend = new MemoryStreamBackend(*writeBackend);
 	}
 	// ostream's destructor freed writeBackend; readBackend owns its own copy.

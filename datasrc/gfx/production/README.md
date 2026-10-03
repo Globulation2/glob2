@@ -1,7 +1,8 @@
 # Original-source production inputs
 
 `original-derived/` contains approved original exports and the 4× unit renders; `pack-metadata/` contains
-frame layout and source hashes. No AI assets are included. Package with
+frame layout and source hashes. No AI assets are included; the hand-authored vector frames in `authored/`
+are rendered from SVG sources in `datasrc/gfx/authored`. Package with
 `python3 tools/artwork/package_runtime.py`; unlisted frames use classic artwork.
 
 Native unit sprites remain in `data/gfx`; their Blender sources remain in

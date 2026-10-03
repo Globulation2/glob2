@@ -12,6 +12,7 @@
 #include <GraphicContext.h>
 #include <emscripten.h>
 #include <stdexcept>
+#include <algorithm>
 
 namespace GAGCore::ApplicationHost
 {
@@ -36,8 +37,26 @@ struct Diagnostics {
     std::map<std::uintptr_t, std::string> controls;
 };
 thread_local Diagnostics diagnostics;
-void publishDiagnostics() {
+// DOM-owned state crosses to the application worker once per host turn. Shared
+// UI queries below consume this snapshot instead of making separate proxies.
+struct HostState {
+    bool active = false;
+    // Keep this packed-double layout in sync with sampleHostState's JS writes.
+    enum Slot { FrameGate, RestorePending, Visibility, Width, Height, Presentation,
+                Count = Presentation + 10 };
+    double values[Count]{};
+};
+thread_local HostState hostState;
+void publishDiagnostics(bool hostTurn = false) {
     auto &d = diagnostics;
+    static const bool checkErrors = std::getenv("GLOB2_WEBGL_ERRORS") != nullptr;
+    int dimensions[3]{};
+    EM_ASM({
+        if (typeof GLctx === 'undefined' || !GLctx || GLctx.isContextLost()) return;
+        HEAP32[$0 >> 2] = GLctx.drawingBufferWidth;
+        HEAP32[($0 >> 2) + 1] = GLctx.drawingBufferHeight;
+        HEAP32[($0 >> 2) + 2] = $1 ? GLctx.getError() : -1;
+    }, dimensions, checkErrors);
     // One publication at a frame boundary; strings are consumed synchronously.
     MAIN_THREAD_EM_ASM({
         const screen = UTF8ToString($0); const imported = UTF8ToString($1);
@@ -51,8 +70,15 @@ void publishDiagnostics() {
         if ($6 >= 0) Module.glob2Torus = !!$6;
         if ($7 >= 0) Module.glob2RoomCanStart = !!$7;
         if ($8 >= 0) Module.glob2CustomGameReady = !!$8;
+        if ($10) Module.glob2Loop = (Module.glob2Loop || 0) + 1;
+        if ($11) {
+            const previous = Module.glob2RenderContext;
+            Module.glob2RenderContext = ({width:$11, height:$12,
+                error:$13 < 0 ? null : ($13 || previous?.error || 0)});
+        }
     }, d.screen.c_str(), d.import.c_str(), d.hasTick, d.tick, d.frames,
-       d.paused, d.torus, d.room, d.custom, d.screenClass.c_str());
+       d.paused, d.torus, d.room, d.custom, d.screenClass.c_str(), hostTurn,
+       dimensions[0], dimensions[1], dimensions[2]);
     for (const auto &[owner, json] : d.controls) {
         MAIN_THREAD_EM_ASM({
             Module.glob2Controls ||= new Map();
@@ -62,25 +88,48 @@ void publishDiagnostics() {
         }, owner, json.c_str());
     }
     d = {};
-    // Context ownership can differ from DOM ownership in the threaded runtime.
-    int dimensions[3]{};
-    EM_ASM({
-        if (typeof GLctx === 'undefined' || !GLctx || GLctx.isContextLost()) return;
-        HEAP32[$0 >> 2] = GLctx.drawingBufferWidth;
-        HEAP32[($0 >> 2) + 1] = GLctx.drawingBufferHeight;
-        HEAP32[($0 >> 2) + 2] = GLctx.getError();
-    }, dimensions);
-    if (dimensions[0]) MAIN_THREAD_EM_ASM({
-        const previous = Module.glob2RenderContext;
-        Module.glob2RenderContext = ({width:$0, height:$1, error:$2 || previous?.error || 0});
-    }, dimensions[0], dimensions[1], dimensions[2]);
 }
+// Capture DOM-owned state once; consumers use it only during this host frame.
+void sampleHostState()
+{
+    // Tests may hold a host turn without assuming its timer's JavaScript realm.
+    auto &host = hostState;
+    MAIN_THREAD_EM_ASM({
+        const offset = $0 >> 3;
+        HEAPF64.fill(0, offset, offset + $2);
+        HEAPF64[offset] = Module.glob2FrameGate?.() === false ? 1 : 0;
+        if (HEAPF64[offset]) return;
+        HEAPF64[offset + 1] = +!!Module.gpuRestorePending;
+        const lost = $1 || (typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost());
+        if (lost) Module.gpuLost = true;
+        const hidden = !!(document.hidden || Module.gpuLost);
+        HEAPF64[offset + 2] = Module.visibilityPending || Module.hostHidden !== hidden ? +hidden : -1;
+        Module.visibilityPending = false;
+        Module.hostHidden = hidden;
+        const size = Module.pendingViewport;
+        // A hidden application returns before consuming viewport changes.
+        // Retain them until its first visible turn.
+        if (!hidden && size && size.width > 0 && size.height > 0) {
+            HEAPF64[offset + 3] = size.width;
+            HEAPF64[offset + 4] = size.height;
+            Module.pendingViewport = null;
+        }
+        const v = Module.presentationMetrics;
+        if (v) HEAPF64.set([v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
+            v.keyboardInset,+v.touch,+v.pointer,+v.hover], offset + 5);
+    }, host.values, EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }), HostState::Count);
+}
+struct HostFrameScope {
+    HostFrameScope() { hostState.active = true; }
+    ~HostFrameScope() { hostState.active = false; }
+};
 struct ScheduledLoop { std::unique_ptr<Loop> loop; std::function<void()> complete; };
 void scheduledFrame(void* opaque)
 {
     auto* state = static_cast<ScheduledLoop*>(opaque);
-    // Tests may hold a host turn without assuming its timer's JavaScript realm.
-    if (MAIN_THREAD_EM_ASM_INT({ return Module.glob2FrameGate?.() === false ? 1 : 0; })) {
+    sampleHostState();
+    auto &host = hostState;
+    if (host.values[HostState::FrameGate]) {
         emscripten_async_call(scheduledFrame, state, 10);
         return;
     }
@@ -93,7 +142,7 @@ void scheduledFrame(void* opaque)
         GLctx.canvas.addEventListener('webglcontextrestored', () => { Module.gpuRestorePending = true; });
     });
     if (EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; }) ||
-        MAIN_THREAD_EM_ASM_INT({ return Module.gpuRestorePending ? 1 : 0; })) {
+        host.values[HostState::RestorePending]) {
         // SDK-pinned compatibility state owns shaders and streaming buffers.
         // Recreate it before asking the shared renderer to restore textures.
         EM_ASM({
@@ -120,21 +169,23 @@ void scheduledFrame(void* opaque)
         MAIN_THREAD_EM_ASM({
             Module.gpuRestorePending = false;
             Module.gpuLost = false;
-            Module.visibilityPending = true;
+            // Restoration does not make a background tab visible. Keep its
+            // simulation suspended, and its viewport request pending.
+            Module.hostHidden = !!document.hidden;
+            Module.visibilityPending = false;
+            HEAPF64[$0 >> 3] = +Module.hostHidden;
             Module.gpuRestores = (Module.gpuRestores || 0) + 1;
-        });
+        }, host.values + HostState::Visibility);
     }
     bool running;
     {
         GAGCore::EventQueue events;
         SDL_Event event;
         while (SDL_PollEvent(&event)) events.push_back(event);
+        const HostFrameScope scope;
         running = state->loop->frame(SDL_GetTicks(), events.events());
     }
-    publishDiagnostics();
-    // Diagnostics: one increment per processed host frame, so tests can wait
-    // for queued input to be consumed.
-    MAIN_THREAD_EM_ASM({ Module.glob2Loop = (Module.glob2Loop || 0) + 1; });
+    publishDiagnostics(true);
     if (!running) {
         state->loop.reset();
         {
@@ -147,7 +198,8 @@ void scheduledFrame(void* opaque)
     }
     // Each callback completes before the next frame is scheduled. Browser UI
     // transitions and loading jobs must return control to this host.
-    emscripten_async_call(scheduledFrame, state, state->loop->delay(SDL_GetTicks()));
+    const auto delay = state->loop->delay(SDL_GetTicks());
+    emscripten_async_call(scheduledFrame, state, delay == AnimationFrameDelay ? -1 : int(delay));
 }
 }
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
@@ -163,6 +215,13 @@ void wait(std::uint32_t)
 }
 bool takeVisibilityChange(bool& hidden)
 {
+    if (hostState.active) {
+        const int state = int(hostState.values[HostState::Visibility]);
+        hostState.values[HostState::Visibility] = -1;
+        if (state < 0) return false;
+        hidden = state != 0;
+        return true;
+    }
     if (EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }))
         MAIN_THREAD_EM_ASM({ Module.gpuLost = true; });
     const int state = MAIN_THREAD_EM_ASM_INT({
@@ -185,13 +244,16 @@ bool takeVisibilityChange(bool& hidden)
 bool presentationMetrics(ViewportMetrics& metrics,InputCapabilities& input)
 {
     double values[10]{};
-    MAIN_THREAD_EM_ASM({
-        const v=Module.presentationMetrics;
-        if (!v) return;
-        const values=Array.of(v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
-            v.keyboardInset,+v.touch,+v.pointer,+v.hover);
-        for (let i=0;i<values.length;++i) HEAPF64[($0>>3)+i]=values[i];
-    },values);
+    if (hostState.active) std::copy_n(hostState.values + HostState::Presentation, 10, values);
+    else {
+        MAIN_THREAD_EM_ASM({
+            const v=Module.presentationMetrics;
+            if (!v) return;
+            const values=Array.of(v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
+                v.keyboardInset,+v.touch,+v.pointer,+v.hover);
+            for (let i=0;i<values.length;++i) HEAPF64[($0>>3)+i]=values[i];
+        },values);
+    }
     if (values[0]>0 && values[1]>0) {
         metrics.width=values[0];metrics.height=values[1];
         metrics.safe={values[2],values[3],values[4],values[5]};metrics.keyboardInset=values[6];
@@ -243,6 +305,12 @@ bool copyText(const std::string& text)
 }
 bool takeViewportSize(int& width, int& height)
 {
+    if (hostState.active) {
+        if (hostState.values[HostState::Width] <= 0 || hostState.values[HostState::Height] <= 0) return false;
+        width = int(hostState.values[HostState::Width]); height = int(hostState.values[HostState::Height]);
+        hostState.values[HostState::Width] = hostState.values[HostState::Height] = 0;
+        return true;
+    }
     return MAIN_THREAD_EM_ASM_INT({
         const size = Module.pendingViewport;
         Module.pendingViewport = null;
@@ -308,6 +376,14 @@ bool assetPackageReady(const char* name)
         const name = UTF8ToString($0);
         if (!assets || !assets.manifest.packages.some(entry => entry.name === name)) return 1;
         return assets.states[name] === 'ready' ? 1 : 0;
+    }, name);
+}
+void requestAssetPackage(const char* name)
+{
+    MAIN_THREAD_EM_ASM({
+        const assets = Module.glob2Assets;
+        const name = UTF8ToString($0);
+        if (assets?.manifest.packages.some(entry => entry.name === name)) assets.request(name);
     }, name);
 }
 std::vector<std::string> takeInstalledAssetPackages()
@@ -432,3 +508,5 @@ void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const
 }
 bool hasBrowserTextInput(const void* owner) { return browserTextCallbacks.count(owner)>0; }
 }
+
+#include "SkinSignature.h"

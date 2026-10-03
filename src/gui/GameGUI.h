@@ -3,6 +3,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+namespace Online { class SkinDownloads; }
 #include <MapCamera.h>
 
 #include <InputState.h>
@@ -65,6 +66,7 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
+namespace Hive { class Client; class Dialog; }
 class GameGUITouch;
 class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
@@ -242,6 +244,8 @@ public:
 	Game game;
 	/// Live network games always use normal speed; replays remain adjustable.
 	bool canChangeGameSpeed() const;
+	void setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads);
+    void swapColonyAppearance(MapRenderState &state);
 	/// Chevrons the HUD speed control lights for the current speed.
 	int litSpeedChevrons() const;
 	/// Step the HUD speed control: forwards to the next chevron (the last wraps
@@ -256,6 +260,7 @@ public:
 	int topBarSpeedX() const;
 	/// The scene this frame draws: the simulation's published scene when the
 	/// simulation runs on its own thread, else the one drawAll extracted.
+	Game *replayTelemetryGame();
 	const Scene& drawnScene() const { return publishedScene ? *publishedScene : frameScene; }
 	/// Draw scenes published by the simulation thread (null: extract in drawAll).
 	void setPublishedScene(const Scene* scene) { publishedScene = scene; }
@@ -293,6 +298,12 @@ public:
 	std::string toLoadGameFileName;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer = 0, localTeamNo = 0;
+	std::shared_ptr<Hive::Client> hive;
+	void updateCommander(bool caughtUp);
+	void openCommander();
+	std::unique_ptr<Hive::Dialog> hiveCards;
+	bool typingCommander = false;
+	bool enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &orders, const std::function<bool()> &commit);
 	int viewportX, viewportY;
 	MapCamera camera;
 	bool zoomControlPushed=false;
@@ -670,6 +681,9 @@ private:
 	TeamStats *teamStats;
 	int measurementPage = 0;
 	void drawStatisticsPage(int y);
+	//! Each side's chance of winning, under the statistics. Drawn for live
+	//! spectators, independently of the game's winning conditions.
+	void drawWinProbabilities(int x, int y);
 	Team *localTeam;
 
 	Uint32 chatMask;
@@ -689,7 +703,7 @@ private:
 	// menu related functions
 	enum InGameMenu
 	{
-		IGM_NONE=0,
+		IGM_NONE = 0,
 		IGM_MAIN,
 		IGM_LOAD,
 		IGM_SAVE,
@@ -697,7 +711,9 @@ private:
 		IGM_ALLIANCE,
 		IGM_OBJECTIVES,
 		IGM_END_OF_GAME,
-		IGM_CONFIRM_LEAVE
+		IGM_HIVE,
+		IGM_CONFIRM_LEAVE,
+		IGM_TELEMETRY
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;

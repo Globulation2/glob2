@@ -1,5 +1,11 @@
 [AI strategy]
 AAren taktika
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Hazkunde iraunkorra eta entrenamendua orekatzen ditu, eta gero armadak olatuetan biltzen ditu.
 [AIMaxima-Profile]
@@ -168,12 +174,6 @@ Ezin da partida sortu: %0 ataka erabileran dago
 Ezin da sartu: partida hasi da
 [Can't join game, game is full]
 Ezin da sartu: partida beteta dago
-[Can't join game, missmatching game parameters]
-Ezin da partidarekin bat egin, parametroak ez datoz bat
-[Can't join game, timeout]
-Ezin da partidarekin bat egin, denbora muga gainditu da
-[Can't join game, wrong game version]
-Ezin da partidarekin bat egin, bertsio desegokia
 [cancel destroy]
 Ezeztatu suntsipena
 [cancel repair]
@@ -198,6 +198,8 @@ Aukeratu partida
 Aukeratu mapa
 [clear area]
 Garbiketa zonaldea
+[farm area]
+Labore zonaldea
 [Clearing:]
 Garbitu:
 [clearingflag explanation 2]
@@ -508,8 +510,6 @@ Maparen scripta
 Maparen zabalera
 [map size y]
 Maparen altuera
-[maps available]
-Mapa eskuragarriak
 [mark map]
 Markatu mapa aliatuentzat
 [market explanation 2]
@@ -550,8 +550,6 @@ Hazkunderik gabe
 Ez
 [Number Of Buildings]
 Eraikin kopurua
-[number of players: %0]
-%0 jokalari daude bertan.
 [number of teams]
 talde kopurua
 [Number Of Units]
@@ -650,8 +648,6 @@ Zirkuitoa
 Hedadura
 [ratios]
 Proportzioak
-[Register a new YOG user with password]
-YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
 [remember unit]
 Gogoratu esleipenak
 [remove map]
@@ -754,6 +750,8 @@ Ostatua aukeratu
 Merkatua aukeratu
 [select place clearing area]
 Jarri eremua: Garbiketa zonaldea
+[select place farm area]
+Jarri eremua: Labore zonaldea
 [select place clearingflag]
 Jarri bandera: Garbiketa bandera
 [select place explorationflag]
@@ -1048,8 +1046,6 @@ Ikusten:
 Ura
 [Wheat]
 Garia
-[wheat]
-garia
 [Won : you defeated your opponents]
 Irabazi duzu: aurkariak zanpatu dituzu
 [Won : you have the most prestige]
@@ -3072,6 +3068,8 @@ Debekatua
 Zaindu
 [Clear]
 Garbitu
+[Farm]
+Laborea
 [Paint]
 Margotu
 [Erase]
@@ -3242,6 +3240,10 @@ Esperimentuak
 Zaintza-eremuen oreka
 [experiment guard-area-balancing help]
 Gerlari libreak margotutako zaintza-eremuen artean banatzen dira, guztiak hurbilenera joan beharrean: eremu handiago batek gehiago jasotzen ditu, eta gainezka dagoen eremu bat pixkanaka husten da besteetara.
+[experiment farm-areas]
+Labore zonaldeak
+[experiment farm-areas help]
+Labore zonaldea gehitzen die eremu-pintzelei. Barruan biltzen duten langileek konektatutako soroaren lauki helduenetik hartzen dute eta lauki bakoitzean ale bat uzten dute, soroa berriz hazi dadin ertzetik jan beharrean. Barrura hazten den egurra garbitzen da.
 [settings Touch scrolling]
 Ukipen bidezko korritzea
 [settings List momentum]
@@ -3331,6 +3333,10 @@ Zerrenden errebotea
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4546,6 +4552,102 @@ Maparen inertzia
 
 [game draw]
 
+[settings Show colony skins]
+Erakutsi kolonien itxurak
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desaktibatu gailu honetan unitate, erle-saldo eta eraikinen kolore klasikoak erabiltzeko.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Errepikatu mapa horizontalki
+[repeat map vertically]
+Errepikatu mapa bertikalki
+[bases]
+baseak
+[bases per colony]
+Oinarriak koloniako; oinarria marraztutako maparen talde bat da, bere eraikin eta unitateekin
 [Match]
 
 [Time limit]
@@ -4639,4 +4741,16 @@ Maparen inertzia
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

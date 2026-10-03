@@ -1,5 +1,11 @@
 [AI strategy]
 KI-Strategie
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balanciert nachhaltiges Wachstum und Ausbildung und sammelt Armeen dann zu Wellen.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Spiel auswählen
 Karte auswählen
 [clear area]
 Rodungszone
+[farm area]
+Ackerzone
 [Clearing:]
 Rodung:
 [clearingflag explanation 2]
@@ -642,8 +650,6 @@ Rennbahn
 Reichweite
 [ratios]
 Verhältnis
-[Register a new YOG user with password]
-Neuen YOG Benutzer mit Passwort registrieren. (unsicher)
 [remember unit]
 Einheitenzahlen merken
 [remove map]
@@ -746,6 +752,8 @@ Wähle Gasthof
 Wähle Markt
 [select place clearing area]
 Wähle Rodungsbereich hinzufügen
+[select place farm area]
+Wähle Ackerbereich hinzufügen
 [select place clearingflag]
 Wähle Rodungsflagge setzen
 [select place explorationflag]
@@ -986,8 +994,6 @@ Einheitliche Landschaft
 Einheiteneditor
 [unit settings explanation]
 Standardeinheitenanzahl
-[unit settings]
-Einheiten
 [units working]
 Einheiten arbeiten
 [Units]
@@ -3062,6 +3068,8 @@ Verboten
 Bewachen
 [Clear]
 Räumen
+[Farm]
+Acker
 [Paint]
 Malen
 [Erase]
@@ -3232,6 +3240,10 @@ Experimente
 Ausgleich der Wachbereiche
 [experiment guard-area-balancing help]
 Freie Krieger verteilen sich auf die gemalten Wachbereiche, statt alle den nächsten zu wählen: ein größerer Bereich bekommt mehr von ihnen, und ein überfüllter Bereich dünnt sich zugunsten der anderen aus.
+[experiment farm-areas]
+Ackerzonen
+[experiment farm-areas help]
+Fügt den Zonenpinseln eine Ackerzone hinzu. Arbeiter, die darin ernten, nehmen vom reifsten Feld des zusammenhängenden Ackers und lassen auf jedem Feld ein Korn stehen, sodass der Acker nachwächst, statt vom Rand her abgefressen zu werden. Holz, das in den Acker wächst, wird gerodet.
 [settings Touch scrolling]
 Berühren und Scrollen
 [settings List momentum]
@@ -3321,6 +3333,10 @@ Listen-Federung
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4536,6 +4552,102 @@ Karten-Schwung
 
 [game draw]
 
+[settings Show colony skins]
+Kolonie-Skins anzeigen
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Deaktivieren, um auf diesem Gerät klassische Einheiten, Schwärme und Gebäudefarben zu verwenden.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Karte horizontal wiederholen
+[repeat map vertically]
+Karte vertikal wiederholen
+[bases]
+Basen
+[bases per colony]
+Basen pro Kolonie; eine Basis ist ein Team der gezeichneten Karte mit seinen Gebäuden und Einheiten
 [Match]
 
 [Time limit]
@@ -4629,4 +4741,16 @@ Karten-Schwung
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

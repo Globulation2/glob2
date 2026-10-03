@@ -214,14 +214,14 @@ GradientInfo make_gradient_info_obstacle(Entities::Entity* source1, Entities::En
 
 
 
-void Gradient::recalculate(Map* map)
+void Gradient::recalculate(Map* map, field::Frontier& frontier)
 {
 	PERF_SCOPE_TIME(AIGradient);
 	width=map->getW();
 	gradient.resize(map->getW()*map->getH());
 	std::fill(gradient.begin(), gradient.end(),0);
 
-	std::queue<position> positions;
+	frontier.clear();
 	for(int x=0; x<map->getW(); ++x)
 	{
 		for(int y=0; y<map->getH(); ++y)
@@ -229,13 +229,13 @@ void Gradient::recalculate(Map* map)
 			if(gradient_info.match_source(map, x, y))
 			{
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_SOURCE_SEED;
-				positions.push(position(x, y));
+				frontier.push_back(get_pos(x,y));
 			}
 			else if(gradient_info.match_obstacle(map, x, y))
 				gradient[get_pos(x, y)]=AI_SHARED_RUNTIME_GRADIENT_OBSTACLE_MARKER;
 		}
 	}
-	expand_bfs(positions);
+	expand_bfs(frontier);
 }
 
 
@@ -293,7 +293,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 			if(ticks_since_update[i-gradients.begin()]>AI_SHARED_RUNTIME_GRADIENT_STALE_TICKS)
 			{
 				ticks_since_update[i-gradients.begin()]=0;
-				(*i)->recalculate(map);
+				(*i)->recalculate(map,frontier);
 			}
 			return **i;
 		}
@@ -301,7 +301,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& gi)
 
 	//Did not find a matching gradient
 	gradients.push_back(std::shared_ptr<Gradient>(new Gradient(gi)));
-	(*(gradients.end()-1))->recalculate(map);
+	(*(gradients.end()-1))->recalculate(map,frontier);
 	ticks_since_update.push_back(0);
 	return **(gradients.end()-1);
 }
@@ -359,7 +359,7 @@ void GradientManager::update()
 		int g=queuedGradients.front();
 		if(ticks_since_update[g]>AI_SHARED_RUNTIME_GRADIENT_QUEUE_MIN_AGE_TICKS)
 		{
-			gradients[g]->recalculate(map);
+			gradients[g]->recalculate(map,frontier);
 			ticks_since_update[g]=0;
 		}
 		queuedGradients.pop();

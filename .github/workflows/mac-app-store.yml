@@ -24,7 +24,7 @@ concurrency:
 jobs:
   build:
     name: Build game and test candidate
-    if: ${{ (github.repository == 'genixpro/glob2-release' && github.actor == 'genixpro' && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
+    if: ${{ (github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
     timeout-minutes: 90
     steps:
@@ -141,7 +141,7 @@ jobs:
 
   upload:
     name: Sign and upload to App Store Connect
-    if: ${{ github.repository == 'genixpro/glob2-release' && github.actor == 'genixpro' && github.triggering_actor == 'genixpro' && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
+    if: ${{ github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor == 'genixpro' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.ref == 'refs/heads/master' && github.event_name == 'workflow_dispatch' && inputs.upload }}
     needs: build
     runs-on: macos-26
     environment: mac-app-store

@@ -60,6 +60,7 @@ struct Tile
 	///is put there by the game engine and is not draw to the screen.
 	Uint32 guardArea = 0; // This is a mask, one bit by team, 1=guard area, 0=normal
 	Uint32 clearArea = 0; // This is a mask, one bit by team, 1=clear area, 0=normal
+	Uint32 farmArea = 0; // This is a mask, one bit by team, 1=farm area, 0=normal (farm-areas experiment)
 
 	Uint16 scriptAreas = 0; // This is also a mask. A single bit represents an area #n, on or off for the square
 	Uint8 canResourcesGrow = 1; // This is a boolean, it represents whether resources are allowed to grow into this location.
@@ -72,7 +73,8 @@ enum AreaType
 {
 	ClearingArea = 0,
 	ForbiddenArea,
-	GuardArea
+	GuardArea,
+	FarmArea
 };
 
 
@@ -179,6 +181,8 @@ public:
 
 	//! Reset map size to width = 2^wDec and height=2^hDec, and fill background with terrainType
 	void setSize(int wDec, int hDec, TerrainType terrainType=WATER);
+	//! Repeat the terrain, resources and discovery rx by ry times; units, buildings and team zones are dropped
+	void tile(int rx, int ry);
 	// !This call is needed to use the Map!
 	void setGame(Game *game);
 	//! Load a map from a stream and relink with associated game
@@ -322,6 +326,19 @@ public:
 	{
 		return tiles[coordToIndex(x, y)].clearArea&teamMask;
 	}
+
+	//! Return true if (x,y) is a farm area in the locally-displayed team's overlay cache
+	//! (i.e. the team computeDisplayedFarmArea was last refreshed for). Render-only.
+	bool isFarmAreaInDisplayedView(int x, int y) const
+	{
+		return displayedFarmAreaView.get(coordToIndex(x, y));
+	}
+
+	//! Returns true if the position(x, y) is a farm area for the given team
+	bool isFarmArea(int x, int y, Uint32 teamMask) const
+	{
+		return tiles[coordToIndex(x, y)].farmArea&teamMask;
+	}
 	
 	// These rebuild the render-only displayed*View caches from the authoritative
 	// tiles[] bits, and are only meaningful for the locally-displayed team (the one
@@ -332,6 +349,8 @@ public:
 	void computeDisplayedGuardArea(int teamNumber);
 	//! Rebuild displayedClearAreaView from tiles[].clearArea for the given team.
 	void computeDisplayedClearArea(int teamNumber);
+	//! Rebuild displayedFarmAreaView from tiles[].farmArea for the given team.
+	void computeDisplayedFarmArea(int teamNumber);
 
 	//! Sentinel for "no displayed team yet" — used before GameGUI::adjustLocalTeam has run.
 	static constexpr Sint32 NO_DISPLAYED_TEAM = -1;
@@ -454,6 +473,11 @@ public:
 		tiles[coordToIndex(x, y)].guardArea |=  Team::teamNumberToMask(teamNum);
 	}
 
+	void addFarmArea(int x, int y, Uint32 teamNum)
+	{
+		tiles[coordToIndex(x, y)].farmArea |=  Team::teamNumberToMask(teamNum);
+	}
+
 	
 	bool isWater(int x, int y) const
 	{
@@ -528,6 +552,72 @@ public:
 	//! Decrement resource at position (x,y) if resource type = resourceType. Return true on success, false otherwise.
 	void decResource(int x, int y, int resourceType);
 	bool incResource(int x, int y, int resourceType, int variety);
+
+	// Farm areas (the "farm-areas" experiment, docs/features/farm-areas.md).
+	// Every rule below is inert unless the game carries the experiment, so a
+	// farm mask loaded into a game without it changes nothing.
+
+	//! Whether this map's game carries the farm-areas experiment. False for a
+	//! map with no game (the editor, Map-only tools).
+	bool farmAreasEnabled() const;
+
+	//! Whether resourceType could ever grow at (x,y): a necessary condition read
+	//! off Map::growResources's terrain probe, not a sufficient one. The probe
+	//! draws offsets dwax, dway in [-15,15] and needs isWater(x+dwax, y+dway) for
+	//! wheat, wood and algae, so a tile with no water in that box never grows.
+	//! Algae also need isSand(x+dway*2, y+dwax*2), checked here as "some sand in
+	//! the doubled box"; the joint draw and the wheat/wood !isSand test are not
+	//! modelled. Keep this in step if growResources' probe changes.
+	bool canResourceEverGrowHere(int x, int y, int resourceType) const;
+
+	//! The crop a farm grows on this tile's terrain: wheat on grass, algae on
+	//! water, nothing anywhere else. The terrain decides, so a farm needs no
+	//! per-resource mode and no extra UI.
+	int farmCropAt(int x, int y) const;
+
+	//! Whether a worker should clear the resource on this tile for the team:
+	//! anything clearable inside a clearing area, and, with farm areas enabled,
+	//! anything clearable inside a farm area that is not the crop that tile's
+	//! terrain grows. A farm is kept clear of what it does not grow, so wood
+	//! creeping into a wheat field is cut down instead of overgrowing it. Where a
+	//! clearing area overlaps a farm the clearing area wins and the crop goes too.
+	//! farmAreas is farmAreasEnabled(), passed in so per-tile loops read it once.
+	bool isClearingTarget(size_t index, Uint32 teamMask, bool farmAreas) const;
+
+	//! Whether a farm area may be painted on (x,y). The brush refuses tiles the
+	//! map forbids growth on, terrain that carries no farmable crop (a farm on
+	//! grass is a wheat farm, on water an alga farm), tiles too far from water
+	//! for the growth probe ever to succeed, and tiles holding a resource that is
+	//! not wheat, wood or alga. Such a tile would join a field as a connector or
+	//! a source that never refills.
+	bool canPaintFarmArea(int x, int y) const;
+
+	//! True when the farm rule can apply to this resource: it accumulates on its
+	//! tile (granular), can be used up (shrinkable) and re-seeds itself
+	//! (expendable). That is wheat and algae. Wood is not granular, so one
+	//! harvest takes the whole tile; stone and the fruits are eternal.
+	bool isFarmableResource(int resourceType) const;
+
+	//! The tile a pooled farm harvest draws from, for a unit standing at (x,y)
+	//! taking resourceType for the team in teamMask, or nullopt when the field
+	//! within reach has nothing above its seed.
+	//!
+	//! The field is every tile holding resourceType reachable, through
+	//! 8-connected tiles also holding it, from a tile of the unit's own 3x3,
+	//! without leaving the team's farm area. Seeding from the 3x3 keeps a
+	//! harvest working when the target empties during the animation, and an
+	//! empty gap ends the field, so nothing is taken from wheat the unit cannot
+	//! reach. Picks the highest amount above the one-grain seed, breaking ties by
+	//! distance to the unit and then by tile index, so every client agrees.
+	std::optional<size_t> pickFarmHarvestTile(int x, int y, int resourceType, Uint32 teamMask);
+
+	//! Complete a harvest of resourceType for a unit at (x,y) whose target tile
+	//! is at offset (dx,dy), and report whether it may carry a resource away.
+	//! Without the experiment, or outside a farm area, this is the original
+	//! rule: the target tile is decremented if it still holds the resource and
+	//! the unit is granted one either way. Inside one, the grain comes off the
+	//! ripest tile of the connected field and an exhausted field yields nothing.
+	bool takeHarvest(int x, int y, int dx, int dy, int resourceType, Uint32 teamMask);
 
 private:
 	//! Allocate/refresh and mark use, without exposing the possibly partial field.
@@ -847,13 +937,22 @@ public:
 	std::vector<Uint32> fogOfWarB;
 	Uint32* fogOfWar = nullptr; // if valid, either points to &fogOfWarA[0] or &fogOfWarB[0]
 	//! Render-only overlay caches for the locally-displayed team's areas (forbidden /
-	//! guard / clear). These mirror the per-team bits in tiles[].{forbidden,guardArea,
-	//! clearArea} but only for displayedTeam, so the renderer can query one tile cheaply.
+	//! guard / clear / farm). These mirror the per-team bits in tiles[].{forbidden,guardArea,
+	//! clearArea,farmArea} but only for displayedTeam, so the renderer can query one tile cheaply.
 	//! They are NOT in checkSum() and must never be read from a sim path — doing so would
 	//! desync, because displayedTeam differs per client. true = bit set.
 	Utilities::BitArray displayedForbiddenView;
 	Utilities::BitArray displayedGuardAreaView;
 	Utilities::BitArray displayedClearAreaView;
+	Utilities::BitArray displayedFarmAreaView;
+
+	// Scratch for pickFarmHarvestTile's flood fill: one stamp per tile, compared
+	// against a counter bumped per call instead of clearing the buffer, and the
+	// queue kept across calls so a harvest does not allocate. Never saved, never
+	// checksummed, never read across calls.
+	std::vector<Uint32> farmFloodStamps;
+	std::vector<size_t> farmFloodQueue;
+	Uint32 farmFloodGeneration = 0;
 	//! Team whose view is locally displayed. Mirror of GameGUI::localTeamNo, used only to
 	//! decide whether to refresh the displayed*View caches above. Not in checkSum.
 	Sint32 displayedTeam = NO_DISPLAYED_TEAM;

@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategie
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balanceert duurzame groei en training en verzamelt legers daarna in golven.
 [AIMaxima-Profile]
@@ -168,12 +174,6 @@ Kan geen spel maken want poort %0 is in gebruik
 Kan niet deelnemen aan dit spel want het is reeds gestart
 [Can't join game, game is full]
 Kan niet deelnemen aan dit spel want het zit vol.
-[Can't join game, missmatching game parameters]
-Kan niet deelnemen aan dit spel: parmaters tussen beiden partijen verschillen.
-[Can't join game, timeout]
-Kan niet deelnemen aan dit spel: timeout
-[Can't join game, wrong game version]
-Kan niet deelnemen aan dit spel: verschillende versies
 [cancel destroy]
 Stop vernietigen
 [cancel repair]
@@ -198,6 +198,8 @@ Kies een spel
 Kies een speelveld
 [clear area]
 Grondstoffenzone
+[farm area]
+Akkerzone
 [Clearing:]
 ontruimen:
 [clearingflag explanation 2]
@@ -260,12 +262,6 @@ Versla je vijanden
 die in de buurt komen
 [defencetower explanation]
 Valt vijanden aan
-[defencetower level 0]
-Toren 0
-[defencetower level 1]
-Toren 1
-[defencetower level 2]
-Toren 2
 [defencetower]
 Toren
 [Defense Map]
@@ -438,12 +434,6 @@ Verhoog aantal werkende eenheden
 
 [inn explanation]
 Voedt je eenheden
-[inn level 0]
-Herberg 0
-[inn level 1]
-Herberg 1
-[inn level 2]
-Herberg 2
 [inn]
 Herberg
 [insert]
@@ -522,8 +512,6 @@ Script
 Breedte van speelveld
 [map size y]
 Hoogte van speelveld
-[maps available]
-Beschikbare speelvelden
 [mark map]
 Markeer speelveld voor bondgenoten
 [market explanation 2]
@@ -564,8 +552,6 @@ niet-groeigebieden
 Nee
 [Number Of Buildings]
 Aantal gebouwen
-[number of players: %0]
-%0 spelers
 [number of teams]
 Aantal teams
 [Number Of Units]
@@ -664,8 +650,6 @@ Racebaan
 Bereik
 [ratios]
 Afmetingen
-[Register a new YOG user with password]
-Registreer nieuwe gebruiker met wachtwoord (onveilig)
 [remember unit]
 Onthoud eenheidsaantal
 [remove map]
@@ -768,6 +752,8 @@ Selecteer herberg
 Selecteer markt
 [select place clearing area]
 Ontruimingsgebied plaatsen
+[select place farm area]
+Akkerzone plaatsen
 [select place clearingflag]
 Ontruimingsvlag plaatsen
 [select place explorationflag]
@@ -850,8 +836,6 @@ Moeras
 
 [swarm explanation]
 Maakt nieuwe eenheden
-[swarm level 0]
-Zwerm
 [swarm]
 zwerm
 [Swim]
@@ -1064,8 +1048,6 @@ Speler:
 Water
 [Wheat]
 Tarwe
-[wheat]
-tarwe
 [Won : you defeated your opponents]
 Gewonnen: je hebt je tegenstanders verslagen
 [Won : you have the most prestige]
@@ -3086,6 +3068,8 @@ Verboden
 Bewaken
 [Clear]
 Opruimen
+[Farm]
+Akker
 [Paint]
 Schilderen
 [Erase]
@@ -3256,6 +3240,10 @@ Experimenten
 Balans van bewakingsgebieden
 [experiment guard-area-balancing help]
 Vrije krijgers verdelen zich over de geschilderde bewakingsgebieden in plaats van allemaal het dichtstbijzijnde te kiezen: een groter gebied krijgt er meer, en een overvol gebied loopt langzaam leeg naar de andere.
+[experiment farm-areas]
+Akkerzones
+[experiment farm-areas help]
+Voegt een akkerzone toe aan de zonepenselen. Arbeiders die erin oogsten nemen van het rijpste vak van de aaneengesloten akker en laten op elk vak één korrel staan, zodat de akker teruggroeit in plaats van vanaf de rand te worden opgegeten. Hout dat de akker in groeit, wordt gekapt.
 [settings Touch scrolling]
 Scrollen met aanraking
 [settings List momentum]
@@ -3345,6 +3333,10 @@ Terugvering van lijsten
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4560,6 +4552,102 @@ Vaart van de kaart
 
 [game draw]
 
+[settings Show colony skins]
+Kolonie-uiterlijk tonen
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Schakel uit om op dit apparaat klassieke eenheden, zwermen en gebouwkleuren te gebruiken.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Kaart horizontaal herhalen
+[repeat map vertically]
+Kaart verticaal herhalen
+[bases]
+bases
+[bases per colony]
+Bases per kolonie; een basis is één team van de kaart zoals getekend, met zijn gebouwen en eenheden
 [Match]
 
 [Time limit]
@@ -4653,4 +4741,16 @@ Vaart van de kaart
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

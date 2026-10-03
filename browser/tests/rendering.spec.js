@@ -9,7 +9,7 @@ test('WebGL2 draws a playable match and resizes its drawing buffer', async ({pag
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   page.on('console', message => { if (/GL_INVALID|GL_INVALID_OPERATION|WebGL:.*(INVALID|error)|Aborted/.test(message.text())) errors.push(message.text()); });
-  await page.goto('/?renderer=webgl2');
+  await page.goto('/?renderer=webgl2&gl-errors=1');
   await screen(page, 'MainMenuScreen');
   expect((await state(page)).renderer).toBe('webgl2');
   expect((await state(page)).renderContext.width).toBeGreaterThan(0);
@@ -51,6 +51,7 @@ test('the default renderer is WebGL2 when the browser accelerates it', async ({p
   await page.goto('/'); await screen(page,'MainMenuScreen');
   expect((await state(page)).renderer).toBe('webgl2');
   expect((await state(page)).renderContext.width).toBeGreaterThan(0);
+  expect((await state(page)).renderContext.error).toBeNull();
 });
 
 const fallbacks = {
@@ -83,7 +84,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
   test.setTimeout(120000);
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
-  await page.goto('/?renderer=webgl2'); await screen(page,'MainMenuScreen');
+  await page.goto('/?renderer=webgl2&gl-errors=1'); await screen(page,'MainMenuScreen');
   await clickMainMenu(page,'custom'); await screen(page,'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick, {timeout:60000}).toBeGreaterThan(25);
@@ -92,13 +93,35 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
       Module._glob2_context_action(0);
     });
     await expect.poll(async () => (await state(page)).contextLost).toBe(true);
-    const paused = (await state(page)).tick;
+    const suspended = await state(page);
+    const paused = suspended.tick;
+    if (count === 1) await page.evaluate(() => {
+      Object.defineProperty(document, 'hidden', {configurable:true, get:() => true});
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    const viewport = count === 1 ? {width:1280,height:720} : {width:1200,height:900};
+    await page.setViewportSize(viewport);
     // Exercise a real suspension interval, not just immediate restoration.
     await page.waitForTimeout(250);
     expect((await state(page)).tick).toBe(paused);
     await page.evaluate(() => Module._glob2_context_action(1));
     await expect.poll(async () => (await state(page)).contextRestores).toBe(count);
+    if (count === 1) {
+      // Restoring the GPU must not resume a tab that is still hidden.
+      const restored = await state(page);
+      await expect.poll(async () => (await state(page)).loop).toBeGreaterThan(restored.loop + 3);
+      expect((await state(page)).tick).toBe(paused);
+      expect((await state(page)).frames).toBe(suspended.frames);
+      await page.evaluate(() => {
+        delete document.hidden;
+        document.dispatchEvent(new Event('visibilitychange'));
+      });
+    }
     await expect.poll(async () => (await state(page)).tick).toBeGreaterThan(paused);
+    await expect.poll(async () => {
+      const s = await state(page);
+      return [s.width,s.height,s.renderContext.width,s.renderContext.height];
+    }).toEqual([viewport.width,viewport.height,viewport.width,viewport.height]);
     await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
     expect((await state(page)).renderContext.error).toBe(0);
   }
@@ -111,7 +134,7 @@ test('WebGL context restoration keeps the match and can recover repeatedly', asy
 test('WebGL context restoration retains settings, editor and confirmation controls', async ({page}, info) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
-  await page.goto('/?renderer=webgl2');
+  await page.goto('/?renderer=webgl2&gl-errors=1');
   await screen(page, 'MainMenuScreen');
   let restores = 0;
   async function recover(expectedScreen) {

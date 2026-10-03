@@ -33,15 +33,17 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 			number("workers", 0, MAX_BUILDING_WORKER_REQUEST),
 			number("futureWorkers", 0, MAX_BUILDING_WORKER_REQUEST), range);
 	}
-	if (type == "forbidden" || type == "guardArea" || type == "clearArea")
+	if (type == "forbidden" || type == "guardArea" || type == "clearArea" || type == "farmArea")
 	{
 		std::shared_ptr<OrderAlterArea> a;
 		if (type == "forbidden")
 			a = std::make_shared<OrderAlterForbidden>();
 		else if (type == "guardArea")
 			a = std::make_shared<OrderAlterGuardArea>();
-		else
+		else if (type == "clearArea")
 			a = std::make_shared<OrderAlterClearArea>();
+		else // farmArea: refused by OrderValidation in a game without the farm-areas experiment
+			a = std::make_shared<OrderAlterFarmArea>();
 		a->teamNumber = team;
 		a->type = number("mode", BrushTool::MODE_ADD, BrushTool::MODE_DEL);
 		a->centerX = number("x", 0, game.map.getW() - 1);

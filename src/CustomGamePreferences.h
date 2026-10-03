@@ -72,24 +72,24 @@ struct CustomGamePreferences
 		// stay unchanged regardless of which generator module is selected.
 		const auto legacy = toLegacyDescriptor(setup.generator);
 		std::ostringstream out;
-		out << "glob2-custom-game 5\n"
-			<< "setup " << setup.random << ' ' << setup.capacity << ' '
-			<< setup.prestige << ' ' << setup.revealed << ' ' << setup.locked << ' '
-			<< setup.speed << ' ' << userMaps << '\n'
+		out << "glob2-custom-game 7\n"
+			<< "setup " << setup.random << ' ' << setup.capacity << ' ' << setup.prestige << ' '
+			<< setup.revealed << ' ' << setup.locked << ' ' << setup.speed << ' ' << userMaps
+			<< '\n'
 			<< "rules " << setup.noResourceGrowth << ' ' << setup.resourceScarcity << ' '
-			<< setup.instantConstruction << ' ' << setup.stockpileStart << ' ' << setup.noHunger << ' '
-			<< setup.unitUpgradesDisabled << ' ' << setup.glassCannonLevel << ' '
-			<< setup.unitsFearless << ' ' << setup.permadeathDisabled << ' ' << setup.peacefulMode << ' '
-			<< setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
+			<< setup.instantConstruction << ' ' << setup.stockpileStart << ' ' << setup.noHunger
+			<< ' ' << setup.unitUpgradesDisabled << ' ' << setup.glassCannonLevel << ' '
+			<< setup.unitsFearless << ' ' << setup.permadeathDisabled << ' ' << setup.peacefulMode
+			<< ' ' << setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
 			<< setup.suddenDeathMinutes << '\n'
+			<< "probability " << setup.winProbabilityPermille << '\n'
 			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.rulesetId) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
 			<< "sections " << expanded[0] << ' ' << expanded[1] << ' ' << expanded[2] << '\n'
 			<< "picker " << landscapeSortOrder << '\n'
-			<< "generator " << int(legacy.method) << ' '
-			<< legacy.logRepeatAreaTimes << '\n';
+			<< "generator " << int(legacy.method) << ' ' << legacy.logRepeatAreaTimes << '\n';
 		for (const auto &f : fields())
 			out << f.name << ' ' << legacy.*(f.member) << '\n';
 		out << "resources";
@@ -105,18 +105,19 @@ struct CustomGamePreferences
 			out << c->id << ' ' << c->get(setup.generator) << '\n';
 		out << "colonies " << setup.colonies.size() << '\n';
 		for (const auto &c : setup.colonies)
-			out << int(c.controller) << ' ' << int(c.ai) << ' ' << c.alliance << '\n';
+			out << int(c.controller) << ' ' << int(c.ai) << ' ' << c.alliance << ' '
+				<< std::quoted(c.aiLibraryId) << '\n';
 		out << "end\n";
 		return out.str();
 	}
-	// Versions 1-4 stored the ruleset's English name, "Custom" once edited; version 5 stores
+	// Versions 1-6 stored the ruleset's English name, "Custom" once edited; version 7 stores
 	// its id. The saved rule values are kept either way, so "Custom" reads as Standard with
 	// its changes. A ruleset this build does not have (a removed or local one) also falls
 	// back to Standard rather than discarding the whole draft.
 	static std::string rulesetIdFromLabel(int version, const std::string &label)
 	{
 		std::string id = label;
-		if (version < 5)
+		if (version < 7)
 			id = label == "Quick clash"			 ? "quick-clash"
 				 : label == "Open book"			 ? "open-book"
 				 : label == "Last colony standing" ? "last-colony-standing"
@@ -143,10 +144,11 @@ struct CustomGamePreferences
 			return true;
 		};
 		int version, random, prestige, revealed, locked, user, method, repeat;
-		if (!word("glob2-custom-game") || !number(version, 1, 5) || !word("setup") ||
+		if (!word("glob2-custom-game") || !number(version, 1, 7) || !word("setup") ||
 			!number(random, 0, 1) || !number(s.capacity, 1, Team::MAX_COUNT) ||
 			!number(prestige, 0, 1) || !number(revealed, 0, 1) || !number(locked, 0, 1) ||
-			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1)) return false;
+			!number(s.speed, 0, Settings::GAME_SPEED_MAXIMUM) || !number(user, 0, 1))
+			return false;
 		// Older preferences did not store these rules; retain their normal defaults.
 		if (version >= 3) {
 			if (!word("rules") || !boolean(s.noResourceGrowth) || !number(s.resourceScarcity, 0, 3) ||
@@ -157,6 +159,11 @@ struct CustomGamePreferences
 				!number(s.suddenDeathMinutes, 0, 90)) return false;
 			const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
 			if (std::find(minutes.begin(), minutes.end(), s.suddenDeathMinutes) == minutes.end()) return false;
+		}
+		if (version >= 6) {
+			if (!word("probability") || !number(s.winProbabilityPermille, 0, 1000)) return false;
+			const auto &choices = CustomGameSetup::winProbabilityChoices;
+			if (std::find(choices.begin(), choices.end(), s.winProbabilityPermille) == choices.end()) return false;
 		}
 		std::string ruleset;
 		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(ruleset))) return false;
@@ -219,6 +226,8 @@ struct CustomGamePreferences
 				!number(c.alliance, 0, Team::MAX_COUNT - 1)) return false;
 			c.controller = CustomGameSetup::Controller(controller);
 			c.ai = AI::ImplementationID(ai);
+			if (version >= 5 && (!(in >> std::quoted(c.aiLibraryId)) || c.aiLibraryId.size() > 128))
+				return false;
 			humans += controller == CustomGameSetup::Human || controller == CustomGameSetup::Shared;
 		}
 		if (humans > 1 || !word("end")) return false;

@@ -139,6 +139,12 @@ Use Tutorial, Campaign, Custom Game or Editor. Clicking the canvas focuses
 keyboard input and enables music. Live resize updates the internal resolution
 at frame boundaries in scheduled browser flows.
 Add `?renderer=software` or `?renderer=webgl2` to the URL to force a renderer.
+Colony skin meshes are a separate `skins` package. It is requested only when
+visible colony paint is available, so unskinned games and the initial menu do
+not download the models. The game continues with classic units while the package
+loads. Repeated frames share the request, and failed downloads retry no more than
+once every ten seconds. Native installations already contain these assets.
+
 `?replay=<url>` downloads a replay while the game loads and opens it in the replay
 viewer (the platform's "Watch in browser"; see
 [match history and the web app](../docs/multiplayer/history-and-web.md#watch-in-browser)).
@@ -234,6 +240,14 @@ test runner and its browser revisions. Failures retain traces and screenshots
 under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
+The colony-skin replay integration test needs the seeded platform e2e server
+(`platform/apps/web/e2e/server.ts`) serving the current browser build. Set
+`GLOB2_TEST_URL` to that server's origin and `GLOB2_SKIN_REPLAY_API=1`, then run
+`replay-skins.spec.js`. It opens the match's actual replay route and requires
+fresh appearance, JWKS and texture requests plus live mesh draws. It does not
+use the developer paint override. The ordinary browser server has no platform
+API, so this case is explicitly skipped there.
+
 Use `GLOB2_TEST_RENDERER=webgl2` or `software` for renderer-sensitive tests.
 Dedicated renderer-contract tests select their own renderer explicitly.
 CI selects software for the full Chromium behavior suite
@@ -258,6 +272,64 @@ New multiplayer features, including reconnect recovery, are outside this change.
 Build outputs and the SDK are ignored local files. Serve the output directory;
 opening the HTML as a `file:` URL is unsupported. The SDL audio backend still
 uses deprecated ScriptProcessorNode.
+
+### Performance investigation
+
+Build with `scons target=web release=1 web_profile=1` to retain WebAssembly
+function names in CPU profiles while keeping release optimization. Install the
+browser test dependencies, serve the build, then run from the repository root:
+
+```sh
+GLOB2_PROFILE_FIXTURE=games/gd-bigarena-long.game.gz \
+node browser/profile.js 'http://127.0.0.1:8765/?renderer=webgl2&threads=serial' \
+  artifacts/browser-performance/serial
+```
+
+Omit `threads=serial` to measure the selected threaded runtime. The harness
+imports the same save through the UI, warms up, and samples normal speed, 8×,
+then pause in a fresh browser profile. It records the actual execution mode,
+GPU/backend, fixture hash, tick throughput, browser-process CPU totals, and
+CPU profiles for the page and every current worker. CPU percent is summed
+across the launched browser's processes: 100% means one CPU core. Profile
+durations are sampled elapsed time, including blocking, rather than CPU time.
+Load the `.cpuprofile` files into Chromium developer tools to inspect stacks.
+
+For the serial flat WebGL map, the harness records frame-boundary dimension
+queries following draw calls as a draw-cadence proxy. These are CPU submission
+timestamps, not physical display scanout. For local display-paced matches, the
+diagnostics `frames` counter counts presentations, while `loop` counts
+processed host turns, including paused turns that skip repainting. Software
+and threaded runs have no WebGL draw-cadence record.
+`GLOB2_PROFILE_MODES=normal,8x` selects a subset of the three modes in their
+fixed order. `GLOB2_PROFILE_SECONDS` sets each sample's duration (default 20);
+`GLOB2_PROFILE_WIDTH` and `GLOB2_PROFILE_HEIGHT` set the viewport (default
+1200×900). `GLOB2_PROFILE_HEADED=1` opens a real window. On macOS the harness
+defaults to Metal; `GLOB2_CHROMIUM_ANGLE` overrides it. Check the recorded GPU
+before interpreting timings. Run without concurrent builds and repeat paired
+measurements; profiling overhead and one fixture do not establish performance
+on every browser or game stage.
+
+Normal gameplay does not poll WebGL errors, because `getError()` can force GPU
+synchronization. `?gl-errors=1` enables frame-boundary error collection for
+renderer validation; `renderContext.error` is `null` when collection is
+disabled and otherwise retains the most recent nonzero observed error. Use
+this flag for error assertions, and omit it from performance measurements.
+
+The browser steps simulation on the application host even in its threaded
+runtime; background AI/gradient workers do not enable the native separate
+simulation runner. Local match presentation uses animation-frame callbacks
+independently of the 25 Hz simulation clock. Each callback consumes input once
+and advances due ticks within a six-millisecond work budget, always allowing
+one due tick to finish. Accelerated play batches ticks instead of scheduling a
+nested timer per tick. An individual expensive tick can exceed the budget; it
+is never interrupted. DOM viewport, visibility and presentation state is
+sampled once per host turn. Relay matches retain their polling, catch-up and
+draw cadence. Paused local maps repaint at most every 40 milliseconds unless
+input or a resize requests an immediate redraw; input continues at display
+rate. Menus and background polling retain their scheduled delays. The threaded
+SDL canvas-resize callback also guards the pinned SDK's viewport query during
+WebGL context loss. Resize requests remain pending until the host can restore
+graphics and apply the new viewport.
 
 ### CI compiler caches
 

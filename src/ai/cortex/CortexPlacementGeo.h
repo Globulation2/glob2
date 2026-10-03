@@ -59,6 +59,7 @@ namespace Cortex
 		int y;
 		int score;
 		int distToColony; // secondary key for deterministic tie-breaking
+		Sint32 team = -1; // owner of an enemy flag target, for telemetry; never ranked on
 	};
 
 	/// Chebyshev distance from the footprint's top-left corner to the nearest

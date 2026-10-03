@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include "online/ReplayAppearance.h"
+#include "online/OnlineServices.h"
+#include "online/SkinDownloads.h"
 #include <FileManager.h>
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -269,6 +272,11 @@ namespace
 					WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
 						v ? std::optional<Uint32>(v) : std::nullopt);
 				}},
+			{"winProbabilityPermille", 1000, [](GameHeader& h, int v)
+				{
+					WinningCondition::setWinProbabilityWinCondition(h.getWinningConditions(),
+						v ? std::optional<Uint32>(v) : std::nullopt);
+				}},
 		};
 		// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
 		for (const auto& definition : experimentDefinitions())
@@ -287,7 +295,8 @@ namespace
 			errno = 0;
 			const long value = equals == std::string::npos ? -1 : strtol(item.c_str() + equals + 1, &end, 10);
 			if (!rule || equals == std::string::npos || errno || *end || end == item.c_str() + equals + 1
-				|| value < 0 || value > rule->maximum)
+				|| value < 0 || value > rule->maximum
+				|| (name == "winProbabilityPermille" && value != 0 && value < 501))
 			{
 				std::cerr << "GLOB2_TEST_RULES: invalid entry \"" << item << "\"" << std::endl;
 				exit(1);
@@ -719,6 +728,13 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 		co_return false;
 	}
 
+    if (!globalContainer->runNoX)
+    {
+        auto &online = Online::services();
+        if (const auto appearance = Online::readReplayAppearance(*Toolkit::getFileManager(),fileName,online.config))
+            setColonySkins(std::make_unique<Online::SkinDownloads>(online.storage,appearance->origin,
+                appearance->matchId,std::vector<Online::SkinDownloads::Ticket>{}));
+    }
 	co_return true;
 }
 

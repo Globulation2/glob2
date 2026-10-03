@@ -6,6 +6,7 @@
 #include <FileManager.h>
 #include <assert.h>
 #include <iostream>
+#include <stdexcept>
 #include "TrueTypeFont.h"
 
 #include <GraphicContext.h>
@@ -100,7 +101,7 @@ namespace GAGCore
 		else
 		{
 			delete ttf;
-			std::cerr << "GAG : Can't load font " << name << " with size " << size << " from " << filename << std::endl;
+			throw std::runtime_error("Cannot load font " + name + " from " + filename);
 		}
 	}
 	

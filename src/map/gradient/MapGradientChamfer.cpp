@@ -4,8 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include "Map.h"
 #include "MapInternal.h"
-
-#include <algorithm>
+#include "field/Influence.h"
 
 // Chamfer distance transform with orthogonal=1, diagonal=1 weights (Chebyshev
 // distance) on a toroidal grid, for the AIs' own Uint8 helper maps (Castor,
@@ -19,7 +18,7 @@
 //   - >= 3 = propagation source: a neighbor with value vN lifts this cell to
 //     vN - 1 if larger. Floor of 3 ensures cand = vN - 1 >= 2 strictly
 //     exceeds a free cell's seed of 1.
-//   - sources keep their seed value (cand = vN - 1 < vN never raises it).
+//   - 255 is pinned; weaker sources may be raised by stronger contributions.
 //
 // Convergence bound: Borgefors 1986 establishes one forward+backward pass
 // suffices on a non-toroidal grid *without obstacles*. With obstacles forcing
@@ -42,73 +41,29 @@ void Map::updateGlobalGradient(Uint8 *gradient)
 
 GAGCore::CooperativeTask Map::updateGlobalGradientTask(Uint8 *gradient)
 {
-	// Values below 3 cannot raise a free cell above its seed of 1.
-	// Without a stronger source, the initialized buffer is already the final field.
-	if (std::none_of(gradient, gradient + size, [](Uint8 value) { return value >= 3; }))
-		co_return true;
-
-	int passes = 0;
-	bool changed;
+	if(size==0)co_return true;
+	field::ConvergentInfluence influence(gradient,{w,h});
+	if (!influence.hasSources()) co_return true;
+	int passes=0;
 	do
 	{
-		changed = false;
-
-		// Only the strongest neighbor matters: subtracting one preserves their order.
-		// Keep the in-place sweep order, including reads across the toroidal seams.
-		for (size_t y = 0; y < (size_t)h; y++)
+		influence.beginPass();
+		for (size_t y=0;y<(size_t)h;++y)
 		{
 			if ((y & 15) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Building gradients]");
-			Uint8* row = gradient + (y << wDec);
-			const Uint8* previousRow = gradient + (((y - 1) & hMask) << wDec);
-			for (size_t x = 0; x < (size_t)w; x++)
-			{
-				const Uint8 g = row[x];
-				// Obstacles stay zero; a goal is already at the maximum possible value.
-				if (g == GRADIENT_FORBIDDEN || g == 255)
-					continue;
-				const size_t xl = (x - 1) & wMask;
-				const size_t xr = (x + 1) & wMask;
-				// Forward neighbors: NW, N, NE, W.
-				const Uint8 neighborMax = std::max(std::max(previousRow[xl], previousRow[x]),
-					std::max(previousRow[xr], row[xl]));
-				if (neighborMax >= 3 && neighborMax - 1 > g)
-				{
-					row[x] = neighborMax - 1;
-					changed = true;
-				}
-			}
+			influence.forwardRow(int(y));
 		}
-
-		for (size_t y = (size_t)h; y-- > 0; )
+		for (size_t y=(size_t)h;y-- > 0;)
 		{
 			if ((y & 15) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Building gradients]");
-			Uint8* row = gradient + (y << wDec);
-			const Uint8* nextRow = gradient + (((y + 1) & hMask) << wDec);
-			for (size_t x = (size_t)w; x-- > 0; )
-			{
-				const Uint8 g = row[x];
-				if (g == GRADIENT_FORBIDDEN || g == 255)
-					continue;
-				const size_t xl = (x - 1) & wMask;
-				const size_t xr = (x + 1) & wMask;
-				// Backward neighbors: SE, S, SW, E.
-				const Uint8 neighborMax = std::max(std::max(nextRow[xr], nextRow[x]),
-					std::max(nextRow[xl], row[xr]));
-				if (neighborMax >= 3 && neighborMax - 1 > g)
-				{
-					row[x] = neighborMax - 1;
-					changed = true;
-				}
-			}
+			influence.reverseRow(int(y));
 		}
-
-		passes++;
-		if (passes >= 256)
+		if (++passes >= 256)
 		{
 			fprintf(stderr, "[chamfer] passes >= 256 - monotonicity violated. w=%d h=%d size=%zu\n",
 				(int)w, (int)h, size);
 			abort();
 		}
-	} while (changed);
-    co_return true;
+	} while (influence.passChanged());
+	co_return true;
 }

@@ -286,7 +286,7 @@ namespace AISharedRuntime
 		};
 
 		///This management order adds a particular type of "area" to the ground.
-		///The three types of areas are in the AreaType enum, and are passed to
+		///The types of areas are in the AreaType enum (FarmArea only with the farm-areas experiment), and are passed to
 		///the constructor. To have this change multiple areas, its nesseccary
 		///to call the add_location function multiple times.
 		class AddArea : public ManagementOrder

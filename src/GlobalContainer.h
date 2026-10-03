@@ -37,6 +37,7 @@ public:
 private:
 	void updateLoadProgressScreen(int value);
 	void loadGameGraphics(bool showProgress);
+	void loadGameFonts();
 	bool gameGraphics = false;
 	bool menuMusic = false;
 
@@ -52,6 +53,8 @@ public:
 	//! until GAGCore::ApplicationHost::assetPackageReady("game"). Always true
 	//! without graphics (runNoX).
 	bool ensureGameGraphics(void);
+	//! Standalone tool startup, after selecting SDL drivers, on the graphics thread.
+	void loadOffscreenGraphics();
 	bool gameGraphicsLoaded(void) const { return gameGraphics; }
 	//! Completes once ensureGameGraphics() succeeds; waits at the
 	//! "[Loading game graphics]" stage. Without waiting it never suspends.
@@ -81,6 +84,7 @@ public:
 	Sprite *areaClearing = nullptr;
 	Sprite *areaForbidden = nullptr;
 	Sprite *areaGuard = nullptr;
+	Sprite *areaFarm = nullptr;
 	Sprite *bullet = nullptr;
 	Sprite *bulletExplosion = nullptr;
 	Sprite *deathAnimation = nullptr;
@@ -99,8 +103,11 @@ public:
 	BuildingsTypes buildingsTypes;
 	ResourcesTypes resourcesTypes;
 
-	std::string videoshotName; //!< the name of videoshot to record. If empty, do not record videoshot
+	std::string videoshotName; //!< Legacy -vs shorthand for compressed capture.
+	std::string recordingPath;
 	bool runNoX;
+	//! The application owns this SDL_net reference and releases it before SDL.
+	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
 	// Zero selects the bounded hardware/AI-count default. Structured

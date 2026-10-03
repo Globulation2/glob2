@@ -1,5 +1,6 @@
 /* Maxima private farming primitives. */
 
+#include "field/PriorityTraversal.h"
 #include "AIMaximaFarming.h"
 
 #include <algorithm>
@@ -327,19 +328,19 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 		{cost[index]=resourceCost(index);length[index]=1;queue.push(Entry(cost[index],1,index));}
 	}
 	int entrance=-1;
-	while(!queue.empty())
-	{
-		const Entry entry=queue.top();queue.pop();
-		const int index=std::get<2>(entry),x=index%width,y=index/width;
-		if(std::get<0>(entry)!=cost[index]||std::get<1>(entry)!=length[index])continue;
-		const int neighbors[4]={y*width+(x+width-1)%width,y*width+(x+1)%width,
-			((y+height-1)%height)*width+x,((y+1)%height)*width+x};
-		for(int next:neighbors)if(footprintMask[next]){entrance=index;break;}
-		if(entrance>=0)break;
-		for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-		{
-			const int next=((y+dy+height)%height)*width+(x+dx+width)%width;
-			if(!allowed[next])continue;
+	field::traversePriority(queue,{width,height},field::Surrounding,
+		[](const Entry& entry){return std::get<2>(entry);},
+		[&](const Entry& entry) {
+			const int index=std::get<2>(entry),x=index%width,y=index/width;
+			if(std::get<0>(entry)!=cost[index] || std::get<1>(entry)!=length[index])return field::Visit::Skip;
+			const int neighbors[4]={y*width+(x+width-1)%width,y*width+(x+1)%width,
+				((y+height-1)%height)*width+x,((y+1)%height)*width+x};
+			for(int next:neighbors)if(footprintMask[next]){entrance=index;break;}
+			return entrance>=0?field::Visit::Stop:field::Visit::Expand;
+		},[&](const Entry& entry,int px,int py) {
+			const int index=std::get<2>(entry);
+			const int next=((py+height)%height)*width+(px+width)%width;
+			if(!allowed[next])return;
 			const uint64_t nextCost=cost[index]+resourceCost(next);
 			const int nextLength=length[index]+1;
 			if(nextCost<cost[next]||(nextCost==cost[next]&&nextLength<length[next]))
@@ -347,8 +348,7 @@ ReservationClearingSelection selectResourcePreservingCirculation(
 				cost[next]=nextCost;length[next]=nextLength;parent[next]=index;
 				queue.push(Entry(nextCost,nextLength,next));
 			}
-		}
-	}
+		});
 	if(entrance>=0)
 	{
 		if(cost[entrance]>0)result.fallbackEntranceTile=entrance;

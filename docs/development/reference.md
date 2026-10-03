@@ -128,15 +128,20 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   Primary GCC 13 programs are published before CLI regressions and consumed by
   both native shards and browser transport checks. Each selected GCC toolchain
   starts its own runtime shards without waiting for Clang. The stable
-  `Relevant checks passed` gate requires every selected check to succeed.
-  Draft PRs defer expensive verification; `ready_for_review` or `ci:run` starts it.
+  `Relevant checks passed` summary requires every selected check to succeed, but
+  is not a merge prerequisite. Cheap-only success does not establish engine
+  verification or acceptance of local PR evidence. Both draft and ready PRs run
+  cheap contracts by default; `ci:run` or `ci:full` requests hosted verification.
   The [risk policy and rollout](#tiered-pull-request-coverage-rollout) controls
-  secondary platforms and cumulative master validation. Unknown inputs select full
+  secondary platforms for explicitly requested PR verification. Retained master
+  pushes always run the full development matrix. Unknown inputs select full
   development coverage. Steam/store release packaging runs only for releases or
   explicit dispatches, including when its helper files change.
 - CI run cancellation: superseded PR revisions cancel through server-side
   concurrency. Master runs finish once started and only the newest pending push
-  remains; nightly and manual runs have separate groups. Call-only workflows
+  remains; nightly and manual runs have separate groups. Nightly skips expensive
+  jobs when available successful full evidence covers its exact master SHA and
+  current coverage policy; otherwise it runs the full matrix. Call-only workflows
   inherit their caller's cancellation. Other callable workflows use a literal
   prefix distinct from their caller to prevent deadlocks. The trusted
   `cancel-superseded.yml` workflow uses `pull_request_target`, checks out only
@@ -175,8 +180,8 @@ on `master`:
 the public `Globulation2/glob2` repository stores the workflow and build code for
 review, but dispatching it there cannot build, sign, upload or publish a release.
 The owner syncs the public changes into the public release mirror and starts each
-release there manually. Merge public `master` into the mirror's `master` so
-mirror-only release configuration stays in place. The workflow builds the existing MinGW x64
+release there manually. The mirror's `master` tracks public `master` exactly; see
+[the release mirror](releasing.md#the-release-mirror). The workflow builds the existing MinGW x64
 client, stages its runtime DLLs, game assets and GPL license, creates
 `MicrosoftGame.config`, shell logos and a 1920×1080 splash image, then
 uses the Microsoft GDK to produce an MSIXVC package. With `upload: false`, it
@@ -273,6 +278,18 @@ team-color masks and HD frame geometry. Normal source/debug builds use the
 originals. Image lookup searches directories in their existing order, checking a
 logical PNG first and its WebP alternative second within each directory; an
 original PNG override therefore retains precedence.
+
+Optimized exports also pack the frames of the sprites in `SPRITE_SHEETS`
+(currently `data/gfx/unit`, 2,816 files) into sprite sheets: runs of up to 256
+consecutive frames of one layer and size, sixteen tiles to a row, each encoded like
+any other image. `<name>.sheet` beside them lists each sheet's file, layer
+(`image` or `rotated`), first frame, frame count and tile size. When that index
+exists, `GAGCore::Sprite::load` cuts the tiles out of the sheets and ignores the
+per-frame files; without one, or if any sheet does not match it, the sprite loads
+one file per frame as in the source tree. The exporter checks that every tile is
+byte-identical to its frame, and the audit lists each sheet's frames under
+`packed_from` so release installs can remove per-frame copies left by older
+installs. Opening thousands of small files dominated unit-sprite loading.
 
 Packaging bootstraps a private Pillow 12.2.0/libwebp 1.6.0 encoder environment
 when the current Python lacks the pinned encoder. This is a build dependency,
@@ -435,6 +452,31 @@ POSIX builds also report process CPU time separately from elapsed time.
 Scope timings separately report CPU submission and overlap; do not sum inclusive
 scopes. The fixture is native OpenGL only; mobile uses the SDL portable renderer,
 so desktop results do not qualify Android/iOS hardware performance.
+
+The `skin-game-preview` diagnostic measures the colony-skin path through the real
+Scene renderer. Build it with `scons release=1 skin-game-preview`, then set
+`SKIN_PREVIEW_SAVE` to a two-colony saved game, `GLOB2_SKIN_PREVIEW_DIR` to a
+mesh directory containing `paint.png`, `SKIN_PREVIEW_CAPTURE` to a capture name,
+and `SKIN_PREVIEW_BENCHMARK` to a relative capture prefix. Run with `-g -m
+-s800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
+`SKIN_BENCH_WARMUP` control total and discarded warmup frames (defaults 45 and 5).
+The harness adds a crowded diagnostic colony, advances its animation phases,
+and checks that every draw preserves simulation checksums and that classic and
+skinned states match. It reports first-frame cost separately from warmed mean,
+p95, draw counts and `render.skins.*` preparation/geometry/raster/composite scopes.
+Set `SKIN_PREVIEW_ZOOM` (0.02–5.0, clamped by the map camera) to exercise adaptive
+zoom detail. Set `SKIN_PREVIEW_ADAPTIVE=0` to check skins with adaptive detail
+disabled. When only overview markers and building icons are visible, the
+diagnostic checks that hidden skin meshes are neither prepared nor drawn.
+Frame times include presentation; scope times measure CPU submission and driver
+work, not isolated GPU duration. Preserve the fixture, binaries, build inputs,
+resolution, driver, counters and captures for matched comparisons; run repeated
+alternating pairs without concurrent builds. Software GL results do not establish
+hardware performance. The smaller `skin-preview ASSET_DIRECTORY OUTPUT_PREFIX
+--validate-opacity` diagnostic captures opaque, half-opacity and invisible mesh/shadow
+composites and verifies that opacity changes reuse cached poses. The
+`--validate-cache` diagnostic checks cache hits, repainting, texture address reuse
+and atlas overflow, and saves images for pixel comparison.
 
 Cloud patches in the flat game and editor views now use a coarser, world-anchored
 lattice when zooming out to half size or smaller. Patches retain at most their configured
@@ -625,12 +667,42 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   publication are relevant checks.
 - Gradient field seeding lives in the area, building and resource source files.
   `MapGradientPropagation.cpp` starts eager fields through the private
-  `kernel/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
-  building fields. Both use `kernel/GradientRelaxation.h`. Keep their cell-cost
+  `src/field/GradientPropagation.h` core; `BuildingGradientSearch.cpp` resumes
+  building fields. Both use `src/field/GradientRelaxation.h`. Keep their cell-cost
   and queue ordering contracts shared when tuning architecture-specific kernels.
-  `GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
+  `src/field/GradientConstants.h` owns the field encoding; `Map` keeps its pipeline and
   per-executor scratch in an opaque `GradientRuntime`. Save/load reaches pending
   work through snapshot views, not the pipeline's mutable jobs.
+- `src/field/` is the Map-independent field library. Weighted paths retain
+  bucket queues and scalar/SSE2/NEON relaxation; uniform four/eight-neighbour
+  fields use an ordered FIFO with caller-owned payloads and admission rules.
+  Seed and neighbour order matter for first-discovery payloads and early stopping,
+  including Cortex wheat depth and Maxima food claims. Keep those searches ordered.
+  Callers own seeding, field encodings, transient scratch, cache ages and publication.
+  Sharing a solver does not make fields with different predicates interchangeable.
+- Choose the smallest field operation that preserves the caller's contract:
+
+  | Operation | Entry point | Caller responsibility |
+  | --- | --- | --- |
+  | Weighted path field | `gradient_kernel::propagateField` | Encode seeds/obstacles, supply stable terrain and a `GradientWorkspace`. |
+  | Resumable weighted paths | `gradient_kernel::expandBucket` | Preserve pending buckets and settle whole cost layers before pausing. |
+  | Uniform distance field | `field::expandDistances` | Seed equal distances, choose the unvisited sentinel and ordered stencil. |
+  | Ordered FIFO with payloads | `field::traverse` | Admit and enqueue neighbours; retain first-discovery payloads and stopping rules. |
+  | Domain heap search | `field::traversePriority` | Own costs, comparator, stale-entry checks and parent ties, including zero-cost edges. |
+  | Component stack/queue | `field::depthFirst` / `field::breadthFirst` | Own discovery and push order. |
+
+  `Grid::neighbors` supplies raw coordinates for bounds checks before wrapping;
+  `Grid::neighborIndices` supplies wrapped indices. Both retain stencil order and
+  aliases on thin grids. The vector FIFO keeps discovery history; `Frontier`
+  consumes entries and retains storage for the largest pending frontier. Clear
+  and seed either workspace at the owning caller. An early stop preserves writes
+  already made; grid traversal finishes the current neighbour stencil before
+  visiting the next entry. Use `breadthFirst` for stops during expansion.
+- Influence has two distinct contracts in `src/field/Influence.h`: convergent
+  maximum-contribution propagation and four directional sweeps. Castor requires
+  the latter's staggered scan order and byte arithmetic; replacing it with
+  convergence changes AI decisions. Map retains the cooperative checkpoints
+  around convergent rows. No solver depends on Map, AI, threading or serialization.
 - In `src/map/gradient/MapGradientChamfer.cpp` the chamfer distance transform's
   convergence-pass cap is bounded by the Uint8 value range (256), not by the
   Borgefors 1-pass result. Borgefors holds only on an obstacle-free grid; with
@@ -782,7 +854,10 @@ a supported open-file checker and is conservatively skipped there.
 ## Scene renderer
 
 Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
-runs while the simulation advances on another thread.
+runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
+an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
+Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
+bounded software target. Asset loading is shared with normal game startup.
 
 - `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
   only place presentation code reads the game. `GameGUI::drawAll` extracts
@@ -847,7 +922,10 @@ also remains the headless default and the equivalence reference.
   for code shared by threads; add boundaries in `.github/scripts/ci_policy.py`
   when new code becomes shared between them. Drafts defer it. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
-  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
+  The windowed fixture explicitly uses the game's software renderer and disables SDL's accelerated
+  framebuffer presentation, keeping uninstrumented Mesa worker threads out of the sanitizer run.
+  GPU rendering remains covered by the renderer suites. Narrow, explained suppressions for
   library shutdown races live in `test/tsan.supp`; never suppress game code there.
   Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
@@ -870,6 +948,42 @@ off by default) draws units between ticks, so threaded play at display rate uses
   so captures with the setting off stay comparable.
 - A unit that turns or stops at the next tick can jump back by at most one tick of motion.
   Serial execution draws right after each tick, so the setting has almost no effect there.
+
+### Smooth fog of war
+
+The simulation's fog of war is binary per tile, and its buffers swap every
+`FOW_SWITCH_TICK_MASK + 1` ticks (`Map::switchFogOfWar`), so every tile that left sight
+during one window darkens on the same tick. The **Smooth fog of war** graphics setting
+(`Settings::smoothFog`, on by default) fades that change in the renderer only; the
+simulation, saves and replays are unaffected.
+
+- `FogFade` (`src/render/FogFade.h`), kept per view in `MapRenderState`, records for each
+  tile whether it is fogged, its fade level when that last changed and the tick it changed
+  on. `Game::drawMap` updates it once per frame from the drawn Scene, and resets it while
+  the fade is not drawn (setting off, or `DRAW_WHOLE_MAP`), so it is `active()` exactly when
+  the frame draws the fog faded. A tile changing state fades linearly from wherever it had
+  reached, into the fog over `FogFade::DARKEN_TICKS` (25) and out of it over
+  `FogFade::REVEAL_TICKS` (4). A new map, other visible teams, a step back in time, a jump
+  forward of more than `FogFade::SETTLE_JUMP_TICKS` (64) or a reset settle every tile
+  without fading.
+- Fades run in game time: the Scene's tick plus the elapsed fraction of the tick interval
+  (`unitMotionFraction`), independently of the smooth unit motion setting. They stop while
+  paused and follow the game speed.
+- The shade draws each square from its four corner levels. The level all corners reach is
+  a fill (`FogFade::fillAlpha`); each higher corner level adds the shade sprite masked to the
+  corners reaching it, drawn with `FogFade::layerAlpha` of the difference. The alphas are
+  chosen so the layers compose to the fill of the top level (within rounding, where the
+  sprite's pixels are at their peak; the derivation is in `FogFade.cpp`), and fully fogged
+  or fully clear corners draw the same single fill or sprite as with the setting off.
+- Enemy units fade with the clearer of their tile and the tile they come from, and so does
+  everything drawn for them: bars and status pips (through the `opacity` parameter of
+  `Game::anchorBars`, `drawStatusPip`, `drawPointBar` and `drawHealthBar`; queued bars take
+  it from their anchor), selection circles, the level-up number and magic effect, the
+  carried resource and the accessibility label. A fading unit's sprite is translucent and so
+  leaves the unit sprite batch; only the few units at the edge of the fog do.
+- Still binary: undiscovered black, the minimap, mouse and touch picking, bullets and
+  explosions, and remembered enemy buildings. Bullets near a fading unit therefore vanish
+  at the fog swap.
 
 ## Adaptive zoom detail
 
@@ -905,8 +1019,8 @@ it is saved, checksummed or read by the simulation.
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
   neighbours tile without seams. The fog-of-war shade draws one fill per horizontal
-  run of whole squares with `drawMapTileFill` and its edge sprites with
-  `drawMapTileSprite`. Both snap to pixels only in the software rasteriser, where
+  run of whole squares at one fade level with `drawMapTileFill` and its edge sprites
+  with `drawMapTileSprite` (see [Smooth fog of war](#smooth-fog-of-war)). Both snap to pixels only in the software rasteriser, where
   truncated coordinates otherwise leave one-pixel gaps between tiles; accelerated
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
@@ -937,7 +1051,8 @@ When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 from the same build for a before/after pair. Set it explicitly on every run: the
 benchmark saves preferences, so the last value otherwise carries into the next run.
 `torus-render-benchmark` takes `GLOB2_BENCH_ZOOM`, `GLOB2_BENCH_PAN_X`/`_Y` (the
-camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`,
+camera's top-left tile), `GLOB2_BENCH_AREAS=1` (zones), `GLOB2_BENCH_FOG=1`
+(with `GLOB2_BENCH_SMOOTH_FOG=0|1` for the fade),
 `GLOB2_BENCH_FRACTION` (a camera offset in map pixels, which seams need to show) and
 `GLOB2_BENCH_ADAPTIVE_ZOOM=0|1` for the same comparison on OpenGL. Sprites stay
 opaque while markers and chips fade in over them, since a translucent sprite leaves
@@ -1079,18 +1194,19 @@ captures, and report unavailable platform and maintainer-playtesting coverage ex
 
 ### CI timing and retained revisions
 
-Ready pull requests cancel superseded revisions. Master finishes active verification
-and keeps the newest pending push. With tiers enabled, the selector compares its
-checkout to the latest successful ancestor checkpoint with matching policy evidence;
-this includes all changes whose intermediate pending runs were replaced. An absent,
-expired, divergent or invalid checkpoint selects full coverage. Nightly verification
-runs at 06:00 UTC in a separate concurrency group without publication operations.
+Pull requests cancel superseded revisions and run cheap contracts by default.
+Master finishes active full verification and keeps the newest pending push; all
+retained master pushes select the full development matrix. Nightly fallback runs
+at 06:00 UTC in a separate concurrency group without publication operations, and
+skips expensive jobs only with matching available successful full evidence for
+its exact revision and policy.
 Release packaging first runs the full development matrix on the exact candidate
 revision through `build.yml`'s `revision` workflow-call input.
 
 CI measurements batch completed runs hourly using trusted default-branch code and
-inert artifacts. Cancellations do not create measurement workflows, and draft-only
-observations are excluded. Batches retain attempt identities to avoid remeasuring
+inert artifacts. Cancellations do not create measurement workflows, and cheap-only
+observations are excluded. Explicitly requested verification on drafts is included.
+Batches retain attempt identities to avoid remeasuring
 completed runs and attempt at most ten new measurements per batch. `feedback.json` reports p90 after ten successful matching-inventory
 PR samples, with explicit gaps when there are fewer samples. Metrics report queue delay, active execution time, idle
 gaps, aggregate runner minutes, feedback time and cache observations separately.
@@ -1099,9 +1215,10 @@ jobs count once in wall execution time and separately in runner minutes.
 Compare ten successful runs with matching event and exact coverage inventory using
 `python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
 Report workload reductions separately from execution savings. The initial service
-objective is p90 ordinary-PR feedback below 15 minutes and queue delay below two
-minutes; full compatibility changes and releases may take longer. Missing samples
-and missing inventories cannot establish improvements.
+objective for explicitly requested affected-PR verification is p90 feedback below
+15 minutes and queue delay below two minutes; full verification and releases may
+take longer. Cheap-contract feedback is not engine verification feedback. Missing
+samples and missing inventories cannot establish improvements.
 
 ### Linux execution dependencies
 
@@ -1146,36 +1263,98 @@ Only platform-matched jobs with ten successful samples enter a profile. Review t
 resulting diff before shipping it; weights never change during a run. Profiles
 remain empty until measurements are available, rather than using invented data.
 
+### Local and VM PR verification
+
+Relevant local or VM testing is the standard PR verification path. Maintainers
+accept evidence directly, including their own evidence; hosted CI success is not
+a merge prerequisite. Choose tests from the change's actual risks and justify
+coverage and omissions rather than reproducing the CI matrix. A VM supplies
+coverage for its actual OS, architecture and configuration; testing on one platform
+does not establish another platform's compatibility.
+
+Record evidence in a PR comment using this template, with links accessible to
+reviewers. Store generated files under ignored `artifacts/` and temporary narratives
+under `docs/.work/`, then upload or attach evidence for review; local paths alone
+are insufficient. Keep secrets out of uploaded logs.
+
+```markdown
+Local / VM verification
+
+- Tested commit SHA:
+- Base revision and integration state (PR head or merge with base):
+- Environment: OS, architecture, VM/container image if applicable, compiler/runtime versions:
+- Dependencies, build configuration and flags:
+- Coverage rationale: changed behavior and risks addressed:
+- Exact build/test commands and results (including counts and exit status):
+- Omitted checks and why; limitations:
+- Evidence: accessible links to logs and applicable checksums, saves, replays or screenshots:
+- Maintainer acceptance: sufficient evidence for this revision, accepted by <name>:
+```
+
+Evidence must describe the tested source and binaries; reuse built artifacts only
+when source, compiler, flags and dependency inputs match. Refresh evidence when
+later edits affect tested behavior, dependencies or integration. Fetch current
+master before final validation and resolve actual conflicts. Unrelated master
+advancement alone does not invalidate evidence; changes in the same components,
+dependencies or CI configuration require renewed integration assessment.
+
+Focused coverage does not waive affected simulation determinism, save/load,
+replay/network, platform compatibility or simulation-version requirements in
+`AGENTS.md`. Local and hosted results may jointly supply that coverage. Hosted
+checks may be pending or unavailable when merging; known failures introduced by
+the PR still require resolution.
+
+### Hosted verification and regression detection
+
+Draft and ready PRs run the existing cheap contracts by default. Becoming ready
+starts no expensive jobs. `ci:run` requests hosted affected checks; `ci:full`
+requests the complete development matrix, even in draft. `ci:windows`, `ci:android`
+and `ci:browsers` expand requested coverage but do not start verification alone.
+Label changes re-evaluate selection; removing the request labels restores
+cheap-only selection. The aggregate summary rejects missing, failed, cancelled
+and unexpectedly skipped selected jobs, while clearly distinguishing cheap-only
+success from engine verification or acceptance of PR evidence.
+
+Every retained master push runs the full development matrix regardless of tier
+settings. Active runs finish and only the newest pending push remains. Full master
+CI detects regressions asynchronously; existing master failures do not restrict
+PR merges. Retain failure artifacts, prioritize diagnosis and repair, document
+verification in repair PRs and confirm recovery with subsequent full master runs.
+Do not require master to become green before other PRs merge.
+
+Nightly is a fallback with a separate concurrency group. Expensive nightly jobs
+are skipped only when a successful full hosted run already covers the exact master
+SHA under the current coverage policy and its evidence is available. Missing,
+expired, mismatched or inaccessible evidence triggers the full matrix. A skipped
+nightly is not a new full checkpoint. Manual and release verification retain their
+existing behavior. Local evidence never substitutes for a hosted full checkpoint.
+
 ### Tiered pull-request coverage rollout
 
 `.github/scripts/ci_policy.py` records proposed and effective selection, reasons,
-changed paths, checkpoint, policy identity and selected command inventory in
-`ci-selection.json`. Native runners additionally retain exact eligible/assigned
-case inventories. Primary Linux keeps the complete applicable native suite.
-Simulation/save/AI changes add older-GCC and Windows compatibility cases plus
-complete native/browser per-tick and scripting comparisons. Presentation changes
-retain software/WebGL and Firefox/WebKit coverage. Network changes retain real
-transport/server/deployment checks. Android changes retain arm64 builds and x86_64
-emulator smoke. Shared headers, dependency/build configuration and unknown paths
-select the full development matrix. Native coverage is selected nightly/full or
-when its infrastructure changes. `test/ci-compatibility.json` owns repeated native
-compatibility cases; add suites there when introducing a new portability boundary.
+changed paths, policy identity and selected command inventory in `ci-selection.json`.
+The observation also identifies `cheap-contracts`, `affected`, `full` or
+`nightly-reused` verification and the reused run ID when applicable. Native runners
+retain eligible/assigned case inventories. Cheap-only PR runs do not enter ordinary
+verification performance cohorts; requesting tests on a draft does not exclude
+actual verification from those cohorts.
 
-Drafts run contracts only. `ci:run` requests normal affected checks while still
-in draft. `ci:full`, `ci:windows`, `ci:android` and `ci:browsers` expand the minimum;
-use `ci:run` as well to execute an expansion while draft. Ready transitions and
-label changes re-evaluate selection. The aggregate gate rejects missing, failed,
-cancelled and unexpectedly skipped required jobs; draft summaries clearly state
-that expensive verification was deferred.
+For explicitly requested affected PR verification, primary Linux keeps the
+complete applicable native suite. Simulation/save/AI changes add older-GCC and
+Windows compatibility cases plus native/browser per-tick and scripting comparisons.
+Presentation changes retain software/WebGL and Firefox/WebKit coverage. Network
+changes retain transport/server/deployment checks. Android changes retain arm64
+builds and x86_64 emulator smoke. Shared headers, dependency/build configuration
+and unknown paths select the full development matrix.
+`test/ci-compatibility.json` owns repeated native compatibility cases; add suites
+there when introducing a portability boundary.
 
-Reductions start disabled. First validate scheduling and reuse changes with the
-full hosted master/nightly matrix. Then set `CI_TIERED_COVERAGE_ENABLED=true` after
-reviewing shadow-selection evidence. The selector discovers successful full master
-runs with matching source/policy identity and unexpired evidence automatically;
-`CI_TIER_BASELINE_RUN_ID` can specify a preferred baseline. Old-policy evidence
-cannot activate a new selector. Unavailable evidence falls back to conservative
-coverage. Set the flag false to roll back reductions while keeping scheduling and
-reuse improvements. Full nightly and release verification remains mandatory.
+Affected-PR tier reductions remain disabled until a full hosted master/nightly
+matrix validates the current policy. `CI_TIERED_COVERAGE_ENABLED=true` activates
+them with matching available full evidence; `CI_TIER_BASELINE_RUN_ID` may specify
+a preferred baseline. Missing evidence or setting the flag false restores
+conservative affected-PR coverage. These settings never reduce master coverage or
+start expensive PR checks without an explicit request.
 
 ## Untrusted maps, saved games and replays
 

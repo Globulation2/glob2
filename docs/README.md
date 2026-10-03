@@ -18,6 +18,7 @@ dated reports and pull-request artifacts do not belong here.
 - **Assets:** [third-party attribution](assets/source-attribution.md) and
   [high-resolution artwork provenance](assets/high-resolution/README.md).
 - **Development:** [build and coding reference](development/reference.md),
+  [GOG releases](development/gog-release.md),
   [Mac App Store release](development/mac-app-store.md),
   [mainland China release](development/china-release.md),
   [menus and dialogs on the declarative UI framework](development/ui-framework.md),
@@ -29,14 +30,16 @@ dated reports and pull-request artifacts do not belong here.
   [network telemetry](development/network-telemetry.md),
   [save continuation](development/savegame-continuation.md), and the
   [historical architecture overview](development/legacy-architecture.txt).
-- **Features:** [custom-game setup](features/custom-game-setup/README.md),
+- **Features:** [gameplay footage and automatic chapters](features/gameplay-recording.md), [custom-game setup](features/custom-game-setup/README.md),
   [experimental features](features/experimental-features.md) and the
-  [guard-area balancing](features/guard-area-balancing.md) experiment,
+  [guard-area balancing](features/guard-area-balancing.md) and
+  [farm areas](features/farm-areas.md) experiments,
   [map previews](features/pre-game-map-preview.md),
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).
 - **Map generators:** [design and implementation index](map-generators/README.md).
-- **Online multiplayer:** [platform architecture](multiplayer/architecture.md),
+- **Online multiplayer:** [Hive Mind commander](multiplayer/hive-mind.md),
+  [platform architecture](multiplayer/architecture.md),
   [identity and sign-in](multiplayer/identity.md),
   [rooms and matches](multiplayer/rooms-and-matches.md),
   [ratings and matchmaking](multiplayer/ratings-and-matchmaking.md),
@@ -50,7 +53,8 @@ dated reports and pull-request artifacts do not belong here.
 - **Tools:** [distributed tournaments](tools/tournaments.md).
 
 - **Mobile platforms:** [builds, responsive UI and verification](mobile/development.md),
-  [Android privacy policy](mobile/privacy-policy.md), and
+  the [privacy policy](mobile/privacy-policy.md) for the Android and iOS apps and the
+  official online service, and the
   [Amazon Fire tablet privacy policy](mobile/amazon-privacy-policy.md).
 
 - **Online multiplayer:** [online client](multiplayer/client.md): platform
@@ -72,3 +76,5 @@ dedicated evidence branch. Preserve only conclusions that remain useful after th
 change merges, and add those conclusions to the appropriate durable guide above.
 
 - [AI ratings](ai/ratings.md): measured opponent strength and interpretation.
+
+- [Win probability model](win-probability-model.md): fitted live-state predictions, calibration limits and optional early victory.

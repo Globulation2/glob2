@@ -171,7 +171,7 @@ export interface EngineAgentsTable {
 
 export interface EngineJobsTable {
   id: Generated<string>;
-  kind: 'generate-map' | 'validate-map' | 'render-preview' | 'verify-match';
+  kind: 'generate-map' | 'validate-map' | 'render-preview' | 'verify-match' | 'import-ai-map';
   sim_version: string;
   payload: Json<JsonValue>;
   status: Defaulted<'queued' | 'succeeded' | 'failed'>;
@@ -205,6 +205,7 @@ export interface RateLimitsTable {
 }
 
 export interface MapsTable {
+  authoring: NullableJson<JsonValue>;
   id: Generated<string>;
   owner_account_id: string;
   title: string;
@@ -334,6 +335,7 @@ export type MatchVerification =
   'pending' | 'verified' | 'diverged' | 'unverifiable' | 'not_applicable' | 'failed';
 
 export interface MatchesTable {
+  skins_frozen_at: NullableTimestamp;
   id: Generated<string>;
   sim_version: string;
   origin: 'room' | 'queue';
@@ -645,7 +647,237 @@ export interface NotificationPayloadsTable {
   created_at: Timestamp;
 }
 
+export interface ColonySkinsTable {
+  id: Generated<string>;
+  owner_account_id: Nullable<string>;
+  kind: 'preset' | 'custom';
+  name: string;
+  entitlement: string;
+  disabled_at: NullableTimestamp;
+  created_at: Timestamp;
+}
+
+export interface ColonySkinVersionsTable {
+  id: Generated<string>;
+  skin_id: string;
+  texture_sha256: string;
+  layout: 'colony-v1';
+  building_color: number;
+  manifest_sha256: string;
+  created_at: Timestamp;
+}
+
+export interface ColonySkinEquipmentTable {
+  building_color: Nullable<number>;
+  account_id: string;
+  version_id: string;
+  updated_at: Timestamp;
+}
+
+export interface MatchColonySkinsTable {
+  building_color: number;
+  match_id: string;
+  team_index: number;
+  account_id: string;
+  version_id: string;
+  assertion: string;
+  created_at: Timestamp;
+}
+
+export interface SkinPurchasesTable {
+  id: Generated<string>;
+  account_id: string;
+  request_id: string;
+  sku: 'designer' | 'stripes' | 'spots';
+  entitlement: string;
+  price_id: string;
+  checkout_id: Nullable<string>;
+  payment_intent_id: Nullable<string>;
+  status: Defaulted<'pending' | 'paid' | 'refunded' | 'disputed' | 'failed'>;
+  entitlement_id: Nullable<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+  reconcile_after: Timestamp;
+  recovery_cursor: Nullable<string>;
+}
+export interface SkinPaymentEventsTable {
+  id: string;
+  event_type: string;
+  purchase_id: Nullable<string>;
+  processed_at: Timestamp;
+}
+export interface ColonySkinDraftsTable {
+  skin_id: Nullable<string>;
+  account_id: string;
+  revision: string;
+  name: string;
+  building_color: number;
+  image: Buffer;
+  updated_at: Timestamp;
+}
+
+export interface ColonySkinReportsTable {
+  id: Generated<string>;
+  version_id: string;
+  reporter_account_id: string;
+  reason: string;
+  created_at: Timestamp;
+  resolution: Nullable<'dismissed' | 'disabled'>;
+  resolved_at: NullableTimestamp;
+  resolved_by_account_id: Nullable<string>;
+  resolution_reason: Nullable<string>;
+}
+// The shared database connection parses bounded bigint values as numbers.
+export interface HiveWalletsTable {
+  account_id: string;
+  balance: Defaulted<number>;
+  reserved: Defaulted<number>;
+}
+export interface HiveLedgerTable {
+  id: string;
+  account_id: string;
+  amount: number;
+  kind: string;
+  details: DefaultedJson<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveCallsTable {
+  id: string;
+  account_id: string;
+  reserved: number;
+  status: string;
+  charged: Nullable<number>;
+  rate: Json<JsonValue>;
+  usage: NullableJson<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveSessionsTable {
+  id: Generated<string>;
+  account_id: string;
+  match_id: string;
+  seat: number;
+  team: number;
+  client_id: Nullable<string>;
+  lease: Nullable<string>;
+  lease_until: NullableTimestamp;
+  tick: Defaulted<number>;
+  generation: Defaulted<number>;
+  supervision: Defaulted<boolean>;
+  pending_run: Defaulted<boolean>;
+  run_id: Nullable<string>;
+  run_until: NullableTimestamp;
+  last_wake_tick: Nullable<number>;
+  wake_window: NullableTimestamp;
+  wake_count: Defaulted<number>;
+  created_at: Timestamp;
+}
+export interface HiveEventsTable {
+  id: Generated<number>;
+  session_id: string;
+  dedup: string;
+  kind: string;
+  body: Json<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveOperationsTable {
+  supervised: Defaulted<boolean>;
+  id: string;
+  session_id: string;
+  generation: number;
+  lease: Nullable<string>;
+  status: string;
+  request: Json<JsonValue>;
+  result: NullableJson<JsonValue>;
+  created_at: Timestamp;
+}
+export interface HiveProgramsTable {
+  supervised: Defaulted<boolean>;
+  session_id: string;
+  id: string;
+  revision: number;
+  definition: Json<JsonValue>;
+  status: string;
+}
+export interface HivePurchasesTable {
+  id: string;
+  account_id: string;
+  checkout_id: Nullable<string>;
+  payment_id: Nullable<string>;
+  pack: Json<JsonValue>;
+  paid: Defaulted<boolean>;
+  reversed: Defaulted<number>;
+  created_at: Timestamp;
+}
+
+export interface StudioThreadsTable {
+  id: Generated<string>;
+  account_id: string;
+  title: string;
+  brief: Defaulted<string>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface StudioMessagesTable {
+  id: string;
+  thread_id: string;
+  role: 'user' | 'assistant';
+  text: string;
+  created_at: Timestamp;
+}
+export interface StudioRequestsTable {
+  id: string;
+  thread_id: string;
+  account_id: string;
+  kind: 'chat' | 'generate';
+  status: Defaulted<string>;
+  input: Json<JsonValue>;
+  checkpoints: DefaultedJson<JsonValue>;
+  lease_until: NullableTimestamp;
+  lease: Nullable<string>;
+  map_id: Nullable<string>;
+  map_hash: Nullable<string>;
+  error: Nullable<string>;
+  charged: Defaulted<boolean>;
+  created_at: Timestamp;
+  completed_at: NullableTimestamp;
+}
+export interface StudioAttemptsTable {
+  id: string;
+  request_id: string;
+  stage: string;
+  model: string;
+  status: string;
+  input: Json<JsonValue>;
+  output: NullableJson<JsonValue>;
+  created_at: Timestamp;
+}
+
 export interface Database {
+  colony_skin_reports: ColonySkinReportsTable;
+  colony_skin_drafts: ColonySkinDraftsTable;
+  skin_purchases: SkinPurchasesTable;
+  skin_payment_events: SkinPaymentEventsTable;
+  colony_skins: ColonySkinsTable;
+  colony_skin_versions: ColonySkinVersionsTable;
+  colony_skin_equipment: ColonySkinEquipmentTable;
+  match_colony_skins: MatchColonySkinsTable;
+
+  studio_threads: StudioThreadsTable;
+  studio_messages: StudioMessagesTable;
+  studio_requests: StudioRequestsTable;
+  studio_attempts: StudioAttemptsTable;
+  map_wallets: HiveWalletsTable;
+  map_ledger: HiveLedgerTable;
+  map_calls: HiveCallsTable;
+  map_purchases: HivePurchasesTable;
+  hive_wallets: HiveWalletsTable;
+  hive_ledger: HiveLedgerTable;
+  hive_calls: HiveCallsTable;
+  hive_sessions: HiveSessionsTable;
+  hive_events: HiveEventsTable;
+  hive_operations: HiveOperationsTable;
+  hive_programs: HiveProgramsTable;
+  hive_purchases: HivePurchasesTable;
   accounts: AccountsTable;
   identities: IdentitiesTable;
   device_credentials: DeviceCredentialsTable;

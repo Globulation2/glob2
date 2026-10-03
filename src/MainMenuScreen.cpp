@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "MainMenuScreen.h"
+#include "ui/RecordingControls.h"
 #include "GlobalContainer.h"
 #include <algorithm>
 #include <cmath>
+#include <ApplicationHost.h>
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -169,6 +171,17 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
+			if (GAGCore::Recording::supported())
+				content.push_back(recordingControls());
+#if defined(GLOB2_MOBILE) && defined(__ANDROID__)
+			content.push_back(button("menu/privacy", "Privacy policy", [] {
+#if defined(GLOB2_AMAZON_RELEASE)
+				GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/amazon-privacy-policy.md");
+#else
+				GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/privacy-policy.md");
+#endif
+			}, rowStyle));
+#endif
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 			content.push_back(action("[quit]", QUIT, rowStyle));
 #endif
@@ -218,10 +231,21 @@ Element MainMenuScreen::build(const Presentation &p)
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 	std::vector<Element> utilities{action("[settings]", GAME_SETUP, utility), action("[editor]", EDITOR, utility),
 								   action("[credits]", CREDITS, utility), action("[quit]", QUIT, utility)};
+#if defined(GLOB2_MOBILE) && defined(__ANDROID__)
+	utilities.push_back(button("menu/privacy", "Privacy policy", [] {
+#if defined(GLOB2_AMAZON_RELEASE)
+		GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/amazon-privacy-policy.md");
+#else
+		GAGCore::ApplicationHost::openUrl("https://github.com/Globulation2/glob2/blob/master/docs/mobile/privacy-policy.md");
+#endif
+	}, utility));
+#endif
 	WrapOptions grid;
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;
 	content.push_back(wrap(std::move(utilities), grid));
+	if (GAGCore::Recording::supported())
+		content.push_back(recordingControls());
 	cardOptions.padding = p.pt(compact ? 16 : 24);
 	auto panel = sized({panelW, panelH},
 					   card(column({expanded(scroll("menu/scroll", column(std::move(content), {p.pt(compact ? 4 : 6)}))), caption(PACKAGE_VERSION)}, {p.pt(6)}),

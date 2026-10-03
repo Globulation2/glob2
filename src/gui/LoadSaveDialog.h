@@ -13,6 +13,7 @@
 class LoadSaveDialog : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "load_save_dialog"; }
 	enum
 	{
 		OK = 0,

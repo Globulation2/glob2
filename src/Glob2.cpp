@@ -5,6 +5,7 @@
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
+#include <GameplayRecording.h>
 
 #ifdef __APPLE__
 #	include <CoreFoundation/CoreFoundation.h>
@@ -32,9 +33,14 @@
 #include "Engine.h"
 #include "Headless.h"
 #include "script/ScriptCommand.h"
+#include "hive/HiveWorker.h"
+#include "hive/HiveClient.h"
 #include "Application.h"
 #include "SinglePlayerFlow.h"
 #include "Game.h"
+#include "Building.h"
+#include "Unit.h"
+#include "FormatableString.h"
 #include "GenerationContext.h"
 #include "GenerationService.h"
 #include "GeneratorRegistry.h"
@@ -206,8 +212,10 @@ static int dumpResources(const std::string& mapName)
 			if (map.getResource(x, y).type == WHEAT)
 			{
 				wheatCount++;
-				if (x < minX) minX = x; if (x > maxX) maxX = x;
-				if (y < minY) minY = y; if (y > maxY) maxY = y;
+				if (x < minX) minX = x;
+				if (x > maxX) maxX = x;
+				if (y < minY) minY = y;
+				if (y > maxY) maxY = y;
 			}
 
 	const int teamCount = game.mapHeader.getNumberOfTeams();
@@ -377,6 +385,66 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	return 0;
 }
 
+namespace
+{
+void closeGameResources()
+{
+	delete globalContainer;
+	globalContainer = nullptr;
+}
+} // namespace
+static void dumpTeams(const Game& game)
+{
+	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); t++)
+	{
+		Team* team = game.teams[t];
+		int units = 0, buildings = 0, swarmCount = 0;
+		std::string where;
+		for (int i = 0; i < Unit::MAX_COUNT; i++)
+			if (team->myUnits[i] && !team->myUnits[i]->isDead)
+			{
+				units++;
+				where += FormattableString(" u%0,%1").arg(team->myUnits[i]->posX).arg(team->myUnits[i]->posY);
+			}
+		for (int i = 0; i < Building::MAX_COUNT; i++)
+			if (Building* b = team->myBuildings[i])
+			{
+				buildings++;
+				if (b->type->unitProductionTime)
+				{
+					swarmCount++;
+					where += FormattableString(" (%0,%1)").arg(b->posX).arg(b->posY);
+				}
+			}
+		std::cout << "  team " << t << " units=" << units << " buildings=" << buildings << " swarms=" << swarmCount << where << std::endl;
+	}
+}
+
+// Headless check of a repeated map: -dump-tiled <map> <rx> <ry> <colonies> <swarms>
+static int dumpTiled(const std::string& mapName, int rx, int ry, int colonies, int swarms)
+{
+	using namespace GAGCore;
+	InputStream* stream = new BinaryInputStream(glob2OpenMapOrSaveInputStreamBackend(*Toolkit::getFileManager(), mapName));
+	if (stream->isEndOfStream())
+	{
+		std::cerr << "dump-tiled: cannot open " << mapName << std::endl;
+		delete stream;
+		return 1;
+	}
+	Game game(NULL);
+	bool ok = game.load(stream);
+	delete stream;
+	if (!ok || !game.tileForPlay(rx, ry, colonies, swarms))
+	{
+		std::cerr << "dump-tiled: failed on " << mapName << std::endl;
+		return 1;
+	}
+	std::cout << "Map " << mapName << " " << rx << "x" << ry << " : " << game.map.getW() << "x" << game.map.getH()
+	          << ", teams=" << game.mapHeader.getNumberOfTeams() << std::endl;
+	dumpTeams(game);
+	return 0;
+}
+
 int Glob2::run(int argc, char *argv[])
 {
 	// --generate-map has a native file/report interface and a structured job interface.
@@ -395,6 +463,32 @@ int Glob2::run(int argc, char *argv[])
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
 	globalContainer->load();
+	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
+	{
+		if (globalContainer->runNoX)
+		{
+			fprintf(stderr, "Video recording requires a rendered session\n");
+			delete globalContainer;
+			return 1;
+		}
+		auto path = globalContainer->recordingPath;
+		if (path.empty())
+		{
+			const auto &name = globalContainer->videoshotName;
+			if (name == "." || name == ".." || name.find_first_of("/\\") != std::string::npos)
+			{
+				fprintf(stderr, "-vs requires a bare recording name\n");
+				delete globalContainer;
+				return 1;
+			}
+			path = globalContainer->fileManager->getDir(0) + "/videoshots/" + name + ".mp4";
+		}
+		if (!GAGCore::Recording::recorder().start(path))
+		{
+			delete globalContainer;
+			return 1;
+		}
+	}
 	// Headless tooling hook (AI wheat-protection sanity check): -dump-resources <map>
 	for (int ai = 1; ai + 1 < argc; ai++)
 		if (strcmp(argv[ai], "-dump-resources") == 0)
@@ -413,6 +507,12 @@ int Glob2::run(int argc, char *argv[])
 			delete globalContainer;
 			return ret;
 		}
+		else if (strcmp(argv[ai], "-dump-tiled") == 0 && ai + 5 < argc)
+		{
+			int ret = dumpTiled(argv[ai + 1], atoi(argv[ai + 2]), atoi(argv[ai + 3]), atoi(argv[ai + 4]), atoi(argv[ai + 5]));
+			closeGameResources();
+			return ret;
+		}
 
 #ifndef __EMSCRIPTEN__
 	if ( !NET_Init() )
@@ -420,14 +520,14 @@ int Glob2::run(int argc, char *argv[])
 		fprintf(stderr, "Couldn't initialize net: %s\n", SDL_GetError());
 		exit(1);
 	}
-	atexit(NET_Quit);
+	globalContainer->networkInitialized = true;
 #endif
 
 
 	if (globalContainer->runTestGames)
 	{
 		int ret=runTestGames();
-		delete globalContainer;
+		closeGameResources();
 		return ret;
 	}
 	
@@ -439,14 +539,13 @@ int Glob2::run(int argc, char *argv[])
 	if (globalContainer->runNoX)
 	{
 		int ret=runNoX();
-		delete globalContainer;
+		closeGameResources();
 		return ret;
 	}
 
     GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
         GAGCore::DrawableSurface::printFinishingText();
-        delete globalContainer;
-        globalContainer = nullptr;
+        closeGameResources();
         GAGCore::ApplicationHost::exited(0);
     });
     return HOSTED_RUN;
@@ -457,6 +556,8 @@ int Glob2::run(int argc, char *argv[])
 
 int main(int argc, char *argv[])
 {
+	if (argc == 2 && std::string(argv[1]) == "--hive-worker") return Hive::workerMain();
+	Hive::setExecutable(argv[0]);
 #ifdef GLOB2_MOBILE
     try { initializeMobilePaths(); }
     catch(const std::exception& error) {
@@ -476,7 +577,9 @@ int main(int argc, char *argv[])
 
 #if defined(__APPLE__) && !defined(GLOB2_MOBILE)
 	// Map tools resolve input and output paths relative to the caller.
-	if (!(argc > 1 && (isMapCommand(argv[1]) || std::string(argv[1])=="--check-script" || std::string(argv[1])=="--attach-map-script")))
+	if (!(argc > 1 &&
+		  (isMapCommand(argv[1]) || std::string(argv[1]) == "--check-script" ||
+		   std::string(argv[1]) == "--check-ai" || std::string(argv[1]) == "--attach-map-script")))
 	{
 		/* SDL has this annoying "feature" of setting working directory to parent
 		   of bundle during static initialization.  We want to set it back to the

@@ -23,6 +23,13 @@ void NewNicowar::update_farming(Runtime& runtime)
 	RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
 	AddArea* mo_clearing=new AddArea(ClearingArea);
 	RemoveArea* mo_non_clearing=new RemoveArea(ClearingArea);
+	// With the farm-areas experiment, wheat near water is farmed with a farm
+	// area instead of forbidden spots: the farm keeps every tile's seed and
+	// clears wood growing into it. Wood keeps its forbidden spots.
+	MapInfo farm_info(runtime);
+	const bool farms = farm_info.farm_areas_enabled();
+	AddArea* mo_farm=farms ? new AddArea(FarmArea) : nullptr;
+	RemoveArea* mo_non_farm=farms ? new RemoveArea(FarmArea) : nullptr;
 	AISharedRuntime::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new Entities::Water);
 	Gradient& water_gradient=runtime.get_gradient_manager().get_gradient(gi_water);
@@ -97,7 +104,22 @@ void NewNicowar::update_farming(Runtime& runtime)
 				}
 
 
-				bool clear_wood = is_wood &&
+				const bool wheat_farm = farms && is_in_wheat_zone && mi.wants_farm(x, y);
+				if(farms)
+				{
+					if(wheat_farm && !mi.is_farm_area(x, y))
+						mo_farm->add_location(x, y);
+					else if(!wheat_farm && mi.is_farm_area(x, y))
+						mo_non_farm->add_location(x, y);
+					// The farm protects wheat, and forbidden paint inside it would
+					// stop the farm clearing wood: forbidden spots are for wood
+					// outside farms only.
+					if(is_wheat || wheat_farm)
+						farm_spot = false;
+				}
+
+				// A farm clears the wood inside it, so it needs no clearing area.
+				bool clear_wood = is_wood && !wheat_farm &&
 					((is_in_wheat_zone && !is_in_wood_zone) || mi.is_resource(x-1, y, WHEAT) ||
 					 mi.is_resource(x+1, y, WHEAT) || mi.is_resource(x, y-1, WHEAT) ||
 					 mi.is_resource(x, y+1, WHEAT) || mi.is_resource(x-1, y-1, WHEAT) ||
@@ -148,6 +170,11 @@ void NewNicowar::update_farming(Runtime& runtime)
 	runtime.add_management_order(mo_non_clearing);
 	runtime.add_management_order(mo_farming);
 	runtime.add_management_order(mo_non_farming);
+	if(farms)
+	{
+		runtime.add_management_order(mo_farm);
+		runtime.add_management_order(mo_non_farm);
+	}
 	runtime.add_management_order(mo_clearing);
 }
 

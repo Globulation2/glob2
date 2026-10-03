@@ -94,16 +94,15 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 				++owner->stats.measurements.cleared[clearedBefore.type];
 			hp -= race->getUnitType(typeNum, level[HARVEST])->harvestDamage;
 		}
+		const bool farmAreas = map->farmAreasEnabled();
 		for (int tdx = -1; tdx <= 1; tdx++)
 			for (int tdy = -1; tdy <= 1; tdy++)
 			{
 				int x = (posX + tdx) & map->wMask;
 				int y = (posY + tdy) & map->hMask;
-				Tile mapCase = map->tiles[(y << map->wDec) + x];
-				if ((mapCase.clearArea & owner->me)
-					&& (mapCase.resource.type != NO_RES_TYPE)
-					&& globalContainer->resourcesTypes.get(mapCase.resource.type)->clearable
-					&& !(mapCase.forbidden & owner->me))
+				const size_t index = (y << map->wDec) + x;
+				if (map->isClearingTarget(index, owner->me, farmAreas)
+					&& !(map->tiles[index].forbidden & owner->me))
 				{
 					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber, gid);
 					previousClearingArea = ClearingAreaClaim{

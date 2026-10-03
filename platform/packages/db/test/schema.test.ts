@@ -13,6 +13,159 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  colony_skin_reports: [
+    'id',
+    'version_id',
+    'reporter_account_id',
+    'reason',
+    'created_at',
+    'resolution',
+    'resolved_at',
+    'resolved_by_account_id',
+    'resolution_reason',
+  ],
+  colony_skin_drafts: [
+    'account_id',
+    'revision',
+    'name',
+    'building_color',
+    'image',
+    'updated_at',
+    'skin_id',
+  ],
+  skin_purchases: [
+    'id',
+    'account_id',
+    'request_id',
+    'sku',
+    'entitlement',
+    'price_id',
+    'checkout_id',
+    'payment_intent_id',
+    'status',
+    'entitlement_id',
+    'created_at',
+    'updated_at',
+    'reconcile_after',
+    'recovery_cursor',
+  ],
+  skin_payment_events: ['id', 'event_type', 'purchase_id', 'processed_at'],
+  colony_skins: [
+    'id',
+    'owner_account_id',
+    'kind',
+    'name',
+    'entitlement',
+    'disabled_at',
+    'created_at',
+  ],
+  colony_skin_versions: [
+    'id',
+    'skin_id',
+    'texture_sha256',
+    'layout',
+    'building_color',
+    'manifest_sha256',
+    'created_at',
+  ],
+  colony_skin_equipment: ['account_id', 'version_id', 'updated_at', 'building_color'],
+  match_colony_skins: [
+    'building_color',
+    'match_id',
+    'team_index',
+    'account_id',
+    'version_id',
+    'assertion',
+    'created_at',
+  ],
+  studio_threads: ['id', 'account_id', 'title', 'brief', 'created_at', 'updated_at'],
+  studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
+  studio_requests: [
+    'id',
+    'thread_id',
+    'account_id',
+    'kind',
+    'status',
+    'input',
+    'checkpoints',
+    'lease_until',
+    'lease',
+    'map_id',
+    'map_hash',
+    'error',
+    'charged',
+    'created_at',
+    'completed_at',
+  ],
+  studio_attempts: [
+    'id',
+    'request_id',
+    'stage',
+    'model',
+    'status',
+    'input',
+    'output',
+    'created_at',
+  ],
+  map_wallets: ['account_id', 'balance', 'reserved'],
+  map_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  map_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
+  hive_wallets: ['account_id', 'balance', 'reserved'],
+  hive_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  hive_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
+  hive_sessions: [
+    'id',
+    'account_id',
+    'match_id',
+    'seat',
+    'team',
+    'client_id',
+    'lease',
+    'lease_until',
+    'tick',
+    'generation',
+    'supervision',
+    'pending_run',
+    'run_id',
+    'run_until',
+    'last_wake_tick',
+    'wake_window',
+    'wake_count',
+    'created_at',
+  ],
+  hive_events: ['id', 'session_id', 'dedup', 'kind', 'body', 'created_at'],
+  hive_operations: [
+    'supervised',
+    'id',
+    'session_id',
+    'generation',
+    'lease',
+    'status',
+    'request',
+    'result',
+    'created_at',
+  ],
+  hive_programs: ['session_id', 'id', 'revision', 'definition', 'status', 'supervised'],
+  map_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
+  hive_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
   accounts: [
     'id',
     'kind',
@@ -163,6 +316,7 @@ const typedColumns: ColumnLists = {
     'match_id',
   ],
   maps: [
+    'authoring',
     'id',
     'owner_account_id',
     'title',
@@ -250,6 +404,7 @@ const typedColumns: ColumnLists = {
   ],
   room_chat_messages: ['id', 'room_id', 'account_id', 'text', 'sent_at'],
   matches: [
+    'skins_frozen_at',
     'id',
     'sim_version',
     'origin',
@@ -505,6 +660,56 @@ afterAll(async () => {
 });
 
 describe('migrations', () => {
+  it('upgrades the online foundation without replacing account data', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const foundation = await createMigrator(existing.db).migrateTo('0017_retention');
+      expect(foundation.error).toBeUndefined();
+      const account = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Existing commander' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      expect((await migrateToLatest(existing.db)).map((r) => r.migrationName)).toEqual([
+        '0018_realtime_presence',
+        '0019_warm_maps_over_generated',
+        '0020_hive',
+        '0021_hive_supervision',
+        '0022_map_studio',
+        '0023_colony_skins',
+        '0024_match_skin_snapshot',
+        '0025_skin_purchases',
+        '0026_skin_building_color',
+        '0027_skin_payment_reconciliation',
+        '0028_skin_checkout_recovery',
+        '0029_skin_drafts',
+        '0030_skin_draft_source',
+        '0031_skin_reports',
+      ]);
+      expect(
+        (
+          await existing.db
+            .selectFrom('accounts')
+            .select('display_name')
+            .where('id', '=', account.id)
+            .executeTakeFirstOrThrow()
+        ).display_name,
+      ).toBe('Existing commander');
+      await existing.db.insertInto('hive_wallets').values({ account_id: account.id }).execute();
+      expect(
+        (
+          await existing.db
+            .selectFrom('hive_wallets')
+            .select('balance')
+            .where('account_id', '=', account.id)
+            .executeTakeFirstOrThrow()
+        ).balance,
+      ).toBe(0);
+      expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
+  });
   it('apply from an empty database and are idempotent', async () => {
     const first = await migrateToLatest(database.db);
     const files = Object.keys(await new SqlFileMigrationProvider().getMigrations());
@@ -519,6 +724,32 @@ describe('migrations', () => {
     expect(await migrateToLatest(database.db)).toEqual([]);
     const status = await createMigrator(database.db).getMigrations();
     expect(status.every((m) => m.executedAt instanceof Date)).toBe(true);
+  });
+
+  it('upgrades an existing platform database through all skin migrations', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const old = await createMigrator(existing.db).migrateTo('0022_map_studio');
+      expect(old.error).toBeUndefined();
+      const account = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Existing colony' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const upgraded = await migrateToLatest(existing.db);
+      expect(upgraded).toHaveLength(9);
+      expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
+      expect(
+        await existing.db
+          .selectFrom('accounts')
+          .select('display_name')
+          .where('id', '=', account.id)
+          .executeTakeFirstOrThrow(),
+      ).toEqual({ display_name: 'Existing colony' });
+      expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
   });
 
   it('match the typed schema column for column', async () => {

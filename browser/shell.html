@@ -188,6 +188,16 @@ const watchReplay = (() => {
     state.path = '/tmp/' + (named ? named[1] : 'watch') + '.replay';
     const bytes = new Uint8Array(await response.arrayBuffer());
     if (bytes.length === 0 || bytes.length > WATCH_REPLAY_MAX_BYTES) throw Error('replay empty or too large');
+    // Only the hosting instance's exact match-artifact route supplies context.
+    // The native reader also checks instance trust and the recording's hash.
+    const match = /^\/api\/v1\/matches\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/artifacts\/replay$/.exec(url.pathname);
+    if (match && url.origin === location.origin && response.url === url.href) {
+      try {
+        const hash = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+        state.appearance = {format:1, origin:url.origin, matchId:match[1],
+          replaySha256:Array.from(hash, byte=>byte.toString(16).padStart(2,'0')).join('')};
+      } catch (_) { /* Replay viewing still works without cosmetic metadata. */ }
+    }
     return bytes;
   });
   return state;
@@ -251,6 +261,8 @@ var Module = {
   printErr(text) { Module.browserLog.push(String(text)); console.error(text); },
   preRun: [function() {
     ENV.HOME = '/home/web_user';
+    if (new URLSearchParams(location.search).get('gl-errors') === '1')
+      ENV.GLOB2_WEBGL_ERRORS = '1';
     FS.mkdirTree('/home/web_user');
     Module.storage = new Glob2Storage(callback => FS.syncfs(false, callback));
     glob2SnapshotPersistence(IDBFS);
@@ -276,6 +288,8 @@ var Module = {
       Module.setStatus('Downloading replay…');
       watchReplay.bytes.then(bytes => {
         FS.writeFile(watchReplay.path, bytes);
+        if (watchReplay.appearance)
+          FS.writeFile(watchReplay.path + '.appearance.json', JSON.stringify(watchReplay.appearance));
         watchReplay.status = 'ready';
         watchReplay.size = bytes.length;
       }, error => {

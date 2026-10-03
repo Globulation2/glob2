@@ -13,11 +13,13 @@ explains how to run, configure, upgrade and back it up.
 | `platform-init.sh`, `relay-entrypoint.sh`, `engine-agent-entrypoint.sh` | Container start-up: keys, relay identity, engine checks |
 | `sim_version.py` | Prints a source tree's sim version key (engine-agent image label) |
 | `update-host.sh` | Upgrades a single-host deployment from this checkout |
+| `online-deploy.sh`, `online_remote.py` | Automatic deployment of the official instance from the release mirror (`.github/workflows/deploy-online.yml`): host-side driver and IAP SSH helper ([details](../docs/hosting/README.md#automatic-deployment)) |
 | `build-web-client.sh`, `install-web-client.py` | Build the WebAssembly client in a container and install it where Caddy serves `/play/` |
 | `source-identity.sh` | Docker build helper: gives the copied source tree a Git identity |
 | `provision_tls.py` | Creates an isolated private CA and service certificates. The transport and relay tests use it for local TLS fixtures. |
 
-`.github/workflows/server-image.yml` publishes the four images for a `server-v*` tag.
+`.github/workflows/server-image.yml` publishes the four images for a `server-v*` tag
+in the release mirror only ([details](../docs/hosting/README.md#images)).
 Deployment script tests: `python3 -m unittest discover -s tests/deployment -v`.
 Whole-stack smoke test: `tests/deployment/platform_stack_smoke.py` (see the
 hosting guide).

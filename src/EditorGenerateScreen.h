@@ -5,6 +5,7 @@
 class EditorGenerateScreen : public EditorLoadScreen
 {
   public:
+	const char *recordingId() const override { return "editor_generate"; }
 	void onTimer(Uint32 tick) override;
 	EditorGenerateScreen(GenerationRequest descriptor, Uint32 seed,
 						 GAGCore::CooperativeSlice slice = GAGCore::CooperativeSlice());

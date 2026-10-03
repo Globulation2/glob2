@@ -3,6 +3,7 @@
 #pragma once
 #include "GameHeader.h"
 #include "MapHeader.h"
+#include "MapTiling.h"
 #include "ui/FileListing.h"
 #include "ui/FrontendUI.h"
 #include <ApplicationHost.h>
@@ -18,6 +19,7 @@ class MapPreview;
 class ChooseMapScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "choose_map"; }
 	/// Directory is the source of the listed files and extension the file
 	/// extension to show; an alternate directory adds a switch button.
 	ChooseMapScreen(const char *directory, const char *extension, bool recurse,
@@ -59,6 +61,8 @@ class ChooseMapScreen : public Glob2UI::Screen
 	bool hasPreview() const;
 
 	void select(int index);
+	// A source-only advanced dialog; no second file picker or import tools.
+	void editMapParameters(const std::string &path);
 	/// Adds "Share online…" for maps: called with the selected map's file.
 	void enableSharing(std::function<void(const std::string &)> share) { shareMap = std::move(share); invalidate(); }
 
@@ -73,6 +77,15 @@ class ChooseMapScreen : public Glob2UI::Screen
 	GameHeader gameHeader;
 
   private:
+	// Repetition is opt-in and resets with the source selection. Hiding the
+	// section keeps the current preview; resetting restores the authored map.
+	MapTiling::MapInfo tilingSource;
+	int tileX = 1, tileY = 1, tileTeams = 0, tileBases = 1;
+	bool showTiling = false, tilingValid = true, parametersOnly = false;
+	void selectFile(const std::string &path);
+	bool tilingActive() const;
+	void refreshTiling();
+	Glob2UI::Element tilingControls(const Glob2UI::Presentation &p, bool busy);
 	bool importBusy() const;
 	Glob2UI::FileCatalog primary;
 	std::optional<Glob2UI::FileCatalog> alternate;

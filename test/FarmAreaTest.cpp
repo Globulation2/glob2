@@ -1,0 +1,662 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 glob2 contributors
+
+// Farm areas, the "farm-areas" experiment (docs/features/farm-areas.md), on the
+// real Map and the real simulation. Inside a team's farm area a harvest draws
+// one unit off the ripest tile of the connected field the worker can reach,
+// keeps one grain on every tile as seed, and an exhausted field yields nothing.
+// Outside a farm area, and in every game without the experiment, the original
+// harvest is untouched, phantom grain included.
+//
+// The "without the experiment" cases paint the mask directly, the way a map or
+// save made with the experiment would carry it into a game without it, and
+// check that nothing reads it.
+
+#include "EngineFixtures.h"
+#include "Brush.h"
+#include "ExperimentalFeatures.h"
+#include "Order.h"
+#include "OrderValidation.h"
+#include "UnitConsts.h"
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include <algorithm>
+#include <cstdio>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <vector>
+
+using namespace GAGCore;
+
+namespace
+{
+	const Uint32 TEAM_MASK = Team::teamNumberToMask(0);
+
+	glob2test::GameOptions options(bool experiment, TerrainType terrain = GRASS, int sizeShift = 5)
+	{
+		glob2test::GameOptions game;
+		game.wDec = game.hDec = sizeShift;
+		game.terrain = terrain;
+		game.header = true;
+		if (experiment)
+			game.experiments.set(ExperimentId::FarmAreas);
+		return game;
+	}
+
+	void put(Map& map, int x, int y, int type, int amount)
+	{
+		Resource& resource = map.getResource(x, y);
+		resource.type = type;
+		resource.variety = 0;
+		resource.amount = amount;
+		resource.animation = 0;
+	}
+
+	void setWheat(Map& map, int x, int y, int amount) { put(map, x, y, WHEAT, amount); }
+
+	int wheatAt(const Map& map, int x, int y)
+	{
+		const Resource& resource = map.getResource(x, y);
+		return resource.type == WHEAT ? resource.amount : 0;
+	}
+
+	int totalWheat(const Map& map)
+	{
+		int total = 0;
+		for (int y = 0; y < map.getH(); y++)
+			for (int x = 0; x < map.getW(); x++)
+				total += wheatAt(map, x, y);
+		return total;
+	}
+
+	void paintFarm(Map& map, int x0, int y0, int x1, int y1, int team = 0)
+	{
+		for (int y = y0; y <= y1; y++)
+			for (int x = x0; x <= x1; x++)
+				map.addFarmArea(x, y, team);
+	}
+
+	// A body of water down the left edge, wide enough that its middle renders as
+	// water rather than as a shore transition, which is what growResources' and
+	// canPaintFarmArea's terrain probes read.
+	void addWater(Map& map, int width = 4)
+	{
+		for (int y = 0; y < map.getH(); y++)
+			for (int x = 0; x < width; x++)
+				map.setUMatPos(x, y, WATER, 1);
+	}
+
+	//! A worker at (x,y) finishing a harvest against the tile at (x+dx,y+dy).
+	bool harvest(Map& map, int x, int y, int dx, int dy, int resource = WHEAT)
+	{
+		return map.takeHarvest(x, y, dx, dy, resource, TEAM_MASK);
+	}
+
+	// Paint or erase a farm area with the order a player's brush sends.
+	void paintOrder(glob2test::HeadlessGame& world, int x0, int y0, int x1, int y1, BrushTool::Mode mode = BrushTool::MODE_ADD)
+	{
+		Game& game = world.game;
+		BrushAccumulator acc;
+		for (int y = y0; y <= y1; y++)
+			for (int x = x0; x <= x1; x++)
+				acc.applyBrush(BrushApplication(x, y, 0), &game.map);
+		std::shared_ptr<Order> order(new OrderAlterFarmArea(0, mode, &acc, &game.map));
+		order->sender = 0;
+		game.executeOrder(order, 0);
+	}
+
+	// Workers of a swarm harvesting a 6x6 wheat field next to water, fed every
+	// tick so hunger never takes them away. Returns how many of the field's 36
+	// tiles still hold wheat, and the wheat the colony took, after `ticks`.
+	struct FieldRun
+	{
+		int tilesAlive = 0;
+		int harvested = 0;
+	};
+	FieldRun workAField(bool experiment, bool painted, int ticks)
+	{
+		glob2test::HeadlessGame world(options(experiment));
+		Map& map = world.game.map;
+		addWater(map);
+		const int x0 = 12, y0 = 12;
+		for (int y = y0; y < y0 + 6; y++)
+			for (int x = x0; x < x0 + 6; x++)
+				setWheat(map, x, y, 3);
+		if (painted)
+			paintFarm(map, x0 - 2, y0 - 2, x0 + 7, y0 + 7);
+		world.addBuilding("swarm", x0 + 1, y0 + 9);
+		for (int i = 0; i < 8; i++)
+			world.addUnit(WORKER, x0 - 1 + i, y0 + 7);
+		for (int t = 0; t < ticks; t++)
+		{
+			world.step();
+			for (int i = 0; i < Unit::MAX_COUNT; ++i)
+				if (Unit* u = world.team->myUnits[i])
+					u->hungry = Unit::HUNGRY_MAX;
+		}
+		FieldRun run;
+		for (int y = y0; y < y0 + 6; y++)
+			for (int x = x0; x < x0 + 6; x++)
+				run.tilesAlive += wheatAt(map, x, y) > 0;
+		run.harvested = world.team->stats.measurements.harvested[WHEAT];
+		return run;
+	}
+}
+
+namespace
+{
+	// The default game (no experiment, nothing painted as a farm) on every code
+	// path the experiment touches: workers of a swarm harvesting wheat, and
+	// clearing wood inside a clearing area, with the simulation's checksum
+	// every 100 ticks. Uses only what master already had, so the
+	// committed golden (test/fixtures/farm-areas/off-path-checksums.txt) was
+	// generated by this same function on master before the experiment existed.
+	// The whole simulation's per-component checksums, folded, without the map
+	// header's: that one mixes in the save format version, which this change
+	// moves without changing what is simulated.
+	Uint32 simulationChecksum(Game& game)
+	{
+		std::vector<Uint32> parts, buildings, units;
+		game.checkSum(&parts, &buildings, &units, true);
+		parts.erase(parts.begin());
+		parts.insert(parts.end(), buildings.begin(), buildings.end());
+		parts.insert(parts.end(), units.begin(), units.end());
+		Uint32 hash = 2166136261u;
+		for (Uint32 part : parts)
+			hash = (hash ^ part) * 16777619u;
+		return hash;
+	}
+
+	std::string offPathTrace()
+	{
+		glob2test::HeadlessGame world(options(false));
+		Map& map = world.game.map;
+		addWater(map);
+		for (int y = 12; y < 18; y++)
+			for (int x = 12; x < 18; x++)
+				setWheat(map, x, y, 3);
+		for (int y = 4; y < 8; y++)
+			for (int x = 22; x < 26; x++)
+			{
+				put(map, x, y, WOOD, 3);
+				map.addClearArea(x, y, 0);
+			}
+		world.addBuilding("swarm", 13, 21);
+		for (int i = 0; i < 8; i++)
+			world.addUnit(WORKER, 11 + i, 19);
+		std::ostringstream trace;
+		for (int t = 1; t <= 3000; t++)
+		{
+			world.step();
+			for (int i = 0; i < Unit::MAX_COUNT; ++i)
+				if (Unit* u = world.team->myUnits[i])
+					u->hungry = Unit::HUNGRY_MAX;
+			if (t % 100 == 0)
+				trace << t << ' ' << std::hex << simulationChecksum(world.game) << std::dec
+				      << " wheat " << world.team->stats.measurements.harvested[WHEAT]
+				      << " cleared " << world.team->stats.measurements.cleared[WOOD] << '\n';
+		}
+		return trace.str();
+	}
+}
+
+TEST_SUITE("FarmAreas")
+{
+	TEST_CASE("without the experiment the default game's checksums are unchanged [golden]")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::expectGolden("farm-areas/off-path-checksums.txt", offPathTrace());
+	}
+
+	TEST_CASE("workers on a farm worked down to its seed carry nothing away")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto run = [](bool experiment) {
+			glob2test::HeadlessGame world(options(experiment));
+			Map& map = world.game.map;
+			addWater(map);
+			paintFarm(map, 10, 10, 19, 19);
+			// Every tile at its one-grain seed, and none allowed to regrow.
+			for (int y = 12; y < 18; y++)
+				for (int x = 12; x < 18; x++)
+				{
+					setWheat(map, x, y, 1);
+					map.getTile(x, y).canResourcesGrow = 0;
+				}
+			world.addBuilding("swarm", 13, 21);
+			for (int i = 0; i < 8; i++)
+				world.addUnit(WORKER, 11 + i, 19);
+			int carrying = 0;
+			for (int t = 0; t < 1500; t++)
+			{
+				world.step();
+				for (int i = 0; i < Unit::MAX_COUNT; ++i)
+					if (Unit* u = world.team->myUnits[i])
+					{
+						u->hungry = Unit::HUNGRY_MAX;
+						carrying += u->carriedResource == WHEAT;
+					}
+			}
+			struct { int harvested, left, carrying; } result{
+				int(world.team->stats.measurements.harvested[WHEAT]), totalWheat(map), carrying};
+			return result;
+		};
+		const auto farmed = run(true);
+		const auto unfarmed = run(false);
+		std::printf("[seed] 1500 ticks on 36 one-grain tiles: farm %d harvested, %d left; without the experiment %d harvested, %d left\n",
+			farmed.harvested, farmed.left, unfarmed.harvested, unfarmed.left);
+		CHECK(farmed.harvested == 0);
+		CHECK(farmed.carrying == 0);
+		CHECK(farmed.left == 36);
+		CHECK(unfarmed.harvested > 0);
+		CHECK(unfarmed.left < 36);
+	}
+
+	TEST_CASE("harvesting a farm takes from the ripest tile of the field, not the touched one")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 4, 4, 9, 9);
+		setWheat(map, 5, 5, 1);   // the rim tile the worker stands next to
+		setWheat(map, 6, 5, 3);
+		setWheat(map, 7, 5, 5);   // the ripest tile, two steps away
+		REQUIRE(harvest(map, 4, 5, 1, 0));
+		CHECK(wheatAt(map, 7, 5) == 4);
+		CHECK(wheatAt(map, 5, 5) == 1);
+		CHECK(wheatAt(map, 6, 5) == 3);
+	}
+
+	TEST_CASE("an empty gap ends the field, so nothing is taken across it")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 0, 0, 31, 31);
+		setWheat(map, 5, 5, 2);
+		setWheat(map, 8, 5, 5); // (6,5) and (7,5) are empty
+		setWheat(map, 9, 5, 5);
+		REQUIRE(harvest(map, 4, 5, 1, 0));
+		CHECK(wheatAt(map, 5, 5) == 1);
+		CHECK(wheatAt(map, 8, 5) == 5);
+		CHECK(wheatAt(map, 9, 5) == 5);
+	}
+
+	TEST_CASE("a worker out of reach of any wheat, or on an exhausted field, gets nothing")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 0, 0, 31, 31);
+		CHECK_FALSE(harvest(map, 4, 5, 1, 0));
+		setWheat(map, 10, 10, 5);
+		CHECK_FALSE(harvest(map, 2, 2, 1, 0));
+		CHECK(wheatAt(map, 10, 10) == 5);
+	}
+
+	TEST_CASE("the target emptying during the animation is not a failure while the field is in reach")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 0, 0, 31, 31);
+		// (5,5) was aimed at and is now empty; (5,6) is in reach and joins the field.
+		setWheat(map, 5, 6, 2);
+		setWheat(map, 6, 6, 4);
+		REQUIRE(harvest(map, 4, 5, 1, 0));
+		CHECK(wheatAt(map, 6, 6) == 3);
+	}
+
+	TEST_CASE("standing still flattens what the worker can reach down to the seed, then stops")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 0, 0, 31, 31);
+		setWheat(map, 5, 5, 2); // the only tile in the worker's 3x3
+		setWheat(map, 6, 5, 5);
+		setWheat(map, 7, 5, 4);
+		const int before = totalWheat(map);
+		int harvests = 0;
+		while (harvest(map, 4, 5, 1, 0))
+			REQUIRE(++harvests <= 32);
+		CHECK(harvests == 8);
+		CHECK(totalWheat(map) == before - harvests);
+		CHECK(wheatAt(map, 5, 5) == 1);
+		CHECK(wheatAt(map, 6, 5) == 1);
+		CHECK(wheatAt(map, 7, 5) == 1);
+	}
+
+	TEST_CASE("a farm gives up its surplus and keeps every tile, where the same unfarmed field loses its rim")
+	{
+		glob2test::HeadlessGlobals globals;
+		struct Spot { int x, y, dx, dy; };
+		const Spot spots[] = {{3, 5, 1, 0}, {7, 5, -1, 0}, {5, 3, 0, 1}, {5, 7, 0, -1}};
+		{
+			glob2test::HeadlessGame world(options(true));
+			Map& map = world.game.map;
+			for (int y = 4; y <= 6; y++)
+				for (int x = 4; x <= 6; x++)
+					setWheat(map, x, y, 3);
+			paintFarm(map, 0, 0, 31, 31);
+			int harvests = 0;
+			for (int round = 0; round < 200; round++)
+				for (const Spot& spot : spots)
+					harvests += harvest(map, spot.x, spot.y, spot.dx, spot.dy);
+			CHECK(harvests == 9 * 2);
+			for (int y = 4; y <= 6; y++)
+				for (int x = 4; x <= 6; x++)
+					CHECK(wheatAt(map, x, y) == 1);
+		}
+		{
+			glob2test::HeadlessGame world(options(true));
+			Map& map = world.game.map;
+			for (int y = 4; y <= 6; y++)
+				for (int x = 4; x <= 6; x++)
+					setWheat(map, x, y, 3);
+			for (int round = 0; round < 200; round++)
+				for (const Spot& spot : spots)
+					harvest(map, spot.x, spot.y, spot.dx, spot.dy);
+			for (const Spot& spot : spots)
+				CHECK(wheatAt(map, spot.x + spot.dx, spot.y + spot.dy) == 0);
+			CHECK(wheatAt(map, 5, 5) == 3);
+		}
+	}
+
+	TEST_CASE("off a farm, and for another team's farm, the original harvest is unchanged, phantom grain included")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		setWheat(map, 5, 5, 1);
+		setWheat(map, 7, 5, 5);
+		REQUIRE(harvest(map, 4, 5, 1, 0));
+		CHECK(wheatAt(map, 5, 5) == 0);
+		CHECK(wheatAt(map, 7, 5) == 5);
+		CHECK(harvest(map, 4, 5, 1, 0)); // the tile is empty and a grain is still granted
+
+		paintFarm(map, 10, 10, 20, 20, 1);
+		setWheat(map, 15, 15, 1);
+		setWheat(map, 16, 15, 5);
+		REQUIRE(harvest(map, 14, 15, 1, 0));
+		CHECK(wheatAt(map, 15, 15) == 0);
+		CHECK(wheatAt(map, 16, 15) == 5);
+	}
+
+	TEST_CASE("wood is not farmed; algae are")
+	{
+		glob2test::HeadlessGlobals globals;
+		{
+			glob2test::HeadlessGame world(options(true));
+			Map& map = world.game.map;
+			paintFarm(map, 0, 0, 31, 31);
+			for (int x : {5, 6, 7})
+				put(map, x, 5, WOOD, x == 7 ? 5 : 1);
+			REQUIRE(harvest(map, 4, 5, 1, 0, WOOD));
+			CHECK(map.getResource(5, 5).type == NO_RES_TYPE);
+			CHECK(map.getResource(7, 5).amount == 5);
+		}
+		{
+			glob2test::HeadlessGame world(options(true, WATER));
+			Map& map = world.game.map;
+			paintFarm(map, 0, 0, 31, 31);
+			for (int x : {5, 6, 7})
+				put(map, x, 5, ALGA, x == 7 ? 4 : 1);
+			REQUIRE(harvest(map, 4, 5, 1, 0, ALGA));
+			CHECK(map.getResource(7, 5).amount == 3);
+			CHECK(map.getResource(5, 5).amount == 1);
+		}
+	}
+
+	TEST_CASE("wood inside a farm is a clearing target and the crop never is")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 4, 4, 9, 9);
+		put(map, 5, 5, WOOD, 3);
+		put(map, 6, 5, WHEAT, 3);
+		put(map, 11, 5, WOOD, 3); // outside the farm
+		const bool on = map.farmAreasEnabled();
+		REQUIRE(on);
+		CHECK(map.isClearingTarget(map.coordToIndex(5, 5), TEAM_MASK, on));
+		CHECK_FALSE(map.isClearingTarget(map.coordToIndex(6, 5), TEAM_MASK, on));
+		CHECK_FALSE(map.isClearingTarget(map.coordToIndex(11, 5), TEAM_MASK, on));
+		CHECK_FALSE(map.isClearingTarget(map.coordToIndex(5, 5), Team::teamNumberToMask(1), on));
+		map.addClearArea(11, 5, 0);
+		CHECK(map.isClearingTarget(map.coordToIndex(11, 5), TEAM_MASK, on));
+	}
+
+	TEST_CASE("clearing stays on the touched tile inside a farm")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		paintFarm(map, 0, 0, 31, 31);
+		setWheat(map, 5, 5, 1);
+		setWheat(map, 7, 5, 5);
+		// The call Unit::handleMovementClearingResources and
+		// tryClaimClearingAreaForHarvesting make.
+		map.decResource(5, 5);
+		CHECK(wheatAt(map, 5, 5) == 0);
+		CHECK(wheatAt(map, 7, 5) == 5);
+	}
+
+	TEST_CASE("growth ignores the farm mask")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto grow = [](bool painted) {
+			glob2test::HeadlessGame world(options(true, GRASS, 4));
+			Map& map = world.game.map;
+			addWater(map);
+			for (int y = 5; y <= 9; y++)
+				for (int x = 5; x <= 9; x++)
+					setWheat(map, x, y, 1 + ((x + y) % 4));
+			if (painted)
+				paintFarm(map, 0, 0, map.getW() - 1, map.getH() - 1);
+			for (int i = 0; i < 20000; i++)
+				map.growResources();
+			std::vector<Uint32> resources;
+			for (int y = 0; y < map.getH(); y++)
+				for (int x = 0; x < map.getW(); x++)
+					resources.push_back(map.getResource(x, y).getUint32());
+			return std::make_pair(resources, totalWheat(map));
+		};
+		const auto bare = grow(false);
+		const auto farmed = grow(true);
+		CHECK(bare.first == farmed.first);
+		std::printf("[growth] 20000 ticks: 25 tiles/63 grains -> %d grains, identical with and without the farm\n", bare.second);
+		CHECK(bare.second > 63); // the fixture must actually grow
+	}
+
+	TEST_CASE("the brush refuses ground that can never grow, and a refused tile connects nothing")
+	{
+		glob2test::HeadlessGlobals globals;
+		{
+			glob2test::HeadlessGame world(options(true));
+			Map& map = world.game.map;
+			for (int y = 0; y < map.getH(); y++)
+			{
+				for (int x = 0; x < 8; x++)
+					map.setUMatPos(x, y, WATER, 1);
+				for (int x = 8; x < 16; x++)
+					map.setUMatPos(x, y, SAND, 1);
+			}
+			const int water = 3, sand = 11, grass = 19;
+			REQUIRE(map.getTerrainType(water, 10) == WATER);
+			REQUIRE(map.getTerrainType(sand, 10) == SAND);
+			REQUIRE(map.getTerrainType(grass, 10) == GRASS);
+			CHECK(map.canPaintFarmArea(grass, 10));
+			CHECK_FALSE(map.canPaintFarmArea(sand, 10));
+			CHECK(map.canPaintFarmArea(water, 10));
+			put(map, grass, 10, STONE, 3);
+			CHECK_FALSE(map.canPaintFarmArea(grass, 10));
+			put(map, grass, 10, WOOD, 3);
+			CHECK(map.canPaintFarmArea(grass, 10));
+			map.getResource(grass, 10).clear();
+			map.getTile(grass, 10).canResourcesGrow = 0;
+			CHECK_FALSE(map.canPaintFarmArea(grass, 10));
+		}
+		{
+			glob2test::HeadlessGame dry(options(true, GRASS, 6));
+			CHECK_FALSE(dry.game.map.canPaintFarmArea(32, 32));
+		}
+		{
+			glob2test::HeadlessGame world(options(true));
+			Map& map = world.game.map;
+			addWater(map, 8);
+			const int gap = 20;
+			map.getTile(gap, 10).canResourcesGrow = 0;
+			paintOrder(world, 0, 0, 31, 31);
+			REQUIRE(map.isFarmArea(gap - 1, 10, TEAM_MASK));
+			CHECK_FALSE(map.isFarmArea(gap, 10, TEAM_MASK));
+			CHECK(map.isFarmAreaInDisplayedView(gap - 1, 10));
+			CHECK_FALSE(map.isFarmAreaInDisplayedView(gap, 10));
+			setWheat(map, gap - 1, 10, 2);
+			setWheat(map, gap, 10, 1);
+			setWheat(map, gap + 1, 10, 5);
+			REQUIRE(harvest(map, gap - 2, 10, 1, 0));
+			CHECK(wheatAt(map, gap - 1, 10) == 1);
+			CHECK(wheatAt(map, gap + 1, 10) == 5);
+			CHECK(wheatAt(map, gap, 10) == 1);
+
+			paintOrder(world, 0, 0, 31, 31, BrushTool::MODE_DEL);
+			CHECK_FALSE(map.isFarmArea(gap - 1, 10, TEAM_MASK));
+			CHECK_FALSE(map.isFarmAreaInDisplayedView(gap - 1, 10));
+		}
+	}
+
+	TEST_CASE("without the experiment the order is rejected and a painted mask is inert")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(false));
+		Map& map = world.game.map;
+		addWater(map, 8);
+		CHECK_FALSE(map.farmAreasEnabled());
+		CHECK_FALSE(world.gui.toolManager.farmAreasAvailable());
+		CHECK(world.gui.toolManager.zoneTypeCount() == 3);
+
+		BrushAccumulator acc;
+		acc.applyBrush(BrushApplication(12, 12, 0), &map);
+		OrderAlterFarmArea order(0, BrushTool::MODE_ADD, &acc, &map);
+		CHECK(OrderValidation::validate(world.game, 0, order).reason == OrderValidation::Reason::NotPermitted);
+		paintOrder(world, 10, 10, 14, 14);
+		CHECK_FALSE(map.isFarmArea(12, 12, TEAM_MASK));
+
+		// A mask that arrived some other way (a map made with the experiment)
+		// changes neither harvesting nor clearing.
+		paintFarm(map, 0, 0, 31, 31);
+		setWheat(map, 13, 5, 1);
+		setWheat(map, 14, 5, 5);
+		put(map, 15, 8, WOOD, 3);
+		REQUIRE(harvest(map, 12, 5, 1, 0));
+		CHECK(wheatAt(map, 13, 5) == 0);
+		CHECK(wheatAt(map, 14, 5) == 5);
+		CHECK(harvest(map, 12, 5, 1, 0));
+		CHECK_FALSE(map.isClearingTarget(map.coordToIndex(15, 8), TEAM_MASK, map.farmAreasEnabled()));
+
+		glob2test::HeadlessGame withExperiment(options(true));
+		CHECK(OrderValidation::validate(withExperiment.game, 0, order).verdict == OrderValidation::Verdict::Accepted);
+		CHECK(withExperiment.gui.toolManager.zoneTypeCount() == 4);
+	}
+
+	TEST_CASE("workers keep every tile of a farmed field alive")
+	{
+		glob2test::HeadlessGlobals globals;
+		const int ticks = 3000;
+		const FieldRun farmed = workAField(true, true, ticks);
+		const FieldRun unpainted = workAField(true, false, ticks);
+		const FieldRun inert = workAField(false, true, ticks);
+		std::printf("[field] %d ticks, 36 tiles: farmed %d alive/%d harvested; unpainted %d/%d; mask without experiment %d/%d\n",
+			ticks, farmed.tilesAlive, farmed.harvested, unpainted.tilesAlive, unpainted.harvested, inert.tilesAlive, inert.harvested);
+		CHECK(farmed.harvested > 0);
+		CHECK(farmed.tilesAlive == 36);
+		CHECK(unpainted.harvested > 0);
+		CHECK(unpainted.tilesAlive < 36);
+		// Without the experiment a painted mask is inert: the same game as unpainted.
+		CHECK(inert.tilesAlive == unpainted.tilesAlive);
+		CHECK(inert.harvested == unpainted.harvested);
+	}
+
+	TEST_CASE("a farm area survives a save and load [save-format]")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame world(options(true));
+		Map& map = world.game.map;
+		addWater(map, 8);
+		paintOrder(world, 10, 10, 14, 14);
+		REQUIRE(map.isFarmArea(12, 12, TEAM_MASK));
+
+		auto* backend = new MemoryStreamBackend();
+		BinaryOutputStream output(backend);
+		world.gui.save(&output, "farm area");
+		const std::string bytes(backend->getBuffer(), backend->getPosition());
+
+		GameGUI restored(false);
+		auto* source = new MemoryStreamBackend(bytes.data(), bytes.size());
+		source->seekFromStart(0);
+		BinaryInputStream input(source);
+		REQUIRE(restored.load(&input));
+		CHECK(restored.game.gameHeader.hasExperiment(ExperimentId::FarmAreas));
+		CHECK(restored.game.map.isFarmArea(12, 12, TEAM_MASK));
+		CHECK_FALSE(restored.game.map.isFarmArea(9, 12, TEAM_MASK));
+		CHECK(restored.game.map.checkSum(true) == map.checkSum(true));
+	}
+}
+
+#include "GraphicContext.h"
+// Not a property check: renders the four zones side by side over wheat at the
+// zoom tiers ZoomDetail switches between (pattern, cross-fade, tint), with the
+// classic and the high-resolution artwork, so a reviewer can see the farm overlay
+// reads like the others. Images land in the case's artifact directory.
+TEST_SUITE("FarmAreas")
+{
+TEST_CASE("farm overlay beside the other zones at every zoom tier [display:1024x768][artifacts]")
+{
+	glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{
+		.display = true, .width = 1024, .height = 768, .screenFlags = GAGCore::GraphicContext::PORTABLEGPU});
+	glob2test::HeadlessGame world(options(true, GRASS, 6));
+	Map& map = world.game.map;
+	addWater(map, 6);
+	map.setMapDiscovered();
+	// Four 8x10 bands, left to right: forbidden, guard, clearing, farm, over wheat.
+	for (int y = 22; y < 32; y++)
+		for (int x = 12; x < 44; x++)
+		{
+			setWheat(map, x, y, 1 + (x + y) % 5);
+			const int band = (x - 12) / 8;
+			if (band == 0) map.addForbidden(x, y, 0);
+			if (band == 1) map.addGuardArea(x, y, 0);
+			if (band == 2) map.addClearArea(x, y, 0);
+			if (band == 3) map.addFarmArea(x, y, 0);
+		}
+	map.setDisplayedTeam(0);
+	map.computeDisplayedForbidden(0);
+	map.computeDisplayedGuardArea(0);
+	map.computeDisplayedClearArea(0);
+	map.computeDisplayedFarmArea(0);
+	auto& gui = world.gui;
+	auto* gfx = globalContainer->gfx;
+	gui.viewportResized(gfx->getW(), gfx->getH(), gfx->getW(), gfx->getH());
+	for (bool hd : {false, true})
+	{
+		globalContainer->settings.highResolutionArtwork = hd;
+		gui.updateCamera();
+		for (double zoom : {1.0, 0.5, 0.25, gui.camera.minimumZoom()})
+		{
+			gui.camera.setZoom(zoom, 300, 300);
+			gui.camera.originX = 28 * 32 - gfx->getW() / 2.0 / gui.camera.zoom;
+			gui.camera.originY = 27 * 32 - gfx->getH() / 2.0 / gui.camera.zoom;
+			gui.viewportX = gui.camera.tileX();
+			gui.viewportY = gui.camera.tileY();
+			gui.updateCamera();
+			gui.drawAll(0);
+			gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/zones-" + (hd ? "hd" : "classic") +
+							 "-" + std::to_string(int(zoom * 100)) + ".bmp");
+			gfx->nextFrame();
+		}
+	}
+	CHECK(map.isFarmAreaInDisplayedView(40, 27));
+}
+}

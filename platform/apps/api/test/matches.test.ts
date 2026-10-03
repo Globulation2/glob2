@@ -93,6 +93,7 @@ describe('AccessPolicy', () => {
       canHost: deny('hosting'),
       canJoin: deny('joining'),
       canQueue: deny('queueing'),
+      canUseHiveMind: async () => ({ allowed: true }),
     };
     const denied = await harness.start({ origin: ORIGIN, access: denyAll, instance: { queues } });
     const host = await player(a);
@@ -127,6 +128,7 @@ describe('AccessPolicy', () => {
       canJoin: async () =>
         allowJoin ? { allowed: true } : { allowed: false, reason: 'joining closed' },
       canQueue: async () => ({ allowed: true }),
+      canUseHiveMind: async () => ({ allowed: true }),
     };
     const gated = await harness.start({
       origin: ORIGIN,
@@ -432,6 +434,12 @@ describe('relays', () => {
       .where('id', '=', matchId)
       .executeTakeFirstOrThrow();
     expect(placed.relay_id).toBe('relay-1');
+    // room.start replies before asynchronous match.start delivery. Consume and
+    // verify that initial delivery before testing the subsequent failover.
+    for (const client of [host.client, guest.client]) {
+      const initial = await client.event('match.start');
+      expect(initial['relayUrl']).toBe('wss://relay-1.relays.test/relay');
+    }
 
     // relay-1 refuses the new match (Reject 5); relay-2 stopped draining.
     const heartbeat = await relayCall(a, 'POST', '/relays/heartbeat', {
@@ -441,9 +449,6 @@ describe('relays', () => {
       activeMatchIds: [],
     });
     expect(await json(heartbeat)).toEqual({ ok: true });
-    // The first start's pushes may still be in flight: take them before clearing.
-    await host.client.event('match.start');
-    await guest.client.event('match.start');
     host.client.clear();
     guest.client.clear();
     const moved = await guest.client.ok('match.reconnect', { matchId, relayUnavailable: true });
@@ -1106,6 +1111,7 @@ describe('PlatformMatchStarter', () => {
         canHost: async () => ({ allowed: true }),
         canJoin: async () => ({ allowed: true }),
         canQueue: async () => ({ allowed: true }),
+        canUseHiveMind: async () => ({ allowed: true }),
       },
       generationTimeoutMs: 5000,
     });
@@ -1150,6 +1156,7 @@ describe('PlatformMatchStarter', () => {
         canHost: async () => ({ allowed: true }),
         canJoin: async () => ({ allowed: true }),
         canQueue: async () => ({ allowed: true }),
+        canUseHiveMind: async () => ({ allowed: true }),
       },
       warmMaps: {
         takeWarmMap: async (queueId, simVersionKey) =>
@@ -1181,6 +1188,7 @@ describe('PlatformMatchStarter', () => {
         canHost: async () => ({ allowed: true }),
         canJoin: async () => ({ allowed: true }),
         canQueue: async () => ({ allowed: false, reason: 'no' }),
+        canUseHiveMind: async () => ({ allowed: true }),
       },
     });
     await expect(denying.start(await proposal([p1.accountId]))).rejects.toBeInstanceOf(StartError);

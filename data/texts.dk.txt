@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategi
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balancerer bæredygtig vækst og træning og samler derefter hære i bølger.
 [AIMaxima-Profile]
@@ -72,10 +78,6 @@ AINumbi
 Udvider og omvender enheder uden at producere krigere.
 [AIEcono]
 Econo
-[AIToubib-Description]
-
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 Hurtige angreb, der afprøver dit tidlige forsvar.
 [AIWarrush]
@@ -144,54 +146,6 @@ break
 Missionsbeskrivelse
 [build %0 level %1]
 Byg %0 niveau %1
-[build barracks level 0]
-Byg Kaserne niv. 0
-[build barracks level 1]
-Byg Kaserne niv. 1
-[build barracks level 2]
-Byg Kaserne niv. 2
-[build defencetower level 0]
-Byg Forsvarstårn 1
-[build defencetower level 1]
-Byg Forsvarstårn 2
-[build defencetower level 2]
-Byg Forsvarstårn 3
-[build hospital level 0]
-Byg Hospital 1
-[build hospital level 1]
-Byg Hospital 2
-[build hospital level 2]
-Byg Hospital 3
-[build inn level 0]
-Byg Kro 1
-[build inn level 1]
-Construct Inn 2
-[build inn level 2]
-Byg kro 3
-[build market level 0]
-Byg Marked
-[build racetrack level 0]
-Byg Træningsbane 1
-[build racetrack level 1]
-Byg Træningsbane 2
-[build racetrack level 2]
-Byg Træningsbane 3
-[build school level 0]
-Byg Skole 1
-[build school level 1]
-Byg Skole 2
-[build school level 2]
-Byg Skole 3
-[build stonewall level 0]
-Byg Sten væg
-[build swarm level 0]
-Byg Sværm
-[build swimmingpool level 0]
-Byg Svømmebassin 1
-[build swimmingpool level 1]
-Byg Svømmebassin 2
-[build swimmingpool level 2]
-Byg Svømmebassin 3
 [Build]
 Byg
 [Building Defaults]
@@ -220,12 +174,6 @@ Kan ikke være vært: port %0 er i brug
 Kan ikke deltage: spillet er startet
 [Can't join game, game is full]
 Kan ikke deltage: spillet er fyldt
-[Can't join game, missmatching game parameters]
-Kan ikke forbinde til spillet, spilparametrene stemmer ikke overens
-[Can't join game, timeout]
-Kan ikke forbinde til spillet, der er opstået en timeout
-[Can't join game, wrong game version]
-Kan ikke forbinde til spillet, spilversionen er forkert
 [cancel destroy]
 Afbryd destruktion
 [cancel repair]
@@ -250,6 +198,8 @@ Vælg et spil
 Vælg et kort
 [clear area]
 Rydningsområde
+[farm area]
+Dyrkningsområde
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]
@@ -312,12 +262,6 @@ Besejr dine modstandere
 og bygninger i nærheden
 [defencetower explanation]
 Angriber fjendtlige enheder
-[defencetower level 0]
-Byg tårn 1
-[defencetower level 1]
-Byg tårn 2
-[defencetower level 2]
-Forsvars tårn 3
 [defencetower]
 Forsvarstårn
 [Defense Map]
@@ -488,12 +432,6 @@ Flere arbejdende enheder
 
 [inn explanation]
 Giver dine enheder mad
-[inn level 0]
-Kro 1
-[inn level 1]
-Kro 2
-[inn level 2]
-Kro 3
 [inn]
 Kro
 [insert]
@@ -572,8 +510,6 @@ Kortscript
 Kortbredde
 [map size y]
 Korthøjde
-[maps available]
-Tilgængelige kort
 [mark map]
 Marker kort for allierede
 [market explanation 2]
@@ -614,8 +550,6 @@ Ingen vækst
 Nej
 [Number Of Buildings]
 Antal bygninger
-[number of players: %0]
-%0 antal spillere er tilgængelig
 [number of teams]
 antal af hold
 [Number Of Units]
@@ -714,8 +648,6 @@ Træningsbane
 Rækkevidde
 [ratios]
 Proportioner
-[Register a new YOG user with password]
-Register en ny YOG bruger med adgangskode. (usikker)
 [remember unit]
 Husk enhedstildelinger
 [remove map]
@@ -818,6 +750,8 @@ Vælg Kro
 Vælg marked
 [select place clearing area]
 Placér rydningsområde
+[select place farm area]
+Placér dyrkningsområde
 [select place clearingflag]
 Placér flag: Rydningsflag
 [select place explorationflag]
@@ -900,8 +834,6 @@ Sump
 
 [swarm explanation]
 Skaber nye enheder
-[swarm level 0]
-Sværm
 [swarm]
 Sværm
 [Swim]
@@ -1114,8 +1046,6 @@ Ser på:
 Vand
 [Wheat]
 Hvede
-[wheat]
-hvede
 [Won : you defeated your opponents]
 Vundet : Du har slået din modstander
 [Won : you have the most prestige]
@@ -3138,6 +3068,8 @@ Forbudt
 Bevogt
 [Clear]
 Ryd
+[Farm]
+Dyrk
 [Paint]
 Mal
 [Erase]
@@ -3308,6 +3240,10 @@ Eksperimenter
 Balancering af vagtområder
 [experiment guard-area-balancing help]
 Frie krigere fordeler sig mellem de malede vagtområder i stedet for alle at tage det nærmeste: et større område får flere af dem, og et overfyldt område tyndes ud til de andre.
+[experiment farm-areas]
+Dyrkningsområder
+[experiment farm-areas help]
+Tilføjer et dyrkningsområde til områdepenslerne. Arbejdere, der høster i et, tager fra det mest modne felt i den sammenhængende mark og efterlader ét korn på hvert felt, så marken vokser igen i stedet for at blive ædt fra kanten. Træ, der vokser ind i området, bliver ryddet.
 [settings Touch scrolling]
 Berøringsrulning
 [settings List momentum]
@@ -3397,6 +3333,10 @@ Listers tilbageslag
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4612,6 +4552,102 @@ Kortets fart
 
 [game draw]
 
+[settings Show colony skins]
+Vis koloniernes udseender
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Slå fra for at bruge klassiske enheder, sværme og bygningsfarver på denne enhed.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Gentag kortet vandret
+[repeat map vertically]
+Gentag kortet lodret
+[bases]
+baser
+[bases per colony]
+Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets bygninger og enheder
 [Match]
 
 [Time limit]
@@ -4705,4 +4741,16 @@ Kortets fart
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

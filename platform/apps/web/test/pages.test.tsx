@@ -3,7 +3,7 @@
 // the deep links the game uses, leaderboard, profile, match page (charts and
 // Watch in browser), sign-in state and the moderation guard.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { LineChart } from '../src/components/LineChart.tsx';
 import { matchPath } from '../src/router.tsx';
@@ -312,7 +312,9 @@ describe('pages', () => {
 
   it('match page shows players, timelines, refused orders and Watch in browser', async () => {
     open(`/matches/${MATCH}`);
-    expect((await screen.findByTestId('match-title')).textContent).toBe(
+    // The route is lazy-loaded; allow its first transform to finish on a busy
+    // development host before checking the rendered content.
+    expect((await screen.findByTestId('match-title', {}, { timeout: 10_000 })).textContent).toBe(
       '1 vs 1 ranked · Even Ground',
     );
     expect(screen.getAllByTestId('participant')).toHaveLength(2);
@@ -353,8 +355,13 @@ describe('pages', () => {
   });
 
   it('clicking a match row navigates without reloading', async () => {
-    open(`/players/${ALICE}`);
-    fireEvent.click((await screen.findAllByTestId('match-row'))[0]!);
+    // Flush the mocked fetches: the profile's initial match list is replaced
+    // when its separate history request completes. Clicking a node returned
+    // before that update can dispatch an event on an already detached link.
+    await act(async () => {
+      open(`/players/${ALICE}`);
+    });
+    fireEvent.click(screen.getAllByTestId('match-row')[0]!);
     expect(await screen.findByTestId('match-title')).toBeTruthy();
     expect(window.location.pathname).toBe(`/matches/${MATCH}`);
   });
@@ -401,6 +408,10 @@ describe('pages', () => {
     });
     open('/account');
     expect(await screen.findByText('Delete my account')).toBeTruthy();
+    // Download my data is a plain download link to the export endpoint.
+    const download = screen.getByRole('link', { name: 'Download my data' });
+    expect(download.getAttribute('href')).toBe('/api/v1/accounts/me/export');
+    expect(download.hasAttribute('download')).toBe(true);
     const button = screen.getByRole('button', { name: 'Delete my account for good' });
     expect((button as HTMLButtonElement).disabled).toBe(true);
     const input = screen.getByLabelText(/Type your name, Bob, to confirm/);

@@ -1,5 +1,11 @@
 [AI strategy]
 Strategija UI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Uravnoteži vzdržno rast in urjenje, nato zbira vojske v valove.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Izberi igro
 Izberi mapo
 [clear area]
 Območje čiščenja
+[farm area]
+Območje obdelovanja
 [Clearing:]
 Čiščenje:
 [clearingflag explanation 2]
@@ -542,8 +550,6 @@ Brez rasti
 Ne
 [Number Of Buildings]
 Število zgradb
-[number of players: %0]
-Število igralcev: %0
 [number of teams]
 Število ekip
 [Number Of Units]
@@ -642,8 +648,6 @@ Tekaška steza
 Domet
 [ratios]
 Razmerja
-[Register a new YOG user with password]
-Prijavi novega YOG uporabnika z geslom. (Ni varno!)
 [remember unit]
 Zapomni si število enot
 [remove map]
@@ -746,6 +750,8 @@ Izberi stavbo: Restavracija
 Izberi stavbo: Tržnica
 [select place clearing area]
 Postavi območje: Območje čiščenja
+[select place farm area]
+Postavi območje: Območje obdelovanja
 [select place clearingflag]
 Postavi zastavo čiščenja
 [select place explorationflag]
@@ -3062,6 +3068,8 @@ Prepovedano
 Straži
 [Clear]
 Počisti
+[Farm]
+Njiva
 [Paint]
 Riši
 [Erase]
@@ -3232,6 +3240,10 @@ Poskusi
 Uravnoteženje stražarskih območij
 [experiment guard-area-balancing help]
 Prosti bojevniki se porazdelijo med narisana stražarska območja, namesto da bi vsi šli v najbližje: večje območje jih dobi več, prenatrpano pa se postopoma prazni v druga.
+[experiment farm-areas]
+Območja obdelovanja
+[experiment farm-areas help]
+Doda območje obdelovanja med čopiče območij. Delavci, ki žanjejo v njem, jemljejo z najzrelejšega polja povezane njive in na vsakem polju pustijo eno zrno, tako da njiva ponovno zraste, namesto da bi jo pojedli od roba. Les, ki zraste v območje, se poseka.
 [settings Touch scrolling]
 Drsenje z dotikom
 [settings List momentum]
@@ -3321,6 +3333,10 @@ Odboj seznamov
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4536,6 +4552,102 @@ Zagon zemljevida
 
 [game draw]
 
+[settings Show colony skins]
+Prikaži preobleke kolonij
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Izklopite za uporabo klasičnih enot, rojev in barv stavb v tej napravi.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Ponovi zemljevid vodoravno
+[repeat map vertically]
+Ponovi zemljevid navpično
+[bases]
+baze
+[bases per colony]
+Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradbami in enotami
 [Match]
 
 [Time limit]
@@ -4629,4 +4741,16 @@ Zagon zemljevida
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

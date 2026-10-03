@@ -85,20 +85,16 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		int dec = (RIGHT_MENU_WIDTH - BrushTool::WIDTH)/2;
 		int relY = my - YPOS_BASE_FLAG;
-		int nmx = mx - dec;
 		if (relY > YOFFSET_BRUSH)
 		{
 			// set the selection
 			setSelection(BRUSH_SELECTION);
-			// change the brush type (forbidden, guard, clear) if necessary
+			// change the brush type (forbidden, guard, clear, farm) if necessary
 			if (relY < YOFFSET_BRUSH+ZONE_STRIP_HEIGHT)
 			{
-				if (nmx < 44)
-					toolManager.activateZoneTool(GameGUIToolManager::Forbidden);
-				else if (nmx < 84)
-					toolManager.activateZoneTool(GameGUIToolManager::Guard);
-				else if(nmx < 124)
-					toolManager.activateZoneTool(GameGUIToolManager::Clearing);
+				const int zone = zoneStripButtonAt(mx, toolManager.zoneTypeCount());
+				if (zone >= 0)
+					toolManager.activateZoneTool((GameGUIToolManager::ZoneType)zone);
 			}
 			// anyway, update the tool
 			brush.handleClick(mx-dec, relY-YOFFSET_BRUSH-ZONE_STRIP_HEIGHT);
@@ -118,7 +114,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 	{
 		const int y = YPOS_BASE_STAT + (globalContainer->isViewingGame() ? 15 : 0);
 		if (my >= y && my < y + 16)
-			measurementPage = (measurementPage + 1) % 3;
+			measurementPage = (measurementPage + 1) % (globalContainer->liveSpectating ? 4 : 3);
 	}
 	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->isViewingGame()) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->isViewingGame()))
 	{

@@ -4,6 +4,12 @@ Android and iOS use the shared game sources and SDL renderer. The mobile targets
 share pinned tool installations and validated dependency bundles across worktrees,
 with isolated build outputs and simulator state; they do not use host libraries or install into the desktop application's directories.
 
+Android builds have a Privacy policy entry in the main menu (under More on
+phones) that opens the store edition's policy. Google Play and iOS builds include
+online and LAN play; keep each store's data-safety and privacy declarations in
+step with the policies before distributing a build. The Amazon Fire edition has
+LAN play but no online play.
+
 The phone presentation shares simulation, game orders, settings persistence and
 lobby setup with desktop. `InterfacePresentation.h` selects the presentation;
 `GameGUITouch` owns gameplay gestures and phone panels. Menus and dialogs are
@@ -252,8 +258,8 @@ new confirmation gesture. Painting buffers an unfinished stroke; release applies
 its existing brush operations, while interruption discards it. Completed strokes
 are never undone by leaving the tool. Two fingers navigate instead of painting.
 
-Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear and
-Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
+Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear (plus
+Farm in a game with the farm-areas experiment) and Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
 sizes as detents (smallest lowest; touching one magnifies it beside the rail and
 the thumb can scrub along it), Paint/Erase at its foot and Pan at its head. Pan
 makes one finger move the map. A stroke held in the 24-point band along a map
@@ -578,6 +584,18 @@ verify its `PAGE_ALIGNMENT_16K` setting, and check startup, gameplay, rotation,
 background/resume and save/load on a real device. Keep the generated `.apks`,
 screenshots, logs and replay checksums under `artifacts/`.
 
+Link the [privacy policy](privacy-policy.md) in the store listing and keep Play's
+Data safety form in step with it. The Play build includes online play, so the form
+must declare what the official instance collects when a player goes online (account
+and display name, optional e-mail address from a sign-in provider, user IDs, in-game
+and room chat, uploaded maps, match and connection-quality data, IP addresses in logs
+and rate limits), that it is sent over TLS, that nothing is used for ads, analytics or
+tracking, and that players can download their data and delete their account at
+`https://app.glob2online.com/account`. Single-player, editor and LAN play collect
+nothing. The game has no minimum age; the Play Console target-audience and content
+answers must match the policy's [children](privacy-policy.md#children) section. Invite links open the app only after the official instance publishes the Play
+app-signing fingerprint ([mobile app links](../hosting/README.md#mobile-app-links)).
+
 ### Automated Google Play internal releases
 
 `.github/workflows/android-play-internal.yml` is public for review, but its
@@ -655,15 +673,19 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
 
 ```sh
+git fetch origin master
 git fetch upstream master
-git checkout master
-git merge upstream/master
-git push origin master
+git checkout --detach upstream/master
+git merge -s ours --no-edit -m "Merge public glob2 master into release mirror" origin/master
+git diff --exit-code upstream/master   # the tree must equal upstream's
+git push origin HEAD:master
 ```
 
-The release mirror has release-specific commits, so merging may require
-conflict resolution. Inspect the commits and resulting tree before pushing.
-Do not force-push a release branch.
+The merge keeps the mirror's history (so the push is not a force push) while
+taking upstream's files exactly; the release mirror never carries its own
+changes. Make any release-specific change upstream first; see
+[the release mirror](../development/releasing.md#the-release-mirror). Inspect
+the new commits before pushing. Do not force-push a release branch.
 
 After syncing, run **Actions → Android Play internal release → Run workflow**
 in the mirror. The optional release notes are shown to internal testers. The
@@ -762,6 +784,12 @@ Configure the app's internal TestFlight group for automatic distribution in App
 Store Connect if testers should receive every processed build without another
 manual step.
 
+App Store Connect's App Privacy answers and privacy policy URL follow the same
+[privacy policy](privacy-policy.md) as Play's Data safety form (above). Universal
+links for invites need the Associated Domains capability on the App ID and the
+official instance's `apple-app-site-association` file
+([mobile app links](../hosting/README.md#mobile-app-links)).
+
 The iOS Info.plist declares `ITSAppUsesNonExemptEncryption = NO` for the app's
 standard TLS use. This is the owner's export-compliance determination; revisit it
 if the app's encryption changes. The workflow uploads an `.xcarchive` artifact
@@ -779,6 +807,37 @@ when it is no longer needed; anyone with the link can request access while it is
 enabled. Install TestFlight on the iPhone, open the link and accept the invitation.
 Play a real device session before treating the build as release ready. Keep the
 App Store release step separate.
+
+### Signing fingerprints for invite links
+
+`.github/workflows/app-signing-fingerprints.yml` reads the public signing
+identities that [mobile app links](../hosting/README.md#mobile-app-links) need. Like
+the release workflows, every job runs only when the owner dispatches it from
+`master` in `genixpro/glob2-release`; it is skipped in `Globulation2/glob2`. Sync
+the mirror as above, then run **Actions → App signing fingerprints → Run
+workflow** and approve its three environments. The run summary lists:
+
+| Job (environment) | Reports |
+| --- | --- |
+| `android-play` (`google-play-internal`) | The upload key's certificate SHA-256, read with `keytool -list` from the keystore secret decoded to a private runner directory and then shredded. The Play App Signing certificate: the latest **internal** release's version code (from a Play edit that is deleted, never committed), then `generatedapks.list` and one downloaded generated APK, whose signer `apksigner` reports. If generated APKs are unavailable it falls back to a `systemapks.variants` APK, which Play signs with the same key. |
+| `android-amazon` (`amazon-appstore`) | The Amazon key's certificate SHA-256, compared with `GLOB2_AMAZON_CERT_SHA256`. The Fire edition has no invite links, so it is not needed for app links. |
+| `ios` (`ios-testflight`) | The `org.globulation2.glob2` App ID's Team ID (its `seedId`) and capabilities, and each provisioning profile's state and whether it carries the associated-domains and multicast entitlements. It enables `ASSOCIATED_DOMAINS` when missing, unless the dispatch input is unchecked; a second run changes nothing. |
+| `report` | The `appLinks` block for `instance.yaml` with the Play App Signing certificate and the App ID. |
+
+It prints only certificate fingerprints and App ID metadata, never keys,
+passwords or tokens. Play's Workload Identity provider must accept this
+workflow (`genixpro/glob2-release/.github/workflows/app-signing-fingerprints.yml`
+at `refs/heads/master`) as well as the internal release workflow. Otherwise the
+Play step is reported as not read and the job fails after printing the upload key.
+The Play App Signing certificate is then in Play Console > Test and release > App
+integrity.
+
+Enabling a capability invalidates the App ID's existing profiles; the next
+TestFlight export with `-allowProvisioningUpdates` regenerates the Xcode-managed
+App Store profile with the capability. The TestFlight archive is built unsigned,
+so the app's entitlements file does not reach the exported app, and the profile
+alone does not add `applinks:`. Check a TestFlight IPA with
+`codesign -d --entitlements - Payload/Glob2.app` before relying on universal links.
 
 ## Verification
 
@@ -947,7 +1006,7 @@ The iOS project includes `mobile/ios/Glob2.entitlements` for UDP broadcast LAN
 discovery. Device signing requires a provisioning profile approved for Apple's
 multicast entitlement, in addition to the existing local-network usage
 explanation. Manual pairing remains available when discovery cannot run.
-Android currently targets API 36 and uses INTERNET for LAN connections. A future
+Android currently targets API 36 and uses INTERNET for LAN and online connections. A future
 API 37 target must add ACCESS_LOCAL_NETWORK and request it before LAN access,
 as described by [Android's local-network permission guide](https://developer.android.com/privacy-and-security/local-network-permission).
 Connection failures point players to local-network permission and certificate

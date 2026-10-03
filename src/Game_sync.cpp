@@ -23,11 +23,17 @@
 #include <SDL3/SDL.h>
 #include "sim/ClientCommandSink.h"
 #include "sim/ClientRequests.h"
+#include "TeamStat.h"
+#include "WinProbability.h"
+#include <iostream>
+#include <vector>
 
 
 #include "Brush.h"
 
 #include "ReplayWriter.h"
+#include "ReplayReader.h"
+#include "ai/AITelemetry.h"
 
 #define BULLET_IMGID 0
 
@@ -106,6 +112,37 @@ void Game::wonSyncStep(void)
 	}
 	isGameEnded = areAllDecided;
 
+}
+
+void Game::winProbabilitySyncStep()
+{
+	// Diagnostic only, and off unless GLOB2_TEAM_TIMELINE asks for it. The
+	// numbers are the ones the optional win probability victory condition reads,
+	// so a test can check the engine and tools/win_probability_model.py agree
+	// sample by sample instead of only at the end, and a divergence between two
+	// platforms shows up as a diff rather than as a desynchronised game.
+	//
+	// Runs on the 512-tick boundary TeamStats samples at, after the teams have
+	// stepped, so it reports exactly the state the condition was evaluated on.
+	if ((stepCounter & END_OF_GAME_STAT_INTERVAL_MASK) != 0)
+		return;
+	if (!getenv("GLOB2_TEAM_TIMELINE"))
+		return;
+	std::vector<int> allianceOf;
+	const std::vector<WinProbability::Slot> slots = WinProbability::slotsOf(*this, allianceOf);
+	const std::vector<int> chances = WinProbability::permille(slots);
+	for (size_t i = 0; i < slots.size(); ++i)
+		std::cout << "GLOB2_WINPROB alliance=" << i
+			<< " tick=" << stepCounter
+			<< " alive=" << (slots[i].alive ? 1 : 0)
+			<< " permille=" << chances[i]
+			<< " units=" << slots[i].units
+			<< " prestige=" << slots[i].prestige
+			<< " barracks=" << slots[i].barracks
+			<< " explorers=" << slots[i].explorers
+			<< " foodCritical=" << slots[i].foodCritical
+			<< " attack=" << slots[i].attack
+			<< std::endl;
 }
 
 void Game::scriptSyncStep()
@@ -196,6 +233,15 @@ void Game::syncStep(Sint32 localTeam)
 			teams[i]->syncStep();
 
 		map.syncStep(stepCounter);
+		if (globalContainer->replaying && globalContainer->replayReader)
+			globalContainer->replayReader->applyTelemetry(*this);
+		if ((stepCounter & 31) == 0)
+		{
+			for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+				AITelemetry::capture(teams[t], false, false);
+			if (globalContainer->replayWriter)
+				globalContainer->replayWriter->captureTelemetry();
+		}
 		for(int p=0;p<gameHeader.getNumberOfPlayers();++p)
 			if(players[p] && players[p]->ai && players[p]->ai->implementationID==AI::JAVASCRIPT)
 				static_cast<AIJavaScript*>(players[p]->ai->aiImplementation)->observe();
@@ -229,6 +275,7 @@ void Game::syncStep(Sint32 localTeam)
 			prestigeSyncStep();
 			scriptSyncStep();
 			wonSyncStep();
+			winProbabilitySyncStep();
 		}
 
 		Uint64 endTick=SDL_GetTicks();

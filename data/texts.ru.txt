@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегия ИИ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Уравновешивает устойчивый рост и обучение, затем собирает армии в волны.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ caps lock
 Выбор карты
 [clear area]
 Зона очистки
+[farm area]
+Зона земледелия
 [Clearing:]
 Очистка:
 [clearingflag explanation 2]
@@ -462,8 +470,6 @@ ru
 левая клавиша windows
 [left]
 влево
-[Leo: nur ein erster Test]
-тест
 [level]
 Уровень
 [levels]
@@ -746,6 +752,8 @@ scroll lock
 Выбор Рынка
 [select place clearing area]
 Выбор размещения зоны очистки
+[select place farm area]
+Выбор размещения зоны земледелия
 [select place clearingflag]
 Выбор размещения флага очистки
 [select place explorationflag]
@@ -3060,6 +3068,8 @@ Emoji
 Охрана
 [Clear]
 Расчистка
+[Farm]
+Поле
 [Paint]
 Рисовать
 [Erase]
@@ -3230,6 +3240,10 @@ Emoji
 Балансировка зон охраны
 [experiment guard-area-balancing help]
 Свободные воины распределяются между нарисованными зонами охраны, а не идут все в ближайшую: большая зона получает больше воинов, а переполненная постепенно перетекает в остальные.
+[experiment farm-areas]
+Зоны земледелия
+[experiment farm-areas help]
+Добавляет зону земледелия к кистям зон. Рабочие, собирающие урожай внутри неё, берут с самой спелой клетки связного поля и оставляют на каждой клетке по одному зерну, поэтому поле отрастает, а не съедается с краёв. Деревья, прорастающие в зону, вырубаются.
 [settings Touch scrolling]
 Сенсорная прокрутка
 [settings List momentum]
@@ -3319,6 +3333,10 @@ Emoji
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4534,6 +4552,102 @@ Emoji
 
 [game draw]
 
+[settings Show colony skins]
+Показывать облики колоний
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Отключите, чтобы использовать классические юниты, рои и цвета зданий на этом устройстве.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Повторить карту по горизонтали
+[repeat map vertically]
+Повторить карту по вертикали
+[bases]
+базы
+[bases per colony]
+Баз на колонию; база — это одна команда карты в нарисованном виде, с её зданиями и юнитами
 [Match]
 
 [Time limit]
@@ -4627,4 +4741,16 @@ Emoji
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

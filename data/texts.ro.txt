@@ -1,5 +1,11 @@
 [AI strategy]
 Strategia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Echilibrează creșterea sustenabilă și instruirea, apoi adună armatele în valuri.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Alegeţi un joc
 Alegeţi o hartă
 [clear area]
 Zonă de curățare
+[farm area]
+Zonă de cultură
 [Clearing:]
 Curățare:
 [clearingflag explanation 2]
@@ -542,8 +550,6 @@ Fără regenerare
 Nu
 [Number Of Buildings]
 Număr de clădiri
-[number of players: %0]
-%0 jucători prezenţi.
 [number of teams]
 numărul echipelor
 [Number Of Units]
@@ -642,8 +648,6 @@ Pistă de alergare
 Rază de acțiune
 [ratios]
 Proportii
-[Register a new YOG user with password]
-Înregistrează noul jucător YOG cu parola. (nesecurizat)
 [remember unit]
 Reține numărul de unități
 [remove map]
@@ -746,6 +750,8 @@ Selectează clădirea: Popas
 Selectează clădirea: Piață
 [select place clearing area]
 Plasează zona: Zonă de curățare
+[select place farm area]
+Plasează zona: Zonă de cultură
 [select place clearingflag]
 Plasează steagul de curățare
 [select place explorationflag]
@@ -3062,6 +3068,8 @@ Interzis
 Păzește
 [Clear]
 Curăță
+[Farm]
+Cultură
 [Paint]
 Pictează
 [Erase]
@@ -3232,6 +3240,10 @@ Experimente
 Echilibrarea zonelor de gardă
 [experiment guard-area-balancing help]
 Războinicii liberi se împart între zonele de gardă desenate în loc să meargă toți la cea mai apropiată: o zonă mai mare primește mai mulți, iar o zonă supraaglomerată se golește treptat spre celelalte.
+[experiment farm-areas]
+Zone de cultură
+[experiment farm-areas help]
+Adaugă o zonă de cultură la pensulele de zone. Muncitorii care recoltează în ea iau din pătratul cel mai copt al câmpului conectat și lasă câte un bob pe fiecare pătrat, astfel încât câmpul crește din nou în loc să fie mâncat de la margine. Lemnul care crește în zonă este defrișat.
 [settings Touch scrolling]
 Derulare tactilă
 [settings List momentum]
@@ -3321,6 +3333,10 @@ Reculul listelor
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4536,6 +4552,102 @@ Inerția hărții
 
 [game draw]
 
+[settings Show colony skins]
+Arată aspectele coloniilor
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Dezactivează pentru a folosi unități, roiuri și culori ale clădirilor clasice pe acest dispozitiv.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetă harta pe orizontală
+[repeat map vertically]
+Repetă harta pe verticală
+[bases]
+baze
+[bases per colony]
+Baze pe colonie; o bază este o echipă a hărții așa cum a fost desenată, cu clădirile și unitățile ei
 [Match]
 
 [Time limit]
@@ -4629,4 +4741,16 @@ Inerția hărții
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

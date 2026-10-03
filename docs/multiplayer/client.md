@@ -25,7 +25,7 @@ run (`Online::ServicesOwner`, its first member, so the services outlive every sc
 `Online::services()` creates them on first use, and they are destroyed when the game
 exits, which closes the connection. Tools and test harnesses that run without an
 `Application` get process-lifetime services instead. Online objects take what they
-need explicitly: `OnlineMatch` and `PlatformRoom` receive the map cache, and
+need explicitly: `OnlineMatch` and `PlatformRoom` receive the map cache and skin storage, and
 `QuickMatch` the client. `Services::addHook` returns an id for `removeHook`. The client
 is not started until a screen calls `client.start(origin)`.
 
@@ -272,6 +272,10 @@ seconds (default 40; 0 stays to the end) by closing its window, or by the in-gam
 Quit with `GLOB2_E2E_LEAVE_BY=menu`. The host logs the other seat's presence as its
 connection panel shows it, the game's end, and every change of the results card,
 and waits until the platform has settled the result before returning to the room.
+For colony appearance checks, `GLOB2_E2E_OPENGL=1` enables live meshes and
+`GLOB2_E2E_EXPECT_SKINS=N` requires N authorized textures to arrive within
+30 seconds of play on each client. Equip the fixture accounts before starting
+the match; the harness uses the real assignment and texture downloads.
 The `quick` role plays a casual quick match (AI backfill) and leaves after
 `GLOB2_E2E_QUICK_LEAVE` seconds. Every stage is captured:
 
@@ -338,12 +342,16 @@ second launch joins directly. In-client "Join by code" covers the rest.
 | iOS | `CFBundleURLTypes` and `applinks:<official host>` (written by `mobile/ios.py`) |
 
 App Links and universal links cover the official domain only; self-hosted
-instances use `glob2://`. They need the instance to serve
+instances use `glob2://`. The Amazon and China editions have no online play and
+declare none of these (`mobile/android.py` strips the invite intent filters,
+`mobile/ios.py` the associated domain and URL scheme). They need the instance to serve
 `/.well-known/assetlinks.json` (the release signing certificate's SHA-256) and
 `/.well-known/apple-app-site-association` (team id plus
 `org.globulation2.glob2`, path `/j/*`). For the official instance that is
 `app.glob2online.com`; the public website at the apex serves neither file and
-redirects `/j/*` to the app, so an apex invite opens in the browser first.
+redirects `/j/*` to the app, so an apex invite opens in the browser first. What the
+maintainer supplies for these files is in
+[hosting: mobile app links](../hosting/README.md#mobile-app-links).
 
 ## Sim version
 

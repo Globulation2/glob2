@@ -55,6 +55,8 @@ Settings::Settings()
 	version = 0;
 	
 	scrollWheelEnabled=true;
+	hiveMindEnabled=true;
+	hiveMindSupervision=true;
 	highResolutionArtwork=true;
 	autosaveGames=true;
 	resetDefaultUnitsAssigned();
@@ -152,6 +154,7 @@ void Settings::load(std::string filename)
 		// Old profiles seed each missing effect; explicit choices win.
 		if (parsed.count("optionFlags"))
 			setGraphicsDetail(!(optionFlags & LEGACY_LOW_DETAIL));
+		READ_PARSED_INT(showColonySkins);
 		READ_PARSED_INT(clouds);
 		READ_PARSED_INT(cloudShadows);
 		READ_PARSED_INT(buildingParticles);
@@ -162,6 +165,7 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(decorativeAnimations);
 		READ_PARSED_INT(unitInterpolation);
 		READ_PARSED_INT(adaptiveZoomDetail);
+		READ_PARSED_INT(smoothFog);
 
 		READ_PARSED_INT(automaticTorus);
 		READ_PARSED_STRING(language);
@@ -170,6 +174,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+		READ_PARSED_INT(hiveMindEnabled);
+		READ_PARSED_INT(hiveMindSupervision);
 		READ_PARSED_INT(highResolutionArtwork);
 		READ_PARSED_INT(autosaveGames);
 		// The file decides the set: absent or empty means nothing enabled, the
@@ -254,7 +260,10 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
+		Utilities::streamprintf(stream, "hiveMindEnabled=%d\n", hiveMindEnabled);
+		Utilities::streamprintf(stream, "hiveMindSupervision=%d\n", hiveMindSupervision);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);
+		Utilities::streamprintf(stream, "showColonySkins=%d\n", showColonySkins);
 		Utilities::streamprintf(stream, "clouds=%d\n", clouds);
 		Utilities::streamprintf(stream, "cloudShadows=%d\n", cloudShadows);
 		Utilities::streamprintf(stream, "buildingParticles=%d\n", buildingParticles);
@@ -265,6 +274,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "decorativeAnimations=%d\n", decorativeAnimations);
 		Utilities::streamprintf(stream, "unitInterpolation=%d\n", unitInterpolation);
 		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
+		Utilities::streamprintf(stream, "smoothFog=%d\n", smoothFog);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);

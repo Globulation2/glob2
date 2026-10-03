@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
+#include "FogFade.h"
 #include "MapOverlayQueue.h"
 #include "ZoomDetail.h"
 #include "scene/Scene.h"
@@ -11,6 +12,7 @@
 #include <valarray>
 
 class DynamicClouds;
+class ColonySkinPreview;
 namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 
@@ -27,11 +29,15 @@ struct MapRenderState
 
 	//! Water and cloud phase, advanced once per drawn frame; frozen while paused.
 	int animationTime = 0;
-	//! Phase of the animated area (forbidden/guard/clear) markers.
+	//! Phase of the animated area (forbidden/guard/clear/farm) markers.
 	int areaAnimationTick = 0;
 	//! How far this frame draws units from their ticked state towards the next tick,
 	//! 0..1 (see UnitMotion.h); 0 draws exactly the simulated positions.
 	float unitMotion = 0;
+	//! How far each tile has faded into the fog of war, with the smooth fog
+	//! setting. Game::drawMap updates it each frame, and resets it while the fade is
+	//! not drawn, so it is active() exactly when this frame draws the fog faded.
+	FogFade fogFade;
 	//! Reused alpha buffer for overlay maps, kept to avoid per-frame allocation.
 	std::valarray<unsigned char> overlayAlphas;
 	//! How this frame's zoom draws each map element; set by Game::drawMap.
@@ -50,6 +56,9 @@ struct MapRenderState
 
 	//! The cloud field for this view, created on first use.
 	DynamicClouds &clouds();
+	ColonySkinPreview &skinPreview();
+	// Keep match appearance while rebuilding the rest of a reconnect view.
+	void swapSkinPreview(MapRenderState &other);
 	//! The software terrain cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
 	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);
@@ -58,6 +67,7 @@ struct MapRenderState
 
 private:
 	std::unique_ptr<DynamicClouds> clouds_;
+	std::unique_ptr<ColonySkinPreview> skinPreview_;
 	std::unique_ptr<SoftwareTerrainCache> terrainCache_;
 	Uint64 terrainCacheMap = 0; //!< Map::identity() the cache was built for.
 };

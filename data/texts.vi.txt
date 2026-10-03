@@ -1,5 +1,11 @@
 [AI strategy]
 Chiến thuật AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Cân bằng tăng trưởng bền vững và huấn luyện, rồi tập hợp quân thành từng đợt.
 [AIMaxima-Profile]
@@ -200,6 +206,8 @@ Chọn trận đấu
 Chọn bản đồ
 [clear area]
 Vùng khai quang
+[farm area]
+Vùng canh tác
 [Clearing:]
 Đang khai quang:
 [clearingflag explanation 2]
@@ -760,6 +768,8 @@ Chọn quán trọ
 Chọn chợ
 [select place clearing area]
 Chọn tạo vùng khai quang
+[select place farm area]
+Chọn tạo vùng canh tác
 [select place clearingflag]
 Chọn đặt cờ khai quang
 [select place explorationflag]
@@ -3058,6 +3068,8 @@ Cấm
 Canh gác
 [Clear]
 Dọn dẹp
+[Farm]
+Canh tác
 [Paint]
 Vẽ
 [Erase]
@@ -3228,6 +3240,10 @@ Thử nghiệm
 Cân bằng vùng canh gác
 [experiment guard-area-balancing help]
 Chiến binh rảnh rỗi phân bố giữa các vùng canh gác đã vẽ thay vì tất cả đi đến vùng gần nhất: vùng lớn hơn nhận nhiều hơn, và vùng quá đông dần dần vơi sang các vùng khác.
+[experiment farm-areas]
+Vùng canh tác
+[experiment farm-areas help]
+Thêm vùng canh tác vào các cọ vẽ vùng. Công nhân thu hoạch trong vùng sẽ lấy từ ô chín nhất của cánh đồng liền kề và để lại một hạt trên mỗi ô, nhờ vậy cánh đồng mọc lại thay vì bị ăn mòn từ rìa. Gỗ mọc vào vùng canh tác sẽ bị khai quang.
 [settings Touch scrolling]
 Cuộn bằng cảm ứng
 [settings List momentum]
@@ -3317,6 +3333,10 @@ Nảy của danh sách
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4532,6 +4552,102 @@ Quán tính bản đồ
 
 [game draw]
 
+[settings Show colony skins]
+Hiển thị diện mạo thuộc địa
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Tắt để sử dụng đơn vị, bầy đàn và màu công trình cổ điển trên thiết bị này.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Lặp bản đồ theo chiều ngang
+[repeat map vertically]
+Lặp bản đồ theo chiều dọc
+[bases]
+căn cứ
+[bases per colony]
+Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đồ như đã vẽ, cùng các công trình và đơn vị của nó
 [Match]
 
 [Time limit]
@@ -4625,4 +4741,16 @@ Quán tính bản đồ
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

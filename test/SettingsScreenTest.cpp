@@ -81,6 +81,10 @@ static void run(int width,int height,bool gl,bool expanded)
         for(auto category:screen.visibleCategories()){
             screen.selectCategory(category);
             for(const auto& r:screen.rows()){
+                if(category==SettingsScreen::Category::Online){
+                    CHECK(r.label.find("[settings ")==std::string::npos);
+                    CHECK(r.help.find("[settings ")==std::string::npos);
+                }
                 if(r.id.empty())continue;
                 if(!(r.control.w>0 && r.control.h>0)){std::cerr<<"row without bounds: "<<r.id<<"\n";
                     std::function<void(GAGGUI::ui::Node&,int)> dump=[&](GAGGUI::ui::Node& n,int d){std::cerr<<std::string(size_t(d)*2,' ')<<n.name()<<" "<<n.key<<" "<<n.bounds.x<<","<<n.bounds.y<<" "<<n.bounds.w<<"x"<<n.bounds.h<<"\n";for(auto& c:n.children)dump(*c,d+1);};
@@ -130,10 +134,15 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(GAGCore::ScrollPresets::widget().momentum);
         screen.selectCategory(SettingsScreen::Category::Display);
         s.optionFlags |= 0x80;
-        for (const char* id : {"graphics.clouds", "graphics.shadows", "graphics.particles", "graphics.magic", "graphics.panels", "graphics.paths", "graphics.indicators", "graphics.animation", "graphics.unitmotion"}) {
+        for (const char* id : {"graphics.skins", "graphics.clouds", "graphics.shadows", "graphics.particles", "graphics.magic", "graphics.panels", "graphics.paths", "graphics.indicators", "graphics.animation", "graphics.unitmotion"}) {
             REQUIRE(screen.changeSetting(id,0)); REQUIRE(s.optionFlags==0x80);
             REQUIRE(screen.changeSetting(id,1)); REQUIRE(s.optionFlags==0x80);
         }
+        REQUIRE(s.showColonySkins);
+        REQUIRE(screen.changeSetting("graphics.skins",0));
+        REQUIRE_FALSE(s.showColonySkins);
+        Settings skinSaved; skinSaved.load(); REQUIRE_FALSE(skinSaved.showColonySkins);
+        REQUIRE(screen.changeSetting("graphics.skins",1));
         REQUIRE((s.clouds && s.cloudShadows && s.buildingParticles && s.fullMagicEffects));
         REQUIRE(screen.changeSetting("graphics.clouds",0));
         REQUIRE((!s.clouds && s.cloudShadows && s.highResolutionArtwork==originalArtwork));

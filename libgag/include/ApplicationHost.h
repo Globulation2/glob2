@@ -10,6 +10,10 @@
 namespace GAGCore { struct ViewportMetrics; struct InputCapabilities; }
 namespace GAGCore::ApplicationHost
 {
+// Browser loops may request the next display callback instead of a timer.
+// Native loops return millisecond delays. Zero remains a cooperative timer.
+inline constexpr std::uint32_t AnimationFrameDelay = UINT32_MAX;
+
 class Loop
 {
   public:
@@ -46,6 +50,8 @@ struct SelectedFile
 {
 	std::string name;
 	std::vector<unsigned char> bytes;
+	// Desktop only; browser/mobile imports deliberately expose no external path.
+	std::string externalPath;
 };
 class FileSelection
 {
@@ -64,6 +70,8 @@ bool storageRestoreFailed();
 // Hosts that ship all data with the application answer true for every package
 // and never report an installation.
 bool assetPackageReady(const char *name);
+// Start an optional package without blocking the game; readiness is polled.
+void requestAssetPackage(const char *name);
 // Packages installed since the previous call, oldest first.
 std::vector<std::string> takeInstalledAssetPackages();
 bool canExportFiles();

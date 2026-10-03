@@ -57,7 +57,7 @@ class Telemetry(unittest.TestCase):
             summary = export(source, [record, legacy], root)
             self.assertEqual(summary['jobs'][0]['errors'], 1)
             self.assertEqual(summary['jobs'][0]['missing_final'], [])
-            self.assertEqual(summary['jobs'][1]['unavailable'], ['gameplay','ai','performance'])
+            self.assertEqual(summary['jobs'][1]['unavailable'], ['gameplay','ai','performance','team_state'])
             reread = [json.loads(line) for line in (root/'game-telemetry.jsonl').read_text().splitlines()]
             self.assertEqual(reread[:9], rows)
             with (root/'game-telemetry-values.csv').open() as stream:

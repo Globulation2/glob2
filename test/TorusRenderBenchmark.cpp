@@ -253,7 +253,10 @@ static int run(int argc, char **argv)
             else populateSynthetic(gui.game, worldW, worldH);
             const int count = population(gui.game);
             const int cloudGridLimit = detailForZoom(gui.game, camera.zoom);
-            // GLOB2_BENCH_FOG=1 draws the first team's fog of war instead of the whole map.
+            // GLOB2_BENCH_FOG=1 draws the first team's fog of war instead of the whole map;
+            // GLOB2_BENCH_SMOOTH_FOG=0 draws it without the smooth fog fade.
+            if (const char *smoothFog = std::getenv("GLOB2_BENCH_SMOOTH_FOG"))
+                globalContainer->settings.smoothFog = std::atoi(smoothFog) != 0;
             const Uint32 options = (std::getenv("GLOB2_BENCH_FOG") ? 0 : Game::DRAW_WHOLE_MAP) | (std::getenv("GLOB2_BENCH_BARS") ? Game::DRAW_HEALTH_FOOD_BAR : 0)
                 | (std::getenv("GLOB2_BENCH_AREAS") ? Game::DRAW_AREA : 0);
             std::printf("mapped_units=%d (excludes units inside buildings)\n", mappedPopulation(gui.game));

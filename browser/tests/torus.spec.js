@@ -13,6 +13,7 @@ const transition = {timeout: 120000};
 function urlWith(renderer) {
   const url = new URL(gameURL(), 'http://localhost');
   url.searchParams.set('renderer', renderer);
+  if (renderer === 'webgl2') url.searchParams.set('gl-errors', '1');
   return url.pathname + url.search;
 }
 

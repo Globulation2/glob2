@@ -93,7 +93,8 @@ setup. Writes replace the old file atomically.
 
 Preference format 3 also retains every economy and combat rule, the starting unit
 level and the time limit. Formats 1 and 2 remain readable; they did not store
-these choices, so those rules load at their normal defaults. Format 5 stores the
+these choices, so those rules load at their normal defaults. Format 5 adds custom
+AI library identities and format 6 probability victory. Format 7 stores the
 ruleset's id instead of its English name: older files load "Quick clash", "Open
 book" and "Last colony standing" as those rulesets and "Custom" as Standard, keeping
 the saved rule values, so they show as changes. An id this build does not have also
@@ -124,7 +125,8 @@ rules it changes from Standard; every other rule keeps its Standard value:
   take `true`/`false` (`combat`, `hunger`, `revealTerrain`, `alliancesChange`,
   `instantConstruction`, `woundedRetreat`, `unitsCanDie`, `unitTraining`); `workers`
   takes 1 to 8; the others take an option id: `victory` (`prestige`, `conquest`),
-  `timeLimit` (`off`, `30`, `45`, `60`, `90`), `speed` (`1x` to `40x`, `max`),
+  `timeLimit` (`off`, `30`, `45`, `60`, `90`), `winProbability` (`off`, `95`, `97`,
+  `99`), `speed` (`1x` to `40x`, `max`),
   `unitLevel` (`standard`, `veteran`, `elite`, `legendary`), `stockpile` (`none`,
   `50`, `150`, `300`), `regrowth` (`normal`, `slow`, `very-slow`, `rare`, `none`),
   `glassCannon` (`off`, `x2`, `x3`) and `buildingStrength` (`normal`, `x5`, `x10`).
@@ -134,7 +136,7 @@ rules it changes from Standard; every other rule keeps its Standard value:
 
 Rulesets only choose values for rules that already exist, so adding or editing one
 changes no simulation code and needs no `SIM_REVISION` bump. Online rooms carry
-every rule except game speed, starting workers and unit level; a room shows the
+every rule except game speed, starting workers, unit level and probability victory; a room shows the
 first ruleset that matches the rules it carries (Quick clash reads as Standard).
 A new *rule* is different: it needs a field in the setup and header, a registry
 entry, save and replay versioning, and a simulation version bump.

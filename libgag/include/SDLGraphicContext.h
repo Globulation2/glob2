@@ -6,6 +6,7 @@
 
 #include "GAGSys.h"
 #include "CursorManager.h"
+#include "SkinAtlasCache.h"
 #include <map>
 #include <vector>
 #include <string>
@@ -26,6 +27,8 @@
 namespace GAGCore
 {
     class RenderBatch;
+    struct SkinMesh;
+    struct SkinMeshRequest;
 
     class RenderBackend;
     class SoftwareFramePresenter;
@@ -179,6 +182,8 @@ namespace GAGCore
 		// its own uploaded revision; raw pixel writes must call markPixelsChanged().
 		std::uint64_t glUploadedRevision = 0; // Revision uploaded to this surface's legacy GL texture.
         std::uint64_t pixelRevision = 1, opacityRevision = 0;
+        static std::uint64_t nextSurfaceIdentity();
+        const std::uint64_t surfaceIdentity = nextSurfaceIdentity();
         bool opaquePixels = false;
 		bool highResolutionSampling=false;
 		//! texture index if GPU (GL) is used
@@ -215,6 +220,8 @@ namespace GAGCore
 		DrawableSurface(int w, int h);
 		DrawableSurface(const SDL_Surface *sourceSurface);
 		DrawableSurface *clone(void);
+        DrawableSurface(const DrawableSurface&) = delete;
+        DrawableSurface& operator=(const DrawableSurface&) = delete;
 		virtual ~DrawableSurface(void);
 		
 		// modifiers
@@ -231,6 +238,7 @@ namespace GAGCore
 		virtual int getH(void) { if (textureInfo) return textureInfo->h; return sdlsurface->h; }
 		//! The raw software surface, e.g. to hand off to an SDL API that wants one directly
 		SDL_Surface *getSDLSurface(void) { return sdlsurface; }
+        std::uint64_t lifetimeIdentity() const { return surfaceIdentity; }
         std::uint64_t contentRevision() const { return pixelRevision; }
         virtual void prepareDraw() {}
         void markPixelsChanged() { ++pixelRevision; }
@@ -390,6 +398,7 @@ namespace GAGCore
 		float rasterScale(void);
 		//! target pixels per logical pixel while drawing into an offscreen target; 0 while drawing into the window
 		float renderTargetScale = 0.0f;
+		bool offscreenPass = false;
 		bool mapTransformActive=false;
         bool periodicCopy=false;
 		float mapScale=1, mapTranslateX=0, mapTranslateY=0;
@@ -428,6 +437,7 @@ namespace GAGCore
 		} frameCache;
 		void reportFrameCacheFailure(const char *reason);
 		void releaseFrameCache();
+		void captureRecordingFrame();
 		void cacheFrame();
         std::unique_ptr<SoftwareFramePresenter> softwarePresenter;
         void prepareDraw() override;
@@ -440,7 +450,20 @@ namespace GAGCore
 		// types, to keep GL headers out of this public header (see Sprite::vbo).
 		std::unique_ptr<RenderBatch> renderBatch;
         bool renderBatchEnabled=true;
-		unsigned unitShaderProgram = 0;
+		// Experimental live mesh renderer, owned by the GL context.
+        struct SkinResources
+        {
+            unsigned program = 0, framebuffer = 0, depth = 0;
+            std::vector<unsigned> colors;
+            using Key = SkinAtlasCache::Key;
+            SkinAtlasCache slots;
+            unsigned poses = 0, uv = 0, indices = 0, vao = 0;
+            std::uint64_t meshIdentity = 0;
+            unsigned frame = ~0u;
+            bool attempted = false;
+        } skinResources;
+        void destroySkinRenderer();
+        unsigned unitShaderProgram = 0;
 		int unitShaderLocBase = -1, unitShaderLocTeam = -1;
 		int unitShaderLocHasBase = -1, unitShaderLocHasTeam = -1;
 		bool unitShaderFailureLogged = false;
@@ -469,6 +492,8 @@ namespace GAGCore
 		//! Destructor
 		virtual ~GraphicContext(void);
 		
+		//! Bounded software pass; borrows pixels and restores facade/backend state on failure.
+		void drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw);
 		unsigned getGLContextGeneration() const { return glContextGeneration; }
 
 		// modifiers
@@ -482,7 +507,7 @@ namespace GAGCore
             compactWindowAllowed=allowed;applyWindowMinimumSize();
         }
         bool isResponsiveViewport() const { return responsiveViewport; }
-        bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware; }
+        bool hasPortableRenderer() const { return bool(renderer) && !nativeSoftware && !offscreenPass; }
         double logicalUnitsPerPoint() const;
         //! Logical pixels per authored font pixel for text a touch painter sizes in
         //! points: logicalUnitsPerPoint() times the player's text-size preference.
@@ -539,7 +564,7 @@ namespace GAGCore
         //! A sprite frame covering the `size`-pixel map square at (x, y), meeting
         //! its neighbours and drawMapTileFill exactly. In the software rasteriser
         //! its edges snap to the same pixels as theirs; elsewhere it is drawSprite.
-        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index);
+        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index, Uint8 alpha = Color::ALPHA_OPAQUE);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
@@ -627,6 +652,11 @@ namespace GAGCore
         // Diagnostic comparison switches use the same context and assets.
         void setRenderBatchEnabled(bool enabled);
         bool hasUnitShader() const { return unitShaderProgram != 0; }
+        // Render distinct visible poses before painting the map; composites retain painter order.
+        void prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests);
+        // Returns false without drawing when the backend or assets are unavailable.
+        bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
+                          float x, float y, float w, float h, DrawableSurface *underlay = nullptr, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
 		virtual void drawAlphaMap(const std::valarray<unsigned char> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);
@@ -735,12 +765,22 @@ namespace GAGCore
 
 		friend class DrawableSurface;
 		// Support functions
+		//! Load every frame from the sheets listed in <filename>.sheet, return false and load nothing if there is no usable index
+		bool loadSheets(const std::string &filename);
 		//! Load a frame from two file pointers
 		void loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream);
 		//! Check if index is within bound and return true, assert false and return false otherwise
 		bool checkBound(int index);
 		//! Return a rotated drawable surface for actColor, create it if necessary
     public:
+        // The uncolored layer may be retained beneath replacement geometry
+        // (unit sheets store their ground shadows here). The caller sizes it
+        // to the native logical canvas, even when an HD surface is returned.
+        DrawableSurface *baseFrame(unsigned index)
+        {
+            return checkBound(index) ? prepareDrawSurface(index, false, true) : nullptr;
+        }
+
         // Immutable native image access for terrain cache preparation. Team layers
         // need separate composition and therefore are not cacheable here.
         DrawableSurface* nativeFrame(unsigned index) const

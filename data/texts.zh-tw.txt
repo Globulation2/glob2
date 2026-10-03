@@ -1,5 +1,11 @@
 [AI strategy]
 AI 戰術
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 平衡可持續發展與訓練，然後集結軍隊發動波次進攻。
 [AIMaxima-Profile]
@@ -140,54 +146,6 @@ Break 鍵
 任務簡報
 [build %0 level %1]
 建造 %0，等級 %1
-[build barracks level 0]
-建造兵營 1
-[build barracks level 1]
-建造兵營 2
-[build barracks level 2]
-建造兵營 3
-[build defencetower level 0]
-建造防禦塔 1
-[build defencetower level 1]
-建造防禦塔 2
-[build defencetower level 2]
-建造防禦塔 3
-[build hospital level 0]
-建造醫院 1
-[build hospital level 1]
-建造醫院 2
-[build hospital level 2]
-建造醫院 3
-[build inn level 0]
-建造客棧 1
-[build inn level 1]
-建造客棧 2
-[build inn level 2]
-建造客棧 3
-[build market level 0]
-建造市場
-[build racetrack level 0]
-建造跑道 1
-[build racetrack level 1]
-建造跑道 2
-[build racetrack level 2]
-建造跑道 3
-[build school level 0]
-建造學校 1
-[build school level 1]
-建造學校 2
-[build school level 2]
-建造學校 3
-[build stonewall level 0]
-建造石牆
-[build swarm level 0]
-建造孢子堆
-[build swimmingpool level 0]
-建造游泳池 1
-[build swimmingpool level 1]
-建造游泳池 2
-[build swimmingpool level 2]
-建造游泳池 3
 [Build]
 建造
 [Building Defaults]
@@ -216,12 +174,6 @@ Ctrl + 拖曳 = 直線
 無法加入：遊戲已開始
 [Can't join game, game is full]
 無法加入：遊戲人數已滿
-[Can't join game, missmatching game parameters]
-無法加入遊戲，遊戲參數失對。
-[Can't join game, timeout]
-無法加入遊戲，過時。
-[Can't join game, wrong game version]
-無法加入遊戲，版本錯誤。
 [cancel destroy]
 取消摧毀
 [cancel repair]
@@ -246,6 +198,8 @@ Caps Lock 鍵
 選擇一個地圖
 [clear area]
 清除區
+[farm area]
+耕種區
 [Clearing:]
 清除:
 [clearingflag explanation 2]
@@ -308,12 +262,6 @@ Ctrl - 直線
 敵方單位和建築
 [defencetower explanation]
 攻擊附近的
-[defencetower level 0]
-防禦塔 1
-[defencetower level 1]
-防禦塔 2
-[defencetower level 2]
-防禦塔 3
 [defencetower]
 防禦塔
 [Defense Map]
@@ -484,12 +432,6 @@ Home 鍵
 
 [inn explanation]
 餵飽你的單位
-[inn level 0]
-客棧 1
-[inn level 1]
-客棧 2
-[inn level 2]
-客棧 3
 [inn]
 客棧
 [insert]
@@ -568,8 +510,6 @@ zh-tw
 地圖寬度
 [map size y]
 地圖高度
-[maps available]
-可用的地圖
 [mark map]
 為盟友標示地圖
 [market explanation 2]
@@ -610,8 +550,6 @@ meta-%0
 否
 [Number Of Buildings]
 建築物數量
-[number of players: %0]
-%0 玩家再線.
 [number of teams]
 隊伍數量
 [Number Of Units]
@@ -710,8 +648,6 @@ Print Screen 鍵
 射程
 [ratios]
 比例
-[Register a new YOG user with password]
-註冊一個新 YOG 帳號和密碼。 (不穩定)
 [remember unit]
 記住單位配置數量
 [remove map]
@@ -814,6 +750,8 @@ Scroll Lock 鍵
 選擇市場
 [select place clearing area]
 放置區域: 清除區
+[select place farm area]
+放置區域: 耕種區
 [select place clearingflag]
 放置旗幟: 清除旗幟
 [select place explorationflag]
@@ -896,8 +834,6 @@ V: 按住以使用語音交談
 
 [swarm explanation]
 製造新單位
-[swarm level 0]
-孢子堆
 [swarm]
 孢子堆
 [Swim]
@@ -1109,8 +1045,6 @@ Tab 鍵
 [water]
 水面
 [Wheat]
-小麥
-[wheat]
 小麥
 [Won : you defeated your opponents]
 贏: 你打敗了你的對手
@@ -3134,6 +3068,8 @@ CPU %0%
 守衛
 [Clear]
 清理
+[Farm]
+耕種
 [Paint]
 繪製
 [Erase]
@@ -3304,6 +3240,10 @@ CPU %0%
 警戒區均衡
 [experiment guard-area-balancing help]
 空閒的戰士會分散到各個已繪製的警戒區，而不是全部湧向最近的一個：更大的區域獲得更多戰士，過於擁擠的區域會逐漸向其他區域分流。
+[experiment farm-areas]
+耕種區
+[experiment farm-areas help]
+在區域筆刷中加入耕種區。在其中收割的工人會從相連田地中最成熟的格子取用，並在每一格留下一粒種子，讓田地重新生長，而不是從邊緣被吃光。長進耕種區的木材會被清除。
 [settings Touch scrolling]
 觸控捲動
 [settings List momentum]
@@ -3393,6 +3333,10 @@ CPU %0%
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4608,6 +4552,102 @@ CPU %0%
 
 [game draw]
 
+[settings Show colony skins]
+顯示殖民地外觀
+[settings Turn off to use classic units, swarms and building colors on this device.]
+關閉後，此裝置將使用經典單位、蟲群和建築顏色。
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+水平重複地圖
+[repeat map vertically]
+垂直重複地圖
+[bases]
+基地
+[bases per colony]
+每個殖民地的基地數；一個基地是地圖原樣中的一支團隊及其建築和單位
 [Match]
 
 [Time limit]
@@ -4701,4 +4741,16 @@ CPU %0%
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

@@ -31,6 +31,7 @@ class PlatformClient;
 class OnlineHubScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "online_hub"; }
 	// What "Find match" does: the queue screens set this (see OnlineHub::setQuickMatch).
 	using QuickMatch = std::function<void(GAGGUI::ScreenStack &, const Online::Json &queue, bool allowAiOpponent)>;
 	static void setQuickMatch(QuickMatch start);

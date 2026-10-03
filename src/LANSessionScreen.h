@@ -19,6 +19,7 @@ class ScreenStack;
 class LANSessionScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "lansession"; }
 	LANSessionScreen(GAGGUI::ScreenStack &screens, std::shared_ptr<Lan::LanRoom> room);
 	~LANSessionScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;

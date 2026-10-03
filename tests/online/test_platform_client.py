@@ -18,6 +18,7 @@ certificate for `localhost` exercises the real TLS path), and drives the
 Skipped when the variables are unset.
 """
 import json
+import http.cookiejar
 import os
 from pathlib import Path
 import platform
@@ -219,19 +220,24 @@ class PlatformClientIntegration(unittest.TestCase):
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         lines = []
         deadline = time.time() + timeout
-        for raw in process.stdout:
-            line = json.loads(raw)
-            lines.append(line)
-            self.transcript.append({'scenario': scenario, **line})
-            if on_line:
-                on_line(line)
-            if time.time() > deadline:
+        try:
+            for raw in process.stdout:
+                line = json.loads(raw)
+                lines.append(line)
+                self.transcript.append({'scenario': scenario, **line})
+                if on_line:
+                    on_line(line)
+                if time.time() > deadline:
+                    process.kill()
+                    break
+            process.wait(timeout=30)
+            errors = process.stderr.read()
+        finally:
+            if process.poll() is None:
                 process.kill()
-                break
-        process.wait(timeout=30)
-        errors = process.stderr.read()
-        process.stdout.close()
-        process.stderr.close()
+                process.wait(timeout=30)
+            process.stdout.close()
+            process.stderr.close()
         self.write_evidence()
         self.assertEqual(process.returncode, 0, f'{lines}\n{errors}')
         return {line['event']: line for line in lines}
@@ -266,19 +272,24 @@ class PlatformClientIntegration(unittest.TestCase):
             error.close()
             return error.code
 
-    def browser_sign_in(self, sign_in_url, username):
-        """Registers a local account on the sign-in page, as a browser would."""
+    def browser_sign_in(self, sign_in_url, username, code):
+        """Confirms the game's code, then registers through the bound browser."""
         context = ssl.create_default_context(cafile=str(self.cert))
-        with urllib.request.urlopen(sign_in_url, context=context, timeout=20) as page:
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPSHandler(context=context),
+            urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        with opener.open(sign_in_url, timeout=20) as page:
             body = page.read().decode()
-            cookies = [header.split(';', 1)[0] for header in page.headers.get_all('Set-Cookie') or []]
         attempt = urllib.parse.parse_qs(urllib.parse.urlparse(sign_in_url).query)['attempt'][0]
-        form = urllib.parse.urlencode({'attempt': attempt, 'username': username,
-                                       'password': 'correct horse battery', 'action': 'register'})
-        request = urllib.request.Request(self.origin + '/signin/local', data=form.encode(), method='POST',
-                                         headers={'Content-Type': 'application/x-www-form-urlencoded',
-                                                  'Origin': self.origin, 'Cookie': '; '.join(cookies)})
-        with urllib.request.urlopen(request, context=context, timeout=20) as reply:
+        def post(path, values):
+            return opener.open(urllib.request.Request(
+                self.origin + path, data=urllib.parse.urlencode(values).encode(), method='POST',
+                headers={'Content-Type': 'application/x-www-form-urlencoded',
+                         'Origin': self.origin}), timeout=20)
+        with post('/signin/confirm', {'attempt': attempt, 'code': code}) as confirmed:
+            self.assertIn('Code accepted', confirmed.read().decode())
+        with post('/signin/local', {'attempt': attempt, 'username': username,
+                                   'password': 'correct horse battery', 'action': 'register'}) as reply:
             return body, reply.status, reply.read().decode()
 
     def test_client_lifecycle(self):
@@ -318,7 +329,10 @@ class PlatformClientIntegration(unittest.TestCase):
         second = self.probe('returning')['online']
         self.assertEqual((second['auth'], second['accountId']), ('signed-in', account))
         self.assertNotEqual(self.stored()['refreshToken'], before)
-        self.assertEqual(self.refresh_status(before), 401)  # rotated: no longer valid
+        # The immediately previous token remains valid during the server's
+        # bounded concurrent-refresh grace. Older tokens still revoke the
+        # family below once their successor has itself been rotated.
+        self.assertEqual(self.refresh_status(before), 200)
 
         # 3. Presenting a rotated refresh token revokes its family; the client
         # falls back to the device credential and keeps the same account.
@@ -338,10 +352,11 @@ class PlatformClientIntegration(unittest.TestCase):
         def browser(line):
             if line['event'] == 'handoff-ready':
                 self.proxy.drop_all()
-                pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player')
+                pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player', line['confirmationCode'])
                 pages['code'] = line['confirmationCode']
         linked = self.probe('link', browser)['handoff-finished']
-        self.assertIn(pages['code'], pages['page'])  # the page shows the game's code
+        self.assertIn('name="code"', pages['page'])
+        self.assertNotIn(pages['code'], pages['page'])  # only the game reveals the code
         self.assertEqual(pages['status'], 200)
         self.assertTrue(linked['completed'], linked)
         self.assertTrue(linked['linked'])

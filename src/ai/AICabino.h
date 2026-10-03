@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "field/Frontier.h"
 #include <memory>
 
 #include "BuildingType.h"
@@ -76,7 +77,7 @@ namespace Cabino
 			void reset(AICabino& team, unsigned sources, unsigned obstacles);
 			///Updates the gradient from the given starting point outwards.
 			///Resources count as obstacles
-			void update();
+			void update(field::Frontier& frontier);
 			///Gets the height of point x,y
 			int getHeight(int x, int y) const;
 
@@ -123,6 +124,7 @@ namespace Cabino
 			};
 
 			std::map<gradientSignature, Gradient> gradients;
+			field::Frontier frontier; // transient, shared by this manager's fields
 			std::queue<std::map<gradientSignature, Gradient>::iterator> update_queue;
 			AICabino* team;
 
@@ -137,6 +139,7 @@ namespace Cabino
 		  {
 			  return AITelemetry::schema(8);
 		  }
+		  Uint32 telemetrySchemaVersion() const override { return 2; }
 			AICabino(Player *player);
 			AICabino(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor);
 			~AICabino();

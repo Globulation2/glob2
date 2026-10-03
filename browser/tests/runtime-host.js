@@ -3,10 +3,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const {randomUUID} = require('node:crypto');
-exports.openRuntimeHost = async (page, body) => {
+exports.openRuntimeHost = async (page, body, search = '') => {
   const name = 'test-host-' + randomUUID() + '.html';
   const file = path.resolve(__dirname, '../../build/emscripten/client/release', name);
   fs.writeFileSync(file, body);
-  try { await page.goto('/' + name); }
+  try { await page.goto('/' + name + search); }
   finally { fs.unlinkSync(file); }
 };

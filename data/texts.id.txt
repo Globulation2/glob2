@@ -1,5 +1,11 @@
 [AI strategy]
 Strategi AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Menyeimbangkan pertumbuhan berkelanjutan dan pelatihan, lalu mengumpulkan tentara dalam gelombang.
 [AIMaxima-Profile]
@@ -200,6 +206,8 @@ Pilih permainan
 Pilih peta
 [clear area]
 Area pembersihan
+[farm area]
+Area pertanian
 [Clearing:]
 Membersihkan:
 [clearingflag explanation 2]
@@ -760,6 +768,8 @@ Pilih Penginapan
 Pilih Pasar
 [select place clearing area]
 Pilih Pasang Area Pembersihan
+[select place farm area]
+Pilih Pasang Area Pertanian
 [select place clearingflag]
 Pilih Pasang Bendera Pembersihan
 [select place explorationflag]
@@ -3058,6 +3068,8 @@ Terlarang
 Jaga
 [Clear]
 Bersihkan
+[Farm]
+Tani
 [Paint]
 Lukis
 [Erase]
@@ -3228,6 +3240,10 @@ Eksperimen
 Penyeimbangan area jaga
 [experiment guard-area-balancing help]
 Prajurit bebas menyebar di antara area jaga yang dilukis alih-alih semuanya ke yang terdekat: area yang lebih besar mendapat lebih banyak, dan area yang terlalu penuh perlahan mengalir ke area lain.
+[experiment farm-areas]
+Area pertanian
+[experiment farm-areas help]
+Menambahkan area pertanian ke kuas zona. Pekerja yang memanen di dalamnya mengambil dari petak paling matang di ladang yang tersambung dan menyisakan satu butir di setiap petak, sehingga ladang tumbuh kembali alih-alih habis dimakan dari tepinya. Kayu yang tumbuh ke dalam area akan dibersihkan.
 [settings Touch scrolling]
 Gulir sentuh
 [settings List momentum]
@@ -3317,6 +3333,10 @@ Pantulan daftar
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4532,6 +4552,102 @@ Momentum peta
 
 [game draw]
 
+[settings Show colony skins]
+Tampilkan tampilan koloni
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Nonaktifkan untuk menggunakan unit, kawanan, dan warna bangunan klasik di perangkat ini.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Ulangi peta secara horizontal
+[repeat map vertically]
+Ulangi peta secara vertikal
+[bases]
+markas
+[bases per colony]
+Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beserta bangunan dan unitnya
 [Match]
 
 [Time limit]
@@ -4625,4 +4741,16 @@ Momentum peta
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

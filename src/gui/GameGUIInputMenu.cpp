@@ -1,3 +1,4 @@
+#include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -101,9 +102,20 @@ void GameGUI::openChat()
 		typingInputScreen->attach(*globalContainer->gfx);
 }
 
+void GameGUI::openCommander()
+{
+ if(!hive || !hive->available() || !globalContainer->settings.hiveMindEnabled || typingInputScreen)return;
+ if(touch)touch->cancel(true);
+ typingCommander=true;
+ typingInputScreen=std::make_unique<InGameTextInput>(true);
+ typingInputScreen->setText(hive->commandDraft);
+ if(!globalContainer->runNoX)typingInputScreen->attach(*globalContainer->gfx);
+}
+
 void GameGUI::closeChat()
 {
 	typingInputScreen.reset();
+	typingCommander=false;
 }
 
 void GameGUI::toggleHistory()
@@ -148,6 +160,9 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (result)
 			{
+				case InGameMainScreen::HIVE_MIND:
+					if(hive)openDialog(IGM_HIVE,std::make_unique<Hive::Dialog>(hive));
+					return true;
 				case InGameMainScreen::LOAD_GAME:
 				{
 					if (globalContainer->replaying)
@@ -161,6 +176,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					openDialog(IGM_SAVE, std::make_unique<LoadSaveDialog>("games", "game", false, Toolkit::getStringTable()->getString("[save game]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
+				case InGameMainScreen::AI_TELEMETRY:
+					openDialog(IGM_TELEMETRY, std::make_unique<InGameAITelemetryScreen>(this));
+					return true;
+
 				case InGameMainScreen::OPTIONS:
 				{
 					openDialog(IGM_OPTION, std::make_unique<InGameOptionScreen>(this));
@@ -251,6 +270,13 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			closeDialog();
 			return true;
 		}
+
+		case IGM_HIVE:
+			closeDialog();return true;
+
+		case IGM_TELEMETRY:
+			closeDialog();
+			return true;
 
 		case IGM_OPTION:
 		{

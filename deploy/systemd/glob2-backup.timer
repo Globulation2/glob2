@@ -1,0 +1,12 @@
+# Runs glob2-backup.service once a day; a run missed while the host was down
+# happens at the next boot (Persistent). See docs/hosting/README.md, "Scheduled backups".
+[Unit]
+Description=Daily Globulation 2 platform database backup
+
+[Timer]
+OnCalendar=*-*-* 03:17:00 UTC
+RandomizedDelaySec=10min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -16,6 +16,7 @@
 class SettingsScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "settings"; }
 	enum class Category
 	{
 		Display,
@@ -25,7 +26,8 @@ class SettingsScreen : public Glob2UI::Screen
 		Controls,
 		Player,
 		Online,
-		Experiments
+		Experiments,
+		CustomAIs
 	};
 	enum class Kind
 	{
@@ -132,6 +134,12 @@ class SettingsScreen : public Glob2UI::Screen
 	std::shared_ptr<OnlineState> online;
 	void buildOnline();
 	void pollOnline();
+	struct CustomAIState;
+	std::shared_ptr<CustomAIState> customAIs;
+	void buildCustomAIs();
+	void pollCustomAIs();
+	bool customAIBusy() const;
+	void selectCustomAIFile(bool linked, const std::string &replace = {});
 	// Settings > Online: removes a linked sign-in method (never the last one).
 	void unlinkProvider(const std::string &provider, const std::string &name);
 	void custom(const std::string &id, std::function<Glob2UI::Element(const Glob2UI::Presentation &)> render);

@@ -7,11 +7,17 @@
 
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "hive/HiveClient.h"
+#include "OnlineServices.h"
+#include "GameDiagnostics.h"
 #include "TurnMatchPresenter.h"
 #include "sim/SimulationRunner.h"
 #include "EngineTiming.h"
 #include "GlobalContainer.h"
 #include "OnlineMatch.h"
+#include "online/SkinDownloads.h"
+#include "online/ReplayAppearance.h"
+#include <Toolkit.h>
 #include "ReplayWriter.h"
 #include "SoundMixer.h"
 
@@ -95,6 +101,7 @@ void Engine::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> result)
     if (onlineResult)
     {
         gui.networkMatch.online = true;
+        gui.hive=std::make_shared<Hive::Client>(gui,Online::services().client,onlineResult->matchId,gui.localPlayer);
         gui.networkMatch.rated = onlineResult->rated;
         gui.networkMatch.fromRoom = onlineResult->fromRoom;
     }
@@ -133,4 +140,16 @@ int Engine::run(void)
     const int result = endScreen ? endScreen->execute(globalContainer->gfx, GAME_TICK_MS) : -1;
     restoreCursor();
     return result == -1 ? -1 : EE_NO_ERROR;
+}
+
+void Engine::setColonySkins(std::unique_ptr<Online::SkinDownloads> downloads)
+{
+    if (downloads && globalContainer->replayWriter)
+    {
+        const Online::ReplayAppearance context{downloads->origin(),downloads->matchId()};
+        globalContainer->replayWriter->setSaveObserver([context](const std::string &filename) {
+            Online::writeReplayAppearance(*GAGCore::Toolkit::getFileManager(),filename,context);
+        });
+    }
+    gui.setColonySkins(std::move(downloads));
 }

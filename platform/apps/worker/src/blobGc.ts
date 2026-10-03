@@ -1,7 +1,7 @@
 // Blob garbage collection: mark and sweep over the `blobs` table. A blob is
 // garbage when nothing references it and it is older than the grace period:
 // no map version (file or preview), match artifact (record, replay, result),
-// upload, generated or warm map, and no match played on it (matches.map_hash:
+// colony skin texture, upload, generated or warm map, and no match played on it (matches.map_hash:
 // replays and re-verification need the map). Rows referenced through foreign
 // keys cannot be deleted anyway; the others are checked in the same statement.
 // The row goes first, then the stored bytes. A second pass (stores that can
@@ -39,12 +39,15 @@ export async function collectBlobs(
     WHERE b.sha256 IN (
       SELECT c.sha256 FROM blobs c
       WHERE c.created_at < now() - make_interval(days => ${graceDays})
+        AND NOT EXISTS (SELECT 1 FROM colony_skin_versions v WHERE v.texture_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM map_versions v WHERE v.hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM map_versions v WHERE v.preview_hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM match_artifacts a WHERE a.blob_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM map_uploads u WHERE u.blob_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM generated_maps g WHERE g.map_hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM matches m WHERE m.map_hash = c.sha256)
+        AND NOT EXISTS (SELECT 1 FROM studio_requests r WHERE r.map_hash = c.sha256 OR strpos(r.checkpoints::text, c.sha256) > 0)
+        AND NOT EXISTS (SELECT 1 FROM studio_attempts a WHERE strpos(a.input::text, c.sha256) > 0 OR strpos(a.output::text, c.sha256) > 0)
       ORDER BY c.created_at
       LIMIT ${options.batch ?? BLOB_GC_BATCH}
       FOR UPDATE SKIP LOCKED

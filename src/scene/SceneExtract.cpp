@@ -2,6 +2,7 @@
 #include "scene/SceneExtract.h"
 
 #include "Building.h"
+#include "map/edit/MapEdit.h"
 #include "BuildingType.h"
 #include "Bullet.h"
 #include "Game.h"
@@ -11,7 +12,9 @@
 #include "Player.h"
 #include "UnitTiming.h"
 #include "TeamStat.h"
+#include "WinProbability.h"
 #include "Unit.h"
+#include "ai/AITelemetry.h"
 #include "render/GameAnimations.h"
 
 static_assert(Team::MAX_COUNT <= SceneEntities::Teams, "SceneEntities::Teams too small");
@@ -148,6 +151,14 @@ namespace
 		if (const Building *b = game.resolveBuilding(request.selectedBuilding))
 		{
 			selected.ref = request.selectedBuilding;
+			selected.verbose = b->verbose;
+			if (b->verbose == 1 || b->verbose == 2)
+			{
+				int swim = b->verbose == 1 ? 0 : 1;
+				while (b->verbose == 2 && swim < SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
+				if (b->globalGradient[swim])
+					selected.debugGradient.assign(b->globalGradient[swim], b->globalGradient[swim] + size_t(game.map.getW())*game.map.getH());
+			}
 			selected.recordFailingUnits = b->recordFailingUnits;
 			selected.desiredMaxUnitWorking = b->desiredMaxUnitWorking;
 			for (int r = 0; r < SceneSelectedBuilding::FailReasons; ++r)
@@ -182,6 +193,14 @@ namespace
 			local.prestige, local.unitConversionGained, local.unitConversionLost, local.noMoreBuildingSitesCountdown};
 
 		SceneHud &hud = panels.hud;
+		std::vector<int> allianceOf;
+		const auto slots = WinProbability::slotsOf(game, allianceOf);
+		const auto chances = WinProbability::permille(slots);
+		hud.winChances.clear();
+		for (int t = 0; t < game.teamsCount(); ++t)
+			if (const Team *team = game.teams[t])
+				hud.winChances.push_back({firstPlayerName(game, *team), team->color,
+					chances[allianceOf[t]], slots[allianceOf[t]].alive});
 		hud.totalPrestige = game.totalPrestige;
 		hud.prestigeToReach = game.prestigeToReach;
 		hud.anyPlayerWaited = game.anyPlayerWaited;
@@ -201,6 +220,43 @@ namespace
 			panels.localStats = std::make_shared<TeamStats>(local.stats);
 		else
 			*panels.localStats = local.stats;
+		panels.localStats->aiTelemetry.clear();
+
+		panels.aiTelemetry.clear();
+		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		{
+			// A unilateral diplomacy toggle must not reveal an opponent's plans.
+			const bool allied = (local.allies & (1u << t)) &&
+				(game.teams[t]->allies & local.me);
+			if (!request.spectating && t != request.localTeam && !allied)
+				continue;
+			for (const auto &series : game.teams[t]->stats.aiTelemetry)
+			{
+				if (!series->active)
+					continue;
+				SceneAITelemetry row;
+				row.team = t;
+				row.player = series->player;
+				row.name = series->playerName;
+				row.available = series->current.available;
+				if (row.available)
+				{
+					for (std::size_t i = 0;
+						 i < series->fields.size() && i < series->current.values.size(); ++i)
+					{
+						const auto &field = series->fields[i];
+						const auto &value = series->current.values[i];
+						if (i >= AITelemetry::OrderTypes && i < AITelemetry::Specific &&
+							(!value.valid || !value.bits))
+							continue;
+						row.values.push_back({field.name, AITelemetry::displayValue(field, value),
+											  field.unit, field.meaning, value.updated});
+					}
+					row.values.insert(row.values.end(), series->named.begin(), series->named.end());
+				}
+				panels.aiTelemetry.push_back(std::move(row));
+			}
+		}
 
 		SceneBuildingPanel &bp = panels.building;
 		bp = SceneBuildingPanel();
@@ -290,12 +346,13 @@ namespace
 
 void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
 {
+	scene.editor = game.edit != nullptr;
 	scene.tick = game.stepCounter;
 	scene.tickTime = request.tickTime;
 	scene.tickInterval = request.tickInterval;
-	scene.map.extract(game.map, request.view.displayW, request.view.displayH);
+	scene.map.extract(game.map, request.view.displayW, request.view.displayH, request.includeScriptAreas);
 	extractEntities(game, request, scene.entities);
-	extractPanels(game, request, scene.panels);
+	if (request.includePanels) extractPanels(game, request, scene.panels);
 
 	// Overlay maps refresh every 25 ticks (windows start at ticks 25k+1), and at once
 	// when the client switches overlay or team.
@@ -313,7 +370,7 @@ void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scen
 	overlayType = type;
 	overlayWindow = window;
 	overlayTeam = request.localTeam;
-	scene.overlay = overlay;
+	scene.overlay = game.edit && !overlay ? std::make_shared<OverlayArea>(game.edit->overlay) : overlay;
 }
 
 void extractScene(const Game &game, const SceneRequest &request, Scene &scene)

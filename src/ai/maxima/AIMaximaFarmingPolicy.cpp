@@ -1,7 +1,9 @@
 /* Maxima farming and clearing policy. */
 
+#include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
+#include "AIFarmAreas.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Unit.h"
@@ -70,22 +72,11 @@ namespace
 		// A beach can be several sand tiles wide. Follow touching sand from
 		// actual water, including blended tiles and diagonals, but never grass.
 		// This excludes isolated inland sand without depending on crop density.
-		for(size_t head=0; head<queue.size(); ++head)
-		{
-			const int x=queue[head]%w, y=queue[head]/w;
-			for(int dy=-1; dy<=1; ++dy)
-				for(int dx=-1; dx<=1; ++dx)
-				{
-					if(!dx && !dy) continue;
-					const int nx=(x+dx+w)%w, ny=(y+dy+h)%h;
-					const int next=ny*w+nx;
-					if(!backing[next] && map->hasSand(nx, ny))
-					{
-						backing[next]=1;
-						queue.push_back(next);
-					}
-				}
-		}
+		field::traverse(queue,{w,h},field::Surrounding,[](int){return field::Visit::Expand;},
+			[&](int,int x,int y) {
+				const int nx=(x+w)%w,ny=(y+h)%h,next=ny*w+nx;
+				if(!backing[next] && map->hasSand(nx,ny)){backing[next]=1;queue.push_back(next);}
+			});
 		return backing;
 	}
 
@@ -529,20 +520,21 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 			const int index=map->normalizeY(worker->posY)*w+map->normalizeX(worker->posX);
 			if(!visited[index]){visited[index]=1;queue.push_back(index);}
 		}
-		for(size_t head=0;head<queue.size();++head)
-		{
-			const int index=queue[head],x=index%w,y=index/w;
-			const Tile& current=map->getTile(x,y);
-			const bool current_farm_area=after_harvest
-				&& index<int(applied_farm_protection_mask.size())
-				&& applied_farm_protection_mask[index];
-			if(current.building==NOGBID && (current.resource.type==NO_RES_TYPE
-			   || current_farm_area
-			   || (after_harvest && (current.resource.type==WOOD || current.resource.type==WHEAT))))
-				reachable[index]=1;
-			for(int dy=-1;dy<=1;++dy)for(int dx=-1;dx<=1;++dx)
-			{
-				const int nx=map->normalizeX(x+dx),ny=map->normalizeY(y+dy),next=ny*w+nx;
+		field::traverse(queue,{w,h},field::Surrounding,
+			[&](int index) {
+				const int x=index%w,y=index/w;
+				const Tile& current=map->getTile(x,y);
+				const bool current_farm_area=after_harvest
+					&& index<int(applied_farm_protection_mask.size())
+					&& applied_farm_protection_mask[index];
+				if(current.building==NOGBID && (current.resource.type==NO_RES_TYPE
+				   || current_farm_area
+				   || (after_harvest && (current.resource.type==WOOD || current.resource.type==WHEAT))))
+					reachable[index]=1;
+
+				return field::Visit::Expand;
+			},[&](int,int px,int py) {
+				const int nx=map->normalizeX(px),ny=map->normalizeY(py),next=ny*w+nx;
 				const Tile& tile=map->getTile(nx,ny);
 				const bool farm_area=after_harvest
 					&& next<int(applied_farm_protection_mask.size())
@@ -553,10 +545,9 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 				   ||(!swimming&&map->isWater(nx,ny))
 				   ||!map->isMapDiscovered(nx,ny,runtime.player->team->allies)
 				   ||(map->isForbidden(nx,ny,runtime.player->team->me)
-				      && !farm_area && !development_planner.isCirculationReserved(next)))continue;
+				      && !farm_area && !development_planner.isCirculationReserved(next)))return;
 				visited[next]=1;queue.push_back(next);
-			}
-		}
+			});
 	}
 
 	return reachable;
@@ -974,7 +965,68 @@ void Maxima::release_farming_protection(Context& runtime)
 		applied_farm_protection_mask[index]=0;
 	}
 	if(removed) runtime.add_management_order(removals); else delete removals;
+	release_farm_areas(runtime);
 	farming_urgent=false;
+}
+
+void Maxima::release_farm_areas(Context& runtime)
+{
+	Map* map=runtime.player->map;
+	if(!map->farmAreasEnabled()) return;
+	const Uint32 me=runtime.player->team->me;
+	RemoveArea* removals=new RemoveArea(FarmArea);
+	int removed=0;
+	for(int y=0; y<map->getH(); ++y)
+		for(int x=0; x<map->getW(); ++x)
+			if(map->isFarmArea(x, y, me))
+			{
+				removals->add_location(x, y);
+				++removed;
+			}
+	if(removed) runtime.add_management_order(removals); else delete removals;
+}
+
+void Maxima::apply_farm_areas(Context& runtime, FarmProtectionPlan& plan,
+	int& added, int& removed)
+{
+	added=0;
+	removed=0;
+	Map* map=runtime.player->map;
+	if(!map->farmAreasEnabled()) return;
+	MapInfo map_info(runtime);
+	const int w=map->getW();
+	const int size=w*map->getH();
+	const Uint32 me=runtime.player->team->me;
+	// The farm covers each managed wheat field and the ring it grows into. It
+	// keeps every tile's seed itself, so the forbidden wheat pattern goes, and
+	// it clears wood inside it, so no forbidden paint may stay there either.
+	const int radius=budget.farming_management_radius;
+	const std::vector<Uint8> nearby=radius>0
+		? farm_management_area(runtime, radius) : std::vector<Uint8>(size, 1);
+	AddArea* additions=new AddArea(FarmArea);
+	RemoveArea* removals=new RemoveArea(FarmArea);
+	for(int index=0; index<size; ++index)
+	{
+		const int x=index%w;
+		const int y=index/w;
+		if(!map_info.is_discovered(x, y)) continue;
+		const bool actual=map->isFarmArea(x, y, me);
+		const bool farm=AIFarmAreas::wantsFarm(*map, x, y) && (nearby[index] || actual);
+		if(farm || map->getResource(x, y).type==WHEAT)
+			plan.forbidden[index]=0;
+		if(farm && !actual)
+		{
+			additions->add_location(x, y);
+			++added;
+		}
+		else if(!farm && actual)
+		{
+			removals->add_location(x, y);
+			++removed;
+		}
+	}
+	if(added) runtime.add_management_order(additions); else delete additions;
+	if(removed) runtime.add_management_order(removals); else delete removals;
 }
 
 bool Maxima::has_hard_farming_contract(int index) const
@@ -1206,26 +1258,27 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 		visited[start]=1;
 		bool protected_live=false;
 		int anchor=-1;
-		for(size_t head=0;head<component.size();++head)
-		{
-			const int index=component[head], x=index%w, y=index/w;
-			const Tile& cell=map->getTile(x,y);
-			if(cell.resource.amount>0)
-			{
-				protected_live|=plan.forbidden[index]!=0;
-				const Uint32 minimum=resource==WHEAT
-					? Uint32(budget.farming_wheat_fertility_min) : plan.wood_fertility;
-				if(fertility_cache.at(x,y)>=minimum
-				   && !has_hard_farming_contract(index)
-				   && !(resource==WOOD && ((budget.farming_wood_firebreak_enabled
-					   && wood_firebreak_mask[index]) || (clearing_wood
-					   && map->warpDistSquare(x,y,clearing_x,clearing_y)<=4*4)))
-				   && (anchor<0 || index<anchor))
-					anchor=index;
-			}
-			for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-			{
-				const int nx=map->normalizeX(x+dx), ny=map->normalizeY(y+dy);
+		field::traverse(component,{w,h},field::Surrounding,
+			[&](int index) {
+				const int x=index%w,y=index/w;
+				const Tile& cell=map->getTile(x,y);
+				if(cell.resource.amount>0)
+				{
+					protected_live|=plan.forbidden[index]!=0;
+					const Uint32 minimum=resource==WHEAT
+						? Uint32(budget.farming_wheat_fertility_min) : plan.wood_fertility;
+					if(fertility_cache.at(x,y)>=minimum
+					   && !has_hard_farming_contract(index)
+					   && !(resource==WOOD && ((budget.farming_wood_firebreak_enabled
+						   && wood_firebreak_mask[index]) || (clearing_wood
+						   && map->warpDistSquare(x,y,clearing_x,clearing_y)<=4*4)))
+					   && (anchor<0 || index<anchor))
+						anchor=index;
+				}
+
+				return field::Visit::Expand;
+			},[&](int,int px,int py) {
+				const int nx=map->normalizeX(px), ny=map->normalizeY(py);
 				const int next=ny*w+nx;
 				if(!visited[next]
 				   && map->getTile(nx,ny).resource.type==resource)
@@ -1233,8 +1286,7 @@ Maxima::FarmProtectionPlan Maxima::build_farming_protection_plan(Context& runtim
 					visited[next]=1;
 					component.push_back(next);
 				}
-			}
-		}
+			});
 		if(protected_live || anchor<0) continue;
 		const int x=anchor%w, y=anchor/w;
 		plan.forbidden[anchor]=1;
@@ -1339,9 +1391,14 @@ void Maxima::update_farming(Context& runtime)
 	}
 
 	resolve_wheat_invasion_clearing(runtime, plan);
+	int farms_added=0;
+	int farms_removed=0;
+	apply_farm_areas(runtime, plan, farms_added, farms_removed);
 	int added=0;
 	int removed=0;
 	apply_farming_protection(runtime, plan, added, removed);
+	added+=farms_added;
+	removed+=farms_removed;
 	// This pass satisfies the clearing campaign's urgent farming request;
 	// subsequent evaluations resume the ordinary cadence.
 	if(farming_urgent)

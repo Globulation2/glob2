@@ -41,6 +41,7 @@ public:
   {
 	  return AITelemetry::schema(6);
   }
+  Uint32 telemetrySchemaVersion() const override { return 2; }
 	explicit AICortex(Player* player);
 	AICortex(GAGCore::InputStream* stream, Player* player, Sint32 versionMinor);
 	~AICortex();
@@ -256,6 +257,8 @@ private:
 	/// wheat is fenced in one cycle. Self-correcting: an already-painted diff is empty
 	/// next cycle, so re-running each cycle is free when there is no new work.
 	void enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool liftAll = false);
+	/// Farm-areas experiment: paint (or, for a wheat blitz, erase) the farm over the scanned field.
+	void enqueueWheatFarm(const std::vector<int>& field, bool liftAll);
 
 	/// Resolve a tracked flag gid to its live ALIVE WAR_FLAG building, or NULL if the
 	/// gid is unset (NOGBID) or the flag no longer exists (died / was deleted).

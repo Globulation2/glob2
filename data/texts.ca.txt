@@ -1,5 +1,11 @@
 [AI strategy]
 Estratègia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Equilibra creixement sostenible i entrenament, després reuneix exèrcits en onades.
 [AIMaxima-Profile]
@@ -168,12 +174,6 @@ No es pot crear la partida: el port %0 està ocupat
 No es pot entrar: la partida ja ha començat
 [Can't join game, game is full]
 No es pot entrar: la partida és plena
-[Can't join game, missmatching game parameters]
-No pots unirte a la partida, falten parametres
-[Can't join game, timeout]
-No pots unirte a la partida, el servidor no respon
-[Can't join game, wrong game version]
-No pots unirte a la partida, la versió no es correcte
 [cancel destroy]
 Cancelar destrucció
 [cancel repair]
@@ -198,6 +198,8 @@ Escull una partida
 Escull un mapa
 [clear area]
 Area de Neteja
+[farm area]
+Area de Conreu
 [Clearing:]
 Netejant
 [clearingflag explanation 2]
@@ -548,8 +550,6 @@ Sense creixement
 No
 [Number Of Buildings]
 Nombre d'edificis
-[number of players: %0]
-%0 nombre de jugadors
 [number of teams]
 Nombre d' equips
 [Number Of Units]
@@ -648,8 +648,6 @@ Poliesportiu
 Abast
 [ratios]
 Proporció
-[Register a new YOG user with password]
-Registrar un nou jugador YOG amb contrasenya (insegur)
 [remember unit]
 Recorda les assignacions
 [remove map]
@@ -752,6 +750,8 @@ Selecciona edifici: Despensa
 Selecciona edifici: Mercat
 [select place clearing area]
 Col·loca zona de neteja
+[select place farm area]
+Col·loca zona de conreu
 [select place clearingflag]
 Col·loca bandera de neteja
 [select place explorationflag]
@@ -1046,8 +1046,6 @@ Observant:
 Aigua
 [Wheat]
 Blat
-[wheat]
-blat
 [Won : you defeated your opponents]
 Vencedor: Has destruit als teus enemics
 [Won : you have the most prestige]
@@ -3070,6 +3068,8 @@ Prohibit
 Vigila
 [Clear]
 Neteja
+[Farm]
+Conreu
 [Paint]
 Pinta
 [Erase]
@@ -3240,6 +3240,10 @@ Funcions experimentals
 Equilibri de les zones de guàrdia
 [experiment guard-area-balancing help]
 Els guerrers lliures es reparteixen entre les zones de guàrdia pintades en lloc d'anar tots a la més propera: una zona més gran en rep més, i una zona massa plena es buida a poc a poc cap a les altres.
+[experiment farm-areas]
+Zones de conreu
+[experiment farm-areas help]
+Afegeix una zona de conreu als pinzells de zona. Els treballadors que cullen dins d'una agafen de la casella més madura del camp connectat i deixen un gra a cada casella, de manera que el camp torna a créixer en lloc de ser menjat per les vores. La fusta que hi creix es neteja.
 [settings Touch scrolling]
 Desplaçament tàctil
 [settings List momentum]
@@ -3329,6 +3333,10 @@ Rebot de les llistes
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4544,6 +4552,102 @@ Inèrcia del mapa
 
 [game draw]
 
+[settings Show colony skins]
+Mostra els aspectes de les colònies
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desactiva-ho per utilitzar les unitats, els eixams i els colors dels edificis clàssics en aquest dispositiu.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Repeteix el mapa horitzontalment
+[repeat map vertically]
+Repeteix el mapa verticalment
+[bases]
+bases
+[bases per colony]
+Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb els seus edificis i unitats
 [Match]
 
 [Time limit]
@@ -4637,4 +4741,16 @@ Inèrcia del mapa
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

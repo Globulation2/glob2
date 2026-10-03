@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
 #include <SoftwareFramePresenter.h>
@@ -21,6 +22,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
 
@@ -270,7 +272,7 @@ namespace GAGCore
 		releaseFrameCache();
 		freeOwnedSurface();
 #ifdef HAVE_OPENGL
-		if (context) destroyUnitShader();
+		if (context) { destroySkinRenderer(); destroyUnitShader(); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		if (window) SDL_DestroyWindow(window);
@@ -294,7 +296,7 @@ namespace GAGCore
         // Include the local UI transform used by enlarged touch controls.
         // Unscaled software surfaces retain their authored raster size.
         if (!renderer && !(optionFlags & USEGPU)) return 1.0f;
-        const float outputScale = softwareTransform ? 1.0f : drawableScale();
+        const float outputScale = (softwareTransform || offscreenPass) ? 1.0f : drawableScale();
         const float scale = outputScale * (uiTransformActive ? uiTransformScale : 1.0f);
         if (std::fabs(scale - 1.0f) < 0.01f) return 1.0f;
         return std::clamp(scale, 0.25f, 8.0f);
@@ -763,7 +765,7 @@ namespace GAGCore
 		watchingEvents = false;
 		releaseFrameCache();
 #ifdef HAVE_OPENGL
-		if (context) destroyUnitShader();
+		if (context) { destroySkinRenderer(); destroyUnitShader(); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
 		context = nullptr;
@@ -914,6 +916,75 @@ namespace GAGCore
 		}
 	}
 
+	void GraphicContext::captureRecordingFrame()
+	{
+		auto &capture = Recording::recorder();
+		if (!Recording::supported())
+			return;
+		const auto state = capture.status().state;
+		const char *suffix =
+			state == Recording::State::Starting || state == Recording::State::Recording
+				? " — Recording"
+			: state == Recording::State::Finalizing ? " — Finalizing recording"
+			: state == Recording::State::Failed ? " — Recording failed (see recording controls/log)"
+												: "";
+		const auto title = windowTitle + suffix;
+		if (window && title != SDL_GetWindowTitle(window))
+			SDL_SetWindowTitle(window, title.c_str());
+		if (!capture.wantsFrame())
+			return;
+		try
+		{
+			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(nullptr,
+																			   SDL_DestroySurface);
+			if (renderer)
+			{
+				renderer->flush();
+				pixels.reset(renderer->capture());
+			}
+#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+			else if (optionFlags & USEGPU)
+			{
+				GLint viewport[4], alignment, rowLength;
+				glGetIntegerv(GL_VIEWPORT, viewport);
+				if (viewport[2] <= 0 || viewport[3] <= 0)
+					return;
+				pixels.reset(SDL_CreateSurface(viewport[2], viewport[3], SDL_PIXELFORMAT_RGBA32));
+				if (!pixels)
+					throw std::runtime_error(SDL_GetError());
+				glGetIntegerv(GL_PACK_ALIGNMENT, &alignment);
+				glGetIntegerv(GL_PACK_ROW_LENGTH, &rowLength);
+				glPixelStorei(GL_PACK_ALIGNMENT, 1);
+				glPixelStorei(GL_PACK_ROW_LENGTH, pixels->pitch / 4);
+				glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA,
+							 GL_UNSIGNED_BYTE, pixels->pixels);
+				glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+				glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
+				std::vector<unsigned char> row(pixels->pitch);
+				auto *data = static_cast<unsigned char *>(pixels->pixels);
+				for (int y = 0; y < pixels->h / 2; ++y)
+				{
+					auto *top = data + y * pixels->pitch;
+					auto *bottom = data + (pixels->h - y - 1) * pixels->pitch;
+					std::memcpy(row.data(), top, row.size());
+					std::memcpy(top, bottom, row.size());
+					std::memcpy(bottom, row.data(), row.size());
+				}
+			}
+#endif
+			else
+				pixels.reset(SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32));
+			if (!pixels)
+				throw std::runtime_error(SDL_GetError());
+			capture.frame(*pixels);
+		}
+		catch (const std::exception &error)
+		{
+			SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Recording frame capture: %s", error.what());
+			capture.abort(error.what());
+		}
+	}
+
 	void GraphicContext::nextFrame(void)
 	{
         endBrowserTextFrame();
@@ -934,6 +1005,8 @@ namespace GAGCore
 					cursorScale = std::min(float(windowW) / getW(), float(windowH) / getH());
 				cursorManager.update(cursorScale);
 			}
+
+			captureRecordingFrame();
 
 			// A transformed software pass may end before nextFrame. Keep the
 			// request independent of the borrowed active-backend pointer.
@@ -1016,4 +1089,60 @@ namespace GAGCore
 			}
 		}
 	}
+}
+
+namespace GAGCore
+{
+void GraphicContext::drawToSurface(SDL_Surface* surface, float scale, const std::function<void()>& draw)
+{
+	if (!surface || !(scale > 0) || offscreenPass)
+		throw std::invalid_argument("Invalid or nested offscreen pass");
+	if (renderBatch) renderBatch->barrier();
+	Sprite::flushBatches(this);
+	if (renderer) renderer->flush();
+	auto backend = makeSoftwareRenderBackend(surface);
+	if (!backend) throw std::runtime_error("Cannot create offscreen backend");
+	auto savedBatch = std::move(renderBatch);
+	const auto savedRenderer = renderer;
+	const auto savedSurface = sdlsurface;
+	const auto savedClip = clipRect;
+	const auto savedFlags = optionFlags;
+	const auto savedNative = nativeDesktop;
+	const auto savedSoftware = nativeSoftware;
+	const auto savedTransform = softwareTransform;
+	const auto savedMap = mapTransformActive;
+	const auto savedUI = uiTransformActive;
+	const auto savedScale = mapScale;
+	const auto savedTargetScale = renderTargetScale;
+	const auto savedUiScale = uiScale;
+	const auto savedMapGeometry = std::make_tuple(mapTranslateX, mapTranslateY,
+		mapCopyTranslateX, mapCopyTranslateY, mapClipX, mapClipY, mapClipW, mapClipH, overlayScale, periodicCopy);
+	const auto savedUIGeometry = std::make_tuple(uiTransformScale, uiTransformX, uiTransformY, uiBounds, uiSavedClip);
+	const auto restore = [&] {
+		renderer = savedRenderer; sdlsurface = savedSurface; clipRect = savedClip;
+		optionFlags = savedFlags; nativeDesktop = savedNative; nativeSoftware = savedSoftware;
+		softwareTransform = savedTransform; mapTransformActive = savedMap; uiTransformActive = savedUI;
+		mapScale = savedScale; renderTargetScale = savedTargetScale; uiScale = savedUiScale;
+		std::tie(mapTranslateX, mapTranslateY, mapCopyTranslateX, mapCopyTranslateY,
+			mapClipX, mapClipY, mapClipW, mapClipH, overlayScale, periodicCopy) = savedMapGeometry;
+		std::tie(uiTransformScale, uiTransformX, uiTransformY, uiBounds, uiSavedClip) = savedUIGeometry;
+		renderBatch = std::move(savedBatch); offscreenPass = false;
+	};
+	sdlsurface = surface; renderer = backend.get(); optionFlags = 0;
+	nativeDesktop = nativeSoftware = softwareTransform = uiTransformActive = false;
+	mapTransformActive = true;
+	mapClipX = mapClipY = 0; mapClipW = surface->w; mapClipH = surface->h;
+	offscreenPass = true; uiScale = 1; renderTargetScale = 1; mapScale = scale;
+	mapTranslateX = mapTranslateY = mapCopyTranslateX = mapCopyTranslateY = 0;
+	periodicCopy = false;
+	clipRect = {0, 0, surface->w, surface->h};
+	try
+	{
+		backend->clip(&clipRect);
+		backend->transform(scale, 0, 0, &clipRect);
+		draw(); backend->flush();
+	}
+	catch (...) { restore(); throw; }
+	restore();
+}
 }

@@ -1,3 +1,5 @@
+import { Skins } from './pages/Skins.tsx';
+import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
 // catalog and moderation. Client routes the game links to must stay stable:
 // /players/<id>, /matches/<id>, /maps/<id>, /leaderboard/<queueId>. Invite
@@ -14,6 +16,9 @@ import { ThemeProvider, ThemeToggle } from './theme.tsx';
 
 // Pages most visitors never open load on demand.
 const Admin = lazy(() => import('./admin/Admin.tsx').then((m) => ({ default: m.Admin })));
+const MapStudio = lazy(() =>
+  import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
+);
 const Maps = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.Maps })));
 const MapPage = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapPage })));
 const MapUpload = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapUpload })));
@@ -33,6 +38,25 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
+  { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
+  {
+    pattern: '/map-studio',
+    section: 'studio',
+    title: 'AI Map Studio',
+    render: () => <MapStudio />,
+  },
+  {
+    pattern: '/map-studio/:id',
+    section: 'studio',
+    title: 'AI Map Studio',
+    render: (p) => <MapStudio key={p['id']} id={p['id']} />,
+  },
+  {
+    pattern: '/commander',
+    section: 'commander',
+    title: 'Hive Mind',
+    render: () => <CommanderCredits />,
+  },
   { pattern: '/', section: 'home', title: '', render: () => <Home /> },
   {
     pattern: '/leaderboard',
@@ -256,6 +280,8 @@ function Layout() {
     { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', art: 'warFlag' },
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
+    { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
+    { to: '/map-studio', id: 'studio', name: 'AI Map Studio', art: 'explorationFlag' },
     ...(isModerator(account)
       ? [{ to: '/admin', id: 'admin', name: 'Moderation', art: 'hospital' as ArtName }]
       : []),

@@ -16,6 +16,7 @@
 
 #include "EngineFixtures.h"
 #include "Environment.h"
+#include "ScopedEnvironment.h"
 
 #include <algorithm>
 #include <chrono>
@@ -403,7 +404,17 @@ struct LanMatch
 				return true;
 			step();
 		}
-		return done();
+		if (done())
+			return true;
+		// Preserve connection and map-transfer errors when an asynchronous phase
+		// times out, rather than reporting only that its predicate stayed false.
+		MESSAGE("LAN host state: " << hostSide().state().toJson().dump());
+		for (const auto& player : players)
+			if (const auto* guest = player->room->guestSide())
+				MESSAGE(player->name << ": phase=" << static_cast<int>(guest->phase())
+				        << " reason=" << guest->closeReason() << " detail=" << guest->closeDetail()
+				        << " map=" << guest->downloadPercent());
+		return false;
 	}
 };
 
@@ -521,12 +532,15 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
-	GLOB2_TEST_CASE("a LAN host and two guests over loopback WSS play with AIs through a drop, a restart and the host "
-	                "leaving, and agree at every tick",
+	// The case name becomes an artifact directory; leave room for the 64-byte
+	// map hash and cache suffix under Windows' legacy file-path limit.
+	GLOB2_TEST_CASE("LAN WSS drop, restart and host departure",
 	                "[network][slow][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		REQUIRE(std::getenv("GLOB2_LAN_ADDRESS") != nullptr);
+		REQUIRE(std::string(std::getenv("GLOB2_LAN_ADDRESS")) == "127.0.0.1");
 		LanMatch m;
 		m.directory = glob2test::artifactDir() / "lan-match";
 		fs::remove_all(m.directory);
@@ -534,6 +548,7 @@ TEST_SUITE("LanMatchHarness")
 		const std::uint16_t port = testPort(0);
 		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(port, m.directory), 101));
 		const std::string endpoint = m.host().room->shareText();
+		INFO("LAN pairing endpoint=" << endpoint);
 		REQUIRE(endpoint.find("127.0.0.1:" + std::to_string(port) + "/yog#sha256=") != std::string::npos);
 		const fs::path cacheA = m.directory / "cache-a", cacheB = m.directory / "cache-b";
 		auto& host = m.hostSide();
@@ -690,7 +705,7 @@ TEST_SUITE("LanMatchHarness")
 	GLOB2_TEST_CASE("an idle LAN host sleeps and wakes at once for guests and the host", "[network][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
 		LanMatch m;
 		m.directory = glob2test::artifactDir() / "wait";
 		fs::remove_all(m.directory);
@@ -754,10 +769,14 @@ TEST_SUITE("LanMatchHarness")
 		CHECK(hostToGuest < 50);
 	}
 
-	GLOB2_TEST_CASE("LAN input delay on loopback and on emulated slower links", "[network][slow][benchmark][artifacts]")
+	GLOB2_TEST_CASE("LAN input delay on loopback and delayed links", "[network][slow][benchmark][artifacts]")
+
+
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
+		REQUIRE(std::getenv("GLOB2_LAN_ADDRESS") != nullptr);
+		REQUIRE(std::string(std::getenv("GLOB2_LAN_ADDRESS")) == "127.0.0.1");
 		std::ostringstream table, stages;
 		table << "LAN input delay: time from a click (an order queued by the GUI at a random moment between "
 		         "frames) to its execution, host and one guest, FourSquares1 with one Nicowar AI, 25 s of play each.\n";
@@ -777,6 +796,7 @@ TEST_SUITE("LanMatchHarness")
 			fs::create_directories(m.directory);
 			m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(offset++), m.directory, bundle), 201));
 			const std::string endpoint = m.host().room->shareText();
+			INFO("LAN pairing endpoint=" << endpoint);
 			m.players.push_back(std::make_unique<LanPlayer>(
 				"Guest", guestRoom(endpoint, "Guest", m.directory / "cache", oneWayMs * 1000), 202));
 			joinAndStart(m, {"nicowar"});

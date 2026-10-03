@@ -147,6 +147,7 @@ export async function runMaintenance(db: Kysely<Database>): Promise<MaintenanceR
           AND NOT EXISTS (SELECT 1 FROM match_participants p WHERE p.account_id = a.id)
           AND NOT EXISTS (SELECT 1 FROM rooms r WHERE r.host_account_id = a.id AND r.status <> 'closed')
           AND NOT EXISTS (SELECT 1 FROM maps m WHERE m.owner_account_id = a.id)
+          AND NOT EXISTS (SELECT 1 FROM colony_skin_reports r WHERE r.reporter_account_id = a.id)
           AND NOT EXISTS (
             SELECT 1 FROM device_credentials d
             WHERE d.account_id = a.id AND d.last_used_at >= ${days(GUEST_RETENTION_DAYS)}

@@ -1,5 +1,11 @@
 [AI strategy]
 Estratégia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Equilibra crescimento sustentável e treino, depois reúne exércitos em vagas.
 [AIMaxima-Profile]
@@ -168,12 +174,6 @@ Não é possível alojar a partida: porta %0 em uso
 Não é possível entrar: a partida já começou
 [Can't join game, game is full]
 Não é possível entrar: a partida está cheia
-[Can't join game, missmatching game parameters]
-Impossível unir-se à partida: parâmetros do jogo diferentes
-[Can't join game, timeout]
-Impossível unir-se à partida: tempo de espera esgotado
-[Can't join game, wrong game version]
-Impossível unir-se à partida: versão do jogo incorreta
 [cancel destroy]
 Cancelar destruição
 [cancel repair]
@@ -198,6 +198,8 @@ Escolher uma partida
 Escolher um mapa
 [clear area]
 Área de limpeza
+[farm area]
+Área de cultivo
 [Clearing:]
 Limpando:
 [clearingflag explanation 2]
@@ -548,8 +550,6 @@ Sem crescimento
 Não
 [Number Of Buildings]
 Número de edifícios
-[number of players: %0]
-%0 jogadores presentes.
 [number of teams]
 Número de equipas
 [Number Of Units]
@@ -648,8 +648,6 @@ Pista de corrida
 Alcance
 [ratios]
 Proporções
-[Register a new YOG user with password]
-Registrar um novo usuário de YOG com contrasenha. (inseguro)
 [remember unit]
 Memorizar atribuições
 [remove map]
@@ -752,6 +750,8 @@ Selecionar edifício: Taberna
 Selecionar edifício: Mercado
 [select place clearing area]
 Colocar área: Área de limpeza
+[select place farm area]
+Colocar área: Área de cultivo
 [select place clearingflag]
 Colocar bandeira de limpeza
 [select place explorationflag]
@@ -3068,6 +3068,8 @@ Proibido
 Vigiar
 [Clear]
 Limpar
+[Farm]
+Cultivo
 [Paint]
 Pintar
 [Erase]
@@ -3238,6 +3240,10 @@ Experiências
 Equilíbrio das zonas de guarda
 [experiment guard-area-balancing help]
 Os guerreiros livres distribuem-se pelas zonas de guarda pintadas em vez de irem todos para a mais próxima: uma zona maior recebe mais, e uma zona sobrelotada esvazia-se aos poucos para as outras.
+[experiment farm-areas]
+Áreas de cultivo
+[experiment farm-areas help]
+Acrescenta uma área de cultivo aos pincéis de zona. Os trabalhadores que colhem dentro dela tiram da casa mais madura do campo ligado e deixam um grão em cada casa, para que o campo volte a crescer em vez de ser comido a partir da borda. A madeira que cresce dentro da área é cortada.
 [settings Touch scrolling]
 Deslocamento por toque
 [settings List momentum]
@@ -3327,6 +3333,10 @@ Ressalto das listas
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4542,6 +4552,102 @@ Inércia do mapa
 
 [game draw]
 
+[settings Show colony skins]
+Mostrar visuais das colónias
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Desative para usar unidades, enxames e cores de edifícios clássicos neste dispositivo.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Repetir o mapa na horizontal
+[repeat map vertically]
+Repetir o mapa na vertical
+[bases]
+bases
+[bases per colony]
+Bases por colónia; uma base é uma equipa do mapa tal como foi desenhado, com os seus edifícios e unidades
 [Match]
 
 [Time limit]
@@ -4635,4 +4741,16 @@ Inércia do mapa
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

@@ -1,0 +1,126 @@
+name: F-Droid buildserver recipe trial
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_commit:
+        description: Exact public candidate commit SHA, before the release tag exists
+        required: true
+        type: string
+      arch:
+        description: ABI recipe to exercise in the F-Droid buildserver image
+        required: true
+        type: choice
+        options: [armeabi-v7a, arm64-v8a, x86_64]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fdroid-buildserver-trial-${{ inputs.arch }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.actor_id == 6193625 &&
+      github.triggering_actor == 'genixpro' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    container:
+      image: registry.gitlab.com/fdroid/fdroidserver@sha256:9cb68105642ca4e7b295f0ceab10f069f5b3247dc18fa7c36046e9d81aa469a8
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify public source and prepare candidate recipe
+        env:
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          ARCH: ${{ inputs.arch }}
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git fetch --no-tags https://github.com/Globulation2/glob2.git "$SOURCE_COMMIT"
+          test "$(git rev-parse FETCH_HEAD)" = "$SOURCE_COMMIT"
+          git fetch --tags https://github.com/Globulation2/glob2.git
+          git checkout --detach "$SOURCE_COMMIT"
+          python3 mobile/android_release.py check
+          python3 mobile/android_release.py check-listing
+          code="$(python3 mobile/android_release.py code --arch "$ARCH")"
+          echo "VERSION_CODE=$code" >> "$GITHUB_ENV"
+          mkdir -p metadata config logs tmp unsigned repo build srclibs
+          cp fdroid/metadata/org.globulation2.glob2.yml metadata/
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          path = Path('metadata/org.globulation2.glob2.yml')
+          text = path.read_text()
+          tag = 'commit: v' + __import__('json').loads(Path('mobile/android-release.json').read_text())['versionName']
+          if text.count(tag) != 3:
+              raise ValueError('Expected three release-tag recipe entries')
+          path.write_text(text.replace(tag, 'commit: ' + os.environ['SOURCE_COMMIT']))
+          PY
+          git clone --depth 1 --filter=blob:none --sparse \
+            https://gitlab.com/fdroid/fdroiddata.git "$RUNNER_TEMP/fdroiddata-config"
+          git -C "$RUNNER_TEMP/fdroiddata-config" sparse-checkout set config
+          cp -a "$RUNNER_TEMP/fdroiddata-config/config/." config/
+      - name: Build the exact ABI recipe inside F-Droid's buildserver image
+        env:
+          ARCH: ${{ inputs.arch }}
+        run: |
+          set -euo pipefail
+          test -f /etc/profile.d/bsenv.sh
+          source /etc/profile.d/bsenv.sh
+          test -n "$fdroidserver"
+          test -n "$home_vagrant"
+          fdroidserver="$home_vagrant/fdroidserver-trial"
+          export ANDROID_HOME=/opt/android-sdk
+          apt-get update -qq
+          apt-get install -y --no-install-recommends sudo git fdroidserver
+          git clone --shallow-since=2026-07-13 \
+            https://gitlab.com/fdroid/fdroidserver.git "$fdroidserver"
+          git -C "$fdroidserver" config transfer.fsckObjects true
+          git -C "$fdroidserver" checkout --detach a35fdfddd9c66823987a410566a6101186e39c84
+          chown -R vagrant:vagrant "$fdroidserver"
+          chown -R vagrant:vagrant "$GITHUB_WORKSPACE"
+          sudo --preserve-env --user vagrant env \
+            HOME="$home_vagrant" ANDROID_HOME="$ANDROID_HOME" \
+            PATH="$fdroidserver:$PATH" \
+            PYTHONPATH="$fdroidserver:$fdroidserver/examples" \
+            "$fdroidserver/fdroid" lint org.globulation2.glob2
+          sudo --preserve-env --user vagrant env \
+            HOME="$home_vagrant" ANDROID_HOME="$ANDROID_HOME" \
+            PATH="$fdroidserver:$PATH" \
+            PYTHONPATH="$fdroidserver:$fdroidserver/examples" \
+            "$fdroidserver/fdroid" build --verbose --test --refresh-scanner \
+            --on-server --no-tarball "org.globulation2.glob2:$VERSION_CODE" \
+            2>&1 | tee "logs/fdroid-$ARCH-buildserver.log"
+          test -f "tmp/org.globulation2.glob2_${VERSION_CODE}.apk"
+          sha256sum "tmp/org.globulation2.glob2_${VERSION_CODE}.apk" \
+            > "tmp/org.globulation2.glob2_${VERSION_CODE}.sha256"
+      - name: Show native compiler detection diagnostics
+        if: failure()
+        run: |
+          find build -path '*/detect_compiler/*' -name '*err.log' \
+            -print -exec tail -n 120 {} \;
+      - name: Retain F-Droid buildserver result and diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: fdroid-buildserver-${{ inputs.arch }}-${{ inputs.source_commit }}
+          path: |
+            tmp/*.apk
+            tmp/*.sha256
+            logs/**
+            build/**/detect_compiler/**/*.log
+          if-no-files-found: ignore
+          retention-days: 14

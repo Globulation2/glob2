@@ -107,46 +107,61 @@ result, verification and limits in the PR.
 
 ## Validation and CI feedback
 
-Keep unfinished PRs in draft: only selection and cheap contracts run automatically.
-Mark a PR ready when hosted verification is useful, and batch small revisions once
-it is ready. `ci:run` requests affected checks while still draft. Expansion labels
-`ci:full`, `ci:windows`, `ci:android` and `ci:browsers` add coverage; none can remove
-automatically selected checks. Require the current ready-PR `Relevant checks passed`
-result before merging. A successful draft selector means verification was deferred,
-not that the engine passed its checks.
+Keep unfinished PRs in draft. Draft and ready PRs run cheap contracts by default;
+becoming ready does not start expensive CI. Relevant local or VM testing is the
+standard merge verification path. Maintainers accept the evidence, including for
+their own PRs; hosted CI success is not a merge prerequisite. `ci:run` explicitly
+requests hosted affected checks and `ci:full` requests the full development matrix,
+even in draft. `ci:windows`, `ci:android` and `ci:browsers` expand coverage when
+hosted verification is requested; they do not start it on their own. A successful
+cheap-only `Relevant checks passed` result establishes neither engine verification
+nor acceptance of local evidence.
 
-The complete primary GCC 13 suite protects ordinary engine changes. The selector
-adds compatibility checks for changed boundaries; unknown/shared build inputs fail
+Choose focused tests from the change's actual risks and explain both coverage and
+omissions; local verification need not reproduce the CI matrix. Record evidence
+in a PR comment: tested commit SHA and base revision, OS/architecture/toolchain,
+dependencies and build flags, exact commands and results, coverage rationale,
+omitted checks and limitations. Attach logs and applicable checksums, saves,
+replays or screenshots through links reviewers can access; files left only on a
+local machine are insufficient evidence. Use the [evidence template](docs/development/reference.md#local-and-vm-pr-verification).
+Refresh evidence when later edits affect tested behavior, dependencies or
+integration. Preserve all affected simulation determinism, save/load,
+replay/network, platform compatibility and simulation-version requirements;
+focused testing does not waive those boundaries.
+
+Hosted affected verification keeps the complete primary GCC 13 suite for ordinary
+engine changes. The selector adds compatibility checks for changed boundaries; unknown/shared build inputs fail
 closed to full development verification. Add new native compatibility suites to
 `test/ci-compatibility.json` and shared boundaries to `.github/scripts/ci_policy.py`.
 Intentional repeats across platforms, browser engines and renderers must remain
 explicit. Release/store packaging, signing, metadata and upload validation belong
 in release workflows, not routine PR or master validation.
 
-Master verification finishes once started, with only the newest pending push kept.
-When risk tiers are enabled, retained pushes cover all changes since the last
-successful ancestor checkpoint; missing evidence selects full coverage. Nightly
-runs use a separate concurrency group and run the full development matrix. Never
-cancel a running master run to clear a merge burst. See the development reference
-for staged activation, baseline evidence and the independent runtime-package gate.
+Full master CI detects regressions asynchronously after merges. Every retained
+master push runs the full development matrix, irrespective of tier-reduction
+settings. Active master runs finish, with only the newest pending push retained;
+never cancel a running master run to clear a merge burst. Nightly is a fallback:
+it skips expensive jobs only when available successful full hosted evidence covers
+the exact master SHA under the current coverage policy. Manual and release
+verification remain separate. Local PR evidence never becomes a hosted checkpoint.
 
-
-Use focused checks while editing, then run the checks selected for the final PR
-revision. Keep every affected platform and compatibility boundary covered; changing
-shared headers, build inputs or test infrastructure can require broader checks than
-the apparent feature area. When an API changes, update its test doubles and build the
-affected harnesses. Fixtures that change process-wide SDL drivers or other global
+Use focused checks while editing, then verify the final PR revision with justified
+relevant coverage and record the evidence. Keep every affected platform and
+compatibility boundary covered; changing shared headers, build inputs or test
+infrastructure can require broader checks than the apparent feature area.
+When an API changes, update its test doubles and build the affected harnesses. Fixtures that change process-wide SDL drivers or other global
 state must restore it or run in an isolated process through the engine test registry.
 
 Fetch current master before final validation and resolve actual conflicts. Do not
-merge or rebase merely because unrelated commits advanced master: PR CI tests the
-merge result against its recorded base. If newer base changes affect the same
+merge or rebase merely because unrelated commits advanced master: hosted PR
+verification, when requested, tests the merge result against its recorded base. If newer base changes affect the same
 components, dependencies or CI configuration, refresh integration validation.
-Respect branch protection and address known regressions from selected checks.
-When a maintainer explicitly authorizes an incremental, low-risk CI repair with
-checks pending, record concrete validation, pending checks and material limits,
-then monitor and repair master promptly. This does not authorize merging known
-regressions or dropping relevant tests.
+Respect remaining branch protections. Hosted checks may be pending or unavailable
+at merge; known failures introduced by the PR still require resolution. Existing
+master regressions impose no merge restriction: PRs can continue merging while
+maintainers diagnose and repair them asynchronously. Retain failure evidence and
+prioritize repair; record verification in repair PRs and use subsequent full master
+results to confirm recovery. Master need not become green before other PRs merge.
 
 For CI speed changes, record queue delay, execution time, runner minutes and time
 to result separately. Preserve the selected-case inventory and compare ten

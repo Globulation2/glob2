@@ -3,6 +3,7 @@
 
 #include "Ressource.h"
 #include "UnitConsts.h"
+#include "ai/AITelemetryValue.h"
 #include "scene/SceneEntities.h"
 
 #include <array>
@@ -85,6 +86,8 @@ struct ScenePanelLocal
 //! Game-wide values the HUD shows.
 struct SceneHud
 {
+	struct WinChance { std::string name; GAGCore::Color color; int permille = 0; bool alive = false; };
+	std::vector<WinChance> winChances;
 	int totalPrestige = 0, prestigeToReach = 0;
 	bool anyPlayerWaited = false;
 	Uint32 maskAwayPlayer = 0;
@@ -95,8 +98,16 @@ struct SceneHud
 	int legacyScriptTimer = 0;
 };
 
+struct SceneAITelemetry
+{
+	int team = 0, player = 0;
+	std::string name;
+	bool available = false;
+	std::vector<AITelemetry::NamedValue> values;
+};
 struct ScenePanels
 {
+	std::vector<SceneAITelemetry> aiTelemetry;
 	ScenePanelLocal local;
 	SceneBuildingPanel building;
 	SceneUnitPanel unit;

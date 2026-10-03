@@ -2,6 +2,8 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "scene/Scene.h"
+#include "ColonySkinPreview.h"
+#include "IntBuildingType.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>
 
@@ -46,7 +48,7 @@ struct BuildingPosComp
 };
 
 
-void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene)
+void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, const Scene& scene, MapRenderState* drawnRender, ViewState* view)
 {
 	const SceneEntities &entities = scene.entities;
 	const SceneMap &map = scene.map; // the extracted map, not Game::map
@@ -97,7 +99,10 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	Sprite *buildingSprite = type->gameSpritePtr;
 	dx = (type->width<<5)-buildingSprite->getW(imgid);
 	dy = (type->height<<5)-buildingSprite->getH(imgid);
-	buildingSprite->setBaseColor(team->color);
+	auto color=team->color;
+    if(view)if(const auto chosen=view->render.skinPreview().buildingColor(team->teamNumber))
+        color=GAGCore::Color((*chosen>>16)&255,(*chosen>>8)&255,*chosen&255);
+    buildingSprite->setBaseColor(color);
 
 	// draw building. Zoomed far out, the sprite cross-fades to a chip in its
 	// team's colour carrying an icon of what the building is for; where chips
@@ -107,7 +112,13 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 	// The sprite stays opaque under the chip fading in over it, and goes once
 	// the chip is solid: a translucent sprite would leave the sprite batch.
 	if (spriteOpacity > 0)
-		globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	{
+		const bool skinned = view && type->shortTypeNum == IntBuildingType::SWARM_BUILDING
+			&& !type->isBuildingSite && view->render.skinPreview().drawSwarm(
+				*globalContainer->gfx, team->teamNumber, x+dx, y+dy,
+				buildingSprite->getW(imgid), buildingSprite->getH(imgid));
+		if (!skinned) globalContainer->gfx->drawSprite(x+dx, y+dy, buildingSprite, imgid);
+	}
 	if (detail && detail->buildingIcon > 0)
 	{
 		// Icon frames follow IntBuildingType up to the clearing flag; the market comes last.
@@ -119,7 +130,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			: shortType==IntBuildingType::SWARM_BUILDING ? 120 : 100;
 		drawnRender->overlays.glyph(*globalContainer->gfx, x, y, x+type->width*32, y+type->height*32,
 			icon, wall ? MapOverlayQueue::Tile : MapOverlayQueue::Chip, type->level, type->isBuildingSite,
-			priority, team->color.r, team->color.g, team->color.b, detail->buildingIcon);
+			priority, color.r, color.g, color.b, detail->buildingIcon);
 	}
 	globalContainer->gfx->finishDrawingSprite(buildingSprite, 255);
 
@@ -163,9 +174,9 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 			int decy=(type->height*32);
 			int healDecx=(type->width-(maxWidth>>3))*16+addDec;
 
-			anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp);
+			anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp, drawnRender);
 			if (building->hp!=building->effectiveMaxHp || !building->type->crossConnectMultiImage)
-				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio);
+				drawHealthBar(x+healDecx, y+decy-4, maxWidth, actWidth, hpRatio, drawnRender);
 		}
 
 		// Attention outlasts routine status when zoomed out: damage, a building
@@ -174,24 +185,24 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 		const bool understaffed = building->maxUnitWorking>0 && building->unitsWorking*2<building->maxUnitWorking;
 		const bool unfed = type->canFeedUnit && building->resources[WHEAT]==0;
 		const bool unarmed = type->maxBullets && building->bullets==0;
-		anchorBars(x+type->width*32, y);
+		anchorBars(x+type->width*32, y, false, drawnRender);
 		if (building->maxUnitInside>0)
-			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255);
-		anchorBars(x+type->width*16, y, understaffed);
+			drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255, 2, drawnRender);
+		anchorBars(x+type->width*16, y, understaffed, drawnRender);
 		if (building->maxUnitWorking>0)
-			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 0, 255, 255, 255, 255, 64, 0);
+			drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 0, 255, 255, 255, 255, 64, 0, 2, drawnRender);
 
-		anchorBars(x, y, unfed);
+		anchorBars(x, y, unfed, drawnRender);
 		if ((type->canFeedUnit) || (type->unitProductionTime))
-			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120);
+			drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120, drawnRender);
 
-		anchorBars(x, y, unarmed);
+		anchorBars(x, y, unarmed, drawnRender);
 		if (type->maxBullets)
-			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200);
+			drawBuildingResourceBar(x+1, y+1, type, type->maxBullets, building->bullets, 200, 200, 200, drawnRender);
 		if (damaged)
-			drawStatusPip(x+type->width*32-4, y+4, 255, 0, 0);
+			drawStatusPip(x+type->width*32-4, y+4, 255, 0, 0, drawnRender);
 		else if (understaffed || unfed || unarmed)
-			drawStatusPip(x+type->width*32-4, y+4, 255, 176, 0);
+			drawStatusPip(x+type->width*32-4, y+4, 255, 176, 0, drawnRender);
 	}
 
 	if (drawOptions & DRAW_ACCESSIBILITY)
@@ -214,7 +225,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 }
 
 
-void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene)
+void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, std::set<Uint16> *visibleBuildings, const BuildingGuiStateMap* buildingGuiState, const Scene& scene, MapRenderState* drawnRender, ViewState* view)
 {
 	PERF_SCOPE_TIME(GroundBuildings);
 	const SceneEntities &entities = scene.entities;
@@ -252,7 +263,7 @@ void Game::drawMapGroundBuildings(int left, int top, int right, int bot, int sw,
 						const Sint32 dispY = buildingGuiState ? displayedPosY(*buildingGuiState, building->gid, building->posY) : building->posY;
 						px = originX * 32 + (dispX - building->posX) * 32;
 						py = originY * 32 + (dispY - building->posY) * 32;
-						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene);
+						drawMapBuilding(px, py, gid, viewportX, viewportY, localTeam, drawOptions, scene, drawnRender, view);
 						drawnCopies.insert(copy);
 						drawnBuildings.insert(building->gid);
 					}

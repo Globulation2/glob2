@@ -1,5 +1,11 @@
 [%0 has left the game]
 %0 has quit the game.
+[start recording]
+Start recording
+[stop recording]
+Stop recording
+[finalizing recording]
+Finalizing recording…
 [%0 level %1]
 %0 Level %1
 [%0 units can't access building]
@@ -194,6 +200,8 @@ Choose a game
 Choose a map
 [clear area]
 Clearing area
+[farm area]
+Farm area
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]
@@ -472,8 +480,6 @@ left meta
 left windows key
 [left]
 left
-[Leo: nur ein erster Test]
-test
 [level]
 Level
 [levels]
@@ -756,6 +762,8 @@ Select Inn
 Select Market
 [select place clearing area]
 Select Place Clearing Area
+[select place farm area]
+Select Place Farm Area
 [select place clearingflag]
 Select Place Clearing Flag
 [select place explorationflag]
@@ -2142,6 +2150,16 @@ Off (no timer)
 45 minutes
 [60 minutes]
 60 minutes
+[Probability victory]
+Probability victory
+[Off (play it out)]
+Off (play it out)
+[95% sure]
+95% sure
+[97% sure]
+97% sure
+[99% sure]
+99% sure
 [Stats births]
 Births
 [Stats deaths]
@@ -3060,6 +3078,8 @@ Forbidden
 Guard
 [Clear]
 Clear
+[Farm]
+Farm
 [Paint]
 Paint
 [Erase]
@@ -3216,6 +3236,8 @@ Resume game
 Add AI
 [settings Experiments]
 Experiments
+[settings Custom AIs]
+Custom AIs
 [settings Try features we are still testing. They can change balance and pacing.]
 Try features we are still testing. They can change balance and pacing.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
@@ -3230,6 +3252,10 @@ Experiments
 Guard-area balancing
 [experiment guard-area-balancing help]
 Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.
+[experiment farm-areas]
+Farm areas
+[experiment farm-areas help]
+Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared.
 [settings Touch scrolling]
 Touch scrolling
 [settings List momentum]
@@ -3306,6 +3332,10 @@ Animate victory artwork. Reduced motion also disables this animation.
 Smooth unit motion
 [settings Experimental: move and animate units between game ticks.]
 Experimental: move and animate units between game ticks.
+[settings Smooth fog of war]
+Smooth fog of war
+[settings Fade the map into and out of the fog of war gradually.]
+Fade the map into and out of the fog of war gradually.
 [settings Adaptive zoom detail]
 Adaptive zoom detail
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
@@ -4534,6 +4564,102 @@ this map
 Create a room and invite your friends: the room plays this map.
 [game draw]
 Draw
+[settings Show colony skins]
+Show colony skins
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Turn off to use classic units, swarms and building colors on this device.
+[settings Hive Mind]
+Hive Mind
+[settings Enable commander shortcuts]
+Enable commander shortcuts
+[settings Command your colony without opening a menu.]
+Command your colony without opening a menu.
+[settings Allow supervision for new commands]
+Allow supervision for new commands
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.
+[settings Commander account and credits]
+Commander account and credits
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.
+[open commander]
+Open commander
+[stop commander]
+Stop commander
+[File selection is unavailable.]
+File selection is unavailable.
+[Saving custom AI…]
+Saving custom AI…
+[Could not read the selected JavaScript file.]
+Could not read the selected JavaScript file.
+[Custom AI library saved.]
+Custom AI library saved.
+[Storage could not be saved. The previous library is retained.]
+Storage could not be saved. The previous library is retained.
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+Import a single JavaScript AI file, then select it when setting up a local game.
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.
+[Waiting for file selection or storage…]
+Waiting for file selection or storage…
+[Import JavaScript AI]
+Import JavaScript AI
+[Link development file]
+Link development file
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.
+[Example AI and authoring guide]
+Example AI and authoring guide
+[No custom AIs yet. Import a bundled .js file to get started.]
+No custom AIs yet. Import a bundled .js file to get started.
+[Relink]
+Relink
+[Update]
+Update
+[Validate]
+Validate
+[AI startup and persistent globals are valid.]
+AI startup and persistent globals are valid.
+[Remove from library]
+Remove from library
+[AI telemetry]
+AI telemetry
+[No accessible AI telemetry.]
+No accessible AI telemetry.
+[Search fields]
+Search fields
+[Telemetry unavailable for this recording or controller.]
+Telemetry unavailable for this recording or controller.
+[Linked]
+Linked
+[Imported]
+Imported
+[Player]
+Player
+[Updated at tick %0]
+Updated at tick %0
+[No values published yet.]
+No values published yet.
+[No fields match your search.]
+No fields match your search.
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.
+[Missing custom AI]
+Missing custom AI
+[Map repetition failed]
+Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.
+[repeat map horizontally]
+Repeat map horizontally
+[repeat map vertically]
+Repeat map vertically
+[bases]
+bases
+[bases per colony]
+Bases per colony; a base is one team of the map as drawn, its buildings and units
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.
 [Match]
 Match
 [Time limit]
@@ -4595,7 +4721,7 @@ Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends
 [Blitz]
 Blitz
 [ruleset blitz description]
-Rush start and a 45-minute buzzer.
+Rush start; ends at 45 minutes or once the winner is clear.
 [Gentle]
 Gentle
 [ruleset gentle description]

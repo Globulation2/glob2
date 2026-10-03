@@ -255,7 +255,7 @@ namespace GAGCore
 
     void GraphicContext::beginFrame(FrameMode mode)
     {
-        if (!softwarePresenter || !softwarePresenter->needsBegin()) return;
+        if (offscreenPass || !softwarePresenter || !softwarePresenter->needsBegin()) return;
         if (softwareRasterizer) softwareRasterizer->flush();
         SDL_Surface* target = softwarePresenter->begin(mode == FrameMode::PreserveContent);
         sdlsurface = target;

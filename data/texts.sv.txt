@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategi
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balanserar hållbar tillväxt och träning och samlar sedan arméer i vågor.
 [AIMaxima-Profile]
@@ -168,12 +174,6 @@ Kan inte vara värd: port %0 används
 Kan inte gå med: spelet har börjat
 [Can't join game, game is full]
 Kan inte gå med: spelet är fullt
-[Can't join game, missmatching game parameters]
-Kan inte ansluta till spel, omatchande spelparametrar
-[Can't join game, timeout]
-Kan inte ansluta till spel, timeout
-[Can't join game, wrong game version]
-Kan inte ansluta till spel, fel spelversion
 [cancel destroy]
 Avbryt destruktion
 [cancel repair]
@@ -198,6 +198,8 @@ Välj ett spel
 Välj en karta
 [clear area]
 Röjningsområde
+[farm area]
+Odlingsområde
 [Clearing:]
 Röjning:
 [clearingflag explanation 2]
@@ -508,8 +510,6 @@ Kartskript
 Kartbredd
 [map size y]
 Karthöjd
-[maps available]
-Tillgängliga Kartor
 [mark map]
 Markera Karta För Allierade
 [market explanation 2]
@@ -550,8 +550,6 @@ Ingen tillväxt
 Nej
 [Number Of Buildings]
 Antal byggnader
-[number of players: %0]
-%0 spelare är närvarande.
 [number of teams]
 antal lag
 [Number Of Units]
@@ -650,8 +648,6 @@ Löparbana
 Räckvidd
 [ratios]
 Proportioner
-[Register a new YOG user with password]
-Registrera en ny YOG-användare med lösenord. (osäkert)
 [remember unit]
 Kom ihåg tilldelningar
 [remove map]
@@ -754,6 +750,8 @@ Välj Värdshus
 Välj Marknad
 [select place clearing area]
 Placera område: Röjningsområde
+[select place farm area]
+Placera område: Odlingsområde
 [select place clearingflag]
 Placera flagga: Röjningsflagga
 [select place explorationflag]
@@ -1048,8 +1046,6 @@ Tittar på:
 Vatten
 [Wheat]
 Vete
-[wheat]
-vete
 [Won : you defeated your opponents]
 Seger: Du besegrade dina motståndare
 [Won : you have the most prestige]
@@ -3072,6 +3068,8 @@ Förbjudet
 Bevaka
 [Clear]
 Röj
+[Farm]
+Odla
 [Paint]
 Måla
 [Erase]
@@ -3242,6 +3240,10 @@ Experiment
 Balansering av vaktområden
 [experiment guard-area-balancing help]
 Fria krigare fördelar sig mellan de målade vaktområdena i stället för att alla ta det närmaste: ett större område får fler av dem, och ett överfullt område tunnas ut till de andra.
+[experiment farm-areas]
+Odlingsområden
+[experiment farm-areas help]
+Lägger till ett odlingsområde bland områdespenslarna. Arbetare som skördar i ett tar från den mognaste rutan på det sammanhängande fältet och lämnar ett korn på varje ruta, så att fältet växer igen i stället för att ätas upp från kanten. Trä som växer in i området röjs.
 [settings Touch scrolling]
 Pekrullning
 [settings List momentum]
@@ -3331,6 +3333,10 @@ Listornas studs
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4546,6 +4552,102 @@ Kartans fart
 
 [game draw]
 
+[settings Show colony skins]
+Visa koloniernas utseenden
+[settings Turn off to use classic units, swarms and building colors on this device.]
+Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på den här enheten.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+Upprepa kartan vågrätt
+[repeat map vertically]
+Upprepa kartan lodrätt
+[bases]
+baser
+[bases per colony]
+Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess byggnader och enheter
 [Match]
 
 [Time limit]
@@ -4639,4 +4741,16 @@ Kartans fart
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

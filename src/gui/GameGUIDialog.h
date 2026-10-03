@@ -19,6 +19,7 @@ class GameHeader;
 class InGameMainScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_main"; }
 	enum
 	{
 		LOAD_GAME = 0,
@@ -26,7 +27,9 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		OPTIONS = 2,
 		RETURN_GAME = 5,
 		QUIT_GAME = 6,
-		PAUSE_GAME = 7
+		PAUSE_GAME = 7,
+		HIVE_MIND = 8,
+		AI_TELEMETRY = 9
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
@@ -40,6 +43,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		pauseLabel = std::move(label);
 		pauseEnabled = enabled;
 	}
+	void setHiveMind(bool value) { hiveMind = value; }
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
@@ -47,7 +51,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
-	bool networked = false;
+	bool networked = false, hiveMind = false;
 	std::string pauseLabel;
 	bool pauseEnabled = true;
 };
@@ -75,6 +79,7 @@ class InGameConfirmScreen : public Glob2UI::InGameDialog
 class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_end_of_game"; }
 	enum
 	{
 		QUIT = 0,
@@ -99,6 +104,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 class InGameAllianceScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_alliance"; }
 	enum
 	{
 		OK = 0
@@ -156,6 +162,7 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 class InGameOptionScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_option"; }
 	enum
 	{
 		OK = 0,
@@ -184,7 +191,8 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 class InGameTextInput : public Glob2UI::InGameDialog
 {
   public:
-	InGameTextInput();
+	const char *recordingId() const override { return "in_game_text_input"; }
+	explicit InGameTextInput(bool commander = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	std::string getText() const { return text; }
 	void setText(const std::string &value)
@@ -202,6 +210,7 @@ class InGameTextInput : public Glob2UI::InGameDialog
 
   private:
 	std::string text;
+	bool commander = false;
 };
 
 ///This screen shows the current objectives of the mission, a mission briefing, and
@@ -209,6 +218,7 @@ class InGameTextInput : public Glob2UI::InGameDialog
 class InGameObjectivesScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "in_game_objectives"; }
 	enum
 	{
 		OBJECTIVES = 1,
@@ -238,4 +248,24 @@ class InGameObjectivesScreen : public Glob2UI::InGameDialog
 	std::string briefing;
 	std::vector<Line> primary, secondary, hints;
 	bool hasSecondary = false;
+};
+
+// Reads only access-filtered immutable Scene data.
+class InGameAITelemetryScreen : public Glob2UI::InGameDialog
+{
+  public:
+	explicit InGameAITelemetryScreen(GameGUI *gui) : gui(gui) {}
+	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
+
+  protected:
+	void onEscape() override { finish(0); }
+	void onUpdate(Uint32) override;
+	double maxWidth() const override { return 720; }
+	bool fillHeight() const override { return true; }
+
+  private:
+	GameGUI *gui;
+	int player = -1;
+	Uint32 sample = ~0u, accessiblePlayers = 0;
+	std::string search;
 };

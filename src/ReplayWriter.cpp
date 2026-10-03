@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <array>
 #include <ios>
+#include <filesystem>
 
 // Write an Order to the stream, with the given checksum
 inline void writeOrder(GAGCore::OutputStream *stream, std::shared_ptr<Order> order, Uint32 checksum = 0)
@@ -48,8 +49,15 @@ ReplayWriter::~ReplayWriter()
 
 void ReplayWriter::init(const std::string &backend, GameGUI &gui)
 {
+	recordingPath = backend;
 	// Avoid trouble
 	checksum = 0;
+	game = gui.replayTelemetryGame();
+	telemetry = {};
+	telemetryStep = 0;
+	finished = false;
+	if (game)
+		telemetry.capture(*game, 0);
 
 	// Initialise the buffer backend.
 	// Absolute paths (leading '/') bypass FileManager — its dirList prepend
@@ -91,7 +99,16 @@ bool ReplayWriter::isValid() const
 
 void ReplayWriter::advanceStep()
 {
+	if (finished)
+		return;
+	++telemetryStep;
 	stepsSinceLastOrder++;
+}
+
+void ReplayWriter::captureTelemetry()
+{
+	if (game && !finished)
+		telemetry.capture(*game, telemetryStep);
 }
 
 void ReplayWriter::setCheckSum(Uint32 checksum)
@@ -101,7 +118,8 @@ void ReplayWriter::setCheckSum(Uint32 checksum)
 
 void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 {
-	if (!isValid()) return;
+	if (!isValid() || finished)
+		return;
 	if (order->getOrderType() == ORDER_VOICE_DATA || order->getOrderType() == ORDER_NULL) return;
 
 	// Write the number of steps since last order to this order (can be 0)
@@ -118,7 +136,8 @@ void ReplayWriter::pushOrder(std::shared_ptr<Order> order)
 
 void ReplayWriter::finish()
 {
-	if (!isValid()) return;
+	if (!isValid() || finished)
+		return;
 
 	// Write the number of steps since last order to the end of the replay
 	buffer->writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
@@ -126,8 +145,12 @@ void ReplayWriter::finish()
 	// We write a NullOrder to mark the end of the replay (like terminating a string with \0)
 	writeOrder(buffer, std::shared_ptr<Order>(new NullOrder()), 0);
 
+	telemetry.write(buffer);
+	finished = true;
+
 	// Flush the buffer now
 	buffer->flush();
+	if (!recordingPath.empty()) notifySaved(recordingPath);
 
 	stepsSinceLastOrder = 0;
 }
@@ -153,15 +176,36 @@ bool ReplayWriter::write(const std::string &filename) const
             file.write(bytes.data(), count, "replayBytes");
             remaining -= count;
         }
-        file.writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
-        writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
+		if (!finished)
+		{
+			file.writeUint32(stepsSinceLastOrder, "replayStepsSinceLastOrder");
+			writeOrder(&file, std::shared_ptr<Order>(new NullOrder()), 0);
+			telemetry.write(&file);
+		}
     });
     // Atomic writer failures must not leave the live recording's cursor moved.
     bufferBackend->seekFromStart(pos);
+    if (saved) notifySaved(filename);
     return saved;
 }
 
 GAGCore::OutputStream* ReplayWriter::getBuffer() const
 {
 	return buffer;
+}
+
+void ReplayWriter::notifySaved(const std::string &filename) const
+{
+    try {
+        // A classic recording can overwrite an identical online recording. Remove
+        // its old companion even when the replay hash would still match.
+        if (auto *files = Toolkit::getFileManager()) {
+            auto path = std::filesystem::path(filename + ".appearance.json");
+            if (!path.is_absolute()) path = std::filesystem::path(files->getDir(0)) / path;
+            std::error_code ignored;
+            std::filesystem::remove(path, ignored);
+        }
+        if (saveObserver) saveObserver(filename);
+    }
+    catch (...) { /* Cosmetic metadata must never break replay saving or teardown. */ }
 }

@@ -2,6 +2,7 @@
 #pragma once
 #include "CustomGameRules.h"
 #include "CustomGameSetup.h"
+#include "ai/ScriptLibrary.h"
 #include "MapHeader.h"
 #include "StartQuality.h"
 #include "ui/FrontendUI.h"
@@ -25,6 +26,7 @@ class CustomGameChoiceScreen : public Glob2UI::Screen
 	std::vector<bool> enabled;
 
   public:
+	const char *recordingId() const override { return "custom_game_choice"; }
 	CustomGameChoiceScreen(const std::string &, const std::vector<std::string> &, int, bool, const std::vector<bool> &);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void choose(int index) { selected = index; invalidate(); }
@@ -52,6 +54,7 @@ class RulesetChoiceScreen : public Glob2UI::Screen
 class CustomGameScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "custom_game"; }
 	enum
 	{
 		OK = 1,
@@ -104,6 +107,14 @@ class CustomGameScreen : public Glob2UI::Screen
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	std::string username, source, message;
+	std::unique_ptr<Online::OnlineStorage> aiStorage;
+	std::unique_ptr<Script::Library> aiLibrary;
+	std::map<std::string, std::string> frozenAIs;
+	std::vector<std::string> aiChoices() const;
+	int aiSelection(int colony) const;
+	void selectAI(int colony, int selection);
+	std::string aiLabel(int colony) const;
+	void freezeAIs();
 	// Serialized bytes of the last successfully generated map (see generateMap()), read
 	// directly by the loader instead of round-tripping through a temporary file.
 	std::shared_ptr<std::string> generatedSnapshot;
@@ -167,6 +178,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	LandscapePickerScreen *chooseLandscape();
 	void applyLandscape(int method, std::optional<std::uint32_t> seed, const GenerationRequest *shown = nullptr);
 	void resetParameters();
+	void repeatCurrentMap();
 	void randomizeParameters();
 	bool drawRandomParameters();
 	void showStartQuality();

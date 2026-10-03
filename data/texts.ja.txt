@@ -1,5 +1,11 @@
 [AI strategy]
 AIの戦略
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 持続可能な成長と訓練を両立させ、軍を集めて波状攻撃を行います。
 [AIMaxima-Profile]
@@ -200,6 +206,8 @@ Caps Lock
 マップを選択
 [clear area]
 資源除去領域
+[farm area]
+農地領域
 [Clearing:]
 除去対象：
 [clearingflag explanation 2]
@@ -766,6 +774,8 @@ Scroll Lock
 市場を選択
 [select place clearing area]
 資源除去領域の配置を選択
+[select place farm area]
+農地領域の配置を選択
 [select place clearingflag]
 資源除去の旗の配置を選択
 [select place explorationflag]
@@ -3058,6 +3068,8 @@ CPU %0%
 警備
 [Clear]
 除去
+[Farm]
+農地
 [Paint]
 描く
 [Erase]
@@ -3228,6 +3240,10 @@ AIを追加
 警備エリアの分散
 [experiment guard-area-balancing help]
 自由な戦士は最も近い警備エリアに全員集まるのではなく、塗られた警備エリアの間で分散します。大きなエリアほど多くの戦士を受け入れ、混みすぎたエリアからは他のエリアへ少しずつ移動します。
+[experiment farm-areas]
+農地領域
+[experiment farm-areas help]
+ゾーンブラシに農地領域を追加します。その中で収穫する作業員は、つながった畑のうち最も実った区画から取り、各区画に一粒ずつ残すので、畑は端から食べ尽くされずに再び育ちます。農地に生えてきた木は除去されます。
 [settings Touch scrolling]
 タッチスクロール
 [settings List momentum]
@@ -3317,6 +3333,10 @@ AIを追加
 [settings Smooth unit motion]
 
 [settings Experimental: move and animate units between game ticks.]
+
+[settings Smooth fog of war]
+
+[settings Fade the map into and out of the fog of war gradually.]
 
 [settings Adaptive zoom detail]
 
@@ -4532,6 +4552,102 @@ AIを追加
 
 [game draw]
 
+[settings Show colony skins]
+コロニーのスキンを表示
+[settings Turn off to use classic units, swarms and building colors on this device.]
+オフにすると、この端末では従来のユニット、群れ、建物の色を使用します。
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
+[File selection is unavailable.]
+
+[Saving custom AI…]
+
+[Could not read the selected JavaScript file.]
+
+[Custom AI library saved.]
+
+[Storage could not be saved. The previous library is retained.]
+
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+
+[Waiting for file selection or storage…]
+
+[Import JavaScript AI]
+
+[Link development file]
+
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+
+[Example AI and authoring guide]
+
+[No custom AIs yet. Import a bundled .js file to get started.]
+
+[Relink]
+
+[Update]
+
+[Validate]
+
+[AI startup and persistent globals are valid.]
+
+[Remove from library]
+
+[AI telemetry]
+
+[No accessible AI telemetry.]
+
+[Search fields]
+
+[Telemetry unavailable for this recording or controller.]
+
+[Linked]
+
+[Imported]
+
+[Player]
+
+[Updated at tick %0]
+
+[No values published yet.]
+
+[No fields match your search.]
+
+[settings Custom AIs]
+
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+
+[Missing custom AI]
+
+[Map repetition failed]
+
+[repeat map horizontally]
+マップを横に繰り返す
+[repeat map vertically]
+マップを縦に繰り返す
+[bases]
+拠点
+[bases per colony]
+コロニーあたりの拠点数。拠点とは描かれたマップの1チームで、その建物とユニットを含みます
 [Match]
 
 [Time limit]
@@ -4625,4 +4741,16 @@ AIを追加
 [Shifting alliances]
 
 [ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
 

@@ -35,6 +35,7 @@ class MapPreview;
 class OnlineMapsScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "online_maps"; }
 	enum
 	{
 		BACK = 1
@@ -126,6 +127,7 @@ class OnlineMapsScreen : public Glob2UI::Screen
 class MapShareScreen : public Glob2UI::Screen
 {
   public:
+	const char *recordingId() const override { return "map_share"; }
 	enum
 	{
 		CLOSED = 1,

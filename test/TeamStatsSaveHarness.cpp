@@ -22,6 +22,8 @@
 #include "Sector.h"
 #include "EndGameScreen.h"
 #include "ReplayReader.h"
+#include "ReplayTelemetry.h"
+#include "FileFormatVersions.h"
 #include "OrderMessages.h"
 #include "Order.h"
 #include "Player.h"
@@ -815,8 +817,9 @@ static void measurementReplayBoundaries()
 {
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
-	// Protocol 51 prevents peers that cannot read compact map snapshots.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION == 51,
+	// Format 130 adds the farm-areas tile mask, still retaining that floor.
+	// Protocol 52 prevents peers that cannot read the farm mask or its order.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 127 && NET_PROTOCOL_VERSION >= 52,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, VERSION_MINOR, VERSION_MINOR+1})
 	{
@@ -827,6 +830,8 @@ static void measurementReplayBoundaries()
 		writer.writeUint32(0, "replayStepCounter");
 		NetSendOrder message(std::make_shared<NullOrder>());
 		message.encodeData(&writer);
+		if (version >= FILE_FORMAT_VERSION_CUSTOM_AI)
+			ReplayTelemetry::Stream().write(&writer);
 		auto *copy = new GAGCore::MemoryStreamBackend(*bytes);
 		copy->seekFromStart(0);
 		ReplayReader reader;

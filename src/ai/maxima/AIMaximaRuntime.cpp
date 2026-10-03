@@ -1,3 +1,4 @@
+#include "field/UniformTraversal.h"
 #include "FileFormatVersions.h"
 #include <PerformanceTelemetry.h>
 #include "AITelemetryFields.h"
@@ -238,15 +239,15 @@ bool GradientInfo::load(GAGCore::InputStream* stream)
 
 Gradient::Gradient(const GradientInfo& info) : info(info),width(0),sourceCount(0) {}
 
-void Gradient::recalculate(Player* player)
+void Gradient::recalculate(Player* player, field::Frontier& frontier)
 {
 	Map* map=player->map;
 	width=map->getW();
 	const int height=map->getH();
 	values.assign(width*height,UnreachableCell);
 	sourceCount=0;
-	std::vector<int> queue;
-	queue.reserve(width*height);
+	auto& queue=frontier;
+	queue.clear();
 	for(int x=0;x<width;++x)
 		for(int y=0;y<height;++y)
 		{
@@ -254,24 +255,7 @@ void Gradient::recalculate(Player* player)
 			if(info.matches_source(player,x,y)) { values[at]=SourceCell; queue.push_back(at);++sourceCount; }
 			else if(info.matches_obstacle(player,x,y)) values[at]=ObstacleCell;
 		}
-	for(size_t head=0;head<queue.size();++head)
-	{
-		const int at=queue[head];
-		const int px=at%width;
-		const int py=at/width;
-		const Sint16 next=values[at]+1;
-		const int xs[3]={px==0?width-1:px-1,px,px+1==width?0:px+1};
-		const int ys[3]={py==0?height-1:py-1,py,py+1==height?0:py+1};
-		for(int dy=-1;dy<=1;++dy)
-			for(int dx=-1;dx<=1;++dx)
-			{
-				if(dx==0 && dy==0) continue;
-				const int nx=xs[dx+1];
-				const int ny=ys[dy+1];
-				Sint16& value=values[ny*width+nx];
-				if(value==UnreachableCell) { value=next; queue.push_back(ny*width+nx); }
-			}
-	}
+	field::expandDistances(values,queue,{width,height},field::Surrounding,UnreachableCell);
 }
 
 int Gradient::get_height(int x,int y) const
@@ -300,7 +284,7 @@ Gradient& GradientManager::get_gradient(const GradientInfo& info)
 	{
 		gradients.push_back(shared_ptr<Gradient>(new Gradient(info)));
 		ages.push_back(0); index=int(gradients.size())-1;
-		gradients[index]->recalculate(player);
+		gradients[index]->recalculate(player,frontier);
 	}
 	else if(ages[index]>150 && info.needs_updating())
 	{
@@ -336,7 +320,7 @@ void GradientManager::update(Uint32 step)
 	{
 		const int index=queued.front(); queued.pop();queuedIndexes.erase(index);
 		if(index>=0 && index<int(gradients.size()) && ages[index]>50)
-		{ gradients[index]->recalculate(player); ages[index]=0; }
+		{ gradients[index]->recalculate(player,frontier); ages[index]=0; }
 	}
 }
 void GradientManager::saveExecutionState(GAGCore::OutputStream* stream) const
@@ -570,7 +554,7 @@ ManagementOrder* ManagementOrder::load(GAGCore::InputStream* stream)
 		case 4:{const int size=stream->readSint32("value");order.reset(new ChangeFlagSize(size,stream->readSint32("id")));break;}
 		case 5:{const int level=stream->readSint32("value");order.reset(new ChangeFlagMinimumLevel(level,stream->readSint32("id")));break;}
 		case 6:{const int x=stream->readSint32("x");const int y=stream->readSint32("y");order.reset(new ChangeFlagPosition(x,y,stream->readSint32("id")));break;}
-		case 7:case 8:{const int savedArea=stream->readSint32("area_type");if(savedArea<0 || savedArea>GuardArea)throw std::runtime_error("Invalid saved area type");const AreaType area=static_cast<AreaType>(savedArea);const Uint32 count=stream->readCount("location_count");if(kind==7){std::unique_ptr<AddArea> areaOrder(new AddArea(area));for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);const int x=stream->readSint32("x");const int y=stream->readSint32("y");areaOrder->add_location(x,y);stream->readLeaveSection();}order.reset(areaOrder.release());}else{std::unique_ptr<RemoveArea> areaOrder(new RemoveArea(area));for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);const int x=stream->readSint32("x");const int y=stream->readSint32("y");areaOrder->add_location(x,y);stream->readLeaveSection();}order.reset(areaOrder.release());}break;}
+		case 7:case 8:{const int savedArea=stream->readSint32("area_type");if(savedArea<0 || savedArea>FarmArea)throw std::runtime_error("Invalid saved area type");const AreaType area=static_cast<AreaType>(savedArea);const Uint32 count=stream->readCount("location_count");if(kind==7){std::unique_ptr<AddArea> areaOrder(new AddArea(area));for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);const int x=stream->readSint32("x");const int y=stream->readSint32("y");areaOrder->add_location(x,y);stream->readLeaveSection();}order.reset(areaOrder.release());}else{std::unique_ptr<RemoveArea> areaOrder(new RemoveArea(area));for(Uint32 i=0;i<count;++i){stream->readEnterSection(i);const int x=stream->readSint32("x");const int y=stream->readSint32("y");areaOrder->add_location(x,y);stream->readLeaveSection();}order.reset(areaOrder.release());}break;}
 		case 9:{const int team=stream->readSint32("team");const OptionalBool allied=static_cast<OptionalBool>(stream->readSint32("allied"));const OptionalBool enemy=static_cast<OptionalBool>(stream->readSint32("enemy"));const OptionalBool market=static_cast<OptionalBool>(stream->readSint32("market"));const OptionalBool inn=static_cast<OptionalBool>(stream->readSint32("inn"));const OptionalBool other=static_cast<OptionalBool>(stream->readSint32("other"));order.reset(new ChangeAlliances(team,allied,enemy,market,inn,other));break;}
 		case 10:order.reset(new UpgradeRepair(stream->readSint32("id")));break;
 		case 11:{const RuntimeEvent::Type eventType=static_cast<RuntimeEvent::Type>(stream->readSint32("event_type"));const int first=stream->readSint32("first");const int second=stream->readSint32("second");order.reset(new Notify(RuntimeEvent(eventType,first,second)));break;}
@@ -619,6 +603,7 @@ void AddArea::modify(Context& c)
 	BrushAccumulator acc;for(size_t i=0;i<locations.size();++i)acc.applyBrush(BrushApplication(c.player->map->normalizeX(locations[i].x),c.player->map->normalizeY(locations[i].y),0),c.player->map);if(!acc.getApplicationCount())return;
 	if(areaType==ClearingArea)c.push_order(shared_ptr<Order>(new OrderAlterClearArea(c.player->team->teamNumber,BrushTool::MODE_ADD,&acc,c.player->map)));
 	else if(areaType==ForbiddenArea)c.push_order(shared_ptr<Order>(new OrderAlterForbidden(c.player->team->teamNumber,BrushTool::MODE_ADD,&acc,c.player->map)));
+	else if(areaType==FarmArea)c.push_order(shared_ptr<Order>(new OrderAlterFarmArea(c.player->team->teamNumber,BrushTool::MODE_ADD,&acc,c.player->map)));
 	else c.push_order(shared_ptr<Order>(new OrderAlterGuardArea(c.player->team->teamNumber,BrushTool::MODE_ADD,&acc,c.player->map)));
 }
 void AddArea::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(areaType,"area_type");s->writeUint32(locations.size(),"location_count");for(size_t i=0;i<locations.size();++i){s->writeEnterSection(i);s->writeSint32(locations[i].x,"x");s->writeSint32(locations[i].y,"y");s->writeLeaveSection();}}
@@ -630,6 +615,7 @@ void RemoveArea::modify(Context& c)
 	BrushAccumulator acc;for(size_t i=0;i<locations.size();++i)acc.applyBrush(BrushApplication(c.player->map->normalizeX(locations[i].x),c.player->map->normalizeY(locations[i].y),0),c.player->map);if(!acc.getApplicationCount())return;
 	if(areaType==ClearingArea)c.push_order(shared_ptr<Order>(new OrderAlterClearArea(c.player->team->teamNumber,BrushTool::MODE_DEL,&acc,c.player->map)));
 	else if(areaType==ForbiddenArea)c.push_order(shared_ptr<Order>(new OrderAlterForbidden(c.player->team->teamNumber,BrushTool::MODE_DEL,&acc,c.player->map)));
+	else if(areaType==FarmArea)c.push_order(shared_ptr<Order>(new OrderAlterFarmArea(c.player->team->teamNumber,BrushTool::MODE_DEL,&acc,c.player->map)));
 	else c.push_order(shared_ptr<Order>(new OrderAlterGuardArea(c.player->team->teamNumber,BrushTool::MODE_DEL,&acc,c.player->map)));
 }
 void RemoveArea::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(areaType,"area_type");s->writeUint32(locations.size(),"location_count");for(size_t i=0;i<locations.size();++i){s->writeEnterSection(i);s->writeSint32(locations[i].x,"x");s->writeSint32(locations[i].y,"y");s->writeLeaveSection();}}
