@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // The online screens closed while their platform calls are in flight: the
-// process-wide client (Online::services()) outlives every screen, so a call
+// shared client (Online::services()) outlives every screen, so a call
 // that still held a screen when its answer arrived would run on freed memory.
 // Each screen is opened on a scripted platform, made to start its requests,
 // destroyed, and then every request is answered. The screen's calls must be

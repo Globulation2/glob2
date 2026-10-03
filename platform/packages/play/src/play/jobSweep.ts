@@ -18,7 +18,7 @@
 // of graphile-worker 0.18): a pending result is an ENGINE_RESULT_TASK job
 // naming the engine job id in its payload.
 import { sql, type Kysely } from 'kysely';
-import type { Logger } from '@glob2/core';
+import { ENGINE_AGENT_FRESH_SECONDS, type Logger } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { ENGINE_RESULT_TASK, type EngineJobKind } from '@glob2/protocol';
 import { handleEngineJobResult } from '../ratings/apply.ts';
@@ -29,8 +29,6 @@ type Db = Kysely<Database>;
 export const STALE_ENGINE_JOB_SECONDS = 600;
 /** Without any agent of its sim version, a queued job is given up after this long. */
 export const UNSERVED_ENGINE_JOB_SECONDS = 6 * 3600;
-/** Engine agents seen this recently serve their sim version. */
-const AGENT_FRESH_SECONDS = 300;
 
 export interface StaleJob {
   jobId: string;
@@ -74,7 +72,7 @@ export async function findStaleEngineJobs(db: Db, options: SweepOptions = {}): P
           AND NOT EXISTS (
             SELECT 1 FROM engine_agents a
             WHERE a.sim_version = j.sim_version
-              AND a.last_seen_at > now() - make_interval(secs => ${AGENT_FRESH_SECONDS})
+              AND a.last_seen_at > now() - make_interval(secs => ${ENGINE_AGENT_FRESH_SECONDS})
           )
         )
       )

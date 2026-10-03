@@ -537,15 +537,10 @@ export interface WarmMapsTable {
   queue_id: string;
   sim_version: string;
   entry_key: string;
-  generator: Json<JsonValue>;
-  status: Defaulted<'generating' | 'ready' | 'taken' | 'failed'>;
-  job_id: Nullable<string>;
-  map_hash: Nullable<string>;
-  map_facts: NullableJson<JsonValue>;
-  failure: Nullable<string>;
+  /** The generated map (generated_maps, with sim_version); null only on rows taken before 0019. */
+  descriptor_hash: Nullable<string>;
   match_id: Nullable<string>;
   created_at: Timestamp;
-  ready_at: NullableTimestamp;
   taken_at: NullableTimestamp;
 }
 
@@ -631,6 +626,18 @@ export interface LeaderLeasesTable {
   renewed_at: Timestamp;
 }
 
+export interface ApiReplicasTable {
+  id: string;
+  started_at: Timestamp;
+  heartbeat_at: Timestamp;
+}
+
+export interface RealtimePresenceTable {
+  account_id: string;
+  replica_id: string;
+  since: Timestamp;
+}
+
 export interface NotificationPayloadsTable {
   id: Generated<string>;
   channel: string;
@@ -680,6 +687,8 @@ export interface Database {
   account_name_scrubs: AccountNameScrubsTable;
   leader_leases: LeaderLeasesTable;
   notification_payloads: NotificationPayloadsTable;
+  api_replicas: ApiReplicasTable;
+  realtime_presence: RealtimePresenceTable;
   match_results_view: MatchResultsView;
   recent_win_rates_view: RecentWinRatesView;
   recent_game_lengths_view: RecentGameLengthsView;

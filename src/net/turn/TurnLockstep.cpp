@@ -129,32 +129,16 @@ RecordTransport::RecordTransport(const MatchRecord& record, std::uint8_t seat)
 	welcome.resumeFromTick = 0;
 	script.push_back(TurnCodec::encode(welcome));
 
-	// The whole log in bundles below the frame limit, split at tick boundaries
-	// exactly as the relay splits its resync bundles.
-	TurnBundle bundle;
-	bundle.fromTick = 0;
-	std::size_t bytes = 0;
-	auto flush = [&](std::uint32_t horizon) {
-		bundle.horizonTick = horizon;
+	// The whole log in bundles below the frame limit, split at tick boundaries by
+	// the relay's own splitter (TurnSequencer sends resync bundles the same way).
+	for (const auto& bundle : splitIntoBundles(record.turns, 0, record.endTick))
 		script.push_back(TurnCodec::encode(bundle));
-		bundle.entries.clear();
-		bundle.fromTick = horizon;
-		bytes = 0;
-	};
-	std::size_t i = 0;
-	while (i < record.turns.size())
+	if (record.endTick == 0)
 	{
-		const std::uint32_t tick = record.turns[i].tick;
-		std::size_t tickBytes = 0, end = i;
-		while (end < record.turns.size() && record.turns[end].tick == tick)
-			tickBytes += entryWireBytes(record.turns[end++]);
-		if (!bundle.entries.empty() && bytes + tickBytes > MAX_BUNDLE_BYTES)
-			flush(tick);
-		for (; i < end; ++i)
-			bundle.entries.push_back(record.turns[i]);
-		bytes += tickBytes;
+		// A record that ended before its first tick: one empty bundle, as before.
+		TurnBundle empty;
+		script.push_back(TurnCodec::encode(empty));
 	}
-	flush(record.endTick);
 }
 
 void RecordTransport::connect()
