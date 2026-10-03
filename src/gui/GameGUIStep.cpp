@@ -22,12 +22,14 @@
 
 #include "EngineTiming.h"
 #include "Game.h"
+#include "SaveSnapshot.h"
 #include "GameGUI.h"
 #include "GameGUITouch.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
 #include "GameGUIInternal.h"
 #include "GameUtilities.h"
+#include "WinningConditions.h"
 #include "GlobalContainer.h"
 #include "Unit.h"
 #include "Utilities.h"
@@ -131,6 +133,7 @@ void GameGUI::step(void)
 
 void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 {
+    if(autosaveWriter) autosaveWriter->poll();
     consumeClientEvents();
     if (inGameMenu == IGM_SAVE && gameMenuScreen &&
         static_cast<LoadSaveDialog*>(gameMenuScreen.get())->pollPersistence())
@@ -374,8 +377,10 @@ void GameGUI::syncStep(void)
 	const bool autosaveDue = globalContainer->settings.autosaveGames && (lastAutosaveStep < 0
 		? game.stepCounter % AUTOSAVE_INTERVAL_TICKS == AUTOSAVE_PHASE_TICKS
 		: static_cast<Sint64>(game.stepCounter) - lastAutosaveStep >= autosaveInterval);
-	if (autosaveDue)
+	if(autosaveDue) autosavePending=true;
+	if (autosavePending && globalContainer->settings.autosaveGames && (!autosaveWriter || !autosaveWriter->busy()))
 	{
+        autosavePending=false;
 		lastAutosaveStep = game.stepCounter;
 		autosave();
 	}
@@ -383,23 +388,27 @@ void GameGUI::syncStep(void)
 
 void GameGUI::autosave()
 {
-    // Wait before allocating. Capturing first can retain an active, queued and
-    // newly captured snapshot together; worker hashing/compression stays asynchronous.
-    waitForAutosave();
+    // Do not capture or wait while an earlier save is being encoded.
+    if(autosaveWriter && autosaveWriter->busy()) return;
     try
     {
         const std::string name = Toolkit::getStringTable()->getString("[auto save]");
-        auto* memory = new ChunkedStreamBackend();
-        BinaryOutputStream stream(memory);
-        DeferredGameSHA1 sha1;
-        save(&stream, name, &sha1);
         if (!autosaveWriter)
             autosaveWriter = std::make_unique<BackgroundFileWriter>(Toolkit::getFileManager());
-        autosaveWriter->write(glob2GzipWritePath(glob2NameToFilename("games", name, "game")), memory->takeContents(),
-            [sha1 = std::move(sha1)](ChunkedBuffer& bytes) { sha1.apply(bytes); });
+        auto encode=captureSave([&](OutputStream* stream,DeferredGameSHA1* sha){save(stream,name,sha);});
+        autosaveWriter->submit(glob2GzipWritePath(glob2NameToFilename("games", name, "game")),std::move(encode));
     }
     catch (const std::exception& error)
     { std::cerr << "Autosave failed; previous file retained: " << error.what() << std::endl; }
+}
+
+bool GameGUI::savePending()
+{
+    // A failed save remains actionable until retry succeeds or the user cancels.
+    // This also includes capture waiting behind an earlier autosave.
+    const bool dialog = inGameMenu == IGM_SAVE && gameMenuScreen;
+    const bool writing = autosaveWriter && autosaveWriter->busy();
+    return dialog || writing;
 }
 
 void GameGUI::waitForAutosave()
@@ -415,7 +424,10 @@ void GameGUI::checkWonConditions(void)
 
     if(globalContainer->liveSpectating) {
         for(int i=0;i<game.teamsCount();++i) if(game.teams[i]->hasWon && inGameMenu==IGM_NONE) {
-            openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[Match finished]"), true, game.teams[i]->color, true));
+            // A tie at the top across alliances is a draw, not this team's win.
+            // Empty online seats (idle AI::NONE colonies) never share it.
+            const bool drawn = isGameDrawn(&game, contestedTeamsMask(&game));
+            openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[Match finished]"), true, game.teams[i]->color, !drawn));
             hasEndOfGameDialogBeenShown=true;
             miniMapPushed=false;
             break;
@@ -438,7 +450,8 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[Total prestige reached]"), true, localTeam->color, localTeam->hasWon));
+			const bool drawn = classifyTeamOutcome(&game, localTeamNo, contestedTeamsMask(&game)) == TeamOutcome::Draw;
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[Total prestige reached]"), true, localTeam->color, localTeam->hasWon && !drawn));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}
@@ -456,11 +469,14 @@ void GameGUI::checkWonConditions(void)
 	{
 		if (inGameMenu==IGM_NONE)
 		{
+			// Campaign progression follows the engine's won flag; a draw only
+			// changes the words the player sees.
 			if(campaign!=NULL)
 			{
 				campaign->setCompleted(missionName);
 			}
-			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString("[you have won]"), true, localTeam->color, true));
+			const bool drawn = classifyTeamOutcome(&game, localTeamNo, contestedTeamsMask(&game)) == TeamOutcome::Draw;
+			openDialog(IGM_END_OF_GAME, std::make_unique<InGameEndOfGameScreen>(Toolkit::getStringTable()->getString(drawn ? "[game draw]" : "[you have won]"), true, localTeam->color, !drawn));
 			hasEndOfGameDialogBeenShown=true;
 			miniMapPushed=false;
 		}

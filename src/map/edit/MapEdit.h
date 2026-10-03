@@ -4,6 +4,7 @@
 
 #pragma once
 #include <MapCamera.h>
+#include <BackgroundFileWriter.h>
 #include <InputState.h>
 #include <utility>
 
@@ -392,6 +393,9 @@ class MapEdit
     GAGCore::InputState inputState;
     bool fertilityRequested = false;
     std::string pendingSaveFilename, pendingSaveName, pendingLoadFilename, pendingShareFilename;
+    std::unique_ptr<GAGCore::BackgroundFileWriter> saveWriter;
+    // Keep retry/export available if a save fails after a window-close request.
+    bool quitAfterSave = false;
 public:
 	MapEdit();
 	~MapEdit();

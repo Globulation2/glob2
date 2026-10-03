@@ -177,7 +177,10 @@ TEST_SUITE("MatchSetup")
 		// gain fixtures without touching it.
 		auto entries = [](const fs::path& root) {
 			std::vector<json> out;
-			for (const auto& entry : json::parse(glob2test::readFile(root / "manifest.json")).at("fixtures"))
+			// Keep the parsed manifest alive: a range-for over a member of a
+			// temporary dangles (the temporary dies before the loop body runs).
+			const json manifest = json::parse(glob2test::readFile(root / "manifest.json"));
+			for (const auto& entry : manifest.at("fixtures"))
 				if (entry.at("schema") == "MatchSetup" || entry.at("schema") == "SimVersion")
 					out.push_back(entry);
 			return out;
@@ -390,7 +393,8 @@ TEST_SUITE("MatchSetup")
 		CHECK(resolveMatchMap(setup, path) == path);
 		glob2test::TempDir cache("map-cache");
 		fs::copy_file(path, cache.path / (hash + ".map.gz"));
-		CHECK(resolveMatchMap(setup, "", cache.path.string()) == (cache.path / (hash + ".map.gz")).string());
+		// Compared as paths: Windows accepts either separator in the returned name.
+		CHECK(fs::path(resolveMatchMap(setup, "", cache.path.string())) == cache.path / (hash + ".map.gz"));
 		setup.map.hash = std::string(64, '0');
 		CHECK_THROWS_AS(resolveMatchMap(setup, path), MatchSetupError);
 		CHECK_THROWS_AS(resolveMatchMap(setup, "", cache.path.string()), MatchSetupError);

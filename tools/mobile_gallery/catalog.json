@@ -349,6 +349,12 @@
       "group": "Gameplay"
     },
     {
+      "id": "game-draw",
+      "title": "Draw dialog",
+      "description": "End-of-game dialog opened by the production win check when the local team ties a non-allied team at the top.",
+      "group": "Gameplay"
+    },
+    {
       "id": "game-results",
       "title": "End-game statistics",
       "description": "Simulation-generated history for three colonies; metric dropdown and team filters.",

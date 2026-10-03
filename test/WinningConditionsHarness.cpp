@@ -31,6 +31,7 @@
 #include "WinningConditions.h"
 #include "Game.h"
 #include "Team.h"
+#include "Player.h"
 #include "MapHeader.h"
 #include "SGSL.h"
 
@@ -38,6 +39,7 @@
 #include <array>
 #include <cstdio>
 #include <cstring>
+#include <initializer_list>
 #include <string>
 
 namespace {
@@ -317,6 +319,65 @@ void testFactoryOrder()
 	}
 }
 
+// Sets every team's hasWon/hasLost from `cond` the way Team::checkWinConditions
+// would for a single-condition list, then lets WinningConditionAllies spread a
+// win to mutual allies, as the default list does on later evaluation.
+void resolveFlags(const WinningCondition& cond, int n)
+{
+	bool won[kMaxTeams] = {}, lost[kMaxTeams] = {};
+	for (int t = 0; t < n; ++t)
+	{
+		won[t] = cond.hasTeamWon(t, g());
+		lost[t] = !won[t] && cond.hasTeamLost(t, g());
+	}
+	for (int t = 0; t < n; ++t)
+	{
+		T(t)->hasWon = won[t];
+		T(t)->hasLost = lost[t];
+	}
+	WinningConditionAllies allies;
+	for (int t = 0; t < n; ++t)
+		if (allies.hasTeamWon(t, g()))
+		{
+			T(t)->hasWon = true;
+			T(t)->hasLost = false;
+		}
+}
+
+void suddenDeathAtBuzzer(std::array<int, 3> prestige, Uint32 allianceMask)
+{
+	clearAll();
+	setupTeams(3);
+	mutualAlliances(3, allianceMask);
+	g()->stepCounter = 100;
+	for (int i = 0; i < 3; ++i) T(i)->prestige = prestige[i];
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 3);
+}
+
+// Seats `players[p]` on team p with the given player type, the way an online
+// MatchSetup does: an empty seat is an AI::NONE player whose colony stays alive.
+alignas(Player) unsigned char playerStorage[kMaxTeams][sizeof(Player)];
+
+void seatPlayers(std::initializer_list<BasePlayer::PlayerType> types)
+{
+	std::memset(playerStorage, 0, sizeof(playerStorage));
+	int p = 0;
+	for (BasePlayer::PlayerType type : types)
+	{
+		Player* player = reinterpret_cast<Player*>(playerStorage[p]);
+		player->type = type;
+		player->teamNumber = p;
+		g()->players[p] = player;
+		++p;
+	}
+	g()->gameHeader.setNumberOfPlayers(p);
+}
+
+const BasePlayer::PlayerType kEmptySeat = BasePlayer::playerTypeFromImplementationID(AI::NONE);
+const BasePlayer::PlayerType kRealAI = BasePlayer::playerTypeFromImplementationID(AI::NUMBI);
+
 }  // namespace
 
 TEST_SUITE("WinningConditions")
@@ -333,5 +394,144 @@ TEST_CASE("every predicate matches the golden record stream [golden]")
 	testScript();
 	testOpponentsDefeated();
 	glob2test::expectGolden("winning-conditions/expected.txt", out);
+}
+
+TEST_CASE("draw outcome: before the buzzer nobody is decided")
+{
+	clearAll();
+	setupTeams(3);
+	g()->stepCounter = 50;
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 3);
+	for (int t = 0; t < 3; ++t) CHECK(classifyTeamOutcome(g(), t) == TeamOutcome::Undecided);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: a single winner wins and the rest lose")
+{
+	suddenDeathAtBuzzer({10, 30, 10}, 0);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Lost);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: a tie at the top across alliances is a draw and teams below still lose")
+{
+	suddenDeathAtBuzzer({30, 30, 10}, 0);
+	// The engine's flags are untouched: both tied teams are still "won".
+	CHECK(T(0)->hasWon);
+	CHECK(T(1)->hasWon);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: allied teams tied at the top share a win")
+{
+	suddenDeathAtBuzzer({30, 30, 10}, 0x3);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: an ally of the sole leader shares its win")
+{
+	suddenDeathAtBuzzer({10, 30, 5}, 0x3);
+	CHECK(T(0)->hasWon);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Won);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+	CHECK_FALSE(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: an alliance tied with an outsider is a draw for everyone at the top")
+{
+	suddenDeathAtBuzzer({30, 10, 30}, 0x3);
+	for (int t = 0; t < 3; ++t) CHECK(classifyTeamOutcome(g(), t) == TeamOutcome::Draw);
+	CHECK(isGameDrawn(g()));
+}
+
+TEST_CASE("draw outcome: a one-way alliance does not turn a tie into a shared win")
+{
+	suddenDeathAtBuzzer({30, 30, 10}, 0);
+	T(0)->allies = T(0)->me | T(1)->me;
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Draw);
+}
+
+TEST_CASE("draw outcome: a prestige finish tied at the top across alliances is a draw")
+{
+	clearAll();
+	setupTeams(3);
+	g()->totalPrestige = 100;
+	g()->prestigeToReach = 100;
+	T(0)->prestige = 45;
+	T(1)->prestige = 45;
+	T(2)->prestige = 10;
+	WinningConditionPrestige wc;
+	resolveFlags(wc, 3);
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 2) == TeamOutcome::Lost);
+}
+
+TEST_CASE("draw outcome: empty seats count for nobody")
+{
+	// The staging room match: a host and a guest on a four-team map, the other
+	// two seats empty (AI::NONE). The guest left and lost; the sudden-death
+	// buzzer then found the host and both idle colonies tied at the top.
+	clearAll();
+	setupTeams(4);
+	seatPlayers({BasePlayer::P_LOCAL, BasePlayer::P_IP, kEmptySeat, kEmptySeat});
+	CHECK(contestedTeamsMask(g()) == 0x3u);
+	g()->stepCounter = 100;
+	T(1)->prestige = -5;
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 4);
+	// The engine's flags are untouched: the idle colonies are still "won".
+	CHECK(T(2)->hasWon);
+	CHECK(T(3)->hasWon);
+	const Uint32 contested = contestedTeamsMask(g());
+	CHECK(classifyTeamOutcome(g(), 0, contested) == TeamOutcome::Won);
+	CHECK_FALSE(isGameDrawn(g(), contested));
+	// Without the mask the idle colonies would turn the win into a draw.
+	CHECK(classifyTeamOutcome(g(), 0) == TeamOutcome::Draw);
+}
+
+TEST_CASE("draw outcome: two players tied next to empty seats still draw")
+{
+	clearAll();
+	setupTeams(4);
+	seatPlayers({BasePlayer::P_LOCAL, BasePlayer::P_IP, kEmptySeat, kEmptySeat});
+	g()->stepCounter = 100;
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 4);
+	const Uint32 contested = contestedTeamsMask(g());
+	CHECK(classifyTeamOutcome(g(), 0, contested) == TeamOutcome::Draw);
+	CHECK(classifyTeamOutcome(g(), 1, contested) == TeamOutcome::Draw);
+	CHECK(isGameDrawn(g(), contested));
+}
+
+TEST_CASE("draw outcome: a real AI tied at the top is a draw; replays count every team")
+{
+	clearAll();
+	setupTeams(3);
+	seatPlayers({BasePlayer::P_LOCAL, kRealAI, kEmptySeat});
+	CHECK(contestedTeamsMask(g()) == 0x3u);
+	g()->stepCounter = 100;
+	WinningConditionSuddenDeath wc;
+	wc.endStepTick = 100;
+	resolveFlags(wc, 3);
+	CHECK(classifyTeamOutcome(g(), 0, contestedTeamsMask(g())) == TeamOutcome::Draw);
+	// A replay drives every player as AI::NONE: nothing to tell apart, so all count.
+	seatPlayers({kEmptySeat, kEmptySeat, kEmptySeat});
+	CHECK(contestedTeamsMask(g()) == ~Uint32(0));
+	CHECK(isGameDrawn(g(), contestedTeamsMask(g())));
 }
 }

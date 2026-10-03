@@ -40,7 +40,10 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   are in `vcpkg.json` and CI. Check the affected platform jobs rather than assuming
   a successful local build covers another compiler or operating system.
 - The **Steam Windows package** workflow runs manually, as a reusable workflow, or
-  when its packaging files change in a pull request. It builds the MinGW release
+  from the release workflows; it never runs on pull requests or master pushes, because
+  packaging checks are only needed when releasing. The same rule applies to the Mac App
+  Store build and to Android release-contract, store-listing and APK checks (pull
+  requests only build and smoke-test Android). It builds the MinGW release
   client and stages `glob2.exe`, its runtime DLL dependency closure, game assets,
   license, and attribution in one depot folder. A separate Windows job downloads
   that artifact and runs a short headless game without the build toolchain. Download
@@ -120,20 +123,28 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   test shards per toolchain. Linux compiler builds share
   `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
   compatibility check run separately, so runtime shards do not wait for Clang.
-  Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
-  build and shard to pass, preserving their merge-blocking status. PRs compare
-  with their base commit; retained master pushes and scheduled runs always select
-  full CI. Unknown paths or unavailable PR diffs also select full CI.
-  Changes confined to the render-backend and pixel-raster implementation files
-  retain native, browser and cross-platform checks without repeating independent
-  map-generator sweeps or container deployment tests. Shared headers, file I/O and
-  unknown library files still select full CI.
-  CI-tool unit-test-only edits run the selector's Python contract suites without
-  native compilation. The selector runs the changed-path, coverage-tier, measurement,
-  native-runner and failure-aggregation contracts before selecting downstream jobs;
-  changes to the runners themselves still select native checks.
-  Steam packaging helper/workflow changes retain their packaging and smoke checks;
-  editing this reference guide alone does not rebuild the Steam client.
+  Primary GCC 13 programs are published before CLI regressions and consumed by
+  both native shards and browser transport checks. Each selected GCC toolchain
+  starts its own runtime shards without waiting for Clang. The stable
+  `Relevant checks passed` gate requires every selected check to succeed.
+  Draft PRs defer expensive verification; `ready_for_review` or `ci:run` starts it.
+  The [risk policy and rollout](#tiered-pull-request-coverage-rollout) controls
+  secondary platforms and cumulative master validation. Unknown inputs select full
+  development coverage. Steam/store release packaging runs only for releases or
+  explicit dispatches, including when its helper files change.
+- CI run cancellation: superseded PR revisions cancel through server-side
+  concurrency. Master runs finish once started and only the newest pending push
+  remains; nightly and manual runs have separate groups. Call-only workflows
+  inherit their caller's cancellation. Other callable workflows use a literal
+  prefix distinct from their caller to prevent deadlocks. The trusted
+  `cancel-superseded.yml` workflow uses `pull_request_target`, checks out only
+  default-branch code, and cancels allowlisted event-triggered validation left
+  behind by updates or closed/merged PRs, including forks. Legacy Steam/App Store
+  PR runs from older workflow definitions are retired even at the current PR head. It never executes PR
+  code or cancels manual releases. Its sweep can clear obsolete pending master
+  pushes but protects master once any job has begun (including between jobs),
+  even when the workflow API reports it as queued, and protects scheduled runs. Closed-PR caches and old
+  master cache generations are reclaimed on closure and in a daily sweep.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
@@ -583,8 +594,9 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   for a historical serialized length. Save floor 58 remains unchanged.
   Warrush probes one capacity slot every two ticks (32 ticks for sixteen slots).
   Empty slots fall through to normal decisions, preserving smaller-match timing.
-  Replay floor 127 and network/YOG protocol 50 gate the new capacity and counted
-  state; older saves load into the current simulation.
+  Replay floor 127 gates the new capacity; network/YOG protocol 51 additionally
+  requires the format-128 compact save reader. Older saves load into the current
+  simulation.
 - Versioning rule: when the save format changes, bump `VERSION_MINOR` and preserve
   older saves through version-gated loading, or explicitly document an approved
   compatibility break. When simulation changes invalidate old replays or mixed-client
@@ -790,6 +802,8 @@ runs while the simulation advances on another thread.
 - Adding something drawn on the map: extract what the drawing needs in
   `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
   `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
+  `tests/build_system/test_scene_boundary.py` rejects live entity reads in the render
+  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/scene/` headers.
 - Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
   tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
   handlers still act on the game, and validate against it before issuing an order.
@@ -821,14 +835,42 @@ also remains the headless default and the equivalence reference.
 - The simulation thread paces on the host's clock (`Engine::sessionClock`): the clock the
   host last passed in, advanced by real time. Time the application spent in the
   background is therefore not caught up after resuming, as in serial execution.
+  GUI updates use `SDL_GetTicks()` instead: touch event timestamps and momentum
+  must share the SDL clock, including after the session clock has been suspended.
 - Values the client sets while drawing and extraction reads (viewport, drawn map size,
   overlay, observed building) go through `ClientRequests`, never through `Game` or `Map`
   fields. To check for races, build with `CXXFLAGS="-g -fsanitize=thread"
   LINKFLAGS="-fsanitize=thread"` and run a windowed `-test-games` session or a headless
   `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
   with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
+  `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
+  through the main build workflow and on demand. The risk selector includes it
+  for code shared by threads; add boundaries in `.github/scripts/ci_policy.py`
+  when new code becomes shared between them. Drafts defer it. It does not report thread leaks, because SDL3
+  leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  library shutdown races live in `test/tsan.supp`; never suppress game code there.
+  Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
+
+### Smooth unit motion
+
+The experimental **Smooth unit motion** graphics setting (`Settings::unitInterpolation`,
+off by default) draws units between ticks, so threaded play at display rate uses all
+32 animation frames per direction instead of repeating one pose per tick.
+
+- A unit's drawn position and animation frame follow `delta`, which the simulation
+  advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
+  `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
+  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/render/UnitMotion.h`).
+  Unit drawing, path lines, off-screen markers and worker circles add that fraction of
+  `stepSpeed` to `delta`, stopping at the end of the current action.
+- Motion is 0 when the setting is off, when the game is paused, and when the simulation
+  runs uncapped. At 0, drawing is identical to drawing the ticked state; keep it that way
+  so captures with the setting off stay comparable.
+- A unit that turns or stops at the next tick can jump back by at most one tick of motion.
+  Serial execution draws right after each tick, so the setting has almost no effect there.
 
 ## Software rendering architecture and profiling
 
@@ -917,7 +959,11 @@ so the workload does not change with monitor density. `PROFILE_NATIVE_DISPLAY=1`
 offsets; `PROFILE_FRACTION=1` adds a half-pixel horizontal offset. `PROFILE_VISIBLE=1`
 shows the window; omit `PROFILE_NO_PRESENT` to include presentation. `PROFILE_CAPTURE`
 names an output BMP. `PROFILE_TERRAIN_CACHE=0` isolates primitive performance without
-adding a user graphics setting. The harness reports population, wall-time mean/median/p95,
+adding a user graphics setting. `PROFILE_SELECT=building|flag|unit` selects the local
+team's first such entity, so frames include its selection panel and map markers;
+`PROFILE_TOOL=<building type>` (for example `inn`) activates the building tool with the
+cursor over the middle of the map view, so frames include the placement preview. Use them
+with `PROFILE_MODE=gui` for Scene parity captures against another revision. The harness reports population, wall-time mean/median/p95,
 process CPU time, optional thread CPU stage costs, backend operation counts, cache memory
 and cache hit/rebuild counts. It also checks that drawing preserves the simulation checksum.
 Run captured fixtures from early, mid and late games; keep generated saves and profiles
@@ -962,35 +1008,55 @@ captures, and report unavailable platform and maintainer-playtesting coverage ex
 
 ### CI timing and retained revisions
 
-Pull requests select relevant checks and cancel superseded revisions. Master
-finishes its running verification and retains the newest pending revision; each
-retained revision runs full coverage, including after a documentation-only push.
-Nightly verification runs at 06:00 UTC without invoking publication workflows.
-The separate CI measurements workflow reads job timestamps and inert observation
-artifacts using trusted master code. It reports initial queue delay, active execution
-time, execution span, idle gaps, aggregate runner minutes, time to result, cancellations, and observed cache
-hits. Per-job queue estimates use job registration to first step; execution time is the union of executing job intervals, while execution span
-includes idle gaps and does not by itself identify runner saturation. Overlapping
-jobs count once in wall execution time and separately in aggregate runner minutes.
-Compare ten successful runs with matching event and selected coverage using
+Ready pull requests cancel superseded revisions. Master finishes active verification
+and keeps the newest pending push. With tiers enabled, the selector compares its
+checkout to the latest successful ancestor checkpoint with matching policy evidence;
+this includes all changes whose intermediate pending runs were replaced. An absent,
+expired, divergent or invalid checkpoint selects full coverage. Nightly verification
+runs at 06:00 UTC in a separate concurrency group without publication operations.
+Release packaging first runs the full development matrix on the exact candidate
+revision through `build.yml`'s `revision` workflow-call input.
+
+CI measurements batch completed runs hourly using trusted default-branch code and
+inert artifacts. Cancellations do not create measurement workflows, and draft-only
+observations are excluded. Batches retain attempt identities to avoid remeasuring
+completed runs and attempt at most ten new measurements per batch. `feedback.json` reports p90 after ten successful matching-inventory
+PR samples, with explicit gaps when there are fewer samples. Metrics report queue delay, active execution time, idle
+gaps, aggregate runner minutes, feedback time and cache observations separately.
+Per-job queue timestamps are estimates, not proof of runner saturation. Overlapping
+jobs count once in wall execution time and separately in runner minutes.
+Compare ten successful runs with matching event and exact coverage inventory using
 `python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
-Missing observations and insufficient samples must not be reported as savings.
+Report workload reductions separately from execution savings. The initial service
+objective is p90 ordinary-PR feedback below 15 minutes and queue delay below two
+minutes; full compatibility changes and releases may take longer. Missing samples
+and missing inventories cannot establish improvements.
 
 ### Linux execution dependencies
 
-Each GCC reusable-workflow invocation starts its own four test shards and three
-map-generator jobs after its build succeeds. Neither platform waits for the other
-GCC compiler or Clang. The final Linux result still requires all selected calls.
-Golden-only changes retain the standalone generator path.
+GCC 13 builds its client and applicable transport programs once. Runtime consumers
+reuse same-run artifacts with matching source/configuration provenance. Compiler
+build jobs publish programs before separate CLI/scripting regressions; native and
+browser consumers can start without waiting for those regressions. Golden-only
+changes build once per selected platform and distribute programs to sweep consumers.
+Primary generator sweeps are complete; secondary platforms retain golden rows and
+telemetry equivalence under enabled tiers. Native inventory audits require every
+selected engine case to belong to exactly one shard.
 
-Build artifacts include runtime package owners resolved from actual ELF library
-dependencies. Unresolved or unowned system libraries fail collection rather than
-being silently omitted. The reduced shard environment retains software GL, Mesa,
-Xvfb and crash diagnostics. Enable `CI_RUNTIME_PACKAGES_ENABLED=true` only after
-`Validate clean Linux runtime images` passes both clean Ubuntu container images;
-until then ordinary shards keep their existing dependency installation. Dispatch
-that validation workflow manually; it runs the same unit, engine, image, CLI and
-continuation checks without publishing anything.
+ELF dependency collection records runtime package owners and rejects unresolved or
+unowned libraries. Generator, CLI and browser consumers install runtime libraries
+rather than compiler/header environments. Enable `CI_RUNTIME_PACKAGES_ENABLED=true`
+for ordinary engine shards only after `Validate clean Linux runtime images` passes
+both Ubuntu container images. Until then engine shards retain their prior package
+installation; the clean-image dispatch also exercises CLI/scripting consumers.
+
+Pinned SDL3, WebAssembly and Android dependency prefixes are cached independently
+from application objects. Restored prefixes require matching inputs and complete
+file hashes; invalid content rebuilds. Android tooling and Playwright installations
+use pinned tool/package identities. Default-branch jobs publish shared caches;
+ordinary PRs restore them. The cleanup sweep removes closed-PR caches and retains
+three generations per master compiler/object family. Cache timings and quota
+pressure must be measured before expanding retained cache data.
 
 ### Reviewed native shard timing profiles
 
@@ -1011,23 +1077,34 @@ remain empty until measurements are available, rather than using invented data.
 
 ### Tiered pull-request coverage rollout
 
-The selector records both proposed and effective coverage, including the reason
-for compatibility coverage. Primary PR checks retain GCC 13, Windows, Chromium
-and affected Android arm64 builds. Shared headers, simulation/save/network code,
-platform/build/dependency changes, mixed changes and unknown paths retain full
-compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
-The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
-Android is called by the main build workflow, avoiding duplicate PR APK builds
-and including its selected result in the stable aggregate gate. Master and nightly
-run the complete matrix, including Android.
+`.github/scripts/ci_policy.py` records proposed and effective selection, reasons,
+changed paths, checkpoint, policy identity and selected command inventory in
+`ci-selection.json`. Native runners additionally retain exact eligible/assigned
+case inventories. Primary Linux keeps the complete applicable native suite.
+Simulation/save/AI changes add older-GCC and Windows compatibility cases plus
+complete native/browser per-tick and scripting comparisons. Presentation changes
+retain software/WebGL and Firefox/WebKit coverage. Network changes retain real
+transport/server/deployment checks. Android changes retain arm64 builds and x86_64
+emulator smoke. Shared headers, dependency/build configuration and unknown paths
+select the full development matrix. Native coverage is selected nightly/full or
+when its infrastructure changes. `test/ci-compatibility.json` owns repeated native
+compatibility cases; add suites there when introducing a new portability boundary.
 
-PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
-full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
-PR matrix, the selector verifies the baseline is a successful master build with
-a matching SHA and unexpired full-matrix selection evidence (including Android).
-Unavailable, expired or invalid evidence falls back to existing full compatibility
-coverage. Review comparison artifacts before enabling the flag. Set the flag
-false to roll back coverage reductions without reverting scheduling improvements.
+Drafts run contracts only. `ci:run` requests normal affected checks while still
+in draft. `ci:full`, `ci:windows`, `ci:android` and `ci:browsers` expand the minimum;
+use `ci:run` as well to execute an expansion while draft. Ready transitions and
+label changes re-evaluate selection. The aggregate gate rejects missing, failed,
+cancelled and unexpectedly skipped required jobs; draft summaries clearly state
+that expensive verification was deferred.
+
+Reductions start disabled. First validate scheduling and reuse changes with the
+full hosted master/nightly matrix. Then set `CI_TIERED_COVERAGE_ENABLED=true` after
+reviewing shadow-selection evidence. The selector discovers successful full master
+runs with matching source/policy identity and unexpired evidence automatically;
+`CI_TIER_BASELINE_RUN_ID` can specify a preferred baseline. Old-policy evidence
+cannot activate a new selector. Unavailable evidence falls back to conservative
+coverage. Set the flag false to roll back reductions while keeping scheduling and
+reuse improvements. Full nightly and release verification remains mandatory.
 
 ## Untrusted maps, saved games and replays
 
@@ -1149,12 +1226,25 @@ headers or simulation state. Filename-based custom and campaign initialization
 reuse one validated input for both headers and the body, then release it before
 replay/network setup. Standalone header readers retain their existing interfaces.
 
-Manual/headless saves and autosaves serialize into the same chunked storage;
-header backpatches and deferred SHA1 operate on ranges without flattening it.
-Normal gzip compression uses bounded 256 KiB output buffers without flushing at
-input-block boundaries. Optional level-zero compression retains the legacy
-whole-buffer path to preserve zlib's stored-block byte layout; it is outside the
-normal-save memory bound. Save/replay/network version gates are unchanged.
+Interactive saves capture owned literals and bounded array/history batches at a
+consistent game boundary. A lightweight fixed integer representation bounds the
+capture memory; final array encoding and history transposition run on the worker.
+Final output uses chunked storage, with relocated header offsets and SHA1 ranges;
+headless callers can still serialize synchronously without changing saved bytes.
+A captured `DeferredStream::Snapshot` is consumed once: finalization releases its
+owned inputs as their output is produced. Append deferred fields in stream order;
+seeks may only backpatch fixed-size literals. Serialize stream positions with
+`OutputStream::writeOffset32`, which explicitly registers relocation on deferred
+streams and writes an ordinary uint32 on binary/text streams. Field names do not
+control relocation. SHA1 still covers the original header followed by the final
+body, preserving the existing pre-backpatch hash contract.
+
+Worker gzip compression uses bounded 256 KiB output buffers; cooperative gzip
+uses 64 KiB input/output steps. Neither flushes at input-block boundaries.
+Optional level-zero compression retains the legacy whole-buffer path to preserve
+zlib's stored-block byte layout; it is outside the normal-save memory bound.
+Background finalization does not add a wire-format change beyond compact format
+128 (save floor 58, replay floor 127, network/YOG protocol 51).
 
 For the 45,000-tick large-map fixture, the native macOS arm64 comparison measured
 1.93 GiB peak RSS for combined loading and saving, down from 3.96 GiB in the
@@ -1163,10 +1253,25 @@ default compression. This is a fixture-specific measurement, not a bound for
 arbitrary games or other platforms; preserve the commands, fixture hashes and
 raw measurements under ignored `artifacts/` when repeating it.
 
-Autosave waits for the previous writer before capturing a new snapshot at the
-current tick. Hashing and compression remain on the worker, which releases the
-snapshot before publishing idle. When writes fall behind, this can pause play;
-it prevents overlap of active, queued and newly captured autosave snapshots.
+Autosave defers capture while a previous writer is busy, then captures the current
+tick when the writer becomes idle. It never queues a second owned snapshot or
+waits for compression during a game tick. Manual game and editor saves keep their
+dialog pending while waiting for the worker, writing the file, and persisting
+browser storage; names and editor dirty state change only after success. Editor
+mutation is disabled while saving. A pending save dialog cannot be replaced by
+another panel. Normal session exit stops simulation and keeps presenting frames
+and polling the dialog through queued capture, file writing and browser storage
+completion. A failed save remains actionable for retry/export or cancellation;
+exiting does not silently discard that dialog.
+
+Native and threaded-browser jobs finalize arrays, transpose histories, hash,
+compress and replace files on the worker. Threadless builds advance bounded
+encoding and compression steps with a two-millisecond polling budget (individual
+steps can exceed the budget); snapshot capture still occurs synchronously.
+Worker-start failures fail the save rather than running encoding synchronously.
 Allocation, serialization and worker-finalization failures retain the previous
-file and allow subsequent writes. Other background string writers still keep
-the newest queued snapshot.
+file and allow subsequent writes. Browser persistence occurs after local atomic
+replacement: if it fails, the new local file remains available for export while
+the previously persisted browser copy remains intact. A retry creates a new save
+operation; each operation's terminal state is sticky and its success callback
+runs once. Other background string writers still keep the newest queued snapshot.

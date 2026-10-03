@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Select CI jobs from a PR diff; retained master revisions always run full CI."""
+"""Select CI jobs from a PR diff; master checks cover cumulative changes since a successful checkpoint."""
 
 import argparse
 import json
@@ -10,15 +10,6 @@ import sys
 
 
 JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack")
-# Paths whose changes rebuild and smoke-test the whole self-hosted stack
-# (deploy/compose.yaml). Its images compile the engine, so other engine changes
-# leave it to full CI rather than adding a second client build to every PR.
-PLATFORM_STACK_PATHS = (
-    "deploy/", "tests/deployment/", "src/relay/", "platform/package-lock.json",
-    "platform/packages/db/migrations/", "platform/apps/api/src/main.ts",
-    "platform/apps/worker/src/main.ts", "platform/apps/engine-agent/src/main.ts",
-)
-
 # Implementation-only drawing changes retain native, browser, and equivalence
 # checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
 RENDER_IMPLEMENTATIONS = {
@@ -32,7 +23,13 @@ CI_TOOL_TESTS = {
     "tests/build_system/test_ci_changed_paths.py",
     "tests/build_system/test_ci_tiers.py",
     "tests/build_system/test_ci_run_metrics.py",
+    "tests/build_system/test_ci_concurrency.py",
 }
+def platform_stack_changed(paths):
+    from ci_policy import PLATFORM_STACK_PATHS
+    return any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
+
+
 TRANSPORT_TESTS = {
     "test/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
@@ -47,22 +44,21 @@ def classify(paths):
     if not paths:
         return {job: True for job in JOBS}
 
+    from ci_policy import cheap_path
     native = browser = map_generators = deployment = cross_platform = platform = False
-    platform_stack = any(path.startswith(PLATFORM_STACK_PATHS) and not path.endswith(".md") for path in paths)
+    platform_stack = platform_stack_changed(paths)
     for path in paths:
         # These Python suites execute directly in the selector job, without
         # compiling a client or launching platform/browser regressions.
-        if path in CI_TOOL_TESTS:
+        if path in CI_TOOL_TESTS or cheap_path(path):
             continue
         if path.startswith("docs/") or path.endswith(".md"):
             continue
-        if path.startswith("platform/packages/protocol/fixtures/"):
-            # Generated contract fixtures: checked by the platform job and
-            # consumed by the C++ contract tests.
-            native = platform = True
-            continue
         if path.startswith("platform/"):
+            # Selected by ci_policy's platform flag; protocol fixtures also feed
+            # the C++ contract tests.
             platform = True
+            native = native or path.startswith("platform/packages/protocol/fixtures/")
             continue
         if path == "test/map-generator-golden.txt":
             map_generators = True
@@ -132,12 +128,13 @@ def browser_only(path):
 
 
 def coverage_profile(paths, event, selected):
+    from ci_policy import cheap_path
     compatibility = event != 'pull_request' or not paths
     browsers_all = compatibility
     android = event != 'pull_request' or not paths
     reasons = []
     for path in paths:
-        if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS:
+        if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS or cheap_path(path):
             continue
         if path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
             android = True
@@ -180,61 +177,92 @@ def changed_paths(base):
 
 
 def main():
+    from ci_policy import FLAGS, full, select, browser_matrix, fingerprint
+    from ci_coverage_baseline import activated, master_checkpoint
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base", help="PR base or pre-push commit; omitted for full CI")
+    parser.add_argument("--base", help="PR base; master uses a successful ancestor checkpoint")
     args = parser.parse_args()
-    paths = []
     event = os.environ.get("GITHUB_EVENT_NAME", "workflow_dispatch")
-    if args.base and event == "pull_request":
+    payload = {}
+    if os.environ.get('GITHUB_EVENT_PATH'):
+        payload = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+    labels = [label['name'] for label in payload.get('pull_request', {}).get('labels', [])]
+    draft = event == 'pull_request' and (os.environ.get('DRAFT') == 'true' or
+            payload.get('pull_request', {}).get('draft') is True) and 'ci:run' not in labels
+    enabled = False if draft else event in ('pull_request', 'push') and activated()
+    paths, known, checkpoint = [], False, None
+    base = args.base if event == 'pull_request' else None
+    if event == 'push' and enabled:
+        checkpoint = master_checkpoint(os.environ['GITHUB_REPOSITORY'], os.environ['GH_TOKEN'])
+        base = checkpoint
+    if base and event in ('pull_request', 'push'):
         try:
-            paths = changed_paths(args.base)
-            selected = classify(paths)
+            paths = changed_paths(base)
+            known = True
         except (OSError, subprocess.CalledProcessError) as error:
             print(f"Could not inspect changed paths ({error}); running full CI", file=sys.stderr)
-            selected = {job: True for job in JOBS}
+    desired_selection, reasons = select(paths, labels, known)
+    complete = event in ('schedule', 'workflow_dispatch') or 'ci:full' in labels
+    if complete:
+        desired_selection = full()
+    if os.environ.get('CI_CALLED_FULL') == 'true':
+        complete = True
+        desired_selection = full()
+    desired = dict(desired_selection, reasons=reasons,
+                   profile='compatibility' if desired_selection['coverage'] else 'primary')
+    if enabled or complete:
+        selected = dict(desired_selection)
     else:
-        selected = {job: True for job in JOBS}
-
-    if os.environ.get("GITHUB_EVENT_NAME") == "workflow_dispatch" and os.environ.get("BROWSER_ONLY") == "true":
-        selected = {
-            "native": False,
-            "browser": True,
-            "map_generators": False,
-            "deployment": True,
-            "cross_platform": False,
-            "platform": False,
-            "platform_stack": False,
-        }
-
-    desired = coverage_profile(paths, event, selected)
-    from ci_coverage_baseline import activated
-    enabled = event == 'pull_request' and activated()
-    effective = dict(desired)
-    if not enabled:
-        effective.update(compatibility=True, browsers_all=True, android_arches=['arm64-v8a','armeabi-v7a','x86_64'])
-    # Mobile is independently relevant; native test-only diffs do not compile APKs.
-    legacy_android = any(path.startswith(('mobile/', 'scons/', 'libgag/', 'src/', 'tests/build_system/', 'fdroid/', 'fastlane/')) or path in ('SConstruct', 'tools/package_assets.py', 'tools/asset-requirements.txt', 'test/ci_step_summary.py', '.github/workflows/mobile.yml') for path in paths if path not in CI_TOOL_TESTS)
-    selected['android'] = desired['android'] or (not enabled and legacy_android)
-    if event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true':
-        selected['android'] = False
-    effective['android'] = selected['android']
+        # Preserve the existing job family selection until a new full hosted
+        # baseline validates the changed policy. Cheap docs/contracts stay cheap.
+        legacy = classify(paths) if known else {job: True for job in JOBS}
+        selected = dict(desired_selection)
+        selected.update(legacy)
+        selected.update(compatibility=legacy['native'] or legacy['map_generators'], variants=legacy['native'],
+                        coverage=legacy['native'], windows=legacy['native'], macos=False,
+                        android=coverage_profile(paths, event, legacy)['android'])
+    if draft:
+        selected = {flag: False for flag in FLAGS}
+    browser_only = event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true'
+    if browser_only:
+        selected = {flag: flag in ('browser', 'deployment') for flag in FLAGS}
+    full_matrix = not draft and not browser_only and all(selected.values())
+    # Unknown/shared boundaries request the complete development matrix.
+    exhaustive = selected['coverage'] or complete or (not enabled and not draft)
+    entries = browser_matrix(selected, paths, exhaustive or 'ci:browsers' in labels)
+    arches = ['arm64-v8a', 'armeabi-v7a', 'x86_64'] if exhaustive else ['arm64-v8a', 'x86_64']
+    effective = dict(selected, browsers_all=bool(entries and {e['browsers'] for e in entries} == {'chromium','firefox','webkit'}), android_arches=arches)
+    policy = fingerprint()
+    inventory = {'jobs': selected, 'native_secondary': 'full' if exhaustive else 'compatibility',
+                 'browsers': entries, 'android_arches': arches if selected['android'] else []}
+    import hashlib
+    inventory_hash = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
+    observed_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() if os.environ.get('CI_CALLED_FULL') == 'true' else os.environ.get('GITHUB_SHA')
+    observation = dict(schema=2, selection=selected, event=event, sha=observed_sha,
+                       full_matrix=full_matrix, desired=desired, effective=effective, tiers_enabled=enabled,
+                       draft=draft, paths=paths, checkpoint=checkpoint, policy_fingerprint=policy,
+                       inventory=inventory, inventory_fingerprint=inventory_hash,
+                       checkpoint_eligible=event in ('push','schedule','workflow_dispatch') and not browser_only and os.environ.get('CI_CALLED_FULL') != 'true')
     artifact = Path('artifacts/ci-selection.json')
     artifact.parent.mkdir(parents=True, exist_ok=True)
-    artifact.write_text(json.dumps({'selection': selected, 'event': event, 'sha': os.environ.get('GITHUB_SHA'), 'full_matrix': event != 'pull_request' and all(selected.values()), 'desired': desired, 'effective': effective, 'tiers_enabled': enabled}, indent=2) + '\n')
-    output = "".join(f"{job}={str(enabled).lower()}\n" for job, enabled in selected.items())
-    output += 'compatibility=' + str(effective['compatibility']).lower() + '\n'
-    output += 'browsers_all=' + str(effective['browsers_all']).lower() + '\n'
-    output += 'android_arches=' + json.dumps(effective['android_arches'], separators=(',', ':')) + '\n'
-    browser_entries = json.loads(Path(__file__).with_name('ci_browser_matrix.json').read_text())
-    if not effective['browsers_all']:
-        browser_entries = [entry for entry in browser_entries if entry['browsers'] == 'chromium']
-    output += 'browser_matrix=' + json.dumps({'include': browser_entries}, separators=(',', ':')) + '\n'
-    output += 'profile=' + desired['profile'] + '\n'
-    print(json.dumps({'desired': desired, 'effective': effective, 'tiers_enabled': enabled}, indent=2))
-    print(output, end="")
-    if os.environ.get("GITHUB_OUTPUT"):
-        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as destination:
-            destination.write(output)
+    artifact.write_text(json.dumps(observation, indent=2) + '\n')
+    outputs = dict(selected, browsers_all=effective['browsers_all'],
+                   android_arches=json.dumps(arches, separators=(',', ':')),
+                   browser_matrix=json.dumps({'include': entries}, separators=(',', ':')),
+                   secondary_profile='full' if exhaustive or 'ci:windows' in labels or any(p.startswith(('windows/', 'darwin/')) for p in paths) else 'compatibility', draft=draft,
+                   full_matrix=full_matrix, inventory_fingerprint=inventory_hash)
+    output = ''.join(f'{key}={str(value).lower() if isinstance(value,bool) else value}\n' for key,value in outputs.items())
+    print(json.dumps(observation, indent=2))
+    if os.environ.get('GITHUB_OUTPUT'):
+        with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as target:
+            target.write(output)
+    summary = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary:
+        with open(summary, 'a') as target:
+            target.write('## Selected development checks\n')
+            if draft:
+                target.write('Draft: expensive verification deferred; mark ready or add `ci:run`.\n')
+            target.write('```json\n' + json.dumps(observation, indent=2) + '\n```\n')
 
 
 if __name__ == "__main__":

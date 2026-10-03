@@ -27,6 +27,7 @@
 
 class MultiplayersJoin;
 class SimulationRunner;
+namespace PerformanceTelemetry { struct Collector; }
 class NetGame;
 namespace Turn { class TurnLockstepSession; }
 namespace Online { class OnlineMatchResult; }
@@ -204,12 +205,16 @@ public:
     Uint64 sessionClock() const;
     bool simulationStep(Uint64 now);
     void extractScene(Scene& scene);
-    // Called on the main thread with the simulation parked.
-    void clientStep(Uint64 now, const std::vector<SDL_Event>& events);
+    // Called on the main thread with the simulation parked. GUI timing uses
+    // the SDL clock, independently of the host/session simulation clock.
+    void clientStep(const std::vector<SDL_Event>& events);
     struct PendingLoad { std::string filename; bool replay; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
     std::optional<PendingLoad> finishSessionForHost();
+    // Service save UI on SDL time after simulation has stopped; false means
+    // safe to tear down. The suspendable session clock is not a GUI input.
+    bool advancePendingSave(const std::vector<SDL_Event>& events);
     // Synchronous adapter for native command-line/headless hosts.
     bool finishSession();
 
@@ -347,6 +352,11 @@ private:
 	void printTurnTelemetrySession();
 	void printTurnTelemetrySamples();
 	void exportTurnTelemetry();
+	void saveVideoshot(MainLoopState& st);
+	void configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf);
+	//! Threaded: fold the simulation thread's measurements into the session collector
+	//! (called with the simulation parked).
+	void absorbSimulationTelemetry();
     std::optional<MainLoopState> session;
     /// A turn game draws only after a step: polls between steps change nothing visible.
     bool turnDrawPending = true;

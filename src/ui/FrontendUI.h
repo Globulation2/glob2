@@ -137,6 +137,8 @@ class InGameDialog : public UIDialog
 	bool classic() const { return classicLook; }
 
   protected:
+	// Available content bounds with a visible 16-point gutter outside the panel.
+	GAGGUI::ui::Rect insetAvailable(const Presentation &p, const GAGGUI::ui::Metrics &m);
 	bool scrim() const override { return false; }
 	void paintPanel(GAGGUI::ui::Canvas &canvas, GAGGUI::ui::Rect panel) override;
 	// A classic button: 300 points wide, 40 tall, in the menu font.

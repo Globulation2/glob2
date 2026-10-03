@@ -4,11 +4,13 @@ import importlib.util
 from pathlib import Path
 import re
 import subprocess
+import sys
 from types import SimpleNamespace
 import unittest
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / ".github/scripts/ci_changed_paths.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("ci_changed_paths", SCRIPT)
 ci_changed_paths = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ci_changed_paths)
@@ -96,17 +98,15 @@ class ChangedPathsTest(unittest.TestCase):
         selector = workflow.split("  changes:\n", 1)[1].split("\n  linux-build:", 1)[0]
         for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py"):
             self.assertIn(filename, selector)
-        self.assertIn("-s tests/build_system -p 'test_ci*.py'", selector)
+        self.assertIn("-m unittest discover -s tests/build_system -v", selector)
+        self.assertEqual(selector.count("-m unittest discover -s tests/build_system"), 1)
         for path in ci_changed_paths.CI_TOOL_TESTS:
             if path.startswith("tests/build_system/"):
                 self.assertTrue(Path(path).match("tests/build_system/test_ci*.py"))
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
-        paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
-        self.assertNotIn("docs/development/reference.md", paths)
-        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", package)
-        for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
-                         ".github/workflows/steam-windows-package.yml"):
-            self.assertIn(filename, paths)
+        self.assertNotIn('  pull_request:', package)
+        self.assertIn('  workflow_call:', package)
+        self.assertIn('cancel-in-progress: false', package)
 
     def test_browser_shell_only(self):
         self.assert_jobs(
@@ -297,6 +297,14 @@ class ChangedPathsTest(unittest.TestCase):
                         # Evaluate only the exact, asserted expression above.
                         self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
 
+    def test_every_inline_build_checks_out_the_selected_revision(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        checkouts = workflow.split("      - uses: actions/checkout@v4\n")[1:]
+        self.assertTrue(checkouts)
+        for checkout in checkouts:
+            step = checkout.split("\n      - ", 1)[0]
+            self.assertIn("ref: ${{ inputs.revision || github.sha }}", step)
+
     def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
         for job, build in (("windows", "Build glob2 and the regression harnesses"),
@@ -321,9 +329,9 @@ class ChangedPathsTest(unittest.TestCase):
         for gcc in ('11', '13'):
             block = workflow.split(f'  linux-gcc{gcc}:\n', 1)[1].split('\n  linux-', 1)[0]
             self.assertIn('run_tests: true', block)
-            self.assertIn('needs: changes', block)
+            self.assertIn('needs: changes' if gcc == '11' else 'needs: [changes, linux-gcc13-producer]', block)
         tests = helper.split('  tests:\n', 1)[1]
-        self.assertIn('needs: build', tests)
+        self.assertIn('needs: [build, reuse]', tests)
         self.assertNotIn('linux-clang', tests)
         gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
         self.assertIn('needs: [changes, linux-build, linux-clang]', gate)

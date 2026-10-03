@@ -3588,6 +3588,10 @@ Rimbalzo delle liste
 
 [settings Animate victory artwork. Reduced motion also disables this animation.]
 
+[settings Smooth unit motion]
+
+[settings Experimental: move and animate units between game ticks.]
+
 [settings Text size]
 
 [settings Enlarge interface text without changing the map scale.]
@@ -4817,4 +4821,6 @@ Inerzia della mappa
 [room map ready body]
 
 [device busy %0]
+
+[game draw]
 
