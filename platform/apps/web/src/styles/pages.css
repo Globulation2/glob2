@@ -175,3 +175,68 @@
 .admin-row {
   display: block !important;
 }
+
+/* AI map studio follows the online app's responsive panels and form controls. */
+.studio-wallet {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+.studio-wallet > span {
+  margin-left: 1rem;
+}
+.studio-layout {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.studio-chat {
+  max-height: 32rem;
+  overflow: auto;
+  padding: 0.5rem;
+}
+.studio-message {
+  padding: 0.8rem;
+  margin-bottom: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+}
+.studio-message p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.studio-controls,
+.studio-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.studio-controls label {
+  display: grid;
+  gap: 0.3rem;
+}
+.studio-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1rem;
+}
+.studio-version {
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+.studio-gallery img {
+  width: 100%;
+  max-height: 28rem;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+.map-studio textarea {
+  width: 100%;
+}
+@media (max-width: 720px) {
+  .studio-layout {
+    grid-template-columns: 1fr;
+  }
+}

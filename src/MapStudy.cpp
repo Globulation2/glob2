@@ -370,6 +370,7 @@ void shiftTeams(Game &game, int shift)
 		tile.forbidden = mask(tile.forbidden);
 		tile.guardArea = mask(tile.guardArea);
 		tile.clearArea = mask(tile.clearArea);
+		tile.farmArea = mask(tile.farmArea);
 	}
 	for (auto &bits : game.map.mapDiscovered)
 		bits = mask(bits);

@@ -198,6 +198,8 @@ caps lock
 ﺍﺧﺘﺮ ﺧﺎﺭﻃﺔ
 [clear area]
 ﻣﻨﻄﻘﺔ ﺗﺼﻔﻴﺔ
+[farm area]
+ﻣﻨﻄﻘﺔ ﻗﻤﺢ
 [Clearing:]
 ﻳﺼﻔﻲ:
 [clearingflag explanation 2]
@@ -752,6 +754,8 @@ scroll lock
 ﺍﺧﺘﺮ ﺍﻟﺴﻮﻕ
 [select place clearing area]
 ﺍﺧﺘﺮ ﻭﺿﻊ ﻣﻨﻄﻘﺔ ﺍﻟﺘﺼﻔﻴﺔ
+[select place farm area]
+اختر وضع منطقة الزراعة
 [select place clearingflag]
 ﺍﺧﺘﺮ ﻭﺿﻊ ﻋﻠﻢ ﺍﻟﺘﺼﻔﻴﺔ
 [select place explorationflag]
@@ -3120,6 +3124,8 @@ Emoji
 حراسة
 [Clear]
 تنظيف
+[Farm]
+زراعة
 [Paint]
 رسم
 [Erase]
@@ -3290,6 +3296,10 @@ Emoji
 موازنة مناطق الحراسة
 [experiment guard-area-balancing help]
 يتوزع المحاربون الأحرار بين مناطق الحراسة المرسومة بدلاً من التوجه جميعاً إلى الأقرب: تحصل المنطقة الأكبر على عدد أكبر منهم، والمنطقة المكتظة تتناقص لصالح المناطق الأخرى.
+[experiment farm-areas]
+مناطق الزراعة
+[experiment farm-areas help]
+تضيف منطقة زراعة إلى فرش المناطق. العمال الذين يحصدون داخلها يأخذون من أنضج مربع في الحقل المتصل ويتركون حبة واحدة في كل مربع، فيعود الحقل للنمو بدل أن يؤكل من أطرافه. يُزال الخشب الذي ينمو داخل المزرعة.
 [settings Touch scrolling]
 التمرير باللمس
 [settings List momentum]
@@ -4624,6 +4634,26 @@ Emoji
 إظهار مظاهر المستعمرات
 [settings Turn off to use classic units, swarms and building colors on this device.]
 عطّل هذا الخيار لاستخدام الوحدات والأسراب وألوان المباني الكلاسيكية على هذا الجهاز.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]

@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:ImportAiMapResult",
+  "title": "ImportAiMapResult",
+  "type": "object",
+  "required": [
+    "mapHash",
+    "previewHash",
+    "categoricalHash",
+    "reportHash",
+    "previewWidth",
+    "previewHeight",
+    "size",
+    "map"
+  ],
+  "properties": {
+    "mapHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "previewHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "categoricalHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "reportHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "previewWidth": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "previewHeight": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "map": {
+      "type": "object",
+      "required": [
+        "width",
+        "height",
+        "teamCount"
+      ],
+      "properties": {
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "teamCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    }
+  }
+}

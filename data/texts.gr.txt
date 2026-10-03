@@ -252,6 +252,8 @@ caps lock
 Επιλέξτε ένα χάρτη
 [clear area]
 Καθαρισμός περιοχής
+[farm area]
+Περιοχή καλλιέργειας
 [Clearing:]
 Καθαρισμός:
 [clearingflag explanation 2]
@@ -820,6 +822,8 @@ scroll lock
 Επιλογή Αγοράς
 [select place clearing area]
 Τοποθέτηση ζώνης καθαρισμού
+[select place farm area]
+Τοποθέτηση ζώνης καλλιέργειας
 [select place clearingflag]
 Τοποθέτηση σημαίας καθαρισμού
 [select place explorationflag]
@@ -3192,6 +3196,8 @@ CPU %0%
 Φύλαξη
 [Clear]
 Καθαρισμός
+[Farm]
+Καλλιέργεια
 [Paint]
 Ζωγραφική
 [Erase]
@@ -3362,6 +3368,10 @@ CPU %0%
 Εξισορρόπηση ζωνών φρούρησης
 [experiment guard-area-balancing help]
 Οι ελεύθεροι πολεμιστές μοιράζονται στις σχεδιασμένες ζώνες φρούρησης αντί να πηγαίνουν όλοι στην πλησιέστερη: μια μεγαλύτερη ζώνη παίρνει περισσότερους, και μια υπερπλήρης ζώνη αδειάζει σταδιακά προς τις άλλες.
+[experiment farm-areas]
+Περιοχές καλλιέργειας
+[experiment farm-areas help]
+Προσθέτει μια περιοχή καλλιέργειας στα πινέλα ζωνών. Οι εργάτες που θερίζουν μέσα σε αυτήν παίρνουν από το πιο ώριμο τετράγωνο του συνδεδεμένου χωραφιού και αφήνουν έναν κόκκο σε κάθε τετράγωνο, ώστε το χωράφι να ξαναφυτρώνει αντί να τρώγεται από την άκρη. Το ξύλο που φυτρώνει μέσα καθαρίζεται.
 [settings Touch scrolling]
 Κύλιση με αφή
 [settings List momentum]
@@ -4696,6 +4706,26 @@ CPU %0%
 Εμφάνιση εμφανίσεων αποικιών
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Απενεργοποιήστε για να χρησιμοποιείτε κλασικές μονάδες, σμήνη και χρώματα κτιρίων σε αυτή τη συσκευή.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]

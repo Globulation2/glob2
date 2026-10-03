@@ -55,6 +55,8 @@ public:
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+	bool hiveMindEnabled;
+	bool hiveMindSupervision;
 	bool highResolutionArtwork;
 	// Local rendering preferences; never serialized into games or orders.
 	bool showColonySkins = true;

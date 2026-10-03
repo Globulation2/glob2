@@ -42,6 +42,17 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   map_reports: ['reporter_account_id'],
   map_uploads: ['owner_account_id'],
   map_downloads: ['downloader'],
+  hive_wallets: ['account_id'],
+  hive_ledger: ['account_id'],
+  hive_calls: ['account_id'],
+  hive_sessions: ['account_id'],
+  hive_purchases: ['account_id'],
+  map_wallets: ['account_id'],
+  map_ledger: ['account_id'],
+  map_calls: ['account_id'],
+  map_purchases: ['account_id'],
+  studio_threads: ['account_id'],
+  studio_requests: ['account_id'],
 };
 
 /**
@@ -316,6 +327,7 @@ export async function exportAccount(
           'description',
           'visibility',
           'made_with',
+          'authoring',
           'generator',
           'hidden',
           'hidden_reason',
@@ -456,6 +468,146 @@ export async function exportAccount(
         .orderBy('created_at')
         .execute();
 
+      const hiveWallets = await tx
+        .selectFrom('hive_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', id)
+        .execute();
+      const hiveLedger = await tx
+        .selectFrom('hive_ledger')
+        .select(['id', 'amount', 'kind', 'details', 'created_at'])
+        .where('account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const hiveCalls = await tx
+        .selectFrom('hive_calls')
+        .select(['id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'])
+        .where('account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const hivePurchases = await tx
+        .selectFrom('hive_purchases')
+        .select(['id', 'checkout_id', 'payment_id', 'pack', 'paid', 'reversed', 'created_at'])
+        .where('account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      // Lease and run identifiers are internal capabilities, not export data.
+      const hiveSessions = await tx
+        .selectFrom('hive_sessions')
+        .select([
+          'id',
+          'match_id',
+          'seat',
+          'team',
+          'tick',
+          'generation',
+          'supervision',
+          'pending_run',
+          'last_wake_tick',
+          'created_at',
+        ])
+        .where('account_id', '=', id)
+        .orderBy('created_at')
+        .execute();
+      const hiveEvents = await tx
+        .selectFrom('hive_events as e')
+        .innerJoin('hive_sessions as s', 's.id', 'e.session_id')
+        .select(['e.id', 'e.session_id', 'e.kind', 'e.body', 'e.created_at'])
+        .where('s.account_id', '=', id)
+        .orderBy('e.id')
+        .execute();
+      const hiveOperations = await tx
+        .selectFrom('hive_operations as o')
+        .innerJoin('hive_sessions as s', 's.id', 'o.session_id')
+        .select([
+          'o.id',
+          'o.session_id',
+          'o.generation',
+          'o.status',
+          'o.request',
+          'o.result',
+          'o.supervised',
+          'o.created_at',
+        ])
+        .where('s.account_id', '=', id)
+        .orderBy('o.created_at')
+        .execute();
+      const hivePrograms = await tx
+        .selectFrom('hive_programs as p')
+        .innerJoin('hive_sessions as s', 's.id', 'p.session_id')
+        .select(['p.session_id', 'p.id', 'p.revision', 'p.definition', 'p.status', 'p.supervised'])
+        .where('s.account_id', '=', id)
+        .orderBy('p.id')
+        .execute();
+
+      const studioWallets = await tx
+        .selectFrom('map_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioLedger = await tx
+        .selectFrom('map_ledger')
+        .select(['id', 'amount', 'kind', 'details', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioCalls = await tx
+        .selectFrom('map_calls')
+        .select(['id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioPurchases = await tx
+        .selectFrom('map_purchases')
+        .select(['id', 'checkout_id', 'payment_id', 'pack', 'paid', 'reversed', 'created_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioThreads = await tx
+        .selectFrom('studio_threads')
+        .select(['id', 'brief', 'title', 'created_at', 'updated_at'])
+        .where('account_id', '=', id)
+        .execute();
+      const studioRequests = await tx
+        .selectFrom('studio_requests')
+        .select([
+          'id',
+          'thread_id',
+          'kind',
+          'status',
+          'input',
+          'checkpoints',
+          'map_id',
+          'map_hash',
+          'error',
+          'charged',
+          'created_at',
+          'completed_at',
+        ])
+        .where('account_id', '=', id)
+        .execute();
+      const studioMessages = await tx
+        .selectFrom('studio_messages as m')
+        .innerJoin('studio_threads as t', 't.id', 'm.thread_id')
+        .select(['m.id', 'm.thread_id', 'm.role', 'm.text', 'm.created_at'])
+        .where('t.account_id', '=', id)
+        .orderBy('m.created_at')
+        .orderBy('m.id')
+        .execute();
+      const studioAttempts = await tx
+        .selectFrom('studio_attempts as a')
+        .innerJoin('studio_requests as r', 'r.id', 'a.request_id')
+        .select([
+          'a.id',
+          'a.request_id',
+          'a.stage',
+          'a.model',
+          'a.status',
+          'a.input',
+          'a.output',
+          'a.created_at',
+        ])
+        .where('r.account_id', '=', id)
+        .orderBy('a.created_at')
+        .execute();
+
       return {
         format: ACCOUNT_EXPORT_FORMAT,
         exportedAt: new Date().toISOString(),
@@ -513,6 +665,26 @@ export async function exportAccount(
           tickets: rows(queueTickets),
           cooldowns: rows(queueCooldowns),
           proposals: rows(matchProposals),
+        },
+        hive: {
+          wallets: rows(hiveWallets),
+          ledger: rows(hiveLedger),
+          calls: rows(hiveCalls),
+          purchases: rows(hivePurchases),
+          sessions: rows(hiveSessions),
+          events: rows(hiveEvents),
+          operations: rows(hiveOperations),
+          programs: rows(hivePrograms),
+        },
+        mapStudio: {
+          wallets: rows(studioWallets),
+          ledger: rows(studioLedger),
+          calls: rows(studioCalls),
+          purchases: rows(studioPurchases),
+          threads: rows(studioThreads),
+          messages: rows(studioMessages),
+          requests: rows(studioRequests),
+          attempts: rows(studioAttempts),
         },
         maps: {
           published: maps.map((m) => ({

@@ -98,6 +98,10 @@ jobs:
           # No PulseAudio: its uninstrumented mainloop thread reports races
           # inside libpulse during audio startup, unrelated to the game threads.
           SDL_AUDIODRIVER: dummy
+          # Present the game's software-rendered frame without uninstrumented
+          # Mesa/llvmpipe worker threads. GPU rendering has separate coverage.
+          SDL_RENDER_DRIVER: software
+          SDL_FRAMEBUFFER_ACCELERATION: '0'
           # SDL3 leaves threads it created during startup unjoined at exit; that
           # is not a race between the game's threads, so thread leaks are not reported.
           TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp
@@ -105,7 +109,7 @@ jobs:
           mkdir -p artifacts/tsan
           xvfb-run -a -s '-screen 0 1280x1024x24' \
             build/tsan/src/glob2 -test-games 1 --map balanced --matchup maxima,cortex,maxima,cortex \
-            -m -s 1024x768 > artifacts/tsan/windowed.log 2>&1
+            -G -m -s 1024x768 > artifacts/tsan/windowed.log 2>&1
 
       - name: Show sanitizer reports
         if: failure()

@@ -15,6 +15,9 @@ test_env = env.Clone()
 test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src'), Dir('#third_party/quickjs-ng')])
 # Console entry point for every test binary: no -mwindows, SDL3 headers supply no separate main library.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
+# Keep function names in native harnesses for crash backtraces; shipping programs
+# retain their usual release stripping and both use the same production objects.
+test_env['LINKFLAGS'] = [flag for flag in test_env['LINKFLAGS'] if flag != '-s']
 # These binaries carry their own console main; discard a legacy main rename
 # if a toolchain supplied one, and keep SDL's entry-point wrapper disabled.
 

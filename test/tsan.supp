@@ -1,4 +1,5 @@
 # ThreadSanitizer suppressions for .github/workflows/thread-sanitizer.yml.
 # Keep each entry narrow and explain it; never suppress game code.
-# SDL_net resolver teardown is intentionally unsuppressed: the application
-# must call NET_Quit before the graphics context shuts down SDL.
+
+# No active suppressions. SDL_net resolver threads are joined before SDL_Quit
+# during GlobalContainer teardown, including windowed test games.

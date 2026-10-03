@@ -69,6 +69,7 @@ export function pngSize(bytes: Uint8Array): { width: number; height: number } {
 
 export class HeadlessEngineRunner implements EngineRunner {
   readonly kinds: readonly EngineJobKind[] = [
+    'import-ai-map',
     'generate-map',
     'validate-map',
     'render-preview',
@@ -88,6 +89,9 @@ export class HeadlessEngineRunner implements EngineRunner {
     let result: unknown;
     try {
       switch (job.kind) {
+        case 'import-ai-map':
+          result = await this.importImage(job.payload, signal, blobs);
+          break;
         case 'generate-map':
           result = await this.generateMap(job.payload, signal, blobs);
           break;
@@ -132,6 +136,39 @@ export class HeadlessEngineRunner implements EngineRunner {
     if (facts.teamCount < 1 || facts.teamCount > 12)
       return `This map has ${facts.teamCount} teams; maps need 1 to 12.`;
     return undefined;
+  }
+
+  async importImage(
+    payload: EngineJobPayload<'import-ai-map'>,
+    signal: AbortSignal,
+    blobs: JobBlobs,
+  ): Promise<EngineJobOutput<'import-ai-map'>> {
+    const imported = await this.options.engine.importImage(
+      await blobs.read(payload.imageHash, 16 * 1024 * 1024),
+      payload,
+      signal,
+    );
+    const facts = {
+      width: imported.map.width,
+      height: imported.map.height,
+      teamCount: imported.map.teamCount,
+    };
+    if (
+      facts.width !== payload.settings.width ||
+      facts.height !== payload.settings.height ||
+      facts.teamCount !== payload.settings.players
+    )
+      throw new EngineOutputError('Imported map settings mismatch');
+    return {
+      mapHash: await blobs.write(imported.bytes, CONTENT_TYPES.map),
+      previewHash: await blobs.write(imported.png, CONTENT_TYPES.png),
+      reportHash: await blobs.write(imported.json, CONTENT_TYPES.result),
+      categoricalHash: await blobs.write(imported.tile, CONTENT_TYPES.png),
+      size: imported.bytes.byteLength,
+      previewWidth: pngSize(imported.png).width,
+      previewHeight: pngSize(imported.png).height,
+      map: facts,
+    };
   }
 
   async generateMap(

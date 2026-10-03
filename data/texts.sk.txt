@@ -204,6 +204,8 @@ Vyber si hru
 Vyber si mapu
 [clear area]
 Čistenie
+[farm area]
+Pestovanie
 [Clearing:]
 Čistenie:
 [clearingflag explanation 2]
@@ -758,6 +760,8 @@ Vybrať budovu: Jedáleň
 Vybrať budovu: Trhovisko
 [select place clearing area]
 Umiestniť oblasť: Čistenie
+[select place farm area]
+Umiestniť oblasť: Pestovanie
 [select place clearingflag]
 Umiestniť vlajku: Vlajka čistenia
 [select place explorationflag]
@@ -3130,6 +3134,8 @@ Zakázané
 Strážiť
 [Clear]
 Vyčistiť
+[Farm]
+Pole
 [Paint]
 Maľovať
 [Erase]
@@ -3300,6 +3306,10 @@ Experimenty
 Vyvažovanie strážnych oblastí
 [experiment guard-area-balancing help]
 Voľní bojovníci sa rozdelia medzi vyznačené strážne oblasti namiesto toho, aby všetci išli do najbližšej: väčšia oblasť ich dostane viac a preplnená oblasť sa postupne vyprázdni do ostatných.
+[experiment farm-areas]
+Oblasti pestovania
+[experiment farm-areas help]
+Pridá k zónovým štetcom oblasť pestovania. Robotníci, ktorí v nej zbierajú úrodu, berú z najzrelšieho políčka prepojeného poľa a na každom políčku nechajú jedno zrno, takže pole znova dorastie namiesto toho, aby bolo vyjedené od okraja. Drevo, ktoré do oblasti prerastie, sa vyrúbe.
 [settings Touch scrolling]
 Dotykové posúvanie
 [settings List momentum]
@@ -4634,6 +4644,26 @@ Zotrvačnosť mapy
 Zobrazovať vzhľady kolónií
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Vypnutím obnovíte na tomto zariadení klasické jednotky, roje a farby budov.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]

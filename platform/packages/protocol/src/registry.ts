@@ -1,3 +1,5 @@
+import { studioSchemas } from './mapStudio.ts';
+import { hiveSchemas } from './hive.ts';
 // Every schema exported as a JSON Schema file for non-TypeScript consumers,
 // by its stable name. Names are part of the contract: C++ tests and other
 // workstreams refer to fixtures/schemas/<Name>.schema.json.
@@ -18,6 +20,8 @@ import {
 import type { TSchema } from 'typebox';
 import { ErrorBody } from './common.ts';
 import {
+  ImportAiMapPayload,
+  ImportAiMapResult,
   EngineJob,
   EngineJobResult,
   GenerateMapPayload,
@@ -164,6 +168,8 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   ColonySkinVersion: { schema: ColonySkinVersion },
   MatchColonySkin: { schema: MatchColonySkin },
   ColonySkinClaims: { schema: ColonySkinClaims },
+  ...Object.fromEntries(Object.entries(studioSchemas).map(([name, schema]) => [name, { schema }])),
+  ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),
   // Simulation and match description
   SimVersion: { schema: SimVersion },
   GeneratorDescriptor: { schema: GeneratorDescriptor },
@@ -247,6 +253,8 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   PlayerProfile: { schema: PlayerProfile },
   InstanceStats: { schema: InstanceStats },
   // Engine-agent jobs
+  ImportAiMapPayload: { schema: ImportAiMapPayload },
+  ImportAiMapResult: { schema: ImportAiMapResult },
   EngineJob: {
     schema: EngineJob,
     semantic: (value) => {

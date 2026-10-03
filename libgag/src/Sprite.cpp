@@ -102,6 +102,9 @@ namespace GAGCore
 			std::string line;
 			while (std::getline(lines, line))
 			{
+				// Accept an index saved with Windows line endings.
+				if (!line.empty() && line.back() == '\r')
+					line.pop_back();
 				if (line.empty() || line[0] == '#')
 					continue;
 				SheetEntry entry;

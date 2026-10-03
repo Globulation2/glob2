@@ -911,7 +911,10 @@ also remains the headless default and the equivalence reference.
   for code shared by threads; add boundaries in `.github/scripts/ci_policy.py`
   when new code becomes shared between them. Drafts defer it. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
-  PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
+  The windowed fixture explicitly uses the game's software renderer and disables SDL's accelerated
+  framebuffer presentation, keeping uninstrumented Mesa worker threads out of the sanitizer run.
+  GPU rendering remains covered by the renderer suites. Narrow, explained suppressions for
   library shutdown races live in `test/tsan.supp`; never suppress game code there.
   Draft PRs skip it.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without

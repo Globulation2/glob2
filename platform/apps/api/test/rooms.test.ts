@@ -696,20 +696,24 @@ describe('presence and sweeps', () => {
     // A replica that crashed while it held the guest's socket: its last
     // heartbeat is old, its presence row and the member's flag remain.
     const db = harness.database.db;
-    await db
-      .insertInto('api_replicas')
-      .values({ id: 'crashed-replica', heartbeat_at: new Date(Date.now() - 3_600_000) })
-      .execute();
-    await db
-      .insertInto('realtime_presence')
-      .values({ account_id: guest.accountId, replica_id: 'crashed-replica' })
-      .execute();
-    await db
-      .updateTable('room_members')
-      .set({ connected: true })
-      .where('room_id', '=', room.id)
-      .where('account_id', '=', guest.accountId)
-      .execute();
+    // Publish the entire crashed state together: a live replica can sweep the
+    // stale heartbeat immediately, even between separate fixture inserts.
+    await db.transaction().execute(async (tx) => {
+      await tx
+        .insertInto('api_replicas')
+        .values({ id: 'crashed-replica', heartbeat_at: new Date(Date.now() - 3_600_000) })
+        .execute();
+      await tx
+        .insertInto('realtime_presence')
+        .values({ account_id: guest.accountId, replica_id: 'crashed-replica' })
+        .execute();
+      await tx
+        .updateTable('room_members')
+        .set({ connected: true })
+        .where('room_id', '=', room.id)
+        .where('account_id', '=', guest.accountId)
+        .execute();
+    });
 
     // A live replica's heartbeat expires it and re-evaluates the guest.
     await waitUntil(async () => !(await memberConnected(room.id, guest.accountId)));

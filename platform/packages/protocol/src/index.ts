@@ -14,3 +14,5 @@ export * from './validate.ts';
 export * from './registry.ts';
 export * from './document.ts';
 export * from './skins.ts';
+export * from './hive.ts';
+export * from './mapStudio.ts';

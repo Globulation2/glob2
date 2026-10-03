@@ -115,6 +115,11 @@ services:
       <<: *platform-environment
       DATABASE_URL: postgres://glob2_api@postgres:5432/glob2
       DATABASE_PASSWORD_FILE: /var/lib/glob2/db/api/password
+      HIVE_OPENAI_API_KEY: ${HIVE_OPENAI_API_KEY:-}
+      HIVE_STRIPE_SECRET_KEY: ${HIVE_STRIPE_SECRET_KEY:-}
+      HIVE_STRIPE_WEBHOOK_SECRET: ${HIVE_STRIPE_WEBHOOK_SECRET:-}
+      MAP_STRIPE_SECRET_KEY: ${MAP_STRIPE_SECRET_KEY:-}
+      MAP_STRIPE_WEBHOOK_SECRET: ${MAP_STRIPE_WEBHOOK_SECRET:-}
     # Provider secrets named in instance.yaml (`clientSecretEnv: …`) come from .env.
     env_file:
       - path: ${GLOB2_ENV_FILE:-.env}
@@ -166,6 +171,34 @@ services:
   # One service per sim version served. To keep serving an older version (its
   # verify-match jobs, its rooms), add a second service with that version's
   # image; see docs/hosting/README.md, "Sim versions".
+  ai-map-worker:
+    <<: *hardening
+    profiles: [ai-maps]
+    image: ${GLOB2_AI_MAP_IMAGE:-glob2-ai-map-worker:development}
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+      target: ai-map-worker
+      args: {JOBS: '${GLOB2_BUILD_JOBS:-4}'}
+    command: [node, apps/ai-map-worker/src/main.ts]
+    environment:
+      <<: *platform-environment
+      DATABASE_URL: postgres://glob2_worker@postgres:5432/glob2
+      DATABASE_PASSWORD_FILE: /var/lib/glob2/db/worker/password
+      ENGINE_AGENT_KEYS_FILE: ''
+      MAP_OPENAI_API_KEY: ${MAP_OPENAI_API_KEY:-}
+      RELAY_KEYS_FILE: ''
+      SHUTDOWN_GRACE_SECONDS: 290
+    tmpfs: ['/tmp:size=1024m,mode=1777']
+    volumes:
+      - db-worker-secret:/var/lib/glob2/db/worker:ro
+      - blobs:/var/lib/glob2/blobs
+      - *instance-config
+    networks: [backend, egress]
+    depends_on:
+      init: {condition: service_completed_successfully}
+    stop_grace_period: 5m
+
   engine-agent:
     <<: *hardening
     image: ${GLOB2_ENGINE_AGENT_IMAGE:-glob2-engine-agent:development}

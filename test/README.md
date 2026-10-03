@@ -59,6 +59,12 @@ collects a bounded GDB backtrace before cleanup when available. To opt in when i
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
+Windows CI replays native engine access violations under GDB with a fresh profile
+and separate artifacts. Harnesses retain function names for backtraces; shipped
+programs keep their normal release stripping. Logs appear in
+`artifacts/tests/crash-diagnostics/`. Diagnostic replays are bounded to 180 seconds
+per case and never replace the original failed result.
+
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so
 `build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
@@ -1148,6 +1154,15 @@ the default game's per-100-tick checksums with
 `glob2test::GameOptions::experiments`; `GameOptions::header` installs the
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../docs/features/guard-area-balancing.md).
+
+`FarmAreas` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'FarmAreas/*'`) covers the `farm-areas` experiment on the real `Map` and engine:
+the ripest-tile source, empty gaps, exhausted fields, the seed grain, wood and
+algae, another team's area, the original harvest off a farm, clearing targets,
+growth ignoring the mask, the brush refusing ground that cannot grow, the order
+being rejected and a painted mask being inert without the experiment, workers
+keeping every tile of a farmed field alive, and a save/load round trip. Design:
+[farm areas](../docs/features/farm-areas.md).
 
 ## JavaScript
 

@@ -198,6 +198,8 @@ caps lock
 选择一个地图
 [clear area]
 清除区域
+[farm area]
+耕种区域
 [Clearing:]
 清除中:
 [clearingflag explanation 2]
@@ -750,6 +752,8 @@ OpenGL
 选择市场
 [select place clearing area]
 选择需要清除的区域
+[select place farm area]
+选择需要耕种的区域
 [select place clearingflag]
 选择地方放置清除令旗
 [select place explorationflag]
@@ -3118,6 +3122,8 @@ CPU %0%
 守卫
 [Clear]
 清理
+[Farm]
+耕种
 [Paint]
 绘制
 [Erase]
@@ -3288,6 +3294,10 @@ CPU %0%
 警戒区均衡
 [experiment guard-area-balancing help]
 空闲的战士会分散到各个已绘制的警戒区，而不是全部涌向最近的一个：更大的区域获得更多战士，过于拥挤的区域会逐渐向其他区域分流。
+[experiment farm-areas]
+耕种区域
+[experiment farm-areas help]
+在区域笔刷中加入耕种区域。在其中收割的工人会从相连田地中最成熟的格子取用，并在每一格留下一粒种子，让田地重新生长，而不是从边缘被吃光。长进耕种区域的木材会被清除。
 [settings Touch scrolling]
 触摸滚动
 [settings List momentum]
@@ -4622,6 +4632,26 @@ CPU %0%
 显示殖民地外观
 [settings Turn off to use classic units, swarms and building colors on this device.]
 关闭后，此设备将使用经典单位、虫群和建筑颜色。
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]

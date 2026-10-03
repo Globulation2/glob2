@@ -52,6 +52,7 @@ namespace GameGUIKeyActions
 		SelectPlaceForbiddenArea,
 		SelectPlaceGuardArea,
 		SelectPlaceClearingArea,
+		SelectPlaceFarmArea,
 		SwitchToAddingAreas,
 		SwitchToRemovingAreas,
 		SwitchToAreaBrush1,
@@ -65,6 +66,8 @@ namespace GameGUIKeyActions
 		ToggleTorusView,
 		IncreaseGameSpeed,
 		DecreaseGameSpeed,
+		OpenCommander,
+		StopCommander,
 		ActionSize,
 	};
 

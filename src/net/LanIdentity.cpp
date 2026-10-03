@@ -103,11 +103,22 @@ void provisionLanIdentity(NetworkConfig &config)
 							   reinterpret_cast<const unsigned char *>("Globulation 2 LAN session"),
 							   -1, -1, 0);
 	X509_set_issuer_name(cert.get(), name);
-	X509V3_CTX context;
+	X509V3_CTX context{};
 	X509V3_set_ctx(&context, cert.get(), cert.get(), nullptr, nullptr, 0);
 	std::string san = "DNS:localhost";
 	for (const auto &address : addresses)
-		san += ",IP:" + address;
+	{
+		auto ip = boost::asio::ip::make_address(address);
+		if (ip.is_v6())
+		{
+			// Interface scopes select a local route, but are not part of the
+			// address bytes encoded in a certificate's IP subject alternative name.
+			auto ipv6 = ip.to_v6();
+			ipv6.scope_id(0);
+			ip = ipv6;
+		}
+		san += ",IP:" + ip.to_string();
+	}
 	for (const auto &extension :
 		 {std::make_pair(NID_basic_constraints, std::string("critical,CA:TRUE")),
 		  std::make_pair(NID_key_usage, std::string("critical,digitalSignature,keyCertSign")),

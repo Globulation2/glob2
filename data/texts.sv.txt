@@ -204,6 +204,8 @@ Välj ett spel
 Välj en karta
 [clear area]
 Röjningsområde
+[farm area]
+Odlingsområde
 [Clearing:]
 Röjning:
 [clearingflag explanation 2]
@@ -760,6 +762,8 @@ Välj Värdshus
 Välj Marknad
 [select place clearing area]
 Placera område: Röjningsområde
+[select place farm area]
+Placera område: Odlingsområde
 [select place clearingflag]
 Placera flagga: Röjningsflagga
 [select place explorationflag]
@@ -3132,6 +3136,8 @@ Förbjudet
 Bevaka
 [Clear]
 Röj
+[Farm]
+Odla
 [Paint]
 Måla
 [Erase]
@@ -3302,6 +3308,10 @@ Experiment
 Balansering av vaktområden
 [experiment guard-area-balancing help]
 Fria krigare fördelar sig mellan de målade vaktområdena i stället för att alla ta det närmaste: ett större område får fler av dem, och ett överfullt område tunnas ut till de andra.
+[experiment farm-areas]
+Odlingsområden
+[experiment farm-areas help]
+Lägger till ett odlingsområde bland områdespenslarna. Arbetare som skördar i ett tar från den mognaste rutan på det sammanhängande fältet och lämnar ett korn på varje ruta, så att fältet växer igen i stället för att ätas upp från kanten. Trä som växer in i området röjs.
 [settings Touch scrolling]
 Pekrullning
 [settings List momentum]
@@ -4636,6 +4646,26 @@ Kartans fart
 Visa koloniernas utseenden
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på den här enheten.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]

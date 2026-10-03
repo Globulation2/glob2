@@ -54,6 +54,9 @@ namespace
 			case GuardArea:
 				runtime.push_order(shared_ptr<Order>(new OrderAlterGuardArea(team, mode, &acc, map)));
 				break;
+			case FarmArea:
+				// No AI paints farm areas (the farm-areas experiment) yet.
+				break;
 		}
 	}
 }

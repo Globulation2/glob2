@@ -443,7 +443,7 @@ struct Environment
 	{
 		static const char *names[] = {"teams",    "units",     "buildings",    "unit",
 									  "building", "tile",      "region",       "objectives",
-									  "hints",    "interface", "buildingTypes"};
+									  "hints",    "interface", "buildingTypes", "wakeAgent"};
 		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
 		try
 		{
@@ -506,10 +506,12 @@ struct Environment
 		set(context.get(), "random", JS_NewCFunction(ctx, random, "random", 0));
 		static const char *names[] = {"teams",    "units",     "buildings",    "unit",
 									  "building", "tile",      "region",       "objectives",
-									  "hints",    "interface", "buildingTypes"};
+									  "hints",    "interface", "buildingTypes", "wakeAgent"};
 		for (int i = 0; i < 11; ++i)
-			set(i == 5 || i == 6 ? map.get() : game.get(), names[i],
+			if (!host->commander || i < 7 || i == 10) set(i == 5 || i == 6 ? map.get() : game.get(), names[i],
 				JS_NewCFunctionMagic(ctx, query, names[i], 0, JS_CFUNC_generic_magic, i));
+		if (host->commander)
+			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, 11));
 		set(map.get(), "width", JS_NewUint32(ctx, host->width));
 		set(map.get(), "height", JS_NewUint32(ctx, host->height));
 		set(game.get(), "map", map.release());

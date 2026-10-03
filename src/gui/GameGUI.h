@@ -66,6 +66,7 @@ class MapMarkOrder;
 /*!
 	Handle all user input during game, draw & handle menu.
 */
+namespace Hive { class Client; class Dialog; }
 class GameGUITouch;
 class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
@@ -297,6 +298,12 @@ public:
 	std::string toLoadGameFileName;
 	bool drawHealthFoodBar, drawPathLines, drawAccessibilityAids;
 	int localPlayer = 0, localTeamNo = 0;
+	std::shared_ptr<Hive::Client> hive;
+	void updateCommander(bool caughtUp);
+	void openCommander();
+	std::unique_ptr<Hive::Dialog> hiveCards;
+	bool typingCommander = false;
+	bool enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &orders, const std::function<bool()> &commit);
 	int viewportX, viewportY;
 	MapCamera camera;
 	bool zoomControlPushed=false;
@@ -701,6 +708,7 @@ private:
 		IGM_ALLIANCE,
 		IGM_OBJECTIVES,
 		IGM_END_OF_GAME,
+		IGM_HIVE,
 		IGM_CONFIRM_LEAVE,
 		IGM_TELEMETRY
 	} inGameMenu;

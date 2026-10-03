@@ -137,7 +137,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
     files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
+    files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
     if threaded:
         files += ['browser/Audio.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
@@ -232,6 +232,21 @@ def build_web(directory, identity, arguments):
         return 0
     page = env.Command(str(Path(directory) / 'index.html'),
         ['browser/shell.html', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
+    # Assistant programs never execute in the live game's WebAssembly memory.
+    hive = env.Clone()
+    hive['LIBS'] = []
+    hive['LINKFLAGS'] = ['-fwasm-exceptions', '--no-entry', '-sMODULARIZE=1', '-sEXPORT_NAME=createHiveRuntime',
+        '-sENVIRONMENT=worker', '-sFILESYSTEM=0', '-sALLOW_MEMORY_GROWTH=1',
+        '-sMAXIMUM_MEMORY=268435456', '-sSTACK_SIZE=8388608',
+        '-sEXPORTED_FUNCTIONS=["_glob2_hive_invoke","_malloc","_free"]', '-sEXPORTED_RUNTIME_METHODS=["ccall","stringToUTF8","lengthBytesUTF8"]']
+    hive.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
+    hive_objects = [hive.Object(str(Path(directory) / 'hive-obj' / (source + '.o')), source)
+        for source in ('browser/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/script/ScriptRuntime.cpp', 'src/script/ScriptValue.cpp')]
+    hive_objects += javascript_objects(hive, Path(directory) / 'hive-obj/third_party', True)
+    hive_program = hive.Program(str(Path(directory) / 'hive-runtime.js'), hive_objects)
+    hive.SideEffect(str(Path(directory) / 'hive-runtime.wasm'), hive_program)
+    hive_worker = env.Install(directory, 'browser/hive-worker.js')
+    env.Depends(page, [hive_program, hive_worker])
     loader = env.Install(directory, 'browser/loader.js')
     env.Depends(page, loader)
     env.Alias('web-package', [page, loader])

@@ -200,6 +200,8 @@ Choose a game
 Choose a map
 [clear area]
 Clearing area
+[farm area]
+Farm area
 [Clearing:]
 Clearing:
 [clearingflag explanation 2]
@@ -762,6 +764,8 @@ Select Inn
 Select Market
 [select place clearing area]
 Select Place Clearing Area
+[select place farm area]
+Select Place Farm Area
 [select place clearingflag]
 Select Place Clearing Flag
 [select place explorationflag]
@@ -3120,6 +3124,8 @@ Forbidden
 Guard
 [Clear]
 Clear
+[Farm]
+Farm
 [Paint]
 Paint
 [Erase]
@@ -3292,6 +3298,10 @@ Experiments
 Guard-area balancing
 [experiment guard-area-balancing help]
 Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.
+[experiment farm-areas]
+Farm areas
+[experiment farm-areas help]
+Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared.
 [settings Touch scrolling]
 Touch scrolling
 [settings List momentum]
@@ -4626,6 +4636,26 @@ Draw
 Show colony skins
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Turn off to use classic units, swarms and building colors on this device.
+[settings Hive Mind]
+Hive Mind
+[settings Enable commander shortcuts]
+Enable commander shortcuts
+[settings Command your colony without opening a menu.]
+Command your colony without opening a menu.
+[settings Allow supervision for new commands]
+Allow supervision for new commands
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.
+[settings Commander account and credits]
+Commander account and credits
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.
+[open commander]
+Open commander
+[stop commander]
+Stop commander
 [File selection is unavailable.]
 File selection is unavailable.
 [Saving custom AI…]

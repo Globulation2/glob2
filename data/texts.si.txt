@@ -198,6 +198,8 @@ Izberi igro
 Izberi mapo
 [clear area]
 Območje čiščenja
+[farm area]
+Območje obdelovanja
 [Clearing:]
 Čiščenje:
 [clearingflag explanation 2]
@@ -752,6 +754,8 @@ Izberi stavbo: Restavracija
 Izberi stavbo: Tržnica
 [select place clearing area]
 Postavi območje: Območje čiščenja
+[select place farm area]
+Postavi območje: Območje obdelovanja
 [select place clearingflag]
 Postavi zastavo čiščenja
 [select place explorationflag]
@@ -3122,6 +3126,8 @@ Prepovedano
 Straži
 [Clear]
 Počisti
+[Farm]
+Njiva
 [Paint]
 Riši
 [Erase]
@@ -3292,6 +3298,10 @@ Poskusi
 Uravnoteženje stražarskih območij
 [experiment guard-area-balancing help]
 Prosti bojevniki se porazdelijo med narisana stražarska območja, namesto da bi vsi šli v najbližje: večje območje jih dobi več, prenatrpano pa se postopoma prazni v druga.
+[experiment farm-areas]
+Območja obdelovanja
+[experiment farm-areas help]
+Doda območje obdelovanja med čopiče območij. Delavci, ki žanjejo v njem, jemljejo z najzrelejšega polja povezane njive in na vsakem polju pustijo eno zrno, tako da njiva ponovno zraste, namesto da bi jo pojedli od roba. Les, ki zraste v območje, se poseka.
 [settings Touch scrolling]
 Drsenje z dotikom
 [settings List momentum]
@@ -4626,6 +4636,26 @@ Zagon zemljevida
 Prikaži preobleke kolonij
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Izklopite za uporabo klasičnih enot, rojev in barv stavb v tej napravi.
+[settings Hive Mind]
+
+[settings Enable commander shortcuts]
+
+[settings Command your colony without opening a menu.]
+
+[settings Allow supervision for new commands]
+
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+
+[settings Commander account and credits]
+
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+
+[open commander]
+
+[stop commander]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]

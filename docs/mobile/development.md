@@ -258,8 +258,8 @@ new confirmation gesture. Painting buffers an unfinished stroke; release applies
 its existing brush operations, while interruption discards it. Completed strokes
 are never undone by leaving the tool. Two fingers navigate instead of painting.
 
-Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear and
-Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
+Zone painting is one-thumb too. The toolbar holds Forbidden, Guard, Clear (plus
+Farm in a game with the farm-areas experiment) and Done (Done under the thumb), and a brush rail on the opposite edge holds the brush
 sizes as detents (smallest lowest; touching one magnifies it beside the rail and
 the thumb can scrub along it), Paint/Erase at its foot and Pan at its head. Pan
 makes one finger move the map. A stroke held in the 24-point band along a map

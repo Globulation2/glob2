@@ -93,6 +93,7 @@ describe('AccessPolicy', () => {
       canHost: deny('hosting'),
       canJoin: deny('joining'),
       canQueue: deny('queueing'),
+      canUseHiveMind: async () => ({ allowed: true }),
     };
     const denied = await harness.start({ origin: ORIGIN, access: denyAll, instance: { queues } });
     const host = await player(a);
@@ -127,6 +128,7 @@ describe('AccessPolicy', () => {
       canJoin: async () =>
         allowJoin ? { allowed: true } : { allowed: false, reason: 'joining closed' },
       canQueue: async () => ({ allowed: true }),
+      canUseHiveMind: async () => ({ allowed: true }),
     };
     const gated = await harness.start({
       origin: ORIGIN,
@@ -1109,6 +1111,7 @@ describe('PlatformMatchStarter', () => {
         canHost: async () => ({ allowed: true }),
         canJoin: async () => ({ allowed: true }),
         canQueue: async () => ({ allowed: true }),
+        canUseHiveMind: async () => ({ allowed: true }),
       },
       generationTimeoutMs: 5000,
     });
@@ -1153,6 +1156,7 @@ describe('PlatformMatchStarter', () => {
         canHost: async () => ({ allowed: true }),
         canJoin: async () => ({ allowed: true }),
         canQueue: async () => ({ allowed: true }),
+        canUseHiveMind: async () => ({ allowed: true }),
       },
       warmMaps: {
         takeWarmMap: async (queueId, simVersionKey) =>
@@ -1184,6 +1188,7 @@ describe('PlatformMatchStarter', () => {
         canHost: async () => ({ allowed: true }),
         canJoin: async () => ({ allowed: true }),
         canQueue: async () => ({ allowed: false, reason: 'no' }),
+        canUseHiveMind: async () => ({ allowed: true }),
       },
     });
     await expect(denying.start(await proposal([p1.accountId]))).rejects.toBeInstanceOf(StartError);

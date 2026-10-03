@@ -40,6 +40,7 @@ GAGCore::CooperativeTask MapEdit::loadTask(std::string filename)
     game.map.computeDisplayedForbidden(team);
     game.map.computeDisplayedClearArea(team);
     game.map.computeDisplayedGuardArea(team);
+    game.map.computeDisplayedFarmArea(team);
     hasMapBeenModified = false;
     co_return true;
 }

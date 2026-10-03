@@ -54,6 +54,7 @@ export type MapRow = {
   title: string;
   description: string;
   visibility: MapVisibility;
+  authoring?: { kind: 'ai'; pipelineVersion: string } | null;
   hidden: boolean;
   hidden_reason: string | null;
   play_count: number;
@@ -116,6 +117,7 @@ const MAP_COLUMNS = [
   'm.title',
   'm.description',
   'm.visibility',
+  'm.authoring',
   'm.hidden',
   'm.hidden_reason',
   'm.play_count',
@@ -225,6 +227,7 @@ export function mapView(
   const privileged = isOwner(row, viewer) || canModerate(viewer);
   return {
     id: row.id,
+    ...(row.authoring ? { authoring: row.authoring } : {}),
     owner: publicOwner(row),
     title: row.title,
     description: row.description,

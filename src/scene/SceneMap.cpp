@@ -45,6 +45,7 @@ void SceneMap::extract(const Map &map, int displayW, int displayH)
 	forbiddenView = map.displayedForbiddenView;
 	guardAreaView = map.displayedGuardAreaView;
 	clearAreaView = map.displayedClearAreaView;
+	farmAreaView = map.displayedFarmAreaView;
 }
 
 bool SceneMap::isMapPartiallyDiscovered(int x1, int y1, int x2, int y2, Uint32 visionMask) const

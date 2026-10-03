@@ -126,3 +126,30 @@ queues:
         params: { width: 7, height: 7, teams: 2 }
         candidates: 5
         startingUnitLevel: 0
+
+# Hive Mind stays disabled until the release gates in docs/multiplayer/hive-mind.md pass.
+# One server-selected model; no player model picker. Prices below are development
+# credit units, not approved production sale prices.
+hiveMind:
+  enabled: false
+  model: gpt-6-luna
+  rate:
+    version: development-1
+    input: 1000
+    cachedInput: 100
+    cacheWrite: 1250
+    output: 5000
+  salesEnabled: false
+  packs: []
+
+# Optional AI Map Studio. Qualify all size/player combinations and real checkout
+# before enabling generation or sales. Prices follow the cost study.
+mapStudio:
+  enabled: false
+  salesEnabled: false
+  pipelineVersion: ai-map-v1
+  chatPerHour: 60
+  providerCallsPerDay: 100
+  packs: []
+  # textModel: <qualified text model>
+  # imageModel: <qualified image-editing model>

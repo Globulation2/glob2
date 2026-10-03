@@ -16,6 +16,7 @@
 
 #include "EngineFixtures.h"
 #include "Environment.h"
+#include "ScopedEnvironment.h"
 
 #include <algorithm>
 #include <chrono>
@@ -403,7 +404,17 @@ struct LanMatch
 				return true;
 			step();
 		}
-		return done();
+		if (done())
+			return true;
+		// Preserve connection and map-transfer errors when an asynchronous phase
+		// times out, rather than reporting only that its predicate stayed false.
+		MESSAGE("LAN host state: " << hostSide().state().toJson().dump());
+		for (const auto& player : players)
+			if (const auto* guest = player->room->guestSide())
+				MESSAGE(player->name << ": phase=" << static_cast<int>(guest->phase())
+				        << " reason=" << guest->closeReason() << " detail=" << guest->closeDetail()
+				        << " map=" << guest->downloadPercent());
+		return false;
 	}
 };
 
@@ -521,12 +532,13 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
-	GLOB2_TEST_CASE("a LAN host and two guests over loopback WSS play with AIs through a drop, a restart and the host "
-	                "leaving, and agree at every tick",
+	// The case name becomes an artifact directory; leave room for the 64-byte
+	// map hash and cache suffix under Windows' legacy file-path limit.
+	GLOB2_TEST_CASE("LAN WSS drop, restart and host departure",
 	                "[network][slow][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		REQUIRE(GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1) == 0);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
 		REQUIRE(std::getenv("GLOB2_LAN_ADDRESS") != nullptr);
 		REQUIRE(std::string(std::getenv("GLOB2_LAN_ADDRESS")) == "127.0.0.1");
 		LanMatch m;
@@ -693,7 +705,7 @@ TEST_SUITE("LanMatchHarness")
 	GLOB2_TEST_CASE("an idle LAN host sleeps and wakes at once for guests and the host", "[network][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
 		LanMatch m;
 		m.directory = glob2test::artifactDir() / "wait";
 		fs::remove_all(m.directory);
@@ -757,10 +769,12 @@ TEST_SUITE("LanMatchHarness")
 		CHECK(hostToGuest < 50);
 	}
 
-	GLOB2_TEST_CASE("LAN input delay on loopback and on emulated slower links", "[network][slow][benchmark][artifacts]")
+	GLOB2_TEST_CASE("LAN input delay on loopback and delayed links", "[network][slow][benchmark][artifacts]")
+
+
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
-		REQUIRE(GAGCore::setProcessEnvironment("GLOB2_LAN_ADDRESS", "127.0.0.1", 1) == 0);
+		glob2test::ScopedEnvironment address("GLOB2_LAN_ADDRESS", "127.0.0.1");
 		REQUIRE(std::getenv("GLOB2_LAN_ADDRESS") != nullptr);
 		REQUIRE(std::string(std::getenv("GLOB2_LAN_ADDRESS")) == "127.0.0.1");
 		std::ostringstream table, stages;
