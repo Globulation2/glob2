@@ -2,7 +2,6 @@
 // stored row about the account, other people's data and secrets stay out,
 // and every account column in the schema is either exported or deliberately
 // left out (so a new table cannot silently escape the export).
-import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { createHash, randomUUID } from 'node:crypto';
