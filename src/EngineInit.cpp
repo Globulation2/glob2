@@ -17,6 +17,7 @@
 #include "Player.h"
 #include "ReplayReader.h"
 #include "ReplayWriter.h"
+#include "TurnLockstep.h"
 
 #include <cerrno>
 #include <cstdlib>
@@ -145,6 +146,65 @@ GAGCore::CooperativeTask Engine::initMultiplayerTask(std::shared_ptr<Multiplayer
 	co_return true;
 }
 
+
+int Engine::initTurnMatch(TurnMatchStart start)
+{
+    const bool loaded = initTurnMatchTask(std::move(start)).run();
+    if (!loaded) showMapLoadError();
+    return loaded ? EE_NO_ERROR : EE_CANT_LOAD_MAP;
+}
+
+GAGCore::CooperativeTask Engine::initTurnMatchTask(TurnMatchStart start)
+{
+    initializationDiagnostic.clear();
+    if (!start.transport) co_return false;
+    co_await GAGCore::CooperativeTask::checkpoint("[Loading headers]");
+    TurnMatchState state;
+    state.mapFile = start.mapFile;
+    state.map = loadMapHeader(start.mapFile);
+    try { state.header = start.setup.toGameHeader(state.map); }
+    catch (const Online::MatchSetupError& error)
+    {
+        initializationDiagnostic = error.what();
+        co_return false;
+    }
+    const int players = state.header.getNumberOfPlayers();
+    if (start.localSeat >= players) co_return false;
+    int viewSeat = start.localSeat;
+    if (viewSeat < 0)
+    {
+        viewSeat = 0;
+        for (const auto& seat : start.setup.seats)
+            if (seat.human) { viewSeat = seat.seat; break; }
+    }
+    state.localPlayer = viewSeat;
+    state.localTeam = state.header.getBasePlayer(viewSeat).teamNumber;
+    gui.localPlayer = state.localPlayer;
+    gui.localTeamNo = state.localTeam;
+
+    // ignoreGUIData: a saved game's own local player and viewport do not apply.
+    const bool loaded = co_await initGameTask(state.map, state.header, true, true, false, state.mapFile);
+    if (!loaded) co_return false;
+    // A match without human seats would otherwise start as a live-spectated
+    // offline game, whose local AI orders would be submitted as human orders.
+    globalContainer->liveSpectating = false;
+    gui.localPlayer = state.localPlayer;
+    gui.localTeamNo = state.localTeam;
+
+    // Replaces the NetEngine finishGameInit created; nothing has used it yet.
+    auto session = std::make_unique<Turn::TurnLockstepSession>(players, start.transport, start.config);
+    turn = session.get();
+    net = std::move(session);
+    const char* envReplayPath = getenv("GLOB2_REPLAY_PATH");
+    state.replayPath = envReplayPath ? envReplayPath : "replays/last_game.replay";
+    turnMatch = std::move(state);
+    co_return true;
+}
+
+Turn::TurnSession* Engine::turnSession()
+{
+    return turn ? &turn->turn() : nullptr;
+}
 
 
 namespace

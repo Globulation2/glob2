@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
@@ -31,5 +32,27 @@ assert len(trace) > 1000, 'Missing or empty simulation trace'
 metadata = {'fixture': 'games/cross-replay.game.gz', 'seed': 42, 'ticks': 1500,
             'fixture_sha256': hashlib.sha256(fixture.read_bytes()).hexdigest(),
             'trace_sha256': hashlib.sha256(trace).hexdigest(), 'command': command}
+
+# The committed turn-protocol match record, verified headlessly. Its per-tick
+# checksum trace must match every other platform's (and the browsers').
+record = root / 'test/fixtures/multiplayer/FourSquares1.g2mr'
+match_map = root / 'maps/FourSquares1.map.gz'
+verify_dir = output / 'verify-match'
+shutil.rmtree(verify_dir, ignore_errors=True)
+verify_command = [str(binary), '--verify-match', str(record), '--map', str(match_map), '--out', str(verify_dir)]
+with (output / 'verify-match.log').open('w') as log:
+    subprocess.run(verify_command, cwd=root, check=True, timeout=300, stdout=log, stderr=subprocess.STDOUT,
+                   env=dict(os.environ, SDL_VIDEODRIVER='dummy', SDL_AUDIODRIVER='dummy'))
+verify_trace = (verify_dir / 'checksums.txt').read_bytes()
+assert verify_trace.count(b'\n') > 600, 'Missing or short verify-match trace'
+(output / 'verify-match.checksums.txt').write_bytes(verify_trace)
+verdict = json.loads((verify_dir / 'verdict.json').read_text())
+# Keep the uploaded evidence small: the replay and scratch profile are reproducible.
+(verify_dir / 'match.replay').unlink()
+shutil.rmtree(verify_dir / 'profile', ignore_errors=True)
+metadata['verify_match'] = {'record': 'test/fixtures/multiplayer/FourSquares1.g2mr',
+                            'record_sha256': hashlib.sha256(record.read_bytes()).hexdigest(),
+                            'trace_sha256': hashlib.sha256(verify_trace).hexdigest(),
+                            'verdict': verdict['verdict'], 'command': verify_command}
 (output / 'manifest.json').write_text(json.dumps(metadata, indent=2) + '\n')
 print(metadata['trace_sha256'])

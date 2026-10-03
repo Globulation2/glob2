@@ -72,7 +72,12 @@ Each generation sample is its own job, so a failed sample does not discard a bat
 Put the command first. `--headless-catalog` writes schema-version-1 JSON to stdout;
 startup diagnostics go to stderr. It enumerates selectable AIs (excluding None),
 Cortex and Maxima parameter schemas, generators, controls, revisions, telemetry,
-and save/network versions, plus map-report and generation-telemetry schema versions. Structured commands require `--output-dir DIR`; an existing
+and save/network versions, plus map-report and generation-telemetry schema versions.
+Its `commands` list names the structured commands this build supports (`game`,
+`generate_map`, `verify_match`, `sim_version`), and `sim_version` holds the build's
+simulation version (see [verifying a match record](../development/headless-replays.md#verifying-a-match-record)),
+so a job runner can probe a binary without passing it flags it may not know.
+Structured commands require `--output-dir DIR`; an existing
 `result.json` is rejected. Values are separate ordinary arguments, not JSON.
 
 ```sh

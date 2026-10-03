@@ -18,6 +18,8 @@
 #include "GenerationRequest.h"
 #include "GeneratorRegistry.h"
 #include "ReplayWriter.h"
+#include "SimVersion.h"
+#include <nlohmann/json.hpp>
 #include <BinaryStream.h>
 #include <FileManager.h>
 #include <Toolkit.h>
@@ -64,6 +66,7 @@ void writeJson(const std::string &path, const std::string &json)
 	fs::rename(temporary, path);
 }
 }
+
 namespace
 {
 using Headless::quote;
@@ -174,6 +177,69 @@ void manifest(const fs::path &directory)
 	}
 	out << "]}"; Headless::writeJson((directory / "artifacts.json").string(), out.str());
 }
+}
+
+void Headless::writeManifest(const std::string &directory)
+{
+	manifest(fs::path(directory));
+}
+
+void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::vector<Sint32> &eliminatedTicks)
+{
+	bool comma=false;
+	result << "\"players\":[";
+	for(int p=0;p<game.gameHeader.getNumberOfPlayers();++p)
+	{
+		const auto &bp=game.gameHeader.getBasePlayer(p);
+		if(p) result << ',';
+		result << "{\"player\":" << p << ",\"team\":" << bp.teamNumber << ",\"ai\":"
+			<< quote(bp.type>=BasePlayer::P_AI ? AINames::getCLIName(BasePlayer::implementationIdFromPlayerType(bp.type)) : bp.type==BasePlayer::P_IP ? "human" : "local")
+			<< ",\"runtime_values\":" << quote(game.gameHeader.getAIConfig(p)) << '}';
+	}
+	result << "],\"teams\":[";
+	std::set<int> winningAlliances; std::vector<int> winningTeams;
+	for(int t=0;t<game.mapHeader.getNumberOfTeams();++t)
+	{
+		Team *team=game.teams[t];
+		int units=0,workers=0,explorers=0,warriors=0,buildings=0,sites=0;
+		long long warriorHP=0,warriorAttack=0;
+		for(int i=0;i<Unit::MAX_COUNT;++i) if(const Unit *u=team->myUnits[i])
+		{
+			++units;workers+=u->typeNum==WORKER;explorers+=u->typeNum==EXPLORER;
+			if(u->typeNum==WARRIOR){++warriors;warriorHP+=u->hp;warriorAttack+=u->getRealAttackStrength();}
+		}
+		for(int i=0;i<Building::MAX_COUNT;++i) if(const Building *b=team->myBuildings[i])
+			if(!b->type->isVirtual){if(b->type->isBuildingSite)++sites;else ++buildings;}
+		int alliance=game.gameHeader.getAllyTeamNumber(t);
+		if(team->hasWon){winningTeams.push_back(t);winningAlliances.insert(alliance);}
+		if(t) result << ',';
+		result << "{\"team\":" << t << ",\"alliance\":" << alliance << ",\"allies_mask\":" << team->allies
+			<< ",\"start\":[" << team->startPosX << ',' << team->startPosY << "],\"alive\":" << (team->isAlive?"true":"false")
+			<< ",\"outcome\":" << quote(team->hasWon?"won":team->hasLost?"lost":"unresolved")
+			<< ",\"eliminated_tick\":" << eliminatedTicks[t] << ",\"prestige\":" << team->prestige
+			<< ",\"units\":" << units << ",\"workers\":" << workers << ",\"explorers\":" << explorers
+			<< ",\"warriors\":" << warriors << ",\"warrior_hp\":" << warriorHP << ",\"warrior_attack\":" << warriorAttack
+			<< ",\"buildings\":" << buildings << ",\"sites\":" << sites;
+		const TeamStat &stats=*team->stats.getLatestStat();
+		result << ",\"standard_statistics\":"; standardStatistics(result,stats);
+		result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding
+			<< ",\"total_hp\":" << stats.totalHP << ",\"total_attack_power\":" << stats.totalAttackPower
+			<< ",\"total_defense_power\":" << stats.totalDefensePower << ",\"food\":" << stats.totalFood
+			<< ",\"food_capacity\":" << stats.totalFoodCapacity << ",\"need_food\":" << stats.needFood << "},\"history\":[";
+		comma=false;
+		for(const auto &stat:team->stats.getEndOfGameStats())
+		{
+			if(comma)result<<',';comma=true;result<<'[';
+			for(int k=0;k<EndOfGameStat::TYPE_NB_STATS;++k){if(k)result<<',';result<<stat.value[k];}
+			result<<']';
+		}
+		result << "]}";
+	}
+	result << "],\"winning_teams\":[";
+	comma=false;for(int t:winningTeams){if(comma)result<<',';comma=true;result<<t;}
+	result << "],\"winning_alliances\":[";
+	comma=false;for(int t:winningAlliances){if(comma)result<<',';comma=true;result<<t;}
+	result << "],\"unresolved\":" << (winningTeams.empty()?"true":"false");
 }
 
 struct HeadlessRunner
@@ -412,59 +478,8 @@ struct HeadlessRunner
 		result << "],\"experiments\":[";
 		comma=false;
 		for(const auto &key:game.gameHeader.getExperiments().keys()) { if(comma)result<<',';comma=true;result<<quote(key); }
-		result << "]},\"players\":[";
-		for(int p=0;p<game.gameHeader.getNumberOfPlayers();++p)
-		{
-			const auto &bp=game.gameHeader.getBasePlayer(p);
-			if(p) result << ',';
-			result << "{\"player\":" << p << ",\"team\":" << bp.teamNumber << ",\"ai\":"
-				<< quote(bp.type>=BasePlayer::P_AI ? AINames::getCLIName(BasePlayer::implementationIdFromPlayerType(bp.type)) : "local")
-				<< ",\"runtime_values\":" << quote(game.gameHeader.getAIConfig(p)) << '}';
-		}
-		result << "],\"teams\":[";
-		std::set<int> winningAlliances; std::vector<int> winningTeams;
-		for(int t=0;t<game.mapHeader.getNumberOfTeams();++t)
-		{
-			Team *team=game.teams[t];
-			int units=0,workers=0,explorers=0,warriors=0,buildings=0,sites=0;
-			long long warriorHP=0,warriorAttack=0;
-			for(int i=0;i<Unit::MAX_COUNT;++i) if(const Unit *u=team->myUnits[i])
-			{
-				++units;workers+=u->typeNum==WORKER;explorers+=u->typeNum==EXPLORER;
-				if(u->typeNum==WARRIOR){++warriors;warriorHP+=u->hp;warriorAttack+=u->getRealAttackStrength();}
-			}
-			for(int i=0;i<Building::MAX_COUNT;++i) if(const Building *b=team->myBuildings[i])
-				if(!b->type->isVirtual){if(b->type->isBuildingSite)++sites;else ++buildings;}
-			int alliance=game.gameHeader.getAllyTeamNumber(t);
-			if(team->hasWon){winningTeams.push_back(t);winningAlliances.insert(alliance);}
-			if(t) result << ',';
-			result << "{\"team\":" << t << ",\"alliance\":" << alliance << ",\"allies_mask\":" << team->allies
-				<< ",\"start\":[" << team->startPosX << ',' << team->startPosY << "],\"alive\":" << (team->isAlive?"true":"false")
-				<< ",\"outcome\":" << quote(team->hasWon?"won":team->hasLost?"lost":"unresolved")
-				<< ",\"eliminated_tick\":" << engine.teamEliminatedTick[t] << ",\"prestige\":" << team->prestige
-				<< ",\"units\":" << units << ",\"workers\":" << workers << ",\"explorers\":" << explorers
-				<< ",\"warriors\":" << warriors << ",\"warrior_hp\":" << warriorHP << ",\"warrior_attack\":" << warriorAttack
-				<< ",\"buildings\":" << buildings << ",\"sites\":" << sites;
-			const TeamStat &stats=*team->stats.getLatestStat();
-			result << ",\"standard_statistics\":"; standardStatistics(result,stats);
-			result << ",\"statistics\":{\"total_units\":" << stats.totalUnit << ",\"total_buildings\":" << stats.totalBuilding
-				<< ",\"total_hp\":" << stats.totalHP << ",\"total_attack_power\":" << stats.totalAttackPower
-				<< ",\"total_defense_power\":" << stats.totalDefensePower << ",\"food\":" << stats.totalFood
-				<< ",\"food_capacity\":" << stats.totalFoodCapacity << ",\"need_food\":" << stats.needFood << "},\"history\":[";
-			comma=false;
-			for(const auto &stat:team->stats.getEndOfGameStats())
-			{
-				if(comma)result<<',';comma=true;result<<'[';
-				for(int k=0;k<EndOfGameStat::TYPE_NB_STATS;++k){if(k)result<<',';result<<stat.value[k];}
-				result<<']';
-			}
-			result << "]}";
-		}
-		result << "],\"winning_teams\":[";
-		comma=false;for(int t:winningTeams){if(comma)result<<',';comma=true;result<<t;}
-		result << "],\"winning_alliances\":[";
-		comma=false;for(int t:winningAlliances){if(comma)result<<',';comma=true;result<<t;}
-		result << "],\"unresolved\":" << (winningTeams.empty()?"true":"false");
+		result << "]},";
+		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		if(fs::exists(output/"generated/result.json"))
 		{
 			std::ifstream generation(output/"generated/result.json");
@@ -480,18 +495,28 @@ int runHeadlessCommand(int argc,char **argv)
 {
 	if(argc<2) return -1;
 	const std::string command=argv[1];
-	if(command!="--headless-catalog" && command!="--run-game" && command!="--generate-map") return -1;
+	if(command!="--headless-catalog" && command!="--run-game" && command!="--generate-map"
+		&& command!="--verify-match" && command!="--sim-version") return -1;
 	fs::path output;
 	try
 	{
 		isolateEnvironment();
+		if(command=="--verify-match") return runVerifyMatch(argc,argv);
+		if(command=="--sim-version")
+		{
+			if(argc!=2) throw std::invalid_argument("--sim-version takes no arguments");
+			GlobalContainer globals("glob2-sim-version");
+			globalContainer=&globals;globals.runNoX=true;
+			std::cout << Online::currentSimVersion().toJson().dump() << std::endl;
+			return 0;
+		}
 		if(command=="--headless-catalog")
 		{
 			if(argc!=2) throw std::invalid_argument("catalog takes no arguments");
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\"],\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())
 			{
