@@ -117,6 +117,43 @@ TEST_SUITE("PlatformClient")
 		CHECK_EQ(f.client.account()->displayName, "Guest-7");
 	}
 
+	TEST_CASE("an unsupported sim version says which side is out of date")
+	{
+		auto mismatchFor = [](const Json &served) {
+			Fixture f;
+			f.client.start(ORIGIN);
+			f.answerGuest();
+			f.world.socket().state = NetTransport::State::Connected;
+			f.client.update();
+			auto hello = f.world.socket().find("session.hello");
+			REQUIRE(!hello.is_null());
+			const Json mine = hello["params"]["client"]["simVersion"];
+			Json list = Json::array();
+			// Each entry: {versionMinor offset, netProtocol offset, data hash}.
+			if (served.is_array())
+				for (const auto &entry : served)
+					list.push_back(Json{{"versionMinor", mine["versionMinor"].get<int>() + entry[0].get<int>()},
+										{"netProtocol", mine["netProtocol"].get<int>() + entry[1].get<int>()},
+										{"dataHash", entry[2]}});
+			Json result = {{"sessionId", "s-1"}, {"serverTime", "2026-09-21T14:13:20Z"}, {"simSupported", false}};
+			if (!served.is_null())
+				result["supportedSimVersions"] = list;
+			f.world.socket().respond(hello, result);
+			f.client.update();
+			REQUIRE(f.client.connection() == PlatformClient::Connection::Online);
+			return f.client.simMismatch();
+		};
+		using M = PlatformClient::SimMismatch;
+		const std::string other(64, 'a');
+		CHECK(mismatchFor(Json::array({Json::array({-1, -1, other})})) == M::ServerBehind);
+		CHECK(mismatchFor(Json::array({Json::array({0, -1, other})})) == M::ServerBehind);
+		CHECK(mismatchFor(Json::array({Json::array({-1, 0, other}), Json::array({1, 0, other})})) == M::ClientBehind);
+		CHECK(mismatchFor(Json::array({Json::array({0, 1, other})})) == M::ClientBehind);
+		CHECK(mismatchFor(Json::array({Json::array({0, 0, other})})) == M::Unknown);
+		CHECK(mismatchFor(Json::array()) == M::Unknown);
+		CHECK(mismatchFor(Json()) == M::Unknown);
+	}
+
 	TEST_CASE("a returning player signs in with the device credential or refresh token")
 	{
 		Fixture f;

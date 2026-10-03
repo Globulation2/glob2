@@ -83,7 +83,9 @@ produce identical games; every simulation change bumps `SIM_REVISION`
   `engine_agents` and `GET /api/v1/instance` lists every version with an agent
   seen in the last five minutes. A client whose version is not served gets
   `simSupported: false` from `session.hello` (it can still sign in) and
-  `update_required` from room, queue and match requests.
+  `update_required` from room, queue and match requests. The hello result also
+  lists the served versions, so the client can say whether it or the server
+  needs updating rather than always asking the player to update.
 - Serving an older version means running an engine-agent image of that version
   alongside the current one. AI rating entities are keyed by (AI id, sim
   version), so AI revisions are never combined.

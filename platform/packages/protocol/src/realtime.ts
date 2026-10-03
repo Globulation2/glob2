@@ -142,6 +142,13 @@ export const realtimeMethods = {
       simSupported: Type.Boolean({
         description: 'False: rooms, queues and matches answer update_required.',
       }),
+      supportedSimVersions: Type.Optional(
+        Type.Array(SimVersion, {
+          maxItems: 16,
+          description:
+            'Sim versions this instance serves, so an unsupported client can tell whether it or the server is behind.',
+        }),
+      ),
       account: Type.Optional(SelfAccount),
     }),
   },

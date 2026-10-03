@@ -3632,6 +3632,18 @@ Unrated
 %0 plays a newer version, so this copy can't join online games until it updates. LAN games still work.
 [hub update required]
 Update required
+[hub server behind]
+Server update pending
+[hub server behind at %0]
+%0 · server update pending
+[hub server behind detail %0]
+This copy is newer than %0, which hasn't been updated to it yet. Online games will open once the server updates. LAN games still work.
+[hub version mismatch]
+Different version
+[hub version mismatch at %0]
+%0 · different version
+[hub version mismatch detail %0]
+%0 plays a different version of the game, so this copy can't join online games. LAN games still work.
 [hub versus %0]
 vs %0
 [match ai]
@@ -4018,6 +4030,10 @@ You declined a match. You can search again in %0.
 Ranked queues are for signed-in accounts; sign in first.
 [online update required]
 This version of the game is too old for the server; update to play online.
+[online server behind]
+The server hasn't been updated to this version yet; online play opens once it is.
+[online version mismatch]
+The server plays a different version of the game; online play isn't available with this copy.
 [qm already searching]
 You are already searching or in a match.
 [online connection problem]

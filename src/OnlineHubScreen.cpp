@@ -221,7 +221,14 @@ void OnlineHubScreen::syncFromClient()
 	using C = Online::PlatformClient::Connection;
 	const auto connection = platform.connection();
 	if (connection == C::Online)
+	{
 		data.link = platform.simSupported() ? Model::Link::Online : Model::Link::UpdateRequired;
+		using Mismatch = Online::PlatformClient::SimMismatch;
+		const auto mismatch = platform.simMismatch();
+		data.outdated = mismatch == Mismatch::ClientBehind	 ? Model::Outdated::Client
+						: mismatch == Mismatch::ServerBehind ? Model::Outdated::Server
+															 : Model::Outdated::Unknown;
+	}
 	else if (connection == C::Waiting || (connection == C::Stopped && !platform.lastError().empty()))
 		data.link = Model::Link::Offline;
 	else
@@ -611,12 +618,21 @@ Element OnlineHubScreen::banner(const Presentation &p)
 					{.color = theme().palette.field, .padding = p.pt(10), .shadow = false, .border = theme().palette.danger});
 	}
 	if (data.link == Model::Link::UpdateRequired)
-		return card(column({row({icon(uiIcon(UIIcon::Warning), {22, theme().palette.danger}), expanded(column({heading(tr("[hub update required]")), paragraph(formatted("[hub update required detail %0]", hostOf(data.origin)), {FontRole::Support, true})}, {p.pt(2)}))}, {p.pt(10), CrossAlign::Start}),
-							row({button("banner/update", tr("[hub get update]"), [] { GAGCore::ApplicationHost::openUrl("https://globulation2.org/download"); }, {.primary = true}),
-								 button("banner/server", tr("[hub change server]"), [this] { openSettings(); })},
-								{p.pt(8)})},
+	{
+		// Only offer the download when this copy may be the one that is out of date.
+		const bool serverBehind = data.outdated == Model::Outdated::Server;
+		const bool clientBehind = data.outdated == Model::Outdated::Client;
+		const char *headingKey = serverBehind ? "[hub server behind]" : clientBehind ? "[hub update required]" : "[hub version mismatch]";
+		const char *detailKey = serverBehind ? "[hub server behind detail %0]" : clientBehind ? "[hub update required detail %0]" : "[hub version mismatch detail %0]";
+		std::vector<Element> actions;
+		if (!serverBehind)
+			actions.push_back(button("banner/update", tr("[hub get update]"), [] { GAGCore::ApplicationHost::openUrl("https://globulation2.org/download"); }, {.primary = true}));
+		actions.push_back(button("banner/server", tr("[hub change server]"), [this] { openSettings(); }));
+		return card(column({row({icon(uiIcon(UIIcon::Warning), {22, theme().palette.danger}), expanded(column({heading(tr(headingKey)), paragraph(formatted(detailKey, hostOf(data.origin)), {FontRole::Support, true})}, {p.pt(2)}))}, {p.pt(10), CrossAlign::Start}),
+							row(std::move(actions), {p.pt(8)})},
 						   {p.pt(8)}),
 					{.color = theme().palette.field, .padding = p.pt(10), .shadow = false, .border = theme().palette.danger});
+	}
 	return nullptr;
 }
 
@@ -874,7 +890,10 @@ Element OnlineHubScreen::build(const Presentation &p)
 		status = formatted("[hub offline at %0]", hostOf(data.origin));
 		break;
 	case Model::Link::UpdateRequired:
-		status = formatted("[hub update required at %0]", hostOf(data.origin));
+		status = formatted(data.outdated == Model::Outdated::Server	  ? "[hub server behind at %0]"
+						   : data.outdated == Model::Outdated::Client ? "[hub update required at %0]"
+																	  : "[hub version mismatch at %0]",
+						   hostOf(data.origin));
 		break;
 	}
 	auto headline = row({expanded(column({phone ? heading(tr("[hub online]")) : title(tr("[hub online]")), caption(status)}, {0})), accountChip(p)}, {p.pt(8), CrossAlign::Center});
@@ -882,7 +901,13 @@ Element OnlineHubScreen::build(const Presentation &p)
 		// A narrow phone (or large text) gives the status line the full width under
 		// the title and account chip, rather than wrapping it word by word beside the
 		// chip and pushing Back off the bottom.
-		headline = column({row({expanded(heading(tr("[hub online]"))), accountChip(p)}, {p.pt(8), CrossAlign::Center}), caption(status)}, {0});
+	{
+		std::vector<Element> lines{row({expanded(heading(tr("[hub online]"))), accountChip(p)}, {p.pt(8), CrossAlign::Center})};
+		// The offline and update banners already name the server and the problem.
+		if (data.link != Model::Link::Offline && data.link != Model::Link::UpdateRequired)
+			lines.push_back(caption(status));
+		headline = column(std::move(lines), {0});
+	}
 	// Modal panels take the body: sign-in, the trust prompt and the account menu.
 	Element overlay = trustPrompt ? trustPanel(p) : data.signIn != Model::SignIn::Closed ? signInPanel(p) : accountMenu ? accountPanel(p) : nullptr;
 	std::vector<Element> toast;
