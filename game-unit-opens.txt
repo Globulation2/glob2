@@ -1,0 +1,12 @@
+openat(AT_FDCWD, "./data/gfx/unit.sheet", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-0.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-1.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-2.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-3.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-4.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-5.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-6.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-7.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-8.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-9.webp", O_RDONLY) = 29
+openat(AT_FDCWD, "./data/gfx/unit-sheet-10.webp", O_RDONLY) = 29

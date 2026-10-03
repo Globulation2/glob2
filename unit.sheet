@@ -1,0 +1,14 @@
+# Sprite sheet index, written by tools/package_assets.py, read by GAGCore::Sprite::load.
+# One line per sheet: <file> <image|rotated> <first frame> <frames> <tile width> <tile height>
+# Tiles are packed row-major; the column count follows from the sheet's width.
+unit-sheet-0.png image 256 256 38 38
+unit-sheet-1.png image 768 256 38 38
+unit-sheet-2.png image 1024 256 40 40
+unit-sheet-3.png image 1536 256 40 40
+unit-sheet-4.png rotated 0 256 32 32
+unit-sheet-5.png rotated 256 256 38 38
+unit-sheet-6.png rotated 512 256 38 38
+unit-sheet-7.png rotated 768 256 38 38
+unit-sheet-8.png rotated 1024 256 40 40
+unit-sheet-9.png rotated 1280 256 40 40
+unit-sheet-10.png rotated 1536 256 40 40

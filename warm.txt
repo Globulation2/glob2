@@ -1,0 +1,21 @@
+== source
+run 0 ok=1 frames=1792 load_ms=162.1
+run 1 ok=1 frames=1792 load_ms=153.1
+run 2 ok=1 frames=1792 load_ms=143.0
+run 3 ok=1 frames=1792 load_ms=136.2
+run 4 ok=1 frames=1792 load_ms=135.9
+run 5 ok=1 frames=1792 load_ms=151.8
+== baseline
+run 0 ok=1 frames=1792 load_ms=262.8
+run 1 ok=1 frames=1792 load_ms=195.0
+run 2 ok=1 frames=1792 load_ms=196.3
+run 3 ok=1 frames=1792 load_ms=184.4
+run 4 ok=1 frames=1792 load_ms=195.8
+run 5 ok=1 frames=1792 load_ms=207.2
+== sheets
+run 0 ok=1 frames=1792 load_ms=59.1
+run 1 ok=1 frames=1792 load_ms=41.6
+run 2 ok=1 frames=1792 load_ms=43.4
+run 3 ok=1 frames=1792 load_ms=40.6
+run 4 ok=1 frames=1792 load_ms=42.4
+run 5 ok=1 frames=1792 load_ms=38.2
