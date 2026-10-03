@@ -2,6 +2,8 @@
 // scheduler (maintenance, matchmaker, rating sweep) on the one replica
 // holding the leader lock.
 import {
+  ConfigError,
+  JobQueue,
   Shutdown,
   createLogger,
   loadConfig,
@@ -17,6 +19,7 @@ import { PgQueueNotifier } from './matchmaking/notifier.ts';
 import type { MatchStarter } from './matchmaking/starter.ts';
 import { applyPendingRatings, handleEngineJobResult } from './ratings/apply.ts';
 import { runScheduler, type ScheduledTask } from './scheduler.ts';
+import { WarmMapPool } from './warmMaps.ts';
 
 const config = loadConfig();
 const logger = createLogger('worker', config.logLevel);
@@ -39,6 +42,8 @@ try {
   });
   shutdown.add('database', () => database.close());
   await prepareJobQueue(database.pool, logger);
+  const jobQueue = await JobQueue.create(database.pool, logger);
+  shutdown.add('job queue', () => jobQueue.close());
 
   const runner = await startJobRunner({
     pool: database.pool,
@@ -69,6 +74,14 @@ try {
   if (queues.length > 0) {
     scheduled.push({ name: 'matchmaker', intervalMs: 1000, run: () => matchmaker.tick() });
   }
+  // Warm map pool: WARM_MAPS_PER_ENTRY pre-generated maps per queue map pool
+  // entry and served sim version (default 1; 0 turns the pool off).
+  const perEntry = Number(process.env['WARM_MAPS_PER_ENTRY'] ?? '1');
+  if (!Number.isInteger(perEntry) || perEntry < 0 || perEntry > 16) {
+    throw new ConfigError('WARM_MAPS_PER_ENTRY must be an integer from 0 to 16');
+  }
+  const warmMaps = new WarmMapPool({ db: database.db, queue: jobQueue, queues, perEntry, logger });
+  scheduled.push({ name: 'warm maps', intervalMs: 10_000, run: () => warmMaps.refill() });
   const leader = new LeaderElection({
     connectionString: config.databaseUrl,
     name: 'scheduler',

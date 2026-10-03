@@ -425,6 +425,97 @@ export interface QueueCooldownsTable {
   created_at: Timestamp;
 }
 
+export interface WarmMapsTable {
+  id: Generated<string>;
+  queue_id: string;
+  sim_version: string;
+  entry_key: string;
+  generator: Json<JsonValue>;
+  status: Defaulted<'generating' | 'ready' | 'taken' | 'failed'>;
+  job_id: Nullable<string>;
+  map_hash: Nullable<string>;
+  map_facts: NullableJson<JsonValue>;
+  failure: Nullable<string>;
+  match_id: Nullable<string>;
+  created_at: Timestamp;
+  ready_at: NullableTimestamp;
+  taken_at: NullableTimestamp;
+}
+
+// ------------------------------------------------- read-only views (0004)
+
+/** Read-only column of a view. */
+type View<T> = ColumnType<T, never, never>;
+
+export interface MatchResultsView {
+  match_id: View<string>;
+  origin: View<'room' | 'queue'>;
+  queue_id: View<string | null>;
+  rated: View<boolean>;
+  sim_version: View<string>;
+  map_hash: View<string>;
+  generator_id: View<string | null>;
+  final_tick: View<number | null>;
+  ended_at: View<Date>;
+  seat: View<number>;
+  team: View<number>;
+  kind: View<'human' | 'ai'>;
+  account_id: View<string | null>;
+  ai_id: View<string | null>;
+  rating_entity_id: View<string | null>;
+  outcome: View<Outcome | null>;
+  won: View<boolean | null>;
+}
+
+export interface RecentWinRatesView {
+  account_id: View<string | null>;
+  ai_id: View<string | null>;
+  ai_sim_version: View<string | null>;
+  dimension: View<'queue' | 'map' | 'generator'>;
+  key: View<string>;
+  games: View<number>;
+  wins: View<number>;
+  win_rate: View<number>;
+  last_played_at: View<Date>;
+}
+
+export interface RecentGameLengthsView {
+  dimension: View<'queue' | 'generator'>;
+  key: View<string>;
+  games: View<number>;
+  mean_ticks: View<number>;
+  median_ticks: View<number>;
+  p90_ticks: View<number>;
+  max_ticks: View<number>;
+}
+
+export interface TeamTimelineView {
+  match_id: View<string>;
+  team: View<number>;
+  tick: View<number>;
+  units: View<number>;
+  buildings: View<number>;
+  prestige: View<number>;
+  hp: View<number>;
+  attack: View<number>;
+  defense: View<number>;
+}
+
+export interface AccountEconomyCurvesView {
+  account_id: View<string>;
+  match_id: View<string>;
+  queue_id: View<string | null>;
+  ended_at: View<Date>;
+  tick: View<number>;
+  units: View<number>;
+  buildings: View<number>;
+  prestige: View<number>;
+  average_units: View<number>;
+  average_buildings: View<number>;
+  average_prestige: View<number>;
+  games_at_tick: View<number>;
+}
+
 export interface Database {
   accounts: AccountsTable;
   identities: IdentitiesTable;
@@ -458,6 +549,12 @@ export interface Database {
   match_proposals: MatchProposalsTable;
   match_proposal_seats: MatchProposalSeatsTable;
   queue_cooldowns: QueueCooldownsTable;
+  warm_maps: WarmMapsTable;
+  match_results_view: MatchResultsView;
+  recent_win_rates_view: RecentWinRatesView;
+  recent_game_lengths_view: RecentGameLengthsView;
+  team_timeline_view: TeamTimelineView;
+  account_economy_curves_view: AccountEconomyCurvesView;
 }
 
 export type Account = Selectable<AccountsTable>;
@@ -466,3 +563,4 @@ export type AccountUpdate = Updateable<AccountsTable>;
 export type Match = Selectable<MatchesTable>;
 export type NewMatch = Insertable<MatchesTable>;
 export type Room = Selectable<RoomsTable>;
+export type WarmMap = Selectable<WarmMapsTable>;
