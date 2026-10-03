@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="36" failures="0" errors="0" skipped="0"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.000869" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.010542" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.009947" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.009838" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.027328" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.000991" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="parallel fields" time="0.024454" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.001427" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.008056" status="run" />
+  </testsuite><testsuite name="ClearingFlagGradient"><testcase classname="ClearingFlagGradient" name="basic switches; all fruit; empty tiles; padding independence and swimming variants" time="0.002643" status="run" />
+  </testsuite><testsuite name="CortexActionCoverage"><testcase classname="CortexActionCoverage" name="build actions reject invalid slots and cooldown suppresses duplicate orders" time="0.000805" status="run" />
+  <testcase classname="CortexActionCoverage" name="flag rediscovery excludes claimed flags and stale defense teardown is idempotent" time="0.000856" status="run" />
+  <testcase classname="CortexActionCoverage" name="live upgrade eligibility and worker columns drive the actual construction order" time="0.002015" status="run" />
+  <testcase classname="CortexActionCoverage" name="production clamps ratios applies orders and deduplicates finished swarms" time="0.000858" status="run" />
+  <testcase classname="CortexActionCoverage" name="rally selection and bound warrior arrivals respect colony preference and toroidal range" time="0.000916" status="run" />
+  <testcase classname="CortexActionCoverage" name="war flags create once reconcile force limits and retarget through real orders" time="0.00097" status="run" />
+  </testsuite><testsuite name="CortexGeometry"><testcase classname="CortexGeometry" name="placement geometry matches the tile-scan oracle" time="0.178345" status="run" />
+  </testsuite><testsuite name="CortexNetCoverage"><testcase classname="CortexNetCoverage" name="equal negative logits select the lowest eligible class" time="0" status="run" />
+  <testcase classname="CortexNetCoverage" name="file loaders reject missing empty and wrong-net blobs" time="0.000735" status="run" />
+  <testcase classname="CortexNetCoverage" name="integer inference matches an independent two-signal oracle" time="0" status="run" />
+  <testcase classname="CortexNetCoverage" name="truncated blobs and invalid header or layer contracts are rejected" time="0.005845" status="run" />
+  <testcase classname="CortexNetCoverage" name="worker caps mask impossible outputs and clamp depleted wheat" time="0" status="run" />
+  </testsuite><testsuite name="CortexPolicyCoverage"><testcase classname="CortexPolicyCoverage" name="combat prioritizes serious defense and respects attack hold and amphibious capacity" time="0" status="run" />
+  <testcase classname="CortexPolicyCoverage" name="first tech buildings require prerequisites and feasible locations" time="0" status="run" />
+  <testcase classname="CortexPolicyCoverage" name="inn upgrades retain enough feeding capacity and hospitals scale with army" time="0" status="run" />
+  <testcase classname="CortexPolicyCoverage" name="learned policies load once retain feasibility masks and fall back on invalid files" time="0.000986" status="run" />
+  <testcase classname="CortexPolicyCoverage" name="protection hunger and bootstrap decisions honor observation validity" time="0" status="run" />
+  <testcase classname="CortexPolicyCoverage" name="tech upgrades require trained units and decline below the boundary" time="0" status="run" />
+  <testcase classname="CortexPolicyCoverage" name="worker tuning respects depletion floors settling and a shared construction budget" time="0" status="run" />
+  </testsuite><testsuite name="ImmobileUnitGradient"><testcase classname="ImmobileUnitGradient" name="fresh map has no immobile units" time="0.001224" status="run" />
+  <testcase classname="ImmobileUnitGradient" name="immobile unit blocks its own tile" time="0.002229" status="run" />
+  <testcase classname="ImmobileUnitGradient" name="painting forbidden area refreshes gradients" time="0.001321" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="forbidden edits invalidate exactly the affected fields and preserve the rest" time="0.342197" status="run" />
+  </testsuite><testsuite name="Maxima.Implementation"><testcase classname="Maxima.Implementation" name="fruit strategy regressions" time="0.020851" status="run" />
+  <testcase classname="Maxima.Implementation" name="fruit supply routes" time="0.002492" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.262081" status="run" />
+  </testsuite></testsuites>
