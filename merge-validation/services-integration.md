@@ -1,13 +1,13 @@
 # Online services integration validation
 
-Source9fb540d50 integrates master5c46e832b. Skin storage is passed explicitly
+Source 9fb540d50 integrates master 5c46e832b. Skin storage is passed explicitly
 to online rooms/matches, following application service ownership. Skin migrations
 0020–0028 follow the landed presence and warm-map migrations; upgrade from0019
 retains an existing account. Native game/probes build;607 unit cases;29 focused
 engine cases; real API lifecycle probe; platform lint/typecheck and367 tests
 (5 existing skips);258 build contracts (3 environment skips) pass. Browser serial
-and threaded builds/package pass; serial Chromium mesh/context-loss/deferred
-asset tests2PASS. Threaded browser check pending when this note was written.
+and threaded builds/package pass; serial and threaded Chromium mesh/context-loss/deferred
+asset tests2PASS each; Firefox and WebKit2PASS each.
 
 Crowded-render180 checksum frames pass with488 added units and two paints.
 Steady geometry/raster calls remain0. New timings are integration smoke evidence
