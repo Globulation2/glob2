@@ -468,7 +468,7 @@ auditing platform API use, and playing on representative older tablets. Do not
 select those devices in the store until they pass.
 
 `--amazon-apk` builds an isolated Amazon native flavor that hides and blocks
-the public YOG account flow while retaining LAN play. It reuses the standard
+online play (the online hub and invite links) while retaining LAN play. It reuses the standard
 Android dependency builds and checks matching native libraries in both ABIs,
 the packaged asset index, alignment and both native build IDs. It derives
 `versionName` from

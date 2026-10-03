@@ -56,18 +56,14 @@ screens, so cancelling a dialog resumes the same editor and its unsaved map.
 Campaign-editor entry drafts are owned by their completion callbacks and outlive
 screens that borrow them.
 
-## YOG and LAN ownership
+## Online and LAN ownership
 
-YOG login, registration, lobby tabs, room setup, map transfer, and matches are
-owned by the application stack. Network callbacks record state; transitions are
-requested only after the current client update returns. A pending match launch
-queues cooperative game loading and then the shared `GameSessionScreen`.
-
-Orders received during loading remain queued until the engine attaches. Engine
-teardown detaches the borrowed network pointer. Transfer-screen destruction
-cancels active transfers, and lobby teardown breaks client/game ownership cycles.
-Desktop LAN discovery, admission, lobby, and match execution follow the same
-stack ownership; discovery resumes after a join session returns.
+The online hub, rooms, map transfer and matches, and LAN discovery, rooms and
+matches, are owned by the application stack. Network callbacks record state;
+transitions are requested only after the current client update returns. A pending
+match launch queues cooperative game loading and then the shared
+`GameSessionScreen`. Discovery resumes after a LAN join session returns. (The YOG
+lobby screens this section first described were removed at the M9 cutover.)
 
 ## Overlay ownership
 
@@ -113,7 +109,7 @@ navigation, cancellation, quit propagation, deterministic simulation under
 varied callback schedules, input/focus cleanup, editor ownership, load failure,
 and repeated interpreter use. Browser tests exercise the same flows with real
 input across Chromium, Firefox, and WebKit, including repeated loads, editor
-cancellation, replay saving, YOG navigation, match startup, and clean shutdown.
+cancellation, replay saving, online navigation, match startup, and clean shutdown.
 
 Interpreter lifetime fixes discovered by repeated loading are recorded in
 [ADR 007](adr-007-script-lifetimes.md). Cooperative generation decisions are

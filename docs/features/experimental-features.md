@@ -11,7 +11,7 @@ covers what players see, the compatibility rules, and how to add an experiment.
   a line explaining what it changes. The page says when a build has none.
 - The set applies to **new games only**: a custom game, a map file played from the
   load screen, a headless `-test-games` match, and a multiplayer game the player
-  hosts on YOG or LAN. A joiner plays with the host's set, whatever their own
+  hosts online or on LAN. A joiner plays with the host's set, whatever their own
   settings say.
 - **Campaign missions and the tutorial never take experiments**: scripted content
   plays as its author tested it.
@@ -33,9 +33,9 @@ header with the map, so joiners see the set in the lobby.
 
 The set lives in `GameHeader` (`src/GameHeader.h`) as an `ExperimentSet`
 (`src/ExperimentalFeatures.h`), written after the custom-game rules and gated on
-save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replays,
-the network game-header messages and the YOG after-join information, so every
-peer of a game runs the same set. Adding the field changed the header's wire
+save format 124 (`FILE_FORMAT_VERSION_EXPERIMENTS`). It travels in saves, replays
+and the match setup every peer of a game starts from, so every peer runs the same
+set. Adding the field changed the header's wire
 format and introduced network protocol 47. The current protocol is 48, which
 also adds JavaScript scripting compatibility and refuses older clients. Replays
 recorded at format 123 still play, because a header without the section loads as
