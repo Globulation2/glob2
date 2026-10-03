@@ -1,3 +1,4 @@
+#include "hive/HiveClient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -208,7 +209,11 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 					}
 				}
 				break;
-				case GameGUIKeyActions::OpenChatBox:
+				case GameGUIKeyActions::OpenCommander:
+                    openCommander(); break;
+                case GameGUIKeyActions::StopCommander:
+                    if(hive)hive->stop(); break;
+                case GameGUIKeyActions::OpenChatBox:
 				{
 					openChat();
 				}

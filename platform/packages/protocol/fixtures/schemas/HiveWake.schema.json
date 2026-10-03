@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:HiveWake",
+  "title": "HiveWake",
+  "type": "object",
+  "required": [
+    "eventId",
+    "programId",
+    "revision",
+    "tick",
+    "key",
+    "reason",
+    "data"
+  ],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "programId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "tick": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "key": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "data": {
+      "type": "string",
+      "maxLength": 65536
+    }
+  },
+  "additionalProperties": false
+}

@@ -88,7 +88,11 @@ services:
   platform-api:
     <<: [*hardening, *platform-image]
     command: [node, apps/api/src/main.ts]
-    environment: *platform-environment
+    environment:
+      <<: *platform-environment
+      HIVE_OPENAI_API_KEY: ${HIVE_OPENAI_API_KEY:-}
+      HIVE_STRIPE_SECRET_KEY: ${HIVE_STRIPE_SECRET_KEY:-}
+      HIVE_STRIPE_WEBHOOK_SECRET: ${HIVE_STRIPE_WEBHOOK_SECRET:-}
     # Provider secrets named in instance.yaml (`clientSecretEnv: …`) come from .env.
     env_file:
       - path: ${GLOB2_ENV_FILE:-.env}
