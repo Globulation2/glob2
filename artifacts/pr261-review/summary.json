@@ -1,0 +1,42 @@
+{
+  "revision": "7369a24dd81ea70f18a6e02c7b6aaaa5dd32b710",
+  "base": "d46638d859e228a63e0471e2dd45108b112e9454",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "native": {
+    "cases": 1232,
+    "passed": 1142,
+    "failures": 0,
+    "errors": 0,
+    "skips": 90
+  },
+  "display_concurrent": {
+    "cases": 90,
+    "passed": 87,
+    "failures": 0,
+    "errors": 3,
+    "skips": 0
+  },
+  "display_icon_rerun": {
+    "cases": 1,
+    "passed": 1,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "display_portable_rerun": {
+    "cases": 2,
+    "passed": 2,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "build_system": {
+    "passed": 283,
+    "skips": 3
+  },
+  "python_contracts": 12,
+  "strict_translation_errors": 0,
+  "broad_UI_baseline_revision": "b7f89e595",
+  "final_UI_scope": "GLOB2_UI_ONLY=map-repeat; six viewport sweeps",
+  "SDL_prefix": "/tmp/glob2-sdl3/prefix"
+}
