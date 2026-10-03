@@ -76,7 +76,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	if (finishingSession)
 	{
 		frameStarted = tick;
-		const bool pending = engine->advancePendingSave(clock, input.events());
+		const bool pending = engine->advancePendingSave(input.events());
 		input.clear();
 		if (pending) return;
 	}
@@ -103,7 +103,7 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	if (!running && !finishingSession)
 	{
 		finishingSession = true;
-		if (engine->advancePendingSave(clock, {})) return;
+		if (engine->advancePendingSave({})) return;
 	}
 	if (!running)
 	{
