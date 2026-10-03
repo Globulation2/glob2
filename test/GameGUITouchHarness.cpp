@@ -1103,9 +1103,13 @@ class GameGUITouchHarness
 				const auto savedCamera = gui.camera;
 				for (double initial : {0.75, 1.0, 2.0, MapCamera::MAX_ZOOM})
 				{
+					gui.camera = savedCamera;
 					gui.camera.setZoom(initial, spot.x, spot.y);
-					gui.camera.originX = gui.camera.mapWidth - 8;
-					gui.camera.originY = gui.camera.mapHeight - 8;
+					if (initial != 1.0)
+					{
+						gui.camera.originX = gui.camera.mapWidth - 8;
+						gui.camera.originY = gui.camera.mapHeight - 8;
+					}
 					gui.viewportX = gui.camera.tileX();
 					gui.viewportY = gui.camera.tileY();
 					gui.updateCamera();
