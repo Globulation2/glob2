@@ -48,17 +48,16 @@ class ChangedPathsTest(unittest.TestCase):
         for path in ci_changed_paths.CI_TOOL_TESTS:
             if path.startswith("tests/build_system/"):
                 self.assertTrue(Path(path).match("tests/build_system/test_ci*.py"))
-        package = (root / ".github/workflows/steam-windows-package.yml").read_text()
-        paths = package.split("    paths:\n", 1)[1].split("\npermissions:", 1)[0]
-        self.assertNotIn("docs/development/reference.md", paths)
-        # Game data and build-system edits are covered by the Windows CI jobs;
-        # only packaging changes justify the long Steam depot build on a PR.
-        for broad in ("data/**", "scons/**", "SConstruct"):
-            self.assertNotIn(f"- {broad}\n", paths)
-        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' }}", package)
-        for filename in ("tools/package_steam_windows.py", "test/test_steam_windows_package.py",
-                         ".github/workflows/steam-windows-package.yml"):
-            self.assertIn(filename, paths)
+        # Packaging-for-a-store checks are release-only: they run from the release
+        # workflows or by hand, never on pull requests or master pushes.
+        for name in ("steam-windows-package.yml", "mac-app-store.yml"):
+            text = (root / ".github/workflows" / name).read_text()
+            triggers = text.split("\non:\n", 1)[1].split("\n\n", 1)[0]
+            self.assertNotIn("pull_request:", triggers, name)
+            self.assertNotIn("push:", triggers, name)
+        mobile = (root / ".github/workflows/mobile.yml").read_text()
+        self.assertNotIn("android_release.py check", mobile)
+        self.assertNotIn("verify-apk", mobile)
 
     def test_browser_shell_only(self):
         self.assert_jobs(
