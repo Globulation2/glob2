@@ -3536,3 +3536,5 @@ Listák visszapattanása
 
 [Map momentum]
 Térkép lendülete
+[game draw]
+

@@ -3532,3 +3532,5 @@ Pantulan daftar
 
 [Map momentum]
 Momentum peta
+[game draw]
+

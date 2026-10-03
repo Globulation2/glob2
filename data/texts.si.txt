@@ -3536,3 +3536,5 @@ Odboj seznamov
 
 [Map momentum]
 Zagon zemljevida
+[game draw]
+

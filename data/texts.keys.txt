@@ -1765,3 +1765,4 @@
 [settings Experimental: move and animate units between game ticks.]
 [settings Text size]
 [settings Enlarge interface text without changing the map scale.]
+[game draw]

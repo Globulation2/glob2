@@ -3536,3 +3536,5 @@ Emoji
 
 [Map momentum]
 Замах мапе
+[game draw]
+

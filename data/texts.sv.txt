@@ -3546,3 +3546,5 @@ Listornas studs
 
 [Map momentum]
 Kartans fart
+[game draw]
+

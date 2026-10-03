@@ -3536,3 +3536,5 @@ Reculul listelor
 
 [Map momentum]
 Inerția hărții
+[game draw]
+

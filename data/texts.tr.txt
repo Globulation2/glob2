@@ -3544,3 +3544,5 @@ Liste sekmesi
 
 [Map momentum]
 Harita ivmesi
+[game draw]
+

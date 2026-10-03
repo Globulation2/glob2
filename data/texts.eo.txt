@@ -3534,3 +3534,5 @@ Resalto de listoj
 
 [Map momentum]
 Inercio de la mapo
+[game draw]
+

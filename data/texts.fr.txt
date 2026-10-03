@@ -3546,3 +3546,5 @@ Rebond des listes
 
 [Map momentum]
 Élan de la carte
+[game draw]
+

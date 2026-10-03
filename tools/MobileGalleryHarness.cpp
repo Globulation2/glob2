@@ -771,6 +771,23 @@ class MobileGalleryGameplay
 		dialog("game-victory", GameGUI::IGM_END_OF_GAME,
 			   std::make_unique<InGameEndOfGameScreen>("Victory", true, gui.localTeam->color, true));
 		gui.localTeam->hasWon = false;
+		{
+			// Production path: a tie at the top with a non-allied team reads as a draw.
+			Team *rival = nullptr;
+			for (int t = 0; t < gui.game.teamsCount(); ++t)
+				if (t != gui.localTeamNo && !(gui.game.teams[t]->me & gui.localTeam->allies))
+					rival = gui.game.teams[t];
+			if (!rival)
+				throw std::runtime_error("Draw fixture needs a non-allied team");
+			gui.localTeam->hasWon = rival->hasWon = true;
+			gui.checkWonConditions();
+			if (gui.inGameMenu != GameGUI::IGM_END_OF_GAME)
+				throw std::runtime_error("Draw did not open the end-of-game dialog");
+			capture("game-draw");
+			gui.closeDialog();
+			gui.localTeam->hasWon = rival->hasWon = false;
+			gui.hasEndOfGameDialogBeenShown = false;
+		}
 		globalContainer->replayReader = std::make_unique<ReplayReader>();
 		if (!globalContainer->replayReader->loadReplay("replays/gallery-match.replay"))
 			throw std::runtime_error("Replay fixture read failed");

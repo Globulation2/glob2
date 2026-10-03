@@ -3534,3 +3534,5 @@ Emoji
 
 [Map momentum]
 زخم الخريطة
+[game draw]
+

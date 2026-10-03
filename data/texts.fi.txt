@@ -3536,3 +3536,5 @@ Listojen kimmoisuus
 
 [Map momentum]
 Kartan liike-energia
+[game draw]
+

@@ -3544,3 +3544,5 @@ Odraz zoznamov
 
 [Map momentum]
 Zotrvačnosť mapy
+[game draw]
+

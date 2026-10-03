@@ -3612,3 +3612,5 @@ Listers tilbageslag
 
 [Map momentum]
 Kortets fart
+[game draw]
+

@@ -3560,3 +3560,5 @@ Terugvering van lijsten
 
 [Map momentum]
 Vaart van de kaart
+[game draw]
+

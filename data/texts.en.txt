@@ -3534,3 +3534,5 @@ Unable to verify or connect to the LAN host: %0
 The server refused to start this game. Check player readiness or reconnect after the server update.
 [lan lobby endpoint required]
 Use the host lobby endpoint
+[game draw]
+Draw

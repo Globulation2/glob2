@@ -3536,3 +3536,5 @@ Odbicie list
 
 [Map momentum]
 Rozpęd mapy
+[game draw]
+

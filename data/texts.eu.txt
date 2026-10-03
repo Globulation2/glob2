@@ -3546,3 +3546,5 @@ Zerrenden errebotea
 
 [Map momentum]
 Maparen inertzia
+[game draw]
+

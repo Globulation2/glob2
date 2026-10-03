@@ -3544,3 +3544,5 @@ Rebot de les llistes
 
 [Map momentum]
 Inèrcia del mapa
+[game draw]
+
