@@ -1,31 +1,31 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="29" failures="0" errors="0" skipped="0"><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.00186" status="run" />
-  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.002015" status="run" />
-  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.001592" status="run" />
-  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.001701" status="run" />
-  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.002155" status="run" />
-  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.268244" status="run" />
-  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.004482" status="run" />
-  <testcase classname="WinProbability" name="equal alliances share chances and eliminated allies contribute nothing" time="0.001623" status="run" />
-  <testcase classname="WinProbability" name="native arithmetic reproduces every published calibration sample" time="0.0004" status="run" />
-  <testcase classname="WinProbability" name="rule serialization gates the new tag and rejects ambiguous thresholds" time="0" status="run" />
-  <testcase classname="WinProbability" name="the rule waits for the minimum tick and sample boundary then ends all teams" time="0.002422" status="run" />
-  </testsuite><testsuite name="WinningConditionDecode"><testcase classname="WinningConditionDecode" name="RoundTrip" time="0" status="run" />
+<testsuites tests="29" failures="0" errors="0" skipped="0"><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.003153" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.003083" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.008057" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.00238" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.003236" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.571125" status="run" />
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.011612" status="run" />
+  <testcase classname="WinProbability" name="equal alliances share chances and eliminated allies contribute nothing" time="0.004786" status="run" />
+  <testcase classname="WinProbability" name="native arithmetic reproduces every published calibration sample" time="0.000372" status="run" />
+  <testcase classname="WinProbability" name="rule serialization gates the new tag and rejects ambiguous thresholds" time="0.00014" status="run" />
+  <testcase classname="WinProbability" name="the rule waits for the minimum tick and sample boundary then ends all teams" time="0.003448" status="run" />
+  </testsuite><testsuite name="WinningConditionDecode"><testcase classname="WinningConditionDecode" name="RoundTrip" time="0.000112" status="run" />
     <testcase classname="WinningConditionDecode" name="SuddenDeathRoundTrip" time="0" status="run" />
     <testcase classname="WinningConditionDecode" name="UnknownTypeTag" time="0" status="run" />
     <testcase classname="WinningConditionDecode" name="TruncatedStream" time="0" status="run" />
   </testsuite><testsuite name="WinningConditionPrestigeToggle"><testcase classname="WinningConditionPrestigeToggle" name="prestige toggle edits only the prestige entry at its default rank" time="0" status="run" />
   </testsuite><testsuite name="WinningConditionSuddenDeathToggle"><testcase classname="WinningConditionSuddenDeathToggle" name="sudden death toggle appends last and retunes in place" time="0" status="run" />
-  </testsuite><testsuite name="WinningConditions"><testcase classname="WinningConditions" name="every predicate matches the golden record stream [golden]" time="0.005388" status="run" />
-    <testcase classname="WinningConditions" name="draw outcome: before the buzzer nobody is decided" time="0" status="run" />
-    <testcase classname="WinningConditions" name="draw outcome: a single winner wins and the rest lose" time="0" status="run" />
+  </testsuite><testsuite name="WinningConditions"><testcase classname="WinningConditions" name="every predicate matches the golden record stream [golden]" time="0.008421" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: before the buzzer nobody is decided" time="0.000561" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: a single winner wins and the rest lose" time="0.000226" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: a tie at the top across alliances is a draw and teams below still lose" time="0" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: allied teams tied at the top share a win" time="0" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: an ally of the sole leader shares its win" time="0" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: an alliance tied with an outsider is a draw for everyone at the top" time="0" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: a one-way alliance does not turn a tie into a shared win" time="0" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: a prestige finish tied at the top across alliances is a draw" time="0" status="run" />
-    <testcase classname="WinningConditions" name="draw outcome: empty seats count for nobody" time="0" status="run" />
+    <testcase classname="WinningConditions" name="draw outcome: empty seats count for nobody" time="0.00013" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: two players tied next to empty seats still draw" time="0" status="run" />
     <testcase classname="WinningConditions" name="draw outcome: a real AI tied at the top is a draw; replays count every team" time="0" status="run" />
   </testsuite></testsuites>

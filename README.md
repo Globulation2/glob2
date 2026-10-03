@@ -9,3 +9,5 @@ The enabled-rule golden fixture checks 65 consecutive simulation checksums throu
 `probability-cli/` retains the generated map, saves, replay, full tick records and exact command arguments from the probability-rule CLI check. Its checkpoint continuation compares complete tick records with uninterrupted execution. `screenshots/` contains the rule control and all sixteen spectator rows at 640×480.
 
 Hosted primary GCC 13, secondary native and browser verification remain pending. The inherited coefficients have not been recalibrated against current AI/rules or human play; historical calibration claims describe the original campaign. No human gameplay review was performed by this validation run.
+
+PR #358 merged after its current ready-PR gate passed. The remaining stack was rebased onto that merge; the source tree is identical, and its 29 focused native cases were rerun successfully. Both revisions and tree identifiers are recorded in provenance.
