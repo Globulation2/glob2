@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RelayMatchEnded",
+  "title": "RelayMatchEnded",
+  "type": "object",
+  "required": [
+    "matchId",
+    "relayId",
+    "simVersion",
+    "startedAt",
+    "endedAt",
+    "finalTick",
+    "reason",
+    "seats",
+    "desync",
+    "record"
+  ],
+  "properties": {
+    "matchId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "relayId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]{1,64}$"
+    },
+    "simVersion": {
+      "type": "object",
+      "required": [
+        "versionMinor",
+        "netProtocol",
+        "dataHash"
+      ],
+      "properties": {
+        "versionMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+        },
+        "netProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "NET_PROTOCOL_VERSION in src/Version.h."
+        },
+        "dataHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity of a deterministic simulation build."
+    },
+    "startedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "endedAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "finalTick": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "completed"
+        },
+        {
+          "type": "string",
+          "const": "abandoned"
+        },
+        {
+          "type": "string",
+          "const": "aborted"
+        }
+      ],
+      "description": "completed: the game ended normally; abandoned: every human left; aborted: the relay ended it (error, drain timeout)."
+    },
+    "seats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "seat",
+          "disconnects",
+          "droppedForDesync"
+        ],
+        "properties": {
+          "seat": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "disconnects": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "quitTick": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "droppedForDesync": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "maxItems": 12
+    },
+    "desync": {
+      "type": "object",
+      "required": [
+        "flagged",
+        "minoritySeats"
+      ],
+      "properties": {
+        "flagged": {
+          "type": "boolean",
+          "description": "Checksums disagreed and no majority settled it (two clients)."
+        },
+        "minoritySeats": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "maxItems": 12,
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "record": {
+      "type": "object",
+      "required": [
+        "sha256",
+        "size",
+        "formatVersion"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hexadecimal SHA-256 digest."
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "formatVersion": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "description": "Relay report of a finished match."
+}

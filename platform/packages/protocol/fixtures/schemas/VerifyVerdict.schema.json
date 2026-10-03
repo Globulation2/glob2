@@ -1,0 +1,198 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:VerifyVerdict",
+  "title": "VerifyVerdict",
+  "anyOf": [
+    {
+      "type": "object",
+      "required": [
+        "verdict",
+        "outcome"
+      ],
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "const": "verified"
+        },
+        "outcome": {
+          "type": "object",
+          "required": [
+            "finalTick",
+            "teams",
+            "resultHash",
+            "replayHash"
+          ],
+          "properties": {
+            "finalTick": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "team",
+                  "outcome",
+                  "prestige"
+                ],
+                "properties": {
+                  "team": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  },
+                  "outcome": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "won"
+                      },
+                      {
+                        "type": "string",
+                        "const": "lost"
+                      },
+                      {
+                        "type": "string",
+                        "const": "unresolved"
+                      }
+                    ]
+                  },
+                  "eliminatedTick": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "prestige": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "resultHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "replayHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            }
+          },
+          "description": "Outcome replayed by the engine; result.json and .replay are stored as blobs."
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "verdict",
+        "clients",
+        "outcome"
+      ],
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "const": "diverged"
+        },
+        "clients": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 11
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "description": "Seats whose reported checksums disagree with the verifier."
+        },
+        "outcome": {
+          "type": "object",
+          "required": [
+            "finalTick",
+            "teams",
+            "resultHash",
+            "replayHash"
+          ],
+          "properties": {
+            "finalTick": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "teams": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "team",
+                  "outcome",
+                  "prestige"
+                ],
+                "properties": {
+                  "team": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 11
+                  },
+                  "outcome": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "won"
+                      },
+                      {
+                        "type": "string",
+                        "const": "lost"
+                      },
+                      {
+                        "type": "string",
+                        "const": "unresolved"
+                      }
+                    ]
+                  },
+                  "eliminatedTick": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "prestige": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "resultHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "replayHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            }
+          },
+          "description": "Outcome replayed by the engine; result.json and .replay are stored as blobs."
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "verdict",
+        "reason"
+      ],
+      "properties": {
+        "verdict": {
+          "type": "string",
+          "const": "unverifiable"
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "No client matched the verifier: engine nondeterminism or a corrupt record."
+        }
+      }
+    }
+  ],
+  "description": "verify-match result."
+}
