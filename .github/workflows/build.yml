@@ -1397,6 +1397,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
       - uses: actions/setup-node@v4
         id: actions_setup_node_v4_1
         with:
@@ -1435,6 +1437,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
+        with:
+          ref: ${{ inputs.revision || github.sha }}
       - name: Build the images and smoke-test deploy/compose.yaml
         id: smoke_test_the_platform_stack
         continue-on-error: true
