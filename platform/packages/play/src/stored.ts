@@ -187,7 +187,7 @@ export const STORED_VERIFY_VERDICT: StoredFormat<typeof VerifyVerdict> = {
   current: 1,
 };
 
-/** engine_jobs.result of generate-map jobs, and warm_maps.map_facts. */
+/** engine_jobs.result of generate-map jobs. */
 export const STORED_GENERATE_MAP_RESULT: StoredFormat<typeof GenerateMapResult> = {
   what: 'engine_jobs.result (generate-map)',
   schema: GenerateMapResult,
@@ -208,7 +208,7 @@ export const STORED_RENDER_PREVIEW_RESULT: StoredFormat<typeof RenderPreviewResu
   current: 1,
 };
 
-/** warm_maps.generator, generated_maps.generator, map_versions.generator. */
+/** generated_maps.descriptor, map_versions.generator. */
 export const STORED_GENERATOR: StoredFormat<typeof GeneratorDescriptor> = {
   what: 'generator descriptor',
   schema: GeneratorDescriptor,
