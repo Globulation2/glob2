@@ -64,15 +64,42 @@ auth:
 access:
   policy: allow-all
 
+# Quick-match queues. Each rated queue is its own ladder (named by the id).
+# Omitted settings take the defaults in docs/multiplayer/ratings-and-matchmaking.md;
+# without mapPool a queue uses the 128x128 fair-by-construction generators.
 queues:
   - id: ranked-1v1
     name: Ranked 1v1
     mode: 1v1
     rated: true
+    # Seats still empty after this many seconds are filled with the AI whose
+    # rating on this ladder is closest (players can opt out). Omit to never backfill.
     aiBackfillSeconds: 90
+    # All-human ranked groups must accept within this many seconds (default 10
+    # for rated queues, 0 = start at once).
+    acceptSeconds: 10
+    declineCooldownSeconds: 60
+    # Soft relay preference: players sharing a relay within initialMs (+ perSecondMs
+    # per second waited) are paired first; after anyRegionAfterSeconds any relay
+    # will do. Round trips never make a player unmatchable: the group always plays
+    # on the best relay that exists, even a far one.
+    rttPreference: { initialMs: 100, perSecondMs: 5, anyRegionAfterSeconds: 30 }
+    # maxRttMs: 150   # opt-in hard cap, off by default; only for instances with
+    #                 # relays near every player (others then rely on AI backfill)
+    ratingWindow: { initial: 100, perSecond: 5, max: 800 }
+  - id: ranked-2v2
+    name: Ranked 2v2
+    mode: 2v2
+    rated: true
+    aiBackfillSeconds: 120
+  - id: casual-1v1
+    name: Casual 1v1
+    mode: 1v1
+    rated: false
+    aiBackfillSeconds: 45
     mapPool:
       - generatorId: even-ground
-        revision: 1
+        revision: 2
         params: { width: 7, height: 7, teams: 2 }
         candidates: 5
         startingUnitLevel: 0

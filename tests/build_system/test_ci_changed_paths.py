@@ -251,6 +251,14 @@ class ChangedPathsTest(unittest.TestCase):
                         # Evaluate only the exact, asserted expression above.
                         self.assertEqual(eval(expression, {"__builtins__": {}}, context), allowed)
 
+    def test_every_inline_build_checks_out_the_selected_revision(self):
+        workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
+        checkouts = workflow.split("      - uses: actions/checkout@v4\n")[1:]
+        self.assertTrue(checkouts)
+        for checkout in checkouts:
+            step = checkout.split("\n      - ", 1)[0]
+            self.assertIn("ref: ${{ inputs.revision || github.sha }}", step)
+
     def test_windows_git_newline_policy_is_pinned_before_cache_and_build(self):
         workflow = (SCRIPT.parents[2] / ".github/workflows/build.yml").read_text()
         for job, build in (("windows", "Build glob2 and the regression harnesses"),

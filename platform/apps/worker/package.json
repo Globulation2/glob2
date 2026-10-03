@@ -5,6 +5,9 @@
   "type": "module",
   "description": "Background work: matchmaker, rating updates, engine-job results and schedules.",
   "license": "GPL-3.0-or-later",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "start": "node src/main.ts"
   },
@@ -12,6 +15,7 @@
     "@glob2/core": "0.1.0",
     "@glob2/db": "0.1.0",
     "@glob2/protocol": "0.1.0",
-    "kysely": "^0.29.6"
+    "kysely": "^0.29.6",
+    "openskill": "^5.0.1"
   }
 }

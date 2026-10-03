@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:RealtimeEventQueueProposalEnded",
+  "title": "RealtimeEventQueueProposalEnded",
+  "type": "object",
+  "required": [
+    "proposalId",
+    "ticketId",
+    "outcome",
+    "reason"
+  ],
+  "properties": {
+    "proposalId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "ticketId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "outcome": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "requeued"
+        },
+        {
+          "type": "string",
+          "const": "removed"
+        }
+      ]
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "declined"
+        },
+        {
+          "type": "string",
+          "const": "timeout"
+        },
+        {
+          "type": "string",
+          "const": "other_declined"
+        },
+        {
+          "type": "string",
+          "const": "start_failed"
+        }
+      ]
+    },
+    "cooldownUntil": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    }
+  }
+}

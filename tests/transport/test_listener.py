@@ -113,6 +113,29 @@ class ListenerTests(unittest.TestCase):
             try: self.assertEqual(read_frame(sock)[0], 8)
             except (EOFError, OSError): pass
 
+    def test_text_mode_echoes_text_and_rejects_binary(self):
+        self.start('text')
+        sock = self.connect(origin='https://test.example')
+        send_frame(sock, b'{"type":"ping","id":1}', opcode=1)
+        self.assertEqual(read_frame(sock), (1, b'{"type":"ping","id":1}'))
+        send_frame(sock, b'{"part":', opcode=1, final=False); send_frame(sock, b'2}', opcode=0)
+        self.assertEqual(read_frame(sock), (1, b'{"part":2}'))
+        send_frame(sock, b'', opcode=1)
+        self.assertEqual(read_frame(sock), (1, b''))
+        large = b'x' * (200 * 1024)
+        send_frame(sock, large, opcode=1)
+        echoed, opcode = bytearray(), None
+        while len(echoed) < len(large):
+            frame_opcode, chunk = read_frame(sock)
+            opcode = opcode or frame_opcode
+            echoed.extend(chunk)
+        self.assertEqual((opcode, bytes(echoed)), (1, large))
+        # Binary messages, invalid UTF-8 and oversized text close the connection.
+        for body, opcode in [(b'binary', 2), (b'\xff\xfe', 1), (b'x' * (256 * 1024 + 1), 1)]:
+            sock = self.connect(); send_frame(sock, body, opcode)
+            try: self.assertEqual(read_frame(sock)[0], 8)
+            except (EOFError, OSError): pass
+
     def test_plaintext_and_missing_client_certificate_rejected(self):
         self.start('register')
         with self.assertRaises((EOFError, OSError)): self.connect(route='/register')
