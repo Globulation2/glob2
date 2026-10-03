@@ -46,7 +46,7 @@ export default tseslint.config(
   {
     // The engine agent's end-to-end test runs a real platform-api replica
     // (its test harness) to exercise the internal engine API over HTTP.
-    files: ['apps/engine-agent/test/queue.test.ts'],
+    files: ['apps/engine-agent/test/queue.test.ts', 'apps/ai-map-worker/test/pipeline.test.ts'],
     rules: { 'no-restricted-imports': 'off' },
   },
   {

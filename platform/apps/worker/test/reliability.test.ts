@@ -393,12 +393,63 @@ describe('blob garbage collection', () => {
         .where('id', '=', matchId)
         .execute();
 
+      const studioMap = await put('a delivered AI map removed from the catalogue', 'old');
+      const checkpoint = await put('a canonical AI revision source', 'old');
+      const providerOutput = await put('a journaled provider image', 'old');
+      const account = await createAccount(database.db, 'Studio owner');
+      const map = await database.db
+        .insertInto('maps')
+        .values({
+          owner_account_id: account,
+          title: 'Studio map',
+          visibility: 'private',
+          made_with: 'generator',
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const thread = await database.db
+        .insertInto('studio_threads')
+        .values({
+          account_id: account,
+          title: 'Studio thread',
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const request = await database.db
+        .insertInto('studio_requests')
+        .values({
+          id: crypto.randomUUID(),
+          thread_id: thread.id,
+          account_id: account,
+          kind: 'generate',
+          status: 'ready',
+          input: {},
+          map_id: map.id,
+          map_hash: studioMap.sha256,
+          checkpoints: { categoricalHash: checkpoint.sha256 },
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      await database.db
+        .insertInto('studio_attempts')
+        .values({
+          id: crypto.randomUUID(),
+          request_id: request.id,
+          stage: 'image',
+          model: 'fixture',
+          status: 'completed',
+          input: {},
+          output: { hash: providerOutput.sha256 },
+        })
+        .execute();
+      await database.db.deleteFrom('maps').where('id', '=', map.id).execute();
+
       const result = await collectBlobs(database.db, store, { logger });
       expect(result.deletedOrphanFiles).toBe(1);
       expect(result.deletedBlobs).toBeGreaterThanOrEqual(1);
       expect(await store.size(garbage.key)).toBeUndefined();
       expect(await store.size(orphanFile.key)).toBeUndefined();
-      for (const kept of [fresh, artifact, playedMap]) {
+      for (const kept of [fresh, artifact, playedMap, studioMap, checkpoint, providerOutput]) {
         expect(await store.size(kept.key)).toBeGreaterThan(0);
         expect(
           await database.db

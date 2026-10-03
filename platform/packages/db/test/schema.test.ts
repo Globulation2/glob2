@@ -13,6 +13,38 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  studio_threads: ['id', 'account_id', 'title', 'brief', 'created_at', 'updated_at'],
+  studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
+  studio_requests: [
+    'id',
+    'thread_id',
+    'account_id',
+    'kind',
+    'status',
+    'input',
+    'checkpoints',
+    'lease_until',
+    'lease',
+    'map_id',
+    'map_hash',
+    'error',
+    'charged',
+    'created_at',
+    'completed_at',
+  ],
+  studio_attempts: [
+    'id',
+    'request_id',
+    'stage',
+    'model',
+    'status',
+    'input',
+    'output',
+    'created_at',
+  ],
+  map_wallets: ['account_id', 'balance', 'reserved'],
+  map_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
+  map_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
   hive_wallets: ['account_id', 'balance', 'reserved'],
   hive_ledger: ['id', 'account_id', 'amount', 'kind', 'details', 'created_at'],
   hive_calls: ['id', 'account_id', 'reserved', 'status', 'charged', 'rate', 'usage', 'created_at'],
@@ -49,6 +81,16 @@ const typedColumns: ColumnLists = {
     'created_at',
   ],
   hive_programs: ['session_id', 'id', 'revision', 'definition', 'status', 'supervised'],
+  map_purchases: [
+    'id',
+    'account_id',
+    'checkout_id',
+    'payment_id',
+    'pack',
+    'paid',
+    'reversed',
+    'created_at',
+  ],
   hive_purchases: [
     'id',
     'account_id',
@@ -209,6 +251,7 @@ const typedColumns: ColumnLists = {
     'match_id',
   ],
   maps: [
+    'authoring',
     'id',
     'owner_account_id',
     'title',
@@ -566,6 +609,7 @@ describe('migrations', () => {
         '0019_warm_maps_over_generated',
         '0020_hive',
         '0021_hive_supervision',
+        '0022_map_studio',
       ]);
       expect(
         (

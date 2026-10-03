@@ -8,12 +8,14 @@
 // EngineJobResult under ENGINE_RESULT_TASK (graphile-worker) for apps/worker
 // to apply. Blobs (maps, saves, records, previews, replays) move through the
 // same HTTP API by SHA-256. engineTaskIdentifier names the job in logs.
+import { StudioSettings } from './mapStudio.ts';
 import { Type, type Static, type TSchema } from 'typebox';
 import { ErrorBody, Open, SeatIndex, Sha256Hex, Strict, TeamIndex, Uuid } from './common.ts';
 import { GeneratorDescriptor, MatchSetup } from './matchSetup.ts';
 import { SimVersion, simVersionKey } from './simVersion.ts';
 
 export const ENGINE_JOB_KINDS = [
+  'import-ai-map',
   'generate-map',
   'validate-map',
   'render-preview',
@@ -34,6 +36,24 @@ const MapFacts = Open({
   height: Type.Integer({ minimum: 1 }),
   teamCount: Type.Integer({ minimum: 1, maximum: 12 }),
 });
+
+export const ImportAiMapPayload = Strict({
+  imageHash: Sha256Hex,
+  settings: StudioSettings,
+  seed: Type.Integer({ minimum: 0, maximum: 4294967295 }),
+});
+export const ImportAiMapResult = Open({
+  mapHash: Sha256Hex,
+  previewHash: Sha256Hex,
+  categoricalHash: Sha256Hex,
+  reportHash: Sha256Hex,
+  previewWidth: Type.Integer({ minimum: 1 }),
+  previewHeight: Type.Integer({ minimum: 1 }),
+  size: Type.Integer({ minimum: 1 }),
+  map: MapFacts,
+});
+export type ImportAiMapPayload = Static<typeof ImportAiMapPayload>;
+export type ImportAiMapResult = Static<typeof ImportAiMapResult>;
 
 // ------------------------------------------------------------ generate-map
 
@@ -185,6 +205,7 @@ interface JobContract {
 }
 
 export const engineJobs = {
+  'import-ai-map': { payload: ImportAiMapPayload, result: ImportAiMapResult },
   'generate-map': { payload: GenerateMapPayload, result: GenerateMapResult },
   'validate-map': { payload: ValidateMapPayload, result: ValidateMapResult },
   'render-preview': { payload: RenderPreviewPayload, result: RenderPreviewResult },
@@ -195,6 +216,7 @@ export type EngineJobPayload<K extends EngineJobKind> = Static<(typeof engineJob
 export type EngineJobOutput<K extends EngineJobKind> = Static<(typeof engineJobs)[K]['result']>;
 
 const JobKind = Type.Union([
+  Type.Literal('import-ai-map'),
   Type.Literal('generate-map'),
   Type.Literal('validate-map'),
   Type.Literal('render-preview'),
@@ -277,7 +299,11 @@ export const ENGINE_LEASE_HEADER = 'x-glob2-lease';
 
 export const EngineAgentId = Type.String({ pattern: '^[A-Za-z0-9._-]{1,128}$' });
 const LeaseSeconds = Type.Integer({ minimum: 10, maximum: 3600 });
-const JobKinds = Type.Array(JobKind, { minItems: 1, maxItems: 4, uniqueItems: true });
+const JobKinds = Type.Array(JobKind, {
+  minItems: 1,
+  maxItems: ENGINE_JOB_KINDS.length,
+  uniqueItems: true,
+});
 
 export const EngineAgentHeartbeat = Strict({
   agentId: EngineAgentId,

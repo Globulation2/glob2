@@ -363,6 +363,11 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
     async (request, reply) => {
       const viewer = await signedIn(request);
       const map = await ownedMap(db, request.params.id, viewer);
+      if (map.authoring?.kind === 'ai')
+        throw apiError(
+          'conflict',
+          'AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map.',
+        );
       const served = await supportedSimVersions(db);
       let simVersion: SimVersion | undefined;
       if (request.query.simVersion !== undefined) {

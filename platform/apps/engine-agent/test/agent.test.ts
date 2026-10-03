@@ -71,7 +71,7 @@ describe('EngineAgent', () => {
       {
         op: 'heartbeat',
         agentId: 'agent-1',
-        kinds: ['generate-map', 'validate-map', 'render-preview', 'verify-match'],
+        kinds: ['import-ai-map', 'generate-map', 'validate-map', 'render-preview', 'verify-match'],
       },
       { op: 'deregister', agentId: 'agent-1' },
     ]);
