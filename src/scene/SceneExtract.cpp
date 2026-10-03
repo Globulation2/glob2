@@ -9,6 +9,7 @@
 #include "Team.h"
 #include "OverlayAreas.h"
 #include "Player.h"
+#include "UnitTiming.h"
 #include "TeamStat.h"
 #include "Unit.h"
 #include "render/GameAnimations.h"
@@ -45,6 +46,7 @@ namespace
 		s.dy = u.dy;
 		s.direction = u.direction;
 		s.delta = u.delta;
+		s.stepSpeed = unitActionStepSpeed(u.speed, u.action, u.dx, u.dy);
 		s.action = u.action;
 		s.hp = u.hp;
 		s.hungry = u.hungry;
@@ -289,6 +291,8 @@ namespace
 void SceneExtractor::extract(const Game &game, const SceneRequest &request, Scene &scene)
 {
 	scene.tick = game.stepCounter;
+	scene.tickTime = request.tickTime;
+	scene.tickInterval = request.tickInterval;
 	scene.map.extract(game.map, request.view.displayW, request.view.displayH);
 	extractEntities(game, request, scene.entities);
 	extractPanels(game, request, scene.panels);
