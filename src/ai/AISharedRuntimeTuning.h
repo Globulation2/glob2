@@ -69,17 +69,13 @@ namespace AISharedRuntime
 	static constexpr int AI_SHARED_RUNTIME_RTI_INN_POP_PER_L3 = 16;
 
 
-	// ---- Stale-inn / stale-swarm destroy thresholds --------------------------
-	// (Econo.cpp:771, 773, 791, 793.)
+	// ---- Stale-inn destroy thresholds ----------------------------------------
+	// (EconoBuilding.cpp: tick_delete_old_inns.)
 
 	/// Min resource-tracker age (~60s) before an inn becomes a destroy candidate.
 	static constexpr int AI_SHARED_RUNTIME_RTI_INN_DELETE_AGE_TICKS = 1500;
 	/// Per-level food threshold; inn destroyed if total_level < THIS * level.
 	static constexpr int AI_SHARED_RUNTIME_RTI_INN_DELETE_FOOD_PER_LEVEL = 24;
-	/// Min resource-tracker age (~100s) before a swarm becomes a destroy candidate.
-	static constexpr int AI_SHARED_RUNTIME_RTI_SWARM_DELETE_AGE_TICKS = 2500;
-	/// Total-wheat threshold below which a swarm is destroyed.
-	static constexpr int AI_SHARED_RUNTIME_RTI_SWARM_DELETE_FOOD = 18;
 
 
 	// ---- Exploration-flag radii / explorer-count gates -----------------------
