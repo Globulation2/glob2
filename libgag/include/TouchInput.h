@@ -8,13 +8,14 @@
 namespace GAGCore
 {
 // ZoomDrag is the second contact of a double-tap: vertical travel zooms about
-// the contact, and a release without travel requests the 1:1 reset. Travel
+// the contact, and a release without travel emits DoubleTap. The consumer owns
+// its zoom policy (gameplay zooms in; the editor resets to 1:1). Travel
 // that starts mostly sideways pans instead. The caller owns the tap timing
 // window and chooses this mode on finger-down.
 enum class TouchMode { Navigate, Placement, Paint, ZoomDrag };
 // Pan carries a delta; PanEnd follows the last Pan of a gesture (finger lifted or a
 // second finger changed the gesture) so consumers can release momentum.
-enum class TouchActionKind { Select, Pan, PanEnd, Zoom, Preview, BeginStroke, Stroke, EndStroke, Cancel, ZoomReset };
+enum class TouchActionKind { Select, Pan, PanEnd, Zoom, Preview, BeginStroke, Stroke, EndStroke, Cancel, DoubleTap };
 // `time` is the SDL event timestamp in milliseconds when the caller supplies one.
 struct TouchAction { TouchActionKind kind; ViewPoint point; double factor=1; std::uint64_t time=0; };
 class TouchInput
@@ -109,7 +110,7 @@ public:
         if(!suppress && fingers.size()==1) {
             if(painting) out.push_back({TouchActionKind::EndStroke,point,1,time});
             else if(mode==TouchMode::ZoomDrag && !dragging && distance(point,it->second.start)<slop)
-                out.push_back({TouchActionKind::ZoomReset,it->second.start,1,time});
+                out.push_back({TouchActionKind::DoubleTap,it->second.start,1,time});
             else if(mode==TouchMode::Navigate && !dragging && distance(point,it->second.start)<slop)
                 out.push_back({TouchActionKind::Select,point,1,time});
         }

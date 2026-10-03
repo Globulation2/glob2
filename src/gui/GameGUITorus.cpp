@@ -3,6 +3,7 @@
 #include "GameGUIInternal.h"
 #include "GameGUITouch.h"
 #include "GlobalContainer.h"
+#include "render/UnitMotion.h"
 #include "Unit.h"
 
 // Adapt the rendered surface to the normal tool coordinate system, retaining
@@ -113,7 +114,7 @@ void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options,
                     continue;
                 int ux, uy;
                 scene.map.mapCaseToDisplayable(unit->posX, unit->posY, &ux, &uy, originX, originY);
-                int deltaLeft = 255 - unit->delta;
+                int deltaLeft = 255 - drawnUnitDelta(*unit, view.render.unitMotion);
                 if (unit->action < BUILD)
                 {
                     ux -= (unit->dx * deltaLeft) >> 3;

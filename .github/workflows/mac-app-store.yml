@@ -1,16 +1,6 @@
 name: Mac App Store release
 
 on:
-  pull_request:
-    paths:
-      - '.github/workflows/mac-app-store.yml'
-      - 'SConstruct'
-      - 'scons/bundle.py'
-      - 'scons/addDependentLibsToBundle.py'
-      - 'scons/mac_image_dependency.py'
-      - 'tools/package_assets.py'
-      - 'tools/asset-requirements.txt'
-      - 'darwin/**'
   workflow_dispatch:
     inputs:
       build_number:
@@ -26,15 +16,15 @@ on:
 permissions:
   contents: read
 
-# Manual releases serialize; superseded public PR build checks can be cancelled.
+# Store release operations serialize and finish once started.
 concurrency:
-  group: mac-app-store-${{ github.event_name == 'workflow_dispatch' && 'release' || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: mac-app-store-release
+  cancel-in-progress: false
 
 jobs:
   build:
     name: Build game and test candidate
-    if: ${{ (github.repository == 'Globulation2/glob2' && github.event_name == 'pull_request') || (github.repository == 'genixpro/glob2-release' && github.actor == 'genixpro' && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
+    if: ${{ (github.repository == 'genixpro/glob2-release' && github.actor == 'genixpro' && github.triggering_actor == 'genixpro' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/master') }}
     runs-on: macos-26
     timeout-minutes: 90
     steps:

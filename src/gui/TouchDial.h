@@ -43,6 +43,8 @@ double padAngle(const Ring &ring, double points);
 int value(double angle, double from, double to, int maximum);
 //! Angle for a value within [from, to].
 double angleOf(int value, double from, double to, int maximum);
+//! Round relative weights to a fixed budget; largest remainders preserve the total.
+std::array<int, 3> shares(const std::array<int, 3> &weights, int budget);
 //! Fills the annular sector between two radii (points) and two angles.
 void fill(const Geometry &geometry, double inner, double outer, double from, double to,
 		  const GAGCore::Color &color);
