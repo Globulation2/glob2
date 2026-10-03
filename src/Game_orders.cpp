@@ -110,6 +110,9 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 		case ORDER_ALTER_CLEAR_AREA:
 			executeAlterClearArea(*std::static_pointer_cast<OrderAlterClearArea>(order), localPlayer);
 			break;
+		case ORDER_ALTER_FARM_AREA:
+			executeAlterFarmArea(*std::static_pointer_cast<OrderAlterFarmArea>(order), localPlayer);
+			break;
 		case ORDER_MODIFY_SWARM:
 			if (!isPlayerAlive) break;
 			executeModifySwarm(*std::static_pointer_cast<OrderModifySwarm>(order), localPlayer);
@@ -361,6 +364,8 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 	const Uint32 oldGeneration = map.topologyGeneration;
 	const Uint32 teamMask = teams[oaa.teamNumber]->me;
 	bool changed = false, walkingChanged = false, clearingChanged = false;
+	// A farm area is a clearing goal too, but only in a game with farm areas.
+	const Uint32 clearingMask = map.farmAreasEnabled() ? ~Uint32(0) : 0;
 	size_t maskIndex = 0;
 	for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; ++y)
 		for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; ++x, ++maskIndex)
@@ -372,7 +377,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				changed = true;
 				// Resources already block walking, but can be harvesting/clearing goals.
 				walkingChanged |= tile.resource.type == NO_RES_TYPE;
-				clearingChanged |= (tile.clearArea & teamMask) != 0;
+				clearingChanged |= ((tile.clearArea | (tile.farmArea & clearingMask)) & teamMask) != 0;
 				if (adding) map.addForbidden(x, y, oaa.teamNumber);
 				else map.removeForbidden(x, y, oaa.teamNumber);
 			}
@@ -500,6 +505,38 @@ void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer
 	}
 	else
 		assert(false);
+	map.updateClearAreasGradient(oaa.teamNumber);
+}
+
+// A farm area only changes what a harvest draws from and what counts as a
+// clearing target, so it feeds no gradient of its own. It refuses ground nothing
+// can grow on (Map::canPaintFarmArea) here rather than only in the brush, since
+// this is the path a replay and every remote client take. A game without the
+// farm-areas experiment ignores the order.
+void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
+{
+	if (!gameHeader.hasExperiment(ExperimentId::FarmAreas)) return;
+	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
+		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
+	const bool adding = oaa.type == BrushTool::MODE_ADD;
+	const Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
+	const bool local = oaa.teamNumber == players[localPlayer]->teamNumber;
+	size_t orderMaskIndex = 0;
+	for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
+		for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++, orderMaskIndex++)
+		{
+			if (!oaa.mask.get(orderMaskIndex) || (adding && !map.canPaintFarmArea(x, y)))
+				continue;
+			size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+			if (adding)
+				map.tiles[index].farmArea |= teamMask;
+			else
+				map.tiles[index].farmArea &= ~teamMask;
+			if (local)
+				map.displayedFarmAreaView.set(index, adding);
+		}
+	// A farm area is a clearing goal for everything it does not grow, so the
+	// clearing field has to be rebuilt even though the farm itself has none.
 	map.updateClearAreasGradient(oaa.teamNumber);
 }
 

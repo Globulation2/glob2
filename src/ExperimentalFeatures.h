@@ -36,6 +36,9 @@ enum class ExperimentId : Uint8
 	// Free warriors spread between painted guard areas by crowding instead of
 	// all taking the nearest one.
 	GuardAreaBalancing = 0,
+	// A fourth painted area: a harvest inside it draws from the ripest tile of
+	// the connected field and keeps one grain on every tile as seed.
+	FarmAreas = 1,
 	Count
 };
 

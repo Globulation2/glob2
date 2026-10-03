@@ -38,12 +38,19 @@ public:
 	};
 	
 	///List of zone types
+	//! Order matters: it is the left-to-right order of the zone strip's buttons.
 	enum ZoneType
 	{
 		Forbidden=0,
 		Guard,
 		Clearing,
+		Farm, ///< only in a game carrying the farm-areas experiment
 	};
+
+	///Whether this game offers the farm zone (the farm-areas experiment)
+	bool farmAreasAvailable() const;
+	///Number of zone types this game offers: three, or four with farm areas
+	int zoneTypeCount() const { return farmAreasAvailable() ? 4 : 3; }
 
 	///Activates the building tool with the given building or flag type
 	void activateBuildingTool(const std::string& building);

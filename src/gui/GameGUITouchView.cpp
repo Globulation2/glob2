@@ -31,10 +31,13 @@ void GameGUITouch::drawControls()
 		// Paint/Erase, Pan and Undo on the rail above it.
 		auto *gfx = globalContainer->gfx;
 		auto *strings = GAGCore::Toolkit::getStringTable();
-		const std::string labels[] = {strings->getString("[Forbidden]"), strings->getString("[Guard]"),
-									  strings->getString("[Clear]"), strings->getString("[Done]")};
+		std::vector<std::string> labels = {strings->getString("[Forbidden]"), strings->getString("[Guard]"),
+										   strings->getString("[Clear]")};
+		if (gui.toolManager.farmAreasAvailable())
+			labels.push_back(strings->getString("[Farm]"));
+		labels.push_back(strings->getString("[Done]"));
 		const auto buttons = brushBarButtons();
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < int(buttons.size()); ++i)
 		{
 			const auto &b = buttons[i];
 			gfx->drawFilledRect(int(b.x), int(b.y), int(b.w) - 1, int(b.h),
@@ -187,7 +190,7 @@ void GameGUITouch::drawHUD()
 		for (const auto &p : pending.points)
 			centres.push_back({(int(p.x) >> 5) & map.getMaskW(), (int(p.y) >> 5) & map.getMaskH()});
 		const auto area = world();
-		const int zone = std::clamp(pending.zone, 0, 2);
+		const int zone = std::clamp(pending.zone, 0, 3);
 		const Color fill = pending.mode == BrushTool::MODE_DEL ? InGameTouchTheme::erasePreview
 																 : InGameTouchTheme::zonePreview[zone];
 		const int size = std::max(2, int(std::ceil(32 * gui.camera.zoom)));

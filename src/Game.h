@@ -50,6 +50,7 @@ class OrderMoveFlag;
 class OrderAlterForbidden;
 class OrderAlterGuardArea;
 class OrderAlterClearArea;
+class OrderAlterFarmArea;
 class OrderModifySwarm;
 class OrderDelete;
 class OrderChangePriority;
@@ -331,6 +332,7 @@ private:
 	void executeAlterForbidden(const OrderAlterForbidden& order, int localPlayer);
 	void executeAlterGuardArea(const OrderAlterGuardArea& order, int localPlayer);
 	void executeAlterClearArea(const OrderAlterClearArea& order, int localPlayer);
+	void executeAlterFarmArea(const OrderAlterFarmArea& order, int localPlayer);
 	void executeModifySwarm(const OrderModifySwarm& order, int localPlayer);
 	/// Delete-building. Bypasses the team-alive gate: dead-team buildings
 	/// can still be torn down.

@@ -243,6 +243,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	displayedForbiddenView.resize(size, false);
 	displayedGuardAreaView.resize(size, false);
 	displayedClearAreaView.resize(size, false);
+	displayedFarmAreaView.resize(size, false);
 	
 	tiles.assign(size, Tile());
 

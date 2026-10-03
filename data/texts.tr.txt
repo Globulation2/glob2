@@ -198,6 +198,8 @@ Oyun seç
 Harita seç
 [clear area]
 Temizlik bölgesi
+[farm area]
+Tarım bölgesi
 [Clearing:]
 Temizlenen kaynaklar:
 [clearingflag explanation 2]
@@ -752,6 +754,8 @@ Bina seç: Otel
 Bina seç: Market
 [select place clearing area]
 Alan yerleştir: Temizlik bölgesi
+[select place farm area]
+Alan yerleştir: Tarım bölgesi
 [select place clearingflag]
 Bayrak yerleştir: Temizlik bayrağı
 [select place explorationflag]
@@ -3124,6 +3128,8 @@ Yasak
 Koru
 [Clear]
 Temizle
+[Farm]
+Tarım
 [Paint]
 Boya
 [Erase]
@@ -3294,6 +3300,10 @@ Deneyler
 Nöbet alanı dengeleme
 [experiment guard-area-balancing help]
 Serbest savaşçılar hepsi en yakınına gitmek yerine boyanmış nöbet alanları arasında dağılır: daha büyük bir alan daha fazlasını alır ve aşırı dolu bir alan yavaş yavaş diğerlerine boşalır.
+[experiment farm-areas]
+Tarım bölgeleri
+[experiment farm-areas help]
+Bölge fırçalarına bir tarım bölgesi ekler. İçinde hasat yapan işçiler bağlı tarlanın en olgun karesinden alır ve her karede bir tane bırakır; böylece tarla kenarından yenip bitmek yerine yeniden büyür. Bölgeye doğru büyüyen odun temizlenir.
 [settings Touch scrolling]
 Dokunmatik kaydırma
 [settings List momentum]

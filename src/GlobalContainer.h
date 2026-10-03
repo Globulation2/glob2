@@ -80,6 +80,7 @@ public:
 	Sprite *areaClearing = nullptr;
 	Sprite *areaForbidden = nullptr;
 	Sprite *areaGuard = nullptr;
+	Sprite *areaFarm = nullptr;
 	Sprite *bullet = nullptr;
 	Sprite *bulletExplosion = nullptr;
 	Sprite *deathAnimation = nullptr;

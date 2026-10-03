@@ -6,7 +6,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 128
+#define VERSION_MINOR 129
+// version 129 adds Tile::farmArea, the per-tile mask of the farm-areas experiment.
+//             Older saves load with no farm painted; replays from 127 and 128 still play.
 // version 128 losslessly packs map, routing, statistics and Maxima save state.
 // version 127 supports 16 teams and counts Maxima opponents and script generation planes.
 // Older saves remain loadable; Warrush probes all sixteen slots within 32 ticks.
@@ -161,7 +163,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 51
+#define NET_PROTOCOL_VERSION 52
+// version 52 adds ORDER_ALTER_FARM_AREA and requires readers of version-129 map snapshots.
 // version 51 requires readers of compact version-128 map snapshots.
 // version 50 requires clients that understand all sixteen team/controller slots.
 // version 49 requires native WSS endpoints and versioned mutual-TLS router registration.

@@ -200,6 +200,8 @@ Pilih permainan
 Pilih peta
 [clear area]
 Area pembersihan
+[farm area]
+Area pertanian
 [Clearing:]
 Membersihkan:
 [clearingflag explanation 2]
@@ -760,6 +762,8 @@ Pilih Penginapan
 Pilih Pasar
 [select place clearing area]
 Pilih Pasang Area Pembersihan
+[select place farm area]
+Pilih Pasang Area Pertanian
 [select place clearingflag]
 Pilih Pasang Bendera Pembersihan
 [select place explorationflag]
@@ -3112,6 +3116,8 @@ Terlarang
 Jaga
 [Clear]
 Bersihkan
+[Farm]
+Tani
 [Paint]
 Lukis
 [Erase]
@@ -3282,6 +3288,10 @@ Eksperimen
 Penyeimbangan area jaga
 [experiment guard-area-balancing help]
 Prajurit bebas menyebar di antara area jaga yang dilukis alih-alih semuanya ke yang terdekat: area yang lebih besar mendapat lebih banyak, dan area yang terlalu penuh perlahan mengalir ke area lain.
+[experiment farm-areas]
+Area pertanian
+[experiment farm-areas help]
+Menambahkan area pertanian ke kuas zona. Pekerja yang memanen di dalamnya mengambil dari petak paling matang di ladang yang tersambung dan menyisakan satu butir di setiap petak, sehingga ladang tumbuh kembali alih-alih habis dimakan dari tepinya. Kayu yang tumbuh ke dalam area akan dibersihkan.
 [settings Touch scrolling]
 Gulir sentuh
 [settings List momentum]

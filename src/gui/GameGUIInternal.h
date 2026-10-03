@@ -42,8 +42,8 @@ using namespace GAGGUI;
 
 #define YOFFSET_BRUSH 56
 
-// The flag view's zone-type strip (forbidden/guard/clearing buttons) sits at
-// YPOS_BASE_FLAG+YOFFSET_BRUSH and is this tall; the brush tool panel starts
+// The flag view's zone-type strip (forbidden/guard/clearing, and farm with the
+// farm-areas experiment) sits at YPOS_BASE_FLAG+YOFFSET_BRUSH and is this tall; the brush tool panel starts
 // directly below it. Shared by the draw path (GameGUIDrawMiscPanels.cpp) and
 // the click path (GameGUIInputMenuClick.cpp) so they cannot drift apart.
 constexpr int ZONE_STRIP_HEIGHT = 40;
@@ -73,6 +73,33 @@ constexpr int ZONE_STRIP_HEIGHT = 40;
 #define RIGHT_MENU_HALF_WIDTH (RIGHT_MENU_WIDTH / 2)
 #define RIGHT_MENU_OFFSET ((RIGHT_MENU_WIDTH -128)/2)
 #define RIGHT_MENU_RIGHT_OFFSET (RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET)
+
+// The zone strip's buttons, one per GameGUIToolManager::ZoneType the game offers,
+// in that order, in panel-local x. Three sit at a 40px pitch from 8px inside the
+// brush panel, as they always have. A fourth (the farm-areas experiment) at that
+// pitch would run off the 160px panel, so four use a 38px pitch from 6, ending
+// at 152. Draw, hover and click all take positions from these two functions.
+constexpr int zoneStripButtonX(int index, int count)
+{
+	return count > 3 ? 6 + index * 38 : RIGHT_MENU_OFFSET + 8 + index * 40;
+}
+
+//! The zone button under panel-local x, or -1 for none. With three buttons this
+//! is the strip's original hit test, which gives the space left of the first
+//! button to it; with four, the gaps are split between neighbours.
+constexpr int zoneStripButtonAt(int panelX, int count)
+{
+	if (count <= 3)
+	{
+		const int x = panelX - RIGHT_MENU_OFFSET;
+		return x < 44 ? 0 : x < 84 ? 1 : x < 124 ? 2 : -1;
+	}
+	const int offset = panelX - 3;
+	if (offset < 0)
+		return -1;
+	const int index = offset / 38;
+	return index < count ? index : -1;
+}
 
 // The exploration flag reuses Building::minLevelToFlag as a two-option choice
 // of which explorers may answer the flag (see Building::canUnitWorkHere):

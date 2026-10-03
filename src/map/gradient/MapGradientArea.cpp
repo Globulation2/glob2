@@ -315,13 +315,14 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 	bool canSwim = swimClass > 0;
 
 	Uint32 teamMask = Team::teamNumberToMask(teamNumber);
+	const bool farmAreas = farmAreasEnabled();
 	initializeGradientCells([&](size_t begin, size_t end) {
 	for (size_t i=begin; i<end; i++)
 	{
 		const Tile& c=tiles[i];
 		if (c.forbidden & teamMask)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(c.clearArea & teamMask && c.resource.type != NO_RES_TYPE && globalContainer->resourcesTypes.get(c.resource.type)->clearable)
+		else if(isClearingTarget(i, teamMask, farmAreas))
 			gradient[i] = GRADIENT_AT_GOAL;
 		else if(immobileUnits[i] != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;

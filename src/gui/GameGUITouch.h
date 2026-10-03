@@ -91,7 +91,7 @@ class GameGUITouch
 	// Zone painting with one thumb: the brush rail, a Pan mode, panning while a
 	// held stroke touches a map edge, and undo of the last stroke's changes.
 	BrushHUD::Layout brushHUD() const;
-	std::vector<GAGCore::ViewRect> brushBarButtons() const; // Forbid, Guard, Clear, Done.
+	std::vector<GAGCore::ViewRect> brushBarButtons() const; // Forbid, Guard, Clear, [Farm,] Done.
 	bool brushPan = false;
 	int railTouched = -1;
 	std::optional<TouchPlacementSession> strokeHold;

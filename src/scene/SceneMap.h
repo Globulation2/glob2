@@ -50,6 +50,7 @@ public:
 	bool isForbiddenInDisplayedView(int x, int y) const { return forbiddenView.get(coordToIndex(x, y)); }
 	bool isGuardAreaInDisplayedView(int x, int y) const { return guardAreaView.get(coordToIndex(x, y)); }
 	bool isClearAreaInDisplayedView(int x, int y) const { return clearAreaView.get(coordToIndex(x, y)); }
+	bool isFarmAreaInDisplayedView(int x, int y) const { return farmAreaView.get(coordToIndex(x, y)); }
 	bool canResourcesGrow(int x, int y) const { return resourcesGrow[coordToIndex(x, y)]; }
 	Uint16 getGroundUnit(int x, int y) const { return groundUnits[coordToIndex(x, y)]; }
 	Uint16 getAirUnit(int x, int y) const { return airUnits[coordToIndex(x, y)]; }
@@ -81,5 +82,5 @@ private:
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
 	std::vector<Uint32> discovered, fogOfWar;
-	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView;
+	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
 };

@@ -192,6 +192,8 @@ Alegeţi un joc
 Alegeţi o hartă
 [clear area]
 Zonă de curățare
+[farm area]
+Zonă de cultură
 [Clearing:]
 Curățare:
 [clearingflag explanation 2]
@@ -746,6 +748,8 @@ Selectează clădirea: Popas
 Selectează clădirea: Piață
 [select place clearing area]
 Plasează zona: Zonă de curățare
+[select place farm area]
+Plasează zona: Zonă de cultură
 [select place clearingflag]
 Plasează steagul de curățare
 [select place explorationflag]
@@ -3116,6 +3120,8 @@ Interzis
 Păzește
 [Clear]
 Curăță
+[Farm]
+Cultură
 [Paint]
 Pictează
 [Erase]
@@ -3286,6 +3292,10 @@ Experimente
 Echilibrarea zonelor de gardă
 [experiment guard-area-balancing help]
 Războinicii liberi se împart între zonele de gardă desenate în loc să meargă toți la cea mai apropiată: o zonă mai mare primește mai mulți, iar o zonă supraaglomerată se golește treptat spre celelalte.
+[experiment farm-areas]
+Zone de cultură
+[experiment farm-areas help]
+Adaugă o zonă de cultură la pensulele de zone. Muncitorii care recoltează în ea iau din pătratul cel mai copt al câmpului conectat și lasă câte un bob pe fiecare pătrat, astfel încât câmpul crește din nou în loc să fie mâncat de la margine. Lemnul care crește în zonă este defrișat.
 [settings Touch scrolling]
 Derulare tactilă
 [settings List momentum]

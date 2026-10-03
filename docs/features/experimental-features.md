@@ -63,6 +63,7 @@ game's experiments. See [headless replays](../development/headless-replays.md).
 | Key | Setting | What it changes |
 | --- | --- | --- |
 | `guard-area-balancing` | Guard-area balancing | Free warriors spread between painted guard areas by crowding instead of all taking the nearest one. Design and measurements: [guard-area balancing](guard-area-balancing.md). |
+| `farm-areas` | Farm areas | A fourth painted area: a harvest inside it draws from the ripest tile of the connected field and keeps one grain on every tile, and wood growing into it is cleared. Design: [farm areas](farm-areas.md). |
 
 ## Adding an experiment
 

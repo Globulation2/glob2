@@ -192,6 +192,8 @@ Spiel auswählen
 Karte auswählen
 [clear area]
 Rodungszone
+[farm area]
+Ackerzone
 [Clearing:]
 Rodung:
 [clearingflag explanation 2]
@@ -746,6 +748,8 @@ Wähle Gasthof
 Wähle Markt
 [select place clearing area]
 Wähle Rodungsbereich hinzufügen
+[select place farm area]
+Wähle Ackerbereich hinzufügen
 [select place clearingflag]
 Wähle Rodungsflagge setzen
 [select place explorationflag]
@@ -3116,6 +3120,8 @@ Verboten
 Bewachen
 [Clear]
 Räumen
+[Farm]
+Acker
 [Paint]
 Malen
 [Erase]
@@ -3286,6 +3292,10 @@ Experimente
 Ausgleich der Wachbereiche
 [experiment guard-area-balancing help]
 Freie Krieger verteilen sich auf die gemalten Wachbereiche, statt alle den nächsten zu wählen: ein größerer Bereich bekommt mehr von ihnen, und ein überfüllter Bereich dünnt sich zugunsten der anderen aus.
+[experiment farm-areas]
+Ackerzonen
+[experiment farm-areas help]
+Fügt den Zonenpinseln eine Ackerzone hinzu. Arbeiter, die darin ernten, nehmen vom reifsten Feld des zusammenhängenden Ackers und lassen auf jedem Feld ein Korn stehen, sodass der Acker nachwächst, statt vom Rand her abgefressen zu werden. Holz, das in den Acker wächst, wird gerodet.
 [settings Touch scrolling]
 Berühren und Scrollen
 [settings List momentum]

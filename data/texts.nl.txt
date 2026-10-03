@@ -198,6 +198,8 @@ Kies een spel
 Kies een speelveld
 [clear area]
 Grondstoffenzone
+[farm area]
+Akkerzone
 [Clearing:]
 ontruimen:
 [clearingflag explanation 2]
@@ -768,6 +770,8 @@ Selecteer herberg
 Selecteer markt
 [select place clearing area]
 Ontruimingsgebied plaatsen
+[select place farm area]
+Akkerzone plaatsen
 [select place clearingflag]
 Ontruimingsvlag plaatsen
 [select place explorationflag]
@@ -3140,6 +3144,8 @@ Verboden
 Bewaken
 [Clear]
 Opruimen
+[Farm]
+Akker
 [Paint]
 Schilderen
 [Erase]
@@ -3310,6 +3316,10 @@ Experimenten
 Balans van bewakingsgebieden
 [experiment guard-area-balancing help]
 Vrije krijgers verdelen zich over de geschilderde bewakingsgebieden in plaats van allemaal het dichtstbijzijnde te kiezen: een groter gebied krijgt er meer, en een overvol gebied loopt langzaam leeg naar de andere.
+[experiment farm-areas]
+Akkerzones
+[experiment farm-areas help]
+Voegt een akkerzone toe aan de zonepenselen. Arbeiders die erin oogsten nemen van het rijpste vak van de aaneengesloten akker en laten op elk vak één korrel staan, zodat de akker teruggroeit in plaats van vanaf de rand te worden opgegeten. Hout dat de akker in groeit, wordt gekapt.
 [settings Touch scrolling]
 Scrollen met aanraking
 [settings List momentum]
