@@ -129,28 +129,7 @@ void TurnSequencer::dropPeer(PeerId peer)
 		s.graceStart = now;
 		setState(static_cast<std::uint8_t>(seat), PresenceState::Reconnecting);
 		event(static_cast<std::uint8_t>(seat), MatchEventKind::Disconnected);
-		endIfDecided(now);
 	}
-}
-
-void TurnSequencer::endIfDecided(std::uint64_t nowMicros)
-{
-	if (!decided || over)
-		return;
-	for (unsigned i = 0; i < MAX_SEATS; ++i)
-	{
-		if (!(humanMask & (1u << i)))
-			continue;
-		const PresenceState state = seats[i].state;
-		if (state == PresenceState::Connected || state == PresenceState::Lagging || state == PresenceState::Resyncing)
-			return; // someone is still watching the end of the game
-	}
-	// The game is over and nobody is left to play it: the seats still in reconnect
-	// grace leave now (their quit orders land after the decisive tick, so they change
-	// nothing), and the last one finishes the match.
-	for (unsigned i = 0; i < MAX_SEATS && !over; ++i)
-		if ((humanMask & (1u << i)) && seats[i].state != PresenceState::Left)
-			sequenceQuit(static_cast<std::uint8_t>(i), MatchEventKind::LeftByGrace, nowMicros);
 }
 
 void TurnSequencer::setState(std::uint8_t seat, PresenceState state)
@@ -224,10 +203,18 @@ void TurnSequencer::onReceive(PeerId peer, const std::uint8_t* data, std::size_t
 		handleResync(peer, seat, static_cast<const ResyncRequest&>(*message).fromTick);
 		break;
 	case MSG_QUIT:
-		if (static_cast<const Quit&>(*message).reason == QuitReason::GameFinished)
-			decided = true;
+		if (static_cast<const Quit&>(*message).reason == QuitReason::GameFinished &&
+		    seats[seat].state != PresenceState::Left)
+		{
+			// A claim, not a verdict: the match counts as decided only once every seat
+			// still playing now has made it too (gameDecided()).
+			if (!finishedClaims)
+				for (unsigned i = 0; i < MAX_SEATS; ++i)
+					if ((humanMask & (1u << i)) && seats[i].state != PresenceState::Left)
+						inMatchAtFirstClaim |= 1u << i;
+			finishedClaims |= 1u << seat;
+		}
 		sequenceQuit(static_cast<std::uint8_t>(seat), MatchEventKind::LeftByQuit, now);
-		endIfDecided(now);
 		break;
 	case MSG_PING:
 	{
@@ -437,13 +424,17 @@ void TurnSequencer::handleOrder(int seat, const OrderSubmit& submit, std::uint64
 	}
 	if (!assign(static_cast<std::uint8_t>(seat), submit.order, relayTick(now)))
 	{
+		// Flooding: the seat's queue already reaches maxAheadTicks past the clock. The
+		// order is dropped (identically for everyone: it never enters a bundle) and the
+		// connection stays; a paced client never gets here, and an old or runaway one
+		// loses only the orders beyond the limit instead of its seat.
 		++counters.ordersDropped;
+		++counters.ordersFlooded;
 		if (t)
 		{
 			++t->ordersDropped;
 			++t->floodRejections;
 		}
-		reject(s.peer, RejectReason::Flooding, "Too many orders queued");
 	}
 	else if (onSequenced)
 		onSequenced(static_cast<std::uint8_t>(seat), submit.clientSequence, s.nextFreeTick - 1, relayTick(now));
@@ -552,6 +543,7 @@ void TurnSequencer::handleChecksum(int seat, const ChecksumReport& report)
 	tr.first.emplace(key, report.checksum);
 	if (!tr.arbitrated)
 	{
+		openReports.insert(report.tick);
 		tr.current[key] = report.checksum;
 		bool complete = true;
 		for (unsigned i = 0; i < MAX_SEATS; ++i)
@@ -585,14 +577,19 @@ void TurnSequencer::arbitrate(std::uint32_t tick, bool timedOut)
 	if (tr.arbitrated)
 		return;
 	tr.arbitrated = true;
-	const std::size_t n = tr.current.size();
+	openReports.erase(tick);
+	// Only the verdict outlives arbitration (late reports compare with it; the record
+	// keeps `first`).
+	const std::map<std::uint8_t, std::uint32_t> current = std::move(tr.current);
+	tr.current.clear();
+	const std::size_t n = current.size();
 	if (n == 0)
 		return;
 	++net.arbitrations;
 	if (timedOut)
 		++net.timedOut;
 	std::map<std::uint32_t, std::uint32_t> counts;
-	for (const auto& r : tr.current)
+	for (const auto& r : current)
 		++counts[r.second];
 	auto best = std::max_element(counts.begin(), counts.end(),
 	                             [](const auto& a, const auto& b) { return a.second < b.second; });
@@ -604,14 +601,14 @@ void TurnSequencer::arbitrate(std::uint32_t tick, bool timedOut)
 		return;
 	}
 	std::uint32_t reporters = 0;
-	for (const auto& r : tr.current)
+	for (const auto& r : current)
 		reporters |= 1u << r.first;
 	if (n >= 3 && best->second * 2 > n)
 	{
 		tr.agreed = best->first;
 		tr.support = best->second;
 		++net.majority;
-		for (const auto& r : tr.current)
+		for (const auto& r : current)
 			if (r.second != best->first)
 				tellRejoin(r.first, tick);
 		return;
@@ -635,9 +632,8 @@ void TurnSequencer::tellRejoin(std::uint8_t seat, std::uint32_t tick)
 		++t->toldToRejoin;
 	s.awaitingResync = true;
 	s.streaming = false;
-	for (auto& r : reports)
-		if (!r.second.arbitrated)
-			r.second.current.erase(seat);
+	for (const std::uint32_t open : openReports)
+		reports[open].current.erase(seat);
 	setState(seat, PresenceState::Resyncing);
 	event(seat, MatchEventKind::ToldToRejoin);
 	if (s.hasPeer)
@@ -759,6 +755,28 @@ void TurnSequencer::checkBarrier()
 	presenceDirty = true;
 }
 
+std::uint64_t TurnSequencer::nextWakeMicros() const
+{
+	if (over)
+		return UINT64_MAX;
+	if (presenceDirty)
+		return now;
+	if (!clockRunning)
+		return created + config.startBarrierMicros;
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if (seats[i].hasPeer)
+			return nextBundleMicros();
+	// Nobody is connected: no bundle has a reader (the next update broadcasts the
+	// whole gap at once to whoever returns), no report can arrive and presence has no
+	// audience. Only a grace timer can run out.
+	std::uint64_t wake = now + 1000000;
+	for (unsigned i = 0; i < MAX_SEATS; ++i)
+		if ((humanMask & (1u << i)) &&
+		    (seats[i].state == PresenceState::NotConnected || seats[i].state == PresenceState::Reconnecting))
+			wake = std::min(wake, seats[i].graceStart + config.graceMicros);
+	return std::max(wake, now);
+}
+
 void TurnSequencer::update(std::uint64_t nowMicros)
 {
 	now = std::max(now, nowMicros);
@@ -794,13 +812,8 @@ void TurnSequencer::update(std::uint64_t nowMicros)
 	if (tick + 1 >= sentHorizon + config.bundleInterval)
 		emitUpTo(tick + 1);
 
-	for (auto& r : reports)
-	{
-		if (r.first + config.arbitrationTimeoutTicks > tick)
-			break;
-		if (!r.second.arbitrated)
-			arbitrate(r.first, true);
-	}
+	while (!openReports.empty() && *openReports.begin() + config.arbitrationTimeoutTicks <= tick)
+		arbitrate(*openReports.begin(), true);
 
 	if (presenceDirty || tick >= lastPresenceTick + config.presenceRefreshTicks)
 		broadcastPresence();
@@ -820,9 +833,8 @@ void TurnSequencer::finish(std::uint64_t nowMicros)
 	if (!pending.empty())
 		end = std::max(end, pending.rbegin()->first + 1);
 	emitUpTo(end);
-	for (auto& r : reports)
-		if (!r.second.arbitrated)
-			arbitrate(r.first);
+	while (!openReports.empty())
+		arbitrate(*openReports.begin());
 	over = true;
 	broadcastPresence();
 }

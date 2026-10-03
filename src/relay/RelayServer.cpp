@@ -145,7 +145,6 @@ public:
 	const std::int64_t startedAt;
 	Turn::TurnSequencer sequencer;
 	std::optional<std::string> setupJson;
-	bool gameFinished = false;
 	bool aborted = false;
 	bool ended = false;
 	std::size_t connectionCount() const { return peers.size(); }
@@ -153,10 +152,13 @@ public:
 private:
 	asio::awaitable<void> tickLoop();
 	void afterEvent();
+	/// Wakes the tick loop early when an event made work due sooner than it sleeps.
+	void reschedule();
 
 	std::map<PeerId, std::shared_ptr<Connection>> peers;
 	int pendingSeat = -1;
 	std::unique_ptr<asio::steady_timer> timer;
+	std::uint64_t scheduledWake = 0;
 };
 
 struct RelayServer::Impl : std::enable_shared_from_this<RelayServer::Impl>
@@ -254,19 +256,19 @@ void Match::start(asio::any_io_executor executor)
 
 asio::awaitable<void> Match::tickLoop()
 {
-	// Wake when the next live bundle is due (TurnSequencer::nextBundleMicros), so
-	// bundles leave on their tick boundary instead of up to a timer period late, which
-	// clients would see as jitter. Grace expiry, arbitration timeouts and presence
-	// need no more than the 10 ms fallback, also used while no bundle is due (before
-	// the first tick, or once the sequencer stops sending).
-	constexpr std::uint64_t FALLBACK_MICROS = 10000;
+	// Sleep until the sequencer next has work (TurnSequencer::nextWakeMicros): the
+	// next live bundle while anyone is connected, so bundles leave on their tick
+	// boundary instead of up to a timer period late (which clients would see as
+	// jitter); a grace expiry or the load-barrier deadline otherwise. Events that make
+	// work due sooner (a connection, a presence change) cut the sleep short through
+	// reschedule(). A running match therefore wakes once per tick, an empty one about
+	// once a second; the cap only bounds a clock surprise.
+	constexpr std::uint64_t MAX_SLEEP_MICROS = 1000000;
 	while (!ended)
 	{
 		const std::uint64_t now = monotonicMicros();
-		std::uint64_t wake = now + FALLBACK_MICROS;
-		const std::uint64_t next = sequencer.nextBundleMicros();
-		if (next > now && next < wake)
-			wake = next;
+		const std::uint64_t wake = std::min(std::max(sequencer.nextWakeMicros(), now), now + MAX_SLEEP_MICROS);
+		scheduledWake = wake;
 		timer->expires_at(std::chrono::steady_clock::time_point(std::chrono::microseconds(wake)));
 		boost::system::error_code ignored;
 		co_await timer->async_wait(asio::redirect_error(asio::use_awaitable, ignored));
@@ -274,6 +276,15 @@ asio::awaitable<void> Match::tickLoop()
 			break;
 		sequencer.update(monotonicMicros());
 		afterEvent();
+	}
+}
+
+void Match::reschedule()
+{
+	if (timer && !ended && sequencer.nextWakeMicros() < scheduledWake)
+	{
+		scheduledWake = 0;
+		timer->cancel();
 	}
 }
 
@@ -293,14 +304,6 @@ void Match::receive(Connection& connection, const std::vector<std::uint8_t>& pay
 {
 	if (!peers.count(connection.id))
 		return;
-	// The sequencer treats both quit reasons alike; the relay remembers a finished game
-	// so the platform can tell a completed match from an abandoned one.
-	if (!payload.empty() && payload[0] == Turn::MSG_QUIT)
-	{
-		auto message = Turn::TurnCodec::decode(payload);
-		if (message && static_cast<const Turn::Quit&>(*message).reason == Turn::QuitReason::GameFinished)
-			gameFinished = true;
-	}
 	sequencer.onReceive(connection.id, payload, monotonicMicros());
 	afterEvent();
 }
@@ -323,6 +326,8 @@ void Match::abortNow()
 
 void Match::afterEvent()
 {
+	if (!ended && !sequencer.matchOver())
+		reschedule();
 	if (ended || !sequencer.matchOver())
 		return;
 	ended = true;
@@ -757,7 +762,7 @@ asio::awaitable<void> RelayServer::Impl::finalize(std::shared_ptr<Match> match)
 	info.simVersion = match->simVersion;
 	info.startedAt = match->startedAt;
 	info.endedAt = unixNow();
-	info.reason = match->aborted ? EndReason::Aborted : match->gameFinished ? EndReason::Completed : EndReason::Abandoned;
+	info.reason = match->aborted ? EndReason::Aborted : match->sequencer.gameDecided() ? EndReason::Completed : EndReason::Abandoned;
 	info.network = match->sequencer.networkSummary();
 	const auto& stats = match->sequencer.stats();
 	metrics.ordersSequenced += stats.ordersSequenced;
