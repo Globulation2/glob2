@@ -673,14 +673,17 @@ To sync from a local clone of the release mirror, configure `upstream` once as
 `https://github.com/Globulation2/glob2.git`, then use:
 
 ```sh
+git fetch origin master
 git fetch upstream master
-git checkout master
-git merge --ff-only upstream/master
-git push origin master
+git checkout --detach upstream/master
+git merge -s ours --no-edit -m "Merge public glob2 master into release mirror" origin/master
+git diff --exit-code upstream/master   # the tree must equal upstream's
+git push origin HEAD:master
 ```
 
-The release mirror's `master` tracks upstream `master` exactly, so the sync is
-a fast-forward. Make any release-specific change upstream first; see
+The merge keeps the mirror's history (so the push is not a force push) while
+taking upstream's files exactly; the release mirror never carries its own
+changes. Make any release-specific change upstream first; see
 [the release mirror](../development/releasing.md#the-release-mirror). Inspect
 the new commits before pushing. Do not force-push a release branch.
 

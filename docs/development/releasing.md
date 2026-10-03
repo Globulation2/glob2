@@ -15,8 +15,11 @@ workflow that uses deployment environments, named secrets or write tokens is
 missing from that set. Add a new release workflow to that set and give its root
 jobs the same guard.
 
-The mirror's `master` tracks `Globulation2/glob2` `master` exactly: syncing is
-a fast-forward, and the mirror carries no commits of its own. A change needed
+The mirror's `master` has exactly the same files as `Globulation2/glob2`
+`master`: each sync is a merge commit whose tree is upstream's, and the mirror
+carries no changes of its own. The mirror's older history has its own merge
+commits, so syncs cannot be fast-forwards, and its `master` refuses force
+pushes. A change needed
 for releasing, including a workflow or packaging fix, is made here first,
 through a normal pull request, and reaches the mirror with the next sync.
 Configure release credentials only as restricted GitHub environment secrets in
