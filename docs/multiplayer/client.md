@@ -252,6 +252,10 @@ seconds (default 40; 0 stays to the end) by closing its window, or by the in-gam
 Quit with `GLOB2_E2E_LEAVE_BY=menu`. The host logs the other seat's presence as its
 connection panel shows it, the game's end, and every change of the results card,
 and waits until the platform has settled the result before returning to the room.
+For colony appearance checks, `GLOB2_E2E_OPENGL=1` enables live meshes and
+`GLOB2_E2E_EXPECT_SKINS=N` requires N authorized textures to arrive within
+30 seconds of play on each client. Equip the fixture accounts before starting
+the match; the harness uses the real assignment and texture downloads.
 The `quick` role plays a casual quick match (AI backfill) and leaves after
 `GLOB2_E2E_QUICK_LEAVE` seconds. Every stage is captured:
 
