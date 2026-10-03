@@ -1,0 +1,5 @@
+{
+  "report": "function step(ctx) {\n  const buildings = ctx.game.buildings({team:ctx.myTeam,limit:200});\n  return {output:{tick:ctx.tick,buildings:buildings.map(b=>({id:b.id,generation:b.generation,type:b.type,workers:b.workers}))}};\n}\n",
+  "food-watch": "let wasHungry = false;\nfunction step(ctx) {\n  const workers = ctx.game.units({team:ctx.myTeam,limit:200}).filter(u=>u.type===0);\n  const hungry = workers.filter(u=>u.medical===1).length;\n  if(hungry>0 && !wasHungry) {\n    ctx.wakeAgent({key:'hungry-workers',reason:'Our workers need food.',data:{hungry,tick:ctx.tick}});\n  }\n  wasHungry = hungry>0;\n  return {output:{hungry,observedWorkers:workers.length}};\n}\n",
+  "production": "function step(ctx) {\n  const swarms = ctx.game.buildings({team:ctx.myTeam,limit:200}).filter(b=>b.shortType===0 && b.construction===0);\n  return {output:{swarms:swarms.length},orders:swarms.map(b=>({type:'production',building:{id:b.id,generation:b.generation},ratios:[4,1,1]})).slice(0,32)};\n}\n"
+}
