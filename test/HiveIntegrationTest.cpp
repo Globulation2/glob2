@@ -397,38 +397,26 @@ TEST_CASE("Hive Mind cadence replacement cancellation and lost acknowledgements"
 }
 
 #include "hive/HiveDialog.h"
+#include "Engine.h"
 #include <ScreenStack.h>
 TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindPresentation"))
 {
 	glob2test::HeadlessGlobals globals(
 		{.display = true, .loadStrings = true, .width = 1000, .height = 800});
-	glob2test::HeadlessGame world(
-		{.teams = 1, .discovered = true, .loadDefaultRace = true, .header = true});
-	world.addBuilding("swarm", 12, 7);
-	world.addBuilding("inn", 18, 9);
-	world.addBuilding("school", 20, 14);
-	for (int i = 0; i < 12; i++)
-		world.addUnit(WORKER, 11 + i % 6, 13 + i / 6);
-	world.addUnit(EXPLORER, 18, 16);
-	world.addUnit(WARRIOR, 19, 16);
-	for (int y = 2; y < 16; y++)
-		for (int x = 2; x < 8; x++)
-			if ((x + y) % 3 != 0)
-			{
-				auto &r = world.game.map.getResource(x, y);
-				r.type = WOOD;
-				r.variety = 0;
-				r.amount = 3;
-			}
-	for (int y = 18; y < 25; y++)
-		for (int x = 22; x < 29; x++)
-		{
-			auto &r = world.game.map.getResource(x, y);
-			r.type = WHEAT;
-			r.variety = 0;
-			r.amount = 3;
-		}
-
+	struct
+	{
+		GameGUI gui;
+	} world;
+	auto map = Engine::loadMapHeader("maps/balanced.map");
+	GameHeader players;
+	players.setNumberOfPlayers(1);
+	players.getBasePlayer(0) = BasePlayer(0, "Commander", 0, BasePlayer::P_LOCAL);
+	REQUIRE(world.gui.loadFromHeaders(map, players, true, true));
+	world.gui.localTeamNo = 0;
+	world.gui.localPlayer = 0;
+	world.gui.adjustLocalTeam();
+	world.gui.viewportX = (world.gui.game.teams[0]->startPosX - 12) & world.gui.game.map.getMaskW();
+	world.gui.viewportY = (world.gui.game.teams[0]->startPosY - 8) & world.gui.game.map.getMaskH();
 	Online::MemoryStorage storage;
 	Online::InstanceConfig config(storage);
 	Online::PlatformClient platform(config);
