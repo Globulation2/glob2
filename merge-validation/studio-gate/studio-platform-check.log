@@ -1,0 +1,16 @@
+
+> check
+> npm run lint && npm run typecheck && npm test
+
+
+> lint
+> eslint . && prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+apps/api/test/accountExport.test.ts(5,10): error TS2300: Duplicate identifier 'randomUUID'.
+apps/api/test/accountExport.test.ts(8,22): error TS2300: Duplicate identifier 'randomUUID'.

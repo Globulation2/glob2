@@ -1,0 +1,4 @@
+A 10 s drag of one flag (a new cell every 10 ms) while a key changes a building's worker count ~29 times a second, then the drop; two engines on clean 15 ms links (FourSquares1, Nicowar AI).
+client | queued moves | executed moves | move delay mean / p95 / max ms | drop delay ms | last key press ms | orders flooded at the relay | coalesced | local queue max | relay queue ahead max ticks
+unpaced (before) | 1000 | 151 | 3524.17 / 6650 / 6970 | -1 | -1 | 38 | 0 | 1 | 251
+paced (this change) | 1000 | 250 | 248.56 / 250 / 250 | 275 | 315 | 0 | 282 | 2 | 5

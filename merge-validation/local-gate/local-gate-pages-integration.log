@@ -1,0 +1,9 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/colony-skins/glob2/platform
+
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  13:42:43
+   Duration  13.66s (tests 30%, environment 29%, import 21%, transform 20%)
+

@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="39" failures="0" errors="0" skipped="0"><testsuite name="EngineSession"><testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="11.9517" status="run" />
+  <testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="4.11036" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="1.50184" status="run" />
+  </testsuite><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]" time="4.92828" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="44.2299" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="9.44144" status="run" />
+  </testsuite><testsuite name="LanMatchHarness"><testcase classname="LanMatchHarness" name="a LAN host and two guests over loopback WSS play with AIs through a drop, a restart and the host leaving, and agree at every tick [network][slow][artifacts]" time="30.0429" status="run" />
+  <testcase classname="LanMatchHarness" name="an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]" time="2.06006" status="run" />
+  </testsuite><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="2.77784" status="run" />
+  <testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="1.58873" status="run" />
+  </testsuite><testsuite name="OnlineScreenLifetime"><testcase classname="OnlineScreenLifetime" name="online screens closed with platform calls in flight are never called back" time="0.532871" status="run" />
+  </testsuite><testsuite name="OnlineServices"><testcase classname="OnlineServices" name="an owner's services are the ones services() returns, until the owner goes" time="0.000174" status="run" />
+  <testcase classname="OnlineServices" name="pump hooks run on update and stop once removed" time="0" status="run" />
+  </testsuite><testsuite name="PlatformRoom"><testcase classname="PlatformRoom" name="a map change is announced once; a status change is not" time="0.670114" status="run" />
+  <testcase classname="PlatformRoom" name="a member without a seat is listed, and Ready says why it is unavailable" time="0.791787" status="run" />
+  <testcase classname="PlatformRoom" name="a premade map is uploaded and chosen for the room, then named by the server" time="0.413382" status="run" />
+  <testcase classname="PlatformRoom" name="the server's start notice is shown once in the room chat" time="0.209053" status="run" />
+  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.014748" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.012049" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.006606" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.020007" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.011841" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="4.46475" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="44.5047" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="4.91146" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="2.47522" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="0.522209" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="5.39649" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="2.34239" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="20.0762" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="6.66842" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="7.10013" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="1.62546" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="2.45584" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="1.11602" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="11.6182" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="5.00072" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="0.511424" status="run" />
+  </testsuite><testsuite name="WssTransport"><testcase classname="WssTransport" name="a reader that stops reading resumes with every message in order" time="1.54276" status="run" />
+  </testsuite></testsuites>

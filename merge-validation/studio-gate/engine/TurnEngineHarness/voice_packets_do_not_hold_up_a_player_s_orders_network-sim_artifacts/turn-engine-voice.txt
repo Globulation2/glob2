@@ -1,0 +1,4 @@
+Bot orders (10% of ticks) on clean 15 ms links, 30 s, with and without four 600-byte voice packets a second from the same player.
+run | orders | mean ms | p95 ms | voice sent | voice received
+quiet | 74 | 120 | 120 | 0 | 0
+talking | 74 | 121.622 | 120 | 120 | 120

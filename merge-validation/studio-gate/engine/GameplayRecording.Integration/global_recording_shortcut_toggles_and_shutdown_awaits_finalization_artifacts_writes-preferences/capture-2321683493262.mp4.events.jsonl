@@ -1,0 +1,9 @@
+{"time_us":0,"kind":"chapter","id":1,"phase":"menu","screen":"main_menu","dialog":"","match":0,"mode":"","map":"","team":-1}
+{"time_us":150000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":500000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":600000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":666666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":900000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":950000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1083333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1250000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}

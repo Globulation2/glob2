@@ -1,0 +1,615 @@
+
+> check
+> npm run lint && npm run typecheck && npm test
+
+
+> lint
+> eslint . && prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/colony-skins/glob2/platform
+
+ ❯ apps/web/test/pages.test.tsx (11 tests | 1 failed) 22331ms
+   ❯ pages (6)
+     × match page shows players, timelines, refused orders and Watch in browser 2092ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/web/test/pages.test.tsx > pages > match page shows players, timelines, refused orders and Watch in browser
+TestingLibraryElementError: Unable to find an element by: [data-testid="match-title"]
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"site"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"skip-link"[39m
+        [33mhref[39m=[32m"#main"[39m
+      [36m>[39m
+        [0mSkip to content[0m
+      [36m</a>[39m
+      [36m<div[39m
+        [33maria-hidden[39m=[32m"true"[39m
+        [33mclass[39m=[32m"world-band"[39m
+      [36m/>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"site-top"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"site-header"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"wrap"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Test Instance, home"[39m
+              [33mclass[39m=[32m"brand"[39m
+              [33mhref[39m=[32m"/"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"34"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+                [33mwidth[39m=[32m"34"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"wordmark "[39m
+              [36m/>[39m
+            [36m</a>[39m
+            [36m<nav[39m
+              [33maria-label[39m=[32m"Main"[39m
+              [33mclass[39m=[32m"nav"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/leaderboard"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/war-flag.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mLeaderboard[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33maria-current[39m=[32m"page"[39m
+                [33mclass[39m=[32m"on"[39m
+                [33mhref[39m=[32m"/matches"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mMatches[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/maps"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/exploration-flag.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mMaps[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/skins"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mSkins[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"header-end"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Theme: same as this device. Change theme"[39m
+                [33mclass[39m=[32m"theme-toggle"[39m
+                [33mdata-testid[39m=[32m"theme-toggle"[39m
+                [33mtitle[39m=[32m"Theme: same as this device"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"12"[39m
+                    [33mcy[39m=[32m"12"[39m
+                    [33mr[39m=[32m"8.5"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M12 3.5a8.5 8.5 0 0 1 0 17z"[39m
+                    [33mfill[39m=[32m"currentColor"[39m
+                    [33mstroke[39m=[32m"none"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"btn primary small"[39m
+                [33mhref[39m=[32m"/signin"[39m
+              [36m>[39m
+                [0mSign in[0m
+              [36m</a>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</header>[39m
+      [36m</div>[39m
+      [36m<main[39m
+        [33mid[39m=[32m"main"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"wrap"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"page"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"loading"[39m
+              [33mrole[39m=[32m"status"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"glob-spin"[39m
+              [36m/>[39m
+              [0m Loading…[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+      [36m<footer[39m
+        [33mclass[39m=[32m"site-footer"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"decor"[39m
+        [36m>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mdecoding[39m=[32m"async"[39m
+            [33mdraggable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"56"[39m
+            [33mloading[39m=[32m"lazy"[39m
+            [33msrc[39m=[32m"/apps/web/src/art/wood.webp"[39m
+            [33mwidth[39m=[32m"56"[39m
+          [36m/>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mdecoding[39m=[32m"async"[39m
+            [33mdraggable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"40"[39m
+            [33mloading[39m=[32m"lazy"[39m
+            [33msrc[39m=[32m"/apps/web/src/art/fruit.webp"[39m
+            [33mwidth[39m=[32m"40"[39m
+          [36m/>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mdecoding[39m=[32m"async"[39m
+            [33mdraggable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"44"[39m
+            [33mloading[39m=[32m"lazy"[39m
+            [33msrc[39m=[32m"/apps/web/src/art/wood.webp"[39m
+            [33mwidth[39m=[32m"44"[39m
+          [36m/>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"wrap"[39m
+        [36m>[39m
+          [36m<div>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"wordmark "[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mGlobulation 2 is free software (GPL 3): a real-time strategy game where you lead a colony of globs by setting goals, not by clicking every unit.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"Play"[39m
+          [36m>[39m
+            [36m<h2>[39m
+              [0mPlay[0m
+            [36m</h2>[39m
+            [36m<ul>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"/play/"[39m
+                [36m>[39m
+                  [0mPlay in browser[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/releases"[39m
+                  [33mrel[39m=[32m"noopener"[39m
+                [36m>[39m
+                  [0mDownload the game[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"/leaderboard"[39m
+                [36m>[39m
+                  [0mLeaderboards[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"/maps"[39m
+                [36m>[39m
+                  [0mMaps[0m
+                [36m</a>[39m
+              [36m</li>[39m
+            [36m</ul>[39m
+          [36m</nav>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"About"[39m
+          [36m>[39m
+            [36m<h2>[39m
+              [0mAbout[0m
+            [36m</h2>[39m
+            [36m<ul>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2"[39m
+                  [33mrel[39m=[32m"noopener"[39m
+                [36m>[39m
+                  [0mSource code[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/blob/master/docs/assets/source-attribution.md"[39m
+                  [33mrel[39m=[32m"noopener"[39m
+                [36m>[39m
+                  [0mArtwork and font credits[0m
+                [36m</a>[39m
+              [36m</li>[39m
+            [36m</ul>[39m
+          [36m</nav>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"fine"[39m
+          [36m>[39m
+            [0mPictures on this site are the game’s own artwork by the Globulation 2 artists (GPL 3). Fonts: Glob2 Sans (DejaVu) and Nunito (SIL Open Font License).[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</footer>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"site"[39m
+    [36m>[39m
+      [36m<a[39m
+        [33mclass[39m=[32m"skip-link"[39m
+        [33mhref[39m=[32m"#main"[39m
+      [36m>[39m
+        [0mSkip to content[0m
+      [36m</a>[39m
+      [36m<div[39m
+        [33maria-hidden[39m=[32m"true"[39m
+        [33mclass[39m=[32m"world-band"[39m
+      [36m/>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"site-top"[39m
+      [36m>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"site-header"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"wrap"[39m
+          [36m>[39m
+            [36m<a[39m
+              [33maria-label[39m=[32m"Test Instance, home"[39m
+              [33mclass[39m=[32m"brand"[39m
+              [33mhref[39m=[32m"/"[39m
+            [36m>[39m
+              [36m<img[39m
+                [33malt[39m=[32m""[39m
+                [33mheight[39m=[32m"34"[39m
+                [33msrc[39m=[32m"/apps/web/src/art/glob-64.png"[39m
+                [33mwidth[39m=[32m"34"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"wordmark "[39m
+              [36m/>[39m
+            [36m</a>[39m
+            [36m<nav[39m
+              [33maria-label[39m=[32m"Main"[39m
+              [33mclass[39m=[32m"nav"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/"[39m
+              [36m>[39m
+                [0mHome[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/leaderboard"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/war-flag.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mLeaderboard[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33maria-current[39m=[32m"page"[39m
+                [33mclass[39m=[32m"on"[39m
+                [33mhref[39m=[32m"/matches"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mMatches[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/maps"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/exploration-flag.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mMaps[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m""[39m
+                [33mhref[39m=[32m"/skins"[39m
+              [36m>[39m
+                [36m<img[39m
+                  [33malt[39m=[32m""[39m
+                  [33mheight[39m=[32m"26"[39m
+                  [33msrc[39m=[32m"/apps/web/src/art/swarm.webp"[39m
+                  [33mwidth[39m=[32m"26"[39m
+                [36m/>[39m
+                [0mSkins[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"header-end"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Theme: same as this device. Change theme"[39m
+                [33mclass[39m=[32m"theme-toggle"[39m
+                [33mdata-testid[39m=[32m"theme-toggle"[39m
+                [33mtitle[39m=[32m"Theme: same as this device"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33maria-hidden[39m=[32m"true"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"2"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [36m>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"12"[39m
+                    [33mcy[39m=[32m"12"[39m
+                    [33mr[39m=[32m"8.5"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M12 3.5a8.5 8.5 0 0 1 0 17z"[39m
+                    [33mfill[39m=[32m"currentColor"[39m
+                    [33mstroke[39m=[32m"none"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"btn primary small"[39m
+                [33mhref[39m=[32m"/signin"[39m
+              [36m>[39m
+                [0mSign in[0m
+              [36m</a>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</header>[39m
+      [36m</div>[39m
+      [36m<main[39m
+        [33mid[39m=[32m"main"[39m
+        [33mtabindex[39m=[32m"-1"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"wrap"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"page"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"loading"[39m
+              [33mrole[39m=[32m"status"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"glob-spin"[39m
+              [36m/>[39m
+              [0m Loading…[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</main>[39m
+      [36m<footer[39m
+        [33mclass[39m=[32m"site-footer"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33maria-hidden[39m=[32m"true"[39m
+          [33mclass[39m=[32m"decor"[39m
+        [36m>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mdecoding[39m=[32m"async"[39m
+            [33mdraggable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"56"[39m
+            [33mloading[39m=[32m"lazy"[39m
+            [33msrc[39m=[32m"/apps/web/src/art/wood.webp"[39m
+            [33mwidth[39m=[32m"56"[39m
+          [36m/>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mdecoding[39m=[32m"async"[39m
+            [33mdraggable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"40"[39m
+            [33mloading[39m=[32m"lazy"[39m
+            [33msrc[39m=[32m"/apps/web/src/art/fruit.webp"[39m
+            [33mwidth[39m=[32m"40"[39m
+          [36m/>[39m
+          [36m<img[39m
+            [33malt[39m=[32m""[39m
+            [33mdecoding[39m=[32m"async"[39m
+            [33mdraggable[39m=[32m"false"[39m
+            [33mheight[39m=[32m"44"[39m
+            [33mloading[39m=[32m"lazy"[39m
+            [33msrc[39m=[32m"/apps/web/src/art/wood.webp"[39m
+            [33mwidth[39m=[32m"44"[39m
+          [36m/>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"wrap"[39m
+        [36m>[39m
+          [36m<div>[39m
+            [36m<span[39m
+              [33maria-hidden[39m=[32m"true"[39m
+              [33mclass[39m=[32m"wordmark "[39m
+            [36m/>[39m
+            [36m<p>[39m
+              [0mGlobulation 2 is free software (GPL 3): a real-time strategy game where you lead a colony of globs by setting goals, not by clicking every unit.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"Play"[39m
+          [36m>[39m
+            [36m<h2>[39m
+              [0mPlay[0m
+            [36m</h2>[39m
+            [36m<ul>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"/play/"[39m
+                [36m>[39m
+                  [0mPlay in browser[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/releases"[39m
+                  [33mrel[39m=[32m"noopener"[39m
+                [36m>[39m
+                  [0mDownload the game[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"/leaderboard"[39m
+                [36m>[39m
+                  [0mLeaderboards[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"/maps"[39m
+                [36m>[39m
+                  [0mMaps[0m
+                [36m</a>[39m
+              [36m</li>[39m
+            [36m</ul>[39m
+          [36m</nav>[39m
+          [36m<nav[39m
+            [33maria-label[39m=[32m"About"[39m
+          [36m>[39m
+            [36m<h2>[39m
+              [0mAbout[0m
+            [36m</h2>[39m
+            [36m<ul>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2"[39m
+                  [33mrel[39m=[32m"noopener"[39m
+                [36m>[39m
+                  [0mSource code[0m
+                [36m</a>[39m
+              [36m</li>[39m
+              [36m<li>[39m
+                [36m<a[39m
+                  [33mhref[39m=[32m"https://github.com/Globulation2/glob2/blob/master/docs/assets/source-attribution.md"[39m
+                  [33mrel[39m=[32m"noopener"[39m
+                [36m>[39m
+                  [0mArtwork and font credits[0m
+                [36m</a>[39m
+              [36m</li>[39m
+            [36m</ul>[39m
+          [36m</nav>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"fine"[39m
+          [36m>[39m
+            [0mPictures on this site are the game’s own artwork by the Globulation 2 artists (GPL 3). Fonts: Glob2 Sans (DejaVu) and Nunito (SIL Open Font License).[0m
+          [36m</p>[39m
+        [36m</div>[39m
+      [36m</footer>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ apps/web/test/pages.test.tsx:315:26
+    313|   it('match page shows players, timelines, refused orders and Watch in…
+    314|     open(`/matches/${MATCH}`);
+    315|     expect((await screen.findByTestId('match-title')).textContent).toB…
+       |                          ^
+    316|       '1 vs 1 ranked · Even Ground',
+    317|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 50 passed | 1 skipped (52)
+      Tests  1 failed | 373 passed | 5 skipped (379)
+   Start at  13:28:36
+   Duration  92.19s (tests 49%, import 33%, transform 16%, environment 1%)
+

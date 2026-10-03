@@ -1,0 +1,17 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts a11y.spec.ts -g every page passes --output=../../../artifacts/skins/merge-validation/local-gate-a11y-final
+
+
+Running 4 tests using 1 worker
+
+(node:3300691) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (light) (1.7m)
+  ✓  2 [desktop] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (dark) (1.6m)
+(node:3311010) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [phone] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (light) (1.5m)
+  ✓  4 [phone] › e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (dark) (1.6m)
+
+  4 passed (6.9m)
