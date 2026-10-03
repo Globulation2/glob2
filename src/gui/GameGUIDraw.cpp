@@ -904,13 +904,47 @@ void GameGUI::drawStatisticsPage(int y)
 		x + 4, y, globalContainer->littleFont,
 		Toolkit::getStringTable()->getString(measurementPage == 0 ? "[Stats page one]"
 													: measurementPage == 1 ? "[Stats page two]"
-													: "[Stats page three]"));
+													: measurementPage == 2 ? "[Stats page three]"
+													: "[Win chance]"));
 	if (measurementPage == 1)
 		teamStats->drawMeasurements(x, y + 16);
 	else if (measurementPage == 2)
 		teamStats->drawExpandedMeasurements(x, y + 16);
+	else if (measurementPage == 3)
+		drawWinProbabilities(x, y);
 	else
 		teamStats->drawText(x, y);
+}
+
+void GameGUI::drawWinProbabilities(int x, int y)
+{
+	// Spectators can use the model to follow any AI-only game. Players do not
+	// receive an extra prediction about an outcome that the game may not use.
+	if (!globalContainer->liveSpectating)
+		return;
+
+
+	Font *font = globalContainer->littleFont;
+	globalContainer->gfx->drawString(x + 4, y, font,
+		Toolkit::getStringTable()->getString("[Win chance]"));
+	const int inc = 14;
+	int row = 0;
+	const Scene &scene = drawnScene();
+	for (const auto &chance : scene.panels.hud.winChances)
+	{
+		const int permille = chance.permille;
+		const int top = y + 16 + row * inc;
+		// The name is clipped rather than allowed to run into the figure: player
+		// names are arbitrary length and the panel is narrow.
+		const int percentX = x + RIGHT_MENU_WIDTH - RIGHT_MENU_OFFSET - 40;
+		globalContainer->gfx->drawFilledRect(x + 4, top + 3, 8, 8, chance.color);
+		globalContainer->gfx->drawString(x + 16, top, font, chance.name.c_str(),
+			percentX - (x + 16) - 4);
+		globalContainer->gfx->drawString(percentX, top, font,
+			FormattableString(chance.alive ? "%0%" : "-")
+				.arg(permille / 10).c_str());
+		++row;
+	}
 }
 
 SceneRequest GameGUI::sceneRequest()

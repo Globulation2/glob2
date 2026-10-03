@@ -478,6 +478,7 @@ CLIENT_SOURCES = (
     'unit/UnitUtils.cpp',
     'Utilities.cpp',
     'VoiceRecorder.cpp',
+    'WinProbability.cpp',
     'WinningConditions.cpp',
     'Application.cpp',
     'MapEditorScreen.cpp',
