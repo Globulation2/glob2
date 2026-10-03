@@ -9,7 +9,7 @@ import { HASH, createAccount, createMatch, createVerifyJob, resultPayload } from
 let database: TestDatabase;
 
 beforeAll(async () => {
-  database = await createTestDatabase();
+  database = await createTestDatabase({ role: 'worker' });
   await database.db
     .insertInto('blobs')
     .values({ sha256: HASH, size: 10, content_type: 'application/octet-stream', storage_key: 'k' })

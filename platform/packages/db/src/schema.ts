@@ -175,6 +175,12 @@ export interface EngineJobsTable {
   agent_id: Nullable<string>;
   created_at: Timestamp;
   completed_at: NullableTimestamp;
+  attempts: Defaulted<number>;
+  max_attempts: Defaulted<number>;
+  leased_by: Nullable<string>;
+  lease_token_hash: Nullable<string>;
+  lease_expires_at: NullableTimestamp;
+  reported_at: NullableTimestamp;
 }
 
 export interface MapsTable {

@@ -537,7 +537,7 @@ describe('empty seats', () => {
 describe('rating application', () => {
   let database: TestDatabase;
   beforeAll(async () => {
-    database = await createTestDatabase();
+    database = await createTestDatabase({ role: 'worker' });
   });
   afterAll(async () => {
     await database?.drop();

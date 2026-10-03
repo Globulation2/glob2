@@ -1,16 +1,8 @@
 // Warm map pool: refill per queue, entry and served sim version; completion
 // through the engine-job result path; takeWarmMap; backoff and housekeeping.
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { sql } from 'kysely';
 import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
-import {
-  JobQueue,
-  createLogger,
-  defaultMapPool,
-  prepareJobQueue,
-  resolveQueue,
-  type ResolvedQueue,
-} from '@glob2/core';
+import { createLogger, defaultMapPool, resolveQueue, type ResolvedQueue } from '@glob2/core';
 import { handleEngineJobResult } from '../src/ratings/apply.ts';
 import {
   WARM_MAP_FAILURE_LIMIT,
@@ -23,7 +15,6 @@ import { SIM_A, SIM_B } from './support.ts';
 
 const logger = createLogger('warm-maps-test', 'silent');
 let database: TestDatabase;
-let queue: JobQueue;
 
 const twoEntries = (): ResolvedQueue =>
   resolveQueue({
@@ -37,13 +28,10 @@ const twoEntries = (): ResolvedQueue =>
   });
 
 beforeAll(async () => {
-  database = await createTestDatabase();
-  await prepareJobQueue(database.pool, logger);
-  queue = await JobQueue.create(database.pool, logger);
+  database = await createTestDatabase({ role: 'worker' });
 });
 
 afterAll(async () => {
-  await queue?.close();
   await database?.drop();
 });
 
@@ -51,7 +39,6 @@ beforeEach(async () => {
   await database.db.deleteFrom('warm_maps').execute();
   await database.db.deleteFrom('engine_jobs').execute();
   await database.db.deleteFrom('engine_agents').execute();
-  await sql`DELETE FROM graphile_worker._private_jobs`.execute(database.db);
 });
 
 async function agent(id: string, simVersion: string, seenSecondsAgo = 0) {
@@ -67,11 +54,15 @@ async function agent(id: string, simVersion: string, seenSecondsAgo = 0) {
     .execute();
 }
 
-async function queuedTasks(): Promise<string[]> {
-  const rows = await sql<{ identifier: string }>`
-    SELECT t.identifier FROM graphile_worker._private_jobs j
-    JOIN graphile_worker._private_tasks t ON t.id = j.task_id ORDER BY j.id`.execute(database.db);
-  return rows.rows.map((r) => r.identifier);
+/** Engine jobs waiting for an agent, as `<kind>:<sim version>`. */
+async function queuedJobs(): Promise<string[]> {
+  const rows = await database.db
+    .selectFrom('engine_jobs')
+    .select(['kind', 'sim_version'])
+    .where('status', '=', 'queued')
+    .orderBy('created_at')
+    .execute();
+  return rows.map((r) => `${r.kind}:${r.sim_version}`);
 }
 
 /** Completes every generating warm map as the engine agent and worker would. */
@@ -129,7 +120,6 @@ describe('WarmMapPool', () => {
     let seed = 0;
     const pool = new WarmMapPool({
       db: database.db,
-      queue,
       queues: [q],
       perEntry: 2,
       logger,
@@ -137,9 +127,9 @@ describe('WarmMapPool', () => {
     });
     expect((await pool.refill()).submitted).toBe(8); // 2 versions × 2 entries × 2
     expect((await pool.refill()).submitted).toBe(0); // generating counts as open
-    const tasks = await queuedTasks();
-    expect(tasks.filter((t) => t === `engine:generate-map:${SIM_A}`)).toHaveLength(4);
-    expect(tasks.filter((t) => t === `engine:generate-map:${SIM_B}`)).toHaveLength(4);
+    const tasks = await queuedJobs();
+    expect(tasks.filter((t) => t === `generate-map:${SIM_A}`)).toHaveLength(4);
+    expect(tasks.filter((t) => t === `generate-map:${SIM_B}`)).toHaveLength(4);
 
     // Jobs carry a full descriptor with a fresh seed, recorded on engine_jobs.
     const jobs = await database.db.selectFrom('engine_jobs').select(['payload']).execute();
@@ -171,7 +161,7 @@ describe('WarmMapPool', () => {
   it('hands each ready map to exactly one concurrent taker', async () => {
     await agent('a1', SIM_A);
     const q = twoEntries();
-    const pool = new WarmMapPool({ db: database.db, queue, queues: [q], perEntry: 3, logger });
+    const pool = new WarmMapPool({ db: database.db, queues: [q], perEntry: 3, logger });
     await pool.refill();
     await completeAll();
     const takes = await Promise.all(
@@ -186,7 +176,7 @@ describe('WarmMapPool', () => {
   it('backs off entries that keep failing and drops maps of entries no longer configured', async () => {
     await agent('a1', SIM_A);
     const q = twoEntries();
-    const pool = new WarmMapPool({ db: database.db, queue, queues: [q], perEntry: 1, logger });
+    const pool = new WarmMapPool({ db: database.db, queues: [q], perEntry: 1, logger });
     const arenaKey = poolEntryKey(q.mapPool.find((e) => e.generatorId === 'symmetric-arena')!);
     for (let round = 0; round < WARM_MAP_FAILURE_LIMIT; round++) {
       await pool.refill();
@@ -215,7 +205,6 @@ describe('WarmMapPool', () => {
     };
     const shrunk = new WarmMapPool({
       db: database.db,
-      queue,
       queues: [arenaOnly],
       perEntry: 1,
       logger,
@@ -228,7 +217,6 @@ describe('WarmMapPool', () => {
     await agent('a1', SIM_A);
     const pool = new WarmMapPool({
       db: database.db,
-      queue,
       queues: [twoEntries()],
       perEntry: 1,
       logger,
@@ -246,12 +234,12 @@ describe('WarmMapPool', () => {
   it('does nothing when disabled or when no agent serves a version', async () => {
     const q = twoEntries();
     expect(
-      (await new WarmMapPool({ db: database.db, queue, queues: [q], perEntry: 1, logger }).refill())
+      (await new WarmMapPool({ db: database.db, queues: [q], perEntry: 1, logger }).refill())
         .submitted,
     ).toBe(0);
     await agent('a1', SIM_A);
     expect(
-      (await new WarmMapPool({ db: database.db, queue, queues: [q], perEntry: 0, logger }).refill())
+      (await new WarmMapPool({ db: database.db, queues: [q], perEntry: 0, logger }).refill())
         .submitted,
     ).toBe(0);
   });

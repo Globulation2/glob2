@@ -200,7 +200,7 @@ export async function ensureVerifyJob(
     .executeTakeFirst();
   if (!match || match.status !== 'ended') return undefined;
   const setup = match.setup as unknown as MatchSetup;
-  return submitEngineJob(db, jobs, {
+  return submitEngineJob(db, {
     kind: 'verify-match',
     simVersion: setup.simVersion,
     payload: { matchId, setup, recordHash: match.blob_sha256 },

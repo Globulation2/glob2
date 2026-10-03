@@ -14,7 +14,6 @@ import { sql, type Kysely } from 'kysely';
 import {
   modeSeats,
   submitEngineJob,
-  type JobQueue,
   type Logger,
   type MapPoolEntry,
   type ResolvedQueue,
@@ -75,7 +74,6 @@ export async function servedSimVersions(
 
 export interface WarmMapPoolOptions {
   db: Db;
-  queue: JobQueue;
   queues: readonly ResolvedQueue[];
   /** Maps kept ready (or generating) per queue, entry and sim version; 0 disables the pool. */
   perEntry: number;
@@ -98,7 +96,7 @@ export class WarmMapPool {
   }
 
   async refill(): Promise<RefillResult> {
-    const { db, queue, queues, perEntry, logger } = this.options;
+    const { db, queues, perEntry, logger } = this.options;
     const housekeeping = await this.housekeeping();
     let submitted = 0;
     if (perEntry <= 0 || queues.length === 0) return { submitted, ...housekeeping };
@@ -131,7 +129,7 @@ export class WarmMapPool {
               })
               .execute();
             try {
-              await submitEngineJob(db, queue, {
+              await submitEngineJob(db, {
                 kind: 'generate-map',
                 simVersion,
                 payload: { generator },

@@ -8,7 +8,7 @@ const SIM = `125-49-${'ab'.repeat(32)}`;
 let database: TestDatabase;
 
 beforeAll(async () => {
-  database = await createTestDatabase();
+  database = await createTestDatabase({ role: 'worker' });
 });
 
 afterAll(async () => {
@@ -17,7 +17,8 @@ afterAll(async () => {
 
 describe('maintenance', () => {
   it('expires stale sign-ins and queue tickets and purges old refresh tokens', async () => {
-    const db = database.db;
+    // Fixtures are written as the API writes them; maintenance runs as the worker.
+    const db = database.as('api').db;
     const account = await db
       .insertInto('accounts')
       .values({ kind: 'guest', display_name: 'Guest 1' })
@@ -95,14 +96,14 @@ describe('maintenance', () => {
       ])
       .execute();
 
-    expect(await runMaintenance(db)).toEqual({
+    expect(await runMaintenance(database.db)).toEqual({
       expiredSigninAttempts: 1,
       expiredQueueTickets: 1,
       deletedRefreshTokens: 1,
       deletedAuthFlows: 1,
       deletedWebSessions: 1,
     });
-    expect(await runMaintenance(db)).toEqual({
+    expect(await runMaintenance(database.db)).toEqual({
       expiredSigninAttempts: 0,
       expiredQueueTickets: 0,
       deletedRefreshTokens: 0,

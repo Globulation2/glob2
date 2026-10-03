@@ -149,6 +149,12 @@ const typedColumns: ColumnLists = {
     'agent_id',
     'created_at',
     'completed_at',
+    'attempts',
+    'max_attempts',
+    'leased_by',
+    'lease_token_hash',
+    'lease_expires_at',
+    'reported_at',
   ],
   maps: [
     'id',
@@ -483,7 +489,7 @@ const HASH2 = 'cd'.repeat(32);
 let database: TestDatabase;
 
 beforeAll(async () => {
-  database = await createTestDatabase({ migrate: false });
+  database = await createTestDatabase({ migrate: false, role: 'migrator' });
 });
 
 afterAll(async () => {

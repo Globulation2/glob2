@@ -17,6 +17,7 @@ import {
   prepareJobQueue,
   type AccessPolicy,
   type InstanceConfig,
+  type EngineAgentKey,
   type PlatformConfig,
   type RelayKey,
 } from '@glob2/core';
@@ -51,6 +52,7 @@ export interface Harness {
     build?: BuildOptions;
     access?: AccessPolicy;
     relayKeys?: RelayKey[];
+    engineAgentKeys?: EngineAgentKey[];
   }): Promise<Instance>;
   close(): Promise<void>;
 }
@@ -83,6 +85,7 @@ export async function createHarness(): Promise<Harness> {
         instanceConfigPath: undefined,
         secrets: options.secrets ?? {},
         relayKeys: options.relayKeys ?? [],
+        engineAgentKeys: options.engineAgentKeys ?? [],
       };
       // The origin must be known before building (cookies, redirect URIs), but
       // the port only after listening: reserve one first.

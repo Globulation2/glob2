@@ -76,7 +76,7 @@ export async function playRoutes(
   rooms: RoomService,
 ): Promise<void> {
   const { services } = app;
-  const { db, blobs, jobs } = services;
+  const { db, blobs } = services;
   const origin = services.config.publicOrigin;
   const uploads = new WindowCounter(UPLOADS_PER_HOUR, 3_600_000);
 
@@ -246,7 +246,7 @@ export async function playRoutes(
       }
       let row: UploadRow = inserted;
       if (!known) {
-        const jobId = await submitEngineJob(db, jobs, {
+        const jobId = await submitEngineJob(db, {
           kind: 'validate-map',
           simVersion,
           payload: { blobHash: key.blob, format },

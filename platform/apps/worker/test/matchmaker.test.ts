@@ -56,15 +56,15 @@ let database: TestDatabase;
 // Registered display names are unique (identity migration 0003).
 let players = 0;
 beforeAll(async () => {
-  database = await createTestDatabase();
+  database = await createTestDatabase({ role: 'worker' });
 });
 afterAll(async () => {
   await database?.drop();
 });
 afterEach(async () => {
-  // Each test starts with empty queues.
+  // Each test starts with empty queues (TRUNCATE is the schema owner's).
   await sql`TRUNCATE queue_tickets, match_proposals, match_proposal_seats, queue_cooldowns, matches CASCADE`.execute(
-    database.db,
+    database.as('migrator').db,
   );
 });
 

@@ -1459,11 +1459,16 @@ jobs:
       - name: Run tests
         id: run_tests
         run: npm test
-      - name: Apply migrations with the CLI
+      - name: Create the database roles and apply migrations with the CLI
         id: apply_migrations_with_the_cli
         env:
-          DATABASE_URL: postgres://glob2:glob2@localhost:5432/glob2
+          ADMIN_DATABASE_URL: postgres://glob2:glob2@localhost:5432/glob2
+          DATABASE_URL: postgres://glob2_migrator:ci-migrator@localhost:5432/glob2
+          DB_MIGRATOR_PASSWORD: ci-migrator
+          DB_API_PASSWORD: ci-api
+          DB_WORKER_PASSWORD: ci-worker
         run: |
+          npm run migrate -- roles
           npm run migrate -- latest
           npm run migrate -- status
 
