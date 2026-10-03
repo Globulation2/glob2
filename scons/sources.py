@@ -715,7 +715,6 @@ RELAY_SOURCES = (
     'relay/RelayLog.cpp',
     'relay/RelayMetrics.cpp',
     'relay/RelayServer.cpp',
-    'relay/RelaySha1.cpp',
     'relay/TicketVerifier.cpp',
     'net/turn/MatchRecord.cpp',
     'net/turn/TurnMessages.cpp',
@@ -725,6 +724,7 @@ RELAY_SOURCES = (
 
 RELAY_GAG_SOURCES = (
     'BinaryStream.cpp',
+    'Sha1.cpp',
     'Stream.cpp',
     'StreamBackend.cpp',
 )
@@ -732,6 +732,7 @@ RELAY_GAG_SOURCES = (
 GAG_SOURCES = (
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
+    'Sha1.cpp',
     'RenderBackend.cpp',
     'SoftwareRenderBackend.cpp',
     'SurfaceRaster.cpp',
@@ -782,6 +783,7 @@ GAG_SOURCES = (
 GAG_SERVER_SOURCES = (
     'PerformanceTelemetry.cpp',
     'BinaryStream.cpp',
+    'Sha1.cpp',
     'Stream.cpp',
     'FileManager.cpp',
     'FileManagerAtomic.cpp',

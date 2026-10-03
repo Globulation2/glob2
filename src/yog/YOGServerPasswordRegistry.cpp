@@ -6,7 +6,6 @@
 #include "BinaryStream.h"
 #include "Toolkit.h"
 #include "FileManager.h"
-#include "../gnupg/sha1.c"
 #include "Version.h"
 
 #include <string>

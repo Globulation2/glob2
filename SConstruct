@@ -557,7 +557,6 @@ def main():
         "data",
         "debian",
         "fedora",
-        "gnupg",
         "libgag",
         "libusl",
         "maps",

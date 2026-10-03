@@ -8,12 +8,13 @@
 
 */
  
+// Used by BinaryOutputStream to hash saves, and by every role that links libgag's
+// streams (game, tests, relay).
+
 #ifndef _SHA1_H
 # define _SHA1_H
 
-#include <SDL3_net/SDL_net.h>
-
-typedef Uint32 uint32_t;
+#include <cstdint>
 
 typedef struct {
   uint32_t state[5];
