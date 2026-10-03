@@ -1518,3 +1518,40 @@ and threaded recordings against unrecorded per-tick baselines.
 Set `GLOB2_TEST_FFMPEG=ffmpeg` to also encode real video/audio and chapter fixtures.
 Run `python3 test/test_recording_tool.py` for manifest selection and extraction
 argument tests. See [gameplay recording](../docs/features/gameplay-recording.md).
+
+## Legacy AI state and full-game continuation
+
+`LegacyAIStateTest.cpp` checks binary and text records for Warrush and Numbi clocks,
+Nicowar explorer phases and full-width construction counters, Cabino queued orders
+and specialist/cache state, Cortex policy selection and weights, and shared-runtime
+replacement of pending work on direct reload. Timer cases include boundaries,
+malformed values, truncation, constructors and wrapper loading. Genuine historical
+Warrush and Numbi layouts, followed by a sentinel, check versions 58, 121 and 127.
+The pre-fix writer records in `fixtures/legacy-ai-127/` additionally check Nicowar,
+Cabino and Cortex alignment and defaults. None relabel current-format records.
+
+`AIStateContinuationTest.cpp` compares order types and payloads, every controller's
+RNG, the simulation RNG, and detailed simulation checksum components for 256 ticks
+after each checkpoint. Checkpoints span boot, construction cooldowns, maintenance
+and phase transitions; colonies must stay alive and emit substantive decisions.
+It exercises every native AI, mixed opponents, shared-team controllers and repeated
+reloads at 64 and 128 ticks. Saves and per-tick TSV traces are retained under
+`artifacts/tests/AIStateContinuation/`. JavaScript's saved state, RNG and disabled
+state are covered by `JavaScriptIntegration`, alongside the Maxima archive fixtures.
+
+```sh
+python3 test/run_tests.py --filter 'LegacyAIState/*' --filter 'AIStateContinuation/*' \
+  --filter 'CastorContinuation/*' --filter 'JavaScriptIntegration/*' \
+  --filter 'Maxima.Continuation/*' --filter 'RuntimeContinuation/*'
+```
+
+Save format 132 gates the added fields by AI. The save compatibility floor stays
+58; omitted values in older saves retain their historical defaults. Exact old
+continuation cannot be recovered, and Cabino's historically damaged nonempty queue
+records cannot be repaired from missing bytes. Fresh-game strategy is unchanged,
+so the replay floor stays 127. Protocol 54 carries the new saved-game data;
+compatibility tests cover 127, 128, 132 and rejection of future format 133.
+
+For platform verification, run the same seeds and fixtures on macOS and Linux and
+compare the emitted TSV traces. A successful local run establishes local resumed
+equivalence; cross-platform equivalence requires both platform traces.

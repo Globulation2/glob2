@@ -33,6 +33,7 @@ namespace GAGCore
 			printString(name);
 			printString(" = ");
 		}
+		if (size == 0) printString("\"\""); // Empty binary fields still need a text token.
 		const unsigned char *dataChars = static_cast<const unsigned char *>(data);
 		for (size_t i=0; i<size; i++)
 		{
@@ -224,7 +225,7 @@ namespace GAGCore
 					
 					default:
 					{
-						if (isalnum(next) || (next == '.') || (next == '-') || (next == '[') || (next == ']'))
+						if (isalnum(next) || (next == '_') || (next == '.') || (next == '-') || (next == '[') || (next == ']'))
 						{
 							std::string tempValue;
 							do
@@ -232,7 +233,7 @@ namespace GAGCore
 								tempValue += static_cast<std::string::value_type>(next);
 								nextChar();
 							}
-							while (isalnum(next) || (next == '.') || (next == '[') || (next==']'));
+							while (isalnum(next) || (next == '_') || (next == '.') || (next == '[') || (next==']'));
 							token = Token(Token::VAL, tempValue);
 						}
 						else

@@ -7,6 +7,8 @@
 #include <Stream.h>
 
 #include "AICabino.h"
+#include "AIStateSerialization.h"
+#include "OrderMessages.h"
 #include "Game.h"
 #include "Building.h"
 #include "GlobalContainer.h"
@@ -45,6 +47,11 @@ AICabino::AICabino(GAGCore::InputStream *stream, Player *player, Sint32 versionM
 
 void AICabino::init(Player *player)
 {
+	for (auto* module : modules) delete module;
+	modules.clear();
+	other_modules.clear();
+	orders = {};
+	gradient_manager.clear();
 	timer=0;
 	iteration=0;
 	center_x=0;
@@ -105,6 +112,7 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	modules.clear();
 	while (!orders.empty()) orders.pop();
 	init(player);
+	GAGCore::BinaryInputStream::CheckedReads checked(stream);
 
 	stream->readEnterSection("AICabino");
 	timer=stream->readUint32("timer");
@@ -121,13 +129,21 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	for (Uint32 ordersIndex = 0; ordersIndex < ordersSize; ordersIndex++)
 	{
 		stream->readEnterSection(ordersIndex);
-		size_t size=stream->readCount("size");
-		std::vector<Uint8> buffer(size);
-		stream->read(buffer.data(), size, "data");
-		auto order = Order::getOrder(buffer.data(), size, versionMinor);
+		std::shared_ptr<Order> order;
+		if (versionMinor >= AI_CABINO_SAVE_FORMAT_CONTINUATION) {
+			NetSendOrder envelope;
+			envelope.setDecodeVersionMinor(versionMinor);
+			envelope.decodeData(stream);
+			order = envelope.getOrder();
+		} else {
+			const auto size=stream->readCount("size");
+			if (size == 0 || size > 65536) return false;
+			std::vector<Uint8> buffer(size);
+			stream->read(buffer.data(),size,"data");
+			order = Order::getOrder(buffer.data(),size,versionMinor);
+		}
 		if (!order) return false;
 		orders.push(order);
-		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -161,8 +177,9 @@ bool AICabino::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 	}
 	stream->readLeaveSection();
 
+	if (versionMinor >= AI_CABINO_SAVE_FORMAT_CONTINUATION && !gradient_manager.load(stream)) return false;
 	stream->readLeaveSection();
-	return true;
+	return stream->isValid();
 }
 
 
@@ -186,11 +203,7 @@ void AICabino::save(GAGCore::OutputStream *stream)
 		stream->writeEnterSection(ordersIndex);
 		const auto order = remainingOrders.front();
 		remainingOrders.pop();
-		std::vector<Uint8> packet(order->getDataLength()+1);
-		packet[0] = order->getOrderType();
-		if (order->getDataLength()) std::memcpy(packet.data()+1, order->getData(), order->getDataLength());
-		stream->writeUint32(packet.size(), "size");
-		stream->write(packet.data(), packet.size(), "data");
+		NetSendOrder(order).encodeData(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -207,6 +220,7 @@ void AICabino::save(GAGCore::OutputStream *stream)
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	gradient_manager.save(stream);
 	stream->writeLeaveSection();
 }
 
@@ -1189,6 +1203,20 @@ bool SimpleBuildingDefense::load(GAGCore::InputStream *stream, Player *player, S
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (versionMinor >= AI_CABINO_SAVE_FORMAT_CONTINUATION)
+	{
+		building_health.clear();
+		stream->readEnterSection("building_health");
+		const auto count = stream->readUint32("size");
+		if (count > Building::MAX_COUNT) return false;
+		for (Uint32 i=0; i<count; ++i) {
+			stream->readEnterSection(i);
+			const auto gid = stream->readUint32("gid");
+			building_health[gid] = stream->readUint32("hp");
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -1214,6 +1242,15 @@ void SimpleBuildingDefense::save(GAGCore::OutputStream *stream) const
 		stream->writeUint32(i->height, "height");
 		stream->writeUint32(i->assigned, "assigned");
 		stream->writeUint32(i->building, "building");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("building_health");
+	stream->writeUint32(building_health.size(), "size");
+	Uint32 healthIndex=0;
+	for (const auto& [gid,hp] : building_health) {
+		stream->writeEnterSection(healthIndex++);
+		stream->writeUint32(gid,"gid"); stream->writeUint32(hp,"hp");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -3801,6 +3838,10 @@ bool ExplorationManager::load(GAGCore::InputStream *stream, Player *player, Sint
 {
 	stream->readEnterSection("ExplorationManager");
 	explorers_wanted=stream->readUint32("explorers_wanted");
+	if (versionMinor >= AI_CABINO_SAVE_FORMAT_CONTINUATION)
+	{
+		original_explorers_wanted = stream->readUint32("original_explorers_wanted");
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -3812,6 +3853,7 @@ void ExplorationManager::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("ExplorationManager");
 	stream->writeUint32(explorers_wanted, "explorers_wanted");
+	stream->writeUint32(original_explorers_wanted,"original_explorers_wanted");
 	stream->writeLeaveSection();
 }
 
@@ -4338,6 +4380,41 @@ std::string HappinessHandler::getName() const
 bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
 	stream->readEnterSection("HappinessHandler");
+	if (versionMinor >= AI_CABINO_SAVE_FORMAT_CONTINUATION)
+	{
+		is_fruit_trees_computed = stream->readUint8("is_fruit_trees_computed") != 0;
+		stream->readEnterSection("fruit_trees");
+		fruit_trees.clear();
+		const auto fruit_treesCount = stream->readUint32("size");
+		if (fruit_treesCount > Uint32(ai.map->getW()*ai.map->getH())) return false;
+		for (Uint32 i=0; i<fruit_treesCount; ++i) {
+			stream->readEnterSection(i);
+			fruitTreeRecord record;
+			record.fruit_tree_max_x = AIStateSerialization::readSint32(stream,"fruit_tree_max_x");
+			record.fruit_tree_max_y = AIStateSerialization::readSint32(stream,"fruit_tree_max_y");
+			record.fruit_tree_min_x = AIStateSerialization::readSint32(stream,"fruit_tree_min_x");
+			record.fruit_tree_min_y = AIStateSerialization::readSint32(stream,"fruit_tree_min_y");
+			record.fruit_tree_type = AIStateSerialization::readSint32(stream,"fruit_tree_type");
+			fruit_trees.push_back(record);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+		stream->readEnterSection("exploring_fruit_trees");
+		exploring_fruit_trees.clear();
+		const auto exploring_fruit_treesCount = stream->readUint32("size");
+		if (exploring_fruit_treesCount > Uint32(ai.map->getW()*ai.map->getH())) return false;
+		for (Uint32 i=0; i<exploring_fruit_treesCount; ++i) {
+			stream->readEnterSection(i);
+			fruitTreeExplorationRecord record;
+			record.flag = AIStateSerialization::readSint32(stream,"flag");
+			record.pos_x = AIStateSerialization::readSint32(stream,"pos_x");
+			record.pos_y = AIStateSerialization::readSint32(stream,"pos_y");
+			record.radius = AIStateSerialization::readSint32(stream,"radius");
+			exploring_fruit_trees.push_back(record);
+			stream->readLeaveSection();
+		}
+		stream->readLeaveSection();
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -4348,6 +4425,30 @@ bool HappinessHandler::load(GAGCore::InputStream *stream, Player *player, Sint32
 void HappinessHandler::save(GAGCore::OutputStream *stream) const
 {
 	stream->writeEnterSection("HappinessHandler");
+	stream->writeUint8(is_fruit_trees_computed,"is_fruit_trees_computed");
+	stream->writeEnterSection("fruit_trees");
+	stream->writeUint32(fruit_trees.size(),"size");
+	for (Uint32 i=0; i<fruit_trees.size(); ++i) {
+		stream->writeEnterSection(i);
+		stream->writeSint32(fruit_trees[i].fruit_tree_max_x,"fruit_tree_max_x");
+		stream->writeSint32(fruit_trees[i].fruit_tree_max_y,"fruit_tree_max_y");
+		stream->writeSint32(fruit_trees[i].fruit_tree_min_x,"fruit_tree_min_x");
+		stream->writeSint32(fruit_trees[i].fruit_tree_min_y,"fruit_tree_min_y");
+		stream->writeSint32(fruit_trees[i].fruit_tree_type,"fruit_tree_type");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+	stream->writeEnterSection("exploring_fruit_trees");
+	stream->writeUint32(exploring_fruit_trees.size(),"size");
+	for (Uint32 i=0; i<exploring_fruit_trees.size(); ++i) {
+		stream->writeEnterSection(i);
+		stream->writeSint32(exploring_fruit_trees[i].flag,"flag");
+		stream->writeSint32(exploring_fruit_trees[i].pos_x,"pos_x");
+		stream->writeSint32(exploring_fruit_trees[i].pos_y,"pos_y");
+		stream->writeSint32(exploring_fruit_trees[i].radius,"radius");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 }
 
@@ -4601,6 +4702,11 @@ bool Farmer::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMi
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
 	}
+	if (versionMinor >= AI_CABINO_SAVE_FORMAT_CONTINUATION)
+	{
+		is_water_gradient_computed = stream->readUint8("is_water_gradient_computed") != 0;
+		if (is_water_gradient_computed && !water_gradient.load(stream, ai)) return false;
+	}
 	stream->readLeaveSection();
 	return true;
 }
@@ -4620,6 +4726,8 @@ void Farmer::save(GAGCore::OutputStream *stream) const
 		stream->writeUint16(i->y, "y");
 		stream->writeLeaveSection();
 	}
+	stream->writeUint8(is_water_gradient_computed,"is_water_gradient_computed");
+	if (is_water_gradient_computed) water_gradient.save(stream);
 	stream->writeLeaveSection();
 }
 
@@ -4698,4 +4806,87 @@ bool Farmer::updateFarm()
 		ai.orders.push(std::shared_ptr<Order>(new OrderAlterFarmArea(ai.team->teamNumber, BrushTool::MODE_ADD, &farm_add_acc, ai.map)));
 	return ai.telemetry.returnedBool(AITrace::AI8::Farmer_updateFarm_result,
 									 AITrace::AI8::Farmer_updateFarm_true, false);
+}
+
+// Cached gradients can be older than the map. Preserve their cells and the
+// rotating refresh FIFO, rather than recomputing them when loading a game.
+void Gradient::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("Gradient");
+	stream->writeUint32(sources,"sources");
+	stream->writeUint32(obstacles,"obstacles");
+	stream->writeUint32(gradient.size(),"cells");
+	for (Uint32 i=0; i<gradient.size(); ++i) {
+		stream->writeEnterSection(i);
+		stream->writeSint32(gradient[i],"height");
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+}
+
+bool Gradient::load(GAGCore::InputStream *stream, AICabino& owner)
+{
+	stream->readEnterSection("Gradient");
+	const auto savedSources=stream->readUint32("sources");
+	const auto savedObstacles=stream->readUint32("obstacles");
+	if (savedSources > 63 || savedObstacles > 3) return false;
+	const auto count=stream->readUint32("cells");
+	if (count != Uint32(owner.map->getW()*owner.map->getH())) return false;
+	reset(owner,savedSources,savedObstacles);
+	for (Uint32 i=0; i<count; ++i) {
+		stream->readEnterSection(i);
+		const auto value=AIStateSerialization::readSint32(stream,"height");
+		if (value < -32768 || value > 32767) return false;
+		gradient[i]=static_cast<short>(value);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	return stream->isValid();
+}
+
+void GradientManager::clear()
+{
+	update_queue={};
+	gradients.clear();
+}
+
+void GradientManager::save(GAGCore::OutputStream *stream) const
+{
+	stream->writeEnterSection("GradientManager");
+	// Serializing in refresh order encodes both the map and its FIFO without
+	// persisting iterators or changing insertion/refresh order on load.
+	auto pending=update_queue;
+	stream->writeUint32(pending.size(),"size");
+	Uint32 index=0;
+	while (!pending.empty()) {
+		stream->writeEnterSection(index++);
+		stream->writeUint32(pending.front()->first.sources,"sources");
+		stream->writeUint32(pending.front()->first.obstacles,"obstacles");
+		pending.front()->second.save(stream);
+		pending.pop();
+		stream->writeLeaveSection();
+	}
+	stream->writeLeaveSection();
+}
+
+bool GradientManager::load(GAGCore::InputStream *stream)
+{
+	clear();
+	stream->readEnterSection("GradientManager");
+	const auto count=stream->readUint32("size");
+	if (count > 256) return false; // 64 source masks times 4 obstacle masks.
+	for (Uint32 i=0; i<count; ++i) {
+		stream->readEnterSection(i);
+		const auto sources=stream->readUint32("sources");
+		const auto obstacles=stream->readUint32("obstacles");
+		gradientSignature signature(sources,obstacles);
+		if (gradients.count(signature)) return false;
+		Gradient field;
+		if (!field.load(stream,*team) || field.sources != sources || field.obstacles != obstacles) return false;
+		auto result=gradients.emplace(signature,std::move(field));
+		update_queue.push(result.first);
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	return stream->isValid();
 }
