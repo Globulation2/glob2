@@ -1,3 +1,5 @@
+#include "hive/HiveClient.h"
+#include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -354,4 +356,26 @@ bool GameGUI::zoomMap(double steps,int x,int y)
 void GameGUI::configureLiveSpectatorView()
 {
 	minimap.setMinimapMode(Minimap::HideFOW);
+}
+
+// Assistant orders share the human input channel. Allocate the whole batch before
+// publishing any order; allocation failure must not submit a partial command.
+bool GameGUI::enqueueCommanderOrders(const std::vector<std::shared_ptr<Order>> &orders, const std::function<bool()> &commit)
+{
+ if(globalContainer->replaying || globalContainer->liveSpectating || orders.size()>32 || orderQueue.size()+orders.size()>64)
+  return false;
+ std::list<std::shared_ptr<Order>> prepared(orders.begin(),orders.end());
+ if(!commit())return false;
+ orderQueue.splice(orderQueue.end(),prepared);
+ return true;
+}
+
+void GameGUI::updateCommander(bool caughtUp)
+{
+ if(!hive)return;
+ hive->update(caughtUp);
+ if(!hiveCards && hive->available() && !globalContainer->runNoX) {
+ hiveCards=std::make_unique<Hive::Dialog>(hive); hiveCards->compose=[this]{openCommander();}; hiveCards->attach(*globalContainer->gfx);
+ }
+ if(hiveCards)hiveCards->invalidate();
 }

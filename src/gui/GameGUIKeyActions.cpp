@@ -18,6 +18,8 @@ namespace GameGUIKeyActions
 		table.add(IncreaseUnitsWorking, "increase units working");
 		table.add(DecreaseUnitsWorking, "decrease units working");
 		table.add(OpenChatBox, "open chat box");
+		table.add(OpenCommander, "open commander");
+		table.add(StopCommander, "stop commander");
 		table.add(IterateSelection, "iterate selection");
 		table.add(GoToEvent, "go to event");
 		table.add(GoToHome, "go to home");

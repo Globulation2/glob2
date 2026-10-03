@@ -43,6 +43,17 @@ def packages_for(binary, run=subprocess.check_output):
     return owners
 
 
+def runtime_binaries(root):
+    """Built runtime programs, excluding SCons' disposable compiler probes."""
+    for path in sorted(root.rglob('*')):
+        if path.is_relative_to(root / 'configure') or not path.is_file():
+            continue
+        with path.open('rb') as source:
+            elf = source.read(4) == b'\x7fELF'
+        if elf and (path.stat().st_mode & 0o111 or '.so' in path.name):
+            yield path
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('root', type=Path)
@@ -51,22 +62,14 @@ def main():
     args = parser.parse_args()
     packages = set()
     binaries = []
-    for path in sorted(args.root.rglob('*')):
-        # Configure probes belong to the compiler cache, not the runtime
-        # artifact. Restored probes can reference obsolete SDK libraries.
-        if path.relative_to(args.root).parts[0] == 'configure':
-            continue
-        if path.is_file():
-            with path.open('rb') as source:
-                elf = source.read(4) == b'\x7fELF'
-            if elf and (path.stat().st_mode & 0o111 or '.so' in path.name):
-                if args.verify:
-                    linked = subprocess.check_output(['ldd', str(path)], text=True, stderr=subprocess.STDOUT)
-                    if 'not found' in linked:
-                        raise ValueError(f'unresolved runtime dependency in {path}: {linked}')
-                else:
-                    packages |= packages_for(path)
-                binaries.append(str(path))
+    for path in runtime_binaries(args.root):
+        if args.verify:
+            linked = subprocess.check_output(['ldd', str(path)], text=True, stderr=subprocess.STDOUT)
+            if 'not found' in linked:
+                raise ValueError(f'unresolved runtime dependency in {path}: {linked}')
+        else:
+            packages |= packages_for(path)
+        binaries.append(str(path))
     if not binaries:
         raise ValueError('no built ELF executables found')
     if args.verify:

@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-
 #include <SDL3/SDL_stdinc.h>
 #include <string>
 
-// Presentation values shared by telemetry extraction and the Scene. Keep this
-// independent of the live telemetry sink and simulation objects.
+// Copied diagnostic values for presentation; no live simulation access.
 namespace AITelemetry
 {
 struct NamedValue

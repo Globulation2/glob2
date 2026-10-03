@@ -13,6 +13,7 @@
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "hive/HiveClient.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -1000,6 +1001,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     clientWork();
 
     pumpTurnSession(now);
+    gui.updateCommander(turn && turn->turn().tickIntervalMicros()!=0);
     bool readyNow = st.wasReadyLastTick;
     if (!gui.hardPause) {
         gatherAndAdvanceOrders(st.wasReadyLastTick);

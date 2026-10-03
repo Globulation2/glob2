@@ -59,6 +59,12 @@ collects a bounded GDB backtrace before cleanup when available. To opt in when i
 `GLOB2_TEST_FULLSCREEN=1`; the Python runner overrides that variable according to
 its flag, so an inherited setting cannot enable fullscreen in a standard run.
 
+Windows CI replays native engine access violations under GDB with a fresh profile
+and separate artifacts. Harnesses retain function names for backtraces; shipped
+programs keep their normal release stripping. Logs appear in
+`artifacts/tests/crash-diagnostics/`. Diagnostic replays are bounded to 180 seconds
+per case and never replace the original failed result.
+
 Running a binary by hand is safe too: `TestMain.cpp` creates a temporary profile
 and selects the dummy drivers when the environment does not, so
 `build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
