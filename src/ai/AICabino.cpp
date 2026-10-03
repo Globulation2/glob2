@@ -1,17 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2005-2007 Bradley Arsenault
 
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
-#include "AITelemetryFields.h"
+#include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include <Stream.h>
 
@@ -1006,10 +996,10 @@ void Gradient::reset(AICabino& aAi, unsigned aSources, unsigned aObstacles)
 
 
 
-void Gradient::update()
+void Gradient::update(field::Frontier& frontier)
 {
 	std::fill(gradient.begin(), gradient.end(), 0);
-	std::queue<unsigned int> squares;
+	frontier.clear();
 	for(unsigned x=0; x<width; ++x)
 		for(unsigned y=0; y<height; ++y)
 	{
@@ -1021,69 +1011,15 @@ void Gradient::update()
 		if(isSource(x, y))
 		{
 			gradient[y*width+x]=2;
-			squares.push(y*width+x);
+			frontier.push_back(y*width+x);
 			continue;
 		}
 	}
 
-	while(squares.size())
-	{
-		unsigned int square=squares.front();
-		unsigned int x=square%width;
-		unsigned int y=square/width;
-		int x1=x-1, x2=x+1, y1=y-1, y2=y+1;
-		if(x1<0)
-			x1+=width;
-		if(x2>=static_cast<int>(width))
-			x2-=width;
-		if(y1<0)
-			y1+=height;
-		if(y2>=static_cast<int>(height))
-			y2-=height;
-		if(gradient[y1*width+x1]==0)
-		{
-			squares.push(y1*width+x1);
-			gradient[y1*width+x1]=gradient[y*width+x]+1;
-		}
-		if(gradient[y1*width+x2]==0)
-		{
-			squares.push(y1*width+x2);
-			gradient[y1*width+x2]=gradient[y*width+x]+1;
-		}
-		if(gradient[y2*width+x1]==0)
-		{
-			squares.push(y2*width+x1);
-			gradient[y2*width+x1]=gradient[y*width+x]+1;
-		}
-		if(gradient[y2*width+x2]==0)
-		{
-			squares.push(y2*width+x2);
-			gradient[y2*width+x2]=gradient[y*width+x]+1;
-		}
-
-
-		if(gradient[y*width+x1]==0)
-		{
-			squares.push(y*width+x1);
-			gradient[y*width+x1]=gradient[y*width+x]+1;
-		}
-		if(gradient[y*width+x2]==0)
-		{
-			squares.push(y*width+x2);
-			gradient[y*width+x2]=gradient[y*width+x]+1;
-		}
-		if(gradient[y1*width+x]==0)
-		{
-			squares.push(y1*width+x);
-			gradient[y1*width+x]=gradient[y*width+x]+1;
-		}
-		if(gradient[y2*width+x]==0)
-		{
-			squares.push(y2*width+x);
-			gradient[y2*width+x]=gradient[y*width+x]+1;
-		}
-		squares.pop();
-	}
+	// Preserve Cabino's diagonal-first neighbour order.
+	static constexpr std::array<field::Offset,8> neighbors={{{-1,-1},{1,-1},
+		{-1,1},{1,1},{-1,0},{1,0},{0,-1},{0,1}}};
+	field::expandDistances(gradient,frontier,{int(width),int(height)},neighbors,short(0));
 }
 
 
@@ -1165,7 +1101,7 @@ Gradient& GradientManager::getGradient(unsigned sources, unsigned obstacles)
 		return gradients[sig];
 	Gradient& gradient=gradients[sig];
 	gradient.reset(*team, sources, obstacles);
-	gradient.update();
+	gradient.update(frontier);
 	update_queue.push(gradients.find(sig));
 	return gradient;
 }
@@ -1177,7 +1113,7 @@ void GradientManager::updateGradients()
 {
 	if(update_queue.size())
 	{
-		update_queue.front()->second.update();
+		update_queue.front()->second.update(frontier);
 		update_queue.push(update_queue.front());
 		update_queue.pop();
 	}
@@ -4568,80 +4504,31 @@ void HappinessHandler::computeFruitTrees()
 					int max_y=y;
 					int min_x=x;
 					int min_y=y;
-					std::queue<point> points_to_examine;
-					points_to_examine.push(point(x, y));
-					while(!points_to_examine.empty())
-					{
-						point p=points_to_examine.front();
-						points_to_examine.pop();
-						if(p.x>max_x)
-							max_x=p.x;
-						else if(p.x<min_x)
-							min_x=p.x;
-						if(p.y>min_y)
-							max_y=p.y;
-						else if(p.y<min_y)
-							min_y=p.y;
-						int xl=p.x-1;
-						int xr=p.x+1;
-						int yu=p.y-1;
-						int yd=p.y+1;
-						if(xr>=ai.map->getW())
-							xr-=ai.map->getW();
-						if(xl<0)
-							xl+=ai.map->getW();
-						if(yd>=ai.map->getH())
-							yd-=ai.map->getH();
-						if(yu<0)
-							yu+=ai.map->getH();
-						if(ai.map->getResource(xl, yu).type==res_type && examined_points.count(point(xl, yu))==0)
-						{
-							examined_points.insert(point(xl, yu));
-							points_to_examine.push(point(xl, yu));
-						}
+					std::vector<point> points_to_examine;
+					points_to_examine.push_back(point(x, y));
+					field::breadthFirst(points_to_examine,
+						[&](const point& p) {
+							if(p.x>max_x)
+								max_x=p.x;
+							else if(p.x<min_x)
+								min_x=p.x;
+							if(p.y>min_y)
+								max_y=p.y;
+							else if(p.y<min_y)
+								min_y=p.y;
 	
-						if(ai.map->getResource(x, yu).type==res_type && examined_points.count(point(x, yu))==0)
-						{
-							examined_points.insert(point(x, yu));
-							points_to_examine.push(point(x, yu));
-						}
-	
-						if(ai.map->getResource(xr, yu).type==res_type && examined_points.count(point(xr, yu))==0)
-						{
-							examined_points.insert(point(xr, yu));
-							points_to_examine.push(point(xr, yu));
-						}
-	
-						if(ai.map->getResource(xl, y).type==res_type && examined_points.count(point(xl, y))==0)
-						{
-							examined_points.insert(point(xl, y));
-							points_to_examine.push(point(xl, y));
-						}
-	
-						if(ai.map->getResource(xr, y).type==res_type && examined_points.count(point(xr, y))==0)
-						{
-							examined_points.insert(point(xr, y));
-							points_to_examine.push(point(xr, y));
-						}
-	
-						if(ai.map->getResource(xl, yd).type==res_type && examined_points.count(point(xl, yd))==0)
-						{
-							examined_points.insert(point(xl, yd));
-							points_to_examine.push(point(xl, yd));
-						}
-	
-						if(ai.map->getResource(x, yd).type==res_type && examined_points.count(point(x, yd))==0)
-						{
-							examined_points.insert(point(x, yd));
-							points_to_examine.push(point(x, yd));
-						}
-	
-						if(ai.map->getResource(xr, yd).type==res_type && examined_points.count(point(xr, yd))==0)
-						{
-							examined_points.insert(point(xr, yd));
-							points_to_examine.push(point(xr, yd));
-						}
-					}
+							return field::Visit::Expand;
+						},[&](const point& p) {
+							const int xl=ai.map->normalizeX(p.x-1),xr=ai.map->normalizeX(p.x+1);
+							const int yu=ai.map->normalizeY(p.y-1),yd=ai.map->normalizeY(p.y+1);
+							// These cardinal coordinates are deliberately anchored to the seed.
+							const point neighbors[8]={point(xl,yu),point(x,yu),point(xr,yu),
+								point(xl,y),point(xr,y),point(xl,yd),point(x,yd),point(xr,yd)};
+							for(const point& next:neighbors)
+								if(ai.map->getResource(next.x,next.y).type==res_type && examined_points.count(next)==0)
+								{examined_points.insert(next);points_to_examine.push_back(next);}
+							return field::Visit::Expand;
+						});
 					fruitTreeRecord ftr;
 					ftr.fruit_tree_max_x=max_x;
 					ftr.fruit_tree_min_x=min_x;
@@ -4744,7 +4631,8 @@ bool Farmer::updateFarm()
 	if(!is_water_gradient_computed)
 	{
 		water_gradient.reset(ai, Gradient::Water, Gradient::None);
-		water_gradient.update();
+		field::Frontier frontier;
+		water_gradient.update(frontier);
 		is_water_gradient_computed=true;
 	}
 

@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include "ReplayTelemetry.h"
 #include <assert.h>
 #include "Types.h"
 
@@ -38,6 +39,8 @@ public:
 
 	/// Increments the current step number and updates the checksum.
 	void advanceStep();
+	// Called after the simulation publishes its sampled diagnostic values.
+	void captureTelemetry();
 
 	/// If the checksum is 0, there won't be any checking if the checksums match for orders.
 	void setCheckSum(Uint32 checksum = 0);
@@ -67,6 +70,10 @@ private:
 	/// You shouldn't use assignment on this class
 	void operator=(const ReplayWriter &writer) { assert(false); };
 
+	Game *game = nullptr;
+	ReplayTelemetry::Stream telemetry;
+	Uint32 telemetryStep = 0;
+	bool finished = false;
 	/// The StreamBackend of the buffer
 	GAGCore::StreamBackend *bufferBackend;
 

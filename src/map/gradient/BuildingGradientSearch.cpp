@@ -6,7 +6,7 @@
 #include <mutex>
 #include "Map.h"
 #include "MapInternal.h"
-#include "kernel/GradientRelaxation.h"
+#include "field/GradientRelaxation.h"
 
 using gradient_kernel::BUCKETS;
 using gradient_kernel::COST_LIMIT;
@@ -23,7 +23,6 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	cells = std::size_t(map.getW()) * map.getH();
 	widthMask = map.getMaskW();
 	heightMask = map.getMaskH();
-	widthShift = map.getShiftW();
 	swimClass = swim;
 	currentCost = 0;
 	popped = 0;
@@ -63,7 +62,7 @@ void BuildingGradientSearch::resolve(std::size_t target)
 			assert(currentCost <= COST_LIMIT);
 			popped += buckets[currentCost % BUCKETS].size;
 			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
-				widthMask, heightMask, widthShift, waterSteps, waterAt);
+				{widthMask+1, heightMask+1}, waterSteps, waterAt);
 			++currentCost;
 		}
 	};

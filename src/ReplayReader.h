@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include "ReplayTelemetry.h"
 #include <assert.h>
 #include <string>
 #include "Types.h"
@@ -71,7 +72,11 @@ public:
 	/// Get the next order on the current step
 	std::shared_ptr<Order> retrieveOrder();
 
-private:
+	void applyTelemetry(Game &game) { telemetry.apply(game, currentStep); }
+	bool hasTelemetry() const { return telemetry.available(); }
+
+  private:
+	ReplayTelemetry::Stream telemetry;
 	/// You shouldn't copy-construct this class
 	ReplayReader(const ReplayReader &copy) { assert(false); };
 

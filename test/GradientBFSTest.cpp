@@ -22,7 +22,6 @@
 
 #include <algorithm>
 #include <cstdlib>
-#include <queue>
 #include <vector>
 
 TEST_SUITE("GradientBFS")
@@ -48,11 +47,11 @@ std::vector<Sint16> GradientBFSTest::run_bfs(int width, int height,
 	Gradient g(gi);
 	g.width = width;
 	g.gradient.assign(width * height, 0);
-	std::queue<position> q;
+	field::Frontier q;
 	for (const auto& s : sources)
 	{
 		g.gradient[s.y * width + s.x] = 2;
-		q.push(s);
+		q.push_back(s.y*width+s.x);
 	}
 	for (const auto& o : obstacles)
 		g.gradient[o.y * width + o.x] = 1;
@@ -176,8 +175,8 @@ void GradientBFSTest::testQueueIsDrained()
 	g.width = 4;
 	g.gradient.assign(16, 0);
 	g.gradient[0] = 2;
-	std::queue<position> q;
-	q.push(position(0, 0));
+	field::Frontier q;
+	q.push_back(0);
 
 	g.expand_bfs(q);
 

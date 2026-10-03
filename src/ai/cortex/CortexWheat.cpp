@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
+#include "field/UniformTraversal.h"
 #include "CortexWheat.h"
 
 #include "map/Map.h"
@@ -149,26 +150,19 @@ namespace Cortex
 				}
 		}
 
-		for (size_t head = 0; head < q.size(); ++head)
-		{
-			const int cur = q[head];
-			const int cx = cur % w;
-			const int cy = cur / w;
-			const int d = depth[cur];
-			for (int k = 0; k < 4; k++)
-			{
-				const int nx = cx + NB_DX[k];
-				const int ny = cy + NB_DY[k];
-				const bool wheat = isField(nx, ny);
-				if (!wheat && !isLand(nx, ny))
-					continue;
-				const int ni = static_cast<int>(map.coordToIndex(nx, ny));
-				if (depth[ni] != INT_MAX)
-					continue; // first BFS visit == shortest walking path; keep it.
-				depth[ni] = d + (wheat ? 1 : 0);
-				q.push_back(ni);
-			}
-		}
+		// First discovery follows the shortest walking path, carrying its wheat
+		// depth. Do not relax a later path with fewer wheat tiles: that changes
+		// classification, including ties resolved by seed and neighbour order.
+		std::array<field::Offset,4> neighbors;
+		for(int k=0;k<4;++k)neighbors[k]={NB_DX[k],NB_DY[k]};
+		field::traverse(q,{w,h},neighbors,[](int){return field::Visit::Expand;},
+			[&](int cur,int nx,int ny) {
+				const bool wheat=isField(nx,ny);
+				if(!wheat && !isLand(nx,ny))return;
+				const int ni=static_cast<int>(map.coordToIndex(nx,ny));
+				if(depth[ni]!=INT_MAX)return;
+				depth[ni]=depth[cur]+(wheat?1:0);q.push_back(ni);
+			});
 
 		// --- Classify field wheat and collect the desired forbidden set. ---
 		for (int idx : fieldTiles)
@@ -221,25 +215,16 @@ namespace Cortex
 					stack.clear();
 					stack.push_back(idx);
 					seen[idx] = true;
-					while (!stack.empty())
-					{
-						const int c = stack.back();
-						stack.pop_back();
-						const int ccx = c % w;
-						const int ccy = c / w;
-						for (int kk = 0; kk < 4; kk++)
-						{
-							const int nx = ccx + NB_DX[kk];
-							const int ny = ccy + NB_DY[kk];
-							if (!inBox(nx, ny) || !isWheat(map, nx, ny) || !wheatVisible(nx, ny))
-								continue;
-							const int ni = static_cast<int>(map.coordToIndex(nx, ny));
-							if (seen[ni] || depth[ni] == INT_MAX)
-								continue;
-							seen[ni] = true;
-							stack.push_back(ni);
-						}
-					}
+					field::depthFirst(stack,[](int){return field::Visit::Expand;},
+						[&](int c) {
+							field::Grid(w,h).neighbors(c,neighbors,[&](int nx,int ny) {
+								if(!inBox(nx,ny) || !isWheat(map,nx,ny) || !wheatVisible(nx,ny))return;
+								const int ni=static_cast<int>(map.coordToIndex(nx,ny));
+								if(seen[ni] || depth[ni]==INT_MAX)return;
+								seen[ni]=true;stack.push_back(ni);
+							});
+							return field::Visit::Expand;
+						});
 				}
 		}
 

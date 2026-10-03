@@ -336,6 +336,13 @@ added. The values the maintainer supplies:
 | Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
 | Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
 
+The release mirror's **App signing fingerprints** workflow reads these values with
+the release credentials, enables Associated Domains on the App ID when it is
+missing, and ends with a ready-to-paste `appLinks` block
+([signing fingerprints for invite links](../mobile/development.md#signing-fingerprints-for-invite-links)).
+Use the Play App Signing certificate it reports. The upload key and Amazon
+certificates are listed for reference only.
+
 Then add to the deployment's `instance.yaml` and recreate `platform-api`:
 
 ```yaml
@@ -860,6 +867,123 @@ GLOB2_RELAY_IMAGE=ghcr.io/<owner>/<repository>-relay@sha256:…
 GLOB2_CADDY_IMAGE=ghcr.io/<owner>/<repository>-caddy@sha256:…
 ```
 
+### Automatic deployment
+
+The official instance, `https://app.glob2online.com` (VM `glob2-staging` in project
+`pharaoh-418820`, zone `northamerica-northeast2-a`), is deployed by
+`.github/workflows/deploy-online.yml`. Like the store release workflows it is
+defined here but runs only in the owner's release mirror `genixpro/glob2-release`:
+every job is skipped in any other repository, for any other actor, and off the
+mirror's `master`. Mirror a reviewed commit there to make a new version of the
+workflow take effect.
+
+**What it deploys.** The host can only check out public commits, so:
+
+- A push to the mirror's `master` (when enabled, below) and a dispatch with
+  `ref` = `master` deploy the newest public `master` commit that the mirror's
+  `master` contains (their merge base).
+- A dispatch with another `ref` deploys that public branch, tag or full commit id.
+  It must be on public `master` unless `allow_unmerged` is ticked (for example to
+  return to a commit of an integration branch).
+
+The `preflight` job writes the commit, its source and the trigger to the run
+summary.
+
+**How it runs.** The `deploy` job uses the `online-production` environment
+(restricted to `master`; add required reviewers there to approve each deploy). It
+authenticates to Google Cloud without keys through Workload Identity Federation,
+adds a three-hour SSH key for the deploy user to the VM's instance metadata,
+connects through an IAP TCP tunnel and pipes `deploy/online-deploy.sh` to the host.
+That script refuses to start while another `update-host.sh` runs (a process check
+plus a lock), records the running revision if there is no record yet, checks out
+the commit, and starts `deploy/update-host.sh` detached under `nohup`, with its log
+and exit status in `/opt/glob2/deploys/gh-<run id>-<attempt>/`. The job then polls
+once a minute, runs the attached smoke test (`platform_stack_smoke.py --attach`,
+with `GLOB2_ONLINE_WEBSITE` as `--website`), writes the result, the deployed and
+previous revisions, the rollback status, the sim version and the backup directory
+to the run summary, and removes its SSH key. Cancelling the run, or the run timing
+out, does not stop the deploy on the host; check it there with
+`sh /opt/glob2/src/deploy/online-deploy.sh status /opt/glob2/config/staging.env gh-<run>-<attempt>`.
+
+One deploy runs at a time (concurrency group `deploy-online`). A run in progress
+is never cancelled; a newer request replaces one that is still waiting. The job
+waits on a GitHub-hosted runner for the whole deploy (30–50 minutes when the images
+and the web client are rebuilt); standard runners are free for public repositories
+such as the mirror, otherwise this is about 50 runner minutes per deploy.
+
+**Trigger, enable and disable.**
+
+```sh
+gh workflow run deploy-online.yml -R genixpro/glob2-release -f ref=master
+gh variable set AUTO_DEPLOY_ONLINE -R genixpro/glob2-release -b true   # deploy every mirrored master
+gh variable set AUTO_DEPLOY_ONLINE -R genixpro/glob2-release -b false  # back to manual only
+```
+
+Without `AUTO_DEPLOY_ONLINE` = `true`, pushes run nothing. An automatic deploy is
+skipped when the deployed revision already contains the commit (the same commit, or
+a mirror that is behind what was deployed by hand); a dispatch always deploys.
+
+**Roll back.** `update-host.sh` already returns to the previous release when the
+new stack does not become healthy (the summary's rollback row says
+`rolled-back`, `failed` or `unchanged`). To go back after a successful deploy,
+dispatch again with `ref` = the previous revision from the summary (tick
+`allow_unmerged` if it is not on public `master`). Database restores stay manual;
+see [Upgrades](#upgrades).
+
+**Repository variables** in the mirror: `GLOB2_ONLINE_WIF_PROVIDER`,
+`GLOB2_ONLINE_SERVICE_ACCOUNT`, `GLOB2_ONLINE_PROJECT`, `GLOB2_ONLINE_ZONE`,
+`GLOB2_ONLINE_INSTANCE`, `GLOB2_ONLINE_SSH_USER` (the host user that owns
+`/opt/glob2` and is in the `docker` group), `GLOB2_ONLINE_ENV_FILE`
+(`/opt/glob2/config/staging.env`), optionally `GLOB2_ONLINE_WEBSITE`
+(`https://glob2online.com`) and `AUTO_DEPLOY_ONLINE`. None of them is a secret.
+
+**Google Cloud identity.** Each piece, and why it exists:
+
+| Resource | Scope | Why |
+| --- | --- | --- |
+| Provider `glob2-online-deploy` in pool `github-actions` | the pool | Accepts only GitHub OIDC tokens whose repository is `genixpro/glob2-release` (and its id), actor id the owner's, ref `refs/heads/master`, event `workflow_dispatch` or `push`, environment `online-production`, a GitHub-hosted runner and workflow `deploy-online.yml@refs/heads/master`. It maps `attribute.online_deploy_repository_id`, which no other provider in the pool sets. |
+| Service account `glob2-online-deployer` | | The identity of the workflow; no keys. |
+| `roles/iam.workloadIdentityUser` on the service account for `principalSet://…/github-actions/attribute.online_deploy_repository_id/1397722696` | the service account | Lets tokens from that provider act as it. |
+| Custom role `glob2OnlineDeployInstance` (`compute.instances.get`, `compute.instances.setMetadata`) | the VM only | Read the VM and add or remove the short-lived SSH key in its own metadata. Nothing project-wide: `gcloud compute ssh` is not used because it also reads and tries to write project metadata. |
+| `roles/iap.tunnelResourceAccessor` | the VM's IAP tunnel resource only | Open the IAP TCP tunnel to port 22. |
+| Firewall rule `glob2-staging-iap-ssh`: tcp:22 from `35.235.240.0/20` to tag `glob2-staging` | the network | IAP's forwarding range, so SSH keeps working through IAP if the open `default-allow-ssh` rule is ever removed. |
+
+Setting instance metadata is root-equivalent on the VM (as is the deploy user's
+`docker` group), so the account is as powerful as a person deploying by hand, but
+only on that VM. If Compute Engine asks for `iam.serviceAccounts.actAs` on the
+VM's service account when setting metadata, grant `roles/iam.serviceAccountUser`
+on that service account only (better: move the VM to the dedicated
+`glob2-staging-host` account first). The commands that set this up:
+
+```sh
+P=pharaoh-418820 Z=northamerica-northeast2-a SA=glob2-online-deployer@pharaoh-418820.iam.gserviceaccount.com
+POOL=projects/485653453075/locations/global/workloadIdentityPools/github-actions
+gcloud iam service-accounts create glob2-online-deployer --project $P
+gcloud iam workload-identity-pools providers create-oidc glob2-online-deploy --project $P \
+    --location global --workload-identity-pool github-actions \
+    --issuer-uri https://token.actions.githubusercontent.com \
+    --attribute-mapping google.subject=assertion.sub,attribute.online_deploy_repository_id=assertion.repository_id \
+    --attribute-condition "assertion.repository_id == '1397722696' && assertion.repository == 'genixpro/glob2-release' && assertion.actor_id == '6193625' && (assertion.event_name == 'workflow_dispatch' || assertion.event_name == 'push') && assertion.environment == 'online-production' && assertion.runner_environment == 'github-hosted' && assertion.ref == 'refs/heads/master' && assertion.workflow_ref == 'genixpro/glob2-release/.github/workflows/deploy-online.yml@refs/heads/master'"
+gcloud iam service-accounts add-iam-policy-binding $SA --project $P --role roles/iam.workloadIdentityUser \
+    --member principalSet://iam.googleapis.com/$POOL/attribute.online_deploy_repository_id/1397722696
+gcloud iam roles create glob2OnlineDeployInstance --project $P \
+    --permissions compute.instances.get,compute.instances.setMetadata
+gcloud compute instances add-iam-policy-binding glob2-staging --zone $Z --project $P \
+    --member serviceAccount:$SA --role projects/$P/roles/glob2OnlineDeployInstance
+# gcloud has no command for a single instance's IAP tunnel policy, so call the
+# API. This replaces the instance's tunnel policy; read it first with
+# :getIamPolicy and add to it if it already has bindings.
+curl -sS -X POST -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+    -H "Content-Type: application/json" \
+    -d "{\"policy\":{\"bindings\":[{\"role\":\"roles/iap.tunnelResourceAccessor\",\"members\":[\"serviceAccount:$SA\"]}]}}" \
+    "https://iap.googleapis.com/v1/projects/$P/iap_tunnel/zones/$Z/instances/glob2-staging:setIamPolicy"
+gcloud compute firewall-rules create glob2-staging-iap-ssh --project $P --network default \
+    --source-ranges 35.235.240.0/20 --allow tcp:22 --target-tags glob2-staging
+```
+
+To revoke the pipeline, delete the provider (or disable it with
+`gcloud iam workload-identity-pools providers update-oidc … --disabled`).
+
 ## Operations
 
 - Logs: `docker compose logs -f platform-api relay`; Compose keeps up to 100 MB per
@@ -1038,7 +1162,8 @@ the VM only.
 5. **Deploy and redeploy.** `deploy/update-host.sh /path/to/deployment.env
    origin/<branch>` builds and starts everything; run it again for each new
    revision. The first build takes about half an hour on four vCPUs; later builds
-   reuse the BuildKit caches.
+   reuse the BuildKit caches. The official instance is redeployed from GitHub Actions instead;
+   see [Automatic deployment](#automatic-deployment).
 6. **Check.** Run the attached smoke test and the live match above.
 
 Approximate cost (2026 on-demand list prices, a Canadian region): the VM about

@@ -27,7 +27,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		RETURN_GAME = 5,
 		QUIT_GAME = 6,
 		PAUSE_GAME = 7,
-		HIVE_MIND = 8
+		HIVE_MIND = 8,
+		AI_TELEMETRY = 9
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
@@ -241,4 +242,24 @@ class InGameObjectivesScreen : public Glob2UI::InGameDialog
 	std::string briefing;
 	std::vector<Line> primary, secondary, hints;
 	bool hasSecondary = false;
+};
+
+// Reads only access-filtered immutable Scene data.
+class InGameAITelemetryScreen : public Glob2UI::InGameDialog
+{
+  public:
+	explicit InGameAITelemetryScreen(GameGUI *gui) : gui(gui) {}
+	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
+
+  protected:
+	void onEscape() override { finish(0); }
+	void onUpdate(Uint32) override;
+	double maxWidth() const override { return 720; }
+	bool fillHeight() const override { return true; }
+
+  private:
+	GameGUI *gui;
+	int player = -1;
+	Uint32 sample = ~0u, accessiblePlayers = 0;
+	std::string search;
 };
