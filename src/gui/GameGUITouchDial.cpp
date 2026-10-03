@@ -29,7 +29,10 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	const ViewRect safe{ui.safe.x / unit, ui.safe.y / unit, ui.safe.w / unit, ui.safe.h / unit};
 	const double bottom = ui.actions.y / unit, margin = 8, header = InGameTouchTheme::inspectorHeader,
 				 chip = InGameTouchTheme::dialChipWidth;
-	const double minimapBottom = safe.y + (safe.h < 400 ? 80 : 104);
+	const auto hud = hudLayout(ui);
+	// Use the same geometry as drawing and minimap input: compact inspection
+	// can enlarge the minimap to leave room for two stat rows and the title.
+	const double minimapBottom = (hud.minimap.y + hud.minimap.h) / unit + 4;
 	DialLayout out;
 	out.portrait = safe.w <= safe.h;
 	// Portrait keeps a full-height chip column on the far side of the dial;
@@ -69,7 +72,6 @@ GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const
 	}
 	// The identity bar shares the stats column and the minimap's bottom edge.
 	// Keep the allocation controls where they were; this is a HUD placement change.
-	const auto hud = hudLayout(ui);
 	const ViewRect head{hud.stats.x / unit, (hud.minimap.y + hud.minimap.h) / unit - header,
 			hud.stats.w / unit, header};
 	const ViewRect quadrant{left ? safe.x : safe.x + safe.w - radius, bottom - radius, radius, radius};

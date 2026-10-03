@@ -2130,6 +2130,10 @@ class GameGUITouchHarness
 				const auto ui = gui.touch->layout();
 				const auto hud = gui.touch->hudLayout(ui);
 				const auto identity = gui.touch->allocationRect();
+				const auto dialGeometry = gui.touch->dialLayout(ui).geometry;
+				require(dialGeometry.center.y - dialGeometry.rings[0].outer * dialGeometry.unit >=
+						hud.minimap.y + hud.minimap.h,
+						"Allocation rings clear the actual inspector minimap bounds");
 				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
 				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w),
 						"Building identity aligns with the rendered stats width");

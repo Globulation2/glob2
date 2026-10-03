@@ -234,7 +234,7 @@ void GameGUITouch::drawHUD()
 	{
 		const auto &stat = stats[i];
 		const ViewRect r{start + (i % columns) * cell,
-						 ui.safe.y + 4 * unit + (i / columns) * 28 * unit, cell - 3 * unit,
+						 hud.stats.y + (i / columns) * 28 * unit, cell - 3 * unit,
 						 24 * unit};
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper);
 		if (stat.warning)
@@ -557,7 +557,7 @@ GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
 	hud.columns = available / unit >= 600 ? 6 : 3;
 	const double cell = std::min(120 * unit, available / hud.columns);
 	hud.stats = {ui.world.x + (available - hud.columns * cell) / 2, safe.y + 4 * unit,
-				 hud.columns * cell - 3 * unit, (6 / hud.columns * 28 - 4) * unit};
+				 std::max(0.0, hud.columns * cell - 3 * unit), (6 / hud.columns * 28 - 4) * unit};
 	return hud;
 }
 
