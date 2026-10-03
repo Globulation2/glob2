@@ -2,7 +2,7 @@
 
 This evidence branch is separate from the game source. Renderer profiling was
 recorded at be4a0d621; corrected model assets at 174afa553. These commits are
-preserved on codex/colony-skins-before-master-integration locally. The PR
+preserved on the remote codex/colony-skins-profile-source branch. The PR
 replays the feature onto current master and records new integration checks
 separately. Earlier measurements are not performance claims for a new base.
 
