@@ -203,13 +203,15 @@ Element MainMenuScreen::build(const Presentation &p)
 		content.push_back(title("Globulation 2"));
 	content.push_back(spacer(p.pt(compact ? 8 : 16)));
 	content.push_back(action("[custom game]", CUSTOM, primary));
+	// Play online is a way to play like the others, under Custom game as on
+	// phones, not a small extra below them.
+#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
+	content.push_back(action("[play online]", PLAY_ONLINE, launch));
+#endif
 	content.push_back(action("[campaign]", CAMPAIGN, launch));
 	content.push_back(action("[load game]", LOAD_GAME, launch));
 	content.push_back(action("[tutorial]", TUTORIAL, launch));
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
-#if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
-	content.push_back(action("[play online]", PLAY_ONLINE, utility));
-#endif
 #ifndef __EMSCRIPTEN__
 	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));
 #endif
