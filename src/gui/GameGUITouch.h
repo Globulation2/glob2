@@ -191,7 +191,7 @@ class GameGUITouch
 	};
 	struct DialRegion
 	{
-		enum Part { Arc, Minus, Plus, Segment, Chip } part = Chip;
+		enum Part { Arc, Minus, Plus, Segment, Proportions, Chip } part = Chip;
 		BuildingAction action;
 		int ring = -1, maximum = 0;
 		double from = 0, to = 0; // Sweep angles covered by the region.
@@ -205,7 +205,8 @@ class GameGUITouch
 	GAGCore::ViewPoint dialActionPoint(int kind, int value, int side) const;
 	void tapDial(Building &building, const DialRegion &region, GAGCore::ViewPoint point);
 	void drawDial();
-	int ratioType = 0; // Unit type whose swarm ratio the dial's inner ring edits.
+	std::array<int, 3> dialRatios() const;
+	void commitRatios(Building &building, const std::array<int, 3> &ratios);
 	int heldActionKind = -1, heldActionValue = 0;
 	std::string heldActionLabel;
 	bool heldActionConfirmation = false;

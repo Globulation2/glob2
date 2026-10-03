@@ -420,7 +420,7 @@ std::vector<ViewRect> GameGUITouch::keyboardTargets()
 	else if (inspecting() && usesDial())
 	{
 		for (const auto &region : dialRegions())
-			if (region.part != DialRegion::Arc)
+			if (region.part != DialRegion::Arc && region.part != DialRegion::Proportions)
 				targets.push_back(region.box);
 	}
 	else if (inspecting())
@@ -1430,7 +1430,6 @@ void GameGUITouch::prepareDraw()
 	{
 		confirmDestroy = false;
 		actionScroll = 0;
-		ratioType = 0;
 		lastInspectedBuilding = inspected;
 	}
 	if (usesHUD())
