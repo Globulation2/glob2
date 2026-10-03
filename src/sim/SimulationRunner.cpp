@@ -67,7 +67,7 @@ void SimulationRunner::run()
 			// owner to drain it; park requests still take precedence above.
 			if (engine.diagnosticsPending())
 			{
-				wake.wait_for(lock, std::chrono::milliseconds(1));
+				wake.wait(lock, [&] { return stopping || parkRequested || suspended || !engine.diagnosticsPending(); });
 				continue;
 			}
 			lock.unlock();
