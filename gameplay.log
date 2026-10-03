@@ -1,0 +1,13 @@
+PASS CustomGameSetup/landscape preview performance [display][artifacts] (3.6s)
+PASS CustomGameSetup/landscape preview stays responsive [display][artifacts] (3.2s)
+PASS CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (68.9s)
+PASS EngineSession/momentum uses the SDL clock after session suspension [display][artifacts] (1.8s)
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (1.1s)
+PASS GameGUITouch/unit taps have a zoom independent halo and show unit stats [display][artifacts] (2.2s)
+PASS GameGUITouch/a touch on or near a flag drags the flag; not the map [display] (1.0s)
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (1.2s)
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (19.2s)
+PASS MapPreview/native widget events and custom lobby captures [display][artifacts] (2.0s)
+
+10 passed, 0 failed, 0 skipped (104.3s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-final/gameplay.xml (10 cases)

@@ -1,0 +1,37 @@
+{
+  "source": "8febb87d55aa4e3f4e04dd133b819d69411b4324",
+  "captures": {
+    "unit-portrait": "/tmp/glob2-test-l6uadny3",
+    "unit-landscape-scrolled": "/tmp/glob2-test-l6uadny3",
+    "momentum-jitter-released": "/tmp/glob2-test-h_espct4",
+    "momentum-jitter-later": "/tmp/glob2-test-h_espct4",
+    "building-header-portrait": "/tmp/glob2-test-ak9ulscp",
+    "building-header-landscape": "/tmp/glob2-test-ak9ulscp",
+    "building-header-wide": "/tmp/glob2-test-ak9ulscp",
+    "building-header-left-portrait": "/tmp/glob2-test-ak9ulscp",
+    "building-header-safe-fallback": "/tmp/glob2-test-ak9ulscp",
+    "building-confirmation-row-fallback": "/tmp/glob2-test-ak9ulscp",
+    "touch-proportions-portrait": "/tmp/glob2-test-ak9ulscp",
+    "touch-proportions-landscape": "/tmp/glob2-test-ak9ulscp",
+    "touch-proportions-left-portrait": "/tmp/glob2-test-ak9ulscp",
+    "resource-wood-portrait": "/tmp/glob2-test-ak9ulscp",
+    "resource-wheat-landscape": "/tmp/glob2-test-ak9ulscp",
+    "inset-objectives-320x568": "/tmp/glob2-test-ak9ulscp",
+    "inset-teams-320x568": "/tmp/glob2-test-ak9ulscp",
+    "inset-long-hints-large-text-568x320": "/tmp/glob2-test-ak9ulscp",
+    "inset-desktop-short-teams-568x320": "/tmp/glob2-test-ak9ulscp",
+    "touch-brush-rail-portrait": "/tmp/glob2-test-ak9ulscp",
+    "touch-brush-rail-landscape": "/tmp/glob2-test-ak9ulscp",
+    "touch-lenses-portrait": "/tmp/glob2-test-ak9ulscp",
+    "touch-double-tap-before-portrait": "/tmp/glob2-test-ak9ulscp",
+    "touch-double-tap-after-portrait": "/tmp/glob2-test-ak9ulscp",
+    "dismiss-2-portrait-before": "/tmp/glob2-test-ak9ulscp",
+    "dismiss-2-portrait-after": "/tmp/glob2-test-ak9ulscp"
+  },
+  "provenance": [
+    "output-glob2-test-yp87cjtr.txt",
+    "output-glob2-test-l6uadny3.txt",
+    "output-glob2-test-h_espct4.txt",
+    "output-glob2-test-ak9ulscp.txt"
+  ]
+}

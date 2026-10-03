@@ -1,0 +1,4 @@
+PASS UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] (111.9s)
+
+1 passed, 0 failed, 0 skipped (111.9s of test time)
+[run_tests] JUnit report: artifacts/ux-team-review/merge-final/tablet-portrait.xml (1 cases)

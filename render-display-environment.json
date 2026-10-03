@@ -1,0 +1,12 @@
+{
+  "PATH_prefix": "/home/bradley/.codex/worktrees/474e/glob2/artifacts/ux-team-review/window-manager/root/usr/bin",
+  "LD_LIBRARY_PATH": "/home/bradley/.codex/worktrees/474e/glob2/artifacts/ux-team-review/window-manager/root/usr/lib/x86_64-linux-gnu",
+  "XDG_DATA_DIRS": "/home/bradley/.codex/worktrees/474e/glob2/artifacts/ux-team-review/window-manager/root/usr/share:/usr/local/share:/usr/share",
+  "XDG_CONFIG_DIRS": "/home/bradley/.codex/worktrees/474e/glob2/artifacts/ux-team-review/window-manager/root/etc/xdg:/etc/xdg",
+  "packages": [
+    "Package: libstartup-notification0\nVersion: 0.12-8build1",
+    "Package: libobrender32\nVersion: 3.6.1-12ubuntu3",
+    "Package: libobt2\nVersion: 3.6.1-12ubuntu3",
+    "Package: openbox\nVersion: 3.6.1-12ubuntu3"
+  ]
+}
