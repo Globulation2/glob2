@@ -1109,7 +1109,7 @@ class GameGUITouchHarness
 					gui.viewportX = gui.camera.tileX();
 					gui.viewportY = gui.camera.tileY();
 					gui.updateCamera();
-					const auto zoomSpot = emptyGround();
+					const auto zoomSpot = spot;
 					const double before = gui.camera.zoom;
 					const auto anchor = gui.camera.screenToWorld(zoomSpot.x, zoomSpot.y);
 					if (initial == 1.0)
