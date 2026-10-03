@@ -145,8 +145,8 @@ class QuickMatch
 	std::uint64_t changes = 0;
 };
 
-// The shared search, created on first use with the online services' client
-// and pumped by Online::pump().
+// The application's search: services().quickMatch(), created on first use with
+// the services' client and advanced by Online::pump().
 QuickMatch &quickMatch();
 const char *phaseName(QuickMatch::Phase phase);
 } // namespace Online
