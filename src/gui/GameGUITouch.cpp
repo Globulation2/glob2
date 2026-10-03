@@ -90,10 +90,19 @@ MobileLayout GameGUITouch::layout() const
 											 result.actions.y, ThumbSide::toolboxLeft());
 		}
 	}
-	// Compact inspectors are the thumb dial; its bounds are set once the layout
-	// is in drawable units below.
-	const bool dial = (result.persistentPanel || panelOpen) && inspecting() &&
-					  !result.persistentPanel && usesHUD();
+	// Resolve the HUD and the dial-fit policy in drawable units, just as drawing
+	// and input do. Neither helper calls layout(), so this cannot recurse.
+	auto drawable = result;
+	for (auto *rect : {&drawable.safe, &drawable.world, &drawable.actions})
+	{
+		rect->x *= unit;
+		rect->y *= unit;
+		rect->w *= unit;
+		rect->h *= unit;
+	}
+	const auto hud = hudLayout(drawable);
+	const double minimapBottom = (hud.minimap.y + hud.minimap.h) / unit + 4;
+	const bool dial = (result.persistentPanel || panelOpen) && inspecting() && usesDial(drawable);
 	if ((result.persistentPanel || panelOpen) && inspecting() && !dial)
 	{
 		// Use horizontal room before introducing overflow. Ordinary inspectors
@@ -101,10 +110,10 @@ MobileLayout GameGUITouch::layout() const
 		result.panel.w = std::min(result.safe.w, result.safe.w > result.safe.h
 			? InGameTouchTheme::inspectorLandscapeWidth : InGameTouchTheme::inspectorPortraitWidth);
 		result.panel.x = result.safe.x + result.safe.w - result.panel.w;
-		const double available = result.actions.y - result.safe.y - (result.safe.h < 400 ? 80 : 104);
+		const double available = std::max(0.0, result.actions.y - minimapBottom);
 		const double height = std::min(available,
-			InGameTouchTheme::inspectorHeader + buildingActionsHeight(result.panel.w));
-		result.panel.y = result.persistentPanel ? result.safe.y + 104 : result.actions.y - height;
+			(result.persistentPanel ? InGameTouchTheme::inspectorHeader : 0) + buildingActionsHeight(result.panel.w));
+		result.panel.y = result.persistentPanel ? minimapBottom : result.actions.y - height;
 		result.panel.h = height;
 	}
 	if ((result.persistentPanel || panelOpen) && gui.selectionMode == GameGUI::UNIT_SELECTION)
@@ -123,7 +132,6 @@ MobileLayout GameGUITouch::layout() const
 	if (gui.selectionMode == GameGUI::BRUSH_SELECTION)
 		result.panel = {}; // Brush controls live in the bottom toolbar.
 	// Independent HUD components reserve their bounds in the overlay layer.
-	const double minimapBottom = result.safe.y + (result.safe.h < 400 ? 80 : 104);
 	if (result.panel.w > 0 && result.panel.y < minimapBottom)
 	{
 		const double bottom = result.panel.y + result.panel.h;
@@ -382,11 +390,13 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		if (header.contains(point) &&
 			point.x >= header.x + header.w - 48 * globalContainer->gfx->logicalUnitsPerPoint())
 			return 38;
+		if (header.contains(point))
+			return 3;
 		// The dial answers only on its rings, chips and header; the map shows
 		// (and stays tappable) between them.
 		if (inspecting() && usesDial())
 		{
-			if (header.contains(point) || dialRegionAt(point))
+			if (dialRegionAt(point))
 				return 3;
 		}
 		else if (layout().panel.contains(point))

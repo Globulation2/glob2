@@ -33,8 +33,8 @@ uses the portable renderer.
 
 Tapping a resource in the touch HUD opens a compact information card with its
 localized name, resource sprite and current/maximum amount for granular resources.
-It sits opposite the selected thumb. Close dismisses it; choosing Build, Flags or Tools replaces it with that toolbox. A depleted
-resource closes its inspector. Resource cards do not dispatch tactical commands.
+It sits opposite the selected thumb. Close dismisses it; choosing Build, Flags or
+Tools replaces it with that toolbox. A depleted resource closes its inspector. Resource cards do not dispatch tactical commands.
 
 Objectives/Hints and Teams dialogs leave at least 16 screen points around the
 painted panel inside the safe, keyboard-adjusted area. Short objectives and hints
@@ -78,7 +78,8 @@ Painting and placement keep their tool-specific map gestures. Choosing Build,
 Flags or Tools explicitly replaces the current inspector; deferred restoration or
 selection invalidation cannot override that toolbox choice on the next frame.
 The game is playable with one thumb. A completed map tap that does not dismiss
-a panel arms one-finger zoom for the next contact that lands within 300 ms of the release and 24 points of the tap.
+a panel arms one-finger zoom for the next contact that lands within 300 ms of the
+release and 24 points of the tap.
 Dragging that contact vertically zooms about the point where it landed, doubling
 per 180 points of travel, with the factor shown above the finger; releasing it
 without travel doubles the current zoom there, capped at 3×. The tapped world
@@ -132,6 +133,12 @@ setting (right by default) puts these toolboxes on the left for a right thumb an
 on the right for a left thumb. `ThumbSide::toolboxLeft()` supplies that opposite
 side; the radial inspector and placement confirmation remain on the thumb side.
 
+When safe-area gutters or a short viewport leave too little room for the minimum
+thumb dial and all action chips (including confirmation and the production
+legend), the building inspector uses its scrollable row layout. Drawing and
+input share this fit policy; allocation controls never expand over the minimap
+to satisfy the minimum ring radius.
+
 On compact layouts the building inspector is a thumb dial: concentric quarter
 rings centred on the thumb's bottom corner. Their roles never move: workers
 (0–20) outside, production proportions or flag range in the middle, and priority
@@ -152,9 +159,11 @@ Pause sets all three weights to zero; pressing it again resumes worker-only
 production, or dragging a divider establishes a new mix.
 
 Clearing resources, flag requirements, repair/upgrade and Destroy are action
-chips beside the dial, Destroy lowest. The read-only identity header sits under
-the minimap in portrait and beside the dial in landscape. Rings shrink to fit
-small screens; the map stays visible and is tappable outside the controls. Thin bands retain
+chips beside the dial, Destroy lowest. The compact read-only identity header sits below
+the stats, matching their width and aligning its bottom with the minimap in both
+orientations, including when controls use scrollable rows. While inspecting a building on short screens with two stat rows,
+the minimap uses its larger size so the header fits without overlap. Rings shrink
+to fit small screens; the map stays visible and is tappable outside the controls. Thin bands retain
 expanded touch areas, with the nearest band winning where targets overlap. `dialRegions()` is the single
 source for drawing, hit testing, keyboard focus and the harness, and every change
 uses the same requests and orders as the Spacious row inspector, whose rows group
@@ -185,11 +194,11 @@ that a drag out of the rail places a building rather than navigating back.
 ### Gameplay responsibilities and action flow
 
 - `GameGUITouch` composes explicit bounds, routes input ownership, presents the HUD,
-  and restores the previous palette after explicit inspector closure (an empty-map
-  tap dismisses both). It never draws the desktop
+  and restores the previous palette after explicit building-inspector closure
+  (an empty-map tap dismisses both; read-only cards never restore a palette). It never draws the desktop
   sidebar or forwards touch controls to its pixel hit tests.
 - `GameGUITouchPalette.cpp` reads available building/flag choices and draws artwork
-  in the thumb-corner rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
+  in the opposite-thumb rail (compact) or the side grid (Spacious). Zone entries enter painting mode instead of placement.
 - `GameGUITouchView.cpp` draws independently bounded HUD components, the minimap,
   tutorial, tactical panel and contextual headers. It shares primitives, not the
   desktop sidebar composition.

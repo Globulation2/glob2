@@ -13,6 +13,7 @@
 #include <set>
 #include "GameGUITouch.h"
 #include <MapCamera.h>
+#include <HostViewport.h>
 #include "InGameTouchTheme.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
@@ -2277,7 +2278,26 @@ class GameGUITouchHarness
 			gui.touch->actionScroll = 0;
 			gui.orderQueue.clear();
 		};
-		for (auto [width, height] : {std::pair{320, 568}, {568, 320}})
+		auto checkFallbackHeader = [&] {
+			const auto ui = gui.touch->layout();
+			const auto hud = gui.touch->hudLayout(ui);
+			const auto header = gui.touch->allocationRect();
+			auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+			require(near(header.x, hud.stats.x) && near(header.w, hud.stats.w) &&
+				near(header.y + header.h, hud.minimap.y + hud.minimap.h) &&
+				header.y >= hud.stats.y + hud.stats.h,
+				"Row fallback keeps the compact identity below stats beside the minimap");
+			const auto content = gui.touch->panelContent();
+			require(near(content.y, ui.panel.y) && near(content.h, ui.panel.h),
+				"Fallback rows use their full panel; identity consumes no row space");
+			const GAGCore::ViewPoint close{header.x + header.w - 24 * gfx->logicalUnitsPerPoint(),
+				header.y + header.h / 2};
+			require(gui.touch->interfaceRegion(close) == 38 &&
+				gui.touch->interfaceRegion({header.x + 4, header.y + header.h / 2}) == 3,
+				"The detached fallback title and close button both own their input");
+			return close;
+		};
+		for (auto [width, height] : {std::pair{400, 320}, {320, 568}, {568, 320}, {844, 390}})
 		{
 			const int oldW = gfx->getW(), oldH = gfx->getH();
 			SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()), width, height);
@@ -2288,9 +2308,72 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			openActions(swarm);
+			if (width == 400)
+			{
+				gui.touch->confirmDestroy = true;
+				gui.drawAll(0);
+				const auto packed = gui.touch->dialChips(gui.touch->dialLayout(gui.touch->layout()));
+				require(!packed.fits && !gui.touch->usesDial(),
+					"Confirmation chips cannot overlap the production legend; use scrolling rows");
+				checkFallbackHeader();
+				const auto rows = gui.touch->buildingActions();
+				require(std::any_of(rows.begin(), rows.end(), [](const auto &r) { return r.kind == 5; }),
+					"The fallback retains the Cancel confirmation action");
+				gfx->printScreen("building-confirmation-row-fallback.bmp");
+				gfx->nextFrame();
+				pressAction(5);
+				require(!gui.touch->confirmDestroy && gui.orderQueue.empty(),
+					"Cancel stays reachable through the fallback without issuing an order");
+				continue;
+			}
+			if (width == 568)
+			{
+				const auto oldInsets = GAGCore::mobileSafeInsetsForTesting;
+				GAGCore::mobileSafeInsetsForTesting = GAGCore::SafeInsets{24, 20, 24, 20};
+				const auto constrained = gui.touch->layout();
+				require(!gui.touch->usesDial(), "Short safe viewport falls back to the row inspector");
+				const auto fallbackClose = checkFallbackHeader();
+				const auto mini = gui.touch->minimapRect();
+				require(constrained.panel.y >= mini.y + mini.h &&
+					constrained.panel.y + constrained.panel.h <= constrained.actions.y &&
+					constrained.panel.x >= constrained.safe.x &&
+					constrained.panel.x + constrained.panel.w <= constrained.safe.x + constrained.safe.w,
+					"Fallback inspector clears the minimap, toolbar and safe gutters");
+				const auto content = gui.touch->panelContent();
+				require(content.h > 0 && gui.touch->buildingActionsHeight(content.w / gfx->logicalUnitsPerPoint()) *
+					gfx->logicalUnitsPerPoint() > content.h, "Constrained actions use the existing scrollable rows");
+				gui.drawAll(0);
+				gfx->printScreen("building-header-safe-fallback.bmp");
+				gfx->nextFrame();
+				tap(fallbackClose.x, fallbackClose.y);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(),
+					"The compact fallback title close dismisses without an order");
+				GAGCore::mobileSafeInsetsForTesting = oldInsets;
+				openActions(swarm);
+			}
 			if (gui.touch->usesDial())
 			{
 				const auto ui = gui.touch->layout();
+				const auto hud = gui.touch->hudLayout(ui);
+				const auto identity = gui.touch->allocationRect();
+				const auto dialGeometry = gui.touch->dialLayout(ui).geometry;
+				require(dialGeometry.center.y - dialGeometry.rings[0].outer * dialGeometry.unit >=
+						hud.minimap.y + hud.minimap.h,
+						"Allocation rings clear the actual inspector minimap bounds");
+				auto near = [](double a, double b) { return std::abs(a - b) < .5; };
+				require(near(identity.x, hud.stats.x) && near(identity.w, hud.stats.w),
+						"Building identity aligns with the rendered stats width");
+				require(near(identity.y + identity.h, hud.minimap.y + hud.minimap.h) &&
+						identity.y >= hud.stats.y + hud.stats.h && identity.x + identity.w < hud.minimap.x,
+						"Building identity sits below stats and beside the minimap, bottom aligned");
+				const double pointUnit = gfx->logicalUnitsPerPoint();
+				const GAGCore::ViewPoint close{identity.x + identity.w - 24 * pointUnit, identity.y + identity.h / 2};
+				require(gui.touch->interfaceRegion(close) == 38, "Moved identity close target follows its drawing");
+				gfx->printScreen(width < height ? "building-header-portrait.bmp" : width > 600 ? "building-header-wide.bmp" : "building-header-landscape.bmp");
+				gfx->nextFrame();
+				tap(close.x, close.y);
+				require(gui.selectionMode == GameGUI::NO_SELECTION && gui.orderQueue.empty(), "Moved close dismisses without an order");
+				openActions(swarm);
 				const auto regions = gui.touch->dialRegions();
 				require(regions.size() >= 3 + 1 + 3 + 1,
 						"Swarm dial offers workers, one shared production control, fixed priority and pause");
@@ -2317,6 +2400,10 @@ class GameGUITouchHarness
 				globalContainer->settings.thumbSide = Settings::THUMB_LEFT;
 				gui.drawAll(0);
 				const auto mirrored = gui.touch->dialLayout(gui.touch->layout());
+				require(near(mirrored.header.x, identity.x) && near(mirrored.header.y, identity.y) &&
+						near(mirrored.header.w, identity.w), "Header stays aligned with stats for either thumb side");
+				gfx->printScreen(width < height ? "building-header-left-portrait.bmp" : width > 600 ? "building-header-left-wide.bmp" : "building-header-left-landscape.bmp");
+				gfx->nextFrame();
 				require(mirrored.geometry.mirrored && std::abs(mirrored.geometry.center.x - ui.safe.x) < 0.5,
 						"A left thumb mirrors the dial into the bottom-left corner");
 				for (const auto &region : gui.touch->dialRegions())

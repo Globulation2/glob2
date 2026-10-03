@@ -208,8 +208,7 @@ void GameGUITouch::drawHUD()
 		}
 		gfx->setClipRect();
 	}
-	const double available =
-		std::min(ui.world.x + ui.world.w, minimapRect().x - 4 * unit) - ui.world.x;
+	const auto hud = hudLayout(ui);
 	struct Stat
 	{
 		std::string text;
@@ -240,14 +239,14 @@ void GameGUITouch::drawHUD()
 		{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[CPU load %0]"))
 			 .arg(cpu),
 		 -1, cpu >= 75});
-	const int columns = available / unit >= 600 ? 6 : 3;
-	const double cell = std::min(120 * unit, available / columns);
-	const double start = ui.world.x + (available - columns * cell) / 2;
+	const int columns = hud.columns;
+	const double cell = (hud.stats.w + 3 * unit) / columns;
+	const double start = hud.stats.x;
 	for (size_t i = 0; i < stats.size(); ++i)
 	{
 		const auto &stat = stats[i];
 		const ViewRect r{start + (i % columns) * cell,
-						 ui.safe.y + 4 * unit + (i / columns) * 28 * unit, cell - 3 * unit,
+						 hud.stats.y + (i / columns) * 28 * unit, cell - 3 * unit,
 						 24 * unit};
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper);
 		if (stat.warning)
@@ -456,19 +455,23 @@ const SceneBuildingPanel *GameGUITouch::allocationBuilding() const
 }
 ViewRect GameGUITouch::allocationRect() const
 {
-	auto rect = layout().panel;
+	const auto ui = layout();
+	auto rect = ui.panel;
 	if (!inspecting() || rect.h <= 0)
 		return {};
-	if (usesDial())
-		return dialLayout(layout()).header;
+	// Compact identity stays in the HUD even when its controls need row fallback.
+	if (!ui.persistentPanel)
+		return hudLayout(ui).identity;
 	rect.h = InGameTouchTheme::inspectorHeader * globalContainer->gfx->logicalUnitsPerPoint();
 	return rect;
 }
 ViewRect GameGUITouch::panelContent() const
 {
-	auto rect = layout().panel;
+	const auto ui = layout();
+	auto rect = ui.panel;
 	const double header = gui.selectionMode == GameGUI::UNIT_SELECTION
-		? 48 * globalContainer->gfx->logicalUnitsPerPoint() : allocationRect().h;
+		? 48 * globalContainer->gfx->logicalUnitsPerPoint()
+		: inspecting() && !ui.persistentPanel ? 0 : allocationRect().h;
 	rect.y += header;
 	rect.h = std::max(0.0, rect.h - header);
 	return rect;
@@ -526,13 +529,18 @@ void GameGUITouch::drawAllocation()
 	const int frame = type->miniSpriteImage >= 0 ? type->miniSpriteImage : type->gameSpriteImage;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	sprite->setBaseColor(building->owner.color);
-	gfx->setUITransform(unit, rect.x + 4 * unit, rect.y + 4 * unit, &clip);
+	const bool compact = !layout().persistentPanel;
+	const double factor = compact ? std::min({unit, 32 * unit / sprite->getW(frame),
+		(rect.h - 8 * unit) / sprite->getH(frame)}) : unit;
+	const double iconY = compact ? (rect.h - sprite->getH(frame) * factor) / 2 : 4 * unit;
+	gfx->setUITransform(factor, rect.x + 4 * unit, rect.y + iconY, &clip);
 	gfx->drawSprite(0, 0, sprite, frame);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	const std::string name = Toolkit::getStringTable()->getString("[" + type->type + "]");
 	drawPointLabel(
-		{rect.x + 60 * unit, rect.y, std::max(0.0, rect.w - 108 * unit), rect.h},
+		{rect.x + (compact ? 40 : 60) * unit, rect.y,
+		 std::max(0.0, rect.w - (compact ? 88 : 108) * unit), rect.h},
 		GAGCore::FormattableString(Toolkit::getStringTable()->getString("[%0 · %1]"))
 				.arg(name)
 				.arg(type->level + 1) +
@@ -547,16 +555,34 @@ void GameGUITouch::drawAllocation()
 						 : GAGCore::FormattableString(
 							   GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
 							   .arg(building->owner.teamNumber + 1)),
-		.85);
+		compact ? .8 : .85);
 	drawPointLabel({rect.x + rect.w - 48 * unit, rect.y, 48 * unit, rect.h}, "×", 1.2);
+}
+
+GameGUITouch::HudLayout GameGUITouch::hudLayout(const MobileLayout &ui) const
+{
+	const auto safe = ui.safe;
+	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
+	// Two stat rows need 56 points, then a 40-point identity bar and a gap.
+	// Reserve it for compact building inspection; other tools keep their usual
+	// minimap size. Wide landscapes have enough room for a single stat row.
+	const bool identity = inspecting() && !ui.persistentPanel;
+	const double side = (safe.h / unit < 400 && (!identity || safe.w / unit >= 680) ? 72 : 96) * unit;
+	HudLayout hud;
+	hud.minimap = {safe.x + safe.w - side - 4 * unit, safe.y + 4 * unit, side, side};
+	const double available = std::max(0.0, hud.minimap.x - 4 * unit - ui.world.x);
+	hud.columns = available / unit >= 600 ? 6 : 3;
+	const double cell = std::min(120 * unit, available / hud.columns);
+	hud.stats = {ui.world.x + (available - hud.columns * cell) / 2, safe.y + 4 * unit,
+				 std::max(0.0, hud.columns * cell - 3 * unit), (6 / hud.columns * 28 - 4) * unit};
+	const double header = InGameTouchTheme::inspectorHeader * unit;
+	hud.identity = {hud.stats.x, hud.minimap.y + hud.minimap.h - header, hud.stats.w, header};
+	return hud;
 }
 
 ViewRect GameGUITouch::minimapRect() const
 {
-	const auto safe = layout().safe;
-	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	const double side = (safe.h / unit < 400 ? 72 : 96) * unit;
-	return {safe.x + safe.w - side - 4 * unit, safe.y + 4 * unit, side, side};
+	return hudLayout(layout()).minimap;
 }
 void GameGUITouch::drawMinimap()
 {

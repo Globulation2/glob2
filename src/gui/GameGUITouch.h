@@ -119,6 +119,12 @@ class GameGUITouch
 	void updatePlacementPreview(GAGCore::ViewPoint point);
 	bool commitPlacement();
 	std::unique_ptr<Minimap> hudMinimap;
+	struct HudLayout
+	{
+		GAGCore::ViewRect minimap, stats, identity;
+		int columns;
+	};
+	HudLayout hudLayout(const GAGCore::MobileLayout &ui) const;
 	GAGCore::ViewRect minimapRect() const;
 	void drawMinimap();
 	void navigateMinimap(GAGCore::ViewPoint point);
@@ -209,7 +215,16 @@ class GameGUITouch
 		double sliderFrom = 0, sliderTo = 0; // Sweep of the whole slider (Arc only).
 		GAGCore::ViewRect box;	// Chips; a thumb-sized box around ring regions.
 	};
+	struct DialChips
+	{
+		std::vector<BuildingAction> actions;
+		std::vector<GAGCore::ViewRect> boxes;
+		GAGCore::ViewRect legend;
+		bool fits = true;
+	};
+	DialChips dialChips(const DialLayout &dial) const;
 	bool usesDial() const;
+	bool usesDial(const GAGCore::MobileLayout &ui) const;
 	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
 	std::vector<DialRegion> dialRegions() const;
 	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
