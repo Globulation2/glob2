@@ -90,6 +90,8 @@ test('WebAssembly verifies the committed match record', async ({page}, info) => 
   const trace = await page.evaluate(() => window.verifyTrace);
   const verdict = JSON.parse(await page.evaluate(() => window.verifyVerdict));
   expect(trace.split('\n').length).toBeGreaterThan(600);
+  expect(verdict.verdict).toBe('verified');
+  expect(trace).toBe(fs.readFileSync(path.join(root, 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt'), 'utf8').replace(/\r\n/g, '\n'));
   const output = path.join(root, 'artifacts/browser-determinism/wasm');
   fs.mkdirSync(output, {recursive: true});
   fs.writeFileSync(path.join(output, 'verify-match.checksums.txt'), trace);

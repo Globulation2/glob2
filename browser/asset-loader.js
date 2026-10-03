@@ -17,6 +17,7 @@ class Glob2AssetLoader {
     this.cache = null;
     this.cacheReady = null;
     this.installed = [];
+    this.retryAfter = {};
     for (const entry of manifest.packages) this.states[entry.name] = entry.optional ? 'idle' : 'pending';
   }
   static cacheName = 'glob2-assets-v1';
@@ -130,6 +131,14 @@ class Glob2AssetLoader {
   }
   // Packages installed since the last call (ApplicationHost::takeInstalledAssetPackages).
   takeInstalled() { return this.installed.splice(0); }
+  // Non-blocking demand from the running game. Repeated frames share the
+  // in-flight load; failed optional downloads retry at most once per ten seconds.
+  request(name, now = Date.now()) {
+    if (this.states[name] === 'ready' || this.states[name] === 'downloading' ||
+        now < (this.retryAfter[name] || 0)) return;
+    this.retryAfter[name] = now + 10000;
+    void this.load(name).catch(() => {}); // state() exposes failure; gameplay continues.
+  }
   async load(name, between) {
     if (this.states[name] === 'ready') return;
     this.states[name] = 'downloading';

@@ -310,6 +310,14 @@ bool assetPackageReady(const char* name)
         return assets.states[name] === 'ready' ? 1 : 0;
     }, name);
 }
+void requestAssetPackage(const char* name)
+{
+    MAIN_THREAD_EM_ASM({
+        const assets = Module.glob2Assets;
+        const name = UTF8ToString($0);
+        if (assets?.manifest.packages.some(entry => entry.name === name)) assets.request(name);
+    }, name);
+}
 std::vector<std::string> takeInstalledAssetPackages()
 {
     std::vector<std::string> names;

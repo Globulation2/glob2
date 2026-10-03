@@ -261,3 +261,18 @@ The comparison harness also expects `swarm.gsk`. Generate it with Blender
 retained TRELLIS source and gives it a new paint layout. The swarm camera and
 silhouette are provisional; the map preview draws it at the existing swarm
 sprite anchor and size, preserving building overlays and visibility checks.
+
+
+For a crowded-scene comparison, run `skin-game-preview` with
+`SKIN_PREVIEW_SAVE` pointing to a two-colony save, `GLOB2_SKIN_PREVIEW_DIR`
+pointing to the exported mesh directory containing `paint.png`,
+`SKIN_PREVIEW_CAPTURE=final.bmp`, and `SKIN_PREVIEW_BENCHMARK=crowd`.
+The tool adds ground and flying units in a 16×16 area around the first colony,
+uses two paint variants, and renders the same changing poses with classic art
+and then live meshes. It reports mean and 95th-percentile frame time plus draw
+calls over 40 frames after five warm-up frames. Captures are written beneath
+the selected user-data directory as `crowd-classic.bmp` and `crowd-skinned.bmp`.
+Clouds and interpolation are disabled to isolate this comparison. This measures
+the real Scene/map/HUD drawing path with diagnostic unit placement, not an
+active simulation or a representative hardware benchmark. Record the save,
+backend, display size and hardware with any reported results.
