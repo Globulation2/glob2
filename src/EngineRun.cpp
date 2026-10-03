@@ -14,6 +14,7 @@
 #include "DatasetWriter.h"
 #include "Engine.h"
 #include "hive/HiveClient.h"
+#include "GameDiagnostics.h"
 #include <utility>
 #include "EngineTiming.h"
 #include "Game.h"
@@ -162,6 +163,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 			net->addLocalOrder(order);
 	}
 
+	if (diagnostics) diagnostics->beginTick(gui.game);
 	const bool localAI = wasReadyLastTick && globalContainer->liveSpectating &&
 		gui.game.players[orderPlayer]->ai;
 	if (!gui.gamePaused && gui.game.map.computeEnabled(Map::ComputeAI) &&
@@ -215,6 +217,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 		}
 	}
 
+	if (diagnostics) diagnostics->completeTick(gui.game);
 	if (wasReadyLastTick)
 	{
 		PERF_SCOPE_TIME(Replay);
@@ -340,6 +343,11 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame, const Scene* scene)
 void Engine::drawSession(bool everyFrame)
 {
     if (!session) throw std::logic_error("No active engine session");
+    if (diagnostics && diagnostics->pending())
+    {
+        const auto drain = [&] { diagnostics->drain(); };
+        if (runner) runner->withGame(drain); else drain();
+    }
     if (globalContainer->runNoX) return;
     if (!runner)
     {
@@ -888,6 +896,7 @@ void Engine::abortSession() noexcept
         checksumSidecar.reset();
         globalContainer->datasetWriter.reset();
     }
+    if (diagnostics) diagnostics->drain();
     session.reset();
     randomRequirement.reset();
     sessionInput.clear();
@@ -1074,6 +1083,7 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
 		perf.reset();
 	}
 
+    if (diagnostics) diagnostics->drain();
     session.reset();
     randomRequirement.reset();
     sessionInput.clear();
@@ -1113,6 +1123,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
                 break;
             if (globalContainer->runNoX)
             {
+                drawSession();
                 runner->acquireScene();
                 std::this_thread::sleep_for(std::chrono::milliseconds(8));
             }
@@ -1144,3 +1155,5 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
     }
     doRunOnceAgain = finishSession();
 }
+
+bool Engine::diagnosticsPending() const { return diagnostics && diagnostics->pending(); }

@@ -33,6 +33,8 @@
 #include <map>
 #include <set>
 
+namespace GameDiagnostics { struct FieldSink; }
+
 namespace AIMaxima
 {
 
@@ -40,6 +42,7 @@ namespace AIMaxima
 class Maxima : public AIImplementation, private AIMaximaRuntime::RuntimeAI
 {
 public:
+	std::shared_ptr<GameDiagnostics::FieldSink> fieldDiagnostics; // session-owned, never serialized
   void captureTelemetry() override;
   const std::vector<AITelemetry::Field> &telemetrySchema() const override
   {

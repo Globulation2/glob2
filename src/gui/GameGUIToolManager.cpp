@@ -122,7 +122,7 @@ void GameGUIToolManager::drawTool(int mouseX, int mouseY, int localteam, int vie
 			c = Color(251,206,0);
 			break;
 		case Farm:
-			c = Color(0,200,80);
+			c = Color(110,240,120);
 			break;
 		}
 		/* Instead of using a dimmer intensity to indicate

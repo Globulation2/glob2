@@ -12,7 +12,7 @@ SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/sgsl/', 'src/sim/', 'src/Order')
 SIMULATION_FILES = {'src/Game_sync.cpp', 'src/Game.cpp', 'src/EngineRun.cpp',
                     'src/Engine.cpp', 'src/ReplayReader.cpp', 'src/ReplayWriter.cpp'}
-THREAD_FILES = {'src/Engine.cpp', 'src/EngineRun.cpp', 'src/GameSessionScreen.cpp',
+THREAD_FILES = {'src/GameDiagnostics.cpp', 'src/Engine.cpp', 'src/EngineRun.cpp', 'src/GameSessionScreen.cpp',
                 'src/gui/GameGUIDraw.cpp', 'src/gui/GameGUIStep.cpp', 'src/gui/GameGUIOrders.cpp',
                 'libgag/src/PerformanceTelemetry.cpp'}
 # Paths whose changes rebuild and smoke-test the whole self-hosted stack

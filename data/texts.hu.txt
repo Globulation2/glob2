@@ -4714,3 +4714,13 @@ Térkép lendülete
 
 [Missing custom AI]
 
+[Map repetition failed]
+
+[repeat map horizontally]
+Térkép ismétlése vízszintesen
+[repeat map vertically]
+Térkép ismétlése függőlegesen
+[bases]
+bázis
+[bases per colony]
+Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épületeivel és egységeivel

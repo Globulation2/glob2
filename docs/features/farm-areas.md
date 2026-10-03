@@ -16,6 +16,9 @@ farm keep itself clear of what it does not grow.
 - Switch on **Settings → Experiments → Farm areas**, then start or host a new
   game. The flag panel's zone strip gains a fourth, green button; the touch brush
   bar and flag palette gain a **Farm** choice. `<a>-<w>` selects it from the keyboard.
+- With the setting on, the map editor (desktop and phone) also offers the farm
+  brush, with the same refusal of ground that cannot grow. Maps do not carry
+  experiments: a painted farm only takes effect in games that have the experiment.
 - The brush refuses ground nothing can grow on. A farm on grass is a wheat farm
   and a farm on water is an alga farm; the terrain decides, so there is no extra
   setting.
@@ -104,9 +107,16 @@ A refused tile is never part of a field, so it cannot connect two patches.
 - **Growth.** `Map::growResources` does not read the farm mask.
 - **Clearing the touched tile.** Clearing paths call `Map::decResource` on the
   tile they touch and never go through `takeHarvest`.
-- **The map editor**. It has no farm brush yet (it shows and preserves a painted
-  mask). That is a follow-up, along with high-resolution frames for the
-  `area-farm` overlay, which renders at classic resolution when HD artwork is on.
+
+## Artwork
+
+The overlay marker and its zone button are hand-authored SVG
+(`datasrc/gfx/authored/area-farm.svg`, `gamegui58.svg`): sparse seedlings that
+sway over eight frames, in the same family as the guard dots and clearing sickles.
+`python3 tools/artwork/render_authored.py` renders the classic 32px sprites and the
+128px high-resolution frames from the same source; `--check` verifies both are
+current and follow the marker rules. Zoomed out, the farm fades to the same flat
+tint as the other zones, a light green chosen to stand out from grass.
 
 ## AIs
 
@@ -134,8 +144,9 @@ section, packed or per tile; older maps and saves load with no farm painted.
 `Tile::farmArea` joins the heavy `Map::checkSum`, which is unchanged while it is
 zero. The order is `ORDER_ALTER_FARM_AREA` (45); `OrderValidation` rejects it as
 `not_permitted` in a game without the experiment and `Game::executeAlterFarmArea`
-ignores it there. Network protocol 52 and simulation revision 4 come with the
-format change. Replays from formats 127 to 129 still play: none can contain the
+ignores it there. Network protocol 52 came with the format change, and each
+change to what the experiment simulates (the rule, scripts, the AIs) bumps
+`SIM_REVISION` like any other simulation change. Replays from formats 127 to 129 still play: none can contain the
 farm order or this experiment.
 
 ## Where it lives

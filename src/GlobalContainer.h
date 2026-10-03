@@ -37,6 +37,7 @@ public:
 private:
 	void updateLoadProgressScreen(int value);
 	void loadGameGraphics(bool showProgress);
+	void loadGameFonts();
 	bool gameGraphics = false;
 	bool menuMusic = false;
 
@@ -52,6 +53,8 @@ public:
 	//! until GAGCore::ApplicationHost::assetPackageReady("game"). Always true
 	//! without graphics (runNoX).
 	bool ensureGameGraphics(void);
+	//! Standalone tool startup, after selecting SDL drivers, on the graphics thread.
+	void loadOffscreenGraphics();
 	bool gameGraphicsLoaded(void) const { return gameGraphics; }
 	//! Completes once ensureGameGraphics() succeeds; waits at the
 	//! "[Loading game graphics]" stage. Without waiting it never suspends.
