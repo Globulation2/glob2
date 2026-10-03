@@ -232,7 +232,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	if (!animationsPaused)
 		time++;
 	view.render.detail = ZoomDetail::forView(globalContainer->gfx->mapTransformScale(),
-		globalContainer->gfx->logicalUnitsPerPoint(), globalContainer->settings.adaptiveZoomDetail);
+		globalContainer->gfx->logicalUnitsPerPoint(), globalContainer->settings.adaptiveZoomDetail,
+		view.render.minimumZoom);
 	// Queue constant-size overlays for this frame, and draw whatever the later
 	// passes queued however drawMap returns.
 	struct OverlayPass

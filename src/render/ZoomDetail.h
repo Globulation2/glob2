@@ -58,6 +58,9 @@ struct ZoomDetail
 	static constexpr double BuildingSpriteGone = 5, BuildingSpriteFull = 8;
 	static constexpr double FlagIconFull = 8, FlagIconGone = 12;
 	static constexpr double StrategicFull = 4, StrategicGone = 6;
+	//! Every ramp is complete at this tile size; see rampTile.
+	static constexpr double FarEnd = 3.5;
+	static constexpr double RemapTop = 20, RemapTopOverSmallest = 2;
 
 	//! 0 at or below `gone`, 1 at or above `full`, smooth in between.
 	static float ramp(double value, double gone, double full)
@@ -66,9 +69,26 @@ struct ZoomDetail
 		return float(t * t * (3 - 2 * t));
 	}
 
+	//! The tile size the ramps are evaluated at. A small map cannot zoom out far
+	//! enough to reach the strategic view by tile size alone, so when the
+	//! view's smallest tile `smallest` is still above the far end, the range
+	//! from there up to `RemapTop` is compressed: fully zoomed out is always
+	//! the full strategic view, and from the top of that range in nothing
+	//! changes. A map so small that it is legible fully zoomed out is left alone.
+	static double rampTile(double tile, double smallest)
+	{
+		if (!(smallest > FarEnd) || smallest >= RemapTop)
+			return tile;
+		const double top = std::max(RemapTop, RemapTopOverSmallest * smallest);
+		if (tile >= top)
+			return tile;
+		return FarEnd + std::max(0.0, tile - smallest) * (top - FarEnd) / (top - smallest);
+	}
+
 	//! Detail for a map drawn at `zoom`, where one point is `unitsPerPoint`
 	//! logical units. Disabled, everything scales with the map as it used to.
-	static ZoomDetail forView(double zoom, double unitsPerPoint, bool enabled)
+	//! `minimumZoom` is the furthest the view can zoom out, or 0 when unknown.
+	static ZoomDetail forView(double zoom, double unitsPerPoint, bool enabled, double minimumZoom = 0)
 	{
 		ZoomDetail detail;
 		if (!(unitsPerPoint > 0))
@@ -77,15 +97,18 @@ struct ZoomDetail
 		detail.overlayScale = zoom;
 		if (!enabled)
 			return detail;
-		const double t = detail.tilePoints;
+		// Overlay sizes follow the true tile size; what is drawn follows the
+		// tile size measured against how far this map can zoom out.
+		const double tile = detail.tilePoints;
+		const double t = rampTile(tile, 32 * minimumZoom / unitsPerPoint);
 		// Overlays hold their 100% size in points across the plateau. Either side
 		// they follow the map far more slowly, so a close-up is of the unit and
 		// not its bars, and a bar zoomed out stays legible without burying a crowd.
 		double overlay = 1;
-		if (t > OverlayPlateauTop)
-			overlay = std::pow(t / OverlayPlateauTop, OverlayMagnifiedGrowth);
-		else if (t < OverlayPlateauBottom)
-			overlay = std::max(OverlaySmallest, std::pow(t / OverlayPlateauBottom, OverlayReducedGrowth));
+		if (tile > OverlayPlateauTop)
+			overlay = std::pow(tile / OverlayPlateauTop, OverlayMagnifiedGrowth);
+		else if (tile < OverlayPlateauBottom)
+			overlay = std::max(OverlaySmallest, std::pow(tile / OverlayPlateauBottom, OverlayReducedGrowth));
 		detail.overlayScale = unitsPerPoint * overlay;
 		detail.barAll = ramp(t, BarAllGone, BarAllFull);
 		detail.barException = std::max(detail.barAll, ramp(t, BarExceptionGone, BarExceptionFull));

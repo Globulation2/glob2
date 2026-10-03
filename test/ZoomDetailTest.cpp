@@ -118,4 +118,63 @@ TEST_SUITE("ZoomDetail")
 		CHECK_EQ(1.f, detail.buildingIcon);
 		CHECK_EQ(1.f, detail.strategic);
 	}
+
+	TEST_CASE("Fully zoomed out is the strategic view on a map of any size")
+	{
+		// The furthest zoom-out as a tile size in points: a huge map, one that
+		// stops inside the cross-fades, and one that stops just past half size.
+		for (double smallestTile : {1.5, 8.75, 17.5})
+		{
+			const double minimumZoom = smallestTile / 32;
+			const ZoomDetail far = ZoomDetail::forView(minimumZoom, 1, true, minimumZoom);
+			CHECK_EQ(1.f, far.strategic);
+			CHECK_EQ(1.f, far.terrainOverview);
+			CHECK_EQ(1.f, far.unitMarker);
+			CHECK_EQ(1.f, far.buildingIcon);
+			CHECK_EQ(0.f, far.zonePattern);
+			CHECK_EQ(0.f, far.barException);
+			// Detail still only ever appears while zooming in from there.
+			ZoomDetail previous = far;
+			for (double zoom = minimumZoom; zoom <= 5.0; zoom *= 1.02)
+			{
+				const ZoomDetail detail = ZoomDetail::forView(zoom, 1, true, minimumZoom);
+				CHECK(detail.unitSprite >= previous.unitSprite);
+				CHECK(detail.buildingSprite >= previous.buildingSprite);
+				CHECK(detail.barAll >= previous.barAll);
+				CHECK(detail.terrainOverview <= previous.terrainOverview);
+				CHECK(detail.strategic <= previous.strategic);
+				previous = detail;
+			}
+		}
+	}
+
+	TEST_CASE("A map that zooms out far enough is unaffected by its minimum zoom")
+	{
+		for (double zoom : {0.06, 0.2, 0.5, 1.0, 3.0})
+		{
+			const ZoomDetail plain = ZoomDetail::forView(zoom, 1, true);
+			const ZoomDetail anchored = ZoomDetail::forView(zoom, 1, true, 0.06);
+			CHECK_EQ(plain.unitSprite, anchored.unitSprite);
+			CHECK_EQ(plain.terrainOverview, anchored.terrainOverview);
+			CHECK_EQ(plain.barAll, anchored.barAll);
+		}
+	}
+
+	TEST_CASE("A map legible when fully zoomed out stays detailed")
+	{
+		// It never gets small enough on screen to need the strategic view.
+		const ZoomDetail detail = ZoomDetail::forView(0.9, 1, true, 0.9);
+		CHECK_EQ(1.f, detail.unitSprite);
+		CHECK_EQ(0.f, detail.strategic);
+	}
+
+	TEST_CASE("A small map keeps its normal look at its closer zooms")
+	{
+		// 128x128 on a desktop stops at about 27%; 100% must still be untouched.
+		const ZoomDetail detail = ZoomDetail::forView(1, 1, true, 0.273);
+		CHECK_EQ(1.f, detail.barAll);
+		CHECK_EQ(1.f, detail.unitSprite);
+		CHECK_EQ(1.f, detail.zonePattern);
+		CHECK_EQ(0.f, detail.terrainOverview);
+	}
 }

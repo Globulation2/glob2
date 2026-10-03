@@ -897,7 +897,13 @@ it is saved, checksummed or read by the simulation.
   (`32 * zoom / logicalUnitsPerPoint()`), so thresholds mean the same on a phone, a
   high-density display and a desktop. Every threshold is a named constant there; each
   ramp is a smoothstep between two tile sizes, so representations cross-fade.
-  `Game::drawMap` computes it once per frame into `MapRenderState::detail`. Disabled,
+  `Game::drawMap` computes it once per frame into `MapRenderState::detail`.
+  A small map cannot zoom out far enough to reach the strategic view by tile size,
+  so the view's owner sets `MapRenderState::minimumZoom` and `ZoomDetail::rampTile`
+  compresses the far range: fully zoomed out is the full strategic view on a map of
+  any size, and from twice that tile size (at least 20 points) in nothing changes. A
+  map still at 20 points or more per tile when fully zoomed out is left detailed.
+  Overlay sizes always follow the true zoom. Disabled,
   it returns the values of uniform scaling and the passes take their original paths.
 - `MapOverlayQueue` (`src/render/MapOverlayQueue.h`) holds overlays of constant screen
   size. Passes queue them at a map position while the map transform is active;
@@ -913,10 +919,11 @@ it is saved, checksummed or read by the simulation.
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
   neighbours tile without seams. The fog-of-war shade draws one fill per horizontal
-  run of whole squares with `drawMapTileFill`, which snaps only in the software
-  rasteriser (plain rectangles showed a grid there); accelerated renderers place the
-  shade's edge sprites at exact fractions, and a snapped fill beside them leaves
-  hairline seams.
+  run of whole squares with `drawMapTileFill` and its edge sprites with
+  `drawMapTileSprite`. Both snap to pixels only in the software rasteriser, where
+  truncated coordinates otherwise leave one-pixel gaps between tiles; accelerated
+  renderers place sprites at exact fractions, and a snapped fill beside them
+  leaves hairline seams.
   The outline stroke stops thickening at two points.
 - Below 12 points per tile `Game::drawMapOverview` fades in one flat colour per tile
   (terrain, or the resource's minimap colour over it); at 5 points it replaces the

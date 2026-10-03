@@ -38,6 +38,9 @@ struct MapRenderState
 	ZoomDetail detail;
 	//! The terrain overview's image, one pixel per visible tile, kept between frames.
 	std::unique_ptr<GAGCore::DrawableSurface> overview;
+	//! The furthest this view's camera can zoom out, set by its owner; 0 when
+	//! unknown. It anchors the far end of the detail curves (ZoomDetail::rampTile).
+	double minimumZoom = 0;
 	//! The player is painting zones, so they keep their full strength zoomed out.
 	bool zonesEmphasised = false;
 	//! Constant-size overlays queued by this frame's map passes.

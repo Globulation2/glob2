@@ -534,6 +534,10 @@ namespace GAGCore
         //! drawMapFill; accelerated renderers place sprites at exact fractions,
         //! and a snapped fill beside them would leave a hairline seam.
         void drawMapTileFill(int x1, int y1, int x2, int y2, const Color& color);
+        //! A sprite frame covering the `size`-pixel map square at (x, y), meeting
+        //! its neighbours and drawMapTileFill exactly. In the software rasteriser
+        //! its edges snap to the same pixels as theirs; elsewhere it is drawSprite.
+        void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
         void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);

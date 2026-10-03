@@ -619,6 +619,7 @@ void GameGUI::drawAll(int team)
 	const Scene &scene = drawnScene();
 	view.scene = &scene;
 	view.render.zonesEmphasised = selectionMode==BRUSH_SELECTION;
+	view.render.minimumZoom = camera.minimumZoom();
 	view.render.unitMotion = globalContainer->settings.unitInterpolation && !gamePaused && !hardPause
 		? unitMotionFraction(scene, SDL_GetTicks()) : 0.f;
 	// Panels, the top bar and the statistics pages draw the scene's copy of the stats.

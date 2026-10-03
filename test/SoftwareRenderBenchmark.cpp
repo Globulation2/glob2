@@ -166,6 +166,7 @@ class SoftwareRenderBenchmark
 				throw std::runtime_error("Camera offsets must be finite");
 			gui.viewportX = gui.camera.tileX();
 			gui.viewportY = gui.camera.tileY();
+			gui.view.render.minimumZoom = gui.camera.minimumZoom();
 			printf("CAMERA zoom=%.4f fractional=%.4f,%.4f offset=%.4f,%.4f\n", gui.camera.zoom,
 				   gui.camera.fractionX(), gui.camera.fractionY(), gui.camera.offsetX,
 				   gui.camera.offsetY);

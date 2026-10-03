@@ -214,6 +214,25 @@ namespace GAGCore
             drawFilledRect(float(x1), float(y1), float(x2 - x1), float(y2 - y1), color);
     }
 
+    void GraphicContext::drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index)
+    {
+        if (!softwareTransform || !mapTransformActive)
+        {
+            drawSprite(x, y, sprite, index);
+            return;
+        }
+        // The same snapping as drawMapSnappedRect, with one logical unit a pixel.
+        const float offsetX = mapTranslateX + mapCopyTranslateX, offsetY = mapTranslateY + mapCopyTranslateY;
+        const float left = std::round(x * mapScale + offsetX), top = std::round(y * mapScale + offsetY);
+        const float right = std::round((x + size) * mapScale + offsetX), bottom = std::round((y + size) * mapScale + offsetY);
+        if (right <= left || bottom <= top)
+            return;
+        // Back to map coordinates, a quarter pixel inside each snapped edge so
+        // the rasteriser's truncation lands on it rather than one short.
+        drawSprite((left + 0.25f - offsetX) / mapScale, (top + 0.25f - offsetY) / mapScale,
+                   (right - left) / mapScale, (bottom - top) / mapScale, sprite, index);
+    }
+
     void GraphicContext::drawMapSnappedRect(int x1, int y1, int x2, int y2, const Color& color, bool stroked, float maxStrokePoints)
     {
 		if (renderer) prepareDraw();

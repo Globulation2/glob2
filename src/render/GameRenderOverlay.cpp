@@ -171,7 +171,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				}
 				flush(blackStart, x, black);
 				if (blackValue)
-					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainBlack, blackValue);
+					globalContainer->gfx->drawMapTileSprite((x<<5)+16, (y<<5)+16, 32, globalContainer->terrainBlack, blackValue);
 
 				// then if it isn't full black, draw shade
 				i0=!sceneMap.isFOWDiscovered(x+viewportX+1, y+viewportY+1, visibleTeams) ? 1 : 0;
@@ -188,7 +188,7 @@ void Game::drawMapFogOfWar(int left, int top, int right, int bot, int sw, int sh
 				}
 				flush(shadeStart, x, shade);
 				if (shadeValue)
-					globalContainer->gfx->drawSprite((x<<5)+16, (y<<5)+16, globalContainer->terrainShader, shadeValue);
+					globalContainer->gfx->drawMapTileSprite((x<<5)+16, (y<<5)+16, 32, globalContainer->terrainShader, shadeValue);
 			}
 			flush(blackStart, right+1, black);
 			flush(shadeStart, right+1, shade);
