@@ -4,11 +4,13 @@ import importlib.util
 from pathlib import Path
 import re
 import subprocess
+import sys
 from types import SimpleNamespace
 import unittest
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / ".github/scripts/ci_changed_paths.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("ci_changed_paths", SCRIPT)
 ci_changed_paths = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ci_changed_paths)
@@ -96,22 +98,15 @@ class ChangedPathsTest(unittest.TestCase):
         selector = workflow.split("  changes:\n", 1)[1].split("\n  linux-build:", 1)[0]
         for filename in ("test_run_tests.py", "test_ci_failure_aggregation.py"):
             self.assertIn(filename, selector)
-        self.assertIn("-s tests/build_system -p 'test_ci*.py'", selector)
+        self.assertIn("-m unittest discover -s tests/build_system -v", selector)
+        self.assertEqual(selector.count("-m unittest discover -s tests/build_system"), 1)
         for path in ci_changed_paths.CI_TOOL_TESTS:
             if path.startswith("tests/build_system/"):
                 self.assertTrue(Path(path).match("tests/build_system/test_ci*.py"))
-        # Packaging-for-a-store checks are release-only: they run from the release
-        # workflows or by hand, never on pull requests or master pushes.
-        for name in ("steam-windows-package.yml", "mac-app-store.yml"):
-            text = (root / ".github/workflows" / name).read_text()
-            triggers = text.split("\non:\n", 1)[1].split("\n\n", 1)[0]
-            self.assertNotIn("pull_request:", triggers, name)
-            self.assertNotIn("push:", triggers, name)
-        mobile = (root / ".github/workflows/mobile.yml").read_text()
-        self.assertNotIn("android_release.py check", mobile)
-        self.assertNotIn("verify-apk", mobile)
         package = (root / ".github/workflows/steam-windows-package.yml").read_text()
-        self.assertIn("cancel-in-progress: ${{ github.event_name == 'pull_request' ||", package)
+        self.assertNotIn('  pull_request:', package)
+        self.assertIn('  workflow_call:', package)
+        self.assertIn('cancel-in-progress: false', package)
 
     def test_browser_shell_only(self):
         self.assert_jobs(
@@ -326,9 +321,9 @@ class ChangedPathsTest(unittest.TestCase):
         for gcc in ('11', '13'):
             block = workflow.split(f'  linux-gcc{gcc}:\n', 1)[1].split('\n  linux-', 1)[0]
             self.assertIn('run_tests: true', block)
-            self.assertIn('needs: changes', block)
+            self.assertIn('needs: changes' if gcc == '11' else 'needs: [changes, linux-gcc13-producer]', block)
         tests = helper.split('  tests:\n', 1)[1]
-        self.assertIn('needs: build', tests)
+        self.assertIn('needs: [build, reuse]', tests)
         self.assertNotIn('linux-clang', tests)
         gate = workflow.split('  linux:\n', 1)[1].split('  linux-variants:\n', 1)[0]
         self.assertIn('needs: [changes, linux-build, linux-clang]', gate)

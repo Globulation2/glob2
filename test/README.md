@@ -1256,6 +1256,25 @@ their historical restart behavior; omitted state cannot be recovered from them.
 New games retain the existing decision sequence. This save change does not raise
 the replay acceptance floor.
 
+## CI coverage ownership
+
+Primary GCC 13 runs the complete applicable native suite. Secondary platforms
+use `python3 test/run_tests.py --coverage-profile compatibility` with the reviewed
+suite inventory in `test/ci-compatibility.json`; full nightly/release verification
+uses `--coverage-profile full`. Map-generator contracts run in their dedicated lane.
+Add new compatibility suites when introducing save, replay, scheduling, scripting
+or platform boundaries. The selector fails closed for shared/unknown inputs.
+
+`--write-inventory PATH` retains exact eligible and assigned cases, excluded cases,
+platform, profile and shard ownership alongside JUnit evidence. CI audits shard
+inventories for missing and duplicated cases. Empty compatibility selection fails
+rather than reporting a successful empty suite. Portable primary regressions need
+not be repeated on every compiler; platform, renderer and thread-count repeats
+must have a named compatibility purpose.
+
+The [development reference](../docs/development/reference.md#tiered-pull-request-coverage-rollout)
+records draft behavior, expansion labels, release-only checks and activation gates.
+
 ## Native coverage workflow
 
 Build and measure the regular native tier with a matching Clang/LLVM toolchain:

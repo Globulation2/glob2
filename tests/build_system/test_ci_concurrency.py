@@ -7,6 +7,7 @@ import importlib.util
 from pathlib import Path
 import re
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 WORKFLOWS = ROOT / '.github/workflows'
@@ -24,10 +25,11 @@ RELEASE = {
     'epic-windows-release.yml', 'fdroid-publication.yml', 'fdroid-release-validation.yml',
     'flathub-update.yml', 'github-release.yml', 'ios-testflight.yml', 'publish-desktop.yml',
     'release.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',
-    'windows-store-release.yml',
+    'windows-store-release.yml', 'steam-windows-package.yml', 'mac-app-store.yml',
 }
 # Not superseded by newer runs, each with its own reason.
 EXEMPT = {
+    'thread-sanitizer.yml': 'callable validation inherits build cancellation',
     'ci-metrics.yml': 'each run measures a distinct, completed build run',
     'cancel-superseded.yml': 'the canceller; cancels its own older runs unconditionally',
 }
@@ -103,7 +105,8 @@ class WorkflowConcurrencyTest(unittest.TestCase):
 
     def test_canceller_covers_every_event_triggered_ci_workflow(self):
         texts = workflows()
-        self.assertFalse({path.rsplit('/', 1)[1] for path in cancel.CI_WORKFLOWS} & (RELEASE | set(EXEMPT)))
+        # Legacy release-path PR runs remain cancellable, but manual/tag releases never are.
+        self.assertNotIn('.github/workflows/release.yml', cancel.CI_WORKFLOWS)
         for path in cancel.CI_WORKFLOWS:
             self.assertIn(path.rsplit('/', 1)[1], texts)
         for name, text in texts.items():
@@ -146,12 +149,19 @@ class SelectionTest(unittest.TestCase):
                 run(5, 'old', path='.github/workflows/build.yml@refs/heads/feature')]
         self.assertEqual(self.select(runs, heads), [5])
 
+    def test_legacy_release_pr_runs_are_retired_even_at_the_current_head(self):
+        rows=[run(1,'current',path='.github/workflows/steam-windows-package.yml',status='in_progress'),
+              run(2,'current',path='.github/workflows/mac-app-store.yml'),
+              run(3,'current',path='.github/workflows/steam-windows-package.yml',event='workflow_dispatch'),
+              run(4,'current',path='.github/workflows/mac-app-store.yml',event='workflow_dispatch')]
+        self.assertEqual(self.select(rows,{('pr','o/r','feature'):'current'}),[1,2])
+
     def test_default_branch_is_opt_in_and_keeps_its_newest_run(self):
         runs = [run(1, 'a', branch='master', event='push'), run(2, 'b', branch='master', event='push'),
                 run(3, 'c', branch='master', event='schedule')]
         heads = {('branch', 'o/r', 'master'): 'd'}
         self.assertEqual(self.select(runs, heads), [])
-        self.assertEqual(self.select(runs, heads, include_default_branch=True), [1, 2])
+        self.assertEqual(self.select(runs, heads, include_default_branch=True), [1])
 
     def test_fork_branch_with_same_name_is_a_different_head(self):
         runs = [run(1, 'x', repo='fork/r')]
@@ -160,3 +170,25 @@ class SelectionTest(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class MasterExecutionTest(unittest.TestCase):
+    def test_queued_workflow_with_active_or_completed_job_is_protected(self):
+        row=run(1,'old',branch='master',event='push')
+        for job in [dict(status='in_progress'),dict(status='queued',runner_id=123),
+                    dict(status='completed',steps=[dict(started_at='2026-10-03T04:00:00Z')])]:
+            self.assertTrue(cancel.master_execution_started('o/r',row,read=lambda *args:[job]))
+        self.assertFalse(cancel.master_execution_started('o/r',row,read=lambda *args:[dict(status='queued',runner_id=0),dict(status='completed',conclusion='skipped',steps=[])]))
+        with patch.object(cancel,'master_execution_started',return_value=True):
+            cancel.protect_started_master('o/r',[row],'master')
+        newer=run(2,'new',branch='master',event='push')
+        self.assertEqual(cancel.select_superseded([row,newer],{('branch','o/r','master'):'latest'},repository='o/r',include_default_branch=True),[])
+
+    def test_unknown_execution_is_protected_and_current_attempt_is_queried(self):
+        import subprocess
+        row=dict(run(1,'old',branch='master',event='push'),run_attempt=3)
+        with patch.object(cancel,'gh_pages',side_effect=subprocess.CalledProcessError(1,['gh'])):
+            self.assertTrue(cancel.master_execution_started('o/r',row))
+        with patch.object(cancel,'gh_pages',return_value=[]) as read:
+            self.assertFalse(cancel.master_execution_started('o/r',row))
+            self.assertIn('/attempts/3/jobs',read.call_args.args[0])

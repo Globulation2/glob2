@@ -123,44 +123,28 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   test shards per toolchain. Linux compiler builds share
   `.github/workflows/ci-linux-build.yml`; the GCC artifact builds and Clang
   compatibility check run separately, so runtime shards do not wait for Clang.
-  Each supported GCC build starts its own test shards and generator checks independently. The original `linux (...)` checks require every
-  build and shard to pass, preserving their merge-blocking status. PRs compare
-  with their base commit. Master pushes compare with the commit of the last master
-  build that ran to completion, so merges whose pending runs were superseded are
-  still covered; the nightly schedule and manual dispatch always select full CI and
-  provide the full-matrix baseline. Unknown paths, unavailable diffs or no completed
-  master build also select full CI.
-  Draft PRs run only the selector and its contract suites; the aggregate gate
-  passes with every check deferred. Marking a PR ready for review
-  (`ready_for_review`) runs the selected checks for that commit, so mark a PR ready
-  once it should be tested, and push to drafts as often as needed.
-  Changes confined to the render-backend and pixel-raster implementation files
-  retain native, browser and cross-platform checks without repeating independent
-  map-generator sweeps or container deployment tests. Shared headers, file I/O and
-  unknown library files still select full CI.
-  CI-tool unit-test-only edits run the selector's Python contract suites without
-  native compilation. The selector runs the changed-path, coverage-tier, measurement,
-  native-runner and failure-aggregation contracts before selecting downstream jobs;
-  changes to the runners themselves still select native checks.
-  Steam packaging helper/workflow changes retain their packaging and smoke checks;
-  editing this reference guide alone does not rebuild the Steam client.
-- CI run cancellation: every CI workflow declares a `concurrency` group keyed on
-  `github.ref` whose `cancel-in-progress` is true for `pull_request` events and
-  for pushes to non-default branches, so a newer revision cancels the older run.
-  Default-branch (master) runs are not cancelled once started; GitHub's
-  concurrency still replaces a pending master run with a newer one, so under
-  load only the newest queued master commit is verified. Release, publication
-  and deployment workflows keep non-cancelling groups. Call-only reusable
-  workflows declare no group (they inherit their caller's cancellation); a
-  reusable workflow that also runs on its own uses a literal group prefix,
-  because `github.workflow` names the caller and a shared group deadlocks it.
-  `.github/workflows/cancel-superseded.yml` covers what concurrency cannot: on
-  each pull request push or close it cancels that branch's runs of other CI
-  workflows (path-filtered ones a newer push no longer triggers, and all runs of
-  a closed PR). Its dispatch, or `.github/scripts/ci_cancel_superseded.py
-  --repo Globulation2/glob2 --dry-run` locally, sweeps every branch.
-  `tests/build_system/test_ci_concurrency.py` enforces these rules; classify a
-  new release workflow there.
+  Primary GCC 13 programs are published before CLI regressions and consumed by
+  both native shards and browser transport checks. Each selected GCC toolchain
+  starts its own runtime shards without waiting for Clang. The stable
+  `Relevant checks passed` gate requires every selected check to succeed.
+  Draft PRs defer expensive verification; `ready_for_review` or `ci:run` starts it.
+  The [risk policy and rollout](#tiered-pull-request-coverage-rollout) controls
+  secondary platforms and cumulative master validation. Unknown inputs select full
+  development coverage. Steam/store release packaging runs only for releases or
+  explicit dispatches, including when its helper files change.
+- CI run cancellation: superseded PR revisions cancel through server-side
+  concurrency. Master runs finish once started and only the newest pending push
+  remains; nightly and manual runs have separate groups. Call-only workflows
+  inherit their caller's cancellation. Other callable workflows use a literal
+  prefix distinct from their caller to prevent deadlocks. The trusted
+  `cancel-superseded.yml` workflow uses `pull_request_target`, checks out only
+  default-branch code, and cancels allowlisted event-triggered validation left
+  behind by updates or closed/merged PRs, including forks. Legacy Steam/App Store
+  PR runs from older workflow definitions are retired even at the current PR head. It never executes PR
+  code or cancels manual releases. Its sweep can clear obsolete pending master
+  pushes but protects master once any job has begun (including between jobs),
+  even when the workflow API reports it as queued, and protects scheduled runs. Closed-PR caches and old
+  master cache generations are reclaimed on closure and in a daily sweep.
 
 For headless games, use the client binary's `--nox <game-file> <steps> <runs>`
 option. `-test-games-nox` runs random AI games indefinitely unless bounded as
@@ -860,8 +844,9 @@ also remains the headless default and the equivalence reference.
   `--run-game` with `GLOB2_SIM_THREAD=1`. Build against the pinned SDL3 prefix
   with `GLOB2_SDL3_PREFIX`; sanitizer builds use the same native SDL3 dependency set.
   `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
-  on demand and on pull requests that touch the code the threads share; add paths there
-  when new code becomes shared between them. It does not report thread leaks, because SDL3
+  through the main build workflow and on demand. The risk selector includes it
+  for code shared by threads; add boundaries in `.github/scripts/ci_policy.py`
+  when new code becomes shared between them. Drafts defer it. It does not report thread leaks, because SDL3
   leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
   PulseAudio's uninstrumented mainloop thread reports races inside libpulse. Narrow, explained suppressions for
   library shutdown races live in `test/tsan.supp`; never suppress game code there.
@@ -1023,35 +1008,55 @@ captures, and report unavailable platform and maintainer-playtesting coverage ex
 
 ### CI timing and retained revisions
 
-Pull requests select relevant checks and cancel superseded revisions. Master
-finishes its running verification and retains the newest pending revision; each
-retained revision runs full coverage, including after a documentation-only push.
-Nightly verification runs at 06:00 UTC without invoking publication workflows.
-The separate CI measurements workflow reads job timestamps and inert observation
-artifacts using trusted master code. It reports initial queue delay, active execution
-time, execution span, idle gaps, aggregate runner minutes, time to result, cancellations, and observed cache
-hits. Per-job queue estimates use job registration to first step; execution time is the union of executing job intervals, while execution span
-includes idle gaps and does not by itself identify runner saturation. Overlapping
-jobs count once in wall execution time and separately in aggregate runner minutes.
-Compare ten successful runs with matching event and selected coverage using
+Ready pull requests cancel superseded revisions. Master finishes active verification
+and keeps the newest pending push. With tiers enabled, the selector compares its
+checkout to the latest successful ancestor checkpoint with matching policy evidence;
+this includes all changes whose intermediate pending runs were replaced. An absent,
+expired, divergent or invalid checkpoint selects full coverage. Nightly verification
+runs at 06:00 UTC in a separate concurrency group without publication operations.
+Release packaging first runs the full development matrix on the exact candidate
+revision through `build.yml`'s `revision` workflow-call input.
+
+CI measurements batch completed runs hourly using trusted default-branch code and
+inert artifacts. Cancellations do not create measurement workflows, and draft-only
+observations are excluded. Batches retain attempt identities to avoid remeasuring
+completed runs and attempt at most ten new measurements per batch. `feedback.json` reports p90 after ten successful matching-inventory
+PR samples, with explicit gaps when there are fewer samples. Metrics report queue delay, active execution time, idle
+gaps, aggregate runner minutes, feedback time and cache observations separately.
+Per-job queue timestamps are estimates, not proof of runner saturation. Overlapping
+jobs count once in wall execution time and separately in runner minutes.
+Compare ten successful runs with matching event and exact coverage inventory using
 `python3 .github/scripts/ci_run_metrics.py --before before.json --after after.json`.
-Missing observations and insufficient samples must not be reported as savings.
+Report workload reductions separately from execution savings. The initial service
+objective is p90 ordinary-PR feedback below 15 minutes and queue delay below two
+minutes; full compatibility changes and releases may take longer. Missing samples
+and missing inventories cannot establish improvements.
 
 ### Linux execution dependencies
 
-Each GCC reusable-workflow invocation starts its own four test shards and three
-map-generator jobs after its build succeeds. Neither platform waits for the other
-GCC compiler or Clang. The final Linux result still requires all selected calls.
-Golden-only changes retain the standalone generator path.
+GCC 13 builds its client and applicable transport programs once. Runtime consumers
+reuse same-run artifacts with matching source/configuration provenance. Compiler
+build jobs publish programs before separate CLI/scripting regressions; native and
+browser consumers can start without waiting for those regressions. Golden-only
+changes build once per selected platform and distribute programs to sweep consumers.
+Primary generator sweeps are complete; secondary platforms retain golden rows and
+telemetry equivalence under enabled tiers. Native inventory audits require every
+selected engine case to belong to exactly one shard.
 
-Build artifacts include runtime package owners resolved from actual ELF library
-dependencies. Unresolved or unowned system libraries fail collection rather than
-being silently omitted. The reduced shard environment retains software GL, Mesa,
-Xvfb and crash diagnostics. Enable `CI_RUNTIME_PACKAGES_ENABLED=true` only after
-`Validate clean Linux runtime images` passes both clean Ubuntu container images;
-until then ordinary shards keep their existing dependency installation. Dispatch
-that validation workflow manually; it runs the same unit, engine, image, CLI and
-continuation checks without publishing anything.
+ELF dependency collection records runtime package owners and rejects unresolved or
+unowned libraries. Generator, CLI and browser consumers install runtime libraries
+rather than compiler/header environments. Enable `CI_RUNTIME_PACKAGES_ENABLED=true`
+for ordinary engine shards only after `Validate clean Linux runtime images` passes
+both Ubuntu container images. Until then engine shards retain their prior package
+installation; the clean-image dispatch also exercises CLI/scripting consumers.
+
+Pinned SDL3, WebAssembly and Android dependency prefixes are cached independently
+from application objects. Restored prefixes require matching inputs and complete
+file hashes; invalid content rebuilds. Android tooling and Playwright installations
+use pinned tool/package identities. Default-branch jobs publish shared caches;
+ordinary PRs restore them. The cleanup sweep removes closed-PR caches and retains
+three generations per master compiler/object family. Cache timings and quota
+pressure must be measured before expanding retained cache data.
 
 ### Reviewed native shard timing profiles
 
@@ -1072,24 +1077,34 @@ remain empty until measurements are available, rather than using invented data.
 
 ### Tiered pull-request coverage rollout
 
-The selector records both proposed and effective coverage, including the reason
-for compatibility coverage. Primary PR checks retain GCC 13, Windows, Chromium
-and affected Android arm64 builds. Shared headers, simulation/save/network code,
-platform/build/dependency changes, mixed changes and unknown paths retain full
-compatibility coverage. Browser/UI/rendering changes retain Firefox and WebKit.
-The full browser command inventory lives in `.github/scripts/ci_browser_matrix.json`.
-Android is called by the main build workflow, avoiding duplicate PR APK builds
-and including its selected result in the stable aggregate gate. Nightly and manual
-runs use the complete matrix, including Android; master pushes select by path like
-PRs, keeping full compatibility and browser coverage for the areas they select.
+`.github/scripts/ci_policy.py` records proposed and effective selection, reasons,
+changed paths, checkpoint, policy identity and selected command inventory in
+`ci-selection.json`. Native runners additionally retain exact eligible/assigned
+case inventories. Primary Linux keeps the complete applicable native suite.
+Simulation/save/AI changes add older-GCC and Windows compatibility cases plus
+complete native/browser per-tick and scripting comparisons. Presentation changes
+retain software/WebGL and Firefox/WebKit coverage. Network changes retain real
+transport/server/deployment checks. Android changes retain arm64 builds and x86_64
+emulator smoke. Shared headers, dependency/build configuration and unknown paths
+select the full development matrix. Native coverage is selected nightly/full or
+when its infrastructure changes. `test/ci-compatibility.json` owns repeated native
+compatibility cases; add suites there when introducing a new portability boundary.
 
-PR tier reductions start disabled. Set `CI_TIER_BASELINE_RUN_ID` to a successful
-full master build, then set `CI_TIERED_COVERAGE_ENABLED=true`. Before each reduced
-PR matrix, the selector verifies the baseline is a successful master build with
-a matching SHA and unexpired full-matrix selection evidence (including Android).
-Unavailable, expired or invalid evidence falls back to existing full compatibility
-coverage. Review comparison artifacts before enabling the flag. Set the flag
-false to roll back coverage reductions without reverting scheduling improvements.
+Drafts run contracts only. `ci:run` requests normal affected checks while still
+in draft. `ci:full`, `ci:windows`, `ci:android` and `ci:browsers` expand the minimum;
+use `ci:run` as well to execute an expansion while draft. Ready transitions and
+label changes re-evaluate selection. The aggregate gate rejects missing, failed,
+cancelled and unexpectedly skipped required jobs; draft summaries clearly state
+that expensive verification was deferred.
+
+Reductions start disabled. First validate scheduling and reuse changes with the
+full hosted master/nightly matrix. Then set `CI_TIERED_COVERAGE_ENABLED=true` after
+reviewing shadow-selection evidence. The selector discovers successful full master
+runs with matching source/policy identity and unexpired evidence automatically;
+`CI_TIER_BASELINE_RUN_ID` can specify a preferred baseline. Old-policy evidence
+cannot activate a new selector. Unavailable evidence falls back to conservative
+coverage. Set the flag false to roll back reductions while keeping scheduling and
+reuse improvements. Full nightly and release verification remains mandatory.
 
 ## Untrusted maps, saved games and replays
 

@@ -1,30 +1,35 @@
 name: CI measurements
 on:
-  workflow_run:
-    workflows: [build]
-    types: [completed]
+  schedule:
+    - cron: '15 * * * *'
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Measure one build; empty batches recent completed runs
+        type: string
+        required: false
 permissions:
   contents: read
   actions: read
+concurrency:
+  group: ci-measurements
+  cancel-in-progress: false
 jobs:
   measure:
-    # Cancelled (usually superseded) builds are excluded from comparisons, so
-    # do not spend a runner measuring them. Each remaining run measures a
-    # distinct build, so this workflow has no cancelling concurrency group.
-    if: ${{ github.event.workflow_run.conclusion != 'cancelled' }}
     runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
-      # Use trusted default-branch code, never the triggering PR checkout.
       - uses: actions/checkout@v4
         with:
           ref: master
           persist-credentials: false
-      - name: Report queue, execution, runner minutes and cache observations
+      - name: Batch completed build observations
         env:
           GH_TOKEN: ${{ github.token }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-        run: python3 .github/scripts/ci_run_metrics.py --run-id "$RUN_ID"
+          REQUESTED_RUN: ${{ inputs.run_id }}
+        run: python3 .github/scripts/ci_batch_metrics.py
       - uses: actions/upload-artifact@v4
         with:
-          name: ci-metrics-${{ github.event.workflow_run.id }}
-          path: artifacts/ci-metrics.json
+          name: ci-metrics-batch
+          path: artifacts/ci-metrics/
+          retention-days: 30
