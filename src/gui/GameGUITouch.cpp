@@ -867,7 +867,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			if (action.factor > 0)
 				gui.zoomMap(std::log(action.factor) / std::log(1.1), int(point.x), int(point.y));
 		}
-		else if (action.kind == TouchActionKind::ZoomReset)
+		else if (action.kind == TouchActionKind::DoubleTap)
 		{
 			// Without a zoomable renderer the second tap still selects, as before.
 			if (!zoomIn(point) && world().contains(point))
