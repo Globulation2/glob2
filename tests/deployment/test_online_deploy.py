@@ -238,6 +238,19 @@ class InstanceKeyTests(unittest.TestCase):
         self.assertEqual(remote.quote('https://a.b/c'), 'https://a.b/c')
         self.assertEqual(remote.quote(''), "''")
 
+    def test_host_arguments_follow_the_separator_as_the_workflow_passes_them(self):
+        seen = []
+        original = remote.run
+        remote.run = seen.append
+        try:
+            remote.main(['run', '--project', 'p', '--zone', 'z', '--instance', 'vm', '--user', 'bradley',
+                         '--key', '/k', '--', 'current', '/opt/glob2/config/staging.env', 'abc123'])
+        finally:
+            remote.run = original
+        self.assertEqual(seen[0].command, 'run')
+        self.assertEqual(seen[0].key, '/k')
+        self.assertEqual(seen[0].arguments, ['current', '/opt/glob2/config/staging.env', 'abc123'])
+
 
 if __name__ == '__main__':
     unittest.main()
