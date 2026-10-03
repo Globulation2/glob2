@@ -1,0 +1,214 @@
+TAP version 13
+# Subtest: installs a package into the file system with byte progress
+ok 1 - installs a package into the file system with byte progress
+  ---
+  duration_ms: 7.316183
+  type: 'test'
+  ...
+# Subtest: a later package replaces a core file and is reported once to the game
+ok 2 - a later package replaces a core file and is reported once to the game
+  ---
+  duration_ms: 1.248542
+  type: 'test'
+  ...
+# Subtest: a later visit installs cached parts without the network
+ok 3 - a later visit installs cached parts without the network
+  ---
+  duration_ms: 1.334102
+  type: 'test'
+  ...
+# Subtest: optional parts wait for the page between downloads and appear only when complete
+ok 4 - optional parts wait for the page between downloads and appear only when complete
+  ---
+  duration_ms: 15.709577
+  type: 'test'
+  ...
+# Subtest: failed downloads are reported and leave nothing behind
+ok 5 - failed downloads are reported and leave nothing behind
+  ---
+  duration_ms: 1.913147
+  type: 'test'
+  ...
+# Subtest: a response of the wrong size is rejected
+ok 6 - a response of the wrong size is rejected
+  ---
+  duration_ms: 0.699766
+  type: 'test'
+  ...
+# Subtest: works without Cache Storage and prunes parts of older builds
+ok 7 - works without Cache Storage and prunes parts of older builds
+  ---
+  duration_ms: 1.684289
+  type: 'test'
+  ...
+# Subtest: progress follows transfer bytes when a part arrives compressed
+ok 8 - progress follows transfer bytes when a part arrives compressed
+  ---
+  duration_ms: 1.244421
+  type: 'test'
+  ...
+# Subtest: the loading page estimates remaining time from the rate so far
+ok 9 - the loading page estimates remaining time from the rate so far
+  ---
+  duration_ms: 3.783835
+  type: 'test'
+  ...
+# Subtest: audio activation ignores missing, running and closed contexts
+ok 10 - audio activation ignores missing, running and closed contexts
+  ---
+  duration_ms: 2.684922
+  type: 'test'
+  ...
+# Subtest: closing audio during a pending resume does not reject the gesture handler
+ok 11 - closing audio during a pending resume does not reject the gesture handler
+  ---
+  duration_ms: 0.432958
+  type: 'test'
+  ...
+# Subtest: activation failures are reported and the next gesture can retry
+ok 12 - activation failures are reported and the next gesture can retry
+  ---
+  duration_ms: 3.320508
+  type: 'test'
+  ...
+# Subtest: only Firefox closed-resume rejection is suppressed after game exit
+ok 13 - only Firefox closed-resume rejection is suppressed after game exit
+  ---
+  duration_ms: 0.532807
+  type: 'test'
+  ...
+# Subtest: accepts selected bytes without treating the extension as format validation
+ok 14 - accepts selected bytes without treating the extension as format validation
+  ---
+  duration_ms: 4.326902
+  type: 'test'
+  ...
+# Subtest: rejects paths, control characters, unsupported extensions and oversized inputs before reading
+ok 15 - rejects paths, control characters, unsupported extensions and oversized inputs before reading
+  ---
+  duration_ms: 1.756828
+  type: 'test'
+  ...
+# Subtest: rejects changed sizes and read failures
+ok 16 - rejects changed sizes and read failures
+  ---
+  duration_ms: 1.114592
+  type: 'test'
+  ...
+# Subtest: cancellation and disposal cannot publish late file contents
+ok 17 - cancellation and disposal cannot publish late file contents
+  ---
+  duration_ms: 0.716265
+  type: 'test'
+  ...
+# Subtest: a second selection cannot replace an in-flight read
+ok 18 - a second selection cannot replace an in-flight read
+  ---
+  duration_ms: 0.476547
+  type: 'test'
+  ...
+# Subtest: picker uses accepted extensions and releases its input on cancellation
+ok 19 - picker uses accepted extensions and releases its input on cancellation
+  ---
+  duration_ms: 0.879205
+  type: 'test'
+  ...
+# Subtest: disposing an open picker ignores its late change event
+ok 20 - disposing an open picker ignores its late change event
+  ---
+  duration_ms: 0.788545
+  type: 'test'
+  ...
+# Subtest: accepts gzip containers only for supported map and save types
+ok 21 - accepts gzip containers only for supported map and save types
+  ---
+  duration_ms: 0.694475
+  type: 'test'
+  ...
+# Subtest: fresh browser profiles use the game hosting origin
+ok 22 - fresh browser profiles use the game hosting origin
+  ---
+  duration_ms: 5.659433
+  type: 'test'
+  ...
+# Subtest: official cutover preserves credentials under their original origin
+ok 23 - official cutover preserves credentials under their original origin
+  ---
+  duration_ms: 0.540387
+  type: 'test'
+  ...
+# Subtest: custom selections and corrupt or future-version storage are left intact
+ok 24 - custom selections and corrupt or future-version storage are left intact
+  ---
+  duration_ms: 0.569627
+  type: 'test'
+  ...
+# Subtest: coalesces writes and acknowledges only the completed generation
+ok 25 - coalesces writes and acknowledges only the completed generation
+  ---
+  duration_ms: 3.578197
+  type: 'test'
+  ...
+# Subtest: quota failure is retained, rejects completion, and allows an explicit retry
+ok 26 - quota failure is retained, rejects completion, and allows an explicit retry
+  ---
+  duration_ms: 0.975393
+  type: 'test'
+  ...
+# Subtest: restore failure cannot overwrite existing storage
+ok 27 - restore failure cannot overwrite existing storage
+  ---
+  duration_ms: 0.945763
+  type: 'test'
+  ...
+# Subtest: synchronous adapter errors reject the operation
+ok 28 - synchronous adapter errors reject the operation
+  ---
+  duration_ms: 0.372887
+  type: 'test'
+  ...
+# Subtest: threaded software mode requires a successful shared-memory worker
+ok 29 - threaded software mode requires a successful shared-memory worker
+  ---
+  duration_ms: 4.994557
+  type: 'test'
+  ...
+# Subtest: serial fallback explains missing isolation, memory and worker support
+ok 30 - serial fallback explains missing isolation, memory and worker support
+  ---
+  duration_ms: 1.023853
+  type: 'test'
+  ...
+# Subtest: worker WebGL has an additional canvas-transfer requirement
+ok 31 - worker WebGL has an additional canvas-transfer requirement
+  ---
+  duration_ms: 0.525207
+  type: 'test'
+  ...
+# Subtest: actual pthread errors and silent startup stalls are observed, then detached
+ok 32 - actual pthread errors and silent startup stalls are observed, then detached
+  ---
+  duration_ms: 1.006194
+  type: 'test'
+  ...
+# Subtest: synchronous pthread creation errors reach fallback and retain their exception
+ok 33 - synchronous pthread creation errors reach fallback and retain their exception
+  ---
+  duration_ms: 0.871394
+  type: 'test'
+  ...
+# Subtest: persistence snapshots survive worker rename and byte changes during the database scan
+ok 34 - persistence snapshots survive worker rename and byte changes during the database scan
+  ---
+  duration_ms: 4.256112
+  type: 'test'
+  ...
+1..34
+# tests 34
+# suites 0
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 346.270213

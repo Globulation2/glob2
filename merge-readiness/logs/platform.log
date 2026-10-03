@@ -1,0 +1,27 @@
+
+> check
+> npm run lint && npm run typecheck && npm test
+
+
+> lint
+> eslint . && prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json
+
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/f95a/glob2/platform
+
+
+ Test Files  38 passed | 1 skipped (39)
+      Tests  311 passed | 5 skipped (316)
+   Start at  22:12:11
+   Duration  14.29s (tests 56%, import 24%, transform 18%, environment 1%)
+
