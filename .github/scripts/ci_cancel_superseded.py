@@ -29,7 +29,7 @@ CI_WORKFLOWS = {
     '.github/workflows/thread-sanitizer.yml',
 }
 CANCELLABLE_EVENTS = {'pull_request', 'push'}
-DEFAULT_BRANCH_EVENTS = {'push', 'schedule'}
+DEFAULT_BRANCH_EVENTS = {'push'}
 ACTIVE_STATUSES = ('queued', 'in_progress', 'waiting', 'pending', 'requested')
 
 
@@ -64,7 +64,7 @@ def select_superseded(runs, heads, current_run_id=None, default_branch='master',
         key = head_key(run)
         on_default = key[1:] == (repository, default_branch) and run.get('event') in DEFAULT_BRANCH_EVENTS
         if on_default:
-            if not include_default_branch:
+            if not include_default_branch or run.get('status') == 'in_progress':
                 continue
             path = workflow_path(run)
             if path not in newest_default or run['id'] > newest_default[path]['id']:
@@ -113,7 +113,8 @@ def branch_head(repo, branch):
     try:
         return gh_json(f'repos/{repo}/branches/{quote(branch, safe="")}')['commit']['sha']
     except subprocess.CalledProcessError:
-        return None  # deleted branch
+        # An unavailable API is not evidence that a branch was deleted.
+        return False
 
 
 def resolve_heads(repo, runs):
@@ -121,7 +122,8 @@ def resolve_heads(repo, runs):
     open_prs = {}
     for pr in gh_pages(f'repos/{repo}/pulls?state=open', None):
         head_repo = (pr['head'].get('repo') or {}).get('full_name')
-        open_prs[('pr', head_repo, pr['head']['ref'])] = pr['head']['sha']
+        key = ('pr', head_repo, pr['head']['ref'])
+        open_prs[key] = pr['head']['sha']
     heads = {}
     for run in runs:
         key = head_key(run)
@@ -130,7 +132,9 @@ def resolve_heads(repo, runs):
         if key[0] == 'pr':
             heads[key] = open_prs.get(key)  # closed or merged PR: nothing current
         elif key[1] == repo:
-            heads[key] = branch_head(repo, key[2])
+            value = branch_head(repo, key[2])
+            if value is not False:
+                heads[key] = value
     return heads
 
 

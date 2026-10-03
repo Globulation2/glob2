@@ -7,8 +7,10 @@ name: Cancel superseded CI runs
 # touched; release, publication and deployment runs never are. See "CI run
 # cancellation" in docs/development/reference.md.
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed, converted_to_draft]
+  schedule:
+    - cron: '45 5 * * *'
   workflow_dispatch:
     inputs:
       include_default_branch:
@@ -28,14 +30,12 @@ concurrency:
 
 jobs:
   cancel:
-    # Fork pull requests receive a read-only token; their runs are left to the
-    # per-workflow concurrency groups.
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
           sparse-checkout: .github/scripts
       - name: Cancel runs whose commit is no longer the head
@@ -48,3 +48,9 @@ jobs:
           if [ -n "$HEAD_REF" ]; then args+=(--branch "$HEAD_REF"); fi
           if [ "$INCLUDE_DEFAULT_BRANCH" = true ]; then args+=(--include-default-branch); fi
           python3 .github/scripts/ci_cancel_superseded.py "${args[@]}"
+      - name: Reclaim closed-PR and old-generation caches
+        if: ${{ github.event_name != 'pull_request_target' || github.event.action == 'closed' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: python3 .github/scripts/ci_cleanup.py --repo "$REPOSITORY"

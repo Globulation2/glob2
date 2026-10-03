@@ -111,6 +111,7 @@ class AndroidReleaseTests(unittest.TestCase):
         # the release workflows keep the strict check.
         mobile = (ROOT / ".github/workflows/mobile.yml").read_text()
         self.assertNotIn("android_release.py check", mobile)
+        self.assertNotIn("python3 mobile/android_release.py verify-apk", mobile)
         for name in ("release.yml", "fdroid-release-validation.yml"):
             workflow = (ROOT / ".github/workflows" / name).read_text()
             self.assertIn("python3 mobile/android_release.py ${{ inputs.tag && 'check' || 'check-candidate' }}\n", workflow)

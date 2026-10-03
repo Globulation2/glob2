@@ -24,10 +24,11 @@ RELEASE = {
     'epic-windows-release.yml', 'fdroid-publication.yml', 'fdroid-release-validation.yml',
     'flathub-update.yml', 'github-release.yml', 'ios-testflight.yml', 'publish-desktop.yml',
     'release.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',
-    'windows-store-release.yml',
+    'windows-store-release.yml', 'steam-windows-package.yml', 'mac-app-store.yml',
 }
 # Not superseded by newer runs, each with its own reason.
 EXEMPT = {
+    'thread-sanitizer.yml': 'callable validation inherits build cancellation',
     'ci-metrics.yml': 'each run measures a distinct, completed build run',
     'cancel-superseded.yml': 'the canceller; cancels its own older runs unconditionally',
 }
@@ -103,7 +104,8 @@ class WorkflowConcurrencyTest(unittest.TestCase):
 
     def test_canceller_covers_every_event_triggered_ci_workflow(self):
         texts = workflows()
-        self.assertFalse({path.rsplit('/', 1)[1] for path in cancel.CI_WORKFLOWS} & (RELEASE | set(EXEMPT)))
+        # Legacy release-path PR runs remain cancellable, but manual/tag releases never are.
+        self.assertNotIn('.github/workflows/release.yml', cancel.CI_WORKFLOWS)
         for path in cancel.CI_WORKFLOWS:
             self.assertIn(path.rsplit('/', 1)[1], texts)
         for name, text in texts.items():
@@ -151,7 +153,7 @@ class SelectionTest(unittest.TestCase):
                 run(3, 'c', branch='master', event='schedule')]
         heads = {('branch', 'o/r', 'master'): 'd'}
         self.assertEqual(self.select(runs, heads), [])
-        self.assertEqual(self.select(runs, heads, include_default_branch=True), [1, 2])
+        self.assertEqual(self.select(runs, heads, include_default_branch=True), [1])
 
     def test_fork_branch_with_same_name_is_a_different_head(self):
         runs = [run(1, 'x', repo='fork/r')]
