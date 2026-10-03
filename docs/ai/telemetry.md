@@ -1,7 +1,10 @@
 # AI telemetry
 
 AI telemetry is collected automatically alongside gameplay measurements and exported
-when `GLOB2_TEAM_TIMELINE=1`. It has no UI. The values describe the AI's own state,
+when `GLOB2_TEAM_TIMELINE=1`. Open **AI telemetry** from the in-game menu to inspect
+current values, filter fields, and select a controller. Scene extraction includes
+only own/mutually allied teams during play, and all teams for spectators and replays.
+The dialog reads immutable Scene values. The values describe the AI's own state,
 calculations and requests; emitted orders are not evidence that the engine accepted
 or completed an action.
 
@@ -13,7 +16,8 @@ storage. Its indexed writes and increments allocate nothing, perform no string
 lookup and do not inspect the world. Storage is allocated when a controller binds.
 The schema is initialized once, independently of simulation state and RNG.
 
-`TeamStats` captures at the existing 512-tick measurement boundary. Snapshot hooks
+Current values refresh every 32 ticks; `TeamStats` retains historical samples at
+the existing 512-tick measurement boundary. Snapshot hooks
 copy existing scalar members, fixed-size aggregate arrays and constant-time
 container sizes. Transient results are recorded at the original computation or
 return statement. No observations, scores, predicates, pathfinding or entity/map
@@ -72,10 +76,14 @@ Timestamps are simulation ticks. AI-local timer values retain the AI's own caden
 | Maxima | Cached strategic snapshot/trends, environment, demands, director budget, all policy bids/posture utilities, fixed opponent assessments, campaign/offense state, strategic/recon/farming calls, runtime requests, management/placement outcomes and posture changes. |
 | Cortex | Cached controller/wave state, existing observation/fact scalars, nineteen hand-policy candidate scores, gates/masks, hand/ML choice, actual economy action, independent combat scores/action, policy evaluations. ML choice is recorded without rerunning inference. |
 | Cabino | Scheduler, queue and installed-module scalar/container-size snapshots; module invocations and existing boolean/integer outcomes, covering defense, attack, construction, upgrades, swarm allocation, exploration, inns, towers, clearing, happiness and farming. |
+| JavaScript profile 2 | Named script values and controller status, queued actions, native query work, and placement failures. |
 
 The schema output is the authoritative field-by-field catalog. Per-entity lists,
 map surfaces, variable-length candidate sets, debug strings and expensive new
-aggregations are deliberately excluded. Existing independent AI debug options
+aggregations are deliberately excluded from the indexed numeric schema. JavaScript
+controllers may additionally publish bounded numbers, booleans and short text with
+`ctx.telemetry.set`; see the [API reference](../development/javascript-api.md#telemetry).
+Existing independent AI debug options
 remain independent; this mechanism does not enable them or parse their output.
 
 ## Output and persistence
@@ -88,6 +96,7 @@ GLOB2_AI_SCHEMA ... field=polls type=1 kind=1 unit="calls" meaning="Actual AI im
 GLOB2_AI_SAMPLE ... tick=512 available=1 active=1 polls=512 polls@tick=511 ...
 GLOB2_AI_HISTORY ... tick=512 available=1 active=1 ...
 GLOB2_AI_FINAL ... tick=777 available=1 active=1 ...
+GLOB2_AI_VALUE ... tick=777 field="strategy.phase" value="expansion" updated=768 unit="" meaning=""
 ```
 
 Schema descriptions are emitted once per matching implementation/schema in a game;
@@ -96,6 +105,8 @@ real=2; kinds are gauge=0, counter=1, enum=2, mask=3. Strings use quoted, escape
 text. Each valid field includes `field@tick`. Values remain exact decimal integers;
 consumers must use 64-bit/big-integer parsing rather than converting everything to
 double. Non-finite floating-point values export as `na`.
+Named presentation values use separate `GLOB2_AI_VALUE` records, with a quoted
+value and its original update tick. They are emitted for current/final snapshots.
 
 The final summary exports retained history and current readouts, including games
 ending between samples. History repeats previously emitted samples: distinguish
@@ -110,10 +121,13 @@ sample cadence/order, and rejects truncated binary fields. A field's saved meani
 survives schema evolution; changed schemas begin a new series rather than
 reinterpreting historical columns.
 
-Replay acceptance and network protocol gates are unchanged. Replay playback reads
-orders without executing AI decisions: it preserves loaded history but marks
-internal readouts unavailable and adds no synthetic AI history. It does not run
-shadow AIs. This telemetry is local diagnostic state, not network traffic.
+Format 129 adds bounded named values to saves and a versioned diagnostic stream to
+replays. Replays record sampled changes independently of gameplay orders, up to
+16 MiB; values become unavailable after a truncated stream's coverage ends.
+Playback displays recorded values without executing AI decisions. Older accepted
+replays show telemetry as unavailable. Replay presentation schemas also survive a
+headless final-state save. This telemetry is local diagnostic state, not network
+traffic, and is excluded from gameplay checksums.
 
 ## Adding fields or an AI
 

@@ -161,6 +161,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 					openDialog(IGM_SAVE, std::make_unique<LoadSaveDialog>("games", "game", false, Toolkit::getStringTable()->getString("[save game]"), defaultGameSaveName.c_str(), glob2FilenameToName, glob2NameToFilename));
 					return true;
 				}
+				case InGameMainScreen::AI_TELEMETRY:
+					openDialog(IGM_TELEMETRY, std::make_unique<InGameAITelemetryScreen>(this));
+					return true;
+
 				case InGameMainScreen::OPTIONS:
 				{
 					openDialog(IGM_OPTION, std::make_unique<InGameOptionScreen>(this));
@@ -251,6 +255,10 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			closeDialog();
 			return true;
 		}
+
+		case IGM_TELEMETRY:
+			closeDialog();
+			return true;
 
 		case IGM_OPTION:
 		{

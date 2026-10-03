@@ -3418,6 +3418,8 @@ Games
 Add AI
 [settings Experiments]
 Experiments
+[settings Custom AIs]
+Custom AIs
 [settings Try features we are still testing. They can change balance and pacing.]
 Try features we are still testing. They can change balance and pacing.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]

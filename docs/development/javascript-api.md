@@ -1,6 +1,7 @@
-# JavaScript API reference — profile 1
+# JavaScript API reference
 
-This is the contract for the implemented, unpublished JavaScript profile 1.
+The sections below describe the preserved profile 1 contract;
+[custom AI profile 2](#custom-ai-profile-2) extends it with native services.
 Embedded sources execute automatically and must be trusted developer code. Start with the
 [scripting guide](javascript.md) for loading, callbacks, persistence and failures.
 The [TypeScript declarations](../../examples/javascript/glob2.d.ts) mirror these
@@ -376,3 +377,126 @@ serialization, budgets, visibility or callback execution can change deterministi
 results: decide the profile/compatibility impact explicitly and compare the
 [frozen fixture](../../test/fixtures/javascript/README.md) across supported
 platforms. Build success alone is not proof of equivalent execution.
+
+## Custom AI profile 2
+
+Profile 1 remains supported with its original execution and snapshot contract.
+A custom AI opts into profile 2 with `metadata()` returning `{apiVersion: 2,
+name: "My AI"}`. Optional string fields are `description`, `version`, and `author`.
+Named exports, including renamed export bindings produced by a bundler, and
+standalone `function step()` / `function metadata()` declarations are supported.
+Metadata runs in a separate restricted runtime without randomness or game data.
+Use `glob2 --check-ai bundle.js` to check startup, metadata, callback resolution,
+and initial global serialization. `--check-script` remains compile-only.
+
+[Profile 2 declarations](../../examples/javascript/glob2-v2.d.ts) extend the read
+API above. All imported code must be bundled into one ES module; runtime imports
+remain unavailable. The external [example repository](https://github.com/Globulation2/javascript-ai-example)
+contains modular authoring sources and the pinned, atomic esbuild build/watch wrapper.
+
+### Managed properties and actions
+
+```javascript
+export function metadata() { return {apiVersion: 2, name: "My AI"}; }
+export function step(ctx) {
+  const buildings = ctx.game.buildings({team: ctx.myTeam, limit: 32});
+  for (const b of buildings) {
+    if (b.workers !== 3) b.workers = 3;
+  }
+  ctx.telemetry.set("colony.buildings", buildings.length);
+}
+```
+
+Owned building records have native getters and setters. Repeated lookups return
+the same object within a callback. Writable properties are `workers`, `priority`,
+`production` (swarm), `receiveMask` and `sendMask` (market), flag `x`, `y`, `range`,
+`minimumLevel`, and `clearingResources` (clearing flag). Other fields and enemy
+records are read-only. Assign complete arrays for production and clearing settings.
+
+Getters show pending desired values; `building.observed` shows simulation values.
+Managed objects and field handles are callback-local: persist `building.ref`
+and reacquire with `ctx.game.building(ref)`. Never store managed objects or spatial
+fields in module globals. Plain module variables retain automatic persistence.
+Persistent closures, class instances, runtime-created functions, external imports,
+I/O, and clocks remain unsupported. Callbacks return nothing in profile 2.
+
+`ctx.actions` offers `create`, `build`, `upgrade`, `repair`, `delete`, `zone`,
+`status`, and `cancel`; exact descriptor shapes are in the declarations.
+Actions return controller-local IDs. Creation IDs track pending, issued,
+constructing, completed, failed, or cancelled states. Ordinary gameplay rejection
+and stale queued targets become failed statuses. Malformed operations throw.
+Cancelling affects only commands still pending. Completed history is bounded;
+`status` returns null when a record is no longer retained.
+
+Changes are staged until the callback and global snapshot succeed. Repeated
+property writes coalesce; replacing a pending edit retains its queue position.
+Flag coordinates form one move. One ordinary order is dispatched per AI poll;
+queued actions and construction tracking survive saves. Queue limits are 256
+pending operations, 256 newly staged operations per callback, and 1,024 history
+records. A script failure disables the controller and preserves the previous
+committed globals and RNG.
+
+### Synchronous spatial services
+
+`ctx.spatial` computes native fields lazily from the controller's observations.
+`distance`, `displacement`, `footprintDistance`, and `overlap` wrap across map
+seams. Coordinates use tiles; footprint distance is the gap between rectangles.
+`summary` returns observed fertility, resource amounts, and known/visible tile
+counts for a wrapped region. Fertility is remembered under fog in profile 2.
+
+`distanceField({sources, movement, metric})` builds a reusable callback-local
+field. Sources select points, resources, permitted units, and building families.
+Movement is `walk`, `swim`, or `fly`; metrics are `path`, `manhattan`, or
+`chebyshev`. Path fields use eight-neighbor movement, known obstacles and forbidden
+areas; they do not predict moving-unit congestion. Resource and building sources
+seed obstacle tiles so their neighbors measure distance to the target.
+`fieldValue(field,x,y)` returns `known`, `reachable`, `distance`, and
+`observedTick`. Null distance is unavailable; reachability stays null when unknown
+map regions prevent a definitive unreachable answer. Geometric fields ignore
+obstacles. `passable` and `components` expose the same movement rules.
+
+`hotspots` ranks regional source sums, with optional visible-unit strength weights.
+With `weight: "strength"`, `strength: {worker: 0, explorer: 0, warrior: 2}` selects
+per-type integer multipliers (0..1000) for observed health times attack power.
+Native unit/building sources use compact observation records and tile bins,
+avoiding full JavaScript entity-record allocation during map analysis.
+`summary` and military density values describe observed data; unknown tiles are
+not evidence of absence. Spatial helpers never acquire hidden enemy records.
+
+Native work is synchronous and bounded: 16 million logical work units and the
+shared 32 MiB native conversion budget per callback. Distance fields charge
+roughly eleven work units per map tile plus source enumeration. Hotspot ranking
+charges `log2(map tiles) + result limit + 6` units per tile plus enumeration.
+Large result limits may exceed the budget on a maximum-size map. Region summaries charge one unit per visited tile. Placement
+charges candidate count times the inspected footprint and scoring terms, plus
+field costs. Schedule expensive decisions using `ctx.tick` and restrict placement
+regions. Up to eight field handles/cached fields are retained per controller.
+Cache hits pay the same logical charge as recomputation; eviction, worker count,
+and loading a save do not change query results or decision budgets.
+
+### Placement
+
+`ctx.spatial.placement(request)` returns ranked candidates, score contributions,
+rejection counts, and an ordinary creation descriptor. `ctx.actions.build(request)`
+uses the same solver and queues its best result, or returns null if none exists.
+
+Requests name a building family and may specify staffing, region, colony anchor,
+clearance, upgrade-footprint reservation, and reachable access. Constraints and
+preferences compose `distance`, `fertility`, `resourceDensity`, and `threat` terms.
+Constraints use integer `min`/`max`; preferences use signed integer `weight`.
+Positive weights prefer larger values. Equal scores break by wrapped row-major
+coordinate. Footprints must be currently observed and buildable. Pending creations
+reserve their footprints for later plans, including within the same callback.
+Finding a candidate does not guarantee execution after queued orders reach the game.
+
+### Telemetry
+
+`ctx.telemetry.set(name, value, description?)` publishes numbers, booleans, or short
+text. The optional third argument is text or `{description, unit}`. Limits are 128
+names per controller, names up to 128 bytes, and text values up to 512 bytes.
+The in-game **AI telemetry** menu also displays C++ controllers. Own/allied values
+are copied into Scenes during play; spectators and replay viewers can see all teams.
+Changes are sampled into a versioned replay diagnostic stream, capped at 16 MiB.
+A truncated recording explicitly stops providing telemetry past its coverage.
+Older replays report telemetry unavailable. Diagnostics do not enter gameplay
+checksums and opening the dialog does not run AI code.

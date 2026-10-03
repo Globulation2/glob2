@@ -93,6 +93,7 @@ struct CustomGameSetup
 	{
 		Controller controller = Computer;
 		AI::ImplementationID ai = AI::NUMBI;
+		std::string aiLibraryId;
 		int alliance = 0;
 	};
 	std::array<Colony, Team::MAX_COUNT> colonies;

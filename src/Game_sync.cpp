@@ -28,6 +28,8 @@
 #include "Brush.h"
 
 #include "ReplayWriter.h"
+#include "ReplayReader.h"
+#include "ai/AITelemetry.h"
 
 #define BULLET_IMGID 0
 
@@ -196,6 +198,15 @@ void Game::syncStep(Sint32 localTeam)
 			teams[i]->syncStep();
 
 		map.syncStep(stepCounter);
+		if (globalContainer->replaying && globalContainer->replayReader)
+			globalContainer->replayReader->applyTelemetry(*this);
+		if ((stepCounter & 31) == 0)
+		{
+			for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
+				AITelemetry::capture(teams[t], false, false);
+			if (globalContainer->replayWriter)
+				globalContainer->replayWriter->captureTelemetry();
+		}
 		for(int p=0;p<gameHeader.getNumberOfPlayers();++p)
 			if(players[p] && players[p]->ai && players[p]->ai->implementationID==AI::JAVASCRIPT)
 				static_cast<AIJavaScript*>(players[p]->ai->aiImplementation)->observe();

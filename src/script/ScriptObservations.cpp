@@ -190,7 +190,7 @@ Value Observations::tile(int x, int y) const
 							 .set("type", int(t.type))
 							 .set("variety", int(t.variety))
 							 .set("amount", int(t.amount)));
-	if (team < 0)
+	if (team < 0 || profile == 2)
 		v.set("fertility", int(t.fertility));
 	if (current)
 	{
@@ -462,3 +462,70 @@ void Observations::load(GAGCore::InputStream *s)
 	s->readLeaveSection();
 }
 } // namespace Script
+
+Script::Observations::Cell Script::Observations::cell(int x, int y) const
+{
+	x &= game.map.getW() - 1;
+	y &= game.map.getH() - 1;
+	Cell out;
+	out.visible = team < 0 || game.map.isFOWDiscovered(x, y, game.teams[team]->me);
+	if (out.visible)
+	{
+		const auto &tile = game.map.getTile(x, y);
+		out.known = true;
+		out.tick = game.stepCounter;
+		out.terrain = tile.terrain;
+		out.fertility = tile.fertility;
+		out.resource = tile.resource.type;
+		out.amount = tile.resource.amount;
+		if (tile.building != 65535)
+		{
+			const auto &b = game.teams[Building::GIDtoTeam(tile.building)]
+								->myBuildings[Building::GIDtoID(tile.building)];
+			out.building = b && visible(game, team, *b);
+		}
+	}
+	else if (const auto *old = lookup(game.map.coordToIndex(x, y)))
+	{
+		out.known = true;
+		out.tick = old->tick;
+		out.terrain = old->terrain;
+		out.fertility = old->fertility;
+		out.resource = old->type;
+		out.amount = old->amount;
+	}
+	if (team >= 0 && out.known)
+		out.forbidden = (game.map.getTile(x, y).forbidden & game.teams[team]->me) != 0;
+	return out;
+}
+
+void Script::Observations::visitSpatialEntities(
+	bool units, int filter, const std::function<void(const SpatialEntity &)> &visit,
+	const QueryBudget &budget) const
+{
+	if (filter < -1 || filter >= game.mapHeader.getNumberOfTeams())
+		throw std::runtime_error("Invalid spatial source team");
+	const int capacity = units ? Unit::MAX_COUNT : Building::MAX_COUNT;
+	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		if (filter < 0 || filter == t)
+		{
+			// Charge the fixed slot scan, independent of hidden entity counts.
+			if (budget)
+				budget(capacity, 0);
+			for (int i = 0; i < capacity; ++i)
+				if (units)
+				{
+					const auto *u = game.teams[t]->myUnits[i];
+					if (u && !u->isDead && visible(game, team, *u))
+						visit({t, u->typeNum, u->posX, u->posY, u->hp,
+							   u->performance[ATTACK_STRENGTH], false});
+				}
+				else
+				{
+					const auto *b = game.teams[t]->myBuildings[i];
+					if (b && b->buildingState != Building::DEAD && visible(game, team, *b))
+						visit({t, b->shortTypeNum, b->posX, b->posY, b->hp, 0,
+							   bool(b->type->isVirtual)});
+				}
+		}
+}

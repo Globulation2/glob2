@@ -322,6 +322,7 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/net/turn/TurnTelemetry.cpp',
     '#src/ReplayReader.cpp',
     '#src/ReplayWriter.cpp',
+    '#src/ReplayTelemetry.cpp',
     # Without the client's Brush and Game surfaces: only the byte marshalers are wanted.
     ('#src/OrderModify.cpp', dict(defines=['YOG_SERVER_ONLY'])),
     ('#src/OrderBuilding.cpp', dict(defines=['YOG_SERVER_ONLY'])),
