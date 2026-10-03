@@ -706,6 +706,8 @@ with the real binary, applied by the worker and stored as a blob. It then remove
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
 leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
 `src/relay/`, migrations or platform dependencies change, and on full runs.
+`--match-e2e` also plays a rated quick match through the stack; see
+[End-to-end test of the stack](#end-to-end-test-of-the-stack).
 
 On a running deployment, the same checks run against the public origin with a
 publicly trusted certificate, the deployed web client and the replica counts in
@@ -729,6 +731,52 @@ python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \
     --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
     --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
 ```
+
+`--mode queue --queue <id>` plays a rated quick match instead: two new local
+accounts (the instance needs local sign-in) join a rated 1v1 queue, accept the
+ranked prompt and play. Player A quits first, which leaves B the winner (B
+would quit 30 s later otherwise), so the verified match is rated; with `--psql` the script also checks
+that both players' ratings on the queue's ladder changed. `--engine-command`
+replaces `--glob2` with a command prefix, for example a `docker run` of the
+engine-agent image, and `--ca-file` trusts a private CA.
+
+### End-to-end test of the stack
+
+One command builds the stack from this checkout, starts it, plays a rated quick
+match through it and tears it down again. It needs a Linux machine with Docker
+(Compose v2) and Python 3; the clients use host networking, so Docker Desktop on
+macOS does not work.
+
+```sh
+python3 tests/deployment/platform_stack_smoke.py --jobs 8 --log-dir artifacts/stack-e2e --match-e2e
+```
+
+After the smoke checks above, it runs `live_match_e2e.py --mode queue` against the
+fresh stack:
+
+1. The instance has local sign-in and a small rated queue (`e2e-ranked`, one
+   128×128 generated map).
+2. Two new local accounts join the queue, get the ranked accept prompt and accept.
+3. Two headless clients (`glob2 --turn-client`) play the match through a relay. They
+   run from the engine-agent image, so client, relay and verifier share one build
+   and sim version. Their per-tick checksums must agree.
+4. Player A quits after 40 s, so B wins and the game ends (B would quit 30 s later
+   otherwise). The relay uploads the match record and reports the end.
+5. The verify-match job must judge the match `verified`. The worker must then apply
+   ratings: `rating_status = applied`, and one won and one lost `rating_history` row
+   on the `e2e-ranked` ladder, both with changed μ.
+
+The first run builds every image (about 15 minutes on 4 cores); later runs on the
+same Docker host reuse the BuildKit caches. The match adds about three minutes.
+Everything ends up in the log directory: the compose logs, `results.json` of the
+smoke checks, and under `match-e2e/` the clients' logs, results and checksum
+traces, plus the end-to-end `results.json`. The exit status is 0 only if every
+check passed. Add `--keep` to leave the stack running for inspection.
+
+The web app's browser suites (`platform/apps/web/e2e`: page smoke tests and axe
+accessibility checks on desktop and phone) run separately, against a seeded API:
+`npm run build -w @glob2/web && npm run e2e -w @glob2/web` in `platform/`, with the
+test Postgres running.
 
 ## Example: one virtual machine on Google Cloud
 

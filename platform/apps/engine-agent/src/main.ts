@@ -21,7 +21,13 @@
 //   ENGINE_AGENT_ID        stable id (default <hostname>-<pid>)
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { ConfigError, Shutdown, createLogger, loadConfig } from '@glob2/core';
+import {
+  ConfigError,
+  ENGINE_AGENT_HEARTBEAT_SECONDS,
+  Shutdown,
+  createLogger,
+  loadConfig,
+} from '@glob2/core';
 import { parseSimVersionKey, type SimVersion } from '@glob2/protocol';
 import { EngineAgent, unsupportedRunner, type EngineRunner } from './agent.ts';
 import { DEFAULT_LIMITS, GlobEngine } from './engine.ts';
@@ -29,7 +35,7 @@ import { PlatformClient } from './platform.ts';
 import { DEFAULT_RUNNER_LIMITS, HeadlessEngineRunner } from './runners.ts';
 import { describeSimVersion, detectSimVersion, SimVersionError } from './simVersion.ts';
 
-const HEARTBEAT_MS = 60_000;
+const HEARTBEAT_MS = ENGINE_AGENT_HEARTBEAT_SECONDS * 1000;
 
 const config = loadConfig({ database: false });
 const logger = createLogger('engine-agent', config.logLevel);

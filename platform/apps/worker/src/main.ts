@@ -15,15 +15,20 @@ import {
 } from '@glob2/core';
 import { LeaderElection, createDatabase } from '@glob2/db';
 import { ENGINE_RESULT_TASK } from '@glob2/protocol';
-import { scrubSettledMatchNames } from './accountScrub.ts';
 import { runMaintenance } from './maintenance.ts';
+import {
+  PgQueueNotifier,
+  PlatformMatchStarter,
+  WarmMapPool,
+  abortMatchesOnLostRelays,
+  applyPendingRatings,
+  expireStartingMatches,
+  handleEngineJobResult,
+  scrubSettledMatchNames,
+  takeWarmMap,
+} from '@glob2/play';
 import { Matchmaker } from './matchmaking/matchmaker.ts';
-import { PgQueueNotifier } from './matchmaking/notifier.ts';
-import { abortMatchesOnLostRelays, expireStartingMatches } from './play/intake.ts';
-import { PlatformMatchStarter } from './play/start.ts';
-import { applyPendingRatings, handleEngineJobResult } from './ratings/apply.ts';
 import { runScheduler, type ScheduledTask } from './scheduler.ts';
-import { WarmMapPool, takeWarmMap } from './warmMaps.ts';
 
 const config = loadConfig();
 const logger = createLogger('worker', config.logLevel);

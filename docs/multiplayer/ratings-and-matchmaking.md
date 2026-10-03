@@ -1,7 +1,8 @@
 # Ratings and matchmaking
 
 Quick-match queues group players into matches, and engine-verified results of rated
-queue matches update a ladder per queue. Both run in `platform/apps/worker`; the
+queue matches update a ladder per queue. Both run in the worker (`platform/apps/worker`), on
+the shared match domain in `platform/packages/play`; the
 contracts they share with the API, the match starter and clients are listed at the
 end. The platform's overall design is in [architecture](architecture.md).
 
@@ -10,7 +11,7 @@ end. The platform's overall design is in [architecture](architecture.md).
 ### Model
 
 Ratings are OpenSkill (Weng–Lin) with the Plackett–Luce model, from the npm
-`openskill` package. Every option is pinned in `apps/worker/src/ratings/scale.ts`, so
+`openskill` package. Every option is pinned in `packages/play/src/ratings/scale.ts`, so
 a library default change cannot move a ladder:
 
 | Constant | Value | Meaning |
@@ -204,7 +205,8 @@ pool, or engine agents of the new sim version will refuse the old revision.
 
 ## Matchmaker
 
-The matchmaker (`apps/worker/src/matchmaking/`) runs every second as a task of the
+The matchmaker (`apps/worker/src/matchmaking/matchmaker.ts`; grouping, tickets and
+proposals in `packages/play/src/matchmaking/`) runs every second as a task of the
 worker scheduler. The scheduler runs only on the replica holding the `scheduler`
 leader lock, a Postgres advisory lock. All state is in Postgres, so a new leader
 continues where the old one stopped.
@@ -306,7 +308,7 @@ the connection, reports the fastest request as is.
   - new columns `allow_ai_opponent` and `proposal_id`;
   - the one-ticket-per-account index now covers `waiting` and `proposed`.
 
-**API realtime handlers** call the ticket operations exported by `@glob2/worker`
+**API realtime handlers** call the ticket operations exported by `@glob2/play`
 after their own `AccessPolicy.canQueue` and sim-version checks:
 
 - `joinQueue`: refuses guests in rated queues, active cooldowns and a second
@@ -318,7 +320,7 @@ The API forwards `NOTIFY queue_events {accountId, event, data}` to that account'
 sockets as the named realtime event. On `NOTIFY match_updates {matchId}` it re-reads
 the match and sends `match.updated`.
 
-**`MatchStarter`** (M4/M6) receives a `MatchProposal`. Its fields are the proposal
+**`MatchStarter`** receives a `MatchProposal`. Its fields are the proposal
 and queue ids, rated and backfilled flags, sim version, region, the map pool entry,
 and seats with slot, side, account or AI, rating entity and μ/σ. The starter must:
 
@@ -327,16 +329,18 @@ and seats with slot, side, account or AI, rating entity and μ/σ. The starter m
 - place seat = slot on map team = slot, with `teams[slot].alliance = side`, and
   copy `rating_entity_id` from the seat;
 - pick the seed and map: `takeWarmMap(db, queueId, simVersionKey, { entry })`
-  from `@glob2/worker` returns a pre-generated map of the proposal's pool entry
+  from `@glob2/play` returns a pre-generated map of the proposal's pool entry
   (descriptor with seed, map hash, map facts) or undefined, in which case the
   starter submits its own generate-map job; then allocate a relay in the region
   and push `match.start`;
 - be idempotent per proposal id, by looking the match up by `matches.proposal_id`;
 - throw when the match cannot start.
 
-`InMemoryMatchStarter` is the test double; given a database, it writes the rows a
-real starter would. Until M4 provides a starter, the worker's starter always fails,
-so queued players are requeued.
+The production starter is `PlatformMatchStarter`; its MatchSetup comes from
+`queueMatchSetup()`, the one builder for queue matches. The test double
+`InMemoryMatchStarter` (exported by `@glob2/play/testing`, not by the package
+index) writes the rows a real starter would through the same builder, with a
+placeholder map.
 
 **Match intake** (M4) sets `match_participants.quit_tick` from the relay's
 `RelayMatchEnded` report. It may mark a seat `outcome = 'abandoned'`. Ratings read
@@ -344,7 +348,8 @@ both fields.
 
 ## Tests
 
-`platform/apps/worker/test/ratings.test.ts` and `matchmaker.test.ts` run against a
+`platform/packages/play/test/ratings.test.ts` and
+`platform/apps/worker/test/matchmaker.test.ts` run against a
 real Postgres; see [architecture](architecture.md#working-on-the-platform) for the
 test database. They cover:
 

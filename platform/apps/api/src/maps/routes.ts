@@ -25,7 +25,7 @@ import {
   type MapVersionInfo,
   type SimVersion,
 } from '@glob2/protocol';
-import { MAP_CONTENT_TYPE, insertBlob, refreshLatestVersions } from '@glob2/worker';
+import { MAP_CONTENT_TYPE, insertBlob, refreshLatestVersions } from '@glob2/play';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';

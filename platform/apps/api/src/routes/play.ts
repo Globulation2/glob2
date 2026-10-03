@@ -20,7 +20,7 @@ import {
   insertBlob,
   relayRegions,
   storedSimVersion,
-} from '@glob2/worker';
+} from '@glob2/play';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';

@@ -19,6 +19,7 @@ import {
 } from '@glob2/protocol';
 import type { RegionRtt } from '../matchmaking/grouping.ts';
 import type { MatchProposal, MatchStarter, StartedMatch } from '../matchmaking/starter.ts';
+import { readRegionRtts } from '../stored.ts';
 import { publishPlay } from './notify.ts';
 import {
   noWarmMaps,
@@ -250,14 +251,14 @@ export async function matchPlacementProbes(db: Db, matchId: string): Promise<Reg
       .select('rm.region_rtts')
       .where('p.match_id', '=', matchId)
       .execute();
-    return rows.map((r) => r.region_rtts as unknown as RegionRtt[]);
+    return rows.map((r) => readRegionRtts(r.region_rtts));
   }
   const rows = await db
     .selectFrom('queue_tickets')
     .select('region_rtts')
     .where('match_id', '=', matchId)
     .execute();
-  return rows.map((r) => r.region_rtts as unknown as RegionRtt[]);
+  return rows.map((r) => readRegionRtts(r.region_rtts));
 }
 
 /** How many times a starting match may be moved to another relay. */
@@ -384,7 +385,7 @@ export class PlatformMatchStarter implements MatchStarter {
               .select('region_rtts')
               .where('id', 'in', tickets)
               .execute()
-          ).map((r) => r.region_rtts as unknown as RegionRtt[]);
+          ).map((r) => readRegionRtts(r.region_rtts));
     const created = await createMatch(db, {
       setup,
       origin: 'queue',

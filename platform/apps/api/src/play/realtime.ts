@@ -26,7 +26,7 @@ import {
   sendProposal,
   updateTicket,
   PgQueueNotifier,
-} from '@glob2/worker';
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
 
 const queueNotifier = new PgQueueNotifier();

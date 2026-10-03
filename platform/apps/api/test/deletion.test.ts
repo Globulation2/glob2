@@ -4,7 +4,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { sql } from 'kysely';
 import { DEFAULT_INSTANCE_CONFIG } from '@glob2/core';
-import { scrubSettledMatchNames } from '@glob2/worker';
+import { scrubSettledMatchNames } from '@glob2/play';
 import { registeredPlayer, type Player } from './playSupport.ts';
 import { SIM, createHarness, postJson, type Harness, type Instance } from './support.ts';
 

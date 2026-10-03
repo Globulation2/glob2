@@ -12,7 +12,12 @@ import {
   type MatchSummary,
   type MatchTicketClaims,
 } from '@glob2/protocol';
-import { activeEntitlements, matchRatingPreview } from '@glob2/worker';
+import {
+  STORED_MATCH_SETUP,
+  activeEntitlements,
+  matchRatingPreview,
+  readStored,
+} from '@glob2/play';
 import type { SigningKeys } from '../auth/keys.ts';
 import {
   catalogTitles,
@@ -56,7 +61,7 @@ export class Assignments {
       .where('m.id', '=', matchId)
       .executeTakeFirst();
     if (!match || (match.status !== 'starting' && match.status !== 'running')) return undefined;
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const seat = setup.seats.find((s) => s.kind === 'human' && s.accountId === accountId);
     if (!seat) return undefined;
     const humanSeats = setup.seats.filter((s) => s.kind === 'human').map((s) => s.seat);

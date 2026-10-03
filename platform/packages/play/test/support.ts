@@ -1,9 +1,13 @@
-// Shared fixtures for worker tests: accounts, queue matches and verify jobs.
+// Shared fixtures for match-domain tests (this package, the worker and the
+// API): accounts, queue matches, verify jobs and the matchmaker test doubles.
 import { randomUUID } from 'node:crypto';
 import type { Kysely } from 'kysely';
 import type { Database } from '@glob2/db';
 import type { VerifyVerdict } from '@glob2/protocol';
-import { proposalSetup, type MatchProposal } from '../src/matchmaking/starter.ts';
+import type { MatchProposal } from '../src/matchmaking/starter.ts';
+import { testQueueMatchSetup } from './doubles.ts';
+
+export * from './doubles.ts';
 
 export const SIM_A = `125-49-${'aa'.repeat(32)}`;
 export const SIM_B = `126-49-${'bb'.repeat(32)}`;
@@ -73,7 +77,7 @@ export async function createMatch(
       sigma: 25 / 3,
     })),
   };
-  const setup = proposalSetup(proposal, 7, HASH);
+  const setup = testQueueMatchSetup(proposal, 7, HASH);
   const match = await db
     .insertInto('matches')
     .values({

@@ -4,7 +4,7 @@
 import { sql, type Kysely } from 'kysely';
 import type { Account, Database, JsonValue } from '@glob2/db';
 import type { AdminAccount } from '@glob2/protocol';
-import { scrubMatchNames } from '@glob2/worker';
+import { scrubMatchNames } from '@glob2/play';
 import { apiError } from '../errors.ts';
 import type { AccountService } from './accounts.ts';
 

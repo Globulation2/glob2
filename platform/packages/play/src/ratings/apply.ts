@@ -9,7 +9,8 @@ import { sql, type Kysely, type Transaction } from 'kysely';
 import { applyEngineJobResult } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { applyMapJobResult } from '../play/maps.ts';
-import type { MatchSetup, VerifyVerdict } from '@glob2/protocol';
+import type { VerifyVerdict } from '@glob2/protocol';
+import { STORED_MATCH_SETUP, STORED_VERIFY_VERDICT, readStored } from '../stored.ts';
 import {
   contestedTeams,
   decideRating,
@@ -82,7 +83,7 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
     if (!job || job.kind !== 'verify-match') return { recorded: false, reason: 'not_verify_job' };
     if (job.status !== 'succeeded') return { recorded: false, reason: 'job_failed' };
     const matchId = (job.payload as { matchId: string }).matchId;
-    const verdict = job.result as unknown as VerifyVerdict;
+    const verdict = readStored(STORED_VERIFY_VERDICT, job.result);
 
     const match = await trx
       .selectFrom('matches')
@@ -105,16 +106,14 @@ export async function recordVerification(db: Db, jobId: string): Promise<Verific
       // tie) is recorded as a draw for those teams and their participants.
       // Empty seats never win or share a win: closed teams have lost from the
       // start, and older matches' idle colonies (AI `none`) are left out.
-      const setup = match.setup as unknown as MatchSetup | null;
+      const setup = readStored(STORED_MATCH_SETUP, match.setup);
       const recorded = participantOutcomes(
-        new Map((setup?.teams ?? []).map((t) => [t.team, t.alliance])),
+        new Map(setup.teams.map((t) => [t.team, t.alliance])),
         new Map(outcome.teams.map((t) => [t.team, t.outcome])),
-        setup ? contestedTeams(setup.seats) : undefined,
+        contestedTeams(setup.seats),
       );
       // A closed team has no colony and nobody to show it for: no stats row.
-      const closed = new Set(
-        (setup?.seats ?? []).flatMap((s) => (s.kind === 'closed' ? [s.team] : [])),
-      );
+      const closed = new Set(setup.seats.flatMap((s) => (s.kind === 'closed' ? [s.team] : [])));
       for (const team of outcome.teams) {
         if (closed.has(team.team)) continue;
         const teamOutcome = recorded.get(team.team) ?? team.outcome;
@@ -258,7 +257,7 @@ export async function applyMatchRatings(
       return finish(trx, matchId, 'unchanged', `verification_${match.verification}`);
     }
     const ladder = match.queue_id;
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
 
     // Empty seats (AI `none`) are not rated and take no side.
     const participants = (
