@@ -78,7 +78,12 @@ class PolicyTest(unittest.TestCase):
         self.assertLess(len(ui_rows),len(json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())))
 
     def test_release_metadata_does_not_compile_engine(self):
-        self.assertFalse(any(self.select(['fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py']).values()))
+        paths=['fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
+               '.github/workflows/steam-windows-package.yml','.github/workflows/mac-app-store.yml',
+               'mobile/android_release.py','tests/build_system/test_ci_policy.py']
+        self.assertFalse(any(self.select(paths).values()))
+        before_activation,_=self.exercise('pull_request',paths,enabled=False)
+        self.assertFalse(any(before_activation['selection'].values()))
 
     def exercise(self,event,paths,draft=False,labels=(),enabled=True,checkpoint='old'):
         with tempfile.TemporaryDirectory() as directory:

@@ -39,11 +39,12 @@ def classify(paths):
     if not paths:
         return {job: True for job in JOBS}
 
+    from ci_policy import cheap_path
     native = browser = map_generators = deployment = cross_platform = False
     for path in paths:
         # These Python suites execute directly in the selector job, without
         # compiling a client or launching platform/browser regressions.
-        if path in CI_TOOL_TESTS:
+        if path in CI_TOOL_TESTS or cheap_path(path):
             continue
         if path.startswith("docs/") or path.endswith(".md"):
             continue
@@ -104,12 +105,13 @@ def browser_only(path):
 
 
 def coverage_profile(paths, event, selected):
+    from ci_policy import cheap_path
     compatibility = event != 'pull_request' or not paths
     browsers_all = compatibility
     android = event != 'pull_request' or not paths
     reasons = []
     for path in paths:
-        if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS:
+        if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS or cheap_path(path):
             continue
         if path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
             android = True

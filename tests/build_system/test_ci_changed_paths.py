@@ -4,11 +4,13 @@ import importlib.util
 from pathlib import Path
 import re
 import subprocess
+import sys
 from types import SimpleNamespace
 import unittest
 
 
 SCRIPT = Path(__file__).resolve().parents[2] / ".github/scripts/ci_changed_paths.py"
+sys.path.insert(0, str(SCRIPT.parent))
 SPEC = importlib.util.spec_from_file_location("ci_changed_paths", SCRIPT)
 ci_changed_paths = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(ci_changed_paths)

@@ -35,9 +35,10 @@ class TierTest(unittest.TestCase):
         for path in ['test/run_tests.py','test/ci_native_shard_plan.py','test/ci-native-auxiliary.json','test/build_ci_timing_profile.py','test/ci-timings/ubuntu-22.04.json']:
             with self.subTest(path=path):self.assertTrue(self.profile([path])['compatibility'])
 
-    def test_android_metadata_remains_relevant(self):
-        for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt','.github/workflows/mobile.yml']:
-            self.assertTrue(self.profile([path])['android'])
+    def test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant(self):
+        for path in ['fdroid/metadata.yml','fastlane/metadata/title.txt']:
+            self.assertFalse(self.profile([path])['android'])
+        self.assertTrue(self.profile(['.github/workflows/mobile.yml'])['android'])
     def test_ci_contract_tests_do_not_select_mobile_or_compatibility(self):
         for path in selector.CI_TOOL_TESTS:
             with self.subTest(path=path):

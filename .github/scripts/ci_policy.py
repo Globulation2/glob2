@@ -18,6 +18,15 @@ RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp'
           'libgag/src/SurfaceRaster.cpp'}
 
 
+def cheap_path(path):
+    return (path.startswith(('docs/', 'tests/build_system/test_ci', 'fdroid/', 'fastlane/'))
+            or path.endswith('.md') or path in {
+                'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
+                'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
+                'mobile/android_release.py', '.github/workflows/steam-windows-package.yml',
+                '.github/workflows/mac-app-store.yml'})
+
+
 def fingerprint():
     # Coverage evidence from a different selector/workflow cannot activate reductions.
     paths = sorted(list((ROOT / '.github/workflows').glob('*.yml')) +
@@ -45,14 +54,7 @@ def select(paths, labels=(), known=False):
     if not known:
         return full(), [{'path': None, 'checks': list(FLAGS), 'reason': 'diff unavailable'}]
     for path in paths:
-        if path.startswith('docs/') or path.endswith('.md'):
-            continue
-        if path.startswith('tests/build_system/test_ci') or path in {
-            'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py'}:
-            continue
-        # Release-only metadata/contracts do not compile development binaries.
-        if path.startswith(('fdroid/', 'fastlane/')) or path in {
-            'tools/package_steam_windows.py', 'test/test_steam_windows_package.py'}:
+        if cheap_path(path):
             continue
         if path == 'test/map-generator-golden.txt':
             add(path, 'map_generators', 'compatibility')
