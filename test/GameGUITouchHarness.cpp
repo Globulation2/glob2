@@ -3095,12 +3095,13 @@ class GameGUITouchHarness
 			const float previousMotion = gui.view.render.unitMotion;
 			gui.view.scene = &displayed;
 			gui.view.render.unitMotion = 1;
+			const double reachUnit = gfx->logicalUnitsPerPoint();
 			const GAGCore::ViewPoint visibleCenter{gfx->getW() / 2. - 15, gfx->getH() / 2.};
 			require(gui.touch->unitAt({visibleCenter.x - 14, visibleCenter.y}) == worker,
 				"Exact touch follows the last rendered smooth-motion rectangle");
-			require(gui.touch->unitAt({visibleCenter.x - 28, visibleCenter.y}, 30) == worker,
+			require(gui.touch->unitAt({visibleCenter.x - 28 * reachUnit, visibleCenter.y}, 30) == worker,
 				"Unit halo follows the last rendered smooth-motion centre");
-			require(!gui.touch->unitAt({visibleCenter.x - 32, visibleCenter.y}, 30),
+			require(!gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30),
 				"Smooth motion does not enlarge the 30-point halo");
 			++shown->generation;
 			require(!gui.touch->unitAt(visibleCenter, 30),
