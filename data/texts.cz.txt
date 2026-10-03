@@ -3444,6 +3444,8 @@ Setrvačnost mapy
 
 [conn connections]
 
+[conn connection]
+
 [conn delay explanation %0 %1]
 
 [conn fair]
@@ -3843,6 +3845,10 @@ Setrvačnost mapy
 [room uploaded map]
 
 [room waiting for %0]
+
+[room waiting for you]
+
+[room match over]
 
 [room waiting for host]
 
@@ -4549,6 +4555,8 @@ Setrvačnost mapy
 [online about %0 min]
 
 [online %0 s]
+
+[online %0 min %1 s]
 
 [qm ai opponent %0]
 

@@ -91,6 +91,9 @@ std::string durationText(std::int64_t seconds);
 // A queue as players know it: its configured name, else a readable form of the id
 // ("casual-1v1" -> "Casual 1v1"); never the raw id.
 std::string queueDisplayName(const std::string &id, const std::string &name);
+// A relay region as players read it ("ca-central" -> "Canada, central",
+// "eu-west" -> "Europe, west"); unknown ids become readable words.
+std::string regionDisplayName(const std::string &id);
 // The certificate fingerprint in a LAN pairing link ("wss://…#sha256=ab12cd34…") as a
 // short code people can compare ("AB12 CD34"); empty when the link has none.
 std::string pairingCode(const std::string &pairing);
