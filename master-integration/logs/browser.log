@@ -1,0 +1,150 @@
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:21] "GET / HTTP/1.1" 200 -
+
+Running 10 tests using 1 worker
+
+(node:2600698) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:22] "GET /test-host-e4ee6d9e-0863-4aa2-8182-8d954efe3b5a.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:22] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:22] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:22] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+  ✓   1 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (serial/1) (3.8s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /test-host-443cbe67-d5b9-4c86-abcd-e76c71a2a61b.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:26] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+  ✓   2 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/1) (3.9s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /test-host-e8b6d205-2252-483b-ac0f-bd32618d034f.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:30] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+  ✓   3 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/2) (3.8s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /test-host-6911fecd-6b36-4f7d-93c8-eb5f63ec6290.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:34] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:37] "GET /threaded/index.js HTTP/1.1" 304 -
+  ✓   4 [chromium] › tests/determinism.spec.js:10:1 › WebAssembly produces a complete per-tick simulation trace (threaded/4) (4.5s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:38] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:38] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:39] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+  ✓   5 [chromium] › tests/determinism.spec.js:63:1 › WebAssembly verifies the committed match record (3.4s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:42] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /hive-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /hive-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /hive-runtime.wasm HTTP/1.1" 200 -
+  ✓   6 [chromium] › tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (936ms)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:43] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:45] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:52] "GET /assets/game-1.5079d2b93d5894f2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:53] "GET /assets/game-2.566bc93f4747f687.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:53] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:53] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:53] "GET /assets/translations.716330a9afd02097.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:42:53] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+  ✓   7 [chromium] › tests/staged-assets.spec.js:35:1 › the menus work before the game sprites arrive, and a match waits for them (21.9s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:05] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:06] "GET /assets/game-1.5079d2b93d5894f2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:06] "GET /assets/game-2.566bc93f4747f687.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:06] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:06] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:06] "GET /assets/translations.716330a9afd02097.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:07] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:18] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:18] "GET /threaded/index.js HTTP/1.1" 304 -
+  ✓   8 [chromium] › tests/staged-assets.spec.js:57:1 › later packages arrive in the background and replace the core font (13.9s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:19] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:20] "GET /assets/game-1.5079d2b93d5894f2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:20] "GET /assets/game-2.566bc93f4747f687.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:20] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:23] "GET /assets/translations.716330a9afd02097.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:26] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:27] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+  ✓   9 [chromium] › tests/staged-assets.spec.js:71:1 › a Chinese interface downloads the full font before the game starts (10.1s)
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:29] "GET /assets/core.2b6315188c999b61.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:30] "GET /assets/game-1.5079d2b93d5894f2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:30] "GET /assets/game-2.566bc93f4747f687.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:30] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:30] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET / HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:33] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:36] "GET /assets/translations.716330a9afd02097.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [03/Oct/2026 07:43:37] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+  ✓  10 [chromium] › tests/staged-assets.spec.js:91:1 › an interface in another language downloads its translations before the game starts (9.8s)
+
+  10 passed (1.3m)

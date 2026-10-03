@@ -1,3 +1,5 @@
+> Current master integration validation: see [master-integration](master-integration/README.md).
+
 > Current final usability and merge validation: see [merge-readiness](merge-readiness/README.md). Older captures and smoke results below are superseded where noted.
 
 > Superseded UI and version-1 evaluation: see [review revision evidence](revision/README.md) for current screenshots, production-harness evaluations and validation.

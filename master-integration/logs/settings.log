@@ -1,0 +1,5 @@
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences] (6.0s)
+PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences] (43.8s)
+
+2 passed, 0 failed, 0 skipped (49.8s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/f95a/glob2/artifacts/tests/junit.xml (2 cases)
