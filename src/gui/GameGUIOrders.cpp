@@ -172,12 +172,12 @@ void GameGUI::handleClientEvent(ClientEventVariant&& event)
 						addMessage(Color(99, 255, 242), FormattableString("<%0%1> %2").arg(Toolkit::getStringTable()->getString("[to:]")).arg(recipient).arg(e.text), true);
 				}
 			}
-			else
-				assert(false);
+			// Any other type is not shown (it was an assert; a remote client chooses it).
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::VoiceData>)
 		{
-			if (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer)))
+			// Headless games (bots, the verifier) have no mixer.
+			if (globalContainer->mix && (e.order->recipientsMask & (Team::teamNumberToMask(localPlayer))))
 				globalContainer->mix->addVoiceData(e.order);
 		}
 		else if constexpr (std::is_same_v<T, ClientEvent::PlayerQuit>)

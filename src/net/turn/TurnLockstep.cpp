@@ -3,6 +3,8 @@
 
 #include "TurnLockstep.h"
 
+#include <iostream>
+
 namespace Turn
 {
 TurnLockstepSession::TurnLockstepSession(int numberOfPlayers, std::shared_ptr<TurnTransport> transport,
@@ -20,7 +22,26 @@ void TurnLockstepSession::advanceStep(Uint32 checksum)
 
 std::shared_ptr<Order> TurnLockstepSession::retrieveOrder(int playerNumber)
 {
-	auto order = session.retrieveOrder(playerNumber);
+	int undecodableType = -1;
+	auto order = session.retrieveOrder(playerNumber, undecodableType);
+	const bool undecodable = undecodableType >= 0;
+	if (session.isHumanSeat(playerNumber) && (undecodable || (validator && order->getOrderType() != ORDER_NULL)))
+	{
+		using namespace OrderValidation;
+		const bool voice = (undecodable ? undecodableType : order->getOrderType()) == ORDER_VOICE_DATA;
+		const Result result = undecodable ? Result{Verdict::Rejected, Reason::Undecodable} : validator(playerNumber, *order);
+		const std::uint32_t tick = session.executedTick();
+		audit.record(playerNumber, tick, voice, result);
+		if (result.verdict != Verdict::Accepted)
+		{
+			// Enough to diagnose, not enough for a flooding client to fill the log.
+			if (result.verdict == Verdict::Rejected && ++loggedRejections <= 20)
+				std::cerr << "Turn session: rejected an order of type " << (undecodable ? undecodableType : int(order->getOrderType()))
+				          << " from seat " << playerNumber << " at tick " << tick << " (" << name(result.reason) << ")\n";
+			order = std::make_shared<NullOrder>();
+			order->sender = playerNumber;
+		}
+	}
 	if (orderFilter)
 	{
 		order = orderFilter(session.executedTick(), playerNumber, std::move(order));

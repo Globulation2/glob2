@@ -60,6 +60,7 @@ ENGINE_TESTS = [
     'RoundTripHungerGateHarness.cpp',
     'TerrainResourcesHarness.cpp',
     'LockstepSessionTest.cpp',
+    'OrderValidationTest.cpp',
     'MatchSetupTest.cpp',
     ('TurnEngineHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),

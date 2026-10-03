@@ -93,6 +93,12 @@ namespace Turn
 		bool orderReceived(int playerNumber);
 		/// The player's order for the next tick (a NullOrder when there is none).
 		std::shared_ptr<Order> retrieveOrder(int playerNumber);
+		/// As above; `undecodableType` is the type byte of a human seat's sequenced
+		/// order when its bytes did not decode (the NullOrder then stands in for them),
+		/// and -1 otherwise.
+		std::shared_ptr<Order> retrieveOrder(int playerNumber, int& undecodableType);
+		/// True for the seats whose orders come from the relay.
+		bool isHumanSeat(int player) const { return isHuman(player); }
 		/// Finishes the tick: drops its orders and advances the executed tick.
 		void clearTopOrders();
 		/// Seats the engine is waiting on: AI seats without orders, then human seats

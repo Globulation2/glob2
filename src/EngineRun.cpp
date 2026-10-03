@@ -789,6 +789,7 @@ void Engine::reloadTurnInitialState()
 	teamEliminatedTick.clear();
 	if (session)
 		session->wasReadyLastTick = true;
+	turn->resetOrderAudit();
 	turn->turn().reloadDone();
 	std::cerr << "Turn session: reloaded the initial state in "
 		<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - started).count()

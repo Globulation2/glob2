@@ -167,8 +167,41 @@ The relay looks at the first byte of each order, which is the order type
 
 Each entry's seat is the sender's authenticated seat, never a value from the client.
 The engine sets `order->sender` from the bundle seat. The relay does not validate the
-rest of an order. Orders that act for another team are an engine-level concern, as
-they are today.
+rest of an order; the engine does, as described next.
+
+### Order validation in the engine
+
+The relay passes order bytes through, so a modified client (or relay, or record) can
+put any bytes in its seat's turns. Before the engine executes a human seat's order,
+`TurnLockstepSession::retrieveOrder` checks it with `OrderValidation::validate`
+(`src/OrderValidation.h`). The check reads only the game state at that point of that
+tick and the seat from the bundle, never an identity the order claims, so every client
+and `--verify-match` reach the same verdict. An order that fails, or whose bytes do not
+decode, executes as a `NullOrder` everywhere; the game and every checksum stay the same
+on all machines. AI orders, single player, replays and legacy network games are not
+checked.
+
+| Verdict | Meaning | Examples |
+| --- | --- | --- |
+| accepted | executed unchanged | anything the user interface sends |
+| stale | it no longer applies; network latency can cause it | cancelling a deletion that is no longer pending |
+| rejected | no unmodified client sends it | another team's buildings or alliances, another player's quit, a worker count above 20, an unplaceable building type, an off-map flag position, an unknown brush mode or message type, an `AdjustLatency`, undecodable bytes |
+
+The rules per order type are in `OrderValidation.cpp`. Pause orders stay allowed for
+every player, as in legacy games. Voice packets are checked (at most 128 frames) and
+the mixer drops packets beyond about ten seconds of backlog per player.
+
+The session counts verdicts per seat (`TurnLockstepSession::orderAudit()`: accepted,
+stale, rejected, per-reason counts and the first rejected tick). The counts restart when
+the engine reloads the initial state. `--verify-match` reports the same counts for the
+record, so the platform can flag a seat that sent rejected orders. Voice is not in the
+record, so rejected voice packets are counted separately and only by live clients.
+
+Executors that a hostile order could stop with an assert or an out-of-range index
+(`Game::executeCreate`, the area brushes, alliances, quits, building lookups,
+`Building::cancelConstruction`, chat and map marks in `GameGUI`) now ignore such an
+order instead. This only changes what invalid orders do, so legacy games and replays
+of valid orders run as before.
 
 ## Tick assignment
 
@@ -539,13 +572,23 @@ all of them to agree at every tick (and with the relay's agreed checksums):
 - three engines where one executes a tampered order: the majority tells it to rejoin,
   it reloads in place and fast-forwards, and `--verify-match` names its seat;
 - a player who quits through the sequenced `PlayerQuitsGameOrder` while the others
-  play on.
+  play on;
+- three engines where one client sends malformed, mutated and cross-team orders of
+  every type through the relay: no client crashes, all agree at every tick, every
+  client and the verifier count the same rejections, and the record verifies;
+- a record into which a hostile relay forged another seat's quit, a latency order,
+  undecodable bytes, cross-team orders and voice: the verifier refuses them and still
+  verifies.
 
 Each case verifies the relay's record with `--verify-match` and requires the verifier's
 per-tick checksums and `result.json` team outcomes to equal the live clients'. Forged
 turns make the record unverifiable, and a seat whose reports disagree is named. A
 `[benchmark]` case measures rejoin fast-forward time against game length and AI count
 (`python3 test/run_tests.py --tag benchmark --filter 'TurnEngineHarness/*'`).
+
+`test/OrderValidationTest.cpp` checks each validation rule on a two-team game, runs
+random payloads of every order type through decoding, the check and execution, and
+executes hostile orders unchecked to show the executor guards.
 
 `test/MatchSetupTest.cpp` runs every MatchSetup and SimVersion contract fixture: valid
 ones must parse and round-trip, invalid ones must fail at the stage the manifest names.
