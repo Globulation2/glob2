@@ -9,11 +9,11 @@ import { notify, type Database } from '@glob2/db';
 import {
   MATCH_RECORD_CONTENT_TYPE,
   sameSimVersion,
-  type MatchSetup,
   type RelayMatchEnded,
   type RelayNetworkSeat,
 } from '@glob2/protocol';
 import { MATCH_UPDATES_CHANNEL } from '../ratings/apply.ts';
+import { STORED_END_REPORT, STORED_MATCH_SETUP, readStored } from '../stored.ts';
 import { countCatalogPlay } from './catalog.ts';
 import { insertBlob } from './maps.ts';
 import { publishPlay } from './notify.ts';
@@ -42,7 +42,7 @@ export async function storeMatchRecord(
   if (!match) return { ok: false, reason: 'not_found' };
   const stored = await putContent(blobs, bytes);
   if (match.end_report) {
-    const reported = (match.end_report as unknown as RelayMatchEnded).record.sha256;
+    const reported = readStored(STORED_END_REPORT, match.end_report).record.sha256;
     if (reported !== stored.sha256) return { ok: false, reason: 'already_ended' };
   }
   await insertBlob(db, stored.sha256, stored.size, MATCH_RECORD_CONTENT_TYPE, 'private');
@@ -90,7 +90,7 @@ export async function recordMatchEnded(
     // after all: its real result replaces the abort, and verification and
     // ratings proceed as for any ended match.
     const wasLost = match.status === 'ended' && match.end_reason === 'aborted';
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     if (!sameSimVersion(setup.simVersion, report.simVersion)) {
       return { ok: false, reason: 'sim_version_mismatch' };
     }
@@ -214,7 +214,7 @@ async function submitVerifyJob(db: Db, matchId: string): Promise<string | undefi
     .where('m.id', '=', matchId)
     .executeTakeFirst();
   if (!match || match.status !== 'ended') return undefined;
-  const setup = match.setup as unknown as MatchSetup;
+  const setup = readStored(STORED_MATCH_SETUP, match.setup);
   try {
     return await submitEngineJob(db, {
       kind: 'verify-match',
@@ -297,7 +297,7 @@ export async function reverifyMatch(
       .set({ verification: 'pending', rating_status: 'pending', rating_note: null })
       .where('id', '=', matchId)
       .execute();
-    const setup = match.setup as unknown as MatchSetup;
+    const setup = readStored(STORED_MATCH_SETUP, match.setup);
     const jobId = await submitEngineJob(trx, {
       kind: 'verify-match',
       simVersion: setup.simVersion,

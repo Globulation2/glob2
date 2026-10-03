@@ -15,21 +15,23 @@ import {
 } from '@glob2/core';
 import { LeaderElection, assertLease, createDatabase } from '@glob2/db';
 import { collectBlobs } from './blobGc.ts';
-import { sweepStaleEngineJobs } from './play/jobSweep.ts';
 import { ENGINE_RESULT_TASK } from '@glob2/protocol';
 import { runMaintenance } from './maintenance.ts';
-import { Matchmaker } from './matchmaking/matchmaker.ts';
-import { PgQueueNotifier } from './matchmaking/notifier.ts';
-import { abortMatchesOnLostRelays, expireStartingMatches } from './play/intake.ts';
-import { PlatformMatchStarter } from './play/start.ts';
-import { applyPendingRatings, handleEngineJobResult } from './ratings/apply.ts';
-import { runScheduler, type ScheduledTask } from './scheduler.ts';
 import {
   DEFAULT_WARM_MAPS_MAX_PER_ENTRY,
   DEFAULT_WARM_MAPS_PER_ENTRY,
+  PgQueueNotifier,
+  PlatformMatchStarter,
   WarmMapPool,
+  abortMatchesOnLostRelays,
+  applyPendingRatings,
+  expireStartingMatches,
+  handleEngineJobResult,
+  sweepStaleEngineJobs,
   takeWarmMap,
-} from './warmMaps.ts';
+} from '@glob2/play';
+import { Matchmaker } from './matchmaking/matchmaker.ts';
+import { runScheduler, type ScheduledTask } from './scheduler.ts';
 
 const config = loadConfig();
 const logger = createLogger('worker', config.logLevel);

@@ -19,11 +19,13 @@ import {
 } from '@glob2/protocol';
 import {
   RELAY_HEARTBEAT_SECONDS,
+  STORED_MATCH_SETUP,
+  readStored,
   recordMatchEnded,
   registerRelay,
   relayHeartbeat,
   storeMatchRecord,
-} from '@glob2/worker';
+} from '@glob2/play';
 import { apiError } from '../errors.ts';
 import { body } from '../http/validate.ts';
 
@@ -134,7 +136,10 @@ export async function internalRoutes(app: FastifyInstance): Promise<void> {
         .select('setup')
         .where('id', '=', id)
         .executeTakeFirstOrThrow();
-      return reply.header('content-type', 'application/json; charset=utf-8').send(match.setup);
+      // Relays get the current MatchSetup version: older rows are upgraded on
+      // the way out, and a row that cannot be read fails here, not in the relay.
+      const setup = readStored(STORED_MATCH_SETUP, match.setup);
+      return reply.header('content-type', 'application/json; charset=utf-8').send(setup);
     },
   );
 

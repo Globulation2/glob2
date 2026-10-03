@@ -10,7 +10,7 @@ import { sql, type Kysely } from 'kysely';
 import { putContent, type BlobStore } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { STANDARD_RULES, simVersionKey, type MatchSetup, type SimVersion } from '@glob2/protocol';
-import { displayRating } from '@glob2/worker';
+import { displayRating } from '@glob2/play';
 import { SIM } from './support.ts';
 
 // Not imported from playSupport.ts, which needs the Vitest runtime: the
@@ -506,8 +506,18 @@ export async function seedHistory(
         payload: JSON.stringify({ matchId: match.id }),
         match_id: match.id,
         status: 'succeeded',
+        // A complete verdict: the match page decodes it against VerifyVerdict.
         result: JSON.stringify({
           verdict: 'verified',
+          outcome: {
+            finalTick: 30_000,
+            teams: [
+              { team: 0, outcome: 'won', prestige: 0 },
+              { team: 1, outcome: 'lost', prestige: 0 },
+            ],
+            resultHash: replay.sha256,
+            replayHash: replay.sha256,
+          },
           ...(i === 7
             ? {
                 orderRejections: [

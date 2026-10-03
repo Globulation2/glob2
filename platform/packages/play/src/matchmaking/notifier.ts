@@ -41,28 +41,3 @@ export class PgQueueNotifier implements QueueNotifier {
     await notify(db, QUEUE_EVENTS_CHANNEL, payload);
   }
 }
-
-/** Test double: keeps every event in order. */
-export class RecordingQueueNotifier implements QueueNotifier {
-  readonly events: QueueNotification[] = [];
-
-  async send<E extends QueueEventName>(
-    _db: Kysely<Database>,
-    accountId: string,
-    event: E,
-    data: RealtimeEventData<E>,
-  ): Promise<void> {
-    this.events.push({ accountId, event, data } as QueueNotification);
-  }
-
-  of<E extends QueueEventName>(event: E, accountId?: string): QueueNotification<E>[] {
-    return this.events.filter(
-      (e): e is QueueNotification<E> =>
-        e.event === event && (accountId === undefined || e.accountId === accountId),
-    );
-  }
-
-  clear(): void {
-    this.events.length = 0;
-  }
-}

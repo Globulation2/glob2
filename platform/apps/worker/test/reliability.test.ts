@@ -16,10 +16,14 @@ import {
 import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
 import { collectBlobs } from '../src/blobGc.ts';
 import { runMaintenance } from '../src/maintenance.ts';
-import { ensureVerifyJob, reverifyMatch } from '../src/play/intake.ts';
-import { insertBlob } from '../src/play/maps.ts';
-import { findStaleEngineJobs, sweepStaleEngineJobs } from '../src/play/jobSweep.ts';
-import { handleEngineJobResult } from '../src/ratings/apply.ts';
+import {
+  ensureVerifyJob,
+  findStaleEngineJobs,
+  handleEngineJobResult,
+  insertBlob,
+  reverifyMatch,
+  sweepStaleEngineJobs,
+} from '@glob2/play';
 import {
   HASH,
   createAccount,
@@ -27,7 +31,7 @@ import {
   createVerifyJob,
   resultPayload,
   verified,
-} from './support.ts';
+} from '@glob2/play/testing';
 
 const logger = createLogger('test', 'silent');
 let database: TestDatabase;

@@ -7,6 +7,7 @@ import pg from 'pg';
 import { sql } from 'kysely';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createTestDatabase, type TestDatabase } from '@glob2/db/testing';
+import { STANDARD_RULES, parseSimVersionKey } from '@glob2/protocol';
 import { HistoryService } from '../src/history/service.ts';
 
 const SIM = `125-49-${'ab'.repeat(32)}`;
@@ -14,6 +15,23 @@ const HASH = 'cd'.repeat(32);
 const ACCOUNTS = 400;
 const MATCHES = 600;
 const POINTS = 40;
+/** A valid stored MatchSetup (the match page decodes it). */
+const SETUP = JSON.stringify({
+  schemaVersion: 1,
+  simVersion: parseSimVersionKey(SIM),
+  seed: 1,
+  map: { kind: 'catalog', hash: HASH },
+  teams: [
+    { team: 0, alliance: 0 },
+    { team: 1, alliance: 1 },
+  ],
+  seats: [
+    { seat: 0, kind: 'human', team: 0, name: 'A' },
+    { seat: 1, kind: 'human', team: 1, name: 'B' },
+  ],
+  rules: STANDARD_RULES,
+  experiments: [],
+});
 
 let database: TestDatabase;
 let client: pg.Client;
@@ -50,7 +68,7 @@ beforeAll(async () => {
         queue_id: 'ranked-1v1',
         status: 'ended' as const,
         verification: 'verified' as const,
-        setup: '{}',
+        setup: SETUP,
         seed: 1,
         map_hash: HASH,
         final_tick: 20_000,
@@ -98,7 +116,19 @@ beforeAll(async () => {
         payload: JSON.stringify({ matchId: match_id }),
         match_id,
         status: 'succeeded' as const,
-        result: JSON.stringify({ verdict: 'verified', clients: [1] }),
+        result: JSON.stringify({
+          verdict: 'diverged',
+          clients: [1],
+          outcome: {
+            finalTick: 20_000,
+            teams: [
+              { team: 0, outcome: 'won', prestige: 0 },
+              { team: 1, outcome: 'lost', prestige: 0 },
+            ],
+            resultHash: HASH,
+            replayHash: HASH,
+          },
+        }),
         completed_at: new Date(),
       })),
       ...Array.from({ length: 4000 }, () => ({

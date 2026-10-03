@@ -13,7 +13,7 @@ import type { Kysely } from 'kysely';
 import { notify, type Database, type PgPubSub } from '@glob2/db';
 import type { Logger } from '@glob2/core';
 import type { RealtimeEventName } from '@glob2/protocol';
-import { REALTIME_CHANNEL, type PlayFanout } from '@glob2/worker';
+import { REALTIME_CHANNEL, type PlayFanout } from '@glob2/play';
 import type { RealtimeConnection } from './connection.ts';
 
 export { REALTIME_CHANNEL };
@@ -32,7 +32,7 @@ export type FanoutMessage =
       signOut?: boolean;
     }
   | { t: 'handoff'; attemptId: string }
-  /** Rooms and matches (published by the API and the worker; see @glob2/worker notify.ts). */
+  /** Rooms and matches (published by the API and the worker; see @glob2/play notify.ts). */
   | PlayFanout;
 
 export type HandoffListener = (connection: RealtimeConnection, attemptId: string) => void;

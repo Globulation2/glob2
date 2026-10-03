@@ -5,7 +5,7 @@
 // like the account actions; a null actor means the server's command line.
 import type { Kysely } from 'kysely';
 import type { Account, Database } from '@glob2/db';
-import { reverifyMatch, type ReverifyOutcome } from '@glob2/worker';
+import { reverifyMatch, type ReverifyOutcome } from '@glob2/play';
 import { apiError } from '../errors.ts';
 import { UUID } from './summaries.ts';
 

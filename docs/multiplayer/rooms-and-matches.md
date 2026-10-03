@@ -11,7 +11,7 @@ relay work adds. Queues and ratings are covered in
 
 Code: `platform/apps/api/src/play/` (rooms, tickets, realtime delivery),
 `platform/apps/api/src/routes/{play,internal,invite}.ts`, and
-`platform/apps/worker/src/play/` (start sequence, relay placement, map sources,
+`platform/packages/play/src/play/` (start sequence, relay placement, map sources,
 match-end intake), which both the API and the worker use. Data: migration
 `0005_rooms_matches.sql`.
 
@@ -151,7 +151,7 @@ caller gets `404`. Responses carry `ETag: "<hash>"` and an immutable cache lifet
 
 **Warm maps.** Queue starts first take a pre-generated map of the queue, sim
 version and pool entry from the warm map pool (`takeWarmMap` in
-`apps/worker/src/warmMaps.ts`, wired in the worker's `main.ts`; see
+`packages/play/src/warmMaps.ts`, wired in the worker's `main.ts`; see
 [Warm map pool](architecture.md#warm-map-pool)). Warm maps are generated with one
 team per queue seat, as on-demand maps are. When the pool is empty or turned off
 (`WARM_MAPS_PER_ENTRY=0`), the starter generates on demand and waits up to 60 s.
@@ -159,7 +159,7 @@ team per queue seat, as on-demand maps are. When the pool is empty or turned off
 ## Start sequence
 
 Rooms (`room.start`, in the API) and queues (`PlatformMatchStarter`, in the worker)
-share one sequence, `createMatch()` in `platform/apps/worker/src/play/start.ts`:
+share one sequence, `createMatch()` in `platform/packages/play/src/play/start.ts`:
 
 1. **AccessPolicy.** For rooms, the host is checked with `canHost`, and every
    other seated human with `canJoin`, again at start. For queues, every human is
@@ -282,7 +282,7 @@ Keys are compared in constant time.
 **Lost relays.** The worker's scheduler checks every 30 s for `running` matches
 that their relay has not listed in a heartbeat for 180 s
 (`LOST_MATCH_GRACE_SECONDS`, `abortMatchesOnLostRelays` in
-`apps/worker/src/play/intake.ts`). This covers a relay that died and one that
+`packages/play/src/play/intake.ts`). This covers a relay that died and one that
 restarted and forgot its matches. Such a match ends with end reason `aborted`,
 verification `not_applicable` and rating status `not_rated`, so it changes no
 rating. Its room reopens, and its players get `match.updated` with `endReason:
@@ -311,7 +311,7 @@ The API handles `queue.join`, `queue.leave` and `queue.respond`.
 
 - `queue.join` checks the sim version (`update_required`) and
   `AccessPolicy.canQueue` (`access_denied`) first, then calls `joinQueue` from
-  `@glob2/worker`.
+  `@glob2/play`.
 - Errors map to codes: guest in a rated queue → `forbidden`; already queued →
   `conflict`; decline cooldown → `rate_limited`, with `until` in `details`; unknown
   queue → `not_found`.

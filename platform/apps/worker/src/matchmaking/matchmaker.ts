@@ -19,24 +19,35 @@
 // leader cannot commit proposals or starts.
 import { randomInt, randomUUID } from 'node:crypto';
 import { sql, type Kysely, type Selectable, type Transaction } from 'kysely';
-import type { Logger, MapPoolEntry, ResolvedQueue } from '@glob2/core';
+import type { Logger, ResolvedQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
-import { systemClock, type Clock } from '../clock.ts';
-import { aiLadderRatings, ensureAccountEntity, type RatedAi } from '../ratings/entities.ts';
-import { DEFAULT_RATING, displayRating, isProvisional, matchSkill } from '../ratings/scale.ts';
 import {
+  DEFAULT_RATING,
+  aiLadderRatings,
   backfillAt,
   backfillDue,
+  displayRating,
+  ensureAccountEntity,
+  isProvisional,
+  matchSkill,
   planGroups,
   ratingWindow,
+  sendProposal,
+  systemClock,
   waitedSeconds,
+  type Clock,
+  type MatchProposal,
+  type MatchStarter,
   type PlannedGroup,
+  type ProposalSeat,
+  type QueueNotifier,
+  type RatedAi,
   type RegionRtt,
   type WaitingTicket,
-} from './grouping.ts';
-import type { QueueNotifier } from './notifier.ts';
-import { sendProposal } from './proposalView.ts';
-import type { MatchProposal, MatchStarter, ProposalSeat } from './starter.ts';
+  STORED_REGION_RTTS,
+  readMapPoolEntry,
+  tryReadStored,
+} from '@glob2/play';
 
 type Db = Kysely<Database>;
 
@@ -431,28 +442,31 @@ export class Matchmaker {
       .where('proposal_id', '=', row.id)
       .orderBy('slot')
       .execute();
-    const proposal: MatchProposal = {
-      id: row.id,
-      queueId: row.queue_id,
-      rated: row.rated,
-      backfilled: row.backfilled,
-      simVersion: row.sim_version,
-      region: row.region,
-      map: row.map as unknown as MapPoolEntry,
-      seats: seats.map((s): ProposalSeat => ({
-        slot: s.slot,
-        side: s.side,
-        kind: s.kind,
-        ...(s.ticket_id ? { ticketId: s.ticket_id } : {}),
-        ...(s.account_id ? { accountId: s.account_id } : {}),
-        ...(s.ai_id ? { ai: s.ai_id as RatedAi } : {}),
-        ratingEntityId: s.rating_entity_id,
-        mu: s.mu,
-        sigma: s.sigma,
-      })),
-    };
+    let proposal: MatchProposal;
     let matchId: string;
     try {
+      // A proposal whose stored map entry no longer decodes fails like any
+      // other start (retried, then the players are requeued).
+      proposal = {
+        id: row.id,
+        queueId: row.queue_id,
+        rated: row.rated,
+        backfilled: row.backfilled,
+        simVersion: row.sim_version,
+        region: row.region,
+        map: readMapPoolEntry(row.map),
+        seats: seats.map((s): ProposalSeat => ({
+          slot: s.slot,
+          side: s.side,
+          kind: s.kind,
+          ...(s.ticket_id ? { ticketId: s.ticket_id } : {}),
+          ...(s.account_id ? { accountId: s.account_id } : {}),
+          ...(s.ai_id ? { ai: s.ai_id as RatedAi } : {}),
+          ratingEntityId: s.rating_entity_id,
+          mu: s.mu,
+          sigma: s.sigma,
+        })),
+      };
       ({ matchId } = await this.starter.start(proposal));
     } catch (error) {
       const now = this.clock.now();
@@ -471,9 +485,9 @@ export class Matchmaker {
           .set({ status: 'failed', failure: String(error), resolved_at: now })
           .where('id', '=', row.id)
           .execute();
-        for (const seat of proposal.seats) {
-          if (!seat.ticketId || !seat.accountId) continue;
-          await this.requeue(trx, row.id, seat.ticketId, seat.accountId, 'start_failed', now);
+        for (const seat of seats) {
+          if (!seat.ticket_id || !seat.account_id) continue;
+          await this.requeue(trx, row.id, seat.ticket_id, seat.account_id, 'start_failed', now);
         }
         return true;
       });
@@ -622,7 +636,13 @@ function toTicket(row: {
     createdAt: row.created_at,
     mu: row.rating_mu ?? DEFAULT_RATING.mu,
     sigma: row.rating_sigma ?? DEFAULT_RATING.sigma,
-    regions: Array.isArray(row.region_rtts) ? (row.region_rtts as RegionRtt[]) : [],
+    regions: waitingRegions(row.region_rtts),
     allowAi: row.allow_ai_opponent,
   };
+}
+
+/** A ticket's stored region round trips; a damaged list only loses the region preference. */
+function waitingRegions(stored: unknown): readonly RegionRtt[] {
+  const decoded = tryReadStored(STORED_REGION_RTTS, stored ?? []);
+  return decoded.ok ? decoded.value : [];
 }
