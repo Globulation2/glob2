@@ -2,6 +2,7 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "LanHost.h"
+#include "NetWait.h"
 
 #include <algorithm>
 #include <chrono>
@@ -31,6 +32,9 @@ namespace
 {
 constexpr std::size_t MAX_PEERS = 32;
 constexpr unsigned FRAMES_PER_PEER_UPDATE = 512;
+/// The longest the worker sleeps with nothing due: bounds the transports' own
+/// timers (handshake, write and ping deadlines) and the discovery beacon.
+constexpr std::uint64_t IDLE_WAIT_MICROS = 100000;
 
 int seatCapacity(const RoomState& room)
 {
@@ -69,6 +73,8 @@ public:
 			h->relay->onConnect(0, nowMicros());
 			h->localInRelay = true;
 		}
+		// The relay has a presence change to broadcast.
+		h->wakeWorker();
 	}
 	void close() override
 	{
@@ -82,6 +88,7 @@ public:
 		h->localInRelay = false;
 		h->localConnected = false;
 		h->toLocal.clear();
+		h->wakeWorker();
 	}
 	bool send(const std::vector<std::uint8_t>& payload) override
 	{
@@ -90,6 +97,8 @@ public:
 			return false;
 		std::lock_guard<std::recursive_mutex> guard(h->mutex);
 		h->localFrame(payload);
+		// The relay may owe the guests a reply or a presence update now.
+		h->wakeWorker();
 		return true;
 	}
 	bool receive(std::vector<std::uint8_t>& payload) override
@@ -215,16 +224,10 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 			}
 		}
 		if (options.thread)
-			worker = std::thread([this] {
-				while (!stopping)
-				{
-					{
-						std::lock_guard<std::recursive_mutex> guard(mutex);
-						updateLocked();
-					}
-					std::this_thread::sleep_for(std::chrono::milliseconds(1));
-				}
-			});
+		{
+			waker = std::make_unique<NetWaker>();
+			worker = std::thread([this] { serve(); });
+		}
 	}
 }
 
@@ -235,11 +238,67 @@ LanHost::~LanHost()
 		close("cancelled");
 }
 
+void LanHost::serve()
+{
+	// Service the network when there is something to do: a socket is ready, the
+	// relay's next bundle or timer is due (TurnSequencer::nextWakeMicros), another
+	// thread queued work (wakeWorker), or IDLE_WAIT_MICROS passed. Where the
+	// transports cannot report readiness (Windows), netWait polls every millisecond.
+	std::vector<NetWaitHandle> handles;
+	while (!stopping)
+	{
+		std::uint64_t timeout = 0;
+		bool supported = true;
+		{
+			std::lock_guard<std::recursive_mutex> guard(mutex);
+			++wakeups;
+			if (!updateLocked())
+			{
+				handles.clear();
+				const std::uint64_t now = nowMicros();
+				const std::uint64_t until = nextWakeLocked(now, handles, supported);
+				timeout = until > now ? until - now : 0;
+			}
+		}
+		if (timeout > 0)
+			netWait(handles, waker.get(), timeout, supported);
+		else
+			std::this_thread::yield(); // let the host's own threads take the lock
+	}
+}
+
+std::uint64_t LanHost::nextWakeLocked(std::uint64_t now, std::vector<NetWaitHandle>& handles, bool& supported)
+{
+	std::uint64_t wake = now + IDLE_WAIT_MICROS;
+	auto watch = [&](NetWaitStatus status) {
+		if (status == NetWaitStatus::Ready)
+			wake = now;
+		else if (status == NetWaitStatus::Unsupported)
+			supported = false;
+	};
+	if (listener && !closed)
+		watch(listener->waitHandles(handles));
+	for (auto& entry : peers)
+		watch(entry.second.link->waitHandles(handles));
+	if (room.started && !relay && !closed)
+		wake = std::min(wake, startRequestedAt + options.loadWaitMicros);
+	if (relay)
+		wake = std::min(wake, relay->nextWakeMicros());
+	return wake;
+}
+
+void LanHost::wakeWorker()
+{
+	if (waker && worker.joinable() && worker.get_id() != std::this_thread::get_id())
+		waker->wake();
+}
+
 void LanHost::stopThread()
 {
 	if (!worker.joinable() || worker.get_id() == std::this_thread::get_id())
 		return;
 	stopping = true;
+	waker->wake();
 	worker.join();
 }
 
@@ -280,12 +339,13 @@ std::optional<std::uint32_t> LanHost::agreedChecksum(std::uint32_t tick) const
 	return relay ? relay->agreedChecksum(tick) : std::nullopt;
 }
 
-void LanHost::updateLocked()
+bool LanHost::updateLocked()
 {
 	const std::uint64_t now = nowMicros();
+	bool busy = false;
 	if (!closed)
 	{
-		accept(now);
+		busy = accept(now);
 		if (broadcaster)
 			broadcaster->update();
 	}
@@ -300,6 +360,9 @@ void LanHost::updateLocked()
 			continue;
 		for (unsigned n = 0; n < FRAMES_PER_PEER_UPDATE && !it->second.closing && it->second.link->receive(payload); ++n)
 		{
+			// More may already be buffered (TLS records, queued completions): look again
+			// before waiting.
+			busy = true;
 			handle(id, it->second, payload, now);
 			it = peers.find(id);
 			if (it == peers.end())
@@ -331,14 +394,17 @@ void LanHost::updateLocked()
 		else
 			++it;
 	}
+	return busy;
 }
 
-void LanHost::accept(std::uint64_t now)
+bool LanHost::accept(std::uint64_t now)
 {
+	bool accepted = false;
 	if (!listener)
-		return;
+		return accepted;
 	while (auto transport = listener->accept())
 	{
+		accepted = true;
 		if (peers.size() >= MAX_PEERS)
 		{
 			transport->close();
@@ -353,6 +419,7 @@ void LanHost::accept(std::uint64_t now)
 			peer.inRelay = true;
 		}
 	}
+	return accepted;
 }
 
 void LanHost::handle(Turn::PeerId id, Peer& peer, const std::vector<std::uint8_t>& payload, std::uint64_t now)
@@ -832,7 +899,10 @@ void LanHost::send(Turn::PeerId peer, const std::vector<std::uint8_t>& payload)
 	}
 	auto it = peers.find(peer);
 	if (it != peers.end() && !it->second.closing)
+	{
 		it->second.link->send(payload);
+		wakeWorker();
+	}
 }
 
 void LanHost::close(Turn::PeerId peer)
@@ -847,13 +917,18 @@ void LanHost::close(Turn::PeerId peer)
 	{
 		it->second.inRelay = false;
 		it->second.closing = true;
+		wakeWorker();
 	}
 }
 
 void LanHost::sendTo(Peer& peer, const std::vector<std::uint8_t>& payload)
 {
 	if (!peer.closing)
+	{
 		peer.link->send(payload);
+		// Writes progress when the worker polls the connection.
+		wakeWorker();
+	}
 }
 
 void LanHost::broadcast(const nlohmann::json& message)

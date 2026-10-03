@@ -88,6 +88,8 @@ namespace Lan
 		/// Sends what the transport will take now.
 		void flush();
 		bool outboxEmpty() const { return outbox.empty(); }
+		/// As NetTransport::waitHandles; Ready while whole frames wait to be received.
+		NetWaitStatus waitHandles(std::vector<NetWaitHandle>& handles) const;
 		void close();
 		std::string error() const;
 		std::string peerAddress() const;

@@ -34,6 +34,8 @@
 
 class NetBroadcaster;
 class NetTransportListener;
+class NetWaker;
+struct NetWaitHandle;
 class GameHeader;
 
 namespace Lan
@@ -84,9 +86,12 @@ namespace Lan
 		LanHost& operator=(const LanHost&) = delete;
 
 		/// Accepts guests, handles their messages, and advances the relay. The thread
-		/// calls it every millisecond; without a thread, call it often.
+		/// calls it whenever a connection is ready or the relay has work due; without
+		/// a thread, call it often.
 		void update();
 		bool threaded() const { return worker.joinable(); }
+		/// How many times the worker thread has woken (diagnostics and tests).
+		std::uint64_t workerWakeups() const { return wakeups; }
 
 		// --- Room (host player's actions) ---
 		RoomState state() const;
@@ -154,7 +159,8 @@ namespace Lan
 		void send(Turn::PeerId peer, const std::vector<std::uint8_t>& payload) override;
 		void close(Turn::PeerId peer) override;
 
-		void accept(std::uint64_t now);
+		/// True when a connection was accepted.
+		bool accept(std::uint64_t now);
 		void handle(Turn::PeerId id, Peer& peer, const std::vector<std::uint8_t>& payload, std::uint64_t now);
 		void handleRoom(Turn::PeerId id, Peer& peer, const nlohmann::json& message, std::uint64_t now);
 		void handleHello(Turn::PeerId id, Peer& peer, const nlohmann::json& message);
@@ -172,7 +178,13 @@ namespace Lan
 		void localFrame(const std::vector<std::uint8_t>& payload);
 		std::string uniqueName(const std::string& wanted) const;
 		void writeRecord();
-		void updateLocked();
+		/// One round of servicing; true when more work is ready at once.
+		bool updateLocked();
+		void serve();
+		/// When the worker must next run, collecting what it can wait on meanwhile.
+		std::uint64_t nextWakeLocked(std::uint64_t now, std::vector<NetWaitHandle>& handles, bool& supported);
+		/// Wakes the worker after another thread queued work for it.
+		void wakeWorker();
 		void stopThread();
 
 		Options options;
@@ -204,7 +216,9 @@ namespace Lan
 		bool recordWritten = false;
 
 		mutable std::recursive_mutex mutex;
+		std::unique_ptr<NetWaker> waker;
 		std::thread worker;
 		std::atomic<bool> stopping{false};
+		std::atomic<std::uint64_t> wakeups{0};
 	};
 }
