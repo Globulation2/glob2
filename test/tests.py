@@ -63,6 +63,7 @@ ENGINE_TESTS = [
     'OrderValidationTest.cpp',
     'MatchSetupTest.cpp',
     ('TurnEngineHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    ('LanIdentityTest.cpp', dict(require={'wss'})),
     ('LanMatchHarness.cpp', dict(require={'wss'}, cxxflags=['-fno-access-control'])),
     ('AISavePortabilityHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'BuildingFootprintHarness.cpp',
