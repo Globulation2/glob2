@@ -712,18 +712,6 @@ jobs:
   # and handed to the test jobs as artifacts; the test suites then run on
   # separate runners, with the Chromium suite split into shards by spec file.
 
-      - name: Summarize CI failures
-        if: always()
-        env:
-          CI_STEPS_JSON: ${{ toJSON(steps) }}
-        run: python3 test/ci_step_summary.py
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ci-observation-${{ github.job }}-${{ strategy.job-index }}
-          path: artifacts/ci-observation/
-          if-no-files-found: ignore
-
   web-build:
     name: browser build (WebAssembly)
     needs: changes
