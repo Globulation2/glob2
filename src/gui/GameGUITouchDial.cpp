@@ -20,7 +20,23 @@ using namespace GAGCore;
 
 bool GameGUITouch::usesDial() const
 {
-	return usesHUD() && !layout().persistentPanel;
+	return usesDial(layout());
+}
+
+bool GameGUITouch::usesDial(const MobileLayout &ui) const
+{
+	if (!usesHUD() || ui.persistentPanel)
+		return false;
+	// The minimum ring size preserves usable controls, but is not permission
+	// to cover the HUD or safe-area gutters. Fall back to scrolling rows when
+	// that minimum cannot fit. This policy never asks layout() to resolve itself.
+	const auto dial = dialLayout(ui);
+	const double unit = dial.geometry.unit;
+	const double radius = dial.geometry.rings[0].outer * unit;
+	const auto hud = hudLayout(ui);
+	return dial.geometry.center.y - radius >= hud.minimap.y + hud.minimap.h + 4 * unit &&
+		ui.safe.w >= radius + (InGameTouchTheme::dialChipWidth + 16) * unit &&
+		dial.chips.h >= InGameTouchTheme::dialChipHeight * unit;
 }
 
 GameGUITouch::DialLayout GameGUITouch::dialLayout(const MobileLayout &ui) const

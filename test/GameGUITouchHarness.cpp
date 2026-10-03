@@ -13,6 +13,7 @@
 #include <set>
 #include "GameGUITouch.h"
 #include <MapCamera.h>
+#include <HostViewport.h>
 #include "InGameTouchTheme.h"
 #include "GameGUIDialog.h"
 #include "LoadSaveDialog.h"
@@ -2288,6 +2289,27 @@ class GameGUITouchHarness
 			GAGCore::GraphicContext::translateMouseEvent(&resized);
 			gui.viewportResized(oldW, oldH, gfx->getW(), gfx->getH());
 			openActions(swarm);
+			if (width == 568)
+			{
+				const auto oldInsets = GAGCore::mobileSafeInsetsForTesting;
+				GAGCore::mobileSafeInsetsForTesting = GAGCore::SafeInsets{24, 20, 24, 20};
+				const auto constrained = gui.touch->layout();
+				require(!gui.touch->usesDial(), "Short safe viewport falls back to the row inspector");
+				const auto mini = gui.touch->minimapRect();
+				require(constrained.panel.y >= mini.y + mini.h &&
+					constrained.panel.y + constrained.panel.h <= constrained.actions.y &&
+					constrained.panel.x >= constrained.safe.x &&
+					constrained.panel.x + constrained.panel.w <= constrained.safe.x + constrained.safe.w,
+					"Fallback inspector clears the minimap, toolbar and safe gutters");
+				const auto content = gui.touch->panelContent();
+				require(content.h > 0 && gui.touch->buildingActionsHeight(content.w / gfx->logicalUnitsPerPoint()) *
+					gfx->logicalUnitsPerPoint() > content.h, "Constrained actions use the existing scrollable rows");
+				gui.drawAll(0);
+				gfx->printScreen("building-header-safe-fallback.bmp");
+				gfx->nextFrame();
+				GAGCore::mobileSafeInsetsForTesting = oldInsets;
+				openActions(swarm);
+			}
 			if (gui.touch->usesDial())
 			{
 				const auto ui = gui.touch->layout();

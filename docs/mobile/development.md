@@ -128,6 +128,11 @@ setting (right by default) puts these toolboxes on the left for a right thumb an
 on the right for a left thumb. `ThumbSide::toolboxLeft()` supplies that opposite
 side; the radial inspector and placement confirmation remain on the thumb side.
 
+When safe-area gutters or a short viewport leave too little room for the minimum
+thumb dial, the building inspector uses its scrollable row layout. Drawing and
+input share this fit policy; allocation controls never expand over the minimap
+to satisfy the minimum ring radius.
+
 On compact layouts the building inspector is a thumb dial: concentric quarter
 rings centred on the thumb's bottom corner. Their roles never move: workers
 (0–20) outside, production proportions or flag range in the middle, and priority

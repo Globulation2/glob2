@@ -216,6 +216,7 @@ class GameGUITouch
 		GAGCore::ViewRect box;	// Chips; a thumb-sized box around ring regions.
 	};
 	bool usesDial() const;
+	bool usesDial(const GAGCore::MobileLayout &ui) const;
 	DialLayout dialLayout(const GAGCore::MobileLayout &ui) const;
 	std::vector<DialRegion> dialRegions() const;
 	std::optional<DialRegion> dialRegionAt(GAGCore::ViewPoint point) const;
