@@ -227,7 +227,8 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 						  !(globalContainer->gfx->getOptionFlags() &
 							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
     view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
-        viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP);
+        viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP,
+        view.render.unitMotion);
 	// Prepare coverage before water, keeping scene ordering independent of the
 	// cache's storage policy. Discovery uses exactly the uncached terrain rule.
 	// Native opaque tile copies beat blending mixed-alpha chunks. Cache only

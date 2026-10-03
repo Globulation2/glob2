@@ -591,6 +591,32 @@ describe('migrations', () => {
     expect(status.every((m) => m.executedAt instanceof Date)).toBe(true);
   });
 
+  it('upgrades an existing platform database through all skin migrations', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const old = await createMigrator(existing.db).migrateTo('0017_retention');
+      expect(old.error).toBeUndefined();
+      const account = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Existing colony' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const upgraded = await migrateToLatest(existing.db);
+      expect(upgraded).toHaveLength(9);
+      expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
+      expect(
+        await existing.db
+          .selectFrom('accounts')
+          .select('display_name')
+          .where('id', '=', account.id)
+          .executeTakeFirstOrThrow(),
+      ).toEqual({ display_name: 'Existing colony' });
+      expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
+  });
+
   it('match the typed schema column for column', async () => {
     const rows = await sql<{ table_name: string; column_name: string }>`
       SELECT table_name, column_name FROM information_schema.columns

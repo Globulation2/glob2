@@ -72,13 +72,11 @@ export async function equipSkin(
         building_color: buildingColor ?? null,
       })
       .onConflict((oc) =>
-        oc
-          .column('account_id')
-          .doUpdateSet({
-            version_id: versionId,
-            building_color: buildingColor ?? null,
-            updated_at: sql`now()`,
-          }),
+        oc.column('account_id').doUpdateSet({
+          version_id: versionId,
+          building_color: buildingColor ?? null,
+          updated_at: sql`now()`,
+        }),
       )
       .execute();
   });

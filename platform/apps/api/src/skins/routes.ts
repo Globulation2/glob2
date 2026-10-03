@@ -7,7 +7,8 @@ import { sql } from 'kysely';
 import { putContent, sha256Hex } from '@glob2/core';
 import { EquipSkinRequest, PublishSkinRequest, type ColonySkinVersion } from '@glob2/protocol';
 import { requireAccount, type Identity } from '../identity.ts';
-import { body, WindowCounter } from '../http/validate.ts';
+import { body } from '../http/validate.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { equipSkin } from './equipment.ts';
 import { canonicalSkinImage } from './images.ts';
@@ -37,7 +38,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
       ),
     };
   });
-  const uploads = new WindowCounter(30, 3600000);
+  const uploads = new SharedLimit(db, 'skin-publish', 30, 3600000);
   app.put('/api/v1/skins/equipped', async (request) => {
     const { account } = await requireAccount(identity, request);
     const input = body(EquipSkinRequest, request.body);
@@ -87,7 +88,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
         throw apiError('forbidden', 'Link a recoverable account first.');
       const input = body(PublishSkinRequest, request.body);
       if (!input.name.trim()) throw apiError('bad_request', 'Choose a skin name.');
-      if (!uploads.take(account.id)) throw apiError('rate_limited', 'Too many skin uploads.');
+      await enforce(uploads, account.id, undefined, 'Too many skin uploads.');
       // Entitlement check precedes decoding and is repeated while committing.
       const checkGrant = async (query = db) => {
         const grant = await query

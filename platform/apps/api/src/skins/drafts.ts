@@ -2,13 +2,14 @@ import { randomUUID } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
 import { SaveSkinDraftRequest, type SkinDraft } from '@glob2/protocol';
 import { requireAccount, type Identity } from '../identity.ts';
-import { body, WindowCounter } from '../http/validate.ts';
+import { body } from '../http/validate.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { canonicalSkinImage } from './images.ts';
 
 export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) {
   const { db } = app.services;
-  const saves = new WindowCounter(60, 3600000);
+  const saves = new SharedLimit(db, 'skin-draft', 60, 3600000);
   app.get('/api/v1/skins/draft', async (request, reply): Promise<{ draft: SkinDraft | null }> => {
     const { account } = await requireAccount(identity, request);
     if (account.kind !== 'registered' || account.status !== 'active')
@@ -37,7 +38,7 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
       throw apiError('forbidden', 'Link an active recoverable account to sync drafts.');
     const input = body(SaveSkinDraftRequest, request.body);
     if (!input.name.trim()) throw apiError('bad_request', 'Choose a skin name.');
-    if (!saves.take(account.id)) throw apiError('rate_limited', 'Too many draft saves.');
+    await enforce(saves, account.id, undefined, 'Too many draft saves.');
     const image = await canonicalSkinImage(input.imageBase64);
     reply.header('Cache-Control', 'private, no-store');
     return db.transaction().execute(async (trx) => {

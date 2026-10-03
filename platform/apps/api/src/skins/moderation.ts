@@ -4,7 +4,8 @@ import { sql } from 'kysely';
 import type { Database } from '@glob2/db';
 import { ModerateSkinRequest, ResolveSkinReportRequest, SkinReportRequest } from '@glob2/protocol';
 import { requireAccount, requireRole, type Identity } from '../identity.ts';
-import { body, WindowCounter } from '../http/validate.ts';
+import { body } from '../http/validate.ts';
+import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 
 const uuid = (value: string) => {
@@ -19,7 +20,7 @@ const reasonOf = (value: string) => {
 
 export async function skinModerationRoutes(app: FastifyInstance, identity: Identity) {
   const { db } = app.services;
-  const reports = new WindowCounter(30, 3600000);
+  const reports = new SharedLimit(db, 'skin-report', 30, 3600000);
   const setDisabled = async (
     trx: Transaction<Database>,
     id: string,
@@ -71,7 +72,7 @@ export async function skinModerationRoutes(app: FastifyInstance, identity: Ident
         .where('id', '=', versionId)
         .executeTakeFirst();
       if (!version) throw apiError('not_found', 'Skin version not found.');
-      if (!reports.take(account.id)) throw apiError('rate_limited', 'Too many skin reports.');
+      await enforce(reports, account.id, undefined, 'Too many skin reports.');
       await db
         .insertInto('colony_skin_reports')
         .values({ version_id: versionId, reporter_account_id: account.id, reason })

@@ -2,7 +2,7 @@
 // Browser-only integration test of the production WebCrypto authorization path.
 #include "SkinAuthorization.h"
 #include <nlohmann/json.hpp>
-#include <emscripten.h>
+#include "../../browser/SkinSignature.h"
 #include <fstream>
 #include <iostream>
 

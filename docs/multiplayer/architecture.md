@@ -192,7 +192,13 @@ belong to the feature that owns them, not to the policy.
 Skin identity (`colony_skins`) is separate from immutable published paint
 (`colony_skin_versions`). Versions reference texture blobs, a model/UV layout,
 building color and manifest digest. Database triggers reject edits and deletion
-of published versions; moderation disables the parent skin.
+of published versions; moderation disables the parent skin. Blob garbage
+collection retains published textures. Account deletion removes private drafts
+and equipment, replaces owned skin names with “Deleted skin” and disables their
+paint while preserving immutable version identifiers for match history. Guest
+retention keeps accounts referenced by skin reports so moderation records remain
+valid. Publishing, draft saves and reporting use shared database rate limits
+across API replicas.
 
 `colony_skin_equipment` records a selected version. The equipment service checks
 active registered accounts, unexpired and unrevoked entitlements, and ownership
@@ -205,7 +211,8 @@ changing content. The distinct `glob2-colony-skin+jwt` type and
 `glob2-colony-renderer` audience bind account, match, team and version; they
 cannot be used as relay join tickets. `GET /api/v1/matches/:id/skins` exposes
 already frozen appearances for spectators/history without freezing new choices.
-Native consumption and payments remain under development.
+Native clients verify these assertions before downloading paint. Checkout requires
+server-side Stripe configuration; without it, purchases remain unavailable.
 
 Authenticated `GET /api/v1/skins` lists presets and the caller's versions;
 `PUT /api/v1/skins/equipped` accepts a version ID or null to restore default art,

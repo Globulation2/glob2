@@ -440,3 +440,5 @@ void browserTextInput(const void* owner,SDL_Rect rect,int width,int height,const
 }
 bool hasBrowserTextInput(const void* owner) { return browserTextCallbacks.count(owner)>0; }
 }
+
+#include "SkinSignature.h"

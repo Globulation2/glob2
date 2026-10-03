@@ -148,15 +148,13 @@ test('reports match paint and moderates it without rewriting the original', asyn
 }, info) => {
   if (!baseURL) throw new Error('A test server URL is required.');
   const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
-  await page
-    .context()
-    .addCookies([
-      {
-        name: 'glob2_session',
-        value: info.project.name === 'phone' ? seed.adminSession : seed.userSession,
-        url: baseURL,
-      },
-    ]);
+  await page.context().addCookies([
+    {
+      name: 'glob2_session',
+      value: info.project.name === 'phone' ? seed.adminSession : seed.userSession,
+      url: baseURL,
+    },
+  ]);
   const original = (await (
     await request.get(`/api/v1/matches/${seed.featuredMatch}/skins`)
   ).json()) as { colonySkins: Array<{ version: { id: string } }> };
