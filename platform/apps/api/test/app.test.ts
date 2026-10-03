@@ -13,6 +13,7 @@ import {
 } from '@glob2/core';
 import { checkDocument, simVersionKey } from '@glob2/protocol';
 import { buildApp } from '../src/app.ts';
+import { SigningKeys } from '../src/auth/keys.ts';
 
 const logger = createLogger('api-test', 'silent');
 const SIM = { versionMinor: 125, netProtocol: 49, dataHash: 'ab'.repeat(32) };
@@ -67,6 +68,7 @@ beforeAll(async () => {
     jobs,
     blobs: new FsBlobStore('/tmp/unused'),
     access: allowAllPolicy,
+    keys: SigningKeys.ephemeral(),
   });
 });
 

@@ -1340,6 +1340,24 @@ jobs:
         run: |
           python3 test/check_cli_evidence.py artifacts/cli-platforms --require-platform linux --require-platform windows
 
+      - name: Compare every --verify-match trace across Linux, Windows and WebAssembly
+        id: compare_every_verify_match_trace
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          traces = sorted(Path('artifacts/ci-traces').rglob('verify-match.checksums.txt'))
+          assert len(traces) == 6, f'Expected Linux (2), Windows and three browser traces, got {traces}'
+          reference = traces[0].read_bytes().replace(b'\r\n', b'\n')
+          assert reference.count(b'\n') > 600
+          for trace in traces[1:]:
+              assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'
+          committed = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()
+          if committed.replace(b'\r\n', b'\n') != reference:
+              print('::warning::Every platform agrees, but not with the committed trace; '
+                    'regenerate test/fixtures/multiplayer with run_tests.py --update-fixtures')
+          print('All six --verify-match traces match')
+          PY
+
       - uses: actions/download-artifact@v4
         with:
           pattern: javascript-profile-*

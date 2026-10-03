@@ -108,6 +108,15 @@ class ChangedPathsTest(unittest.TestCase):
                     deployment=False, cross_platform=True,
                 )
 
+    def test_match_record_fixture_runs_native_browser_and_comparison(self):
+        for path in ("test/fixtures/multiplayer/FourSquares1.g2mr",
+                     "test/fixtures/multiplayer/FourSquares1.verify-trace.txt"):
+            with self.subTest(path=path):
+                self.assert_jobs(
+                    [path], native=True, browser=True, map_generators=False,
+                    deployment=False, cross_platform=True,
+                )
+
     def test_golden_table_only_runs_golden_job(self):
         self.assert_jobs(
             ["test/map-generator-golden.txt"],

@@ -29,7 +29,7 @@ cutover milestone (M9), when they are deleted. There is no data import from YOG.
 
 | Part | Code | Role |
 | --- | --- | --- |
-| `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
+| `platform-api` | `platform/apps/api` | Public REST (`/api/v1`), realtime WebSocket (`/realtime`), browser sign-in pages (`/signin`, `/auth/<provider>/…`), JWKS (`/.well-known/jwks.json`), internal endpoints for relays and agents (`/internal`), health (`/healthz`, `/readyz`). Stateless; run any number of replicas. |
 | `platform-worker` | `platform/apps/worker` | Applies engine-job results (recording verify-match verdicts and applying ratings); runs the scheduler (maintenance, matchmaker, rating sweep) on the one replica holding the leader lock. |
 | `engine-agent` | `platform/apps/engine-agent` | Runs engine jobs for exactly one sim version. |
 | web app | `platform/apps/web` | Sign-in pages, invite landing, profiles, leaderboards, maps (React + Vite). |
@@ -153,6 +153,16 @@ events cover handoff completion, room state and chat, queue progress and
 match start. Room changes fan out to sockets on every API replica through
 NOTIFY (only ids and revisions travel; replicas re-read state).
 
+Implemented so far (M3): the envelope, `session.*` and `auth.handoff.*` (see
+[identity](identity.md#realtime-sessions)); other methods answer `unsupported`
+until their milestones. Each replica indexes its sockets by account, sign-in
+and pending handoff, and listens on one NOTIFY channel (`realtime`); anything
+addressed to a socket (`{t: "event", to: {account | family | connection}, …}`
+or `{t: "handoff", attemptId}`) is published there and delivered by the replica
+holding it (`platform/apps/api/src/realtime/hub.ts`). Malformed frames close
+the socket (1007/1008); a request with bad params gets a `bad_request`
+response with the schema issues in `details`.
+
 ## AccessPolicy
 
 `AccessPolicy` (`platform/packages/core/src/accessPolicy.ts`) has three checks,
@@ -172,7 +182,7 @@ database in tests.
 
 | Area | Tables |
 | --- | --- |
-| Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `entitlements`, `admin_audit_log` |
+| Identity | `accounts`, `identities`, `device_credentials`, `refresh_tokens`, `signin_attempts`, `web_sessions`, `auth_flows`, `entitlements`, `admin_audit_log` |
 | Infrastructure | `blobs`, `relays`, `engine_agents`, `engine_jobs` |
 | Rooms | `rooms` (settings JSON, revision), `room_members`, `room_seats`, `room_chat_messages` |
 | Matches | `matches` (the exact `MatchSetup`, seed, map hash, relay, verification), `match_participants`, `match_team_stats`, `match_artifacts` |

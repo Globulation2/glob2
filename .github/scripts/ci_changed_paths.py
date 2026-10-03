@@ -69,6 +69,11 @@ def classify(paths):
             # WebAssembly harness too; native-only CI would leave that boundary untested.
             native = browser = cross_platform = True
             continue
+        if path.startswith("test/fixtures/multiplayer/"):
+            # The committed match record is verified natively and in every browser,
+            # and the comparison job requires identical traces.
+            native = browser = cross_platform = True
+            continue
         if path.startswith("browser/") and browser_only(path):
             browser = True
             continue

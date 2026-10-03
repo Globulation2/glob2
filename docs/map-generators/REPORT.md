@@ -35,6 +35,7 @@ no NaN, infinity, per-tile grids, elapsed-time measurements, or simulation steps
 | `map.player_slots` | Actual colony/team count. This is what “number of players” usually means when comparing generated maps. An editor-only generator may create fewer colonies than its request's `teams` value. |
 | `map.controller_count` | Number of controller slots in `GameHeader`. A fresh generated map normally has zero; controllers are assigned later in the lobby. Multiple controllers can share one colony. |
 | `map.saved_game` | Whether the loaded header describes a saved game rather than a premade map. |
+| `map.format_version_minor` | The save-format version (`VERSION_MINOR`) the input file was written with; the executable's own for a freshly generated snapshot. Lets a platform check a map's age without parsing its header. |
 | `map.tick` | Snapshot's simulation tick. Analyzing a save does not advance it. |
 | `map.game_seed` | Seed stored in the game header. For a generated report it equals the requested generation seed. In a loaded file it is not evidence of the original generator or its settings. |
 | `map.colonies[]` | One entry per colony, in team-index order: `team`, `alive`, `start`, live object counts in `units`, and `buildings_and_flags`. |
@@ -42,7 +43,7 @@ no NaN, infinity, per-tile grids, elapsed-time measurements, or simulation steps
 | `colony.start.source` | Engine start-position source: 0 unset, 1 unit, 2 building, 3 swarm. |
 | `colony.units.workers`, `explorers`, `warriors` | Existing unit objects of each type, including units inside buildings. This differs from the pathfinding source count, which only counts ground-unit tiles currently on the map. |
 | `colony.buildings_and_flags` | Existing building objects, including flag objects and construction sites. It is not an occupied-tile count. |
-| `map.controllers[]` | Controller `slot`, assigned `team`, and raw `type`: 0 none, 1 being dropped, 2 lost, 3 network, 4 local, or 5 + the AI implementation ID. |
+| `map.controllers[]` | Controller `slot`, assigned `team`, raw `type` (0 none, 1 being dropped, 2 lost, 3 network, 4 local, or 5 + the AI implementation ID) and the player `name` stored in the header (empty when the file stores none). Saved games list the players they were saved with, which the online platform uses to map returning players onto seats. |
 
 For generation in this invocation, `generation.available` is true and includes:
 
