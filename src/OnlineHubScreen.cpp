@@ -743,10 +743,12 @@ Element OnlineHubScreen::signInPanel(const Presentation &p)
 		for (const auto &provider : data.providers)
 			if (provider.value("kind", "") != "local")
 				providers.push_back({provider.value("id", ""), provider.value("displayName", providerName(provider.value("id", "")))});
+		// Without external providers the one way in is the instance's own sign-in
+		// page: say that, rather than "Continue with Sign in in the browser".
 		if (providers.empty())
-			providers.push_back({"", tr("[hub sign in browser]")});
+			parts.push_back(button("signin/page", tr("[hub sign in browser]"), [this] { signInWith(""); }, {.primary = true, .alignLeft = true, .shortcut = SDLK_RETURN, .icon = uiIcon(UIIcon::SignIn)}));
 		for (const auto &[id, name] : providers)
-			parts.push_back(button("signin/" + (id.empty() ? std::string("page") : id), formatted("[hub continue with %0]", name), [this, id] { signInWith(id); }, {.alignLeft = true, .icon = uiIcon(UIIcon::SignIn)}));
+			parts.push_back(button("signin/" + id, formatted("[hub continue with %0]", name), [this, id] { signInWith(id); }, {.alignLeft = true, .icon = uiIcon(UIIcon::SignIn)}));
 		parts.push_back(button("signin/cancel", tr("[Cancel]"), [this] { cancelSignIn(); }, {.shortcut = SDLK_ESCAPE}));
 	}
 	else
@@ -901,8 +903,9 @@ Element OnlineHubScreen::build(const Presentation &p)
 		list.push_back(roomList(p, true));
 		if (auto recent = recentMatches(p, true))
 			list.push_back(recent);
-		list.push_back(row({button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Users), .iconSize = 16}),
-							button("maps/browse", tr("[hub maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16})},
+		// Both share the width, so a narrow phone never pushes Maps past the edge.
+		list.push_back(row({expanded(button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Users), .iconSize = 16})),
+							expanded(button("maps/browse", tr("[hub maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16}))},
 						   {p.pt(6)}));
 		Element body = overlay ? scroll("hub/overlay", overlay) : scroll("hub/scroll", column(std::move(list), {p.pt(12)}));
 		std::vector<Element> page{headline};

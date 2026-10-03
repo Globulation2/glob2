@@ -17,7 +17,6 @@
 #include <Toolkit.h>
 
 #include "AINames.h"
-#include "Engine.h"
 #include "GameHeader.h"
 #include "MapCache.h"
 #include "NetBroadcaster.h"
@@ -163,7 +162,9 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 	GameHeader header;
 	if (save)
 	{
-		const GameHeader saved = Engine::loadGameHeader(options.map.getFileName());
+		if (!options.loadSaveHeader)
+			throw std::invalid_argument("LanHost::Options::loadSaveHeader is required to host a save");
+		const GameHeader saved = options.loadSaveHeader(options.map.getFileName());
 		try
 		{
 			const auto fromSave = Online::MatchSetup::fromGameHeader(saved, options.map, setup.map, setup.simVersion);
@@ -176,8 +177,8 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 		}
 		header.setExperiments(saved.getExperiments());
 	}
-	else
-		Engine::applyLocalExperiments(header, options.map);
+	else if (options.applyExperiments)
+		options.applyExperiments(header, options.map);
 	setup.experiments = header.getExperiments().keys();
 	room.hostName = clampUtf8(options.hostName.empty() ? "Host" : options.hostName, MAX_NAME_BYTES);
 	room.mapName = options.map.getMapName();

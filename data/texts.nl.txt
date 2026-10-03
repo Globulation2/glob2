@@ -3468,6 +3468,8 @@ Vaart van de kaart
 
 [conn connections]
 
+[conn connection]
+
 [conn delay explanation %0 %1]
 
 [conn fair]
@@ -3867,6 +3869,10 @@ Vaart van de kaart
 [room uploaded map]
 
 [room waiting for %0]
+
+[room waiting for you]
+
+[room match over]
 
 [room waiting for host]
 
@@ -4573,6 +4579,8 @@ Vaart van de kaart
 [online about %0 min]
 
 [online %0 s]
+
+[online %0 min %1 s]
 
 [qm ai opponent %0]
 

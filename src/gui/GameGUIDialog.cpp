@@ -78,8 +78,9 @@ Element InGameMainScreen::build(const Presentation &p)
 		buttons.push_back(item("load", loadLabel, LOAD_GAME));
 	if(hiveMind)buttons.push_back(item("hive","Hive Mind",HIVE_MIND));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
-	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
+	// Leaving ends the list, away from the everyday choices (it asks first).
+	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
 	// Return stays pinned below the list so it is always in reach.
 	return fe::column({fe::paragraph(fe::tr("[Menu]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}),
 					   fe::footer(fe::scroll("menu/scroll", fe::column(std::move(buttons), {p.pt(8)})),

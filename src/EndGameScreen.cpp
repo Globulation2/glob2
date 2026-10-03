@@ -14,6 +14,7 @@
 #include "gui/LoadSaveDialog.h"
 #include "OnlineHandoff.h"
 #include "OnlineMatch.h"
+#include "ui/OnlineUI.h"
 #include <SDL3/SDL.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
@@ -97,6 +98,10 @@ EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
 	durationSeconds = game->stepCounter / 25;
 	if (Team *local = gui->getLocalTeam())
 	{
+		// Mark the player's own row, as the connection panel does ("Ana (you)").
+		for (auto &team : teams)
+			if (team.teamNum == local->teamNumber)
+				team.name = GAGCore::FormattableString(fe::tr("[conn you %0]")).arg(team.name);
 		const Description described = describe(*game, *local);
 		outcome = described.outcome;
 		reason = described.reason;
@@ -293,11 +298,10 @@ void EndGameScreen::setOnlineResult(std::shared_ptr<Online::OnlineMatchResult> r
 
 namespace
 {
+// The same wording as the hub's Recent matches and the profile.
 std::string minutesText(Uint32 seconds)
 {
-	if (seconds < 60)
-		return GAGCore::FormattableString(fe::tr("[results seconds %0]")).arg(seconds);
-	return GAGCore::FormattableString(fe::tr("[results minutes %0]")).arg(seconds / 60);
+	return Glob2UI::durationText(seconds);
 }
 std::string ratingText(double value)
 {
