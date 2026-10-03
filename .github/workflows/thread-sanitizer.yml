@@ -95,6 +95,9 @@ jobs:
           GLOB2_USER_DATA_DIR: ${{ runner.temp }}/tsan-profile
           GLOB2_TEST_SEED: '5'
           GLOB2_TEST_MAX_TICKS: '300'
+          # No PulseAudio: its uninstrumented mainloop thread reports races
+          # inside libpulse during audio startup, unrelated to the game threads.
+          SDL_AUDIODRIVER: dummy
           # SDL3 leaves threads it created during startup unjoined at exit; that
           # is not a race between the game's threads, so thread leaks are not reported.
           TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0

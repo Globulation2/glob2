@@ -830,7 +830,8 @@ also remains the headless default and the equivalence reference.
   `.github/workflows/thread-sanitizer.yml` runs both games under ThreadSanitizer nightly,
   on demand and on pull requests that touch the code the threads share; add paths there
   when new code becomes shared between them. It does not report thread leaks, because SDL3
-  leaves its own startup threads unjoined at exit.
+  leaves its own startup threads unjoined at exit, and uses the dummy audio driver, because
+  PulseAudio's uninstrumented mainloop thread reports races inside libpulse.
 - `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
