@@ -2,7 +2,7 @@
 
 Evidence for PRs #358, #361 and #363. `provenance.json` identifies the final stack revision and source tree.
 
-Local results: 51 Python estimator/model/telemetry tests; 573 headless unit cases; 29 focused native cases covering probability arithmetic, condition version gates, alliance outcomes, Scene copies and multiplayer verification; production CLI save/reload and parallel continuation checks; custom-game preference/replay integration and visual captures. Logs and JUnit records retain the actual results.
+Local results: 51 Python estimator/model/telemetry tests; 573 headless unit cases; 30 focused native cases covering probability arithmetic, condition version gates, alliance outcomes, Scene copies and multiplayer verification; production CLI save/reload and parallel continuation checks; custom-game preference/replay integration and visual captures. Logs and JUnit records retain the actual results.
 
 The enabled-rule golden fixture checks 65 consecutive simulation checksums through adjudication at tick 5120. It is selected for secondary native compatibility runs; foreign-platform agreement is pending hosted verification. The standard multiplayer fixture was regenerated for save format 129, protocol 52 and SIM_REVISION 2.
 
@@ -10,4 +10,6 @@ The enabled-rule golden fixture checks 65 consecutive simulation checksums throu
 
 Hosted primary GCC 13, secondary native and browser verification remain pending. The inherited coefficients have not been recalibrated against current AI/rules or human play; historical calibration claims describe the original campaign. No human gameplay review was performed by this validation run.
 
-PR #358 merged after its current ready-PR gate passed. The remaining stack was rebased onto that merge; the source tree is identical, and its 29 focused native cases were rerun successfully. Both revisions and tree identifiers are recorded in provenance.
+PR #358 merged after its current ready-PR gate passed. The remaining stack was rebased onto that merge and refreshed against master 5c46e832b, whose source inventory and engine initialization changes overlap the stack. The client and all test harnesses rebuilt successfully; all local checks above were rerun except the unchanged Python suites. The focused native JUnit file contains 30 native cases plus the preference/engine/replay integration case.
+
+Final review found that assigning an early probability loser could change inputs for later teams. The retained failing regression log demonstrates the original error; the fixed regression passes all six orderings of three teams. New probability losses are masked while deciding a sample, with physically dead and other-condition losses still excluded. No cache or saved state was added.

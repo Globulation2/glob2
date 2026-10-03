@@ -1,4 +1,4 @@
-PASS glob2-unit-tests (573 cases) (6.2s)
+PASS glob2-unit-tests (573 cases) (6.3s)
 
-1 passed, 0 failed, 12 skipped (6.2s of test time)
+1 passed, 0 failed, 12 skipped (6.3s of test time)
 [run_tests] JUnit report: artifacts/probability-unit.xml (585 cases)
