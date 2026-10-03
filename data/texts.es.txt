@@ -1,5 +1,11 @@
 [AI strategy]
 Estrategia IA
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Equilibra crecimiento sostenible y entrenamiento y después reúne ejércitos en oleadas.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Elige una partida
 Elige un mapa
 [clear area]
 Limpiar área
+[farm area]
+Cultivar área
 [Clearing:]
 Limpiando:
 [clearingflag explanation 2]
@@ -748,6 +756,8 @@ Seleccionar Posada
 Seleccionar Mercado
 [select place clearing area]
 Marcar área de limpieza
+[select place farm area]
+Marcar área de cultivo
 [select place clearingflag]
 Colocar bandera de limpieza
 [select place explorationflag]
@@ -3116,6 +3126,8 @@ Prohibido
 Vigilar
 [Clear]
 Despejar
+[Farm]
+Cultivar
 [Paint]
 Pintar
 [Erase]
@@ -3286,6 +3298,10 @@ Experimentos
 Equilibrio de zonas de guardia
 [experiment guard-area-balancing help]
 Los guerreros libres se reparten entre las zonas de guardia pintadas en lugar de ir todos a la más cercana: una zona más grande recibe más, y una zona saturada se vacía poco a poco hacia las demás.
+[experiment farm-areas]
+Áreas de cultivo
+[experiment farm-areas help]
+Añade un área de cultivo a los pinceles de zona. Los trabajadores que cosechan dentro de una toman de la casilla más madura del campo conectado y dejan un grano en cada casilla, de modo que el campo vuelve a crecer en lugar de ser devorado desde el borde. La madera que crece dentro se tala.
 [settings Touch scrolling]
 Desplazamiento táctil
 [settings List momentum]

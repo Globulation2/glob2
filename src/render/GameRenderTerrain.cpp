@@ -451,6 +451,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isForbiddenInDisplayedView, areaAnimationTick, ForbiddenArea, view.render);
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isGuardAreaInDisplayedView, areaAnimationTick, GuardArea, view.render);
 		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isClearAreaInDisplayedView, areaAnimationTick, ClearingArea, view.render);
+		drawMapArea(left, top, right, bot, sw, sh, viewportX, viewportY, localTeam, drawOptions, sceneMap, &SceneMap::isFarmAreaInDisplayedView, areaAnimationTick, FarmArea, view.render);
 		for (int y=top; y<bot; y++)
 			for (int x=left; x<right; x++)
 			{
@@ -493,6 +494,7 @@ void Game::drawMapArea(int left, int top, int right, int bot, int sw,
 		case ClearingArea: sprite = globalContainer->areaClearing; c = GAGCore::Color(255,255,0); break;
 		case ForbiddenArea: sprite = globalContainer->areaForbidden; c = GAGCore::Color(255,0,0); break;
 		case GuardArea: sprite = globalContainer->areaGuard; c = GAGCore::Color(0,0,255); break;
+		case FarmArea: sprite = globalContainer->areaFarm; c = GAGCore::Color(0,200,80); break;
 		default: assert(false);
 	}
 	// Zoomed out, the pattern is noise and a one-pixel outline is most of a

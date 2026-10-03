@@ -1,5 +1,11 @@
 [AI strategy]
 Стратегија ВИ
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Уравнотежује одржив раст и обуку, а затим окупља војске у таласе.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Caps Lock
 Избор мапе
 [clear area]
 Област чишћења
+[farm area]
+Област узгоја
 [Clearing:]
 Чишћење:
 [clearingflag explanation 2]
@@ -746,6 +754,8 @@ Scroll Lock
 Изабери зграду: Пијаца
 [select place clearing area]
 Постави област: Област чишћења
+[select place farm area]
+Постави област: Област узгоја
 [select place clearingflag]
 Постави заставу чишћења
 [select place explorationflag]
@@ -3116,6 +3126,8 @@ Emoji
 Чувај
 [Clear]
 Очисти
+[Farm]
+Њива
 [Paint]
 Цртај
 [Erase]
@@ -3286,6 +3298,10 @@ Emoji
 Уравнотежење зона страже
 [experiment guard-area-balancing help]
 Слободни ратници се распоређују између обележених зона страже уместо да сви иду у најближу: већа зона добија више ратника, а препуна зона се постепено празни у остале.
+[experiment farm-areas]
+Области узгоја
+[experiment farm-areas help]
+Додаје област узгоја четкицама зона. Радници који жању у њој узимају са најзрелијег поља повезане њиве и на сваком пољу остављају по једно зрно, па њива поново расте уместо да буде поједена од ивице. Дрво које урасте у област се сече.
 [settings Touch scrolling]
 Померање додиром
 [settings List momentum]

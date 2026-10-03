@@ -1,5 +1,11 @@
 [AI strategy]
 MI-stratégia
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Egyensúlyozza a fenntartható növekedést és képzést, majd hullámokba gyűjti seregeit.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Válassz egy játékot
 Válassz egy térképet
 [clear area]
 Tisztítási terület
+[farm area]
+Termesztési terület
 [Clearing:]
 Tisztítás:
 [clearingflag explanation 2]
@@ -746,6 +754,8 @@ Zászló kijelölése: Felderítő zászló
 Épület kijelölése: Piac
 [select place clearing area]
 Terület elhelyezése: Tisztítási terület
+[select place farm area]
+Terület elhelyezése: Termesztési terület
 [select place clearingflag]
 Zászló elhelyezése: Tisztító zászló
 [select place explorationflag]
@@ -3116,6 +3126,8 @@ Tiltott
 Őrzés
 [Clear]
 Tisztítás
+[Farm]
+Termesztés
 [Paint]
 Festés
 [Erase]
@@ -3286,6 +3298,10 @@ Kísérletek
 Őrterületek kiegyensúlyozása
 [experiment guard-area-balancing help]
 A szabad harcosok eloszlanak a kijelölt őrterületek között ahelyett, hogy mind a legközelebbibe mennének: a nagyobb terület többet kap belőlük, a túlzsúfolt terület pedig fokozatosan a többibe ürül.
+[experiment farm-areas]
+Termesztési területek
+[experiment farm-areas help]
+Termesztési területet ad a zónaecsetekhez. A benne arató munkások az összefüggő mező legérettebb mezejéről vesznek, és minden mezőn hagynak egy szemet, így a mező újranő ahelyett, hogy a szélétől felélnék. A területre benövő fát kivágják.
 [settings Touch scrolling]
 Érintéses görgetés
 [settings List momentum]

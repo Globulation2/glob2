@@ -303,7 +303,6 @@ private:
 		int nextGuiStep;      ///< Fast-forward draw countdown
 		Sint64 needToBeTime;  ///< Expected elapsed time for pacing, in ms
 		Uint64 startTime;
-		unsigned frameNumber;
 		bool wasReadyLastTick;
 		bool adjustableGameSpeed; ///< Speed presets apply; live network games stay at GAME_TICK_MS
 	};
@@ -325,7 +324,7 @@ private:
 	/// game.syncStep. Called only from inside the !hardPause branch.
 	void executeOrdersAndStep(bool readyNow);
 
-	void drawFrame(MainLoopState& st, bool everyFrame = false);
+	void drawFrame(MainLoopState& st, bool everyFrame = false, const Scene* scene = nullptr);
 
 	/// Turn games: pumps the session each frame and handles its requests (reload,
 	/// desync flag). Called first in stepSessionImpl.

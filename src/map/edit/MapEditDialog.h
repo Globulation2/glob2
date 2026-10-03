@@ -14,6 +14,7 @@ class Game;
 class MapEditMenuScreen : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "map_edit_menu"; }
 	MapEditMenuScreen();
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
@@ -38,6 +39,7 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 class AskForTextInput : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "ask_for_text_input"; }
 	enum
 	{
 		OK,
@@ -66,6 +68,7 @@ class AskForTextInput : public Glob2UI::InGameDialog
 class TeamsEditor : public Glob2UI::InGameDialog
 {
   public:
+	const char *recordingId() const override { return "teams_editor"; }
 	explicit TeamsEditor(Game *game);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	///Rebuilds the game's GameHeader from scratch out of the slot state

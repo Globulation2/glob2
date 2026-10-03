@@ -30,9 +30,10 @@ dated reports and pull-request artifacts do not belong here.
   [network telemetry](development/network-telemetry.md),
   [save continuation](development/savegame-continuation.md), and the
   [historical architecture overview](development/legacy-architecture.txt).
-- **Features:** [custom-game setup](features/custom-game-setup/README.md),
+- **Features:** [gameplay footage and automatic chapters](features/gameplay-recording.md), [custom-game setup](features/custom-game-setup/README.md),
   [experimental features](features/experimental-features.md) and the
-  [guard-area balancing](features/guard-area-balancing.md) experiment,
+  [guard-area balancing](features/guard-area-balancing.md) and
+  [farm areas](features/farm-areas.md) experiments,
   [map previews](features/pre-game-map-preview.md),
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).

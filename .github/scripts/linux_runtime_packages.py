@@ -52,6 +52,10 @@ def main():
     packages = set()
     binaries = []
     for path in sorted(args.root.rglob('*')):
+        # Configure probes belong to the compiler cache, not the runtime
+        # artifact. Restored probes can reference obsolete SDK libraries.
+        if path.relative_to(args.root).parts[0] == 'configure':
+            continue
         if path.is_file():
             with path.open('rb') as source:
                 elf = source.read(4) == b'\x7fELF'

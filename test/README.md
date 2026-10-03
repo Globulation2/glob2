@@ -1149,6 +1149,15 @@ the default game's per-100-tick checksums with
 one-local-player header and seed they need. Design and numbers:
 [guard-area balancing](../docs/features/guard-area-balancing.md).
 
+`FarmAreas` (`glob2-engine-tests`, `python3 test/run_tests.py --filter
+'FarmAreas/*'`) covers the `farm-areas` experiment on the real `Map` and engine:
+the ripest-tile source, empty gaps, exhausted fields, the seed grain, wood and
+algae, another team's area, the original harvest off a farm, clearing targets,
+growth ignoring the mask, the brush refusing ground that cannot grow, the order
+being rejected and a painted mask being inert without the experiment, workers
+keeping every tile of a farmed field alive, and a save/load round trip. Design:
+[farm areas](../docs/features/farm-areas.md).
+
 ## JavaScript
 
 See the [scripting guide](../docs/development/javascript.md) and
@@ -1462,3 +1471,12 @@ the immutable copy and its lightweight in-memory representation; encoding includ
 final array/history packing, offset relocation and hashing. The benchmark flattens
 the finished output for section-independent measurement, so its process peak is
 not an isolated allocation bound for the production writer.
+
+## Gameplay recording
+
+The `GameplayRecording` unit suite checks lifecycle failures, output protection,
+and decoded callback audio bursts. `GameplayRecording.Integration` compares serial
+and threaded recordings against unrecorded per-tick baselines.
+Set `GLOB2_TEST_FFMPEG=ffmpeg` to also encode real video/audio and chapter fixtures.
+Run `python3 test/test_recording_tool.py` for manifest selection and extraction
+argument tests. See [gameplay recording](../docs/features/gameplay-recording.md).

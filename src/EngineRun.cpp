@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
 #include <ApplicationHost.h>
@@ -315,12 +316,16 @@ void Engine::executeOrdersAndStep(bool readyNow)
 	}
 }
 
-void Engine::drawFrame(MainLoopState& st, bool everyFrame)
+void Engine::drawFrame(MainLoopState& st, bool everyFrame, const Scene* scene)
 {
     GAGCore::ApplicationHost::matchFrame(gui.gamePaused);
 	const bool renderedFrame = everyFrame || st.nextGuiStep == 0;
 	if (renderedFrame)
 	{
+		// A threaded client records the immutable scene it presents, rather than
+		// reading the live simulation's tick or timing from the rendering thread.
+		GAGCore::Recording::recorder().matchFrame(scene ? scene->tick : gui.game.stepCounter,
+				gui.gamePaused || gui.hardPause, scene ? int(scene->tickInterval) : st.speed);
 		gui.drawAll(gui.localTeamNo);
 		{
 			PERF_SCOPE_TIME(Present);
@@ -329,21 +334,6 @@ void Engine::drawFrame(MainLoopState& st, bool everyFrame)
 		PerformanceTelemetry::collector().presented();
 	}
 
-	if (renderedFrame)
-		saveVideoshot(st);
-}
-
-void Engine::saveVideoshot(MainLoopState& st)
-{
-	// if required, save videoshot
-	if (!(globalContainer->videoshotName.empty()) &&
-		!(globalContainer->gfx->getOptionFlags() & GraphicContext::USEGPU)
-		)
-	{
-		FormattableString fileName = FormattableString("videoshots/%0.%1.bmp").arg(globalContainer->videoshotName).arg(st.frameNumber++, 10, 10, '0');
-		printf("printing video shot %s\n", fileName.c_str());
-		globalContainer->gfx->printScreen(fileName.c_str());
-	}
 }
 
 void Engine::drawSession(bool everyFrame)
@@ -361,7 +351,7 @@ void Engine::drawSession(bool everyFrame)
     if (!scene)
         return;
     gui.setPublishedScene(scene);
-    drawFrame(*session, true);
+    drawFrame(*session, true, scene);
 }
 
 bool Engine::startSimulationThread(Uint64 now)
@@ -814,7 +804,7 @@ void Engine::reloadTurnInitialState()
 //   5. (gate flip) readyNow = net->tickReady()
 //   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
 //   7. automatic-ending step-count check
-//   8. drawSession / sessionDelay  - draw, videoshot, host pacing
+//   8. drawSession / sessionDelay  - draw, gameplay capture, host pacing
 //   9. handleExitRequest           - drain on exit request
 //
 // Track order readiness separately for the previous and current ticks.
@@ -836,6 +826,10 @@ void Engine::beginSession(Uint64 now)
     session = st;
     randomRequirement.emplace();
     automaticGameStartTick = now;
+	if (!globalContainer->runNoX)
+		GAGCore::Recording::recorder().beginMatch(
+			globalContainer->replaying ? "replay" : (turn ? "multiplayer" : "single_player"),
+			gui.game.mapHeader.getMapName(), gui.localTeamNo, gui.game.stepCounter);
 	auto &perf = PerformanceTelemetry::collector();
 	if (!perf.enabled && !perf.started)
 		perf.reset();

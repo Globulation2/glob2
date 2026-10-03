@@ -1,7 +1,10 @@
+#ifndef __EMSCRIPTEN__
+#include <SDL3_net/SDL_net.h>
+#endif
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2007 Stephane Magnenat & Luc-Olivier de Charrière
 
-
+#include <GameplayRecording.h>
 #include <Toolkit.h>
 #include <GAG.h>
 #include <GUIBase.h>
@@ -95,6 +98,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 
 GlobalContainer::~GlobalContainer(void)
 {
+	GAGCore::Recording::recorder().shutdown();
 	// unlink GUI style
 	if (!runNoX)
 		delete Style::style;
@@ -105,6 +109,13 @@ GlobalContainer::~GlobalContainer(void)
 	mix.reset();
 	voiceRecorder.reset();
 	title.reset();
+
+	// SDL_net owns resolver threads and conditions. Join them before the
+	// graphics backend calls SDL_Quit and destroys SDL thread resources.
+#ifndef __EMSCRIPTEN__
+	if (networkInitialized)
+		NET_Quit();
+#endif
 
 	// release resources
 	Toolkit::close();
@@ -278,6 +289,7 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	areaClearing = Toolkit::getSprite("data/gfx/area-clearing");
 	areaForbidden = Toolkit::getSprite("data/gfx/area-forbidden");
 	areaGuard = Toolkit::getSprite("data/gfx/area-guard");
+	areaFarm = Toolkit::getSprite("data/gfx/area-farm");
 	bullet = Toolkit::getSprite("data/gfx/bullet");
 	bulletExplosion = Toolkit::getSprite("data/gfx/explosion");
 	deathAnimation = Toolkit::getSprite("data/gfx/death"); 

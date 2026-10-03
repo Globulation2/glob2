@@ -110,6 +110,9 @@ void Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 		case ORDER_ALTER_CLEAR_AREA:
 			executeAlterClearArea(*std::static_pointer_cast<OrderAlterClearArea>(order), localPlayer);
 			break;
+		case ORDER_ALTER_FARM_AREA:
+			executeAlterFarmArea(*std::static_pointer_cast<OrderAlterFarmArea>(order), localPlayer);
+			break;
 		case ORDER_MODIFY_SWARM:
 			if (!isPlayerAlive) break;
 			executeModifySwarm(*std::static_pointer_cast<OrderModifySwarm>(order), localPlayer);
@@ -354,13 +357,13 @@ void Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 
 void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer)
 {
-	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
-		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
-	assert(oaa.type == BrushTool::MODE_ADD || oaa.type == BrushTool::MODE_DEL);
+	if (!isValidAlterArea(oaa)) return;
 	const bool adding = oaa.type == BrushTool::MODE_ADD;
 	const Uint32 oldGeneration = map.topologyGeneration;
 	const Uint32 teamMask = teams[oaa.teamNumber]->me;
 	bool changed = false, walkingChanged = false, clearingChanged = false;
+	// A farm area is a clearing goal too, but only in a game with farm areas.
+	const Uint32 clearingMask = map.farmAreasEnabled() ? ~Uint32(0) : 0;
 	size_t maskIndex = 0;
 	for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; ++y)
 		for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; ++x, ++maskIndex)
@@ -372,7 +375,7 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 				changed = true;
 				// Resources already block walking, but can be harvesting/clearing goals.
 				walkingChanged |= tile.resource.type == NO_RES_TYPE;
-				clearingChanged |= (tile.clearArea & teamMask) != 0;
+				clearingChanged |= ((tile.clearArea | (tile.farmArea & clearingMask)) & teamMask) != 0;
 				if (adding) map.addForbidden(x, y, oaa.teamNumber);
 				else map.removeForbidden(x, y, oaa.teamNumber);
 			}
@@ -409,97 +412,71 @@ void Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 		map.updateClearAreasGradient(oaa.teamNumber);
 }
 
+namespace
+{
+// Sets (MODE_ADD) or clears (MODE_DEL) the order's team bit in one per-tile area
+// mask, Tile::*field, on every cell the order's brush covers, and mirrors the
+// change into the local player's displayed view. Cells `paintable` refuses are
+// skipped when adding; erasing always applies. The caller has checked the team
+// and the mode.
+template <typename Paintable>
+void alterAreaMask(Map& map, const OrderAlterArea& oaa, bool local, Uint32 Tile::*field,
+	Utilities::BitArray& view, Paintable paintable)
+{
+	const bool adding = oaa.type == BrushTool::MODE_ADD;
+	const Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
+	size_t orderMaskIndex = 0;
+	for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
+		for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++, orderMaskIndex++)
+		{
+			if (!oaa.mask.get(orderMaskIndex) || (adding && !paintable(x, y)))
+				continue;
+			const size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
+			if (adding)
+				map.tiles[index].*field |= teamMask;
+			else
+				map.tiles[index].*field &= ~teamMask;
+			if (local)
+				view.set(index, adding);
+		}
+}
+
+bool anyTile(int, int) { return true; }
+}
+
+bool Game::isValidAlterArea(const OrderAlterArea& oaa) const
+{
+	return oaa.teamNumber < mapHeader.getNumberOfTeams() && teams[oaa.teamNumber] &&
+		(oaa.type == BrushTool::MODE_ADD || oaa.type == BrushTool::MODE_DEL);
+}
+
 void Game::executeAlterGuardArea(const OrderAlterGuardArea& oaa, int localPlayer)
 {
-	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
-		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
-	if (oaa.type == BrushTool::MODE_ADD)
-	{
-		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
-		size_t orderMaskIndex = 0;
-		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
-			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
-			{
-				if (oaa.mask.get(orderMaskIndex))
-				{
-					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
-					// Update real map
-					map.tiles[index].guardArea |= teamMask;
-					// Update local map
-					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedGuardAreaView.set(index, true);
-				}
-				orderMaskIndex++;
-			}
-	}
-	else if (oaa.type == BrushTool::MODE_DEL)
-	{
-		Uint32 notTeamMask = ~Team::teamNumberToMask(oaa.teamNumber);
-		size_t orderMaskIndex = 0;
-		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
-			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
-			{
-				if (oaa.mask.get(orderMaskIndex))
-				{
-					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
-					// Update real map
-					map.tiles[index].guardArea &= notTeamMask;
-					// Update local map
-					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedGuardAreaView.set(index, false);
-				}
-				orderMaskIndex++;
-			}
-	}
-	else
-		assert(false);
+	if (!isValidAlterArea(oaa)) return;
+	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
+		&Tile::guardArea, map.displayedGuardAreaView, anyTile);
 	map.updateGuardAreasGradient(oaa.teamNumber);
 }
 
 void Game::executeAlterClearArea(const OrderAlterClearArea& oaa, int localPlayer)
 {
-	if (oaa.teamNumber >= mapHeader.getNumberOfTeams() || !teams[oaa.teamNumber] ||
-		(oaa.type != BrushTool::MODE_ADD && oaa.type != BrushTool::MODE_DEL)) return;
-	if (oaa.type == BrushTool::MODE_ADD)
-	{
-		Uint32 teamMask = Team::teamNumberToMask(oaa.teamNumber);
-		size_t orderMaskIndex = 0;
-		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
-			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
-			{
-				if (oaa.mask.get(orderMaskIndex))
-				{
-					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
-					// Update real map
-					map.tiles[index].clearArea |= teamMask;
-					// Update local map
-					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedClearAreaView.set(index, true);
-				}
-				orderMaskIndex++;
-			}
-	}
-	else if (oaa.type == BrushTool::MODE_DEL)
-	{
-		Uint32 notTeamMask = ~Team::teamNumberToMask(oaa.teamNumber);
-		size_t orderMaskIndex = 0;
-		for (int y=oaa.centerY+oaa.minY; y<oaa.centerY+oaa.maxY; y++)
-			for (int x=oaa.centerX+oaa.minX; x<oaa.centerX+oaa.maxX; x++)
-			{
-				if (oaa.mask.get(orderMaskIndex))
-				{
-					size_t index = (x&map.wMask)+(((y&map.hMask)<<map.wDec));
-					// Update real map
-					map.tiles[index].clearArea &= notTeamMask;
-					// Update local map
-					if (oaa.teamNumber == players[localPlayer]->teamNumber)
-						map.displayedClearAreaView.set(index, false);
-				}
-				orderMaskIndex++;
-			}
-	}
-	else
-		assert(false);
+	if (!isValidAlterArea(oaa)) return;
+	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
+		&Tile::clearArea, map.displayedClearAreaView, anyTile);
+	map.updateClearAreasGradient(oaa.teamNumber);
+}
+
+// A farm area (the farm-areas experiment) only changes what a harvest draws
+// from and what counts as a clearing target, so it feeds no gradient of its
+// own. It refuses ground nothing can grow on here rather than only in the
+// brush, since this is the path a replay and every remote client take.
+void Game::executeAlterFarmArea(const OrderAlterFarmArea& oaa, int localPlayer)
+{
+	if (!gameHeader.hasExperiment(ExperimentId::FarmAreas) || !isValidAlterArea(oaa)) return;
+	alterAreaMask(map, oaa, oaa.teamNumber == players[localPlayer]->teamNumber,
+		&Tile::farmArea, map.displayedFarmAreaView,
+		[this](int x, int y) { return map.canPaintFarmArea(x, y); });
+	// A farm is a clearing goal for everything it does not grow.
 	map.updateClearAreasGradient(oaa.teamNumber);
 }
 

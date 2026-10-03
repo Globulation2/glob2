@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <GameplayRecording.h>
 #include <ApplicationHost.h>
 #include <algorithm>
 #include <sstream>
@@ -142,6 +143,12 @@ void UIScreen::updateExecution(Uint32 tick)
 {
 	if (!run)
 		return;
+	const int state = int(GAGCore::Recording::recorder().status().state);
+	if (state != recordingState)
+	{
+		recordingState = state;
+		hostValue.invalidate();
+	}
 	lastTick = tick;
 	refreshPresentation();
 	Screen::updateExecution(tick);
@@ -203,6 +210,7 @@ void UIScreen::drawExecution()
 {
 	if (!run || !gfx)
 		return;
+	GAGCore::Recording::recorder().screen(recordingId());
 	paintFrame(lastTick);
 	gfx->nextFrame();
 }
@@ -274,6 +282,12 @@ void UIDialog::update(Uint32 tick)
 {
 	if (done)
 		return;
+	const int state = int(GAGCore::Recording::recorder().status().state);
+	if (state != recordingState)
+	{
+		recordingState = state;
+		hostValue.invalidate();
+	}
 	onUpdate(tick);
 	refreshPresentation();
 	hostValue.update(tick);
@@ -296,6 +310,7 @@ void UIDialog::draw(Uint32 tick)
 {
 	if (!surface || done)
 		return;
+	GAGCore::Recording::recorder().dialog(recordingId());
 	refreshPresentation();
 	hostValue.layoutIfNeeded();
 	surface->setClipRect();

@@ -1,5 +1,11 @@
 [AI strategy]
 AI-strategi
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Balancerer bæredygtig vækst og træning og samler derefter hære i bølger.
 [AIMaxima-Profile]
@@ -250,6 +256,8 @@ Vælg et spil
 Vælg et kort
 [clear area]
 Rydningsområde
+[farm area]
+Dyrkningsområde
 [Clearing:]
 Rydning:
 [clearingflag explanation 2]
@@ -818,6 +826,8 @@ Vælg Kro
 Vælg marked
 [select place clearing area]
 Placér rydningsområde
+[select place farm area]
+Placér dyrkningsområde
 [select place clearingflag]
 Placér flag: Rydningsflag
 [select place explorationflag]
@@ -3192,6 +3202,8 @@ Forbudt
 Bevogt
 [Clear]
 Ryd
+[Farm]
+Dyrk
 [Paint]
 Mal
 [Erase]
@@ -3362,6 +3374,10 @@ Eksperimenter
 Balancering af vagtområder
 [experiment guard-area-balancing help]
 Frie krigere fordeler sig mellem de malede vagtområder i stedet for alle at tage det nærmeste: et større område får flere af dem, og et overfyldt område tyndes ud til de andre.
+[experiment farm-areas]
+Dyrkningsområder
+[experiment farm-areas help]
+Tilføjer et dyrkningsområde til områdepenslerne. Arbejdere, der høster i et, tager fra det mest modne felt i den sammenhængende mark og efterlader ét korn på hvert felt, så marken vokser igen i stedet for at blive ædt fra kanten. Træ, der vokser ind i området, bliver ryddet.
 [settings Touch scrolling]
 Berøringsrulning
 [settings List momentum]

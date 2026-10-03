@@ -1,5 +1,11 @@
 [AI strategy]
 Strategie AI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Vyvažuje udržitelný růst a výcvik a poté shromažďuje armády do vln.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Výběr hry
 Výběr mapy
 [clear area]
 Oblast čištění
+[farm area]
+Oblast farmy
 [Clearing:]
 Vyčištění:
 [clearingflag explanation 2]
@@ -746,6 +754,8 @@ Vybrat budovu: Hospoda
 Vybrat budovu: Tržiště
 [select place clearing area]
 Umístit oblast: Oblast čištění
+[select place farm area]
+Umístit oblast: Oblast farmy
 [select place clearingflag]
 Umístit vlajku: Čisticí prapor
 [select place explorationflag]
@@ -3116,6 +3126,8 @@ Zakázáno
 Hlídat
 [Clear]
 Vyčistit
+[Farm]
+Farma
 [Paint]
 Malovat
 [Erase]
@@ -3286,6 +3298,10 @@ Experimenty
 Vyvažování strážních oblastí
 [experiment guard-area-balancing help]
 Volní bojovníci se rozdělí mezi vyznačené strážní oblasti, místo aby všichni šli do nejbližší: větší oblast jich dostane více a přeplněná oblast se postupně vyprázdní do ostatních.
+[experiment farm-areas]
+Oblasti farem
+[experiment farm-areas help]
+Přidá k zónovým štětcům oblast farmy. Dělníci, kteří v ní sklízejí, berou z nejzralejšího políčka propojeného pole a na každém políčku nechají jedno zrno, takže pole znovu doroste, místo aby bylo vyjedeno od okraje. Dřevo, které do farmy proroste, se vykácí.
 [settings Touch scrolling]
 Dotykové posouvání
 [settings List momentum]

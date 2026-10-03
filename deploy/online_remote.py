@@ -159,8 +159,16 @@ def main(argv=None):
     parser.add_argument('--hours', type=float, default=3, help='add-key: lifetime of the key (default 3)')
     parser.add_argument('--connect-timeout', type=float, default=120,
                         help='run: seconds to keep retrying a failed connection')
-    parser.add_argument('arguments', nargs='*')
+    # Everything after `--` goes to the host script. Split it off before
+    # parsing: argparse rejects positionals after `--` once an option has
+    # come between them and the command.
+    argv = list(sys.argv[1:] if argv is None else argv)
+    remote = []
+    if '--' in argv:
+        split = argv.index('--')
+        argv, remote = argv[:split], argv[split + 1:]
     args = parser.parse_args(argv)
+    args.arguments = remote
     for name in ('project', 'zone', 'instance', 'user'):
         if not getattr(args, name):
             parser.error(f'--{name} (or GLOB2_ONLINE_{name.upper() if name != "user" else "SSH_USER"}) is required')

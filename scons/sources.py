@@ -546,6 +546,9 @@ RELAY_GAG_SOURCES = (
 )
 
 GAG_SOURCES = (
+    'GameplayRecording.cpp',
+    'RecordingMetadata.cpp',
+    'RecordingProcess.cpp',
     'PerformanceTelemetry.cpp',
     'BackgroundFileWriter.cpp',
     'Sha1.cpp',

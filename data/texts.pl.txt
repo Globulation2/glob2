@@ -1,5 +1,11 @@
 [AI strategy]
 Strategia SI
+[start recording]
+
+[stop recording]
+
+[finalizing recording]
+
 [AIMaxima-Summary]
 Równoważy trwały wzrost i szkolenie, a następnie zbiera armie w fale.
 [AIMaxima-Profile]
@@ -192,6 +198,8 @@ Wybierz grę
 Wybierz mapę
 [clear area]
 Oczyszczany obszar
+[farm area]
+Uprawiany obszar
 [Clearing:]
 Czyszczenie
 [clearingflag explanation 2]
@@ -748,6 +756,8 @@ Wybierz Gospodę
 Wybierz Bazar
 [select place clearing area]
 Wyznacz teren oczyszczania
+[select place farm area]
+Wyznacz teren uprawy
 [select place clearingflag]
 Ustaw flagę oczyszczania
 [select place explorationflag]
@@ -3116,6 +3126,8 @@ Zakaz
 Strzeż
 [Clear]
 Oczyść
+[Farm]
+Uprawa
 [Paint]
 Maluj
 [Erase]
@@ -3286,6 +3298,10 @@ Eksperymenty
 Równoważenie stref straży
 [experiment guard-area-balancing help]
 Wolni wojownicy rozdzielają się między namalowane strefy straży, zamiast wszyscy iść do najbliższej: większa strefa dostaje ich więcej, a przepełniona strefa stopniowo opróżnia się do pozostałych.
+[experiment farm-areas]
+Obszary uprawy
+[experiment farm-areas help]
+Dodaje obszar uprawy do pędzli stref. Robotnicy zbierający w nim plony biorą z najdojrzalszego pola połączonego łanu i zostawiają jedno ziarno na każdym polu, więc łan odrasta zamiast być zjadany od brzegu. Drewno wrastające w obszar jest wycinane.
 [settings Touch scrolling]
 Przewijanie dotykiem
 [settings List momentum]
