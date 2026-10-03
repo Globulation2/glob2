@@ -292,6 +292,9 @@ namespace Turn
 		bool stallShown = false;
 		std::uint64_t stallSince = 0;
 		std::uint64_t jitterQuietUntil = 0;
+		/// The relay's next round trips to this seat may still be ones it measured
+		/// across the gap; until then the own row uses this client's fresh Ping.
+		std::uint64_t ownRelayRttFrom = 0;
 
 		JitterEstimator jitter;
 		JitterBuffer buffer;

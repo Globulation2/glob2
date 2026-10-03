@@ -1380,13 +1380,24 @@ TEST_SUITE("TurnSession")
 			b.horizonTick = ++q.horizon;
 			q.link.deliver(b);
 		}
+		// The relay's own measurement of this seat spans the gap too.
+		SeatLatency staleRelay;
+		staleRelay.seats.push_back({0, 4000000});
+		q.link.deliver(staleRelay);
 		q.session.update(back);
 		CHECK_FALSE(q.session.linkStalled());
 		CHECK(q.session.rttMicros() < 1 * SECOND); // the stale pong measured the gap, not the link
+		CHECK(q.session.seatPresenceInfo(0).relayRttMicros == 0);
 		q.at = back;
 		q.steady(3 * SECOND);
 		CHECK(q.session.jitterMicros() < 5 * MS);
 		CHECK(q.session.targetTicks() <= steadyTarget + 1);
+		q.steady(1 * SECOND);
+		SeatLatency fresh;
+		fresh.seats.push_back({0, 40000});
+		q.link.deliver(fresh);
+		q.bundle(q.at + TICK_PERIOD);
+		CHECK(q.session.seatPresenceInfo(0).relayRttMicros == 40000);
 	}
 
 	TEST_CASE("an older relay that refuses version 2 is offered version 1 once")

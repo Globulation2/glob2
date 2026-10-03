@@ -218,6 +218,9 @@ void TurnSession::forgetLinkHistory()
 	pingsInFlight.clear();
 	// The relay's next SeatLatency measures the link again.
 	seatRtt.fill(0);
+	rtt = 0;
+	if (maxSeenHorizon > 0)
+		ownRelayRttFrom = now + config.stallMicros + config.pingIntervalMicros * 4;
 }
 
 void TurnSession::handle(const NetMessage& message)
@@ -260,7 +263,8 @@ void TurnSession::handle(const NetMessage& message)
 	case MSG_SEAT_LATENCY:
 		seatRtt.fill(0);
 		for (const auto& p : static_cast<const SeatLatency&>(message).seats)
-			seatRtt[p.seat] = p.rttMicros;
+			if (p.seat != seat || now >= ownRelayRttFrom)
+				seatRtt[p.seat] = p.rttMicros;
 		break;
 	case MSG_DESYNC_NOTICE:
 		onDesync(static_cast<const DesyncNotice&>(message));
