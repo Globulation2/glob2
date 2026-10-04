@@ -1212,7 +1212,9 @@ The API uses `MAP_STRIPE_SECRET_KEY` and `MAP_STRIPE_WEBHOOK_SECRET`; the option
 worker alone uses `MAP_OPENAI_API_KEY`. Run the Compose profile with
 `docker compose --profile ai-maps up -d --build`. The worker image contains Python,
 Pillow, native assets, generator descriptions and a matching engine binary. Its
-sources and binary must come from the same engine build context. Existing engine
+sources and binary must come from the same engine build context. The image sets
+`BLOB_DIR=/var/lib/glob2/blobs`, matching the shared blob volume mounted by
+Compose; generated checkpoints must not use the read-only image filesystem. Existing engine
 agents consume `import-ai-map` jobs; the platform worker applies their results.
 
 Expose the signed Stripe webhook at `/api/v1/map-studio/stripe`. Checkout return

@@ -198,7 +198,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
     && rm -rf /var/lib/apt/lists/*
 COPY --from=engine-source /src/map/generator/generators /opt/glob2/share/src/map/generator/generators
 COPY --from=engine-source /.agents/skills/glob2-map-design/references /opt/glob2/share/.agents/skills/glob2-map-design/references
-ENV GLOB2_SOURCE_DIR=/opt/glob2/share
+ENV GLOB2_SOURCE_DIR=/opt/glob2/share \
+    BLOB_STORE=fs \
+    BLOB_DIR=/var/lib/glob2/blobs
 USER 10001:10001
 CMD ["node", "apps/ai-map-worker/src/main.ts"]
 
