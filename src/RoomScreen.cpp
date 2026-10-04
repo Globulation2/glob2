@@ -1023,7 +1023,7 @@ Element RoomScreen::build(const Presentation &p)
 		if (available.w < ctx.presentation.pt(820))
 			return column({expanded(left, 3), expanded(stackedRight, 2)}, {ctx.presentation.pt(10)});
 		// Short windows (a landscape tablet with large text) scroll the side too.
-		return row({expanded(left, 3), expanded(available.h < ctx.presentation.pt(560) ? stackedRight : right, 2)},
+		return row({expanded(left, 3), expanded(available.h < ctx.presentation.textPt(560) ? stackedRight : right, 2)},
 				   {ctx.presentation.pt(16), CrossAlign::Stretch});
 	});
 	std::vector<Element> status{caption(room->setupSummary())};

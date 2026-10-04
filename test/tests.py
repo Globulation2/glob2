@@ -58,7 +58,7 @@ ENGINE_TESTS = [
     'GameGUISelectionHarness.cpp',
     'SceneExtractTest.cpp',
     'GameDiagnosticsTest.cpp',
-    'WinProbabilityTest.cpp',
+    ('WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'HiringBucketHarness.cpp',
     'HungryDefeatHarness.cpp',

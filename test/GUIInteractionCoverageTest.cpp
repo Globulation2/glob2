@@ -74,6 +74,7 @@ TEST_SUITE("GUIInteractionCoverage")
             .discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
         auto& gui=world.gui; gui.localTeamNo=0; gui.localPlayer=0; gui.localTeam=world.team;
         auto* inn=world.addBuilding("inn",4,4);
+        gui.init();
         gui.setSelection(GameGUI::BUILDING_SELECTION,inn);
         gui.drawAll(0); // The menu describes the scene currently drawn.
         const int original=inn->maxUnitWorking;

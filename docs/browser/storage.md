@@ -136,7 +136,9 @@ and browser use the same screen transition. A browser transaction failure or
 quota exhaustion retains Settings with Retry and Continue and a visible failure
 message. Continue retains the live changes without claiming a durable save;
 it does not roll back files already written to the local filesystem, and later
-background persistence may save them. Done waits for an acknowledgement covering
+background persistence may save them. After a failed flush, another edit or an
+explicit retry starts the next attempt; a timer does not remove Continue while
+the player is pressing it. Done waits for an acknowledgement covering
 the latest preferences and keyboard writes, including edits made during an earlier
 flush. Completion of that earlier flush cannot close the screen.
 

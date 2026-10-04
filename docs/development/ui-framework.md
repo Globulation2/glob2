@@ -191,8 +191,9 @@ framework:
 - `menu()`: on pointer hosts a narrow panel of 300-point body-font buttons
   with the Escape action pinned at the bottom; on touch hosts a grid of large
   actions.
-- `actions(items, p)`: content-sized body-font buttons at the right; on touch
-  hosts a wrapping grid of large buttons.
+- `actions(items, p)`: content-sized body-font buttons at the right, wrapping
+  when their measured labels exceed the available width; on touch hosts a
+  wrapping grid of large buttons.
 - `pageTitle()` and `hint()`: see Typography.
 - `animation()` and `mapPreview()` (hosts a `MapPreview` in a canvas).
 

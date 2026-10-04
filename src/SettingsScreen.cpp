@@ -396,7 +396,9 @@ void SettingsScreen::onTimer(Uint32 tick)
 				// may also need rewriting if this state was reached because
 				// the browser evicted storage mid-session.
 				settingsDirty = keyboardDirty[0] = keyboardDirty[1] = true;
-				saveAt = tick + 300;
+				// Wait for another edit or an explicit retry. Repeating a failed
+				// flush on a timer removes Continue while it is being clicked.
+				saveAt = 0;
 			}
 			persistence.reset();
 			invalidate();

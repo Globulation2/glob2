@@ -404,6 +404,11 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 {
 	glob2test::HeadlessGlobals globals(
 		{.display = true, .loadStrings = true, .width = 1000, .height = 800});
+	// GameGUI owns the client and saves its state during destruction, so its
+	// borrowed storage and platform must outlive the GUI.
+	Online::MemoryStorage storage;
+	Online::InstanceConfig config(storage);
+	Online::PlatformClient platform(config);
 	struct
 	{
 		GameGUI gui;
@@ -418,9 +423,6 @@ TEST_CASE("Hive Mind commander panel [display]" * doctest::test_suite("HiveMindP
 	world.gui.adjustLocalTeam();
 	world.gui.viewportX = (world.gui.game.teams[0]->startPosX - 12) & world.gui.game.map.getMaskW();
 	world.gui.viewportY = (world.gui.game.teams[0]->startPosY - 8) & world.gui.game.map.getMaskH();
-	Online::MemoryStorage storage;
-	Online::InstanceConfig config(storage);
-	Online::PlatformClient platform(config);
 	Hive::ClientEnvironment environment;
 	environment.storage = &storage;
 	unsigned commandPosts = 0, stopPosts = 0;
