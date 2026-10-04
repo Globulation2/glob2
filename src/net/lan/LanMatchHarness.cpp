@@ -14,6 +14,10 @@
 // The engines share one process and one GlobalContainer. Each keeps its own
 // synchronized RNG stream, swapped in while it runs, as TurnEngineHarness does.
 
+// Asio must precede SDL headers so Windows uses WinSock2, not WinSock.h.
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/ip/tcp.hpp>
+
 #include "EngineFixtures.h"
 #include "Environment.h"
 #include "ScopedEnvironment.h"
@@ -30,8 +34,6 @@
 #include <random>
 #include <sstream>
 #include <thread>
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/ip/tcp.hpp>
 
 #include <FormatableString.h>
 #include <StringTable.h>
