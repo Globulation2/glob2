@@ -1,5 +1,5 @@
 Name:           glob2
-Version:        0.10.0.0
+Version:        0.10.0.1
 Release:        1%{?dist}
 Summary:        Real time strategy game with automatic unit task assignment
 License:        GPL-3.0-or-later
@@ -98,6 +98,9 @@ scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}"
 %{_datadir}/icons/hicolor/*/apps/glob2.png
 
 %changelog
+* Sun Oct 04 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.10.0.1-1
+- Build the pinned SDL3 libraries in Linux, Snap, Flatpak and RPM packages
+
 * Sat Oct 03 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.10.0.0-1
 - Online multiplayer, new AI and statistics features, interface themes and complete translations
 
