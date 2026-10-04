@@ -1,5 +1,5 @@
 const {clickCreateMap}=require('./editor-controls');
-const {editTextField,clickControl}=require('./main-menu');
+const {editTextField,clickControl,control}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
@@ -30,6 +30,9 @@ for(const fault of ['quota','aborted transaction']) test(`editor save before qui
   await clickControl(page,'ok');
   await expect.poll(async()=>(await state(page)).persistence).toBe('failed');
   await screen(page,'MapEditorScreen');
+  // Auto-persistence can fail while the background map encoder is still
+  // running. Export is offered only after this save's operation finishes.
+  await control(page,'export');
   const digest=()=>page.evaluate(()=>glob2Diagnostics.mapDigest('Editor_durability.map.gz'));
   const local=await digest();expect(local).not.toBeNull();
   const downloadEvent=page.waitForEvent('download');await clickControl(page,'export');
