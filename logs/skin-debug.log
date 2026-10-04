@@ -1,0 +1,261 @@
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:18] "GET / HTTP/1.1" 200 -
+
+Running 1 test using 1 worker
+
+(node:2230788) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:19] "GET /test-host-ddc254ef-a033-47c5-9674-2f06c6f9b8a2.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:19] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:19] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:19] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:19] "GET /assets/core.b816167349d2accf.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:19] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:20] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:23] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:24] "GET /assets/skins-1.1b46c97e0303b531.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:24] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:24] "GET /assets/skins-2.85e98e9573cd6907.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:24] "GET /assets/translations-1.4f7c85dcfe04bee6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:24] "GET /assets/skins-3.68ec86d000cdccc0.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:24] "GET /assets/translations-2.12c8234a49df100b.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:25] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:25] "GET /assets/skins-4.b84e4ed34500a17f.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:25] "GET /assets/skins-5.027c4f5ff3a364e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:25] "GET /assets/music-sets-1.0dc5ba6c190dc2fa.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:25] "GET /assets/skins-6.9162c46c1a6ab662.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:25] "GET /assets/music-sets-2.d3815cc6e865e3bc.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/skins-7.90d0fb8799c14ba7.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/music-sets-3.08b6be56b144a83d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/music-sets-4.304475fed333d760.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/skins-8.93724036aefc90e5.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/music-sets-5.42b893e898e8fd72.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/skins-9.9069fdb7dc94c2ef.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:26] "GET /assets/music-sets-6.f3d5a92d6b51aca1.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:27] "GET /assets/music-sets-7.fa5c4af58fa83c63.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:27] "GET /assets/skins-10.eeec5b14febea9f1.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:28] "GET /assets/hd-1.880f04addc35c5d4.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:28] "GET /assets/hd-2.36b53a214578643c.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:28] "GET /assets/hd-3.083ef8ce34b7ad01.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:13:29] "GET /assets/hd-4.88ad97cceabe5e57.data HTTP/1.1" 200 -
+SKIN_DEBUG {
+  state: {
+    version: 1,
+    executionMode: 'serial',
+    threadFallback: 'serial requested',
+    workerCount: 0,
+    renderer: 'webgl2',
+    renderContext: { width: 1200, height: 900, error: 0 },
+    contextLost: false,
+    contextRestores: 0,
+    screen: 'match',
+    screenClass: '17GameSessionScreen',
+    roomCanStart: false,
+    customGameReady: false,
+    tick: 1497,
+    frames: 2182,
+    loop: 2270,
+    paused: false,
+    torus: false,
+    torusSettled: false,
+    width: 1200,
+    height: 900,
+    restore: 'ready',
+    watchReplay: 'none',
+    import: 'idle',
+    persisting: false,
+    persistence: 'persisted',
+    audio: 'inactive',
+    assets: {
+      core: 'ready',
+      game: 'ready',
+      skins: 'ready',
+      'font-cjk': 'ready',
+      'menu-music': 'ready',
+      translations: 'ready',
+      music: 'ready',
+      'music-sets': 'ready',
+      hd: 'ready'
+    },
+    opened: [],
+    controls: {}
+  },
+  env: '/data/skins/colony-v1',
+  paint: 4424,
+  draws: 774423,
+  shaders: [
+    'attribute vec4 a_position;\n' +
+      'attribute vec4 a_color;\n' +
+      'varying vec4 v_color;\n' +
+      'attribute vec4 a_texCoord0;\n' +
+      'varying vec4 v_texCoord0;\n' +
+      'uniform mat4 u_modelView;\n' +
+      'uniform mat4 u_projection;\n' +
+      'void main()\n' +
+      '{\n' +
+      '  vec4 ecPosition = u_modelView * a_position;\n' +
+      '  gl_Position = u_projection * ecPosition;\n' +
+      '  v_color = a_color;\n' +
+      '  v_texCoord0 = a_texCoord0;\n' +
+      '}\n',
+    'precision mediump float;\n' +
+      'varying vec4 v_texCoord0;\n' +
+      'uniform sampler2D u_texUnit0;\n' +
+      'varying vec4 v_color;\n' +
+      'void main()\n' +
+      '{\n' +
+      '  vec4 tej_env0_result = v_color * texture2D(u_texUnit0, v_texCoord0.xy);\n' +
+      '  \n' +
+      '  gl_FragColor = tej_env0_result;\n' +
+      '}\n',
+    'attribute vec4 a_position;\n' +
+      'attribute vec4 a_color;\n' +
+      'varying vec4 v_color;\n' +
+      'uniform mat4 u_modelView;\n' +
+      'uniform mat4 u_projection;\n' +
+      'void main()\n' +
+      '{\n' +
+      '  vec4 ecPosition = u_modelView * a_position;\n' +
+      '  gl_Position = u_projection * ecPosition;\n' +
+      '  v_color = a_color;\n' +
+      '}\n',
+    'precision mediump float;\n' +
+      'varying vec4 v_color;\n' +
+      'void main()\n' +
+      '{\n' +
+      '  gl_FragColor = v_color;\n' +
+      '}\n',
+    'attribute vec4 a_position;\n' +
+      'attribute vec4 a_color;\n' +
+      'varying vec4 v_color;\n' +
+      'uniform mat4 u_modelView;\n' +
+      'uniform mat4 u_projection;\n' +
+      'void main()\n' +
+      '{\n' +
+      '  vec4 ecPosition = u_modelView * a_position;\n' +
+      '  gl_Position = u_projection * ecPosition;\n' +
+      '  v_color = a_color;\n' +
+      '}\n',
+    'precision mediump float;\n' +
+      'varying vec4 v_color;\n' +
+      'void main()\n' +
+      '{\n' +
+      '  gl_FragColor = v_color;\n' +
+      '}\n',
+    '#version 300 es\n' +
+      'precision highp float;\n' +
+      'layout(location=0) in vec3 position;layout(location=1) in vec3 surfaceNormal;layout(location=2) in vec2 texcoord;\n' +
+      'out vec2 uv;out vec3 normal;void main(){uv=texcoord;normal=surfaceNormal;gl_Position=vec4(position.xy/1.25,position.z,1.0);}\n',
+    '#extension GL_OES_standard_derivatives : enable\n' +
+      '#version 300 es\n' +
+      'precision highp float;\n' +
+      'uniform sampler2D paint;uniform sampler2D material;uniform vec2 region;in vec2 uv;in vec3 normal;out vec4 color;\n' +
+      '\n' +
+      '// BEGIN skin-material\n' +
+      'float skinHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }\n' +
+      'float skinNoise(vec2 p) {\n' +
+      '  vec2 i = floor(p);\n' +
+      '  vec2 f = fract(p);\n' +
+      '  vec2 s = f * f * (3.0 - 2.0 * f);\n' +
+      '  return mix(mix(skinHash(i), skinHash(i + vec2(1.0, 0.0)), s.x),\n' +
+      '             mix(skinHash(i + vec2(0.0, 1.0)), skinHash(i + vec2(1.0, 1.0)), s.x), s.y);\n' +
+      '}\n' +
+      '// The original glob material bumps its normals with Stucci noise (norfac 5).\n' +
+      'float skinStucci(vec2 p) { return skinNoise(p) + 0.5 * skinNoise(p * 2.03 + 17.0); }\n' +
+      'vec3 skinBump(vec3 n, vec2 uv, float amount, float frequency) {\n' +
+      '  float e = 0.25 / frequency;\n' +
+      '  float h = skinStucci(uv * frequency);\n' +
+      '  float gu = (skinStucci((uv + vec2(e, 0.0)) * frequency) - h) / e;\n' +
+      '  float gv = (skinStucci((uv + vec2(0.0, e)) * frequency) - h) / e;\n' +
+      '  // Express the UV height gradient in screen directions, independent of resolution.\n' +
+      '  vec2 du = vec2(dFdx(uv.x), dFdy(uv.x));\n' +
+      '  vec2 dv = vec2(dFdx(uv.y), dFdy(uv.y));\n' +
+      '  float density = max(0.5 * (length(du) + length(dv)), 1e-6);\n' +
+      '  vec2 g = amount * (gu * du + gv * dv) / density;\n' +
+      '  // Stretched UV regions exaggerate the gradient; keep the tilt bounded.\n' +
+      '  g *= min(1.0, 0.7 / max(length(g), 1e-6));\n' +
+      '  return normalize(n - vec3(g, 0.0));\n' +
+      '}\n' +
+      "// Material ids come from the skin's material map: 0 classic glossy,\n" +
+      '// 1 matte, 2 metallic, 3 hairy (shell fur adds strands in extra passes).\n' +
+      'vec3 skinShade(vec3 albedo, float material, vec3 surfaceNormal, vec2 uv) {\n' +
+      '  vec3 n = normalize(surfaceNormal);\n' +
+      '  vec3 l = normalize(vec3(-0.4, 0.7, 1.0));\n' +
+      '  vec3 h = normalize(l + vec3(0.0, 0.0, 1.0));\n' +
+      '  if (material < 0.5) {\n' +
+      '    // The original glob material: Stucci-bumped body and broad white streaks\n' +
+      '    // (specular 0.5, hardness 2), lit like the classic sprites.\n' +
+      '    vec3 b = skinBump(n, uv, 0.08, 12.0);\n' +
+      '    float nh = max(0.0, dot(b, h));\n' +
+      '    return albedo * (0.24 + 0.66 * max(0.0, dot(b, l))) + vec3(0.42 * pow(nh, 4.0));\n' +
+      '  }\n' +
+      '  if (material < 1.5) {\n' +
+      '    return albedo * (0.45 + 0.55 * max(0.0, dot(n, l)));\n' +
+      '  }\n' +
+      '  if (material < 2.5) {\n' +
+      '    // Metal: albedo-tinted reflection of a sky/ground gradient, a tight\n' +
+      '    // highlight and a brightening rim.\n' +
+      '    vec3 b = skinBump(n, uv, 0.015, 20.0);\n' +
+      '    float facing = max(0.0, b.z);\n' +
+      '    float nh = max(0.0, dot(b, h));\n' +
+      '    vec3 sky = mix(vec3(0.18), vec3(1.0), smoothstep(-0.6, 0.8, b.y));\n' +
+      '    float rim = pow(1.0 - facing, 3.0);\n' +
+      '    vec3 tint = mix(albedo, vec3(1.0), 0.3 * rim);\n' +
+      '    return tint * (0.12 + 0.2 * max(0.0, dot(b, l)) + 0.75 * sky) + vec3(pow(nh, 40.0));\n' +
+      '  }\n' +
+      '  // Hairy: soft, wrapped diffuse with a light fringe.\n' +
+      '  float wrap = max(0.0, (dot(n, l) + 0.5) / 1.5);\n' +
+      '  float fringe = pow(1.0 - max(0.0, n.z), 2.0);\n' +
+      '  return albedo * (0.35 + 0.65 * wrap) + albedo * 0.35 * fringe;\n' +
+      '}\n' +
+      '// END skin-material\n' +
+      'void main(){vec2 atlasUv=uv*0.5+region;float id=floor(texture(material,atlasUv).r*255.0+0.5);color=vec4(skinShade(texture(paint,atlasUv).rgb,id,normal,uv),1.0);}\n'
+  ],
+  logs: [
+    'readlink() error: No such file or directory',
+    `Settings::load("preferences.txt") : error, can't open file.`,
+    'WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports',
+    "SoundMixer : File data/zik/original/a1.ogg can't be opened for reading.",
+    "SoundMixer : File data/zik/original/a2.ogg can't be opened for reading.",
+    "SoundMixer : File data/zik/original/a3.ogg can't be opened for reading.",
+    'Map generation: fingerprint revision 4 seed 1042685401 [complete]: ',
+    'selecting music dir orchestral-dawn'
+  ]
+}
+  ✘  1 [chromium] › tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (1.4m)
+
+
+  1) [chromium] › tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 5
+    Received:   0
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      114 |   await clickCustomGameStart(page);
+      115 |   await expect.poll(async () => (await state()).screen, {timeout:120000}).toContain('match');
+    > 116 |   try { await expect.poll(() => page.evaluate(() => globalThis.skinDraws), {timeout:60000}).toBeGreaterThan(5); } catch(e) { console.log('SKIN_DEBUG', await page.evaluate(() => ({state:glob2Diagnostics.snapshot(),env:ENV.GLOB2_SKIN_PREVIEW_DIR,paint:FS.stat('/data/skins/colony-v1/paint.png').size,draws:skinAllDraws,shaders:skinShaderSources,logs:Module.browserLog}))); throw e; }
+          |                                                                                             ^
+      117 |   const manifest = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../data/skins/colony-v1/manifest.json'), 'utf8'));
+      118 |   for (const name of ['worker-walk.gsk', 'swarm.gsk'])
+      119 |     await expect.poll(() => page.evaluate(() => globalThis.skinMeshCounts), {timeout:60000}).toContain(manifest.meshes[name].triangles * 3);
+        at /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/browser/tests/colony-skins.spec.js:116:93
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/skin-debug/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/skin-debug/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/skin-debug/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/skin-debug/colony-skins-live-colony-m-60eea-survive-context-restoration-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration 

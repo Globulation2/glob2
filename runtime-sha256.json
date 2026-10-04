@@ -1,0 +1,8 @@
+{
+  "index.js": "b82133b0301e9d5115ffe3ae7f0da180233f1b8881a8ed600abc793e5868542d",
+  "index.js.unpatched": "906cb04ed947332c977e5f77b5ed9cb1e0779c5a80d07732cde9a701e7107d75",
+  "threaded/index.js": "7f5e7fef3025facf35b987c1757a54c8b3b1fae6bc48568af4f896e6d9f17cb8",
+  "threaded/index.js.unpatched": "80c23ff3c7860098bf4f28e7e96f7e587bc0fc8ad6db076bc80a93767c59b79e",
+  "index.wasm": "554707607f8ffe726ded58b3f4850997a2aa5611978858ccaa4b238a22e06928",
+  "threaded/index.wasm": "50acbdbefdbc48082d0cae6f017b85cedfbd8587b513ebbf7c458d003d3dc7b8"
+}
