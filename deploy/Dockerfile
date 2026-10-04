@@ -24,7 +24,7 @@ COPY . /
 
 FROM ${UBUNTU_IMAGE} AS cpp-deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates git g++ make python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev \
+    ca-certificates git g++ make nasm python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev \
     libboost-dev libssl-dev zlib1g-dev \
     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
