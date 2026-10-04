@@ -144,7 +144,7 @@ class FFmpegVideoEncoder final : public VideoEncoder
 	std::vector<unsigned char> padded;
 	bool hardwareFrames = false;
   public:
-	FFmpegVideoEncoder(const VideoConfiguration &configuration, const char *name) : configuration(configuration)
+	FFmpegVideoEncoder(const VideoConfiguration &configuration, const char *name, const std::string &devicePath = {}) : configuration(configuration)
 	{
 		encoder = codec(avcodec_find_encoder_by_name(name));
 		auto &c = *encoder;
@@ -192,7 +192,7 @@ class FFmpegVideoEncoder final : public VideoEncoder
 			{
 				av_dict_set(&options.value, "rc_mode", "VBR", 0);
 				AVBufferRef *device = nullptr;
-				check(av_hwdevice_ctx_create(&device, AV_HWDEVICE_TYPE_VAAPI, nullptr, nullptr, 0), "Open VAAPI device");
+				check(av_hwdevice_ctx_create(&device, AV_HWDEVICE_TYPE_VAAPI, devicePath.empty() ? nullptr : devicePath.c_str(), nullptr, 0), "Open VAAPI device");
 				Owned<AVBufferRef> ownedDevice(device);
 				Owned<AVBufferRef> pool(av_hwframe_ctx_alloc(device));
 				if (!pool) throw std::bad_alloc();
@@ -290,8 +290,23 @@ std::unique_ptr<VideoEncoder> createVideoEncoder(const VideoConfiguration &confi
 	std::string failures = reason;
 	for (auto name : candidates)
 	{
-		try { auto encoder = std::make_unique<FFmpegVideoEncoder>(configuration, name); encoder->fallbackReason(failures); return encoder; }
-		catch (const std::exception &e) { if (!failures.empty()) failures += "; "; failures += std::string(name) + ": " + e.what(); }
+		std::vector<std::string> devices{std::string()};
+#if defined(__linux__) && !defined(__EMSCRIPTEN__)
+		if (std::strcmp(name,"h264_vaapi") == 0 && avcodec_find_encoder_by_name(name))
+		{
+			std::error_code error;
+			std::vector<std::string> nodes;
+			for (std::filesystem::directory_iterator entry("/dev/dri",error), end;
+				!error && entry != end; entry.increment(error))
+				if (entry->path().filename().string().starts_with("renderD")) nodes.push_back(entry->path().string());
+			if (!nodes.empty()) { std::sort(nodes.begin(),nodes.end()); devices = std::move(nodes); }
+		}
+#endif
+		for (const auto &device : devices)
+		{
+			try { auto encoder = std::make_unique<FFmpegVideoEncoder>(configuration, name, device); encoder->fallbackReason(failures); return encoder; }
+			catch (const std::exception &e) { if (!failures.empty()) failures += "; "; failures += std::string(name) + (device.empty() ? "" : " ("+device+")") + ": " + e.what(); }
+		}
 	}
 	auto software = std::make_unique<FFmpegVideoEncoder>(configuration, "libx264");
 	software->fallbackReason(std::move(failures));
