@@ -158,6 +158,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	std::optional<Invite> trustPrompt;
 	// An invite that waits for the client to reach its instance.
 	std::optional<Invite> pendingInvite;
+	std::string mapLaunchOrigin;
 	bool fetchingStats = false;
 	// New rooms are listed in Open rooms (Play with friends' toggle); invite-only by default.
 	bool listRoom = false;

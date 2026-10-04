@@ -320,11 +320,24 @@ LAN guests store the maps they download from a host in the same cache.
 | `?join=<code>` | the web client's page; the instance is the page's origin |
 | `--join <link or code> [--instance <origin>]` | command line; a bare code without `--instance` means the official instance |
 
-"Play this map" on a web map page opens `/play/?map=<mapId>&version=<sha256>&title=<title>`;
-the browser shell passes `--room-map <mapId> <sha256> <title>`, which keeps the catalog
-map (`Online::useMapInRoom`) for the next online room the player hosts. The game opens
-Online and says so; the room screen takes the kept map once it is the host
-(`Online::takePendingRoomMap`).
+"Play this map" opens a dialog with two illustrated choices. **Play Locally in
+Custom Game** downloads the selected catalog version into the verified map cache
+and opens Custom Game with it loaded; **Play in Multiplayer** connects to the
+instance and creates an invite-only room with that catalog map in the initial
+`room.create` request. Neither choice starts a match automatically.
+
+Both use `/play/?map=<mapId>&version=<sha256>&title=<title>&mode=<local|multiplayer>`.
+The browser shell passes `--local-map` or `--room-map <mapId> <sha256> <title>` with
+`--instance <origin>`. A missing mode on an older map link means multiplayer.
+The dialog also offers **Open in installed app** for each choice, using
+`glob2://play?instance=<origin>&map=<mapId>&version=<sha256>&title=<title>&mode=<mode>`.
+Desktop URL handlers, Android intents and iOS URL events accept the same intent;
+the official mobile apps also associate `/play/*` HTTPS links. A running main
+menu, online hub or local Custom Game screen accepts a launch immediately; a
+launch received during a match or room waits until the player leaves it. Multiplayer
+launches retain the existing instance trust and authentication checks. Local
+fetches send credentials only when the linked origin is the current client's
+origin; inaccessible private maps report a download failure in Custom Game.
 
 A link becomes the **pending join** (`Online::pendingJoin()`,
 `takePendingJoin()` in `InviteLink.h`). The online hub takes it, asks for trust

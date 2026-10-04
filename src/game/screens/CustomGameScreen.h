@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "CustomGameRules.h"
+#include "OnlineHandoff.h"
+#include "MapCache.h"
 #include "CustomGameSetup.h"
 #include "ScriptLibrary.h"
 #include "MapHeader.h"
@@ -74,6 +76,7 @@ class CustomGameScreen : public Glob2UI::Screen
 	// Hands over the generated map's serialized bytes (null for a premade map),
 	// which the loader reads directly instead of this screen ever holding them.
 	std::shared_ptr<std::string> releaseSnapshot();
+	void loadCatalogMap(const Online::MapPlayRequest &request);
 	void launchFailed()
 	{
 		message = "Could not launch this map. Your setup is retained; try again.";
@@ -111,6 +114,9 @@ class CustomGameScreen : public Glob2UI::Screen
 	friend struct CustomGameSetupHarness;
 	GAGGUI::ScreenStack &screens;
 	CustomGameSetup setup;
+	std::unique_ptr<Online::MapCache::Download> catalogDownload;
+	std::optional<Online::MapPlayRequest> catalogRequest;
+	void beginCatalogDownload();
 	MapHeader mapHeader;
 	GameHeader gameHeader;
 	std::string username, source, message;

@@ -14,6 +14,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="glob2" android:host="join" />
+                <data android:scheme="glob2" android:host="play" />
             </intent-filter>
             <!-- App Link for the official instance only (scons/official_instance.py fills
                  officialInstanceHost); verified through https://<host>/.well-known/assetlinks.json. -->
@@ -22,6 +23,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" android:host="${officialInstanceHost}" android:pathPrefix="/j/" />
+                <data android:scheme="https" android:host="${officialInstanceHost}" android:pathPrefix="/play/" />
             </intent-filter>
         </activity>
     </application>

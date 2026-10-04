@@ -431,6 +431,32 @@ void OnlineHubScreen::onTimer(Uint32 tick)
 	watchSearch();
 	syncFromClient();
 	refresh(false);
+	if (!mapLaunchOrigin.empty() && (!Online::pendingMapPlay() || Online::pendingMapPlay()->mode == Online::MapPlayRequest::Mode::Local))
+	{
+		mapLaunchOrigin.clear();
+		trustPrompt.reset();
+		pendingInvite.reset();
+	}
+	if (const auto &play = Online::pendingMapPlay(); play && play->mode == Online::MapPlayRequest::Mode::Multiplayer)
+	{
+		if (mapLaunchOrigin != play->origin)
+		{
+			trustPrompt.reset();
+			pendingInvite.reset();
+			mapLaunchOrigin = play->origin;
+			acceptInvite(play->origin, "");
+		}
+		if (!trustPrompt && canPlay() && client().origin() == play->origin)
+		{
+			auto request = Online::takePendingMapPlay();
+			mapLaunchOrigin.clear();
+			pendingInvite.reset();
+			const auto setup = Online::defaultRoomSetup(2, 0);
+			enterRoom(Online::PlatformRoom::create(client(), Online::services().maps, Online::services().storage,
+				formatted("[hub room name %0]", data.displayName), false, setup, false, request->map));
+			return;
+		}
+	}
 	// Invite links that arrived while the game runs (or at launch) land here.
 	if (!trustPrompt)
 		if (auto invite = Online::takePendingJoin())
@@ -440,7 +466,8 @@ void OnlineHubScreen::onTimer(Uint32 tick)
 	{
 		const std::string code = pendingInvite->code;
 		pendingInvite.reset();
-		joinByCode(code);
+		if (!code.empty())
+			joinByCode(code);
 	}
 }
 
@@ -569,7 +596,8 @@ void OnlineHubScreen::acceptInvite(const std::string &origin, const std::string 
 			pendingInvite = Invite{origin, code};
 			return;
 		}
-		joinByCode(code);
+		if (!code.empty())
+			joinByCode(code);
 		return;
 	}
 	trustPrompt = Invite{origin, code};
@@ -583,6 +611,11 @@ void OnlineHubScreen::answerTrust(bool join)
 		return;
 	auto invite = *trustPrompt;
 	trustPrompt.reset();
+	if (!join && !mapLaunchOrigin.empty())
+	{
+		Online::takePendingMapPlay();
+		mapLaunchOrigin.clear();
+	}
 	if (join)
 	{
 		Online::services().config.trust(invite.origin, invite.remember);
@@ -731,6 +764,12 @@ void OnlineHubScreen::openSettings()
 
 void OnlineHubScreen::onEscape()
 {
+	if (!mapLaunchOrigin.empty())
+	{
+		Online::takePendingMapPlay();
+		mapLaunchOrigin.clear();
+		pendingInvite.reset();
+	}
 	if (trustPrompt)
 		answerTrust(false);
 	else if (data.signIn != Model::SignIn::Closed)

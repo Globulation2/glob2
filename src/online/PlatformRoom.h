@@ -14,6 +14,7 @@
 // OnlineMatch (takeMatch) and shows the starting steps.
 
 #include "PlatformClient.h"
+#include "OnlineHandoff.h"
 #include "PlatformProtocol.h"
 #include "RoomBackend.h"
 
@@ -34,10 +35,11 @@ class PlatformRoom final : public RoomBackend
 	/// Creates a room hosted by the signed-in account.
 	/// `automaticMap`: the setup is the default room map (defaultRoomSetup), which grows
 	/// from two to four colonies when more people join, until the host picks a map.
+	/// `catalogMap` selects that version in room.create and disables automatic growth.
 	/// Rooms download their maps into `maps` and pass `storage` to match skins.
 	/// The client, cache and storage must outlive the room and its matches.
 	static std::shared_ptr<PlatformRoom> create(PlatformClient &client, MapCache &maps, OnlineStorage &storage, const std::string &name,
-												bool listed, const CustomGameSetup &setup, bool automaticMap = false);
+												bool listed, const CustomGameSetup &setup, bool automaticMap = false, std::optional<RoomMapChoice> catalogMap = std::nullopt);
 	/// Joins the room behind an invite code.
 	static std::shared_ptr<PlatformRoom> join(PlatformClient &client, MapCache &maps, OnlineStorage &storage, const std::string &code);
 	/// Opens (or joins) the unrated rematch room of a finished quick match
