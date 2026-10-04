@@ -11,6 +11,8 @@ jobs:
   chromium:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    env:
+      GLOB2_TEST_RENDERER: software
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
