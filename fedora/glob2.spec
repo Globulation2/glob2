@@ -38,6 +38,7 @@ BuildRequires:  libXtst-devel
 BuildRequires:  wayland-devel
 BuildRequires:  libxkbcommon-devel
 BuildRequires:  libpng-devel
+BuildRequires:  libpng-static
 BuildRequires:  git
 BuildRequires:  alsa-lib-devel
 BuildRequires:  pulseaudio-libs-devel
