@@ -118,7 +118,9 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
         encoders += ['h264_videotoolbox']; hardware = ['--enable-videotoolbox']
     elif target == 'mingw32':
         x264 += ['--host=x86_64-w64-mingw32']
-        encoders += ['h264_mf', 'h264_nvenc']; hardware = ['--enable-mediafoundation','--enable-ffnvcodec','--enable-nvenc']
+        # MF's encoder references its D3D11 device context even for CPU input.
+        # Enable the context API; unrelated hardware decoders remain disabled.
+        encoders += ['h264_mf', 'h264_nvenc']; hardware = ['--enable-mediafoundation','--enable-d3d11va','--enable-ffnvcodec','--enable-nvenc']
     elif target == 'linux':
         # VAAPI is linked only to its runtime API, never to codec implementations.
         encoders += ['h264_nvenc']; hardware = ['--enable-ffnvcodec','--enable-nvenc']
