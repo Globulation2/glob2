@@ -80,8 +80,8 @@ struct CustomGameSetupHarness
         Scene scene;
         world.gui.extractScene(scene);
         world.gui.setPublishedScene(&scene);
-        world.gui.measurementPage = 3;
         globalContainer->liveSpectating = true;
+        world.gui.measurementPage = world.gui.statisticsPages() - 1;
         globalContainer->gfx->drawFilledRect(0, 0, 640, 480, 0, 0, 32);
         world.gui.drawStatisticsPage(195);
         const auto path = glob2test::artifactDir() / "probability-sixteen-colonies.png";

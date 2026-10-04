@@ -617,19 +617,20 @@ void TeamStats::drawStat(int posx, int posy)
 		std::string starving=strings->getString("[starving]");
 		std::string wounded=strings->getString("[wounded]");
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 22, 229, 40));
+		// The same worst-to-best colours as the hunger and health charts after a match.
+		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 12, 163, 12));
 		gfx->drawString(textStartPos, startPoxY+104, font, Free);
 		font->popStyle();
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 224, 210, 17));
+		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 250, 178, 25));
 		gfx->drawString(textStartPos+64, startPoxY+104, font, hungry);
 		font->popStyle();
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 249, 167, 14));
+		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 236, 131, 90));
 		gfx->drawString(textStartPos, startPoxY+104+12, font, starving);
 		font->popStyle();
 
-		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 250, 25, 25));
+		font->pushStyle(Font::Style(Font::STYLE_NORMAL, 208, 59, 59));
 		gfx->drawString(textStartPos+64, startPoxY+104+12, font, wounded);
 		font->popStyle();
 	}
@@ -691,10 +692,10 @@ void TeamStats::drawStat(int posx, int posy)
 		{
 			nbOk=nbNeedFood=nbNeedHeal=nbNeedFoodCritical=0;
 		}
-		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12  +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 22, 229, 40);
-		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 224, 210, 17);
-		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 249, 167, 14);
-		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal, nbNeedHeal, 250, 25, 25);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12  +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood-nbOk, nbOk, 12, 163, 12);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical-nbNeedFood, nbNeedFood, 250, 178, 25);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal-nbNeedFoodCritical, nbNeedFoodCritical, 236, 131, 90);
+		globalContainer->gfx->drawVertLine(posx+i, startPoxY+ 120+12 +64-nbNeedHeal, nbNeedHeal, 208, 59, 59);
 	}
 }
 
@@ -1034,252 +1035,6 @@ void TeamStats::printMeasurements(int team, bool final) const
 	if (final)
 		for (const auto& sample : measurementHistory) emit(sample, "GLOB2_MEASURE_HISTORY", false);
 	emit(measurements, "GLOB2_MEASURE", final);
-}
-
-namespace
-{
-template <class T> Uint64 measurementSum(const T &value)
-{
-	return value;
-}
-template <class T, size_t N> Uint64 measurementSum(const T (&values)[N])
-{
-	Uint64 total = 0;
-	for (const auto &v : values)
-		total += measurementSum(v);
-	return total;
-}
-} // namespace
-const char *TeamStats::measurementLabel(int metric)
-{
-	static const char *labels[] = {
-		"[Stats births]",        "[Stats deaths]",          "[Stats starvation]",
-		"[Stats wheat stock]",   "[Stats wheat loads]",     "[Stats meals]",
-		"[Stats new buildings]", "[Stats upgrades]",        "[Stats training]",
-		"[Stats damage dealt]",  "[Stats damage received]", "[Stats HP restored]",
-		"[Stats combat deaths]", "[Stats clearing deaths]", "[Stats trapped deaths]",
-		"[Stats unknown deaths]", "[Stats current blocked units]", "[Stats current blocked buildings]",
-		"[Stats growth global]", "[Stats growth near 8]", "[Stats growth near 16]",
-		"[Stats growth near 32]", "[Stats low HP 25]", "[Stats low food 25]",
-		"[Stats low HP 50]", "[Stats low HP 75]", "[Stats low food 50]",
-		"[Stats low food 75]", "[Stats structural units]", "[Stats structural buildings]"};
-	assert(metric >= 0 && metric < 30);
-	return labels[metric];
-}
-Uint64 TeamStats::graphValue(const GameplayMeasurements &m, int metric)
-{
-	switch (metric)
-	{
-	case 0:
-		return measurementSum(m.births);
-	case 1:
-		return measurementSum(m.deaths);
-	case 2:
-	{
-		Uint64 total = 0;
-		for (const auto &row : m.deaths)
-			total += row[GameplayMeasurements::STARVATION];
-		return total;
-	}
-	case 3:
-		return m.stock[WHEAT];
-	case 4:
-		return m.harvested[WHEAT];
-	case 5:
-		return m.meals;
-	case 6:
-		return measurementSum(m.completed[GameplayMeasurements::NEW_BUILDING]);
-	case 7:
-		return measurementSum(m.completed[GameplayMeasurements::UPGRADED]);
-	case 8:
-		return measurementSum(m.trainingVisits);
-	case 9:
-		return measurementSum(m.damageDealt);
-	case 10:
-		return measurementSum(m.damageReceived);
-	case 11:
-		return m.hpRestored;
-	case 12: case 13: case 14: case 15:
-	{
-		const int cause[] = {GameplayMeasurements::COMBAT, GameplayMeasurements::CLEARING,
-			GameplayMeasurements::TRAPPED, GameplayMeasurements::UNKNOWN};
-		Uint64 total = 0;
-		for (const auto &row : m.deaths) total += row[cause[metric-12]];
-		return total;
-	}
-	case 16: return measurementSum(m.trappedUnits[1]);
-	case 17: return measurementSum(m.trappedBuildings[1][0]);
-	case 18: return measurementSum(m.growthGlobal[1]);
-	case 19: case 20: case 21: return measurementSum(m.growthAmount[metric-19]);
-	case 22: return measurementSum(m.lowHP[0]);
-	case 23: return measurementSum(m.lowFood[0]);
-	case 24: return measurementSum(m.lowHP[1]);
-	case 25: return measurementSum(m.lowHP[2]);
-	case 26: return measurementSum(m.lowFood[1]);
-	case 27: return measurementSum(m.lowFood[2]);
-	case 28: return measurementSum(m.trappedUnits[0]);
-	case 29: return measurementSum(m.trappedBuildings[0][0]);
-	default:
-		return 0;
-	}
-}
-void TeamStats::drawMeasurements(int x, int y)
-{
-	auto *strings = Toolkit::getStringTable();
-	auto compact = [](Uint64 value)
-	{
-		if (value < 1000000) return std::to_string(value);
-		std::ostringstream text;
-		text.setf(std::ios::scientific); text.precision(2);
-		text << static_cast<long double>(value);
-		return text.str();
-	};
-	auto fit = [](std::string text, int width)
-	{
-		while (!text.empty() && globalContainer->littleFont->getStringWidth(text) > width)
-		{
-			size_t last = text.size()-1;
-			while (last>0 && (static_cast<unsigned char>(text[last]) & 0xc0)==0x80) --last;
-			text.resize(last);
-		}
-		return text;
-	};
-	auto line = [&](const char *label, const std::string &value)
-	{
-		const int valueWidth=globalContainer->littleFont->getStringWidth(value);
-		globalContainer->gfx->drawString(x+4,y,globalContainer->littleFont,fit(strings->getString(label),124-valueWidth));
-		globalContainer->gfx->drawString(x+132-valueWidth,y,globalContainer->littleFont,value);
-		y += 12;
-	};
-	auto count = [&](const char *label, Uint64 value) { line(label, compact(value)); };
-	count("[Stats since tick]", coverageStartTick);
-	count("[Stats births]", measurementSum(measurements.births));
-	count("[Stats deaths]", measurementSum(measurements.deaths));
-	const char *causes[] = {"[Stats combat deaths]", "[Stats starvation]",
-							"[Stats clearing deaths]", "[Stats trapped deaths]",
-							"[Stats unknown deaths]"};
-	for (int c = 0; c < GameplayMeasurements::DEATH_CAUSES; ++c)
-	{
-		Uint64 n = 0;
-		for (auto &row : measurements.deaths)
-			n += row[c];
-		count(causes[c], n);
-	}
-	line("[Stats conversions]", compact(measurementSum(measurements.conversionsIn)) + " / " +
-									compact(measurementSum(measurements.conversionsOut)));
-	for (int r = 0; r < MAX_RESOURCES; ++r)
-	{
-		const std::string amount = compact(measurements.stock[r]);
-		const std::string name = fit(getResourceName(r), 60-globalContainer->littleFont->getStringWidth(amount));
-		globalContainer->gfx->drawString(x + 4 + (r % 2) * 66, y, globalContainer->littleFont,
-										 name + " " + amount);
-		if (r % 2)
-			y += 12;
-	}
-	auto rate = [&](int kind)
-	{
-		if (measurementHistory.size() < 2)
-			return std::string(strings->getString("[Stats unavailable]"));
-		const auto &a = measurementHistory[measurementHistory.size() - 2];
-		const auto &b = measurementHistory.back();
-		const Uint64 difference = kind == 0 ? b.harvested[WHEAT] - a.harvested[WHEAT]
-			: b.consumed[GameplayMeasurements::MEAL][WHEAT] -
-				a.consumed[GameplayMeasurements::MEAL][WHEAT];
-		std::ostringstream text;
-		text.setf(std::ios::fixed);
-		text.precision(1);
-		text << static_cast<long double>(difference) * 1500 / (b.tick - a.tick);
-		return text.str();
-	};
-	line("[Stats wheat per minute]", rate(0));
-	line("[Stats meals per minute]", rate(1));
-	line("[Stats occupancy]",
-		 std::to_string(measurements.feeding) + " / " + std::to_string(measurements.healing));
-	count("[Stats HP restored]", measurements.hpRestored);
-	count("[Stats new buildings]", graphValue(measurements, 6));
-	count("[Stats upgrades]", graphValue(measurements, 7));
-	count("[Stats training]", graphValue(measurements, 8));
-}
-
-void TeamStats::drawExpandedMeasurements(int x, int y)
-{
-	auto *strings = Toolkit::getStringTable();
-	auto compact = [](Uint64 value)
-	{
-		if (value < 1000000) return std::to_string(value);
-		std::ostringstream text;
-		text.setf(std::ios::scientific); text.precision(2);
-		text << static_cast<long double>(value);
-		return text.str();
-	};
-	auto line = [&](const char *label, const std::string &value)
-	{
-		const int valueWidth = globalContainer->littleFont->getStringWidth(value);
-		std::string name = strings->getString(label);
-		while (!name.empty() && globalContainer->littleFont->getStringWidth(name) > 124-valueWidth)
-		{
-			size_t last = name.size()-1;
-			while (last>0 && (static_cast<unsigned char>(name[last]) & 0xc0)==0x80) --last;
-			name.resize(last);
-		}
-		globalContainer->gfx->drawString(x+4,y,globalContainer->littleFont,name);
-		globalContainer->gfx->drawString(x+132-valueWidth,y,globalContainer->littleFont,value);
-		y += 12;
-	};
-	auto count = [&](const char *label, Uint64 value) { line(label,compact(value)); };
-	count("[Stats since tick]", extendedCoverageStartTick);
-	if (measurements.trappedTick < extendedCoverageStartTick)
-	{
-		for (const char *key : {"[Stats blocked units]", "[Stats blocked buildings]",
-			"[Stats blocked buildings swim]", "[Stats low HP ranges]", "[Stats low food ranges]"})
-			line(key,strings->getString("[Stats unavailable]"));
-	}
-	else
-	{
-		line("[Stats blocked units]",compact(measurementSum(measurements.trappedUnits[0]))+" / "+
-			compact(measurementSum(measurements.trappedUnits[1])));
-		line("[Stats blocked buildings]",compact(measurementSum(measurements.trappedBuildings[0][0]))+" / "+
-			compact(measurementSum(measurements.trappedBuildings[1][0])));
-		line("[Stats blocked buildings swim]",compact(measurementSum(measurements.trappedBuildings[0][1]))+" / "+
-			compact(measurementSum(measurements.trappedBuildings[1][1])));
-		line("[Stats low HP ranges]",compact(measurementSum(measurements.lowHP[0]))+"/"+
-			compact(measurementSum(measurements.lowHP[1]))+"/"+
-			compact(measurementSum(measurements.lowHP[2])));
-		line("[Stats low food ranges]",compact(measurementSum(measurements.lowFood[0]))+"/"+
-			compact(measurementSum(measurements.lowFood[1]))+"/"+
-			compact(measurementSum(measurements.lowFood[2])));
-	}
-	count("[Stats growth new tiles]",measurementSum(measurements.growthGlobal[0]));
-	count("[Stats growth global]",measurementSum(measurements.growthGlobal[1]));
-	count("[Stats growth reductions]",measurementSum(measurements.growthGlobal[2]));
-	for (int r = 0; r < MAX_RESOURCES; ++r)
-	{
-		const std::string amount = compact(measurements.growthGlobal[1][r]);
-		std::string name = getResourceName(r);
-		while (!name.empty() && globalContainer->littleFont->getStringWidth(name+" "+amount) > 60)
-		{
-			size_t last = name.size()-1;
-			while (last>0 && (static_cast<unsigned char>(name[last]) & 0xc0)==0x80) --last;
-			name.resize(last);
-		}
-		globalContainer->gfx->drawString(x+4+(r%2)*66,y,globalContainer->littleFont,name+" "+amount);
-		if (r%2) y += 12;
-	}
-	count("[Stats growth near 8]",measurementSum(measurements.growthAmount[0]));
-	count("[Stats growth near 16]",measurementSum(measurements.growthAmount[1]));
-	count("[Stats growth near 32]",measurementSum(measurements.growthAmount[2]));
-	if (measurementHistory.size() < 2)
-		line("[Stats growth per minute]",strings->getString("[Stats unavailable]"));
-	else
-	{
-		const auto &a = measurementHistory[measurementHistory.size()-2];
-		const auto &b = measurementHistory.back();
-		const Uint64 delta = b.growthGlobal[1][WHEAT]-a.growthGlobal[1][WHEAT];
-		std::ostringstream rate;
-		rate.setf(std::ios::fixed); rate.precision(1);
-		rate << static_cast<long double>(delta)*1500/(b.tick-a.tick);
-		line("[Stats growth per minute]",rate.str());
-	}
 }
 
 void TeamStats::beginMeasurementSnapshot(Team *team)

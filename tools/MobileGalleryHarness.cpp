@@ -1090,7 +1090,9 @@ class MobileGalleryGameplay
 			auto results = std::make_unique<ResultsFixture>(&gui);
 			auto *view = results.get();
 			stack.push(std::move(results));
+			view->selectMetric(EndGameScreen::OVERVIEW);
 			stackShot(stack, "game-results");
+			view->selectMetric(Stats::findMetric("population"));
 			view->showFilters();
 			stackShot(stack, "game-results-filters");
 			view->inspectValue();
