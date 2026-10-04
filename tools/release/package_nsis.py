@@ -90,7 +90,9 @@ def package(stage, output, version, compiler="makensis"):
                     ("VERSION", version),
                 )
             )
-            + f'\n!include "{quote(ROOT / "windows/win32_installer.nsi", runtime=False)}"\n',
+            # Inline the script: MSYS2's makensis cannot open the checkout's
+            # path through !include, while it reads this temporary wrapper.
+            + "\n" + (ROOT / "windows/win32_installer.nsi").read_text(encoding="utf-8") + "\n",
             encoding="utf-8",
         )
         subprocess.run([compiler, "-WX", str(wrapper)], check=True)
