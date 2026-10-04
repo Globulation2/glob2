@@ -166,6 +166,13 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
   `libgag/src/ui/UILayoutHarness.cpp` and the presentation harness check that no
   painted line crosses a control's edge, at 100% and 150%.
 
+### Map scrolling preferences
+
+Settings > Controls has independent edge scrolling toggles for fullscreen and
+windowed mode, defaulting to on and off respectively. They apply to both the game
+and map editor using the current display mode; keyboard and drag panning remain
+available in either mode. These are local preferences, saved in `preferences.txt`.
+
 ### Containers and controls
 
 Containers: `column`, `row`, `stack`, `wrap` (grid by minimum child width),
