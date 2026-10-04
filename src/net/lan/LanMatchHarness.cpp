@@ -14,9 +14,14 @@
 // The engines share one process and one GlobalContainer. Each keeps its own
 // synchronized RNG stream, swapped in while it runs, as TurnEngineHarness does.
 
-// Asio must precede SDL headers so Windows uses WinSock2, not WinSock.h.
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/ip/tcp.hpp>
+// WinSock2 must precede the SDL fixtures' Windows headers.
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
 
 #include "EngineFixtures.h"
 #include "Environment.h"
@@ -82,9 +87,37 @@ std::string mapPath()
 std::uint16_t testPort()
 {
 	// Let the OS avoid occupied and reserved ports (including Windows exclusions).
-	boost::asio::io_context context;
-	boost::asio::ip::tcp::acceptor probe(context, {boost::asio::ip::address_v4::loopback(), 0});
-	return probe.local_endpoint().port();
+	// Use native sockets here, without adding Asio's header-only implementation
+	// to another engine-test translation unit.
+	struct Probe
+	{
+#ifdef _WIN32
+		WSADATA data{};
+		bool initialized = WSAStartup(MAKEWORD(2, 2), &data) == 0;
+		SOCKET socket = initialized ? ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) : INVALID_SOCKET;
+		~Probe()
+		{
+			if (socket != INVALID_SOCKET) closesocket(socket);
+			if (initialized) WSACleanup();
+		}
+#else
+		int socket = ::socket(AF_INET, SOCK_STREAM, 0);
+		~Probe() { if (socket >= 0) ::close(socket); }
+#endif
+	} probe;
+#ifdef _WIN32
+	REQUIRE(probe.socket != INVALID_SOCKET);
+	int size = sizeof(sockaddr_in);
+#else
+	REQUIRE(probe.socket >= 0);
+	socklen_t size = sizeof(sockaddr_in);
+#endif
+	sockaddr_in address{};
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+	REQUIRE(::bind(probe.socket, reinterpret_cast<const sockaddr*>(&address), sizeof(address)) == 0);
+	REQUIRE(::getsockname(probe.socket, reinterpret_cast<sockaddr*>(&address), &size) == 0);
+	return ntohs(address.sin_port);
 }
 
 /// A link with a fixed one-way delay in each direction, around a guest's turn transport.
