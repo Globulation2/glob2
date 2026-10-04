@@ -1,0 +1,6 @@
+.........................
+----------------------------------------------------------------------
+Ran 25 tests in 11.763s
+
+OK
+The sim version key matches the committed match record and follows every change of the golden trace

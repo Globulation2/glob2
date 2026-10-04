@@ -1,0 +1,3 @@
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+PASS 25 main-binary cases; retained artifacts: /Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/review-cli-mac

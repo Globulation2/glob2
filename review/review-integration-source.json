@@ -1,0 +1,31 @@
+{
+  "feature": "77b62164c16705927052a165cdfd7d5afcccf377",
+  "master": "b1a8603bedf079e587307c77b665e3090bd2d2e5",
+  "merge_tree": "678fdf08baf2e7e9cbdfbfb5c8e07caa8271ae97",
+  "overlay_paths": [
+    "browser/README.md",
+    "browser/shell.html",
+    "docs/development/reference.md",
+    "docs/features/window-resizing.md",
+    "libgag/include/BidiText.h",
+    "libgag/include/StringTable.h",
+    "libgag/include/TrueTypeFont.h",
+    "libgag/src/BidiText.cpp",
+    "libgag/src/GraphicContext.cpp",
+    "libgag/src/TrueTypeFont.cpp",
+    "scons/sources.py",
+    "src/GlobalContainer.cpp",
+    "src/Settings.cpp",
+    "src/SystemLanguage.cpp",
+    "src/SystemLanguage.h",
+    "src/TeamStat.cpp",
+    "test/BidiTextTest.cpp",
+    "test/MobileInputHarness.cpp",
+    "test/SystemLanguageTest.cpp",
+    "test/WindowResizeHarness.cpp",
+    "test/ZoomDetailTest.cpp",
+    "test/support/EngineFixtures.cpp",
+    "test/tests.py",
+    "tools/MenuColonyHarness.cpp"
+  ]
+}

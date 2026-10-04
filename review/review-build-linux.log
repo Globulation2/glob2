@@ -1,0 +1,100 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL3... (cached) yes
+Checking for C library SDL3_ttf... (cached) yes
+Checking for C library SDL3_image... (cached) yes
+Checking for C library SDL3_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library vorbisfile... (cached) yes
+Checking for C library vorbis... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Checking for C library GL... (cached) yes
+Checking for C++ header file GL/gl.h... (cached) yes
+Checking for C library GLU... (cached) yes
+Checking for C++ header file GL/glu.h... (cached) yes
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) no
+scons: done reading SConscript files.
+scons: Building targets ...
+Generating build/linux/client/release/include/glob2/TestBuildProvenance.h
+g++ -o build/linux/client/release/test/engine-support_EngineFixtures.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/support/EngineFixtures.cpp
+g++ -o build/linux/client/release/test/engine-AIRulesTest.o -c -std=gnu++20 -Wall -fPIC -O3 -s -fno-access-control -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/AIRulesTest.cpp
+g++ -o build/linux/client/release/test/engine-LanMatchHarness.o -c -std=gnu++20 -Wall -fPIC -O3 -s -fno-access-control -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/LanMatchHarness.cpp
+g++ -o build/linux/client/release/test/engine-TeamStatsSaveHarness.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/TeamStatsSaveHarness.cpp
+g++ -o build/linux/client/release/test/engine-online_PlatformRoomTest.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/online/PlatformRoomTest.cpp
+g++ -o build/linux/client/release/test/engine-MapRenderResizeHarness.o -c -std=gnu++20 -Wall -fPIC -O3 -s -fno-access-control -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/MapRenderResizeHarness.cpp
+g++ -o build/linux/client/release/test/engine-FontKerningTest.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/FontKerningTest.cpp
+g++ -o build/linux/client/release/test/engine-support_TestMain.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/support/TestMain.cpp
+g++ -o build/linux/client/release/test/engine-TextRasterHarness.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/TextRasterHarness.cpp
+test/TeamStatsSaveHarness.cpp: In function 'void {anonymous}::measurementScreenshots(const std::string&)':
+test/TeamStatsSaveHarness.cpp:1176:25: warning: loop variable 'size' creates a copy from type 'const std::pair<int, int>' [-Wrange-loop-construct]
+ 1176 |         for (const auto size : {std::pair{640, 480}, std::pair{1024, 768}})
+      |                         ^~~~
+test/TeamStatsSaveHarness.cpp:1176:25: note: use reference type to prevent copying
+ 1176 |         for (const auto size : {std::pair{640, 480}, std::pair{1024, 768}})
+      |                         ^~~~
+      |                         &
+test/AIRulesTest.cpp: In function 'void DOCTEST_ANON_SUITE_2::DOCTEST_ANON_FUNC_26()':
+test/AIRulesTest.cpp:237:36: error: no matching function for call to 'glob2test::HeadlessGame::HeadlessGame(int, int, int)'
+  237 |     glob2test::HeadlessGame w(6,6,2);
+      |                                    ^
+In file included from test/AIRulesTest.cpp:2:
+test/support/EngineFixtures.h:105:26: note: candidate: 'glob2test::HeadlessGame::HeadlessGame(Options)'
+  105 |                 explicit HeadlessGame(Options options = {});
+      |                          ^~~~~~~~~~~~
+test/support/EngineFixtures.h:105:26: note:   candidate expects 1 argument, 3 provided
+test/MapRenderResizeHarness.cpp: In function 'void {anonymous}::run(bool)':
+test/MapRenderResizeHarness.cpp:482:25: warning: loop variable 'dimensions' creates a copy from type 'const std::pair<int, int>' [-Wrange-loop-construct]
+  482 |         for (const auto dimensions : {std::pair<int,int>{4,5}, {5,4}})
+      |                         ^~~~~~~~~~
+test/MapRenderResizeHarness.cpp:482:25: note: use reference type to prevent copying
+  482 |         for (const auto dimensions : {std::pair<int,int>{4,5}, {5,4}})
+      |                         ^~~~~~~~~~
+      |                         &
+In file included from libgag/include/TextStream.h:7,
+                 from test/TeamStatsSaveHarness.cpp:18:
+libgag/include/StreamBackend.h: In member function 'virtual void GAGCore::FileStreamBackend::read(void*, size_t)':
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+g++ -o build/linux/client/release/test/engine-SettingsScreenTest.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/w/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/SettingsScreenTest.cpp
+In file included from libgag/include/BinaryStream.h:7,
+                 from test/AIRulesTest.cpp:25:
+libgag/include/StreamBackend.h: In member function 'virtual void GAGCore::FileStreamBackend::read(void*, size_t)':
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+scons: *** [build/linux/client/release/test/engine-AIRulesTest.o] Error 1
+test/SettingsScreenTest.cpp: In function 'void {anonymous}::run(int, int, bool, bool)':
+test/SettingsScreenTest.cpp:251:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
+  251 |         for(const auto& b:check.getKeyboardShortcuts())if(b.getKeyPress(0).getKey()=="f11"){++matches;REQUIRE((b.getAction()==2 && b.getKeyPressCount()==1));}REQUIRE(matches==1);
+      |         ^~~
+In file included from test/support/Glob2Test.h:8,
+                 from test/support/EngineFixtures.h:6,
+                 from test/SettingsScreenTest.cpp:2:
+test/support/../third_party/doctest.h:2424:5: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'for'
+ 2424 |     doctest::detail::decomp_assert(                                                                \
+      |     ^~~~~~~
+test/support/../third_party/doctest.h:2441:30: note: in expansion of macro 'DOCTEST_ASSERT_IMPLEMENT_1'
+ 2441 | #define DOCTEST_REQUIRE(...) DOCTEST_ASSERT_IMPLEMENT_1(DT_REQUIRE, __VA_ARGS__)
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~
+test/support/../third_party/doctest.h:2976:22: note: in expansion of macro 'DOCTEST_REQUIRE'
+ 2976 | #define REQUIRE(...) DOCTEST_REQUIRE(__VA_ARGS__)
+      |                      ^~~~~~~~~~~~~~~
+test/SettingsScreenTest.cpp:251:159: note: in expansion of macro 'REQUIRE'
+  251 |         for(const auto& b:check.getKeyboardShortcuts())if(b.getKeyPress(0).getKey()=="f11"){++matches;REQUIRE((b.getAction()==2 && b.getKeyPressCount()==1));}REQUIRE(matches==1);
+      |                                                                                                                                                               ^~~~~~~
+scons: building terminated because of errors.
