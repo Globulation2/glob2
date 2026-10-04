@@ -23,7 +23,7 @@ and fixtures under `fixtures/`). Lists are newest first and page with an opaque
 | `GET /api/v1/matches/{id}` | `MatchDetail`: summary, setup, team statistics and timelines, artifacts, map, verification detail, economy curves, connection quality per human player |
 | `GET /api/v1/matches/{id}/artifacts/{replay\|result\|record}` | The file, as an attachment |
 | `GET /api/v1/admin/matches?q=&status=` | Moderators: `MatchList` of any status; `q` is a match, room or account id, part of a player name, or a relay id |
-| `GET /api/v1/stats` | `InstanceStats` for the home page: players online (seen in the last 15 minutes, in an open room, or in a match that has not ended), live matches, matches of the last 24 hours. Counts only; each API replica caches them for 30 seconds |
+| `GET /api/v1/stats` | `InstanceStats` for the home page: players online (seen in the last 15 minutes, in an open room, or in a match that has not ended), live matches, matches of the last 24 hours, and `queues`: every configured queue with how many players are searching it (waiting or answering a match prompt). Counts only; each API replica caches them for 30 seconds. The game's online hub shows players online and the chosen queue's searchers on its Quick match card |
 
 Aggregates come from the views of migration 0004 and cover verified matches of
 the last 90 days: win rates by queue, map (catalog title when the map is public

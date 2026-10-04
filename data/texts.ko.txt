@@ -3544,6 +3544,10 @@ AI
 순위
 [hub play with friends]
 친구와 플레이
+[hub online now %0 %1]
+%0명 접속 중 · %1명이 이 대기열에서 검색 중
+[hub show in open rooms]
+열린 방에 표시
 [hub last match]
 최근 경기
 [hub your rank %0 %1]

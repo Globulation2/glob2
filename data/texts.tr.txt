@@ -3544,6 +3544,10 @@ Odalar
 Sıralama
 [hub play with friends]
 Arkadaşlarla oyna
+[hub online now %0 %1]
+%0 oyuncu çevrimiçi · %1 bu kuyrukta arıyor
+[hub show in open rooms]
+Açık odalarda göster
 [hub last match]
 Son maç
 [hub your rank %0 %1]

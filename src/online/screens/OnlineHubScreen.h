@@ -7,11 +7,16 @@ namespace Online
 {
 class PlatformScope;
 }
+namespace Glob2UI
+{
+class PreviewImages;
+}
 #include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
 #include "ui/MapPictures.h"
 #include <ScreenStack.h>
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
@@ -75,6 +80,10 @@ class OnlineHubScreen : public Glob2UI::Screen
 		std::string leaderboardName;
 		int myRank = 0;
 		double myRating = 0;
+		// GET /api/v1/stats: players online (-1 until known) and players searching
+		// each queue (servers without per-queue counts leave it empty).
+		int playersOnline = -1;
+		std::map<std::string, int> searching;
 		// Browser sign-in: none, choosing a provider, or waiting for the browser.
 		enum class SignIn
 		{
@@ -104,6 +113,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void showSection(Section next);
 	Section currentSection() const { return section; }
 	void createRoom();
+	void createRoom(bool listed);
 	void joinByCode(const std::string &codeOrLink);
 	void findMatch(int queueIndex);
 	void openSignIn();
@@ -143,6 +153,10 @@ class OnlineHubScreen : public Glob2UI::Screen
 	std::optional<Invite> trustPrompt;
 	// An invite that waits for the client to reach its instance.
 	std::optional<Invite> pendingInvite;
+	bool fetchingStats = false;
+	// New rooms are listed in Open rooms (Play with friends' toggle); invite-only by default.
+	bool listRoom = false;
+	std::unique_ptr<Glob2UI::PreviewImages> previews;
 	bool fetchingInstance = false, fetchingRooms = false, fetchingHistory = false, fetchingLeaderboard = false, fetchingStanding = false;
 	// This account's latest matches from GET /api/v1/players/{id}/matches; matches
 	// seen live (match.updated) are merged over them.
@@ -195,6 +209,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// friends, and the last match.
 	Glob2UI::Element quickMatchCard(const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element friendsCard(const Glob2UI::Presentation &p);
+	// Players online and searching this queue, from /stats; null when unknown.
+	Glob2UI::Element liveLine(const Online::Json &queue, const Glob2UI::Presentation &p);
 	// The queue's map pool as pictures with their names; null without a pool.
 	Glob2UI::Element mapPool(const Online::Json &queue, const Glob2UI::Presentation &p, bool phone);
 	Glob2UI::Element lastMatchCard(const Glob2UI::Presentation &p, bool phone);

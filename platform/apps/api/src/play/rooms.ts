@@ -47,6 +47,7 @@ import {
 import { apiError } from '../errors.ts';
 import type { ReplicaPresence } from '../realtime/presence.ts';
 import { catalogTitles, generatorLabel, uploadTitle } from '../history/summaries.ts';
+import { versionUrls } from '../maps/catalog.ts';
 
 type Db = Kysely<Database>;
 
@@ -434,6 +435,22 @@ export class RoomService {
     const rows = await query.execute();
     const page = rows.slice(0, limit);
     const last = page[page.length - 1];
+    // Catalog maps: their titles and server previews, in one query for the page.
+    const catalogHashes = page.flatMap((row) => {
+      const decoded = tryReadStored(STORED_ROOM_SETTINGS, row.settings);
+      return decoded.ok && decoded.value.map?.kind === 'catalog' ? [decoded.value.map.hash] : [];
+    });
+    const catalog = await catalogTitles(this.db, catalogHashes);
+    const catalogMapFields = (hash: string | undefined) => {
+      const found = hash ? catalog.get(hash) : undefined;
+      if (!hash || !found) return {};
+      return {
+        mapTitle: found.title.slice(0, 128),
+        ...(found.previewReady
+          ? { mapPreviewUrl: versionUrls(this.origin, found.mapId, hash).previewUrl }
+          : {}),
+      };
+    };
     return {
       // A room whose stored settings no longer decode is left out of the
       // public list rather than failing it for everyone.
@@ -457,6 +474,7 @@ export class RoomService {
             ...(settings.map?.kind === 'generated'
               ? { mapTitle: generatorLabel(settings.map.generator.generatorId) }
               : {}),
+            ...catalogMapFields(settings.map?.kind === 'catalog' ? settings.map.hash : undefined),
           },
         ];
       }),

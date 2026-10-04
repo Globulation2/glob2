@@ -6,6 +6,7 @@
 // moderators' match lookup, the home page's live stats, and the mobile
 // app-link files.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { sql } from 'kysely';
 import { checkDocument } from '@glob2/protocol';
 import { SEEDED_QUEUES, seedHistory, type SeededHistory } from './historySeed.ts';
 import { createHarness, json, type Harness, type Instance } from './support.ts';
@@ -278,6 +279,11 @@ describe('matches', () => {
 
 describe('stats', () => {
   it('counts players online, live matches and matches of the last day', async () => {
+    // One player waiting in the ranked 1v1 queue (the answer is cached, so before the first call).
+    await sql`
+      INSERT INTO queue_tickets (queue_id, account_id, sim_version, region_rtts, rating_mu, rating_sigma)
+      SELECT 'ranked-1v1', ${seed.accounts.guest}, sim_version, '[]'::jsonb, 25, 8.3 FROM matches LIMIT 1
+    `.execute(harness.database.db);
     const response = await get('/api/v1/stats');
     expect(response.headers.get('cache-control')).toBe('public, max-age=30');
     const stats = (await json(response)) as Doc;
@@ -287,6 +293,11 @@ describe('stats', () => {
     expect(stats.playersOnline).toBeGreaterThanOrEqual(1);
     expect(stats.matchesToday).toBeGreaterThanOrEqual(1);
     expect(stats.activeWindowMinutes).toBe(15);
+    // Every configured queue, zero included.
+    expect(stats.queues).toEqual([
+      { id: 'ranked-1v1', searching: 1 },
+      { id: 'ranked-2v2', searching: 0 },
+    ]);
   });
 });
 

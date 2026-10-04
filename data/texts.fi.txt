@@ -3544,6 +3544,10 @@ Huoneet
 Sijoitus
 [hub play with friends]
 Pelaa ystävien kanssa
+[hub online now %0 %1]
+%0 pelaajaa paikalla · %1 etsii tästä jonosta
+[hub show in open rooms]
+Näytä avoimissa huoneissa
 [hub last match]
 Viimeisin ottelu
 [hub your rank %0 %1]

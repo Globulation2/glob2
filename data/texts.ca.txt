@@ -3544,6 +3544,10 @@ Sales
 Rànquing
 [hub play with friends]
 Juga amb amics
+[hub online now %0 %1]
+%0 jugadors en línia · %1 buscant en aquesta cua
+[hub show in open rooms]
+Mostra a Sales obertes
 [hub last match]
 Darrera partida
 [hub your rank %0 %1]

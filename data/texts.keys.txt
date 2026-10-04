@@ -1763,6 +1763,8 @@
 [hub rooms]
 [hub ranks]
 [hub play with friends]
+[hub online now %0 %1]
+[hub show in open rooms]
 [hub last match]
 [hub your rank %0 %1]
 [hub not placed]

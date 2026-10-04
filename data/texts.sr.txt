@@ -3544,6 +3544,10 @@ LAN домаћин није доступан. Проверите дозволу 
 Ранг
 [hub play with friends]
 Играј са пријатељима
+[hub online now %0 %1]
+%0 играча на мрежи · %1 тражи у овом реду
+[hub show in open rooms]
+Прикажи међу отвореним собама
 [hub last match]
 Последњи меч
 [hub your rank %0 %1]

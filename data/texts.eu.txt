@@ -3544,6 +3544,10 @@ Gelak
 Sailkapena
 [hub play with friends]
 Jokatu lagunekin
+[hub online now %0 %1]
+%0 jokalari linean · %1 ilara honetan bilatzen
+[hub show in open rooms]
+Erakutsi gela irekietan
 [hub last match]
 Azken partida
 [hub your rank %0 %1]

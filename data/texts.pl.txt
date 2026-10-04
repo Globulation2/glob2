@@ -3544,6 +3544,10 @@ Pokoje
 Ranking
 [hub play with friends]
 Graj ze znajomymi
+[hub online now %0 %1]
+%0 graczy online · %1 szuka w tej kolejce
+[hub show in open rooms]
+Pokaż w otwartych pokojach
 [hub last match]
 Ostatni mecz
 [hub your rank %0 %1]

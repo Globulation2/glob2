@@ -88,7 +88,10 @@ account and an address 10 failed `room.join` lookups per 10 minutes, and
 A code expires when its room closes.
 
 **Public list.** `GET /api/v1/rooms?simVersion=<key>` lists open public rooms of a sim
-version, most recently changed first, with a `cursor` for the next page.
+version, most recently changed first, with a `cursor` for the next page. Each
+`RoomSummary` names its map: a generated map by its generator, a catalog map by its
+catalog title with `mapPreviewUrl` (the version's server preview) once that preview is
+ready.
 
 ## Map sources
 

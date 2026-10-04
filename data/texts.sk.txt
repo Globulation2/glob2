@@ -3544,6 +3544,10 @@ Miestnosti
 Poradie
 [hub play with friends]
 Hrať s priateľmi
+[hub online now %0 %1]
+%0 hráčov online · %1 hľadá v tomto rade
+[hub show in open rooms]
+Zobraziť v otvorených miestnostiach
 [hub last match]
 Posledný zápas
 [hub your rank %0 %1]

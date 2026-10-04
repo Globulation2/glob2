@@ -3544,6 +3544,10 @@ Ludi
 Rangoj
 [hub play with friends]
 Ludi kun amikoj
+[hub online now %0 %1]
+%0 ludantoj enrete · %1 serĉas en ĉi tiu vico
+[hub show in open rooms]
+Montri en Malfermitaj ĉambroj
 [hub last match]
 Lasta matĉo
 [hub your rank %0 %1]

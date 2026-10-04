@@ -3544,6 +3544,10 @@ Camere
 Clasament
 [hub play with friends]
 Joacă cu prietenii
+[hub online now %0 %1]
+%0 jucători online · %1 caută în această coadă
+[hub show in open rooms]
+Arată în Camere deschise
 [hub last match]
 Ultimul meci
 [hub your rank %0 %1]

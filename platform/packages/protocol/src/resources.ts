@@ -433,6 +433,8 @@ export const RoomSummary = Open({
   seatsTotal: Type.Integer({ minimum: 0 }),
   seatsTaken: Type.Integer({ minimum: 0 }),
   mapTitle: Type.Optional(Type.String({ maxLength: 128 })),
+  // The catalog map's server preview (PNG), when the room uses one and it is ready.
+  mapPreviewUrl: Type.Optional(HttpsOrWssUrl),
 });
 
 export const RoomChatMessage = Open({

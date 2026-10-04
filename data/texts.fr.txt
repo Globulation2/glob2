@@ -3544,6 +3544,10 @@ Salons
 Classement
 [hub play with friends]
 Jouer entre amis
+[hub online now %0 %1]
+%0 joueurs en ligne · %1 cherchent dans cette file
+[hub show in open rooms]
+Afficher dans les salons ouverts
 [hub last match]
 Dernière partie
 [hub your rank %0 %1]

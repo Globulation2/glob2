@@ -3544,6 +3544,10 @@ Rum
 Rangliste
 [hub play with friends]
 Spil med venner
+[hub online now %0 %1]
+%0 spillere online · %1 søger i denne kø
+[hub show in open rooms]
+Vis under Åbne rum
 [hub last match]
 Seneste kamp
 [hub your rank %0 %1]

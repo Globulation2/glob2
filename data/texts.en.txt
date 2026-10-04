@@ -3552,6 +3552,10 @@ Rooms
 Ranks
 [hub play with friends]
 Play with friends
+[hub online now %0 %1]
+%0 players online · %1 searching this queue
+[hub show in open rooms]
+Show in Open rooms
 [hub last match]
 Last match
 [hub your rank %0 %1]

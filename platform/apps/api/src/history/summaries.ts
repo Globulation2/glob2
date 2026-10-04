@@ -52,13 +52,26 @@ export function pageLimit(value: string | undefined, fallback: number, max: numb
 export async function catalogTitles(
   db: Db,
   hashes: readonly string[],
-): Promise<Map<string, { title: string; mapId: string; width?: number; height?: number }>> {
+): Promise<
+  Map<
+    string,
+    { title: string; mapId: string; width?: number; height?: number; previewReady: boolean }
+  >
+> {
   const unique = [...new Set(hashes)];
   if (unique.length === 0) return new Map();
   const rows = await db
     .selectFrom('map_versions as v')
     .innerJoin('maps as mp', 'mp.id', 'v.map_id')
-    .select(['v.hash', 'mp.id', 'mp.title', 'v.width', 'v.height', 'mp.updated_at'])
+    .select([
+      'v.hash',
+      'mp.id',
+      'mp.title',
+      'v.width',
+      'v.height',
+      'v.preview_status',
+      'mp.updated_at',
+    ])
     .where('v.hash', 'in', unique)
     .where('mp.visibility', 'in', ['public', 'unlisted'])
     .where('mp.hidden', '=', false)
@@ -66,13 +79,14 @@ export async function catalogTitles(
     .execute();
   const titles = new Map<
     string,
-    { title: string; mapId: string; width?: number; height?: number }
+    { title: string; mapId: string; width?: number; height?: number; previewReady: boolean }
   >();
   for (const row of rows) {
     if (titles.has(row.hash)) continue;
     titles.set(row.hash, {
       title: row.title,
       mapId: row.id,
+      previewReady: row.preview_status === 'ready',
       ...(row.width !== null ? { width: row.width } : {}),
       ...(row.height !== null ? { height: row.height } : {}),
     });
