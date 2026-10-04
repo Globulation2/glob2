@@ -267,6 +267,7 @@ UNIT_TESTS = [
     '#libgag/src/PerformanceTelemetryHarness.cpp',
     '#libgag/src/ScrollPhysicsTest.cpp',
     '#src/hud/GameSpeedControlTest.cpp',
+    '#src/hud/GameEventFeedTest.cpp',
     '#src/audio/SoundMixerTrackSelectionHarness.cpp',
     '#libgag/src/ui/UILayoutHarness.cpp',
     '#src/map/gradient/GlobalGradientHarness.cpp',

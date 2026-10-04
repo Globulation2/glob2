@@ -224,6 +224,16 @@ python3 test/run_tests.py --filter 'GameGUISelection/*'
 python3 test/run_tests.py --filter 'ClientChannels/*'
 ```
 
+The HUD turns those events into coalesced notification rows (`src/hud/GameEventFeed.h`).
+The `GameEventFeed` suite (`src/hud/GameEventFeedTest.cpp`, unit binary) covers which
+reports share a row, warp-safe attack areas, the eight-row cap, expiry once both the
+game-time linger and the wall-clock floor have passed (normal speed, maximum speed,
+pause), fading, and GoToEvent stepping through rows by recency, with explicit times:
+
+```sh
+python3 test/run_tests.py --filter 'GameEventFeed/*'
+```
+
 For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
 engine tests into a separate directory with the sanitizer flags and run the same filter:
 

@@ -43,6 +43,8 @@ public:
 	Uint32 getStep() const { return step; }
 	Sint16 getX() const { return x; }
 	Sint16 getY() const { return y; }
+	Uint32 getTypeNum() const { return typeNum; }
+	Uint8 getOtherTeamNumber() const { return otherTeamNumber; }
 
 private:
 	GameEvent(GameEventType type, Uint32 step, Sint16 x, Sint16 y, Uint32 typeNum, Uint8 otherTeamNumber);

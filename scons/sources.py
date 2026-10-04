@@ -176,6 +176,7 @@ CLIENT_SOURCES = (
     'hud/draw/GameGUIDrawBuildingHelpers.cpp',
     'hud/draw/FailureShapes.cpp',
     'hud/draw/GameGUIDrawMiscPanels.cpp',
+    'hud/draw/GameGUIDrawEventFeed.cpp',
     'hud/GameGUIGhostBuildingManager.cpp',
     'hud/input/GameGUIInput.cpp',
     'hud/input/GameGUIInputKey.cpp',
