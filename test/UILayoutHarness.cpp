@@ -897,6 +897,18 @@ TEST_SUITE("UILayout")
 	TEST_CASE("column and flex") { checkColumnAndFlex(); }
 	TEST_CASE("row cross align") { checkRowCrossAlign(); }
 	TEST_CASE("paragraph wraps with width") { checkParagraphWrapsWithWidth(); }
+	TEST_CASE("text fields retain the touch target with compact control metrics")
+	{
+		Theme compactTheme = theme;
+		compactTheme.touchControlHeight = 34;
+		FixedTextMeasurer text(8, 38);
+		Host host(compactTheme, [](const Presentation &) { return column({textField("chat", "", {})}); });
+		host.setMeasurer(&text);
+		host.setPresentation(Presentation::forSurface(1024, 768, 1, true));
+		host.layoutIfNeeded();
+		REQUIRE(host.find("chat"));
+		CHECK(host.find("chat")->bounds.h >= host.metrics().minTarget);
+	}
 	TEST_CASE("wrap columns") { checkWrapColumns(); }
 	TEST_CASE("footer folds") { checkFooterFolds(); }
 	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }
