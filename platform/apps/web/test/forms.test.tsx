@@ -202,7 +202,7 @@ describe('links between the app and the website', () => {
     expect(container.querySelector('.brand')?.getAttribute('href')).toBe('/');
   });
 
-  it('points Download and the logo at the website when one is configured', async () => {
+  it('keeps the brand in the app and exposes the website and download in About', async () => {
     vi.resetModules();
     vi.stubEnv('VITE_WEBSITE_URL', 'https://glob2online.com/');
     const home = await import('../src/pages/Home.tsx');
@@ -212,12 +212,19 @@ describe('links between the app and the website', () => {
     window.history.replaceState(null, '', '/leaderboard');
     const { container } = render(<SiteApp />);
     const main = await screen.findByRole('navigation', { name: 'Main' });
-    const header = container.querySelector<HTMLElement>('.site-header');
-    const logo = within(header!).getByRole('link', { name: 'Globulation 2 Online website' });
-    expect(logo.classList.contains('brand')).toBe(true);
-    expect(logo.getAttribute('href')).toBe('https://glob2online.com');
-    // One header: no second strip of website links above it.
-    expect(screen.queryByRole('navigation', { name: 'Globulation 2 Online website' })).toBeNull();
+    const sidebar = container.querySelector<HTMLElement>('.app-sidebar');
+    const logo = sidebar!.querySelector('.brand');
+    expect(logo?.getAttribute('href')).toBe('/');
+    fireEvent.click(within(sidebar!).getByText('About & help'));
+    const about = within(sidebar!).getByRole('navigation', { name: 'About' });
+    expect(
+      within(about)
+        .getByRole('link', { name: 'Globulation 2 Online website' })
+        .getAttribute('href'),
+    ).toBe('https://glob2online.com');
+    expect(
+      within(about).getByRole('link', { name: 'Download the game' }).getAttribute('href'),
+    ).toBe('https://glob2online.com/downloads/');
     expect(within(main).getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/');
   });
 });

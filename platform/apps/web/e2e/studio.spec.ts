@@ -69,12 +69,17 @@ test('design conversation, private versions and explicit generation fit desktop 
       });
   });
   await page.goto(`/map-studio/${id}`);
+  if ((page.viewportSize()?.width ?? 1280) < 900)
+    await page.getByRole('button', { name: 'Open navigation' }).click();
   await expect(
     page
       .getByRole('navigation', { name: 'Main', exact: true })
       .getByRole('link', { name: 'AI Map Studio' }),
   ).toHaveAttribute('aria-current', 'page');
+  if ((page.viewportSize()?.width ?? 1280) < 900) await page.keyboard.press('Escape');
   await expect(page.getByRole('button', { name: 'Generate — 1 credit' })).toBeVisible();
+  const versionsTab = page.getByRole('button', { name: 'Versions (2)' });
+  if (await versionsTab.isVisible()) await versionsTab.click();
   await expect(page.getByRole('button', { name: 'Publish this version' })).toHaveCount(2);
   await page.getByLabel('Compare', { exact: true }).first().check();
   await page.getByLabel('Compare', { exact: true }).last().check();
@@ -107,6 +112,8 @@ test('design conversation, private versions and explicit generation fit desktop 
       fullPage: true,
     });
   }
+  const conversationTab = page.getByRole('button', { name: 'Conversation', exact: true });
+  if (await conversationTab.isVisible()) await conversationTab.click();
   await page
     .getByRole('textbox', { name: 'Describe your map or discuss changes' })
     .fill('Add a second walking bridge.');

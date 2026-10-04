@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { LeaderboardEntry } from '@glob2/protocol';
 import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
-import { Avatar, Empty, Loaded, PlayerLink, TableWrap } from '../components/common.tsx';
+import { Avatar, Loaded, PlayerLink, TableWrap } from '../components/common.tsx';
 import { aiName, percent, rating, versionKey } from '../format.ts';
 import { Link } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
@@ -173,7 +173,13 @@ export function Leaderboard({ queueId }: { queueId: string | undefined }) {
           <Loaded load={load}>
             {(page) =>
               !page || page.entries.length === 0 ? (
-                <Empty art="warFlag">No rated players yet.</Empty>
+                <div className="ladder-empty">
+                  <GameArt name="warFlag" size={40} />
+                  <p>No rated players yet. Play a ranked match to start climbing.</p>
+                  <a className="btn small" href="/play/">
+                    Play in browser
+                  </a>
+                </div>
               ) : (
                 <>
                   <Rows entries={page.entries} caption={`${name ?? 'Leaderboard'} players`} />

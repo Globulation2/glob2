@@ -176,31 +176,119 @@
   display: block !important;
 }
 
-/* AI map studio follows the online app's responsive panels and form controls. */
-.studio-wallet {
-  padding: 1rem;
-  margin: 1rem 0;
+/* Creative workspaces share the app surface while keeping their drafts mounted. */
+.map-studio {
+  container-type: inline-size;
+}
+.studio-wallet,
+.studio-threads {
+  padding: 12px 16px;
+  margin: 0 0 16px;
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--r-sm);
+  background: var(--surface);
 }
-.studio-wallet > span {
-  margin-left: 1rem;
+.studio-wallet summary,
+.studio-threads summary {
+  cursor: pointer;
+  min-height: 24px;
 }
-.studio-layout {
+.studio-wallet summary span,
+.studio-threads summary span {
+  margin-left: 12px;
+  color: var(--ink-2);
+  font-size: var(--text-sm);
+}
+.studio-wallet > p,
+.studio-wallet > details {
+  margin-top: 12px;
+}
+.studio-wallet > button {
+  margin: 4px 8px 4px 0;
+}
+.studio-threads aside {
+  padding-top: 16px;
+}
+.studio-threads ul {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.studio-threads li a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: var(--surface-2);
+  border-radius: var(--r-sm);
+}
+.studio-threads li a[aria-current] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.studio-threads form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+.studio-threads form .field {
+  flex: 1;
+  min-width: min(240px, 100%);
+}
+.studio-layout,
+.studio-workspace > *,
+.skin-designer > * {
+  min-width: 0;
+}
+.studio-workspace {
   display: grid;
-  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.studio-workspace[data-view='versions'] .studio-conversation,
+.studio-workspace[data-view='conversation'] .studio-versions {
+  display: none;
+}
+.studio-mobile-switch,
+.skin-view-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.studio-mobile-switch button[aria-pressed='true'],
+.skin-view-switch button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent-edge);
+}
+.studio-progress {
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.studio-empty {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  color: var(--ink-2);
 }
 .studio-chat {
   max-height: 32rem;
   overflow: auto;
-  padding: 0.5rem;
+  padding: 4px;
 }
 .studio-message {
-  padding: 0.8rem;
-  margin-bottom: 0.7rem;
+  padding: 12px;
+  margin-bottom: 12px;
   border: 1px solid var(--line);
-  border-radius: 0.8rem;
+  border-radius: var(--r-sm);
+  background: var(--surface);
 }
 .studio-message p {
   white-space: pre-wrap;
@@ -210,21 +298,22 @@
 .studio-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 12px;
 }
 .studio-controls label {
   display: grid;
-  gap: 0.3rem;
+  gap: 4px;
 }
 .studio-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: 1rem;
+  gap: 16px;
 }
 .studio-version {
-  padding: 1rem;
+  padding: 16px;
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--r-md);
+  background: var(--surface);
 }
 .studio-gallery img {
   width: 100%;
@@ -235,8 +324,47 @@
 .map-studio textarea {
   width: 100%;
 }
-@media (max-width: 720px) {
-  .studio-layout {
-    grid-template-columns: 1fr;
+@container (min-width: 760px) {
+  .studio-mobile-switch {
+    display: none;
+  }
+  .studio-workspace {
+    grid-template-columns: minmax(360px, 0.9fr) minmax(360px, 1.1fr);
+  }
+  .studio-workspace[data-view] .studio-conversation,
+  .studio-workspace[data-view] .studio-versions {
+    display: block;
+  }
+}
+.skin-designer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 24px;
+}
+.skin-designer > section {
+  padding: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--r-md);
+}
+.skin-designer label {
+  display: block;
+  margin-bottom: 12px;
+}
+.skin-designer button {
+  margin: 4px 8px 4px 0;
+}
+.skin-designer canvas {
+  max-width: 100%;
+}
+
+/* Preview stays compact while the tools continue down the page. */
+.skin-designer > :last-child {
+  align-self: start;
+}
+@media (min-width: 1100px) {
+  .skin-designer > :last-child {
+    position: sticky;
+    top: 24px;
   }
 }

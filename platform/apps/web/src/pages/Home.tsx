@@ -1,10 +1,9 @@
-// The home page: the living colony with the ways in (browser, download,
-// invite code), live numbers, how the game plays, the leaderboards, maps
-// players like, and recent matches.
+// The app dashboard: a compact living colony with play and invite actions,
+// live numbers, recent public matches, popular maps and rankings.
 import { useState, type FormEvent } from 'react';
 import type { InstanceStats, MapInfo, QueueInfo } from '@glob2/protocol';
 import { api } from '../api.ts';
-import { GameArt, Wordmark } from '../art.tsx';
+import { GameArt } from '../art.tsx';
 import { ColonyHero } from '../components/Colony.tsx';
 import { Avatar, Loaded, MapImage, MatchListView, PlayerLink } from '../components/common.tsx';
 import { aiName, rating } from '../format.ts';
@@ -115,21 +114,17 @@ function LiveStats() {
 }
 
 function Hero() {
-  const { instance, instanceError } = useSession();
-  const name = instance?.name ?? 'Globulation 2';
-  const plainName = name === 'Globulation 2';
+  const { instance, instanceError, account } = useSession();
   return (
     <section className="hero" aria-labelledby="hero-title">
       <ColonyHero />
-      <div className="hero-inner wrap">
+      <div className="hero-inner">
         <div className="hero-card">
           <h1 id="hero-title">
-            <Wordmark label={plainName ? null : 'Globulation 2'} />
-            <span className={plainName ? 'sr-only' : 'instance'}>{name}</span>
+            {account ? `Welcome, ${account.displayName}` : 'Welcome to the colony'}
           </h1>
           <p className="lede">
-            Grow a colony of globs: feed them, school them, and send them exploring or to war. A
-            free real-time strategy game where you set the goals and your colony gets to work.
+            Your next colony starts here. Play in your browser or join your friends.
           </p>
           {instanceError && (
             <div className="notice error" role="alert">
@@ -170,24 +165,6 @@ function Hero() {
     </section>
   );
 }
-
-const FEATURES = [
-  {
-    art: 'swarm',
-    title: 'Grow',
-    text: 'Your swarm hatches globs. Raise inns, schools and racetracks; workers build and stock them on their own.',
-  },
-  {
-    art: 'fruit',
-    title: 'Feed',
-    text: 'Globs gather wheat, wood and algae, and go hungry when inns run dry. A good economy wins long games.',
-  },
-  {
-    art: 'warFlag',
-    title: 'Explore and fight',
-    text: 'Plant flags to send explorers scouting and warriors to battle. Out-think your rivals instead of out-clicking them.',
-  },
-] as const;
 
 function LadderTeaser({ queue }: { queue: QueueInfo }) {
   const load = useLoad((signal) => api.leaderboard(queue.id, { limit: 5 }, signal), [queue.id]);
@@ -288,19 +265,15 @@ export function Home() {
   return (
     <>
       <Hero />
-      <div className="wrap home-body">
-        <section aria-labelledby="features-title" className="features">
-          <h2 id="features-title" className="sr-only">
-            How a colony grows
-          </h2>
-          {FEATURES.map((f) => (
-            <div className="feature" key={f.title}>
-              <GameArt name={f.art} size={84} />
-              <h3>{f.title}</h3>
-              <p>{f.text}</p>
-            </div>
-          ))}
+      <div className="home-body">
+        <section aria-labelledby="recent-title">
+          <div className="section-head">
+            <h2 id="recent-title">Recent matches</h2>
+            <Link to="/matches">All matches</Link>
+          </div>
+          <Loaded load={recent}>{(page) => <MatchListView matches={page.items} />}</Loaded>
         </section>
+        <FeaturedMaps />
         {rated.length > 0 && (
           <section aria-labelledby="ladders-title">
             <div className="section-head">
@@ -314,21 +287,14 @@ export function Home() {
             </div>
           </section>
         )}
-        <FeaturedMaps />
-        <section aria-labelledby="recent-title">
-          <div className="section-head">
-            <h2 id="recent-title">Recent matches</h2>
-            <Link to="/matches">All matches</Link>
-          </div>
-          <Loaded load={recent}>{(page) => <MatchListView matches={page.items} />}</Loaded>
-        </section>
         <div className="grid2" style={{ marginTop: 'var(--sp-6)' }}>
           <div className="card">
-            <h3>Play anywhere</h3>
+            <h3>New to Globulation 2?</h3>
             <p className="muted" style={{ margin: 0 }}>
-              The same game runs in your browser, on desktop and on phones. Invite links open
-              whichever you have, and your account follows you.
+              Set the goals and your globs get to work. Feed your colony, train your units and
+              explore together.
             </p>
+            {websitePage('/learn/') && <a href={websitePage('/learn/')}>Player guides</a>}
           </div>
           <InstanceCard />
         </div>

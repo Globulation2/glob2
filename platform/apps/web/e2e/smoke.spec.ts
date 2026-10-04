@@ -102,14 +102,22 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
   page,
 }, info) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Glob2 Online (test)');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome to the colony');
   await expect(page.getByTestId('ladder-teaser').first()).toContainText('Kestrel');
   await expect(page.getByTestId('match-row').first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Play in browser' }).first()).toHaveAttribute(
     'href',
     '/play/',
   );
-  await expect(page.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin');
+  const mobile = (page.viewportSize()?.width ?? 1280) < 900;
+  if (mobile)
+    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  await expect(
+    page
+      .locator(mobile ? '.drawer-content' : '.app-sidebar')
+      .getByRole('link', { name: 'Sign in' }),
+  ).toHaveAttribute('href', '/signin');
+  if (mobile) await page.getByRole('button', { name: 'Close navigation' }).click();
   // Live numbers come from GET /api/v1/stats: the seeded running match is live.
   const stats = page.getByTestId('live-stats');
   await expect(stats).toContainText(/players? online/);
@@ -120,13 +128,17 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
   await check(page, info, 'home');
 });
 
-test('home: nothing covers the header over the hero', async ({ page }) => {
+test('home: navigation and play controls remain reachable beside the colony', async ({ page }) => {
   await page.goto('/');
-  // Each header control must be the topmost element at its own centre.
+  const mobile = (page.viewportSize()?.width ?? 1280) < 900;
+  if (mobile)
+    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  const navigation = page.locator(mobile ? '.drawer-content' : '.app-sidebar');
+  // Navigation controls must remain the topmost element at their own centre.
   for (const target of [
-    page.locator('.site-header .brand'),
-    page.getByRole('navigation', { name: 'Main' }).getByRole('link').first(),
-    page.getByRole('link', { name: 'Sign in' }),
+    navigation.locator('.brand'),
+    navigation.getByRole('navigation', { name: 'Main' }).getByRole('link').first(),
+    navigation.getByRole('link', { name: 'Sign in' }),
   ]) {
     await expect(target).toBeVisible();
     const box = await target.boundingBox();
@@ -140,10 +152,11 @@ test('home: nothing covers the header over the hero', async ({ page }) => {
     );
     expect(topmost).toBe(true);
   }
-  // The hero card starts below the header.
+  if (mobile) await navigation.getByRole('button', { name: 'Close navigation' }).click();
   const card = await page.locator('.hero-card').boundingBox();
-  const header = await page.locator('.site-header').boundingBox();
-  expect(card?.y ?? 0).toBeGreaterThanOrEqual((header?.y ?? 0) + (header?.height ?? 0));
+  const shell = await page.locator(mobile ? '.mobile-bar' : '.app-sidebar').boundingBox();
+  if (mobile) expect(card?.y ?? 0).toBeGreaterThanOrEqual((shell?.y ?? 0) + (shell?.height ?? 0));
+  else expect(card?.x ?? 0).toBeGreaterThanOrEqual((shell?.x ?? 0) + (shell?.width ?? 0));
 });
 
 test('missing pages and items have a heading and a title', async ({ page }) => {
@@ -315,7 +328,12 @@ test('account page signed out and signed in', async ({ page }, info) => {
 test('the theme toggle cycles system, light and dark and is remembered', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/leaderboard');
-  const toggle = page.getByTestId('theme-toggle');
+  const mobile = (page.viewportSize()?.width ?? 1280) < 900;
+  if (mobile)
+    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  const toggle = page
+    .locator(mobile ? '.drawer-content' : '.app-sidebar')
+    .getByTestId('theme-toggle');
   const bg = () => inPage<string>(page, 'getComputedStyle(document.body).backgroundColor');
   await expect(toggle).toHaveAccessibleName(/same as this device/);
   await expect.poll(bg).toBe('rgb(241, 241, 225)');
@@ -327,8 +345,10 @@ test('the theme toggle cycles system, light and dark and is remembered', async (
   await page.reload();
   expect(await inPage(page, 'document.documentElement.dataset.theme')).toBe('dark');
   await expect.poll(bg).toBe('rgb(27, 18, 41)');
-  await page.getByTestId('theme-toggle').click();
-  await expect(page.getByTestId('theme-toggle')).toHaveAccessibleName(/same as this device/);
+  if (mobile)
+    await page.locator('.mobile-bar').getByRole('button', { name: 'Open navigation' }).click();
+  await toggle.click();
+  await expect(toggle).toHaveAccessibleName(/same as this device/);
 });
 
 test('keyboard: skip link first, visible focus, focus moves to new pages', async ({

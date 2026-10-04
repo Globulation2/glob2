@@ -178,6 +178,22 @@ export function Maps({ mine }: { mine: boolean }) {
                 </option>
               ))}
             </select>
+            {(filtered || q || sort !== 'recent') && (
+              <button
+                type="button"
+                onClick={() => {
+                  setQ('');
+                  setQuery('');
+                  setTeams('');
+                  setSize('');
+                  setMadeWith('');
+                  setSort('recent');
+                  setMore(0);
+                }}
+              >
+                Reset filters
+              </button>
+            )}
           </form>
           <Loaded load={load}>
             {(data) =>

@@ -1,20 +1,10 @@
 /* Home page: the colony hero and the sections under it. */
 
-/* The header floats over the hero's colony; the hero
-   keeps its content below it (App.tsx measures --site-top-height). */
-.site.home .site-top {
-  position: absolute;
-  inset: 0 0 auto;
-  z-index: 6;
-}
-.site.home .world-band {
-  display: none;
-}
-
 .hero {
   position: relative;
   isolation: isolate;
-  min-height: min(760px, 100svh);
+  min-height: 320px;
+  border-radius: var(--r-lg);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -42,13 +32,13 @@
 }
 .hero-inner {
   width: 100%;
-  padding-top: calc(var(--site-top-height, 72px) + 40px);
-  padding-bottom: 88px;
+  padding: var(--sp-5);
+  padding-bottom: 72px;
 }
 
 /* The menu panel the game shows over its own colony. */
 .hero-card {
-  max-width: 580px;
+  max-width: 620px;
   background: color-mix(in srgb, var(--surface) 95%, transparent);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
@@ -61,17 +51,6 @@
   flex-direction: column;
   gap: var(--sp-2);
   margin-bottom: var(--sp-3);
-}
-.hero-card h1 .wordmark {
-  height: auto;
-  width: min(100%, 440px);
-}
-.hero-card .instance {
-  font-size: var(--text-lg);
-  color: var(--gold-ink);
-  font-family: var(--font-body);
-  font-weight: 800;
-  letter-spacing: 0.02em;
 }
 .hero-card .lede {
   font-size: var(--text-lg);
@@ -254,7 +233,7 @@
 .motion-toggle {
   position: absolute;
   right: var(--gutter);
-  bottom: 40px;
+  bottom: 16px;
   z-index: 3;
   min-height: var(--target);
   background: color-mix(in srgb, var(--surface) 88%, transparent);
@@ -267,38 +246,7 @@
 .home-body {
   position: relative;
   z-index: 1;
-  margin-top: calc(-1 * var(--sp-6));
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-4);
-}
-.feature {
-  position: relative;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  padding: var(--sp-4) var(--sp-4) var(--sp-4) 104px;
-  min-height: 132px;
-  box-shadow: var(--shadow-md);
-}
-.feature img {
-  position: absolute;
-  left: 12px;
-  top: 16px;
-  width: 84px;
-  height: 84px;
-}
-.feature h3 {
-  font-size: var(--text-lg);
-  margin-bottom: var(--sp-1);
-}
-.feature p {
-  margin: 0;
-  color: var(--ink-2);
-  font-size: var(--text-sm);
+  margin-top: var(--sp-5);
 }
 
 .podium {
@@ -365,18 +313,13 @@
   overflow-wrap: anywhere;
 }
 
-@media (max-width: 960px) {
-  .features {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
 @media (max-width: 760px) {
   .hero {
     min-height: 0;
     align-items: flex-start;
   }
   .hero-inner {
-    padding-top: calc(var(--site-top-height, 120px) + 16px);
+    padding: var(--sp-4);
     padding-bottom: 72px;
   }
   .hero-art > img {
@@ -421,4 +364,40 @@
   .flyer {
     --s: 32px;
   }
+}
+
+/* Readable settings and compact empty lists within the fluid app frame. */
+.account-settings {
+  display: grid;
+  gap: var(--sp-4);
+  max-width: 800px;
+}
+.ladder-empty {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+}
+.ladder-empty p {
+  flex: 1 1 200px;
+  margin: 0;
+  color: var(--ink-2);
+}
+.match-diagnostics {
+  margin-top: var(--sp-5);
+}
+.match-diagnostics > summary {
+  padding: var(--sp-3) 0;
+  font-weight: 800;
+  cursor: pointer;
+}
+.hero-card h1 {
+  font-size: var(--text-2xl);
+}
+.home-body > section:first-child .section-head {
+  margin-top: 0;
 }

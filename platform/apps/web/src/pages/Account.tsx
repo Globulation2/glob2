@@ -53,39 +53,48 @@ export function Account() {
           Your profile
         </Link>
       </div>
-      <div className="card">
-        <h2 className="card-title">Sign-in methods</h2>
-        {account.identities.length === 0 ? (
-          <p>None: this guest account lives on the device that created it.</p>
-        ) : (
-          <ul>
-            {account.identities.map((identity) => (
-              <li key={identity.provider}>
-                {identity.provider === 'local' ? 'Username and password' : identity.provider}
-                {identity.email ? ` (${identity.email})` : ''}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="account-settings">
+        <div className="card">
+          <h2 className="card-title">Sign-in methods</h2>
+          {account.identities.length === 0 ? (
+            <p>None: this guest account lives on the device that created it.</p>
+          ) : (
+            <ul>
+              {account.identities.map((identity) => (
+                <li key={identity.provider}>
+                  {identity.provider === 'local' ? 'Username and password' : identity.provider}
+                  {identity.email ? ` (${identity.email})` : ''}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div className="card">
+          <h2 className="card-title">Download my data</h2>
+          <p>
+            A JSON file with everything this server stores about your account: your profile, sign-in
+            methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps
+            and moderation records.
+          </p>
+          <a className="btn" href={ACCOUNT_EXPORT_PATH} download>
+            Download my data
+          </a>
+        </div>
+        <div className="card">
+          <h2 className="card-title">Hive Mind</h2>
+          <p>Manage the credits for your in-game AI commander.</p>
+          <Link className="btn" to="/commander">
+            Hive Mind credits
+          </Link>
+        </div>
+        <DeleteAccount
+          account={account}
+          onDeleted={() => {
+            setDeleted(true);
+            refresh();
+          }}
+        />
       </div>
-      <div className="card">
-        <h2 className="card-title">Download my data</h2>
-        <p>
-          A JSON file with everything this server stores about your account: your profile, sign-in
-          methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps
-          and moderation records.
-        </p>
-        <a className="btn" href={ACCOUNT_EXPORT_PATH} download>
-          Download my data
-        </a>
-      </div>
-      <DeleteAccount
-        account={account}
-        onDeleted={() => {
-          setDeleted(true);
-          refresh();
-        }}
-      />
     </>
   );
 }
