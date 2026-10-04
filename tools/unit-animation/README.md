@@ -284,6 +284,18 @@ retained TRELLIS source and gives it a new paint layout. The swarm camera and
 silhouette are provisional; the map preview draws it at the existing swarm
 sprite anchor and size, preserving building overlays and visibility checks.
 
+`tools/skins/generate_swarms.py` is an experimental generator for alternative
+swarm meshes built from seeded metaball designs. Run it with Blender 3.6.23
+and `-t 1` (metaball surfacing is only byte-reproducible on one thread):
+`blender --background --factory-startup -t 1 --python-exit-code 1 --python
+tools/skins/generate_swarms.py -- --output artifacts/skins/swarms`. Each design
+is written with a `view` paint layout projected along the game camera and a
+`smart` layout for comparison. The swarm has one pose and is only seen and
+painted from that camera, so the `view` layout has no visible seams.
+`tools/skins/swarm_metrics.py MESH.gsk...` (NumPy; Blender's bundled Python
+has it) reports texel density, visible seam length and UV islands as the game
+camera sees a static mesh. Nothing selects among these meshes at runtime yet.
+
 
 For a crowded-scene comparison, run `skin-game-preview` with
 `SKIN_PREVIEW_SAVE` pointing to a two-colony save, `GLOB2_SKIN_PREVIEW_DIR`

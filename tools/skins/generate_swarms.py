@@ -1,0 +1,337 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
+"""Generate paintable swarm mesh variants from metaball designs.
+
+Run with Blender 3.6.23 --background --factory-startup -t 1
+--python-exit-code 1 --python tools/skins/generate_swarms.py --
+--output artifacts/skins/swarms. Metaball polygonization is threaded and only
+reproducible byte for byte with a single thread (-t 1).
+
+Each design is a seeded list of metaball elements, the same primitive the
+original glob units were modelled with, so variants share their soft house
+style. Every variant uses one fixed design volume (footprint radius 1, height
+up to HEIGHT) and one camera fit, so variants keep a common scale and ground
+line in the swarm's sprite canvas.
+
+UV layouts:
+  view  - projection along the game camera. The swarm has a single static pose
+          and is only seen and painted from that camera, so this layout has no
+          seams on the visible surface and even texel density on screen.
+  smart - Blender smart projection, as tools/skins/export_swarm.py uses.
+"""
+import argparse
+import hashlib
+import json
+import math
+from pathlib import Path
+import struct
+import sys
+
+import bpy
+import bmesh
+import numpy as np
+from mathutils import Vector
+
+CAMERA = (6, -8, 10)
+HEIGHT = 1.7           # design volume: cylinder of radius 1, z in [0, HEIGHT]
+CANVAS_FIT = 1.8       # projected design volume spans 90% of the clip square
+DEPTH_RANGE = 0.5      # matches export_swarm.py
+TRIANGLES = 2000       # matches the TRELLIS swarm's runtime budget
+MAX_VERTICES, MAX_INDICES = 8192, 49152
+THRESHOLD = 0.6
+
+
+class Design:
+    def __init__(self, seed):
+        self.rng = np.random.default_rng(seed)
+        self.elements = []
+
+    def ball(self, co, radius, stiffness=2.0, negative=False):
+        self.elements.append(('BALL', tuple(co), radius, stiffness, None, None, negative))
+
+    def ellipsoid(self, co, radius, size, axis=(0, 0, 1), stiffness=2.0, negative=False):
+        self.elements.append(('ELLIPSOID', tuple(co), radius, stiffness, tuple(size), tuple(axis), negative))
+
+    def chain(self, start, direction, length, r0, r1, bend=(0, 0, 0)):
+        """Tapered limb of overlapping balls along a gently bent path."""
+        start, direction, bend = (np.array(v, float) for v in (start, direction, bend))
+        direction /= np.linalg.norm(direction)
+        t, points = 0.0, []
+        while t <= 1.0:
+            radius = r0 + (r1 - r0) * t
+            points.append(start + direction * length * t + bend * t * t)
+            self.ball(points[-1], radius)
+            t += max(0.35 * radius / length, 0.02)
+        return points[-1]
+
+    def spire(self, base, height, radius, lean=(0, 0)):
+        tip_direction = (lean[0], lean[1], 1.0)
+        return self.chain(base, tip_direction, height, radius, radius * 0.18,
+                          bend=(lean[0] * 0.2, lean[1] * 0.2, 0))
+
+    def jitter(self, scale):
+        return float(self.rng.uniform(-scale, scale))
+
+
+def crown(d):
+    """Closest to the original sprite: spires ringed around a central egg."""
+    d.ellipsoid((0, 0, 0.12), 0.5, (1.0, 1.0, 0.62))
+    for k in range(18):
+        a = 2 * math.pi * k / 18
+        d.ball((0.82 * math.cos(a), 0.82 * math.sin(a), 0.02), 0.17)
+    count = 7
+    for k in range(count):
+        a = 2 * math.pi * (k + 0.5) / count + d.jitter(0.12)
+        r = 0.82
+        height = 0.95 + 0.5 * abs(math.sin(k * 2.3)) + d.jitter(0.1)
+        d.spire((r * math.cos(a), r * math.sin(a), 0), height, 0.2 + d.jitter(0.03),
+                lean=(0.18 * math.cos(a), 0.18 * math.sin(a)))
+
+
+def clutch(d):
+    """A clutch of brood eggs nested in a low rim."""
+    for k in range(26):
+        a = 2 * math.pi * k / 26
+        d.ball((0.86 * math.cos(a), 0.86 * math.sin(a), 0.04 + 0.03 * math.sin(3 * a)), 0.15)
+    d.ellipsoid((0, 0, -0.08), 0.8, (1.0, 1.0, 0.25))
+    eggs = [((0.0, 0.0), 0.3, 0.0)] + [
+        ((0.56 * math.cos(a), 0.56 * math.sin(a)), 0.23 + 0.03 * (k % 2), 0.35)
+        for k, a in enumerate(2 * math.pi * k / 5 + 0.3 for k in range(5))]
+    for (x, y), radius, tilt in eggs:
+        axis = (tilt * x + d.jitter(0.08), tilt * y + d.jitter(0.08), 1.0)
+        d.ellipsoid((x, y, radius * 1.1), radius, (0.85, 0.85, 1.4), axis=axis, stiffness=4.0)
+
+
+def toadstool(d):
+    """A broad-capped toadstool with a ring of young caps at its foot."""
+    d.chain((0, 0, 0), (0.05, 0.02, 1), 0.85, 0.3, 0.22)
+    d.ellipsoid((0.05, 0.02, 1.05), 0.78, (1.0, 1.0, 0.38))
+    d.ellipsoid((0.05, 0.02, 0.86), 0.5, (1.0, 1.0, 0.25), stiffness=1.5, negative=True)
+    d.ellipsoid((0, 0, 0.0), 0.55, (1.0, 1.0, 0.3))
+    for k, a in enumerate((0.4, 1.9, 3.3, 4.6)):
+        a += d.jitter(0.2)
+        x, y = 0.72 * math.cos(a), 0.72 * math.sin(a)
+        height = 0.22 + 0.1 * (k % 2)
+        d.chain((x, y, 0), (0.15 * math.cos(a), 0.15 * math.sin(a), 1), height, 0.1, 0.08)
+        d.ellipsoid((x * 1.05, y * 1.05, height + 0.04), 0.2, (1.0, 1.0, 0.5))
+
+
+def coral(d):
+    """Branching spires that fork from a low mound."""
+    d.ellipsoid((0, 0, 0.0), 0.75, (1.0, 1.0, 0.4))
+
+    def branch(start, direction, length, radius, depth):
+        tip = d.chain(start, direction, length, radius, radius * 0.7)
+        if depth == 0:
+            d.chain(tip, direction, length * 0.45, radius * 0.7, radius * 0.15)
+            return
+        base = np.arctan2(direction[1], direction[0])
+        for side in (-1, 1):
+            a = base + side * (0.7 + d.jitter(0.25))
+            spread = 0.55 + d.jitter(0.1)
+            child = (spread * math.cos(a), spread * math.sin(a), 1.0)
+            branch(tip, child, length * 0.7, radius * 0.72, depth - 1)
+
+    for k, a in enumerate((0.3, 2.4, 4.3)):
+        a += d.jitter(0.2)
+        start = (0.3 * math.cos(a), 0.3 * math.sin(a), 0.1)
+        branch(start, (0.35 * math.cos(a), 0.35 * math.sin(a), 1.0), 0.5 + 0.08 * k, 0.17, 2 if k else 1)
+
+
+def skep(d):
+    """A coiled hive, like a straw bee skep, with a doorway facing the camera."""
+    rows = 6
+    for row in range(rows):
+        z = 0.1 + row * 0.21
+        radius = 0.84 * math.cos(row / rows * math.pi / 2.1)
+        count = max(10, int(60 * radius))
+        for k in range(count):
+            a = 2 * math.pi * k / count
+            d.ball((radius * math.cos(a), radius * math.sin(a), z), 0.12, stiffness=4.0)
+    d.ball((0, 0, 0.1 + rows * 0.21 - 0.08), 0.16)
+    d.ellipsoid((0, 0, 0.0), 0.72, (1.0, 1.0, 1.5))
+    camera = math.atan2(CAMERA[1], CAMERA[0])
+    door = (0.86 * math.cos(camera), 0.86 * math.sin(camera), 0.18)
+    d.ellipsoid(door, 0.3, (0.75, 0.75, 1.15), stiffness=8.0, negative=True)
+
+
+def bloom(d):
+    """Petals cupped open around a central bud."""
+    d.ellipsoid((0, 0, 0.0), 0.6, (1.0, 1.0, 0.35))
+    d.ellipsoid((0, 0, 0.45), 0.36, (1.0, 1.0, 1.4))
+    count = 6
+    for k in range(count):
+        a = 2 * math.pi * k / count + d.jitter(0.08)
+        out = 0.55 + d.jitter(0.05)
+        centre = (out * math.cos(a), out * math.sin(a), 0.42)
+        axis = (0.75 * math.cos(a), 0.75 * math.sin(a), 1.0)
+        d.ellipsoid(centre, 0.42, (0.55, 0.22, 1.25), axis=axis)
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + 0.5
+        d.chain((0.12 * math.cos(a), 0.12 * math.sin(a), 0.75), (0.3 * math.cos(a), 0.3 * math.sin(a), 1), 0.45, 0.07, 0.04)
+        d.ball((0.12 * math.cos(a) + 0.13 * math.cos(a), 0.12 * math.sin(a) + 0.13 * math.sin(a), 1.2), 0.09)
+
+
+DESIGNS = {'crown': (crown, 11), 'clutch': (clutch, 12), 'toadstool': (toadstool, 13),
+           'coral': (coral, 14), 'skep': (skep, 15), 'bloom': (bloom, 16)}
+
+
+def clear_scene():
+    for obj in list(bpy.data.objects):
+        bpy.data.objects.remove(obj)
+    for block in (bpy.data.meshes, bpy.data.metaballs):
+        for item in list(block):
+            block.remove(item)
+
+
+def surface(design, resolution):
+    """Polygonize the metaballs, keep only what stands above the ground."""
+    data = bpy.data.metaballs.new('swarm')
+    data.resolution = data.render_resolution = resolution
+    data.threshold = THRESHOLD
+    for kind, co, radius, stiffness, size, axis, negative in design.elements:
+        element = data.elements.new(type=kind)
+        # Designs give the radius of the surface; an isolated element's surface
+        # lies where its falloff reaches the threshold, inside its radius.
+        reach = math.sqrt(1 - math.sqrt(THRESHOLD / stiffness))
+        element.co, element.radius, element.stiffness = co, radius / reach, stiffness
+        element.use_negative = negative
+        if size:
+            element.size_x, element.size_y, element.size_z = size
+            element.rotation = Vector(axis).normalized().to_track_quat('Z', 'Y')
+    meta = bpy.data.objects.new('swarm-meta', data)
+    bpy.context.scene.collection.objects.link(meta)
+    depsgraph = bpy.context.evaluated_depsgraph_get()
+    mesh = bpy.data.meshes.new_from_object(meta.evaluated_get(depsgraph))
+    bpy.data.objects.remove(meta)
+    bm = bmesh.new()
+    bm.from_mesh(mesh)
+    geometry = bm.verts[:] + bm.edges[:] + bm.faces[:]
+    # Faces below ground are never drawn; leave the base open on the ground.
+    bmesh.ops.bisect_plane(bm, geom=geometry, plane_co=(0, 0, 0), plane_no=(0, 0, 1), clear_inner=True)
+    bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=1e-6)
+    bm.to_mesh(mesh)
+    bm.free()
+    obj = bpy.data.objects.new('swarm', mesh)
+    bpy.context.scene.collection.objects.link(obj)
+    bpy.context.view_layer.objects.active = obj
+    obj.select_set(True)
+    return obj
+
+
+def decimate(obj):
+    obj.data.calc_loop_triangles()
+    before = len(obj.data.loop_triangles)
+    modifier = obj.modifiers.new('SkinSurfaceBudget', 'DECIMATE')
+    modifier.ratio = min(1.0, TRIANGLES / before)
+    bpy.ops.object.modifier_apply(modifier=modifier.name)
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    return before
+
+
+def camera_fit():
+    """One projection for every variant, fitted to the shared design volume."""
+    rotation = np.array(Vector(CAMERA).to_track_quat('Z', 'Y').to_matrix()).T
+    ring = np.linspace(0, 2 * math.pi, 256, endpoint=False)
+    volume = np.array([(math.cos(a), math.sin(a), z) for a in ring for z in (0.0, HEIGHT)])
+    view = volume @ rotation.T
+    low, high = view.min(axis=0), view.max(axis=0)
+    scale = CANVAS_FIT / (high[:2] - low[:2]).max()
+    return rotation, (low + high) / 2, scale, DEPTH_RANGE / (high[2] - low[2])
+
+
+def project(obj):
+    rotation, centre, scale, depth = camera_fit()
+    mesh = obj.data
+    mesh.calc_loop_triangles()
+    mesh.calc_normals()
+    positions = np.array([v.co[:] for v in mesh.vertices])
+    view = positions @ rotation.T - centre
+    view[:, :2] *= scale
+    view[:, 2] *= -depth
+    normals = np.array([v.normal[:] for v in mesh.vertices]) @ rotation.T
+    if np.abs(view[:, :2]).max() > 0.97:
+        raise ValueError(f'{obj.name} leaves the swarm canvas: {np.abs(view[:, :2]).max():.3f}')
+    return view, normals
+
+
+def unwrap(obj, layout, view):
+    mesh = obj.data
+    if layout == 'smart':
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=0.025)
+        bpy.ops.object.mode_set(mode='OBJECT')
+        return {loop: tuple(mesh.uv_layers.active.data[loop].uv) for loop in range(len(mesh.loops))}
+    # Camera projection: fit the silhouette's bounds, square texels, 2px border.
+    low, high = view[:, :2].min(axis=0), view[:, :2].max(axis=0)
+    span = (high - low).max()
+    border = 2 / 256
+    uv = border + (view[:, :2] - low) / span * (1 - 2 * border)
+    return {loop: tuple(uv[mesh.loops[loop].vertex_index]) for loop in range(len(mesh.loops))}
+
+
+def write(obj, layout, output, name, metadata):
+    view, normals = project(obj)
+    loop_uv = unwrap(obj, layout, view)
+    mesh = obj.data
+    vertices, uv, indices, lookup = [], [], [], {}
+    for tri in mesh.loop_triangles:
+        for loop_id in tri.loops:
+            vertex = mesh.loops[loop_id].vertex_index
+            tex = loop_uv[loop_id]
+            key = vertex, tex
+            if key not in lookup:
+                lookup[key] = len(vertices)
+                vertices.append([*view[vertex], *normals[vertex]])
+                uv.append((tex[0], 1 - tex[1]))
+            indices.append(lookup[key])
+    if len(vertices) > MAX_VERTICES or len(indices) > MAX_INDICES:
+        raise ValueError(f'{name} exceeds runtime geometry budget: {len(vertices)} vertices, {len(indices)//3} triangles')
+    output.mkdir(parents=True, exist_ok=True)
+    path = output / 'swarm.gsk'
+    with path.open('wb') as stream:
+        stream.write(struct.pack('<4sIIII', b'GSK1', len(vertices), len(indices), 1, 96))
+        stream.write(np.array(uv, dtype='<f4').tobytes())
+        stream.write(np.array(indices, dtype='<u4').tobytes())
+        stream.write(np.array(vertices, dtype='<f4').tobytes())
+    metadata = dict(metadata, uvLayout=f'swarm-{name}-{layout}', triangles=len(indices) // 3,
+                    vertices=len(vertices), sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    (output / 'swarm-mesh.json').write_text(json.dumps(metadata, indent=2) + '\n')
+    return metadata
+
+
+def generate(name, output, layouts, resolution):
+    build, seed = DESIGNS[name]
+    clear_scene()
+    design = Design(seed)
+    build(design)
+    obj = surface(design, resolution)
+    obj.name = name
+    surface_triangles = decimate(obj)
+    metadata = {'format': 'GSK1', 'experimental': True, 'design': name, 'seed': seed,
+                'generator': 'tools/skins/generate_swarms.py', 'elements': len(design.elements),
+                'metaballResolution': resolution, 'surfaceTriangles': surface_triangles,
+                'logicalSize': 96, 'frames': 1, 'cameraDirection': list(CAMERA),
+                'cameraFit': f'design volume r=1 h={HEIGHT} spans {CANVAS_FIT / 2:.0%} of canvas'}
+    results = []
+    for layout in layouts:
+        results.append(write(obj, layout, output / name / layout, name, metadata))
+        print(json.dumps(results[-1]), flush=True)
+    return results
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--designs', default=','.join(DESIGNS))
+    parser.add_argument('--layouts', default='view,smart')
+    parser.add_argument('--resolution', type=float, default=0.03)
+    args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
+    if bpy.app.version[:3] != (3, 6, 23):
+        raise ValueError('Use Blender 3.6.23')
+    for name in args.designs.split(','):
+        generate(name, args.output.resolve(), args.layouts.split(','), args.resolution)
