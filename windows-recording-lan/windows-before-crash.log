@@ -1,0 +1,235 @@
+[New Thread 6464.0xbe4 (id 2)]
+[New Thread 6464.0x1b04 (id 3)]
+[New Thread 6464.0x4a0 (id 4)]
+warning: File "D:/a/_temp/msys64/mingw64/bin/libstdc++-6.dll-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load".
+To enable execution of this file add
+	add-auto-load-safe-path D:/a/_temp/msys64/mingw64/bin/libstdc++-6.dll-gdb.py
+line to your configuration file "D:\a\_temp\msys64\home\runneradmin/.config/gdb/gdbinit".
+To completely disable this security protection add
+	set auto-load safe-path /
+line to your configuration file "D:\a\_temp\msys64\home\runneradmin/.config/gdb/gdbinit".
+For more information about this security protection see the
+"Auto-loading safe path" section in the GDB manual.  E.g., run from the shell:
+	info "(gdb)Auto-loading safe path"
+warning: Invalid parameter passed to C runtime function.
+warning: Invalid parameter passed to C runtime function.
+GLOB2_TEST_BUILD compiler=16.2.0 platform=Windows pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" WIN32 HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wall -O3 -fwhole-program"}, "revision": "72b5a8e6b608face92e215d69a4f293e3cba46ed", "sourceStatus": [], "sourceTreeSha256": "5c9f7b780c9976b580e2688c91d79dafd92b9091998644bdf788a72282444ca6"}
+warning: [doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+Settings::load("preferences.txt") : error, can't open file.
+warning: onecore\net\netprofiles\service\src\nsp\dll\namespaceserviceprovider.cpp(601)\nlansp_c.dll!00007FF8BBF6D95C: (caller: 00007FF8D711E407) LogHr(1) tid(134c) 8007277C No such service is known. The service cannot be found in the specified name space.
+[New Thread 6464.0x23e8 (id 5)]
+[New Thread 6464.0x1614 (id 6)]
+[New Thread 6464.0x235c (id 7)]
+[New Thread 6464.0x1e20 (id 8)]
+[New Thread 6464.0x848 (id 9)]
+[New Thread 6464.0x1e34 (id 10)]
+[New Thread 6464.0x23e0 (id 11)]
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+[New Thread 6464.0x23a4 (id 12)]
+[New Thread 6464.0x1e40 (id 13)]
+[New Thread 6464.0x149c (id 14)]
+[Thread 6464.0x1e34 (id 10) exited with code 0]
+[Thread 6464.0x848 (id 9) exited with code 0]
+[Thread 6464.0x23e0 (id 11) exited with code 0]
+[New Thread 6464.0x1afc (id 15)]
+[New Thread 6464.0x219c (id 16)]
+[New Thread 6464.0x2118 (id 17)]
+[Thread 6464.0x235c (id 7) exited with code 0]
+[Thread 6464.0x1614 (id 6) exited with code 0]
+[Thread 6464.0x23a4 (id 12) exited with code 0]
+[Thread 6464.0x1e20 (id 8) exited with code 0]
+[New Thread 6464.0x1b5c (id 18)]
+[New Thread 6464.0x14d8 (id 19)]
+[New Thread 6464.0x8b0 (id 20)]
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+[New Thread 6464.0x6e4 (id 21)]
+[Thread 6464.0x23e8 (id 5) exited with code 0]
+[Thread 6464.0x2118 (id 17) exited with code 0]
+[Thread 6464.0x8b0 (id 20) exited with code 0]
+[New Thread 6464.0x728 (id 22)]
+[New Thread 6464.0x23fc (id 23)]
+[Thread 6464.0x219c (id 16) exited with code 0]
+[Thread 6464.0x1afc (id 15) exited with code 0]
+[New Thread 6464.0x18f4 (id 24)]
+[New Thread 6464.0x384 (id 25)]
+[Thread 6464.0x14d8 (id 19) exited with code 0]
+[Thread 6464.0x1b5c (id 18) exited with code 0]
+[New Thread 6464.0x2144 (id 26)]
+[New Thread 6464.0x1a68 (id 27)]
+[Thread 6464.0x384 (id 25) exited with code 0]
+[Thread 6464.0x18f4 (id 24) exited with code 0]
+[New Thread 6464.0x1e54 (id 28)]
+[New Thread 6464.0x548 (id 29)]
+[Thread 6464.0x23fc (id 23) exited with code 0]
+[Thread 6464.0x728 (id 22) exited with code 0]
+[New Thread 6464.0x1c98 (id 30)]
+[New Thread 6464.0x1330 (id 31)]
+[Thread 6464.0x1a68 (id 27) exited with code 0]
+[Thread 6464.0x2144 (id 26) exited with code 0]
+[New Thread 6464.0x1fe0 (id 32)]
+[New Thread 6464.0x1ce0 (id 33)]
+[Thread 6464.0x548 (id 29) exited with code 0]
+[Thread 6464.0x1e54 (id 28) exited with code 0]
+[New Thread 6464.0x1b00 (id 34)]
+[New Thread 6464.0x204 (id 35)]
+[Thread 6464.0x1330 (id 31) exited with code 0]
+[Thread 6464.0x1c98 (id 30) exited with code 0]
+[New Thread 6464.0x114c (id 36)]
+[New Thread 6464.0xb64 (id 37)]
+[Thread 6464.0x1ce0 (id 33) exited with code 0]
+[Thread 6464.0x1fe0 (id 32) exited with code 0]
+[New Thread 6464.0x1968 (id 38)]
+[New Thread 6464.0x444 (id 39)]
+[Thread 6464.0x204 (id 35) exited with code 0]
+[Thread 6464.0x1b00 (id 34) exited with code 0]
+[New Thread 6464.0x1c0c (id 40)]
+[New Thread 6464.0x6bc (id 41)]
+[Thread 6464.0xb64 (id 37) exited with code 0]
+[Thread 6464.0x114c (id 36) exited with code 0]
+warning: ===============================================================================
+src/net/lan/LanMatchHarness.cpp:537:
+TEST SUITE: LanMatchHarness
+TEST CASE:  LAN WSS drop, restart and host departure [network][slow][artifacts]
+
+src/net/lan/LanMatchHarness.cpp:411: MESSAGE: LAN host state: {"hostName":"Host","mapBytes":48770,"mapName":"a/glob2/glob2\\maps\\FourSquares1","members":[{"hasMap":true,"id":0,"name":"Host","ready":true,"seat":0},{"hasMap":true,"id":1,"name":"Guest A","ready":true,"seat":1},{"hasMap":true,"id":2,"name":"Guest B","ready":true,"seat":2}],"setup":{"experiments":[],"map":{"format":"map","hash":"5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98","kind":"upload"},"rules":{"allyTeamsFixed":true,"buildingHpLevel":0,"glassCannonLevel":0,"hungerDisabled":false,"instantConstruction":false,"mapDiscovered":false,"peacefulMode":false,"permadeathDisabled":false,"prestigeVictory":true,"resourceGrowthDisabled":false,"resourceScarcityLevel":0,"stockpileStartLevel":0,"suddenDeathMinutes":0,‡Av
+
+Thread 1 received signal SIGSEGV, Segmentation fault.
+0x00007ff6b9685257 in (anonymous namespace)::LanMatch::runUntil(unsigned long long, std::function<bool ()> const&) ()
+
+Thread 41 (Thread 6464.0x6bc):
+#0  0x00007ff8d77a2914 in ntdll!ZwRemoveIoCompletion () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0e45c in KERNELBASE!GetQueuedCompletionStatus () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff6bb29aaac in boost::asio::detail::win_iocp_io_context::do_one(unsigned long, boost::asio::detail::win_iocp_thread_info&, boost::system::error_code&) ()
+#3  0x00007ff6bb2530e5 in boost::asio::detail::posix_thread::func<boost::asio::detail::resolver_thread_pool::work_scheduler_runner, boost::asio::execution_context::allocator<void> >::run() ()
+#4  0x00007ff6bb49a2aa in asio_detail_posix_thread_function ()
+#5  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#6  0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#7  0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#8  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#9  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#10 0x0000000000000000 in ?? ()
+
+Thread 40 (Thread 6464.0x1c0c):
+#0  0x00007ff8d77a2874 in ntdll!ZwWaitForSingleObject () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0759f in WaitForSingleObjectEx () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff6bb252f87 in boost::asio::detail::posix_thread::func<boost::asio::detail::win_iocp_io_context::timer_thread_function, std::allocator<void> >::run() ()
+#3  0x00007ff6bb49a2aa in asio_detail_posix_thread_function ()
+#4  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#5  0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#6  0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#7  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#8  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#9  0x0000000000000000 in ?? ()
+
+Thread 39 (Thread 6464.0x444):
+#0  0x00007ff8d77a2914 in ntdll!ZwRemoveIoCompletion () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0e45c in KERNELBASE!GetQueuedCompletionStatus () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff6bb29aaac in boost::asio::detail::win_iocp_io_context::do_one(unsigned long, boost::asio::detail::win_iocp_thread_info&, boost::system::error_code&) ()
+#3  0x00007ff6bb2530e5 in boost::asio::detail::posix_thread::func<boost::asio::detail::resolver_thread_pool::work_scheduler_runner, boost::asio::execution_context::allocator<void> >::run() ()
+#4  0x00007ff6bb49a2aa in asio_detail_posix_thread_function ()
+#5  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#6  0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#7  0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#8  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#9  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#10 0x0000000000000000 in ?? ()
+
+Thread 38 (Thread 6464.0x1968):
+#0  0x00007ff8d77a2874 in ntdll!ZwWaitForSingleObject () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0759f in WaitForSingleObjectEx () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff6bb252f87 in boost::asio::detail::posix_thread::func<boost::asio::detail::win_iocp_io_context::timer_thread_function, std::allocator<void> >::run() ()
+#3  0x00007ff6bb49a2aa in asio_detail_posix_thread_function ()
+#4  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#5  0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#6  0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#7  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#8  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#9  0x0000000000000000 in ?? ()
+
+Thread 21 (Thread 6464.0x6e4):
+#0  0x00007ff8d77a3344 in ntdll!ZwWaitForMultipleObjects () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0de73 in WaitForMultipleObjectsEx () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff8d4d0dd41 in WaitForMultipleObjects () from C:/Windows/System32/KernelBase.dll
+#3  0x00007ff8d16c246a in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#4  0x00007ff8d16c272d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#5  0x00007ff8d16c2f07 in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#6  0x00007ff6bb487bad in GradientPipeline::configure(unsigned int, unsigned int, unsigned long long, std::function<void (GradientPipeline::Job&, GradientWorkspace&)>, std::function<std::thread (std::function<void ()>)>)::{lambda()#1}::operator()() const ()
+#7  0x00007ff6bb443a3d in std::thread::_State_impl<std::thread::_Invoker<std::tuple<GAGCore::ThreadSupport::launch(std::function<void ()>)::{lambda()#1}> > >::_M_run() ()
+#8  0x00007ff8b673f54f in ?? () from D:/a/_temp/msys64/mingw64/bin/libstdc++-6.dll
+#9  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#10 0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#11 0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#12 0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#13 0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#14 0x0000000000000000 in ?? ()
+
+Thread 14 (Thread 6464.0x149c):
+#0  0x00007ff8d77a3344 in ntdll!ZwWaitForMultipleObjects () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0de73 in WaitForMultipleObjectsEx () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff8d4d0dd41 in WaitForMultipleObjects () from C:/Windows/System32/KernelBase.dll
+#3  0x00007ff8d16c246a in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#4  0x00007ff8d16c272d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#5  0x00007ff8d16c2f07 in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#6  0x00007ff6bb487bad in GradientPipeline::configure(unsigned int, unsigned int, unsigned long long, std::function<void (GradientPipeline::Job&, GradientWorkspace&)>, std::function<std::thread (std::function<void ()>)>)::{lambda()#1}::operator()() const ()
+#7  0x00007ff6bb443a3d in std::thread::_State_impl<std::thread::_Invoker<std::tuple<GAGCore::ThreadSupport::launch(std::function<void ()>)::{lambda()#1}> > >::_M_run() ()
+#8  0x00007ff8b673f54f in ?? () from D:/a/_temp/msys64/mingw64/bin/libstdc++-6.dll
+#9  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#10 0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#11 0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#12 0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#13 0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#14 0x0000000000000000 in ?? ()
+
+Thread 13 (Thread 6464.0x1e40):
+#0  0x00007ff8d77a3344 in ntdll!ZwWaitForMultipleObjects () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d4d0de73 in WaitForMultipleObjectsEx () from C:/Windows/System32/KernelBase.dll
+#2  0x00007ff8d4d0dd41 in WaitForMultipleObjects () from C:/Windows/System32/KernelBase.dll
+#3  0x00007ff8d16c246a in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#4  0x00007ff8d16c272d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#5  0x00007ff8d16c2f07 in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#6  0x00007ff6bb487bad in GradientPipeline::configure(unsigned int, unsigned int, unsigned long long, std::function<void (GradientPipeline::Job&, GradientWorkspace&)>, std::function<std::thread (std::function<void ()>)>)::{lambda()#1}::operator()() const ()
+#7  0x00007ff6bb443a3d in std::thread::_State_impl<std::thread::_Invoker<std::tuple<GAGCore::ThreadSupport::launch(std::function<void ()>)::{lambda()#1}> > >::_M_run() ()
+#8  0x00007ff8b673f54f in ?? () from D:/a/_temp/msys64/mingw64/bin/libstdc++-6.dll
+#9  0x00007ff8d16c766d in ?? () from D:/a/_temp/msys64/mingw64/bin/libwinpthread-1.dll
+#10 0x00007ff8d696f0ad in msvcrt!_beginthreadex () from C:/Windows/System32/msvcrt.dll
+#11 0x00007ff8d696f17c in msvcrt!_endthreadex () from C:/Windows/System32/msvcrt.dll
+#12 0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#13 0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#14 0x0000000000000000 in ?? ()
+
+Thread 4 (Thread 6464.0x4a0):
+#0  0x00007ff8d77a64a4 in ntdll!ZwWaitForWorkViaWorkerFactory () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d76b5f3e in ntdll!RtlSetThreadSubProcessTag () from C:/Windows/SYSTEM32/ntdll.dll
+#2  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#3  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#4  0x0000000000000000 in ?? ()
+
+Thread 3 (Thread 6464.0x1b04):
+#0  0x00007ff8d77a64a4 in ntdll!ZwWaitForWorkViaWorkerFactory () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d76b5f3e in ntdll!RtlSetThreadSubProcessTag () from C:/Windows/SYSTEM32/ntdll.dll
+#2  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#3  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#4  0x0000000000000000 in ?? ()
+
+Thread 2 (Thread 6464.0xbe4):
+#0  0x00007ff8d77a64a4 in ntdll!ZwWaitForWorkViaWorkerFactory () from C:/Windows/SYSTEM32/ntdll.dll
+#1  0x00007ff8d76b5f3e in ntdll!RtlSetThreadSubProcessTag () from C:/Windows/SYSTEM32/ntdll.dll
+#2  0x00007ff8d721e987 in KERNEL32!BaseThreadInitThunk () from C:/Windows/System32/kernel32.dll
+#3  0x00007ff8d76cc53c in ntdll!RtlUserThreadStart () from C:/Windows/SYSTEM32/ntdll.dll
+#4  0x0000000000000000 in ?? ()
+
+Thread 1 (Thread 6464.0x134c):
+#0  0x00007ff6b9685257 in (anonymous namespace)::LanMatch::runUntil(unsigned long long, std::function<bool ()> const&) ()
+#1  0x00007ff6b968d916 in DOCTEST_ANON_SUITE_8::DOCTEST_ANON_FUNC_9() ()
+#2  0x00007ff6b949e6c4 in doctest::Context::run() ()
+#3  0x00007ff6bb49ad48 in main ()

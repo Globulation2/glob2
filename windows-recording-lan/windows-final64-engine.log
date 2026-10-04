@@ -1,0 +1,11 @@
+PASS LanMatchHarness/LAN departure waits for asynchronous transport writes (0.0s)
+PASS LanMatchHarness/timeout diagnostics tolerate a destroyed guest room [network] (0.2s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (0.3s)
+PASS GameplayRecording.Integration/global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences] (1.7s)
+PASS GameplayRecording.Integration/production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording] (4.5s)
+PASS GameplayRecording.Integration/threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording] (6.2s)
+PASS LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts] (27.2s)
+PASS LanMatchHarness/an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts] (1.6s)
+
+8 passed, 0 failed, 0 skipped (41.8s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/windows-final64-engine.xml (8 cases)

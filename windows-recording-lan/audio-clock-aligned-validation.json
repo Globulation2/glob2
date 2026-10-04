@@ -1,0 +1,12 @@
+{
+  "bytes": 131552,
+  "expected_first_sample": 25767,
+  "audible_onset_sample": 25728,
+  "alignment_error_ms": 0.8843537414965986,
+  "chunk_mean_absolute_amplitudes": [
+    7700.54296875,
+    7583.83984375,
+    7468.283203125,
+    7481.861328125
+  ]
+}
