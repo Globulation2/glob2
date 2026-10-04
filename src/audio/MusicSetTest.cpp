@@ -19,14 +19,24 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	REQUIRE(settings.musicSet.empty());
 
 	auto& mixer = *globalContainer->mix;
+	// Only Original ships; a second valid set is a copy of it in the disposable profile.
+	const auto profile = std::filesystem::path(globalContainer->fileManager->getDir(0));
+	const auto fixture = profile / "data/zik/test-set";
+	std::filesystem::create_directories(fixture);
+	for (int i = 1; i <= 3; ++i)
+	{
+		const auto file = "a" + std::to_string(i) + ".ogg";
+		std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original" / file, fixture / file,
+			std::filesystem::copy_options::overwrite_existing);
+	}
 	const auto sets = SoundMixer::getMusicSets();
 	REQUIRE(std::find(sets.begin(), sets.end(), "original") != sets.end());
-	REQUIRE(std::find(sets.begin(), sets.end(), "seedling") != sets.end());
+	REQUIRE(std::find(sets.begin(), sets.end(), "test-set") != sets.end());
 	REQUIRE(std::is_sorted(sets.begin(), sets.end()));
 	REQUIRE(std::adjacent_find(sets.begin(), sets.end()) == sets.end());
-	REQUIRE(SoundMixer::musicSetLabel("bramble-dance") == "Bramble Dance");
-	REQUIRE(mixer.selectMusicSet("seedling"));
-	REQUIRE(mixer.getMusicSet() == "seedling");
+	REQUIRE(SoundMixer::musicSetLabel("test-set") == "Test Set");
+	REQUIRE(mixer.selectMusicSet("test-set"));
+	REQUIRE(mixer.getMusicSet() == "test-set");
 	if (mixer.audioStream) SDL_PauseAudioDevice(SDL_GetAudioStreamDevice(mixer.audioStream));
 	mixer.actTrack = 4;
 	mixer.nextTrack = 2;
@@ -38,7 +48,7 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	mixer.nextTrack = 4;
 	mixer.pendingTrack = 3;
 	mixer.fadePos = 2048;
-	REQUIRE(mixer.selectMusicSet("seedling"));
+	REQUIRE(mixer.selectMusicSet("test-set"));
 	CHECK(mixer.actTrack == 3);
 	CHECK(mixer.nextTrack == 3);
 	CHECK(mixer.pendingTrack == -1);
@@ -48,7 +58,6 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	REQUIRE((mixer.selectMusicSet("original") && mixer.tracks[2] == current));
 	REQUIRE((!mixer.selectMusicSet("../original") && mixer.tracks[2] == current));
 
-	const auto profile = std::filesystem::path(globalContainer->fileManager->getDir(0));
 	const auto incomplete = profile / "data/zik/test-incomplete";
 	std::filesystem::create_directories(incomplete);
 	std::ofstream(incomplete / "a1.ogg") << "invalid";
@@ -57,11 +66,12 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	const auto broken = profile / "data/zik/test-broken";
 	std::filesystem::create_directories(broken);
 	for (int i = 1; i <= 2; ++i)
-		std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/seedling/a1.ogg", broken / ("a" + std::to_string(i) + ".ogg"));
+		std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original/a1.ogg", broken / ("a" + std::to_string(i) + ".ogg"));
 	std::ofstream(broken / "a3.ogg") << "invalid";
 	REQUIRE(!mixer.selectMusicSet("test-broken"));
 	REQUIRE((mixer.getMusicSet() == "original" && mixer.tracks[2] == current));
-	std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original/a1.ogg", broken / "a3.ogg", std::filesystem::copy_options::overwrite_existing);
+	// A valid 44.1 kHz stereo stream whose length differs from the other two.
+	std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/menu.ogg", broken / "a3.ogg", std::filesystem::copy_options::overwrite_existing);
 	REQUIRE(!mixer.selectMusicSet("test-broken"));
 	REQUIRE((mixer.getMusicSet() == "original" && mixer.tracks[2] == current));
 	{
@@ -101,16 +111,16 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	{
 		GameGUI gui;
 		InGameOptionScreen screen(&gui);
-		REQUIRE(screen.setMusicSet("seedling"));
+		REQUIRE(screen.setMusicSet("test-set"));
 		CHECK(settings.mute);
-		CHECK(settings.musicSet == "seedling");
-		CHECK(mixer.getMusicSet() == "seedling");
+		CHECK(settings.musicSet == "test-set");
+		CHECK(mixer.getMusicSet() == "test-set");
 		CHECK_FALSE(screen.setMusicSet("../original"));
-		CHECK(settings.musicSet == "seedling");
+		CHECK(settings.musicSet == "test-set");
 	}
 	Settings loaded;
 	loaded.load();
-	CHECK(loaded.musicSet == "seedling");
+	CHECK(loaded.musicSet == "test-set");
 	{
 		GameGUI gui;
 		InGameOptionScreen screen(&gui);
@@ -119,5 +129,7 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	}
 	loaded.load();
 	CHECK(loaded.musicSet.empty());
+	REQUIRE(mixer.selectMusicSet("original"));
+	std::filesystem::remove_all(fixture);
 }
 }

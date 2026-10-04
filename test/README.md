@@ -1613,6 +1613,5 @@ queued mood replacement, live dummy-audio switching, muted changes and saved
 preferences through the current in-game dialog API. `Settings/*` also covers the
 Audio selector and captures its layout. The mixer selection regression suite is
 `SoundMixerTrackSelection/*`. These display cases run in isolated runner processes.
-MIDI timing and atomic installer checks run with
-`python3 -m unittest discover -s music -p 'test_*.py'`; the FluidSynth repeat-render
-case skips when its pinned sound bank or shared library is unavailable.
+Only Original ships, so `MusicSet/*` builds its extra valid and broken sets from copies
+of the shipped Oggs in the disposable profile.
