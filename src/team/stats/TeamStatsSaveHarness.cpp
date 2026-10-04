@@ -769,9 +769,10 @@ static void measurementScenarios()
 		w.inside(u, b, ATTACK_SPEED);
 		TeamStatsMeasurementFixture::displacement(u);
 		const auto &m = w.game.teams[0]->stats.measurements;
-		require(u->level[ATTACK_SPEED] == level && m.trainingVisits[WARRIOR] == 1 &&
+		require(u->displacement == Unit::DIS_EXITING_BUILDING &&
+				u->level[ATTACK_SPEED] == level && m.trainingVisits[WARRIOR] == 0 &&
 				m.abilityGains[WARRIOR][ATTACK_SPEED] == 0,
-				"disabled upgrades still complete a visit without a level gain");
+				"disabled upgrades exit without recording a training visit or level gain");
 	}
 	{
 		TeamStatsMeasurementFixture w;

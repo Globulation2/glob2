@@ -95,13 +95,13 @@ protected:
 		CHECK_EQ((Sint32)-1, a.unitCount);
 	}
 
-	// C++: CortexTypes.h — the observation layout is at v20 (forward-rally staging
-	// added forwardRallyValid/forwardRallyX/forwardRallyY); the action layout is at v13
+	// C++: CortexTypes.h — the observation layout is at v21 (effective match rules
+	// added rule capabilities); the action layout is at v13
 	// (ACTION_BUILD_FORWARD). Bump these in lockstep with the OBSERVATION_VERSION /
 	// ACTION_VERSION constants.
 	void testVersionBump(void)
 	{
-		CHECK_EQ((Uint32)20, (Uint32)OBSERVATION_VERSION);
+		CHECK_EQ((Uint32)21, (Uint32)OBSERVATION_VERSION);
 		CHECK_EQ((Uint32)13, (Uint32)ACTION_VERSION);
 		// makeEmptyObservation must stamp the current version (so a stale
 		// observation from an old layout is rejected by the policy).
