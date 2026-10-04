@@ -1,0 +1,19 @@
+Rebasing (1/6)Auto-merging data/texts.en.txt
+Auto-merging data/texts.keys.txt
+CONFLICT (modify/delete): src/Engine.cpp deleted in HEAD and modified in 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources).  Version 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources) of src/Engine.cpp left in tree.
+Auto-merging src/SConscript
+CONFLICT (content): Merge conflict in src/SConscript
+CONFLICT (modify/delete): src/Settings.h deleted in HEAD and modified in 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources).  Version 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources) of src/Settings.h left in tree.
+Auto-merging src/app/Settings.cpp
+Auto-merging src/audio/SoundMixer.cpp
+CONFLICT (content): Merge conflict in src/audio/SoundMixer.cpp
+Auto-merging src/audio/SoundMixer.h
+CONFLICT (modify/delete): src/gui/GameGUIDialog.cpp deleted in HEAD and modified in 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources).  Version 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources) of src/gui/GameGUIDialog.cpp left in tree.
+CONFLICT (modify/delete): src/gui/GameGUIDialog.h deleted in HEAD and modified in 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources).  Version 7e11c3674 (Add selectable adaptive soundtrack sets and MIDI sources) of src/gui/GameGUIDialog.h left in tree.
+error: could not apply 7e11c3674... Add selectable adaptive soundtrack sets and MIDI sources
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Could not apply 7e11c3674... # Add selectable adaptive soundtrack sets and MIDI sources

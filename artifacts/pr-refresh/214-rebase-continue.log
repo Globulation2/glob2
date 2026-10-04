@@ -1,0 +1,47 @@
+[detached HEAD 3d528fa8f] Add selectable adaptive soundtrack sets and MIDI sources
+ 52 files changed, 1346 insertions(+), 27 deletions(-)
+ create mode 100644 data/zik/bramble-dance/SConscript
+ create mode 100644 data/zik/bramble-dance/a1.ogg
+ create mode 100644 data/zik/bramble-dance/a2.ogg
+ create mode 100644 data/zik/bramble-dance/a3.ogg
+ create mode 100644 data/zik/seedling/SConscript
+ create mode 100644 data/zik/seedling/a1.ogg
+ create mode 100644 data/zik/seedling/a2.ogg
+ create mode 100644 data/zik/seedling/a3.ogg
+ create mode 100644 data/zik/tidepool/SConscript
+ create mode 100644 data/zik/tidepool/a1.ogg
+ create mode 100644 data/zik/tidepool/a2.ogg
+ create mode 100644 data/zik/tidepool/a3.ogg
+ create mode 100644 data/zik/velvet-orbit/SConscript
+ create mode 100644 data/zik/velvet-orbit/a1.ogg
+ create mode 100644 data/zik/velvet-orbit/a2.ogg
+ create mode 100644 data/zik/velvet-orbit/a3.ogg
+ create mode 100644 music/.gitignore
+ create mode 100644 music/README.md
+ create mode 100644 music/contrasts/README.md
+ create mode 100644 music/contrasts/bramble-dance/building.mid
+ create mode 100644 music/contrasts/bramble-dance/calm.mid
+ create mode 100644 music/contrasts/bramble-dance/combat.mid
+ create mode 100644 music/contrasts/bramble-dance/render-info.json
+ create mode 100644 music/contrasts/generate.py
+ create mode 100644 music/contrasts/velvet-orbit/building.mid
+ create mode 100644 music/contrasts/velvet-orbit/calm.mid
+ create mode 100644 music/contrasts/velvet-orbit/combat.mid
+ create mode 100644 music/contrasts/velvet-orbit/render-info.json
+ create mode 100644 music/install_sets.py
+ create mode 100644 music/installed-sets.json
+ create mode 100644 music/seedling/README.md
+ create mode 100644 music/seedling/a1-calm.mid
+ create mode 100644 music/seedling/a2-building.mid
+ create mode 100644 music/seedling/a3-combat.mid
+ create mode 100644 music/seedling/generate.py
+ create mode 100644 music/seedling/render-info.json
+ create mode 100644 music/tidepool/README.md
+ create mode 100644 music/tidepool/building.mid
+ create mode 100644 music/tidepool/calm.mid
+ create mode 100644 music/tidepool/combat.mid
+ create mode 100644 music/tidepool/generate.py
+ create mode 100644 music/tidepool/render-info.json
+ create mode 100644 test/MusicSetTest.cpp
+ create mode 100644 test/run-music-set-tests.py
+Rebasing (2/6)Rebasing (3/6)Rebasing (4/6)Rebasing (5/6)Rebasing (6/6)Successfully rebased and updated refs/heads/codex/refresh-pr-214.

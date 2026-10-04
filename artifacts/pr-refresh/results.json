@@ -62,5 +62,13 @@
     "result": "All 2,287 frames and source hashes validated; 91,136 terrain joins checked; candidate preparation/rejection passed; four software/OpenGL renderer cases passed. Selected current renderer captures attached.",
     "commands": "python3 tools/artwork/package_runtime.py --check; uv run --with numpy --with scipy --with pillow python tools/artwork/validate_runtime.py; python3 tools/artwork/runtime_provenance.py --check; GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --filter RuntimePack/* --filter HighResolutionIntegration/* --artifacts artifacts/pr-refresh/220-render",
     "limitations": "macOS arm64 software/OpenGL only; external model inference, other platforms and human gameplay/performance review not performed. Original PR history preserved on archive branch."
+  },
+  {
+    "number": 214,
+    "sha": "612cf6b4ed464a759112de3b859dbf02bc736daa",
+    "base": "526f607f919ea57c9aa1735944848953c8941d69",
+    "result": "Native test binaries build; five mixer/music/settings/golden cases pass; six Python checks pass and one repeat-synthesis case skips. Audio settings capture inspected and localization corrected.",
+    "commands": "GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix CCACHE=1 scons -j6 release=1 tests; uv run --with numpy python -m unittest discover -s music -p 'test_*.py'; python3 test/run_tests.py --filter 'MusicSet/*' --filter 'SoundMixerTrackSelection/*' --filter 'Settings/*640x480 in OpenGL*' --filter 'TurnEngineHarness/the committed*' --artifacts artifacts/pr-refresh/214-render; python3 test/check_sim_revision.py --base origin/master",
+    "limitations": "macOS arm64 only; offline repeat synthesis skipped without pinned sound bank. No fresh full soundtrack render, other-platform checks or human listening review. Draft retained. Earlier failed build iterations superseded by final logs."
   }
 ]
