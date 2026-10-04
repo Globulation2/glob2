@@ -4258,6 +4258,10 @@ Cosa non va in questa mappa?
 Cerca mappe o autori
 [maps none found]
 Nessuna mappa corrisponde.
+[maps catalog empty]
+Nessuna mappa è ancora stata condivisa su questo server.
+[maps clear filters]
+Cancella filtri
 [maps any colonies]
 Qualsiasi n. di colonie
 [maps checking]

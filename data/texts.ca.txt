@@ -4258,6 +4258,10 @@ Què li passa a aquest mapa?
 Cerca mapes o autors
 [maps none found]
 Cap mapa coincideix.
+[maps catalog empty]
+Encara no s'ha compartit cap mapa en aquest servidor.
+[maps clear filters]
+Esborra els filtres
 [maps any colonies]
 Qualsevol nombre de colònies
 [maps checking]

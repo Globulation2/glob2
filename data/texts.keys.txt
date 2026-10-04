@@ -2125,6 +2125,8 @@
 [maps report why]
 [maps search placeholder]
 [maps none found]
+[maps catalog empty]
+[maps clear filters]
 [maps any colonies]
 [maps checking]
 [maps no version yet]

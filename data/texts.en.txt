@@ -4266,6 +4266,10 @@ What is wrong with this map?
 Search maps or authors
 [maps none found]
 No maps match.
+[maps catalog empty]
+No maps have been shared on this server yet.
+[maps clear filters]
+Clear filters
 [maps any colonies]
 Any colonies
 [maps checking]

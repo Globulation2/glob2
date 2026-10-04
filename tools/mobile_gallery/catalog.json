@@ -604,6 +604,12 @@
       "group": "Online screens"
     },
     {
+      "id": "online-maps-empty",
+      "title": "Maps: empty catalog",
+      "description": "A server with no shared maps yet: the empty state explains it and offers Upload a map.",
+      "group": "Online play"
+    },
+    {
       "id": "online-my-maps",
       "title": "My maps",
       "description": "Own maps: published, checking on the server, rejected.",
@@ -815,6 +821,12 @@
       "id": "online-hub",
       "title": "Online hub",
       "description": "Guest account, quick-match cards, rooms and recent matches (fixed model).",
+      "group": "Online play"
+    },
+    {
+      "id": "online-hub-searching",
+      "title": "Online hub: searching",
+      "description": "A casual quick-match search running: the search strip with the timer, AI countdown, Details and Cancel.",
       "group": "Online play"
     },
     {

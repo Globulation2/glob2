@@ -187,6 +187,7 @@ std::vector<Fixture> fixtures()
 		{"lan-find", [](GAGGUI::ScreenStack &s) { return std::make_unique<LANFindScreen>(s); }},
 		{"lan-room", lanRoom},
 		{"online-hub", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubFixture(s); }},
+		{"online-hub-searching", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSearching(s); }},
 		{"online-hub-signin", [](GAGGUI::ScreenStack &s)
 		 {
 			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
@@ -284,6 +285,7 @@ std::vector<Fixture> fixtures()
 		{"online-profile", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::profile(s); }},
 		{"online-maps", [](GAGGUI::ScreenStack &s)
 		 { return OnlineUIFixtures::maps(s, OnlineMapsScreen::Tab::Browse, glob2test::sourceRoot().string() + "/"); }},
+		{"online-maps-empty", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::mapsEmpty(s); }},
 		{"online-my-maps", [](GAGGUI::ScreenStack &s)
 		 { return OnlineUIFixtures::maps(s, OnlineMapsScreen::Tab::Mine, glob2test::sourceRoot().string() + "/"); }},
 		{"map-share", [](GAGGUI::ScreenStack &) { return OnlineUIFixtures::share(0); }},
