@@ -3544,6 +3544,10 @@ Kamers
 Ranglijst
 [hub play with friends]
 Spelen met vrienden
+[hub online now %0 %1]
+%0 spelers online · %1 zoeken in deze wachtrij
+[hub show in open rooms]
+Tonen bij open kamers
 [hub last match]
 Laatste wedstrijd
 [hub your rank %0 %1]

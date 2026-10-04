@@ -60,6 +60,11 @@ inline std::string rooms(const std::string &simVersionKey)
 {
 	return path("/rooms?simVersion=" + urlEncode(simVersionKey));
 }
+// Live activity: players online, matches, and how many are searching each queue.
+inline std::string stats()
+{
+	return path("/stats");
+}
 inline std::string match(const std::string &matchId)
 {
 	return path("/matches/" + urlEncode(matchId));

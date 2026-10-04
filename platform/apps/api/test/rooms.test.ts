@@ -3,6 +3,7 @@
 // the start sequence down to tickets verified with the published JWKS, and
 // the invite landing page.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { sql } from 'kysely';
 import { STANDARD_RULES, checkDocument as check, simVersionKey } from '@glob2/protocol';
 import {
   FakeEngine,
@@ -539,6 +540,63 @@ describe('room REST and the invite page', () => {
     );
     const missing = await fetch(`${a.url}/api/v1/rooms`);
     expect(missing.status).toBe(400);
+  });
+
+  it('names catalog maps in the list and links their ready previews', async () => {
+    // Its own host: a player has one open room at a time, and later tests use `room`.
+    const db = harness.database.db;
+    const catalogRoom = (
+      await (
+        await player(a)
+      ).client.ok('room.create', { name: 'Canal night', visibility: 'public' })
+    )['room'] as Room;
+    const hash = 'c'.repeat(64);
+    const previewHash = 'd'.repeat(64);
+    for (const sha256 of [hash, previewHash])
+      await db
+        .insertInto('blobs')
+        .values({
+          sha256,
+          size: 1,
+          content_type: 'application/octet-stream',
+          storage_key: `test/${sha256}`,
+        })
+        .execute();
+    const map = await db
+      .insertInto('maps')
+      .values({
+        owner_account_id: catalogRoom.members[0]!.accountId,
+        title: 'Canal Duel',
+        visibility: 'public',
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('map_versions')
+      .values({
+        map_id: map.id,
+        hash,
+        size: 1,
+        preview_hash: previewHash,
+        preview_status: 'ready',
+        validation: 'valid',
+      })
+      .execute();
+    const selection = JSON.stringify({ kind: 'catalog', hash, mapId: map.id });
+    await sql`UPDATE rooms SET settings = jsonb_set(settings, '{map}', ${selection}::jsonb)
+      WHERE id = ${catalogRoom.id}`.execute(db);
+    const list = await json(
+      await fetch(`${a.url}/api/v1/rooms?simVersion=${simVersionKey(SIM)}&limit=50`),
+    );
+    expect(check('RoomList', list).stage).toBe('ok');
+    const listed = (list['items'] as { id: string }[]).find((i) => i.id === catalogRoom.id);
+    expect(listed).toMatchObject({
+      mapTitle: 'Canal Duel',
+      mapPreviewUrl: `${ORIGIN}/api/v1/maps/${map.id}/versions/${hash}/preview.png`,
+    });
+    // Rooms on generated maps carry no preview link.
+    const generated = (list['items'] as Record<string, unknown>[]).find((i) => i['id'] === room.id);
+    expect(generated?.['mapPreviewUrl']).toBeUndefined();
   });
 
   it('describes an invite code', async () => {

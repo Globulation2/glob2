@@ -267,6 +267,23 @@ export const InstanceStats = Open(
       description: 'Matches created in the last 24 hours, cancelled ones excluded.',
     }),
     generatedAt: Timestamp,
+    queues: Type.Optional(
+      Type.Array(
+        Open({
+          id: Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }),
+          searching: Type.Integer({
+            minimum: 0,
+            description:
+              'Players waiting in the queue or answering a match prompt, any sim version.',
+          }),
+        }),
+        {
+          maxItems: 64,
+          description:
+            'Every configured queue with how many players are searching it, so a client can say whether a search is likely to find a person.',
+        },
+      ),
+    ),
   },
   { description: 'GET /api/v1/stats.' },
 );

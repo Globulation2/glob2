@@ -3544,6 +3544,10 @@ OpenGL недоступний у цій збірці.
 Рейтинг
 [hub play with friends]
 Грати з друзями
+[hub online now %0 %1]
+%0 гравців онлайн · %1 шукають у цій черзі
+[hub show in open rooms]
+Показувати у відкритих кімнатах
 [hub last match]
 Останній матч
 [hub your rank %0 %1]

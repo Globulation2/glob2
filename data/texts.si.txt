@@ -3544,6 +3544,10 @@ Sobe
 Lestvica
 [hub play with friends]
 Igraj s prijatelji
+[hub online now %0 %1]
+%0 igralcev na spletu · %1 jih išče v tej vrsti
+[hub show in open rooms]
+Prikaži med odprtimi sobami
 [hub last match]
 Zadnja tekma
 [hub your rank %0 %1]

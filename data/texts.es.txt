@@ -3544,6 +3544,10 @@ Salas
 Ranking
 [hub play with friends]
 Jugar con amigos
+[hub online now %0 %1]
+%0 jugadores en línea · %1 buscando en esta cola
+[hub show in open rooms]
+Mostrar en Salas abiertas
 [hub last match]
 Última partida
 [hub your rank %0 %1]

@@ -3,5 +3,15 @@
   "activeWindowMinutes": 15,
   "liveMatches": 3,
   "matchesToday": 41,
-  "generatedAt": "2026-10-01T12:00:00Z"
+  "generatedAt": "2026-10-01T12:00:00Z",
+  "queues": [
+    {
+      "id": "ranked-1v1",
+      "searching": 2
+    },
+    {
+      "id": "casual-1v1",
+      "searching": 0
+    }
+  ]
 }

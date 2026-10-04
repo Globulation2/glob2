@@ -3544,6 +3544,10 @@ Místnosti
 Pořadí
 [hub play with friends]
 Hrát s přáteli
+[hub online now %0 %1]
+%0 hráčů online · %1 hledá v této frontě
+[hub show in open rooms]
+Zobrazit v otevřených místnostech
 [hub last match]
 Poslední zápas
 [hub your rank %0 %1]

@@ -3544,6 +3544,10 @@ Szobák
 Ranglista
 [hub play with friends]
 Játék barátokkal
+[hub online now %0 %1]
+%0 játékos online · %1 keres ebben a sorban
+[hub show in open rooms]
+Megjelenítés a nyitott szobák között
 [hub last match]
 Legutóbbi mérkőzés
 [hub your rank %0 %1]

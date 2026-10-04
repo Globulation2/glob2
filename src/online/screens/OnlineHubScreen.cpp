@@ -123,7 +123,7 @@ void OnlineHubScreen::setQuickMatch(QuickMatch start)
 }
 
 OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect)
-	: screens(screens), pictures(std::make_unique<MapPictures>())
+	: screens(screens), pictures(std::make_unique<MapPictures>()), previews(std::make_unique<PreviewImages>())
 {
 	auto &services = Online::services();
 	auto &platform = services.client;
@@ -377,6 +377,22 @@ void OnlineHubScreen::refresh(bool force)
 			}
 		}
 	}
+	// Live counts: whether a search is likely to find a person (the server caches them 30 s).
+	if (!fetchingStats)
+	{
+		fetchingStats = true;
+		calls->rest(HttpFetch::Method::Get, Online::Api::stats(), Json(), [this](const Online::PlatformClient::Response &r) {
+			fetchingStats = false;
+			if (!r.ok)
+				return;
+			data.playersOnline = r.result.value("playersOnline", -1);
+			data.searching.clear();
+			for (const auto &queue : r.result.value("queues", Json::array()))
+				if (queue.is_object() && queue.contains("id") && queue["id"].is_string())
+					data.searching[queue["id"].get<std::string>()] = queue.value("searching", 0);
+			invalidate();
+		});
+	}
 	if (!fetchingRooms)
 	{
 		fetchingRooms = true;
@@ -463,13 +479,18 @@ void OnlineHubScreen::enterRoom(std::shared_ptr<RoomBackend> room)
 
 void OnlineHubScreen::createRoom()
 {
+	createRoom(listRoom);
+}
+
+void OnlineHubScreen::createRoom(bool listed)
+{
 	if (!canPlay())
 		return;
 	// A fair 128×128 two-colony map: most rooms are two friends. It grows to four
 	// colonies when more people join, until the host chooses a map.
 	const auto setup = Online::defaultRoomSetup(2, std::random_device{}());
 	const std::string name = formatted("[hub room name %0]", data.displayName);
-	enterRoom(Online::PlatformRoom::create(client(), Online::services().maps, Online::services().storage, name, false, setup, true));
+	enterRoom(Online::PlatformRoom::create(client(), Online::services().maps, Online::services().storage, name, listed, setup, true));
 }
 
 void OnlineHubScreen::joinByCode(const std::string &codeOrLink)
@@ -887,6 +908,18 @@ Element OnlineHubScreen::outcomeBadge(const std::string &letter, const Presentat
 	}));
 }
 
+Element OnlineHubScreen::liveLine(const Json &queue, const Presentation &p)
+{
+	// Shown only when the server reports both numbers.
+	const auto found = data.searching.find(queue.value("id", ""));
+	if (data.playersOnline < 0 || found == data.searching.end())
+		return nullptr;
+	const auto palette = theme().palette;
+	return row({icon(uiIcon(UIIcon::Users), {16, palette.muted}),
+				expanded(caption(GAGCore::FormattableString(tr("[hub online now %0 %1]")).arg(data.playersOnline).arg(found->second)))},
+			   {p.pt(6), CrossAlign::Center});
+}
+
 Element OnlineHubScreen::mapPool(const Json &queue, const Presentation &p, bool phone)
 {
 	// The map pool, drawn: what a match in this queue will look like.
@@ -933,6 +966,8 @@ Element OnlineHubScreen::quickMatchCard(const Presentation &p, bool phone)
 	if (canPlay() && !open)
 		detail = tr("[qm sign in to play ranked]");
 	parts.push_back(paragraph(detail, {FontRole::Support, true}));
+	if (auto live = liveLine(queue, p))
+		parts.push_back(live);
 	if (auto pool = mapPool(queue, p, phone))
 		parts.push_back(pool);
 	if (canPlay() && !open)
@@ -954,7 +989,9 @@ Element OnlineHubScreen::friendsCard(const Presentation &p)
 							 spacer(p.pt(8)), caption(tr("[hub join by code]")),
 							 expanded(textField("join/code", joinDraft, [this](const std::string &v) { joinDraft = v; }, codeField)),
 							 button("join/go", tr("[hub join]"), [this] { joinByCode(joinDraft); }, {.enabled = canPlay() && !joinDraft.empty()})},
-							{p.pt(6), CrossAlign::Center})},
+							{p.pt(6), CrossAlign::Center}),
+						// Invite-only unless the host chooses otherwise; the room can change it later.
+						toggle("room/listed", tr("[hub show in open rooms]"), listRoom, [this](bool v) { listRoom = v; invalidate(); })},
 					   {p.pt(8)}),
 				{.color = palette.field, .padding = p.pt(12), .shadow = false, .border = palette.line});
 }
@@ -999,8 +1036,11 @@ Element OnlineHubScreen::playSection(const Presentation &p, bool phone)
 	if (phone && data.queues.is_array() && !data.queues.empty())
 	{
 		const int chosen = std::clamp(selectedQueue < 0 ? defaultQueue() : selectedQueue, 0, int(data.queues.size()) - 1);
-		if (auto pool = mapPool(data.queues[std::size_t(chosen)], p, true))
-			parts.push_back(column({heading(tr("[hub quick match]")), pool}, {p.pt(6)}));
+		const Json &queue = data.queues[std::size_t(chosen)];
+		auto live = liveLine(queue, p);
+		auto pool = mapPool(queue, p, true);
+		if (live || pool)
+			parts.push_back(column({heading(tr("[hub quick match]")), live, pool}, {p.pt(6)}));
 	}
 	if (auto last = lastMatchCard(p, phone))
 		parts.push_back(last);
@@ -1031,7 +1071,11 @@ Element OnlineHubScreen::roomsSection(const Presentation &p, bool phone)
 		auto words = column({label(room.value("name", "")), caption(detail)}, {0});
 		ButtonOptions join;
 		join.enabled = canPlay() && taken < total;
-		rows.push_back(row({icon(uiIcon(UIIcon::Users), {20, theme().palette.muted}), expanded(words),
+		// The catalog map's server preview when there is one; an icon otherwise.
+		Element picture = icon(uiIcon(UIIcon::Users), {20, theme().palette.muted});
+		if (const std::string url = room.value("mapPreviewUrl", ""); !url.empty() && previews && !previewing)
+			picture = previewPicture(previews->get(&client(), url, [this] { invalidate(); }), p.pt(40));
+		rows.push_back(row({picture, expanded(words),
 							button("rooms/" + std::to_string(i) + "/join", tr("[hub join]"), [this, code] { joinByCode(code); }, join)},
 						   {p.pt(8), CrossAlign::Center}));
 		rows.push_back(divider());
@@ -1040,7 +1084,7 @@ Element OnlineHubScreen::roomsSection(const Presentation &p, bool phone)
 	// ways to play anyway.
 	if (shown == 0)
 		rows.push_back(emptyState(uiIcon(UIIcon::Users), tr("[hub no rooms]"),
-								  {button("rooms/empty/create", tr("[hub create room]"), [this] { createRoom(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Plus)}),
+								  {button("rooms/empty/create", tr("[hub create room]"), [this] { createRoom(true); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Plus)}),
 								   button("rooms/empty/quick", tr("[hub quick match]"), [this] { showSection(Section::Play); }, {.icon = uiIcon(UIIcon::Bolt)})},
 								  p));
 	std::vector<Element> head{expanded(heading(tr("[hub open rooms]")))};

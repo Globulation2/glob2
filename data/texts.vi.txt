@@ -3544,6 +3544,10 @@ Phòng
 Xếp hạng
 [hub play with friends]
 Chơi cùng bạn bè
+[hub online now %0 %1]
+%0 người chơi trực tuyến · %1 đang tìm trong hàng này
+[hub show in open rooms]
+Hiển thị trong Phòng đang mở
 [hub last match]
 Trận gần nhất
 [hub your rank %0 %1]
