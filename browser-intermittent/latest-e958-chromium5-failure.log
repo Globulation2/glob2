@@ -1,0 +1,1608 @@
+﻿2026-10-04T08:21:33.8835563Z Current runner version: '2.337.0'
+2026-10-04T08:21:33.8872479Z ##[group]Runner Image Provisioner
+2026-10-04T08:21:33.8873931Z Hosted Compute Agent
+2026-10-04T08:21:33.8874923Z Version: 20260901.588
+2026-10-04T08:21:33.8876146Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T08:21:33.8877853Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T08:21:33.8879036Z Worker ID: {e971bfa5-778d-4d4c-9f04-58abe5bd9c2d}
+2026-10-04T08:21:33.8880417Z Azure Region: eastus
+2026-10-04T08:21:33.8881331Z ##[endgroup]
+2026-10-04T08:21:33.8885020Z ##[group]Operating System
+2026-10-04T08:21:33.8886104Z Ubuntu
+2026-10-04T08:21:33.8887220Z 24.04.5
+2026-10-04T08:21:33.8888239Z LTS
+2026-10-04T08:21:33.8889095Z ##[endgroup]
+2026-10-04T08:21:33.8890306Z ##[group]Runner Image
+2026-10-04T08:21:33.8891305Z Image: ubuntu-24.04
+2026-10-04T08:21:33.8892200Z Version: 20260927.320.1
+2026-10-04T08:21:33.8894390Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-04T08:21:33.8897478Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-04T08:21:33.8899364Z ##[endgroup]
+2026-10-04T08:21:33.8905031Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T08:21:33.8908954Z Actions: write
+2026-10-04T08:21:33.8910176Z ArtifactMetadata: write
+2026-10-04T08:21:33.8911187Z Attestations: write
+2026-10-04T08:21:33.8912170Z Checks: write
+2026-10-04T08:21:33.8913105Z CodeQuality: write
+2026-10-04T08:21:33.8914052Z Contents: write
+2026-10-04T08:21:33.8915126Z CopilotRequests: write
+2026-10-04T08:21:33.8916077Z Deployments: write
+2026-10-04T08:21:33.8917544Z Discussions: write
+2026-10-04T08:21:33.8918532Z Drives: write
+2026-10-04T08:21:33.8919443Z Issues: write
+2026-10-04T08:21:33.8920556Z Metadata: read
+2026-10-04T08:21:33.8921672Z Models: read
+2026-10-04T08:21:33.8922635Z Packages: write
+2026-10-04T08:21:33.8923583Z Pages: write
+2026-10-04T08:21:33.8924508Z PullRequests: write
+2026-10-04T08:21:33.8925652Z RepositoryProjects: write
+2026-10-04T08:21:33.8926686Z SecurityEvents: write
+2026-10-04T08:21:33.8928023Z Statuses: write
+2026-10-04T08:21:33.8929003Z VulnerabilityAlerts: read
+2026-10-04T08:21:33.8930036Z ##[endgroup]
+2026-10-04T08:21:33.8933393Z Secret source: Actions
+2026-10-04T08:21:33.8934881Z Cache mode: write
+2026-10-04T08:21:33.8936631Z Prepare workflow directory
+2026-10-04T08:21:33.9738934Z Prepare all required actions
+2026-10-04T08:21:33.9815148Z Getting action download info
+2026-10-04T08:21:34.1889385Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T08:21:34.2924837Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-04T08:21:34.4761318Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-04T08:21:34.5711499Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-10-04T08:21:34.6673822Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T08:21:34.9355349Z Complete job name: browser tests (chromium 5/5)
+2026-10-04T08:21:35.0392046Z ##[group]Run actions/checkout@v4
+2026-10-04T08:21:35.0393513Z with:
+2026-10-04T08:21:35.0394376Z   ref: e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:21:35.0395502Z   repository: Globulation2/glob2
+2026-10-04T08:21:35.0403736Z   token: ***
+2026-10-04T08:21:35.0404513Z   ssh-strict: true
+2026-10-04T08:21:35.0405324Z   ssh-user: git
+2026-10-04T08:21:35.0406127Z   persist-credentials: true
+2026-10-04T08:21:35.0407151Z   clean: true
+2026-10-04T08:21:35.0407979Z   sparse-checkout-cone-mode: true
+2026-10-04T08:21:35.0408941Z   fetch-depth: 1
+2026-10-04T08:21:35.0409723Z   fetch-tags: false
+2026-10-04T08:21:35.0410535Z   show-progress: true
+2026-10-04T08:21:35.0411359Z   lfs: false
+2026-10-04T08:21:35.0412103Z   submodules: false
+2026-10-04T08:21:35.0412915Z   set-safe-directory: true
+2026-10-04T08:21:35.0413855Z   allow-unsafe-pr-checkout: false
+2026-10-04T08:21:35.0415516Z env:
+2026-10-04T08:21:35.0416279Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:21:35.0417407Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:21:35.0418320Z ##[endgroup]
+2026-10-04T08:21:35.1523333Z Syncing repository: Globulation2/glob2
+2026-10-04T08:21:35.1526187Z ##[group]Getting Git version info
+2026-10-04T08:21:35.1527854Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-04T08:21:35.1529638Z [command]/usr/bin/git version
+2026-10-04T08:21:35.1649716Z git version 2.55.0
+2026-10-04T08:21:35.1660386Z ##[endgroup]
+2026-10-04T08:21:35.1678254Z Temporarily overriding HOME='/home/runner/work/_temp/c84507e3-3b9f-4126-b9fa-453158bffc4c' before making global git config changes
+2026-10-04T08:21:35.1682777Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T08:21:35.1686195Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T08:21:35.1749467Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-04T08:21:35.1756405Z ##[group]Initializing the repository
+2026-10-04T08:21:35.1760657Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-04T08:21:35.1903245Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T08:21:35.1907659Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T08:21:35.1910704Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T08:21:35.1913053Z hint: call:
+2026-10-04T08:21:35.1914260Z hint:
+2026-10-04T08:21:35.1915785Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T08:21:35.1918022Z hint:
+2026-10-04T08:21:35.1919815Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T08:21:35.1922773Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T08:21:35.1925076Z hint:
+2026-10-04T08:21:35.1926392Z hint: 	git branch -m <name>
+2026-10-04T08:21:35.1928017Z hint:
+2026-10-04T08:21:35.1929983Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T08:21:35.1933129Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-04T08:21:35.1939802Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-04T08:21:35.2073034Z ##[endgroup]
+2026-10-04T08:21:35.2075498Z ##[group]Disabling automatic garbage collection
+2026-10-04T08:21:35.2078005Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T08:21:35.2123057Z ##[endgroup]
+2026-10-04T08:21:35.2125350Z ##[group]Setting up auth
+2026-10-04T08:21:35.2131408Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T08:21:35.2181447Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T08:21:35.2590585Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T08:21:35.2633275Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T08:21:35.2873583Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T08:21:35.2915039Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T08:21:35.3151486Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T08:21:35.3195299Z ##[endgroup]
+2026-10-04T08:21:35.3196750Z ##[group]Fetching the repository
+2026-10-04T08:21:35.3205717Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:21:38.7309235Z From https://github.com/Globulation2/glob2
+2026-10-04T08:21:38.7310894Z  * branch            e958fe16e25091f177c2f280301d4cc3a509df71 -> FETCH_HEAD
+2026-10-04T08:21:38.7313997Z ##[endgroup]
+2026-10-04T08:21:38.7314879Z ##[group]Determining the checkout info
+2026-10-04T08:21:38.7316522Z ##[endgroup]
+2026-10-04T08:21:38.7323864Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T08:21:38.7383861Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T08:21:38.7418974Z ##[group]Checking out the ref
+2026-10-04T08:21:38.7424271Z [command]/usr/bin/git checkout --progress --force e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:21:39.7555334Z Updating files:  76% (10666/13874)
+2026-10-04T08:21:39.7680475Z Updating files:  77% (10683/13874)
+2026-10-04T08:21:39.7827200Z Updating files:  78% (10822/13874)
+2026-10-04T08:21:39.7933859Z Updating files:  79% (10961/13874)
+2026-10-04T08:21:39.8058440Z Updating files:  80% (11100/13874)
+2026-10-04T08:21:39.8168780Z Updating files:  81% (11238/13874)
+2026-10-04T08:21:39.9016518Z Updating files:  82% (11377/13874)
+2026-10-04T08:21:39.9105126Z Updating files:  83% (11516/13874)
+2026-10-04T08:21:39.9169780Z Updating files:  84% (11655/13874)
+2026-10-04T08:21:39.9251290Z Updating files:  85% (11793/13874)
+2026-10-04T08:21:39.9377674Z Updating files:  86% (11932/13874)
+2026-10-04T08:21:39.9509651Z Updating files:  87% (12071/13874)
+2026-10-04T08:21:39.9598534Z Updating files:  88% (12210/13874)
+2026-10-04T08:21:39.9706454Z Updating files:  89% (12348/13874)
+2026-10-04T08:21:39.9818013Z Updating files:  90% (12487/13874)
+2026-10-04T08:21:39.9992516Z Updating files:  91% (12626/13874)
+2026-10-04T08:21:40.0091788Z Updating files:  92% (12765/13874)
+2026-10-04T08:21:40.0190260Z Updating files:  93% (12903/13874)
+2026-10-04T08:21:40.0285279Z Updating files:  94% (13042/13874)
+2026-10-04T08:21:40.0377907Z Updating files:  95% (13181/13874)
+2026-10-04T08:21:40.0744164Z Updating files:  96% (13320/13874)
+2026-10-04T08:21:40.1079520Z Updating files:  97% (13458/13874)
+2026-10-04T08:21:40.1255904Z Updating files:  98% (13597/13874)
+2026-10-04T08:21:40.1382354Z Updating files:  99% (13736/13874)
+2026-10-04T08:21:40.1383062Z Updating files: 100% (13874/13874)
+2026-10-04T08:21:40.1383529Z Updating files: 100% (13874/13874), done.
+2026-10-04T08:21:40.1491085Z Note: switching to 'e958fe16e25091f177c2f280301d4cc3a509df71'.
+2026-10-04T08:21:40.1491606Z 
+2026-10-04T08:21:40.1491891Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-04T08:21:40.1492427Z changes and commit them, and you can discard any commits you make in this
+2026-10-04T08:21:40.1492944Z state without impacting any branches by switching back to a branch.
+2026-10-04T08:21:40.1493257Z 
+2026-10-04T08:21:40.1493450Z If you want to create a new branch to retain commits you create, you may
+2026-10-04T08:21:40.1493920Z do so (now or later) by using -c with the switch command. Example:
+2026-10-04T08:21:40.1494204Z 
+2026-10-04T08:21:40.1494312Z   git switch -c <new-branch-name>
+2026-10-04T08:21:40.1494636Z 
+2026-10-04T08:21:40.1494750Z Or undo this operation with:
+2026-10-04T08:21:40.1494935Z 
+2026-10-04T08:21:40.1495029Z   git switch -
+2026-10-04T08:21:40.1495444Z 
+2026-10-04T08:21:40.1495682Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-04T08:21:40.1496002Z 
+2026-10-04T08:21:40.1496227Z HEAD is now at e958fe1 Document complete selected CI match trace coverage (#698)
+2026-10-04T08:21:40.1527813Z ##[endgroup]
+2026-10-04T08:21:40.1576141Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T08:21:40.1603943Z e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:21:40.1857830Z ##[group]Run actions/download-artifact@v4
+2026-10-04T08:21:40.1858191Z with:
+2026-10-04T08:21:40.1858388Z   name: web-client
+2026-10-04T08:21:40.1858622Z   path: build/emscripten/client/release
+2026-10-04T08:21:40.1858914Z   merge-multiple: false
+2026-10-04T08:21:40.1859157Z   repository: Globulation2/glob2
+2026-10-04T08:21:40.1859410Z   run-id: 37187146428
+2026-10-04T08:21:40.1859617Z env:
+2026-10-04T08:21:40.1860000Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:21:40.1860246Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:21:40.1860483Z ##[endgroup]
+2026-10-04T08:21:40.3395482Z Downloading single artifact
+2026-10-04T08:21:40.3592705Z (node:2340) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:21:40.3593958Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:21:40.4359916Z Preparing to download the following artifacts:
+2026-10-04T08:21:40.4361076Z - web-client (ID: 11298151834, Size: 144038100, Expected Digest: sha256:b778f574bf0712764785d4df3ed47fc38fab675b168c3a8a880d7b2afe9740cd)
+2026-10-04T08:21:40.5385178Z Redirecting to blob download url: https://productionresultssa17.blob.core.windows.net/actions-results/87f6bbbc-9af9-4599-a147-e01cbd57ca97/workflow-job-run-a1e7a591-075c-53da-bc37-937e50af0038/artifacts/278290161bdc18b74f81bc21bbf56d461b1aa5a01dc25b928b985b3f38a8fa2c.zip
+2026-10-04T08:21:40.5388166Z Starting download of artifact to: /home/runner/work/glob2/glob2/build/emscripten/client/release
+2026-10-04T08:21:40.6472507Z (node:2340) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T08:21:43.3444283Z SHA256 digest of downloaded artifact is b778f574bf0712764785d4df3ed47fc38fab675b168c3a8a880d7b2afe9740cd
+2026-10-04T08:21:43.3445139Z Artifact download completed successfully.
+2026-10-04T08:21:43.3445658Z Total of 1 artifact(s) downloaded
+2026-10-04T08:21:43.3453622Z Download artifact has finished successfully
+2026-10-04T08:21:43.3644643Z ##[group]Run actions/download-artifact@v4
+2026-10-04T08:21:43.3644954Z with:
+2026-10-04T08:21:43.3645157Z   name: web-native
+2026-10-04T08:21:43.3645377Z   path: artifacts/ci-native
+2026-10-04T08:21:43.3645636Z   merge-multiple: false
+2026-10-04T08:21:43.3645882Z   repository: Globulation2/glob2
+2026-10-04T08:21:43.3646147Z   run-id: 37187146428
+2026-10-04T08:21:43.3646356Z env:
+2026-10-04T08:21:43.3646548Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:21:43.3646792Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:21:43.3647360Z ##[endgroup]
+2026-10-04T08:21:43.5218281Z Downloading single artifact
+2026-10-04T08:21:43.5379853Z (node:2352) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:21:43.5381136Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:21:43.5974245Z Preparing to download the following artifacts:
+2026-10-04T08:21:43.5975487Z - web-native (ID: 11298221901, Size: 30753598, Expected Digest: sha256:335717dc8f0b0d300779935b540fb4c022244633ba032f5a629fe61ac01217d3)
+2026-10-04T08:21:43.7103801Z Redirecting to blob download url: https://productionresultssa17.blob.core.windows.net/actions-results/87f6bbbc-9af9-4599-a147-e01cbd57ca97/workflow-job-run-f7dbecac-1aca-5647-9a4d-393f1b07416f/artifacts/a9765a6f67c06a35469388e814d351f1a826a8ac21a61f542cd7a22b6ebfefbe.zip
+2026-10-04T08:21:43.7106578Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-native
+2026-10-04T08:21:43.8154101Z (node:2352) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T08:21:44.2548268Z SHA256 digest of downloaded artifact is 335717dc8f0b0d300779935b540fb4c022244633ba032f5a629fe61ac01217d3
+2026-10-04T08:21:44.2549320Z Artifact download completed successfully.
+2026-10-04T08:21:44.2549841Z Total of 1 artifact(s) downloaded
+2026-10-04T08:21:44.2554173Z Download artifact has finished successfully
+2026-10-04T08:21:44.2743761Z ##[group]Run tar -xzf artifacts/ci-native/web-native.tar.gz
+2026-10-04T08:21:44.2744295Z [36;1mtar -xzf artifacts/ci-native/web-native.tar.gz[0m
+2026-10-04T08:21:44.3084145Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:21:44.3084516Z env:
+2026-10-04T08:21:44.3084771Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:21:44.3085336Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:21:44.3085643Z ##[endgroup]
+2026-10-04T08:21:44.8420572Z ##[group]Run sudo apt-get update -qq
+2026-10-04T08:21:44.8420979Z [36;1msudo apt-get update -qq[0m
+2026-10-04T08:21:44.8421516Z [36;1mxargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt[0m
+2026-10-04T08:21:44.8422411Z [36;1msudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb[0m
+2026-10-04T08:21:44.8423237Z [36;1mpython3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify[0m
+2026-10-04T08:21:44.8486788Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:21:44.8487341Z env:
+2026-10-04T08:21:44.8487562Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:21:44.8487829Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:21:44.8488083Z ##[endgroup]
+2026-10-04T08:21:51.1467674Z Reading package lists...
+2026-10-04T08:21:51.3785987Z Building dependency tree...
+2026-10-04T08:21:51.3793345Z Reading state information...
+2026-10-04T08:21:51.6030417Z libbrotli1 is already the newest version (1.1.0-2build2).
+2026-10-04T08:21:51.6031022Z libbrotli1 set to manually installed.
+2026-10-04T08:21:51.6031507Z libbsd0 is already the newest version (0.12.1-1build1.1).
+2026-10-04T08:21:51.6031984Z libbsd0 set to manually installed.
+2026-10-04T08:21:51.6032597Z libbz2-1.0 is already the newest version (1.0.8-5.1ubuntu0.1).
+2026-10-04T08:21:51.6033183Z libbz2-1.0 set to manually installed.
+2026-10-04T08:21:51.6033562Z libc6 is already the newest version (2.39-0ubuntu8.9).
+2026-10-04T08:21:51.6034043Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-04T08:21:51.6034481Z libdrm2 set to manually installed.
+2026-10-04T08:21:51.6034861Z libepoxy0 is already the newest version (1.5.10-1build1).
+2026-10-04T08:21:51.6035289Z libepoxy0 set to manually installed.
+2026-10-04T08:21:51.6035730Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-10-04T08:21:51.6036204Z libfreetype6 set to manually installed.
+2026-10-04T08:21:51.6036620Z libfribidi0 is already the newest version (1.0.13-3build1).
+2026-10-04T08:21:51.6037495Z libfribidi0 set to manually installed.
+2026-10-04T08:21:51.6038154Z libgcc-s1 is already the newest version (14.2.0-4ubuntu2~24.04.1).
+2026-10-04T08:21:51.6038778Z libgl1 is already the newest version (1.7.0-1build1).
+2026-10-04T08:21:51.6039176Z libgl1 set to manually installed.
+2026-10-04T08:21:51.6039551Z libglvnd0 is already the newest version (1.7.0-1build1).
+2026-10-04T08:21:51.6039949Z libglvnd0 set to manually installed.
+2026-10-04T08:21:51.6040313Z libglx0 is already the newest version (1.7.0-1build1).
+2026-10-04T08:21:51.6040691Z libglx0 set to manually installed.
+2026-10-04T08:21:51.6041063Z libmd0 is already the newest version (1.1.0-2build1.1).
+2026-10-04T08:21:51.6041639Z libmd0 set to manually installed.
+2026-10-04T08:21:51.6042196Z libogg0 is already the newest version (1.3.5-3build1).
+2026-10-04T08:21:51.6042741Z libogg0 set to manually installed.
+2026-10-04T08:21:51.6043153Z libpng16-16t64 is already the newest version (1.6.43-5ubuntu0.6).
+2026-10-04T08:21:51.6043591Z libpng16-16t64 set to manually installed.
+2026-10-04T08:21:51.6043964Z libstdc++6 is already the newest version (14.2.0-4ubuntu2~24.04.1).
+2026-10-04T08:21:51.6044385Z libvorbis0a is already the newest version (1.3.7-1build3).
+2026-10-04T08:21:51.6044737Z libvorbis0a set to manually installed.
+2026-10-04T08:21:51.6045085Z libvorbisfile3 is already the newest version (1.3.7-1build3).
+2026-10-04T08:21:51.6045449Z libvorbisfile3 set to manually installed.
+2026-10-04T08:21:51.6045819Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-10-04T08:21:51.6046321Z libx11-6 set to manually installed.
+2026-10-04T08:21:51.6046663Z libxau6 is already the newest version (1:1.0.9-1build6).
+2026-10-04T08:21:51.6047160Z libxau6 set to manually installed.
+2026-10-04T08:21:51.6047484Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-04T08:21:51.6048179Z libxcb1 set to manually installed.
+2026-10-04T08:21:51.6048729Z libxdmcp6 is already the newest version (1:1.1.3-0ubuntu6).
+2026-10-04T08:21:51.6049093Z libxdmcp6 set to manually installed.
+2026-10-04T08:21:51.6049468Z zlib1g is already the newest version (1:1.3.dfsg-3.1ubuntu2.2).
+2026-10-04T08:21:51.6050010Z The following additional packages will be installed:
+2026-10-04T08:21:51.6050334Z   libssl-dev openssl
+2026-10-04T08:21:51.6050554Z Suggested packages:
+2026-10-04T08:21:51.6050773Z   speex libssl-doc
+2026-10-04T08:21:51.6050988Z Recommended packages:
+2026-10-04T08:21:51.6051219Z   va-driver-all | va-driver
+2026-10-04T08:21:51.6309617Z The following NEW packages will be installed:
+2026-10-04T08:21:51.6316754Z   libspeex1 libva-drm2 libva2
+2026-10-04T08:21:51.6322658Z The following packages will be upgraded:
+2026-10-04T08:21:51.6326032Z   libssl-dev libssl3t64 openssl
+2026-10-04T08:21:51.6504739Z 3 upgraded, 3 newly installed, 0 to remove and 22 not upgraded.
+2026-10-04T08:21:51.6505441Z Need to get 5491 kB of archives.
+2026-10-04T08:21:51.6505833Z After this operation, 411 kB of additional disk space will be used.
+2026-10-04T08:21:51.6506281Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T08:21:51.7012917Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl-dev amd64 3.0.13-0ubuntu3.16 [2409 kB]
+2026-10-04T08:21:51.8274393Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl3t64 amd64 3.0.13-0ubuntu3.16 [1945 kB]
+2026-10-04T08:21:51.8564106Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 openssl amd64 3.0.13-0ubuntu3.16 [1004 kB]
+2026-10-04T08:21:51.8785415Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libspeex1 amd64 1.2.1-2ubuntu2.24.04.1 [59.6 kB]
+2026-10-04T08:21:51.8937544Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 libva2 amd64 2.20.0-2ubuntu0.2 [66.4 kB]
+2026-10-04T08:21:51.9086167Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 libva-drm2 amd64 2.20.0-2ubuntu0.2 [7124 B]
+2026-10-04T08:21:52.1885627Z Fetched 5491 kB in 0s (20.4 MB/s)
+2026-10-04T08:21:52.2452044Z (Reading database ... 
+2026-10-04T08:21:52.2452594Z (Reading database ... 5%
+2026-10-04T08:21:52.2453056Z (Reading database ... 10%
+2026-10-04T08:21:52.2453503Z (Reading database ... 15%
+2026-10-04T08:21:52.2453905Z (Reading database ... 20%
+2026-10-04T08:21:52.2454296Z (Reading database ... 25%
+2026-10-04T08:21:52.2454698Z (Reading database ... 30%
+2026-10-04T08:21:52.2455085Z (Reading database ... 35%
+2026-10-04T08:21:52.2455470Z (Reading database ... 40%
+2026-10-04T08:21:52.2456268Z (Reading database ... 45%
+2026-10-04T08:21:52.2456826Z (Reading database ... 50%
+2026-10-04T08:21:52.2506765Z (Reading database ... 55%
+2026-10-04T08:21:52.3841372Z (Reading database ... 60%
+2026-10-04T08:21:52.5851013Z (Reading database ... 65%
+2026-10-04T08:21:52.7878650Z (Reading database ... 70%
+2026-10-04T08:21:52.9894856Z (Reading database ... 75%
+2026-10-04T08:21:53.1315514Z (Reading database ... 80%
+2026-10-04T08:21:53.2927373Z (Reading database ... 85%
+2026-10-04T08:21:53.4419128Z (Reading database ... 90%
+2026-10-04T08:21:53.5464204Z (Reading database ... 95%
+2026-10-04T08:21:53.5464620Z (Reading database ... 100%
+2026-10-04T08:21:53.5465083Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T08:21:53.5509631Z Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T08:21:53.5552323Z Unpacking libssl-dev:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T08:21:53.6821287Z Preparing to unpack .../libssl3t64_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T08:21:53.6861317Z Unpacking libssl3t64:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T08:21:53.7516095Z Setting up libssl3t64:amd64 (3.0.13-0ubuntu3.16) ...
+2026-10-04T08:21:53.7858329Z (Reading database ... 
+2026-10-04T08:21:53.7858905Z (Reading database ... 5%
+2026-10-04T08:21:53.7859371Z (Reading database ... 10%
+2026-10-04T08:21:53.7860119Z (Reading database ... 15%
+2026-10-04T08:21:53.7860408Z (Reading database ... 20%
+2026-10-04T08:21:53.7860843Z (Reading database ... 25%
+2026-10-04T08:21:53.7861120Z (Reading database ... 30%
+2026-10-04T08:21:53.7861398Z (Reading database ... 35%
+2026-10-04T08:21:53.7861669Z (Reading database ... 40%
+2026-10-04T08:21:53.7861941Z (Reading database ... 45%
+2026-10-04T08:21:53.7862240Z (Reading database ... 50%
+2026-10-04T08:21:53.7869618Z (Reading database ... 55%
+2026-10-04T08:21:53.7987690Z (Reading database ... 60%
+2026-10-04T08:21:53.8017260Z (Reading database ... 65%
+2026-10-04T08:21:53.8040615Z (Reading database ... 70%
+2026-10-04T08:21:53.8082191Z (Reading database ... 75%
+2026-10-04T08:21:53.8117101Z (Reading database ... 80%
+2026-10-04T08:21:53.8147548Z (Reading database ... 85%
+2026-10-04T08:21:53.8331040Z (Reading database ... 90%
+2026-10-04T08:21:53.8656405Z (Reading database ... 95%
+2026-10-04T08:21:53.8656855Z (Reading database ... 100%
+2026-10-04T08:21:53.8657683Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T08:21:53.8704230Z Preparing to unpack .../openssl_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T08:21:53.8734098Z Unpacking openssl (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T08:21:53.9811017Z Selecting previously unselected package libspeex1:amd64.
+2026-10-04T08:21:53.9945754Z Preparing to unpack .../libspeex1_1.2.1-2ubuntu2.24.04.1_amd64.deb ...
+2026-10-04T08:21:53.9957100Z Unpacking libspeex1:amd64 (1.2.1-2ubuntu2.24.04.1) ...
+2026-10-04T08:21:54.0181673Z Selecting previously unselected package libva2:amd64.
+2026-10-04T08:21:54.0311645Z Preparing to unpack .../libva2_2.20.0-2ubuntu0.2_amd64.deb ...
+2026-10-04T08:21:54.0321331Z Unpacking libva2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T08:21:54.0554987Z Selecting previously unselected package libva-drm2:amd64.
+2026-10-04T08:21:54.0688256Z Preparing to unpack .../libva-drm2_2.20.0-2ubuntu0.2_amd64.deb ...
+2026-10-04T08:21:54.0699091Z Unpacking libva-drm2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T08:21:54.1148402Z Setting up libspeex1:amd64 (1.2.1-2ubuntu2.24.04.1) ...
+2026-10-04T08:21:54.1175731Z Setting up libva2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T08:21:54.1201565Z Setting up libssl-dev:amd64 (3.0.13-0ubuntu3.16) ...
+2026-10-04T08:21:54.1223112Z Setting up libva-drm2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T08:21:54.1245530Z Setting up openssl (3.0.13-0ubuntu3.16) ...
+2026-10-04T08:21:54.1292938Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-04T08:21:54.1317538Z Not building database; man-db/auto-update is not 'true'.
+2026-10-04T08:21:54.1332518Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-04T08:21:54.7265963Z 
+2026-10-04T08:21:54.7266828Z Running kernel seems to be up-to-date.
+2026-10-04T08:21:54.7267479Z 
+2026-10-04T08:21:54.7267636Z Restarting services...
+2026-10-04T08:21:54.7741352Z  /etc/needrestart/restart.d/systemd-manager
+2026-10-04T08:21:55.1131903Z  systemctl restart packagekit.service php8.3-fpm.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-udevd.service udisks2.service
+2026-10-04T08:21:55.3107463Z 
+2026-10-04T08:21:55.3108029Z Service restarts being deferred:
+2026-10-04T08:21:55.3108660Z  systemctl restart hosted-compute-agent.service
+2026-10-04T08:21:55.3109087Z  systemctl restart systemd-logind.service
+2026-10-04T08:21:55.3109591Z  systemctl restart walinuxagent.service
+2026-10-04T08:21:55.3109929Z 
+2026-10-04T08:21:55.3110112Z No containers need to be restarted.
+2026-10-04T08:21:55.3110415Z 
+2026-10-04T08:21:55.3110602Z User sessions running outdated binaries:
+2026-10-04T08:21:55.3111098Z  runner @ user manager service: systemd[1232]
+2026-10-04T08:21:55.3195314Z 
+2026-10-04T08:21:55.3196099Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T08:21:56.4533802Z Reading package lists...
+2026-10-04T08:21:56.6863770Z Building dependency tree...
+2026-10-04T08:21:56.6871338Z Reading state information...
+2026-10-04T08:21:56.8759102Z python3 is already the newest version (3.12.3-0ubuntu2.1).
+2026-10-04T08:21:56.8760798Z libgl1 is already the newest version (1.7.0-1build1).
+2026-10-04T08:21:56.8761353Z libepoxy0 is already the newest version (1.5.10-1build1).
+2026-10-04T08:21:56.8761829Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+2026-10-04T08:21:56.8762272Z xauth is already the newest version (1:1.1.2-1build1).
+2026-10-04T08:21:56.8762671Z xauth set to manually installed.
+2026-10-04T08:21:56.8763042Z The following additional packages will be installed:
+2026-10-04T08:21:56.8763574Z   fonts-urw-base35 libbabeltrace1 libdebuginfod-common libdebuginfod1t64
+2026-10-04T08:21:56.8768087Z   libgbm1 libgif7 libglx-mesa0 libgs-common libgs10 libgs10-common libhwy1t64
+2026-10-04T08:21:56.8769082Z   libid3tag0 libidn12 libijs-0.35 libimlib2t64 libipt2 libjbig2dec0 libjxl0.7
+2026-10-04T08:21:56.8770074Z   libobrender32v5 libobt2v5 libopengl0 libpangoxft-1.0-0 libpaper1 librsvg2-2
+2026-10-04T08:21:56.8771004Z   libsource-highlight-common libsource-highlight4t64 libspectre1
+2026-10-04T08:21:56.8771867Z   libstartup-notification0 libxcb-shape0 libxcb-util1 libxv1 libxxf86dga1
+2026-10-04T08:21:56.8772432Z   mesa-libgallium poppler-data xfonts-encodings xfonts-utils
+2026-10-04T08:21:56.8773320Z Suggested packages:
+2026-10-04T08:21:56.8773912Z   fonts-freefont-otf | fonts-freefont-ttf fonts-texgyre gdb-doc gdbserver
+2026-10-04T08:21:56.8774794Z   librsvg2-bin tint2 openbox-gnome-session openbox-kde-session poppler-utils
+2026-10-04T08:21:56.8775615Z   ghostscript fonts-japanese-mincho | fonts-ipafont-mincho
+2026-10-04T08:21:56.8776349Z   fonts-japanese-gothic | fonts-ipafont-gothic fonts-arphic-ukai
+2026-10-04T08:21:56.8777198Z   fonts-arphic-uming fonts-nanum mesa-utils
+2026-10-04T08:21:56.8777700Z Recommended packages:
+2026-10-04T08:21:56.8778054Z   libc-dbg fonts-droid-fallback libpaper-utils librsvg2-common obconf
+2026-10-04T08:21:56.8778456Z   | obconf-qt scrot luit
+2026-10-04T08:21:56.9073689Z The following NEW packages will be installed:
+2026-10-04T08:21:56.9075132Z   fonts-urw-base35 gdb libbabeltrace1 libdebuginfod-common libdebuginfod1t64
+2026-10-04T08:21:56.9077862Z   libgif7 libglu1-mesa libgs-common libgs10 libgs10-common libhwy1t64
+2026-10-04T08:21:56.9097983Z   libid3tag0 libidn12 libijs-0.35 libimlib2t64 libipt2 libjbig2dec0 libjxl0.7
+2026-10-04T08:21:56.9127986Z   libobrender32v5 libobt2v5 libopengl0 libpangoxft-1.0-0 libpaper1 librsvg2-2
+2026-10-04T08:21:56.9137499Z   libsource-highlight-common libsource-highlight4t64 libspectre1
+2026-10-04T08:21:56.9138497Z   libstartup-notification0 libxcb-shape0 libxcb-util1 libxv1 libxxf86dga1
+2026-10-04T08:21:56.9139021Z   openbox poppler-data x11-utils xfonts-encodings xfonts-utils
+2026-10-04T08:21:56.9139430Z The following packages will be upgraded:
+2026-10-04T08:21:56.9139774Z   libgbm1 libgl1-mesa-dri libglx-mesa0 mesa-libgallium
+2026-10-04T08:21:56.9271532Z 4 upgraded, 37 newly installed, 0 to remove and 18 not upgraded.
+2026-10-04T08:21:56.9272188Z Need to get 38.9 MB of archives.
+2026-10-04T08:21:56.9272670Z After this operation, 89.4 MB of additional disk space will be used.
+2026-10-04T08:21:56.9273141Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T08:21:57.0958518Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdebuginfod-common all 0.190-1.1ubuntu0.1 [14.6 kB]
+2026-10-04T08:21:57.2462551Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 poppler-data all 0.4.12-1 [2060 kB]
+2026-10-04T08:21:57.8186030Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-04T08:21:57.9088219Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-04T08:21:57.9863657Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-urw-base35 all 20200910-8 [11.0 MB]
+2026-10-04T08:21:58.3370890Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libbabeltrace1 amd64 1.5.11-3build3 [164 kB]
+2026-10-04T08:21:58.4143144Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libdebuginfod1t64 amd64 0.190-1.1ubuntu0.1 [17.1 kB]
+2026-10-04T08:21:58.4906349Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libipt2 amd64 2.0.6-1build1 [45.7 kB]
+2026-10-04T08:21:58.5668686Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsource-highlight-common all 3.1.9-4.3build1 [64.2 kB]
+2026-10-04T08:21:58.6434243Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsource-highlight4t64 amd64 3.1.9-4.3build1 [258 kB]
+2026-10-04T08:21:58.7208008Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 gdb amd64 15.1-1ubuntu1~24.04.1 [4083 kB]
+2026-10-04T08:21:58.8815117Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgl1-mesa-dri amd64 25.2.8-0ubuntu0.24.04.4 [38.0 kB]
+2026-10-04T08:21:58.9578094Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglx-mesa0 amd64 25.2.8-0ubuntu0.24.04.4 [110 kB]
+2026-10-04T08:21:59.0342954Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm1 amd64 25.2.8-0ubuntu0.24.04.4 [34.2 kB]
+2026-10-04T08:21:59.1105634Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mesa-libgallium amd64 25.2.8-0ubuntu0.24.04.4 [10.8 MB]
+2026-10-04T08:21:59.4461024Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgif7 amd64 5.2.2-1ubuntu1.2 [35.6 kB]
+2026-10-04T08:21:59.5221915Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgs-common all 10.02.1~dfsg1-0ubuntu7.9 [176 kB]
+2026-10-04T08:21:59.6013289Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgs10-common all 10.02.1~dfsg1-0ubuntu7.9 [488 kB]
+2026-10-04T08:21:59.6885838Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libidn12 amd64 1.42-1ubuntu0.1 [56.1 kB]
+2026-10-04T08:21:59.7649651Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libijs-0.35 amd64 0.35-15.1build1 [15.3 kB]
+2026-10-04T08:21:59.8412684Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libjbig2dec0 amd64 0.20-1ubuntu0.24.04.1 [65.2 kB]
+2026-10-04T08:21:59.9178915Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpaper1 amd64 1.1.29build1 [13.4 kB]
+2026-10-04T08:21:59.9944228Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgs10 amd64 10.02.1~dfsg1-0ubuntu7.9 [3898 kB]
+2026-10-04T08:22:00.1620693Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libhwy1t64 amd64 1.0.7-8.1build1 [584 kB]
+2026-10-04T08:22:00.2506116Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libid3tag0 amd64 0.15.1b-14build1 [33.6 kB]
+2026-10-04T08:22:00.3268530Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 libjxl0.7 amd64 0.7.0-10.2ubuntu6.1 [1001 kB]
+2026-10-04T08:22:00.4258683Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 librsvg2-2 amd64 2.58.0+dfsg-1build1 [2135 kB]
+2026-10-04T08:22:00.5518851Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libspectre1 amd64 0.2.12-1build2 [30.9 kB]
+2026-10-04T08:22:00.6282203Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libimlib2t64 amd64 1.12.1-1.1build2 [208 kB]
+2026-10-04T08:22:00.7080228Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libobt2v5 amd64 3.6.1-12build5 [33.3 kB]
+2026-10-04T08:22:00.7843445Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpangoxft-1.0-0 amd64 1.52.1+ds-1build1 [20.3 kB]
+2026-10-04T08:22:00.8604344Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libobrender32v5 amd64 3.6.1-12build5 [42.5 kB]
+2026-10-04T08:22:00.9367628Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-util1 amd64 0.4.0-1build3 [10.7 kB]
+2026-10-04T08:22:01.0130377Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libstartup-notification0 amd64 0.12-6build3 [18.4 kB]
+2026-10-04T08:22:01.0891318Z Get:36 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-shape0 amd64 1.15-1ubuntu2 [6100 B]
+2026-10-04T08:22:01.1651376Z Get:37 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxv1 amd64 2:1.0.11-1.1build1 [10.7 kB]
+2026-10-04T08:22:01.2411936Z Get:38 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxxf86dga1 amd64 2:1.1.5-1build1 [11.6 kB]
+2026-10-04T08:22:01.3182957Z Get:39 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 openbox amd64 3.6.1-12build5 [304 kB]
+2026-10-04T08:22:01.4001443Z Get:40 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 x11-utils amd64 7.7+6build2 [189 kB]
+2026-10-04T08:22:01.4793955Z Get:41 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libopengl0 amd64 1.7.0-1build1 [32.8 kB]
+2026-10-04T08:22:01.5560696Z Get:42 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libglu1-mesa amd64 9.0.2-1.1build1 [152 kB]
+2026-10-04T08:22:01.8277714Z Preconfiguring packages ...
+2026-10-04T08:22:01.9047330Z Fetched 38.9 MB in 5s (8372 kB/s)
+2026-10-04T08:22:01.9258678Z Selecting previously unselected package libdebuginfod-common.
+2026-10-04T08:22:01.9317357Z (Reading database ... 
+2026-10-04T08:22:01.9317870Z (Reading database ... 5%
+2026-10-04T08:22:01.9318364Z (Reading database ... 10%
+2026-10-04T08:22:01.9318692Z (Reading database ... 15%
+2026-10-04T08:22:01.9318982Z (Reading database ... 20%
+2026-10-04T08:22:01.9319259Z (Reading database ... 25%
+2026-10-04T08:22:01.9319542Z (Reading database ... 30%
+2026-10-04T08:22:01.9319815Z (Reading database ... 35%
+2026-10-04T08:22:01.9320100Z (Reading database ... 40%
+2026-10-04T08:22:01.9320374Z (Reading database ... 45%
+2026-10-04T08:22:01.9320664Z (Reading database ... 50%
+2026-10-04T08:22:01.9334245Z (Reading database ... 55%
+2026-10-04T08:22:01.9472163Z (Reading database ... 60%
+2026-10-04T08:22:01.9503359Z (Reading database ... 65%
+2026-10-04T08:22:01.9530404Z (Reading database ... 70%
+2026-10-04T08:22:01.9576518Z (Reading database ... 75%
+2026-10-04T08:22:01.9615902Z (Reading database ... 80%
+2026-10-04T08:22:01.9649989Z (Reading database ... 85%
+2026-10-04T08:22:01.9841380Z (Reading database ... 90%
+2026-10-04T08:22:02.0160917Z (Reading database ... 95%
+2026-10-04T08:22:02.0161318Z (Reading database ... 100%
+2026-10-04T08:22:02.0161770Z (Reading database ... 202311 files and directories currently installed.)
+2026-10-04T08:22:02.0208698Z Preparing to unpack .../00-libdebuginfod-common_0.190-1.1ubuntu0.1_all.deb ...
+2026-10-04T08:22:02.0218264Z Unpacking libdebuginfod-common (0.190-1.1ubuntu0.1) ...
+2026-10-04T08:22:02.0451203Z Selecting previously unselected package poppler-data.
+2026-10-04T08:22:02.0588375Z Preparing to unpack .../01-poppler-data_0.4.12-1_all.deb ...
+2026-10-04T08:22:02.0595833Z Unpacking poppler-data (0.4.12-1) ...
+2026-10-04T08:22:02.1834676Z Selecting previously unselected package xfonts-encodings.
+2026-10-04T08:22:02.1969985Z Preparing to unpack .../02-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-04T08:22:02.1978290Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-04T08:22:02.2275444Z Selecting previously unselected package xfonts-utils.
+2026-10-04T08:22:02.2409458Z Preparing to unpack .../03-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-04T08:22:02.2417322Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-04T08:22:02.2750919Z Selecting previously unselected package fonts-urw-base35.
+2026-10-04T08:22:02.2886668Z Preparing to unpack .../04-fonts-urw-base35_20200910-8_all.deb ...
+2026-10-04T08:22:02.3561086Z Unpacking fonts-urw-base35 (20200910-8) ...
+2026-10-04T08:22:02.4488388Z Selecting previously unselected package libbabeltrace1:amd64.
+2026-10-04T08:22:02.4620876Z Preparing to unpack .../05-libbabeltrace1_1.5.11-3build3_amd64.deb ...
+2026-10-04T08:22:02.4633382Z Unpacking libbabeltrace1:amd64 (1.5.11-3build3) ...
+2026-10-04T08:22:02.4872104Z Selecting previously unselected package libdebuginfod1t64:amd64.
+2026-10-04T08:22:02.5006648Z Preparing to unpack .../06-libdebuginfod1t64_0.190-1.1ubuntu0.1_amd64.deb ...
+2026-10-04T08:22:02.5013658Z Unpacking libdebuginfod1t64:amd64 (0.190-1.1ubuntu0.1) ...
+2026-10-04T08:22:02.5222173Z Selecting previously unselected package libipt2.
+2026-10-04T08:22:02.5357229Z Preparing to unpack .../07-libipt2_2.0.6-1build1_amd64.deb ...
+2026-10-04T08:22:02.5365232Z Unpacking libipt2 (2.0.6-1build1) ...
+2026-10-04T08:22:02.5576139Z Selecting previously unselected package libsource-highlight-common.
+2026-10-04T08:22:02.5708421Z Preparing to unpack .../08-libsource-highlight-common_3.1.9-4.3build1_all.deb ...
+2026-10-04T08:22:02.5716627Z Unpacking libsource-highlight-common (3.1.9-4.3build1) ...
+2026-10-04T08:22:02.6238171Z Selecting previously unselected package libsource-highlight4t64:amd64.
+2026-10-04T08:22:02.6374112Z Preparing to unpack .../09-libsource-highlight4t64_3.1.9-4.3build1_amd64.deb ...
+2026-10-04T08:22:02.6382118Z Unpacking libsource-highlight4t64:amd64 (3.1.9-4.3build1) ...
+2026-10-04T08:22:02.6625932Z Selecting previously unselected package gdb.
+2026-10-04T08:22:02.6761410Z Preparing to unpack .../10-gdb_15.1-1ubuntu1~24.04.1_amd64.deb ...
+2026-10-04T08:22:02.6769361Z Unpacking gdb (15.1-1ubuntu1~24.04.1) ...
+2026-10-04T08:22:02.7736787Z Preparing to unpack .../11-libgl1-mesa-dri_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T08:22:02.7887717Z Unpacking libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T08:22:02.8414449Z Preparing to unpack .../12-libglx-mesa0_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T08:22:02.8437965Z Unpacking libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T08:22:02.8818753Z Preparing to unpack .../13-libgbm1_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T08:22:02.8841914Z Unpacking libgbm1:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T08:22:02.9245060Z Preparing to unpack .../14-mesa-libgallium_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T08:22:02.9269524Z Unpacking mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T08:22:03.1184881Z Selecting previously unselected package libgif7:amd64.
+2026-10-04T08:22:03.1320643Z Preparing to unpack .../15-libgif7_5.2.2-1ubuntu1.2_amd64.deb ...
+2026-10-04T08:22:03.1329808Z Unpacking libgif7:amd64 (5.2.2-1ubuntu1.2) ...
+2026-10-04T08:22:03.1538146Z Selecting previously unselected package libgs-common.
+2026-10-04T08:22:03.1672020Z Preparing to unpack .../16-libgs-common_10.02.1~dfsg1-0ubuntu7.9_all.deb ...
+2026-10-04T08:22:03.1680607Z Unpacking libgs-common (10.02.1~dfsg1-0ubuntu7.9) ...
+2026-10-04T08:22:03.1917817Z Selecting previously unselected package libgs10-common.
+2026-10-04T08:22:03.2048277Z Preparing to unpack .../17-libgs10-common_10.02.1~dfsg1-0ubuntu7.9_all.deb ...
+2026-10-04T08:22:03.2055945Z Unpacking libgs10-common (10.02.1~dfsg1-0ubuntu7.9) ...
+2026-10-04T08:22:03.2700223Z Selecting previously unselected package libidn12:amd64.
+2026-10-04T08:22:03.2833053Z Preparing to unpack .../18-libidn12_1.42-1ubuntu0.1_amd64.deb ...
+2026-10-04T08:22:03.2841814Z Unpacking libidn12:amd64 (1.42-1ubuntu0.1) ...
+2026-10-04T08:22:03.3059938Z Selecting previously unselected package libijs-0.35:amd64.
+2026-10-04T08:22:03.3194265Z Preparing to unpack .../19-libijs-0.35_0.35-15.1build1_amd64.deb ...
+2026-10-04T08:22:03.3202026Z Unpacking libijs-0.35:amd64 (0.35-15.1build1) ...
+2026-10-04T08:22:03.3434966Z Selecting previously unselected package libjbig2dec0:amd64.
+2026-10-04T08:22:03.3566307Z Preparing to unpack .../20-libjbig2dec0_0.20-1ubuntu0.24.04.1_amd64.deb ...
+2026-10-04T08:22:03.3573720Z Unpacking libjbig2dec0:amd64 (0.20-1ubuntu0.24.04.1) ...
+2026-10-04T08:22:03.3800085Z Selecting previously unselected package libpaper1:amd64.
+2026-10-04T08:22:03.3930290Z Preparing to unpack .../21-libpaper1_1.1.29build1_amd64.deb ...
+2026-10-04T08:22:03.3938146Z Unpacking libpaper1:amd64 (1.1.29build1) ...
+2026-10-04T08:22:03.4150373Z Selecting previously unselected package libgs10:amd64.
+2026-10-04T08:22:03.4283051Z Preparing to unpack .../22-libgs10_10.02.1~dfsg1-0ubuntu7.9_amd64.deb ...
+2026-10-04T08:22:03.4290736Z Unpacking libgs10:amd64 (10.02.1~dfsg1-0ubuntu7.9) ...
+2026-10-04T08:22:03.5230383Z Selecting previously unselected package libhwy1t64:amd64.
+2026-10-04T08:22:03.5360689Z Preparing to unpack .../23-libhwy1t64_1.0.7-8.1build1_amd64.deb ...
+2026-10-04T08:22:03.5434535Z Unpacking libhwy1t64:amd64 (1.0.7-8.1build1) ...
+2026-10-04T08:22:03.5749771Z Selecting previously unselected package libid3tag0:amd64.
+2026-10-04T08:22:03.5880656Z Preparing to unpack .../24-libid3tag0_0.15.1b-14build1_amd64.deb ...
+2026-10-04T08:22:03.5889447Z Unpacking libid3tag0:amd64 (0.15.1b-14build1) ...
+2026-10-04T08:22:03.6112050Z Selecting previously unselected package libjxl0.7:amd64.
+2026-10-04T08:22:03.6243611Z Preparing to unpack .../25-libjxl0.7_0.7.0-10.2ubuntu6.1_amd64.deb ...
+2026-10-04T08:22:03.6251755Z Unpacking libjxl0.7:amd64 (0.7.0-10.2ubuntu6.1) ...
+2026-10-04T08:22:03.6606795Z Selecting previously unselected package librsvg2-2:amd64.
+2026-10-04T08:22:03.6741286Z Preparing to unpack .../26-librsvg2-2_2.58.0+dfsg-1build1_amd64.deb ...
+2026-10-04T08:22:03.6750244Z Unpacking librsvg2-2:amd64 (2.58.0+dfsg-1build1) ...
+2026-10-04T08:22:03.7201401Z Selecting previously unselected package libspectre1:amd64.
+2026-10-04T08:22:03.7333440Z Preparing to unpack .../27-libspectre1_0.2.12-1build2_amd64.deb ...
+2026-10-04T08:22:03.7340833Z Unpacking libspectre1:amd64 (0.2.12-1build2) ...
+2026-10-04T08:22:03.7555122Z Selecting previously unselected package libimlib2t64:amd64.
+2026-10-04T08:22:03.7686017Z Preparing to unpack .../28-libimlib2t64_1.12.1-1.1build2_amd64.deb ...
+2026-10-04T08:22:03.7694019Z Unpacking libimlib2t64:amd64 (1.12.1-1.1build2) ...
+2026-10-04T08:22:03.7972914Z Selecting previously unselected package libobt2v5:amd64.
+2026-10-04T08:22:03.8103479Z Preparing to unpack .../29-libobt2v5_3.6.1-12build5_amd64.deb ...
+2026-10-04T08:22:03.8111142Z Unpacking libobt2v5:amd64 (3.6.1-12build5) ...
+2026-10-04T08:22:03.8331936Z Selecting previously unselected package libpangoxft-1.0-0:amd64.
+2026-10-04T08:22:03.8466671Z Preparing to unpack .../30-libpangoxft-1.0-0_1.52.1+ds-1build1_amd64.deb ...
+2026-10-04T08:22:03.8475786Z Unpacking libpangoxft-1.0-0:amd64 (1.52.1+ds-1build1) ...
+2026-10-04T08:22:03.8697988Z Selecting previously unselected package libobrender32v5.
+2026-10-04T08:22:03.8832809Z Preparing to unpack .../31-libobrender32v5_3.6.1-12build5_amd64.deb ...
+2026-10-04T08:22:03.8867893Z Unpacking libobrender32v5 (3.6.1-12build5) ...
+2026-10-04T08:22:03.9085799Z Selecting previously unselected package libxcb-util1:amd64.
+2026-10-04T08:22:03.9219120Z Preparing to unpack .../32-libxcb-util1_0.4.0-1build3_amd64.deb ...
+2026-10-04T08:22:03.9227242Z Unpacking libxcb-util1:amd64 (0.4.0-1build3) ...
+2026-10-04T08:22:03.9441028Z Selecting previously unselected package libstartup-notification0:amd64.
+2026-10-04T08:22:03.9575864Z Preparing to unpack .../33-libstartup-notification0_0.12-6build3_amd64.deb ...
+2026-10-04T08:22:03.9584225Z Unpacking libstartup-notification0:amd64 (0.12-6build3) ...
+2026-10-04T08:22:03.9807804Z Selecting previously unselected package libxcb-shape0:amd64.
+2026-10-04T08:22:03.9940401Z Preparing to unpack .../34-libxcb-shape0_1.15-1ubuntu2_amd64.deb ...
+2026-10-04T08:22:03.9969670Z Unpacking libxcb-shape0:amd64 (1.15-1ubuntu2) ...
+2026-10-04T08:22:04.0182349Z Selecting previously unselected package libxv1:amd64.
+2026-10-04T08:22:04.0318722Z Preparing to unpack .../35-libxv1_2%3a1.0.11-1.1build1_amd64.deb ...
+2026-10-04T08:22:04.0329293Z Unpacking libxv1:amd64 (2:1.0.11-1.1build1) ...
+2026-10-04T08:22:04.0538999Z Selecting previously unselected package libxxf86dga1:amd64.
+2026-10-04T08:22:04.0673341Z Preparing to unpack .../36-libxxf86dga1_2%3a1.1.5-1build1_amd64.deb ...
+2026-10-04T08:22:04.0681976Z Unpacking libxxf86dga1:amd64 (2:1.1.5-1build1) ...
+2026-10-04T08:22:04.0915878Z Selecting previously unselected package openbox.
+2026-10-04T08:22:04.1053509Z Preparing to unpack .../37-openbox_3.6.1-12build5_amd64.deb ...
+2026-10-04T08:22:04.1106385Z Unpacking openbox (3.6.1-12build5) ...
+2026-10-04T08:22:04.2464526Z Selecting previously unselected package x11-utils.
+2026-10-04T08:22:04.2599274Z Preparing to unpack .../38-x11-utils_7.7+6build2_amd64.deb ...
+2026-10-04T08:22:04.2609513Z Unpacking x11-utils (7.7+6build2) ...
+2026-10-04T08:22:04.2911280Z Selecting previously unselected package libopengl0:amd64.
+2026-10-04T08:22:04.3043660Z Preparing to unpack .../39-libopengl0_1.7.0-1build1_amd64.deb ...
+2026-10-04T08:22:04.3052130Z Unpacking libopengl0:amd64 (1.7.0-1build1) ...
+2026-10-04T08:22:04.3781428Z Selecting previously unselected package libglu1-mesa:amd64.
+2026-10-04T08:22:04.3919426Z Preparing to unpack .../40-libglu1-mesa_9.0.2-1.1build1_amd64.deb ...
+2026-10-04T08:22:04.3926901Z Unpacking libglu1-mesa:amd64 (9.0.2-1.1build1) ...
+2026-10-04T08:22:04.4453464Z Setting up libhwy1t64:amd64 (1.0.7-8.1build1) ...
+2026-10-04T08:22:04.4473631Z Setting up libpaper1:amd64 (1.1.29build1) ...
+2026-10-04T08:22:04.5918816Z 
+2026-10-04T08:22:04.5919483Z Creating config file /etc/papersize with new version
+2026-10-04T08:22:04.6412209Z Setting up mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T08:22:04.6430901Z Setting up libpangoxft-1.0-0:amd64 (1.52.1+ds-1build1) ...
+2026-10-04T08:22:04.6449650Z Setting up libdebuginfod-common (0.190-1.1ubuntu0.1) ...
+2026-10-04T08:22:04.7501411Z Setting up libgbm1:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T08:22:04.7522423Z Setting up libijs-0.35:amd64 (0.35-15.1build1) ...
+2026-10-04T08:22:04.7540885Z Setting up libgs-common (10.02.1~dfsg1-0ubuntu7.9) ...
+2026-10-04T08:22:04.7558599Z Setting up libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T08:22:04.7638459Z Setting up libxcb-shape0:amd64 (1.15-1ubuntu2) ...
+2026-10-04T08:22:04.7654482Z Setting up libxxf86dga1:amd64 (2:1.1.5-1build1) ...
+2026-10-04T08:22:04.7706821Z Setting up libsource-highlight-common (3.1.9-4.3build1) ...
+2026-10-04T08:22:04.7726501Z Setting up libopengl0:amd64 (1.7.0-1build1) ...
+2026-10-04T08:22:04.7746074Z Setting up libxcb-util1:amd64 (0.4.0-1build3) ...
+2026-10-04T08:22:04.7764337Z Setting up poppler-data (0.4.12-1) ...
+2026-10-04T08:22:04.7829119Z Setting up librsvg2-2:amd64 (2.58.0+dfsg-1build1) ...
+2026-10-04T08:22:04.7847230Z Setting up libid3tag0:amd64 (0.15.1b-14build1) ...
+2026-10-04T08:22:04.7867235Z Setting up libjbig2dec0:amd64 (0.20-1ubuntu0.24.04.1) ...
+2026-10-04T08:22:04.7885453Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-04T08:22:04.7905967Z Setting up libxv1:amd64 (2:1.0.11-1.1build1) ...
+2026-10-04T08:22:04.7926307Z Setting up libidn12:amd64 (1.42-1ubuntu0.1) ...
+2026-10-04T08:22:04.7946386Z Setting up libobt2v5:amd64 (3.6.1-12build5) ...
+2026-10-04T08:22:04.7965628Z Setting up libipt2 (2.0.6-1build1) ...
+2026-10-04T08:22:04.7985799Z Setting up libjxl0.7:amd64 (0.7.0-10.2ubuntu6.1) ...
+2026-10-04T08:22:04.8008659Z Setting up libbabeltrace1:amd64 (1.5.11-3build3) ...
+2026-10-04T08:22:04.8029000Z Setting up libgif7:amd64 (5.2.2-1ubuntu1.2) ...
+2026-10-04T08:22:04.8047265Z Setting up x11-utils (7.7+6build2) ...
+2026-10-04T08:22:04.8128508Z Setting up libglu1-mesa:amd64 (9.0.2-1.1build1) ...
+2026-10-04T08:22:04.8156120Z Setting up libstartup-notification0:amd64 (0.12-6build3) ...
+2026-10-04T08:22:04.8184411Z Setting up libdebuginfod1t64:amd64 (0.190-1.1ubuntu0.1) ...
+2026-10-04T08:22:04.8201805Z Setting up libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T08:22:04.8251081Z Setting up libsource-highlight4t64:amd64 (3.1.9-4.3build1) ...
+2026-10-04T08:22:04.8269556Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-04T08:22:04.8314052Z Setting up gdb (15.1-1ubuntu1~24.04.1) ...
+2026-10-04T08:22:04.8338932Z Setting up fonts-urw-base35 (20200910-8) ...
+2026-10-04T08:22:04.9734596Z Setting up libgs10-common (10.02.1~dfsg1-0ubuntu7.9) ...
+2026-10-04T08:22:04.9753372Z Setting up libgs10:amd64 (10.02.1~dfsg1-0ubuntu7.9) ...
+2026-10-04T08:22:04.9773413Z Setting up libspectre1:amd64 (0.2.12-1build2) ...
+2026-10-04T08:22:04.9791787Z Setting up libimlib2t64:amd64 (1.12.1-1.1build2) ...
+2026-10-04T08:22:04.9809838Z Setting up libobrender32v5 (3.6.1-12build5) ...
+2026-10-04T08:22:04.9836040Z Setting up openbox (3.6.1-12build5) ...
+2026-10-04T08:22:04.9938598Z update-alternatives: using /usr/bin/openbox to provide /usr/bin/x-window-manager (x-window-manager) in auto mode
+2026-10-04T08:22:04.9994500Z update-alternatives: using /usr/bin/openbox-session to provide /usr/bin/x-session-manager (x-session-manager) in auto mode
+2026-10-04T08:22:05.0037714Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-04T08:22:05.0285424Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-04T08:22:05.0303943Z Not building database; man-db/auto-update is not 'true'.
+2026-10-04T08:22:05.0317960Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-04T08:22:05.6567450Z 
+2026-10-04T08:22:05.6568151Z Running kernel seems to be up-to-date.
+2026-10-04T08:22:05.6568566Z 
+2026-10-04T08:22:05.6568732Z Restarting services...
+2026-10-04T08:22:05.6786595Z 
+2026-10-04T08:22:05.6787170Z Service restarts being deferred:
+2026-10-04T08:22:05.6787887Z  systemctl restart hosted-compute-agent.service
+2026-10-04T08:22:05.6788436Z  systemctl restart systemd-logind.service
+2026-10-04T08:22:05.6788801Z  systemctl restart walinuxagent.service
+2026-10-04T08:22:05.6789024Z 
+2026-10-04T08:22:05.6789151Z No containers need to be restarted.
+2026-10-04T08:22:05.6789332Z 
+2026-10-04T08:22:05.6789447Z User sessions running outdated binaries:
+2026-10-04T08:22:05.6790327Z  runner @ user manager service: systemd[1232]
+2026-10-04T08:22:05.6849175Z 
+2026-10-04T08:22:05.6849667Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T08:22:06.8447652Z ##[group]Run actions/setup-node@v4
+2026-10-04T08:22:06.8447979Z with:
+2026-10-04T08:22:06.8448188Z   node-version: 22
+2026-10-04T08:22:06.8448414Z   cache: npm
+2026-10-04T08:22:06.8448680Z   cache-dependency-path: browser/package-lock.json
+2026-10-04T08:22:06.8449016Z   always-auth: false
+2026-10-04T08:22:06.8449251Z   check-latest: false
+2026-10-04T08:22:06.8451505Z   token: ***
+2026-10-04T08:22:06.8451717Z env:
+2026-10-04T08:22:06.8451913Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:22:06.8452164Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:22:06.8452434Z ##[endgroup]
+2026-10-04T08:22:06.9916098Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-04T08:22:06.9920164Z (node:3725) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:22:06.9920897Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:22:06.9923655Z ##[group]Environment details
+2026-10-04T08:22:07.4198788Z node: v22.23.3
+2026-10-04T08:22:07.4199070Z npm: 10.9.9
+2026-10-04T08:22:07.4199265Z yarn: 1.22.22
+2026-10-04T08:22:07.4200357Z ##[endgroup]
+2026-10-04T08:22:07.4222405Z [command]/opt/hostedtoolcache/node/22.23.3/x64/bin/npm config get cache
+2026-10-04T08:22:07.5428026Z /home/runner/.npm
+2026-10-04T08:22:07.6408325Z Cache hit for: node-cache-Linux-x64-npm-647d81569d16e846ab9be7adcb60f4c5b7a32fc6a4fb1cb3dfa6dd643f387eed
+2026-10-04T08:22:07.6529710Z (node:3725) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T08:22:07.8191915Z Received 4035854 of 4035854 (100.0%), 30.3 MBs/sec
+2026-10-04T08:22:07.8192386Z Cache Size: ~4 MB (4035854 B)
+2026-10-04T08:22:07.8219524Z [command]/usr/bin/tar -xf /home/runner/work/_temp/c8f28b5b-a3bf-4ac0-b45b-a66954062475/cache.tzst -P -C /home/runner/work/glob2/glob2 --use-compress-program unzstd
+2026-10-04T08:22:07.8361793Z Cache restored successfully
+2026-10-04T08:22:07.8368921Z Cache restored from key: node-cache-Linux-x64-npm-647d81569d16e846ab9be7adcb60f4c5b7a32fc6a4fb1cb3dfa6dd643f387eed
+2026-10-04T08:22:07.9139869Z ##[group]Run actions/cache/restore@v4
+2026-10-04T08:22:07.9140217Z with:
+2026-10-04T08:22:07.9140439Z   path: ~/.cache/ms-playwright
+2026-10-04T08:22:07.9141011Z   key: playwright-v1-Linux-X64-chromium-647d81569d16e846ab9be7adcb60f4c5b7a32fc6a4fb1cb3dfa6dd643f387eed
+2026-10-04T08:22:07.9141586Z   enableCrossOsArchive: false
+2026-10-04T08:22:07.9142094Z   fail-on-cache-miss: false
+2026-10-04T08:22:07.9142343Z   lookup-only: false
+2026-10-04T08:22:07.9142565Z env:
+2026-10-04T08:22:07.9142759Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:22:07.9143008Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:22:07.9143265Z ##[endgroup]
+2026-10-04T08:22:08.0289611Z (node:3784) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:22:08.0290943Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:22:08.0953270Z Cache hit for: playwright-v1-Linux-X64-chromium-647d81569d16e846ab9be7adcb60f4c5b7a32fc6a4fb1cb3dfa6dd643f387eed
+2026-10-04T08:22:08.1061153Z (node:3784) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T08:22:09.1431992Z Received 251658240 of 284189280 (88.6%), 237.6 MBs/sec
+2026-10-04T08:22:09.3380134Z Received 284189280 of 284189280 (100.0%), 224.9 MBs/sec
+2026-10-04T08:22:09.3385334Z Cache Size: ~271 MB (284189280 B)
+2026-10-04T08:22:09.3428986Z [command]/usr/bin/tar -xf /home/runner/work/_temp/b1c2193e-5886-40bd-a5c5-0c711da078ee/cache.tzst -P -C /home/runner/work/glob2/glob2 --use-compress-program unzstd
+2026-10-04T08:22:10.6003591Z Cache restored successfully
+2026-10-04T08:22:10.6259701Z Cache restored from key: playwright-v1-Linux-X64-chromium-647d81569d16e846ab9be7adcb60f4c5b7a32fc6a4fb1cb3dfa6dd643f387eed
+2026-10-04T08:22:10.6471521Z ##[group]Run npm ci --ignore-scripts
+2026-10-04T08:22:10.6471917Z [36;1mnpm ci --ignore-scripts[0m
+2026-10-04T08:22:10.6472259Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-04T08:22:10.7807172Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:22:10.7807748Z env:
+2026-10-04T08:22:10.7808170Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:22:10.7808695Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:22:10.7809231Z ##[endgroup]
+2026-10-04T08:22:11.7704071Z 
+2026-10-04T08:22:11.7705312Z added 3 packages, and audited 4 packages in 918ms
+2026-10-04T08:22:11.7712387Z 
+2026-10-04T08:22:11.7712732Z found 0 vulnerabilities
+2026-10-04T08:22:12.6493168Z Installing dependencies...
+2026-10-04T08:22:12.6606721Z Switching to root user to install dependencies...
+2026-10-04T08:22:12.7715252Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T08:22:12.8486811Z Hit:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+2026-10-04T08:22:12.8929552Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-04T08:22:12.8930828Z Hit:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-10-04T08:22:12.8932100Z Hit:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-10-04T08:22:12.8936696Z Hit:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-10-04T08:22:14.2544338Z Reading package lists...
+2026-10-04T08:22:14.2775219Z Reading package lists...
+2026-10-04T08:22:14.5133053Z Building dependency tree...
+2026-10-04T08:22:14.5141248Z Reading state information...
+2026-10-04T08:22:14.7412673Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-04T08:22:14.7413689Z libasound2t64 set to manually installed.
+2026-10-04T08:22:14.7414612Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-04T08:22:14.7415472Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-04T08:22:14.7416321Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-04T08:22:14.7417532Z libatk1.0-0t64 set to manually installed.
+2026-10-04T08:22:14.7418405Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-04T08:22:14.7419257Z libatspi2.0-0t64 set to manually installed.
+2026-10-04T08:22:14.7420034Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-04T08:22:14.7421041Z libcairo2 set to manually installed.
+2026-10-04T08:22:14.7421844Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-04T08:22:14.7423054Z libcups2t64 set to manually installed.
+2026-10-04T08:22:14.7423841Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-04T08:22:14.7424633Z libdbus-1-3 set to manually installed.
+2026-10-04T08:22:14.7425455Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-04T08:22:14.7426397Z libgbm1 is already the newest version (25.2.8-0ubuntu0.24.04.4).
+2026-10-04T08:22:14.7427383Z libgbm1 set to manually installed.
+2026-10-04T08:22:14.7428190Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-04T08:22:14.7428973Z libglib2.0-0t64 set to manually installed.
+2026-10-04T08:22:14.7429744Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-04T08:22:14.7430614Z libnspr4 set to manually installed.
+2026-10-04T08:22:14.7431346Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-04T08:22:14.7432063Z libnss3 set to manually installed.
+2026-10-04T08:22:14.7432827Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-04T08:22:14.7433596Z libpango-1.0-0 set to manually installed.
+2026-10-04T08:22:14.7434333Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-10-04T08:22:14.7435110Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-04T08:22:14.7435984Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-04T08:22:14.7436805Z libxcomposite1 set to manually installed.
+2026-10-04T08:22:14.7437898Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-04T08:22:14.7438985Z libxdamage1 set to manually installed.
+2026-10-04T08:22:14.7439734Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-04T08:22:14.7440435Z libxext6 set to manually installed.
+2026-10-04T08:22:14.7441169Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-04T08:22:14.7441877Z libxfixes3 set to manually installed.
+2026-10-04T08:22:14.7442626Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-04T08:22:14.7443351Z libxkbcommon0 set to manually installed.
+2026-10-04T08:22:14.7444118Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-04T08:22:14.7444822Z libxrandr2 set to manually installed.
+2026-10-04T08:22:14.7445577Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+2026-10-04T08:22:14.7446548Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-04T08:22:14.7447780Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-04T08:22:14.7448555Z libfontconfig1 set to manually installed.
+2026-10-04T08:22:14.7449496Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-10-04T08:22:14.7450451Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-04T08:22:14.7451099Z fonts-liberation set to manually installed.
+2026-10-04T08:22:14.7451563Z Recommended packages:
+2026-10-04T08:22:14.7451989Z   fonts-ipafont-mincho fonts-tlwg-loma
+2026-10-04T08:22:14.7622910Z The following NEW packages will be installed:
+2026-10-04T08:22:14.7624054Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-04T08:22:14.7633725Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-scalable
+2026-10-04T08:22:14.7822012Z 0 upgraded, 7 newly installed, 0 to remove and 18 not upgraded.
+2026-10-04T08:22:14.7822591Z Need to get 20.4 MB of archives.
+2026-10-04T08:22:14.7823324Z After this operation, 78.4 MB of additional disk space will be used.
+2026-10-04T08:22:14.7824279Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T08:22:14.8133692Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-04T08:22:14.8529239Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-04T08:22:14.9018173Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-04T08:22:14.9199331Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-04T08:22:14.9667481Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-04T08:22:15.1212108Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-04T08:22:15.1396127Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-04T08:22:15.4170558Z Fetched 20.4 MB in 0s (55.1 MB/s)
+2026-10-04T08:22:15.4374239Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-04T08:22:15.4433344Z (Reading database ... 
+2026-10-04T08:22:15.4434280Z (Reading database ... 5%
+2026-10-04T08:22:15.4435113Z (Reading database ... 10%
+2026-10-04T08:22:15.4435463Z (Reading database ... 15%
+2026-10-04T08:22:15.4435793Z (Reading database ... 20%
+2026-10-04T08:22:15.4436093Z (Reading database ... 25%
+2026-10-04T08:22:15.4436387Z (Reading database ... 30%
+2026-10-04T08:22:15.4436673Z (Reading database ... 35%
+2026-10-04T08:22:15.4437230Z (Reading database ... 40%
+2026-10-04T08:22:15.4437531Z (Reading database ... 45%
+2026-10-04T08:22:15.4437826Z (Reading database ... 50%
+2026-10-04T08:22:15.4449053Z (Reading database ... 55%
+2026-10-04T08:22:15.4569401Z (Reading database ... 60%
+2026-10-04T08:22:15.4599943Z (Reading database ... 65%
+2026-10-04T08:22:15.4625028Z (Reading database ... 70%
+2026-10-04T08:22:15.4665573Z (Reading database ... 75%
+2026-10-04T08:22:15.4710847Z (Reading database ... 80%
+2026-10-04T08:22:15.4734934Z (Reading database ... 85%
+2026-10-04T08:22:15.4968271Z (Reading database ... 90%
+2026-10-04T08:22:15.5238204Z (Reading database ... 95%
+2026-10-04T08:22:15.5238886Z (Reading database ... 100%
+2026-10-04T08:22:15.5239864Z (Reading database ... 204234 files and directories currently installed.)
+2026-10-04T08:22:15.5287648Z Preparing to unpack .../0-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-04T08:22:15.5357484Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-04T08:22:15.7731088Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-04T08:22:15.7866391Z Preparing to unpack .../1-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-04T08:22:15.7875492Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-04T08:22:15.8700690Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-04T08:22:15.8832894Z Preparing to unpack .../2-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-04T08:22:15.8840858Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-04T08:22:15.9049937Z Selecting previously unselected package fonts-unifont.
+2026-10-04T08:22:15.9181307Z Preparing to unpack .../3-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-04T08:22:15.9188779Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-04T08:22:16.0266445Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-04T08:22:16.0407140Z Preparing to unpack .../4-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-04T08:22:16.0908353Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-04T08:22:16.7988228Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-04T08:22:16.8122212Z Preparing to unpack .../5-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-04T08:22:16.8132372Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-04T08:22:16.8477773Z Selecting previously unselected package xfonts-scalable.
+2026-10-04T08:22:16.8613155Z Preparing to unpack .../6-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-04T08:22:16.8621214Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-04T08:22:16.9079262Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-04T08:22:16.9200610Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-04T08:22:16.9218690Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-04T08:22:16.9235178Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-04T08:22:16.9311852Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-04T08:22:16.9327921Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-04T08:22:16.9601773Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-04T08:22:17.0221668Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-04T08:22:17.0245035Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-04T08:22:17.5785734Z 
+2026-10-04T08:22:17.5786513Z Running kernel seems to be up-to-date.
+2026-10-04T08:22:17.5787235Z 
+2026-10-04T08:22:17.5787745Z Restarting services...
+2026-10-04T08:22:17.5977926Z 
+2026-10-04T08:22:17.5978831Z Service restarts being deferred:
+2026-10-04T08:22:17.5979955Z  systemctl restart hosted-compute-agent.service
+2026-10-04T08:22:17.6038929Z  systemctl restart systemd-logind.service
+2026-10-04T08:22:17.6039604Z  systemctl restart walinuxagent.service
+2026-10-04T08:22:17.6039839Z 
+2026-10-04T08:22:17.6040017Z No containers need to be restarted.
+2026-10-04T08:22:17.6040225Z 
+2026-10-04T08:22:17.6040399Z User sessions running outdated binaries:
+2026-10-04T08:22:17.6040809Z  runner @ user manager service: systemd[1232]
+2026-10-04T08:22:17.6048327Z 
+2026-10-04T08:22:17.6049279Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T08:22:18.7614158Z ##[group]Run xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'
+2026-10-04T08:22:18.7615300Z [36;1mxvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js'[0m
+2026-10-04T08:22:18.7678540Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:22:18.7678814Z env:
+2026-10-04T08:22:18.7679034Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:22:18.7679306Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:22:18.7679565Z ##[endgroup]
+2026-10-04T08:22:19.8900319Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:19] "GET / HTTP/1.1" 200 -
+2026-10-04T08:22:20.5347547Z 
+2026-10-04T08:22:20.5348368Z Running 20 tests using 1 worker, shard 5 of 5
+2026-10-04T08:22:20.5348705Z 
+2026-10-04T08:22:21.3080964Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:22:21.3482065Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:22:21.4069229Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:22:21.4493259Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:21.4545146Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:21.4599092Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:21.4648538Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:21.4801957Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:22:21.5888894Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:22:21.7097892Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:22:21.8949192Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:21] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:22:27.9697395Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:27] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:22:28.0125035Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:28] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:22:28.1918793Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:28] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:22:28.3350059Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:28] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:22:28.4185751Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:28] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:22:29.7930388Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:29] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:35.4288991Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.2895944Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T08:22:40.3275247Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.3678875Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.3949938Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.3988515Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.4018453Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.4038301Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:22:40.4231491Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:22:40] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:23:15.2584487Z   ✘   1 [chromium] › tests/storage.spec.js:16:40 › abort failure retains the previous durable save and can retry (51.4s)
+2026-10-04T08:23:15.9618824Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:15] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:23:15.9975414Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:15] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:23:16.0508763Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:23:16.0872596Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:16.0998571Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:16.1080626Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:16.1190922Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:16.1263442Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:23:16.2517624Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:23:16.2929219Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:23:16.5900896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:16] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:23:22.5716135Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:22] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:23:22.6084202Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:22] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:23:22.7318894Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:22] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:23:22.8662556Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:22] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:23:22.9126347Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:22] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:23:24.3791144Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:24] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:30.0809147Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.2433652Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T08:23:35.2862868Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.3346546Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.3628895Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.3665290Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.3667293Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.3729074Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:35.3962389Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:35] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:23:43.1165783Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T08:23:43.1302618Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T08:23:43.1560834Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:43.1801582Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:43.1868863Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:43.1890083Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:23:43.1969568Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:43.2028525Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:48.5030815Z   ✓   2 [chromium] › tests/storage.spec.js:16:40 › quota failure retains the previous durable save and can retry (32.6s)
+2026-10-04T08:23:48.5713811Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:23:48.6125041Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:23:48.6568957Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:23:48.6826633Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:48.6844365Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:48.6901781Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:48.6964805Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:48.7087912Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:23:48.8014094Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:23:48.9339799Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:48] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:23:49.1219180Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:49] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:23:55.2928812Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:55] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:23:55.3232721Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:55] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:23:55.4612615Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:55] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:23:55.6002188Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:55] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:23:55.6718949Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:55] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:23:59.0916607Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T08:23:59.1083189Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T08:23:59.1244746Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:59.1546554Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:59.1562647Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:59.1662598Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:23:59.1694819Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:23:59.1728568Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:23:59] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:04.5159089Z   ✓   3 [chromium] › tests/storage.spec.js:78:1 › restore failure is explained before entering the game (16.0s)
+2026-10-04T08:24:04.5866709Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:24:04.6313858Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:24:04.6679085Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:24:04.6961810Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:04.7019435Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:04.7049996Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:04.7051206Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:04.7249058Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:24:04.8065432Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:24:04.9724053Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:04] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:24:05.1530509Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:05] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:24:11.0697578Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:11] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:24:11.1084869Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:11] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:24:11.2293217Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:11] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:24:11.3789938Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:11] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:24:11.4408860Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:11] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:24:14.4959098Z   ✓   4 [chromium] › tests/team-colors.spec.js:27:3 › software preserves the red tutorial team before and after resize (10.0s)
+2026-10-04T08:24:14.5562006Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /?renderer=webgl2 HTTP/1.1" 200 -
+2026-10-04T08:24:14.5982041Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:24:14.6534204Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:24:14.6861951Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:14.6868845Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:14.6903531Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:14.6938917Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:14.7148633Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:24:14.8861891Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:24:14.9406051Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:14] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:24:15.1489281Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:15] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.2389096Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.2651363Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.3891236Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.5299638Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.6129827Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.6624980Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/hd-1.880f04addc35c5d4.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.7361527Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/hd-2.36b53a214578643c.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.8415955Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/hd-3.083ef8ce34b7ad01.data HTTP/1.1" 200 -
+2026-10-04T08:24:21.9279402Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:21] "GET /assets/hd-4.88ad97cceabe5e57.data HTTP/1.1" 200 -
+2026-10-04T08:24:38.8524677Z   ✓   5 [chromium] › tests/team-colors.spec.js:27:3 › webgl2 preserves the red tutorial team before and after resize (24.3s)
+2026-10-04T08:24:38.9594654Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:38] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:24:39.0098448Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:24:39.0514225Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:24:39.0810835Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:39.0822801Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:39.0850648Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:39.0867862Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:39.1069074Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:24:39.1368304Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:24:39.1938960Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:24:39.5398894Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:39] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:24:45.5102661Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:45] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:24:45.5438747Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:45] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:24:45.6721447Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:45] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:24:45.8269047Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:45] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:24:45.8708507Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:45] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:24:47.3149636Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:47] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:24:52.4351771Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /test-host-139a0da1-4add-430a-bb9a-ebd93af6fb89.html HTTP/1.1" 200 -
+2026-10-04T08:24:52.4503667Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /threaded/script-tests.js HTTP/1.1" 200 -
+2026-10-04T08:24:52.4980650Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /script-tests.data HTTP/1.1" 200 -
+2026-10-04T08:24:52.5012701Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:52.5079430Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:52.5098392Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /threaded/script-tests.wasm HTTP/1.1" 200 -
+2026-10-04T08:24:52.5121395Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:52.5149546Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:52] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:53.0122240Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:53] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:53.0150121Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:53] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:53.0151747Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:53] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:53.0180812Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:53] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:55.2868002Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:55] "GET /threaded/script-tests.js HTTP/1.1" 304 -
+2026-10-04T08:24:56.3973625Z   ✓   6 [chromium] › tests/threading.spec.js:8:1 › threaded runtime executes shared compute, gradients and save lifecycle tests (17.5s)
+2026-10-04T08:24:56.4601369Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+2026-10-04T08:24:56.5011023Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:24:56.5146351Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /index.js HTTP/1.1" 200 -
+2026-10-04T08:24:56.5716465Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /index.wasm HTTP/1.1" 200 -
+2026-10-04T08:24:56.5878734Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:24:56.6175091Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:24:56.8618973Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:24:56] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:00.0214881Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:00] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:00.1528914Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:00] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:00.3450446Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:00] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:00.5083788Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:00] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:25:00.5743587Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:00] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:25:05.3434659Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:05] "GET /test-host-5a8ce4da-3b64-4e08-b3a9-2139ed9afaef.html HTTP/1.1" 200 -
+2026-10-04T08:25:05.3578711Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:05] "GET /script-tests.js HTTP/1.1" 200 -
+2026-10-04T08:25:05.4024938Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:05] "GET /script-tests.data HTTP/1.1" 200 -
+2026-10-04T08:25:05.4118963Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:05] "GET /script-tests.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:08.6246894Z   ✓   7 [chromium] › tests/threading.spec.js:8:1 › serial runtime executes shared compute, gradients and save lifecycle tests (12.2s)
+2026-10-04T08:25:08.6977777Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:08] "GET /?renderer=software&threads=serial HTTP/1.1" 200 -
+2026-10-04T08:25:08.7418460Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:08] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:08.7573185Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:08] "GET /index.js HTTP/1.1" 200 -
+2026-10-04T08:25:08.8083493Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:08] "GET /index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:08.8239263Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:08] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:08.8558701Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:08] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:09.1109975Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:09] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:12.2989268Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:12] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:12.4128920Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:12] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:12.5897700Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:12] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:12.7269834Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:12] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:25:12.9919955Z   ✓   8 [chromium] › tests/threading.spec.js:43:1 › serial selection preserves ordinary startup (4.4s)
+2026-10-04T08:25:13.0650488Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /index.html?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:25:13.0820852Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:13.0960034Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /index.js HTTP/1.1" 200 -
+2026-10-04T08:25:13.1458680Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:13.2000740Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:13.2057981Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:13.5018953Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:13] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:16.5018313Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:16] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:16.6361174Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:16] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:17.0811464Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:17.0909380Z [WebServer] ----------------------------------------
+2026-10-04T08:25:17.0910689Z [WebServer] Exception occurred during processing of request from ('127.0.0.1', 37216)
+2026-10-04T08:25:17.0943292Z [WebServer] Traceback (most recent call last):
+2026-10-04T08:25:17.0972137Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+2026-10-04T08:25:17.0974831Z [WebServer]     self.finish_request(request, client_address)
+2026-10-04T08:25:17.0975856Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+2026-10-04T08:25:17.0977137Z [WebServer]     self.RequestHandlerClass(request, client_address, self)
+2026-10-04T08:25:17.0978160Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+2026-10-04T08:25:17.0979045Z [WebServer]     super().__init__(*args, **kwargs)
+2026-10-04T08:25:17.0980171Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+2026-10-04T08:25:17.0980912Z [WebServer]     self.handle()
+2026-10-04T08:25:17.0981708Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 436, in handle
+2026-10-04T08:25:17.0982514Z [WebServer]     self.handle_one_request()
+2026-10-04T08:25:17.0983476Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+2026-10-04T08:25:17.0984265Z [WebServer]     method()
+2026-10-04T08:25:17.0985070Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 679, in do_GET
+2026-10-04T08:25:17.0985948Z [WebServer]     self.copyfile(f, self.wfile)
+2026-10-04T08:25:17.0986838Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 878, in copyfile
+2026-10-04T08:25:17.0988076Z [WebServer]     shutil.copyfileobj(source, outputfile)
+2026-10-04T08:25:17.0989467Z [WebServer]   File "/usr/lib/python3.12/shutil.py", line 204, in copyfileobj
+2026-10-04T08:25:17.0990235Z [WebServer]     fdst_write(buf)
+2026-10-04T08:25:17.0991045Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 840, in write
+2026-10-04T08:25:17.0991817Z [WebServer]     self._sock.sendall(b)
+2026-10-04T08:25:17.0992610Z [WebServer] ConnectionResetError: [Errno 104] Connection reset by peer
+2026-10-04T08:25:17.0993442Z [WebServer] ----------------------------------------
+2026-10-04T08:25:17.0999158Z   ✓   9 [chromium] › tests/threading.spec.js:50:1 › missing isolation headers automatically selects serial (4.1s)
+2026-10-04T08:25:17.1630974Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:25:17.2030604Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:17.2507304Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /?renderer=software&threads=serial&thread-fallback=threaded+runtime+initialization+failed%3A+test+startup+failure HTTP/1.1" 200 -
+2026-10-04T08:25:17.2641726Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:17.2766211Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /index.js HTTP/1.1" 200 -
+2026-10-04T08:25:17.3293944Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:17.4768636Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:17.4780750Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:17.7246243Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:17] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:20.8941884Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:20] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:21.0259218Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:21.4628545Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:21.4879066Z   ✓  10 [chromium] › tests/threading.spec.js:62:1 › threaded startup failure reloads the serial runtime (4.4s)
+2026-10-04T08:25:21.5495496Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:25:21.5889655Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:21.6249905Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:25:21.6794930Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:21.7829019Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:21.7865219Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /?renderer=software&threads=serial&thread-fallback=pthread+worker+startup+failed%3A+Uncaught+Error%3A+test+pthread+startup+failure HTTP/1.1" 200 -
+2026-10-04T08:25:21.7947982Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:21.7965789Z [WebServer] ----------------------------------------
+2026-10-04T08:25:21.8003642Z [WebServer] Exception occurred during processing of request from ('127.0.0.1', 37378)
+2026-10-04T08:25:21.8058696Z [WebServer] Traceback (most recent call last):
+2026-10-04T08:25:21.8060116Z [WebServer] ----------------------------------------
+2026-10-04T08:25:21.8064651Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+2026-10-04T08:25:21.8066159Z [WebServer]     self.finish_request(request, client_address)
+2026-10-04T08:25:21.8067757Z [WebServer] Exception occurred during processing of request from ('127.0.0.1', 37374)
+2026-10-04T08:25:21.8071169Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+2026-10-04T08:25:21.8072383Z [WebServer]     self.RequestHandlerClass(request, client_address, self)
+2026-10-04T08:25:21.8073366Z [WebServer] ----------------------------------------
+2026-10-04T08:25:21.8074077Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+2026-10-04T08:25:21.8074740Z [WebServer]     super().__init__(*args, **kwargs)
+2026-10-04T08:25:21.8075415Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+2026-10-04T08:25:21.8076193Z [WebServer]     self.handle()
+2026-10-04T08:25:21.8077513Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 436, in handle
+2026-10-04T08:25:21.8078594Z [WebServer]     self.handle_one_request()
+2026-10-04T08:25:21.8079772Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+2026-10-04T08:25:21.8080937Z [WebServer]     method()
+2026-10-04T08:25:21.8082497Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 679, in do_GET
+2026-10-04T08:25:21.8083290Z [WebServer]     self.copyfile(f, self.wfile)
+2026-10-04T08:25:21.8084786Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 878, in copyfile
+2026-10-04T08:25:21.8086084Z [WebServer]     shutil.copyfileobj(source, outputfile)
+2026-10-04T08:25:21.8087337Z [WebServer]   File "/usr/lib/python3.12/shutil.py", line 204, in copyfileobj
+2026-10-04T08:25:21.8088919Z [WebServer]     fdst_write(buf)
+2026-10-04T08:25:21.8090147Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 840, in write
+2026-10-04T08:25:21.8091274Z [WebServer]     self._sock.sendall(b)
+2026-10-04T08:25:21.8092239Z [WebServer] ConnectionResetError: [Errno 104] Connection reset by peer
+2026-10-04T08:25:21.8092921Z [WebServer] ----------------------------------------
+2026-10-04T08:25:21.8093473Z [WebServer] Traceback (most recent call last):
+2026-10-04T08:25:21.8094258Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+2026-10-04T08:25:21.8095344Z [WebServer]     self.finish_request(request, client_address)
+2026-10-04T08:25:21.8096194Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+2026-10-04T08:25:21.8097969Z [WebServer]     self.RequestHandlerClass(request, client_address, self)
+2026-10-04T08:25:21.8099137Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+2026-10-04T08:25:21.8100003Z [WebServer]     super().__init__(*args, **kwargs)
+2026-10-04T08:25:21.8100905Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+2026-10-04T08:25:21.8101654Z [WebServer]     self.handle()
+2026-10-04T08:25:21.8102452Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 436, in handle
+2026-10-04T08:25:21.8103212Z [WebServer]     self.handle_one_request()
+2026-10-04T08:25:21.8103763Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+2026-10-04T08:25:21.8104226Z [WebServer]     method()
+2026-10-04T08:25:21.8104697Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 679, in do_GET
+2026-10-04T08:25:21.8105173Z [WebServer]     self.copyfile(f, self.wfile)
+2026-10-04T08:25:21.8105682Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 878, in copyfile
+2026-10-04T08:25:21.8106216Z [WebServer]     shutil.copyfileobj(source, outputfile)
+2026-10-04T08:25:21.8106737Z [WebServer]   File "/usr/lib/python3.12/shutil.py", line 204, in copyfileobj
+2026-10-04T08:25:21.8107641Z [WebServer]     fdst_write(buf)
+2026-10-04T08:25:21.8108428Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 840, in write
+2026-10-04T08:25:21.8109217Z [WebServer]     self._sock.sendall(b)
+2026-10-04T08:25:21.8110009Z [WebServer] ConnectionResetError: [Errno 104] Connection reset by peer
+2026-10-04T08:25:21.8110849Z [WebServer] ----------------------------------------
+2026-10-04T08:25:21.8111720Z [WebServer] Exception occurred during processing of request from ('127.0.0.1', 37396)
+2026-10-04T08:25:21.8113003Z [WebServer] Traceback (most recent call last):
+2026-10-04T08:25:21.8113887Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 692, in process_request_thread
+2026-10-04T08:25:21.8114514Z [WebServer]     self.finish_request(request, client_address)
+2026-10-04T08:25:21.8115101Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 362, in finish_request
+2026-10-04T08:25:21.8115709Z [WebServer]     self.RequestHandlerClass(request, client_address, self)
+2026-10-04T08:25:21.8116303Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 672, in __init__
+2026-10-04T08:25:21.8116797Z [WebServer]     super().__init__(*args, **kwargs)
+2026-10-04T08:25:21.8118076Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 761, in __init__
+2026-10-04T08:25:21.8118574Z [WebServer]     self.handle()
+2026-10-04T08:25:21.8119043Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 436, in handle
+2026-10-04T08:25:21.8119501Z [WebServer]     self.handle_one_request()
+2026-10-04T08:25:21.8120047Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 424, in handle_one_request
+2026-10-04T08:25:21.8120502Z [WebServer]     method()
+2026-10-04T08:25:21.8121203Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 679, in do_GET
+2026-10-04T08:25:21.8121685Z [WebServer]     self.copyfile(f, self.wfile)
+2026-10-04T08:25:21.8122176Z [WebServer]   File "/usr/lib/python3.12/http/server.py", line 878, in copyfile
+2026-10-04T08:25:21.8122694Z [WebServer]     shutil.copyfileobj(source, outputfile)
+2026-10-04T08:25:21.8123209Z [WebServer]   File "/usr/lib/python3.12/shutil.py", line 204, in copyfileobj
+2026-10-04T08:25:21.8123635Z [WebServer]     fdst_write(buf)
+2026-10-04T08:25:21.8124081Z [WebServer]   File "/usr/lib/python3.12/socketserver.py", line 840, in write
+2026-10-04T08:25:21.8124524Z [WebServer]     self._sock.sendall(b)
+2026-10-04T08:25:21.8124994Z [WebServer] ConnectionResetError: [Errno 104] Connection reset by peer
+2026-10-04T08:25:21.8127875Z [WebServer] ----------------------------------------
+2026-10-04T08:25:21.8128722Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T08:25:21.8215131Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /index.js HTTP/1.1" 200 -
+2026-10-04T08:25:21.8708760Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:21] "GET /index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:22.0127839Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:22] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:22.0308960Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:22] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:22.1955826Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:22] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:25.3843729Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:25] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:25.5580176Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:25] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:25.6704410Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:25] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:25.8582973Z   ✓  11 [chromium] › tests/threading.spec.js:73:1 › a real pthread worker error after the probe reloads the serial runtime (4.4s)
+2026-10-04T08:25:25.9176117Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:25] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:25:25.9608870Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:25] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:26.0229244Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:25:26.0578586Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:26.0598641Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:26.0612493Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:26.0675359Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:26.0893346Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:26.1662012Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:26.3058870Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:26.4854147Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:26] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:32.4473198Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:32] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:32.4847228Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:32] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:32.6118822Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:32] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:32.7710066Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:32] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:25:32.8308018Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:32] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:25:36.8532392Z   ✓  12 [chromium] › tests/threading.spec.js:96:1 › threaded audio produces PCM, keeps settings responsive and shuts down cleanly (11.0s)
+2026-10-04T08:25:36.9285339Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:36] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:25:36.9706167Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:36] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:37.0168495Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:25:37.0426343Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:37.0477654Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:37.0488902Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:37.0510130Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:37.0654896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:37.1499180Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:37.1540448Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:37.4224562Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:37] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:43.4643776Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:43] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:43.4921651Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:43] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:43.6206123Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:43] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:43.7663308Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:43] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:25:43.8184243Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:43] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:25:49.2767601Z   ✓  13 [chromium] › tests/viewport.spec.js:14:1 › menus follow the viewport and keep their controls clickable (12.4s)
+2026-10-04T08:25:49.3363500Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:25:49.3725172Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:25:49.4230925Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:25:49.4515447Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:49.4531970Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:49.4558414Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:49.4583258Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:25:49.4786799Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:25:49.5209073Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:25:49.5578287Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:25:49.8640593Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:49] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:25:55.9201401Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:55] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:25:55.9589184Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:55] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:25:56.1029175Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:56] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:25:56.2428896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:56] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:25:56.2998838Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:56] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:25:57.6958911Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:25:57] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:04.2399559Z   ✓  14 [chromium] › tests/viewport.spec.js:23:1 › a running match survives resize and its open menu follows the new center (14.9s)
+2026-10-04T08:26:04.3085095Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:26:04.3507920Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:26:04.3933932Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:26:04.4220361Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:04.4237973Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:04.4270572Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:04.4292274Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:04.4511624Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:26:04.5825691Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:26:04.6718586Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:26:04.8559493Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:04] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:26:10.7643921Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:10] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:26:10.7924648Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:10] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:26:10.9216757Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:10] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:26:11.0549922Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:11] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:26:11.1194237Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:11] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:26:17.2816881Z   ✓  15 [chromium] › tests/viewport.spec.js:45:1 › editor dialogs and discard controls follow viewport changes (13.0s)
+2026-10-04T08:26:17.3456865Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:26:17.3834622Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:26:17.4284205Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:26:17.4609170Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:17.4638552Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:17.4662570Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:17.4672625Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:17.4876138Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:26:17.6837853Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:26:17.7537547Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:26:17.9308983Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:17] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:26:23.8348952Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:23] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:26:23.8608800Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:23] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:26:23.9849261Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:23] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:26:24.1453844Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:24] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:26:24.2039856Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:24] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:26:27.1732019Z   ✓  16 [chromium] › tests/viewport.spec.js:56:1 › small viewports retain the active screen and continue rendering (9.9s)
+2026-10-04T08:26:27.2308342Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:26:27.2690813Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:26:27.2957727Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:26:27.3214707Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:27.3233626Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:27.3258766Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:27.3278436Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:27.3441030Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:26:27.4643373Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:26:27.5223007Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:26:27.6792607Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:27] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:26:33.0386753Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:33] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:26:33.0607260Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:33] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:26:33.1578677Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:33] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:26:33.2865007Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:33] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:26:33.3526605Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:33] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:26:35.4469698Z   ✓  17 [chromium] › tests/viewport.spec.js:66:3 › initial small viewport › starts at the actual browser dimensions (8.3s)
+2026-10-04T08:26:35.5109320Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:26:35.5494594Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:26:35.5871094Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:26:35.6159214Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:35.6201980Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:35.6220207Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:35.6234007Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:35.6399353Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:26:35.7399166Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:26:35.8516924Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:35] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:26:36.0150693Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:36] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:26:41.4769896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:41] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:26:41.5016637Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:41] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:26:41.5989006Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:41] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:26:41.7485862Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:41] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:26:41.7878929Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:41] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:26:43.3928611Z   ✓  18 [chromium] › tests/viewport.spec.js:76:3 › initial wide viewport › fills the page before any resize (7.9s)
+2026-10-04T08:26:43.4596762Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:26:43.4973322Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:26:43.5401709Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:26:43.5686594Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:43.5702517Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:43.5719410Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:43.5743747Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:43.5898820Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:26:43.7897992Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:26:43.8141815Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:26:43.9728389Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:43] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:26:49.7820874Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:49] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:26:49.8438906Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:49] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:26:49.9533549Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:49] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:26:50.1187689Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:50] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:26:50.1623374Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:50] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:26:52.8469961Z   ✓  19 [chromium] › tests/viewport.spec.js:85:3 › high density display › uses the renderer-appropriate backing resolution (9.4s)
+2026-10-04T08:26:52.9058625Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:52] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T08:26:52.9539657Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:52] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T08:26:52.9965698Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:52] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T08:26:53.0258907Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:53.0298270Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:53.0367210Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:53.0368408Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T08:26:53.0525564Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T08:26:53.1708891Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T08:26:53.2564249Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T08:26:53.4475496Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:53] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T08:26:59.2825273Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:59] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T08:26:59.3163355Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:59] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T08:26:59.4490792Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:59] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T08:26:59.5710908Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:59] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T08:26:59.6162461Z [WebServer] 127.0.0.1 - - [04/Oct/2026 08:26:59] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T08:27:03.7518716Z   ✓  20 [chromium] › tests/viewport.spec.js:98:1 › interface scale survives resizing and keeps settings controls clickable (10.9s)
+2026-10-04T08:27:04.0680413Z 
+2026-10-04T08:27:04.0687506Z 
+2026-10-04T08:27:04.0695636Z   1) [chromium] › tests/storage.spec.js:16:40 › abort failure retains the previous durable save and can retry 
+2026-10-04T08:27:04.0696482Z 
+2026-10-04T08:27:04.0697303Z     Error: expect(received).toContain(expected) // indexOf
+2026-10-04T08:27:04.0697814Z 
+2026-10-04T08:27:04.0698087Z     Expected substring: "MainMenuScreen"
+2026-10-04T08:27:04.0698558Z     Received string:    "loading"
+2026-10-04T08:27:04.0698798Z 
+2026-10-04T08:27:04.0698920Z     Call Log:
+2026-10-04T08:27:04.0699507Z     - Timeout 30000ms exceeded while waiting on the predicate
+2026-10-04T08:27:04.0699941Z 
+2026-10-04T08:27:04.0700236Z        5 | const {createHash}=require('node:crypto');
+2026-10-04T08:27:04.0700903Z        6 | const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
+2026-10-04T08:27:04.0701584Z     >  7 | const screen=(page,name)=>expect.poll(async ()=>(await state(page)).screen).toContain(name);
+2026-10-04T08:27:04.0702187Z          |                                                                             ^
+2026-10-04T08:27:04.0702589Z        8 | async function save(page) {
+2026-10-04T08:27:04.0703019Z        9 |   await page.locator('#canvas').press('Escape',{delay:80});
+2026-10-04T08:27:04.0703797Z       10 |   const frames=(await state(page)).frames;
+2026-10-04T08:27:04.0704330Z         at screen (/home/runner/work/glob2/glob2/browser/tests/storage.spec.js:7:77)
+2026-10-04T08:27:04.0704939Z         at /home/runner/work/glob2/glob2/browser/tests/storage.spec.js:64:41
+2026-10-04T08:27:04.0705271Z 
+2026-10-04T08:27:04.0705768Z     attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+2026-10-04T08:27:04.0706681Z     ../build/browser-test-results/storage-abort-failure-reta-1a704--durable-save-and-can-retry-chromium/test-failed-2.png
+2026-10-04T08:27:04.0708383Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-04T08:27:04.0708865Z 
+2026-10-04T08:27:04.0709330Z     attachment #2: screenshot (image/png) ──────────────────────────────────────────────────────────
+2026-10-04T08:27:04.0710200Z     ../build/browser-test-results/storage-abort-failure-reta-1a704--durable-save-and-can-retry-chromium/test-failed-1.png
+2026-10-04T08:27:04.0711118Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-04T08:27:04.0711642Z 
+2026-10-04T08:27:04.0712199Z     Error Context: ../build/browser-test-results/storage-abort-failure-reta-1a704--durable-save-and-can-retry-chromium/error-context.md
+2026-10-04T08:27:04.0712822Z 
+2026-10-04T08:27:04.0713252Z     attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+2026-10-04T08:27:04.0714062Z     ../build/browser-test-results/storage-abort-failure-reta-1a704--durable-save-and-can-retry-chromium/trace.zip
+2026-10-04T08:27:04.0714640Z     Usage:
+2026-10-04T08:27:04.0714771Z 
+2026-10-04T08:27:04.0715353Z         npx playwright show-trace ../build/browser-test-results/storage-abort-failure-reta-1a704--durable-save-and-can-retry-chromium/trace.zip
+2026-10-04T08:27:04.0715944Z 
+2026-10-04T08:27:04.0716314Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+2026-10-04T08:27:04.0716638Z 
+2026-10-04T08:27:04.0716733Z   1 failed
+2026-10-04T08:27:04.0717664Z     [chromium] › tests/storage.spec.js:16:40 › abort failure retains the previous durable save and can retry 
+2026-10-04T08:27:04.0718196Z   19 passed (4.7m)
+2026-10-04T08:27:04.2513028Z ##[error]Process completed with exit code 1.
+2026-10-04T08:27:04.2582862Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T08:27:04.2583199Z with:
+2026-10-04T08:27:04.2583435Z   name: browser-determinism-wasm-5
+2026-10-04T08:27:04.2583740Z   path: artifacts/browser-determinism/
+2026-10-04T08:27:04.2584042Z   if-no-files-found: ignore
+2026-10-04T08:27:04.2584302Z   compression-level: 6
+2026-10-04T08:27:04.2584528Z   overwrite: false
+2026-10-04T08:27:04.2584761Z   include-hidden-files: false
+2026-10-04T08:27:04.2585015Z env:
+2026-10-04T08:27:04.2585216Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:27:04.2585467Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:27:04.2585895Z ##[endgroup]
+2026-10-04T08:27:04.4294269Z (node:5504) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:27:04.4295908Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:27:04.4370828Z With the provided path, there will be 2 files uploaded
+2026-10-04T08:27:04.4371877Z Artifact name is valid!
+2026-10-04T08:27:04.4372424Z Root directory input is valid!
+2026-10-04T08:27:04.6292390Z Beginning upload of artifact content to blob storage
+2026-10-04T08:27:04.6512512Z (node:5504) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T08:27:04.6947309Z Uploaded bytes 4789
+2026-10-04T08:27:04.7138428Z Finished uploading artifact content to blob storage!
+2026-10-04T08:27:04.7139641Z SHA256 digest of uploaded artifact zip is 395d0c459d88fdb86f42d02a57e7dff5214eea473ad26d9e176dfd5c04e9b809
+2026-10-04T08:27:04.7140899Z Finalizing artifact upload
+2026-10-04T08:27:04.9852037Z Artifact browser-determinism-wasm-5.zip successfully finalized. Artifact ID 11297657877
+2026-10-04T08:27:04.9853530Z Artifact browser-determinism-wasm-5 has been successfully uploaded! Final size is 4789 bytes. Artifact ID is 11297657877
+2026-10-04T08:27:04.9860004Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37187146428/artifacts/11297657877
+2026-10-04T08:27:05.0030937Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T08:27:05.0031338Z with:
+2026-10-04T08:27:05.0031574Z   name: browser-failure-traces-5
+2026-10-04T08:27:05.0031856Z   retention-days: 7
+2026-10-04T08:27:05.0032171Z   path: build/browser-test-results
+build/browser-test-report
+
+2026-10-04T08:27:05.0032581Z   if-no-files-found: warn
+2026-10-04T08:27:05.0032846Z   compression-level: 6
+2026-10-04T08:27:05.0033086Z   overwrite: false
+2026-10-04T08:27:05.0033327Z   include-hidden-files: false
+2026-10-04T08:27:05.0033600Z env:
+2026-10-04T08:27:05.0033811Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:27:05.0034067Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:27:05.0034332Z ##[endgroup]
+2026-10-04T08:27:05.1798650Z (node:5516) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:27:05.1800171Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:27:05.1972131Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-04T08:27:05.1974771Z The least common ancestor is /home/runner/work/glob2/glob2/build. This will be the root directory of the artifact
+2026-10-04T08:27:05.1976170Z With the provided path, there will be 35 files uploaded
+2026-10-04T08:27:05.1983465Z Artifact name is valid!
+2026-10-04T08:27:05.1984083Z Root directory input is valid!
+2026-10-04T08:27:05.3878841Z Beginning upload of artifact content to blob storage
+2026-10-04T08:27:05.6803674Z (node:5516) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T08:27:05.8294343Z Uploaded bytes 8388608
+2026-10-04T08:27:06.0538509Z Uploaded bytes 16777216
+2026-10-04T08:27:06.3440646Z Uploaded bytes 25165824
+2026-10-04T08:27:06.6013677Z Uploaded bytes 33554432
+2026-10-04T08:27:06.9643547Z Uploaded bytes 41943040
+2026-10-04T08:27:07.1586658Z Uploaded bytes 50331648
+2026-10-04T08:27:07.4450259Z Uploaded bytes 58720256
+2026-10-04T08:27:07.7160641Z Uploaded bytes 67108864
+2026-10-04T08:27:07.9676283Z Uploaded bytes 75497472
+2026-10-04T08:27:08.2067421Z Uploaded bytes 83886080
+2026-10-04T08:27:08.4391052Z Uploaded bytes 92274688
+2026-10-04T08:27:08.5827888Z Uploaded bytes 95997476
+2026-10-04T08:27:08.6042517Z Finished uploading artifact content to blob storage!
+2026-10-04T08:27:08.6045927Z SHA256 digest of uploaded artifact zip is b3ad6b75bc3666f4a4e7fee4079c4bde742fa195ce47cfaca1a6b90493892875
+2026-10-04T08:27:08.6048001Z Finalizing artifact upload
+2026-10-04T08:27:08.8651505Z Artifact browser-failure-traces-5.zip successfully finalized. Artifact ID 11297363370
+2026-10-04T08:27:08.8653234Z Artifact browser-failure-traces-5 has been successfully uploaded! Final size is 95997476 bytes. Artifact ID is 11297363370
+2026-10-04T08:27:08.8662866Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37187146428/artifacts/11297363370
+2026-10-04T08:27:08.8867843Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-04T08:27:08.8868292Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-04T08:27:08.8932115Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:27:08.8932415Z env:
+2026-10-04T08:27:08.8932645Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:27:08.8932926Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:27:08.8939124Z   CI_STEPS_JSON: {
+  "actions_checkout_v4_1": {
+    "outputs": {
+      "commit": "e958fe16e25091f177c2f280301d4cc3a509df71",
+      "ref": ""
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "actions_download_artifact_v4_1": {
+    "outputs": {
+      "download-path": "/home/runner/work/glob2/glob2/build/emscripten/client/release"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "actions_download_artifact_v4_2": {
+    "outputs": {
+      "download-path": "/home/runner/work/glob2/glob2/artifacts/ci-native"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "unpack_the_native_programs": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "actions_setup_node_v4_1": {
+    "outputs": {
+      "node-version": "v22.23.3",
+      "cache-hit": "true"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "install_browser_test_dependencies": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "start_a_silent_audio_service": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "run_matrix_name": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "success"
+  },
+  "upload_artifact_1": {
+    "outputs": {
+      "artifact-id": "11297657877",
+      "artifact-digest": "395d0c459d88fdb86f42d02a57e7dff5214eea473ad26d9e176dfd5c04e9b809",
+      "artifact-url": "https://github.com/Globulation2/glob2/actions/runs/37187146428/artifacts/11297657877"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "upload_artifact_2": {
+    "outputs": {
+      "artifact-id": "11297363370",
+      "artifact-digest": "b3ad6b75bc3666f4a4e7fee4079c4bde742fa195ce47cfaca1a6b90493892875",
+      "artifact-url": "https://github.com/Globulation2/glob2/actions/runs/37187146428/artifacts/11297363370"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  }
+}
+2026-10-04T08:27:08.8945094Z ##[endgroup]
+2026-10-04T08:27:08.9283365Z ## CI check results
+2026-10-04T08:27:08.9283632Z 
+2026-10-04T08:27:08.9283824Z - Failed: `run_matrix_name`
+2026-10-04T08:27:08.9284069Z 
+2026-10-04T08:27:08.9327948Z ##[error]Process completed with exit code 1.
+2026-10-04T08:27:08.9388955Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T08:27:08.9389301Z with:
+2026-10-04T08:27:08.9389545Z   name: ci-observation-web-test-5
+2026-10-04T08:27:08.9389855Z   path: artifacts/ci-observation/
+2026-10-04T08:27:08.9390155Z   if-no-files-found: ignore
+2026-10-04T08:27:08.9390430Z   compression-level: 6
+2026-10-04T08:27:08.9390681Z   overwrite: false
+2026-10-04T08:27:08.9390928Z   include-hidden-files: false
+2026-10-04T08:27:08.9391198Z env:
+2026-10-04T08:27:08.9391413Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:27:08.9391677Z   GLOB2_TEST_RENDERER: software
+2026-10-04T08:27:08.9391945Z ##[endgroup]
+2026-10-04T08:27:09.1101399Z (node:5530) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:27:09.1103353Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:27:09.1188042Z With the provided path, there will be 1 file uploaded
+2026-10-04T08:27:09.1189544Z Artifact name is valid!
+2026-10-04T08:27:09.1190099Z Root directory input is valid!
+2026-10-04T08:27:09.3110682Z Beginning upload of artifact content to blob storage
+2026-10-04T08:27:09.3305638Z (node:5530) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T08:27:09.3752549Z Uploaded bytes 201
+2026-10-04T08:27:09.3959264Z Finished uploading artifact content to blob storage!
+2026-10-04T08:27:09.3960779Z SHA256 digest of uploaded artifact zip is ddf4cae1a1080c040943985df6ca205db9bdc0ee754f3263f9c7713e8c442e6d
+2026-10-04T08:27:09.3961871Z Finalizing artifact upload
+2026-10-04T08:27:09.6032937Z Artifact ci-observation-web-test-5.zip successfully finalized. Artifact ID 11297674518
+2026-10-04T08:27:09.6034142Z Artifact ci-observation-web-test-5 has been successfully uploaded! Final size is 201 bytes. Artifact ID is 11297674518
+2026-10-04T08:27:09.6039664Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37187146428/artifacts/11297674518
+2026-10-04T08:27:09.6241525Z Post job cleanup.
+2026-10-04T08:27:09.7128940Z [command]/usr/bin/git version
+2026-10-04T08:27:09.7175846Z git version 2.55.0
+2026-10-04T08:27:09.7221437Z Temporarily overriding HOME='/home/runner/work/_temp/8a95d5af-ff8f-4620-8e1d-8bb6495a6799' before making global git config changes
+2026-10-04T08:27:09.7222768Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T08:27:09.7228260Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T08:27:09.7270702Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T08:27:09.7308119Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T08:27:09.7584744Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T08:27:09.7618104Z http.https://github.com/.extraheader
+2026-10-04T08:27:09.7630325Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T08:27:09.7671057Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T08:27:09.7985524Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T08:27:09.8030774Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T08:27:09.8469745Z Cleaning up orphan processes
+2026-10-04T08:27:09.8851613Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache/restore@v4, actions/checkout@v4, actions/download-artifact@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -1,0 +1,45 @@
+name: Browser stall diagnostics
+on:
+  workflow_dispatch:
+concurrency:
+  group: browser-stall-diagnostics
+  cancel-in-progress: false
+permissions:
+  contents: read
+  actions: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GLOB2_TEST_RENDERER: software
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-client
+          run-id: 37187146428
+          github-token: ${{ github.token }}
+          path: build/emscripten/client/release
+      - name: Install the pinned browser test runtime
+        working-directory: browser
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Repeat the original storage and renderer cases with failure stack capture
+        working-directory: browser
+        run: |
+          for attempt in $(seq 1 30); do
+            echo "Cold-browser storage attempt $attempt"
+            npx playwright test tests/storage.spec.js --project=chromium --grep 'abort failure' || exit $?
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-stall-diagnostics
+          path: |
+            build/browser-test-results
+            build/browser-test-report
