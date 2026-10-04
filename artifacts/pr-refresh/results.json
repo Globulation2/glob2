@@ -46,5 +46,21 @@
     "result": "Engine and unit builds passed; 693 headless unit cases passed (13 display/slow skips); 19 focused engine cases passed; golden record regenerated; sim-version contract passed.",
     "commands": "GLOB2_SDL3_PREFIX=<pinned SDL3 3.4.16 / ttf 3.2.2 / image 3.4.6 / net 3.2.0 SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --binary unit --no-display --quick; python3 test/run_tests.py --binary engine --filter MarketFetch/* --filter GigRelease/* --filter HiringBucket/* --filter ResourceFetchTarget/* --filter RoundTripHungerGate/* --filter SavegameSafety/* --filter RuntimeContinuation/* --filter MapGradientInvalidation/* --filter 'TurnEngineHarness/the committed*' --filter MatchSetup/* --no-display; python3 test/check_sim_revision.py --base origin/master",
     "limitations": "macOS arm64 only; cross-platform per-tick checks and human market gameplay not run. Stacked on draft #254 with unresolved balance feedback. Converted to draft pending those remaining checks. Earlier failing logs are retained; final tests and JUnit supersede them."
+  },
+  {
+    "number": 258,
+    "sha": "f46b16e7d7bfbd23539cfeee3d5a250a0f58a4d1",
+    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "result": "Native tests build passed; 11 market/save/scene/golden cases passed; all three market levels survive binary and text saves; sim-version contract passed.",
+    "commands": "GLOB2_SDL3_PREFIX=<same pinned SDK as #257> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --filter MarketFetch/* --filter SavegameSafety/* --filter SceneExtract/* --filter 'TurnEngineHarness/the committed*' --no-display; python3 test/check_sim_revision.py --base origin/master",
+    "limitations": "macOS arm64 only. No cross-platform per-tick comparison, human visual/balance review or distinct upgrade sprites; costs remain provisional. Draft stack retains #254 balance concern."
+  },
+  {
+    "number": 220,
+    "sha": "b71e295c1555b4da2a176719ca0bc35d47e96cd8",
+    "base": "526f607f919ea57c9aa1735944848953c8941d69",
+    "result": "All 2,287 frames and source hashes validated; 91,136 terrain joins checked; candidate preparation/rejection passed; four software/OpenGL renderer cases passed. Selected current renderer captures attached.",
+    "commands": "python3 tools/artwork/package_runtime.py --check; uv run --with numpy --with scipy --with pillow python tools/artwork/validate_runtime.py; python3 tools/artwork/runtime_provenance.py --check; GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --filter RuntimePack/* --filter HighResolutionIntegration/* --artifacts artifacts/pr-refresh/220-render",
+    "limitations": "macOS arm64 software/OpenGL only; external model inference, other platforms and human gameplay/performance review not performed. Original PR history preserved on archive branch."
   }
 ]

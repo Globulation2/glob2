@@ -1,0 +1,7 @@
+PASS RuntimePack/HD runtime pack: logical sizes in software rendering (0.4s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (0.8s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (29.7s)
+PASS RuntimePack/HD runtime pack: frames; team hues; bounded cache and session release [display][artifacts][slow] (83.2s)
+
+4 passed, 0 failed, 0 skipped (114.1s of test time)
+[run_tests] JUnit report: artifacts/pr-refresh/220-junit.xml (4 cases)

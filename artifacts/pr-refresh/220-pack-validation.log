@@ -1,0 +1,6 @@
+Installed 3 packages in 145ms
+PASS: 2287 frames; coverage, layer dimensions, RGBA, hashes, locked pool / unreplaced school, four independently padded atlas levels
+PASS: all 65 resource frames, original native tree/wheat/papyrus alpha / constrained other alpha, isolated resource atlas mip levels
+PASS: complete non-unit world frame coverage
+PASS: 91136 exported atlas joins and all corner junctions, RGBA, four mip levels
+PASS: periodic opaque water; opposing edges agree through four mip levels

@@ -1,0 +1,3 @@
+usage: upscale.py [-h] --frame FRAME --output OUTPUT [--executable EXECUTABLE]
+                  [--models MODELS] [--prepare-only]
+upscale.py: error: Select an existing AI-upscaled sprite; original artwork and connected terrain are excluded
