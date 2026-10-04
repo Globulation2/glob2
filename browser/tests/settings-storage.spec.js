@@ -92,7 +92,20 @@ test('settings can continue after failure without claiming a durable save',async
   await toggleClouds(page);
   await expect.poll(async()=>(await state(page)).persistence,{timeout:10000}).toBe('failed');
   await screen(page,'SettingsScreen');
-  await clickSettingsCancel(page);await screen(page,'MainMenuScreen');
+  await controlBox(page,'cancel');
+  const staysOffered=await page.evaluate(()=>new Promise(resolve=>{
+    const until=performance.now()+800;
+    let visible=true;
+    const sample=()=>{
+      visible=visible&&Boolean(glob2Diagnostics.snapshot().controls.cancel);
+      if(performance.now()>=until)resolve(visible);else requestAnimationFrame(sample);
+    };
+    sample();
+  }));
+  expect(staysOffered).toBe(true);
+  // A held click must still close: failed auto-saves must not rebuild away
+  // Continue between pressing and releasing the mouse button.
+  await clickControl(page,'cancel',{click:{delay:500}});await screen(page,'MainMenuScreen');
   expect((await state(page)).persistence).toBe('failed');
   const restored=await context.newPage();await restored.goto(gameURL());await screen(restored,'MainMenuScreen');
   expect(await preferences(restored)).toEqual(lowPreferences);
