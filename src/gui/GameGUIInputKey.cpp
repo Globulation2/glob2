@@ -8,6 +8,7 @@
 #include <SDL3/SDL_keycode.h>
 
 #include <FormatableString.h>
+#include <GameplayRecording.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 
@@ -258,6 +259,12 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
                     openCommander(); break;
                 case GameGUIKeyActions::StopCommander:
                     if(hive)hive->stop(); break;
+                case GameGUIKeyActions::ToggleRecording:
+                    // Single-key bindings are taken globally by Application; this
+                    // handles multi-key sequences bound in the game layout.
+                    if(GAGCore::Recording::available() || GAGCore::Recording::recorder().active())
+                        GAGCore::Recording::toggle();
+                    break;
                 case GameGUIKeyActions::OpenChatBox:
 				{
 					openChat();

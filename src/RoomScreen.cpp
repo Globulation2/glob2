@@ -479,7 +479,7 @@ Element RoomScreen::header(const Presentation &p, bool phone)
 		name = tr("[room connecting]");
 	if (phone)
 		return column({heading(name), caption(badge), caption(room->setupSummary())}, {p.pt(2)});
-	std::vector<Element> cells{expanded(title(name))};
+	std::vector<Element> cells{expanded(heading(name))};
 	if (room->canChangeVisibility())
 	{
 		cells.push_back(caption(tr("[room who can find it]")));
@@ -509,7 +509,6 @@ Element RoomScreen::tabs(const Presentation &p)
 	{
 		ButtonOptions options;
 		options.selected = currentTab == i;
-		options.role = FontRole::Heading;
 		row.push_back(expanded(column({button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options),
 									   caption(details[std::size_t(i)])},
 									  {p.pt(2)})));
@@ -770,7 +769,7 @@ Element RoomScreen::rulesPanel(const Presentation &p)
 			lines.push_back(caption(tr("[room rules otherwise standard]")));
 	}
 	if (const auto experiments = room->experimentsLabel(); !experiments.empty())
-		lines.push_back(paragraph(tr("[Experiments set by the host]") + ": " + experiments, {FontRole::Support}));
+		lines.push_back(hint(tr("[Experiments set by the host]") + ": " + experiments));
 	if (room->canEditSetup())
 		lines.push_back(button("rules/change", tr("[room change rules]"), [this] { editSetup(2); }, {.icon = uiIcon(UIIcon::Rules)}));
 	else if (room->optionsHeader())

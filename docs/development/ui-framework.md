@@ -116,8 +116,9 @@ Element LANFindScreen::build(const Presentation &p)
 
 `Glob2UI::Screen` paints the live colony background and keeps the frontend theme
 active for its lifetime. `Glob2UI::Dialog`
-is the same for frontend modals; `Glob2UI::InGameDialog` uses `inGameTheme()`,
-the frontend's paper look, for gameplay and editor dialogs on every host. On big
+is the same for frontend modals; `Glob2UI::InGameDialog` takes a `Surface`
+(`Match` by default, `Editor` for editor dialogs) and wears the theme
+`themeFor()` maps it to, on every host. On big
 desktop windows whose interface scale follows a 100 % desktop, `Glob2UI::Screen`
 enlarges points and text up to 1.5x (`ui::comfortScale`, via
 `UIScreen::adjustPresentation`); gameplay and dialogs keep their sizes. `endExecute(code)` and the
@@ -184,17 +185,31 @@ Game-side builders in `Glob2UI` reproduce the game's established look on
 each host, so a screen written with them looks as it did before the
 framework:
 
-- `page()`: on pointer hosts the classic centered 640x480 paper panel with
-  the title in the menu font, a scrolling body and 180-point menu-font
-  buttons at the bottom right; on touch hosts a content-sized card with a
-  folding footer.
-- `menu()`: on pointer hosts the narrow panel of 300-point buttons with the
-  Escape action pinned at the bottom; on touch hosts a grid of large actions.
-- `actions(items, p, style)`: `ActionStyle::Classic` gives the 180-point
-  menu-font buttons (wrapping into a grid when they cannot fit);
-  `ActionStyle::Compact` gives content-sized body-font buttons for the
-  screens that always had small ones (settings, the lobby).
+- `page()`: on pointer hosts the centered 640x480 paper panel with a
+  `pageTitle()`, a scrolling body and the action row at the bottom right; on
+  touch hosts a content-sized card with a folding footer.
+- `menu()`: on pointer hosts a narrow panel of 300-point body-font buttons
+  with the Escape action pinned at the bottom; on touch hosts a grid of large
+  actions.
+- `actions(items, p)`: content-sized body-font buttons at the right; on touch
+  hosts a wrapping grid of large buttons.
+- `pageTitle()` and `hint()`: see Typography.
 - `animation()` and `mapPreview()` (hosts a `MapPreview` in a canvas).
+
+### Typography
+
+Every screen uses the same scale, so menus read alike:
+
+| Use | How |
+| --- | --- |
+| Page title | `pageTitle()` (Heading, left-aligned); `page()`, `menu()`, Settings, the hub and the room all use it |
+| Hero content | `title()` (Title): the main-menu wordmark fallback, the result banner, large numbers |
+| Section header | `heading()`, never a plain `label()` |
+| Body, list rows, fields, tabs, action buttons | Body (the default) |
+| Hints, help and notes | `hint()` (Support, muted) |
+| Small metadata | `caption()` |
+
+Only the main menu's launch buttons use the Heading font for buttons.
 
 ### Theme
 
@@ -202,15 +217,17 @@ framework:
 accent, selected, hover, focus, scrim, disabled, danger, success, shadow,
 pressed, backdrop, neutral, placeholder), font roles (Title, Heading, Body, Support,
 Caption mapped to toolkit font names) and metrics in points. `frontendTheme()`
-is the paper look for menus, and `inGameTheme()` the same look for in-game
-dialogs and the results screen, so a match's menus read like the Online hub and
-the room. `classicInGameTheme()` (the former navy box with the sprite frame and
-gold 40-point buttons) is no longer used by `InGameDialog`; `classic()` is
-always false, and the `classicButton()` branches in dialogs are kept only until
-they are removed. Controls take colors and sizes from the theme only; a screen
+is the paper look and `inGameTheme()` the aubergine, cream and gold in-match
+look shared with the HUD (`InGameTouchTheme.h`); both use the same fonts and
+sizes. `themeFor(Surface)` in `src/ui/FrontendUI.cpp` is the single table that
+decides which look each kind of surface wears: `Frontend` (menus, lobbies,
+settings) and `Results` (the after-game statistics) use paper; `Match` (dialogs
+over a match) and `Editor` (dialogs over the map editor) use the in-match look.
+Moving a kind of surface to the other look is a one-line change there.
+Controls take colors and sizes from the theme only; a screen
 that needs a color for data (a team swatch) passes it to `swatch()` or
 `TextOptions::color`. Every colour outside gameplay's own HUD palette comes
-from one of the three themes: the old `FrontendTheme` style that paints the
+from one of the two themes: the old `FrontendTheme` style that paints the
 colony backdrop and paper panel reads the frontend palette rather than
 keeping its own, and screens reach the palette through `theme().palette`.
 The only literals left are data painters (map preview frames, the end-game

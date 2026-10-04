@@ -94,6 +94,7 @@ ENGINE_TESTS = [
     'OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
     'TeamStatsSaveHarness.cpp',
+    'TeamLabourStatsTest.cpp',
     ('EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'TurnNetConnectionTest.cpp',
     'RelayTransportTest.cpp',

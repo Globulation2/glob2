@@ -27,7 +27,7 @@ class LoadSaveDialog : public Glob2UI::InGameDialog
 	//! \a title is the localized caption; in load mode there is no name entry.
 	LoadSaveDialog(const char *directory, const char *extension, bool isLoad = true, std::string title = "",
 				   const char *defaultFileName = nullptr, NameFunction filenameToName = nullptr,
-				   PathFunction nameToFilename = nullptr);
+				   PathFunction nameToFilename = nullptr, Glob2UI::Surface surface = Glob2UI::Surface::Match);
 	~LoadSaveDialog() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 
@@ -57,7 +57,7 @@ class LoadSaveDialog : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { cancelPresentedFile(); }
-	double maxWidth() const override { return classic() ? 280 : -1; }
+	double maxWidth() const override { return -1; }
 
   private:
 	bool isLoad;

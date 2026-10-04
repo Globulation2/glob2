@@ -905,7 +905,6 @@ Element CustomGameScreen::build(const Presentation &p)
 	{
 		fe::ButtonOptions options;
 		options.selected = currentTab == i;
-		options.role = narrow ? fe::FontRole::Body : fe::FontRole::Heading;
 		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
 		// Desktop tabs carry their current choice underneath, as before.
 		tabs.push_back(fe::expanded(narrow ? tab : fe::column({tab, fe::caption(details[std::size_t(i)])}, {p.pt(2)})));
@@ -939,13 +938,13 @@ Element CustomGameScreen::build(const Presentation &p)
 		footerActions.push_back({"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE});
 		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
 	}
-	auto actionRow = fe::actions(std::move(footerActions), p, fe::ActionStyle::Compact);
+	auto actionRow = fe::actions(std::move(footerActions), p);
 	std::vector<Element> summaryParts{fe::caption(summary)};
 	if (!note.empty())
-		summaryParts.push_back(fe::paragraph(note, {fe::FontRole::Support}));
+		summaryParts.push_back(fe::hint(note));
 	// Experiments come from Settings, not the lobby, so say which ones this match will carry.
 	if (!globalContainer->settings.experiments.empty())
-		summaryParts.push_back(fe::paragraph(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments), {fe::FontRole::Support}));
+		summaryParts.push_back(fe::hint(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments)));
 	// Desktop: summary at the left, compact Back / Start at the right, as before.
 	Element footerColumn = p.touch ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
 								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});

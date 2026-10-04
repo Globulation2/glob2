@@ -12,8 +12,13 @@ Install an FFmpeg executable with `libx264` and AAC encoders and make it availab
 on `PATH`, or select it with `--record-ffmpeg`. FFmpeg is optional: ordinary play
 does not require it. Browser and mobile recording are not supported yet.
 
-Use **Start recording / Stop recording** in the main menu, in-game menu, or final
-statistics screen, or press **Ctrl+Shift+R**. Each UI start creates a unique MP4 in
+At startup the game checks in the background whether FFmpeg runs and provides
+both encoders. **Settings > Recording** always shows the recording controls, the
+hotkey and the output folder; without a working FFmpeg it explains why recording
+is off and offers to check again. The in-game menu offers **Start recording /
+Stop recording**, and the **Start or stop recording** hotkey (default **Ctrl+Shift+R**,
+rebindable under **Settings > Controls**) works on every screen, only when FFmpeg
+works; a recording in progress can always be stopped. Each UI start creates a unique MP4 in
 `videoshots/` beneath the current user profile. The window title reports recording,
 finalization, or failure; that status is outside the captured image. Capture
 errors also appear in the recording controls and application log.

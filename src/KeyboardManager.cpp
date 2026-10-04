@@ -248,8 +248,19 @@ Uint32 KeyboardManager::getAction(const KeyPress& key)
 
 
 
+namespace
+{
+	unsigned layoutRevision = 0;
+}
+
+unsigned KeyboardManager::revision()
+{
+	return layoutRevision;
+}
+
 bool KeyboardManager::saveKeyboardLayout() const
 {
+	++layoutRevision;
 	std::string file;
 	if(mode == GameGUIShortcuts)
 		file = GameGUIKeyActions::getConfigurationFile();

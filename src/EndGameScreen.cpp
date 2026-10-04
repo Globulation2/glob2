@@ -3,7 +3,6 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "EndGameScreen.h"
-#include "ui/RecordingControls.h"
 #include "FrontendTheme.h"
 #include "TeamStatChart.h"
 #include "stats/MetricSeries.h"
@@ -20,6 +19,7 @@
 #include <SDL3/SDL.h>
 #include <ApplicationHost.h>
 #include <FormatableString.h>
+#include <GameplayRecording.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -102,7 +102,7 @@ std::string replayFilenameToName(const std::string &fullfilename)
 	return filename;
 }
 
-EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::inGameTheme())
+EndGameScreen::EndGameScreen(GameGUI *gui) : UIScreen(fe::themeFor(fe::Surface::Results))
 {
 	// We're no longer replaying a game
 	globalContainer->replaying = false;
@@ -603,7 +603,7 @@ Element EndGameScreen::onlineBanner(const Presentation &p)
 	subtitle += " · " + minutesText(durationSeconds);
 	fe::IconOptions trophy;
 	trophy.size = p.touch ? 28 : 32;
-	trophy.color = fe::inGameTheme().palette.accent;
+	trophy.color = theme().palette.accent;
 	std::vector<Element> lines{fe::title(fe::tr(titleKey))};
 	// The platform's verdict can differ from what this game saw (a draw); then the
 	// local reason would contradict the title.
@@ -621,7 +621,7 @@ Element EndGameScreen::ratingCard(const Presentation &p)
 {
 	using V = Online::OnlineMatchResult::Verification;
 	const auto &r = *online;
-	const auto palette = fe::inGameTheme().palette;
+	const auto palette = theme().palette;
 	fe::TextOptions big;
 	big.role = fe::FontRole::Heading;
 	fe::TextOptions greyed = big;
@@ -812,8 +812,6 @@ Element EndGameScreen::build(const Presentation &p)
 									  {.flat = true, .icon = fe::uiIcon(fe::UIIcon::ExternalLink), .iconSize = 16}));
 		parts.push_back(fe::expanded(fe::row({fe::width(p.pt(230), fe::column(std::move(side), {p.pt(4)})), fe::expanded(main)}, {p.pt(12)})));
 	}
-	if (GAGCore::Recording::supported())
-		parts.push_back(fe::recordingControls());
 	parts.push_back(actionBar(p, compact));
 	// A paper card over the colony background, as the Online hub and the room have.
 	fe::CardOptions page;
@@ -858,7 +856,7 @@ void EndGameScreen::saveReplay(const char *dir, const char *ext)
 	if (replaySave)
 		return;
 	replaySave = std::make_unique<LoadSaveDialog>(dir, ext, false, Toolkit::getStringTable()->getString("[save replay]"), "",
-												  replayFilenameToName, glob2NameToFilename);
+												  replayFilenameToName, glob2NameToFilename, fe::Surface::Results);
 	if (gfx)
 		replaySave->attach(*gfx);
 	GAGCore::ApplicationHost::screenChanged(typeid(*replaySave).name());

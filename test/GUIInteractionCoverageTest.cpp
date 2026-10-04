@@ -4,6 +4,8 @@
 #include "Order.h"
 #include "GameGUIKeyActions.h"
 #include "GameGUIDialog.h"
+#include "LoadSaveDialog.h"
+#include "map/edit/MapEditDialog.h"
 #include <SDLGraphicContext.h>
 #include <SDL3/SDL.h>
 #include <set>
@@ -144,6 +146,41 @@ TEST_SUITE("GUIInteractionCoverage")
         gui.showScriptText("first message"); gui.hideScriptText();
         gui.showScriptText("second message"); gui.hideScriptText();
         CHECK(w.checksum()==checksum); CHECK(gui.orderQueue.empty());
+    }
+
+    TEST_CASE("match and editor dialogs wear the in-match theme; results dialogs stay on paper [display][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=1024,.height=768});
+        const auto& match=Glob2UI::themeFor(Glob2UI::Surface::Match);
+        const auto& paper=Glob2UI::themeFor(Glob2UI::Surface::Frontend);
+        CHECK(&match==&Glob2UI::inGameTheme());
+        CHECK(&paper==&Glob2UI::frontendTheme());
+        CHECK(&Glob2UI::themeFor(Glob2UI::Surface::Editor)==&Glob2UI::inGameTheme());
+        CHECK(&Glob2UI::themeFor(Glob2UI::Surface::Results)==&Glob2UI::frontendTheme());
+        auto capture=[&](Glob2UI::InGameDialog& dialog,const char* name)
+        {
+            auto* gfx=globalContainer->gfx;
+            dialog.attach(*gfx); dialog.update(0);
+            gfx->beginFrame(GAGCore::GraphicContext::FrameMode::FullRedraw);
+            gfx->setClipRect();
+            gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),GAGCore::Color(60,110,50));
+            dialog.draw(0); gfx->nextFrame();
+            REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/name).string().c_str()));
+        };
+        InGameMainScreen menu(false,true,false);
+        CHECK(&menu.theme()==&match);
+        capture(menu,"dialog-ingame-menu.bmp");
+        InGameEndOfGameScreen outcome("Victory",true);
+        CHECK(&outcome.theme()==&match);
+        capture(outcome,"dialog-ingame-outcome.bmp");
+        LoadSaveDialog save("games","game",false,"Save game");
+        CHECK(&save.theme()==&match);
+        capture(save,"dialog-ingame-save.bmp");
+        MapEditMenuScreen editor;
+        CHECK(&editor.theme()==&Glob2UI::themeFor(Glob2UI::Surface::Editor));
+        capture(editor,"dialog-editor-menu.bmp");
+        LoadSaveDialog replay("replays","replay",false,"Save replay",nullptr,nullptr,nullptr,Glob2UI::Surface::Results);
+        CHECK(&replay.theme()==&paper);
     }
 
     TEST_CASE("match dialogs accept return and distinguish continuing from ending a game [display]")

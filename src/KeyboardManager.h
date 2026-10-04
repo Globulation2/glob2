@@ -83,6 +83,9 @@ public:
 	///Clears all current shortcuts and loads the defaults
 	void loadDefaultShortcuts();
 
+	///Changes whenever a layout is saved, so cached bindings know to reload
+	static unsigned revision();
+
 	///Returns the list of keyboard shortcuts
 	const std::list<KeyboardShortcut>& getKeyboardShortcuts() const;
 

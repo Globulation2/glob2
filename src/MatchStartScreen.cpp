@@ -128,7 +128,7 @@ Element MatchStartScreen::build(const Presentation &p)
 	const auto &ctx = flow->context();
 	std::vector<Element> body;
 	auto heading = narrow ? column({Glob2UI::heading(tr("[match starting]")), caption(ctx.label + (flow->mapTitle().empty() ? "" : " · " + flow->mapTitle()))}, {p.pt(2)})
-						  : row({expanded(title(tr("[match starting]"))), caption(ctx.label)}, {p.pt(8), CrossAlign::Center});
+						  : row({expanded(Glob2UI::heading(tr("[match starting]"))), caption(ctx.label)}, {p.pt(8), CrossAlign::Center});
 	body.push_back(heading);
 	// The preview appears once the map is on this device.
 	Element map = previewFile.empty() ? nullptr : mapPreview("map", *preview, narrow ? 150 : 180);
@@ -153,7 +153,7 @@ Element MatchStartScreen::build(const Presentation &p)
 	std::vector<MenuAction> buttons;
 	buttons.push_back({"leave", tr(failed ? "[Back]" : "[match leave]"), [this] { leave(); }, failed, SDLK_ESCAPE});
 	auto content = scroll("match/scroll", column(std::move(body), {p.pt(10)}));
-	auto actionRow = actions(std::move(buttons), p, ActionStyle::Compact);
+	auto actionRow = actions(std::move(buttons), p);
 	CardOptions options;
 	options.padding = p.pt(narrow ? 12 : 20);
 	if (p.touch)

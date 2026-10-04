@@ -119,7 +119,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=std::make_unique<LoadSaveDialog>("maps", "map", true, Toolkit::getStringTable()->getString("[load map]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=std::make_unique<LoadSaveDialog>("maps", "map", true, Toolkit::getStringTable()->getString("[load map]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename, Glob2UI::Surface::Editor);
 		attachDialog(*loadSaveScreen);
 		showingLoad=true;
 	}
@@ -133,7 +133,7 @@ bool MapEdit::performViewAction(const std::string& action, float relMouseX, floa
 		performAction("unselect");
 		performAction("scroll horizontal stop");
 		performAction("scroll vertical stop");
-		loadSaveScreen=std::make_unique<LoadSaveDialog>("maps", "map", false, Toolkit::getStringTable()->getString("[save map]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename);
+		loadSaveScreen=std::make_unique<LoadSaveDialog>("maps", "map", false, Toolkit::getStringTable()->getString("[save map]"), game.mapHeader.getMapName().c_str(), glob2FilenameToName, glob2NameToFilename, Glob2UI::Surface::Editor);
 		attachDialog(*loadSaveScreen);
 		showingSave=true;
 	}

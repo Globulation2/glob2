@@ -4686,6 +4686,26 @@ Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på 
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
