@@ -351,6 +351,17 @@
   display: block;
   margin-bottom: 12px;
 }
+.skin-designer label:has(> input[type='radio']),
+.skin-designer label:has(> input[type='checkbox']) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--target);
+}
+.skin-designer input[type='radio'],
+.skin-designer input[type='checkbox'] {
+  flex: none;
+}
 .skin-designer button {
   margin: 4px 8px 4px 0;
 }

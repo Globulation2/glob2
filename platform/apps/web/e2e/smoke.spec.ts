@@ -418,11 +418,13 @@ test('phones: no sideways scrolling at 320 and 430 px, 44 px touch targets', asy
       );
       expect(overflow, `${path} at ${width} px scrolls sideways`).toBeLessThanOrEqual(0);
       // Buttons, nav links and form fields: at least 44 x 44 CSS px.
+      // Radio/checkbox labels are the clickable target, including their indicators.
       const small = await inPage<string[]>(
         page,
-        `[...document.querySelectorAll(
-          'button, .btn, a.button, .nav a, .seg > *, input:not([type=checkbox]), select')]
+        `[...new Set([...document.querySelectorAll(
+          'button, .btn, a.button, .nav a, .seg > *, input, select')]
           .filter((el) => el.offsetParent !== null)
+          .map((el) => el.matches('input[type=radio], input[type=checkbox]') ? el.closest('label') ?? el : el))]
           .map((el) => ({ el, r: el.getBoundingClientRect() }))
           .filter(({ r }) => r.height < 43.5 || r.width < 43.5)
           .map(({ el, r }) => el.tagName + ' "' + el.textContent.trim() + '" ' + r.width + 'x' + r.height)`,
