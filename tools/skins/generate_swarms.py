@@ -9,9 +9,11 @@ reproducible byte for byte with a single thread (-t 1).
 
 Each design is a seeded list of metaball elements, the same primitive the
 original glob units were modelled with, so variants share their soft house
-style. Every variant uses one fixed design volume (footprint radius 1, height
-up to HEIGHT) and one camera fit, so variants keep a common scale and ground
-line in the swarm's sprite canvas.
+style. Every variant uses one camera fit and stands on the same ground line in
+the swarm's sprite canvas. Each is then scaled about its ground centre to cover
+COVERAGE pixels of the 128px sprite, so variants carry the same visual weight;
+the designs themselves are proportioned so their enclosed volumes also stay
+close (the metadata records both).
 
 UV layouts:
   view  - projection along the game camera. The swarm has a single static pose
@@ -32,11 +34,18 @@ import bmesh
 import numpy as np
 from mathutils import Vector
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from swarm_metrics import SUPERSAMPLE, rasterize  # noqa: E402
+
 CAMERA = (6, -8, 10)
 HEIGHT = 1.7           # design volume: cylinder of radius 1, z in [0, HEIGHT]
 CANVAS_FIT = 1.8       # projected design volume spans 90% of the clip square
 DEPTH_RANGE = 0.5      # matches export_swarm.py
 TRIANGLES = 2000       # matches the TRELLIS swarm's runtime budget
+# Visual weight: every design is scaled about its ground centre until it covers
+# this many pixels of the 128px swarm sprite, close to the TRELLIS swarm (5,486).
+COVERAGE = 5200
+SPRITE = 128
 MAX_VERTICES, MAX_INDICES = 8192, 49152
 THRESHOLD = 0.6
 
@@ -75,16 +84,16 @@ class Design:
 
 def crown(d):
     """Closest to the original sprite: spires ringed around a central egg."""
-    d.ellipsoid((0, 0, 0.12), 0.5, (1.0, 1.0, 0.62))
+    d.ellipsoid((0, 0, 0.16), 0.64, (1.0, 1.0, 0.7))
     for k in range(18):
         a = 2 * math.pi * k / 18
-        d.ball((0.82 * math.cos(a), 0.82 * math.sin(a), 0.02), 0.17)
+        d.ball((0.8 * math.cos(a), 0.8 * math.sin(a), 0.02), 0.2)
     count = 7
     for k in range(count):
         a = 2 * math.pi * (k + 0.5) / count + d.jitter(0.12)
         r = 0.82
         height = 0.95 + 0.5 * abs(math.sin(k * 2.3)) + d.jitter(0.1)
-        d.spire((r * math.cos(a), r * math.sin(a), 0), height, 0.2 + d.jitter(0.03),
+        d.spire((r * math.cos(a), r * math.sin(a), 0), height, 0.3 + d.jitter(0.03),
                 lean=(0.18 * math.cos(a), 0.18 * math.sin(a)))
 
 
@@ -92,10 +101,10 @@ def clutch(d):
     """A clutch of brood eggs nested in a low rim."""
     for k in range(26):
         a = 2 * math.pi * k / 26
-        d.ball((0.86 * math.cos(a), 0.86 * math.sin(a), 0.04 + 0.03 * math.sin(3 * a)), 0.15)
+        d.ball((0.84 * math.cos(a), 0.84 * math.sin(a), 0.04 + 0.03 * math.sin(3 * a)), 0.19)
     d.ellipsoid((0, 0, -0.08), 0.8, (1.0, 1.0, 0.25))
-    eggs = [((0.0, 0.0), 0.3, 0.0)] + [
-        ((0.56 * math.cos(a), 0.56 * math.sin(a)), 0.23 + 0.03 * (k % 2), 0.35)
+    eggs = [((0.0, 0.0), 0.4, 0.0)] + [
+        ((0.56 * math.cos(a), 0.56 * math.sin(a)), 0.3 + 0.03 * (k % 2), 0.35)
         for k, a in enumerate(2 * math.pi * k / 5 + 0.3 for k in range(5))]
     for (x, y), radius, tilt in eggs:
         axis = (tilt * x + d.jitter(0.08), tilt * y + d.jitter(0.08), 1.0)
@@ -128,30 +137,32 @@ def coral(d):
         base = np.arctan2(direction[1], direction[0])
         for side in (-1, 1):
             a = base + side * (0.7 + d.jitter(0.25))
-            spread = 0.55 + d.jitter(0.1)
+            spread = 0.42 + d.jitter(0.08)
             child = (spread * math.cos(a), spread * math.sin(a), 1.0)
             branch(tip, child, length * 0.7, radius * 0.72, depth - 1)
 
     for k, a in enumerate((0.3, 2.4, 4.3)):
         a += d.jitter(0.2)
         start = (0.3 * math.cos(a), 0.3 * math.sin(a), 0.1)
-        branch(start, (0.35 * math.cos(a), 0.35 * math.sin(a), 1.0), 0.5 + 0.08 * k, 0.17, 2 if k else 1)
+        branch(start, (0.25 * math.cos(a), 0.25 * math.sin(a), 1.0), 0.5 + 0.08 * k, 0.24, 2 if k else 1)
 
 
 def skep(d):
-    """A coiled hive, like a straw bee skep, with a doorway facing the camera."""
-    rows = 6
+    """A coiled hive, like a straw bee skep, on a stand, its doorway facing the camera."""
+    rows = 7
     for row in range(rows):
-        z = 0.1 + row * 0.21
-        radius = 0.84 * math.cos(row / rows * math.pi / 2.1)
+        z = 0.1 + row * 0.2
+        radius = 0.56 * math.cos(row / rows * math.pi / 2.1)
         count = max(10, int(60 * radius))
         for k in range(count):
             a = 2 * math.pi * k / count
             d.ball((radius * math.cos(a), radius * math.sin(a), z), 0.12, stiffness=4.0)
-    d.ball((0, 0, 0.1 + rows * 0.21 - 0.08), 0.16)
-    d.ellipsoid((0, 0, 0.0), 0.72, (1.0, 1.0, 1.5))
+    d.ball((0, 0, 0.1 + rows * 0.2 - 0.08), 0.16)
+    d.ellipsoid((0, 0, 0.0), 0.47, (1.0, 1.0, 2.5))
+    # A low woven stand widens the footprint without adding much bulk.
+    d.ellipsoid((0, 0, -0.02), 1.2, (1.0, 1.0, 0.06), stiffness=4.0)
     camera = math.atan2(CAMERA[1], CAMERA[0])
-    door = (0.86 * math.cos(camera), 0.86 * math.sin(camera), 0.18)
+    door = (0.58 * math.cos(camera), 0.58 * math.sin(camera), 0.3)
     d.ellipsoid(door, 0.3, (0.75, 0.75, 1.15), stiffness=8.0, negative=True)
 
 
@@ -258,6 +269,35 @@ def project(obj):
     return view, normals
 
 
+def weight(obj):
+    """Screen coverage in sprite pixels, and enclosed volume in design units."""
+    mesh = obj.data
+    mesh.calc_loop_triangles()
+    triangles = np.array([t.vertices[:] for t in mesh.loop_triangles])
+    positions = np.array([v.co[:] for v in mesh.vertices])
+    rotation, centre, scale, depth = camera_fit()
+    view = positions @ rotation.T - centre
+    size = SPRITE * SUPERSAMPLE
+    screen = np.stack([(view[:, 0] * scale + 1) / 2 * size, (1 - view[:, 1] * scale) / 2 * size], axis=1)
+    coverage = float((rasterize(screen, -view[:, 2], triangles, size) >= 0).sum()) / SUPERSAMPLE ** 2
+    # Divergence theorem with F = (0, 0, z): the open base lies on z = 0 and adds nothing.
+    a, b, c = (positions[triangles[:, i]] for i in range(3))
+    normal_z = np.cross(b - a, c - a)[:, 2] / 2
+    volume = float(((a[:, 2] + b[:, 2] + c[:, 2]) / 3 * normal_z).sum())
+    return coverage, volume
+
+
+def fit(obj):
+    """Scale uniformly about the ground centre to the shared screen coverage."""
+    coverage, volume = weight(obj)
+    factor = math.sqrt(COVERAGE / coverage)
+    for vertex in obj.data.vertices:
+        vertex.co *= factor
+    fitted = weight(obj)
+    return {'designCoverage': round(coverage, 1), 'designVolume': round(volume, 4), 'fitScale': round(factor, 4),
+            'coveragePx': round(fitted[0], 1), 'volume': round(fitted[1], 4)}
+
+
 def unwrap(obj, layout, view):
     mesh = obj.data
     if layout == 'smart':
@@ -312,11 +352,13 @@ def generate(name, output, layouts, resolution):
     obj = surface(design, resolution)
     obj.name = name
     surface_triangles = decimate(obj)
+    fitted = fit(obj)
     metadata = {'format': 'GSK1', 'experimental': True, 'design': name, 'seed': seed,
                 'generator': 'tools/skins/generate_swarms.py', 'elements': len(design.elements),
                 'metaballResolution': resolution, 'surfaceTriangles': surface_triangles,
                 'logicalSize': 96, 'frames': 1, 'cameraDirection': list(CAMERA),
-                'cameraFit': f'design volume r=1 h={HEIGHT} spans {CANVAS_FIT / 2:.0%} of canvas'}
+                'cameraFit': f'design volume r=1 h={HEIGHT} spans {CANVAS_FIT / 2:.0%} of canvas',
+                **fitted}
     results = []
     for layout in layouts:
         results.append(write(obj, layout, output / name / layout, name, metadata))

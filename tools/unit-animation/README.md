@@ -291,7 +291,11 @@ and `-t 1` (metaball surfacing is only byte-reproducible on one thread):
 tools/skins/generate_swarms.py -- --output artifacts/skins/swarms`. Each design
 is written with a `view` paint layout projected along the game camera and a
 `smart` layout for comparison. The swarm has one pose and is only seen and
-painted from that camera, so the `view` layout has no visible seams.
+painted from that camera, so the `view` layout has no visible seams. Each
+design is scaled to the same screen coverage, and the designs are proportioned
+so their volumes stay close; the metadata records coverage, volume and scale.
+`export_swarm.py --turn DEGREES` turns the TRELLIS swarm about its vertical
+axis before projection, keeping its paint layout unchanged.
 `tools/skins/swarm_metrics.py MESH.gsk...` (NumPy; Blender's bundled Python
 has it) reports texel density, visible seam length and UV islands as the game
 camera sees a static mesh. Nothing selects among these meshes at runtime yet.
