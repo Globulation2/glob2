@@ -22,6 +22,7 @@
 #include "Team.h"
 #include "TeamStat.h"
 #include "FileFormatVersions.h"
+#include "Version.h"
 #include "Unit.h"
 #include "Bullet.h"
 #include "Map.h"
@@ -83,7 +84,9 @@ void statValue(Stream* stream, const char* name, T (&values)[N])
     leaveStatSection(stream);
 }
 
-template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat, bool extended = true)
+// Fields are grouped by the save format that introduced them; a stream written
+// at versionMinor carries exactly the groups that existed then.
+template <class Stream, class Stat> void measurementFields(Stream *stream, Stat &stat, int versionMinor = VERSION_MINOR)
 {
 	statValue(stream, "tick", stat.tick);
 	statValue(stream, "births", stat.births);
@@ -116,7 +119,7 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 	statValue(stream, "critical", stat.critical);
 	statValue(stream, "feeding", stat.feeding);
 	statValue(stream, "healing", stat.healing);
-	if (extended)
+	if (versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS)
 	{
 		statValue(stream, "trappedUnits", stat.trappedUnits);
 		statValue(stream, "trappedBuildings", stat.trappedBuildings);
@@ -128,17 +131,34 @@ template <class Stream, class Stat> void measurementFields(Stream *stream, Stat 
 		statValue(stream, "growthReduction", stat.growthReduction);
 		statValue(stream, "growthGlobal", stat.growthGlobal);
 	}
+	if (versionMinor >= FILE_FORMAT_VERSION_LABOUR_STATS)
+	{
+		statValue(stream, "labour", stat.labour);
+		statValue(stream, "filling", stat.filling);
+		statValue(stream, "harvestDistance", stat.harvestDistance);
+		statValue(stream, "harvestSamples", stat.harvestSamples);
+		statValue(stream, "eatWalkDistance", stat.eatWalkDistance);
+		statValue(stream, "eatWalkSamples", stat.eatWalkSamples);
+		statValue(stream, "combatDeathPlace", stat.combatDeathPlace);
+		statValue(stream, "combatDeathAssignment", stat.combatDeathAssignment);
+		statValue(stream, "warriors", stat.warriors);
+		statValue(stream, "warriorLevels", stat.warriorLevels);
+		statValue(stream, "warriorsHurt", stat.warriorsHurt);
+		statValue(stream, "warriorsFlagged", stat.warriorsFlagged);
+		statValue(stream, "warriorsInside", stat.warriorsInside);
+		statValue(stream, "intruders", stat.intruders);
+		statValue(stream, "intruderLevels", stat.intruderLevels);
+		statValue(stream, "defenceTick", stat.defenceTick);
+	}
 }
 
-size_t measurementRecordBytes()
+// Packed history rows have the fixed size of one record in the save's own format.
+size_t measurementRecordBytes(int versionMinor)
 {
-    static const size_t bytes=[] {
-        GAGCore::BinaryOutputStream stream(new GAGCore::MemoryStreamBackend);
-        GameplayMeasurements value{};
-        measurementFields(&stream,value);
-        return stream.getPosition();
-    }();
-    return bytes;
+    GAGCore::BinaryOutputStream stream(new GAGCore::MemoryStreamBackend);
+    GameplayMeasurements value{};
+    measurementFields(&stream,value,versionMinor);
+    return stream.getPosition();
 }
 
 template<class Stream, class Stat>
@@ -311,6 +331,9 @@ void TeamStats::step(Team *team, bool reloaded)
 				<< " inn=" << s.numberBuildingPerType[IntBuildingType::FOOD_BUILDING]
 				<< " school=" << s.numberBuildingPerType[IntBuildingType::SCIENCE_BUILDING]
 				<< " barracks=" << s.numberBuildingPerType[IntBuildingType::ATTACK_BUILDING]
+				<< " hospital=" << s.numberBuildingPerType[IntBuildingType::HEAL_BUILDING]
+				<< " racetrack=" << s.numberBuildingPerType[IntBuildingType::WALKSPEED_BUILDING]
+				<< " pool=" << s.numberBuildingPerType[IntBuildingType::SWIMSPEED_BUILDING]
 				<< " tower=" << s.numberBuildingPerType[IntBuildingType::DEFENSE_BUILDING]
 				<< std::endl;
 		}
@@ -323,6 +346,9 @@ void TeamStats::step(Team *team, bool reloaded)
 	{
 		Unit *u=team->myUnits[i];
 		observeMeasurementUnit(u);
+		// Filter here: most of the 1024 slots hold no worker.
+		if (!reloaded && u && u->typeNum == WORKER)
+			observeLabour(u);
 		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
 		{
 			smoothedStat.isFree[(int)u->typeNum]++;
@@ -349,6 +375,7 @@ void TeamStats::step(Team *team, bool reloaded)
 		(measurementHistory.empty() || measurementHistory.back().tick != measurements.tick))
 	{
 		sampleTraps(team);
+		sampleDefence(team);
 		measurementHistory.push_back(measurements);
 		AITelemetry::capture(team, true, getenv("GLOB2_TEAM_TIMELINE") != nullptr);
 		if (getenv("GLOB2_TEAM_TIMELINE"))
@@ -761,7 +788,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 	{
 		GAGCore::BinaryInputStream::CheckedReads checked(stream);
 		coverageStartTick = stream->readUint32("coverageStartTick");
-		measurementFields(stream, measurements, versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS);
+		measurementFields(stream, measurements, versionMinor);
 		const Uint32 count = stream->readUint32("measurementCount");
 		if (measurements.tick < coverageStartTick || count > Uint64(measurements.tick) / 512 + 1)
 			throw std::runtime_error("Invalid gameplay statistics coverage");
@@ -770,7 +797,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
         {
 			stream->readEnterSection(i);
 			GameplayMeasurements sample;
-			measurementFields(stream, sample, versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS);
+			measurementFields(stream, sample, versionMinor);
 			stream->readLeaveSection();
 			if (sample.tick < coverageStartTick || sample.tick > measurements.tick ||
 				(sample.tick & 511) ||
@@ -779,7 +806,7 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			measurementHistory.push_back(sample);
         };
         if(versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream))
-            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(),readMeasurement);
+            GAGCore::PackedRecords::read(stream,count,measurementRecordBytes(versionMinor),readMeasurement);
         else for(Uint32 i=0;i<count;++i) readMeasurement(stream,i);
 		needsMeasurementInitialization = false;
 		extendedCoverageStartTick = versionMinor >= FILE_FORMAT_VERSION_EXTENDED_GAMEPLAY_STATS
@@ -814,11 +841,15 @@ bool TeamStats::load(GAGCore::InputStream *stream, Sint32 versionMinor)
 			coverageBuildings.clear();
 			coverageBuildingTick = coverageBuildingGeneration = 0;
 		}
+		labourCoverageStartTick = versionMinor >= FILE_FORMAT_VERSION_LABOUR_STATS
+			? stream->readUint32("labourCoverageStartTick") : measurements.tick;
+		if (labourCoverageStartTick < coverageStartTick || labourCoverageStartTick > measurements.tick)
+			throw std::runtime_error("Invalid labour statistics coverage");
 	}
 	else
 	{
 		needsMeasurementInitialization = true;
-		extendedCoverageStartTick = measurements.tick;
+		extendedCoverageStartTick = labourCoverageStartTick = measurements.tick;
 	}
 
 	if (versionMinor >= FILE_FORMAT_VERSION_AI_TELEMETRY)
@@ -872,7 +903,7 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 	measurementFields(stream, measurements);
 	stream->writeUint32(measurementHistory.size(), "measurementCount");
     if(GAGCore::PackedArray::binary(stream))
-        GAGCore::PackedRecords::write(stream,measurementHistory.size(),measurementRecordBytes(),
+        GAGCore::PackedRecords::write(stream,measurementHistory.size(),measurementRecordBytes(VERSION_MINOR),
             [&](GAGCore::OutputStream* rows,size_t i){measurementFields(rows,measurementHistory[i]);});
     else
 	for (unsigned i = 0; i < measurementHistory.size(); ++i)
@@ -892,6 +923,7 @@ void TeamStats::save(GAGCore::OutputStream *stream)
 		stream->writeSint32(b.width, "coverageW");
 		stream->writeSint32(b.height, "coverageH");
 	}
+	stream->writeUint32(labourCoverageStartTick, "labourCoverageStartTick");
 
 	AITelemetry::save(stream, aiTelemetry);
 	stream->writeLeaveSection();
@@ -901,7 +933,7 @@ void TeamStats::initializeMeasurements(Uint32 tick)
 {
 	measurements = GameplayMeasurements{};
 	measurements.tick = coverageStartTick = tick;
-	extendedCoverageStartTick = tick;
+	extendedCoverageStartTick = labourCoverageStartTick = tick;
 	coverageBuildingTick = 0;
 	coverageBuildingGeneration = 0;
 	coverageBuildings.clear();
@@ -940,7 +972,8 @@ void TeamStats::printMeasurements(int team, bool final) const
 	{
 	std::cout << prefix << " team=" << team << " tick=" << measurements.tick
 			  << " coverage_start=" << coverageStartTick
-			  << " extended_coverage_start=" << extendedCoverageStartTick << " final=" << isFinal;
+			  << " extended_coverage_start=" << extendedCoverageStartTick
+			  << " labour_coverage_start=" << labourCoverageStartTick << " final=" << isFinal;
 	printMeasurement("births", measurements.births);
 	printMeasurement("deaths", measurements.deaths);
 	printMeasurement("conversionsIn", measurements.conversionsIn);
@@ -980,6 +1013,22 @@ void TeamStats::printMeasurements(int team, bool final) const
 	printMeasurement("growthAmount", measurements.growthAmount);
 	printMeasurement("growthReduction", measurements.growthReduction);
 	printMeasurement("growthGlobal", measurements.growthGlobal);
+	printMeasurement("labour", measurements.labour);
+	printMeasurement("filling", measurements.filling);
+	printMeasurement("harvestDistance", measurements.harvestDistance);
+	printMeasurement("harvestSamples", measurements.harvestSamples);
+	printMeasurement("eatWalkDistance", measurements.eatWalkDistance);
+	printMeasurement("eatWalkSamples", measurements.eatWalkSamples);
+	printMeasurement("combatDeathPlace", measurements.combatDeathPlace);
+	printMeasurement("combatDeathAssignment", measurements.combatDeathAssignment);
+	printMeasurement("warriors", measurements.warriors);
+	printMeasurement("warriorLevels", measurements.warriorLevels);
+	printMeasurement("warriorsHurt", measurements.warriorsHurt);
+	printMeasurement("warriorsFlagged", measurements.warriorsFlagged);
+	printMeasurement("warriorsInside", measurements.warriorsInside);
+	printMeasurement("intruders", measurements.intruders);
+	printMeasurement("intruderLevels", measurements.intruderLevels);
+	printMeasurement("defenceTick", measurements.defenceTick);
 	std::cout << '\n';
 	};
 	if (final)
@@ -1275,6 +1324,149 @@ void TeamStats::observeMeasurementBuilding(Building *b)
 				measurements.stock[r] += std::max(0, b->resources[r]);
 	}
 }
+GameplayMeasurements::Place TeamStats::placeOf(const Team *team, int x, int y)
+{
+	// One read of the growth-coverage tile masks. Callers refresh them first.
+	const Uint32 near = team->map->teamsWithBuildingsNear(x, y, GameplayMeasurements::PLACE_BAND);
+	if (near & team->me)
+		return GameplayMeasurements::HOME;
+	return (near & team->enemies) ? GameplayMeasurements::AWAY : GameplayMeasurements::FIELD;
+}
+
+void TeamStats::observeLabour(Unit *u)
+{
+	using M = GameplayMeasurements;
+	if (!u || u->isDead || u->typeNum != WORKER)
+		return;
+	auto &m = measurements;
+	auto distanceTo = [u](Building *b)
+	{
+		return Uint64(u->owner->map->warpDistMax(u->posX, u->posY, b->getMidX(), b->getMidY()));
+	};
+	const bool inside = u->displacement == Unit::DIS_INSIDE ||
+		u->displacement == Unit::DIS_ENTERING_BUILDING || u->displacement == Unit::DIS_EXITING_BUILDING;
+	if (u->medical != Unit::MED_FREE)
+	{
+		const bool hungry = u->medical == Unit::MED_HUNGRY;
+		if (inside)
+			++m.labour[hungry ? M::EAT_INSIDE : M::HEAL_INSIDE];
+		else if (!u->targetBuilding)
+			++m.labour[hungry ? M::EAT_NO_INN : M::HEAL_NO_HOSPITAL];
+		else
+		{
+			++m.labour[hungry ? M::EAT_WALKING : M::HEAL_WALKING];
+			if (hungry)
+			{
+				m.eatWalkDistance += distanceTo(u->targetBuilding);
+				++m.eatWalkSamples;
+			}
+		}
+		return;
+	}
+	switch (u->activity)
+	{
+	case Unit::ACT_RANDOM:
+		++m.labour[M::IDLE];
+		return;
+	case Unit::ACT_UPGRADING:
+		if (u->destinationPurpose == HEAL)
+			++m.labour[inside ? M::HEAL_INSIDE : M::HEAL_WALKING];
+		else
+			++m.labour[inside ? M::TRAIN_INSIDE : M::TRAIN_WALKING];
+		return;
+	case Unit::ACT_FLAG:
+		++m.labour[M::FLAG_WORK];
+		return;
+	case Unit::ACT_FILLING:
+		if (Building *b = u->attachedBuilding)
+		{
+			M::LabourJob job = M::OTHER_JOB;
+			if (b->type->isBuildingSite)
+				job = M::SITE_JOB;
+			else if (b->type->shortTypeNum == IntBuildingType::SWARM_BUILDING)
+				job = M::SWARM_JOB;
+			else if (b->type->shortTypeNum == IntBuildingType::FOOD_BUILDING)
+				job = M::INN_JOB;
+			M::LabourPhase phase = M::OTHER_PHASE;
+			if (u->displacement == Unit::DIS_GOING_TO_RESOURCE)
+				phase = M::TO_RESOURCE;
+			else if (u->displacement == Unit::DIS_HARVESTING)
+			{
+				phase = M::HARVESTING;
+				m.harvestDistance[job] += distanceTo(b);
+				++m.harvestSamples[job];
+			}
+			else if (u->displacement == Unit::DIS_GOING_TO_BUILDING)
+				phase = M::TO_BUILDING;
+			++m.filling[job][phase];
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+	++m.labour[M::OTHER_ACTIVITY];
+}
+
+void TeamStats::recordCombatDeath(Unit *u)
+{
+	using M = GameplayMeasurements;
+	if (u->typeNum < 0 || u->typeNum >= NB_UNIT_TYPE)
+		return;
+	u->owner->map->rebuildGrowthCoverage();
+	++measurements.combatDeathPlace[u->typeNum][placeOf(u->owner, u->posX, u->posY)];
+	M::Assignment assignment = M::UNASSIGNED;
+	if (u->attachedBuilding)
+		switch (u->attachedBuilding->type->shortTypeNum)
+		{
+		case IntBuildingType::WAR_FLAG: assignment = M::WAR_FLAG; break;
+		case IntBuildingType::CLEARING_FLAG: assignment = M::CLEARING_FLAG; break;
+		case IntBuildingType::EXPLORATION_FLAG: assignment = M::EXPLORATION_FLAG; break;
+		default: assignment = M::OTHER_BUILDING; break;
+		}
+	++measurements.combatDeathAssignment[u->typeNum][assignment];
+}
+
+void TeamStats::sampleDefence(Team *team)
+{
+	auto &m = measurements;
+	m.defenceTick = team->game->stepCounter;
+	team->map->rebuildGrowthCoverage();
+	std::fill(std::begin(m.warriors), std::end(m.warriors), 0);
+	std::fill(std::begin(m.warriorLevels), std::end(m.warriorLevels), 0);
+	m.warriorsHurt = m.warriorsFlagged = m.warriorsInside = m.intruders = m.intruderLevels = 0;
+	auto attackLevels = [](const Unit *u) { return Uint64(u->level[ATTACK_SPEED] + u->level[ATTACK_STRENGTH]); };
+	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	{
+		Unit *u = team->myUnits[i];
+		if (!u || u->isDead || u->typeNum != WARRIOR)
+			continue;
+		const auto place = placeOf(team, u->posX, u->posY);
+		++m.warriors[place];
+		m.warriorLevels[place] += attackLevels(u);
+		m.warriorsHurt += u->medical == Unit::MED_DAMAGED;
+		m.warriorsFlagged += u->attachedBuilding &&
+			u->attachedBuilding->type->shortTypeNum == IntBuildingType::WAR_FLAG;
+		m.warriorsInside += u->displacement == Unit::DIS_INSIDE;
+	}
+	for (int t = 0; t < team->game->teamsCount(); ++t)
+	{
+		const Team *other = team->game->teams[t];
+		if (!other || !(team->enemies & other->me))
+			continue;
+		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		{
+			const Unit *u = other->myUnits[i];
+			if (u && !u->isDead && u->typeNum == WARRIOR &&
+				placeOf(team, u->posX, u->posY) == GameplayMeasurements::HOME)
+			{
+				++m.intruders;
+				m.intruderLevels += attackLevels(u);
+			}
+		}
+	}
+}
+
 void TeamStats::refreshMeasurements(Team *team)
 {
 	beginMeasurementSnapshot(team);
@@ -1283,6 +1475,7 @@ void TeamStats::refreshMeasurements(Team *team)
 	for (int i = 0; i < Building::MAX_COUNT; ++i)
 		observeMeasurementBuilding(team->myBuildings[i]);
 	sampleTraps(team);
+	sampleDefence(team);
 }
 
 void TeamStats::sampleTraps(Team *team)

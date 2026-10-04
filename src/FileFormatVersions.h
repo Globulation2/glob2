@@ -188,3 +188,7 @@ static constexpr int FILE_FORMAT_VERSION_CUSTOM_AI = 129;
 //! Tile::farmArea joins the per-tile area masks in the map section (MapIO.cpp),
 //! for the farm-areas experiment. Older maps and saves load with no farm painted.
 static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 130;
+
+//! Worker time use, combat-death place and assignment, and the defence snapshot in
+//! gameplay measurements (diagnostic only; older saves start them at load).
+static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;

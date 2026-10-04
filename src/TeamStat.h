@@ -148,6 +148,61 @@ struct GameplayMeasurements
 		OTHER,
 		REMOVALS
 	};
+	// Worker time use. Each live worker counts once per tick: in labour[] by
+	// activity, or, while filling a building, in filling[][] by job and phase.
+	enum LabourActivity
+	{
+		IDLE,
+		EAT_WALKING,
+		EAT_INSIDE,
+		EAT_NO_INN,
+		HEAL_WALKING,
+		HEAL_INSIDE,
+		HEAL_NO_HOSPITAL,
+		TRAIN_WALKING,
+		TRAIN_INSIDE,
+		FLAG_WORK,
+		OTHER_ACTIVITY,
+		LABOUR_ACTIVITIES
+	};
+	// The building a filling worker serves, and what it is doing for it.
+	enum LabourJob
+	{
+		SWARM_JOB,
+		INN_JOB,
+		SITE_JOB,
+		OTHER_JOB,
+		LABOUR_JOBS
+	};
+	enum LabourPhase
+	{
+		TO_RESOURCE,
+		HARVESTING,
+		TO_BUILDING,
+		OTHER_PHASE,
+		LABOUR_PHASES
+	};
+	// Where a unit is: within GROWTH_COVERAGE_RADII[PLACE_BAND] tiles of one of its
+	// team's buildings, else of an enemy's, else neither. Flags are not buildings
+	// here, and buildings are those of each team's last 512-tick snapshot.
+	enum Place
+	{
+		HOME,
+		AWAY,
+		FIELD,
+		PLACES
+	};
+	static constexpr int PLACE_BAND = 1;
+	// The building a unit was attached to when it died.
+	enum Assignment
+	{
+		UNASSIGNED,
+		WAR_FLAG,
+		CLEARING_FLAG,
+		EXPLORATION_FLAG,
+		OTHER_BUILDING,
+		ASSIGNMENTS
+	};
 	bool operator==(const GameplayMeasurements &) const = default;
 	Uint32 tick = 0;
 	Uint64 births[NB_UNIT_TYPE]{};
@@ -191,6 +246,27 @@ struct GameplayMeasurements
 	Uint64 growthAmount[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
 	Uint64 growthReduction[GROWTH_COVERAGE_BANDS][MAX_NB_RESOURCES]{};
 	Uint64 growthGlobal[3][MAX_NB_RESOURCES]{};
+	// Format 129 (FILE_FORMAT_VERSION_LABOUR_STATS). Cumulative worker-ticks.
+	Uint64 labour[LABOUR_ACTIVITIES]{};
+	Uint64 filling[LABOUR_JOBS][LABOUR_PHASES]{};
+	// Distance sums and sample counts: harvesting workers to the building they
+	// fill, and hungry workers walking to their inn.
+	Uint64 harvestDistance[LABOUR_JOBS]{};
+	Uint64 harvestSamples[LABOUR_JOBS]{};
+	Uint64 eatWalkDistance{};
+	Uint64 eatWalkSamples{};
+	Uint64 combatDeathPlace[NB_UNIT_TYPE][PLACES]{};
+	Uint64 combatDeathAssignment[NB_UNIT_TYPE][ASSIGNMENTS]{};
+	// Defence snapshot at defenceTick: live warriors by place, their summed attack
+	// speed and strength levels, and enemy warriors at this team's home.
+	Uint64 warriors[PLACES]{};
+	Uint64 warriorLevels[PLACES]{};
+	Uint64 warriorsHurt{};
+	Uint64 warriorsFlagged{};
+	Uint64 warriorsInside{};
+	Uint64 intruders{};
+	Uint64 intruderLevels{};
+	Uint32 defenceTick = 0;
 };
 
 class Team;
@@ -206,11 +282,16 @@ public:
   GameplayMeasurements measurements;
   Uint32 coverageStartTick = 0;
   Uint32 extendedCoverageStartTick = 0;
+  Uint32 labourCoverageStartTick = 0;
   bool needsMeasurementInitialization = false;
   std::vector<GameplayMeasurements> measurementHistory;
   void initializeMeasurements(Uint32 tick);
   void refreshMeasurements(Team *team);
   void sampleTraps(Team *team);
+  void sampleDefence(Team *team);
+  void observeLabour(class Unit *unit);
+  void recordCombatDeath(class Unit *unit);
+  static GameplayMeasurements::Place placeOf(const Team *team, int x, int y);
   void beginMeasurementSnapshot(Team *team);
   void observeMeasurementUnit(class Unit *unit);
   void observeMeasurementBuilding(class Building *building);
