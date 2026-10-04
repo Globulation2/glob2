@@ -189,6 +189,21 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 		check(mix.mode == SoundMixer::MODE_NORMAL,
 			"queued change: back to normal playback afterwards");
 
+		const auto currentPosition = op_pcm_tell(mix.tracks[mix.actTrack]);
+		mix.setNextTrack(MusicTrack::WarEvent, true);
+		check(mix.mode == SoundMixer::MODE_NORMAL, "repeated mood keeps normal playback");
+		check(op_pcm_tell(mix.tracks[mix.actTrack]) == currentPosition,
+			"repeated mood does not move the decoder");
+		beginCrossfade(mix, MusicTrack::InGameDefault, MusicTrack::BuildingEvent);
+		pump(mix, 4);
+		const unsigned repeatedFadePosition = mix.fadePos;
+		mix.setNextTrack(MusicTrack::WarEvent, true);
+		mix.setNextTrack(MusicTrack::BuildingEvent, true);
+		check(mix.pendingTrack == -1, "latest incoming mood cancels an older queued request");
+		check(mix.fadePos == repeatedFadePosition, "repeated incoming mood preserves fade progress");
+		pump(mix, kCallbacksPerFade - 4);
+		check(mix.mode == SoundMixer::MODE_NORMAL, "repeated incoming mood does not start a self fade");
+
 		// --- 6. stopping clears a queued change --------------------------
 		beginCrossfade(mix, MusicTrack::InGameDefault, MusicTrack::BuildingEvent);
 		pump(mix, 4);

@@ -451,7 +451,17 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	// queue the request and let mixaudio() start it when this fade lands.
 	if (soundEnabled && mode == MODE_EARLY_CHANGE)
 	{
-		pendingTrack = static_cast<int>(i);
+		pendingTrack = static_cast<int>(i) == nextTrack ? -1 : static_cast<int>(i);
+		if (audioStream) SDL_UnlockAudioStream(audioStream);
+		return;
+	}
+
+	// Repeated mood events must not mix a decoder with itself.
+	if (soundEnabled && static_cast<int>(i) == actTrack &&
+		(mode == MODE_NORMAL || mode == MODE_START))
+	{
+		nextTrack = actTrack;
+		pendingTrack = -1;
 		if (audioStream) SDL_UnlockAudioStream(audioStream);
 		return;
 	}
