@@ -235,4 +235,41 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 	}
 }
 
+TEST_CASE("MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]")
+{
+	glob2test::HeadlessGlobals globals;
+	for (int level=0; level<3; ++level) for (bool text : {false,true})
+	{
+		glob2test::HeadlessGame source(glob2test::GameOptions{.header=true});
+		auto *market=source.addBuilding("market",8,8,level);
+		REQUIRE(market);
+		CHECK(market->typeNum==(level ? 50+2*level : 50));
+		CHECK(globalContainer->buildingsTypes.getTypeNum("market",level,true)==(level ? 49+2*level : 49));
+		CHECK((market->type->maxResource[WOOD]>0)==(level>=1));
+		CHECK((market->type->maxResource[WHEAT]>0)==(level>=1));
+		CHECK((market->type->maxResource[STONE]>0)==(level>=2));
+		market->resources[CHERRY]=20;
+		if (level) market->resources[WOOD]=30;
+		auto *storage=new GAGCore::MemoryStreamBackend;
+		std::unique_ptr<GAGCore::OutputStream> out(text
+			? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(storage))
+			: static_cast<GAGCore::OutputStream *>(new GAGCore::BinaryOutputStream(storage)));
+		source.game.save(out.get(),false,"Market upgrades"); out->flush();
+		const auto bytes=storage->takeContents();
+		auto *backend=new GAGCore::MemoryStreamBackend;
+		backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+		std::unique_ptr<GAGCore::InputStream> in(text
+			? static_cast<GAGCore::InputStream *>(new GAGCore::TextInputStream(backend))
+			: static_cast<GAGCore::InputStream *>(new GAGCore::BinaryInputStream(backend)));
+		GameGUI restored;
+		REQUIRE(restored.game.load(in.get()));
+		auto *loaded=restored.game.teams[0]->myBuildings[Building::GIDtoID(market->gid)];
+		REQUIRE(loaded);
+		CHECK(loaded->typeNum==market->typeNum);
+		CHECK(loaded->type->level==level);
+		CHECK(loaded->resources[CHERRY]==20);
+		if (level) CHECK(loaded->resources[WOOD]==30);
+	}
+}
+
 }
