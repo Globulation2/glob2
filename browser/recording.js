@@ -38,9 +38,9 @@ if (typeof ENVIRONMENT_IS_PTHREAD === 'undefined' || !ENVIRONMENT_IS_PTHREAD) {
       const root=await this.root(),files=[];
       for await (const [name,handle] of root.entries()) {
         const path=decodeURIComponent(name);
-        let size;
-        try { size=(await handle.getFile()).size; } catch (_) { continue; }
-        if (path.endsWith('.complete') && size) files.push({path:path.slice(0,-9),recoverable:false});
+        let size,modified;
+        try { const file=await handle.getFile();size=file.size;modified=file.lastModified; } catch (_) { continue; }
+        if (path.endsWith('.complete') && size) files.push({path:path.slice(0,-9),recoverable:false,modified});
         else if (path.endsWith('.recording/manifest.json')) {
           if (!size) {
             for (const suffix of ['manifest.1.json','manifest.2.json']) {
@@ -51,10 +51,10 @@ if (typeof ENVIRONMENT_IS_PTHREAD === 'undefined' || !ENVIRONMENT_IS_PTHREAD) {
           const video=path.slice(0,-24);
           let complete=false;
           try { complete=(await (await root.getFileHandle(encodeURIComponent(video+'.complete'))).getFile()).size>0; } catch (_) {}
-          if (!complete) files.push({path:video,recoverable:true});
+          if (!complete) files.push({path:video,recoverable:true,modified});
         }
       }
-      this.files=files.sort((a,b)=>b.path.localeCompare(a.path));
+      this.files=files.sort((a,b)=>b.modified-a.modified || b.path.localeCompare(a.path));
     },
     async refresh() {
       if (this.busy) return; this.busy=true; this.error='';

@@ -20,6 +20,14 @@
 #include <stdexcept>
 #include <thread>
 #include <vector>
+#if defined(__APPLE__) || (defined(__linux__) && !defined(__EMSCRIPTEN__))
+#include <time.h>
+#elif defined(_WIN32)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 #ifdef __EMSCRIPTEN__
 #include "RecordingPlatform.h"
 #include <nlohmann/json.hpp>
@@ -29,15 +37,25 @@ namespace GAGCore::Recording
 {
 namespace
 {
-using Clock = std::chrono::steady_clock;
 constexpr std::size_t MaxQueuedFrames = 3;
 constexpr std::size_t MaxQueuedEvents = 1024;
 constexpr std::size_t AudioBlockSamples = 4096;
 constexpr std::size_t AudioSampleBudget = AudioSampleRate * AudioChannels * 2;
 std::int64_t now()
 {
-	return std::chrono::duration_cast<std::chrono::microseconds>(Clock::now().time_since_epoch())
-		.count();
+	// Recording time includes OS suspend; engine scheduling retains its own clock.
+#if defined(__APPLE__)
+	return std::int64_t(clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW)/1000);
+#elif defined(__linux__) && !defined(__EMSCRIPTEN__)
+	timespec time{};
+	if (!clock_gettime(CLOCK_BOOTTIME,&time)) return std::int64_t(time.tv_sec)*1000000+time.tv_nsec/1000;
+#elif defined(_WIN32)
+	using InterruptClock = void (WINAPI *)(PULONGLONG);
+	static const auto precise = reinterpret_cast<InterruptClock>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"QueryInterruptTimePrecise"));
+	if (precise) { ULONGLONG time; precise(&time); return std::int64_t(time/10); }
+	return std::int64_t(GetTickCount64())*1000;
+#endif
+	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 std::string utf8(const std::filesystem::path &path)
 {
