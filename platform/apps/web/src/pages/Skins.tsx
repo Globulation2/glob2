@@ -271,6 +271,10 @@ function SkinDesigner() {
         Paint your units and swarm. Choose a color for the rest of your buildings. Try the designer
         for free; publishing requires the designer unlock.
       </p>
+      <p>
+        Glob paint repeats automatically on matching front/back and top/bottom surfaces so their
+        flips stay seamless.
+      </p>
       <div
         className="skin-designer"
         style={{
