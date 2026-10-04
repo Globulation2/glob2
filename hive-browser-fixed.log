@@ -1,0 +1,8 @@
+
+Running 1 test using 1 worker
+
+(node:526850) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (929ms)
+
+  1 passed (2.1s)

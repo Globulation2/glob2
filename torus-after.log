@@ -1,0 +1,20 @@
+
+Running 9 tests using 1 worker
+
+(node:523980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/torus.spec.js:61:1 › WebGL2 switches between the flat map and the torus overview (42.8s)
+  ✓  2 [chromium] › browser/tests/torus.spec.js:85:1 › the torus overview recovers after WebGL context loss (40.3s)
+  ✓  3 [chromium] › browser/tests/torus.spec.js:105:1 › the software renderer keeps the flat map (14.7s)
+(node:524556) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › browser/tests/torus.spec.js:61:1 › WebGL2 switches between the flat map and the torus overview (42.5s)
+  ✓  5 [chromium] › browser/tests/torus.spec.js:85:1 › the torus overview recovers after WebGL context loss (41.1s)
+  ✓  6 [chromium] › browser/tests/torus.spec.js:105:1 › the software renderer keeps the flat map (15.3s)
+(node:525115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  7 [chromium] › browser/tests/torus.spec.js:61:1 › WebGL2 switches between the flat map and the torus overview (46.8s)
+  ✓  8 [chromium] › browser/tests/torus.spec.js:85:1 › the torus overview recovers after WebGL context loss (38.0s)
+  ✓  9 [chromium] › browser/tests/torus.spec.js:105:1 › the software renderer keeps the flat map (14.1s)
+
+  9 passed (5.0m)

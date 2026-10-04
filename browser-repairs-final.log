@@ -1,0 +1,12 @@
+
+Running 5 tests using 1 worker
+
+(node:527333) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/hive-worker.spec.js:5:1 › Hive worker matches native results and rejects forbidden capabilities (886ms)
+  ✓  2 [chromium] › browser/tests/settings-storage.spec.js:86:1 › settings can continue after failure without claiming a durable save (19.8s)
+  ✓  3 [chromium] › browser/tests/single-player.spec.js:40:1 › starts with a full-page game and restored local storage (9.9s)
+  ✓  4 [chromium] › browser/tests/single-player.spec.js:94:1 › game rules and AI descriptions return to setup, and a finished game returns there too (18.0s)
+  ✓  5 [chromium] › browser/tests/storage.spec.js:78:1 › restore failure is explained before entering the game (18.1s)
+
+  5 passed (1.1m)
