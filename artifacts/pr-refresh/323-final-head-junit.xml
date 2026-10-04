@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="6" failures="0" errors="0" skipped="0"><testsuite name="PrototypeTerrain"><testcase classname="PrototypeTerrain" name="mixed costs agree with Dijkstra eager and resumed fields" time="0.006962" status="run" />
+  <testcase classname="PrototypeTerrain" name="scene layers and binary text saves preserve terrain and continuation [save-format]" time="0.245563" status="run" />
+  </testsuite><testsuite name="PrototypeTerrainRender"><testcase classname="PrototypeTerrainRender" name="flat terrain and single-corner overlays match direct OpenGL drawing [display][artifacts]" time="0.687768" status="run" />
+  <testcase classname="PrototypeTerrainRender" name="flat terrain and single-corner overlays match direct software drawing [display][artifacts]" time="0.656962" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.270276" status="run" />
+  </testsuite><testsuite name="TextStream"><testcase classname="TextStream" name="legacy scoped statistics keys preserve section inheritance" time="0.00016" status="run" />
+  </testsuite></testsuites>

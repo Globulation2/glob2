@@ -1,0 +1,78 @@
+{
+  "master": "8bc1b897ff7b30b094d35dd86c3230828988c457",
+  "all_open_prs": [
+    {
+      "number": 493,
+      "sha": "56f9068e1808d48cd0174b36e0535cf826d7b3f4",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 448,
+      "sha": "a5c2ad0e8c9352ea9d4bf96707671cefc808265b",
+      "master_ancestor": true,
+      "isDraft": false
+    },
+    {
+      "number": 430,
+      "sha": "65f84e211677fc732d2f7c6d459ae345dff00065",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 5,
+      "sha": "df23dd3c37db7c9f8d11fcc7da40c090229c543b",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 254,
+      "sha": "2bdaf33460789a5f1630a0ec31b55d7a988e32e1",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 257,
+      "sha": "3ed8505bc83586741769c5a1ba7fea072d9564a3",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 258,
+      "sha": "258c853a79e54731f172003ee9f27ef35049f56d",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 220,
+      "sha": "13dc865444ea9fbeb41538d8f6d19d25d7136978",
+      "master_ancestor": true,
+      "isDraft": false
+    },
+    {
+      "number": 214,
+      "sha": "c1794546c221dbe86bed3d43db99d30a5336b712",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 323,
+      "sha": "739b4e4065ca616eaede3151b2ca21f9b9bb8dd8",
+      "master_ancestor": true,
+      "isDraft": true
+    },
+    {
+      "number": 694,
+      "sha": "5c5a84b3f099239e30c959a1c095f2ae082ba459",
+      "master_ancestor": true,
+      "isDraft": false
+    },
+    {
+      "number": 695,
+      "sha": "07f21bac58106e4a9525c5581fc79682b349e9be",
+      "master_ancestor": true,
+      "isDraft": true
+    }
+  ],
+  "market_stack_preserved": true
+}

@@ -1,0 +1,5 @@
+watershed revision 2 seed 7 [complete]: 
+Preview: artifacts/pr-refresh/323-maps/watershed-0.png (128x128 tiles)
+Map: artifacts/pr-refresh/323-maps/watershed-0.map.gz
+Map report: artifacts/pr-refresh/323-maps/watershed-0.json
+TrueTypeFont: this SDL3_ttf misplaces kerned glyphs; drawing text without kerning

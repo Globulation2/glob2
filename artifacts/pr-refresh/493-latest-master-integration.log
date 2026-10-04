@@ -1,0 +1,14 @@
+Switched to branch 'codex/refresh-pr-493'
+Your branch is up to date with 'origin/wizard-unit-concept'.
+Rebasing (1/1)Successfully rebased and updated refs/heads/codex/refresh-pr-493.
+...................
+----------------------------------------------------------------------
+Ran 19 tests in 1.483s
+
+OK
+remote: 
+remote: GitHub found 13 vulnerabilities on Globulation2/glob2's default branch (10 high, 3 moderate). To find out more, visit:        
+remote:      https://github.com/Globulation2/glob2/security/dependabot        
+remote: 
+To github.com:Globulation2/glob2.git
+ + b8ccbfb07...56f9068e1 HEAD -> wizard-unit-concept (forced update)

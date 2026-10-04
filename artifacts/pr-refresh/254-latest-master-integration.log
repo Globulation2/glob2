@@ -1,0 +1,18 @@
+Switched to branch 'codex/refresh-pr-254'
+Your branch is up to date with 'origin/feat/gig-hiring'.
+Rebasing (1/3)Rebasing (2/3)Rebasing (3/3)Successfully rebased and updated refs/heads/codex/refresh-pr-254.
+PASS GigRelease/deliveries are released only with at least a fifth idle (0.0s)
+PASS HiringBucket/hiring round is fair (0.0s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.0s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (0.3s)
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (5.8s)
+
+5 passed, 0 failed, 0 skipped (6.2s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/open-pr-refresh/glob2/artifacts/pr-refresh/254-latest-master-junit.xml (5 cases)
+The sim version key matches the committed match record and follows every change of the golden trace
+remote: 
+remote: GitHub found 13 vulnerabilities on Globulation2/glob2's default branch (10 high, 3 moderate). To find out more, visit:        
+remote:      https://github.com/Globulation2/glob2/security/dependabot        
+remote: 
+To github.com:Globulation2/glob2.git
+ + ba7c379fa...2bdaf3346 HEAD -> feat/gig-hiring (forced update)

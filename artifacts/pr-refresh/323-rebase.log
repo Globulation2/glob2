@@ -1,0 +1,84 @@
+Rebasing (1/1)Auto-merging data/texts.ar.txt
+Auto-merging data/texts.br.txt
+Auto-merging data/texts.ca.txt
+Auto-merging data/texts.cz.txt
+Auto-merging data/texts.de.txt
+Auto-merging data/texts.dk.txt
+Auto-merging data/texts.en.txt
+Auto-merging data/texts.eo.txt
+Auto-merging data/texts.es.txt
+Auto-merging data/texts.eu.txt
+Auto-merging data/texts.fa.txt
+Auto-merging data/texts.fi.txt
+Auto-merging data/texts.fr.txt
+Auto-merging data/texts.gr.txt
+Auto-merging data/texts.hu.txt
+Auto-merging data/texts.id.txt
+Auto-merging data/texts.it.txt
+Auto-merging data/texts.ja.txt
+Auto-merging data/texts.keys.txt
+Auto-merging data/texts.ko.txt
+Auto-merging data/texts.nl.txt
+Auto-merging data/texts.pl.txt
+Auto-merging data/texts.pt.txt
+Auto-merging data/texts.ro.txt
+Auto-merging data/texts.ru.txt
+Auto-merging data/texts.si.txt
+Auto-merging data/texts.sk.txt
+Auto-merging data/texts.sr.txt
+Auto-merging data/texts.sv.txt
+Auto-merging data/texts.tr.txt
+Auto-merging data/texts.uk.txt
+Auto-merging data/texts.vi.txt
+Auto-merging data/texts.zh-cn.txt
+Auto-merging data/texts.zh-tw.txt
+CONFLICT (modify/delete): docs/development-notes.md deleted in HEAD and modified in 0fb806694 (Prototype ice and cobblestone terrain).  Version 0fb806694 (Prototype ice and cobblestone terrain) of docs/development-notes.md left in tree.
+Auto-merging docs/map-generators/MAP_GENERATOR_FRAMEWORK.md
+CONFLICT (content): Merge conflict in docs/map-generators/MAP_GENERATOR_FRAMEWORK.md
+Auto-merging src/ai/castor/Maps.cpp
+Auto-merging src/ai/maxima/AIMaxima.cpp
+Auto-merging src/ai/maxima/AIMaximaRuntime.cpp
+Auto-merging src/ai/maxima/AIMaximaRuntime.h
+Auto-merging src/game/Game_editor.cpp
+Auto-merging src/map/Map.cpp
+Auto-merging src/map/Map.h
+CONFLICT (content): Merge conflict in src/map/Map.h
+Auto-merging src/map/MapQuery.cpp
+Auto-merging src/map/TerrainResourcesHarness.cpp
+CONFLICT (content): Merge conflict in src/map/TerrainResourcesHarness.cpp
+Auto-merging src/map/editor/MapEdit.h
+Auto-merging src/map/editor/MapEditActionTerrain.cpp
+Auto-merging src/map/editor/MapEditClicks.cpp
+Auto-merging src/map/editor/MapEditCtor.cpp
+Auto-merging src/map/editor/MapEditDelegate.cpp
+Auto-merging src/map/editor/MapEditDraw.cpp
+Auto-merging src/map/editor/WidgetsTools.cpp
+Auto-merging src/map/generator/generators/CityStatesGenerator.cpp
+CONFLICT (content): Merge conflict in src/map/generator/generators/CityStatesGenerator.cpp
+Auto-merging src/map/generator/generators/FjordContinentGenerator.cpp
+CONFLICT (content): Merge conflict in src/map/generator/generators/FjordContinentGenerator.cpp
+Auto-merging src/map/generator/generators/OldTownGenerator.cpp
+CONFLICT (content): Merge conflict in src/map/generator/generators/OldTownGenerator.cpp
+Auto-merging src/map/generator/generators/WatershedGenerator.cpp
+CONFLICT (content): Merge conflict in src/map/generator/generators/WatershedGenerator.cpp
+CONFLICT (modify/delete): src/map/gradient/MapGradientField.cpp deleted in HEAD and modified in 0fb806694 (Prototype ice and cobblestone terrain).  Version 0fb806694 (Prototype ice and cobblestone terrain) of src/map/gradient/MapGradientField.cpp left in tree.
+Auto-merging src/map/io/MapIO.cpp
+CONFLICT (content): Merge conflict in src/map/io/MapIO.cpp
+Auto-merging src/map/io/MapThumbnail.cpp
+Auto-merging src/map/pathfind/MapPathfindRessource.cpp
+CONFLICT (content): Merge conflict in src/map/pathfind/MapPathfindRessource.cpp
+Auto-merging src/map/tools/MapReport.cpp
+Auto-merging src/render/GameRenderTerrain.cpp
+CONFLICT (content): Merge conflict in src/render/GameRenderTerrain.cpp
+Auto-merging src/render/Minimap.cpp
+Auto-merging src/unit/Unit.cpp
+Auto-merging src/unit/Unit.h
+Auto-merging test/README.md
+CONFLICT (content): Merge conflict in test/README.md
+error: could not apply 0fb806694... Prototype ice and cobblestone terrain
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Could not apply 0fb806694... # Prototype ice and cobblestone terrain

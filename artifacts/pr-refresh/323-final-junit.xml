@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="23" failures="0" errors="0" skipped="0"><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Bastion Keys contracts" time="0.93403" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Drowned Forest contracts [slow]" time="28.9709" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Explicit designs preserve pre-Random golden worlds" time="0.512562" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Faulted City contracts" time="7.90288" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Gauntlet shapes; request rejection and final-world corruption checks" time="2.3679" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Hungry Marches contracts" time="2.314" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Last Treeline checks" time="6.61623" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Portage Lakes contracts [slow]" time="20.1404" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Random design defaults resolve reproducibly without changing explicit enums" time="1.66637" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Random designs match explicit generated worlds on rectangles [slow]" time="2.62823" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="Who Ate the Map contracts" time="1.26283" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="editor and lobby defaults contract [slow][map-generators]" time="0.155636" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="search domains preserve legal values and constrain deterministic rolls" time="0.089175" status="run" />
+  <testcase classname="MapGeneratorDefaults" name="toolkit geometry; raster; resource and home contracts" time="1.07464" status="run" />
+  </testsuite><testsuite name="PrototypeTerrain"><testcase classname="PrototypeTerrain" name="mixed costs agree with Dijkstra eager and resumed fields" time="0.006015" status="run" />
+  <testcase classname="PrototypeTerrain" name="scene layers and binary text saves preserve terrain and continuation [save-format]" time="0.332028" status="run" />
+  </testsuite><testsuite name="PrototypeTerrainRender"><testcase classname="PrototypeTerrainRender" name="flat terrain and single-corner overlays match direct OpenGL drawing [display][artifacts]" time="0.794645" status="run" />
+  <testcase classname="PrototypeTerrainRender" name="flat terrain and single-corner overlays match direct software drawing [display][artifacts]" time="0.660132" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="0.012217" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="7.27316" status="run" />
+  </testsuite><testsuite name="TerrainResources"><testcase classname="TerrainResources" name="terrain strokes clear incompatible resources; buildings and units" time="0.810787" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.243837" status="run" />
+  </testsuite><testsuite name="TextStream"><testcase classname="TextStream" name="legacy scoped statistics keys preserve section inheritance" time="0.000103" status="run" />
+  </testsuite></testsuites>

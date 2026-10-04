@@ -1,74 +1,134 @@
 [
   {
     "number": 493,
-    "sha": "b8ccbfb0716ec79c08a46a1856905daa9361aa84",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "56f9068e1808d48cd0174b36e0535cf826d7b3f4",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "19 tests passed",
     "commands": "python3 -m unittest discover -s tools/unit-animation -p test_*.py",
-    "limitations": "No Blender render or art regeneration; engine unchanged."
+    "limitations": "No Blender render or art regeneration; engine unchanged.",
+    "previous_validation_sha": "b8ccbfb0716ec79c08a46a1856905daa9361aa84",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "19 unit-animation tests passed again on final rebased head; whitespace check passed.",
+    "latest_master_commands": "python3 -m unittest discover -s tools/unit-animation -p test_*.py; git diff --check origin/master...HEAD"
   },
   {
     "number": 448,
-    "sha": "36e75abc33dd65e5aa2acc17c180fc76b73fbdd4",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "a5c2ad0e8c9352ea9d4bf96707671cefc808265b",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "Resolved conflict against current online-service policy; whitespace check passed",
     "commands": "git diff --check origin/master...HEAD",
-    "limitations": "Documentation only; no APK or privacy publication."
+    "limitations": "Documentation only; no APK or privacy publication.",
+    "previous_validation_sha": "36e75abc33dd65e5aa2acc17c180fc76b73fbdd4",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "Whitespace check passed; rebasing added only newer master changes, with no feature changes. Prior icon/mailmap/privacy checks remain applicable.",
+    "latest_master_commands": "git diff --check origin/master...HEAD"
   },
   {
     "number": 430,
-    "sha": "cc3ff3d0bab79172f70da86a696d463f30bbab8d",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "65f84e211677fc732d2f7c6d459ae345dff00065",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "13 opaque iOS icons reproduce exactly; Android unchanged; whitespace check passed",
     "commands": "python3 mobile/icons.py; git diff --exit-code; Pillow mode/background checks",
-    "limitations": "No signed archive, simulator gameplay or store publication."
+    "limitations": "No signed archive, simulator gameplay or store publication.",
+    "previous_validation_sha": "cc3ff3d0bab79172f70da86a696d463f30bbab8d",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "Whitespace check passed; rebasing added only newer master changes, with no feature changes. Prior icon/mailmap/privacy checks remain applicable.",
+    "latest_master_commands": "git diff --check origin/master...HEAD"
   },
   {
     "number": 5,
-    "sha": "8f05ee98a2109a6b4e3a613a802f53577edb735c",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "df23dd3c37db7c9f8d11fcc7da40c090229c543b",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "Four ambiguous legacy none@none authors resolve correctly; whitespace check passed",
     "commands": "git check-mailmap nct/leo/marv/genixpro contacts; git diff --check origin/master...HEAD",
-    "limitations": "Author mappings preserved; draft remains draft."
+    "limitations": "Author mappings preserved; draft remains draft.",
+    "previous_validation_sha": "8f05ee98a2109a6b4e3a613a802f53577edb735c",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "Whitespace check passed; rebasing added only newer master changes, with no feature changes. Prior icon/mailmap/privacy checks remain applicable.",
+    "latest_master_commands": "git diff --check origin/master...HEAD"
   },
   {
     "number": 254,
-    "sha": "ba7c379faf3fdfe0537dd3453a1f3e155209cd92",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "2bdaf33460789a5f1630a0ec31b55d7a988e32e1",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "Engine build passed; 7 focused hiring/save/load cases passed; golden match regenerated and verified; sim-version contract passed.",
     "commands": "GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix CCACHE=1 scons -j6 release=1 engine-tests; python3 test/run_tests.py --filter GigRelease/* --filter HiringBucket/* --filter ResourceFetchTarget/* --filter RoundTripHungerGate/* --filter SavegameSafety/* --filter RuntimeContinuation/* --no-display; python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'; python3 test/check_sim_revision.py --base origin/master",
-    "limitations": "macOS arm64 only; Linux/Windows/browser per-tick equivalence, human play and fresh balance benchmarks not run. Existing Econo regression review remains unresolved; PR remains draft."
+    "limitations": "macOS arm64 only; Linux/Windows/browser per-tick equivalence, human play and fresh balance benchmarks not run. Existing Econo regression review remains unresolved; PR remains draft.",
+    "previous_validation_sha": "ba7c379faf3fdfe0537dd3453a1f3e155209cd92",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "Native binaries rebuilt on final rebased head; focused checks passed. Exact command filters and results in latest-master integration log; prior broader evidence remains linked at previous_validation_sha.",
+    "latest_master_commands": "GLOB2_SDL3_PREFIX=<pinned SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --junit artifacts/pr-refresh/254-latest-master-junit.xml --filter 'GigRelease/*' --filter 'HiringBucket/*' --filter 'SavegameSafety/*' --filter 'RuntimeContinuation/*' --filter 'TurnEngineHarness/the committed*' --no-display; python3 test/check_sim_revision.py --base origin/master; git diff --check origin/master...HEAD"
   },
   {
     "number": 257,
-    "sha": "4d32a09c39c2cd8eb0424d5f2bd04c5ea2d02b7d",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "3ed8505bc83586741769c5a1ba7fea072d9564a3",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "Engine and unit builds passed; 693 headless unit cases passed (13 display/slow skips); 19 focused engine cases passed; golden record regenerated; sim-version contract passed.",
     "commands": "GLOB2_SDL3_PREFIX=<pinned SDL3 3.4.16 / ttf 3.2.2 / image 3.4.6 / net 3.2.0 SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --binary unit --no-display --quick; python3 test/run_tests.py --binary engine --filter MarketFetch/* --filter GigRelease/* --filter HiringBucket/* --filter ResourceFetchTarget/* --filter RoundTripHungerGate/* --filter SavegameSafety/* --filter RuntimeContinuation/* --filter MapGradientInvalidation/* --filter 'TurnEngineHarness/the committed*' --filter MatchSetup/* --no-display; python3 test/check_sim_revision.py --base origin/master",
-    "limitations": "macOS arm64 only; cross-platform per-tick checks and human market gameplay not run. Stacked on draft #254 with unresolved balance feedback. Converted to draft pending those remaining checks. Earlier failing logs are retained; final tests and JUnit supersede them."
+    "limitations": "macOS arm64 only; cross-platform per-tick checks and human market gameplay not run. Stacked on draft #254 with unresolved balance feedback. Converted to draft pending those remaining checks. Earlier failing logs are retained; final tests and JUnit supersede them.",
+    "previous_validation_sha": "4d32a09c39c2cd8eb0424d5f2bd04c5ea2d02b7d",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "Native binaries rebuilt on final rebased head; focused checks passed. Exact command filters and results in latest-master integration log; prior broader evidence remains linked at previous_validation_sha.",
+    "latest_master_commands": "GLOB2_SDL3_PREFIX=<pinned SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --junit artifacts/pr-refresh/257-latest-master-junit.xml --filter 'MarketFetch/*' --filter 'MapGradientInvalidation/*' --filter 'SavegameSafety/*' --filter 'RuntimeContinuation/*' --filter 'TurnEngineHarness/the committed*' --no-display; python3 test/check_sim_revision.py --base origin/master; git diff --check origin/master...HEAD"
   },
   {
     "number": 258,
-    "sha": "f46b16e7d7bfbd23539cfeee3d5a250a0f58a4d1",
-    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "sha": "258c853a79e54731f172003ee9f27ef35049f56d",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "Native tests build passed; 11 market/save/scene/golden cases passed; all three market levels survive binary and text saves; sim-version contract passed.",
     "commands": "GLOB2_SDL3_PREFIX=<same pinned SDK as #257> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --filter MarketFetch/* --filter SavegameSafety/* --filter SceneExtract/* --filter 'TurnEngineHarness/the committed*' --no-display; python3 test/check_sim_revision.py --base origin/master",
-    "limitations": "macOS arm64 only. No cross-platform per-tick comparison, human visual/balance review or distinct upgrade sprites; costs remain provisional. Draft stack retains #254 balance concern."
+    "limitations": "macOS arm64 only. No cross-platform per-tick comparison, human visual/balance review or distinct upgrade sprites; costs remain provisional. Draft stack retains #254 balance concern.",
+    "previous_validation_sha": "f46b16e7d7bfbd23539cfeee3d5a250a0f58a4d1",
+    "previous_validation_base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "latest_master_verification": "Native binaries rebuilt on final rebased head; focused checks passed. Exact command filters and results in latest-master integration log; prior broader evidence remains linked at previous_validation_sha.",
+    "latest_master_commands": "GLOB2_SDL3_PREFIX=<pinned SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --junit artifacts/pr-refresh/258-latest-master-junit.xml --filter 'MarketFetch/*' --filter 'SceneExtract/*' --filter 'SavegameSafety/*' --filter 'TurnEngineHarness/the committed*' --no-display; python3 test/check_sim_revision.py --base origin/master; git diff --check origin/master...HEAD"
   },
   {
     "number": 220,
-    "sha": "b71e295c1555b4da2a176719ca0bc35d47e96cd8",
-    "base": "526f607f919ea57c9aa1735944848953c8941d69",
+    "sha": "13dc865444ea9fbeb41538d8f6d19d25d7136978",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "All 2,287 frames and source hashes validated; 91,136 terrain joins checked; candidate preparation/rejection passed; four software/OpenGL renderer cases passed. Selected current renderer captures attached.",
     "commands": "python3 tools/artwork/package_runtime.py --check; uv run --with numpy --with scipy --with pillow python tools/artwork/validate_runtime.py; python3 tools/artwork/runtime_provenance.py --check; GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --filter RuntimePack/* --filter HighResolutionIntegration/* --artifacts artifacts/pr-refresh/220-render",
-    "limitations": "macOS arm64 software/OpenGL only; external model inference, other platforms and human gameplay/performance review not performed. Original PR history preserved on archive branch."
+    "limitations": "macOS arm64 software/OpenGL only; external model inference, other platforms and human gameplay/performance review not performed. Original PR history preserved on archive branch.",
+    "previous_validation_sha": "b71e295c1555b4da2a176719ca0bc35d47e96cd8",
+    "previous_validation_base": "526f607f919ea57c9aa1735944848953c8941d69",
+    "latest_master_verification": "Native binaries rebuilt on final rebased head; focused checks passed. Exact command filters and results in latest-master integration log; prior broader evidence remains linked at previous_validation_sha.",
+    "latest_master_commands": "GLOB2_SDL3_PREFIX=<pinned SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --junit artifacts/pr-refresh/220-latest-master-junit.xml --filter 'HighResolutionIntegration/*' --artifacts artifacts/pr-refresh/220-latest-master-render; python3 test/check_sim_revision.py --base origin/master; git diff --check origin/master...HEAD"
   },
   {
     "number": 214,
-    "sha": "612cf6b4ed464a759112de3b859dbf02bc736daa",
-    "base": "526f607f919ea57c9aa1735944848953c8941d69",
+    "sha": "c1794546c221dbe86bed3d43db99d30a5336b712",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
     "result": "Native test binaries build; five mixer/music/settings/golden cases pass; six Python checks pass and one repeat-synthesis case skips. Audio settings capture inspected and localization corrected.",
     "commands": "GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix CCACHE=1 scons -j6 release=1 tests; uv run --with numpy python -m unittest discover -s music -p 'test_*.py'; python3 test/run_tests.py --filter 'MusicSet/*' --filter 'SoundMixerTrackSelection/*' --filter 'Settings/*640x480 in OpenGL*' --filter 'TurnEngineHarness/the committed*' --artifacts artifacts/pr-refresh/214-render; python3 test/check_sim_revision.py --base origin/master",
-    "limitations": "macOS arm64 only; offline repeat synthesis skipped without pinned sound bank. No fresh full soundtrack render, other-platform checks or human listening review. Draft retained. Earlier failed build iterations superseded by final logs."
+    "limitations": "macOS arm64 only; offline repeat synthesis skipped without pinned sound bank. No fresh full soundtrack render, other-platform checks or human listening review. Draft retained. Earlier failed build iterations superseded by final logs.",
+    "previous_validation_sha": "612cf6b4ed464a759112de3b859dbf02bc736daa",
+    "previous_validation_base": "526f607f919ea57c9aa1735944848953c8941d69",
+    "latest_master_verification": "Native binaries rebuilt on final rebased head; focused checks passed. Exact command filters and results in latest-master integration log; prior broader evidence remains linked at previous_validation_sha.",
+    "latest_master_commands": "GLOB2_SDL3_PREFIX=<pinned SDK> CCACHE=1 scons -j6 release=1 tests; python3 test/run_tests.py --junit artifacts/pr-refresh/214-latest-master-junit.xml --filter 'MusicSet/*' --filter 'Settings/*' --filter 'SoundMixerTrackSelection/*' --filter 'TurnEngineHarness/the committed*' --artifacts artifacts/pr-refresh/214-latest-master-render; python3 test/check_sim_revision.py --base origin/master; git diff --check origin/master...HEAD"
+  },
+  {
+    "number": 323,
+    "sha": "739b4e4065ca616eaede3151b2ca21f9b9bb8dd8",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
+    "result": "Native tests/client build passed; 23 focused engine/parser/render/save cases passed; 694 headless unit cases passed (13 display/slow skips); 564 macOS generator golden rows passed, all 32 bumped default rows keep identical status/hash; nine manual-control maps and four enabled terrain renders succeeded; final rebased head six cases passed; independent source re-review found no new actionable defects.",
+    "commands": "GLOB2_SDL3_PREFIX=<pinned SDL3 SDK> CCACHE=1 scons -j6 release=1 tests map-generator-golden-test build/darwin/client/release/src/glob2; python3 test/run_tests.py --filter TerrainResources/* --filter PrototypeTerrain/* --filter PrototypeTerrainRender/* --filter TextStream/* --filter MapGeneratorDefaults/* --filter SavegameSafety/* --filter RuntimeContinuation/* --filter 'TurnEngineHarness/the committed*'; python3 test/run_tests.py --binary unit --no-display --quick; MapGeneratorGoldenTest <profile> --update --only=city-states,fjord-continent,old-town,watershed; MapGeneratorGoldenTest <profile> --require-rows; nine map commands recorded in 323-maps/results.json; python3 test/check_sim_revision.py --base origin/master",
+    "limitations": "macOS arm64 only; no Linux/Windows/browser per-tick comparison, fresh balance tournaments, full generator-envelope sweeps or human gameplay. Prototype artwork; bypassing flat terrain caches can increase rendering cost. Foreign-platform golden rows not fabricated. Original history archived; draft retained. Failed intermediate logs retained; final-head JUnit supersedes them."
+  },
+  {
+    "number": 694,
+    "sha": "5c5a84b3f099239e30c959a1c095f2ae082ba459",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
+    "result": "Rebase succeeded without conflicts; build-system suite ran 297 tests, OK with one NSIS-compiler skip; YAML parsed and whitespace check passed.",
+    "commands": "python3 -m unittest discover -s test/build_system; uv run --with pyyaml python <yaml.safe_load workflow>; git diff --check origin/master...HEAD",
+    "limitations": "Workflow-only change; Windows/Epic packaging or upload not run from macOS. No release/tag changed."
+  },
+  {
+    "number": 695,
+    "sha": "07f21bac58106e4a9525c5581fc79682b349e9be",
+    "base": "8bc1b897ff7b30b094d35dd86c3230828988c457",
+    "result": "Already contains latest master; no rewrite or integration adjustment required. 36 native runner contracts pass on current head; ancestry and whitespace checks pass. Existing broader author evidence is retained separately and is not claimed as rerun.",
+    "commands": "git merge-base --is-ancestor origin/master origin/codex/repair-windows-recording-and-lan; git diff --check origin/master...origin/codex/repair-windows-recording-and-lan; python3 -m unittest discover -s test -p test_run_tests.py",
+    "limitations": "No native rebuild, recording or LAN engine suite rerun in this audit. Original author evidence covers prior 64efcdacc; current head adds timeout diagnostics. Windows hosted verification pending; existing draft retained."
   }
 ]

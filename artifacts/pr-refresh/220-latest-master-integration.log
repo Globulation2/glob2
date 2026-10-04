@@ -1,0 +1,15 @@
+Switched to branch 'codex/refresh-pr-220'
+Your branch is up to date with 'origin/codex/hd-ai-artwork'.
+Rebasing (1/2)Rebasing (2/2)Successfully rebased and updated refs/heads/codex/refresh-pr-220.
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts] (1.0s)
+PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (29.4s)
+
+2 passed, 0 failed, 0 skipped (30.4s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/open-pr-refresh/glob2/artifacts/pr-refresh/220-latest-master-junit.xml (2 cases)
+The sim version key matches the committed match record and follows every change of the golden trace
+remote: 
+remote: GitHub found 13 vulnerabilities on Globulation2/glob2's default branch (10 high, 3 moderate). To find out more, visit:        
+remote:      https://github.com/Globulation2/glob2/security/dependabot        
+remote: 
+To github.com:Globulation2/glob2.git
+ + b71e295c1...13dc86544 HEAD -> codex/hd-ai-artwork (forced update)

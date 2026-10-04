@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (694 cases) (4.9s)
+
+1 passed, 0 failed, 13 skipped (4.9s of test time)
+[run_tests] JUnit report: artifacts/pr-refresh/323-unit-junit.xml (707 cases)

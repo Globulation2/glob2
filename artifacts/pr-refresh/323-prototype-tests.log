@@ -1,0 +1,9 @@
+PASS glob2-unit-tests TextStream (1 cases) (0.0s)
+PASS PrototypeTerrain/mixed costs agree with Dijkstra eager and resumed fields (0.0s)
+PASS PrototypeTerrain/scene layers and binary text saves preserve terrain and continuation [save-format] (0.3s)
+PASS TerrainResources/terrain strokes clear incompatible resources; buildings and units (0.6s)
+PASS PrototypeTerrainRender/flat terrain and single-corner overlays match direct software drawing [display][artifacts] (0.9s)
+PASS PrototypeTerrainRender/flat terrain and single-corner overlays match direct OpenGL drawing [display][artifacts] (0.9s)
+
+6 passed, 0 failed, 0 skipped (2.8s of test time)
+[run_tests] JUnit report: artifacts/pr-refresh/323-prototype-junit.xml (6 cases)

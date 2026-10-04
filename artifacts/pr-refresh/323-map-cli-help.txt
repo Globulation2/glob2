@@ -1,0 +1,20 @@
+  --render-game <file.map|file.game> --output file.png [--render-max-pixels 1..8192]
+    [--render-field file.field] [--field-color r,g,b]
+Map launch modes (put the mode first; no display required):
+  --generate-map <generator> [--output file.map] [--preview file.png] [--json report.json]
+    [--config file] [--set key=value ...] [--seed N]
+    [--width tiles] [--height tiles] [--teams N] [--workers N]
+  --preview-map <file.map|file.game> [--output file.png] [--json report.json]
+  --export-map-image <file.map|file.game> --output image.png
+  --import-map-image <image.png> --output file.map [--preview file.png] [--json report.json]
+    [--width tiles] [--height tiles] [--teams N] [--workers N] [--seed N]
+    [--image-seam-width 0..16] (default: map short side / 32, clamped 2..12)
+  --generate-map <generator> --map-image image.png [other outputs/settings]
+  --list-map-generators [generator]  List IDs, or settings and allowed values
+Preview scale: --preview-scale 2|4|8 (default 2, relative to retained thumbnail pixels).
+Or --preview-size 128..4096 (explicit longest side; cannot combine with scale).
+Asset search: -d directory (repeatable).
+Supply at least one output: --output, --preview, or --json. Defaults: seed=1, registered settings.
+Config: key=value lines; blank lines and # comments allowed. CLI overrides config.
+Width/height are tile counts, not exponents. See docs/map-generators/CLI.md.
+JSON fields, units and formulas: docs/map-generators/REPORT.md.

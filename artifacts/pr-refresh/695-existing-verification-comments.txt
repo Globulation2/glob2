@@ -1,0 +1,16 @@
+author:	genixpro
+association:	member
+edited:	false
+status:	none
+--
+Final local verification: clean `64efcdacc80c03e55d27b974bbb002bbd5b284c0`, base `8bc1b897ff7b30b094d35dd86c3230828988c457`, Ubuntu 26.04 x86_64, GCC 15.2.0 / C++20 release O3, SDL 3.4.16, pinned recording dependencies and host FFmpeg.
+
+- 707 unit cases pass, no skips; 36 runner contracts pass.
+- Eight engine cases pass, no skips: real LAN WSS drop/restart/departure and per-tick checksum comparisons, delayed-write drain boundary, destroyed-room timeout diagnostics, three recording integrations, and the unchanged committed golden match.
+- The slow-start recording retained from the preceding local PCM failure meets the original length/content/timing assertions when decoded on the video's zero clock; onset error is 0.884ms against the existing 50ms threshold.
+
+[Commands, coverage rationale and limitations](https://github.com/Globulation2/glob2/blob/5c5bc2756683a8df1d677349df978ab137c64949/windows-recording-lan/README.md), [unit results](https://github.com/Globulation2/glob2/blob/5c5bc2756683a8df1d677349df978ab137c64949/windows-recording-lan/windows-final64-unit.xml), [engine results](https://github.com/Globulation2/glob2/blob/5c5bc2756683a8df1d677349df978ab137c64949/windows-recording-lan/windows-final64-engine.xml), and [original Windows crash stack](https://github.com/Globulation2/glob2/blob/5c5bc2756683a8df1d677349df978ab137c64949/windows-recording-lan/windows-before-crash.log) are attached on the evidence branch. Raw before-Windows unit/engine reports and LAN network summary are retained alongside them.
+
+Hosted validation of this final source is [run 37181722642](https://github.com/Globulation2/glob2/actions/runs/37181722642); Windows is running. These local results do not establish the full hosted matrix. No simulation/save/replay version boundary changed; the golden record remains identical. Windows recording becomes usable, and guests receive the host-departure message after asynchronous writes drain.
+
+--

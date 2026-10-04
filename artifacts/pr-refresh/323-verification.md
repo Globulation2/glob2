@@ -1,0 +1,10 @@
+Local verification
+
+- Tested final commit SHA: 739b4e4065ca616eaede3151b2ca21f9b9bb8dd8
+- Final base: 8bc1b897ff7b30b094d35dd86c3230828988c457 (rebased PR head).
+- Environment: macOS, arm64; Python 3.14.7; Apple Clang 21.0.0.
+- Native SDK where applicable: SDL3 3.4.16, SDL3_ttf 3.2.2, SDL3_image 3.4.6, SDL3_net 3.2.0; release=1, -j6, CCACHE=1.
+- Final verification: Native tests/client build passed; 23 focused engine/parser/render/save cases passed; 694 headless unit cases passed (13 display/slow skips); 564 macOS generator golden rows passed, all 32 bumped default rows keep identical status/hash; nine manual-control maps and four enabled terrain renders succeeded; final rebased head six cases passed; independent source re-review found no new actionable defects.
+- Commands/results: `GLOB2_SDL3_PREFIX=<pinned SDL3 SDK> CCACHE=1 scons -j6 release=1 tests map-generator-golden-test build/darwin/client/release/src/glob2; python3 test/run_tests.py --filter TerrainResources/* --filter PrototypeTerrain/* --filter PrototypeTerrainRender/* --filter TextStream/* --filter MapGeneratorDefaults/* --filter SavegameSafety/* --filter RuntimeContinuation/* --filter 'TurnEngineHarness/the committed*'; python3 test/run_tests.py --binary unit --no-display --quick; MapGeneratorGoldenTest <profile> --update --only=city-states,fjord-continent,old-town,watershed; MapGeneratorGoldenTest <profile> --require-rows; nine map commands recorded in 323-maps/results.json; python3 test/check_sim_revision.py --base origin/master`; final rebase and focused commands/results also recorded in 323-latest-master-integration.log where present.
+- Limitations: macOS arm64 only; no Linux/Windows/browser per-tick comparison, fresh balance tournaments, full generator-envelope sweeps or human gameplay. Prototype artwork; bypassing flat terrain caches can increase rendering cost. Foreign-platform golden rows not fabricated. Original history archived; draft retained. Failed intermediate logs retained; final-head JUnit supersedes them.
+

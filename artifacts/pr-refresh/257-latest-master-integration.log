@@ -1,0 +1,19 @@
+Switched to branch 'codex/refresh-pr-257'
+Your branch is up to date with 'origin/fix/market-round-trip'.
+Rebasing (1/2)Rebasing (2/2)Successfully rebased and updated refs/heads/codex/refresh-pr-257.
+PASS MarketFetch/stocked markets are resource goals, depleted markets are not (0.0s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.1s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (0.3s)
+PASS MapGradientInvalidation/forbidden edits invalidate exactly the affected fields and preserve the rest (0.3s)
+PASS MarketFetch/market fields and pending publications survive binary and text saves [save-format] (0.8s)
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (5.9s)
+
+6 passed, 0 failed, 0 skipped (7.4s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/open-pr-refresh/glob2/artifacts/pr-refresh/257-latest-master-junit.xml (6 cases)
+The sim version key matches the committed match record and follows every change of the golden trace
+remote: 
+remote: GitHub found 13 vulnerabilities on Globulation2/glob2's default branch (10 high, 3 moderate). To find out more, visit:        
+remote:      https://github.com/Globulation2/glob2/security/dependabot        
+remote: 
+To github.com:Globulation2/glob2.git
+ + 4d32a09c3...3ed8505bc HEAD -> fix/market-round-trip (forced update)

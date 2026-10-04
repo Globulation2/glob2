@@ -1,0 +1,81 @@
+BuildingExpel/steps without any gradient
+BuildingGradientInvalidation/a paused field keeps its original obstacles
+BuildingGradientInvalidation/a ring cuts off a virtual flags field
+BuildingGradientInvalidation/a rival teams ring cuts off a cached field
+BuildingGradientInvalidation/centre placed inside an existing ring
+BuildingGradientInvalidation/delayed fields
+BuildingGradientInvalidation/idle field storage is reused without stale routes
+BuildingGradientInvalidation/parallel fields
+BuildingGradientInvalidation/public reads resolve their inputs
+BuildingGradientInvalidation/ring placed around an existing field
+ClearingFlagGradient/basic switches; all fruit; empty tiles; padding independence and swimming variants
+FieldGradient/Bounded traversal preserves unwrapped domain coordinates
+FieldGradient/Convergent influence agrees with an independent strongest first frontier
+FieldGradient/Depth first traversal preserves stack discovery order
+FieldGradient/Directional sweep digests preserve original byte arithmetic and scan order
+FieldGradient/Distance FIFO preserves order through wrap growth and scratch reuse
+FieldGradient/FIFO discovery can stop without admitting later neighbours
+FieldGradient/FIFO visitor stop retains vector history and ring pending entries
+FieldGradient/Map independent weighted kernel agrees with a heap oracle
+FieldGradient/Ordered payload traversal stops on the threshold crossing cell
+FieldGradient/Priority traversal preserves zero costs stale entries and heap tie order
+FieldGradient/Uniform fields preserve metrics obstacles and wrapping
+GlobalGradient/check boundaries and obstacles
+GlobalGradient/check inert fields
+GlobalGradient/check random fields
+Gradient/DirectionBlockedNeighbour
+Gradient/DirectionPrefersCheapestTotal
+Gradient/MatchesLegacyKernelOnLargeMaps
+Gradient/MaxCostStopsPropagation
+Gradient/ObstaclesForcePathAround
+Gradient/OpenGridIsOctileOnTorus
+Gradient/RandomFieldsAgainstReference
+Gradient/SeedBelowGoalPropagates
+Gradient/SeedsBeyondBucketWindow
+Gradient/SwimClassFromSpeeds
+Gradient/UnreachableCellsStayUnreachable
+Gradient/WaterCostsBySwimClass
+GradientBFS/EmptyQueueIsNoop
+GradientBFS/IsolatedCellRemainsUnreachable
+GradientBFS/MultipleSourcesUseMinimum
+GradientBFS/ObstacleNotOverwritten
+GradientBFS/QueueIsDrained
+GradientBFS/SingleSourceMatchesChebyshev
+GradientBFS/WrapAroundSmallGrid
+GradientPipeline/fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown
+ImmobileUnitGradient/fresh map has no immobile units
+ImmobileUnitGradient/immobile unit blocks its own tile
+ImmobileUnitGradient/painting forbidden area refreshes gradients
+LegacyAIState/Cabino preserves stale gradients module latches and fruit memories
+MapGeneratorDefaults/Bastion Keys contracts
+MapGeneratorDefaults/Drowned Forest contracts [slow]
+MapGeneratorDefaults/Explicit designs preserve pre-Random golden worlds
+MapGeneratorDefaults/Faulted City contracts
+MapGeneratorDefaults/Gauntlet shapes; request rejection and final-world corruption checks
+MapGeneratorDefaults/Hungry Marches contracts
+MapGeneratorDefaults/Last Treeline checks
+MapGeneratorDefaults/Portage Lakes contracts [slow]
+MapGeneratorDefaults/Random design defaults resolve reproducibly without changing explicit enums
+MapGeneratorDefaults/Random designs match explicit generated worlds on rectangles [slow]
+MapGeneratorDefaults/Who Ate the Map contracts
+MapGeneratorDefaults/editor and lobby defaults contract [slow][map-generators]
+MapGeneratorDefaults/search domains preserve legal values and constrain deterministic rolls
+MapGeneratorDefaults/toolkit geometry; raster; resource and home contracts
+MapGradientInvalidation/forbidden edits invalidate exactly the affected fields and preserve the rest
+Maxima.Implementation/gradient dependencies; payload round trips and cache expiry
+PathGradient/analytic oracle
+PathGradient/boundary; random and exhaustive seeds against the heap oracle
+PathGradient/immutable water snapshots share storage and retain their captured terrain [pathfinding]
+PathGradient/lazy building fields
+PathGradient/parallel searches
+ResourceFetchTarget/a depleted target is refreshed after its gradient rebuild for every swim class
+RuntimeContinuation/gradient manager state survives binary and text round trips [save-format]
+SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]
+SceneExtract/overlay maps match a direct computation and refresh per 25-tick window or type change
+SceneExtract/published scene retains old entity fields while subsequent scenes reflect changes
+SceneExtract/script area snapshots are opt-in and independent of later map edits
+SceneExtract/smooth unit motion advances the drawn delta within the current action only
+SceneExtract/stale selection generation never selects a replacement occupying the same gid
+SceneExtract/units and buildings resolve by gid with their drawn fields and the selection
+SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines
+80 cases
