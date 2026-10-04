@@ -44,6 +44,18 @@ void draw(Recorder &recorder, SDL_Surface *pixels, int milliseconds)
 	}
 }
 
+// Functional media checks wait for encoded output, rather than assuming a
+// worker has run within a short wall-clock interval on a contended test host.
+template<class Ready>
+void drawUntil(Recorder &recorder, SDL_Surface *pixels, Ready ready)
+{
+	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
+	do { draw(recorder, pixels, 50); }
+	while (!ready() && std::chrono::steady_clock::now() < deadline);
+	INFO(recorder.status().error);
+	REQUIRE(ready());
+}
+
 void awaitRecording(Recorder &recorder, SDL_Surface &pixels)
 {
 	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
@@ -203,9 +215,14 @@ TEST_SUITE("GameplayRecording")
 		draw(recorder, pixels.get(), 200);
 		recorder.beginMatch("multiplayer", "chapter test", 2, 15000);
 		recorder.matchFrame(15000, false, 40);
-		draw(recorder, pixels.get(), 200);
+		const auto journal = path.string() + ".recording/events.jsonl";
+		drawUntil(recorder, pixels.get(), [&] {
+			return read(journal).find("\"era_start\":10000") != std::string::npos;
+		});
 		recorder.matchFrame(20000, false, 40);
-		draw(recorder, pixels.get(), 200);
+		drawUntil(recorder, pixels.get(), [&] {
+			return read(journal).find("\"era_start\":20000") != std::string::npos;
+		});
 		recorder.matchFrame(20005, true, 40);
 		recorder.dialog("in_game_main");
 		draw(recorder, pixels.get(), 200);
@@ -214,9 +231,14 @@ TEST_SUITE("GameplayRecording")
 		SDL_FillSurfaceRect(pixels.get(), nullptr,
 							SDL_MapSurfaceRGBA(pixels.get(), 10, 20, 200, 255));
 		recorder.matchFrame(20005, false, 40);
-		draw(recorder, pixels.get(), 350);
+		drawUntil(recorder, pixels.get(), [&] {
+			return recorder.status().segment == 2 && recorder.status().state == State::Recording;
+		});
 		recorder.screen("end_game");
-		draw(recorder, pixels.get(), 200);
+		drawUntil(recorder, pixels.get(), [&] {
+			return read(recorder.status().path + ".recording/events.jsonl").find(
+				"\"phase\":\"results\"") != std::string::npos;
+		});
 		recorder.stop();
 		CHECK_FALSE(recorder.active());
 		CHECK_FALSE(recorder.start(output("busy").string()));
