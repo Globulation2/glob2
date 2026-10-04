@@ -1,0 +1,6 @@
+[run_tests] /Users/bradley/.codex/worktrees/open-pr-refresh/glob2/build/darwin/client/release/test/glob2-unit-tests is not built; skipping
+PASS MarketFetch/stocked markets are resource goals, depleted markets are not (0.0s)
+PASS MarketFetch/market fields and pending publications survive binary and text saves [save-format] (0.7s)
+
+2 passed, 0 failed, 0 skipped (0.8s of test time)
+[run_tests] JUnit report: artifacts/pr-refresh/257-market-junit.xml (2 cases)

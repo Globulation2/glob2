@@ -1,0 +1,11 @@
+[run_tests] /Users/bradley/.codex/worktrees/open-pr-refresh/glob2/build/darwin/client/release/test/glob2-unit-tests is not built; skipping
+PASS ResourceFetchTarget/a depleted target is refreshed after its gradient rebuild for every swim class (0.0s)
+PASS RoundTripHungerGate/the fallback scores a whole round trip (0.0s)
+PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.0s)
+PASS RoundTripHungerGate/a unit is judged on the walk to the resource (0.1s)
+PASS HiringBucket/hiring round is fair (0.1s)
+PASS GigRelease/deliveries are released only with at least a fifth idle (0.1s)
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (6.6s)
+
+7 passed, 0 failed, 0 skipped (6.9s of test time)
+[run_tests] JUnit report: artifacts/pr-refresh/254-junit.xml (7 cases)

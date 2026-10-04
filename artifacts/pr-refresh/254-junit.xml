@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="src/unit/GigReleaseHarness.cpp"><testcase classname="src/unit/GigReleaseHarness.cpp" name="GigRelease/deliveries are released only with at least a fifth idle" time="0.003446" status="run" />
+  </testsuite><testsuite name="HiringBucket"><testcase classname="HiringBucket" name="hiring round is fair" time="0.002961" status="run" />
+  </testsuite><testsuite name="ResourceFetchTarget"><testcase classname="ResourceFetchTarget" name="a depleted target is refreshed after its gradient rebuild for every swim class" time="0.003432" status="run" />
+  </testsuite><testsuite name="RoundTripHungerGate"><testcase classname="RoundTripHungerGate" name="a unit is judged on the walk to the resource" time="0.00475" status="run" />
+  <testcase classname="RoundTripHungerGate" name="the fallback scores a whole round trip" time="0.002213" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="0.01164" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="6.59451" status="run" />
+  </testsuite></testsuites>
