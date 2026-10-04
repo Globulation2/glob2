@@ -3,7 +3,7 @@
 //
 // Standalone regression harness for SoundMixer's track selection and its fade
 // state machine. Both changed when the device buffer shrank from 16384 frames
-// to 1024 and a fade consequently grew from one callback to sixteen.
+// to 1024; the 48 kHz mixer scales the fade to preserve its duration.
 //
 // Two regressions are covered:
 //
@@ -16,7 +16,7 @@
 //     track rather than the game track. While nothing is playing there is no
 //     "current" track, so the selection must move both.
 //
-//  2. A fade now spans sixteen callbacks, so a track change can arrive while
+//  2. A fade now spans multiple callbacks, so a track change can arrive while
 //     one is still running -- GameMusicController can emit on consecutive
 //     40 ms ticks. Restarting the fade cut the incoming track off mid-mix,
 //     jumping the output by whatever it had faded in so far. The request is
@@ -203,6 +203,28 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 		check(mix.fadePos == repeatedFadePosition, "repeated incoming mood preserves fade progress");
 		pump(mix, kCallbacksPerFade - 4);
 		check(mix.mode == SoundMixer::MODE_NORMAL, "repeated incoming mood does not start a self fade");
+
+        // Vary the callback size, including a partial Opus packet and a large
+        // device request. Fade progress and mood alignment use PCM samples.
+        for (const unsigned frames : {127u, 1024u, 4096u})
+        {
+            beginCrossfade(mix, MusicTrack::InGameDefault, MusicTrack::BuildingEvent);
+            std::vector<Sint16> output(frames * 2);
+            const unsigned calls = (SoundMixer::FadeSampleCount + frames * 2 - 1) / (frames * 2);
+            for (unsigned call = 0; call < calls; ++call)
+            {
+                mixaudio(&mix, reinterpret_cast<Uint8 *>(output.data()), output.size() * sizeof(Sint16));
+                check(op_pcm_tell(mix.tracks[static_cast<int>(MusicTrack::InGameDefault)]) ==
+                      op_pcm_tell(mix.tracks[static_cast<int>(MusicTrack::BuildingEvent)]),
+                      "callback sizes preserve aligned mood positions");
+                if (call + 1 < calls)
+                {
+                    check(mix.mode == SoundMixer::MODE_EARLY_CHANGE, "fade remains active before its sample budget");
+                    check(mix.fadePos == (call + 1) * frames * 2, "fade advances by interleaved PCM samples");
+                }
+            }
+            check(mix.mode == SoundMixer::MODE_NORMAL, "fade lands after its sample budget across callback sizes");
+        }
 
 		// --- 6. stopping clears a queued change --------------------------
 		beginCrossfade(mix, MusicTrack::InGameDefault, MusicTrack::BuildingEvent);
