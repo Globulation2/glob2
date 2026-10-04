@@ -28,8 +28,9 @@ docker run --rm \
 	"$image" sh -euc '
 		export DEBIAN_FRONTEND=noninteractive
 		apt-get update -qq
-		# binutils: the configure script of the embedded x264 recording build needs strings.
-		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils >/dev/null
+		# The embedded recording build configures x264 (needs strings, from binutils) and
+		# cross-compiles FFmpeg, whose configure needs a host C compiler and pkg-config.
+		apt-get install -y -qq --no-install-recommends ca-certificates git python3 scons xz-utils bzip2 libatomic1 brotli python3-venv cmake make binutils gcc libc6-dev pkg-config >/dev/null
 		git config --global --add safe.directory "*"
 		python3 browser/setup.py
 		# Both runtimes (serial and threaded), the loader and the page. The
