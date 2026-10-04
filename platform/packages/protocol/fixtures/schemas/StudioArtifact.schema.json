@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:StudioArtifact",
+  "title": "StudioArtifact",
+  "type": "object",
+  "required": [
+    "id",
+    "requestId",
+    "stage",
+    "kind",
+    "label",
+    "url"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "stage": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "prepare"
+        },
+        {
+          "type": "string",
+          "const": "terrain"
+        },
+        {
+          "type": "string",
+          "const": "build"
+        },
+        {
+          "type": "string",
+          "const": "checks"
+        },
+        {
+          "type": "string",
+          "const": "ready"
+        }
+      ]
+    },
+    "kind": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "reference"
+        },
+        {
+          "type": "string",
+          "const": "generated"
+        },
+        {
+          "type": "string",
+          "const": "crop"
+        },
+        {
+          "type": "string",
+          "const": "categorical"
+        },
+        {
+          "type": "string",
+          "const": "preview"
+        }
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "height": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}

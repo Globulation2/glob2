@@ -897,9 +897,32 @@ job routed by simulation version. Its map, preview, categorical export and repor
 are private blobs. Provider keys never reach Python or engine subprocesses.
 
 REST under `/api/v1/map-studio` provides account state, thread creation/listing,
-messages, explicit generation, and checkout. Per-thread long polling uses the
-existing Postgres pub/sub with timeout refresh for lost notifications. Messages
-cost no map credits. A Generate action reserves one credit; a successful validated
+messages, explicit generation, checkout, per-request progress and authorized stage
+images. Thread creation accepts an optional client UUID; retrying the same owner,
+UUID and title returns the original project. Clients persist this UUID and the
+first message request ID before sending so an unknown HTTP outcome does not
+create a duplicate project. The browser reads a repeatable-read thread snapshot
+with an event cursor, then opens `/threads/:id/events` as a persistent SSE stream. Events and their
+state changes commit together; a locked per-thread counter preserves commit
+order. Postgres notifications wake readers, while reconnect listeners and
+15-second heartbeat catch-up recover missed notifications. `Last-Event-ID`
+resumes delivery; clients deduplicate cursors. Session authorization is checked
+on every catch-up, and slow connections close instead of buffering indefinitely.
+The old long-poll route remains available for older clients.
+
+Stage, artifact and check events retain the creation journey with the owning
+thread. Image descriptors reference owner-authorized routes, never arbitrary
+blob hashes. Older requests recover only recorded images and delivery summaries
+from a safe checkpoint allowlist; missing historical checks are not invented.
+Events and descriptors participate in account export and cascade on deletion.
+The full-screen workspace separates chat from the inspected map, supports
+following live stages or inspecting history, and displays playability checks.
+The separate no-credit landing page preserves draft writing and access to saved
+projects; active last-credit generations open their workspace. Drafts, pending
+submission identities and revision settings survive same-tab refresh and checkout.
+Payment-return URLs trigger wallet refresh without granting credits themselves.
+Messages cost no map credits but require an available
+map credit. A Generate action reserves one credit; a successful validated
 delivery consumes it and failures return it. Each request snapshots the rolling
 conversation and accumulated design brief, settings, parent version and pipeline
 version. A parent revision retains its dimensions/player count; changing these

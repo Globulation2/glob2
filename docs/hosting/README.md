@@ -1229,6 +1229,24 @@ mark a confirmed unrecoverable request failed using
 `POST /api/v1/admin/map-studio/requests/<id>/fail`; this releases the credit and
 records an audit entry. Never re-dispatch an uncertain paid provider request.
 
+Deploy the additive studio-event migration before updating the API, authoring
+worker and web client. Keep the previous long-poll route during client rollout.
+The stage event journal and authorized artifact records are retained with each
+thread; do not prune their cursor history independently of the thread.
+
+Studio progress uses persistent SSE at
+`/api/v1/map-studio/threads/<id>/events`. Preserve `text/event-stream`,
+`Cache-Control: no-cache, no-transform`, and `Last-Event-ID` through the edge.
+Caddy's reverse proxy flushes SSE responses as they arrive; any additional load
+balancer must disable buffering for this content type and permit connections
+with 15-second heartbeat intervals. Verify that an authenticated `curl -N` through
+the public edge receives the initial comment immediately, then stage events
+before generation finishes. Reconnect with the last event ID to check replay.
+Streams do not own worker lifetimes; disconnecting never cancels generation.
+Stream logs include delivered-event counts, cursors, connection duration and
+closure errors, without message text or provider diagnostics. Event timestamps
+provide stage duration and delivery latency evidence.
+
 Monitor `studio_requests` status/age, `studio_attempts` usage/model, map-wallet
 reservations, delivery failure rates and queue age. Pause sales or generation via
 the instance flags; retain blobs and payment journals during rollback. Migrations

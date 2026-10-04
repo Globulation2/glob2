@@ -1,0 +1,16 @@
+{
+  "id": "42",
+  "requestId": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "createdAt": "2026-10-01T12:00:00Z",
+  "type": "check",
+  "payload": {
+    "id": "wheat-0",
+    "label": "Colony 1: starter food",
+    "status": "passed",
+    "colony": 0,
+    "location": {
+      "x": 32,
+      "y": 48
+    }
+  }
+}

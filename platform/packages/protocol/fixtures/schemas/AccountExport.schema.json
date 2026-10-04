@@ -484,6 +484,24 @@
               "^.*$": {}
             }
           }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
         }
       }
     },

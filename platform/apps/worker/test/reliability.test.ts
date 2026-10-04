@@ -443,6 +443,7 @@ describe('blob garbage collection', () => {
       const studioMap = await put('a delivered AI map removed from the catalogue', 'old');
       const checkpoint = await put('a canonical AI revision source', 'old');
       const providerOutput = await put('a journaled provider image', 'old');
+      const stageImage = await put('an image registered before its worker checkpoint', 'old');
       const account = await createAccount(database.db, 'Studio owner');
       const map = await database.db
         .insertInto('maps')
@@ -489,6 +490,17 @@ describe('blob garbage collection', () => {
           output: { hash: providerOutput.sha256 },
         })
         .execute();
+      await database.db
+        .insertInto('studio_artifacts')
+        .values({
+          thread_id: thread.id,
+          request_id: request.id,
+          stage: 'build',
+          kind: 'crop',
+          label: 'Stage image',
+          hash: stageImage.sha256,
+        })
+        .execute();
       await database.db.deleteFrom('maps').where('id', '=', map.id).execute();
 
       const result = await collectBlobs(database.db, store, { logger });
@@ -505,6 +517,7 @@ describe('blob garbage collection', () => {
         studioMap,
         checkpoint,
         providerOutput,
+        stageImage,
       ]) {
         expect(await store.size(kept.key)).toBeGreaterThan(0);
         expect(

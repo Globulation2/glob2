@@ -82,7 +82,28 @@ const typedColumns: ColumnLists = {
     'assertion',
     'created_at',
   ],
-  studio_threads: ['id', 'account_id', 'title', 'brief', 'created_at', 'updated_at'],
+  studio_threads: [
+    'id',
+    'account_id',
+    'title',
+    'brief',
+    'created_at',
+    'updated_at',
+    'event_cursor',
+  ],
+  studio_events: ['thread_id', 'cursor', 'request_id', 'dedup', 'type', 'payload', 'created_at'],
+  studio_artifacts: [
+    'id',
+    'thread_id',
+    'request_id',
+    'stage',
+    'kind',
+    'label',
+    'hash',
+    'width',
+    'height',
+    'created_at',
+  ],
   studio_messages: ['id', 'thread_id', 'role', 'text', 'created_at'],
   studio_requests: [
     'id',
@@ -695,6 +716,7 @@ describe('migrations', () => {
         '0033_queue_searches',
         '0034_skin_swarm_mesh',
         '0035_colony_skins_v2',
+        '0036_studio_events',
       ]);
       expect(
         (
@@ -747,7 +769,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(13);
+      expect(upgraded).toHaveLength(14);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -868,6 +890,7 @@ describe('migrations', () => {
       const upgraded = await migrateToLatest(db);
       expect(upgraded.map((m) => [m.migrationName, m.status])).toEqual([
         ['0035_colony_skins_v2', 'Success'],
+        ['0036_studio_events', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
