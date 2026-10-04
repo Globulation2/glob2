@@ -4,6 +4,7 @@
 #include "AINames.h"
 #include "CustomGameOtherOptions.h"
 #include "CustomGameScreen.h"
+#include "CustomGameRules.h"
 #include "CustomGameSetup.h"
 #include "Engine.h"
 #include "GUIMapPreview.h"
@@ -47,37 +48,18 @@ GAGCore::Color colorOf(const std::optional<std::array<std::uint8_t, 3>> &color)
 	return GAGCore::Color((*color)[0], (*color)[1], (*color)[2]);
 }
 
-// The rules a room plays with, as "label: value" lines. Every label reads positively
-// ("Food: Units get hungry", not "No hunger: Off"): the four rules that shape every
-// match first, then only the ones changed from Standard (allRules lists the rest too).
+// The rules a room plays with, as "label: value" lines: the Match rules that shape every
+// game first, then only the ones changed from Standard (allRules lists the rest too).
 std::vector<std::pair<std::string, std::string>> ruleLines(const CustomGameSetup &s, bool allRules = false)
 {
-	auto pick = [](bool second, const char *first, const char *other) { return tr(second ? other : first); };
-	auto level = [](int value, std::initializer_list<const char *> options) {
-		const auto *begin = options.begin();
-		return value <= 0 || value >= int(options.size()) ? tr("[room rule off]") : tr(begin[value]);
-	};
 	std::vector<std::pair<std::string, std::string>> lines;
-	auto label = [](int index) { return tr(std::string("[") + CustomGameSetup::ruleDefinitions[std::size_t(index)].label + "]"); };
-	lines.push_back({label(0), s.prestige ? tr("[room rule prestige]") : tr("[room rule conquest]")});
-	lines.push_back({label(17), s.suddenDeathMinutes ? GAGCore::FormattableString(tr("[results minutes %0]")).arg(s.suddenDeathMinutes) : tr("[room rule off]")});
-	lines.push_back({label(1), s.revealed ? tr("[room rule revealed]") : tr("[room rule hidden]")});
-	lines.push_back({label(2), s.locked ? tr("[room rule fixed]") : tr("[room rule free]")});
-	auto add = [&](int index, std::string name, std::string value) {
-		if (allRules || s.ruleChanged(index))
-			lines.push_back({std::move(name), std::move(value)});
-	};
-	add(5, tr("[room rule resources]"), pick(s.noResourceGrowth, "[Grow normally]", "[No growth]"));
-	add(6, label(6), level(s.resourceScarcity, {"", "[Scarce (2x slower)]", "[Very scarce (4x slower)]", "[Extremely scarce (8x slower)]"}));
-	add(7, tr("[room rule construction]"), pick(s.instantConstruction, "[Normal construction]", "[Instant]"));
-	add(8, label(8), level(s.stockpileStart, {"", "[Small (+50 each)]", "[Medium (+150 each)]", "[Large (+300 each)]"}));
-	add(9, tr("[room rule food]"), pick(s.noHunger, "[Units get hungry]", "[No hunger]"));
-	add(10, tr("[room rule training]"), pick(s.unitUpgradesDisabled, "[Trains normally]", "[No upgrades]"));
-	add(11, label(11), level(s.glassCannonLevel, {"", "[Glass cannon x2]", "[Glass cannon x3]"}));
-	add(12, tr("[room rule retreat]"), pick(s.unitsFearless, "[Retreats when damaged]", "[Fearless]"));
-	add(13, tr("[room rule unit deaths]"), pick(s.permadeathDisabled, "[Can die permanently]", "[No permadeath]"));
-	add(14, tr("[room rule combat]"), pick(s.peacefulMode, "[Normal combat]", "[Peaceful mode]"));
-	add(15, label(15), level(s.buildingHpLevel, {"", "[Fortress x5]", "[Fortress x10]"}));
+	for (const auto &rule : CustomGameRules::rules())
+	{
+		if (rule.inRooms != CustomGameRules::InRooms::Carried ||
+			!(allRules || rule.group == CustomGameRules::Group::Match || s.ruleNonStandard(rule, true)))
+			continue;
+		lines.push_back({tr("[" + std::string(rule.label) + "]"), CustomGameRules::valueText(rule, s)});
+	}
 	return lines;
 }
 
@@ -503,7 +485,7 @@ Element RoomScreen::tabs(const Presentation &p)
 	const std::vector<std::string> titles = {tr("[Map]"), tr("[Players & Teams]"), tr("[Game Rules]")};
 	const std::vector<std::string> details = {room->mapName(),
 											  seatsSummary(people, ais, open),
-											  haveDraft ? tr("[" + draft.ruleset + "]") : room->experimentsLabel()};
+											  haveDraft ? draft.rulesetTitle(true) : room->experimentsLabel()};
 	std::vector<Element> row;
 	for (int i = 0; i < 3; ++i)
 	{
@@ -761,7 +743,7 @@ Element RoomScreen::rulesPanel(const Presentation &p)
 	CustomGameSetup draft;
 	if (room->setupDraft(draft))
 	{
-		lines.push_back(heading(tr("[" + draft.ruleset + "]")));
+		lines.push_back(heading(draft.rulesetTitle(true)));
 		const auto rules = ruleLines(draft);
 		for (const auto &[name, value] : rules)
 			lines.push_back(row({expanded(label(name)), label(value)}, {p.pt(8), CrossAlign::Center}));

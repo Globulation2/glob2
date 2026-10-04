@@ -1146,8 +1146,6 @@ AIの戦略と対抗策
 コロニーの成長と訓練済み部隊の攻撃を調整し、治療と食料を最初に狙います。
 [Algae]
 藻
-[Alliances]
-同盟
 [Beach size]
 砂浜の広さ
 [Blue]
@@ -1156,8 +1154,6 @@ AIの戦略と対抗策
 茶色
 [Built-in maps]
 内蔵マップ
-[Can change in game]
-ゲーム内で変更可能
 [Closed]
 参加しない
 [Colonies]
@@ -1186,8 +1182,6 @@ AIの戦略と対抗策
 砂漠の割合
 [Easy]
 簡単
-[Explore as you play]
-探索して地形を発見
 [Extra colony assignments are retained for larger maps.]
 入りきらないコロニーの設定は、より大きなマップに戻したときのために保持されます。
 [Extra islands]
@@ -1230,14 +1224,10 @@ AIの戦略と対抗策
 最後まで生き残るコロニー
 [Layout]
 レイアウト
-[Locked teams]
-チーム固定
 [Magenta]
 マゼンタ
 [Map]
 マップ
-[Map knowledge]
-地形の公開範囲
 [Match finished]
 試合終了
 [Medium]
@@ -1284,10 +1274,6 @@ AIの命令なし
 地形の繰り返し
 [Resources]
 資源
-[Restore standard rules]
-標準ルールを復元する
-[Revealed terrain does not reveal all enemy activity.]
-地形が明らかになったからといって、敵の活動がすべて明らかになるわけではありません。
 [River]
 川
 [River width]
@@ -1314,10 +1300,6 @@ AIの命令なし
 チーム
 [Terrain]
 地形
-[Terrain revealed]
-地形を最初から公開
-[Try a ruleset, then make it your own.]
-ルールセットを選び、好みに合わせて変更しましょう。
 [Victory]
 勝利
 [Watch game]
@@ -1342,12 +1324,6 @@ AIの命令なし
 自作マップ
 [colonies]
 コロニー
-[* Changed from standard.]
-※標準からの変更となります。
-[World & diplomacy]
-世界と外交
-[Starting conditions & pace]
-スタート条件とペース
 [Inactive]
 非アクティブ
 [8 workers / 2x speed]
@@ -1370,8 +1346,6 @@ AIの命令なし
 このライブラリにはマップがありません。
 [Premade maps retain their authored starting units.]
 既製マップでは、作者が設定した初期ユニットを使用します。
-[Premade: only speed changes (2x)]
-既製: 速度のみ変更 (2x)
 [Start with terrain known]
 既知の地形から始める
 [This colony will not join the match.]
@@ -2138,38 +2112,20 @@ Globulation 2 のカーソルを表示します。
 ページ (P)
 [Map preview choose another]
 マップを選択
-[Resources never grow or spread across the map.]
-資源はマップ上で決して成長せず、広がることもありません。
 [Building sites complete immediately, skipping delivery.]
 建設現場は配送段階を省略し、即座に完成します。
-[Units never grow hungry and never starve.]
-ユニットが空腹になることも、餓死することも決してありません。
-[Slows how often resources grow or spread across the map.]
-マップ上で資源が成長・拡散する頻度を遅くします。
-[Seeds each team's shared market/exchange resource pool at game start.]
-ゲーム開始時に、各チームの共有市場/交換資源プールを補充します。
-[Grow normally]
-通常の成長
 [No growth]
 成長なし
-[Normal construction]
-通常の建設
-[Instant]
-即時
 [Units get hungry]
 ユニットが空腹になる
 [No hunger]
 空腹なし
-[Off (today's growth)]
-オフ（現在の成長速度）
 [Scarce (2x slower)]
 希少（2x遅い）
 [Very scarce (4x slower)]
 非常に希少（4x遅い）
 [Extremely scarce (8x slower)]
 極めて希少（8x遅い）
-[None (today's default)]
-なし（現在のデフォルト）
 [Small (+50 each)]
 小（各+50）
 [Medium (+150 each)]
@@ -2180,50 +2136,20 @@ Globulation 2 のカーソルを表示します。
 資源の成長なし
 [Economy]
 経済
-[Scarce resources]
-希少資源
 [Instant construction]
 即時建設
-[Stockpile start]
-開始時の備蓄
-[Units still visit schools but never gain a level.]
-ユニットは引き続き学校に通いますが、レベルアップすることはありません。
-[Units fight to the death instead of retreating to heal.]
-ユニットは回復のために撤退する代わりに、死ぬまで戦います。
-[Units are never permanently lost -- HP just stops at 1.]
-ユニットは永久に失われることはありません――体力はただ1で止まります。
-[Disables all combat between every team.]
-すべてのチーム間の戦闘を無効にします。
-[Higher tiers deal more damage but have less HP and armor.]
-上位のティアはより多くのダメージを与えますが、体力と装甲が低くなります。
 [Higher tiers give every building much more HP.]
 上位のティアはすべての建物の体力を大幅に増加させます。
 [Starting units spawn already leveled up. Changes the generated map.]
 開始時のユニットは最初からレベルが上がった状態で出現します。生成されるマップが変わります。
-[Trains normally]
-通常どおり訓練する
 [No upgrades]
 レベルアップなし
-[Retreats when damaged]
-ダメージを受けると撤退する
-[Fearless]
-恐れ知らず
-[Can die permanently]
-永久に死亡することがある
 [No permadeath]
 永久死亡なし
-[Normal combat]
-通常の戦闘
-[Peaceful mode]
-平和モード
-[Off (today's balance)]
-オフ（現在のバランス）
 [Glass cannon x2]
 ガラスの大砲 x2
 [Glass cannon x3]
 ガラスの大砲 x3
-[Off (today's HP)]
-オフ（現在の体力）
 [Fortress x5]
 要塞 x5
 [Fortress x10]
@@ -2238,10 +2164,6 @@ Globulation 2 のカーソルを表示します。
 戦闘
 [Glass cannon]
 ガラスの大砲
-[Fortress buildings]
-要塞化された建物
-[Veteran/Fast start]
-ベテラン/早期スタート
 [Match ends at the timer; highest prestige at that instant wins.]
 試合はタイマーで終了し、その瞬間に名声が最も高いプレイヤーが勝利する。
 [Off (no timer)]
@@ -2254,8 +2176,6 @@ Globulation 2 のカーソルを表示します。
 45分
 [60 minutes]
 60分
-[Sudden-death timer]
-サドンデスタイマー
 [Stats page three]
 統計 3/3 >
 [Stats blocked units]
@@ -2984,10 +2904,6 @@ Emoji
 その他
 [No items]
 項目なし
-[Opponents]
-対戦相手
-[Review]
-確認
 [Review & Play]
 確認してプレイ
 [Edit opponents]
@@ -3430,8 +3346,6 @@ AIを追加
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3824,21 +3738,9 @@ AIを追加
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4538,20 +4440,6 @@ AIを追加
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -5125,4 +5013,120 @@ AIを追加
 [stat nothing to show]
 
 [stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

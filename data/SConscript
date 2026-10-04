@@ -17,7 +17,7 @@ if env.get('OPTIMIZED_ASSET_INSTALL') and 'dist' not in COMMAND_LINE_TARGETS:
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in sorted(os.listdir(env.Dir(".").srcnode().abspath)):
-        if file.endswith(".txt"):
+        if file.endswith(".txt") or file == "rulesets.json":
             PackTar(env["TARFILE"], file)
             env.Install(env["INSTALLDIR"] + "/glob2/data", file)
         

@@ -5,6 +5,7 @@
 #include <map>
 #include <fstream>
 #include <utility>
+#include <tuple>
 #include <mutex>
 #include <cstdio>
 #include <cstdint>
@@ -14,6 +15,11 @@
 #include <ScreenStack.h>
 #include "CustomGameSetup.h"
 #include "CustomGamePreferences.h"
+#include "CustomGameRules.h"
+#include "RulesetCatalog.h"
+#include "RoomSetup.h"
+#include <Stream.h>
+#include <set>
 #include "Engine.h"
 #include "FrontendTheme.h"
 #include "EngineFixtures.h"
@@ -151,11 +157,10 @@ struct CustomGameSetupHarness
 		// choice) has no repeat option in the modular registry, so it would
 		// always round-trip back to 0 regardless of what is written here.
 		original.setup.generator = fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eCRATERLAKES, 5), 0);
-		original.setup.presetRules(1);
+		original.setup.applyRuleset("quick-clash");
 		original.setup.prestige = false;
 		original.setup.revealed = true;
 		original.setup.locked = false;
-		original.setup.ruleset = "Custom";
 		setExtraRules(original.setup);
 		original.setup.colonies[11].controller = CustomGameSetup::Closed;
 		REQUIRE(original.setup.setController(3, CustomGameSetup::Shared));
@@ -233,13 +238,31 @@ struct CustomGameSetupHarness
 			REQUIRE((fromOld.setup.startingUnitLevel == (version >= 3 ? 3 : 0) &&
 					 fromOld.setup.suddenDeathMinutes == (version >= 3 ? 90 : 0)));
 		}
+		// Formats before 7 stored the ruleset's English name, "Custom" once edited. Both load as
+		// the matching ruleset id, keeping the saved rule values; an id this build lacks loads as
+		// Standard instead of rejecting the draft.
+		REQUIRE(restored.setup.rulesetId == "quick-clash");
+		for (const auto &[version, label, id] : std::vector<std::tuple<std::string, std::string, std::string>>{
+				 {"6", "Quick clash", "quick-clash"}, {"6", "Last colony standing", "last-colony-standing"},
+				 {"6", "Open book", "open-book"}, {"6", "Standard", "standard"},
+				 {"6", "Custom", "standard"}, {"7", "blitz", "blitz"}, {"7", "no-such-ruleset", "standard"}})
+		{
+			auto old = encoded;
+			old.replace(0, std::string("glob2-custom-game 7").size(), "glob2-custom-game " + version);
+			const auto at = old.find("\"quick-clash\"");
+			REQUIRE(at != std::string::npos);
+			old.replace(at, std::string("\"quick-clash\"").size(), "\"" + label + "\"");
+			CustomGamePreferences fromOld;
+			REQUIRE((fromOld.decode(old) && fromOld.setup.rulesetId == id));
+			checkExtraRules(fromOld.setup);
+		}
 		for (size_t length : {size_t(0), size_t(10), encoded.size() / 2, encoded.size() - 5})
 		{
 			REQUIRE(!restored.decode(encoded.substr(0, length)));
 			REQUIRE(restored.encode() == encoded);
 		}
 		for (const auto &replacement : std::vector<std::pair<std::string, std::string>>{
-				 {"glob2-custom-game 6", "glob2-custom-game 7"},
+				 {"glob2-custom-game 7", "glob2-custom-game 8"},
 				 {"rules 1 3", "rules 2 3"},
 				 {"rules 1 3", "rules 1 4"},
 				 {"2 3 90\nprobability", "2 4 90\nprobability"},
@@ -595,7 +618,7 @@ struct CustomGameSetupHarness
 			screen.setup.colonies[0].alliance = 2;
 			screen.setup.colonies[11].ai = AI::NICOWAR;
 			screen.setup.colonies[11].alliance = 7;
-			screen.setup.presetRules(1);
+			screen.setup.applyRuleset("quick-clash");
 			setExtraRules(screen.setup);
 			screen.setup.generator = fromLegacyDescriptor(maxedLegacy(MapGenerationDescriptor::eISLANDS, 3), 0);
 			screen.expanded[1] = true;
@@ -617,7 +640,7 @@ struct CustomGameSetupHarness
 				REQUIRE(screen.setup.colonies[2].ai == AI::CORTEX);
 				REQUIRE(screen.setup.colonies[0].alliance == 2);
 				REQUIRE((screen.setup.colonies[11].ai == AI::NICOWAR && screen.setup.colonies[11].alliance == 7));
-				REQUIRE((screen.setup.speed == 3 && screen.setup.ruleset == "Quick clash"));
+				REQUIRE((screen.setup.speed == 3 && screen.setup.rulesetId == "quick-clash"));
 				checkExtraRules(screen.setup);
 				REQUIRE(screen.expanded[1]);
 				REQUIRE(screen.userMaps == screen.separateMapLibraries);
@@ -772,7 +795,15 @@ struct CustomGameSetupHarness
 				click("profile/use");
 			}
 			key(SDLK_3, SDL_KMOD_CTRL);
-			click("ruleset/1");
+			// Wide layouts list the rulesets beside the rules; narrower ones open them as a screen.
+			frames(1);
+			if (!top()->host().find("ruleset/quick-clash"))
+			{
+				click("rules/ruleset");
+				REQUIRE(dynamic_cast<RulesetChoiceScreen *>(screens.top()));
+			}
+			click("ruleset/quick-clash");
+			REQUIRE((lobby->setup.rulesetId == "quick-clash" && lobby->setup.speed == 3));
 			key(SDLK_1, SDL_KMOD_CTRL);
 			click("map/mode/1");
 			for (Uint32 started = SDL_GetTicks(); (!lobby->validMap || lobby->previewBusy()) && SDL_GetTicks() - started < 60000;)
@@ -890,6 +921,30 @@ struct CustomGameSetupHarness
 		}
 		if (onlyAIProfile)
 			return;
+		{
+			// The ruleset list for narrow layouts: tapping a card ends with that ruleset.
+			RulesetChoiceScreen picker("standard");
+			picker.beginExecution(globalContainer->gfx);
+			picker.paintFrame(0);
+			globalContainer->gfx->printScreen(output + "/ruleset-picker.bmp");
+			const auto &rulesets = RulesetCatalog::shipped().rulesets;
+			REQUIRE(picker.host().find("ruleset/standard"));
+			picker.host().scrollIntoView("ruleset/blitz");
+			picker.paintFrame(0);
+			const auto r = picker.host().bounds("ruleset/blitz");
+			for (Uint32 type : {SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
+			{
+				SDL_Event e = {};
+				e.type = type;
+				e.button.button = SDL_BUTTON_LEFT;
+				e.button.x = r.x + r.w / 2;
+				e.button.y = r.y + r.h / 2;
+				picker.handleExecutionEvent(e);
+			}
+			const auto blitz = std::find_if(rulesets.begin(), rulesets.end(), [](const Ruleset &x) { return x.id == "blitz"; });
+			REQUIRE(picker.returnCode == int(blitz - rulesets.begin()));
+			picker.finishExecution();
+		}
 
     GAGGUI::ScreenStack screens(*globalContainer->gfx);
 
@@ -1059,16 +1114,38 @@ struct CustomGameSetupHarness
            screen.setup.colonies[1].alliance);
     screen.selectTab(2);
     paint();
-    clickControl("rule/1/1");
-    REQUIRE((screen.setup.revealed && screen.setup.ruleset == "Custom"));
+    // Summary lists the Match rules. Wide layouts list the rulesets beside them; narrower
+    // ones open the rulesets as their own screen and show All rules one group at a time.
+    const bool rulesetList = has("ruleset/standard");
+    REQUIRE(has("rule/victory/0"));
+    REQUIRE(!has("rule/revealTerrain"));
+    REQUIRE(rulesetList != has("rules/ruleset"));
+    clickControl("rules/view/1");
+    REQUIRE(screen.rulesView == CustomGameScreen::RulesView::All);
+    if (has("rules/group"))
+    {
+      REQUIRE(!has("rule/revealTerrain"));
+      screen.rulesGroup = CustomGameRules::Group::Start;
+      screen.invalidate();
+    }
+    clickControl("rule/revealTerrain");
+    REQUIRE((screen.setup.revealed && screen.setup.rulesetId == "standard" && screen.setup.rulesetDiff().size() == 1));
+    REQUIRE((has("rule/revealTerrain/reset") && has("rules/reset")));
     REQUIRE(!screen.setup.unitUpgradesDisabled);
     screen.setup.unitUpgradesDisabled = true;
     const int rulesOffset = scrollOf("lobby/rules");
-    clickControl("rule/1/0");
+    clickControl("rule/revealTerrain");
     REQUIRE((!screen.setup.revealed && scrollOf("lobby/rules") == rulesOffset));
     REQUIRE(screen.setup.unitUpgradesDisabled);
-    clickControl("ruleset/1");
+    // Undoing an edit leaves no change behind; a reset restores the ruleset's value.
+    screen.setup.unitUpgradesDisabled = false;
+    REQUIRE((screen.setup.rulesetDiff().empty() && !has("rule/revealTerrain/reset")));
+    clickControl("rule/revealTerrain");
+    clickControl("rule/revealTerrain/reset");
+    REQUIRE((!screen.setup.revealed && screen.setup.rulesetDiff().empty()));
+    screen.selectRuleset("quick-clash");
     REQUIRE((screen.setup.speed == 3 && screen.setup.generator.nbWorkers == 8));
+    screen.setRulesView(CustomGameScreen::RulesView::Summary);
     screen.setup = CustomGameSetup();
     screen.loadMap("maps/FourSquares1.map");
     scrollTo("lobby/rules", 0);
@@ -1278,7 +1355,7 @@ struct CustomGameSetupHarness
       preview();
       REQUIRE(screen.validMap);
     }
-    screen.setup.presetRules(1);
+    screen.setup.applyRuleset("quick-clash");
     screen.invalidatePreview();
     REQUIRE(!screen.validMap);
     auto assignments = screen.setup.colonies;
@@ -1804,6 +1881,24 @@ struct CustomGameSetupHarness
 
 		screen.selectTab(2);
 		capture("rules-1000");
+		// The ruleset list sits beside the rules when it fits; otherwise it is its own screen.
+		if (has("ruleset/blitz"))
+			clickControl("ruleset/blitz");
+		else
+		{
+			REQUIRE(has("rules/ruleset"));
+			screen.selectRuleset("blitz");
+		}
+		REQUIRE(screen.setup.rulesetId == "blitz");
+		capture("rules-blitz-1000");
+		screen.setRulesView(CustomGameScreen::RulesView::All);
+		screen.setup.peacefulMode = true;
+		screen.setup.prestige = false;
+		screen.setup.suddenDeathMinutes = 0;
+		screen.invalidate();
+		capture("rules-all-changed-1000");
+		screen.selectRuleset("standard");
+		screen.setRulesView(CustomGameScreen::RulesView::Summary);
 		screen.setup.winProbabilityPermille = 970;
 		screen.invalidate();
 		paint();
@@ -1815,6 +1910,189 @@ struct CustomGameSetupHarness
 		std::cout << "PASS native rendering, snapshot reroll ownership, "
 					 "invalidation, failure "
 					 "recovery, preserved alliances\n";
+	}
+	// Rulesets come from data/rulesets.json and every rule from CustomGameRules; edits are
+	// measured against the chosen ruleset, and rooms compare only the rules they carry.
+	static void rulesets()
+	{
+		using CustomGameRules::Rule;
+		auto rule = [](const char *id) -> const Rule & {
+			const Rule *found = CustomGameRules::find(id);
+			REQUIRE(found);
+			return *found;
+		};
+		// The registry agrees with itself, with the setup's choice tables and with the string
+		// tables, and every value survives its accessors.
+		std::set<std::string> textKeys;
+		{
+			GAGCore::InputLineStream keys(Toolkit::getFileManager()->openInputStreamBackend("data/texts.keys.txt"));
+			while (!keys.isEndOfStream())
+				textKeys.insert(keys.readLine());
+		}
+		auto hasText = [&](const char *key) { return textKeys.count("[" + std::string(key) + "]") == 1; };
+		for (CustomGameRules::Group group : CustomGameRules::groups)
+			REQUIRE(hasText(CustomGameRules::groupLabel(group)));
+		CustomGameSetup probe;
+		probe.random = true;
+		for (const auto &r : CustomGameRules::rules())
+		{
+			INFO(r.id);
+			REQUIRE((hasText(r.label) && hasText(r.help)));
+			for (const char *option : r.optionLabels)
+				REQUIRE(hasText(option));
+			if (r.kind == CustomGameRules::Kind::Toggle || r.kind == CustomGameRules::Kind::Stepper)
+				REQUIRE((r.optionIds.empty() && r.optionLabels.empty()));
+			else if (std::string_view(r.id) != "speed")
+				REQUIRE(r.optionLabels.size() == r.optionIds.size());
+			REQUIRE((!r.needsCombat || r.group == CustomGameRules::Group::Combat));
+			for (int v = CustomGameRules::minimum(r, probe); v <= CustomGameRules::maximum(r, probe); ++v)
+			{
+				probe.setRule(r, v);
+				REQUIRE(probe.ruleValue(r) == v);
+				REQUIRE(!CustomGameRules::optionText(r, v).empty());
+			}
+		}
+		REQUIRE(rule("timeLimit").optionIds.size() == CustomGameSetup::suddenDeathMinuteChoices.size());
+		REQUIRE(rule("winProbability").optionIds.size() == CustomGameSetup::winProbabilityChoices.size());
+		REQUIRE(rule("speed").optionIds.size() == std::size_t(Settings::GAME_SPEED_MAXIMUM + 1));
+		for (int v = 0; v <= Settings::GAME_SPEED_MAXIMUM; ++v)
+		{
+			Settings speed = globalContainer->settings;
+			speed.gameSpeed = v;
+			REQUIRE(CustomGameRules::optionText(rule("speed"), v) == speed.getGameSpeedText());
+		}
+
+		// The shipped file is valid, starts with Standard and uses every rule somewhere.
+		std::vector<std::string> errors;
+		const auto parsed = RulesetCatalog::load(RulesetCatalog::filename, errors);
+		REQUIRE(parsed);
+		REQUIRE_MESSAGE(errors.empty(), (errors.empty() ? std::string() : errors.front()));
+		const auto &catalog = RulesetCatalog::shipped();
+		REQUIRE((catalog.rulesets.size() == parsed->rulesets.size() && catalog.rulesets.size() == 13));
+		REQUIRE((catalog.standard().id == "standard" && catalog.standard().values.empty()));
+		std::set<const Rule *> used;
+		for (const auto &ruleset : catalog.rulesets)
+			for (const auto &[r, value] : ruleset.values)
+				used.insert(r);
+		REQUIRE(used.size() == CustomGameRules::rules().size());
+
+		// The four rulesets that predate the file keep their exact values.
+		CustomGameSetup s;
+		s.random = true;
+		s.applyRuleset("standard");
+		const CustomGameSetup standard = s;
+		const int defaultWorkers = GenerationRequest::control(s.generator.method, "workers").defaultValue;
+		REQUIRE((s.prestige && !s.revealed && s.locked && s.speed == 0 && s.generator.nbWorkers == defaultWorkers));
+		REQUIRE((!s.noResourceGrowth && s.resourceScarcity == 0 && !s.instantConstruction && s.stockpileStart == 0));
+		REQUIRE((!s.noHunger && !s.unitUpgradesDisabled && s.glassCannonLevel == 0 && !s.unitsFearless));
+		REQUIRE((!s.permadeathDisabled && !s.peacefulMode && s.buildingHpLevel == 0 && s.startingUnitLevel == 0 &&
+				 s.suddenDeathMinutes == 0));
+		s.applyRuleset("quick-clash");
+		REQUIRE((s.speed == 3 && s.generator.nbWorkers == 8));
+		s.applyRuleset("open-book");
+		REQUIRE((s.revealed && s.speed == 0 && s.generator.nbWorkers == defaultWorkers && s.prestige));
+		s.applyRuleset("last-colony-standing");
+		REQUIRE((!s.prestige && !s.revealed));
+		s.applyRuleset("blitz");
+		REQUIRE((s.speed == 3 && s.generator.nbWorkers == 8 && s.startingUnitLevel == 1 && s.stockpileStart == 2 &&
+				 s.instantConstruction && s.suddenDeathMinutes == 45));
+		// Unknown ids fall back to Standard.
+		s.applyRuleset("no-such-ruleset");
+		REQUIRE(s.rulesetId == "standard");
+
+		// Edits are changes from the chosen ruleset; undoing one leaves the ruleset whole.
+		s.applyRuleset("blitz");
+		REQUIRE((s.rulesetDiff().empty() && s.rulesetTitle() == Toolkit::getStringTable()->getString("[Blitz]")));
+		auto revision = s.mapRevision;
+		REQUIRE((!s.setRule(rule("timeLimit"), 3) && s.mapRevision == revision));
+		REQUIRE((s.setRule(rule("workers"), 6) && s.mapRevision > revision));
+		REQUIRE((s.rulesetDiff().size() == 2 && s.ruleChanged(rule("workers")) && !s.ruleChanged(rule("speed"))));
+		REQUIRE(s.rulesetTitle() != Toolkit::getStringTable()->getString("[Blitz]"));
+		s.setRule(rule("workers"), 8);
+		s.setRule(rule("timeLimit"), 2);
+		REQUIRE(s.rulesetDiff().empty());
+		// Values clamp to the rule's range.
+		s.setRule(rule("workers"), 99);
+		REQUIRE(s.generator.nbWorkers == CustomGameRules::maximum(rule("workers"), s));
+		s.setRule(rule("workers"), 8);
+		// Premade maps keep their own starting units: those rules are not changes.
+		s.random = false;
+		s.startingUnitLevel = 0;
+		REQUIRE((s.rulesetDiff().empty() && !CustomGameRules::appliesTo(rule("unitLevel"), s)));
+		s.random = true;
+		s.startingUnitLevel = 1;
+
+		// One Regrowth choice covers both stored resource fields.
+		s.setRule(rule("regrowth"), 4);
+		REQUIRE((s.noResourceGrowth && s.resourceScarcity == 0));
+		s.setRule(rule("regrowth"), 2);
+		REQUIRE((!s.noResourceGrowth && s.resourceScarcity == 2));
+		s.noResourceGrowth = true;
+		s.resourceScarcity = 3;
+		REQUIRE(s.ruleValue(rule("regrowth")) == 4);
+		// Positive toggles read the stored negative fields.
+		s.applyRuleset("sandbox");
+		REQUIRE((s.peacefulMode && s.noHunger && s.permadeathDisabled && s.ruleValue(rule("combat")) == 0 &&
+				 s.ruleValue(rule("hunger")) == 0 && s.ruleValue(rule("unitsCanDie")) == 0));
+
+		// Rooms carry no speed, workers or unit level: they never count as changes there, and
+		// every ruleset survives the room's MatchRules round trip (Quick clash reads as Standard).
+		s.applyRuleset("standard");
+		s.speed = 5;
+		REQUIRE((s.rulesetDiff(true).empty() && s.rulesetDiff().size() == 1));
+		for (const auto &ruleset : catalog.rulesets)
+		{
+			CustomGameSetup draft;
+			draft.random = true;
+			draft.applyRuleset(ruleset.id);
+			CustomGameSetup room;
+			Online::applyRulesToSetup(Online::matchRules(draft), room);
+			const std::string expected = ruleset.id == "quick-clash" ? "standard" : ruleset.id;
+			REQUIRE_MESSAGE(room.rulesetId == expected, ruleset.id);
+			REQUIRE(room.rulesetDiff(true).empty());
+		}
+		CustomGameSetup custom;
+		custom.buildingHpLevel = 1;
+		custom.glassCannonLevel = 1;
+		REQUIRE(Online::matchingRuleset(custom).empty());
+		// A room with no matching ruleset reads as Standard and its changes, as the lobby would.
+		CustomGameSetup unmatched;
+		Online::applyRulesToSetup(Online::matchRules(custom), unmatched);
+		REQUIRE((unmatched.rulesetId == "standard" && unmatched.rulesetDiff(true).size() == 2));
+		// A room can set a time limit the lobby's menu does not offer: it counts as a change
+		// and reads as its minutes.
+		CustomGameSetup longRoom;
+		longRoom.suddenDeathMinutes = 120;
+		REQUIRE((longRoom.ruleValue(rule("timeLimit")) == -1 && longRoom.ruleNonStandard(rule("timeLimit"), true)));
+		REQUIRE(CustomGameRules::valueText(rule("timeLimit"), longRoom).find("120") != std::string::npos);
+		REQUIRE(Online::matchingRuleset(longRoom).empty());
+
+		// A malformed file keeps the game playable on Standard; a bad entry is skipped alone.
+		errors.clear();
+		REQUIRE((RulesetCatalog::parse("not json", errors).rulesets.size() == 1 && !errors.empty()));
+		errors.clear();
+		const auto mixed = RulesetCatalog::parse(R"({"version": 1, "rulesets": [
+			{"id": "fast", "name": "[Blitz]", "description": "[Blitz]", "rules": {"speed": "2x"}},
+			{"id": "standard", "name": "[Standard]", "description": "[Standard]"},
+			{"id": "fast", "name": "[Blitz]", "description": "[Blitz]"},
+			{"id": "typo", "name": "[Blitz]", "description": "[Blitz]", "rules": {"sped": "2x"}},
+			{"id": "range", "name": "[Blitz]", "description": "[Blitz]", "rules": {"workers": 20}},
+			{"id": "option", "name": "[Blitz]", "description": "[Blitz]", "rules": {"regrowth": "sometimes"}},
+			{"id": "kind", "name": "[Blitz]", "description": "[Blitz]", "rules": {"combat": "off"}},
+			{"id": "key", "name": "Blitz", "description": "[Blitz]"}]})", errors);
+		REQUIRE((mixed.rulesets.size() == 2 && mixed.standard().id == "standard" && mixed.find("fast")));
+		REQUIRE(mixed.find("fast")->values.size() == 1);
+		REQUIRE(errors.size() == 6);
+		errors.clear();
+		const auto noStandard = RulesetCatalog::parse(R"({"version": 1, "rulesets": [
+			{"id": "fast", "name": "[Blitz]", "description": "[Blitz]", "rules": {"speed": "2x"}}]})", errors);
+		REQUIRE((noStandard.standard().id == "standard" && noStandard.find("fast") && errors.size() == 1));
+		// Standard cannot change rules, and an unknown version is reported but still read.
+		errors.clear();
+		const auto strict = RulesetCatalog::parse(R"({"version": 2, "rulesets": [
+			{"id": "standard", "name": "[Standard]", "description": "[Standard]", "rules": {"speed": "2x"}}]})", errors);
+		REQUIRE((strict.rulesets.size() == 1 && strict.standard().values.empty() && errors.size() == 2));
+		std::cout << "PASS rulesets: shipped catalog, legacy values, changes, regrowth, rooms, invalid files\n";
 	}
 	static void model()
 	{
@@ -1848,12 +2126,12 @@ struct CustomGameSetupHarness
 		REQUIRE(s.presetTeams(0));
 		s.setCapacity(4);
 		auto revision = s.mapRevision;
-		s.presetRules(1);
+		REQUIRE(s.applyRuleset("quick-clash"));
 		REQUIRE((s.speed == 3 && s.generator.nbWorkers == 8 && s.mapRevision > revision));
-		s.presetRules(2);
-		REQUIRE((s.revealed && s.prestige));
-		s.presetRules(3);
-		REQUIRE(!s.prestige);
+		s.applyRuleset("open-book");
+		REQUIRE((s.revealed && s.prestige && s.speed == 0));
+		s.applyRuleset("last-colony-standing");
+		REQUIRE((!s.prestige && !s.revealed));
 		for (int i = 0; i < 4; ++i)
 			s.setController(i, CustomGameSetup::Closed);
 		REQUIRE(!s.validation().empty());
@@ -2101,6 +2379,7 @@ TEST_SUITE("CustomGameSetup")
 	std::cout << "PASS all " << playableMethods.size() << " playable generator landscapes\n";
 
 	CustomGameSetupHarness::model();
+	CustomGameSetupHarness::rulesets();
 	const auto &selection = AINames::selectionOrder();
 	REQUIRE(selection.back() == AI::NONE);
 	REQUIRE((std::set<int>(selection.begin(), selection.end()) ==

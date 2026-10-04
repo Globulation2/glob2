@@ -550,8 +550,6 @@ meta-%0
 Не
 [Number Of Buildings]
 Број зграда
-[number of players: %0]
-Број присутних играча: %0.
 [number of teams]
 Број тимова
 [Number Of Units]
@@ -650,8 +648,6 @@ Print Screen
 Домет
 [ratios]
 Односи
-[Register a new YOG user with password]
-Пријави новог корисника на YOG са лозинком. (није шифровано)
 [remember unit]
 Памти број јединица
 [remove map]
@@ -1150,8 +1146,6 @@ Cortex
 Усклађује раст колоније и обучене нападе, прво гађајући лечење и храну.
 [Algae]
 Алге
-[Alliances]
-Савези
 [Beach size]
 Величина плаже
 [Blue]
@@ -1160,8 +1154,6 @@ Cortex
 Браон
 [Built-in maps]
 Уграђене мапе
-[Can change in game]
-Може се променити у игри
 [Closed]
 Затворено
 [Colonies]
@@ -1190,8 +1182,6 @@ Cortex
 Удео пустиње
 [Easy]
 Лако
-[Explore as you play]
-Истражујте док играте
 [Extra colony assignments are retained for larger maps.]
 Додатни задаци колонија се задржавају за веће мапе.
 [Extra islands]
@@ -1234,14 +1224,10 @@ Cortex
 Последња преживела колонија
 [Layout]
 Распоред
-[Locked teams]
-Закључани тимови
 [Magenta]
 Магента
 [Map]
 Мапа
-[Map knowledge]
-Знање о мапи
 [Match finished]
 Утакмица је завршена
 [Medium]
@@ -1288,10 +1274,6 @@ Cortex
 Понављање пејзажа
 [Resources]
 Ресурси
-[Restore standard rules]
-Вратите стандардна правила
-[Revealed terrain does not reveal all enemy activity.]
-Откривени терен не открива сву непријатељску активност.
 [River]
 Река
 [River width]
@@ -1318,10 +1300,6 @@ Cortex
 Тим
 [Terrain]
 Терен
-[Terrain revealed]
-Терен откривен
-[Try a ruleset, then make it your own.]
-Испробајте скуп правила, а затим га направите својим.
 [Victory]
 Победа
 [Watch game]
@@ -1346,12 +1324,6 @@ Cortex
 Ваше мапе
 [colonies]
 колоније
-[* Changed from standard.]
-* Промењено од стандардног.
-[World & diplomacy]
-Свет и дипломатија
-[Starting conditions & pace]
-Почетни услови и темпо
 [Inactive]
 Неактиван
 [8 workers / 2x speed]
@@ -1374,8 +1346,6 @@ Cortex
 Нема мапа у овој библиотеци.
 [Premade maps retain their authored starting units.]
 Унапред припремљене мапе задржавају своје ауторске почетне јединице.
-[Premade: only speed changes (2x)]
-Готова мапа: мења се само брзина (2x)
 [Start with terrain known]
 Почните са познатим тереном
 [This colony will not join the match.]
@@ -2142,38 +2112,20 @@ OpenGL није доступан у овој верзији.
 Страница (P)
 [Map preview choose another]
 Изаберите мапу
-[Resources never grow or spread across the map.]
-Ресурси никада не расту нити се шире по мапи.
 [Building sites complete immediately, skipping delivery.]
 Градилишта се завршавају одмах, без фазе испоруке.
-[Units never grow hungry and never starve.]
-Јединице никада не гладују нити умиру од глади.
-[Slows how often resources grow or spread across the map.]
-Успорава колико често ресурси расту или се шире по мапи.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Пуни заједничку резерву пијаце/размене сваког тима на почетку игре.
-[Grow normally]
-Нормалан раст
 [No growth]
 Без раста
-[Normal construction]
-Нормална градња
-[Instant]
-Тренутна
 [Units get hungry]
 Јединице гладују
 [No hunger]
 Без глади
-[Off (today's growth)]
-Искључено (данашњи раст)
 [Scarce (2x slower)]
 Оскудни (2x спорије)
 [Very scarce (4x slower)]
 Врло оскудни (4x спорије)
 [Extremely scarce (8x slower)]
 Изузетно оскудни (8x спорије)
-[None (today's default)]
-Ниједан (данашња подразумевана вредност)
 [Small (+50 each)]
 Мали (+50 сваки)
 [Medium (+150 each)]
@@ -2184,50 +2136,20 @@ OpenGL није доступан у овој верзији.
 Без раста ресурса
 [Economy]
 Привреда
-[Scarce resources]
-Оскудни ресурси
 [Instant construction]
 Тренутна градња
-[Stockpile start]
-Почетна залиха
-[Units still visit schools but never gain a level.]
-Јединице и даље похађају школу, али никада не достижу виши ниво.
-[Units fight to the death instead of retreating to heal.]
-Јединице се боре до смрти уместо да се повуку да би се излечиле.
-[Units are never permanently lost -- HP just stops at 1.]
-Јединице никада нису трајно изгубљене -- здравље само стане на 1.
-[Disables all combat between every team.]
-Онемогућава сваку борбу између свих тимова.
-[Higher tiers deal more damage but have less HP and armor.]
-Виши нивои задају више штете, али имају мање здравља и оклопа.
 [Higher tiers give every building much more HP.]
 Виши нивои дају свакој згради много више здравља.
 [Starting units spawn already leveled up. Changes the generated map.]
 Почетне јединице се појављују већ на вишем нивоу. Мења генерисану мапу.
-[Trains normally]
-Тренира се нормално
 [No upgrades]
 Без надоградњи
-[Retreats when damaged]
-Повлачи се када је повређена
-[Fearless]
-Неустрашива
-[Can die permanently]
-Може трајно да умре
 [No permadeath]
 Без трајне смрти
-[Normal combat]
-Нормална борба
-[Peaceful mode]
-Мирољубиви режим
-[Off (today's balance)]
-Искључено (данашња равнотежа)
 [Glass cannon x2]
 Стаклени топ x2
 [Glass cannon x3]
 Стаклени топ x3
-[Off (today's HP)]
-Искључено (данашње здравље)
 [Fortress x5]
 Тврђава x5
 [Fortress x10]
@@ -2242,10 +2164,6 @@ OpenGL није доступан у овој верзији.
 Борба
 [Glass cannon]
 Стаклени топ
-[Fortress buildings]
-Утврђене зграде
-[Veteran/Fast start]
-Ветеран/Брзи почетак
 [Match ends at the timer; highest prestige at that instant wins.]
 Меч се завршава истеком тајмера; побеђује онај ко у том тренутку има највећи престиж.
 [Off (no timer)]
@@ -2258,8 +2176,6 @@ OpenGL није доступан у овој верзији.
 45 минута
 [60 minutes]
 60 минута
-[Sudden-death timer]
-Тајмер изненадне смрти
 [Stats page three]
 Статистика 3/3 >
 [Stats blocked units]
@@ -2988,10 +2904,6 @@ Emoji
 Више
 [No items]
 Нема ставки
-[Opponents]
-Противници
-[Review]
-Преглед
 [Review & Play]
 Провери и играј
 [Edit opponents]
@@ -3434,8 +3346,6 @@ Emoji
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3828,21 +3738,9 @@ Emoji
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4542,20 +4440,6 @@ Emoji
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -5129,4 +5013,120 @@ Emoji
 [stat nothing to show]
 
 [stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

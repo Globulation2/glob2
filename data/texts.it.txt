@@ -146,54 +146,6 @@ pausa
 Briefing
 [build %0 level %1]
 Costruisci %0 livello %1
-[build barracks level 0]
-Costruisci caserma liv. 0
-[build barracks level 1]
-Costruisci caserma liv. 1
-[build barracks level 2]
-Costruisci caserma liv. 2
-[build defencetower level 0]
-Costruisci torre di difesa liv. 0
-[build defencetower level 1]
-Costruisci torre di difesa liv. 1
-[build defencetower level 2]
-Costruisci torre di difesa liv. 2
-[build hospital level 0]
-Costruisci ospedale liv. 0
-[build hospital level 1]
-Costruisci ospedale liv. 1
-[build hospital level 2]
-Costruisci ospedale liv. 2
-[build inn level 0]
-Costruisci mensa liv. 0
-[build inn level 1]
-Costruisci mensa liv. 1
-[build inn level 2]
-Costruisci mensa liv. 2
-[build market level 0]
-Costruisci mercato
-[build racetrack level 0]
-Costruisci circuito liv. 0
-[build racetrack level 1]
-Costruisci circuito liv. 1
-[build racetrack level 2]
-Costruisci circuito liv. 2
-[build school level 0]
-Costruisci scuola liv. 0
-[build school level 1]
-Costruisci scuola liv. 1
-[build school level 2]
-Costruisci scuola liv. 2
-[build stonewall level 0]
-Costruisci muro di pietra
-[build swarm level 0]
-Costruisci Magazzino
-[build swimmingpool level 0]
-Costruisci piscina liv. 0
-[build swimmingpool level 1]
-Costruisci piscina liv. 1
-[build swimmingpool level 2]
-Costruisci piscina liv. 2
 [Build]
 Costruisci
 [Building Defaults]
@@ -310,12 +262,6 @@ Sconfiggi gli avversari
 nemiche nelle vicinanze
 [defencetower explanation]
 Attacca unità e costruzioni
-[defencetower level 0]
-Torre di difesa liv. 0
-[defencetower level 1]
-Torre di difesa liv. 1
-[defencetower level 2]
-Torre di difesa liv. 2
 [defencetower]
 Torre di difesa
 [Defense Map]
@@ -486,12 +432,6 @@ aumenta unità lavorative
 
 [inn explanation]
 Approvvigiona le unità
-[inn level 0]
-Mensa liv. 0
-[inn level 1]
-Mensa liv. 1
-[inn level 2]
-Mensa liv. 2
 [inn]
 Mensa
 [insert]
@@ -570,8 +510,6 @@ Script della mappa
 Grandezza x della mappa
 [map size y]
 Grandezza y della mappa
-[maps available]
-Mappe disponibili
 [mark map]
 Segna la mappa per gli Alleati
 [market explanation 2]
@@ -710,8 +648,6 @@ Circuito
 Raggio
 [ratios]
 Razioni
-[Register a new YOG user with password]
-Registra un nuovo utente YOG con password. (non sicuro)
 [remember unit]
 Ricorda le assegnazioni
 [remove map]
@@ -898,8 +834,6 @@ Palude
 
 [swarm explanation]
 Crea nuove unità
-[swarm level 0]
-Magazzino
 [swarm]
 Magazzino
 [Swim]
@@ -1212,8 +1146,6 @@ Strategia principale: Ripartisce la produzione fra costruzioni, miglioramenti, d
 Coordina crescita e attacchi addestrati, mirando prima a cure e cibo.
 [Algae]
 alghe
-[Alliances]
-Alleanze
 [Beach size]
 Dimensioni della spiaggia
 [Blue]
@@ -1222,8 +1154,6 @@ Blu
 Marrone
 [Built-in maps]
 Mappe integrate
-[Can change in game]
-Può cambiare nel gioco
 [Closed]
 Chiuso
 [Colonies]
@@ -1252,8 +1182,6 @@ Ciano
 Peso del deserto
 [Easy]
 Facile
-[Explore as you play]
-Esplora mentre giochi
 [Extra colony assignments are retained for larger maps.]
 Le assegnazioni di colonie extra vengono mantenute per le mappe più grandi.
 [Extra islands]
@@ -1296,14 +1224,10 @@ Paesaggio
 Ultima colonia rimasta
 [Layout]
 Disposizione
-[Locked teams]
-Squadre bloccate
 [Magenta]
 Magenta
 [Map]
 Mappa
-[Map knowledge]
-Conoscenza della mappa
 [Match finished]
 Partita finita
 [Medium]
@@ -1350,10 +1274,6 @@ Rosso
 Ripeti il paesaggio
 [Resources]
 Risorse
-[Restore standard rules]
-Ripristina le regole standard
-[Revealed terrain does not reveal all enemy activity.]
-Il terreno rivelato non rivela tutta l'attività nemica.
 [River]
 Fiume
 [River width]
@@ -1380,10 +1300,6 @@ Palude
 Squadra
 [Terrain]
 Terreno
-[Terrain revealed]
-Terreno rivelato
-[Try a ruleset, then make it your own.]
-Prova un set di regole e poi personalizzalo.
 [Victory]
 Vittoria
 [Watch game]
@@ -1408,12 +1324,6 @@ Tu contro tutti
 Le tue mappe
 [colonies]
 colonie
-[* Changed from standard.]
-* Modificato rispetto allo standard.
-[World & diplomacy]
-Mondo e diplomazia
-[Starting conditions & pace]
-Condizioni di partenza e ritmo
 [Inactive]
 Inattivo
 [8 workers / 2x speed]
@@ -1436,8 +1346,6 @@ Unità iniziali definite dalla mappa
 Nessuna mappa in questa libreria.
 [Premade maps retain their authored starting units.]
 Le mappe predefinite mantengono le unità iniziali scelte dall’autore.
-[Premade: only speed changes (2x)]
-Mappa predefinita: cambia solo la velocità (2x)
 [Start with terrain known]
 Inizia con il terreno conosciuto
 [This colony will not join the match.]
@@ -2204,38 +2112,20 @@ Statistiche 2/3 >
 Pagina (P)
 [Map preview choose another]
 Scegli una mappa
-[Resources never grow or spread across the map.]
-Le risorse non crescono né si diffondono mai sulla mappa.
 [Building sites complete immediately, skipping delivery.]
 I cantieri si completano immediatamente, saltando la consegna.
-[Units never grow hungry and never starve.]
-Le unità non hanno mai fame e non muoiono mai di fame.
-[Slows how often resources grow or spread across the map.]
-Rallenta la frequenza con cui le risorse crescono o si diffondono sulla mappa.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Rifornisce la riserva condivisa di mercato/scambio di ogni squadra all'inizio della partita.
-[Grow normally]
-Crescita normale
 [No growth]
 Nessuna crescita
-[Normal construction]
-Costruzione normale
-[Instant]
-Istantanea
 [Units get hungry]
 Le unità hanno fame
 [No hunger]
 Nessuna fame
-[Off (today's growth)]
-Disattivata (crescita attuale)
 [Scarce (2x slower)]
 Scarse (2x più lente)
 [Very scarce (4x slower)]
 Molto scarse (4x più lente)
 [Extremely scarce (8x slower)]
 Estremamente scarse (8x più lente)
-[None (today's default)]
-Nessuna (valore attuale)
 [Small (+50 each)]
 Piccola (+50 ciascuna)
 [Medium (+150 each)]
@@ -2246,50 +2136,20 @@ Grande (+300 ciascuna)
 Nessuna crescita delle risorse
 [Economy]
 Economia
-[Scarce resources]
-Risorse scarse
 [Instant construction]
 Costruzione istantanea
-[Stockpile start]
-Riserva iniziale
-[Units still visit schools but never gain a level.]
-Le unità continuano ad andare a scuola, ma non salgono mai di livello.
-[Units fight to the death instead of retreating to heal.]
-Le unità combattono fino alla morte invece di ritirarsi per curarsi.
-[Units are never permanently lost -- HP just stops at 1.]
-Le unità non vengono mai perse definitivamente -- i PV si fermano semplicemente a 1.
-[Disables all combat between every team.]
-Disabilita tutti i combattimenti tra tutte le squadre.
-[Higher tiers deal more damage but have less HP and armor.]
-I livelli superiori infliggono più danni ma hanno meno PV e armatura.
 [Higher tiers give every building much more HP.]
 I livelli superiori danno molti più PV a ogni edificio.
 [Starting units spawn already leveled up. Changes the generated map.]
 Le unità iniziali compaiono già con livelli avanzati. Cambia la mappa generata.
-[Trains normally]
-Si allena normalmente
 [No upgrades]
 Nessun avanzamento
-[Retreats when damaged]
-Si ritira quando è ferita
-[Fearless]
-Senza paura
-[Can die permanently]
-Può morire definitivamente
 [No permadeath]
 Nessuna morte definitiva
-[Normal combat]
-Combattimento normale
-[Peaceful mode]
-Modalità pacifica
-[Off (today's balance)]
-Disattivato (equilibrio attuale)
 [Glass cannon x2]
 Cannone di vetro x2
 [Glass cannon x3]
 Cannone di vetro x3
-[Off (today's HP)]
-Disattivato (PV attuali)
 [Fortress x5]
 Fortezza x5
 [Fortress x10]
@@ -2304,10 +2164,6 @@ Leggendario
 Combattimento
 [Glass cannon]
 Cannone di vetro
-[Fortress buildings]
-Edifici fortificati
-[Veteran/Fast start]
-Veterano/Partenza rapida
 [Match ends at the timer; highest prestige at that instant wins.]
 La partita termina al timer; vince chi ha il prestigio più alto in quell'istante.
 [Off (no timer)]
@@ -2320,8 +2176,6 @@ Disattivato (nessun timer)
 45 minuti
 [60 minutes]
 60 minuti
-[Sudden-death timer]
-Timer di morte improvvisa
 [Stats page three]
 Statistiche 3/3 >
 [Stats blocked units]
@@ -3050,10 +2904,6 @@ Spaziosa
 Altro
 [No items]
 Nessun elemento
-[Opponents]
-Avversari
-[Review]
-Riepilogo
 [Review & Play]
 Controlla e gioca
 [Edit opponents]
@@ -3496,8 +3346,6 @@ Inerzia della mappa
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3890,21 +3738,9 @@ Inerzia della mappa
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4604,20 +4440,6 @@ Inerzia della mappa
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -5191,4 +5013,120 @@ Basi per colonia; una base è una squadra della mappa così come è disegnata, c
 [stat nothing to show]
 
 [stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

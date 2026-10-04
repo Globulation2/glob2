@@ -78,10 +78,6 @@ AINumbi
 Udvider og omvender enheder uden at producere krigere.
 [AIEcono]
 Econo
-[AIToubib-Description]
-
-[AIToubib]
-AIToubib
 [AIWarrush-Description]
 Hurtige angreb, der afprøver dit tidlige forsvar.
 [AIWarrush]
@@ -150,54 +146,6 @@ break
 Missionsbeskrivelse
 [build %0 level %1]
 Byg %0 niveau %1
-[build barracks level 0]
-Byg Kaserne niv. 0
-[build barracks level 1]
-Byg Kaserne niv. 1
-[build barracks level 2]
-Byg Kaserne niv. 2
-[build defencetower level 0]
-Byg Forsvarstårn 1
-[build defencetower level 1]
-Byg Forsvarstårn 2
-[build defencetower level 2]
-Byg Forsvarstårn 3
-[build hospital level 0]
-Byg Hospital 1
-[build hospital level 1]
-Byg Hospital 2
-[build hospital level 2]
-Byg Hospital 3
-[build inn level 0]
-Byg Kro 1
-[build inn level 1]
-Construct Inn 2
-[build inn level 2]
-Byg kro 3
-[build market level 0]
-Byg Marked
-[build racetrack level 0]
-Byg Træningsbane 1
-[build racetrack level 1]
-Byg Træningsbane 2
-[build racetrack level 2]
-Byg Træningsbane 3
-[build school level 0]
-Byg Skole 1
-[build school level 1]
-Byg Skole 2
-[build school level 2]
-Byg Skole 3
-[build stonewall level 0]
-Byg Sten væg
-[build swarm level 0]
-Byg Sværm
-[build swimmingpool level 0]
-Byg Svømmebassin 1
-[build swimmingpool level 1]
-Byg Svømmebassin 2
-[build swimmingpool level 2]
-Byg Svømmebassin 3
 [Build]
 Byg
 [Building Defaults]
@@ -226,12 +174,6 @@ Kan ikke være vært: port %0 er i brug
 Kan ikke deltage: spillet er startet
 [Can't join game, game is full]
 Kan ikke deltage: spillet er fyldt
-[Can't join game, missmatching game parameters]
-Kan ikke forbinde til spillet, spilparametrene stemmer ikke overens
-[Can't join game, timeout]
-Kan ikke forbinde til spillet, der er opstået en timeout
-[Can't join game, wrong game version]
-Kan ikke forbinde til spillet, spilversionen er forkert
 [cancel destroy]
 Afbryd destruktion
 [cancel repair]
@@ -320,12 +262,6 @@ Besejr dine modstandere
 og bygninger i nærheden
 [defencetower explanation]
 Angriber fjendtlige enheder
-[defencetower level 0]
-Byg tårn 1
-[defencetower level 1]
-Byg tårn 2
-[defencetower level 2]
-Forsvars tårn 3
 [defencetower]
 Forsvarstårn
 [Defense Map]
@@ -496,12 +432,6 @@ Flere arbejdende enheder
 
 [inn explanation]
 Giver dine enheder mad
-[inn level 0]
-Kro 1
-[inn level 1]
-Kro 2
-[inn level 2]
-Kro 3
 [inn]
 Kro
 [insert]
@@ -580,8 +510,6 @@ Kortscript
 Kortbredde
 [map size y]
 Korthøjde
-[maps available]
-Tilgængelige kort
 [mark map]
 Marker kort for allierede
 [market explanation 2]
@@ -622,8 +550,6 @@ Ingen vækst
 Nej
 [Number Of Buildings]
 Antal bygninger
-[number of players: %0]
-%0 antal spillere er tilgængelig
 [number of teams]
 antal af hold
 [Number Of Units]
@@ -722,8 +648,6 @@ Træningsbane
 Rækkevidde
 [ratios]
 Proportioner
-[Register a new YOG user with password]
-Register en ny YOG bruger med adgangskode. (usikker)
 [remember unit]
 Husk enhedstildelinger
 [remove map]
@@ -910,8 +834,6 @@ Sump
 
 [swarm explanation]
 Skaber nye enheder
-[swarm level 0]
-Sværm
 [swarm]
 Sværm
 [Swim]
@@ -1124,8 +1046,6 @@ Ser på:
 Vand
 [Wheat]
 Hvede
-[wheat]
-hvede
 [Won : you defeated your opponents]
 Vundet : Du har slået din modstander
 [Won : you have the most prestige]
@@ -1226,8 +1146,6 @@ Grundstrategi: Fordeler enhedsproduktion mellem byggeri, opgraderinger, forsvar,
 Koordinerer vækst og trænede angreb, først mod heling og mad.
 [Algae]
 Alger
-[Alliances]
-Alliancer
 [Beach size]
 Strandstørrelse
 [Blue]
@@ -1236,8 +1154,6 @@ Blå
 Brun
 [Built-in maps]
 Indbyggede kort
-[Can change in game]
-Kan ændre sig i spillet
 [Closed]
 Lukket
 [Colonies]
@@ -1266,8 +1182,6 @@ Cyan
 Ørkenvægt
 [Easy]
 Let
-[Explore as you play]
-Udforsk, mens du spiller
 [Extra colony assignments are retained for larger maps.]
 Ekstra kolonitildelinger bibeholdes for større kort.
 [Extra islands]
@@ -1310,14 +1224,10 @@ Landskab
 Sidste overlevende koloni
 [Layout]
 Layout
-[Locked teams]
-Aflåste hold
 [Magenta]
 Magenta
 [Map]
 Kort
-[Map knowledge]
-Kortkendskab
 [Match finished]
 Kampen afsluttet
 [Medium]
@@ -1364,10 +1274,6 @@ Rød
 Gentag landskab
 [Resources]
 Ressourcer
-[Restore standard rules]
-Gendan standardregler
-[Revealed terrain does not reveal all enemy activity.]
-Afsløret terræn afslører ikke al fjendens aktivitet.
 [River]
 Flod
 [River width]
@@ -1394,10 +1300,6 @@ Sump
 Hold
 [Terrain]
 Terræn
-[Terrain revealed]
-Terræn afsløret
-[Try a ruleset, then make it your own.]
-Prøv et regelsæt, og gør det så til dit eget.
 [Victory]
 Sejr
 [Watch game]
@@ -1422,12 +1324,6 @@ Dig mod alle
 Dine kort
 [colonies]
 kolonier
-[* Changed from standard.]
-* Ændret fra standard.
-[World & diplomacy]
-Verden og diplomati
-[Starting conditions & pace]
-Startforhold og tempo
 [Inactive]
 Inaktiv
 [8 workers / 2x speed]
@@ -1450,8 +1346,6 @@ Kortdefinerede startenheder
 Ingen kort i dette bibliotek.
 [Premade maps retain their authored starting units.]
 Forudbyggede kort beholder deres oprettede startenheder.
-[Premade: only speed changes (2x)]
-Færdigt kort: kun hastigheden ændres (2x)
 [Start with terrain known]
 Start med kendt terræn
 [This colony will not join the match.]
@@ -2218,38 +2112,20 @@ Statistik 2/3 >
 Side (P)
 [Map preview choose another]
 Vælg et kort
-[Resources never grow or spread across the map.]
-Ressourcer vokser eller spreder sig aldrig på kortet.
 [Building sites complete immediately, skipping delivery.]
 Byggepladser færdiggøres med det samme uden leveringsfase.
-[Units never grow hungry and never starve.]
-Enheder bliver aldrig sultne og dør aldrig af sult.
-[Slows how often resources grow or spread across the map.]
-Sænker hvor ofte ressourcer vokser eller spreder sig på kortet.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Fylder hvert holds fælles marked/byttehandel-ressourcepulje op ved spilstart.
-[Grow normally]
-Vokser normalt
 [No growth]
 Ingen vækst
-[Normal construction]
-Normal opførelse
-[Instant]
-Øjeblikkelig
 [Units get hungry]
 Enheder bliver sultne
 [No hunger]
 Ingen sult
-[Off (today's growth)]
-Fra (dagens vækst)
 [Scarce (2x slower)]
 Sparsomt (2x langsommere)
 [Very scarce (4x slower)]
 Meget sparsomt (4x langsommere)
 [Extremely scarce (8x slower)]
 Ekstremt sparsomt (8x langsommere)
-[None (today's default)]
-Ingen (dagens standard)
 [Small (+50 each)]
 Lille (+50 pr. stk.)
 [Medium (+150 each)]
@@ -2260,50 +2136,20 @@ Stor (+300 pr. stk.)
 Ingen ressourcevækst
 [Economy]
 Økonomi
-[Scarce resources]
-Sparsomme ressourcer
 [Instant construction]
 Øjeblikkelig opførelse
-[Stockpile start]
-Startbeholdning
-[Units still visit schools but never gain a level.]
-Enheder går stadig i skole, men stiger aldrig i niveau.
-[Units fight to the death instead of retreating to heal.]
-Enheder kæmper til døden i stedet for at trække sig tilbage for at hele.
-[Units are never permanently lost -- HP just stops at 1.]
-Enheder går aldrig permanent tabt -- HP stopper bare ved 1.
-[Disables all combat between every team.]
-Deaktiverer al kamp mellem alle hold.
-[Higher tiers deal more damage but have less HP and armor.]
-Højere niveauer gør mere skade, men har mindre HP og rustning.
 [Higher tiers give every building much more HP.]
 Højere niveauer giver hver bygning meget mere HP.
 [Starting units spawn already leveled up. Changes the generated map.]
 Startenheder starter allerede på et højere niveau. Ændrer det genererede kort.
-[Trains normally]
-Træner normalt
 [No upgrades]
 Ingen opgraderinger
-[Retreats when damaged]
-Trækker sig tilbage, når den er skadet
-[Fearless]
-Frygtløs
-[Can die permanently]
-Kan dø permanent
 [No permadeath]
 Ingen permanent død
-[Normal combat]
-Normal kamp
-[Peaceful mode]
-Fredelig tilstand
-[Off (today's balance)]
-Fra (dagens balance)
 [Glass cannon x2]
 Glaskanon x2
 [Glass cannon x3]
 Glaskanon x3
-[Off (today's HP)]
-Fra (dagens HP)
 [Fortress x5]
 Fæstning x5
 [Fortress x10]
@@ -2318,10 +2164,6 @@ Legendarisk
 Kamp
 [Glass cannon]
 Glaskanon
-[Fortress buildings]
-Befæstede bygninger
-[Veteran/Fast start]
-Veteran/Hurtig start
 [Match ends at the timer; highest prestige at that instant wins.]
 Kampen slutter ved timeren; den med højest prestige på det tidspunkt vinder.
 [Off (no timer)]
@@ -2334,8 +2176,6 @@ Fra (ingen timer)
 45 minutter
 [60 minutes]
 60 minutter
-[Sudden-death timer]
-Sudden death-timer
 [Stats page three]
 Statistik 3/3 >
 [Stats blocked units]
@@ -3064,10 +2904,6 @@ Rummelig
 Mere
 [No items]
 Ingen elementer
-[Opponents]
-Modstandere
-[Review]
-Oversigt
 [Review & Play]
 Gennemgå og spil
 [Edit opponents]
@@ -3510,8 +3346,6 @@ Kortets fart
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3904,21 +3738,9 @@ Kortets fart
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4618,20 +4440,6 @@ Kortets fart
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -5205,4 +5013,120 @@ Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets by
 [stat nothing to show]
 
 [stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 

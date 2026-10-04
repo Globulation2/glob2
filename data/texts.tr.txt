@@ -174,12 +174,6 @@ Oyun kurulamıyor: %0 numaralı bağlantı noktası kullanımda
 Katılınamıyor: oyun başlamış
 [Can't join game, game is full]
 Katılınamıyor: oyun dolu
-[Can't join game, missmatching game parameters]
-Oyuna katilamadiniz: oyun parametreleri uyusmuyor
-[Can't join game, timeout]
-Oyuna katilamadiniz: zamanasimi
-[Can't join game, wrong game version]
-Oyuna katilamadiniz: yanlis oyun versiyonu
 [cancel destroy]
 Yıkımı iptal et
 [cancel repair]
@@ -556,8 +550,6 @@ Büyüme yok
 Hayır
 [Number Of Buildings]
 Bina Sayısı
-[number of players: %0]
-%0 oyuncu var.
 [number of teams]
 takım sayısı
 [Number Of Units]
@@ -656,8 +648,6 @@ Koşu Yolu
 Menzil
 [ratios]
 Oranlar
-[Register a new YOG user with password]
-Bir parola girerek yeni bir YOG kullanici hesabi olusturun. (guvenli degil)
 [remember unit]
 Birim Sayılarını Hatırla
 [remove map]
@@ -1056,8 +1046,6 @@ Tekrar izle
 Su
 [Wheat]
 Buğday
-[wheat]
-bugday
 [Won : you defeated your opponents]
 Zafer: Rakiplerinizi yendiniz
 [Won : you have the most prestige]
@@ -1158,8 +1146,6 @@ Temel strateji: Birim üretimini inşaat, yükseltme, savunma, saldırı ve keş
 Koloni büyümesini ve eğitimli saldırıları koordine eder; önce tedavi ve gıdayı hedefler.
 [Algae]
 Yosun
-[Alliances]
-İttifaklar
 [Beach size]
 Plaj büyüklüğü
 [Blue]
@@ -1168,8 +1154,6 @@ Mavi
 Kahverengi
 [Built-in maps]
 Yerleşik haritalar
-[Can change in game]
-Oyunda değişebilir
 [Closed]
 Kapalı
 [Colonies]
@@ -1198,8 +1182,6 @@ Camgöbeği
 Çöl ağırlığı
 [Easy]
 Kolay
-[Explore as you play]
-Oynarken keşfedin
 [Extra colony assignments are retained for larger maps.]
 Daha büyük haritalar için ekstra koloni atamaları korunur.
 [Extra islands]
@@ -1242,14 +1224,10 @@ Manzara
 Ayakta kalan son koloni
 [Layout]
 Düzen
-[Locked teams]
-Kilitli takımlar
 [Magenta]
 Macenta
 [Map]
 Harita
-[Map knowledge]
-Harita bilgisi
 [Match finished]
 Maç bitti
 [Medium]
@@ -1296,10 +1274,6 @@ Kırmızı
 Manzarayı tekrarla
 [Resources]
 Kaynaklar
-[Restore standard rules]
-Standart kuralları geri yükleyin
-[Revealed terrain does not reveal all enemy activity.]
-Ortaya çıkan arazi, düşmanın tüm faaliyetlerini ortaya çıkarmaz.
 [River]
 Nehir
 [River width]
@@ -1326,10 +1300,6 @@ Bataklık
 Takım
 [Terrain]
 Arazi
-[Terrain revealed]
-Arazi açık
-[Try a ruleset, then make it your own.]
-Bir kural seti deneyin ve ardından onu kendinize ait hale getirin.
 [Victory]
 Zafer
 [Watch game]
@@ -1354,12 +1324,6 @@ Siz herkese karşı
 Haritalarınız
 [colonies]
 koloniler
-[* Changed from standard.]
-* Standarttan değiştirildi.
-[World & diplomacy]
-Dünya ve diplomasi
-[Starting conditions & pace]
-Başlangıç koşulları ve tempo
 [Inactive]
 Etkin değil
 [8 workers / 2x speed]
@@ -1382,8 +1346,6 @@ Harita tanımlı başlangıç birimleri
 Bu kütüphanede harita yok.
 [Premade maps retain their authored starting units.]
 Hazır haritalarda, yapımcının belirlediği başlangıç birimleri korunur.
-[Premade: only speed changes (2x)]
-Önceden hazırlanmış: yalnızca hız değişiklikleri (2x)
 [Start with terrain known]
 Bilinen araziyle başlayın
 [This colony will not join the match.]
@@ -2150,38 +2112,20 @@ Beslenme / tedavi
 Sayfa (P)
 [Map preview choose another]
 Bir harita seçin
-[Resources never grow or spread across the map.]
-Kaynaklar haritada asla büyümez veya yayılmaz.
 [Building sites complete immediately, skipping delivery.]
 İnşaat alanları, teslimat aşaması atlanarak hemen tamamlanır.
-[Units never grow hungry and never starve.]
-Birimler asla acıkmaz ve asla açlıktan ölmez.
-[Slows how often resources grow or spread across the map.]
-Kaynakların haritada ne sıklıkla büyüyüp yayılacağını yavaşlatır.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Oyun başlangıcında her takımın ortak pazar/takas kaynak havuzunu doldurur.
-[Grow normally]
-Normal büyüme
 [No growth]
 Büyüme yok
-[Normal construction]
-Normal inşaat
-[Instant]
-Anında
 [Units get hungry]
 Birimler acıkır
 [No hunger]
 Açlık yok
-[Off (today's growth)]
-Kapalı (bugünkü büyüme)
 [Scarce (2x slower)]
 Kıt (2x daha yavaş)
 [Very scarce (4x slower)]
 Çok kıt (4x daha yavaş)
 [Extremely scarce (8x slower)]
 Aşırı kıt (8x daha yavaş)
-[None (today's default)]
-Yok (bugünkü varsayılan)
 [Small (+50 each)]
 Küçük (her biri +50)
 [Medium (+150 each)]
@@ -2192,50 +2136,20 @@ Büyük (her biri +300)
 Kaynak büyümesi yok
 [Economy]
 Ekonomi
-[Scarce resources]
-Kıt kaynaklar
 [Instant construction]
 Anında inşaat
-[Stockpile start]
-Başlangıç stoğu
-[Units still visit schools but never gain a level.]
-Birimler hâlâ akademiye gidiyor ama asla seviye atlamıyor.
-[Units fight to the death instead of retreating to heal.]
-Birimler iyileşmek için geri çekilmek yerine ölümüne savaşıyor.
-[Units are never permanently lost -- HP just stops at 1.]
-Birimler asla kalıcı olarak kaybolmaz -- canları sadece 1'de durur.
-[Disables all combat between every team.]
-Tüm takımlar arasındaki tüm savaşı devre dışı bırakır.
-[Higher tiers deal more damage but have less HP and armor.]
-Daha yüksek seviyeler daha fazla hasar verir ama daha az can ve zırha sahiptir.
 [Higher tiers give every building much more HP.]
 Daha yüksek seviyeler her binaya çok daha fazla can verir.
 [Starting units spawn already leveled up. Changes the generated map.]
 Başlangıç birimleri zaten seviye atlamış olarak ortaya çıkar. Oluşturulan haritayı değiştirir.
-[Trains normally]
-Normal şekilde eğitilir
 [No upgrades]
 Yükseltme yok
-[Retreats when damaged]
-Hasar aldığında geri çekilir
-[Fearless]
-Korkusuz
-[Can die permanently]
-Kalıcı olarak ölebilir
 [No permadeath]
 Kalıcı ölüm yok
-[Normal combat]
-Normal savaş
-[Peaceful mode]
-Barışçıl mod
-[Off (today's balance)]
-Kapalı (bugünkü denge)
 [Glass cannon x2]
 Cam top x2
 [Glass cannon x3]
 Cam top x3
-[Off (today's HP)]
-Kapalı (bugünkü can)
 [Fortress x5]
 Kale x5
 [Fortress x10]
@@ -2250,10 +2164,6 @@ Efsanevi
 Savaş
 [Glass cannon]
 Cam top
-[Fortress buildings]
-Tahkim edilmiş binalar
-[Veteran/Fast start]
-Veteran/Hızlı başlangıç
 [Match ends at the timer; highest prestige at that instant wins.]
 Maç zamanlayıcıyla sona erer; o anda en yüksek prestije sahip olan kazanır.
 [Off (no timer)]
@@ -2266,8 +2176,6 @@ Kapalı (zamanlayıcı yok)
 45 dakika
 [60 minutes]
 60 dakika
-[Sudden-death timer]
-Ani ölüm zamanlayıcısı
 [Stats page three]
 İstatistikler 3/3 >
 [Stats blocked units]
@@ -2996,10 +2904,6 @@ Geniş
 Daha fazla
 [No items]
 Öğe yok
-[Opponents]
-Rakipler
-[Review]
-Özet
 [Review & Play]
 İncele ve oyna
 [Edit opponents]
@@ -3442,8 +3346,6 @@ Harita ivmesi
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3836,21 +3738,9 @@ Harita ivmesi
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4550,20 +4440,6 @@ Harita ivmesi
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -5137,4 +5013,120 @@ Koloni başına üs; üs, haritanın çizildiği hâliyle bir takımı, binalar�
 [stat nothing to show]
 
 [stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
 
