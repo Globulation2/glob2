@@ -1605,3 +1605,15 @@ For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
 opt-in assertion checks each AI order when selected and reports unavailable work
 without filtering it. A repair can finish while its order waits in the network
 queue, so replay-time building health alone cannot classify upgrade intentions.
+
+## Market fetching
+
+`MarketFetch` covers hiring and arrival at stocked markets, preference for a
+nearer natural resource, stock exhaustion, and binary/text preservation of market
+fields and pending gradient publications. Non-market buildings use these fields;
+markets themselves fetch from natural resources. The market fields participate
+in the existing one-field-per-tick round robin and optional fixed-delay gradient
+pipeline. Stock transitions invalidate pending market snapshots and request a
+refresh. Format 134 saves these fields and their scheduling flags; older saves
+load without them and allocate them on first use. Run
+`python3 test/run_tests.py --filter 'MarketFetch/*'`.

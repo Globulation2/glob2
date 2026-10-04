@@ -134,8 +134,8 @@ public:
 	void configureGradientPipeline(unsigned workers, unsigned delay);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedResourcesGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false);
-	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient, bool withMarkets = false);
-	void seedClearAreasGradient(int team, int swim, Uint16 *gradient, bool withMarkets = false);
+	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
+	void seedClearAreasGradient(int team, int swim, Uint16 *gradient);
 	void advanceHiringGradients(Building *building);
 
 	void saveRuntimeState(GAGCore::OutputStream *stream) const;
