@@ -909,8 +909,9 @@ Element CustomGameScreen::build(const Presentation &p)
 	{
 		fe::ButtonOptions options;
 		options.selected = currentTab == i;
-		// Large text on a narrow screen would break the titles mid-word.
-		options.role = narrow && p.textGrowth > 1.2 ? fe::FontRole::Support : narrow || topActions ? fe::FontRole::Body : fe::FontRole::Heading;
+		// Tabs use the body font; large text on a narrow screen would break the titles mid-word.
+		if (narrow && p.textGrowth > 1.2)
+			options.role = fe::FontRole::Support;
 		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
 		// Desktop tabs carry their current choice underneath, as before.
 		tabs.push_back(fe::expanded(narrow || topActions ? tab : fe::column({tab, fe::caption(details[std::size_t(i)])}, {p.pt(2)})));
@@ -944,14 +945,14 @@ Element CustomGameScreen::build(const Presentation &p)
 		footerActions.push_back({"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE});
 		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
 	}
-	auto actionRow = fe::actions(std::move(footerActions), p, fe::ActionStyle::Compact);
+	auto actionRow = fe::actions(std::move(footerActions), p);
 	// Short landscape phones keep their few lines for the tab: the tabs already say it all.
 	std::vector<Element> summaryParts{p.shortLandscape() ? nullptr : fe::caption(summary)};
 	if (!note.empty())
-		summaryParts.push_back(fe::paragraph(note, {fe::FontRole::Support}));
+		summaryParts.push_back(fe::hint(note));
 	// Experiments come from Settings, not the lobby, so say which ones this match will carry.
 	if (!globalContainer->settings.experiments.empty())
-		summaryParts.push_back(fe::paragraph(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments), {fe::FontRole::Support}));
+		summaryParts.push_back(fe::hint(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments)));
 	// Desktop: summary at the left, compact Back / Start at the right, as before.
 	Element footerColumn = p.touch || narrow ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
 								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});
@@ -962,7 +963,7 @@ Element CustomGameScreen::build(const Presentation &p)
 	{
 		tabs.push_back(actionRow);
 		panel = fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6), fe::CrossAlign::Center}), fe::expanded(body),
-									 note.empty() ? nullptr : fe::paragraph(note, {fe::FontRole::Support})},
+									 note.empty() ? nullptr : fe::hint(note)},
 									{p.pt(6)}),
 						 cardOptions);
 	}
@@ -1460,7 +1461,7 @@ Element CustomGameScreen::ruleRow(const Rule &rule, const Presentation &p, bool 
 			reset = fe::button(key + "/reset", tr("Reset"), action, options);
 	}
 	const int resetWidth = p.touch ? p.pt(48) : p.textPt(70);
-	Element noteText = note.empty() ? nullptr : fe::paragraph(note, {fe::FontRole::Support, true});
+	Element noteText = note.empty() ? nullptr : fe::hint(note);
 	const bool toggle = rule.kind == Kind::Toggle && applies;
 
 	return fe::adaptive(
@@ -1535,7 +1536,7 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 	else if (setup.suddenDeathMinutes == 30)
 		body.push_back(warning(tr("Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie."), p, theme()));
 	if (!setup.random && std::any_of(base.values.begin(), base.values.end(), [](const auto &v) { return v.first->affectsMap; }))
-		body.push_back(fe::paragraph(tr("Premade maps retain their authored starting units."), {fe::FontRole::Support, true}));
+		body.push_back(fe::hint(tr("Premade maps retain their authored starting units.")));
 	if (all && !groupFilter)
 		// Match and Economy at the left, Start and Combat at the right, when two columns fit.
 		body.push_back(fe::adaptive(
@@ -1551,8 +1552,7 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 	else
 		body.push_back(stackGroups(std::move(groups)));
 	if (!all && hidden > 0)
-		body.push_back(fe::row({fe::expanded(fe::paragraph(FormattableString(tr("%0 more rules are at their Standard values.")).arg(hidden),
-														   {fe::FontRole::Support, true})),
+		body.push_back(fe::row({fe::expanded(fe::hint(FormattableString(tr("%0 more rules are at their Standard values.")).arg(hidden))),
 								fe::button("rules/all", tr("Show all rules"), [this] { setRulesView(RulesView::All); })},
 							   {p.pt(8), fe::CrossAlign::Center}));
 	auto rulesList = [&body, &p] { return fe::scroll("lobby/rules", fe::column(body, {p.pt(8)})); };

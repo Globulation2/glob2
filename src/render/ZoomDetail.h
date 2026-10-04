@@ -7,9 +7,11 @@
 // Adaptive zoom detail (the adaptiveZoomDetail graphics setting). Uniform scaling
 // makes overlays huge when zoomed in and illegible when zoomed out, so each map
 // element instead changes representation as a smooth function of how many screen
-// points one tile occupies. Every threshold lives here; ramps cross-fade between
-// two tile sizes so a wheel notch (1.1x) never pops. Presentation only: the
-// simulation never sees it.
+// points one tile occupies. The map has two looks, the detailed one and the
+// strategic overview, and everything that differs between them cross-fades
+// inside one narrow window of tile sizes, so each look is undistorted over a
+// range of zooms either side. Every threshold lives here. Presentation only:
+// the simulation never sees it.
 struct ZoomDetail
 {
 	//! One tile's edge in screen points; 32 at 100% on a desktop.
@@ -19,9 +21,8 @@ struct ZoomDetail
 
 	//! Opacity of every health, food and occupancy bar.
 	float barAll = 1;
-	//! Opacity of the bars of entities needing attention; at least barAll.
-	float barException = 1;
-	//! Opacity of the single status pip that replaces an exception's bars.
+	//! Opacity of the single status pip that stands in for the bars of an
+	//! entity needing attention, between the bars fading and the overview.
 	float statusPip = 0;
 
 	//! Zone pattern sprites, the flat tint that replaces them, and the outline.
@@ -47,20 +48,22 @@ struct ZoomDetail
 	static constexpr double OverlayMagnifiedGrowth = 0.6;
 	static constexpr double OverlayReducedGrowth = 0.5, OverlaySmallest = 0.6;
 	static constexpr double BarAllGone = 16, BarAllFull = 20;
-	static constexpr double BarExceptionGone = 9, BarExceptionFull = 12;
-	static constexpr double StatusPipGone = 5, StatusPipFull = 8;
-	static constexpr double ZonePatternGone = 8, ZonePatternFull = 16;
-	static constexpr double ZoneOutlineGone = 5, ZoneOutlineFull = 12;
+	static constexpr double ZonePatternGone = 9, ZonePatternFull = 16;
 	static constexpr double ZoneStrokeMaxPoints = 2;
-	static constexpr double TerrainOverviewFull = 5, TerrainOverviewGone = 12;
-	static constexpr double UnitSpriteGone = 6, UnitSpriteFull = 10;
+	//! The cross-fade between the detailed map and the strategic overview:
+	//! sprites, terrain, zone outlines and status pips on one side, markers,
+	//! icons, flat colours and the territory wash on the other.
+	static constexpr double OverviewFull = 7, OverviewGone = 9;
 	static constexpr double WorkerMarkerSmall = 3, WorkerMarkerFull = 6;
-	static constexpr double BuildingSpriteGone = 5, BuildingSpriteFull = 8;
-	static constexpr double FlagIconFull = 8, FlagIconGone = 12;
-	static constexpr double StrategicFull = 4, StrategicGone = 6;
-	//! Every ramp is complete at this tile size; see rampTile.
+	//! The tile size a view that cannot zoom out further is drawn as; see rampTile.
 	static constexpr double FarEnd = 3.5;
-	static constexpr double RemapTop = 20, RemapTopOverSmallest = 2;
+	//! A map that stops zooming out above the overview still gets one: it
+	//! holds from fully zoomed out to this many times that tile size, but no
+	//! further in than `OverviewReach`. A map whose smallest tile is
+	//! `LegibleSmallest` or more never needs it.
+	static constexpr double OverviewSpan = 1.5, OverviewSpanLeast = 1.1, OverviewReach = 16;
+	static constexpr double LegibleSmallest = 20;
+	static constexpr double RemapTop = 20, RemapTopOverFade = 1.25, RemapTopMost = 32;
 
 	//! 0 at or below `gone`, 1 at or above `full`, smooth in between.
 	static float ramp(double value, double gone, double full)
@@ -70,19 +73,27 @@ struct ZoomDetail
 	}
 
 	//! The tile size the ramps are evaluated at. A small map cannot zoom out far
-	//! enough to reach the strategic view by tile size alone, so when the
-	//! view's smallest tile `smallest` is still above the far end, the range
-	//! from there up to `RemapTop` is compressed: fully zoomed out is always
-	//! the full strategic view, and from the top of that range in nothing
-	//! changes. A map so small that it is legible fully zoomed out is left alone.
+	//! enough to reach the overview by tile size alone, so when the view's
+	//! smallest tile `smallest` is above `FarEnd`, the tile sizes from there
+	//! up are remapped: fully zoomed out is always the full overview, it holds
+	//! over the first stretch of zooming in, the cross-fade is as narrow as on
+	//! any other map, and from normal size in nothing changes. A map so small
+	//! that it is legible fully zoomed out is left alone.
 	static double rampTile(double tile, double smallest)
 	{
-		if (!(smallest > FarEnd) || smallest >= RemapTop)
+		if (!(smallest > FarEnd) || smallest >= LegibleSmallest)
 			return tile;
-		const double top = std::max(RemapTop, RemapTopOverSmallest * smallest);
+		const double low = std::max({OverviewFull, std::min(OverviewSpan * smallest, OverviewReach),
+			OverviewSpanLeast * smallest});
+		const double high = low * OverviewGone / OverviewFull;
+		const double top = std::clamp(RemapTopOverFade * high, RemapTop, RemapTopMost);
 		if (tile >= top)
 			return tile;
-		return FarEnd + std::max(0.0, tile - smallest) * (top - FarEnd) / (top - smallest);
+		if (tile >= high)
+			return OverviewGone + (tile - high) * (top - OverviewGone) / (top - high);
+		if (tile >= low)
+			return OverviewFull + (tile - low) * (OverviewGone - OverviewFull) / (high - low);
+		return FarEnd + std::max(0.0, tile - smallest) * (OverviewFull - FarEnd) / (low - smallest);
 	}
 
 	//! Detail for a map drawn at `zoom`, where one point is `unitsPerPoint`
@@ -110,21 +121,21 @@ struct ZoomDetail
 		else if (tile < OverlayPlateauBottom)
 			overlay = std::max(OverlaySmallest, std::pow(tile / OverlayPlateauBottom, OverlayReducedGrowth));
 		detail.overlayScale = unitsPerPoint * overlay;
+		const float detailed = ramp(t, OverviewFull, OverviewGone);
 		detail.barAll = ramp(t, BarAllGone, BarAllFull);
-		detail.barException = std::max(detail.barAll, ramp(t, BarExceptionGone, BarExceptionFull));
-		detail.statusPip = ramp(t, StatusPipGone, StatusPipFull) * (1 - detail.barException);
+		detail.statusPip = detailed * (1 - detail.barAll);
 		detail.zonePattern = ramp(t, ZonePatternGone, ZonePatternFull);
 		detail.zoneTint = 1 - detail.zonePattern;
-		detail.zoneOutline = ramp(t, ZoneOutlineGone, ZoneOutlineFull);
+		detail.zoneOutline = detailed;
 		detail.zoneStrokeMaxPoints = float(ZoneStrokeMaxPoints);
-		detail.terrainOverview = 1 - ramp(t, TerrainOverviewFull, TerrainOverviewGone);
-		detail.unitSprite = ramp(t, UnitSpriteGone, UnitSpriteFull);
-		detail.unitMarker = 1 - detail.unitSprite;
+		detail.terrainOverview = 1 - detailed;
+		detail.unitSprite = detailed;
+		detail.unitMarker = 1 - detailed;
 		detail.workerMarkerScale = ramp(t, WorkerMarkerSmall, WorkerMarkerFull);
-		detail.buildingSprite = ramp(t, BuildingSpriteGone, BuildingSpriteFull);
-		detail.buildingIcon = 1 - detail.buildingSprite;
-		detail.flagIcon = 1 - ramp(t, FlagIconFull, FlagIconGone);
-		detail.strategic = 1 - ramp(t, StrategicFull, StrategicGone);
+		detail.buildingSprite = detailed;
+		detail.buildingIcon = 1 - detailed;
+		detail.flagIcon = 1 - detailed;
+		detail.strategic = 1 - detailed;
 		return detail;
 	}
 };

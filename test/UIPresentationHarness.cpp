@@ -264,6 +264,18 @@ std::vector<Fixture> fixtures()
 			 settings->selectCategory(SettingsScreen::Category::Online);
 			 return settings;
 		 }},
+		{"settings-hive-mind", [](GAGGUI::ScreenStack &)
+		 {
+			 auto settings = std::make_unique<SettingsScreen>();
+			 settings->selectCategory(SettingsScreen::Category::HiveMind);
+			 return settings;
+		 }},
+		{"settings-recording", [](GAGGUI::ScreenStack &)
+		 {
+			 auto settings = std::make_unique<SettingsScreen>();
+			 settings->selectCategory(SettingsScreen::Category::Recording);
+			 return settings;
+		 }},
 		// Online screens (quick match, profile, maps) on canned data.
 		{"quick-match", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::quickMatch(s, false); }},
 		{"quick-match-searching", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::quickMatch(s, true); }},

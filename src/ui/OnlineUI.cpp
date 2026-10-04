@@ -44,7 +44,7 @@ Element onlinePanel(OnlinePanel spec, const Presentation &p)
 	if (phone && spec.thumbBlock)
 		actionRow = spec.thumbBlock;
 	else if (!spec.actions.empty())
-		actionRow = actions(spec.actions, p, ActionStyle::Compact);
+		actionRow = actions(spec.actions, p);
 	(void)palette;
 	if (p.touch)
 	{

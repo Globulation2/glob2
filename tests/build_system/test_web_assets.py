@@ -112,11 +112,12 @@ class WebAssetPackageTests(unittest.TestCase):
             hd = next(entry for entry in manifest['packages'] if entry['name'] == 'hd')
             self.assertGreater(len(hd['parts']), 1)
             for entry in manifest['packages']:
+                self.assertEqual(entry['optional'], entry['name'] not in ('core', 'game'))
                 self.assertEqual(entry['size'], sum(part['size'] for part in entry['parts']))
                 for part in entry['parts']:
                     blob = (output / part['url']).read_bytes()
                     self.assertEqual(len(blob), part['size'])
-                    if entry['optional'] and len(part['files']) > 1:
+                    if entry['name'] != 'core' and len(part['files']) > 1:
                         self.assertLessEqual(part['size'], web_assets.PART_BYTES + 2_000_000)
                     for path, start, end in part['files'][:50]:
                         self.assertEqual(blob[start:end], web_assets.contents(ROOT, entry['name'], path.lstrip('/'),

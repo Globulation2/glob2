@@ -430,9 +430,10 @@ void Econo::tick_upgrade_l2_to_l3(Runtime& runtime)
 
 
 
-//Delete old inns and swarms that are hard to keep full of wheat
-void Econo::tick_delete_old_inns_swarms(Runtime& runtime)
+//Delete old inns that are hard to keep full of wheat. Existing swarms are retained.
+void Econo::tick_delete_old_inns(Runtime& runtime)
 {
+	// Preserve the historical telemetry column for save/load continuity.
 	telemetry.count(AITrace::AI4::Econo_tick_delete_old_inns_swarms_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_DELETE_SCAN_INTERVAL_TICKS)==0)
 	{
@@ -447,26 +448,6 @@ void Econo::tick_delete_old_inns_swarms(Runtime& runtime)
 				if(rt->get_age()>AI_SHARED_RUNTIME_RTI_INN_DELETE_AGE_TICKS)
 				{
 					if(rt->get_total_level() < AI_SHARED_RUNTIME_RTI_INN_DELETE_FOOD_PER_LEVEL*runtime.get_building_register().get_level(*i))
-					{
-						ManagementOrder* mo_destroy=new DestroyBuilding(*i);
-						runtime.add_management_order(mo_destroy);
-					}
-				}
-			}
-		}
-
-
-		BuildingSearch swarms(runtime);
-		swarms.add_condition(new SpecificBuildingType(IntBuildingType::SWARM_BUILDING));
-		swarms.add_condition(new NotUnderConstruction);
-		for(building_search_iterator i=swarms.begin(); i!=swarms.end(); ++i)
-		{
-			std::shared_ptr<ResourceTracker> rt=runtime.get_resource_tracker(*i);
-			if(rt)
-			{
-				if(rt->get_age()>AI_SHARED_RUNTIME_RTI_SWARM_DELETE_AGE_TICKS)
-				{
-					if(rt->get_total_level() < AI_SHARED_RUNTIME_RTI_SWARM_DELETE_FOOD)
 					{
 						ManagementOrder* mo_destroy=new DestroyBuilding(*i);
 						runtime.add_management_order(mo_destroy);
