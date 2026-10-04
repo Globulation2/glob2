@@ -3472,8 +3472,6 @@ Emoji
 هوش مصنوعی پس از %0 می‌پیوندد
 [hub all rooms]
 همه
-[hub browse maps]
-مرور نقشه‌ها
 [hub cant reach %0]
 دسترسی به %0 ممکن نیست.
 [hub change server]
@@ -3508,10 +3506,6 @@ Emoji
 پیوستن
 [hub leaderboard]
 جدول رده‌بندی
-[hub linked %0]
-حساب‌های پیوندشده · %0
-[hub linked accounts]
-حساب‌های پیوندشده
 [hub maps]
 نقشه‌ها
 [hub no queues]
@@ -3532,6 +3526,20 @@ Emoji
 باز کردن دوبارهٔ صفحه
 [hub open rooms]
 اتاق‌های باز
+[hub play]
+بازی
+[hub rooms]
+اتاق‌ها
+[hub ranks]
+رتبه‌ها
+[hub play with friends]
+بازی با دوستان
+[hub last match]
+آخرین مسابقه
+[hub your rank %0 %1]
+رتبهٔ شما #%0 · امتیاز %1
+[hub not placed]
+هنوز اینجا رتبه‌ای ندارید. برای رتبه گرفتن مسابقه‌های رتبه‌بندی بازی کنید.
 [hub page opened at %0]
 %0 باز شد. در بازی چیزی لازم نیست تایپ کنید؛ خودش شما را وارد می‌کند.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Emoji
 مسابقهٔ سریع
 [hub ranked]
 رتبه‌ای
-[hub recent matches]
-مسابقه‌های اخیر
 [hub refresh]
 تازه‌سازی
 [hub retry now]
@@ -3556,8 +3562,6 @@ Emoji
 اتاق
 [hub seats %0 %1]
 %0/%1 جا
-[hub server %0]
-سرور: %0
 [hub sign in browser]
 باز کردن صفحهٔ ورود
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Emoji
 پیوستن به مسابقهٔ دوبارهٔ %0
 [hub profile history]
 نمایه و سابقه
-[hub my maps]
-نقشه‌های من
 [hub leaderboard %0]
 جدول رده‌بندی · %0
 [hub leaderboard empty]

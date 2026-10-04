@@ -3472,8 +3472,6 @@ Conta
 A IA entra após %0
 [hub all rooms]
 Todas
-[hub browse maps]
-Explorar mapas
 [hub cant reach %0]
 Não é possível contactar %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Código de entrada
 Entrar
 [hub leaderboard]
 Classificação
-[hub linked %0]
-Contas associadas · %0
-[hub linked accounts]
-Contas associadas
 [hub maps]
 Mapas
 [hub no queues]
@@ -3532,6 +3526,20 @@ Online
 Abrir a página novamente
 [hub open rooms]
 Salas abertas
+[hub play]
+Jogar
+[hub rooms]
+Salas
+[hub ranks]
+Ranking
+[hub play with friends]
+Jogar com amigos
+[hub last match]
+Última partida
+[hub your rank %0 %1]
+Está em n.º %0 · classificação %1
+[hub not placed]
+Ainda não tem posição aqui. Jogue partidas classificadas para ser classificado.
 [hub page opened at %0]
 %0 foi aberto. Não precisa de escrever nada no jogo; a sessão é iniciada automaticamente.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ A partida rápida ainda não está disponível nesta versão.
 Partida rápida
 [hub ranked]
 Competitiva
-[hub recent matches]
-Partidas recentes
 [hub refresh]
 Atualizar
 [hub retry now]
@@ -3556,8 +3562,6 @@ Sala de %0
 Sala
 [hub seats %0 %1]
 %0/%1 lugares
-[hub server %0]
-Servidor: %0
 [hub sign in browser]
 Abrir a página de início de sessão
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Desforra
 Entrar na desforra de %0
 [hub profile history]
 Perfil e histórico
-[hub my maps]
-Os meus mapas
 [hub leaderboard %0]
 Classificação · %0
 [hub leaderboard empty]

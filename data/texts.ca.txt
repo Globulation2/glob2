@@ -3472,8 +3472,6 @@ Compte
 La IA s'hi uneix d'aquí a %0
 [hub all rooms]
 Totes
-[hub browse maps]
-Explora mapes
 [hub cant reach %0]
 No es pot accedir a %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Codi per unir-se
 Uneix-t'hi
 [hub leaderboard]
 Classificació
-[hub linked %0]
-Comptes enllaçats · %0
-[hub linked accounts]
-Comptes enllaçats
 [hub maps]
 Mapes
 [hub no queues]
@@ -3532,6 +3526,20 @@ En línia
 Torna a obrir la pàgina
 [hub open rooms]
 Sales obertes
+[hub play]
+Juga
+[hub rooms]
+Sales
+[hub ranks]
+Rànquing
+[hub play with friends]
+Juga amb amics
+[hub last match]
+Darrera partida
+[hub your rank %0 %1]
+Ets el núm. %0 · puntuació %1
+[hub not placed]
+Encara no tens posició aquí. Juga partides classificatòries per obtenir-ne una.
 [hub page opened at %0]
 S'ha obert %0. No cal escriure res al joc; la sessió s'inicia sola.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ La partida ràpida encara no està disponible en aquesta versió.
 Partida ràpida
 [hub ranked]
 Classificatòria
-[hub recent matches]
-Partides recents
 [hub refresh]
 Actualitza
 [hub retry now]
@@ -3556,8 +3562,6 @@ Sala de %0
 Sala
 [hub seats %0 %1]
 %0/%1 places
-[hub server %0]
-Servidor: %0
 [hub sign in browser]
 Obre la pàgina d'inici de sessió
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Revenja
 Uneix-te a la revenja de %0
 [hub profile history]
 Perfil i historial
-[hub my maps]
-Els meus mapes
 [hub leaderboard %0]
 Classificació · %0
 [hub leaderboard empty]

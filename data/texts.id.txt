@@ -3472,8 +3472,6 @@ Akun
 AI bergabung setelah %0
 [hub all rooms]
 Semua
-[hub browse maps]
-Jelajahi peta
 [hub cant reach %0]
 Tidak dapat menjangkau %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Kode gabung
 Gabung
 [hub leaderboard]
 Papan peringkat
-[hub linked %0]
-Akun tertaut · %0
-[hub linked accounts]
-Akun tertaut
 [hub maps]
 Peta
 [hub no queues]
@@ -3532,6 +3526,20 @@ Daring
 Buka halaman lagi
 [hub open rooms]
 Ruang terbuka
+[hub play]
+Main
+[hub rooms]
+Ruang
+[hub ranks]
+Peringkat
+[hub play with friends]
+Main bersama teman
+[hub last match]
+Pertandingan terakhir
+[hub your rank %0 %1]
+Peringkat Anda #%0 · rating %1
+[hub not placed]
+Anda belum punya peringkat di sini. Mainkan pertandingan berperingkat untuk mendapatkannya.
 [hub page opened at %0]
 %0 telah dibuka. Tidak perlu mengetik apa pun di permainan; Anda akan masuk secara otomatis.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Pertandingan cepat belum tersedia di versi ini.
 Pertandingan cepat
 [hub ranked]
 Berperingkat
-[hub recent matches]
-Pertandingan terbaru
 [hub refresh]
 Segarkan
 [hub retry now]
@@ -3556,8 +3562,6 @@ Ruang %0
 Ruang
 [hub seats %0 %1]
 %0/%1 kursi
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Buka halaman masuk
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Tanding ulang
 Gabung tanding ulang %0
 [hub profile history]
 Profil & riwayat
-[hub my maps]
-Peta saya
 [hub leaderboard %0]
 Papan peringkat · %0
 [hub leaderboard empty]

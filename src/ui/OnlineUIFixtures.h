@@ -203,7 +203,8 @@ inline OnlineHubScreen::Model hubModel()
 	m.accountId = GUEST_ID;
 	m.queues = Json::array({{{"id", "ranked-1v1"}, {"name", "1 vs 1"}, {"mode", "1v1"}, {"rated", true}},
 							{{"id", "ranked-2v2"}, {"name", "2 vs 2"}, {"mode", "2v2"}, {"rated", true}},
-							{{"id", "casual-1v1"}, {"name", "Casual 1 vs 1"}, {"mode", "1v1"}, {"rated", false}, {"aiBackfillSeconds", 30}}});
+							{{"id", "casual-1v1"}, {"name", "Casual 1 vs 1"}, {"mode", "1v1"}, {"rated", false}, {"aiBackfillSeconds", 30},
+							 {"maps", Json::array({"even-ground", "symmetric-arena"})}}});
 	m.providers = Json::array({{{"id", "google"}, {"kind", "oidc"}, {"displayName", "Google"}},
 							   {{"id", "microsoft"}, {"kind", "oidc"}, {"displayName", "Microsoft"}}});
 	m.rooms = Json::array(
@@ -218,11 +219,11 @@ inline OnlineHubScreen::Model hubModel()
 	m.recent = Json::array({{{"id", "m1"}, {"origin", "queue"}, {"queueId", "1 vs 1"}, {"rated", true}, {"verification", "verified"}, {"mapTitle", "Even Ground"}, {"durationTicks", 31500}, {"participants", won}},
 							{{"id", "m2"}, {"origin", "room"}, {"rated", false}, {"verification", "not_applicable"}, {"mapTitle", "Marchland"}, {"durationTicks", 72000}, {"participants", room}}});
 	m.leaderboardName = "1 vs 1";
-	auto entry = [](int rank, const char *name, double rating) {
-		return Json{{"rank", rank}, {"rating", rating}, {"entity", {{"kind", "account"}, {"account", {{"displayName", name}}}}}};
+	auto entry = [](int rank, const char *name, double rating, std::string id = {}) {
+		return Json{{"rank", rank}, {"rating", rating}, {"entity", {{"kind", "account"}, {"account", {{"id", id}, {"displayName", name}}}}}};
 	};
 	m.leaderboard = Json::array({entry(1, "Mirelle", 1912), entry(2, "tuxboy", 1874), entry(3, "Kestrel", 1840),
-								 entry(4, "Ana_M", 1795), entry(5, "Bradley", 1760)});
+								 entry(4, "Ana_M", 1795), entry(5, "Bradley", 1760, GUEST_ID)});
 	return m;
 }
 
@@ -342,6 +343,20 @@ inline std::unique_ptr<GAGGUI::Screen> quickMatch(GAGGUI::ScreenStack &stack, bo
 	if (searching)
 		m.presentSearching(queues()[0], status(now), now - 42000);
 	return std::make_unique<QuickMatchScreen>(stack, m, queues(), "https://app.glob2online.com", "Bradley");
+}
+
+// A section of the hub other than Play (a registered player placed on the ladder).
+inline std::unique_ptr<GAGGUI::Screen> hubSection(GAGGUI::ScreenStack &stack, OnlineHubScreen::Section section)
+{
+	auto hub = std::make_unique<OnlineHubScreen>(stack, false);
+	auto model = hubModel();
+	model.displayName = "Bradley";
+	model.accountKind = "registered";
+	model.myRank = 5;
+	model.myRating = 1760;
+	hub->preview(model);
+	hub->showSection(section);
+	return hub;
 }
 
 // The hub with a casual search running behind it: the search strip.

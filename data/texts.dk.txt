@@ -3472,8 +3472,6 @@ Konto
 AI deltager efter %0
 [hub all rooms]
 Alle
-[hub browse maps]
-Gennemse kort
 [hub cant reach %0]
 Kan ikke nå %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Deltagelseskode
 Deltag
 [hub leaderboard]
 Rangliste
-[hub linked %0]
-Tilknyttede konti · %0
-[hub linked accounts]
-Tilknyttede konti
 [hub maps]
 Kort
 [hub no queues]
@@ -3532,6 +3526,20 @@ Online
 Åbn siden igen
 [hub open rooms]
 Åbne rum
+[hub play]
+Spil
+[hub rooms]
+Rum
+[hub ranks]
+Rangliste
+[hub play with friends]
+Spil med venner
+[hub last match]
+Seneste kamp
+[hub your rank %0 %1]
+Du er nr. %0 · rating %1
+[hub not placed]
+Du har endnu ingen placering her. Spil rangerede kampe for at blive placeret.
 [hub page opened at %0]
 Åbnede %0. Du skal ikke skrive noget i spillet; det logger dig selv ind.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Hurtig kamp er endnu ikke tilgængelig i denne version.
 Hurtig kamp
 [hub ranked]
 Rangeret
-[hub recent matches]
-Seneste kampe
 [hub refresh]
 Opdater
 [hub retry now]
@@ -3556,8 +3562,6 @@ Rum
 Rum
 [hub seats %0 %1]
 %0/%1 pladser
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Åbn login-siden
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Revanche
 Deltag i %0s revanche
 [hub profile history]
 Profil og historik
-[hub my maps]
-Mine kort
 [hub leaderboard %0]
 Rangliste · %0
 [hub leaderboard empty]

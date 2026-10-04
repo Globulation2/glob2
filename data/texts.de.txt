@@ -3472,8 +3472,6 @@ Konto
 KI tritt nach %0 bei
 [hub all rooms]
 Alle
-[hub browse maps]
-Karten durchsuchen
 [hub cant reach %0]
 %0 ist nicht erreichbar.
 [hub change server]
@@ -3508,10 +3506,6 @@ Beitrittscode
 Beitreten
 [hub leaderboard]
 Rangliste
-[hub linked %0]
-Verknüpfte Konten · %0
-[hub linked accounts]
-Verknüpfte Konten
 [hub maps]
 Karten
 [hub no queues]
@@ -3532,6 +3526,20 @@ Online
 Seite erneut öffnen
 [hub open rooms]
 Offene Räume
+[hub play]
+Spielen
+[hub rooms]
+Räume
+[hub ranks]
+Rangliste
+[hub play with friends]
+Mit Freunden spielen
+[hub last match]
+Letztes Match
+[hub your rank %0 %1]
+Du bist Platz %0 · Wertung %1
+[hub not placed]
+Du hast hier noch keinen Rang. Spiele gewertete Matches, um eingestuft zu werden.
 [hub page opened at %0]
 %0 geöffnet. Im Spiel ist nichts einzugeben; die Anmeldung erfolgt automatisch.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Schnelles Match ist in dieser Version noch nicht verfügbar.
 Schnelles Match
 [hub ranked]
 Gewertet
-[hub recent matches]
-Letzte Matches
 [hub refresh]
 Aktualisieren
 [hub retry now]
@@ -3556,8 +3562,6 @@ Raum von %0
 Raum
 [hub seats %0 %1]
 %0/%1 Plätze
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Anmeldeseite öffnen
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Revanche
 Der Revanche von %0 beitreten
 [hub profile history]
 Profil & Verlauf
-[hub my maps]
-Meine Karten
 [hub leaderboard %0]
 Rangliste · %0
 [hub leaderboard empty]

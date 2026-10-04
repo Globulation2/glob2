@@ -3472,8 +3472,6 @@ Kontua
 AI %0 barru sartuko da
 [hub all rooms]
 Denak
-[hub browse maps]
-Arakatu mapak
 [hub cant reach %0]
 Ezin da %0 zerbitzarira iritsi.
 [hub change server]
@@ -3508,10 +3506,6 @@ Sartzeko kodea
 Sartu
 [hub leaderboard]
 Sailkapena
-[hub linked %0]
-Lotutako kontuak · %0
-[hub linked accounts]
-Lotutako kontuak
 [hub maps]
 Mapak
 [hub no queues]
@@ -3532,6 +3526,20 @@ Sarean
 Ireki orria berriro
 [hub open rooms]
 Gela irekiak
+[hub play]
+Jokatu
+[hub rooms]
+Gelak
+[hub ranks]
+Sailkapena
+[hub play with friends]
+Jokatu lagunekin
+[hub last match]
+Azken partida
+[hub your rank %0 %1]
+%0. postuan zaude · puntuazioa %1
+[hub not placed]
+Oraindik ez duzu postu bat hemen. Jokatu sailkatutako partidak postua lortzeko.
 [hub page opened at %0]
 Ireki da: %0. Ez duzu ezer idatzi behar jokoan; saioa berez hasiko da.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Partida azkarra ez dago oraindik erabilgarri bertsio honetan.
 Partida azkarra
 [hub ranked]
 Sailkapenekoa
-[hub recent matches]
-Azken partidak
 [hub refresh]
 Freskatu
 [hub retry now]
@@ -3556,8 +3562,6 @@ Gela
 Gela
 [hub seats %0 %1]
 %0/%1 leku
-[hub server %0]
-Zerbitzaria: %0
 [hub sign in browser]
 Ireki saio-hasierako orria
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Errebantxa
 Sartu %0(r)en errebantxan
 [hub profile history]
 Profila eta historia
-[hub my maps]
-Nire mapak
 [hub leaderboard %0]
 Sailkapena · %0
 [hub leaderboard empty]

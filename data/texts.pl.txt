@@ -3472,8 +3472,6 @@ Konto
 SI dołączy po %0
 [hub all rooms]
 Wszystkie
-[hub browse maps]
-Przeglądaj mapy
 [hub cant reach %0]
 Brak połączenia z %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Kod dołączenia
 Dołącz
 [hub leaderboard]
 Ranking
-[hub linked %0]
-Połączone konta · %0
-[hub linked accounts]
-Połączone konta
 [hub maps]
 Mapy
 [hub no queues]
@@ -3532,6 +3526,20 @@ Gra online
 Otwórz stronę ponownie
 [hub open rooms]
 Otwarte pokoje
+[hub play]
+Graj
+[hub rooms]
+Pokoje
+[hub ranks]
+Ranking
+[hub play with friends]
+Graj ze znajomymi
+[hub last match]
+Ostatni mecz
+[hub your rank %0 %1]
+Jesteś na %0. miejscu · ranking %1
+[hub not placed]
+Nie masz tu jeszcze miejsca w rankingu. Graj mecze rankingowe, aby się w nim znaleźć.
 [hub page opened at %0]
 Otwarto %0. W grze nie trzeba nic wpisywać; zaloguje Cię sama.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Szybki mecz nie jest jeszcze dostępny w tej wersji.
 Szybki mecz
 [hub ranked]
 Rankingowy
-[hub recent matches]
-Ostatnie mecze
 [hub refresh]
 Odśwież
 [hub retry now]
@@ -3556,8 +3562,6 @@ Pokój gracza %0
 Pokój
 [hub seats %0 %1]
 Miejsca: %0/%1
-[hub server %0]
-Serwer: %0
 [hub sign in browser]
 Otwórz stronę logowania
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Rewanż
 Dołącz do rewanżu gracza %0
 [hub profile history]
 Profil i historia
-[hub my maps]
-Moje mapy
 [hub leaderboard %0]
 Ranking · %0
 [hub leaderboard empty]

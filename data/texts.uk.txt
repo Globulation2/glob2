@@ -3472,8 +3472,6 @@ OpenGL недоступний у цій збірці.
 ШІ приєднається через %0
 [hub all rooms]
 Усі
-[hub browse maps]
-Огляд карт
 [hub cant reach %0]
 Не вдалося зв’язатися з %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ OpenGL недоступний у цій збірці.
 Приєднатися
 [hub leaderboard]
 Таблиця лідерів
-[hub linked %0]
-Пов’язані облікові записи · %0
-[hub linked accounts]
-Пов’язані облікові записи
 [hub maps]
 Карти
 [hub no queues]
@@ -3532,6 +3526,20 @@ OpenGL недоступний у цій збірці.
 Відкрити сторінку знову
 [hub open rooms]
 Відкриті кімнати
+[hub play]
+Грати
+[hub rooms]
+Кімнати
+[hub ranks]
+Рейтинг
+[hub play with friends]
+Грати з друзями
+[hub last match]
+Останній матч
+[hub your rank %0 %1]
+Ви на %0-му місці · рейтинг %1
+[hub not placed]
+У вас ще немає місця в рейтингу. Зіграйте рейтингові матчі, щоб потрапити до нього.
 [hub page opened at %0]
 Відкрито %0. У грі нічого вводити не потрібно — вхід відбудеться автоматично.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ OpenGL недоступний у цій збірці.
 Швидкий матч
 [hub ranked]
 Рейтинговий
-[hub recent matches]
-Останні матчі
 [hub refresh]
 Оновити
 [hub retry now]
@@ -3556,8 +3562,6 @@ OpenGL недоступний у цій збірці.
 Кімната
 [hub seats %0 %1]
 Місць: %0/%1
-[hub server %0]
-Сервер: %0
 [hub sign in browser]
 Відкрити сторінку входу
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ OpenGL недоступний у цій збірці.
 Приєднатися до реваншу %0
 [hub profile history]
 Профіль та історія
-[hub my maps]
-Мої карти
 [hub leaderboard %0]
 Таблиця лідерів · %0
 [hub leaderboard empty]

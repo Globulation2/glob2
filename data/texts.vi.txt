@@ -3472,8 +3472,6 @@ Tài khoản
 AI vào sau %0
 [hub all rooms]
 Tất cả
-[hub browse maps]
-Duyệt bản đồ
 [hub cant reach %0]
 Không thể kết nối tới %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Mã vào phòng
 Tham gia
 [hub leaderboard]
 Bảng xếp hạng
-[hub linked %0]
-Tài khoản liên kết · %0
-[hub linked accounts]
-Tài khoản liên kết
 [hub maps]
 Bản đồ
 [hub no queues]
@@ -3532,6 +3526,20 @@ Trực tuyến
 Mở lại trang
 [hub open rooms]
 Phòng đang mở
+[hub play]
+Chơi
+[hub rooms]
+Phòng
+[hub ranks]
+Xếp hạng
+[hub play with friends]
+Chơi cùng bạn bè
+[hub last match]
+Trận gần nhất
+[hub your rank %0 %1]
+Bạn hạng #%0 · điểm %1
+[hub not placed]
+Bạn chưa có hạng ở đây. Hãy chơi các trận xếp hạng để được xếp hạng.
 [hub page opened at %0]
 Đã mở %0. Không cần nhập gì trong trò chơi; nó sẽ tự đăng nhập cho bạn.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Phòng đang mở
 Đấu nhanh
 [hub ranked]
 Xếp hạng
-[hub recent matches]
-Trận gần đây
 [hub refresh]
 Làm mới
 [hub retry now]
@@ -3556,8 +3562,6 @@ Phòng của %0
 Phòng
 [hub seats %0 %1]
 %0/%1 chỗ
-[hub server %0]
-Máy chủ: %0
 [hub sign in browser]
 Mở trang đăng nhập
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Tái đấu
 Vào trận tái đấu của %0
 [hub profile history]
 Hồ sơ & lịch sử
-[hub my maps]
-Bản đồ của tôi
 [hub leaderboard %0]
 Bảng xếp hạng · %0
 [hub leaderboard empty]

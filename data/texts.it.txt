@@ -3472,8 +3472,6 @@ Account
 l'IA entra dopo %0
 [hub all rooms]
 Tutte
-[hub browse maps]
-Sfoglia mappe
 [hub cant reach %0]
 Impossibile raggiungere %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Entra con codice
 Entra
 [hub leaderboard]
 Classifica
-[hub linked %0]
-Account collegati · %0
-[hub linked accounts]
-Account collegati
 [hub maps]
 Mappe
 [hub no queues]
@@ -3532,6 +3526,20 @@ Online
 Riapri la pagina
 [hub open rooms]
 Stanze aperte
+[hub play]
+Gioca
+[hub rooms]
+Stanze
+[hub ranks]
+Classifica
+[hub play with friends]
+Gioca con gli amici
+[hub last match]
+Ultima partita
+[hub your rank %0 %1]
+Sei il n. %0 · punteggio %1
+[hub not placed]
+Non hai ancora una posizione qui. Gioca partite classificate per ottenerla.
 [hub page opened at %0]
 Aperto %0. Non devi digitare nulla nel gioco: l'accesso avviene da solo.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ La partita rapida non è ancora disponibile in questa versione.
 Partita rapida
 [hub ranked]
 Classificata
-[hub recent matches]
-Partite recenti
 [hub refresh]
 Aggiorna
 [hub retry now]
@@ -3556,8 +3562,6 @@ Stanza di %0
 Stanza
 [hub seats %0 %1]
 %0/%1 posti
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Apri la pagina di accesso
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Rivincita
 Unisciti alla rivincita di %0
 [hub profile history]
 Profilo e cronologia
-[hub my maps]
-Le mie mappe
 [hub leaderboard %0]
 Classifica · %0
 [hub leaderboard empty]

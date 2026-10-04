@@ -3472,8 +3472,6 @@ LAN домаћин није доступан. Проверите дозволу 
 ВИ се прикључује након %0
 [hub all rooms]
 Све
-[hub browse maps]
-Прегледај мапе
 [hub cant reach %0]
 %0 није доступан.
 [hub change server]
@@ -3508,10 +3506,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Придружи се
 [hub leaderboard]
 Ранг-листа
-[hub linked %0]
-Повезани налози · %0
-[hub linked accounts]
-Повезани налози
 [hub maps]
 Мапе
 [hub no queues]
@@ -3532,6 +3526,20 @@ LAN домаћин није доступан. Проверите дозволу 
 Поново отвори страницу
 [hub open rooms]
 Отворене собе
+[hub play]
+Играј
+[hub rooms]
+Собе
+[hub ranks]
+Ранг
+[hub play with friends]
+Играј са пријатељима
+[hub last match]
+Последњи меч
+[hub your rank %0 %1]
+Ви сте #%0 · рејтинг %1
+[hub not placed]
+Још немате ранг овде. Играјте рангиране мечеве да бисте се рангирали.
 [hub page opened at %0]
 Отворено: %0. У игри не треба ништа куцати; пријава се обавља сама.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Брзи меч
 [hub ranked]
 Рангирано
-[hub recent matches]
-Недавни мечеви
 [hub refresh]
 Освежи
 [hub retry now]
@@ -3556,8 +3562,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Соба
 [hub seats %0 %1]
 Места: %0/%1
-[hub server %0]
-Сервер: %0
 [hub sign in browser]
 Отвори страницу за пријаву
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Придружи се реваншу: %0
 [hub profile history]
 Профил и историја
-[hub my maps]
-Моје мапе
 [hub leaderboard %0]
 Ранг-листа · %0
 [hub leaderboard empty]

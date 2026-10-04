@@ -3472,8 +3472,6 @@ Account
 AI doet mee na %0
 [hub all rooms]
 Alle
-[hub browse maps]
-Kaarten bekijken
 [hub cant reach %0]
 Kan %0 niet bereiken.
 [hub change server]
@@ -3508,10 +3506,6 @@ Code om mee te doen
 Meedoen
 [hub leaderboard]
 Ranglijst
-[hub linked %0]
-Gekoppelde accounts · %0
-[hub linked accounts]
-Gekoppelde accounts
 [hub maps]
 Kaarten
 [hub no queues]
@@ -3532,6 +3526,20 @@ Online
 Pagina opnieuw openen
 [hub open rooms]
 Open kamers
+[hub play]
+Spelen
+[hub rooms]
+Kamers
+[hub ranks]
+Ranglijst
+[hub play with friends]
+Spelen met vrienden
+[hub last match]
+Laatste wedstrijd
+[hub your rank %0 %1]
+Je staat op #%0 · rating %1
+[hub not placed]
+Je hebt hier nog geen rang. Speel ranked wedstrijden om ingedeeld te worden.
 [hub page opened at %0]
 %0 geopend. Je hoeft niets in te typen in het spel; het logt je vanzelf in.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Snel spelen is in deze versie nog niet beschikbaar.
 Snel spelen
 [hub ranked]
 Competitief
-[hub recent matches]
-Recente wedstrijden
 [hub refresh]
 Vernieuwen
 [hub retry now]
@@ -3556,8 +3562,6 @@ Kamer van %0
 Kamer
 [hub seats %0 %1]
 %0/%1 plaatsen
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Inlogpagina openen
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Revanche
 Doe mee met de revanche van %0
 [hub profile history]
 Profiel en geschiedenis
-[hub my maps]
-Mijn kaarten
 [hub leaderboard %0]
 Ranglijst · %0
 [hub leaderboard empty]

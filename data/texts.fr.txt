@@ -3472,8 +3472,6 @@ Compte
 L'IA rejoint après %0
 [hub all rooms]
 Tous
-[hub browse maps]
-Parcourir les cartes
 [hub cant reach %0]
 Impossible de joindre %0.
 [hub change server]
@@ -3508,10 +3506,6 @@ Code d'accès
 Rejoindre
 [hub leaderboard]
 Classement
-[hub linked %0]
-Comptes liés · %0
-[hub linked accounts]
-Comptes liés
 [hub maps]
 Cartes
 [hub no queues]
@@ -3532,6 +3526,20 @@ En ligne
 Rouvrir la page
 [hub open rooms]
 Salons ouverts
+[hub play]
+Jouer
+[hub rooms]
+Salons
+[hub ranks]
+Classement
+[hub play with friends]
+Jouer entre amis
+[hub last match]
+Dernière partie
+[hub your rank %0 %1]
+Vous êtes n° %0 · classement %1
+[hub not placed]
+Vous n'avez pas encore de rang ici. Jouez des parties classées pour être classé.
 [hub page opened at %0]
 Page %0 ouverte. Rien à saisir dans le jeu ; la connexion se fait toute seule.
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ La partie rapide n'est pas encore disponible dans cette version.
 Partie rapide
 [hub ranked]
 Classée
-[hub recent matches]
-Parties récentes
 [hub refresh]
 Actualiser
 [hub retry now]
@@ -3556,8 +3562,6 @@ Salon de %0
 Salon
 [hub seats %0 %1]
 %0/%1 places
-[hub server %0]
-Serveur : %0
 [hub sign in browser]
 Ouvrir la page de connexion
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ Revanche
 Rejoindre la revanche de %0
 [hub profile history]
 Profil et historique
-[hub my maps]
-Mes cartes
 [hub leaderboard %0]
 Classement · %0
 [hub leaderboard empty]

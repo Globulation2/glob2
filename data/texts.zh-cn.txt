@@ -3472,8 +3472,6 @@ Ping
 %0 后 AI 加入
 [hub all rooms]
 全部
-[hub browse maps]
-浏览地图
 [hub cant reach %0]
 无法连接 %0。
 [hub change server]
@@ -3508,10 +3506,6 @@ Ping
 加入
 [hub leaderboard]
 排行榜
-[hub linked %0]
-已关联账户 · %0
-[hub linked accounts]
-已关联账户
 [hub maps]
 地图
 [hub no queues]
@@ -3532,6 +3526,20 @@ Ping
 重新打开页面
 [hub open rooms]
 开放房间
+[hub play]
+开始游戏
+[hub rooms]
+房间
+[hub ranks]
+排名
+[hub play with friends]
+和朋友一起玩
+[hub last match]
+上一场对局
+[hub your rank %0 %1]
+你排名第 %0 · 积分 %1
+[hub not placed]
+你在这里还没有排名。进行积分对局即可获得排名。
 [hub page opened at %0]
 已打开 %0。无需在游戏中输入任何内容，登录会自动完成。
 [hub queues unavailable]
@@ -3542,8 +3550,6 @@ Ping
 快速匹配
 [hub ranked]
 排位
-[hub recent matches]
-最近对局
 [hub refresh]
 刷新
 [hub retry now]
@@ -3556,8 +3562,6 @@ Ping
 房间
 [hub seats %0 %1]
 %0/%1 个座位
-[hub server %0]
-服务器：%0
 [hub sign in browser]
 打开登录页面
 [hub sign in conflict]
@@ -4394,8 +4398,6 @@ AI 补位
 加入 %0 的再战
 [hub profile history]
 资料与历史
-[hub my maps]
-我的地图
 [hub leaderboard %0]
 排行榜 · %0
 [hub leaderboard empty]
