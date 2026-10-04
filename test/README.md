@@ -1671,3 +1671,9 @@ pipeline. Stock transitions invalidate pending market snapshots and request a
 refresh. Format 134 saves these fields and their scheduling flags; older saves
 load without them and allocate them on first use. Run
 `python3 test/run_tests.py --filter 'MarketFetch/*'`.
+
+`MarketFetch` also checks the three market levels: existing type IDs 49–50
+remain stable, higher-level sites and buildings append as IDs 51–54, and their
+stock and type IDs survive binary/text game saves. Level 2 accepts wood and
+wheat in addition to fruit; level 3 accepts all eight resource types. Costs and
+reuse of the level-1 artwork remain provisional while the feature is draft.
