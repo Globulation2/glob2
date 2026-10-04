@@ -30,6 +30,8 @@
 #include <random>
 #include <sstream>
 #include <thread>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/ip/tcp.hpp>
 
 #include <FormatableString.h>
 #include <StringTable.h>
@@ -54,10 +56,6 @@
 #include "Utilities.h"
 #include "VerifyMatch.h"
 
-#ifndef _WIN32
-#include <unistd.h>
-#endif
-
 namespace fs = std::filesystem;
 
 namespace
@@ -79,14 +77,12 @@ std::string mapPath()
 	return (glob2test::sourceRoot() / "maps" / "FourSquares1.map.gz").string();
 }
 
-std::uint16_t testPort(int offset)
+std::uint16_t testPort()
 {
-#ifndef _WIN32
-	const int pid = static_cast<int>(getpid());
-#else
-	const int pid = static_cast<int>(std::random_device()());
-#endif
-	return static_cast<std::uint16_t>(21000 + (pid % 9000) * 4 + offset);
+	// Let the OS avoid occupied and reserved ports (including Windows exclusions).
+	boost::asio::io_context context;
+	boost::asio::ip::tcp::acceptor probe(context, {boost::asio::ip::address_v4::loopback(), 0});
+	return probe.local_endpoint().port();
 }
 
 /// A link with a fixed one-way delay in each direction, around a guest's turn transport.
@@ -579,7 +575,7 @@ TEST_SUITE("LanMatchHarness")
 		LanMatch match;
 		match.directory = glob2test::artifactDir() / "timeout-diagnostics";
 		fs::create_directories(match.directory);
-		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(0), match.directory), 101));
+		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), match.directory), 101));
 		match.players.push_back(std::make_unique<LanPlayer>("Crashed guest", nullptr, 102));
 		CHECK_FALSE(match.runUntil(0, [] { return false; }));
 	}
@@ -597,7 +593,7 @@ TEST_SUITE("LanMatchHarness")
 		m.directory = glob2test::artifactDir() / "lan-match";
 		fs::remove_all(m.directory);
 		fs::create_directories(m.directory);
-		const std::uint16_t port = testPort(0);
+		const std::uint16_t port = testPort();
 		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(port, m.directory), 101));
 		const std::string endpoint = m.host().room->shareText();
 		INFO("LAN pairing endpoint=" << endpoint);
@@ -762,7 +758,7 @@ TEST_SUITE("LanMatchHarness")
 		m.directory = glob2test::artifactDir() / "wait";
 		fs::remove_all(m.directory);
 		fs::create_directories(m.directory);
-		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(3), m.directory), 301));
+		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory), 301));
 		const std::string endpoint = m.host().room->shareText();
 		m.players.push_back(std::make_unique<LanPlayer>("Guest", guestRoom(endpoint, "Guest", m.directory / "cache"), 302));
 		auto& host = m.hostSide();
@@ -835,7 +831,6 @@ TEST_SUITE("LanMatchHarness")
 		table << "bundle interval | one-way delay | player | samples | mean ms | median ms | p95 ms | buffer target ticks | "
 		         "rtt ms | stalls | long stalls | stalled ms\n";
 		stages << "Per-stage breakdown of the same runs (" << turntest::LatencyTrace::header() << ")\n";
-		int offset = 1;
 		const char* only = std::getenv("GLOB2_LAN_DELAY_BUNDLE");
 		for (std::uint8_t bundle : {std::uint8_t(2), std::uint8_t(1)})
 		for (std::uint64_t oneWayMs : {0u, 25u, 50u})
@@ -846,7 +841,7 @@ TEST_SUITE("LanMatchHarness")
 			m.directory = glob2test::artifactDir() / ("lan-delay-" + std::to_string(bundle) + "-" + std::to_string(oneWayMs));
 			fs::remove_all(m.directory);
 			fs::create_directories(m.directory);
-			m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(offset++), m.directory, bundle), 201));
+			m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory, bundle), 201));
 			const std::string endpoint = m.host().room->shareText();
 			INFO("LAN pairing endpoint=" << endpoint);
 			m.players.push_back(std::make_unique<LanPlayer>(
