@@ -2,13 +2,10 @@
 // Real-engine regression: after a delivery a worker is released for the hiring
 // auction only when at least RELEASE_IDLE_WORKER_PERCENT of the team's workers
 // are idle; otherwise it keeps its building and picks its next trip itself.
-#define SDL_MAIN_HANDLED
-#ifdef main
-#undef main
-#endif
+#include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <string>
 #include "Game.h"
 #include "GameGUI.h"
@@ -22,11 +19,12 @@
 #include <cstdio>
 #include <cstdlib>
 
-GlobalContainer* globalContainer = nullptr;
+namespace
+{
 
 static void require(bool ok, const char* message)
 {
-	if (!ok) { std::fprintf(stderr, "FAIL: %s\n", message); std::exit(1); }
+	GLOB2_REQUIRE(ok, message);
 }
 
 struct TestUnit : Unit
@@ -60,9 +58,9 @@ struct Bed
 		require(inn != nullptr, "inn placed");
 		game.map.setBuilding(8, 8, inn->type->width, inn->type->height, inn->gid);
 		inn->maxUnitWorking = 2;
-		inn->resources[CORN] = 0;
+		inn->resources[WHEAT] = 0;
 		inn->updateCallLists();
-		require(game.map.incResource(14, 8, CORN, 0), "wheat within reach for the next trip");
+		require(game.map.incResource(14, 8, WHEAT, 0), "wheat within reach for the next trip");
 		// The carrier: attached, at the door, wheat on its back, depositing.
 		carrier = new TestUnit(7, 8, Unit::GIDfrom(0, 0), WORKER, team, 0);
 		team->myUnits[0] = carrier;
@@ -72,8 +70,8 @@ struct Bed
 		carrier->attachedBuilding = inn;
 		inn->unitsWorking.push_back(carrier);
 		carrier->setTargetBuilding(inn);
-		carrier->destinationPurpose = CORN;
-		carrier->carriedResource = CORN;
+		carrier->destinationPurpose = WHEAT;
+		carrier->carriedResource = WHEAT;
 		carrier->displacement = Unit::DIS_FILLING_BUILDING;
 		carrier->dx = 1; carrier->dy = 0;
 		carrier->validTarget = false;
@@ -87,19 +85,10 @@ struct Bed
 	}
 };
 
-int main(int argc, char** argv)
+TEST_CASE("GigRelease/deliveries are released only with at least a fifth idle")
 {
-	SDL_SetMainReady();
-	require(argc == 3, "usage: harness PROFILE ROOT");
-	require(std::string(argv[1]).find("glob2-save-test-") == 0, "disposable profile required");
-	GlobalContainer globals(argv[1]);
-	globals.fileManager->addDir(argv[2]);
-	globalContainer = &globals;
-	globals.runNoX = true;
-	globals.settings.rememberUnit = false;
-	globals.buildingsTypes.init();
-	IntBuildingType::init();
-	Race::loadDefault();
+	glob2test::HeadlessGlobals globals;
+	globals->settings.rememberUnit = false;
 	require(RELEASE_IDLE_WORKER_PERCENT == 20, "this harness assumes the one-in-five threshold");
 
 	{
@@ -107,7 +96,7 @@ int main(int argc, char** argv)
 		Bed bed(4, true);
 		require(bed.team->idleWorkerShareAtLeast(RELEASE_IDLE_WORKER_PERCENT), "four idle of five is above the threshold");
 		bed.carrier->deliver();
-		require(bed.inn->resources[CORN] == 1, "the wheat was deposited");
+		require(bed.inn->resources[WHEAT] == 1, "the wheat was deposited");
 		require(bed.carrier->activity == Unit::ACT_RANDOM && bed.carrier->attachedBuilding == NULL, "released for the auction");
 		require(bed.inn->unitsWorking.empty(), "no longer working for the inn");
 		std::puts("gig release: with idle hands the deliverer goes back to the pool");
@@ -117,9 +106,9 @@ int main(int argc, char** argv)
 		Bed bed(4, false);
 		require(!bed.team->idleWorkerShareAtLeast(RELEASE_IDLE_WORKER_PERCENT), "nobody idle is below the threshold");
 		bed.carrier->deliver();
-		require(bed.inn->resources[CORN] == 1, "the wheat was deposited");
+		require(bed.inn->resources[WHEAT] == 1, "the wheat was deposited");
 		require(bed.carrier->activity == Unit::ACT_FILLING && bed.carrier->attachedBuilding == bed.inn, "keeps its building");
-		require(bed.carrier->displacement == Unit::DIS_GOING_TO_RESOURCE && bed.carrier->destinationPurpose == CORN, "already heading for the next wheat");
+		require(bed.carrier->displacement == Unit::DIS_GOING_TO_RESOURCE && bed.carrier->destinationPurpose == WHEAT, "already heading for the next wheat");
 		std::puts("gig release: with nobody idle the deliverer keeps its job");
 	}
 	{
@@ -132,5 +121,6 @@ int main(int argc, char** argv)
 		std::puts("gig release: one idle worker in five is enough");
 	}
 	std::puts("PASS a delivery releases the worker only while a fifth of the team is idle");
-	return 0;
+}
+
 }

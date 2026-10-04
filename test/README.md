@@ -1605,3 +1605,11 @@ For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
 opt-in assertion checks each AI order when selected and reports unavailable work
 without filtering it. A repair can finish while its order waits in the network
 queue, so replay-time building health alone cannot classify upgrade intentions.
+
+## Per-delivery hiring
+
+`GigRelease` checks that a worker finishes depositing before returning to the
+hiring pool when at least 20% of its team's living workers are idle. Below that
+threshold it keeps its building and selects the next delivery. Run it with
+`python3 test/run_tests.py --filter 'GigRelease/*'`; the inclusive threshold and
+busy-colony continuation are covered in the engine test registry.
