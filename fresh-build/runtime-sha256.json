@@ -1,0 +1,6 @@
+{
+  "index.js": "2fe66f77c5e5d013c5539ae797693f4d5a4851a7f5eaf9a212f3001ce88cdb3b",
+  "index.wasm": "3033f198f355037e961c375fd16885ee9e4b72baca0d0cac1e0a2ef0b7813bb7",
+  "threaded/index.js": "466ac851dfae10854ec7c99e7812b260dc31f20e39f2ff9705c2c96cb1cd3a4c",
+  "threaded/index.wasm": "7befa000d4dc260ddb99f5766408fea832f1e65f8374d9bd36a9237e9011e152"
+}

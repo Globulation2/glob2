@@ -1,0 +1,74 @@
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:20] "GET / HTTP/1.1" 200 -
+
+Running 2 tests using 1 worker
+
+(node:2409270) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /test-host-bfcfd462-647e-4560-a0ae-def703cd1410.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /assets/core.b816167349d2accf.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:23] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:25] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:25] "GET /assets/skins-1.1b46c97e0303b531.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:25] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/skins-2.85e98e9573cd6907.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/skins-3.68ec86d000cdccc0.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/translations-1.4f7c85dcfe04bee6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/translations-2.12c8234a49df100b.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/skins-4.b84e4ed34500a17f.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/skins-5.027c4f5ff3a364e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/skins-6.9162c46c1a6ab662.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:26] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/hd-1.880f04addc35c5d4.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/hd-2.36b53a214578643c.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/skins-7.90d0fb8799c14ba7.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/hd-3.083ef8ce34b7ad01.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/hd-4.88ad97cceabe5e57.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/skins-8.93724036aefc90e5.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/skins-9.9069fdb7dc94c2ef.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:27] "GET /assets/skins-10.eeec5b14febea9f1.data HTTP/1.1" 200 -
+  ✓  1 [firefox] › tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (27.2s)
+(node:2413922) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:51] "GET /test-host-af2b2ae2-dbc2-4b0b-9cb9-44f734969522.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:52] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:52] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:52] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:52] "GET /assets/core.b816167349d2accf.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:52] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:52] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:53] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:53] "GET /assets/skins-1.1b46c97e0303b531.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:54] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:54] "GET /assets/skins-2.85e98e9573cd6907.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:54] "GET /assets/translations-1.4f7c85dcfe04bee6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:54] "GET /assets/skins-3.68ec86d000cdccc0.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:54] "GET /assets/translations-2.12c8234a49df100b.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/skins-4.b84e4ed34500a17f.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/skins-5.027c4f5ff3a364e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/skins-6.9162c46c1a6ab662.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/skins-7.90d0fb8799c14ba7.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/skins-8.93724036aefc90e5.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/hd-1.880f04addc35c5d4.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:55] "GET /assets/skins-9.9069fdb7dc94c2ef.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:56] "GET /assets/hd-2.36b53a214578643c.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:56] "GET /assets/skins-10.eeec5b14febea9f1.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:56] "GET /assets/hd-3.083ef8ce34b7ad01.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [04/Oct/2026 19:56:57] "GET /assets/hd-4.88ad97cceabe5e57.data HTTP/1.1" 200 -
+  ✓  2 [webkit] › tests/colony-skins.spec.js:9:1 › live colony meshes render through WebGL2 and survive context restoration (29.9s)
+
+  2 passed (1.0m)
