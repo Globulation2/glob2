@@ -1,6 +1,8 @@
 /* Indexed geometry is bounded by decode before rendering or hit testing. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
+import type { SwarmMeshId } from '@glob2/protocol';
+import { swarmModel } from './swarmShapes.ts';
 
 // The same bounded GSK1 model data and orthographic projection as the native renderer.
 type Mesh = {
@@ -49,10 +51,12 @@ type Model = keyof typeof models;
 
 export function MeshPreview({
   texture,
+  swarmMesh,
   onPaint,
   onStroke,
 }: {
   texture: HTMLCanvasElement | null;
+  swarmMesh: SwarmMeshId;
   onPaint: (u: number, v: number) => void;
   onStroke: () => void;
 }) {
@@ -66,6 +70,13 @@ export function MeshPreview({
   });
   const [model, setModel] = useState<Model>('worker');
   const [action, setAction] = useState('walk');
+  // Choosing a swarm shape shows it; the swarm entry always previews the chosen shape.
+  const [shownMesh, setShownMesh] = useState(swarmMesh);
+  if (shownMesh !== swarmMesh) {
+    setShownMesh(swarmMesh);
+    setModel('swarm');
+    setAction('');
+  }
   const [phase, setPhase] = useState(0);
   const [direction, setDirection] = useState(0);
   const [animate, setAnimate] = useState(true);
@@ -74,7 +85,7 @@ export function MeshPreview({
   useEffect(() => {
     controls.current = { direction, animate, phase };
   }, [direction, animate, phase]);
-  const asset = model === 'swarm' ? 'swarm' : `${model}-${action}`;
+  const asset = model === 'swarm' ? swarmModel(swarmMesh) : `${model}-${action}`;
   useEffect(() => {
     if (!canvas.current || !texture) return;
     const target = canvas.current;

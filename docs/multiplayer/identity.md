@@ -267,7 +267,7 @@ snapshot (`apps/api/src/auth/accountExport.ts`):
 | `matches` | every match played: the match's origin, status, result, times, map hash, and the account's seat, team, name, outcome, disconnects, rating change and connection-quality summary, with the match page URL |
 | `rooms` | rooms hosted (with their settings), memberships (with server-region round trips), seats, own chat messages, kicks |
 | `matchmaking` | queue tickets (with region round trips), cooldowns, quick-match proposals and responses |
-| `skins` | published paints and immutable version metadata, equipped version and building color, private draft PNG as base64, match appearances, purchases and payment-event references, reports filed |
+| `skins` | published paints and immutable version metadata (including the swarm mesh), equipped version and building color, private draft (name, building color, swarm mesh) with its PNG as base64, match appearances, purchases and payment-event references, reports filed |
 | `maps` | catalog maps with their versions, likes, reports filed, uploads, and download days |
 
 Rows keep the database's columns in camelCase and leave out nulls. Left out on

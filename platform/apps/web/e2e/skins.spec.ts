@@ -81,21 +81,34 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   await page.getByRole('button', { name: 'Use as a starting point' }).first().click();
   const name = `Browser design ${test.info().project.name}`;
   await page.getByLabel('Skin name').fill(name);
+  const swarmModel = page.waitForResponse((r) => r.url().endsWith('/skins/models/swarm-skep.gsk'));
+  await page.getByRole('radio', { name: /^Skep/ }).check();
+  expect((await swarmModel).status()).toBe(200);
+  await expect(page.getByLabel('Preview model')).toHaveValue('swarm');
   const firstResponse = page.waitForResponse(
     (r) => r.url().endsWith('/skins/publish') && r.request().method() === 'POST',
   );
   await page.getByRole('button', { name: 'Publish skin', exact: true }).click();
   const first = await firstResponse;
   expect(first.status()).toBe(200);
-  const original = (await first.json()) as { id: string; skinId: string; textureSha256: string };
+  const original = (await first.json()) as {
+    id: string;
+    skinId: string;
+    textureSha256: string;
+    swarmMesh: string;
+  };
+  expect(original.swarmMesh).toBe('skep');
   const originalPaint = await (
     await page.request.get(`/api/v1/skins/versions/${original.id}/texture`)
   ).body();
   const card = page.locator(`[data-version-id="${original.id}"]`);
   await card.getByRole('button', { name: 'Equip', exact: true }).click();
   await expect(card.getByRole('button', { name: 'Equipped', exact: true })).toBeVisible();
+  await expect(card).toContainText('skep swarm');
+  await page.getByRole('radio', { name: /^Classic/ }).check();
   await card.getByRole('button', { name: 'Edit this version' }).click();
   await expect(page.getByLabel('Skin name')).toHaveValue(name);
+  await expect(page.getByRole('radio', { name: /^Skep/ })).toBeChecked();
   await page.getByLabel('Paint', { exact: true }).fill('#aabbcc');
   await page.getByRole('button', { name: 'Fill', exact: true }).click();
   await page.getByLabel('Skin name').fill(`${name} revised`);

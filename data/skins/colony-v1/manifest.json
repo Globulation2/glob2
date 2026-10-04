@@ -119,6 +119,102 @@
       "sourceSha256": "c33fd3b6b54f977ac7a74be391a8ba719b5d340de9aee1517a73ade7cbaa7301",
       "vertices": 2253,
       "triangles": 1998
+    },
+    "swarm-crown.gsk": {
+      "sha256": "b2a7cb72fa07e735a04123242578263468e0aca5945e9bffb53bc7e181eb88ba",
+      "source": "tools/skins/generate_swarms.py",
+      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "dependencies": {
+        "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
+      },
+      "design": "crown",
+      "seed": 11,
+      "metaballResolution": 0.03,
+      "coveragePx": 5199.6,
+      "volume": 1.1837,
+      "fitScale": 0.8797,
+      "vertices": 1052,
+      "triangles": 2000
+    },
+    "swarm-clutch.gsk": {
+      "sha256": "0bb2d4debf835c5ca17f82a06ba8adb26389e3c64ca255bb743e17ba8d68df9d",
+      "source": "tools/skins/generate_swarms.py",
+      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "dependencies": {
+        "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
+      },
+      "design": "clutch",
+      "seed": 12,
+      "metaballResolution": 0.03,
+      "coveragePx": 5200.6,
+      "volume": 1.1375,
+      "fitScale": 1.0482,
+      "vertices": 1004,
+      "triangles": 2000
+    },
+    "swarm-toadstool.gsk": {
+      "sha256": "4e6478fb30b63c28607c03fdf32186af635b425132367fd8c9727a9e814a74ee",
+      "source": "tools/skins/generate_swarms.py",
+      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "dependencies": {
+        "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
+      },
+      "design": "toadstool",
+      "seed": 13,
+      "metaballResolution": 0.03,
+      "coveragePx": 5198.8,
+      "volume": 1.2876,
+      "fitScale": 1.2229,
+      "vertices": 1044,
+      "triangles": 2000
+    },
+    "swarm-coral.gsk": {
+      "sha256": "ee28c327cc9ffc811627b1b1c9d821a18339af48f1f3df63e155b85f7788c954",
+      "source": "tools/skins/generate_swarms.py",
+      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "dependencies": {
+        "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
+      },
+      "design": "coral",
+      "seed": 14,
+      "metaballResolution": 0.03,
+      "coveragePx": 5200.5,
+      "volume": 1.3249,
+      "fitScale": 1.2719,
+      "vertices": 1015,
+      "triangles": 2000
+    },
+    "swarm-skep.gsk": {
+      "sha256": "af142b7b61aadfa4dee5f4e2422f4be330d7c5502983e95f385bdfe6492cbfb3",
+      "source": "tools/skins/generate_swarms.py",
+      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "dependencies": {
+        "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
+      },
+      "design": "skep",
+      "seed": 15,
+      "metaballResolution": 0.03,
+      "coveragePx": 5199.4,
+      "volume": 1.1671,
+      "fitScale": 1.0369,
+      "vertices": 1006,
+      "triangles": 1998
+    },
+    "swarm-bloom.gsk": {
+      "sha256": "287f035a5a94cf762bc70db3c6b03d3e48397b09775cc19c81cead3d9fc5b18a",
+      "source": "tools/skins/generate_swarms.py",
+      "sourceSha256": "04827936f2583b88fe50bcf3dd67b33b721ff68d0647ded4d085d23a1ef67633",
+      "dependencies": {
+        "tools/skins/swarm_metrics.py": "64a727d006d15071487e63b1f3ffe6334c9a66a7f5ada5e09ac6b877511a8af3"
+      },
+      "design": "bloom",
+      "seed": 16,
+      "metaballResolution": 0.03,
+      "coveragePx": 5200.3,
+      "volume": 1.2984,
+      "fitScale": 1.4064,
+      "vertices": 1011,
+      "triangles": 2000
     }
   }
 }

@@ -21,7 +21,7 @@ from mathutils import Vector
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def export(output):
+def export(output, turn=0):
     if bpy.app.version[:3] != (3, 6, 23):
         raise ValueError('Use Blender 3.6.23')
     source = ROOT / 'datasrc/gfx/buildings/swarm-trellis.glb'
@@ -73,6 +73,12 @@ def export(output):
     # Orthographic camera matches the game's elevated view. Fit the projected
     # surface into its sprite canvas; visual calibration remains explicit.
     rotation = np.array(Vector((6, -8, 10)).to_track_quat('Z', 'Y').to_matrix()).T
+    # Turning the model about its vertical axis shows the camera another side.
+    # The paint layout above is unchanged, so painted texels stay on the same
+    # surface; only which part of it faces the camera changes.
+    angle = math.radians(turn)
+    rotation = rotation @ np.array([[math.cos(angle), -math.sin(angle), 0],
+                                    [math.sin(angle), math.cos(angle), 0], [0, 0, 1]])
     view = positions @ rotation.T
     extent = np.ptp(view[:, :2], axis=0).max()
     view[:, :2] *= 1.8 / extent
@@ -104,7 +110,8 @@ def export(output):
                 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
                 'sourceTriangles': original_triangles, 'reconstructedTriangles': reconstructed_triangles, 'triangles': len(indices)//3,
                 'vertices': len(vertices), 'logicalSize': 96, 'frames': 1,
-                'cameraDirection': [6, -8, 10], 'cameraFit': '90% square canvas'}
+                'cameraDirection': [6, -8, 10], 'cameraFit': '90% square canvas',
+                'turnDegrees': turn}
     (output / 'swarm-mesh.json').write_text(json.dumps(metadata, indent=2)+'\n')
     print(json.dumps(metadata), flush=True)
 
@@ -112,4 +119,7 @@ def export(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
-    export(parser.parse_args(sys.argv[sys.argv.index('--')+1:]).output.resolve())
+    parser.add_argument('--turn', type=float, default=0,
+                        help='degrees to turn the model about its vertical axis before projection')
+    args = parser.parse_args(sys.argv[sys.argv.index('--')+1:])
+    export(args.output.resolve(), args.turn)

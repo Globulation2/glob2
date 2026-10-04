@@ -1,11 +1,28 @@
 import { Type, type Static } from 'typebox';
 import { Open, Strict, Uuid, Sha256Hex, TeamIndex, Timestamp } from './common.ts';
 
+// Swarm meshes a design can be painted for, mirroring src/online/SwarmMeshCatalog.h
+// (the game ships each as data/skins/colony-v1/swarm[-<id>].gsk). 'classic' is the
+// original swarm and the default; versions published before mesh choice use it.
+export const SwarmMesh = Type.Union([
+  Type.Literal('classic'),
+  Type.Literal('crown'),
+  Type.Literal('clutch'),
+  Type.Literal('toadstool'),
+  Type.Literal('coral'),
+  Type.Literal('skep'),
+  Type.Literal('bloom'),
+]);
+export type SwarmMeshId = Static<typeof SwarmMesh>;
+/** Catalog order: the game's mesh index, and the designer's picker order. */
+export const SWARM_MESHES = SwarmMesh.anyOf.map((mesh) => mesh.const) as readonly SwarmMeshId[];
+
 export const PublishSkinRequest = Strict({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   skinId: Type.Optional(Uuid),
   imageBase64: Type.String({ minLength: 4, maxLength: 349528, pattern: '^[A-Za-z0-9+/]+={0,2}$' }),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
+  swarmMesh: Type.Optional(SwarmMesh),
 });
 export const EquipSkinRequest = Strict({
   versionId: Type.Union([Uuid, Type.Null()]),
@@ -18,6 +35,7 @@ export const ColonySkinVersion = Open({
   manifestSha256: Sha256Hex,
   layout: Type.Literal('colony-v1'),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
+  swarmMesh: SwarmMesh,
 });
 export type ColonySkinVersion = Static<typeof ColonySkinVersion>;
 
@@ -52,6 +70,7 @@ export const SaveSkinDraftRequest = Strict({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   imageBase64: Type.String({ minLength: 4, maxLength: 349528, pattern: '^[A-Za-z0-9+/]+={0,2}$' }),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
+  swarmMesh: Type.Optional(SwarmMesh),
 });
 export const SkinDraft = Open({
   skinId: Type.Optional(Uuid),
@@ -59,6 +78,7 @@ export const SkinDraft = Open({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   imageBase64: Type.String({ minLength: 4, maxLength: 349528 }),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
+  swarmMesh: SwarmMesh,
 });
 export type SkinDraft = Static<typeof SkinDraft>;
 
