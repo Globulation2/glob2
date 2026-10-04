@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="LanMatchHarness"><testcase classname="LanMatchHarness" name="LAN WSS drop, restart and host departure [network][slow][artifacts]" time="37.0183" status="run">
+      <failure message="false" type="REQUIRE">
+src/net/lan/LanMatchHarness.cpp:700:
+REQUIRE( m.runUntil(10000, [&amp;] { return m.host().stopped &amp;&amp; m.players[2]-&gt;stopped &amp;&amp; rejoined.stopped &amp;&amp; m.players[2]-&gt;finished &amp;&amp; rejoined.finished; }) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: LAN pairing endpoint=wss://127.0.0.1:23952/yog#sha256=02adbac8eabd62fa2f2345a2a6f6f428496c64039e73f91870837beb130c09cc
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

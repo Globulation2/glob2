@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="LanMatchHarness"><testcase classname="LanMatchHarness" name="LAN WSS drop, restart and host departure [network][slow][artifacts]" time="27.1873" status="run" />
+  </testsuite></testsuites>

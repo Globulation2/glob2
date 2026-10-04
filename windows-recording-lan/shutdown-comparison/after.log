@@ -1,0 +1,4 @@
+PASS LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts] (27.3s)
+
+1 passed, 0 failed, 0 skipped (27.3s of test time)
+[run_tests] JUnit report: artifacts/windows-lan/after.xml (1 cases)

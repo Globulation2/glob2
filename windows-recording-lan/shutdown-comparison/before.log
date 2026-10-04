@@ -1,0 +1,44 @@
+FAIL LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts] (37.1s)
+
+===== FAIL LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts] =====
+GLOB2_TEST_BUILD compiler=16.2.0 platform=Windows pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" WIN32 HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wall -O3 -fwhole-program"}, "revision": "0048ddf5542d84d5205e0a975fce12c94ca1486a", "sourceStatus": [], "sourceTreeSha256": "d5a0d51e961686f7566112aeff825a07d72a23c2a03c43f2d70ef1c36f5bc964"}
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+WSS close accepted=0 shutdown=The operation completed successfully
+WSS failure accepted=1 error=An existing connection was forcibly closed by the remote host
+WSS close accepted=1 shutdown=The operation completed successfully
+WSS close accepted=0 shutdown=The operation completed successfully
+WSS failure accepted=1 error=An existing connection was forcibly closed by the remote host
+WSS close accepted=1 shutdown=The operation completed successfully
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+WSS close accepted=1 shutdown=The operation completed successfully
+WSS close accepted=1 shutdown=The operation completed successfully
+WSS failure accepted=0 error=An existing connection was forcibly closed by the remote host
+WSS close accepted=0 shutdown=The operation completed successfully
+WSS failure accepted=0 error=An existing connection was forcibly closed by the remote host
+WSS close accepted=0 shutdown=The operation completed successfully
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+WSS failure accepted=0 error=No connection could be made because the target machine actively refused it
+
+[failure] LAN WSS drop, restart and host departure [network][slow][artifacts]: false
+src/net/lan/LanMatchHarness.cpp:700:
+REQUIRE( m.runUntil(10000, [&] { return m.host().stopped && m.players[2]->stopped && rejoined.stopped && m.players[2]->finished && rejoined.finished; }) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: LAN pairing endpoint=wss://127.0.0.1:23952/yog#sha256=02adbac8eabd62fa2f2345a2a6f6f428496c64039e73f91870837beb130c09cc
+
+::error file=src/net/lan/LanMatchHarness.cpp,line=589,title=LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts]::fail
+
+0 passed, 1 failed, 0 skipped (37.1s of test time)
+[run_tests] JUnit report: artifacts/windows-lan/before.xml (1 cases)
