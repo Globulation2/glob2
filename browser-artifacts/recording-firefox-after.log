@@ -1,0 +1,17 @@
+
+Running 10 tests using 1 worker
+
+(node:784793) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [firefox] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (10.2s)
+  ✓   2 [firefox] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (15.0s)
+  ✓   3 [firefox] › browser/tests/recording.spec.js:52:1 › serial missing WebCodecs uses embedded x264 (9.4s)
+  ✓   4 [firefox] › browser/tests/recording.spec.js:66:1 › serial OPFS unavailable reports a recording error (4.4s)
+  ✓   5 [firefox] › browser/tests/recording.spec.js:52:1 › threaded missing WebCodecs uses embedded x264 (14.8s)
+  ✓   6 [firefox] › browser/tests/recording.spec.js:66:1 › threaded OPFS unavailable reports a recording error (10.2s)
+  ✓   7 [firefox] › browser/tests/recording.spec.js:75:2 › serial interrupted recording recovers committed fragments (13.2s)
+  ✓   8 [firefox] › browser/tests/recording.spec.js:99:2 › serial OPFS full reports an error and retains recovery files (6.2s)
+  ✓   9 [firefox] › browser/tests/recording.spec.js:75:2 › threaded interrupted recording recovers committed fragments (23.4s)
+  ✓  10 [firefox] › browser/tests/recording.spec.js:99:2 › threaded OPFS full reports an error and retains recovery files (12.7s)
+
+  10 passed (2.0m)

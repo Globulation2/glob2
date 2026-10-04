@@ -1,0 +1,13 @@
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/c59e/glob2/platform
+
+
+ Test Files  65 passed | 2 skipped (67)
+      Tests  439 passed | 6 skipped (445)
+   Start at  00:59:08
+   Duration  15.65s (tests 68%, import 19%, transform 11%, environment 1%)
+

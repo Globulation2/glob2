@@ -1,0 +1,45 @@
+
+> @glob2/web@0.1.0 build
+> vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 767 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                        1.26 kB │ gzip:  0.61 kB
+dist/assets/hospital-CZ8mxl8H.webp                     4.16 kB
+dist/assets/glob-64-DRYAgOz9.png                       4.51 kB
+dist/assets/school-3kPEHozp.webp                       4.60 kB
+dist/assets/war-flag-ClpBapaP.webp                     4.61 kB
+dist/assets/exploration-flag-DEYVuIyb.webp             5.54 kB
+dist/assets/wood-BvhIq-A_.webp                         5.59 kB
+dist/assets/clearing-flag-Dr2FX3nZ.webp                5.94 kB
+dist/assets/stone-CR7HLFDE.webp                        6.14 kB
+dist/assets/racetrack-BEfp0i51.webp                    6.45 kB
+dist/assets/inn-pEFHk1BY.webp                          6.51 kB
+dist/assets/fruit-C8P4nJfl.webp                        7.36 kB
+dist/assets/papyrus-sl-e5iDV.webp                      7.49 kB
+dist/assets/algae-Cf7k497T.webp                        7.53 kB
+dist/assets/swarm-C7Cw-oud.webp                        9.26 kB
+dist/assets/wordmark-letters-Cs-rHGsD.webp            14.87 kB
+dist/assets/explorer-west-DFIszYPU.webp               20.89 kB
+dist/assets/worker-east-Bqinqqlq.webp                 22.38 kB
+dist/assets/worker-west-DG0XWj8f.webp                 23.28 kB
+dist/assets/warrior-east-BQEGqC40.webp                29.46 kB
+dist/assets/nunito-latin-wght-normal-BzFMHfZw.woff2   39.12 kB
+dist/assets/colony-960-CjmrWzyt.webp                  96.84 kB
+dist/assets/colony-1600-CJWZJSba.webp                220.64 kB
+dist/assets/index-DKd2XZct.css                        44.57 kB │ gzip: 12.90 kB
+dist/assets/rolldown-runtime-BpQH8Ho1.js               0.22 kB │ gzip:  0.19 kB
+dist/assets/Account-QNylgKBq.js                        3.57 kB │ gzip:  1.49 kB │ map:     8.67 kB
+dist/assets/LineChart-DYL3yj77.js                      4.34 kB │ gzip:  1.90 kB │ map:    16.64 kB
+dist/assets/Player-D9CkYk6w.js                         7.08 kB │ gzip:  2.52 kB │ map:    21.11 kB
+dist/assets/MapStudio-Yxw_Aecv.js                     10.71 kB │ gzip:  3.77 kB │ map:    35.08 kB
+dist/assets/Admin-Bq5uNbEo.js                         10.81 kB │ gzip:  3.39 kB │ map:    31.69 kB
+dist/assets/Match-B75q2wyU.js                         15.92 kB │ gzip:  5.10 kB │ map:    45.99 kB
+dist/assets/Maps-BUkehxN7.js                          16.52 kB │ gzip:  4.98 kB │ map:    48.88 kB
+dist/assets/src-BKROrQ5L.js                          180.38 kB │ gzip: 53.42 kB │ map: 1,194.94 kB
+dist/assets/index-tTazV2R6.js                        287.59 kB │ gzip: 92.80 kB │ map: 1,236.32 kB
+
+✓ built in 749ms

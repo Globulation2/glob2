@@ -1,0 +1,76 @@
+
+> test
+> vitest run
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/c59e/glob2/platform
+
+ ❯ packages/protocol/test/fixtures.test.ts (5 tests | 1 failed) 3557ms
+   ❯ protocol fixtures (5)
+     × are current (run `npm run fixtures` after changing schemas or cases) 280ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  packages/protocol/test/fixtures.test.ts > protocol fixtures > are current (run `npm run fixtures` after changing schemas or cases)
+AssertionError: schemas/AiLeaderboard.schema.json: expected '{\n  "$schema": "https://json-schema.…' to be '{\n  "$schema": "https://json-schema.…' // Object.is equality
+
+- Expected
++ Received
+
+@@ -32,17 +32,17 @@
+              "properties": {
+                "versionMinor": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 65535,
+-                 "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
++                 "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+                },
+                "netProtocol": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 65535,
+-                 "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
++                 "description": "NET_PROTOCOL_VERSION in src/Version.h."
+                },
+                "dataHash": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+@@ -193,17 +193,17 @@
+                            "properties": {
+                              "versionMinor": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 65535,
+-                               "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
++                               "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+                              },
+                              "netProtocol": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 65535,
+-                               "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
++                               "description": "NET_PROTOCOL_VERSION in src/Version.h."
+                              },
+                              "dataHash": {
+                                "type": "string",
+                                "pattern": "^[0-9a-f]{64}$",
+                                "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+
+ ❯ packages/protocol/test/fixtures.test.ts:48:32
+     46|     expect(actual).toEqual([...expected.keys()].sort());
+     47|     for (const [path, content] of expected) {
+     48|       expect(read(path), path).toBe(content);
+       |                                ^
+     49|     }
+     50|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 64 passed | 2 skipped (67)
+      Tests  1 failed | 438 passed | 6 skipped (445)
+   Start at  00:56:01
+   Duration  16.61s (tests 69%, import 20%, transform 10%, environment 1%)
+

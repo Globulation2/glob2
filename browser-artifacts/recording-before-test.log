@@ -1,0 +1,43 @@
+
+Running 1 test using 1 worker
+
+(node:782258) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/recording.spec.js:52:1 › serial missing WebCodecs uses embedded x264 (46.0s)
+
+
+  1) [chromium] › browser/tests/recording.spec.js:52:1 › serial missing WebCodecs uses embedded x264 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "libx264"
+    Received: null
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+      62 |   const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});
+      63 |   for await(const [name,handle]of root.entries()) if(!existing.includes(name)&&name.endsWith('.complete')&&(await handle.getFile()).size){const path=decodeURIComponent(name).slice(0,-9);return JSON.parse(await(await(await root.getFileHandle(encodeURIComponent(path+'.json'))).getFile()).text()).encoder;}return null;
+    > 64 |  },existing),{timeout:30000}).toBe('libx264');
+         |                               ^
+      65 | });
+      66 | test(`${variant} OPFS unavailable reports a recording error`,async({page})=>{
+      67 |  await page.route('**/recording-storage.js',async route=>{const response=await route.fetch();await route.fulfill({response,body:await response.text()+"\nrecordingStorage.initialize=async()=>{throw new Error('OPFS unavailable fixture');};"});});
+        at /home/bradley/.codex/worktrees/c59e/glob2/browser/tests/recording.spec.js:64:31
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-repair/recording-before-test/recording-serial-missing-WebCodecs-uses-embedded-x264-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-repair/recording-before-test/recording-serial-missing-WebCodecs-uses-embedded-x264-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-repair/recording-before-test/recording-serial-missing-WebCodecs-uses-embedded-x264-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-repair/recording-before-test/recording-serial-missing-WebCodecs-uses-embedded-x264-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/recording.spec.js:52:1 › serial missing WebCodecs uses embedded x264 

@@ -1,0 +1,3 @@
+Checking formatting...
+[warn] apps/web/art/README.md
+[warn] Code style issues found in the above file. Run Prettier with --write to fix.

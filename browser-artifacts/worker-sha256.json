@@ -1,0 +1,7 @@
+{
+  "recording-worker.js": "04c666ad37952900c0cf94d355b6e58a3a5b9f84418c02921b362d8c71501e7e",
+  "recording-storage.js": "aa6eb7141feb777da4dc3d76f40bacea6370ee28aaa6f0514835ae0b5ccf8370",
+  "recording-video.js": "4c21d557f1a59a8ca2ce2d8e62efb322c518b9e445c0dd501e5da6bbad20cd43",
+  "recording-runtime.js": "50806bbd4a36e1cdcc0e2de560d66bfec5d27119018e80c6ba8fa813b4b367a8",
+  "recording-runtime.wasm": "5227bea92d066cc88b0335477b2817a8b323a8303affe622da83663bac4b50ba"
+}

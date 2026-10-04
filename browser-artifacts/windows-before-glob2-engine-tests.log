@@ -1,0 +1,362 @@
+GLOB2_TEST_BUILD compiler=16.2.0 platform=Windows pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" WIN32 HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wall -O3 -fwhole-program"}, "revision": "79cca9b700e6c9e7c54314252336d4baa3c2095a", "sourceStatus": [], "sourceTreeSha256": "9f6852a0249ca2babac48f51ca3b23db0b72f72de3a467a0007b7877f9b3e3da"}
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+TextStream::parser : error @ 847193:0 : value expected
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+TextInputStream::readFromTableToString : no entry named Game.scriptGenerations.32767.value
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+TextStream::parser : error @ 847192:22 : ; (semicolon) expected
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+TextInputStream::readFromTableToString : no entry named Game.scriptGenerations.32767.value
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+TextInputStream::readFromTableToString : no entry named Game.signature
+TextInputStream::read : requested length 4 differs from serialized size 0
+TextInputStream::readFromTableToString : no entry named Game.briefing
+TextInputStream::readFromTableToString : no entry named Game.scriptGenerations.32767.value
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Error reading replay: Unsupported replay version: iostream error
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+JavaScript AI player 0: JavaScript AI at tick 0: Invalid integer argument: id
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+GLOB2_SPATIAL_BENCH size=64 cold_us=118 warm_us=4 logical_work=45056
+GLOB2_SPATIAL_BENCH size=512 cold_us=6878 warm_us=422 logical_work=2883584
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+MapScriptUSL::compileCode(): Error in usl runtime file invalid-prepared-runtime.usl:1:27 : Syntax error: found the end of the text, expected: an expression
+
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Failed to load the map: SyntaxError: Unexpected token '('
+    at <glob2-script>:2:29
+
+The map couldn't be loaded because the file is either damaged or an incompatible version.
+SyntaxError: Unexpected token '('
+    at <glob2-script>:2:29
+
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Failed to load the map: SyntaxError: Unexpected token '('
+    at <glob2-script>:2:29
+
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 0e59ad62
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=395 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 0e59ad62
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=395 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 0e59ad62
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=348 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 0e59ad62
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=196 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 0e59ad62
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="replayHeader" orders=0 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = b36933e2
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = b36933e2
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = b36933e2
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=448 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = b36933e2
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="study-15-42-r0" orders=256 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = b36933e2
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="replayHeader" orders=0 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 91786403
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Conversion boundary" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 91786403
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Conversion boundary" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 91786403
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Conversion boundary" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 91786403
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="replayHeader" orders=0 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 67080762
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Profile two continuation" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 67080762
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Profile two continuation" orders=512 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 67080762
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Profile two continuation" orders=448 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 67080762
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="Profile two continuation" orders=256 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+nox::gui.game.checkSum() = 67080762
+automaticEndingGame ended: 256 ticks, 0 minutes, 10 seconds
+GLOB2_GAME_END ticks=256 winner_team=-1 seed=19 map="replayHeader" orders=0 players=team0:JavaScript,team1:JavaScript
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+Settings::load("preferences.txt") : error, can't open file.
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/
+* Failed to load data/usl/Language/Runtime/
+* Failed to load data/usl/Glob2/Runtime/

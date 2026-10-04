@@ -1,0 +1,38 @@
+
+> migrate
+> npm run --workspace @glob2/db migrate -- latest
+
+
+> @glob2/db@0.1.0 migrate
+> node src/cli.ts latest
+
+Success     0001_initial
+Success     0002_ratings_matchmaking
+Success     0003_identity
+Success     0004_engine_history
+Success     0005_rooms_matches
+Success     0006_room_kicks_lost_relays
+Success     0007_map_catalog
+Success     0008_draw_outcome
+Success     0009_participant_network
+Success     0010_engine_job_leases
+Success     0011_rate_limits
+Success     0012_signin_code_entry
+Success     0013_account_deletion
+Success     0015_history_scaling
+Success     0016_recovery
+Success     0017_retention
+Success     0018_realtime_presence
+Success     0019_warm_maps_over_generated
+Success     0020_hive
+Success     0021_hive_supervision
+Success     0022_map_studio
+Success     0023_colony_skins
+Success     0024_match_skin_snapshot
+Success     0025_skin_purchases
+Success     0026_skin_building_color
+Success     0027_skin_payment_reconciliation
+Success     0028_skin_checkout_recovery
+Success     0029_skin_drafts
+Success     0030_skin_draft_source
+Success     0031_skin_reports
