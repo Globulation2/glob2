@@ -76,7 +76,9 @@ TEST_CASE("JavaScript test environment scopes restore SDL and CRT readers" *
 	// A previous SDL-only write can leave the process and CRT views different.
 	// Preserve both, rather than replacing one original with the other.
 	REQUIRE(_putenv_s(absent.c_str(), "crt-original") == 0);
-	REQUIRE(GAGCore::setProcessEnvironment(absent.c_str(), "sdl-original", 1) == 0);
+	REQUIRE(SDL_setenv_unsafe(absent.c_str(), "sdl-original", 1) == 0);
+	REQUIRE(currentValue() == "sdl-original");
+	REQUIRE(currentCRT(absent.c_str()) == "crt-original");
 	{
 		glob2test::ScopedEnvironment value(absent.c_str(), "temporary");
 		CHECK(currentValue() == "temporary");
