@@ -16,6 +16,10 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
+      revision:
+        description: Exact master revision to verify with the existing full workflow
+        required: true
+        type: string
       browser_only:
         description: Run only browser, transport and deployment checks
         required: false
