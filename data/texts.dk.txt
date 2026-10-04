@@ -1,17 +1,17 @@
 [AI strategy]
 AI-strategi
 [start recording]
-
+Start optagelse
 [stop recording]
-
+Stop optagelse
 [finalizing recording]
-
+Færdiggør optagelse…
 [AIMaxima-Summary]
 Balancerer bæredygtig vækst og træning og samler derefter hære i bølger.
 [AIMaxima-Profile]
 Grundstrategi: Behandler mad, arbejdere, fødsler, træning, byggeri og kamp som konkurrerende behov. Tilpasser hæren delvist til anslået fjendtlig styrke og prøver at få den effektivt frem.\n\nØkonomi og udvikling: Planlægger fødsler efter mad og arbejde, bevarer ledige træningsmuligheder og stopper ekstra arbejdere, når militær produktion behøves. Skalerer træningskapacitet og undgår at lukke for meget infrastruktur for opgraderinger.\n\nRekognoscering og beslutninger: Anslår fjendtlige styrker fra synlige enheder og huskede observationer med en tilpasset model. Mål afhænger af værdi, afstand, tårne, udsatte arbejdere og vedholdenhed. Frugtmissioner støtter madvariation og omvendelse.\n\nAngreb og forsvar: Reserverer krigere til træning og forsvar, samler så egnede landstyrker nær venlig madinfrastruktur før bølger. Bruger lokale forsvarsreaktioner og vurderer tilgange til kolonien.\n\nNår angreb går i stå: Efter fire på hinanden følgende fejlslagne bølgeankomster skifter den til løbende forstærkede angrebsflag. Amfibiske angreb kan også bruge løbende forstærkning. Løsningen fjerner ikke alle blokeringer før en samling kan dannes.\n\nSammenlignet med andre AI'er: Integrerer mad, træning, efterretning og indsættelse tættere. Cabino vægter flere bygningsangreb; Maxima anslået behov og fremføring af samlede styrker.\n\nStyrker og svagheder: Opretholder vækst og militær erstatning under tilpasning til madpres og observerede trusler. Kræver mad, træning og åbent samlingsrum; trængsel og lange ruter kan hindre fremføring.\n\nMuligt modspil: Bestrid udsat hvede, kroer og kaserner før bølgerne samles. Hold et forsynet forsvar samlet, og forstyr forstærkningsruter. Forvent gentaget pres efter første bølge.\n\nRekognoscering: Styrkeskøn bruger observationer og observationshistorik, ikke skjulte fjendtlige troppetal.
 [%0 has left the game]
-%0 har forladt spillet
+%0 har forladt spillet.
 [%0 level %1]
 %0 niveau %1
 [%0 units can't access building]
@@ -41,7 +41,7 @@ En enhed fra %0s hold sluttede sig til dit hold
 [abreaviation explanation A]
 A: Allierede
 [abreaviation explanation C]
-C : Send besked til
+C: Send chatbeskeder til
 [abreaviation explanation fV]
 fV: Del udsyn ved kroer (for at lokke enheder over)
 [abreaviation explanation mV]
@@ -61,7 +61,7 @@ AI
 [AICastor-Description]
 Bygger og træner med vækst tilpasset madforsyningen.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
 Øger befolkningen, træner krigere og angriber så.
 [AINicowar]
@@ -73,7 +73,7 @@ Ingen
 [AINumbi-Description]
 En overkommelig modstander, som stadig udvider og angriber.
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
 Udvider og omvender enheder uden at producere krigere.
 [AIEcono]
@@ -81,7 +81,7 @@ Econo
 [AIWarrush-Description]
 Hurtige angreb, der afprøver dit tidlige forsvar.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 En stærk bygger, der stiller med trænede angrebsstyrker.
 [AICabino]
@@ -109,15 +109,15 @@ er sultne
 [are ok]
 er ok
 [are wonded]
-er skadede
+er sårede
 [armor]
 Rustning
 [assigned]
 Tildelt
 [At. speed]
-Angrebshastighed
+Angr.-hast.
 [At. strength]
-Angrebsstyrke
+Angr.-styrke
 [Attack]
 Angrib
 [audio]
@@ -153,7 +153,7 @@ Standarder for bygninger
 [building settings]
 Bygningsindstillinger
 [building site]
-bygningssted
+byggeplads
 [Building Tool Box Explanation]
 Shift + træk = rektangel
 [Building Tool Line Explanation]
@@ -175,7 +175,7 @@ Kan ikke deltage: spillet er startet
 [Can't join game, game is full]
 Kan ikke deltage: spillet er fyldt
 [cancel destroy]
-Afbryd destruktion
+Afbryd nedrivning
 [cancel repair]
 Afbryd reparation
 [cancel upgrade]
@@ -213,7 +213,7 @@ Lukket
 [combined vision]
 Fælles udsyn
 [compile]
-Kompilere skript
+Kompilér script
 [compose]
 compose
 [Computing Fertility]
@@ -241,7 +241,7 @@ Kratersøer
 [create map]
 Lav et kort
 [credits]
-Credit
+Rulletekster
 [ctrl - line]
 Ctrl - linje
 [current speed]
@@ -275,9 +275,9 @@ Slet
 [desert]
 Ørken
 [destroy building]
-Destruer valgte bygning
+Riv valgte bygning ned
 [destroy]
-Destruktion
+Riv ned
 [display]
 Skærm
 [do nothing]
@@ -289,11 +289,11 @@ ned
 [edit map]
 Rediger kort
 [editing map]
-Rediger kort
+Redigerer kort
 [editor shortcuts]
 Korteditor
 [editor]
-Rediger bane
+Korteditor
 [end]
 end
 [enter]
@@ -367,9 +367,9 @@ fra:
 [fruit]
 frugt
 [fullscreen]
-Fuld skærm tilstand
+Fuld skærm
 [game full]
-Spillet er fyldt op.
+Spillet er fyldt
 [game shortcuts]
 Spil
 [Game]
@@ -391,11 +391,11 @@ Vagtområde
 [GUIMapPreview text 0]
 Vælg venligst
 [GUIMapPreview text 1]
-Et kort
+et kort
 [handmade map]
 Håndlavet kort
 [Happyness]
-Antal lykkelige
+Lykke
 [hard pause]
 Fuld pause
 [Harvest]
@@ -415,7 +415,7 @@ Hospital
 [host]
 Opret et spil
 [hp]
-HP
+LP
 [Human]
 Menneske
 [human]
@@ -425,7 +425,7 @@ Sulten
 [hungryness]
 Sult
 [In way]
-Er på vej
+På vej
 [increase units working]
 Flere arbejdende enheder
 [inn explanation 2]
@@ -437,9 +437,9 @@ Kro
 [insert]
 insert
 [inside]
-Indenfor
+Inde
 [islands size]
-Ø størrelse
+Østørrelse
 [islands terrain]
 Øer
 [isles terrain]
@@ -449,13 +449,13 @@ Gå til næste valg
 [jobs]
 job
 [join a game]
-Forbind til et spil
+Deltag i et spil
 [keyboard settings]
 Genvejstaster
 [lan]
 Lokalt netspil
 [language incomplete]
-Dansk - Incomplete
+Dansk - ufuldstændig
 [language-code]
 dk
 [language-tr]
@@ -469,27 +469,27 @@ venstre Windows-tast
 [left]
 venstre
 [level]
-niveau
+Niveau
 [levels]
 Niveauer
 [load campaign]
-Hent Kampagne
+Indlæs kampagne
 [load game]
-Hent spil
+Indlæs spil
 [load map]
-Hent bane
+Indlæs kort
 [load replay]
 Indlæs genafspilning
 [load script]
 Indlæs script
 [load]
-hent
+Indlæs
 [look around]
 Se dig omkring
 [Lost : %0 has more prestige than you]
-Tabt : %0 har mere prestige end du har
+Tabt: %0 har mere prestige end dig
 [Lost : your colony is dead]
-Tabt : Din koloni er død
+Tabt: din koloni er død
 [low priority]
 lav
 [lowquality]
@@ -523,7 +523,7 @@ middel
 [meta %0]
 meta-%0
 [Min required level:]
-Minimum krævede niveau:
+Mindste krævede niveau:
 [Minimum Level To Flag]
 Min. enhedsniveau
 [Music volume]
@@ -533,9 +533,9 @@ Slå lyd fra
 [mute]
 Slå lyd fra
 [new campaign]
-Ny Kampagne
+Ny kampagne
 [new map]
-Ny
+Nyt kort
 [no fullscreen]
 * kun i vinduestilstand
 [No Hints]
@@ -551,7 +551,7 @@ Nej
 [Number Of Buildings]
 Antal bygninger
 [number of teams]
-antal af hold
+antal hold
 [Number Of Units]
 Antal enheder
 [numlock]
@@ -579,7 +579,7 @@ Ved slip
 [open save menu]
 Åbn gemmemenu
 [open scenario editor]
-Åben Script Editor
+Åbn scenarieeditor
 [open teams editor]
 Åbn holdeditor
 [open]
@@ -601,11 +601,11 @@ page up
 [Papyrus]
 Papyrus
 [pause game]
-Pause spillet
+Sæt spillet på pause
 [pause]
 pause
 [Paused]
-Pause
+På pause
 [player name]
 Spillernavn
 [players]
@@ -615,7 +615,7 @@ Vent venligst
 [power]
 tænd/sluk
 [press space]
-Tryk på mellemrum for at fortsætte
+Tryk på mellemrum for at fortsætte.
 [Prestige Score]
 Prestigepoint
 [Prestige Win Enabled]
@@ -631,7 +631,7 @@ Prioritet
 [Prune]
 Blomme
 [quit the editor]
-Afslut editor
+Afslut editoren
 [quit the game]
 Afslut spillet
 [quit the replay]
@@ -651,13 +651,13 @@ Proportioner
 [remember unit]
 Husk enhedstildelinger
 [remove map]
-Fjern Kort
+Fjern kort
 [remove shortcut]
 Fjern genvej
 [repair building]
-Start/Stop Reparation
+Start/stop reparation
 [repair]
-Reparere
+Reparér
 [repeat area]
 antal gange det samme landskab
 [replay ended]
@@ -665,7 +665,7 @@ Genafspilning afsluttet
 [restore default shortcuts]
 Gendan standard-tastaturgenveje
 [return to editor]
-Tilbage til editor
+Tilbage til editoren
 [return to game]
 Vend tilbage til spillet
 [return to replay]
@@ -687,9 +687,9 @@ Sand
 [save before quit?]
 Vil du gemme, før du afslutter?
 [save game]
-Gemme spil
+Gem spil
 [save map]
-Gem bane
+Gem kort
 [save replay]
 Gem genafspilning
 [save script]
@@ -703,7 +703,7 @@ Forbedrer arbejdernes
 [school]
 Skole
 [Script Areas]
-Script Områder
+Scriptområder
 [scroll lock]
 scroll lock
 [scroll wheel enabled]
@@ -717,7 +717,7 @@ Leder
 [select barracks building]
 Vælg kaserne
 [select clearingflag]
-Vælg Rydnings Flag
+Vælg rydningsflag
 [select construct barracks]
 Vælg byggeri: Kaserne
 [select construct defencetower]
@@ -733,7 +733,7 @@ Vælg byggeri: Træningsbane
 [select construct school]
 Vælg byggeri: Skole
 [select construct stonewall]
-Vælg byggeri: Stenvæg
+Vælg byggeri: Stenmur
 [select construct swarm]
 Vælg byggeri: Sværm
 [select construct swimmingpool]
@@ -741,11 +741,11 @@ Vælg byggeri: Svømmebassin
 [select delete tool]
 Vælg sletteværktøj
 [select explorationflag]
-Vælg Udforsknings Flag
+Vælg udforskningsflag
 [select hospital building]
-Vælg Hospital
+Vælg hospital
 [select inn building]
-Vælg Kro
+Vælg kro
 [select market building]
 Vælg marked
 [select place clearing area]
@@ -763,27 +763,27 @@ Placér vagtområde
 [select place warflag]
 Placér krigsflag
 [select racetrack building]
-Vælg Træningsbane
+Vælg træningsbane
 [select school building]
-Vælg Skole
+Vælg skole
 [select swarm building]
-Vælg Sværm
+Vælg sværm
 [select swimmingpool building]
-Vælg Svømmebassin
+Vælg svømmebassin
 [select tower building]
-Vælg Tårn
+Vælg forsvarstårn
 [select wall building]
-Vælg væg
+Vælg mur
 [select warflag]
-Vælg Krigs Flag
+Vælg krigsflag
 [settings]
 Indstillinger
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-tast enter : send en besked
+Enter: send en chatbesked
 [shortcut explanation v]
-tast v : hold v nede for at snakke
+V: hold nede for at tale
 [show areas]
 Vis områder
 [show flags]
@@ -799,15 +799,15 @@ mellemrum
 [start mission]
 Start mission
 [start new campaign]
-Start Ny Kampagne
+Start ny kampagne
 [Start]
 Start
 [Starving Map]
-Sult-kort
+Sultkort
 [starving]
 dør af sult
 [Statistics]
-Statistikker
+Statistik
 [Still (i)]
 Stadigvæk
 [still (w)]
@@ -825,7 +825,7 @@ forsvarselement
 [stonewall explanation]
 Passivt
 [stonewall]
-Stenvæg
+Stenmur
 [svr hostname]
 Serverens maskinnavn
 [swamp terrain]
@@ -865,11 +865,11 @@ Vælg områdepensel: 8
 [switch to building view]
 Skift til bygningsvisning
 [switch to flag view]
-Skift til flag visning
+Skift til flagvisning
 [switch to removing areas]
 Fjern områder
 [switch to teams view]
-Skift til hold visning
+Skift til holdvisning
 [switch to terrain view]
 Skift til terrænvisning
 [sys req]
@@ -883,71 +883,71 @@ Faste hold
 [teams]
  hold
 [the barracks is finished]
-Kasernen er færdig
+Kasernen er færdigbygget.
 [the barracks is under attack]
-Kasernen er under angreb
+Kasernen er under angreb.
 [the building is finished]
-Bygningen er færdig gjort
+Bygningen er færdigbygget.
 [the building is under attack]
-Bygningen er under angreb
+Bygningen er under angreb.
 [the clearingflag is finished]
-?? Rydnings flaget er færdig ??
+Rydningsflag placeret.
 [the clearingflag is under attack]
-?? Rydnings flaget er under angreb ??
+Rydningsflaget er under angreb.
 [the defencetower is finished]
-Forsvarstårnet er færdigbygget
+Forsvarstårnet er færdigbygget.
 [the defencetower is under attack]
-Forsvarstårnet er under angreb
+Forsvarstårnet er under angreb.
 [the explorationflag is finished]
-?? Udforsknings flaget er færdig ??
+Udforskningsflag placeret.
 [the explorationflag is under attack]
-?? Udforsknings flaget er under angreb ??
+Udforskningsflaget er under angreb.
 [The game has not been finished]
-Spillet er ikke færdigt
+Spillet er ikke afsluttet.
 [the games]
 Spil
 [the hospital is finished]
-Hospitalet er færdigbygget
+Hospitalet er færdigbygget.
 [the hospital is under attack]
-Hospitalet er under angreb
+Hospitalet er under angreb.
 [The host has cancelled the game]
 Værten har aflyst spillet.
 [the inn is finished]
-Kroen er færdigbygget
+Kroen er færdigbygget.
 [the inn is under attack]
-Kroen er under angreb
+Kroen er under angreb.
 [the maps]
 Kort
 [the market is finished]
-Markedet er færdigbygget
+Markedet er færdigbygget.
 [the market is under attack]
-Markedet er under angreb
+Markedet er under angreb.
 [the racetrack is finished]
-Træningsbanen er færdig
+Træningsbanen er færdigbygget.
 [the racetrack is under attack]
-Træningsbanen er under angreb
+Træningsbanen er under angreb.
 [the replays]
 Genafspilninger
 [the school is finished]
-Skolen er færdig gjort
+Skolen er færdigbygget.
 [the school is under attack]
-Skolen er under angreb
+Skolen er under angreb.
 [the stonewall is finished]
-En sektion af en væg er færdig
+Et stykke mur er færdigbygget.
 [the stonewall is under attack]
-Fjenden er ved dine vægge
+Fjenden er ved dine mure.
 [the swarm is finished]
-Sværmen er færdig gjort
+Sværmen er færdigbygget.
 [the swarm is under attack]
-Sværmen er under angreb
+Sværmen er under angreb.
 [the swimmingpool is finished]
-Svømmebassinet er færdigt
+Svømmebassinet er færdigbygget.
 [the swimmingpool is under attack]
-Svømmebassinet er under angreb
+Svømmebassinet er under angreb.
 [the warflag is finished]
-?? Krigs flaget er færdig ??
+Krigsflag placeret.
 [the warflag is under attack]
-?? Krigs flaget er under angreb ??
+Krigsflaget er under angreb.
 [time]
 Tid
 [to:]
@@ -969,9 +969,9 @@ Samlet forsvarsstyrke
 [Total Hitpoints]
 Samlede livspoint
 [Total prestige reached]
-Total prestige opnået
+Samlet prestige opnået
 [Total]
-Total
+I alt
 [tutorial text 1]
 Velkommen til grundvejledningen i Globulation 2! Her lærer du at bygge kroer, udforske områder og besejre fjender. Der er masser af nyttig viden at hente!
 [tutorial text 2]
@@ -989,11 +989,11 @@ fortryd
 [uniform terrain]
 Ensartet terræn
 [Unit editor]
-Rediger Enhed
+Enhedseditor
 [unit settings explanation]
 Standardantal tildelte enheder
 [units working]
-Enheder der arbejder
+ arbejdende enheder
 [Units]
 Enheder
 [unlocked at start]
@@ -1005,11 +1005,11 @@ Låst op af
 [up]
 op
 [upgrade building]
-Start/Stop Opgradering
+Start/stop opgradering
 [Upgrade Defaults]
 Standarder for opgraderinger
 [upgrade]
-Opgradere
+Opgradér
 [username]
 Brugernavn
 [Version]
@@ -1031,7 +1031,7 @@ Tiltrækker krigere
 [warflag]
 Krigsflag
 [Warning, you need to reboot the game for changes to take effect]
-Advarsel: Du skal genstarte spillet for at ændringerne har nogen virkning
+Advarsel: Du skal genstarte spillet, før ændringerne træder i kraft
 [Warrior Ratio]
 Andel krigere
 [Warrior]
@@ -1047,15 +1047,15 @@ Vand
 [Wheat]
 Hvede
 [Won : you defeated your opponents]
-Vundet : Du har slået din modstander
+Vundet: du besejrede dine modstandere
 [Won : you have the most prestige]
-Vundet : du havde den største prestige
+Vundet: du har mest prestige
 [Won : your ally %0 has the most prestige]
-Vundet: din allierede %0 havde den største prestige
+Vundet: din allierede %0 har mest prestige
 [Wood]
 Træ
 [wood]
-Træ
+træ
 [Worker Ratio]
 Andel arbejdere
 [Worker]
@@ -1063,9 +1063,9 @@ Arbejder
 [workers]
 arbejdere
 [working]
-Arbejde
+Arbejder
 [wounded]
-skadet
+såret
 [Yes]
 Ja
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
@@ -1077,7 +1077,7 @@ Du har vundet!
 [You where kicked from the game]
 Du blev smidt ud af spillet
 [Your %0 are under attack]
-Din %0 er under angreb
+Din enhed er under angreb (%0)
 [Your unit got converted to %0's team]
 En af dine enheder sluttede sig til %0s hold
 [game speed]
@@ -1091,7 +1091,7 @@ Maksimal
 [multiplayer game speed]
 Hastighed: 1x (flerspiller)
 [game speed help]
-Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
+Kun for én spiller og genafspilninger. Flerspiller kører med 1x hastighed.
 [AICortex-Description]
 Samlede bølger af krigere med støtte fra mad og helbredelse.
 [AIMaxima-Description]
@@ -1105,7 +1105,7 @@ Kampagnen kunne ikke gemmes. Kontrollér, at destinationsmappen findes, er skriv
 [AICortex]
 Cortex
 [Units still inside: %0]
-Inde: %0
+Stadig inde: %0
 [Units still working: %0]
 Arbejder stadig: %0
 [2 vs 2]
@@ -1251,7 +1251,7 @@ Spil dette kort
 [Players & Teams]
 Spillere og hold
 [Premade maps]
-Forudarbejdede kort
+Færdige kort
 [Preview ready. Start plays this exact map.]
 Forhåndsvisning klar. Start af spillet bruger dette nøjagtige kort.
 [Regenerate all]
@@ -1265,7 +1265,7 @@ Hvert landskab vises som et rigtigt kort med din nuværende størrelse og dit an
 [Purple]
 Lilla
 [Quick clash]
-Hurtig kamp
+Hurtigt slag
 [Random map]
 Tilfældigt kort
 [Red]
@@ -1291,9 +1291,9 @@ Standard
 [Start game]
 Start spillet
 [Starting workers]
-Indledende arbejdere
+Startarbejdere
 [Starting workers: Game Rules tab.]
-Indledende arbejdere: Fanen Spilregler.
+Startarbejdere: fanen Spilleregler.
 [Swamp]
 Sump
 [Team]
@@ -1345,7 +1345,7 @@ Kortdefinerede startenheder
 [No maps in this library.]
 Ingen kort i dette bibliotek.
 [Premade maps retain their authored starting units.]
-Forudbyggede kort beholder deres oprettede startenheder.
+Færdige kort beholder deres egne startenheder.
 [Start with terrain known]
 Start med kendt terræn
 [This colony will not join the match.]
@@ -1405,7 +1405,7 @@ Spilformat
 [No current preview]
 Ingen aktuel forhåndsvisning
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Hurtig kamp: dobbelt hastighed; genererede kort starter med 8 arbejdere.
+Hurtigt slag: dobbelt hastighed; genererede kort starter med 8 arbejdere.
 [Reroll]
 Generer endnu et kort
 [Randomize]
@@ -1417,13 +1417,13 @@ Regelsæt
 [Select a map from the library.]
 Vælg et kort fra biblioteket.
 [Starting workers affects generated maps only.]
-Det oprindelige antal arbejdere gælder kun for genererede kort.
+Startarbejdere gælder kun for genererede kort.
 [Unavailable]
 Ikke tilgængelig
 [Use selection]
 Brug markering
 [Quick clash on premade maps: only speed changes (2x).]
-Hurtig kamp på forudlavede kort: kun hastigheden ændres (dobbelt hastighed).
+Hurtigt slag på færdige kort: kun hastigheden ændres (dobbelt hastighed).
 [Generate a preview to explore this world.]
 Generer en forhåndsvisning for at udforske denne verden.
 [More workers jump-start colony growth. Changes the generated map.]
@@ -1435,13 +1435,13 @@ Tilføj tast til sekvens
 [settings Add shortcut]
 Tilføj genvej
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Brug musehjulet til at ændre antallet af tildelte enheder. Hvis denne indstilling er slået fra, skal du holde Ctrl-tasten nede for at bruge hjulet. Hold Shift-tasten nede for at justere flagradius. Denne indstilling styrer også musehjulsinput i andre menuer.
+Juster tildelte enheder med musehjulet. Når den er slået fra, så hold Ctrl nede. Shift justerer flagradius. Styrer også musehjulet i andre menuer.
 [settings Adjust music and voice volume.]
 Juster lydstyrken for musik og stemme.
 [settings Adjust the pace of play.]
 Juster spillets hastighed.
 [settings Advanced binding]
-Avanceret genvejsredigering
+Avanceret tildeling
 [settings Artwork & effects]
 Grafik og effekter
 [settings Audio]
@@ -1509,7 +1509,7 @@ Grafikdetaljer
 [settings Interface scale]
 Grænsefladeskalering
 [settings Keep]
-Behold ændringer
+Behold
 [settings Keep this display mode?]
 Vil du beholde denne visningstilstand?
 [settings Keep your volume levels while silencing audio.]
@@ -1551,7 +1551,7 @@ Spillernavn
 [settings Press]
 Ved tryk
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Tryk på en tast. Escape annullerer registreringen. Vælg "Tildel Escape-tasten" for at tildele Escape.
+Tryk på en tast. Escape annullerer. Brug Tildel Escape-tasten for at tildele Escape.
 [settings Radius]
 Radius
 [settings Reduced]
@@ -1579,7 +1579,7 @@ Gendan standard-tastaturgenveje
 [settings Retry]
 Prøv igen
 [settings Revert]
-Tilbagefør ændringer
+Fortryd
 [settings Reverting in]
 Gendanner om
 [settings Save shortcut]
@@ -1587,7 +1587,7 @@ Gem tastaturgenvej
 [settings Saved — restart required]
 Gemt — genstart påkrævet
 [settings Saving…]
-Gemmer...
+Gemmer…
 [settings Scroll wheel enabled]
 Musehjul aktiveret
 [settings Set starting unit assignments by building type and level.]
@@ -1597,7 +1597,7 @@ Indstil dit sprog og spillernavn.
 [settings Settings]
 Indstillinger
 [settings Single-player and replays only. Multiplayer runs at 1x.]
-Kun for én spiller og optagelser. Flerspillerspil kører med 1x hastighed.
+Kun for én spiller og genafspilninger. Flerspiller kører med 1x hastighed.
 [settings Software]
 Softwarerendering
 [settings Starting unit counts and radius for newly placed flags.]
@@ -1605,7 +1605,7 @@ Oprindeligt antal enheder og radius for nye flag.
 [settings This shortcut conflicts with existing bindings:]
 Denne tastaturgenvej er i konflikt med eksisterende genveje:
 [settings Trigger]
-Aktiveringsbegivenhed
+Udløser
 [settings Unbound]
 Ingen genvej tildelt
 [settings Unit counts assigned to new construction sites.]
@@ -1625,7 +1625,7 @@ Lydstyrke (stemme)
 [settings Window mode]
 Vinduestilstand
 [settings Window-only sizes also switch the game to windowed mode.]
-Hvis du vælger en opløsning, der kun understøtter vinduestilstand, skifter spillet også til vinduestilstand.
+Størrelser kun til vindue skifter også spillet til vinduestilstand.
 [settings Windowed]
 I vindue
 [settings Windowed only]
@@ -1979,7 +1979,7 @@ Ekstra broer
 [Polder]
 Polder
 [Old town]
-Gamle bydel
+Gammel bydel
 [Anthill]
 Myretue
 [Row angle]
@@ -2049,9 +2049,9 @@ Dårligst
 [Best]
 Bedst
 [Map preview controls]
-Træk for at se over kanterne. Brug hjulet til zoom. Højreklik eller dobbeltklik for at nulstille.
+Træk for at rulle rundt. Brug hjulet til zoom. Højreklik eller dobbeltklik for at nulstille.
 [Map preview drag help]
-Træk for at flytte; brug hjulet til zoom.
+Træk for at rulle rundt; brug hjulet til zoom.
 [Map preview loading]
 Indlæser...
 [Map preview failed]
@@ -2079,13 +2079,13 @@ Opgraderinger
 [Stats training]
 Træningsbesøg
 [Stats damage dealt]
-Skade givet
+Påført skade
 [Stats damage received]
 Skade modtaget
 [Stats HP restored]
-Helbred genoprettet
+Livspoint genvundet
 [Stats since tick]
-Siden trin
+Siden tik
 [Stats combat deaths]
 Kamp
 [Stats clearing deaths]
@@ -2139,7 +2139,7 @@ Ingen ressourcevækst
 [Instant construction]
 Øjeblikkelig opførelse
 [Higher tiers give every building much more HP.]
-Højere niveauer giver hver bygning meget mere HP.
+Højere niveauer giver hver bygning langt flere livspoint.
 [Starting units spawn already leveled up. Changes the generated map.]
 Startenheder starter allerede på et højere niveau. Ændrer det genererede kort.
 [No upgrades]
@@ -2179,21 +2179,21 @@ Fra (ingen timer)
 [Stats page three]
 Statistik 3/3 >
 [Stats blocked units]
-Enheder S/C
+Blokerede enheder S/C
 [Stats blocked buildings]
-Bygninger S/C
+Blokerede bygninger S/C
 [Stats blocked buildings swim]
-Svøm S/C
+Svømmeudgange S/C
 [Stats current blocked units]
-Enheder C
+Blokerede enheder nu
 [Stats current blocked buildings]
-Bygninger C
+Blokerede bygninger nu
 [Stats growth global]
-Ressourcer +
+Tilført vækst
 [Stats growth new tiles]
-Ressourcer +#
+Nye ressourcefelter
 [Stats growth reductions]
-Ressourcer -
+Naturlige fald
 [Stats growth per minute]
 Hvede +/min
 [Stats growth near 8]
@@ -2203,11 +2203,11 @@ Ressourcer + <=16
 [Stats growth near 32]
 Ressourcer + <=32
 [Stats low HP 25]
-HP <=25%
+LP <=25%
 [Stats low HP 50]
-HP <=50%
+LP <=50%
 [Stats low HP 75]
-HP <=75%
+LP <=75%
 [Stats low food 25]
 Mad <=25%
 [Stats low food 50]
@@ -2215,11 +2215,11 @@ Mad <=50%
 [Stats low food 75]
 Mad <=75%
 [Stats structural units]
-Enheder S
+Blokerede enheder S
 [Stats structural buildings]
-Bygninger S
+Blokerede bygninger S
 [Stats low HP ranges]
-HP: <=25/50/75%
+LP: <=25/50/75%
 [Stats low food ranges]
 Mad: <=25/50/75%
 [Emoji]
@@ -2357,7 +2357,7 @@ Nogle
 [Home oasis size]
 Hjemoasens størrelse
 [Caravanserais per colony]
-Karavanserajer pr. koloni
+Karavanseraier pr. koloni
 [Desert]
 Ørken
 [Open erg]
@@ -2511,7 +2511,7 @@ Lange lavatunger
 [Crater rim width]
 Kraterkantens bredde
 [Honeycomb isle]
-Honningkageø
+Bikageø
 [Blocks per colony]
 Karréer pr. koloni
 [Rubble]
@@ -2723,17 +2723,17 @@ Flere stier
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Denne korttypes sider skal være mellem 64 og 512 felter.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
-Dette frø giver ikke plads til kolonier ved bredderne.
+Dette seed giver ikke plads til kolonier ved bredderne.
 [Portage Lakes cannot fit renewable shore fields beside every settlement.]
 Der er ikke plads til fornybare marker ved hver koloni.
 [Portage Lakes cannot connect its shoreline trails.]
 Stierne langs bredderne kan ikke forbindes.
 [Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
-Dette frø giver ikke plads til en nyttig genvej gennem tør skov.
+Dette seed giver ikke plads til en nyttig genvej gennem tør skov.
 [Portage Lakes cannot fit a useful swimming shortcut on this seed.]
-Dette frø giver ikke plads til en nyttig svømmegenvej.
+Dette seed giver ikke plads til en nyttig svømmegenvej.
 [Portage Lakes needs separate swimming lakes on this seed.]
-Med dette frø skal søerne til svømning være adskilte.
+Med dette seed skal søerne til svømning være adskilte.
 [Drowned Forest]
 Oversvømmet skov
 [Sandbar connections]
@@ -2771,7 +2771,7 @@ Hver kolonis start måles på det færdige kort: vejen til hvede og til træ, hv
 [ERROR_CANT_SAVE_MAP]
 Kortet kunne ikke gemmes. Tjek destinationen og den tilgængelige plads. Dine ændringer er stadig åbne.
 [Loading headers]
-Indlæser headere...
+Indlæser filhoveder...
 [Loading teams]
 Indlæser hold...
 [Loading terrain]
@@ -2843,7 +2843,7 @@ Afslut uden at gemme
 [game closed]
 Spillet er lukket. Du kan lukke dette vindue eller genindlæse for at spille igen.
 [campaign editor save failed]
-Lagring ikke bekræftet. OK prøver igen; Annuller går tilbage til editormenuen.
+Lagring ikke bekræftet. OK prøver igen; Afbryd går tilbage til editormenuen.
 [Actions]
 Handlinger
 [Minimap]
@@ -2897,7 +2897,7 @@ Grænsefladens layout
 [settings Automatic]
 Automatisk
 [settings Compact]
-Tæt
+Kompakt
 [settings Spacious]
 Rummelig
 [More]
@@ -3009,13 +3009,13 @@ Forløbet tid · %0
 [Read-only building]
 Skrivebeskyttet bygning
 [Alliance and shared vision are fixed for this match.]
-Alliance og delt syn er faste i denne kamp.
+Alliance og delt udsyn er faste i denne kamp.
 [Share vision]
-Del syn
+Del udsyn
 [Share food vision]
-Del madsyn
+Del udsyn ved kroer
 [Share market vision]
-Del markedssyn
+Del udsyn ved markeder
 [Chat]
 Chat
 [No other players have editable diplomatic settings in this match.]
@@ -3089,7 +3089,7 @@ Ingen filer i denne mappe
 [No files saved yet]
 Ingen gemte filer endnu
 [Export]
-Eksporter
+Eksportér
 [Tap to write the mission briefing]
 Tryk for at skrive missionsbriefingen
 [Tap to write the map script]
@@ -3169,7 +3169,7 @@ Kolonier: %0
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Enheder
+%0 · %1 enheder
 [settings Level %0]
 Niveau %0
 [settings Match the desktop %0]
@@ -3185,7 +3185,7 @@ Vinderchance: %0 · Styrke: %1
 [%0 · Contribution: %1]
 %0 · Bidrag: %1
 [Min required level %0]
-Minimum krævede niveau: %0
+Mindste krævede niveau: %0
 [Confirm %0]
 Ok: %0
 [%0 %1]
@@ -3235,1415 +3235,1415 @@ Listers fart
 [List bounce]
 Listers tilbageslag
 [lan pairing field]
-
+Værtens parringskode (eller betroet WSS-URL)
 [lan pairing connect]
-
+Par og forbind
 [lan discovery instructions]
-
+Vælg en vært, og indsæt derefter dens parringskode for at bekræfte dens identitet.
 [lan discovery unavailable]
-
+LAN-søgning er ikke tilgængelig. Tjek tilladelsen til lokalt netværk, eller indsæt en parringskode fra værten.
 [lan discovered host %0]
-
+Fandt værten %0 — par for at se spil
 [lan connection unavailable]
-
+Kan ikke nå LAN-værten. Tjek tilladelsen til lokalt netværk og værtens parringskode.
 [lan connection verification failed %0]
-
+Kan ikke bekræfte eller forbinde til LAN-værten: %0
 [lan lobby endpoint required]
-
+Brug værtens lobby-adresse
 [settings Artwork]
-
+Grafik
 [settings Original]
-
+Oprindelig
 [settings High resolution]
-
+Høj opløsning
 [settings Clouds]
-
+Skyer
 [settings Show cloud cover above the map.]
-
+Vis skydække over kortet.
 [settings Cloud shadows]
-
+Skyskygger
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Vis skyernes skygger på jorden uafhængigt af skydækket.
 [settings Building particles]
-
+Bygningspartikler
 [settings Show smoke and other building particles.]
-
+Vis røg og andre partikler fra bygninger.
 [settings Magic effects]
-
+Magiske effekter
 [settings Choose animated magic effects or a simple visible effect.]
-
+Vælg animerede magiske effekter eller en enkel synlig effekt.
 [settings Simple]
-
+Enkel
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Kræver OpenGL-renderen. Dit gemte valg bevares.
 [settings Interface appearance]
-
+Brugerfladens udseende
 [settings Panels]
-
+Paneler
 [settings Choose translucent or opaque interface panels.]
-
+Vælg gennemsigtige eller uigennemsigtige paneler.
 [settings Opaque]
-
+Uigennemsigtig
 [settings Translucent]
-
+Gennemsigtig
 [settings Advanced graphics]
-
+Avanceret grafik
 [settings Path lines]
-
+Ruter
 [settings Choose translucent or opaque unit path lines.]
-
+Vælg gennemsigtige eller uigennemsigtige linjer for enhedernes ruter.
 [settings Smooth progress indicators]
-
+Bløde statuslinjer
 [settings Smooth the moving edges of progress indicators.]
-
+Udglat de bevægelige kanter på statuslinjer.
 [settings Decorative interface animation]
-
+Dekorative animationer
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animér sejrsgrafikken. Reduceret bevægelse slår også denne animation fra.
 [settings Smooth unit motion]
-
+Bløde enhedsbevægelser
 [settings Experimental: move and animate units between game ticks.]
-
+Eksperimentel: flyt og animér enheder mellem spillets tik.
 [settings Smooth fog of war]
-
+Blød krigståge
 [settings Fade the map into and out of the fog of war gradually.]
-
+Lad kortet glide gradvist ind og ud af krigstågen.
 [settings Adaptive zoom detail]
-
+Tilpasset zoomdetalje
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Forenkl bjælker, zoner, terræn og enheder, når kortet zoomes ud, og hold dem små, når der zoomes ind.
 [settings Text size]
-
+Tekststørrelse
 [settings Enlarge interface text without changing the map scale.]
-
+Forstør teksten i brugerfladen uden at ændre kortets skala.
 [Map momentum]
 Kortets fart
 [turn reconnecting]
-
+Forbindelsen til værten blev afbrudt. Genopretter forbindelse...
 [turn waiting for players]
-
+Venter på, at alle spillere er indlæst...
 [turn rejoining]
-
+Genindtræder i spillet...
 [turn catching up %0]
-
+Indhenter: %0 ture bagud
 [turn player reconnecting %0]
-
+%0 genopretter forbindelsen...
 [turn player lagging %0]
-
+%0 halter bagefter
 [turn player resyncing %0]
-
+%0 indhenter
 [turn player not connected %0]
-
+%0 har ikke forbundet endnu
 [lan host left]
-
+Værten forlod spillet.
 [lan host lost]
-
+Forbindelsen til værten blev afbrudt.
 [lan version mismatch %0]
-
+Værten kører en anden version af Globulation 2 (%0).
 [lan cannot host %0]
-
+Kan ikke være vært for et LAN-spil: %0
 [play online]
-
+Spil online
 [Use in room]
-
+Brug i rummet
 [conn ai]
-
+AI
 [conn behind %0]
-
+Bagud %0
 [conn behind explanation %0 %1]
-
+Bagud: hvor langt en spillers spil halter efter kampens ur; det inkluderer spillerens forsinkelse. Under %0 er normalt; fra %1 markeres spilleren som langsom.
 [conn behind]
-
+Bagud
 [conn card catching up]
-
+Indhenter
 [conn card colony works]
-
+Din koloni arbejder videre af sig selv: enhederne gør deres opgaver færdige, og bygningerne kører videre.
 [conn card desync detail]
-
+Genindtræder fra kampens optegnelse, så du ser det samme som alle andre. En rapport blev sendt automatisk.
 [conn card desync]
-
+Dit spil kom ud af synkronisering
 [conn card grace %0]
-
+Din koloni arbejder videre af sig selv: enhederne gør deres opgaver færdige, og bygningerne kører videre. Du har %0 til at vende tilbage, før du fjernes fra kampen.
 [conn card input paused]
-
+Du indhenter · input sat på pause
 [conn card lost]
-
+Forbindelse afbrudt
 [conn card progress %0 %1 %2]
-
+%0 % · %1 af %2 tik
 [conn card reconnecting %0]
-
+Genopretter forbindelsen til kampen… forsøg %0
 [conn card replaying %0]
-
+Afspiller de %0, du gik glip af. Skærmen opdateres, når du er tilbage i nutiden.
 [conn card seconds left %0]
-
+ca. %0 s tilbage
 [conn connections]
-
+Forbindelser
 [conn connection]
-
+Forbindelse
 [conn delay explanation %0 %1]
-
+Forsinkelse: tiden fra dit klik, til det sker for alle. Den følger din egen forbindelse, ikke de andre spilleres. God under %0, dårlig fra %1.
 [conn fair]
-
+Rimelig
 [conn good]
-
+God
 [conn grid legend]
-
+Med mere end fire spillere viser panelet hver spillers ping i millisekunder, eller hvor mange sekunder de er bagud.
 [conn jitter %0]
-
+udsving %0
 [conn leave match]
-
+Forlad kampen
 [conn left]
-
+Gået
 [conn notice back %0]
-
+%0 er tilbage.
 [conn notice left %0]
-
+%0 forlod kampen.
 [conn notice lost %0 %1]
-
+%0 mistede forbindelsen. Spillet fortsætter; kolonien arbejder videre, mens spilleren genopretter forbindelsen (%1 tilbage).
 [conn ping explanation %0 %1]
-
+Ping: tur-retur-tiden mellem en spiller og relæet. God under %0, dårlig fra %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Spillere
 [conn poor]
-
+Dårlig
 [conn reconnecting]
-
+Genopretter
 [conn relay %0]
-
+Relæ: %0
 [conn resyncing]
-
+Genindtræder
 [conn slow]
-
+Langsom
 [conn unstable]
-
+ustabil
 [conn waiting]
-
+Forbinder…
 [conn you %0]
-
+%0 (dig)
 [conn you]
-
+Dig
 [conn your delay %0]
-
+Din forsinkelse %0
 [hub account menu]
-
+Konto
 [hub ai joins after %0]
-
+AI deltager efter %0
 [hub all rooms]
-
+Alle
 [hub browse maps]
-
+Gennemse kort
 [hub cant reach %0]
-
+Kan ikke nå %0.
 [hub change server]
-
+Skift server…
 [hub check code]
-
+Når den beder om en kode, så indtast denne:
 [hub code placeholder]
-
+Kode eller invitationslink
 [hub connecting to %0]
-
+%0 · forbinder…
 [hub continue with %0]
-
+Fortsæt med %0
 [hub create room]
-
+Opret rum
 [hub find match]
-
+Find kamp
 [hub finish in browser]
-
+Gør login færdigt på siden, der blev åbnet i din browser.
 [hub free seat]
-
+Ledig plads
 [hub get update]
-
+Hent opdateringen
 [hub guest kept on device]
-
+Gæst · gemt på denne enhed
 [hub invalid code]
-
+Det er ikke en invitationskode eller et invitationslink.
 [hub join by code]
-
+Deltag med kode
 [hub join code]
-
+Deltagelseskode
 [hub join]
-
+Deltag
 [hub leaderboard]
-
+Rangliste
 [hub linked %0]
-
+Tilknyttede konti · %0
 [hub linked accounts]
-
+Tilknyttede konti
 [hub maps]
-
+Kort
 [hub no queues]
-
+Denne server har ingen køer til hurtig kamp.
 [hub no rooms]
-
+Ingen åbne rum lige nu. Opret et, og del invitationen.
 [hub offline at %0]
-
+%0 · ikke forbundet
 [hub offline detail %0]
-
+Prøver igen om %0 s. Hurtig kamp og onlinerum er ikke tilgængelige. LAN-spil i hovedmenuen har ikke brug for denne server.
 [hub online at %0]
-
+%0 · forbundet
 [hub online settings]
-
+Onlineindstillinger
 [hub online]
-
+Online
 [hub open page again]
-
+Åbn siden igen
 [hub open rooms]
-
+Åbne rum
 [hub page opened at %0]
-
+Åbnede %0. Du skal ikke skrive noget i spillet; det logger dig selv ind.
 [hub queues unavailable]
-
+Hurtig kamp vises, når serveren svarer.
 [hub quick match unavailable]
-
+Hurtig kamp er endnu ikke tilgængelig i denne version.
 [hub quick match]
-
+Hurtig kamp
 [hub ranked]
-
+Rangeret
 [hub recent matches]
-
+Seneste kampe
 [hub refresh]
-
+Opdater
 [hub retry now]
-
+Prøv igen nu
 [hub room match]
-
+Rum
 [hub room name %0]
-
+%0s rum
 [hub room]
-
+Rum
 [hub seats %0 %1]
-
+%0/%1 pladser
 [hub server %0]
-
+Server: %0
 [hub sign in browser]
-
+Åbn login-siden
 [hub sign in conflict]
-
+Det login tilhører allerede en anden konto.
 [hub sign in failed %0]
-
+Login blev ikke fuldført (%0).
 [hub sign in intro]
-
+Log ind eller opret en konto i din browser. Dine gæstekampe følger med.
 [hub sign in]
-
+Log ind
 [hub sign out]
-
+Log ud på denne enhed
 [hub signed in as %0]
-
+Logget ind som %0.
 [hub signed in on %0]
-
+Logget ind på %0
 [hub signing in]
-
+Logger ind…
 [hub sim %0]
-
+sim. %0
 [hub unrated]
-
+Uden rating
 [hub update required at %0]
-
+%0 · opdatering påkrævet
 [hub update required detail %0]
-
+%0 spiller en nyere version, så denne kopi kan ikke deltage i onlinespil, før den opdateres. LAN-spil virker stadig.
 [hub update required]
-
+Opdatering påkrævet
 [hub server behind]
-
+Serveropdatering afventer
 [hub server behind at %0]
-
+%0 · serveropdatering afventer
 [hub server behind detail %0]
-
+Denne kopi er nyere end %0, som endnu ikke er opdateret. Onlinespil åbner, når serveren er opdateret. LAN-spil virker stadig.
 [hub version mismatch]
-
+Anden version
 [hub version mismatch at %0]
-
+%0 · anden version
 [hub version mismatch detail %0]
-
+%0 spiller en anden version af spillet, så denne kopi kan ikke deltage i onlinespil. LAN-spil virker stadig.
 [hub versus %0]
-
+mod %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+Henter kortet %0
 [match failed]
-
+Kampen kunne ikke starte.
 [match leave]
-
+Forlad
 [match loading]
-
+Indlæser spillet
 [Loading game graphics]
-
+Indlæser spillets grafik
 [match map cached]
-
+findes allerede på denne enhed
 [match map]
-
+Henter kortet
 [match relay %0]
-
+Forbundet til relæet %0
 [match seat confirmed]
-
+Plads bekræftet
 [match starting]
-
+Starter kampen
 [match tip flags]
-
+Tip: udforskningsflag sender udforskere ud for at afdække kortet; krigsflag samler dine krigere.
 [match tip input]
-
+Tip: dine ordrer når alle efter din egen inputforsinkelse; andre spilleres forbindelser gør dig ikke langsommere.
 [match tip select]
-
+Tip: dobbeltklik på en bygning for at vælge alle bygninger af den type.
 [match waiting for players]
-
+Venter på alle spillere
 [match you %0]
-
+%0 (dig)
 [match player map]
-
+kort
 [match player loading]
-
+indlæser
 [match player connecting]
-
+forbinder
 [match player ready]
-
+klar
 [match player left]
-
+gået
 [results back to online]
-
+Tilbage til online
 [results back to room]
-
+Tilbage til rummet
 [results defeat]
-
+Nederlag
 [results ladder rating %0]
-
+%0-rating
 [results left]
-
+Du forlod kampen
 [results match over]
-
+Kampen er slut
 [results match page]
-
+Kampside
 [results minutes %0]
-
+%0 min.
 [results no change]
-
+ingen ændring
 [results ranked]
-
+Rangeret
 [results recording]
-
+Registrerer resultatet…
 [results room unrated]
-
+Rumkamp · uden rating
 [results saved to history]
-
+Gemt i din historik
 [results seconds %0]
-
+%0 sek.
 [results unverifiable]
-
+Serveren kunne ikke genskabe denne kamp, så den tæller ikke med i nogens rating. Den er blevet rapporteret til undersøgelse; du behøver ikke gøre noget.
 [results verified provisional]
-
+Bekræftet · foreløbig
 [results verified]
-
+Bekræftet
 [results verifying detail]
-
+Serveren genafspiller kampen for at bekræfte den. Tager normalt under et minut.
 [results verifying]
-
+Bekræfter resultatet…
 [results victory]
-
+Sejr
 [room address]
-
+Adresse
 [room ai %0]
-
+AI-spiller: %0
 [room browser pairing]
-
+Parring via browser
 [room catalog map]
-
+Kort fra kataloget
 [room change map]
-
+Skift kort…
 [room change rules]
-
+Skift regler…
 [room chat]
-
+Chat
 [room closed seat detail]
-
+Lukket af værten
 [room closed seat]
-
+Lukket
 [room colonies]
-
+Kolonier
 [room connecting]
-
+Forbinder til rummet…
 [room copy]
-
+Kopiér
 [room disconnected]
-
+afbrudt
 [room downloading %0]
-
+Henter kort %0 %
 [room downloading map]
-
+Henter kortet…
 [room expired]
-
+Rummet er lukket.
 [room generated on server]
-
+Genereret én gang på serveren, så alle spiller præcis dette kort.
 [room guest]
-
+gæst
 [room host %0]
-
+vært %0
 [room host closed]
-
+Værten lukkede rummet.
 [room host]
-
+vært
 [room humans vs ai]
-
+Mennesker mod AI
 [room invite code %0]
-
+Kode %0 · åbner i appen, på telefoner eller i en browser
 [room invite not found]
-
+Denne invitation er udløbet eller findes ikke.
 [room invite only]
-
+Kun med invitation
 [room invite]
-
+Invitér
 [room joining on network]
-
+Deltager på dette netværk
 [room lan badge]
-
+Lokalt netværk · uden rating
 [room lan list hint %0]
-
+Andre på samme netværk ser %0 i listen over LAN-spil i hovedmenuen.
 [room leave]
-
+Forlad
 [room map changed %0]
-
+Kortet blev skiftet til %0.
 [room map failed]
-
+Kortet kunne ikke forberedes
 [room match label]
-
+Rum
 [room member joined %0]
-
+%0 kom ind i rummet.
 [room member left %0]
-
+%0 forlod rummet.
 [room member ready %0]
-
+%0 er klar.
 [room needs two seats]
-
+Invitér en ven, eller tilføj en AI for at starte
 [room no map]
-
+Intet kort endnu
 [room not ready]
-
+Ikke klar
 [room open for a person]
-
+Åben for et menneske
 [room open seat detail]
-
+Alle med invitationen kan tage den
 [room open seat]
-
+Ledig plads
 [room person]
-
+Menneske
 [room preparing map]
-
+Forbereder kortet på serveren…
 [room public]
-
+Offentligt
 [room ready?]
-
+Klar
 [room ready]
-
+✓ Klar
 [room remove from room]
-
+Fjern fra rummet
 [room rule off]
-
+Fra
 [room rule on]
-
+Til
 [room rules changed]
-
+Reglerne blev ændret.
 [room rules]
-
+Regler
 [room say something]
-
+Skriv noget…
 [room seat hint]
-
+Spillere kan selv flytte til en ledig plads. Skift hold for at udligne.
 [room seat options]
-
+Pladsindstillinger
 [room seats summary %0 %1 %2]
-
+%0 spillere · %1 AI · %2 ledige
 [room seats]
-
+Pladser
 [room seed]
-
+Seed
 [room send]
-
+Send
 [room set by host]
-
+Bestemt af værten
 [room share text %0]
-
+Kom med i mit Globulation 2-rum: %0
 [room share]
-
+Del…
 [room size]
-
+Størrelse
 [room starting match]
-
+Starter kampen…
 [room take seat]
-
+Tag pladsen
 [room team %0]
-
+Hold %0
 [room update required]
-
+Dette rum spiller en anden version af spillet. Opdater for at deltage.
 [room uploaded map]
-
+Uploadet kort
 [room waiting for %0]
-
+Venter på, at %0 er klar
 [room waiting for you]
-
+Tryk på Klar, når du er parat
 [room match over]
-
+Kampen er slut. Gør klar til en ny runde!
 [room waiting for host]
-
+Venter på, at værten starter
 [room waiting for players %0]
-
+Venter på, at %0 spillere er klar
 [room who can find it]
-
+Hvem kan finde det
 [room you created]
-
+Du oprettede rummet.
 [room you joined %0]
-
+Du kom ind i %0.
 [room you were removed]
-
+Værten fjernede dig fra rummet.
 [room you]
-
+dig
 [settings Online]
-
+Online
 [settings Another server]
-
+En anden server
 [settings Check]
-
+Tjek
 [settings Checking…]
-
+Tjekker…
 [settings Choose which server you play on and how you sign in to it.]
-
+Vælg hvilken server du spiller på, og hvordan du logger ind.
 [settings Connecting…]
-
+Forbinder…
 [settings Could not reach this server.]
-
+Kunne ikke nå denne server.
 [settings Display name saved.]
-
+Visningsnavn gemt.
 [settings Display name]
-
+Visningsnavn
 [settings Download or delete my data]
-
+Slet min konto
 [settings Enter an https:// address.]
-
+Indtast en https://-adresse.
 [settings Finish in your browser. It shows the code %0.]
-
+Gør det færdigt i din browser: indtast koden %0, når den beder om det.
 [settings Forget]
-
+Glem
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gæster beholder et genereret navn; log ind for at vælge et.
 [settings Link]
-
+Tilknyt
 [settings Not a Globulation 2 server.]
-
+Ikke en Globulation 2-server.
 [settings Not linked]
-
+Ikke tilknyttet
 [settings Not signed in.]
-
+Ikke logget ind.
 [settings Open]
-
+Åbn
 [settings Opens your account page on %0.]
-
+Åbner din kontoside på %0, hvor du kan slette den.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Drives af et fællesskab, en klub eller dig selv. Indsæt dens adresse.
 [settings Save]
-
+Gem
 [settings Server]
-
+Server
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Vises i rum, kampe og på ranglisten. Kan ændres én gang hver 30. dag.
 [settings Sign in with: %0 · queues: %1]
-
+Log ind med: %0 · køer: %1
 [settings Sign out on this device]
-
+Log ud på denne enhed
 [settings Sign out]
-
+Log ud
 [settings Switch to this server]
-
+Skift til denne server
 [settings The last sign-in method can't be unlinked.]
-
+Den sidste loginmetode kan ikke fjernes.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Den officielle Globulation 2-server · rangerede køer, ranglister, kortkatalog
 [settings Unlink]
-
+Fjern
 [settings Unlinking is done on the account page.]
-
+Tilknytninger fjernes på kontosiden.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Du er en ny gæst, indtil du logger ind igen. Din konto og dine kampe bliver på serveren.
 [settings Your account on %0]
-
+Din konto på %0
 [settings compatible with this version]
-
+kompatibel med denne version
 [settings connected]
-
+forbundet
 [settings connecting…]
-
+forbinder…
 [settings guest]
-
+gæst
 [settings linked]
-
+tilknyttet
 [settings plays another version]
-
+spiller en anden version
 [settings trusted]
-
+betroet
 [settings used before]
-
+brugt før
 [settings you were %0 there]
-
+du var %0 der
 [trust invited to room %0]
-
+Inviteret til rummet %0
 [trust join as guest]
-
+Deltag som gæst
 [trust not official]
-
+Denne server drives ikke af Globulation 2-projektet.
 [trust remember]
-
+Husk denne server
 [trust separate identity %0]
-
+Du deltager som gæst dér. Din %0-konto, rating og historik bliver, hvor de er.
 [trust title]
-
+Deltag i et spil på en anden server?
 [trust what it sees]
-
+Serveren ser dit visningsnavn, din forbindelses adresse og de spil, du spiller på den.
 [settings not connected]
-
+ikke forbundet
 [settings Open Play online to connect.]
-
+Åbn Spil online for at forbinde.
 [hub code]
-
+Kode
 [results draw]
-
+Uafgjort
 [qm 2 vs 2]
-
+2 mod 2
 [qm 1 vs 1]
-
+1 mod 1
 [qm ping about]
-
+Ping ca.
 [qm ranked]
-
+Rangeret
 [qm casual %0]
-
+Afslappet %0
 [qm rated]
-
+Rangeret
 [qm unrated]
-
+Uden rating
 [qm solo queue]
-
+solokø
 [qm ai joins after %0]
-
+AI deltager efter %0
 [qm fair maps %0]
-
+Kort: %0
 [qm cooldown %0]
-
+Du afslog en kamp. Du kan søge igen om %0.
 [qm sign in to play ranked]
-
+Rangerede køer er for konti, der er logget ind; log ind først.
 [online update required]
-
+Denne version af spillet er for gammel til serveren; opdater for at spille online.
 [online server behind]
-
+Serveren er endnu ikke opdateret til denne version; onlinespil åbner, når den er.
 [online version mismatch]
-
+Serveren kører en anden version af spillet; onlinespil er ikke tilgængeligt med denne kopi.
 [qm already searching]
-
+Du søger allerede eller er i en kamp.
 [online connection problem]
-
+Serveren kunne ikke nås.
 [qm find match]
-
+Find kamp
 [qm opponents rated %0 to %1]
-
+Modstandere med rating %0 til %1
 [qm region %0]
-
+Region: %0
 [qm searching]
-
+Søger
 [qm measuring relays]
-
+Måler relæer
 [qm joining queue]
-
+Går i kø
 [qm waiting for a person]
-
+Venter på et menneske: AI-modstandere er slået fra.
 [qm ai in %0 rated]
-
+Hvis ingen findes, spiller du mod AI'en med nærmeste rating om %0
 [qm ai in %0]
-
+Hvis ingen findes, deltager en AI om %0
 [qm ai after %0]
-
+Hvis ingen findes, tager en AI pladsen efter %0
 [qm allow ai short]
-
+Tillad AI
 [qm allow ai]
-
+Tillad en AI-modstander
 [qm cancel]
-
+Afbryd
 [qm cancel search]
-
+Afbryd søgning
 [qm usual wait %0]
-
+normal ventetid %0
 [qm widening]
-
+udvides, mens du venter
 [qm ais are rated]
-
+(med rating: AI'er har også rating)
 [qm opponent declined]
-
+Din modstander accepterede ikke. Du er tilbage forrest i køen.
 [qm %0 did not accept]
-
+%0 accepterede ikke. Du er tilbage forrest i køen.
 [qm start failed]
-
+Kampen kunne ikke starte. Du søger igen.
 [qm you declined]
-
+Du afslog kampen. Du kan søge igen efter en kort pause.
 [qm you did not answer]
-
+Du accepterede ikke i tide. Du kan søge igen efter en kort pause.
 [qm search ended]
-
+Søgningen sluttede.
 [qm try again]
-
+Prøv igen
 [online connecting]
-
+Forbinder…
 [qm no queues]
-
+Denne server har ingen køer til hurtig kamp.
 [qm quick match]
-
+Hurtig kamp
 [qm phone searching note]
-
+Søgningen fortsætter, hvis du forlader denne skærm.
 [qm phone intro]
-
+Vælg en kø nedenfor; søgningen kører, mens du kigger rundt.
 [qm online]
-
+Online
 [qm keeps running note]
-
+Søgningen fortsætter, hvis du forlader denne skærm.
 [qm ai]
-
+AI
 [qm provisional]
-
+foreløbig
 [qm accepted]
-
+✓ accepteret
 [qm declined]
-
+afslået
 [qm waiting]
-
+venter…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Kamp fundet
 [qm playing an ai]
-
+Spiller mod en AI
 [qm vs]
-
+mod
 [qm ai explanation rated]
-
+Ingen inden for dit ratingområde søgte. Du spiller mod den AI, der er tættest på din rating; resultatet tæller for både din og AI'ens rating.
 [qm ai explanation]
-
+Ingen søgte. Du spiller mod den AI, der er tættest på din rating; dette spil er uden rating.
 [qm casual explanation]
-
+Kampen starter med det samme; afslappede spil er uden rating.
 [qm accepted button]
-
+Accepteret
 [qm accept]
-
+Acceptér
 [qm decline]
-
+Afslå
 [qm both must accept]
-
+Begge skal acceptere
 [qm accept explanation]
-
+Begge spillere skal acceptere. Hvis du afslår eller lader tiden løbe ud, kommer du bagerst i køen.
 [qm starting in %0]
-
+Starter om %0…
 [qm preparing match]
-
+Forbereder kampen…
 [qm match assigned %0 %1]
-
+Kamp %0 er klar på %1, men denne version kan endnu ikke forbinde til onlinekampe.
 [online jan]
-
+jan.
 [online feb]
-
+feb.
 [online mar]
-
+mar.
 [online apr]
-
+apr.
 [online may]
-
+maj
 [online jun]
-
+jun.
 [online jul]
-
+jul.
 [online aug]
-
+aug.
 [online sep]
-
+sep.
 [online oct]
-
+okt.
 [online nov]
-
+nov.
 [online dec]
-
+dec.
 [profile win letter]
-
+V
 [profile loss letter]
-
+T
 [profile draw letter]
-
+U
 [profile history unavailable]
-
+Denne server tilbyder endnu ikke kamphistorik.
 [profile downloading replay]
-
+Henter genafspilningen…
 [profile no replay]
-
+Der findes ingen genafspilning af denne kamp.
 [profile room with %0]
-
+Rum · %0 kolonier
 [profile with %0 vs %1]
-
+med %0 mod %1
 [profile vs %0]
-
+mod %0
 [profile room]
-
+Rum
 [profile casual]
-
+Afslappet
 [profile ai filled]
-
+Udfyldt med AI
 [profile provisional %0 games]
-
+foreløbig · %0 spil
 [profile unrated]
-
+uden rating
 [profile checking]
-
+tjekker…
 [profile %0 min]
-
+%0 min.
 [profile match page]
-
+Kampside
 [profile replay]
-
+Genafspilning
 [profile win rate last %0]
-
+Sejrsrate, seneste %0
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 T · %2 uafgjort
 [profile typical game]
-
+Typisk spil
 [profile median length]
-
+din medianlængde
 [profile best map]
-
+Bedste kort
 [profile %0 w %1 l]
-
+%0 V · %1 T
 [profile no rated games]
-
+Spil en rangeret kamp for at få en rating.
 [profile all]
-
+Alle
 [profile rooms]
-
+Rum
 [profile vs ai]
-
+mod AI
 [profile matches]
-
+Kampe
 [online loading]
-
+Indlæser…
 [profile no matches]
-
+Ingen kampe endnu.
 [online load more]
-
+Indlæs flere
 [profile title]
-
+Profil
 [profile guest]
-
+gæst
 [profile playing since %0]
-
+spiller siden %0
 [profile full profile web]
-
+Fuld profil på nettet
 [profile replays note]
-
+Genafspilninger hentes fra serveren, når du åbner dem; dem, du har gemt lokalt, ligger under Indlæs spil → Genafspilninger.
 [profile web profile]
-
+Webprofil
 [maps most played]
-
+Mest spillede
 [maps most liked]
-
+Mest populære
 [maps newest]
-
+Nyeste
 [maps most downloaded]
-
+Mest hentede
 [maps any size]
-
+Alle størrelser
 [maps up to 128]
-
+Op til 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 og større
 [maps report broken]
-
+Det virker ikke
 [maps report offensive]
-
+Stødende
 [maps report copyright]
-
+En andens værk
 [maps report other]
-
+Noget andet
 [maps public]
-
+Offentligt
 [maps unlisted]
-
+Skjult fra listen
 [maps private]
-
+Privat
 [maps cannot read file]
-
+Kortfilen kunne ikke læses.
 [maps file too large]
-
+Kortfilen er for stor til at blive delt.
 [maps saved for next room]
-
+Kortet er hentet; det bruges, når du åbner et rum.
 [maps download failed]
-
+Kortet kunne ikke hentes.
 [maps %0 colonies]
-
+%0 kolonier
 [maps version %0]
-
+version %0
 [maps updated %0]
-
+opdateret %0
 [maps downloading]
-
+Henter kortet…
 [maps like needs account]
-
+Du skal være logget ind for at synes godt om kort.
 [maps report sent]
-
+Tak; moderatorerne kigger på det.
 [maps select a map]
-
+Vælg et kort for at se detaljerne.
 [maps by %0]
-
+af %0
 [maps stats %0 %1 %2]
-
+▶ %0 spil · ⬇ %1 hentninger · ♥ %2
 [maps use in room]
-
+Brug i et rum
 [maps liked]
-
+✓ Synes godt om
 [maps like]
-
+Synes godt om
 [maps map page]
-
+Kortside
 [maps reported]
-
+Rapporteret
 [maps report]
-
+Rapportér…
 [maps report why]
-
+Hvad er der galt med dette kort?
 [maps search placeholder]
-
+Søg efter kort eller forfattere
 [maps none found]
-
+Ingen kort matcher.
 [maps any colonies]
-
+Alle koloniantal
 [maps checking]
-
+Tjekker…
 [maps no version yet]
-
+Der er endnu ikke uploadet nogen version.
 [maps rejected]
-
+Afvist
 [maps did not load %0]
-
+Kortet blev ikke indlæst: %0
 [maps unknown reason]
-
+der blev ikke givet nogen grund
 [maps fix and upload again]
-
+ret det i editoren, og upload det igen
 [maps uploaded just now]
-
+uploadet lige nu
 [maps loading on server]
-
+indlæser det på serveren
 [maps %0 plays]
-
+%0 spil
 [maps hidden]
-
+Skjult
 [maps upload again]
-
+Upload igen…
 [maps delete]
-
+Slet
 [maps update]
-
+Opdater…
 [maps upload a map]
-
+Upload et kort…
 [maps upload hint]
-
+.map-filer fra din kortmappe eller editoren
 [maps no maps yet]
-
+Du har endnu ikke delt nogen kort.
 [maps my maps]
-
+Mine kort
 [maps my maps %0]
-
+Mine kort (%0)
 [maps browse]
-
+Gennemse
 [maps title]
-
+Kort
 [maps browse note %0]
-
+%0-katalog · kun kort, der kan indlæses i denne version, vises
 [maps visibility note]
-
+Offentlige kort vises under Gennemse. Skjulte kort virker i dine rum og via deres link. Private kort kun i dine egne rum.
 [maps use %0]
-
+Brug %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Titel
 [maps field description]
-
+Beskrivelse
 [maps who can use it]
-
+Hvem kan bruge det
 [maps guests unlisted]
-
+Gæster kan dele skjulte og private kort; log ind for at udgive under Gennemse.
 [maps visibility help]
-
+Skjulte kort virker i dine rum og via deres link; offentlige kort vises også under Gennemse.
 [maps new version of %0]
-
+Upload denne fil som en ny version af %0.
 [maps upload]
-
+Upload
 [maps uploading]
-
+Uploader…
 [maps checking detail]
-
+Serveren indlæser kortet og tegner dets forhåndsvisning. Indtil da kan kortet ikke bruges.
 [maps ready]
-
+Klar
 [maps ready public]
-
+Kortet er klar og vises under Gennemse.
 [maps ready unlisted]
-
+Kortet er klar. Skjulte kort virker i dine rum og via deres link.
 [maps ready private]
-
+Kortet er klar. Private kort virker kun i dine egne rum.
 [maps upload failed]
-
+Upload mislykkedes
 [maps server read %0 %1]
-
+Serveren læste det som %0 med %1 kolonier.
 [maps continue in background]
-
+Luk
 [maps upload a map title]
-
+Upload et kort
 [maps update map title]
-
+Opdater et kort
 [maps upload note]
-
+Serveren indlæser hver upload, før den kan bruges.
 [online just now]
-
+lige nu
 [online today %0]
-
+i dag %0
 [online yesterday]
-
+i går
 [online sun]
-
+søn.
 [online mon]
-
+man.
 [online tue]
-
+tir.
 [online wed]
-
+ons.
 [online thu]
-
+tor.
 [online fri]
-
+fre.
 [online sat]
-
+lør.
 [online %0 weeks ago]
-
+for %0 uger siden
 [online %0 months ago]
-
+for %0 måneder siden
 [online %0 years ago]
-
+for %0 år siden
 [maps share online]
-
+Del online…
 [maps mine]
-
+Mine kort
 [results waiting for players]
-
+Venter på, at de andre spillere forlader kampen…
 [results waiting detail]
-
+Resultatet registreres, når alle har forladt kampen.
 [results waiting slow]
-
+En spiller, der mistede forbindelsen, har op til 3 minutter til at vende tilbage. Resultatet vises i din historik og på kampsiden.
 [results verifying slow]
-
+Bekræftelsen tager længere tid end normalt. Resultatet vises i din historik og på kampsiden.
 [results rematch]
-
+Revanche
 [results join rematch %0]
-
+Deltag i %0s revanche
 [hub profile history]
-
+Profil og historik
 [hub my maps]
-
+Mine kort
 [hub leaderboard %0]
-
+Rangliste · %0
 [hub leaderboard empty]
-
+Ingen rangerede spillere endnu.
 [hub guests not ranked]
-
+Gæster rangeres ikke. Log ind for at blive vist her.
 [hub full leaderboard]
-
+Hele ranglisten
 [settings %0 is no longer linked.]
-
+%0 er ikke længere tilknyttet.
 [room map read failed]
-
+Denne kortfil kunne ikke læses.
 [room map upload failed]
-
+Kortet kunne ikke deles med rummet.
 [room map upload failed %0]
-
+Kortet kunne ikke deles med rummet: %0
 [room uploading map]
-
+Deler kortet med rummet…
 [room premade map shared]
-
+Alle i rummet spiller denne kortfil; den hentes før kampen.
 [room take a seat to play]
-
+Tag en ledig plads for at spille
 [room waiting for a seat]
-
+Alle pladser er taget. Du kan tage en, når den bliver ledig.
 [room not seated]
-
+Uden plads
 [room copied]
-
+Kopieret
 [room copy failed]
-
+Kunne ikke kopiere
 [room closed title]
-
+Rummet er lukket
 [room removed title]
-
+Fjernet fra rummet
 [room back to online]
-
+Tilbage til online
 [leave match]
-
+Forlad kampen
 [leave match title]
-
+Forlad denne kamp?
 [leave lan title]
-
+Forlad dette LAN-spil?
 [leave rated body]
-
+Du taber denne rangerede kamp, og din rating falder. De andre spiller videre, og du kan ikke vende tilbage.
 [leave casual body]
-
+Denne hurtige kamp tæller som et nederlag for dig. De andre spiller videre, og du kan ikke vende tilbage.
 [leave room body]
-
+Du forlader rummets kamp, og den tæller som et nederlag i din historik. De andre spiller videre, og du kan ikke vende tilbage.
 [leave lan body]
-
+De andre spiller videre uden dig, og du kan ikke vende tilbage til dette spil.
 [leave match confirm]
-
+Forlad kampen
 [keep playing]
-
+Spil videre
 [results team]
-
+Hold
 [results quick unrated]
-
+Hurtig kamp · uden rating
 [conn card cannot keep up]
-
+Din enhed kan ikke følge med i denne kamp
 [conn card cannot keep up body]
-
+Den genafspiller kampen langsommere, end kampen kører, så den indhenter den ikke. Du kan forlade kampen eller sænke grafikindstillingerne og vente videre.
 [conn card not gaining]
-
+indhenter ikke
 [results reason opponents left]
-
+Dine modstandere forlod kampen.
 [results reason victory]
-
+Alle modstanderkolonier blev besejret.
 [results reason defeat]
-
+Din koloni blev besejret.
 [results reason you left]
-
+Du forlod kampen. Det tæller som et nederlag.
 [results final after end]
-
+Endeligt resultat, når kampen er slut.
 [pause none left]
-
+Ingen pauser tilbage
 [pause game left %0]
-
+Sæt på pause (%0 tilbage)
 [pause by %0]
-
+Sat på pause af %0
 [pause by %0 resumes in %1]
-
+Sat på pause af %0 · fortsætter om %1
 [turn too many actions]
-
+For mange handlinger: nogle venter stadig på at blive sendt
 [turn no pauses left]
-
+Du har ingen pauser tilbage i denne kamp
 [turn pause time used %0]
-
+%0 har brugt al sin pausetid: spillet fortsætter
 [room seats one person %0 %1]
-
+1 spiller · %0 AI · %1 ledige
 [room rules otherwise standard]
-
+Alle andre regler er som i Standard.
 [room browser link]
-
+Link til browserspillere
 [room browser link hint]
-
+Spillere i en browser indsætter dette link for at deltage.
 [room browser link code %0]
-
+Spillere i en browser indsætter dette link for at deltage. Deres spil viser koden %0.
 [room copy link]
-
+Kopiér link
 [room lan open seat detail]
-
+Alle på dette netværk kan tage den
 [room close title]
-
+Luk rummet?
 [room close body one]
-
+Hvis du går, lukkes rummet for alle, også den anden spiller i det.
 [room close body %0]
-
+Hvis du går, lukkes rummet for alle, også de %0 andre spillere i det.
 [room close confirm]
-
+Luk rummet
 [room stay]
-
+Bliv
 [room colours changed]
-
+Det nye kort gav pladserne nye farver. Tjek din, før du starter.
 [room copy by hand]
-
+Kopiering virkede ikke. Kopiér selv invitationen:
 [room copy by hand close]
-
+Luk
 [room copy by hand touch]
-
+Tryk og hold på linket, og vælg derefter Kopiér.
 [room copy by hand keys]
-
+Linket er markeret: tryk på Ctrl+C (⌘C på en Mac).
 [room code]
-
+Kode
 [online under a minute]
-
+under et minut
 [online about %0 min]
-
+ca. %0 min.
 [online %0 s]
-
+%0 sek.
 [online %0 min %1 s]
-
+%0 min. %1 sek.
 [qm ai opponent %0]
-
+AI-modstander: %0
 [match relay connected]
-
+Forbundet til spilserveren
 [room picker title]
-
+Vælg et kort
 [room picker for one]
-
+Til den 1 spiller i rummet
 [room picker for %0]
-
+Til de %0 spillere i rummet
 [room picker generated]
-
+Genereret
 [room picker premade]
-
+Færdige
 [room picker catalog]
-
+Katalog
 [room picker size]
-
+Størrelse
 [room picker colonies]
-
+Kolonier
 [room picker fair]
-
+Fair start for alle kolonier
 [room picker does not fit]
-
+Passer ikke til denne størrelse; prøv en anden
 [room picker preparing]
-
+Forbereder forhåndsvisningen…
 [room picker generated note]
-
+Hvert landskab giver alle kolonier en lige god start, og serveren laver det samme kort til alle.
 [room picker players %0]
-
+%0 spillere
 [room picker unreadable]
-
+kan ikke læses
 [room picker no premade]
-
+Der blev ikke fundet nogen færdige kort.
 [room picker too small %0]
-
+Dette kort har færre kolonier end de %0 spillere i rummet.
 [room picker pick premade]
-
+Vælg et kort for at se det her.
 [room picker catalog intro]
-
+Kort, som andre spillere har delt. Åbn et, og vælg Brug i et rum.
 [room picker browse catalog]
-
+Gennemse delte kort
 [room picker more options]
-
+Flere valgmuligheder…
 [room picker use]
-
+Brug dette kort
 [room map ready title %0]
-
+Spil %0
 [room map ready unnamed]
-
+dette kort
 [room map ready body]
-
+Opret et rum, og invitér dine venner: rummet spiller dette kort.
 [game draw]
-
+Uafgjort
 [settings Show colony skins]
 Vis koloniernes udseender
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Slå fra for at bruge klassiske enheder, sværme og bygningsfarver på denne enhed.
 [settings Hive Mind]
-
+Hivemind
 [settings Enable commander shortcuts]
-
+Slå kommandørgenveje til
 [settings Command your colony without opening a menu.]
-
+Styr din koloni uden at åbne en menu.
 [settings Allow supervision for new commands]
-
+Tillad opfølgning på nye ordrer
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Kommandøren må følge op på stående ordrer. Opfølgninger bruger kreditter; installerede ordrer kører videre uden kreditter.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Standardgenveje: Ctrl+Enter for at give en ordre; Ctrl+Shift+Enter for at stoppe kommandørens arbejde. Skift dem under Spilkontrol. Kort med stående ordrer har separate knapper til pause og annullering.
 [settings Commander account and credits]
-
+Kommandørkonto og kreditter
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Administrer kreditter og køb i din browser. Hjælp fra kommandøren er tilladt i rangerede kampe.
 [open commander]
-
+Åbn kommandør
 [stop commander]
-
+Stop kommandør
 [settings Recording]
-
+Optagelse
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Optag dine spil som MP4-videoer med lyd. Optagelse kræver FFmpeg med libx264- og AAC-koderne.
 [settings FFmpeg is ready.]
-
+FFmpeg er klar.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg er ikke tilgængelig, så optagelse er slået fra. Installer FFmpeg, sørg for at det er i din PATH, og tjek så igen.
 [settings Check for FFmpeg again]
-
+Søg efter FFmpeg igen
 [settings Checking for FFmpeg…]
-
+Søger efter FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Genvejstast: %0. Den virker også i menuer og i editoren.
 [settings Change the hotkey]
-
+Skift genvejstasten
 [settings Recordings are saved in %0]
-
+Optagelser gemmes i %0
 [toggle recording]
-
+Start eller stop optagelse
 [File selection is unavailable.]
-
+Filvalg er ikke tilgængeligt.
 [Saving custom AI…]
-
+Gemmer egen AI…
 [Could not read the selected JavaScript file.]
-
+Kunne ikke læse den valgte JavaScript-fil.
 [Custom AI library saved.]
-
+Bibliotek med egne AI'er gemt.
 [Storage could not be saved. The previous library is retained.]
-
+Lageret kunne ikke gemmes. Det tidligere bibliotek bevares.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importér en enkelt JavaScript-AI-fil, og vælg den, når du opsætter et lokalt spil.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Importerede AI'er gemmes som en kopi i Glob2. Opdater erstatter kopien til fremtidige spil; gemte spil beholder deres oprindelige AI.
 [Waiting for file selection or storage…]
-
+Venter på filvalg eller lager…
 [Import JavaScript AI]
-
+Importér JavaScript-AI
 [Link development file]
-
+Tilknyt udviklingsfil
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Tilknyttede filer læses ved spillets start. Byg igen, før du starter et nyt spil. At fjerne en tilknytning sletter aldrig din fil.
 [Example AI and authoring guide]
-
+Eksempel-AI og vejledning
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Ingen egne AI'er endnu. Importér en samlet .js-fil for at komme i gang.
 [Relink]
-
+Tilknyt igen
 [Update]
-
+Opdater
 [Validate]
-
+Validér
 [AI startup and persistent globals are valid.]
-
+AI'ens opstart og vedvarende globale variabler er gyldige.
 [Remove from library]
-
+Fjern fra biblioteket
 [AI telemetry]
-
+AI-telemetri
 [No accessible AI telemetry.]
-
+Ingen tilgængelig AI-telemetri.
 [Search fields]
-
+Søg i felter
 [Telemetry unavailable for this recording or controller.]
-
+Telemetri er ikke tilgængelig for denne optagelse eller styring.
 [Linked]
-
+Tilknyttet
 [Imported]
-
+Importeret
 [Player]
-
+Spiller
 [Updated at tick %0]
-
+Opdateret ved tik %0
 [No values published yet.]
-
+Ingen værdier offentliggjort endnu.
 [No fields match your search.]
-
+Ingen felter passer til din søgning.
 [settings Custom AIs]
-
+Egne AI'er
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Tilføj JavaScript-AI'er under Indstillinger → Egne AI'er. De vises i hver kolonis AI-vælger.
 [Missing custom AI]
-
+Manglende egen AI
 [Map repetition failed]
-
+Kan ikke gentage dette kort. Brug et startkort uden script, eller reducér gentagelser og baser.
 [repeat map horizontally]
 Gentag kortet vandret
 [repeat map vertically]
@@ -4653,594 +4653,594 @@ baser
 [bases per colony]
 Baser pr. koloni; en base er ét hold fra kortet, som det er tegnet, med dets bygninger og enheder
 [stat group population]
-
+Befolkning
 [stat group food]
-
+Mad og trivsel
 [stat group resources]
-
+Ressourcer
 [stat group buildings]
-
+Bygninger
 [stat group military]
-
+Militær
 [stat group map]
-
+Territorium
 [stat group score]
-
+Point
 [stat overview]
-
+Oversigt
 [stat overview about]
-
+Hver kolonis tal for hele kampen. Det højeste fremhæves, hvor mere er bedre; klik på en kolonneoverskrift for at se, hvordan det ændrede sig over tid.
 [stat population]
-
+Befolkning
 [stat population about]
-
+Hvor mange levende enheder kolonien havde: arbejdere, udforskere og krigere tilsammen.
 [stat births]
-
+Fødte enheder
 [stat births about]
-
+Hvor hurtigt sværmene producerede nye enheder. Opdel for at se arbejdere, udforskere og krigere hver for sig.
 [stat deaths]
-
+Mistede enheder
 [stat deaths about]
-
+Hvor hurtigt kolonien mistede enheder, uanset årsag: kamp, sult, skader under rydning eller at blive fanget.
 [stat net growth]
-
+Befolkningsvækst
 [stat net growth about]
-
+Fødte enheder minus mistede enheder. Over nul voksede kolonien; under nul skrumpede den.
 [stat death causes]
-
+Dødsårsager
 [stat death causes about]
-
+Hvad koloniens enheder døde af: kamp, sult, skader under rydning af ressourcer, at blive fanget uden udvej eller andre årsager.
 [stat conversions]
-
+Netto-omvendelser
 [stat conversions about]
-
+Enheder vundet over fra andre kolonier minus enheder mistet til dem. Enheder skifter side, når en anden koloni giver dem bedre mad.
 [stat hunger]
-
+Madreserver
 [stat hunger about]
-
+Hvor meget mad koloniens enheder bar i sig. Hver enhed placeres efter, hvor meget af dens madreserve der er tilbage: næsten tom (en fjerdedel eller mindre), lav (op til halvdelen), halvfuld (op til tre fjerdedele) eller mæt. Enheder går på jagt efter en kro, når reserven løber ned, så en koloni har altid nogle, der er lave.
 [stat health]
-
+Helbred
 [stat health about]
-
+Hvor sunde koloniens enheder var. Hver enhed placeres efter, hvor mange af dens livspoint der er tilbage: kritisk (en fjerdedel eller mindre), såret (op til halvdelen), skadet (op til tre fjerdedele) eller rask.
 [stat seeking food]
-
+Enheder, der søger mad
 [stat seeking food about]
-
+Enheder, der var holdt op med at arbejde for at finde en kro. Dem, der også har mindre end fuldt helbred, tælles som svækkede.
 [stat in care]
-
+Enheder, der spiser eller heles
 [stat in care about]
-
+Enheder, der spiser i en kro eller bliver helet på et hospital, og derfor ikke arbejder.
 [stat wheat harvested]
-
+Høstet hvede
 [stat wheat harvested about]
-
+Læs hvede plukket af arbejdere. Hvede er det, kroerne laver måltider af.
 [stat wheat stored]
-
+Hvede på lager
 [stat wheat stored about]
-
+Hvede i koloniens bygninger, klar til at blive serveret eller brugt.
 [stat meals]
-
+Serverede måltider
 [stat meals about]
-
+Måltider, koloniens kroer serverede for egne enheder og for besøgende fra andre kolonier.
 [stat starvation]
-
+Døde af sult
 [stat starvation about]
-
+Enheder, der døde, fordi de ikke fandt mad i tide.
 [stat healing]
-
+Genvundet helbred
 [stat healing about]
-
+Livspoint, som koloniens hospitaler gav tilbage til sårede enheder.
 [stat gathered]
-
+Indsamlede ressourcer
 [stat gathered about]
-
+Læs af alle ressourcer samlet af arbejdere. Opdel for at se hver ressource.
 [stat stored]
-
+Ressourcer på lager
 [stat stored about]
-
+Ressourcer i koloniens bygninger. Opdel for at se hver ressource.
 [stat spending]
-
+Ressourceforbrug
 [stat spending about]
-
+Hvor leverede ressourcer gik hen: måltider, nye enheder, tårnammunition, nye bygninger eller opgraderinger.
 [stat delivered]
-
+Leverede ressourcer
 [stat delivered about]
-
+Læs, som arbejdere bar ind i bygninger.
 [stat traded]
-
+Nettohandel
 [stat traded about]
-
+Ressourcer modtaget via markeder minus ressourcer givet væk.
 [stat buildings]
-
+Stående bygninger
 [stat buildings about]
-
+Færdige bygninger, kolonien havde. Opdel for at se hver bygningstype.
 [stat construction]
-
+Udført byggearbejde
 [stat construction about]
-
+Udført byggearbejde: nye bygninger, opgraderinger og reparationer.
 [stat buildings lost]
-
+Mistede bygninger
 [stat buildings lost about]
-
+Bygninger ødelagt af fjender eller revet ned af kolonien selv.
 [stat blocked buildings]
-
+Bygninger uden adgang
 [stat blocked buildings about]
-
+Bygninger, hvis indgange var blokeret, så enheder ikke kunne komme ind eller ud.
 [stat attack]
-
+Angrebsstyrke
 [stat attack about]
-
+Et tal for den samlede kampkraft hos koloniens krigere: hvor hårdt og hvor hurtigt de slår.
 [stat defence]
-
+Forsvarsstyrke
 [stat defence about]
-
+Et tal for den samlede ildkraft i koloniens forsvarstårne.
 [stat hit points]
-
+Samlede livspoint
 [stat hit points about]
-
+Livspointene for alle koloniens enheder og bygninger lagt sammen.
 [stat damage dealt]
-
+Påført skade
 [stat damage dealt about]
-
+Skade, kolonien påførte fjendens enheder og bygninger. Opdel for at se krigere, magi og tårne.
 [stat damage taken]
-
+Modtaget skade
 [stat damage taken about]
-
+Skade, fjender påførte koloniens enheder og bygninger.
 [stat damage traded]
-
+Skadebalance
 [stat damage traded about]
-
+Påført skade minus modtaget skade. Over nul vandt kolonien sine kampe.
 [stat combat deaths]
-
+Dræbt i kamp
 [stat combat deaths about]
-
+Enheder fra denne koloni dræbt af fjender. Opdel for at se arbejdere, udforskere og krigere hver for sig.
 [stat accuracy]
-
+Træffende skud
 [stat accuracy about]
-
+Andelen af skud fra koloniens tårne og udforskere, der ramte deres mål.
 [stat training]
-
+Træning
 [stat training about]
-
+Enheders besøg på skoler, kaserner, træningsbaner og svømmebassiner for at lære en færdighed.
 [stat skills]
-
+Opnåede færdigheder
 [stat skills about]
-
+Færdighedsniveauer, koloniens enheder opnåede gennem træning.
 [stat growth nearby]
-
+Ressourcevækst nær kolonien
 [stat growth nearby about]
-
+Hvor meget hvede, træ og andre ressourcer voksede inden for 32 felter fra koloniens bygninger, målt i vækstpoint frem for læs. Opdel for at se, hvor tæt på hjemmet de voksede.
 [stat growth map]
-
+Ressourcevækst på hele kortet
 [stat growth map about]
-
+Hvor meget ressourcer voksede overalt på kortet, målt i vækstpoint frem for læs. Det er det samme for alle kolonier.
 [stat stranded]
-
+Enheder, der ikke kan flytte sig
 [stat stranded about]
-
+Enheder, der er lukket inde uden et ledigt felt at træde hen på.
 [stat cleared]
-
+Ryddede ressourcer
 [stat cleared about]
-
+Ressourcer fjernet af arbejdere i rydningsområder for at skabe plads.
 [stat prestige]
-
+Prestige
 [stat prestige about]
-
+Koloniens prestige, optjent med bygninger på højeste niveau. En kamp med et prestigemål slutter, når målet nås.
 [stat band combat]
-
+Kamp
 [stat band starvation]
-
+Sult
 [stat band clearing]
-
+Rydningsskader
 [stat band trapped]
-
+Fanget
 [stat band other]
-
+Andet
 [stat band starving]
-
+Næsten tom
 [stat band hungry]
-
+Lav
 [stat band peckish]
-
+Halvfuld
 [stat band fed]
-
+Mæt
 [stat band critical]
-
+Kritisk
 [stat band wounded]
-
+Såret
 [stat band hurt]
-
+Skadet
 [stat band healthy]
-
+Rask
 [stat band weakening]
-
+Svækkes
 [stat band looking]
-
+Søger en kro
 [stat band eating]
-
+Spiser
 [stat band healing]
-
+Heles
 [stat band meals]
-
+Måltider
 [stat band new units]
-
+Nye enheder
 [stat band ammunition]
-
+Tårnammunition
 [stat band construction]
-
+Nye bygninger
 [stat band upgrades]
-
+Opgraderinger
 [stat band built]
-
+Bygget
 [stat band upgraded]
-
+Opgraderet
 [stat band repaired]
-
+Repareret
 [stat band destroyed]
-
+Ødelagt
 [stat band demolished]
-
+Revet ned
 [stat band melee]
-
+Krigere
 [stat band magic]
-
+Magi
 [stat band towers]
-
+Tårne
 [stat band within 8]
-
+Inden for 8 felter
 [stat band 8 to 16]
-
+8 til 16 felter
 [stat band 16 to 32]
-
+16 til 32 felter
 [stat unit units]
-
+enheder
 [stat unit wheat]
-
+hvede
 [stat unit meals]
-
+måltider
 [stat unit hit points]
-
+livspoint
 [stat unit resources]
-
+ressourcer
 [stat unit buildings]
-
+bygninger
 [stat unit strength]
-
+point
 [stat unit damage]
-
+skade
 [stat unit shots]
-
+skud
 [stat unit visits]
-
+besøg
 [stat unit skills]
-
+færdighedsniveauer
 [stat unit prestige]
-
+prestigepoint
 [stat axis percent of %0]
-
+% af %0
 [stat axis share of all teams]
-
+% af alle kolonier
 [stat axis percent of units]
-
+% af koloniens enheder
 [stat axis %0 per minute per 100 units]
-
+%0 pr. minut pr. 100 enheder i kolonien
 [stat axis %0 per 100 units]
-
+%0 pr. 100 enheder i kolonien
 [stat axis %0 per minute]
-
+%0 pr. minut
 [stat axis %0 so far]
-
+%0, løbende total
 [stat axis %0 minute average]
-
+%0-minutters gennemsnit
 [stat view per minute]
-
+Pr. minut
 [stat view total]
-
+I alt
 [stat view %0 min]
-
+%0 min.
 [stat view split]
-
+Opdel efter type
 [stat view percentages]
-
+Som % af total
 [stat view percent of units]
-
+Som % af kolonien
 [stat view per 100 units]
-
+I forhold til kolonistørrelse
 [stat view share]
-
+Andel af alle kolonier
 [stat view highlight none]
-
+Fremhæv: ingen
 [stat column peak units]
-
+Flest enheder
 [stat column born]
-
+Født
 [stat column lost]
-
+Mistet
 [stat column wheat]
-
+Hvede
 [stat column damage dealt]
-
+Påført skade
 [stat column damage taken]
-
+Modtaget skade
 [stat column built]
-
+Bygget
 [stat column buildings lost]
-
+Mistede bygninger
 [stat column prestige]
-
+Prestige
 [stat marker wiped out]
-
+sidste enhed mistet
 [stat marker first combat death]
-
+første enhed dræbt i kamp
 [stat marker first building destroyed]
-
+første bygning ødelagt
 [stat not recorded for this match]
-
+Denne statistik blev ikke registreret for denne kamp.
 [results reason beyond doubt]
-
+Resultatet var ikke længere i tvivl.
 [stat per minute short]
-
+/min.
 [stat page colony]
-
+Koloni
 [stat page %0 of %1]
-
+%0 af %1  >
 [stat band workers]
-
+Arbejdere
 [stat band explorers]
-
+Udforskere
 [stat band warriors]
-
+Krigere
 [stat unit deaths]
-
+dødsfald
 [stat unit growth]
-
+vækst
 [stat view by unit type]
-
+Efter enhedstype
 [stat view by state]
-
+Efter tilstand
 [stat view by resource]
-
+Efter ressource
 [stat view by building]
-
+Efter bygning
 [stat view by work]
-
+Efter arbejdstype
 [stat view by cause]
-
+Efter årsag
 [stat view by weapon]
-
+Efter våben
 [stat view by distance]
-
+Efter afstand
 [stat nothing to show]
-
+Intet at vise: dette skete ikke i denne kamp.
 [stat %0 nothing]
-
+%0 (ingen)
 [Match]
-
+Kamp
 [Time limit]
-
+Tidsgrænse
 [Alliances can change]
-
+Alliancer kan ændres
 [Reveal terrain]
-
+Afslør terræn
 [Starting unit level]
-
+Enhedernes startniveau
 [Starting stockpile]
-
+Startlager
 [Regrowth]
-
+Genvækst
 [Building strength]
-
+Bygningers styrke
 [Wounded units retreat]
-
+Sårede enheder trækker sig tilbage
 [Units can die]
-
+Enheder kan dø
 [Unit training]
-
+Enhedstræning
 [No stockpile]
-
+Intet
 [No glass cannon]
-
+Fra
 [How quickly harvested resources grow back and spread.]
-
+Hvor hurtigt høstede ressourcer vokser ud igen og spreder sig.
 [Units must eat to keep working.]
-
+Enheder skal spise for at blive ved med at arbejde.
 [Summary]
-
+Oversigt
 [All rules]
-
+Alle regler
 [Show all rules]
-
+Vis alle regler
 [Choose a ruleset]
-
+Vælg et regelsæt
 [Reset to %0]
-
+Nulstil til %0
 [ruleset one change %0]
-
+%0 + 1 ændring
 [ruleset changes %0 %1]
-
+%0 + %1 ændringer
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Denne kamp kan ikke slutte. Slå prestigesejr til, eller sæt en tidsgrænse.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Prestige dukker som regel op efter 13 til 28 minutter, så en grænse på 30 minutter ender ofte uafgjort.
 [Blitz]
-
+Lynkrig
 [ruleset blitz description]
-
+Hurtig start, tidlig afslutning
 [Gentle]
-
+Mild
 [ruleset gentle description]
-
+Tilgivende regler til en første kamp
 [Sandbox]
-
+Sandkasse
 [ruleset sandbox description]
-
+Ingen kamp, ingen sult, byg alt
 [Bloodbath]
-
+Blodbad
 [ruleset bloodbath description]
-
+Skrøbelige, frygtløse hære
 [Siege]
-
+Belejring
 [ruleset siege description]
-
+Fæstningsmure og lange krige
 [Lean years]
-
+Magre år
 [ruleset lean years description]
-
+Ressourcerne vokser knap igen
 [Gold rush]
-
+Guldfeber
 [ruleset gold rush description]
-
+Det, der er på kortet, er alt, der er
 [Elite ranks]
-
+Elitetropper
 [ruleset elite ranks description]
-
+Start trænet, ingen yderligere træning
 [Shifting alliances]
-
+Skiftende alliancer
 [ruleset shifting alliances description]
-
+Hold kan skifte i et kapløb på 60 minutter
 [Probability victory]
-
+Sandsynlighedssejr
 [Off (play it out)]
-
+Fra (spil til ende)
 [95% sure]
-
+95 % sikker
 [97% sure]
-
+97 % sikker
 [99% sure]
-
+99 % sikker
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Afslutter kampen, når modellen når den valgte sikkerhed. Tilskuere kan se de forudsagte vinderchancer i statistikken.
 [Changed from %0: %1]
-
+Ændret fra %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Kamp er slået fra, så reglerne nedenfor har ingen virkning.
 [%0 more rules are at their Standard values.]
-
+%0 andre regler har deres standardværdier.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Spillerne ser kortets terræn fra start; fjendtlige enheder forbliver skjulte.
 [Each team starts with extra resources in its shared pool.]
-
+Hvert hold starter med ekstra ressourcer i sit fælles lager.
 [Units hit harder but have less HP and armor.]
-
+Enheder slår hårdere, men har færre livspoint og mindre rustning.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Hold kan angribe hinanden. Slå fra for en fredelig kamp.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Sårede enheder går tilbage for at blive helet i stedet for at kæmpe til døden.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Enheder dør, når de løber tør for livspoint. Slå fra for at stoppe dem ved 1 livspoint.
 [Units gain levels at schools.]
-
+Enheder stiger i niveau på skoler.
 [stat group work]
-
+Arbejdernes tid
 [stat worker time]
-
+Hvordan arbejderne brugte deres tid
 [stat worker time about]
-
+Hvad koloniens arbejdere lavede fra øjeblik til øjeblik: arbejdede for en bygning, arbejdede ved et flag, trænede, spiste, blev helet, ventede sultne eller sårede uden en ledig kro eller et ledigt hospital, eller gik ledige uden noget at lave. En sund koloni holder de fleste arbejdere i arbejde, få ledige og ingen ventende.
 [stat idle workers]
-
+Ledige arbejdere
 [stat idle workers about]
-
+Andelen af arbejdernes tid uden noget at lave. Høje værdier betyder flere arbejdere end arbejde; nær nul betyder, at alle arbejdere har travlt, og at opgaver måske venter.
 [stat work by job]
-
+Hvad arbejderne arbejdede på
 [stat work by job about]
-
+Hvor mange arbejdere der forsynede hver type bygning: sværme (til nye enheder), kroer (til måltider), bygninger under opførelse eller opgradering eller andre bygninger som tårne, skoler og kaserner.
 [stat haul distance]
-
+Afstand til ressourcer
 [stat haul distance about]
-
+Hvor langt en høstende arbejder i gennemsnit var fra den bygning, den forsynede, målt i kortfelter i lige linje.
 [stat hauling]
-
+Hente og bære
 [stat hauling about]
-
+Hvordan arbejderne, der forsynede bygninger, fordelte sig mellem at gå til en ressource, høste den, bære den tilbage og aflevere den eller vente på en ressource, de kan nå. Det meste er gang, så jo tættere ressourcerne er, jo mere bliver der gjort.
 [stat eating time]
-
+Arbejdere på vej for at spise
 [stat eating time about]
-
+Hvor mange arbejdere der var væk fra arbejdet for at spise: på vej til en kro, spiste inde i en eller var sultne uden en kro, der kunne tage imod dem. Arbejdere uden kro betyder, at kolonien er vokset fra sine kroer eller deres mad.
 [stat inn distance]
-
+Afstand fra kroen
 [stat inn distance about]
-
+Hvor langt sultne arbejdere i gennemsnit under deres gåtur var fra den kro, de var på vej til, målt i kortfelter i lige linje. En hel tur er omtrent det dobbelte. Høje værdier betyder, at kroerne ligger langt fra, hvor arbejderne arbejder.
 [stat warriors]
-
+Krigere
 [stat warriors about]
-
+Hvor mange krigere kolonien havde. Opdel for at se, hvor mange der var nær hjemmet, nær en fjendtlig koloni eller i åbent terræn. Terræn tæt på begge kolonier tæller som hjemme.
 [stat warrior level]
-
+Krigernes gennemsnitlige angrebsniveau
 [stat warrior level about]
-
+Det gennemsnitlige angrebsniveau for koloniens krigere, hvor angrebshastighed og angrebsstyrke tæller lige meget, på den skala fra 1 til 4, som spillet viser. Kaserner hæver det; nye utrænede krigere trækker det ned.
 [stat warrior duties]
-
+Hvad krigerne lavede
 [stat warrior duties about]
-
+Hvordan koloniens krigere fordelte sig mellem dem, der var sendt til et krigsflag, dem, der var så sårede, at de forlod kampen for at tage på hospitalet (inklusive dem, der bliver helet), og de ledige.
 [stat intruders]
-
+Fjendtlige krigere hjemme
 [stat intruders about]
-
+Hvor mange fjendtlige krigere der var inden for 16 felter fra koloniens bygninger. Hvor to kolonier ligger tæt, tæller hver af dem den andens forsvarere.
 [stat home defence]
-
+Styrkeforspring i hjemmeforsvaret
 [stat home defence about]
-
+Styrken af koloniens egne krigere nær dens bygninger minus styrken af de fjendtlige krigere dér, hvor hver kriger og hvert af dens angrebsniveauer tælles. Under nul var kolonien underlegen hjemme.
 [stat combat death places]
-
+Hvor enheder faldt i kamp
 [stat combat death places about]
-
+Hvor koloniens enheder var, da de blev dræbt: nær egne bygninger, nær en fjendes bygninger eller i åbent terræn mellem kolonierne. Tab hjemme betyder, at kolonien blev angrebet; tab ved en fjendtlig koloni betyder, at den angreb. Terræn tæt på begge kolonier tæller som hjemme.
 [stat band working]
-
+Arbejder
 [stat band flag work]
-
+Ved et flag
 [stat band idle]
-
+Ledig
 [stat band training]
-
+Træner
 [stat band unserved]
-
+Ingen ledig kro eller hospital
 [stat band swarms]
-
+Sværme
 [stat band inns]
-
+Kroer
 [stat band sites]
-
+Byggeri og opgradering
 [stat band other buildings]
-
+Andre bygninger
 [stat band to resource]
-
+Går til en ressource
 [stat band harvesting]
-
+Høster
 [stat band carrying]
-
+Bærer tilbage
 [stat band delivering]
-
+Afleverer eller venter
 [stat band walking to inn]
-
+Går til en kro
 [stat band no inn]
-
+Ingen ledig kro
 [stat band at home]
-
+Hjemme
 [stat band at enemy]
-
+Ved en fjendtlig koloni
 [stat band in the open]
-
+I åbent terræn
 [stat band war flag]
-
+Ved et krigsflag
 [stat band seeking healing]
-
+Søger heling
 [stat band free]
-
+Ledig
 [stat unit workers]
-
+arbejdere
 [stat unit worker time]
-
+arbejdernes tid
 [stat unit working workers]
-
+arbejdere, der forsyner bygninger
 [stat unit squares]
-
+felter
 [stat unit warriors]
-
+krigere
 [stat unit attack level]
-
+angrebsniveau
 [stat unit enemy warriors]
-
+fjendtlige krigere
 [stat unit strength count]
-
+styrke
 [stat view by place]
-
+Efter sted

@@ -1,15 +1,15 @@
 [AI strategy]
-AI 戰術
+AI 策略
 [start recording]
-
+開始錄影
 [stop recording]
-
+停止錄影
 [finalizing recording]
-
+正在完成錄影…
 [AIMaxima-Summary]
 平衡可持續發展與訓練，然後集結軍隊發動波次進攻。
 [AIMaxima-Profile]
-核心策略: 將食物、工人、繁殖、訓練、建設和戰鬥視為相互競爭的需求。部分依據估算的敵方實力確定軍隊規模，然後盡力有效投送軍隊。\n\n經濟與發展: 根據食物和勞力安排繁殖，保留可用於訓練的空閒機會，需要軍事生產時停止增加多餘工人。擴大訓練容量，避免升級時同時停用過多設施。\n\n偵察與決策: 根據可見單位和記憶中的目擊資訊，使用擬合模型估算敵軍。目標取決於價值、距離、塔、暴露的工人和持續攻擊的考量。水果任務支援食物多樣性和招降。\n\n攻防戰術: 為訓練和防禦預留士兵，再把符合條件的陸軍集結在友方食物設施附近，隨後發動波次進攻。採取局部防禦措施，並評估通往殖民地的進路。\n\n攻勢受阻時: 連續4次未能成功投送攻擊波次後，改用持續增援的攻擊旗。渡水進攻也可使用持續增援。這種備用辦法並不能解決集結成形前遇到的所有堵塞。\n\n與其他AI相比: 更緊密地整合食物、訓練、情報和部署。Cabino重視同時攻擊多個建築；Maxima重視估算需求並將集結的部隊送到戰場。\n\n優點與弱點: 適應食物壓力和已觀察到的威脅，同時維持成長和軍隊補充。需要食物、訓練容量和開闊的集結空間；壅塞和長路線會妨礙兵力投送。\n\n應對建議: 在攻擊波次集結前爭奪暴露的小麥、客棧和兵營。將有補給的守軍集中起來，擾亂增援路線。第一波之後仍要準備面對反覆施壓。\n\n偵察: 戰力估算使用目擊資訊和觀察歷史，而非隱藏的敵軍總數。
+核心策略: 將食物、工人、繁殖、訓練、建設和戰鬥視為相互競爭的需求。部分依據估算的敵方實力確定軍隊規模，然後盡力有效投送軍隊。\n\n經濟與發展: 根據食物和勞力安排繁殖，保留可用於訓練的空閒機會，需要軍事生產時停止增加多餘工人。擴大訓練容量，避免升級時同時停用過多設施。\n\n偵察與決策: 根據可見單位和記憶中的目擊資訊，使用擬合模型估算敵軍。目標取決於價值、距離、塔、暴露的工人和持續攻擊的考量。水果任務支援食物多樣性和招降。\n\n攻防戰術: 為訓練和防禦預留士兵，再把符合條件的陸軍集結在友方食物設施附近，隨後發動波次進攻。採取局部防禦措施，並評估通往殖民地的進路。\n\n攻勢受阻時: 連續4次未能成功投送攻擊波次後，改用持續增援的攻擊旗幟。渡水進攻也可使用持續增援。這種備用辦法並不能解決集結成形前遇到的所有堵塞。\n\n與其他AI相比: 更緊密地整合食物、訓練、情報和部署。Cabino重視同時攻擊多個建築；Maxima重視估算需求並將集結的部隊送到戰場。\n\n優點與弱點: 適應食物壓力和已觀察到的威脅，同時維持成長和軍隊補充。需要食物、訓練容量和開闊的集結空間；壅塞和長路線會妨礙兵力投送。\n\n應對建議: 在攻擊波次集結前爭奪暴露的小麥、客棧和兵營。將有補給的守軍集中起來，擾亂增援路線。第一波之後仍要準備面對反覆施壓。\n\n偵察: 戰力估算使用目擊資訊和觀察歷史，而非隱藏的敵軍總數。
 [%0 has left the game]
 %0 已離開遊戲
 [%0 level %1]
@@ -39,15 +39,15 @@ AI 戰術
 [%0's team unit got converted to your team]
 %0 的單位被你招降
 [abreaviation explanation A]
-A: 盟友
+A：盟友
 [abreaviation explanation C]
-C: 傳送訊息至
+C：傳送訊息至
 [abreaviation explanation fV]
-fV: 分享客棧視野（以招降單位）
+fV：分享客棧視野（以招降單位）
 [abreaviation explanation mV]
-mV: 分享市場視野（以交換水果）
+mV：分享市場視野（以交換水果）
 [abreaviation explanation V]
-V: 分享所有建築物的視野
+V：分享所有建築物的視野
 [add map]
 新增地圖
 [add shortcut]
@@ -55,15 +55,15 @@ V: 分享所有建築物的視野
 [AI Descriptions]
 AI 說明
 [AI]
-人工智慧
+AI
 [ai]
-人工智慧
+AI
 [AICastor-Description]
 建設與訓練的同時，讓人口成長配合食物供應。
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
-發展人口，訓練戰士，再發動進攻。
+發展人口，訓練士兵，再發動進攻。
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -73,15 +73,15 @@ Nicowar
 [AINumbi-Description]
 較為寬容的對手，但仍會擴張與進攻。
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
-透過擴張和爭取敵方單位投靠來競爭，不生產戰士。
+透過擴張和爭取敵方單位投靠來競爭，不生產士兵。
 [AIEcono]
 Econo
 [AIWarrush-Description]
 快速進攻，考驗你的早期防禦。
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 擅長建設，並派出訓練有素的進攻部隊。
 [AICabino]
@@ -99,17 +99,17 @@ JavaScript
 [alt %0]
 alt-%0
 [and]
-而且
+另有
 [any explorer]
 任何探索者
 [are dying hungry]
 正在挨餓
 [are hungry]
-肚子餓
+飢餓
 [are ok]
-沒問題的
+狀況良好
 [are wonded]
-受傷的
+受傷
 [armor]
 護甲
 [assigned]
@@ -153,7 +153,7 @@ Break 鍵
 [building settings]
 建築物設定
 [building site]
-建築地點
+工地
 [Building Tool Box Explanation]
 Shift + 拖曳 = 矩形
 [Building Tool Line Explanation]
@@ -185,23 +185,23 @@ Ctrl + 拖曳 = 直線
 [caps lock]
 Caps Lock 鍵
 [carry]
-搬運:
+搬運：
 [Change Area Name]
 更改區域名稱
 [Cherry]
 櫻桃
 [choose campaign]
-選擇一個戰役
+選擇戰役
 [choose game]
-選擇一個遊戲
+選擇遊戲
 [choose map]
-選擇一個地圖
+選擇地圖
 [clear area]
 清除區
 [farm area]
 耕種區
 [Clearing:]
-清除:
+清除：
 [clearingflag explanation 2]
 
 [clearingflag explanation]
@@ -239,9 +239,9 @@ control-%0
 [crater lakes terrain]
 隕石坑湖泊
 [create map]
-創造地圖
+建立地圖
 [credits]
-幕後人員
+製作團隊
 [ctrl - line]
 Ctrl - 直線
 [current speed]
@@ -249,7 +249,7 @@ Ctrl - 直線
 [custom game]
 自訂遊戲
 [customcur]
-自訂鼠標
+自訂游標
 [damage]
 傷害
 [Damaged Map]
@@ -269,13 +269,13 @@ Ctrl - 直線
 [Defense]
 防禦
 [Delete game]
-刪除已選取的遊戲
+刪除選取的遊戲
 [delete]
 刪除
 [desert]
 沙漠
 [destroy building]
-摧毀已選擇建築物
+摧毀選取的建築物
 [destroy]
 摧毀
 [display]
@@ -363,7 +363,7 @@ f9
 [free]
 閒置
 [from:]
-來自:
+來自：
 [fruit]
 水果
 [fullscreen]
@@ -391,7 +391,7 @@ f9
 [GUIMapPreview text 0]
 請選擇
 [GUIMapPreview text 1]
-一個地圖
+一張地圖
 [handmade map]
 手工地圖
 [Happyness]
@@ -413,7 +413,7 @@ Home 鍵
 [hospital]
 醫院
 [host]
-開始一局新遊戲
+建立遊戲
 [hp]
 生命值
 [Human]
@@ -421,7 +421,7 @@ Home 鍵
 [human]
 人類玩家
 [hungry]
-肚子餓
+飢餓
 [hungryness]
 飢餓度
 [In way]
@@ -449,7 +449,7 @@ Insert 鍵
 [jobs]
 工作
 [join a game]
-加入一局遊戲
+加入遊戲
 [keyboard settings]
 鍵盤設定
 [lan]
@@ -487,9 +487,9 @@ zh-tw
 [look around]
 環顧四周
 [Lost : %0 has more prestige than you]
-輸: %0 的聲望比你還高
+落敗：%0 的聲望比你高
 [Lost : your colony is dead]
-輸: 你的殖民地已被摧毀
+落敗：你的殖民地已被摧毀
 [low priority]
 低
 [lowquality]
@@ -523,11 +523,11 @@ zh-tw
 [meta %0]
 meta-%0
 [Min required level:]
-最小等級需求:
+最低等級需求：
 [Minimum Level To Flag]
 單位最低等級
 [Music volume]
-音量 (音樂)
+音量（音樂）
 [Mute]
 靜音
 [mute]
@@ -535,7 +535,7 @@ meta-%0
 [new campaign]
 新戰役
 [new map]
-新的
+新地圖
 [no fullscreen]
 * 僅適用於視窗模式
 [No Hints]
@@ -545,7 +545,7 @@ meta-%0
 [No Objectives]
 沒有目標
 [no ressources growth areas]
-資源禁止生長區
+禁止生長區
 [No]
 否
 [Number Of Buildings]
@@ -615,7 +615,7 @@ Pause 鍵
 [power]
 電源鍵
 [press space]
-按下空白鍵以繼續
+按空白鍵繼續。
 [Prestige Score]
 聲望分數
 [Prestige Win Enabled]
@@ -655,7 +655,7 @@ Print Screen 鍵
 [remove shortcut]
 移除快捷鍵
 [repair building]
-開始/停止 修復
+開始/停止修復
 [repair]
 修復
 [repeat area]
@@ -685,7 +685,7 @@ Enter 鍵
 [sand]
 沙礫
 [save before quit?]
-你在離開前要先儲存嗎?
+離開前要先儲存嗎？
 [save game]
 儲存遊戲
 [save map]
@@ -719,25 +719,25 @@ Scroll Lock 鍵
 [select clearingflag]
 選擇清除旗幟
 [select construct barracks]
-選擇建造項目: 兵營
+選擇建造項目：兵營
 [select construct defencetower]
-選擇建造項目: 防禦塔
+選擇建造項目：防禦塔
 [select construct hospital]
-選擇建造項目: 醫院
+選擇建造項目：醫院
 [select construct inn]
-選擇建造項目: 客棧
+選擇建造項目：客棧
 [select construct market]
-選擇建造項目: 市場
+選擇建造項目：市場
 [select construct racetrack]
-選擇建造項目: 跑道
+選擇建造項目：跑道
 [select construct school]
-選擇建造項目: 學校
+選擇建造項目：學校
 [select construct stonewall]
-選擇建造項目: 石牆
+選擇建造項目：石牆
 [select construct swarm]
-選擇建造項目: 孢子堆
+選擇建造項目：孢子堆
 [select construct swimmingpool]
-選擇建造項目: 游泳池
+選擇建造項目：游泳池
 [select delete tool]
 選擇刪除工具
 [select explorationflag]
@@ -749,19 +749,19 @@ Scroll Lock 鍵
 [select market building]
 選擇市場
 [select place clearing area]
-放置區域: 清除區
+放置區域：清除區
 [select place farm area]
-放置區域: 耕種區
+放置區域：耕種區
 [select place clearingflag]
-放置旗幟: 清除旗幟
+放置旗幟：清除旗幟
 [select place explorationflag]
-放置旗幟: 探索旗幟
+放置旗幟：探索旗幟
 [select place forbidden area]
-放置區域: 禁區
+放置區域：禁區
 [select place guard area]
-放置區域: 守衛區
+放置區域：守衛區
 [select place warflag]
-放置旗幟: 攻擊旗幟
+放置旗幟：攻擊旗幟
 [select racetrack building]
 選擇跑道
 [select school building]
@@ -771,9 +771,9 @@ Scroll Lock 鍵
 [select swimmingpool building]
 選擇游泳池
 [select tower building]
-選擇塔
+選擇防禦塔
 [select wall building]
-選擇牆
+選擇石牆
 [select warflag]
 選擇攻擊旗幟
 [settings]
@@ -781,9 +781,9 @@ Scroll Lock 鍵
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-Enter: 傳送訊息
+Enter：傳送訊息
 [shortcut explanation v]
-V: 按住以使用語音交談
+V：按住以使用語音交談
 [show areas]
 顯示區域
 [show flags]
@@ -847,21 +847,21 @@ V: 按住以使用語音交談
 [switch to adding areas]
 新增區域
 [switch to area brush 1]
-選擇區域筆刷: 1
+選擇區域筆刷：1
 [switch to area brush 2]
-選擇區域筆刷: 2
+選擇區域筆刷：2
 [switch to area brush 3]
-選擇區域筆刷: 3
+選擇區域筆刷：3
 [switch to area brush 4]
-選擇區域筆刷: 4
+選擇區域筆刷：4
 [switch to area brush 5]
-選擇區域筆刷: 5
+選擇區域筆刷：5
 [switch to area brush 6]
-選擇區域筆刷: 6
+選擇區域筆刷：6
 [switch to area brush 7]
-選擇區域筆刷: 7
+選擇區域筆刷：7
 [switch to area brush 8]
-選擇區域筆刷: 8
+選擇區域筆刷：8
 [switch to building view]
 切換至建築物視野
 [switch to flag view]
@@ -869,7 +869,7 @@ V: 按住以使用語音交談
 [switch to removing areas]
 移除區域
 [switch to teams view]
-切換至團隊視野
+切換至隊伍視野
 [switch to terrain view]
 切換至地形視野
 [sys req]
@@ -881,7 +881,7 @@ Tab 鍵
 [Teams Fixed]
 固定隊伍
 [teams]
-團隊
+ 支隊伍
 [the barracks is finished]
 兵營已完成
 [the barracks is under attack]
@@ -891,7 +891,7 @@ Tab 鍵
 [the building is under attack]
 建築物正遭受攻擊
 [the clearingflag is finished]
-清除旗幟已完成
+已放置清除旗幟
 [the clearingflag is under attack]
 清除旗幟正遭受攻擊
 [the defencetower is finished]
@@ -899,7 +899,7 @@ Tab 鍵
 [the defencetower is under attack]
 防禦塔正遭受攻擊
 [the explorationflag is finished]
-探索旗幟已完成
+已放置探索旗幟
 [the explorationflag is under attack]
 探索旗幟正遭受攻擊
 [The game has not been finished]
@@ -935,7 +935,7 @@ Tab 鍵
 [the stonewall is finished]
 一段石牆已完成
 [the stonewall is under attack]
-石牆正遭受攻擊
+敵人正在攻擊你的城牆
 [the swarm is finished]
 孢子堆已完成
 [the swarm is under attack]
@@ -945,7 +945,7 @@ Tab 鍵
 [the swimmingpool is under attack]
 游泳池正遭受攻擊
 [the warflag is finished]
-攻擊旗幟已完成
+已放置攻擊旗幟
 [the warflag is under attack]
 攻擊旗幟正遭受攻擊
 [time]
@@ -971,7 +971,7 @@ Tab 鍵
 [Total prestige reached]
 總聲望已達門檻
 [Total]
-總共
+總計
 [tutorial text 1]
 歡迎來到 Globulation 2 基礎教學！這裡將教你建造客棧、探索區域及消滅敵人，還有許多實用的遊戲知識！
 [tutorial text 2]
@@ -981,7 +981,7 @@ Tab 鍵
 [tutorial text 4]
 快要完成了，只剩下旗幟與進攻。學完之後，你就能嘗試自訂遊戲，日後還可以上網挑戰 Globulation 2 的頂尖玩家。
 [tutorial]
-教學指導
+教學
 [Uncontrolled]
 未控制
 [undo]
@@ -993,7 +993,7 @@ Tab 鍵
 [unit settings explanation]
 預設指派的單位數量
 [units working]
-單位工作
+ 個單位工作中
 [Units]
 單位
 [unlocked at start]
@@ -1005,19 +1005,19 @@ Tab 鍵
 [up]
 上
 [upgrade building]
-開始/停止 升級
+開始/停止升級
 [Upgrade Defaults]
 升級預設值
 [upgrade]
 升級
 [username]
-用戶名
+使用者名稱
 [Version]
 版本
 [view history]
 檢視歷程記錄
 [Voice volume]
-語音音量
+音量（語音）
 [waiting for %0]
 等待 %0
 [waiting for key]
@@ -1047,9 +1047,9 @@ Tab 鍵
 [Wheat]
 小麥
 [Won : you defeated your opponents]
-贏: 你打敗了你的對手
+勝利：你擊敗了對手
 [Won : you have the most prestige]
-贏: 你的聲望最高
+勝利：你的聲望最高
 [Won : your ally %0 has the most prestige]
 勝利：你的盟友 %0 擁有最高聲望
 [Wood]
@@ -1069,11 +1069,11 @@ Tab 鍵
 [Yes]
 是
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
+YOG 中央伺服器拒絕連線，因為你的 Globulation 2 版本已過時。請從 www.globulation2.org 取得最新版本以進行線上遊戲。
 [you have lost]
-你輸了!!
+你輸了！
 [you have won]
-你贏了!!
+你贏了！
 [You where kicked from the game]
 你已被踢出遊戲
 [Your %0 are under attack]
@@ -1091,11 +1091,11 @@ YOG meta伺服器拒絕連線因為你的globulation2版本已過時。
 [multiplayer game speed]
 遊戲速度：1x（多人遊戲）
 [game speed help]
-僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
+僅限單人遊戲和重播。多人遊戲固定為 1x 速度。
 [AICortex-Description]
-集結戰士分波進攻，並提供食物和治療支援。
+集結士兵分波進攻，並提供食物和治療支援。
 [AIMaxima-Description]
-偵察目標，發展食物供應，並集結戰士分波進攻。
+偵察目標，發展食物供應，並集結士兵分波進攻。
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1105,15 +1105,15 @@ Maxima
 [AICortex]
 Cortex
 [Units still inside: %0]
-內部：%0
+仍在內部：%0
 [Units still working: %0]
 仍在工作：%0
 [2 vs 2]
-2對2
+2 對 2
 [AI strategy & counterplay]
-AI策略與對抗
+AI 策略與對抗
 [AICastor-Profile]
-核心策略: 先投資於高產的殖民地和技術，再發動大規模進攻。按優先順序安排建設計畫，逐步發展聚落；發展程度、軍事設施和時間共同提高戰爭準備度。\n\n經濟與發展: 分析水分、小麥生長、障礙物和工人的可達範圍。在生產的同時管理食物擴張、升級和防禦。\n\n攻防戰術: 估算健康士兵的攻擊力，在戰力或時間條件滿足時出擊。偏好已發現且可到達的建築，尤其是兵營和學校，並將攻擊旗移向高價值目標。\n\n與其他AI相比: 比Numbi更仔細考慮地形和目標價值。比Warrush更有耐心，以較少的早期壓力換取發達的基地和更強的部隊。\n\n優點與弱點: 廣泛的設施規劃和高價值軍事目標讓進攻更有目的。但準備需要時間，快速的對手能在其主力就緒前爭奪資源。\n\n應對建議: 儘早爭奪擴張地點。除食物外，也要保護兵營和學校；進攻其發達聚落時保留預備隊。
+核心策略: 先投資於高產的殖民地和技術，再發動大規模進攻。按優先順序安排建設計畫，逐步發展聚落；發展程度、軍事設施和時間共同提高戰爭準備度。\n\n經濟與發展: 分析水分、小麥生長、障礙物和工人的可達範圍。在生產的同時管理食物擴張、升級和防禦。\n\n攻防戰術: 估算健康士兵的攻擊力，在戰力或時間條件滿足時出擊。偏好已發現且可到達的建築，尤其是兵營和學校，並將攻擊旗幟移向高價值目標。\n\n與其他AI相比: 比Numbi更仔細考慮地形和目標價值。比Warrush更有耐心，以較少的早期壓力換取發達的基地和更強的部隊。\n\n優點與弱點: 廣泛的設施規劃和高價值軍事目標讓進攻更有目的。但準備需要時間，快速的對手能在其主力就緒前爭奪資源。\n\n應對建議: 儘早爭奪擴張地點。除食物外，也要保護兵營和學校；進攻其發達聚落時保留預備隊。
 [AICastor-Summary]
 先發展設防的殖民地，再打擊軍事和科研建築。
 [AICortex-Profile]
@@ -1121,15 +1121,15 @@ AI策略與對抗
 [AICortex-Summary]
 依靠前線食物和治療，支撐持續的軍事攻勢。
 [AINicowar-Profile]
-核心策略: 透過可同時滿足的條件，將成長、訓練、升級和戰爭結合起來。可以邊擴張邊進攻，供食失敗時則把經濟力量轉向恢復。\n\n開局: 隨遊戲提供的激進設定在總單位數達到5時開始備戰，在士兵達到5時允許開戰，零級士兵也計入其中。目標是建立3面攻擊旗，每面分配5名士兵。自訂策略檔案可以修改這些門檻。\n\n經濟與發展: 擴大食物和繁殖能力，訓練工人，發展游泳和移動能力，並升級建築。調整食物崗位人手，應對飢餓，爭取水果。\n\n攻防戰術: 從可達的敵方建築中隨機抽取進攻目標。可以用清理旗打開被資源堵塞的路線。防禦旗覆蓋受威脅的單位和建築群。後期由受過地面攻擊訓練的探索者攻擊敵方單位群。\n\n與其他AI相比: 與Warrush一樣早期進攻性強，但後續發展更全面。與Cabino不同，它不會始終優先攻擊醫院和客棧。\n\n優點與弱點: 廣泛的戰術將早期壓力與持續發展結合起來。隨機選目標可能在低價值建築上浪費力量。其門檻機制沒有Maxima那樣細緻的敵方戰力估算。\n\n應對建議: 做好應對早攻的準備。保護食物和工人，爭奪擴張地點；若其達到高階訓練階段，還要防範探索者攻擊。
+核心策略: 透過可同時滿足的條件，將成長、訓練、升級和戰爭結合起來。可以邊擴張邊進攻，供食失敗時則把經濟力量轉向恢復。\n\n開局: 隨遊戲提供的激進設定在總單位數達到5時開始備戰，在士兵達到5時允許開戰，零級士兵也計入其中。目標是建立3面攻擊旗幟，每面分配5名士兵。自訂策略檔案可以修改這些門檻。\n\n經濟與發展: 擴大食物和繁殖能力，訓練工人，發展游泳和移動能力，並升級建築。調整食物崗位人手，應對飢餓，爭取水果。\n\n攻防戰術: 從可達的敵方建築中隨機抽取進攻目標。可以用清除旗幟打開被資源堵塞的路線。防禦旗覆蓋受威脅的單位和建築群。後期由受過地面攻擊訓練的探索者攻擊敵方單位群。\n\n與其他AI相比: 與Warrush一樣早期進攻性強，但後續發展更全面。與Cabino不同，它不會始終優先攻擊醫院和客棧。\n\n優點與弱點: 廣泛的戰術將早期壓力與持續發展結合起來。隨機選目標可能在低價值建築上浪費力量。其門檻機制沒有Maxima那樣細緻的敵方戰力估算。\n\n應對建議: 做好應對早攻的準備。保護食物和工人，爭奪擴張地點；若其達到高階訓練階段，還要防範探索者攻擊。
 [AINicowar-Summary]
 以農業、升級、防禦和探索者攻擊支援早期快攻。
 [AINone-Profile]
-核心策略:不發出任何人工智慧命令。\n\n優勢:行為可預測、保持不動的實驗對手。\n\n弱點:不會擴張或適應局勢。
+核心策略: 不發出任何 AI 命令。\n\n優點: 行為可預測、保持不動的實驗對手。\n\n弱點: 不會擴張或適應局勢。
 [AINone-Summary]
 用於實驗的閒置殖民地。
 [AINumbi-Profile]
-核心策略: 先發展食物和人口，再增加治療、科研和訓練，最後轉向戰爭。總體階段隨時間推進，而非根據對手的發展調整。\n\n經濟與發展: 按人口擴大建築需求，並估算附近的小麥。後期加入升級、防禦和擴張，支撐不斷壯大的軍隊。\n\n攻防戰術: 健康戰鬥單位足夠或等待時間到期時發動進攻。在隨機抽取的敵方建築上放置戰爭旗。戰力降得太低時撤下攻擊旗，並提高下次進攻的門檻。\n\n與其他AI相比: 比Castor或Nicowar更容易預測。Castor更仔細考慮地形和目標價值；Nicowar則更早施壓。\n\n優點與弱點: 不受干擾地發展後，廣泛的支援設施會讓它變得危險，但其時間表未必符合戰局。簡單的目標選擇和損失後更長的停頓，使其攻擊更容易預判。\n\n應對建議: 在軍事階段前施壓。一邊進攻一邊在後方發展食物和訓練，擊退一次攻勢後利用其停頓期。\n\n偵察: 攻擊程式直接讀取敵方建築位置，不檢查是否可見。
+核心策略: 先發展食物和人口，再增加治療、科研和訓練，最後轉向戰爭。總體階段隨時間推進，而非根據對手的發展調整。\n\n經濟與發展: 按人口擴大建築需求，並估算附近的小麥。後期加入升級、防禦和擴張，支撐不斷壯大的軍隊。\n\n攻防戰術: 健康戰鬥單位足夠或等待時間到期時發動進攻。在隨機抽取的敵方建築上放置戰爭旗。戰力降得太低時撤下攻擊旗幟，並提高下次進攻的門檻。\n\n與其他AI相比: 比Castor或Nicowar更容易預測。Castor更仔細考慮地形和目標價值；Nicowar則更早施壓。\n\n優點與弱點: 不受干擾地發展後，廣泛的支援設施會讓它變得危險，但其時間表未必符合戰局。簡單的目標選擇和損失後更長的停頓，使其攻擊更容易預判。\n\n應對建議: 在軍事階段前施壓。一邊進攻一邊在後方發展食物和訓練，擊退一次攻勢後利用其停頓期。\n\n偵察: 攻擊程式直接讀取敵方建築位置，不檢查是否可見。
 [AINumbi-Summary]
 按時間表逐步建設殖民地，然後依靠數量進攻。
 [AIEcono-Profile]
@@ -1137,7 +1137,7 @@ AI策略與對抗
 [AIEcono-Summary]
 不生產士兵，發展食物充足的殖民地並爭取敵方單位投靠。
 [AIWarrush-Profile]
-核心策略: 在對手完成長期經濟或技術發展前發動進攻。希望在需要龐大支援網路之前，靠戰鬥決定勝負。\n\n經濟與發展: 有6個單位能採收後，將生產比例設為4名工人、1名探索者和3名士兵。訓練容量滿時增加兵營，但限制新客棧。剩餘建設力量通常用於醫院和移動訓練。\n\n攻防戰術: 在已發現的敵方建築上標記警戒區域，讓士兵持續施壓，不等待精心集結的攻擊波次。清除擋路的木材，並保護部分可再生資源。\n\n水果政策: 禁止採集水果，避開水果帶來的護甲懲罰，也不採用Econo的招降策略。\n\n與其他AI相比: 比Numbi或Castor更執著於早期壓力。Nicowar也以激進開局，但隨後有更廣泛的升級和戰術安排。\n\n優點與弱點: 懲罰緩慢開局，迫使對手儘早投入防禦。系統升級有限、食物支援精簡，導致攻勢停滯時付出較大代價。地形和長途行軍會削弱早期優勢。\n\n應對建議: 儘早保護客棧和孢子堆。補充守軍的同時補充工人，發展訓練，等快攻勢頭減弱後反擊。\n\n偵察: 開局探索旗直接使用敵方起始位置。之後放置攻擊區域則要求目標可見。
+核心策略: 在對手完成長期經濟或技術發展前發動進攻。希望在需要龐大支援網路之前，靠戰鬥決定勝負。\n\n經濟與發展: 有6個單位能採收後，將生產比例設為4名工人、1名探索者和3名士兵。訓練容量滿時增加兵營，但限制新客棧。剩餘建設力量通常用於醫院和移動訓練。\n\n攻防戰術: 在已發現的敵方建築上標記警戒區域，讓士兵持續施壓，不等待精心集結的攻擊波次。清除擋路的木材，並保護部分可再生資源。\n\n水果政策: 禁止採集水果，避開水果帶來的護甲懲罰，也不採用Econo的招降策略。\n\n與其他AI相比: 比Numbi或Castor更執著於早期壓力。Nicowar也以激進開局，但隨後有更廣泛的升級和戰術安排。\n\n優點與弱點: 懲罰緩慢開局，迫使對手儘早投入防禦。系統升級有限、食物支援精簡，導致攻勢停滯時付出較大代價。地形和長途行軍會削弱早期優勢。\n\n應對建議: 儘早保護客棧和孢子堆。補充守軍的同時補充工人，發展訓練，等快攻勢頭減弱後反擊。\n\n偵察: 開局探索旗幟直接使用敵方起始位置。之後放置攻擊區域則要求目標可見。
 [AIWarrush-Summary]
 刻意精簡支援經濟，以士兵在早期持續施壓。
 [AICabino-Profile]
@@ -1167,11 +1167,11 @@ AI策略與對抗
 [Conquest or prestige]
 征服或聲望
 [Could not launch this map. Your setup is retained; try again.]
-無法啟動此地圖。您的設定將被保留；再試一次。
+無法啟動此地圖。你的設定已保留；請再試一次。
 [Could not load this map. Choose another map or retry.]
-無法載入此地圖。選擇另一張地圖或重試。
+無法載入此地圖。請選擇其他地圖或重試。
 [Crater lakes]
-火山口湖
+隕石坑湖泊
 [Custom]
 自訂
 [Custom teams]
@@ -1197,7 +1197,7 @@ AI策略與對抗
 [Generate & play]
 產生並開始遊戲
 [Give at least one terrain type a nonzero weight.]
-為至少一種地形類型賦予非零權重。
+請至少為一種地形類型設定非零權重。
 [Grass weight]
 草地權重
 [Gray]
@@ -1221,7 +1221,7 @@ AI策略與對抗
 [Landscape]
 地形類型
 [Last colony standing]
-最後的殖民地
+最後存活的殖民地
 [Layout]
 佈局
 [Magenta]
@@ -1229,13 +1229,13 @@ AI策略與對抗
 [Map]
 地圖
 [Match finished]
-比賽結束
+對局結束
 [Medium]
 中等
 [Medium - Experimental]
 中等 - 實驗性
 [No AI orders]
-沒有AI命令
+沒有 AI 命令
 [Old islands]
 崎嶇群島
 [Old random]
@@ -1253,13 +1253,13 @@ AI策略與對抗
 [Premade maps]
 預製地圖
 [Preview ready. Start plays this exact map.]
-預覽準備就緒。開始遊戲時使用這張精確的地圖。
+預覽已就緒。開始後將使用這張地圖。
 [Regenerate all]
-全部重新生成
+全部重新產生
 [Generating preview...]
 正在產生預覽...
 [Preview unavailable]
-預覽無法使用
+無法預覽
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 每種地貌都以目前大小和殖民地數量實際產生的地圖顯示。選擇一個即可遊玩所顯示的地圖。
 [Purple]
@@ -1281,9 +1281,9 @@ AI策略與對抗
 [Sand weight]
 沙地權重
 [Select a valid map.]
-選擇有效的地圖。
+請選擇有效的地圖。
 [Shared control needs a free controller slot (maximum %0).]
-共同操控需要一個空餘的操控者名額（最多%0個）。
+共同操控需要一個空餘的操控者名額（最多 %0 個）。
 [Smoothing]
 平滑
 [Standard]
@@ -1315,9 +1315,9 @@ AI策略與對抗
 [You]
 你
 [You + AI]
-你+人工智慧
+你 + AI
 [You and the AI both issue orders. Uses two controller slots.]
-你與人工智慧都可以下達命令，佔用兩個操控者名額。
+你與 AI 都可以下達命令，佔用兩個操控者名額。
 [You vs all]
 你對抗所有人
 [Your maps]
@@ -1327,7 +1327,7 @@ AI策略與對抗
 [Inactive]
 不活躍
 [8 workers / 2x speed]
-8 名工人/2 倍速度
+8 名工人／2 倍速度
 [Changes the pace of the whole simulation.]
 改變整個模擬的節奏。
 [Choose whether teams can change during the match.]
@@ -1337,7 +1337,7 @@ AI策略與對抗
 [Dimensions and colony count are set above.]
 請在上方設定尺寸和殖民地數量。
 [Generate & watch]
-生成並觀看
+產生並觀看
 [Info]
 資訊
 [Map-defined starting units]
@@ -1349,7 +1349,7 @@ AI策略與對抗
 [Start with terrain known]
 從已知地形開始
 [This colony will not join the match.]
-該殖民地不會參加比賽。
+此殖民地不會參加對局。
 [This landscape uses a fixed terrain recipe.]
 此地形類型使用固定的地形配置。
 [This landscape uses fixed resource placement.]
@@ -1373,17 +1373,17 @@ AI策略與對抗
 [Generation failed. Adjust settings or press Start to retry.]
 地圖產生失敗。請調整設定，或按開始重試。
 [Preview unavailable. Adjust settings or start to retry.]
-預覽不可用。更改設定或啟動遊戲重試。
+無法預覽。請調整設定，或開始遊戲以重試。
 [automatic torus view]
-自動環面視圖
+自動環面檢視
 [toggle torus view]
-切換 2D／環面視圖
+切換 2D／環面檢視
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2對2需要4個參與的殖民地。「你對抗所有人」需要一名人類玩家。
+2 對 2 需要 4 個參與的殖民地。「你對抗所有人」需要一名人類玩家。
 [Alliance]
 聯盟
 [Choose a rule to change it.]
-選擇一條規則來更改它。
+選擇規則即可變更。
 [Conquest only removes prestige victory; map scripts still apply.]
 「只限征服」只停用聲望勝利，地圖腳本仍然生效。
 [Control]
@@ -1391,45 +1391,45 @@ AI策略與對抗
 [Controller]
 操控者
 [Generate preview]
-生成預覽
+產生預覽
 [Generation failed. Adjust settings or try again.]
 地圖產生失敗。請調整設定或重試。
 [Map settings changed. Generate a new preview or start.]
-地圖設定已更改。產生新的預覽或開始。
+地圖設定已變更。請產生新的預覽或開始遊戲。
 [Map source]
 地圖來源
 [Map-defined]
 地圖定義
 [Match format]
-遊戲形式
+對局形式
 [No current preview]
 目前沒有預覽
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-快速戰鬥:雙倍速度；生成的地圖以 8 個工人開始。
+快速戰鬥：2 倍速度；產生的地圖以 8 名工人開始。
 [Reroll]
-生成另一張地圖
+換一張地圖
 [Randomize]
-隨機生成
+隨機產生
 [Reset to defaults]
 還原預設值
 [Ruleset]
 規則集
 [Select a map from the library.]
-從庫中選擇一張地圖。
+從地圖庫中選擇一張地圖。
 [Starting workers affects generated maps only.]
 初始工人數量只影響產生的地圖。
 [Unavailable]
-不可用
+無法使用
 [Use selection]
-選擇此人工智慧
+使用所選項目
 [Quick clash on premade maps: only speed changes (2x).]
-在預製地圖上快速戰鬥:僅速度變化（雙倍速度）。
+在預製地圖上快速戰鬥：僅改變速度（2 倍）。
 [Generate a preview to explore this world.]
-生成預覽來探索這個世界。
+產生預覽來探索這個世界。
 [More workers jump-start colony growth. Changes the generated map.]
 更多工人能加快殖民地的初期發展。修改此設定會改變產生的地圖。
 [No warriors]
-無戰士
+無士兵
 [settings Add key to sequence]
 新增按鍵至序列
 [settings Add shortcut]
@@ -1467,7 +1467,7 @@ AI策略與對抗
 [settings Choose how the game looks on your screen.]
 選擇遊戲在螢幕上的外觀。
 [settings Completed]
-已竣工建築物
+已完工
 [settings Construction]
 建造中
 [settings Controls]
@@ -1535,7 +1535,7 @@ AI策略與對抗
 [settings Missing font]
 缺少字型
 [settings Music volume]
-音量 (音樂)
+音樂音量
 [settings Mute audio]
 靜音
 [settings Name shown to other players.]
@@ -1545,7 +1545,7 @@ AI策略與對抗
 [settings On]
 開啟
 [settings OpenGL is not available in this build.]
-OpenGL 在此版本中不可用。
+此版本無法使用 OpenGL。
 [settings Player name]
 玩家名稱
 [settings Press]
@@ -1593,11 +1593,11 @@ OpenGL 在此版本中不可用。
 [settings Set starting unit assignments by building type and level.]
 依建築類型和等級設定起始單位分配。
 [settings Set your language and player name.]
-設定您的語言和玩家名稱。
+設定你的語言和玩家名稱。
 [settings Settings]
 設定
 [settings Single-player and replays only. Multiplayer runs at 1x.]
-僅限單人遊戲和錄影重播。多人遊戲固定為1x速度。
+僅限單人遊戲和重播。多人遊戲固定為 1x 速度。
 [settings Software]
 軟體渲染
 [settings Starting unit counts and radius for newly placed flags.]
@@ -1637,15 +1637,15 @@ OpenGL 在此版本中不可用。
 [settings High-resolution artwork]
 高解析度美術素材
 [settings Apply artwork on the next game or editor load (OpenGL).]
-美術素材會在下次載入遊戲或地圖編輯器時套用 (OpenGL)。
+美術素材會在下次載入遊戲或地圖編輯器時套用（OpenGL）。
 [settings Automatic torus view]
-自動環面視圖
+自動環面檢視
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
-在地圖上移動時自動顯示圓環形狀的地圖概覽 (OpenGL)。
+在地圖上移動時自動顯示環面地圖概覽（OpenGL）。
 [settings Autosave]
 自動儲存
 [settings Save the game automatically about every 10 seconds.]
-大約每10秒自動儲存遊戲。
+大約每 10 秒自動儲存遊戲。
 [Channel width]
 水道寬度
 [Land bridge width]
@@ -1659,7 +1659,7 @@ OpenGL 在此版本中不可用。
 [Fjord continent]
 峽灣大陸
 [Cell size]
-單元格大小
+區格大小
 [Corridor width]
 通道寬度
 [Spoke width]
@@ -1667,11 +1667,11 @@ OpenGL 在此版本中不可用。
 [Loopiness]
 迴路密度
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
-迷宮在橫向和縱向上都至少需要兩個單元格；請使用更大的地圖或更小的單元格。
+迷宮在橫向和縱向上都至少需要兩個區格；請使用更大的地圖或更小的區格。
 [Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-水道這麼寬，每個單元格裡剩下的草地太少；請使用更窄的水道或更大的單元格。
+水道這麼寬，每個區格裡剩下的草地太少；請使用更窄的水道或更大的區格。
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
-迷宮中的死路太少，不足以容納這麼多殖民地；請使用更大的地圖或更小的單元格。
+迷宮中的死路太少，不足以容納這麼多殖民地；請使用更大的地圖或更小的區格。
 [Home island size]
 起始島嶼大小
 [Commons size]
@@ -1725,7 +1725,7 @@ OpenGL 在此版本中不可用。
 [Resource richness]
 資源豐富度
 [Symmetric arena needs 2, 4 or 8 colonies.]
-對稱競技場需要2、4或8個殖民地。
+對稱競技場需要 2、4 或 8 個殖民地。
 [Eight colonies need a square map in the symmetric arena.]
 在對稱競技場中，八個殖民地需要正方形地圖。
 [The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
@@ -2051,7 +2051,7 @@ OpenGL 在此版本中不可用。
 [Map preview controls]
 拖曳以跨越邊界，滾輪縮放。按右鍵或連按兩下重設。
 [Map preview drag help]
-拖曳移動；滾輪縮放。
+拖曳以跨越邊界；滾輪縮放。
 [Map preview loading]
 載入中...
 [Map preview failed]
@@ -2089,7 +2089,7 @@ OpenGL 在此版本中不可用。
 [Stats combat deaths]
 戰鬥
 [Stats clearing deaths]
-清理受傷
+清除受傷
 [Stats trapped deaths]
 受困
 [Stats unknown deaths]
@@ -2109,7 +2109,7 @@ OpenGL 在此版本中不可用。
 [Stats page two]
 統計 2/3 >
 [Stats next page]
-頁面 (P)
+翻頁（P）
 [Map preview choose another]
 選擇地圖
 [Building sites complete immediately, skipping delivery.]
@@ -2117,15 +2117,15 @@ OpenGL 在此版本中不可用。
 [No growth]
 不生長
 [Units get hungry]
-單位會肚子餓
+單位會飢餓
 [No hunger]
 沒有飢餓
 [Scarce (2x slower)]
-稀少（慢 2x）
+稀少（慢 2 倍）
 [Very scarce (4x slower)]
-非常稀少（慢 4x）
+非常稀少（慢 4 倍）
 [Extremely scarce (8x slower)]
-極度稀少（慢 8x）
+極度稀少（慢 8 倍）
 [Small (+50 each)]
 小（各 +50）
 [Medium (+150 each)]
@@ -2141,15 +2141,15 @@ OpenGL 在此版本中不可用。
 [Higher tiers give every building much more HP.]
 更高的等級會讓每座建築物獲得更多生命值。
 [Starting units spawn already leveled up. Changes the generated map.]
-初始單位一開始就已經升級。會改變生成的地圖。
+初始單位一開始就已經升級。會改變產生的地圖。
 [No upgrades]
 不升級
 [No permadeath]
 不會永久死亡
 [Glass cannon x2]
-玻璃大炮 x2
+玻璃大砲 x2
 [Glass cannon x3]
-玻璃大炮 x3
+玻璃大砲 x3
 [Fortress x5]
 堡壘 x5
 [Fortress x10]
@@ -2157,15 +2157,15 @@ OpenGL 在此版本中不可用。
 [Veteran]
 老兵
 [Elite]
-精英
+菁英
 [Legendary]
 傳奇
 [Combat]
 戰鬥
 [Glass cannon]
-玻璃大炮
+玻璃大砲
 [Match ends at the timer; highest prestige at that instant wins.]
-比賽在計時器歸零時結束；那一刻聲望最高者獲勝。
+對局在計時器歸零時結束；那一刻聲望最高者獲勝。
 [Off (no timer)]
 關閉（無計時器）
 [90 minutes]
@@ -2179,49 +2179,49 @@ OpenGL 在此版本中不可用。
 [Stats page three]
 統計 3/3 >
 [Stats blocked units]
-單位 S/C
+受阻單位 S/C
 [Stats blocked buildings]
-建築物 S/C
+受阻建築物 S/C
 [Stats blocked buildings swim]
-游泳 S/C
+游泳出口 S/C
 [Stats current blocked units]
-單位 C
+目前受阻單位
 [Stats current blocked buildings]
-建築物 C
+目前受阻建築物
 [Stats growth global]
-資源 +
+生長增加量
 [Stats growth new tiles]
-資源 +#
+新資源格
 [Stats growth reductions]
-資源 -
+自然減少
 [Stats growth per minute]
-小麥 +/min
+小麥生長/分
 [Stats growth near 8]
-資源 + <=8
+8 格內生長
 [Stats growth near 16]
-資源 + <=16
+16 格內生長
 [Stats growth near 32]
-資源 + <=32
+32 格內生長
 [Stats low HP 25]
-生命值 <=25%
+生命值 25% 的單位
 [Stats low HP 50]
-生命值 <=50%
+生命值 50% 的單位
 [Stats low HP 75]
-生命值 <=75%
+生命值 75% 的單位
 [Stats low food 25]
-食物 <=25%
+食物儲備 25% 的單位
 [Stats low food 50]
-食物 <=50%
+食物儲備 50% 的單位
 [Stats low food 75]
-食物 <=75%
+食物儲備 75% 的單位
 [Stats structural units]
-單位 S
+結構性受阻單位
 [Stats structural buildings]
-建築物 S
+結構性受阻建築物
 [Stats low HP ranges]
-生命值: <=25/50/75%
+生命值 ≤25/50/75%
 [Stats low food ranges]
-食物: <=25/50/75%
+食物 ≤25/50/75%
 [Emoji]
 Emoji
 [Emoji character]
@@ -2695,7 +2695,7 @@ Emoji
 [Surviving junctions]
 保留路口
 [The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
-斷層之城要求每邊為256或512格，並有一至十二個殖民地。
+斷層之城要求每邊為 256 或 512 格，並有一至十二個殖民地。
 [The city has too few usable junctions.]
 城市中可用的路口太少。
 [A city neighbourhood lacks reachable crops or building room.]
@@ -2721,7 +2721,7 @@ Emoji
 [Extra trails]
 額外小徑
 [Portage Lakes needs sides between 64 and 512 tiles.]
-此地圖的邊長必須為64至512格。
+此地圖的邊長必須為 64 至 512 格。
 [Portage Lakes cannot fit shoreline settlements on this seed.]
 此種子無法在湖岸安置聚落。
 [Portage Lakes cannot fit renewable shore fields beside every settlement.]
@@ -2769,7 +2769,7 @@ Emoji
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 每個殖民地的開局都在完成的地圖上測量：到小麥和木材的路程、土地的再生能力、可及範圍內的儲量和建築用地，以及與對手的距離。每項因素按固定標準計 0 到 1 分，總分對其加權，公平度是最低殖民地的總分除以最高者，評分是最低總分乘以公平度。
 [ERROR_CANT_SAVE_MAP]
-無法儲存地圖。請檢查目的位置與可用空間。您的編輯內容仍為開啟狀態。
+無法儲存地圖。請檢查目的位置與可用空間。你的編輯內容仍為開啟狀態。
 [Loading headers]
 正在載入標頭...
 [Loading teams]
@@ -2799,7 +2799,7 @@ Emoji
 [export save]
 匯出存檔
 [storage restore failed]
-無法還原瀏覽器儲存空間。現有已儲存的資料未被變更。您可以繼續這個工作階段，但本機變更將無法保留。請從儲存失敗對話方塊匯出重要存檔。重新載入以再次嘗試還原儲存空間。
+無法還原瀏覽器儲存空間。現有已儲存的資料未被變更。你可以繼續這個工作階段，但本機變更將無法保留。請從儲存失敗對話方塊匯出重要存檔。重新載入以再次嘗試還原儲存空間。
 [continue]
 繼續
 [export file]
@@ -2841,7 +2841,7 @@ Emoji
 [quit without saving]
 不儲存離開
 [game closed]
-遊戲已結束。您可以關閉此視窗，或重新載入以再次遊玩。
+遊戲已結束。你可以關閉此視窗，或重新載入以再次遊玩。
 [campaign editor save failed]
 尚未確認儲存。「確定」重試；「取消」返回編輯器選單。
 [Actions]
@@ -2897,7 +2897,7 @@ Emoji
 [settings Automatic]
 自動
 [settings Compact]
-緊湊
+精簡
 [settings Spacious]
 寬敞
 [More]
@@ -2925,7 +2925,7 @@ Emoji
 [settings Save the game automatically about every minute.]
 大約每分鐘自動儲存遊戲。
 [AI opponents]
-電腦對手
+AI 對手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。
 [settings One-finger zoom]
@@ -3037,7 +3037,7 @@ CPU %0%
 [Guard]
 守衛
 [Clear]
-清理
+清除
 [Farm]
 耕種
 [Paint]
@@ -3159,13 +3159,13 @@ CPU %0%
 [%0 / Browse]
 %0 / 瀏覽
 [%0 colonies · %1]
-%0個殖民地 · %1
+%0 個殖民地 · %1
 [%0 · Team %1]
 %0 · 隊伍 %1
 [Colonies: %0]
-殖民地: %0
+殖民地：%0
 [%0 colonies · %1 AI]
-%0個殖民地 · %1 AI
+%0 個殖民地 · %1 個 AI
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
@@ -3173,27 +3173,27 @@ CPU %0%
 [settings Level %0]
 等級 %0
 [settings Match the desktop %0]
-與桌面相同 (%0)
+與桌面相同（%0）
 [settings Current display %0 %1 %2 %3]
-目前顯示設定: %0 × %1 · %2 · %3
+目前顯示設定：%0 × %1 · %2 · %3
 [Fairness: %0]
-公平度: %0
+公平度：%0
 [Colony %0]
 殖民地 %0
 [Win chance: %0 · Fitness: %1]
-勝率: %0 · 強度: %1
+勝率：%0 · 強度：%1
 [%0 · Contribution: %1]
-%0 · 貢獻: %1
+%0 · 貢獻：%1
 [Min required level %0]
-最小等級需求: %0
+最低等級需求：%0
 [Confirm %0]
-確定: %0
+確定：%0
 [%0 %1]
 %0 %1
 [resume game]
 繼續遊戲
 [Add AI]
-新增人工智慧
+新增 AI
 [settings Experiments]
 實驗功能
 [settings Try features we are still testing. They can change balance and pacing.]
@@ -3207,9 +3207,9 @@ CPU %0%
 [Experiments]
 實驗功能
 [experiment guard-area-balancing]
-警戒區均衡
+守衛區均衡
 [experiment guard-area-balancing help]
-空閒的戰士會分散到各個已繪製的警戒區，而不是全部湧向最近的一個：更大的區域獲得更多戰士，過於擁擠的區域會逐漸向其他區域分流。
+空閒的士兵會分散到各個已繪製的守衛區，而不是全部湧向最近的一個：較大的區域分到較多士兵，過於擁擠的區域會分流到其他區域。
 [experiment farm-areas]
 耕種區
 [experiment farm-areas help]
@@ -3235,1415 +3235,1415 @@ CPU %0%
 [List bounce]
 清單回彈
 [lan pairing field]
-
+主機配對字串（或受信任的 WSS 網址）
 [lan pairing connect]
-
+配對並連線
 [lan discovery instructions]
-
+選擇主機，然後貼上它的配對字串以驗證身分。
 [lan discovery unavailable]
-
+無法使用 LAN 探索。請檢查區域網路權限，或貼上主機配對字串。
 [lan discovered host %0]
-
+已發現主機 %0 — 配對後即可查看遊戲
 [lan connection unavailable]
-
+無法連上 LAN 主機。請檢查區域網路權限和主機配對字串。
 [lan connection verification failed %0]
-
+無法驗證或連線到 LAN 主機：%0
 [lan lobby endpoint required]
-
+請使用主機的大廳端點
 [settings Artwork]
-
+美術圖像
 [settings Original]
-
+原版
 [settings High resolution]
-
+高解析度
 [settings Clouds]
-
+雲層
 [settings Show cloud cover above the map.]
-
+在地圖上方顯示雲層。
 [settings Cloud shadows]
-
+雲影
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+在地面顯示雲影，與雲層設定分開。
 [settings Building particles]
-
+建築粒子效果
 [settings Show smoke and other building particles.]
-
+顯示煙霧和其他建築粒子效果。
 [settings Magic effects]
-
+魔法效果
 [settings Choose animated magic effects or a simple visible effect.]
-
+選擇動態魔法效果或簡單的可見效果。
 [settings Simple]
-
+簡單
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+需要 OpenGL 渲染器。已儲存的選擇會保留。
 [settings Interface appearance]
-
+介面外觀
 [settings Panels]
-
+面板
 [settings Choose translucent or opaque interface panels.]
-
+選擇半透明或不透明的介面面板。
 [settings Opaque]
-
+不透明
 [settings Translucent]
-
+半透明
 [settings Advanced graphics]
-
+進階圖形
 [settings Path lines]
-
+路徑線
 [settings Choose translucent or opaque unit path lines.]
-
+選擇半透明或不透明的單位路徑線。
 [settings Smooth progress indicators]
-
+平滑進度指示
 [settings Smooth the moving edges of progress indicators.]
-
+讓進度指示的移動邊緣更平滑。
 [settings Decorative interface animation]
-
+介面裝飾動畫
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+為勝利圖像加上動畫。「減少動態效果」也會停用此動畫。
 [settings Smooth unit motion]
-
+平滑單位動作
 [settings Experimental: move and animate units between game ticks.]
-
+實驗功能：在遊戲刻之間移動單位並播放動畫。
 [settings Smooth fog of war]
-
+平滑戰爭迷霧
 [settings Fade the map into and out of the fog of war gradually.]
-
+讓地圖逐漸淡入和淡出戰爭迷霧。
 [settings Adaptive zoom detail]
-
+依縮放調整細節
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+地圖縮小時簡化狀態條、區域、地形和單位，放大時讓它們保持小巧。
 [settings Text size]
-
+文字大小
 [settings Enlarge interface text without changing the map scale.]
-
+放大介面文字，不改變地圖比例。
 [Map momentum]
 地圖慣性
 [turn reconnecting]
-
+與主機的連線中斷，正在重新連線...
 [turn waiting for players]
-
+正在等待所有玩家載入...
 [turn rejoining]
-
+正在重新加入遊戲...
 [turn catching up %0]
-
+正在追趕：落後 %0 回合
 [turn player reconnecting %0]
-
+%0 正在重新連線...
 [turn player lagging %0]
-
+%0 連線延遲
 [turn player resyncing %0]
-
+%0 正在追趕進度
 [turn player not connected %0]
-
+%0 尚未連線
 [lan host left]
-
+主機已離開遊戲。
 [lan host lost]
-
+與主機的連線已中斷。
 [lan version mismatch %0]
-
+主機執行的是不同版本的 Globulation 2（%0）。
 [lan cannot host %0]
-
+無法建立 LAN 遊戲：%0
 [play online]
-
+線上遊戲
 [Use in room]
-
+在房間中使用
 [conn ai]
-
+AI
 [conn behind %0]
-
+落後 %0
 [conn behind explanation %0 %1]
-
+落後：玩家的遊戲比對局時鐘慢多少，包含其延遲。低於 %0 屬正常；達到 %1 時該玩家會被標示為緩慢。
 [conn behind]
-
+落後
 [conn card catching up]
-
+正在追趕
 [conn card colony works]
-
+你的殖民地會自行運作：單位會完成工作，建築物也會繼續運轉。
 [conn card desync detail]
-
+正從對局紀錄重新加入，讓你看到和其他人相同的畫面。已自動傳送回報。
 [conn card desync]
-
+你的遊戲不同步了
 [conn card grace %0]
-
+你的殖民地會自行運作：單位會完成工作，建築物也會繼續運轉。你有 %0 的時間返回，逾時將被移出對局。
 [conn card input paused]
-
+正在追趕 · 已暫停操作
 [conn card lost]
-
+連線中斷
 [conn card progress %0 %1 %2]
-
+%0 % · %1/%2 刻
 [conn card reconnecting %0]
-
+正在重新連線到對局… 第 %0 次嘗試
 [conn card replaying %0]
-
+正在重播你錯過的 %0。回到目前進度後畫面就會更新。
 [conn card seconds left %0]
-
+約剩 %0 秒
 [conn connections]
-
+連線
 [conn connection]
-
+連線
 [conn delay explanation %0 %1]
-
+延遲：從你點擊到所有人看到結果的時間。它取決於你自己的連線，而非其他玩家的連線。低於 %0 為良好，達到 %1 為不佳。
 [conn fair]
-
+普通
 [conn good]
-
+良好
 [conn grid legend]
-
+超過四名玩家時，面板會顯示每位玩家的 Ping 值（毫秒），或其落後的秒數。
 [conn jitter %0]
-
+抖動 %0
 [conn leave match]
-
+離開對局
 [conn left]
-
+已離開
 [conn notice back %0]
-
+%0 回來了。
 [conn notice left %0]
-
+%0 已離開對局。
 [conn notice lost %0 %1]
-
+%0 失去連線。遊戲繼續進行；在其重新連線期間，其殖民地會持續運作（剩餘 %1）。
 [conn ping explanation %0 %1]
-
+Ping 值：玩家與中繼伺服器之間的往返時間。低於 %0 為良好，達到 %1 為不佳。
 [conn ping]
-
+Ping 值
 [conn players]
-
+玩家
 [conn poor]
-
+不佳
 [conn reconnecting]
-
+重新連線中
 [conn relay %0]
-
+中繼：%0
 [conn resyncing]
-
+重新加入中
 [conn slow]
-
+緩慢
 [conn unstable]
-
+不穩定
 [conn waiting]
-
+連線中…
 [conn you %0]
-
+%0（你）
 [conn you]
-
+你
 [conn your delay %0]
-
+你的延遲 %0
 [hub account menu]
-
+帳號
 [hub ai joins after %0]
-
+%0 後由 AI 加入
 [hub all rooms]
-
+全部
 [hub browse maps]
-
+瀏覽地圖
 [hub cant reach %0]
-
+無法連上 %0。
 [hub change server]
-
+變更伺服器…
 [hub check code]
-
+要求輸入代碼時，請輸入這組：
 [hub code placeholder]
-
+代碼或邀請連結
 [hub connecting to %0]
-
+%0 · 連線中…
 [hub continue with %0]
-
+以 %0 繼續
 [hub create room]
-
+建立房間
 [hub find match]
-
+尋找對局
 [hub finish in browser]
-
+請在瀏覽器開啟的頁面上完成登入。
 [hub free seat]
-
+空位
 [hub get update]
-
+取得更新
 [hub guest kept on device]
-
+訪客 · 保留在此裝置上
 [hub invalid code]
-
+這不是邀請代碼或連結。
 [hub join by code]
-
+以代碼加入
 [hub join code]
-
+加入代碼
 [hub join]
-
+加入
 [hub leaderboard]
-
+排行榜
 [hub linked %0]
-
+已連結帳號 · %0
 [hub linked accounts]
-
+已連結帳號
 [hub maps]
-
+地圖
 [hub no queues]
-
+此伺服器沒有快速配對佇列。
 [hub no rooms]
-
+目前沒有開放的房間。建立一個並分享邀請吧。
 [hub offline at %0]
-
+%0 · 離線
 [hub offline detail %0]
-
+%0 秒後重試。快速配對和線上房間目前無法使用。主選單中的區域網路遊戲不需要此伺服器。
 [hub online at %0]
-
+%0 · 線上
 [hub online settings]
-
+線上設定
 [hub online]
-
+線上
 [hub open page again]
-
+再次開啟頁面
 [hub open rooms]
-
+開放的房間
 [hub page opened at %0]
-
+已開啟 %0。不需在遊戲中輸入任何內容，它會自動幫你登入。
 [hub queues unavailable]
-
+伺服器回應後就會顯示快速配對。
 [hub quick match unavailable]
-
+此版本尚未提供快速配對。
 [hub quick match]
-
+快速配對
 [hub ranked]
-
+積分賽
 [hub recent matches]
-
+最近對局
 [hub refresh]
-
+重新整理
 [hub retry now]
-
+立即重試
 [hub room match]
-
+房間
 [hub room name %0]
-
+%0 的房間
 [hub room]
-
+房間
 [hub seats %0 %1]
-
+%0/%1 個座位
 [hub server %0]
-
+伺服器：%0
 [hub sign in browser]
-
+開啟登入頁面
 [hub sign in conflict]
-
+此登入方式已屬於另一個帳號。
 [hub sign in failed %0]
-
+登入未完成（%0）。
 [hub sign in intro]
-
+請在瀏覽器中登入或建立帳號。你的訪客對局紀錄會一併保留。
 [hub sign in]
-
+登入
 [hub sign out]
-
+在此裝置上登出
 [hub signed in as %0]
-
+已登入為 %0。
 [hub signed in on %0]
-
+已在 %0 登入
 [hub signing in]
-
+登入中…
 [hub sim %0]
-
+模擬 %0
 [hub unrated]
-
+不計積分
 [hub update required at %0]
-
+%0 · 需要更新
 [hub update required detail %0]
-
+%0 執行的是較新版本，因此此程式必須更新後才能加入線上遊戲。區域網路遊戲仍可使用。
 [hub update required]
-
+需要更新
 [hub server behind]
-
+伺服器待更新
 [hub server behind at %0]
-
+%0 · 伺服器待更新
 [hub server behind detail %0]
-
+此程式比 %0 新，而該伺服器尚未更新。伺服器更新後即可進行線上遊戲。區域網路遊戲仍可使用。
 [hub version mismatch]
-
+版本不同
 [hub version mismatch at %0]
-
+%0 · 版本不同
 [hub version mismatch detail %0]
-
+%0 執行的是不同版本的遊戲，因此此程式無法加入線上遊戲。區域網路遊戲仍可使用。
 [hub versus %0]
-
+對戰 %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+正在下載地圖 %0
 [match failed]
-
+對局無法開始。
 [match leave]
-
+離開
 [match loading]
-
+正在載入遊戲
 [Loading game graphics]
-
+正在載入遊戲圖像
 [match map cached]
-
+已在此裝置上
 [match map]
-
+正在下載地圖
 [match relay %0]
-
+已連線到中繼伺服器 %0
 [match seat confirmed]
-
+座位已確認
 [match starting]
-
+對局即將開始
 [match tip flags]
-
+提示：探索旗幟會派探索者揭開地圖；攻擊旗幟會集結你的士兵。
 [match tip input]
-
+提示：你的指令會在你自己的操作延遲後送達所有人；其他玩家的連線不會拖慢你。
 [match tip select]
-
+提示：雙擊建築物可選取所有同類型的建築物。
 [match waiting for players]
-
+正在等待所有玩家
 [match you %0]
-
+%0（你）
 [match player map]
-
+地圖
 [match player loading]
-
+載入中
 [match player connecting]
-
+連線中
 [match player ready]
-
+就緒
 [match player left]
-
+已離開
 [results back to online]
-
+返回線上
 [results back to room]
-
+返回房間
 [results defeat]
-
+失敗
 [results ladder rating %0]
-
+%0 積分
 [results left]
-
+你已離開對局
 [results match over]
-
+對局結束
 [results match page]
-
+對局頁面
 [results minutes %0]
-
+%0 分鐘
 [results no change]
-
+無變化
 [results ranked]
-
+積分賽
 [results recording]
-
+正在記錄結果…
 [results room unrated]
-
+房間對局 · 不計積分
 [results saved to history]
-
+已存入你的紀錄
 [results seconds %0]
-
+%0 秒
 [results unverifiable]
-
+伺服器無法重現這場對局，因此不會計入任何人的積分。此對局已回報待查，你不需要做任何事。
 [results verified provisional]
-
+已驗證 · 暫定
 [results verified]
-
+已驗證
 [results verifying detail]
-
+伺服器正在重播對局以確認結果，通常不到一分鐘。
 [results verifying]
-
+正在驗證結果…
 [results victory]
-
+勝利
 [room address]
-
+位址
 [room ai %0]
-
+AI：%0
 [room browser pairing]
-
+瀏覽器配對
 [room catalog map]
-
+目錄地圖
 [room change map]
-
+變更地圖…
 [room change rules]
-
+變更規則…
 [room chat]
-
+聊天
 [room closed seat detail]
-
+已被主持人關閉
 [room closed seat]
-
+已關閉
 [room colonies]
-
+殖民地
 [room connecting]
-
+正在連線到房間…
 [room copy]
-
+複製
 [room disconnected]
-
+已斷線
 [room downloading %0]
-
+正在下載地圖 %0 %
 [room downloading map]
-
+正在下載地圖…
 [room expired]
-
+房間已關閉。
 [room generated on server]
-
+由伺服器產生一次，讓每個人都玩完全相同的地圖。
 [room guest]
-
+訪客
 [room host %0]
-
+主持人 %0
 [room host closed]
-
+主持人已關閉房間。
 [room host]
-
+主持人
 [room humans vs ai]
-
+玩家對 AI
 [room invite code %0]
-
+代碼 %0 · 可在應用程式、手機或瀏覽器中開啟
 [room invite not found]
-
+此邀請已過期或不存在。
 [room invite only]
-
+僅限受邀者
 [room invite]
-
+邀請
 [room joining on network]
-
+正在此網路上加入
 [room lan badge]
-
+區域網路 · 不計積分
 [room lan list hint %0]
-
+同一網路上的其他人可在主選單的區域網路遊戲清單中看到 %0。
 [room leave]
-
+離開
 [room map changed %0]
-
+地圖已變更為 %0。
 [room map failed]
-
+無法準備地圖
 [room match label]
-
+房間
 [room member joined %0]
-
+%0 已加入。
 [room member left %0]
-
+%0 已離開。
 [room member ready %0]
-
+%0 已就緒。
 [room needs two seats]
-
+邀請朋友或加入 AI 即可開始
 [room no map]
-
+尚未選擇地圖
 [room not ready]
-
+未就緒
 [room open for a person]
-
+開放給玩家
 [room open seat detail]
-
+任何持有邀請的人都能入座
 [room open seat]
-
+空位
 [room person]
-
+玩家
 [room preparing map]
-
+伺服器正在準備地圖…
 [room public]
-
+公開
 [room ready?]
-
+就緒
 [room ready]
-
+✓ 已就緒
 [room remove from room]
-
+移出房間
 [room rule off]
-
+關閉
 [room rule on]
-
+開啟
 [room rules changed]
-
+規則已變更。
 [room rules]
-
+規則
 [room say something]
-
+說點什麼…
 [room seat hint]
-
+玩家可以自行移到空位。變更隊伍以重新平衡。
 [room seat options]
-
+座位選項
 [room seats summary %0 %1 %2]
-
+%0 名玩家 · %1 個 AI · %2 個空位
 [room seats]
-
+座位
 [room seed]
-
+種子
 [room send]
-
+傳送
 [room set by host]
-
+由主持人設定
 [room share text %0]
-
+加入我的 Globulation 2 房間：%0
 [room share]
-
+分享…
 [room size]
-
+大小
 [room starting match]
-
+對局即將開始…
 [room take seat]
-
+入座
 [room team %0]
-
+隊伍 %0
 [room update required]
-
+此房間使用其他版本的遊戲。請更新後再加入。
 [room uploaded map]
-
+上傳的地圖
 [room waiting for %0]
-
+正在等待 %0 就緒
 [room waiting for you]
-
+準備好後請按「就緒」
 [room match over]
-
+對局結束。準備好再來一局吧！
 [room waiting for host]
-
+正在等待主持人開始
 [room waiting for players %0]
-
+正在等待 %0 名玩家就緒
 [room who can find it]
-
+誰能找到它
 [room you created]
-
+你建立了房間。
 [room you joined %0]
-
+你已加入 %0。
 [room you were removed]
-
+主持人已將你移出房間。
 [room you]
-
+你
 [settings Online]
-
+線上
 [settings Another server]
-
+其他伺服器
 [settings Check]
-
+檢查
 [settings Checking…]
-
+檢查中…
 [settings Choose which server you play on and how you sign in to it.]
-
+選擇要在哪個伺服器上遊玩，以及如何登入。
 [settings Connecting…]
-
+連線中…
 [settings Could not reach this server.]
-
+無法連上此伺服器。
 [settings Display name saved.]
-
+顯示名稱已儲存。
 [settings Display name]
-
+顯示名稱
 [settings Download or delete my data]
-
+刪除我的帳號
 [settings Enter an https:// address.]
-
+請輸入 https:// 位址。
 [settings Finish in your browser. It shows the code %0.]
-
+請在瀏覽器中完成：要求輸入時請輸入代碼 %0。
 [settings Forget]
-
+忘記
 [settings Guests keep a generated name; sign in to choose one.]
-
+訪客使用系統產生的名稱；登入後即可自選名稱。
 [settings Link]
-
+連結
 [settings Not a Globulation 2 server.]
-
+這不是 Globulation 2 伺服器。
 [settings Not linked]
-
+未連結
 [settings Not signed in.]
-
+尚未登入。
 [settings Open]
-
+開啟
 [settings Opens your account page on %0.]
-
+開啟你在 %0 上的帳號頁面，可在那裡刪除帳號。
 [settings Run by a community, a club or yourself. Paste its address.]
-
+由社群、社團或你自己架設。請貼上其位址。
 [settings Save]
-
+儲存
 [settings Server]
-
+伺服器
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+顯示於房間、對局和排行榜中。每 30 天可變更一次。
 [settings Sign in with: %0 · queues: %1]
-
+登入方式：%0 · 佇列：%1
 [settings Sign out on this device]
-
+在此裝置上登出
 [settings Sign out]
-
+登出
 [settings Switch to this server]
-
+切換到此伺服器
 [settings The last sign-in method can't be unlinked.]
-
+無法解除最後一種登入方式的連結。
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+官方 Globulation 2 伺服器 · 積分賽佇列、排行榜、地圖目錄
 [settings Unlink]
-
+解除連結
 [settings Unlinking is done on the account page.]
-
+請在帳號頁面上解除連結。
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+在你重新登入前，你將成為新的訪客。你的帳號和對局紀錄會保留在伺服器上。
 [settings Your account on %0]
-
+你在 %0 上的帳號
 [settings compatible with this version]
-
+與此版本相容
 [settings connected]
-
+已連線
 [settings connecting…]
-
+連線中…
 [settings guest]
-
+訪客
 [settings linked]
-
+已連結
 [settings plays another version]
-
+執行其他版本
 [settings trusted]
-
+已信任
 [settings used before]
-
+曾使用過
 [settings you were %0 there]
-
+你在那裡的名稱是 %0
 [trust invited to room %0]
-
+受邀加入房間 %0
 [trust join as guest]
-
+以訪客身分加入
 [trust not official]
-
+此伺服器並非由 Globulation 2 專案營運。
 [trust remember]
-
+記住此伺服器
 [trust separate identity %0]
-
+你將以訪客身分加入該伺服器。你的 %0 帳號、積分和紀錄都不受影響。
 [trust title]
-
+要加入其他伺服器上的遊戲嗎？
 [trust what it sees]
-
+該伺服器會看到你的顯示名稱、你的連線位址以及你在其上進行的遊戲。
 [settings not connected]
-
+未連線
 [settings Open Play online to connect.]
-
+請開啟「線上遊戲」以連線。
 [hub code]
-
+代碼
 [results draw]
-
+平手
 [qm 2 vs 2]
-
+2 對 2
 [qm 1 vs 1]
-
+1 對 1
 [qm ping about]
-
+Ping 值約
 [qm ranked]
-
+積分賽
 [qm casual %0]
-
+休閒 %0
 [qm rated]
-
+積分賽
 [qm unrated]
-
+不計積分
 [qm solo queue]
-
+單人佇列
 [qm ai joins after %0]
-
+%0 後由 AI 加入
 [qm fair maps %0]
-
+地圖：%0
 [qm cooldown %0]
-
+你拒絕了一場對局。%0 後可再次搜尋。
 [qm sign in to play ranked]
-
+積分賽佇列僅限已登入的帳號；請先登入。
 [online update required]
-
+此遊戲版本對伺服器而言太舊；請更新後再進行線上遊戲。
 [online server behind]
-
+伺服器尚未更新到此版本；更新後即可進行線上遊戲。
 [online version mismatch]
-
+伺服器執行的是不同版本的遊戲；此程式無法進行線上遊戲。
 [qm already searching]
-
+你已經在搜尋中或正在對局。
 [online connection problem]
-
+無法連上伺服器。
 [qm find match]
-
+尋找對局
 [qm opponents rated %0 to %1]
-
+對手積分 %0 至 %1
 [qm region %0]
-
+地區 %0
 [qm searching]
-
+搜尋中
 [qm measuring relays]
-
+正在測量中繼伺服器
 [qm joining queue]
-
+正在加入佇列
 [qm waiting for a person]
-
+正在等待真人玩家：AI 對手已關閉。
 [qm ai in %0 rated]
-
+若找不到對手，%0 後你將與積分最接近的 AI 對戰
 [qm ai in %0]
-
+若找不到對手，%0 後將由 AI 加入
 [qm ai after %0]
-
+若找不到對手，%0 後將由 AI 入座
 [qm allow ai short]
-
+允許 AI
 [qm allow ai]
-
+允許 AI 對手
 [qm cancel]
-
+取消
 [qm cancel search]
-
+取消搜尋
 [qm usual wait %0]
-
+一般等待 %0
 [qm widening]
-
+等待越久範圍越寬
 [qm ais are rated]
-
+（計積分：AI 也有積分）
 [qm opponent declined]
-
+你的對手沒有接受。你已回到佇列最前面。
 [qm %0 did not accept]
-
+%0 沒有接受。你已回到佇列最前面。
 [qm start failed]
-
+對局無法開始。正在重新搜尋。
 [qm you declined]
-
+你拒絕了對局。稍等片刻後可再次搜尋。
 [qm you did not answer]
-
+你沒有及時接受。稍等片刻後可再次搜尋。
 [qm search ended]
-
+搜尋已結束。
 [qm try again]
-
+重試
 [online connecting]
-
+連線中…
 [qm no queues]
-
+此伺服器沒有快速配對佇列。
 [qm quick match]
-
+快速配對
 [qm phone searching note]
-
+離開此畫面後搜尋仍會繼續。
 [qm phone intro]
-
+請在下方選擇佇列；瀏覽時搜尋會持續進行。
 [qm online]
-
+線上
 [qm keeps running note]
-
+離開此畫面後搜尋仍會繼續。
 [qm ai]
-
+AI
 [qm provisional]
-
+暫定
 [qm accepted]
-
+✓ 已接受
 [qm declined]
-
+已拒絕
 [qm waiting]
-
+等待中…
 [qm ai badge]
-
+AI
 [qm match found]
-
+找到對局
 [qm playing an ai]
-
+與 AI 對戰
 [qm vs]
-
+對
 [qm ai explanation rated]
-
+你的積分範圍內沒有人在搜尋。你將與積分最接近的 AI 對戰；結果會計入你和該 AI 的積分。
 [qm ai explanation]
-
+沒有人在搜尋。你將與積分最接近的 AI 對戰；這場遊戲不計積分。
 [qm casual explanation]
-
+對局會立即開始；休閒遊戲不計積分。
 [qm accepted button]
-
+已接受
 [qm accept]
-
+接受
 [qm decline]
-
+拒絕
 [qm both must accept]
-
+雙方都必須接受
 [qm accept explanation]
-
+雙方玩家都必須接受。拒絕或讓計時器歸零會讓你排到佇列最後面。
 [qm starting in %0]
-
+%0 後開始…
 [qm preparing match]
-
+正在準備對局…
 [qm match assigned %0 %1]
-
+對局 %0 已在 %1 上準備就緒，但此版本尚無法連線到線上對局。
 [online jan]
-
+1月
 [online feb]
-
+2月
 [online mar]
-
+3月
 [online apr]
-
+4月
 [online may]
-
+5月
 [online jun]
-
+6月
 [online jul]
-
+7月
 [online aug]
-
+8月
 [online sep]
-
+9月
 [online oct]
-
+10月
 [online nov]
-
+11月
 [online dec]
-
+12月
 [profile win letter]
-
+勝
 [profile loss letter]
-
+敗
 [profile draw letter]
-
+和
 [profile history unavailable]
-
+此伺服器尚未提供對局紀錄。
 [profile downloading replay]
-
+正在下載重播…
 [profile no replay]
-
+這場對局沒有可用的重播。
 [profile room with %0]
-
+房間 · %0 個殖民地
 [profile with %0 vs %1]
-
+與 %0 一起對戰 %1
 [profile vs %0]
-
+對戰 %0
 [profile room]
-
+房間
 [profile casual]
-
+休閒
 [profile ai filled]
-
+AI 補位
 [profile provisional %0 games]
-
+暫定 · %0 場
 [profile unrated]
-
+不計積分
 [profile checking]
-
+檢查中…
 [profile %0 min]
-
+%0 分鐘
 [profile match page]
-
+對局頁面
 [profile replay]
-
+重播
 [profile win rate last %0]
-
+勝率，最近 %0
 [profile %0 w %1 l %2 d]
-
+%0 勝 · %1 敗 · %2 和
 [profile typical game]
-
+典型對局
 [profile median length]
-
+你的對局時長中位數
 [profile best map]
-
+最佳地圖
 [profile %0 w %1 l]
-
+%0 勝 · %1 敗
 [profile no rated games]
-
+進行一場積分賽即可獲得積分。
 [profile all]
-
+全部
 [profile rooms]
-
+房間
 [profile vs ai]
-
+對戰 AI
 [profile matches]
-
+對局
 [online loading]
-
+載入中…
 [profile no matches]
-
+尚無對局。
 [online load more]
-
+載入更多
 [profile title]
-
+個人檔案
 [profile guest]
-
+訪客
 [profile playing since %0]
-
+自 %0 開始遊玩
 [profile full profile web]
-
+網頁上的完整個人檔案
 [profile replays note]
-
+重播會在你開啟時從伺服器下載；你儲存在本機的重播仍位於「載入遊戲 → 重播」。
 [profile web profile]
-
+網頁個人檔案
 [maps most played]
-
+最多遊玩
 [maps most liked]
-
+最多喜歡
 [maps newest]
-
+最新
 [maps most downloaded]
-
+最多下載
 [maps any size]
-
+任何大小
 [maps up to 128]
-
+最大 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 以上
 [maps report broken]
-
+無法正常運作
 [maps report offensive]
-
+冒犯性內容
 [maps report copyright]
-
+他人的作品
 [maps report other]
-
+其他原因
 [maps public]
-
+公開
 [maps unlisted]
-
+不公開列出
 [maps private]
-
+私人
 [maps cannot read file]
-
+無法讀取地圖檔案。
 [maps file too large]
-
+地圖檔案太大，無法分享。
 [maps saved for next room]
-
+地圖已下載；你開啟房間時將會使用它。
 [maps download failed]
-
+無法下載地圖。
 [maps %0 colonies]
-
+%0 個殖民地
 [maps version %0]
-
+版本 %0
 [maps updated %0]
-
+更新於 %0
 [maps downloading]
-
+正在下載地圖…
 [maps like needs account]
-
+需要登入帳號才能喜歡地圖。
 [maps report sent]
-
+謝謝你；管理員會進行查看。
 [maps select a map]
-
+選擇地圖以查看詳細資訊。
 [maps by %0]
-
+作者：%0
 [maps stats %0 %1 %2]
-
+▶ %0 次遊玩 · ⬇ %1 次下載 · ♥ %2
 [maps use in room]
-
+在房間中使用
 [maps liked]
-
+已喜歡
 [maps like]
-
+喜歡
 [maps map page]
-
+地圖頁面
 [maps reported]
-
+已檢舉
 [maps report]
-
+檢舉…
 [maps report why]
-
+這張地圖有什麼問題？
 [maps search placeholder]
-
+搜尋地圖或作者
 [maps none found]
-
+沒有符合的地圖。
 [maps any colonies]
-
+任何殖民地數
 [maps checking]
-
+檢查中…
 [maps no version yet]
-
+尚未上傳任何版本。
 [maps rejected]
-
+已拒絕
 [maps did not load %0]
-
+地圖未能載入：%0
 [maps unknown reason]
-
+未提供原因
 [maps fix and upload again]
-
+請在編輯器中修正後重新上傳
 [maps uploaded just now]
-
+剛剛上傳
 [maps loading on server]
-
+正在伺服器上載入
 [maps %0 plays]
-
+%0 次遊玩
 [maps hidden]
-
+已隱藏
 [maps upload again]
-
+重新上傳…
 [maps delete]
-
+刪除
 [maps update]
-
+更新…
 [maps upload a map]
-
+上傳地圖…
 [maps upload hint]
-
+來自地圖資料夾或編輯器的 .map 檔案
 [maps no maps yet]
-
+你尚未分享任何地圖。
 [maps my maps]
-
+我的地圖
 [maps my maps %0]
-
+我的地圖（%0）
 [maps browse]
-
+瀏覽
 [maps title]
-
+地圖
 [maps browse note %0]
-
+%0 目錄 · 只顯示可在此版本載入的地圖
 [maps visibility note]
-
+公開地圖會出現在「瀏覽」中。不公開列出的地圖可在你的房間中及透過其連結使用。私人地圖只能在你自己的房間中使用。
 [maps use %0]
-
+使用 %0
 [maps %0 kb]
-
+%0 KB
 [maps field title]
-
+標題
 [maps field description]
-
+說明
 [maps who can use it]
-
+誰可以使用
 [maps guests unlisted]
-
+訪客可以分享不公開列出和私人的地圖；登入後才能發布到「瀏覽」。
 [maps visibility help]
-
+不公開列出的地圖可在你的房間中及透過其連結使用；公開地圖也會出現在「瀏覽」中。
 [maps new version of %0]
-
+將此檔案上傳為 %0 的新版本。
 [maps upload]
-
+上傳
 [maps uploading]
-
+上傳中…
 [maps checking detail]
-
+伺服器正在載入地圖並繪製預覽。在此之前無法使用此地圖。
 [maps ready]
-
+就緒
 [maps ready public]
-
+地圖已就緒，並已列於「瀏覽」中。
 [maps ready unlisted]
-
+地圖已就緒。不公開列出的地圖可在你的房間中及透過其連結使用。
 [maps ready private]
-
+地圖已就緒。私人地圖只能在你自己的房間中使用。
 [maps upload failed]
-
+上傳失敗
 [maps server read %0 %1]
-
+伺服器讀取結果為 %0，含 %1 個殖民地。
 [maps continue in background]
-
+關閉
 [maps upload a map title]
-
+上傳地圖
 [maps update map title]
-
+更新地圖
 [maps upload note]
-
+伺服器會先載入每個上傳的檔案，之後才能使用。
 [online just now]
-
+剛剛
 [online today %0]
-
+今天 %0
 [online yesterday]
-
+昨天
 [online sun]
-
+週日
 [online mon]
-
+週一
 [online tue]
-
+週二
 [online wed]
-
+週三
 [online thu]
-
+週四
 [online fri]
-
+週五
 [online sat]
-
+週六
 [online %0 weeks ago]
-
+%0 週前
 [online %0 months ago]
-
+%0 個月前
 [online %0 years ago]
-
+%0 年前
 [maps share online]
-
+線上分享…
 [maps mine]
-
+我的
 [results waiting for players]
-
+正在等待其他玩家離開…
 [results waiting detail]
-
+所有人離開對局後才會記錄結果。
 [results waiting slow]
-
+失去連線的玩家最多有 3 分鐘可以返回。結果會顯示在你的紀錄和對局頁面上。
 [results verifying slow]
-
+驗證時間比平常更久。結果會顯示在你的紀錄和對局頁面上。
 [results rematch]
-
+再戰一局
 [results join rematch %0]
-
+加入 %0 的再戰
 [hub profile history]
-
+個人檔案與紀錄
 [hub my maps]
-
+我的地圖
 [hub leaderboard %0]
-
+排行榜 · %0
 [hub leaderboard empty]
-
+尚無排名玩家。
 [hub guests not ranked]
-
+訪客不列入排名。登入後即可出現在這裡。
 [hub full leaderboard]
-
+完整排行榜
 [settings %0 is no longer linked.]
-
+已解除 %0 的連結。
 [room map read failed]
-
+無法讀取此地圖檔案。
 [room map upload failed]
-
+無法將地圖分享給房間。
 [room map upload failed %0]
-
+無法將地圖分享給房間：%0
 [room uploading map]
-
+正在將地圖分享給房間…
 [room premade map shared]
-
+房間中的每個人都會玩這個地圖檔案；它會在對局前下載。
 [room take a seat to play]
-
+選擇一個空位入座即可遊玩
 [room waiting for a seat]
-
+所有座位都已滿。有空位時即可入座。
 [room not seated]
-
+未入座
 [room copied]
-
+已複製
 [room copy failed]
-
+無法複製
 [room closed title]
-
+房間已關閉
 [room removed title]
-
+已被移出房間
 [room back to online]
-
+返回線上
 [leave match]
-
+離開對局
 [leave match title]
-
+要離開這場對局嗎？
 [leave lan title]
-
+要離開這場區域網路遊戲嗎？
 [leave rated body]
-
+你將輸掉這場積分賽，積分也會下降。其他人會繼續遊戲，而你無法再回來。
 [leave casual body]
-
+這場快速配對將算你落敗。其他人會繼續遊戲，而你無法再回來。
 [leave room body]
-
+你將離開房間的對局，並在紀錄中算作落敗。其他人會繼續遊戲，而你無法再回來。
 [leave lan body]
-
+其他人會在沒有你的情況下繼續遊戲，而你無法再回到這場遊戲。
 [leave match confirm]
-
+離開對局
 [keep playing]
-
+繼續遊戲
 [results team]
-
+隊伍
 [results quick unrated]
-
+快速配對 · 不計積分
 [conn card cannot keep up]
-
+你的裝置跟不上這場對局
 [conn card cannot keep up body]
-
+你的裝置重播對局的速度比對局進行的速度慢，因此無法追上。你可以離開對局，或降低圖形設定後繼續等待。
 [conn card not gaining]
-
+沒有進展
 [results reason opponents left]
-
+你的對手已離開對局。
 [results reason victory]
-
+所有敵對殖民地都已被擊敗。
 [results reason defeat]
-
+你的殖民地已被擊敗。
 [results reason you left]
-
+你已離開對局，算作落敗。
 [results final after end]
-
+對局結束後才會有最終結果。
 [pause none left]
-
+沒有剩餘的暫停次數
 [pause game left %0]
-
+暫停遊戲（剩餘 %0）
 [pause by %0]
-
+由 %0 暫停
 [pause by %0 resumes in %1]
-
+由 %0 暫停 · %1 後恢復
 [turn too many actions]
-
+動作過多：部分動作仍在等待傳送
 [turn no pauses left]
-
+你在這場對局中已沒有剩餘的暫停次數
 [turn pause time used %0]
-
+%0 已用完所有暫停時間：遊戲繼續
 [room seats one person %0 %1]
-
+1 名玩家 · %0 個 AI · %1 個空位
 [room rules otherwise standard]
-
+其他規則皆與「標準」相同。
 [room browser link]
-
+瀏覽器玩家連結
 [room browser link hint]
-
+使用瀏覽器的玩家貼上此連結即可加入。
 [room browser link code %0]
-
+使用瀏覽器的玩家貼上此連結即可加入。他們的遊戲會顯示代碼 %0。
 [room copy link]
-
+複製連結
 [room lan open seat detail]
-
+此網路上的任何人都能入座
 [room close title]
-
+要關閉房間嗎？
 [room close body one]
-
+離開將為所有人關閉房間，包括房間中的另一位玩家。
 [room close body %0]
-
+離開將為所有人關閉房間，包括房間中的其他 %0 位玩家。
 [room close confirm]
-
+關閉房間
 [room stay]
-
+留下
 [room colours changed]
-
+新地圖為座位分配了新顏色。開始前請確認你的顏色。
 [room copy by hand]
-
+複製失敗。請自行複製邀請：
 [room copy by hand close]
-
+關閉
 [room copy by hand touch]
-
+長按連結，然後選擇「複製」。
 [room copy by hand keys]
-
+連結已選取：請按 Ctrl+C（Mac 上為 ⌘C）。
 [room code]
-
+代碼
 [online under a minute]
-
+不到一分鐘
 [online about %0 min]
-
+約 %0 分鐘
 [online %0 s]
-
+%0 秒
 [online %0 min %1 s]
-
+%0 分 %1 秒
 [qm ai opponent %0]
-
+AI 對手：%0
 [match relay connected]
-
+已連線到遊戲伺服器
 [room picker title]
-
+選擇地圖
 [room picker for one]
-
+適合房間中的 1 名玩家
 [room picker for %0]
-
+適合房間中的 %0 名玩家
 [room picker generated]
-
+產生
 [room picker premade]
-
+預製
 [room picker catalog]
-
+目錄
 [room picker size]
-
+大小
 [room picker colonies]
-
+殖民地
 [room picker fair]
-
+每個殖民地都有公平的起點
 [room picker does not fit]
-
+不適合此大小；請換一個
 [room picker preparing]
-
+正在準備預覽…
 [room picker generated note]
-
+每種地形都會給每個殖民地同樣好的起點，而且伺服器會為所有人產生相同的地圖。
 [room picker players %0]
-
+%0 名玩家
 [room picker unreadable]
-
+無法讀取
 [room picker no premade]
-
+找不到預製地圖。
 [room picker too small %0]
-
+此地圖的殖民地數少於房間中的 %0 名玩家。
 [room picker pick premade]
-
+選擇地圖即可在此預覽。
 [room picker catalog intro]
-
+其他玩家分享的地圖。開啟一張並選擇「在房間中使用」。
 [room picker browse catalog]
-
+瀏覽分享的地圖
 [room picker more options]
-
+更多選項…
 [room picker use]
-
+使用此地圖
 [room map ready title %0]
-
+遊玩 %0
 [room map ready unnamed]
-
+此地圖
 [room map ready body]
-
+建立房間並邀請朋友：房間將使用這張地圖。
 [game draw]
-
+平手
 [settings Show colony skins]
 顯示殖民地外觀
 [settings Turn off to use classic units, swarms and building colors on this device.]
-關閉後，此裝置將使用經典單位、蟲群和建築顏色。
+關閉後，此裝置將使用經典的單位、孢子堆和建築物顏色。
 [settings Hive Mind]
-
+蜂巢意識
 [settings Enable commander shortcuts]
-
+啟用指揮官快捷鍵
 [settings Command your colony without opening a menu.]
-
+不需開啟選單即可指揮你的殖民地。
 [settings Allow supervision for new commands]
-
+允許監督新指令
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+指揮官可以跟進常駐指令。跟進會使用點數；已設定的指令不需點數也會持續執行。
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+預設快捷鍵：Ctrl+Enter 下達指令；Ctrl+Shift+Enter 停止指揮官的工作。可在「控制」中變更。常駐指令卡片另有暫停和取消控制項。
 [settings Commander account and credits]
-
+指揮官帳號與點數
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+在瀏覽器中管理點數和購買項目。積分賽中允許使用指揮官協助。
 [open commander]
-
+開啟指揮官
 [stop commander]
-
+停止指揮官
 [settings Recording]
-
+錄影
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+將你的遊戲錄製為有聲音的 MP4 影片。錄影需要含 libx264 和 AAC 編碼器的 FFmpeg。
 [settings FFmpeg is ready.]
-
+FFmpeg 已就緒。
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+無法使用 FFmpeg，因此錄影已關閉。請安裝 FFmpeg 並確認它在你的 PATH 中，然後再檢查一次。
 [settings Check for FFmpeg again]
-
+再次檢查 FFmpeg
 [settings Checking for FFmpeg…]
-
+正在檢查 FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+快捷鍵：%0。在選單和編輯器中也可使用。
 [settings Change the hotkey]
-
+變更快捷鍵
 [settings Recordings are saved in %0]
-
+錄影儲存在 %0
 [toggle recording]
-
+開始或停止錄影
 [File selection is unavailable.]
-
+無法選擇檔案。
 [Saving custom AI…]
-
+正在儲存自訂 AI…
 [Could not read the selected JavaScript file.]
-
+無法讀取所選的 JavaScript 檔案。
 [Custom AI library saved.]
-
+自訂 AI 庫已儲存。
 [Storage could not be saved. The previous library is retained.]
-
+無法儲存資料。先前的 AI 庫已保留。
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+匯入單一 JavaScript AI 檔案，然後在設定本機遊戲時選擇它。
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+匯入時會在 Glob2 中保留一份副本。「更新」會為之後的遊戲替換該副本；存檔會保留原本的 AI。
 [Waiting for file selection or storage…]
-
+正在等待選擇檔案或儲存…
 [Import JavaScript AI]
-
+匯入 JavaScript AI
 [Link development file]
-
+連結開發檔案
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+連結的檔案會在遊戲開始時讀取。開始新遊戲前請重新建置。移除連結不會刪除你的檔案。
 [Example AI and authoring guide]
-
+範例 AI 與撰寫指南
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+尚無自訂 AI。匯入打包好的 .js 檔案即可開始。
 [Relink]
-
+重新連結
 [Update]
-
+更新
 [Validate]
-
+驗證
 [AI startup and persistent globals are valid.]
-
+AI 啟動程序和持久全域變數皆有效。
 [Remove from library]
-
+從 AI 庫移除
 [AI telemetry]
-
+AI 遙測
 [No accessible AI telemetry.]
-
+沒有可存取的 AI 遙測資料。
 [Search fields]
-
+搜尋欄位
 [Telemetry unavailable for this recording or controller.]
-
+此錄影或控制器沒有遙測資料。
 [Linked]
-
+已連結
 [Imported]
-
+已匯入
 [Player]
-
+玩家
 [Updated at tick %0]
-
+於第 %0 刻更新
 [No values published yet.]
-
+尚未發布任何數值。
 [No fields match your search.]
-
+沒有符合搜尋的欄位。
 [settings Custom AIs]
-
+自訂 AI
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+在「設定 → 自訂 AI」中新增 JavaScript AI。它們會出現在每個殖民地的 AI 選擇器中。
 [Missing custom AI]
-
+缺少自訂 AI
 [Map repetition failed]
-
+無法重複此地圖。請使用沒有腳本的起始地圖，或減少重複次數和基地數。
 [repeat map horizontally]
 水平重複地圖
 [repeat map vertically]
@@ -4651,596 +4651,596 @@ CPU %0%
 [bases]
 基地
 [bases per colony]
-每個殖民地的基地數；一個基地是地圖原樣中的一支團隊及其建築和單位
+每個殖民地的基地數；一個基地是地圖原樣中的一支隊伍及其建築物和單位
 [stat group population]
-
+人口
 [stat group food]
-
+食物與健康
 [stat group resources]
-
+資源
 [stat group buildings]
-
+建築物
 [stat group military]
-
+軍事
 [stat group map]
-
+領土
 [stat group score]
-
+分數
 [stat overview]
-
+總覽
 [stat overview about]
-
+每個殖民地在整場對局中的數據。數值越高越好的項目會標示最高者；點擊欄位標題可查看其隨時間的變化。
 [stat population]
-
+人口
 [stat population about]
-
+殖民地存活的單位數量：工人、探索者和士兵的總和。
 [stat births]
-
+出生單位
 [stat births about]
-
+孢子堆產生新單位的速度。拆分後可分別查看工人、探索者和士兵。
 [stat deaths]
-
+損失單位
 [stat deaths about]
-
+殖民地損失單位的速度，不論原因：戰鬥、飢餓、清除時受傷或受困。
 [stat net growth]
-
+人口成長
 [stat net growth about]
-
+出生單位減去損失單位。大於零表示殖民地在成長；小於零表示在縮減。
 [stat death causes]
-
+死因
 [stat death causes about]
-
+殖民地單位的死因：戰鬥、飢餓、清除資源時受傷、受困無路可出或其他原因。
 [stat conversions]
-
+淨招降數
 [stat conversions about]
-
+從其他殖民地招降的單位減去被其他殖民地招降的單位。當另一個殖民地讓單位吃得更好時，單位就會投靠過去。
 [stat hunger]
-
+食物儲備
 [stat hunger about]
-
+殖民地單位體內攜帶的食物量。每個單位依其剩餘食物儲備分類：幾乎耗盡（四分之一以下）、偏低（一半以下）、半飽（四分之三以下）或吃飽。單位的儲備減少時會去找客棧，因此殖民地總會有一些偏低的單位。
 [stat health]
-
+健康
 [stat health about]
-
+殖民地單位的健康程度。每個單位依其剩餘生命值分類：危急（四分之一以下）、重傷（一半以下）、輕傷（四分之三以下）或健康。
 [stat seeking food]
-
+覓食中的單位
 [stat seeking food about]
-
+停下工作去找客棧的單位。其中生命值未滿的會被計為衰弱中。
 [stat in care]
-
+用餐或治療中的單位
 [stat in care about]
-
+在客棧內用餐或在醫院內接受治療、因此沒有工作的單位。
 [stat wheat harvested]
-
+小麥收成
 [stat wheat harvested about]
-
+工人採收的小麥份數。客棧會把小麥做成餐點。
 [stat wheat stored]
-
+庫存小麥
 [stat wheat stored about]
-
+存放在殖民地建築物中、隨時可供應或使用的小麥。
 [stat meals]
-
+供應餐點
 [stat meals about]
-
+殖民地客棧供應給自己單位和其他殖民地來客的餐點。
 [stat starvation]
-
+餓死數
 [stat starvation about]
-
+因為無法及時找到食物而死亡的單位。
 [stat healing]
-
+恢復生命值
 [stat healing about]
-
+殖民地醫院為受傷單位恢復的生命值。
 [stat gathered]
-
+資源採集
 [stat gathered about]
-
+工人採集的各種資源份數。拆分後可查看每種資源。
 [stat stored]
-
+庫存資源
 [stat stored about]
-
+存放在殖民地建築物中的資源。拆分後可查看每種資源。
 [stat spending]
-
+資源用途
 [stat spending about]
-
+送達的資源用在哪裡：餐點、新單位、塔的彈藥、新建築物或升級。
 [stat delivered]
-
+資源送達
 [stat delivered about]
-
+工人運進建築物的份數。
 [stat traded]
-
+淨交易
 [stat traded about]
-
+透過市場收到的資源減去送出的資源。
 [stat buildings]
-
+現存建築物
 [stat buildings about]
-
+殖民地擁有的已完成建築物。拆分後可查看每種建築物。
 [stat construction]
-
+完成的建築工作
 [stat construction about]
-
+完成的建築工作：新建築物、升級和修復。
 [stat buildings lost]
-
+損失建築物
 [stat buildings lost about]
-
+被敵人摧毀或被殖民地自行拆除的建築物。
 [stat blocked buildings]
-
+無法進入的建築物
 [stat blocked buildings about]
-
+入口被堵住，單位無法進出的建築物。
 [stat attack]
-
+攻擊力
 [stat attack about]
-
+殖民地士兵整體戰鬥力的分數：攻擊的力道和速度。
 [stat defence]
-
+防禦力
 [stat defence about]
-
+殖民地防禦塔整體火力的分數。
 [stat hit points]
-
+總生命值
 [stat hit points about]
-
+殖民地所有單位和建築物的生命值總和。
 [stat damage dealt]
-
+造成傷害
 [stat damage dealt about]
-
+殖民地對敵方單位和建築物造成的傷害。拆分後可查看士兵、魔法和塔。
 [stat damage taken]
-
+承受傷害
 [stat damage taken about]
-
+敵人對殖民地單位和建築物造成的傷害。
 [stat damage traded]
-
+傷害差額
 [stat damage traded about]
-
+造成傷害減去承受傷害。大於零表示殖民地在戰鬥中佔上風。
 [stat combat deaths]
-
+戰死單位
 [stat combat deaths about]
-
+此殖民地被敵人殺死的單位。拆分後可分別查看工人、探索者和士兵。
 [stat accuracy]
-
+命中射擊
 [stat accuracy about]
-
+殖民地的塔和探索者發射的攻擊中命中目標的比例。
 [stat training]
-
+訓練
 [stat training about]
-
+單位前往學校、兵營、跑道和游泳池學習技能的次數。
 [stat skills]
-
+獲得技能
 [stat skills about]
-
+殖民地單位透過訓練獲得的技能等級。
 [stat growth nearby]
-
+殖民地附近的資源生長
 [stat growth nearby about]
-
+在殖民地建築物 32 格內生長的小麥、木材和其他資源量，以生長點數而非份數計算。拆分後可查看資源生長處與基地的距離。
 [stat growth map]
-
+全地圖的資源生長
 [stat growth map about]
-
+整張地圖上資源的生長量，以生長點數而非份數計算。每個殖民地的數值都相同。
 [stat stranded]
-
+無法移動的單位
 [stat stranded about]
-
+被困住、沒有空格可以走動的單位。
 [stat cleared]
-
+清除的資源
 [stat cleared about]
-
+工人在清除區域中為騰出空間而移除的資源。
 [stat prestige]
-
+聲望
 [stat prestige about]
-
+殖民地的聲望，由最高等級的建築物獲得。設有聲望目標的對局會在達到目標時結束。
 [stat band combat]
-
+戰鬥
 [stat band starvation]
-
+飢餓
 [stat band clearing]
-
+清除受傷
 [stat band trapped]
-
+受困
 [stat band other]
-
+其他
 [stat band starving]
-
+幾乎耗盡
 [stat band hungry]
-
+偏低
 [stat band peckish]
-
+半飽
 [stat band fed]
-
+吃飽
 [stat band critical]
-
+危急
 [stat band wounded]
-
+重傷
 [stat band hurt]
-
+輕傷
 [stat band healthy]
-
+健康
 [stat band weakening]
-
+衰弱中
 [stat band looking]
-
+尋找客棧
 [stat band eating]
-
+用餐中
 [stat band healing]
-
+治療中
 [stat band meals]
-
+餐點
 [stat band new units]
-
+新單位
 [stat band ammunition]
-
+彈藥
 [stat band construction]
-
+新建築物
 [stat band upgrades]
-
+升級
 [stat band built]
-
+建造
 [stat band upgraded]
-
+升級
 [stat band repaired]
-
+修復
 [stat band destroyed]
-
+被摧毀
 [stat band demolished]
-
+拆除
 [stat band melee]
-
+士兵
 [stat band magic]
-
+魔法
 [stat band towers]
-
+塔
 [stat band within 8]
-
+8 格以內
 [stat band 8 to 16]
-
+8 至 16 格
 [stat band 16 to 32]
-
+16 至 32 格
 [stat unit units]
-
+單位
 [stat unit wheat]
-
+小麥
 [stat unit meals]
-
+餐點
 [stat unit hit points]
-
+生命值
 [stat unit resources]
-
+資源
 [stat unit buildings]
-
+建築物
 [stat unit strength]
-
+分數
 [stat unit damage]
-
+傷害
 [stat unit shots]
-
+射擊
 [stat unit visits]
-
+次數
 [stat unit skills]
-
+技能等級
 [stat unit prestige]
-
+聲望
 [stat axis percent of %0]
-
+佔 %0 的百分比
 [stat axis share of all teams]
-
+佔所有殖民地的百分比
 [stat axis percent of units]
-
+佔殖民地單位的百分比
 [stat axis %0 per minute per 100 units]
-
+每分鐘 %0，以殖民地每 100 個單位計
 [stat axis %0 per 100 units]
-
+殖民地每 100 個單位的 %0
 [stat axis %0 per minute]
-
+每分鐘 %0
 [stat axis %0 so far]
-
+%0，累計
 [stat axis %0 minute average]
-
+%0 分鐘平均
 [stat view per minute]
-
+每分鐘
 [stat view total]
-
+累計
 [stat view %0 min]
-
+%0 分鐘
 [stat view split]
-
+依種類拆分
 [stat view percentages]
-
+佔總數百分比
 [stat view percent of units]
-
+佔殖民地百分比
 [stat view per 100 units]
-
+相對殖民地規模
 [stat view share]
-
+佔所有殖民地比例
 [stat view highlight none]
-
+標示：無
 [stat column peak units]
-
+最多單位
 [stat column born]
-
+出生
 [stat column lost]
-
+損失
 [stat column wheat]
-
+小麥
 [stat column damage dealt]
-
+造成傷害
 [stat column damage taken]
-
+承受傷害
 [stat column built]
-
+建造
 [stat column buildings lost]
-
+損失建築
 [stat column prestige]
-
+聲望
 [stat marker wiped out]
-
+最後一個單位陣亡
 [stat marker first combat death]
-
+首個單位戰死
 [stat marker first building destroyed]
-
+首棟建築物被摧毀
 [stat not recorded for this match]
-
+這場對局沒有記錄此項統計。
 [results reason beyond doubt]
-
+勝負已成定局。
 [stat per minute short]
-
+/分
 [stat page colony]
-
+殖民地
 [stat page %0 of %1]
-
+第 %0/%1 頁  >
 [stat band workers]
-
+工人
 [stat band explorers]
-
+探索者
 [stat band warriors]
-
+士兵
 [stat unit deaths]
-
+死亡
 [stat unit growth]
-
+生長
 [stat view by unit type]
-
+依單位類型
 [stat view by state]
-
+依狀態
 [stat view by resource]
-
+依資源
 [stat view by building]
-
+依建築物
 [stat view by work]
-
+依工作類型
 [stat view by cause]
-
+依原因
 [stat view by weapon]
-
+依武器
 [stat view by distance]
-
+依距離
 [stat nothing to show]
-
+沒有可顯示的內容：這場對局中沒有發生此情況。
 [stat %0 nothing]
-
+%0（無）
 [Match]
-
+對局
 [Time limit]
-
+時間限制
 [Alliances can change]
-
+可變更聯盟
 [Reveal terrain]
-
+顯示地形
 [Starting unit level]
-
+初始單位等級
 [Starting stockpile]
-
+初始庫存
 [Regrowth]
-
+再生
 [Building strength]
-
+建築強度
 [Wounded units retreat]
-
+受傷單位撤退
 [Units can die]
-
+單位會死亡
 [Unit training]
-
+單位訓練
 [No stockpile]
-
+無
 [No glass cannon]
-
+關閉
 [How quickly harvested resources grow back and spread.]
-
+已採集的資源重新生長和擴散的速度。
 [Units must eat to keep working.]
-
+單位必須進食才能持續工作。
 [Summary]
-
+摘要
 [All rules]
-
+所有規則
 [Show all rules]
-
+顯示所有規則
 [Choose a ruleset]
-
+選擇規則集
 [Reset to %0]
-
+重設為 %0
 [ruleset one change %0]
-
+%0 + 1 項變更
 [ruleset changes %0 %1]
-
+%0 + %1 項變更
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+這場對局無法結束。請開啟聲望勝利或設定時間限制。
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+聲望通常在 13 至 28 分鐘後才會出現，因此 30 分鐘的限制常以平手收場。
 [Blitz]
-
+閃電戰
 [ruleset blitz description]
-
+快速開局，提早結束
 [Gentle]
-
+溫和
 [ruleset gentle description]
-
+適合第一場對局的寬鬆規則
 [Sandbox]
-
+沙盒
 [ruleset sandbox description]
-
+無戰鬥、無飢餓，自由建造
 [Bloodbath]
-
+血戰
 [ruleset bloodbath description]
-
+脆弱而無畏的軍隊
 [Siege]
-
+圍城
 [ruleset siege description]
-
+堅固城牆與持久戰
 [Lean years]
-
+荒年
 [ruleset lean years description]
-
+資源幾乎不會再生
 [Gold rush]
-
+淘金熱
 [ruleset gold rush description]
-
+地圖上的資源就是全部
 [Elite ranks]
-
+精銳部隊
 [ruleset elite ranks description]
-
+開局即受過訓練，無法再訓練
 [Shifting alliances]
-
+多變聯盟
 [ruleset shifting alliances description]
-
+60 分鐘競賽，隊伍可以變更
 [Probability victory]
-
+勝率判勝
 [Off (play it out)]
-
+關閉（打到最後）
 [95% sure]
-
+95% 把握
 [97% sure]
-
+97% 把握
 [99% sure]
-
+99% 把握
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+當模型達到所選的把握程度時結束對局。觀戰者可在統計中看到預測勝率。
 [Changed from %0: %1]
-
+已從 %0 變更：%1
 [Combat is off, so the rules below have no effect.]
-
+戰鬥已關閉，因此下列規則沒有作用。
 [%0 more rules are at their Standard values.]
-
+另有 %0 條規則維持「標準」值。
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+玩家從一開始就能看到地圖地形；敵方單位仍然隱藏。
 [Each team starts with extra resources in its shared pool.]
-
+每個隊伍開局時共用資源池中有額外資源。
 [Units hit harder but have less HP and armor.]
-
+單位攻擊更強，但生命值和護甲較低。
 [Teams can attack each other. Turn off for a peaceful match.]
-
+隊伍之間可以互相攻擊。關閉即可進行和平對局。
 [Hurt units go back to heal instead of fighting to the death.]
-
+受傷單位會返回治療，而不是戰鬥到死。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+單位生命值耗盡時會死亡。關閉後單位會停在 1 點生命值。
 [Units gain levels at schools.]
-
+單位可在學校提升等級。
 [stat group work]
-
+工人時間
 [stat worker time]
-
+工人如何分配時間
 [stat worker time about]
-
+殖民地工人每一刻在做什麼：為建築物工作、在旗幟處工作、訓練、用餐、治療、因沒有空閒的客棧或醫院而飢餓或受傷地等待，或無事可做而閒置。健康的殖民地會讓大多數工人在工作，少數閒置，沒有人在等待。
 [stat idle workers]
-
+閒置工人
 [stat idle workers about]
-
+工人時間中無事可做的比例。數值高表示工人多於工作；接近零表示每個工人都很忙，可能還有工作在等待。
 [stat work by job]
-
+工人在做什麼工作
 [stat work by job about]
-
+為各類建築物供應資源的工人數：孢子堆（產生新單位）、客棧（製作餐點）、建造或升級中的建築物，或其他建築物，例如塔、學校和兵營。
 [stat haul distance]
-
+與資源的距離
 [stat haul distance about]
-
+採集中的工人與其供應的建築物之間的平均直線距離，以地圖格數計算。
 [stat hauling]
-
+取得與搬運
 [stat hauling about]
-
+供應建築物的工人如何分配於走向資源、採集資源、搬運回去，以及送達或等待可取得的資源。大部分時間都在走路，所以資源越近，完成的工作越多。
 [stat eating time]
-
+去用餐的工人
 [stat eating time about]
-
+離開工作去用餐的工人數：走向客棧、在客棧內用餐，或飢餓卻沒有客棧可以接納。沒有客棧可去的工人，表示殖民地已超出客棧或其食物的負荷。
 [stat inn distance]
-
+與客棧的距離
 [stat inn distance about]
-
+飢餓的工人在前往客棧途中與目標客棧的平均直線距離，以地圖格數計算。整趟往返約為此值的兩倍。數值高表示客棧離工人工作的地方很遠。
 [stat warriors]
-
+士兵
 [stat warriors about]
-
+殖民地擁有的士兵數量。拆分後可查看有多少在家園附近、在敵方殖民地附近或在野外。靠近雙方殖民地的區域算作家園。
 [stat warrior level]
-
+士兵平均攻擊等級
 [stat warrior level about]
-
+殖民地士兵的平均攻擊等級，攻擊速度和攻擊力各佔一半，採用遊戲顯示的 1 至 4 級。兵營可提升此值；未受訓練的新士兵會拉低此值。
 [stat warrior duties]
-
+士兵在做什麼
 [stat warrior duties about]
-
+殖民地士兵如何分配：被派往攻擊旗幟的、傷重到離開戰場前往醫院的（包括正在治療的），以及空閒的。
 [stat intruders]
-
+家園中的敵方士兵
 [stat intruders about]
-
+位於殖民地建築物 16 格內的敵方士兵數量。兩個殖民地彼此靠近時，雙方都會把對方的守軍計入。
 [stat home defence]
-
+家園防禦力差距
 [stat home defence about]
-
+殖民地在自家建築物附近的士兵戰力減去該處敵方士兵的戰力，每名士兵及其每個攻擊等級都計入。小於零表示殖民地在家園處於劣勢。
 [stat combat death places]
-
+單位戰死地點
 [stat combat death places about]
-
+殖民地單位被殺時的位置：在自己的建築物附近、在敵方建築物附近，或在殖民地之間的野外。在家園的損失表示殖民地正遭受攻擊；在敵方殖民地的損失表示正在進攻。靠近雙方殖民地的區域算作家園。
 [stat band working]
-
+工作中
 [stat band flag work]
-
+在旗幟處
 [stat band idle]
-
+閒置
 [stat band training]
-
+訓練中
 [stat band unserved]
-
+沒有空閒的客棧或醫院
 [stat band swarms]
-
+孢子堆
 [stat band inns]
-
+客棧
 [stat band sites]
-
+建造與升級
 [stat band other buildings]
-
+其他建築物
 [stat band to resource]
-
+走向資源
 [stat band harvesting]
-
+採集中
 [stat band carrying]
-
+搬運回去
 [stat band delivering]
-
+送達或等待
 [stat band walking to inn]
-
+走向客棧
 [stat band no inn]
-
+沒有空閒的客棧
 [stat band at home]
-
+在家園
 [stat band at enemy]
-
+在敵方殖民地
 [stat band in the open]
-
+在野外
 [stat band war flag]
-
+在攻擊旗幟
 [stat band seeking healing]
-
+尋求治療
 [stat band free]
-
+空閒
 [stat unit workers]
-
+工人
 [stat unit worker time]
-
+工人時間
 [stat unit working workers]
-
+供應建築物的工人
 [stat unit squares]
-
+格
 [stat unit warriors]
-
+士兵
 [stat unit attack level]
-
+攻擊等級
 [stat unit enemy warriors]
-
+敵方士兵
 [stat unit strength count]
-
+戰力
 [stat view by place]
-
+依地點

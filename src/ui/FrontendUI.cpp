@@ -279,7 +279,21 @@ Element actions(std::vector<MenuAction> items, const Presentation &p)
 			buttons.push_back(constrained({p.pt(90), 0, Constraints::Unbounded, Constraints::Unbounded},
 										  padding(Insets::symmetric(p.pt(10), 0), button(item.key, item.label, item.action, options))));
 		}
-		return row(std::move(buttons), {p.pt(10), CrossAlign::Center, MainAlign::End});
+		return adaptive([buttons, gap = p.pt(10)](const LayoutContext &ctx, Size available)
+						{
+							int width = buttons.empty() ? 0 : gap * (int(buttons.size()) - 1);
+							int widest = 1;
+							for (const auto &button : buttons)
+							{
+								const int naturalWidth = button->measure(ctx, {}).w;
+								width += naturalWidth;
+								widest = std::max(widest, naturalWidth);
+							}
+							if (width <= available.w)
+								return row(buttons, {gap, CrossAlign::Center, MainAlign::End});
+							// Large text and long translated labels need more than one row.
+							return wrap(buttons, {gap, widest});
+						});
 	}
 	std::vector<Element> buttons;
 	for (const auto &item : items)

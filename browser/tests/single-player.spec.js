@@ -39,8 +39,10 @@ test.beforeEach(async ({page}, info) => {
 
 test('starts with a full-page game and restored local storage', async ({page}) => {
   expect(await state(page)).toMatchObject({width:1200, height:900, restore:'ready'});
-  await expect(page.locator('button')).toHaveCount(0);
   await expect(page.locator('#loading')).toHaveAttribute('aria-hidden','true');
+  // The hidden outbound-link notice owns a DOM close button; the game itself
+  // exposes no HTML buttons while its canvas menu is active.
+  await expect(page.getByRole('button')).toHaveCount(0);
   expect(await page.locator('#canvas').boundingBox()).toMatchObject({x:0,y:0,width:1200,height:900});
 });
 
@@ -97,7 +99,7 @@ test('game rules and AI descriptions return to setup, and a finished game return
   // The lobby redesign (#237) folded "other options" into inline Game Rules
   // rows - no separate screen to navigate to and back from anymore.
   await clickControl(page, 'tab/2'); // Game Rules tab.
-  await clickControl(page, 'ruleset/1'); // "Quick clash" tile.
+  await clickControl(page, 'ruleset/quick-clash'); // "Quick clash" tile.
   // The AI profile picker (Players & Teams tab, a colony's Info button) is a
   // screen CustomGameScreen pushes - see CustomGameScreen::showAIProfile.
   // It must actually be pushed, not blocking-executed: the browser host has

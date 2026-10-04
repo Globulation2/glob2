@@ -14,6 +14,8 @@
 
 #ifdef HAVE_FRIBIDI
 #include <fribidi/fribidi.h>
+#else
+#include <BidiText.h>
 #endif
 
 #define MAX_CACHE_SIZE 128
@@ -258,7 +260,7 @@ std::string TrueTypeFont::shapeText(const std::string &text) const
 	delete[] bidiStr;
 	return shaped;
 #else
-	return text;
+	return visualOrder(text);
 #endif
 }
 

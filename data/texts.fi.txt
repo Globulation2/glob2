@@ -1,19 +1,19 @@
 [AI strategy]
-Tekoälytaktiikka
+Tekoälyn strategia
 [start recording]
-
+Aloita tallennus
 [stop recording]
-
+Lopeta tallennus
 [finalizing recording]
-
+Viimeistellään tallennetta…
 [AIMaxima-Summary]
 Tasapainottaa kestävän kasvun ja koulutuksen ja kokoaa sitten armeijat aalloiksi.
 [AIMaxima-Profile]
-Perusstrategia: Käsittelee ruokaa, työläisiä, syntymiä, koulutusta, rakentamista ja taistelua kilpailevina tarpeina. Mitoittaa armeijansa osittain arvioidun vihollisvoiman perusteella ja pyrkii sitten saamaan sen tehokkaasti perille.\n\nTalous ja kehitys: Mitoittaa syntymät ruoan ja työvoiman mukaan, jättää vapaa-aikaa koulutukseen ja lopettaa ylimääräisten työläisten lisäämisen sotilastuotannon ollessa tarpeen. Kasvattaa koulutuskapasiteettia ja välttää liian suuren infrastruktuuriosan sulkemista parannusten vuoksi.\n\nTiedustelu ja päätökset: Arvioi vihollisjoukot näkyvistä yksiköistä ja muistetuista havainnoista sovitetun mallin avulla. Kohteisiin vaikuttavat arvo, etäisyys, tornit, suojaamattomat työläiset ja pitkäjänteisyys. Hedelmätehtävät tukevat ruoan monipuolisuutta ja loikkauksia.\n\nHyökkäys ja puolustus: Varaa sotureita koulutukseen ja puolustukseen, kokoaa sitten soveltuvat maajoukot omien ruokahuoltorakennusten lähelle ennen aaltojen lähettämistä. Reagoi paikallisiin puolustustarpeisiin ja arvioi yhdyskuntaan johtavia lähestymisreittejä.\n\nHyökkäysten pysähtyessä: Neljän peräkkäisen hyökkäysaallon perillepääsyn epäonnistumisen jälkeen siirtyy jatkuvasti täydennettyihin hyökkäyslippuihin. Myös maihinnousuhyökkäykset voivat käyttää jatkuvia vahvistuksia. Varamenettely ei ratkaise kaikkia esteitä ennen kokoontumisen syntymistä.\n\nVertailu muihin tekoälyihin: Yhdistää ruoan, koulutuksen, tiedustelutiedon ja joukkojen lähettämisen tiiviimmin. Cabino painottaa useisiin rakennuksiin hyökkäämistä; Maxima arvioitua tarvetta ja koottujen joukkojen perillepääsyä.\n\nVahvuudet ja heikkoudet: Ylläpitää kasvua ja sotilastappioiden korvaamista sopeutuen ruokapaineeseen ja havaittuihin uhkiin. Tarvitsee ruokaa, koulutuskapasiteettia ja avointa kokoontumistilaa; ruuhkat ja pitkät reitit voivat vaikeuttaa perillepääsyä.\n\nKokeiltava vastataktiikka: Taistele suojaamattomien vehnäalueiden, majatalojen ja parakkien hallinnasta ennen aaltojen kokoontumista. Pidä huollettu puolustusjoukko yhdessä ja häiritse vahvistusreittejä. Varaudu jatkuvaan paineeseen ensimmäisen aallon jälkeen.\n\nTiedustelu: Voima-arviot perustuvat havaintoihin ja havaintohistoriaan, eivät piilossa olevien vihollisjoukkojen kokonaismääriin.
+Perusstrategia: Käsittelee ruokaa, työläisiä, syntymiä, koulutusta, rakentamista ja taistelua kilpailevina tarpeina. Mitoittaa armeijansa osittain arvioidun vihollisvoiman perusteella ja pyrkii sitten saamaan sen tehokkaasti perille.\n\nTalous ja kehitys: Mitoittaa syntymät ruoan ja työvoiman mukaan, jättää vapaa-aikaa koulutukseen ja lopettaa ylimääräisten työläisten lisäämisen sotilastuotannon ollessa tarpeen. Kasvattaa koulutuskapasiteettia ja välttää liian suuren infrastruktuuriosan sulkemista parannusten vuoksi.\n\nTiedustelu ja päätökset: Arvioi vihollisjoukot näkyvistä yksiköistä ja muistetuista havainnoista sovitetun mallin avulla. Kohteisiin vaikuttavat arvo, etäisyys, tornit, suojaamattomat työläiset ja pitkäjänteisyys. Hedelmätehtävät tukevat ruoan monipuolisuutta ja loikkauksia.\n\nHyökkäys ja puolustus: Varaa sotureita koulutukseen ja puolustukseen, kokoaa sitten soveltuvat maajoukot omien ruokahuoltorakennusten lähelle ennen aaltojen lähettämistä. Reagoi paikallisiin puolustustarpeisiin ja arvioi siirtokuntaan johtavia lähestymisreittejä.\n\nHyökkäysten pysähtyessä: Neljän peräkkäisen hyökkäysaallon perillepääsyn epäonnistumisen jälkeen siirtyy jatkuvasti täydennettyihin hyökkäyslippuihin. Myös maihinnousuhyökkäykset voivat käyttää jatkuvia vahvistuksia. Varamenettely ei ratkaise kaikkia esteitä ennen kokoontumisen syntymistä.\n\nVertailu muihin tekoälyihin: Yhdistää ruoan, koulutuksen, tiedustelutiedon ja joukkojen lähettämisen tiiviimmin. Cabino painottaa useisiin rakennuksiin hyökkäämistä; Maxima arvioitua tarvetta ja koottujen joukkojen perillepääsyä.\n\nVahvuudet ja heikkoudet: Ylläpitää kasvua ja sotilastappioiden korvaamista sopeutuen ruokapaineeseen ja havaittuihin uhkiin. Tarvitsee ruokaa, koulutuskapasiteettia ja avointa kokoontumistilaa; ruuhkat ja pitkät reitit voivat vaikeuttaa perillepääsyä.\n\nKokeiltava vastataktiikka: Taistele suojaamattomien vilja-alueiden, majatalojen ja parakkien hallinnasta ennen aaltojen kokoontumista. Pidä huollettu puolustusjoukko yhdessä ja häiritse vahvistusreittejä. Varaudu jatkuvaan paineeseen ensimmäisen aallon jälkeen.\n\nTiedustelu: Voima-arviot perustuvat havaintoihin ja havaintohistoriaan, eivät piilossa olevien vihollisjoukkojen kokonaismääriin.
 [%0 has left the game]
 %0 on poistunut pelistä.
 [%0 level %1]
-%0 Taso %1
+%0, taso %1
 [%0 units can't access building]
 %0 yksikköä ei pääse rakennukseen
 [%0 units can't access flag]
@@ -29,23 +29,23 @@ Perusstrategia: Käsittelee ruokaa, työläisiä, syntymiä, koulutusta, rakenta
 [%0 units too far from flag]
 %0 yksikköä on liian kaukana lipusta
 [%0 units too far from fruit]
-%0 yksikköä liian kaukana hedelmistä
+%0 yksikköä on liian kaukana hedelmistä
 [%0 units too far from resource]
-%0 yksikköä liian kaukana resurssista
+%0 yksikköä on liian kaukana resurssista
 [%0 units too low level]
-%0:n yksikön taso liian matala
+%0 yksikön taso on liian matala
 [%0% Uploaded]
-%0% ladattu
+%0 % lähetetty
 [%0's team unit got converted to your team]
-%0:n joukkueen yksikkö siirtyi sinun joukkueeseesi.
+Yksikkö joukkueesta %0 siirtyi joukkueeseesi.
 [abreaviation explanation A]
 A: Liittolaiset
 [abreaviation explanation C]
 C: Lähetä chat-viestit näille pelaajille
 [abreaviation explanation fV]
-fV: Näytä majatalot (yksiköiden käännyttämistä varten)
+fV: Näytä majatalot (yksiköiden houkuttelemiseksi loikkaamaan)
 [abreaviation explanation mV]
-mV: Näytä torit (hedelmien vaihtamista varten)
+mV: Näytä kaupat (hedelmien vaihtamista varten)
 [abreaviation explanation V]
 V: Näytä kaikki rakennukset
 [add map]
@@ -53,11 +53,11 @@ Lisää kartta
 [add shortcut]
 Lisää pikanäppäin
 [AI Descriptions]
-AI:n kuvaukset
+Tekoälyjen kuvaukset
 [AI]
-AI
+Tekoäly
 [ai]
-AI
+Tekoäly
 [AICastor-Description]
 Rakentaa ja kouluttaa sovittaen kasvun ruoansaantiin.
 [AICastor]
@@ -67,7 +67,7 @@ Kasvattaa väestöä, kouluttaa sotureita ja hyökkää sitten.
 [AINicowar]
 Nicowar
 [AINone-Description]
-None ei tee mitään.
+Ei tee mitään.
 [AINone]
 Ei mitään
 [AINumbi-Description]
@@ -135,7 +135,7 @@ askelpalautin
 [barracks explanation 2]
 taistelukykyä
 [barracks explanation]
-Parantaa sotureittesi
+Parantaa soturiesi
 [barracks]
 Parakki
 [beach size]
@@ -143,9 +143,9 @@ rannan koko
 [break]
 break
 [briefing]
-Ohjeistaminen
+Tehtävänanto
 [build %0 level %1]
-Rakentaminen: %0 Taso %1
+Rakenna %0, taso %1
 [Build]
 Rakentaminen
 [Building Defaults]
@@ -159,15 +159,15 @@ Shift + Raahaus = Laatikko
 [Building Tool Line Explanation]
 Ctrl + Raahaus = Viiva
 [Buildings]
-Rakennuksia
+Rakennukset
 [Bullets]
-Luotien määrä
+Ammukset
 [campaign editor]
 Kampanjaeditori
 [campaign]
 Kampanja
 [Can't connect, can't find host]
-Yhdistäminen epäonnistui, pelin aloittajaa ei löydy
+Yhdistäminen epäonnistui, isäntää ei löydy
 [Can't host game, port %0 in use]
 Pelin luonti epäonnistui, portti %0 käytössä
 [Can't join game, game has started]
@@ -197,17 +197,17 @@ Valitse peli
 [choose map]
 Valitse kartta
 [clear area]
-Keräämisalue
+Raivausalue
 [farm area]
 Viljelyalue
 [Clearing:]
-Keräämässä:
+Raivaamassa:
 [clearingflag explanation 2]
 valitulta alueelta
 [clearingflag explanation]
 Poistaa resursseja
 [clearingflag]
-Keräämislippu
+Raivauslippu
 [closed]
 Ei käytössä
 [combined vision]
@@ -255,13 +255,13 @@ Vahinko
 [Damaged Map]
 Haavoittuneiden kartta
 [decrease units working]
-Laske työskentelevien määrää
+Vähennä työskenteleviä yksiköitä
 [Defeat Your Oppenents]
-Kukista vastustajasi.
+Kukista vastustajasi
 [defencetower explanation 2]
-yksiköitä ja rakennuksia
+yksiköitä tai rakennuksia
 [defencetower explanation]
-Tulittaa vihollisen
+Tulittaa lähellä olevia vihollisen
 [defencetower]
 Puolustustorni
 [Defense Map]
@@ -287,11 +287,11 @@ Ei kanna mitään
 [down]
 alas
 [edit map]
-Muokkaa
+Muokkaa karttaa
 [editing map]
 Muokataan karttaa
 [editor shortcuts]
-Editori
+Editorin pikanäppäimet
 [editor]
 Editori
 [end]
@@ -349,11 +349,11 @@ f8
 [f9]
 f9
 [Fertility Map]
-Hedelmällisyys
+Hedelmällisyyskartta
 [Flag Defaults]
 Lippuasetukset
 [flag settings explanation]
-Lipun säteen oletuspituus
+Lipun oletussäde
 [fog of war]
 Sodan sumu
 [food]
@@ -365,7 +365,7 @@ Terveet
 [free]
 on vapaana
 [from:]
-alkaen:
+lähettäjä:
 [fruit]
 hedelmä
 [fullscreen]
@@ -373,7 +373,7 @@ Koko näyttö
 [game full]
 Peli on täynnä
 [game shortcuts]
-Peli
+Pelin pikanäppäimet
 [Game]
 Peli
 [general settings]
@@ -385,7 +385,7 @@ Keskitä karttaa Pesään
 [goto main menu]
 Takaisin päävalikkoon
 [grass]
-ruoho
+Ruoho
 [ground attack]
 maahyökkäys
 [guard area]
@@ -399,13 +399,13 @@ Käsin tehty kartta
 [Happyness]
 Onnellisuus
 [hard pause]
-Vahva pelin pysäytys
+Täysi pysäytys
 [Harvest]
 Kerääminen
 [high priority]
 ylin
 [hints]
-Vihjeitä
+Vihjeet
 [home]
 home
 [hospital explanation 2]
@@ -429,11 +429,11 @@ Nälkäisyys
 [In way]
 Matkalla
 [increase units working]
-Kasvata työskentelevien määrää
+Lisää työskenteleviä yksiköitä
 [inn explanation 2]
 
 [inn explanation]
-Ruokkii yksiköitäsi.
+Ruokkii yksiköitäsi
 [inn]
 Majatalo
 [insert]
@@ -445,7 +445,7 @@ saarien koko
 [islands terrain]
 Saaret
 [isles terrain]
-saaret
+Saaristo
 [iterate selection]
 Siirrä valinta rakennuksesta toiseen
 [jobs]
@@ -475,7 +475,7 @@ Tason
 [levels]
 Kokemustasot
 [load campaign]
-Jatka kampanjaa
+Lataa kampanja
 [load game]
 Lataa tallennettu peli
 [load map]
@@ -489,7 +489,7 @@ Avaa
 [look around]
 Katsele ympärillesi
 [Lost : %0 has more prestige than you]
-Hävisit: %0:lla on enemmän Mainetta, kuin sinulla
+Hävisit: pelaajalla %0 on enemmän mainetta kuin sinulla
 [Lost : your colony is dead]
 Hävisit: sinun siirtokuntasi on tuhottu
 [low priority]
@@ -497,9 +497,9 @@ alin
 [lowquality]
 Matala laatu
 [Magic At. Air]
-Hyök. ilmaan:
+Ilmavahinko
 [Magic At. Ground]
-Hyök. maahan:
+Maavahinko
 [map description]
 Kuvaus
 [Map Discovered]
@@ -515,7 +515,7 @@ Kartan korkeus
 [mark map]
 Merkitse kartta liittolaisille
 [market explanation 2]
-vaihdon muiden kanssa.
+vaihdon muiden kanssa
 [market explanation]
 Mahdollistaa hedelmien
 [market]
@@ -529,7 +529,7 @@ Alin vaadittu taso:
 [Minimum Level To Flag]
 Yksikön min. taso
 [Music volume]
-musiikin voimakkuus
+Äänenvoimakkuus (musiikki)
 [Mute]
 Mykistä
 [mute]
@@ -541,21 +541,21 @@ Uusi kartta
 [no fullscreen]
 * vain ikkunatilassa
 [No Hints]
-Ei Vihjeitä
+Ei vihjeitä
 [no key]
 ei näppäintä
 [No Objectives]
-Ei Tavoitteita
+Ei tavoitteita
 [no ressources growth areas]
-Ei kasvua
+Ei kasvualueita
 [No]
 Ei
 [Number Of Buildings]
-Rakennusten Määrä:
+Rakennusten määrä
 [number of teams]
 joukkueiden määrä
 [Number Of Units]
-yksiköiden määrä
+Yksiköiden määrä
 [numlock]
 numlock
 [objectives]
@@ -595,7 +595,7 @@ Asetukset
 [Orange]
 Appelsiini
 [Other Options]
-Muut Asetukset
+Muut asetukset
 [page down]
 page down
 [page up]
@@ -603,7 +603,7 @@ page up
 [Papyrus]
 Papyrus
 [pause game]
-Pelin pysäytys
+Keskeytä peli
 [pause]
 pause
 [Paused]
@@ -621,7 +621,7 @@ Paina välilyöntiä jatkaaksesi.
 [Prestige Score]
 Mainepisteet
 [Prestige Win Enabled]
-Voitto Maineen avulla sallittu
+Mainevoitto käytössä
 [Prestige]
 Maine
 [Primary Objectives]
@@ -641,9 +641,9 @@ Poistu toistosta
 [quit]
 Lopeta
 [racetrack explanation 2]
-kävelynopeutta.
+kävelynopeutta
 [racetrack explanation]
-Parantaa yksiköittesi
+Parantaa yksiköidesi
 [racetrack]
 Kilparata
 [range]
@@ -657,7 +657,7 @@ Poista kartta
 [remove shortcut]
 Poista pikanäppäin
 [repair building]
-Aloita/Lopeta korjaaminen
+Aloita/lopeta korjaus
 [repair]
 Korjaa
 [repeat area]
@@ -685,7 +685,7 @@ joen leveys
 [river terrain]
 Joki
 [sand]
-hiekka
+Hiekka
 [save before quit?]
 Haluatko tallentaa ennen poistumista?
 [save game]
@@ -699,7 +699,7 @@ Tallenna skripti
 [Save]
 Tallenna
 [school explanation 2]
-rakentamistasoa.
+rakennustaitoa
 [school explanation]
 Parantaa työläistesi
 [school]
@@ -719,7 +719,7 @@ etsimässä
 [select barracks building]
 Valitse Parakki
 [select clearingflag]
-Valitse Keräämislippu
+Valitse Raivauslippu
 [select construct barracks]
 Valitse Rakenna Parakki
 [select construct defencetower]
@@ -743,7 +743,7 @@ Valitse Rakenna Uima-allas
 [select delete tool]
 Valitse Poistotyökalu
 [select explorationflag]
-valitse Tiedustelulippu
+Valitse Tiedustelulippu
 [select hospital building]
 Valitse Sairaala
 [select inn building]
@@ -751,11 +751,11 @@ Valitse Majatalo
 [select market building]
 Valitse Kauppa
 [select place clearing area]
-Valitse Aseta keräämisalue
+Valitse Aseta raivausalue
 [select place farm area]
 Valitse Aseta viljelyalue
 [select place clearingflag]
-Valitse Aseta keräämislippu
+Valitse Aseta raivauslippu
 [select place explorationflag]
 Valitse Aseta tiedustelulippu
 [select place forbidden area]
@@ -795,7 +795,7 @@ Näytä päävalikko
 [skin]
 Näyttö
 [smoothing]
-tasaisuus
+Tasoitus
 [space]
 välilyönti
 [start mission]
@@ -841,35 +841,35 @@ Pesä
 [Swim]
 Uinti
 [swimmingpool explanation 2]
-uintinopeutta.
+uintinopeutta
 [swimmingpool explanation]
-Parantaa yksiköittesi
+Parantaa yksiköidesi
 [swimmingpool]
 Uima-allas
 [switch to adding areas]
-Vaihda alueiden lisäämistoimintoon
+Vaihda alueiden lisäämiseen
 [switch to area brush 1]
-Vaihda alueenmerkintäkuvioon 1
+Vaihda aluesiveltimeen 1
 [switch to area brush 2]
-Vaihda alueenmerkintäkuvioon 2
+Vaihda aluesiveltimeen 2
 [switch to area brush 3]
-Vaihda alueenmerkintäkuvioon 3
+Vaihda aluesiveltimeen 3
 [switch to area brush 4]
-Vaihda alueenmerkintäkuvioon 4
+Vaihda aluesiveltimeen 4
 [switch to area brush 5]
-Vaihda alueenmerkintäkuvioon 5
+Vaihda aluesiveltimeen 5
 [switch to area brush 6]
-Vaihda alueenmerkintäkuvioon 6
+Vaihda aluesiveltimeen 6
 [switch to area brush 7]
-Vaihda alueenmerkintäkuvioon 7
+Vaihda aluesiveltimeen 7
 [switch to area brush 8]
-Vaihda alueenmerkintäkuvioon 8
+Vaihda aluesiveltimeen 8
 [switch to building view]
 Vaihda rakennusnäkymään
 [switch to flag view]
 Vaihda lippunäkymään
 [switch to removing areas]
-Vaihda alueiden poistamistoimintoon
+Vaihda alueiden poistamiseen
 [switch to teams view]
 Vaihda joukkuenäkymään
 [switch to terrain view]
@@ -893,17 +893,17 @@ Rakennus on valmis
 [the building is under attack]
 Rakennuksesi kimppuun hyökätään
 [the clearingflag is finished]
-keräämislippu on valmis
+Raivauslippu on asetettu
 [the clearingflag is under attack]
-keräämislippusi kimppuun hyökätään
+Raivauslippusi kimppuun hyökätään
 [the defencetower is finished]
 Puolustustorni on valmis
 [the defencetower is under attack]
-Puolustuksesi kimppuun hyökätään.
+Puolustustornisi kimppuun hyökätään
 [the explorationflag is finished]
-tiedustelulippu on valmis
+Tiedustelulippu on asetettu
 [the explorationflag is under attack]
-tiedustelulippusi kimppuun hyökätään
+Tiedustelulippusi kimppuun hyökätään
 [The game has not been finished]
 Peliä ei pelattu loppuun saakka
 [the games]
@@ -913,7 +913,7 @@ Sairaala on valmis
 [the hospital is under attack]
 Sairaalasi kimppuun hyökätään
 [The host has cancelled the game]
-Pelin aloittaja on perunut pelin
+Isäntä on perunut pelin
 [the inn is finished]
 Majatalo on valmis
 [the inn is under attack]
@@ -935,9 +935,9 @@ Koulu on valmis
 [the school is under attack]
 Koulusi kimppuun hyökätään
 [the stonewall is finished]
-Muuri on valmis
+Muurin osa on valmis
 [the stonewall is under attack]
-Muurisi kimppuun hyökätään
+Vihollinen on muureillasi
 [the swarm is finished]
 Pesä on valmis
 [the swarm is under attack]
@@ -947,23 +947,23 @@ Uima-allas on valmis
 [the swimmingpool is under attack]
 Uima-altaasi kimppuun hyökätään
 [the warflag is finished]
-sotalippu on valmis
+Sotalippu on asetettu
 [the warflag is under attack]
-sotalippusi kimppuun hyökätään
+Sotalippusi kimppuun hyökätään
 [time]
 Aika
 [to:]
-vastaanottajalle:
+vastaanottaja:
 [toggle draw accessibility aids]
 Näytä/piilota joukkuenumerot
 [toggle draw information]
-Näytä yksiköiden status-palkit
+Näytä/piilota tilapalkit
 [toggle draw unit paths]
-Piirrä yksiköiden polut
+Näytä/piilota yksiköiden reitit
 [toggle menu screen]
 Näytä/piilota valikko
 [toggle recording voice]
-Initiate Voice Recording
+Ääninauhoitus päälle/pois
 [Total Attack Power]
 Kokonaishyökkäysvoima
 [Total Defence Power]
@@ -975,19 +975,19 @@ Saavutettu kokonaismaine
 [Total]
 Yhteensä
 [tutorial text 1]
-Tervetuloa Globulation 2:n tutoriaalin! Tämä tutoriaali kattaa muun muassa majatalojen rakentamisen, alueiden tutkimisen ja vihollisten tuhoamisen. Hyödyllisestä tiedosta ei ole pulaa.
+Tervetuloa Globulation 2:n perustutoriaaliin! Tämä tutoriaali kattaa kaiken majatalojen rakentamisesta alueiden tutkimiseen ja vihollisten tuhoamiseen. Hyödyllistä tietoa riittää!
 [tutorial text 2]
-Nyt kun hallitset perusasiat, on aika tutustua muihin rakennuksiin, kuten Kilparatoihin, Altaisiin ja Kouluihin.
+Nyt kun hallitset perusasiat, on aika tutustua muihin rakennuksiin, kuten kilparatoihin, uima-altaisiin ja kouluihin.
 [tutorial text 3]
-Olet pärjännyt hyvin tähän asti. Nyt on vuoro keskittyä Sotureihin, Parakkeihin, ja Päivityksiin.
+Olet pärjännyt hyvin tähän asti. Seuraavaksi vuorossa ovat soturit, parakit ja päivitykset.
 [tutorial text 4]
-Olet melkein valmis. Vain Liput ja hyökkääminen jäljellä. Sitten tiedät tarpeeksi keskittyäksesi tavallisiin peleihin ja lopulta internet-peleihin pelaten Globulation 2:n parhaimpia pelaajia vastaan.
+Olet melkein valmis. Jäljellä ovat vain liput ja hyökkääminen. Sen jälkeen osaat tarpeeksi kokeillaksesi mukautettuja pelejä ja lopulta pelataksesi verkossa Globulation 2:n parhaita pelaajia vastaan.
 [tutorial]
 Tutoriaali
 [Uncontrolled]
 Ohjaamaton
 [undo]
-peru
+kumoa
 [uniform terrain]
 Yhdenmukainen maasto
 [Unit editor]
@@ -995,7 +995,7 @@ Yksikköeditori
 [unit settings explanation]
 Yksiköiden oletusmäärä eri tehtävissä
 [units working]
-yksiköitä tehtävissä
+ yksikköä työssä
 [Units]
 Yksiköt
 [unlocked at start]
@@ -1007,7 +1007,7 @@ Avaava tehtävä
 [up]
 ylös
 [upgrade building]
-Aloita/Pysäytä Päivitys
+Aloita/lopeta päivitys
 [Upgrade Defaults]
 Päivitysasetukset
 [upgrade]
@@ -1019,9 +1019,9 @@ Versio
 [view history]
 Näytä historia
 [Voice volume]
-Ääniefektien voimakkuus
+Äänenvoimakkuus (puhe)
 [waiting for %0]
-Odotetaan %0:ta
+Odotetaan: %0
 [waiting for key]
 odotetaan näppäintä...
 [Walk]
@@ -1029,11 +1029,11 @@ Kävely
 [warflag explanation 2]
 
 [warflag explanation]
-Houkuttelee sotureita.
+Houkuttelee sotureita
 [warflag]
 Sotalippu
 [Warning, you need to reboot the game for changes to take effect]
-Varoitus, sinun pitää käynnistää peli uudelleen, että muutokset astuvat voimaan.
+Varoitus: muutokset tulevat voimaan vasta, kun käynnistät pelin uudelleen
 [Warrior Ratio]
 Sotureiden suhde
 [Warrior]
@@ -1045,15 +1045,15 @@ Katso uudelleen
 [watching:]
 Katsotaan:
 [water]
-vesi
+Vesi
 [Wheat]
 Vilja
 [Won : you defeated your opponents]
 Voitit: kukistit vastustajasi
 [Won : you have the most prestige]
-Voitit: sinulla on eniten Mainetta
+Voitit: sinulla on eniten mainetta
 [Won : your ally %0 has the most prestige]
-Voitit: sinun liittolaisellasi %0:lla on eniten Mainetta
+Voitit: liittolaisellasi %0 on eniten mainetta
 [Wood]
 Puu
 [wood]
@@ -1063,7 +1063,7 @@ Työläisten suhde
 [Worker]
 Työläinen
 [workers]
-Työläistä
+työläistä
 [working]
 Työskentelemässä
 [wounded]
@@ -1071,7 +1071,7 @@ haavoittunut
 [Yes]
 Kyllä
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-The YOG serveri katkaisi yhteyden, koska Globulation 2-pelisi versio on vanhentunut. Uusin versio on ladattavissa osoitteessa www.globulation2.org.
+YOG-metapalvelin hylkäsi yhteyden, koska Globulation 2 -pelisi versio on vanhentunut. Hae uusin versio osoitteesta www.globulation2.org pelataksesi verkossa.
 [you have lost]
 Olet hävinnyt pelin!
 [you have won]
@@ -1081,7 +1081,7 @@ Sinut on poistettu pelistä.
 [Your %0 are under attack]
 %0 on hyökkäyksen kohteena
 [Your unit got converted to %0's team]
-Yksikkösi siirtyi %0:n joukkueeseen.
+Yksikkösi siirtyi joukkueeseen %0.
 [game speed]
 Pelinopeus
 [decrease game speed]
@@ -1093,7 +1093,7 @@ Suurin
 [multiplayer game speed]
 Nopeus: 1x (moninpeli)
 [game speed help]
-Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
+Vain yksinpeliin ja toistoihin. Moninpelin nopeus on 1x.
 [AICortex-Description]
 Koottuja soturiaaltoja, joita ruoka ja hoito tukevat.
 [AIMaxima-Description]
@@ -1109,41 +1109,41 @@ Sisällä: %0
 [Units still working: %0]
 Yhä töissä: %0
 [2 vs 2]
-2 vs 2
+2 vs. 2
 [AI strategy & counterplay]
 Tekoälyn strategia ja vastapeli
 [AICastor-Profile]
-Perusstrategia: Panostaa tuottavaan yhdyskuntaan ja teknologiaan ennen suuria hyökkäyksiä. Tärkeysjärjestykseen asetetut rakennushankkeet kehittävät asutusta; kehitys, sotilaallinen infrastruktuuri ja aika lisäävät sotavalmiutta.\n\nTalous ja kehitys: Tutkii kosteutta, vehnän kasvua, esteitä ja työläisten ulottuvuutta. Hallitsee ruokahuollon laajentamista, parannuksia ja puolustusta tuotannon rinnalla.\n\nHyökkäys ja puolustus: Arvioi terveiden soturien hyökkäysvoimaa ja aloittaa iskut voima- tai aikaehtojen täyttyessä. Suosii aiemmin nähtyjä, saavutettavia rakennuksia, erityisesti parakkeja ja kouluja, ja siirtää hyökkäyslippuja kohti arvokkaita kohteita.\n\nVertailu muihin tekoälyihin: Harkitsee maastoa ja kohteiden arvoa tarkemmin kuin Numbi. On kärsivällisempi kuin Warrush ja vaihtaa varhaisen painostuksen kehittyneeseen tukikohtaan ja vahvempiin joukkoihin.\n\nVahvuudet ja heikkoudet: Laaja infrastruktuurin suunnittelu ja arvokkaat sotilaskohteet antavat iskuille tarkoituksen. Valmistelu vie aikaa, joten nopeammat vastustajat voivat kiistää resurssien hallinnan ennen pääjoukon valmistumista.\n\nKokeiltava vastataktiikka: Estä laajentumista varhain. Suojaa parakit ja koulut ruokahuollon ohella ja pidä reserviä hyökätessäsi sen kehittyneeseen asutukseen.
+Perusstrategia: Panostaa tuottavaan siirtokuntaan ja teknologiaan ennen suuria hyökkäyksiä. Tärkeysjärjestykseen asetetut rakennushankkeet kehittävät asutusta; kehitys, sotilaallinen infrastruktuuri ja aika lisäävät sotavalmiutta.\n\nTalous ja kehitys: Tutkii kosteutta, viljan kasvua, esteitä ja työläisten ulottuvuutta. Hallitsee ruokahuollon laajentamista, parannuksia ja puolustusta tuotannon rinnalla.\n\nHyökkäys ja puolustus: Arvioi terveiden soturien hyökkäysvoimaa ja aloittaa iskut voima- tai aikaehtojen täyttyessä. Suosii aiemmin nähtyjä, saavutettavia rakennuksia, erityisesti parakkeja ja kouluja, ja siirtää hyökkäyslippuja kohti arvokkaita kohteita.\n\nVertailu muihin tekoälyihin: Harkitsee maastoa ja kohteiden arvoa tarkemmin kuin Numbi. On kärsivällisempi kuin Warrush ja vaihtaa varhaisen painostuksen kehittyneeseen tukikohtaan ja vahvempiin joukkoihin.\n\nVahvuudet ja heikkoudet: Laaja infrastruktuurin suunnittelu ja arvokkaat sotilaskohteet antavat iskuille tarkoituksen. Valmistelu vie aikaa, joten nopeammat vastustajat voivat kiistää resurssien hallinnan ennen pääjoukon valmistumista.\n\nKokeiltava vastataktiikka: Estä laajentumista varhain. Suojaa parakit ja koulut ruokahuollon ohella ja pidä reserviä hyökätessäsi sen kehittyneeseen asutukseen.
 [AICastor-Summary]
-Kehittää linnoitettua yhdyskuntaa ja iskee sitten sotilas- ja tiederakennuksiin.
+Kehittää linnoitettua siirtokuntaa ja iskee sitten sotilas- ja tiederakennuksiin.
 [AICortex-Profile]
-Perusstrategia: Kasvattaa toimivaa taloutta tilanteeseen reagoivilla prioriteeteilla ja käyttää ylimääräisen työvoiman ruokaan, teknologiaan ja sotilaalliseen painostukseen. Tavallinen toimintamalli on sääntöpohjainen; opittuihin malleihin perustuvat kokeilut vaativat erilliset asetukset.\n\nTalous ja kehitys: Säätää työläistuotantoa miehitystarpeen mukaan ja pitää syntymät käynnissä. Ruokavaikeudet vähentävät laajentumis- ja teknologiamenoja. Lisää uintia, kun vesireiteistä on olennaista hyötyä.\n\nHyökkäys ja puolustus: Valmistelee hyökkäyksiä havaitun vihollisteknologian ja käytettävissä olevien joukkojen mukaan. Vesistöjen ylitys vaatii uintitaitoisia sotureita. Tukee pitkiä sotaretkiä eteen rakennetuilla majataloilla ja sairaaloilla ja voi koota joukkoja ennen etenemistä.\n\nSitoutuminen ja hätätilanteet: Jatkaa hyökkäystä pienestä häirinnästä huolimatta sen sijaan, että marssisi toistuvasti kotiin. Vakavat iskut voivat kutsua puolustajat takaisin. Varhainen hätätilanne voi käynnistää pelkän soturituotannon ja sairaalan rakentamisen; nälänhätä voi laukaista pienemmän epätoivoisen hyökkäyksen.\n\nVertailu muihin tekoälyihin: Huomioi etulinjan tuen paremmin kuin Warrush. Maxima menee pidemmälle kestävien syntymien, koulutuksen ja joukkojen lähettämisen mitoituksessa suhteessa arvioituun vihollisvoimaan.\n\nVahvuudet ja heikkoudet: Yhdistää painostuksen ruokaan, hoitoon ja saavutettavuuteen. Etulinjan infrastruktuuri tarvitsee jatkuvaa huoltoa, ja syntymien jatkuminen voi rasittaa niukkaa ruokahuoltoa. Hätätilanteiden prioriteetit pakottavat valitsemaan kasvun ja selviytymisen välillä.\n\nKokeiltava vastataktiikka: Taistele etulinjan majatalojen, sairaaloiden ja vehnäalueiden hallinnasta. Pidä puolustajat yhdessä sen etenemistä vastaan; pieni häirintä ei välttämättä saa sitä vetäytymään.\n\nTiedustelu: Käyttää löydettyjä vihollisrakennuksia ja havaittuja vihollisjoukkoja.
+Perusstrategia: Kasvattaa toimivaa taloutta tilanteeseen reagoivilla prioriteeteilla ja käyttää ylimääräisen työvoiman ruokaan, teknologiaan ja sotilaalliseen painostukseen. Tavallinen toimintamalli on sääntöpohjainen; opittuihin malleihin perustuvat kokeilut vaativat erilliset asetukset.\n\nTalous ja kehitys: Säätää työläistuotantoa miehitystarpeen mukaan ja pitää syntymät käynnissä. Ruokavaikeudet vähentävät laajentumis- ja teknologiamenoja. Lisää uintia, kun vesireiteistä on olennaista hyötyä.\n\nHyökkäys ja puolustus: Valmistelee hyökkäyksiä havaitun vihollisteknologian ja käytettävissä olevien joukkojen mukaan. Vesistöjen ylitys vaatii uintitaitoisia sotureita. Tukee pitkiä sotaretkiä eteen rakennetuilla majataloilla ja sairaaloilla ja voi koota joukkoja ennen etenemistä.\n\nSitoutuminen ja hätätilanteet: Jatkaa hyökkäystä pienestä häirinnästä huolimatta sen sijaan, että marssisi toistuvasti kotiin. Vakavat iskut voivat kutsua puolustajat takaisin. Varhainen hätätilanne voi käynnistää pelkän soturituotannon ja sairaalan rakentamisen; nälänhätä voi laukaista pienemmän epätoivoisen hyökkäyksen.\n\nVertailu muihin tekoälyihin: Huomioi etulinjan tuen paremmin kuin Warrush. Maxima menee pidemmälle kestävien syntymien, koulutuksen ja joukkojen lähettämisen mitoituksessa suhteessa arvioituun vihollisvoimaan.\n\nVahvuudet ja heikkoudet: Yhdistää painostuksen ruokaan, hoitoon ja saavutettavuuteen. Etulinjan infrastruktuuri tarvitsee jatkuvaa huoltoa, ja syntymien jatkuminen voi rasittaa niukkaa ruokahuoltoa. Hätätilanteiden prioriteetit pakottavat valitsemaan kasvun ja selviytymisen välillä.\n\nKokeiltava vastataktiikka: Taistele etulinjan majatalojen, sairaaloiden ja vilja-alueiden hallinnasta. Pidä puolustajat yhdessä sen etenemistä vastaan; pieni häirintä ei välttämättä saa sitä vetäytymään.\n\nTiedustelu: Käyttää löydettyjä vihollisrakennuksia ja havaittuja vihollisjoukkoja.
 [AICortex-Summary]
 Tukee päättäväisiä sotilaallisia etenemisiä etulinjan ruoalla ja hoidolla.
 [AINicowar-Profile]
-Perusstrategia: Yhdistää kasvun, koulutuksen, parannukset ja sodankäynnin päällekkäisten ehtojen avulla. Voi hyökätä laajentuessaan ja siirtää talouden painopisteen toipumiseen ruokahuollon pettäessä.\n\nAvaus: Mukana toimitettu aggressiivinen profiili aloittaa sotavalmistelut viiden yksikön kokonaismäärällä ja sallii sodan viidellä soturilla, mukaan lukien nollatason soturit. Tavoittelee kolmea hyökkäyslippua, joista kullekin määrätään viisi soturia. Omat strategiatiedostot voivat muuttaa näitä rajoja.\n\nTalous ja kehitys: Laajentaa ruokahuoltoa ja syntymäkapasiteettia, kouluttaa työläisiä, kehittää uintia ja liikkumista sekä parantaa rakennuksia. Säätää ruokahuollon miehitystä, reagoi nälkään ja hankkii hedelmiä.\n\nHyökkäys ja puolustus: Valitsee saavutettavista vihollisrakennuksista hyökkäyskohteita satunnaisesti. Voi avata resurssien tukkimia reittejä keräämislipuilla. Puolustusliput suojaavat uhattujen yksiköiden ja rakennusten ryhmiä. Myöhemmin maahyökkäykseen koulutetut tiedustelijat iskevät vihollisyksikköjen ryhmiin.\n\nVertailu muihin tekoälyihin: Jakaa Warrush-tekoälyn varhaisen aggressiivisuuden mutta jatkaa monipuolisemmin. Toisin kuin Cabino, ei suosi johdonmukaisesti sairaaloita ja majataloja.\n\nVahvuudet ja heikkoudet: Laaja taktiikkavalikoima yhdistää alkupelin painostuksen jatkuvaan kehitykseen. Satunnaiset kohteet voivat kuluttaa voimia vähäarvoisiin rakennuksiin. Sen kynnysarvot eivät korvaa Maxima-tekoälyn tarkkaa arviota vastustajan taisteluvoimasta.\n\nKokeiltava vastataktiikka: Varaudu varhaiseen hyökkäykseen. Suojaa ruokahuolto ja työläiset, estä laajentumista ja valmistaudu tiedustelijaiskuihin, jos se saavuttaa edistyneen koulutuksen.
+Perusstrategia: Yhdistää kasvun, koulutuksen, parannukset ja sodankäynnin päällekkäisten ehtojen avulla. Voi hyökätä laajentuessaan ja siirtää talouden painopisteen toipumiseen ruokahuollon pettäessä.\n\nAvaus: Mukana toimitettu aggressiivinen profiili aloittaa sotavalmistelut viiden yksikön kokonaismäärällä ja sallii sodan viidellä soturilla, mukaan lukien nollatason soturit. Tavoittelee kolmea hyökkäyslippua, joista kullekin määrätään viisi soturia. Omat strategiatiedostot voivat muuttaa näitä rajoja.\n\nTalous ja kehitys: Laajentaa ruokahuoltoa ja syntymäkapasiteettia, kouluttaa työläisiä, kehittää uintia ja liikkumista sekä parantaa rakennuksia. Säätää ruokahuollon miehitystä, reagoi nälkään ja hankkii hedelmiä.\n\nHyökkäys ja puolustus: Valitsee saavutettavista vihollisrakennuksista hyökkäyskohteita satunnaisesti. Voi avata resurssien tukkimia reittejä raivauslipuilla. Puolustusliput suojaavat uhattujen yksiköiden ja rakennusten ryhmiä. Myöhemmin maahyökkäykseen koulutetut tiedustelijat iskevät vihollisyksikköjen ryhmiin.\n\nVertailu muihin tekoälyihin: Jakaa Warrush-tekoälyn varhaisen aggressiivisuuden mutta jatkaa monipuolisemmin. Toisin kuin Cabino, ei suosi johdonmukaisesti sairaaloita ja majataloja.\n\nVahvuudet ja heikkoudet: Laaja taktiikkavalikoima yhdistää alkupelin painostuksen jatkuvaan kehitykseen. Satunnaiset kohteet voivat kuluttaa voimia vähäarvoisiin rakennuksiin. Sen kynnysarvot eivät korvaa Maxima-tekoälyn tarkkaa arviota vastustajan taisteluvoimasta.\n\nKokeiltava vastataktiikka: Varaudu varhaiseen hyökkäykseen. Suojaa ruokahuolto ja työläiset, estä laajentumista ja valmistaudu tiedustelijaiskuihin, jos se saavuttaa edistyneen koulutuksen.
 [AINicowar-Summary]
 Varhainen rynnäkkö, jota tukevat viljely, parannukset, puolustus ja tiedustelijaiskut.
 [AINone-Profile]
-Strategia: AI ei anna komentoja.\n\nVahvuudet: Ennustettava, ei-aktiivinen vastustaja kokeissa.\n\nHeikkoudet: Ei laajene tai mukaudu.
+Perusstrategia: Ei anna tekoälykäskyjä.\n\nVahvuudet: Ennustettava, toimeton vastustaja kokeiluihin.\n\nHeikkoudet: Ei laajennu eikä mukaudu.
 [AINone-Summary]
 Toimeton siirtokunta kokeiluja varten.
 [AINumbi-Profile]
-Perusstrategia: Kehittää ensin ruokahuoltoa ja kasvattaa väestöä, lisää sitten hoitoa, tiedettä ja koulutusta ja siirtyy lopuksi sotimaan. Päävaiheet etenevät ajan, eivät vastustajan kehityksen mukaan.\n\nTalous ja kehitys: Mitoittaa rakennustarpeet väestön mukaan ja arvioi lähistön vehnävaroja. Myöhemmissä vaiheissa parannukset, puolustus ja laajentuminen tukevat kasvavaa armeijaa.\n\nHyökkäys ja puolustus: Hyökkää, kun terveitä taistelijoita on tarpeeksi tai odotusaika päättyy. Asettaa sotalippuja satunnaisesti valittuihin vihollisrakennuksiin. Taisteluvoiman heikentyessä liikaa poistaa hyökkäysliput ja nostaa seuraavan yrityksen kynnysarvoja.\n\nVertailu muihin tekoälyihin: Ennalta arvattavampi kuin Castor tai Nicowar. Castor huomioi maaston ja kohteiden arvon tarkemmin; Nicowar aloittaa painostuksen paljon aikaisemmin.\n\nVahvuudet ja heikkoudet: Monipuolinen tukirakentaminen voi tehdä siitä vaarallisen, jos sen annetaan kehittyä rauhassa, mutta aikataulu ei välttämättä vastaa taistelutilannetta. Yksinkertainen kohteenvalinta ja tappioiden jälkeiset pidemmät tauot helpottavat hyökkäysten ennakointia.\n\nKokeiltava vastataktiikka: Painosta ennen sen sotavaihetta. Kehitä ruokahuoltoa ja koulutusta hyökkäysten taustalla ja hyödynnä tauko torjutun hyökkäyksen jälkeen.\n\nTiedustelu: Hyökkäysrutiini lukee vihollisrakennusten sijainnit suoraan tarkistamatta näkyvyyttä.
+Perusstrategia: Kehittää ensin ruokahuoltoa ja kasvattaa väestöä, lisää sitten hoitoa, tiedettä ja koulutusta ja siirtyy lopuksi sotimaan. Päävaiheet etenevät ajan, eivät vastustajan kehityksen mukaan.\n\nTalous ja kehitys: Mitoittaa rakennustarpeet väestön mukaan ja arvioi lähistön viljavaroja. Myöhemmissä vaiheissa parannukset, puolustus ja laajentuminen tukevat kasvavaa armeijaa.\n\nHyökkäys ja puolustus: Hyökkää, kun terveitä taistelijoita on tarpeeksi tai odotusaika päättyy. Asettaa sotalippuja satunnaisesti valittuihin vihollisrakennuksiin. Taisteluvoiman heikentyessä liikaa poistaa hyökkäysliput ja nostaa seuraavan yrityksen kynnysarvoja.\n\nVertailu muihin tekoälyihin: Ennalta arvattavampi kuin Castor tai Nicowar. Castor huomioi maaston ja kohteiden arvon tarkemmin; Nicowar aloittaa painostuksen paljon aikaisemmin.\n\nVahvuudet ja heikkoudet: Monipuolinen tukirakentaminen voi tehdä siitä vaarallisen, jos sen annetaan kehittyä rauhassa, mutta aikataulu ei välttämättä vastaa taistelutilannetta. Yksinkertainen kohteenvalinta ja tappioiden jälkeiset pidemmät tauot helpottavat hyökkäysten ennakointia.\n\nKokeiltava vastataktiikka: Painosta ennen sen sotavaihetta. Kehitä ruokahuoltoa ja koulutusta hyökkäysten taustalla ja hyödynnä tauko torjutun hyökkäyksen jälkeen.\n\nTiedustelu: Hyökkäysrutiini lukee vihollisrakennusten sijainnit suoraan tarkistamatta näkyvyyttä.
 [AINumbi-Summary]
-Kasvattaa yhdyskuntaa vähitellen aikataulun mukaan ja hyökkää sitten ylivoimalla.
+Kasvattaa siirtokuntaa vähitellen aikataulun mukaan ja hyökkää sitten ylivoimalla.
 [AIEcono-Profile]
-Perusstrategia: Tuottaa työläisiä ja tiedustelijoita, laajentaa taloutta ja houkuttelee vihollisyksiköitä ruoalla ja hedelmillä. Ei harjoita tavanomaista soturihyökkäystä.\n\nTalous ja kehitys: Rakentaa majataloja ja pesiä vehnän lähelle, lisää koulutusta ja liikkumistaitoja sekä parantaa infrastruktuuria. Seuraa ruokavaroja ja korvaa vanhoja majataloja ja pesiä niiden resurssitilanteen heikentyessä.\n\nViljely ja loikkaukset: Suojaa uusiutuvaa vehnää ja puustoa veden lähellä. Lähettää tiedustelijoita hedelmäpaikoille ja vihollisyhdyskuntiin sekä mainostaa ruokaa vihollisille hankkiessaan hedelmiä. Parempi ruoka ja hedelmät voivat houkutella loikkareita.\n\nVertailu muihin tekoälyihin: Talouteen erikoistunein vastustaja. Cabino ja Maxima tavoittelevat myös hedelmiä mutta yhdistävät ne armeijoihin.\n\nVahvuudet ja heikkoudet: Voi kasvaa sotilaallisten vastustajien uuvuttaessa toisensa, ja loikkaukset tarjoavat toisen kilpailukeinon. Ei tuota sotureita jatkuvan hyökkäyksen torjumiseen. Ruoka, hedelmät, maantiede ja voittoehdot vaikuttavat vahvasti mahdollisuuksiin.\n\nKokeiltava vastataktiikka: Painosta suojaamattomia laajennuksia. Pidä omat majatalot ruoassa ja hedelmissä säilyttääksesi yksikkösi. Älä uuvuta yhdyskuntaasi turhissa taisteluissa sen kasvaessa.
+Perusstrategia: Tuottaa työläisiä ja tiedustelijoita, laajentaa taloutta ja houkuttelee vihollisyksiköitä ruoalla ja hedelmillä. Ei harjoita tavanomaista soturihyökkäystä.\n\nTalous ja kehitys: Rakentaa majataloja ja pesiä viljan lähelle, lisää koulutusta ja liikkumistaitoja sekä parantaa infrastruktuuria. Seuraa ruokavaroja ja korvaa vanhoja majataloja ja pesiä niiden resurssitilanteen heikentyessä.\n\nViljely ja loikkaukset: Suojaa uusiutuvaa viljaa ja puustoa veden lähellä. Lähettää tiedustelijoita hedelmäpaikoille ja vihollissiirtokuntiin sekä mainostaa ruokaa vihollisille hankkiessaan hedelmiä. Parempi ruoka ja hedelmät voivat houkutella loikkareita.\n\nVertailu muihin tekoälyihin: Talouteen erikoistunein vastustaja. Cabino ja Maxima tavoittelevat myös hedelmiä mutta yhdistävät ne armeijoihin.\n\nVahvuudet ja heikkoudet: Voi kasvaa sotilaallisten vastustajien uuvuttaessa toisensa, ja loikkaukset tarjoavat toisen kilpailukeinon. Ei tuota sotureita jatkuvan hyökkäyksen torjumiseen. Ruoka, hedelmät, maantiede ja voittoehdot vaikuttavat vahvasti mahdollisuuksiin.\n\nKokeiltava vastataktiikka: Painosta suojaamattomia laajennuksia. Pidä omat majatalot ruoassa ja hedelmissä säilyttääksesi yksikkösi. Älä uuvuta siirtokuntaasi turhissa taisteluissa sen kasvaessa.
 [AIEcono-Summary]
-Kasvattaa ruokarikasta yhdyskuntaa ja kilpailee loikkareista tuottamatta sotureita.
+Kasvattaa ruokarikasta siirtokuntaa ja kilpailee loikkareista tuottamatta sotureita.
 [AIWarrush-Profile]
 Perusstrategia: Hyökkää ennen kuin vastustajat ehtivät kehittää pitkälle talouttaan tai teknologiaansa. Odottaa taistelun ratkaisevan pelin ennen laajan tukiverkoston tarvetta.\n\nTalous ja kehitys: Kun kuusi yksikköä osaa kerätä resursseja, asettaa tuotantosuhteeksi neljä työläistä, yhden tiedustelijan ja kolme soturia. Lisää parakkeja koulutuspaikkojen täyttyessä mutta rajoittaa uusia majataloja. Muu rakentaminen painottuu usein sairaaloihin ja liikkumiskoulutukseen.\n\nHyökkäys ja puolustus: Merkitsee löydetyt vihollisrakennukset vartioalueiksi, jotta soturit painostavat jatkuvasti. Ei odota huolellisesti koottua hyökkäysaaltoa. Raivaa tukkivaa puustoa ja suojaa osan uusiutuvista resursseista.\n\nHedelmäpolitiikka: Kieltää hedelmien keruun, välttää niiden aiheuttamat panssarirangaistukset eikä käytä Econo-tekoälyn loikkauksiin perustuvaa strategiaa.\n\nVertailu muihin tekoälyihin: Panostaa alkupelin painostukseen enemmän kuin Numbi tai Castor. Nicowar aloittaa myös aggressiivisesti mutta jatkaa monipuolisemmilla parannuksilla ja taktiikoilla.\n\nVahvuudet ja heikkoudet: Rankaisee hitaista avauksista ja pakottaa varhaisiin puolustusmenoihin. Vähäinen järjestelmällinen parantaminen ja niukka ruokahuolto tekevät pysähtyneestä hyökkäyksestä kalliin. Maasto ja pitkät matkat voivat syödä alkuetua.\n\nKokeiltava vastataktiikka: Suojaa majatalot ja pesät varhain. Korvaa myös menetetyt työläiset, älä vain puolustajia, kehitä koulutusta ja iske takaisin rynnäkön hiipuessa.\n\nTiedustelu: Alun tiedusteluliput käyttävät vihollisten lähtöpaikkoja suoraan. Myöhempi hyökkäysalueiden sijoittaminen edellyttää näkyvyyttä.
 [AIWarrush-Summary]
 Painostaa varhain sotureilla tarkoituksellisen niukan tukitalouden turvin.
 [AICabino-Profile]
-Perusstrategia: Jakaa yksikkötuotannon rakentamisen, parannusten, puolustuksen, hyökkäysten ja tiedustelun kesken. Erilliset hallintamoduulit pyytävät ja varaavat yksiköitä kehittäen taloutta ja armeijaa rinnakkain.\n\nTalous ja kehitys: Rakentaa ja parantaa monipuolista asutusta, hallitsee majatalojen ja tornien miehitystä, raivaa rakennusten ympäristöä ja suojaa uusiutuvia resursseja. Tiedustelee hedelmiä ja mainostaa ruokaa kilpaillakseen loikkareista.\n\nHyökkäys ja puolustus: Valitsee vihollisen ja asettaa sairaalat etusijalle, sitten majatalot ja parakit. Tukee enintään neljää hyökkäystä ja määrää tavallisesti 8–20 soturia kohdetta kohti saatavuuden ja läheisten vihollisten perusteella. Käyttää erillisiä puolustuslippuja uhattujen rakennusten ympärillä.\n\nKoulutus: Hyökkääminen vaatii tarpeeksi sopivia sotureita ja valmiin parakin, mutta ei korkeinta teknologiaa. Jatkuvat parannukset ja koulutus vahvistavat myöhempiä hyökkäyksiä.\n\nVertailu muihin tekoälyihin: Tuhoaa tukirakennuksia tarkoitushakuisemmin kuin Nicowar. Hajauttaa hyökkäyksiä enemmän kuin Maxima-tekoälyn kootut aallot ja hallitsee kilpailevia tarpeita yksikkövarauksilla.\n\nVahvuudet ja heikkoudet: Yhdistää kasvun, koulutuksen, puolustuksen ja useita hyökkäyksiä. Ruoan ja hoidon tuhoaminen voi heikentää koko yhdyskuntaa. Satunnainen vastustajanvalinta ja kiinteät rakennusprioriteetit voivat hukata tilaisuuksia; useat hyökkäykset voivat hajottaa voimat.\n\nKokeiltava vastataktiikka: Puolusta sairaaloita ja majataloja. Painosta suojaamattomia laajennuksia ja keskitä puolustajat yksittäisiä hyökkäyksiä vastaan. Vahingoita ruokahuoltoa tai koulutusta ennen kuin se pystyy ylläpitämään useita rintamia.\n\nTiedustelu: Hyökkäyskohteiden valitsin lukee vihollisrakennusten luetteloita ilman nimenomaista näkyvyystarkistusta. Osa talousvertailuista käyttää vihollistilastoja suoraan.
+Perusstrategia: Jakaa yksikkötuotannon rakentamisen, parannusten, puolustuksen, hyökkäysten ja tiedustelun kesken. Erilliset hallintamoduulit pyytävät ja varaavat yksiköitä kehittäen taloutta ja armeijaa rinnakkain.\n\nTalous ja kehitys: Rakentaa ja parantaa monipuolista asutusta, hallitsee majatalojen ja tornien miehitystä, raivaa rakennusten ympäristöä ja suojaa uusiutuvia resursseja. Tiedustelee hedelmiä ja mainostaa ruokaa kilpaillakseen loikkareista.\n\nHyökkäys ja puolustus: Valitsee vihollisen ja asettaa sairaalat etusijalle, sitten majatalot ja parakit. Tukee enintään neljää hyökkäystä ja määrää tavallisesti 8–20 soturia kohdetta kohti saatavuuden ja läheisten vihollisten perusteella. Käyttää erillisiä puolustuslippuja uhattujen rakennusten ympärillä.\n\nKoulutus: Hyökkääminen vaatii tarpeeksi sopivia sotureita ja valmiin parakin, mutta ei korkeinta teknologiaa. Jatkuvat parannukset ja koulutus vahvistavat myöhempiä hyökkäyksiä.\n\nVertailu muihin tekoälyihin: Tuhoaa tukirakennuksia tarkoitushakuisemmin kuin Nicowar. Hajauttaa hyökkäyksiä enemmän kuin Maxima-tekoälyn kootut aallot ja hallitsee kilpailevia tarpeita yksikkövarauksilla.\n\nVahvuudet ja heikkoudet: Yhdistää kasvun, koulutuksen, puolustuksen ja useita hyökkäyksiä. Ruoan ja hoidon tuhoaminen voi heikentää koko siirtokuntaa. Satunnainen vastustajanvalinta ja kiinteät rakennusprioriteetit voivat hukata tilaisuuksia; useat hyökkäykset voivat hajottaa voimat.\n\nKokeiltava vastataktiikka: Puolusta sairaaloita ja majataloja. Painosta suojaamattomia laajennuksia ja keskitä puolustajat yksittäisiä hyökkäyksiä vastaan. Vahingoita ruokahuoltoa tai koulutusta ennen kuin se pystyy ylläpitämään useita rintamia.\n\nTiedustelu: Hyökkäyskohteiden valitsin lukee vihollisrakennusten luetteloita ilman nimenomaista näkyvyystarkistusta. Osa talousvertailuista käyttää vihollistilastoja suoraan.
 [AICabino-Summary]
-Yhdistää yhdyskunnan kasvun ja koulutetut hyökkäykset; iskee ensin hoitoon ja ruokaan.
+Yhdistää siirtokunnan kasvun ja koulutetut hyökkäykset; iskee ensin hoitoon ja ruokaan.
 [Algae]
 Levä
 [Beach size]
@@ -1165,13 +1165,13 @@ Erilliset saaret
 [Conquest only]
 Vain valloitus
 [Conquest or prestige]
-Valloitus tai arvovalta
+Valloitus tai maine
 [Could not launch this map. Your setup is retained; try again.]
 Tätä karttaa ei voitu käynnistää. Asetuksesi säilytetään; yritä uudelleen.
 [Could not load this map. Choose another map or retry.]
 Tätä karttaa ei voitu ladata. Valitse toinen kartta tai yritä uudelleen.
 [Crater lakes]
-Kraatterijärviä
+Kraatterijärvet
 [Custom]
 Mukautettu
 [Custom teams]
@@ -1185,7 +1185,7 @@ Helppo
 [Extra colony assignments are retained for larger maps.]
 Ylimääräiset siirtokuntamääräykset säilytetään suurempia karttoja varten.
 [Extra islands]
-Ylimääräisiä saaria
+Lisäsaaret
 [FFA]
 Kaikki kaikkia vastaan
 [Fruit]
@@ -1215,7 +1215,7 @@ Saaren koko
 [Islands]
 Saaret
 [Isles]
-saaret
+Saaristo
 [Lake density]
 Järvien tiheys
 [Landscape]
@@ -1249,11 +1249,11 @@ Vaaleanpunainen
 [Play this map]
 Pelaa tällä kartalla
 [Players & Teams]
-Pelaajat & Joukkueet
+Pelaajat ja joukkueet
 [Premade maps]
 Valmiit kartat
 [Preview ready. Start plays this exact map.]
-Esikatselu valmis. Pelin aloittaminen käyttää tätä tarkkaa karttaa.
+Esikatselu valmis. Aloita käynnistää juuri tämän kartan.
 [Regenerate all]
 Luo kaikki uudelleen
 [Generating preview...]
@@ -1327,7 +1327,7 @@ siirtokuntia
 [Inactive]
 Ei-aktiivinen
 [8 workers / 2x speed]
-8 työntekijää / 2x nopeus
+8 työläistä / 2x nopeus
 [Changes the pace of the whole simulation.]
 Muuttaa koko simulaation vauhtia.
 [Choose whether teams can change during the match.]
@@ -1363,7 +1363,7 @@ pelaajat ja tekoälyt
 [Use]
 Valitse
 [Lime]
-Limen vihreä
+Limetti
 [Teal]
 Sinivihreä
 [Azure]
@@ -1371,25 +1371,25 @@ Taivaansininen
 [Updating map preview...]
 Päivitetään kartan esikatselua...
 [Generation failed. Adjust settings or press Start to retry.]
-Kartan luonti epäonnistui. Muuta asetuksia tai aloita peli yrittääksesi uudelleen.
+Kartan luonti epäonnistui. Muuta asetuksia tai paina Aloita yrittääksesi uudelleen.
 [Preview unavailable. Adjust settings or start to retry.]
-Esikatselu ei ole käytettävissä. Muuta asetuksia tai käynnistä peli ja yritä uudelleen.
+Esikatselu ei ole käytettävissä. Muuta asetuksia tai yritä uudelleen aloittamalla.
 [automatic torus view]
 Automaattinen torusnäkymä
 [toggle torus view]
 Vaihda 2D- ja torusnäkymän välillä
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vastaan 2 vaatii neljä avointa siirtokuntaa. Sinä vastaan kaikki vaatii ihmispelaajan.
+2 vs. 2 vaatii neljä avointa siirtokuntaa. Sinä kaikkia vastaan vaatii ihmispelaajan.
 [Alliance]
 Liitto
 [Choose a rule to change it.]
 Valitse sääntö muuttaaksesi sitä.
 [Conquest only removes prestige victory; map scripts still apply.]
-Vain valloitus poistaa arvovaltavoiton; kartan skriptit ovat edelleen voimassa.
+Vain valloitus poistaa mainevoiton; kartan skriptit ovat yhä voimassa.
 [Control]
 Hallinta
 [Controller]
-Hallitsee
+Ohjaaja
 [Generate preview]
 Luo esikatselu
 [Generation failed. Adjust settings or try again.]
@@ -1401,11 +1401,11 @@ Karttalähde
 [Map-defined]
 Kartan määrittelemä
 [Match format]
-Pelin muoto
+Ottelumuoto
 [No current preview]
 Ei nykyistä esikatselua
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Nopea taistelu: kaksinkertainen nopeus; luodut kartat alkavat 8 työntekijällä.
+Nopea taistelu: 2x nopeus; luodut kartat alkavat 8 työläisellä.
 [Reroll]
 Luo toinen kartta
 [Randomize]
@@ -1417,17 +1417,17 @@ Säännöstö
 [Select a map from the library.]
 Valitse kartta kirjastosta.
 [Starting workers affects generated maps only.]
-Alkuperäinen työntekijöiden lukumäärä koskee vain luotuja karttoja.
+Aloitustyöläisten määrä koskee vain luotuja karttoja.
 [Unavailable]
 Ei saatavilla
 [Use selection]
 Käytä valintaa
 [Quick clash on premade maps: only speed changes (2x).]
-Nopea taistelu valmiilla kartoilla: vain nopeus muuttuu (kaksinkertainen nopeus).
+Nopea taistelu valmiilla kartoilla: vain nopeus muuttuu (2x).
 [Generate a preview to explore this world.]
 Luo esikatselu tutustuaksesi tähän maailmaan.
 [More workers jump-start colony growth. Changes the generated map.]
-Lisää työntekijöitä nopeuttaa siirtokuntien kasvua. Tämä asetus muuttaa luotua karttaa.
+Useammat työläiset vauhdittavat siirtokunnan kasvua. Muuttaa luotua karttaa.
 [No warriors]
 Ei sotureita
 [settings Add key to sequence]
@@ -1509,7 +1509,7 @@ Graafiset yksityiskohdat
 [settings Interface scale]
 Käyttöliittymän koko
 [settings Keep]
-Säilytä muutokset
+Säilytä
 [settings Keep this display mode?]
 Säilytetäänkö tämä näyttötila?
 [settings Keep your volume levels while silencing audio.]
@@ -1551,7 +1551,7 @@ Pelaajan nimi
 [settings Press]
 Painettaessa
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Paina näppäimistön näppäintä. Esc-näppäimen painaminen peruuttaa syötteen sieppauksen. Määritä Esc-näppäin valitsemalla "Määritä Esc-näppäin".
+Paina näppäintä. Esc peruuttaa. Määritä Esc itse valitsemalla Määritä Esc-näppäin.
 [settings Radius]
 Säde
 [settings Reduced]
@@ -1581,7 +1581,7 @@ Yritä uudelleen
 [settings Revert]
 Kumoa muutokset
 [settings Reverting in]
-Palautetaan, kun on kulunut
+Palautus:
 [settings Save shortcut]
 Tallenna pikanäppäin
 [settings Saved — restart required]
@@ -1597,7 +1597,7 @@ Aseta kieli ja pelaajanimi.
 [settings Settings]
 Asetukset
 [settings Single-player and replays only. Multiplayer runs at 1x.]
-Vain yksinpeliin ja tallenteisiin. Moninpelin nopeus on 1x.
+Vain yksinpeliin ja toistoihin. Moninpelin nopeus on 1x.
 [settings Software]
 Ohjelmistorenderöinti
 [settings Starting unit counts and radius for newly placed flags.]
@@ -1845,7 +1845,7 @@ Amfiteatteri ei mahdu tälle kartalle; käytä suurempaa karttaa, vähemmän ren
 [Spider web]
 Hämähäkinseitti
 [Spokes per colony]
-Puolia siirtokuntaa kohden
+Säteitä siirtokuntaa kohden
 [Ring spacing]
 Renkaiden väli
 [Thread width]
@@ -2067,15 +2067,15 @@ Kuolemat
 [Stats starvation]
 Nälkäkuolemat
 [Stats wheat stock]
-Vehnävarasto
+Viljavarasto
 [Stats wheat loads]
-Vehnäkuormat
+Viljakuormat
 [Stats meals]
 Tarjoillut ateriat
 [Stats new buildings]
 Uudet rakennukset
 [Stats upgrades]
-Parannukset
+Päivitykset
 [Stats training]
 Koulutuskäynnit
 [Stats damage dealt]
@@ -2105,9 +2105,9 @@ Ruokaa/min
 [Stats occupancy]
 Ruokailu / hoito
 [Stats page one]
-Tilastot 1/3 >
+Tilastot 1/3  >
 [Stats page two]
-Tilastot 2/3 >
+Tilastot 2/3  >
 [Stats next page]
 Sivu (P)
 [Map preview choose another]
@@ -2165,7 +2165,7 @@ Taistelu
 [Glass cannon]
 Lasitykki
 [Match ends at the timer; highest prestige at that instant wins.]
-Ottelu päättyy ajastimeen; eniten mainetta sillä hetkellä omaava voittaa.
+Ottelu päättyy ajan loppuessa; eniten mainetta sillä hetkellä kerännyt voittaa.
 [Off (no timer)]
 Pois (ei ajastinta)
 [90 minutes]
@@ -2177,17 +2177,17 @@ Pois (ei ajastinta)
 [60 minutes]
 60 minuuttia
 [Stats page three]
-Tilastot 3/3 >
+Tilastot 3/3  >
 [Stats blocked units]
 Yksiköt S/C
 [Stats blocked buildings]
-Rakennuksia S/C
+Rakennukset S/C
 [Stats blocked buildings swim]
 Uinti S/C
 [Stats current blocked units]
 Yksiköt C
 [Stats current blocked buildings]
-Rakennuksia C
+Rakennukset C
 [Stats growth global]
 Resurssit +
 [Stats growth new tiles]
@@ -2217,7 +2217,7 @@ Ruoka <=75%
 [Stats structural units]
 Yksiköt S
 [Stats structural buildings]
-Rakennuksia S
+Rakennukset S
 [Stats low HP ranges]
 HP: <=25/50/75%
 [Stats low food ranges]
@@ -2767,7 +2767,7 @@ Tila
 [Isolation]
 Eristyneisyys
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Jokaisen yhdyskunnan aloitus mitataan valmiilta kartalta: matka vehnän ja puun luo, kuinka hyvin sen maa kasvaa takaisin, ulottuvilla olevat esiintymät ja rakennuspaikat sekä etäisyys kilpailijoihin. Jokainen tekijä saa pisteet 0–1 kiinteää mittapuuta vasten, kokonaisarvo painottaa ne, tasapuolisuus on heikoimman yhdyskunnan kokonaisarvo jaettuna parhaan arvolla, ja pisteet ovat heikoin kokonaisarvo kerrottuna tasapuolisuudella.
+Jokaisen siirtokunnan aloitus mitataan valmiilta kartalta: matka viljan ja puun luo, kuinka hyvin sen maa kasvaa takaisin, ulottuvilla olevat esiintymät ja rakennuspaikat sekä etäisyys kilpailijoihin. Jokainen tekijä saa pisteet 0–1 kiinteää mittapuuta vasten, kokonaisarvo painottaa ne, tasapuolisuus on heikoimman siirtokunnan kokonaisarvo jaettuna parhaan arvolla, ja pisteet ovat heikoin kokonaisarvo kerrottuna tasapuolisuudella.
 [ERROR_CANT_SAVE_MAP]
 Karttaa ei voitu tallentaa. Tarkista kohde ja käytettävissä oleva tila. Muutoksesi ovat yhä avoinna.
 [Loading headers]
@@ -2777,7 +2777,7 @@ Ladataan joukkueita...
 [Loading terrain]
 Ladataan maastoa...
 [Building gradients]
-Rakennetaan liukuvärejä...
+Lasketaan reittikarttoja...
 [Loading players]
 Ladataan pelaajia...
 [Loading scripts]
@@ -2819,7 +2819,7 @@ Tuonti peruutettu
 [import failed]
 Tuonti epäonnistui: virheellinen tai tukematon tiedosto
 [import persistence failed]
-Ei tallennettu: valitse Tuo yrittääksesi uudelleen, tai Vie tiedosto
+Ei tallennettu: valitse Tuo yrittääksesi uudelleen tai Vie tiedosto
 [import progress]
 Tuonnin edistyminen
 [export progress]
@@ -2923,9 +2923,9 @@ Asetukset
 [settings Back]
 Takaisin
 [settings Save the game automatically about every minute.]
-Tallenna peli automaattisesti noin minuutin välein.
+Tallentaa pelin automaattisesti noin minuutin välein.
 [AI opponents]
-Tietokonevastustajat
+Tekoälyvastustajat
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.
 [settings One-finger zoom]
@@ -2965,7 +2965,7 @@ Joukkue %0
 [Your colony]
 Oma siirtokuntasi
 [%0 / %1 HP · %2]
-%0 / %1 EP · %2
+%0 / %1 HP · %2
 [Units: %0]
 Yksiköt: %0
 [Buildings: %0]
@@ -3021,7 +3021,7 @@ Keskustelu
 [No other players have editable diplomatic settings in this match.]
 Muilla pelaajilla ei ole muokattavia diplomatia-asetuksia tässä ottelussa.
 [No briefing for this match.]
-Ei ohjeistusta tälle ottelulle.
+Tälle ottelulle ei ole tehtävänantoa.
 [Chat · recipients selected in Teams]
 Keskustelu · vastaanottajat valitaan Joukkueet-valikossa
 [Filename]
@@ -3091,7 +3091,7 @@ Ei vielä tallennettuja tiedostoja
 [Export]
 Vie
 [Tap to write the mission briefing]
-Kirjoita tehtävän ohjeistus napauttamalla
+Kirjoita tehtävänanto napauttamalla
 [Tap to write the map script]
 Kirjoita kartan skripti napauttamalla
 [Script]
@@ -3105,7 +3105,7 @@ Kirjoita tämä vihje napauttamalla
 [Tap to write this objective]
 Kirjoita tämä tavoite napauttamalla
 [Mission briefing · tap to edit, swipe to scroll]
-Tehtävän ohjeistus · muokkaa napauttamalla, vieritä pyyhkäisemällä
+Tehtävänanto · muokkaa napauttamalla, vieritä pyyhkäisemällä
 [Not enough recorded history yet.]
 Tallennettua historiaa ei vielä ole tarpeeksi.
 [Select a team to show its history.]
@@ -3119,7 +3119,7 @@ Paikka
 [Color]
 Väri
 [Player / AI]
-Pelaaja / TI
+Pelaaja / tekoäly
 [Group]
 Ryhmä
 [Forbid]
@@ -3159,17 +3159,17 @@ Valitse maisema
 [%0 / Browse]
 %0 / Selaa
 [%0 colonies · %1]
-%0 siirtokuntia · %1
+%0 siirtokuntaa · %1
 [%0 · Team %1]
 %0 · Joukkue %1
 [Colonies: %0]
 Siirtokunnat: %0
 [%0 colonies · %1 AI]
-%0 siirtokuntia · %1 AI
+%0 siirtokuntaa · %1 tekoälyä
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Yksiköt
+%0 · %1 yksikköä
 [settings Level %0]
 Taso %0
 [settings Match the desktop %0]
@@ -3193,7 +3193,7 @@ Ok: %0
 [resume game]
 Jatka peliä
 [Add AI]
-Lisää AI
+Lisää tekoäly
 [settings Experiments]
 Kokeilut
 [settings Try features we are still testing. They can change balance and pacing.]
@@ -3209,7 +3209,7 @@ Kokeilut
 [experiment guard-area-balancing]
 Vartioalueiden tasapainotus
 [experiment guard-area-balancing help]
-Vapaat soturit jakautuvat maalattujen vartioalueiden kesken sen sijaan, että kaikki menisivät lähimpään: suurempi alue saa heitä enemmän, ja ylitäysi alue harvenee vähitellen muihin.
+Vapaat soturit jakautuvat maalattujen vartioalueiden kesken sen sijaan, että kaikki menisivät lähimpään: suurempi alue saa niitä enemmän, ja ylitäysi alue harvenee vähitellen muihin.
 [experiment farm-areas]
 Viljelyalueet
 [experiment farm-areas help]
@@ -3235,1415 +3235,1415 @@ Listojen liike-energia
 [List bounce]
 Listojen kimmoisuus
 [lan pairing field]
-
+Isännän paritusmerkkijono (tai luotettu WSS-osoite)
 [lan pairing connect]
-
+Parita ja yhdistä
 [lan discovery instructions]
-
+Valitse isäntä ja liitä sen paritusmerkkijono henkilöllisyyden vahvistamiseksi.
 [lan discovery unavailable]
-
+LAN-haku ei ole käytettävissä. Tarkista lähiverkon käyttöoikeus tai liitä isännän paritusmerkkijono.
 [lan discovered host %0]
-
+Löydetty isäntä %0 – parita nähdäksesi pelit
 [lan connection unavailable]
-
+LAN-isäntää ei tavoiteta. Tarkista lähiverkon käyttöoikeus ja isännän paritusmerkkijono.
 [lan connection verification failed %0]
-
+LAN-isäntää ei voitu vahvistaa tai siihen ei saatu yhteyttä: %0
 [lan lobby endpoint required]
-
+Käytä isännän aulan osoitetta
 [settings Artwork]
-
+Grafiikka
 [settings Original]
-
+Alkuperäinen
 [settings High resolution]
-
+Tarkka
 [settings Clouds]
-
+Pilvet
 [settings Show cloud cover above the map.]
-
+Näytä pilvipeite kartan yllä.
 [settings Cloud shadows]
-
+Pilvien varjot
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Näytä pilvien varjot maassa pilvipeitteestä riippumatta.
 [settings Building particles]
-
+Rakennusten hiukkaset
 [settings Show smoke and other building particles.]
-
+Näytä savu ja muut rakennusten hiukkastehosteet.
 [settings Magic effects]
-
+Taikatehosteet
 [settings Choose animated magic effects or a simple visible effect.]
-
+Valitse animoidut taikatehosteet tai yksinkertainen näkyvä tehoste.
 [settings Simple]
-
+Yksinkertainen
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Vaatii OpenGL-renderöijän. Tallennettu valintasi säilyy.
 [settings Interface appearance]
-
+Käyttöliittymän ulkoasu
 [settings Panels]
-
+Paneelit
 [settings Choose translucent or opaque interface panels.]
-
+Valitse läpikuultavat tai peittävät käyttöliittymäpaneelit.
 [settings Opaque]
-
+Peittävä
 [settings Translucent]
-
+Läpikuultava
 [settings Advanced graphics]
-
+Grafiikan lisäasetukset
 [settings Path lines]
-
+Reittiviivat
 [settings Choose translucent or opaque unit path lines.]
-
+Valitse läpikuultavat tai peittävät yksiköiden reittiviivat.
 [settings Smooth progress indicators]
-
+Pehmeät edistymispalkit
 [settings Smooth the moving edges of progress indicators.]
-
+Pehmennä edistymispalkkien liikkuvat reunat.
 [settings Decorative interface animation]
-
+Koristeanimaatiot
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animoi voittokuva. Vähennetty liike poistaa myös tämän animaation käytöstä.
 [settings Smooth unit motion]
-
+Pehmeä yksiköiden liike
 [settings Experimental: move and animate units between game ticks.]
-
+Kokeellinen: liikuta ja animoi yksiköitä pelin askelten välillä.
 [settings Smooth fog of war]
-
+Pehmeä sodan sumu
 [settings Fade the map into and out of the fog of war gradually.]
-
+Häivytä kartta vähitellen sodan sumuun ja siitä esiin.
 [settings Adaptive zoom detail]
-
+Mukautuva zoomaustarkkuus
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Yksinkertaista palkit, alueet, maasto ja yksiköt loitonnettaessa ja pidä ne pieninä lähennettäessä.
 [settings Text size]
-
+Tekstin koko
 [settings Enlarge interface text without changing the map scale.]
-
+Suurenna käyttöliittymän tekstiä muuttamatta kartan mittakaavaa.
 [Map momentum]
 Kartan liike-energia
 [turn reconnecting]
-
+Yhteys isäntään katkesi. Yhdistetään uudelleen...
 [turn waiting for players]
-
+Odotetaan, että kaikki pelaajat latautuvat...
 [turn rejoining]
-
+Liitytään peliin uudelleen...
 [turn catching up %0]
-
+Kiritään kiinni: %0 vuoroa jäljessä
 [turn player reconnecting %0]
-
+%0 yhdistää uudelleen...
 [turn player lagging %0]
-
+%0 viivästyy
 [turn player resyncing %0]
-
+%0 kirii kiinni
 [turn player not connected %0]
-
+%0 ei ole vielä yhdistänyt
 [lan host left]
-
+Isäntä poistui pelistä.
 [lan host lost]
-
+Yhteys isäntään katkesi.
 [lan version mismatch %0]
-
+Isännällä on eri Globulation 2 -versio (%0).
 [lan cannot host %0]
-
+LAN-pelin isännöinti epäonnistui: %0
 [play online]
-
+Pelaa verkossa
 [Use in room]
-
+Käytä huoneessa
 [conn ai]
-
+Tekoäly
 [conn behind %0]
-
+Jäljessä %0
 [conn behind explanation %0 %1]
-
+Jäljessä: kuinka paljon pelaajan peli on ottelun kellosta jäljessä, viive mukaan lukien. Alle %0 on normaalia; arvosta %1 alkaen pelaaja merkitään hitaaksi.
 [conn behind]
-
+Jäljessä
 [conn card catching up]
-
+Kiritään kiinni
 [conn card colony works]
-
+Siirtokuntasi toimii itsenäisesti: yksiköt hoitavat tehtävänsä ja rakennukset pysyvät käynnissä.
 [conn card desync detail]
-
+Liitytään uudelleen ottelun tallenteesta, jotta näet saman kuin muut. Raportti lähetettiin automaattisesti.
 [conn card desync]
-
+Pelisi ajautui epätahtiin
 [conn card grace %0]
-
+Siirtokuntasi toimii itsenäisesti: yksiköt hoitavat tehtävänsä ja rakennukset pysyvät käynnissä. Sinulla on %0 aikaa palata, ennen kuin sinut poistetaan ottelusta.
 [conn card input paused]
-
+Kirit kiinni · ohjaus tauolla
 [conn card lost]
-
+Yhteys katkesi
 [conn card progress %0 %1 %2]
-
+%0 % · %1/%2 askelta
 [conn card reconnecting %0]
-
+Yhdistetään otteluun uudelleen… yritys %0
 [conn card replaying %0]
-
+Toistetaan väliin jäänyt aika (%0). Näkymä päivittyy, kun olet taas ajan tasalla.
 [conn card seconds left %0]
-
+noin %0 s jäljellä
 [conn connections]
-
+Yhteydet
 [conn connection]
-
+Yhteys
 [conn delay explanation %0 %1]
-
+Viive: aika napsautuksestasi siihen, kun se tapahtuu kaikille. Se riippuu omasta yhteydestäsi, ei muiden pelaajien. Hyvä alle %0, heikko arvosta %1 alkaen.
 [conn fair]
-
+Kohtalainen
 [conn good]
-
+Hyvä
 [conn grid legend]
-
+Kun pelaajia on yli neljä, paneeli näyttää kunkin pelaajan pingin millisekunteina tai kuinka monta sekuntia hän on jäljessä.
 [conn jitter %0]
-
+vaihtelu %0
 [conn leave match]
-
+Poistu ottelusta
 [conn left]
-
+Poistui
 [conn notice back %0]
-
+%0 palasi.
 [conn notice left %0]
-
+%0 poistui ottelusta.
 [conn notice lost %0 %1]
-
+%0 menetti yhteyden. Peli jatkuu; pelaajan siirtokunta toimii, kun hän yhdistää uudelleen (%1 jäljellä).
 [conn ping explanation %0 %1]
-
+Ping: edestakainen viive pelaajan ja välityspalvelimen välillä. Hyvä alle %0, heikko arvosta %1 alkaen.
 [conn ping]
-
+Ping
 [conn players]
-
+Pelaajat
 [conn poor]
-
+Heikko
 [conn reconnecting]
-
+Yhdistetään
 [conn relay %0]
-
+Välitys: %0
 [conn resyncing]
-
+Liitytään
 [conn slow]
-
+Hidas
 [conn unstable]
-
+epävakaa
 [conn waiting]
-
+Yhdistetään…
 [conn you %0]
-
+%0 (sinä)
 [conn you]
-
+Sinä
 [conn your delay %0]
-
+Viiveesi %0
 [hub account menu]
-
+Tili
 [hub ai joins after %0]
-
+Tekoäly liittyy %0 kuluttua
 [hub all rooms]
-
+Kaikki
 [hub browse maps]
-
+Selaa karttoja
 [hub cant reach %0]
-
+Ei yhteyttä: %0.
 [hub change server]
-
+Vaihda palvelinta…
 [hub check code]
-
+Kun koodia kysytään, syötä tämä:
 [hub code placeholder]
-
+Koodi tai kutsulinkki
 [hub connecting to %0]
-
+%0 · yhdistetään…
 [hub continue with %0]
-
+Jatka: %0
 [hub create room]
-
+Luo huone
 [hub find match]
-
+Etsi ottelu
 [hub finish in browser]
-
+Viimeistele kirjautuminen selaimeen avautuneella sivulla.
 [hub free seat]
-
+Vapaa paikka
 [hub get update]
-
+Hae päivitys
 [hub guest kept on device]
-
+Vieras · tallessa tällä laitteella
 [hub invalid code]
-
+Tämä ei ole kutsukoodi tai -linkki.
 [hub join by code]
-
+Liity koodilla
 [hub join code]
-
+Liittymiskoodi
 [hub join]
-
+Liity
 [hub leaderboard]
-
+Tulostaulu
 [hub linked %0]
-
+Linkitetyt tilit · %0
 [hub linked accounts]
-
+Linkitetyt tilit
 [hub maps]
-
+Kartat
 [hub no queues]
-
+Tällä palvelimella ei ole pikaottelujonoja.
 [hub no rooms]
-
+Avoimia huoneita ei nyt ole. Luo sellainen ja jaa kutsu.
 [hub offline at %0]
-
+%0 · ei yhteyttä
 [hub offline detail %0]
-
+Yritetään uudelleen %0 s kuluttua. Pikaottelu ja verkkohuoneet eivät ole käytettävissä. Päävalikon LAN-peli ei tarvitse tätä palvelinta.
 [hub online at %0]
-
+%0 · verkossa
 [hub online settings]
-
+Verkkoasetukset
 [hub online]
-
+Verkkopeli
 [hub open page again]
-
+Avaa sivu uudelleen
 [hub open rooms]
-
+Avoimet huoneet
 [hub page opened at %0]
-
+Avattu: %0. Peliin ei tarvitse kirjoittaa mitään; se kirjaa sinut sisään itse.
 [hub queues unavailable]
-
+Pikaottelu tulee näkyviin, kun palvelin vastaa.
 [hub quick match unavailable]
-
+Pikaottelu ei ole vielä käytettävissä tässä versiossa.
 [hub quick match]
-
+Pikaottelu
 [hub ranked]
-
+Luokiteltu
 [hub recent matches]
-
+Viimeisimmät ottelut
 [hub refresh]
-
+Päivitä
 [hub retry now]
-
+Yritä nyt
 [hub room match]
-
+Huone
 [hub room name %0]
-
+Huone: %0
 [hub room]
-
+Huone
 [hub seats %0 %1]
-
+%0/%1 paikkaa
 [hub server %0]
-
+Palvelin: %0
 [hub sign in browser]
-
+Avaa kirjautumissivu
 [hub sign in conflict]
-
+Tämä kirjautuminen kuuluu jo toiselle tilille.
 [hub sign in failed %0]
-
+Kirjautuminen ei valmistunut (%0).
 [hub sign in intro]
-
+Kirjaudu tai luo tili selaimessa. Vierasotteluesi siirtyvät mukanasi.
 [hub sign in]
-
+Kirjaudu
 [hub sign out]
-
+Kirjaudu ulos tältä laitteelta
 [hub signed in as %0]
-
+Kirjautunut: %0.
 [hub signed in on %0]
-
+Kirjautunut palvelimelle %0
 [hub signing in]
-
+Kirjaudutaan…
 [hub sim %0]
-
+sim-versio %0
 [hub unrated]
-
+Luokittelematon
 [hub update required at %0]
-
+%0 · päivitys vaaditaan
 [hub update required detail %0]
-
+%0 käyttää uudempaa versiota, joten tämä kopio ei voi liittyä verkkopeleihin ennen päivitystä. LAN-pelit toimivat yhä.
 [hub update required]
-
+Päivitys vaaditaan
 [hub server behind]
-
+Palvelimen päivitys odottaa
 [hub server behind at %0]
-
+%0 · palvelimen päivitys odottaa
 [hub server behind detail %0]
-
+Tämä kopio on uudempi kuin %0, jota ei ole vielä päivitetty. Verkkopelit avautuvat, kun palvelin päivittyy. LAN-pelit toimivat yhä.
 [hub version mismatch]
-
+Eri versio
 [hub version mismatch at %0]
-
+%0 · eri versio
 [hub version mismatch detail %0]
-
+%0 käyttää pelin eri versiota, joten tämä kopio ei voi liittyä verkkopeleihin. LAN-pelit toimivat yhä.
 [hub versus %0]
-
+vs. %0
 [match ai]
-
+Tekoäly
 [match downloading map %0]
-
+Ladataan karttaa %0
 [match failed]
-
+Ottelua ei voitu aloittaa.
 [match leave]
-
+Poistu
 [match loading]
-
+Ladataan peliä
 [Loading game graphics]
-
+Ladataan pelin grafiikkaa
 [match map cached]
-
+jo tällä laitteella
 [match map]
-
+Ladataan karttaa
 [match relay %0]
-
+Yhdistetty välityspalvelimeen %0
 [match seat confirmed]
-
+Paikka vahvistettu
 [match starting]
-
+Ottelu alkaa
 [match tip flags]
-
+Vinkki: tiedustelulipuilla lähetät tiedustelijat paljastamaan karttaa; sotaliput kokoavat soturisi.
 [match tip input]
-
+Vinkki: käskysi tavoittavat kaikki oman ohjausviiveesi jälkeen; muiden pelaajien yhteydet eivät hidasta sinua.
 [match tip select]
-
+Vinkki: kaksoisnapsauta rakennusta valitaksesi kaikki samantyyppiset rakennukset.
 [match waiting for players]
-
+Odotetaan kaikkia pelaajia
 [match you %0]
-
+%0 (sinä)
 [match player map]
-
+kartta
 [match player loading]
-
+lataa
 [match player connecting]
-
+yhdistää
 [match player ready]
-
+valmis
 [match player left]
-
+poistui
 [results back to online]
-
+Takaisin verkkopeliin
 [results back to room]
-
+Takaisin huoneeseen
 [results defeat]
-
+Tappio
 [results ladder rating %0]
-
+Luokitus: %0
 [results left]
-
+Poistuit ottelusta
 [results match over]
-
+Ottelu päättyi
 [results match page]
-
+Ottelusivu
 [results minutes %0]
-
+%0 min
 [results no change]
-
+ei muutosta
 [results ranked]
-
+Luokiteltu
 [results recording]
-
+Tallennetaan tulosta…
 [results room unrated]
-
+Huoneottelu · luokittelematon
 [results saved to history]
-
+Tallennettu historiaasi
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+Palvelin ei pystynyt toistamaan tätä ottelua, joten se ei vaikuta kenenkään luokitukseen. Siitä on tehty ilmoitus tutkittavaksi; sinun ei tarvitse tehdä mitään.
 [results verified provisional]
-
+Vahvistettu · alustava
 [results verified]
-
+Vahvistettu
 [results verifying detail]
-
+Palvelin toistaa ottelun vahvistaakseen sen. Yleensä alle minuutti.
 [results verifying]
-
+Vahvistetaan tulosta…
 [results victory]
-
+Voitto
 [room address]
-
+Osoite
 [room ai %0]
-
+Tekoäly: %0
 [room browser pairing]
-
+Selainparitus
 [room catalog map]
-
+Luettelon kartta
 [room change map]
-
+Vaihda kartta…
 [room change rules]
-
+Muuta sääntöjä…
 [room chat]
-
+Keskustelu
 [room closed seat detail]
-
+Isäntä sulki paikan
 [room closed seat]
-
+Suljettu
 [room colonies]
-
+Siirtokunnat
 [room connecting]
-
+Yhdistetään huoneeseen…
 [room copy]
-
+Kopioi
 [room disconnected]
-
+yhteys katkennut
 [room downloading %0]
-
+Ladataan karttaa %0 %
 [room downloading map]
-
+Ladataan karttaa…
 [room expired]
-
+Huone on suljettu.
 [room generated on server]
-
+Luotu kerran palvelimella, joten kaikki pelaavat juuri tätä karttaa.
 [room guest]
-
+vieras
 [room host %0]
-
+isäntä %0
 [room host closed]
-
+Isäntä sulki huoneen.
 [room host]
-
+isäntä
 [room humans vs ai]
-
+Ihmiset vs. tekoäly
 [room invite code %0]
-
+Koodi %0 · aukeaa sovelluksessa, puhelimissa tai selaimessa
 [room invite not found]
-
+Tämä kutsu on vanhentunut tai sitä ei ole.
 [room invite only]
-
+Vain kutsutut
 [room invite]
-
+Kutsu
 [room joining on network]
-
+Liitytään tässä verkossa
 [room lan badge]
-
+Lähiverkko · ei luokitusta
 [room lan list hint %0]
-
+Saman verkon muut pelaajat näkevät huoneen %0 päävalikon LAN-pelien luettelossa.
 [room leave]
-
+Poistu
 [room map changed %0]
-
+Kartta vaihdettiin: %0.
 [room map failed]
-
+Karttaa ei voitu valmistella
 [room match label]
-
+Huone
 [room member joined %0]
-
+%0 liittyi.
 [room member left %0]
-
+%0 poistui.
 [room member ready %0]
-
+%0 on valmis.
 [room needs two seats]
-
+Kutsu ystävä tai lisää tekoäly aloittaaksesi
 [room no map]
-
+Ei vielä karttaa
 [room not ready]
-
+Ei valmis
 [room open for a person]
-
+Avoin ihmiselle
 [room open seat detail]
-
+Kuka tahansa kutsun saanut voi ottaa sen
 [room open seat]
-
+Avoin paikka
 [room person]
-
+Ihminen
 [room preparing map]
-
+Valmistellaan karttaa palvelimella…
 [room public]
-
+Julkinen
 [room ready?]
-
+Valmis
 [room ready]
-
+✓ Valmis
 [room remove from room]
-
+Poista huoneesta
 [room rule off]
-
+Pois
 [room rule on]
-
+Päällä
 [room rules changed]
-
+Sääntöjä muutettiin.
 [room rules]
-
+Säännöt
 [room say something]
-
+Sano jotain…
 [room seat hint]
-
+Pelaajat voivat siirtyä avoimelle paikalle itse. Tasapainota vaihtamalla joukkuetta.
 [room seat options]
-
+Paikan asetukset
 [room seats summary %0 %1 %2]
-
+Pelaajia %0 · tekoälyjä %1 · avoimia %2
 [room seats]
-
+Paikat
 [room seed]
-
+Siemen
 [room send]
-
+Lähetä
 [room set by host]
-
+Isännän asettama
 [room share text %0]
-
+Liity Globulation 2 -huoneeseeni: %0
 [room share]
-
+Jaa…
 [room size]
-
+Koko
 [room starting match]
-
+Ottelu alkaa…
 [room take seat]
-
+Ota paikka
 [room team %0]
-
+Joukkue %0
 [room update required]
-
+Tässä huoneessa pelataan pelin toista versiota. Päivitä liittyäksesi.
 [room uploaded map]
-
+Lähetetty kartta
 [room waiting for %0]
-
+Odotetaan, että %0 on valmis
 [room waiting for you]
-
+Paina Valmis, kun olet valmis
 [room match over]
-
+Ottelu päättyi. Valmistaudu uuteen erään!
 [room waiting for host]
-
+Odotetaan, että isäntä aloittaa
 [room waiting for players %0]
-
+Odotetaan valmiutta: %0 pelaajaa
 [room who can find it]
-
+Kuka voi löytää sen
 [room you created]
-
+Loit huoneen.
 [room you joined %0]
-
+Liityit huoneeseen %0.
 [room you were removed]
-
+Isäntä poisti sinut huoneesta.
 [room you]
-
+sinä
 [settings Online]
-
+Verkko
 [settings Another server]
-
+Toinen palvelin
 [settings Check]
-
+Tarkista
 [settings Checking…]
-
+Tarkistetaan…
 [settings Choose which server you play on and how you sign in to it.]
-
+Valitse, millä palvelimella pelaat ja miten kirjaudut sille.
 [settings Connecting…]
-
+Yhdistetään…
 [settings Could not reach this server.]
-
+Tähän palvelimeen ei saatu yhteyttä.
 [settings Display name saved.]
-
+Näyttönimi tallennettu.
 [settings Display name]
-
+Näyttönimi
 [settings Download or delete my data]
-
+Poista tilini
 [settings Enter an https:// address.]
-
+Syötä https://-osoite.
 [settings Finish in your browser. It shows the code %0.]
-
+Viimeistele selaimessa: syötä koodi %0, kun sitä kysytään.
 [settings Forget]
-
+Unohda
 [settings Guests keep a generated name; sign in to choose one.]
-
+Vierailla on luotu nimi; kirjaudu valitaksesi oman.
 [settings Link]
-
+Linkitä
 [settings Not a Globulation 2 server.]
-
+Ei ole Globulation 2 -palvelin.
 [settings Not linked]
-
+Ei linkitetty
 [settings Not signed in.]
-
+Ei kirjautunut.
 [settings Open]
-
+Avaa
 [settings Opens your account page on %0.]
-
+Avaa tilisivusi palvelimella %0, jossa voit poistaa tilin.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Yhteisön, kerhon tai sinun itsesi ylläpitämä. Liitä sen osoite.
 [settings Save]
-
+Tallenna
 [settings Server]
-
+Palvelin
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Näkyy huoneissa, otteluissa ja tulostaululla. Vaihdettavissa kerran 30 päivässä.
 [settings Sign in with: %0 · queues: %1]
-
+Kirjautuminen: %0 · jonot: %1
 [settings Sign out on this device]
-
+Kirjaudu ulos tältä laitteelta
 [settings Sign out]
-
+Kirjaudu ulos
 [settings Switch to this server]
-
+Vaihda tähän palvelimeen
 [settings The last sign-in method can't be unlinked.]
-
+Viimeistä kirjautumistapaa ei voi irrottaa.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Virallinen Globulation 2 -palvelin · luokitellut jonot, tulostaulut, karttaluettelo
 [settings Unlink]
-
+Irrota
 [settings Unlinking is done on the account page.]
-
+Irrotus tehdään tilisivulla.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Olet uusi vieras, kunnes kirjaudut uudelleen. Tilisi ja ottelusi säilyvät palvelimella.
 [settings Your account on %0]
-
+Tilisi palvelimella %0
 [settings compatible with this version]
-
+yhteensopiva tämän version kanssa
 [settings connected]
-
+yhdistetty
 [settings connecting…]
-
+yhdistetään…
 [settings guest]
-
+vieras
 [settings linked]
-
+linkitetty
 [settings plays another version]
-
+eri versio
 [settings trusted]
-
+luotettu
 [settings used before]
-
+käytetty aiemmin
 [settings you were %0 there]
-
+nimesi siellä: %0
 [trust invited to room %0]
-
+Kutsu huoneeseen %0
 [trust join as guest]
-
+Liity vieraana
 [trust not official]
-
+Tätä palvelinta ei ylläpidä Globulation 2 -projekti.
 [trust remember]
-
+Muista tämä palvelin
 [trust separate identity %0]
-
+Liityt sinne vieraana. %0-tilisi, luokituksesi ja historiasi pysyvät ennallaan.
 [trust title]
-
+Liitytäänkö peliin toisella palvelimella?
 [trust what it sees]
-
+Palvelin näkee näyttönimesi, yhteytesi osoitteen ja pelit, joita pelaat siellä.
 [settings not connected]
-
+ei yhteyttä
 [settings Open Play online to connect.]
-
+Yhdistä avaamalla Pelaa verkossa.
 [hub code]
-
+Koodi
 [results draw]
-
+Tasapeli
 [qm 2 vs 2]
-
+2 vs. 2
 [qm 1 vs 1]
-
+1 vs. 1
 [qm ping about]
-
+Ping noin
 [qm ranked]
-
+Luokiteltu
 [qm casual %0]
-
+Rento %0
 [qm rated]
-
+Luokiteltu
 [qm unrated]
-
+Luokittelematon
 [qm solo queue]
-
+yksinjono
 [qm ai joins after %0]
-
+Tekoäly liittyy %0 kuluttua
 [qm fair maps %0]
-
+Kartat: %0
 [qm cooldown %0]
-
+Hylkäsit ottelun. Voit hakea uudelleen %0 kuluttua.
 [qm sign in to play ranked]
-
+Luokitellut jonot ovat kirjautuneille tileille; kirjaudu ensin.
 [online update required]
-
+Tämä pelin versio on liian vanha palvelimelle; päivitä pelataksesi verkossa.
 [online server behind]
-
+Palvelinta ei ole vielä päivitetty tähän versioon; verkkopeli avautuu, kun se on.
 [online version mismatch]
-
+Palvelimella on pelin eri versio; verkkopeli ei ole käytettävissä tällä kopiolla.
 [qm already searching]
-
+Haet jo ottelua tai olet ottelussa.
 [online connection problem]
-
+Palvelimeen ei saatu yhteyttä.
 [qm find match]
-
+Etsi ottelu
 [qm opponents rated %0 to %1]
-
+Vastustajien luokitus %0–%1
 [qm region %0]
-
+Alue: %0
 [qm searching]
-
+Haetaan
 [qm measuring relays]
-
+Mitataan välityspalvelimia
 [qm joining queue]
-
+Liitytään jonoon
 [qm waiting for a person]
-
+Odotetaan ihmispelaajaa: tekoälyvastustajat ovat pois päältä.
 [qm ai in %0 rated]
-
+Jos ketään ei löydy, pelaat luokitukseltaan lähintä tekoälyä vastaan %0 kuluttua
 [qm ai in %0]
-
+Jos ketään ei löydy, tekoäly liittyy %0 kuluttua
 [qm ai after %0]
-
+Jos ketään ei löydy, tekoäly ottaa paikan %0 kuluttua
 [qm allow ai short]
-
+Salli tekoäly
 [qm allow ai]
-
+Salli tekoälyvastustaja
 [qm cancel]
-
+Peruuta
 [qm cancel search]
-
+Peruuta haku
 [qm usual wait %0]
-
+tavallinen odotus %0
 [qm widening]
-
+laajenee odottaessa
 [qm ais are rated]
-
+(luokiteltu: tekoälyilläkin on luokitus)
 [qm opponent declined]
-
+Vastustajasi ei hyväksynyt. Olet taas jonon kärjessä.
 [qm %0 did not accept]
-
+%0 ei hyväksynyt. Olet taas jonon kärjessä.
 [qm start failed]
-
+Ottelua ei voitu aloittaa. Haet taas.
 [qm you declined]
-
+Hylkäsit ottelun. Voit hakea uudelleen lyhyen odotuksen jälkeen.
 [qm you did not answer]
-
+Et hyväksynyt ajoissa. Voit hakea uudelleen lyhyen odotuksen jälkeen.
 [qm search ended]
-
+Haku päättyi.
 [qm try again]
-
+Yritä uudelleen
 [online connecting]
-
+Yhdistetään…
 [qm no queues]
-
+Tällä palvelimella ei ole pikaottelujonoja.
 [qm quick match]
-
+Pikaottelu
 [qm phone searching note]
-
+Haku jatkuu, vaikka poistuisit tästä näkymästä.
 [qm phone intro]
-
+Valitse jono alta; haku jatkuu selatessasi.
 [qm online]
-
+Verkkopeli
 [qm keeps running note]
-
+Haku jatkuu, vaikka poistuisit tästä näkymästä.
 [qm ai]
-
+Tekoäly
 [qm provisional]
-
+alustava
 [qm accepted]
-
+✓ hyväksytty
 [qm declined]
-
+hylätty
 [qm waiting]
-
+odotetaan…
 [qm ai badge]
-
+tekoäly
 [qm match found]
-
+Ottelu löytyi
 [qm playing an ai]
-
+Pelaat tekoälyä vastaan
 [qm vs]
-
+vs.
 [qm ai explanation rated]
-
+Luokitusalueellasi ei hakenut kukaan. Pelaat luokitukseltasi lähintä tekoälyä vastaan; tulos vaikuttaa sekä sinun että tekoälyn luokitukseen.
 [qm ai explanation]
-
+Kukaan ei hakenut. Pelaat luokitukseltasi lähintä tekoälyä vastaan; tämä peli on luokittelematon.
 [qm casual explanation]
-
+Ottelu alkaa heti; rennot pelit ovat luokittelemattomia.
 [qm accepted button]
-
+Hyväksytty
 [qm accept]
-
+Hyväksy
 [qm decline]
-
+Hylkää
 [qm both must accept]
-
+Molempien on hyväksyttävä
 [qm accept explanation]
-
+Molempien pelaajien on hyväksyttävä. Hylkääminen tai ajan umpeutuminen siirtää sinut jonon perälle.
 [qm starting in %0]
-
+Alkaa: %0…
 [qm preparing match]
-
+Valmistellaan ottelua…
 [qm match assigned %0 %1]
-
+Ottelu %0 on valmis palvelimella %1, mutta tämä versio ei vielä voi yhdistää verkko-otteluihin.
 [online jan]
-
+tammik.
 [online feb]
-
+helmik.
 [online mar]
-
+maalisk.
 [online apr]
-
+huhtik.
 [online may]
-
+toukok.
 [online jun]
-
+kesäk.
 [online jul]
-
+heinäk.
 [online aug]
-
+elok.
 [online sep]
-
+syysk.
 [online oct]
-
+lokak.
 [online nov]
-
+marrask.
 [online dec]
-
+jouluk.
 [profile win letter]
-
+V
 [profile loss letter]
-
+H
 [profile draw letter]
-
+T
 [profile history unavailable]
-
+Tämä palvelin ei vielä tarjoa otteluhistoriaa.
 [profile downloading replay]
-
+Ladataan toistoa…
 [profile no replay]
-
+Tälle ottelulle ei ole toistoa.
 [profile room with %0]
-
+Huone · siirtokuntia %0
 [profile with %0 vs %1]
-
+liittolaiset: %0 · vs. %1
 [profile vs %0]
-
+vs. %0
 [profile room]
-
+Huone
 [profile casual]
-
+Rento
 [profile ai filled]
-
+Tekoäly täytti
 [profile provisional %0 games]
-
+alustava · %0 peliä
 [profile unrated]
-
+luokittelematon
 [profile checking]
-
+tarkistetaan…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Ottelusivu
 [profile replay]
-
+Toisto
 [profile win rate last %0]
-
+Voittoprosentti, viimeiset %0
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 H · %2 tasapeliä
 [profile typical game]
-
+Tyypillinen peli
 [profile median length]
-
+pelisi mediaanipituus
 [profile best map]
-
+Paras kartta
 [profile %0 w %1 l]
-
+%0 V · %1 H
 [profile no rated games]
-
+Pelaa luokiteltu ottelu saadaksesi luokituksen.
 [profile all]
-
+Kaikki
 [profile rooms]
-
+Huoneet
 [profile vs ai]
-
+vs. tekoäly
 [profile matches]
-
+Ottelut
 [online loading]
-
+Ladataan…
 [profile no matches]
-
+Ei vielä otteluita.
 [online load more]
-
+Lataa lisää
 [profile title]
-
+Profiili
 [profile guest]
-
+vieras
 [profile playing since %0]
-
+pelannut %0 alkaen
 [profile full profile web]
-
+Koko profiili verkossa
 [profile replays note]
-
+Toistot ladataan palvelimelta, kun avaat ne; paikallisesti tallentamasi löytyvät kohdasta Lataa peli → Toistot.
 [profile web profile]
-
+Verkkoprofiili
 [maps most played]
-
+Pelatuimmat
 [maps most liked]
-
+Tykätyimmät
 [maps newest]
-
+Uusimmat
 [maps most downloaded]
-
+Ladatuimmat
 [maps any size]
-
+Kaikki koot
 [maps up to 128]
-
+Enintään 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 ja suuremmat
 [maps report broken]
-
+Se ei toimi
 [maps report offensive]
-
+Loukkaava
 [maps report copyright]
-
+Jonkun muun tekemä
 [maps report other]
-
+Jokin muu
 [maps public]
-
+Julkinen
 [maps unlisted]
-
+Listaamaton
 [maps private]
-
+Yksityinen
 [maps cannot read file]
-
+Karttatiedostoa ei voitu lukea.
 [maps file too large]
-
+Karttatiedosto on liian suuri jaettavaksi.
 [maps saved for next room]
-
+Kartta on ladattu; sitä käytetään, kun avaat huoneen.
 [maps download failed]
-
+Karttaa ei voitu ladata.
 [maps %0 colonies]
-
+%0 siirtokuntaa
 [maps version %0]
-
+versio %0
 [maps updated %0]
-
+päivitetty %0
 [maps downloading]
-
+Ladataan karttaa…
 [maps like needs account]
-
+Karttoihin tykkääminen vaatii kirjautuneen tilin.
 [maps report sent]
-
+Kiitos; moderaattorit tarkistavat sen.
 [maps select a map]
-
+Valitse kartta nähdäksesi sen tiedot.
 [maps by %0]
-
+tekijä: %0
 [maps stats %0 %1 %2]
-
+▶ %0 pelikertaa · ⬇ %1 latausta · ♥ %2
 [maps use in room]
-
+Käytä huoneessa
 [maps liked]
-
+Tykätty
 [maps like]
-
+Tykkää
 [maps map page]
-
+Karttasivu
 [maps reported]
-
+Ilmoitettu
 [maps report]
-
+Ilmoita…
 [maps report why]
-
+Mikä tässä kartassa on vialla?
 [maps search placeholder]
-
+Hae karttoja tai tekijöitä
 [maps none found]
-
+Ei osuvia karttoja.
 [maps any colonies]
-
+Kaikki siirtokuntamäärät
 [maps checking]
-
+Tarkistetaan…
 [maps no version yet]
-
+Yhtään versiota ei ole vielä lähetetty.
 [maps rejected]
-
+Hylätty
 [maps did not load %0]
-
+Kartta ei latautunut: %0
 [maps unknown reason]
-
+syytä ei annettu
 [maps fix and upload again]
-
+korjaa se editorissa ja lähetä uudelleen
 [maps uploaded just now]
-
+lähetetty juuri
 [maps loading on server]
-
+ladataan palvelimella
 [maps %0 plays]
-
+%0 pelikertaa
 [maps hidden]
-
+Piilotettu
 [maps upload again]
-
+Lähetä uudelleen…
 [maps delete]
-
+Poista
 [maps update]
-
+Päivitä…
 [maps upload a map]
-
+Lähetä kartta…
 [maps upload hint]
-
+.map-tiedostot karttakansiostasi tai editorista
 [maps no maps yet]
-
+Et ole vielä jakanut karttoja.
 [maps my maps]
-
+Omat kartat
 [maps my maps %0]
-
+Omat kartat (%0)
 [maps browse]
-
+Selaa
 [maps title]
-
+Kartat
 [maps browse note %0]
-
+Luettelo: %0 · vain tässä versiossa latautuvat kartat näytetään
 [maps visibility note]
-
+Julkiset kartat näkyvät Selaa-näkymässä. Listaamattomat toimivat huoneissasi ja linkin kautta. Yksityiset vain omissa huoneissasi.
 [maps use %0]
-
+Käytä: %0
 [maps %0 kb]
-
+%0 kt
 [maps field title]
-
+Otsikko
 [maps field description]
-
+Kuvaus
 [maps who can use it]
-
+Kuka voi käyttää
 [maps guests unlisted]
-
+Vieraat voivat jakaa listaamattomia ja yksityisiä karttoja; kirjaudu julkaistaksesi Selaa-näkymään.
 [maps visibility help]
-
+Listaamattomat kartat toimivat huoneissasi ja linkin kautta; julkiset näkyvät myös Selaa-näkymässä.
 [maps new version of %0]
-
+Lähetä tämä tiedosto uutena versiona kartasta %0.
 [maps upload]
-
+Lähetä
 [maps uploading]
-
+Lähetetään…
 [maps checking detail]
-
+Palvelin lataa karttaa ja piirtää sen esikatselua. Siihen asti karttaa ei voi käyttää.
 [maps ready]
-
+Valmis
 [maps ready public]
-
+Kartta on valmis ja näkyy Selaa-näkymässä.
 [maps ready unlisted]
-
+Kartta on valmis. Listaamattomat kartat toimivat huoneissasi ja linkin kautta.
 [maps ready private]
-
+Kartta on valmis. Yksityiset kartat toimivat vain omissa huoneissasi.
 [maps upload failed]
-
+Lähetys epäonnistui
 [maps server read %0 %1]
-
+Palvelin tulkitsi sen näin: %0, siirtokuntia %1.
 [maps continue in background]
-
+Sulje
 [maps upload a map title]
-
+Lähetä kartta
 [maps update map title]
-
+Päivitä kartta
 [maps upload note]
-
+Palvelin lataa jokaisen lähetyksen ennen kuin sitä voi käyttää.
 [online just now]
-
+juuri nyt
 [online today %0]
-
+tänään %0
 [online yesterday]
-
+eilen
 [online sun]
-
+su
 [online mon]
-
+ma
 [online tue]
-
+ti
 [online wed]
-
+ke
 [online thu]
-
+to
 [online fri]
-
+pe
 [online sat]
-
+la
 [online %0 weeks ago]
-
+%0 viikkoa sitten
 [online %0 months ago]
-
+%0 kuukautta sitten
 [online %0 years ago]
-
+%0 vuotta sitten
 [maps share online]
-
+Jaa verkossa…
 [maps mine]
-
+Omat
 [results waiting for players]
-
+Odotetaan, että muut pelaajat poistuvat…
 [results waiting detail]
-
+Tulos kirjataan, kun kaikki ovat poistuneet ottelusta.
 [results waiting slow]
-
+Yhteyden menettäneellä pelaajalla on enintään 3 minuuttia aikaa palata. Tulos näkyy historiassasi ja ottelusivulla.
 [results verifying slow]
-
+Vahvistus kestää tavallista kauemmin. Tulos näkyy historiassasi ja ottelusivulla.
 [results rematch]
-
+Uusintaottelu
 [results join rematch %0]
-
+Liity uusintaotteluun: %0
 [hub profile history]
-
+Profiili ja historia
 [hub my maps]
-
+Omat kartat
 [hub leaderboard %0]
-
+Tulostaulu · %0
 [hub leaderboard empty]
-
+Ei vielä luokiteltuja pelaajia.
 [hub guests not ranked]
-
+Vieraita ei luokitella. Kirjaudu näkyäksesi täällä.
 [hub full leaderboard]
-
+Koko tulostaulu
 [settings %0 is no longer linked.]
-
+%0 ei ole enää linkitetty.
 [room map read failed]
-
+Tätä karttatiedostoa ei voitu lukea.
 [room map upload failed]
-
+Karttaa ei voitu jakaa huoneelle.
 [room map upload failed %0]
-
+Karttaa ei voitu jakaa huoneelle: %0
 [room uploading map]
-
+Jaetaan karttaa huoneelle…
 [room premade map shared]
-
+Kaikki huoneessa pelaavat tätä karttatiedostoa; se ladataan ennen ottelua.
 [room take a seat to play]
-
+Ota avoin paikka pelataksesi
 [room waiting for a seat]
-
+Kaikki paikat on varattu. Voit ottaa paikan, kun sellainen vapautuu.
 [room not seated]
-
+Ei paikkaa
 [room copied]
-
+Kopioitu
 [room copy failed]
-
+Kopiointi epäonnistui
 [room closed title]
-
+Huone suljettu
 [room removed title]
-
+Poistettu huoneesta
 [room back to online]
-
+Takaisin verkkopeliin
 [leave match]
-
+Poistu ottelusta
 [leave match title]
-
+Poistutaanko ottelusta?
 [leave lan title]
-
+Poistutaanko LAN-pelistä?
 [leave rated body]
-
+Häviät tämän luokitellun ottelun ja luokituksesi laskee. Muut jatkavat pelaamista, etkä voi palata otteluun.
 [leave casual body]
-
+Tämä pikaottelu lasketaan tappioksesi. Muut jatkavat pelaamista, etkä voi palata otteluun.
 [leave room body]
-
+Poistut huoneen ottelusta, ja se lasketaan historiassasi tappioksi. Muut jatkavat pelaamista, etkä voi palata otteluun.
 [leave lan body]
-
+Muut jatkavat pelaamista ilman sinua, etkä voi palata tähän peliin.
 [leave match confirm]
-
+Poistu ottelusta
 [keep playing]
-
+Jatka pelaamista
 [results team]
-
+Joukkue
 [results quick unrated]
-
+Pikaottelu · luokittelematon
 [conn card cannot keep up]
-
+Laitteesi ei pysy tämän ottelun tahdissa
 [conn card cannot keep up body]
-
+Se toistaa ottelua hitaammin kuin ottelu etenee, joten se ei ehdi kiinni. Voit poistua ottelusta tai laskea grafiikka-asetuksia ja odottaa.
 [conn card not gaining]
-
+ei kiri kiinni
 [results reason opponents left]
-
+Vastustajasi poistuivat ottelusta.
 [results reason victory]
-
+Kaikki vastustajien siirtokunnat kukistettiin.
 [results reason defeat]
-
+Siirtokuntasi kukistettiin.
 [results reason you left]
-
+Poistuit ottelusta. Se lasketaan tappioksi.
 [results final after end]
-
+Lopullinen tulos ottelun päätyttyä.
 [pause none left]
-
+Ei taukoja jäljellä
 [pause game left %0]
-
+Keskeytä peli (%0 jäljellä)
 [pause by %0]
-
+Tauolla: %0
 [pause by %0 resumes in %1]
-
+Tauolla: %0 · jatkuu %1 kuluttua
 [turn too many actions]
-
+Liikaa toimintoja: osa odottaa yhä lähetystä
 [turn no pauses left]
-
+Sinulla ei ole taukoja jäljellä tässä ottelussa
 [turn pause time used %0]
-
+%0 on käyttänyt kaiken taukoaikansa: peli jatkuu
 [room seats one person %0 %1]
-
+1 pelaaja · tekoälyjä %0 · avoimia %1
 [room rules otherwise standard]
-
+Kaikki muut säännöt ovat kuten Vakio-säännöstössä.
 [room browser link]
-
+Linkki selainpelaajille
 [room browser link hint]
-
+Selaimessa pelaavat liittyvät liittämällä tämän linkin.
 [room browser link code %0]
-
+Selaimessa pelaavat liittyvät liittämällä tämän linkin. Heidän pelinsä näyttää koodin %0.
 [room copy link]
-
+Kopioi linkki
 [room lan open seat detail]
-
+Kuka tahansa tässä verkossa voi ottaa sen
 [room close title]
-
+Suljetaanko huone?
 [room close body one]
-
+Poistuminen sulkee huoneen kaikilta, myös siinä olevalta toiselta pelaajalta.
 [room close body %0]
-
+Poistuminen sulkee huoneen kaikilta, myös siinä olevilta muilta pelaajilta (%0).
 [room close confirm]
-
+Sulje huone
 [room stay]
-
+Jää
 [room colours changed]
-
+Uusi kartta antoi paikoille uudet värit. Tarkista omasi ennen aloitusta.
 [room copy by hand]
-
+Kopiointi ei onnistunut. Kopioi kutsu itse:
 [room copy by hand close]
-
+Sulje
 [room copy by hand touch]
-
+Paina linkkiä pitkään ja valitse Kopioi.
 [room copy by hand keys]
-
+Linkki on valittu: paina Ctrl+C (Macissa ⌘C).
 [room code]
-
+Koodi
 [online under a minute]
-
+alle minuutti
 [online about %0 min]
-
+noin %0 minuuttia
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+Tekoälyvastustaja: %0
 [match relay connected]
-
+Yhdistetty pelipalvelimeen
 [room picker title]
-
+Valitse kartta
 [room picker for one]
-
+Huoneen 1 pelaajalle
 [room picker for %0]
-
+Huoneen pelaajille (%0)
 [room picker generated]
-
+Luodut
 [room picker premade]
-
+Valmiit
 [room picker catalog]
-
+Luettelo
 [room picker size]
-
+Koko
 [room picker colonies]
-
+Siirtokunnat
 [room picker fair]
-
+Reilu alku jokaiselle siirtokunnalle
 [room picker does not fit]
-
+Ei sovi tähän kokoon; kokeile toista
 [room picker preparing]
-
+Valmistellaan esikatselua…
 [room picker generated note]
-
+Jokainen maisema antaa kaikille siirtokunnille yhtä hyvän alun, ja palvelin luo saman kartan kaikille.
 [room picker players %0]
-
+%0 pelaajaa
 [room picker unreadable]
-
+ei voi lukea
 [room picker no premade]
-
+Valmiita karttoja ei löytynyt.
 [room picker too small %0]
-
+Tässä kartassa on vähemmän siirtokuntia kuin huoneessa on pelaajia (%0).
 [room picker pick premade]
-
+Valitse kartta nähdäksesi sen tässä.
 [room picker catalog intro]
-
+Muiden pelaajien jakamia karttoja. Avaa kartta ja valitse Käytä huoneessa.
 [room picker browse catalog]
-
+Selaa jaettuja karttoja
 [room picker more options]
-
+Lisää vaihtoehtoja…
 [room picker use]
-
+Käytä tätä karttaa
 [room map ready title %0]
-
+Pelaa: %0
 [room map ready unnamed]
-
+tämä kartta
 [room map ready body]
-
+Luo huone ja kutsu ystäväsi: huoneessa pelataan tätä karttaa.
 [game draw]
-
+Tasapeli
 [settings Show colony skins]
 Näytä siirtokuntien ulkoasut
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Poista käytöstä, jos haluat tällä laitteella klassiset yksiköt, parvet ja rakennusten värit.
+Poista käytöstä, jos haluat tällä laitteella klassiset yksiköt, pesät ja rakennusten värit.
 [settings Hive Mind]
-
+Parviäly
 [settings Enable commander shortcuts]
-
+Ota komentajan pikanäppäimet käyttöön
 [settings Command your colony without opening a menu.]
-
+Komenna siirtokuntaasi avaamatta valikkoa.
 [settings Allow supervision for new commands]
-
+Salli uusien käskyjen valvonta
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Komentaja voi tehdä jatkotoimia pysyvien käskyjen pohjalta. Jatkotoimet kuluttavat krediittejä; asennetut käskyt toimivat ilman krediittejä.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Oletuspikanäppäimet: Ctrl+Enter antaa käskyn; Ctrl+Shift+Enter pysäyttää komentajan työn. Muuta niitä kohdassa Ohjaus. Pysyvien käskyjen korteissa on omat keskeytys- ja peruutussäätimet.
 [settings Commander account and credits]
-
+Komentajan tili ja krediitit
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Hallitse krediittejä ja ostoksia selaimessa. Komentajan apu on sallittu luokitelluissa peleissä.
 [open commander]
-
+Avaa komentaja
 [stop commander]
-
+Pysäytä komentaja
 [settings Recording]
-
+Videotallennus
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Tallenna pelisi äänellisinä MP4-videoina. Tallennus vaatii FFmpegin, jossa on libx264- ja AAC-kooderit.
 [settings FFmpeg is ready.]
-
+FFmpeg on valmis.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg ei ole käytettävissä, joten tallennus on pois päältä. Asenna FFmpeg, varmista että se on PATH-polussa, ja tarkista uudelleen.
 [settings Check for FFmpeg again]
-
+Tarkista FFmpeg uudelleen
 [settings Checking for FFmpeg…]
-
+Tarkistetaan FFmpegiä…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Pikanäppäin: %0. Toimii myös valikoissa ja editorissa.
 [settings Change the hotkey]
-
+Vaihda pikanäppäin
 [settings Recordings are saved in %0]
-
+Tallenteet tallennetaan kansioon %0
 [toggle recording]
-
+Aloita tai lopeta tallennus
 [File selection is unavailable.]
-
+Tiedoston valinta ei ole käytettävissä.
 [Saving custom AI…]
-
+Tallennetaan omaa tekoälyä…
 [Could not read the selected JavaScript file.]
-
+Valittua JavaScript-tiedostoa ei voitu lukea.
 [Custom AI library saved.]
-
+Omien tekoälyjen kirjasto tallennettu.
 [Storage could not be saved. The previous library is retained.]
-
+Tallennus epäonnistui. Edellinen kirjasto säilytetään.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Tuo yksi JavaScript-tekoälytiedosto ja valitse se paikallista peliä asettaessasi.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Tuonti säilyttää kopion Glob2:ssa. Päivitä korvaa kopion tulevia pelejä varten; tallennuksissa säilyy alkuperäinen tekoäly.
 [Waiting for file selection or storage…]
-
+Odotetaan tiedoston valintaa tai tallennustilaa…
 [Import JavaScript AI]
-
+Tuo JavaScript-tekoäly
 [Link development file]
-
+Linkitä kehitystiedosto
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Linkitetyt tiedostot luetaan pelin alussa. Käännä uudelleen ennen uuden pelin aloittamista. Linkin poistaminen ei koskaan poista tiedostoasi.
 [Example AI and authoring guide]
-
+Esimerkkitekoäly ja kirjoitusopas
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Ei vielä omia tekoälyjä. Aloita tuomalla koottu .js-tiedosto.
 [Relink]
-
+Linkitä uudelleen
 [Update]
-
+Päivitä
 [Validate]
-
+Tarkista
 [AI startup and persistent globals are valid.]
-
+Tekoälyn käynnistys ja pysyvät globaalit muuttujat ovat kelvollisia.
 [Remove from library]
-
+Poista kirjastosta
 [AI telemetry]
-
+Tekoälyn telemetria
 [No accessible AI telemetry.]
-
+Ei saatavilla olevaa tekoälyn telemetriaa.
 [Search fields]
-
+Hae kenttiä
 [Telemetry unavailable for this recording or controller.]
-
+Telemetria ei ole saatavilla tälle tallenteelle tai ohjaajalle.
 [Linked]
-
+Linkitetty
 [Imported]
-
+Tuotu
 [Player]
-
+Pelaaja
 [Updated at tick %0]
-
+Päivitetty askeleella %0
 [No values published yet.]
-
+Arvoja ei ole vielä julkaistu.
 [No fields match your search.]
-
+Hakuasi vastaavia kenttiä ei ole.
 [settings Custom AIs]
-
+Omat tekoälyt
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Lisää JavaScript-tekoälyjä kohdassa Asetukset → Omat tekoälyt. Ne näkyvät kunkin siirtokunnan tekoälyvalitsimessa.
 [Missing custom AI]
-
+Oma tekoäly puuttuu
 [Map repetition failed]
-
+Tätä karttaa ei voi toistaa. Käytä skriptitöntä aloituskarttaa tai vähennä toistoja ja tukikohtia.
 [repeat map horizontally]
 Toista kartta vaakasuunnassa
 [repeat map vertically]
@@ -4653,594 +4653,594 @@ tukikohtaa
 [bases per colony]
 Tukikohtia siirtokuntaa kohden; tukikohta on piirretyn kartan yksi joukkue rakennuksineen ja yksiköineen
 [stat group population]
-
+Väestö
 [stat group food]
-
+Ruoka ja hyvinvointi
 [stat group resources]
-
+Resurssit
 [stat group buildings]
-
+Rakennukset
 [stat group military]
-
+Sotavoima
 [stat group map]
-
+Maa-alue
 [stat group score]
-
+Pisteet
 [stat overview]
-
+Yleiskatsaus
 [stat overview about]
-
+Kunkin siirtokunnan luvut koko ottelulta. Suurin korostetaan, kun enemmän on parempi; napsauta sarakkeen otsikkoa nähdäksesi, miten luku muuttui ajan myötä.
 [stat population]
-
+Väestö
 [stat population about]
-
+Kuinka monta elävää yksikköä siirtokunnalla oli: työläiset, tiedustelijat ja soturit yhteensä.
 [stat births]
-
+Syntyneet yksiköt
 [stat births about]
-
+Kuinka nopeasti pesät tuottivat uusia yksiköitä. Erittele nähdäksesi työläiset, tiedustelijat ja soturit erikseen.
 [stat deaths]
-
+Menetetyt yksiköt
 [stat deaths about]
-
+Kuinka nopeasti siirtokunta menetti yksiköitä syystä riippumatta: taistelu, nälkä, raivausvammat tai jumiin jääminen.
 [stat net growth]
-
+Väestönkasvu
 [stat net growth about]
-
+Syntyneet yksiköt miinus menetetyt. Yli nollan siirtokunta kasvoi; alle nollan se pieneni.
 [stat death causes]
-
+Kuolinsyyt
 [stat death causes about]
-
+Mihin siirtokunnan yksiköt kuolivat: taisteluun, nälkään, resurssien raivauksessa saatuihin vammoihin, jumiin jäämiseen ilman ulospääsyä tai muihin syihin.
 [stat conversions]
-
+Nettoloikkaukset
 [stat conversions about]
-
+Muista siirtokunnista loikanneet yksiköt miinus niihin loikanneet. Yksiköt vaihtavat puolta, kun toinen siirtokunta ruokkii niitä paremmin.
 [stat hunger]
-
+Ruokavarat
 [stat hunger about]
-
+Kuinka paljon ruokaa siirtokunnan yksiköillä oli sisällään. Jokainen yksikkö luokitellaan jäljellä olevan ruokavaransa mukaan: lähes tyhjä (enintään neljännes), vähissä (enintään puolet), puolillaan (enintään kolme neljännestä) tai hyvin ruokittu. Yksiköt lähtevät etsimään majataloa varansa huvetessa, joten siirtokunnassa on aina joitakin, joilla ruoka on vähissä.
 [stat health]
-
+Terveys
 [stat health about]
-
+Kuinka terveitä siirtokunnan yksiköt olivat. Jokainen yksikkö luokitellaan jäljellä olevien osumapisteidensä mukaan: kriittinen (enintään neljännes), haavoittunut (enintään puolet), loukkaantunut (enintään kolme neljännestä) tai terve.
 [stat seeking food]
-
+Ruokaa etsivät yksiköt
 [stat seeking food about]
-
+Yksiköt, jotka olivat lopettaneet työn etsiäkseen majatalon. Ne, joiden terveys ei myöskään ole täysi, lasketaan heikkeneviksi.
 [stat in care]
-
+Syövät tai paranevat yksiköt
 [stat in care about]
-
+Majatalossa syövät tai sairaalassa hoidettavat yksiköt, jotka eivät siksi ole töissä.
 [stat wheat harvested]
-
+Korjattu vilja
 [stat wheat harvested about]
-
+Työläisten keräämät viljakuormat. Majatalot tekevät viljasta aterioita.
 [stat wheat stored]
-
+Viljaa varastossa
 [stat wheat stored about]
-
+Siirtokunnan rakennuksissa oleva vilja, valmiina tarjottavaksi tai käytettäväksi.
 [stat meals]
-
+Tarjoillut ateriat
 [stat meals about]
-
+Siirtokunnan majatalojen tarjoamat ateriat omille yksiköille ja muiden siirtokuntien vierailijoille.
 [stat starvation]
-
+Nälkäkuolemat
 [stat starvation about]
-
+Yksiköt, jotka kuolivat, koska eivät löytäneet ruokaa ajoissa.
 [stat healing]
-
+Palautettu terveys
 [stat healing about]
-
+Osumapisteet, jotka siirtokunnan sairaalat palauttivat haavoittuneille yksiköille.
 [stat gathered]
-
+Kerätyt resurssit
 [stat gathered about]
-
+Työläisten keräämät kuormat kaikkia resursseja. Erittele nähdäksesi kunkin resurssin.
 [stat stored]
-
+Resursseja varastossa
 [stat stored about]
-
+Siirtokunnan rakennuksissa olevat resurssit. Erittele nähdäksesi kunkin resurssin.
 [stat spending]
-
+Resurssien käyttö
 [stat spending about]
-
+Mihin toimitetut resurssit menivät: aterioihin, uusiin yksiköihin, tornien ammuksiin, uusiin rakennuksiin tai päivityksiin.
 [stat delivered]
-
+Toimitetut resurssit
 [stat delivered about]
-
+Työläisten rakennuksiin kantamat kuormat.
 [stat traded]
-
+Nettokauppa
 [stat traded about]
-
+Kauppojen kautta saadut resurssit miinus annetut.
 [stat buildings]
-
+Pystyssä olevat rakennukset
 [stat buildings about]
-
+Siirtokunnan valmiit rakennukset. Erittele nähdäksesi kunkin rakennustyypin.
 [stat construction]
-
+Valmis rakennustyö
 [stat construction about]
-
+Valmistunut rakennustyö: uudet rakennukset, päivitykset ja korjaukset.
 [stat buildings lost]
-
+Menetetyt rakennukset
 [stat buildings lost about]
-
+Vihollisten tuhoamat tai siirtokunnan itse purkamat rakennukset.
 [stat blocked buildings]
-
+Saartuneet rakennukset
 [stat blocked buildings about]
-
+Rakennukset, joiden sisäänkäynnit olivat tukossa, joten yksiköt eivät päässeet sisään tai ulos.
 [stat attack]
-
+Hyökkäysvoima
 [stat attack about]
-
+Siirtokunnan sotureiden yhteenlasketun taistelukyvyn pisteet: kuinka kovaa ja nopeasti ne iskevät.
 [stat defence]
-
+Puolustusvoima
 [stat defence about]
-
+Siirtokunnan puolustustornien yhteenlasketun tulivoiman pisteet.
 [stat hit points]
-
+Osumapisteet yhteensä
 [stat hit points about]
-
+Siirtokunnan kaikkien yksiköiden ja rakennusten osumapisteet yhteenlaskettuina.
 [stat damage dealt]
-
+Aiheutettu vahinko
 [stat damage dealt about]
-
+Siirtokunnan vihollisen yksiköille ja rakennuksille aiheuttama vahinko. Erittele nähdäksesi soturit, taikuuden ja tornit.
 [stat damage taken]
-
+Kärsitty vahinko
 [stat damage taken about]
-
+Vihollisten siirtokunnan yksiköille ja rakennuksille aiheuttama vahinko.
 [stat damage traded]
-
+Vahinkotase
 [stat damage traded about]
-
+Aiheutettu vahinko miinus kärsitty. Yli nollan siirtokunta voitti taistelunsa.
 [stat combat deaths]
-
+Taistelussa kuolleet
 [stat combat deaths about]
-
+Vihollisten tappamat tämän siirtokunnan yksiköt. Erittele nähdäksesi työläiset, tiedustelijat ja soturit erikseen.
 [stat accuracy]
-
+Osuneet laukaukset
 [stat accuracy about]
-
+Osuus siirtokunnan tornien ja tiedustelijoiden ampumista laukauksista, jotka osuivat kohteeseensa.
 [stat training]
-
+Koulutus
 [stat training about]
-
+Yksiköiden käynnit kouluissa, parakeissa, kilparadoilla ja uima-altaissa taidon oppimiseksi.
 [stat skills]
-
+Saavutetut taidot
 [stat skills about]
-
+Taitotasot, jotka siirtokunnan yksiköt saivat koulutuksella.
 [stat growth nearby]
-
+Resurssien kasvu siirtokunnan lähellä
 [stat growth nearby about]
-
+Kuinka paljon viljaa, puuta ja muita resursseja kasvoi 32 ruudun säteellä siirtokunnan rakennuksista, kasvupisteinä eikä kuormina. Erittele nähdäksesi, kuinka lähellä kotia ne kasvoivat.
 [stat growth map]
-
+Resurssien kasvu koko kartalla
 [stat growth map about]
-
+Kuinka paljon resursseja kasvoi missä tahansa kartalla, kasvupisteinä eikä kuormina. Tämä on sama kaikille siirtokunnille.
 [stat stranded]
-
+Liikkumattomat yksiköt
 [stat stranded about]
-
+Yksiköt, jotka ovat saarroksissa ilman vapaata ruutua, jolle astua.
 [stat cleared]
-
+Raivatut resurssit
 [stat cleared about]
-
+Työläisten raivausalueilta poistamat resurssit tilan tekemiseksi.
 [stat prestige]
-
+Maine
 [stat prestige about]
-
+Siirtokunnan maine, jota ylimmän tason rakennukset tuottavat. Ottelu, jossa on mainetavoite, päättyy, kun se saavutetaan.
 [stat band combat]
-
+Taistelu
 [stat band starvation]
-
+Nälkä
 [stat band clearing]
-
+Raivausvammat
 [stat band trapped]
-
+Jumissa
 [stat band other]
-
+Muu
 [stat band starving]
-
+Lähes tyhjä
 [stat band hungry]
-
+Vähissä
 [stat band peckish]
-
+Puolillaan
 [stat band fed]
-
+Hyvin ruokittu
 [stat band critical]
-
+Kriittinen
 [stat band wounded]
-
+Haavoittunut
 [stat band hurt]
-
+Loukkaantunut
 [stat band healthy]
-
+Terve
 [stat band weakening]
-
+Heikkenevä
 [stat band looking]
-
+Etsii majataloa
 [stat band eating]
-
+Syö
 [stat band healing]
-
+Paranee
 [stat band meals]
-
+Ateriat
 [stat band new units]
-
+Uudet yksiköt
 [stat band ammunition]
-
+Ammukset
 [stat band construction]
-
+Uudet rakennukset
 [stat band upgrades]
-
+Päivitykset
 [stat band built]
-
+Rakennettu
 [stat band upgraded]
-
+Päivitetty
 [stat band repaired]
-
+Korjattu
 [stat band destroyed]
-
+Tuhottu
 [stat band demolished]
-
+Purettu
 [stat band melee]
-
+Soturit
 [stat band magic]
-
+Taikuus
 [stat band towers]
-
+Tornit
 [stat band within 8]
-
+Alle 8 ruutua
 [stat band 8 to 16]
-
+8–16 ruutua
 [stat band 16 to 32]
-
+16–32 ruutua
 [stat unit units]
-
+yksiköt
 [stat unit wheat]
-
+vilja
 [stat unit meals]
-
+ateriat
 [stat unit hit points]
-
+osumapisteet
 [stat unit resources]
-
+resurssit
 [stat unit buildings]
-
+rakennukset
 [stat unit strength]
-
+pisteet
 [stat unit damage]
-
+vahinko
 [stat unit shots]
-
+laukaukset
 [stat unit visits]
-
+käynnit
 [stat unit skills]
-
+taitotasot
 [stat unit prestige]
-
+maine
 [stat axis percent of %0]
-
+% kokonaismäärästä (%0)
 [stat axis share of all teams]
-
+% kaikista siirtokunnista
 [stat axis percent of units]
-
+% siirtokunnan yksiköistä
 [stat axis %0 per minute per 100 units]
-
+%0 minuutissa / 100 siirtokunnan yksikköä
 [stat axis %0 per 100 units]
-
+%0 / 100 siirtokunnan yksikköä
 [stat axis %0 per minute]
-
+%0 minuutissa
 [stat axis %0 so far]
-
+%0, kertymä
 [stat axis %0 minute average]
-
+%0 minuutin keskiarvo
 [stat view per minute]
-
+Minuutissa
 [stat view total]
-
+Yhteensä
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Erittele tyypeittäin
 [stat view percentages]
-
+% kokonaismäärästä
 [stat view percent of units]
-
+% siirtokunnasta
 [stat view per 100 units]
-
+Suhteessa kokoon
 [stat view share]
-
+Osuus kaikista
 [stat view highlight none]
-
+Korostus: ei mitään
 [stat column peak units]
-
+Huippumäärä
 [stat column born]
-
+Syntyneet
 [stat column lost]
-
+Menetetyt
 [stat column wheat]
-
+Vilja
 [stat column damage dealt]
-
+Aiheutettu vahinko
 [stat column damage taken]
-
+Kärsitty vahinko
 [stat column built]
-
+Rakennettu
 [stat column buildings lost]
-
+Menetetyt rakennukset
 [stat column prestige]
-
+Maine
 [stat marker wiped out]
-
+viimeinen yksikkö menetetty
 [stat marker first combat death]
-
+ensimmäinen taistelussa kuollut yksikkö
 [stat marker first building destroyed]
-
+ensimmäinen tuhottu rakennus
 [stat not recorded for this match]
-
+Tätä tilastoa ei kirjattu tässä ottelussa.
 [results reason beyond doubt]
-
+Tulos oli jo selvä.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Siirtokunta
 [stat page %0 of %1]
-
+%0/%1  >
 [stat band workers]
-
+Työläiset
 [stat band explorers]
-
+Tiedustelijat
 [stat band warriors]
-
+Soturit
 [stat unit deaths]
-
+kuolemat
 [stat unit growth]
-
+kasvu
 [stat view by unit type]
-
+Yksikkötyypeittäin
 [stat view by state]
-
+Tiloittain
 [stat view by resource]
-
+Resursseittain
 [stat view by building]
-
+Rakennuksittain
 [stat view by work]
-
+Työtyypeittäin
 [stat view by cause]
-
+Syittäin
 [stat view by weapon]
-
+Aseittain
 [stat view by distance]
-
+Etäisyyksittäin
 [stat nothing to show]
-
+Ei näytettävää: tätä ei tapahtunut tässä ottelussa.
 [stat %0 nothing]
-
+%0 (ei mitään)
 [Match]
-
+Ottelu
 [Time limit]
-
+Aikaraja
 [Alliances can change]
-
+Liittoumat voivat muuttua
 [Reveal terrain]
-
+Paljasta maasto
 [Starting unit level]
-
+Yksiköiden aloitustaso
 [Starting stockpile]
-
+Aloitusvarasto
 [Regrowth]
-
+Uudelleenkasvu
 [Building strength]
-
+Rakennusten kestävyys
 [Wounded units retreat]
-
+Haavoittuneet vetäytyvät
 [Units can die]
-
+Yksiköt voivat kuolla
 [Unit training]
-
+Yksiköiden koulutus
 [No stockpile]
-
+Ei mitään
 [No glass cannon]
-
+Pois
 [How quickly harvested resources grow back and spread.]
-
+Kuinka nopeasti kerätyt resurssit kasvavat takaisin ja leviävät.
 [Units must eat to keep working.]
-
+Yksiköiden on syötävä jaksaakseen tehdä töitä.
 [Summary]
-
+Yhteenveto
 [All rules]
-
+Kaikki säännöt
 [Show all rules]
-
+Näytä kaikki säännöt
 [Choose a ruleset]
-
+Valitse säännöstö
 [Reset to %0]
-
+Palauta: %0
 [ruleset one change %0]
-
+%0 + 1 muutos
 [ruleset changes %0 %1]
-
+%0 + %1 muutosta
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Tämä ottelu ei voi päättyä. Ota mainevoitto käyttöön tai aseta aikaraja.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Mainetta kertyy yleensä vasta 13–28 minuutin jälkeen, joten 30 minuutin raja päättyy usein tasapeliin.
 [Blitz]
-
+Salamasota
 [ruleset blitz description]
-
+Nopea alku, aikainen loppu
 [Gentle]
-
+Lempeä
 [ruleset gentle description]
-
+Anteeksiantavat säännöt ensimmäiseen otteluun
 [Sandbox]
-
+Hiekkalaatikko
 [ruleset sandbox description]
-
+Ei taisteluja, ei nälkää, rakenna mitä vain
 [Bloodbath]
-
+Verilöyly
 [ruleset bloodbath description]
-
+Hauraat, pelottomat armeijat
 [Siege]
-
+Piiritys
 [ruleset siege description]
-
+Linnoitusmuurit ja pitkät sodat
 [Lean years]
-
+Laihat vuodet
 [ruleset lean years description]
-
+Resurssit tuskin palautuvat
 [Gold rush]
-
+Kultakuume
 [ruleset gold rush description]
-
+Kartan resurssit ovat kaikki, mitä on
 [Elite ranks]
-
+Eliittijoukot
 [ruleset elite ranks description]
-
+Valmiiksi koulutettu, ei lisäkoulutusta
 [Shifting alliances]
-
+Vaihtuvat liitot
 [ruleset shifting alliances description]
-
+Joukkueet voivat vaihtua 60 minuutin kisassa
 [Probability victory]
-
+Todennäköisyysvoitto
 [Off (play it out)]
-
+Pois (pelaa loppuun)
 [95% sure]
-
+95 % varma
 [97% sure]
-
+97 % varma
 [99% sure]
-
+99 % varma
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Päättää ottelun, kun malli saavuttaa valitun varmuuden. Katsojat näkevät ennustetut voittomahdollisuudet tilastoissa.
 [Changed from %0: %1]
-
+Muutettu säännöstöstä %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Taistelu on pois päältä, joten alla olevilla säännöillä ei ole vaikutusta.
 [%0 more rules are at their Standard values.]
-
+Muut säännöt (%0) ovat Vakio-arvoissaan.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Pelaajat näkevät kartan maaston alusta asti; vihollisen yksiköt pysyvät piilossa.
 [Each team starts with extra resources in its shared pool.]
-
+Jokainen joukkue aloittaa ylimääräisillä resursseilla yhteisessä varastossaan.
 [Units hit harder but have less HP and armor.]
-
+Yksiköt iskevät kovempaa, mutta niillä on vähemmän HP:ta ja panssaria.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Joukkueet voivat hyökätä toistensa kimppuun. Poista käytöstä rauhallista ottelua varten.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Loukkaantuneet yksiköt palaavat parantumaan sen sijaan, että taistelisivat kuolemaan asti.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Yksiköt kuolevat, kun niiden HP loppuu. Poista käytöstä, niin ne pysähtyvät 1 HP:hen.
 [Units gain levels at schools.]
-
+Yksiköt nousevat tasoja kouluissa.
 [stat group work]
-
+Työläisten aika
 [stat worker time]
-
+Mihin työläiset käyttivät aikansa
 [stat worker time about]
-
+Mitä siirtokunnan työläiset tekivät hetki hetkeltä: työtä rakennukselle, työtä lipulla, koulutusta, syömistä, parantumista, odottamista nälkäisenä tai loukkaantuneena ilman vapaata majataloa tai sairaalaa, tai joutilaisuutta ilman tekemistä. Terve siirtokunta pitää useimmat työläiset työssä, harvat joutilaina eikä ketään odottamassa.
 [stat idle workers]
-
+Joutilaat työläiset
 [stat idle workers about]
-
+Osuus työläisten ajasta ilman tekemistä. Suuret arvot tarkoittavat, että työläisiä on enemmän kuin työtä; lähes nolla tarkoittaa, että jokainen työläinen on kiireinen ja töitä voi odottaa.
 [stat work by job]
-
+Mitä työläiset tekivät
 [stat work by job about]
-
+Kuinka monta työläistä toimitti tarvikkeita kuhunkin rakennustyyppiin: pesiin (uusia yksiköitä varten), majataloihin (aterioita varten), rakenteilla tai päivityksessä oleviin rakennuksiin tai muihin rakennuksiin, kuten torneihin, kouluihin ja parakkeihin.
 [stat haul distance]
-
+Etäisyys resursseihin
 [stat haul distance about]
-
+Kuinka kaukana keräävä työläinen keskimäärin oli rakennuksesta, jota se huolsi, karttaruutuina linnuntietä.
 [stat hauling]
-
+Hakeminen ja kantaminen
 [stat hauling about]
-
+Miten rakennuksia huoltavat työläiset jakautuivat resurssin luo kävelemiseen, sen keräämiseen, takaisin kantamiseen sekä toimittamiseen tai saavutettavan resurssin odottamiseen. Suurin osa on kävelyä, joten mitä lähempänä resurssit ovat, sitä enemmän saadaan aikaan.
 [stat eating time]
-
+Syömään menevät työläiset
 [stat eating time about]
-
+Kuinka monta työläistä oli poissa töistä syömässä: kävelemässä majataloon, syömässä siellä tai nälkäisenä ilman majataloa, joka voisi ottaa ne vastaan. Ilman majataloa jääneet työläiset tarkoittavat, että siirtokunta on kasvanut majatalojaan tai niiden ruokaa suuremmaksi.
 [stat inn distance]
-
+Etäisyys majatalosta
 [stat inn distance about]
-
+Kuinka kaukana nälkäiset työläiset keskimäärin kävelynsä aikana olivat majatalosta, johon ne olivat menossa, karttaruutuina linnuntietä. Koko matka on noin kaksinkertainen. Suuret arvot tarkoittavat, että majatalot ovat kaukana työläisten työpaikoista.
 [stat warriors]
-
+Soturit
 [stat warriors about]
-
+Kuinka monta soturia siirtokunnalla oli. Erittele nähdäksesi, kuinka moni oli kotona, vihollisen siirtokunnan lähellä tai avoimessa maastossa. Molempien siirtokuntien lähellä oleva maa lasketaan kodiksi.
 [stat warrior level]
-
+Sotureiden keskimääräinen hyökkäystaso
 [stat warrior level about]
-
+Siirtokunnan sotureiden keskimääräinen hyökkäystaso, jossa hyökkäysnopeus ja -voima painavat yhtä paljon, pelin näyttämällä asteikolla 1–4. Parakit nostavat sitä; uudet kouluttamattomat soturit laskevat sitä.
 [stat warrior duties]
-
+Mitä soturit tekivät
 [stat warrior duties about]
-
+Miten siirtokunnan soturit jakautuivat sotalipulle lähetettyihin, niin pahasti loukkaantuneisiin, että ne lähtivät taistelusta sairaalaan (hoidettavat mukaan lukien), ja vapaisiin.
 [stat intruders]
-
+Vihollissoturit kotona
 [stat intruders about]
-
+Kuinka monta vihollissoturia oli 16 ruudun säteellä siirtokunnan rakennuksista. Kun kaksi siirtokuntaa on lähellä toisiaan, kumpikin laskee toisen puolustajat.
 [stat home defence]
-
+Kotipuolustuksen voimaero
 [stat home defence about]
-
+Siirtokunnan omien sotureiden voima sen rakennusten lähellä miinus siellä olevien vihollissotureiden voima, kun jokainen soturi ja sen jokainen hyökkäystaso lasketaan. Alle nollan siirtokunta oli kotonaan alakynnessä.
 [stat combat death places]
-
+Missä yksiköt kaatuivat taistelussa
 [stat combat death places about]
-
+Missä siirtokunnan yksiköt olivat kuollessaan: omien rakennustensa lähellä, vihollisen rakennusten lähellä tai avoimessa maastossa siirtokuntien välillä. Menetykset kotona tarkoittavat, että siirtokuntaa vastaan hyökättiin; menetykset vihollisen luona, että se hyökkäsi. Molempien siirtokuntien lähellä oleva maa lasketaan kodiksi.
 [stat band working]
-
+Työssä
 [stat band flag work]
-
+Lipulla
 [stat band idle]
-
+Joutilaana
 [stat band training]
-
+Koulutuksessa
 [stat band unserved]
-
+Ei vapaata majataloa tai sairaalaa
 [stat band swarms]
-
+Pesät
 [stat band inns]
-
+Majatalot
 [stat band sites]
-
+Rakentaminen ja päivitys
 [stat band other buildings]
-
+Muut rakennukset
 [stat band to resource]
-
+Kävely resurssille
 [stat band harvesting]
-
+Kerääminen
 [stat band carrying]
-
+Kantaminen takaisin
 [stat band delivering]
-
+Toimitus tai odotus
 [stat band walking to inn]
-
+Kävely majataloon
 [stat band no inn]
-
+Ei vapaata majataloa
 [stat band at home]
-
+Kotona
 [stat band at enemy]
-
+Vihollisen luona
 [stat band in the open]
-
+Avoimessa maastossa
 [stat band war flag]
-
+Sotalipulla
 [stat band seeking healing]
-
+Hakee hoitoa
 [stat band free]
-
+Vapaana
 [stat unit workers]
-
+työläiset
 [stat unit worker time]
-
+työläisten aika
 [stat unit working workers]
-
+rakennuksia huoltavat työläiset
 [stat unit squares]
-
+ruudut
 [stat unit warriors]
-
+soturit
 [stat unit attack level]
-
+hyökkäystaso
 [stat unit enemy warriors]
-
+vihollissoturit
 [stat unit strength count]
-
+voima
 [stat view by place]
-
+Paikoittain

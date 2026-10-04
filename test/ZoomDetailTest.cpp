@@ -123,16 +123,16 @@ TEST_SUITE("ZoomDetail")
 		for (double smallestTile : {1.5, 8.75, 17.5})
 		{
 			const double minimumZoom = smallestTile / 32;
-			const ZoomDetail far = ZoomDetail::forView(minimumZoom, 1, true, minimumZoom);
-			CHECK_EQ(1.f, far.strategic);
-			CHECK_EQ(1.f, far.terrainOverview);
-			CHECK_EQ(1.f, far.unitMarker);
-			CHECK_EQ(1.f, far.buildingIcon);
-			CHECK_EQ(0.f, far.zonePattern);
-			CHECK_EQ(0.f, far.barAll);
-			CHECK_EQ(0.f, far.statusPip);
+			const ZoomDetail overview = ZoomDetail::forView(minimumZoom, 1, true, minimumZoom);
+			CHECK_EQ(1.f, overview.strategic);
+			CHECK_EQ(1.f, overview.terrainOverview);
+			CHECK_EQ(1.f, overview.unitMarker);
+			CHECK_EQ(1.f, overview.buildingIcon);
+			CHECK_EQ(0.f, overview.zonePattern);
+			CHECK_EQ(0.f, overview.barAll);
+			CHECK_EQ(0.f, overview.statusPip);
 			// Detail still only ever appears while zooming in from there.
-			ZoomDetail previous = far;
+			ZoomDetail previous = overview;
 			for (double zoom = minimumZoom; zoom <= 5.0; zoom *= 1.02)
 			{
 				const ZoomDetail detail = ZoomDetail::forView(zoom, 1, true, minimumZoom);

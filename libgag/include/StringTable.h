@@ -25,6 +25,7 @@ namespace GAGCore
 		void setDefaultLang(int l) { defaultLang = l; }
 		int getLang(void) { return actLang; }
 		int getLangCode(const std::string & lang) { return languageCodes[lang]; }
+		bool hasLanguage(const std::string & lang) const { return languageCodes.count(lang) != 0; }
 		bool isLangComplete(int l) { return !incomplete[l]; }
 		int getNumberOfLanguage(void) { return languageCount; }
 		bool loadIncompleteList(const std::string filename);

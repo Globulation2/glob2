@@ -638,6 +638,7 @@ TEST_CASE("farm overlay beside the other zones at every zoom tier [display:1024x
 	map.computeDisplayedFarmArea(0);
 	auto& gui = world.gui;
 	auto* gfx = globalContainer->gfx;
+	gui.init();
 	gui.viewportResized(gfx->getW(), gfx->getH(), gfx->getW(), gfx->getH());
 	for (bool hd : {false, true})
 	{

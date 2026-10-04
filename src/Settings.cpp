@@ -41,7 +41,7 @@ Settings::Settings()
 	setGraphicsDetail(true);
 #endif
 	automaticTorus = false;
-	language = "en";
+	language.clear(); // follow the system until the player picks one
 	musicVolume = 190;
 	voiceVolume = 190;
 	mute = 0;

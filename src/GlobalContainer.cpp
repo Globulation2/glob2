@@ -21,6 +21,7 @@
 #include "MapEditKeyActions.h"
 #include "Race.h"
 #include "SoundMixer.h"
+#include "SystemLanguage.h"
 #include "render/UnitSkin.h"
 #include "VoiceRecorder.h"
 #include "DatasetWriter.h"
@@ -379,7 +380,13 @@ void GlobalContainer::load(void)
 		exit(-1);
 	}
 	
-	Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(settings.language));
+	// A profile without a language (or with one this build no longer ships) follows
+	// the operating system's or browser's preferred languages.
+	StringTable *strings = Toolkit::getStringTable();
+	if (!strings->hasLanguage(settings.language))
+		settings.language = SystemLanguage::choose(SystemLanguage::preferred(),
+			[strings](const std::string &code) { return strings->hasLanguage(code); });
+	strings->setLang(strings->getLangCode(settings.language));
 	// load default unit types
 	Race::loadDefault();
 	// Resource types are now a compile-time const table (see
