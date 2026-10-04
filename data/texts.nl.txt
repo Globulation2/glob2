@@ -3646,6 +3646,8 @@ vertrokken
 Terug naar online
 [results back to room]
 Terug naar kamer
+[results find another match]
+Nieuwe wedstrijd zoeken
 [results defeat]
 Nederlaag
 [results ladder rating %0]

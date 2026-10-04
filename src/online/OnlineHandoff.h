@@ -54,4 +54,10 @@ struct RematchRequest
 using RematchHandler = std::function<void(const RematchRequest &)>;
 void setRematchHandler(RematchHandler handler);
 bool requestRematch(const RematchRequest &request);
+
+// "Find another match" on the results of a quick match: the hub searches the
+// same queue again once the match has closed. False when no hub is open.
+using QueueAgainHandler = std::function<void()>;
+void setQueueAgainHandler(QueueAgainHandler handler);
+bool requestQueueAgain();
 } // namespace Online

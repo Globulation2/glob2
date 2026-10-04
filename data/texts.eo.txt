@@ -3646,6 +3646,8 @@ foriris
 Reen al reta ludo
 [results back to room]
 Reen al la ĉambro
+[results find another match]
+Trovi alian matĉon
 [results defeat]
 Malvenko
 [results ladder rating %0]

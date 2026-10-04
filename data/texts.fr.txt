@@ -3646,6 +3646,8 @@ parti
 Retour en ligne
 [results back to room]
 Retour au salon
+[results find another match]
+Trouver une autre partie
 [results defeat]
 Défaite
 [results ladder rating %0]

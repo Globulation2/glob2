@@ -3646,6 +3646,8 @@ Ping
 返回在线大厅
 [results back to room]
 返回房间
+[results find another match]
+再找一场对局
 [results defeat]
 失败
 [results ladder rating %0]

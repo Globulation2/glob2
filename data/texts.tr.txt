@@ -3646,6 +3646,8 @@ ayrıldı
 Çevrimiçine dön
 [results back to room]
 Odaya dön
+[results find another match]
+Başka maç bul
 [results defeat]
 Yenilgi
 [results ladder rating %0]

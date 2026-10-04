@@ -3646,6 +3646,8 @@ AI
 返回線上
 [results back to room]
 返回房間
+[results find another match]
+再找一場對局
 [results defeat]
 失敗
 [results ladder rating %0]

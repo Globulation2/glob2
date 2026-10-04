@@ -744,7 +744,11 @@ Element EndGameScreen::actionBar(const Presentation &p, bool compact)
 							   : std::string(GAGCore::FormattableString(fe::tr("[results join rematch %0]")).arg(online->rematchOfferedBy)),
 						   [this] { rematch(); }});
 	const char *quitKey = !online ? "[quit]" : online->fromRoom ? "[results back to room]" : "[results back to online]";
-	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, true, SDLK_RETURN});
+	// After a quick match the usual next step is another one in the same queue.
+	const bool queueAgain = online && !online->fromRoom;
+	actions.push_back({"quit", fe::tr(quitKey), [this] { endExecute(QUIT); }, !queueAgain, queueAgain ? SDLK_UNKNOWN : SDLK_RETURN});
+	if (queueAgain)
+		actions.push_back({"queue-again", fe::tr("[results find another match]"), [this] { findAnotherMatch(); }, true, SDLK_RETURN});
 	return fe::actions(std::move(actions), p);
 }
 
@@ -869,6 +873,13 @@ void EndGameScreen::rematch()
 	Online::RematchRequest request;
 	request.matchId = online->matchId;
 	if (!Online::requestRematch(request))
+		return;
+	endExecute(QUIT);
+}
+
+void EndGameScreen::findAnotherMatch()
+{
+	if (!online || !Online::requestQueueAgain())
 		return;
 	endExecute(QUIT);
 }

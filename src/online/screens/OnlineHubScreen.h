@@ -107,7 +107,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	bool previewing = false;
 	std::string joinDraft;
 	int roomFilter = 0;
-	int selectedQueue = 0;
+	int selectedQueue = -1; // -1: defaultQueue()
 	bool accountMenu = false, joinField = false;
 	Uint32 lastRefresh = 0, toastAt = 0, now = 0;
 	// Every platform call and listener of this screen: destroying it with the
@@ -132,6 +132,10 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// A match assigned while the quick-match search screen was in front: that
 	// screen closes first, so the match (and its results) return to this hub.
 	std::optional<Online::Json> deferredMatch;
+	// The queue of the quick match in progress, and whether its results asked to
+	// search that queue again ("Find another match") once its screens close.
+	std::string matchQueueId;
+	bool queueAgain = false;
 
 	Online::PlatformClient &client();
 	// After the quick-match search screen closes (QuickMatchScreen result codes).
@@ -145,6 +149,11 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void openProfile();
 	void openMaps(bool mine);
 	bool canPlay() const;
+	// Guests cannot enter rated queues: the server refuses them.
+	bool canQueue(const Online::Json &queue) const;
+	// The queue offered first: the first one this account can enter.
+	int defaultQueue() const;
+	int queueIndex(const std::string &queueId) const;
 
 	Glob2UI::Element accountChip(const Glob2UI::Presentation &p);
 	Glob2UI::Element banner(const Glob2UI::Presentation &p);

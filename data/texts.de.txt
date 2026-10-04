@@ -3646,6 +3646,8 @@ gegangen
 Zurück zu Online
 [results back to room]
 Zurück zum Raum
+[results find another match]
+Weiteres Match suchen
 [results defeat]
 Niederlage
 [results ladder rating %0]

@@ -3646,6 +3646,8 @@ keluar
 Kembali ke daring
 [results back to room]
 Kembali ke ruang
+[results find another match]
+Cari pertandingan lain
 [results defeat]
 Kekalahan
 [results ladder rating %0]

@@ -3646,6 +3646,8 @@ odešel
 Zpět do online hry
 [results back to room]
 Zpět do místnosti
+[results find another match]
+Najít další zápas
 [results defeat]
 Porážka
 [results ladder rating %0]

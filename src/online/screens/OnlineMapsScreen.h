@@ -38,12 +38,24 @@ class OnlineMapsScreen : public Glob2UI::Screen
 	const char *recordingId() const override { return "online_maps"; }
 	enum
 	{
-		BACK = 1
+		BACK = 1,
+		// "Use in a room" chose a map: OPEN_ROOM asks the hub to open a room with it
+		// (Online::pendingRoomMap); USED_IN_ROOM gave it to the open room.
+		OPEN_ROOM = 2,
+		USED_IN_ROOM = 3
 	};
 	enum class Tab
 	{
 		Browse,
 		Mine
+	};
+	// Where the screen returns to, which names Back and decides what "Use in a
+	// room" does once the map is downloaded.
+	enum class Origin
+	{
+		Other, // keeps the map for the next room the player hosts
+		Hub,   // closes with OPEN_ROOM
+		Room   // the open room takes the map; closes with USED_IN_ROOM
 	};
 	explicit OnlineMapsScreen(GAGGUI::ScreenStack &screens, Tab tab = Tab::Browse);
 	// Harnesses: fixed catalog and preview files, no network.
@@ -79,6 +91,7 @@ class OnlineMapsScreen : public Glob2UI::Screen
 	void setVisibility(const std::string &mapId, const std::string &visibility);
 	void remove(const std::string &mapId);
 	void loadMore();
+	void setOrigin(Origin value) { origin = value; }
 
   protected:
 	void onEscape() override;
@@ -101,6 +114,8 @@ class OnlineMapsScreen : public Glob2UI::Screen
 	bool live;
 	Data data;
 	Tab tab;
+	Origin origin = Origin::Other;
+	std::string backLabel() const;
 	Online::MapQuery query;
 	int sizeChoice = 0, coloniesChoice = 0, sortChoice = 0;
 	std::string cursor[2];

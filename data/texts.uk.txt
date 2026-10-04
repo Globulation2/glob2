@@ -3646,6 +3646,8 @@ OpenGL недоступний у цій збірці.
 Назад до онлайну
 [results back to room]
 Назад до кімнати
+[results find another match]
+Знайти ще матч
 [results defeat]
 Поразка
 [results ladder rating %0]

@@ -3646,6 +3646,8 @@ AI
 온라인으로 돌아가기
 [results back to room]
 방으로 돌아가기
+[results find another match]
+다른 경기 찾기
 [results defeat]
 패배
 [results ladder rating %0]

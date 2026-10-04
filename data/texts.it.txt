@@ -3646,6 +3646,8 @@ uscito
 Torna al gioco online
 [results back to room]
 Torna alla stanza
+[results find another match]
+Trova un'altra partita
 [results defeat]
 Sconfitta
 [results ladder rating %0]
