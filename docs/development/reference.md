@@ -469,7 +469,9 @@ The `skin-game-preview` diagnostic measures the colony-skin path through the rea
 Scene renderer. Build it with `scons release=1 skin-game-preview`, then set
 `SKIN_PREVIEW_SAVE` to a two-colony saved game, `GLOB2_SKIN_PREVIEW_DIR` to a
 mesh directory containing `paint.png`, `SKIN_PREVIEW_CAPTURE` to a capture name,
-and `SKIN_PREVIEW_BENCHMARK` to a relative capture prefix. Run with `-g -m
+and `SKIN_PREVIEW_BENCHMARK` to a relative capture prefix. Set
+`GLOB2_SKIN_PREVIEW_SWARM` to a swarm mesh id (such as `crown`) to draw team 0's
+swarm with that mesh; the directory then needs its `swarm-<id>.gsk`. Run with `-g -m
 -s800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
 `SKIN_BENCH_WARMUP` control total and discarded warmup frames (defaults 45 and 5).
 The harness adds a crowded diagnostic colony, advances its animation phases,

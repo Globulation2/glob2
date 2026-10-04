@@ -1,9 +1,15 @@
 import { SkinStore } from '../skins/Store.tsx';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ColonySkinVersion, SkinDraft } from '@glob2/protocol';
+import {
+  SWARM_MESHES,
+  type ColonySkinVersion,
+  type SkinDraft,
+  type SwarmMeshId,
+} from '@glob2/protocol';
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
 import { MeshPreview } from '../skins/MeshPreview.tsx';
+import { SWARM_SHAPES, isSwarmMesh } from '../skins/swarmShapes.ts';
 
 function contextOf(canvas: HTMLCanvasElement) {
   const context = canvas.getContext('2d');
@@ -37,6 +43,7 @@ function SkinDesigner() {
   const [name, setName] = useState('My colony');
   const [brush, setBrush] = useState('#ed9252');
   const [building, setBuilding] = useState('#ed9252');
+  const [swarmMesh, setSwarmMesh] = useState<SwarmMeshId>('classic');
   const [size, setSize] = useState(12);
   const [erase, setErase] = useState(false);
   const [message, setMessage] = useState('');
@@ -105,7 +112,13 @@ function SkinDesigner() {
     try {
       localStorage.setItem(
         `glob2-skin-draft:${account?.id ?? 'local'}`,
-        JSON.stringify({ name, building, skinId, image: canvas.toDataURL('image/png') }),
+        JSON.stringify({
+          name,
+          building,
+          swarmMesh,
+          skinId,
+          image: canvas.toDataURL('image/png'),
+        }),
       );
       setMessage('Draft saved on this device.');
     } catch {
@@ -126,6 +139,7 @@ function SkinDesigner() {
         building: string;
         image: string;
         skinId?: string;
+        swarmMesh?: string;
       };
       if (
         typeof draft.image !== 'string' ||
@@ -133,6 +147,8 @@ function SkinDesigner() {
         draft.image.length > 350000 ||
         !/^#[0-9a-f]{6}$/i.test(draft.building) ||
         typeof draft.name !== 'string' ||
+        // Drafts saved before shape choice have no swarmMesh and use the classic swarm.
+        (draft.swarmMesh !== undefined && !isSwarmMesh(draft.swarmMesh)) ||
         (draft.skinId !== undefined &&
           (typeof draft.skinId !== 'string' ||
             !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(draft.skinId)))
@@ -147,6 +163,7 @@ function SkinDesigner() {
       contextOf(canvas).drawImage(image, 0, 0);
       setName(draft.name.slice(0, 64));
       setBuilding(draft.building);
+      setSwarmMesh(isSwarmMesh(draft.swarmMesh) ? draft.swarmMesh : 'classic');
       setSkinId(draft.skinId);
       setMessage('Draft restored.');
     } catch {
@@ -167,6 +184,7 @@ function SkinDesigner() {
             ...(skinId ? { skinId } : {}),
             name,
             buildingColor: parseInt(building.slice(1), 16),
+            swarmMesh,
             imageBase64: canvas.toDataURL('image/png').split(',')[1],
           },
         });
@@ -191,6 +209,7 @@ function SkinDesigner() {
         contextOf(canvas).drawImage(image, 0, 0);
         setName(draft.name);
         setBuilding(`#${draft.buildingColor.toString(16).padStart(6, '0')}`);
+        setSwarmMesh(draft.swarmMesh);
         setSkinId(draft.skinId);
         setDraftRevision(draft.revision);
         setMessage('Account draft restored.');
@@ -215,6 +234,7 @@ function SkinDesigner() {
       contextOf(canvas).drawImage(image, 0, 0);
       setName(skin.kind === 'custom' ? skin.name : `${skin.name} remix`);
       setBuilding(`#${skin.buildingColor.toString(16).padStart(6, '0')}`);
+      setSwarmMesh(skin.swarmMesh);
       setSkinId(skin.kind === 'custom' ? skin.skinId : undefined);
       setMessage(
         skin.kind === 'custom'
@@ -237,6 +257,7 @@ function SkinDesigner() {
           name,
           ...(skinId ? { skinId } : {}),
           buildingColor: parseInt(building.slice(1), 16),
+          swarmMesh,
           imageBase64: canvas.toDataURL('image/png').split(',')[1],
         },
       });
@@ -268,8 +289,8 @@ function SkinDesigner() {
     <>
       <h1>Colony skins</h1>
       <p>
-        Paint your units and swarm. Choose a color for the rest of your buildings. Try the designer
-        for free; publishing requires the designer unlock.
+        Paint your units, choose your swarm's shape and paint it, and pick a color for the rest of
+        your buildings. Try the designer for free; publishing requires the designer unlock.
       </p>
       <div
         className="skin-designer"
@@ -344,6 +365,25 @@ function SkinDesigner() {
               Building color{' '}
               <input type="color" value={building} onChange={(e) => setBuilding(e.target.value)} />
             </label>
+            <fieldset aria-describedby="swarm-shape-hint">
+              <legend>Swarm shape</legend>
+              {SWARM_MESHES.map((mesh) => (
+                <label key={mesh} style={{ display: 'block' }}>
+                  <input
+                    type="radio"
+                    name="swarm-shape"
+                    value={mesh}
+                    checked={swarmMesh === mesh}
+                    onChange={() => setSwarmMesh(mesh)}
+                  />{' '}
+                  <strong>{SWARM_SHAPES[mesh].name}</strong> {SWARM_SHAPES[mesh].description}
+                </label>
+              ))}
+              <p id="swarm-shape-hint">
+                Each shape takes paint in its own way, so check your swarm in the preview after
+                switching. Your units keep their paint.
+              </p>
+            </fieldset>
             <div>
               <button disabled={busy} onClick={saveDraft}>
                 Save on this device
@@ -390,6 +430,7 @@ function SkinDesigner() {
         </section>
         <MeshPreview
           texture={canvas}
+          swarmMesh={swarmMesh}
           onPaint={(u, v) => {
             if (!busy) paint(u, v);
           }}
@@ -422,7 +463,8 @@ function SkinDesigner() {
                 {skin.kind === 'custom' ? 'Edit this version' : 'Use as a starting point'}
               </button>
               <p>
-                {skin.kind === 'preset' ? 'Premade skin' : 'Your design'}{' '}
+                {skin.kind === 'preset' ? 'Premade skin' : 'Your design'},{' '}
+                {SWARM_SHAPES[skin.swarmMesh].name.toLowerCase()} swarm{' '}
                 <span
                   role="img"
                   aria-label={`Building color #${skin.buildingColor.toString(16).padStart(6, '0')}`}

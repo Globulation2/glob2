@@ -222,8 +222,8 @@ Authenticated `GET /api/v1/skins` lists presets and the caller's versions;
 plus an optional RGB building color. The chosen color is independent of the
 immutable preset paint and is frozen/signed alongside the version for a match.
 `POST /api/v1/skins/publish` requires the designer entitlement. It accepts a name,
-optional owned skin ID for another version, RGB building color, and base64 PNG
-or WebP. Images must be still 256×256 pixels and at most 256 KiB. The server
+optional owned skin ID for another version, RGB building color, optional swarm
+mesh, and base64 PNG or WebP. Images must be still 256×256 pixels and at most 256 KiB. The server
 re-encodes them as opaque sRGB PNGs without metadata before hashing/storage.
 `GET /api/v1/skins/versions/:id/texture` serves published paint for other clients;
 disabled skins return 404. Raw uploads and arbitrary blob keys are never served
@@ -233,13 +233,26 @@ creates an immutable content version; previously equipped versions and frozen
 match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
+Each version also names the swarm mesh its paint is laid out for (`swarmMesh`):
+`classic`, the original swarm and the default, or one of the generated shapes
+`crown`, `clutch`, `toadstool`, `coral`, `skep` and `bloom`. The protocol's
+`SWARM_MESHES` and the game's `src/online/SwarmMeshCatalog.h` list the same ids in
+the same order. Because paint is laid out per mesh, the mesh belongs to the
+immutable version, and the same paint on two meshes is two versions. The manifest
+digest is SHA-256 over the compact JSON object `skinId`, `textureSha256`,
+`layout`, `buildingColor`, followed by `swarmMesh` only when it is not `classic`;
+game clients recompute it before showing a skin. Versions published before mesh
+choice therefore keep their digest. Clients without mesh choice reject skins for
+other meshes and show classic art for that team, rather than painting them onto
+the classic swarm.
+
 Registered active accounts can save one private working canvas with
 `PUT /api/v1/skins/draft` and restore it with `GET /api/v1/skins/draft`, without
 buying the designer unlock. Drafts use the same image validation as publishing;
 one bounded PNG is stored per account and is never served by public texture
 routes. A save supplies the last observed revision (null for the first save).
 Drafts may also retain an owned skin ID so edits resume as new versions of that
-design. Concurrent or stale saves return 409 rather than overwrite another device's
+design, and they keep the chosen swarm mesh. Concurrent or stale saves return 409 rather than overwrite another device's
 work. The designer also offers a separate account-scoped device draft for offline
 backup before resolving conflicts. Publishing and equipping remain explicit.
 
@@ -796,7 +809,13 @@ available in Settings > Display and the in-game Options dialog. Turning it off
 immediately restores classic units, swarms and building colors locally; verified
 appearance refreshes continue, so turning it back on uses current authorization.
 Original-derived meshes are installed under
-`data/skins/colony-v1`; they share the web designer's UV layout. The browser
+`data/skins/colony-v1`; they share the web designer's UV layout. Each verified
+skin also selects its swarm mesh: `swarm.gsk` for `classic`, or
+`swarm-<id>.gsk` for a generated shape. A skin naming a mesh this client does not
+know is rejected like any other invalid assertion, and a mesh file that fails to
+load leaves that colony's swarm on the classic sprite. The generated swarms come
+from `tools/skins/generate_swarms.py`; see the
+[unit animation tooling](../../tools/unit-animation/README.md). The browser
 ships them in an on-demand `skins` package requested when visible paint is
 available. Classic rendering continues during the download; hidden or unskinned
 colonies do not initiate it. Failed package requests retry at most every ten

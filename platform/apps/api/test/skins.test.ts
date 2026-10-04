@@ -59,6 +59,7 @@ describe('colony skin equipment', () => {
         texture_sha256: hash,
         layout: 'colony-v1',
         building_color: 0xff8800,
+        swarm_mesh: 'crown',
         manifest_sha256: 'b'.repeat(64),
       })
       .returning('id')
@@ -142,6 +143,7 @@ describe('colony skin equipment', () => {
     expect(appearance.accountId).toBe(account.id);
     expect(appearance.buildingColor).toBe(0x112233);
     expect(appearance.version.buildingColor).toBe(0xff8800);
+    expect(appearance.version.swarmMesh).toBe('crown');
     const verified = keys.verify(appearance.assertion, {
       type: COLONY_SKIN_TYPE,
       audience: COLONY_SKIN_AUDIENCE,
@@ -150,7 +152,7 @@ describe('colony skin equipment', () => {
       matchId: match.id,
       team: 0,
       accountId: account.id,
-      version: { id: version.id },
+      version: { id: version.id, swarmMesh: 'crown' },
     });
     expect(() =>
       keys.verify(appearance.assertion, { type: 'glob2-match+jwt', audience: 'glob2-relay' }),

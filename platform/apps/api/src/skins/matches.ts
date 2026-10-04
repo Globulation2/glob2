@@ -10,6 +10,7 @@ import {
 } from '@glob2/protocol';
 import type { SigningKeys } from '../auth/keys.ts';
 import { HttpError } from '../errors.ts';
+import { storedSwarmMesh } from './manifest.ts';
 import { authorizedSkin } from './equipment.ts';
 
 /** Serialize the first assignment across API replicas, freezing defaults too.
@@ -80,6 +81,7 @@ export async function matchColonySkins(
           manifestSha256: authorized.manifest_sha256,
           layout: authorized.layout,
           buildingColor: authorized.building_color,
+          swarmMesh: storedSwarmMesh(authorized.swarm_mesh),
         };
         await trx
           .insertInto('match_colony_skins')
@@ -119,6 +121,7 @@ export async function matchColonySkins(
       'v.manifest_sha256',
       'v.layout',
       'v.building_color',
+      'v.swarm_mesh',
     ])
     .where('m.match_id', '=', matchId)
     .orderBy('m.team_index')
@@ -131,6 +134,7 @@ export async function matchColonySkins(
       manifestSha256: row.manifest_sha256,
       layout: row.layout,
       buildingColor: row.building_color,
+      swarmMesh: storedSwarmMesh(row.swarm_mesh),
     };
     // Refresh only authorization lifetime; the frozen content never changes.
     return {

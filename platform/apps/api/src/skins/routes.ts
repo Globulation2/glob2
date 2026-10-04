@@ -4,7 +4,7 @@ import { seedSkinPresets } from './presets.ts';
 import { matchColonySkins } from './matches.ts';
 import type { FastifyInstance } from 'fastify';
 import { sql } from 'kysely';
-import { putContent, sha256Hex } from '@glob2/core';
+import { putContent } from '@glob2/core';
 import { EquipSkinRequest, PublishSkinRequest, type ColonySkinVersion } from '@glob2/protocol';
 import { requireAccount, type Identity } from '../identity.ts';
 import { body } from '../http/validate.ts';
@@ -12,6 +12,7 @@ import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { equipSkin } from './equipment.ts';
 import { canonicalSkinImage } from './images.ts';
+import { skinManifestSha256, type SkinContent } from './manifest.ts';
 
 export async function skinRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
@@ -60,6 +61,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
         'v.manifest_sha256 as manifestSha256',
         'v.layout',
         'v.building_color as buildingColor',
+        'v.swarm_mesh as swarmMesh',
       ])
       .where('s.disabled_at', 'is', null)
       .where((eb) =>
@@ -157,13 +159,14 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
           })
           .onConflict((oc) => oc.column('sha256').doNothing())
           .execute();
-        const content = {
+        const content: SkinContent = {
           skinId: skin.id,
           textureSha256: stored.sha256,
-          layout: 'colony-v1' as const,
+          layout: 'colony-v1',
           buildingColor: input.buildingColor,
+          swarmMesh: input.swarmMesh ?? 'classic',
         };
-        const digest = sha256Hex(Buffer.from(JSON.stringify(content)));
+        const digest = skinManifestSha256(content);
         let version = await trx
           .selectFrom('colony_skin_versions')
           .select('id')
@@ -177,6 +180,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
               texture_sha256: stored.sha256,
               layout: 'colony-v1',
               building_color: input.buildingColor,
+              swarm_mesh: content.swarmMesh,
               manifest_sha256: digest,
             })
             .returning('id')

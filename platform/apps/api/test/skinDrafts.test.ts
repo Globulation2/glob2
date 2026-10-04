@@ -44,7 +44,12 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   const revision = saves.find((r) => r.statusCode === 200)!.json().revision;
   const read = await app.inject({ url, headers });
   expect(read.headers['cache-control']).toBe('private, no-store');
-  expect(read.json().draft).toMatchObject({ revision, name: 'My draft', buildingColor: 0x123456 });
+  expect(read.json().draft).toMatchObject({
+    revision,
+    name: 'My draft',
+    buildingColor: 0x123456,
+    swarmMesh: 'classic',
+  });
   expect(
     (await sharp(Buffer.from(read.json().draft.imageBase64, 'base64')).metadata()).hasAlpha,
   ).toBe(false);
@@ -63,7 +68,7 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
     method: 'PUT',
     url,
     headers,
-    payload: { ...payload, revision, name: 'Next' },
+    payload: { ...payload, revision, name: 'Next', swarmMesh: 'skep' },
   });
   expect(update.statusCode, update.body).toBe(200);
   expect(update.json().revision).not.toBe(revision);
@@ -75,6 +80,7 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
     { name: ' ' },
     { imageBase64: Buffer.from('<svg/>').toString('base64') },
     { buildingColor: -1 },
+    { swarmMesh: 'pyramid' },
   ]) {
     expect(
       (
@@ -87,7 +93,10 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
       ).statusCode,
     ).toBe(400);
   }
-  expect((await app.inject({ url, headers })).json().draft.name).toBe('Next');
+  expect((await app.inject({ url, headers })).json().draft).toMatchObject({
+    name: 'Next',
+    swarmMesh: 'skep',
+  });
   expect(
     await harness.database.db.selectFrom('colony_skin_drafts').selectAll().execute(),
   ).toHaveLength(1);

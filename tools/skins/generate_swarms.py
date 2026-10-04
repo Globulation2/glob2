@@ -4,7 +4,7 @@
 
 Run with Blender 3.6.23 --background --factory-startup -t 1
 --python-exit-code 1 --python tools/skins/generate_swarms.py --
---output artifacts/skins/swarms. Metaball polygonization is threaded and only
+--output data/skins/colony-v1. Metaball polygonization is threaded and only
 reproducible byte for byte with a single thread (-t 1).
 
 Each design is a seeded list of metaball elements, the same primitive the
@@ -13,13 +13,12 @@ style. Every variant uses one camera fit and stands on the same ground line in
 the swarm's sprite canvas. Each is then scaled about its ground centre to cover
 COVERAGE pixels of the 128px sprite, so variants carry the same visual weight;
 the designs themselves are proportioned so their enclosed volumes also stay
-close (the metadata records both).
+close (the manifest records both).
 
-UV layouts:
-  view  - projection along the game camera. The swarm has a single static pose
-          and is only seen and painted from that camera, so this layout has no
-          seams on the visible surface and even texel density on screen.
-  smart - Blender smart projection, as tools/skins/export_swarm.py uses.
+Each design is written as swarm-<design>.gsk with a paint layout projected
+along the game camera (see unwrap). Designs are the skin catalog's swarm mesh
+ids; add one to DESIGNS, src/online/SwarmMeshCatalog.h and the platform's
+SWARM_MESHES together.
 """
 import argparse
 import hashlib
@@ -298,82 +297,86 @@ def fit(obj):
             'coveragePx': round(fitted[0], 1), 'volume': round(fitted[1], 4)}
 
 
-def unwrap(obj, layout, view):
-    mesh = obj.data
-    if layout == 'smart':
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=0.025)
-        bpy.ops.object.mode_set(mode='OBJECT')
-        return {loop: tuple(mesh.uv_layers.active.data[loop].uv) for loop in range(len(mesh.loops))}
-    # Camera projection: fit the silhouette's bounds, square texels, 2px border.
+def unwrap(view):
+    """Paint layout projected along the game camera.
+
+    The swarm has one static pose and is only seen and painted from this
+    camera, so a projection leaves no seams on the visible surface and gives
+    every visible pixel the same texel density. The silhouette's bounds fill
+    the texture with square texels and a 2 texel border; hidden surfaces share
+    texels with the surfaces in front of them.
+    """
     low, high = view[:, :2].min(axis=0), view[:, :2].max(axis=0)
-    span = (high - low).max()
     border = 2 / 256
-    uv = border + (view[:, :2] - low) / span * (1 - 2 * border)
-    return {loop: tuple(uv[mesh.loops[loop].vertex_index]) for loop in range(len(mesh.loops))}
+    return border + (view[:, :2] - low) / (high - low).max() * (1 - 2 * border)
 
 
-def write(obj, layout, output, name, metadata):
+def write(obj, path):
     view, normals = project(obj)
-    loop_uv = unwrap(obj, layout, view)
+    uv = unwrap(view)
     mesh = obj.data
-    vertices, uv, indices, lookup = [], [], [], {}
-    for tri in mesh.loop_triangles:
-        for loop_id in tri.loops:
-            vertex = mesh.loops[loop_id].vertex_index
-            tex = loop_uv[loop_id]
-            key = vertex, tex
-            if key not in lookup:
-                lookup[key] = len(vertices)
-                vertices.append([*view[vertex], *normals[vertex]])
-                uv.append((tex[0], 1 - tex[1]))
-            indices.append(lookup[key])
-    if len(vertices) > MAX_VERTICES or len(indices) > MAX_INDICES:
-        raise ValueError(f'{name} exceeds runtime geometry budget: {len(vertices)} vertices, {len(indices)//3} triangles')
-    output.mkdir(parents=True, exist_ok=True)
-    path = output / 'swarm.gsk'
+    triangles = np.array([t.vertices[:] for t in mesh.loop_triangles], dtype='<u4')
+    if len(view) > MAX_VERTICES or triangles.size > MAX_INDICES:
+        raise ValueError(f'{path.name} exceeds runtime geometry budget: {len(view)} vertices, {len(triangles)} triangles')
+    # Image rows run top to bottom; view y runs up.
+    texture = np.stack([uv[:, 0], 1 - uv[:, 1]], axis=1)
     with path.open('wb') as stream:
-        stream.write(struct.pack('<4sIIII', b'GSK1', len(vertices), len(indices), 1, 96))
-        stream.write(np.array(uv, dtype='<f4').tobytes())
-        stream.write(np.array(indices, dtype='<u4').tobytes())
-        stream.write(np.array(vertices, dtype='<f4').tobytes())
-    metadata = dict(metadata, uvLayout=f'swarm-{name}-{layout}', triangles=len(indices) // 3,
-                    vertices=len(vertices), sha256=hashlib.sha256(path.read_bytes()).hexdigest())
-    (output / 'swarm-mesh.json').write_text(json.dumps(metadata, indent=2) + '\n')
-    return metadata
+        stream.write(struct.pack('<4sIIII', b'GSK1', len(view), triangles.size, 1, 96))
+        stream.write(texture.astype('<f4').tobytes())
+        stream.write(triangles.tobytes())
+        stream.write(np.hstack([view, normals]).astype('<f4').tobytes())
+    return len(view), len(triangles)
 
 
-def generate(name, output, layouts, resolution):
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def generate(name, output, resolution):
     build, seed = DESIGNS[name]
     clear_scene()
     design = Design(seed)
     build(design)
     obj = surface(design, resolution)
     obj.name = name
-    surface_triangles = decimate(obj)
+    decimate(obj)
     fitted = fit(obj)
-    metadata = {'format': 'GSK1', 'experimental': True, 'design': name, 'seed': seed,
-                'generator': 'tools/skins/generate_swarms.py', 'elements': len(design.elements),
-                'metaballResolution': resolution, 'surfaceTriangles': surface_triangles,
-                'logicalSize': 96, 'frames': 1, 'cameraDirection': list(CAMERA),
-                'cameraFit': f'design volume r=1 h={HEIGHT} spans {CANVAS_FIT / 2:.0%} of canvas',
-                **fitted}
-    results = []
-    for layout in layouts:
-        results.append(write(obj, layout, output / name / layout, name, metadata))
-        print(json.dumps(results[-1]), flush=True)
-    return results
+    path = output / f'swarm-{name}.gsk'
+    vertices, triangles = write(obj, path)
+    here = Path(__file__).resolve().parent
+    return path.name, {
+        'sha256': sha256(path),
+        'source': 'tools/skins/generate_swarms.py',
+        'sourceSha256': sha256(here / 'generate_swarms.py'),
+        'dependencies': {'tools/skins/swarm_metrics.py': sha256(here / 'swarm_metrics.py')},
+        'design': name, 'seed': seed, 'metaballResolution': resolution,
+        'coveragePx': fitted['coveragePx'], 'volume': fitted['volume'], 'fitScale': fitted['fitScale'],
+        'vertices': vertices, 'triangles': triangles,
+    }
+
+
+def install(output, records):
+    """Record generated meshes in the colony-v1 manifest beside them."""
+    path = output / 'manifest.json'
+    manifest = json.loads(path.read_text())
+    if manifest.get('layout') != 'colony-v1':
+        raise ValueError(f'{path} is not a colony-v1 manifest')
+    manifest['meshes'].update(records)
+    path.write_text(json.dumps(manifest, indent=2) + '\n')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--output', required=True, type=Path,
+                        help='directory for swarm-<design>.gsk; a colony-v1 manifest.json there is updated')
     parser.add_argument('--designs', default=','.join(DESIGNS))
-    parser.add_argument('--layouts', default='view,smart')
     parser.add_argument('--resolution', type=float, default=0.03)
     args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
     if bpy.app.version[:3] != (3, 6, 23):
         raise ValueError('Use Blender 3.6.23')
-    for name in args.designs.split(','):
-        generate(name, args.output.resolve(), args.layouts.split(','), args.resolution)
+    output = args.output.resolve()
+    output.mkdir(parents=True, exist_ok=True)
+    records = dict(generate(name, output, args.resolution) for name in args.designs.split(','))
+    if (output / 'manifest.json').exists():
+        install(output, records)
+    print(json.dumps(records, indent=2), flush=True)

@@ -1,6 +1,8 @@
 /* Indexed geometry is bounded by decode before rendering or hit testing. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
+import type { SwarmMeshId } from '@glob2/protocol';
+import { swarmModel } from './swarmShapes.ts';
 
 // The same bounded GSK1 model data and orthographic projection as the native renderer.
 type Mesh = {
@@ -41,10 +43,12 @@ function decode(bytes: ArrayBuffer): Mesh {
 }
 export function MeshPreview({
   texture,
+  swarmMesh,
   onPaint,
   onStroke,
 }: {
   texture: HTMLCanvasElement | null;
+  swarmMesh: SwarmMeshId;
   onPaint: (u: number, v: number) => void;
   onStroke: () => void;
 }) {
@@ -57,6 +61,13 @@ export function MeshPreview({
     stroke.current = onStroke;
   });
   const [model, setModel] = useState('worker-walk');
+  // Choosing a swarm shape shows it; the swarm entry always previews the chosen shape.
+  const [shownMesh, setShownMesh] = useState(swarmMesh);
+  if (shownMesh !== swarmMesh) {
+    setShownMesh(swarmMesh);
+    setModel('swarm');
+  }
+  const file = model === 'swarm' ? swarmModel(swarmMesh) : model;
   const [direction, setDirection] = useState(0);
   const [animate, setAnimate] = useState(true);
   const [error, setError] = useState('');
@@ -73,7 +84,7 @@ export function MeshPreview({
     const resources: (() => void)[] = [];
     async function start() {
       if (!gl) return;
-      const response = await fetch(`/skins/models/${model}.gsk`, { signal: abort.signal });
+      const response = await fetch(`/skins/models/${file}.gsk`, { signal: abort.signal });
       if (!response.ok) throw new Error('Could not load the colony model.');
       const mesh = decode(await response.arrayBuffer());
       if (abort.signal.aborted) return;
@@ -200,7 +211,7 @@ export function MeshPreview({
       resources.forEach((dispose) => dispose());
       pick.current = () => {};
     };
-  }, [texture, model, direction, animate]);
+  }, [texture, file, direction, animate]);
   return (
     <section
       aria-label="Live colony preview"

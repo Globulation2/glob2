@@ -7,7 +7,8 @@
     "revision",
     "name",
     "imageBase64",
-    "buildingColor"
+    "buildingColor",
+    "swarmMesh"
   ],
   "properties": {
     "skinId": {
@@ -34,6 +35,38 @@
       "type": "integer",
       "minimum": 0,
       "maximum": 16777215
+    },
+    "swarmMesh": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "classic"
+        },
+        {
+          "type": "string",
+          "const": "crown"
+        },
+        {
+          "type": "string",
+          "const": "clutch"
+        },
+        {
+          "type": "string",
+          "const": "toadstool"
+        },
+        {
+          "type": "string",
+          "const": "coral"
+        },
+        {
+          "type": "string",
+          "const": "skep"
+        },
+        {
+          "type": "string",
+          "const": "bloom"
+        }
+      ]
     }
   }
 }
