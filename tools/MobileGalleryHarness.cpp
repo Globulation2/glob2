@@ -3,6 +3,7 @@
 // Build: scons release=1 mobile-gallery
 // Run via tools/mobile_gallery/capture.py; see docs/mobile/development.md.
 // Stable capture names must also be documented in mobile_gallery/catalog.json.
+#include "ui/ThemeCatalog.h"
 #include <Environment.h>
 #include "GlobalContainer.h"
 #include <cmath>
@@ -1486,6 +1487,12 @@ int main(int argc, char **argv)
 		resize.type = SDL_EVENT_WINDOW_RESIZED;
 		resize.type = SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
 		GAGCore::GraphicContext::translateMouseEvent(&resize);
+		// Review captures can wear any theme: GLOB2_MENU_THEME / GLOB2_GAME_THEME.
+		if (const char *menu = SDL_getenv_unsafe("GLOB2_MENU_THEME"))
+			settings.menuTheme = menu;
+		if (const char *game = SDL_getenv_unsafe("GLOB2_GAME_THEME"))
+			settings.gameTheme = game;
+		Glob2UI::applyThemes(settings.menuTheme, settings.gameTheme);
 		{
 			FrontendTheme theme;
 			if (!SDL_getenv_unsafe("GLOB2_GALLERY_GAME_ONLY"))

@@ -2928,6 +2928,26 @@ Simpan permainan secara otomatis kira-kira setiap menit.
 Lawan AI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Tata letak lapang menggunakan panel samping jika ada ruang. Tata letak ringkas menggunakan bilah alat dan panel yang dapat dibuka.
+[settings Menu theme]
+Tema menu
+[settings Colours and backdrop of menus, lobbies and results.]
+Warna dan latar menu, ruang, dan hasil.
+[settings In-game theme]
+Tema permainan
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Warna dialog dan antarmuka sentuh selama permainan dan di editor.
+[theme light]
+Terang
+[theme dark]
+Gelap
+[theme classic]
+Klasik
+[theme ocean]
+Samudra
+[theme dune]
+Bukit pasir
+[theme high-contrast]
+Kontras tinggi
 [settings One-finger zoom]
 Zoom satu jari
 [settings Double-tap the map, hold, then drag to zoom.]

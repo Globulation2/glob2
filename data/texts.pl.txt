@@ -2928,6 +2928,26 @@ Automatycznie zapisuj grę mniej więcej co minutę.
 Przeciwnicy SI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Przestronny układ używa panelu bocznego, gdy jest miejsce. Kompaktowy używa paska narzędzi i wysuwanych paneli.
+[settings Menu theme]
+Motyw menu
+[settings Colours and backdrop of menus, lobbies and results.]
+Kolory i tło menu, pokojów i wyników.
+[settings In-game theme]
+Motyw gry
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Kolory okien dialogowych i interfejsu dotykowego podczas gry i w edytorze.
+[theme light]
+Jasny
+[theme dark]
+Ciemny
+[theme classic]
+Klasyczny
+[theme ocean]
+Ocean
+[theme dune]
+Wydma
+[theme high-contrast]
+Wysoki kontrast
 [settings One-finger zoom]
 Powiększanie jednym palcem
 [settings Double-tap the map, hold, then drag to zoom.]

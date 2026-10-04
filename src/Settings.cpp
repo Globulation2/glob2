@@ -117,6 +117,8 @@ void Settings::load(std::string filename)
 	setGraphicsDetail(true);
 #endif
     interfacePresentation="automatic";
+    menuTheme="light";
+    gameTheme="dark";
 	std::map<std::string, std::string> parsed;
 
 	InputStream *stream = new BinaryInputStream(Toolkit::getFileManager()->openInputStreamBackend(filename));
@@ -149,6 +151,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(uiScale);
         READ_PARSED_STRING(interfacePresentation);
+        READ_PARSED_STRING(menuTheme);
+        READ_PARSED_STRING(gameTheme);
         interfacePresentation=presentationPreferenceName(parsePresentationPreference(interfacePresentation));
 		READ_PARSED_INT(optionFlags);
 		// Old profiles seed each missing effect; explicit choices win.
@@ -254,6 +258,8 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "screenFlags=%d\n", screenFlags);
 		Utilities::streamprintf(stream, "uiScale=%d\n", uiScale);
         Utilities::streamprintf(stream, "interfacePresentation=%s\n", interfacePresentation.c_str());
+        Utilities::streamprintf(stream, "menuTheme=%s\n", menuTheme.c_str());
+        Utilities::streamprintf(stream, "gameTheme=%s\n", gameTheme.c_str());
 		Utilities::streamprintf(stream, "optionFlags=%d\n", optionFlags & ~LEGACY_LOW_DETAIL);
 		Utilities::streamprintf(stream, "automaticTorus=%d\n", automaticTorus);
 		Utilities::streamprintf(stream, "language=%s\n", language.c_str());

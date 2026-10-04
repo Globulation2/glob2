@@ -2928,6 +2928,26 @@ A játék automatikus mentése körülbelül percenként.
 MI-ellenfelek
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A tágas elrendezés oldalsó panelt használ, ha van elég hely. A kompakt elrendezés eszköztárat és kinyitható paneleket használ.
+[settings Menu theme]
+Menük témája
+[settings Colours and backdrop of menus, lobbies and results.]
+A menük, várótermek és eredmények színei és háttere.
+[settings In-game theme]
+Játék témája
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+A párbeszédablakok és az érintőfelület színei játék közben és a szerkesztőben.
+[theme light]
+Világos
+[theme dark]
+Sötét
+[theme classic]
+Klasszikus
+[theme ocean]
+Óceán
+[theme dune]
+Dűne
+[theme high-contrast]
+Nagy kontraszt
 [settings One-finger zoom]
 Nagyítás egy ujjal
 [settings Double-tap the map, hold, then drag to zoom.]

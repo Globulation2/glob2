@@ -2928,6 +2928,26 @@ OpenGL није доступан у овој верзији.
 ВИ противници
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Простран распоред користи бочну таблу када има места. Компактан користи траку алатки и табле на извлачење.
+[settings Menu theme]
+Тема менија
+[settings Colours and backdrop of menus, lobbies and results.]
+Боје и позадина менија, соба и резултата.
+[settings In-game theme]
+Тема игре
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Боје дијалога и интерфејса на додир током игре и у уређивачу.
+[theme light]
+Светла
+[theme dark]
+Тамна
+[theme classic]
+Класична
+[theme ocean]
+Океан
+[theme dune]
+Дина
+[theme high-contrast]
+Висок контраст
 [settings One-finger zoom]
 Зумирање једним прстом
 [settings Double-tap the map, hold, then drag to zoom.]

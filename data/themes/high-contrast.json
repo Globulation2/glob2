@@ -1,0 +1,50 @@
+{
+	"schema": 1,
+	"id": "high-contrast",
+	"name": "High contrast",
+	"description": "Black panels, white text and yellow accents for the clearest reading.",
+	"palette": {
+		"ink": "#ffffff",
+		"muted": "#e0e0e0",
+		"paper": "#000000",
+		"panel": "#000000fa",
+		"field": "#121212",
+		"rail": "#1a1a1a",
+		"line": "#ffffff",
+		"accent": "#ffd400",
+		"accentInk": "#000000",
+		"selected": "#4a4000",
+		"hover": "#333333",
+		"focus": "#00e5ff",
+		"scrim": "#000000c8",
+		"disabled": "#2a2a2a",
+		"danger": "#ff6b6b",
+		"success": "#5dff7a",
+		"warning": "#ffd400",
+		"shadow": "#00000000",
+		"pressed": "#ffd40050",
+		"backdrop": "#000000",
+		"neutral": "#808080",
+		"placeholder": "#222222"
+	},
+	"hud": {
+		"ink": "#ffffff",
+		"paper": "#000000eb",
+		"field": "#1a1a1af0",
+		"selected": "#4a4000f5",
+		"border": "#ffd400",
+		"readout": "#000000f5",
+		"dialTrack": "#1a1a1ae6",
+		"dialFill": "#ffd400d0",
+		"dialPadFill": "#333333f5",
+		"destroy": "#5a0000f0",
+		"erasePreview": "#0000008c"
+	},
+	"backdrop": {
+		"kind": "solid",
+		"veil": "#00000000"
+	},
+	"metrics": {
+		"focusRing": 3
+	}
+}

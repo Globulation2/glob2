@@ -2928,6 +2928,26 @@ OpenGL недоступний у цій збірці.
 Суперники-ШІ
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.
+[settings Menu theme]
+Тема меню
+[settings Colours and backdrop of menus, lobbies and results.]
+Кольори й тло меню, кімнат і результатів.
+[settings In-game theme]
+Тема гри
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Кольори діалогів і сенсорного інтерфейсу під час гри та в редакторі.
+[theme light]
+Світла
+[theme dark]
+Темна
+[theme classic]
+Класична
+[theme ocean]
+Океан
+[theme dune]
+Дюна
+[theme high-contrast]
+Висока контрастність
 [settings One-finger zoom]
 Масштаб одним пальцем
 [settings Double-tap the map, hold, then drag to zoom.]

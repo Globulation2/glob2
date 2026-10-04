@@ -1,0 +1,47 @@
+{
+	"schema": 1,
+	"id": "dune",
+	"name": "Dune",
+	"description": "Warm sand panels, umber ink and terracotta accents.",
+	"palette": {
+		"ink": "#3b2414",
+		"muted": "#6b5240",
+		"paper": "#f4e9d4",
+		"panel": "#ecdcc0",
+		"field": "#fbf4e6",
+		"rail": "#e8d8bb",
+		"line": "#d4b98f",
+		"accent": "#b5552f",
+		"accentInk": "#fff8ee",
+		"selected": "#e9c48a",
+		"hover": "#e2c9a0",
+		"focus": "#9a3d12",
+		"scrim": "#2a1a0ea0",
+		"disabled": "#e6dccb",
+		"danger": "#a8321e",
+		"success": "#3f6e24",
+		"warning": "#80520a",
+		"shadow": "#3b241423",
+		"pressed": "#b5552f37",
+		"backdrop": "#3b2414",
+		"neutral": "#b8a58c",
+		"placeholder": "#e5d5b8"
+	},
+	"hud": {
+		"ink": "#3b2414",
+		"paper": "#f4e9d4e8",
+		"field": "#fbf4e6f0",
+		"selected": "#e9c48af5",
+		"border": "#a8572f",
+		"readout": "#ecdcc0f0",
+		"dialTrack": "#e8d8bbe6",
+		"dialFill": "#b5552fc8",
+		"dialPadFill": "#e2c9a0f5",
+		"destroy": "#f0c8b8f0",
+		"erasePreview": "#f4e9d48c"
+	},
+	"backdrop": {
+		"kind": "colony",
+		"veil": "#f4e9d433"
+	}
+}

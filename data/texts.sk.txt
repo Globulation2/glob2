@@ -2928,6 +2928,26 @@ Automaticky ukladať hru približne každú minútu.
 Súperi UI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Priestranné rozloženie používa bočný panel, ak je dosť miesta. Kompaktné používa panel nástrojov a vysúvacie panely.
+[settings Menu theme]
+Motív ponúk
+[settings Colours and backdrop of menus, lobbies and results.]
+Farby a pozadie ponúk, miestností a výsledkov.
+[settings In-game theme]
+Motív hry
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Farby dialógov a dotykového rozhrania počas hry a v editore.
+[theme light]
+Svetlý
+[theme dark]
+Tmavý
+[theme classic]
+Klasický
+[theme ocean]
+Oceán
+[theme dune]
+Duna
+[theme high-contrast]
+Vysoký kontrast
 [settings One-finger zoom]
 Priblíženie jedným prstom
 [settings Double-tap the map, hold, then drag to zoom.]

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/FrontendUI.h"
+#include "ui/ThemeCatalog.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
 #include "gui/InGameTouchTheme.h"
@@ -69,56 +70,14 @@ Element compactButton(const std::string &key, const std::string &label, UIIcon i
 	return width(p.pt(48), button(key, "", std::move(action), options));
 }
 
-// Every touch theme shares one text size, so menus, dialogs over gameplay and
-// the end-of-game sheet read alike; the player's preference multiplies it.
-constexpr double touchTextBase = 1.15;
-
 const Theme &frontendTheme()
 {
-	static const Theme theme = []
-	{
-		Theme t;
-		t.fonts = {"front-title", "menu", "standard", "little", "front-caption"};
-		t.touchFonts = {"front-title", "menu", "frontend-body", "frontend-support", "front-caption"};
-		t.touchTextScale = touchTextBase;
-		return t;
-	}();
-	return theme;
+	return menuTheme();
 }
 
 const Theme &inGameTheme()
 {
-	// The in-match look of the HUD (InGameTouchTheme): aubergine panels, cream ink
-	// and gold lines, so dialogs belong to the map they sit on. Fonts and sizes are
-	// the frontend's, so text reads alike everywhere.
-	static const Theme theme = []
-	{
-		Theme t = frontendTheme();
-		auto &c = t.palette;
-		c.ink = InGameTouchTheme::ink;
-		c.muted = GAGCore::Color(204, 188, 152);
-		c.paper = GAGCore::Color(43, 28, 66);
-		c.panel = GAGCore::Color(43, 28, 66, 244);
-		c.field = GAGCore::Color(65, 43, 88);
-		c.rail = GAGCore::Color(55, 36, 78);
-		c.line = InGameTouchTheme::border;
-		c.accent = InGameTouchTheme::border;
-		c.accentInk = GAGCore::Color(30, 18, 40);
-		c.selected = GAGCore::Color(114, 78, 111);
-		c.hover = GAGCore::Color(92, 62, 116);
-		c.focus = GAGCore::Color(255, 214, 120);
-		c.scrim = GAGCore::Color(10, 6, 20, 140);
-		c.disabled = GAGCore::Color(52, 38, 70);
-		c.shadow = GAGCore::Color(10, 6, 20, 60);
-		c.pressed = GAGCore::Color(255, 214, 120, 50);
-		c.success = GAGCore::Color(120, 220, 120);
-		c.warning = GAGCore::Color(255, 214, 120);
-		c.danger = GAGCore::Color(255, 110, 100);
-		c.neutral = GAGCore::Color(120, 104, 140);
-		c.placeholder = GAGCore::Color(70, 50, 92);
-		return t;
-	}();
-	return theme;
+	return gameTheme();
 }
 
 const Theme &themeFor(Surface surface)
@@ -398,3 +357,19 @@ Element mapPreview(const std::string &key, ::MapPreview &preview, double points,
 	return element;
 }
 } // namespace Glob2UI
+
+// The HUD wears the in-game theme; see InGameTouchTheme.h.
+#define HUD_TOKEN(name) \
+	const GAGCore::Color &InGameTouchTheme::name() { return Glob2UI::gameTheme().hud.name; }
+HUD_TOKEN(ink)
+HUD_TOKEN(paper)
+HUD_TOKEN(field)
+HUD_TOKEN(selected)
+HUD_TOKEN(border)
+HUD_TOKEN(readout)
+HUD_TOKEN(dialTrack)
+HUD_TOKEN(dialFill)
+HUD_TOKEN(dialPadFill)
+HUD_TOKEN(destroy)
+HUD_TOKEN(erasePreview)
+#undef HUD_TOKEN

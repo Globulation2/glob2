@@ -19,7 +19,7 @@
 using namespace GAGCore;
 namespace
 {
-void surface(ViewRect r, Color color = InGameTouchTheme::paper)
+void surface(ViewRect r, Color color = InGameTouchTheme::paper())
 {
 	globalContainer->gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), color);
 }
@@ -96,7 +96,7 @@ void PhoneEditor::drawInspector()
 	label({safe.x, safe.y, 88 * u, 44 * u}, translated("[menu]"));
 	surface(inspector);
 	const ViewRect close{inspector.x + inspector.w - 48 * u, inspector.y + 4 * u, 44 * u, 44 * u};
-	surface(close, InGameTouchTheme::field);
+	surface(close, InGameTouchTheme::field());
 	label(close, "X");
 	std::string title, detail;
 	MapEditorWidget *picture = nullptr;
@@ -150,15 +150,15 @@ void PhoneEditor::drawInspector()
 		ViewRect minus{r.x, r.y + 24 * u, 44 * u, 44 * u},
 			plus{r.x + r.w - 44 * u, r.y + 24 * u, 44 * u, 44 * u};
 		ViewRect track{r.x + 48 * u, r.y + 24 * u, r.w - 96 * u, 44 * u};
-		surface(minus, InGameTouchTheme::field);
-		surface(plus, InGameTouchTheme::field);
+		surface(minus, InGameTouchTheme::field());
+		surface(plus, InGameTouchTheme::field());
 		label(minus, "-");
 		label(plus, "+");
-		surface(track, InGameTouchTheme::field);
+		surface(track, InGameTouchTheme::field());
 		double fraction =
 			double(property.value->currentValue()) / std::max(1, property.value->maximumValue());
 		surface({track.x, track.y + track.h - 5 * u, track.w * fraction, 5 * u},
-				InGameTouchTheme::selected);
+				InGameTouchTheme::selected());
 		label(track, std::to_string(property.value->currentValue()) + " / " +
 						 std::to_string(property.value->maximumValue()));
 	}
@@ -169,7 +169,7 @@ void PhoneEditor::drawInspector()
 		surface({inspector.x + inspector.w - 3 * u,
 				 inspectorBody.y + inspectorScroll / inspectorMaximum * (inspectorBody.h - thumb),
 				 2 * u, thumb},
-				InGameTouchTheme::border);
+				InGameTouchTheme::border());
 	}
 }
 void PhoneEditor::drawInteractionPreview()
@@ -336,8 +336,8 @@ void PhoneEditor::drawPeek()
 	if (showsMapButton())
 	{
 		const auto button = mapButton();
-		surface(button, InGameTouchTheme::field);
-		gfx->drawRect(int(button.x), int(button.y), int(button.w), int(button.h), InGameTouchTheme::border);
+		surface(button, InGameTouchTheme::field());
+		gfx->drawRect(int(button.x), int(button.y), int(button.w), int(button.h), InGameTouchTheme::border());
 		label(button, translated("[Minimap]"));
 	}
 	if (!peekOpen)
@@ -369,13 +369,13 @@ void PhoneEditor::drawPeek()
 					  int(std::ceil(editor.camera.visibleH() / 32)));
 	gfx->setUITransform();
 	gfx->setClipRect();
-	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border);
+	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
 	const std::string labels[] = {translated("[Done]"), "−", "+"};
 	for (int i = 0; i < 3; ++i)
 	{
-		surface(buttons[i], InGameTouchTheme::field);
+		surface(buttons[i], InGameTouchTheme::field());
 		gfx->drawRect(int(buttons[i].x), int(buttons[i].y), int(buttons[i].w), int(buttons[i].h),
-					  InGameTouchTheme::border);
+					  InGameTouchTheme::border());
 		label(buttons[i], labels[i]);
 	}
 }

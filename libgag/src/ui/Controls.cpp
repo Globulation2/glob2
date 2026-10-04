@@ -151,7 +151,7 @@ class Button : public Node
 		if (options.danger && options.enabled)
 			fill = p.field;
 		const auto &painter = frame.layout.theme.buttonPainter;
-		const bool classic = painter && painter(frame.canvas, bounds, {options.primary, options.selected, options.enabled, hovered, pressed});
+		const bool classic = painter && painter(frame.canvas, bounds, {options.primary, options.selected, options.enabled, hovered, pressed, options.flat});
 		if (!classic)
 		{
 			if (!options.flat || options.selected || options.primary || hovered || pressed)
@@ -173,7 +173,10 @@ class Button : public Node
 		const int extra = side + (side && !text.empty() ? frame.layout.presentation.pt(6) : 0);
 		const auto block = layoutText(m, options.role, text, std::max(1, textRect.w - extra),
 									  frame.layout.metrics.lineGap);
-		GAGCore::Color ink = options.primary || classic ? p.accentInk : inkFor(frame, options.enabled, false);
+		// Painted button art carries the theme's ordinary ink, as the original's did.
+		GAGCore::Color ink = classic ? (options.enabled ? p.ink : p.muted)
+							 : options.primary ? p.accentInk
+											   : inkFor(frame, options.enabled, false);
 		if (options.danger && options.enabled)
 			ink = p.danger;
 		if (hasIcon)

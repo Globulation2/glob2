@@ -51,4 +51,6 @@ class TeamStatChart
 	static GAGCore::Color bandColor(const Stats::Chart &chart, std::size_t index);
 	//! The plot background the line and band colours are chosen for.
 	static const GAGCore::Color background;
+	//! Text, axes and tooltip edge on that background, whatever the interface theme.
+	static const GAGCore::Color ink, border;
 };

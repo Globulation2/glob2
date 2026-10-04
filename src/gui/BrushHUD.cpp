@@ -114,8 +114,8 @@ void drawButton(const ViewRect &r, const std::string &text, bool selected, doubl
 	auto *gfx = globalContainer->gfx;
 	auto *font = globalContainer->standardFont;
 	gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
-						selected ? InGameTouchTheme::selected : InGameTouchTheme::field);
-	gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border);
+						selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
+	gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
 	InGameTouchTheme::TextStyle style(font);
 	const double scale = std::min(0.8 * gfx->textUnitsPerPoint(), (r.w - 4 * unit) / std::max(1, font->getStringWidth(text)));
 	SDL_Rect clip{int(r.x), int(r.y), int(r.w), int(r.h)};
@@ -133,17 +133,17 @@ void draw(const Layout &layout, const State &state)
 	const double unit = layout.unit;
 	gfx->setClipRect();
 	gfx->drawFilledRect(int(layout.rail.x - 2 * unit), int(layout.rail.y - 2 * unit), int(layout.rail.w + 4 * unit),
-						int(layout.rail.h + 2 * unit), InGameTouchTheme::paper);
+						int(layout.rail.h + 2 * unit), InGameTouchTheme::paper());
 	for (size_t i = 0; i < layout.detents.size(); ++i)
 	{
 		const auto &r = layout.detents[i];
 		const bool selected = i == state.figure;
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
-							selected ? InGameTouchTheme::selected : InGameTouchTheme::field);
+							selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
 		if (selected)
-			gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border);
+			gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
 		drawMask(unsigned(i), r, std::max(2.0, std::min(r.w, r.h) * 0.7 / 5),
-				 selected ? InGameTouchTheme::ink : InGameTouchTheme::border);
+				 selected ? InGameTouchTheme::ink() : InGameTouchTheme::border());
 	}
 	if (layout.mode.w > 0)
 		drawButton(layout.mode, state.modeLabel, state.erase, unit);
@@ -160,12 +160,12 @@ void draw(const Layout &layout, const State &state)
 									std::max(layout.rail.y, layout.rail.y + layout.rail.h - side));
 		const ViewRect box{layout.left ? layout.rail.x + layout.rail.w + 8 * unit : layout.rail.x - 8 * unit - side, y,
 						   side, side};
-		gfx->drawFilledRect(int(box.x), int(box.y), int(box.w), int(box.h), InGameTouchTheme::readout);
+		gfx->drawFilledRect(int(box.x), int(box.y), int(box.w), int(box.h), InGameTouchTheme::readout());
 		for (int i = 0; i < std::max(1, int(2 * unit)); ++i)
 			gfx->drawRect(int(box.x) + i, int(box.y) + i, int(box.w) - 2 * i, int(box.h) - 2 * i,
-						  InGameTouchTheme::border);
+						  InGameTouchTheme::border());
 		const ViewRect cells{box.x, box.y, box.w, box.h - 18 * unit};
-		drawMask(unsigned(state.touched), cells, (side - 28 * unit) / 5, InGameTouchTheme::ink);
+		drawMask(unsigned(state.touched), cells, (side - 28 * unit) / 5, InGameTouchTheme::ink());
 		const auto figure = unsigned(state.touched);
 		const std::string size = std::to_string(BrushTool::getBrushWidth(figure)) + " × " +
 								 std::to_string(BrushTool::getBrushHeight(figure));

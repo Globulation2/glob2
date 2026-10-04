@@ -200,8 +200,8 @@ void GameGUITouch::drawBuildingActions()
 
 		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
 							row.kind == 4  ? Color(81, 36, 60, 235)
-							: row.selected ? InGameTouchTheme::selected
-										   : InGameTouchTheme::field);
+							: row.selected ? InGameTouchTheme::selected()
+										   : InGameTouchTheme::field());
 		if (row.kind == 7)
 		{
 			const std::string labels[] = {Toolkit::getStringTable()->getString("[↓ Low]"),
@@ -213,8 +213,8 @@ void GameGUITouch::drawBuildingActions()
 									  rect.h};
 				gfx->drawFilledRect(int(button.x), int(button.y), int(button.w), int(button.h),
 									gui.displayedPriority(*inspectedBuilding()) == k - 1
-										? InGameTouchTheme::selected
-										: InGameTouchTheme::field);
+										? InGameTouchTheme::selected()
+										: InGameTouchTheme::field());
 				drawPointLabel(button, labels[k], .8);
 			}
 		}
@@ -245,9 +245,9 @@ void GameGUITouch::drawBuildingActions()
 				gfx->drawFilledRect(int(left), int(y - 2 * unit), int(width), int(4 * unit),
 									Color(29, 20, 43));
 				gfx->drawFilledRect(int(left), int(y - 2 * unit), int(width * fraction),
-									int(4 * unit), InGameTouchTheme::border);
+									int(4 * unit), InGameTouchTheme::border());
 				gfx->drawFilledRect(int(left + width * fraction - 5 * unit), int(y - 7 * unit),
-									int(10 * unit), int(14 * unit), InGameTouchTheme::ink);
+									int(10 * unit), int(14 * unit), InGameTouchTheme::ink());
 			}
 		}
 		else

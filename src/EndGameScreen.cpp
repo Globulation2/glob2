@@ -828,7 +828,7 @@ void EndGameScreen::paintChart(fe::Canvas &canvas, fe::Rect r)
 	canvas.fillRounded(r, 6, TeamStatChart::background);
 	if (std::none_of(teams.begin(), teams.end(), [](const auto &team) { return team.enabled; }))
 	{
-		canvas.text({r.x + 8, r.y + 8}, fe::FontRole::Body, fe::tr("[Select a team to show its history.]"), InGameTouchTheme::ink);
+		canvas.text({r.x + 8, r.y + 8}, fe::FontRole::Body, fe::tr("[Select a team to show its history.]"), TeamStatChart::ink);
 		return;
 	}
 	canvas.pushClip(r);

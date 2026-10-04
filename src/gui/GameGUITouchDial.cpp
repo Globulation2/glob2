@@ -369,7 +369,7 @@ void GameGUITouch::drawDial()
 	{
 		const ViewRect note{dial.chips.x, dial.chips.y + dial.chips.h - InGameTouchTheme::dialChipHeight * unit,
 							dial.chips.w, InGameTouchTheme::dialChipHeight * unit};
-		gfx->drawFilledRect(int(note.x), int(note.y), int(note.w), int(note.h), InGameTouchTheme::paper);
+		gfx->drawFilledRect(int(note.x), int(note.y), int(note.w), int(note.h), InGameTouchTheme::paper());
 		drawPointLabel(note, Toolkit::getStringTable()->getString("[Read-only building]"), .8);
 		return;
 	}
@@ -380,7 +380,7 @@ void GameGUITouch::drawDial()
 	for (int i = 0; i < 3; ++i)
 		if (rings[i])
 			TouchDial::fill(g, g.rings[i].inner, g.rings[i].outer, g.sweepStart, g.sweepEnd,
-							InGameTouchTheme::dialTrack);
+							InGameTouchTheme::dialTrack());
 	const double seam = 0.6; // Degrees left between neighbouring parts.
 	std::vector<std::pair<ViewRect, std::string>> sliderCaptions;
 	// Captions are sized to their text and kept on screen near the edge.
@@ -400,10 +400,10 @@ void GameGUITouch::drawDial()
 		{
 			const auto &box = region.box;
 			gfx->drawFilledRect(int(box.x), int(box.y), int(box.w), int(box.h),
-								row.kind == 4	 ? InGameTouchTheme::destroy
-								: row.selected ? InGameTouchTheme::selected
-											   : InGameTouchTheme::field);
-			gfx->drawRect(int(box.x), int(box.y), int(box.w), int(box.h), InGameTouchTheme::border);
+								row.kind == 4	 ? InGameTouchTheme::destroy()
+								: row.selected ? InGameTouchTheme::selected()
+											   : InGameTouchTheme::field());
+			gfx->drawRect(int(box.x), int(box.y), int(box.w), int(box.h), InGameTouchTheme::border());
 			drawPointLabel(box, row.label, .78);
 			continue;
 		}
@@ -426,7 +426,7 @@ void GameGUITouch::drawDial()
 				const double width = area.w / (dial.portrait ? 1 : 3);
 				const ViewRect label{area.x + (dial.portrait ? 0 : type * width),
 					area.y + (dial.portrait ? type * 24 * unit : 0), width, 22 * unit};
-				gfx->drawFilledRect(int(label.x), int(label.y), int(label.w), int(label.h), InGameTouchTheme::readout);
+				gfx->drawFilledRect(int(label.x), int(label.y), int(label.w), int(label.h), InGameTouchTheme::readout());
 				gfx->drawFilledRect(int(label.x), int(label.y), int(4 * unit), int(label.h), colors[type]);
 				const auto text = std::string(getUnitName(type)) + " " +
 					std::to_string(percentages[type]) + "%";
@@ -440,23 +440,23 @@ void GameGUITouch::drawDial()
 				const double at = TouchDial::angleOf(sum, region.from, region.to, std::max(1, total));
 				const auto inside = TouchDial::point(g, ring.inner, at);
 				const auto outside = TouchDial::point(g, ring.outer, at);
-				gfx->drawLine(int(inside.x), int(inside.y), int(outside.x), int(outside.y), InGameTouchTheme::ink);
+				gfx->drawLine(int(inside.x), int(inside.y), int(outside.x), int(outside.y), InGameTouchTheme::ink());
 				const auto grip = TouchDial::point(g, divider == 0 ? ring.inner + 4 : ring.outer - 4, at);
-				gfx->drawFilledRect(int(grip.x - 4 * unit), int(grip.y - 4 * unit), int(8 * unit), int(8 * unit), InGameTouchTheme::ink);
+				gfx->drawFilledRect(int(grip.x - 4 * unit), int(grip.y - 4 * unit), int(8 * unit), int(8 * unit), InGameTouchTheme::ink());
 			}
 			continue;
 		}
 		if (region.part == DialRegion::Segment)
 		{
 			TouchDial::fill(g, ring.inner, ring.outer, region.from + seam, region.to - seam,
-							row.selected ? InGameTouchTheme::selected : InGameTouchTheme::field);
+							row.selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
 			drawPointLabel(captionRect(centre, row.label, .78), row.label, .78);
 			continue;
 		}
 		if (region.part != DialRegion::Arc)
 		{
 			TouchDial::fill(g, ring.inner, ring.outer, region.from + seam, region.to - seam,
-							InGameTouchTheme::dialPadFill);
+							InGameTouchTheme::dialPadFill());
 			drawPointLabel({centre.x - 22 * unit, centre.y - 22 * unit, 44 * unit, 44 * unit},
 						   region.part == DialRegion::Minus ? "−" : "+", 1.1);
 			continue;
@@ -471,18 +471,18 @@ void GameGUITouch::drawDial()
 											: gui.displayedRatio(*b)[row.value];
 		TouchDial::fill(g, ring.inner, ring.outer, region.from,
 						TouchDial::angleOf(current, region.sliderFrom, region.sliderTo, region.maximum),
-						InGameTouchTheme::dialFill);
+						InGameTouchTheme::dialFill());
 		if (row.kind == 6)
 			TouchDial::fill(g, ring.outer - 5, ring.outer, region.from,
 							TouchDial::angleOf(int(b->unitsWorking), region.sliderFrom, region.sliderTo,
 											   region.maximum),
-							InGameTouchTheme::ink);
+							InGameTouchTheme::ink());
 		sliderCaptions.push_back({captionRect(centre, row.label, .72), row.label});
 	}
 	// Slider captions go over every ring, so neighbouring fills never cover them.
 	for (const auto &[caption, text] : sliderCaptions)
 	{
-		gfx->drawFilledRect(int(caption.x), int(caption.y), int(caption.w), int(caption.h), InGameTouchTheme::readout);
+		gfx->drawFilledRect(int(caption.x), int(caption.y), int(caption.w), int(caption.h), InGameTouchTheme::readout());
 		drawPointLabel(caption, text, .72);
 	}
 	if (allocation && allocation->polar && allocation->divider < 0)

@@ -41,4 +41,5 @@ class MainMenuScreen : public Glob2UI::Screen
 	void showMore(bool value);
 	bool more = false;
 	int wordmarkWidth = 0;
+	unsigned wordmarkTheme = 0;
 };

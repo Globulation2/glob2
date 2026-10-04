@@ -7,17 +7,22 @@
 // Measurements are window points; conversion to drawable units belongs to views.
 namespace InGameTouchTheme
 {
-inline const GAGCore::Color ink{249, 232, 187};
-inline const GAGCore::Color paper{43, 28, 66, 218};
-inline const GAGCore::Color field{65, 43, 88, 235};
-inline const GAGCore::Color selected{114, 78, 111, 245};
-inline const GAGCore::Color border{199, 165, 87};
-inline const GAGCore::Color readout{29, 18, 46, 240};
+// HUD colours follow the player's in-game theme (Theme::hud).
+const GAGCore::Color &ink();
+const GAGCore::Color &paper();
+const GAGCore::Color &field();
+const GAGCore::Color &selected();
+const GAGCore::Color &border();
+const GAGCore::Color &readout();
+const GAGCore::Color &dialTrack();
+const GAGCore::Color &dialFill();
+const GAGCore::Color &dialPadFill();
+const GAGCore::Color &destroy();
+const GAGCore::Color &erasePreview();
 // Pending zone-brush cells, indexed by GameGUIToolManager::ZoneType (forbidden,
 // guard, clearing, farm): tinted like the zone they add, dark when erasing.
 inline const GAGCore::Color zonePreview[4] = {{235, 80, 70, 110}, {80, 130, 255, 120}, {245, 225, 90, 110}, {110, 240, 120, 110}};
 inline const GAGCore::Color zonePreviewEdge[4] = {{255, 150, 140}, {160, 190, 255}, {255, 240, 150}, {190, 255, 190}};
-inline const GAGCore::Color erasePreview{20, 14, 30, 140};
 inline constexpr double textScale = 1.0;
 inline constexpr double target = 48;
 // Reach of a flag's forgiving hit zone, for selecting and for touch grabs: the
@@ -63,10 +68,6 @@ inline constexpr double dialPad = 44; // Arc length of the −/+ pads at a slide
 inline constexpr double dialPadMaximumAngle = 18; // capped so short inner arcs keep a slider.
 inline constexpr double dialChipWidth = 104;
 inline constexpr double dialChipHeight = 44;
-inline const GAGCore::Color dialTrack{29, 20, 43, 225};
-inline const GAGCore::Color dialFill{199, 165, 87, 190};
-inline const GAGCore::Color dialPadFill{82, 56, 108, 245};
-inline const GAGCore::Color destroy{81, 36, 60, 235};
 // The brush rail (zones and editor): cell width, the smallest cell before it
 // folds into two columns, the magnified size preview and the Undo chip. A
 // stroke can be undone for this long after it lands.
@@ -107,7 +108,7 @@ class TextStyle
   public:
 	explicit TextStyle(GAGCore::Font *value) : font(value)
 	{
-		font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, ink));
+		font->pushStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, ink()));
 	}
 	~TextStyle() { font->popStyle(); }
 	TextStyle(const TextStyle &) = delete;

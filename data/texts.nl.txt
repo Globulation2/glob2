@@ -2928,6 +2928,26 @@ Sla het spel ongeveer elke minuut automatisch op.
 AI-tegenstanders
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Ruim gebruikt een zijpaneel als er plaats is. Compact gebruikt een werkbalk en uitklappanelen.
+[settings Menu theme]
+Menuthema
+[settings Colours and backdrop of menus, lobbies and results.]
+Kleuren en achtergrond van menu's, lobby's en resultaten.
+[settings In-game theme]
+Spelthema
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Kleuren van dialogen en de aanraakinterface tijdens het spel en in de editor.
+[theme light]
+Licht
+[theme dark]
+Donker
+[theme classic]
+Klassiek
+[theme ocean]
+Oceaan
+[theme dune]
+Duin
+[theme high-contrast]
+Hoog contrast
 [settings One-finger zoom]
 Zoomen met één vinger
 [settings Double-tap the map, hold, then drag to zoom.]
