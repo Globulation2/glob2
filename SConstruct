@@ -463,6 +463,9 @@ def main():
 
     env.Append(CPPPATH=['#'+path for path in INCLUDE_DIRECTORIES])
     env.Append(CXXFLAGS=["-Wall", "-fPIC"])
+    # C sources (QuickJS, openlibm) link into the same executable, which
+    # distributions such as Fedora link as PIE.
+    env.Append(CFLAGS=["-fPIC"])
     # Uninitialized-read diagnostics: DET_INIT=zero|pattern forces deterministic
     # stack initialization (see CLAUDE.md). Env var, not a cached scons option.
     _detinit = os.environ.get('DET_INIT')
