@@ -1264,8 +1264,9 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 			{
 				auto ai = fe::choice(id + "/ai", names, selectedAI,
 									 [this, i](int value) { selectAI(i, value); });
-				auto info = fe::button(id + "/info", tr("AI strategy"), [this, i] { showAIProfile(i); },
-									   {.icon = fe::uiIcon(fe::UIIcon::Info)});
+				// Touch: an icon-only button, leaving the AI name room on one line.
+				auto info = fe::compactButton(id + "/info", tr("AI strategy"), fe::UIIcon::Info,
+											  [this, i] { showAIProfile(i); }, p, {.icon = fe::uiIcon(fe::UIIcon::Info)});
 				if (available.w < p.textPt(300))
 					return fe::column({ai, info}, {p.pt(6)});
 				return fe::row({fe::expanded(ai), info}, {p.pt(6), fe::CrossAlign::Center});
