@@ -77,6 +77,9 @@ function SkinDesigner() {
   const [mode, setMode] = useState<'colour' | 'material'>('colour');
   const [material, setMaterial] = useState(2);
   const [showMaterials, setShowMaterials] = useState(false);
+  const [workspaceView, setWorkspaceView] = useState<'designer' | 'library' | 'store'>(() =>
+    new URLSearchParams(window.location.search).has('purchase') ? 'store' : 'designer',
+  );
   const [name, setName] = useState('My colony');
   const [brush, setBrush] = useState('#ed9252');
   const [building, setBuilding] = useState('#ed9252');
@@ -383,7 +386,7 @@ function SkinDesigner() {
       if (!alive.current) return;
       setSkinId(version.skinId);
       catalog.reload();
-      setMessage('Published. Choose Equip below to use this version.');
+      setMessage('Published. Open My skins to equip this version.');
     } catch (e) {
       setMessage(e instanceof Error ? e.message : 'Could not publish.');
     } finally {
@@ -406,299 +409,352 @@ function SkinDesigner() {
   }
   return (
     <>
-      <h1>Colony skins</h1>
-      <p>
-        Paint each kind of unit and your swarm, choose what each part is made of and your swarm's
-        shape, and pick a color for the rest of your buildings. Try the designer for free;
-        publishing requires the designer unlock.
-      </p>
-      <p>
-        Glob paint repeats automatically on matching front/back and top/bottom surfaces so their
-        flips stay seamless.
-      </p>
-      <div role="tablist" aria-label="Model to paint" style={{ display: 'flex', gap: 8 }}>
-        {MODELS.map((m) => (
-          <button
-            key={m.id}
-            role="tab"
-            aria-selected={m.id === model.id}
-            onClick={() => setModel(m)}
-            style={{ fontWeight: m.id === model.id ? 'bold' : undefined }}
-          >
-            {m.name}
-          </button>
-        ))}
+      <div className="page-head">
+        <div className="grow">
+          <h1>Colony skins</h1>
+          <p className="caption">Make your colony your own.</p>
+        </div>
       </div>
-      <div
-        className="skin-designer"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))',
-          gap: '1.5rem',
-        }}
+      <div className="skin-view-switch seg" role="group" aria-label="Skins view">
+        <button
+          aria-pressed={workspaceView === 'designer'}
+          onClick={() => setWorkspaceView('designer')}
+        >
+          Designer
+        </button>
+        <button
+          aria-pressed={workspaceView === 'library'}
+          onClick={() => setWorkspaceView('library')}
+        >
+          My skins
+        </button>
+        <button aria-pressed={workspaceView === 'store'} onClick={() => setWorkspaceView('store')}>
+          Store
+        </button>
+      </div>
+      <section
+        aria-label="Skin designer"
+        hidden={workspaceView !== 'designer'}
+        inert={workspaceView !== 'designer'}
       >
-        <section aria-label="Paint tools">
-          <fieldset disabled={busy} style={{ border: 0, padding: 0, margin: 0 }}>
-            <label>
-              Skin name{' '}
-              <input maxLength={64} value={name} onChange={(e) => setName(e.target.value)} />
-            </label>
-            <div role="radiogroup" aria-label="Brush paints">
-              Brush paints{' '}
-              <label className="check">
-                <input
-                  type="radio"
-                  name="brush-mode"
-                  checked={mode === 'colour'}
-                  onChange={() => setMode('colour')}
-                />{' '}
-                Colour
-              </label>{' '}
-              <label className="check">
-                <input
-                  type="radio"
-                  name="brush-mode"
-                  checked={mode === 'material'}
-                  onChange={() => setMode('material')}
-                />{' '}
-                Material
-              </label>
-            </div>
-            {mode === 'colour' ? (
-              <div>
-                <label>
-                  Paint{' '}
-                  <input type="color" value={brush} onChange={(e) => setBrush(e.target.value)} />
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={erase}
-                    onChange={(e) => setErase(e.target.checked)}
-                  />{' '}
-                  Erase to white
-                </label>
-              </div>
-            ) : (
-              <div role="radiogroup" aria-label="Material">
-                {MATERIALS.map((m) => (
-                  <label key={m.id} className="check" style={{ marginRight: 8 }}>
-                    <input
-                      type="radio"
-                      name="material"
-                      checked={material === m.id}
-                      onChange={() => setMaterial(m.id)}
-                    />{' '}
-                    <span
-                      aria-hidden="true"
-                      style={{
-                        display: 'inline-block',
-                        width: 12,
-                        height: 12,
-                        border: '1px solid #888',
-                        background: m.swatch,
-                      }}
-                    />{' '}
-                    {m.name}
-                  </label>
-                ))}
-              </div>
-            )}
-            <label>
-              Brush size{' '}
-              <input
-                type="range"
-                min="1"
-                max="64"
-                value={size}
-                onChange={(e) => setSize(Number(e.target.value))}
-              />
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={overlay}
-                disabled={mode === 'material'}
-                onChange={(e) => setShowMaterials(e.target.checked)}
-              />{' '}
-              Show materials
-            </label>
-            <canvas
-              ref={ref}
-              width={MODEL_SIZE}
-              height={MODEL_SIZE}
-              aria-label="Paint texture"
-              style={{ width: 256, height: 256, touchAction: 'none', border: '1px solid #888' }}
-              onPointerDown={(e) => {
-                if (busy) return;
-                checkpoint();
-                e.currentTarget.setPointerCapture(e.pointerId);
-                const r = e.currentTarget.getBoundingClientRect();
-                paint((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
-              }}
-              onPointerMove={(e) => {
-                if (e.buttons && !busy) {
-                  const r = e.currentTarget.getBoundingClientRect();
-                  paint((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
-                }
-              }}
-            />
-            <div>
-              <button disabled={!historyCounts[0]} onClick={() => history(true)}>
-                Undo
-              </button>
-              <button disabled={!historyCounts[1]} onClick={() => history(false)}>
-                Redo
-              </button>
-              <button onClick={() => pattern('fill')}>Fill</button>
-              <button onClick={() => pattern('stripes')}>Try stripes</button>
-              <button onClick={() => pattern('spots')}>Try spots</button>
-              <button onClick={copyToAll}>Copy to all models</button>
-            </div>
-            <label>
-              Building color{' '}
-              <input type="color" value={building} onChange={(e) => setBuilding(e.target.value)} />
-            </label>
-            <fieldset aria-describedby="swarm-shape-hint">
-              <legend>Swarm shape</legend>
-              {SWARM_MESHES.map((mesh) => (
-                <label key={mesh} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <input
-                    type="radio"
-                    name="swarm-shape"
-                    value={mesh}
-                    checked={swarmMesh === mesh}
-                    onChange={() => {
-                      setSwarmMesh(mesh);
-                      // Show the new shape; the swarm quadrant paints every shape.
-                      setModel(MODELS[3]);
-                    }}
-                  />
-                  <span>
-                    <strong>{SWARM_SHAPES[mesh].name}</strong> {SWARM_SHAPES[mesh].description}
-                  </span>
-                </label>
-              ))}
-              <p id="swarm-shape-hint">
-                Each shape takes paint in its own way, so check your swarm in the preview after
-                switching. Your units keep their paint.
-              </p>
-            </fieldset>
-            <div>
-              <button disabled={busy} onClick={saveDraft}>
-                Save on this device
-              </button>
-              <button disabled={busy} onClick={() => void loadDraft()}>
-                Restore from this device
-              </button>
-              {account?.kind === 'registered' && (
-                <>
-                  <button disabled={busy} onClick={() => void accountDraft(true)}>
-                    Save to account
-                  </button>
-                  <button disabled={busy} onClick={() => void accountDraft(false)}>
-                    Restore from account
-                  </button>
-                </>
-              )}
-              <button
-                disabled={busy || !account || account.kind !== 'registered'}
-                onClick={() => void publish()}
-              >
-                {skinId ? 'Publish new version' : 'Publish skin'}
-              </button>
-            </div>
-            {skinId && (
-              <p>
-                Editing a published design. Existing versions stay available.{' '}
-                <button
-                  onClick={() => {
-                    setSkinId(undefined);
-                    setMessage('This painting will publish as a separate design.');
-                  }}
-                >
-                  Make a separate design
-                </button>
-              </p>
-            )}
-            {!account && (
-              <p>
-                <a href="/signin">Sign in</a> to publish or equip a skin.
-              </p>
-            )}
-          </fieldset>
-        </section>
-        <MeshPreview
-          texture={atlas}
-          swarmMesh={swarmMesh}
-          materials={readMaterials}
-          materialRevision={materialRevision}
-          model={model}
-          onPaint={(u, v) => {
-            if (!busy) paint(u, v);
-          }}
-          onStroke={() => {
-            if (!busy) checkpoint();
-          }}
-        />
-      </div>
-      <p role="status" aria-label="Designer status">
-        {message}
-      </p>
-      <SkinStore onChange={catalog.reload} />
-      <h2>Your colony looks</h2>
-      <button disabled={busy || !account} onClick={() => void equip(null)}>
-        Use default colony
-      </button>
-      {catalog.status === 'error' && <p role="alert">{catalog.error.message}</p>}
-      {catalog.status === 'ready' && (
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
-          {catalog.data.items.map((skin) => (
-            <article key={skin.id} data-version-id={skin.id} style={{ maxWidth: 200 }}>
-              <img
-                width={128}
-                height={128}
-                src={`/api/v1/skins/versions/${skin.id}/texture`}
-                alt={`${skin.name} paint`}
-              />
-              <h3>{skin.name}</h3>
-              <button disabled={busy} onClick={() => void openDesign(skin)}>
-                {skin.kind === 'custom' ? 'Edit this version' : 'Use as a starting point'}
-              </button>
-              <p>
-                {skin.kind === 'preset' ? 'Premade skin' : 'Your design'},{' '}
-                {SWARM_SHAPES[skin.swarmMesh].name.toLowerCase()} swarm{' '}
-                <span
-                  role="img"
-                  aria-label={`Building color #${skin.buildingColor.toString(16).padStart(6, '0')}`}
-                  style={{
-                    display: 'inline-block',
-                    width: 16,
-                    height: 16,
-                    background: `#${skin.buildingColor.toString(16).padStart(6, '0')}`,
-                  }}
-                />
-              </p>
-              <button
-                disabled={
-                  busy ||
-                  (catalog.data.equippedVersionId === skin.id &&
-                    (catalog.data.equippedBuildingColor ?? skin.buildingColor) ===
-                      parseInt(building.slice(1), 16))
-                }
-                onClick={() => void equip(skin.id)}
-              >
-                {catalog.data.equippedVersionId === skin.id
-                  ? (catalog.data.equippedBuildingColor ?? skin.buildingColor) ===
-                    parseInt(building.slice(1), 16)
-                    ? 'Equipped'
-                    : 'Apply building color'
-                  : 'Equip'}
-              </button>
-            </article>
+        <p>
+          Paint each kind of unit and your swarm, choose what each part is made of and your swarm's
+          shape, and pick a color for the rest of your buildings. Try the designer for free;
+          publishing requires the designer unlock.
+        </p>
+        <p>
+          Glob paint repeats automatically on matching front/back and top/bottom surfaces so their
+          flips stay seamless.
+        </p>
+        <div
+          role="tablist"
+          aria-label="Model to paint"
+          style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
+        >
+          {MODELS.map((m) => (
+            <button
+              key={m.id}
+              role="tab"
+              aria-selected={m.id === model.id}
+              onClick={() => setModel(m)}
+              style={{ fontWeight: m.id === model.id ? 'bold' : undefined }}
+            >
+              {m.name}
+            </button>
           ))}
         </div>
-      )}
+        <div className="skin-designer">
+          <section aria-label="Paint tools">
+            <fieldset disabled={busy} style={{ border: 0, padding: 0, margin: 0 }}>
+              <label>
+                Skin name{' '}
+                <input maxLength={64} value={name} onChange={(e) => setName(e.target.value)} />
+              </label>
+              <div role="radiogroup" aria-label="Brush paints">
+                Brush paints{' '}
+                <label className="check">
+                  <input
+                    type="radio"
+                    name="brush-mode"
+                    checked={mode === 'colour'}
+                    onChange={() => setMode('colour')}
+                  />{' '}
+                  Colour
+                </label>{' '}
+                <label className="check">
+                  <input
+                    type="radio"
+                    name="brush-mode"
+                    checked={mode === 'material'}
+                    onChange={() => setMode('material')}
+                  />{' '}
+                  Material
+                </label>
+              </div>
+              {mode === 'colour' ? (
+                <div>
+                  <label>
+                    Paint{' '}
+                    <input type="color" value={brush} onChange={(e) => setBrush(e.target.value)} />
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={erase}
+                      onChange={(e) => setErase(e.target.checked)}
+                    />{' '}
+                    Erase to white
+                  </label>
+                </div>
+              ) : (
+                <div role="radiogroup" aria-label="Material">
+                  {MATERIALS.map((m) => (
+                    <label key={m.id} className="check" style={{ marginRight: 8 }}>
+                      <input
+                        type="radio"
+                        name="material"
+                        checked={material === m.id}
+                        onChange={() => setMaterial(m.id)}
+                      />{' '}
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          display: 'inline-block',
+                          width: 12,
+                          height: 12,
+                          border: '1px solid #888',
+                          background: m.swatch,
+                        }}
+                      />{' '}
+                      {m.name}
+                    </label>
+                  ))}
+                </div>
+              )}
+              <label>
+                Brush size{' '}
+                <input
+                  type="range"
+                  min="1"
+                  max="64"
+                  value={size}
+                  onChange={(e) => setSize(Number(e.target.value))}
+                />
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={overlay}
+                  disabled={mode === 'material'}
+                  onChange={(e) => setShowMaterials(e.target.checked)}
+                />{' '}
+                Show materials
+              </label>
+              <canvas
+                ref={ref}
+                width={MODEL_SIZE}
+                height={MODEL_SIZE}
+                aria-label="Paint texture"
+                style={{ width: 256, height: 256, touchAction: 'none', border: '1px solid #888' }}
+                onPointerDown={(e) => {
+                  if (busy) return;
+                  checkpoint();
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  const r = e.currentTarget.getBoundingClientRect();
+                  paint((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+                }}
+                onPointerMove={(e) => {
+                  if (e.buttons && !busy) {
+                    const r = e.currentTarget.getBoundingClientRect();
+                    paint((e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+                  }
+                }}
+              />
+              <div>
+                <button disabled={!historyCounts[0]} onClick={() => history(true)}>
+                  Undo
+                </button>
+                <button disabled={!historyCounts[1]} onClick={() => history(false)}>
+                  Redo
+                </button>
+                <button onClick={() => pattern('fill')}>Fill</button>
+                <button onClick={() => pattern('stripes')}>Try stripes</button>
+                <button onClick={() => pattern('spots')}>Try spots</button>
+                <button onClick={copyToAll}>Copy to all models</button>
+              </div>
+              <label>
+                Building color{' '}
+                <input
+                  type="color"
+                  value={building}
+                  onChange={(e) => setBuilding(e.target.value)}
+                />
+              </label>
+              <fieldset aria-describedby="swarm-shape-hint">
+                <legend>Swarm shape</legend>
+                {SWARM_MESHES.map((mesh) => (
+                  <label key={mesh} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <input
+                      type="radio"
+                      name="swarm-shape"
+                      value={mesh}
+                      checked={swarmMesh === mesh}
+                      onChange={() => {
+                        setSwarmMesh(mesh);
+                        // Show the new shape; the swarm quadrant paints every shape.
+                        setModel(MODELS[3]);
+                      }}
+                    />
+                    <span>
+                      <strong>{SWARM_SHAPES[mesh].name}</strong> {SWARM_SHAPES[mesh].description}
+                    </span>
+                  </label>
+                ))}
+                <p id="swarm-shape-hint">
+                  Each shape takes paint in its own way, so check your swarm in the preview after
+                  switching. Your units keep their paint.
+                </p>
+              </fieldset>
+              <div>
+                <button disabled={busy} onClick={saveDraft}>
+                  Save on this device
+                </button>
+                <button disabled={busy} onClick={() => void loadDraft()}>
+                  Restore from this device
+                </button>
+                {account?.kind === 'registered' && (
+                  <>
+                    <button disabled={busy} onClick={() => void accountDraft(true)}>
+                      Save to account
+                    </button>
+                    <button disabled={busy} onClick={() => void accountDraft(false)}>
+                      Restore from account
+                    </button>
+                  </>
+                )}
+                <button
+                  disabled={busy || !account || account.kind !== 'registered'}
+                  onClick={() => void publish()}
+                >
+                  {skinId ? 'Publish new version' : 'Publish skin'}
+                </button>
+              </div>
+              {skinId && (
+                <p>
+                  Editing a published design. Existing versions stay available.{' '}
+                  <button
+                    onClick={() => {
+                      setSkinId(undefined);
+                      setMessage('This painting will publish as a separate design.');
+                    }}
+                  >
+                    Make a separate design
+                  </button>
+                </p>
+              )}
+              {!account && (
+                <p>
+                  <a href="/signin">Sign in</a> to publish or equip a skin.
+                </p>
+              )}
+            </fieldset>
+          </section>
+          <MeshPreview
+            active={workspaceView === 'designer'}
+            texture={atlas}
+            swarmMesh={swarmMesh}
+            materials={readMaterials}
+            materialRevision={materialRevision}
+            model={model}
+            onPaint={(u, v) => {
+              if (!busy) paint(u, v);
+            }}
+            onStroke={() => {
+              if (!busy) checkpoint();
+            }}
+          />
+        </div>
+      </section>
+      <p role="status" aria-label="Designer status">
+        {message}
+        {message.startsWith('Published.') && (
+          <button className="small" onClick={() => setWorkspaceView('library')}>
+            View My skins
+          </button>
+        )}
+      </p>
+      <section
+        aria-label="Skin store"
+        hidden={workspaceView !== 'store'}
+        inert={workspaceView !== 'store'}
+      >
+        <SkinStore onChange={catalog.reload} />
+      </section>
+      <section
+        aria-label="My skins"
+        hidden={workspaceView !== 'library'}
+        inert={workspaceView !== 'library'}
+      >
+        <h2>Your colony looks</h2>
+        <button disabled={busy || !account} onClick={() => void equip(null)}>
+          Use default colony
+        </button>
+        {catalog.status === 'error' && <p role="alert">{catalog.error.message}</p>}
+        {catalog.status === 'ready' && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+            {catalog.data.items.map((skin) => (
+              <article key={skin.id} data-version-id={skin.id} style={{ maxWidth: 200 }}>
+                <img
+                  width={128}
+                  height={128}
+                  src={`/api/v1/skins/versions/${skin.id}/texture`}
+                  alt={`${skin.name} paint`}
+                />
+                <h3>{skin.name}</h3>
+                <button
+                  disabled={busy}
+                  onClick={() => {
+                    setWorkspaceView('designer');
+                    void openDesign(skin);
+                  }}
+                >
+                  {skin.kind === 'custom' ? 'Edit this version' : 'Use as a starting point'}
+                </button>
+                <p>
+                  {skin.kind === 'preset' ? 'Premade skin' : 'Your design'},{' '}
+                  {SWARM_SHAPES[skin.swarmMesh].name.toLowerCase()} swarm{' '}
+                  <span
+                    role="img"
+                    aria-label={`Building color #${skin.buildingColor.toString(16).padStart(6, '0')}`}
+                    style={{
+                      display: 'inline-block',
+                      width: 16,
+                      height: 16,
+                      background: `#${skin.buildingColor.toString(16).padStart(6, '0')}`,
+                    }}
+                  />
+                </p>
+                <button
+                  disabled={
+                    busy ||
+                    (catalog.data.equippedVersionId === skin.id &&
+                      (catalog.data.equippedBuildingColor ?? skin.buildingColor) ===
+                        parseInt(building.slice(1), 16))
+                  }
+                  onClick={() => void equip(skin.id)}
+                >
+                  {catalog.data.equippedVersionId === skin.id
+                    ? (catalog.data.equippedBuildingColor ?? skin.buildingColor) ===
+                      parseInt(building.slice(1), 16)
+                      ? 'Equipped'
+                      : 'Apply building color'
+                    : 'Equip'}
+                </button>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </>
   );
 }

@@ -600,17 +600,18 @@ export function Match({ id }: { id: string }) {
               )}
             </div>
             <TeamCards detail={detail} />
+            <Replay detail={detail} />
             <Participants detail={detail} />
             <MatchSkinLooks matchId={id} />
-            <div className="grid2" style={{ marginTop: 'var(--sp-4)' }}>
-              <Replay detail={detail} />
-              <Verification detail={detail} />
-            </div>
-            <Connection detail={detail} />
             <h2>Timeline</h2>
             <Timelines detail={detail} />
             <Economy detail={detail} />
             <Statistics detail={detail} />
+            <details className="match-diagnostics">
+              <summary>Verification and connection details</summary>
+              <Verification detail={detail} />
+              <Connection detail={detail} />
+            </details>
           </>
         );
       }}

@@ -120,7 +120,9 @@ export function MeshPreview({
   model,
   onPaint,
   onStroke,
+  active = true,
 }: {
+  active?: boolean;
   texture: HTMLCanvasElement | null;
   swarmMesh: SwarmMeshId;
   materials: () => Uint8Array;
@@ -158,7 +160,7 @@ export function MeshPreview({
   }, [direction, animate, phase]);
   const asset = model.id === 'swarm' ? swarmModel(swarmMesh) : `${model.id}-${action}`;
   useEffect(() => {
-    if (!canvas.current || !texture) return;
+    if (!canvas.current || !texture || !active) return;
     const target = canvas.current;
     const gl = target.getContext('webgl2', { alpha: false, antialias: true });
     if (!gl) {
@@ -342,7 +344,7 @@ ${SKIN_MATERIAL_GLSL}
       delete target.dataset['frame'];
       delete target.dataset['model'];
     };
-  }, [texture, asset, model]);
+  }, [texture, asset, model, active]);
   return (
     <section
       aria-label="Live colony preview"

@@ -46,7 +46,8 @@ function RegisteredStudio({ id }: { id?: string }) {
     [busy, setBusy] = useState(false);
   const [settings, setSettings] = useState<StudioSettings>({ width: 256, height: 256, players: 4 }),
     [parent, setParent] = useState<string>(),
-    [comparison, setComparison] = useState<string[]>([]);
+    [comparison, setComparison] = useState<string[]>([]),
+    [view, setView] = useState<'conversation' | 'versions'>('conversation');
   const [retry, setRetry] = useState<{ path: string; body: unknown }>();
   const draftKey = account && id ? `studio-draft:${account.id}:${id}` : undefined;
   useEffect(() => {
@@ -179,9 +180,11 @@ function RegisteredStudio({ id }: { id?: string }) {
     );
   return (
     <section className="map-studio">
-      <header>
-        <h1>AI Map Studio</h1>
-        <p>Describe a landscape. Refine it together. Play your creation.</p>
+      <header className="page-head">
+        <div className="grow">
+          <h1>AI Map Studio</h1>
+          <p>Describe a landscape. Refine it together. Play your creation.</p>
+        </div>
       </header>
       {connectionError && <p role="status">{connectionError}</p>}
       {error && (
@@ -204,9 +207,12 @@ function RegisteredStudio({ id }: { id?: string }) {
         </div>
       )}
       {wallet && (
-        <div className="studio-wallet">
-          <strong>{wallet.available} map credits available</strong>
-          <span>{wallet.reserved} reserved</span>
+        <details className="studio-wallet">
+          <summary>
+            <strong>{wallet.available} map credits available</strong>
+            <span>{wallet.reserved} reserved</span>
+            <span>Manage credits</span>
+          </summary>
           <p>
             Discussion is included. Each delivered map or revision costs 1 credit. Failed
             generations return the credit.
@@ -247,15 +253,29 @@ function RegisteredStudio({ id }: { id?: string }) {
               ))}
             </ul>
           </details>
-        </div>
+        </details>
       )}
-      <div className="studio-layout">
+      {wallet && !wallet.enabled && (
+        <p className="notice">AI Map Studio is not enabled on this instance.</p>
+      )}
+      {wallet?.enabled && wallet.available === 0 && (
+        <p className="notice">
+          No map credits available. Open Manage credits to view purchase options. Discussion is
+          included; generating a map requires a credit.
+        </p>
+      )}
+      <details className="studio-threads" open={!id}>
+        <summary>
+          {thread?.title ?? 'Your map threads'} <span>Switch thread or create a map</span>
+        </summary>
         <aside aria-label="Map threads">
           <h2>Your map threads</h2>
           <ul>
             {threads.map((t) => (
               <li key={t.id}>
-                <Link to={`/map-studio/${t.id}`}>{t.title}</Link>
+                <Link to={`/map-studio/${t.id}`} aria-current={t.id === id ? 'page' : undefined}>
+                  {t.title}
+                </Link>
               </li>
             ))}
           </ul>
@@ -278,244 +298,280 @@ function RegisteredStudio({ id }: { id?: string }) {
             <button disabled={busy || !wallet?.enabled}>New map thread</button>
           </form>
         </aside>
+      </details>
+      <div className="studio-layout">
         <div>
           {!id ? (
-            <p>Open a thread or create one to start designing.</p>
+            <div className="studio-empty">
+              <h2>Design your next battlefield</h2>
+              <p>
+                Create a map thread above, describe your landscape, and refine it with the map
+                designer. Delivered maps stay private until you publish them.
+              </p>
+            </div>
           ) : !thread ? (
             <p>Loading your map thread…</p>
           ) : (
             <>
-              <h2>{thread.title}</h2>
-              {(thread.history?.messagesBefore || thread.history?.requestsBefore) && (
+              <div className="studio-mobile-switch" role="group" aria-label="Studio view">
                 <button
-                  disabled={busy}
-                  onClick={() =>
-                    void action(async () => {
-                      const query = new URLSearchParams();
-                      if (thread.history?.messagesBefore)
-                        query.set('messagesBefore', thread.history.messagesBefore);
-                      if (thread.history?.requestsBefore)
-                        query.set('requestsBefore', thread.history.requestsBefore);
-                      const older = await request<StudioThread>(
-                        'GET',
-                        `${ROOT}/threads/${id}?${query}`,
-                      );
-                      setThread((current) => ({
-                        ...mergeThread(current, older),
-                        history: older.history,
-                      }));
-                    })
-                  }
+                  aria-pressed={view === 'conversation'}
+                  onClick={() => setView('conversation')}
                 >
-                  Load earlier conversation and versions
+                  Conversation
                 </button>
-              )}
-              <div
-                className="studio-chat"
-                role="log"
-                aria-label="Map design conversation"
-                aria-live="polite"
-              >
-                {thread.messages.map((m) => (
-                  <article key={m.id} className={`studio-message ${m.role}`}>
-                    <strong>{m.role === 'user' ? 'You' : 'Map designer'}</strong>
-                    <p>{m.text}</p>
-                  </article>
-                ))}
+                <button aria-pressed={view === 'versions'} onClick={() => setView('versions')}>
+                  Versions ({versions.length})
+                </button>
               </div>
               {active && (
-                <p role="status">
+                <p role="status" className="studio-progress">
                   {active.status === 'uncertain'
-                    ? 'The provider outcome needs reconciliation. Your credit remains reserved.'
-                    : active.error
-                      ? active.error
-                      : active.kind === 'chat'
+                    ? 'Provider outcome needs reconciliation. Your credit remains reserved.'
+                    : (active.error ??
+                      (active.kind === 'chat'
                         ? 'The map designer is replying…'
-                        : `Generating your map: ${active.status}…`}
+                        : `Generating your map: ${active.status}…`))}
                 </p>
               )}
-              {thread.requests
-                .filter((r) => r.status === 'failed')
-                .map((r) => (
-                  <p className="notice" key={r.id}>
-                    {r.error ?? 'The request failed.'}
-                  </p>
-                ))}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!draft.trim()) return;
-                  void action(async () => {
-                    const text = draft;
-                    await send(`${ROOT}/threads/${id}/messages`, { id: crypto.randomUUID(), text });
-                    setDraft('');
-                  });
-                }}
-              >
-                <label className="field">
-                  Describe your map or discuss changes
-                  <textarea
-                    rows={4}
-                    value={draft}
-                    maxLength={8000}
-                    onChange={(e) => {
-                      setDraft(e.target.value);
-                      setRetry(undefined);
-                    }}
-                  />
-                </label>
-                <button
-                  disabled={
-                    busy || !!active || !wallet?.enabled || !wallet.available || !draft.trim()
-                  }
-                >
-                  Send message
-                </button>
-              </form>
-              <fieldset disabled={busy || !!active}>
-                <legend>Next map</legend>
-                <div className="studio-controls">
-                  {(['width', 'height'] as const).map((axis) => (
-                    <label key={axis}>
-                      {axis === 'width' ? 'Width' : 'Height'}
-                      <select
-                        value={settings[axis]}
-                        onChange={(e) =>
-                          changeSettings({
-                            ...settings,
-                            [axis]: Number(e.target.value) as StudioSettings['width'],
-                          })
-                        }
-                      >
-                        {[128, 256, 512].map((n) => (
-                          <option key={n} value={n}>
-                            {n} cells
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                  ))}
-                  <label>
-                    Players
-                    <select
-                      value={settings.players}
-                      onChange={(e) =>
-                        changeSettings({ ...settings, players: Number(e.target.value) })
+              <div className="studio-workspace" data-view={view}>
+                <section className="studio-conversation" aria-label="Conversation">
+                  <h2>{thread.title}</h2>
+                  {(thread.history?.messagesBefore || thread.history?.requestsBefore) && (
+                    <button
+                      disabled={busy}
+                      onClick={() =>
+                        void action(async () => {
+                          const query = new URLSearchParams();
+                          if (thread.history?.messagesBefore)
+                            query.set('messagesBefore', thread.history.messagesBefore);
+                          if (thread.history?.requestsBefore)
+                            query.set('requestsBefore', thread.history.requestsBefore);
+                          const older = await request<StudioThread>(
+                            'GET',
+                            `${ROOT}/threads/${id}?${query}`,
+                          );
+                          setThread((current) => ({
+                            ...mergeThread(current, older),
+                            history: older.history,
+                          }));
+                        })
                       }
                     >
-                      {[2, 3, 4, 5, 6, 7, 8].map((n) => (
-                        <option key={n}>{n}</option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <p>
-                  {selected
-                    ? `Revising version ${versions.indexOf(selected) + 1}.`
-                    : 'Creating a fresh map from this discussion.'}{' '}
-                  {selected && (
-                    <button type="button" onClick={() => setParent(undefined)}>
-                      Start fresh
+                      Load earlier conversation and versions
                     </button>
                   )}
-                </p>
-                <button
-                  className="primary"
-                  disabled={
-                    !wallet?.enabled ||
-                    !wallet.available ||
-                    !thread.messages.length ||
-                    !!draft.trim()
-                  }
-                  onClick={() =>
-                    void action(() =>
-                      send(`${ROOT}/threads/${id}/generate`, {
-                        id: crypto.randomUUID(),
-                        settings,
-                        ...(parent ? { parent } : {}),
-                      }),
-                    )
-                  }
-                >
-                  Generate — 1 credit
-                </button>
-                {draft.trim() && <p>Send your draft message before generating.</p>}
-              </fieldset>
-              <h2>Map versions</h2>
-              <p>
-                Drafts are private. Publishing shares only that version. Hosting a room shares its
-                map with players in the room.
-              </p>
-              <div className="studio-gallery">
-                {versions.map((v, i) => (
-                  <article className="studio-version" key={v.id}>
-                    <h3>
-                      Version {i + 1}
-                      {v.input.parent
-                        ? ` · revised from version ${versions.findIndex((p) => p.id === v.input.parent) + 1}`
-                        : ''}
-                    </h3>
-                    <img
-                      src={preview(v)}
-                      alt={`Imported map version ${i + 1}, ${v.input.settings.players} players`}
-                      loading="lazy"
-                    />
-                    <p>
-                      {v.input.settings.width}×{v.input.settings.height} ·{' '}
-                      {v.input.settings.players} players
-                    </p>
-                    <div className="studio-actions">
-                      <button disabled={busy || !!active} onClick={() => revise(v)}>
-                        Revise this version
-                      </button>
-                      <a
-                        className="btn"
-                        href={`/api/v1/maps/${v.map_id}/versions/${v.map_hash}/file`}
-                      >
-                        Download
-                      </a>
-                      <button disabled={busy} onClick={() => void action(() => host(v))}>
-                        Host room
-                      </button>
-                      <button disabled={busy} onClick={() => void action(() => publish(v))}>
-                        Publish this version
-                      </button>
-                      <Link to={`/maps/${v.map_id}`}>Map details</Link>
-                    </div>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={comparison.includes(v.id)}
-                        onChange={(e) =>
-                          setComparison(
-                            e.target.checked
-                              ? [...comparison.slice(-1), v.id]
-                              : comparison.filter((p) => p !== v.id),
-                          )
-                        }
-                      />{' '}
-                      Compare
-                    </label>
-                  </article>
-                ))}
-              </div>
-              {comparison.length === 2 && (
-                <section aria-label="Map comparison">
-                  <h2>Compare versions</h2>
-                  <div className="studio-gallery">
-                    {comparison.map((version) => {
-                      const v = versions.find((r) => r.id === version);
-                      if (!v) return null;
-                      return (
-                        <figure key={version}>
-                          <img src={preview(v)} alt={`Map version ${versions.indexOf(v) + 1}`} />
-                          <figcaption>Version {versions.indexOf(v) + 1}</figcaption>
-                        </figure>
-                      );
-                    })}
+                  <div
+                    className="studio-chat"
+                    role="log"
+                    aria-label="Map design conversation"
+                    aria-live="polite"
+                  >
+                    {thread.messages.map((m) => (
+                      <article key={m.id} className={`studio-message ${m.role}`}>
+                        <strong>{m.role === 'user' ? 'You' : 'Map designer'}</strong>
+                        <p>{m.text}</p>
+                      </article>
+                    ))}
                   </div>
+                  {thread.requests
+                    .filter((r) => r.status === 'failed')
+                    .map((r) => (
+                      <p className="notice" key={r.id}>
+                        {r.error ?? 'The request failed.'}
+                      </p>
+                    ))}
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!draft.trim()) return;
+                      void action(async () => {
+                        const text = draft;
+                        await send(`${ROOT}/threads/${id}/messages`, {
+                          id: crypto.randomUUID(),
+                          text,
+                        });
+                        setDraft('');
+                      });
+                    }}
+                  >
+                    <label className="field">
+                      Describe your map or discuss changes
+                      <textarea
+                        rows={4}
+                        value={draft}
+                        maxLength={8000}
+                        onChange={(e) => {
+                          setDraft(e.target.value);
+                          setRetry(undefined);
+                        }}
+                      />
+                    </label>
+                    <button
+                      disabled={
+                        busy || !!active || !wallet?.enabled || !wallet.available || !draft.trim()
+                      }
+                    >
+                      Send message
+                    </button>
+                  </form>
+                  <fieldset disabled={busy || !!active}>
+                    <legend>Next map</legend>
+                    <div className="studio-controls">
+                      {(['width', 'height'] as const).map((axis) => (
+                        <label key={axis}>
+                          {axis === 'width' ? 'Width' : 'Height'}
+                          <select
+                            value={settings[axis]}
+                            onChange={(e) =>
+                              changeSettings({
+                                ...settings,
+                                [axis]: Number(e.target.value) as StudioSettings['width'],
+                              })
+                            }
+                          >
+                            {[128, 256, 512].map((n) => (
+                              <option key={n} value={n}>
+                                {n} cells
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ))}
+                      <label>
+                        Players
+                        <select
+                          value={settings.players}
+                          onChange={(e) =>
+                            changeSettings({ ...settings, players: Number(e.target.value) })
+                          }
+                        >
+                          {[2, 3, 4, 5, 6, 7, 8].map((n) => (
+                            <option key={n}>{n}</option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                    <p>
+                      {selected
+                        ? `Revising version ${versions.indexOf(selected) + 1}.`
+                        : 'Creating a fresh map from this discussion.'}{' '}
+                      {selected && (
+                        <button type="button" onClick={() => setParent(undefined)}>
+                          Start fresh
+                        </button>
+                      )}
+                    </p>
+                    <button
+                      className="primary"
+                      disabled={
+                        !wallet?.enabled ||
+                        !wallet.available ||
+                        !thread.messages.length ||
+                        !!draft.trim()
+                      }
+                      onClick={() =>
+                        void action(() =>
+                          send(`${ROOT}/threads/${id}/generate`, {
+                            id: crypto.randomUUID(),
+                            settings,
+                            ...(parent ? { parent } : {}),
+                          }),
+                        )
+                      }
+                    >
+                      Generate — 1 credit
+                    </button>
+                    {draft.trim() && <p>Send your draft message before generating.</p>}
+                  </fieldset>
                 </section>
-              )}
+                <section className="studio-versions" aria-label="Map versions">
+                  <h2>Map versions</h2>
+                  {!versions.length && (
+                    <p className="studio-empty">
+                      Your generated maps will appear here. Discuss your landscape, then generate
+                      your first version.
+                    </p>
+                  )}
+                  <p>
+                    Drafts are private. Publishing shares only that version. Hosting a room shares
+                    its map with players in the room.
+                  </p>
+                  <div className="studio-gallery">
+                    {versions.map((v, i) => (
+                      <article className="studio-version" key={v.id}>
+                        <h3>
+                          Version {i + 1}
+                          {v.input.parent
+                            ? ` · revised from version ${versions.findIndex((p) => p.id === v.input.parent) + 1}`
+                            : ''}
+                        </h3>
+                        <img
+                          src={preview(v)}
+                          alt={`Imported map version ${i + 1}, ${v.input.settings.players} players`}
+                          loading="lazy"
+                        />
+                        <p>
+                          {v.input.settings.width}×{v.input.settings.height} ·{' '}
+                          {v.input.settings.players} players
+                        </p>
+                        <div className="studio-actions">
+                          <button disabled={busy || !!active} onClick={() => revise(v)}>
+                            Revise this version
+                          </button>
+                          <a
+                            className="btn"
+                            href={`/api/v1/maps/${v.map_id}/versions/${v.map_hash}/file`}
+                          >
+                            Download
+                          </a>
+                          <button disabled={busy} onClick={() => void action(() => host(v))}>
+                            Host room
+                          </button>
+                          <button disabled={busy} onClick={() => void action(() => publish(v))}>
+                            Publish this version
+                          </button>
+                          <Link to={`/maps/${v.map_id}`}>Map details</Link>
+                        </div>
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={comparison.includes(v.id)}
+                            onChange={(e) =>
+                              setComparison(
+                                e.target.checked
+                                  ? [...comparison.slice(-1), v.id]
+                                  : comparison.filter((p) => p !== v.id),
+                              )
+                            }
+                          />{' '}
+                          Compare
+                        </label>
+                      </article>
+                    ))}
+                  </div>
+                  {comparison.length === 2 && (
+                    <section aria-label="Map comparison">
+                      <h2>Compare versions</h2>
+                      <div className="studio-gallery">
+                        {comparison.map((version) => {
+                          const v = versions.find((r) => r.id === version);
+                          if (!v) return null;
+                          return (
+                            <figure key={version}>
+                              <img
+                                src={preview(v)}
+                                alt={`Map version ${versions.indexOf(v) + 1}`}
+                              />
+                              <figcaption>Version {versions.indexOf(v) + 1}</figcaption>
+                            </figure>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  )}
+                </section>
+              </div>
             </>
           )}
         </div>

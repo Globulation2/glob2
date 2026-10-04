@@ -75,6 +75,7 @@ for (const scheme of ['light', 'dark'] as const) {
 
 test('the match page’s connection table fits phones as cards', async ({ page }, info) => {
   await page.goto(`/matches/${seed.featuredMatch}`);
+  await page.getByText('Verification and connection details', { exact: true }).click();
   const region = page.getByRole('region', { name: 'Connection quality per player' });
   await expect(region).toBeVisible();
   await expect(region).toHaveAttribute('tabindex', '0');

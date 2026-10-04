@@ -71,18 +71,21 @@ width (320 px up).
 
 ### Look
 
-The site is made from the game's own world, the way its menus are: pages sit on
-the menu colony (`data/gfx/menu-colony.png`) under a paper panel, and use the
-game's sprites (globs, buildings, flags, resources), wordmark, icon and team
-colours. The home page's colony has globs walking and flying across it, using
-the game's walk and flight cycles.
+The app keeps the game's sprites (globs, buildings, flags, resources), wordmark,
+icon, fonts and team colours in a fluid workspace. A full-height left navigation
+replaces the website header and floating page panel: desktop shows labels, medium
+widths use a compact rail, and phones open a navigation drawer. Page controls stay
+inside their workspace; ordinary pages scroll with the document. Download, public
+website and attribution links remain available through About. The Home dashboard
+keeps a compact living colony (`data/gfx/menu-colony.png`) with the game's walk
+and flight cycles beside its play and invite actions.
 
 - **Tokens** live in `src/styles/tokens.css`: colours, type, spacing, radii and
   shadows for two themes. *Meadow* (light) is the menu paper theme
   (`libgag/include/ui/Theme.h`) with the wordmark's green and gold; *Night
   colony* (dark) is the in-match touch theme's aubergine and gold
   (`src/ui/FrontendUI.cpp`). The theme follows the system unless the viewer
-  picks one with the header toggle (stored in that browser only; `public/theme.js`
+  picks one with the navigation toggle (stored in that browser only; `public/theme.js`
   applies it before the first paint).
 - **Type**: Glob2 Sans (the game font, a Latin subset of `data/fonts/sans.ttf`)
   for headings and numbers, Nunito (SIL OFL, self-hosted) for body text.
@@ -102,12 +105,12 @@ pages carry an OpenGraph image for link previews.
 
 | Route | Page |
 | --- | --- |
-| `/` | Colony hero with play in browser, download and join-with-code, live stats, how the game plays, leaderboard teasers, most liked maps, recent matches, instance |
+| `/` | App dashboard with play in browser, download and join-with-code, live stats, recent public matches, most liked maps, leaderboard teasers and instance |
 | `/leaderboard`, `/leaderboard/{queueId}` | Ladder of a rated queue, then its AI ladder |
 | `/players/{accountId}` | Ratings, rating graph, aggregates, economy curves, match history |
-| `/matches`, `/matches/{id}` | Recent matches; match page with players, rating changes, connection quality, timelines, verification, replay |
+| `/matches`, `/matches/{id}` | Recent matches; match page with replay actions, players, rating changes and timelines; verification and connection diagnostics are expandable |
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
-| `/account` | The signed-in account: sign-in methods, delete |
+| `/account` | The signed-in account: sign-in methods, data export, Hive Mind credit link, delete |
 | `/admin/accounts`, `/admin/matches`, `/admin/reports` | Moderation: account search, rename, mute and (administrators) ban; match lookup; map report queue with hide and unhide |
 
 The game links to `/players/<id>`, `/matches/<id>`, `/maps/<id>` and
@@ -116,9 +119,10 @@ and sign-in (`/signin`) stay server-rendered by the API. The web app uses the
 web session cookie that `/signin` sets; its writes are same-origin requests,
 which pass the API's cross-site check.
 
-`VITE_DOWNLOAD_URL` at build time sets the home page's download link
-(default `https://globulation2.org/`), and `VITE_WEBSITE_URL` adds a footer link
-to a separately hosted public website (none by default). The Compose deployment
+`VITE_DOWNLOAD_URL` at build time sets the app's download link; it otherwise uses
+`VITE_WEBSITE_URL`'s `/downloads/` page, or the project's GitHub releases when no
+website is configured. `VITE_WEBSITE_URL` also adds About links to the separately
+hosted public website (none by default). The Compose deployment
 passes them from `GLOB2_DOWNLOAD_URL` and `GLOB2_WEBSITE_URL`.
 
 The first script holds the home, leaderboard and match-list pages; the player,

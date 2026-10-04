@@ -21,6 +21,12 @@ test('account drafts restore across devices and refuse stale saves', async ({
   const paint = await page
     .getByLabel('Paint texture')
     .evaluate((c: { toDataURL(): string }) => c.toDataURL());
+  await page.getByRole('button', { name: 'Store', exact: true }).click();
+  await page.getByRole('button', { name: 'Designer', exact: true }).click();
+  await expect(page.getByLabel('Skin name')).toHaveValue('Across devices');
+  expect(
+    await page.getByLabel('Paint texture').evaluate((c: { toDataURL(): string }) => c.toDataURL()),
+  ).toBe(paint);
   await page.getByRole('button', { name: 'Save to account' }).click();
   await expect(page.getByRole('status', { name: 'Designer status' })).toContainText(
     'Draft saved to your account.',
@@ -78,6 +84,7 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   await expect(page.getByRole('status', { name: 'Designer status' })).toContainText(
     /No saved draft|Account draft restored/,
   );
+  await page.getByRole('button', { name: 'My skins', exact: true }).click();
   await page.getByRole('button', { name: 'Use as a starting point' }).first().click();
   const name = `Browser design ${test.info().project.name}`;
   await page.getByLabel('Skin name').fill(name);
@@ -101,11 +108,14 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   const originalPaint = await (
     await page.request.get(`/api/v1/skins/versions/${original.id}/texture`)
   ).body();
+  await page.getByRole('button', { name: 'My skins', exact: true }).click();
   const card = page.locator(`[data-version-id="${original.id}"]`);
   await card.getByRole('button', { name: 'Equip', exact: true }).click();
   await expect(card.getByRole('button', { name: 'Equipped', exact: true })).toBeVisible();
   await expect(card).toContainText('skep swarm');
+  await page.getByRole('button', { name: 'Designer', exact: true }).click();
   await page.getByRole('radio', { name: /^Classic/ }).check();
+  await page.getByRole('button', { name: 'My skins', exact: true }).click();
   await card.getByRole('button', { name: 'Edit this version' }).click();
   await expect(page.getByLabel('Skin name')).toHaveValue(name);
   await expect(page.getByRole('radio', { name: /^Skep/ })).toBeChecked();
@@ -132,6 +142,7 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   expect(
     await (await page.request.get(`/api/v1/skins/versions/${original.id}/texture`)).body(),
   ).toEqual(originalPaint);
+  await page.getByRole('button', { name: 'My skins', exact: true }).click();
   await expect(
     page
       .locator(`[data-version-id="${original.id}"]`)
@@ -142,6 +153,7 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
       .locator(`[data-version-id="${revised.id}"]`)
       .getByRole('button', { name: 'Equip', exact: true }),
   ).toBeVisible();
+  await page.getByRole('button', { name: 'Designer', exact: true }).click();
   await page.getByRole('button', { name: 'Make a separate design' }).click();
   const copyResponse = page.waitForResponse(
     (r) => r.url().endsWith('/skins/publish') && r.request().method() === 'POST',
@@ -164,6 +176,7 @@ test('publishes each model with its own paintable material map', async ({
     .context()
     .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
   await page.goto('/skins');
+  await page.getByRole('button', { name: 'My skins', exact: true }).click();
   await page.getByRole('button', { name: 'Use as a starting point' }).first().click();
   await page.getByLabel('Skin name').fill(`Materials ${test.info().project.name}`);
   const publish = async (button: string) => {
@@ -316,4 +329,19 @@ test('inspects every action and paints a paused model with undo and erase', asyn
   await expect(page.getByLabel('Frame', { exact: true })).toBeDisabled();
   await expect(page.getByLabel('Direction', { exact: true })).toBeDisabled();
   await expect(preview).toHaveAttribute('data-frame', '0');
+});
+
+test('model painting controls fit a 320px screen', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto('/skins');
+  await expect(page.getByRole('tab', { name: 'Swarm' })).toBeVisible();
+  expect(
+    await page
+      .locator('html')
+      .evaluate(
+        (element: { scrollWidth: number; clientWidth: number }) =>
+          element.scrollWidth - element.clientWidth,
+      ),
+  ).toBe(0);
+  await page.screenshot({ path: test.info().outputPath('skins-320.png'), fullPage: true });
 });

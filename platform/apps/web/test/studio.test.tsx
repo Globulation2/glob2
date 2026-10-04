@@ -88,3 +88,18 @@ it('keeps unsent feedback out of generation and stores a recoverable draft', asy
   expect(writes[0]!.path).toContain('/messages');
   expect(writes[0]!.body).toMatchObject({ text: 'More bridges' });
 });
+it('preserves a draft and revision target while switching workspace views', async () => {
+  render(<MapStudio id={id} />);
+  await screen.findByRole('button', { name: 'Revise this version' });
+  fireEvent.click(screen.getByRole('button', { name: 'Revise this version' }));
+  const composer = screen.getByRole('textbox', { name: 'Describe your map or discuss changes' });
+  fireEvent.change(composer, { target: { value: 'Keep this unsent revision' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Versions (1)' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Conversation' }));
+  expect(screen.getByRole('textbox', { name: 'Describe your map or discuss changes' })).toBe(
+    composer,
+  );
+  expect((composer as HTMLTextAreaElement).value).toBe('Keep this unsent revision');
+  expect(screen.getByText(/Revising version 1/)).toBeTruthy();
+  expect(sessionStorage.getItem('studio-draft:owner:thread')).toBe('Keep this unsent revision');
+});
