@@ -1,5 +1,5 @@
 [music set]
-Music set (click to change)
+Music set
 [random music set]
 Random each match
 [playing music set %0]
@@ -5276,3 +5276,7 @@ enemy warriors
 strength
 [stat view by place]
 By place
+[settings Music set]
+Music set
+[settings Random each match]
+Choose Random to select a soundtrack at each match start.

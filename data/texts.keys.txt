@@ -2637,3 +2637,5 @@
 [stat unit enemy warriors]
 [stat unit strength count]
 [stat view by place]
+[settings Music set]
+[settings Random each match]

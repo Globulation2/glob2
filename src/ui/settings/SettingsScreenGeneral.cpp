@@ -250,10 +250,10 @@ void SettingsScreen::buildGeneral()
 		{
 			auto sets = SoundMixer::getMusicSets();
 			sets.insert(sets.begin(), "");
-			std::vector<std::string> labels{tr("[random music set]")};
+			std::vector<std::string> labels{Toolkit::getStringTable()->getString("[random music set]")};
 			for (size_t i = 1; i < sets.size(); ++i) labels.push_back(SoundMixer::musicSetLabel(sets[i]));
 			const auto selected = std::find(sets.begin(), sets.end(), s.musicSet);
-			choice("audio.set", "[music set]", "[random music set]",
+			choice("audio.set", "Music set", "Random each match",
 				selected == sets.end() ? 0 : int(selected - sets.begin()), labels,
 				[this, sets](int index) {
 					if (index >= 0 && index < int(sets.size()) && globalContainer->mix->selectMusicSet(sets[index]))

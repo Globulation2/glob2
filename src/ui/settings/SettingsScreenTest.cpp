@@ -119,6 +119,8 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE((s.defaultFlagRadius[0]==3 && s.defaultFlagRadius[1]==4));
         screen.selectCategory(SettingsScreen::Category::Audio);
         REQUIRE(!screen.row("audio.music").enabled);
+        CHECK(screen.row("audio.set").label == "Music set");
+        CHECK(screen.row("audio.set").value == "Random each match");
         REQUIRE(screen.changeSetting("audio.set", 1));
         screen.finishInteraction();
         REQUIRE(!s.musicSet.empty());
