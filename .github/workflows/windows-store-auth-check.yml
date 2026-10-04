@@ -1,0 +1,90 @@
+name: Check Windows Store credentials
+
+on:
+  workflow_dispatch:
+    inputs:
+      expected_client_id:
+        description: Application (client) ID from the Entra app overview
+        required: true
+      expected_tenant_id:
+        description: Directory (tenant) ID from the Entra app overview
+        required: true
+
+permissions: {}
+
+jobs:
+  authenticate:
+    if: github.event_name == 'workflow_dispatch' && github.repository == 'genixpro/glob2-release' && github.repository_id == 1397722696 && github.actor_id == 6193625 && github.triggering_actor == 'genixpro' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: windows-store
+    steps:
+      - name: Verify identity and request a PackageUploader token
+        shell: python
+        env:
+          STORE_TENANT_ID: ${{ secrets.STORE_TENANT_ID }}
+          STORE_CLIENT_ID: ${{ secrets.STORE_CLIENT_ID }}
+          STORE_CLIENT_SECRET: ${{ secrets.STORE_CLIENT_SECRET }}
+          EXPECTED_CLIENT_ID: ${{ inputs.expected_client_id }}
+          EXPECTED_TENANT_ID: ${{ inputs.expected_tenant_id }}
+        run: |
+          import json
+          import os
+          import sys
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          import uuid
+
+          def fail(message):
+              print(f"::error::{message}")
+              sys.exit(1)
+
+          for name in ("STORE_TENANT_ID", "STORE_CLIENT_ID", "STORE_CLIENT_SECRET"):
+              value = os.environ.get(name, "")
+              if not value:
+                  fail(f"Missing {name} in the mirror's windows-store environment.")
+              if value != value.strip() or "\n" in value or "\r" in value:
+                  fail(f"{name} contains whitespace around its value or a line break. Re-save the value without whitespace.")
+
+          for name, expected in (("STORE_CLIENT_ID", "EXPECTED_CLIENT_ID"), ("STORE_TENANT_ID", "EXPECTED_TENANT_ID")):
+              try:
+                  actual_id = uuid.UUID(os.environ[name])
+                  expected_id = uuid.UUID(os.environ[expected])
+              except ValueError:
+                  fail(f"{name} and its expected value must be GUIDs from the Entra app overview.")
+              if actual_id != expected_id:
+                  fail(f"{name} does not match the Entra app overview. The client ID is the Application (client) ID, not a secret ID or object ID.")
+
+          # Match PackageUploader v3.2.1's AccessTokenProviderConfig resource.
+          body = urllib.parse.urlencode({
+              "grant_type": "client_credentials",
+              "client_id": os.environ["STORE_CLIENT_ID"],
+              "client_secret": os.environ["STORE_CLIENT_SECRET"],
+              "scope": "https://api.partner.microsoft.com/.default",
+          }).encode()
+          tenant = str(uuid.UUID(os.environ["STORE_TENANT_ID"]))
+          request = urllib.request.Request(
+              f"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+              data=body,
+              headers={"Content-Type": "application/x-www-form-urlencoded"},
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  result = json.load(response)
+          except urllib.error.HTTPError as error:
+              # Never print response bodies, credentials, or tokens.
+              try:
+                  result = json.load(error)
+              except (ValueError, OSError):
+                  result = {}
+              codes = [str(code) for code in result.get("error_codes", []) if isinstance(code, int)]
+              fail(f"Microsoft rejected authentication (HTTP {error.code}; AADSTS codes: {', '.join(codes) or 'unavailable'}).")
+          except (urllib.error.URLError, TimeoutError):
+              fail("Unable to reach Microsoft's token endpoint.")
+          if not result.get("access_token"):
+              fail("Microsoft returned no access token.")
+          print("Credential check passed: tenant and client IDs match, and Microsoft accepted the stored client secret for PackageUploader authentication.")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write("Windows Store credential check passed. Microsoft issued a PackageUploader token for the expected tenant and application. No package was built, uploaded, or published. Product publishing permissions still require a Partner Center operation to verify.\n")
