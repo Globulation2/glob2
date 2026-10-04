@@ -3476,8 +3476,6 @@ AI
 %0 후 AI 참가
 [hub all rooms]
 전체
-[hub browse maps]
-지도 찾아보기
 [hub cant reach %0]
 %0에 연결할 수 없습니다.
 [hub change server]
@@ -3512,10 +3510,6 @@ AI
 참가
 [hub leaderboard]
 순위표
-[hub linked %0]
-연결된 계정 · %0
-[hub linked accounts]
-연결된 계정
 [hub maps]
 지도
 [hub no queues]
@@ -3536,6 +3530,20 @@ AI
 페이지 다시 열기
 [hub open rooms]
 열린 방
+[hub play]
+플레이
+[hub rooms]
+방
+[hub ranks]
+순위
+[hub play with friends]
+친구와 플레이
+[hub last match]
+최근 경기
+[hub your rank %0 %1]
+내 순위 %0위 · 레이팅 %1
+[hub not placed]
+아직 여기서 순위가 없습니다. 랭크 경기를 플레이해 순위를 받으세요.
 [hub page opened at %0]
 %0을(를) 열었습니다. 게임에서 입력할 것은 없으며, 자동으로 로그인됩니다.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ AI
 빠른 대전
 [hub ranked]
 랭크전
-[hub recent matches]
-최근 경기
 [hub refresh]
 새로 고침
 [hub retry now]
@@ -3560,8 +3566,6 @@ AI
 방
 [hub seats %0 %1]
 자리 %0/%1
-[hub server %0]
-서버: %0
 [hub sign in browser]
 로그인 페이지 열기
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ AI 대전
 %0 님의 재대결 참가
 [hub profile history]
 프로필 및 기록
-[hub my maps]
-내 지도
 [hub leaderboard %0]
 순위표 · %0
 [hub leaderboard empty]

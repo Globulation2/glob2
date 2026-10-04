@@ -212,6 +212,7 @@ CLIENT_SOURCES = (
     'ui/ThemeCatalog.cpp',
     'ui/ThemePainters.cpp',
     'ui/OnlineUI.cpp',
+    'ui/MapPictures.cpp',
     'ui/FileListing.cpp',
     'ui/Glob2Style.cpp',
     'ui/FrontendTheme.cpp',

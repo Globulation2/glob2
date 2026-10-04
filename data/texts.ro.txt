@@ -3476,8 +3476,6 @@ Cont
 IA intră după %0
 [hub all rooms]
 Toate
-[hub browse maps]
-Răsfoiește hărți
 [hub cant reach %0]
 %0 nu poate fi contactat.
 [hub change server]
@@ -3512,10 +3510,6 @@ Cod de intrare
 Intră
 [hub leaderboard]
 Clasament
-[hub linked %0]
-Conturi asociate · %0
-[hub linked accounts]
-Conturi asociate
 [hub maps]
 Hărți
 [hub no queues]
@@ -3536,6 +3530,20 @@ Online
 Redeschide pagina
 [hub open rooms]
 Camere deschise
+[hub play]
+Joacă
+[hub rooms]
+Camere
+[hub ranks]
+Clasament
+[hub play with friends]
+Joacă cu prietenii
+[hub last match]
+Ultimul meci
+[hub your rank %0 %1]
+Ești pe locul %0 · rating %1
+[hub not placed]
+Încă nu ai un loc aici. Joacă meciuri clasate ca să fii clasat.
 [hub page opened at %0]
 Am deschis %0. Nu trebuie să tastați nimic în joc; autentificarea se face automat.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ Meciul rapid nu este încă disponibil în această versiune.
 Meci rapid
 [hub ranked]
 Competitiv
-[hub recent matches]
-Meciuri recente
 [hub refresh]
 Reîmprospătează
 [hub retry now]
@@ -3560,8 +3566,6 @@ Camera lui %0
 Cameră
 [hub seats %0 %1]
 %0/%1 locuri
-[hub server %0]
-Serverul: %0
 [hub sign in browser]
 Deschide pagina de autentificare
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Revanșă
 Intră în revanșa lui %0
 [hub profile history]
 Profil și istoric
-[hub my maps]
-Hărțile mele
 [hub leaderboard %0]
 Clasament · %0
 [hub leaderboard empty]

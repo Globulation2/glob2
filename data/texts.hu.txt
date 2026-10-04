@@ -3476,8 +3476,6 @@ Fiók
 MI csatlakozik ennyi idő után: %0
 [hub all rooms]
 Összes
-[hub browse maps]
-Térképek böngészése
 [hub cant reach %0]
 Nem érhető el: %0.
 [hub change server]
@@ -3512,10 +3510,6 @@ Csatlakozási kód
 Csatlakozás
 [hub leaderboard]
 Ranglista
-[hub linked %0]
-Kapcsolt fiókok · %0
-[hub linked accounts]
-Kapcsolt fiókok
 [hub maps]
 Térképek
 [hub no queues]
@@ -3536,6 +3530,20 @@ Online
 Oldal újbóli megnyitása
 [hub open rooms]
 Nyitott szobák
+[hub play]
+Játék
+[hub rooms]
+Szobák
+[hub ranks]
+Ranglista
+[hub play with friends]
+Játék barátokkal
+[hub last match]
+Legutóbbi mérkőzés
+[hub your rank %0 %1]
+%0. helyen állsz · pontszám %1
+[hub not placed]
+Még nincs helyezésed itt. Játssz rangsorolt mérkőzéseket a besoroláshoz.
 [hub page opened at %0]
 Megnyitva: %0. A játékban semmit sem kell begépelned, magától bejelentkeztet.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ A gyorsmeccs ebben a verzióban még nem érhető el.
 Gyorsmeccs
 [hub ranked]
 Rangsorolt
-[hub recent matches]
-Legutóbbi mérkőzések
 [hub refresh]
 Frissítés
 [hub retry now]
@@ -3560,8 +3566,6 @@ Szoba – %0
 Szoba
 [hub seats %0 %1]
 %0/%1 hely
-[hub server %0]
-Szerver: %0
 [hub sign in browser]
 Bejelentkezési oldal megnyitása
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Visszavágó
 Csatlakozás a visszavágóhoz: %0
 [hub profile history]
 Profil és előzmények
-[hub my maps]
-Térképeim
 [hub leaderboard %0]
 Ranglista · %0
 [hub leaderboard empty]

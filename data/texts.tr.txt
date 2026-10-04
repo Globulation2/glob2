@@ -3476,8 +3476,6 @@ Hesap
 YZ %0 sonra katılır
 [hub all rooms]
 Tümü
-[hub browse maps]
-Haritalara göz at
 [hub cant reach %0]
 Ulaşılamıyor: %0.
 [hub change server]
@@ -3512,10 +3510,6 @@ Katılma kodu
 Katıl
 [hub leaderboard]
 Sıralama
-[hub linked %0]
-Bağlı hesaplar · %0
-[hub linked accounts]
-Bağlı hesaplar
 [hub maps]
 Haritalar
 [hub no queues]
@@ -3536,6 +3530,20 @@ Bu sunucuda hızlı maç kuyruğu yok.
 Sayfayı yeniden aç
 [hub open rooms]
 Açık odalar
+[hub play]
+Oyna
+[hub rooms]
+Odalar
+[hub ranks]
+Sıralama
+[hub play with friends]
+Arkadaşlarla oyna
+[hub last match]
+Son maç
+[hub your rank %0 %1]
+%0. sıradasınız · puan %1
+[hub not placed]
+Henüz burada bir sıralamanız yok. Sıralamaya girmek için dereceli maçlar oynayın.
 [hub page opened at %0]
 Açıldı: %0. Oyunda bir şey yazmanıza gerek yok; oturumunuz kendiliğinden açılır.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ Hızlı maç bu sürümde henüz yok.
 Hızlı maç
 [hub ranked]
 Dereceli
-[hub recent matches]
-Son maçlar
 [hub refresh]
 Yenile
 [hub retry now]
@@ -3560,8 +3566,6 @@ Oda: %0
 Oda
 [hub seats %0 %1]
 %0/%1 yer
-[hub server %0]
-Sunucu: %0
 [hub sign in browser]
 Oturum açma sayfasını aç
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Rövanş
 Rövanşa katıl: %0
 [hub profile history]
 Profil ve geçmiş
-[hub my maps]
-Haritalarım
 [hub leaderboard %0]
 Sıralama · %0
 [hub leaderboard empty]

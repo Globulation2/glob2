@@ -3484,8 +3484,6 @@ Account
 AI joins after %0
 [hub all rooms]
 All
-[hub browse maps]
-Browse maps
 [hub cant reach %0]
 Can't reach %0.
 [hub change server]
@@ -3520,10 +3518,6 @@ Join code
 Join
 [hub leaderboard]
 Leaderboard
-[hub linked %0]
-Linked accounts · %0
-[hub linked accounts]
-Linked accounts
 [hub maps]
 Maps
 [hub no queues]
@@ -3544,6 +3538,20 @@ Online
 Open the page again
 [hub open rooms]
 Open rooms
+[hub play]
+Play
+[hub rooms]
+Rooms
+[hub ranks]
+Ranks
+[hub play with friends]
+Play with friends
+[hub last match]
+Last match
+[hub your rank %0 %1]
+You are #%0 · rating %1
+[hub not placed]
+You don't have a rank here yet. Play ranked matches to place.
 [hub page opened at %0]
 Opened %0. Nothing to type in the game; it signs you in by itself.
 [hub queues unavailable]
@@ -3554,8 +3562,6 @@ Quick match isn't available in this version yet.
 Quick match
 [hub ranked]
 Ranked
-[hub recent matches]
-Recent matches
 [hub refresh]
 Refresh
 [hub retry now]
@@ -3568,8 +3574,6 @@ Room
 Room
 [hub seats %0 %1]
 %0/%1 seats
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Open the sign-in page
 [hub sign in conflict]
@@ -4406,8 +4410,6 @@ Rematch
 Join %0's rematch
 [hub profile history]
 Profile & history
-[hub my maps]
-My maps
 [hub leaderboard %0]
 Leaderboard · %0
 [hub leaderboard empty]

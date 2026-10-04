@@ -3476,8 +3476,6 @@ Ping
 %0後にAIが参加
 [hub all rooms]
 すべて
-[hub browse maps]
-マップを探す
 [hub cant reach %0]
 %0に接続できません。
 [hub change server]
@@ -3512,10 +3510,6 @@ Ping
 参加
 [hub leaderboard]
 ランキング
-[hub linked %0]
-連携アカウント · %0
-[hub linked accounts]
-連携アカウント
 [hub maps]
 マップ
 [hub no queues]
@@ -3536,6 +3530,20 @@ Ping
 ページをもう一度開く
 [hub open rooms]
 参加可能なルーム
+[hub play]
+プレイ
+[hub rooms]
+ルーム
+[hub ranks]
+ランキング
+[hub play with friends]
+フレンドと遊ぶ
+[hub last match]
+直近の対戦
+[hub your rank %0 %1]
+あなたは %0 位 · レーティング %1
+[hub not placed]
+まだここでの順位はありません。ランク戦をプレイして順位を獲得しましょう。
 [hub page opened at %0]
 %0を開きました。ゲーム内で入力する必要はなく、自動でサインインします。
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ Ping
 クイックマッチ
 [hub ranked]
 ランク戦
-[hub recent matches]
-最近の試合
 [hub refresh]
 更新
 [hub retry now]
@@ -3560,8 +3566,6 @@ Ping
 ルーム
 [hub seats %0 %1]
 %0/%1席
-[hub server %0]
-サーバー：%0
 [hub sign in browser]
 サインインページを開く
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Webプロフィール
 %0の再戦に参加
 [hub profile history]
 プロフィールと履歴
-[hub my maps]
-マイマップ
 [hub leaderboard %0]
 ランキング · %0
 [hub leaderboard empty]

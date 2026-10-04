@@ -3476,8 +3476,6 @@ Konto
 AI ansluter efter %0
 [hub all rooms]
 Alla
-[hub browse maps]
-Bläddra bland kartor
 [hub cant reach %0]
 Kan inte nå %0.
 [hub change server]
@@ -3512,10 +3510,6 @@ Kod för att gå med
 Gå med
 [hub leaderboard]
 Topplista
-[hub linked %0]
-Länkade konton · %0
-[hub linked accounts]
-Länkade konton
 [hub maps]
 Kartor
 [hub no queues]
@@ -3536,6 +3530,20 @@ Online
 Öppna sidan igen
 [hub open rooms]
 Öppna rum
+[hub play]
+Spela
+[hub rooms]
+Rum
+[hub ranks]
+Rankning
+[hub play with friends]
+Spela med vänner
+[hub last match]
+Senaste matchen
+[hub your rank %0 %1]
+Du är nr %0 · rating %1
+[hub not placed]
+Du har ingen placering här än. Spela rankade matcher för att bli placerad.
 [hub page opened at %0]
 Öppnade %0. Du behöver inte skriva något i spelet; det loggar in dig av sig självt.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ Snabbmatch finns inte i den här versionen än.
 Snabbmatch
 [hub ranked]
 Rankad
-[hub recent matches]
-Senaste matcher
 [hub refresh]
 Uppdatera
 [hub retry now]
@@ -3560,8 +3566,6 @@ Rum
 Rum
 [hub seats %0 %1]
 %0/%1 platser
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Öppna inloggningssidan
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Returmatch
 Gå med i %0s returmatch
 [hub profile history]
 Profil och historik
-[hub my maps]
-Mina kartor
 [hub leaderboard %0]
 Topplista · %0
 [hub leaderboard empty]

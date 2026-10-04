@@ -3476,8 +3476,6 @@ Vaša odozva %0
 UI sa pridá o %0
 [hub all rooms]
 Všetky
-[hub browse maps]
-Prehľadávať mapy
 [hub cant reach %0]
 Server %0 je nedostupný.
 [hub change server]
@@ -3512,10 +3510,6 @@ Kód na pripojenie
 Pripojiť sa
 [hub leaderboard]
 Rebríček
-[hub linked %0]
-Prepojené účty · %0
-[hub linked accounts]
-Prepojené účty
 [hub maps]
 Mapy
 [hub no queues]
@@ -3536,6 +3530,20 @@ Online
 Znova otvoriť stránku
 [hub open rooms]
 Otvorené miestnosti
+[hub play]
+Hrať
+[hub rooms]
+Miestnosti
+[hub ranks]
+Poradie
+[hub play with friends]
+Hrať s priateľmi
+[hub last match]
+Posledný zápas
+[hub your rank %0 %1]
+Ste na %0. mieste · hodnotenie %1
+[hub not placed]
+Zatiaľ tu nemáte poradie. Hrajte hodnotené zápasy, aby ste sa zaradili.
 [hub page opened at %0]
 Otvorené: %0. V hre nemusíte nič písať; prihlási vás sama.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ Rýchly zápas v tejto verzii zatiaľ nie je dostupný.
 Rýchly zápas
 [hub ranked]
 Hodnotený
-[hub recent matches]
-Posledné zápasy
 [hub refresh]
 Obnoviť
 [hub retry now]
@@ -3560,8 +3566,6 @@ Miestnosť hráča %0
 Miestnosť
 [hub seats %0 %1]
 Miesta: %0/%1
-[hub server %0]
-Server %0
 [hub sign in browser]
 Otvoriť prihlasovaciu stránku
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Odveta
 Pripojiť sa k odvete hráča %0
 [hub profile history]
 Profil a história
-[hub my maps]
-Moje mapy
 [hub leaderboard %0]
 Rebríček · %0
 [hub leaderboard empty]

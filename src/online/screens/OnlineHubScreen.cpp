@@ -122,7 +122,8 @@ void OnlineHubScreen::setQuickMatch(QuickMatch start)
 	quickMatchStarter() = std::move(start);
 }
 
-OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : screens(screens)
+OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect)
+	: screens(screens), pictures(std::make_unique<MapPictures>())
 {
 	auto &services = Online::services();
 	auto &platform = services.client;
@@ -330,8 +331,9 @@ void OnlineHubScreen::refresh(bool force)
 						invalidate();
 					});
 	}
-	// The leaderboard teaser: the top five of the main queue (the first rated one).
-	if (!fetchingLeaderboard && data.queues.is_array() && !data.queues.empty())
+	// The Leaderboard section: the top of the main queue's ladder (the first rated
+	// one), fetched only while it is shown, and where this account stands on it.
+	if (section == Section::Leaderboard && !fetchingLeaderboard && data.queues.is_array() && !data.queues.empty())
 	{
 		const Json *main = &data.queues[0];
 		for (const auto &queue : data.queues)
@@ -345,7 +347,7 @@ void OnlineHubScreen::refresh(bool force)
 		{
 			fetchingLeaderboard = true;
 			data.leaderboardName = main->value("name", ladder);
-			calls->rest(HttpFetch::Method::Get, Online::Api::leaderboard(ladder, 5), Json(),
+			calls->rest(HttpFetch::Method::Get, Online::Api::leaderboard(ladder, 50), Json(),
 						[this](const Online::PlatformClient::Response &r) {
 							fetchingLeaderboard = false;
 							if (!r.ok)
@@ -353,6 +355,25 @@ void OnlineHubScreen::refresh(bool force)
 							data.leaderboard = r.result.value("entries", Json::array());
 							invalidate();
 						});
+			if (!fetchingStanding && data.accountKind == "registered")
+			{
+				fetchingStanding = true;
+				calls->rest(HttpFetch::Method::Get, Online::Api::player(data.accountId), Json(),
+							[this, ladder](const Online::PlatformClient::Response &r) {
+								fetchingStanding = false;
+								if (!r.ok)
+									return;
+								data.myRank = 0;
+								if (const auto profile = Online::PlayerProfile::fromJson(r.result))
+									for (const auto &rating : profile->ratings)
+										if (rating.ladder == ladder && rating.rank && !rating.provisional)
+										{
+											data.myRank = *rating.rank;
+											data.myRating = rating.rating;
+										}
+								invalidate();
+							});
+			}
 		}
 	}
 	if (!fetchingRooms)
@@ -381,6 +402,8 @@ void OnlineHubScreen::onTimer(Uint32 tick)
 		data.toast.clear();
 		invalidate();
 	}
+	if (pictures && pictures->update())
+		invalidate();
 	if (previewing)
 		return;
 	watchSearch();
@@ -672,7 +695,8 @@ Element OnlineHubScreen::accountChip(const Presentation &p)
 							   button("account/menu", "", [this] { openAccountMenu(!accountMenu); },
 									  {.flat = true, .tooltip = tr("[hub account menu]"), .accessibleLabel = tr("[hub account menu]"), .icon = uiIcon(UIIcon::More)})};
 	if (guest && !p.compact() && !data.displayName.empty())
-		cells.push_back(button("account/signin", tr("[hub sign in]"), [this] { openSignIn(); }, {.primary = true, .icon = uiIcon(UIIcon::SignIn), .iconSize = 16}));
+		// Secondary: Find match is the one primary action on the hub.
+		cells.push_back(button("account/signin", tr("[hub sign in]"), [this] { openSignIn(); }, {.icon = uiIcon(UIIcon::SignIn), .iconSize = 16}));
 	return row(std::move(cells), {p.pt(8), CrossAlign::Center});
 }
 
@@ -707,144 +731,6 @@ Element OnlineHubScreen::banner(const Presentation &p)
 					{.color = theme().palette.field, .padding = p.pt(10), .shadow = false, .border = theme().palette.danger});
 	}
 	return nullptr;
-}
-
-Element OnlineHubScreen::quickMatch(const Presentation &p, bool phone)
-{
-	const bool enabled = canPlay();
-	std::vector<Element> cards;
-	for (std::size_t i = 0; i < data.queues.size(); ++i)
-	{
-		const Json &queue = data.queues[i];
-		std::string detail = queue.value("rated", false) ? tr("[hub ranked]") : tr("[hub unrated]");
-		if (queue.contains("aiBackfillSeconds") && queue["aiBackfillSeconds"].is_number_integer())
-			detail += " · " + formatted("[hub ai joins after %0]", clockText(queue["aiBackfillSeconds"].get<int>()));
-		const int index = int(i);
-		// Guests see why Ranked is closed to them and the way in, rather than an
-		// error after the search starts.
-		const bool open = canQueue(queue);
-		Element action;
-		if (enabled && !open)
-		{
-			detail = tr("[qm sign in to play ranked]");
-			action = button("queue/" + std::to_string(i) + "/signin", tr("[hub sign in]"), [this] { openSignIn(); },
-							{.icon = uiIcon(UIIcon::SignIn), .iconSize = 16});
-		}
-		else
-		{
-			ButtonOptions find;
-			find.primary = index == defaultQueue();
-			find.enabled = enabled && !searchModel().active();
-			action = button("queue/" + std::to_string(i), tr("[hub find match]"), [this, index] { findMatch(index); }, find);
-		}
-		cards.push_back(card(column({row({icon(uiIcon(queue.value("rated", false) ? UIIcon::Bolt : UIIcon::Robot), {18}), label(queueDisplayName(queue.value("id", ""), queue.value("name", "")), {FontRole::Body})}, {p.pt(6), CrossAlign::Center}),
-									 caption(detail),
-									 action},
-									{p.pt(6)}),
-							 {.color = theme().palette.field, .padding = p.pt(10), .shadow = false, .border = theme().palette.line}));
-	}
-	if (cards.empty())
-		cards.push_back(paragraph(data.link == Model::Link::Online ? tr("[hub no queues]") : tr("[hub queues unavailable]"), {FontRole::Support, true}));
-	return column({heading(tr("[hub quick match]")), wrap(std::move(cards), {p.pt(8), p.pt(170), 3})}, {p.pt(6)});
-}
-
-Element OnlineHubScreen::roomList(const Presentation &p, bool phone)
-{
-	std::vector<Element> rows;
-	int shown = 0;
-	for (std::size_t i = 0; i < data.rooms.size(); ++i)
-	{
-		const Json &room = data.rooms[i];
-		const int total = room.value("seatsTotal", 0), taken = room.value("seatsTaken", 0);
-		if (roomFilter == 1 && taken >= total)
-			continue;
-		++shown;
-		const std::string code = room.value("code", "");
-		std::string detail = room.value("hostDisplayName", "");
-		if (room.contains("mapTitle") && room["mapTitle"].is_string())
-			detail += " · " + room["mapTitle"].get<std::string>();
-		detail += " · " + GAGCore::FormattableString(tr("[hub seats %0 %1]")).arg(taken).arg(total);
-		auto words = column({label(room.value("name", "")), caption(detail)}, {0});
-		ButtonOptions join;
-		join.enabled = canPlay() && taken < total;
-		rows.push_back(row({icon(uiIcon(UIIcon::Users), {20, theme().palette.muted}), expanded(words),
-							button("rooms/" + std::to_string(i) + "/join", tr("[hub join]"), [this, code] { joinByCode(code); }, join)},
-						   {p.pt(8), CrossAlign::Center}));
-		rows.push_back(divider());
-	}
-	if (shown == 0)
-		rows.push_back(emptyState(uiIcon(UIIcon::Users), tr("[hub no rooms]"), {}, p));
-	std::vector<Element> head{expanded(heading(tr("[hub open rooms]")))};
-	if (!phone)
-		// A width that holds both labels on one line ("Free seat" used to wrap, H-1).
-		head.push_back(width(p.textPt(220), segments("rooms/filter", {tr("[hub all rooms]"), tr("[hub free seat]")}, roomFilter, [this](int v) { roomFilter = v; invalidate(); })));
-	ButtonOptions reload;
-	reload.icon = uiIcon(UIIcon::Refresh);
-	reload.accessibleLabel = tr("[hub refresh]");
-	reload.tooltip = reload.accessibleLabel;
-	head.push_back(width(p.pt(p.touch ? 48 : 34), button("rooms/refresh", "", [this] { refresh(true); }, reload)));
-	return column({row(std::move(head), {p.pt(6), CrossAlign::Center}), column(std::move(rows), {p.pt(4)})}, {p.pt(6)});
-}
-
-Element OnlineHubScreen::recentMatches(const Presentation &p, bool phone)
-{
-	if (!data.recent.is_array() || data.recent.empty())
-		return nullptr;
-	const auto palette = theme().palette;
-	std::vector<Element> rows;
-	for (std::size_t i = 0; i < data.recent.size() && i < (phone ? 3u : 5u); ++i)
-	{
-		const auto line = recentLine(data.recent[i], data.accountId);
-		const GAGCore::Color tone = line.outcome == "W" ? palette.success : line.outcome == "L" ? palette.danger : palette.neutral;
-		auto badge = sized({p.pt(22), p.pt(22)}, canvas("", {p.pt(22), p.pt(22)}, [tone, letter = line.outcome, palette](Canvas &c, Rect r, const Frame &) {
-			c.fillRounded(r, 3, tone);
-			const int w = c.measurer().width(FontRole::Support, letter);
-			c.text({r.x + (r.w - w) / 2, r.y + (r.h - c.measurer().lineHeight(FontRole::Support)) / 2}, FontRole::Support, letter, palette.paper);
-		}));
-		std::vector<Element> cells{badge, expanded(column({label(line.title), caption(line.detail)}, {0})), caption(line.rating, false)};
-		if (line.verified)
-			cells.push_back(icon(uiIcon(UIIcon::ShieldCheck), {14, palette.success}));
-		// The match page has the full result (timeline, economy, replay).
-		if (const std::string id = data.recent[i].value("id", ""); !id.empty() && !data.origin.empty())
-		{
-			ButtonOptions details;
-			details.icon = uiIcon(UIIcon::ExternalLink);
-			details.iconSize = 16;
-			details.accessibleLabel = tr("[profile match page]");
-			details.tooltip = details.accessibleLabel;
-			cells.push_back(width(p.pt(p.touch ? 48 : 34), button("recent/" + std::to_string(i) + "/page", "",
-																  [origin = data.origin, id] { openInstancePage(origin, "/matches/" + id); }, details)));
-		}
-		rows.push_back(row(std::move(cells), {p.pt(8), CrossAlign::Center}));
-	}
-	return column({heading(tr("[hub recent matches]")), column(std::move(rows), {p.pt(6)})}, {p.pt(6)});
-}
-
-Element OnlineHubScreen::leaderboardTeaser(const Presentation &p)
-{
-	std::vector<Element> rows;
-	for (std::size_t i = 0; i < data.leaderboard.size() && i < 5; ++i)
-	{
-		const Json &entry = data.leaderboard[i];
-		const Json &entity = entry.value("entity", Json::object());
-		std::string name = entity.value("kind", "") == "ai" ? entity.value("ai", "AI")
-															 : entity.value("account", Json::object()).value("displayName", "?");
-		const int rating = int(std::lround(entry.value("rating", 0.0)));
-		rows.push_back(row({width(p.pt(22), caption(std::to_string(entry.value("rank", int(i) + 1)), false)), expanded(label(name)),
-							caption(std::to_string(rating), false)},
-						   {p.pt(8), CrossAlign::Center}));
-	}
-	if (rows.empty())
-		rows.push_back(emptyState(uiIcon(UIIcon::Trophy), tr("[hub leaderboard empty]"), {}, p));
-	std::vector<Element> foot;
-	if (data.accountKind == "guest")
-		foot.push_back(expanded(paragraph(tr("[hub guests not ranked]"), {FontRole::Support, true})));
-	else
-		foot.push_back(expanded(spacer(0)));
-	foot.push_back(button("leaderboard/full", tr("[hub full leaderboard]"), [this] { GAGCore::ApplicationHost::openUrl(data.origin + "/leaderboard"); },
-						  {.icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16}));
-	const std::string title = data.leaderboardName.empty() ? tr("[hub leaderboard]") : formatted("[hub leaderboard %0]", data.leaderboardName);
-	return column({heading(title), column(std::move(rows), {p.pt(4)}), row(std::move(foot), {p.pt(6), CrossAlign::Center})}, {p.pt(6)});
 }
 
 Element OnlineHubScreen::signInPanel(const Presentation &p)
@@ -901,13 +787,10 @@ Element OnlineHubScreen::accountPanel(const Presentation &p)
 	const bool guest = data.accountKind != "registered";
 	std::vector<Element> items;
 	items.push_back(heading(data.displayName));
-	std::string linked;
-	for (const auto &provider : data.linkedProviders)
-		linked += (linked.empty() ? "" : ", ") + providerName(provider);
 	if (guest)
 		items.push_back(button("account/signin-menu", tr("[hub sign in]"), [this] { openSignIn(); }, {.flat = true, .alignLeft = true, .icon = uiIcon(UIIcon::SignIn)}));
-	items.push_back(button("account/linked", linked.empty() ? tr("[hub linked accounts]") : formatted("[hub linked %0]", linked), [this] { openSettings(); }, {.flat = true, .alignLeft = true, .icon = uiIcon(UIIcon::Link)}));
-	items.push_back(button("account/server", formatted("[hub server %0]", hostOf(data.origin)), [this] { openSettings(); }, {.flat = true, .alignLeft = true, .icon = uiIcon(UIIcon::Server)}));
+	// Linked accounts, the server and the display name all live in Settings › Online.
+	items.push_back(button("account/settings", tr("[hub online settings]"), [this] { openSettings(); }, {.flat = true, .alignLeft = true, .icon = uiIcon(UIIcon::Settings)}));
 	if (!guest)
 		items.push_back(button("account/signout", tr("[hub sign out]"), [this] { signOut(); }, {.flat = true, .alignLeft = true, .icon = uiIcon(UIIcon::Leave)}));
 	items.push_back(button("account/close", tr("[Close]"), [this] { openAccountMenu(false); }, {.shortcut = SDLK_ESCAPE}));
@@ -978,6 +861,277 @@ Element OnlineHubScreen::thumbBlock(const Presentation &p, bool withQueues)
 	return column(std::move(parts), {p.pt(6)});
 }
 
+Element OnlineHubScreen::outcomeBadge(const std::string &letter, const Presentation &p)
+{
+	const auto palette = theme().palette;
+	const GAGCore::Color tone = letter == "W" ? palette.success : letter == "L" ? palette.danger : palette.neutral;
+	return sized({p.pt(22), p.pt(22)}, canvas("", {p.pt(22), p.pt(22)}, [tone, letter, palette](Canvas &c, Rect r, const Frame &) {
+		c.fillRounded(r, 3, tone);
+		const int w = c.measurer().width(FontRole::Support, letter);
+		c.text({r.x + (r.w - w) / 2, r.y + (r.h - c.measurer().lineHeight(FontRole::Support)) / 2}, FontRole::Support, letter, palette.paper);
+	}));
+}
+
+Element OnlineHubScreen::mapPool(const Json &queue, const Presentation &p, bool phone)
+{
+	// The map pool, drawn: what a match in this queue will look like.
+	if (!pictures || !queue.contains("maps") || !queue["maps"].is_array() || queue["maps"].empty())
+		return nullptr;
+	std::vector<std::string> pool;
+	for (const auto &id : queue["maps"])
+		if (id.is_string())
+			pool.push_back(id.get<std::string>());
+	std::vector<Element> thumbs;
+	std::string titles;
+	const std::size_t shown = std::min<std::size_t>(phone ? 3 : 4, pool.size());
+	for (std::size_t i = 0; i < shown; ++i)
+	{
+		thumbs.push_back(previewPicture(pictures->generator(pool[i]), p.pt(phone ? 64 : 72)));
+		titles += (i ? ", " : "") + generatorTitle(pool[i]);
+	}
+	if (pool.size() > shown)
+		titles += "…";
+	return column({row(std::move(thumbs), {p.pt(6), CrossAlign::Center}), caption(formatted("[qm fair maps %0]", titles))}, {p.pt(4)});
+}
+
+Element OnlineHubScreen::quickMatchCard(const Presentation &p, bool phone)
+{
+	const auto palette = theme().palette;
+	std::vector<Element> parts{row({icon(uiIcon(UIIcon::Bolt), {22, palette.accent}), expanded(heading(tr("[hub quick match]")))}, {p.pt(8), CrossAlign::Center})};
+	if (!data.queues.is_array() || data.queues.empty())
+	{
+		parts.push_back(paragraph(data.link == Model::Link::Online ? tr("[hub no queues]") : tr("[hub queues unavailable]"), {FontRole::Support, true}));
+		return card(column(std::move(parts), {p.pt(8)}), {.color = palette.field, .padding = p.pt(14), .shadow = false, .border = palette.accent});
+	}
+	std::vector<std::string> names;
+	for (const auto &queue : data.queues)
+		names.push_back(queueDisplayName(queue.value("id", ""), queue.value("name", "")));
+	// Until the player picks one, the default follows the account (guests: Casual).
+	const int chosen = std::clamp(selectedQueue < 0 ? defaultQueue() : selectedQueue, 0, int(names.size()) - 1);
+	const Json &queue = data.queues[std::size_t(chosen)];
+	if (names.size() > 1)
+		parts.push_back(segments("queue/choice", names, chosen, [this](int v) { selectedQueue = v; invalidate(); }));
+	std::string detail = queue.value("rated", false) ? tr("[hub ranked]") : tr("[hub unrated]");
+	if (queue.contains("aiBackfillSeconds") && queue["aiBackfillSeconds"].is_number_integer())
+		detail += " · " + formatted("[hub ai joins after %0]", clockText(queue["aiBackfillSeconds"].get<int>()));
+	const bool open = canQueue(queue);
+	if (canPlay() && !open)
+		detail = tr("[qm sign in to play ranked]");
+	parts.push_back(paragraph(detail, {FontRole::Support, true}));
+	if (auto pool = mapPool(queue, p, phone))
+		parts.push_back(pool);
+	if (canPlay() && !open)
+		parts.push_back(button("queue/signin", tr("[hub sign in]"), [this] { openSignIn(); }, {.primary = true, .icon = uiIcon(UIIcon::SignIn)}));
+	else
+		parts.push_back(button("queue/find", tr("[hub find match]"), [this, chosen] { findMatch(chosen); },
+							   {.primary = true, .enabled = canPlay() && !searchModel().active(), .icon = uiIcon(UIIcon::Bolt)}));
+	return card(column(std::move(parts), {p.pt(8)}), {.color = palette.field, .padding = p.pt(14), .shadow = false, .border = palette.accent});
+}
+
+Element OnlineHubScreen::friendsCard(const Presentation &p)
+{
+	const auto palette = theme().palette;
+	TextFieldOptions codeField;
+	codeField.placeholder = tr("[hub code placeholder]");
+	codeField.submit = [this](const std::string &v) { joinByCode(v); };
+	return card(column({row({icon(uiIcon(UIIcon::Users), {20, palette.muted}), expanded(heading(tr("[hub play with friends]")))}, {p.pt(8), CrossAlign::Center}),
+						row({button("room/create", tr("[hub create room]"), [this] { createRoom(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Plus)}),
+							 spacer(p.pt(8)), caption(tr("[hub join by code]")),
+							 expanded(textField("join/code", joinDraft, [this](const std::string &v) { joinDraft = v; }, codeField)),
+							 button("join/go", tr("[hub join]"), [this] { joinByCode(joinDraft); }, {.enabled = canPlay() && !joinDraft.empty()})},
+							{p.pt(6), CrossAlign::Center})},
+					   {p.pt(8)}),
+				{.color = palette.field, .padding = p.pt(12), .shadow = false, .border = palette.line});
+}
+
+Element OnlineHubScreen::lastMatchCard(const Presentation &p, bool phone)
+{
+	if (!data.recent.is_array() || data.recent.empty())
+		return nullptr;
+	const auto palette = theme().palette;
+	const Json &match = data.recent[0];
+	const auto line = recentLine(match, data.accountId);
+	std::vector<Element> cells;
+	// The map's picture when this device has the map; no empty square otherwise.
+	if (auto *picture = pictures ? pictures->cached(match.value("mapHash", "")) : nullptr; picture && !phone)
+		cells.push_back(previewPicture(picture, p.pt(56)));
+	cells.push_back(outcomeBadge(line.outcome, p));
+	cells.push_back(expanded(column({label(line.title), caption(line.detail)}, {0})));
+	cells.push_back(caption(line.rating, false));
+	if (line.verified)
+		cells.push_back(icon(uiIcon(UIIcon::ShieldCheck), {14, palette.success}));
+	// The match page has the full result (timeline, economy, replay).
+	if (const std::string id = match.value("id", ""); !id.empty() && !data.origin.empty())
+	{
+		ButtonOptions page{.icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16};
+		page.accessibleLabel = page.tooltip = tr("[profile match page]");
+		cells.push_back(phone ? width(p.pt(48), button("recent/0/page", "", [origin = data.origin, id] { openInstancePage(origin, "/matches/" + id); }, page))
+							  : button("recent/0/page", tr("[profile match page]"), [origin = data.origin, id] { openInstancePage(origin, "/matches/" + id); }, page));
+	}
+	return column({heading(tr("[hub last match]")), row(std::move(cells), {p.pt(8), CrossAlign::Center})}, {p.pt(6)});
+}
+
+Element OnlineHubScreen::playSection(const Presentation &p, bool phone)
+{
+	std::vector<Element> parts;
+	// Phones keep Find match, Join code and Room in the thumb block.
+	if (!phone)
+	{
+		parts.push_back(quickMatchCard(p, false));
+		parts.push_back(friendsCard(p));
+	}
+	// Phones: the chosen queue's maps above the thumb block's picker.
+	if (phone && data.queues.is_array() && !data.queues.empty())
+	{
+		const int chosen = std::clamp(selectedQueue < 0 ? defaultQueue() : selectedQueue, 0, int(data.queues.size()) - 1);
+		if (auto pool = mapPool(data.queues[std::size_t(chosen)], p, true))
+			parts.push_back(column({heading(tr("[hub quick match]")), pool}, {p.pt(6)}));
+	}
+	if (auto last = lastMatchCard(p, phone))
+		parts.push_back(last);
+	if (phone)
+		// Both share the width, so a narrow phone never pushes Maps past the edge.
+		parts.push_back(row({expanded(button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Player), .iconSize = 16})),
+							 expanded(button("maps/browse", tr("[hub maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16}))},
+							{p.pt(6)}));
+	return column(std::move(parts), {p.pt(14)});
+}
+
+Element OnlineHubScreen::roomsSection(const Presentation &p, bool phone)
+{
+	std::vector<Element> rows;
+	int shown = 0;
+	for (std::size_t i = 0; i < data.rooms.size(); ++i)
+	{
+		const Json &room = data.rooms[i];
+		const int total = room.value("seatsTotal", 0), taken = room.value("seatsTaken", 0);
+		if (roomFilter == 1 && taken >= total)
+			continue;
+		++shown;
+		const std::string code = room.value("code", "");
+		std::string detail = room.value("hostDisplayName", "");
+		if (room.contains("mapTitle") && room["mapTitle"].is_string())
+			detail += " · " + room["mapTitle"].get<std::string>();
+		detail += " · " + GAGCore::FormattableString(tr("[hub seats %0 %1]")).arg(taken).arg(total);
+		auto words = column({label(room.value("name", "")), caption(detail)}, {0});
+		ButtonOptions join;
+		join.enabled = canPlay() && taken < total;
+		rows.push_back(row({icon(uiIcon(UIIcon::Users), {20, theme().palette.muted}), expanded(words),
+							button("rooms/" + std::to_string(i) + "/join", tr("[hub join]"), [this, code] { joinByCode(code); }, join)},
+						   {p.pt(8), CrossAlign::Center}));
+		rows.push_back(divider());
+	}
+	// An empty list is the usual case on a small server: say so and offer the two
+	// ways to play anyway.
+	if (shown == 0)
+		rows.push_back(emptyState(uiIcon(UIIcon::Users), tr("[hub no rooms]"),
+								  {button("rooms/empty/create", tr("[hub create room]"), [this] { createRoom(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Plus)}),
+								   button("rooms/empty/quick", tr("[hub quick match]"), [this] { showSection(Section::Play); }, {.icon = uiIcon(UIIcon::Bolt)})},
+								  p));
+	std::vector<Element> head{expanded(heading(tr("[hub open rooms]")))};
+	if (!phone)
+		// A width that holds both labels on one line ("Free seat" used to wrap, H-1).
+		head.push_back(width(p.textPt(220), segments("rooms/filter", {tr("[hub all rooms]"), tr("[hub free seat]")}, roomFilter, [this](int v) { roomFilter = v; invalidate(); })));
+	ButtonOptions reload;
+	reload.icon = uiIcon(UIIcon::Refresh);
+	reload.accessibleLabel = tr("[hub refresh]");
+	reload.tooltip = reload.accessibleLabel;
+	head.push_back(width(p.pt(p.touch ? 48 : 34), button("rooms/refresh", "", [this] { refresh(true); }, reload)));
+	std::vector<Element> parts{row(std::move(head), {p.pt(6), CrossAlign::Center}), column(std::move(rows), {p.pt(4)})};
+	if (!phone)
+		parts.push_back(friendsCard(p));
+	return column(std::move(parts), {p.pt(10)});
+}
+
+Element OnlineHubScreen::leaderboardSection(const Presentation &p, bool phone)
+{
+	const auto palette = theme().palette;
+	std::vector<Element> parts;
+	const std::string title = data.leaderboardName.empty() ? tr("[hub leaderboard]") : formatted("[hub leaderboard %0]", data.leaderboardName);
+	parts.push_back(heading(title));
+	// Where the player stands comes first: the reason most people open a leaderboard.
+	std::string standing;
+	if (data.accountKind == "guest")
+		standing = tr("[hub guests not ranked]");
+	else if (data.myRank > 0)
+		standing = GAGCore::FormattableString(tr("[hub your rank %0 %1]")).arg(data.myRank).arg(int(std::lround(data.myRating)));
+	else if (!data.accountId.empty())
+		standing = tr("[hub not placed]");
+	if (!standing.empty())
+		parts.push_back(card(row({icon(uiIcon(UIIcon::Trophy), {20, palette.accent}), expanded(paragraph(standing))}, {p.pt(8), CrossAlign::Center}),
+							 {.color = palette.field, .padding = p.pt(10), .shadow = false, .border = palette.line}));
+	std::vector<Element> rows;
+	for (std::size_t i = 0; i < data.leaderboard.size(); ++i)
+	{
+		const Json &entry = data.leaderboard[i];
+		const Json &entity = entry.value("entity", Json::object());
+		const Json &account = entity.value("account", Json::object());
+		const std::string name = entity.value("kind", "") == "ai" ? aiTitle(entity.value("ai", "")) : account.value("displayName", "?");
+		const bool me = !data.accountId.empty() && account.value("id", "") == data.accountId;
+		const int rating = int(std::lround(entry.value("rating", 0.0)));
+		Element line = row({width(p.pt(34), caption(std::to_string(entry.value("rank", int(i) + 1)), false)), expanded(label(name)),
+							caption(std::to_string(rating), false)},
+						   {p.pt(8), CrossAlign::Center});
+		rows.push_back(me ? card(line, {.color = palette.selected, .padding = p.pt(4), .shadow = false}) : line);
+	}
+	if (rows.empty())
+		rows.push_back(emptyState(uiIcon(UIIcon::Trophy), tr("[hub leaderboard empty]"), {}, p));
+	parts.push_back(column(std::move(rows), {p.pt(4)}));
+	// Below the list, on its own line: beside the title it overflowed with large text.
+	if (!data.origin.empty())
+		parts.push_back(align(Alignment::Left, button("leaderboard/full", tr("[hub full leaderboard]"), [this] { GAGCore::ApplicationHost::openUrl(data.origin + "/leaderboard"); },
+													  {.icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16})));
+	return column(std::move(parts), {p.pt(10)});
+}
+
+Element OnlineHubScreen::sectionNav(const Presentation &p, bool phone)
+{
+	const std::vector<std::string> names{tr("[hub play]"), tr("[hub rooms]"), tr("[hub leaderboard]")};
+	if (phone)
+		// "Leaderboard" does not fit a third of a phone; the tab says Ranks.
+		return segments("hub/section", {names[0], names[1], tr("[hub ranks]")}, int(section), [this](int v) { showSection(Section(v)); });
+	auto item = [&](const std::string &key, const std::string &text, UIIcon glyph, std::function<void()> action, bool selected, bool enabled = true) {
+		return button(key, text, std::move(action), {.selected = selected, .enabled = enabled, .flat = !selected, .alignLeft = true, .icon = uiIcon(glyph)});
+	};
+	std::string rooms = names[1];
+	if (const int open = data.rooms.is_array() ? int(data.rooms.size()) : 0; open > 0)
+		rooms += " (" + std::to_string(open) + ")";
+	// Scrolls rather than squeezing its items below the touch target when large text
+	// makes it taller than a portrait tablet's window.
+	return scroll("hub/nav", column({item("hub/section/play", names[0], UIIcon::Start, [this] { showSection(Section::Play); }, section == Section::Play),
+				   item("hub/section/rooms", rooms, UIIcon::Users, [this] { showSection(Section::Rooms); }, section == Section::Rooms),
+				   item("hub/section/leaderboard", names[2], UIIcon::Trophy, [this] { showSection(Section::Leaderboard); }, section == Section::Leaderboard),
+				   divider(),
+				   // Their own screens; Back returns here.
+				   item("maps/browse", tr("[hub maps]"), UIIcon::Map, [this] { openMaps(false); }, false, canPlay()),
+				   item("profile", tr("[hub profile history]"), UIIcon::Player, [this] { openProfile(); }, false, canPlay()),
+				   divider(),
+				   item("settings", tr("[hub online settings]"), UIIcon::Settings, [this] { openSettings(); }, false)},
+				  {p.pt(4)}));
+}
+
+Element OnlineHubScreen::sectionBody(const Presentation &p, bool phone)
+{
+	switch (section)
+	{
+	case Section::Rooms:
+		return roomsSection(p, phone);
+	case Section::Leaderboard:
+		return leaderboardSection(p, phone);
+	default:
+		return playSection(p, phone);
+	}
+}
+
+void OnlineHubScreen::showSection(Section next)
+{
+	section = next;
+	invalidate();
+	// The full leaderboard is only fetched while it is shown.
+	if (next == Section::Leaderboard)
+		refresh(true);
+}
+
 Element OnlineHubScreen::build(const Presentation &p)
 {
 	const bool phone = p.compact() || (p.touch && p.shortLandscape());
@@ -1031,76 +1185,49 @@ Element OnlineHubScreen::build(const Presentation &p)
 			list.push_back(strip);
 		if (auto b = banner(p))
 			list.push_back(b);
-		if (crowded)
+		// A crowded page scrolls the section tabs too, so the fixed thumb row keeps its height.
+		if (crowded && !overlay)
+			list.push_back(sectionNav(p, true));
+		if (crowded && section == Section::Play)
 			if (auto picker = queuePicker(p, true))
 				list.push_back(picker);
-		list.push_back(roomList(p, true));
-		if (auto recent = recentMatches(p, true))
-			list.push_back(recent);
-		// Both share the width, so a narrow phone never pushes Maps past the edge.
-		list.push_back(row({expanded(button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Users), .iconSize = 16})),
-							expanded(button("maps/browse", tr("[hub maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16}))},
-						   {p.pt(6)}));
+		list.push_back(sectionBody(p, true));
 		Element body = overlay ? scroll("hub/overlay", overlay) : scroll("hub/scroll", column(std::move(list), {p.pt(12)}));
 		std::vector<Element> page{headline};
 		for (auto &t : toast)
 			page.push_back(t);
+		if (!overlay && !crowded)
+			page.push_back(sectionNav(p, true));
+		// The queue picker and Find match belong to Play; the other sections keep
+		// Back, Join code and Room at thumb reach.
+		const bool withQueues = section == Section::Play && !crowded;
 		if (!overlay && p.landscape())
 			// Landscape: the thumb block becomes the right-hand (thumb-side) rail.
-			page.push_back(expanded(ThumbSide::left() ? row({width(p.pt(250), scroll("hub/thumb", thumbBlock(p))), expanded(body)}, {p.pt(10), CrossAlign::End})
-													  : row({expanded(body), width(p.pt(250), scroll("hub/thumb", thumbBlock(p)))}, {p.pt(10), CrossAlign::End})));
+			page.push_back(expanded(ThumbSide::left() ? row({width(p.pt(250), scroll("hub/thumb", thumbBlock(p, section == Section::Play))), expanded(body)}, {p.pt(10), CrossAlign::End})
+													  : row({expanded(body), width(p.pt(250), scroll("hub/thumb", thumbBlock(p, section == Section::Play)))}, {p.pt(10), CrossAlign::End})));
 		else
 		{
 			page.push_back(expanded(body));
 			if (!overlay)
-				page.push_back(thumbBlock(p, !crowded));
+				page.push_back(thumbBlock(p, withQueues));
 		}
 		return padding({p.pt(4), p.pt(4), p.pt(4), p.pt(4)}, card(column(std::move(page), {p.pt(8)}), {.padding = p.pt(10)}));
 	}
-	std::vector<Element> leftColumn;
+	std::vector<Element> content;
 	if (auto b = banner(p))
-		leftColumn.push_back(b);
-	leftColumn.push_back(quickMatch(p, false));
-	TextFieldOptions codeField;
-	codeField.placeholder = tr("[hub code placeholder]");
-	codeField.submit = [this](const std::string &v) { joinByCode(v); };
-	leftColumn.push_back(row({button("room/create", tr("[hub create room]"), [this] { createRoom(); }, {.primary = true, .enabled = canPlay(), .icon = uiIcon(UIIcon::Plus)}),
-							  spacer(p.pt(8)), caption(tr("[hub join by code]")),
-							  expanded(textField("join/code", joinDraft, [this](const std::string &v) { joinDraft = v; }, codeField)),
-							  button("join/go", tr("[hub join]"), [this] { joinByCode(joinDraft); }, {.enabled = canPlay() && !joinDraft.empty()})},
-							 {p.pt(6), CrossAlign::Center}));
-	leftColumn.push_back(roomList(p, false));
-	std::vector<Element> rightColumn;
-	if (auto recent = recentMatches(p, false))
-		rightColumn.push_back(recent);
-	rightColumn.push_back(row({button("profile", tr("[hub profile history]"), [this] { openProfile(); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Users), .iconSize = 16})}, {p.pt(6)}));
-	rightColumn.push_back(heading(tr("[hub maps]")));
-	rightColumn.push_back(row({button("maps/browse", tr("[hub browse maps]"), [this] { openMaps(false); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Map), .iconSize = 16}),
-							   button("maps/mine", tr("[hub my maps]"), [this] { openMaps(true); }, {.enabled = canPlay(), .icon = uiIcon(UIIcon::Upload), .iconSize = 16})},
-							  {p.pt(6)}));
-	rightColumn.push_back(leaderboardTeaser(p));
+		content.push_back(b);
+	content.push_back(sectionBody(p, false));
 	Element body;
 	if (overlay)
 		// Scrolls rather than squeezing its buttons or overlapping the footer when
 		// large text makes it taller than the window.
 		body = center(maxWidth(p.pt(480), scroll("hub/overlay", overlay)));
 	else
-		body = adaptive([left = column(std::move(leftColumn), {p.pt(12)}), right = column(std::move(rightColumn), {p.pt(8)})](const LayoutContext &ctx, Size available) -> Element {
-			if (available.w < ctx.presentation.pt(860))
-				return scroll("hub/scroll", column({left, right}, {ctx.presentation.pt(14)}));
-			return row({expanded(scroll("hub/scroll", left), 3), expanded(scroll("hub/side", right), 2)}, {ctx.presentation.pt(18), CrossAlign::Stretch});
-		});
-	std::vector<MenuAction> buttons{{"settings", tr("[hub online settings]"), [this] { openSettings(); }},
-									{"back", tr("[Back]"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
+		body = row({width(p.textPt(210), sectionNav(p, false)), expanded(scroll("hub/scroll", column(std::move(content), {p.pt(12)})))},
+				   {p.pt(18), CrossAlign::Stretch});
+	std::vector<MenuAction> buttons{{"back", tr("[Back]"), [this] { onEscape(); }, false, SDLK_ESCAPE}};
 	// The game version identifies the build; the simulation version is for Settings.
-	// Where the two buttons and the version do not share a line (a portrait tablet
-	// with large text), the version goes above the buttons.
-	auto footerRow = adaptive([version = caption(instance + " · " + PACKAGE_VERSION),
-							   footerActions = actions(std::move(buttons), p)](const LayoutContext &ctx, Size available) -> Element {
-		if (available.w < ctx.presentation.textPt(760))
-			return column({version, footerActions}, {ctx.presentation.pt(6)});
-		return row({expanded(version), footerActions}, {ctx.presentation.pt(8), CrossAlign::Center});
-	});
+	auto footerRow = row({expanded(caption(instance + " · " + PACKAGE_VERSION)), actions(std::move(buttons), p)}, {p.pt(8), CrossAlign::Center});
 	std::vector<Element> page{headline};
 	for (auto &t : toast)
 		page.push_back(t);

@@ -3476,8 +3476,6 @@ OpenGL недоступен в этой сборке.
 ИИ присоединится через %0
 [hub all rooms]
 Все
-[hub browse maps]
-Обзор карт
 [hub cant reach %0]
 Не удаётся связаться с %0.
 [hub change server]
@@ -3512,10 +3510,6 @@ OpenGL недоступен в этой сборке.
 Присоединиться
 [hub leaderboard]
 Таблица лидеров
-[hub linked %0]
-Связанные аккаунты · %0
-[hub linked accounts]
-Связанные аккаунты
 [hub maps]
 Карты
 [hub no queues]
@@ -3536,6 +3530,20 @@ OpenGL недоступен в этой сборке.
 Открыть страницу снова
 [hub open rooms]
 Открытые комнаты
+[hub play]
+Играть
+[hub rooms]
+Комнаты
+[hub ranks]
+Рейтинг
+[hub play with friends]
+Играть с друзьями
+[hub last match]
+Последний матч
+[hub your rank %0 %1]
+Вы на %0-м месте · рейтинг %1
+[hub not placed]
+У вас пока нет места в рейтинге. Сыграйте рейтинговые матчи, чтобы попасть в него.
 [hub page opened at %0]
 Открыто: %0. В игре ничего вводить не нужно — вход выполнится сам.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ OpenGL недоступен в этой сборке.
 Быстрый матч
 [hub ranked]
 Рейтинговый
-[hub recent matches]
-Недавние матчи
 [hub refresh]
 Обновить
 [hub retry now]
@@ -3560,8 +3566,6 @@ OpenGL недоступен в этой сборке.
 Комната
 [hub seats %0 %1]
 Мест: %0/%1
-[hub server %0]
-Сервер: %0
 [hub sign in browser]
 Открыть страницу входа
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ OpenGL недоступен в этой сборке.
 Принять реванш от %0
 [hub profile history]
 Профиль и история
-[hub my maps]
-Мои карты
 [hub leaderboard %0]
 Таблица лидеров · %0
 [hub leaderboard empty]

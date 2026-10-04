@@ -3476,8 +3476,6 @@ Račun
 UI se pridruži čez %0
 [hub all rooms]
 Vse
-[hub browse maps]
-Prebrskaj zemljevide
 [hub cant reach %0]
 %0 ni dosegljiv.
 [hub change server]
@@ -3512,10 +3510,6 @@ Koda za pridružitev
 Pridruži se
 [hub leaderboard]
 Lestvica
-[hub linked %0]
-Povezani računi · %0
-[hub linked accounts]
-Povezani računi
 [hub maps]
 Zemljevidi
 [hub no queues]
@@ -3536,6 +3530,20 @@ Na spletu
 Znova odpri stran
 [hub open rooms]
 Odprte sobe
+[hub play]
+Igraj
+[hub rooms]
+Sobe
+[hub ranks]
+Lestvica
+[hub play with friends]
+Igraj s prijatelji
+[hub last match]
+Zadnja tekma
+[hub your rank %0 %1]
+Si na %0. mestu · ocena %1
+[hub not placed]
+Tu še nimate uvrstitve. Igrajte rangirane tekme, da se uvrstite.
 [hub page opened at %0]
 Odprto: %0. V igri ni treba ničesar vnesti; prijavi vas samodejno.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ Hitra tekma v tej različici še ni na voljo.
 Hitra tekma
 [hub ranked]
 Rangirano
-[hub recent matches]
-Nedavne tekme
 [hub refresh]
 Osveži
 [hub retry now]
@@ -3560,8 +3566,6 @@ Soba: %0
 Soba
 [hub seats %0 %1]
 Mesta: %0/%1
-[hub server %0]
-Strežnik: %0
 [hub sign in browser]
 Odpri stran za prijavo
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ Povratna tekma
 Pridruži se povratni tekmi (%0)
 [hub profile history]
 Profil in zgodovina
-[hub my maps]
-Moji zemljevidi
 [hub leaderboard %0]
 Lestvica · %0
 [hub leaderboard empty]

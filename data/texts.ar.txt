@@ -3476,8 +3476,6 @@ OpenGL غير متوفر في هذا الإصدار.
 ينضم الذكاء الاصطناعي بعد %0
 [hub all rooms]
 الكل
-[hub browse maps]
-تصفح الخرائط
 [hub cant reach %0]
 تعذر الوصول إلى %0.
 [hub change server]
@@ -3512,10 +3510,6 @@ OpenGL غير متوفر في هذا الإصدار.
 انضم
 [hub leaderboard]
 لوحة المتصدرين
-[hub linked %0]
-الحسابات المرتبطة · %0
-[hub linked accounts]
-الحسابات المرتبطة
 [hub maps]
 الخرائط
 [hub no queues]
@@ -3536,6 +3530,20 @@ OpenGL غير متوفر في هذا الإصدار.
 افتح الصفحة مجددًا
 [hub open rooms]
 الغرف المفتوحة
+[hub play]
+العب
+[hub rooms]
+الغرف
+[hub ranks]
+الترتيب
+[hub play with friends]
+العب مع الأصدقاء
+[hub last match]
+آخر مباراة
+[hub your rank %0 %1]
+ترتيبك #%0 · التقييم %1
+[hub not placed]
+ليس لديك ترتيب هنا بعد. العب مباريات مصنفة لتحصل عليه.
 [hub page opened at %0]
 فُتحت %0. لا حاجة لكتابة شيء في اللعبة؛ ستسجّل دخولك تلقائيًا.
 [hub queues unavailable]
@@ -3546,8 +3554,6 @@ OpenGL غير متوفر في هذا الإصدار.
 مباراة سريعة
 [hub ranked]
 مصنّفة
-[hub recent matches]
-المباريات الأخيرة
 [hub refresh]
 حدّث
 [hub retry now]
@@ -3560,8 +3566,6 @@ OpenGL غير متوفر في هذا الإصدار.
 الغرفة
 [hub seats %0 %1]
 المقاعد: %0/%1
-[hub server %0]
-الخادم: %0
 [hub sign in browser]
 افتح صفحة تسجيل الدخول
 [hub sign in conflict]
@@ -4398,8 +4402,6 @@ OpenGL غير متوفر في هذا الإصدار.
 انضم إلى مباراة الإعادة التي أنشأها %0
 [hub profile history]
 الملف الشخصي والسجل
-[hub my maps]
-خرائطي
 [hub leaderboard %0]
 لوحة المتصدرين · %0
 [hub leaderboard empty]
