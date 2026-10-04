@@ -343,6 +343,8 @@ jobs:
             libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel \
             zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
             libepoxy-devel cmake make python3-devel python3-pip python3-wheel libjpeg-turbo-devel
+          # Build provenance runs git on the container's checkout, owned by another user.
+          git config --global --add safe.directory '*'
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
@@ -584,6 +586,8 @@ jobs:
         env:
           REVISION: ${{ needs.preflight.outputs.revision }}
         run: |
+          # Package size reports run git on the container's checkout.
+          git config --global --add safe.directory '*'
           python3 tools/release/render_flatpak.py "$REVISION" \
             flatpak/org.globulation2.Globulation2.yml
       - uses: flatpak/flatpak-github-actions/flatpak-builder@79327416609af08178ad73b352877e51450790b3 # v6
