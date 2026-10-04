@@ -153,8 +153,8 @@ namespace AISharedRuntime
 			bool is_farm_area(int x, int y);
 			///Whether this game carries the farm-areas experiment
 			bool farm_areas_enabled();
-			///Whether a wheat farm should cover this tile (AIFarmAreas::wantsFarm)
-			bool wants_farm(int x, int y);
+			///Whether the engine accepts farm paint on this tile
+			bool can_paint_farm(int x, int y);
 			bool is_discovered(int x, int y);
 			bool is_resource(int x, int y, int type);
 			bool is_resource(int x, int y);

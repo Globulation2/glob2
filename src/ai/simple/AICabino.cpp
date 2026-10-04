@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2005-2007 Bradley Arsenault
 
-#include "AIFarmAreas.h"
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include <Stream.h>
@@ -4798,7 +4797,7 @@ bool Farmer::updateFarm()
 	BrushAccumulator del_acc;
 	BrushAccumulator add_acc;
 	// With the farm-areas experiment, wheat near water is farmed with a farm
-	// area; the forbidden pattern then protects only wood outside farms.
+	// area on the same pattern; forbidden paint continues to protect wood.
 	const bool farms=ai.map->farmAreasEnabled();
 	BrushAccumulator farm_del_acc;
 	BrushAccumulator farm_add_acc;
@@ -4806,10 +4805,15 @@ bool Farmer::updateFarm()
 	{
 		for(unsigned int y=0; static_cast<int>(y)<ai.map->getH(); ++y)
 		{
-			bool wheat_farm=false;
+			const bool farm_spot = ((x%2!=y%2) && FARMING_METHOD==CheckerBoard) ||
+				((x%2==1 && y%2==1) && FARMING_METHOD==CrossSpacing) ||
+				((x%6<4 && y%3==0) && FARMING_METHOD==Row4) ||
+				((x%3==0 && y%6<4) && FARMING_METHOD==Column4);
 			if(farms && ai.map->isMapDiscovered(x, y, ai.team->me))
 			{
-				wheat_farm=AIFarmAreas::wantsFarm(*ai.map, x, y)
+				const bool wheat_farm=farm_spot && ai.map->isResourceTakeable(x, y, WHEAT)
+					&& !ai.map->isClearArea(x, y, ai.team->me)
+					&& ai.map->canPaintFarmArea(x, y)
 					&& water_gradient.getHeight(x, y)<=static_cast<int>(MAX_DISTANCE_FROM_WATER+2);
 				const bool farmed=ai.map->isFarmArea(x, y, ai.team->me);
 				if(wheat_farm && !farmed)
@@ -4818,13 +4822,10 @@ bool Farmer::updateFarm()
 					farm_del_acc.applyBrush(BrushApplication(x, y, 0), ai.map);
 			}
 
-			if( ((x%2!=y%2) && FARMING_METHOD==CheckerBoard) ||
-				((x%2==1 && y%2==1) && FARMING_METHOD==CrossSpacing) ||
-				((x%6<4 && y%3==0) && FARMING_METHOD==Row4) ||
-				((x%3==0 && y%6<4) && FARMING_METHOD==Column4))
+			if(farm_spot)
 			{
 				const bool protectable=farms
-					? ai.map->isResourceTakeable(x, y, WOOD) && !wheat_farm
+					? ai.map->isResourceTakeable(x, y, WOOD)
 					: ai.map->isResourceTakeable(x, y, WOOD) || ai.map->isResourceTakeable(x, y, WHEAT);
 				if(!protectable || ai.map->isClearArea(x, y, ai.team->me))
 				{
