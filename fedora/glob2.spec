@@ -1,5 +1,5 @@
 Name:           glob2
-Version:        0.9.5.4
+Version:        0.10.0.0
 Release:        1%{?dist}
 Summary:        Real time strategy game with automatic unit task assignment
 License:        GPL-3.0-or-later
@@ -90,6 +90,9 @@ scons -j2 release=0 server=0 CXXFLAGS="%{optflags}" LINKFLAGS="%{build_ldflags}"
 %{_datadir}/icons/hicolor/*/apps/glob2.png
 
 %changelog
+* Sat Oct 03 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.10.0.0-1
+- Online multiplayer, new AI and statistics features, interface themes and complete translations
+
 * Wed Sep 30 2026 Globulation 2 maintainers <glob2-devel@nongnu.org> - 0.9.5.4-1
 - Prepare F-Droid Android candidate
 
