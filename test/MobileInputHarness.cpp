@@ -16,7 +16,7 @@ void require(bool value, const char *message)
 {
 	GLOB2_REQUIRE(value, message);
 }
-void near(double a, double b)
+void checkNear(double a, double b)
 {
 	CHECK_MESSAGE(std::abs(a - b) < 0.000001, "Coordinate mismatch: " << a << " vs " << b);
 }
@@ -63,7 +63,7 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 				metrics.keyboardInset = 200 * scale;
 				require(resolve().layout == PresentationLayout::Spacious,
 						"Keyboard cannot change underlying layout");
-				near(resolve().dialog.h, 280);
+				checkNear(resolve().dialog.h, 280);
 				require(resolve().minimumTargetHeight == (touch ? 48 : 32),
 						"Target size follows capabilities");
 				input.hover = false;
@@ -104,34 +104,34 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		auto cameraCenter = camera.screenToWorld(480, 360);
 		camera.resize(480, 600, 4096, 4096, 24, 48);
 		auto cameraResized = camera.screenToWorld(264, 348);
-		near(MapCamera::wrap(cameraCenter.first, 4096), MapCamera::wrap(cameraResized.first, 4096));
-		near(MapCamera::wrap(cameraCenter.second, 4096),
+		checkNear(MapCamera::wrap(cameraCenter.first, 4096), MapCamera::wrap(cameraResized.first, 4096));
+		checkNear(MapCamera::wrap(cameraCenter.second, 4096),
 			 MapCamera::wrap(cameraResized.second, 4096));
 		require(camera.contains(24, 48) && !camera.contains(23, 48) && !camera.contains(504, 48),
 				"Camera excludes safe areas and side panels");
 		auto anchor = camera.screenToWorld(200, 300);
 		camera.wheel(.3, 200, 300);
 		auto zoomed = camera.screenToWorld(200, 300);
-		near(MapCamera::wrap(anchor.first, 4096), MapCamera::wrap(zoomed.first, 4096));
-		near(MapCamera::wrap(anchor.second, 4096), MapCamera::wrap(zoomed.second, 4096));
+		checkNear(MapCamera::wrap(anchor.first, 4096), MapCamera::wrap(zoomed.first, 4096));
+		checkNear(MapCamera::wrap(anchor.second, 4096), MapCamera::wrap(zoomed.second, 4096));
 		ViewportTransform view({0, 48, 320, 472}, {4096, 4096});
 		view.moveTo({4090, 4});
 		auto at = view.screenToWorld({215, 110});
 		view.zoom(2.3, {215, 110});
 		auto after = view.screenToWorld({215, 110});
-		near(at.x, after.x);
-		near(at.y, after.y);
+		checkNear(at.x, after.x);
+		checkNear(at.y, after.y);
 		auto screen = view.worldToScreen(after);
-		near(screen.x, 215);
-		near(screen.y, 110);
+		checkNear(screen.x, 215);
+		checkNear(screen.y, 110);
 		auto center = view.position();
 		view.resize({0, 48, 568, 224});
-		near(center.x, view.position().x);
-		near(center.y, view.position().y);
+		checkNear(center.x, view.position().x);
+		checkNear(center.y, view.position().y);
 		view.zoom(100, {284, 160});
-		near(view.zoom(), 3);
+		checkNear(view.zoom(), 3);
 		view.zoom(0.01, {284, 160});
-		near(view.zoom(), 0.5);
+		checkNear(view.zoom(), 0.5);
 		view.pan({10000, -10000});
 		require(view.position().x >= 0 && view.position().x < 4096, "Toroidal pan failed");
 		for (auto dimensions :
@@ -164,7 +164,7 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		actions = touch.move(1, 1, {28, 20});
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Pan,
 				"Threshold did not start pan");
-		near(actions[0].point.x, 8);
+		checkNear(actions[0].point.x, 8);
 		actions = touch.up(1, 1, {28, 20}, 500);
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::PanEnd && actions[0].time == 500,
 				"Pan release did not end the pan with its timestamp");
@@ -172,7 +172,7 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		touch.down(1, 2, {30, 10});
 		actions = touch.move(1, 2, {50, 10});
 		require(actions.size() == 2 && actions[1].kind == TouchActionKind::Zoom, "Pinch missing");
-		near(actions[1].factor, 2);
+		checkNear(actions[1].factor, 2);
 		actions = touch.up(1, 2, {50, 10});
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::PanEnd, "Lifting one of two fingers did not end the pan");
 		require(touch.move(1, 1, {90, 90}).empty(), "Remaining finger moved world");
@@ -204,25 +204,25 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		actions = touch.up(1, 1, {100, 295});
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::DoubleTap,
 				"Double-tap without travel must report the gesture without choosing a zoom policy");
-		near(actions[0].point.x, 100);
-		near(actions[0].point.y, 300);
+		checkNear(actions[0].point.x, 100);
+		checkNear(actions[0].point.y, 300);
 		touch.setMode(TouchMode::ZoomDrag);
 		touch.down(1, 1, {100, 300});
 		actions = touch.move(1, 1, {100, 300 - TouchInput::zoomDoublingPoints / 2});
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Zoom,
 				"Upward travel missing zoom");
-		near(actions[0].factor, std::sqrt(2.0));
-		near(actions[0].point.y, 300); // Anchored where the contact landed.
+		checkNear(actions[0].factor, std::sqrt(2.0));
+		checkNear(actions[0].point.y, 300); // Anchored where the contact landed.
 		require(touch.zoomDragging(), "Zoom feedback missing while dragging");
 		actions = touch.move(1, 1, {100, 300 - TouchInput::zoomDoublingPoints});
-		near(actions[0].factor, std::sqrt(2.0)); // Incremental, composing to 2x.
+		checkNear(actions[0].factor, std::sqrt(2.0)); // Incremental, composing to 2x.
 		require(touch.up(1, 1, {100, 120}).empty(), "Zoom drag released as a tap");
 		touch.setMode(TouchMode::ZoomDrag);
 		touch.down(1, 1, {100, 300});
 		actions = touch.move(1, 1, {130, 290});
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Pan,
 				"A sideways start after a tap must pan, not zoom");
-		near(actions[0].point.x, 30);
+		checkNear(actions[0].point.x, 30);
 		actions = touch.move(1, 1, {130, 200});
 		require(actions.size() == 1 && actions[0].kind == TouchActionKind::Pan,
 				"A pan that began sideways must not turn into a zoom");
@@ -233,10 +233,10 @@ TEST_CASE("zoom anchoring; seams; rotation; safe layouts; gestures and cancellat
 		touch.setZoomDragDirection(false);
 		touch.down(1, 1, {100, 300});
 		actions = touch.move(1, 1, {100, 300 + TouchInput::zoomDoublingPoints});
-		near(actions[0].factor, 2);
+		checkNear(actions[0].factor, 2);
 		touch.setZoomDragDirection(true);
 		actions = touch.move(1, 1, {100, 300 + 2 * TouchInput::zoomDoublingPoints});
-		near(actions[0].factor, 0.5);
+		checkNear(actions[0].factor, 0.5);
 		actions = touch.down(1, 2, {200, 300});
 		require(actions.empty() && !touch.zoomDragging(), "Second finger must end one-finger zoom");
 		actions = touch.move(1, 2, {260, 300});
@@ -261,8 +261,8 @@ TEST_CASE("opaque SDL3 touch identifiers retain their high bits")
     const auto actions = input.up(device, finger, {100, 100});
     REQUIRE(actions.size() == 1);
     CHECK(actions[0].kind == TouchActionKind::Select);
-    near(actions[0].point.x, 100);
-    near(actions[0].point.y, 100);
+    checkNear(actions[0].point.x, 100);
+    checkNear(actions[0].point.y, 100);
 }
 }
 

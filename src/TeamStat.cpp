@@ -1082,10 +1082,10 @@ void TeamStats::observeMeasurementBuilding(Building *b)
 GameplayMeasurements::Place TeamStats::placeOf(const Team *team, int x, int y)
 {
 	// One read of the growth-coverage tile masks. Callers refresh them first.
-	const Uint32 near = team->map->teamsWithBuildingsNear(x, y, GameplayMeasurements::PLACE_BAND);
-	if (near & team->me)
+	const Uint32 nearbyTeams = team->map->teamsWithBuildingsNear(x, y, GameplayMeasurements::PLACE_BAND);
+	if (nearbyTeams & team->me)
 		return GameplayMeasurements::HOME;
-	return (near & team->enemies) ? GameplayMeasurements::AWAY : GameplayMeasurements::FIELD;
+	return (nearbyTeams & team->enemies) ? GameplayMeasurements::AWAY : GameplayMeasurements::FIELD;
 }
 
 void TeamStats::observeLabour(Unit *u)
