@@ -397,6 +397,7 @@ test('phones: no sideways scrolling at 320 and 430 px, 44 px touch targets', asy
     `/matches/${seed.featuredMatch}`,
     '/matches',
     '/maps',
+    '/skins',
     `/maps/${seed.mapId}`,
     '/maps/new',
     '/account',

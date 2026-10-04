@@ -330,3 +330,18 @@ test('inspects every action and paints a paused model with undo and erase', asyn
   await expect(page.getByLabel('Direction', { exact: true })).toBeDisabled();
   await expect(preview).toHaveAttribute('data-frame', '0');
 });
+
+test('model painting controls fit a 320px screen', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto('/skins');
+  await expect(page.getByRole('tab', { name: 'Swarm' })).toBeVisible();
+  expect(
+    await page
+      .locator('html')
+      .evaluate(
+        (element: { scrollWidth: number; clientWidth: number }) =>
+          element.scrollWidth - element.clientWidth,
+      ),
+  ).toBe(0);
+  await page.screenshot({ path: test.info().outputPath('skins-320.png'), fullPage: true });
+});

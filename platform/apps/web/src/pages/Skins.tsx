@@ -446,7 +446,11 @@ function SkinDesigner() {
           Glob paint repeats automatically on matching front/back and top/bottom surfaces so their
           flips stay seamless.
         </p>
-        <div role="tablist" aria-label="Model to paint" style={{ display: 'flex', gap: 8 }}>
+        <div
+          role="tablist"
+          aria-label="Model to paint"
+          style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}
+        >
           {MODELS.map((m) => (
             <button
               key={m.id}
