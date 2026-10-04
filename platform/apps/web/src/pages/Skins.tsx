@@ -368,15 +368,17 @@ function SkinDesigner() {
             <fieldset aria-describedby="swarm-shape-hint">
               <legend>Swarm shape</legend>
               {SWARM_MESHES.map((mesh) => (
-                <label key={mesh} style={{ display: 'block' }}>
+                <label key={mesh} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   <input
                     type="radio"
                     name="swarm-shape"
                     value={mesh}
                     checked={swarmMesh === mesh}
                     onChange={() => setSwarmMesh(mesh)}
-                  />{' '}
-                  <strong>{SWARM_SHAPES[mesh].name}</strong> {SWARM_SHAPES[mesh].description}
+                  />
+                  <span>
+                    <strong>{SWARM_SHAPES[mesh].name}</strong> {SWARM_SHAPES[mesh].description}
+                  </span>
                 </label>
               ))}
               <p id="swarm-shape-hint">
