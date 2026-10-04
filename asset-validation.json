@@ -1,0 +1,32 @@
+[
+  {
+    "file": "data/zik/intro.opus",
+    "frames": 720675,
+    "seconds": 15.0140625,
+    "bytes": 94336
+  },
+  {
+    "file": "data/zik/menu.opus",
+    "frames": 1152009,
+    "seconds": 24.0001875,
+    "bytes": 169761
+  },
+  {
+    "file": "data/zik/original/a1.opus",
+    "frames": 2566809,
+    "seconds": 53.4751875,
+    "bytes": 396858
+  },
+  {
+    "file": "data/zik/original/a2.opus",
+    "frames": 2566809,
+    "seconds": 53.4751875,
+    "bytes": 474346
+  },
+  {
+    "file": "data/zik/original/a3.opus",
+    "frames": 2566809,
+    "seconds": 53.4751875,
+    "bytes": 375248
+  }
+]

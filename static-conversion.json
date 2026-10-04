@@ -1,0 +1,130 @@
+{
+  "encoder": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+  "tracks": [
+    {
+      "source": "data/zik/intro.ogg",
+      "file": "data/zik/intro.opus",
+      "before": 346640,
+      "after": 94336,
+      "frames": 720675,
+      "recipe": [
+        "-af",
+        "aresample=48000,asetpts=N/SR/TB",
+        "-c:a",
+        "libopus",
+        "-b:a",
+        "48k",
+        "-vbr",
+        "on",
+        "-application",
+        "audio",
+        "-compression_level",
+        "10",
+        "-ar",
+        "48000",
+        "-ac",
+        "2"
+      ]
+    },
+    {
+      "source": "data/zik/menu.ogg",
+      "file": "data/zik/menu.opus",
+      "before": 557717,
+      "after": 169761,
+      "frames": 1152009,
+      "recipe": [
+        "-af",
+        "aresample=48000,asetpts=N/SR/TB",
+        "-c:a",
+        "libopus",
+        "-b:a",
+        "48k",
+        "-vbr",
+        "on",
+        "-application",
+        "audio",
+        "-compression_level",
+        "10",
+        "-ar",
+        "48000",
+        "-ac",
+        "2"
+      ]
+    },
+    {
+      "source": "data/zik/original/a1.ogg",
+      "file": "data/zik/original/a1.opus",
+      "before": 1040855,
+      "after": 396858,
+      "frames": 2566809,
+      "recipe": [
+        "-af",
+        "aresample=48000,asetpts=N/SR/TB",
+        "-c:a",
+        "libopus",
+        "-b:a",
+        "48k",
+        "-vbr",
+        "on",
+        "-application",
+        "audio",
+        "-compression_level",
+        "10",
+        "-ar",
+        "48000",
+        "-ac",
+        "2"
+      ]
+    },
+    {
+      "source": "data/zik/original/a2.ogg",
+      "file": "data/zik/original/a2.opus",
+      "before": 723117,
+      "after": 474346,
+      "frames": 2566809,
+      "recipe": [
+        "-af",
+        "aresample=48000,asetpts=N/SR/TB",
+        "-c:a",
+        "libopus",
+        "-b:a",
+        "48k",
+        "-vbr",
+        "on",
+        "-application",
+        "audio",
+        "-compression_level",
+        "10",
+        "-ar",
+        "48000",
+        "-ac",
+        "2"
+      ]
+    },
+    {
+      "source": "data/zik/original/a3.ogg",
+      "file": "data/zik/original/a3.opus",
+      "before": 1111407,
+      "after": 375248,
+      "frames": 2566809,
+      "recipe": [
+        "-af",
+        "aresample=48000,asetpts=N/SR/TB",
+        "-c:a",
+        "libopus",
+        "-b:a",
+        "48k",
+        "-vbr",
+        "on",
+        "-application",
+        "audio",
+        "-compression_level",
+        "10",
+        "-ar",
+        "48000",
+        "-ac",
+        "2"
+      ]
+    }
+  ]
+}
