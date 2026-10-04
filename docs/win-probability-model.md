@@ -171,7 +171,7 @@ python3 tools/win_probability_model.py dataset RESULTS_DIR --output dataset.json
 # What each candidate state measurement predicts on its own.
 python3 tools/win_probability_model.py screen dataset.json.gz
 
-# Select, fit, and regenerate src/WinProbabilityModel.h.
+# Select, fit, and regenerate src/team/stats/WinProbabilityModel.h.
 python3 tools/win_probability_model.py fit dataset.json.gz
 
 # What the condition would have saved on games already played.

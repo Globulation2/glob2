@@ -73,7 +73,7 @@ capacity while it is a site.
 `canLearn[i] = (bool) race->getUnitType(typeNum, 3)->performance[i]` — a unit type
 can learn ability `i` iff its LEVEL-3 unit-type has nonzero performance for `i`.
 
-**Default race performance (level-3 rows)** `src/game/entities/Race.cpp:26-131`
+**Default race performance (level-3 rows)** `src/unit/types/Race.cpp:26-131`
 (performance array order is `{stopWalk, stopSwim, stopFly, walk, swim, fly, build,
 harvest, attackSpeed, attackForce, magicAir, magicGround, magicWood, magicWheat,
 magicAlga, armor, hp}`):
@@ -87,15 +87,15 @@ magicAlga, armor, hp}`):
   harvest=0. → WARRIOR canLearn = **WALK, SWIM, ATTACK_SPEED, ATTACK_STRENGTH**.
 
 **Building `upgrade[]` arrays** (1 = this building trains that ability index):
-- Racetrack / WALKSPEED_BUILDING: `upgrade[WALK]=1` (`src/game/entities/BuildingTypesUpgrade.cpp:27,50,73`).
+- Racetrack / WALKSPEED_BUILDING: `upgrade[WALK]=1` (`src/building/types/BuildingTypesUpgrade.cpp:27,50,73`).
   Single-ability (no `upgradeInParallel`).
-- Swimmingpool: `upgrade[SWIM]=1` (`src/game/entities/BuildingTypesUpgrade.cpp:95,118,141`).
+- Swimmingpool: `upgrade[SWIM]=1` (`src/building/types/BuildingTypesUpgrade.cpp:95,118,141`).
   Single-ability.
 - Barracks / ATTACK_BUILDING: `upgrade[ATTACK_SPEED]=1, upgrade[ATTACK_STRENGTH]=1`,
-  `upgradeInParallel=1` (`src/game/entities/BuildingTypesUpgrade.cpp:164-166,188-190,212-214`).
+  `upgradeInParallel=1` (`src/building/types/BuildingTypesUpgrade.cpp:164-166,188-190,212-214`).
 - School / SCIENCE_BUILDING: `upgrade[BUILD]=1, upgrade[HARVEST]=1`, `upgradeInParallel=1`
-  (`src/game/entities/BuildingTypesUpgrade.cpp:236-238,259-261`). At LEVEL 2 the school ALSO
-  adds `upgrade[MAGIC_ATTACK_GROUND]=1` (`src/game/entities/BuildingTypesUpgrade.cpp:283`).
+  (`src/building/types/BuildingTypesUpgrade.cpp:236-238,259-261`). At LEVEL 2 the school ALSO
+  adds `upgrade[MAGIC_ATTACK_GROUND]=1` (`src/building/types/BuildingTypesUpgrade.cpp:283`).
 
 **Cross product (who actually trains where), combining canLearn × upgrade[]:**
 - Racetrack (WALK): **workers AND warriors** (both canLearn WALK). Explorers do not.
@@ -169,7 +169,7 @@ barracks blackout. A single barracks mid-upgrade trains zero warriors that whole
 
 Inn feeding capacity = `type->maxUnitInside` (trainee/feeding slots) gated by
 `ressources[WHEAT] > unitsInside.size()` (`src/building/Construction.cpp:344`). Per
-level (`src/game/entities/BuildingTypesColony.cpp`):
+level (`src/building/types/BuildingTypesColony.cpp`):
 
 | Inn level | maxUnitInside | maxUnitWorking | WHEAT maxRessource | timeToFeedUnit | cite |
 |-----------|---------------|----------------|-------------------|----------------|------|
@@ -181,7 +181,7 @@ While an inn is mid-UPGRADE its feeding capacity is REMOVED entirely:
 `launchConstruction` pulls it from `canFeedUnit` via `removeFromAbilitiesLists`
 (`src/building/Construction.cpp:110`) and sets `maxUnitInside=0` (`:137`); the
 construction-site inn variants (#4 inn1c, #6 inn2c) have no `foodable`/`canFeedUnit`
-flag (`src/game/entities/BuildingTypesColony.cpp:65-73,89-98`), so they cannot feed.
+flag (`src/building/types/BuildingTypesColony.cpp:65-73,89-98`), so they cannot feed.
 Upgrading the colony's only/last inn while `feedCapacity` barely covers population
 deletes that capacity for the full blackout window (section 4) → starvation. This is
 the engine basis for a "build a spare inn first, then upgrade" gate.
@@ -210,11 +210,11 @@ trainee throughput. Trainee throughput is `maxUnitInside`.)
 
 ## 6. What the observation already surfaces (and what is missing)
 
-Source for the level histograms: `src/TeamStat.cpp:231-237` populates
+Source for the level histograms: `src/team/stats/TeamStat.cpp:231-237` populates
 `upgradeState[ability][level]++` and `upgradeStatePerType[type][ability][level]++` for
 EVERY ability where `u->performance[ability]` is nonzero (so e.g. a worker contributes
 to WALK/BUILD/HARVEST/SWIM buckets; a warrior to WALK/SWIM/ATTACK_SPEED/ATTACK_STRENGTH).
-`TeamStat` fields: `src/TeamStat.h:53-54`.
+`TeamStat` fields: `src/team/stats/TeamStat.h:53-54`.
 
 **Already in `CortexObservation`** (`src/ai/cortex/CortexTypes.h`, filled in
 `src/ai/cortex/CortexObservation.cpp:255-263`):

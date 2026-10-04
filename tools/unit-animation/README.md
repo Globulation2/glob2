@@ -99,7 +99,7 @@ walk-cycle duration.
 ## Checks
 
 Run `python3 tools/unit-animation/test_render.py` with Pillow installed to test
-scene preparation and rejection of an incomplete install. `test/UnitAnimationTest.cpp`
+scene preparation and rejection of an incomplete install. `src/unit/render/UnitAnimationTest.cpp`
 is part of `glob2-unit-tests` and exhaustively checks frame ranges and
 turning cadence. Compare alpha separately from RGB when reviewing the generated
 report: geometry/coverage matching and subtle shading differences are distinct.

@@ -71,7 +71,7 @@ Effects measured over 6 seeds at 256×256 with 4 colonies (low / default / high)
   share tiles) and still holds its stencil's crops, that no town starts with a crop, that with the
   passes shut no range can be crossed, that no town's grass touches grass outside it where a crop
   could grow, and that every colony can walk to the first. The contract test in
-  `test/MapGeneratorContracts.h` covers the envelope and its refusal, all three designs, resource
+  `src/map/generator/MapGeneratorContracts.h` covers the envelope and its refusal, all three designs, resource
   extremes, 4,096 ticks of growth with every town still sealed, and refusals of damaged worlds.
 - **Growth potential** (`.agents/skills/glob2-map-design/scripts/growth_potential.c`), seeds 1–6 at
   256×256 with 4 colonies:

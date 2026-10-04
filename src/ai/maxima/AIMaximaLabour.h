@@ -153,7 +153,7 @@ inline int hospitalBedsWanted(int warriors, int bedsPerWarriorPercent)
 }
 
 /// Damage rate of a warrior by combat level: attack speed times what its
-/// strength leaves after armour (src/game/entities/Race.cpp, armour 10).
+/// strength leaves after armour (src/unit/types/Race.cpp, armour 10).
 const int WarriorDamageRate[4]={36, 64, 110, 168};
 
 /// Whether an army's damage rate clears the defenders it is believed to face.

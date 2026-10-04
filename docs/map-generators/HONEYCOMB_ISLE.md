@@ -75,7 +75,7 @@ and are summarised here.
   fixes: squares were at a fifth of the building sites until given the hexagons' area, wheat and
   wood amounts did nothing past their new maximums, and a minimum of 8 blocks per colony keeps
   ruins in the city.
-- **Contract** (`test/MapGeneratorContracts.h`, `honeycombIsleContracts`): shapes and the refusal,
+- **Contract** (`src/map/generator/MapGeneratorContracts.h`, `honeycombIsleContracts`): shapes and the refusal,
   all three home and landmark designs, resource extremes, 4,096 ticks of unattended growth staying
   inside every block, the design cache returning the same map and telemetry, and a colony stripped
   of its starter wheat failing validation.

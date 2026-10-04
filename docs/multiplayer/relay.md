@@ -319,7 +319,7 @@ All metric names start with `glob2_relay_`.
 ```sh
 scons role=relay release=1 relay
 build/<toolchain>/relay/release/src/glob2-relay-tests
-python3 -m unittest discover -s tests/relay -v
+python3 -m unittest discover -s test/relay_service -v
 ```
 
 `glob2-relay-tests` (doctest) covers:
@@ -332,7 +332,7 @@ python3 -m unittest discover -s tests/relay -v
 - the platform JSON bodies;
 - the configuration checks.
 
-`tests/relay/` starts the real binary. Its Python helpers, which use only the
+`test/relay_service/` starts the real binary. Its Python helpers, which use only the
 standard library, sign tickets with the same fixture key in pure Python, speak the
 turn protocol over a WebSocket, parse match records and run a fake platform. The
 tests cover:

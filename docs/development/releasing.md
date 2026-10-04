@@ -9,8 +9,8 @@ has a job-level `if:` that requires the mirror's name and numeric repository ID
 (`1397722696`), plus the owner and the expected ref. Anywhere else, including
 this repository and forks, every job is skipped before a runner starts. None of
 these workflows has a pull request trigger.
-`tests/build_system/test_release_guards.py` enforces this for every workflow in
-the release set in `tests/build_system/test_ci_concurrency.py`, and fails if a
+`test/build_system/test_release_guards.py` enforces this for every workflow in
+the release set in `test/build_system/test_ci_concurrency.py`, and fails if a
 workflow that uses deployment environments, named secrets or write tokens is
 missing from that set. Add a new release workflow to that set and give its root
 jobs the same guard.

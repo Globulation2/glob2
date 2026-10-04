@@ -1,6 +1,7 @@
 """Development coverage policy. Labels only add work; unknown inputs stay full."""
 import hashlib
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -9,34 +10,63 @@ FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
          'platform_stack')
 LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
 SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
-              'src/sgsl/', 'src/sim/', 'src/Order')
-SIMULATION_FILES = {'src/Game_sync.cpp', 'src/Game.cpp', 'src/EngineRun.cpp',
-                    'src/Engine.cpp', 'src/ReplayReader.cpp', 'src/ReplayWriter.cpp'}
-THREAD_FILES = {'src/GameDiagnostics.cpp', 'src/Engine.cpp', 'src/EngineRun.cpp', 'src/GameSessionScreen.cpp',
-                'src/gui/GameGUIDraw.cpp', 'src/gui/GameGUIStep.cpp', 'src/gui/GameGUIOrders.cpp',
+              'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
+PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud/')
+# Code inside the directories above that belongs to neither class: every check.
+UNCLASSIFIED = ('src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
+                'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
+                'src/net/lan/screens/')
+UNCLASSIFIED_FILES = {'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
+                      'src/map/Brush.cpp', 'src/map/BrushCoverage.cpp', 'src/unit/UnitDisplayNames.cpp',
+                      'src/net/ConnectionOverlay.cpp', 'src/net/turn/TurnMatchPresenter.cpp',
+                      'src/map/editor/screens/EditorMainMenu.cpp'}
+# Tests sit beside the code they test and are told apart by name.
+TEST_SOURCE = re.compile(r'(Test|Harness|Benchmark|Fixture)\.(cpp|py)$')
+TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_contracts.py', 'MapGeneratorStudy.cpp',
+                     'RecordingMultiplayerPeer.cpp', 'OnlineProbeFileManager.cpp', 'PlatformClientProbe.cpp',
+                     'OnlineScreensProbe.cpp', 'RelayTestMain.cpp'}
+# Build-system and service suites: unknown to the selector, so every check.
+TOOLING_TESTS = ('test/build_system/', 'test/baselines/', 'test/relay_service/', 'test/online_service/')
+TEST_ROOTS = ('src/', 'libgag/', 'libusl/', 'natsort/', 'mobile/')
+SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/EngineRun.cpp',
+                    'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
+THREAD_FILES = {'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
+                'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
                 'libgag/src/PerformanceTelemetry.cpp'}
 # Paths whose changes rebuild and smoke-test the whole self-hosted stack
 # (deploy/compose.yaml). Its images compile the engine, so engine changes that
 # do not otherwise select every check skip it rather than adding a second
 # client build to every PR.
 PLATFORM_STACK_PATHS = (
-    'deploy/', 'tests/deployment/', 'src/relay/', 'platform/package-lock.json',
+    'deploy/', 'test/deployment/', 'src/relay/', 'platform/package-lock.json',
     'platform/packages/db/migrations/', 'platform/apps/api/src/main.ts',
     'platform/apps/worker/src/main.ts', 'platform/apps/engine-agent/src/main.ts',
 )
+TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
+                       'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
 RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp',
           'libgag/src/SurfaceRaster.cpp'}
 
 
 # The mirror-only deployment of app.glob2online.com (deploy-online.yml runs
 # nothing in this repository) and its scripts, which no image build or CI job runs.
-# Their tests run with the rest of tests/deployment whenever those are selected.
+# Their tests run with the rest of test/deployment whenever those are selected.
 MIRROR_DEPLOY_FILES = {'.github/workflows/deploy-online.yml', 'deploy/online-deploy.sh',
-                       'deploy/online_remote.py', 'tests/deployment/test_online_deploy.py'}
+                       'deploy/online_remote.py', 'test/deployment/test_online_deploy.py'}
+
+
+def is_test_source(path):
+    """A test translation unit or script living beside production code."""
+    name = Path(path).name
+    return path.startswith(TEST_ROOTS) and (bool(TEST_SOURCE.search(name)) or name in TEST_SOURCE_NAMES)
+
+
+def unclassified(path):
+    return path.startswith(UNCLASSIFIED) or path in UNCLASSIFIED_FILES
 
 
 def cheap_path(path):
-    return (path.startswith(('docs/', 'tests/build_system/test_ci', 'fdroid/', 'fastlane/'))
+    return (path.startswith(('docs/', 'test/build_system/test_ci', 'fdroid/', 'fastlane/'))
             or path.endswith('.md') or path in MIRROR_DEPLOY_FILES or path in {
                 'test/test_run_tests.py', 'test/test_ci_failure_aggregation.py',
                 'tools/package_steam_windows.py', 'test/test_steam_windows_package.py',
@@ -83,7 +113,22 @@ def select(paths, labels=(), known=False):
             continue
         if path == 'test/map-generator-golden.txt':
             add(path, 'map_generators', 'compatibility')
-        elif path.endswith(('.h', '.hpp', '.hh')) or path.startswith(('scons/', 'libusl/')) or path in {'SConstruct', 'vcpkg.json'}:
+        elif path.endswith(('.h', '.hpp', '.hh')):
+            add(path, *FLAGS)
+        elif is_test_source(path):
+            name = Path(path).name
+            if name.startswith('Hive'):
+                # Sandbox, scheduling and order boundaries span every client target.
+                add(path, *FLAGS)
+            elif name in TRANSPORT_HARNESSES:
+                add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform', 'deployment')
+            elif name.startswith('Script'):
+                add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
+            elif name.startswith('MapGenerator'):
+                add(path, 'native', 'map_generators', 'compatibility')
+            else:
+                add(path, 'native')
+        elif path.startswith(('scons/', 'libusl/')) or path in {'SConstruct', 'vcpkg.json'} or unclassified(path):
             add(path, *FLAGS)
         elif path.startswith(('test/fixtures/', 'test/support/', '.github/')) or path in {
             'test/run_tests.py', 'test/ci_native_shard_plan.py', 'test/ci-native-auxiliary.json',
@@ -97,14 +142,11 @@ def select(paths, labels=(), known=False):
             add(path, 'native', 'macos')
         elif path.startswith('windows/'):
             add(path, 'native', 'windows')
-        elif path.startswith(('src/hive/', 'test/Hive')):
-            # Sandbox, scheduling and order boundaries span every client target.
+        elif path.startswith('src/hive/'):
             add(path, *FLAGS)
-        elif path.startswith(('src/net/', 'src/yog/', 'tests/transport/')) or Path(path).name in {
-            'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
-            'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}:
+        elif path.startswith(('src/net/', 'src/yog/', 'test/transport/')) or Path(path).name in TRANSPORT_HARNESSES:
             add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform', 'deployment')
-        elif path.startswith(('deploy/', 'tests/deployment/')):
+        elif path.startswith(('deploy/', 'test/deployment/')):
             add(path, 'browser', 'deployment')
         elif path.startswith('browser/'):
             if path == 'browser/toolchain.json':
@@ -113,24 +155,24 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
             else:
                 add(path, 'browser')
-        elif path.startswith(('src/gui/', 'src/render/', 'src/scene/')) or path in RENDER or path.startswith('src/') and 'Screen' in Path(path).name:
+        elif path.startswith(PRESENTATION) or path in RENDER or path.startswith('src/') and 'Screen' in Path(path).name:
             add(path, 'native', 'browser', 'android')
-        elif path.startswith(SIMULATION) or path in SIMULATION_FILES or path.startswith('test/Script'):
+        elif path.startswith(SIMULATION) or path in SIMULATION_FILES:
             add(path, 'native', 'browser', 'windows', 'compatibility', 'cross_platform')
             if path.startswith('src/map/generator/') or Path(path).name.startswith('MapGenerator'):
                 add(path, 'map_generators')
-        elif path.startswith('test/') and Path(path).name.startswith('MapGenerator'):
-            add(path, 'native', 'map_generators', 'compatibility')
+        elif path.startswith(TOOLING_TESTS):
+            add(path, *FLAGS)
         elif path.startswith('test/') and Path(path).suffix in {'.cpp', '.py'}:
             add(path, 'native')
         else:
             add(path, *FLAGS)
-        if path.startswith(('src/sim/', 'src/scene/')) or path in THREAD_FILES:
+        if path.startswith(('src/engine/sim/', 'src/render/scene/')) and not is_test_source(path) or path in THREAD_FILES:
             add(path, 'tsan')
     # The stack's own inputs run the stack smoke; shared and unknown paths
     # above already select every check, the stack included.
     for path in paths:
-        if path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path):
+        if path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path) and not is_test_source(path):
             add(path, 'platform_stack')
     labels = set(labels) & LABELS
     if 'ci:full' in labels:
@@ -150,7 +192,7 @@ def browser_matrix(selected, paths, complete=False):
     entries = json.loads((ROOT / '.github/scripts/ci_browser_matrix.json').read_text())
     if not selected['browser']:
         return []
-    presentation = any(p.startswith(('browser/', 'src/gui/', 'src/render/', 'src/scene/')) or p in RENDER or 'Screen' in Path(p).name for p in paths)
+    presentation = any(p.startswith(('browser/',) + PRESENTATION) or p in RENDER or 'Screen' in Path(p).name for p in paths)
     if complete:
         return entries
     if presentation:

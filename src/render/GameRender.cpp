@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "MapCopies.h"
-#include "ColonySkinPreview.h"
+#include "unit/render/ColonySkinPreview.h"
 
 #include "AICastor.h"
 #include "AINicowar.h"
@@ -33,7 +33,7 @@
 
 #include "GameRenderInternal.h"
 #include "SoftwareTerrainCache.h"
-#include "UnitMotion.h"
+#include "unit/render/UnitMotion.h"
 #include "scene/SceneExtract.h"
 #include "PerformanceTelemetry.h"
 

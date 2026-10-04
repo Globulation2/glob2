@@ -97,7 +97,7 @@ def main():
     libraries += [recording_prefix/'lib'/('lib'+name+'.a') for name in ('avformat','avcodec','swscale','swresample','avutil','x264')]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
-        'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('mobile/ios/ScriptTests.mm' if args.script_tests else 'src/Glob2.cpp'))+')',
+        'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('mobile/ios/ScriptTests.mm' if args.script_tests else 'src/app/Glob2.cpp'))+')',
         'install(TARGETS Glob2 BUNDLE DESTINATION Applications)',
         'target_compile_definitions(Glob2 PRIVATE HAVE_CONFIG_H)',
         'target_include_directories(Glob2 PRIVATE '+' '.join(map(cmake_quote,include))+')',

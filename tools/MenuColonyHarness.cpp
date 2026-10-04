@@ -13,7 +13,7 @@
 #include "CustomGameScreen.h"
 #include "CustomGamePreferences.h"
 #include "CustomGameOtherOptions.h"
-#include "gui/LoadSaveDialog.h"
+#include "LoadSaveDialog.h"
 #include "CampaignMainMenu.h"
 #include "EditorMainMenu.h"
 #include "CreditScreen.h"

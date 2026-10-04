@@ -60,7 +60,7 @@ from tools.tournaments.results import Results
 
 SCHEMA_VERSION = 1
 # The cadence TeamStats samples at (END_OF_GAME_STAT_INTERVAL_MASK in
-# src/TeamStat.h). The model is only ever evaluated on these boundaries, in the
+# src/team/stats/TeamStat.h). The model is only ever evaluated on these boundaries, in the
 # fit and in the engine alike.
 SAMPLE_INTERVAL = 512
 # Only used as a fallback when a game's record does not state its own tick limit.
@@ -512,7 +512,7 @@ def calibration(model, data, buckets=12):
 # The engine evaluates this model inside the synchronised simulation, where the
 # answer decides a winning condition, so it may not use floating point: two
 # machines that disagree by one bit would end the same game on different ticks.
-# Everything below is the integer algorithm src/WinProbability.cpp implements,
+# Everything below is the integer algorithm src/team/stats/WinProbability.cpp implements,
 # written again in Python so a test can assert the two agree exactly rather than
 # approximately. Python's ints are unbounded and its >> and // truncate towards
 # negative infinity for positives just as C++ does on non-negative values, so
@@ -616,7 +616,7 @@ def fixed_permille(model, slots):
 # ---------------------------------------------------------------------------
 # C++ emission
 # ---------------------------------------------------------------------------
-HEADER_PATH = 'src/WinProbabilityModel.h'
+HEADER_PATH = 'src/team/stats/WinProbabilityModel.h'
 
 
 def constant_name(name, transform):

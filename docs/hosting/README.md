@@ -146,7 +146,7 @@ cp ../platform/instance.example.yaml instance.yaml
 7. Check the instance: `https://<origin>/api/v1/instance` lists the sim version
    your engine agent serves; a desktop client pointed at the origin can sign in.
 
-`tests/deployment/platform_stack_smoke.py` performs these steps in an isolated
+`test/deployment/platform_stack_smoke.py` performs these steps in an isolated
 project and checks the result; it is a good first test of a new host as well.
 
 ## DNS and TLS
@@ -799,7 +799,7 @@ that starts with that id, or that finds the directory unclaimed, re-sends them.
 ### Sim versions and engine agents
 
 A sim version is `VERSION_MINOR`, `NET_PROTOCOL_VERSION` and a hash of `SIM_REVISION`
-(`src/SimRevision.h`, bumped with every simulation change) and the data files that
+(`src/game/SimRevision.h`, bumped with every simulation change) and the data files that
 affect the simulation (`python3 deploy/sim_version.py` prints it for a source tree; a
 tree from before `SIM_REVISION` keeps its earlier key). Players are only matched with the same version, and only an engine agent of
 that version can generate maps for or verify their games.
@@ -1040,7 +1040,7 @@ they are updated.
 ## Testing a deployment
 
 ```sh
-python3 tests/deployment/platform_stack_smoke.py --log-dir artifacts/platform-stack
+python3 test/deployment/platform_stack_smoke.py --log-dir artifacts/platform-stack
 ```
 
 The smoke test builds the images, starts an isolated project with its own ports,
@@ -1053,7 +1053,7 @@ token's `kid`; each relay registered with the platform under its public URL,
 reachable at `/relay/<id>`, and unknown ids refused; and a `generate-map` job run by the engine agent
 with the real binary, applied by the worker and stored as a blob. It then removes
 the project and its volumes. `--no-build --tag <tag>` reuses built images; `--keep`
-leaves the stack running. CI runs it when `deploy/`, `tests/deployment/`,
+leaves the stack running. CI runs it when `deploy/`, `test/deployment/`,
 `src/relay/`, migrations or platform dependencies change, and on full runs.
 `--match-e2e` also plays a rated quick match through the stack; see
 [End-to-end test of the stack](#end-to-end-test-of-the-stack).
@@ -1063,11 +1063,11 @@ publicly trusted certificate, the deployed web client and the replica counts in
 the env file (run on the host; nothing is started or removed):
 
 ```sh
-python3 tests/deployment/platform_stack_smoke.py --attach glob2-platform \
+python3 test/deployment/platform_stack_smoke.py --attach glob2-platform \
     --env-file /path/to/deployment.env --log-dir artifacts/live-smoke
 ```
 
-`tests/deployment/live_match_e2e.py` then plays a real match on the instance: two
+`test/deployment/live_match_e2e.py` then plays a real match on the instance: two
 guests create and join a room by invite code, start it with AI seats on a generated
 map, and two headless native clients (`glob2 --turn-client`, built from the same
 sim version) play it through the relay until a sudden-death rule ends it. It checks
@@ -1076,7 +1076,7 @@ reported the match, uploaded its record and the verify-match job judged it
 `verified`:
 
 ```sh
-python3 tests/deployment/live_match_e2e.py --origin https://play.example.org \
+python3 test/deployment/live_match_e2e.py --origin https://play.example.org \
     --glob2 build/linux/client/release/src/glob2 --out artifacts/live-e2e \
     --psql "docker compose -p glob2-platform exec -T postgres psql -U glob2 -d glob2 -At"
 ```
@@ -1097,7 +1097,7 @@ match through it and tears it down again. It needs a Linux machine with Docker
 macOS does not work.
 
 ```sh
-python3 tests/deployment/platform_stack_smoke.py --jobs 8 --log-dir artifacts/stack-e2e --match-e2e
+python3 test/deployment/platform_stack_smoke.py --jobs 8 --log-dir artifacts/stack-e2e --match-e2e
 ```
 
 After the smoke checks above, it runs `live_match_e2e.py --mode queue` against the

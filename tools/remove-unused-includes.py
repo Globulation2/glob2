@@ -92,6 +92,9 @@ def load_compile_commands(root, only):
         rel = os.path.relpath(os.path.join(e.get("directory", root), e["file"]), root)
         if not rel.startswith("src/") or not rel.endswith((".cpp", ".cc", ".cxx")):
             continue
+        # Tests sit beside the sources; this tool cleans production code only.
+        if re.search(r"(Test|Harness|Benchmark|Fixture|Probe|TestMain)\.cpp$", rel):
+            continue
         if only and not re.search(only, rel):
             continue
         commands.setdefault(rel, e.get("command") or shlex.join(e["arguments"]))

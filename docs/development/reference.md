@@ -24,8 +24,9 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
 ```
 
 - The test binaries are built by the same `scons` invocation as the game, from
-  the same objects, and listed in `test/tests.py`; `test/README.md` describes
-  the runner, the fixtures and where a new test goes. Extend an existing
+  the same objects, and listed in `test/tests.py`; a domain's test files sit
+  beside the code they test and cross-domain tests in `test/`. `test/README.md`
+  describes the runner, the fixtures and where a new test goes. Extend an existing
   relevant suite where practical.
 - Options are explicit on each invocation; there is no cross-invocation
   `options.py`. Outputs and generated configuration are isolated under
@@ -310,7 +311,7 @@ Windows CI uses standard CPython for encoding and MinGW Python for building;
 Python tests can use the same environment:
 
 ```sh
-"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v
+"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v
 python3 tools/package_assets.py --platform linux --output build/runtime-assets
 ```
 
@@ -570,7 +571,7 @@ seeds, binaries, captures and timing data under `artifacts/` for review.
 ## Simulation verification and diagnostics
 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
-For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp`.
+For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/EngineRun.cpp`.
 
 - Use `Utilities::syncRand()` for simulation randomness. Keep iteration and tie
   breaking deterministic; never depend on pointer ordering, hash-table iteration,
@@ -595,7 +596,7 @@ For timing and scheduling, start with `src/Game_sync.cpp` and `src/EngineRun.cpp
   `syncRand()`. Use a presentation-owned generator such as `GameGUI::effectsRandom`,
   so visual effects can change, run at any frame rate or move to another thread
   without consuming simulation draws.
-- Simulation/client boundary (`src/sim/`). Simulation code must not call `GameGUI`;
+- Simulation/client boundary (`src/engine/sim/`). Simulation code must not call `GameGUI`;
   it talks to the client through three channels, which `GameGUI` owns and `Game`
   points to (all null without a GUI):
   - `ClientEvents`: lossless queue of notices the simulation publishes (team
@@ -861,13 +862,13 @@ a supported open-file checker and is conservatively skipped there.
 
 ## Scene renderer
 
-Drawing reads an immutable `Scene` (`src/scene/`), never live simulation objects, so it
+Drawing reads an immutable `Scene` (`src/render/scene/`), never live simulation objects, so it
 runs while the simulation advances on another thread. `Game::drawSceneMap` accepts
 an extracted Scene directly; `Game::drawMap` supplies extraction for legacy callers.
 Offline `--render-game` and Maxima field PNGs use the same passes through a scoped,
 bounded software target. Asset loading is shared with normal game startup.
 
-- `SceneExtractor::extract(game, request, scene)` (`src/scene/SceneExtract.cpp`) is the
+- `SceneExtractor::extract(game, request, scene)` (`src/render/scene/SceneExtract.cpp`) is the
   only place presentation code reads the game. `GameGUI::drawAll` extracts
   `frameScene` once per frame and publishes it in `Game::ViewState::scene`; `drawMap`
   callers without a published scene (menu colony, editor, torus without a GUI, tests)
@@ -884,15 +885,15 @@ bounded software target. Asset loading is shared with normal game startup.
 - Adding something drawn on the map: extract what the drawing needs in
   `SceneExtract.cpp` and read it from the `Scene` in the render pass. Never read
   `Game`, `Map`, `Team`, `Unit` or `Building` state from drawing code.
-  `tests/build_system/test_scene_boundary.py` rejects live entity reads in the render
-  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/scene/` headers.
+  `test/build_system/test_scene_boundary.py` rejects live entity reads in the render
+  passes, the minimap and `GameGUIDraw*`, and simulation includes in `src/render/scene/` headers.
 - Selection panels, the HUD, the top bar, statistics pages, the minimap and the building
   tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
   handlers still act on the game, and validate against it before issuing an order.
 
 ### Simulation thread
 
-Interactive sessions run the simulation on its own thread (`src/sim/SimulationRunner`)
+Interactive sessions run the simulation on its own thread (`src/engine/sim/SimulationRunner`)
 on native platforms; there is no setting. Both browser runtimes, and any platform where
 creating the simulation thread fails, run the same session serially (`Engine::stepSession`), which
 also remains the headless default and the equivalence reference.
@@ -936,7 +937,7 @@ also remains the headless default and the equivalence reference.
   GPU rendering remains covered by the renderer suites. Narrow, explained suppressions for
   library shutdown races live in `test/tsan.supp`; never suppress game code there.
   Draft PRs skip it.
-- `SceneBuffer<T>` (`src/scene/SceneBuffer.h`) hands Scenes between the threads without
+- `SceneBuffer<T>` (`src/render/scene/SceneBuffer.h`) hands Scenes between the threads without
   either waiting for the other.
 
 ### Smooth unit motion
@@ -948,7 +949,7 @@ off by default) draws units between ticks, so threaded play at display rate uses
 - A unit's drawn position and animation frame follow `delta`, which the simulation
   advances by `SceneUnit::stepSpeed` each tick. Each frame, `GameGUI::drawAll` sets
   `MapRenderState::unitMotion` to the elapsed fraction of the tick interval since the
-  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/render/UnitMotion.h`).
+  Scene's tick (`Scene::tickTime`, `Scene::tickInterval`; `src/unit/render/UnitMotion.h`).
   Unit drawing, path lines, off-screen markers and worker circles add that fraction of
   `stepSpeed` to `delta`, stopping at the end of the current action.
 - Motion is 0 when the setting is off, when the game is paused, and when the simulation

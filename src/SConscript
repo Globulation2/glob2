@@ -17,7 +17,7 @@ if env.get('role') == 'relay':
     tests_env.Append(CPPPATH=['#test/third_party'])
     tests_env.Append(CPPDEFINES=[('RELAY_FIXTURE_DIR', '\\"%s\\"' % Dir('#test/fixtures/relay-tickets').abspath)])
     relay_tests = tests_env.Program('glob2-relay-tests', relay_objects + [
-        tests_env.Object('relay-test-' + name + '.o', '#test/relay/' + name + '.cpp')
+        tests_env.Object('relay-test-' + name + '.o', '#src/relay/' + name + '.cpp')
         for name in ('RelayTestMain', 'RelayTicketTest', 'RelayAdmissionTest')])
     tests_env.Alias('relay-tests', relay_tests)
     tests_env.Alias('relay', relay_tests)
@@ -39,7 +39,7 @@ source_files += [node.abspath for node in js_library]
 strict = local.Clone()
 strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
 strict_sources = [source for source in source_files
-                  if isinstance(source, str) and source.endswith('.cpp') and (source.startswith('script/') or source == 'ai/AIJavaScript.cpp')]
+                  if isinstance(source, str) and source.endswith('.cpp') and (source.startswith('scripting/javascript/') or source == 'ai/javascript/AIJavaScript.cpp')]
 from javascript import numeric_guard
 strict_objects = dict(zip(strict_sources, [strict.Object(source)[0] for source in strict_sources]))
 numeric_guard(strict, list(strict_objects.values()))
@@ -53,7 +53,7 @@ p1 = local.Program("glob2", program_sources + ["../libgag/src/libgag.a", "../lib
 
 # Shared with test/SConscript: every client object except the entry point, so test
 # binaries link exactly the objects the game was built from and nothing compiles twice.
-client_cpp_sources = [source for source in source_files if isinstance(source, str) and source != 'Glob2.cpp' and source.endswith('.cpp')]
+client_cpp_sources = [source for source in source_files if isinstance(source, str) and source != 'app/Glob2.cpp' and source.endswith('.cpp')]
 client_objects = [strict_objects[source] if source in strict_objects else local.Object(source)[0]
                   for source in client_cpp_sources]
 client_object_by_source = dict(zip(client_cpp_sources, client_objects))
@@ -62,13 +62,13 @@ client_libs = [local.File(source) for source in source_files if isinstance(sourc
 Export('client_objects', 'client_object_by_source', 'client_libs')
 
 
-lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
-lan_sources += local.Object('LANSessionHarness.o', '#test/LANSessionHarness.cpp')
+lan_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
+lan_sources += local.Object('LANSessionHarness.o', '#src/net/lan/LANSessionHarness.cpp')
 lan_test = local.Program('LANSessionHarness', lan_sources)
 local.Alias('lan-test', lan_test)
-online_play_test = local.Program('OnlinePlayHarness', [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
+online_play_test = local.Program('OnlinePlayHarness', [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
                                  # It reads the engine's game state to report what it sees.
-                                 + local.Object('OnlinePlayHarness.o', '#test/OnlinePlayHarness.cpp',
+                                 + local.Object('OnlinePlayHarness.o', '#src/online/OnlinePlayHarness.cpp',
                                                 CXXFLAGS=local['CXXFLAGS'] + ['-fno-access-control']))
 local.Alias('online-play-test', online_play_test)
 
@@ -82,37 +82,37 @@ local.Alias('twelve-team-benchmark', twelve_team_benchmark)
 for alias, target in [('map-generator-study', 'MapGeneratorStudy'),
                       ('map-generator-golden-test', 'MapGeneratorGoldenTest'),
                       ('map-generator-profile-fixture', 'MapGeneratorProfileFixture')]:
-    sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
-    sources += local.Object(target + '.o', '#test/' + target + '.cpp')
+    sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
+    sources += local.Object(target + '.o', '#src/map/generator/' + target + '.cpp')
     local.Alias(alias, local.Program(target, sources))
-transport_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
-transport_sources += local.Object('NetConnectionHarness.o', '#test/NetConnectionHarness.cpp')
+transport_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
+transport_sources += local.Object('NetConnectionHarness.o', '#src/net/NetConnectionHarness.cpp')
 transport_test = local.Program('net-connection-test', transport_sources)
 local.Alias('transport-test', transport_test)
 discovery_test = local.Program('lan-discovery-test', [
     'net/NetBroadcastListener.cpp', 'net/NetBroadcaster.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-    local.Object('LANDiscoveryHarness.o', '#test/LANDiscoveryHarness.cpp')])
+    local.Object('LANDiscoveryHarness.o', '#src/net/LANDiscoveryHarness.cpp')])
 local.Alias('transport-test', discovery_test)
 if env.get('wss', True):
     wss_test = local.Program('wss-transport-test', [
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('WssTransportHarness.o', '#test/WssTransportHarness.cpp')] + platform_trust_sources)
+        local.Object('WssTransportHarness.o', '#src/net/WssTransportHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', wss_test)
     listener_test = local.Program('wss-listener-test', [
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('WssListenerHarness.o', '#test/WssListenerHarness.cpp')] + platform_trust_sources)
+        local.Object('WssListenerHarness.o', '#src/net/WssListenerHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', listener_test)
     http_test = local.Program('http-fetch-test', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp',
-        local.Object('HttpFetchHarness.o', '#test/HttpFetchHarness.cpp')] + platform_trust_sources)
+        local.Object('HttpFetchHarness.o', '#src/online/HttpFetchHarness.cpp')] + platform_trust_sources)
     local.Alias('transport-test', http_test)
-    probe_file_manager = local.Object('OnlineProbeFileManager.o', '#test/OnlineProbeFileManager.cpp')
+    probe_file_manager = local.Object('OnlineProbeFileManager.o', '#src/online/OnlineProbeFileManager.cpp')
     platform_probe = local.Program('platform-client-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
         'online/MemoryStorage.cpp', 'online/PlatformClient.cpp', 'online/PlatformProtocol.cpp',
         'online/SimVersion.cpp', 'online/Sha256.cpp',
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('PlatformClientProbe.o', '#test/PlatformClientProbe.cpp')] + probe_file_manager + platform_trust_sources)
+        local.Object('PlatformClientProbe.o', '#src/online/PlatformClientProbe.cpp')] + probe_file_manager + platform_trust_sources)
     local.Alias('transport-test', platform_probe)
     screens_probe = local.Program('online-screens-probe', [
         'online/HttpFetch.cpp', 'online/HttpFetchCommon.cpp', 'online/InstanceConfig.cpp',
@@ -120,7 +120,7 @@ if env.get('wss', True):
         'online/OnlineResources.cpp', 'online/QuickMatch.cpp', 'online/RelayProbe.cpp',
         'online/MapCatalog.cpp', 'online/SimVersion.cpp', 'online/Sha256.cpp',
         'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/NetworkConfig.cpp', 'net/LanIdentity.cpp',
-        local.Object('OnlineScreensProbe.o', '#test/OnlineScreensProbe.cpp')] + probe_file_manager + platform_trust_sources)
+        local.Object('OnlineScreensProbe.o', '#src/online/OnlineScreensProbe.cpp')] + probe_file_manager + platform_trust_sources)
     local.Alias('online-screens-probe', screens_probe)
 
 local.Default(p1)
@@ -133,14 +133,15 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     env.Alias("install", env["BINDIR"])
 
     import os
-    for file in os.listdir("."):
-        if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
-            PackTar(env["TARFILE"], file)
+    for directory, _, names in os.walk("."):
+        for file in names:
+            if file.find(".cpp") != -1 or file.find(".h") != -1 or file.find(".py") != -1:
+                PackTar(env["TARFILE"], os.path.join(directory, file))
 
     PackTar(env["TARFILE"], "SConscript")
 
 # Offline production-screen capture for the mobile design review gallery.
-gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'Glob2.cpp']
+gallery_sources = [strict_objects.get(source, source) for source in source_files if source != 'app/Glob2.cpp']
 gallery_sources += local.Object('MobileGalleryHarness.o', '#tools/MobileGalleryHarness.cpp')
 local.Alias('mobile-gallery', local.Program('mobile-gallery', gallery_sources))
 

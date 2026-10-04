@@ -9,7 +9,7 @@
 #include "OnlineServices.h"
 #include "OnlineStorage.h"
 #include "team/Team.h"
-#include "script/ScriptOrders.h"
+#include "scripting/javascript/ScriptOrders.h"
 #include <ApplicationHost.h>
 #include <SDL3/SDL.h>
 #include <filesystem>

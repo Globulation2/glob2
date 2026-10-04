@@ -153,13 +153,13 @@ def exported_substitutes(root, source, files, derived):
 def game_sprites(root):
     """Names of the sprites GlobalContainer::loadGameGraphics loads, buildings included."""
     root = Path(root)
-    text = (root / 'src/GlobalContainer.cpp').read_text()
+    text = (root / 'src/app/GlobalContainer.cpp').read_text()
     body = text[text.index('void GlobalContainer::loadGameGraphics'):]
     names = set(SPRITE.findall(body[:body.index('\n}\n')]))
-    for path in sorted((root / 'src/game/entities').glob('BuildingTypes*.cpp')):
+    for path in sorted((root / 'src/building/types').glob('BuildingTypes*.cpp')):
         names.update(SPRITE.findall(path.read_text()))
     if not {'unit', 'terrain', 'gamegui', 'swarm0b'} <= names:
-        raise ValueError('could not find the game sprites in src/GlobalContainer.cpp')
+        raise ValueError('could not find the game sprites in src/app/GlobalContainer.cpp')
     return names
 
 

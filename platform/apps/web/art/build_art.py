@@ -26,7 +26,7 @@ OUT = REPO / "platform/apps/web/src/art"
 STATIC = REPO / "platform/apps/api/src/web/static"
 PUBLIC = REPO / "platform/apps/web/public"
 
-# Unit sprite atlas layout (src/render/UnitSkin.cpp, src/render/UnitAnimation.h):
+# Unit sprite atlas layout (src/unit/render/UnitSkin.cpp, src/unit/render/UnitAnimation.h):
 # frame = actionBase * 4 + direction * 32 + pose; direction 3 moves east, 7 west.
 WORKER_WALK = 64 * 4
 EXPLORER_FLY = 0

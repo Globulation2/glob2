@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def source_manifest():
     files = {}
-    for directory in ('src/script', 'third_party/quickjs-ng', 'third_party/openlibm',
+    for directory in ('src/scripting/javascript', 'third_party/quickjs-ng', 'third_party/openlibm',
                       'test/fixtures/javascript'):
         for path in sorted((ROOT / directory).rglob('*')):
             if path.is_file():

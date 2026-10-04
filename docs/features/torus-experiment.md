@@ -224,13 +224,13 @@ for a controlled frame-rate comparison.
 Standalone CPU checks (also included in Linux and Windows CI):
 
 ```sh
-c++ -std=c++14 -O2 test/TorusGeometryTest.cpp -o /tmp/torus-geometry
+c++ -std=c++14 -O2 src/render/torus/TorusGeometryTest.cpp -o /tmp/torus-geometry
 /tmp/torus-geometry
-c++ -std=c++14 -O2 test/TorusPickingTest.cpp -o /tmp/torus-picking
+c++ -std=c++14 -O2 src/render/torus/TorusPickingTest.cpp -o /tmp/torus-picking
 /tmp/torus-picking
-c++ -std=c++14 -O2 test/CloudFieldTest.cpp src/SimplexNoise.cpp -o /tmp/cloud-field
+c++ -std=c++14 -O2 src/render/clouds/CloudFieldTest.cpp src/render/clouds/SimplexNoise.cpp -o /tmp/cloud-field
 /tmp/cloud-field
-c++ -std=c++14 -O2 test/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
+c++ -std=c++14 -O2 src/map/preview/MapRenderGeometryTest.cpp -o /tmp/map-render-geometry
 /tmp/map-render-geometry
 ```
 

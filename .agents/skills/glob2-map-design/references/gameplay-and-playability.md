@@ -29,7 +29,7 @@ These are ground-unit rules; flying explorers do not respect the same barriers. 
 
 ## Build an economy that does not eat its own town
 
-**Engine rules.** Read [MapStep.cpp](../../../../src/map/MapStep.cpp), [MapResources.cpp](../../../../src/map/MapResources.cpp), and the [resource table](../../../../src/game/entities/Resources.cpp) together. Growth visits selected resource tiles, draws offsets `dx, dy` in `[-15, 15]`, and applies these gates:
+**Engine rules.** Read [MapStep.cpp](../../../../src/map/MapStep.cpp), [MapResources.cpp](../../../../src/map/MapResources.cpp), and the [resource table](../../../../src/resource/Resources.cpp) together. Growth visits selected resource tiles, draws offsets `dx, dy` in `[-15, 15]`, and applies these gates:
 
 - Wheat and wood require pure water at `(x + dx, y + dy)` and no pure sand at `(x - dx, y - dy)`. Wheat alone then passes an additional one-in-three random gate. Wood does **not** have that throttle.
 - Algae requires pure water at `(x + dx, y + dy)` and pure sand at `(x + 2*dy, y + 2*dx)`. Preserve that exact swapped/doubled probe when reasoning about fertility; it is not literally a quarter-turn rotation.
@@ -74,7 +74,7 @@ The lever costs ground wherever water arrives. Honeycomb isle's first rubble was
 
 Do not assume that an AI will recognize a beautiful farm design, clear a blocked route promptly, or reserve the exact future footprint the map requires. Existing policies differ:
 
-- [Numbi placement](../../../../src/ai/AINumbiPlacement.cpp) scores free margins around buildings, including rings two and three tiles out. A legal footprint hemmed in by sand or crops can still be unattractive to its placement policy.
+- [Numbi placement](../../../../src/ai/numbi/AINumbiPlacement.cpp) scores free margins around buildings, including rings two and three tiles out. A legal footprint hemmed in by sand or crops can still be unattractive to its placement policy.
 - [Nicowar farming](../../../../src/ai/nicowar/Farming.cpp) reserves patterned resource sites near water with forbidden areas and expands them into adjacent grass. Its [building placement](../../../../src/ai/nicowar/Buildings.cpp) also imposes sand distances and upgrade spacing. Equal raw grass area does not imply equal usable AI sites.
 - [Maxima farming and clearing](../../../../src/ai/maxima/AIMaximaFarmingPolicy.cpp) manages fertility, protected crops, placement/circulation maintenance, and wood-clearing campaigns. Its behavior depends on strategic budgets, discovered space, worker availability, cooldowns, and existing reservations. These mechanisms are evidence that congestion needs active management, not a promise that every overgrown map will recover.
 
@@ -117,7 +117,7 @@ Connectivity is a minimum, not a throughput test. Make heavily shared lanes wide
 
 ## Tower geometry and permanent boundaries
 
-**Engine rules.** [Defence towers](../../../../src/game/entities/BuildingTypesDefence.cpp) occupy 2×2 tiles and have ranges 5, 7, and 9 at player-facing levels 1–3 (table levels 0–2). [Target selection](../../../../src/building/TypeSteps.cpp) scans square rings using [turretScanTile](../../../../src/building/BuildingUtils.cpp); it does not perform a wall/water line-of-sight test. Towers can threaten units and buildings across a barrier, although range alone does not promise a shot: ammunition, target selection, and target motion also matter. Stone access supplies ammunition as well as upgrades.
+**Engine rules.** [Defence towers](../../../../src/building/types/BuildingTypesDefence.cpp) occupy 2×2 tiles and have ranges 5, 7, and 9 at player-facing levels 1–3 (table levels 0–2). [Target selection](../../../../src/building/TypeSteps.cpp) scans square rings using [turretScanTile](../../../../src/building/BuildingUtils.cpp); it does not perform a wall/water line-of-sight test. Towers can threaten units and buildings across a barrier, although range alone does not promise a shot: ammunition, target selection, and target motion also matter. Stone access supplies ammunition as well as upgrades.
 
 Three more tower rules decide whether granted towers do anything (Hidden Oasis, 2026-09-17; each verified in the source and in games): **a worker serves only buildings at or below its build level** (`Building::canUnitWorkHere`: construction, repair *and resupply*), and build level comes from a school, so a colony without one can only ever serve level-1 towers (table level 0); **a tower is an ammunition counter**, 12, 16 or 20 shots plus a reserve of stone for as many again, about six workers, after which it is scenery unless its owner's workers can walk to it and find stone; and **armour decides who can break it**: a level-0 warrior hits for 13 less the tower's armour of 8, 12 or 15, so 5 a hit on a level-1 tower's 480 hp and 1 a hit on a level-2 tower's 1,440. A tower with no unit in range shoots buildings, so two towers in range of each other duel from the first tick. Workers never avoid an enemy tower's range: a site that asks for a resource behind one marches them under it.
 
@@ -129,7 +129,7 @@ A permanent boundary also provides permanent mining frontage. Consider whether i
 
 ## A scarce resource as the prize
 
-A map about one resource is designed from the engine's cost tables outward (`src/game/entities/BuildingTypes*.cpp`). For stone:
+A map about one resource is designed from the engine's cost tables outward (`src/building/types/BuildingTypes*.cpp`). For stone:
 
 - **Every level-0 building is stone-free.** Inns, hospitals, schools, pools, barracks and swarms cost none. Towers can be built without it but fire it, and walls, racetracks, markets and every level-1 and level-2 upgrade cost it. Colonies without stone still grow and train warriors, so a monopoly shows up as unarmed towers and unupgraded buildings, not as starvation.
 - **One quarry is permanent,** because stone is eternal. Its output is limited by how many workers can stand beside it, so the quarry's size is a throughput control, and its shape decides frontage: a compact knot of 9 tiles has more standing room than a line of 9.

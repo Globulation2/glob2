@@ -3,7 +3,7 @@
 #include "ui/ThemeCatalog.h"
 #include "GlobalContainer.h"
 #include "GUIMapPreview.h"
-#include "gui/InGameTouchTheme.h"
+#include "InGameTouchTheme.h"
 #include "InterfacePresentation.h"
 #include <GUIStyle.h>
 #include <StringTable.h>

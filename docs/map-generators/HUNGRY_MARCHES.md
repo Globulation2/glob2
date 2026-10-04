@@ -83,7 +83,7 @@ The control studies, rotated AI games, profiling commands and their retained
 evidence were reviewed in PR #355; the bundle is available from that PR and from git
 history (`git show af8f97308:test/fixtures/hungry-marches/README.md`), not in the tree.
 
-See `test/HungryMarchesContracts.h` for telemetry repeatability, supported shapes,
+See `src/map/generator/HungryMarchesContracts.h` for telemetry repeatability, supported shapes,
 resource extremes, late growth and deliberate corruption checks. Reproduce with:
 
 ```sh

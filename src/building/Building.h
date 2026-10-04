@@ -452,7 +452,7 @@ private:
 		Unit* choosen;
 	};
 
-	/// Lets test/RoundTripHungerGateHarness.cpp reach considerUnitForResource
+	/// Lets src/unit/RoundTripHungerGateHarness.cpp reach considerUnitForResource
 	/// without exposing it to game callers, as GameGUI does for its own harness.
 	friend class RoundTripHungerGateHarness;
 

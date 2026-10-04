@@ -15,5 +15,5 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
 ```
 
 Use the corresponding native build path on other platforms. This fixture is
-separate from `tests/baselines/`, whose files are shared with external determinism
+separate from `test/baselines/`, whose files are shared with external determinism
 tooling and must not be replaced just to keep browser import tests current.

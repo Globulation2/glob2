@@ -20,22 +20,26 @@ RENDER_IMPLEMENTATIONS = {
 CI_TOOL_TESTS = {
     "test/test_run_tests.py",
     "test/test_ci_failure_aggregation.py",
-    "tests/build_system/test_ci_changed_paths.py",
-    "tests/build_system/test_ci_tiers.py",
-    "tests/build_system/test_ci_run_metrics.py",
-    "tests/build_system/test_ci_concurrency.py",
+    "test/build_system/test_ci_changed_paths.py",
+    "test/build_system/test_ci_tiers.py",
+    "test/build_system/test_ci_run_metrics.py",
+    "test/build_system/test_ci_concurrency.py",
 }
+# Outside the drawing and AI directories before they gained these files: every job.
+FULL_PATHS = ("src/render/scene/", "src/ai/AIThreading.h", "src/hud/AllyTeamWidgetIndex.h")
+
+
 def platform_stack_changed(paths):
-    from ci_policy import PLATFORM_STACK_PATHS, cheap_path
-    return any(path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path) for path in paths)
+    from ci_policy import PLATFORM_STACK_PATHS, cheap_path, is_test_source
+    return any(path.startswith(PLATFORM_STACK_PATHS) and not cheap_path(path) and not is_test_source(path) for path in paths)
 
 
 TRANSPORT_TESTS = {
-    "test/NetConnectionHarness.cpp",
+    "src/net/NetConnectionHarness.cpp",
     "test/NativeMultiplayerPeer.cpp",
-    "test/WssTransportHarness.cpp",
-    "test/WssListenerHarness.cpp",
-    "test/LANDiscoveryHarness.cpp",
+    "src/net/WssTransportHarness.cpp",
+    "src/net/WssListenerHarness.cpp",
+    "src/net/LANDiscoveryHarness.cpp",
     "test/run-network-transport-tests.py",
 }
 
@@ -44,7 +48,7 @@ def classify(paths):
     if not paths:
         return {job: True for job in JOBS}
 
-    from ci_policy import cheap_path
+    from ci_policy import PRESENTATION, TOOLING_TESTS, cheap_path, is_test_source, unclassified
     native = browser = map_generators = deployment = cross_platform = platform = False
     platform_stack = platform_stack_changed(paths)
     for path in paths:
@@ -66,10 +70,10 @@ def classify(paths):
         if path in TRANSPORT_TESTS:
             browser = True
             continue
-        if path.startswith(("test/fixtures/javascript/", "test/Script", "test/support/ScriptCorpus")) or path in {
+        if path.startswith(("test/fixtures/javascript/", "test/support/ScriptCorpus")) or is_test_source(path) and Path(path).name.startswith("Script") or path in {
             "test/check_javascript.py", "test/check_javascript_corpus.py", "test/check_javascript_evidence.py",
             "test/build_provenance.py", "test/support/TestMain.cpp",
-            "test/ImageAssetTest.cpp",
+            "libgag/src/ImageAssetTest.cpp",
         }:
             # These cases and fixtures are compiled/executed in the production
             # WebAssembly harness too; native-only CI would leave that boundary untested.
@@ -83,23 +87,25 @@ def classify(paths):
         if path.startswith("browser/") and browser_only(path):
             browser = True
             continue
-        if path.startswith("deploy/") or path.startswith("tests/deployment/"):
+        if path.startswith("deploy/") or path.startswith("test/deployment/"):
             browser = True
             deployment = True
             continue
-        if path.startswith(("tests/transport/",)):
+        if path.startswith(("test/transport/",)):
             browser = True
             continue
         # The match relay builds and runs in the native-programs job only.
-        if path.startswith(("src/relay/", "tests/relay/", "test/relay/", "test/fixtures/relay-tickets/")):
+        if path.startswith(("src/relay/", "test/relay_service/", "test/fixtures/relay-tickets/")):
             browser = True
             continue
-        if path.startswith("test/") and path not in {
+        if (path.startswith("test/") and not path.startswith(TOOLING_TESTS) or is_test_source(path)) and path not in {
             "test/run-browser-determinism.py",
         } and not Path(path).name.startswith("MapGenerator"):
             native = True
             continue
-        if path in RENDER_IMPLEMENTATIONS or path.startswith(("src/ai/", "src/gui/", "src/render/")):
+        if unclassified(path) or is_test_source(path) or path.startswith(FULL_PATHS):
+            return {**{job: True for job in JOBS}, "platform_stack": platform_stack}
+        if path in RENDER_IMPLEMENTATIONS or path.startswith(("src/ai/",) + PRESENTATION):
             native = browser = cross_platform = True
             continue
         if path.startswith(("src/net/", "src/yog/")):
@@ -128,7 +134,7 @@ def browser_only(path):
 
 
 def coverage_profile(paths, event, selected):
-    from ci_policy import cheap_path
+    from ci_policy import PRESENTATION, TOOLING_TESTS, cheap_path, is_test_source, unclassified
     compatibility = event != 'pull_request' or not paths
     browsers_all = compatibility
     android = event != 'pull_request' or not paths
@@ -136,14 +142,15 @@ def coverage_profile(paths, event, selected):
     for path in paths:
         if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS or cheap_path(path):
             continue
-        if path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
+        if not is_test_source(path) and path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
             android = True
-        if path.startswith(('browser/', 'src/gui/', 'src/render/')) or path in RENDER_IMPLEMENTATIONS:
+        if path.startswith(('browser/',) + PRESENTATION) or path in RENDER_IMPLEMENTATIONS:
             browsers_all = True
         # Conservative omissions only for known test-only and implementation-only boundaries.
-        primary_safe = (path.startswith('test/') and not path.startswith(('test/Script','test/fixtures/','test/support/'))
-                        and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/build_provenance.py','test/ImageAssetTest.cpp'))
-        primary_safe = primary_safe or path in RENDER_IMPLEMENTATIONS or (path.startswith(('src/gui/','src/render/')) and path.endswith('.cpp')) or (path.startswith('browser/') and browser_only(path)) or path.startswith(('deploy/','tests/deployment/','tests/transport/'))
+        primary_safe = ((path.startswith('test/') and not path.startswith(('test/fixtures/','test/support/') + TOOLING_TESTS)
+                         or is_test_source(path) and not Path(path).name.startswith('Script'))
+                        and path not in ('test/run-browser-determinism.py','test/check_javascript.py','test/check_javascript_corpus.py','test/check_javascript_evidence.py','test/build_provenance.py','libgag/src/ImageAssetTest.cpp'))
+        primary_safe = primary_safe or path in RENDER_IMPLEMENTATIONS or (path.startswith(PRESENTATION) and not unclassified(path) and not path.startswith(FULL_PATHS) and path.endswith('.cpp')) or (path.startswith('browser/') and browser_only(path)) or path.startswith(('deploy/','test/deployment/','test/transport/'))
         # Shard/runtime configuration changes must exercise the oldest supported
         # platform too, even though their files live under test/.
         if path.startswith('test/ci-timings/') or path in {
@@ -153,7 +160,7 @@ def coverage_profile(paths, event, selected):
             primary_safe = False
         if path.endswith(('.h','.hpp','.hh')) or not primary_safe:
             compatibility = True
-            if not path.startswith(('test/', 'tests/', '.github/')):
+            if not path.startswith(('test/', '.github/')) and not is_test_source(path):
                 android = True
             reasons.append('compatibility or unknown path: '+path)
     browsers_all = browsers_all or compatibility

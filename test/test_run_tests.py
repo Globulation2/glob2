@@ -44,20 +44,20 @@ class WindowsCrashDiagnosticsTests(unittest.TestCase):
 LISTING = """<?xml version="1.0" encoding="UTF-8"?>
 <doctest binary="x" version="2.4.11">
   <Options order_by="file"/>
-  <TestCase name="feeds the last worker" testsuite="HungryDefeat" filename="test/HungryDefeatHarness.cpp" line="12" skipped="false"/>
-  <TestCase name="renders the bar [display:1024x768][artifacts]" testsuite="PointBar" filename="test/PointBarRenderTest.cpp" line="40" skipped="false"/>
-  <TestCase name="sweeps every landscape [slow]" testsuite="MapGeneratorDefaults" filename="test/MapGeneratorDefaultsTest.cpp" line="7" skipped="false"/>
-  <TestCase name="binds a port [network]" testsuite="NetConnection" filename="test/NetConnectionHarness.cpp" line="9" skipped="false"/>
+  <TestCase name="feeds the last worker" testsuite="HungryDefeat" filename="src/unit/HungryDefeatHarness.cpp" line="12" skipped="false"/>
+  <TestCase name="renders the bar [display:1024x768][artifacts]" testsuite="PointBar" filename="src/render/PointBarRenderTest.cpp" line="40" skipped="false"/>
+  <TestCase name="sweeps every landscape [slow]" testsuite="MapGeneratorDefaults" filename="src/map/generator/MapGeneratorDefaultsTest.cpp" line="7" skipped="false"/>
+  <TestCase name="binds a port [network]" testsuite="NetConnection" filename="src/net/NetConnectionHarness.cpp" line="9" skipped="false"/>
   <OverallResultsTestCases unskipped="4"/>
 </doctest>
 """
 
 FAKE_CLASSNAME_SHELL = (
     'case "$name" in\n'
-    '"feeds the last worker") class="test/HungryDefeatHarness.cpp";;\n'
-    '"sweeps every landscape [slow]") class="test/MapGeneratorDefaultsTest.cpp";;\n'
-    '"binds a port [network]") class="test/NetConnectionHarness.cpp";;\n'
-    '*) class="test/PointBarRenderTest.cpp";; esac\n'
+    '"feeds the last worker") class="src/unit/HungryDefeatHarness.cpp";;\n'
+    '"sweeps every landscape [slow]") class="src/map/generator/MapGeneratorDefaultsTest.cpp";;\n'
+    '"binds a port [network]") class="src/net/NetConnectionHarness.cpp";;\n'
+    '*) class="src/render/PointBarRenderTest.cpp";; esac\n'
 )
 
 
@@ -169,22 +169,22 @@ class ShardTest(unittest.TestCase):
 
     def test_same_name_in_two_suites_stays_in_its_suite(self):
         listing = LISTING.replace('<OverallResultsTestCases', '<TestCase name="feeds the last worker" testsuite="InnSwap" '
-                                  'filename="test/InnSwapHarness.cpp" line="3" skipped="false"/>\n  <OverallResultsTestCases')
+                                  'filename="src/building/InnSwapHarness.cpp" line="3" skipped="false"/>\n  <OverallResultsTestCases')
         cases = run_tests.parse_listing(listing, 'unit')
         kept, _ = run_tests.select(cases, args(filter=['InnSwap/*']))
         jobs = run_tests.make_jobs(kept, args(), cases)
         self.assertEqual(len(jobs), 1)
         self.assertEqual(run_tests.doctest_filter(jobs[0]), ['-tce=*[display*', '-tc=feeds the last worker', '-ts=InnSwap'])
         foreign = run_tests.Result(jobs[0], 'pass', 0.1, junit=(
-            '<testsuites><testsuite name="x"><testcase classname="test/HungryDefeatHarness.cpp" name="feeds the last worker"/>'
-            '<testcase classname="test/InnSwapHarness.cpp" name="feeds the last worker"/></testsuite></testsuites>'))
+            '<testsuites><testsuite name="x"><testcase classname="src/unit/HungryDefeatHarness.cpp" name="feeds the last worker"/>'
+            '<testcase classname="src/building/InnSwapHarness.cpp" name="feeds the last worker"/></testsuite></testsuites>'))
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'junit.xml'
             run_tests.merge_junit([foreign], path)
             text = path.read_text()
         self.assertIn('classname="InnSwap"', text)
         self.assertNotIn('classname="InnSwap" name="feeds the last worker"/><testcase classname="InnSwap"', text)
-        self.assertIn('classname="test/HungryDefeatHarness.cpp"', text)
+        self.assertIn('classname="src/unit/HungryDefeatHarness.cpp"', text)
         engine = run_tests.make_jobs(run_tests.parse_listing(LISTING, 'engine'), args())
         self.assertEqual(len(engine), 4)
         self.assertEqual(run_tests.doctest_filter(engine[0]), ['-tc=feeds the last worker', '-ts=HungryDefeat'])
@@ -237,7 +237,7 @@ class JunitTest(unittest.TestCase):
         cases = run_tests.parse_listing(LISTING, 'engine')
         jobs = run_tests.make_jobs(cases, args())
         passed = run_tests.Result(jobs[0], 'pass', 0.5, junit=(
-            '<testsuites><testsuite name="test/HungryDefeatHarness.cpp"><testcase classname="test/HungryDefeatHarness.cpp"'
+            '<testsuites><testsuite name="src/unit/HungryDefeatHarness.cpp"><testcase classname="src/unit/HungryDefeatHarness.cpp"'
             ' name="feeds the last worker" time="0.4"/></testsuite></testsuites>'))
         crashed = run_tests.Result(jobs[1], 'timeout', 300.0, output='tail of output')
         skipped = run_tests.Result(jobs[2], 'skip', 0.0)
@@ -263,7 +263,7 @@ class EndToEndTest(unittest.TestCase):
             binary.write_text('#!/bin/sh\n'
                               'for a in "$@"; do case "$a" in -ltc) printf "%b" "' + listing + '"; exit 0;; esac; done\n'
                               'test "$GLOB2_TEST_FULLSCREEN" = "$EXPECTED_FULLSCREEN" || exit 9\n'
-                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites><testsuite><testcase classname=\\"test/HungryDefeatHarness.cpp\\" name=\\"feeds the last worker\\"/></testsuite></testsuites>" > "${a#-o=}";; esac; done\n')
+                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites><testsuite><testcase classname=\\"src/unit/HungryDefeatHarness.cpp\\" name=\\"feeds the last worker\\"/></testsuite></testsuites>" > "${a#-o=}";; esac; done\n')
             binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
             for in_process in (False, True):
                 for fullscreen in (False, True):
@@ -352,7 +352,7 @@ class EndToEndTest(unittest.TestCase):
             self.assertIn('FAIL NetConnection/binds a port [network]', result.stdout)
             self.assertIn('PASS HungryDefeat/feeds the last worker', result.stdout)
             self.assertIn('boom', result.stdout)
-            self.assertIn('::error file=test/NetConnectionHarness.cpp,line=9', result.stdout)
+            self.assertIn('::error file=src/net/NetConnectionHarness.cpp,line=9', result.stdout)
             self.assertIn('2 passed, 1 failed, 1 skipped', result.stdout)
             self.assertTrue(junit.exists())
 

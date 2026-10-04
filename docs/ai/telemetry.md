@@ -38,7 +38,7 @@ return statement. No observations, scores, predicates, pathfinding or entity/map
 scans are recomputed for telemetry. Saving and final export refresh the scalar
 snapshot without polling an AI.
 
-The field catalog in `src/ai/AITelemetryFields.inc` generates both numeric indices
+The field catalog in `src/ai/telemetry/AITelemetryFields.inc` generates both numeric indices
 and field descriptions. Each descriptor contains its name, numeric type, kind,
 unit and meaning. Signed/unsigned integers have 64-bit storage; doubles preserve
 their bit representation in saves. These values are excluded from gameplay,

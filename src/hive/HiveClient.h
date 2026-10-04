@@ -2,7 +2,7 @@
 #pragma once
 #include "HiveWorker.h"
 #include "online/PlatformClient.h"
-#include "script/ScriptObservations.h"
+#include "scripting/javascript/ScriptObservations.h"
 #include <future>
 #include <memory>
 #include <map>
