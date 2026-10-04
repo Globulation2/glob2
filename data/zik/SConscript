@@ -10,7 +10,7 @@ if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
         directory = os.path.relpath(source_directory, source_root)
         for name in sorted(files):
             file = os.path.normpath(os.path.join(directory, name))
-            if name.endswith(".opus"):
+            if name.endswith(".opus") or name == "LICENSE.txt":
                 PackTar(env["TARFILE"], file)
                 env.Install(env["INSTALLDIR"] + "/glob2/data/zik/" + directory, file)
             elif name == "SConscript":

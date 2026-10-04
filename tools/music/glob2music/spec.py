@@ -1,18 +1,18 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The trio format and every quality threshold: the single source of numbers.
 
-Globulation 2 plays in-game music as a *trio*: ``data/zik/<set_id>/a1.ogg`` (calm),
-``a2.ogg`` (building) and ``a3.ogg`` (combat). ``SoundMixer::openMusicSet`` accepts a
-set only when all three are 44100 Hz stereo Ogg Vorbis files with one logical stream
+Globulation 2 plays in-game music as a *trio*: ``data/zik/<set_id>/a1.opus`` (calm),
+``a2.opus`` (building) and ``a3.opus`` (combat). ``SoundMixer::openMusicSet`` accepts a
+set only when all three are 48000 Hz stereo Ogg Opus files with one logical stream
 and the same PCM frame count, because the mixer switches mood by crossfading into
 the next file *at the current playback position* and loops each file forever. Its
-crossfade lasts ``FADE_SAMPLE_COUNT`` = 32768 interleaved samples, about 0.37 s, so
+crossfade lasts ``FadeSampleCount`` = 35666 interleaved samples, about 0.37 s, so
 the moods must agree on the beat to within a few milliseconds.
 
 Everything else in the pipeline reads its numbers from here:
 
 * ``master.finish`` masters to ``TrioSpec.target_lufs`` and ``master_ceiling_dbtp``;
-* ``audio.write_trio`` encodes at ``vorbis_quality``;
+* ``audio.write_trio`` encodes at 48 kbps VBR total for stereo;
 * every check in ``glob2music.qa`` reads its pass/warn/fail bands from
   ``TrioSpec.qa`` (a ``QAThresholds``).
 
@@ -28,12 +28,12 @@ original soundtrack's inverted loudness ladder, say) *waives* that rule in its
 """
 from dataclasses import dataclass, field
 
-SAMPLE_RATE = 44100
+SAMPLE_RATE = 48000
 CHANNELS = 2
 
-#: Mood names in file order. ``a1.ogg`` is calm, ``a2.ogg`` building, ``a3.ogg`` combat.
+#: Mood names in file order. ``a1.opus`` is calm, ``a2.opus`` building, ``a3.opus`` combat.
 MOODS = ('calm', 'building', 'combat')
-FILENAMES = {'calm': 'a1.ogg', 'building': 'a2.ogg', 'combat': 'a3.ogg'}
+FILENAMES = {'calm': 'a1.opus', 'building': 'a2.opus', 'combat': 'a3.opus'}
 
 
 @dataclass(frozen=True)
@@ -55,7 +55,7 @@ class QAThresholds:
     # -- loudness -------------------------------------------------------------
     # Integrated loudness may deviate this far from the mood's target.
     lufs_tolerance: float = 1.0
-    # Hard ceiling on the decoded true peak (4x oversampled), after Vorbis encoding.
+    # Hard ceiling on the decoded true peak (4x oversampled), after Opus encoding.
     true_peak_max_dbtp: float = -1.0
     # calm <= building <= combat, allowing this much inversion between neighbours.
     ladder_slack_lu: float = 0.3
@@ -151,17 +151,8 @@ class TrioSpec:
     #: Integrated loudness targets (LUFS, ITU-R BS.1770-4) per mood: calm sits
     #: under game sound effects without vanishing; combat is the loudest.
     target_lufs: dict = field(default_factory=lambda: {'calm': -18.0, 'building': -17.0, 'combat': -16.0})
-    #: The limiter's true-peak ceiling, 0.5 dB under the -1 dBTP QA ceiling. Vorbis q2
-    #: encoding can still overshoot it by about 1 dB (1.03 dB at most on the shipped
-    #: sets), so ``manifest.encode_within_ceiling`` measures each decoded file and
-    #: trims any mood above -1.2 dBTP (by at most 0.73 dB on the shipped sets).
+    #: Mastering ceiling; decoded peaks are measured and trimmed after encoding.
     master_ceiling_dbtp: float = -1.5
-    #: libvorbis VBR quality (-q:a). 2 is ~80 kb/s stereo. The maintainer chose it
-    #: after a blind listening test against q3 and q6-7 (~190 kb/s): it roughly
-    #: halves the shipped size with no audible loss under game sound (the nine sets
-    #: beside the original total 25.7 MB in data/zik). Opus would save ~25% more but
-    #: needs an engine change; see docs/assets/music-pipeline.md.
-    vorbis_quality: float = 2.0
     qa: QAThresholds = field(default_factory=QAThresholds)
 
 

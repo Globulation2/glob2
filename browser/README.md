@@ -102,7 +102,7 @@ The loading page shows megabytes, a percentage and an estimate of the time left.
 
 The rest follows in the background once the main menu is up, most needed first:
 
-- `menu-music`; the menu music starts when it arrives.
+- `menu-music`: `intro.opus` and `menu.opus`; music starts when it arrives.
 - `font-cjk`, the full font. The game reopens its fonts when it arrives, so
   Chinese, Japanese and Korean player names and chat get their glyphs (the core
   copy already has the characters of every language's own name). With a Chinese,
@@ -112,7 +112,8 @@ The rest follows in the background once the main menu is up, most needed first:
   they arrive. An interface in another language loads them before the game starts;
   on a first visit with no saved language, that is the browser's preferred language
   when the game has a catalog for it (`src/app/SystemLanguage.cpp`).
-- `music-sets`: the soundtrack sets beyond the original. Until it arrives the
+- `music-sets`: all nine soundtrack sets beyond the original, encoded as stereo
+  Opus at 48 kbps VBR. Until it arrives the
   game lists and plays only the original set; a saved preference for another set
   falls back to a random available one.
 - `music` and `hd`: the in-game music and the high-resolution artwork (WebGL2

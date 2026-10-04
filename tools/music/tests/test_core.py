@@ -111,13 +111,34 @@ class TrioIoTest(unittest.TestCase):
         with self.assertRaises(AudioFormatError):
             Trio(calm=np.zeros(10), building=np.zeros(11), combat=np.zeros(10))
         n = SR * 2 + 123
-        trio = Trio(**{m: noise_loop(n / SR, k)[:n] for k, m in enumerate(('calm', 'building', 'combat'))})
+        trio = Trio(**{m: np.random.default_rng(k).standard_normal((n, 2)) * 0.1 for k, m in enumerate(('calm', 'building', 'combat'))})
         with tempfile.TemporaryDirectory() as tmp:
             write_trio(trio, tmp)
             back = read_trio(tmp)
             self.assertEqual(back.frames, n)
-            p = preview.make(back, Path(tmp) / 'preview.ogg', segment_s=1.0, crossfade_s=0.2)
+            p = preview.make(back, Path(tmp) / 'preview.opus', segment_s=1.0, crossfade_s=0.2)
             self.assertTrue(p.exists())
+
+    def test_failed_trio_encode_preserves_all_previous_files(self):
+        from unittest import mock
+        from glob2music import audio
+        trio = Trio(**{m: np.zeros((4813, 2)) for m in ('calm', 'building', 'combat')})
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = write_trio(trio, tmp)
+            before = {m: p.read_bytes() for m, p in paths.items()}
+            writer = audio.write_opus
+            count = 0
+            def fail_second(y, path, **kwargs):
+                nonlocal count
+                count += 1
+                if count == 2:
+                    raise RuntimeError('encoder failed')
+                return writer(y, path, **kwargs)
+            with mock.patch.object(audio, 'write_opus', side_effect=fail_second):
+                with self.assertRaises(RuntimeError):
+                    write_trio(trio, tmp)
+            self.assertEqual({m: p.read_bytes() for m, p in paths.items()}, before)
+            self.assertFalse(list(Path(tmp).glob('.trio-*')))
 
     def test_preview_follows_shared_position(self):
         n = SR
@@ -126,6 +147,21 @@ class TrioIoTest(unittest.TestCase):
         self.assertEqual(len(y), int(1.5 * SR) * 4)
         self.assertAlmostEqual(y[int(2.0 * SR), 0], 0.2)
         self.assertAlmostEqual(y[int(3.5 * SR), 0], 0.3)
+
+
+class SeamPreparationTest(unittest.TestCase):
+    def test_configured_taper_keeps_frames_and_other_moods(self):
+        trio = Trio(**{m: noise_loop(1.0, k) for k, m in enumerate(('calm', 'building', 'combat'))})
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as tmp, mock.patch('glob2music.master.loop_true_peak_dbtp', return_value=-10):
+            written = encode_within_ceiling(trio, Path(tmp), seam_ms={'calm': 2})
+            self.assertEqual(written.frames, trio.frames)
+            np.testing.assert_array_equal(written.building, trio.building)
+            np.testing.assert_array_equal(written.combat, trio.combat)
+            self.assertEqual(written.calm[0].tolist(), [0, 0])
+            self.assertEqual(written.calm[-1].tolist(), [0, 0])
+            np.testing.assert_array_equal(written.calm[96:-96], trio.calm[96:-96])
+            self.assertEqual(written.meta['encode_seam_ms'], {'calm': 2})
 
 
 class SourcesTest(unittest.TestCase):
@@ -171,6 +207,18 @@ class ManifestTest(unittest.TestCase):
 
 
 class EncodeCeilingTest(unittest.TestCase):
+    def test_bounded_peak_correction_enforces_the_actual_ceiling(self):
+        from unittest import mock
+        trio = Trio(**{m: np.zeros((4813, 2)) for m in ('calm', 'building', 'combat')})
+        for peak, safe in [(-1.1, True), (-0.9, False)]:
+            with self.subTest(peak=peak), tempfile.TemporaryDirectory() as tmp, \
+                    mock.patch('glob2music.master.loop_true_peak_dbtp', return_value=peak):
+                if safe:
+                    encode_within_ceiling(trio, Path(tmp), attempts=0)
+                else:
+                    with self.assertRaises(RuntimeError):
+                        encode_within_ceiling(trio, Path(tmp), attempts=0)
+
     def test_encoded_true_peak_stays_under_the_qa_ceiling(self):
         # Dense full-scale noise right at the mastering ceiling: low-quality Vorbis
         # overshoots it, and encode_within_ceiling must trim until it doesn't.
@@ -180,7 +228,7 @@ class EncodeCeilingTest(unittest.TestCase):
         trio = Trio(y, y.copy(), y.copy())
         with tempfile.TemporaryDirectory() as tmp:
             written = encode_within_ceiling(trio, Path(tmp), DEFAULT_SPEC)
-            for mood, name in (('calm', 'a1.ogg'), ('building', 'a2.ogg'), ('combat', 'a3.ogg')):
+            for mood, name in (('calm', 'a1.opus'), ('building', 'a2.opus'), ('combat', 'a3.opus')):
                 decoded, _ = read_audio(Path(tmp) / name)
                 self.assertLessEqual(master.loop_true_peak_dbtp(decoded), DEFAULT_SPEC.qa.true_peak_max_dbtp)
                 self.assertLessEqual(written.meta['encode_trim_db'][mood], 0.0)

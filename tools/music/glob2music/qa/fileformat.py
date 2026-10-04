@@ -1,18 +1,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Check ``format``: will the game load this trio at all?
 
-What it measures: for each of a1/a2/a3.ogg, that the file is an Ogg container with
-exactly one logical stream, that the stream is Vorbis, 44100 Hz and stereo; across the
+What it measures: for each of a1/a2/a3.opus, that the file is an Ogg container with
+exactly one logical stream, that the stream is Opus, 48000 Hz and stereo; across the
 trio, that the three decoded PCM frame counts are identical; and that the loop length
 lies within ``min_seconds``..``max_seconds``.
 
-Why it matters: ``SoundMixer::openMusicSet`` refuses a set unless ``ov_info`` reports
-44100 Hz stereo, ``ov_streams`` is 1 and ``ov_pcm_total`` is equal for all three files,
-because the mixer crossfades between moods at the *same playback position* and wraps
-every file at the same frame. A one-frame difference would make the moods drift apart
-by a frame per loop; the game prefers refusing the set. The decoded length here comes
-from libsndfile, which (like libvorbisfile) reads the final granule position, and was
-cross-checked against ffmpeg and ffprobe on the whole calibration corpus.
+Why it matters: opusfile reports positions at 48 kHz after pre-skip and end
+trimming. Require one complete logical stream, decode the complete file, and
+compare its decoded frames with final granule minus pre-skip as well as the other
+moods. A frame mismatch would make looping moods drift.
 
 Thresholds: these are hard rules of the engine, not tuned values, so every violation
 is a ``fail``. The length band (50-120 s) is the soundtrack brief's: below 50 s a loop
@@ -30,7 +27,7 @@ NAME = 'format'
 def check(trio, spec):
     """Run the format check on a ``TrioAudio``; returns a ``CheckResult``."""
     t = spec.qa
-    cr = CheckResult(NAME, description='rate, channels, single Vorbis stream, equal frame counts, length')
+    cr = CheckResult(NAME, description='rate, channels, single Opus stream, equal frame counts, length')
     for mood, err in sorted(getattr(trio, 'errors', {}).items()):
         cr.add(f'{mood}.readable', FAIL, err, 'a decodable file', err)
     for mood in trio.present():
@@ -38,15 +35,17 @@ def check(trio, spec):
         if a.path is not None:
             try:
                 streams = ogg_streams(a.path)
-                ok = len(streams) == 1 and streams[0]['codec'] == 'vorbis'
+                ok = len(streams) == 1 and streams[0]['codec'] == 'opus' and streams[0]['eos']
+                if ok:
+                    ok = streams[0]['last_granule'] - streams[0]['pre_skip'] == a.frames
                 desc = ', '.join(f"{s['codec']}#{s['serial']:08x}" for s in streams)
-                cr.add(f'{mood}.container', PASS if ok else FAIL, len(streams), 'one Vorbis stream',
+                cr.add(f'{mood}.container', PASS if ok else FAIL, len(streams), 'one Opus stream',
                        f'{FILENAMES[mood]}: {desc}')
             except AudioFormatError as e:
-                cr.add(f'{mood}.container', FAIL, 'not Ogg', 'one Vorbis stream', str(e))
+                cr.add(f'{mood}.container', FAIL, 'not Ogg', 'one Opus stream', str(e))
         cr.add(f'{mood}.rate', PASS if a.sample_rate == SAMPLE_RATE else FAIL, a.sample_rate,
                f'== {SAMPLE_RATE}', unit='Hz')
-        channels = a.samples.shape[1]
+        channels = a.info.channels if a.info is not None else a.samples.shape[1]
         cr.add(f'{mood}.channels', PASS if channels == spec.channels else FAIL, channels, f'== {spec.channels}')
     present = trio.present()
     if len(present) >= 2:

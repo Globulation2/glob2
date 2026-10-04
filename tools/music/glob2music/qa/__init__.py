@@ -3,7 +3,7 @@
 
 Pipeline role: ``build`` runs the suite on every freshly encoded set, ``install``
 refuses a set that fails, and ``python3 -m glob2music check <dir>`` runs it on any
-directory holding ``a1.ogg``/``a2.ogg``/``a3.ogg`` (including sets made outside the
+directory holding ``a1.opus``/``a2.opus``/``a3.opus`` (including sets made outside the
 pipeline). It needs only numpy, scipy, soundfile, pyloudnorm and librosa, and checks
 an 80 s trio in roughly 30 s on one CPU core (the 111 s woodland in about 40-50 s).
 
@@ -14,7 +14,7 @@ threshold was calibrated):
 =========== ================================================== ==============
 check       measures                                           can fail?
 =========== ================================================== ==============
-format      Ogg/Vorbis, 44.1 kHz, stereo, one stream, equal    yes
+format      Ogg/Opus, 48 kHz, stereo, one stream, equal    yes
             frame counts, 50-120 s
 loudness    integrated LUFS vs -18/-17/-16, true peak, ladder  yes
 seam        click, spectral jump, level jump at the wrap       yes
@@ -66,7 +66,7 @@ __all__ = ['CHECKS', 'CHECK_NAMES', 'CheckResult', 'Measure', 'Report', 'TrioAud
 def run_checks(target, spec=DEFAULT_SPEC, waivers=None, only=None):
     """Run the QA suite and return a ``Report``.
 
-    ``target`` is a directory holding a1/a2/a3.ogg, a ``TrioAudio`` or an in-memory
+    ``target`` is a directory holding a1/a2/a3.opus, a ``TrioAudio`` or an in-memory
     ``Trio`` (container checks are then skipped). ``waivers`` maps measure names or
     prefixes to reasons. ``only`` restricts the run to some check names. A check that
     raises is reported as a ``fail`` of ``<check>.error`` rather than aborting the

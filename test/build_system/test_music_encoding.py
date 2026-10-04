@@ -28,6 +28,34 @@ class MusicEncodingTests(unittest.TestCase):
             self.assertEqual(target.read_bytes(), before)
             self.assertFalse(list(Path(folder).glob('.opus-*')))
 
+    def test_circular_padding_is_trimmed_to_the_original_frame_count(self):
+        import ctypes
+        import ctypes.util
+        with tempfile.TemporaryDirectory() as folder:
+            source, target = Path(folder) / 'source.wav', Path(folder) / 'a1.opus'
+            with wave.open(str(source), 'wb') as out:
+                out.setparams((2, 2, 48000, 4813, 'NONE', 'PCM'))
+                out.writeframes(b'\x10\x00\x20\x00' * 4813)
+            record = encode(source, target, 4813, loop=True)
+            self.assertEqual(record['frames'], 4813)
+            self.assertEqual(record['loop_preroll_frames'], 4813)
+            # Check the actual runtime timeline independently of FFmpeg.
+            library = ctypes.util.find_library('opusfile')
+            if library:
+                lib = ctypes.CDLL(library)
+                lib.op_open_file.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_int)]
+                lib.op_open_file.restype = ctypes.c_void_p
+                lib.op_pcm_total.argtypes = [ctypes.c_void_p, ctypes.c_int]
+                lib.op_pcm_total.restype = ctypes.c_longlong
+                lib.op_free.argtypes = [ctypes.c_void_p]
+                error = ctypes.c_int()
+                decoder = lib.op_open_file(str(target).encode(), ctypes.byref(error))
+                self.assertTrue(decoder)
+                try:
+                    self.assertEqual(lib.op_pcm_total(decoder, -1), 4813)
+                finally:
+                    lib.op_free(decoder)
+
     def test_output_cannot_replace_source_or_use_old_extension(self):
         with self.assertRaises(ValueError): encode('a.opus', 'a.opus')
         with self.assertRaises(ValueError): encode('a.wav', 'a.ogg')

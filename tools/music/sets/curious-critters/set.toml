@@ -44,6 +44,9 @@ with less contrast was judged too uniform across moods.
 
 # Calm is a sparse melody over a reverb bed; it was approved at -19 LUFS.
 [master]
+# Opus at 48 kbps exaggerates the sparse calm seam; taper 2 ms at each end.
+# This preserves the loop length and every mood's shared musical timeline.
+opus_seam_ms = { calm = 2.0 }
 loudness_offset_db = { calm = -1.0 }
 
 [[sources]]

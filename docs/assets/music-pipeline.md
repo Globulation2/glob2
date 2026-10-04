@@ -1,20 +1,20 @@
 # Music pipeline
 
 `tools/music/` builds and checks the game's soundtrack sets. The Python package
-`glob2music` turns a set's recipe into three looping Ogg Vorbis files, masters them
+`glob2music` turns a set's recipe into three looping Ogg Opus files, masters them
 the same way for every set, and runs automatic quality checks. Those checks were
 calibrated against a maintainer's listening verdicts. For what makes a set sound
 right for the game, read the [soundtrack style guide](music-style-guide.md) first.
 
 ## How the game uses a set
 
-A set is a directory `data/zik/<set>/` holding `a1.ogg` (calm), `a2.ogg` (building)
-and `a3.ogg` (combat). `src/audio/SoundMixer.cpp` loads all three. When the mood
+A set is a directory `data/zik/<set>/` holding `a1.opus` (calm), `a2.opus` (building)
+and `a3.opus` (combat). `src/audio/SoundMixer.cpp` loads all three. When the mood
 changes, it crossfades to the other file *at the same playback position*, and every
 file loops forever. So the pipeline guarantees that:
 
-- the three files decode to exactly the same number of frames (44.1 kHz stereo, one
-  Vorbis stream each);
+- the three files decode to exactly the same number of frames (48 kHz stereo, one
+  Opus stream each);
 - the moods share one timeline, so a crossfade at any moment lands on the same beat
   and harmony;
 - each file loops without a click or gap, with reverb tails folded over the seam;
@@ -83,7 +83,7 @@ uv pip install --python .venv/bin/python -r requirements.txt
 ```
 
 Building a set also needs that method's extra requirements file, `ffmpeg` with
-libvorbis, and the set's pinned inputs. `fetch` downloads and verifies `[[sources]]`
+libopus, and the set's pinned inputs. `fetch` downloads and verifies `[[sources]]`
 and, for sample sets, every file in `samples.lock` plus the pinned `sfizz_render`
 (cmake and a C++17 compiler are needed the first time). It says so when a set has
 nothing to fetch; generated sets need the approved generation from a maintainer:
@@ -91,12 +91,12 @@ nothing to fetch; generated sets need the approved generation from a maintainer:
 ```bash
 uv pip install --python .venv/bin/python -r requirements-samples.txt
 .venv/bin/python -m glob2music fetch moss-lanterns
-.venv/bin/python -m glob2music build moss-lanterns   # out/moss-lanterns/: a1–a3.ogg, preview.ogg, qa.json, build.json
+.venv/bin/python -m glob2music build moss-lanterns   # out/moss-lanterns/: a1–a3.opus, preview.opus, qa.json, build.json
 .venv/bin/python -m glob2music check moss-lanterns
 .venv/bin/python -m glob2music install moss-lanterns # checks again, then writes data/zik/moss-lanterns/
 ```
 
-`check` also accepts any directory holding `a1.ogg`–`a3.ogg`, which is useful for
+`check` also accepts any directory holding `a1.opus`–`a3.opus`, which is useful for
 judging candidate music from elsewhere. It exits 0 on pass (warnings allowed), 1 on
 any failed check and 2 on a usage error. Add `--json` for a machine-readable report
 and `--verbose` to see every measure.
@@ -110,11 +110,13 @@ and the spec. `build_set` then applies the shared stages:
 
 1. `master.finish`: a 20 Hz high-pass, loudness normalisation and a circular
    true-peak limiter, all loop-aware so filter state continues across the seam.
-2. `encode_within_ceiling`: encodes at `spec.vorbis_quality`, decodes the result and
-   trims any mood whose encoded true peak is above −1.2 dBTP. Vorbis q2 can overshoot
-   the −1.5 dBTP master by about 1 dB (1.03 dB at most on the shipped sets; the largest
-   trim is 0.73 dB). A mood still over after three trims fails the build.
-3. `preview.make` and the QA suite, which write `preview.ogg` and `qa.json`.
+2. `encode_within_ceiling`: encodes PCM at 48 kbps VBR total for stereo, fully
+   decodes the result and corrects peaks toward −1.2 dBTP, with the −1 dBTP QA ceiling mandatory. Small overshoots use the existing static trim; overshoots above 0.5 dB
+   use the existing circular peak limiter to preserve mood levels. Neither adds
+   normalisation; `build.json` records the correction. Curious Critters additionally
+   uses a 2 ms taper at each end of calm to suppress a codec seam click; loop lengths
+   and mood positions are unchanged (`[master] opus_seam_ms`).
+3. `preview.make` and the QA suite, which write `preview.opus` and `qa.json`.
 
 `set.toml` holds everything that isn't code: title, method, licence, credits,
 whether the set ships, the seed, pinned sources, a description (including change
@@ -173,7 +175,7 @@ it measures, why it matters for the mixer and how its threshold was chosen.
 
 | Check | What it catches | Main measures |
 |---|---|---|
-| format | Files the mixer would refuse | sample rate, channels, single Vorbis stream, identical frame counts, 50–120 s |
+| format | Files the mixer would refuse | sample rate, channels, single Opus stream, identical frame counts, 50–120 s |
 | loudness | Sets or moods that jump in level | integrated LUFS per mood, the calm ≤ building ≤ combat ladder, decoded true peak |
 | seam | Clicks, gaps or abrupt changes at the loop point | sample step and spectral flux at the wrap, ranked against the file's own frames; silence across the wrap |
 | repetition | Short material looped inside the file, the "AI slop" signature | best envelope self-similarity over lags; share of frames that are exact copies |
@@ -213,11 +215,11 @@ person still listens to every set before it ships.
 3. Run `build` and then `check` until the set passes. Fix defects in the music rather
    than adding waivers. A waiver needs a reason a reviewer can verify, such as "the
    composer's own phrasing, approved by ear".
-4. Listen to `preview.ogg` and to in-game switching. Copying `out/<set>/` to
+4. Listen to `preview.opus` and to in-game switching. Copying `out/<set>/` to
    `~/.glob2/data/zik/<set>/` makes it selectable without installing it.
 5. After a maintainer approves it by ear, set `shipped = true` and run `install`. Add
    the credits to `data/authors.txt` and [source attribution](source-attribution.md),
-   and list the directory in `data/zik/SConscript` (`install` does this).
+   Native packaging discovers set directories automatically.
 
 Prefer human-authored material. Adapt AI-generated audio only when a maintainer
 explicitly accepts it, and disclose it (`ai_generated = true`). Steam and itch.io
@@ -225,13 +227,32 @@ require that disclosure.
 
 ## Encoding and package size
 
-Sets ship as Vorbis quality 2 (about 80 kbps; `spec.vorbis_quality`). A blind
-listening test against q3 and q6–7 (about 190 kbps) found no audible loss under game
-sound, and q2 roughly halves the size of q6–7. The nine sets beside the original take
-25.7 MB in `data/zik`. Opus at
-48–64 kbps would save roughly another quarter at similar quality, but the mixer
-decodes only Vorbis, and Opus decodes at 48 kHz while the mixer runs at 44.1 kHz.
-Switching is a separate engine change.
+All runtime music uses Ogg Opus (`.opus`), 48 kHz stereo, encoded with FFmpeg:
+
+```bash
+-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2
+```
+
+The bitrate applies to the whole stereo stream. Composed sets render directly at
+48 kHz; source adaptations resample to the same timeline. Encoding verifies full
+decoding and exact frame counts after Opus pre-skip and end trimming. Loop encoding adds 200 ms of circular
+PCM history at both ends, then hides it through those fields so codec startup and
+ending padding do not introduce seam clicks. The visible timeline stays unchanged. `build.json`
+records source pins, encoder version, recipe, duration and track sizes. Render
+caches include the sample rate, so old renders cannot silently be reused.
+
+Custom Vorbis sets must be converted before use; the game has no Vorbis fallback:
+
+```bash
+for mood in a1 a2 a3; do
+  python3 tools/encode_music.py --loop "custom/$mood.ogg" "custom/$mood.opus"
+done
+PYTHONPATH=tools/music tools/music/.venv/bin/python -m glob2music check custom --only format
+```
+
+Keep source Vorbis files outside runtime asset directories. Listen again after
+conversion, including loop boundaries and mood transitions; automated QA cannot
+approve the audible changes from the fixed 48 kbps target.
 
 The browser build downloads `data/zik/original/` in its `music` package and every
 other set in `music-sets`. Both are background packages that arrive after the main

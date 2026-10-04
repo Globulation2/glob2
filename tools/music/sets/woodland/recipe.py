@@ -13,7 +13,7 @@ from glob2music.sources import extract
 from glob2music.spec import SAMPLE_RATE as SR
 
 BAR = SR * 60 / 130 * 4                       # frames per 4/4 bar at 130 bpm
-LOOP_FRAMES = 6350400                          # 78 bars, the composer's loop
+LOOP_FRAMES = round(6350400 * 48000 / 44100)                          # 78 bars, the composer's loop
 # Bars 32-49 are removed: of every 14-30-bar block, this one joined best (per-stem
 # activity and chroma matched on both sides of the cut; see set.toml).
 CUT_START, CUT_END = int(round(32 * BAR)), int(round(50 * BAR))

@@ -34,7 +34,7 @@ from glob2music.audio import Trio, db_to_gain
 # Loop region in source frames, found with glob2music.loop.find_loop_points (min 55 s,
 # max 118 s; feature similarity 0.959 across the wrap, waveform correlation 0.996
 # after refine_loop_end). It is 44 bars of 4/4 at 101 bpm.
-LOOP_START, LOOP_END = 719872, 5330724            # 16.324 s .. 120.878 s, 104.554 s
+LOOP_START, LOOP_END = round(719872 * 48000 / 44100), round(5330724 * 48000 / 44100)            # 16.324 s .. 120.878 s, 104.554 s
 SEAM = dict(crossfade_s=0.030, pre_s=0.005)
 GRID_BEATS = 176                                  # what fit_loop_grid must find
 F2, C2 = 87.31, 65.41                             # timpani tuning (source key: F major)

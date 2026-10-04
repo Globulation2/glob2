@@ -15,7 +15,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from glob2music.audio import Trio, write_ogg, write_trio  # noqa: E402
+from glob2music.audio import Trio, write_opus, write_trio  # noqa: E402
 from glob2music.qa import run_checks  # noqa: E402
 from glob2music.qa.analysis import MoodAudio, TrioAudio  # noqa: E402
 import synthetic  # noqa: E402
@@ -128,7 +128,7 @@ class FormatTest(unittest.TestCase):
             write_trio(Trio(**short), tmp)
             st = statuses(run_checks(tmp, only={'format'}), 'format')
             self.assertTrue(all(s == 'pass' for s in st.values()), st)
-            write_ogg(short['combat'][:-441], Path(tmp) / 'a3.ogg')       # 10 ms short
+            write_opus(short['combat'][:-441], Path(tmp) / 'a3.opus')       # 10 ms short
             st = statuses(run_checks(tmp, only={'format'}), 'format')
             self.assertEqual(st['format.frames'], 'fail')
 
@@ -143,7 +143,7 @@ class FormatTest(unittest.TestCase):
 
     def test_in_memory_rate_and_length(self):
         y = np.zeros((10 * SR, 2), dtype=np.float32)
-        audio = TrioAudio({'calm': MoodAudio('calm', y, 48000), 'building': MoodAudio('building', y, SR),
+        audio = TrioAudio({'calm': MoodAudio('calm', y, 44100), 'building': MoodAudio('building', y, SR),
                            'combat': MoodAudio('combat', y, SR)})
         audio.errors = {}
         st = statuses(run_checks(audio, only={'format'}), 'format')

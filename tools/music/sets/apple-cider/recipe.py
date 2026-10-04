@@ -14,7 +14,7 @@ from glob2music.audio import Trio
 # (99.31 bpm, first downbeat 0.547 s) bars 12-52 matched best across the wrap
 # (per-stem activity and chroma), and the end was refined by 47 ms by
 # cross-correlating drums + bass (a constant-tempo fit drifts that much in 40 bars).
-LOOP_START, LOOP_END = 1303051, 5568257          # 29.548 s .. 126.264 s, 96.717 s
+LOOP_START, LOOP_END = round(1303051 * 48000 / 44100), round(5568257 * 48000 / 44100)          # 29.548 s .. 126.264 s, 96.717 s
 SEAM = dict(crossfade_s=0.010, pre_s=0.012)
 
 MOODS = {
