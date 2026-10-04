@@ -52,3 +52,7 @@ python3 test/run_tests.py --binary engine --filter 'GameGUITouch/*' --filter 'Ma
 ```
 
 Hands-on device/Retina feel and actual non-Mac builds remain unverified. The user explicitly requested merge; these omissions are retained rather than represented as completed validation. The original synthetic demonstration still describes unchanged gesture production code.
+
+## Existing master hosted-contract failures
+
+Hosted run https://github.com/Globulation2/glob2/actions/runs/37219361420 failed its selector on two shared build-system contracts for `windows-store-auth-check.yml`: missing CI concurrency classification and absence from the release-workflow set. Both failures were reproduced using only files extracted from unmodified master base `931fca466f70eafd646fc2a14cfe95bdaac66718`. The feature changes none of those workflow/test inputs. Logs are retained in `merge-ci-failure.log.gz` and `master-ci-reproduction.log.gz`. This is an existing master regression introduced by #714, not a gesture-scrolling failure. Repository policy permits merging with existing master regressions; local relevant build/runtime coverage passed as above. No running master CI was cancelled.
