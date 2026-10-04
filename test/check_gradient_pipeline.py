@@ -29,9 +29,9 @@ def main():
         'fixture_sha256':{str(initial):digest(initial)}}]}))
     subprocess.run([sys.executable,str(Path(__file__).with_name('benchmark_gradient_pipeline.py')),str(binary),str(manifest),
                     '--output',str(output/'verification'),'--workers','0','1','2','4','8','--delays','1','3','8','--verify'],check=True)
-    default = execute(binary, ['--load-game',str(initial),'--ticks','32','--gradient-workers','1'], output/'default')
+    default = execute(binary, ['--load-game',str(initial),'--ticks','32'], output/'default')
     assert default['result']['gradient_delay'] == 8
-    assert default['result']['gradient_workers'] == 1
+    assert default['result']['gradient_workers'] == 2
     # Save with work pending at every offset of the eight-tick pipeline. Compare
     # resumed tick/entity traces against the uninterrupted run, across worker counts.
     whole = output/'whole'

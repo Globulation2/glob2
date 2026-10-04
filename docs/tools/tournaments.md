@@ -683,7 +683,7 @@ ticks, workload size, platform, and all commands rather than extrapolating one r
 to every tournament.
 
 
-Periodic gradient propagation uses one background worker and an eight-tick
+Periodic gradient propagation uses two background workers and an eight-tick
 publication delay by default, including normal games. `--gradient-workers N`
 selects 0–16 background workers for headless runs; zero is the serial control
 with identical simulation behavior. `--gradient-delay D` selects 1–16 ticks for

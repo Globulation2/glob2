@@ -226,7 +226,7 @@ void Game::syncStep(Sint32 localTeam)
 
 		Uint64 startTick=SDL_GetTicks();
 
-		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(1, 8);
+		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
 
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
