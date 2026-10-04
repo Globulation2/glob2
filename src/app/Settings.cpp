@@ -178,6 +178,8 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(mute);
 		READ_PARSED_INT(rememberUnit);
 		READ_PARSED_INT(scrollWheelEnabled);
+		READ_PARSED_INT(edgeScrollFullscreen);
+		READ_PARSED_INT(edgeScrollWindowed);
 		READ_PARSED_INT(hiveMindEnabled);
 		READ_PARSED_INT(hiveMindSupervision);
 		READ_PARSED_INT(highResolutionArtwork);
@@ -268,6 +270,8 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);
+		Utilities::streamprintf(stream, "edgeScrollFullscreen=%d\n", edgeScrollFullscreen);
+		Utilities::streamprintf(stream, "edgeScrollWindowed=%d\n", edgeScrollWindowed);
 		Utilities::streamprintf(stream, "hiveMindEnabled=%d\n", hiveMindEnabled);
 		Utilities::streamprintf(stream, "hiveMindSupervision=%d\n", hiveMindSupervision);
 		Utilities::streamprintf(stream, "highResolutionArtwork=%d\n", highResolutionArtwork);

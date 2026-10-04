@@ -257,8 +257,12 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	{
 		handleKeyAlways();
         updateCamera();
-        camera.originX+=viewportSpeedX*32/camera.zoom;
-        camera.originY+=viewportSpeedY*32/camera.zoom;
+        if (globalContainer->settings.edgeScrollingEnabled(
+                globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN))
+        {
+            camera.originX+=viewportSpeedX*32/camera.zoom;
+            camera.originY+=viewportSpeedY*32/camera.zoom;
+        }
         camera.normalize();viewportX=camera.tileX();viewportY=camera.tileY();
 	}
 	if (touch) touch->advanceScroll(now);

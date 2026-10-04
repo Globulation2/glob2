@@ -123,6 +123,15 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE(screen.changeSetting("audio.music",123));
         screen.finishInteraction();Settings loaded;loaded.load();REQUIRE((loaded.musicVolume==123 && !loaded.mute));
         screen.selectCategory(SettingsScreen::Category::Controls);
+        REQUIRE(screen.row("controls.edgefullscreen").number == 1);
+        REQUIRE(screen.row("controls.edgewindowed").number == 0);
+        REQUIRE(screen.changeSetting("controls.edgefullscreen", 0));
+        REQUIRE(screen.changeSetting("controls.edgewindowed", 1));
+        loaded.load();
+        REQUIRE_FALSE(loaded.edgeScrollFullscreen);
+        REQUIRE(loaded.edgeScrollWindowed);
+        REQUIRE(screen.changeSetting("controls.edgefullscreen", 1));
+        REQUIRE(screen.changeSetting("controls.edgewindowed", 0));
         for(const char* id:{"controls.momentum","controls.bounce","controls.mapmomentum"}){
             REQUIRE(screen.row(id).kind==SettingsScreen::Kind::Slider);REQUIRE(screen.row(id).value=="50%");REQUIRE(screen.row(id).maximum==100);
         }

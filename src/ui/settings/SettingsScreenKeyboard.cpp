@@ -11,6 +11,7 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <algorithm>
+#include <utility>
 
 using namespace GAGCore;
 KeyboardManager& SettingsScreen::keyboard() { return shortcutMode==GameGUIShortcuts?gameKeys:editorKeys; }
@@ -35,6 +36,18 @@ void SettingsScreen::buildKeyboard()
         "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",s.scrollWheelEnabled,[this](int v){
             globalContainer->settings.scrollWheelEnabled=v;GAGGUI::Screen::scrollWheelEnabled=v;commit();
         });
+    section("Edge scrolling");
+    for (const auto& option : {
+        std::pair{"controls.edgefullscreen", &Settings::edgeScrollFullscreen},
+        std::pair{"controls.edgewindowed", &Settings::edgeScrollWindowed}}) {
+        const bool fullscreen = option.second == &Settings::edgeScrollFullscreen;
+        toggle(option.first, fullscreen ? "Edge scrolling in fullscreen" : "Edge scrolling in windowed mode",
+            "Move the game and editor maps when the mouse reaches the window edge.", s.*option.second,
+            [this, field = option.second](int v) {
+                globalContainer->settings.*field = v != 0;
+                commit();
+            });
+    }
     section("Gesture scrolling");
     info(tr("Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default."));
     struct ScrollSlider{const char* id,*label,*help;int Settings::*field;};

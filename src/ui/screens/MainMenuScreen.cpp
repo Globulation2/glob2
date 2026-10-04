@@ -123,7 +123,7 @@ Element MainMenuScreen::build(const Presentation &p)
 		const int panelHeight = std::min(p.safe.h - p.pt(24), p.pt(more ? 596 : 420));
 		loadWordmark(std::max(64, w - p.pt(140)));
 		auto header =
-			row({expanded(wordmark ? image(wordmark.get(), {false}) : title("Globulation 2")),
+			row({expanded(wordmark ? image(wordmark.get(), {true}) : title("Globulation 2")),
 				 compactButton("menu/settings", tr("[settings]"), UIIcon::Settings,
 							   choose(GAME_SETUP), p)},
 				{p.pt(8), CrossAlign::Center});

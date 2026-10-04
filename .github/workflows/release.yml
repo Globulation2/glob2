@@ -289,7 +289,7 @@ jobs:
             image: fedora:43
             install: >-
               dnf install -y git gcc-c++ make python3 scons pkgconf-pkg-config nasm libva-devel cmake freetype-devel
-              libpng-devel libjpeg-turbo-devel zlib-ng-compat-static
+              libpng-devel libpng-static libjpeg-turbo-devel zlib-ng-compat-static
               libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel libXScrnSaver-devel libXtst-devel
               wayland-devel libxkbcommon-devel alsa-lib-devel pulseaudio-libs-devel
               libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel
@@ -301,7 +301,7 @@ jobs:
               pacman -Syu --noconfirm --needed git python scons pkgconf nasm libva cmake freetype2
               libpng libjpeg-turbo
               libx11 libxext libxcursor libxi libxrandr libxss libxtst wayland libxkbcommon alsa-lib libpulse
-                 libvorbis libogg speex boost openssl
+              libvorbis libogg speex boost openssl
               zlib fribidi pcre glu libepoxy
           - name: openSUSE Tumbleweed
             image: opensuse/tumbleweed
@@ -339,7 +339,7 @@ jobs:
         run: |
           dnf install -y git rpm-build gcc-c++ python3 scons pkgconf-pkg-config nasm libva-devel \
             cmake freetype-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-lib-devel pulseaudio-libs-devel \
-            libXScrnSaver-devel libXtst-devel wayland-devel libxkbcommon-devel libpng-devel zlib-ng-compat-static \
+            libXScrnSaver-devel libXtst-devel wayland-devel libxkbcommon-devel libpng-devel libpng-static zlib-ng-compat-static \
             libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel \
             zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
             libepoxy-devel cmake make python3-devel python3-pip python3-wheel libjpeg-turbo-devel

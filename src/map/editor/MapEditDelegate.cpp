@@ -161,7 +161,9 @@ void MapEdit::handleMapScroll()
 	xSpeed = 0;
 	ySpeed = 0;
 	int scrollAreaWidth=10; // if the cursor is that close to the border the viewport will scroll
-	const bool edgeScroll = !isLeftScrollDragging;
+	const bool edgeScroll = !isLeftScrollDragging &&
+		globalContainer->settings.edgeScrollingEnabled(
+			globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN);
 
 	if (!inputState.hasFocus()) return;
 	const Uint8 *keystate = inputState.keyboard();
