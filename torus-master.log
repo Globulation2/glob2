@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:514580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/torus.spec.js:57:1 › WebGL2 switches between the flat map and the torus overview (47.4s)
+  ✓  2 [chromium] › browser/tests/torus.spec.js:80:1 › the torus overview recovers after WebGL context loss (41.3s)
+  ✓  3 [chromium] › browser/tests/torus.spec.js:99:1 › the software renderer keeps the flat map (16.2s)
+
+  3 passed (1.8m)

@@ -1,0 +1,4 @@
+PASS MapGeneratorRegistry/catalog generation contracts [slow][map-generators] (213.0s)
+
+1 passed, 0 failed, 0 skipped (213.0s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/catalog-final.xml (1 cases)

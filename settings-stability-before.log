@@ -1,0 +1,40 @@
+
+Running 1 test using 1 worker
+
+(node:521995) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › browser/tests/settings-storage.spec.js:86:1 › settings can continue after failure without claiming a durable save (13.1s)
+
+
+  1) [chromium] › browser/tests/settings-storage.spec.js:86:1 › settings can continue after failure without claiming a durable save 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      103 |     sample();
+      104 |   }));
+    > 105 |   expect(staysOffered).toBe(true);
+          |                        ^
+      106 |   // A held click must still close: failed auto-saves must not rebuild away
+      107 |   // Continue between pressing and releasing the mouse button.
+      108 |   await clickControl(page,'cancel',{click:{delay:500}});await screen(page,'MainMenuScreen');
+        at /home/bradley/.codex/worktrees/c59e/glob2/browser/tests/settings-storage.spec.js:105:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/ci-repair/settings-stability-before/settings-storage-settings--31ffd-out-claiming-a-durable-save-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/ci-repair/settings-stability-before/settings-storage-settings--31ffd-out-claiming-a-durable-save-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/ci-repair/settings-stability-before/settings-storage-settings--31ffd-out-claiming-a-durable-save-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/ci-repair/settings-stability-before/settings-storage-settings--31ffd-out-claiming-a-durable-save-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › browser/tests/settings-storage.spec.js:86:1 › settings can continue after failure without claiming a durable save 

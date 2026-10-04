@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="39" failures="0" errors="0" skipped="0"><testsuite name="HiveMindPresentation"><testcase classname="HiveMindPresentation" name="Hive Mind commander panel [display]" time="1.08008" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.85075" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="3.48154" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="9.71594" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.21396" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.39679" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.30832" status="run" />
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="calling an early loser cannot change later teams' decision inputs" time="0.002168" status="run" />
+  <testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.004049" status="run" />
+  <testcase classname="WinProbability" name="equal alliances share chances and eliminated allies contribute nothing" time="0.004894" status="run" />
+  <testcase classname="WinProbability" name="native arithmetic reproduces every published calibration sample" time="0.000227" status="run" />
+  <testcase classname="WinProbability" name="rule serialization gates the new tag and rejects ambiguous thresholds" time="0.000117" status="run" />
+  <testcase classname="WinProbability" name="the rule waits for the minimum tick and sample boundary then ends all teams" time="0.002257" status="run" />
+  </testsuite><testsuite name="UILayout"><testcase classname="UILayout" name="icons and tooltips" time="0.000241" status="run" />
+    <testcase classname="UILayout" name="geometry" time="0" status="run" />
+    <testcase classname="UILayout" name="text" time="0" status="run" />
+    <testcase classname="UILayout" name="column and flex" time="0" status="run" />
+    <testcase classname="UILayout" name="row cross align" time="0" status="run" />
+    <testcase classname="UILayout" name="paragraph wraps with width" time="0" status="run" />
+    <testcase classname="UILayout" name="text fields retain the touch target with compact control metrics" time="0" status="run" />
+    <testcase classname="UILayout" name="wrap columns" time="0" status="run" />
+    <testcase classname="UILayout" name="footer folds" time="0" status="run" />
+    <testcase classname="UILayout" name="scroll clamp and wheel" time="0" status="run" />
+    <testcase classname="UILayout" name="tap versus pan" time="0" status="run" />
+    <testcase classname="UILayout" name="fling continues after release" time="0.001031" status="run" />
+    <testcase classname="UILayout" name="overscroll springs back" time="0.000238" status="run" />
+    <testcase classname="UILayout" name="touch wheel and programmatic scroll stop a fling" time="0.000182" status="run" />
+    <testcase classname="UILayout" name="scrollbar press stops a fling" time="0" status="run" />
+    <testcase classname="UILayout" name="mouse drag does not fling" time="0" status="run" />
+    <testcase classname="UILayout" name="list and text overscroll" time="0.000378" status="run" />
+    <testcase classname="UILayout" name="press survives resize" time="0" status="run" />
+    <testcase classname="UILayout" name="focus and keyboard" time="0" status="run" />
+    <testcase classname="UILayout" name="choice popup" time="0" status="run" />
+    <testcase classname="UILayout" name="text field" time="0" status="run" />
+    <testcase classname="UILayout" name="list view" time="0" status="run" />
+    <testcase classname="UILayout" name="copy field" time="0" status="run" />
+    <testcase classname="UILayout" name="adaptive and field" time="0" status="run" />
+    <testcase classname="UILayout" name="invariants" time="0" status="run" />
+    <testcase classname="UILayout" name="text stays inside its control at every size" time="0.001471" status="run" />
+  </testsuite></testsuites>

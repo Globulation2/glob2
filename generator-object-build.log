@@ -1,0 +1,46 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL3... (cached) yes
+Checking for C library SDL3_ttf... (cached) yes
+Checking for C library SDL3_image... (cached) yes
+Checking for C library SDL3_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library vorbisfile... (cached) yes
+Checking for C library vorbis... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Checking for C library GL... (cached) yes
+Checking for C++ header file GL/gl.h... (cached) yes
+Checking for C library GLU... (cached) yes
+Checking for C++ header file GL/glu.h... (cached) yes
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) no
+scons: done reading SConscript files.
+scons: Building targets ...
+g++ -o build/linux/client/release/test/engine-MapGeneratorDefaultsTest.o -c -std=gnu++20 -Wall -fPIC -O3 -s -fno-access-control -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/MapGeneratorDefaultsTest.cpp
+Generating build/linux/client/release/include/glob2/TestBuildProvenance.h
+g++ -o build/linux/client/release/test/engine-support_TestMain.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -DSDL_MAIN_HANDLED -I/home/bradley/glob2-verify/integrator/sdl3/prefix/include -Ibuild/linux/client/release/include -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/ai/maxima -Isrc/building -Isrc/game/entities -Isrc/gui -Isrc/map -Isrc/map/edit -Isrc/map/generator -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/generator/compatibility -Isrc/map/gradient -Isrc/map/io -Isrc/map/pathfind -Isrc/net -Isrc/net/lan -Isrc/net/message -Isrc/net/turn -Isrc/sgsl -Isrc/team -Isrc/unit -Isrc/online -Ithird_party/nlohmann-json/include -I/work/sdl3/prefix/include -Itest -Itest/support -Isrc/render -Ilibgag/src -Ithird_party/quickjs-ng test/support/TestMain.cpp
+test/MapGeneratorDefaultsTest.cpp:2:9: warning: 'SDL_MAIN_HANDLED' redefined
+    2 | #define SDL_MAIN_HANDLED
+      |         ^~~~~~~~~~~~~~~~
+<command-line>: note: this is the location of the previous definition
+In file included from libgag/include/BinaryStream.h:7,
+                 from test/MapGeneratorToolkitChecks.h:20,
+                 from test/MapGeneratorDefaultsTest.cpp:24:
+libgag/include/StreamBackend.h: In member function 'virtual void GAGCore::FileStreamBackend::read(void*, size_t)':
+libgag/include/StreamBackend.h:58:79: warning: ignoring return value of 'size_t fread(void*, size_t, size_t, FILE*)' declared with attribute 'warn_unused_result' [-Wunused-result]
+   58 |                 virtual void read(void *data, size_t size) { assert(fp); fread(data, size, 1, fp); }
+      |                                                                          ~~~~~^~~~~~~~~~~~~~~~~~~
+scons: done building targets.
