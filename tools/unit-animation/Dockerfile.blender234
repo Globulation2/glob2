@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Render container for the original Blender 2.34 (i386, static) used by
+# render.py, render-jobs.py and derive_unit.py. Blender itself is not baked in:
+# it lives in the mounted work directory, as render-jobs.py expects.
+#
+# The build context must contain the legacy C++ runtime package (see README.md
+# for download URLs and SHA-256 values):
+#   libstdc++2.10-glibc2.2_2.95.4-27_i386.deb
+#
+# Build and start (WORK also holds blender-2.34-linux-glibc2.2.5-i386-static/):
+#   docker build -t glob2-sprite-render-img -f Dockerfile.blender234 <dir with the .deb>
+#   docker run -d --name glob2-sprite-render -v "$WORK":/work glob2-sprite-render-img sleep infinity
+FROM debian:bookworm
+
+# qemu-user runs the 32-bit x86 binary on any host (including Apple Silicon);
+# Blender 2.34 needs i386 libc, X11/Xmu/Xi/Xext, OpenGL/GLU and SDL 1.2 even
+# when rendering in background mode.
+RUN dpkg --add-architecture i386 \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends \
+      qemu-user libc6:i386 libx11-6:i386 libxmu6:i386 libxi6:i386 libxext6:i386 \
+      libgl1:i386 libglu1-mesa:i386 libsdl1.2debian:i386 \
+ && rm -rf /var/lib/apt/lists/*
+
+# libstdc++-libc6.2-2.so.3 is unpacked privately; renderers set
+# LD_LIBRARY_PATH=/opt/legacy/usr/lib rather than replacing system libraries.
+COPY libstdc++2.10-glibc2.2_2.95.4-27_i386.deb /tmp/
+RUN mkdir -p /opt/legacy \
+ && dpkg-deb -x /tmp/libstdc++2.10-glibc2.2_2.95.4-27_i386.deb /opt/legacy \
+ && rm /tmp/libstdc++2.10-glibc2.2_2.95.4-27_i386.deb

@@ -33,6 +33,12 @@ Verified download SHA-256 values:
 - Blender archive: `2caa14fc37aa272b26bb3e88b925d61a4de861f37e1820723f833ebf0e1bf125`
 - Legacy C++ package: `236ed073aa04d4d704d1664eb4bfc2d32f0c47c30f6c0fc5c7d62a4a03fa7317`
 
+[`Dockerfile.blender234`](Dockerfile.blender234) builds a suitable container
+(`qemu-user`, the i386 libraries and the private legacy C++ runtime). Unpack the
+Blender archive into the work directory mounted at `/work`, which is where
+`render-jobs.py` and `derive_unit.py` expect `blender-2.34-linux-glibc2.2.5-i386-static/`.
+Run at most one Blender process per container CPU.
+
 ## Generate
 
 Use a temporary output directory, mounted at `/work` in the rendering container.
@@ -99,7 +105,9 @@ walk-cycle duration.
 ## Checks
 
 Run `python3 tools/unit-animation/test_render.py` with Pillow installed to test
-scene preparation and rejection of an incomplete install. `src/unit/render/UnitAnimationTest.cpp`
+scene preparation and rejection of an incomplete install, and
+`python3 tools/unit-animation/test_derive_unit.py` to check the host-side maths
+and unit specs used by `derive_unit.py` (no Blender needed). `src/unit/render/UnitAnimationTest.cpp`
 is part of `glob2-unit-tests` and exhaustively checks frame ranges and
 turning cadence. Compare alpha separately from RGB when reviewing the generated
 report: geometry/coverage matching and subtle shading differences are distinct.
@@ -303,3 +311,57 @@ Clouds and interpolation are disabled to isolate this comparison. This measures
 the real Scene/map/HUD drawing path with diagnostic unit placement, not an
 active simulation or a representative hardware benchmark. Record the save,
 backend, display size and hardware with any reported results.
+
+## Deriving new units
+
+`derive_unit.py` builds artwork for a *new* unit by editing copies of the
+original rigs inside Blender 2.34 and saving them with Blender 2.34. A unit is
+described by a spec module beside it, `<unit>_unit.py`; `wizard_unit.py` is a
+concept for a ranged, magic-casting unit, reshaped from the warrior. Nothing
+here changes the shipped sprites, the engine or the packaged artwork.
+
+```sh
+python3 tools/unit-animation/derive_unit.py build  --work /path/to/work
+python3 tools/unit-animation/derive_unit.py render --work /path/to/work --size 40
+python3 tools/unit-animation/derive_unit.py render --work /path/to/work --size 128
+python3 tools/unit-animation/preview_unit.py --work /path/to/work --out artifacts/wizard
+```
+
+`build` writes `sources/<set>.blend`; `render` writes 32 poses for each of 8
+directions to `render<size>/<set>/`. The team layer is frames 0004 to 0259, and
+where the set has one, the shadow layer is frames 0260 to 0515. Rendering skips
+frames that already exist, so an interrupted run can be resumed. `preview_unit.py`
+composites the shadow and hue-shifted team layers over terrain, next to the
+shipped worker and warrior, as animated WebP.
+
+A spec can change:
+
+- the body metaball, with extra elements and edits to the body's own element;
+- the hand/foot and elbow/knee metaball sizes and positions;
+- the bone keyframes, as target limb directions per frame;
+- the armature object curves, such as the bob or the body's rotation.
+
+Loading and re-saving an original through this path renders pixel-identically
+to the shipped sprites, so derived units keep the original material, lights,
+camera and shadow pass.
+
+Blender 2.34 constraints that shape these tools:
+
+- **No standard library.** The embedded Python has no `math` module or other
+  stdlib modules. All geometry and quaternion maths runs on the host, and the
+  generated script only receives numbers.
+- **No new curves or keys.** `Ipo.addCurve` rejects every channel name, so only
+  existing curves can be edited. Points can't be deleted either, so a new
+  animation must give each curve at least as many keys as it already has.
+- **Shifted quaternion channels.** In actions, the `QuatX` channel holds w,
+  `QuatY` holds x, `QuatZ` holds y and `QuatW` holds z.
+- **Metaball quirk.** `Metaball.addMetaelem` prepends the new element and
+  garbles its fields, so set every field afterwards with `setMetadata`.
+- **Coordinate frames.** Scene frame f is IPO time f × 8/9 in these sources.
+  The standing armature has +x to the glob's side, +y up and −z forward. The
+  body metaball (`Meta.014`) has +y up and −x forward.
+- **Top-to-bottom symmetry.** The walk loops a 180° flip, so a body shape must
+  be symmetric through that flip, or the loop pops.
+- **The swim folds the forearms.** The warrior swim folds each forearm about
+  165°, which works for heavy limb balls but tangles thin limbs. Units with
+  thin limbs need their own stroke.
