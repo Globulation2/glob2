@@ -1,0 +1,4 @@
+PASS glob2-unit-tests (680 cases) (3.2s)
+
+1 passed, 0 failed, 13 skipped (3.2s of test time)
+[run_tests] JUnit report: artifacts/ai-telemetry-investigation/unit.xml (693 cases)

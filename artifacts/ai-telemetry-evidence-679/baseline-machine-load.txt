@@ -1,0 +1,13 @@
+23:18  up 10 days,  8:10, 2 users, load averages: 23.90 27.96 39.58
+160.0 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+ 98.2 build/darwin/client/release/test/glob2-engine-tests
+ 90.6 /usr/sbin/spindump
+ 41.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+ 40.3 build/darwin/client/release/src/mobile-gallery
+ 22.8 /Applications/Glob2.app/Contents/MacOS/glob2
+ 22.2 /usr/libexec/mobileassetd
+ 16.8 /System/Library/CoreServices/TimeMachine/backupd
+ 10.6 /usr/libexec/triald
+ 10.5 /usr/libexec/opendirectoryd
+  8.1 /usr/sbin/coreaudiod
+  5.7 /Applications/Claude.app/Contents/MacOS/Claude

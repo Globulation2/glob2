@@ -1,0 +1,89 @@
+FAIL UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] (4.1s)
+FAIL UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (27.6s)
+FAIL UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (28.4s)
+FAIL UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] (4.1s)
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [" M libgag/include/TrueTypeFont.h", " M libgag/src/TrueTypeFont.cpp", " M src/gui/GameGUIDialog.cpp", " M src/gui/GameGUIDialog.h"], "sourceTreeSha256": "3229ff6261178bb3b0ce1dec0a3d9274d5bd32a7a6b28b19ebb090b274bd19a2"}
+
+[failure] every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]: 810 == 1080
+test/UIPresentationHarness.cpp:327:
+REQUIRE( actualHeight == height ) is NOT correct!
+  values: REQUIRE( 810 == 1080 )
+  logged: Requested 1920x1080; actual 1920x810; minimum 1x1; maximum 0x0; flags 536879136; SDL error: 0x103d7b2fb
+
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [" M libgag/include/TrueTypeFont.h", " M libgag/src/TrueTypeFont.cpp", " M src/gui/GameGUIDialog.cpp", " M src/gui/GameGUIDialog.h"], "sourceTreeSha256": "3229ff6261178bb3b0ce1dec0a3d9274d5bd32a7a6b28b19ebb090b274bd19a2"}
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 2150220842 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 4080913884 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 4166966055 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 1979234787 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+
+[failure] every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]: false
+test/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast<bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: landscape-navigation laptop touch=0 text=150 bottom=0: control landscape/use leaves the safe area
+
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [" M libgag/include/TrueTypeFont.h", " M libgag/src/TrueTypeFont.cpp", " M src/gui/GameGUIDialog.cpp", " M src/gui/GameGUIDialog.h"], "sourceTreeSha256": "3229ff6261178bb3b0ce1dec0a3d9274d5bd32a7a6b28b19ebb090b274bd19a2"}
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 259187338 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 487621972 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 4223156197 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 3511155834 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+
+[failure] every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]: false
+test/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast<bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: landscape-navigation tablet-landscape touch=0 text=150 bottom=0: control landscape/use leaves the safe area
+
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [" M libgag/include/TrueTypeFont.h", " M libgag/src/TrueTypeFont.cpp", " M src/gui/GameGUIDialog.cpp", " M src/gui/GameGUIDialog.h"], "sourceTreeSha256": "3229ff6261178bb3b0ce1dec0a3d9274d5bd32a7a6b28b19ebb090b274bd19a2"}
+
+[failure] every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]: 810 == 1024
+test/UIPresentationHarness.cpp:327:
+REQUIRE( actualHeight == height ) is NOT correct!
+  values: REQUIRE( 810 == 1024 )
+  logged: Requested 768x1024; actual 768x810; minimum 1x1; maximum 0x0; flags 536879140; SDL error: 0x105f532fb
+
+
+0 passed, 4 failed, 0 skipped (64.1s of test time)
+[run_tests] JUnit report: artifacts/ai-telemetry-investigation/baseline-layout.xml (4 cases)

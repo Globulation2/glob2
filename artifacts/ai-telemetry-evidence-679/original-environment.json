@@ -1,0 +1,13 @@
+{
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83",
+  "architecture": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "head": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c",
+  "base": "79229b3101c6bd6e0c83abb5ed55579834595785",
+  "master": "69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea",
+  "load": "23:03  up 10 days,  7:55, 2 users, load averages: 39.89 56.29 68.04",
+  "memory": "hw.memsize: 25769803776\nhw.logicalcpu: 8",
+  "sdk": "/Users/bradley/.cache/glob2-sdl3/prefix",
+  "build_command": "CCACHE=1 GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix scons -j4 release=1 server=0 tests",
+  "benchmark_limit": "Concurrent external builds and game processes; quiet-machine targets cannot be established under observed load."
+}

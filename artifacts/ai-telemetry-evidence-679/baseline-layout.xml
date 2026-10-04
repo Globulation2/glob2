@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="4" errors="0" skipped="0"><testsuite name="UIPresentation"><testcase classname="UIPresentation" name="every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]" time="3.98136" status="run">
+      <failure message="810 == 1080" type="REQUIRE">
+test/UIPresentationHarness.cpp:327:
+REQUIRE( actualHeight == height ) is NOT correct!
+  values: REQUIRE( 810 == 1080 )
+  logged: Requested 1920x1080; actual 1920x810; minimum 1x1; maximum 0x0; flags 536879136; SDL error: 0x103d7b2fb
+
+      </failure>
+    </testcase>
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]" time="28.3047" status="run">
+      <failure message="false" type="REQUIRE">
+test/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast&lt;bool&gt;(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: landscape-navigation laptop touch=0 text=150 bottom=0: control landscape/use leaves the safe area
+
+      </failure>
+    </testcase>
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="27.4877" status="run">
+      <failure message="false" type="REQUIRE">
+test/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast&lt;bool&gt;(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: landscape-navigation tablet-landscape touch=0 text=150 bottom=0: control landscape/use leaves the safe area
+
+      </failure>
+    </testcase>
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="4.01675" status="run">
+      <failure message="810 == 1024" type="REQUIRE">
+test/UIPresentationHarness.cpp:327:
+REQUIRE( actualHeight == height ) is NOT correct!
+  values: REQUIRE( 810 == 1024 )
+  logged: Requested 768x1024; actual 768x810; minimum 1x1; maximum 0x0; flags 536879140; SDL error: 0x105f532fb
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

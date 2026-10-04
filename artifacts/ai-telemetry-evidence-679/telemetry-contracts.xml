@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptIntegration"><testcase classname="JavaScriptIntegration" name="JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]" time="1.28509" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript telemetry scene permissions and replay diagnostic roundtrip" time="0.001248" status="run" />
+  </testsuite></testsuites>

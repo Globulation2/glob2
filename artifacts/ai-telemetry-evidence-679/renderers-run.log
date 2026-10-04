@@ -1,0 +1,121 @@
+PASS AITargetTelemetrySave/Cortex flag targets carry the team that owns each building (0.0s)
+PASS AITargetTelemetrySave/target fields are declared in schema version 2 (0.0s)
+PASS AITargetTelemetrySave/Numbi reports the highest-numbered enemy its attack searches (0.0s)
+PASS AITargetTelemetrySave/Cortex records its committed target until the offense stands down, across saves (0.1s)
+PASS FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs (0.0s)
+PASS FontKerning/pair advances equal the glyph advances plus kerning (0.0s)
+PASS FontKerning/kerned words have no gap wider than the same words unkerned (0.0s)
+PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (0.7s)
+PASS GameGUITouch/unit taps have a zoom independent halo and show unit stats [display][artifacts] (0.8s)
+PASS GameGUITouch/a touch on or near a flag drags the flag; not the map [display] (0.6s)
+PASS AITargetTelemetrySave/target telemetry names only real enemies and leaves the simulation unchanged (2.7s)
+PASS GameGUITouch/touch scroll momentum on the map; the HUD palette and the editor [display] (0.8s)
+PASS PortableRenderer/live scale retains portable viewport ownership [display] (0.2s)
+PASS PortableRenderer/software targets resize and destroy safely during an active transform [display] (0.3s)
+PASS PortableRenderer/each accelerated backend uploads surface revisions independently [display] (0.3s)
+PASS PortableRenderer/zone boundaries; UI transforms and portable rendering paths [display] (1.4s)
+PASS SoftwareRenderer/native display scaling preserves direct pixels through lazy geometry and target rotation (0.0s)
+PASS SoftwareRenderer/nearest blits retain sampling under destination clipping and restore source state (0.0s)
+PASS SoftwareRenderer/fractional shared endpoints leave no seams; queued triangles obey direct writes (0.0s)
+PASS SoftwareRenderer/opacity classification follows content revisions; opaque copy matches alpha blending (0.0s)
+PASS SoftwareRenderer/opaque row copies retain SDL clipping and color modulation (0.0s)
+PASS SoftwareRenderer/integer transformed primitives retain SDL triangle blending exactly (0.0s)
+PASS SoftwareRenderer/geometry-reference blits preserve mixed pixel formats and source modulation (0.0s)
+PASS SoftwareRenderer/large owned images retain SDL geometry sampling and overflow behavior (0.0s)
+PASS SoftwareRenderer/translucent fills preserve colors on 32-bit targets without alpha (0.0s)
+PASS SoftwareRenderer/presenter rotates full frames and preserves completed pixels during partial updates (0.0s)
+PASS GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (16.9s)
+PASS TextRaster/native software glyphs at fractional scale [display][artifacts] (0.3s)
+PASS TextRaster/scaled and unscaled text rasterisation [display:1600x1400][artifacts] (0.6s)
+PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (30.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow] (31.0s)
+FAIL UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] (3.7s)
+FAIL UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (25.6s)
+FAIL UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (26.3s)
+FAIL UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] (3.6s)
+PASS SoftwareRenderer/terrain cache matches integer-transformed coastlines and discovery across wraps and mutations [display][artifacts] (0.8s)
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [], "sourceTreeSha256": "7ed75fb74f8401c2fb1308d62ce30d0db1849b10ac193658a2273111edf5f8be"}
+
+[failure] every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]: 811 == 1080
+test/UIPresentationHarness.cpp:327:
+REQUIRE( actualHeight == height ) is NOT correct!
+  values: REQUIRE( 811 == 1080 )
+  logged: Requested 1920x1080; actual 1920x811; minimum 1x1; maximum 0x0; flags 536879136; SDL error: 0x10645b2fb
+
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [], "sourceTreeSha256": "7ed75fb74f8401c2fb1308d62ce30d0db1849b10ac193658a2273111edf5f8be"}
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 2775136940 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 2967574391 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 3158797931 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 3007201001 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+
+[failure] every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]: false
+test/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast<bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: landscape-navigation laptop touch=0 text=150 bottom=0: control landscape/use leaves the safe area
+
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [], "sourceTreeSha256": "7ed75fb74f8401c2fb1308d62ce30d0db1849b10ac193658a2273111edf5f8be"}
+UI presentation fixture: main-menu touch=0
+UI presentation fixture: main-menu-more touch=0
+UI presentation fixture: campaign-menu touch=0
+UI presentation fixture: editor-menu touch=0
+UI presentation fixture: lan-menu touch=0
+UI presentation fixture: credits touch=0
+UI presentation fixture: message touch=0
+UI presentation fixture: settings touch=0
+UI presentation fixture: custom-game touch=0
+Map generation: fingerprint revision 4 seed 3604358266 [complete]: 
+UI presentation fixture: custom-game-players touch=0
+Map generation: fingerprint revision 4 seed 3080647423 [complete]: 
+UI presentation fixture: custom-game-rules touch=0
+Map generation: fingerprint revision 4 seed 1301174778 [complete]: 
+UI presentation fixture: custom-game-rules-all touch=0
+Map generation: fingerprint revision 4 seed 2848583293 [complete]: 
+UI presentation fixture: ruleset-choice touch=0
+UI presentation fixture: new-map touch=0
+UI presentation fixture: landscape-navigation touch=0
+
+[failure] every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]: false
+test/UIPresentationHarness.cpp:58:
+REQUIRE( static_cast<bool>(value) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: landscape-navigation tablet-landscape touch=0 text=150 bottom=0: control landscape/use leaves the safe area
+
+
+===== FAIL UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/Users/bradley/.cache/glob2-sdl3/prefix/lib"}, "revision": "a4fad39b4e2a2ee1daf882008654eeed4de4a22c", "sourceStatus": [], "sourceTreeSha256": "7ed75fb74f8401c2fb1308d62ce30d0db1849b10ac193658a2273111edf5f8be"}
+
+[failure] every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]: 811 == 1024
+test/UIPresentationHarness.cpp:327:
+REQUIRE( actualHeight == height ) is NOT correct!
+  values: REQUIRE( 811 == 1024 )
+  logged: Requested 768x1024; actual 768x811; minimum 1x1; maximum 0x0; flags 536879136; SDL error: 0x103de32fb
+
+
+32 passed, 4 failed, 0 skipped (147.9s of test time)
+[run_tests] JUnit report: artifacts/ai-telemetry-investigation/renderers.xml (36 cases)

@@ -1,0 +1,13 @@
+23:35  up 10 days,  8:27, 2 users, load averages: 11.27 16.78 25.24
+182.6 /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/Support/fseventsd
+139.1 /usr/sbin/spindump
+ 95.8 build/darwin/client/release/test/glob2-engine-tests
+ 25.3 /System/Library/PrivateFrameworks/SkyLight.framework/Resources/WindowServer
+  8.4 /usr/libexec/opendirectoryd
+  6.1 /usr/sbin/coreaudiod
+  3.2 /Applications/Xcode.app/Contents/Applications/DeviceHub.app/Contents/MacOS/DeviceHub
+  2.6 ./build/src/glob2
+  2.3 /System/Library/PrivateFrameworks/CoreSpeech.framework/corespeechd
+  2.1 /Applications/ChatGPT.app/Contents/Frameworks/Codex Framework.framework/Versions/154.0.8037.93/Helpers/Codex (Renderer).app/Contents/MacOS/Codex (Renderer)
+  1.9 /System/Library/CoreServices/Dock.app/Contents/MacOS/Dock
+  1.8 /usr/libexec/spotlightknowledged.updater

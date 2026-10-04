@@ -1,0 +1,24 @@
+# Original patch and restored patch validation (a4fad39b4e2a2ee1daf882008654eeed4de4a22c)
+CCACHE=1 GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix scons -j4 release=1 server=0 tests
+CCACHE=1 GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix scons -j4 release=1 server=0
+python3 test/run_tests.py --filter 'AITelemetryUI/*' --filter 'TextMetrics/*' --no-display -j2 --artifacts artifacts/ai-telemetry-investigation/focused --junit artifacts/ai-telemetry-investigation/focused.xml
+python3 test/run_tests.py --binary unit --quick --no-display -j2 --artifacts artifacts/ai-telemetry-investigation/unit --junit artifacts/ai-telemetry-investigation/unit.xml
+python3 test/run_tests.py --binary engine --filter 'TextRaster/*' --filter 'PortableRenderer/*' --filter 'SoftwareRenderer/*' --filter 'GameGUITouch/*' --filter 'FontKerning/*' --filter 'AITargetTelemetrySave/*' --filter 'UIPresentation/*' --display-jobs 1 -j2 --artifacts artifacts/ai-telemetry-investigation/renderers --junit artifacts/ai-telemetry-investigation/renderers.xml
+python3 test/run_tests.py --binary engine --filter 'JavaScriptIntegration/*telemetry*' -j1 --artifacts artifacts/ai-telemetry-investigation/telemetry-contracts --junit artifacts/ai-telemetry-investigation/telemetry-contracts.xml
+python3 -m unittest discover -s tests/build_system -p test_ci_policy.py
+
+# Baseline stock production, current harness; see reversal patch and zero-byte production diff
+python3 artifacts/ai-telemetry-investigation/baseline-swap.py install
+CCACHE=1 GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix scons -j4 release=1 server=0 engine-tests
+GLOB2_TEST_DISPLAY=1 GLOB2_TEST_ARTIFACTS_ROOT=/Users/bradley/.codex/worktrees/b9fb/glob2/artifacts/ai-telemetry-investigation/baseline-measured GLOB2_TELEMETRY_BENCH_TRACE=1 GLOB2_TELEMETRY_BENCH_SAVE=/Users/bradley/.codex/worktrees/b9fb/glob2/artifacts/ai-telemetry-investigation/benchmark-input.game build/darwin/client/release/test/glob2-engine-tests --test-suite=AITelemetryUI --test-case='*full-game*'
+python3 test/run_tests.py --binary engine --filter 'UIPresentation/*tablet portrait*' --filter 'UIPresentation/*tablet landscape*' --filter 'UIPresentation/*laptop*' --filter 'UIPresentation/*fullhd*' -j1 --display-jobs 1 --artifacts artifacts/ai-telemetry-investigation/baseline-layout --junit artifacts/ai-telemetry-investigation/baseline-layout.xml
+python3 artifacts/ai-telemetry-investigation/baseline-swap.py restore
+CCACHE=1 GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix scons -j4 release=1 server=0 tests build/darwin/client/release/src/glob2
+# The same benchmark environment/arguments were used for candidate, with a distinct artifacts root.
+
+# Final integrated revision c3cd5ba3f3688bd293edad43718c4ec5955cbb31, base 0ac3a79ad68bb8ace58e6b926301c8ca6e4d344a
+CCACHE=1 GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix scons -j4 release=1 server=0 tests build/darwin/client/release/src/glob2
+python3 test/run_tests.py --binary unit --quick --no-display -j2 --artifacts artifacts/ai-telemetry-investigation/integration-unit --junit artifacts/ai-telemetry-investigation/integration-unit.xml
+python3 test/run_tests.py --binary engine --filter 'AITelemetryUI/*' --filter 'TextRaster/*' --filter 'PortableRenderer/*' --filter 'SoftwareRenderer/*' --filter 'GameGUITouch/*' --filter 'FontKerning/*' --filter 'AITargetTelemetrySave/*' --filter 'UIPresentation/*' --filter 'JavaScriptIntegration/*telemetry*' --display-jobs 1 -j2 --artifacts artifacts/ai-telemetry-investigation/integration-engine --junit artifacts/ai-telemetry-investigation/integration-engine.xml
+
+GLOB2_TEST_DISPLAY=1 GLOB2_TEST_ARTIFACTS_ROOT=/Users/bradley/.codex/worktrees/b9fb/glob2/artifacts/ai-telemetry-investigation/integrated-measured GLOB2_TELEMETRY_BENCH_TRACE=1 GLOB2_TELEMETRY_BENCH_SAVE=/Users/bradley/.codex/worktrees/b9fb/glob2/artifacts/ai-telemetry-investigation/benchmark-input.game build/darwin/client/release/test/glob2-engine-tests --test-suite=AITelemetryUI --test-case='*full-game*'

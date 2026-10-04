@@ -1,0 +1,5 @@
+PASS JavaScriptIntegration/JavaScript telemetry scene permissions and replay diagnostic roundtrip (0.0s)
+PASS JavaScriptIntegration/JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts] (1.4s)
+
+2 passed, 0 failed, 0 skipped (1.4s of test time)
+[run_tests] JUnit report: artifacts/ai-telemetry-investigation/telemetry-contracts.xml (2 cases)

@@ -1,0 +1,372 @@
+diff --git a/libgag/include/TrueTypeFont.h b/libgag/include/TrueTypeFont.h
+index 5b36390e5..26e0bbb0d 100644
+--- a/libgag/include/TrueTypeFont.h
++++ b/libgag/include/TrueTypeFont.h
+@@ -8,9 +8,7 @@
+ #include <SDL3_ttf/SDL_ttf.h>
+ #include <stack>
+ #include <map>
+-#include <list>
+ #include <string>
+-#include <utility>
+ 
+ struct SDL_Surface;
+ 
+@@ -31,9 +29,9 @@ namespace GAGCore
+ 		//! and its style stack stay. Returns false (and keeps the font) on failure.
+ 		bool reload(void);
+ 		
+-		//! Measure shaped text at the authored size, without creating a bitmap.
++		//! Get the width of string with shape. Update cache
+ 		int getStringWidth(const std::string string);
+-		//! Measure text height; an empty string returns the font's base height.
++		//! Get the height of string with shape. If string is NULL, return base value, else update cache
+ 		int getStringHeight(const std::string string);
+ 		//! Whether every character of this UTF-8 string has a glyph in the loaded font
+ 		virtual bool hasGlyphsFor(const std::string &utf8Text);
+@@ -53,19 +51,6 @@ namespace GAGCore
+ 		virtual Style getStyle(void) const;
+ 		
+ 	protected:
+-		using MetricsKey = std::pair<std::string, int>;
+-		struct MetricsData
+-		{
+-			int w, h;
+-			std::list<MetricsKey>::iterator age;
+-		};
+-		std::pair<int, int> measureString(const std::string &text);
+-		void clearMetrics();
+-		// Both copies of key text count toward the independent metrics budget.
+-		std::map<MetricsKey, MetricsData> metricsCache;
+-		std::list<MetricsKey> metricsAge;
+-		size_t metricsTextBytes = 0;
+-
+ 		struct CacheKey
+ 		{
+ 			std::string text;
+diff --git a/libgag/src/TrueTypeFont.cpp b/libgag/src/TrueTypeFont.cpp
+index 63a439073..963056f57 100644
+--- a/libgag/src/TrueTypeFont.cpp
++++ b/libgag/src/TrueTypeFont.cpp
+@@ -146,17 +146,9 @@ TTF_Font *TrueTypeFont::openFont(const std::string &filename, unsigned size)
+ 
+ bool TrueTypeFont::load(const std::string filename, unsigned size)
+ {
+-	TTF_Font *replacement = openFont(filename, size);
+-	if (!replacement)
++	font = openFont(filename, size);
++	if (!font)
+ 		return false;
+-	clearCache();
+-	clearMetrics();
+-	for (const auto &[rasterSize, raster] : rasterFonts)
+-		TTF_CloseFont(raster);
+-	rasterFonts.clear();
+-	if (font)
+-		TTF_CloseFont(font);
+-	font = replacement;
+ 	fontFilename = filename;
+ 	baseSize = size;
+ 	renderFont = font;
+@@ -173,7 +165,6 @@ bool TrueTypeFont::reload(void)
+ 	if (!replacement)
+ 		return false;
+ 	clearCache();
+-	clearMetrics();
+ 	for (const auto &[size, raster] : rasterFonts)
+ 		TTF_CloseFont(raster);
+ 	rasterFonts.clear();
+@@ -262,55 +253,39 @@ std::string TrueTypeFont::shapeText(const std::string &text) const
+ #endif
+ }
+ 
+-void TrueTypeFont::clearMetrics()
++int TrueTypeFont::getStringWidth(const std::string string)
+ {
+-	metricsCache.clear();
+-	metricsAge.clear();
+-	metricsTextBytes = 0;
++	const CacheData *data = getStringCached(string, false);
++	int w;
++	if (data)
++	{
++		w = data->w;
++		cleanupCache();
++	}
++	else
++		w = 0;
++	return w;
+ }
+ 
+-std::pair<int, int> TrueTypeFont::measureString(const std::string &text)
++int TrueTypeFont::getStringHeight(const std::string string)
+ {
+-	assert(font);
+-	assert(!styleStack.empty());
+-	if (text.empty())
+-		return {0, TTF_GetFontHeight(font)};
+-	MetricsKey key{text, styleStack.top().shape};
+-	auto found = metricsCache.find(key);
+-	if (found != metricsCache.end())
++	int h;
++	if (!string.empty())
+ 	{
+-		metricsAge.splice(metricsAge.end(), metricsAge, found->second.age);
+-		return {found->second.w, found->second.h};
++		const CacheData *data = getStringCached(string, false);
++		if (data)
++		{
++			h = data->h;
++			cleanupCache();
++		}
++		else
++			h = 0;
+ 	}
+-	int w = 0, h = 0;
+-	const auto shaped = shapeText(text);
+-	if (!TTF_GetStringSize(font, shaped.c_str(), 0, &w, &h))
+-		return {0, 0};
+-	constexpr size_t maximumEntries = 1024, maximumTextBytes = 1024 * 1024;
+-	// A single oversized diagnostic string must not grow the cache beyond its budget.
+-	if (text.size() > maximumTextBytes / 2)
+-		return {w, h};
+-	const size_t bytes = 2 * text.size();
+-	while (metricsCache.size() >= maximumEntries || metricsTextBytes + bytes > maximumTextBytes)
++	else
+ 	{
+-		metricsTextBytes -= 2 * metricsAge.front().first.size();
+-		metricsCache.erase(metricsAge.front());
+-		metricsAge.pop_front();
++		h = TTF_GetFontHeight(font);
+ 	}
+-	metricsAge.push_back(key);
+-	metricsCache.emplace(std::move(key), MetricsData{w, h, std::prev(metricsAge.end())});
+-	metricsTextBytes += bytes;
+-	return {w, h};
+-}
+-
+-int TrueTypeFont::getStringWidth(const std::string string)
+-{
+-	return measureString(string).first;
+-}
+-
+-int TrueTypeFont::getStringHeight(const std::string string)
+-{
+-	return measureString(string).second;
++	return h;
+ }
+ 
+ bool TrueTypeFont::hasGlyphsFor(const std::string &utf8Text)
+diff --git a/src/gui/GameGUIDialog.cpp b/src/gui/GameGUIDialog.cpp
+index 6067395c0..792f23158 100644
+--- a/src/gui/GameGUIDialog.cpp
++++ b/src/gui/GameGUIDialog.cpp
+@@ -642,35 +642,16 @@ Element InGameTextInput::build(const Presentation &p)
+ 	return fe::row({fe::expanded(entry), send, close}, {p.pt(6), fe::CrossAlign::Center});
+ }
+ 
+-void InGameAITelemetryScreen::resetFieldSelection()
+-{
+-	selectedField.clear();
+-	for (const auto *key : {"telemetry/fields", "telemetry/details"})
+-	{
+-		if (auto *node = host().find(key))
+-			node->scrollTo(0, host());
+-		host().state(key).scroll = 0;
+-	}
+-}
+-
+ void InGameAITelemetryScreen::onUpdate(Uint32)
+ {
+ 	const auto &scene = gui->drawnScene();
+ 	Uint32 players = 0;
+ 	for (const auto &record : scene.panels.aiTelemetry)
+ 		players |= Uint32(1) << record.player;
+-	const bool accessChanged = players != accessiblePlayers;
+-	if (accessChanged || sample != scene.tick / 32)
++	// Values are sampled every 32 ticks. Permission changes still refresh the
++	// dialog immediately, including when the viewer changes while paused.
++	if (sample != scene.tick / 32 || players != accessiblePlayers)
+ 	{
+-		// Never leave private rows or their callbacks alive after access is revoked.
+-		// Routine samples wait for gestures/coasting, retaining their newest tick.
+-		if (accessChanged)
+-		{
+-			host().cancelInput();
+-			host().closePopup();
+-		}
+-		else if (host().root() && (host().interacting() || host().animating()))
+-			return;
+ 		sample = scene.tick / 32;
+ 		accessiblePlayers = players;
+ 		invalidate();
+@@ -690,15 +671,9 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
+ 	}
+ 	std::vector<Element> rows;
+ 	if (records.empty())
+-	{
+-		resetFieldSelection();
+-		player = -1;
+ 		rows.push_back(fe::paragraph(fe::tr("[No accessible AI telemetry.]")));
+-	}
+ 	else
+ 	{
+-		if (player != records[selected].player)
+-			resetFieldSelection();
+ 		player = records[selected].player;
+ 		rows.push_back(fe::field(fe::tr("[Player]"),
+ 								 fe::choice("telemetry/player", names, selected,
+@@ -706,35 +681,27 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
+ 											{
+ 												const auto &values =
+ 													gui->drawnScene().panels.aiTelemetry;
+-												if (index >= 0 && size_t(index) < values.size() &&
+-													player != values[index].player)
+-												{
+-													resetFieldSelection();
++												if (index >= 0 && size_t(index) < values.size())
+ 													player = values[index].player;
+-												}
+ 												invalidate();
+ 											})));
+ 		rows.push_back(
+ 			fe::field(fe::tr("[Search fields]"), fe::textField("telemetry/search", search,
+-															   [this](const std::string &value)
+-															   {
+-																   search = value;
+-																   invalidate();
+-															   })));
++															 [this](const std::string &value)
++															 {
++																 search = value;
++																 invalidate();
++															 })));
+ 		const auto &record = records[selected];
+ 		if (!record.available)
+-		{
+-			resetFieldSelection();
+ 			rows.push_back(
+ 				fe::paragraph(fe::tr("[Telemetry unavailable for this recording or controller.]")));
+-		}
+ 		else
+ 		{
+-			// Only the selected field becomes paragraphs. listView measures a fixed
+-			// row height and paints visible rows, regardless of the schema's size.
+ 			auto values = record.values;
+ 			std::sort(values.begin(), values.end(),
+ 					  [](const auto &a, const auto &b) { return a.name < b.name; });
++			// ASCII folding preserves UTF-8 bytes and makes common API field names easy to find.
+ 			auto folded = [](std::string text)
+ 			{
+ 				for (char &c : text)
+@@ -743,77 +710,40 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
+ 				return text;
+ 			};
+ 			const auto query = folded(search);
+-			std::vector<std::string> labels, fields;
+-			std::vector<const AITelemetry::NamedValue *> matches;
+-			int fieldIndex = 0;
++			bool matched = false;
++			std::string group;
+ 			for (const auto &value : values)
+ 			{
+-				if (!query.empty() &&
++				if (!search.empty() &&
+ 					folded(value.name + " " + value.meaning + " " + value.value).find(query) ==
+ 						std::string::npos)
+ 					continue;
+-				if (value.name == selectedField)
+-					fieldIndex = int(matches.size());
+-				matches.push_back(&value);
+-				fields.push_back(value.name);
+-				labels.push_back(value.name + ": " + value.value +
+-								 (value.unit.empty() ? "" : " " + value.unit));
+-			}
+-			if (matches.empty())
+-			{
+-				selectedField.clear();
+-				rows.push_back(
+-					fe::paragraph(fe::tr(search.empty() ? "[No values published yet.]"
+-														: "[No fields match your search.]")));
+-			}
+-			else
+-			{
+-				const auto &value = *matches[fieldIndex];
+-				if (selectedField != value.name)
++				matched = true;
++				auto category = value.name.substr(0, value.name.find('.'));
++				if (category != group)
+ 				{
+-					if (auto *details = host().find("telemetry/details"))
+-						details->scrollTo(0, host());
+-					host().state("telemetry/details").scroll = 0;
++					group = category;
++					rows.push_back(fe::paragraph(group, {fe::FontRole::Heading}));
+ 				}
+-				selectedField = value.name;
+-				auto list = fe::listView("telemetry/fields", labels, fieldIndex,
+-										 [this, fields = std::move(fields)](int index)
+-										 {
+-											 if (index >= 0 && size_t(index) < fields.size())
+-												 selectedField = fields[index];
+-											 if (auto *details = host().find("telemetry/details"))
+-												 details->scrollTo(0, host());
+-											 host().state("telemetry/details").scroll = 0;
+-											 invalidate();
+-										 });
+-				std::vector<Element> details{
+-					fe::paragraph(value.name, {fe::FontRole::Heading}),
+-					fe::paragraph(value.value + (value.unit.empty() ? "" : " " + value.unit)),
+-					fe::paragraph(
+-						std::string(GAGCore::FormattableString(fe::tr("[Updated at tick %0]"))
+-										.arg(value.updated)))};
++				rows.push_back(fe::paragraph(
++					value.name + ": " + value.value + (value.unit.empty() ? "" : " " + value.unit) +
++					"  · " +
++					std::string(GAGCore::FormattableString(fe::tr("[Updated at tick %0]"))
++									.arg(value.updated))));
+ 				if (!value.meaning.empty())
+-					details.push_back(fe::paragraph(value.meaning));
+-				auto detail =
+-					fe::scroll("telemetry/details", fe::column(std::move(details), {p.pt(4)}));
+-				rows.push_back(fe::expanded(fe::adaptive(
+-					[list, detail](const fe::LayoutContext &ctx, fe::Size available)
+-					{
+-						return fe::column(
+-							{fe::expanded(list), fe::constrained({0, 0, fe::Constraints::Unbounded,
+-																  std::max(0, available.h / 3)},
+-																 detail)},
+-							{ctx.metrics.gap});
+-					})));
++					rows.push_back(fe::paragraph(value.meaning));
+ 			}
++			if (!matched)
++				rows.push_back(fe::paragraph(fe::tr(
++					search.empty() ? "[No values published yet.]" : "[No fields match your search.]")));
+ 		}
+ 	}
+ 	fe::ButtonOptions close;
+ 	close.shortcut = SDLK_ESCAPE;
+ 	return fe::column({fe::paragraph(fe::tr("[AI telemetry]"), {fe::FontRole::Heading}),
+-					   fe::expanded(fe::footer(fe::column(std::move(rows), {p.pt(8)}),
+-											   fe::button(
+-												   "telemetry/close", fe::tr("[Close]"),
+-												   [this] { finish(0); }, close)))},
++					   fe::expanded(fe::footer(
++						   fe::scroll("telemetry/scroll", fe::column(std::move(rows), {p.pt(8)})),
++						   fe::button(
++							   "telemetry/close", fe::tr("[Close]"), [this] { finish(0); }, close)))},
+ 					  {p.pt(12)});
+ }
+diff --git a/src/gui/GameGUIDialog.h b/src/gui/GameGUIDialog.h
+index 194bc284f..616395a2d 100644
+--- a/src/gui/GameGUIDialog.h
++++ b/src/gui/GameGUIDialog.h
+@@ -267,6 +267,5 @@ class InGameAITelemetryScreen : public Glob2UI::InGameDialog
+ 	GameGUI *gui;
+ 	int player = -1;
+ 	Uint32 sample = ~0u, accessiblePlayers = 0;
+-	std::string search, selectedField;
+-	void resetFieldSelection();
++	std::string search;
+ };
