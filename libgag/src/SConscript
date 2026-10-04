@@ -1,5 +1,8 @@
 from sources import GAG_SOURCES
+Import("env")
 libgag_sources = list(GAG_SOURCES)
+if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcross"):
+    libgag_sources.append("MacScrollMonitor.mm")
 
 
     
@@ -16,7 +19,7 @@ import os
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
-        if file.find(".cpp") != -1:
+        if file.endswith((".cpp", ".mm", ".h")):
             PackTar(env["TARFILE"], file)
     
     PackTar(env["TARFILE"], "SConscript")

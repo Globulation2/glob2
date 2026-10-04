@@ -2,6 +2,7 @@
 #pragma once
 #include <TouchInput.h>
 #include <ScrollPhysics.h>
+#include <GestureScroll.h>
 #include "TouchInteractionSession.h"
 #include "TouchDial.h"
 #include "BrushHUD.h"
@@ -273,6 +274,12 @@ class GameGUITouch
 	// HUD panel offsets with momentum and bounce; clampScroll() keeps them and
 	// the plain scroll variables in step.
 	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
+	GAGCore::GestureScrollController nativeScroll;
+	Uint64 nativeSequence = 0;
+	int nativePanel = 0; // 1 palette, 2 inspector actions, 3 tutorial; retained for cancelled tails
+	bool nativeScrolling = false;
+	GAGCore::TrackedScrollAxis &nativeAxis() { return nativePanel == 3 ? tutorialAxis : nativePanel == 2 ? actionAxis : panelAxis; }
+	double &nativeOffset() { return nativePanel == 3 ? tutorialScroll : nativePanel == 2 ? actionScroll : panelScroll; }
 	GAGCore::ScrollMotion mapMotion;
 	// Screen-point displacement, separate from the smaller pan/tap slop.
 	GAGCore::ViewPoint mapDragTravel{};

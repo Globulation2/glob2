@@ -945,6 +945,104 @@ TEST_SUITE("UILayout")
 	TEST_CASE("footer folds") { checkFooterFolds(); }
 	TEST_CASE("scroll clamp and wheel") { checkScrollClampAndWheel(); }
 	TEST_CASE("tap versus pan") { checkTapVersusPan(); }
+	TEST_CASE("native gestures retain fractions ownership and survive rebuilds")
+	{
+		int taps = 0;
+		Fixture f(buttonList(taps), 200, 100);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 31; e.x = 50; e.y = 50;
+		auto send = [&](GAGCore::ScrollGesturePhase phase, double dy,
+			GAGCore::ScrollGesturePhase momentum = GAGCore::ScrollGesturePhase::None)
+		{
+			e.phase = phase; e.momentum = momentum; e.dy = dy;
+			e.timestamp = SDL_MS_TO_NS(f.clock);
+			CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		};
+		send(GAGCore::ScrollGesturePhase::Began, 0);
+		for (int i = 0; i < 8; ++i) send(GAGCore::ScrollGesturePhase::Changed, -0.125);
+		CHECK(f.host.find("list")->scrollOffset() == 1);
+		f.host.invalidate(); f.host.layoutIfNeeded();
+		e.x = 500; e.y = 500; // Pointer leaves the captured list.
+		send(GAGCore::ScrollGesturePhase::Changed, -20);
+		CHECK(f.host.find("list")->scrollOffset() == 21);
+		send(GAGCore::ScrollGesturePhase::Ended, 0);
+		f.advance(16);
+		CHECK(f.host.find("list")->scrollOffset() == 21);
+		send(GAGCore::ScrollGesturePhase::None, -10, GAGCore::ScrollGesturePhase::Began);
+		CHECK(f.host.find("list")->scrollOffset() == 31);
+		f.host.cancelGestures();
+		send(GAGCore::ScrollGesturePhase::None, -10, GAGCore::ScrollGesturePhase::Changed);
+		CHECK(f.host.find("list")->scrollOffset() == 31);
+		CHECK(taps == 0);
+	}
+	TEST_CASE("native gesture bounds settle and external jumps cancel the tail")
+	{
+		int taps = 0;
+		Fixture f(buttonList(taps), 200, 100);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 32; e.x = 50; e.y = 50; e.timestamp = SDL_MS_TO_NS(f.clock);
+		e.phase = GAGCore::ScrollGesturePhase::Began;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = 80;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		CHECK(f.host.find("list")->overscroll() < 0);
+		e.phase = GAGCore::ScrollGesturePhase::Ended; e.dy = 0;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		CHECK(f.host.animating());
+		f.settle("list");
+		CHECK(f.host.find("list")->overscroll() == 0);
+		e.sequence++; e.phase = GAGCore::ScrollGesturePhase::Began;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		f.host.find("list")->scrollBy(50, f.host);
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = -10;
+		f.host.event(GAGCore::gestureScrollEvent(e));
+		CHECK(f.host.find("list")->scrollOffset() == 50);
+		CHECK_FALSE(f.host.animating());
+	}
+	TEST_CASE("native nested capture does not transfer to parent and missing owners consume tails")
+	{
+		bool includeInner = true;
+		Fixture f([&](const Presentation &)
+		{
+			std::vector<Element> children;
+			for (int i = 0; i < 20; ++i) children.push_back(height(40, label("row")));
+			return scroll("outer", column({includeInner ? height(80, scroll("inner", column(children))) : height(80, label("gone")), height(300, label("footer"))}));
+		}, 200, 100);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 41; e.x = 50; e.y = 40; e.timestamp = SDL_MS_TO_NS(f.clock);
+		e.phase = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = -2000;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(f.host.find("inner")->scrollOffset() > 0);
+		CHECK(f.host.find("outer")->scrollOffset() == 0);
+		includeInner = false; f.host.invalidate(); f.advance(16);
+		e.phase = GAGCore::ScrollGesturePhase::None; e.momentum = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(f.host.find("outer")->scrollOffset() == 0);
+	}
+	TEST_CASE("native popup scrolling owns its tail after dismissal")
+	{
+		int taps = 0;
+		Fixture f(buttonList(taps), 200, 100);
+		PopupSpec popup;
+		popup.anchor = {20, 20, 100, 20};
+		for (int i = 0; i < 20; ++i) popup.options.push_back("option " + std::to_string(i));
+		f.host.openPopup(popup);
+		auto *list = f.host.find("popup/scroll");
+		REQUIRE(list);
+		GAGCore::GestureScrollEvent e;
+		e.sequence = 42; e.x = list->bounds.x + 10; e.y = list->bounds.y + 10;
+		e.timestamp = SDL_MS_TO_NS(f.clock); e.phase = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		e.phase = GAGCore::ScrollGesturePhase::Changed; e.dy = -20;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(list->scrollOffset() > 0);
+		f.host.closePopup();
+		e.phase = GAGCore::ScrollGesturePhase::None; e.momentum = GAGCore::ScrollGesturePhase::Began;
+		CHECK(f.host.event(GAGCore::gestureScrollEvent(e)));
+		CHECK(f.host.find("list")->scrollOffset() == 0);
+	}
 	TEST_CASE("fling continues after release") { checkFlingContinues(); }
 	TEST_CASE("overscroll springs back") { checkOverscrollSpringsBack(); }
 	TEST_CASE("touch wheel and programmatic scroll stop a fling") { checkTouchStopsFling(); }

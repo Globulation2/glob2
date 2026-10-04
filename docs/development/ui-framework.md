@@ -414,12 +414,37 @@ Finger pans on `scroll`, `listView` and `textEditor` (the nodes whose
 Nodes keep an `int` offset that is always clamped, which is what
 `NodeState::scroll` persists, plus a transient `overscroll()` displacement that
 is painted and hit-tested but never saved; `scrollTo()` sets the clamped offset
-and `setOverscroll()` the stretch. Mouse drags never coast or stretch, so
-desktop behaviour is unchanged. `Host::animating()` reports a coast or bounce
+and `setOverscroll()` the stretch. Mouse drags and conventional wheel events never coast or stretch. `Host::animating()` reports a coast or bounce
 in progress and `UIScreen::executionDelay` frames every 16 ms meanwhile.
 The three preference sliders under Settings › Controls (and the in-game
 Options dialog on touch) tune the feel through `GAGCore::scrollTuning()`; 0
 turns momentum or bounce off, 50 is the researched default.
+
+On macOS, phased trackpad and gesture-mouse scroll events use native momentum
+and a gentler rubber band (half the touch coefficient). The AppKit local monitor
+in libgag intercepts only precise events with gesture or momentum phases and
+queues a value-only `GestureScrollEvent`; ordinary wheels remain SDL wheel events.
+Devices with momentum phases but no direct-contact phases also retain the wheel
+path throughout, since they cannot establish gesture capture.
+`GestureScrollController` feeds those deltas into the existing axis without adding
+another fling. Native point deltas are converted into logical coordinates once.
+
+The deepest scrollable at gesture start owns the whole sequence, including its
+momentum after the pointer leaves. Stable-key rebuilds retain that capture; removal,
+modal changes, focus loss, viewport changes and external scroll jumps cancel it
+and consume the remaining tail. Active Mac gestures request 16 ms frames during
+contact and the short wait for native momentum. Content stretches while fingers pull past an edge;
+release or momentum reaching an edge starts the spring and stops further tail
+movement. A 150 ms gap after release or during momentum closes an incomplete
+sequence; a resting finger never times out. Horizontal editor trays choose the
+initial dominant axis and accept vertical input as an alternative.
+
+The same controller drives shared widgets, HUD palettes/actions/tutorials and
+editor trays/inspectors in their existing presentations. Unclaimed map gestures
+retain wheel zoom. List momentum at zero suppresses native UI momentum; positive
+values leave its duration and speed to macOS. List bounce adjusts the gentler
+edge stretch, and zero bounce or reduced motion gives firm bounds. No extra
+preference fields or simulation state are introduced.
 
 ## Verification
 
@@ -430,7 +455,11 @@ turns momentum or bounce off, 50 is the researched default.
   ellipsis, focus order, capture, tap versus pan, fling, overscroll and bounce
   (with an explicit clock: event timestamps and `host.update(tick)`), popup
   routing, per-key state across rebuilds and text editing. The `ScrollPhysics`
-  suite covers the kernel itself.
+  suite covers the kernel itself. `GestureScroll` covers native delta sequences,
+  fractions, axis selection, bounds, settings, cancellation, timeout and deferred
+  SDL payload copies; the Mac-only `MacScrollMonitor` engine suite checks native
+  phase/delta conversion, wheel pass-through and monitor teardown. Physical
+  trackpad and gesture-mouse feel still require hands-on verification.
 - The `UIPresentation` suite in `glob2-engine-tests`
   (`python3 test/run_tests.py --filter 'UIPresentation/*'`) instantiates every
   screen and dialog fixture at phone, tablet and desktop viewports in both touch

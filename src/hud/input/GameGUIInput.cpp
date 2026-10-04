@@ -1,3 +1,4 @@
+#include <GestureScroll.h>
 #include "hive/HiveDialog.h"
 #include "MapZoomControls.h"
 #include "ConnectionOverlay.h"
@@ -125,6 +126,7 @@ bool GameGUI::processTypingInput(SDL_Event *event)
 
 void GameGUI::processEvent(SDL_Event *event)
 {
+    if (GAGCore::scrollGesture(*event) && !inputState.hasFocus()) return;
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
@@ -205,6 +207,11 @@ void GameGUI::processEvent(SDL_Event *event)
 		else if (event->type==SDL_EVENT_MOUSE_BUTTON_UP)
 		{
 			handleMouseButtonUp(event->button);
+		}
+		else if (auto sample = GAGCore::scrollGesture(*event))
+		{
+			const auto wheel = GAGCore::gestureWheelFallback(*sample);
+			zoomMap(wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1), mouseX, mouseY);
 		}
 		else if (event->type==SDL_EVENT_MOUSE_WHEEL)
 		{
