@@ -4258,6 +4258,10 @@ Webプロフィール
 マップや作者を検索
 [maps none found]
 該当するマップはありません。
+[maps catalog empty]
+このサーバーにはまだ共有されたマップがありません。
+[maps clear filters]
+フィルターを解除
 [maps any colonies]
 コロニー数指定なし
 [maps checking]

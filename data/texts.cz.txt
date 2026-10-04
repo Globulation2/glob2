@@ -4258,6 +4258,10 @@ Co je s touto mapou špatně?
 Hledat mapy nebo autory
 [maps none found]
 Žádné odpovídající mapy.
+[maps catalog empty]
+Na tomto serveru zatím nikdo nesdílel žádnou mapu.
+[maps clear filters]
+Zrušit filtry
 [maps any colonies]
 Libovolný počet kolonií
 [maps checking]

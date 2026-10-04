@@ -51,6 +51,9 @@ Element sparkline(std::vector<double> values, bool provisional, Size size);
 Element countdownRing(std::int64_t remainingMs, std::int64_t totalMs, int pixels);
 // A small rounded label such as "provisional 5/10" or "Rejected".
 Element badge(const std::string &text, GAGCore::Color color);
+// What an empty list says: an icon, why it is empty and what to do instead
+// (actions, usually one or two buttons; may be empty).
+Element emptyState(IconRef glyph, const std::string &text, std::vector<Element> actions, const Presentation &p);
 
 // Decoded PNG previews from the instance, by URL. Downloads go through the
 // platform client (authenticated, so private maps work); failures are kept

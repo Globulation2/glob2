@@ -4258,6 +4258,10 @@ OpenGL недоступен в этой сборке.
 Поиск карт или авторов
 [maps none found]
 Подходящих карт нет.
+[maps catalog empty]
+На этом сервере пока никто не поделился картами.
+[maps clear filters]
+Сбросить фильтры
 [maps any colonies]
 Любое число колоний
 [maps checking]

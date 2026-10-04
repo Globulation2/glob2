@@ -281,6 +281,7 @@ struct MobileGallerySetup
 		screenShot(stack, "lan-find", std::make_unique<LANFindScreen>(stack));
 		// Online play (fixed models, no network): hub states, rooms, starting a match.
 		screenShot(stack, "online-hub", OnlineUIFixtures::hubFixture(stack));
+		screenShot(stack, "online-hub-searching", OnlineUIFixtures::hubSearching(stack));
 		screenShot(stack, "online-hub-signin", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
 					   m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
 					   m.confirmationCode = "KXQ742";
@@ -371,6 +372,7 @@ struct MobileGallerySetup
 		screenShot(stack, "online-profile", OnlineUIFixtures::profile(stack));
 		screenShot(stack, "online-maps", OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Browse, ""));
 		screenShot(stack, "online-my-maps", OnlineUIFixtures::maps(stack, OnlineMapsScreen::Tab::Mine, ""));
+		screenShot(stack, "online-maps-empty", OnlineUIFixtures::mapsEmpty(stack));
 		screenShot(stack, "map-share", OnlineUIFixtures::share(0));
 		screenShot(stack, "map-share-checking", OnlineUIFixtures::share(1));
 		screenShot(stack, "map-share-rejected", OnlineUIFixtures::share(2));

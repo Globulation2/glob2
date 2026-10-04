@@ -4258,6 +4258,10 @@ Vad är fel med den här kartan?
 Sök kartor eller skapare
 [maps none found]
 Inga kartor matchar.
+[maps catalog empty]
+Inga kartor har delats på den här servern än.
+[maps clear filters]
+Rensa filter
 [maps any colonies]
 Valfritt antal kolonier
 [maps checking]

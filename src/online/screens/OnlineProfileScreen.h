@@ -2,6 +2,7 @@
 #pragma once
 #include "OnlineResources.h"
 #include "SinglePlayerFlow.h"
+#include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
 
 #include <map>
@@ -95,6 +96,7 @@ class OnlineProfileScreen : public Glob2UI::Screen
 	std::string status; // replay download progress
 	Filter filter = Filter::All;
 	int selected = -1;
+	SearchStrip::Ticker searchTicker;
 	bool started = false;
 	// This screen's platform calls, cancelled when it closes (made on first use:
 	// fixture screens never touch the platform).

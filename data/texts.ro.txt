@@ -4258,6 +4258,10 @@ Ce problemă are această hartă?
 Caută hărți sau autori
 [maps none found]
 Nicio hartă nu corespunde.
+[maps catalog empty]
+Încă nu a fost partajată nicio hartă pe acest server.
+[maps clear filters]
+Șterge filtrele
 [maps any colonies]
 Oricâte colonii
 [maps checking]
