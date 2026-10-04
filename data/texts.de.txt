@@ -1,19 +1,19 @@
 [AI strategy]
 KI-Strategie
 [start recording]
-
+Aufnahme starten
 [stop recording]
-
+Aufnahme stoppen
 [finalizing recording]
-
+Aufnahme wird abgeschlossen…
 [AIMaxima-Summary]
 Balanciert nachhaltiges Wachstum und Ausbildung und sammelt Armeen dann zu Wellen.
 [AIMaxima-Profile]
-Grundstrategie: Behandelt Nahrung, Arbeiter, Geburten, Ausbildung, Bau und Kampf als konkurrierende Bedürfnisse. Bemisst die Armee teilweise nach geschätzter Feindstärke und versucht sie wirksam ans Ziel zu bringen.\n\nWirtschaft und Entwicklung: Plant Geburten nach Nahrung und Arbeit, erhält freie Zeit für Ausbildung und stoppt zusätzliche überzählige Arbeiter bei Militärbedarf. Skaliert Ausbildungskapazität und vermeidet zu viele gleichzeitig wegen Verbesserung stillgelegte Einrichtungen.\n\nAufklärung und Entscheidungen: Schätzt Feindkräfte aus sichtbaren Einheiten und erinnerten Sichtungen mit einem angepassten Modell. Zielwahl berücksichtigt Wert, Entfernung, Türme, ungeschützte Arbeiter und Beharrlichkeit. Fruchtmissionen fördern Nahrungsvielfalt und Bekehrung.\n\nAngriff und Verteidigung: Reserviert Krieger für Ausbildung und Verteidigung und sammelt geeignete Landtruppen nahe eigener Nahrungseinrichtungen vor Angriffswellen. Reagiert lokal zur Verteidigung und bewertet Zugänge zur Kolonie.\n\nBei stockenden Angriffen: Nachdem vier aufeinanderfolgende Angriffswellen ihr Ziel nicht erreicht haben wechselt es zu ständig verstärkten Angriffsflaggen. Auch amphibische Angriffe können laufende Verstärkung nutzen. Diese Ausweichstrategie löst nicht jede Blockade vor einer möglichen Sammlung.\n\nVergleich mit anderen KIs: Verbindet Nahrung, Ausbildung, Informationen und Einsatz enger. Cabino betont mehrere Gebäudeangriffe; Maxima geschätzten Bedarf und die Ankunft gesammelter Kräfte.\n\nStärken und Schwächen: Hält Wachstum und militärischen Ersatz aufrecht und passt sich Nahrungsknappheit und beobachteten Gefahren an. Braucht Nahrung, Ausbildung und freien Sammelraum; Staus und lange Wege können die Ankunft vereiteln.\n\nGegenstrategie: Ungeschütztes Getreide, Gasthöfe und Trainingslager vor der Sammlung bestreiten. Versorgte Verteidigung zusammenhalten und Verstärkungswege stören. Nach der ersten Welle weiteren Druck erwarten.\n\nAufklärung: Stärkeschätzungen nutzen Sichtungen und Beobachtungsverlauf, nicht versteckte Gesamtzahlen feindlicher Truppen.
+Grundstrategie: Behandelt Nahrung, Arbeiter, Geburten, Ausbildung, Bau und Kampf als konkurrierende Bedürfnisse. Bemisst die Armee teilweise nach geschätzter Feindstärke und versucht sie wirksam ans Ziel zu bringen.\n\nWirtschaft und Entwicklung: Plant Geburten nach Nahrung und Arbeit, erhält freie Zeit für Ausbildung und stoppt zusätzliche überzählige Arbeiter bei Militärbedarf. Skaliert Ausbildungskapazität und vermeidet zu viele gleichzeitig wegen Verbesserung stillgelegte Einrichtungen.\n\nAufklärung und Entscheidungen: Schätzt Feindkräfte aus sichtbaren Einheiten und erinnerten Sichtungen mit einem angepassten Modell. Zielwahl berücksichtigt Wert, Entfernung, Türme, ungeschützte Arbeiter und Beharrlichkeit. Fruchtmissionen fördern Nahrungsvielfalt und Bekehrung.\n\nAngriff und Verteidigung: Reserviert Krieger für Ausbildung und Verteidigung und sammelt geeignete Landtruppen nahe eigener Nahrungseinrichtungen vor Angriffswellen. Reagiert lokal zur Verteidigung und bewertet Zugänge zur Kolonie.\n\nBei stockenden Angriffen: Nachdem vier aufeinanderfolgende Angriffswellen ihr Ziel nicht erreicht haben, wechselt es zu ständig verstärkten Angriffsflaggen. Auch amphibische Angriffe können laufende Verstärkung nutzen. Diese Ausweichstrategie löst nicht jede Blockade vor einer möglichen Sammlung.\n\nVergleich mit anderen KIs: Verbindet Nahrung, Ausbildung, Informationen und Einsatz enger. Cabino betont mehrere Gebäudeangriffe; Maxima geschätzten Bedarf und die Ankunft gesammelter Kräfte.\n\nStärken und Schwächen: Hält Wachstum und militärischen Ersatz aufrecht und passt sich Nahrungsknappheit und beobachteten Gefahren an. Braucht Nahrung, Ausbildung und freien Sammelraum; Staus und lange Wege können die Ankunft vereiteln.\n\nGegenstrategie: Ungeschützten Weizen, Gasthöfe und Trainingslager vor der Sammlung bestreiten. Versorgte Verteidigung zusammenhalten und Verstärkungswege stören. Nach der ersten Welle weiteren Druck erwarten.\n\nAufklärung: Stärkeschätzungen nutzen Sichtungen und Beobachtungsverlauf, nicht versteckte Gesamtzahlen feindlicher Truppen.
 [%0 has left the game]
 %0 hat das Spiel verlassen.
 [%0 level %1]
-%0 Level %1
+%0 Stufe %1
 [%0 units can't access building]
 %0 Einheiten können das Gebäude nicht betreten
 [%0 units can't access flag]
@@ -21,11 +21,11 @@ Grundstrategie: Behandelt Nahrung, Arbeiter, Geburten, Ausbildung, Bau und Kampf
 [%0 units can't access fruit]
 %0 Einheiten können die Früchte nicht erreichen
 [%0 units can't access resource]
-%0 Einheiten können die Resource nicht erreichen
+%0 Einheiten können die Ressource nicht erreichen
 [%0 units not available]
 %0 Einheiten nicht verfügbar
 [%0 units too far from building]
-%0 Einheiten zu weit  vom Gebäude entfernt
+%0 Einheiten zu weit vom Gebäude entfernt
 [%0 units too far from flag]
 %0 Einheiten zu weit von der Flagge entfernt
 [%0 units too far from fruit]
@@ -33,25 +33,25 @@ Grundstrategie: Behandelt Nahrung, Arbeiter, Geburten, Ausbildung, Bau und Kampf
 [%0 units too far from resource]
 %0 Einheiten zu weit von der Ressource entfernt
 [%0 units too low level]
-%0 Einheiten mit unzureichender Bildung
+%0 Einheiten mit zu niedriger Stufe
 [%0% Uploaded]
 %0% hochgeladen
 [%0's team unit got converted to your team]
-Sie haben eine Einheit von Spieler %0 übernommen.
+Eine Einheit aus dem Team von %0 ist Ihrem Team beigetreten
 [abreaviation explanation A]
 A: Verbündete
 [abreaviation explanation C]
-C: Chatnachrichten senden
+C: Chatnachrichten senden an
 [abreaviation explanation fV]
-fV: Teile die Sicht für Gasthöfe (um Einheiten zu bekehren)
+fV: Sicht auf Gasthöfe teilen (um Einheiten abzuwerben)
 [abreaviation explanation mV]
-mV: Teile die Sicht für Märkte (um Waren zu handeln)
+mV: Sicht auf Märkte teilen (um Früchte zu tauschen)
 [abreaviation explanation V]
-V: Teile die Sicht für alle Gebäude
+V: Sicht auf alle Gebäude teilen
 [add map]
 Karte hinzufügen
 [add shortcut]
-Shortcut hinzufügen
+Tastenkürzel hinzufügen
 [AI Descriptions]
 KI-Beschreibungen
 [AI]
@@ -67,9 +67,9 @@ Vergrößert seine Bevölkerung, bildet Krieger aus und greift dann an.
 [AINicowar]
 Nicowar
 [AINone-Description]
-KINone tut nichts und kommt eigentlich nur in Zusammenhang mit Skripten zum Einsatz.
+Keine – tut nichts.
 [AINone]
-KINone
+Keine
 [AINumbi-Description]
 Ein nachsichtiger Gegner, der sich trotzdem ausbreitet und angreift.
 [AINumbi]
@@ -79,7 +79,7 @@ Breitet sich aus und wirbt Einheiten ab, ohne Krieger zu produzieren.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Schnelle Angriffe, die deine frühe Verteidigung auf die Probe stellen.
+Schnelle Angriffe, die Ihre frühe Verteidigung auf die Probe stellen.
 [AIWarrush]
 Warrush
 [AICabino-Description]
@@ -95,7 +95,7 @@ Algen
 [algae]
 Algen
 [alliances]
-Allianzen
+Bündnisse
 [alt %0]
 Alt-%0
 [and]
@@ -109,21 +109,21 @@ hungrig
 [are ok]
 ok
 [are wonded]
-sind verletzt
+verletzt
 [armor]
 Rüstung
 [assigned]
-zugewiesen
+Zugewiesen
 [At. speed]
-Geschwindigkeit
+Angr.-Tempo
 [At. strength]
-Stärke
+Angr.-Stärke
 [Attack]
 Angriff
 [audio]
 Audio
 [auto save]
-autosave
+Autospeicherung
 [available lan games]
 Lokal verfügbare Spiele
 [away:]
@@ -131,9 +131,9 @@ weg:
 [Back]
 Zurück
 [backspace]
-Backspace
+Rücktaste
 [barracks explanation 2]
-kraft Deiner Einheiten
+kraft Ihrer Krieger
 [barracks explanation]
 Verbessert die Kampf-
 [barracks]
@@ -141,11 +141,11 @@ Trainingslager
 [beach size]
 Strandbreite
 [break]
-zerbrechen
+Pause
 [briefing]
 Briefing
 [build %0 level %1]
-Baue %0 Level %1
+%0 Stufe %1 bauen
 [Build]
 Bauen
 [Building Defaults]
@@ -167,7 +167,7 @@ Feldzugeditor
 [campaign]
 Feldzug
 [Can't connect, can't find host]
-Verbindungsfehler: Kann Server nicht finden.
+Verbindungsfehler: Host nicht gefunden.
 [Can't host game, port %0 in use]
 Serverfehler: Port %0 belegt.
 [Can't join game, game has started]
@@ -183,7 +183,7 @@ Verbesserung abbrechen
 [Cancel]
 Abbrechen
 [caps lock]
-Caps-Lock
+Feststelltaste
 [carry]
 Transportiert:
 [Change Area Name]
@@ -191,7 +191,7 @@ Zone umbenennen
 [Cherry]
 Kirschen
 [choose campaign]
-Wähle einen Feldzug aus
+Feldzug auswählen
 [choose game]
 Spiel auswählen
 [choose map]
@@ -215,15 +215,15 @@ Kombinierte Sicht
 [compile]
 Skript kompilieren
 [compose]
-schreiben
+Compose-Taste
 [Computing Fertility]
-Berechne Fruchtbarkeit der Böden.
+Berechne Fruchtbarkeit der Böden…
 [concrete islands terrain]
 Getrennte Inseln
 [connect]
 Verbinden
 [connecting to game]
-Verbinde zu Spiel
+Verbinde mit Spiel
 [connecting to]
 Verbinden mit
 [Construction Site Defaults]
@@ -255,15 +255,15 @@ Schaden
 [Damaged Map]
 Verwundetenkarte
 [decrease units working]
-Arbeiter kündigen
+Weniger Arbeiter
 [Defeat Your Oppenents]
-Besiege Deinen Gegner
+Besiegen Sie Ihre Gegner
 [defencetower explanation 2]
 bäude und Einheiten an
 [defencetower explanation]
-Greift Feindliche Ge-
+Greift feindliche Ge-
 [defencetower]
-Panzerturm
+Wachturm
 [Defense Map]
 Verteidigungskarte
 [Defense]
@@ -275,7 +275,7 @@ Löschen
 [desert]
 Wüste
 [destroy building]
-Zerstörung einleiten/abbrechen
+Ausgewähltes Gebäude zerstören
 [destroy]
 Zerstören
 [display]
@@ -285,11 +285,11 @@ Tut nichts
 [don't carry anything]
 Transportiert nichts
 [down]
-unten
+Unten
 [edit map]
 Karte bearbeiten
 [editing map]
-bearbeite Karte
+Karte wird bearbeitet
 [editor shortcuts]
 Editor-Tasten
 [editor]
@@ -297,17 +297,17 @@ Editor
 [end]
 Ende
 [enter]
-Beitreten
+Eingabe
 [equals]
-entspricht
+Gleich
 [ERROR_CANT_LOAD_MAP]
 Die Karte konnte nicht geladen werden. Die Datei ist beschädigt oder hat eine inkompatible Version.
 [escape]
-Verlassen
+Esc
 [explorationflag explanation 2]
-und Luftangriffe (Schule L3)
+
 [explorationflag explanation]
-Steuert Entdecker
+Lockt Entdecker an
 [explorationflag]
 Entdeckerflagge
 [Explorer Ratio]
@@ -351,7 +351,7 @@ F9
 [Fertility Map]
 Fruchtbarkeitskarte
 [Flag Defaults]
-Flaggen Standards
+Flaggenstandards
 [flag settings explanation]
 Standardradius der Flagge
 [fog of war]
@@ -359,7 +359,7 @@ Kriegsnebel
 [food]
 Nahrung
 [forbidden area]
-Verbotener Bereich
+Sperrzone
 [Free]
 Gesund
 [free]
@@ -373,25 +373,25 @@ Vollbild
 [game full]
 Spiel voll
 [game shortcuts]
-Spiel-Tasten
+Spieltasten
 [Game]
 Spiel
 [general settings]
 Allgemein
 [go to event]
-Gehe zu Ereignis
+Zum Ereignis springen
 [go to home]
-Gehe nach Hause
+Zur Basis springen
 [goto main menu]
-zum Hauptmenu
+Zurück zum Hauptmenü
 [grass]
 Gras
 [ground attack]
 Bodenangriff
 [guard area]
-Bereich bewachen
+Wachzone
 [GUIMapPreview text 0]
-Bitte wähle
+Bitte wählen Sie
 [GUIMapPreview text 1]
 eine Karte
 [handmade map]
@@ -403,21 +403,21 @@ Harte Pause
 [Harvest]
 Ernten
 [high priority]
-hohe Priorität
+hoch
 [hints]
 Hinweise
 [home]
-zu Hause
+Pos1
 [hospital explanation 2]
 
 [hospital explanation]
-Heilt Deine Einheiten
+Heilt Ihre Einheiten
 [hospital]
 Krankenhaus
 [host]
-Spiel einleiten
+Spiel eröffnen
 [hp]
-Leben
+TP
 [Human]
 Mensch
 [human]
@@ -429,33 +429,33 @@ Hunger
 [In way]
 Unterwegs
 [increase units working]
-Arbeiter anwerben
+Mehr Arbeiter
 [inn explanation 2]
 
 [inn explanation]
-Ernährt Deine Einheiten
+Ernährt Ihre Einheiten
 [inn]
 Gasthof
 [insert]
-einfügen
+Einfg
 [inside]
 Drinnen
 [islands size]
-Inselgrösse
+Inselgröße
 [islands terrain]
 Inseln
 [isles terrain]
-Inseln II
+Eilande
 [iterate selection]
-Wechsle auf nächste Auswahl
+Zur nächsten Auswahl wechseln
 [jobs]
 Arbeit
 [join a game]
-einem Spiel beitreten
+Einem Spiel beitreten
 [keyboard settings]
 Tastatur
 [lan]
-Spiel im lokalen Netz
+LAN-Spiel
 [language incomplete]
 Deutsch (unvollständig)
 [language-code]
@@ -465,7 +465,7 @@ Sprache
 [language]
 Deutsch
 [left meta]
-ALT (links)
+Meta (links)
 [left super]
 WIN (links)
 [left]
@@ -483,23 +483,23 @@ Karte laden
 [load replay]
 Replay laden
 [load script]
-Script laden
+Skript laden
 [load]
 Laden
 [look around]
 Umsehen
 [Lost : %0 has more prestige than you]
-Verloren: %0 hat mehr Prestige als Du
+Verloren: %0 hat mehr Prestige als Sie
 [Lost : your colony is dead]
-Verloren: Deine Kolonie ist tot
+Verloren: Ihre Kolonie ist ausgelöscht
 [low priority]
-niedrige Priorität
+niedrig
 [lowquality]
 Niedrige Qualität
 [Magic At. Air]
-Stärke Luftabwehr
+Luftschaden
 [Magic At. Ground]
-Kampfstärke
+Bodenschaden
 [map description]
 Kartenbeschreibung
 [Map Discovered]
@@ -507,25 +507,25 @@ Erkundet
 [map name]
 Kartenname
 [map script]
-Karten Script
+Kartenskript
 [map size x]
 Breite der Karte
 [map size y]
 Höhe der Karte
 [mark map]
-Karte markieren
+Karte für Verbündete markieren
 [market explanation 2]
-Früchten
+Früchten mit anderen
 [market explanation]
 Erlaubt den Handel mit
 [market]
 Markt
 [medium priority]
-mittlere Priorität
+mittel
 [meta %0]
-ALT-%0
+Meta-%0
 [Min required level:]
-Mindestlevel:
+Mindeststufe:
 [Minimum Level To Flag]
 Min. Einheitenstufe
 [Music volume]
@@ -545,7 +545,7 @@ Keine Hinweise
 [no key]
 keine Taste
 [No Objectives]
-keine Anweisungen
+Keine Aufgaben
 [no ressources growth areas]
 Kein Wachstum
 [No]
@@ -553,7 +553,7 @@ Nein
 [Number Of Buildings]
 Anzahl der Gebäude
 [number of teams]
-Mannschaften
+Anzahl der Teams
 [Number Of Units]
 Anzahl der Einheiten
 [numlock]
@@ -575,15 +575,15 @@ Vor Ort
 [on unpress]
 Loslassen
 [open chat box]
-Öffne Chat
+Chat öffnen
 [open load menu]
-Öffne "Laden"
+Laden-Menü öffnen
 [open save menu]
-Öffne "Speichern"
+Speichern-Menü öffnen
 [open scenario editor]
-Öffne "Skript"
+Szenario-Editor öffnen
 [open teams editor]
-Öffne "Teams"
+Team-Editor öffnen
 [open]
 offen
 [OpenGL]
@@ -597,9 +597,9 @@ Orangen
 [Other Options]
 Andere Einstellungen
 [page down]
-nächste Seite
+Bild ab
 [page up]
-vorherige Seite
+Bild auf
 [Papyrus]
 Papyrus
 [pause game]
@@ -607,7 +607,7 @@ Pause
 [pause]
 Pause
 [Paused]
-Pause
+Pausiert
 [player name]
 Spielername
 [players]
@@ -621,13 +621,13 @@ Leertaste drücken, um fortzufahren.
 [Prestige Score]
 Prestige-Punkte
 [Prestige Win Enabled]
-Sieg durch Prestige aktivieren
+Prestigesieg
 [Prestige]
 Prestige
 [Primary Objectives]
-Hauptaufgabe
+Hauptaufgaben
 [print screen]
-Bildschirm drucken
+Druck
 [priority]
 Priorität
 [Prune]
@@ -649,13 +649,13 @@ Rennbahn
 [range]
 Reichweite
 [ratios]
-Verhältnis
+Anteile
 [remember unit]
 Einheitenzahlen merken
 [remove map]
-Entferne Karte
+Karte entfernen
 [remove shortcut]
-Entferne Tastenkürzel
+Tastenkürzel entfernen
 [repair building]
 Reparieren / Abbrechen
 [repair]
@@ -675,7 +675,7 @@ Zurück zum Replay
 [return]
 Enter
 [right meta]
-ALT (rechts)
+Meta (rechts)
 [right super]
 WIN (rechts)
 [right]
@@ -687,7 +687,7 @@ Flussbett
 [sand]
 Sand
 [save before quit?]
-Möchtest Du vor dem Beenden speichern?
+Möchten Sie vor dem Beenden speichern?
 [save game]
 Spiel speichern
 [save map]
@@ -699,13 +699,13 @@ Skript speichern
 [Save]
 Speichern
 [school explanation 2]
-Fähigkeit zu bauen
+fähigkeit Ihrer Arbeiter
 [school explanation]
-Verbessert die
+Verbessert die Bau-
 [school]
 Schule
 [Script Areas]
-Script-Bereich
+Skriptbereiche
 [scroll lock]
 Rollen
 [scroll wheel enabled]
@@ -717,71 +717,71 @@ suchen Arbeit
 [seeking]
 suchen
 [select barracks building]
-Wähle Trainingslager
+Trainingslager auswählen
 [select clearingflag]
-Wähle Rodungsflagge
+Rodungsflagge auswählen
 [select construct barracks]
-Wähle Trainingslagerbau
+Trainingslager zum Bauen wählen
 [select construct defencetower]
-Wähle Turmbau
+Wachturm zum Bauen wählen
 [select construct hospital]
-Wähle Krankenhausbau
+Krankenhaus zum Bauen wählen
 [select construct inn]
-Wähle Gasthofbau
+Gasthof zum Bauen wählen
 [select construct market]
-Wähle Marktbau
+Markt zum Bauen wählen
 [select construct racetrack]
-Wähle Rennbahnbau
+Rennbahn zum Bauen wählen
 [select construct school]
-Wähle Schulbau
+Schule zum Bauen wählen
 [select construct stonewall]
-Wähle Mauerbau
+Mauer zum Bauen wählen
 [select construct swarm]
-Wähle Hauptgebäudebau
+Stock zum Bauen wählen
 [select construct swimmingpool]
-Wähle Schwimmbahnbau
+Schwimmbecken zum Bauen wählen
 [select delete tool]
-Wähle Löschwerkzeug
+Löschwerkzeug wählen
 [select explorationflag]
-Wähle Erkundungsflagge
+Entdeckerflagge auswählen
 [select hospital building]
-Wähle Krankenhaus
+Krankenhaus auswählen
 [select inn building]
-Wähle Gasthof
+Gasthof auswählen
 [select market building]
-Wähle Markt
+Markt auswählen
 [select place clearing area]
-Wähle Rodungsbereich hinzufügen
+Rodungszone setzen
 [select place farm area]
-Wähle Ackerbereich hinzufügen
+Ackerzone setzen
 [select place clearingflag]
-Wähle Rodungsflagge setzen
+Rodungsflagge setzen
 [select place explorationflag]
-Wähle Erkundungsflagge setzen
+Entdeckerflagge setzen
 [select place forbidden area]
-Wähle verbotenen Bereich setzen
+Sperrzone setzen
 [select place guard area]
-Wähle Sicherheitsbereich setzen
+Wachzone setzen
 [select place warflag]
-Wähle Angriffsflagge setzen
+Kriegsflagge setzen
 [select racetrack building]
-Wähle Rennbahn
+Rennbahn auswählen
 [select school building]
-Wähle Schule
+Schule auswählen
 [select swarm building]
-Wähle Hauptgebäude
+Stock auswählen
 [select swimmingpool building]
-Wähle Schwimmbahn
+Schwimmbecken auswählen
 [select tower building]
-Wähle Kanonenturm
+Wachturm auswählen
 [select wall building]
-Wähle Mauer
+Mauer auswählen
 [select warflag]
-Wähle Angriffsflagge
+Kriegsflagge auswählen
 [settings]
 Einstellungen
 [shift %0]
-SHIFT-%0
+Umschalt-%0
 [shortcut explanation enter]
 Enter: Chatnachricht senden
 [shortcut explanation v]
@@ -791,7 +791,7 @@ Bereiche
 [show flags]
 Flaggen
 [show main menu]
-Zeige Hauptmenü
+Hauptmenü zeigen
 [skin]
 Anzeige
 [smoothing]
@@ -799,9 +799,9 @@ Glättung
 [space]
 Leertaste
 [start mission]
-Beginne Mission
+Mission starten
 [start new campaign]
-Beginne neuen Feldzug
+Neuen Feldzug starten
 [Start]
 Start
 [Starving Map]
@@ -815,7 +815,7 @@ Noch
 [still (w)]
 Noch
 [still one unit working]
-Eine Einheit arbeitet
+Eine Einheit arbeitet noch
 [Still one]
 Noch eine
 [Stone]
@@ -831,7 +831,7 @@ Mauer
 [svr hostname]
 Server-Hostname
 [swamp terrain]
-Sumpflandschaft
+Sumpf
 [swarm explanation 2]
 
 [swarm explanation]
@@ -847,43 +847,43 @@ Erhöht das Schwimm-
 [swimmingpool]
 Schwimmbecken
 [switch to adding areas]
-Wechsle zu "Bereich hinzufügen"
+Zu „Bereich hinzufügen“ wechseln
 [switch to area brush 1]
-Wechsle zu Muster 1
+Zu Muster 1 wechseln
 [switch to area brush 2]
-Wechsle zu Muster 2
+Zu Muster 2 wechseln
 [switch to area brush 3]
-Wechsle zu Muster 3
+Zu Muster 3 wechseln
 [switch to area brush 4]
-Wechsle zu Muster 4
+Zu Muster 4 wechseln
 [switch to area brush 5]
-Wechsle zu Muster 5
+Zu Muster 5 wechseln
 [switch to area brush 6]
-Wechsle zu Muster 6
+Zu Muster 6 wechseln
 [switch to area brush 7]
-Wechsle zu Muster 7
+Zu Muster 7 wechseln
 [switch to area brush 8]
-Wechsle zu Muster 8
+Zu Muster 8 wechseln
 [switch to building view]
-Wechsle zur Gebäudeansicht
+Zur Gebäudeansicht wechseln
 [switch to flag view]
-Wechsle zur Flaggenansicht
+Zur Flaggenansicht wechseln
 [switch to removing areas]
-Wechsle zu "Bereich löschen"
+Zu „Bereich löschen“ wechseln
 [switch to teams view]
-Wechsle zur Teamansicht
+Zur Teamansicht wechseln
 [switch to terrain view]
-Wechsle zur Landschaftsansicht
+Zur Landschaftsansicht wechseln
 [sys req]
-sys req
+S-Abf
 [tab]
-TAB
+Tab
 [teams editor]
 Teameditor
 [Teams Fixed]
-feste Teams
+Feste Teams
 [teams]
-Teams
+ Teams
 [the barracks is finished]
 Das Trainingslager ist fertig
 [the barracks is under attack]
@@ -897,9 +897,9 @@ Rodungsflagge fertig
 [the clearingflag is under attack]
 Rodungsflagge wird angegriffen
 [the defencetower is finished]
-Der Panzerturm ist fertig
+Der Wachturm ist fertig
 [the defencetower is under attack]
-Ihre Befestigungen werden angegriffen
+Der Wachturm wird angegriffen
 [the explorationflag is finished]
 Entdeckerflagge fertig
 [the explorationflag is under attack]
@@ -909,11 +909,11 @@ Das Spiel wurde nicht abgeschlossen
 [the games]
 Spiele
 [the hospital is finished]
-Das Hospital ist fertig
+Das Krankenhaus ist fertig
 [the hospital is under attack]
-Das Hospital wird angegriffen
+Das Krankenhaus wird angegriffen
 [The host has cancelled the game]
-Der Server hat das Spiel abgesagt
+Der Host hat das Spiel abgesagt
 [the inn is finished]
 Der Gasthof ist fertig
 [the inn is under attack]
@@ -929,7 +929,7 @@ Die Rennbahn ist fertig
 [the racetrack is under attack]
 Die Rennbahn wird angegriffen
 [the replays]
-Die Replays
+Replays
 [the school is finished]
 Die Schule ist fertig
 [the school is under attack]
@@ -953,15 +953,15 @@ Kriegsflagge wird angegriffen
 [time]
 Zeit
 [to:]
-auf:
+an:
 [toggle draw accessibility aids]
 Teamnummern ein-/ausblenden
 [toggle draw information]
-Informationen malen an/aus
+Informationen ein-/ausblenden
 [toggle draw unit paths]
-Wege zeigen an/aus
+Einheitenwege ein-/ausblenden
 [toggle menu screen]
-Schalte Menü an/aus
+Menü ein-/ausblenden
 [toggle recording voice]
 Mikrofon ein-/ausschalten
 [Total Attack Power]
@@ -975,27 +975,27 @@ Höchstmögliches Prestige erreicht
 [Total]
 Gesamt
 [tutorial text 1]
-Wilkommen beim Tutorial zu Globulation 2! Dieses Tutorial wird Dir alles vom Bauen der Gebäude über die handhabung der Bereiche und Flaggen bis hin zur Vernichtung Deiner Feinde beibringen!
+Willkommen zum Haupt-Tutorial von Globulation 2! Hier lernen Sie alles vom Bau von Gasthöfen über das Erkunden von Gebieten bis zur Vernichtung Ihrer Feinde. An nützlichem Wissen fehlt es hier nicht!
 [tutorial text 2]
-Nun da Du die Grundprinzipien beherrschst ist es an der Zeit, andere Gebäude wie Rennstrecke, Schwimmbecken und Schulen kennen zu lernen.
+Jetzt, da Sie die Grundlagen beherrschen, ist es Zeit, andere Gebäude wie Rennbahnen, Schwimmbecken und Schulen kennenzulernen.
 [tutorial text 3]
-Nicht schlecht Herr Specht! Dann schaun wir uns jetzt mal die Krieger mit ihren Trainingslagern und Upgrades an.
+Gut gemacht, dass Sie so weit gekommen sind. Weiter geht es mit Kriegern, Trainingslagern und Verbesserungen.
 [tutorial text 4]
-Du hast es fast geschafft.  Just flags, and attacking left. Then you'll know enough to venture forwarded into Custom Games and eventually play online against some of Globulation 2's finest players.
+Sie haben es fast geschafft. Nur Flaggen und Angriffe fehlen noch. Danach wissen Sie genug für freie Spiele und können irgendwann online gegen einige der besten Globulation-2-Spieler antreten.
 [tutorial]
 Übungsmission
 [Uncontrolled]
 Unkontrolliert
 [undo]
-rückgängig
+Rückgängig
 [uniform terrain]
 Einheitliche Landschaft
 [Unit editor]
 Einheiteneditor
 [unit settings explanation]
-Standardeinheitenanzahl
+Standardanzahl zugewiesener Einheiten
 [units working]
-Einheiten arbeiten
+ Einheiten arbeiten
 [Units]
 Einheiten
 [unlocked at start]
@@ -1003,13 +1003,13 @@ Entsperrt zu Beginn
 [unlocked by]
 Entsperrt von
 [Unnamed Area]
-unbenannter Bereich
+{Unbenannter Bereich}
 [up]
-hoch
+Oben
 [upgrade building]
 Verbessern / Abbrechen
 [Upgrade Defaults]
-Verbessern-Standards
+Verbesserungsstandards
 [upgrade]
 Verbessern
 [username]
@@ -1017,7 +1017,7 @@ Benutzername
 [Version]
 Version
 [view history]
-Betrachte Verlauf
+Verlauf anzeigen
 [Voice volume]
 Sprachlautstärke
 [waiting for %0]
@@ -1029,7 +1029,7 @@ Gehen
 [warflag explanation 2]
 
 [warflag explanation]
-Steuert Krieger
+Lockt Krieger an
 [warflag]
 Kriegsflagge
 [Warning, you need to reboot the game for changes to take effect]
@@ -1043,7 +1043,7 @@ Krieger
 [watch again]
 Erneut ansehen
 [watching:]
-Schaue zu:
+Beobachtet:
 [water]
 Wasser
 [Wheat]
@@ -1071,17 +1071,17 @@ verletzt
 [Yes]
 Ja
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Der YOG-Metaserver hat die Verbindung verweigert, da Deine Version von Globulation 2 zu alt ist.
+Der YOG-Metaserver hat die Verbindung verweigert, weil Ihr Globulation-2-Client veraltet ist. Bitte laden Sie die neueste Version von www.globulation2.org herunter, um online zu spielen.
 [you have lost]
-Du hast verloren!
+Sie haben verloren!
 [you have won]
-Du hast gewonnen!
+Sie haben gewonnen!
 [You where kicked from the game]
-Du wurdest aus dem Spiel geworfen!
+Sie wurden aus dem Spiel geworfen
 [Your %0 are under attack]
-Dein %0 wird angegriffen
+Ihre %0 werden angegriffen
 [Your unit got converted to %0's team]
-Eine Deiner Einheiten wurde von %0 übernommen.
+Eine Ihrer Einheiten ist zum Team von %0 übergelaufen
 [game speed]
 Spielgeschwindigkeit
 [decrease game speed]
@@ -1093,7 +1093,7 @@ Maximum
 [multiplayer game speed]
 Tempo: 1x (Mehrspieler)
 [game speed help]
-Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
+Nur Einzelspieler und Replays. Mehrspieler läuft mit 1x.
 [AICortex-Description]
 Gesammelte Kriegerwellen mit Nahrung und Heilung zur Unterstützung.
 [AIMaxima-Description]
@@ -1101,7 +1101,7 @@ Erkundet, baut die Nahrungsversorgung aus und sammelt Kriegerwellen.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
-Die Kampagne konnte nicht gespeichert werden. Prüfe, ob der Zielordner existiert, beschreibbar ist und genügend Speicherplatz frei ist.
+Der Feldzug konnte nicht gespeichert werden. Prüfen Sie, ob der Zielordner existiert, beschreibbar ist und genügend freien Speicherplatz hat.
 [AICortex]
 Cortex
 [Units still inside: %0]
@@ -1113,15 +1113,15 @@ Arbeiten noch: %0
 [AI strategy & counterplay]
 KI-Strategie und Gegenspiel
 [AICastor-Profile]
-Grundstrategie: Investiert vor größeren Angriffen in eine produktive Kolonie und Technik. Priorisierte Bauprojekte entwickeln die Siedlung; Entwicklung, Militärinfrastruktur und Zeit steigern die Kriegsbereitschaft.\n\nWirtschaft und Entwicklung: Untersucht Feuchtigkeit, Getreidewachstum, Hindernisse und Arbeiterreichweite. Verwaltet Nahrungsausbau, Verbesserungen und Verteidigung neben der Produktion.\n\nAngriff und Verteidigung: Schätzt die Angriffskraft gesunder Krieger und schlägt bei erfüllten Stärke- oder Zeitbedingungen zu. Bevorzugt erreichbare, bereits gesichtete Gebäude, besonders Trainingslager und Schulen, und verschiebt Angriffsflaggen zu wertvollen Zielen.\n\nVergleich mit anderen KIs: Beachtet Gelände und Zielwert stärker als Numbi. Geduldiger als Warrush; tauscht frühen Druck gegen eine entwickelte Basis und stärkere Truppen.\n\nStärken und Schwächen: Breite Infrastrukturplanung und wertvolle Militärziele geben Angriffen Richtung. Die Vorbereitung lässt schnellen Gegnern Zeit, Ressourcen zu bestreiten, bevor die Hauptstreitmacht bereit ist.\n\nGegenstrategie: Expansion früh bestreiten. Neben Nahrung auch Trainingslager und Schulen schützen und beim Angriff auf die entwickelte Siedlung Reserven behalten.
+Grundstrategie: Investiert vor größeren Angriffen in eine produktive Kolonie und Technik. Priorisierte Bauprojekte entwickeln die Siedlung; Entwicklung, Militärinfrastruktur und Zeit steigern die Kriegsbereitschaft.\n\nWirtschaft und Entwicklung: Untersucht Feuchtigkeit, Weizenwachstum, Hindernisse und Arbeiterreichweite. Verwaltet Nahrungsausbau, Verbesserungen und Verteidigung neben der Produktion.\n\nAngriff und Verteidigung: Schätzt die Angriffskraft gesunder Krieger und schlägt bei erfüllten Stärke- oder Zeitbedingungen zu. Bevorzugt erreichbare, bereits gesichtete Gebäude, besonders Trainingslager und Schulen, und verschiebt Angriffsflaggen zu wertvollen Zielen.\n\nVergleich mit anderen KIs: Beachtet Gelände und Zielwert stärker als Numbi. Geduldiger als Warrush; tauscht frühen Druck gegen eine entwickelte Basis und stärkere Truppen.\n\nStärken und Schwächen: Breite Infrastrukturplanung und wertvolle Militärziele geben Angriffen Richtung. Die Vorbereitung lässt schnellen Gegnern Zeit, Ressourcen zu bestreiten, bevor die Hauptstreitmacht bereit ist.\n\nGegenstrategie: Expansion früh bestreiten. Neben Nahrung auch Trainingslager und Schulen schützen und beim Angriff auf die entwickelte Siedlung Reserven behalten.
 [AICastor-Summary]
 Entwickelt eine befestigte Kolonie und schlägt dann gegen Militär- und Wissenschaftsgebäude zu.
 [AICortex-Profile]
-Grundstrategie: Nutzt reaktive Prioritäten für eine funktionierende Wirtschaft und wandelt freie Arbeit in Nahrung, Technik und Militärdruck um. Die normale Strategie ist regelbasiert; Experimente mit gelernten Strategien brauchen separate Konfiguration.\n\nWirtschaft und Entwicklung: Passt Arbeiterproduktion an den Personalbedarf an und hält Geburten aufrecht. Nahrungsprobleme bremsen Expansion und Technikausgaben. Ergänzt Schwimmen, wenn Wasserzugang deutlich hilft.\n\nAngriff und Verteidigung: Plant Angriffe anhand beobachteter Feindtechnik und verfügbarer Truppen. Feldzüge über Wasser brauchen schwimmfähige Krieger. Stützt lange Feldzüge mit vorgeschobenen Gasthöfen und Krankenhäusern und kann Truppen vor dem Vormarsch sammeln.\n\nBindung und Notfälle: Hält trotz kleiner Störungen am Angriff fest, statt ständig heimzukehren. Ernste Angriffe können Verteidiger zurückrufen. Frühe Notlagen können reine Kriegerproduktion und ein Krankenhaus auslösen; Hunger kann einen kleineren Verzweiflungsangriff auslösen.\n\nVergleich mit anderen KIs: Beachtet vorgeschobene Versorgung stärker als Warrush. Maxima plant nachhaltige Geburten, Ausbildung und Einsatz anhand geschätzter Feindstärke noch umfassender.\n\nStärken und Schwächen: Verbindet Druck mit Nahrung, Heilung und Erreichbarkeit. Vorgeschobene Infrastruktur braucht Versorgung; anhaltende Geburten können knappe Nahrung weiter belasten. Notfallprioritäten erzwingen Abwägungen zwischen Wachstum und Überleben.\n\nGegenstrategie: Vorgeschobene Gasthöfe, Krankenhäuser und Getreide bestreiten. Verteidiger zusammenhalten; kleine Störungen erzwingen womöglich keinen Rückzug.\n\nAufklärung: Nutzt entdeckte Feindgebäude und beobachtete Feindtruppen.
+Grundstrategie: Nutzt reaktive Prioritäten für eine funktionierende Wirtschaft und wandelt freie Arbeit in Nahrung, Technik und Militärdruck um. Die normale Strategie ist regelbasiert; Experimente mit gelernten Strategien brauchen separate Konfiguration.\n\nWirtschaft und Entwicklung: Passt Arbeiterproduktion an den Personalbedarf an und hält Geburten aufrecht. Nahrungsprobleme bremsen Expansion und Technikausgaben. Ergänzt Schwimmen, wenn Wasserzugang deutlich hilft.\n\nAngriff und Verteidigung: Plant Angriffe anhand beobachteter Feindtechnik und verfügbarer Truppen. Feldzüge über Wasser brauchen schwimmfähige Krieger. Stützt lange Feldzüge mit vorgeschobenen Gasthöfen und Krankenhäusern und kann Truppen vor dem Vormarsch sammeln.\n\nBindung und Notfälle: Hält trotz kleiner Störungen am Angriff fest, statt ständig heimzukehren. Ernste Angriffe können Verteidiger zurückrufen. Frühe Notlagen können reine Kriegerproduktion und ein Krankenhaus auslösen; Hunger kann einen kleineren Verzweiflungsangriff auslösen.\n\nVergleich mit anderen KIs: Beachtet vorgeschobene Versorgung stärker als Warrush. Maxima plant nachhaltige Geburten, Ausbildung und Einsatz anhand geschätzter Feindstärke noch umfassender.\n\nStärken und Schwächen: Verbindet Druck mit Nahrung, Heilung und Erreichbarkeit. Vorgeschobene Infrastruktur braucht Versorgung; anhaltende Geburten können knappe Nahrung weiter belasten. Notfallprioritäten erzwingen Abwägungen zwischen Wachstum und Überleben.\n\nGegenstrategie: Vorgeschobene Gasthöfe, Krankenhäuser und Weizen bestreiten. Verteidiger zusammenhalten; kleine Störungen erzwingen womöglich keinen Rückzug.\n\nAufklärung: Nutzt entdeckte Feindgebäude und beobachtete Feindtruppen.
 [AICortex-Summary]
 Stützt entschlossene Offensiven mit vorgeschobener Nahrung und Heilung.
 [AINicowar-Profile]
-Grundstrategie: Verbindet Wachstum, Ausbildung, Verbesserungen und Krieg durch überlappende Bedingungen. Kann beim Expandieren angreifen und bei Versorgungsproblemen wirtschaftliche Arbeit zur Erholung umleiten.\n\nEröffnung: Das mitgelieferte aggressive Profil beginnt Kriegsvorbereitung bei insgesamt fünf Einheiten und erlaubt Krieg mit fünf Kriegern, auch Stufe null. Strebt drei Angriffsflaggen mit je fünf Kriegern an. Angepasste Strategiedateien können diese Schwellen ändern.\n\nWirtschaft und Entwicklung: Erweitert Nahrung und Geburtenkapazität, bildet Arbeiter aus, entwickelt Schwimmen und Bewegung und verbessert Gebäude. Passt Nahrungsbesetzung an, reagiert auf Hunger und sucht Früchte.\n\nAngriff und Verteidigung: Wählt aus erreichbaren Feindgebäuden Stichproben als Ziele. Kann mit Räumflaggen ressourcenblockierte Wege öffnen. Verteidigungsflaggen decken Gruppen bedrohter Einheiten und Gebäude. Später greifen für Bodenangriffe ausgebildete Entdecker feindliche Einheitengruppen an.\n\nVergleich mit anderen KIs: Teilt Warrushs frühe Aggression, hat aber mehr Anschlussentwicklung. Anders als Cabino priorisiert es nicht zuverlässig Krankenhäuser und Gasthöfe.\n\nStärken und Schwächen: Breite Taktiken verbinden frühen Druck mit weiterer Entwicklung. Zufällige Ziele können Aufwand auf weniger wertvolle Gebäude lenken. Seine Schwellen bieten nicht Maximas genaue Einschätzung feindlicher Kampfkraft.\n\nGegenstrategie: Frühen Angriff erwarten. Nahrung und Arbeiter schützen, Expansion bestreiten und bei fortgeschrittener Ausbildung Entdeckerangriffe einplanen.
+Grundstrategie: Verbindet Wachstum, Ausbildung, Verbesserungen und Krieg durch überlappende Bedingungen. Kann beim Expandieren angreifen und bei Versorgungsproblemen wirtschaftliche Arbeit zur Erholung umleiten.\n\nEröffnung: Das mitgelieferte aggressive Profil beginnt Kriegsvorbereitung bei insgesamt fünf Einheiten und erlaubt Krieg mit fünf Kriegern, auch Stufe null. Strebt drei Angriffsflaggen mit je fünf Kriegern an. Angepasste Strategiedateien können diese Schwellen ändern.\n\nWirtschaft und Entwicklung: Erweitert Nahrung und Geburtenkapazität, bildet Arbeiter aus, entwickelt Schwimmen und Bewegung und verbessert Gebäude. Passt Nahrungsbesetzung an, reagiert auf Hunger und sucht Früchte.\n\nAngriff und Verteidigung: Wählt aus erreichbaren Feindgebäuden Stichproben als Ziele. Kann mit Rodungsflaggen ressourcenblockierte Wege öffnen. Verteidigungsflaggen decken Gruppen bedrohter Einheiten und Gebäude. Später greifen für Bodenangriffe ausgebildete Entdecker feindliche Einheitengruppen an.\n\nVergleich mit anderen KIs: Teilt Warrushs frühe Aggression, hat aber mehr Anschlussentwicklung. Anders als Cabino priorisiert es nicht zuverlässig Krankenhäuser und Gasthöfe.\n\nStärken und Schwächen: Breite Taktiken verbinden frühen Druck mit weiterer Entwicklung. Zufällige Ziele können Aufwand auf weniger wertvolle Gebäude lenken. Seine Schwellen bieten nicht Maximas genaue Einschätzung feindlicher Kampfkraft.\n\nGegenstrategie: Frühen Angriff erwarten. Nahrung und Arbeiter schützen, Expansion bestreiten und bei fortgeschrittener Ausbildung Entdeckerangriffe einplanen.
 [AINicowar-Summary]
 Früher Ansturm mit Landwirtschaft, Verbesserungen, Verteidigung und Entdeckerangriffen.
 [AINone-Profile]
@@ -1129,15 +1129,15 @@ Strategie: Die KI erteilt keine Befehle.\n\nStärken: Ein berechenbarer, untäti
 [AINone-Summary]
 Eine untätige Kolonie für Experimente.
 [AINumbi-Profile]
-Grundstrategie: Entwickelt zuerst Nahrung und Bevölkerung, ergänzt Heilung, Wissenschaft und Ausbildung und geht dann zum Krieg über. Seine großen Phasen folgen der Zeit statt dem Fortschritt des Gegners.\n\nWirtschaft und Entwicklung: Passt den Gebäudebedarf an die Bevölkerung an und schätzt nahes Getreide. Spätere Phasen ergänzen Verbesserungen, Verteidigung und Expansion für die wachsende Armee.\n\nAngriff und Verteidigung: Greift mit genügend gesunden Kämpfern oder nach Ablauf einer Frist an. Setzt Kriegsflaggen auf ausgewählte Feindgebäude. Bei zu geringer Kampfstärke entfernt es Angriffsflaggen und erhöht die Schwellen für den nächsten Versuch.\n\nVergleich mit anderen KIs: Berechenbarer als Castor oder Nicowar. Castor berücksichtigt Gelände und Zielwert genauer; Nicowar macht viel früher Druck.\n\nStärken und Schwächen: Breite Versorgung kann es nach ungestörtem Aufbau gefährlich machen, doch der Zeitplan passt nicht immer zum Kampf. Einfache Zielwahl und längere Pausen nach Verlusten machen Angriffe vorhersehbarer.\n\nGegenstrategie: Vor der Militärphase Druck machen. Hinter den Angriffen Nahrung und Ausbildung ausbauen und die Pause nach einem abgewehrten Angriff nutzen.\n\nAufklärung: Die Angriffsroutine liest feindliche Gebäudepositionen direkt ohne Sichtprüfung.
+Grundstrategie: Entwickelt zuerst Nahrung und Bevölkerung, ergänzt Heilung, Wissenschaft und Ausbildung und geht dann zum Krieg über. Seine großen Phasen folgen der Zeit statt dem Fortschritt des Gegners.\n\nWirtschaft und Entwicklung: Passt den Gebäudebedarf an die Bevölkerung an und schätzt nahen Weizen. Spätere Phasen ergänzen Verbesserungen, Verteidigung und Expansion für die wachsende Armee.\n\nAngriff und Verteidigung: Greift mit genügend gesunden Kämpfern oder nach Ablauf einer Frist an. Setzt Kriegsflaggen auf ausgewählte Feindgebäude. Bei zu geringer Kampfstärke entfernt es Angriffsflaggen und erhöht die Schwellen für den nächsten Versuch.\n\nVergleich mit anderen KIs: Berechenbarer als Castor oder Nicowar. Castor berücksichtigt Gelände und Zielwert genauer; Nicowar macht viel früher Druck.\n\nStärken und Schwächen: Breite Versorgung kann es nach ungestörtem Aufbau gefährlich machen, doch der Zeitplan passt nicht immer zum Kampf. Einfache Zielwahl und längere Pausen nach Verlusten machen Angriffe vorhersehbarer.\n\nGegenstrategie: Vor der Militärphase Druck machen. Hinter den Angriffen Nahrung und Ausbildung ausbauen und die Pause nach einem abgewehrten Angriff nutzen.\n\nAufklärung: Die Angriffsroutine liest feindliche Gebäudepositionen direkt ohne Sichtprüfung.
 [AINumbi-Summary]
 Baut seine Kolonie schrittweise nach Zeitplan auf und greift dann in großer Zahl an.
 [AIEcono-Profile]
-Grundstrategie: Produziert Arbeiter und Entdecker, erweitert die Wirtschaft und lockt Feindeinheiten mit Nahrung und Früchten. Hat keine herkömmliche Kriegeroffensive.\n\nWirtschaft und Entwicklung: Baut Gasthöfe und Stöcke nahe Getreide, ergänzt Bildung und Bewegungsausbildung und verbessert Infrastruktur. Überwacht Vorräte und ersetzt alte Gasthöfe und Stöcke, wenn sich ihre Ressourcenlage verschlechtert.\n\nLandwirtschaft und Bekehrung: Schützt nachwachsendes Getreide und Holz nahe Wasser. Schickt Entdecker zu Früchten und Feindkolonien und bietet Feinden bei der Suche nach Früchten Nahrung an. Bessere Nahrung und Früchte können Überläufer anziehen.\n\nVergleich mit anderen KIs: Der spezialisierteste Wirtschaftsgegner. Cabino und Maxima suchen ebenfalls Früchte, verbinden dies aber mit Armeen.\n\nStärken und Schwächen: Kann wachsen, während militärische Gegner sich erschöpfen; Bekehrung bietet weiteren Wettbewerb. Produziert keine Krieger gegen anhaltende Angriffe. Nahrung, Früchte, Geografie und Siegbedingungen bestimmen seine Chancen stark.\n\nGegenstrategie: Ungeschützte Expansion angreifen. Eigene Gasthöfe mit Nahrung und Früchten versorgen, um Einheiten zu halten. Die Kolonie nicht in unnötigen Kämpfen erschöpfen, während es wächst.
+Grundstrategie: Produziert Arbeiter und Entdecker, erweitert die Wirtschaft und lockt Feindeinheiten mit Nahrung und Früchten. Hat keine herkömmliche Kriegeroffensive.\n\nWirtschaft und Entwicklung: Baut Gasthöfe und Stöcke nahe Weizen, ergänzt Bildung und Bewegungsausbildung und verbessert Infrastruktur. Überwacht Vorräte und ersetzt alte Gasthöfe und Stöcke, wenn sich ihre Ressourcenlage verschlechtert.\n\nLandwirtschaft und Bekehrung: Schützt nachwachsenden Weizen und Holz nahe Wasser. Schickt Entdecker zu Früchten und Feindkolonien und bietet Feinden bei der Suche nach Früchten Nahrung an. Bessere Nahrung und Früchte können Überläufer anziehen.\n\nVergleich mit anderen KIs: Der spezialisierteste Wirtschaftsgegner. Cabino und Maxima suchen ebenfalls Früchte, verbinden dies aber mit Armeen.\n\nStärken und Schwächen: Kann wachsen, während militärische Gegner sich erschöpfen; Bekehrung bietet weiteren Wettbewerb. Produziert keine Krieger gegen anhaltende Angriffe. Nahrung, Früchte, Geografie und Siegbedingungen bestimmen seine Chancen stark.\n\nGegenstrategie: Ungeschützte Expansion angreifen. Eigene Gasthöfe mit Nahrung und Früchten versorgen, um Einheiten zu halten. Die Kolonie nicht in unnötigen Kämpfen erschöpfen, während es wächst.
 [AIEcono-Summary]
 Entwickelt eine nahrungsreiche Kolonie und wirbt Überläufer an, ohne Krieger zu produzieren.
 [AIWarrush-Profile]
-Grundstrategie: Greift vor Abschluss eines langen wirtschaftlichen oder technischen Aufbaus an. Erwartet eine Kampfentscheidung, bevor ein großes Versorgungsnetz nötig wird.\n\nWirtschaft und Entwicklung: Sobald sechs Einheiten ernten können, stellt es die Produktion auf vier Arbeiter, einen Entdecker und drei Krieger. Ergänzt Trainingslager bei ausgelasteter Ausbildung, beschränkt aber neue Gasthöfe. Freie Baukapazität geht häufig in Krankenhäuser und Bewegungsausbildung.\n\nAngriff und Verteidigung: Markiert entdeckte Feindgebäude mit Wachgebieten für anhaltenden Kriegerdruck. Wartet nicht auf sorgfältig gesammelte Wellen. Räumt blockierendes Holz und schützt einige nachwachsende Ressourcen.\n\nFruchtpolitik: Verbietet die Fruchternte, vermeidet damit verbundene Rüstungsabzüge und verzichtet auf Econos Bekehrungsstrategie.\n\nVergleich mit anderen KIs: Setzt stärker auf frühen Druck als Numbi oder Castor. Nicowar beginnt ebenfalls aggressiv, setzt aber mit breiteren Verbesserungen und Taktiken fort.\n\nStärken und Schwächen: Bestraft langsame Eröffnungen und erzwingt frühe Verteidigungsausgaben. Begrenzte systematische Verbesserungen und knappe Nahrung machen stockende Offensiven teuer. Gelände und lange Wege können den frühen Vorteil aufzehren.\n\nGegenstrategie: Gasthöfe und Stöcke früh schützen. Arbeiter ebenso wie Verteidiger ersetzen, Ausbildung entwickeln und nach dem Nachlassen des Ansturms kontern.\n\nAufklärung: Anfängliche Entdeckerflaggen nutzen feindliche Startpositionen direkt. Spätere Angriffsgebiete erfordern Sichtbarkeit.
+Grundstrategie: Greift vor Abschluss eines langen wirtschaftlichen oder technischen Aufbaus an. Erwartet eine Kampfentscheidung, bevor ein großes Versorgungsnetz nötig wird.\n\nWirtschaft und Entwicklung: Sobald sechs Einheiten ernten können, stellt es die Produktion auf vier Arbeiter, einen Entdecker und drei Krieger. Ergänzt Trainingslager bei ausgelasteter Ausbildung, beschränkt aber neue Gasthöfe. Freie Baukapazität geht häufig in Krankenhäuser und Bewegungsausbildung.\n\nAngriff und Verteidigung: Markiert entdeckte Feindgebäude mit Wachzonen für anhaltenden Kriegerdruck. Wartet nicht auf sorgfältig gesammelte Wellen. Rodet blockierendes Holz und schützt einige nachwachsende Ressourcen.\n\nFruchtpolitik: Verbietet die Fruchternte, vermeidet damit verbundene Rüstungsabzüge und verzichtet auf Econos Bekehrungsstrategie.\n\nVergleich mit anderen KIs: Setzt stärker auf frühen Druck als Numbi oder Castor. Nicowar beginnt ebenfalls aggressiv, setzt aber mit breiteren Verbesserungen und Taktiken fort.\n\nStärken und Schwächen: Bestraft langsame Eröffnungen und erzwingt frühe Verteidigungsausgaben. Begrenzte systematische Verbesserungen und knappe Nahrung machen stockende Offensiven teuer. Gelände und lange Wege können den frühen Vorteil aufzehren.\n\nGegenstrategie: Gasthöfe und Stöcke früh schützen. Arbeiter ebenso wie Verteidiger ersetzen, Ausbildung entwickeln und nach dem Nachlassen des Ansturms kontern.\n\nAufklärung: Anfängliche Entdeckerflaggen nutzen feindliche Startpositionen direkt. Spätere Angriffszonen erfordern Sichtbarkeit.
 [AIWarrush-Summary]
 Früher Kriegerdruck mit bewusst knapper Versorgungswirtschaft.
 [AICabino-Profile]
@@ -1215,7 +1215,7 @@ Inselgröße
 [Islands]
 Inseln
 [Isles]
-Inseln II
+Eilande
 [Lake density]
 Dichte der Seen
 [Landscape]
@@ -1261,7 +1261,7 @@ Vorschau wird erstellt...
 [Preview unavailable]
 Keine Vorschau verfügbar
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
-Jede Landschaft wird als echte Karte in deiner aktuellen Größe und Kolonienzahl gezeigt. Wähle eine, um die gezeigte Karte zu spielen.
+Jede Landschaft wird als echte Karte in Ihrer aktuellen Größe und Kolonienzahl gezeigt. Wählen Sie eine, um die gezeigte Karte zu spielen.
 [Purple]
 Lila
 [Quick clash]
@@ -1295,7 +1295,7 @@ Arbeiter zu Beginn
 [Starting workers: Game Rules tab.]
 Arbeiter zu Beginn: Registerkarte Spielregeln.
 [Swamp]
-Sumpflandschaft
+Sumpf
 [Team]
 Team
 [Terrain]
@@ -1313,15 +1313,15 @@ Breite
 [Yellow]
 Gelb
 [You]
-Du
+Sie
 [You + AI]
-Du + KI
+Sie + KI
 [You and the AI both issue orders. Uses two controller slots.]
-Du und die KI erteilen beide Befehle. Belegt zwei Spielerplätze.
+Sie und die KI erteilen beide Befehle. Belegt zwei Spielerplätze.
 [You vs all]
-Du gegen alle
+Sie gegen alle
 [Your maps]
-Deine Karten
+Ihre Karten
 [colonies]
 Kolonien
 [Inactive]
@@ -1347,7 +1347,7 @@ Keine Karten in dieser Bibliothek.
 [Premade maps retain their authored starting units.]
 Vorgefertigte Karten behalten die vom Autor festgelegten Starteinheiten.
 [Start with terrain known]
-Beginnen Sie mit bekanntem Gelände
+Mit bekanntem Gelände starten
 [This colony will not join the match.]
 Diese Kolonie wird dem Match nicht beitreten.
 [This landscape uses a fixed terrain recipe.]
@@ -1355,7 +1355,7 @@ Diese Landschaft verwendet ein festes Geländerezept.
 [This landscape uses fixed resource placement.]
 Diese Landschaft verwendet eine feste Ressourcenplatzierung.
 [Win through conquest]
-Gewinnen Sie durch Eroberung
+Sieg durch Eroberung
 [You control this colony.]
 Sie kontrollieren diese Kolonie.
 [controllers]
@@ -1379,7 +1379,7 @@ Automatische Torusansicht
 [toggle torus view]
 2D-/Torusansicht umschalten
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 gegen 2 benötigt vier offene Kolonien. Du gegen alle benötigt einen menschlichen Spieler.
+2 gegen 2 benötigt vier offene Kolonien. „Sie gegen alle“ benötigt einen menschlichen Spieler.
 [Alliance]
 Allianz
 [Choose a rule to change it.]
@@ -1405,9 +1405,9 @@ Spielformat
 [No current preview]
 Keine aktuelle Vorschau
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Schneller Kampf: doppelte Geschwindigkeit; Generierte Karten beginnen mit 8 Arbeitern.
+Schneller Kampf: doppelte Geschwindigkeit; generierte Karten beginnen mit 8 Arbeitern.
 [Reroll]
-Erzeugen Sie eine weitere Karte
+Neu würfeln
 [Randomize]
 Zufällig generieren
 [Reset to defaults]
@@ -1433,13 +1433,13 @@ Keine Krieger
 [settings Add key to sequence]
 Taste zur Sequenz hinzufügen
 [settings Add shortcut]
-Tastaturkürzel hinzufügen
+Tastenkürzel hinzufügen
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Mit dem Mausrad können Sie die Anzahl der zugewiesenen Einheiten ändern. Wenn diese Option deaktiviert ist, halten Sie die Strg-Taste gedrückt, um das Rad zu verwenden. Halten Sie die Umschalttaste gedrückt, um den Flaggenradius anzupassen. Diese Option steuert auch die Mausradeingabe in anderen Menüs.
+Zugewiesene Einheiten mit dem Mausrad ändern. Wenn aus, Strg halten. Umschalt ändert den Flaggenradius. Steuert auch das Mausrad in anderen Menüs.
 [settings Adjust music and voice volume.]
-Passen Sie die Musik- und Sprachlautstärke an.
+Musik- und Sprachlautstärke anpassen.
 [settings Adjust the pace of play.]
-Passen Sie die Geschwindigkeit des Spiels an.
+Spieltempo anpassen.
 [settings Advanced binding]
 Erweiterte Tastenbelegung
 [settings Artwork & effects]
@@ -1447,7 +1447,7 @@ Grafik und Effekte
 [settings Audio]
 Audio
 [settings Bind Escape]
-Escape-Taste zuweisen
+Esc zuweisen
 [settings Building]
 Gebäude
 [settings Building defaults]
@@ -1457,13 +1457,13 @@ Abbrechen
 [settings Changes saved automatically]
 Änderungen werden automatisch gespeichert
 [settings Changes you make during play update these defaults for future games.]
-Durch Änderungen, die Sie während des Spiels vornehmen, werden diese Standardeinstellungen für zukünftige Spiele aktualisiert.
+Änderungen während des Spiels aktualisieren diese Standards für künftige Spiele.
 [settings Changing the renderer requires a restart.]
 Das Ändern des Renderers erfordert einen Neustart.
 [settings Choose a binding to change it, or add another shortcut for an action.]
-Wählen Sie eine Tastenkombination aus, um sie zu bearbeiten, oder fügen Sie eine weitere Tastenkombination für eine Aktion hinzu.
+Wählen Sie eine Belegung zum Ändern oder fügen Sie einer Aktion ein weiteres Tastenkürzel hinzu.
 [settings Choose a window or fill the screen.]
-Wählen Sie zwischen Fenster- und Vollbildmodus.
+Fenster- oder Vollbildmodus wählen.
 [settings Choose how the game looks on your screen.]
 Wählen Sie, wie das Spiel auf Ihrem Bildschirm aussieht.
 [settings Completed]
@@ -1477,7 +1477,7 @@ Der Anzeigemodus konnte nicht geändert werden. Der vorherige Modus wurde wieder
 [settings Could not save]
 Konnte nicht gespeichert werden
 [settings Current display]
-Aktuelle Anzeigeeinstellungen
+Aktuelle Anzeige
 [settings Default]
 Standard
 [settings Display]
@@ -1485,11 +1485,11 @@ Anzeige
 [settings Display & graphics]
 Anzeige und Grafik
 [settings Display the Globulation 2 cursor.]
-Zeigen Sie den Globulation 2-Cursor an.
+Den Globulation-2-Mauszeiger anzeigen.
 [settings Done]
 Fertig
 [settings Edit shortcut]
-Tastaturkürzel bearbeiten
+Tastenkürzel bearbeiten
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
 Multipliziert die Anzeigeskalierung des Betriebssystems für Menüs, Text und Seitenleiste.
 [settings Flags]
@@ -1509,7 +1509,7 @@ Grafikdetails
 [settings Interface scale]
 Oberflächenskalierung
 [settings Keep]
-Änderungen beibehalten
+Beibehalten
 [settings Keep this display mode?]
 Diesen Anzeigemodus beibehalten?
 [settings Keep your volume levels while silencing audio.]
@@ -1517,7 +1517,7 @@ Schalten Sie den gesamten Ton stumm, ohne die gespeicherten Lautstärkepegel zu 
 [settings Key]
 Taste
 [settings Keyboard shortcuts]
-Tastaturkürzel
+Tastenkürzel
 [settings Keys form a sequence in order. Each key can trigger on press or release.]
 Die Tasten bilden eine geordnete Sequenz. Jede Taste kann beim Drücken oder Loslassen auslösen.
 [settings Language]
@@ -1537,7 +1537,7 @@ Fehlende Schriftart
 [settings Music volume]
 Musiklautstärke
 [settings Mute audio]
-Audio stumm schalten
+Ton stumm
 [settings Name shown to other players.]
 Name, der anderen Spielern angezeigt wird.
 [settings Off]
@@ -1551,7 +1551,7 @@ Spielername
 [settings Press]
 Beim Drücken
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Drücken Sie eine Taste. Escape bricht die Erfassung ab. Wählen Sie „Escape-Taste zuweisen“, um Escape zu belegen.
+Drücken Sie eine Taste. Esc bricht die Erfassung ab. Mit „Esc zuweisen“ belegen Sie Esc.
 [settings Radius]
 Radius
 [settings Reduced]
@@ -1565,13 +1565,13 @@ Einheitenzuweisungen zwischen Partien merken
 [settings Remove key]
 Taste entfernen
 [settings Remove shortcut]
-Tastaturkürzel entfernen
+Tastenkürzel entfernen
 [settings Renderer]
 Grafik-Renderer
 [settings Replace conflicting bindings]
-Konfliktbelegungen ersetzen
+Kollidierende Belegungen ersetzen
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
-Tastaturkürzel in diesem Kontext durch die Standardbelegung ersetzen? Die Änderung wird sofort gespeichert.
+Tastenkürzel in diesem Kontext durch die Standardbelegung ersetzen? Die Änderung wird sofort gespeichert.
 [settings Resolution]
 Bildschirmauflösung
 [settings Restore default shortcuts]
@@ -1579,11 +1579,11 @@ Standardkürzel wiederherstellen
 [settings Retry]
 Erneut versuchen
 [settings Revert]
-Änderungen rückgängig machen
+Zurücksetzen
 [settings Reverting in]
 Zurücksetzen in
 [settings Save shortcut]
-Tastaturkürzel speichern
+Tastenkürzel speichern
 [settings Saved — restart required]
 Gespeichert – Neustart erforderlich
 [settings Saving…]
@@ -1597,15 +1597,15 @@ Legen Sie Ihre Sprache und Ihren Spielernamen fest.
 [settings Settings]
 Einstellungen
 [settings Single-player and replays only. Multiplayer runs at 1x.]
-Nur für Einzelspieler und Wiederholungen. Mehrspielerpartien laufen mit 1x.
+Nur Einzelspieler und Replays. Mehrspieler läuft mit 1x.
 [settings Software]
 Software-Rendering
 [settings Starting unit counts and radius for newly placed flags.]
 Anfängliche Einheitenanzahl und Radius für neu platzierte Flaggen.
 [settings This shortcut conflicts with existing bindings:]
-Diese Tastenkombination steht im Konflikt mit vorhandenen Tastenkombinationen:
+Dieses Tastenkürzel kollidiert mit vorhandenen Belegungen:
 [settings Trigger]
-Aktivierungsereignis
+Auslöser
 [settings Unbound]
 Nicht belegt
 [settings Unit counts assigned to new construction sites.]
@@ -1625,7 +1625,7 @@ Sprachlautstärke
 [settings Window mode]
 Fenstermodus
 [settings Window-only sizes also switch the game to windowed mode.]
-Wenn Sie eine Auflösung auswählen, die nur den Fenstermodus unterstützt, wechselt das Spiel auch in den Fenstermodus.
+Nur im Fenster verfügbare Größen schalten das Spiel auch in den Fenstermodus.
 [settings Windowed]
 Im Fenster
 [settings Windowed only]
@@ -1771,7 +1771,7 @@ Altwasser
 [Everglades need at least one colony.]
 Das Sumpfland braucht mindestens eine Kolonie.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
-Zu viele Kolonien für diese Karte; wähle eine größere Karte oder weniger Kolonien.
+Zu viele Kolonien für diese Karte; verwenden Sie eine größere Karte oder weniger Kolonien.
 [Coral]
 Koralle
 [Fork angle]
@@ -1781,7 +1781,7 @@ Neigung
 [Home size]
 Heimatgröße
 [The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
-Die Koralle passt nicht auf diese Karte; nimm eine größere Karte, schmalere Meerengen oder weniger Kolonien.
+Die Koralle passt nicht auf diese Karte; verwenden Sie eine größere Karte, schmalere Meerengen oder weniger Kolonien.
 [Branching]
 Verzweigung
 [Branch width]
@@ -1837,11 +1837,11 @@ Serpentinen brauchen mindestens zwei Kolonien.
 [An amphitheatre needs at least two colonies.]
 Ein Amphitheater braucht mindestens zwei Kolonien.
 [The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
-Das Karussell passt nicht auf diese Karte; wähle eine größere Karte, kleinere Heimaten oder weniger Kolonien.
+Das Karussell passt nicht auf diese Karte; verwenden Sie eine größere Karte, kleinere Heimaten oder weniger Kolonien.
 [The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
-Die Serpentinen passen nicht auf diese Karte; wähle eine größere Karte, ein kleineres Plateau, schmalere Pfade oder weniger Kolonien.
+Die Serpentinen passen nicht auf diese Karte; verwenden Sie eine größere Karte, ein kleineres Plateau, schmalere Pfade oder weniger Kolonien.
 [The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
-Das Amphitheater passt nicht auf diese Karte; wähle eine größere Karte, weniger Ringe, schmalere Terrassen oder weniger Kolonien.
+Das Amphitheater passt nicht auf diese Karte; verwenden Sie eine größere Karte, weniger Ringe, schmalere Terrassen oder weniger Kolonien.
 [Spider web]
 Spinnennetz
 [Spokes per colony]
@@ -1873,9 +1873,9 @@ Zentrale Insel
 [Tidal flats need at least one colony.]
 Das Wattenmeer braucht mindestens eine Kolonie.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
-Die Heimatinseln passen nicht auf diese Karte; verwende eine größere Karte, weniger Kolonien oder kleinere Inseln.
+Die Heimatinseln passen nicht auf diese Karte; verwenden Sie eine größere Karte, weniger Kolonien oder kleinere Inseln.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
-Gemeinschaftsland und Meerenge lassen zu wenig Platz für die Heimatbasen; verwende eine größere Karte, weniger Kolonien, ein kleineres Gemeinschaftsland oder eine schmalere Meerenge.
+Gemeinschaftsland und Meerenge lassen zu wenig Platz für die Heimatbasen; verwenden Sie eine größere Karte, weniger Kolonien, ein kleineres Gemeinschaftsland oder eine schmalere Meerenge.
 [Wheat amount]
 Weizenmenge
 [Wood amount]
@@ -2075,7 +2075,7 @@ Servierte Mahlzeiten
 [Stats new buildings]
 Neue Gebäude
 [Stats upgrades]
-Ausbauten
+Verbesserungen
 [Stats training]
 Trainingsbesuche
 [Stats damage dealt]
@@ -2083,13 +2083,13 @@ Verursachter Schaden
 [Stats damage received]
 Erlittener Schaden
 [Stats HP restored]
-Wiederhergestellte LP
+Geheilte TP
 [Stats since tick]
 Seit Spielschritt
 [Stats combat deaths]
 Kampf
 [Stats clearing deaths]
-Räumverletzung
+Rodungsverletzung
 [Stats trapped deaths]
 Eingeschlossen
 [Stats unknown deaths]
@@ -2139,7 +2139,7 @@ Wirtschaft
 [Instant construction]
 Sofortiger Bau
 [Higher tiers give every building much more HP.]
-Höhere Stufen geben jedem Gebäude viel mehr Leben.
+Höhere Stufen geben jedem Gebäude viel mehr Trefferpunkte.
 [Starting units spawn already leveled up. Changes the generated map.]
 Start-Einheiten erscheinen bereits hochgestuft. Verändert die generierte Karte.
 [No upgrades]
@@ -2203,25 +2203,25 @@ Ressourcen + <=16
 [Stats growth near 32]
 Ressourcen + <=32
 [Stats low HP 25]
-Leben <=25%
+TP ≤25%
 [Stats low HP 50]
-Leben <=50%
+TP ≤50%
 [Stats low HP 75]
-Leben <=75%
+TP ≤75%
 [Stats low food 25]
-Nahrung <=25%
+Nahrung ≤25%
 [Stats low food 50]
-Nahrung <=50%
+Nahrung ≤50%
 [Stats low food 75]
-Nahrung <=75%
+Nahrung ≤75%
 [Stats structural units]
 Einheiten S
 [Stats structural buildings]
 Gebäude S
 [Stats low HP ranges]
-Leben: <=25/50/75%
+TP ≤25/50/75%
 [Stats low food ranges]
-Nahrung: <=25/50/75%
+Nahrung ≤25/50/75%
 [Emoji]
 Emoji
 [Emoji character]
@@ -2369,7 +2369,7 @@ Canyonland
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
 Eine Festung erreicht ihre Furt nicht; verwenden Sie eine größere Karte oder weniger Kolonien.
 [A wall would stand on a beach; try another seed.]
-Eine Mauer würde auf einem Strand stehen; versuchen Sie einen anderen Seed.
+Eine Mauer würde auf einem Strand stehen; versuchen Sie einen anderen Startwert.
 [The fort is too small for its gardens; raise Fort size.]
 Die Festung ist zu klein für ihre Gärten; erhöhen Sie die Festungsgröße.
 [The home oasis is too small; raise Home oasis size.]
@@ -2385,9 +2385,9 @@ Zusätzliche Furten
 [Moraine hummocks]
 Moränenhügel
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
-Die Verflechtung lässt den Heimaten zu wenig Terrasse; wähle eine größere Karte oder eine schmalere Verflechtung.
+Die Verflechtung lässt den Heimaten zu wenig Terrasse; verwenden Sie eine größere Karte oder eine schmalere Verflechtung.
 [The map is too narrow across for a braid; use a bigger map.]
-Die Karte ist in der Breite zu schmal für eine Verflechtung; wähle eine größere Karte.
+Die Karte ist in der Breite zu schmal für eine Verflechtung; verwenden Sie eine größere Karte.
 [Drumlin field]
 Drumlinfeld
 [Drumlin spacing]
@@ -2399,7 +2399,7 @@ Wasserlücke
 [Esker loops]
 Esker-Schleifen
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
-Die Esker konnten nicht alle Drumlins verbinden; wähle eine kleinere Wasserlücke oder eine größere Karte.
+Die Esker konnten nicht alle Drumlins verbinden; verwenden Sie eine kleinere Wasserlücke oder eine größere Karte.
 [Continents]
 Kontinente
 [Continent]
@@ -2483,7 +2483,7 @@ Inseln pro Kolonie
 [Outpost inns]
 Außenposten-Gasthöfe
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
-Die Inseln sind zu klein für ihre Bauplätze; wähle eine größere Karte, einen kleineren Bauplatz oder weniger Kolonien.
+Die Inseln sind zu klein für ihre Bauplätze; verwenden Sie eine größere Karte, einen kleineren Bauplatz oder weniger Kolonien.
 [Sierpiński Gardens]
 Sierpiński-Gärten
 [Hilbert River]
@@ -2701,7 +2701,7 @@ Die Stadt hat zu wenige nutzbare Kreuzungen.
 [A city neighbourhood lacks reachable crops or building room.]
 Einem Stadtviertel fehlen erreichbare Nutzpflanzen oder Bauflächen.
 [The city neighbourhoods are too unequal; try another seed.]
-Die Stadtviertel sind zu unausgewogen; versuchen Sie einen anderen Seed.
+Die Stadtviertel sind zu unausgewogen; versuchen Sie einen anderen Startwert.
 [The fractured civic plaza did not survive.]
 Der zerbrochene Stadtplatz ist nicht erhalten geblieben.
 [Who Ate the Map?]
@@ -2827,11 +2827,11 @@ Exportfortschritt
 [retry save]
 Speichern erneut versuchen
 [campaign save failed]
-Kampagnenfortschritt nicht gespeichert. Erneut versuchen oder eine Sicherung exportieren.
+Feldzugfortschritt nicht gespeichert. Erneut versuchen oder eine Sicherung exportieren.
 [leave without saving]
-Beenden ohne zu speichern
+Ohne Speichern verlassen
 [campaign import failed]
-Ungültige Fortschrittsdatei oder abweichende Kampagnenversion
+Ungültige Fortschrittsdatei oder abweichende Feldzugversion
 [settings continue]
 Weiter
 [settings save failed]
@@ -2839,7 +2839,7 @@ Einstellungen speichern nicht bestätigt. Erneut versuchen oder fortfahren.
 [shutdown save failed]
 Letztes Speichern nicht bestätigt. Erneut versuchen oder ohne Speichern beenden.
 [quit without saving]
-Beenden ohne zu speichern
+Ohne Speichern beenden
 [game closed]
 Spiel beendet. Sie können dieses Fenster schließen oder neu laden, um erneut zu spielen.
 [campaign editor save failed]
@@ -2897,7 +2897,7 @@ Oberflächenlayout
 [settings Automatic]
 Automatisch
 [settings Compact]
-Eng
+Kompakt
 [settings Spacious]
 Geräumig
 [More]
@@ -2917,7 +2917,7 @@ Fertig
 [Contribution]
 Beitrag
 [Choose who controls this colony]
-Wähle, wer diese Kolonie steuert
+Wählen Sie, wer diese Kolonie steuert
 [Settings]
 Einstellungen
 [settings Back]
@@ -2941,7 +2941,7 @@ Nach unten ziehen vergrößert
 [settings Thumb side]
 Daumenseite
 [settings Phone controls gather in this bottom corner.]
-Die Steuerelemente auf dem Telefon sammeln sich in dieser unteren Ecke.
+Die Bedienelemente auf dem Handy sammeln sich in dieser unteren Ecke.
 [settings Right]
 Rechts
 [settings Left]
@@ -2963,9 +2963,9 @@ Pinsel %0
 [Team %0]
 Team %0
 [Your colony]
-Deine Kolonie
+Ihre Kolonie
 [%0 / %1 HP · %2]
-%0 / %1 LP · %2
+%0 / %1 TP · %2
 [Units: %0]
 Einheiten: %0
 [Buildings: %0]
@@ -3037,7 +3037,7 @@ Verboten
 [Guard]
 Bewachen
 [Clear]
-Räumen
+Roden
 [Farm]
 Acker
 [Paint]
@@ -3109,7 +3109,7 @@ Missionseinweisung · zum Bearbeiten tippen, zum Scrollen wischen
 [Not enough recorded history yet.]
 Noch nicht genug Verlauf aufgezeichnet.
 [Select a team to show its history.]
-Wähle ein Team aus, um seinen Verlauf anzuzeigen.
+Wählen Sie ein Team, um seinen Verlauf anzuzeigen.
 [Back to chart]
 Zurück zum Diagramm
 [Expand chart]
@@ -3133,7 +3133,7 @@ Verbieten
 [Details]
 Details
 [Campaign name]
-Kampagnenname
+Feldzugname
 [Unlocking]
 Freischaltung
 [Parameters]
@@ -3175,7 +3175,7 @@ Stufe %0
 [settings Match the desktop %0]
 Wie der Desktop (%0)
 [settings Current display %0 %1 %2 %3]
-Aktuelle Anzeigeeinstellungen: %0 × %1 · %2 · %3
+Aktuelle Anzeige: %0 × %1 · %2 · %3
 [Fairness: %0]
 Ausgeglichenheit: %0
 [Colony %0]
@@ -3185,7 +3185,7 @@ Siegchance: %0 · Stärke: %1
 [%0 · Contribution: %1]
 %0 · Beitrag: %1
 [Min required level %0]
-Mindestlevel: %0
+Mindeststufe: %0
 [Confirm %0]
 Ok: %0
 [%0 %1]
@@ -3197,9 +3197,9 @@ KI hinzufügen
 [settings Experiments]
 Experimente
 [settings Try features we are still testing. They can change balance and pacing.]
-Probiere Funktionen aus, die wir noch testen. Sie können Balance und Tempo verändern.
+Probieren Sie Funktionen aus, die wir noch testen. Sie können Balance und Tempo verändern.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
-Experimente gelten für neue Spiele, die du startest oder hostest, nie für Kampagnenmissionen. Ein gespeichertes Spiel behält die, mit denen es begonnen hat.
+Experimente gelten für neue Spiele, die Sie starten oder hosten, nie für Feldzugmissionen. Ein gespeichertes Spiel behält die, mit denen es begonnen hat.
 [Experiments set by the host]
 Vom Host gewählte Experimente
 [settings No experiments in this build.]
@@ -3207,15 +3207,15 @@ Keine Experimente in dieser Version.
 [Experiments]
 Experimente
 [experiment guard-area-balancing]
-Ausgleich der Wachbereiche
+Ausgleich der Wachzonen
 [experiment guard-area-balancing help]
-Freie Krieger verteilen sich auf die gemalten Wachbereiche, statt alle den nächsten zu wählen: ein größerer Bereich bekommt mehr von ihnen, und ein überfüllter Bereich dünnt sich zugunsten der anderen aus.
+Freie Krieger verteilen sich auf die gemalten Wachzonen, statt alle die nächste zu wählen: Eine größere Zone bekommt mehr von ihnen, und eine überfüllte Zone dünnt sich zugunsten der anderen aus.
 [experiment farm-areas]
 Ackerzonen
 [experiment farm-areas help]
 Fügt den Zonenpinseln eine Ackerzone hinzu. Arbeiter, die darin ernten, nehmen vom reifsten Feld des zusammenhängenden Ackers und lassen auf jedem Feld ein Korn stehen, sodass der Acker nachwächst, statt vom Rand her abgefressen zu werden. Holz, das in den Acker wächst, wird gerodet.
 [settings Touch scrolling]
-Berühren und Scrollen
+Touch-Scrollen
 [settings List momentum]
 Listen-Schwung
 [settings How far lists and panels keep scrolling after a flick.]
@@ -3235,1415 +3235,1415 @@ Listen-Schwung
 [List bounce]
 Listen-Federung
 [lan pairing field]
-
+Kopplungscode des Hosts (oder vertrauenswürdige WSS-URL)
 [lan pairing connect]
-
+Koppeln und verbinden
 [lan discovery instructions]
-
+Wählen Sie einen Host und fügen Sie dessen Kopplungscode ein, um seine Identität zu prüfen.
 [lan discovery unavailable]
-
+Die LAN-Suche ist nicht verfügbar. Prüfen Sie die Berechtigung für das lokale Netzwerk oder fügen Sie einen Kopplungscode ein.
 [lan discovered host %0]
-
+Host %0 gefunden – koppeln, um Spiele zu sehen
 [lan connection unavailable]
-
+Der LAN-Host ist nicht erreichbar. Prüfen Sie die Berechtigung für das lokale Netzwerk und den Kopplungscode des Hosts.
 [lan connection verification failed %0]
-
+Prüfung oder Verbindung mit dem LAN-Host fehlgeschlagen: %0
 [lan lobby endpoint required]
-
+Verwenden Sie den Lobby-Endpunkt des Hosts
 [settings Artwork]
-
+Grafikstil
 [settings Original]
-
+Klassisch
 [settings High resolution]
-
+Hochauflösend
 [settings Clouds]
-
+Wolken
 [settings Show cloud cover above the map.]
-
+Wolkendecke über der Karte anzeigen.
 [settings Cloud shadows]
-
+Wolkenschatten
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Wolkenschatten am Boden unabhängig von der Wolkendecke anzeigen.
 [settings Building particles]
-
+Gebäudepartikel
 [settings Show smoke and other building particles.]
-
+Rauch und andere Gebäudepartikel anzeigen.
 [settings Magic effects]
-
+Magieeffekte
 [settings Choose animated magic effects or a simple visible effect.]
-
+Animierte Magieeffekte oder einen einfachen sichtbaren Effekt wählen.
 [settings Simple]
-
+Einfach
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Erfordert den OpenGL-Renderer. Ihre gespeicherte Auswahl bleibt erhalten.
 [settings Interface appearance]
-
+Oberfläche
 [settings Panels]
-
+Leisten
 [settings Choose translucent or opaque interface panels.]
-
+Durchscheinende oder deckende Bedienleisten wählen.
 [settings Opaque]
-
+Deckend
 [settings Translucent]
-
+Durchscheinend
 [settings Advanced graphics]
-
+Erweiterte Grafik
 [settings Path lines]
-
+Weglinien
 [settings Choose translucent or opaque unit path lines.]
-
+Durchscheinende oder deckende Weglinien der Einheiten wählen.
 [settings Smooth progress indicators]
-
+Weiche Fortschrittsanzeigen
 [settings Smooth the moving edges of progress indicators.]
-
+Die bewegten Kanten von Fortschrittsanzeigen glätten.
 [settings Decorative interface animation]
-
+Deko-Animationen
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Siegesgrafik animieren. „Weniger Bewegung“ schaltet diese Animation ebenfalls ab.
 [settings Smooth unit motion]
-
+Flüssige Einheitenbewegung
 [settings Experimental: move and animate units between game ticks.]
-
+Experimentell: Einheiten zwischen Spielschritten bewegen und animieren.
 [settings Smooth fog of war]
-
+Weicher Kriegsnebel
 [settings Fade the map into and out of the fog of war gradually.]
-
+Die Karte allmählich in den Kriegsnebel ein- und ausblenden.
 [settings Adaptive zoom detail]
-
+Zoomabhängige Details
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Balken, Zonen, Gelände und Einheiten beim Herauszoomen vereinfachen und beim Hineinzoomen klein halten.
 [settings Text size]
-
+Textgröße
 [settings Enlarge interface text without changing the map scale.]
-
+Text der Oberfläche vergrößern, ohne den Kartenmaßstab zu ändern.
 [Map momentum]
 Karten-Schwung
 [turn reconnecting]
-
+Verbindung zum Host verloren. Verbinde neu...
 [turn waiting for players]
-
+Warte, bis alle Spieler geladen haben...
 [turn rejoining]
-
+Trete dem Spiel wieder bei...
 [turn catching up %0]
-
+Hole auf: %0 Züge im Rückstand
 [turn player reconnecting %0]
-
+%0 verbindet sich neu...
 [turn player lagging %0]
-
+%0 hängt hinterher
 [turn player resyncing %0]
-
+%0 holt auf
 [turn player not connected %0]
-
+%0 hat sich noch nicht verbunden
 [lan host left]
-
+Der Host hat das Spiel verlassen.
 [lan host lost]
-
+Die Verbindung zum Host wurde unterbrochen.
 [lan version mismatch %0]
-
+Der Host verwendet eine andere Version von Globulation 2 (%0).
 [lan cannot host %0]
-
+LAN-Spiel kann nicht erstellt werden: %0
 [play online]
-
+Online spielen
 [Use in room]
-
+Im Raum verwenden
 [conn ai]
-
+KI
 [conn behind %0]
-
+%0 zurück
 [conn behind explanation %0 %1]
-
+Rückstand: wie weit das Spiel eines Spielers hinter der Matchuhr liegt, einschließlich seiner Verzögerung. Unter %0 ist normal; ab %1 gilt der Spieler als langsam.
 [conn behind]
-
+Rückstand
 [conn card catching up]
-
+Holt auf
 [conn card colony works]
-
+Ihre Kolonie arbeitet selbstständig weiter: Einheiten beenden ihre Aufgaben und Gebäude laufen weiter.
 [conn card desync detail]
-
+Wiedereinstieg über die Matchaufzeichnung, damit Sie dasselbe sehen wie alle anderen. Ein Bericht wurde automatisch gesendet.
 [conn card desync]
-
+Ihr Spiel ist nicht mehr synchron
 [conn card grace %0]
-
+Ihre Kolonie arbeitet selbstständig weiter: Einheiten beenden ihre Aufgaben und Gebäude laufen weiter. Sie haben %0 Zeit zurückzukehren, bevor Sie aus dem Match entfernt werden.
 [conn card input paused]
-
+Sie holen auf · Eingabe pausiert
 [conn card lost]
-
+Verbindung verloren
 [conn card progress %0 %1 %2]
-
+%0 % · %1 von %2 Ticks
 [conn card reconnecting %0]
-
+Verbinde neu mit dem Match… Versuch %0
 [conn card replaying %0]
-
+Die verpassten %0 werden nachgespielt. Die Anzeige aktualisiert sich, sobald Sie wieder in der Gegenwart sind.
 [conn card seconds left %0]
-
+noch etwa %0 s
 [conn connections]
-
+Verbindungen
 [conn connection]
-
+Verbindung
 [conn delay explanation %0 %1]
-
+Verzögerung: die Zeit von Ihrem Klick, bis er für alle ausgeführt wird. Sie hängt von Ihrer eigenen Verbindung ab, nicht von der der anderen. Gut unter %0, schlecht ab %1.
 [conn fair]
-
+Mittel
 [conn good]
-
+Gut
 [conn grid legend]
-
+Bei mehr als vier Spielern zeigt die Leiste den Ping jedes Spielers in Millisekunden oder seinen Rückstand in Sekunden.
 [conn jitter %0]
-
+Jitter %0
 [conn leave match]
-
+Match verlassen
 [conn left]
-
+Gegangen
 [conn notice back %0]
-
+%0 ist zurück.
 [conn notice left %0]
-
+%0 hat das Match verlassen.
 [conn notice lost %0 %1]
-
+%0 hat die Verbindung verloren. Das Spiel läuft weiter; die Kolonie arbeitet weiter, während die Verbindung wiederhergestellt wird (noch %1).
 [conn ping explanation %0 %1]
-
+Ping: die Umlaufzeit zwischen einem Spieler und dem Relay. Gut unter %0, schlecht ab %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Spieler
 [conn poor]
-
+Schlecht
 [conn reconnecting]
-
+Verbindet neu
 [conn relay %0]
-
+Relay-Server: %0
 [conn resyncing]
-
+Wiedereinstieg
 [conn slow]
-
+Langsam
 [conn unstable]
-
+instabil
 [conn waiting]
-
+Verbinde…
 [conn you %0]
-
+%0 (Sie)
 [conn you]
-
+Sie
 [conn your delay %0]
-
+Ihre Verzögerung %0
 [hub account menu]
-
+Konto
 [hub ai joins after %0]
-
+KI tritt nach %0 bei
 [hub all rooms]
-
+Alle
 [hub browse maps]
-
+Karten durchsuchen
 [hub cant reach %0]
-
+%0 ist nicht erreichbar.
 [hub change server]
-
+Server wechseln…
 [hub check code]
-
+Wenn nach einem Code gefragt wird, geben Sie diesen ein:
 [hub code placeholder]
-
+Code oder Einladungslink
 [hub connecting to %0]
-
+%0 · verbinde…
 [hub continue with %0]
-
+Weiter mit %0
 [hub create room]
-
+Raum erstellen
 [hub find match]
-
+Match suchen
 [hub finish in browser]
-
+Schließen Sie die Anmeldung auf der Seite ab, die sich in Ihrem Browser geöffnet hat.
 [hub free seat]
-
+Freier Platz
 [hub get update]
-
+Update holen
 [hub guest kept on device]
-
+Gast · auf diesem Gerät gespeichert
 [hub invalid code]
-
+Das ist kein Einladungscode oder -link.
 [hub join by code]
-
+Per Code beitreten
 [hub join code]
-
+Beitrittscode
 [hub join]
-
+Beitreten
 [hub leaderboard]
-
+Rangliste
 [hub linked %0]
-
+Verknüpfte Konten · %0
 [hub linked accounts]
-
+Verknüpfte Konten
 [hub maps]
-
+Karten
 [hub no queues]
-
+Dieser Server hat keine Warteschlangen für schnelle Matches.
 [hub no rooms]
-
+Gerade gibt es keine offenen Räume. Erstellen Sie einen und teilen Sie die Einladung.
 [hub offline at %0]
-
+%0 · offline
 [hub offline detail %0]
-
+Neuer Versuch in %0 s. Schnelles Match und Online-Räume sind nicht verfügbar. Für LAN-Spiele im Hauptmenü wird dieser Server nicht benötigt.
 [hub online at %0]
-
+%0 · online
 [hub online settings]
-
+Online-Einstellungen
 [hub online]
-
+Online
 [hub open page again]
-
+Seite erneut öffnen
 [hub open rooms]
-
+Offene Räume
 [hub page opened at %0]
-
+%0 geöffnet. Im Spiel ist nichts einzugeben; die Anmeldung erfolgt automatisch.
 [hub queues unavailable]
-
+Schnelles Match erscheint, sobald der Server antwortet.
 [hub quick match unavailable]
-
+Schnelles Match ist in dieser Version noch nicht verfügbar.
 [hub quick match]
-
+Schnelles Match
 [hub ranked]
-
+Gewertet
 [hub recent matches]
-
+Letzte Matches
 [hub refresh]
-
+Aktualisieren
 [hub retry now]
-
+Jetzt erneut versuchen
 [hub room match]
-
+Raum
 [hub room name %0]
-
+Raum von %0
 [hub room]
-
+Raum
 [hub seats %0 %1]
-
+%0/%1 Plätze
 [hub server %0]
-
+Server: %0
 [hub sign in browser]
-
+Anmeldeseite öffnen
 [hub sign in conflict]
-
+Diese Anmeldung gehört bereits zu einem anderen Konto.
 [hub sign in failed %0]
-
+Anmeldung nicht abgeschlossen (%0).
 [hub sign in intro]
-
+Melden Sie sich im Browser an oder erstellen Sie ein Konto. Ihre Gast-Matches werden übernommen.
 [hub sign in]
-
+Anmelden
 [hub sign out]
-
+Auf diesem Gerät abmelden
 [hub signed in as %0]
-
+Angemeldet als %0.
 [hub signed in on %0]
-
+Angemeldet bei %0
 [hub signing in]
-
+Anmeldung läuft…
 [hub sim %0]
-
+Sim %0
 [hub unrated]
-
+Ungewertet
 [hub update required at %0]
-
+%0 · Update erforderlich
 [hub update required detail %0]
-
+%0 verwendet eine neuere Version, daher kann diese Kopie erst nach einem Update Online-Spielen beitreten. LAN-Spiele funktionieren weiterhin.
 [hub update required]
-
+Update erforderlich
 [hub server behind]
-
+Server-Update ausstehend
 [hub server behind at %0]
-
+%0 · Server-Update ausstehend
 [hub server behind detail %0]
-
+Diese Kopie ist neuer als %0, das noch nicht darauf aktualisiert wurde. Online-Spiele öffnen sich, sobald der Server aktualisiert ist. LAN-Spiele funktionieren weiterhin.
 [hub version mismatch]
-
+Andere Version
 [hub version mismatch at %0]
-
+%0 · andere Version
 [hub version mismatch detail %0]
-
+%0 verwendet eine andere Spielversion, daher kann diese Kopie keinen Online-Spielen beitreten. LAN-Spiele funktionieren weiterhin.
 [hub versus %0]
-
+gegen %0
 [match ai]
-
+KI
 [match downloading map %0]
-
+Lade Karte %0 herunter
 [match failed]
-
+Das Match konnte nicht starten.
 [match leave]
-
+Verlassen
 [match loading]
-
+Spiel wird geladen
 [Loading game graphics]
-
+Spielgrafik wird geladen
 [match map cached]
-
+bereits auf diesem Gerät
 [match map]
-
+Karte wird heruntergeladen
 [match relay %0]
-
+Mit Relay-Server %0 verbunden
 [match seat confirmed]
-
+Platz bestätigt
 [match starting]
-
+Match startet
 [match tip flags]
-
+Tipp: Entdeckerflaggen schicken Entdecker los, um die Karte aufzudecken; Kriegsflaggen sammeln Ihre Krieger.
 [match tip input]
-
+Tipp: Ihre Befehle erreichen alle nach Ihrer eigenen Eingabeverzögerung; die Verbindungen anderer Spieler bremsen Sie nicht.
 [match tip select]
-
+Tipp: Doppelklicken Sie auf ein Gebäude, um alle Gebäude dieses Typs auszuwählen.
 [match waiting for players]
-
+Warte auf alle Spieler
 [match you %0]
-
+%0 (Sie)
 [match player map]
-
+Karte
 [match player loading]
-
+lädt
 [match player connecting]
-
+verbindet
 [match player ready]
-
+bereit
 [match player left]
-
+gegangen
 [results back to online]
-
+Zurück zu Online
 [results back to room]
-
+Zurück zum Raum
 [results defeat]
-
+Niederlage
 [results ladder rating %0]
-
+Wertung: %0
 [results left]
-
+Sie haben das Match verlassen
 [results match over]
-
+Match vorbei
 [results match page]
-
+Match-Seite
 [results minutes %0]
-
+%0 Min.
 [results no change]
-
+unverändert
 [results ranked]
-
+Gewertet
 [results recording]
-
+Ergebnis wird gespeichert…
 [results room unrated]
-
+Raum-Match · ungewertet
 [results saved to history]
-
+In Ihrem Verlauf gespeichert
 [results seconds %0]
-
+%0 Sek.
 [results unverifiable]
-
+Der Server konnte dieses Match nicht nachvollziehen, daher zählt es für niemandes Wertung. Es wurde zur Untersuchung gemeldet; Sie müssen nichts tun.
 [results verified provisional]
-
+Bestätigt · vorläufig
 [results verified]
-
+Bestätigt
 [results verifying detail]
-
+Der Server spielt das Match zur Bestätigung nach. Meist dauert das weniger als eine Minute.
 [results verifying]
-
+Ergebnis wird geprüft…
 [results victory]
-
+Sieg
 [room address]
-
+Adresse
 [room ai %0]
-
+KI: %0
 [room browser pairing]
-
+Browser-Kopplung
 [room catalog map]
-
+Katalogkarte
 [room change map]
-
+Karte ändern…
 [room change rules]
-
+Regeln ändern…
 [room chat]
-
+Chat
 [room closed seat detail]
-
+Vom Host geschlossen
 [room closed seat]
-
+Geschlossen
 [room colonies]
-
+Kolonien
 [room connecting]
-
+Verbinde mit dem Raum…
 [room copy]
-
+Kopieren
 [room disconnected]
-
+getrennt
 [room downloading %0]
-
+Lade Karte herunter: %0 %
 [room downloading map]
-
+Karte wird heruntergeladen…
 [room expired]
-
+Der Raum wurde geschlossen.
 [room generated on server]
-
+Einmal auf dem Server erzeugt, damit alle genau diese Karte spielen.
 [room guest]
-
+Gast
 [room host %0]
-
+Host %0
 [room host closed]
-
+Der Host hat den Raum geschlossen.
 [room host]
-
+Host
 [room humans vs ai]
-
+Menschen gegen KI
 [room invite code %0]
-
+Code %0 · öffnet sich in der App, auf Handys oder im Browser
 [room invite not found]
-
+Diese Einladung ist abgelaufen oder existiert nicht.
 [room invite only]
-
+Nur mit Einladung
 [room invite]
-
+Einladen
 [room joining on network]
-
+Beitritt über dieses Netzwerk
 [room lan badge]
-
+Lokales Netzwerk · ungewertet
 [room lan list hint %0]
-
+Andere im selben Netzwerk sehen %0 in der LAN-Spielliste im Hauptmenü.
 [room leave]
-
+Verlassen
 [room map changed %0]
-
+Die Karte wurde zu %0 geändert.
 [room map failed]
-
+Die Karte konnte nicht vorbereitet werden
 [room match label]
-
+Raum
 [room member joined %0]
-
+%0 ist beigetreten.
 [room member left %0]
-
+%0 ist gegangen.
 [room member ready %0]
-
+%0 ist bereit.
 [room needs two seats]
-
+Laden Sie jemanden ein oder fügen Sie eine KI hinzu, um zu starten
 [room no map]
-
+Noch keine Karte
 [room not ready]
-
+Nicht bereit
 [room open for a person]
-
+Offen für einen Menschen
 [room open seat detail]
-
+Jeder mit der Einladung kann ihn einnehmen
 [room open seat]
-
+Freier Platz
 [room person]
-
+Mensch
 [room preparing map]
-
+Karte wird auf dem Server vorbereitet…
 [room public]
-
+Öffentlich
 [room ready?]
-
+Bereit
 [room ready]
-
+✓ Bereit
 [room remove from room]
-
+Aus dem Raum entfernen
 [room rule off]
-
+Aus
 [room rule on]
-
+An
 [room rules changed]
-
+Die Regeln wurden geändert.
 [room rules]
-
+Regeln
 [room say something]
-
+Schreiben Sie etwas…
 [room seat hint]
-
+Spieler können selbst auf einen freien Platz wechseln. Ändern Sie das Team, um auszugleichen.
 [room seat options]
-
+Platzoptionen
 [room seats summary %0 %1 %2]
-
+%0 Spieler · %1 KI · %2 frei
 [room seats]
-
+Plätze
 [room seed]
-
+Startwert
 [room send]
-
+Senden
 [room set by host]
-
+Vom Host festgelegt
 [room share text %0]
-
+Tritt meinem Globulation-2-Raum bei: %0
 [room share]
-
+Teilen…
 [room size]
-
+Größe
 [room starting match]
-
+Match wird gestartet…
 [room take seat]
-
+Platz nehmen
 [room team %0]
-
+Team %0
 [room update required]
-
+Dieser Raum spielt eine andere Version des Spiels. Aktualisieren Sie, um beizutreten.
 [room uploaded map]
-
+Hochgeladene Karte
 [room waiting for %0]
-
+Warte, bis %0 bereit ist
 [room waiting for you]
-
+Drücken Sie „Bereit“, wenn Sie so weit sind
 [room match over]
-
+Match vorbei. Bereit für eine weitere Runde?
 [room waiting for host]
-
+Warte auf den Start durch den Host
 [room waiting for players %0]
-
+Warte, bis %0 Spieler bereit sind
 [room who can find it]
-
+Wer ihn finden kann
 [room you created]
-
+Sie haben den Raum erstellt.
 [room you joined %0]
-
+Sie sind %0 beigetreten.
 [room you were removed]
-
+Der Host hat Sie aus dem Raum entfernt.
 [room you]
-
+Sie
 [settings Online]
-
+Online
 [settings Another server]
-
+Anderer Server
 [settings Check]
-
+Prüfen
 [settings Checking…]
-
+Prüfe…
 [settings Choose which server you play on and how you sign in to it.]
-
+Wählen Sie, auf welchem Server Sie spielen und wie Sie sich dort anmelden.
 [settings Connecting…]
-
+Verbinde…
 [settings Could not reach this server.]
-
+Dieser Server ist nicht erreichbar.
 [settings Display name saved.]
-
+Anzeigename gespeichert.
 [settings Display name]
-
+Anzeigename
 [settings Download or delete my data]
-
+Mein Konto löschen
 [settings Enter an https:// address.]
-
+Geben Sie eine https://-Adresse ein.
 [settings Finish in your browser. It shows the code %0.]
-
+Schließen Sie im Browser ab: Geben Sie den Code %0 ein, wenn danach gefragt wird.
 [settings Forget]
-
+Vergessen
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gäste behalten einen erzeugten Namen; melden Sie sich an, um einen zu wählen.
 [settings Link]
-
+Verknüpfen
 [settings Not a Globulation 2 server.]
-
+Kein Globulation-2-Server.
 [settings Not linked]
-
+Nicht verknüpft
 [settings Not signed in.]
-
+Nicht angemeldet.
 [settings Open]
-
+Öffnen
 [settings Opens your account page on %0.]
-
+Öffnet Ihre Kontoseite auf %0, wo Sie das Konto löschen können.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Betrieben von einer Community, einem Verein oder Ihnen selbst. Fügen Sie die Adresse ein.
 [settings Save]
-
+Speichern
 [settings Server]
-
+Server
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Wird in Räumen, Matches und der Rangliste angezeigt. Änderung einmal alle 30 Tage.
 [settings Sign in with: %0 · queues: %1]
-
+Anmelden mit: %0 · Warteschlangen: %1
 [settings Sign out on this device]
-
+Auf diesem Gerät abmelden
 [settings Sign out]
-
+Abmelden
 [settings Switch to this server]
-
+Zu diesem Server wechseln
 [settings The last sign-in method can't be unlinked.]
-
+Die letzte Anmeldemethode kann nicht getrennt werden.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Der offizielle Globulation-2-Server · gewertete Warteschlangen, Ranglisten, Kartenkatalog
 [settings Unlink]
-
+Trennen
 [settings Unlinking is done on the account page.]
-
+Das Trennen erfolgt auf der Kontoseite.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Sie sind ein neuer Gast, bis Sie sich wieder anmelden. Ihr Konto und Ihre Matches bleiben auf dem Server.
 [settings Your account on %0]
-
+Ihr Konto auf %0
 [settings compatible with this version]
-
+mit dieser Version kompatibel
 [settings connected]
-
+verbunden
 [settings connecting…]
-
+verbinde…
 [settings guest]
-
+Gast
 [settings linked]
-
+verknüpft
 [settings plays another version]
-
+spielt eine andere Version
 [settings trusted]
-
+vertrauenswürdig
 [settings used before]
-
+schon verwendet
 [settings you were %0 there]
-
+dort waren Sie %0
 [trust invited to room %0]
-
+In Raum %0 eingeladen
 [trust join as guest]
-
+Als Gast beitreten
 [trust not official]
-
+Dieser Server wird nicht vom Globulation-2-Projekt betrieben.
 [trust remember]
-
+Diesen Server merken
 [trust separate identity %0]
-
+Sie treten dort als Gast bei. Ihr %0-Konto, Ihre Wertung und Ihr Verlauf bleiben, wo sie sind.
 [trust title]
-
+Einem Spiel auf einem anderen Server beitreten?
 [trust what it sees]
-
+Der Server sieht Ihren Anzeigenamen, die Adresse Ihrer Verbindung und die Spiele, die Sie dort spielen.
 [settings not connected]
-
+nicht verbunden
 [settings Open Play online to connect.]
-
+Öffnen Sie „Online spielen“, um sich zu verbinden.
 [hub code]
-
+Code
 [results draw]
-
+Unentschieden
 [qm 2 vs 2]
-
+2 gegen 2
 [qm 1 vs 1]
-
+1 gegen 1
 [qm ping about]
-
+Ping ca.
 [qm ranked]
-
+Gewertet
 [qm casual %0]
-
+Normal %0
 [qm rated]
-
+Gewertet
 [qm unrated]
-
+Ungewertet
 [qm solo queue]
-
+Einzelwarteschlange
 [qm ai joins after %0]
-
+KI tritt nach %0 bei
 [qm fair maps %0]
-
+Karten: %0
 [qm cooldown %0]
-
+Sie haben ein Match abgelehnt. Sie können in %0 wieder suchen.
 [qm sign in to play ranked]
-
+Gewertete Warteschlangen sind angemeldeten Konten vorbehalten; melden Sie sich zuerst an.
 [online update required]
-
+Diese Spielversion ist für den Server zu alt; aktualisieren Sie, um online zu spielen.
 [online server behind]
-
+Der Server wurde noch nicht auf diese Version aktualisiert; Online-Spiele sind möglich, sobald das geschehen ist.
 [online version mismatch]
-
+Der Server verwendet eine andere Spielversion; mit dieser Kopie ist kein Online-Spiel möglich.
 [qm already searching]
-
+Sie suchen bereits oder sind in einem Match.
 [online connection problem]
-
+Der Server war nicht erreichbar.
 [qm find match]
-
+Match suchen
 [qm opponents rated %0 to %1]
-
+Gegner mit Wertung %0 bis %1
 [qm region %0]
-
+Region %0
 [qm searching]
-
+Suche läuft
 [qm measuring relays]
-
+Relay-Server werden gemessen
 [qm joining queue]
-
+Warteschlange wird betreten
 [qm waiting for a person]
-
+Warte auf einen Menschen: KI-Gegner sind aus.
 [qm ai in %0 rated]
-
+Findet sich niemand, spielen Sie in %0 gegen die KI mit der nächstliegenden Wertung
 [qm ai in %0]
-
+Findet sich niemand, tritt in %0 eine KI bei
 [qm ai after %0]
-
+Findet sich niemand, übernimmt nach %0 eine KI den Platz
 [qm allow ai short]
-
+KI erlauben
 [qm allow ai]
-
+KI-Gegner erlauben
 [qm cancel]
-
+Abbrechen
 [qm cancel search]
-
+Suche abbrechen
 [qm usual wait %0]
-
+übliche Wartezeit %0
 [qm widening]
-
+wird mit der Zeit erweitert
 [qm ais are rated]
-
+(gewertet: auch KIs haben Wertungen)
 [qm opponent declined]
-
+Ihr Gegner hat nicht angenommen. Sie stehen wieder vorne in der Warteschlange.
 [qm %0 did not accept]
-
+%0 hat nicht angenommen. Sie stehen wieder vorne in der Warteschlange.
 [qm start failed]
-
+Das Match konnte nicht starten. Sie suchen erneut.
 [qm you declined]
-
+Sie haben das Match abgelehnt. Nach kurzer Wartezeit können Sie wieder suchen.
 [qm you did not answer]
-
+Sie haben nicht rechtzeitig angenommen. Nach kurzer Wartezeit können Sie wieder suchen.
 [qm search ended]
-
+Die Suche wurde beendet.
 [qm try again]
-
+Erneut versuchen
 [online connecting]
-
+Verbinde…
 [qm no queues]
-
+Dieser Server hat keine Warteschlangen für schnelle Matches.
 [qm quick match]
-
+Schnelles Match
 [qm phone searching note]
-
+Die Suche läuft weiter, wenn Sie diesen Bildschirm verlassen.
 [qm phone intro]
-
+Wählen Sie unten eine Warteschlange; die Suche läuft, während Sie sich umsehen.
 [qm online]
-
+Online
 [qm keeps running note]
-
+Die Suche läuft weiter, wenn Sie diesen Bildschirm verlassen.
 [qm ai]
-
+KI
 [qm provisional]
-
+vorläufig
 [qm accepted]
-
+✓ angenommen
 [qm declined]
-
+abgelehnt
 [qm waiting]
-
+wartet…
 [qm ai badge]
-
+KI
 [qm match found]
-
+Match gefunden
 [qm playing an ai]
-
+Spiel gegen eine KI
 [qm vs]
-
+gegen
 [qm ai explanation rated]
-
+In Ihrem Wertungsbereich hat niemand gesucht. Sie spielen gegen die KI, die Ihrer Wertung am nächsten ist; das Ergebnis zählt für Ihre Wertung und die der KI.
 [qm ai explanation]
-
+Niemand hat gesucht. Sie spielen gegen die KI, die Ihrer Wertung am nächsten ist; dieses Spiel ist ungewertet.
 [qm casual explanation]
-
+Das Match startet sofort; normale Spiele sind ungewertet.
 [qm accepted button]
-
+Angenommen
 [qm accept]
-
+Annehmen
 [qm decline]
-
+Ablehnen
 [qm both must accept]
-
+Beide müssen annehmen
 [qm accept explanation]
-
+Beide Spieler müssen annehmen. Wer ablehnt oder den Timer ablaufen lässt, kommt ans Ende der Warteschlange.
 [qm starting in %0]
-
+Start in %0…
 [qm preparing match]
-
+Match wird vorbereitet…
 [qm match assigned %0 %1]
-
+Match %0 ist auf %1 bereit, aber dieser Build kann sich noch nicht mit Online-Matches verbinden.
 [online jan]
-
+Jan.
 [online feb]
-
+Feb.
 [online mar]
-
+März
 [online apr]
-
+Apr.
 [online may]
-
+Mai
 [online jun]
-
+Juni
 [online jul]
-
+Juli
 [online aug]
-
+Aug.
 [online sep]
-
+Sept.
 [online oct]
-
+Okt.
 [online nov]
-
+Nov.
 [online dec]
-
+Dez.
 [profile win letter]
-
+S
 [profile loss letter]
-
+N
 [profile draw letter]
-
+U
 [profile history unavailable]
-
+Dieser Server bietet noch keinen Matchverlauf an.
 [profile downloading replay]
-
+Replay wird heruntergeladen…
 [profile no replay]
-
+Für dieses Match ist kein Replay verfügbar.
 [profile room with %0]
-
+Raum · %0 Kolonien
 [profile with %0 vs %1]
-
+mit %0 gegen %1
 [profile vs %0]
-
+gegen %0
 [profile room]
-
+Raum
 [profile casual]
-
+Normal
 [profile ai filled]
-
+Mit KI aufgefüllt
 [profile provisional %0 games]
-
+vorläufig · %0 Spiele
 [profile unrated]
-
+ungewertet
 [profile checking]
-
+wird geprüft…
 [profile %0 min]
-
+%0 Min.
 [profile match page]
-
+Match-Seite
 [profile replay]
-
+Replay
 [profile win rate last %0]
-
+Siegquote, letzte %0
 [profile %0 w %1 l %2 d]
-
+%0 S · %1 N · %2 U
 [profile typical game]
-
+Typisches Spiel
 [profile median length]
-
+Ihre mittlere Dauer
 [profile best map]
-
+Beste Karte
 [profile %0 w %1 l]
-
+%0 S · %1 N
 [profile no rated games]
-
+Spielen Sie ein gewertetes Match, um eine Wertung zu erhalten.
 [profile all]
-
+Alle
 [profile rooms]
-
+Räume
 [profile vs ai]
-
+gegen KI
 [profile matches]
-
+Matches
 [online loading]
-
+Lade…
 [profile no matches]
-
+Noch keine Matches.
 [online load more]
-
+Mehr laden
 [profile title]
-
+Profil
 [profile guest]
-
+Gast
 [profile playing since %0]
-
+spielt seit %0
 [profile full profile web]
-
+Vollständiges Profil im Web
 [profile replays note]
-
+Replays werden beim Öffnen vom Server heruntergeladen; lokal gespeicherte bleiben unter Spiel laden → Replays.
 [profile web profile]
-
+Webprofil
 [maps most played]
-
+Meistgespielt
 [maps most liked]
-
+Beliebteste
 [maps newest]
-
+Neueste
 [maps most downloaded]
-
+Meistgeladen
 [maps any size]
-
+Jede Größe
 [maps up to 128]
-
+Bis 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 und größer
 [maps report broken]
-
+Funktioniert nicht
 [maps report offensive]
-
+Anstößig
 [maps report copyright]
-
+Fremdes Werk
 [maps report other]
-
+Etwas anderes
 [maps public]
-
+Öffentlich
 [maps unlisted]
-
+Nicht gelistet
 [maps private]
-
+Privat
 [maps cannot read file]
-
+Die Kartendatei konnte nicht gelesen werden.
 [maps file too large]
-
+Die Kartendatei ist zu groß zum Teilen.
 [maps saved for next room]
-
+Die Karte ist heruntergeladen; sie wird verwendet, wenn Sie einen Raum öffnen.
 [maps download failed]
-
+Die Karte konnte nicht heruntergeladen werden.
 [maps %0 colonies]
-
+%0 Kolonien
 [maps version %0]
-
+Version %0
 [maps updated %0]
-
+aktualisiert %0
 [maps downloading]
-
+Karte wird heruntergeladen…
 [maps like needs account]
-
+Zum Liken von Karten müssen Sie angemeldet sein.
 [maps report sent]
-
+Danke; die Moderatoren sehen es sich an.
 [maps select a map]
-
+Wählen Sie eine Karte, um Details zu sehen.
 [maps by %0]
-
+von %0
 [maps stats %0 %1 %2]
-
+▶ %0 Spiele · ⬇ %1 Downloads · ♥ %2
 [maps use in room]
-
+In einem Raum verwenden
 [maps liked]
-
+Gefällt mir
 [maps like]
-
+Liken
 [maps map page]
-
+Kartenseite
 [maps reported]
-
+Gemeldet
 [maps report]
-
+Melden…
 [maps report why]
-
+Was stimmt mit dieser Karte nicht?
 [maps search placeholder]
-
+Karten oder Autoren suchen
 [maps none found]
-
+Keine passenden Karten.
 [maps any colonies]
-
+Beliebig viele Kolonien
 [maps checking]
-
+Wird geprüft…
 [maps no version yet]
-
+Es wurde noch keine Version hochgeladen.
 [maps rejected]
-
+Abgelehnt
 [maps did not load %0]
-
+Die Karte wurde nicht geladen: %0
 [maps unknown reason]
-
+kein Grund angegeben
 [maps fix and upload again]
-
+beheben Sie das im Editor und laden Sie sie erneut hoch
 [maps uploaded just now]
-
+gerade hochgeladen
 [maps loading on server]
-
+wird auf dem Server geladen
 [maps %0 plays]
-
+%0 Spiele
 [maps hidden]
-
+Verborgen
 [maps upload again]
-
+Erneut hochladen…
 [maps delete]
-
+Löschen
 [maps update]
-
+Aktualisieren…
 [maps upload a map]
-
+Karte hochladen…
 [maps upload hint]
-
+.map-Dateien aus Ihrem Kartenordner oder dem Editor
 [maps no maps yet]
-
+Sie haben noch keine Karten geteilt.
 [maps my maps]
-
+Meine Karten
 [maps my maps %0]
-
+Meine Karten (%0)
 [maps browse]
-
+Stöbern
 [maps title]
-
+Karten
 [maps browse note %0]
-
+Katalog von %0 · nur Karten, die in dieser Version laden, werden angezeigt
 [maps visibility note]
-
+Öffentliche Karten erscheinen unter „Stöbern“. Nicht gelistete Karten funktionieren in Ihren Räumen und über ihren Link. Private Karten nur in Ihren eigenen Räumen.
 [maps use %0]
-
+%0 verwenden
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Titel
 [maps field description]
-
+Beschreibung
 [maps who can use it]
-
+Wer sie verwenden kann
 [maps guests unlisted]
-
+Gäste können nicht gelistete und private Karten teilen; melden Sie sich an, um unter „Stöbern“ zu veröffentlichen.
 [maps visibility help]
-
+Nicht gelistete Karten funktionieren in Ihren Räumen und über ihren Link; öffentliche Karten erscheinen zusätzlich unter „Stöbern“.
 [maps new version of %0]
-
+Diese Datei als neue Version von %0 hochladen.
 [maps upload]
-
+Hochladen
 [maps uploading]
-
+Lade hoch…
 [maps checking detail]
-
+Der Server lädt die Karte und zeichnet ihre Vorschau. Bis dahin kann die Karte nicht verwendet werden.
 [maps ready]
-
+Bereit
 [maps ready public]
-
+Die Karte ist bereit und unter „Stöbern“ gelistet.
 [maps ready unlisted]
-
+Die Karte ist bereit. Nicht gelistete Karten funktionieren in Ihren Räumen und über ihren Link.
 [maps ready private]
-
+Die Karte ist bereit. Private Karten funktionieren nur in Ihren eigenen Räumen.
 [maps upload failed]
-
+Das Hochladen ist fehlgeschlagen
 [maps server read %0 %1]
-
+Der Server hat sie als %0 mit %1 Kolonien gelesen.
 [maps continue in background]
-
+Schließen
 [maps upload a map title]
-
+Karte hochladen
 [maps update map title]
-
+Karte aktualisieren
 [maps upload note]
-
+Der Server lädt jeden Upload, bevor er verwendet werden kann.
 [online just now]
-
+gerade eben
 [online today %0]
-
+heute %0
 [online yesterday]
-
+gestern
 [online sun]
-
+So
 [online mon]
-
+Mo
 [online tue]
-
+Di
 [online wed]
-
+Mi
 [online thu]
-
+Do
 [online fri]
-
+Fr
 [online sat]
-
+Sa
 [online %0 weeks ago]
-
+vor %0 Wochen
 [online %0 months ago]
-
+vor %0 Monaten
 [online %0 years ago]
-
+vor %0 Jahren
 [maps share online]
-
+Online teilen…
 [maps mine]
-
+Meine
 [results waiting for players]
-
+Warte, bis die anderen Spieler das Match verlassen…
 [results waiting detail]
-
+Das Ergebnis wird gespeichert, sobald alle das Match verlassen haben.
 [results waiting slow]
-
+Ein Spieler mit Verbindungsabbruch hat bis zu 3 Minuten Zeit zurückzukehren. Das Ergebnis erscheint in Ihrem Verlauf und auf der Match-Seite.
 [results verifying slow]
-
+Die Prüfung dauert länger als üblich. Das Ergebnis erscheint in Ihrem Verlauf und auf der Match-Seite.
 [results rematch]
-
+Revanche
 [results join rematch %0]
-
+Der Revanche von %0 beitreten
 [hub profile history]
-
+Profil & Verlauf
 [hub my maps]
-
+Meine Karten
 [hub leaderboard %0]
-
+Rangliste · %0
 [hub leaderboard empty]
-
+Noch keine gewerteten Spieler.
 [hub guests not ranked]
-
+Gäste werden nicht gewertet. Melden Sie sich an, um hier zu erscheinen.
 [hub full leaderboard]
-
+Vollständige Rangliste
 [settings %0 is no longer linked.]
-
+%0 ist nicht mehr verknüpft.
 [room map read failed]
-
+Diese Kartendatei konnte nicht gelesen werden.
 [room map upload failed]
-
+Die Karte konnte nicht mit dem Raum geteilt werden.
 [room map upload failed %0]
-
+Die Karte konnte nicht mit dem Raum geteilt werden: %0
 [room uploading map]
-
+Karte wird mit dem Raum geteilt…
 [room premade map shared]
-
+Alle im Raum spielen diese Kartendatei; sie wird vor dem Match heruntergeladen.
 [room take a seat to play]
-
+Nehmen Sie einen freien Platz ein, um zu spielen
 [room waiting for a seat]
-
+Alle Plätze sind belegt. Sie können einen einnehmen, sobald er frei wird.
 [room not seated]
-
+Kein Platz
 [room copied]
-
+Kopiert
 [room copy failed]
-
+Kopieren fehlgeschlagen
 [room closed title]
-
+Raum geschlossen
 [room removed title]
-
+Aus dem Raum entfernt
 [room back to online]
-
+Zurück zu Online
 [leave match]
-
+Match verlassen
 [leave match title]
-
+Dieses Match verlassen?
 [leave lan title]
-
+Dieses LAN-Spiel verlassen?
 [leave rated body]
-
+Sie verlieren dieses gewertete Match und Ihre Wertung sinkt. Die anderen spielen weiter, und Sie können nicht zurückkehren.
 [leave casual body]
-
+Dieses schnelle Match zählt für Sie als Niederlage. Die anderen spielen weiter, und Sie können nicht zurückkehren.
 [leave room body]
-
+Sie verlassen das Match des Raums, und es zählt in Ihrem Verlauf als Niederlage. Die anderen spielen weiter, und Sie können nicht zurückkehren.
 [leave lan body]
-
+Die anderen spielen ohne Sie weiter, und Sie können nicht in dieses Spiel zurückkehren.
 [leave match confirm]
-
+Match verlassen
 [keep playing]
-
+Weiterspielen
 [results team]
-
+Team
 [results quick unrated]
-
+Schnelles Match · ungewertet
 [conn card cannot keep up]
-
+Ihr Gerät kommt bei diesem Match nicht mit
 [conn card cannot keep up body]
-
+Es spielt das Match langsamer nach, als es läuft, und holt daher nicht auf. Sie können das Match verlassen oder die Grafikeinstellungen senken und weiter warten.
 [conn card not gaining]
-
+kein Aufholen
 [results reason opponents left]
-
+Ihre Gegner haben das Match verlassen.
 [results reason victory]
-
+Alle gegnerischen Kolonien wurden besiegt.
 [results reason defeat]
-
+Ihre Kolonie wurde besiegt.
 [results reason you left]
-
+Sie haben das Match verlassen. Es zählt als Niederlage.
 [results final after end]
-
+Endergebnis nach Ende des Matches.
 [pause none left]
-
+Keine Pausen mehr
 [pause game left %0]
-
+Spiel pausieren (noch %0)
 [pause by %0]
-
+Pausiert von %0
 [pause by %0 resumes in %1]
-
+Pausiert von %0 · weiter in %1
 [turn too many actions]
-
+Zu viele Aktionen: einige warten noch auf das Senden
 [turn no pauses left]
-
+Sie haben in diesem Match keine Pausen mehr
 [turn pause time used %0]
-
+%0 hat die gesamte Pausenzeit verbraucht: das Spiel geht weiter
 [room seats one person %0 %1]
-
+1 Spieler · %0 KI · %1 frei
 [room rules otherwise standard]
-
+Alle anderen Regeln entsprechen dem Standard.
 [room browser link]
-
+Link für Browser-Spieler
 [room browser link hint]
-
+Spieler im Browser fügen diesen Link ein, um beizutreten.
 [room browser link code %0]
-
+Spieler im Browser fügen diesen Link ein, um beizutreten. Ihr Spiel zeigt den Code %0.
 [room copy link]
-
+Link kopieren
 [room lan open seat detail]
-
+Jeder in diesem Netzwerk kann ihn einnehmen
 [room close title]
-
+Raum schließen?
 [room close body one]
-
+Wenn Sie gehen, wird der Raum für alle geschlossen, auch für den anderen Spieler darin.
 [room close body %0]
-
+Wenn Sie gehen, wird der Raum für alle geschlossen, auch für die %0 anderen Spieler darin.
 [room close confirm]
-
+Raum schließen
 [room stay]
-
+Bleiben
 [room colours changed]
-
+Durch die neue Karte haben die Plätze neue Farben. Prüfen Sie Ihre vor dem Start.
 [room copy by hand]
-
+Kopieren hat nicht geklappt. Kopieren Sie die Einladung selbst:
 [room copy by hand close]
-
+Schließen
 [room copy by hand touch]
-
+Halten Sie den Link gedrückt und wählen Sie dann „Kopieren“.
 [room copy by hand keys]
-
+Der Link ist markiert: Drücken Sie Strg+C (⌘C auf dem Mac).
 [room code]
-
+Code
 [online under a minute]
-
+unter einer Minute
 [online about %0 min]
-
+etwa %0 Min.
 [online %0 s]
-
+%0 Sek.
 [online %0 min %1 s]
-
+%0 Min. %1 Sek.
 [qm ai opponent %0]
-
+KI-Gegner: %0
 [match relay connected]
-
+Mit dem Spielserver verbunden
 [room picker title]
-
+Karte wählen
 [room picker for one]
-
+Für den 1 Spieler im Raum
 [room picker for %0]
-
+Für die %0 Spieler im Raum
 [room picker generated]
-
+Generiert
 [room picker premade]
-
+Vorgefertigt
 [room picker catalog]
-
+Katalog
 [room picker size]
-
+Größe
 [room picker colonies]
-
+Kolonien
 [room picker fair]
-
+Fairer Start für jede Kolonie
 [room picker does not fit]
-
+Passt nicht zu dieser Größe; versuchen Sie eine andere
 [room picker preparing]
-
+Vorschau wird vorbereitet…
 [room picker generated note]
-
+Jede Landschaft gibt jeder Kolonie einen gleich guten Start, und der Server erzeugt für alle dieselbe Karte.
 [room picker players %0]
-
+%0 Spieler
 [room picker unreadable]
-
+nicht lesbar
 [room picker no premade]
-
+Keine vorgefertigten Karten gefunden.
 [room picker too small %0]
-
+Diese Karte hat weniger Kolonien als die %0 Spieler im Raum.
 [room picker pick premade]
-
+Wählen Sie eine Karte, um sie hier zu sehen.
 [room picker catalog intro]
-
+Von anderen Spielern geteilte Karten. Öffnen Sie eine und wählen Sie „In einem Raum verwenden“.
 [room picker browse catalog]
-
+Geteilte Karten durchsuchen
 [room picker more options]
-
+Weitere Optionen…
 [room picker use]
-
+Diese Karte verwenden
 [room map ready title %0]
-
+%0 spielen
 [room map ready unnamed]
-
+diese Karte
 [room map ready body]
-
+Erstellen Sie einen Raum und laden Sie Ihre Freunde ein: Der Raum spielt diese Karte.
 [game draw]
-
+Unentschieden
 [settings Show colony skins]
 Kolonie-Skins anzeigen
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Deaktivieren, um auf diesem Gerät klassische Einheiten, Schwärme und Gebäudefarben zu verwenden.
+Ausschalten, um auf diesem Gerät klassische Einheiten, Stöcke und Gebäudefarben zu verwenden.
 [settings Hive Mind]
-
+Schwarmgeist
 [settings Enable commander shortcuts]
-
+Kommandanten-Kürzel aktivieren
 [settings Command your colony without opening a menu.]
-
+Befehligen Sie Ihre Kolonie, ohne ein Menü zu öffnen.
 [settings Allow supervision for new commands]
-
+Überwachung für neue Befehle erlauben
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Der Kommandant darf Daueraufträge weiterverfolgen. Nachfassen verbraucht Guthaben; eingerichtete Aufträge laufen ohne Guthaben weiter.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Standardkürzel: Strg+Eingabe erteilt einen Befehl; Strg+Umschalt+Eingabe beendet die Arbeit des Kommandanten. Ändern Sie sie unter „Steuerung“. Dauerauftragskarten haben eigene Schaltflächen zum Pausieren und Abbrechen.
 [settings Commander account and credits]
-
+Kommandantenkonto und Guthaben
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Verwalten Sie Guthaben und Käufe im Browser. Hilfe durch den Kommandanten ist in gewerteten Spielen erlaubt.
 [open commander]
-
+Kommandant öffnen
 [stop commander]
-
+Kommandant stoppen
 [settings Recording]
-
+Aufnahme
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Nehmen Sie Ihre Spiele als MP4-Videos mit Ton auf. Die Aufnahme benötigt FFmpeg mit den Encodern libx264 und AAC.
 [settings FFmpeg is ready.]
-
+FFmpeg ist bereit.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg ist nicht verfügbar, daher ist die Aufnahme ausgeschaltet. Installieren Sie FFmpeg, stellen Sie sicher, dass es in Ihrem PATH liegt, und prüfen Sie erneut.
 [settings Check for FFmpeg again]
-
+Erneut nach FFmpeg suchen
 [settings Checking for FFmpeg…]
-
+Suche nach FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Tastenkürzel: %0. Funktioniert auch in Menüs und im Editor.
 [settings Change the hotkey]
-
+Tastenkürzel ändern
 [settings Recordings are saved in %0]
-
+Aufnahmen werden in %0 gespeichert
 [toggle recording]
-
+Aufnahme starten oder stoppen
 [File selection is unavailable.]
-
+Dateiauswahl ist nicht verfügbar.
 [Saving custom AI…]
-
+Eigene KI wird gespeichert…
 [Could not read the selected JavaScript file.]
-
+Die gewählte JavaScript-Datei konnte nicht gelesen werden.
 [Custom AI library saved.]
-
+Bibliothek eigener KIs gespeichert.
 [Storage could not be saved. The previous library is retained.]
-
+Der Speicher konnte nicht gesichert werden. Die bisherige Bibliothek bleibt erhalten.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importieren Sie eine einzelne JavaScript-KI-Datei und wählen Sie sie beim Einrichten eines lokalen Spiels aus.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Importe behalten eine Kopie in Glob2. „Aktualisieren“ ersetzt diese Kopie für künftige Spiele; Spielstände behalten ihre ursprüngliche KI.
 [Waiting for file selection or storage…]
-
+Warte auf Dateiauswahl oder Speicher…
 [Import JavaScript AI]
-
+JavaScript-KI importieren
 [Link development file]
-
+Entwicklungsdatei verknüpfen
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Verknüpfte Dateien werden beim Spielstart gelesen. Bauen Sie neu, bevor Sie ein neues Spiel starten. Das Entfernen einer Verknüpfung löscht Ihre Datei nie.
 [Example AI and authoring guide]
-
+Beispiel-KI und Anleitung
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Noch keine eigenen KIs. Importieren Sie eine gebündelte .js-Datei, um zu beginnen.
 [Relink]
-
+Neu verknüpfen
 [Update]
-
+Aktualisieren
 [Validate]
-
+Prüfen
 [AI startup and persistent globals are valid.]
-
+KI-Start und persistente globale Variablen sind gültig.
 [Remove from library]
-
+Aus Bibliothek entfernen
 [AI telemetry]
-
+KI-Telemetrie
 [No accessible AI telemetry.]
-
+Keine zugängliche KI-Telemetrie.
 [Search fields]
-
+Felder durchsuchen
 [Telemetry unavailable for this recording or controller.]
-
+Für diese Aufzeichnung oder Steuerung ist keine Telemetrie verfügbar.
 [Linked]
-
+Verknüpft
 [Imported]
-
+Importiert
 [Player]
-
+Spieler
 [Updated at tick %0]
-
+Aktualisiert bei Tick %0
 [No values published yet.]
-
+Noch keine Werte veröffentlicht.
 [No fields match your search.]
-
+Keine Felder passen zu Ihrer Suche.
 [settings Custom AIs]
-
+Eigene KIs
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Fügen Sie JavaScript-KIs unter Einstellungen → Eigene KIs hinzu. Sie erscheinen in der KI-Auswahl jeder Kolonie.
 [Missing custom AI]
-
+Eigene KI fehlt
 [Map repetition failed]
-
+Diese Karte kann nicht wiederholt werden. Verwenden Sie eine Startkarte ohne Skript oder verringern Sie Wiederholungen und Basen.
 [repeat map horizontally]
 Karte horizontal wiederholen
 [repeat map vertically]
@@ -4653,594 +4653,594 @@ Basen
 [bases per colony]
 Basen pro Kolonie; eine Basis ist ein Team der gezeichneten Karte mit seinen Gebäuden und Einheiten
 [stat group population]
-
+Bevölkerung
 [stat group food]
-
+Nahrung und Befinden
 [stat group resources]
-
+Ressourcen
 [stat group buildings]
-
+Gebäude
 [stat group military]
-
+Militär
 [stat group map]
-
+Gebiet
 [stat group score]
-
+Punkte
 [stat overview]
-
+Übersicht
 [stat overview about]
-
+Die Werte jeder Kolonie für das ganze Match. Wo mehr besser ist, wird der Höchstwert hervorgehoben; klicken Sie auf eine Spaltenüberschrift, um den Verlauf zu sehen.
 [stat population]
-
+Bevölkerung
 [stat population about]
-
+Wie viele Einheiten die Kolonie lebend hatte: Arbeiter, Entdecker und Krieger zusammen.
 [stat births]
-
+Geborene Einheiten
 [stat births about]
-
+Wie schnell die Stöcke neue Einheiten erzeugten. Aufteilen, um Arbeiter, Entdecker und Krieger getrennt zu sehen.
 [stat deaths]
-
+Verlorene Einheiten
 [stat deaths about]
-
+Wie schnell die Kolonie Einheiten verlor, egal aus welchem Grund: Kampf, Hunger, Verletzungen beim Roden oder Eingeschlossensein.
 [stat net growth]
-
+Bevölkerungswachstum
 [stat net growth about]
-
+Geborene minus verlorene Einheiten. Über null wuchs die Kolonie, unter null schrumpfte sie.
 [stat death causes]
-
+Todesursachen
 [stat death causes about]
-
+Woran die Einheiten der Kolonie starben: Kämpfe, Hunger, Verletzungen beim Roden, Eingeschlossensein ohne Ausweg oder andere Ursachen.
 [stat conversions]
-
+Netto-Überläufer
 [stat conversions about]
-
+Von anderen Kolonien gewonnene minus an sie verlorene Einheiten. Einheiten wechseln die Seite, wenn eine andere Kolonie sie besser ernährt.
 [stat hunger]
-
+Nahrungsreserven
 [stat hunger about]
-
+Wie viel Nahrung die Einheiten der Kolonie in sich trugen. Jede Einheit wird danach eingeordnet, wie viel ihrer Nahrungsreserve übrig ist: fast leer (ein Viertel oder weniger), niedrig (bis zur Hälfte), halb voll (bis drei Viertel) oder gut genährt. Einheiten suchen einen Gasthof, wenn ihre Reserve schwindet, daher hat eine Kolonie immer einige mit niedriger Reserve.
 [stat health]
-
+Gesundheit
 [stat health about]
-
+Wie gesund die Einheiten der Kolonie waren. Jede Einheit wird danach eingeordnet, wie viele Trefferpunkte übrig sind: kritisch (ein Viertel oder weniger), verwundet (bis zur Hälfte), angeschlagen (bis drei Viertel) oder gesund.
 [stat seeking food]
-
+Einheiten auf Nahrungssuche
 [stat seeking food about]
-
+Einheiten, die die Arbeit unterbrochen haben, um einen Gasthof zu finden. Wer zusätzlich nicht voll gesund ist, zählt als geschwächt.
 [stat in care]
-
+Einheiten beim Essen oder Heilen
 [stat in care about]
-
+Einheiten, die in einem Gasthof essen oder in einem Krankenhaus geheilt werden und daher nicht arbeiten.
 [stat wheat harvested]
-
+Geernteter Weizen
 [stat wheat harvested about]
-
+Von Arbeitern geerntete Weizenladungen. Gasthöfe machen aus Weizen Mahlzeiten.
 [stat wheat stored]
-
+Gelagerter Weizen
 [stat wheat stored about]
-
+Weizen in den Gebäuden der Kolonie, bereit zum Servieren oder Verwenden.
 [stat meals]
-
+Servierte Mahlzeiten
 [stat meals about]
-
+Mahlzeiten, die die Gasthöfe der Kolonie servierten, an eigene Einheiten und an Besucher anderer Kolonien.
 [stat starvation]
-
+Hungertote
 [stat starvation about]
-
+Einheiten, die starben, weil sie nicht rechtzeitig Nahrung fanden.
 [stat healing]
-
+Geheilte Trefferpunkte
 [stat healing about]
-
+Trefferpunkte, die die Krankenhäuser der Kolonie verwundeten Einheiten zurückgaben.
 [stat gathered]
-
+Gesammelte Ressourcen
 [stat gathered about]
-
+Von Arbeitern aufgenommene Ladungen aller Ressourcen. Aufteilen, um jede Ressource zu sehen.
 [stat stored]
-
+Gelagerte Ressourcen
 [stat stored about]
-
+Ressourcen in den Gebäuden der Kolonie. Aufteilen, um jede Ressource zu sehen.
 [stat spending]
-
+Ressourcenverbrauch
 [stat spending about]
-
+Wofür gelieferte Ressourcen verwendet wurden: Mahlzeiten, neue Einheiten, Turmmunition, neue Gebäude oder Verbesserungen.
 [stat delivered]
-
+Gelieferte Ressourcen
 [stat delivered about]
-
+Ladungen, die Arbeiter in Gebäude trugen.
 [stat traded]
-
+Handelsbilanz
 [stat traded about]
-
+Über Märkte erhaltene minus abgegebene Ressourcen.
 [stat buildings]
-
+Stehende Gebäude
 [stat buildings about]
-
+Fertige Gebäude der Kolonie. Aufteilen, um jede Gebäudeart zu sehen.
 [stat construction]
-
+Erledigte Bauarbeit
 [stat construction about]
-
+Erledigte Bauarbeit: neue Gebäude, Verbesserungen und Reparaturen.
 [stat buildings lost]
-
+Verlorene Gebäude
 [stat buildings lost about]
-
+Von Feinden zerstörte oder von der Kolonie selbst abgerissene Gebäude.
 [stat blocked buildings]
-
+Gebäude ohne Zugang
 [stat blocked buildings about]
-
+Gebäude mit blockierten Eingängen, sodass Einheiten weder hinein noch heraus konnten.
 [stat attack]
-
+Angriffsstärke
 [stat attack about]
-
+Ein Wert für die gesamte Kampfkraft der Krieger der Kolonie: wie hart und wie schnell sie zuschlagen.
 [stat defence]
-
+Verteidigungsstärke
 [stat defence about]
-
+Ein Wert für die gesamte Feuerkraft der Wachtürme der Kolonie.
 [stat hit points]
-
+Trefferpunkte gesamt
 [stat hit points about]
-
+Die Trefferpunkte aller Einheiten und Gebäude der Kolonie zusammen.
 [stat damage dealt]
-
+Verursachter Schaden
 [stat damage dealt about]
-
+Schaden, den die Kolonie an feindlichen Einheiten und Gebäuden anrichtete. Aufteilen, um Krieger, Magie und Türme zu sehen.
 [stat damage taken]
-
+Erlittener Schaden
 [stat damage taken about]
-
+Schaden, den Feinde an Einheiten und Gebäuden der Kolonie anrichteten.
 [stat damage traded]
-
+Schadensbilanz
 [stat damage traded about]
-
+Verursachter minus erlittener Schaden. Über null gewann die Kolonie ihre Kämpfe.
 [stat combat deaths]
-
+Im Kampf getötete Einheiten
 [stat combat deaths about]
-
+Von Feinden getötete Einheiten dieser Kolonie. Aufteilen, um Arbeiter, Entdecker und Krieger getrennt zu sehen.
 [stat accuracy]
-
+Treffer
 [stat accuracy about]
-
+Anteil der Schüsse von Türmen und Entdeckern der Kolonie, die ihr Ziel trafen.
 [stat training]
-
+Ausbildung
 [stat training about]
-
+Besuche von Einheiten in Schulen, Trainingslagern, Rennbahnen und Schwimmbecken, um eine Fähigkeit zu lernen.
 [stat skills]
-
+Erworbene Fähigkeiten
 [stat skills about]
-
+Fähigkeitsstufen, die die Einheiten der Kolonie durch Ausbildung gewannen.
 [stat growth nearby]
-
+Ressourcenwachstum nahe der Kolonie
 [stat growth nearby about]
-
+Wie viel Weizen, Holz und andere Ressourcen im Umkreis von 32 Feldern um die Gebäude der Kolonie wuchsen, in Wachstumspunkten statt Ladungen. Aufteilen, um zu sehen, wie nah sie wuchsen.
 [stat growth map]
-
+Ressourcenwachstum auf der Karte
 [stat growth map about]
-
+Wie viel Ressourcen irgendwo auf der Karte wuchsen, in Wachstumspunkten statt Ladungen. Für alle Kolonien gleich.
 [stat stranded]
-
+Bewegungsunfähige Einheiten
 [stat stranded about]
-
+Eingeschlossene Einheiten ohne freies Feld zum Betreten.
 [stat cleared]
-
+Gerodete Ressourcen
 [stat cleared about]
-
+Von Arbeitern in Rodungszonen entfernte Ressourcen, um Platz zu schaffen.
 [stat prestige]
-
+Prestigepunkte
 [stat prestige about]
-
+Das Prestige der Kolonie, verdient durch Gebäude der höchsten Stufe. Ein Match mit Prestigeziel endet, sobald es erreicht ist.
 [stat band combat]
-
+Kampf
 [stat band starvation]
-
+Hunger
 [stat band clearing]
-
+Rodungsverletzungen
 [stat band trapped]
-
+Eingeschlossen
 [stat band other]
-
+Sonstiges
 [stat band starving]
-
+Fast leer
 [stat band hungry]
-
+Niedrig
 [stat band peckish]
-
+Halb voll
 [stat band fed]
-
+Gut genährt
 [stat band critical]
-
+Kritisch
 [stat band wounded]
-
+Verwundet
 [stat band hurt]
-
+Angeschlagen
 [stat band healthy]
-
+Gesund
 [stat band weakening]
-
+Geschwächt
 [stat band looking]
-
+Sucht Gasthof
 [stat band eating]
-
+Isst
 [stat band healing]
-
+Heilt
 [stat band meals]
-
+Mahlzeiten
 [stat band new units]
-
+Neue Einheiten
 [stat band ammunition]
-
+Munition
 [stat band construction]
-
+Neue Gebäude
 [stat band upgrades]
-
+Verbesserungen
 [stat band built]
-
+Gebaut
 [stat band upgraded]
-
+Verbessert
 [stat band repaired]
-
+Repariert
 [stat band destroyed]
-
+Zerstört
 [stat band demolished]
-
+Abgerissen
 [stat band melee]
-
+Krieger
 [stat band magic]
-
+Magie
 [stat band towers]
-
+Türme
 [stat band within 8]
-
+Bis 8 Felder
 [stat band 8 to 16]
-
+8 bis 16 Felder
 [stat band 16 to 32]
-
+16 bis 32 Felder
 [stat unit units]
-
+Einheiten
 [stat unit wheat]
-
+Weizen
 [stat unit meals]
-
+Mahlzeiten
 [stat unit hit points]
-
+Trefferpunkte
 [stat unit resources]
-
+Ressourcen
 [stat unit buildings]
-
+Gebäude
 [stat unit strength]
-
+Wert
 [stat unit damage]
-
+Schaden
 [stat unit shots]
-
+Schüsse
 [stat unit visits]
-
+Besuche
 [stat unit skills]
-
+Fähigkeitsstufen
 [stat unit prestige]
-
+Prestigepunkte
 [stat axis percent of %0]
-
+% von %0
 [stat axis share of all teams]
-
+% aller Kolonien
 [stat axis percent of units]
-
+% der Einheiten der Kolonie
 [stat axis %0 per minute per 100 units]
-
+%0 pro Minute je 100 Einheiten der Kolonie
 [stat axis %0 per 100 units]
-
+%0 je 100 Einheiten der Kolonie
 [stat axis %0 per minute]
-
+%0 pro Minute
 [stat axis %0 so far]
-
+%0, laufende Summe
 [stat axis %0 minute average]
-
+Mittel über %0 Minuten
 [stat view per minute]
-
+Pro Minute
 [stat view total]
-
+Gesamt
 [stat view %0 min]
-
+%0 Min.
 [stat view split]
-
+Nach Art
 [stat view percentages]
-
+In % der Summe
 [stat view percent of units]
-
+In % der Kolonie
 [stat view per 100 units]
-
+Relativ zur Koloniegröße
 [stat view share]
-
+Anteil aller Kolonien
 [stat view highlight none]
-
+Hervorheben: nichts
 [stat column peak units]
-
+Max. Einheiten
 [stat column born]
-
+Geboren
 [stat column lost]
-
+Verloren
 [stat column wheat]
-
+Weizen
 [stat column damage dealt]
-
+Schaden verursacht
 [stat column damage taken]
-
+Schaden erlitten
 [stat column built]
-
+Gebaut
 [stat column buildings lost]
-
+Gebäude verloren
 [stat column prestige]
-
+Prestigepunkte
 [stat marker wiped out]
-
+letzte Einheit verloren
 [stat marker first combat death]
-
+erste Einheit im Kampf getötet
 [stat marker first building destroyed]
-
+erstes Gebäude zerstört
 [stat not recorded for this match]
-
+Diese Statistik wurde für dieses Match nicht aufgezeichnet.
 [results reason beyond doubt]
-
+Das Ergebnis stand nicht mehr in Frage.
 [stat per minute short]
-
+/Min.
 [stat page colony]
-
+Kolonie
 [stat page %0 of %1]
-
+%0 von %1  >
 [stat band workers]
-
+Arbeiter
 [stat band explorers]
-
+Entdecker
 [stat band warriors]
-
+Krieger
 [stat unit deaths]
-
+Tode
 [stat unit growth]
-
+Wachstum
 [stat view by unit type]
-
+Nach Einheitentyp
 [stat view by state]
-
+Nach Zustand
 [stat view by resource]
-
+Nach Ressource
 [stat view by building]
-
+Nach Gebäude
 [stat view by work]
-
+Nach Arbeitsart
 [stat view by cause]
-
+Nach Ursache
 [stat view by weapon]
-
+Nach Waffe
 [stat view by distance]
-
+Nach Entfernung
 [stat nothing to show]
-
+Nichts anzuzeigen: Das ist in diesem Match nicht vorgekommen.
 [stat %0 nothing]
-
+%0 (keine)
 [Match]
-
+Match
 [Time limit]
-
+Zeitlimit
 [Alliances can change]
-
+Bündnisse änderbar
 [Reveal terrain]
-
+Gelände aufdecken
 [Starting unit level]
-
+Startstufe der Einheiten
 [Starting stockpile]
-
+Startvorrat
 [Regrowth]
-
+Nachwachsen
 [Building strength]
-
+Gebäudestärke
 [Wounded units retreat]
-
+Verwundete ziehen sich zurück
 [Units can die]
-
+Einheiten können sterben
 [Unit training]
-
+Ausbildung
 [No stockpile]
-
+Keiner
 [No glass cannon]
-
+Aus
 [How quickly harvested resources grow back and spread.]
-
+Wie schnell geerntete Ressourcen nachwachsen und sich ausbreiten.
 [Units must eat to keep working.]
-
+Einheiten müssen essen, um weiterzuarbeiten.
 [Summary]
-
+Übersicht
 [All rules]
-
+Alle Regeln
 [Show all rules]
-
+Alle Regeln zeigen
 [Choose a ruleset]
-
+Regelsatz wählen
 [Reset to %0]
-
+Auf %0 zurücksetzen
 [ruleset one change %0]
-
+%0 + 1 Änderung
 [ruleset changes %0 %1]
-
+%0 + %1 Änderungen
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Dieses Match kann nicht enden. Aktivieren Sie den Prestigesieg oder legen Sie ein Zeitlimit fest.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Prestige entsteht meist nach 13 bis 28 Minuten, daher endet ein 30-Minuten-Limit oft unentschieden.
 [Blitz]
-
+Blitzpartie
 [ruleset blitz description]
-
+Schneller Start, frühes Ende
 [Gentle]
-
+Sanft
 [ruleset gentle description]
-
+Nachsichtige Regeln für das erste Match
 [Sandbox]
-
+Sandkasten
 [ruleset sandbox description]
-
+Kein Kampf, kein Hunger, alles baubar
 [Bloodbath]
-
+Blutbad
 [ruleset bloodbath description]
-
+Zerbrechliche, furchtlose Armeen
 [Siege]
-
+Belagerung
 [ruleset siege description]
-
+Festungsmauern und lange Kriege
 [Lean years]
-
+Magere Jahre
 [ruleset lean years description]
-
+Ressourcen wachsen kaum nach
 [Gold rush]
-
+Goldrausch
 [ruleset gold rush description]
-
+Was auf der Karte liegt, ist alles
 [Elite ranks]
-
+Elitetruppen
 [ruleset elite ranks description]
-
+Ausgebildet starten, nicht weiter ausbilden
 [Shifting alliances]
-
+Wechselnde Bündnisse
 [ruleset shifting alliances description]
-
+Teams können in einem 60-Minuten-Rennen wechseln
 [Probability victory]
-
+Prognosesieg
 [Off (play it out)]
-
+Aus (ausspielen)
 [95% sure]
-
+95 % sicher
 [97% sure]
-
+97 % sicher
 [99% sure]
-
+99 % sicher
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Beendet das Match, sobald das Modell die gewählte Sicherheit erreicht. Zuschauer sehen die vorhergesagten Siegchancen in der Statistik.
 [Changed from %0: %1]
-
+Geändert gegenüber %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Kampf ist aus, daher haben die Regeln unten keine Wirkung.
 [%0 more rules are at their Standard values.]
-
+%0 weitere Regeln haben ihre Standardwerte.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Spieler sehen das Gelände der Karte von Anfang an; feindliche Einheiten bleiben verborgen.
 [Each team starts with extra resources in its shared pool.]
-
+Jedes Team startet mit zusätzlichen Ressourcen im gemeinsamen Vorrat.
 [Units hit harder but have less HP and armor.]
-
+Einheiten schlagen härter zu, haben aber weniger Trefferpunkte und Rüstung.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Teams können sich gegenseitig angreifen. Ausschalten für ein friedliches Match.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Verletzte Einheiten ziehen sich zum Heilen zurück, statt bis zum Tod zu kämpfen.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Einheiten sterben, wenn ihre Trefferpunkte aufgebraucht sind. Ausschalten, damit sie bei 1 Trefferpunkt stehen bleiben.
 [Units gain levels at schools.]
-
+Einheiten steigen in Schulen auf.
 [stat group work]
-
+Arbeitszeit
 [stat worker time]
-
+Wie Arbeiter ihre Zeit verbrachten
 [stat worker time about]
-
+Was die Arbeiter der Kolonie gerade taten: Arbeit für ein Gebäude, Arbeit an einer Flagge, Ausbildung, Essen, Heilen, hungriges oder verletztes Warten ohne freien Gasthof oder freies Krankenhaus, oder Untätigkeit ohne Aufgabe. Eine gesunde Kolonie hält die meisten Arbeiter beschäftigt, wenige untätig und keine wartend.
 [stat idle workers]
-
+Untätige Arbeiter
 [stat idle workers about]
-
+Anteil der Arbeiterzeit ohne Aufgabe. Hohe Werte bedeuten mehr Arbeiter als Arbeit; nahe null heißt, jeder Arbeiter ist beschäftigt und Aufgaben warten womöglich.
 [stat work by job]
-
+Woran Arbeiter arbeiteten
 [stat work by job about]
-
+Wie viele Arbeiter jede Gebäudeart versorgten: Stöcke (für neue Einheiten), Gasthöfe (für Mahlzeiten), Gebäude im Bau oder in Verbesserung, oder andere Gebäude wie Türme, Schulen und Trainingslager.
 [stat haul distance]
-
+Weg zu Ressourcen
 [stat haul distance about]
-
+Wie weit ein erntender Arbeiter im Mittel von dem Gebäude entfernt war, das er versorgte, in Kartenfeldern Luftlinie.
 [stat hauling]
-
+Holen und Tragen
 [stat hauling about]
-
+Wie sich die versorgenden Arbeiter aufteilten: Weg zur Ressource, Ernten, Zurücktragen und Abliefern oder Warten auf eine erreichbare Ressource. Das meiste ist Laufen, also gilt: Je näher die Ressourcen, desto mehr wird erledigt.
 [stat eating time]
-
+Arbeiter beim Essen
 [stat eating time about]
-
+Wie viele Arbeiter zum Essen von der Arbeit fern waren: auf dem Weg zu einem Gasthof, beim Essen darin oder hungrig ohne aufnahmebereiten Gasthof. Arbeiter ohne Gasthof bedeuten, dass die Kolonie ihren Gasthöfen oder deren Nahrung entwachsen ist.
 [stat inn distance]
-
+Weg zum Gasthof
 [stat inn distance about]
-
+Wie weit hungrige Arbeiter im Mittel ihres Weges von ihrem Ziel-Gasthof entfernt waren, in Kartenfeldern Luftlinie. Ein ganzer Weg ist etwa doppelt so lang. Hohe Werte bedeuten, dass Gasthöfe weit von den Arbeitsorten entfernt sind.
 [stat warriors]
-
+Krieger
 [stat warriors about]
-
+Wie viele Krieger die Kolonie hatte. Aufteilen, um zu sehen, wie viele nahe der Heimat, nahe einer feindlichen Kolonie oder im offenen Gelände waren. Gelände nahe beider Kolonien zählt als Heimat.
 [stat warrior level]
-
+Mittlere Angriffsstufe der Krieger
 [stat warrior level about]
-
+Die mittlere Angriffsstufe der Krieger der Kolonie, wobei Angriffsgeschwindigkeit und Angriffsstärke gleich zählen, auf der Skala 1 bis 4 wie im Spiel. Trainingslager heben sie; neue unausgebildete Krieger senken sie.
 [stat warrior duties]
-
+Was Krieger taten
 [stat warrior duties about]
-
+Wie sich die Krieger der Kolonie aufteilten: zu einer Kriegsflagge geschickt, so schwer verletzt, dass sie den Kampf für ein Krankenhaus verließen (einschließlich der gerade Geheilten), oder frei.
 [stat intruders]
-
+Feindliche Krieger daheim
 [stat intruders about]
-
+Wie viele feindliche Krieger sich im Umkreis von 16 Feldern um die Gebäude der Kolonie befanden. Liegen zwei Kolonien nah beieinander, zählt jede die Verteidiger der anderen mit.
 [stat home defence]
-
+Stärkevorsprung daheim
 [stat home defence about]
-
+Die Stärke der eigenen Krieger nahe den Gebäuden der Kolonie minus die der feindlichen Krieger dort, wobei jeder Krieger und jede seiner Angriffsstufen zählt. Unter null war die Kolonie daheim unterlegen.
 [stat combat death places]
-
+Wo Einheiten im Kampf fielen
 [stat combat death places about]
-
+Wo sich die Einheiten der Kolonie befanden, als sie getötet wurden: nahe den eigenen Gebäuden, nahe feindlichen Gebäuden oder im offenen Gelände zwischen Kolonien. Verluste daheim heißen, dass die Kolonie angegriffen wurde; Verluste bei einer feindlichen Kolonie, dass sie angriff. Gelände nahe beider Kolonien zählt als Heimat.
 [stat band working]
-
+Arbeitet
 [stat band flag work]
-
+An einer Flagge
 [stat band idle]
-
+Untätig
 [stat band training]
-
+Ausbildung
 [stat band unserved]
-
+Kein Gasthof/Krankenhaus frei
 [stat band swarms]
-
+Stöcke
 [stat band inns]
-
+Gasthöfe
 [stat band sites]
-
+Bau und Verbesserung
 [stat band other buildings]
-
+Andere Gebäude
 [stat band to resource]
-
+Weg zur Ressource
 [stat band harvesting]
-
+Ernten
 [stat band carrying]
-
+Zurücktragen
 [stat band delivering]
-
+Abliefern oder Warten
 [stat band walking to inn]
-
+Weg zum Gasthof
 [stat band no inn]
-
+Kein Gasthof frei
 [stat band at home]
-
+Daheim
 [stat band at enemy]
-
+Bei feindlicher Kolonie
 [stat band in the open]
-
+Im offenen Gelände
 [stat band war flag]
-
+An einer Kriegsflagge
 [stat band seeking healing]
-
+Sucht Heilung
 [stat band free]
-
+Frei
 [stat unit workers]
-
+Arbeiter
 [stat unit worker time]
-
+Arbeiterzeit
 [stat unit working workers]
-
+versorgende Arbeiter
 [stat unit squares]
-
+Felder
 [stat unit warriors]
-
+Krieger
 [stat unit attack level]
-
+Angriffsstufe
 [stat unit enemy warriors]
-
+feindliche Krieger
 [stat unit strength count]
-
+Stärke
 [stat view by place]
-
+Nach Ort
