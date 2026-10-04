@@ -16,6 +16,18 @@ LOCK = Path(__file__).with_name('recording-versions.json')
 LIBRARIES = ('avformat', 'avcodec', 'swscale', 'swresample', 'avutil', 'x264')
 
 
+def configure_bash(environment):
+    if platform.system() != 'Windows':
+        return 'bash'
+    # System32 also contains bash.exe (a WSL launcher). Use the Bash beside
+    # the POSIX shell already selected for the MSYS build tools instead.
+    shell = shutil.which('sh', path=environment.get('PATH'))
+    bash = Path(shell).with_name('bash.exe') if shell else None
+    if not bash or not bash.is_file():
+        raise RuntimeError('Embedded recording requires MSYS Bash; install the MSYS build tools and add their bin directory to PATH.')
+    return str(bash)
+
+
 def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
           target=None, arch=None, cflags=(), ldflags=(), environment=None, jobs=2, sdk_identity=None):
     prefix, work = Path(prefix).resolve(), Path(work).resolve()
@@ -87,7 +99,7 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
     extra_ld = shlex.join(ldflags)
     # x264's configure uses brace expansion to create architecture output
     # directories. /bin/sh is dash on Linux and silently creates wrong paths.
-    x264 = ['bash', (sources['x264'] / 'configure').as_posix(), '--prefix=' + prefix.as_posix(),
+    x264 = [configure_bash(env), (sources['x264'] / 'configure').as_posix(), '--prefix=' + prefix.as_posix(),
             '--enable-static', '--enable-pic', '--disable-cli', '--disable-opencl',
             '--disable-avs', '--disable-lavf', '--disable-swscale', '--disable-ffms',
             '--bit-depth=8', '--chroma-format=420', '--extra-cflags=' + extra_c,
