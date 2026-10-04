@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Ping
 %0に接続できません。
 [hub change server]
 サーバーを変更…
-[hub check code]
-コードを求められたら、次のコードを入力してください：
 [hub code placeholder]
 コードまたは招待リンク
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Ping
 ルームを作成
 [hub find match]
 対戦を探す
-[hub finish in browser]
-ブラウザーで開いたページでサインインを完了してください。
 [hub free seat]
 空き席
 [hub get update]
@@ -3532,8 +3538,6 @@ Ping
 ページをもう一度開く
 [hub open rooms]
 参加可能なルーム
-[hub page opened at %0]
-%0を開きました。ゲーム内で入力する必要はなく、自動でサインインします。
 [hub queues unavailable]
 サーバーが応答するとクイックマッチが表示されます。
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Globulation 2のルームに参加しよう：%0
 アカウントを削除
 [settings Enter an https:// address.]
 https:// で始まるアドレスを入力してください。
-[settings Finish in your browser. It shows the code %0.]
-ブラウザーで完了してください。コードを求められたら%0と入力します。
 [settings Forget]
 削除
 [settings Guests keep a generated name; sign in to choose one.]

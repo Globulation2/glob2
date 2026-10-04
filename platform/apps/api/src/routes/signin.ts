@@ -1,10 +1,13 @@
 // Browser sign-in: /signin pages (the handoff target and plain web sign-in),
 // provider redirects and callbacks, and local password forms.
 //
-// A handoff attempt first asks the player to type the code their game shows
-// (so a sign-in link someone sent them leads nowhere), then binds the attempt
-// to that browser (a cookie whose hash is stored on the attempt); every later
-// step checks the binding, and state-changing forms also check Origin.
+// A handoff attempt is bound to the first browser that opens its link (a
+// cookie whose hash is stored on the attempt). On the game's own network that
+// happens at once and the browser goes straight to the provider the player
+// picked in the game; elsewhere the player first confirms with one click that
+// the code shown matches their game (so a link someone sent them does not sign
+// them in to the sender's game). Every later step checks the binding, and
+// state-changing forms also check Origin.
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { sql } from 'kysely';
 import type { Database } from '@glob2/db';
@@ -94,34 +97,61 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     return attempt;
   };
 
-  /** Asks for the code the game shows; nothing else is offered before it. */
-  const codePage = (reply: FastifyReply, attempt: Attempt, problem?: string, status = 200) =>
+  /** This browser's binding cookie, or a fresh one to set once the attempt is bound. */
+  const browserCookie = (request: FastifyRequest) => {
+    const cookie = request.cookies[bindingCookieName(identity)];
+    return cookie && /^[A-Za-z0-9_-]{43}$/.test(cookie) ? cookie : randomSecret();
+  };
+
+  const platformName: Record<Attempt['client_platform'], string> = {
+    desktop: 'on a computer',
+    android: 'on an Android device',
+    ios: 'on an iPhone or iPad',
+    browser: 'in a web browser',
+  };
+
+  /** Groups the code the way the game shows it: KXQ · 742. */
+  const displayCode = (code: string) =>
+    code.length === 6 ? `${code.slice(0, 3)} · ${code.slice(3)}` : code;
+
+  /**
+   * For a browser away from the game's network: one click, after comparing
+   * the code with the one the game shows.
+   */
+  const confirmPage = (reply: FastifyReply, attempt: Attempt, status = 200) =>
     sendPage(
       reply,
-      'Enter the code from your game',
+      'Sign in to Globulation 2',
       html`<div class="card">
-        <p>
-          Globulation 2 shows a code on its sign-in screen. Type it here to continue signing in.
-        </p>
-        <form method="post" action="/signin/confirm" novalidate>
-          <input type="hidden" name="attempt" value="${attempt.id}" />
-          ${field({
-            id: 'code',
-            label: 'Code from the game',
-            name: 'code',
-            error: problem,
-            attrs: html`autocomplete="one-time-code" autocapitalize="characters" spellcheck="false"
-            required maxlength="16"`,
-          })}
-          <button class="primary" type="submit">Continue</button>
-        </form>
-        <p class="muted warn">
-          Only type a code that your own game is showing you right now. If someone sent you this
-          link or told you a code, close this page: they are trying to get into your account.
-        </p>
-      </div>`,
+          <p>
+            Sign in to Globulation 2 ${platformName[attempt.client_platform]}? Your game shows this
+            code:
+          </p>
+          <p class="code"><strong>${displayCode(attempt.confirmation_code)}</strong></p>
+          <form method="post" action="/signin/confirm">
+            <input type="hidden" name="attempt" value="${attempt.id}" />
+            <input type="hidden" name="code" value="${attempt.confirmation_code}" />
+            <button class="primary" type="submit">Yes, continue</button>
+          </form>
+          <p class="muted warn">
+            Only continue if you just started signing in from your own game and it shows the same
+            code. If someone sent you this link, cancel.
+          </p>
+        </div>
+        <form method="post" action="/signin/cancel">
+          <input type="hidden" name="attempt" value="${attempt.id}" /><button>Cancel</button>
+        </form>`,
       status,
     );
+
+  /** Where a freshly bound browser goes: straight to the provider picked in the game. */
+  const afterBinding = (attempt: Attempt) => {
+    const provider = attempt.provider ? identity.providers.get(attempt.provider) : undefined;
+    const id = encodeURIComponent(attempt.id);
+    return provider
+      ? `/auth/${encodeURIComponent(provider.id)}/start?attempt=${id}`
+      : `/signin?attempt=${id}`;
+  };
 
   const providerButtons = (attempt: Attempt | undefined) => {
     const query = attempt ? `?attempt=${encodeURIComponent(attempt.id)}` : '';
@@ -258,13 +288,29 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
   ) => {
     const { attempt, form } = view;
     if (attempt) {
+      // Already signed in on this site: the game can take that account in one click.
+      const continueAs =
+        view.signedInAs && attempt.mode === 'signin'
+          ? html`<div class="card">
+              <form method="post" action="/signin/continue">
+                <input type="hidden" name="attempt" value="${attempt.id}" />
+                <button class="primary" type="submit">Continue as ${view.signedInAs}</button>
+              </form>
+            </div>`
+          : '';
+      const providers = providerButtons(attempt);
       return sendPage(
         reply,
         'Sign in to Globulation 2',
-        html`<div class="card">
-            <p>Code accepted. Choose how to sign in to the game:</p>
-            ${providerButtons(attempt)}
-          </div>
+        html`${continueAs}
+          ${
+            providers.length > 0
+              ? html`<div class="card">
+                  <p>Choose how to sign in to the game:</p>
+                  ${providers}
+                </div>`
+              : ''
+          }
           ${localForms(attempt, form)}
           <form method="post" action="/signin/cancel">
             <input type="hidden" name="attempt" value="${attempt.id}" /><button>Cancel</button>
@@ -316,8 +362,20 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
     if (attempt.browser_binding_hash && attempt.browser_binding_hash !== hash) {
       return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
     }
-    if (!attempt.code_confirmed_at) return codePage(reply, attempt);
-    return signinPage(reply, { attempt });
+    if (!attempt.code_confirmed_at) {
+      if (!identity.handoff.sameNetwork(attempt, request.ip)) return confirmPage(reply, attempt);
+      const cookie = browserCookie(request);
+      if (!(await identity.handoff.bindBrowser(attempt.id, sha256Hex(cookie)))) {
+        return errorPage(reply, 'This sign-in was already opened in another browser.', 409);
+      }
+      setBindingCookie(identity, reply, cookie);
+      return reply.redirect(afterBinding(attempt), 303);
+    }
+    const caller = await authenticate(identity, request).catch(() => undefined);
+    return signinPage(reply, {
+      attempt,
+      ...(caller ? { signedInAs: caller.account.display_name } : {}),
+    });
   });
 
   app.post<{ Body: Form }>('/signin/confirm', authLimit('confirm'), async (request, reply) => {
@@ -333,21 +391,15 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       );
     }
     const typed = (request.body?.code ?? '').slice(0, 64);
-    if (!typed.trim()) return codePage(reply, attempt, 'Type the code your game shows.', 400);
-    let cookie = request.cookies[bindingCookieName(identity)];
-    if (!cookie || !/^[A-Za-z0-9_-]{43}$/.test(cookie)) cookie = randomSecret();
+    if (!typed.trim()) return confirmPage(reply, attempt, 400);
+    const cookie = browserCookie(request);
     const outcome = await identity.handoff.confirmCode(attempt.id, typed, sha256Hex(cookie));
     switch (outcome) {
       case 'confirmed':
         setBindingCookie(identity, reply, cookie);
-        return reply.redirect(`/signin?attempt=${encodeURIComponent(attempt.id)}`, 303);
+        return reply.redirect(afterBinding(attempt), 303);
       case 'wrong':
-        return codePage(
-          reply,
-          attempt,
-          'That is not the code your game shows. Check it and try again.',
-          400,
-        );
+        return confirmPage(reply, attempt, 400);
       case 'locked':
         return errorPage(
           reply,
@@ -375,6 +427,37 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
       'Sign-in cancelled',
       html`<div class="card"><p>You can close this page.</p></div>`,
     );
+  });
+
+  /** The last page of a game sign-in: the game has already been told. */
+  const signedInPage = (reply: FastifyReply, displayName: string, linked: boolean) =>
+    sendPage(
+      reply,
+      'Signed in',
+      html`<div class="card">
+        <p>
+          ${linked ? 'Your account is now linked' : 'You are signed in'} as
+          <strong>${displayName}</strong>.
+        </p>
+        <p>Go back to the game: it has signed you in. You can close this tab.</p>
+      </div>`,
+    );
+
+  // The browser's own web session, handed to the game without another sign-in.
+  app.post<{ Body: Form }>('/signin/continue', authLimit('continue'), async (request, reply) => {
+    if (!sameOriginRequest(identity, request))
+      return errorPage(reply, 'Cross-site request refused.', 403);
+    const attempt = await boundAttempt(request, request.body?.attempt);
+    if (!attempt || attempt.mode !== 'signin')
+      return errorPage(reply, 'This sign-in has expired or belongs to another browser.', 410);
+    const caller = await authenticate(identity, request).catch(() => undefined);
+    if (!caller || caller.via !== 'cookie') return signinPage(reply, { attempt }, 401);
+    await identity.handoff.complete(attempt.id, caller.account.id, false);
+    request.log.info(
+      { account: caller.account.id, attempt: attempt.id },
+      'browser sign-in completed from web session',
+    );
+    return signedInPage(reply, caller.account.display_name, false);
   });
 
   // --------------------------------------------------- provider redirects
@@ -561,17 +644,7 @@ export async function signinRoutes(app: FastifyInstance, identity: Identity): Pr
         { account: account.id, attempt: attempt.id, linked },
         'browser sign-in completed',
       );
-      return sendPage(
-        reply,
-        'Signed in',
-        html`<div class="card">
-          <p>
-            ${linked ? 'Your account is now linked' : 'You are signed in'} as
-            <strong>${account.display_name}</strong>.
-          </p>
-          <p>Return to the game; you can close this page.</p>
-        </div>`,
-      );
+      return signedInPage(reply, account.display_name, linked);
     }
     return sendPage(
       reply,

@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Bläddra bland kartor
 Kan inte nå %0.
 [hub change server]
 Byt server…
-[hub check code]
-När den ber om en kod anger du den här:
 [hub code placeholder]
 Kod eller inbjudningslänk
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Fortsätt med %0
 Skapa rum
 [hub find match]
 Hitta match
-[hub finish in browser]
-Slutför inloggningen på sidan som öppnades i webbläsaren.
 [hub free seat]
 Ledig plats
 [hub get update]
@@ -3532,8 +3538,6 @@ Online
 Öppna sidan igen
 [hub open rooms]
 Öppna rum
-[hub page opened at %0]
-Öppnade %0. Du behöver inte skriva något i spelet; det loggar in dig av sig självt.
 [hub queues unavailable]
 Snabbmatch visas när servern svarar.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Visningsnamn
 Radera mitt konto
 [settings Enter an https:// address.]
 Ange en https://-adress.
-[settings Finish in your browser. It shows the code %0.]
-Slutför i webbläsaren: skriv koden %0 när den frågar.
 [settings Forget]
 Glöm
 [settings Guests keep a generated name; sign in to choose one.]

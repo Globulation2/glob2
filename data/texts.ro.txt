@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Răsfoiește hărți
 %0 nu poate fi contactat.
 [hub change server]
 Schimbă serverul…
-[hub check code]
-Când vi se cere un cod, introduceți-l pe acesta:
 [hub code placeholder]
 Cod sau link de invitație
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Continuă cu %0
 Creează cameră
 [hub find match]
 Caută meci
-[hub finish in browser]
-Finalizați autentificarea în pagina deschisă în browser.
 [hub free seat]
 Loc liber
 [hub get update]
@@ -3532,8 +3538,6 @@ Online
 Redeschide pagina
 [hub open rooms]
 Camere deschise
-[hub page opened at %0]
-Am deschis %0. Nu trebuie să tastați nimic în joc; autentificarea se face automat.
 [hub queues unavailable]
 Meciul rapid apare când serverul răspunde.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Nume afișat
 Șterge-mi contul
 [settings Enter an https:// address.]
 Introduceți o adresă https://.
-[settings Finish in your browser. It shows the code %0.]
-Finalizați în browser: tastați codul %0 când vi se cere.
 [settings Forget]
 Uită
 [settings Guests keep a generated name; sign in to choose one.]

@@ -304,14 +304,17 @@ void SettingsScreen::buildOnline()
 								if (isLinked)
 									unlinkProvider(id, name);
 								else
+								{
+									GAGCore::ApplicationHost::prepareUrlWindow();
 									Online::services().client.beginBrowserSignIn("link", id);
+								}
 							}, action)},
 						   {p.pt(8), CrossAlign::Center});
 			});
 		}
 		const auto &handoff = client.handoff();
 		if (handoff.state == Online::PlatformClient::Handoff::State::Waiting)
-			info(GAGCore::FormattableString(tr("Finish in your browser. It shows the code %0.")).arg(handoff.confirmationCode));
+			info(tr("Finish in your browser. The game continues by itself."));
 		if (account->kind == "registered")
 			custom("online.signout.button", [this](const Presentation &p) {
 				return row({expanded(column({label(tr("Sign out on this device")), paragraph(tr("You'll be a new guest until you sign in again. Your account and matches stay on the server."), {FontRole::Support, true})}, {0})),

@@ -70,7 +70,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 		// Top of the main queue's ladder (LeaderboardEntry objects) and its name.
 		Online::Json leaderboard = Online::Json::array();
 		std::string leaderboardName;
-		// Browser sign-in: none, choosing a provider, or waiting with a code.
+		// Browser sign-in: none, choosing a provider, or waiting for the browser.
 		enum class SignIn
 		{
 			Closed,
@@ -78,6 +78,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 			Waiting
 		} signIn = SignIn::Closed;
 		std::string confirmationCode;
+		// Whether the game managed to open the sign-in page itself.
+		bool browserOpened = true;
 		std::string toast;
 	};
 	// Harness: shows a fixed model without touching the network.
@@ -91,6 +93,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void openSignIn();
 	void signInWith(const std::string &provider);
 	void cancelSignIn();
+	void copyCode();
 	void signOut();
 	void openAccountMenu(bool open);
 	void openSettings();

@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Prehľadávať mapy
 Server %0 je nedostupný.
 [hub change server]
 Zmeniť server…
-[hub check code]
-Keď sa stránka spýta na kód, zadajte tento:
 [hub code placeholder]
 Kód alebo odkaz pozvánky
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Pokračovať cez %0
 Vytvoriť miestnosť
 [hub find match]
 Nájsť zápas
-[hub finish in browser]
-Dokončite prihlásenie na stránke, ktorá sa otvorila v prehliadači.
 [hub free seat]
 Voľné miesto
 [hub get update]
@@ -3532,8 +3538,6 @@ Online
 Znova otvoriť stránku
 [hub open rooms]
 Otvorené miestnosti
-[hub page opened at %0]
-Otvorené: %0. V hre nemusíte nič písať; prihlási vás sama.
 [hub queues unavailable]
 Rýchly zápas sa zobrazí, keď server odpovie.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Zobrazované meno
 Zrušiť môj účet
 [settings Enter an https:// address.]
 Zadajte adresu https://.
-[settings Finish in your browser. It shows the code %0.]
-Dokončite to v prehliadači: keď sa spýta, zadajte kód %0.
 [settings Forget]
 Zabudnúť
 [settings Guests keep a generated name; sign in to choose one.]

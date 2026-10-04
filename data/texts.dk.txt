@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Gennemse kort
 Kan ikke nå %0.
 [hub change server]
 Skift server…
-[hub check code]
-Når den beder om en kode, så indtast denne:
 [hub code placeholder]
 Kode eller invitationslink
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Fortsæt med %0
 Opret rum
 [hub find match]
 Find kamp
-[hub finish in browser]
-Gør login færdigt på siden, der blev åbnet i din browser.
 [hub free seat]
 Ledig plads
 [hub get update]
@@ -3532,8 +3538,6 @@ Online
 Åbn siden igen
 [hub open rooms]
 Åbne rum
-[hub page opened at %0]
-Åbnede %0. Du skal ikke skrive noget i spillet; det logger dig selv ind.
 [hub queues unavailable]
 Hurtig kamp vises, når serveren svarer.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Visningsnavn
 Slet min konto
 [settings Enter an https:// address.]
 Indtast en https://-adresse.
-[settings Finish in your browser. It shows the code %0.]
-Gør det færdigt i din browser: indtast koden %0, når den beder om det.
 [settings Forget]
 Glem
 [settings Guests keep a generated name; sign in to choose one.]

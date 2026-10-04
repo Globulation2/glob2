@@ -231,6 +231,7 @@ const typedColumns: ColumnLists = {
     'delivered_at',
     'code_confirmed_at',
     'code_failures',
+    'requesting_network_hash',
   ],
   web_sessions: [
     'id',
@@ -685,6 +686,7 @@ describe('migrations', () => {
         '0029_skin_drafts',
         '0030_skin_draft_source',
         '0031_skin_reports',
+        '0032_signin_same_network',
       ]);
       expect(
         (
@@ -737,7 +739,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(9);
+      expect(upgraded).toHaveLength(10);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db

@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ OpenGL недоступний у цій збірці.
 Не вдалося зв’язатися з %0.
 [hub change server]
 Змінити сервер…
-[hub check code]
-Коли буде запит коду, введіть цей:
 [hub code placeholder]
 Код або посилання-запрошення
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ OpenGL недоступний у цій збірці.
 Створити кімнату
 [hub find match]
 Знайти матч
-[hub finish in browser]
-Завершіть вхід на сторінці, що відкрилася у браузері.
 [hub free seat]
 Вільне місце
 [hub get update]
@@ -3532,8 +3538,6 @@ OpenGL недоступний у цій збірці.
 Відкрити сторінку знову
 [hub open rooms]
 Відкриті кімнати
-[hub page opened at %0]
-Відкрито %0. У грі нічого вводити не потрібно — вхід відбудеться автоматично.
 [hub queues unavailable]
 Швидкий матч з’явиться, коли сервер відповість.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ OpenGL недоступний у цій збірці.
 Видалити мій обліковий запис
 [settings Enter an https:// address.]
 Введіть адресу https://.
-[settings Finish in your browser. It shows the code %0.]
-Завершіть у браузері: введіть код %0, коли його попросять.
 [settings Forget]
 Забути
 [settings Guests keep a generated name; sign in to choose one.]

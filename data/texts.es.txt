@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Explorar mapas
 No se puede contactar con %0.
 [hub change server]
 Cambiar servidor…
-[hub check code]
-Cuando te pida un código, introduce este:
 [hub code placeholder]
 Código o enlace de invitación
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Continuar con %0
 Crear sala
 [hub find match]
 Buscar partida
-[hub finish in browser]
-Termina de iniciar sesión en la página que se abrió en tu navegador.
 [hub free seat]
 Plaza libre
 [hub get update]
@@ -3532,8 +3538,6 @@ En línea
 Abrir la página de nuevo
 [hub open rooms]
 Salas abiertas
-[hub page opened at %0]
-Se abrió %0. No hay que escribir nada en el juego; la sesión se inicia sola.
 [hub queues unavailable]
 La partida rápida aparecerá cuando responda el servidor.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Nombre visible
 Eliminar mi cuenta
 [settings Enter an https:// address.]
 Introduce una dirección https://.
-[settings Finish in your browser. It shows the code %0.]
-Termina en tu navegador: escribe el código %0 cuando te lo pida.
 [settings Forget]
 Olvidar
 [settings Guests keep a generated name; sign in to choose one.]

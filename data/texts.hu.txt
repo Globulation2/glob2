@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Térképek böngészése
 Nem érhető el: %0.
 [hub change server]
 Szerver módosítása…
-[hub check code]
-Amikor kódot kér, ezt add meg:
 [hub code placeholder]
 Kód vagy meghívólink
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Folytatás ezzel: %0
 Szoba létrehozása
 [hub find match]
 Mérkőzés keresése
-[hub finish in browser]
-Fejezd be a bejelentkezést a böngésződben megnyílt oldalon.
 [hub free seat]
 Szabad hely
 [hub get update]
@@ -3532,8 +3538,6 @@ Online
 Oldal újbóli megnyitása
 [hub open rooms]
 Nyitott szobák
-[hub page opened at %0]
-Megnyitva: %0. A játékban semmit sem kell begépelned, magától bejelentkeztet.
 [hub queues unavailable]
 A gyorsmeccs akkor jelenik meg, amikor a szerver válaszol.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Megjelenített név
 Fiókom törlése
 [settings Enter an https:// address.]
 Adj meg egy https:// címet.
-[settings Finish in your browser. It shows the code %0.]
-Fejezd be a böngésződben: amikor kéri, írd be ezt a kódot: %0.
 [settings Forget]
 Elfelejtés
 [settings Guests keep a generated name; sign in to choose one.]

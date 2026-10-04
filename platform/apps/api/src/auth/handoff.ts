@@ -2,8 +2,10 @@
 // socket, opens /signin?attempt=… in the system browser, and the platform
 // pushes the result to the waiting socket on whichever replica holds it.
 //
-// Before the browser offers any sign-in method, the player types the code the
-// game shows (confirmCode): a link someone else started is useless without it.
+// A browser that opens the link from the game's own network goes straight on
+// (bindBrowser). Any other browser first confirms with one click, comparing
+// the code the game shows (confirmCode), so a link someone else started does
+// not quietly sign a victim's account into the sender's game.
 //
 // Attempt rows move pending → completed | failed | cancelled | expired once;
 // `delivered_at` makes delivery to the socket happen exactly once, so tokens
@@ -20,6 +22,27 @@ export const CODE_ATTEMPTS = 5;
 /** The code as typed: case, spaces and separators do not matter. */
 export function normalizeCode(code: string): string {
   return code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+
+/**
+ * The part of an address that one household or device shares: the whole IPv4
+ * address, or the /64 prefix of an IPv6 one (privacy extensions rotate the
+ * rest). Hashed, so the attempt row never stores the address itself.
+ */
+export function networkHash(ip: string): string {
+  const address = ip.startsWith('::ffff:') ? ip.slice(7) : ip;
+  if (!address.includes(':')) return sha256Hex(`ipv4:${address}`);
+  const [head = '', tail = ''] = address.split('::');
+  const left = head ? head.split(':') : [];
+  const right = tail ? tail.split(':') : [];
+  const groups = address.includes('::')
+    ? [...left, ...Array<string>(Math.max(0, 8 - left.length - right.length)).fill('0'), ...right]
+    : left;
+  const prefix = groups
+    .slice(0, 4)
+    .map((group) => (parseInt(group, 16) || 0).toString(16))
+    .join(':');
+  return sha256Hex(`ipv6:${prefix}`);
 }
 
 export type FailureReason = 'expired' | 'denied' | 'cancelled' | 'conflict' | 'error';
@@ -54,6 +77,8 @@ export class HandoffService {
     mode: 'link' | 'signin';
     requestingAccountId?: string | undefined;
     platform: ClientPlatform;
+    /** The game socket's address; a browser on the same network needs no confirmation. */
+    ip?: string | undefined;
   }): Promise<Attempt> {
     const resumeToken = randomSecret();
     const row = await this.db
@@ -65,6 +90,7 @@ export class HandoffService {
         mode: options.mode,
         requesting_account_id: options.requestingAccountId ?? null,
         client_platform: options.platform,
+        requesting_network_hash: options.ip ? networkHash(options.ip) : null,
         expires_at: new Date(Date.now() + this.lifetimeSeconds * 1000),
       })
       .returning(['id', 'confirmation_code', 'expires_at'])
@@ -101,8 +127,40 @@ export class HandoffService {
     return attempt;
   }
 
+  /** Whether a browser at this address shares the game's network. */
+  sameNetwork(attempt: { requesting_network_hash: string | null }, ip: string): boolean {
+    return (
+      attempt.requesting_network_hash !== null &&
+      safeEqual(attempt.requesting_network_hash, networkHash(ip))
+    );
+  }
+
   /**
-   * Checks the code the player typed into the browser against the one their
+   * Binds the attempt to this browser without a code, for a browser on the
+   * game's own network (the first browser to open the link wins).
+   */
+  async bindBrowser(id: string, bindingHash: string): Promise<boolean> {
+    const bound = await this.db
+      .updateTable('signin_attempts')
+      .set({
+        browser_binding_hash: bindingHash,
+        code_confirmed_at: sql<Date>`coalesce(code_confirmed_at, now())`,
+      })
+      .where('id', '=', id)
+      .where('status', '=', 'pending')
+      .where('expires_at', '>', sql<Date>`now()`)
+      .where((eb) =>
+        eb.or([
+          eb('browser_binding_hash', 'is', null),
+          eb('browser_binding_hash', '=', bindingHash),
+        ]),
+      )
+      .executeTakeFirst();
+    return Number(bound.numUpdatedRows) === 1;
+  }
+
+  /**
+   * Checks the code the player confirmed in the browser against the one their
    * game shows. The right code binds the attempt to this browser (the first
    * browser to enter it wins); wrong codes count, and the attempt fails after
    * CODE_ATTEMPTS of them so the code cannot be guessed.
@@ -168,6 +226,7 @@ export class HandoffService {
         account_id: accountId,
         linked,
         completed_at: sql<Date>`now()`,
+        requesting_network_hash: null,
       })
       .where('id', '=', id)
       .where('status', '=', 'pending')
@@ -182,7 +241,12 @@ export class HandoffService {
       reason === 'expired' ? 'expired' : reason === 'cancelled' ? 'cancelled' : 'failed';
     const result = await this.db
       .updateTable('signin_attempts')
-      .set({ status, failure_reason: reason, completed_at: sql<Date>`now()` })
+      .set({
+        status,
+        failure_reason: reason,
+        completed_at: sql<Date>`now()`,
+        requesting_network_hash: null,
+      })
       .where('id', '=', id)
       .where('status', '=', 'pending')
       .executeTakeFirst();

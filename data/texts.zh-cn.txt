@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Ping
 无法连接 %0。
 [hub change server]
 更换服务器…
-[hub check code]
-当页面要求输入代码时，请输入此代码：
 [hub code placeholder]
 代码或邀请链接
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Ping
 创建房间
 [hub find match]
 寻找对局
-[hub finish in browser]
-请在浏览器中打开的页面上完成登录。
 [hub free seat]
 空位
 [hub get update]
@@ -3532,8 +3538,6 @@ Ping
 重新打开页面
 [hub open rooms]
 开放房间
-[hub page opened at %0]
-已打开 %0。无需在游戏中输入任何内容，登录会自动完成。
 [hub queues unavailable]
 服务器响应后将显示快速匹配。
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ AI：%0
 删除我的账户
 [settings Enter an https:// address.]
 请输入 https:// 地址。
-[settings Finish in your browser. It shows the code %0.]
-请在浏览器中完成：在要求时输入代码 %0。
 [settings Forget]
 忘记
 [settings Guests keep a generated name; sign in to choose one.]

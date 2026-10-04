@@ -272,8 +272,8 @@ class PlatformClientIntegration(unittest.TestCase):
             error.close()
             return error.code
 
-    def browser_sign_in(self, sign_in_url, username, code):
-        """Confirms the game's code, then registers through the bound browser."""
+    def browser_sign_in(self, sign_in_url, username):
+        """Opens the link on the game's network (bound at once), then registers there."""
         context = ssl.create_default_context(cafile=str(self.cert))
         opener = urllib.request.build_opener(
             urllib.request.HTTPSHandler(context=context),
@@ -286,8 +286,6 @@ class PlatformClientIntegration(unittest.TestCase):
                 self.origin + path, data=urllib.parse.urlencode(values).encode(), method='POST',
                 headers={'Content-Type': 'application/x-www-form-urlencoded',
                          'Origin': self.origin}), timeout=20)
-        with post('/signin/confirm', {'attempt': attempt, 'code': code}) as confirmed:
-            self.assertIn('Code accepted', confirmed.read().decode())
         with post('/signin/local', {'attempt': attempt, 'username': username,
                                    'password': 'correct horse battery', 'action': 'register'}) as reply:
             return body, reply.status, reply.read().decode()
@@ -352,11 +350,12 @@ class PlatformClientIntegration(unittest.TestCase):
         def browser(line):
             if line['event'] == 'handoff-ready':
                 self.proxy.drop_all()
-                pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player', line['confirmationCode'])
+                pages['page'], pages['status'], pages['result'] = self.browser_sign_in(line['signInUrl'], 'probe.player')
                 pages['code'] = line['confirmationCode']
         linked = self.probe('link', browser)['handoff-finished']
-        self.assertIn('name="code"', pages['page'])
-        self.assertNotIn(pages['code'], pages['page'])  # only the game reveals the code
+        # Same network as the game: no code to confirm, straight to the sign-in choices.
+        self.assertIn('action="/signin/local"', pages['page'])
+        self.assertNotIn(pages['code'], pages['page'])
         self.assertEqual(pages['status'], 200)
         self.assertTrue(linked['completed'], linked)
         self.assertTrue(linked['linked'])

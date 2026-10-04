@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Selaa karttoja
 Ei yhteyttä: %0.
 [hub change server]
 Vaihda palvelinta…
-[hub check code]
-Kun koodia kysytään, syötä tämä:
 [hub code placeholder]
 Koodi tai kutsulinkki
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Jatka: %0
 Luo huone
 [hub find match]
 Etsi ottelu
-[hub finish in browser]
-Viimeistele kirjautuminen selaimeen avautuneella sivulla.
 [hub free seat]
 Vapaa paikka
 [hub get update]
@@ -3532,8 +3538,6 @@ Verkkopeli
 Avaa sivu uudelleen
 [hub open rooms]
 Avoimet huoneet
-[hub page opened at %0]
-Avattu: %0. Peliin ei tarvitse kirjoittaa mitään; se kirjaa sinut sisään itse.
 [hub queues unavailable]
 Pikaottelu tulee näkyviin, kun palvelin vastaa.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Näyttönimi
 Poista tilini
 [settings Enter an https:// address.]
 Syötä https://-osoite.
-[settings Finish in your browser. It shows the code %0.]
-Viimeistele selaimessa: syötä koodi %0, kun sitä kysytään.
 [settings Forget]
 Unohda
 [settings Guests keep a generated name; sign in to choose one.]

@@ -99,6 +99,10 @@ std::unique_ptr<Persistence> persistStorage();
 // false when the host cannot, or a popup blocker refused it; browsers allow it
 // reliably only while handling a click.
 bool openUrl(const std::string &url);
+// Call while handling a click whose page URL only arrives later (from a server
+// reply): the browser opens an empty tab now, while the click still allows it,
+// and the next openUrl loads the page there. Does nothing on native hosts.
+void prepareUrlWindow();
 // Puts text on the system clipboard. In the browser this is the asynchronous
 // Clipboard API (with a fallback for browsers without it), which needs the
 // transient activation of a recent click; SDL's own clipboard does not reach

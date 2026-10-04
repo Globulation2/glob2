@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3478,8 +3488,6 @@ Kaarten bekijken
 Kan %0 niet bereiken.
 [hub change server]
 Server wijzigen…
-[hub check code]
-Voer deze code in als erom gevraagd wordt:
 [hub code placeholder]
 Code of uitnodigingslink
 [hub connecting to %0]
@@ -3490,8 +3498,6 @@ Doorgaan met %0
 Kamer maken
 [hub find match]
 Wedstrijd zoeken
-[hub finish in browser]
-Rond het inloggen af op de pagina die in je browser is geopend.
 [hub free seat]
 Vrije plaats
 [hub get update]
@@ -3532,8 +3538,6 @@ Online
 Pagina opnieuw openen
 [hub open rooms]
 Open kamers
-[hub page opened at %0]
-%0 geopend. Je hoeft niets in te typen in het spel; het logt je vanzelf in.
 [hub queues unavailable]
 Snel spelen verschijnt zodra de server antwoordt.
 [hub quick match unavailable]
@@ -3862,8 +3866,6 @@ Weergavenaam
 Mijn account verwijderen
 [settings Enter an https:// address.]
 Voer een https://-adres in.
-[settings Finish in your browser. It shows the code %0.]
-Rond het af in je browser: typ de code %0 als erom gevraagd wordt.
 [settings Forget]
 Vergeten
 [settings Guests keep a generated name; sign in to choose one.]

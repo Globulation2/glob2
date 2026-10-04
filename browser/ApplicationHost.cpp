@@ -274,6 +274,10 @@ bool openUrl(const std::string& url)
         return false;
     return MAIN_THREAD_EM_ASM_INT({ return Module.glob2OpenUrl(UTF8ToString($0)); }, url.c_str()) != 0;
 }
+void prepareUrlWindow()
+{
+    MAIN_THREAD_EM_ASM({ Module.glob2PrepareWindow(); });
+}
 bool copyText(const std::string& text)
 {
     return MAIN_THREAD_EM_ASM_INT({

@@ -268,6 +268,7 @@ void OnlineHubScreen::syncFromClient()
 	{
 		data.signIn = Model::SignIn::Waiting;
 		data.confirmationCode = handoff.confirmationCode;
+		data.browserOpened = handoff.state == H::Starting || handoff.browserOpened;
 	}
 	else if (data.signIn == Model::SignIn::Waiting)
 	{
@@ -562,10 +563,19 @@ void OnlineHubScreen::signInWith(const std::string &provider)
 {
 	if (previewing)
 		return;
+	// The page is only known once the server replies; open its tab during this click.
+	GAGCore::ApplicationHost::prepareUrlWindow();
 	// A guest links the identity, so their matches and maps come along.
 	client().beginBrowserSignIn("", provider);
 	data.signIn = Model::SignIn::Waiting;
 	invalidate();
+}
+
+void OnlineHubScreen::copyCode()
+{
+	if (data.confirmationCode.empty())
+		return;
+	showToast(tr(GAGCore::ApplicationHost::copyText(data.confirmationCode) ? "[hub code copied]" : "[room copy failed]"));
 }
 
 void OnlineHubScreen::cancelSignIn()
@@ -837,16 +847,21 @@ Element OnlineHubScreen::signInPanel(const Presentation &p)
 	}
 	else
 	{
-		parts.push_back(paragraph(tr("[hub finish in browser]")));
-		parts.push_back(caption(tr("[hub check code]")));
+		// The browser does the rest and the game signs in by itself. The code is
+		// only for comparing, when the page opens on another network.
+		parts.push_back(paragraph(tr(data.browserOpened ? "[hub finish in browser, game continues]" : "[hub browser did not open]")));
 		std::string code = data.confirmationCode;
 		if (code.size() == 6)
 			code = code.substr(0, 3) + " · " + code.substr(3);
-		parts.push_back(center(title(code.empty() ? "…" : code)));
-		parts.push_back(paragraph(formatted("[hub page opened at %0]", hostOf(data.origin) + "/signin"), {FontRole::Support, true}));
-		parts.push_back(row({button("signin/reopen", tr("[hub open page again]"), [this] { if (!previewing) client().openSignInPage(); }),
-							 button("signin/cancel", tr("[Cancel]"), [this] { cancelSignIn(); }, {.shortcut = SDLK_ESCAPE})},
-							{p.pt(8)}));
+		if (!code.empty())
+			parts.push_back(row({expanded(paragraph(formatted("[hub compare code %0]", code), {FontRole::Support, true})),
+								 button("signin/copy", tr("[room copy]"), [this] { copyCode(); }, {.icon = uiIcon(UIIcon::Copy), .iconSize = 16})},
+								{p.pt(6), CrossAlign::Center}));
+		std::vector<Element> actions{button("signin/reopen", tr(data.browserOpened ? "[hub open page again]" : "[hub sign in browser]"), [this] { if (!previewing) client().openSignInPage(); },
+											{.primary = !data.browserOpened, .icon = uiIcon(UIIcon::ExternalLink), .iconSize = 16}),
+									 button("signin/cancel", tr("[Cancel]"), [this] { cancelSignIn(); }, {.shortcut = SDLK_ESCAPE})};
+		// Phones stack the two buttons: side by side they do not fit.
+		parts.push_back(p.compact() ? column(std::move(actions), {p.pt(8)}) : row(std::move(actions), {p.pt(8)}));
 	}
 	return card(column(std::move(parts), {p.pt(8)}), {.padding = p.pt(16)});
 }
