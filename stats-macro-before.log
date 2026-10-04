@@ -1,0 +1,26 @@
+src/TeamStat.cpp: In member function ‘void TeamStats::save(GAGCore::OutputStream*)’:
+src/TeamStat.cpp:909:5: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+  909 |     else
+      |     ^~~~
+src/TeamStat.cpp:916:9: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+  916 |         stream->writeUint32(extendedCoverageStartTick, "extendedCoverageStartTick");
+      |         ^~~~~~
+src/TeamStat.cpp: In static member function ‘static GameplayMeasurements::Place TeamStats::placeOf(const Team*, int, int)’:
+src/TeamStat.cpp:1085:27: error: expected unqualified-id before ‘=’ token
+ 1085 |         const Uint32 near = team->map->teamsWithBuildingsNear(x, y, GameplayMeasurements::PLACE_BAND);
+      |                           ^
+src/TeamStat.cpp:1086:18: warning: the address of ‘Team::me’ will never be NULL [-Waddress]
+ 1086 |         if (near & team->me)
+      |                  ^~~~~~~~~~
+In file included from src/map/Map.h:21,
+                 from src/Game.h:12,
+                 from src/TeamStat.cpp:20:
+src/team/Team.h:188:16: note: ‘Team::me’ declared here
+  188 |         Uint32 me; // this team's own bit
+      |                ^~
+src/TeamStat.cpp:1088:22: warning: the address of ‘Team::enemies’ will never be NULL [-Waddress]
+ 1088 |         return (near & team->enemies) ? GameplayMeasurements::AWAY : GameplayMeasurements::FIELD;
+      |                ~~~~~~^~~~~~~~~~~~~~~~
+src/team/Team.h:180:16: note: ‘Team::enemies’ declared here
+  180 |         Uint32 enemies; // teams we fire on
+      |                ^~~~~~~

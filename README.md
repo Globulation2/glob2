@@ -89,3 +89,16 @@ PYTHONPATH="$(artifacts/ci-repair/font-runtime/bin/python -c 'import sysconfig; 
 ```
 
 Exit 0: 291 tests, two existing skips (`build-system-integrated.log`). Final strict translation audit and five translation tests also pass. Full hosted PR run 37170132194 is running against exact final repair HEAD; its platform results and the post-merge full master run supply the remaining hosted coverage.
+
+## Windows follow-up PR #682
+
+Final repair revision `d7c0ad977181165a4ba44e464cf73805a58a4e32`, fetched master base `429f505684338b5676356e5f32817d4f8f362db3`. The full independent run 37171997415 exposes a second MinGW `near` macro collision in `TeamStats::placeOf` after compiling beyond the first repaired collision. `windows-master-followup.log` is the complete failed Windows job log (111347036700), not an inferred failure. Rename the local mask and the remaining `near`/`far` identifiers in two unit harnesses. Expressions and test names are unchanged; no simulation, save-format or version-gate changes.
+
+Local native toolchain/SDL dependencies remain those above. Exact compiler argv is recorded in `stats-macro-compile.py` and `harness-macro-after.log`. Compile the production TeamStat source with `-fsyntax-only -Dnear= -Dfar=`: the original source fails (exit 1, `stats-macro-before.log`) and the renamed source passes (exit 0, `stats-macro-after.log`). Both renamed unit harnesses also compile with these empty macros, exit 0. This establishes the specific macro repair, not full Windows platform execution.
+
+```sh
+GLOB2_SDL3_PREFIX=/home/bradley/glob2-verify/integrator/sdl3/prefix scons -j12 release=1 server=0 tests
+LD_LIBRARY_PATH=/home/bradley/glob2-verify/integrator/sdl3/prefix/lib python3 test/run_tests.py --filter 'TeamStatsSave/*' --filter 'MobileInput/*' --filter 'ZoomDetail/*' --filter 'WinProbability/*' --filter 'BidiText/*' --filter 'SystemLanguage/*' --jobs 4 --display-jobs 1 --junit artifacts/ci-repair/windows-stats-final.xml --artifacts artifacts/ci-repair/windows-stats-final
+```
+
+Exit 0: 28 process groups / 43 cases, no skips or failures; build provenance is clean d7c0ad977 (`windows-stats-provenance.json`). Covers team telemetry placement, legacy save golden traces, sampling/ring-wrap/text-stream/corruption and continuation; victory checksums; both renamed input/zoom harnesses; Arabic/Persian ordering against fribidi; newly merged system-language detection. Full hosted Windows and master matrix supply remaining platform execution and determinism coverage. The PR requests `ci:run` plus `ci:windows`; the merged master will receive the complete matrix.

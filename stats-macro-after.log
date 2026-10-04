@@ -1,0 +1,7 @@
+src/TeamStat.cpp: In member function ‘void TeamStats::save(GAGCore::OutputStream*)’:
+src/TeamStat.cpp:909:5: warning: this ‘else’ clause does not guard... [-Wmisleading-indentation]
+  909 |     else
+      |     ^~~~
+src/TeamStat.cpp:916:9: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘else’
+  916 |         stream->writeUint32(extendedCoverageStartTick, "extendedCoverageStartTick");
+      |         ^~~~~~

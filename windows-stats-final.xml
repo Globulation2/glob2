@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="43" failures="0" errors="0" skipped="0"><testsuite name="SystemLanguage"><testcase classname="SystemLanguage" name="ISO locales map to the historical catalog codes" time="0" status="run" />
+  <testcase classname="SystemLanguage" name="languages without a catalog are not confused with catalog codes" time="0" status="run" />
+  <testcase classname="SystemLanguage" name="regional and script variants pick the matching catalog" time="0" status="run" />
+  <testcase classname="SystemLanguage" name="startup follows the system only when the profile has no usable language" time="0.464558" status="run" />
+  <testcase classname="SystemLanguage" name="the first available preference wins, then English" time="0" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="2.06897" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="1.14863" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.176857" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="1.51143" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.005335" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.00538" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.003281" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.077288" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.017907" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.011289" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="2.53003" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.031036" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.033859" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.005399" status="run" />
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="calling an early loser cannot change later teams' decision inputs" time="0.003237" status="run" />
+  <testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.007042" status="run" />
+  <testcase classname="WinProbability" name="equal alliances share chances and eliminated allies contribute nothing" time="0.003168" status="run" />
+  <testcase classname="WinProbability" name="native arithmetic reproduces every published calibration sample" time="0.00025" status="run" />
+  <testcase classname="WinProbability" name="rule serialization gates the new tag and rejects ambiguous thresholds" time="0" status="run" />
+  <testcase classname="WinProbability" name="the rule waits for the minimum tick and sample boundary then ends all teams" time="0.002913" status="run" />
+  </testsuite><testsuite name="BidiText"><testcase classname="BidiText" name="left-to-right text is unchanged" time="0" status="run" />
+    <testcase classname="BidiText" name="Arabic letters join and read right to left" time="0" status="run" />
+    <testcase classname="BidiText" name="numbers and Latin words keep their own order inside right-to-left text" time="0" status="run" />
+    <testcase classname="BidiText" name="matches fribidi on every Arabic and Persian catalog value" time="0.089805" status="run" />
+  </testsuite><testsuite name="MobileInput"><testcase classname="MobileInput" name="zoom anchoring; seams; rotation; safe layouts; gestures and cancellation" time="0.000136" status="run" />
+    <testcase classname="MobileInput" name="opaque SDL3 touch identifiers retain their high bits" time="0" status="run" />
+  </testsuite><testsuite name="ZoomDetail"><testcase classname="ZoomDetail" name="Disabled reproduces uniform scaling at every zoom" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Normal zoom draws the detailed map with every bar" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Curves are monotonic and replacements cross-fade" time="0.000362" status="run" />
+    <testcase classname="ZoomDetail" name="Overlays hold their size zoomed out and grow slowly zoomed in" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Thresholds are measured in points, not logical units" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Far zoom is the strategic view" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Fully zoomed out is the strategic view on a map of any size" time="0.000353" status="run" />
+    <testcase classname="ZoomDetail" name="The two looks cross-fade inside one narrow window" time="0.00089" status="run" />
+    <testcase classname="ZoomDetail" name="Every bar fades together, leaving a pip on what needs attention" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="A map that zooms out far enough is unaffected by its minimum zoom" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="A map legible when fully zoomed out stays detailed" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="A small map keeps its normal look at its closer zooms" time="0" status="run" />
+  </testsuite></testsuites>
