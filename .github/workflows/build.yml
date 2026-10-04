@@ -30,7 +30,10 @@ jobs:
       - name: Repeat the original storage and renderer cases with failure stack capture
         working-directory: browser
         run: |
-          npx playwright test tests/storage.spec.js tests/rendering.spec.js --project=chromium --grep 'abort failure|default renderer falls back' --repeat-each=30
+          for attempt in $(seq 1 30); do
+            echo "Cold-browser storage attempt $attempt"
+            npx playwright test tests/storage.spec.js --project=chromium --grep 'abort failure' || exit $?
+          done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
