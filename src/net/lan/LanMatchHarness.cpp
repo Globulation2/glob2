@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <deque>
 #include <filesystem>
+#include <fstream>
 #include <map>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -409,11 +410,27 @@ struct LanMatch
 		// Preserve connection and map-transfer errors when an asynchronous phase
 		// times out, rather than reporting only that its predicate stayed false.
 		MESSAGE("LAN host state: " << hostSide().state().toJson().dump());
+		nlohmann::json diagnostics = nlohmann::json::array();
 		for (const auto& player : players)
+		{
+			nlohmann::json state = {{"name", player->name}, {"launched", player->launched},
+			                        {"stopped", player->stopped}, {"finished", player->finished.has_value()}};
 			if (const auto* guest = player->room ? player->room->guestSide() : nullptr)
-				MESSAGE(player->name << ": phase=" << static_cast<int>(guest->phase())
-				        << " reason=" << guest->closeReason() << " detail=" << guest->closeDetail()
-				        << " map=" << guest->downloadPercent());
+			{
+				state["guest"] = {{"phase", static_cast<int>(guest->phase())}, {"reason", guest->closeReason()},
+				                  {"detail", guest->closeDetail()}, {"map", guest->downloadPercent()},
+				                  {"endReason", guest->endReason()}};
+				MESSAGE(player->name << ": " << state["guest"].dump());
+			}
+			if (player->engine && player->engine->turnLockstep())
+			{
+				const auto& turn = player->session();
+				state["turn"] = {{"state", static_cast<int>(turn.state())}, {"tick", turn.executedTick()},
+				                 {"catchingUp", turn.catchingUp()}};
+			}
+			diagnostics.push_back(std::move(state));
+		}
+		std::ofstream(directory / "timeout.json") << diagnostics.dump(2) << '\n';
 		return false;
 	}
 };
