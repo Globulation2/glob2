@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="31" failures="0" errors="0" skipped="0"><testsuite name="MusicSet"><testcase classname="MusicSet" name="discovery atomic replacement queued moods and muted preferences [display][writes-preferences]" time="2.14426" status="run" />
+<testsuites tests="31" failures="0" errors="0" skipped="0"><testsuite name="MusicSet"><testcase classname="MusicSet" name="discovery atomic replacement queued moods and muted preferences [display][writes-preferences]" time="2.43484" status="run" />
   </testsuite><testsuite name="GameMusicController"><testcase classname="GameMusicController" name="WarEventSetsWarTrackAndTimer" time="0" status="run" />
     <testcase classname="GameMusicController" name="GoodEventSetsBuildingTrackAndTimer" time="0" status="run" />
     <testcase classname="GameMusicController" name="TimerDecaysToDefaultTrack" time="0" status="run" />
@@ -7,27 +7,27 @@
     <testcase classname="GameMusicController" name="ResetClearsTimers" time="0" status="run" />
     <testcase classname="GameMusicController" name="NoEventNoTrack" time="0" status="run" />
     <testcase classname="GameMusicController" name="WarEventOverridesExpiringBuildingTimer" time="0" status="run" />
-  </testsuite><testsuite name="GameplayRecording"><testcase classname="GameplayRecording" name="producer failure remains failed and a publication collision preserves foreign files [recording]" time="1.44998" status="run" />
-    <testcase classname="GameplayRecording" name="split callback audio survives as consecutive decoded PCM [recording][artifacts]" time="1.19643" status="run" />
-    <testcase classname="GameplayRecording" name="recording rejects invalid options and never overwrites output" time="0.000386" status="run" />
-    <testcase classname="GameplayRecording" name="recording encodes audio, odd resized frames, and semantic chapters [recording]" time="1.511" status="run" />
-    <testcase classname="GameplayRecording" name="stopping a recording before its first frame completes without hanging" time="0.001218" status="run" />
+  </testsuite><testsuite name="GameplayRecording"><testcase classname="GameplayRecording" name="producer failure remains failed and a publication collision preserves foreign files [recording]" time="1.72079" status="run" />
+    <testcase classname="GameplayRecording" name="split callback audio survives as consecutive decoded PCM [recording][artifacts]" time="1.13109" status="run" />
+    <testcase classname="GameplayRecording" name="recording rejects invalid options and never overwrites output" time="0.000393" status="run" />
+    <testcase classname="GameplayRecording" name="recording encodes audio, odd resized frames, and semantic chapters [recording]" time="1.50946" status="run" />
+    <testcase classname="GameplayRecording" name="stopping a recording before its first frame completes without hanging" time="0.001643" status="run" />
   </testsuite><testsuite name="PlayerVoiceDrain"><testcase classname="PlayerVoiceDrain" name="DrainReportsExhaustionExactlyOnce" time="0" status="run" />
     <testcase classname="PlayerVoiceDrain" name="SingleSampleQueueDrainsOnFirstRollover" time="0" status="run" />
     <testcase classname="PlayerVoiceDrain" name="NoRolloverKeepsQueueIntact" time="0" status="run" />
     <testcase classname="PlayerVoiceDrain" name="ContributionUsesPreAdvanceState" time="0" status="run" />
-    <testcase classname="PlayerVoiceDrain" name="one second of Speex PCM lasts one second at the mixer rate" time="0.000489" status="run" />
-  </testsuite><testsuite name="RecordingSession"><testcase classname="RecordingSession" name="session index creation preserves an existing recording" time="0.000322" status="run" />
-    <testcase classname="RecordingSession" name="resize coalescing preserves full resolution and numbers completed segments" time="0.040151" status="run" />
-    <testcase classname="RecordingSession" name="worker normalizes capture color layout and bottom-up orientation" time="0.017446" status="run" />
-    <testcase classname="RecordingSession" name="asynchronous encoder flush is polled before publishing the output" time="0.007886" status="run" />
-    <testcase classname="RecordingSession" name="long scheduling gaps preserve time without an encoding catch-up burst" time="0.104883" status="run" />
-    <testcase classname="RecordingSession" name="device failure closes its stream and starts a software segment" time="0.032306" status="run" />
-    <testcase classname="RecordingSession" name="hardware flush failure during resize continues with a software segment" time="0.038888" status="run" />
-    <testcase classname="RecordingSession" name="capture pressure rejects input within the three-frame budget" time="0.013342" status="run" />
-    <testcase classname="RecordingSession" name="interrupted fragmented media recovers without a finalized trailer" time="0.077441" status="run" />
-    <testcase classname="RecordingSession" name="legacy 44.1 kHz recording recovery preserves its audio rate [recording][artifacts]" time="0.444444" status="run" />
-    <testcase classname="RecordingSession" name="publication failure retains media that can be recovered without overwriting" time="0.013576" status="run" />
-  </testsuite><testsuite name="SoundMixerTrackSelection"><testcase classname="SoundMixerTrackSelection" name="track selection while closed and queued mid-fade changes" time="0.114824" status="run" />
-    <testcase classname="SoundMixerTrackSelection" name="Opus trimmed timeline looping seeking and unavailable decoder" time="0.011187" status="run" />
+    <testcase classname="PlayerVoiceDrain" name="one second of Speex PCM lasts one second at the mixer rate" time="0.000486" status="run" />
+  </testsuite><testsuite name="RecordingSession"><testcase classname="RecordingSession" name="session index creation preserves an existing recording" time="0.000301" status="run" />
+    <testcase classname="RecordingSession" name="resize coalescing preserves full resolution and numbers completed segments" time="0.041942" status="run" />
+    <testcase classname="RecordingSession" name="worker normalizes capture color layout and bottom-up orientation" time="0.015152" status="run" />
+    <testcase classname="RecordingSession" name="asynchronous encoder flush is polled before publishing the output" time="0.01298" status="run" />
+    <testcase classname="RecordingSession" name="long scheduling gaps preserve time without an encoding catch-up burst" time="0.133763" status="run" />
+    <testcase classname="RecordingSession" name="device failure closes its stream and starts a software segment" time="0.035831" status="run" />
+    <testcase classname="RecordingSession" name="hardware flush failure during resize continues with a software segment" time="0.041772" status="run" />
+    <testcase classname="RecordingSession" name="capture pressure rejects input within the three-frame budget" time="0.013916" status="run" />
+    <testcase classname="RecordingSession" name="interrupted fragmented media recovers without a finalized trailer" time="0.130696" status="run" />
+    <testcase classname="RecordingSession" name="legacy 44.1 kHz recording recovery preserves its audio rate [recording][artifacts]" time="0.459193" status="run" />
+    <testcase classname="RecordingSession" name="publication failure retains media that can be recovered without overwriting" time="0.012891" status="run" />
+  </testsuite><testsuite name="SoundMixerTrackSelection"><testcase classname="SoundMixerTrackSelection" name="track selection while closed and queued mid-fade changes" time="0.155698" status="run" />
+    <testcase classname="SoundMixerTrackSelection" name="Opus trimmed timeline looping seeking and unavailable decoder" time="0.012612" status="run" />
   </testsuite></testsuites>

@@ -1,3 +1,3 @@
 <?xml version='1.0' encoding='utf-8'?>
-<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MobileDocuments"><testcase classname="MobileDocuments" name="selection requests; terminal callbacks; validation and export" time="0.1235" status="run" />
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MobileDocuments"><testcase classname="MobileDocuments" name="selection requests; terminal callbacks; validation and export" time="0.122425" status="run" />
   </testsuite></testsuites>

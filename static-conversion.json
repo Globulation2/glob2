@@ -126,5 +126,6 @@
         "2"
       ]
     }
-  ]
+  ],
+  "encoder_libopus": "libopus 1.6.1"
 }

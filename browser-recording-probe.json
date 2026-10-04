@@ -1,0 +1,233 @@
+[
+  {
+    "file": "build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "2.666667"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "2.666000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "2.667000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "1.833333"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "1.554000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "2.067000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-serial-interrupt-936cf-ecovers-committed-fragments-chromium/recovered.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "3.100000"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "2.986000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "3.100000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-threaded-interru-f8b5d-ecovers-committed-fragments-chromium/recovered.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "4.566667"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "4.566000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "4.567000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "1.800000"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "1.800000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "1.800000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "1.966667"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "1.685000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "2.233000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-serial-interrupt-936cf-ecovers-committed-fragments-firefox/recovered.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "3.033333"
+      },
+      {
+        "codec": "aac",
+        "start": "0.000000",
+        "duration": "2.986000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "3.033000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "2.166667"
+      },
+      {
+        "codec": "aac",
+        "start": "0.661000",
+        "duration": "1.237333"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "2.800000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "2.200000"
+      },
+      {
+        "codec": "aac",
+        "start": "0.561000",
+        "duration": "1.365333"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "2.700000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-serial-interrupt-936cf-ecovers-committed-fragments-webkit/recovered.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "3.233333"
+      },
+      {
+        "codec": "aac",
+        "start": "0.661000",
+        "duration": "2.346667"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "3.233000"
+      }
+    ]
+  },
+  {
+    "file": "build/browser-test-results/recording-threaded-interru-f8b5d-ecovers-committed-fragments-webkit/recovered.mp4",
+    "audio_rate": 48000,
+    "streams": [
+      {
+        "codec": "h264",
+        "start": "0.000000",
+        "duration": "3.100000"
+      },
+      {
+        "codec": "aac",
+        "start": "0.828000",
+        "duration": "2.272000"
+      },
+      {
+        "codec": "bin_data",
+        "start": "0.000000",
+        "duration": "3.100000"
+      }
+    ]
+  }
+]
