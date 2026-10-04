@@ -1,0 +1,4 @@
+ASan startup progress 10 { screen: 'loading', loop: 0, heap: 882049024 }
+ASan startup progress 20 { screen: 'loading', loop: 0, heap: 1084424192 }
+ASan startup progress 30 { screen: 'loading', loop: 0, heap: 1084424192 }
+ASan main menu ready 39727 ms errors []

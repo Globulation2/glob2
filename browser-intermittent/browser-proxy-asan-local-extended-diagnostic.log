@@ -1,0 +1,9 @@
+
+Running 1 test using 1 worker
+
+(node:923551) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Sanitizer errors []
+  ✓  1 [chromium] › artifacts/ci-repair/browser-proxy-asan-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (3.2m)
+
+  1 passed (3.2m)
