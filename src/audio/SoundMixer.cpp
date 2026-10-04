@@ -67,6 +67,18 @@ static void initInterpolationTable(void)
 
 //! Ramp value for the i-th sample of a callback that starts `fadePos` samples
 //! into the fade.
+//! Open an Ogg Vorbis file from a FILE* obtained through FileManager. On MSVC the
+//! FILE* must not cross into libvorbisfile's CRT (vcpkg builds can link another
+//! one), so the stdio callbacks are compiled here instead of inside ov_open.
+static int openOggFile(FILE *fp, OggVorbis_File *oggFile)
+{
+#ifdef _MSC_VER
+	return ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT);
+#else
+	return ov_open(fp, oggFile, NULL, 0);
+#endif
+}
+
 static inline int fadeValue(unsigned fadePos, unsigned i)
 {
 	unsigned p = fadePos + i;
@@ -386,11 +398,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	// `tracks` via release(). If ov_open fails, the unique_ptr's destructor frees
 	// it on return — fixing the leak that existed when this was raw `new`.
 	auto oggFile = std::make_unique<OggVorbis_File>();
-#ifdef _MSC_VER
-	if (ov_open_callbacks(fp, oggFile.get(), NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
-#else
-	if (ov_open(fp, oggFile.get(), NULL, 0) < 0)
-#endif
+	if (openOggFile(fp, oggFile.get()) < 0)
 	{
 		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
 		fclose(fp);
@@ -527,41 +535,81 @@ std::string SoundMixer::musicSetLabel(const std::string& name)
 	return label;
 }
 
+namespace
+{
+	struct OggTrackCloser
+	{
+		void operator()(OggVorbis_File *track) const { ov_clear(track); delete track; }
+	};
+	using OggTrack = std::unique_ptr<OggVorbis_File, OggTrackCloser>;
+	using MusicSetTrio = std::array<OggTrack, 3>;
+
+	//! Open the three in-game tracks of `name`. They must all be 44100 Hz stereo,
+	//! one logical stream, and of equal length, so the mixer can cross over between
+	//! moods at the same position. On failure `trio` holds no usable set.
+	bool openMusicSet(const std::string& name, MusicSetTrio& trio)
+	{
+		ogg_int64_t frames = 0;
+		for (unsigned i = 0; i < trio.size(); ++i)
+		{
+			const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".ogg";
+			FILE *file = Toolkit::getFileManager()->openFP(path);
+			if (!file)
+				return false;
+			auto track = std::make_unique<OggVorbis_File>();
+			if (openOggFile(file, track.get()) < 0)
+			{
+				fclose(file);
+				std::cerr << "SoundMixer : music set " << name << " has an unreadable " << path << std::endl;
+				return false;
+			}
+			trio[i].reset(track.release());
+			const auto *info = ov_info(trio[i].get(), -1);
+			const auto length = ov_pcm_total(trio[i].get(), -1);
+			if (!info || info->rate != 44100 || info->channels != 2 || length <= 0 ||
+				(i > 0 && length != frames) || ov_streams(trio[i].get()) != 1)
+			{
+				std::cerr << "SoundMixer : music set " << name << " has an unusable " << path << std::endl;
+				return false;
+			}
+			frames = length;
+		}
+		return true;
+	}
+}
+
 bool SoundMixer::selectMusicSet(const std::string& preference)
 {
-	const auto available = getMusicSets();
-	if (available.empty())
-		return false;
-	const std::string name = preference.empty() ? available[rand() % available.size()] : preference;
-	if (std::find(available.begin(), available.end(), name) == available.end())
-		return false;
-	if (name == activeMusicSet && tracks.size() >= static_cast<unsigned>(MusicTrack::Count))
-		return true;
-
-	auto closeTrack = [](OggVorbis_File *track) { if (track) { ov_clear(track); delete track; } };
-	using Track = std::unique_ptr<OggVorbis_File, decltype(closeTrack)>;
-	std::array<Track, 3> replacement = {Track(nullptr, closeTrack), Track(nullptr, closeTrack), Track(nullptr, closeTrack)};
-	ogg_int64_t frames = 0;
-	for (unsigned i = 0; i < replacement.size(); ++i)
+	auto candidates = getMusicSets();
+	if (preference.empty())
 	{
-		const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".ogg";
-		FILE *file = Toolkit::getFileManager()->openFP(path);
-		if (!file)
-			return false;
-		auto track = std::make_unique<OggVorbis_File>();
-		if (ov_open(file, track.get(), nullptr, 0) < 0)
-		{
-			fclose(file);
-			return false;
-		}
-		replacement[i].reset(track.release());
-		const auto *info = ov_info(replacement[i].get(), -1);
-		const auto length = ov_pcm_total(replacement[i].get(), -1);
-		if (!info || info->rate != 44100 || info->channels != 2 || length <= 0 ||
-			(i > 0 && length != frames) || ov_streams(replacement[i].get()) != 1)
-			return false;
-		frames = length;
+		// Discovery only checks that the files exist, so a random pick tries the
+		// sets in a random order until one opens. This is menu randomness (rand()),
+		// never the synchronized simulation generator.
+		for (size_t i = candidates.size(); i > 1; --i)
+			std::swap(candidates[i - 1], candidates[static_cast<size_t>(rand()) % i]);
 	}
+	else if (std::find(candidates.begin(), candidates.end(), preference) != candidates.end())
+		candidates.assign(1, preference);
+	else
+		return false;
+
+	MusicSetTrio replacement;
+	std::string name;
+	for (const auto& candidate : candidates)
+	{
+		if (candidate == activeMusicSet && tracks.size() >= static_cast<unsigned>(MusicTrack::Count))
+			return true;
+		MusicSetTrio opened;
+		if (openMusicSet(candidate, opened))
+		{
+			replacement = std::move(opened);
+			name = candidate;
+			break;
+		}
+	}
+	if (name.empty())
+		return false;
 
 	if (audioStream) SDL_LockAudioStream(audioStream);
 	const unsigned first = static_cast<unsigned>(MusicTrack::InGameDefault);

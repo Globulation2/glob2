@@ -64,6 +64,25 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original/a1.ogg", broken / "a3.ogg", std::filesystem::copy_options::overwrite_existing);
 	REQUIRE(!mixer.selectMusicSet("test-broken"));
 	REQUIRE((mixer.getMusicSet() == "original" && mixer.tracks[2] == current));
+	{
+		// Discovery lists the broken set; a random pick must skip it, not fail.
+		const auto withBroken = SoundMixer::getMusicSets();
+		REQUIRE(std::find(withBroken.begin(), withBroken.end(), "test-broken") != withBroken.end());
+		srand(214);
+		std::vector<std::string> picked;
+		for (int i = 0; i < 200; ++i)
+		{
+			REQUIRE(mixer.selectMusicSet(""));
+			REQUIRE(mixer.getMusicSet() != "test-broken");
+			REQUIRE(mixer.tracks[2] != nullptr);
+			picked.push_back(mixer.getMusicSet());
+		}
+		std::sort(picked.begin(), picked.end());
+		picked.erase(std::unique(picked.begin(), picked.end()), picked.end());
+		CHECK(picked.size() == withBroken.size() - 1);
+		REQUIRE(mixer.selectMusicSet("original"));
+		current = mixer.tracks[2];
+	}
 	std::filesystem::remove_all(broken);
 	std::filesystem::remove_all(incomplete);
 	std::cout << "PASS: discovery, atomic failure, different lengths, queued mood, same-set no-op\n";
