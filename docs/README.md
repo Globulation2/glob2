@@ -15,7 +15,8 @@ dated reports and pull-request artifacts do not belong here.
   and multiplayer app use [app.glob2online.com](https://app.glob2online.com/).
 - **AI:** [telemetry](ai/telemetry.md), [gameplay measurements](ai/gameplay-statistics.md),
   [Cortex mechanics](ai/cortex-upgrade-expand-mechanics.md), and [Maxima](ai/maxima/README.md).
-- **Assets:** [third-party attribution](assets/source-attribution.md) and
+- **Assets:** [third-party attribution](assets/source-attribution.md),
+  [soundtrack style guide](assets/music-style-guide.md), [music pipeline](assets/music-pipeline.md) and
   [high-resolution artwork provenance](assets/high-resolution/README.md).
 - **Development:** [build and coding reference](development/reference.md),
   [GOG releases](development/gog-release.md),

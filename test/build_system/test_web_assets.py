@@ -23,7 +23,8 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_skin_meshes_are_only_in_the_on_demand_package(self):
         meshes = list((ROOT / 'data/skins/colony-v1').glob('*.gsk'))
-        self.assertEqual(len(meshes), 8)
+        manifest = json.loads((ROOT / 'data/skins/colony-v1/manifest.json').read_text())
+        self.assertEqual(sorted(p.name for p in meshes), sorted(manifest['meshes']))
         for path in meshes:
             self.assertEqual(self.owner[path.relative_to(ROOT).as_posix()], 'skins')
         self.assertNotIn('data/skins/colony-v1/manifest.json', self.packages['core'])
@@ -89,6 +90,7 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(self.owner['data/zik/intro.ogg'], 'menu-music')
         self.assertEqual(self.owner['data/zik/menu.ogg'], 'menu-music')
         self.assertEqual(self.owner['data/zik/original/a1.ogg'], 'music')
+        self.assertEqual(self.owner['data/zik/woodland/a1.ogg'], 'music-sets')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 

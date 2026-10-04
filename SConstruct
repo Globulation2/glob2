@@ -399,7 +399,10 @@ def main():
         sdl_prefix = str(Path(sdl_prefix).resolve())
         env.Prepend(CPPPATH=[sdl_prefix + '/include'], LIBPATH=[sdl_prefix + '/lib'])
         env['ENV']['PKG_CONFIG_PATH'] = sdl_prefix + '/lib/pkgconfig' + os.pathsep + os.environ.get('PKG_CONFIG_PATH', '')
-        env.Append(RPATH=[sdl_prefix + '/lib'])
+        # Development runs load the prefix in place; installed copies use only
+        # their bundled $ORIGIN/../lib/glob2 (distributions reject build paths).
+        if 'install' not in COMMAND_LINE_TARGETS:
+            env.Append(RPATH=[sdl_prefix + '/lib'])
         env['ENV']['PATH'] = sdl_prefix + '/bin' + os.pathsep + env['ENV'].get('PATH', '')
         if not isDarwinPlatform and not isWindowsPlatform and not env['mingw'] and not env['mingwcross']:
             # RPATH entries undergo another SCons expansion; protect the linker

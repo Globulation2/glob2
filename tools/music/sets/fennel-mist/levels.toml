@@ -1,0 +1,33 @@
+# Level references of each player, dBFS (see glob2music.score.mix.measure_levels).
+# Measured once from the renders and frozen so every rebuild mixes identically;
+# delete this file to measure again (this changes the mix).
+# Values measured from the renders the maintainer approved.
+"bassdrum" = -18.442913444965733
+"basses" = -43.5543758776347
+"basses_pizz" = -36.22753736215872
+"basses_spic" = -31.42601079223531
+"basses_sus" = -37.960260554623105
+"bassoon" = -34.538105068533646
+"bongos" = -34.99615803054447
+"cellos" = -36.34166300133951
+"cellos_pizz" = -30.15740527179183
+"cellos_spic" = -29.97021141886108
+"clarinet_desc" = -37.220589930079896
+"clarinet_stac" = -31.495115989133534
+"flute_desc" = -30.440388269142446
+"frame_drum" = -21.668872983574808
+"glock" = -35.79473423989201
+"harp" = -32.70038420750811
+"horn_lead" = -24.07165521080451
+"shaker" = -51.670376213191005
+"snare" = -34.40769321228551
+"tamb" = -43.37534331835365
+"timpani" = -30.486366352016955
+"toms" = -21.665322237263204
+"trombones" = -31.781460746667523
+"tuba" = -38.31935526455469
+"violas_pad" = -32.36757342534252
+"violas_trem" = -33.369762142349714
+"violins_pad" = -32.3619413324637
+"violins_pizz" = -27.46742801501485
+"violins_spic" = -26.34356674635761

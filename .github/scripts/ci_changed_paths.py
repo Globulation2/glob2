@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 
-JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack")
+JOBS = ("native", "browser", "map_generators", "deployment", "cross_platform", "platform", "platform_stack", "music")
 # Implementation-only drawing changes retain native, browser, and equivalence
 # checks. Shared headers, file I/O, fonts and unknown library paths stay full CI.
 RENDER_IMPLEMENTATIONS = {
@@ -48,8 +48,8 @@ def classify(paths):
     if not paths:
         return {job: True for job in JOBS}
 
-    from ci_policy import PRESENTATION, TOOLING_TESTS, cheap_path, is_test_source, unclassified
-    native = browser = map_generators = deployment = cross_platform = platform = False
+    from ci_policy import MUSIC_TOOL_PATHS, PRESENTATION, TOOLING_TESTS, cheap_path, is_test_source, music_set_path, unclassified
+    native = browser = map_generators = deployment = cross_platform = platform = music = False
     platform_stack = platform_stack_changed(paths)
     for path in paths:
         # These Python suites execute directly in the selector job, without
@@ -63,6 +63,13 @@ def classify(paths):
             # the C++ contract tests.
             platform = True
             native = native or path.startswith("platform/packages/protocol/fixtures/")
+            continue
+        if path.startswith(MUSIC_TOOL_PATHS):
+            music = True
+            continue
+        if music_set_path(path):
+            # Soundtrack set data: packaged by the native and browser builds.
+            native = browser = True
             continue
         if path == "test/map-generator-golden.txt":
             map_generators = True
@@ -121,6 +128,7 @@ def classify(paths):
         "cross_platform": cross_platform,
         "platform": platform,
         "platform_stack": platform_stack,
+        "music": music,
     }
 
 
@@ -134,13 +142,15 @@ def browser_only(path):
 
 
 def coverage_profile(paths, event, selected):
-    from ci_policy import PRESENTATION, TOOLING_TESTS, cheap_path, is_test_source, unclassified
+    from ci_policy import MUSIC_TOOL_PATHS, PRESENTATION, TOOLING_TESTS, cheap_path, is_test_source, unclassified
     compatibility = event != 'pull_request' or not paths
     browsers_all = compatibility
     android = event != 'pull_request' or not paths
     reasons = []
     for path in paths:
         if path.startswith('docs/') or path.endswith('.md') or path in CI_TOOL_TESTS or cheap_path(path):
+            continue
+        if path.startswith(MUSIC_TOOL_PATHS):
             continue
         if not is_test_source(path) and path.startswith(('src/', 'libgag/', 'libusl/', 'mobile/', 'scons/', 'data/', 'darwin/', 'windows/', 'flatpak/', 'snap/', 'fdroid/', 'fastlane/')) or path in ('SConstruct','vcpkg.json','tools/package_assets.py','tools/asset-requirements.txt','.github/workflows/mobile.yml','.github/scripts/ci_changed_paths.py','.github/scripts/ci_coverage_baseline.py'):
             android = True
@@ -166,7 +176,7 @@ def coverage_profile(paths, event, selected):
     browsers_all = browsers_all or compatibility
     return {'compatibility': compatibility, 'browsers_all': browsers_all,
             'android': android, 'android_arches': ['arm64-v8a','armeabi-v7a','x86_64'] if compatibility else ['arm64-v8a'],
-            'profile': 'compatibility' if compatibility else ('primary' if any(selected.values()) else 'lightweight'),
+            'profile': 'compatibility' if compatibility else ('primary' if any(on for job, on in selected.items() if job != 'music') else 'lightweight'),
             'reasons': reasons or ['known relevant boundaries; primary platforms suffice']}
 
 def changed_paths(base):
@@ -184,7 +194,7 @@ def changed_paths(base):
 
 
 def main():
-    from ci_policy import FLAGS, full, select, browser_matrix, fingerprint
+    from ci_policy import CHEAP_FLAGS, CHEAP_PATHS, FLAGS, full, select, browser_matrix, fingerprint
     from ci_coverage_baseline import activated, successful_full_run
     parser = argparse.ArgumentParser()
     parser.add_argument("--base", help="Base revision for reporting changed paths; master always runs full coverage")
@@ -233,7 +243,11 @@ def main():
                                          os.environ.get('GITHUB_SHA', ''),
                                          os.environ.get('GH_TOKEN', ''))
     if cheap_only or reused_run is not None:
-        selected = {flag: False for flag in FLAGS}
+        # Cheap jobs (CHEAP_FLAGS) still follow their own paths on pull requests
+        # (all of them when the diff is unknown).
+        cheap = select(paths, (), known)[0] if cheap_only else {}
+        selected = {flag: flag in CHEAP_FLAGS and cheap.get(flag, False) and (not known or any(
+                        p.startswith(CHEAP_PATHS[flag]) for p in paths)) for flag in FLAGS}
     browser_only = event == 'workflow_dispatch' and os.environ.get('BROWSER_ONLY') == 'true'
     if browser_only:
         selected = {flag: flag in ('browser', 'deployment') for flag in FLAGS}
@@ -249,8 +263,9 @@ def main():
     import hashlib
     inventory_hash = hashlib.sha256(json.dumps(inventory, sort_keys=True).encode()).hexdigest()
     observed_sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip() if os.environ.get('CI_CALLED_FULL') == 'true' else os.environ.get('GITHUB_SHA')
+    engine_selected = any(on for flag, on in selected.items() if flag not in CHEAP_FLAGS)
     mode = ('nightly-reused' if reused_run is not None else 'full' if full_matrix else
-            'affected' if any(selected.values()) else 'cheap-contracts')
+            'affected' if engine_selected else 'cheap-contracts')
     observation = dict(schema=3, verification_mode=mode, reused_run_id=reused_run, selection=selected, event=event, sha=observed_sha,
                        full_matrix=full_matrix, desired=desired, effective=effective, tiers_enabled=enabled,
                        draft=draft, paths=paths, checkpoint=checkpoint, policy_fingerprint=policy,
@@ -278,7 +293,7 @@ def main():
                 target.write('PR: cheap contracts only; use `ci:run` or `ci:full` to request hosted verification.\n')
             if reused_run is not None:
                 target.write(f'Nightly full coverage already verified by run {reused_run} for this exact revision and policy.\n')
-            if not any(selected.values()):
+            if not engine_selected:
                 target.write('Cheap-only success does not establish engine verification or acceptance of PR evidence.\n')
             target.write('```json\n' + json.dumps(observation, indent=2) + '\n```\n')
 

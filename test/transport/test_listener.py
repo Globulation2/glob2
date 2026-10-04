@@ -109,9 +109,11 @@ class ListenerTests(unittest.TestCase):
     def test_text_and_oversized_frames_rejected(self):
         self.start()
         for body, opcode in [(b'not-binary', 1), (bytes(65537), 2)]:
-            sock = self.connect(); send_frame(sock, body, opcode)
-            try: self.assertEqual(read_frame(sock)[0], 8)
-            except (EOFError, OSError): pass
+            sock = self.connect()
+            try:
+                send_frame(sock, body, opcode)
+                self.assertEqual(read_frame(sock)[0], 8)
+            except (EOFError, ConnectionResetError, BrokenPipeError, ssl.SSLEOFError): pass
 
     def test_text_mode_echoes_text_and_rejects_binary(self):
         self.start('text')
@@ -132,9 +134,12 @@ class ListenerTests(unittest.TestCase):
         self.assertEqual((opcode, bytes(echoed)), (1, large))
         # Binary messages, invalid UTF-8 and oversized text close the connection.
         for body, opcode in [(b'binary', 2), (b'\xff\xfe', 1), (b'x' * (256 * 1024 + 1), 1)]:
-            sock = self.connect(); send_frame(sock, body, opcode)
-            try: self.assertEqual(read_frame(sock)[0], 8)
-            except (EOFError, OSError): pass
+            sock = self.connect()
+            try:
+                # A rejected frame can close TLS before its whole payload is sent.
+                send_frame(sock, body, opcode)
+                self.assertEqual(read_frame(sock)[0], 8)
+            except (EOFError, ConnectionResetError, BrokenPipeError, ssl.SSLEOFError): pass
 
     def test_plaintext_and_missing_client_certificate_rejected(self):
         self.start('register')

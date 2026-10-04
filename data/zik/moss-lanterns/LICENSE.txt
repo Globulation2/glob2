@@ -1,0 +1,13 @@
+Globulation 2 soundtrack set "moss-lanterns": Moss Lanterns
+Files: a1.ogg (calm), a2.ogg (building), a3.ogg (combat)
+
+Licence: GPL-3.0-or-later (https://www.gnu.org/licenses/gpl-3.0.html)
+
+Credits:
+  Composed for Globulation 2 as a score written in code (composition.py), performed and mixed by the glob2music pipeline.
+  Samples: VSCO 2 Community Edition, Versilian Studios (Sam Gossner), CC0 1.0.
+  Rendered with sfizz 1.2.3 (BSD-2-Clause).
+
+An original chamber score in G minor (4/4, 92 bpm, 32 bars) for flute, clarinet, oboe, harp, glockenspiel and strings, echoing the key, tempo and high woodwind lead of the original soundtrack. A theme, a development in Bb, a G major lift with a chromatic-mediant climax, and a varied return. Calm is lead, counter-line and rolled harp; building adds pizzicato, walking bass and hand percussion; combat adds spiccato strings, horn, timpani and a light drum line.
+
+Built by tools/music/sets/moss-lanterns in the Globulation 2 source tree.

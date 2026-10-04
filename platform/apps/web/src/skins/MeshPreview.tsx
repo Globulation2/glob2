@@ -1,6 +1,48 @@
 /* Indexed geometry is bounded by decode before rendering or hit testing. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
+import type { SwarmMeshId } from '@glob2/protocol';
+import { swarmModel } from './swarmShapes.ts';
+
+// Kept identical to libgag/src/GraphicContextSkinMesh.cpp (test_skin_shader_parity.py).
+const SKIN_MATERIAL_GLSL = `
+// BEGIN skin-material
+float skinHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float skinNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 s = f * f * (3.0 - 2.0 * f);
+  return mix(mix(skinHash(i), skinHash(i + vec2(1.0, 0.0)), s.x),
+             mix(skinHash(i + vec2(0.0, 1.0)), skinHash(i + vec2(1.0, 1.0)), s.x), s.y);
+}
+// The original glob material bumps its normals with Stucci noise (norfac 5).
+float skinStucci(vec2 p) { return skinNoise(p) + 0.5 * skinNoise(p * 2.03 + 17.0); }
+vec3 skinBump(vec3 n, vec2 uv, float amount, float frequency) {
+  float e = 0.25 / frequency;
+  float h = skinStucci(uv * frequency);
+  float gu = (skinStucci((uv + vec2(e, 0.0)) * frequency) - h) / e;
+  float gv = (skinStucci((uv + vec2(0.0, e)) * frequency) - h) / e;
+  // Express the UV height gradient in screen directions, independent of resolution.
+  vec2 du = vec2(dFdx(uv.x), dFdy(uv.x));
+  vec2 dv = vec2(dFdx(uv.y), dFdy(uv.y));
+  float density = max(0.5 * (length(du) + length(dv)), 1e-6);
+  vec2 g = amount * (gu * du + gv * dv) / density;
+  // Stretched UV regions exaggerate the gradient; keep the tilt bounded.
+  g *= min(1.0, 0.7 / max(length(g), 1e-6));
+  return normalize(n - vec3(g, 0.0));
+}
+// Classic glossy: the original glob material's bumped body and broad white
+// streaks (specular 0.5, hardness 2), lit like the classic sprites.
+vec3 skinShade(vec3 albedo, vec3 surfaceNormal, vec2 uv) {
+  vec3 n = skinBump(normalize(surfaceNormal), uv, 0.08, 12.0);
+  vec3 l = normalize(vec3(-0.4, 0.7, 1.0));
+  vec3 h = normalize(l + vec3(0.0, 0.0, 1.0));
+  float diffuse = max(0.0, dot(n, l));
+  float nh = max(0.0, dot(n, h));
+  return albedo * (0.24 + 0.66 * diffuse) + vec3(0.42 * pow(nh, 4.0));
+}
+// END skin-material
+`;
 
 // The same bounded GSK1 model data and orthographic projection as the native renderer.
 type Mesh = {
@@ -49,10 +91,12 @@ type Model = keyof typeof models;
 
 export function MeshPreview({
   texture,
+  swarmMesh,
   onPaint,
   onStroke,
 }: {
   texture: HTMLCanvasElement | null;
+  swarmMesh: SwarmMeshId;
   onPaint: (u: number, v: number) => void;
   onStroke: () => void;
 }) {
@@ -66,6 +110,13 @@ export function MeshPreview({
   });
   const [model, setModel] = useState<Model>('worker');
   const [action, setAction] = useState('walk');
+  // Choosing a swarm shape shows it; the swarm entry always previews the chosen shape.
+  const [shownMesh, setShownMesh] = useState(swarmMesh);
+  if (shownMesh !== swarmMesh) {
+    setShownMesh(swarmMesh);
+    setModel('swarm');
+    setAction('');
+  }
   const [phase, setPhase] = useState(0);
   const [direction, setDirection] = useState(0);
   const [animate, setAnimate] = useState(true);
@@ -74,7 +125,7 @@ export function MeshPreview({
   useEffect(() => {
     controls.current = { direction, animate, phase };
   }, [direction, animate, phase]);
-  const asset = model === 'swarm' ? 'swarm' : `${model}-${action}`;
+  const asset = model === 'swarm' ? swarmModel(swarmMesh) : `${model}-${action}`;
   useEffect(() => {
     if (!canvas.current || !texture) return;
     const target = canvas.current;
@@ -117,8 +168,9 @@ export function MeshPreview({
         shader(
           gl.FRAGMENT_SHADER,
           `#version 300 es
-        precision mediump float; in vec3 n; in vec2 tex; uniform sampler2D paint; out vec4 color;
-        void main(){float light=.45+.55*max(0.,dot(normalize(n),normalize(vec3(-.4,.7,1.))));color=vec4(texture(paint,tex).rgb*light,1.);}`,
+        precision highp float; in vec3 n; in vec2 tex; uniform sampler2D paint; out vec4 color;
+${SKIN_MATERIAL_GLSL}
+        void main(){color=vec4(skinShade(texture(paint,tex).rgb,n,tex),1.);}`,
         ),
       );
       gl.linkProgram(program);

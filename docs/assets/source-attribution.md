@@ -27,3 +27,13 @@ nlohmann/json v3.12.0 (MIT). See data/json-license.txt and third_party/README.md
 Runtime image codecs:
 SDL_image (zlib license) and libwebp (BSD license and patent grant).
 See data/image-codec-licenses.txt for notices shipped with runtime assets.
+
+Music (data/zik/; each set directory also holds a LICENSE.txt with full details):
+- `original`: Jacques-Paul Grivaz, original Globulation 2 soundtrack.
+- `woodland`: adapted from "Woodland Music - Vol 1" (Level theme) by JC Sounds, CC BY 4.0, https://opengameart.org/content/woodland-music-vol-1. Remixed from the author's stems into calm/building/combat arrangements.
+- `apple-cider`: adapted from "Apple Cider" by Zane Little Music, CC0 1.0, https://opengameart.org/content/apple-cider.
+- `curious-critters`: adapted from "Curious Critters" by Matthew Pablo, CC BY 3.0, https://opengameart.org/content/curious-critters. Rearranged, with added original percussion.
+- `moss-lanterns`, `thistle-waltz`, `bramble-jig`, `fennel-mist`: original scores rendered with VSCO 2 Community Edition and VCSL samples (Versilian Studios, CC0 1.0).
+- `glass-garden`: original score with sounds designed in Surge XT (GPL-3.0).
+- `orchestral-dawn`: AI-generated audio (ACE-Step 1.5, MIT) separated with Demucs (MIT). Disclosed as AI-generated content.
+How these sets are built is described in [the music pipeline guide](music-pipeline.md).

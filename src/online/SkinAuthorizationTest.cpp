@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "SkinAuthorization.h"
+#include "SwarmMeshCatalog.h"
 #include <nlohmann/json.hpp>
 #include <limits>
 using namespace Online;
@@ -28,6 +29,19 @@ TEST_SUITE("SkinAuthorization")
             CHECK(invalid.state()==SkinAuthorization::State::Rejected);
             CHECK(invalid.skin()==nullptr);
         }
+    }
+    TEST_CASE("the chosen swarm mesh is part of the signed manifest")
+    {
+        const auto f=fixture();
+        const auto mesh=[&](const std::string &token){
+            SkinAuthorization auth(token,f["jwks"].dump(),"https://example.test",f["claims"]["matchId"],2,1700000000);
+            REQUIRE(auth.state()==SkinAuthorization::State::Verified);
+            return auth.skin()->swarmMesh;
+        };
+        // Skins from before mesh choice carry no swarmMesh and keep the classic swarm.
+        CHECK(mesh(f["valid"])==0);
+        CHECK(mesh(f["swarm"]["classic"])==0);
+        CHECK(SWARM_MESHES[mesh(f["swarm"]["crown"])].id=="crown");
     }
     TEST_CASE("untrusted key sets and bounded malformed inputs fail closed")
     {

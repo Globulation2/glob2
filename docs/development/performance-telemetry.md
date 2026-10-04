@@ -238,7 +238,7 @@ regression checks. Timing thresholds are deliberately not CI assertions.
 
 ### Delayed periodic gradients
 
-All games use one background worker and an eight-tick publication delay by
+All games use two background workers and an eight-tick publication delay by
 default. Structured headless runs accept `--gradient-workers N --gradient-delay D`.
 `N` counts **background workers** (0–16); the simulation thread is additional.
 `D` is the fixed publication delay (1–16 ticks, default 8). Zero workers computes

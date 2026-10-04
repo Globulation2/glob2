@@ -420,7 +420,15 @@ export async function exportAccount(
         .execute();
       const skinDrafts = await tx
         .selectFrom('colony_skin_drafts')
-        .select(['revision', 'skin_id', 'name', 'building_color', 'image', 'updated_at'])
+        .select([
+          'revision',
+          'skin_id',
+          'name',
+          'building_color',
+          'swarm_mesh',
+          'image',
+          'updated_at',
+        ])
         .where('account_id', '=', id)
         .execute();
       const skinMatches = await tx

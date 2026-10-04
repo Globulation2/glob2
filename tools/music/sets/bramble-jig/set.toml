@@ -1,0 +1,20 @@
+# Soundtrack set "bramble-jig": see composition.py for the score and its form.
+# Samples are pinned file by file in samples.lock; level references are frozen in levels.toml.
+title = "Bramble Jig"
+method = "symbolic-acoustic"
+license = "GPL-3.0-or-later"
+ai_generated = false
+shipped = true
+# 0 keeps the approved humanisation (seeded from the set id); any other value is a new performance.
+seed = 0
+description = """An original jig in A major / A Mixolydian (6/8, dotted crotchet 92, 56 bars) for flute, clarinet, oboe and glockenspiel over harp and strings, with an F# minor section and a sudden C major turn. Calm is lead, counter-lines and a jig-rhythm harp; building adds a pizzicato oom-pah, marimba and hand drums; combat re-arranges the same tune over a galloping low riff with tuba, low brass, horns and a drum line."""
+credits = [
+    "Composed for Globulation 2 as a score written in code (composition.py), performed and mixed by the glob2music pipeline.",
+    "Samples: VSCO 2 Community Edition and the Versilian Community Sample Library, Versilian Studios (Sam Gossner), CC0 1.0.",
+    "Rendered with sfizz 1.2.3 (BSD-2-Clause).",
+]
+
+# The bus chain in glob2music.score.mix already high-passes at 32 Hz; a second high-pass
+# in master.finish would only thin the low end the maintainer approved.
+[master]
+highpass_hz = 0.0

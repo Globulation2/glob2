@@ -1,0 +1,20 @@
+# Generated sets (glob2music/genai/acestep.py): ACE-Step 1.5, used by orchestral-dawn.
+#
+# Not needed to *build* orchestral-dawn from its cached generation: that path only
+# needs requirements-separation.txt (Demucs). These pins matter only to regenerate the
+# source audio, which needs a CUDA GPU (8 GB worked: RTX 2070 SUPER, DiT + offload on
+# one card, the 1.7B LM on a second card) and about 25 GB of disk.
+#
+# ACE-Step pins its own torch/transformers stack in a uv lockfile that conflicts with
+# the pipeline venv, so it lives in its own checkout and venv, and glob2music calls it
+# through a subprocess. Set it up with the pinned commit, the Turing patch
+# (glob2music/genai/acestep-turing.patch: LM load-order fix + ACESTEP_FORCE_DTYPE) and
+# the SHA-256-pinned weights (Hugging Face ACE-Step/Ace-Step1.5, MIT) in one step:
+#
+#   cd tools/music
+#   python3 -m glob2music.genai.acestep /path/to/ace-step     # git, uv, network
+#   export GLOB2MUSIC_ACESTEP_DIR=/path/to/ace-step
+#
+# The checkout's dependencies are exactly the lockfile at this commit (uv sync);
+# the line below records the pin in requirements form for reference:
+ace-step @ git+https://github.com/ace-step/ACE-Step-1.5.git@ca1e85fe9430179831e6bc6be790c332190a3866

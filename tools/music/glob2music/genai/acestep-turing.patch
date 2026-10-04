@@ -1,0 +1,27 @@
+diff --git a/acestep/core/generation/handler/init_service_orchestrator.py b/acestep/core/generation/handler/init_service_orchestrator.py
+index 4b03224..5db4aa4 100644
+--- a/acestep/core/generation/handler/init_service_orchestrator.py
++++ b/acestep/core/generation/handler/init_service_orchestrator.py
+@@ -88,6 +88,9 @@ class InitServiceOrchestratorMixin:
+                     f"[initialize_service] ROCm/HIP device detected: using dtype={self.dtype} "
+                     "(set ACESTEP_ROCM_DTYPE=bfloat16 or float16 to override)"
+                 )
++            elif resolved_device == "cuda" and os.environ.get("ACESTEP_FORCE_DTYPE"):
++                # glob2music patch: force the DiT dtype (bf16 on Turing avoids fp16 NaNs in the base model)
++                self.dtype = getattr(torch, os.environ["ACESTEP_FORCE_DTYPE"])
+             elif resolved_device == "cuda":
+                 if gpu_config.cuda_supports_bfloat16():
+                     self.dtype = torch.bfloat16
+diff --git a/acestep/llm_inference.py b/acestep/llm_inference.py
+index 3690af5..f3ad464 100644
+--- a/acestep/llm_inference.py
++++ b/acestep/llm_inference.py
+@@ -403,7 +403,7 @@ class LLMHandler:
+         try:
+             self.llm = AutoModelForCausalLM.from_pretrained(model_path, trust_remote_code=True)
+             if not self.offload_to_cpu:
+-                self.llm = self.llm.to(device).to(self.dtype)
++                self.llm = self.llm.to(self.dtype).to(device)
+             else:
+                 self.llm = self.llm.to("cpu").to(self.dtype)
+             self.llm.eval()

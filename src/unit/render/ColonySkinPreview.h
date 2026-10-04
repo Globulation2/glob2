@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SkinMesh.h>
+#include "online/SwarmMeshCatalog.h"
 #include <array>
 #include <memory>
 #include <optional>
@@ -29,13 +30,16 @@ public:
                    float width, float height);
 private:
     const GAGCore::SkinMesh *unitMesh(int type, int action) const;
+    // The team's chosen swarm mesh, or null when it is unavailable.
+    const GAGCore::SkinMesh *swarmMesh(int team) const;
     bool loadMeshes(const std::string &root, bool installed = false);
     bool loadInstalledMeshes();
     std::unique_ptr<Online::SkinDownloads> downloads;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> textures;
     std::array<std::optional<std::uint32_t>,32> colors;
+    std::array<int,32> swarmChoice{};
     bool attemptedMeshes = false;
-    GAGCore::SkinMesh swarm;
+    std::array<GAGCore::SkinMesh, Online::SWARM_MESHES.size()> swarms;
     bool visible = true;
     bool ready = false;
     std::array<GAGCore::SkinMesh, 7> clips;

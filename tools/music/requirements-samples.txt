@@ -1,0 +1,7 @@
+# Extra dependencies for sample-library sets (backends/sfizz.py with glob2music.score.mix):
+# pedalboard supplies the stem high-pass and the bus EQ and compressor.
+# pedalboard 0.9.25 crashes with SIGILL on older x86-64 CPUs (seen on AMD Zen 1);
+# 0.9.16 is the newest release verified on the maintainer's machine.
+# Building sfizz_render (on first use) also needs cmake and a C++17 compiler.
+-r requirements.txt
+pedalboard==0.9.16

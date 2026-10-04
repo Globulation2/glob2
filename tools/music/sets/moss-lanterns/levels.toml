@@ -1,0 +1,39 @@
+# Level references of each player, dBFS (see glob2music.score.mix.measure_levels).
+# Measured once from the renders and frozen so every rebuild mixes identically;
+# delete this file to measure again (this changes the mix).
+# Values measured from the renders the maintainer approved.
+"bassdrum" = -17.54324251473295
+"basses" = -43.01144258989473
+"basses_pizz" = -35.456876764090765
+"basses_spic" = -26.843294540076805
+"basses_sus" = -39.009682683728535
+"bassoon" = -23.15791572181469
+"cellos" = -40.28533624856288
+"cellos_pizz" = -31.730893646723377
+"cellos_spic" = -30.300999853461047
+"clarinet" = -37.83795237803303
+"clarinet_ctr" = -34.353244330983145
+"clarinet_stac" = -32.3660410585483
+"conga" = -30.675748283043866
+"flute" = -36.93813248332761
+"flute_ctr" = -33.60053846746167
+"flute_dbl" = -44.254963607000875
+"glock" = -49.33076056219207
+"harp" = -34.32373369319
+"horn" = -25.68973921074232
+"horn_stac" = -24.905065159643232
+"log" = -27.22007851579415
+"oboe" = -38.6487324868217
+"oboe_dbl" = -36.61076051673814
+"quinto" = -62.75201789576559
+"shaker" = -46.79142141047941
+"snare" = -23.583746008743695
+"snare_roll" = -34.61247519803199
+"tamb" = -44.19314714048638
+"timp_roll" = -41.64844698522525
+"timpani" = -30.70731697281174
+"triangle" = -58.19666877248874
+"violas_pad" = -31.11037523025263
+"violas_spic" = -27.629143228069637
+"violins_ctr" = -42.14002826183198
+"violins_pizz" = -27.439426597571618

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import sharp from 'sharp';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { createHarness, type Harness, type Instance } from './support.ts';
@@ -158,4 +159,51 @@ it('publishes canonical paint, retains old versions, equips and serves verified 
     (await app.inject({ method: 'GET', url: `/api/v1/skins/versions/${version.id}/texture` }))
       .statusCode,
   ).toBe(404);
+});
+
+it('publishes paint per swarm mesh, keeping classic manifests compatible', async () => {
+  const app = instance.app;
+  const headers = { authorization: `Bearer ${player.accessToken}` };
+  const png = await sharp({
+    create: { width: 256, height: 256, channels: 3, background: { r: 10, g: 200, b: 90 } },
+  })
+    .png()
+    .toBuffer();
+  const payload = { name: 'Shapes', imageBase64: png.toString('base64'), buildingColor: 0x445566 };
+  await harness.database.db
+    .insertInto('entitlements')
+    .values({ account_id: player.accountId, entitlement: 'skins:designer', source: 'shapes' })
+    .execute();
+  const publish = (extra: object) =>
+    app.inject({
+      method: 'POST',
+      url: '/api/v1/skins/publish',
+      headers,
+      payload: { ...payload, ...extra },
+    });
+  const classic = (await publish({})).json();
+  expect(classic.swarmMesh).toBe('classic');
+  // Game clients recompute this manifest: classic omits swarmMesh, as before mesh choice.
+  const manifest = (content: object) =>
+    createHash('sha256').update(JSON.stringify(content)).digest('hex');
+  const base = {
+    skinId: classic.skinId,
+    textureSha256: classic.textureSha256,
+    layout: 'colony-v1',
+    buildingColor: 0x445566,
+  };
+  expect(classic.manifestSha256).toBe(manifest(base));
+  const crown = (await publish({ skinId: classic.skinId, swarmMesh: 'crown' })).json();
+  expect(crown).toMatchObject({ skinId: classic.skinId, swarmMesh: 'crown' });
+  expect(crown.id).not.toBe(classic.id);
+  expect(crown.manifestSha256).toBe(manifest({ ...base, swarmMesh: 'crown' }));
+  expect((await publish({ skinId: classic.skinId, swarmMesh: 'crown' })).json()).toEqual(crown);
+  expect((await publish({ swarmMesh: 'pyramid' })).statusCode).toBe(400);
+  const items = (await app.inject({ method: 'GET', url: '/api/v1/skins', headers })).json().items;
+  expect(
+    items
+      .filter((item: { skinId: string }) => item.skinId === classic.skinId)
+      .map((item: { swarmMesh: string }) => item.swarmMesh)
+      .sort(),
+  ).toEqual(['classic', 'crown']);
 });
