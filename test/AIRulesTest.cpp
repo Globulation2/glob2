@@ -129,7 +129,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         g.gameHeader.setResourceGrowthDisabled(variant==2);
         populate(w);
         // Existing service buildings and starting levels must not create training investments.
-        w.addBuilding("school",3,35,1);w.addBuilding("racetrack",10,35);
+        auto* school=w.addBuilding("school",3,35,1);school->maxUnitWorking=5;w.addBuilding("racetrack",10,35);
         w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,25,12,0,2);
         if(variant==2) {
             for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->resources[WHEAT]=0;b->update();}
@@ -140,6 +140,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         for(int i=0;i<4096;++i) decisions+=static_cast<unsigned char>(tick(g)[0])!=ORDER_NULL;
         CHECK(decisions>0);
         CHECK(g.teams[0]->isAlive);
+        CHECK(school->maxUnitWorking==0);
         CHECK(g.teams[0]->stats.measurements.trainingVisits[WORKER]==0);
         CHECK(g.teams[0]->stats.measurements.trainingVisits[WARRIOR]==0);
         auto* backend=new GAGCore::MemoryStreamBackend;
@@ -210,6 +211,13 @@ TEST_CASE("restored controller queues discard unavailable work and release prere
     const int school=globalContainer->buildingsTypes.getTypeNum("school",0,true);
     OrderCreate training(0,20,20,school,2,2);
     CHECK(!AIRules::permittedQueuedOrder(g,training));
+    AIMaximaRuntime::Context maxima(g.players[0]);
+    auto& register_=maxima.get_building_register();register_.initiate();
+    const auto id=register_.found().begin()->first;
+    AIMaximaRuntime::Management::UpgradeRepair savedUpgrade(id);
+    savedUpgrade.modify(maxima);
+    CHECK(!register_.is_building_upgrading(id));
+    CHECK(maxima.orders.empty());
     AICortex cortex(g.players[0]);
     cortex.orderQueue.push(std::make_shared<OrderConstruction>(inn->gid,2,2));
     CHECK(cortex.getOrder()->getOrderType()==ORDER_NULL);CHECK(cortex.orderQueue.empty());

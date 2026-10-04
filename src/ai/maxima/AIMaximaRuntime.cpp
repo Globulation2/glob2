@@ -636,7 +636,16 @@ void ChangePriority::modify(Context& c){::Building* b=c.get_building_register().
 void ChangePriority::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(priority,"value");s->writeSint32(id,"id");}
 UpgradeRepair::UpgradeRepair(int id):id(id){}
 Result UpgradeRepair::wait(Context& c) const{return wait_for_building(c,id);}
-void UpgradeRepair::modify(Context& c){::Building* b=c.get_building_register().get_building(id);if(b){c.push_order(shared_ptr<Order>(new OrderConstruction(b->gid,1,1)));c.get_building_register().set_upgrading(id);}}
+void UpgradeRepair::modify(Context& c)
+{
+	::Building* b=c.get_building_register().get_building(id);
+	if(!b) return;
+	// A restored management request must not register an impossible upgrade
+	// after the planner has removed training investments. Damaged repairs remain.
+	if(c.player->game->gameHeader.isUnitUpgradesDisabled() && b->hp>=b->getEffectiveMaxHp()) return;
+	c.push_order(shared_ptr<Order>(new OrderConstruction(b->gid,1,1)));
+	c.get_building_register().set_upgrading(id);
+}
 void UpgradeRepair::save_payload(GAGCore::OutputStream* s)const{s->writeSint32(id,"id");}
 Notify::Notify(const RuntimeEvent& event):event(event){}
 Result Notify::wait(Context&) const{return Ready;}

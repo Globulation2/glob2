@@ -108,7 +108,16 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 		PerformanceTelemetry::Id::AI,
 		PerformanceTelemetry::collector().actor(player->number, player->team->teamNumber,
 												implementationID, telemetrySeries->generation));
-	auto order = aiImplementation->getOrder();
+	// Loaded colonies can retain workers hauling training supplies even after
+	// the strategy gates remove that investment. Release those assignments for
+	// native controllers before planning; hospitals and barracks can still heal.
+	std::shared_ptr<Order> order;
+	if (implementationID!=JAVASCRIPT && player->game->gameHeader.isUnitUpgradesDisabled())
+		for (int i=0;i<Building::MAX_COUNT;++i)
+			if (auto* b=player->team->myBuildings[i]; b && !b->type->isBuildingSite
+				&& AIRules::trainingBuilding(b->type->shortTypeNum) && b->maxUnitWorking>0)
+			{ order=std::make_shared<OrderModifyBuilding>(b->gid,0); break; }
+	if (!order) order = aiImplementation->getOrder();
 	// Qualification audits planning at selection time. A replay sees orders
 	// after the network queue, when a repair may already have finished, and
 	// cannot reliably distinguish that repair from an unavailable upgrade.
