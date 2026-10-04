@@ -59,12 +59,6 @@ namespace
 		exit(1);
 	}
 
-	bool recordingDimension(std::string_view text, int &dimension)
-	{
-		const auto result = std::from_chars(text.data(), text.data() + text.size(), dimension);
-		return result.ec == std::errc{} && result.ptr == text.data() + text.size() &&
-			   dimension >= 1 && dimension <= 16384;
-	}
 
 	// Consume and return the token after argv[i], advancing i past it. If no
 	// token follows, print `usageMessage` verbatim to stdout and exit(0). The
@@ -249,20 +243,16 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (strcmp(argv[i], "--record") == 0)
 			recordingPath = requireRecordingArg(i, argc, argv);
-		else if (strcmp(argv[i], "--record-ffmpeg") == 0)
-			GAGCore::Recording::recorder().options.ffmpeg = requireRecordingArg(i, argc, argv);
-		else if (strcmp(argv[i], "--record-size") == 0)
+		else if (strcmp(argv[i], "--record-ffmpeg") == 0 || strcmp(argv[i], "--record-size") == 0)
 		{
-			const std::string_view value = requireRecordingArg(i, argc, argv);
-			auto &settings = GAGCore::Recording::recorder().options;
-			const auto separator = value.find('x');
-			if (separator == std::string_view::npos ||
-				!recordingDimension(value.substr(0, separator), settings.width) ||
-				!recordingDimension(value.substr(separator + 1), settings.height))
-			{
-				fprintf(stderr, "Invalid recording size\n");
-				exit(1);
-			}
+			fprintf(stderr, "%s is obsolete: recording uses an embedded encoder at full framebuffer resolution. Remove this option.\n", argv[i]);
+			exit(1);
+		}
+		else if (strcmp(argv[i], "--record-encoder") == 0)
+		{
+			std::string value = requireRecordingArg(i, argc, argv);
+			if (value != "auto" && value != "software") { fprintf(stderr, "Recording encoder must be auto or software\n"); exit(1); }
+			GAGCore::Recording::recorder().options.encoder = value == "software" ? GAGCore::Recording::EncoderPreference::Software : GAGCore::Recording::EncoderPreference::Auto;
 		}
 		else if (strcmp(argv[i], "--record-fps") == 0 || strcmp(argv[i], "--record-crf") == 0 ||
 				 strcmp(argv[i], "--record-chapter-ticks") == 0)
@@ -466,11 +456,10 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-vs <name>\trecord compressed footage to videoshots/<name>.mp4\n");
 			printf("--record <path.mp4>\trecord menus, gameplay, and results with automatic "
 				   "chapters\n");
-			printf("--record-fps <1..240>\toutput frame rate (default 60)\n");
-			printf("--record-size <WxH>\toutput canvas (default native framebuffer size)\n");
-			printf("--record-crf <0..51>\tH.264 quality (default 18)\n");
+			printf("--record-fps <1..240>\toutput frame rate (default 30)\n");
+			printf("--record-encoder <auto|software>\tencoder selection (default auto)\n");
+			printf("--record-crf <0..51>\tsoftware H.264 quality (default 23)\n");
 			printf("--record-chapter-ticks <N>\tera length (default 10000)\n");
-			printf("--record-ffmpeg <path>\tFFmpeg executable (default PATH)\n");
 			printf("-replay <replay file name>\t replay the game stored in the specified file.\n");
 			printf("-version\tprint the version and exit\n");
 			exit(0);

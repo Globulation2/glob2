@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "support/Glob2Test.h"
 #include <GameplayRecording.h>
-#include <RecordingProcess.h>
+#include "support/RecordingValidationProcess.h"
 #include <SDL3/SDL.h>
 #include <chrono>
 #include <cmath>
@@ -63,16 +63,13 @@ TEST_SUITE("GameplayRecording")
 	TEST_CASE("producer failure remains failed and a publication collision preserves foreign files "
 			  "[recording]")
 	{
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		if (!encoder || !supported())
-			return;
+		if (!supported()) return;
 		auto pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
 			SDL_CreateSurface(64, 64, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 		REQUIRE(pixels);
 		for (bool captureFailure : {true, false})
 		{
 			Recorder recorder;
-			recorder.options.ffmpeg = encoder;
 			const auto path = output(captureFailure ? "capture-failure" : "publish-collision");
 			REQUIRE(recorder.start(path.string()));
 			awaitRecording(recorder, *pixels);
@@ -102,7 +99,6 @@ TEST_SUITE("GameplayRecording")
 		if (!encoder || !supported())
 			return;
 		Recorder recorder;
-		recorder.options.ffmpeg = encoder;
 		const auto path = output("audio-burst");
 		auto pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
 			SDL_CreateSurface(64, 64, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
@@ -138,6 +134,21 @@ TEST_SUITE("GameplayRecording")
 		const auto pcm = read(raw);
 		const auto first = (callbackStart - epochHint) * AudioSampleRate / 1000000;
 		REQUIRE(pcm.size() >= std::size_t(first + 4096) * 4);
+		// The MP4's first video timestamp is zero. Detect the first audible window
+		// after AAC decoding; priming/edit-list handling must retain clock alignment.
+		std::int64_t onset = -1;
+		for (std::size_t at=0; at+128 <= pcm.size()/4; at+=128)
+		{
+			double energy = 0;
+			for (std::size_t i=at;i<at+128;++i)
+			{
+				const auto offset=i*4;
+				const auto sample=std::int16_t(std::uint16_t(static_cast<unsigned char>(pcm[offset])) | (std::uint16_t(static_cast<unsigned char>(pcm[offset+1]))<<8));
+				energy += std::abs(int(sample));
+			}
+			if (energy/128 > 2000) { onset=std::int64_t(at); break; }
+		}
+		REQUIRE(onset>=0); CHECK(std::abs(onset-first)*1000/AudioSampleRate <= 50);
 		// Inspect each chunk's interior, away from codec priming/transition samples.
 		for (int chunk = 0; chunk < 4; ++chunk)
 		{
@@ -159,38 +170,20 @@ TEST_SUITE("GameplayRecording")
 		recorder.options.fps = 0;
 		CHECK_FALSE(recorder.start(output("invalid").string()));
 		CHECK(recorder.status().state == State::Failed);
-		recorder.options.fps = 60;
+		recorder.options.fps = 30;
+		recorder.options.encoder = EncoderPreference::Software;
 		auto path = output("existing");
 		std::ofstream(path) << "preserve";
 		CHECK_FALSE(recorder.start(path.string()));
 		CHECK(read(path) == "preserve");
 	}
-	TEST_CASE("missing encoder fails asynchronously without holding the caller")
-	{
-		if (!supported())
-			return;
-		Recorder recorder;
-		recorder.options.ffmpeg = "glob2-nonexistent-ffmpeg";
-		auto path = output("missing-encoder");
-		REQUIRE(recorder.start(path.string()));
-		recorder.shutdown();
-		CHECK(recorder.status().state == State::Failed);
-		CHECK_FALSE(std::filesystem::exists(path));
-		CHECK(std::filesystem::exists(path.string() + ".recording/manifest.json"));
-	}
 	TEST_CASE("recording encodes audio, odd resized frames, and semantic chapters [recording]")
 	{
-		// Explicit opt-in: normal unit tests must not require an installed FFmpeg.
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		if (!encoder || !supported())
-		{
-			MESSAGE("Set GLOB2_TEST_FFMPEG to exercise real video encoding");
-			return;
-		}
+		if (!supported()) return;
 		auto path = output("recording-sections");
 		Recorder recorder;
-		recorder.options.ffmpeg = encoder;
-		recorder.options.fps = 60;
+		recorder.options.fps = 30;
+		recorder.options.encoder = EncoderPreference::Software;
 		auto pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
 			SDL_CreateSurface(321, 181, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
 		REQUIRE(pixels);
@@ -221,7 +214,7 @@ TEST_SUITE("GameplayRecording")
 		SDL_FillSurfaceRect(pixels.get(), nullptr,
 							SDL_MapSurfaceRGBA(pixels.get(), 10, 20, 200, 255));
 		recorder.matchFrame(20005, false, 40);
-		draw(recorder, pixels.get(), 200);
+		draw(recorder, pixels.get(), 350);
 		recorder.screen("end_game");
 		draw(recorder, pixels.get(), 200);
 		recorder.stop();
@@ -237,7 +230,8 @@ TEST_SUITE("GameplayRecording")
 		CHECK(manifest.find("\"height\":182") != std::string::npos);
 		CHECK(manifest.find("\"era_start\":10000") != std::string::npos);
 		CHECK(manifest.find("\"era_start\":20000") != std::string::npos);
-		CHECK(manifest.find("\"phase\":\"results\"") != std::string::npos);
+		REQUIRE(recorder.status().outputs.size() == 2);
+		CHECK(read(recorder.status().outputs.back()+".json").find("\"phase\":\"results\"") != std::string::npos);
 		CHECK(manifest.find("\"screen\":\"multiplayer_game\"") != std::string::npos);
 		CHECK(manifest.find("\"mode\":\"multiplayer\"") != std::string::npos);
 		CHECK(manifest.find("\"team\":2") != std::string::npos);
@@ -249,8 +243,6 @@ TEST_SUITE("GameplayRecording")
 		if (!supported())
 			return;
 		Recorder recorder;
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		recorder.options.ffmpeg = encoder ? encoder : "glob2-nonexistent-ffmpeg";
 		REQUIRE(recorder.start(output("no-frame").string()));
 		recorder.stop();
 		recorder.shutdown();

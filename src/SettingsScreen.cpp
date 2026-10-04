@@ -379,7 +379,7 @@ void SettingsScreen::onTimer(Uint32 tick)
 	pollCustomAIs();
 	if (current == Category::Online)
 		pollOnline();
-	if (current == Category::Recording && int(GAGCore::Recording::encoder()) != recordingEncoder)
+	if (current == Category::Recording && int(GAGCore::Recording::recorder().status().state) != recordingState)
 		invalidate();
 	if (saveAt && Sint32(tick - saveAt) >= 0)
 		persist();

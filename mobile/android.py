@@ -190,6 +190,7 @@ def main():
         from tools.package_assets import export_assets
         exported = output/'runtime-assets'
         export_assets(ROOT, exported, platform='android', optimized=args.release)
+        shutil.copytree(output/'recording/prefix/share/licenses/recording',exported/'licenses/recording',dirs_exist_ok=True)
         assets=generated/'assets/glob2-bundle'
         if assets.exists(): shutil.rmtree(assets)
         assets.parent.mkdir(parents=True, exist_ok=True)

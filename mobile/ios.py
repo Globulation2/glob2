@@ -93,6 +93,8 @@ def main():
     manifest=json.loads((prefix/'manifest.json').read_text())
     include=[output/'include',prefix/'include',prefix/'include/SDL3']+[ROOT/p for p in INCLUDE_DIRECTORIES]
     libraries=[output/('lib/libglob2-script-tests.a' if args.script_tests else 'lib/libglob2.a')]+[prefix/p for p in manifest['archives']]
+    recording_prefix=output/'recording/prefix'
+    libraries += [recording_prefix/'lib'/('lib'+name+'.a') for name in ('avformat','avcodec','swscale','swresample','avutil','x264')]
     lines=['cmake_minimum_required(VERSION 3.24)','project(Glob2 LANGUAGES C CXX OBJC OBJCXX)',
         'set(CMAKE_CXX_STANDARD 20)', 'set(CMAKE_CXX_STANDARD_REQUIRED ON)',
         'add_executable(Glob2 MACOSX_BUNDLE '+cmake_quote(ROOT/('mobile/ios/ScriptTests.mm' if args.script_tests else 'src/Glob2.cpp'))+')',
@@ -131,7 +133,7 @@ def main():
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
-    for framework in ('UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
+    for framework in ('VideoToolbox','UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     if args.script_tests:
         lines += ['set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)']
@@ -140,7 +142,8 @@ def main():
     from tools.package_assets import export_assets
     asset_root = output/'runtime-assets'
     export_assets(ROOT, asset_root, platform='ios', optimized=args.release)
-    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts')]
+    shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
+    resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses')]
     if args.script_tests:
         resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures')]
     for resource_root, folder in resource_roots:

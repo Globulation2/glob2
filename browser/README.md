@@ -364,3 +364,23 @@ fresh runners; compiler caching does not replace the browser or determinism test
 The determinism test transfers its checksum file as Base64 to avoid serializing
 millions of individual byte values through Playwright. The decoded bytes still
 feed the same per-tick comparison against native platforms.
+
+## Embedded recording
+
+Both game runtimes use the same lazily loaded `recording-worker.js` and
+`recording-runtime.wasm`. The game submits bounded transferable frames and PCM;
+acknowledgements release capture credits only when the shared session consumes
+input. The worker owns WebCodecs, x264 fallback, AAC, fragmented MP4 staging,
+final remuxing and synchronous OPFS handles. Shared C++ code calls the browser
+adapter in `RecordingPlatform.cpp`; it does not include browser API calls.
+
+`recording-video.js` probes actual dimensions and tests initialization before
+committing a stream. `recording-storage.js` owns streaming OPFS I/O and filename
+locks. Recording files remain outside IDBFS; export uses OPFS-backed File objects.
+The Recordings screen also lists interrupted staging files for recovery. Encoding
+uses no Asyncify, shared-memory requirement or main-thread codec proxy.
+
+Run `recording.spec.js` in Chromium, Firefox and WebKit for both runtime transports,
+resize segmentation, exports, missing WebCodecs and unavailable storage. Independent
+media decoding requires an external validator; recording itself does not. See
+[gameplay footage](../docs/features/gameplay-recording.md) for defaults and limits.

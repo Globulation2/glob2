@@ -141,7 +141,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            clang-18 llvm-18 python3 scons pkg-config git cmake \
+            clang-18 llvm-18 python3 scons pkg-config nasm libva-dev git cmake \
             libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev libgl1-mesa-dev \
@@ -311,7 +311,7 @@ jobs:
           EOF
           sudo apt-get update -qq
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git ${{ matrix.compiler }} python3 python3-venv scons pkg-config ccache \
+            ca-certificates git ${{ matrix.compiler }} python3 python3-venv scons pkg-config nasm libva-dev ccache \
             cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
             libvorbis-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
@@ -461,7 +461,7 @@ jobs:
           update: true
           install: >-
             git
-            mingw-w64-x86_64-toolchain
+            make mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python
             mingw-w64-x86_64-scons
@@ -477,6 +477,7 @@ jobs:
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-libepoxy
             mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-nasm
             mingw-w64-x86_64-ccache
 
       - uses: actions/checkout@v4
@@ -741,7 +742,7 @@ jobs:
             /etc/apt/sources.list.d/google-chrome.list \
             /etc/apt/sources.list.d/google-chrome.sources
           sudo apt-get update -qq
-          sudo apt-get install -y python3-venv scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y python3-venv scons nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       - name: Install pinned Emscripten
         id: install_pinned_emscripten
         run: python3 browser/setup.py
@@ -923,7 +924,7 @@ jobs:
         id: install_native_build_dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y python3-venv scons ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
+          sudo apt-get install -y python3-venv scons nasm libva-dev ccache g++-13 cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
       # Reuse the native client objects already populated by the main Linux job.
       # This job only reads that cache; transport-specific misses stay local.
       - name: Restore native compiler cache

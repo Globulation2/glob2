@@ -2,7 +2,7 @@
 #include <glob2/BuildConfig.h>
 #include <GameplayRecording.h>
 #include "RecordingMetadata.h"
-#include <RecordingProcess.h>
+#include "RecordingSession.h"
 #include <FileManager.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -20,61 +20,54 @@
 #include <stdexcept>
 #include <thread>
 #include <vector>
+#if defined(__APPLE__) || (defined(__linux__) && !defined(__EMSCRIPTEN__))
+#include <time.h>
+#elif defined(_WIN32)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
+#ifdef __EMSCRIPTEN__
+#include "RecordingPlatform.h"
+#include <nlohmann/json.hpp>
+#endif
 
 namespace GAGCore::Recording
 {
 namespace
 {
-using Clock = std::chrono::steady_clock;
 constexpr std::size_t MaxQueuedFrames = 3;
 constexpr std::size_t MaxQueuedEvents = 1024;
 constexpr std::size_t AudioBlockSamples = 4096;
 constexpr std::size_t AudioSampleBudget = AudioSampleRate * AudioChannels * 2;
-constexpr std::int64_t JitterToleranceFrames = AudioSampleRate / 50; // 20ms
-constexpr std::int64_t VideoDelayUs = 50'000;
-constexpr std::int64_t AudioCallbackAllowanceUs = 250'000;
 std::int64_t now()
 {
-	return std::chrono::duration_cast<std::chrono::microseconds>(Clock::now().time_since_epoch())
-		.count();
+	// Recording time includes OS suspend; engine scheduling retains its own clock.
+#if defined(__APPLE__)
+	return std::int64_t(clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW)/1000);
+#elif defined(__linux__) && !defined(__EMSCRIPTEN__)
+	timespec time{};
+	if (!clock_gettime(CLOCK_BOOTTIME,&time)) return std::int64_t(time.tv_sec)*1000000+time.tv_nsec/1000;
+#elif defined(_WIN32)
+	using InterruptClock = void (WINAPI *)(PULONGLONG);
+	static const auto precise = reinterpret_cast<InterruptClock>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"QueryInterruptTimePrecise"));
+	if (precise) { ULONGLONG time; precise(&time); return std::int64_t(time/10); }
+	return std::int64_t(GetTickCount64())*1000;
+#endif
+	return std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 std::string utf8(const std::filesystem::path &path)
 {
 	auto value = path.u8string();
 	return std::string(reinterpret_cast<const char *>(value.data()), value.size());
 }
-// Throws unless the encoder runs and provides libx264 and AAC; output goes to log.
-void checkEncoders(const std::string &ffmpeg, const std::string &log)
-{
-	Process probe;
-	probe.launch({ffmpeg, "-hide_banner", "-encoders"}, log, false);
-	if (probe.finish(5))
-		throw std::runtime_error("FFmpeg did not report its encoders");
-	std::ifstream input(std::filesystem::u8path(log));
-	std::string encoders((std::istreambuf_iterator<char>(input)), {});
-	if (encoders.find("libx264 ") == std::string::npos || encoders.find(" aac ") == std::string::npos)
-		throw std::runtime_error("FFmpeg must provide libx264 and AAC encoders");
-}
 using Detail::Context;
-using Detail::ffescape;
-using Detail::json;
-struct Frame
-{
-	std::int64_t time;
-	int width, height;
-	std::vector<unsigned char> rgba;
-	Context context;
-};
+using Frame = Detail::CaptureFrame;
 struct Event
 {
 	std::int64_t time;
 	std::string kind, value;
-};
-struct Chapter
-{
-	std::int64_t start, end;
-	Context context;
-	std::uint32_t lastTick;
 };
 struct Audio
 {
@@ -89,7 +82,8 @@ struct Recorder::Impl
 	std::atomic<bool> finished{true};
 	std::atomic<std::int64_t> epoch{0}, stoppedAt{0}, lastCapture{-1};
 	std::atomic<std::uint64_t> droppedFrames{0}, droppedAudio{0};
-	std::atomic<int> captureFps{60};
+	std::atomic<int> captureFps{30};
+	std::atomic<std::size_t> queuedFrames{0};
 	std::mutex mutex, audioMutex;
 	std::condition_variable wake;
 	std::deque<Frame> frames;
@@ -98,6 +92,7 @@ struct Recorder::Impl
 	std::array<Audio, 128> audioBlocks;
 	std::size_t audioRead = 0, audioWrite = 0, audioCount = 0, audioSamples = 0;
 	std::string path, error;
+	Status published;
 	Context context;
 	std::uint64_t matchSerial = 0;
 	std::thread worker;
@@ -120,8 +115,47 @@ struct Recorder::Impl
 	}
 
 	void run(Options options);
-	void encodeAudio(const Options &options, const std::string &work, std::atomic<bool> &audioDone,
-					 std::atomic<bool> &audioFailed, std::string &audioError);
+#ifdef __EMSCRIPTEN__
+	std::uint64_t reportedFrames = 0, reportedAudio = 0;
+	void pump()
+	{
+		if (char *value = browserRecordingStatus())
+		{
+			try
+			{
+				auto s = nlohmann::json::parse(value);
+				std::lock_guard lock(mutex);
+				published.state = static_cast<State>(s.value("state",int(State::Failed)));
+				published.path = s.value("path",path); published.error = s.value("error","");
+				published.encoder = s.value("encoder",""); published.fallbackReason = s.value("fallbackReason","");
+				published.segment = s.value("segment",0u); published.width = s.value("width",0); published.height = s.value("height",0);
+				published.sourceWidth = s.value("sourceWidth",0); published.sourceHeight = s.value("sourceHeight",0);
+				published.droppedFrames = s.value("droppedFrames",std::uint64_t(0));
+				published.droppedAudioSamples = s.value("droppedAudioSamples",std::uint64_t(0));
+				published.outputs = s.value("outputs",std::vector<std::string>{});
+				if (state != State::Failed && (state != State::Finalizing || published.state >= State::Complete)) state = published.state;
+				error = published.error; finished = state == State::Complete || state == State::Failed;
+			}
+			catch (...) { fail("Invalid recording worker status"); }
+			std::free(value);
+		}
+		for (;;)
+		{
+			Audio block;
+			{
+				std::lock_guard lock(audioMutex); if (!audioCount) break;
+				block = audioBlocks[audioRead]; audioRead = (audioRead+1)%audioBlocks.size(); --audioCount; audioSamples -= block.count;
+			}
+			if (!browserRecordingAudio(block.samples.data(),int(block.count),double(block.time))) droppedAudio += block.count;
+		}
+		if (reportedFrames != droppedFrames || reportedAudio != droppedAudio)
+		{
+			reportedFrames = droppedFrames; reportedAudio = droppedAudio;
+			browserRecordingDrops(double(reportedFrames),double(reportedAudio));
+		}
+	}
+#endif
+
 };
 Recorder::Recorder() : impl(std::make_unique<Impl>()) {}
 Recorder::~Recorder()
@@ -139,90 +173,13 @@ Recorder &recorder()
 }
 bool supported()
 {
-#if defined(__EMSCRIPTEN__) || defined(GLOB2_MOBILE)
-	return false;
+#if defined(__EMSCRIPTEN__)
+	return browserRecordingAvailable();
 #else
 	return true;
 #endif
 }
-namespace
-{
-// One probe at a time; the destructor waits for it at exit.
-struct EncoderProbe
-{
-	std::mutex mutex;
-	Encoder state = Encoder::Unknown;
-	std::string problem;
-	std::thread worker;
-	~EncoderProbe()
-	{
-		if (worker.joinable())
-			worker.join();
-	}
-};
-EncoderProbe &encoderProbe()
-{
-	static EncoderProbe instance;
-	return instance;
-}
-} // namespace
-void probeEncoder(bool force)
-{
-	auto &probe = encoderProbe();
-	std::lock_guard<std::mutex> lock(probe.mutex);
-	if (!supported())
-	{
-		probe.state = Encoder::Missing;
-		probe.problem = "Recording is not supported on this platform";
-		return;
-	}
-	if (probe.state == Encoder::Checking || (!force && probe.state != Encoder::Unknown))
-		return;
-	if (probe.worker.joinable())
-		probe.worker.join();
-	probe.state = Encoder::Checking;
-	probe.problem.clear();
-	const std::string ffmpeg = recorder().options.ffmpeg;
-	probe.worker = std::thread(
-		[&probe, ffmpeg]
-		{
-			std::string problem;
-			std::filesystem::path log;
-			try
-			{
-				log = std::filesystem::temp_directory_path() /
-					  ("glob2-ffmpeg-probe-" + std::to_string(now()) + ".log");
-				checkEncoders(ffmpeg, utf8(log));
-			}
-			catch (const std::exception &error)
-			{
-				problem = error.what();
-			}
-			std::error_code ignored;
-			if (!log.empty())
-				std::filesystem::remove(log, ignored);
-			std::lock_guard<std::mutex> lock(probe.mutex);
-			probe.state = problem.empty() ? Encoder::Available : Encoder::Missing;
-			probe.problem = problem;
-		});
-}
-Encoder encoder()
-{
-	probeEncoder();
-	auto &probe = encoderProbe();
-	std::lock_guard<std::mutex> lock(probe.mutex);
-	return probe.state;
-}
-std::string encoderProblem()
-{
-	auto &probe = encoderProbe();
-	std::lock_guard<std::mutex> lock(probe.mutex);
-	return probe.problem;
-}
-bool available()
-{
-	return supported() && encoder() == Encoder::Available;
-}
+bool available() { return supported(); }
 bool Recorder::start(const std::string &requestedPath)
 {
 	if (active() || impl->state == State::Finalizing)
@@ -236,27 +193,20 @@ bool Recorder::start(const std::string &requestedPath)
 	try
 	{
 		if (!supported())
-			throw std::runtime_error("Video recording currently requires a desktop build");
-		if (options.fps < 1 || options.fps > 240 || options.crf < 0 || options.crf > 51 ||
-			!options.chapterTicks || options.width < 0 || options.height < 0 ||
-			bool(options.width) != bool(options.height) || options.width > 16384 ||
-			options.height > 16384)
+			throw std::runtime_error("Recording worker is unavailable");
+		if (options.fps < 1 || options.fps > 240 || options.crf < 0 || options.crf > 51 || !options.chapterTicks)
 			throw std::runtime_error("Invalid recording options");
 		auto path = std::filesystem::absolute(std::filesystem::u8path(requestedPath));
 		if (path.extension() != ".mp4")
 			throw std::runtime_error("Recording output must have a .mp4 extension");
-		std::filesystem::create_directories(path.parent_path());
-		// Atomic directory reservation prevents two clients claiming the same output.
-		if (std::filesystem::exists(path) ||
-			std::filesystem::exists(std::filesystem::u8path(utf8(path) + ".json")) ||
-			std::filesystem::exists(std::filesystem::u8path(utf8(path) + ".events.jsonl")) ||
-			!std::filesystem::create_directory(std::filesystem::u8path(utf8(path) + ".recording")))
-			throw std::runtime_error(
-				"Recording output already exists or is reserved; choose a new name");
+#ifndef __EMSCRIPTEN__
+		Detail::nativeSessionStorage().reserve(utf8(path));
+#endif
 		{
 			std::lock_guard<std::mutex> lock(impl->mutex);
 			impl->path = utf8(path);
 			impl->error.clear();
+			impl->published = {};
 			impl->frames.clear();
 			impl->events.clear();
 		}
@@ -269,11 +219,17 @@ bool Recorder::start(const std::string &requestedPath)
 		impl->epoch = 0;
 		impl->stoppedAt = 0;
 		impl->lastCapture = -1;
+		impl->queuedFrames = 0;
 		impl->droppedFrames = 0;
 		impl->droppedAudio = 0;
 		impl->captureFps = options.fps;
 		impl->state = State::Starting;
 		impl->finished = false;
+#ifdef __EMSCRIPTEN__
+		char *base = browserRecordingBase();
+		browserRecordingStart(impl->path.c_str(),options.fps,options.crf,options.encoder == EncoderPreference::Software,options.chapterTicks,base,double(now()));
+		std::free(base);
+#else
 		impl->worker = std::thread(
 			[this, settings = options]
 			{
@@ -287,6 +243,7 @@ bool Recorder::start(const std::string &requestedPath)
 				}
 				impl->finished = true;
 			});
+#endif
 		return true;
 	}
 	catch (const std::exception &e)
@@ -298,6 +255,9 @@ bool Recorder::start(const std::string &requestedPath)
 }
 void Recorder::stop()
 {
+#ifdef __EMSCRIPTEN__
+	impl->pump();
+#endif
 	{
 		// Serialize stop time and failure publication; a failed encoder must never
 		// be changed back into Finalizing by a simultaneous quit/shortcut request.
@@ -313,6 +273,10 @@ void Recorder::stop()
 		}
 	}
 	impl->wake.notify_all();
+#ifdef __EMSCRIPTEN__
+	impl->pump();
+	browserRecordingStop(double(impl->stoppedAt.load()));
+#endif
 }
 
 void Recorder::abort(const std::string &error)
@@ -321,6 +285,9 @@ void Recorder::abort(const std::string &error)
 		return;
 	event("capture_error", error);
 	impl->fail(error);
+#ifdef __EMSCRIPTEN__
+	browserRecordingFail(error.c_str());
+#endif
 }
 void Recorder::shutdown()
 {
@@ -330,9 +297,14 @@ void Recorder::shutdown()
 }
 Status Recorder::status() const
 {
+#ifdef __EMSCRIPTEN__
+	impl->pump();
+#endif
 	std::lock_guard<std::mutex> lock(impl->mutex);
-	return {impl->state.load(), impl->path, impl->error, impl->droppedFrames.load(),
-			impl->droppedAudio.load()};
+	Status result = impl->published;
+	result.state = impl->state.load(); result.path = result.path.empty() ? impl->path : result.path;
+	result.error = impl->error; result.droppedFrames = std::max(result.droppedFrames,impl->droppedFrames.load()); result.droppedAudioSamples = std::max(result.droppedAudioSamples,impl->droppedAudio.load());
+	return result;
 }
 bool Recorder::active() const
 {
@@ -343,52 +315,61 @@ bool Recorder::wantsFrame() const
 	if (!active())
 		return false;
 	auto epoch = impl->epoch.load();
+	// One initial frame supplies the dimensions while the encoder initializes.
+	if (epoch && impl->state == State::Starting) return false;
 	if (epoch && (now() - epoch) * impl->captureFps / 1000000 <= impl->lastCapture)
 		return false;
 	std::unique_lock<std::mutex> lock(impl->mutex, std::try_to_lock);
-	if (lock && impl->frames.size() >= MaxQueuedFrames)
+	if (!lock) { ++impl->droppedFrames; return false; }
+#ifdef __EMSCRIPTEN__
+	if (!browserRecordingRoom()) { ++impl->droppedFrames; return false; }
+#endif
+	if (lock && impl->queuedFrames >= MaxQueuedFrames)
 		++impl->droppedFrames;
-	return lock && impl->frames.size() < MaxQueuedFrames;
+	return lock && impl->queuedFrames < MaxQueuedFrames;
 }
-void Recorder::frame(const SDL_Surface &pixels)
+void Recorder::frame(const SDL_Surface &pixels, bool bottomUp)
 {
 	if (!active())
 		return;
 	const auto time = now();
 	std::unique_lock<std::mutex> lock(impl->mutex, std::try_to_lock);
-	if (!lock || impl->frames.size() >= MaxQueuedFrames)
+	if (!lock || impl->queuedFrames >= MaxQueuedFrames)
 	{
 		++impl->droppedFrames;
 		return;
 	}
 	if (pixels.w <= 0 || pixels.h <= 0)
 		return;
-	std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> converted(nullptr,
-																		  SDL_DestroySurface);
-	const SDL_Surface *source = &pixels;
-	if (pixels.format != SDL_PIXELFORMAT_RGBA32)
+	unsigned layout = 0;
+	if (pixels.format == SDL_PIXELFORMAT_BGRA32) layout = 1;
+	else if (pixels.format == SDL_PIXELFORMAT_ARGB32) layout = 2;
+	else if (pixels.format == SDL_PIXELFORMAT_ABGR32) layout = 3;
+	else if (pixels.format == SDL_PIXELFORMAT_RGB24) layout = 4;
+	else if (pixels.format == SDL_PIXELFORMAT_BGR24) layout = 5;
+	else if (pixels.format != SDL_PIXELFORMAT_RGBA32)
 	{
-		converted.reset(
-			SDL_ConvertSurface(const_cast<SDL_Surface *>(&pixels), SDL_PIXELFORMAT_RGBA32));
-		if (!converted)
-		{
-			lock.unlock();
-			abort(SDL_GetError());
-			return;
-		}
-		source = converted.get();
+		lock.unlock(); abort("Unsupported recording capture pixel format"); return;
 	}
-	Frame frame{time, source->w, source->h, {}, impl->context};
-	frame.rgba.resize(std::size_t(frame.width) * frame.height * 4);
+	const auto bytesPerPixel = layout < 4 ? 4 : 3;
+	Frame frame{time, pixels.w, pixels.h, {}, impl->context};
+	frame.pixelLayout = layout; frame.bottomUp = bottomUp;
+	frame.rgba.resize(std::size_t(frame.width) * frame.height * bytesPerPixel);
 	for (int y = 0; y < frame.height; ++y)
-		std::memcpy(frame.rgba.data() + std::size_t(y) * frame.width * 4,
-					static_cast<const unsigned char *>(source->pixels) + y * source->pitch,
-					std::size_t(frame.width) * 4);
+		std::memcpy(frame.rgba.data() + std::size_t(y) * frame.width * bytesPerPixel,
+					static_cast<const unsigned char *>(pixels.pixels) + y * pixels.pitch,
+					std::size_t(frame.width) * bytesPerPixel);
 	if (!impl->epoch)
 		impl->epoch = time;
 	impl->lastCapture = (time - impl->epoch) * impl->captureFps / 1000000;
+#ifdef __EMSCRIPTEN__
+	auto context = "{\"pixel_layout\":"+std::to_string(frame.pixelLayout)+",\"bottom_up\":"+(frame.bottomUp ? "true" : "false")+","+frame.context.fields(options.chapterTicks)+",\"speed\":"+std::to_string(frame.context.speed)+",\"paused\":"+(frame.context.paused ? "true" : "false")+"}";
+	if (!browserRecordingFrame(frame.rgba.data(),frame.width,frame.height,double(frame.time),context.c_str())) ++impl->droppedFrames;
+#else
 	impl->frames.push_back(std::move(frame));
+	++impl->queuedFrames;
 	impl->wake.notify_all();
+#endif
 }
 void Recorder::audio(const std::int16_t *samples, std::size_t count)
 {
@@ -469,9 +450,13 @@ void Recorder::event(const std::string &kind, const std::string &value)
 {
 	if (!active())
 		return;
+#ifdef __EMSCRIPTEN__
+	browserRecordingEvent(double(now()),kind.c_str(),value.c_str());
+#else
 	std::unique_lock<std::mutex> lock(impl->mutex, std::try_to_lock);
 	if (lock && impl->events.size() < MaxQueuedEvents)
 		impl->events.push_back({now(), kind, value});
+#endif
 }
 bool toggle()
 {
@@ -495,429 +480,58 @@ std::string controlLabel()
 	return recorder().active() ? "[stop recording]" : "[start recording]";
 }
 
-void Recorder::Impl::encodeAudio(const Options &options, const std::string &work,
-								 std::atomic<bool> &audioDone, std::atomic<bool> &audioFailed,
-								 std::string &audioError)
-{
-	try
-	{
-		// delay_moov preserves AAC priming/edit-list information. empty_moov
-		// would shift decoded samples by one 1024-frame AAC block on remux.
-		Process audio;
-		audio.launch({options.ffmpeg,
-					  "-hide_banner",
-					  "-loglevel",
-					  "warning",
-					  "-nostdin",
-					  "-n",
-					  "-f",
-					  "s16le",
-					  "-ar",
-					  "44100",
-					  "-ac",
-					  "2",
-					  "-i",
-					  "pipe:0",
-					  "-vn",
-					  "-c:a",
-					  "aac",
-					  "-b:a",
-					  "192k",
-					  "-movflags",
-					  "+frag_keyframe+delay_moov+default_base_moof",
-					  "-frag_duration",
-					  "1000000",
-					  work + "audio.mp4"},
-					 work + "audio.log", true);
-		std::uint64_t written = 0;
-		std::array<std::int16_t, AudioBlockSamples> silence{};
-		auto pad = [&](std::uint64_t target)
-		{
-			while (written < target)
-			{
-				auto n = std::min<std::uint64_t>(target - written, silence.size() / 2);
-				audio.write(silence.data(), n * 4);
-				written += n;
-			}
-		};
-		for (;;)
-		{
-			Audio block;
-			bool available = false;
-			{
-				std::lock_guard<std::mutex> lock(audioMutex);
-				if (audioCount)
-				{
-					block = audioBlocks[audioRead];
-					audioRead = (audioRead + 1) % audioBlocks.size();
-					--audioCount;
-					audioSamples -= block.count;
-					available = true;
-				}
-			}
-			if (available)
-			{
-				auto start =
-					std::max<std::int64_t>(0, (block.time - epoch) * AudioSampleRate / 1000000);
-				// Preserve continuous PCM through normal scheduling jitter; correct
-				// gaps or drift once they exceed 20ms on the common timeline.
-				if (std::abs(start - std::int64_t(written)) < JitterToleranceFrames)
-					start = std::int64_t(written);
-				auto end = std::uint64_t(start) + block.count / 2;
-				// Correct callback/device clock drift against the common recording clock.
-				pad(std::uint64_t(start));
-				if (end > written)
-				{
-					auto skip = written - std::uint64_t(start);
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-					for (std::size_t i = 0; i < block.count; ++i)
-						block.samples[i] = SDL_Swap16(block.samples[i]);
-#endif
-					audio.write(block.samples.data() + skip * 2, (end - written) * 4);
-					written = end;
-				}
-			}
-			else
-			{
-				auto end = stoppedAt.load();
-				if (audioDone)
-				{
-					pad(std::uint64_t(std::max<std::int64_t>(0, end - epoch)) * AudioSampleRate /
-						1000000);
-					break;
-				}
-				// Leave 250ms for late callbacks; muted/stopped devices become silence.
-				auto target =
-					(now() - epoch - AudioCallbackAllowanceUs) * AudioSampleRate / 1000000;
-				if (target > 0)
-					pad(std::uint64_t(target));
-				std::this_thread::sleep_for(std::chrono::milliseconds(5));
-			}
-		}
-		if (audio.finish())
-			throw std::runtime_error("Audio encoder failed; inspect audio.log");
-	}
-	catch (const std::exception &e)
-	{
-		audioError = e.what();
-		audioFailed = true;
-	}
-}
-
+#ifndef __EMSCRIPTEN__
 void Recorder::Impl::run(Options options)
 {
-	const std::string work = path + ".recording/";
-	std::ofstream journal(std::filesystem::u8path(work + "events.jsonl"), std::ios::binary);
-	std::vector<Chapter> chapters;
-	std::uint64_t videoFrames = 0;
-	int width = 0, height = 0;
-	auto writeManifest = [&](bool complete, std::int64_t duration)
+	Detail::Session session(path, options, Detail::nativeSessionStorage(), [this](const Status &status)
 	{
-		std::string recordedError;
+		std::lock_guard lock(mutex);
+		published = status;
+		if (state != State::Failed)
 		{
-			std::lock_guard<std::mutex> lock(mutex);
-			recordedError = error;
+			if (state != State::Finalizing || status.state == State::Complete || status.state == State::Failed)
+				state = status.state;
+			error = status.error;
 		}
-		std::ofstream manifest(std::filesystem::u8path(work + "manifest.json"), std::ios::binary);
-		manifest << "{\"version\":1,\"video\":"
-				 << json(utf8(std::filesystem::u8path(path).filename()))
-				 << ",\"complete\":" << (complete ? "true" : "false")
-				 << ",\"error\":" << json(recordedError) << ",\"duration_us\":" << duration
-				 << ",\"fps\":" << options.fps << ",\"width\":" << width << ",\"height\":" << height
-				 << ",\"crf\":" << options.crf
-				 << ",\"video_codec\":\"h264\",\"audio_codec\":\"aac\",\"dropped_frames\":"
-				 << droppedFrames << ",\"dropped_audio_samples\":" << droppedAudio
-				 << ",\"chapters\":[";
-		for (std::size_t i = 0; i < chapters.size(); ++i)
-		{
-			auto &chapter = chapters[i];
-			if (i)
-				manifest << ',';
-			manifest << "{\"id\":" << i + 1
-					 << ",\"title\":" << json(chapter.context.title(options.chapterTicks))
-					 << ",\"start_us\":" << chapter.start << ",\"end_us\":" << chapter.end << ','
-					 << chapter.context.fields(options.chapterTicks);
-			if (chapter.context.match)
-				manifest << ",\"start_tick\":" << chapter.context.tick
-						 << ",\"last_tick\":" << chapter.lastTick;
-			manifest << '}';
-		}
-		manifest << "]}\n";
-		manifest.flush();
-		if (!manifest)
-			throw std::runtime_error("Cannot write recording manifest");
-	};
-	std::atomic<bool> audioDone{false}, audioFailed{false};
-	std::string audioError;
-	std::thread audioWorker;
+	});
 	try
 	{
-		if (!journal)
-			throw std::runtime_error("Cannot write recording event journal");
-		checkEncoders(options.ffmpeg, work + "preflight.log");
-		Frame latest;
-		{
-			std::unique_lock<std::mutex> lock(mutex);
-			wake.wait(lock, [&] { return !frames.empty() || !active(); });
-			if (frames.empty())
-				throw std::runtime_error("Recording stopped before a frame was captured");
-			latest = std::move(frames.front());
-			frames.pop_front();
-		}
-		width = options.width ? options.width : latest.width;
-		height = options.height ? options.height : latest.height;
-		width += width % 2;
-		height += height % 2;
-		Process video;
-		video.launch({options.ffmpeg,
-					  "-hide_banner",
-					  "-loglevel",
-					  "warning",
-					  "-nostdin",
-					  "-n",
-					  "-f",
-					  "rawvideo",
-					  "-pixel_format",
-					  "rgba",
-					  "-video_size",
-					  std::to_string(width) + "x" + std::to_string(height),
-					  "-framerate",
-					  std::to_string(options.fps),
-					  "-i",
-					  "pipe:0",
-					  "-an",
-					  "-c:v",
-					  "libx264",
-					  "-preset",
-					  "veryfast",
-					  "-crf",
-					  std::to_string(options.crf),
-					  "-pix_fmt",
-					  "yuv420p",
-					  "-g",
-					  std::to_string(options.fps * 2),
-					  "-movflags",
-					  "+frag_keyframe+empty_moov+default_base_moof",
-					  work + "video.mp4"},
-					 work + "video.log", true);
-		audioWorker =
-			std::thread([&] { encodeAudio(options, work, audioDone, audioFailed, audioError); });
-		auto canvas = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
-			SDL_CreateSurface(width, height, SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
-		if (!canvas)
-			throw std::runtime_error(SDL_GetError());
-		std::vector<unsigned char> rgba(std::size_t(width) * height * 4);
-		auto prepare = [&]
-		{
-			SDL_FillSurfaceRect(canvas.get(), nullptr,
-								SDL_MapSurfaceRGBA(canvas.get(), 0, 0, 0, 255));
-			auto source = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(
-				SDL_CreateSurfaceFrom(latest.width, latest.height, SDL_PIXELFORMAT_RGBA32,
-									  latest.rgba.data(), latest.width * 4),
-				SDL_DestroySurface);
-			if (!source)
-				throw std::runtime_error(SDL_GetError());
-			double scale = std::min(double(width) / latest.width, double(height) / latest.height);
-			SDL_Rect target{0, 0, std::max(1, int(latest.width * scale)),
-							std::max(1, int(latest.height * scale))};
-			target.x = (width - target.w) / 2;
-			target.y = (height - target.h) / 2;
-			SDL_SetSurfaceBlendMode(source.get(), SDL_BLENDMODE_NONE);
-			if (!SDL_BlitSurfaceScaled(source.get(), nullptr, canvas.get(), &target,
-									   SDL_SCALEMODE_LINEAR))
-				throw std::runtime_error(SDL_GetError());
-			for (int y = 0; y < height; ++y)
-				std::memcpy(rgba.data() + std::size_t(y) * width * 4,
-							static_cast<unsigned char *>(canvas->pixels) + y * canvas->pitch,
-							std::size_t(width) * 4);
-		};
-		prepare();
-		auto lastWidth = latest.width, lastHeight = latest.height;
-		auto requireHealthyCapture = [&]
-		{
-			if (state != State::Failed)
-				return;
-			std::lock_guard<std::mutex> lock(mutex);
-			throw std::runtime_error(error);
-		};
-		auto journalEventsThrough = [&](std::int64_t relative)
-		{
-			std::deque<Event> pending;
-			{
-				std::lock_guard<std::mutex> lock(mutex);
-				while (!events.empty() && events.front().time <= epoch + relative)
-				{
-					pending.push_back(std::move(events.front()));
-					events.pop_front();
-				}
-			}
-			for (const auto &event : pending)
-				journal << "{\"time_us\":" << std::max<std::int64_t>(0, event.time - epoch)
-						<< ",\"kind\":" << json(event.kind) << ",\"value\":" << json(event.value)
-						<< "}\n";
-			if (!pending.empty())
-			{
-				journal.flush();
-				if (!journal)
-					throw std::runtime_error("Cannot write recording journal");
-			}
-		};
-		std::uint64_t reportedFrames = 0, reportedAudio = 0;
+		bool primed = false;
 		for (;;)
 		{
-			requireHealthyCapture();
-			if (audioFailed)
-				throw std::runtime_error("Audio encoder stopped; inspect audio.log");
-			auto relative = std::int64_t(videoFrames) * 1000000 / options.fps;
-			auto end = stoppedAt.load();
-			if (!active() && end && relative >= std::max<std::int64_t>(1, end - epoch))
-				break;
-			// A small presentation delay allows submitted frames to reach their correct output slot.
-			if (active() && now() < epoch + relative + VideoDelayUs)
+			std::deque<Frame> incoming;
+			std::deque<Event> pending;
 			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(2));
-				continue;
+				std::lock_guard lock(mutex);
+				if (state == State::Failed) throw std::runtime_error(error);
+				incoming.swap(frames); pending.swap(events);
 			}
-			bool changed = false;
+			const auto before = session.queuedFrames()+incoming.size();
+			bool haveFrame = !incoming.empty();
+			for (auto &frame : incoming) session.frame(std::move(frame));
+			if (stoppedAt) session.stop(stoppedAt);
+			if (!primed && haveFrame) { session.step(now()); primed = true; }
+			for (const auto &e : pending) session.event(e.time,e.kind,e.value);
+			for (;;)
 			{
-				std::lock_guard<std::mutex> lock(mutex);
-				while (!frames.empty() && frames.front().time <= epoch + relative)
+				Audio block;
 				{
-					latest = std::move(frames.front());
-					frames.pop_front();
-					changed = true;
+					std::lock_guard lock(audioMutex);
+					if (!audioCount) break;
+					block = audioBlocks[audioRead]; audioRead = (audioRead+1)%audioBlocks.size();
+					--audioCount; audioSamples -= block.count;
 				}
+				session.audio(block.samples.data(),block.count,block.time);
 			}
-			journalEventsThrough(relative);
-			const auto frameDrops = droppedFrames.load(), audioDrops = droppedAudio.load();
-			if (frameDrops != reportedFrames || audioDrops != reportedAudio)
-			{
-				journal << "{\"time_us\":" << relative
-						<< ",\"kind\":\"capture_gap\",\"dropped_frames\":"
-						<< frameDrops - reportedFrames
-						<< ",\"dropped_audio_samples\":" << audioDrops - reportedAudio << "}\n";
-				reportedFrames = frameDrops;
-				reportedAudio = audioDrops;
-				journal.flush();
-				if (!journal)
-					throw std::runtime_error("Cannot write recording journal");
-			}
-			if (changed)
-			{
-				prepare();
-				if (lastWidth != latest.width || lastHeight != latest.height)
-					journal << "{\"time_us\":" << relative
-							<< ",\"kind\":\"resize\",\"width\":" << latest.width
-							<< ",\"height\":" << latest.height << "}\n";
-				lastWidth = latest.width;
-				lastHeight = latest.height;
-			}
-			if (chapters.empty() || chapters.back().context.key(options.chapterTicks) !=
-										latest.context.key(options.chapterTicks))
-			{
-				if (!chapters.empty())
-					chapters.back().end = relative;
-				chapters.push_back({relative, relative, latest.context, latest.context.tick});
-				journal << "{\"time_us\":" << relative
-						<< ",\"kind\":\"chapter\",\"id\":" << chapters.size() << ','
-						<< latest.context.fields(options.chapterTicks) << "}\n";
-				journal.flush();
-				if (!journal)
-					throw std::runtime_error("Cannot write recording journal");
-			}
-			chapters.back().lastTick = latest.context.tick;
-			video.write(rgba.data(), rgba.size());
-			++videoFrames;
-			State expected = State::Starting;
-			state.compare_exchange_strong(expected, State::Recording);
-		}
-		auto duration = std::int64_t(videoFrames) * 1000000 / options.fps;
-		if (!chapters.empty())
-			chapters.back().end = duration;
-		if (!stoppedAt)
-			stoppedAt = epoch + duration;
-		audioDone = true;
-		audioWorker.join();
-		if (audioFailed)
-			throw std::runtime_error(audioError);
-		if (video.finish())
-			throw std::runtime_error("Video encoder failed; inspect video.log");
-		requireHealthyCapture();
-		journalEventsThrough(duration);
-		writeManifest(false, duration);
-		std::ofstream metadata(std::filesystem::u8path(work + "chapters.ffmetadata"),
-							   std::ios::binary);
-		metadata << ";FFMETADATA1\n";
-		for (const auto &chapter : chapters)
-			metadata << "[CHAPTER]\nTIMEBASE=1/1000000\nSTART=" << chapter.start
-					 << "\nEND=" << chapter.end
-					 << "\ntitle=" << ffescape(chapter.context.title(options.chapterTicks)) << '\n';
-		metadata.close();
-		if (!metadata)
-			throw std::runtime_error("Cannot write embedded chapter metadata");
-		Process mux;
-		mux.launch({options.ffmpeg,
-					"-hide_banner",
-					"-loglevel",
-					"warning",
-					"-nostdin",
-					"-n",
-					"-i",
-					work + "video.mp4",
-					"-i",
-					work + "audio.mp4",
-					"-f",
-					"ffmetadata",
-					"-i",
-					work + "chapters.ffmetadata",
-					"-map",
-					"0:v:0",
-					"-map",
-					"1:a:0",
-					"-map_chapters",
-					"2",
-					"-c",
-					"copy",
-					"-t",
-					std::to_string(double(duration) / 1000000),
-					"-movflags",
-					"+faststart",
-					work + "final.mp4"},
-				   work + "finalize.log", false);
-		if (mux.finish(120))
-			throw std::runtime_error(
-				"Recording finalization failed; compressed tracks and metadata were retained");
-		writeManifest(true, duration);
-		journal.close();
-		if (!journal)
-			throw std::runtime_error("Cannot close recording journal");
-		Detail::publishCompletedRecording(std::filesystem::u8path(work),
-										  std::filesystem::u8path(path));
-		std::error_code cleanupError;
-		std::filesystem::remove_all(std::filesystem::u8path(path + ".recording"), cleanupError);
-		if (cleanupError)
-			SDL_LogWarn(SDL_LOG_CATEGORY_APPLICATION, "Recording saved; cleanup failed: %s",
-						cleanupError.message().c_str());
-		state = State::Complete;
-		SDL_Log("Recording saved: %s", path.c_str());
-	}
-	catch (const std::exception &e)
-	{
-		if (!stoppedAt)
-			stoppedAt = now();
-		audioDone = true;
-		if (audioWorker.joinable())
-			audioWorker.join();
-		fail(e.what());
-		if (!chapters.empty())
-			chapters.back().end = std::int64_t(videoFrames) * 1000000 / options.fps;
-		try
-		{
-			writeManifest(false, std::int64_t(videoFrames) * 1000000 / options.fps);
-		}
-		catch (...)
-		{
+			session.drops(droppedFrames,droppedAudio);
+			const bool done = session.step(now());
+			queuedFrames.fetch_sub(before-session.queuedFrames());
+			if (done) break;
+			std::unique_lock lock(mutex);
+			wake.wait_for(lock,std::chrono::milliseconds(2));
 		}
 	}
+	catch (const std::exception &e) { session.fail(e.what()); fail(e.what()); }
 }
+#endif
 } // namespace GAGCore::Recording

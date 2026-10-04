@@ -73,6 +73,14 @@ def build_mobile(directory, identity, arguments):
     env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)), CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
+    from recording_dependencies import build as build_recording, attach as attach_recording
+    recording_prefix = output / 'recording/prefix'
+    build_recording(recording_prefix, output / 'recording/sources', sdk_identity=toolchain['fingerprint'],
+        cc=command_path(toolchain['cc']), cxx=command_path(toolchain['cxx']),
+        ar=command_path(toolchain['ar']), ranlib=command_path(Path(toolchain['ar']).with_name('llvm-ranlib' if identity['target']=='android' else 'ranlib')),
+        target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
+        ldflags=toolchain['ldflags'], environment=environment)
+    attach_recording(env, recording_prefix, identity['target'])
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)

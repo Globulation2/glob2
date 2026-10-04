@@ -12,7 +12,6 @@ import time
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("binary", type=Path)
-    parser.add_argument("--ffmpeg", default="ffmpeg")
     parser.add_argument("--output", type=Path, required=True, help="A fresh evidence directory")
     args = parser.parse_args()
     output = args.output.resolve()
@@ -21,7 +20,7 @@ def main():
     output.mkdir(parents=True)
     binary = args.binary.resolve()
     base = dict(os.environ, SDL_VIDEODRIVER="dummy", SDL_AUDIODRIVER="dummy",
-                GLOB2_TEST_FFMPEG=args.ffmpeg, GLOB2_LAN_ADDRESS="127.0.0.1")
+                GLOB2_LAN_ADDRESS="127.0.0.1")
     peers = []
     try:
         with (output / "host.log").open("w") as host_log, (output / "join.log").open("w") as join_log:

@@ -39,6 +39,9 @@ parts:
     parse-info:
       - data/org.globulation2.Globulation2.metainfo.xml
     build-packages:
+      - nasm
+      - pkg-config
+      - libva-dev
       - g++
       - python3
       - python3-venv
@@ -70,6 +73,8 @@ parts:
       - libglu1-mesa-dev
       - libepoxy-dev
     stage-packages:
+      - libva2
+      - libva-drm2
       - libx11-6
       - libxext6
       - libxcursor1

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <glob2/BuildConfig.h>
-#include <RecordingProcess.h>
+#include "RecordingValidationProcess.h"
 #include <chrono>
 #include <atomic>
 #include <algorithm>
@@ -145,7 +145,7 @@ void Process::launch(const std::vector<std::string> &args, const std::string &lo
 	if (!CreateProcessW(nullptr, command.data(), nullptr, nullptr, TRUE,
 						EXTENDED_STARTUPINFO_PRESENT | CREATE_NO_WINDOW, nullptr, nullptr,
 						&startup.StartupInfo, &process))
-		throw std::runtime_error("Cannot launch FFmpeg; install it or set --record-ffmpeg");
+		throw std::runtime_error("Cannot launch the independent FFmpeg validator; set GLOB2_TEST_FFMPEG");
 	CloseHandle(process.hThread);
 	impl->child = process.hProcess;
 	impl->input = handles.write;
@@ -267,7 +267,7 @@ void Process::launch(const std::vector<std::string> &args, const std::string &lo
 		impl->child = -1;
 		if (pipes[1] >= 0)
 			close(pipes[1]);
-		throw std::runtime_error("Cannot launch FFmpeg; install it or set --record-ffmpeg");
+		throw std::runtime_error("Cannot launch the independent FFmpeg validator; set GLOB2_TEST_FFMPEG");
 	}
 	impl->input = pipes[1];
 	if (input)

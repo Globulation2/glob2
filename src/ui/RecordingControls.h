@@ -5,8 +5,7 @@
 
 namespace Glob2UI
 {
-// The in-game menu offers recording only when FFmpeg works, but a recording in
-// progress (or finishing) can always be stopped from it.
+// Supported clients offer recording, including controls during finalization.
 inline bool recordingOffered()
 {
 	const auto state = GAGCore::Recording::recorder().status().state;
@@ -14,8 +13,7 @@ inline bool recordingOffered()
 		   state == GAGCore::Recording::State::Finalizing;
 }
 
-// Start/stop button plus the last error. Settings shows it even without FFmpeg
-// (disabled), so players learn the feature exists.
+// Start/stop button, completed files and the last error.
 inline Element recordingControls(bool always = false)
 {
 	if (!GAGCore::Recording::supported() || (!always && !recordingOffered()))
@@ -27,6 +25,7 @@ inline Element recordingControls(bool always = false)
 	std::vector<Element> parts{button(
 		"recording/toggle", tr(GAGCore::Recording::controlLabel()),
 		[] { GAGCore::Recording::toggle(); }, options)};
+	parts.push_back(button("recording/files","Recordings",[] { GAGCore::Recording::requestFiles(); }));
 	if (!status.error.empty())
 		parts.push_back(paragraph(status.error, {FontRole::Support, true}));
 	return column(std::move(parts));

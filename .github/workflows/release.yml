@@ -131,7 +131,7 @@ jobs:
           repository: ${{ inputs.tag && 'Globulation2/glob2' || github.repository }}
           ref: ${{ inputs.tag || github.sha }}
       - name: Install native build utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config unzip zip autoconf automake libtool cmake ninja-build
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends scons pkg-config nasm libva-dev unzip zip autoconf automake libtool cmake ninja-build
       - name: Install pinned Android toolchain
         run: |
           python3 mobile/setup_ndk.py
@@ -194,7 +194,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends \
-            g++ python3 python3-venv scons pkg-config cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev \
+            g++ python3 python3-venv scons pkg-config nasm libva-dev cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev \
             libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev \
             libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev \
             libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
@@ -287,14 +287,14 @@ jobs:
             image: debian:trixie
             install: >-
               apt-get update -qq && apt-get install -y --no-install-recommends
-              git ca-certificates g++ python3 python3-venv scons pkg-config cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev
+              git ca-certificates g++ python3 python3-venv scons pkg-config nasm libva-dev cmake ninja-build libpng-dev libjpeg-dev libwebp-dev libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev
               libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev libvorbis-dev libogg-dev
               libspeex-dev libboost-dev libssl-dev zlib1g-dev libfribidi-dev
               libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev
           - name: Fedora 43
             image: fedora:43
             install: >-
-              dnf install -y git gcc-c++ python3 scons pkgconf-pkg-config cmake freetype-devel
+              dnf install -y git gcc-c++ python3 scons pkgconf-pkg-config nasm libva-devel cmake freetype-devel
               libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-lib-devel pulseaudio-libs-devel
               libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel
               zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel
@@ -302,14 +302,14 @@ jobs:
           - name: Arch Linux
             image: archlinux:base-devel
             install: >-
-              pacman -Syu --noconfirm --needed git python scons pkgconf cmake freetype
+              pacman -Syu --noconfirm --needed git python scons pkgconf nasm libva cmake freetype
               libx11 libxext libxcursor libxi libxrandr alsa-lib libpulse
                  libvorbis libogg speex boost openssl
               zlib fribidi pcre glu libepoxy
           - name: openSUSE Tumbleweed
             image: opensuse/tumbleweed
             install: >-
-              zypper --non-interactive install git gcc-c++ python3 scons pkg-config cmake freetype2-devel
+              zypper --non-interactive install git gcc-c++ python3 scons pkg-config nasm libva-devel cmake freetype2-devel
               libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-devel libpulse-devel
               libvorbis-devel libogg-devel speex-devel boost-devel libopenssl-devel
               zlib-devel fribidi-devel Mesa-libGL-devel Mesa-libGLU-devel
@@ -336,7 +336,7 @@ jobs:
     steps:
       - name: Install RPM tools and build dependencies
         run: |
-          dnf install -y git rpm-build gcc-c++ python3 scons pkgconf-pkg-config \
+          dnf install -y git rpm-build gcc-c++ python3 scons pkgconf-pkg-config nasm libva-devel \
             cmake freetype-devel libX11-devel libXext-devel libXcursor-devel libXi-devel libXrandr-devel alsa-lib-devel pulseaudio-libs-devel \
             libvorbis-devel libogg-devel speex-devel boost-devel openssl-devel \
             zlib-devel fribidi-devel pcre-devel mesa-libGL-devel mesa-libGLU-devel \
@@ -398,8 +398,8 @@ jobs:
           msystem: MINGW64
           update: true
           install: >-
-            git mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-python mingw-w64-x86_64-scons
+            git make mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-nasm mingw-w64-x86_64-python mingw-w64-x86_64-scons
             mingw-w64-x86_64-cmake
             mingw-w64-x86_64-freetype
             mingw-w64-x86_64-libpng mingw-w64-x86_64-libjpeg-turbo

@@ -140,8 +140,8 @@ class SettingsScreen : public Glob2UI::Screen
 	void buildHiveMind();
 	// Settings > Recording (SettingsScreenRecording.cpp): controls, hotkey, FFmpeg status.
 	void buildRecording();
-	// Encoder state the Recording tab was built with, to rebuild when the probe answers.
-	int recordingEncoder = -1;
+	// Rebuild the Recording tab when session state changes.
+	int recordingState = -1;
 	struct CustomAIState;
 	std::shared_ptr<CustomAIState> customAIs;
 	void buildCustomAIs();

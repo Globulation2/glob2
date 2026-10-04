@@ -76,7 +76,7 @@ jobs:
           update: true
           install: >-
             git
-            mingw-w64-x86_64-toolchain
+            make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-binutils
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python

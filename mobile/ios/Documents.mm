@@ -111,6 +111,17 @@ static Glob2DocumentPicker* active;
 @end
 
 namespace MobileDocuments {
+bool platformExportPath(const std::string& path, const std::string& error) {
+    NSString* filename = [[NSString alloc] initWithBytes:path.data() length:path.size() encoding:NSUTF8StringEncoding];
+    NSString* message = [[NSString alloc] initWithBytes:error.data() length:error.size() encoding:NSUTF8StringEncoding];
+    if (!filename || reserved.exchange(true)) return false;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        active = [Glob2DocumentPicker new];
+        active.picker = [[UIDocumentPickerViewController alloc] initForExportingURLs:@[[NSURL fileURLWithPath:filename]] asCopy:YES];
+        if (![active present]) { [active finish]; exportError(message); }
+    });
+    return true;
+}
 void cleanupTemporaryExports() { MobileTemporaryFiles::cleanupExports(NSTemporaryDirectory().fileSystemRepresentation); }
 bool platformOpen(Request request, const std::string&) {
     if (reserved.exchange(true)) return false;

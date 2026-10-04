@@ -66,7 +66,7 @@ jobs:
           msystem: MINGW64
           update: true
           install: >-
-            git mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
+            git make mingw-w64-x86_64-nasm mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python mingw-w64-x86_64-scons
             mingw-w64-x86_64-SDL2 mingw-w64-x86_64-SDL2_image
             mingw-w64-x86_64-SDL2_net mingw-w64-x86_64-SDL2_ttf
