@@ -1350,6 +1350,12 @@ Sinä + tekoäly
 Sinä ja tekoäly voitte antaa käskyjä. Vie kaksi pelaaja- tai tekoälypaikkaa.
 [You vs all]
 Sinä kaikkia vastaan
+[%0 vs %1]
+%0 vs. %1
+[%0 vs all]
+%0 kaikkia vastaan
+[You will watch this match.]
+Katselet tätä ottelua.
 [Your maps]
 Omat kartat
 [colonies]
@@ -1408,8 +1414,6 @@ Esikatselu ei ole käytettävissä. Muuta asetuksia tai yritä uudelleen aloitta
 Automaattinen torusnäkymä
 [toggle torus view]
 Vaihda 2D- ja torusnäkymän välillä
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs. 2 vaatii neljä avointa siirtokuntaa. Sinä kaikkia vastaan vaatii ihmispelaajan.
 [Alliance]
 Liitto
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Tili
 Tekoäly liittyy %0 kuluttua
 [hub all rooms]
 Kaikki
-[hub browse maps]
-Selaa karttoja
 [hub cant reach %0]
 Ei yhteyttä: %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Liittymiskoodi
 Liity
 [hub leaderboard]
 Tulostaulu
-[hub linked %0]
-Linkitetyt tilit · %0
-[hub linked accounts]
-Linkitetyt tilit
 [hub maps]
 Kartat
 [hub no queues]
@@ -3538,6 +3536,20 @@ Verkkopeli
 Avaa sivu uudelleen
 [hub open rooms]
 Avoimet huoneet
+[hub play]
+Pelaa
+[hub rooms]
+Huoneet
+[hub ranks]
+Sijoitus
+[hub play with friends]
+Pelaa ystävien kanssa
+[hub last match]
+Viimeisin ottelu
+[hub your rank %0 %1]
+Olet sijalla %0 · luokitus %1
+[hub not placed]
+Sinulla ei ole vielä sijoitusta täällä. Pelaa rankattuja otteluita saadaksesi sijoituksen.
 [hub queues unavailable]
 Pikaottelu tulee näkyviin, kun palvelin vastaa.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ Pikaottelu ei ole vielä käytettävissä tässä versiossa.
 Pikaottelu
 [hub ranked]
 Luokiteltu
-[hub recent matches]
-Viimeisimmät ottelut
 [hub refresh]
 Päivitä
 [hub retry now]
@@ -3560,8 +3570,6 @@ Huone: %0
 Huone
 [hub seats %0 %1]
 %0/%1 paikkaa
-[hub server %0]
-Palvelin: %0
 [hub sign in browser]
 Avaa kirjautumissivu
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Uusintaottelu
 Liity uusintaotteluun: %0
 [hub profile history]
 Profiili ja historia
-[hub my maps]
-Omat kartat
 [hub leaderboard %0]
 Tulostaulu · %0
 [hub leaderboard empty]

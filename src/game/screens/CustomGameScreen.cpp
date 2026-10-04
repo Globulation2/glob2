@@ -520,6 +520,15 @@ void CustomGameScreen::invalidatePreview()
 	invalidate();
 }
 
+std::string CustomGameScreen::teamsLabel(const TeamLayout::Layout &layout) const
+{
+	const int lone = setup.loneColony(layout);
+	const auto human = setup.humanColony();
+	const std::string name = lone >= 0 && lone < (int)preview->starts.size() ? colorName(preview->starts[std::size_t(lone)].color)
+																			  : tr("Colony") + " " + std::to_string(lone + 1);
+	return TeamLayout::label(layout, human && lone == *human, name);
+}
+
 std::string CustomGameScreen::colonyLabel(int i) const
 {
 	return std::to_string(i + 1) + " - " +
@@ -913,7 +922,7 @@ Element CustomGameScreen::build(const Presentation &p)
 	const std::string rulesetTitle = setup.rulesetTitle(forRoom);
 	const std::vector<std::string> details = {
 		setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName(),
-		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format), rulesetTitle};
+		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + teamsLabel(setup.teamLayout()), rulesetTitle};
 	std::vector<Element> tabs;
 	for (int i = 0; i < 3; ++i)
 	{
@@ -933,8 +942,11 @@ Element CustomGameScreen::build(const Presentation &p)
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
-	const std::string summary = tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " + tr("colonies") + "  /  " +
-								rulesetTitle + "  /  " + speed.getGameSpeedText();
+	// Desktop tabs already name the map, teams and rules underneath; elsewhere the footer does.
+	const std::string summary = !(narrow || topActions)
+									? tr("Game speed") + " " + speed.getGameSpeedText()
+									: teamsLabel(setup.teamLayout()) + "  /  " + std::to_string(setup.activeColonies()) + " " +
+										  tr("colonies") + "  /  " + rulesetTitle + "  /  " + speed.getGameSpeedText();
 	const std::string note = error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
 	bool ready = error.empty();
 	if (forRoom)
@@ -1256,11 +1268,7 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 	for (int j = 0; j < setup.capacity; ++j)
 		teams.push_back(tr("Team") + " " + std::to_string(j + 1));
 	auto team = fe::choice(id + "/team", teams, c.alliance,
-						   [this, i](int value)
-						   {
-							   setup.colonies[i].alliance = value;
-							   setup.format = "Custom teams";
-						   });
+						   [this, i](int value) { setup.colonies[i].alliance = value; });
 	const bool hasAI = c.controller == CustomGameSetup::Computer || c.controller == CustomGameSetup::Shared;
 	Element aiControls;
 	if (hasAI)
@@ -1268,19 +1276,14 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 		const auto names = aiChoices();
 		const int selectedAI = aiSelection(i);
 		// The choice and its strategy button share a line only when both fit.
-		aiControls = fe::adaptive(
-			[this, i, id, names, selectedAI, p](const fe::LayoutContext &,
-												fe::Size available) -> Element
-			{
-				auto ai = fe::choice(id + "/ai", names, selectedAI,
-									 [this, i](int value) { selectAI(i, value); });
-				// Touch: an icon-only button, leaving the AI name room on one line.
-				auto info = fe::compactButton(id + "/info", tr("AI strategy"), fe::UIIcon::Info,
-											  [this, i] { showAIProfile(i); }, p, {.icon = fe::uiIcon(fe::UIIcon::Info)});
-				if (available.w < p.textPt(300))
-					return fe::column({ai, info}, {p.pt(6)});
-				return fe::row({fe::expanded(ai), info}, {p.pt(6), fe::CrossAlign::Center});
-			});
+		auto ai = fe::choice(id + "/ai", names, selectedAI, [this, i](int value) { selectAI(i, value); });
+		// The strategy and counterplay behind the chosen AI, as a small (i) beside it.
+		fe::ButtonOptions infoOptions;
+		infoOptions.tooltip = tr("AI strategy");
+		infoOptions.accessibleLabel = infoOptions.tooltip;
+		infoOptions.icon = fe::uiIcon(fe::UIIcon::Info);
+		auto info = fe::width(p.pt(p.touch ? 48 : 34), fe::button(id + "/info", "", [this, i] { showAIProfile(i); }, infoOptions));
+		aiControls = fe::row({fe::expanded(ai), info}, {p.pt(6), fe::CrossAlign::Center});
 	}
 	else
 		aiControls = fe::caption(tr(c.controller == CustomGameSetup::Human ? "You control this colony." : "Closed"));
@@ -1292,11 +1295,37 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> parts;
-	const int selectedFormat = setup.format == "FFA" ? 0 : setup.format == "2 vs 2" ? 1 : setup.format == "You vs all" ? 2 : -1;
-	parts.push_back(fe::segments("format", localized({"FFA", "2 vs 2", "You vs all"}), selectedFormat, [this](int i) { setup.presetTeams(i); },
-								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1},
-								 {rowIcon(p, fe::UIIcon::FreeForAll), rowIcon(p, fe::UIIcon::Users), rowIcon(p, fe::UIIcon::Crown)}));
-	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / " + std::to_string(Team::MAX_COUNT) + " " + tr("controllers")));
+	// Teams: every shape the open colonies can take, read back from the alliances. A shape
+	// the list does not hold (set with the colonies' own Team choices) names itself.
+	const auto current = setup.teamLayout();
+	auto layouts = TeamLayout::offered(setup.activeColonies());
+	std::vector<std::string> layoutNames;
+	for (auto &layout : layouts)
+	{
+		if (layout.oneVsAll())
+			layout.lone = setup.focusPosition();
+		layoutNames.push_back(teamsLabel(layout));
+	}
+	const int selectedLayout = TeamLayout::indexOf(layouts, current, setup.focusPosition());
+	fe::ChoiceOptions layoutOptions;
+	for (const auto &layout : layouts)
+		layoutOptions.icons.push_back(fe::uiIcon(layout.kind == TeamLayout::Layout::FreeForAll ? fe::UIIcon::FreeForAll
+												 : layout.oneVsAll()							   ? fe::UIIcon::Crown
+																								   : fe::UIIcon::Users));
+	if (selectedLayout < 0)
+		layoutOptions.compactLabel = teamsLabel(current);
+	layoutOptions.controlEnabled = setup.activeColonies() > 1;
+	auto teams = fe::choice("teams", layoutNames, selectedLayout,
+							[this, layouts](int i) { setup.applyTeamLayout(layouts[std::size_t(i)]); }, layoutOptions);
+	auto controllers = fe::caption(std::to_string(setup.controllerCount()) + " / " + std::to_string(Team::MAX_COUNT) + " " + tr("controllers"));
+	// One line led by its label on wide pages, like the colonies' own choices; stacked when narrow.
+	if (narrow)
+		parts.push_back(fe::column({fe::field(tr("Teams"), teams, {"", 220, true}), controllers}, {p.pt(4)}));
+	else
+		parts.push_back(fe::row({fe::label(tr("Teams")), fe::width(p.textPt(220), teams), controllers},
+								{p.pt(12), fe::CrossAlign::Center}));
+	if (!setup.humanColony())
+		parts.push_back(fe::caption(tr("You will watch this match.")));
 	for (int i = 0; i < setup.capacity; ++i)
 	{
 		auto &c = setup.colonies[i];

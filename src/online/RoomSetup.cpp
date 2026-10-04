@@ -199,7 +199,6 @@ bool applyRoomToSetup(const Json& room, CustomGameSetup& setup)
 			if (index >= 0 && index < count)
 				setup.colonies[std::size_t(index)].alliance = integer(team, "alliance", index);
 		}
-		setup.format = formatName(room["teams"]);
 	}
 	return known;
 }
@@ -220,19 +219,18 @@ std::string matchingRuleset(const CustomGameSetup& setup)
 	return {};
 }
 
-std::string formatName(const Json& teams)
+TeamLayout::Layout teamLayout(const Json& teams, const std::vector<bool>& ai)
 {
-	if (!teams.is_array() || teams.empty())
-		return "FFA";
-	std::map<int, int> sizes;
-	for (const auto& team : teams)
-		++sizes[integer(team, "alliance", integer(team, "team", 0))];
-	if (sizes.size() == teams.size())
-		return "FFA";
-	if (sizes.size() == 2 && sizes.begin()->second == 2 && sizes.rbegin()->second == 2)
-		return "2 vs 2";
-	if (sizes.size() == 2 && sizes.begin()->second == sizes.rbegin()->second)
-		return std::to_string(sizes.begin()->second) + " vs " + std::to_string(sizes.begin()->second);
-	return "Custom teams";
+	std::map<int, int> byTeam;
+	if (teams.is_array())
+		for (const auto& team : teams)
+		{
+			const int index = integer(team, "team", int(byTeam.size()));
+			byTeam[index] = integer(team, "alliance", index);
+		}
+	std::vector<int> alliances;
+	for (const auto& entry : byTeam)
+		alliances.push_back(entry.second);
+	return TeamLayout::classify(alliances, ai.size() == alliances.size() ? ai : std::vector<bool>{});
 }
 } // namespace Online

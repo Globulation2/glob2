@@ -1350,6 +1350,12 @@ Du + AI
 Både du och AI kan ge order. Tar två platser för spelare och AI.
 [You vs all]
 Du mot alla
+[%0 vs %1]
+%0 mot %1
+[%0 vs all]
+%0 mot alla
+[You will watch this match.]
+Du tittar på den här matchen.
 [Your maps]
 Dina kartor
 [colonies]
@@ -1408,8 +1414,6 @@ Förhandsvisning saknas. Ändra inställningarna eller starta för att försöka
 Automatisk torusvy
 [toggle torus view]
 Växla mellan 2D- och torusvy
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 mot 2 kräver fyra öppna kolonier. Du mot alla kräver en mänsklig spelare.
 [Alliance]
 Allians
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Konto
 AI ansluter efter %0
 [hub all rooms]
 Alla
-[hub browse maps]
-Bläddra bland kartor
 [hub cant reach %0]
 Kan inte nå %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Kod för att gå med
 Gå med
 [hub leaderboard]
 Topplista
-[hub linked %0]
-Länkade konton · %0
-[hub linked accounts]
-Länkade konton
 [hub maps]
 Kartor
 [hub no queues]
@@ -3538,6 +3536,20 @@ Online
 Öppna sidan igen
 [hub open rooms]
 Öppna rum
+[hub play]
+Spela
+[hub rooms]
+Rum
+[hub ranks]
+Rankning
+[hub play with friends]
+Spela med vänner
+[hub last match]
+Senaste matchen
+[hub your rank %0 %1]
+Du är nr %0 · rating %1
+[hub not placed]
+Du har ingen placering här än. Spela rankade matcher för att bli placerad.
 [hub queues unavailable]
 Snabbmatch visas när servern svarar.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ Snabbmatch finns inte i den här versionen än.
 Snabbmatch
 [hub ranked]
 Rankad
-[hub recent matches]
-Senaste matcher
 [hub refresh]
 Uppdatera
 [hub retry now]
@@ -3560,8 +3570,6 @@ Rum
 Rum
 [hub seats %0 %1]
 %0/%1 platser
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Öppna inloggningssidan
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Returmatch
 Gå med i %0s returmatch
 [hub profile history]
 Profil och historik
-[hub my maps]
-Mina kartor
 [hub leaderboard %0]
 Topplista · %0
 [hub leaderboard empty]

@@ -1350,6 +1350,12 @@ Tú + IA
 Tanto tú como la IA dais órdenes. Ocupa dos plazas de jugador.
 [You vs all]
 Tú contra todos
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra todos
+[You will watch this match.]
+Verás esta partida.
 [Your maps]
 Tus mapas
 [colonies]
@@ -1408,8 +1414,6 @@ Vista previa no disponible. Cambia la configuración o inicia el juego para volv
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 requiere cuatro colonias abiertas. Tú contra todos requiere un jugador humano.
 [Alliance]
 Alianza
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Cuenta
 La IA entra tras %0
 [hub all rooms]
 Todas
-[hub browse maps]
-Explorar mapas
 [hub cant reach %0]
 No se puede contactar con %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Código para unirse
 Unirse
 [hub leaderboard]
 Clasificación
-[hub linked %0]
-Cuentas vinculadas · %0
-[hub linked accounts]
-Cuentas vinculadas
 [hub maps]
 Mapas
 [hub no queues]
@@ -3538,6 +3536,20 @@ En línea
 Abrir la página de nuevo
 [hub open rooms]
 Salas abiertas
+[hub play]
+Jugar
+[hub rooms]
+Salas
+[hub ranks]
+Ranking
+[hub play with friends]
+Jugar con amigos
+[hub last match]
+Última partida
+[hub your rank %0 %1]
+Eres el n.º %0 · puntuación %1
+[hub not placed]
+Todavía no tienes clasificación aquí. Juega partidas clasificatorias para obtenerla.
 [hub queues unavailable]
 La partida rápida aparecerá cuando responda el servidor.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ La partida rápida aún no está disponible en esta versión.
 Partida rápida
 [hub ranked]
 Clasificatoria
-[hub recent matches]
-Partidas recientes
 [hub refresh]
 Actualizar
 [hub retry now]
@@ -3560,8 +3570,6 @@ Sala de %0
 Sala
 [hub seats %0 %1]
 %0/%1 plazas
-[hub server %0]
-Servidor: %0
 [hub sign in browser]
 Abrir la página de inicio de sesión
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Revancha
 Unirse a la revancha de %0
 [hub profile history]
 Perfil e historial
-[hub my maps]
-Mis mapas
 [hub leaderboard %0]
 Clasificación · %0
 [hub leaderboard empty]

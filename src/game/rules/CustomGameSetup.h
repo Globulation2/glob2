@@ -5,6 +5,7 @@
 #include "GenerationRequest.h"
 #include "GenerationValidation.h"
 #include "GeneratorRegistry.h"
+#include "TeamLayout.h"
 #include <array>
 #include <optional>
 #include <string>
@@ -57,7 +58,6 @@ struct CustomGameSetup
 	// ended; 950 ends more of them and is wrong rather more often.
 	static constexpr std::array<int, 4> winProbabilityChoices = {0, 950, 970, 990};
 	int winProbabilityPermille = 0;
-	std::string format = "FFA";
 	// The ruleset the rules started from (data/rulesets.json). Edits do not change it: what
 	// differs from it is derived (rulesetDiff), so undoing an edit makes the ruleset whole again.
 	std::string rulesetId = "standard";
@@ -108,7 +108,6 @@ struct CustomGameSetup
 			colonies = old;
 			return false;
 		}
-		format = "Custom teams";
 		return true;
 	}
 	void setCapacity(int n)
@@ -119,24 +118,58 @@ struct CustomGameSetup
 			++mapRevision;
 		}
 	}
-	bool presetTeams(int preset)
+	// The open colonies, in slot order: what the team layout is read from and applied to.
+	std::vector<int> openColonies() const
 	{
-		if (preset == 1 && activeColonies() != 4)
-			return false;
-		if (preset == 2 && (!humanColony() || activeColonies() < 2))
-			return false;
-		int position = 0;
+		std::vector<int> open;
 		for (int i = 0; i < capacity; ++i)
 			if (colonies[i].controller != Closed)
-			{
-				colonies[i].alliance = preset == 0			 ? i
-									   : preset == 1		 ? position / 2
-									   : i == *humanColony() ? 0
-															 : 1;
-				++position;
-			}
-		format = preset == 0 ? "FFA" : preset == 1 ? "2 vs 2" : "You vs all";
+				open.push_back(i);
+		return open;
+	}
+	// The colony a two-team split is built around: yours, or the first open colony when
+	// you only watch. Its position among openColonies(), or 0.
+	int focusPosition() const
+	{
+		const auto open = openColonies();
+		const auto human = humanColony();
+		for (int i = 0; human && i < int(open.size()); ++i)
+			if (open[std::size_t(i)] == *human)
+				return i;
+		return 0;
+	}
+	// Read from the alliances every time: hand-made teams of a known shape are named too.
+	// A one-against-all layout's `lone` is a position among openColonies().
+	TeamLayout::Layout teamLayout() const
+	{
+		std::vector<int> alliances;
+		for (int i : openColonies())
+			alliances.push_back(colonies[i].alliance);
+		return TeamLayout::classify(alliances);
+	}
+	// The colony a one-against-all layout leaves alone, or -1.
+	int loneColony(const TeamLayout::Layout &layout) const
+	{
+		const auto open = openColonies();
+		return layout.oneVsAll() && layout.lone >= 0 && layout.lone < int(open.size()) ? open[std::size_t(layout.lone)] : -1;
+	}
+	// Sets the open colonies' alliances to an offered layout (TeamLayout::offered).
+	bool applyTeamLayout(const TeamLayout::Layout &layout)
+	{
+		const auto open = openColonies();
+		const auto alliances = TeamLayout::alliances(layout, int(open.size()), focusPosition());
+		if (alliances.empty() || alliances.size() != open.size())
+			return false;
+		for (std::size_t i = 0; i < open.size(); ++i)
+			colonies[std::size_t(open[i])].alliance = alliances[i];
 		return true;
+	}
+	// The preferences' format name (see TeamLayout::legacyFormat).
+	const char *legacyFormat() const
+	{
+		const auto layout = teamLayout();
+		const auto human = humanColony();
+		return TeamLayout::legacyFormat(layout, human && loneColony(layout) == *human);
 	}
 	// Rules, through the CustomGameRules registry (defined in CustomGameRules.cpp).
 	int ruleValue(const CustomGameRules::Rule &rule) const;

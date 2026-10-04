@@ -283,6 +283,16 @@ struct CustomGameSetupHarness
 			REQUIRE((!restored.decode(corrupt) && restored.encode() == encoded));
 		}
 		REQUIRE(!restored.decode(encoded + "trailing junk"));
+		// The teams' format name is written for older builds, which accept only these four,
+		// and no longer read: any name loads, and the teams come from the saved alliances.
+		{
+			const std::string labels = std::string("labels \"") + original.setup.legacyFormat() + "\"";
+			const auto at = encoded.find(labels);
+			REQUIRE(at != std::string::npos);
+			auto relabelled = encoded;
+			relabelled.replace(at, labels.size(), "labels \"3 vs 5\"");
+			REQUIRE((restored.decode(relabelled) && restored.encode() == encoded));
+		}
 		REQUIRE(!restored.decode(std::string(65537, 'x')));
 		// Unfinished drafts remain editable rather than losing the user's choices.
 		for (auto &c : original.setup.colonies) c.controller = CustomGameSetup::Closed;
@@ -781,7 +791,10 @@ struct CustomGameSetupHarness
 			click("colony/0/controller");
 			key(SDLK_DOWN);
 			key(SDLK_RETURN);
-			click("format/1");
+			// Teams: FFA, then 2 vs 2.
+			click("teams");
+			key(SDLK_DOWN);
+			key(SDLK_RETURN);
 			click("colony/1/ai");
 			// Select the following row; the profile interaction below moves back once.
 			const int aiSteps = AINames::selectionIndex(AI::NICOWAR) + 1 - AINames::selectionIndex(AI::NUMBI);
@@ -1109,9 +1122,14 @@ struct CustomGameSetupHarness
     pointerAt(0, 0, SDL_EVENT_MOUSE_BUTTON_UP);
     paint();
     REQUIRE(!host.popupOpen());
-    clickControl("format/1");
+    // The Teams choice: FFA, then 2 vs 2.
+    REQUIRE(screen.setup.teamLayout().kind == TeamLayout::Layout::FreeForAll);
+    clickControl("teams");
+    keyEvent(SDLK_DOWN);
+    keyEvent(SDLK_RETURN);
     REQUIRE(screen.setup.colonies[0].alliance ==
            screen.setup.colonies[1].alliance);
+    REQUIRE(screen.setup.teamLayout() == (TeamLayout::Layout{TeamLayout::Layout::Split, {2, 2}, -1}));
     screen.selectTab(2);
     paint();
     // Summary lists the Match rules. Wide layouts list the rulesets beside them; narrower
@@ -1219,7 +1237,7 @@ struct CustomGameSetupHarness
     REQUIRE((first && !first->empty()));
     capture("random-preview-640");
     screen.setup.colonies[1].ai = AI::CASTOR;
-    screen.setup.presetTeams(1);
+    REQUIRE(screen.setup.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::Split, {2, 2}, -1}));
     screen.onTimer(SDL_GetTicks() + 1000);
     REQUIRE((screen.previewRevision == revision && screen.generatedSnapshot == first));
     {
@@ -1863,6 +1881,37 @@ struct CustomGameSetupHarness
                 << picker.previewer.threadCount()
                 << " threads, selection, regeneration and the shown map played\n";
     }
+    {
+      // Watching eight AIs: the Teams choice offers every shape the eight can take, and one
+      // against all leaves the first colony alone, as when testing one AI against the rest.
+      screen.setup.setCapacity(8);
+      for (int i = 0; i < 8; ++i)
+        REQUIRE(screen.setup.setController(i, CustomGameSetup::Computer));
+      REQUIRE(screen.setup.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::FreeForAll, {}, -1}));
+      screen.invalidatePreview();
+      REQUIRE(screen.generateMap());
+      screen.selectTab(1);
+      scrollTo("lobby/players", 0);
+      paint();
+      clickControl("teams");
+      REQUIRE(host.popupOpen());
+      capture("teams-8-watching-open");
+      // FFA, 4 vs 4, 3 vs 5, 2 vs 6, then Red vs all.
+      for (int i = 0; i < 4; ++i)
+        keyEvent(SDLK_DOWN);
+      keyEvent(SDLK_RETURN);
+      REQUIRE(!host.popupOpen());
+      const auto layout = screen.setup.teamLayout();
+      REQUIRE((layout.oneVsAll() && screen.setup.loneColony(layout) == 0));
+      capture("teams-8-watching-one-vs-all");
+      // Two by two, set from the list, then broken by hand: the choice names it Custom teams.
+      REQUIRE(screen.setup.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::Split, {2, 2, 2, 2}, -1}));
+      screen.setup.colonies[7].alliance = 0;
+      REQUIRE(screen.setup.teamLayout().kind == TeamLayout::Layout::Custom);
+      screen.invalidate();
+      capture("teams-8-custom");
+      REQUIRE(screen.setup.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::FreeForAll, {}, -1}));
+    }
     screen.setup.generatorHistory.select(screen.setup.generator, MapGenerationDescriptor::eRIVER);
     screen.setup.setCapacity(Team::MAX_COUNT);
     screen.setup.generator.wDec = screen.setup.generator.hDec = 8;
@@ -2112,12 +2161,17 @@ struct CustomGameSetupHarness
 		CustomGameSetup s;
 		REQUIRE((s.capacity == 4 && s.activeColonies() == 4 && s.controllerCount() == 4 &&
 			   s.humanColony() == 0));
-		REQUIRE(s.presetTeams(1));
+		const TeamLayout::Layout twoVsTwo{TeamLayout::Layout::Split, {2, 2}, -1};
+		REQUIRE(s.teamLayout().kind == TeamLayout::Layout::FreeForAll);
+		REQUIRE(s.applyTeamLayout(twoVsTwo));
+		REQUIRE((s.teamLayout() == twoVsTwo && std::string(s.legacyFormat()) == "2 vs 2"));
 		auto alliances = s.colonies;
 		s.colonies[2].ai = AI::CASTOR;
 		for (int i = 0; i < 4; ++i)
 			REQUIRE(s.colonies[i].alliance == alliances[i].alliance);
 		REQUIRE((s.setController(0, CustomGameSetup::Shared) && s.controllerCount() == 5));
+		// Changing who controls a colony leaves its teams, and their name, alone.
+		REQUIRE(s.teamLayout() == twoVsTwo);
 		s.setCapacity(2);
 		s.setCapacity(4);
 		REQUIRE(s.colonies[3].alliance == alliances[3].alliance);
@@ -2135,8 +2189,21 @@ struct CustomGameSetupHarness
 		REQUIRE(!s.setController(2, CustomGameSetup::Shared));
 		REQUIRE(s.setController(3, CustomGameSetup::Computer));
 		REQUIRE((s.controllerCount() == Team::MAX_COUNT && !s.humanColony()));
-		REQUIRE((!s.presetTeams(1) && !s.presetTeams(2)));
-		REQUIRE(s.presetTeams(0));
+		// Only watching: one against all leaves the first colony alone, and every equal split
+		// of the sixteen colonies is offered.
+		REQUIRE(TeamLayout::offered(s.activeColonies()).size() == 11);
+		REQUIRE(s.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::Split, {1, 15}, -1}));
+		REQUIRE((s.teamLayout().oneVsAll() && s.loneColony(s.teamLayout()) == 0));
+		REQUIRE(std::string(s.legacyFormat()) == "Custom teams");
+		REQUIRE(s.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::Split, {4, 4, 4, 4}, -1}));
+		REQUIRE((s.colonies[3].alliance == 0 && s.colonies[4].alliance == 1 && s.colonies[15].alliance == 3));
+		REQUIRE(!s.applyTeamLayout(TeamLayout::Layout{}));
+		REQUIRE(s.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::FreeForAll, {}, -1}));
+		REQUIRE(s.teamLayout().kind == TeamLayout::Layout::FreeForAll);
+		// A team set colony by colony that no offered shape matches reads as custom.
+		s.colonies[1].alliance = s.colonies[2].alliance;
+		REQUIRE(s.teamLayout().kind == TeamLayout::Layout::Custom);
+		REQUIRE(s.applyTeamLayout(TeamLayout::Layout{TeamLayout::Layout::FreeForAll, {}, -1}));
 		s.setCapacity(4);
 		auto revision = s.mapRevision;
 		REQUIRE(s.applyRuleset("quick-clash"));

@@ -1350,6 +1350,12 @@ Bạn + AI
 Bạn và AI đều có thể ra lệnh. Chiếm hai chỗ điều khiển.
 [You vs all]
 Bạn đấu tất cả
+[%0 vs %1]
+%0 đấu %1
+[%0 vs all]
+%0 đấu tất cả
+[You will watch this match.]
+Bạn sẽ xem trận đấu này.
 [Your maps]
 Bản đồ của bạn
 [colonies]
@@ -1408,8 +1414,6 @@ Không có bản xem trước. Hãy chỉnh thiết lập hoặc bắt đầu đ
 Chế độ xem hình xuyến tự động
 [toggle torus view]
 Chuyển chế độ xem 2D / hình xuyến
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 đấu 2 cần bốn thuộc địa tham gia. Bạn đấu tất cả cần một người chơi thật.
 [Alliance]
 Liên minh
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Tài khoản
 AI vào sau %0
 [hub all rooms]
 Tất cả
-[hub browse maps]
-Duyệt bản đồ
 [hub cant reach %0]
 Không thể kết nối tới %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Mã vào phòng
 Tham gia
 [hub leaderboard]
 Bảng xếp hạng
-[hub linked %0]
-Tài khoản liên kết · %0
-[hub linked accounts]
-Tài khoản liên kết
 [hub maps]
 Bản đồ
 [hub no queues]
@@ -3538,6 +3536,20 @@ Trực tuyến
 Mở lại trang
 [hub open rooms]
 Phòng đang mở
+[hub play]
+Chơi
+[hub rooms]
+Phòng
+[hub ranks]
+Xếp hạng
+[hub play with friends]
+Chơi cùng bạn bè
+[hub last match]
+Trận gần nhất
+[hub your rank %0 %1]
+Bạn hạng #%0 · điểm %1
+[hub not placed]
+Bạn chưa có hạng ở đây. Hãy chơi các trận xếp hạng để được xếp hạng.
 [hub queues unavailable]
 Đấu nhanh sẽ xuất hiện khi máy chủ phản hồi.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ Phòng đang mở
 Đấu nhanh
 [hub ranked]
 Xếp hạng
-[hub recent matches]
-Trận gần đây
 [hub refresh]
 Làm mới
 [hub retry now]
@@ -3560,8 +3570,6 @@ Phòng của %0
 Phòng
 [hub seats %0 %1]
 %0/%1 chỗ
-[hub server %0]
-Máy chủ: %0
 [hub sign in browser]
 Mở trang đăng nhập
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Tái đấu
 Vào trận tái đấu của %0
 [hub profile history]
 Hồ sơ & lịch sử
-[hub my maps]
-Bản đồ của tôi
 [hub leaderboard %0]
 Bảng xếp hạng · %0
 [hub leaderboard empty]

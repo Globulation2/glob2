@@ -1350,6 +1350,12 @@ Você + IA
 Você e a IA dão ordens. Ocupa duas vagas de jogador.
 [You vs all]
 Você contra todos
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra todos
+[You will watch this match.]
+Você vai assistir a esta partida.
 [Your maps]
 Seus mapas
 [colonies]
@@ -1408,8 +1414,6 @@ Visualização indisponível. Altere as configurações ou inicie o jogo para te
 Vista toroidal automática
 [toggle torus view]
 Alternar entre vista 2D e toroidal
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 exige quatro colônias abertas. Você contra todos exige um jogador humano.
 [Alliance]
 Aliança
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Conta
 IA entra após %0
 [hub all rooms]
 Todas
-[hub browse maps]
-Ver mapas
 [hub cant reach %0]
 Não foi possível alcançar %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Código de entrada
 Entrar
 [hub leaderboard]
 Classificação
-[hub linked %0]
-Contas vinculadas · %0
-[hub linked accounts]
-Contas vinculadas
 [hub maps]
 Mapas
 [hub no queues]
@@ -3538,6 +3536,20 @@ Online
 Abrir a página de novo
 [hub open rooms]
 Salas abertas
+[hub play]
+Jogar
+[hub rooms]
+Salas
+[hub ranks]
+Ranking
+[hub play with friends]
+Jogar com amigos
+[hub last match]
+Última partida
+[hub your rank %0 %1]
+Você é o nº %0 · classificação %1
+[hub not placed]
+Você ainda não tem posição aqui. Jogue partidas ranqueadas para ser classificado.
 [hub queues unavailable]
 A partida rápida aparece quando o servidor responder.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ A partida rápida ainda não está disponível nesta versão.
 Partida rápida
 [hub ranked]
 Ranqueada
-[hub recent matches]
-Partidas recentes
 [hub refresh]
 Atualizar
 [hub retry now]
@@ -3560,8 +3570,6 @@ Sala de %0
 Sala
 [hub seats %0 %1]
 %0/%1 vagas
-[hub server %0]
-Servidor: %0
 [hub sign in browser]
 Abrir a página de login
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Revanche
 Entrar na revanche de %0
 [hub profile history]
 Perfil e histórico
-[hub my maps]
-Meus mapas
 [hub leaderboard %0]
 Classificação · %0
 [hub leaderboard empty]

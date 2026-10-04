@@ -9,6 +9,7 @@ class PlatformScope;
 }
 #include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
+#include "ui/MapPictures.h"
 #include <ScreenStack.h>
 #include <functional>
 #include <memory>
@@ -68,9 +69,12 @@ class OnlineHubScreen : public Glob2UI::Screen
 		Online::Json providers = Online::Json::array();
 		Online::Json rooms = Online::Json::array();
 		Online::Json recent = Online::Json::array();
-		// Top of the main queue's ladder (LeaderboardEntry objects) and its name.
+		// The main queue's ladder (LeaderboardEntry objects), its name, and where
+		// this account stands on it (myRank 0: not placed yet).
 		Online::Json leaderboard = Online::Json::array();
 		std::string leaderboardName;
+		int myRank = 0;
+		double myRating = 0;
 		// Browser sign-in: none, choosing a provider, or waiting for the browser.
 		enum class SignIn
 		{
@@ -89,7 +93,16 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// Harnesses: show this search (a model with presentSearching) instead of the shared one.
 	void previewSearching(Online::QuickMatch &search) { previewSearch = &search; invalidate(); }
 
+	// The hub's sections. Maps and Profile & history are screens of their own.
+	enum class Section
+	{
+		Play,
+		Rooms,
+		Leaderboard
+	};
 	// Semantic entry points (harnesses, tests and the phone thumb block).
+	void showSection(Section next);
+	Section currentSection() const { return section; }
 	void createRoom();
 	void joinByCode(const std::string &codeOrLink);
 	void findMatch(int queueIndex);
@@ -114,6 +127,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	std::string joinDraft;
 	int roomFilter = 0;
 	int selectedQueue = -1; // -1: defaultQueue()
+	Section section = Section::Play;
+	std::unique_ptr<Glob2UI::MapPictures> pictures;
 	bool accountMenu = false, joinField = false;
 	Uint32 lastRefresh = 0, toastAt = 0, now = 0;
 	// Every platform call and listener of this screen: destroying it with the
@@ -128,7 +143,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	std::optional<Invite> trustPrompt;
 	// An invite that waits for the client to reach its instance.
 	std::optional<Invite> pendingInvite;
-	bool fetchingInstance = false, fetchingRooms = false, fetchingHistory = false, fetchingLeaderboard = false;
+	bool fetchingInstance = false, fetchingRooms = false, fetchingHistory = false, fetchingLeaderboard = false, fetchingStanding = false;
 	// This account's latest matches from GET /api/v1/players/{id}/matches; matches
 	// seen live (match.updated) are merged over them.
 	Online::Json history = Online::Json::array();
@@ -170,10 +185,20 @@ class OnlineHubScreen : public Glob2UI::Screen
 
 	Glob2UI::Element accountChip(const Glob2UI::Presentation &p);
 	Glob2UI::Element banner(const Glob2UI::Presentation &p);
-	Glob2UI::Element quickMatch(const Glob2UI::Presentation &p, bool phone);
-	Glob2UI::Element roomList(const Glob2UI::Presentation &p, bool phone);
-	Glob2UI::Element recentMatches(const Glob2UI::Presentation &p, bool phone);
-	Glob2UI::Element leaderboardTeaser(const Glob2UI::Presentation &p);
+	// The sections: the sidebar (desktop) or tabs (phones), and each section's body.
+	Glob2UI::Element sectionNav(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element sectionBody(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element playSection(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element roomsSection(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element leaderboardSection(const Glob2UI::Presentation &p, bool phone);
+	// Play: the one quick-match card (queue choice, map pool, Find match), rooms with
+	// friends, and the last match.
+	Glob2UI::Element quickMatchCard(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element friendsCard(const Glob2UI::Presentation &p);
+	// The queue's map pool as pictures with their names; null without a pool.
+	Glob2UI::Element mapPool(const Online::Json &queue, const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element lastMatchCard(const Glob2UI::Presentation &p, bool phone);
+	Glob2UI::Element outcomeBadge(const std::string &letter, const Glob2UI::Presentation &p);
 	Glob2UI::Element signInPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element trustPanel(const Glob2UI::Presentation &p);
 	Glob2UI::Element accountPanel(const Glob2UI::Presentation &p);

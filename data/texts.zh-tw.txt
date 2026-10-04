@@ -1350,6 +1350,12 @@ AI 策略與對抗
 你與 AI 都可以下達命令，佔用兩個操控者名額。
 [You vs all]
 你對抗所有人
+[%0 vs %1]
+%0 對 %1
+[%0 vs all]
+%0 對抗所有人
+[You will watch this match.]
+你將觀看這場比賽。
 [Your maps]
 你的地圖
 [colonies]
@@ -1408,8 +1414,6 @@ AI 策略與對抗
 自動環面檢視
 [toggle torus view]
 切換 2D／環面檢視
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 對 2 需要 4 個參與的殖民地。「你對抗所有人」需要一名人類玩家。
 [Alliance]
 聯盟
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Ping 值
 %0 後由 AI 加入
 [hub all rooms]
 全部
-[hub browse maps]
-瀏覽地圖
 [hub cant reach %0]
 無法連上 %0。
 [hub change server]
@@ -3514,10 +3516,6 @@ Ping 值
 加入
 [hub leaderboard]
 排行榜
-[hub linked %0]
-已連結帳號 · %0
-[hub linked accounts]
-已連結帳號
 [hub maps]
 地圖
 [hub no queues]
@@ -3538,6 +3536,20 @@ Ping 值
 再次開啟頁面
 [hub open rooms]
 開放的房間
+[hub play]
+開始遊戲
+[hub rooms]
+房間
+[hub ranks]
+排名
+[hub play with friends]
+和朋友一起玩
+[hub last match]
+上一場對局
+[hub your rank %0 %1]
+你排名第 %0 · 積分 %1
+[hub not placed]
+你在這裡還沒有排名。進行積分對局即可獲得排名。
 [hub queues unavailable]
 伺服器回應後就會顯示快速配對。
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ Ping 值
 快速配對
 [hub ranked]
 積分賽
-[hub recent matches]
-最近對局
 [hub refresh]
 重新整理
 [hub retry now]
@@ -3560,8 +3570,6 @@ Ping 值
 房間
 [hub seats %0 %1]
 %0/%1 個座位
-[hub server %0]
-伺服器：%0
 [hub sign in browser]
 開啟登入頁面
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ AI 補位
 加入 %0 的再戰
 [hub profile history]
 個人檔案與紀錄
-[hub my maps]
-我的地圖
 [hub leaderboard %0]
 排行榜 · %0
 [hub leaderboard empty]

@@ -1350,6 +1350,12 @@ Cortex
 Ви и ВИ можете издавати наређења. Заузима два места за играче и ВИ.
 [You vs all]
 Ви против свих
+[%0 vs %1]
+%0 против %1
+[%0 vs all]
+%0 против свих
+[You will watch this match.]
+Гледаћете овај меч.
 [Your maps]
 Ваше мапе
 [colonies]
@@ -1408,8 +1414,6 @@ Cortex
 Аутоматски торусни приказ
 [toggle torus view]
 Промени 2D / торусни приказ
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 против 2 захтева четири отворене колоније. Ви против свих захтева људског играча.
 [Alliance]
 Савез
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ LAN домаћин није доступан. Проверите дозволу 
 ВИ се прикључује након %0
 [hub all rooms]
 Све
-[hub browse maps]
-Прегледај мапе
 [hub cant reach %0]
 %0 није доступан.
 [hub change server]
@@ -3514,10 +3516,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Придружи се
 [hub leaderboard]
 Ранг-листа
-[hub linked %0]
-Повезани налози · %0
-[hub linked accounts]
-Повезани налози
 [hub maps]
 Мапе
 [hub no queues]
@@ -3538,6 +3536,20 @@ LAN домаћин није доступан. Проверите дозволу 
 Поново отвори страницу
 [hub open rooms]
 Отворене собе
+[hub play]
+Играј
+[hub rooms]
+Собе
+[hub ranks]
+Ранг
+[hub play with friends]
+Играј са пријатељима
+[hub last match]
+Последњи меч
+[hub your rank %0 %1]
+Ви сте #%0 · рејтинг %1
+[hub not placed]
+Још немате ранг овде. Играјте рангиране мечеве да бисте се рангирали.
 [hub queues unavailable]
 Брзи меч ће се појавити када сервер одговори.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Брзи меч
 [hub ranked]
 Рангирано
-[hub recent matches]
-Недавни мечеви
 [hub refresh]
 Освежи
 [hub retry now]
@@ -3560,8 +3570,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Соба
 [hub seats %0 %1]
 Места: %0/%1
-[hub server %0]
-Сервер: %0
 [hub sign in browser]
 Отвори страницу за пријаву
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Придружи се реваншу: %0
 [hub profile history]
 Профил и историја
-[hub my maps]
-Моје мапе
 [hub leaderboard %0]
 Ранг-листа · %0
 [hub leaderboard empty]

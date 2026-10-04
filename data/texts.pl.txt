@@ -1350,6 +1350,12 @@ Ty + SI
 Ty i SI możecie wydawać rozkazy. Zajmuje dwa miejsca dla graczy i SI.
 [You vs all]
 Ty przeciwko wszystkim
+[%0 vs %1]
+%0 na %1
+[%0 vs all]
+%0 przeciwko wszystkim
+[You will watch this match.]
+Będziesz oglądać ten mecz.
 [Your maps]
 Twoje mapy
 [colonies]
@@ -1408,8 +1414,6 @@ Podgląd niedostępny. Zmień ustawienia lub uruchom grę, aby spróbować ponow
 Automatyczny widok torusa
 [toggle torus view]
 Przełącz widok 2D / torusa
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 na 2 wymaga czterech otwartych kolonii. Ty przeciw wszystkim wymaga gracza ludzkiego.
 [Alliance]
 Sojusz
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Konto
 SI dołączy po %0
 [hub all rooms]
 Wszystkie
-[hub browse maps]
-Przeglądaj mapy
 [hub cant reach %0]
 Brak połączenia z %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Kod dołączenia
 Dołącz
 [hub leaderboard]
 Ranking
-[hub linked %0]
-Połączone konta · %0
-[hub linked accounts]
-Połączone konta
 [hub maps]
 Mapy
 [hub no queues]
@@ -3538,6 +3536,20 @@ Gra online
 Otwórz stronę ponownie
 [hub open rooms]
 Otwarte pokoje
+[hub play]
+Graj
+[hub rooms]
+Pokoje
+[hub ranks]
+Ranking
+[hub play with friends]
+Graj ze znajomymi
+[hub last match]
+Ostatni mecz
+[hub your rank %0 %1]
+Jesteś na %0. miejscu · ranking %1
+[hub not placed]
+Nie masz tu jeszcze miejsca w rankingu. Graj mecze rankingowe, aby się w nim znaleźć.
 [hub queues unavailable]
 Szybki mecz pojawi się, gdy serwer odpowie.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ Szybki mecz nie jest jeszcze dostępny w tej wersji.
 Szybki mecz
 [hub ranked]
 Rankingowy
-[hub recent matches]
-Ostatnie mecze
 [hub refresh]
 Odśwież
 [hub retry now]
@@ -3560,8 +3570,6 @@ Pokój gracza %0
 Pokój
 [hub seats %0 %1]
 Miejsca: %0/%1
-[hub server %0]
-Serwer: %0
 [hub sign in browser]
 Otwórz stronę logowania
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Rewanż
 Dołącz do rewanżu gracza %0
 [hub profile history]
 Profil i historia
-[hub my maps]
-Moje mapy
 [hub leaderboard %0]
 Ranking · %0
 [hub leaderboard empty]

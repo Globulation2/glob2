@@ -809,7 +809,19 @@ std::string PlatformRoom::setupSummary() const
 		return {};
 	CustomGameSetup setup;
 	applyRulesToSetup(state.value("rules", Json::object()), setup);
-	return text(("[" + formatName(state.value("teams", Json::array())) + "]").c_str()) + " · " + mapName() + " · " +
+	const Json teams = state.value("teams", Json::array());
+	std::vector<bool> ai(teams.size());
+	std::vector<const Slot *> seats(teams.size());
+	const auto all = slots();
+	for (const auto &slot : all)
+		if (slot.index >= 0 && slot.index < int(teams.size()))
+		{
+			ai[std::size_t(slot.index)] = slot.ai;
+			seats[std::size_t(slot.index)] = &slot;
+		}
+	const auto layout = teamLayout(teams, ai);
+	const Slot *lone = layout.oneVsAll() && layout.lone >= 0 && layout.lone < int(seats.size()) ? seats[std::size_t(layout.lone)] : nullptr;
+	return TeamLayout::label(layout, lone && lone->local, lone ? lone->name : std::string()) + " · " + mapName() + " · " +
 		   setup.rulesetTitle(true);
 }
 

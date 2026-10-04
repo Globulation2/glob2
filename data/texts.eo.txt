@@ -1350,6 +1350,12 @@ Vi + AI
 Vi kaj la AI ambaŭ donas ordonojn. Uzas du ludantlokojn.
 [You vs all]
 Vi kontraŭ ĉiuj
+[%0 vs %1]
+%0 kontraŭ %1
+[%0 vs all]
+%0 kontraŭ ĉiuj
+[You will watch this match.]
+Vi spektos ĉi tiun matĉon.
 [Your maps]
 Viaj mapoj
 [colonies]
@@ -1408,8 +1414,6 @@ Antaŭrigardo nedisponebla. Ŝanĝu la agordojn aŭ lanĉu la ludon por provi de
 Aŭtomata tora vido
 [toggle torus view]
 Ŝanĝi inter 2D kaj tora vido
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 kontraŭ 2 bezonas kvar malfermitajn koloniojn. Vi kontraŭ ĉiuj bezonas homan ludanton.
 [Alliance]
 Alianco
 [Choose a rule to change it.]
@@ -3482,8 +3486,6 @@ Konto
 AI aliĝos post %0
 [hub all rooms]
 Ĉiuj
-[hub browse maps]
-Foliumi mapojn
 [hub cant reach %0]
 Ne eblas atingi %0.
 [hub change server]
@@ -3514,10 +3516,6 @@ Aliĝkodo
 Aliĝi
 [hub leaderboard]
 Rangotabelo
-[hub linked %0]
-Ligitaj kontoj · %0
-[hub linked accounts]
-Ligitaj kontoj
 [hub maps]
 Mapoj
 [hub no queues]
@@ -3538,6 +3536,20 @@ Rete
 Malfermi la paĝon denove
 [hub open rooms]
 Malfermitaj ĉambroj
+[hub play]
+Ludi
+[hub rooms]
+Ĉambroj
+[hub ranks]
+Rangoj
+[hub play with friends]
+Ludi kun amikoj
+[hub last match]
+Lasta matĉo
+[hub your rank %0 %1]
+Vi estas n-ro %0 · takso %1
+[hub not placed]
+Vi ankoraŭ ne havas rangon ĉi tie. Ludu rangigitajn matĉojn por esti rangigita.
 [hub queues unavailable]
 Rapida matĉo aperos kiam la servilo respondos.
 [hub quick match unavailable]
@@ -3546,8 +3558,6 @@ Rapida matĉo ankoraŭ ne disponeblas en ĉi tiu versio.
 Rapida matĉo
 [hub ranked]
 Rangigita
-[hub recent matches]
-Lastaj matĉoj
 [hub refresh]
 Aktualigi
 [hub retry now]
@@ -3560,8 +3570,6 @@ Reprovi nun
 Ĉambro
 [hub seats %0 %1]
 %0/%1 lokoj
-[hub server %0]
-Servilo: %0
 [hub sign in browser]
 Malfermi la ensalutan paĝon
 [hub sign in conflict]
@@ -4396,8 +4404,6 @@ Revanĉo
 Aliĝi al la revanĉo de %0
 [hub profile history]
 Profilo kaj historio
-[hub my maps]
-Miaj mapoj
 [hub leaderboard %0]
 Rangotabelo · %0
 [hub leaderboard empty]
