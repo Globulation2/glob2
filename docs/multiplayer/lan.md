@@ -9,7 +9,7 @@ how to try it out, see the [LAN playtest guide](lan-playtest.md).
 
 | Part | Code | Role |
 | --- | --- | --- |
-| Room backend | `src/RoomBackend.h` | What the room screen needs from the network: seats, teams, readiness, chat, map progress, options, start, and starting the engine |
+| Room backend | `src/online/RoomBackend.h` | What the room screen needs from the network: seats, teams, readiness, chat, map progress, options, start, and starting the engine |
 | LAN room | `src/net/lan/LanRoom.*` | `RoomBackend` for LAN: wraps a `LanHost` or a `LanClient` |
 | Host | `src/net/lan/LanHost.*` | Listener, discovery beacon, room state, map serving, and the `TurnSequencer` once the match starts |
 | Guest | `src/net/lan/LanClient.*` | Joins the room, downloads the map, and hands the engine a turn transport that shares the room connection |

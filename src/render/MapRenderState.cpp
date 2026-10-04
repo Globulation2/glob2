@@ -2,7 +2,7 @@
 #include "MapRenderState.h"
 
 #include "DynamicClouds.h"
-#include "ColonySkinPreview.h"
+#include "unit/render/ColonySkinPreview.h"
 #include "GlobalContainer.h"
 #include "SoftwareTerrainCache.h"
 

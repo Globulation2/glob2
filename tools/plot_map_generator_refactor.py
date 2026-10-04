@@ -138,7 +138,7 @@ def main():
         shutil.rmtree(Path.home()/('.'+profile), ignore_errors=True)
     (out/'previews.json').write_text(json.dumps(preview_records, indent=2)+'\n')
     paths = list((ROOT/'src/map/generator').rglob('*.h')) + list((ROOT/'src/map/generator').rglob('*.cpp'))
-    paths += [ROOT/'src/map/MapTerrain.cpp', ROOT/'test/MapGeneratorStudy.cpp']
+    paths += [ROOT/'src/map/MapTerrain.cpp', ROOT/'src/map/generator/MapGeneratorStudy.cpp']
     hashes = {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(paths)}
     (out/'source-hashes.json').write_text(json.dumps(hashes, indent=2)+'\n')
     report = ['# Modular generator validation', '',

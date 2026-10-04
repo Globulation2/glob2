@@ -54,8 +54,8 @@
 #include <StringTable.h>
 #include <ScreenStack.h>
 #include <Toolkit.h>
-#include "gui/ConnectionOverlay.h"
-#include "test/OnlineUIFixtures.h"
+#include "ConnectionOverlay.h"
+#include "OnlineUIFixtures.h"
 #include "SettingsScreen.h"
 #include <SDL3_net/SDL_net.h>
 #include <charconv>
@@ -353,7 +353,7 @@ struct MobileGallerySetup
 			settings->selectCategory(SettingsScreen::Category::Online);
 			screenShot(stack, "settings-online", std::move(settings));
 		}
-		// Online screens on canned data (test/OnlineUIFixtures.h).
+		// Online screens on canned data (src/ui/OnlineUIFixtures.h).
 		screenShot(stack, "quick-match", OnlineUIFixtures::quickMatch(stack, false));
 		screenShot(stack, "quick-match-searching", OnlineUIFixtures::quickMatch(stack, true));
 		{

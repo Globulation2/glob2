@@ -20,8 +20,8 @@ explains how to run, configure, upgrade and back it up.
 
 `.github/workflows/server-image.yml` publishes the four images for a `server-v*` tag
 in the release mirror only ([details](../docs/hosting/README.md#images)).
-Deployment script tests: `python3 -m unittest discover -s tests/deployment -v`.
-Whole-stack smoke test: `tests/deployment/platform_stack_smoke.py` (see the
+Deployment script tests: `python3 -m unittest discover -s test/deployment -v`.
+Whole-stack smoke test: `test/deployment/platform_stack_smoke.py` (see the
 hosting guide).
 
 The legacy YOG lobby and router stack (`compose.legacy.yaml`, `Caddyfile.legacy`,

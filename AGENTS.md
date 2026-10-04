@@ -11,17 +11,18 @@ appear as plain text in a checkout, read `AGENTS.md` and `.agents/skills/` direc
 
 | Area | Start here |
 | --- | --- |
-| Simulation and orders | `src/Game_sync.cpp`, `src/EngineRun.cpp`, `src/Order*.cpp`; simulation thread and client channels in `src/sim/` |
-| Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` |
-| Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/` |
-| AI implementations | `src/ai/`, behind `AIImplementation` |
-| Rendering, menus and editor | `src/render/`, `src/gui/`, `src/*Screen*`, `src/map/edit/`; drawing reads only the extracted Scene in `src/scene/`, see [Scene renderer](docs/development/reference.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
+| Simulation and orders | `src/game/` (`Game_sync.cpp`, orders in `orders/`, rules in `rules/`), `src/engine/EngineRun.cpp`; simulation thread and client channels in `src/engine/sim/`; replays in `src/replay/` |
+| Units, buildings and teams | `src/unit/`, `src/building/`, `src/team/` (statistics in `team/stats/`), `src/resource/`; each holds its type tables in `types/` and its drawing or HUD code in `render/` or `hud/` |
+| Map state and pathfinding | `src/map/`, especially `gradient/` and `pathfind/`; generators in `generator/`, the editor in `editor/` |
+| AI implementations | `src/ai/`, one directory per AI, behind `AIImplementation` |
+| Rendering, menus and editor | `src/render/`, in-game HUD in `src/hud/`, menus and settings in `src/ui/`, each domain's screens in its `screens/` directory, `src/map/editor/`; drawing reads only the extracted Scene in `src/render/scene/`, see [Scene renderer](docs/development/reference.md#scene-renderer); menu/dialog framework in `libgag/include/ui/` and `src/ui/`, see [UI framework](docs/development/ui-framework.md) |
 | Network and multiplayer client | `src/net/` (turn netcode in `src/net/turn/`, LAN in `src/net/lan/`), online client in `src/online/` ([client](docs/multiplayer/client.md)), match relay in `src/relay/` ([relay](docs/multiplayer/relay.md)) |
 | Online platform (TypeScript: accounts, rooms, matches, JSON contracts) | `platform/`, [platform architecture](docs/multiplayer/architecture.md) |
-| Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/sgsl/` |
+| Graphics/UI and scripting libraries | `libgag/`, `libusl/`, `src/scripting/` (`javascript/`, `sgsl/`, map scripts in `map/`) |
 | Builds and platform coverage | `SConstruct`, `src/SConscript`, `scons/`, `.github/workflows/build.yml`, `vcpkg.json` |
 | Documentation index | [docs/README.md](docs/README.md) |
-| Tests and replay usage | [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |
+| Application shell and shared utilities | `src/app/` (entry point, settings, command-line modes in `cli/`), `src/audio/`, `src/common/` |
+| Tests and replay usage | A domain's tests sit beside its code (`*Test.cpp`, `*Harness.cpp`); cross-domain tests, fixtures and the registry are in `test/`: [test/README.md](test/README.md), [docs/development/headless-replays.md](docs/development/headless-replays.md) |
 | Build pitfalls, verification and conventions | [Development reference](docs/development/reference.md) |
 | Architecture background | [Historical source-code overview](docs/development/legacy-architecture.txt) |
 
@@ -62,7 +63,7 @@ permanent docs.
   CI builds and matching replay orders alone do not establish equivalent execution;
   report any platform coverage that could not be verified.
 - Save-state backward compatibility is deliberately durable and has broken for real
-  before: `MINIMUM_VERSION_MINOR` in `src/Version.h` is the floor of save formats the
+  before: `MINIMUM_VERSION_MINOR` in `src/app/Version.h` is the floor of save formats the
   loader must still read, and it moves far more rarely than `VERSION_MINOR` itself. A
   save-format change needs version-gated loading that keeps existing save files
   working, not just a version bump; check save/load continuity whenever simulation
@@ -72,11 +73,11 @@ permanent docs.
   change.
 - Replay and network compatibility are a separate question from saves, and reset far
   more readily: a simulation change can invalidate replays and mixed-client games
-  without changing a single saved byte. Check `src/ReplayReader.h`, `src/Version.h`
+  without changing a single saved byte. Check `src/replay/ReplayReader.h`, `src/app/Version.h`
   and `src/online/SimVersion.cpp` for replay acceptance and network/sim version
   gates, and test the affected acceptance boundaries directly.
 - Online play groups players, AI ratings and match verifiers by sim version, and only
-  `SIM_REVISION` in `src/SimRevision.h` ties that version to simulation code. Bump it
+  `SIM_REVISION` in `src/game/SimRevision.h` ties that version to simulation code. Bump it
   in every change that can alter what the simulation computes from the same setup and
   orders (rules, units, AI, order validation, map loading, random number use), even
   when saves and replays stay compatible, and regenerate the golden match record in the

@@ -351,12 +351,12 @@ Player types that trigger AI loading: any `BasePlayer::type >= P_AI (5)`. The pl
 
 ## Key Source Files
 
-- `src/Engine.cpp` — `initCustom()` loads `.game` files; `run()` contains the game loop; `createRandomGame()` sets up random AI matches
-- `src/ReplayWriter.cpp` — writes replay data live during gameplay
-- `src/ReplayReader.cpp` — reads replays for playback
-- `src/GlobalContainer.cpp` — `parseArgs()` handles CLI flags
-- `src/Glob2.cpp` — `runNoX()` and `runTestGames()` entry points
-- `src/Game.cpp` — `executeOrder()` pushes orders to `ReplayWriter`
+- `src/engine/Engine.cpp` — `initCustom()` loads `.game` files; `run()` contains the game loop; `createRandomGame()` sets up random AI matches
+- `src/replay/ReplayWriter.cpp` — writes replay data live during gameplay
+- `src/replay/ReplayReader.cpp` — reads replays for playback
+- `src/app/GlobalContainer.cpp` — `parseArgs()` handles CLI flags
+- `src/app/Glob2.cpp` — `runNoX()` and `runTestGames()` entry points
+- `src/game/Game.cpp` — `executeOrder()` pushes orders to `ReplayWriter`
 - `src/AI.cpp` — `AI::save()`/`AI::load()` with implementation dispatch
 
 The existing `GLOB2_TEAM_TIMELINE` option also exports timestamped

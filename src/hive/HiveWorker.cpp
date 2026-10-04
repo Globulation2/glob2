@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiveWorker.h"
-#include "script/ScriptRuntime.h"
+#include "scripting/javascript/ScriptRuntime.h"
 #include <cmath>
 #include <iostream>
 #include <stdexcept>

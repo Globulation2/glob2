@@ -329,8 +329,8 @@ jobs:
         continue-on-error: true
         run: |
           python3 test/ci_run_commands.py \
-            --check 'Maxima strategy config' 'MAXIMA_STRATEGY_DUMP=build/linux/client/release/test/MaximaStrategyDump GLOB2_BUILD_DIR=build/linux/client/release GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/MaximaStrategyConfigTest.py' \
-            --check 'Maxima policy tests' 'python3 -m unittest discover -s test/maxima -p "*Test.py"'
+            --check 'Maxima strategy config' 'MAXIMA_STRATEGY_DUMP=build/linux/client/release/test/MaximaStrategyDump GLOB2_BUILD_DIR=build/linux/client/release GLOB2_USER_DIR="$(mktemp -d)" python3 src/ai/maxima/MaximaStrategyConfigTest.py' \
+            --check 'Maxima policy tests' 'python3 -m unittest discover -s src/ai/maxima -p "*Test.py"'
 
       - name: Summarize CI failures
         if: always()

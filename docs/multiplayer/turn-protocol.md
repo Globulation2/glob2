@@ -203,7 +203,7 @@ rest of an order; the engine does, as described next.
 The relay passes order bytes through, so a modified client (or relay, or record) can
 put any bytes in its seat's turns. Before the engine executes a human seat's order,
 `TurnLockstepSession::retrieveOrder` checks it with `OrderValidation::validate`
-(`src/OrderValidation.h`). The check reads only the game state at that point of that
+(`src/game/orders/OrderValidation.h`). The check reads only the game state at that point of that
 tick and the seat from the bundle, never an identity the order claims, so every client
 and `--verify-match` reach the same verdict. An order that fails, or whose bytes do not
 decode, executes as a `NullOrder` everywhere; the game and every checksum stay the same
@@ -348,7 +348,7 @@ Let `P` be the tick period (40 ms) and `B` the bundle interval. The relay emits 
 ### Input delay
 
 An order clicked on a client goes through these stages before that client executes it
-(`test/TurnLatencyTrace.h` measures each one):
+(`src/net/turn/TurnLatencyTrace.h` measures each one):
 
 | Stage | Typical | What sets it |
 | --- | --- | --- |
@@ -734,8 +734,8 @@ key is `<versionMinor>-<netProtocol>-<dataHash>`, the string relays copy into th
 record. `glob2 --sim-version` prints the JSON.
 
 - `versionMinor` is `VERSION_MINOR` and `netProtocol` is `NET_PROTOCOL_VERSION` in
-  `src/Version.h`.
-- `dataHash` is the lowercase hex SHA-256 of `SIM_REVISION` (`src/SimRevision.h`)
+  `src/app/Version.h`.
+- `dataHash` is the lowercase hex SHA-256 of `SIM_REVISION` (`src/game/SimRevision.h`)
   followed by the simulation data files. The revision is hashed first as a pseudo-file
   with path `#sim-revision` and the revision in decimal ASCII as its content. The data
   files are those listed in `Online::simDataFiles()`: the Maxima strategies (`data/maxima/*.strategy`), the
@@ -847,7 +847,7 @@ one relay would. Its contract is in
 
 ## Testing
 
-The unit tests in `test/TurnProtocolTest.cpp` (in `glob2-unit-tests`) use a fake clock
+The unit tests in `src/net/turn/TurnProtocolTest.cpp` (in `glob2-unit-tests`) use a fake clock
 and drive the components directly:
 
 - codec round trips, and rejection of malformed or oversized input;
@@ -863,7 +863,7 @@ and drive the components directly:
   handling of multi-tick bundles;
 - match record round trip and corruption detection.
 
-`test/TurnHarnessTest.cpp` connects 2–4 `TurnSession` clients to a `TurnSequencer` over
+`src/net/turn/TurnHarnessTest.cpp` connects 2–4 `TurnSession` clients to a `TurnSequencer` over
 a simulated network with per-link latency, jitter, loss (as TCP-style retransmission
 delay) and disconnects. It checks that every client executes the same
 `(tick, seat, order)` sequence as the relay's log. It covers a mid-game transport drop
@@ -875,10 +875,10 @@ to stay within bounds on loopback (60 / 80 ms) and at 50 ms one way (150 / 170 m
 with no long stalls. A `[benchmark]` case writes the delay and stall table above
 (`turn-delay-profiles.txt`). Summaries are written under `artifacts/tests/`.
 
-The relay's own tests (`glob2-relay-tests` and `tests/relay/`) run this protocol over
+The relay's own tests (`glob2-relay-tests` and `test/relay_service/`) run this protocol over
 real WebSockets against `glob2-relay`; see [relay.md](relay.md#tests).
 
-`test/TurnEngineHarness.cpp` (in `glob2-engine-tests`) runs the same network with 2–4
+`src/net/turn/TurnEngineHarness.cpp` (in `glob2-engine-tests`) runs the same network with 2–4
 real engines started by `Engine::initTurnMatch` on one MatchSetup, AI seats computed on
 every client and each human seat driven by a bot that queues orders through the GUI's
 order queue. Every client records the checksum before each tick, and the cases require
@@ -904,11 +904,11 @@ turns make the record unverifiable, and a seat whose reports disagree is named. 
 `[benchmark]` case measures rejoin fast-forward time against game length and AI count
 (`python3 test/run_tests.py --tag benchmark --filter 'TurnEngineHarness/*'`).
 
-`test/OrderValidationTest.cpp` checks each validation rule on a two-team game, runs
+`src/game/orders/OrderValidationTest.cpp` checks each validation rule on a two-team game, runs
 random payloads of every order type through decoding, the check and execution, and
 executes hostile orders unchecked to show the executor guards.
 
-`test/MatchSetupTest.cpp` runs every MatchSetup and SimVersion contract fixture: valid
+`src/online/MatchSetupTest.cpp` runs every MatchSetup and SimVersion contract fixture: valid
 ones must parse and round-trip, invalid ones must fail at the stage the manifest names.
 It reads `platform/packages/protocol/fixtures` when that directory exists; until the
 platform workspace is on the branch it reads the copy in `test/fixtures/protocol`, and

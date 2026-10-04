@@ -7,7 +7,7 @@ and pass the logs; result.json is looked for in the directory named like the log
 
   python3 game_counters.py LOG [LOG...] [--keys harvested_4 delivered_4 shots_2 consumed_2_3 ...]
 
-Counter names (src/TeamStat.h, GameplayMeasurements), R = resource (0 wood, 1 wheat, 3 stone, 4 algae,
+Counter names (src/team/stats/TeamStat.h, GameplayMeasurements), R = resource (0 wood, 1 wheat, 3 stone, 4 algae,
 5-7 fruit), T = building short type (0 swarm, 1 inn, 2 hospital, 3 racetrack, 4 pool, 5 barracks,
 6 school, 7 tower, 11 wall, 12 market), L = long level (2 x level, +1 when finished: 1 is a finished
 level-1 building, 3 a finished level-2):

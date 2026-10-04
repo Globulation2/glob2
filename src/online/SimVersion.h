@@ -20,8 +20,8 @@ namespace Online
 {
 	struct SimVersion
 	{
-		std::uint32_t versionMinor = 0; ///< VERSION_MINOR (src/Version.h)
-		std::uint32_t netProtocol = 0;  ///< NET_PROTOCOL_VERSION (src/Version.h)
+		std::uint32_t versionMinor = 0; ///< VERSION_MINOR (src/app/Version.h)
+		std::uint32_t netProtocol = 0;  ///< NET_PROTOCOL_VERSION (src/app/Version.h)
 		std::string dataHash;           ///< 64 lowercase hex digits, see simDataHash(); covers SIM_REVISION
 
 		/// "<versionMinor>-<netProtocol>-<dataHash>", the protocol package's simVersionKey.
@@ -50,7 +50,7 @@ namespace Online
 	/// The data files whose contents feed the simulation data hash, as paths relative
 	/// to the data root, in hashing (byte-wise sorted) order. Everything else the
 	/// simulation depends on is compiled in and covered by SIM_REVISION
-	/// (src/SimRevision.h), which the hash also covers.
+	/// (src/game/SimRevision.h), which the hash also covers.
 	const std::vector<std::string>& simDataFiles();
 
 	/// Hashes simRevisionEntry() followed by simDataFiles() read through the Toolkit

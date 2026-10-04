@@ -3,7 +3,7 @@ name: Publish deployment images
 #
 # Nothing gets a usable tag unless the whole set is good:
 #   1. verify  builds the platform stack from this commit and smoke-tests it
-#              (tests/deployment/platform_stack_smoke.py); nothing is pushed if it fails.
+#              (test/deployment/platform_stack_smoke.py); nothing is pushed if it fails.
 #   2. image   builds every target for amd64 and arm64 and pushes it only as
 #              candidate-<commit>, a tag that deployments never reference.
 #   3. publish runs only when every candidate exists, and only then adds the
@@ -31,7 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Smoke-test the platform stack built from this commit
-        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
+        run: python3 test/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
       - uses: actions/upload-artifact@v4
         if: always()
         with:

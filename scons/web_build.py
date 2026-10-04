@@ -114,9 +114,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         asset_manifest = output / 'asset-manifest.js'
         # The plan also reads the browser copies (browser/derive_assets.py) and the game
         # sprite names in GlobalContainer::loadGameGraphics and the building tables.
-        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py', 'src/GlobalContainer.cpp']
+        plan_inputs = ['scons/web_assets.py', 'deploy/sim_version.py', 'browser/derive_assets.py', 'src/app/GlobalContainer.cpp']
         plan_inputs += [str(p) for p in Path('browser/assets').glob('*') if p.is_file()]
-        plan_inputs += [str(p) for p in Path('src/game/entities').glob('BuildingTypes*.cpp')]
+        plan_inputs += [str(p) for p in Path('src/building/types').glob('BuildingTypes*.cpp')]
         assets = env.Command(str(asset_manifest), [exported] + plan_inputs,
             Action(lambda target, source, env: web_assets.build(root, output, target[0].abspath, asset_root) and 0,
                    'Packaging browser game data'))
@@ -137,7 +137,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             input='', text=True, env=env['ENV']).returncode
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
-    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
+    files = ['src/' + s for s in CLIENT_SOURCES if s not in ('audio/VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
     files += ['libgag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
     files += ['libusl/src/' + s for s in USL_SOURCES]
     files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/RecordingPlatform.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
@@ -150,12 +150,12 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     objects = []
     for f in files:
-        local = strict if f.startswith('src/script/') or f == 'src/ai/AIJavaScript.cpp' else env
-        if f == 'src/Glob2.cpp':
+        local = strict if f.startswith('src/scripting/javascript/') or f == 'src/ai/javascript/AIJavaScript.cpp' else env
+        if f == 'src/app/Glob2.cpp':
             local = local.Clone()
             local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
         objects.append(local.Object(str(output / 'obj' / (f + '.o')), f))
-    numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
+    numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
     objects += javascript_objects(env, output / "obj/third_party", identity["mode"] == "release")
     env.Requires(objects, ports)
     env.Depends(objects, str(config))
@@ -176,17 +176,18 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         tests['LINKFLAGS'] = kept
         for asset_directory in ('data', 'maps', 'campaigns', 'scripts'):
             tests.Append(LINKFLAGS=['--preload-file', str(asset_root / asset_directory) + '@/' + asset_directory])
-        tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+        tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
         tests.Append(LINKFLAGS=['--preload-file', 'test/fixtures@/test/fixtures',
                                '--preload-file', 'games@/games', '-sEXIT_RUNTIME=0'])
         test_objects = []
-        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['ComputeExecutorHarness.cpp', 'GradientPipelineHarness.cpp',
-                'SharedWorkerLifecycleTest.cpp', 'BuildingGradientInvalidationHarness.cpp', 'PathGradientHarness.cpp']:
+        for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries() + ['#src/common/ComputeExecutorHarness.cpp', '#src/map/gradient/GradientPipelineHarness.cpp',
+                '#src/game/SharedWorkerLifecycleTest.cpp', '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
+                '#src/map/gradient/PathGradientHarness.cpp']:
             source, options = (entry, {}) if isinstance(entry, str) else entry
             local = tests.Clone()
             local.Append(CXXFLAGS=options.get('cxxflags', []))
             local.Append(CPPDEFINES=options.get('defines', []))
-            path = 'test/' + source
+            path = registry.source_path(source)
             if source.endswith('TestMain.cpp'):
                 local.Append(CPPDEFINES=['SDL_MAIN_HANDLED', ('main', 'glob2ApplicationMain')])
             targets = local.Object(str(output / 'obj/tests' / (path + '.o')), path)
@@ -194,7 +195,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 local.Depends(targets, provenance_header)
             test_objects += targets
         env.Requires(test_objects, ports)
-        production = [obj for name, obj in zip(files, objects) if name != 'src/Glob2.cpp']
+        production = [obj for name, obj in zip(files, objects) if name != 'src/app/Glob2.cpp']
         production += objects[len(files):]
         harness = tests.Program(str(output / 'script-tests.js'), production + test_objects)
         tests.Depends(harness, ['browser/storage.js', 'browser/file-selection.js',
@@ -269,7 +270,7 @@ def build_web(directory, identity, arguments):
         '-sEXPORTED_FUNCTIONS=["_glob2_hive_invoke","_malloc","_free"]', '-sEXPORTED_RUNTIME_METHODS=["ccall","stringToUTF8","lengthBytesUTF8"]']
     hive.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     hive_objects = [hive.Object(str(Path(directory) / 'hive-obj' / (source + '.o')), source)
-        for source in ('browser/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/script/ScriptRuntime.cpp', 'src/script/ScriptValue.cpp')]
+        for source in ('browser/HiveWorker.cpp', 'src/hive/HiveWorker.cpp', 'src/scripting/javascript/ScriptRuntime.cpp', 'src/scripting/javascript/ScriptValue.cpp')]
     hive_objects += javascript_objects(hive, Path(directory) / 'hive-obj/third_party', True)
     hive_program = hive.Program(str(Path(directory) / 'hive-runtime.js'), hive_objects)
     hive.SideEffect(str(Path(directory) / 'hive-runtime.wasm'), hive_program)

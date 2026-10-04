@@ -61,8 +61,8 @@ class CoverageSummaryTests(unittest.TestCase):
 
     def test_area_groups_preserve_ai_subsystems_and_other_roots(self):
         for path, expected in [('src/ai/cortex/CortexNet.cpp','src/ai/cortex'),
-                               ('src/ai/AICabino.cpp','src/ai'),('src/Game.cpp','src'),
-                               ('src/map/edit/Action.cpp','src/map/edit'),('libgag/src/Stream.cpp','libgag')]:
+                               ('src/ai/AI.cpp','src/ai'),('src/SConscript.cpp','src'),
+                               ('src/map/editor/Action.cpp','src/map/editor'),('libgag/src/Stream.cpp','libgag')]:
             with self.subTest(path=path):
                 self.assertEqual(coverage.area(path),expected)
 

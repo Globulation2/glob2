@@ -68,8 +68,8 @@ from anywhere else.
 ## Simulation versions
 
 A sim version is the triple `VERSION_MINOR` + `NET_PROTOCOL_VERSION` (both in
-`src/Version.h`) + the build's simulation hash (SHA-256 over `SIM_REVISION` from
-`src/SimRevision.h` and the data files that affect simulation, computed by the
+`src/app/Version.h`) + the build's simulation hash (SHA-256 over `SIM_REVISION` from
+`src/game/SimRevision.h` and the data files that affect simulation, computed by the
 engine and by `deploy/sim_version.py`). Two builds with the same sim version must
 produce identical games; every simulation change bumps `SIM_REVISION`
 ([turn protocol](turn-protocol.md#simulation-version)).

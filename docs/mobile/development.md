@@ -244,7 +244,7 @@ that a drag out of the rail places a building rather than navigating back.
 - `EndGameScreen` owns an overview, a chart, the metric picker, team filters,
   expansion and replay export on both desktop and touch. The chart itself is
   `TeamStatChart`, shared with the compact in-match statistics sheet; what it draws
-  comes from the metric catalog (`src/stats/`, see
+  comes from the metric catalog (`src/team/stats/`, see
   [gameplay measurements](../ai/gameplay-statistics.md#what-the-player-sees)),
   including the message for metrics a save has no coverage for. Wide layouts list the
   metrics by group beside the chart; compact layouts put a group and a metric
@@ -845,7 +845,7 @@ alone does not add `applinks:`. Check a TestFlight IPA with
 ## Verification
 
 ```sh
-python3 -m unittest discover -s tests/build_system -v
+python3 -m unittest discover -s test/build_system -v
 scons release=1 tests
 python3 test/run_tests.py --binary unit --filter 'MobileInput/*' --filter 'MobileDocuments/*'
 python3 test/run_tests.py --filter 'PortableRenderer/*' --filter 'GameGUITouch/*' --filter 'UIPresentation/*'

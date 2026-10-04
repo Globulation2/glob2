@@ -33,7 +33,7 @@ release dependency lock covering SDK archive digests and native gateway
 dependencies is still required before reproducible release status.
 
 CI validates the identity rules directly and builds native and WebAssembly
-outputs in their own jobs. `tests/build_system/coexistence.py` remains an
+outputs in their own jobs. `test/build_system/coexistence.py` remains an
 explicit diagnostic for concurrent and alternating builds; it verifies that
 object and artifact contents, timestamps, and tracked source files remain
 unchanged. Running that full native build again in the browser job would

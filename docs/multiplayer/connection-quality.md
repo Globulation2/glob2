@@ -55,7 +55,7 @@ reconnect, offline-time, delayed-order and rejoin rules in
 
 ## In-game panel
 
-`src/gui/ConnectionOverlay.*` reads a `ConnectionSnapshot` that `TurnMatchPresenter` (`src/gui/TurnMatchPresenter.*`) builds from the read-only `TurnSession`.
+`src/net/ConnectionOverlay.*` reads a `ConnectionSnapshot` that `TurnMatchPresenter` (`src/net/turn/TurnMatchPresenter.*`) builds from the read-only `TurnSession`.
 
 - **Rows:** colour, name ("You" on the own row) and the value: `42 ms · Good`, or
   `Behind 1.3 s · Fair` once a player falls a second behind (or when no Ping is
@@ -92,7 +92,7 @@ extra time counts as lag, so a silent client still turns *slow* after two second
    and run `npm run fixtures` in `platform/`. This regenerates
    `fixtures/connection-quality.json` with its sample cases.
 2. Copy that file to `test/fixtures/protocol/connection-quality.json` and update
-   `limits()` in `src/gui/ConnectionQuality.h`.
+   `limits()` in `src/net/ConnectionQuality.h`.
 3. `glob2-unit-tests -ts="connection quality"` checks the C++ table and every sample
    case against the JSON. `packages/protocol/test/connectionQuality.test.ts` checks the
    TypeScript side. The match page's legend text is generated from the table.

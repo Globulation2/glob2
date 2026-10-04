@@ -2,7 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "scene/Scene.h"
-#include "ColonySkinPreview.h"
+#include "unit/render/ColonySkinPreview.h"
 #include "IntBuildingType.h"
 #include <PerformanceTelemetry.h>
 #include <iostream>

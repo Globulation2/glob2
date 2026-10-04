@@ -8,12 +8,12 @@ export const SimVersion = Strict(
     versionMinor: Type.Integer({
       minimum: 0,
       maximum: 65535,
-      description: 'VERSION_MINOR in src/Version.h (save and simulation format).',
+      description: 'VERSION_MINOR in src/app/Version.h (save and simulation format).',
     }),
     netProtocol: Type.Integer({
       minimum: 0,
       maximum: 65535,
-      description: 'NET_PROTOCOL_VERSION in src/Version.h.',
+      description: 'NET_PROTOCOL_VERSION in src/app/Version.h.',
     }),
     dataHash: Type.String({
       pattern: '^[0-9a-f]{64}$',

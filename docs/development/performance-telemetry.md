@@ -103,7 +103,7 @@ Use a named `PerformanceTelemetry::Scope` and `stop()` where only part of a func
 to the scope. Keep timers outside entity/cell inner loops. Background threads must publish
 explicit aggregates through existing synchronization; the implicit collector is thread-local.
 
-When the simulation runs on its own thread (`src/sim/SimulationRunner`), that thread records
+When the simulation runs on its own thread (`src/engine/sim/SimulationRunner`), that thread records
 into a collector its runner owns (`PerformanceTelemetry::bindCollector`). Each client frame,
 with the simulation parked, the main thread absorbs that window into the session collector
 (`Collector::absorb`) and configures and captures the session there, as `advanceSession` does

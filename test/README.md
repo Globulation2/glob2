@@ -91,7 +91,14 @@ Tags go at the end of the name, or through `GLOB2_TEST_CASE(name, "[display][slo
 | `[map-generators]` | the full generator contract; CI runs it in the map-generators job, the shards use `--exclude-tag map-generators` |
 | `[maxima]`, `[save-format]` | selection only |
 
-Where a test goes: `glob2-unit-tests` if it needs neither `GlobalContainer` nor any
+Where a test file lives: beside the code it tests, in that code's directory under
+`src/`, `libgag/src/`, `libusl/test/`, `natsort/` or `mobile/`, named `*Test.cpp`,
+`*Harness.cpp`, `*Benchmark.cpp` or `*Fixture.cpp` so CI and coverage tell it from
+production code (`is_test_source` in `.github/scripts/ci_policy.py`). Tests that span
+domains, shared support, stubs and fixtures stay in `test/`. Registry entries outside
+`test/` are written from the repository root, as `'#src/unit/UnitTimingTest.cpp'`.
+
+Which binary a test joins: `glob2-unit-tests` if it needs neither `GlobalContainer` nor any
 client object, otherwise `glob2-engine-tests`. Add the translation unit to
 `UNIT_TESTS` or `ENGINE_TESTS` in `test/tests.py` (with `cxxflags`, `defines` or
 `require={'wss','not-mingw','opengl'}` when needed); CI picks the new cases up on
@@ -112,7 +119,7 @@ key actions, the repository on the data path, a seeded simulation RNG; `Options`
 select a real display, string loading, screen size and seed) and `HeadlessGame`
 (a one-colony game on a small grass torus with `addBuilding`, `addUnit`, `step`
 and `checksum`). Unit tests that exercise `Map` without the game reuse the
-`GrassMap` subclass in `test/MapQueryTest.cpp`, which sizes the tile array
+`GrassMap` subclass in `src/map/MapQueryTest.cpp`, which sizes the tile array
 directly instead of calling `Map::setSize`; the `Sector`, `MapHeader`, `Order`,
 `GameGUI`, `Race` and SHA-1 symbols such tests reach are supplied once by
 `test/unit/stubs/`, so every unit test shares one link surface. A test that needs a
@@ -124,8 +131,8 @@ timestamps (`event.tfinger.timestamp`, `event.common.timestamp`) and the frame
 clock a test passes to `Host::update(tick)`, `GameGUI::step(events, now)`,
 `GameGUITouch::advanceScroll(now)` or `PhoneEditor::advance(tick)` are the only
 sources the touch scroll physics sees, so a fling, bounce or stopped-finger
-rule is exact and repeatable (`test/ScrollPhysicsTest.cpp`,
-`test/UILayoutHarness.cpp`, `test/GameGUITouchHarness.cpp`). Events without a
+rule is exact and repeatable (`libgag/src/ScrollPhysicsTest.cpp`,
+`libgag/src/ui/UILayoutHarness.cpp`, `src/hud/touch/GameGUITouchHarness.cpp`). Events without a
 timestamp carry no velocity, which is why older synthetic gestures never coast.
 
 ## Python tests
@@ -133,21 +140,22 @@ timestamp carry no velocity, which is why older synthetic gestures never coast.
 `test/test_*.py` are `unittest` files; those that need a build take the binary
 path on the command line (`test_map_cli.py`, `test_map_report.py`). The `check_*.py`
 scripts compare full-game traces against retained fixtures and are documented with
-the harness they accompany below. `tests/` at the repository root tests the build
-system and the browser services.
+the harness they accompany below. `test/build_system/`, `test/deployment/`,
+`test/transport/`, `test/relay_service/` and `test/online_service/` test the build
+system and the services.
 
 ## Match relay
 
 `scons role=relay release=1 relay` builds `glob2-relay` and `glob2-relay-tests`, a
 doctest binary of its own (the relay role builds no engine or SDL code). Run it
-directly, then `python3 -m unittest discover -s tests/relay -v` for the end-to-end
+directly, then `python3 -m unittest discover -s test/relay_service -v` for the end-to-end
 tests against the real binary. `test/fixtures/relay-tickets/` copies the protocol
 package's ticket fixtures. See [docs/multiplayer/relay.md](../docs/multiplayer/relay.md#tests).
 ## Online screens and test switches
 
 Release builds have no switch that opens an online screen directly; players reach
 them through the online hub. To look at a screen offline, render its canned states:
-`test/OnlineUIFixtures.h` holds the fixtures (hub, room, match start, quick match,
+`src/ui/OnlineUIFixtures.h` holds the fixtures (hub, room, match start, quick match,
 profile, maps) for the `UIPresentation` cases and `scons release=1 mobile-gallery`.
 `PlatformClientTest` in the unit binary covers the client's request lifetimes,
 including screens destroyed with requests in flight.
@@ -203,7 +211,7 @@ conversion (the selection follows the unit). It runs headlessly, using the real
 `GameGUI`, entity classes and selection setters. A friend fixture accesses the
 private selection API without exposing it to game callers.
 
-`ClientChannelsTest.cpp` covers the `src/sim/` channels: team events reaching the
+`ClientChannelsTest.cpp` covers the `src/engine/sim/` channels: team events reaching the
 GUI once, in order and aged like `Team::updateEvents`; script presentation going
 through `ClientCommandSink`; the SGSL Space acknowledgement in `ClientRequests`;
 and order effects such as pause arriving as events.
@@ -378,13 +386,13 @@ advanced repetition dialog across desktop/touch viewports, safe insets and text 
 The direct transport/security checks use `scons release=1 transport-test`,
 `python3 test/run-network-transport-tests.py`,
 `build/darwin/client/release/src/lan-discovery-test` (substitute your platform),
-and `python3 -m unittest discover -s tests/transport -v`. Deployment script
-checks use `python3 -m unittest discover -s tests/deployment -v`; the whole
-platform stack is exercised by `tests/deployment/platform_stack_smoke.py` (see
+and `python3 -m unittest discover -s test/transport -v`. Deployment script
+checks use `python3 -m unittest discover -s test/deployment -v`; the whole
+platform stack is exercised by `test/deployment/platform_stack_smoke.py` (see
 `docs/hosting/README.md`). Keep capture output from
-`tests/transport/capture_container.py` under ignored `artifacts/`.
+`test/transport/capture_container.py` under ignored `artifacts/`.
 
-The online client's integration test, `tests/online/test_platform_client.py`,
+The online client's integration test, `test/online_service/test_platform_client.py`,
 drives `platform-client-probe` (also built by `transport-test`) against a real
 platform API; it needs a `platform/` checkout and a Postgres role that may
 create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
@@ -447,7 +455,7 @@ bounds startup, execution, and child cleanup. Logs and captures are written unde
 
 ## Aspect-ratio and screen-capture regression
 
-The `FullscreenAspect` suite (`test/FullscreenAspectHarness.cpp`) opens a real SDL
+The `FullscreenAspect` suite (`libgag/src/FullscreenAspectHarness.cpp`) opens a real SDL
 window and checks native presentation pixels, clipping, logical screen captures,
 and translated mouse motion/button events and polling at equal, wide, tall and odd
 window sizes, accepting actual OS constraints. Desktop fullscreen follows the same
@@ -462,7 +470,7 @@ python3 test/run_tests.py --filter 'FullscreenAspect/*'
 Both cases are tagged `[display:1600x1400]`: the runner opens that Xvfb screen on
 Linux without a `DISPLAY` and uses Mesa software OpenGL (`LIBGL_ALWAYS_SOFTWARE=1`)
 in CI. The OpenGL case is skipped in `opengl=0` builds. The same goes for the
-`WindowResize` suite (`test/WindowResizeHarness.cpp`), which resizes the window
+`WindowResize` suite (`libgag/src/WindowResizeHarness.cpp`), which resizes the window
 through the cache, callbacks, reflow, context recreation and minimum-size paths and
 checks live scale/fullscreen transitions, F11, preserved window dimensions and
 context identity. `TextRaster` checks glyph pixels against an independent native
@@ -510,7 +518,7 @@ itself. Nothing in `Game::drawUnit` reads `displacement`, so at equal `delta`
 that state must render pixel-for-pixel like the same step expressed as an
 ordinary walk onto the destination tile. The harness renders both and compares
 framebuffers over five points of one step; a mismatch is reported in pixels
-against the 32 px tile size. It protects the fix in `src/render/UnitDrawGeometry.h`
+against the 32 px tile size. It protects the fix in `src/unit/render/UnitDrawGeometry.h`
 for issue #230, where the sprite was anchored on the stale map slot and the glob
 walked backwards into the square it came from.
 
@@ -579,7 +587,7 @@ team's fields. `ring-flag` puts an exploration flag, with its goal disc kept ins
 the ring, at the centre: a flag is never written into the building tile grid, so
 walking the changed footprint could not discover its field at any distance.
 
-Each scenario has to let `GRADIENT_DIRTY_REBUILD_TICKS` (`src/EngineTiming.h`)
+Each scenario has to let `GRADIENT_DIRTY_REBUILD_TICKS` (`src/engine/EngineTiming.h`)
 elapse before it can judge a field, and takes the constant from that header rather
 than copying it — when the interval was raised from 25 to 100, a local copy here
 silently stopped covering it and the regression passed stale fields.
@@ -836,7 +844,7 @@ suite of `glob2-unit-tests`.
 ### Native main Settings redesign
 
 Run `python3 test/run_tests.py --filter 'Settings/*'`. The `Settings` suite
-(`test/SettingsScreenTest.cpp`) runs one case per configuration of the old matrix:
+(`src/ui/settings/SettingsScreenTest.cpp`) runs one case per configuration of the old matrix:
 640×480, 800×600, 1000×700 and 1280×900 in OpenGL, 1000×700 in software rendering,
 and 640×480 with expanded English strings written into the case's disposable
 profile. Each case uses its own profile and writes its native captures to its
@@ -855,7 +863,7 @@ preview immediately and commit on release/idle, whereas discrete changes save
 immediately. Bindings commit only after a complete edit. Legacy preference and
 keyboard file formats remain unchanged.
 
-The `GameSpeed` suite (`test/GameSpeedTest.cpp`) has a headless case for the speed
+The `GameSpeed` suite (`src/game/GameSpeedTest.cpp`) has a headless case for the speed
 presets, bounds, legacy settings and persistence, a display case for the main and
 in-game settings, language refresh, keyboard shortcuts, multiplayer eligibility and
 camera cadence, and a display case that runs the live engine at normal and maximum
@@ -864,7 +872,7 @@ maximum and fast-forward. The last case captures the engine's per-run checksums
 and requires the first four (speed and pause) and the last three (playback) to
 agree. `python3 test/run_tests.py --filter 'GameSpeed/settings*'` runs the settings
 case alone. That case also clicks the top bar's speed chevrons. The `GameSpeedControl`
-suite (`test/GameSpeedControlTest.cpp`, unit binary) covers the chevron presets and
+suite (`src/hud/GameSpeedControlTest.cpp`, unit binary) covers the chevron presets and
 the tick-rate readout's window, one-second refresh, stall decay and formatting with
 explicit times.
 
@@ -1064,7 +1072,7 @@ per-tick hashes, and reproduction commands are in
 
 ### AI strategy profile captures
 
-The `CustomGameSetup` suite (`test/CustomGameSetupHarness.cpp`) has one case per
+The `CustomGameSetup` suite (`src/game/screens/CustomGameSetupHarness.cpp`) has one case per
 mode of the old command line:
 
 ```sh

@@ -68,7 +68,7 @@ jobs:
           ref: ${{ inputs.revision || github.sha }}
           fetch-depth: 0
       - name: Test shared build-system contracts once
-        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v'
+        run: '"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v'
       - name: Test CI runners and failure reporting
         run: |
           python3 test/ci_run_commands.py \
@@ -982,7 +982,7 @@ jobs:
         run: |
           python3 test/ci_run_commands.py \
             --check 'relay unit tests' 'build/linux/relay/release/src/glob2-relay-tests' \
-            --check 'relay integration tests' 'python3 -m unittest discover -s tests/relay -v'
+            --check 'relay integration tests' 'python3 -m unittest discover -s test/relay_service -v'
       - name: Build transport integration fixture
         id: build_transport_integration_fixture
         continue-on-error: true
@@ -1006,7 +1006,7 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'network transport' 'python3 test/run-network-transport-tests.py' \
             --check 'LAN discovery' 'build/linux/client/release/src/lan-discovery-test' \
-            --check 'transport unit tests' 'python3 -m unittest discover -s tests/transport -v' \
+            --check 'transport unit tests' 'python3 -m unittest discover -s test/transport -v' \
             --check 'compiler cache statistics' 'ccache -s -v'
       - name: Package the programs the browser tests drive
         id: package_the_programs_the_browser_tests_drive
@@ -1077,7 +1077,7 @@ jobs:
         run: |
           python3 browser/package-static.py
           python3 browser/package-static.py --verify build/browser-static
-          python3 -m unittest discover -s tests/deployment -v
+          python3 -m unittest discover -s test/deployment -v
 
       - name: Summarize CI failures
         if: always()
@@ -1237,7 +1237,7 @@ jobs:
           # that needs a new sim version (test/check_sim_revision.py checks the bump).
           assert committed.replace(b'\r\n', b'\n') == reference, (
               'Every platform agrees, but not with the committed trace: the simulation changed. '
-              'Bump SIM_REVISION in src/SimRevision.h and regenerate test/fixtures/multiplayer with '
+              'Bump SIM_REVISION in src/game/SimRevision.h and regenerate test/fixtures/multiplayer with '
               "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
           print('All six --verify-match traces match')
           PY
@@ -1342,7 +1342,7 @@ jobs:
       - name: Build the images and smoke-test deploy/compose.yaml
         id: smoke_test_the_platform_stack
         continue-on-error: true
-        run: python3 tests/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
+        run: python3 test/deployment/platform_stack_smoke.py --jobs 4 --log-dir artifacts/platform-stack
       - uses: actions/upload-artifact@v4
         if: always()
         id: upload_platform_stack_logs

@@ -9,8 +9,8 @@ standalone policy checks in `glob2-unit-tests`, the engine integrations in
 scons release=1 server=0 tests maxima-strategy-dump
 python3 test/run_tests.py --filter 'Maxima.*'
 MAXIMA_STRATEGY_DUMP=build/darwin/client/release/test/MaximaStrategyDump \
-  GLOB2_BUILD_DIR=build/darwin/client/release python3 test/maxima/MaximaStrategyConfigTest.py
-python3 -m unittest discover -s test/maxima -p '*Test.py'
+  GLOB2_BUILD_DIR=build/darwin/client/release python3 src/ai/maxima/MaximaStrategyConfigTest.py
+python3 -m unittest discover -s src/ai/maxima -p '*Test.py'
 ```
 
 `--filter 'Maxima.Combat/*'` and friends select one suite. No external services

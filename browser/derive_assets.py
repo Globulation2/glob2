@@ -5,7 +5,7 @@ The browser downloads the `core` package before the main menu, so these copies
 replace the originals there (scons/web_assets.py); native builds keep the
 originals. Regenerate them whenever a source changes; the build falls back to
 the original file while `sources.json` does not match it, and
-tests/build_system/test_web_assets.py fails.
+test/build_system/test_web_assets.py fails.
 
 - sans-core.ttf: data/fonts/sans.ttf without the CJK outlines appended from Droid
   Sans Fallback (see data/fonts/README.md), keeping every original DejaVu glyph,

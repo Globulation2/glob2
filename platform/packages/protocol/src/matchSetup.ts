@@ -3,7 +3,7 @@
 // for live clients and for the verifier alike, so the platform never has to
 // parse or produce the engine's binary formats.
 //
-// Field names follow the GameHeader accessors they set (src/GameHeader.h). Every
+// Field names follow the GameHeader accessors they set (src/game/GameHeader.h). Every
 // rule is required: a setup has exactly one meaning, with no defaults that two
 // builds could disagree on.
 import { Type, type Static } from 'typebox';

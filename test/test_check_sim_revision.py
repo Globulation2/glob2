@@ -24,7 +24,7 @@ class CheckSimRevisionTest(unittest.TestCase):
     def setUp(self):
         self.scratch = tempfile.TemporaryDirectory()
         self.root = Path(self.scratch.name)
-        for path in ('src/Version.h', 'src/SimRevision.h') + sim_version.SIM_DATA_FILES:
+        for path in ('src/app/Version.h', 'src/game/SimRevision.h') + sim_version.SIM_DATA_FILES:
             (self.root / path).parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / path, self.root / path)
         self.set_revision(5)
@@ -45,7 +45,7 @@ class CheckSimRevisionTest(unittest.TestCase):
         self.git('-c', 'user.name=t', '-c', 'user.email=t@t', 'commit', '-q', '-m', message)
 
     def set_revision(self, revision):
-        (self.root / 'src/SimRevision.h').write_text(f'// test\n#define SIM_REVISION {revision}\n')
+        (self.root / 'src/game/SimRevision.h').write_text(f'// test\n#define SIM_REVISION {revision}\n')
 
     def write_fixtures(self, trace, key=None):
         (self.root / checker.TRACE).parent.mkdir(parents=True, exist_ok=True)

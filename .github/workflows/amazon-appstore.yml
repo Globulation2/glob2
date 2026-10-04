@@ -70,7 +70,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             scons pkg-config unzip zip autoconf automake libtool ccache
       - name: Check Android release tooling
-        run: python3 -m unittest discover -s tests/build_system -p 'test_amazon_release.py' -v
+        run: python3 -m unittest discover -s test/build_system -p 'test_amazon_release.py' -v
       - name: Install pinned Android tools
         run: |
           python3 mobile/setup_ndk.py

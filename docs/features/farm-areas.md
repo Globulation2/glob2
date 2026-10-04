@@ -159,8 +159,8 @@ farm order or this experiment.
 | Clearing | `src/map/gradient/MapGradientArea.cpp`, `src/unit/UnitMovement.cpp` |
 | Painting it | `OrderAlterFarmArea`, `OrderValidation.cpp`, `Game::executeAlterFarmArea` |
 | Save format | `src/map/io/MapIO.cpp` |
-| Desktop panel, touch UI and overlay | `src/gui/GameGUIInternal.h` (`zoneStripButtonX`), `GameGUIToolManager`, `GameGUITouch*.cpp`, `src/render/GameRenderTerrain.cpp` |
-| Tests | `test/FarmAreaTest.cpp` (`FarmAreas/*`) |
+| Desktop panel, touch UI and overlay | `src/hud/GameGUIInternal.h` (`zoneStripButtonX`), `GameGUIToolManager`, `GameGUITouch*.cpp`, `src/render/GameRenderTerrain.cpp` |
+| Tests | `src/game/orders/FarmAreaTest.cpp` (`FarmAreas/*`) |
 
 Design discussion: [Globulation2/glob2#271](https://github.com/Globulation2/glob2/pull/271)
 and the original [pull request #277](https://github.com/Globulation2/glob2/pull/277).

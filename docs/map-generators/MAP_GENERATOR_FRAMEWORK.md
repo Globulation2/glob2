@@ -1747,7 +1747,7 @@ refusal) and every constant's reason.
 
 ## Verification tools
 
-- `test/MapGeneratorStudy.cpp` builds to `MapGeneratorStudy`, a CLI harness that invokes the real
+- `src/map/generator/MapGeneratorStudy.cpp` builds to `MapGeneratorStudy`, a CLI harness that invokes the real
   production generators directly: `MapGeneratorStudy <method> <seed> <profile-dir> [key=value...]
   [tuning] [headroom] [quality] [dump=path] [overlay=kind]`. `quality` reports `StartQualityReport`/
   `ColonyQuality` per colony; `dump=` writes a plain-text terrain/resource grid for direct
@@ -1755,24 +1755,24 @@ refusal) and every constant's reason.
   (`growth`, the crop growth chance; `sites`, where a 4x4 building fits; `chop`, the cost from the
   nearest colony clearing crops on the way; `owner`, which colony that is); `--catalog` dumps every registered generator's
   controls as JSON, with each control's `kind` (`range` or `toggle`).
-- `test/MapGeneratorDefaultsTest.cpp` is the `MapGeneratorDefaults` suite of
+- `src/map/generator/MapGeneratorDefaultsTest.cpp` is the `MapGeneratorDefaults` suite of
   `glob2-engine-tests` (`python3 test/run_tests.py --filter 'MapGeneratorDefaults/*'`), asserting the
   registry's and every control's contract: discrete domains, shape bounds, topology, home
   footprints, exact worker counts, seed repeatability and RNG stream isolation, the
   lobby/editor UI's own control-editing behavior, and the shared toolkit's own guarantees:
   the point dispersion ends at a mutual best response checked against a brute-force score,
   the distance flood matches a Chebyshev oracle on the torus, with obstacles and repeated
-  sources, and `test/MapGeneratorToolkitChecks.h` checks every module of `shared/` on a map
+  sources, and `src/map/generator/MapGeneratorToolkitChecks.h` checks every module of `shared/` on a map
   built by hand — floods and their limits, beaches and islands, patches and algae bands, the
   cheapest route, strokes and shape fills, fields and clumps, settlements and the colony walk, the crop guarantee through and around a
   wall, a buried colony's room, balanced starts, per-landmass scatter, lattice noise, the
   wedge frame and the context's shuffle — so a change to a module fails there before it shows
-  up as a changed golden fingerprint downstream. `test/MapGeneratorLandscapeChecks.h` does the same
+  up as a changed golden fingerprint downstream. `src/map/generator/MapGeneratorLandscapeChecks.h` does the same
   for the landscape modules: symmetry groups against their orbits, morphology and the distance
   transform against brute force, crop growth and dry zones, cost models and route opening, sites
   and cell graphs, pattern wavelengths and seamless stripes, wandering paths, the channel
   arithmetic against `towerReach`, building room, region homes and every biome kit.
-- `test/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest` and keeps the revision
+- `src/map/generator/MapGeneratorGoldenTest.cpp` builds to `MapGeneratorGoldenTest` and keeps the revision
   rule honest. `test/map-generator-golden.txt` records, per platform, the fingerprint (terrain,
   resources and colony starts) every registered generator produces for three seeds at 256, one
   at 128 and 512, and one each with two and eight colonies, keyed by the generator's revision.
@@ -1788,7 +1788,7 @@ refusal) and every constant's reason.
   every playable landscape at the colony counts and sizes the lobby offers, five seeds at 128
   and 256 and three at 512, prints the success rate per cell and fails any valid cell where no
   seed generated: that is what a player would see as a failed generation. CI runs all three.
-- `test/MapGeneratorProfileFixture.cpp` builds to `MapGeneratorProfileFixture
+- `src/map/generator/MapGeneratorProfileFixture.cpp` builds to `MapGeneratorProfileFixture
   <profile-dir> <seed> <rounds> [generator-id...]`, a load generator for external sampling profilers
   (macOS `sample`, Linux `perf record`): it round-robins every registered generator (or only the ids
   named) for `rounds` passes,

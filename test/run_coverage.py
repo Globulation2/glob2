@@ -16,6 +16,8 @@ import sys
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / '.github/scripts'))
+from ci_policy import is_test_source  # tests sit beside the code they test
 IGNORE = r'/test/|/third_party/|/build/|/src/net/|/src/yog/|^/usr/|^/opt/|^/Applications/|^/Library/'
 
 
@@ -45,7 +47,7 @@ def summarize(export, root=ROOT):
             continue
         if relative.parts[0] not in ('src', 'libgag', 'libusl', 'natsort', 'mobile'):
             continue
-        if str(relative).startswith(('src/net/', 'src/yog/')):
+        if str(relative).startswith(('src/net/', 'src/yog/')) or is_test_source(relative.as_posix()):
             continue
         row = {'path': relative.as_posix(), 'summary': item['summary']}
         files.append(row)
@@ -65,7 +67,8 @@ def summarize(export, root=ROOT):
                         for p in (root / directory).rglob('*')
                         if p.suffix in ('.c', '.cpp', '.cc', '.cxx')
                         and p.relative_to(root).as_posix() not in measured
-                        and not p.relative_to(root).as_posix().startswith(('src/net/', 'src/yog/')))
+                        and not p.relative_to(root).as_posix().startswith(('src/net/', 'src/yog/'))
+                        and not is_test_source(p.relative_to(root).as_posix()))
     uncovered_functions = []
     for function in export['data'][0].get('functions', []):
         if function['count'] or not function.get('regions'):

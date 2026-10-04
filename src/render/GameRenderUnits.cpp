@@ -24,12 +24,12 @@
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Unit.h"
-#include "UnitDrawGeometry.h"
-#include "UnitAnimation.h"
-#include "UnitMotion.h"
-#include "ColonySkinPreview.h"
+#include "unit/render/UnitDrawGeometry.h"
+#include "unit/render/UnitAnimation.h"
+#include "unit/render/UnitMotion.h"
+#include "unit/render/ColonySkinPreview.h"
 #include <algorithm>
-#include "UnitSkin.h"
+#include "unit/render/UnitSkin.h"
 #include "scene/Scene.h"
 #include "Utilities.h"
 #include "GameGUI.h"
@@ -37,7 +37,7 @@
 
 
 #include "Brush.h"
-#include "UnitSkin.h"
+#include "unit/render/UnitSkin.h"
 #include "FailureShapes.h"
 #include <algorithm>
 

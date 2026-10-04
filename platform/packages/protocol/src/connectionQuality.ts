@@ -1,7 +1,7 @@
 // The one table of connection-quality thresholds (docs/multiplayer/connection-quality.md).
 //
 // Every place that rates a connection reads it: the in-game connection panel (C++,
-// src/gui/ConnectionQuality.h, desktop and phone), the match-start checklist and the
+// src/net/ConnectionQuality.h, desktop and phone), the match-start checklist and the
 // quick-match card in the game, the match page's Connection table and
 // ParticipantNetwork.quality from the API. The fixture generator writes this table and
 // its sample cases to fixtures/connection-quality.json; the C++ unit test checks its
