@@ -170,12 +170,12 @@ TEST_SUITE("RecordingSession")
 				Session session(path,options,files,[](const Status &) {});
 				for (int n=0;n<120;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time)); session.step(time+50000); }
 				CHECK(std::filesystem::file_size(path+".recording/capture.mp4")>1000);
-		}
-		if (interruptedMetadata)
-		{ std::ofstream(path+".recording/manifest.json",std::ios::trunc) << "{\"version\":"; }
-		recoverRecording(path,nativeSessionStorage());
-		CHECK(manifest(path+".json")["recovered"]==true);
-		CHECK(manifest(path+".json")["duration_us"].get<std::int64_t>()>=2000000);
+			}
+			if (interruptedMetadata)
+			{ std::ofstream(path+".recording/manifest.json",std::ios::trunc) << "{\"version\":"; }
+			recoverRecording(path,nativeSessionStorage());
+			CHECK(manifest(path+".json")["recovered"]==true);
+			CHECK(manifest(path+".json")["duration_us"].get<std::int64_t>()>=2000000);
 		}
 	}
 	TEST_CASE("publication failure retains media that can be recovered without overwriting")
