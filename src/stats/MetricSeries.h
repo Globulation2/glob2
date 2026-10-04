@@ -35,6 +35,11 @@ std::vector<double> percentOf(const std::vector<double> &values, const std::vect
 //! chart leaves as a gap rather than drawing as 0%.
 std::vector<double> ratioPercent(const std::vector<double> &values, const std::vector<double> &whole);
 
+//! `values` divided by `count`, sample by sample: the mean of what a pair of
+//! counters summed and counted (distance walked per walk). NaN, a gap, where
+//! nothing was counted.
+std::vector<double> meanOf(const std::vector<double> &values, const std::vector<double> &count);
+
 //! Each value averaged with up to `window - 1` values before it. Levels that
 //! jump about from sample to sample (units inside an inn) read as a trend.
 std::vector<double> movingAverage(const std::vector<double> &values, int window);

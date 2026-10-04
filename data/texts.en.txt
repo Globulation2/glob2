@@ -4805,7 +4805,7 @@ Damage dealt minus damage taken. Above zero the colony was winning its fights.
 [stat combat deaths]
 Units killed in combat
 [stat combat deaths about]
-Units of this colony killed by enemies.
+Units of this colony killed by enemies. Split it to see workers, explorers and warriors separately.
 [stat accuracy]
 Shots that hit
 [stat accuracy about]
@@ -5130,3 +5130,117 @@ Hurt units go back to heal instead of fighting to the death.
 Units die when they run out of HP. Turn off to stop them at 1 HP.
 [Units gain levels at schools.]
 Units gain levels at schools.
+[stat group work]
+Workers' time
+[stat worker time]
+How workers spent their time
+[stat worker time about]
+What the colony's workers were doing, moment by moment: working for a building, working at a flag, training, eating, healing, waiting hungry or hurt with no inn or hospital free, or idle with nothing to do. A healthy colony keeps most of its workers working, few idle and none waiting.
+[stat idle workers]
+Idle workers
+[stat idle workers about]
+The share of workers' time spent with nothing to do. High values mean more workers than work; near zero means every worker is busy and jobs may be waiting.
+[stat work by job]
+What workers were working on
+[stat work by job about]
+How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks.
+[stat haul distance]
+Distance to resources
+[stat haul distance about]
+How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line.
+[stat hauling]
+Fetching and carrying
+[stat hauling about]
+How the workers supplying buildings divided between walking to a resource, harvesting it, carrying it back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.
+[stat eating time]
+Workers going to eat
+[stat eating time about]
+How many workers were away from work to eat: walking to an inn, eating inside one, or hungry with no inn that could take them. Workers left with no inn means the colony has outgrown its inns or their food.
+[stat inn distance]
+Distance from the inn
+[stat inn distance about]
+How far hungry workers were, on average over their walk, from the inn they were heading for, in map squares in a straight line. A whole trip is roughly twice this. High values mean inns are far from where workers work.
+[stat warriors]
+Warriors
+[stat warriors about]
+How many warriors the colony had. Split it to see how many were near home, near an enemy colony, or in open ground. Ground close to both colonies counts as home.
+[stat warrior level]
+Average warrior attack level
+[stat warrior level about]
+The average attack level of the colony's warriors, counting attack speed and attack strength equally, on the 1 to 4 scale the game shows. Barracks raise it; new untrained warriors pull it down.
+[stat warrior duties]
+What warriors were doing
+[stat warrior duties about]
+How the colony's warriors divided between those sent to a war flag, those hurt badly enough to leave the fight for a hospital (including those being healed), and those free.
+[stat intruders]
+Enemy warriors at home
+[stat intruders about]
+How many enemy warriors were within 16 squares of the colony's buildings. Where two colonies are close together, each counts the other's defenders.
+[stat home defence]
+Home defence strength margin
+[stat home defence about]
+The strength of the colony's own warriors near its buildings minus that of the enemy warriors there, counting each warrior and each of its attack levels. Below zero the colony was outmatched at home.
+[stat combat death places]
+Where units fell in combat
+[stat combat death places about]
+Where the colony's units were when they were killed: near its own buildings, near an enemy's buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home.
+[stat band working]
+Working
+[stat band flag work]
+At a flag
+[stat band idle]
+Idle
+[stat band training]
+Training
+[stat band unserved]
+No inn or hospital free
+[stat band swarms]
+Swarms
+[stat band inns]
+Inns
+[stat band sites]
+Building and upgrading
+[stat band other buildings]
+Other buildings
+[stat band to resource]
+Walking to a resource
+[stat band harvesting]
+Harvesting
+[stat band carrying]
+Carrying it back
+[stat band delivering]
+Delivering or waiting
+[stat band walking to inn]
+Walking to an inn
+[stat band no inn]
+No inn free
+[stat band at home]
+At home
+[stat band at enemy]
+At an enemy colony
+[stat band in the open]
+In open ground
+[stat band war flag]
+On a war flag
+[stat band seeking healing]
+Seeking healing
+[stat band free]
+Free
+[stat unit workers]
+workers
+[stat unit worker time]
+workers' time
+[stat unit working workers]
+workers supplying buildings
+[stat unit squares]
+squares
+[stat unit warriors]
+warriors
+[stat unit attack level]
+attack level
+[stat unit enemy warriors]
+enemy warriors
+[stat unit strength count]
+strength
+[stat view by place]
+By place
