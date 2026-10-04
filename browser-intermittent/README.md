@@ -12,3 +12,5 @@ Focused verification used the unmodified web-client artifact from run 3718420026
 These passing repetitions do not establish a root cause or fix. Full exact latest-master verification follows separately.
 
 Extended Chromium stress used 50 batches of eight simultaneous contexts: another 400 successful startups (480 stress launches total). The script and log are retained; copy the script to `artifacts/ci-repair/` in the product checkout before running so its relative Playwright dependency path resolves. It records debugger stacks on a failure; none was captured. This increases reproduction coverage but still does not identify a root cause.
+
+Two additional constrained runs completed: 100 startup launches with process CPU affinity limited to CPUs 0 and 1, then 100 with the same affinity and the top-level browser's reported hardwareConcurrency set to 2 (a controlled browser-boundary input). Both passed all 50 two-context batches. Total stress coverage is 680 startup launches, plus the 20 renderer fixture repetitions. These constraints are local diagnostics, not a claim of reproducing the hosted machine. The original failure remains un-reproduced.
