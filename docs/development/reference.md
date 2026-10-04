@@ -1536,7 +1536,7 @@ headers are pinned with the other sources. Mobile archives use the target compil
 ABI and SDK, including assembly flags; browser archives use standalone wasm32
 SIMD without pthreads. Codec optimization flags remain confined to these archives.
 
-Installed archive hashes, source inputs, recipe, compiler, target, SDK and feature
+Installed archive hashes, source inputs, recipe, compiler, assembler version, target, SDK and feature
 flags form the recording cache identity. A mismatching cache is rebuilt rather
 than reused. Release source distributions contain the pinned original archives
 under `third_party/recording-sources/`, allowing offline rebuilds. Packages include

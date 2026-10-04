@@ -26,7 +26,7 @@ const recordingStorage = {
     const outputs = [path, path+'.json', path+'.events.jsonl', path+'.complete'];
     if (sessionIndex) outputs.push(path+'.session.json');
     for (const name of outputs) if (await this.exists(name)) throw new Error('Recording output already exists or is reserved');
-    const files = [...outputs, ...['capture.mp4','final.mp4','manifest.json','events.jsonl'].map(name => path+'.recording/'+name)];
+    const files = [...outputs, ...['capture.mp4','final.mp4','manifest.json','manifest.1.json','manifest.2.json','events.jsonl'].map(name => path+'.recording/'+name)];
     this.reservations.set(path,false);
     for (const name of files) {
       const handle = await this.root.getFileHandle(this.name(name), {create:true});
@@ -41,9 +41,11 @@ const recordingStorage = {
   },
   async prepareRecovery(path) {
     const names=[path,path+'.json',path+'.events.jsonl',path+'.complete',
-      ...['capture.mp4','final.mp4','manifest.json','events.jsonl'].map(name=>path+'.recording/'+name)];
+      ...['capture.mp4','final.mp4','manifest.json','manifest.1.json','manifest.2.json','events.jsonl'].map(name=>path+'.recording/'+name)];
     for (const name of names) {
-      const handle=await this.root.getFileHandle(this.name(name));
+      let handle;
+      try { handle=await this.root.getFileHandle(this.name(name)); }
+      catch (e) { if (/manifest\.[12]\.json$/.test(name) && e.name==='NotFoundError') continue; throw e; }
       this.files.set(name,{handle,sync:await handle.createSyncAccessHandle()});
     }
     if (this.files.get(path+'.complete').sync.getSize()) throw new Error('Recording is already complete');

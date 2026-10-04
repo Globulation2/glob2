@@ -58,16 +58,30 @@ SessionStorage nativeSessionStorage()
 void recoverRecording(const std::string &path, const SessionStorage &storage)
 {
 	const auto work = path+".recording/";
-	auto input = storage.open(work+"manifest.json",false);
-	std::string bytes; std::array<unsigned char,4096> buffer;
-	for (;;)
+	// Alternating checkpoints preserve the previous valid metadata when a write
+	// is interrupted or storage fills. Read one bounded candidate at a time.
+	nlohmann::json manifest;
+	std::uint64_t generation = 0;
+	for (const char *name : {"manifest.json", "manifest.1.json", "manifest.2.json"})
 	{
-		int n = input->read(buffer.data(),int(buffer.size())); if (n == -541478725) break;
-		if (n <= 0 || bytes.size()+std::size_t(n) > 16*1024*1024) throw std::runtime_error("Cannot read recording recovery metadata");
-		bytes.append(reinterpret_cast<const char *>(buffer.data()),n);
+		try
+		{
+			auto input = storage.open(work+name,false);
+			std::string bytes; std::array<unsigned char,4096> buffer;
+			for (;;)
+			{
+				int n = input->read(buffer.data(),int(buffer.size())); if (n == -541478725) break;
+				if (n <= 0 || bytes.size()+std::size_t(n) > 16*1024*1024) throw std::runtime_error("Cannot read recording recovery metadata");
+				bytes.append(reinterpret_cast<const char *>(buffer.data()),n);
+			}
+			auto candidate = nlohmann::json::parse(bytes);
+			auto sequence = candidate.value("checkpoint_generation",std::uint64_t(0));
+			if (candidate.at("version") == 1 && candidate.at("video") == utf8(std::filesystem::u8path(path).filename()) && (manifest.is_null() || sequence > generation))
+			{ manifest = std::move(candidate); generation = sequence; }
+		}
+		catch (const std::exception &) {} // A missing or incomplete checkpoint is expected.
 	}
-	input.reset();
-	auto manifest = nlohmann::json::parse(bytes);
+	if (manifest.is_null()) throw std::runtime_error("No valid recording recovery metadata remains");
 	if (manifest.at("version") != 1 || manifest.at("video") != utf8(std::filesystem::u8path(path).filename()))
 		throw std::runtime_error("Recording recovery metadata does not match its output");
 	auto duration = MediaWriter::duration(work+"capture.mp4",storage.open);
@@ -110,7 +124,7 @@ struct Session::Impl
 	std::vector<Chapter> chapters;
 	std::vector<std::pair<std::string, std::int64_t>> completed;
 	bool done = false, forceSoftware = false;
-	std::uint64_t inputDrops = 0, packets = 0;
+	std::uint64_t inputDrops = 0, packets = 0, checkpointGeneration = 0;
 	Impl(std::string path, Options options, SessionStorage storage,
 		std::function<void(const Status &)> report, std::unique_ptr<VideoEncoder> external)
 		: base(std::move(path)), options(options), storage(std::move(storage)), report(std::move(report)), external(std::move(external))
@@ -132,6 +146,7 @@ struct Session::Impl
 		out << "{\"version\":1,\"video\":" << json(utf8(std::filesystem::u8path(path).filename()))
 			<< ",\"session\":" << json(utf8(std::filesystem::u8path(base).filename()))
 			<< ",\"segment\":" << status.segment << ",\"session_start_us\":" << segmentStart
+			<< ",\"checkpoint_generation\":" << ++checkpointGeneration
 			<< ",\"complete\":" << (complete ? "true" : "false") << ",\"error\":" << json(status.error)
 			<< ",\"duration_us\":" << duration << ",\"fps\":" << options.fps
 			<< ",\"width\":" << status.width << ",\"height\":" << status.height
@@ -147,7 +162,9 @@ struct Session::Impl
 			if (c.context.match) out << ",\"start_tick\":" << c.context.tick << ",\"last_tick\":" << c.lastTick;
 			out << '}';
 		}
-		out << "]}\n"; text(storage,work+"manifest.json",out.str());
+		out << "]}\n";
+		text(storage,work+(checkpointGeneration%2 ? "manifest.1.json" : "manifest.2.json"),out.str());
+		text(storage,work+"manifest.json",out.str());
 	}
 	void begin(CaptureFrame frame, std::int64_t relative)
 	{

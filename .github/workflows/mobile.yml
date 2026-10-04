@@ -41,7 +41,7 @@ jobs:
           fetch-depth: 0
       - name: Install build utilities
         id: install_build_utilities
-        run: sudo apt-get update -qq && sudo apt-get install -y python3-venv scons pkg-config unzip zip autoconf automake libtool ccache
+        run: sudo apt-get update -qq && sudo apt-get install -y python3-venv scons pkg-config nasm unzip zip autoconf automake libtool ccache
       - name: Restore checksum-pinned Android build tools
         id: android_tools
         uses: actions/cache/restore@v4

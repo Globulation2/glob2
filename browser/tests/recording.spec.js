@@ -47,7 +47,10 @@ test(`${variant} missing WebCodecs uses embedded x264`,async({page})=>{
  const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
  await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');
  const existing=await page.evaluate(async()=>{const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});const names=[];for await(const [name]of root.entries())names.push(name);return names;});
- await clickControl(page,'recording/toggle');await page.waitForTimeout(4000);await clickControl(page,'recording/toggle');
+ await clickControl(page,'recording/toggle');
+ await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
+ await page.waitForTimeout(4000);await clickControl(page,'recording/toggle');
+ await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Start recording/i);
  await expect.poll(()=>page.evaluate(async existing=>{
   const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});
   for await(const [name,handle]of root.entries()) if(!existing.includes(name)&&name.endsWith('.complete')&&(await handle.getFile()).size){const path=decodeURIComponent(name).slice(0,-9);return JSON.parse(await(await(await root.getFileHandle(encodeURIComponent(path+'.json'))).getFile()).text()).encoder;}return null;
@@ -60,4 +63,44 @@ test(`${variant} OPFS unavailable reports a recording error`,async({page})=>{
  await expect.poll(()=>page.title()).toMatch(/recording failed/i);
  await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Start recording/i);
 });
+}
+for(const variant of ['serial','threaded']) {
+ test(`${variant} interrupted recording recovers committed fragments`,async({page},info)=>{
+  const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
+  await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');
+  const manifests=()=>page.evaluate(async()=>{
+   const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});const names=[];
+   for await(const [name]of root.entries())if(decodeURIComponent(name).endsWith('.recording/manifest.json'))names.push(name);return names;
+  });
+  const existing=new Set(await manifests());
+  await clickControl(page,'recording/toggle');
+  await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Stop recording/i);
+  await page.waitForTimeout(3500);
+  await page.reload();await screen(page,'MainMenuScreen');
+  const interrupted=(await manifests()).find(name=>!existing.has(name));expect(interrupted).toBeTruthy();
+  const path=decodeURIComponent(interrupted).slice(0,-24);
+  await clickControl(page,'recording/files');await screen(page,'RecordingFilesScreen');
+  await clickControl(page,'recover/'+path);
+  await expect.poll(()=>page.evaluate(async path=>{
+   const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');
+   try{return(await(await root.getFileHandle(encodeURIComponent(path+'.complete'))).getFile()).size;}catch(_){return 0;}
+  },path),{timeout:60000}).toBe(1);
+  const download=page.waitForEvent('download');await clickControl(page,'export/'+path);
+  const video=await download,file=info.outputPath('recovered.mp4');await video.saveAs(file);
+  expect(fs.statSync(file).size).toBeGreaterThan(1000);await info.attach('recovered video',{path:file,contentType:'video/mp4'});
+ });
+ test(`${variant} OPFS full reports an error and retains recovery files`,async({page})=>{
+  await page.route('**/recording-storage.js',async route=>{
+   const response=await route.fetch();await route.fulfill({response,body:await response.text()+
+    "\nconst fixtureWrite=recordingStorage.write.bind(recordingStorage);let fixtureWritten=0;recordingStorage.write=(id,bytes)=>{fixtureWritten+=bytes.length;return fixtureWritten>8192 ? -5 : fixtureWrite(id,bytes);};"});
+  });
+  const url=new URL(gameURL(),'http://localhost');url.searchParams.set('threads',variant);
+  await page.goto(url.pathname+url.search);await screen(page,'MainMenuScreen');await clickControl(page,'recording/toggle');
+  await expect.poll(()=>page.title(),{timeout:60000}).toMatch(/recording failed/i);
+  await expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().controls['recording/toggle']?.label)).toMatch(/Start recording/i);
+  const retained=await page.evaluate(async()=>{
+   const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings');const names=[];
+   for await(const [name,handle]of root.entries())if(decodeURIComponent(name).endsWith('.recording/manifest.json')&&(await handle.getFile()).size)names.push(name);return names;
+  });expect(retained.length).toBeGreaterThan(0);
+ });
 }

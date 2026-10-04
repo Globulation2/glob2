@@ -41,7 +41,13 @@ if (typeof ENVIRONMENT_IS_PTHREAD === 'undefined' || !ENVIRONMENT_IS_PTHREAD) {
         let size;
         try { size=(await handle.getFile()).size; } catch (_) { continue; }
         if (path.endsWith('.complete') && size) files.push({path:path.slice(0,-9),recoverable:false});
-        else if (path.endsWith('.recording/manifest.json') && size) {
+        else if (path.endsWith('.recording/manifest.json')) {
+          if (!size) {
+            for (const suffix of ['manifest.1.json','manifest.2.json']) {
+              try { size ||= (await(await root.getFileHandle(encodeURIComponent(path.slice(0,-13)+suffix))).getFile()).size; } catch (_) {}
+            }
+            if (!size) continue;
+          }
           const video=path.slice(0,-24);
           let complete=false;
           try { complete=(await (await root.getFileHandle(encodeURIComponent(video+'.complete'))).getFile()).size>0; } catch (_) {}

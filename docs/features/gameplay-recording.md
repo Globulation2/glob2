@@ -113,6 +113,8 @@ existing clips or sidecars.
 
 During capture, `<name>.mp4.recording/` reserves the output and holds a fragmented
 MP4 containing both streams, an append-only event journal and incomplete metadata.
+Alternating metadata checkpoints preserve the previous valid copy when storage
+fills or a checkpoint write is interrupted.
 Finalization remuxes compressed packets into a fast-start MP4 with chapters.
 Native publication uses no-replace hard links; browser publication commits a
 completion marker after streaming bounded chunks into final OPFS files. Failures
