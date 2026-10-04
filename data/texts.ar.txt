@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Cortex
 يمكنك أنت والذكاء الاصطناعي إصدار الأوامر. يستهلك ذلك خانتين للمتحكمين.
 [You vs all]
 أنت ضد الجميع
+[%0 vs %1]
+%0 ضد %1
+[%0 vs all]
+%0 ضد الجميع
+[You will watch this match.]
+ستشاهد هذه المباراة.
 [Your maps]
 خرائطك
 [colonies]
@@ -1398,8 +1414,6 @@ Cortex
 عرض الطارة تلقائيًا
 [toggle torus view]
 التبديل بين العرض ثنائي الأبعاد والطارة
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-يتطلب نمط 2 ضد 2 أربع مستعمرات مشاركة. ويتطلب نمط «أنت ضد الجميع» لاعبًا بشريًا.
 [Alliance]
 التحالف
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ OpenGL غير متوفر في هذا الإصدار.
 ينضم الذكاء الاصطناعي بعد %0
 [hub all rooms]
 الكل
-[hub browse maps]
-تصفح الخرائط
 [hub cant reach %0]
 تعذر الوصول إلى %0.
 [hub change server]
 غيّر الخادم…
-[hub check code]
-عندما يُطلب منك رمز، أدخل هذا الرمز:
 [hub code placeholder]
 رمز أو رابط دعوة
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ OpenGL غير متوفر في هذا الإصدار.
 أنشئ غرفة
 [hub find match]
 ابحث عن مباراة
-[hub finish in browser]
-أكمل تسجيل الدخول في الصفحة التي فُتحت في متصفحك.
 [hub free seat]
 مقعد شاغر
 [hub get update]
@@ -3508,10 +3516,6 @@ OpenGL غير متوفر في هذا الإصدار.
 انضم
 [hub leaderboard]
 لوحة المتصدرين
-[hub linked %0]
-الحسابات المرتبطة · %0
-[hub linked accounts]
-الحسابات المرتبطة
 [hub maps]
 الخرائط
 [hub no queues]
@@ -3532,8 +3536,26 @@ OpenGL غير متوفر في هذا الإصدار.
 افتح الصفحة مجددًا
 [hub open rooms]
 الغرف المفتوحة
-[hub page opened at %0]
-فُتحت %0. لا حاجة لكتابة شيء في اللعبة؛ ستسجّل دخولك تلقائيًا.
+[hub play]
+العب
+[hub rooms]
+الغرف
+[hub ranks]
+الترتيب
+[hub play with friends]
+العب مع الأصدقاء
+[hub also search %0]
+ابحث أيضًا في %0
+[hub online now %0 %1]
+%0 لاعب متصل · %1 يبحثون في هذه القائمة
+[hub show in open rooms]
+إظهار في الغرف المفتوحة
+[hub last match]
+آخر مباراة
+[hub your rank %0 %1]
+ترتيبك #%0 · التقييم %1
+[hub not placed]
+ليس لديك ترتيب هنا بعد. العب مباريات مصنفة لتحصل عليه.
 [hub queues unavailable]
 تظهر المباراة السريعة عندما يستجيب الخادم.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ OpenGL غير متوفر في هذا الإصدار.
 مباراة سريعة
 [hub ranked]
 مصنّفة
-[hub recent matches]
-المباريات الأخيرة
 [hub refresh]
 حدّث
 [hub retry now]
@@ -3556,8 +3576,6 @@ OpenGL غير متوفر في هذا الإصدار.
 الغرفة
 [hub seats %0 %1]
 المقاعد: %0/%1
-[hub server %0]
-الخادم: %0
 [hub sign in browser]
 افتح صفحة تسجيل الدخول
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ OpenGL غير متوفر في هذا الإصدار.
 احذف حسابي
 [settings Enter an https:// address.]
 أدخل عنوانًا يبدأ بـ https://.
-[settings Finish in your browser. It shows the code %0.]
-أكمل في متصفحك: اكتب الرمز %0 عندما يُطلب منك.
 [settings Forget]
 انسَ
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ OpenGL غير متوفر في هذا الإصدار.
 انضم إلى مباراة الإعادة التي أنشأها %0
 [hub profile history]
 الملف الشخصي والسجل
-[hub my maps]
-خرائطي
 [hub leaderboard %0]
 لوحة المتصدرين · %0
 [hub leaderboard empty]

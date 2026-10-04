@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Jij + AI
 Jij en de AI geven allebei bevelen. Gebruikt twee spelersplaatsen.
 [You vs all]
 Jij tegen iedereen
+[%0 vs %1]
+%0 tegen %1
+[%0 vs all]
+%0 tegen iedereen
+[You will watch this match.]
+Je kijkt naar deze wedstrijd.
 [Your maps]
 Jouw kaarten
 [colonies]
@@ -1398,8 +1414,6 @@ Voorbeeld niet beschikbaar. Wijzig de instellingen of start om het opnieuw te pr
 Automatische torusweergave
 [toggle torus view]
 Wissel tussen 2D- en torusweergave
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 tegen 2 heeft vier open kolonies nodig. Jij tegen iedereen heeft een mens nodig.
 [Alliance]
 Alliantie
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Account
 AI doet mee na %0
 [hub all rooms]
 Alle
-[hub browse maps]
-Kaarten bekijken
 [hub cant reach %0]
 Kan %0 niet bereiken.
 [hub change server]
 Server wijzigen…
-[hub check code]
-Voer deze code in als erom gevraagd wordt:
 [hub code placeholder]
 Code of uitnodigingslink
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Doorgaan met %0
 Kamer maken
 [hub find match]
 Wedstrijd zoeken
-[hub finish in browser]
-Rond het inloggen af op de pagina die in je browser is geopend.
 [hub free seat]
 Vrije plaats
 [hub get update]
@@ -3508,10 +3516,6 @@ Code om mee te doen
 Meedoen
 [hub leaderboard]
 Ranglijst
-[hub linked %0]
-Gekoppelde accounts · %0
-[hub linked accounts]
-Gekoppelde accounts
 [hub maps]
 Kaarten
 [hub no queues]
@@ -3532,8 +3536,26 @@ Online
 Pagina opnieuw openen
 [hub open rooms]
 Open kamers
-[hub page opened at %0]
-%0 geopend. Je hoeft niets in te typen in het spel; het logt je vanzelf in.
+[hub play]
+Spelen
+[hub rooms]
+Kamers
+[hub ranks]
+Ranglijst
+[hub play with friends]
+Spelen met vrienden
+[hub also search %0]
+Ook zoeken in %0
+[hub online now %0 %1]
+%0 spelers online · %1 zoeken in deze wachtrij
+[hub show in open rooms]
+Tonen bij open kamers
+[hub last match]
+Laatste wedstrijd
+[hub your rank %0 %1]
+Je staat op #%0 · rating %1
+[hub not placed]
+Je hebt hier nog geen rang. Speel ranked wedstrijden om ingedeeld te worden.
 [hub queues unavailable]
 Snel spelen verschijnt zodra de server antwoordt.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Snel spelen is in deze versie nog niet beschikbaar.
 Snel spelen
 [hub ranked]
 Competitief
-[hub recent matches]
-Recente wedstrijden
 [hub refresh]
 Vernieuwen
 [hub retry now]
@@ -3556,8 +3576,6 @@ Kamer van %0
 Kamer
 [hub seats %0 %1]
 %0/%1 plaatsen
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Inlogpagina openen
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Weergavenaam
 Mijn account verwijderen
 [settings Enter an https:// address.]
 Voer een https://-adres in.
-[settings Finish in your browser. It shows the code %0.]
-Rond het af in je browser: typ de code %0 als erom gevraagd wordt.
 [settings Forget]
 Vergeten
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Revanche
 Doe mee met de revanche van %0
 [hub profile history]
 Profiel en geschiedenis
-[hub my maps]
-Mijn kaarten
 [hub leaderboard %0]
 Ranglijst · %0
 [hub leaderboard empty]

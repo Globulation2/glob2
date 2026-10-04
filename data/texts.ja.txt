@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ AIの命令なし
 あなたとAIの両方が命令を出します。操作担当を2枠使用します。
 [You vs all]
 あなた対全員
+[%0 vs %1]
+%0対%1
+[%0 vs all]
+%0対全員
+[You will watch this match.]
+この試合を観戦します。
 [Your maps]
 自作マップ
 [colonies]
@@ -1398,8 +1414,6 @@ AIの命令なし
 自動トーラス表示
 [toggle torus view]
 2D／トーラス表示を切り替え
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2対2には参加するコロニーが4つ必要です。「あなた対全員」には人間のプレイヤーが必要です。
 [Alliance]
 同盟
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Ping
 %0後にAIが参加
 [hub all rooms]
 すべて
-[hub browse maps]
-マップを探す
 [hub cant reach %0]
 %0に接続できません。
 [hub change server]
 サーバーを変更…
-[hub check code]
-コードを求められたら、次のコードを入力してください：
 [hub code placeholder]
 コードまたは招待リンク
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Ping
 ルームを作成
 [hub find match]
 対戦を探す
-[hub finish in browser]
-ブラウザーで開いたページでサインインを完了してください。
 [hub free seat]
 空き席
 [hub get update]
@@ -3508,10 +3516,6 @@ Ping
 参加
 [hub leaderboard]
 ランキング
-[hub linked %0]
-連携アカウント · %0
-[hub linked accounts]
-連携アカウント
 [hub maps]
 マップ
 [hub no queues]
@@ -3532,8 +3536,26 @@ Ping
 ページをもう一度開く
 [hub open rooms]
 参加可能なルーム
-[hub page opened at %0]
-%0を開きました。ゲーム内で入力する必要はなく、自動でサインインします。
+[hub play]
+プレイ
+[hub rooms]
+ルーム
+[hub ranks]
+ランキング
+[hub play with friends]
+フレンドと遊ぶ
+[hub also search %0]
+%0 でも探す
+[hub online now %0 %1]
+%0 人がオンライン · %1 人がこのキューで検索中
+[hub show in open rooms]
+オープンルームに表示
+[hub last match]
+直近の対戦
+[hub your rank %0 %1]
+あなたは %0 位 · レーティング %1
+[hub not placed]
+まだここでの順位はありません。ランク戦をプレイして順位を獲得しましょう。
 [hub queues unavailable]
 サーバーが応答するとクイックマッチが表示されます。
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Ping
 クイックマッチ
 [hub ranked]
 ランク戦
-[hub recent matches]
-最近の試合
 [hub refresh]
 更新
 [hub retry now]
@@ -3556,8 +3576,6 @@ Ping
 ルーム
 [hub seats %0 %1]
 %0/%1席
-[hub server %0]
-サーバー：%0
 [hub sign in browser]
 サインインページを開く
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Globulation 2のルームに参加しよう：%0
 アカウントを削除
 [settings Enter an https:// address.]
 https:// で始まるアドレスを入力してください。
-[settings Finish in your browser. It shows the code %0.]
-ブラウザーで完了してください。コードを求められたら%0と入力します。
 [settings Forget]
 削除
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Webプロフィール
 %0の再戦に参加
 [hub profile history]
 プロフィールと履歴
-[hub my maps]
-マイマップ
 [hub leaderboard %0]
 ランキング · %0
 [hub leaderboard empty]

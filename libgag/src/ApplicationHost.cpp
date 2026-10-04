@@ -194,6 +194,7 @@ bool openUrl(const std::string &url)
 		return false;
 	return SDL_OpenURL(url.c_str());
 }
+void prepareUrlWindow() {}
 bool copyText(const std::string &text)
 {
 	return SDL_SetClipboardText(text.c_str());

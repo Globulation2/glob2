@@ -28,6 +28,12 @@ ColonySkinPreview::ColonySkinPreview()
         && GAGCore::ApplicationHost::assetPackageReady("skins")) ready = loadMeshes(root);
     textures[0] = std::make_unique<GAGCore::DrawableSurface>(root + "/paint.png");
     if (textures[0]->getW()!=256 || textures[0]->getH()!=256) textures[0].reset();
+    if (const char *swarm = std::getenv("GLOB2_SKIN_PREVIEW_SWARM"))
+    {
+        const int index = Online::swarmMeshIndex(swarm);
+        if (index < 0) std::cerr << "Colony skin preview: unknown swarm mesh " << swarm << '\n';
+        swarmChoice[0] = std::max(0, index);
+    }
 }
 bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 {
@@ -48,9 +54,14 @@ bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
             return false;
         }
     }
-    std::string swarmError;
-    if (!load(swarm, root + "/swarm.gsk", swarmError))
-        std::cerr << "Colony skin preview swarm: " << swarmError << '\n';
+    // A missing swarm mesh only leaves that choice on the classic sprite.
+    for (unsigned i = 0; i < swarms.size(); ++i)
+    {
+        std::string error;
+        const std::string file(Online::SWARM_MESHES[i].file);
+        if (!load(swarms[i], root + "/" + file, error))
+            std::cerr << "Colony skin preview " << file << ": " << error << '\n';
+    }
     return true;
 }
 bool ColonySkinPreview::loadInstalledMeshes()
@@ -64,19 +75,21 @@ void ColonySkinPreview::setDownloads(std::unique_ptr<Online::SkinDownloads> valu
     downloads=std::move(value);
     for(auto &texture:textures)texture.reset();
     for(auto &color:colors)color.reset();
+    swarmChoice.fill(0);
 }
 void ColonySkinPreview::poll()
 {
     if (downloads)
     {
         downloads->poll(static_cast<std::int64_t>(std::time(nullptr)));
-        for (int team : downloads->takeRemoved()) { textures[team].reset(); colors[team].reset(); }
+        for (int team : downloads->takeRemoved()) { textures[team].reset(); colors[team].reset(); swarmChoice[team] = 0; }
         for (auto &entry : downloads->takeReady())
         {
             auto texture = std::make_unique<GAGCore::DrawableSurface>(entry.path);
             if (texture->getW()!=256 || texture->getH()!=256) continue;
             textures[entry.skin.team]=std::move(texture);
             colors[entry.skin.team]=entry.skin.buildingColor;
+            swarmChoice[entry.skin.team]=entry.skin.swarmMesh;
         }
     }
     if (visible && !ready && !attemptedMeshes && globalContainer && globalContainer->gfx &&
@@ -113,8 +126,15 @@ bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
 bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
                                  float x, float y, float width, float height)
 {
-    return visible && ready && team >= 0 && team < 32 && textures[team] && swarm.identity &&
-        gfx.drawSkinMesh(swarm, 0, *textures[team], x, y, width, height);
+    if (!visible || !ready || team < 0 || team >= 32 || !textures[team]) return false;
+    const auto *mesh = swarmMesh(team);
+    return mesh && gfx.drawSkinMesh(*mesh, 0, *textures[team], x, y, width, height);
+}
+
+const GAGCore::SkinMesh *ColonySkinPreview::swarmMesh(int team) const
+{
+    const auto &mesh = swarms[swarmChoice[team]];
+    return mesh.identity ? &mesh : nullptr;
 }
 
 const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type, int action) const
@@ -173,11 +193,12 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                 if (!drawBuildings) continue;
                 const auto *building = entities.building(map.getBuilding(mx,my));
                 if (!building || building->team<0 || building->team>=32 || !textures[building->team] ||
-                    !swarm.identity || building->type->isBuildingSite ||
+                    building->type->isBuildingSite ||
                     building->type->shortTypeNum != IntBuildingType::SWARM_BUILDING) continue;
-                if (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
-                    map.isFOWDiscovered(mx,my,visibleTeams))
-                    requests.push_back({&swarm,0,textures[building->team].get()});
+                const auto *swarm = swarmMesh(building->team);
+                if (swarm && (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
+                    map.isFOWDiscovered(mx,my,visibleTeams)))
+                    requests.push_back({swarm,0,textures[building->team].get()});
             }
     }
     gfx.prepareSkinMeshes(requests);

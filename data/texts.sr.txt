@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Cortex
 Ви и ВИ можете издавати наређења. Заузима два места за играче и ВИ.
 [You vs all]
 Ви против свих
+[%0 vs %1]
+%0 против %1
+[%0 vs all]
+%0 против свих
+[You will watch this match.]
+Гледаћете овај меч.
 [Your maps]
 Ваше мапе
 [colonies]
@@ -1398,8 +1414,6 @@ Cortex
 Аутоматски торусни приказ
 [toggle torus view]
 Промени 2D / торусни приказ
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 против 2 захтева четири отворене колоније. Ви против свих захтева људског играча.
 [Alliance]
 Савез
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ LAN домаћин није доступан. Проверите дозволу 
 ВИ се прикључује након %0
 [hub all rooms]
 Све
-[hub browse maps]
-Прегледај мапе
 [hub cant reach %0]
 %0 није доступан.
 [hub change server]
 Промени сервер…
-[hub check code]
-Када буде затражен кôд, унесите овај:
 [hub code placeholder]
 Кôд или линк позивнице
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Направи собу
 [hub find match]
 Нађи меч
-[hub finish in browser]
-Довршите пријаву на страници која се отворила у прегледачу.
 [hub free seat]
 Слободно место
 [hub get update]
@@ -3508,10 +3516,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Придружи се
 [hub leaderboard]
 Ранг-листа
-[hub linked %0]
-Повезани налози · %0
-[hub linked accounts]
-Повезани налози
 [hub maps]
 Мапе
 [hub no queues]
@@ -3532,8 +3536,26 @@ LAN домаћин није доступан. Проверите дозволу 
 Поново отвори страницу
 [hub open rooms]
 Отворене собе
-[hub page opened at %0]
-Отворено: %0. У игри не треба ништа куцати; пријава се обавља сама.
+[hub play]
+Играј
+[hub rooms]
+Собе
+[hub ranks]
+Ранг
+[hub play with friends]
+Играј са пријатељима
+[hub also search %0]
+Тражи и у %0
+[hub online now %0 %1]
+%0 играча на мрежи · %1 тражи у овом реду
+[hub show in open rooms]
+Прикажи међу отвореним собама
+[hub last match]
+Последњи меч
+[hub your rank %0 %1]
+Ви сте #%0 · рејтинг %1
+[hub not placed]
+Још немате ранг овде. Играјте рангиране мечеве да бисте се рангирали.
 [hub queues unavailable]
 Брзи меч ће се појавити када сервер одговори.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Брзи меч
 [hub ranked]
 Рангирано
-[hub recent matches]
-Недавни мечеви
 [hub refresh]
 Освежи
 [hub retry now]
@@ -3556,8 +3576,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Соба
 [hub seats %0 %1]
 Места: %0/%1
-[hub server %0]
-Сервер: %0
 [hub sign in browser]
 Отвори страницу за пријаву
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Обриши мој налог
 [settings Enter an https:// address.]
 Унесите https:// адресу.
-[settings Finish in your browser. It shows the code %0.]
-Довршите у прегледачу: унесите кôд %0 када буде затражен.
 [settings Forget]
 Заборави
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Придружи се реваншу: %0
 [hub profile history]
 Профил и историја
-[hub my maps]
-Моје мапе
 [hub leaderboard %0]
 Ранг-листа · %0
 [hub leaderboard empty]

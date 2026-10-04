@@ -193,4 +193,6 @@ class CustomGameScreen : public Glob2UI::Screen
 	// Discard the current preview and schedule a new one after the edit settles.
 	void invalidatePreview();
 	std::string colonyLabel(int) const;
+	// The shape of the teams as the Teams choice names it ("2 vs 2", "Red vs all").
+	std::string teamsLabel(const TeamLayout::Layout &) const;
 };

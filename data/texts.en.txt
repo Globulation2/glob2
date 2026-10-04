@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+Finish signing in in your browser. The game continues by itself once you are done.
+[hub browser did not open]
+Your browser did not open. Open the sign-in page to continue.
+[hub compare code %0]
+If the page asks, check that it shows %0.
+[hub code copied]
+Code copied
+[settings Finish in your browser. The game continues by itself.]
+Finish in your browser. The game continues by itself.
 [music set]
 Music set
 [random music set]
@@ -1330,6 +1340,12 @@ You + AI
 You and the AI both issue orders. Uses two controller slots.
 [You vs all]
 You vs all
+[%0 vs %1]
+%0 vs %1
+[%0 vs all]
+%0 vs all
+[You will watch this match.]
+You will watch this match.
 [Your maps]
 Your maps
 [colonies]
@@ -1388,8 +1404,6 @@ Preview unavailable. Adjust settings or start to retry.
 Automatic torus view
 [toggle torus view]
 Toggle 2D / torus view
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
 [Alliance]
 Alliance
 [Choose a rule to change it.]
@@ -3480,14 +3494,10 @@ Account
 AI joins after %0
 [hub all rooms]
 All
-[hub browse maps]
-Browse maps
 [hub cant reach %0]
 Can't reach %0.
 [hub change server]
 Change server…
-[hub check code]
-When it asks for a code, enter this one:
 [hub code placeholder]
 Code or invite link
 [hub connecting to %0]
@@ -3498,8 +3508,6 @@ Continue with %0
 Create room
 [hub find match]
 Find match
-[hub finish in browser]
-Finish signing in on the page that opened in your browser.
 [hub free seat]
 Free seat
 [hub get update]
@@ -3516,10 +3524,6 @@ Join code
 Join
 [hub leaderboard]
 Leaderboard
-[hub linked %0]
-Linked accounts · %0
-[hub linked accounts]
-Linked accounts
 [hub maps]
 Maps
 [hub no queues]
@@ -3540,8 +3544,26 @@ Online
 Open the page again
 [hub open rooms]
 Open rooms
-[hub page opened at %0]
-Opened %0. Nothing to type in the game; it signs you in by itself.
+[hub play]
+Play
+[hub rooms]
+Rooms
+[hub ranks]
+Ranks
+[hub play with friends]
+Play with friends
+[hub also search %0]
+Also search %0
+[hub online now %0 %1]
+%0 players online · %1 searching this queue
+[hub show in open rooms]
+Show in Open rooms
+[hub last match]
+Last match
+[hub your rank %0 %1]
+You are #%0 · rating %1
+[hub not placed]
+You don't have a rank here yet. Play ranked matches to place.
 [hub queues unavailable]
 Quick match appears when the server answers.
 [hub quick match unavailable]
@@ -3550,8 +3572,6 @@ Quick match isn't available in this version yet.
 Quick match
 [hub ranked]
 Ranked
-[hub recent matches]
-Recent matches
 [hub refresh]
 Refresh
 [hub retry now]
@@ -3564,8 +3584,6 @@ Room
 Room
 [hub seats %0 %1]
 %0/%1 seats
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Open the sign-in page
 [hub sign in conflict]
@@ -3870,8 +3888,6 @@ Display name
 Delete my account
 [settings Enter an https:// address.]
 Enter an https:// address.
-[settings Finish in your browser. It shows the code %0.]
-Finish in your browser: type the code %0 when it asks.
 [settings Forget]
 Forget
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4402,8 +4418,6 @@ Rematch
 Join %0's rematch
 [hub profile history]
 Profile & history
-[hub my maps]
-My maps
 [hub leaderboard %0]
 Leaderboard · %0
 [hub leaderboard empty]

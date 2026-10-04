@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SkinAuthorization.h"
 #include "Sha256.h"
+#include "SwarmMeshCatalog.h"
 #include <nlohmann/json.hpp>
 #include <vector>
 #include <stdexcept>
@@ -84,7 +85,13 @@ SkinAuthorization::SkinAuthorization(const std::string &token,const std::string 
         if(!uuid(skin.versionId)||!uuid(skin.skinId)||!Sha256::isHexDigest(skin.textureHash)||!Sha256::isHexDigest(skin.manifestHash)||version.at("layout")!="colony-v1")return;
         const auto defaultColor=number(version.at("buildingColor"),0xffffff);
         skin.buildingColor=number(claims.at("buildingColor"),0xffffff);skin.team=team;
-        const nlohmann::ordered_json manifest={{"skinId",skin.skinId},{"textureSha256",skin.textureHash},{"layout","colony-v1"},{"buildingColor",defaultColor}};
+        skin.swarmMesh=swarmMeshIndex(version.value("swarmMesh",std::string(SWARM_MESHES[0].id)));
+        if(skin.swarmMesh<0)return;
+        nlohmann::ordered_json manifest={{"skinId",skin.skinId},{"textureSha256",skin.textureHash},{"layout","colony-v1"},{"buildingColor",defaultColor}};
+        // Classic skins keep the original manifest, so versions published before
+        // mesh choice still verify; older clients reject other meshes outright
+        // instead of drawing their paint on the classic swarm.
+        if(skin.swarmMesh)manifest["swarmMesh"]=std::string(SWARM_MESHES[skin.swarmMesh].id);
         if(Sha256::hex(manifest.dump())!=skin.manifestHash)return;
         const auto kid=header.at("kid").get<std::string>();
         if(kid.empty()||kid.size()>128||!keys.at("keys").is_array()||keys.at("keys").size()>32)return;

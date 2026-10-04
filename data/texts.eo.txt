@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Vi + AI
 Vi kaj la AI ambaŭ donas ordonojn. Uzas du ludantlokojn.
 [You vs all]
 Vi kontraŭ ĉiuj
+[%0 vs %1]
+%0 kontraŭ %1
+[%0 vs all]
+%0 kontraŭ ĉiuj
+[You will watch this match.]
+Vi spektos ĉi tiun matĉon.
 [Your maps]
 Viaj mapoj
 [colonies]
@@ -1398,8 +1414,6 @@ Antaŭrigardo nedisponebla. Ŝanĝu la agordojn aŭ lanĉu la ludon por provi de
 Aŭtomata tora vido
 [toggle torus view]
 Ŝanĝi inter 2D kaj tora vido
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 kontraŭ 2 bezonas kvar malfermitajn koloniojn. Vi kontraŭ ĉiuj bezonas homan ludanton.
 [Alliance]
 Alianco
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Konto
 AI aliĝos post %0
 [hub all rooms]
 Ĉiuj
-[hub browse maps]
-Foliumi mapojn
 [hub cant reach %0]
 Ne eblas atingi %0.
 [hub change server]
 Ŝanĝi servilon…
-[hub check code]
-Kiam ĝi petos kodon, enigu ĉi tiun:
 [hub code placeholder]
 Kodo aŭ invita ligilo
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Daŭrigi per %0
 Krei ĉambron
 [hub find match]
 Trovi matĉon
-[hub finish in browser]
-Finu la ensaluton en la paĝo, kiu malfermiĝis en via retumilo.
 [hub free seat]
 Libera loko
 [hub get update]
@@ -3508,10 +3516,6 @@ Aliĝkodo
 Aliĝi
 [hub leaderboard]
 Rangotabelo
-[hub linked %0]
-Ligitaj kontoj · %0
-[hub linked accounts]
-Ligitaj kontoj
 [hub maps]
 Mapoj
 [hub no queues]
@@ -3532,8 +3536,26 @@ Rete
 Malfermi la paĝon denove
 [hub open rooms]
 Malfermitaj ĉambroj
-[hub page opened at %0]
-Malfermis %0. Nenion necesas tajpi en la ludo; ĝi mem ensalutigas vin.
+[hub play]
+Ludi
+[hub rooms]
+Ĉambroj
+[hub ranks]
+Rangoj
+[hub play with friends]
+Ludi kun amikoj
+[hub also search %0]
+Serĉi ankaŭ en %0
+[hub online now %0 %1]
+%0 ludantoj enrete · %1 serĉas en ĉi tiu vico
+[hub show in open rooms]
+Montri en Malfermitaj ĉambroj
+[hub last match]
+Lasta matĉo
+[hub your rank %0 %1]
+Vi estas n-ro %0 · takso %1
+[hub not placed]
+Vi ankoraŭ ne havas rangon ĉi tie. Ludu rangigitajn matĉojn por esti rangigita.
 [hub queues unavailable]
 Rapida matĉo aperos kiam la servilo respondos.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Rapida matĉo ankoraŭ ne disponeblas en ĉi tiu versio.
 Rapida matĉo
 [hub ranked]
 Rangigita
-[hub recent matches]
-Lastaj matĉoj
 [hub refresh]
 Aktualigi
 [hub retry now]
@@ -3556,8 +3576,6 @@ Reprovi nun
 Ĉambro
 [hub seats %0 %1]
 %0/%1 lokoj
-[hub server %0]
-Servilo: %0
 [hub sign in browser]
 Malfermi la ensalutan paĝon
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Montrata nomo
 Forigi mian konton
 [settings Enter an https:// address.]
 Enigu https://-adreson.
-[settings Finish in your browser. It shows the code %0.]
-Finu en via retumilo: tajpu la kodon %0 kiam ĝi petos.
 [settings Forget]
 Forgesi
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Revanĉo
 Aliĝi al la revanĉo de %0
 [hub profile history]
 Profilo kaj historio
-[hub my maps]
-Miaj mapoj
 [hub leaderboard %0]
 Rangotabelo · %0
 [hub leaderboard empty]

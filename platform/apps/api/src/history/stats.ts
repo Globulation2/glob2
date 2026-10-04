@@ -9,7 +9,11 @@ import type { InstanceStats } from '@glob2/protocol';
 export const ACTIVE_WINDOW_MINUTES = 15;
 const CACHE_MS = 30_000;
 
-export async function queryInstanceStats(db: Kysely<Database>): Promise<InstanceStats> {
+/** queueIds: the configured queues, listed with their searching counts (zero included). */
+export async function queryInstanceStats(
+  db: Kysely<Database>,
+  queueIds: readonly string[] = [],
+): Promise<InstanceStats> {
   const window = `${ACTIVE_WINDOW_MINUTES} minutes`;
   const row = await sql<{ online: number; live: number; today: number }>`
     SELECT
@@ -28,21 +32,38 @@ export async function queryInstanceStats(db: Kysely<Database>): Promise<Instance
          WHERE created_at > now() - interval '24 hours' AND status <> 'cancelled') AS today
   `.execute(db);
   const counts = row.rows[0] ?? { online: 0, live: 0, today: 0 };
+  // Active tickets as the matchmaker sees them: waiting, or in a match prompt.
+  const searching = new Map<string, number>();
+  if (queueIds.length > 0) {
+    const tickets = await sql<{ queue_id: string; searching: number }>`
+      SELECT queue_id, count(*)::int AS searching FROM queue_tickets
+        WHERE status IN ('waiting', 'proposed')
+        GROUP BY queue_id
+    `.execute(db);
+    for (const ticket of tickets.rows) searching.set(ticket.queue_id, ticket.searching);
+  }
   return {
     playersOnline: counts.online,
     activeWindowMinutes: ACTIVE_WINDOW_MINUTES,
     liveMatches: counts.live,
     matchesToday: counts.today,
     generatedAt: new Date().toISOString(),
+    ...(queueIds.length > 0
+      ? { queues: queueIds.map((id) => ({ id, searching: searching.get(id) ?? 0 })) }
+      : {}),
   };
 }
 
 /** queryInstanceStats with a short per-process cache; concurrent callers share one query. */
-export function cachedInstanceStats(db: Kysely<Database>, now: () => number = Date.now) {
+export function cachedInstanceStats(
+  db: Kysely<Database>,
+  queueIds: readonly string[] = [],
+  now: () => number = Date.now,
+) {
   let cached: { at: number; value: Promise<InstanceStats> } | undefined;
   return (): Promise<InstanceStats> => {
     if (cached && now() - cached.at < CACHE_MS) return cached.value;
-    const value = queryInstanceStats(db);
+    const value = queryInstanceStats(db, queueIds);
     cached = { at: now(), value };
     value.catch(() => {
       if (cached?.value === value) cached = undefined;

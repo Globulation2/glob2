@@ -188,12 +188,24 @@ std::vector<Fixture> fixtures()
 		{"lan-room", lanRoom},
 		{"online-hub", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubFixture(s); }},
 		{"online-hub-searching", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSearching(s); }},
+		{"online-hub-registered", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSection(s, OnlineHubScreen::Section::Play); }},
+		{"online-hub-rooms", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSection(s, OnlineHubScreen::Section::Rooms); }},
+		{"online-hub-leaderboard", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSection(s, OnlineHubScreen::Section::Leaderboard); }},
 		{"online-hub-signin", [](GAGGUI::ScreenStack &s)
 		 {
 			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
 												 {
 													 m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
 													 m.confirmationCode = "KXQ742";
+												 });
+		 }},
+		{"online-hub-signin-blocked", [](GAGGUI::ScreenStack &s)
+		 {
+			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
+												 {
+													 m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
+													 m.confirmationCode = "KXQ742";
+													 m.browserOpened = false;
 												 });
 		 }},
 		{"online-hub-offline", [](GAGGUI::ScreenStack &s)

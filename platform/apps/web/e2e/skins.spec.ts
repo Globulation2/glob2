@@ -81,21 +81,34 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   await page.getByRole('button', { name: 'Use as a starting point' }).first().click();
   const name = `Browser design ${test.info().project.name}`;
   await page.getByLabel('Skin name').fill(name);
+  const swarmModel = page.waitForResponse((r) => r.url().endsWith('/skins/models/swarm-skep.gsk'));
+  await page.getByRole('radio', { name: /^Skep/ }).check();
+  expect((await swarmModel).status()).toBe(200);
+  await expect(page.getByLabel('Preview model')).toHaveValue('swarm');
   const firstResponse = page.waitForResponse(
     (r) => r.url().endsWith('/skins/publish') && r.request().method() === 'POST',
   );
   await page.getByRole('button', { name: 'Publish skin', exact: true }).click();
   const first = await firstResponse;
   expect(first.status()).toBe(200);
-  const original = (await first.json()) as { id: string; skinId: string; textureSha256: string };
+  const original = (await first.json()) as {
+    id: string;
+    skinId: string;
+    textureSha256: string;
+    swarmMesh: string;
+  };
+  expect(original.swarmMesh).toBe('skep');
   const originalPaint = await (
     await page.request.get(`/api/v1/skins/versions/${original.id}/texture`)
   ).body();
   const card = page.locator(`[data-version-id="${original.id}"]`);
   await card.getByRole('button', { name: 'Equip', exact: true }).click();
   await expect(card.getByRole('button', { name: 'Equipped', exact: true })).toBeVisible();
+  await expect(card).toContainText('skep swarm');
+  await page.getByRole('radio', { name: /^Classic/ }).check();
   await card.getByRole('button', { name: 'Edit this version' }).click();
   await expect(page.getByLabel('Skin name')).toHaveValue(name);
+  await expect(page.getByRole('radio', { name: /^Skep/ })).toBeChecked();
   await page.getByLabel('Paint', { exact: true }).fill('#aabbcc');
   await page.getByRole('button', { name: 'Fill', exact: true }).click();
   await page.getByLabel('Skin name').fill(`${name} revised`);
@@ -198,4 +211,72 @@ test('reports match paint and moderates it without rewriting the original', asyn
   } finally {
     await context.close();
   }
+});
+
+test('inspects every action and paints a paused model with undo and erase', async ({ page }) => {
+  const requests: string[] = [];
+  page.on('request', (r) => {
+    if (r.url().includes('/skins/models/')) requests.push(new URL(r.url()).pathname);
+  });
+  await page.goto('/skins');
+  await expect(page.getByText('Glob paint repeats automatically', { exact: false })).toBeVisible();
+  const preview = page.getByLabel('Paint directly on the 3D colony model');
+  const texture = page.getByLabel('Paint texture');
+  const image = () => texture.evaluate((c: { toDataURL(): string }) => c.toDataURL());
+  const setFrame = async (direction: number, phase: number) => {
+    await page.getByLabel('Animate', { exact: true }).uncheck();
+    for (const [label, value] of [
+      ['Direction', direction],
+      ['Frame', phase],
+    ] as const) {
+      await page.getByLabel(label, { exact: true }).fill(String(value));
+    }
+    await expect(preview).toHaveAttribute('data-frame', String(direction * 32 + phase));
+    await expect(page.getByLabel('Animate', { exact: true })).not.toBeChecked();
+  };
+  await setFrame(0, 0);
+  const downloads = requests.length;
+  await setFrame(7, 31);
+  await setFrame(0, 0);
+  expect(requests.length).toBe(downloads);
+  const original = await image();
+  await texture.click({ position: { x: 128, y: 32 } });
+  await expect.poll(image).not.toBe(original);
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  expect(await image()).toBe(original);
+  const box = await preview.boundingBox();
+  if (!box) throw new Error('Preview is not visible');
+  const position = { x: box.width / 2, y: box.height / 2 };
+  await preview.click({ position });
+  await expect.poll(image).not.toBe(original);
+  const painted = await image();
+  await page.getByRole('button', { name: 'Undo', exact: true }).click();
+  expect(await image()).toBe(original);
+  await page.getByRole('button', { name: 'Redo', exact: true }).click();
+  expect(await image()).toBe(painted);
+  await page.getByLabel('Brush size', { exact: true }).fill('16');
+  await page.getByLabel('Erase to white', { exact: true }).check();
+  await preview.click({ position });
+  await expect.poll(image).toBe(original);
+  await page.getByLabel('Erase to white', { exact: true }).uncheck();
+  await page.getByRole('button', { name: 'Try stripes' }).click();
+  for (const [model, actions] of [
+    ['worker', ['walk', 'swim', 'harvest']],
+    ['warrior', ['walk', 'swim', 'fight']],
+    ['explorer', ['fly']],
+  ] as const) {
+    await page.getByLabel('Preview model', { exact: true }).selectOption(model);
+    for (const action of actions) {
+      await page.getByLabel('Action', { exact: true }).selectOption(action);
+      await expect.poll(() => requests.includes(`/skins/models/${model}-${action}.gsk`)).toBe(true);
+      await setFrame(4, 15);
+      await expect(preview).toHaveAttribute('data-model', `${model}-${action}`);
+      await preview.screenshot({ path: test.info().outputPath(`${model}-${action}-frame.png`) });
+    }
+  }
+  await page.getByLabel('Preview model', { exact: true }).selectOption('swarm');
+  await expect(page.getByLabel('Action', { exact: true })).toHaveCount(0);
+  await expect(page.getByLabel('Frame', { exact: true })).toBeDisabled();
+  await expect(page.getByLabel('Direction', { exact: true })).toBeDisabled();
+  await expect(preview).toHaveAttribute('data-frame', '0');
 });

@@ -271,9 +271,12 @@ export class RealtimeClient {
 export class Browser {
   private readonly cookies = new Map<string, Map<string, string>>();
   routes: Record<string, string>;
+  /** The address the browser appears to come from (via the trusted proxy header). */
+  ip: string | undefined;
 
-  constructor(routes: Record<string, string> = {}) {
+  constructor(routes: Record<string, string> = {}, ip?: string) {
     this.routes = routes;
+    this.ip = ip;
   }
 
   cookie(host: string, name: string): string | undefined {
@@ -284,6 +287,7 @@ export class Browser {
     const target = new URL(url);
     const jar = this.cookies.get(target.host);
     const headers = new Headers(init.headers);
+    if (this.ip) headers.set('x-forwarded-for', this.ip);
     if (jar && jar.size > 0) {
       headers.set('cookie', [...jar].map(([k, v]) => `${k}=${v}`).join('; '));
     }

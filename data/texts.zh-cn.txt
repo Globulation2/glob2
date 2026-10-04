@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ AI 策略与应对
 你与 AI 都可以下达指令，占用两个操控者名额。
 [You vs all]
 你对抗所有人
+[%0 vs %1]
+%0 对 %1
+[%0 vs all]
+%0 对抗所有人
+[You will watch this match.]
+你将观看这场比赛。
 [Your maps]
 你的地图
 [colonies]
@@ -1398,8 +1414,6 @@ AI 策略与应对
 自动环面视图
 [toggle torus view]
 切换 2D／环面视图
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 对 2 需要 4 个开放的殖民地。“你对抗所有人”需要一名人类玩家。
 [Alliance]
 联盟
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Ping
 %0 后 AI 加入
 [hub all rooms]
 全部
-[hub browse maps]
-浏览地图
 [hub cant reach %0]
 无法连接 %0。
 [hub change server]
 更换服务器…
-[hub check code]
-当页面要求输入代码时，请输入此代码：
 [hub code placeholder]
 代码或邀请链接
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Ping
 创建房间
 [hub find match]
 寻找对局
-[hub finish in browser]
-请在浏览器中打开的页面上完成登录。
 [hub free seat]
 空位
 [hub get update]
@@ -3508,10 +3516,6 @@ Ping
 加入
 [hub leaderboard]
 排行榜
-[hub linked %0]
-已关联账户 · %0
-[hub linked accounts]
-已关联账户
 [hub maps]
 地图
 [hub no queues]
@@ -3532,8 +3536,26 @@ Ping
 重新打开页面
 [hub open rooms]
 开放房间
-[hub page opened at %0]
-已打开 %0。无需在游戏中输入任何内容，登录会自动完成。
+[hub play]
+开始游戏
+[hub rooms]
+房间
+[hub ranks]
+排名
+[hub play with friends]
+和朋友一起玩
+[hub also search %0]
+同时匹配 %0
+[hub online now %0 %1]
+%0 名玩家在线 · %1 人正在此队列匹配
+[hub show in open rooms]
+显示在开放房间中
+[hub last match]
+上一场对局
+[hub your rank %0 %1]
+你排名第 %0 · 积分 %1
+[hub not placed]
+你在这里还没有排名。进行积分对局即可获得排名。
 [hub queues unavailable]
 服务器响应后将显示快速匹配。
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Ping
 快速匹配
 [hub ranked]
 排位
-[hub recent matches]
-最近对局
 [hub refresh]
 刷新
 [hub retry now]
@@ -3556,8 +3576,6 @@ Ping
 房间
 [hub seats %0 %1]
 %0/%1 个座位
-[hub server %0]
-服务器：%0
 [hub sign in browser]
 打开登录页面
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ AI：%0
 删除我的账户
 [settings Enter an https:// address.]
 请输入 https:// 地址。
-[settings Finish in your browser. It shows the code %0.]
-请在浏览器中完成：在要求时输入代码 %0。
 [settings Forget]
 忘记
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ AI 补位
 加入 %0 的再战
 [hub profile history]
 资料与历史
-[hub my maps]
-我的地图
 [hub leaderboard %0]
 排行榜 · %0
 [hub leaderboard empty]

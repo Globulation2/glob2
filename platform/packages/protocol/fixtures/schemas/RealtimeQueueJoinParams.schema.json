@@ -12,6 +12,16 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
     },
+    "queueIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]{0,31}$"
+      },
+      "minItems": 1,
+      "maxItems": 4,
+      "description": "Instances with the 'queue.multi' feature: further queues of the same search. The player holds a ticket in queueId and in each of these; the first to reach a match prompt holds the others back, they close when its match starts and resume when it falls through. queue.leave and queue.update act on the whole search."
+    },
     "regions": {
       "type": "array",
       "items": {

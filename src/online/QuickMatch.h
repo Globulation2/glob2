@@ -6,9 +6,11 @@
 
 #include <cstdint>
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 // One quick-match search at a time (screen group 3): probes the relays,
 // joins the queue, follows queue.status, answers ranked accept prompts and
@@ -66,6 +68,9 @@ class QuickMatch
 
 	// -- actions
 	void search(const QueueInfo &queue, bool allowAiOpponent = true);
+	// One search in several queues (servers with the 'queue.multi' feature): a ticket
+	// in each; the first match found wins and the others close (queue.join queueIds).
+	void search(const std::vector<QueueInfo> &queues, bool allowAiOpponent = true);
 	// Leaves the queue (or the prompt, which counts as declining) and stops a
 	// match that has not been handed off yet.
 	void cancel();
@@ -80,7 +85,11 @@ class QuickMatch
 	// -- state
 	Phase phase() const { return state; }
 	bool active() const { return state != Phase::Idle && state != Phase::Failed; }
+	// The queue shown for the search: the first one searched, or the one whose match
+	// prompt is open.
 	const std::optional<QueueInfo> &queue() const { return chosen; }
+	// Every queue of the search, in the order given.
+	const std::vector<QueueInfo> &queues() const { return searched; }
 	bool allowAiOpponent() const { return allowAi; }
 	const std::optional<QueueStatus> &status() const { return lastStatus; }
 	const std::optional<QueueProposal> &proposal() const { return current; }
@@ -123,6 +132,14 @@ class QuickMatch
 	Environment env;
 	Phase state = Phase::Idle;
 	std::optional<QueueInfo> chosen;
+	std::vector<QueueInfo> searched;
+	// Every ticket of the search: ticket id -> queue id. ticketId is the first one;
+	// queue.leave and queue.update on it act on the whole search.
+	std::map<std::string, std::string> tickets;
+	// The latest queue.status of each queue (AI backfill is per queue).
+	std::map<std::string, QueueStatus> statuses;
+	bool ownsTicket(const std::string &id) const { return tickets.count(id) > 0; }
+	void showQueue(const std::string &queueId);
 	bool allowAi = true;
 	std::unique_ptr<RelayProbe> probe;
 	std::vector<RegionRtt> probed;

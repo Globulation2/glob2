@@ -88,7 +88,10 @@ account and an address 10 failed `room.join` lookups per 10 minutes, and
 A code expires when its room closes.
 
 **Public list.** `GET /api/v1/rooms?simVersion=<key>` lists open public rooms of a sim
-version, most recently changed first, with a `cursor` for the next page.
+version, most recently changed first, with a `cursor` for the next page. Each
+`RoomSummary` names its map: a generated map by its generator, a catalog map by its
+catalog title with `mapPreviewUrl` (the version's server preview) once that preview is
+ready.
 
 ## Map sources
 
@@ -325,8 +328,27 @@ The API handles `queue.join`, `queue.leave` and `queue.respond`.
   to the match's human participants.
 
 - `queue.update {ticketId, allowAiOpponent}` changes AI backfill on a waiting
-  ticket; after a `queue.respond` the API sends the proposal again to everyone in
+  search; after a `queue.respond` the API sends the proposal again to everyone in
   it, so the prompt shows who accepted.
+
+**Searching several queues at once.** Instances list `'queue.multi'` in
+`InstanceInfo.features`; a client sends `queueIds` with `queue.join` only then.
+One search holds a waiting ticket in `queueId` and in each of `queueIds`, sharing
+`queue_tickets.search_id` (migration 0033) and their `created_at`. The result adds
+`searchId` and `tickets` (`{queueId, ticketId}`, the `queueId` ticket first).
+Every queue must exist and pass `canQueue`, and a guest's search may not include
+a rated queue (`forbidden`); an account has one search at a time (`conflict`).
+
+- The matchmaker does not group, prompt or send `queue.status` for a ticket whose
+  account has a ticket in a prompt (`status = 'proposed'`), so the search is
+  offered one match at a time; the claim of a proposal repeats that check.
+- When the prompt falls through for someone else, or the match fails to start,
+  the prompted ticket is requeued and the others carry on, all keeping their place.
+- When its match starts, or the player declines or times out, the search's other
+  waiting tickets are cancelled.
+- `queue.leave` and `queue.update` act on the whole search, whichever of its
+  tickets they name.
+- AI backfill stays per queue: whichever queue fills first ends the search.
 
 ## Rematch after a quick match
 

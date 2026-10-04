@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Tu + IA
 Tu și IA puteți da ordine. Ocupă două locuri pentru jucători și IA.
 [You vs all]
 Tu contra tuturor
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra tuturor
+[You will watch this match.]
+Vei urmări acest meci.
 [Your maps]
 Hărțile voastre
 [colonies]
@@ -1398,8 +1414,6 @@ Previzualizare indisponibilă. Schimbați setările sau lansați jocul pentru a 
 Vizualizare toroidală automată
 [toggle torus view]
 Comută vizualizarea 2D / toroidală
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 necesită patru colonii deschise. Tu contra tuturor necesită un jucător uman.
 [Alliance]
 Alianță
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Cont
 IA intră după %0
 [hub all rooms]
 Toate
-[hub browse maps]
-Răsfoiește hărți
 [hub cant reach %0]
 %0 nu poate fi contactat.
 [hub change server]
 Schimbă serverul…
-[hub check code]
-Când vi se cere un cod, introduceți-l pe acesta:
 [hub code placeholder]
 Cod sau link de invitație
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Continuă cu %0
 Creează cameră
 [hub find match]
 Caută meci
-[hub finish in browser]
-Finalizați autentificarea în pagina deschisă în browser.
 [hub free seat]
 Loc liber
 [hub get update]
@@ -3508,10 +3516,6 @@ Cod de intrare
 Intră
 [hub leaderboard]
 Clasament
-[hub linked %0]
-Conturi asociate · %0
-[hub linked accounts]
-Conturi asociate
 [hub maps]
 Hărți
 [hub no queues]
@@ -3532,8 +3536,26 @@ Online
 Redeschide pagina
 [hub open rooms]
 Camere deschise
-[hub page opened at %0]
-Am deschis %0. Nu trebuie să tastați nimic în joc; autentificarea se face automat.
+[hub play]
+Joacă
+[hub rooms]
+Camere
+[hub ranks]
+Clasament
+[hub play with friends]
+Joacă cu prietenii
+[hub also search %0]
+Caută și în %0
+[hub online now %0 %1]
+%0 jucători online · %1 caută în această coadă
+[hub show in open rooms]
+Arată în Camere deschise
+[hub last match]
+Ultimul meci
+[hub your rank %0 %1]
+Ești pe locul %0 · rating %1
+[hub not placed]
+Încă nu ai un loc aici. Joacă meciuri clasate ca să fii clasat.
 [hub queues unavailable]
 Meciul rapid apare când serverul răspunde.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Meciul rapid nu este încă disponibil în această versiune.
 Meci rapid
 [hub ranked]
 Competitiv
-[hub recent matches]
-Meciuri recente
 [hub refresh]
 Reîmprospătează
 [hub retry now]
@@ -3556,8 +3576,6 @@ Camera lui %0
 Cameră
 [hub seats %0 %1]
 %0/%1 locuri
-[hub server %0]
-Serverul: %0
 [hub sign in browser]
 Deschide pagina de autentificare
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Nume afișat
 Șterge-mi contul
 [settings Enter an https:// address.]
 Introduceți o adresă https://.
-[settings Finish in your browser. It shows the code %0.]
-Finalizați în browser: tastați codul %0 când vi se cere.
 [settings Forget]
 Uită
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Revanșă
 Intră în revanșa lui %0
 [hub profile history]
 Profil și istoric
-[hub my maps]
-Hărțile mele
 [hub leaderboard %0]
 Clasament · %0
 [hub leaderboard empty]

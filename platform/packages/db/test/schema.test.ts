@@ -32,6 +32,7 @@ const typedColumns: ColumnLists = {
     'image',
     'updated_at',
     'skin_id',
+    'swarm_mesh',
   ],
   skin_purchases: [
     'id',
@@ -67,6 +68,7 @@ const typedColumns: ColumnLists = {
     'building_color',
     'manifest_sha256',
     'created_at',
+    'swarm_mesh',
   ],
   colony_skin_equipment: ['account_id', 'version_id', 'updated_at', 'building_color'],
   match_colony_skins: [
@@ -231,6 +233,7 @@ const typedColumns: ColumnLists = {
     'delivered_at',
     'code_confirmed_at',
     'code_failures',
+    'requesting_network_hash',
   ],
   web_sessions: [
     'id',
@@ -485,6 +488,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'allow_ai_opponent',
     'proposal_id',
+    'search_id',
   ],
   rating_history: [
     'match_id',
@@ -685,6 +689,9 @@ describe('migrations', () => {
         '0029_skin_drafts',
         '0030_skin_draft_source',
         '0031_skin_reports',
+        '0032_signin_same_network',
+        '0033_queue_searches',
+        '0034_skin_swarm_mesh',
       ]);
       expect(
         (
@@ -737,7 +744,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(9);
+      expect(upgraded).toHaveLength(12);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -747,6 +754,79 @@ describe('migrations', () => {
           .executeTakeFirstOrThrow(),
       ).toEqual({ display_name: 'Existing colony' });
       expect(await migrateToLatest(existing.db)).toEqual([]);
+    } finally {
+      await existing.drop();
+    }
+  });
+
+  it('keeps published skin versions on the classic swarm and keys versions by mesh', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      expect(
+        (await createMigrator(existing.db).migrateTo('0033_queue_searches')).error,
+      ).toBeUndefined();
+      const owner = await existing.db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Painter' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const skin = await existing.db
+        .insertInto('colony_skins')
+        .values({
+          owner_account_id: owner.id,
+          kind: 'custom',
+          name: 'Old',
+          entitlement: 'skins:designer',
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      await existing.db
+        .insertInto('blobs')
+        .values({
+          sha256: 'a'.repeat(64),
+          size: 1,
+          storage_key: 'skins/a',
+          content_type: 'image/png',
+          visibility: 'private',
+          owner_account_id: owner.id,
+        })
+        .execute();
+      const paint = {
+        skin_id: skin.id,
+        texture_sha256: 'a'.repeat(64),
+        layout: 'colony-v1' as const,
+        building_color: 7,
+      };
+      const published = await existing.db
+        .insertInto('colony_skin_versions')
+        .values({ ...paint, manifest_sha256: 'b'.repeat(64) })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      expect(await migrateToLatest(existing.db)).toHaveLength(1);
+      expect(
+        await existing.db
+          .selectFrom('colony_skin_versions')
+          .select('swarm_mesh')
+          .where('id', '=', published.id)
+          .executeTakeFirstOrThrow(),
+      ).toEqual({ swarm_mesh: 'classic' });
+      // The same paint may be published again for another mesh, but only once per mesh.
+      await existing.db
+        .insertInto('colony_skin_versions')
+        .values({ ...paint, swarm_mesh: 'crown', manifest_sha256: 'c'.repeat(64) })
+        .execute();
+      await expect(
+        existing.db
+          .insertInto('colony_skin_versions')
+          .values({ ...paint, swarm_mesh: 'crown', manifest_sha256: 'd'.repeat(64) })
+          .execute(),
+      ).rejects.toThrow(/colony_skin_versions_content_key/);
+      await expect(
+        existing.db
+          .insertInto('colony_skin_versions')
+          .values({ ...paint, swarm_mesh: 'Crown!', manifest_sha256: 'e'.repeat(64) })
+          .execute(),
+      ).rejects.toThrow(/check constraint/);
     } finally {
       await existing.drop();
     }
@@ -1043,15 +1123,19 @@ describe('data model', () => {
     await expect(
       db.insertInto('rating_entities').values({ kind: 'ai', ai_id: 'numbi' }).execute(),
     ).rejects.toThrow();
-    // One waiting queue ticket per account.
+    // One active ticket per account in each queue (a search may enter several queues).
     await db
       .insertInto('queue_tickets')
       .values({ queue_id: 'q', account_id: account.id, sim_version: SIM })
       .execute();
+    await db
+      .insertInto('queue_tickets')
+      .values({ queue_id: 'q2', account_id: account.id, sim_version: SIM })
+      .execute();
     await expect(
       db
         .insertInto('queue_tickets')
-        .values({ queue_id: 'q2', account_id: account.id, sim_version: SIM })
+        .values({ queue_id: 'q', account_id: account.id, sim_version: SIM })
         .execute(),
     ).rejects.toThrow(/queue_tickets_one_active_idx/);
     // A queue match must name its queue.

@@ -84,7 +84,10 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
     },
   );
 
-  const stats = cachedInstanceStats(services.db);
+  const stats = cachedInstanceStats(
+    services.db,
+    services.config.instance.queues.map((q) => q.id),
+  );
   app.get('/api/v1/stats', async (_request, reply): Promise<InstanceStats> => {
     reply.header('cache-control', 'public, max-age=30');
     return stats();

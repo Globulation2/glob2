@@ -99,8 +99,14 @@ still grants transient activation; a browser that refuses the new tab anyway
 (Safari counts only the DOM event itself) gets a real link at the bottom of
 the page (`glob2OpenUrl` in `browser/shell.html`), which the player taps.
 `glob2Diagnostics.snapshot().opened` lists what opened and how
-(`browser/tests/online-links.spec.js`). The hub also keeps an "Open page
-again" button calling `openSignInPage()`. After a reconnect the client
+(`browser/tests/online-links.spec.js`). The sign-in page's address only
+arrives with the server's reply, after the click has run out, so the hub and
+Settings call `prepareUrlWindow()` during the click. In the browser that opens
+an empty tab (`glob2PrepareWindow`), and the next `openUrl` loads the page there;
+an unused empty tab closes after 30 seconds. On native hosts it does nothing. While waiting, the hub
+says the game will continue by itself and shows the code only for comparing, with a Copy
+button. It keeps an "Open page again" button calling `openSignInPage()`, which
+becomes the main button when the browser did not open. After a reconnect the client
 sends `auth.handoff.resume`, so a phone that lost its socket while the browser
 was in front still receives `auth.handoff.completed`. Without a result the
 attempt fails locally as `expired` one minute after its expiry.
@@ -122,7 +128,9 @@ also offer **Share online…**.
 | Share a map | `src/online/screens/OnlineMapsScreen.cpp` (`MapShareScreen`) | Title, description and visibility (Unlisted by default), then the upload and the server's validation and preview. |
 
 **Search state.** `Online::QuickMatch` (`src/online/QuickMatch.h`) holds the one
-search: it probes the relays (`RelayProbe`), sends `queue.join`, follows
+search, in one queue or (on `'queue.multi'` instances, with the hub's **Also
+search …** toggles) in several, keeping each queue's ticket and status and showing
+the queue whose match prompt opens: it probes the relays (`RelayProbe`), sends `queue.join`, follows
 `queue.status`, answers `queue.proposal` with `queue.respond`, toggles backfill
 with `queue.update` and leaves with `queue.leave`. It lives in the online
 services and is pumped by `Online::pump()`, so a search continues while the
@@ -227,7 +235,7 @@ mock-ups:
 
 | Screen | Code | What it does |
 | --- | --- | --- |
-| Online hub | `src/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact), account chip with browser sign-in and the confirmation code, quick-match cards from `InstanceInfo.queues`, Create room, Join by code, public rooms (`GET /api/v1/rooms`), recent matches (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries seen since merged over them; hidden when empty), Profile & history and Maps (the profile and map-catalog screens), a leaderboard teaser (top five of the first rated queue, `GET /api/v1/leaderboards/{queue}`), offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. |
+| Online hub | `src/online/screens/OnlineHubScreen.*` | "Play online" on the main menu. Starts the client (a guest is created on first contact) and shows the account chip with browser sign-in and the confirmation code, offline and update-required banners, and invite links (`takePendingJoin`) with the trust prompt for other instances. A sidebar (tabs on phones: Play, Rooms, Ranks) picks a section. **Play**: one Quick match card (queue choice from `InstanceInfo.queues`, the queue's map pool drawn by `MapPictures`, one primary Find match), players online and searching that queue (`GET /api/v1/stats`), Play with friends (Create room, Join by code, and Show in Open rooms: new rooms are invite-only unless it is on) and the last match (`GET /api/v1/players/{id}/matches`, with `match.updated` summaries merged over them; its map's picture when the map is cached). **Rooms**: public rooms (`GET /api/v1/rooms`, with the catalog map's preview when the server has one) with filters, and an empty state offering Create room (a public room) or Quick match. **Leaderboard**: where the player stands (`PlayerProfile.ratings[].rank`), then the top 50 of the first rated queue (`GET /api/v1/leaderboards/{queue}`, fetched only while shown) with the player's row highlighted. Maps, Profile & history and Online settings open their own screens. |
 | Room | `src/RoomScreen.*` over `RoomBackend` | One screen for online rooms (`Online::PlatformRoom`) and LAN rooms (`Lan::LanRoom`): Map / Players & Teams / Game Rules tabs, seats with controller, team and remove, invite (or how to join on the network), chat and ready. Phones get a Seats / Map / Rules / Chat bar and Start or Ready in the thumb corner, mirrored by the thumb-side setting. The host edits map and rules with the custom-game screen in room mode (`CustomGameScreen::useForRoom`); the server generates a random map from the generator descriptor (`src/online/RoomSetup.*`), and a premade or own map is uploaded and played as `{kind: "upload"}`. Members without a seat are listed under the seats, and Ready says why it is unavailable. |
 | Starting match | `src/MatchStartScreen.*`, `src/online/OnlineMatch.*` | From `match.start` to the first tick: seat confirmed, map download by hash, engine load, relay connection (`Online::RelayTransport`), waiting for the other players' presence. A relay that refuses the match as new (Reject 5) is reported with `match.reconnect {relayUnavailable: true}` and the new assignment restarts the flow. |
 | In-game connection HUD | `src/net/ConnectionOverlay.*` | Every turn game (online and LAN) shows a permanent panel with each player's state and latency where the "waiting for players" notice was, details on click or tap, one-line notices when a player drops or returns, and centre cards for this client's reconnect (with the grace time and Leave match), catch-up progress (with Leave match, and "can't keep up" once the gap has not shrunk for 15 s) and desync rejoin. The reconnect card also shows when the socket still looks open but nothing has arrived from the relay for 1.5 s, or the horizon has not moved for 1.5 s (`TurnSession::linkStalled()`); after 5 s of silence the session drops the link and reconnects. After a gap or a reconnect the delay estimate starts over: in-flight pings, jitter samples, the buffer target and seat round trips are forgotten, and the backlog's arrival spread is ignored for a second. A player who left stays in the panel as Left; the message list starts below the panel. In every turn game the in-game menu has no Load or Save, and Leave match asks for confirmation, saying what leaving costs. Presentation only: it reads the snapshot `TurnMatchPresenter` (`src/gui/TurnMatchPresenter.*`) builds from the read-only `TurnSession`. Rows show each player's Ping (the relay's round trip to them, `SeatLatency`) or, once they fall a second behind, how far Behind they are (`Presence.lagTicks`); the footer shows your own Delay. Names, units, words and thresholds are in [connection quality](connection-quality.md). |

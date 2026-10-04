@@ -88,15 +88,27 @@ phones and the web client, and needs no loopback server in the game.
    naming a provider, and a `mode`). The platform records a `signin_attempts`
    row and answers with `attemptId`, a `signInUrl` (`<origin>/signin?attempt=…`),
    a 6-character `confirmationCode`, an expiry (`auth.handoffMinutes`, default
-   10) and a `resumeToken`.
-2. The client opens the system browser at `signInUrl` and shows the code.
+   10) and a `resumeToken`. The attempt keeps a hash of the socket's network
+   (`requesting_network_hash`: the IPv4 address, or the IPv6 /64 prefix),
+   cleared when the attempt finishes.
+2. The client opens the system browser at `signInUrl`. It shows the code only
+   as something to compare, with a Copy button.
 3. `/signin` (server-rendered by the API, no scripts, strict CSP, no cross-site Referer)
-   first asks the player to **type the code the game shows** (`POST
-   /signin/confirm`; case, spaces and dashes do not matter) and offers nothing
-   else until they do. The page never shows the code itself. The right code binds
-   the attempt to that browser (a random cookie whose hash is stored on the
-   attempt; other browsers are then refused with `409`); five wrong codes fail the
-   attempt (`denied`). Then the page offers the provider buttons and, if enabled, the local password forms
+   binds the attempt to the first browser that opens it: a random cookie whose
+   hash is stored on the attempt; other browsers are then refused with `409`.
+   - A browser on the game's network is bound at once, with nothing to type or
+     click, and redirected (`303`) straight to the provider the game picked
+     (`/auth/<provider>/start`), or to the page listing every way to sign in.
+   - A browser on another network gets one confirmation page instead. It shows
+     the code and the kind of device, and has one **Yes, continue** button
+     (`POST /signin/confirm` with the code in a hidden field). Five wrong
+     codes still fail the attempt (`denied`), so a code cannot be guessed.
+
+   Opening the link again later shows the choices rather than redirecting, so
+   backing out of a provider is not a loop. The choice page offers
+   **Continue as <name>** when the browser already has a web session and the
+   attempt is a `signin` (`POST /signin/continue`), the provider buttons and,
+   if enabled, the local password forms
    (separate Sign in and Create account forms, `current-password` and
    `new-password`). A problem with a local form (short password, invalid or taken
    username, unknown username, wrong password) re-renders this page with the
@@ -128,11 +140,15 @@ if the attempt already finished. At most three attempts may be pending per
 socket. The worker's maintenance marks attempts past their expiry and deletes
 them a week later.
 
-Typing the code is the defence against a link sent by someone else (RFC 8628
-§5.4): whoever completes the sign-in signs the game that started it in, so an
-attacker could start an attempt and send its link to a victim. With only the
-link the victim's browser offers no way to sign in; the attacker would also have
-to talk them into typing a code, which the page warns against. Starting attempts
+Whoever completes the sign-in signs in the game that started it, so an attacker
+could start an attempt and send its link to a victim (RFC 8628 §5.4). This
+is a game, so the trade-off favours fewer steps over that risk. A browser on
+the game's own network is almost always the player's own: the same computer,
+the web client, a phone signing in on itself, or the same home network. That
+case needs no confirmation at all. A link opened anywhere else shows the code
+and the kind of device and asks for one click, with a warning not to continue
+from a link someone sent. Comparing the code by eye is all the protection left
+there: there is no typing step. Starting attempts
 needs no account, so they are limited per address
 (`limits.signinAttemptsPerHour`, 30) and in total
 (`limits.signinAttemptsPerMinuteTotal`, 300), on every replica.
@@ -251,7 +267,7 @@ snapshot (`apps/api/src/auth/accountExport.ts`):
 | `matches` | every match played: the match's origin, status, result, times, map hash, and the account's seat, team, name, outcome, disconnects, rating change and connection-quality summary, with the match page URL |
 | `rooms` | rooms hosted (with their settings), memberships (with server-region round trips), seats, own chat messages, kicks |
 | `matchmaking` | queue tickets (with region round trips), cooldowns, quick-match proposals and responses |
-| `skins` | published paints and immutable version metadata, equipped version and building color, private draft PNG as base64, match appearances, purchases and payment-event references, reports filed |
+| `skins` | published paints and immutable version metadata (including the swarm mesh), equipped version and building color, private draft (name, building color, swarm mesh) with its PNG as base64, match appearances, purchases and payment-event references, reports filed |
 | `maps` | catalog maps with their versions, likes, reports filed, uploads, and download days |
 
 Rows keep the database's columns in camelCase and leave out nulls. Left out on

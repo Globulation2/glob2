@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
-import { putContent, sha256Hex } from '@glob2/core';
+import { putContent } from '@glob2/core';
 import type { ApiServices } from '../services.ts';
+import { skinManifestSha256, type SkinContent } from './manifest.ts';
 
 /** Stable IDs and immutable PNG bytes: never overwrite a published preset. */
 export const PRESETS = [
@@ -21,11 +22,12 @@ export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'b
   for (const preset of PRESETS) {
     const image = await readFile(new URL(`../../assets/skins/${preset.sku}.png`, import.meta.url));
     const stored = await putContent(blobs, image);
-    const content = {
+    const content: SkinContent = {
       skinId: preset.skinId,
       textureSha256: stored.sha256,
       layout: 'colony-v1',
       buildingColor: 0x2d73b4,
+      swarmMesh: 'classic',
     };
     await db.transaction().execute(async (trx) => {
       await trx
@@ -57,7 +59,8 @@ export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'b
           texture_sha256: stored.sha256,
           layout: 'colony-v1',
           building_color: content.buildingColor,
-          manifest_sha256: sha256Hex(Buffer.from(JSON.stringify(content))),
+          swarm_mesh: content.swarmMesh,
+          manifest_sha256: skinManifestSha256(content),
         })
         .onConflict((oc) => oc.column('id').doNothing())
         .execute();

@@ -5,7 +5,7 @@ inside a large fortified agricultural heartland. The other colonies occupy small
 fortified towns outside its perimeter. More opponents make the siege harder; the
 map does not compensate with extra starting units or finished economic buildings.
 
-Use the existing **You vs all** team preset with the human in colony zero for the
+Choose **You vs all** under Teams, with the human in colony zero, for the
 intended siege, or set alliances manually. The generator does not set alliances,
 change victory conditions, alter AI, or change any simulation rules. In a free-for-all
 the same terrain works, but the outside colonies can fight each other.

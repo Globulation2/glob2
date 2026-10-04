@@ -581,24 +581,55 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 	{
 		CustomGameSetup draft;
 		room->setupDraft(draft);
-		const std::string format = draft.format;
-		rows.push_back(segments("preset", {tr("[FFA]"), tr("[2 vs 2]"), tr("[room humans vs ai]")},
-								format == "FFA" ? 0 : format == "2 vs 2" ? 1 : -1, [this](int preset) {
+		// Teams, as on the custom game screen: the shapes the seats can take, read back from
+		// their alliances. A room seats several people, so nobody is set against all.
+		const auto slots = room->slots();
+		std::vector<bool> ai(std::size_t(draft.capacity));
+		std::vector<int> alliances;
+		bool people = false, ais = false;
+		for (const auto &slot : slots)
+			if (slot.index >= 0 && slot.index < draft.capacity)
+			{
+				ai[std::size_t(slot.index)] = slot.ai;
+				(slot.ai ? ais : people) = true;
+			}
+		for (int i = 0; i < draft.capacity; ++i)
+			alliances.push_back(draft.colonies[std::size_t(i)].alliance);
+		const auto current = TeamLayout::classify(alliances, ai);
+		auto layouts = TeamLayout::offered(draft.capacity, false);
+		if (people && ais)
+			layouts.push_back(TeamLayout::Layout{TeamLayout::Layout::HumansVsAI, {}, -1});
+		std::vector<std::string> names;
+		for (const auto &layout : layouts)
+			names.push_back(TeamLayout::label(layout, false, {}));
+		const int selected = TeamLayout::indexOf(layouts, current, 0);
+		// A shape the list does not hold, set seat by seat, names itself.
+		std::string loneName;
+		for (const auto &slot : slots)
+			if (current.oneVsAll() && slot.index == current.lone)
+				loneName = slot.name;
+		ChoiceOptions options;
+		for (const auto &layout : layouts)
+			options.icons.push_back(uiIcon(layout.kind == TeamLayout::Layout::FreeForAll ? UIIcon::FreeForAll
+										   : layout.kind == TeamLayout::Layout::HumansVsAI ? UIIcon::Robot
+																						   : UIIcon::Users));
+		if (selected < 0)
+			options.compactLabel = TeamLayout::label(current, false, loneName);
+		rows.push_back(field(tr("[Teams]"), choice("teams", names, selected, [this, layouts](int i) {
 									CustomGameSetup s;
 									if (!room->setupDraft(s))
 										return;
-									if (preset == 2)
+									const auto &layout = layouts[std::size_t(i)];
+									if (layout.kind == TeamLayout::Layout::HumansVsAI)
 									{
 										// People on one side, AIs on the other.
-										const auto slots = room->slots();
-										for (const auto &slot : slots)
+										for (const auto &slot : room->slots())
 											s.colonies[std::size_t(slot.index)].alliance = slot.ai ? 1 : 0;
-										s.format = "Humans vs AI";
 									}
 									else
-										s.presetTeams(preset);
+										s.applyTeamLayout(layout);
 									room->applySetup(s);
-								}));
+								}, options), {"", 220}));
 	}
 	for (const auto &slot : room->slots())
 	{

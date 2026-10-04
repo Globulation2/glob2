@@ -3,7 +3,7 @@
 // errors on the file field), invite codes pasted as links, headings on every
 // page, keyboard-scrollable tables and the links between app and website.
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { inviteCodeFrom } from '../src/pages/Home.tsx';
 import { titleFromFileName } from '../src/pages/Maps.tsx';
@@ -195,9 +195,14 @@ describe('links between the app and the website', () => {
     const home = await import('../src/pages/Home.tsx');
     expect(home.WEBSITE_URL).toBeUndefined();
     expect(home.DOWNLOAD_URL).toBe('https://github.com/Globulation2/glob2/releases');
+    const { App: SiteApp } = await import('../src/App.tsx');
+    window.history.replaceState(null, '', '/leaderboard');
+    const { container } = render(<SiteApp />);
+    await screen.findByRole('navigation', { name: 'Main' });
+    expect(container.querySelector('.brand')?.getAttribute('href')).toBe('/');
   });
 
-  it('points Download and the site bar at the website when one is configured', async () => {
+  it('points Download and the logo at the website when one is configured', async () => {
     vi.resetModules();
     vi.stubEnv('VITE_WEBSITE_URL', 'https://glob2online.com/');
     const home = await import('../src/pages/Home.tsx');
@@ -205,15 +210,14 @@ describe('links between the app and the website', () => {
     expect(home.DOWNLOAD_URL).toBe('https://glob2online.com/downloads/');
     const { App: SiteApp } = await import('../src/App.tsx');
     window.history.replaceState(null, '', '/leaderboard');
-    render(<SiteApp />);
-    const bar = await screen.findByRole('navigation', { name: 'Globulation 2 Online website' });
-    const links = Array.from(bar.querySelectorAll('a')).map((a) => a.getAttribute('href'));
-    expect(links).toEqual([
-      'https://glob2online.com',
-      'https://glob2online.com/game/',
-      'https://glob2online.com/learn/',
-      'https://glob2online.com/news/',
-      'https://glob2online.com/downloads/',
-    ]);
+    const { container } = render(<SiteApp />);
+    const main = await screen.findByRole('navigation', { name: 'Main' });
+    const header = container.querySelector<HTMLElement>('.site-header');
+    const logo = within(header!).getByRole('link', { name: 'Globulation 2 Online website' });
+    expect(logo.classList.contains('brand')).toBe(true);
+    expect(logo.getAttribute('href')).toBe('https://glob2online.com');
+    // One header: no second strip of website links above it.
+    expect(screen.queryByRole('navigation', { name: 'Globulation 2 Online website' })).toBeNull();
+    expect(within(main).getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/');
   });
 });

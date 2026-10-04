@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Anda + AI
 Anda dan AI sama-sama memberi perintah. Memakai dua tempat pengendali.
 [You vs all]
 Anda lawan semua
+[%0 vs %1]
+%0 lawan %1
+[%0 vs all]
+%0 lawan semua
+[You will watch this match.]
+Anda akan menonton pertandingan ini.
 [Your maps]
 Peta Anda
 [colonies]
@@ -1398,8 +1414,6 @@ Pratinjau tidak tersedia. Ubah pengaturan atau mulai untuk mencoba lagi.
 Tampilan torus otomatis
 [toggle torus view]
 Beralih tampilan 2D / torus
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 lawan 2 memerlukan empat koloni terbuka. Anda lawan semua memerlukan pemain manusia.
 [Alliance]
 Aliansi
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Akun
 AI bergabung setelah %0
 [hub all rooms]
 Semua
-[hub browse maps]
-Jelajahi peta
 [hub cant reach %0]
 Tidak dapat menjangkau %0.
 [hub change server]
 Ganti server…
-[hub check code]
-Saat diminta kode, masukkan kode ini:
 [hub code placeholder]
 Kode atau tautan undangan
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Lanjutkan dengan %0
 Buat ruang
 [hub find match]
 Cari pertandingan
-[hub finish in browser]
-Selesaikan proses masuk di halaman yang terbuka di peramban Anda.
 [hub free seat]
 Kursi kosong
 [hub get update]
@@ -3508,10 +3516,6 @@ Kode gabung
 Gabung
 [hub leaderboard]
 Papan peringkat
-[hub linked %0]
-Akun tertaut · %0
-[hub linked accounts]
-Akun tertaut
 [hub maps]
 Peta
 [hub no queues]
@@ -3532,8 +3536,26 @@ Daring
 Buka halaman lagi
 [hub open rooms]
 Ruang terbuka
-[hub page opened at %0]
-%0 telah dibuka. Tidak perlu mengetik apa pun di permainan; Anda akan masuk secara otomatis.
+[hub play]
+Main
+[hub rooms]
+Ruang
+[hub ranks]
+Peringkat
+[hub play with friends]
+Main bersama teman
+[hub also search %0]
+Cari juga di %0
+[hub online now %0 %1]
+%0 pemain online · %1 mencari di antrean ini
+[hub show in open rooms]
+Tampilkan di Ruang terbuka
+[hub last match]
+Pertandingan terakhir
+[hub your rank %0 %1]
+Peringkat Anda #%0 · rating %1
+[hub not placed]
+Anda belum punya peringkat di sini. Mainkan pertandingan berperingkat untuk mendapatkannya.
 [hub queues unavailable]
 Pertandingan cepat muncul setelah server menjawab.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Pertandingan cepat belum tersedia di versi ini.
 Pertandingan cepat
 [hub ranked]
 Berperingkat
-[hub recent matches]
-Pertandingan terbaru
 [hub refresh]
 Segarkan
 [hub retry now]
@@ -3556,8 +3576,6 @@ Ruang %0
 Ruang
 [hub seats %0 %1]
 %0/%1 kursi
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Buka halaman masuk
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Nama tampilan
 Hapus akun saya
 [settings Enter an https:// address.]
 Masukkan alamat https://.
-[settings Finish in your browser. It shows the code %0.]
-Selesaikan di peramban Anda: ketik kode %0 saat diminta.
 [settings Forget]
 Lupakan
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Tanding ulang
 Gabung tanding ulang %0
 [hub profile history]
 Profil & riwayat
-[hub my maps]
-Peta saya
 [hub leaderboard %0]
 Papan peringkat · %0
 [hub leaderboard empty]

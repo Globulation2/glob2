@@ -45,8 +45,17 @@ limits when their homes, resources or routes need more room.
 - Each colony has a numbered color swatch, controller, AI/difficulty and team.
   You, AI, shared You + AI, and Closed are explicit choices. Shared control uses
   two of the twelve controller records; the UI explains unavailable combinations.
-- FFA, 2 vs 2 and You vs all presets preserve explicit alliance state. Reducing
-  map capacity retains hidden assignments for a later larger map.
+- The Teams choice above the colonies offers every shape the open colonies can
+  take: FFA, each two-team split from the most even down to one against all, and
+  each split into three or more equal teams (8 colonies: 4 vs 4, 3 vs 5, 2 vs 6,
+  one vs all, 2 vs 2 vs 2 vs 2). One against all, and the smaller side of an uneven
+  split, are built around your colony, or the first open colony when you only watch
+  ("Red vs all"), so testing one AI against the rest is a single choice. The
+  selection is always read back from the alliances, never stored: changing
+  controllers keeps the name, and teams set colony by colony read as their shape or
+  "Custom teams". Online rooms use the same choice and names, plus Humans vs AI and
+  without one against all. Reducing map capacity retains hidden assignments for a
+  later larger map.
 - AI profiles explain strategy, strengths and suggested counterplay. Cortex is
   Medium difficulty. All eight native AI implementations are retained.
 - All-AI matches launch live watching, with whole-map visibility, optional colony

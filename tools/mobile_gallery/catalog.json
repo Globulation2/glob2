@@ -830,6 +830,24 @@
       "group": "Online play"
     },
     {
+      "id": "online-hub-registered",
+      "title": "Online hub: registered player",
+      "description": "Play for a signed-in player: Ranked chosen, with Also search for the other queues on servers that take one search in several queues.",
+      "group": "Online play"
+    },
+    {
+      "id": "online-hub-rooms",
+      "title": "Online hub: rooms",
+      "description": "The Rooms section: open rooms with filters and Play with friends (create a room or join by code).",
+      "group": "Online play"
+    },
+    {
+      "id": "online-hub-leaderboard",
+      "title": "Online hub: leaderboard",
+      "description": "The Leaderboard section: where the player stands, then the ladder with the player's row highlighted.",
+      "group": "Online play"
+    },
+    {
       "id": "online-hub-signin",
       "title": "Online hub: browser sign-in",
       "description": "Waiting for the browser with the confirmation code.",

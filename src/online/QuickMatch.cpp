@@ -69,6 +69,8 @@ void QuickMatch::reset(Phase next)
 	probe.reset();
 	cancelAfterJoin = false;
 	ticketId.clear();
+	tickets.clear();
+	statuses.clear();
 	lastStatus.reset();
 	current.reset();
 	myAnswer.reset();
@@ -90,13 +92,21 @@ void QuickMatch::fail(const ApiError &error)
 
 void QuickMatch::search(const QueueInfo &queue, bool allowAiOpponent)
 {
+	search(std::vector<QueueInfo>{queue}, allowAiOpponent);
+}
+
+void QuickMatch::search(const std::vector<QueueInfo> &queues, bool allowAiOpponent)
+{
+	if (queues.empty())
+		return;
 	if (active())
 		cancel();
 	reset(Phase::Probing);
 	problem = {};
 	cooldown.reset();
 	lastNotice = Notice::None;
-	chosen = queue;
+	searched = queues;
+	chosen = queues.front();
 	allowAi = allowAiOpponent;
 	startedAt = env.wallClock();
 	probed.clear();
@@ -111,7 +121,15 @@ void QuickMatch::join()
 {
 	probe.reset();
 	state = Phase::Joining;
-	Json params = {{"queueId", chosen->id}, {"regions", regionsJson(probed)}, {"allowAiOpponent", allowAi}};
+	Json params = {{"queueId", searched.front().id}, {"regions", regionsJson(probed)}, {"allowAiOpponent", allowAi}};
+	// Further queues of the same search ('queue.multi' servers only; the hub checks).
+	if (searched.size() > 1)
+	{
+		Json more = Json::array();
+		for (std::size_t i = 1; i < searched.size(); ++i)
+			more.push_back(searched[i].id);
+		params["queueIds"] = std::move(more);
+	}
 	joinRequest = calls.request(
 		"queue.join", std::move(params),
 		[this](const PlatformClient::Response &response)
@@ -131,6 +149,10 @@ void QuickMatch::join()
 				return;
 			}
 			ticketId = ticket;
+			tickets[ticket] = searched.front().id;
+			for (const auto &entry : response.result.value("tickets", Json::array()))
+				if (entry.is_object() && entry.contains("ticketId") && entry["ticketId"].is_string())
+					tickets[entry["ticketId"].get<std::string>()] = entry.value("queueId", std::string());
 			if (auto joined = parseTimestamp(response.result.value("joinedAt", std::string())))
 				startedAt = *joined;
 			if (state == Phase::Joining)
@@ -229,8 +251,9 @@ void QuickMatch::handleEvent(const std::string &event, const Json &data)
 	if (event == "queue.status")
 	{
 		auto status = QueueStatus::fromJson(data);
-		if (!status || status->ticketId != ticketId || state != Phase::Searching)
+		if (!status || !ownsTicket(status->ticketId) || state != Phase::Searching)
 			return;
+		statuses[status->queueId] = *status;
 		lastStatus = status;
 		statusAt = env.wallClock();
 		startedAt = statusAt - status->waitedSeconds * 1000ll;
@@ -239,8 +262,10 @@ void QuickMatch::handleEvent(const std::string &event, const Json &data)
 	else if (event == "queue.proposal")
 	{
 		auto proposal = QueueProposal::fromJson(data);
-		if (!proposal || proposal->ticketId != ticketId)
+		if (!proposal || !ownsTicket(proposal->ticketId))
 			return;
+		// The queue that found the match is the one the prompt and the match are about.
+		showQueue(proposal->queueId);
 		if (state != Phase::Searching && state != Phase::Proposed && state != Phase::Starting)
 			return;
 		const bool fresh = !current || current->proposalId != proposal->proposalId;
@@ -263,7 +288,7 @@ void QuickMatch::handleEvent(const std::string &event, const Json &data)
 	else if (event == "queue.proposalEnded")
 	{
 		auto ended = ProposalEnded::fromJson(data);
-		if (!ended || ended->ticketId != ticketId)
+		if (!ended || !ownsTicket(ended->ticketId))
 			return;
 		if (ended->outcome == "requeued")
 		{
@@ -278,6 +303,9 @@ void QuickMatch::handleEvent(const std::string &event, const Json &data)
 					}
 			current.reset();
 			myAnswer.reset();
+			// Every queue of the search is searching again.
+			if (!searched.empty())
+				chosen = searched.front();
 			state = Phase::Searching;
 			changed();
 			return;
@@ -290,8 +318,10 @@ void QuickMatch::handleEvent(const std::string &event, const Json &data)
 	}
 	else if (event == "queue.matchFound")
 	{
-		if (data.value("ticketId", std::string()) != ticketId || ticketId.empty())
+		const std::string found = data.value("ticketId", std::string());
+		if (found.empty() || !ownsTicket(found))
 			return;
+		showQueue(tickets[found]);
 		matchId = data.value("matchId", std::string());
 		if (state == Phase::Proposed || state == Phase::Searching)
 			state = Phase::Starting;
@@ -345,9 +375,25 @@ int QuickMatch::waitedSeconds() const
 
 std::optional<std::int64_t> QuickMatch::backfillInMs() const
 {
-	if (!lastStatus || !lastStatus->aiBackfillAt || !allowAi)
+	if (!allowAi)
 		return {};
-	return std::max<std::int64_t>(0, *lastStatus->aiBackfillAt - env.wallClock());
+	// The soonest AI among the search's queues: whichever fills first ends the search.
+	std::optional<std::int64_t> soonest;
+	for (const auto &[queueId, status] : statuses)
+		if (status.aiBackfillAt && (!soonest || *status.aiBackfillAt < *soonest))
+			soonest = status.aiBackfillAt;
+	if (!soonest && lastStatus && lastStatus->aiBackfillAt)
+		soonest = lastStatus->aiBackfillAt;
+	if (!soonest)
+		return {};
+	return std::max<std::int64_t>(0, *soonest - env.wallClock());
+}
+
+void QuickMatch::showQueue(const std::string &queueId)
+{
+	for (const auto &queue : searched)
+		if (queue.id == queueId)
+			chosen = queue;
 }
 
 std::optional<std::int64_t> QuickMatch::acceptInMs() const
@@ -372,7 +418,10 @@ void QuickMatch::presentSearching(const QueueInfo &queue, const QueueStatus &sta
 {
 	reset(Phase::Searching);
 	chosen = queue;
+	searched = {queue};
 	ticketId = status.ticketId;
+	tickets[status.ticketId] = queue.id;
+	statuses[queue.id] = status;
 	allowAi = status.allowAiOpponent.value_or(true);
 	lastStatus = status;
 	startedAt = searchStartedAt;

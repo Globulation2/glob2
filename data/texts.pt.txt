@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Você + IA
 Você e a IA dão ordens. Ocupa duas vagas de jogador.
 [You vs all]
 Você contra todos
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra todos
+[You will watch this match.]
+Vai assistir a esta partida.
 [Your maps]
 Os seus mapas
 [colonies]
@@ -1398,8 +1414,6 @@ Pré-visualização indisponível. Altere as definições ou inicie para tentar 
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 requer quatro colónias abertas. Você contra todos requer um jogador humano.
 [Alliance]
 Aliança
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Conta
 A IA entra após %0
 [hub all rooms]
 Todas
-[hub browse maps]
-Explorar mapas
 [hub cant reach %0]
 Não é possível contactar %0.
 [hub change server]
 Mudar de servidor…
-[hub check code]
-Quando lhe for pedido um código, introduza este:
 [hub code placeholder]
 Código ou ligação de convite
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Continuar com %0
 Criar sala
 [hub find match]
 Procurar partida
-[hub finish in browser]
-Termine o início de sessão na página que se abriu no navegador.
 [hub free seat]
 Lugar livre
 [hub get update]
@@ -3508,10 +3516,6 @@ Código de entrada
 Entrar
 [hub leaderboard]
 Classificação
-[hub linked %0]
-Contas associadas · %0
-[hub linked accounts]
-Contas associadas
 [hub maps]
 Mapas
 [hub no queues]
@@ -3532,8 +3536,26 @@ Online
 Abrir a página novamente
 [hub open rooms]
 Salas abertas
-[hub page opened at %0]
-%0 foi aberto. Não precisa de escrever nada no jogo; a sessão é iniciada automaticamente.
+[hub play]
+Jogar
+[hub rooms]
+Salas
+[hub ranks]
+Ranking
+[hub play with friends]
+Jogar com amigos
+[hub also search %0]
+Procurar também em %0
+[hub online now %0 %1]
+%0 jogadores online · %1 a procurar nesta fila
+[hub show in open rooms]
+Mostrar em Salas abertas
+[hub last match]
+Última partida
+[hub your rank %0 %1]
+Está em n.º %0 · classificação %1
+[hub not placed]
+Ainda não tem posição aqui. Jogue partidas classificadas para ser classificado.
 [hub queues unavailable]
 A partida rápida aparece quando o servidor responder.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ A partida rápida ainda não está disponível nesta versão.
 Partida rápida
 [hub ranked]
 Competitiva
-[hub recent matches]
-Partidas recentes
 [hub refresh]
 Atualizar
 [hub retry now]
@@ -3556,8 +3576,6 @@ Sala de %0
 Sala
 [hub seats %0 %1]
 %0/%1 lugares
-[hub server %0]
-Servidor: %0
 [hub sign in browser]
 Abrir a página de início de sessão
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Nome público
 Eliminar a minha conta
 [settings Enter an https:// address.]
 Introduza um endereço https://.
-[settings Finish in your browser. It shows the code %0.]
-Termine no navegador: introduza o código %0 quando for pedido.
 [settings Forget]
 Esquecer
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Desforra
 Entrar na desforra de %0
 [hub profile history]
 Perfil e histórico
-[hub my maps]
-Os meus mapas
 [hub leaderboard %0]
 Classificação · %0
 [hub leaderboard empty]

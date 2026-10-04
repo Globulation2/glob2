@@ -59,6 +59,7 @@ describe('colony skin equipment', () => {
         texture_sha256: hash,
         layout: 'colony-v1',
         building_color: 0xff8800,
+        swarm_mesh: 'crown',
         manifest_sha256: 'b'.repeat(64),
       })
       .returning('id')
@@ -142,6 +143,7 @@ describe('colony skin equipment', () => {
     expect(appearance.accountId).toBe(account.id);
     expect(appearance.buildingColor).toBe(0x112233);
     expect(appearance.version.buildingColor).toBe(0xff8800);
+    expect(appearance.version.swarmMesh).toBe('crown');
     const verified = keys.verify(appearance.assertion, {
       type: COLONY_SKIN_TYPE,
       audience: COLONY_SKIN_AUDIENCE,
@@ -150,7 +152,7 @@ describe('colony skin equipment', () => {
       matchId: match.id,
       team: 0,
       accountId: account.id,
-      version: { id: version.id },
+      version: { id: version.id, swarmMesh: 'crown' },
     });
     expect(() =>
       keys.verify(appearance.assertion, { type: 'glob2-match+jwt', audience: 'glob2-relay' }),
@@ -209,5 +211,80 @@ describe('colony skin equipment', () => {
         .where('account_id', '=', account.id)
         .execute(),
     ).toEqual([]);
+  });
+
+  it('leaves out a stored swarm mesh this release does not know', async () => {
+    const db = database.db;
+    const account = await db
+      .insertInto('accounts')
+      .values({ kind: 'registered', display_name: 'Future' })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const hash = 'c'.repeat(64);
+    await db
+      .insertInto('blobs')
+      .values({ sha256: hash, size: 100, content_type: 'image/png', storage_key: `k/${hash}` })
+      .execute();
+    const skin = await db
+      .insertInto('colony_skins')
+      .values({
+        kind: 'custom',
+        owner_account_id: account.id,
+        name: 'Newer shape',
+        entitlement: 'skins:designer',
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    // As written by a newer release, then read after a rollback.
+    const version = await db
+      .insertInto('colony_skin_versions')
+      .values({
+        skin_id: skin.id,
+        texture_sha256: hash,
+        layout: 'colony-v1',
+        building_color: 0x123456,
+        swarm_mesh: 'pyramid',
+        manifest_sha256: 'd'.repeat(64),
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    await db
+      .insertInto('entitlements')
+      .values({ account_id: account.id, entitlement: 'skins:designer', source: 'test' })
+      .execute();
+    await equipSkin(db, account.id, version.id);
+    const setup = JSON.parse(
+      readFileSync(
+        new URL(
+          '../../../packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json',
+          import.meta.url,
+        ),
+        'utf8',
+      ),
+    ) as MatchSetup;
+    setup.seats = [{ seat: 0, team: 0, kind: 'human', accountId: account.id, name: 'Future' }];
+    const match = await db
+      .insertInto('matches')
+      .values({
+        sim_version: simVersionKey(setup.simVersion),
+        origin: 'room',
+        setup: JSON.stringify(setup),
+        seed: setup.seed,
+        map_hash: setup.map.hash,
+      })
+      .returning('id')
+      .executeTakeFirstOrThrow();
+    const keys = SigningKeys.ephemeral();
+    // A cosmetic the API cannot sign must not block the match's appearances.
+    expect(await matchColonySkins(db, keys, 'https://play.test', match.id)).toEqual([]);
+    expect(
+      (
+        await db
+          .selectFrom('matches')
+          .select('skins_frozen_at')
+          .where('id', '=', match.id)
+          .executeTakeFirstOrThrow()
+      ).skins_frozen_at,
+    ).not.toBeNull();
   });
 });

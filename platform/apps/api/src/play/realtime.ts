@@ -422,26 +422,36 @@ export class PlayRealtime {
         const params = raw as RealtimeParams<'queue.join'>;
         const account = connection.requireAccount();
         const sim = this.requireSim(connection);
-        const configured = config.instance.queues.find((q) => q.id === params.queueId);
-        if (!configured) throw apiError('not_found', `No queue ${params.queueId}.`);
-        const queue = resolveQueue(configured);
-        const decision = await access.canQueue(await this.subject(account.id), {
-          queueId: queue.id,
-          rated: queue.rated,
-          simVersion: sim,
-        });
-        if (!decision.allowed) {
-          throw apiError(
-            'access_denied',
-            decision.reason,
-            decision.requiredEntitlement
-              ? { requiredEntitlement: decision.requiredEntitlement }
-              : undefined,
-          );
+        // One search may enter several queues (queueIds); each must exist and be allowed.
+        const ids = [params.queueId, ...(params.queueIds ?? [])];
+        const queues = [];
+        const subject = await this.subject(account.id);
+        for (const id of ids) {
+          const configured = config.instance.queues.find((q) => q.id === id);
+          if (!configured) throw apiError('not_found', `No queue ${id}.`);
+          const queue = resolveQueue(configured);
+          const decision = await access.canQueue(subject, {
+            queueId: queue.id,
+            rated: queue.rated,
+            simVersion: sim,
+          });
+          if (!decision.allowed) {
+            throw apiError(
+              'access_denied',
+              decision.reason,
+              decision.requiredEntitlement
+                ? { requiredEntitlement: decision.requiredEntitlement }
+                : undefined,
+            );
+          }
+          queues.push(queue);
         }
+        const [queue, ...alsoQueues] = queues;
+        if (!queue) throw apiError('bad_request', 'No queue.');
         const result = await joinQueue(this.db, {
           accountId: account.id,
           queue,
+          alsoQueues,
           simVersion: simVersionKey(sim),
           regions: params.regions,
           ...(params.allowAiOpponent === undefined
@@ -449,7 +459,12 @@ export class PlayRealtime {
             : { allowAiOpponent: params.allowAiOpponent }),
         });
         if (result.ok)
-          return { ticketId: result.ticketId, joinedAt: result.joinedAt.toISOString() };
+          return {
+            ticketId: result.ticketId,
+            joinedAt: result.joinedAt.toISOString(),
+            searchId: result.searchId,
+            tickets: result.tickets,
+          };
         switch (result.code) {
           case 'guest_not_allowed':
             throw apiError('forbidden', 'Rated queues are for registered accounts; sign in first.');

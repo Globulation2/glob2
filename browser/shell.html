@@ -540,6 +540,21 @@ Module.textBridge = (() => {
 // activation. A browser that refuses the new tab anyway (Safari counts only the
 // DOM event itself as the gesture) gets a real link here, which the player taps.
 // Returns 1 when a tab opened, 2 when the link is offered instead.
+//
+// glob2PrepareWindow opens an empty tab during a click whose page arrives later
+// (sign-in waits for the server to name the page); glob2OpenUrl then loads the
+// page there instead of asking for a new tab after the click's activation ran out.
+// An empty tab nobody used closes itself.
+Module.glob2PrepareWindow = () => {
+  let blank = null;
+  try { blank = window.open('about:blank', '_blank'); } catch (_) {}
+  if (!blank) return;
+  if (Module.glob2Pending && !Module.glob2Pending.closed) Module.glob2Pending.close();
+  Module.glob2Pending = blank;
+  setTimeout(() => {
+    if (Module.glob2Pending === blank) { Module.glob2Pending = null; blank.close(); }
+  }, 30000);
+};
 Module.glob2OpenUrl = (() => {
   const card = document.getElementById('open-link');
   const anchor = document.getElementById('open-link-anchor');
@@ -549,7 +564,14 @@ Module.glob2OpenUrl = (() => {
   Module.glob2Opened = [];
   return url => {
     let opened = null;
-    try { opened = window.open(url, '_blank'); } catch (_) {}
+    const pending = Module.glob2Pending;
+    Module.glob2Pending = null;
+    if (pending && !pending.closed) {
+      try { pending.location.href = url; opened = pending; } catch (_) {}
+    }
+    if (!opened) {
+      try { opened = window.open(url, '_blank'); } catch (_) {}
+    }
     if (opened) {
       try { opened.opener = null; } catch (_) {}
       hide();

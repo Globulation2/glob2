@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Tu + IA
 Tu i la IA doneu ordres. Ocupa dues places de jugador.
 [You vs all]
 Tu contra tothom
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra tothom
+[You will watch this match.]
+Miraràs aquesta partida.
 [Your maps]
 Els teus mapes
 [colonies]
@@ -1398,8 +1414,6 @@ Vista prèvia no disponible. Canvia la configuració o inicia el joc per tornar-
 Vista toroidal automàtica
 [toggle torus view]
 Alterna entre vista 2D i toroidal
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 necessita quatre colònies obertes. Tu contra tothom necessita un jugador humà.
 [Alliance]
 Aliança
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Compte
 La IA s'hi uneix d'aquí a %0
 [hub all rooms]
 Totes
-[hub browse maps]
-Explora mapes
 [hub cant reach %0]
 No es pot accedir a %0.
 [hub change server]
 Canvia de servidor…
-[hub check code]
-Quan et demani un codi, introdueix aquest:
 [hub code placeholder]
 Codi o enllaç d'invitació
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Continua amb %0
 Crea una sala
 [hub find match]
 Busca partida
-[hub finish in browser]
-Acaba d'iniciar la sessió a la pàgina que s'ha obert al navegador.
 [hub free seat]
 Plaça lliure
 [hub get update]
@@ -3508,10 +3516,6 @@ Codi per unir-se
 Uneix-t'hi
 [hub leaderboard]
 Classificació
-[hub linked %0]
-Comptes enllaçats · %0
-[hub linked accounts]
-Comptes enllaçats
 [hub maps]
 Mapes
 [hub no queues]
@@ -3532,8 +3536,26 @@ En línia
 Torna a obrir la pàgina
 [hub open rooms]
 Sales obertes
-[hub page opened at %0]
-S'ha obert %0. No cal escriure res al joc; la sessió s'inicia sola.
+[hub play]
+Juga
+[hub rooms]
+Sales
+[hub ranks]
+Rànquing
+[hub play with friends]
+Juga amb amics
+[hub also search %0]
+Cerca també a %0
+[hub online now %0 %1]
+%0 jugadors en línia · %1 buscant en aquesta cua
+[hub show in open rooms]
+Mostra a Sales obertes
+[hub last match]
+Darrera partida
+[hub your rank %0 %1]
+Ets el núm. %0 · puntuació %1
+[hub not placed]
+Encara no tens posició aquí. Juga partides classificatòries per obtenir-ne una.
 [hub queues unavailable]
 La partida ràpida apareixerà quan el servidor respongui.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ La partida ràpida encara no està disponible en aquesta versió.
 Partida ràpida
 [hub ranked]
 Classificatòria
-[hub recent matches]
-Partides recents
 [hub refresh]
 Actualitza
 [hub retry now]
@@ -3556,8 +3576,6 @@ Sala de %0
 Sala
 [hub seats %0 %1]
 %0/%1 places
-[hub server %0]
-Servidor: %0
 [hub sign in browser]
 Obre la pàgina d'inici de sessió
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Nom visible
 Suprimeix el meu compte
 [settings Enter an https:// address.]
 Introdueix una adreça https://.
-[settings Finish in your browser. It shows the code %0.]
-Acaba al navegador: escriu el codi %0 quan te'l demani.
 [settings Forget]
 Oblida
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Revenja
 Uneix-te a la revenja de %0
 [hub profile history]
 Perfil i historial
-[hub my maps]
-Els meus mapes
 [hub leaderboard %0]
 Classificació · %0
 [hub leaderboard empty]

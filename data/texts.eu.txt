@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Zu + AI
 Zuk eta AI-ak aginduak ematen dituzue. Bi kontrolatzaile-leku erabiltzen ditu.
 [You vs all]
 Zu denen aurka
+[%0 vs %1]
+%0 vs. %1
+[%0 vs all]
+%0 denen aurka
+[You will watch this match.]
+Partida hau ikusiko duzu.
 [Your maps]
 Zure mapak
 [colonies]
@@ -1398,8 +1414,6 @@ Aurrebista ez dago erabilgarri. Aldatu ezarpenak edo abiarazi jokoa berriro saia
 Toroide-ikuspegi automatikoa
 [toggle torus view]
 Aldatu 2D eta toroide-ikuspegien artean
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs. 2 aukerak lau kolonia ireki behar ditu. Zu denen aurka aukerak giza jokalari bat behar du.
 [Alliance]
 Aliantza
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Kontua
 AI %0 barru sartuko da
 [hub all rooms]
 Denak
-[hub browse maps]
-Arakatu mapak
 [hub cant reach %0]
 Ezin da %0 zerbitzarira iritsi.
 [hub change server]
 Aldatu zerbitzaria…
-[hub check code]
-Kodea eskatzen dizunean, sartu hau:
 [hub code placeholder]
 Kodea edo gonbidapen-esteka
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Jarraitu %0 erabiliz
 Sortu gela
 [hub find match]
 Bilatu partida
-[hub finish in browser]
-Amaitu saio-hasiera nabigatzailean ireki den orrian.
 [hub free seat]
 Leku librea
 [hub get update]
@@ -3508,10 +3516,6 @@ Sartzeko kodea
 Sartu
 [hub leaderboard]
 Sailkapena
-[hub linked %0]
-Lotutako kontuak · %0
-[hub linked accounts]
-Lotutako kontuak
 [hub maps]
 Mapak
 [hub no queues]
@@ -3532,8 +3536,26 @@ Sarean
 Ireki orria berriro
 [hub open rooms]
 Gela irekiak
-[hub page opened at %0]
-Ireki da: %0. Ez duzu ezer idatzi behar jokoan; saioa berez hasiko da.
+[hub play]
+Jokatu
+[hub rooms]
+Gelak
+[hub ranks]
+Sailkapena
+[hub play with friends]
+Jokatu lagunekin
+[hub also search %0]
+Bilatu %0 ilaran ere
+[hub online now %0 %1]
+%0 jokalari linean · %1 ilara honetan bilatzen
+[hub show in open rooms]
+Erakutsi gela irekietan
+[hub last match]
+Azken partida
+[hub your rank %0 %1]
+%0. postuan zaude · puntuazioa %1
+[hub not placed]
+Oraindik ez duzu postu bat hemen. Jokatu sailkatutako partidak postua lortzeko.
 [hub queues unavailable]
 Partida azkarra zerbitzariak erantzutean agertuko da.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Partida azkarra ez dago oraindik erabilgarri bertsio honetan.
 Partida azkarra
 [hub ranked]
 Sailkapenekoa
-[hub recent matches]
-Azken partidak
 [hub refresh]
 Freskatu
 [hub retry now]
@@ -3556,8 +3576,6 @@ Gela
 Gela
 [hub seats %0 %1]
 %0/%1 leku
-[hub server %0]
-Zerbitzaria: %0
 [hub sign in browser]
 Ireki saio-hasierako orria
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Bistaratzeko izena
 Ezabatu nire kontua
 [settings Enter an https:// address.]
 Sartu https:// helbide bat.
-[settings Finish in your browser. It shows the code %0.]
-Amaitu nabigatzailean: idatzi %0 kodea eskatzen dizunean.
 [settings Forget]
 Ahaztu
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Errebantxa
 Sartu %0(r)en errebantxan
 [hub profile history]
 Profila eta historia
-[hub my maps]
-Nire mapak
 [hub leaderboard %0]
 Sailkapena · %0
 [hub leaderboard empty]

@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Sinä + tekoäly
 Sinä ja tekoäly voitte antaa käskyjä. Vie kaksi pelaaja- tai tekoälypaikkaa.
 [You vs all]
 Sinä kaikkia vastaan
+[%0 vs %1]
+%0 vs. %1
+[%0 vs all]
+%0 kaikkia vastaan
+[You will watch this match.]
+Katselet tätä ottelua.
 [Your maps]
 Omat kartat
 [colonies]
@@ -1398,8 +1414,6 @@ Esikatselu ei ole käytettävissä. Muuta asetuksia tai yritä uudelleen aloitta
 Automaattinen torusnäkymä
 [toggle torus view]
 Vaihda 2D- ja torusnäkymän välillä
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs. 2 vaatii neljä avointa siirtokuntaa. Sinä kaikkia vastaan vaatii ihmispelaajan.
 [Alliance]
 Liitto
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Tili
 Tekoäly liittyy %0 kuluttua
 [hub all rooms]
 Kaikki
-[hub browse maps]
-Selaa karttoja
 [hub cant reach %0]
 Ei yhteyttä: %0.
 [hub change server]
 Vaihda palvelinta…
-[hub check code]
-Kun koodia kysytään, syötä tämä:
 [hub code placeholder]
 Koodi tai kutsulinkki
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Jatka: %0
 Luo huone
 [hub find match]
 Etsi ottelu
-[hub finish in browser]
-Viimeistele kirjautuminen selaimeen avautuneella sivulla.
 [hub free seat]
 Vapaa paikka
 [hub get update]
@@ -3508,10 +3516,6 @@ Liittymiskoodi
 Liity
 [hub leaderboard]
 Tulostaulu
-[hub linked %0]
-Linkitetyt tilit · %0
-[hub linked accounts]
-Linkitetyt tilit
 [hub maps]
 Kartat
 [hub no queues]
@@ -3532,8 +3536,26 @@ Verkkopeli
 Avaa sivu uudelleen
 [hub open rooms]
 Avoimet huoneet
-[hub page opened at %0]
-Avattu: %0. Peliin ei tarvitse kirjoittaa mitään; se kirjaa sinut sisään itse.
+[hub play]
+Pelaa
+[hub rooms]
+Huoneet
+[hub ranks]
+Sijoitus
+[hub play with friends]
+Pelaa ystävien kanssa
+[hub also search %0]
+Etsi myös jonosta %0
+[hub online now %0 %1]
+%0 pelaajaa paikalla · %1 etsii tästä jonosta
+[hub show in open rooms]
+Näytä avoimissa huoneissa
+[hub last match]
+Viimeisin ottelu
+[hub your rank %0 %1]
+Olet sijalla %0 · luokitus %1
+[hub not placed]
+Sinulla ei ole vielä sijoitusta täällä. Pelaa rankattuja otteluita saadaksesi sijoituksen.
 [hub queues unavailable]
 Pikaottelu tulee näkyviin, kun palvelin vastaa.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Pikaottelu ei ole vielä käytettävissä tässä versiossa.
 Pikaottelu
 [hub ranked]
 Luokiteltu
-[hub recent matches]
-Viimeisimmät ottelut
 [hub refresh]
 Päivitä
 [hub retry now]
@@ -3556,8 +3576,6 @@ Huone: %0
 Huone
 [hub seats %0 %1]
 %0/%1 paikkaa
-[hub server %0]
-Palvelin: %0
 [hub sign in browser]
 Avaa kirjautumissivu
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Näyttönimi
 Poista tilini
 [settings Enter an https:// address.]
 Syötä https://-osoite.
-[settings Finish in your browser. It shows the code %0.]
-Viimeistele selaimessa: syötä koodi %0, kun sitä kysytään.
 [settings Forget]
 Unohda
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Uusintaottelu
 Liity uusintaotteluun: %0
 [hub profile history]
 Profiili ja historia
-[hub my maps]
-Omat kartat
 [hub leaderboard %0]
 Tulostaulu · %0
 [hub leaderboard empty]

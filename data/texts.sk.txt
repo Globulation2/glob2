@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Vy + UI
 Vy aj UI môžete vydávať rozkazy. Zaberá dve miesta pre hráčov a UI.
 [You vs all]
 Vy proti všetkým
+[%0 vs %1]
+%0 proti %1
+[%0 vs all]
+%0 proti všetkým
+[You will watch this match.]
+Tento zápas budete sledovať.
 [Your maps]
 Vaše mapy
 [colonies]
@@ -1398,8 +1414,6 @@ Náhľad nie je k dispozícii. Zmeňte nastavenia alebo spustite hru a skúste t
 Automatické toroidné zobrazenie
 [toggle torus view]
 Prepnúť 2D / toroidné zobrazenie
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 proti 2 vyžaduje štyri otvorené kolónie. Vy proti všetkým vyžaduje ľudského hráča.
 [Alliance]
 Aliancia
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Vaša odozva %0
 UI sa pridá o %0
 [hub all rooms]
 Všetky
-[hub browse maps]
-Prehľadávať mapy
 [hub cant reach %0]
 Server %0 je nedostupný.
 [hub change server]
 Zmeniť server…
-[hub check code]
-Keď sa stránka spýta na kód, zadajte tento:
 [hub code placeholder]
 Kód alebo odkaz pozvánky
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Pokračovať cez %0
 Vytvoriť miestnosť
 [hub find match]
 Nájsť zápas
-[hub finish in browser]
-Dokončite prihlásenie na stránke, ktorá sa otvorila v prehliadači.
 [hub free seat]
 Voľné miesto
 [hub get update]
@@ -3508,10 +3516,6 @@ Kód na pripojenie
 Pripojiť sa
 [hub leaderboard]
 Rebríček
-[hub linked %0]
-Prepojené účty · %0
-[hub linked accounts]
-Prepojené účty
 [hub maps]
 Mapy
 [hub no queues]
@@ -3532,8 +3536,26 @@ Online
 Znova otvoriť stránku
 [hub open rooms]
 Otvorené miestnosti
-[hub page opened at %0]
-Otvorené: %0. V hre nemusíte nič písať; prihlási vás sama.
+[hub play]
+Hrať
+[hub rooms]
+Miestnosti
+[hub ranks]
+Poradie
+[hub play with friends]
+Hrať s priateľmi
+[hub also search %0]
+Hľadať aj v %0
+[hub online now %0 %1]
+%0 hráčov online · %1 hľadá v tomto rade
+[hub show in open rooms]
+Zobraziť v otvorených miestnostiach
+[hub last match]
+Posledný zápas
+[hub your rank %0 %1]
+Ste na %0. mieste · hodnotenie %1
+[hub not placed]
+Zatiaľ tu nemáte poradie. Hrajte hodnotené zápasy, aby ste sa zaradili.
 [hub queues unavailable]
 Rýchly zápas sa zobrazí, keď server odpovie.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Rýchly zápas v tejto verzii zatiaľ nie je dostupný.
 Rýchly zápas
 [hub ranked]
 Hodnotený
-[hub recent matches]
-Posledné zápasy
 [hub refresh]
 Obnoviť
 [hub retry now]
@@ -3556,8 +3576,6 @@ Miestnosť hráča %0
 Miestnosť
 [hub seats %0 %1]
 Miesta: %0/%1
-[hub server %0]
-Server %0
 [hub sign in browser]
 Otvoriť prihlasovaciu stránku
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Zobrazované meno
 Zrušiť môj účet
 [settings Enter an https:// address.]
 Zadajte adresu https://.
-[settings Finish in your browser. It shows the code %0.]
-Dokončite to v prehliadači: keď sa spýta, zadajte kód %0.
 [settings Forget]
 Zabudnúť
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Odveta
 Pripojiť sa k odvete hráča %0
 [hub profile history]
 Profil a história
-[hub my maps]
-Moje mapy
 [hub leaderboard %0]
 Rebríček · %0
 [hub leaderboard empty]

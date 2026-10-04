@@ -1,6 +1,8 @@
 /* Indexed geometry is bounded by decode before rendering or hit testing. */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useEffect, useRef, useState } from 'react';
+import type { SwarmMeshId } from '@glob2/protocol';
+import { swarmModel } from './swarmShapes.ts';
 
 // The same bounded GSK1 model data and orthographic projection as the native renderer.
 type Mesh = {
@@ -39,12 +41,22 @@ function decode(bytes: ArrayBuffer): Mesh {
     throw new Error('Invalid model geometry');
   return { count, frames, uv, indices: index, poses };
 }
+const models = {
+  worker: { label: 'Worker', actions: ['walk', 'swim', 'harvest'] },
+  warrior: { label: 'Warrior', actions: ['walk', 'swim', 'fight'] },
+  explorer: { label: 'Explorer', actions: ['fly'] },
+  swarm: { label: 'Swarm', actions: [] },
+} as const;
+type Model = keyof typeof models;
+
 export function MeshPreview({
   texture,
+  swarmMesh,
   onPaint,
   onStroke,
 }: {
   texture: HTMLCanvasElement | null;
+  swarmMesh: SwarmMeshId;
   onPaint: (u: number, v: number) => void;
   onStroke: () => void;
 }) {
@@ -56,10 +68,24 @@ export function MeshPreview({
     paint.current = onPaint;
     stroke.current = onStroke;
   });
-  const [model, setModel] = useState('worker-walk');
+  const [model, setModel] = useState<Model>('worker');
+  const [action, setAction] = useState('walk');
+  // Choosing a swarm shape shows it; the swarm entry always previews the chosen shape.
+  const [shownMesh, setShownMesh] = useState(swarmMesh);
+  if (shownMesh !== swarmMesh) {
+    setShownMesh(swarmMesh);
+    setModel('swarm');
+    setAction('');
+  }
+  const [phase, setPhase] = useState(0);
   const [direction, setDirection] = useState(0);
   const [animate, setAnimate] = useState(true);
   const [error, setError] = useState('');
+  const controls = useRef({ direction, animate, phase });
+  useEffect(() => {
+    controls.current = { direction, animate, phase };
+  }, [direction, animate, phase]);
+  const asset = model === 'swarm' ? swarmModel(swarmMesh) : `${model}-${action}`;
   useEffect(() => {
     if (!canvas.current || !texture) return;
     const target = canvas.current;
@@ -73,7 +99,7 @@ export function MeshPreview({
     const resources: (() => void)[] = [];
     async function start() {
       if (!gl) return;
-      const response = await fetch(`/skins/models/${model}.gsk`, { signal: abort.signal });
+      const response = await fetch(`/skins/models/${asset}.gsk`, { signal: abort.signal });
       if (!response.ok) throw new Error('Could not load the colony model.');
       const mesh = decode(await response.arrayBuffer());
       if (abort.signal.aborted) return;
@@ -175,7 +201,11 @@ export function MeshPreview({
         if (hit) paint.current(...hit);
       };
       const draw = (time: number) => {
-        frame = mesh.frames === 1 ? 0 : direction * 32 + (animate ? Math.floor(time / 80) % 32 : 0);
+        const { direction, animate, phase } = controls.current;
+        frame =
+          mesh.frames === 1 ? 0 : direction * 32 + (animate ? Math.floor(time / 80) % 32 : phase);
+        target.dataset['frame'] = String(frame);
+        target.dataset['model'] = asset;
         gl.bindBuffer(gl.ARRAY_BUFFER, poses);
         gl.bufferSubData(
           gl.ARRAY_BUFFER,
@@ -199,8 +229,10 @@ export function MeshPreview({
       cancelAnimationFrame(animation);
       resources.forEach((dispose) => dispose());
       pick.current = () => {};
+      delete target.dataset['frame'];
+      delete target.dataset['model'];
     };
-  }, [texture, model, direction, animate]);
+  }, [texture, asset]);
   return (
     <section
       aria-label="Live colony preview"
@@ -208,32 +240,77 @@ export function MeshPreview({
     >
       <label>
         Preview model{' '}
-        <select value={model} onChange={(e) => setModel(e.target.value)}>
-          {[
-            ['worker-walk', 'Worker'],
-            ['warrior-walk', 'Warrior'],
-            ['explorer-fly', 'Explorer'],
-            ['swarm', 'Swarm'],
-          ].map(([id, name]) => (
+        <select
+          aria-label="Preview model"
+          value={model}
+          onChange={(e) => {
+            const next = e.target.value as Model;
+            setModel(next);
+            setAction(models[next].actions[0] ?? '');
+            setPhase(0);
+          }}
+        >
+          {Object.entries(models).map(([id, item]) => (
             <option key={id} value={id}>
-              {name}
+              {item.label}
             </option>
           ))}
         </select>
       </label>
+      {models[model].actions.length > 0 && (
+        <label>
+          Action{' '}
+          <select
+            aria-label="Action"
+            value={action}
+            onChange={(e) => {
+              setAction(e.target.value);
+              setPhase(0);
+            }}
+          >
+            {models[model].actions.map((id) => (
+              <option key={id} value={id}>
+                {id[0]!.toUpperCase() + id.slice(1)}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <label>
         Direction{' '}
         <input
           type="range"
           min="0"
           max="7"
+          disabled={model === 'swarm'}
           value={direction}
           onChange={(e) => setDirection(Number(e.target.value))}
         />
       </label>
       <label>
-        <input type="checkbox" checked={animate} onChange={(e) => setAnimate(e.target.checked)} />{' '}
+        <input
+          type="checkbox"
+          disabled={model === 'swarm'}
+          checked={animate && model !== 'swarm'}
+          onChange={(e) => setAnimate(e.target.checked)}
+        />{' '}
         Animate
+      </label>
+      <label>
+        Frame{' '}
+        <input
+          type="range"
+          min="0"
+          max="31"
+          aria-label="Frame"
+          value={phase}
+          disabled={model === 'swarm'}
+          onChange={(e) => {
+            setAnimate(false);
+            setPhase(Number(e.target.value));
+          }}
+        />
+        {!animate && <output>{phase + 1} / 32</output>}
       </label>
       <canvas
         ref={canvas}

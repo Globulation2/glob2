@@ -102,6 +102,11 @@
           "mapTitle": {
             "type": "string",
             "maxLength": 128
+          },
+          "mapPreviewUrl": {
+            "type": "string",
+            "pattern": "^(https|wss|http|ws)://[^\\s]+$",
+            "maxLength": 2048
           }
         }
       }

@@ -2021,6 +2021,10 @@ export const fixtureCases: FixtureCase[] = [
       liveMatches: 3,
       matchesToday: 41,
       generatedAt: NOW,
+      queues: [
+        { id: 'ranked-1v1', searching: 2 },
+        { id: 'casual-1v1', searching: 0 },
+      ],
     },
   },
   {

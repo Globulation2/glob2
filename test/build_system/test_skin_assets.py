@@ -12,7 +12,9 @@ class ColonySkinAssetsTest(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, str(ROOT / 'tools/skins/test_export.py'),
              str(ROOT / 'data/skins/colony-v1')],
-            cwd=ROOT, text=True, capture_output=True, timeout=60,
+            # Every posed triangle now receives deformation checks; allow the
+            # complete asset set to finish on slower or concurrently loaded hosts.
+            cwd=ROOT, text=True, capture_output=True, timeout=180,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 

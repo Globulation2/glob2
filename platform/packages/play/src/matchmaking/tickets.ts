@@ -3,7 +3,8 @@
 // on the worker leader; both sides only move rows under conditions on their
 // current status, so they can interleave safely. AccessPolicy.canQueue and
 // the sim-version check stay with the API handler, before joinQueue.
-import { sql, type Kysely } from 'kysely';
+import { randomUUID } from 'node:crypto';
+import type { Kysely } from 'kysely';
 import type { ResolvedQueue } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import { accountRating } from '../ratings/entities.ts';
@@ -14,6 +15,13 @@ type Db = Kysely<Database>;
 export interface JoinQueueRequest {
   accountId: string;
   queue: ResolvedQueue;
+  /**
+   * Further queues of the same search (queue.join queueIds): one ticket in each,
+   * sharing a search id. The first ticket to reach a match prompt holds the others
+   * back (the matchmaker skips an account that is in a prompt); they close when its
+   * match starts and resume, keeping their place, when it falls through.
+   */
+  alsoQueues?: readonly ResolvedQueue[];
   /** simVersionKey() of the client. */
   simVersion: string;
   regions: readonly RegionRtt[];
@@ -22,66 +30,90 @@ export interface JoinQueueRequest {
 }
 
 export type JoinQueueResult =
-  | { ok: true; ticketId: string; joinedAt: Date }
+  | {
+      ok: true;
+      /** The ticket of `queue`. */
+      ticketId: string;
+      searchId: string;
+      tickets: { queueId: string; ticketId: string }[];
+      joinedAt: Date;
+    }
   | { ok: false; code: 'guest_not_allowed' | 'already_queued' | 'account_inactive' }
   | { ok: false; code: 'cooldown'; until: Date };
 
 /**
- * Adds a waiting ticket. Rated queues are for registered accounts only
- * (guests play rooms and casual queues). The ticket snapshots the account's
- * rating on the queue's ladder for grouping.
+ * Starts a search: a waiting ticket in `queue` and in each of `alsoQueues`, all or
+ * none. Rated queues are for registered accounts only (guests play rooms and casual
+ * queues). Each ticket snapshots the account's rating on its queue's ladder for
+ * grouping. An account has one search at a time: the account row is locked while
+ * checking, so two joins cannot both start one.
  */
 export async function joinQueue(db: Db, request: JoinQueueRequest): Promise<JoinQueueResult> {
   const now = request.now ?? new Date();
-  const account = await db
-    .selectFrom('accounts')
-    .select(['kind', 'status'])
-    .where('id', '=', request.accountId)
-    .executeTakeFirst();
-  if (!account || account.status !== 'active') return { ok: false, code: 'account_inactive' };
-  if (request.queue.rated && account.kind === 'guest') {
-    return { ok: false, code: 'guest_not_allowed' };
-  }
-  const cooldown = await db
-    .selectFrom('queue_cooldowns')
-    .select('until')
-    .where('account_id', '=', request.accountId)
-    .where('until', '>', now)
-    .executeTakeFirst();
-  if (cooldown) return { ok: false, code: 'cooldown', until: cooldown.until };
-  const rating = await accountRating(db, request.accountId, request.queue.id);
-  const inserted = await db
-    .insertInto('queue_tickets')
-    .values({
-      queue_id: request.queue.id,
-      account_id: request.accountId,
-      sim_version: request.simVersion,
-      region_rtts: JSON.stringify(request.regions),
-      rating_mu: rating.mu,
-      rating_sigma: rating.sigma,
-      allow_ai_opponent: request.allowAiOpponent ?? true,
-      created_at: now,
-      updated_at: now,
-    })
-    .onConflict((oc) =>
-      // Must repeat the partial index predicate literally for inference.
-      oc
-        .column('account_id')
-        .where(sql<boolean>`status IN ('waiting', 'proposed')`)
-        .doNothing(),
-    )
-    .returning(['id', 'created_at'])
-    .executeTakeFirst();
-  if (!inserted) return { ok: false, code: 'already_queued' };
-  return { ok: true, ticketId: inserted.id, joinedAt: inserted.created_at };
+  const queues = [request.queue, ...(request.alsoQueues ?? [])].filter(
+    (queue, index, all) => all.findIndex((q) => q.id === queue.id) === index,
+  );
+  return db.transaction().execute(async (trx): Promise<JoinQueueResult> => {
+    const account = await trx
+      .selectFrom('accounts')
+      .select(['kind', 'status'])
+      .where('id', '=', request.accountId)
+      .forUpdate()
+      .executeTakeFirst();
+    if (!account || account.status !== 'active') return { ok: false, code: 'account_inactive' };
+    if (queues.some((queue) => queue.rated) && account.kind === 'guest') {
+      return { ok: false, code: 'guest_not_allowed' };
+    }
+    const cooldown = await trx
+      .selectFrom('queue_cooldowns')
+      .select('until')
+      .where('account_id', '=', request.accountId)
+      .where('until', '>', now)
+      .executeTakeFirst();
+    if (cooldown) return { ok: false, code: 'cooldown', until: cooldown.until };
+    const active = await trx
+      .selectFrom('queue_tickets')
+      .select('id')
+      .where('account_id', '=', request.accountId)
+      .where('status', 'in', ['waiting', 'proposed'])
+      .executeTakeFirst();
+    if (active) return { ok: false, code: 'already_queued' };
+    const searchId = randomUUID();
+    const tickets: { queueId: string; ticketId: string }[] = [];
+    for (const queue of queues) {
+      const rating = await accountRating(trx, request.accountId, queue.id);
+      const inserted = await trx
+        .insertInto('queue_tickets')
+        .values({
+          queue_id: queue.id,
+          account_id: request.accountId,
+          search_id: searchId,
+          sim_version: request.simVersion,
+          region_rtts: JSON.stringify(request.regions),
+          rating_mu: rating.mu,
+          rating_sigma: rating.sigma,
+          allow_ai_opponent: request.allowAiOpponent ?? true,
+          created_at: now,
+          updated_at: now,
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      tickets.push({ queueId: queue.id, ticketId: inserted.id });
+    }
+    // `queue` is always first, so its ticket leads.
+    const [first] = tickets;
+    if (!first) throw new Error('a search enters at least one queue');
+    return { ok: true, ticketId: first.ticketId, searchId, tickets, joinedAt: now };
+  });
 }
 
 export type LeaveQueueResult = 'left' | 'declined' | 'starting' | 'not_found';
 
 /**
- * Leaves the queue. Leaving while in a proposal that waits for accepts counts
- * as declining it (the matchmaker applies the cooldown); once a proposal is
- * starting, the player can no longer leave through the queue.
+ * Leaves the search the ticket belongs to: every waiting ticket of it is cancelled.
+ * Leaving while in a proposal that waits for accepts counts as declining it (the
+ * matchmaker applies the cooldown); once a proposal is starting, the player can no
+ * longer leave through the queue, and the other tickets stay until it starts.
  */
 export async function leaveQueue(
   db: Db,
@@ -92,25 +124,35 @@ export async function leaveQueue(
   return db.transaction().execute(async (trx) => {
     const ticket = await trx
       .selectFrom('queue_tickets')
-      .select(['status', 'proposal_id'])
+      .select('search_id')
       .where('id', '=', ticketId)
       .where('account_id', '=', accountId)
-      .forUpdate()
       .executeTakeFirst();
     if (!ticket) return 'not_found';
-    if (ticket.status === 'waiting') {
+    const search = await trx
+      .selectFrom('queue_tickets')
+      .select(['id', 'status', 'proposal_id'])
+      .where('search_id', '=', ticket.search_id)
+      .where('account_id', '=', accountId)
+      .forUpdate()
+      .execute();
+    let result: LeaveQueueResult = 'not_found';
+    const proposed = search.find((t) => t.status === 'proposed' && t.proposal_id);
+    if (proposed?.proposal_id) {
+      const declined = await recordResponse(trx, accountId, proposed.proposal_id, false, now);
+      if (declined !== 'recorded' && declined !== 'already') return 'starting';
+      result = 'declined';
+    }
+    const waiting = search.filter((t) => t.status === 'waiting').map((t) => t.id);
+    if (waiting.length > 0) {
       await trx
         .updateTable('queue_tickets')
         .set({ status: 'cancelled', updated_at: now })
-        .where('id', '=', ticketId)
+        .where('id', 'in', waiting)
         .execute();
-      return 'left';
+      if (result === 'not_found') result = 'left';
     }
-    if (ticket.status === 'proposed' && ticket.proposal_id) {
-      const declined = await recordResponse(trx, accountId, ticket.proposal_id, false, now);
-      return declined === 'recorded' || declined === 'already' ? 'declined' : 'starting';
-    }
-    return 'not_found';
+    return result;
   });
 }
 
@@ -164,8 +206,8 @@ async function recordResponse(
 export type UpdateTicketResult = 'updated' | 'not_waiting' | 'not_found';
 
 /**
- * Changes "Allow an AI opponent" of a ticket that is still waiting (or in a
- * proposal), keeping its queue position.
+ * Changes "Allow an AI opponent" of a search that is still waiting (or in a
+ * proposal), keeping its queue positions.
  */
 export async function updateTicket(
   db: Db,
@@ -174,10 +216,17 @@ export async function updateTicket(
   allowAiOpponent: boolean,
   now: Date = new Date(),
 ): Promise<UpdateTicketResult> {
+  // The whole search: one toggle for every queue it entered.
   const updated = await db
     .updateTable('queue_tickets')
     .set({ allow_ai_opponent: allowAiOpponent, updated_at: now })
-    .where('id', '=', ticketId)
+    .where('search_id', '=', (eb) =>
+      eb
+        .selectFrom('queue_tickets as t')
+        .select('t.search_id')
+        .where('t.id', '=', ticketId)
+        .where('t.account_id', '=', accountId),
+    )
     .where('account_id', '=', accountId)
     .where('status', 'in', ['waiting', 'proposed'])
     .executeTakeFirst();

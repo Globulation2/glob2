@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Du + AI
 Både du och AI kan ge order. Tar två platser för spelare och AI.
 [You vs all]
 Du mot alla
+[%0 vs %1]
+%0 mot %1
+[%0 vs all]
+%0 mot alla
+[You will watch this match.]
+Du tittar på den här matchen.
 [Your maps]
 Dina kartor
 [colonies]
@@ -1398,8 +1414,6 @@ Förhandsvisning saknas. Ändra inställningarna eller starta för att försöka
 Automatisk torusvy
 [toggle torus view]
 Växla mellan 2D- och torusvy
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 mot 2 kräver fyra öppna kolonier. Du mot alla kräver en mänsklig spelare.
 [Alliance]
 Allians
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Konto
 AI ansluter efter %0
 [hub all rooms]
 Alla
-[hub browse maps]
-Bläddra bland kartor
 [hub cant reach %0]
 Kan inte nå %0.
 [hub change server]
 Byt server…
-[hub check code]
-När den ber om en kod anger du den här:
 [hub code placeholder]
 Kod eller inbjudningslänk
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Fortsätt med %0
 Skapa rum
 [hub find match]
 Hitta match
-[hub finish in browser]
-Slutför inloggningen på sidan som öppnades i webbläsaren.
 [hub free seat]
 Ledig plats
 [hub get update]
@@ -3508,10 +3516,6 @@ Kod för att gå med
 Gå med
 [hub leaderboard]
 Topplista
-[hub linked %0]
-Länkade konton · %0
-[hub linked accounts]
-Länkade konton
 [hub maps]
 Kartor
 [hub no queues]
@@ -3532,8 +3536,26 @@ Online
 Öppna sidan igen
 [hub open rooms]
 Öppna rum
-[hub page opened at %0]
-Öppnade %0. Du behöver inte skriva något i spelet; det loggar in dig av sig självt.
+[hub play]
+Spela
+[hub rooms]
+Rum
+[hub ranks]
+Rankning
+[hub play with friends]
+Spela med vänner
+[hub also search %0]
+Sök även i %0
+[hub online now %0 %1]
+%0 spelare online · %1 söker i den här kön
+[hub show in open rooms]
+Visa under Öppna rum
+[hub last match]
+Senaste matchen
+[hub your rank %0 %1]
+Du är nr %0 · rating %1
+[hub not placed]
+Du har ingen placering här än. Spela rankade matcher för att bli placerad.
 [hub queues unavailable]
 Snabbmatch visas när servern svarar.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Snabbmatch finns inte i den här versionen än.
 Snabbmatch
 [hub ranked]
 Rankad
-[hub recent matches]
-Senaste matcher
 [hub refresh]
 Uppdatera
 [hub retry now]
@@ -3556,8 +3576,6 @@ Rum
 Rum
 [hub seats %0 %1]
 %0/%1 platser
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Öppna inloggningssidan
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Visningsnamn
 Radera mitt konto
 [settings Enter an https:// address.]
 Ange en https://-adress.
-[settings Finish in your browser. It shows the code %0.]
-Slutför i webbläsaren: skriv koden %0 när den frågar.
 [settings Forget]
 Glöm
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Returmatch
 Gå med i %0s returmatch
 [hub profile history]
 Profil och historik
-[hub my maps]
-Mina kartor
 [hub leaderboard %0]
 Topplista · %0
 [hub leaderboard empty]

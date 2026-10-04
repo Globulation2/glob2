@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Vi + UI
 Vi in UI lahko izdajate ukaze. Zasede dve mesti za igralce in UI.
 [You vs all]
 Vi proti vsem
+[%0 vs %1]
+%0 proti %1
+[%0 vs all]
+%0 proti vsem
+[You will watch this match.]
+To tekmo boste gledali.
 [Your maps]
 Vaši zemljevidi
 [colonies]
@@ -1398,8 +1414,6 @@ Predogled ni na voljo. Prilagodite nastavitve ali za nov poskus začnite igro.
 Samodejni torusni pogled
 [toggle torus view]
 Preklopi med 2D in torusnim pogledom
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 proti 2 zahteva štiri odprte kolonije. Vi proti vsem zahteva človeškega igralca.
 [Alliance]
 Zavezništvo
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Račun
 UI se pridruži čez %0
 [hub all rooms]
 Vse
-[hub browse maps]
-Prebrskaj zemljevide
 [hub cant reach %0]
 %0 ni dosegljiv.
 [hub change server]
 Zamenjaj strežnik …
-[hub check code]
-Ko vas vpraša za kodo, vnesite to:
 [hub code placeholder]
 Koda ali povezava povabila
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Nadaljuj z %0
 Ustvari sobo
 [hub find match]
 Poišči tekmo
-[hub finish in browser]
-Prijavo dokončajte na strani, ki se je odprla v brskalniku.
 [hub free seat]
 Prosto mesto
 [hub get update]
@@ -3508,10 +3516,6 @@ Koda za pridružitev
 Pridruži se
 [hub leaderboard]
 Lestvica
-[hub linked %0]
-Povezani računi · %0
-[hub linked accounts]
-Povezani računi
 [hub maps]
 Zemljevidi
 [hub no queues]
@@ -3532,8 +3536,26 @@ Na spletu
 Znova odpri stran
 [hub open rooms]
 Odprte sobe
-[hub page opened at %0]
-Odprto: %0. V igri ni treba ničesar vnesti; prijavi vas samodejno.
+[hub play]
+Igraj
+[hub rooms]
+Sobe
+[hub ranks]
+Lestvica
+[hub play with friends]
+Igraj s prijatelji
+[hub also search %0]
+Išči tudi v %0
+[hub online now %0 %1]
+%0 igralcev na spletu · %1 jih išče v tej vrsti
+[hub show in open rooms]
+Prikaži med odprtimi sobami
+[hub last match]
+Zadnja tekma
+[hub your rank %0 %1]
+Si na %0. mestu · ocena %1
+[hub not placed]
+Tu še nimate uvrstitve. Igrajte rangirane tekme, da se uvrstite.
 [hub queues unavailable]
 Hitra tekma se prikaže, ko se strežnik odzove.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Hitra tekma v tej različici še ni na voljo.
 Hitra tekma
 [hub ranked]
 Rangirano
-[hub recent matches]
-Nedavne tekme
 [hub refresh]
 Osveži
 [hub retry now]
@@ -3556,8 +3576,6 @@ Soba: %0
 Soba
 [hub seats %0 %1]
 Mesta: %0/%1
-[hub server %0]
-Strežnik: %0
 [hub sign in browser]
 Odpri stran za prijavo
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Prikazno ime
 Izbriši moj račun
 [settings Enter an https:// address.]
 Vnesite naslov https://.
-[settings Finish in your browser. It shows the code %0.]
-Dokončajte v brskalniku: ko vas vpraša, vnesite kodo %0.
 [settings Forget]
 Pozabi
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Povratna tekma
 Pridruži se povratni tekmi (%0)
 [hub profile history]
 Profil in zgodovina
-[hub my maps]
-Moji zemljevidi
 [hub leaderboard %0]
 Lestvica · %0
 [hub leaderboard empty]

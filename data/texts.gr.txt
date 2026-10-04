@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Cortex
 Εσείς και η ΤΝ δίνετε εντολές. Καταλαμβάνει δύο θέσεις παικτών και ΤΝ.
 [You vs all]
 Εσείς εναντίον όλων
+[%0 vs %1]
+%0 έναντι %1
+[%0 vs all]
+%0 εναντίον όλων
+[You will watch this match.]
+Θα παρακολουθήσετε αυτόν τον αγώνα.
 [Your maps]
 Οι χάρτες σας
 [colonies]
@@ -1398,8 +1414,6 @@ Cortex
 Αυτόματη τοροειδής προβολή
 [toggle torus view]
 Εναλλαγή 2D / τοροειδούς προβολής
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-Το 2 έναντι 2 απαιτεί τέσσερις ανοιχτές αποικίες. Το Εσείς εναντίον όλων απαιτεί ανθρώπινο παίκτη.
 [Alliance]
 Συμμαχία
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ CPU %0%
 Η ΤΝ μπαίνει μετά από %0
 [hub all rooms]
 Όλες
-[hub browse maps]
-Περιήγηση χαρτών
 [hub cant reach %0]
 Αδύνατη η πρόσβαση στο %0.
 [hub change server]
 Αλλαγή διακομιστή…
-[hub check code]
-Όταν σας ζητηθεί κωδικός, εισαγάγετε αυτόν:
 [hub code placeholder]
 Κωδικός ή σύνδεσμος πρόσκλησης
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ CPU %0%
 Νέα αίθουσα
 [hub find match]
 Εύρεση αγώνα
-[hub finish in browser]
-Ολοκληρώστε τη σύνδεση στη σελίδα που άνοιξε στο πρόγραμμα περιήγησής σας.
 [hub free seat]
 Ελεύθερη θέση
 [hub get update]
@@ -3508,10 +3516,6 @@ CPU %0%
 Συμμετοχή
 [hub leaderboard]
 Κατάταξη
-[hub linked %0]
-Διασυνδεδεμένοι λογαριασμοί · %0
-[hub linked accounts]
-Διασυνδεδεμένοι λογαριασμοί
 [hub maps]
 Χάρτες
 [hub no queues]
@@ -3532,8 +3536,26 @@ CPU %0%
 Ανοίξτε ξανά τη σελίδα
 [hub open rooms]
 Ανοιχτές αίθουσες
-[hub page opened at %0]
-Άνοιξε το %0. Δεν χρειάζεται να πληκτρολογήσετε τίποτα στο παιχνίδι· η σύνδεση γίνεται αυτόματα.
+[hub play]
+Παιχνίδι
+[hub rooms]
+Δωμάτια
+[hub ranks]
+Κατάταξη
+[hub play with friends]
+Παίξε με φίλους
+[hub also search %0]
+Αναζήτηση και στο %0
+[hub online now %0 %1]
+%0 παίκτες συνδεδεμένοι · %1 ψάχνουν σε αυτή την ουρά
+[hub show in open rooms]
+Εμφάνιση στα ανοιχτά δωμάτια
+[hub last match]
+Τελευταίος αγώνας
+[hub your rank %0 %1]
+Είσαι #%0 · βαθμολογία %1
+[hub not placed]
+Δεν έχεις ακόμη κατάταξη εδώ. Παίξε αγώνες κατάταξης για να καταταγείς.
 [hub queues unavailable]
 Ο γρήγορος αγώνας εμφανίζεται όταν απαντήσει ο διακομιστής.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ CPU %0%
 Γρήγορος αγώνας
 [hub ranked]
 Βαθμολογούμενος
-[hub recent matches]
-Πρόσφατοι αγώνες
 [hub refresh]
 Ανανέωση
 [hub retry now]
@@ -3556,8 +3576,6 @@ CPU %0%
 Αίθουσα
 [hub seats %0 %1]
 %0/%1 θέσεις
-[hub server %0]
-Διακομιστής: %0
 [hub sign in browser]
 Άνοιγμα σελίδας σύνδεσης
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ CPU %0%
 Διαγραφή λογαριασμού
 [settings Enter an https:// address.]
 Εισαγάγετε μια διεύθυνση https://.
-[settings Finish in your browser. It shows the code %0.]
-Ολοκληρώστε στο πρόγραμμα περιήγησης: πληκτρολογήστε τον κωδικό %0 όταν σας ζητηθεί.
 [settings Forget]
 Διαγραφή
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ CPU %0%
 Συμμετοχή στη ρεβάνς του/της %0
 [hub profile history]
 Προφίλ και ιστορικό
-[hub my maps]
-Οι χάρτες μου
 [hub leaderboard %0]
 Κατάταξη · %0
 [hub leaderboard empty]

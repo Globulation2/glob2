@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Siz + Yapay zekâ
 Siz ve yapay zekâ birlikte emir verebilirsiniz. İki kontrolcü yeri kullanılır.
 [You vs all]
 Siz herkese karşı
+[%0 vs %1]
+%0 karşı %1
+[%0 vs all]
+%0 herkese karşı
+[You will watch this match.]
+Bu maçı izleyeceksiniz.
 [Your maps]
 Haritalarınız
 [colonies]
@@ -1398,8 +1414,6 @@ Harita oluşturulamadı. Ayarları değiştirin veya tekrar denemek için Başla
 Otomatik torus görünümü
 [toggle torus view]
 2B / torus görünümünü değiştir
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2’ye karşı 2 için dört açık koloni gerekir. Siz herkese karşı için bir insan oyuncu gerekir.
 [Alliance]
 İttifak
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Hesap
 YZ %0 sonra katılır
 [hub all rooms]
 Tümü
-[hub browse maps]
-Haritalara göz at
 [hub cant reach %0]
 Ulaşılamıyor: %0.
 [hub change server]
 Sunucuyu değiştir…
-[hub check code]
-Kod sorulduğunda şunu girin:
 [hub code placeholder]
 Kod veya davet bağlantısı
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Kod veya davet bağlantısı
 Oda oluştur
 [hub find match]
 Maç bul
-[hub finish in browser]
-Tarayıcınızda açılan sayfada oturum açmayı tamamlayın.
 [hub free seat]
 Boş yer
 [hub get update]
@@ -3508,10 +3516,6 @@ Katılma kodu
 Katıl
 [hub leaderboard]
 Sıralama
-[hub linked %0]
-Bağlı hesaplar · %0
-[hub linked accounts]
-Bağlı hesaplar
 [hub maps]
 Haritalar
 [hub no queues]
@@ -3532,8 +3536,26 @@ Bu sunucuda hızlı maç kuyruğu yok.
 Sayfayı yeniden aç
 [hub open rooms]
 Açık odalar
-[hub page opened at %0]
-Açıldı: %0. Oyunda bir şey yazmanıza gerek yok; oturumunuz kendiliğinden açılır.
+[hub play]
+Oyna
+[hub rooms]
+Odalar
+[hub ranks]
+Sıralama
+[hub play with friends]
+Arkadaşlarla oyna
+[hub also search %0]
+%0 kuyruğunda da ara
+[hub online now %0 %1]
+%0 oyuncu çevrimiçi · %1 bu kuyrukta arıyor
+[hub show in open rooms]
+Açık odalarda göster
+[hub last match]
+Son maç
+[hub your rank %0 %1]
+%0. sıradasınız · puan %1
+[hub not placed]
+Henüz burada bir sıralamanız yok. Sıralamaya girmek için dereceli maçlar oynayın.
 [hub queues unavailable]
 Hızlı maç, sunucu yanıt verdiğinde görünür.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Hızlı maç bu sürümde henüz yok.
 Hızlı maç
 [hub ranked]
 Dereceli
-[hub recent matches]
-Son maçlar
 [hub refresh]
 Yenile
 [hub retry now]
@@ -3556,8 +3576,6 @@ Oda: %0
 Oda
 [hub seats %0 %1]
 %0/%1 yer
-[hub server %0]
-Sunucu: %0
 [hub sign in browser]
 Oturum açma sayfasını aç
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Görünen ad
 Hesabımı sil
 [settings Enter an https:// address.]
 Bir https:// adresi girin.
-[settings Finish in your browser. It shows the code %0.]
-Tarayıcınızda tamamlayın; kod sorulduğunda %0 yazın.
 [settings Forget]
 Unut
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Rövanş
 Rövanşa katıl: %0
 [hub profile history]
 Profil ve geçmiş
-[hub my maps]
-Haritalarım
 [hub leaderboard %0]
 Sıralama · %0
 [hub leaderboard empty]

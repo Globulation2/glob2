@@ -282,6 +282,9 @@ struct MobileGallerySetup
 		// Online play (fixed models, no network): hub states, rooms, starting a match.
 		screenShot(stack, "online-hub", OnlineUIFixtures::hubFixture(stack));
 		screenShot(stack, "online-hub-searching", OnlineUIFixtures::hubSearching(stack));
+		screenShot(stack, "online-hub-registered", OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Play));
+		screenShot(stack, "online-hub-rooms", OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Rooms));
+		screenShot(stack, "online-hub-leaderboard", OnlineUIFixtures::hubSection(stack, OnlineHubScreen::Section::Leaderboard));
 		screenShot(stack, "online-hub-signin", OnlineUIFixtures::hubFixture(stack, [](OnlineHubScreen::Model &m) {
 					   m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
 					   m.confirmationCode = "KXQ742";

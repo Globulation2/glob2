@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -1340,6 +1350,12 @@ Vy + AI
 Vy i AI vydáváte rozkazy. Zabírá dvě místa pro hráče a AI.
 [You vs all]
 Vy proti všem
+[%0 vs %1]
+%0 na %1
+[%0 vs all]
+%0 proti všem
+[You will watch this match.]
+Tento zápas budete sledovat.
 [Your maps]
 Vaše mapy
 [colonies]
@@ -1398,8 +1414,6 @@ Náhled není k dispozici. Změňte nastavení nebo spusťte hru a zkuste to zno
 Automatický toroidní pohled
 [toggle torus view]
 Přepnout mezi 2D a toroidním pohledem
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 na 2 vyžaduje čtyři otevřené kolonie. Vy proti všem vyžaduje lidského hráče.
 [Alliance]
 Aliance
 [Choose a rule to change it.]
@@ -3472,14 +3486,10 @@ Vaše prodleva %0
 Počítač se přidá po %0
 [hub all rooms]
 Vše
-[hub browse maps]
-Procházet mapy
 [hub cant reach %0]
 Server %0 je nedostupný.
 [hub change server]
 Změnit server…
-[hub check code]
-Až bude vyžadován kód, zadejte tento:
 [hub code placeholder]
 Kód nebo odkaz pozvánky
 [hub connecting to %0]
@@ -3490,8 +3500,6 @@ Pokračovat přes %0
 Vytvořit místnost
 [hub find match]
 Najít zápas
-[hub finish in browser]
-Dokončete přihlášení na stránce, která se otevřela v prohlížeči.
 [hub free seat]
 Volné místo
 [hub get update]
@@ -3508,10 +3516,6 @@ Kód pro připojení
 Připojit
 [hub leaderboard]
 Žebříček
-[hub linked %0]
-Propojené účty · %0
-[hub linked accounts]
-Propojené účty
 [hub maps]
 Mapy
 [hub no queues]
@@ -3532,8 +3536,26 @@ Online hra
 Otevřít stránku znovu
 [hub open rooms]
 Otevřené místnosti
-[hub page opened at %0]
-Otevřeno: %0. Ve hře nic nezadávejte; přihlásí vás sama.
+[hub play]
+Hrát
+[hub rooms]
+Místnosti
+[hub ranks]
+Pořadí
+[hub play with friends]
+Hrát s přáteli
+[hub also search %0]
+Hledat také v %0
+[hub online now %0 %1]
+%0 hráčů online · %1 hledá v této frontě
+[hub show in open rooms]
+Zobrazit v otevřených místnostech
+[hub last match]
+Poslední zápas
+[hub your rank %0 %1]
+Jste na %0. místě · hodnocení %1
+[hub not placed]
+Zatím tu nemáte pořadí. Hrajte hodnocené zápasy, abyste se zařadili.
 [hub queues unavailable]
 Rychlý zápas se zobrazí, až server odpoví.
 [hub quick match unavailable]
@@ -3542,8 +3564,6 @@ Rychlý zápas v této verzi zatím není dostupný.
 Rychlý zápas
 [hub ranked]
 Hodnocené
-[hub recent matches]
-Nedávné zápasy
 [hub refresh]
 Obnovit
 [hub retry now]
@@ -3556,8 +3576,6 @@ Místnost hráče %0
 Místnost
 [hub seats %0 %1]
 Místa: %0/%1
-[hub server %0]
-Server: %0
 [hub sign in browser]
 Otevřít přihlašovací stránku
 [hub sign in conflict]
@@ -3862,8 +3880,6 @@ Zobrazované jméno
 Smazat můj účet
 [settings Enter an https:// address.]
 Zadejte adresu https://.
-[settings Finish in your browser. It shows the code %0.]
-Dokončete akci v prohlížeči: až o to požádá, zadejte kód %0.
 [settings Forget]
 Zapomenout
 [settings Guests keep a generated name; sign in to choose one.]
@@ -4394,8 +4410,6 @@ Odveta
 Připojit se k odvetě hráče %0
 [hub profile history]
 Profil a historie
-[hub my maps]
-Moje mapy
 [hub leaderboard %0]
 Žebříček · %0
 [hub leaderboard empty]

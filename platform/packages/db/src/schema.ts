@@ -89,6 +89,7 @@ export interface SigninAttemptsTable {
   delivered_at: NullableTimestamp;
   code_confirmed_at: NullableTimestamp;
   code_failures: Defaulted<number>;
+  requesting_network_hash: Nullable<string>;
 }
 
 export interface WebSessionsTable {
@@ -486,6 +487,8 @@ export interface QueueTicketsTable {
   updated_at: Timestamp;
   allow_ai_opponent: Defaulted<boolean>;
   proposal_id: Nullable<string>;
+  /** The search this ticket belongs to: tickets of one search enter different queues together. */
+  search_id: Generated<string>;
 }
 
 export type QueueTicketStatus =
@@ -663,6 +666,8 @@ export interface ColonySkinVersionsTable {
   texture_sha256: string;
   layout: 'colony-v1';
   building_color: number;
+  /** Validated against the protocol's SWARM_MESHES by the API. */
+  swarm_mesh: Defaulted<string>;
   manifest_sha256: string;
   created_at: Timestamp;
 }
@@ -712,6 +717,7 @@ export interface ColonySkinDraftsTable {
   revision: string;
   name: string;
   building_color: number;
+  swarm_mesh: Defaulted<string>;
   image: Buffer;
   updated_at: Timestamp;
 }

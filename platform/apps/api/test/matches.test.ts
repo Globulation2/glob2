@@ -1235,6 +1235,36 @@ describe('queue methods and NOTIFY forwarding', () => {
     expect(resolveQueue(queues[1]!).rated).toBe(true);
   });
 
+  it('joins several queues as one search (queue.multi) and leaves them together', async () => {
+    const info = await json(await fetch(`${a.url}/api/v1/instance`));
+    expect(info['features']).toContain('queue.multi');
+    const guest = await player(a);
+    const mixed = await guest.client.call('queue.join', {
+      queueId: 'casual-1v1',
+      queueIds: ['ranked-1v1'],
+      regions: [],
+    });
+    expect(mixed.error?.code).toBe('forbidden');
+    const both = await registeredPlayer(b, 'BothQueues');
+    players.push(both);
+    const joined = await both.client.ok('queue.join', {
+      queueId: 'ranked-1v1',
+      queueIds: ['casual-1v1'],
+      regions: [],
+    });
+    expect(check('RealtimeQueueJoinResult', joined).stage).toBe('ok');
+    const tickets = joined['tickets'] as { queueId: string; ticketId: string }[];
+    expect(tickets.map((t) => t.queueId)).toEqual(['ranked-1v1', 'casual-1v1']);
+    expect(tickets[0]!.ticketId).toBe(joined['ticketId']);
+    await both.client.ok('queue.leave', { ticketId: tickets[1]!.ticketId });
+    const statuses = await harness.database.db
+      .selectFrom('queue_tickets')
+      .select('status')
+      .where('search_id', '=', joined['searchId'] as string)
+      .execute();
+    expect(statuses.map((s) => s.status)).toEqual(['cancelled', 'cancelled']);
+  });
+
   it('describes queues and lists relay regions with probe URLs', async () => {
     const info = await json(await fetch(`${a.url}/api/v1/instance`));
     const listed = info['queues'] as Record<string, unknown>[];

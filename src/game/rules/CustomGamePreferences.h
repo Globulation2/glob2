@@ -83,7 +83,7 @@ struct CustomGamePreferences
 			<< ' ' << setup.buildingHpLevel << ' ' << setup.startingUnitLevel << ' '
 			<< setup.suddenDeathMinutes << '\n'
 			<< "probability " << setup.winProbabilityPermille << '\n'
-			<< "labels " << std::quoted(setup.format) << ' ' << std::quoted(setup.rulesetId) << '\n'
+			<< "labels " << std::quoted(std::string(setup.legacyFormat())) << ' ' << std::quoted(setup.rulesetId) << '\n'
 			<< "map " << std::quoted(setup.premadeMap) << '\n'
 			<< "libraries " << std::quoted(librarySelection[0]) << ' '
 			<< std::quoted(librarySelection[1]) << '\n'
@@ -165,9 +165,10 @@ struct CustomGamePreferences
 			const auto &choices = CustomGameSetup::winProbabilityChoices;
 			if (std::find(choices.begin(), choices.end(), s.winProbabilityPermille) == choices.end()) return false;
 		}
-		std::string ruleset;
-		if (!word("labels") || !(in >> std::quoted(s.format) >> std::quoted(ruleset))) return false;
-		if (s.format != "FFA" && s.format != "2 vs 2" && s.format != "You vs all" && s.format != "Custom teams") return false;
+		// The teams' format name is still written for older builds, which refuse a draft
+		// without one of theirs; this build reads the format from the saved alliances.
+		std::string format, ruleset;
+		if (!word("labels") || !(in >> std::quoted(format) >> std::quoted(ruleset))) return false;
 		s.rulesetId = rulesetIdFromLabel(version, ruleset);
 		if (!word("map") || !(in >> std::quoted(s.premadeMap)) || !word("libraries") ||
 			!(in >> std::quoted(draft.librarySelection[0]) >> std::quoted(draft.librarySelection[1])) ||
