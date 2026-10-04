@@ -503,6 +503,10 @@ def main():
         env.ParseConfig("pkg-config sdl3 --cflags")
     else:
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
+    if sdl_prefix and 'install' in COMMAND_LINE_TARGETS:
+        # sdl3.pc adds -Wl,-rpath,${libdir}; installed copies use only
+        # $ORIGIN/../lib/glob2, so drop the build prefix again.
+        env['RPATH'] = [path for path in env.get('RPATH', []) if str(path) != sdl_prefix + '/lib']
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
