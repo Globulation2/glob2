@@ -404,7 +404,7 @@ def main():
             # flag directly so the loader receives a literal $ORIGIN.
             env.Append(LINKFLAGS=[env.Literal("-Wl,-rpath,$ORIGIN/../lib/glob2")])
             runtime = env.Install(str(Path(env['BINDIR']).parent / 'lib/glob2'),
-                                  [path for path in Path(sdl_prefix, 'lib').glob('libSDL3*.so*')
+                                  [str(path) for path in Path(sdl_prefix, 'lib').glob('libSDL3*.so*')
                                    if not (identity.get('lean_images') and path.name.startswith('libSDL3_image'))])
             env.Alias('install', runtime)
             for license in Path(sdl_prefix, 'share/licenses').glob('SDL3*/LICENSE.txt'):

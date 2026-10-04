@@ -19,7 +19,8 @@ android {
         targetSdk toolchain.android.compile_api
         versionCode nativeBuild.version_code ?: 1
         versionName nativeBuild.version_name
-        ndk { abiFilters nativeBuild.arch }
+        // The Amazon APK packages both ARM ABIs; other builds package one.
+        ndk { abiFilters.addAll(nativeBuild.abis ?: [nativeBuild.arch]) }
         // App Link host of the official instance (scons/official_instance.py).
         manifestPlaceholders = [officialInstanceHost: nativeBuild.official_instance_host]
     }

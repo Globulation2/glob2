@@ -57,7 +57,7 @@ modules:
   - name: setuptools-build-tool
     buildsystem: simple
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --ignore-installed --prefix=/app .
     cleanup:
       - /lib/python*/site-packages/setuptools*
       - /lib/python*/site-packages/_distutils_hack
@@ -87,7 +87,7 @@ modules:
   - name: pillow-build-tool
     buildsystem: simple
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --ignore-installed --prefix=/app .
     cleanup:
       - /lib/python*/site-packages/PIL
       - /lib/python*/site-packages/pillow*
