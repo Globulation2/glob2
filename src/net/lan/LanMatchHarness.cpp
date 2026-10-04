@@ -14,6 +14,15 @@
 // The engines share one process and one GlobalContainer. Each keeps its own
 // synchronized RNG stream, swapped in while it runs, as TurnEngineHarness does.
 
+// WinSock2 must precede the SDL fixtures' Windows headers.
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
+
 #include "EngineFixtures.h"
 #include "Environment.h"
 #include "ScopedEnvironment.h"
@@ -54,10 +63,6 @@
 #include "Utilities.h"
 #include "VerifyMatch.h"
 
-#ifndef _WIN32
-#include <unistd.h>
-#endif
-
 namespace fs = std::filesystem;
 
 namespace
@@ -79,14 +84,40 @@ std::string mapPath()
 	return (glob2test::sourceRoot() / "maps" / "FourSquares1.map.gz").string();
 }
 
-std::uint16_t testPort(int offset)
+std::uint16_t testPort()
 {
-#ifndef _WIN32
-	const int pid = static_cast<int>(getpid());
+	// Let the OS avoid occupied and reserved ports (including Windows exclusions).
+	// Use native sockets here, without adding Asio's header-only implementation
+	// to another engine-test translation unit.
+	struct Probe
+	{
+#ifdef _WIN32
+		WSADATA data{};
+		bool initialized = WSAStartup(MAKEWORD(2, 2), &data) == 0;
+		SOCKET socket = initialized ? ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP) : INVALID_SOCKET;
+		~Probe()
+		{
+			if (socket != INVALID_SOCKET) closesocket(socket);
+			if (initialized) WSACleanup();
+		}
 #else
-	const int pid = static_cast<int>(std::random_device()());
+		int socket = ::socket(AF_INET, SOCK_STREAM, 0);
+		~Probe() { if (socket >= 0) ::close(socket); }
 #endif
-	return static_cast<std::uint16_t>(21000 + (pid % 9000) * 4 + offset);
+	} probe;
+#ifdef _WIN32
+	REQUIRE(probe.socket != INVALID_SOCKET);
+	int size = sizeof(sockaddr_in);
+#else
+	REQUIRE(probe.socket >= 0);
+	socklen_t size = sizeof(sockaddr_in);
+#endif
+	sockaddr_in address{};
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+	REQUIRE(::bind(probe.socket, reinterpret_cast<const sockaddr*>(&address), sizeof(address)) == 0);
+	REQUIRE(::getsockname(probe.socket, reinterpret_cast<sockaddr*>(&address), &size) == 0);
+	return ntohs(address.sin_port);
 }
 
 /// A link with a fixed one-way delay in each direction, around a guest's turn transport.
@@ -579,7 +610,7 @@ TEST_SUITE("LanMatchHarness")
 		LanMatch match;
 		match.directory = glob2test::artifactDir() / "timeout-diagnostics";
 		fs::create_directories(match.directory);
-		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(0), match.directory), 101));
+		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), match.directory), 101));
 		match.players.push_back(std::make_unique<LanPlayer>("Crashed guest", nullptr, 102));
 		CHECK_FALSE(match.runUntil(0, [] { return false; }));
 	}
@@ -597,7 +628,7 @@ TEST_SUITE("LanMatchHarness")
 		m.directory = glob2test::artifactDir() / "lan-match";
 		fs::remove_all(m.directory);
 		fs::create_directories(m.directory);
-		const std::uint16_t port = testPort(0);
+		const std::uint16_t port = testPort();
 		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(port, m.directory), 101));
 		const std::string endpoint = m.host().room->shareText();
 		INFO("LAN pairing endpoint=" << endpoint);
@@ -762,7 +793,7 @@ TEST_SUITE("LanMatchHarness")
 		m.directory = glob2test::artifactDir() / "wait";
 		fs::remove_all(m.directory);
 		fs::create_directories(m.directory);
-		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(3), m.directory), 301));
+		m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory), 301));
 		const std::string endpoint = m.host().room->shareText();
 		m.players.push_back(std::make_unique<LanPlayer>("Guest", guestRoom(endpoint, "Guest", m.directory / "cache"), 302));
 		auto& host = m.hostSide();
@@ -835,7 +866,6 @@ TEST_SUITE("LanMatchHarness")
 		table << "bundle interval | one-way delay | player | samples | mean ms | median ms | p95 ms | buffer target ticks | "
 		         "rtt ms | stalls | long stalls | stalled ms\n";
 		stages << "Per-stage breakdown of the same runs (" << turntest::LatencyTrace::header() << ")\n";
-		int offset = 1;
 		const char* only = std::getenv("GLOB2_LAN_DELAY_BUNDLE");
 		for (std::uint8_t bundle : {std::uint8_t(2), std::uint8_t(1)})
 		for (std::uint64_t oneWayMs : {0u, 25u, 50u})
@@ -846,7 +876,7 @@ TEST_SUITE("LanMatchHarness")
 			m.directory = glob2test::artifactDir() / ("lan-delay-" + std::to_string(bundle) + "-" + std::to_string(oneWayMs));
 			fs::remove_all(m.directory);
 			fs::create_directories(m.directory);
-			m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(offset++), m.directory, bundle), 201));
+			m.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(), m.directory, bundle), 201));
 			const std::string endpoint = m.host().room->shareText();
 			INFO("LAN pairing endpoint=" << endpoint);
 			m.players.push_back(std::make_unique<LanPlayer>(
