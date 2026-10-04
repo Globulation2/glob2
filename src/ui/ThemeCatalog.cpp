@@ -97,7 +97,7 @@ void readColors(const Json &object, const std::pair<const char *, Color Struct::
 			errors.push_back(where + "." + key + ": unknown token");
 			continue;
 		}
-		const auto color = value.is_string() ? parseThemeColor(value.get<std::string>()) : std::nullopt;
+		const auto color = value.is_string() ? parseThemeColor(value.template get<std::string>()) : std::nullopt;
 		if (!color)
 			errors.push_back(where + "." + key + ": expected \"#rrggbb\" or \"#rrggbbaa\"");
 		else
