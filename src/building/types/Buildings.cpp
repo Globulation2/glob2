@@ -11,7 +11,7 @@
 //   - BuildingTypesDefence.cpp : defencetower, stonewall
 //   - BuildingTypesFlags.cpp   : exploration, war and clearing flags
 // each declaring one or more non-static BuildingType[] arrays; this file
-// splices them into a single flat vector indexed 0..50, in the same order
+// splices them into a single flat vector indexed 0..54, with the original entries in the same order
 // data/buildings.txt declared, plus the market levels 51..54 appended after it.
 //
 // Role grouping and ID order do not agree — market sits at the end of the
