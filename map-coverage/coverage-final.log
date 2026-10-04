@@ -1,0 +1,4 @@
+PASS MapGeneratorDefaults/Explicit designs preserve pre-Random golden worlds (6.2s)
+
+1 passed, 0 failed, 0 skipped (6.2s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/coverage-final.xml (1 cases)

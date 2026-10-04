@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="1" errors="0" skipped="0"><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Explicit designs preserve pre-Random golden worlds" time="4.52981" status="run">
+      <failure message="15850274609968439542 == 5648058033288605271" type="REQUIRE">
+test/MapGeneratorDefaultsTest.cpp:879:
+REQUIRE( mapFingerprint(game) == original.hash ) is NOT correct!
+  values: REQUIRE( 15850274609968439542 == 5648058033288605271 )
+  logged: 0x55c6d249fac4
+
+      </failure>
+    </testcase>
+  </testsuite></testsuites>

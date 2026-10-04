@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Explicit designs preserve pre-Random golden worlds" time="0.670946" status="run" />
+  </testsuite></testsuites>

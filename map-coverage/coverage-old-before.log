@@ -1,0 +1,15 @@
+FAIL MapGeneratorDefaults/Explicit designs preserve pre-Random golden worlds (3.2s)
+
+===== FAIL MapGeneratorDefaults/Explicit designs preserve pre-Random golden worlds =====
+GLOB2_TEST_BUILD compiler=Ubuntu Clang 18.1.8 (20ubuntu8) platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "clang++-18", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-g -O0 -fprofile-instr-generate -fcoverage-mapping -DGLOB2_TEST_COVERAGE -std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-g -fprofile-instr-generate -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/work/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "b1a8603bedf079e587307c77b665e3090bd2d2e5", "sourceStatus": [], "sourceTreeSha256": "db21bdc5cf00a47aa2913e530463335cbaa6ba7ff5e3ec443e6615dafa6e6271"}
+
+[failure] Explicit designs preserve pre-Random golden worlds: 15850274609968439542 == 5648058033288605271
+test/MapGeneratorDefaultsTest.cpp:879:
+REQUIRE( mapFingerprint(game) == original.hash ) is NOT correct!
+  values: REQUIRE( 15850274609968439542 == 5648058033288605271 )
+  logged: 0x5874338a6ac4
+
+
+0 passed, 1 failed, 0 skipped (3.2s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/coverage-old-before.xml (1 cases)

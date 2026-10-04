@@ -1,0 +1,4 @@
+PASS MapGeneratorDefaults/Explicit designs preserve pre-Random golden worlds (0.7s)
+
+1 passed, 0 failed, 0 skipped (0.7s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/map-gcc-final.xml (1 cases)
