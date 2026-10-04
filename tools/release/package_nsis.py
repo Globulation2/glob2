@@ -2,6 +2,7 @@
 """Compile the x64 installer from the exact portable Windows staging tree."""
 
 import argparse
+import shutil
 import subprocess
 import tempfile
 from pathlib import Path
@@ -76,6 +77,11 @@ def package(stage, output, version, compiler="makensis"):
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="glob2-nsis-") as temporary:
         generated = Path(temporary)
+        # MSYS2's makensis reads and writes only under its temporary directory
+        # on hosted Windows runners, not the checkout; give it a private copy
+        # of the stage and an output path there.
+        stage = shutil.copytree(stage, generated / "stage", symlinks=True)
+        built = generated / output.name
         file_lists(stage, generated)
         # Definitions live in a generated wrapper, avoiding differences between
         # Unix -D and Windows /D command-line parsing and quoting.
@@ -86,7 +92,7 @@ def package(stage, output, version, compiler="makensis"):
                 for key, value in (
                     ("STAGE_DIR", Path(stage).resolve()),
                     ("LIST_DIR", generated),
-                    ("OUT_FILE", output),
+                    ("OUT_FILE", built),
                     ("VERSION", version),
                 )
             )
@@ -96,6 +102,7 @@ def package(stage, output, version, compiler="makensis"):
             encoding="utf-8",
         )
         subprocess.run([compiler, "-WX", str(wrapper)], check=True)
+        shutil.copy2(built, output)
     return output
 
 
