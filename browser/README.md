@@ -109,7 +109,9 @@ The rest follows in the background once the main menu is up, most needed first:
   Japanese or Korean interface it is a startup package instead; switching to one
   before it arrives shows missing glyphs until it does.
 - `translations`, the other languages' full catalogs; English stands in until
-  they arrive. An interface in another language loads them before the game starts.
+  they arrive. An interface in another language loads them before the game starts;
+  on a first visit with no saved language, that is the browser's preferred language
+  when the game has a catalog for it (`src/SystemLanguage.cpp`).
 - `music` and `hd`: the in-game music and the high-resolution artwork (WebGL2
   only, and only while that setting is on). The game reads them when a match or
   the editor starts, so on a first visit a match started before the artwork
