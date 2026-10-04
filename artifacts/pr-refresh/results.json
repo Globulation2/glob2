@@ -1,0 +1,34 @@
+[
+  {
+    "number": 493,
+    "sha": "b8ccbfb0716ec79c08a46a1856905daa9361aa84",
+    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "result": "19 tests passed",
+    "commands": "python3 -m unittest discover -s tools/unit-animation -p test_*.py",
+    "limitations": "No Blender render or art regeneration; engine unchanged."
+  },
+  {
+    "number": 448,
+    "sha": "36e75abc33dd65e5aa2acc17c180fc76b73fbdd4",
+    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "result": "Resolved conflict against current online-service policy; whitespace check passed",
+    "commands": "git diff --check origin/master...HEAD",
+    "limitations": "Documentation only; no APK or privacy publication."
+  },
+  {
+    "number": 430,
+    "sha": "cc3ff3d0bab79172f70da86a696d463f30bbab8d",
+    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "result": "13 opaque iOS icons reproduce exactly; Android unchanged; whitespace check passed",
+    "commands": "python3 mobile/icons.py; git diff --exit-code; Pillow mode/background checks",
+    "limitations": "No signed archive, simulator gameplay or store publication."
+  },
+  {
+    "number": 5,
+    "sha": "8f05ee98a2109a6b4e3a613a802f53577edb735c",
+    "base": "a05d6cd8cbe594a4d281bb6e753edbe1b8d10899",
+    "result": "Four ambiguous legacy none@none authors resolve correctly; whitespace check passed",
+    "commands": "git check-mailmap nct/leo/marv/genixpro contacts; git diff --check origin/master...HEAD",
+    "limitations": "Author mappings preserved; draft remains draft."
+  }
+]
