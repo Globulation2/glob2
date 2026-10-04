@@ -39,4 +39,16 @@ Representative PNGs show direct scrolling, native glide, edge stretch and settle
 
 Physical Mac trackpad, conventional wheel and gesture-capable mouse have not been operated; hands-on Retina/windowed/fullscreen feel remains unverified. Automated fullscreen transitions and scaled-coordinate tests do not replace that review. Actual Linux, Windows, mobile and browser builds were not available here. Broader six-size presentation coverage and expensive hosted CI were not requested/run. No simulation/order/save/replay/network code changed, so simulation compatibility suites and a SIM_REVISION bump are not required.
 
-Maintainer acceptance is pending; the feature PR remains draft for device/platform verification. Scrolling feel intentionally changes on phased Mac gestures. Existing List momentum zero suppresses native UI momentum; positive values preserve macOS speed/duration. Bounce/reduced-motion controls retain their existing fields.
+The user requested merge with the documented device/platform verification gaps retained. Scrolling feel intentionally changes on phased Mac gestures. Existing List momentum zero suppresses native UI momentum; positive values preserve macOS speed/duration. Bounce/reduced-motion controls retain their existing fields.
+
+## Pre-merge integration refresh
+
+Tested merge head `2f7f3af72ac69205aa608e263607c6f5df2d6d92`, integrated base `931fca466` (full base SHA available in the feature merge commit). Master added a quick-match strip in shared online-screen layouts, so the client/harness build and focused integration tests were refreshed. No conflicts. Same OS/toolchain/dependencies/flags as above. Build exited 0; 53 unit cases and 10 engine/display cases passed, no skips. The latter cover both small portrait/landscape matrices including the new online strips, all GameGUITouch input cases, native Mac gesture contracts/visual demonstration, and screen lifecycle. Earlier settings/fullscreen/build-system/sanitizer evidence remains attributed to its original revisions; those feature inputs were unchanged.
+
+```sh
+GLOB2_SDL3_PREFIX=/Users/bradley/.cache/glob2-sdl3/prefix /opt/homebrew/bin/scons -j8 release=1 build/darwin/client/release/src/glob2 unit-tests engine-tests
+python3 test/run_tests.py --binary unit --filter 'GestureScroll/*' --filter 'ScrollPhysics/*' --filter 'UILayout/*' --filter 'EventQueue/*' --junit artifacts/mac-gesture/merge-unit-junit.xml --artifacts artifacts/mac-gesture/merge-unit-artifacts
+python3 test/run_tests.py --binary engine --filter 'GameGUITouch/*' --filter 'MacScrollMonitor/*' --filter 'ScreenExecution/*' --filter 'UIPresentation/every*small*' --display-jobs 1 --junit artifacts/mac-gesture/merge-engine-junit.xml --artifacts artifacts/mac-gesture/merge-artifacts
+```
+
+Hands-on device/Retina feel and actual non-Mac builds remain unverified. The user explicitly requested merge; these omissions are retained rather than represented as completed validation. The original synthetic demonstration still describes unchanged gesture production code.
