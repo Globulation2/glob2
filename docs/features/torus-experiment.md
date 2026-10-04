@@ -64,8 +64,13 @@ playable area; the tilt adapts to the window.
 
 `TorusView.cpp` owns camera and input state. `TorusViewRender.cpp` owns the
 OpenGL drawing and resources. It captures the normal renderer's terrain,
-resources, buildings, units, cloud shadows and fog of war into a repeating
-texture. Clouds use a separate surface above the terrain, returning to ground
+resources, buildings, units, cloud shadows and fog of war into full-resolution tiled
+textures. Each captures a region at one texel per world pixel (32 pixels per map
+cell), with one cell of wrapped neighbor padding on all sides. Texture edges
+clamp into this padding, so linear filtering crosses capture boundaries and
+map seams without bleeding or cracks. Ground triangles are clipped at the
+capture boundaries; picking retains the original shared surface geometry.
+Clouds use a separate surface above the terrain, returning to ground
 level as the view flattens. Both views sample the same world cloud field;
 texture coordinates include the capture origin and texel-center offset.
 The sky and surface extend beneath the translucent sidebar.
@@ -116,13 +121,31 @@ returns to the normal 2D renderer on the same frame.
 
 ## Performance
 
-The atlas refreshes on every rendered game frame; camera animation uses cached
-indexed GPU geometry at the same cadence. Fog of war is captured by the shared
-map renderer; CPU cloud pixels and mesh buffers are reused. Its resolution is 32 pixels per tile, capped at
-4096 pixels per dimension and the GPU's texture/viewport limits. Larger maps
-therefore downsample. Small distant tiles also lose detail through projection.
+The tiled capture refreshes on every rendered game frame; camera animation uses cached
+GPU geometry at the same cadence. Fog of war is captured by the shared
+map renderer; CPU cloud pixels and mesh buffers are reused. Captures use textures
+of at most 2048 pixels per axis, including padding, further limited by the GPU's
+texture and viewport limits. Large maps allocate more textures rather than
+downsampling. Animation, fog timing and unit interpolation are shared across
+all regions of a frame; region captures omit viewport-edge worker indicators.
+Small distant tiles still lose visible detail through projection.
 Picking caches stationary pointer hits and rejects triangles outside the
-pointer's bounding box.
+pointer's bounding box. Capture regions refresh every frame; partitioned ground
+geometry is reused until navigation offsets, surface geometry or texture layout
+change.
+
+Texture allocation first attempts native resolution for the entire world. If
+allocation or framebuffer setup fails, partial textures are released and the
+renderer retries at half the pixels per cell, down to one pixel per cell. A
+successful reduced resolution remains in use until reset; a new activation or
+context recreation retries native resolution. A diagnostic records degradation.
+If every attempt fails, the ordinary 2D renderer resumes on that frame. Shader
+failure also returns to 2D. Software rendering continues to use the flat map.
+
+Native color storage is roughly four bytes per world pixel plus padding: a
+256 × 256 map needs about 276 MiB with 25 textures at the default limit, versus
+64 MiB for the former capped capture. Splitting textures removes individual
+texture size limits; it does not reduce the total memory needed.
 
 The overview samples clouds and shadows on a world-anchored lattice of at most
 128 cells per axis. The normal 2D viewport retains its configured sampling
@@ -156,15 +179,17 @@ input events. Set `GLOB2_BENCH_SIZE=64x128` or `512x64` to render a synthetic
 terrain checkerboard for rectangular-map checks (power-of-two dimensions from
 64 to 512). This overrides `GLOB2_BENCH_MAP`.
 
-On the Apple M3, Oazis (256 × 256) took about 130 ms per torus frame before these
-changes. CPU sampling identified whole-world cloud noise generation first,
+The following historical measurements used the former 4096-pixel capped
+capture, not the current native-resolution tiled capture. On the Apple M3,
+Oazis (256 × 256) took about 130 ms per torus frame before those optimizations.
+CPU sampling identified whole-world cloud noise generation first,
 then individual resource draws and redundant state changes in sprite batching.
 Optimized runs measured 12–16 ms with clouds, depending on concurrent desktop
-load; ordinary 2D remained around 2 ms. The overview's color texture falls from
-256 MiB to 64 MiB, and cloud-noise evaluations fall from about 3.15 million to
+load; ordinary 2D remained around 2 ms. The overview's color texture fell from
+256 MiB to 64 MiB, and cloud-noise evaluations fell from about 3.15 million to
 132,100 per frame with default settings. Geometry and the live map still update
-on every rendered frame. The larger map receives 16 texture pixels per tile;
-normal 2D retains its native detail.
+on every rendered frame. That capped capture received 16 texture pixels per
+tile; normal 2D retained its native detail.
 
 The GPU integration check compares all resource frames before and after atlas
 creation at three scales and two opacity levels, including frame dimensions.
@@ -213,13 +238,13 @@ Checks cover flat endpoints, periodic seams, bounded camera distance, shared
 navigation, projection/picking round trips during unfolding, nearest-surface
 occlusion, empty-sky misses, world-pixel wrapping, and cloud sampling invariance.
 
-The experiment is implemented with compatibility OpenGL, and has been built on
-macOS, Linux (Ubuntu 22.04 and 24.04), and Windows (MinGW-w64).
-Native rendering has been exercised on macOS; other platforms still need visual
-and gameplay testing. Buildings and units are
+The tiled path is exercised on Linux with compatibility OpenGL and in Chromium
+with WebGL2, including context recreation. The original experiment was also
+built on macOS and Windows; the tiled path still needs validation there and in
+other browsers. Buildings and units are
 sprites on the surface, unit selection
 uses the picked map cell rather than individual sprite pixels. Very large maps
-still have substantial atlas cost, so matching the normal update cadence does
+still have substantial capture cost, so matching the normal update cadence does
 not guarantee identical measured FPS on every map and GPU. Software rendering retains the normal 2D
 view. No torus camera state is serialized or sent over the network.
 
@@ -236,9 +261,14 @@ The OpenGL cases need a display with compatibility OpenGL; the runner opens an X
 screen on Linux. The software case renders a loaded game through software and
 checks that torus inputs stay inactive. The same binary can be built with
 `opengl=0`, including a run with
-`-g` requested to exercise the software fallback. The GPU test covers cloud
-transitions, both navigation axes, picking, return to 2D, and repeated teardown
-and recreation. No desktop input is generated.
+`-g` requested to exercise the software fallback. The GPU tests cover native
+tiled pixel comparisons (including gutters and fog), progressive allocation
+fallback, cloud transitions, both navigation axes,
+picking, return to 2D, and repeated teardown and recreation. The CPU
+`TorusTextureTiles` suite checks region coverage, device limits, seam clipping
+and perspective-correct picking equivalence. No desktop input is generated.
+Browser torus checks wait for the overview transition to settle before recording
+screenshots, and cover toggling, context loss and software fallback.
 
 The fixed-axis navigation and elevated cloud layer were adapted from Giszmo's
 `feat/torus-pan` branch (through `b838f8de`), whose implementation was authored by
