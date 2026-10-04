@@ -876,32 +876,42 @@ SwitchbacksOptions::SwitchbacksOptions(const GenerationRequest &r)
 GeneratorDefinition switchbacksDefinition()
 {
 	return {
-			"switchbacks",
-			24,
-			"Switchbacks",
-			4,
-			false,
-			// The trail's width and the stone between its legs in tiles; the plateau's radius as a
+		"switchbacks",
+		24,
+		"Switchbacks",
+		4,
+		false,
+		// The trail's width and the stone between its legs in tiles; the plateau's radius as a
 		// share of the half side (the mountains fill the rest with as many legs as fit); each home's
 		// radius as a percentage of the standard.
-		{{"trail-width", "Trail width", 5, 9, 2, 7, ControlGroup::Terrain},
-		 {"leg-wall", "Wall between legs", 2, 6, 1, 2, ControlGroup::Terrain},
-		 {"plateau-size", "Plateau size", 14, 34, 2, 22, ControlGroup::Layout},
-		 {"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
+		// Wider trails can meet across a bend and bypass the intended mountain walls.
+		{GeneratorControl{"trail-width", "Trail width", 5, 9, 2, 7, ControlGroup::Terrain}
+			 .withSearchRange(7, 7),
+		 GeneratorControl{"leg-wall", "Wall between legs", 2, 6, 1, 2, ControlGroup::Terrain}
+			 .withSearchRange(2, 3),
+		 GeneratorControl{"plateau-size", "Plateau size", 14, 34, 2, 22, ControlGroup::Layout}
+			 .withSearchRange(22, 28),
+		 GeneratorControl{"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout}
+			 .withSearchRange(100, 120),
 		 // The towers every colony starts with, all against its walls: their level (0 for none, just
 		 // open pads; level 1 by default since 2026-09-14, so players upgrade their own towers) and
 		 // how many.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
-		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
+		 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 1,
+						  ControlGroup::Layout}
+			 .withSearchRange(0, 1),
+		 GeneratorControl{"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(2, 4),
 		 // Off, the trails are grass from wall to wall.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // On, every farm has a 10x4 clearing of grass ringed with sand in its middle, for a
 		 // swarm or an inn.
-		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
+		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
 		 // both on by default so workers cross the rows rather than walking round them.
-		 waterCrossingsControl(),
-		 cropCrossingsControl(),
+		 waterCrossingsControl(), cropCrossingsControl(),
 		 // Every home's scattered fields and grove, the farms' wheat and woodlots, the plateau's
 		 // orchard, and the algae; the mountains' stone and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -909,10 +919,10 @@ GeneratorDefinition switchbacksDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege",
-			 "style:contested-center", "fairness:repeated-wedge"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:arena", "feature:mountains", "feature:stone-walls", "style:siege",
+		 "style:contested-center", "fairness:repeated-wedge"}};
 }

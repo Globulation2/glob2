@@ -567,7 +567,8 @@ GeneratorDefinition whoAteTheMapDefinition()
 			1,
 			false,
 			{GeneratorControl::choice("appetite", "Appetite",
-									  {"A Little Nibble", "Hungry", "Who Ate the Map?"}, 1),
+									  {"A Little Nibble", "Hungry", "Who Ate the Map?"}, 1)
+				 .withSearchValues({0, 1, 2}),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

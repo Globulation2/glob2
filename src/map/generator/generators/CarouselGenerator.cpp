@@ -1053,34 +1053,45 @@ CarouselOptions::CarouselOptions(const GenerationRequest &r)
 GeneratorDefinition carouselDefinition()
 {
 	return {
-			"carousel",
-			22,
-			"Carousel",
-			2,
-			false,
-			// Each home's radius and each court's as percentages of the standard; the corridors' and the
+		"carousel",
+		22,
+		"Carousel",
+		2,
+		false,
+		// Each home's radius and each court's as percentages of the standard; the corridors' and the
 		// spokes' widths and the wall between a court and the next home in tiles; the plaza's radius as
 		// a share of the half side. The lanes and courts default tight: the siege only works in them.
-		{{"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout},
-		 {"corridor-width", "Corridor width", 3, 17, 2, 3, ControlGroup::Terrain},
-		 {"spoke-width", "Spoke width", 3, 17, 2, 3, ControlGroup::Terrain},
-		 {"court-size", "Court size", 20, 160, 10, 30, ControlGroup::Layout},
-		 {"court-wall", "Court wall", 1, 5, 1, 2, ControlGroup::Terrain},
-		 {"plaza-size", "Plaza size", 14, 34, 2, 24, ControlGroup::Layout},
+		{GeneratorControl{"home-size", "Home size", 60, 160, 10, 100, ControlGroup::Layout}
+			 .withSearchRange(100, 150),
+		 GeneratorControl{"corridor-width", "Corridor width", 3, 17, 2, 3, ControlGroup::Terrain}
+			 .withSearchRange(3, 9),
+		 GeneratorControl{"spoke-width", "Spoke width", 3, 17, 2, 3, ControlGroup::Terrain}
+			 .withSearchRange(3, 9),
+		 GeneratorControl{"court-size", "Court size", 20, 160, 10, 30, ControlGroup::Layout}
+			 .withSearchRange(30, 70),
+		 GeneratorControl{"court-wall", "Court wall", 1, 5, 1, 2, ControlGroup::Terrain}
+			 .withSearchRange(1, 3),
+		 GeneratorControl{"plaza-size", "Plaza size", 14, 34, 2, 24, ControlGroup::Layout}
+			 .withSearchRange(20, 28),
 		 // The towers every colony starts with, all against its walls: their level (0 for none, just
 		 // open pads; level 1 by default since 2026-09-14, so players upgrade their own towers) and
 		 // how many.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
-		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
+		 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 1,
+						  ControlGroup::Layout}
+			 .withSearchRange(0, 1),
+		 GeneratorControl{"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(2, 4),
 		 // Off, the lanes and the plaza are grass from wall to wall.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // On, every farm has a 10x4 clearing of grass ringed with sand in its middle, for a swarm or
 		 // an inn.
-		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout),
+		 GeneratorControl::toggle("farm-plots", "Farm building plots", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
 		 // both on by default so workers cross the rows rather than walking round them.
-		 waterCrossingsControl(),
-		 cropCrossingsControl(),
+		 waterCrossingsControl(), cropCrossingsControl(),
 		 // Every home's scattered fields, the farms' wheat and woodlots, the courts' and the orchard's
 		 // fruit, and the algae; the walls' stone and the towers are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -1088,10 +1099,10 @@ GeneratorDefinition carouselDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "style:siege", "style:tight-building",
-			 "fairness:repeated-wedge"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:arena", "feature:stone-walls", "style:siege", "style:tight-building",
+		 "fairness:repeated-wedge"}};
 }

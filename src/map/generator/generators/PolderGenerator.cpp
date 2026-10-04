@@ -362,35 +362,38 @@ PolderOptions::PolderOptions(const GenerationRequest &r)
 GeneratorDefinition polderDefinition()
 {
 	return {
-			"polder",
-			30,
-			"Polder",
-			5,
-			false,
-			// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
+		"polder",
+		30,
+		"Polder",
+		5,
+		false,
+		// A dyke every 24 tiles is a lane every one and a half rows' walk; villages of radius 14
 		// hold a swarm, its kit and a few more buildings and no more (11 before the first play, and
 		// the growth crowded them; FEEDBACK 2026-09-13: a random angle by default, and villages of
 		// 14 in a sand ring).
 		{GeneratorControl::choice("row-angle", "Row angle",
 								  {"Random", "Vertical", "Horizontal", "Diagonal"}, 0,
-								  ControlGroup::Terrain),
-		 {"dyke-spacing", "Dyke spacing", 12, 48, 4, 24, ControlGroup::Terrain},
+								  ControlGroup::Terrain)
+			 .withSearchValues({1, 2, 3}),
+		 GeneratorControl{"dyke-spacing", "Dyke spacing", 12, 48, 4, 24, ControlGroup::Terrain}
+			 .withSearchRange(20, 36),
 		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
 		 // both on by default so workers cross the rows rather than walking round them.
-		 waterCrossingsControl(),
-		 cropCrossingsControl(),
-		 {"village-size", "Village size", 8, 20, 1, 14, ControlGroup::Layout},
-		 GeneratorControl::toggle("hamlets", "Hamlets", true, ControlGroup::Layout),
+		 waterCrossingsControl(), cropCrossingsControl(),
+		 GeneratorControl{"village-size", "Village size", 8, 20, 1, 14, ControlGroup::Layout}
+			 .withSearchRange(14, 20),
+		 GeneratorControl::toggle("hamlets", "Hamlets", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// Engineered grid of dead-straight canals and diked fields, not a natural landscape.
-			{"terrain:urban", "feature:river", "feature:canals", "style:sprawling",
-			 "fairness:stamped-lattice"}};
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// Engineered grid of dead-straight canals and diked fields, not a natural landscape.
+		{"terrain:urban", "feature:river", "feature:canals", "style:sprawling",
+		 "fairness:stamped-lattice"}};
 }

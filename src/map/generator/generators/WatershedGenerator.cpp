@@ -1932,36 +1932,42 @@ WatershedOptions::WatershedOptions(const GenerationRequest &r)
 GeneratorDefinition watershedDefinition()
 {
 	return {
-			"watershed",
-			13,
-			"Watershed",
-			1,
-			false,
-			{// Springs per area of land; each one that finds its way to the network is a tributary.
-			 {"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain},
-			 // The narrowest channel, at a spring; rivers widen downstream as tributaries join.
-			 {"river-width", "River width", 1, 5, 1, 2, ControlGroup::Terrain},
-			 // How near to the rivers the uplands dry out to sand; 0 leaves them grass, and no
-			 // setting dries ground within 11 tiles of water, so every river keeps a floodplain.
-			 {"dryness", "Dryness", 0, 10, 1, 5, ControlGroup::Terrain},
-			 // How often a ford crosses a river: about one per 80 tiles of river at 1, one per 26
-			 // at 5, and at least one on every reach long enough to hold one.
-			 {"fords", "Fords", 1, 5, 1, 3, ControlGroup::Layout},
-			 // Off, the trunk reaches the sea through a single mouth, with no delta lobe.
-			 GeneratorControl::toggle("river-delta", "River delta", true, ControlGroup::Terrain),
-			 // Off, rivers run without their meanders.
-			 GeneratorControl::toggle("meanders", "Meandering rivers", true, ControlGroup::Terrain),
-			 // The farmland along the rivers (wheat and wood each), stone outcrops, fruit groves at
-			 // the confluences and algae off the mouths and shallows. Every colony's starter kit
-			 // stays as it is.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validate,
-			validateWorld,
-			{"terrain:natural", "feature:river", "style:wide-open"}};
+		"watershed",
+		13,
+		"Watershed",
+		1,
+		false,
+		{// Springs per area of land; each one that finds its way to the network is a tributary.
+		 GeneratorControl{"river-density", "River density", 1, 10, 1, 5, ControlGroup::Terrain}
+			 .withSearchRange(3, 5),
+		 // The narrowest channel, at a spring; rivers widen downstream as tributaries join.
+		 // Thin channels at high density can leave a declared ford outside its channel.
+		 GeneratorControl{"river-width", "River width", 1, 5, 1, 2, ControlGroup::Terrain}
+			 .withSearchRange(2, 3),
+		 // How near to the rivers the uplands dry out to sand; 0 leaves them grass, and no
+		 // setting dries ground within 11 tiles of water, so every river keeps a floodplain.
+		 GeneratorControl{"dryness", "Dryness", 0, 10, 1, 5, ControlGroup::Terrain}.withSearchRange(
+			 2, 7),
+		 // How often a ford crosses a river: about one per 80 tiles of river at 1, one per 26
+		 // at 5, and at least one on every reach long enough to hold one.
+		 GeneratorControl{"fords", "Fords", 1, 5, 1, 3, ControlGroup::Layout}.withSearchRange(3, 5),
+		 // Off, the trunk reaches the sea through a single mouth, with no delta lobe.
+		 GeneratorControl::toggle("river-delta", "River delta", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // Off, rivers run without their meanders.
+		 GeneratorControl::toggle("meanders", "Meandering rivers", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // The farmland along the rivers (wheat and wood each), stone outcrops, fruit groves at
+		 // the confluences and algae off the mouths and shallows. Every colony's starter kit
+		 // stays as it is.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		validate,
+		validateWorld,
+		{"terrain:natural", "feature:river", "style:wide-open"}};
 }

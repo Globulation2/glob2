@@ -316,4 +316,62 @@ class DiagnosticTests(unittest.TestCase):
                 self.assertFalse(info['core_available'])
 
 
+class ParameterSampling(unittest.TestCase):
+    def bundle(self):
+        return {'id': 'a'*64, 'capabilities': {'generators': [{'method': 15, 'controls': [
+            {'id': k, 'values': [1, 2], 'searchValues': [2]}
+            for k in ('width', 'height', 'teams', 'workers', 'roads')
+        ] + [{'id': 'shape', 'values': [0, 1, 2], 'searchValues': [0, 1]}]}]}}
+
+    def test_domains_and_reproducibility(self):
+        from tools.tournaments.model import generator_samples
+        catalog = self.bundle()['capabilities']
+        draws = generator_samples(catalog, 15, 64, 123)
+        self.assertEqual(draws, generator_samples(catalog, 15, 64, 123))
+        self.assertEqual({v['roads'] for v in draws}, {2})
+        self.assertEqual({v['shape'] for v in draws}, {0, 1})
+        self.assertTrue(all(set(v) == {'roads', 'shape'} for v in draws))
+        legal = generator_samples(catalog, 15, 64, 123, 'legal')
+        self.assertEqual({v['shape'] for v in legal}, {0, 1, 2})
+        self.assertEqual({v['roads'] for v in legal}, {1, 2})
+        with self.assertRaises(ValueError): generator_samples(catalog, 15, 1, 1, 'unknown')
+        with self.assertRaises(ValueError): generator_samples(catalog, 99, 1, 1)
+        for values in ([], [2, 2], [3], [True], None):
+            control = catalog['generators'][0]['controls'][-1]
+            if values is None: control.pop('searchValues', None)
+            else: control['searchValues'] = values
+            with self.assertRaises(ValueError): generator_samples(catalog, 15, 1, 1)
+
+    def test_balancing_maps_shared_and_overrides_preserved(self):
+        from tools.tournaments.experiments import Planner
+        config = {'id': 'sampled', 'ais': ['cortex', 'maxima'], 'formats': ['1v1'],
+                  'map_seeds': [1, 2], 'randomize_parameters': True,
+                  'generator_params': {'width': 6, 'height': 8, 'workers': 7, 'roads': 1}}
+        manifest = Planner('ai_comparison', config, [self.bundle()]).plan()
+        self.assertEqual(manifest, Planner('ai_comparison', config, [self.bundle()]).plan())
+        maps = [j for j in manifest['jobs'] if j['type'] == 'generate_map']
+        self.assertEqual(len(maps), 2)
+        for value in maps:
+            self.assertEqual(value['config']['params'] | {'shape': 0},
+                             config['generator_params'] | {'teams': 2, 'shape': 0})
+            games = [j for j in manifest['jobs'] if j['depends_on'] == [value['id']]]
+            self.assertEqual(len(games), 4)
+
+    def test_stress_catalog_and_explicit_extremes(self):
+        from tools.tournaments.experiments import Planner
+        config = {'id': 'stress', 'randomize_parameters': True, 'samples': 16,
+                  'generator_params': {'width': 6}, 'sample': {'roads': [1], 'shape': [2]}}
+        manifest = Planner('generator_stress', config, [self.bundle()]).plan()
+        sampled = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('catalog-')]
+        self.assertEqual(len(sampled), 16)
+        self.assertTrue(all(j['config']['params']['roads'] == 2 for j in sampled))
+        self.assertTrue(all(j['config']['params']['width'] == 6 for j in sampled))
+        explicit = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('sample-')]
+        self.assertTrue(all(j['config']['params'] == {'roads': 1, 'shape': 2} for j in explicit))
+        config['parameter_domain'] = 'legal'
+        manifest = Planner('generator_stress', config, [self.bundle()]).plan()
+        sampled = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('catalog-')]
+        self.assertIn(2, {j['config']['params']['shape'] for j in sampled})
+
+
 if __name__ == '__main__': unittest.main()

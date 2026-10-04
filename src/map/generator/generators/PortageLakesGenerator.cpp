@@ -1502,9 +1502,13 @@ GeneratorDefinition portageLakesDefinition()
 			"Portage Lakes",
 			4,
 			false,
-			{{"lake-elongation", "Lake elongation", 125, 300, 25, 200, ControlGroup::Terrain},
-			 {"portage-depth", "Portage depth", 2, 8, 1, 4, ControlGroup::Layout},
-			 {"extra-trails", "Extra trails", 0, 100, 25, 25, ControlGroup::Layout},
+			{GeneratorControl{"lake-elongation", "Lake elongation", 125, 300, 25, 200,
+							  ControlGroup::Terrain}
+				 .withSearchRange(150, 250),
+			 GeneratorControl{"portage-depth", "Portage depth", 2, 8, 1, 4, ControlGroup::Layout}
+				 .withSearchRange(2, 6),
+			 GeneratorControl{"extra-trails", "Extra trails", 0, 100, 25, 25, ControlGroup::Layout}
+				 .withSearchRange(25, 75),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

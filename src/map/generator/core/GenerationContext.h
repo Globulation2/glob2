@@ -30,6 +30,10 @@ struct GenerationContext
 	/// Every stream asked for so far, by name, in its current state.
 	const std::map<std::string, std::mt19937> &namedStreams() const { return streams; }
 	static std::uint32_t deriveSeed(std::uint32_t seed, const std::string &name);
+	// Pure variant resolution: repeated validation/design calls make the same choice and do
+	// not advance any geometry stream. Callers supply only feasible concrete variants.
+	static int choiceFromSeed(std::uint32_t seed, const std::string &name,
+							  const std::vector<int> &values);
 	static std::uint32_t randomSeed();
 
   private:

@@ -1207,32 +1207,46 @@ KarstTowersOptions::KarstTowersOptions(const GenerationRequest &r)
 GeneratorDefinition karstTowersDefinition()
 {
 	return {
-			"karst-towers",
-			54,
-			"Karst towers",
-			2,
-			false,
-			{{"tower-spacing", "Tower spacing", 14, 32, 2, 16, ControlGroup::Terrain},
-			 {"tower-density", "Tower density", 0, 100, 10, 50, ControlGroup::Terrain},
-			 {"river-width", "River width", kNarrowestRiver, 16, 1, 7, ControlGroup::Terrain},
-			 {"fords", "Fords", 1, 6, 1, 2, ControlGroup::Terrain},
-			 {"paddy-depth", "Paddy depth", 16, 40, 2, 24, ControlGroup::Terrain},
-			 {"river-meander", "River meander", 0, 100, 10, 50, ControlGroup::Terrain},
-			 {"flooded-terraces", "Flooded terraces", 0, 100, 4, kDefaultFlooded, ControlGroup::Terrain},
-			 {"sinkholes", "Sinkholes", 0, 300, 25, 100, ControlGroup::Terrain},
-			 GeneratorControl::toggle("lakes", "Lakes", true, ControlGroup::Layout),
-			 GeneratorControl::choice("home-design", "Home design",
-									  {"Random", "Horseshoe", "Twin gates", "Three gates", "Four gates"}, 0,
-									  ControlGroup::Layout),
-			 {"home-size", "Home size", kSmallestHome, 22, 1, 15, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:natural", "feature:river", "feature:mountains", "feature:lakes",
-			 "style:tight-building", "fairness:stamped-lattice"}};
+		"karst-towers",
+		54,
+		"Karst towers",
+		2,
+		false,
+		{GeneratorControl{"tower-spacing", "Tower spacing", 14, 32, 2, 16, ControlGroup::Terrain}
+			 .withSearchRange(14, 24),
+		 GeneratorControl{"tower-density", "Tower density", 0, 100, 10, 50, ControlGroup::Terrain}
+			 .withSearchRange(30, 70),
+		 GeneratorControl{"river-width", "River width", kNarrowestRiver, 16, 1, 7,
+						  ControlGroup::Terrain}
+			 .withSearchRange(5, 9),
+		 GeneratorControl{"fords", "Fords", 1, 6, 1, 2, ControlGroup::Terrain}.withSearchRange(2,
+																							   5),
+		 GeneratorControl{"paddy-depth", "Paddy depth", 16, 40, 2, 24, ControlGroup::Terrain}
+			 .withSearchRange(22, 34),
+		 GeneratorControl{"river-meander", "River meander", 0, 100, 10, 50, ControlGroup::Terrain}
+			 .withSearchRange(20, 80),
+		 GeneratorControl{"flooded-terraces", "Flooded terraces", 0, 100, 4, kDefaultFlooded,
+						  ControlGroup::Terrain}
+			 .withSearchRange(32, 68),
+		 GeneratorControl{"sinkholes", "Sinkholes", 0, 300, 25, 100, ControlGroup::Terrain}
+			 .withSearchRange(50, 150),
+		 GeneratorControl::toggle("lakes", "Lakes", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl::choice(
+			 "home-design", "Home design",
+			 {"Random", "Horseshoe", "Twin gates", "Three gates", "Four gates"}, 0,
+			 ControlGroup::Layout)
+			 .withSearchValues({1, 2, 3, 4}),
+		 GeneratorControl{"home-size", "Home size", kSmallestHome, 22, 1, 15, ControlGroup::Layout}
+			 .withSearchRange(15, 19),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:natural", "feature:river", "feature:mountains", "feature:lakes",
+		 "style:tight-building", "fairness:stamped-lattice"}};
 }

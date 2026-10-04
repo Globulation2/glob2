@@ -216,6 +216,7 @@ inline void frameworkChecks()
 	using namespace MapGeneration;
 	GeneratorControl cells{"cell", "Cell", 4,         16, 1, 8, ControlGroup::Layout,
 						   false,  false,  {4, 8, 16}};
+	cells = cells.withSearchValues({8, 16});
 	assert(cells.normalize(6) == 8 && cells.normalize(11) == 8 && cells.normalize(12) == 16);
 	assert(cells.normalize(-100) == 4 && cells.normalize(100) == 16);
 	for (int v : cells.values())
@@ -269,7 +270,7 @@ inline void frameworkChecks()
 		"uniform terrain",
 		1,
 		false,
-		{cells, {"room", "Room", 4, 8, 1, 6}},
+		{cells, GeneratorControl{"room", "Room", 4, 8, 1, 6}.withSearchRange(6, 8)},
 		[](Game &game, GenerationContext &ctx)
 		{
 			game.map.makeHomogenMap(GRASS);

@@ -471,16 +471,21 @@ BraidedDeltaOptions::BraidedDeltaOptions(const GenerationRequest &r)
 
 GeneratorDefinition braidedDeltaDefinition()
 {
-	return {
-			"braided-delta",
+	return {"braided-delta",
 			36,
 			"Braided Delta",
 			3,
 			false,
-			{{"braid-count", "Braid count", 2, 5, 1, 2, ControlGroup::Terrain},
-			 {"rejoining-frequency", "Rejoining frequency", 1, 3, 1, 2, ControlGroup::Terrain},
-			 {"island-size", "Island size", 32, 48, 8, 32, ControlGroup::Layout},
-			 {"crossing-spacing", "Crossing spacing", 32, 96, 16, 64, ControlGroup::Layout},
+			{GeneratorControl{"braid-count", "Braid count", 2, 5, 1, 2, ControlGroup::Terrain}
+				 .withSearchRange(2, 4),
+			 GeneratorControl{"rejoining-frequency", "Rejoining frequency", 1, 3, 1, 2,
+							  ControlGroup::Terrain}
+				 .withSearchRange(1, 3),
+			 GeneratorControl{"island-size", "Island size", 32, 48, 8, 32, ControlGroup::Layout}
+				 .withSearchRange(32, 48),
+			 GeneratorControl{"crossing-spacing", "Crossing spacing", 32, 96, 16, 64,
+							  ControlGroup::Layout}
+				 .withSearchRange(32, 64),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

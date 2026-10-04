@@ -362,28 +362,33 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition islesDefinition()
 {
 	return {
-			"isles",
-			6,
-			"Isles",
-			3,
-			false,
-			// Island size is each island's diameter as a percentage of the least distance between
+		"isles",
+		6,
+		"Isles",
+		3,
+		false,
+		// Island size is each island's diameter as a percentage of the least distance between
 		// colonies (see layoutIslands for its range); bridge width is how many steps a bridge's
 		// ridge spreads.
-		{{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false},
-		 {"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain, false},
+		{GeneratorControl{"island-size", "Island size", 45, 65, 5, 60, ControlGroup::Terrain, false}
+			 .withSearchRange(55, 65),
+		 GeneratorControl{"bridge-width", "Land bridge width", 3, 6, 1, 4, ControlGroup::Terrain,
+						  false}
+			 .withSearchRange(4, 6),
 		 // Off, every colony's island stands alone in the sea.
-		 GeneratorControl::toggle("land-bridges", "Land bridges", true, ControlGroup::Terrain),
+		 GeneratorControl::toggle("land-bridges", "Land bridges", true, ControlGroup::Terrain)
+			 .withSearchValues({1}),
 		 // Off, islands meet the sea without a band of sand.
-		 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain),
+		 GeneratorControl::toggle("sandy-beaches", "Sandy beaches", true, ControlGroup::Terrain)
+			 .withSearchValues({1}),
 		 // Wheat and wood scale each colony's fields, stone its deposits, algae its patch.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate,
-			true,
-			nullptr,
-			validateWorld,
-			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
+		generate,
+		true,
+		nullptr,
+		validateWorld,
+		{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
 }

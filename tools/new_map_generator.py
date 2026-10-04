@@ -202,7 +202,7 @@ GeneratorDefinition {lower}Definition()
 			"{Display}",
 			1,
 			false,
-			{{{{"home-size", "Home size", 10, 24, 1, 14, ControlGroup::Layout}},
+			{{GeneratorControl{{"home-size", "Home size", 10, 24, 1, 14, ControlGroup::Layout}}.withSearchRange(14, 20),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount")}},
 			generate,

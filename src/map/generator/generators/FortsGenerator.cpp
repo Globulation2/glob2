@@ -800,29 +800,33 @@ FortsOptions::FortsOptions(const GenerationRequest &r)
 GeneratorDefinition fortsDefinition()
 {
 	return {
-			"forts",
-			35,
-			"Forts",
-			// Revision 7: one fort design per map (interior layout, wall style, quarter turn and
-			// mirror, market-town plan), moats all the way round, plots a tile clear of the stone.
-			7,
-			false,
-			{{"home-size", "Home size", 20, 26, 2, 22, ControlGroup::Layout},
-			 {"gate-width", "Gate width", 4, 8, 2, 6, ControlGroup::Layout},
-			 {"river-width", "River width", 3, 13, 2, 9, ControlGroup::Layout},
-			 {"lakes", "Lakes", 0, 3, 1, 1, ControlGroup::Layout},
-			 {"village-size", "Village size", 8, 12, 2, 10, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// See BreachableHighlands: "arena" means one shared battleground elsewhere in this file
-			// set, but each colony here gets its own walled fort, so it uses "stronghold" instead.
-			{"terrain:stronghold", "feature:stone-walls", "feature:river", "style:siege",
-			 "style:fortified", "fairness:stamped-lattice"}};
+		"forts",
+		35,
+		"Forts",
+		// Revision 7: one fort design per map (interior layout, wall style, quarter turn and
+		// mirror, market-town plan), moats all the way round, plots a tile clear of the stone.
+		7,
+		false,
+		{GeneratorControl{"home-size", "Home size", 20, 26, 2, 22, ControlGroup::Layout}
+			 .withSearchRange(22, 26),
+		 GeneratorControl{"gate-width", "Gate width", 4, 8, 2, 6, ControlGroup::Layout}
+			 .withSearchRange(6, 8),
+		 GeneratorControl{"river-width", "River width", 3, 13, 2, 9, ControlGroup::Layout}
+			 .withSearchRange(5, 11),
+		 GeneratorControl{"lakes", "Lakes", 0, 3, 1, 1, ControlGroup::Layout}.withSearchRange(1, 3),
+		 GeneratorControl{"village-size", "Village size", 8, 12, 2, 10, ControlGroup::Layout}
+			 .withSearchRange(10, 12),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// See BreachableHighlands: "arena" means one shared battleground elsewhere in this file
+		// set, but each colony here gets its own walled fort, so it uses "stronghold" instead.
+		{"terrain:stronghold", "feature:stone-walls", "feature:river", "style:siege",
+		 "style:fortified", "fairness:stamped-lattice"}};
 }

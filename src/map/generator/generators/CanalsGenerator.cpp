@@ -304,6 +304,7 @@ void blockWalls(Layout &L, int cell, int reach, GenerationContext &context)
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const CanalsOptions o(request);
+	context.telemetry.choice("canals.block-shape", o.blockShape == 0 ? "Squares" : "Hexagons");
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
@@ -833,38 +834,47 @@ CanalsOptions::CanalsOptions(const GenerationRequest &r)
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
+	blockShape = resolveDesignChoice<design>(r, "block-shape", 2, "canals/block-shape");
 }
 
 GeneratorDefinition canalsDefinition()
 {
 	return {
-			"canals",
-			29,
-			"Canals",
-			6,
-			false,
-			// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
+		"canals",
+		29,
+		"Canals",
+		7,
+		false,
+		// Blocks of 24 give a 256 map about a hundred blocks; a canal of 3 corners (two tiles of
 		// water) is sealed against diagonal steps and is reached by a level-2 tower, one upgrade
 		// from what the colonies start with; a fifth again in extra bridges keeps most blocks
 		// islands. Hexagonal blocks sit kHexPitchPercent of the block size apart.
-		{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons"}, 0,
-								  ControlGroup::Layout),
-		 {"block-size", "Block size", 16, 40, 2, 24, ControlGroup::Layout},
-		 {"canal-width", "Canal width", 3, 5, 1, 3, ControlGroup::Terrain},
+		{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons", "Random"},
+								  2, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl{"block-size", "Block size", 16, 40, 2, 24, ControlGroup::Layout}
+			 .withSearchRange(22, 34),
+		 GeneratorControl{"canal-width", "Canal width", 3, 5, 1, 3, ControlGroup::Terrain}
+			 .withSearchRange(3, 4),
 		 // FEEDBACK 2026-09-13: warp 80 and extra bridges 30 (were 40 and 20).
-		 {"warp", "Warp", 0, 100, 10, 80, ControlGroup::Terrain},
-		 {"extra-bridges", "Extra bridges", 0, 100, 10, 30, ControlGroup::Layout},
+		 GeneratorControl{"warp", "Warp", 0, 100, 10, 80, ControlGroup::Terrain}.withSearchRange(
+			 30, 100),
+		 GeneratorControl{"extra-bridges", "Extra bridges", 0, 100, 10, 30, ControlGroup::Layout}
+			 .withSearchRange(20, 70),
 		 // Level 1 by default since 2026-09-14, so players upgrade their own towers.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
-		 {"tower-count", "Towers per colony", 1, 4, 1, 2, ControlGroup::Layout},
+		 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 1,
+						  ControlGroup::Layout}
+			 .withSearchRange(0, 1),
+		 GeneratorControl{"tower-count", "Towers per colony", 1, 4, 1, 2, ControlGroup::Layout}
+			 .withSearchRange(1, 3),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:urban", "feature:canals", "style:tight-building"}};
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:urban", "feature:canals", "style:tight-building"}};
 }

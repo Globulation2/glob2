@@ -7,6 +7,44 @@
 #include <algorithm>
 #include <random>
 #include <stdexcept>
+GeneratorControl GeneratorControl::withSearchRange(int low, int high) const
+{
+	GeneratorControl c = *this;
+	c.searchRange = std::pair{low, high};
+	return c;
+}
+GeneratorControl GeneratorControl::withSearchValues(std::vector<int> values) const
+{
+	GeneratorControl c = *this;
+	c.searchAllowedValues = std::move(values);
+	return c;
+}
+std::vector<int> GeneratorControl::searchValues() const
+{
+	if (searchAllowedValues)
+		return *searchAllowedValues;
+	std::vector<int> result;
+	if (searchRange)
+		for (int v : values())
+			if (v >= searchRange->first && v <= searchRange->second)
+				result.push_back(v);
+	return result;
+}
+bool GeneratorControl::validSearchDomain() const
+{
+	if (searchRange.has_value() == searchAllowedValues.has_value())
+		return false;
+	const auto legal = values();
+	if (searchRange && (isToggle() || isChoice() || searchRange->first > searchRange->second ||
+						!std::binary_search(legal.begin(), legal.end(), searchRange->first) ||
+						!std::binary_search(legal.begin(), legal.end(), searchRange->second)))
+		return false;
+	const auto domain = searchValues();
+	return !domain.empty() && std::is_sorted(domain.begin(), domain.end()) &&
+		   std::adjacent_find(domain.begin(), domain.end()) == domain.end() &&
+		   std::all_of(domain.begin(), domain.end(),
+					   [&](int v) { return std::binary_search(legal.begin(), legal.end(), v); });
+}
 GeneratorControl GeneratorControl::toggle(std::string id, const char *label, bool on,
 										  ControlGroup group)
 {
@@ -16,7 +54,10 @@ GeneratorControl GeneratorControl::toggle(std::string id, const char *label, boo
 }
 GeneratorControl GeneratorControl::percentage(std::string id, const char *label, int maximum)
 {
-	return {std::move(id), label, 0, maximum, 25, 100, ControlGroup::Resources};
+	// Ambient layers need enough supply without crowding expansion ground. Generators with
+	// structural or deliberately scarce layers override this envelope at registration.
+	return GeneratorControl{std::move(id), label, 0, maximum, 25, 100, ControlGroup::Resources}
+		.withSearchRange(75, std::min(150, maximum));
 }
 GeneratorControl GeneratorControl::choice(std::string id, const char *label,
 										  std::vector<const char *> names, int defaultIndex,
@@ -106,10 +147,14 @@ GeneratorControl editorSizeControl(const GeneratorControl &shared)
 const std::vector<GeneratorControl> &sharedGeneratorControls()
 {
 	static const std::vector<GeneratorControl> controls = {
-		{"width", "Width", 6, 9, 1, 8, ControlGroup::Shared, true},
-		{"height", "Height", 6, 9, 1, 8, ControlGroup::Shared, true},
-		{"teams", "Colonies", 1, Team::MAX_COUNT, 1, 4, ControlGroup::Shared},
-		{"workers", "Starting workers", 1, 8, 1, 4, ControlGroup::Shared}};
+		GeneratorControl{"width", "Width", 6, 9, 1, 8, ControlGroup::Shared, true}.withSearchRange(
+			7, 9),
+		GeneratorControl{"height", "Height", 6, 9, 1, 8, ControlGroup::Shared, true}
+			.withSearchRange(7, 9),
+		GeneratorControl{"teams", "Colonies", 1, Team::MAX_COUNT, 1, 4, ControlGroup::Shared}
+			.withSearchRange(2, 8),
+		GeneratorControl{"workers", "Starting workers", 1, 8, 1, 4, ControlGroup::Shared}
+			.withSearchRange(3, 6)};
 	return controls;
 }
 GenerationRequest::GenerationRequest()
@@ -138,7 +183,8 @@ const char *GenerationRequest::methodName(int id)
 {
 	return GeneratorRegistry::builtins().at(id).nameKey;
 }
-bool GenerationRequest::randomizeControls(std::uint32_t seed, int attempts)
+bool GenerationRequest::randomizeControls(std::uint32_t seed, int attempts,
+										  ParameterDomain sampling)
 {
 	// A stream of its own: this is lobby randomness, nothing the simulation ever sees.
 	std::mt19937 rng(seed);
@@ -148,8 +194,16 @@ bool GenerationRequest::randomizeControls(std::uint32_t seed, int attempts)
 		GenerationRequest draft = *this;
 		for (const auto &c : definition.controls)
 		{
-			const std::vector<int> domain = c.values();
-			c.set(draft, domain[rng() % domain.size()]);
+			const std::vector<int> domain =
+				sampling == ParameterDomain::Search ? c.searchValues() : c.values();
+			const std::uint32_t bound = std::uint32_t(domain.size());
+			const std::uint32_t threshold = -bound % bound;
+			std::uint32_t value;
+			do
+			{
+				value = rng();
+			} while (value < threshold);
+			c.set(draft, domain[value % bound]);
 		}
 		if (validateGenerationRequest(draft, definition).empty())
 		{

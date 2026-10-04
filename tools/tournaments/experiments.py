@@ -8,7 +8,7 @@ from .analysis import POLICIES, reanalyze
 from .bundles import inspect_bundle
 from .common import atomic_json, digest, read_json
 from .coordinator import Coordinator
-from .model import grid, job, rotations, seeded_samples, validate_experiment
+from .model import generator_samples, grid, job, rotations, seeded_samples, validate_experiment
 
 
 class Planner:
@@ -22,10 +22,20 @@ class Planner:
         if self.map_build not in self.bundles:
             raise ValueError('map_build needs a supplied bundle')
         self.jobs, self.maps = [], {}
+        if config.get('parameter_domain', 'search') not in ('search', 'legal'):
+            raise ValueError('parameter_domain must be search or legal')
+
+    def parameter_samples(self, build, method, count, seed):
+        return generator_samples(self.bundles[build]['capabilities'], method, count, seed,
+                                 self.config.get('parameter_domain', 'search'))
 
     def generated(self, method, seed, n, variant=None):
         config = self.config
-        generator = {'generator': method, 'params': dict(config.get('generator_params', {}), teams=n),
+        params = (self.parameter_samples(self.map_build, method, 1, seed)[0]
+                  if config.get('randomize_parameters') else {})
+        params.update(config.get('generator_params', {}))
+        params['teams'] = n
+        generator = {'generator': method, 'params': params,
                      'candidates': config.get('candidates', 5), 'rotations': n}
         if variant:
             generator['params'].update(variant)
@@ -67,6 +77,15 @@ class Planner:
                                      config={'generator':method,'params':params,'candidates':config.get('candidates',0)},
                                      outputs=config.get('outputs',{}), limits={'timeout_seconds':config.get('timeout_seconds',60)},
                                      labels={'variant':name,'map_seed':seed,'generator':method}))
+            if config.get('randomize_parameters'):
+                for build, method in itertools.product(self.builds, methods):
+                    samples = self.parameter_samples(build, method, config.get('samples',32), config.get('sample_seed',1))
+                    for seed, (i, params) in itertools.product(seeds, enumerate(samples)):
+                        params = params | config.get('generator_params', {})
+                        self.jobs.append(job('generate_map',build,seeds={'map':seed},
+                            config={'generator':method,'params':params,'candidates':config.get('candidates',0)},
+                            outputs=config.get('outputs',{}), limits={'timeout_seconds':config.get('timeout_seconds',60)},
+                            labels={'variant':f'catalog-{i}','map_seed':seed,'generator':method}))
         elif self.kind == 'fairness':
             n = config.get('colonies',4)
             for method, map_seed in itertools.product(methods,seeds):

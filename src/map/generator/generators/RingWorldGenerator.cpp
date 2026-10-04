@@ -732,23 +732,30 @@ RingWorldOptions::RingWorldOptions(const GenerationRequest &r)
 
 GeneratorDefinition ringWorldDefinition()
 {
-	return {
-			"ring-world",
+	return {"ring-world",
 			16,
 			"Ring world",
 			1,
 			false,
 			// Belt width is the share of the map's breadth the belt covers on average; lake density
 			// is lakes per 4096 tiles of belt; resource islands are counted per 128x128 of map.
-			{{"belt-width", "Belt width", 30, 70, 5, 45, ControlGroup::Terrain},
-			 {"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain},
-			 {"lake-density", "Lake density", 0, 8, 1, 2, ControlGroup::Terrain},
-			 {"resource-islands", "Resource islands", 0, 10, 1, 2, ControlGroup::Resources},
+			{GeneratorControl{"belt-width", "Belt width", 30, 70, 5, 45, ControlGroup::Terrain}
+				 .withSearchRange(40, 60),
+			 GeneratorControl{"coast-roughness", "Coast roughness", 0, 100, 5, 50,
+							  ControlGroup::Terrain}
+				 .withSearchRange(20, 75),
+			 GeneratorControl{"lake-density", "Lake density", 0, 8, 1, 2, ControlGroup::Terrain}
+				 .withSearchRange(1, 4),
+			 GeneratorControl{"resource-islands", "Resource islands", 0, 10, 1, 2,
+							  ControlGroup::Resources}
+				 .withSearchRange(1, 5),
 			 // Off, the belt's centre line runs straight round the map.
-			 GeneratorControl::toggle("winding-belt", "Winding belt", true, ControlGroup::Terrain),
+			 GeneratorControl::toggle("winding-belt", "Winding belt", true, ControlGroup::Terrain)
+				 .withSearchValues({0, 1}),
 			 // Off, every colony starts on the same coast of the belt.
 			 GeneratorControl::toggle("both-coasts", "Colonies on both coasts", true,
-									  ControlGroup::Layout),
+									  ControlGroup::Layout)
+				 .withSearchValues({0, 1}),
 			 // The ambient scatter's wheat, wood, stone and fruit and the shallows' algae. Every
 			 // home's starter patches and each island's prize stay as they are.
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

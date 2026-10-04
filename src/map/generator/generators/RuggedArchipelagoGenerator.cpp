@@ -361,26 +361,29 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition ruggedArchipelagoDefinition()
 {
 	return {
-			"rugged-archipelago",
-			8,
-			"Old islands",
-			3,
-			false,
-			// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
+		"rugged-archipelago",
+		8,
+		"Old islands",
+		3,
+		false,
+		// Island size scales the growth passes (see plantBootstraps for why its range is narrow);
 		// beach size is the number of beach-widening passes.
-		{{"island-size", "Island size", 50, 70, 1, 65, ControlGroup::Terrain, false},
-		 {"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false},
+		{GeneratorControl{"island-size", "Island size", 50, 70, 1, 65, ControlGroup::Terrain, false}
+			 .withSearchRange(60, 70),
+		 GeneratorControl{"beach-size", "Beach size", 0, 4, 1, 1, ControlGroup::Terrain, false}
+			 .withSearchRange(1, 3),
 		 // Off, an island gets no fourth deposit of whichever of wheat or wood came out smaller.
 		 GeneratorControl::toggle("extra-deposit", "Extra starting deposit", true,
-								  ControlGroup::Resources),
+								  ControlGroup::Resources)
+			 .withSearchValues({1}),
 		 // The area of each island's own wheat, wood, stone and algae deposits.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate,
-			true,
-			nullptr,
-			validateWorld,
-			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
+		generate,
+		true,
+		nullptr,
+		validateWorld,
+		{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling"}};
 }

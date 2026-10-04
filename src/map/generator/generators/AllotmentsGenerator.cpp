@@ -620,25 +620,29 @@ AllotmentsOptions::AllotmentsOptions(const GenerationRequest &r)
 GeneratorDefinition allotmentsDefinition()
 {
 	return {
-			"allotments",
-			40,
-			"Allotments",
-			2,
-			false,
-			// Site size is the pitch of the parcel tiling: 36 gives a 256 map seven parcels a side.
-			// Plots four tiles wide are narrow enough to read as strips and wide enough to work.
-			{{"site-size", "Site size", 28, 48, 4, 36, ControlGroup::Layout},
-			 {"strip-width", "Plot width", 3, 5, 1, 4, ControlGroup::Layout},
-			 GeneratorControl::choice("plot-mix", "Plot mix", {"Tended", "Mixed", "Overgrown"}, 1),
-			 GeneratorControl::choice("commons", "Commons", {"Few", "Some", "Many"}, 1),
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:urban", "feature:farmland", "style:tight-building", "fairness:stamped-lattice"}};
+		"allotments",
+		40,
+		"Allotments",
+		2,
+		false,
+		// Site size is the pitch of the parcel tiling: 36 gives a 256 map seven parcels a side.
+		// Plots four tiles wide are narrow enough to read as strips and wide enough to work.
+		{GeneratorControl{"site-size", "Site size", 28, 48, 4, 36, ControlGroup::Layout}
+			 .withSearchRange(32, 44),
+		 GeneratorControl{"strip-width", "Plot width", 3, 5, 1, 4, ControlGroup::Layout}
+			 .withSearchRange(3, 5),
+		 GeneratorControl::choice("plot-mix", "Plot mix", {"Tended", "Mixed", "Overgrown"}, 1)
+			 .withSearchValues({0, 1, 2}),
+		 GeneratorControl::choice("commons", "Commons", {"Few", "Some", "Many"}, 1)
+			 .withSearchValues({0, 1, 2}),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:urban", "feature:farmland", "style:tight-building", "fairness:stamped-lattice"}};
 }

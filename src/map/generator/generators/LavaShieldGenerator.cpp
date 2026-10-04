@@ -846,8 +846,7 @@ LavaShieldOptions::LavaShieldOptions(const GenerationRequest &r)
 
 GeneratorDefinition lavaShieldDefinition()
 {
-	return {
-			"lava-shield",
+	return {"lava-shield",
 			51,
 			"Lava shield",
 			// Revision 3: the towns are chosen by the fitted fairness model now. Lava shield is
@@ -859,11 +858,15 @@ GeneratorDefinition lavaShieldDefinition()
 			// edge every town shares.
 			4,
 			false,
-			{{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout},
-			 {"long-tongues", "Long tongues", 25, 75, 25, 50, ControlGroup::Layout},
-			 {"branching", "Branching", 0, 3, 1, 2, ControlGroup::Layout},
-			 {"rim-width", "Crater rim width", 6, 12, 2, 8, ControlGroup::Terrain},
-			 GeneratorControl::toggle("islets", "Islets", true),
+			{GeneratorControl{"tongue-count", "Lava tongues", 3, 9, 1, 5, ControlGroup::Layout}
+				 .withSearchRange(4, 7),
+			 GeneratorControl{"long-tongues", "Long tongues", 25, 75, 25, 50, ControlGroup::Layout}
+				 .withSearchRange(25, 75),
+			 GeneratorControl{"branching", "Branching", 0, 3, 1, 2, ControlGroup::Layout}
+				 .withSearchRange(1, 3),
+			 GeneratorControl{"rim-width", "Crater rim width", 6, 12, 2, 8, ControlGroup::Terrain}
+				 .withSearchRange(8, 12),
+			 GeneratorControl::toggle("islets", "Islets", true).withSearchValues({0, 1}),
 			 // Both percentage controls intentionally retain the shared 100% default.
 			 // The 2026-09-15 paired AI probe tried 125% wheat / 75% wood: it put
 			 // roughly 400 more wheat tiles on a 256-square island but increased

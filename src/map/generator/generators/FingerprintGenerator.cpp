@@ -86,6 +86,10 @@ struct Layout
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const FingerprintOptions o(request);
+	context.telemetry.choice("fingerprint.pattern", o.pattern == 0   ? "Labyrinth"
+													: o.pattern == 1 ? "Islands"
+																	 : "Channels");
+	context.telemetry.choice("fingerprint.barrier", o.barrier == 0 ? "Water" : "Stone");
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
@@ -262,32 +266,46 @@ FingerprintOptions::FingerprintOptions(const GenerationRequest &r)
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
 {
+	if (pattern == 3)
+		pattern = GenerationContext::choiceFromSeed(
+			r.seed, "fingerprint/pattern",
+			GenerationRequest::control(r.method, "pattern").searchValues());
+	if (barrier == 2)
+		barrier = GenerationContext::choiceFromSeed(
+			r.seed, "fingerprint/barrier",
+			GenerationRequest::control(r.method, "barrier").searchValues());
 }
 
 GeneratorDefinition fingerprintDefinition()
 {
 	return {
-			"fingerprint",
-			26,
-			"Fingerprint",
-			3,
-			false,
-			{// FEEDBACK 2026-09-13: wavelength 30 and homes of 18 (were 20 and 12).
-			 {"wavelength", "Wavelength", 12, 48, 2, 30, ControlGroup::Terrain},
-			 GeneratorControl::choice("pattern", "Pattern", {"Labyrinth", "Islands", "Channels"}, 0,
-									  ControlGroup::Terrain),
-			 GeneratorControl::choice("barrier", "Barrier", {"Water", "Stone"}, 0,
-									  ControlGroup::Terrain),
-			 {"grain", "Grain", 0, 100, 10, 0, ControlGroup::Terrain},
-			 {"home-size", "Home size", 10, 24, 1, 18, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:natural", "feature:river", "feature:maze", "style:tight-building"}};
+		"fingerprint",
+		26,
+		"Fingerprint",
+		4,
+		false,
+		{// FEEDBACK 2026-09-13: wavelength 30 and homes of 18 (were 20 and 12).
+		 GeneratorControl{"wavelength", "Wavelength", 12, 48, 2, 30, ControlGroup::Terrain}
+			 .withSearchRange(24, 40),
+		 GeneratorControl::choice("pattern", "Pattern",
+								  {"Labyrinth", "Islands", "Channels", "Random"}, 3,
+								  ControlGroup::Terrain)
+			 .withSearchValues({0, 1, 2}),
+		 GeneratorControl::choice("barrier", "Barrier", {"Water", "Stone", "Random"}, 2,
+								  ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl{"grain", "Grain", 0, 100, 10, 0, ControlGroup::Terrain}.withSearchRange(
+			 0, 70),
+		 GeneratorControl{"home-size", "Home size", 10, 24, 1, 18, ControlGroup::Layout}
+			 .withSearchRange(18, 24),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:natural", "feature:river", "feature:maze", "style:tight-building"}};
 }

@@ -647,21 +647,23 @@ LastTreelineOptions::LastTreelineOptions(const GenerationRequest &r)
 }
 GeneratorDefinition lastTreelineDefinition()
 {
-	return {"last-treeline",
-			70,
-			"The Last Treeline",
-			3,
-			false,
-			{{"woodland-depth", "Woodland depth", 12, 16, 2, 14, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:natural", "feature:forest", "feature:lakes", "feature:desert",
-			 "style:contested-center", "style:wide-open"}};
+	return {
+		"last-treeline",
+		70,
+		"The Last Treeline",
+		3,
+		false,
+		{GeneratorControl{"woodland-depth", "Woodland depth", 12, 16, 2, 14, ControlGroup::Layout}
+			 .withSearchRange(12, 16),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:natural", "feature:forest", "feature:lakes", "feature:desert",
+		 "style:contested-center", "style:wide-open"}};
 }

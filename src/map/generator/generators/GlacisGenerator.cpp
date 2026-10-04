@@ -1145,29 +1145,35 @@ GlacisOptions::GlacisOptions(const GenerationRequest &r)
 GeneratorDefinition glacisDefinition()
 {
 	return {
-			"glacis",
-			39,
-			"The Glacis",
-			3,
-			false,
-			// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
-			// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of
-			// 10 reads as a cleared ring against the country; under 6 it does not. Starting towers
-			// off by default: a tower's empty stone store recruits workers before the first harvest.
-			{{"fort-size", "Fort size", 20, 36, 2, 30, ControlGroup::Layout},
-			 GeneratorControl::choice("bastions", "Bastions", {"Mixed", "Four-pointed", "Five-pointed", "Six-pointed"}, 0),
-			 {"glacis-width", "Glacis width", 6, 14, 2, 10, ControlGroup::Layout},
-			 {"gates", "Gates", 1, 4, 1, 4, ControlGroup::Layout},
-			 {"starting-towers", "Starting tower level", 0, 3, 1, 0, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "feature:forest", "feature:river",
-			 "style:fortified", "style:siege", "fairness:stamped-lattice"}};
+		"glacis",
+		39,
+		"The Glacis",
+		3,
+		false,
+		// Fort size is the bastion tip radius: 28 holds a small town and three gardens; 20 is
+		// the least with a courtyard. Bastions Mixed deals four, five or six per map. A glacis of
+		// 10 reads as a cleared ring against the country; under 6 it does not. Starting towers
+		// off by default: a tower's empty stone store recruits workers before the first harvest.
+		{GeneratorControl{"fort-size", "Fort size", 20, 36, 2, 30, ControlGroup::Layout}
+			 .withSearchRange(28, 36),
+		 GeneratorControl::choice("bastions", "Bastions",
+								  {"Mixed", "Four-pointed", "Five-pointed", "Six-pointed"}, 0)
+			 .withSearchValues({0, 1, 2, 3}),
+		 GeneratorControl{"glacis-width", "Glacis width", 6, 14, 2, 10, ControlGroup::Layout}
+			 .withSearchRange(8, 12),
+		 GeneratorControl{"gates", "Gates", 1, 4, 1, 4, ControlGroup::Layout}.withSearchRange(2, 4),
+		 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 0,
+						  ControlGroup::Layout}
+			 .withSearchRange(0, 1),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:arena", "feature:stone-walls", "feature:forest", "feature:river",
+		 "style:fortified", "style:siege", "fairness:stamped-lattice"}};
 }

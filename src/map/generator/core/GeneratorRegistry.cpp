@@ -91,6 +91,9 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 {
 	std::set<int> numbers;
 	std::set<std::string> ids;
+	for (const auto &c : sharedGeneratorControls())
+		if (!c.validSearchDomain())
+			throw std::invalid_argument("Invalid shared generator search domain: " + c.id);
 	for (const auto &d : definitions)
 	{
 		if (!d.id || !*d.id || !d.nameKey || d.legacyId < 0 || !d.generate ||
@@ -112,8 +115,10 @@ GeneratorRegistry::GeneratorRegistry(std::vector<GeneratorDefinition> values)
 				(c.isToggle() && (c.minimum != 0 || c.maximum != 1 || c.step != 1 || c.powerOfTwo ||
 								  c.terrainWeight || !c.allowedValues.empty())) ||
 				(c.isChoice() && !validChoice(c)) ||
-				c.normalize(c.defaultValue) != c.defaultValue || !controls.insert(c.id).second)
-				throw std::invalid_argument("Invalid generator control");
+				c.normalize(c.defaultValue) != c.defaultValue || !controls.insert(c.id).second ||
+				!c.validSearchDomain())
+				throw std::invalid_argument(std::string("Invalid generator control: ") + d.id +
+											"/" + c.id);
 	}
 }
 const GeneratorDefinition *GeneratorRegistry::find(int id) const
