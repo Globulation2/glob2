@@ -208,6 +208,9 @@ export class Checkout {
     await this.db.transaction().execute(async (lock) => {
       await sql`SELECT pg_advisory_xact_lock(hashtextextended(${paymentId},0))`.execute(lock);
       const intent = await this.stripe.paymentIntents.retrieve(paymentId);
+      // Skin checkouts identify their account, while legacy Hive payments may
+      // omit creditProduct. Do not mistake those skin payments for legacy Hive.
+      if (!intent.metadata['creditProduct'] && intent.metadata['accountId']) return;
       const purchaseId = intent.metadata['purchaseId'];
       if (!purchaseId || (intent.metadata['creditProduct'] ?? 'hive') !== this.product) return; // A different application using the same Stripe account.
       if (!session) {

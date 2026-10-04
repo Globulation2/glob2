@@ -1,3 +1,4 @@
+import Stripe from 'stripe';
 import { sql } from 'kysely';
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { Checkout, HiveError } from '@glob2/billing';
@@ -260,7 +261,7 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
         try {
           await checkout.webhook(request.body as Buffer, signature);
         } catch (error) {
-          if (error instanceof Error && error.name === 'StripeSignatureVerificationError')
+          if (error instanceof Stripe.errors.StripeSignatureVerificationError)
             throw apiError('bad_request', 'Invalid payment signature.');
           throw error;
         }

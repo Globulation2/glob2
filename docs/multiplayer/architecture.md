@@ -735,7 +735,9 @@ Configure the signed `/api/v1/skins/stripe-webhook` endpoint for
 `checkout.session.async_payment_failed`, `checkout.session.expired`,
 `charge.refunded`, `charge.dispute.created`, `charge.dispute.updated`, and
 `charge.dispute.closed`. The scoped parser retains exact request bytes for SDK
-signature validation. Event IDs are recorded after successful processing, and
+signature validation. Skin and credit webhook handlers acknowledge payments for
+the other product without changing its ledger, so all three products can share
+one Stripe account. Event IDs are recorded after successful processing, and
 purchase row locks serialize reconciliation. Every reconciliation re-reads the
 session and verifies mode, owner, product price and quantity. It grants one
 entitlement per purchase only after payment. Any refund revokes that grant;
