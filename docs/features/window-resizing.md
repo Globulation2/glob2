@@ -196,7 +196,9 @@ The follow-up audit covers these drawing paths:
 | Minimap, offscreen arrows, mouse placement previews, screen-space messages and clouds | Keep their existing view-specific behavior; these are not duplicated as map objects. |
 
 Windowed/Fullscreen and F11 share a live desktop-fullscreen transition, retaining
-windowed dimensions and restoring state on failure. Interface scale applies live
+windowed dimensions and restoring state on failure. The transition waits for SDL to
+finish the fullscreen change and any restoration resize before reading dimensions
+and saving display preferences. Interface scale applies live
 without recreating the window or graphics context. Renderer changes require restart.
 
 `GraphicContext` distinguishes window points, drawable pixels and logical layout.
