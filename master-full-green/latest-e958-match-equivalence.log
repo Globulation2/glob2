@@ -1,0 +1,473 @@
+﻿2026-10-04T10:02:18.4070800Z Current runner version: '2.337.0'
+2026-10-04T10:02:18.4100290Z ##[group]Runner Image Provisioner
+2026-10-04T10:02:18.4101236Z Hosted Compute Agent
+2026-10-04T10:02:18.4102045Z Version: 20260901.588
+2026-10-04T10:02:18.4102852Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T10:02:18.4103853Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T10:02:18.4104672Z Worker ID: {7d20a894-651a-41ee-9cae-a7cc342403ce}
+2026-10-04T10:02:18.4105511Z Azure Region: westus3
+2026-10-04T10:02:18.4106278Z ##[endgroup]
+2026-10-04T10:02:18.4108434Z ##[group]Operating System
+2026-10-04T10:02:18.4109410Z Ubuntu
+2026-10-04T10:02:18.4110072Z 24.04.5
+2026-10-04T10:02:18.4110688Z LTS
+2026-10-04T10:02:18.4111400Z ##[endgroup]
+2026-10-04T10:02:18.4112104Z ##[group]Runner Image
+2026-10-04T10:02:18.4113026Z Image: ubuntu-24.04
+2026-10-04T10:02:18.4113771Z Version: 20260927.320.1
+2026-10-04T10:02:18.4115484Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-04T10:02:18.4117578Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-04T10:02:18.4119155Z ##[endgroup]
+2026-10-04T10:02:18.4123052Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T10:02:18.4125523Z Actions: write
+2026-10-04T10:02:18.4126321Z ArtifactMetadata: write
+2026-10-04T10:02:18.4127084Z Attestations: write
+2026-10-04T10:02:18.4127894Z Checks: write
+2026-10-04T10:02:18.4128577Z CodeQuality: write
+2026-10-04T10:02:18.4129506Z Contents: write
+2026-10-04T10:02:18.4130319Z CopilotRequests: write
+2026-10-04T10:02:18.4131043Z Deployments: write
+2026-10-04T10:02:18.4131828Z Discussions: write
+2026-10-04T10:02:18.4132503Z Drives: write
+2026-10-04T10:02:18.4133231Z Issues: write
+2026-10-04T10:02:18.4134069Z Metadata: read
+2026-10-04T10:02:18.4134908Z Models: read
+2026-10-04T10:02:18.4135635Z Packages: write
+2026-10-04T10:02:18.4136302Z Pages: write
+2026-10-04T10:02:18.4136936Z PullRequests: write
+2026-10-04T10:02:18.4137811Z RepositoryProjects: write
+2026-10-04T10:02:18.4138577Z SecurityEvents: write
+2026-10-04T10:02:18.4139512Z Statuses: write
+2026-10-04T10:02:18.4139996Z VulnerabilityAlerts: read
+2026-10-04T10:02:18.4140489Z ##[endgroup]
+2026-10-04T10:02:18.4142443Z Secret source: Actions
+2026-10-04T10:02:18.4143255Z Cache mode: write
+2026-10-04T10:02:18.4143904Z Prepare workflow directory
+2026-10-04T10:02:18.4558515Z Prepare all required actions
+2026-10-04T10:02:18.4598328Z Getting action download info
+2026-10-04T10:02:18.7556231Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T10:02:18.8755501Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-04T10:02:19.6343694Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T10:02:19.8740599Z Complete job name: browser/native simulation equivalence
+2026-10-04T10:02:19.9327050Z ##[group]Run actions/checkout@v4
+2026-10-04T10:02:19.9327702Z with:
+2026-10-04T10:02:19.9328150Z   ref: e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T10:02:19.9328638Z   repository: Globulation2/glob2
+2026-10-04T10:02:19.9332071Z   token: ***
+2026-10-04T10:02:19.9332418Z   ssh-strict: true
+2026-10-04T10:02:19.9332763Z   ssh-user: git
+2026-10-04T10:02:19.9333122Z   persist-credentials: true
+2026-10-04T10:02:19.9333507Z   clean: true
+2026-10-04T10:02:19.9333857Z   sparse-checkout-cone-mode: true
+2026-10-04T10:02:19.9334264Z   fetch-depth: 1
+2026-10-04T10:02:19.9334603Z   fetch-tags: false
+2026-10-04T10:02:19.9334961Z   show-progress: true
+2026-10-04T10:02:19.9335328Z   lfs: false
+2026-10-04T10:02:19.9335647Z   submodules: false
+2026-10-04T10:02:19.9335993Z   set-safe-directory: true
+2026-10-04T10:02:19.9336383Z   allow-unsafe-pr-checkout: false
+2026-10-04T10:02:19.9336960Z env:
+2026-10-04T10:02:19.9337286Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:19.9337687Z   COMPATIBILITY: true
+2026-10-04T10:02:19.9338041Z ##[endgroup]
+2026-10-04T10:02:20.0167828Z Syncing repository: Globulation2/glob2
+2026-10-04T10:02:20.0170637Z ##[group]Getting Git version info
+2026-10-04T10:02:20.0171459Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-04T10:02:20.0172633Z [command]/usr/bin/git version
+2026-10-04T10:02:20.0220289Z git version 2.55.0
+2026-10-04T10:02:20.0236063Z ##[endgroup]
+2026-10-04T10:02:20.0248233Z Temporarily overriding HOME='/home/runner/work/_temp/9d3329ea-be96-44b8-9036-df527329824a' before making global git config changes
+2026-10-04T10:02:20.0250258Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T10:02:20.0252418Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T10:02:20.0302006Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-04T10:02:20.0305073Z ##[group]Initializing the repository
+2026-10-04T10:02:20.0308282Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-04T10:02:20.0403385Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T10:02:20.0404731Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T10:02:20.0406603Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T10:02:20.0407522Z hint: call:
+2026-10-04T10:02:20.0407992Z hint:
+2026-10-04T10:02:20.0408617Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T10:02:20.0409807Z hint:
+2026-10-04T10:02:20.0410513Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T10:02:20.0411668Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T10:02:20.0412576Z hint:
+2026-10-04T10:02:20.0413069Z hint: 	git branch -m <name>
+2026-10-04T10:02:20.0413639Z hint:
+2026-10-04T10:02:20.0414432Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T10:02:20.0416658Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-04T10:02:20.0419470Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-04T10:02:20.0462287Z ##[endgroup]
+2026-10-04T10:02:20.0463230Z ##[group]Disabling automatic garbage collection
+2026-10-04T10:02:20.0465694Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T10:02:20.0570504Z ##[endgroup]
+2026-10-04T10:02:20.0571845Z ##[group]Setting up auth
+2026-10-04T10:02:20.0572564Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T10:02:20.0574382Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T10:02:20.0890279Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T10:02:20.0926346Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T10:02:20.1119254Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T10:02:20.1148978Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T10:02:20.1337923Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T10:02:20.1374356Z ##[endgroup]
+2026-10-04T10:02:20.1375282Z ##[group]Fetching the repository
+2026-10-04T10:02:20.1382393Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T10:02:25.0000692Z From https://github.com/Globulation2/glob2
+2026-10-04T10:02:25.0001482Z  * branch            e958fe16e25091f177c2f280301d4cc3a509df71 -> FETCH_HEAD
+2026-10-04T10:02:25.0004124Z ##[endgroup]
+2026-10-04T10:02:25.0004687Z ##[group]Determining the checkout info
+2026-10-04T10:02:25.0006518Z ##[endgroup]
+2026-10-04T10:02:25.0013030Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T10:02:25.0060513Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T10:02:25.0088580Z ##[group]Checking out the ref
+2026-10-04T10:02:25.0093187Z [command]/usr/bin/git checkout --progress --force e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T10:02:26.0287838Z Updating files:  91% (12640/13874)
+2026-10-04T10:02:26.0364131Z Updating files:  92% (12765/13874)
+2026-10-04T10:02:26.0443658Z Updating files:  93% (12903/13874)
+2026-10-04T10:02:26.0528119Z Updating files:  94% (13042/13874)
+2026-10-04T10:02:26.0600448Z Updating files:  95% (13181/13874)
+2026-10-04T10:02:26.0912664Z Updating files:  96% (13320/13874)
+2026-10-04T10:02:26.1197956Z Updating files:  97% (13458/13874)
+2026-10-04T10:02:26.1339209Z Updating files:  98% (13597/13874)
+2026-10-04T10:02:26.1439470Z Updating files:  99% (13736/13874)
+2026-10-04T10:02:26.1439935Z Updating files: 100% (13874/13874)
+2026-10-04T10:02:26.1440310Z Updating files: 100% (13874/13874), done.
+2026-10-04T10:02:26.1524571Z Note: switching to 'e958fe16e25091f177c2f280301d4cc3a509df71'.
+2026-10-04T10:02:26.1524938Z 
+2026-10-04T10:02:26.1525191Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-04T10:02:26.1525948Z changes and commit them, and you can discard any commits you make in this
+2026-10-04T10:02:26.1526533Z state without impacting any branches by switching back to a branch.
+2026-10-04T10:02:26.1526883Z 
+2026-10-04T10:02:26.1527113Z If you want to create a new branch to retain commits you create, you may
+2026-10-04T10:02:26.1527692Z do so (now or later) by using -c with the switch command. Example:
+2026-10-04T10:02:26.1528018Z 
+2026-10-04T10:02:26.1528204Z   git switch -c <new-branch-name>
+2026-10-04T10:02:26.1528449Z 
+2026-10-04T10:02:26.1528586Z Or undo this operation with:
+2026-10-04T10:02:26.1528994Z 
+2026-10-04T10:02:26.1529167Z   git switch -
+2026-10-04T10:02:26.1529339Z 
+2026-10-04T10:02:26.1529654Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-04T10:02:26.1530103Z 
+2026-10-04T10:02:26.1530388Z HEAD is now at e958fe1 Document complete selected CI match trace coverage (#698)
+2026-10-04T10:02:26.1559317Z ##[endgroup]
+2026-10-04T10:02:26.1600107Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T10:02:26.1623549Z e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T10:02:26.1833061Z ##[group]Run actions/download-artifact@v4
+2026-10-04T10:02:26.1833307Z with:
+2026-10-04T10:02:26.1833499Z   pattern: browser-determinism-*
+2026-10-04T10:02:26.1833718Z   path: artifacts/ci-traces
+2026-10-04T10:02:26.1833934Z   merge-multiple: false
+2026-10-04T10:02:26.1834134Z   repository: Globulation2/glob2
+2026-10-04T10:02:26.1834335Z   run-id: 37187008011
+2026-10-04T10:02:26.1834510Z env:
+2026-10-04T10:02:26.1834674Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:26.1834867Z   COMPATIBILITY: true
+2026-10-04T10:02:26.1835044Z ##[endgroup]
+2026-10-04T10:02:26.3128193Z (node:2094) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T10:02:26.3129329Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T10:02:26.5859358Z Found 115 artifact(s)
+2026-10-04T10:02:26.5860067Z Filtering artifacts by pattern 'browser-determinism-*'
+2026-10-04T10:02:26.5877707Z Preparing to download the following artifacts:
+2026-10-04T10:02:26.5878931Z - browser-determinism-wasm-5 (ID: 11300007989, Size: 4790, Expected Digest: sha256:f71935769340e3ff63ed77ea4d81f53d6dafe6c9e1dfc89900b7ab179385f233)
+2026-10-04T10:02:26.5880305Z - browser-determinism-wasm-13 (ID: 11299515959, Size: 4856, Expected Digest: sha256:db334694025225d8add02da197737f25e7af605d1915879a26134a8f3f382e29)
+2026-10-04T10:02:26.5881613Z - browser-determinism-wasm-14 (ID: 11299025758, Size: 5587479, Expected Digest: sha256:beb5a5d101582db24c01ca57b2d8ab3ee7f034094a8306fc74584c764111740c)
+2026-10-04T10:02:26.5882985Z - browser-determinism-wasm-17 (ID: 11298995881, Size: 1329877, Expected Digest: sha256:aa27e1f95a9e8bc25464a8dda3572ecb620e14c4e68ddbd2a6fb228b0256f6d3)
+2026-10-04T10:02:26.5884883Z - browser-determinism-ubuntu-24.04 (ID: 11298975566, Size: 398778, Expected Digest: sha256:39e2d53b1f66378f637bad1b06e527761d145ed5bb345651bfb84bfb367f01cc)
+2026-10-04T10:02:26.5886385Z - browser-determinism-ubuntu-22.04 (ID: 11298896175, Size: 398780, Expected Digest: sha256:2da85cf8a86beeb8062a318558ff7f4efdaa5436f77a1275a543282afad2b9d1)
+2026-10-04T10:02:26.5887853Z - browser-determinism-wasm-0 (ID: 11298871873, Size: 6918229, Expected Digest: sha256:6b5eb6ed793d9ab08305551fbbf5f018e82614cd4f31123b7a7071d2b6266250)
+2026-10-04T10:02:26.5889422Z - browser-determinism-wasm-16 (ID: 11298812367, Size: 5357, Expected Digest: sha256:8f3c5cf719759842016f8d83dee2def27df751849018421034241c1b75e427d0)
+2026-10-04T10:02:26.5890803Z - browser-determinism-macos (ID: 11298782453, Size: 398775, Expected Digest: sha256:450a698671c2a933addd4d863051d3e5e6e956e33cdfe70a275a749a4d77e38c)
+2026-10-04T10:02:26.5892184Z - browser-determinism-wasm-19 (ID: 11298732368, Size: 5588190, Expected Digest: sha256:d1fb47d7c6c247f1280c440d9b61f6e4d4e6e5ca97ca332b4b95538a4a7dbf6b)
+2026-10-04T10:02:26.5893528Z - browser-determinism-windows (ID: 11298546981, Size: 398871, Expected Digest: sha256:76be6ff52eceb6aff8582b03f59645fff1630618ea6bbac2de7f45ea177ef59d)
+2026-10-04T10:02:26.5894944Z - browser-determinism-wasm-18 (ID: 11297994704, Size: 1329874, Expected Digest: sha256:ab7ec1cc071315ebbfc0fc003dfbd70168b03088de71dc46c506b6ed0d28516f)
+2026-10-04T10:02:26.7960240Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-adb94f09-09d7-54dc-8935-e760d3176be6/artifacts/ea21720c197cc38b19b856222856571f909246e912889bb31f103abd3e474cd0.zip
+2026-10-04T10:02:26.7962241Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-13
+2026-10-04T10:02:26.9075383Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-f8983b1d-b3c8-55e6-85d0-d27b81980247/artifacts/8b266f0b4186c3e9750c002ca3a004c80491af3dcaec0209223282b67a9704fb.zip
+2026-10-04T10:02:26.9077661Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-17
+2026-10-04T10:02:26.9147437Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-de6e5c8d-c963-57d8-a615-c7f4e39b131a/artifacts/4bab9590c69e164ce595b157b4dc3bc9538d915aa727cd8c96feca83371452fe.zip
+2026-10-04T10:02:26.9149539Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-16
+2026-10-04T10:02:26.9191261Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-4f51abdd-e3eb-59dc-ada6-8613255e9701/artifacts/88a582840e1d683d3226a109bdb1cd066c34e4ab7f5f51a338f89475cf24c562.zip
+2026-10-04T10:02:26.9193866Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-19
+2026-10-04T10:02:26.9201418Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-1dcce743-7b66-5a43-87cb-b6d09b38e6c0/artifacts/44e56f1e39627cbb5a6d0d50578b314aa152f6140d0bc6fdeeee5d2c744ccf65.zip
+2026-10-04T10:02:26.9203398Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-ubuntu-22.04
+2026-10-04T10:02:26.9216135Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-737ffb8c-9ae1-5efb-b94a-4f3249bf0a34/artifacts/b3d1c5bcd77cd2767bf73a9041b74cbab42d1483c7d929bb82283c051d42f166.zip
+2026-10-04T10:02:26.9218543Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-macos
+2026-10-04T10:02:26.9225448Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-7e0e6c42-538d-550b-99e9-0b1b05bd9f4e/artifacts/ddb009763ac094f96dc022a1d5c8d94a88cd62c5320704707cc80c0a076e3d0f.zip
+2026-10-04T10:02:26.9227397Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-0
+2026-10-04T10:02:26.9244528Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/c8118191-2434-8f6a-835a-e666e0ff7110/workflow-job-run-804fb21d-7b8c-5a93-b460-c1b24ad871c2/artifacts/77ff1aa3ae520ad914c9e6a6e74d35d085c8843f7f5b95e97e0bb9c69d95fb40.zip
+2026-10-04T10:02:26.9246601Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-5
+2026-10-04T10:02:26.9250764Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-1668570d-59cf-5f8b-b86b-584111c2c635/artifacts/660d1b589f0bf9b43669b72471c69812f94ed2e90beb3bbd3c7ce130f0103a52.zip
+2026-10-04T10:02:26.9252732Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-18
+2026-10-04T10:02:26.9257010Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-4292ed02-7154-5f2b-a615-8348154aac87/artifacts/658290296421958dc5bb737f4c381c9934feeabfedcd97d063a0b5fcfe2083d0.zip
+2026-10-04T10:02:26.9259070Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-wasm-14
+2026-10-04T10:02:26.9271638Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-d49afb63-8f9e-5305-b935-632c7f10bdaa/artifacts/0910ab7fba832380e80ae67ca4ee00c3cfeca21227b9c42b1a8b9012adab3d20.zip
+2026-10-04T10:02:26.9273497Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-windows
+2026-10-04T10:02:26.9370035Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-2c9433b0-f08a-5b57-bd50-94b7617e7901/artifacts/e69a812cea1801fe1003244b48e2f5a8a9b398a9a0d42b734f5541afc7c276ed.zip
+2026-10-04T10:02:26.9372127Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-traces/browser-determinism-ubuntu-24.04
+2026-10-04T10:02:27.0119166Z (node:2094) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T10:02:27.0161751Z SHA256 digest of downloaded artifact is db334694025225d8add02da197737f25e7af605d1915879a26134a8f3f382e29
+2026-10-04T10:02:27.0162414Z Artifact download completed successfully.
+2026-10-04T10:02:27.1309184Z SHA256 digest of downloaded artifact is 8f3c5cf719759842016f8d83dee2def27df751849018421034241c1b75e427d0
+2026-10-04T10:02:27.1310016Z Artifact download completed successfully.
+2026-10-04T10:02:27.1462465Z SHA256 digest of downloaded artifact is f71935769340e3ff63ed77ea4d81f53d6dafe6c9e1dfc89900b7ab179385f233
+2026-10-04T10:02:27.1463279Z Artifact download completed successfully.
+2026-10-04T10:02:27.4078708Z SHA256 digest of downloaded artifact is 2da85cf8a86beeb8062a318558ff7f4efdaa5436f77a1275a543282afad2b9d1
+2026-10-04T10:02:27.4079863Z Artifact download completed successfully.
+2026-10-04T10:02:27.4283043Z SHA256 digest of downloaded artifact is 39e2d53b1f66378f637bad1b06e527761d145ed5bb345651bfb84bfb367f01cc
+2026-10-04T10:02:27.4283790Z Artifact download completed successfully.
+2026-10-04T10:02:27.4457855Z SHA256 digest of downloaded artifact is 450a698671c2a933addd4d863051d3e5e6e956e33cdfe70a275a749a4d77e38c
+2026-10-04T10:02:27.4459092Z Artifact download completed successfully.
+2026-10-04T10:02:27.4625615Z SHA256 digest of downloaded artifact is 76be6ff52eceb6aff8582b03f59645fff1630618ea6bbac2de7f45ea177ef59d
+2026-10-04T10:02:27.4626434Z Artifact download completed successfully.
+2026-10-04T10:02:27.6552943Z SHA256 digest of downloaded artifact is aa27e1f95a9e8bc25464a8dda3572ecb620e14c4e68ddbd2a6fb228b0256f6d3
+2026-10-04T10:02:27.6553480Z Artifact download completed successfully.
+2026-10-04T10:02:27.8062199Z SHA256 digest of downloaded artifact is ab7ec1cc071315ebbfc0fc003dfbd70168b03088de71dc46c506b6ed0d28516f
+2026-10-04T10:02:27.8063081Z Artifact download completed successfully.
+2026-10-04T10:02:27.9784614Z SHA256 digest of downloaded artifact is d1fb47d7c6c247f1280c440d9b61f6e4d4e6e5ca97ca332b4b95538a4a7dbf6b
+2026-10-04T10:02:27.9785434Z Artifact download completed successfully.
+2026-10-04T10:02:28.0617381Z SHA256 digest of downloaded artifact is beb5a5d101582db24c01ca57b2d8ab3ee7f034094a8306fc74584c764111740c
+2026-10-04T10:02:28.0618089Z Artifact download completed successfully.
+2026-10-04T10:02:28.2060364Z SHA256 digest of downloaded artifact is 6b5eb6ed793d9ab08305551fbbf5f018e82614cd4f31123b7a7071d2b6266250
+2026-10-04T10:02:28.2061196Z Artifact download completed successfully.
+2026-10-04T10:02:28.2061657Z Total of 12 artifact(s) downloaded
+2026-10-04T10:02:28.2066572Z Download artifact has finished successfully
+2026-10-04T10:02:28.2458656Z ##[group]Run actions/download-artifact@v4
+2026-10-04T10:02:28.2459092Z with:
+2026-10-04T10:02:28.2459323Z   pattern: cli-*
+2026-10-04T10:02:28.2459572Z   path: artifacts/cli-platforms
+2026-10-04T10:02:28.2459853Z   merge-multiple: false
+2026-10-04T10:02:28.2460109Z   repository: Globulation2/glob2
+2026-10-04T10:02:28.2460382Z   run-id: 37187008011
+2026-10-04T10:02:28.2460615Z env:
+2026-10-04T10:02:28.2460825Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:28.2461081Z   COMPATIBILITY: true
+2026-10-04T10:02:28.2461337Z ##[endgroup]
+2026-10-04T10:02:28.3933078Z (node:2106) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T10:02:28.3934143Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T10:02:28.6792704Z Found 115 artifact(s)
+2026-10-04T10:02:28.6793499Z Filtering artifacts by pattern 'cli-*'
+2026-10-04T10:02:28.6810786Z Preparing to download the following artifacts:
+2026-10-04T10:02:28.6812046Z - cli-linux-clang-18 (ID: 11298916004, Size: 1513659, Expected Digest: sha256:c33e307c4a7f4d2a73a5bc0bcd5320787e579cbba28bafdd41ac505c630b9daa)
+2026-10-04T10:02:28.6813440Z - cli-linux-g++-13 (ID: 11298730889, Size: 1513661, Expected Digest: sha256:f80c7d1fe6f69db056cf2060b524635954568813b3e888b1cad0b34fd6720204)
+2026-10-04T10:02:28.6814836Z - cli-windows (ID: 11298546355, Size: 1513974, Expected Digest: sha256:8b537739a51e6c17c13cd687ccae101cef4cefa452371913fa884f29b4a502af)
+2026-10-04T10:02:28.6816139Z - cli-linux-g++-11 (ID: 11298506932, Size: 1513627, Expected Digest: sha256:395a8a1e5d1fff8cb662ec470d78c592e331e1ce04347ea58667729dd23d5857)
+2026-10-04T10:02:28.9032664Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-82326231-9a70-504f-93ec-50cee667f583/artifacts/9778e5e5d945feac70654bf57f6e96ba115573def5ef74425ada34f7f49ecdd2.zip
+2026-10-04T10:02:28.9033891Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/cli-platforms/cli-linux-clang-18
+2026-10-04T10:02:28.9983821Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-02f55223-67c5-5d89-860f-0528f12b5f1f/artifacts/01fd9afcfe874705cbf5cbf8ab39176a98a7d6ad588b7083da4d9b4faf86c556.zip
+2026-10-04T10:02:28.9985742Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/cli-platforms/cli-linux-g++-11
+2026-10-04T10:02:29.0024666Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-4f245e47-95be-582a-90e6-e8b11a993278/artifacts/3a5a812d02b1195bf547f42401f405dee67028b9bbebcba5917a6a8dffdf73d8.zip
+2026-10-04T10:02:29.0026816Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/cli-platforms/cli-linux-g++-13
+2026-10-04T10:02:29.0061836Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-d49afb63-8f9e-5305-b935-632c7f10bdaa/artifacts/fd7af20148c5fc6aedcdba01694450040bd3be804a67ff8fcd08abb792f473b2.zip
+2026-10-04T10:02:29.0064101Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/cli-platforms/cli-windows
+2026-10-04T10:02:29.1381871Z (node:2106) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T10:02:29.7177410Z SHA256 digest of downloaded artifact is c33e307c4a7f4d2a73a5bc0bcd5320787e579cbba28bafdd41ac505c630b9daa
+2026-10-04T10:02:29.7177966Z Artifact download completed successfully.
+2026-10-04T10:02:29.7224303Z SHA256 digest of downloaded artifact is 395a8a1e5d1fff8cb662ec470d78c592e331e1ce04347ea58667729dd23d5857
+2026-10-04T10:02:29.7225345Z Artifact download completed successfully.
+2026-10-04T10:02:29.7530752Z SHA256 digest of downloaded artifact is 8b537739a51e6c17c13cd687ccae101cef4cefa452371913fa884f29b4a502af
+2026-10-04T10:02:29.7531323Z Artifact download completed successfully.
+2026-10-04T10:02:29.7782438Z SHA256 digest of downloaded artifact is f80c7d1fe6f69db056cf2060b524635954568813b3e888b1cad0b34fd6720204
+2026-10-04T10:02:29.7783243Z Artifact download completed successfully.
+2026-10-04T10:02:29.7783750Z Total of 4 artifact(s) downloaded
+2026-10-04T10:02:29.7788291Z Download artifact has finished successfully
+2026-10-04T10:02:29.7918587Z ##[group]Run python3 test/check_cli_evidence.py artifacts/cli-platforms --require-platform linux --require-platform windows
+2026-10-04T10:02:29.7920001Z [36;1mpython3 test/check_cli_evidence.py artifacts/cli-platforms --require-platform linux --require-platform windows[0m
+2026-10-04T10:02:29.8804764Z shell: /usr/bin/bash -e {0}
+2026-10-04T10:02:29.8805090Z env:
+2026-10-04T10:02:29.8805350Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:29.8805643Z   COMPATIBILITY: true
+2026-10-04T10:02:29.8805917Z ##[endgroup]
+2026-10-04T10:02:29.9275724Z Matching complete tick records:
+2026-10-04T10:02:29.9276789Z artifacts/cli-platforms/cli-linux-clang-18/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums
+2026-10-04T10:02:29.9278293Z artifacts/cli-platforms/cli-linux-g++-11/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums
+2026-10-04T10:02:29.9280025Z artifacts/cli-platforms/cli-linux-g++-13/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums
+2026-10-04T10:02:29.9281574Z artifacts/cli-platforms/cli-windows/cli-smoke/test_headless_workers_and_saved_continuation_match_complete_tick_records/one-worker/game.replay.checksums
+2026-10-04T10:02:29.9375230Z ##[group]Run python3 - <<'PY'
+2026-10-04T10:02:29.9375599Z [36;1mpython3 - <<'PY'[0m
+2026-10-04T10:02:29.9375883Z [36;1mfrom pathlib import Path[0m
+2026-10-04T10:02:29.9376334Z [36;1mtraces = sorted(Path('artifacts/ci-traces').rglob('verify-match.checksums.txt'))[0m
+2026-10-04T10:02:29.9376841Z [36;1mexpected = 5 + int('true' == 'true') + int('true' == 'true')[0m
+2026-10-04T10:02:29.9377359Z [36;1massert len(traces) == expected, f'Expected {expected} selected native/browser traces, got {traces}'[0m
+2026-10-04T10:02:29.9377906Z [36;1mreference = traces[0].read_bytes().replace(b'\r\n', b'\n')[0m
+2026-10-04T10:02:29.9378292Z [36;1massert reference.count(b'\n') > 600[0m
+2026-10-04T10:02:29.9378950Z [36;1mfor trace in traces[1:]:[0m
+2026-10-04T10:02:29.9379416Z [36;1m    assert trace.read_bytes().replace(b'\r\n', b'\n') == reference, f'Verification differs: {trace}'[0m
+2026-10-04T10:02:29.9380044Z [36;1mcommitted = Path('test/fixtures/multiplayer/FourSquares1.verify-trace.txt').read_bytes()[0m
+2026-10-04T10:02:29.9380627Z [36;1m# Every platform agreeing on a different trace means the simulation changed:[0m
+2026-10-04T10:02:29.9381146Z [36;1m# that needs a new sim version (test/check_sim_revision.py checks the bump).[0m
+2026-10-04T10:02:29.9381610Z [36;1massert committed.replace(b'\r\n', b'\n') == reference, ([0m
+2026-10-04T10:02:29.9382097Z [36;1m    'Every platform agrees, but not with the committed trace: the simulation changed. '[0m
+2026-10-04T10:02:29.9382680Z [36;1m    'Bump SIM_REVISION in src/game/SimRevision.h and regenerate test/fixtures/multiplayer with '[0m
+2026-10-04T10:02:29.9383284Z [36;1m    "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")[0m
+2026-10-04T10:02:29.9383818Z [36;1mprint(f'All {expected} selected --verify-match traces match')[0m
+2026-10-04T10:02:29.9384182Z [36;1mPY[0m
+2026-10-04T10:02:29.9440927Z shell: /usr/bin/bash -e {0}
+2026-10-04T10:02:29.9441235Z env:
+2026-10-04T10:02:29.9441496Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:29.9441782Z   COMPATIBILITY: true
+2026-10-04T10:02:29.9442048Z ##[endgroup]
+2026-10-04T10:02:29.9776788Z All 7 selected --verify-match traces match
+2026-10-04T10:02:29.9854925Z ##[group]Run actions/download-artifact@v4
+2026-10-04T10:02:29.9855256Z with:
+2026-10-04T10:02:29.9855517Z   pattern: javascript-profile-*
+2026-10-04T10:02:29.9855824Z   path: artifacts/ci-scripting
+2026-10-04T10:02:29.9856132Z   merge-multiple: false
+2026-10-04T10:02:29.9856414Z   repository: Globulation2/glob2
+2026-10-04T10:02:29.9856713Z   run-id: 37187008011
+2026-10-04T10:02:29.9856980Z env:
+2026-10-04T10:02:29.9857218Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:29.9857498Z   COMPATIBILITY: true
+2026-10-04T10:02:29.9857781Z ##[endgroup]
+2026-10-04T10:02:30.1212259Z (node:2122) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T10:02:30.1213563Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T10:02:30.3977295Z Found 115 artifact(s)
+2026-10-04T10:02:30.3978127Z Filtering artifacts by pattern 'javascript-profile-*'
+2026-10-04T10:02:30.3979214Z Preparing to download the following artifacts:
+2026-10-04T10:02:30.3994414Z - javascript-profile-mingw (ID: 11298825269, Size: 4772808, Expected Digest: sha256:19eaf1bb409023e7d2c02cc4078a54721f224a7a80f5142cc249e6f90bce8c6a)
+2026-10-04T10:02:30.4010604Z - javascript-profile-linux-g++-13 (ID: 11298680994, Size: 8093929, Expected Digest: sha256:55db94f8c6fc7d348b0abfaf04fa4bbdcee7fe12f000086af30e0e02333a41e1)
+2026-10-04T10:02:30.4011586Z - javascript-profile-linux-clang-18 (ID: 11298611675, Size: 8093968, Expected Digest: sha256:c5285f79a2b74e35c431f0abcfb0274afed7bb0011b5fcea6cd5dc50bb8beafa)
+2026-10-04T10:02:30.4012508Z - javascript-profile-linux-g++-11 (ID: 11298576710, Size: 8093949, Expected Digest: sha256:b13647352488fd454115276f6be25e738efd3785f95001f0badc72e62ba0a37d)
+2026-10-04T10:02:30.4013364Z - javascript-profile-macos (ID: 11298473730, Size: 4772283, Expected Digest: sha256:8f1398a069556e7e7a29e0ce357ee934aa6930e9546ab16a525e66ee8ae4bab0)
+2026-10-04T10:02:30.6089851Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-d49afb63-8f9e-5305-b935-632c7f10bdaa/artifacts/9d812957101a30222f1f8588cf1da3a6956f79b2b242ff30a9f58c57dd691a02.zip
+2026-10-04T10:02:30.6091889Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-scripting/javascript-profile-mingw
+2026-10-04T10:02:30.7195609Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-02f55223-67c5-5d89-860f-0528f12b5f1f/artifacts/1663085b688168bb5ff9b19d5c76bf744cf0a7f76bdc576121776d246cca0d0b.zip
+2026-10-04T10:02:30.7197918Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-scripting/javascript-profile-linux-g++-11
+2026-10-04T10:02:30.7209919Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-4f245e47-95be-582a-90e6-e8b11a993278/artifacts/9e3f921f39f92c66ebbca98c2e283e2e2739b9ec468788ccdf724dd019ce7be7.zip
+2026-10-04T10:02:30.7212683Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-scripting/javascript-profile-linux-g++-13
+2026-10-04T10:02:30.7250968Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-737ffb8c-9ae1-5efb-b94a-4f3249bf0a34/artifacts/7edf74af336c4b34f0398d5afaf4ef58c735d91abf5fdfcd4b0fb109bb4f6455.zip
+2026-10-04T10:02:30.7252595Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-scripting/javascript-profile-macos
+2026-10-04T10:02:30.7394926Z Redirecting to blob download url: https://productionresultssa4.blob.core.windows.net/actions-results/25dd7c12-4cb9-81cd-92eb-92b4fad1fbcb/workflow-job-run-82326231-9a70-504f-93ec-50cee667f583/artifacts/55f53cb92ddc7f501bb4e2120920799859796e36ac6aa715e39c050d19ca939f.zip
+2026-10-04T10:02:30.7396385Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-scripting/javascript-profile-linux-clang-18
+2026-10-04T10:02:30.8804905Z (node:2122) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T10:02:31.6925259Z SHA256 digest of downloaded artifact is 19eaf1bb409023e7d2c02cc4078a54721f224a7a80f5142cc249e6f90bce8c6a
+2026-10-04T10:02:31.6926168Z Artifact download completed successfully.
+2026-10-04T10:02:32.0082858Z SHA256 digest of downloaded artifact is c5285f79a2b74e35c431f0abcfb0274afed7bb0011b5fcea6cd5dc50bb8beafa
+2026-10-04T10:02:32.0083794Z Artifact download completed successfully.
+2026-10-04T10:02:32.0573148Z SHA256 digest of downloaded artifact is 55db94f8c6fc7d348b0abfaf04fa4bbdcee7fe12f000086af30e0e02333a41e1
+2026-10-04T10:02:32.0573733Z Artifact download completed successfully.
+2026-10-04T10:02:32.0920997Z SHA256 digest of downloaded artifact is b13647352488fd454115276f6be25e738efd3785f95001f0badc72e62ba0a37d
+2026-10-04T10:02:32.0921564Z Artifact download completed successfully.
+2026-10-04T10:02:32.1352982Z SHA256 digest of downloaded artifact is 8f1398a069556e7e7a29e0ce357ee934aa6930e9546ab16a525e66ee8ae4bab0
+2026-10-04T10:02:32.1353857Z Artifact download completed successfully.
+2026-10-04T10:02:32.1354358Z Total of 5 artifact(s) downloaded
+2026-10-04T10:02:32.1359643Z Download artifact has finished successfully
+2026-10-04T10:02:32.1520579Z ##[group]Run python3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility 'true'             --variants 'true'             --macos 'true'
+2026-10-04T10:02:32.1521873Z [36;1mpython3 .github/scripts/ci_compare_evidence.py             --traces artifacts/ci-traces --scripting artifacts/ci-scripting             --compatibility 'true'             --variants 'true'             --macos 'true'[0m
+2026-10-04T10:02:32.1577308Z shell: /usr/bin/bash -e {0}
+2026-10-04T10:02:32.1577640Z env:
+2026-10-04T10:02:32.1577909Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:32.1578222Z   COMPATIBILITY: true
+2026-10-04T10:02:32.1578518Z ##[endgroup]
+2026-10-04T10:02:32.3248417Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:32.4171091Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:32.5100288Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:32.6024940Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:32.6947996Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:32.7871882Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:32.8803117Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:33.1170748Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:33.2086369Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:33.3016915Z PASS: 73 numeric/data/complete-trace/decoded-save artifacts match
+2026-10-04T10:02:33.3072394Z 16 exact native/browser traces match
+2026-10-04T10:02:33.3177994Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T10:02:33.3178361Z with:
+2026-10-04T10:02:33.3178668Z   name: javascript-cross-platform-comparisons
+2026-10-04T10:02:33.3179241Z   path: artifacts/javascript-ci/
+2026-10-04T10:02:33.3179575Z   if-no-files-found: ignore
+2026-10-04T10:02:33.3179898Z   compression-level: 6
+2026-10-04T10:02:33.3180196Z   overwrite: false
+2026-10-04T10:02:33.3180500Z   include-hidden-files: false
+2026-10-04T10:02:33.3180809Z env:
+2026-10-04T10:02:33.3181071Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:33.3181375Z   COMPATIBILITY: true
+2026-10-04T10:02:33.3181663Z ##[endgroup]
+2026-10-04T10:02:33.4518521Z (node:2147) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T10:02:33.4519483Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T10:02:33.4604199Z With the provided path, there will be 10 files uploaded
+2026-10-04T10:02:33.4605262Z Artifact name is valid!
+2026-10-04T10:02:33.4605733Z Root directory input is valid!
+2026-10-04T10:02:33.8157717Z Beginning upload of artifact content to blob storage
+2026-10-04T10:02:33.8397991Z (node:2147) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T10:02:34.0581436Z Uploaded bytes 3849
+2026-10-04T10:02:34.1205276Z Finished uploading artifact content to blob storage!
+2026-10-04T10:02:34.1205984Z SHA256 digest of uploaded artifact zip is 90fb595e3a4e335088e372b602f23150888a453084d6e53d7ff8d1bf36886300
+2026-10-04T10:02:34.1207279Z Finalizing artifact upload
+2026-10-04T10:02:34.3576110Z Artifact javascript-cross-platform-comparisons.zip successfully finalized. Artifact ID 11300292267
+2026-10-04T10:02:34.3577428Z Artifact javascript-cross-platform-comparisons has been successfully uploaded! Final size is 3849 bytes. Artifact ID is 11300292267
+2026-10-04T10:02:34.3582174Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37187008011/artifacts/11300292267
+2026-10-04T10:02:34.3730234Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-04T10:02:34.3730649Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-04T10:02:34.3785363Z shell: /usr/bin/bash -e {0}
+2026-10-04T10:02:34.3785695Z env:
+2026-10-04T10:02:34.3785982Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:34.3786299Z   COMPATIBILITY: true
+2026-10-04T10:02:34.3787661Z   CI_STEPS_JSON: {
+  "actions_checkout_v4_1": {
+    "outputs": {
+      "commit": "e958fe16e25091f177c2f280301d4cc3a509df71",
+      "ref": ""
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "actions_download_artifact_v4_1": {
+    "outputs": {
+      "download-path": "/home/runner/work/glob2/glob2/artifacts/ci-traces"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "compare_every_verify_match_trace": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  }
+}
+2026-10-04T10:02:34.3789282Z ##[endgroup]
+2026-10-04T10:02:34.4241580Z ## CI check results
+2026-10-04T10:02:34.4241887Z 
+2026-10-04T10:02:34.4242162Z All completed checks passed.
+2026-10-04T10:02:34.4242487Z 
+2026-10-04T10:02:34.4447024Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T10:02:34.4447385Z with:
+2026-10-04T10:02:34.4447689Z   name: ci-observation-browser-determinism-0
+2026-10-04T10:02:34.4448215Z   path: artifacts/ci-observation/
+2026-10-04T10:02:34.4448560Z   if-no-files-found: ignore
+2026-10-04T10:02:34.4449059Z   compression-level: 6
+2026-10-04T10:02:34.4449357Z   overwrite: false
+2026-10-04T10:02:34.4449657Z   include-hidden-files: false
+2026-10-04T10:02:34.4449968Z env:
+2026-10-04T10:02:34.4450235Z   GLOB2_DEV_MODE: isolated
+2026-10-04T10:02:34.4450548Z   COMPATIBILITY: true
+2026-10-04T10:02:34.4450841Z ##[endgroup]
+2026-10-04T10:02:34.5865632Z (node:2161) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T10:02:34.5866714Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T10:02:34.5919977Z With the provided path, there will be 1 file uploaded
+2026-10-04T10:02:34.5923646Z Artifact name is valid!
+2026-10-04T10:02:34.5925261Z Root directory input is valid!
+2026-10-04T10:02:34.9239259Z Beginning upload of artifact content to blob storage
+2026-10-04T10:02:34.9370567Z (node:2161) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T10:02:35.1548267Z Uploaded bytes 181
+2026-10-04T10:02:35.2167559Z Finished uploading artifact content to blob storage!
+2026-10-04T10:02:35.2168310Z SHA256 digest of uploaded artifact zip is 32f411d4b2b42ff1541912512dfaf61ae6ac5f423427ea9c7850abfe42a71ca2
+2026-10-04T10:02:35.2169671Z Finalizing artifact upload
+2026-10-04T10:02:35.4830026Z Artifact ci-observation-browser-determinism-0.zip successfully finalized. Artifact ID 11300366819
+2026-10-04T10:02:35.4831203Z Artifact ci-observation-browser-determinism-0 has been successfully uploaded! Final size is 181 bytes. Artifact ID is 11300366819
+2026-10-04T10:02:35.4834344Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37187008011/artifacts/11300366819
+2026-10-04T10:02:35.5000397Z Post job cleanup.
+2026-10-04T10:02:35.5715094Z [command]/usr/bin/git version
+2026-10-04T10:02:35.5749922Z git version 2.55.0
+2026-10-04T10:02:35.5780566Z Temporarily overriding HOME='/home/runner/work/_temp/5c44d540-ec3c-41be-83d3-c5a4a80bb5b8' before making global git config changes
+2026-10-04T10:02:35.5781836Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T10:02:35.5783538Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T10:02:35.5816863Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T10:02:35.5848201Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T10:02:35.6081374Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T10:02:35.6108687Z http.https://github.com/.extraheader
+2026-10-04T10:02:35.6134020Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T10:02:35.6156417Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T10:02:35.6392394Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T10:02:35.6433540Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T10:02:35.6776117Z Cleaning up orphan processes
+2026-10-04T10:02:35.7038518Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

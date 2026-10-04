@@ -1,0 +1,1518 @@
+﻿2026-10-04T08:36:39.8142971Z Current runner version: '2.337.0'
+2026-10-04T08:36:39.8166502Z ##[group]Runner Image Provisioner
+2026-10-04T08:36:39.8167312Z Hosted Compute Agent
+2026-10-04T08:36:39.8167926Z Version: 20260901.588
+2026-10-04T08:36:39.8168706Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T08:36:39.8169401Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T08:36:39.8170064Z Worker ID: {415bea5a-73ce-4d7d-8834-7787bca0919c}
+2026-10-04T08:36:39.8170736Z Azure Region: centralus
+2026-10-04T08:36:39.8171297Z ##[endgroup]
+2026-10-04T08:36:39.8172595Z ##[group]Operating System
+2026-10-04T08:36:39.8173174Z Ubuntu
+2026-10-04T08:36:39.8173693Z 24.04.5
+2026-10-04T08:36:39.8174169Z LTS
+2026-10-04T08:36:39.8174654Z ##[endgroup]
+2026-10-04T08:36:39.8175167Z ##[group]Runner Image
+2026-10-04T08:36:39.8175703Z Image: ubuntu-24.04
+2026-10-04T08:36:39.8176320Z Version: 20260927.320.1
+2026-10-04T08:36:39.8177402Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-04T08:36:39.8178972Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-04T08:36:39.8179833Z ##[endgroup]
+2026-10-04T08:36:39.8181635Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T08:36:39.8183634Z Actions: read
+2026-10-04T08:36:39.8184175Z Contents: read
+2026-10-04T08:36:39.8184692Z Metadata: read
+2026-10-04T08:36:39.8185341Z ##[endgroup]
+2026-10-04T08:36:39.8187703Z Secret source: Actions
+2026-10-04T08:36:39.8188974Z Cache mode: write
+2026-10-04T08:36:39.8189650Z Prepare workflow directory
+2026-10-04T08:36:39.8590350Z Prepare all required actions
+2026-10-04T08:36:39.8653848Z Getting action download info
+2026-10-04T08:36:40.1545867Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T08:36:40.2757333Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T08:36:40.4963142Z Complete job name: Select relevant checks
+2026-10-04T08:36:40.5603569Z ##[group]Run actions/checkout@v4
+2026-10-04T08:36:40.5604415Z with:
+2026-10-04T08:36:40.5604919Z   ref: e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:36:40.5605508Z   fetch-depth: 0
+2026-10-04T08:36:40.5606081Z   repository: Globulation2/glob2
+2026-10-04T08:36:40.5609843Z   token: ***
+2026-10-04T08:36:40.5610332Z   ssh-strict: true
+2026-10-04T08:36:40.5610796Z   ssh-user: git
+2026-10-04T08:36:40.5611255Z   persist-credentials: true
+2026-10-04T08:36:40.5611822Z   clean: true
+2026-10-04T08:36:40.5612305Z   sparse-checkout-cone-mode: true
+2026-10-04T08:36:40.5612895Z   fetch-tags: false
+2026-10-04T08:36:40.5613366Z   show-progress: true
+2026-10-04T08:36:40.5613807Z   lfs: false
+2026-10-04T08:36:40.5614686Z   submodules: false
+2026-10-04T08:36:40.5615189Z   set-safe-directory: true
+2026-10-04T08:36:40.5615732Z   allow-unsafe-pr-checkout: false
+2026-10-04T08:36:40.5616485Z env:
+2026-10-04T08:36:40.5616932Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:36:40.5617474Z ##[endgroup]
+2026-10-04T08:36:40.6565641Z Syncing repository: Globulation2/glob2
+2026-10-04T08:36:40.6568594Z ##[group]Getting Git version info
+2026-10-04T08:36:40.6569714Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-04T08:36:40.6571283Z [command]/usr/bin/git version
+2026-10-04T08:36:40.6609632Z git version 2.55.0
+2026-10-04T08:36:40.6625832Z ##[endgroup]
+2026-10-04T08:36:40.6638520Z Temporarily overriding HOME='/home/runner/work/_temp/2642bccd-e2c0-4be5-a9f0-c35751778cbf' before making global git config changes
+2026-10-04T08:36:40.6640713Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T08:36:40.6642486Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T08:36:40.6692688Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-04T08:36:40.6697999Z ##[group]Initializing the repository
+2026-10-04T08:36:40.6703082Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-04T08:36:40.6801334Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T08:36:40.6803199Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T08:36:40.6804595Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T08:36:40.6805708Z hint: call:
+2026-10-04T08:36:40.6806397Z hint:
+2026-10-04T08:36:40.6807337Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T08:36:40.6808478Z hint:
+2026-10-04T08:36:40.6809459Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T08:36:40.6810856Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T08:36:40.6811995Z hint:
+2026-10-04T08:36:40.6812726Z hint: 	git branch -m <name>
+2026-10-04T08:36:40.6813501Z hint:
+2026-10-04T08:36:40.6814507Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T08:36:40.6820221Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-04T08:36:40.6827056Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-04T08:36:40.6880136Z ##[endgroup]
+2026-10-04T08:36:40.6881538Z ##[group]Disabling automatic garbage collection
+2026-10-04T08:36:40.6885018Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T08:36:40.6915159Z ##[endgroup]
+2026-10-04T08:36:40.6915925Z ##[group]Setting up auth
+2026-10-04T08:36:40.6923071Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T08:36:40.6951472Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T08:36:40.7260338Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T08:36:40.7292264Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T08:36:40.7480037Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T08:36:40.7509199Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T08:36:40.7683070Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T08:36:40.7718731Z ##[endgroup]
+2026-10-04T08:36:40.7719960Z ##[group]Fetching the repository
+2026-10-04T08:36:40.7729328Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-04T08:42:39.8752614Z From https://github.com/Globulation2/glob2
+2026-10-04T08:42:39.8759753Z  * [new branch]          ai-neurotica                -> origin/ai-neurotica
+2026-10-04T08:42:39.8761675Z  * [new branch]          archive/ai-elo-full-20260919 -> origin/archive/ai-elo-full-20260919
+2026-10-04T08:42:39.8762899Z  * [new branch]          beta1-rc                    -> origin/beta1-rc
+2026-10-04T08:42:39.8764192Z  * [new branch]          beta2-rc                    -> origin/beta2-rc
+2026-10-04T08:42:39.8765077Z  * [new branch]          beta3-rc                    -> origin/beta3-rc
+2026-10-04T08:42:39.8766094Z  * [new branch]          beta4-rc                    -> origin/beta4-rc
+2026-10-04T08:42:39.8766932Z  * [new branch]          beta5-rc                    -> origin/beta5-rc
+2026-10-04T08:42:39.8768329Z  * [new branch]          char_ptr_to_string          -> origin/char_ptr_to_string
+2026-10-04T08:42:39.8769937Z  * [new branch]          cheese123/fix-small-typo-1556355341231 -> origin/cheese123/fix-small-typo-1556355341231
+2026-10-04T08:42:39.8771424Z  * [new branch]          claude/evidence-connection-signals -> origin/claude/evidence-connection-signals
+2026-10-04T08:42:39.8772704Z  * [new branch]          claude/evidence-draw-end-screen -> origin/claude/evidence-draw-end-screen
+2026-10-04T08:42:39.8774349Z  * [new branch]          claude/evidence-ui-themes   -> origin/claude/evidence-ui-themes
+2026-10-04T08:42:39.8775344Z  * [new branch]          claude/evidence-ui-tweaks-consistency -> origin/claude/evidence-ui-tweaks-consistency
+2026-10-04T08:42:39.8776857Z  * [new branch]          claude/evidence-wizard-unit-concept -> origin/claude/evidence-wizard-unit-concept
+2026-10-04T08:42:39.8777749Z  * [new branch]          codeql                      -> origin/codeql
+2026-10-04T08:42:39.8778838Z  * [new branch]          codex/ai-map-studio-evidence -> origin/codex/ai-map-studio-evidence
+2026-10-04T08:42:39.8779845Z  * [new branch]          codex/ai-rule-evidence-678  -> origin/codex/ai-rule-evidence-678
+2026-10-04T08:42:39.8780908Z  * [new branch]          codex/ai-save-portability-evidence -> origin/codex/ai-save-portability-evidence
+2026-10-04T08:42:39.8781992Z  * [new branch]          codex/ai-telemetry-evidence-679 -> origin/codex/ai-telemetry-evidence-679
+2026-10-04T08:42:39.8782955Z  * [new branch]          codex/amazon-fire-privacy-host -> origin/codex/amazon-fire-privacy-host
+2026-10-04T08:42:39.8784520Z  * [new branch]          codex/archive-pr220-before-refresh-20261004 -> origin/codex/archive-pr220-before-refresh-20261004
+2026-10-04T08:42:39.8785922Z  * [new branch]          codex/archive-pr323-before-refresh-20261004 -> origin/codex/archive-pr323-before-refresh-20261004
+2026-10-04T08:42:39.8787215Z  * [new branch]          codex/archive-pr339-before-rebase-20261004 -> origin/codex/archive-pr339-before-rebase-20261004
+2026-10-04T08:42:39.8788743Z  * [new branch]          codex/archive-pr359-before-rebase-20261004 -> origin/codex/archive-pr359-before-rebase-20261004
+2026-10-04T08:42:39.8789983Z  * [new branch]          codex/artwork-lifecycle     -> origin/codex/artwork-lifecycle
+2026-10-04T08:42:39.8791086Z  * [new branch]          codex/browser-experiment    -> origin/codex/browser-experiment
+2026-10-04T08:42:39.8792501Z  * [new branch]          codex/browser-multithreading-evidence -> origin/codex/browser-multithreading-evidence
+2026-10-04T08:42:39.8793913Z  * [new branch]          codex/browser-performance-evidence -> origin/codex/browser-performance-evidence
+2026-10-04T08:42:39.8795492Z  * [new branch]          codex/castor-continuation-evidence -> origin/codex/castor-continuation-evidence
+2026-10-04T08:42:39.8796823Z  * [new branch]          codex/ci-build-evidence     -> origin/codex/ci-build-evidence
+2026-10-04T08:42:39.8798009Z  * [new branch]          codex/ci-runtime-probes     -> origin/codex/ci-runtime-probes
+2026-10-04T08:42:39.8799218Z  * [new branch]          codex/colony-skins-evidence -> origin/codex/colony-skins-evidence
+2026-10-04T08:42:39.8800389Z  * [new branch]          codex/colony-skins-profile-source -> origin/codex/colony-skins-profile-source
+2026-10-04T08:42:39.8801536Z  * [new branch]          codex/compact-save-evidence -> origin/codex/compact-save-evidence
+2026-10-04T08:42:39.8802583Z  * [new branch]          codex/curated-music-sets    -> origin/codex/curated-music-sets
+2026-10-04T08:42:39.8803618Z  * [new branch]          codex/dev-store-validation  -> origin/codex/dev-store-validation
+2026-10-04T08:42:39.8804704Z  * [new branch]          codex/diagnose-browser-stalls -> origin/codex/diagnose-browser-stalls
+2026-10-04T08:42:39.8805820Z  * [new branch]          codex/diagnose-windows-lan  -> origin/codex/diagnose-windows-lan
+2026-10-04T08:42:39.8806976Z  * [new branch]          codex/diagnose-windows-lan-shutdown-source -> origin/codex/diagnose-windows-lan-shutdown-source
+2026-10-04T08:42:39.8808075Z  * [new branch]          codex/diagnose-windows-lan-source -> origin/codex/diagnose-windows-lan-source
+2026-10-04T08:42:39.8809169Z  * [new branch]          codex/echo-save-continuity-evidence -> origin/codex/echo-save-continuity-evidence
+2026-10-04T08:42:39.8810166Z  * [new branch]          codex/evidence-ai-random-streams -> origin/codex/evidence-ai-random-streams
+2026-10-04T08:42:39.8811016Z  * [new branch]          codex/evidence-android-7-backport -> origin/codex/evidence-android-7-backport
+2026-10-04T08:42:39.8812362Z  * [new branch]          codex/evidence-android-resume-momentum -> origin/codex/evidence-android-resume-momentum
+2026-10-04T08:42:39.8813291Z  * [new branch]          codex/evidence-blank-map-dismissal -> origin/codex/evidence-blank-map-dismissal
+2026-10-04T08:42:39.8814435Z  * [new branch]          codex/evidence-browser-startup-f56f759 -> origin/codex/evidence-browser-startup-f56f759
+2026-10-04T08:42:39.8815468Z  * [new branch]          codex/evidence-browser-worker-lifecycle -> origin/codex/evidence-browser-worker-lifecycle
+2026-10-04T08:42:39.8816527Z  * [new branch]          codex/evidence-building-header -> origin/codex/evidence-building-header
+2026-10-04T08:42:39.8817389Z  * [new branch]          codex/evidence-bundle-size-530 -> origin/codex/evidence-bundle-size-530
+2026-10-04T08:42:39.8818442Z  * [new branch]          codex/evidence-double-tap-zoom-in -> origin/codex/evidence-double-tap-zoom-in
+2026-10-04T08:42:39.8819347Z  * [new branch]          codex/evidence-gradient-eight-player -> origin/codex/evidence-gradient-eight-player
+2026-10-04T08:42:39.8820559Z  * [new branch]          codex/evidence-inset-gameplay-dialogs -> origin/codex/evidence-inset-gameplay-dialogs
+2026-10-04T08:42:39.8821462Z  * [new branch]          codex/evidence-landscape-picker-scroll -> origin/codex/evidence-landscape-picker-scroll
+2026-10-04T08:42:39.8822558Z  * [new branch]          codex/evidence-map-food-386 -> origin/codex/evidence-map-food-386
+2026-10-04T08:42:39.8823507Z  * [new branch]          codex/evidence-master-repair-676 -> origin/codex/evidence-master-repair-676
+2026-10-04T08:42:39.8824612Z  * [new branch]          codex/evidence-opposite-side-toolboxes -> origin/codex/evidence-opposite-side-toolboxes
+2026-10-04T08:42:39.8825558Z  * [new branch]          codex/evidence-pr208-cleanup-20260928 -> origin/codex/evidence-pr208-cleanup-20260928
+2026-10-04T08:42:39.8826700Z  * [new branch]          codex/evidence-pr208-merge-20260928 -> origin/codex/evidence-pr208-merge-20260928
+2026-10-04T08:42:39.8827448Z  * [new branch]          codex/evidence-pr359-review -> origin/codex/evidence-pr359-review
+2026-10-04T08:42:39.8828753Z  * [new branch]          codex/evidence-radial-allocation-usability -> origin/codex/evidence-radial-allocation-usability
+2026-10-04T08:42:39.8829827Z  * [new branch]          codex/evidence-shore-bea5fe2ad -> origin/codex/evidence-shore-bea5fe2ad
+2026-10-04T08:42:39.8830697Z  * [new branch]          codex/evidence-touch-momentum-dead-zone -> origin/codex/evidence-touch-momentum-dead-zone
+2026-10-04T08:42:39.8831630Z  * [new branch]          codex/evidence-touch-resource-info -> origin/codex/evidence-touch-resource-info
+2026-10-04T08:42:39.8832498Z  * [new branch]          codex/evidence-touch-unit-inspector -> origin/codex/evidence-touch-unit-inspector
+2026-10-04T08:42:39.8833417Z  * [new branch]          codex/evidence-ux-merge     -> origin/codex/evidence-ux-merge
+2026-10-04T08:42:39.8834215Z  * [new branch]          codex/evidence-ux-team-review -> origin/codex/evidence-ux-team-review
+2026-10-04T08:42:39.8834978Z  * [new branch]          codex/glob-3d               -> origin/codex/glob-3d
+2026-10-04T08:42:39.8835707Z  * [new branch]          codex/gradient-organization-evidence -> origin/codex/gradient-organization-evidence
+2026-10-04T08:42:39.8836815Z  * [new branch]          codex/graphics-native-display-evidence -> origin/codex/graphics-native-display-evidence
+2026-10-04T08:42:39.8839237Z  * [new branch]          codex/hd-ai-artwork         -> origin/codex/hd-ai-artwork
+2026-10-04T08:42:39.8840630Z  * [new branch]          codex/high-resolution-artwork-zoom -> origin/codex/high-resolution-artwork-zoom
+2026-10-04T08:42:39.8841547Z  * [new branch]          codex/hive-evidence         -> origin/codex/hive-evidence
+2026-10-04T08:42:39.8842396Z  * [new branch]          codex/ios-app-store-page    -> origin/codex/ios-app-store-page
+2026-10-04T08:42:39.8843351Z  * [new branch]          codex/javascript-globals-evidence -> origin/codex/javascript-globals-evidence
+2026-10-04T08:42:39.8844719Z  * [new branch]          codex/javascript-second-pass-evidence -> origin/codex/javascript-second-pass-evidence
+2026-10-04T08:42:39.8845833Z  * [new branch]          codex/landscape-selection-evidence -> origin/codex/landscape-selection-evidence
+2026-10-04T08:42:39.8846715Z  * [new branch]          codex/late-game-memory-evidence -> origin/codex/late-game-memory-evidence
+2026-10-04T08:42:39.8847454Z  * [new branch]          codex/lazy-gradient-evidence -> origin/codex/lazy-gradient-evidence
+2026-10-04T08:42:39.8848347Z  * [new branch]          codex/maxima-farming-evidence-fb8af8a85 -> origin/codex/maxima-farming-evidence-fb8af8a85
+2026-10-04T08:42:39.8850034Z  * [new branch]          codex/maxima-permanent-wheat-evidence -> origin/codex/maxima-permanent-wheat-evidence
+2026-10-04T08:42:39.8851186Z  * [new branch]          codex/memory-churn-evidence -> origin/codex/memory-churn-evidence
+2026-10-04T08:42:39.8852276Z  * [new branch]          codex/multiplayer-wss-evidence -> origin/codex/multiplayer-wss-evidence
+2026-10-04T08:42:39.8853261Z  * [new branch]          codex/native-coverage-evidence -> origin/codex/native-coverage-evidence
+2026-10-04T08:42:39.8853948Z  * [new branch]          codex/nongradient-broad-evidence -> origin/codex/nongradient-broad-evidence
+2026-10-04T08:42:39.8854778Z  * [new branch]          codex/nongradient-profile-evidence -> origin/codex/nongradient-profile-evidence
+2026-10-04T08:42:39.8855904Z  * [new branch]          codex/open-pr-refresh-evidence-20261004 -> origin/codex/open-pr-refresh-evidence-20261004
+2026-10-04T08:42:39.8856965Z  * [new branch]          codex/playable-parameter-search-evidence -> origin/codex/playable-parameter-search-evidence
+2026-10-04T08:42:39.8857728Z  * [new branch]          codex/pr261-evidence-7369a24dd -> origin/codex/pr261-evidence-7369a24dd
+2026-10-04T08:42:39.8858600Z  * [new branch]          codex/pr344-local-validation -> origin/codex/pr344-local-validation
+2026-10-04T08:42:39.8859483Z  * [new branch]          codex/pr344-local-validation-42494d5fb -> origin/codex/pr344-local-validation-42494d5fb
+2026-10-04T08:42:39.8860201Z  * [new branch]          codex/probability-victory-evidence -> origin/codex/probability-victory-evidence
+2026-10-04T08:42:39.8860874Z  * [new branch]          codex/render-evidence-500   -> origin/codex/render-evidence-500
+2026-10-04T08:42:39.8861548Z  * [new branch]          codex/render-overview-evidence -> origin/codex/render-overview-evidence
+2026-10-04T08:42:39.8862249Z  * [new branch]          codex/review-building-invalidation -> origin/codex/review-building-invalidation
+2026-10-04T08:42:39.8862985Z  * [new branch]          codex/shared-gradient-evidence -> origin/codex/shared-gradient-evidence
+2026-10-04T08:42:39.8863686Z  * [new branch]          codex/simplify-global-gradient -> origin/codex/simplify-global-gradient
+2026-10-04T08:42:39.8864409Z  * [new branch]          codex/skip-inert-global-gradients -> origin/codex/skip-inert-global-gradients
+2026-10-04T08:42:39.8865139Z  * [new branch]          codex/software-renderer-evidence -> origin/codex/software-renderer-evidence
+2026-10-04T08:42:39.8866090Z  * [new branch]          codex/torus-full-resolution-evidence-673 -> origin/codex/torus-full-resolution-evidence-673
+2026-10-04T08:42:39.8866795Z  * [new branch]          codex/untrusted-game-file-evidence -> origin/codex/untrusted-game-file-evidence
+2026-10-04T08:42:39.8867775Z  * [new branch]          codex/verify-latest-master-repair -> origin/codex/verify-latest-master-repair
+2026-10-04T08:42:39.8868919Z  * [new branch]          core_rewrite_2007           -> origin/core_rewrite_2007
+2026-10-04T08:42:39.8869683Z  * [new branch]          cursor/native-sdl-cursor    -> origin/cursor/native-sdl-cursor
+2026-10-04T08:42:39.8870625Z  * [new branch]          deploy/app-subdomain-with-flow-fixes -> origin/deploy/app-subdomain-with-flow-fixes
+2026-10-04T08:42:39.8871651Z  * [new branch]          deploy/closed-seats-with-web-fixes -> origin/deploy/closed-seats-with-web-fixes
+2026-10-04T08:42:39.8873064Z  * [new branch]          deploy/web-fixes-with-flow-fixes -> origin/deploy/web-fixes-with-flow-fixes
+2026-10-04T08:42:39.8873976Z  * [new branch]          dynamicPrestige             -> origin/dynamicPrestige
+2026-10-04T08:42:39.8875024Z  * [new branch]          evidence/adaptive-zoom-detail -> origin/evidence/adaptive-zoom-detail
+2026-10-04T08:42:39.8875699Z  * [new branch]          evidence/ai-profiles-i18n-20260921 -> origin/evidence/ai-profiles-i18n-20260921
+2026-10-04T08:42:39.8876292Z  * [new branch]          evidence/ai-ratings-final-20260920 -> origin/evidence/ai-ratings-final-20260920
+2026-10-04T08:42:39.8876900Z  * [new branch]          evidence/ai-save-state-929dafeb7 -> origin/evidence/ai-save-state-929dafeb7
+2026-10-04T08:42:39.8877515Z  * [new branch]          evidence/ai-strategy-profiles-20260920 -> origin/evidence/ai-strategy-profiles-20260920
+2026-10-04T08:42:39.8878442Z  * [new branch]          evidence/braided-delta-generator -> origin/evidence/braided-delta-generator
+2026-10-04T08:42:39.8879099Z  * [new branch]          evidence/breachable-highlands -> origin/evidence/breachable-highlands
+2026-10-04T08:42:39.8879846Z  * [new branch]          evidence/browser-platform-379 -> origin/evidence/browser-platform-379
+2026-10-04T08:42:39.8880516Z  * [new branch]          evidence/emoji-map-generator -> origin/evidence/emoji-map-generator
+2026-10-04T08:42:39.8881057Z  * [new branch]          evidence/farm-areas-followups -> origin/evidence/farm-areas-followups
+2026-10-04T08:42:39.8881575Z  * [new branch]          evidence/forts-generator    -> origin/evidence/forts-generator
+2026-10-04T08:42:39.8882123Z  * [new branch]          evidence/game-rules-redesign -> origin/evidence/game-rules-redesign
+2026-10-04T08:42:39.8882670Z  * [new branch]          evidence/gameplay-recording-622 -> origin/evidence/gameplay-recording-622
+2026-10-04T08:42:39.8883264Z  * [new branch]          evidence/gradient-pipeline-390 -> origin/evidence/gradient-pipeline-390
+2026-10-04T08:42:39.8883888Z  * [new branch]          evidence/hedgerow-country   -> origin/evidence/hedgerow-country
+2026-10-04T08:42:39.8884395Z  * [new branch]          evidence/lava-shield        -> origin/evidence/lava-shield
+2026-10-04T08:42:39.8884938Z  * [new branch]          evidence/maxima-runtime-fixes -> origin/evidence/maxima-runtime-fixes
+2026-10-04T08:42:39.8885478Z  * [new branch]          evidence/multiplayer-web-app -> origin/evidence/multiplayer-web-app
+2026-10-04T08:42:39.8886046Z  * [new branch]          evidence/multiplayer-web-design -> origin/evidence/multiplayer-web-design
+2026-10-04T08:42:39.8886644Z  * [new branch]          evidence/online-update-direction -> origin/evidence/online-update-direction
+2026-10-04T08:42:39.8887188Z  * [new branch]          evidence/orchard-commons    -> origin/evidence/orchard-commons
+2026-10-04T08:42:39.8887720Z  * [new branch]          evidence/portage-lakes      -> origin/evidence/portage-lakes
+2026-10-04T08:42:39.8888374Z  * [new branch]          evidence/pr-290             -> origin/evidence/pr-290
+2026-10-04T08:42:39.8888905Z  * [new branch]          evidence/pr208-mobile-20260924 -> origin/evidence/pr208-mobile-20260924
+2026-10-04T08:42:39.8889469Z  * [new branch]          evidence/pr208-responsive-20260925 -> origin/evidence/pr208-responsive-20260925
+2026-10-04T08:42:39.8890018Z  * [new branch]          evidence/pr315-gzip-6fb2aa3f7 -> origin/evidence/pr315-gzip-6fb2aa3f7
+2026-10-04T08:42:39.8890619Z  * [new branch]          evidence/pr477-flatpak      -> origin/evidence/pr477-flatpak
+2026-10-04T08:42:39.8891111Z  * [new branch]          evidence/render-fixes-665   -> origin/evidence/render-fixes-665
+2026-10-04T08:42:39.8891694Z  * [new branch]          evidence/renderer-zoom-improvements -> origin/evidence/renderer-zoom-improvements
+2026-10-04T08:42:39.8892244Z  * [new branch]          evidence/rice-terraces      -> origin/evidence/rice-terraces
+2026-10-04T08:42:39.8892700Z  * [new branch]          evidence/savannah           -> origin/evidence/savannah
+2026-10-04T08:42:39.8893231Z  * [new branch]          evidence/sixteen-team-cap   -> origin/evidence/sixteen-team-cap
+2026-10-04T08:42:39.8893847Z  * [new branch]          evidence/tabler-ui-icons-479 -> origin/evidence/tabler-ui-icons-479
+2026-10-04T08:42:39.8894376Z  * [new branch]          evidence/telemetry-360-343  -> origin/evidence/telemetry-360-343
+2026-10-04T08:42:39.8894887Z  * [new branch]          evidence/text-size-points   -> origin/evidence/text-size-points
+2026-10-04T08:42:39.8895476Z  * [new branch]          evidence/threaded-renderer-sim-thread -> origin/evidence/threaded-renderer-sim-thread
+2026-10-04T08:42:39.8896095Z  * [new branch]          evidence/unit-sprite-sheets -> origin/evidence/unit-sprite-sheets
+2026-10-04T08:42:39.8896591Z  * [new branch]          evidence/ux-review-3        -> origin/evidence/ux-review-3
+2026-10-04T08:42:39.8897048Z  * [new branch]          evidence/vultures           -> origin/evidence/vultures
+2026-10-04T08:42:39.8897566Z  * [new branch]          evidence/who-ate-the-map    -> origin/evidence/who-ate-the-map
+2026-10-04T08:42:39.8898309Z  * [new branch]          feat/ai-trainer-support-cs-410-claude -> origin/feat/ai-trainer-support-cs-410-claude
+2026-10-04T08:42:39.8899182Z  * [new branch]          feat/ai-trainer-support-cs-410-qwendense -> origin/feat/ai-trainer-support-cs-410-qwendense
+2026-10-04T08:42:39.8899849Z  * [new branch]          feat/ai-trainer-support-cs-410-qwenmoe -> origin/feat/ai-trainer-support-cs-410-qwenmoe
+2026-10-04T08:42:39.8900430Z  * [new branch]          feat/async-gradient-fields  -> origin/feat/async-gradient-fields
+2026-10-04T08:42:39.8900924Z  * [new branch]          feat/farm-area              -> origin/feat/farm-area
+2026-10-04T08:42:39.8901409Z  * [new branch]          feat/fog-clouds             -> origin/feat/fog-clouds
+2026-10-04T08:42:39.8901877Z  * [new branch]          feat/gig-hiring             -> origin/feat/gig-hiring
+2026-10-04T08:42:39.8902371Z  * [new branch]          feat/map-tiling             -> origin/feat/map-tiling
+2026-10-04T08:42:39.8903128Z  * [new branch]          feat/market-levels          -> origin/feat/market-levels
+2026-10-04T08:42:39.8903808Z  * [new branch]          feat/pathfinding-lanes-archive -> origin/feat/pathfinding-lanes-archive
+2026-10-04T08:42:39.8904363Z  * [new branch]          feat/pathfinding-tiles      -> origin/feat/pathfinding-tiles
+2026-10-04T08:42:39.8904914Z  * [new branch]          feat/pathfinding-traffic-lanes -> origin/feat/pathfinding-traffic-lanes
+2026-10-04T08:42:39.8905473Z  * [new branch]          feat/pathfinding-wip-v1     -> origin/feat/pathfinding-wip-v1
+2026-10-04T08:42:39.8906119Z  * [new branch]          feat/survive-building-destruction-simplified -> origin/feat/survive-building-destruction-simplified
+2026-10-04T08:42:39.8906768Z  * [new branch]          feat/task-switch-penalty    -> origin/feat/task-switch-penalty
+2026-10-04T08:42:39.8907317Z  * [new branch]          feat/torus-pan              -> origin/feat/torus-pan
+2026-10-04T08:42:39.8908025Z  * [new branch]          feature/ai-elo-scoring      -> origin/feature/ai-elo-scoring
+2026-10-04T08:42:39.8908752Z  * [new branch]          fix-epic-sdl3-prefix        -> origin/fix-epic-sdl3-prefix
+2026-10-04T08:42:39.8909257Z  * [new branch]          fix/carried-resource-penalty -> origin/fix/carried-resource-penalty
+2026-10-04T08:42:39.8909868Z  * [new branch]          fix/innswap-windows-macros  -> origin/fix/innswap-windows-macros
+2026-10-04T08:42:39.8910367Z  * [new branch]          fix/market-round-trip       -> origin/fix/market-round-trip
+2026-10-04T08:42:39.8910911Z  * [new branch]          fix/opaque-rectangle-batch-test -> origin/fix/opaque-rectangle-batch-test
+2026-10-04T08:42:39.8911453Z  * [new branch]          fix/round-trip-hunger-gate  -> origin/fix/round-trip-hunger-gate
+2026-10-04T08:42:39.8911999Z  * [new branch]          fix/unit-conversion-map-occupancy -> origin/fix/unit-conversion-map-occupancy
+2026-10-04T08:42:39.8912557Z  * [new branch]          folderStructure             -> origin/folderStructure
+2026-10-04T08:42:39.8913073Z  * [new branch]          gamegui_rewrite_2007        -> origin/gamegui_rewrite_2007
+2026-10-04T08:42:39.8913598Z  * [new branch]          gameplay                    -> origin/gameplay
+2026-10-04T08:42:39.8914140Z  * [new branch]          glob2-network               -> origin/glob2-network
+2026-10-04T08:42:39.8914719Z  * [new branch]          guard-area-balancing        -> origin/guard-area-balancing
+2026-10-04T08:42:39.8915538Z  * [new branch]          junior/fix-sgsl-hilight-name-table -> origin/junior/fix-sgsl-hilight-name-table
+2026-10-04T08:42:39.8916255Z  * [new branch]          mailmap                     -> origin/mailmap
+2026-10-04T08:42:39.8916753Z  * [new branch]          market_bug                  -> origin/market_bug
+2026-10-04T08:42:39.8917220Z  * [new branch]          master                      -> origin/master
+2026-10-04T08:42:39.8917656Z  * [new branch]          multiplayer/closed-seats    -> origin/multiplayer/closed-seats
+2026-10-04T08:42:39.8918453Z  * [new branch]          multiplayer/closed-seats-base -> origin/multiplayer/closed-seats-base
+2026-10-04T08:42:39.8919021Z  * [new branch]          multiplayer/m2-lan          -> origin/multiplayer/m2-lan
+2026-10-04T08:42:39.8919506Z  * [new branch]          multiplayer/m4-deploy       -> origin/multiplayer/m4-deploy
+2026-10-04T08:42:39.8920017Z  * [new branch]          multiplayer/net-telemetry   -> origin/multiplayer/net-telemetry
+2026-10-04T08:42:39.8920508Z  * [new branch]          multiplayer/staging         -> origin/multiplayer/staging
+2026-10-04T08:42:39.8921154Z  * [new branch]          multiplayer/turn-latency    -> origin/multiplayer/turn-latency
+2026-10-04T08:42:39.8922601Z  * [new branch]          multiplayer/web-design      -> origin/multiplayer/web-design
+2026-10-04T08:42:39.8923338Z  * [new branch]          nicowar-changes             -> origin/nicowar-changes
+2026-10-04T08:42:39.8923943Z  * [new branch]          one-thumb/evidence          -> origin/one-thumb/evidence
+2026-10-04T08:42:39.8924721Z  * [new branch]          optimized                   -> origin/optimized
+2026-10-04T08:42:39.8925590Z  * [new branch]          proposal/farm-area-sprout-art -> origin/proposal/farm-area-sprout-art
+2026-10-04T08:42:39.8926712Z  * [new branch]          proto/wheat-farming-rule    -> origin/proto/wheat-farming-rule
+2026-10-04T08:42:39.8927871Z  * [new branch]          proto/wheat-fetcher-supply-cap -> origin/proto/wheat-fetcher-supply-cap
+2026-10-04T08:42:39.8929110Z  * [new branch]          rebase/pathfinding-lanes-on-master -> origin/rebase/pathfinding-lanes-on-master
+2026-10-04T08:42:39.8930071Z  * [new branch]          rebase/pathfinding-swaps-on-master -> origin/rebase/pathfinding-swaps-on-master
+2026-10-04T08:42:39.8930970Z  * [new branch]          release/0.10.0.0            -> origin/release/0.10.0.0
+2026-10-04T08:42:39.8931630Z  * [new branch]          replay                      -> origin/replay
+2026-10-04T08:42:39.8932389Z  * [new branch]          reports/pr254-gig-hiring-bench -> origin/reports/pr254-gig-hiring-bench
+2026-10-04T08:42:39.8933185Z  * [new branch]          scons_conversion            -> origin/scons_conversion
+2026-10-04T08:42:39.8933970Z  * [new branch]          terrain-ice-cobblestone     -> origin/terrain-ice-cobblestone
+2026-10-04T08:42:39.8934904Z  * [new branch]          test/building-placement-invalidation -> origin/test/building-placement-invalidation
+2026-10-04T08:42:39.8935776Z  * [new branch]          texturExperiments           -> origin/texturExperiments
+2026-10-04T08:42:39.8936602Z  * [new branch]          unitAssignmentByLeo         -> origin/unitAssignmentByLeo
+2026-10-04T08:42:39.8937376Z  * [new branch]          wizard-unit-concept         -> origin/wizard-unit-concept
+2026-10-04T08:42:39.8938258Z  * [new tag]             alpha1                      -> alpha1
+2026-10-04T08:42:39.8938898Z  * [new tag]             alpha10                     -> alpha10
+2026-10-04T08:42:39.8939475Z  * [new tag]             alpha11                     -> alpha11
+2026-10-04T08:42:39.8940036Z  * [new tag]             alpha12                     -> alpha12
+2026-10-04T08:42:39.8940802Z  * [new tag]             alpha13                     -> alpha13
+2026-10-04T08:42:39.8941432Z  * [new tag]             alpha14                     -> alpha14
+2026-10-04T08:42:39.8942015Z  * [new tag]             alpha15                     -> alpha15
+2026-10-04T08:42:39.8942576Z  * [new tag]             alpha16                     -> alpha16
+2026-10-04T08:42:39.8943118Z  * [new tag]             alpha17                     -> alpha17
+2026-10-04T08:42:39.8943744Z  * [new tag]             alpha17a                    -> alpha17a
+2026-10-04T08:42:39.8944353Z  * [new tag]             alpha18                     -> alpha18
+2026-10-04T08:42:39.8944931Z  * [new tag]             alpha18a                    -> alpha18a
+2026-10-04T08:42:39.8945537Z  * [new tag]             alpha19                     -> alpha19
+2026-10-04T08:42:39.8946130Z  * [new tag]             alpha2                      -> alpha2
+2026-10-04T08:42:39.8946737Z  * [new tag]             alpha20                     -> alpha20
+2026-10-04T08:42:39.8947343Z  * [new tag]             alpha20a                    -> alpha20a
+2026-10-04T08:42:39.8947920Z  * [new tag]             alpha21                     -> alpha21
+2026-10-04T08:42:39.8948640Z  * [new tag]             alpha23                     -> alpha23
+2026-10-04T08:42:39.8949211Z  * [new tag]             alpha3                      -> alpha3
+2026-10-04T08:42:39.8949790Z  * [new tag]             alpha4                      -> alpha4
+2026-10-04T08:42:39.8950418Z  * [new tag]             alpha5                      -> alpha5
+2026-10-04T08:42:39.8950992Z  * [new tag]             alpha6                      -> alpha6
+2026-10-04T08:42:39.8951566Z  * [new tag]             alpha7                      -> alpha7
+2026-10-04T08:42:39.8952135Z  * [new tag]             alpha8                      -> alpha8
+2026-10-04T08:42:39.8952711Z  * [new tag]             alpha9                      -> alpha9
+2026-10-04T08:42:39.8953540Z  * [new tag]             archive/pr343-before-rework -> archive/pr343-before-rework
+2026-10-04T08:42:39.8954298Z  * [new tag]             archive/pr360-before-rework -> archive/pr360-before-rework
+2026-10-04T08:42:39.8955015Z  * [new tag]             beta1                       -> beta1
+2026-10-04T08:42:39.8955612Z  * [new tag]             beta2                       -> beta2
+2026-10-04T08:42:39.8956216Z  * [new tag]             beta3                       -> beta3
+2026-10-04T08:42:39.8956766Z  * [new tag]             beta4                       -> beta4
+2026-10-04T08:42:39.8957310Z  * [new tag]             beta4.1                     -> beta4.1
+2026-10-04T08:42:39.8957914Z  * [new tag]             beta4.2                     -> beta4.2
+2026-10-04T08:42:39.8958691Z  * [new tag]             beta4.3                     -> beta4.3
+2026-10-04T08:42:39.8959293Z  * [new tag]             beta4.4                     -> beta4.4
+2026-10-04T08:42:39.8959940Z  * [new tag]             beta4.5                     -> beta4.5
+2026-10-04T08:42:39.8960501Z  * [new tag]             globalbug                   -> globalbug
+2026-10-04T08:42:39.8961284Z  * [new tag]             semi-stable-0-1             -> semi-stable-0-1
+2026-10-04T08:42:39.8961904Z  * [new tag]             stable-0-2                  -> stable-0-2
+2026-10-04T08:42:39.8962525Z  * [new tag]             v0.10.0.0                   -> v0.10.0.0
+2026-10-04T08:42:39.8963113Z  * [new tag]             v0.9.5.0                    -> v0.9.5.0
+2026-10-04T08:42:39.8963670Z  * [new tag]             v0.9.5.1                    -> v0.9.5.1
+2026-10-04T08:42:39.8964253Z  * [new tag]             v0.9.5.2                    -> v0.9.5.2
+2026-10-04T08:42:39.8964851Z  * [new tag]             v0.9.5.3                    -> v0.9.5.3
+2026-10-04T08:42:39.8965488Z  * [new tag]             v0.9.5.4                    -> v0.9.5.4
+2026-10-04T08:42:39.8967145Z [command]/usr/bin/git rev-parse --verify --quiet e958fe16e25091f177c2f280301d4cc3a509df71^{object}
+2026-10-04T08:42:39.8967930Z e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:42:39.8969618Z ##[endgroup]
+2026-10-04T08:42:39.8970317Z ##[group]Determining the checkout info
+2026-10-04T08:42:39.8971024Z ##[endgroup]
+2026-10-04T08:42:39.8971479Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T08:42:39.8973027Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T08:42:39.8974416Z ##[group]Checking out the ref
+2026-10-04T08:42:39.8975118Z [command]/usr/bin/git checkout --progress --force e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:42:40.9210456Z Updating files:  82% (11382/13874)
+2026-10-04T08:42:40.9268065Z Updating files:  83% (11516/13874)
+2026-10-04T08:42:40.9310261Z Updating files:  84% (11655/13874)
+2026-10-04T08:42:40.9349395Z Updating files:  85% (11793/13874)
+2026-10-04T08:42:40.9456028Z Updating files:  86% (11932/13874)
+2026-10-04T08:42:40.9579120Z Updating files:  87% (12071/13874)
+2026-10-04T08:42:40.9656718Z Updating files:  88% (12210/13874)
+2026-10-04T08:42:40.9752078Z Updating files:  89% (12348/13874)
+2026-10-04T08:42:40.9844730Z Updating files:  90% (12487/13874)
+2026-10-04T08:42:40.9957064Z Updating files:  91% (12626/13874)
+2026-10-04T08:42:41.0043330Z Updating files:  92% (12765/13874)
+2026-10-04T08:42:41.0120961Z Updating files:  93% (12903/13874)
+2026-10-04T08:42:41.0196990Z Updating files:  94% (13042/13874)
+2026-10-04T08:42:41.0275248Z Updating files:  95% (13181/13874)
+2026-10-04T08:42:41.0676290Z Updating files:  96% (13320/13874)
+2026-10-04T08:42:41.1063857Z Updating files:  97% (13458/13874)
+2026-10-04T08:42:41.1228737Z Updating files:  98% (13597/13874)
+2026-10-04T08:42:41.1339617Z Updating files:  99% (13736/13874)
+2026-10-04T08:42:41.1340243Z Updating files: 100% (13874/13874)
+2026-10-04T08:42:41.1340719Z Updating files: 100% (13874/13874), done.
+2026-10-04T08:42:41.1455258Z Note: switching to 'e958fe16e25091f177c2f280301d4cc3a509df71'.
+2026-10-04T08:42:41.1455691Z 
+2026-10-04T08:42:41.1456053Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-04T08:42:41.1456833Z changes and commit them, and you can discard any commits you make in this
+2026-10-04T08:42:41.1457354Z state without impacting any branches by switching back to a branch.
+2026-10-04T08:42:41.1457653Z 
+2026-10-04T08:42:41.1457922Z If you want to create a new branch to retain commits you create, you may
+2026-10-04T08:42:41.1458619Z do so (now or later) by using -c with the switch command. Example:
+2026-10-04T08:42:41.1459019Z 
+2026-10-04T08:42:41.1460245Z   git switch -c <new-branch-name>
+2026-10-04T08:42:41.1460578Z 
+2026-10-04T08:42:41.1460816Z Or undo this operation with:
+2026-10-04T08:42:41.1461130Z 
+2026-10-04T08:42:41.1461285Z   git switch -
+2026-10-04T08:42:41.1461506Z 
+2026-10-04T08:42:41.1461882Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-04T08:42:41.1462459Z 
+2026-10-04T08:42:41.1462828Z HEAD is now at e958fe16e Document complete selected CI match trace coverage (#698)
+2026-10-04T08:42:41.1486270Z ##[endgroup]
+2026-10-04T08:42:41.1533479Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T08:42:41.1556265Z e958fe16e25091f177c2f280301d4cc3a509df71
+2026-10-04T08:42:41.1737713Z ##[group]Run "$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v
+2026-10-04T08:42:41.1738841Z [36;1m"$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s test/build_system -v[0m
+2026-10-04T08:42:41.1908462Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:42:41.1908876Z env:
+2026-10-04T08:42:41.1909217Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:42:41.1909560Z ##[endgroup]
+2026-10-04T08:42:44.3229584Z Collecting Pillow==12.2.0 (from -r /home/runner/work/glob2/glob2/tools/asset-requirements.txt (line 2))
+2026-10-04T08:42:44.3797570Z   Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (8.8 kB)
+2026-10-04T08:42:44.4099443Z Downloading pillow-12.2.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (7.1 MB)
+2026-10-04T08:42:44.5527316Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 7.1/7.1 MB 50.9 MB/s eta 0:00:00
+2026-10-04T08:42:44.5760018Z Installing collected packages: Pillow
+2026-10-04T08:42:44.8465176Z Successfully installed Pillow-12.2.0
+2026-10-04T08:42:46.3239182Z test_rejects_changed_handoff_before_signing (test_amazon_release.ArtifactTests.test_rejects_changed_handoff_before_signing) ... ok
+2026-10-04T08:42:46.3257128Z test_rejects_single_abi (test_amazon_release.ArtifactTests.test_rejects_single_abi) ... ok
+2026-10-04T08:42:46.3279547Z test_failed_upload_leaves_edit_and_retry_stops_before_upload (test_amazon_release.PublisherTests.test_failed_upload_leaves_edit_and_retry_stops_before_upload) ... ok
+2026-10-04T08:42:46.3291649Z test_refuses_existing_draft_without_mutation (test_amazon_release.PublisherTests.test_refuses_existing_draft_without_mutation) ... ok
+2026-10-04T08:42:46.3305147Z test_refuses_nonincreasing_version_before_upload (test_amazon_release.PublisherTests.test_refuses_nonincreasing_version_before_upload) ... ok
+2026-10-04T08:42:46.3317337Z test_rejects_changed_handoff_before_signing (test_amazon_release.PublisherTests.test_rejects_changed_handoff_before_signing) ... ok
+2026-10-04T08:42:46.3330642Z test_rejects_single_abi (test_amazon_release.PublisherTests.test_rejects_single_abi) ... ok
+2026-10-04T08:42:46.3343827Z test_replaces_apk_updates_notes_validates_and_commits (test_amazon_release.PublisherTests.test_replaces_apk_updates_notes_validates_and_commits) ... ok
+2026-10-04T08:42:46.3345341Z test_version_code_is_stable_and_ordered (test_amazon_release.VersionTests.test_version_code_is_stable_and_ordered) ... ok
+2026-10-04T08:42:46.3370470Z test_apk_rejects_second_abi_and_wrong_version (test_android_release.AndroidReleaseTests.test_apk_rejects_second_abi_and_wrong_version) ... ok
+2026-10-04T08:42:46.3389500Z test_apk_rejects_unexpected_same_abi_library (test_android_release.AndroidReleaseTests.test_apk_rejects_unexpected_same_abi_library) ... ok
+2026-10-04T08:42:46.3403524Z test_candidate_accepts_existing_version_but_publication_rejects_tag_collision (test_android_release.AndroidReleaseTests.test_candidate_accepts_existing_version_but_publication_rejects_tag_collision) ... ok
+2026-10-04T08:42:46.3409041Z test_development_check_allows_released_version_but_not_lower_codes (test_android_release.AndroidReleaseTests.test_development_check_allows_released_version_but_not_lower_codes) ... ok
+2026-10-04T08:42:46.3424336Z test_development_cli_preserves_identity_and_recipe_validation (test_android_release.AndroidReleaseTests.test_development_cli_preserves_identity_and_recipe_validation) ... ok
+2026-10-04T08:42:46.3431103Z test_monitor_state_transitions (test_android_release.AndroidReleaseTests.test_monitor_state_transitions) ... ok
+2026-10-04T08:42:46.3435110Z test_preflight_rejects_reused_tag_at_other_commit (test_android_release.AndroidReleaseTests.test_preflight_rejects_reused_tag_at_other_commit) ... ok
+2026-10-04T08:42:46.3446426Z test_recipe_rejects_missing_abi (test_android_release.AndroidReleaseTests.test_recipe_rejects_missing_abi) ... ok
+2026-10-04T08:42:46.3457780Z test_recipe_rejects_sdk_drift (test_android_release.AndroidReleaseTests.test_recipe_rejects_sdk_drift) ... ok
+2026-10-04T08:42:46.3470926Z test_recipe_template_supports_later_tag (test_android_release.AndroidReleaseTests.test_recipe_template_supports_later_tag) ... ok
+2026-10-04T08:42:46.3488756Z test_shared_apk_verification_preserves_release_identity (test_android_release.AndroidReleaseTests.test_shared_apk_verification_preserves_release_identity) ... ok
+2026-10-04T08:42:46.3494156Z test_version_codes_and_desktop_version (test_android_release.AndroidReleaseTests.test_version_codes_and_desktop_version) ... ok
+2026-10-04T08:42:46.3499201Z test_version_manifest_rejects_mismatch (test_android_release.AndroidReleaseTests.test_version_manifest_rejects_mismatch) ... ok
+2026-10-04T08:42:46.3501210Z test_workflows_keep_publication_preflight_strict (test_android_release.AndroidReleaseTests.test_workflows_keep_publication_preflight_strict) ... ok
+2026-10-04T08:42:46.3557240Z test_offline_editions_drop_both_invite_filters (test_android_release.InviteLinkManifestTests.test_offline_editions_drop_both_invite_filters) ... ok
+2026-10-04T08:42:46.3559225Z test_unexpected_layout_is_refused (test_android_release.InviteLinkManifestTests.test_unexpected_layout_is_refused) ... ok
+2026-10-04T08:42:46.3565093Z test_check_only_mode_does_not_write (test_app_link_fingerprints.AppStoreConnectTests.test_check_only_mode_does_not_write) ... ok
+2026-10-04T08:42:46.3574732Z test_der_signature_becomes_jose_form (test_app_link_fingerprints.AppStoreConnectTests.test_der_signature_becomes_jose_form) ... ok
+2026-10-04T08:42:46.3575744Z test_enables_associated_domains_once (test_app_link_fingerprints.AppStoreConnectTests.test_enables_associated_domains_once) ... ok
+2026-10-04T08:42:46.3576692Z test_http_errors_are_reported_without_the_token (test_app_link_fingerprints.AppStoreConnectTests.test_http_errors_are_reported_without_the_token) ... ok
+2026-10-04T08:42:46.3657238Z test_token_is_an_es256_jwt (test_app_link_fingerprints.AppStoreConnectTests.test_token_is_an_es256_jwt) ... ok
+2026-10-04T08:42:46.3661586Z test_apksigner_output (test_app_link_fingerprints.FingerprintTests.test_apksigner_output) ... ok
+2026-10-04T08:42:46.3666738Z test_keytool_listing_yields_only_the_sha256 (test_app_link_fingerprints.FingerprintTests.test_keytool_listing_yields_only_the_sha256) ... ok
+2026-10-04T08:42:46.3668308Z test_normalises_hex_colon_and_base64 (test_app_link_fingerprints.FingerprintTests.test_normalises_hex_colon_and_base64) ... ok
+2026-10-04T08:42:46.3669870Z test_snippet_matches_instance_schema (test_app_link_fingerprints.FingerprintTests.test_snippet_matches_instance_schema) ... ok
+2026-10-04T08:42:47.9518385Z test_reads_certificate_and_removes_decoded_keystore (test_app_link_fingerprints.KeystoreTests.test_reads_certificate_and_removes_decoded_keystore) ... ok
+2026-10-04T08:42:47.9519467Z test_empty_track_is_an_error (test_app_link_fingerprints.PlayTests.test_empty_track_is_an_error) ... ok
+2026-10-04T08:42:47.9523553Z test_falls_back_to_system_apk_variant (test_app_link_fingerprints.PlayTests.test_falls_back_to_system_apk_variant) ... ok
+2026-10-04T08:42:47.9526228Z test_mismatch_between_listing_and_apk_fails (test_app_link_fingerprints.PlayTests.test_mismatch_between_listing_and_apk_fails) ... ok
+2026-10-04T08:42:47.9528832Z test_reads_latest_internal_release_and_never_commits_the_edit (test_app_link_fingerprints.PlayTests.test_reads_latest_internal_release_and_never_commits_the_edit) ... ok
+2026-10-04T08:42:47.9538484Z test_never_prints_secret_material (test_app_link_fingerprints.WorkflowTests.test_never_prints_secret_material) ... ok
+2026-10-04T08:42:47.9539285Z test_runs_only_by_owner_dispatch_in_the_release_mirror (test_app_link_fingerprints.WorkflowTests.test_runs_only_by_owner_dispatch_in_the_release_mirror) ... ok
+2026-10-04T08:42:47.9573947Z test_bad_html_keeps_previous_package (test_browser_package.BrowserPackageTests.test_bad_html_keeps_previous_package) ... ok
+2026-10-04T08:42:47.9610357Z test_corrupt_or_missing_sidecar_rejected (test_browser_package.BrowserPackageTests.test_corrupt_or_missing_sidecar_rejected) ... ok
+2026-10-04T08:42:47.9744655Z test_dual_runtime_references_and_version_include_threaded_binary (test_browser_package.BrowserPackageTests.test_dual_runtime_references_and_version_include_threaded_binary) ... ok
+2026-10-04T08:42:47.9799733Z test_dual_runtime_rejects_missing_worker_sidecar (test_browser_package.BrowserPackageTests.test_dual_runtime_rejects_missing_worker_sidecar) ... ok
+2026-10-04T08:42:47.9828762Z test_existing_website_is_not_an_owned_package (test_browser_package.BrowserPackageTests.test_existing_website_is_not_an_owned_package) ... ok
+2026-10-04T08:42:47.9896578Z test_failed_directory_swap_keeps_previous_package (test_browser_package.BrowserPackageTests.test_failed_directory_swap_keeps_previous_package) ... ok
+2026-10-04T08:42:47.9997735Z test_non_html_sidecars_are_mandatory_even_if_checksums_are_removed (test_browser_package.BrowserPackageTests.test_non_html_sidecars_are_mandatory_even_if_checksums_are_removed) ... ok
+2026-10-04T08:42:48.0003022Z test_package_requires_game_data (test_browser_package.BrowserPackageTests.test_package_requires_game_data) ... ok
+2026-10-04T08:42:48.0083787Z test_public_package_is_readable_under_private_umask (test_browser_package.BrowserPackageTests.test_public_package_is_readable_under_private_umask) ... ok
+2026-10-04T08:42:48.0132954Z test_public_package_is_readable_with_restrictive_umask (test_browser_package.BrowserPackageTests.test_public_package_is_readable_with_restrictive_umask) ... ok
+2026-10-04T08:42:48.0257835Z test_recording_assets_are_versioned_and_references_follow_them (test_browser_package.BrowserPackageTests.test_recording_assets_are_versioned_and_references_follow_them) ... ok
+2026-10-04T08:42:48.0321929Z test_references_sidecars_and_repeatable_identity (test_browser_package.BrowserPackageTests.test_references_sidecars_and_repeatable_identity) ... ok
+2026-10-04T08:42:48.0371137Z test_stale_assets_removed (test_browser_package.BrowserPackageTests.test_stale_assets_removed) ... ok
+2026-10-04T08:42:48.0413421Z test_threaded_package_is_public_readable_under_private_build_umask (test_browser_package.BrowserPackageTests.test_threaded_package_is_public_readable_under_private_build_umask) ... ok
+2026-10-04T08:42:48.0432832Z test_batch_retains_requested_draft_tests_but_excludes_cheap_runs (test_ci_batch_metrics.BatchTest.test_batch_retains_requested_draft_tests_but_excludes_cheap_runs) ... ok
+2026-10-04T08:42:48.0445077Z test_batch_skips_measured_attempts_and_cancelled_runs (test_ci_batch_metrics.BatchTest.test_batch_skips_measured_attempts_and_cancelled_runs) ... ok
+2026-10-04T08:42:48.0466793Z test_cold_batch_bounds_api_work_and_retries_unavailable_measurements (test_ci_batch_metrics.BatchTest.test_cold_batch_bounds_api_work_and_retries_unavailable_measurements) ... ok
+2026-10-04T08:42:48.0470152Z test_previous_state_is_inert_json (test_ci_batch_metrics.BatchTest.test_previous_state_is_inert_json) ... ok
+2026-10-04T08:42:48.0472499Z test_ai_and_ui_changes_skip_map_sweep_and_deployment (test_ci_changed_paths.ChangedPathsTest.test_ai_and_ui_changes_skip_map_sweep_and_deployment) ... ok
+2026-10-04T08:42:48.0473609Z test_browser_shell_only (test_ci_changed_paths.ChangedPathsTest.test_browser_shell_only) ... ok
+2026-10-04T08:42:48.0474702Z test_ci_tool_tests_only_run_selector_contracts (test_ci_changed_paths.ChangedPathsTest.test_ci_tool_tests_only_run_selector_contracts) ... ok
+2026-10-04T08:42:48.0475864Z test_cross_platform_fixtures_run_everything (test_ci_changed_paths.ChangedPathsTest.test_cross_platform_fixtures_run_everything) ... ok
+2026-10-04T08:42:48.0477328Z test_deployment_changes_only_run_browser_and_deployment (test_ci_changed_paths.ChangedPathsTest.test_deployment_changes_only_run_browser_and_deployment) ... ok
+2026-10-04T08:42:48.0478901Z test_documentation_only (test_ci_changed_paths.ChangedPathsTest.test_documentation_only) ... ok
+2026-10-04T08:42:48.0495789Z test_downloaded_native_archives_do_not_dirty_source_provenance (test_ci_changed_paths.ChangedPathsTest.test_downloaded_native_archives_do_not_dirty_source_provenance) ... ok
+2026-10-04T08:42:48.0498612Z test_drawing_implementations_keep_all_platforms_without_map_sweeps (test_ci_changed_paths.ChangedPathsTest.test_drawing_implementations_keep_all_platforms_without_map_sweeps) ... ok
+2026-10-04T08:42:48.0500095Z test_empty_diff_runs_everything (test_ci_changed_paths.ChangedPathsTest.test_empty_diff_runs_everything) ... ok
+2026-10-04T08:42:48.0501342Z test_every_inline_build_checks_out_the_selected_revision (test_ci_changed_paths.ChangedPathsTest.test_every_inline_build_checks_out_the_selected_revision) ... ok
+2026-10-04T08:42:48.0502442Z test_golden_table_only_runs_golden_job (test_ci_changed_paths.ChangedPathsTest.test_golden_table_only_runs_golden_job) ... ok
+2026-10-04T08:42:48.0508440Z test_javascript_evidence_steps_are_visible_to_ci_failure_summary (test_ci_changed_paths.ChangedPathsTest.test_javascript_evidence_steps_are_visible_to_ci_failure_summary) ... ok
+2026-10-04T08:42:48.0511578Z test_lightweight_suites_are_executed_and_packaging_paths_remain (test_ci_changed_paths.ChangedPathsTest.test_lightweight_suites_are_executed_and_packaging_paths_remain) ... ok
+2026-10-04T08:42:48.0513549Z test_linux_platform_tests_depend_only_on_their_own_build (test_ci_changed_paths.ChangedPathsTest.test_linux_platform_tests_depend_only_on_their_own_build) ... ok
+2026-10-04T08:42:48.0514997Z test_match_record_fixture_runs_native_browser_and_comparison (test_ci_changed_paths.ChangedPathsTest.test_match_record_fixture_runs_native_browser_and_comparison) ... ok
+2026-10-04T08:42:48.0516299Z test_mixed_independent_changes (test_ci_changed_paths.ChangedPathsTest.test_mixed_independent_changes) ... ok
+2026-10-04T08:42:48.0517245Z test_native_test_only (test_ci_changed_paths.ChangedPathsTest.test_native_test_only) ... ok
+2026-10-04T08:42:48.0518320Z test_network_changes_keep_deployment (test_ci_changed_paths.ChangedPathsTest.test_network_changes_keep_deployment) ... ok
+2026-10-04T08:42:48.0519373Z test_platform_docs_only (test_ci_changed_paths.ChangedPathsTest.test_platform_docs_only) ... ok
+2026-10-04T08:42:48.0520206Z test_platform_only (test_ci_changed_paths.ChangedPathsTest.test_platform_only) ... ok
+2026-10-04T08:42:48.0521097Z test_platform_stack_paths (test_ci_changed_paths.ChangedPathsTest.test_platform_stack_paths) ... ok
+2026-10-04T08:42:48.0522305Z test_protocol_fixtures_run_platform_and_native_contract_tests (test_ci_changed_paths.ChangedPathsTest.test_protocol_fixtures_run_platform_and_native_contract_tests) ... ok
+2026-10-04T08:42:48.0523638Z test_relay_changes_run_the_relay_job_only (test_ci_changed_paths.ChangedPathsTest.test_relay_changes_run_the_relay_job_only) ... ok
+2026-10-04T08:42:48.0525163Z test_shared_scripting_changes_run_native_browser_and_comparison (test_ci_changed_paths.ChangedPathsTest.test_shared_scripting_changes_run_native_browser_and_comparison) ... ok
+2026-10-04T08:42:48.0526000Z test_shared_source_runs_everything (test_ci_changed_paths.ChangedPathsTest.test_shared_source_runs_everything) ... ok
+2026-10-04T08:42:48.0526832Z test_transport_fixture_only_runs_browser_jobs (test_ci_changed_paths.ChangedPathsTest.test_transport_fixture_only_runs_browser_jobs) ... ok
+2026-10-04T08:42:48.0534932Z test_windows_cache_writes_require_authorized_event_and_successful_build (test_ci_changed_paths.ChangedPathsTest.test_windows_cache_writes_require_authorized_event_and_successful_build) ... ok
+2026-10-04T08:42:48.0536905Z test_windows_git_newline_policy_is_pinned_before_cache_and_build (test_ci_changed_paths.ChangedPathsTest.test_windows_git_newline_policy_is_pinned_before_cache_and_build) ... ok
+2026-10-04T08:42:48.0553488Z test_workspace_compiler_caches_do_not_dirty_source_provenance (test_ci_changed_paths.ChangedPathsTest.test_workspace_compiler_caches_do_not_dirty_source_provenance) ... ok
+2026-10-04T08:42:48.0579882Z test_queued_workflow_with_active_or_completed_job_is_protected (test_ci_concurrency.MasterExecutionTest.test_queued_workflow_with_active_or_completed_job_is_protected) ... ok
+2026-10-04T08:42:48.0582247Z test_unknown_execution_is_protected_and_current_attempt_is_queried (test_ci_concurrency.MasterExecutionTest.test_unknown_execution_is_protected_and_current_attempt_is_queried) ... ok
+2026-10-04T08:42:48.0584219Z test_closed_pull_requests_cancel_everything_but_keep_branch_pushes (test_ci_concurrency.SelectionTest.test_closed_pull_requests_cancel_everything_but_keep_branch_pushes) ... ok
+2026-10-04T08:42:48.0585987Z test_default_branch_is_opt_in_and_keeps_its_newest_run (test_ci_concurrency.SelectionTest.test_default_branch_is_opt_in_and_keeps_its_newest_run) ... ok
+2026-10-04T08:42:48.0587589Z test_fork_branch_with_same_name_is_a_different_head (test_ci_concurrency.SelectionTest.test_fork_branch_with_same_name_is_a_different_head) ... ok
+2026-10-04T08:42:48.0589393Z test_legacy_release_pr_runs_are_retired_even_at_the_current_head (test_ci_concurrency.SelectionTest.test_legacy_release_pr_runs_are_retired_even_at_the_current_head) ... ok
+2026-10-04T08:42:48.0591111Z test_only_runs_for_an_outdated_head_are_cancelled (test_ci_concurrency.SelectionTest.test_only_runs_for_an_outdated_head_are_cancelled) ... ok
+2026-10-04T08:42:48.0593074Z test_release_dispatch_current_and_unknown_runs_are_protected (test_ci_concurrency.SelectionTest.test_release_dispatch_current_and_unknown_runs_are_protected) ... ok
+2026-10-04T08:42:48.0610894Z test_called_workflows_never_share_their_callers_group (test_ci_concurrency.WorkflowConcurrencyTest.test_called_workflows_never_share_their_callers_group) ... ok
+2026-10-04T08:42:48.0620952Z test_canceller_covers_every_event_triggered_ci_workflow (test_ci_concurrency.WorkflowConcurrencyTest.test_canceller_covers_every_event_triggered_ci_workflow) ... ok
+2026-10-04T08:42:48.0635516Z test_ci_workflows_cancel_superseded_pull_request_and_branch_runs (test_ci_concurrency.WorkflowConcurrencyTest.test_ci_workflows_cancel_superseded_pull_request_and_branch_runs) ... ok
+2026-10-04T08:42:48.0641440Z test_classification_names_existing_workflows (test_ci_concurrency.WorkflowConcurrencyTest.test_classification_names_existing_workflows) ... ok
+2026-10-04T08:42:48.0740692Z test_release_workflows_never_cancel_in_progress (test_ci_concurrency.WorkflowConcurrencyTest.test_release_workflows_never_cancel_in_progress) ... ok
+2026-10-04T08:42:48.0745032Z test_browser_compatibility_keeps_every_engine_and_thread_variant (test_ci_policy.PolicyTest.test_browser_compatibility_keeps_every_engine_and_thread_variant) ... ok
+2026-10-04T08:42:48.0830746Z test_checkpoint_never_uses_divergent_or_unattested_revision (test_ci_policy.PolicyTest.test_checkpoint_never_uses_divergent_or_unattested_revision) ... ok
+2026-10-04T08:42:48.0832687Z test_labels_only_expand (test_ci_policy.PolicyTest.test_labels_only_expand) ... ok
+2026-10-04T08:42:48.1146568Z test_master_always_full_and_nightly_reuse_is_not_a_checkpoint (test_ci_policy.PolicyTest.test_master_always_full_and_nightly_reuse_is_not_a_checkpoint) ... ok
+2026-10-04T08:42:48.1148362Z test_platform_stack_smoke_follows_the_stack_inputs (test_ci_policy.PolicyTest.test_platform_stack_smoke_follows_the_stack_inputs) ... ok
+2026-10-04T08:42:48.1150240Z test_portable_cases_remain_primary_and_simulation_adds_compatibility (test_ci_policy.PolicyTest.test_portable_cases_remain_primary_and_simulation_adds_compatibility) ... ok
+2026-10-04T08:42:48.1713431Z test_pr_requests_and_label_removal (test_ci_policy.PolicyTest.test_pr_requests_and_label_removal) ... ok
+2026-10-04T08:42:48.1756148Z test_release_metadata_does_not_compile_engine (test_ci_policy.PolicyTest.test_release_metadata_does_not_compile_engine) ... ok
+2026-10-04T08:42:48.1758003Z test_rendering_mobile_maps_and_network_have_distinct_boundaries (test_ci_policy.PolicyTest.test_rendering_mobile_maps_and_network_have_distinct_boundaries) ... ok
+2026-10-04T08:42:48.1759670Z test_shared_unknown_and_unavailable_inputs_fail_closed (test_ci_policy.PolicyTest.test_shared_unknown_and_unavailable_inputs_fail_closed) ... ok
+2026-10-04T08:42:48.1798398Z test_tests_beside_code_select_as_tests (test_ci_policy.PolicyTest.test_tests_beside_code_select_as_tests) ... ok
+2026-10-04T08:42:48.1839106Z test_timing_inventory_does_not_change_for_equivalent_policy_implementation (test_ci_policy.PolicyTest.test_timing_inventory_does_not_change_for_equivalent_policy_implementation) ... ok
+2026-10-04T08:42:48.1841196Z test_cleanup_protects_open_pr_and_newest_master_generations (test_ci_policy.ReuseTest.test_cleanup_protects_open_pr_and_newest_master_generations) ... ok
+2026-10-04T08:42:48.1842869Z test_different_case_inventories_do_not_produce_speed_comparisons (test_ci_policy.ReuseTest.test_different_case_inventories_do_not_produce_speed_comparisons) ... ok
+2026-10-04T08:42:48.1865649Z test_native_and_browser_evidence_must_include_every_selected_identity (test_ci_policy.ReuseTest.test_native_and_browser_evidence_must_include_every_selected_identity) ... ok
+2026-10-04T08:42:48.1867649Z test_native_coverage_audit_rejects_duplicate_missing_and_disagreeing_shards (test_ci_policy.ReuseTest.test_native_coverage_audit_rejects_duplicate_missing_and_disagreeing_shards) ... ok
+2026-10-04T08:42:48.1877253Z test_restored_dependencies_require_matching_identity_and_exact_content (test_ci_policy.ReuseTest.test_restored_dependencies_require_matching_identity_and_exact_content) ... ok
+2026-10-04T08:42:48.1879324Z test_p90_requires_ten_exact_coverage_samples (test_ci_run_metrics.FeedbackTest.test_p90_requires_ten_exact_coverage_samples) ... ok
+2026-10-04T08:42:48.1880898Z test_all_artifact_pages_are_read_for_large_full_matrix (test_ci_run_metrics.MetricsTest.test_all_artifact_pages_are_read_for_large_full_matrix) ... ok
+2026-10-04T08:42:48.1884336Z test_comparison_requires_ten_successes_and_matching_coverage (test_ci_run_metrics.MetricsTest.test_comparison_requires_ten_successes_and_matching_coverage) ... ok
+2026-10-04T08:42:48.1886248Z test_idle_gaps_do_not_count_as_execution_and_overlap_is_not_double_counted (test_ci_run_metrics.MetricsTest.test_idle_gaps_do_not_count_as_execution_and_overlap_is_not_double_counted) ... ok
+2026-10-04T08:42:48.1888022Z test_master_and_nightly_are_full_not_last_push_diff (test_ci_run_metrics.MetricsTest.test_master_and_nightly_are_full_not_last_push_diff) ... ok
+2026-10-04T08:42:48.1889924Z test_queue_and_execution_are_separate_and_empty_cancelled_jobs_cost_zero (test_ci_run_metrics.MetricsTest.test_queue_and_execution_are_separate_and_empty_cancelled_jobs_cost_zero) ... ok
+2026-10-04T08:42:48.1917714Z test_cheap_contract_summary_and_missing_jobs (test_ci_tiers.AggregateGateTest.test_cheap_contract_summary_and_missing_jobs) ... ok
+2026-10-04T08:42:48.1986081Z test_primary_gcc_gate_rejects_unexpected_compatibility_results (test_ci_tiers.AggregateGateTest.test_primary_gcc_gate_rejects_unexpected_compatibility_results) ... ok
+2026-10-04T08:42:48.2213481Z Measurement unavailable for 0; retry in a later batch
+2026-10-04T08:42:48.2214428Z Measurement unavailable for 1; retry in a later batch
+2026-10-04T08:42:48.2215058Z Measurement unavailable for 2; retry in a later batch
+2026-10-04T08:42:48.2215750Z Measurement unavailable for 3; retry in a later batch
+2026-10-04T08:42:48.2216368Z Measurement unavailable for 4; retry in a later batch
+2026-10-04T08:42:48.2217002Z Measurement unavailable for 5; retry in a later batch
+2026-10-04T08:42:48.2217687Z Measurement unavailable for 6; retry in a later batch
+2026-10-04T08:42:48.2218493Z Measurement unavailable for 7; retry in a later batch
+2026-10-04T08:42:48.2219128Z Measurement unavailable for 8; retry in a later batch
+2026-10-04T08:42:48.2219742Z Measurement unavailable for 9; retry in a later batch
+2026-10-04T08:42:48.2220329Z android: skipped (expected skipped)
+2026-10-04T08:42:48.2220898Z macos: skipped (expected skipped)
+2026-10-04T08:42:48.2221441Z tsan: skipped (expected skipped)
+2026-10-04T08:42:48.2221954Z native-coverage: skipped (expected skipped)
+2026-10-04T08:42:48.2222496Z linux: skipped (expected skipped)
+2026-10-04T08:42:48.2223028Z linux-variants: skipped (expected skipped)
+2026-10-04T08:42:48.2223624Z linux-map-generators: skipped (expected skipped)
+2026-10-04T08:42:48.2224159Z windows: skipped (expected skipped)
+2026-10-04T08:42:48.2224632Z web-build: skipped (expected skipped)
+2026-10-04T08:42:48.2225421Z web-native: skipped (expected skipped)
+2026-10-04T08:42:48.2225993Z web-deploy: skipped (expected skipped)
+2026-10-04T08:42:48.2226580Z web-test: skipped (expected skipped)
+2026-10-04T08:42:48.2227127Z browser-determinism: skipped (expected skipped)
+2026-10-04T08:42:48.2227720Z platform: skipped (expected skipped)
+2026-10-04T08:42:48.2228444Z platform-stack: skipped (expected skipped)
+2026-10-04T08:42:48.2229016Z android: skipped (expected skipped)
+2026-10-04T08:42:48.2229515Z macos: skipped (expected skipped)
+2026-10-04T08:42:48.2230013Z tsan: skipped (expected skipped)
+2026-10-04T08:42:48.2230514Z native-coverage: skipped (expected skipped)
+2026-10-04T08:42:48.2231056Z linux: skipped (expected skipped)
+2026-10-04T08:42:48.2231624Z linux-variants: skipped (expected skipped)
+2026-10-04T08:42:48.2232193Z linux-map-generators: skipped (expected skipped)
+2026-10-04T08:42:48.2232757Z android: success (expected success)
+2026-10-04T08:42:48.2233251Z macos: success (expected success)
+2026-10-04T08:42:48.2233933Z tsan: success (expected success)
+2026-10-04T08:42:48.2234474Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2234986Z linux: success (expected success)
+2026-10-04T08:42:48.2235523Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2236080Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2236704Z windows: success (expected success)
+2026-10-04T08:42:48.2237222Z web-build: success (expected success)
+2026-10-04T08:42:48.2237703Z web-native: success (expected success)
+2026-10-04T08:42:48.2238399Z web-deploy: success (expected success)
+2026-10-04T08:42:48.2238923Z web-test: success (expected success)
+2026-10-04T08:42:48.2239472Z browser-determinism: success (expected success)
+2026-10-04T08:42:48.2240077Z platform: success (expected success)
+2026-10-04T08:42:48.2240605Z platform-stack: success (expected success)
+2026-10-04T08:42:48.2241146Z android: failure (expected success)
+2026-10-04T08:42:48.2241683Z android: cancelled (expected success)
+2026-10-04T08:42:48.2242202Z android: skipped (expected success)
+2026-10-04T08:42:48.2242734Z android: success (expected success)
+2026-10-04T08:42:48.2243211Z macos: failure (expected success)
+2026-10-04T08:42:48.2243720Z android: success (expected success)
+2026-10-04T08:42:48.2244201Z macos: cancelled (expected success)
+2026-10-04T08:42:48.2244661Z android: success (expected success)
+2026-10-04T08:42:48.2245228Z macos: skipped (expected success)
+2026-10-04T08:42:48.2245709Z android: success (expected success)
+2026-10-04T08:42:48.2246202Z macos: success (expected success)
+2026-10-04T08:42:48.2246733Z tsan: failure (expected success)
+2026-10-04T08:42:48.2247190Z android: success (expected success)
+2026-10-04T08:42:48.2247730Z macos: success (expected success)
+2026-10-04T08:42:48.2248335Z tsan: cancelled (expected success)
+2026-10-04T08:42:48.2248833Z android: success (expected success)
+2026-10-04T08:42:48.2249306Z macos: success (expected success)
+2026-10-04T08:42:48.2249754Z tsan: skipped (expected success)
+2026-10-04T08:42:48.2250306Z android: success (expected success)
+2026-10-04T08:42:48.2250788Z macos: success (expected success)
+2026-10-04T08:42:48.2251318Z tsan: success (expected success)
+2026-10-04T08:42:48.2251839Z native-coverage: failure (expected success)
+2026-10-04T08:42:48.2252379Z android: success (expected success)
+2026-10-04T08:42:48.2252908Z macos: success (expected success)
+2026-10-04T08:42:48.2253392Z tsan: success (expected success)
+2026-10-04T08:42:48.2253886Z native-coverage: cancelled (expected success)
+2026-10-04T08:42:48.2254463Z android: success (expected success)
+2026-10-04T08:42:48.2254943Z macos: success (expected success)
+2026-10-04T08:42:48.2255446Z tsan: success (expected success)
+2026-10-04T08:42:48.2255990Z native-coverage: skipped (expected success)
+2026-10-04T08:42:48.2256494Z android: success (expected success)
+2026-10-04T08:42:48.2257022Z macos: success (expected success)
+2026-10-04T08:42:48.2257495Z tsan: success (expected success)
+2026-10-04T08:42:48.2258041Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2259158Z linux: failure (expected success)
+2026-10-04T08:42:48.2259672Z android: success (expected success)
+2026-10-04T08:42:48.2260192Z macos: success (expected success)
+2026-10-04T08:42:48.2260690Z tsan: success (expected success)
+2026-10-04T08:42:48.2261165Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2261754Z linux: cancelled (expected success)
+2026-10-04T08:42:48.2262268Z android: success (expected success)
+2026-10-04T08:42:48.2262773Z macos: success (expected success)
+2026-10-04T08:42:48.2263281Z tsan: success (expected success)
+2026-10-04T08:42:48.2263762Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2264359Z linux: skipped (expected success)
+2026-10-04T08:42:48.2264841Z android: success (expected success)
+2026-10-04T08:42:48.2265337Z macos: success (expected success)
+2026-10-04T08:42:48.2265866Z tsan: success (expected success)
+2026-10-04T08:42:48.2266394Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2267416Z linux: success (expected success)
+2026-10-04T08:42:48.2267906Z linux-variants: failure (expected success)
+2026-10-04T08:42:48.2268603Z android: success (expected success)
+2026-10-04T08:42:48.2269147Z macos: success (expected success)
+2026-10-04T08:42:48.2269633Z tsan: success (expected success)
+2026-10-04T08:42:48.2270150Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2270668Z linux: success (expected success)
+2026-10-04T08:42:48.2271161Z linux-variants: cancelled (expected success)
+2026-10-04T08:42:48.2271801Z android: success (expected success)
+2026-10-04T08:42:48.2272292Z macos: success (expected success)
+2026-10-04T08:42:48.2272788Z tsan: success (expected success)
+2026-10-04T08:42:48.2273270Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2273766Z linux: success (expected success)
+2026-10-04T08:42:48.2274311Z linux-variants: skipped (expected success)
+2026-10-04T08:42:48.2274791Z android: success (expected success)
+2026-10-04T08:42:48.2275296Z macos: success (expected success)
+2026-10-04T08:42:48.2275792Z tsan: success (expected success)
+2026-10-04T08:42:48.2276295Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2276907Z linux: success (expected success)
+2026-10-04T08:42:48.2277407Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2277989Z linux-map-generators: failure (expected success)
+2026-10-04T08:42:48.2278711Z android: success (expected success)
+2026-10-04T08:42:48.2279203Z macos: success (expected success)
+2026-10-04T08:42:48.2279738Z tsan: success (expected success)
+2026-10-04T08:42:48.2280234Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2281254Z linux: success (expected success)
+2026-10-04T08:42:48.2281817Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2282426Z linux-map-generators: cancelled (expected success)
+2026-10-04T08:42:48.2283035Z android: success (expected success)
+2026-10-04T08:42:48.2283526Z macos: success (expected success)
+2026-10-04T08:42:48.2283991Z tsan: success (expected success)
+2026-10-04T08:42:48.2284527Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2285047Z linux: success (expected success)
+2026-10-04T08:42:48.2285557Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2286125Z linux-map-generators: skipped (expected success)
+2026-10-04T08:42:48.2286667Z android: success (expected success)
+2026-10-04T08:42:48.2287179Z macos: success (expected success)
+2026-10-04T08:42:48.2287650Z tsan: success (expected success)
+2026-10-04T08:42:48.2288388Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2288938Z linux: success (expected success)
+2026-10-04T08:42:48.2289438Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2290028Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2290588Z windows: failure (expected success)
+2026-10-04T08:42:48.2291102Z android: success (expected success)
+2026-10-04T08:42:48.2291640Z macos: success (expected success)
+2026-10-04T08:42:48.2292178Z tsan: success (expected success)
+2026-10-04T08:42:48.2292883Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2293442Z linux: success (expected success)
+2026-10-04T08:42:48.2293924Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2294535Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2295090Z windows: cancelled (expected success)
+2026-10-04T08:42:48.2295608Z android: success (expected success)
+2026-10-04T08:42:48.2296150Z macos: success (expected success)
+2026-10-04T08:42:48.2296624Z tsan: success (expected success)
+2026-10-04T08:42:48.2297188Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2297710Z linux: success (expected success)
+2026-10-04T08:42:48.2298593Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2299215Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2299827Z windows: skipped (expected success)
+2026-10-04T08:42:48.2300328Z android: success (expected success)
+2026-10-04T08:42:48.2300983Z macos: success (expected success)
+2026-10-04T08:42:48.2301452Z tsan: success (expected success)
+2026-10-04T08:42:48.2302037Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2302606Z linux: success (expected success)
+2026-10-04T08:42:48.2303123Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2303786Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2304322Z windows: success (expected success)
+2026-10-04T08:42:48.2304889Z web-build: failure (expected success)
+2026-10-04T08:42:48.2305389Z android: success (expected success)
+2026-10-04T08:42:48.2305876Z macos: success (expected success)
+2026-10-04T08:42:48.2306359Z tsan: success (expected success)
+2026-10-04T08:42:48.2306860Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2307473Z linux: success (expected success)
+2026-10-04T08:42:48.2307953Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2308663Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2309236Z windows: success (expected success)
+2026-10-04T08:42:48.2309757Z web-build: cancelled (expected success)
+2026-10-04T08:42:48.2310321Z android: success (expected success)
+2026-10-04T08:42:48.2310809Z macos: success (expected success)
+2026-10-04T08:42:48.2311256Z tsan: success (expected success)
+2026-10-04T08:42:48.2311784Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2312289Z linux: success (expected success)
+2026-10-04T08:42:48.2312846Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2313408Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2313945Z windows: success (expected success)
+2026-10-04T08:42:48.2314484Z web-build: skipped (expected success)
+2026-10-04T08:42:48.2314986Z android: success (expected success)
+2026-10-04T08:42:48.2315510Z macos: success (expected success)
+2026-10-04T08:42:48.2316093Z tsan: success (expected success)
+2026-10-04T08:42:48.2316723Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2317284Z linux: success (expected success)
+2026-10-04T08:42:48.2317861Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2318570Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2319118Z windows: success (expected success)
+2026-10-04T08:42:48.2319591Z web-build: success (expected success)
+2026-10-04T08:42:48.2320136Z web-native: failure (expected success)
+2026-10-04T08:42:48.2320631Z android: success (expected success)
+2026-10-04T08:42:48.2321158Z macos: success (expected success)
+2026-10-04T08:42:48.2321655Z tsan: success (expected success)
+2026-10-04T08:42:48.2322159Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2322746Z linux: success (expected success)
+2026-10-04T08:42:48.2323263Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2323840Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2324424Z windows: success (expected success)
+2026-10-04T08:42:48.2324895Z web-build: success (expected success)
+2026-10-04T08:42:48.2325419Z web-native: cancelled (expected success)
+2026-10-04T08:42:48.2326156Z android: success (expected success)
+2026-10-04T08:42:48.2326654Z macos: success (expected success)
+2026-10-04T08:42:48.2327192Z tsan: success (expected success)
+2026-10-04T08:42:48.2327741Z native-coverage: success (expected success)
+2026-10-04T08:42:48.2328456Z linux: success (expected success)
+2026-10-04T08:42:48.2329006Z linux-variants: success (expected success)
+2026-10-04T08:42:48.2329552Z linux-map-generators: success (expected success)
+2026-10-04T08:42:48.2330146Z windows: success (expected success)
+2026-10-04T08:42:48.2378419Z test_selected_failures_and_cancellations_cannot_pass (test_ci_tiers.AggregateGateTest.test_selected_failures_and_cancellations_cannot_pass) ... ok
+2026-10-04T08:42:48.2716956Z test_nightly_reuses_only_exact_full_available_evidence (test_ci_tiers.BaselineTest.test_nightly_reuses_only_exact_full_available_evidence) ... ok
+2026-10-04T08:42:48.2879702Z test_only_successful_proven_full_master_baseline_activates (test_ci_tiers.BaselineTest.test_only_successful_proven_full_master_baseline_activates) ... ok
+2026-10-04T08:42:48.2884312Z test_ci_contract_tests_do_not_select_mobile_or_compatibility (test_ci_tiers.TierTest.test_ci_contract_tests_do_not_select_mobile_or_compatibility) ... ok
+2026-10-04T08:42:48.2885681Z test_complete_browser_inventory_keeps_every_command (test_ci_tiers.TierTest.test_complete_browser_inventory_keeps_every_command) ... ok
+2026-10-04T08:42:48.2970832Z test_contract_only_selection_is_lightweight_before_tiers_are_enabled (test_ci_tiers.TierTest.test_contract_only_selection_is_lightweight_before_tiers_are_enabled) ... ok
+2026-10-04T08:42:48.3055094Z test_default_pull_requests_defer_every_selected_check (test_ci_tiers.TierTest.test_default_pull_requests_defer_every_selected_check) ... ok
+2026-10-04T08:42:48.3056634Z test_known_implementation_and_test_boundaries_are_primary (test_ci_tiers.TierTest.test_known_implementation_and_test_boundaries_are_primary) ... ok
+2026-10-04T08:42:48.3058232Z test_master_and_schedule_override_docs (test_ci_tiers.TierTest.test_master_and_schedule_override_docs) ... ok
+2026-10-04T08:42:48.3059859Z test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant (test_ci_tiers.TierTest.test_release_metadata_defers_to_release_but_mobile_workflow_stays_relevant) ... ok
+2026-10-04T08:42:48.3061669Z test_reusable_android_does_not_share_caller_concurrency_group (test_ci_tiers.TierTest.test_reusable_android_does_not_share_caller_concurrency_group) ... ok
+2026-10-04T08:42:48.3063607Z test_runtime_and_shard_configuration_exercises_both_gcc_platforms (test_ci_tiers.TierTest.test_runtime_and_shard_configuration_exercises_both_gcc_platforms) ... ok
+2026-10-04T08:42:48.3065604Z test_shared_simulation_platform_and_unknown_paths_are_full (test_ci_tiers.TierTest.test_shared_simulation_platform_and_unknown_paths_are_full) ... ok
+2026-10-04T08:42:48.3383088Z test_browser_migration_preserves_config_caches_and_busy_checkouts (test_dev_store.StoreTests.test_browser_migration_preserves_config_caches_and_busy_checkouts) ... ok
+2026-10-04T08:42:48.3619823Z test_budget_skips_active_cache_and_preserves_tools_and_evidence (test_dev_store.StoreTests.test_budget_skips_active_cache_and_preserves_tools_and_evidence) ... ok
+2026-10-04T08:42:48.4061980Z test_checksum_install_atomic_and_rejects_unverified_directory (test_dev_store.StoreTests.test_checksum_install_atomic_and_rejects_unverified_directory) ... ok
+2026-10-04T08:42:48.4289574Z test_compiler_bytes_invalidate_cached_digest (test_dev_store.StoreTests.test_compiler_bytes_invalidate_cached_digest) ... ok
+2026-10-04T08:42:48.4527307Z test_compiler_fingerprint_survives_installation_relocation (test_dev_store.StoreTests.test_compiler_fingerprint_survives_installation_relocation) ... ok
+2026-10-04T08:42:48.5526786Z test_concurrent_installation_publishes_one_complete_entry (test_dev_store.StoreTests.test_concurrent_installation_publishes_one_complete_entry) ... ok
+2026-10-04T08:42:48.5791471Z test_dependency_bundle_rejects_changed_archives (test_dev_store.StoreTests.test_dependency_bundle_rejects_changed_archives) ... ok
+2026-10-04T08:42:48.6045319Z test_dependency_keys_include_compiler_triplets_manifest_and_sdl (test_dev_store.StoreTests.test_dependency_keys_include_compiler_triplets_manifest_and_sdl) ... ok
+2026-10-04T08:42:48.6274256Z test_explicit_sdk_and_browser_override (test_dev_store.StoreTests.test_explicit_sdk_and_browser_override) ... ok
+2026-10-04T08:42:48.6491885Z test_failed_checksum_never_publishes (test_dev_store.StoreTests.test_failed_checksum_never_publishes) ... ok
+2026-10-04T08:42:48.6737451Z test_identical_components_are_shared_across_toolchain_bundles (test_dev_store.StoreTests.test_identical_components_are_shared_across_toolchain_bundles) ... ok
+2026-10-04T08:42:48.6952486Z test_isolated_mode_cannot_prune_the_shared_store (test_dev_store.StoreTests.test_isolated_mode_cannot_prune_the_shared_store) ... ok
+2026-10-04T08:42:48.7306239Z test_java_sources_available_without_dependency_buildtrees (test_dev_store.StoreTests.test_java_sources_available_without_dependency_buildtrees) ... ok
+2026-10-04T08:42:48.7519608Z test_manifest_changes_coexist (test_dev_store.StoreTests.test_manifest_changes_coexist) ... ok
+2026-10-04T08:42:49.0749362Z test_migration_ignores_own_lock_but_detects_other_processes (test_dev_store.StoreTests.test_migration_ignores_own_lock_but_detects_other_processes) ... ok
+2026-10-04T08:42:49.0999604Z test_migration_preserves_customized_tools (test_dev_store.StoreTests.test_migration_preserves_customized_tools) ... ok
+2026-10-04T08:42:49.1225907Z test_migration_skips_symlinked_parent_overrides (test_dev_store.StoreTests.test_migration_skips_symlinked_parent_overrides) ... ok
+2026-10-04T08:42:49.2576552Z test_paths_cli_is_read_only_and_reports_isolated_mode (test_dev_store.StoreTests.test_paths_cli_is_read_only_and_reports_isolated_mode) ... ok
+2026-10-04T08:42:49.2851252Z test_platform_defaults (test_dev_store.StoreTests.test_platform_defaults) ... ok
+2026-10-04T08:42:49.3342145Z test_process_lease_blocks_install_and_prune (test_dev_store.StoreTests.test_process_lease_blocks_install_and_prune) ... ok
+2026-10-04T08:42:49.3575768Z test_prune_dry_run_does_not_delete (test_dev_store.StoreTests.test_prune_dry_run_does_not_delete) ... ok
+2026-10-04T08:42:49.4075121Z test_readers_can_share_a_resource (test_dev_store.StoreTests.test_readers_can_share_a_resource) ... ok
+2026-10-04T08:42:49.4304868Z test_sdk_alias_does_not_copy_installation (test_dev_store.StoreTests.test_sdk_alias_does_not_copy_installation) ... ok
+2026-10-04T08:42:49.4526763Z test_sdk_java_command_preserves_paths_with_spaces (test_dev_store.StoreTests.test_sdk_java_command_preserves_paths_with_spaces) ... ok
+2026-10-04T08:42:49.5321365Z test_warm_dependency_setup_can_run_during_an_active_build (test_dev_store.StoreTests.test_warm_dependency_setup_can_run_during_an_active_build) ... ok
+2026-10-04T08:42:49.5562917Z test_worktrees_share_pinned_tools_but_not_isolated_state (test_dev_store.StoreTests.test_worktrees_share_pinned_tools_but_not_isolated_state) ... ok
+2026-10-04T08:42:49.5565051Z test_all_supported_configurations_have_distinct_directories (test_layout.BuildLayoutTests.test_all_supported_configurations_have_distinct_directories) ... ok
+2026-10-04T08:42:49.5576718Z test_identical_generated_header_does_not_invalidate_objects (test_layout.BuildLayoutTests.test_identical_generated_header_does_not_invalidate_objects) ... ok
+2026-10-04T08:42:49.5581444Z test_incompatible_explicit_directory_is_rejected (test_layout.BuildLayoutTests.test_incompatible_explicit_directory_is_rejected) ... ok
+2026-10-04T08:42:49.5582823Z test_invalid_combinations_fail_before_toolchain_initialization (test_layout.BuildLayoutTests.test_invalid_combinations_fail_before_toolchain_initialization) ... ok
+2026-10-04T08:42:49.5584084Z test_removed_server_roles_and_mingw_options (test_layout.BuildLayoutTests.test_removed_server_roles_and_mingw_options) ... ok
+2026-10-04T08:42:49.5855080Z test_same_identity_cannot_have_two_concurrent_writers (test_layout.BuildLayoutTests.test_same_identity_cannot_have_two_concurrent_writers) ... ok
+2026-10-04T08:42:49.5912920Z test_shared_manifests_are_valid_and_unique (test_layout.BuildLayoutTests.test_shared_manifests_are_valid_and_unique) ... ok
+2026-10-04T08:42:49.5933033Z test_cached_configure_probes_are_not_runtime_programs (test_linux_runtime_packages.RuntimePackagesTest.test_cached_configure_probes_are_not_runtime_programs) ... ok
+2026-10-04T08:42:49.5936275Z test_diversion_metadata_with_real_owner_is_not_ambiguous (test_linux_runtime_packages.RuntimePackagesTest.test_diversion_metadata_with_real_owner_is_not_ambiguous) ... ok
+2026-10-04T08:42:49.5937611Z test_missing_libraries_are_errors (test_linux_runtime_packages.RuntimePackagesTest.test_missing_libraries_are_errors) ... ok
+2026-10-04T08:42:49.5939082Z test_multiple_real_owners_remain_an_error (test_linux_runtime_packages.RuntimePackagesTest.test_multiple_real_owners_remain_an_error) ... ok
+2026-10-04T08:42:49.5940736Z test_real_dependencies_use_package_owners_and_preserve_architecture (test_linux_runtime_packages.RuntimePackagesTest.test_real_dependencies_use_package_owners_and_preserve_architecture) ... ok
+2026-10-04T08:42:49.5946891Z test_runtime_inventory_excludes_cached_configure_probes (test_linux_runtime_packages.RuntimePackagesTest.test_runtime_inventory_excludes_cached_configure_probes) ... ok
+2026-10-04T08:42:49.5949535Z test_unowned_system_library_is_not_silently_omitted (test_linux_runtime_packages.RuntimePackagesTest.test_unowned_system_library_is_not_silently_omitted) ... ok
+2026-10-04T08:42:49.5952060Z test_usrmerge_loader_diversion_resolves_to_real_package_owner (test_linux_runtime_packages.RuntimePackagesTest.test_usrmerge_loader_diversion_resolves_to_real_package_owner) ... ok
+2026-10-04T08:42:49.5956784Z test_aliases_resolve_to_one_real_file_even_with_spaces (test_mac_image_dependency.MacImageTests.test_aliases_resolve_to_one_real_file_even_with_spaces) ... ok
+2026-10-04T08:42:49.5966710Z test_corrupted_dependency_rejected (test_mac_image_dependency.MacImageTests.test_corrupted_dependency_rejected) ... ok
+2026-10-04T08:42:49.5975058Z test_disk_image_staging_preserves_library_aliases (test_mac_image_dependency.MacImageTests.test_disk_image_staging_preserves_library_aliases) ... ok
+2026-10-04T08:42:49.6007610Z test_identity_ignores_unrelated_libraries_and_hashes_shared_files_once (test_mac_image_dependency.MacImageTests.test_identity_ignores_unrelated_libraries_and_hashes_shared_files_once) ... ok
+2026-10-04T08:42:49.6009301Z test_missing_dependency_is_fatal (test_mac_image_dependency.MacImageTests.test_missing_dependency_is_fatal) ... ok
+2026-10-04T08:42:49.6010357Z test_only_required_codecs_and_saving_are_enabled (test_mac_image_dependency.MacImageTests.test_only_required_codecs_and_saving_are_enabled) ... ok
+2026-10-04T08:42:49.6017308Z test_bundle_uses_base_module_native_library (test_mobile.AndroidSymbolTests.test_bundle_uses_base_module_native_library) ... ok
+2026-10-04T08:42:49.6033283Z test_packaged_symbols_require_matching_unambiguous_build_ids (test_mobile.AndroidSymbolTests.test_packaged_symbols_require_matching_unambiguous_build_ids) ... ok
+2026-10-04T08:42:49.6076433Z test_archive_member_names_distinguish_same_basename_sources (test_mobile.ArchiveSymbolTests.test_archive_member_names_distinguish_same_basename_sources) ... ok
+2026-10-04T08:42:49.6095535Z test_install_rejects_stale_or_modified_signed_apk (test_mobile.DeveloperSigningTests.test_install_rejects_stale_or_modified_signed_apk) ... ok
+2026-10-04T08:42:49.6137410Z test_runner_sdk_cannot_override_the_isolated_emulator_sdk (test_mobile.EmulatorEnvironmentTests.test_runner_sdk_cannot_override_the_isolated_emulator_sdk) ... ok
+2026-10-04T08:42:49.6138993Z test_emulator_archives_match_configured_package_versions (test_mobile.EmulatorSmokeTests.test_emulator_archives_match_configured_package_versions) ... ok
+2026-10-04T08:42:49.6175153Z test_extracted_emulator_is_registered_without_changing_licenses (test_mobile.EmulatorSmokeTests.test_extracted_emulator_is_registered_without_changing_licenses) ... ok
+2026-10-04T08:42:49.6209871Z test_pinned_java_home_is_host_specific_and_preserves_override (test_mobile.EmulatorSmokeTests.test_pinned_java_home_is_host_specific_and_preserves_override) ... ok
+2026-10-04T08:42:49.6232497Z test_smoke_rejects_physical_devices_and_shared_servers (test_mobile.EmulatorSmokeTests.test_smoke_rejects_physical_devices_and_shared_servers) ... ok
+2026-10-04T08:42:49.6279640Z test_incomplete_device_requests_fail_before_sdk_or_build (test_mobile.IOSCommandTests.test_incomplete_device_requests_fail_before_sdk_or_build) ... ok
+2026-10-04T08:42:49.6293707Z test_simulator_install_uses_task_device_set (test_mobile.IOSCommandTests.test_simulator_install_uses_task_device_set) ... ok
+2026-10-04T08:42:49.6317656Z web-build: success (expected success)
+2026-10-04T08:42:49.6318328Z web-native: skipped (expected success)
+2026-10-04T08:42:49.6318892Z android: success (expected success)
+2026-10-04T08:42:49.6319420Z macos: success (expected success)
+2026-10-04T08:42:49.6319860Z tsan: success (expected success)
+2026-10-04T08:42:49.6320453Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6321331Z linux: success (expected success)
+2026-10-04T08:42:49.6321696Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6322108Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6322478Z windows: success (expected success)
+2026-10-04T08:42:49.6322829Z web-build: success (expected success)
+2026-10-04T08:42:49.6323183Z web-native: success (expected success)
+2026-10-04T08:42:49.6323571Z web-deploy: failure (expected success)
+2026-10-04T08:42:49.6323933Z android: success (expected success)
+2026-10-04T08:42:49.6324253Z macos: success (expected success)
+2026-10-04T08:42:49.6324576Z tsan: success (expected success)
+2026-10-04T08:42:49.6324920Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6325356Z linux: success (expected success)
+2026-10-04T08:42:49.6325715Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6326084Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6326445Z windows: success (expected success)
+2026-10-04T08:42:49.6326813Z web-build: success (expected success)
+2026-10-04T08:42:49.6327158Z web-native: success (expected success)
+2026-10-04T08:42:49.6327516Z web-deploy: cancelled (expected success)
+2026-10-04T08:42:49.6327854Z android: success (expected success)
+2026-10-04T08:42:49.6328513Z macos: success (expected success)
+2026-10-04T08:42:49.6328881Z tsan: success (expected success)
+2026-10-04T08:42:49.6329215Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6329575Z linux: success (expected success)
+2026-10-04T08:42:49.6329904Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6330383Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6330969Z windows: success (expected success)
+2026-10-04T08:42:49.6331431Z web-build: success (expected success)
+2026-10-04T08:42:49.6331911Z web-native: success (expected success)
+2026-10-04T08:42:49.6332446Z web-deploy: skipped (expected success)
+2026-10-04T08:42:49.6332800Z android: success (expected success)
+2026-10-04T08:42:49.6333210Z macos: success (expected success)
+2026-10-04T08:42:49.6333642Z tsan: success (expected success)
+2026-10-04T08:42:49.6334090Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6334430Z linux: success (expected success)
+2026-10-04T08:42:49.6334742Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6335166Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6335525Z windows: success (expected success)
+2026-10-04T08:42:49.6335858Z web-build: success (expected success)
+2026-10-04T08:42:49.6336233Z web-native: success (expected success)
+2026-10-04T08:42:49.6336548Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6336931Z web-test: failure (expected success)
+2026-10-04T08:42:49.6337265Z android: success (expected success)
+2026-10-04T08:42:49.6337602Z macos: success (expected success)
+2026-10-04T08:42:49.6337941Z tsan: success (expected success)
+2026-10-04T08:42:49.6338518Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6338913Z linux: success (expected success)
+2026-10-04T08:42:49.6339355Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6339762Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6340137Z windows: success (expected success)
+2026-10-04T08:42:49.6340471Z web-build: success (expected success)
+2026-10-04T08:42:49.6340849Z web-native: success (expected success)
+2026-10-04T08:42:49.6341187Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6341506Z web-test: cancelled (expected success)
+2026-10-04T08:42:49.6341869Z android: success (expected success)
+2026-10-04T08:42:49.6342188Z macos: success (expected success)
+2026-10-04T08:42:49.6342530Z tsan: success (expected success)
+2026-10-04T08:42:49.6342904Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6343227Z linux: success (expected success)
+2026-10-04T08:42:49.6343595Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6343957Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6344426Z windows: success (expected success)
+2026-10-04T08:42:49.6344765Z web-build: success (expected success)
+2026-10-04T08:42:49.6345090Z web-native: success (expected success)
+2026-10-04T08:42:49.6345428Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6345761Z web-test: skipped (expected success)
+2026-10-04T08:42:49.6346165Z android: success (expected success)
+2026-10-04T08:42:49.6346501Z macos: success (expected success)
+2026-10-04T08:42:49.6346821Z tsan: success (expected success)
+2026-10-04T08:42:49.6347169Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6347526Z linux: success (expected success)
+2026-10-04T08:42:49.6347840Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6348412Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6348774Z windows: success (expected success)
+2026-10-04T08:42:49.6349104Z web-build: success (expected success)
+2026-10-04T08:42:49.6349501Z web-native: success (expected success)
+2026-10-04T08:42:49.6349815Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6350179Z web-test: success (expected success)
+2026-10-04T08:42:49.6350534Z browser-determinism: failure (expected success)
+2026-10-04T08:42:49.6350898Z android: success (expected success)
+2026-10-04T08:42:49.6351252Z macos: success (expected success)
+2026-10-04T08:42:49.6351566Z tsan: success (expected success)
+2026-10-04T08:42:49.6351911Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6352247Z linux: success (expected success)
+2026-10-04T08:42:49.6352563Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6353010Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6353376Z windows: success (expected success)
+2026-10-04T08:42:49.6353717Z web-build: success (expected success)
+2026-10-04T08:42:49.6354049Z web-native: success (expected success)
+2026-10-04T08:42:49.6354368Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6354748Z web-test: success (expected success)
+2026-10-04T08:42:49.6355102Z browser-determinism: cancelled (expected success)
+2026-10-04T08:42:49.6355486Z android: success (expected success)
+2026-10-04T08:42:49.6355818Z macos: success (expected success)
+2026-10-04T08:42:49.6356161Z tsan: success (expected success)
+2026-10-04T08:42:49.6356536Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6356883Z linux: success (expected success)
+2026-10-04T08:42:49.6357211Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6357584Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6357937Z windows: success (expected success)
+2026-10-04T08:42:49.6358475Z web-build: success (expected success)
+2026-10-04T08:42:49.6358809Z web-native: success (expected success)
+2026-10-04T08:42:49.6359129Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6359518Z web-test: success (expected success)
+2026-10-04T08:42:49.6359913Z browser-determinism: skipped (expected success)
+2026-10-04T08:42:49.6360311Z android: success (expected success)
+2026-10-04T08:42:49.6360637Z macos: success (expected success)
+2026-10-04T08:42:49.6361045Z tsan: success (expected success)
+2026-10-04T08:42:49.6361410Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6361749Z linux: success (expected success)
+2026-10-04T08:42:49.6362104Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6362481Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6362861Z windows: success (expected success)
+2026-10-04T08:42:49.6363216Z web-build: success (expected success)
+2026-10-04T08:42:49.6363553Z web-native: success (expected success)
+2026-10-04T08:42:49.6363911Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6364252Z web-test: success (expected success)
+2026-10-04T08:42:49.6364605Z browser-determinism: success (expected success)
+2026-10-04T08:42:49.6364985Z platform: failure (expected success)
+2026-10-04T08:42:49.6365304Z android: success (expected success)
+2026-10-04T08:42:49.6365707Z macos: success (expected success)
+2026-10-04T08:42:49.6366223Z tsan: success (expected success)
+2026-10-04T08:42:49.6366808Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6367165Z linux: success (expected success)
+2026-10-04T08:42:49.6367495Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6367873Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6368408Z windows: success (expected success)
+2026-10-04T08:42:49.6368746Z web-build: success (expected success)
+2026-10-04T08:42:49.6369172Z web-native: success (expected success)
+2026-10-04T08:42:49.6369638Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6370020Z web-test: success (expected success)
+2026-10-04T08:42:49.6370421Z browser-determinism: success (expected success)
+2026-10-04T08:42:49.6370784Z platform: cancelled (expected success)
+2026-10-04T08:42:49.6371110Z android: success (expected success)
+2026-10-04T08:42:49.6371447Z macos: success (expected success)
+2026-10-04T08:42:49.6371786Z tsan: success (expected success)
+2026-10-04T08:42:49.6372125Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6372508Z linux: success (expected success)
+2026-10-04T08:42:49.6372924Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6373437Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6373851Z windows: success (expected success)
+2026-10-04T08:42:49.6374205Z web-build: success (expected success)
+2026-10-04T08:42:49.6374531Z web-native: success (expected success)
+2026-10-04T08:42:49.6374890Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6375361Z web-test: success (expected success)
+2026-10-04T08:42:49.6375861Z browser-determinism: success (expected success)
+2026-10-04T08:42:49.6376363Z platform: skipped (expected success)
+2026-10-04T08:42:49.6376846Z android: success (expected success)
+2026-10-04T08:42:49.6377346Z macos: success (expected success)
+2026-10-04T08:42:49.6378053Z tsan: success (expected success)
+2026-10-04T08:42:49.6378667Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6379198Z linux: success (expected success)
+2026-10-04T08:42:49.6379726Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6380260Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6380835Z windows: success (expected success)
+2026-10-04T08:42:49.6381319Z web-build: success (expected success)
+2026-10-04T08:42:49.6381814Z web-native: success (expected success)
+2026-10-04T08:42:49.6382376Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6382936Z web-test: success (expected success)
+2026-10-04T08:42:49.6383549Z browser-determinism: success (expected success)
+2026-10-04T08:42:49.6384116Z platform: success (expected success)
+2026-10-04T08:42:49.6384629Z platform-stack: failure (expected success)
+2026-10-04T08:42:49.6385196Z android: success (expected success)
+2026-10-04T08:42:49.6385702Z macos: success (expected success)
+2026-10-04T08:42:49.6386219Z tsan: success (expected success)
+2026-10-04T08:42:49.6386770Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6387310Z linux: success (expected success)
+2026-10-04T08:42:49.6388076Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6388790Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6389408Z windows: success (expected success)
+2026-10-04T08:42:49.6389891Z web-build: success (expected success)
+2026-10-04T08:42:49.6390387Z web-native: success (expected success)
+2026-10-04T08:42:49.6390945Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6391466Z web-test: success (expected success)
+2026-10-04T08:42:49.6392024Z browser-determinism: success (expected success)
+2026-10-04T08:42:49.6392607Z platform: success (expected success)
+2026-10-04T08:42:49.6393171Z platform-stack: cancelled (expected success)
+2026-10-04T08:42:49.6393731Z android: success (expected success)
+2026-10-04T08:42:49.6394213Z macos: success (expected success)
+2026-10-04T08:42:49.6394690Z tsan: success (expected success)
+2026-10-04T08:42:49.6395221Z native-coverage: success (expected success)
+2026-10-04T08:42:49.6395700Z linux: success (expected success)
+2026-10-04T08:42:49.6396356Z linux-variants: success (expected success)
+2026-10-04T08:42:49.6396877Z linux-map-generators: success (expected success)
+2026-10-04T08:42:49.6397417Z windows: success (expected success)
+2026-10-04T08:42:49.6397959Z web-build: success (expected success)
+2026-10-04T08:42:49.6398609Z web-native: success (expected success)
+2026-10-04T08:42:49.6399125Z web-deploy: success (expected success)
+2026-10-04T08:42:49.6399640Z web-test: success (expected success)
+2026-10-04T08:42:49.6400192Z browser-determinism: success (expected success)
+2026-10-04T08:42:49.6400728Z platform: success (expected success)
+2026-10-04T08:42:49.6401237Z platform-stack: skipped (expected success)
+2026-10-04T08:42:49.6401740Z simctl list devices --json
+2026-10-04T08:42:49.6402231Z simctl spawn owned-test launchctl list
+2026-10-04T08:42:49.6403774Z simctl launch --stdout=/home/runner/work/glob2/glob2/build/test-profiles/tmpmfkf84sv/diagnostics/startup-stdout.txt --stderr=/home/runner/work/glob2/glob2/build/test-profiles/tmpmfkf84sv/diagnostics/startup-stderr.txt owned-test org.globulation2.glob2
+2026-10-04T08:42:49.6405451Z simctl spawn owned-test launchctl list
+2026-10-04T08:42:49.6406401Z simctl spawn owned-test log show --last 3m --style compact --predicate process == "Glob2" OR eventMessage CONTAINS "org.globulation2.glob2"
+2026-10-04T08:42:49.6407710Z simctl io owned-test screenshot /home/runner/work/glob2/glob2/build/test-profiles/tmpmfkf84sv/diagnostics/failure.png
+2026-10-04T08:42:49.6409846Z test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps (test_mobile.IOSSmokeFailureTests.test_launch_timeout_survives_failed_diagnostics_without_stopping_unstarted_apps) ... ok
+2026-10-04T08:42:49.6411421Z test_checks_every_archive_member (test_mobile.MobileArtifactTests.test_checks_every_archive_member) ... ok
+2026-10-04T08:42:49.6412894Z test_packaged_shared_libraries_require_aligned_load_segments (test_mobile.MobileArtifactTests.test_packaged_shared_libraries_require_aligned_load_segments) ... ok
+2026-10-04T08:42:49.6414511Z test_reject_mislabeled_dependency_before_linking (test_mobile.MobileArtifactTests.test_reject_mislabeled_dependency_before_linking) ... ok
+2026-10-04T08:42:49.6415895Z test_rejects_host_archive_and_empty_archive (test_mobile.MobileArtifactTests.test_rejects_host_archive_and_empty_archive) ... ok
+2026-10-04T08:42:49.6417565Z test_amazon_release_isolated_from_standard_android_but_reuses_toolchain (test_mobile.MobileBuildTests.test_amazon_release_isolated_from_standard_android_but_reuses_toolchain) ... ok
+2026-10-04T08:42:49.6419315Z test_android_seven_is_the_default_minimum (test_mobile.MobileBuildTests.test_android_seven_is_the_default_minimum) ... ok
+2026-10-04T08:42:49.6420832Z test_each_mobile_configuration_has_its_own_directory (test_mobile.MobileBuildTests.test_each_mobile_configuration_has_its_own_directory) ... ok
+2026-10-04T08:42:49.6422248Z test_invalid_targets_fail_without_probing_host (test_mobile.MobileBuildTests.test_invalid_targets_fail_without_probing_host) ... ok
+2026-10-04T08:42:49.6423820Z test_ios_on_non_apple_host_has_actionable_error (test_mobile.MobileBuildTests.test_ios_on_non_apple_host_has_actionable_error) ... ok
+2026-10-04T08:42:49.6425287Z test_missing_android_sdk_does_not_fall_back_to_host (test_mobile.MobileBuildTests.test_missing_android_sdk_does_not_fall_back_to_host) ... ok
+2026-10-04T08:42:49.6426146Z test_wrong_architecture_cannot_reuse_output (test_mobile.MobileBuildTests.test_wrong_architecture_cannot_reuse_output) ... ok
+2026-10-04T08:42:49.6428269Z test_bundle_restores_gzip_assets_and_checks_original_bytes (test_mobile.PlayBundleAssetTests.test_bundle_restores_gzip_assets_and_checks_original_bytes) ... ok
+2026-10-04T08:42:49.6448853Z test_signing_rejects_changed_bundle_before_using_key (test_mobile.PlayBundleAssetTests.test_signing_rejects_changed_bundle_before_using_key) ... ok
+2026-10-04T08:42:49.6450675Z test_real_install_graph_preserves_one_canonical_library_and_aliases (test_native_image_dependency.LinuxRuntimeInstallTests.test_real_install_graph_preserves_one_canonical_library_and_aliases) ... skipped 'SCons unavailable'
+2026-10-04T08:42:49.6461463Z test_cached_decoder_acquires_the_supported_shared_lease (test_native_image_dependency.NativeImageTests.test_cached_decoder_acquires_the_supported_shared_lease) ... ok
+2026-10-04T08:42:49.6463298Z test_explicit_compiler_wrappers_reach_the_real_cmake_driver (test_native_image_dependency.NativeImageTests.test_explicit_compiler_wrappers_reach_the_real_cmake_driver) ... ok
+2026-10-04T08:42:49.6491621Z test_linux_dependency_update_invalidates_cache_without_unrelated_libraries (test_native_image_dependency.NativeImageTests.test_linux_dependency_update_invalidates_cache_without_unrelated_libraries) ... ok
+2026-10-04T08:42:49.6493359Z test_private_decoder_cannot_share_ordinary_build_outputs (test_native_image_dependency.NativeImageTests.test_private_decoder_cannot_share_ordinary_build_outputs) ... ok
+2026-10-04T08:42:49.6495672Z test_build_refuses_to_overwrite_existing_environment (test_offline_asset_encoder.OfflineEncoderTests.test_build_refuses_to_overwrite_existing_environment) ... ok
+2026-10-04T08:42:49.6501926Z test_corrupt_archive_rejected_before_extraction (test_offline_asset_encoder.OfflineEncoderTests.test_corrupt_archive_rejected_before_extraction) ... ok
+2026-10-04T08:42:49.6503401Z test_sources_match_rpm_and_flatpak_inputs (test_offline_asset_encoder.OfflineEncoderTests.test_sources_match_rpm_and_flatpak_inputs) ... ok
+2026-10-04T08:42:49.6801352Z test_cache_blob_corruption_is_repaired (test_package_assets.AssetExportTests.test_cache_blob_corruption_is_repaired) ... ok
+2026-10-04T08:42:49.6866832Z test_cache_metadata_corruption_is_repaired (test_package_assets.AssetExportTests.test_cache_metadata_corruption_is_repaired) ... ok
+2026-10-04T08:42:49.6932643Z test_cached_export_is_repeatable_and_stale_files_disappear (test_package_assets.AssetExportTests.test_cached_export_is_repeatable_and_stale_files_disappear) ... ok
+2026-10-04T08:42:49.6977954Z test_corrupt_source_keeps_previous_export (test_package_assets.AssetExportTests.test_corrupt_source_keeps_previous_export) ... ok
+2026-10-04T08:42:49.7014111Z test_exact_pixels_including_invisible_rgb_and_sources_unchanged (test_package_assets.AssetExportTests.test_exact_pixels_including_invisible_rgb_and_sources_unchanged) ... ok
+2026-10-04T08:42:49.7073632Z test_failed_audit_replacement_rolls_back_export (test_package_assets.AssetExportTests.test_failed_audit_replacement_rolls_back_export) ... ok
+2026-10-04T08:42:49.7080534Z test_filters_metadata_but_preserves_linux_store_screenshot (test_package_assets.AssetExportTests.test_filters_metadata_but_preserves_linux_store_screenshot) ... ok
+2026-10-04T08:42:49.7110759Z test_high_depth_png_is_not_quantized_to_webp (test_package_assets.AssetExportTests.test_high_depth_png_is_not_quantized_to_webp) ... ok
+2026-10-04T08:42:49.7145980Z test_linux_screenshots_keep_their_png_representation (test_package_assets.AssetExportTests.test_linux_screenshots_keep_their_png_representation) ... ok
+2026-10-04T08:42:49.7177577Z test_lossy_allowlist_never_changes_sprite_policy (test_package_assets.AssetExportTests.test_lossy_allowlist_never_changes_sprite_policy) ... ok
+2026-10-04T08:42:49.7452302Z test_only_opaque_menu_illustration_can_select_lossy_webp (test_package_assets.AssetExportTests.test_only_opaque_menu_illustration_can_select_lossy_webp) ... ok
+2026-10-04T08:42:49.7472069Z test_original_profile_needs_no_conversion (test_package_assets.AssetExportTests.test_original_profile_needs_no_conversion) ... ok
+2026-10-04T08:42:49.7505628Z test_refuses_source_and_unowned_output (test_package_assets.AssetExportTests.test_refuses_source_and_unowned_output) ... ok
+2026-10-04T08:42:49.7567046Z test_source_change_invalidates_cache (test_package_assets.AssetExportTests.test_source_change_invalidates_cache) ... ok
+2026-10-04T08:42:49.7792315Z test_cached_export_is_repeatable (test_package_assets.SpriteSheetExportTests.test_cached_export_is_repeatable) ... ok
+2026-10-04T08:42:49.7819100Z test_frames_behind_a_gap_are_rejected (test_package_assets.SpriteSheetExportTests.test_frames_behind_a_gap_are_rejected) ... ok
+2026-10-04T08:42:49.7856212Z test_original_profile_keeps_the_frames (test_package_assets.SpriteSheetExportTests.test_original_profile_keeps_the_frames) ... ok
+2026-10-04T08:42:49.7993132Z test_runs_split_by_layer_size_and_sheet_capacity (test_package_assets.SpriteSheetExportTests.test_runs_split_by_layer_size_and_sheet_capacity) ... ok
+2026-10-04T08:42:49.8096854Z test_sheets_hold_every_frame_exactly_and_replace_the_frames (test_package_assets.SpriteSheetExportTests.test_sheets_hold_every_frame_exactly_and_replace_the_frames) ... ok
+2026-10-04T08:42:49.8098907Z test_archive_adoption_requires_meaningful_savings (test_package_optimization.PackageOptimizationTests.test_archive_adoption_requires_meaningful_savings) ... ok
+2026-10-04T08:42:49.8283453Z test_archives_preserve_all_payload_bytes_and_linux_aliases (test_package_optimization.PackageOptimizationTests.test_archives_preserve_all_payload_bytes_and_linux_aliases) ... ok
+2026-10-04T08:42:49.8287653Z test_compiler_profiles_cannot_mix_cached_objects (test_package_optimization.PackageOptimizationTests.test_compiler_profiles_cannot_mix_cached_objects) ... ok
+2026-10-04T08:42:49.8302368Z test_cross_platform_evidence_requires_all_profiles_and_matching_tick_traces (test_package_optimization.PackageOptimizationTests.test_cross_platform_evidence_requires_all_profiles_and_matching_tick_traces) ... ok
+2026-10-04T08:42:49.8309579Z test_repeated_slowdown_requires_evidence_in_both_batches (test_package_optimization.PackageOptimizationTests.test_repeated_slowdown_requires_evidence_in_both_batches) ... ok
+2026-10-04T08:42:49.8311354Z test_comparison_rejects_unrelated_source_toolchains_and_scopes (test_package_sizes.PackageSizeTests.test_comparison_rejects_unrelated_source_toolchains_and_scopes) ... ok
+2026-10-04T08:42:49.8321765Z test_complete_inventory_tracks_categories_archives_and_aliases (test_package_sizes.PackageSizeTests.test_complete_inventory_tracks_categories_archives_and_aliases) ... ok
+2026-10-04T08:42:49.8323390Z test_distro_optimization_preserves_debug_build_selection (test_package_sizes.PackageSizeTests.test_distro_optimization_preserves_debug_build_selection) ... ok
+2026-10-04T08:42:49.8324892Z test_unrecorded_toolchain_cannot_be_compared (test_package_sizes.PackageSizeTests.test_unrecorded_toolchain_cannot_be_compared) ... ok
+2026-10-04T08:42:49.8710622Z test_no_delay_macro_redefines_sdl_behavior (test_platform_boundary.PlatformBoundaryTests.test_no_delay_macro_redefines_sdl_behavior) ... ok
+2026-10-04T08:42:50.3082868Z test_shared_code_does_not_embed_browser_api_calls (test_platform_boundary.PlatformBoundaryTests.test_shared_code_does_not_embed_browser_api_calls) ... ok
+2026-10-04T08:42:50.3438833Z test_shared_code_uses_target_owned_configuration (test_platform_boundary.PlatformBoundaryTests.test_shared_code_uses_target_owned_configuration) ... ok
+2026-10-04T08:42:50.3444684Z test_never_commits_wrong_or_reused_bundle (test_play_release.PlayReleaseTests.test_never_commits_wrong_or_reused_bundle) ... ok
+2026-10-04T08:42:50.3449677Z test_publishes_only_internal_track_after_validation (test_play_release.PlayReleaseTests.test_publishes_only_internal_track_after_validation) ... ok
+2026-10-04T08:42:50.3457512Z test_rejects_changed_build_before_creating_edit (test_play_release.PlayReleaseTests.test_rejects_changed_build_before_creating_edit) ... ok
+2026-10-04T08:42:50.3461231Z test_version_codes_are_monotonic_seconds_within_play_limit (test_play_release.PlayReleaseTests.test_version_codes_are_monotonic_seconds_within_play_limit) ... ok
+2026-10-04T08:42:50.3465144Z test_native_platforms_retain_bash_lookup (test_recording_shell.RecordingShellTests.test_native_platforms_retain_bash_lookup) ... ok
+2026-10-04T08:42:50.3470310Z test_windows_missing_posix_bash_reports_the_required_toolchain (test_recording_shell.RecordingShellTests.test_windows_missing_posix_bash_reports_the_required_toolchain) ... ok
+2026-10-04T08:42:50.3476553Z test_windows_uses_bash_beside_the_posix_shell (test_recording_shell.RecordingShellTests.test_windows_uses_bash_beside_the_posix_shell) ... ok
+2026-10-04T08:42:50.3521450Z test_pinned_archives_append_after_reading_git_archive_and_are_repeatable (test_recording_source_archive.RecordingSourceArchiveTest.test_pinned_archives_append_after_reading_git_archive_and_are_repeatable) ... ok
+2026-10-04T08:42:50.3652657Z test_every_root_job_requires_the_release_mirror (test_release_guards.ReleaseGuardTest.test_every_root_job_requires_the_release_mirror) ... ok
+2026-10-04T08:42:50.3654517Z test_guard_check_rejects_bypasses (test_release_guards.ReleaseGuardTest.test_guard_check_rejects_bypasses) ... ok
+2026-10-04T08:42:50.3723397Z test_publishing_workflows_are_in_the_release_set (test_release_guards.ReleaseGuardTest.test_publishing_workflows_are_in_the_release_set) ... ok
+2026-10-04T08:42:50.3818694Z test_release_workflows_never_run_for_pull_requests (test_release_guards.ReleaseGuardTest.test_release_workflows_never_run_for_pull_requests) ... ok
+2026-10-04T08:42:50.3920852Z test_adjacent_runtime_is_packaged (test_release_windows_package.WindowsPackageTests.test_adjacent_runtime_is_packaged) ... ok
+2026-10-04T08:42:50.4017705Z test_epic_stage_and_zip_share_files (test_release_windows_package.WindowsPackageTests.test_epic_stage_and_zip_share_files) ... ok
+2026-10-04T08:42:50.4184396Z test_frames_packed_into_sheets_leave_the_install (test_runtime_install.RuntimeInstallTests.test_frames_packed_into_sheets_leave_the_install) ... ok
+2026-10-04T08:42:50.4263728Z test_legacy_install_frames_packed_into_sheets_are_removed (test_runtime_install.RuntimeInstallTests.test_legacy_install_frames_packed_into_sheets_are_removed) ... ok
+2026-10-04T08:42:50.4297279Z test_legacy_png_does_not_shadow_webp_after_install (test_runtime_install.RuntimeInstallTests.test_legacy_png_does_not_shadow_webp_after_install) ... ok
+2026-10-04T08:42:50.4332341Z test_legacy_png_from_older_release_does_not_hide_updated_artwork (test_runtime_install.RuntimeInstallTests.test_legacy_png_from_older_release_does_not_hide_updated_artwork) ... ok
+2026-10-04T08:42:50.4380889Z test_modified_old_asset_is_preserved (test_runtime_install.RuntimeInstallTests.test_modified_old_asset_is_preserved) ... ok
+2026-10-04T08:42:50.4449840Z test_removed_assets_and_format_changes_remove_only_owned_files (test_runtime_install.RuntimeInstallTests.test_removed_assets_and_format_changes_remove_only_owned_files) ... ok
+2026-10-04T08:42:50.6336185Z test_drawing_does_not_read_live_entities (test_scene_boundary.SceneBoundaryTests.test_drawing_does_not_read_live_entities) ... ok
+2026-10-04T08:42:50.6339611Z test_scene_types_do_not_include_simulation_headers (test_scene_boundary.SceneBoundaryTests.test_scene_types_do_not_include_simulation_headers) ... ok
+2026-10-04T08:42:50.6341373Z test_rebuild_retains_ownership_and_removes_obsolete_installed_assets (test_scons_asset_install.SConsAssetInstallTests.test_rebuild_retains_ownership_and_removes_obsolete_installed_assets) ... skipped 'SCons command unavailable'
+2026-10-04T08:42:50.7004241Z test_patches_apply_once_and_reject_changed_sources (test_sdl3_dependencies.SourcePatchTests.test_patches_apply_once_and_reject_changed_sources) ... ok
+2026-10-04T08:42:50.7006500Z test_the_kerning_patch_applies_to_the_pinned_archive (test_sdl3_dependencies.TtfKerningPatchTests.test_the_kerning_patch_applies_to_the_pinned_archive) ... skipped 'the pinned SDL3_ttf archive has not been downloaded'
+2026-10-04T08:42:50.7008570Z test_the_kerning_patch_is_part_of_every_pinned_build (test_sdl3_dependencies.TtfKerningPatchTests.test_the_kerning_patch_is_part_of_every_pinned_build) ... ok
+2026-10-04T08:42:51.7571273Z test_installed_meshes_match_their_sources_and_paint_contract (test_skin_assets.ColonySkinAssetsTest.test_installed_meshes_match_their_sources_and_paint_contract) ... ok
+2026-10-04T08:42:51.7965012Z test_a_copy_stands_in_for_a_re_encoded_export_when_smaller (test_web_assets.BrowserCopyTests.test_a_copy_stands_in_for_a_re_encoded_export_when_smaller) ... ok
+2026-10-04T08:42:51.8723729Z test_a_stale_copy_falls_back_to_the_original (test_web_assets.BrowserCopyTests.test_a_stale_copy_falls_back_to_the_original) ... ok
+2026-10-04T08:42:51.8729203Z test_the_core_font_has_every_glyph_but_the_appended_cjk_ones (test_web_assets.BrowserCopyTests.test_the_core_font_has_every_glyph_but_the_appended_cjk_ones) ... skipped 'fontTools is not installed'
+2026-10-04T08:42:51.9473155Z test_installs_entry_files_last_and_keeps_one_previous_release (test_web_assets.InstallWebClientTests.test_installs_entry_files_last_and_keeps_one_previous_release) ... ok
+2026-10-04T08:43:11.3867713Z test_packages_round_trip_and_are_content_addressed (test_web_assets.WebAssetPackageTests.test_packages_round_trip_and_are_content_addressed) ... ok
+2026-10-04T08:43:11.7311904Z test_build_files_and_documentation_are_not_shipped (test_web_assets.WebAssetPlanTests.test_build_files_and_documentation_are_not_shipped) ... ok
+2026-10-04T08:43:11.7320098Z test_core_has_english_and_every_language_name (test_web_assets.WebAssetPlanTests.test_core_has_english_and_every_language_name) ... ok
+2026-10-04T08:43:11.7321499Z test_core_ships_the_browser_copies_and_font_cjk_the_full_font (test_web_assets.WebAssetPlanTests.test_core_ships_the_browser_copies_and_font_cjk_the_full_font) ... ok
+2026-10-04T08:43:11.7326989Z test_in_game_sprites_follow_the_main_menu (test_web_assets.WebAssetPlanTests.test_in_game_sprites_follow_the_main_menu) ... ok
+2026-10-04T08:43:11.7330560Z test_music_and_artwork_the_game_reloads_per_match_are_optional (test_web_assets.WebAssetPlanTests.test_music_and_artwork_the_game_reloads_per_match_are_optional) ... ok
+2026-10-04T08:43:11.7331821Z test_parts_respect_the_size_limit (test_web_assets.WebAssetPlanTests.test_parts_respect_the_size_limit) ... ok
+2026-10-04T08:43:11.7333660Z test_runtime_files_the_menus_need_are_core (test_web_assets.WebAssetPlanTests.test_runtime_files_the_menus_need_are_core) ... ok
+2026-10-04T08:43:11.7334854Z test_simulation_data_starts_with_the_game (test_web_assets.WebAssetPlanTests.test_simulation_data_starts_with_the_game) ... ok
+2026-10-04T08:43:11.7339802Z test_skin_meshes_are_only_in_the_on_demand_package (test_web_assets.WebAssetPlanTests.test_skin_meshes_are_only_in_the_on_demand_package) ... ok
+2026-10-04T08:43:11.7341389Z test_actual_compiler_accepts_unicode_paths_spaces_and_literal_dollars (test_windows_runtime.WindowsRuntimeTests.test_actual_compiler_accepts_unicode_paths_spaces_and_literal_dollars) ... skipped 'NSIS compiler unavailable'
+2026-10-04T08:43:11.7357417Z test_installer_lists_preserve_relative_paths_and_only_owned_files (test_windows_runtime.WindowsRuntimeTests.test_installer_lists_preserve_relative_paths_and_only_owned_files) ... ok
+2026-10-04T08:43:11.7361446Z test_missing_import_fails_with_importer (test_windows_runtime.WindowsRuntimeTests.test_missing_import_fails_with_importer) ... ok
+2026-10-04T08:43:11.7377684Z test_private_sdl3_runtime_stages_notices_and_rejects_sdl2 (test_windows_runtime.WindowsRuntimeTests.test_private_sdl3_runtime_stages_notices_and_rejects_sdl2) ... ok
+2026-10-04T08:43:11.7386149Z test_recursive_case_insensitive_imports_prefer_private_runtime (test_windows_runtime.WindowsRuntimeTests.test_recursive_case_insensitive_imports_prefer_private_runtime) ... ok
+2026-10-04T08:43:11.7389722Z test_rejects_symlinks_and_invalid_nsis_strings (test_windows_runtime.WindowsRuntimeTests.test_rejects_symlinks_and_invalid_nsis_strings) ... ok
+2026-10-04T08:43:11.7390580Z 
+2026-10-04T08:43:11.7390943Z ----------------------------------------------------------------------
+2026-10-04T08:43:11.7391591Z Ran 297 tests in 25.417s
+2026-10-04T08:43:11.7391956Z 
+2026-10-04T08:43:11.7392152Z OK (skipped=5)
+2026-10-04T08:43:11.7699194Z ##[group]Run python3 test/ci_run_commands.py \
+2026-10-04T08:43:11.7699599Z [36;1mpython3 test/ci_run_commands.py \[0m
+2026-10-04T08:43:11.7700176Z [36;1m  --check 'native runner contracts' 'python3 -m unittest discover -s test -p test_run_tests.py -v' \[0m
+2026-10-04T08:43:11.7700853Z [36;1m  --check 'failure aggregation contracts' 'python3 -m unittest discover -s test -p test_ci_failure_aggregation.py -v' \[0m
+2026-10-04T08:43:11.7701610Z [36;1m  --check 'recording extraction contracts' 'python3 test/test_recording_tool.py'[0m
+2026-10-04T08:43:11.7742347Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:43:11.7742814Z env:
+2026-10-04T08:43:11.7743103Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:43:11.7743427Z ##[endgroup]
+2026-10-04T08:43:11.8029439Z ##[group]native runner contracts
+2026-10-04T08:43:11.8862300Z test_auxiliary_assignment_agrees_with_native_partition (test_run_tests.AuxiliaryShardTest.test_auxiliary_assignment_agrees_with_native_partition) ... ok
+2026-10-04T08:43:11.8870967Z test_profiles_need_ten_samples_and_same_platform (test_run_tests.AuxiliaryShardTest.test_profiles_need_ten_samples_and_same_platform) ... ok
+2026-10-04T08:43:12.1570189Z test_fullscreen_requires_explicit_opt_in_even_in_process (test_run_tests.EndToEndTest.test_fullscreen_requires_explicit_opt_in_even_in_process) ... ok
+2026-10-04T08:43:14.2352261Z test_reports_preference_writes_and_timeouts (test_run_tests.EndToEndTest.test_reports_preference_writes_and_timeouts) ... ok
+2026-10-04T08:43:14.3069746Z test_runs_a_fake_binary_per_case (test_run_tests.EndToEndTest.test_runs_a_fake_binary_per_case) ... ok
+2026-10-04T08:43:14.4273059Z test_separator_names_run_instead_of_silently_selecting_nothing (test_run_tests.EndToEndTest.test_separator_names_run_instead_of_silently_selecting_nothing) ... ok
+2026-10-04T08:43:14.6641394Z test_successful_process_with_empty_or_partial_junit_is_an_error (test_run_tests.EndToEndTest.test_successful_process_with_empty_or_partial_junit_is_an_error) ... ok
+2026-10-04T08:43:14.6642754Z test_complete_actual_cases_pass_regardless_of_reported_test_count (test_run_tests.JunitExecutionTest.test_complete_actual_cases_pass_regardless_of_reported_test_count) ... ok
+2026-10-04T08:43:14.6645477Z test_empty_missing_malformed_and_only_skipped_reports_fail (test_run_tests.JunitExecutionTest.test_empty_missing_malformed_and_only_skipped_reports_fail) ... ok
+2026-10-04T08:43:14.6646734Z test_failure_in_successful_exit_report_is_rejected (test_run_tests.JunitExecutionTest.test_failure_in_successful_exit_report_is_rejected) ... ok
+2026-10-04T08:43:14.6652393Z test_incomplete_duplicate_and_foreign_cases_fail (test_run_tests.JunitExecutionTest.test_incomplete_duplicate_and_foreign_cases_fail) ... ok
+2026-10-04T08:43:14.6653552Z test_same_name_from_wrong_file_does_not_satisfy_selection (test_run_tests.JunitExecutionTest.test_same_name_from_wrong_file_does_not_satisfy_selection) ... ok
+2026-10-04T08:43:14.6656153Z test_merges_doctest_reports_and_synthesises_errors (test_run_tests.JunitTest.test_merges_doctest_reports_and_synthesises_errors) ... ok
+2026-10-04T08:43:14.6657237Z test_parses_names_suites_and_tags (test_run_tests.ListingTest.test_parses_names_suites_and_tags) ... ok
+2026-10-04T08:43:14.6660283Z test_filter_and_tags (test_run_tests.SelectionTest.test_filter_and_tags) ... ok
+2026-10-04T08:43:14.6661551Z test_quick_and_no_display (test_run_tests.SelectionTest.test_quick_and_no_display) ... ok
+2026-10-04T08:43:14.6662667Z test_filter_quotes_comma_and_backslash_in_names_and_suites (test_run_tests.ShardTest.test_filter_quotes_comma_and_backslash_in_names_and_suites) ... ok
+2026-10-04T08:43:14.6668623Z test_same_name_in_two_suites_stays_in_its_suite (test_run_tests.ShardTest.test_same_name_in_two_suites_stays_in_its_suite) ... ok
+2026-10-04T08:43:14.6670099Z test_shards_are_deterministic_and_complete (test_run_tests.ShardTest.test_shards_are_deterministic_and_complete) ... ok
+2026-10-04T08:43:14.6672744Z test_unit_display_cases_are_isolated_from_headless_batch (test_run_tests.ShardTest.test_unit_display_cases_are_isolated_from_headless_batch) ... ok
+2026-10-04T08:43:14.6674077Z test_unit_display_cases_are_isolated_from_headless_driver_changes (test_run_tests.ShardTest.test_unit_display_cases_are_isolated_from_headless_driver_changes) ... ok
+2026-10-04T08:43:14.6679996Z test_diagnostic_timeout_does_not_interrupt_cleanup (test_run_tests.TimeoutDiagnosticsTest.test_diagnostic_timeout_does_not_interrupt_cleanup) ... ok
+2026-10-04T08:43:14.6685191Z test_display_diagnostics_cannot_inspect_an_unowned_display (test_run_tests.TimeoutDiagnosticsTest.test_display_diagnostics_cannot_inspect_an_unowned_display) ... ok
+2026-10-04T08:43:14.6693473Z test_display_diagnostics_capture_real_mapping_on_owned_server (test_run_tests.TimeoutDiagnosticsTest.test_display_diagnostics_capture_real_mapping_on_owned_server) ... ok
+2026-10-04T08:43:14.6696606Z test_ignores_processes_outside_owned_group (test_run_tests.TimeoutDiagnosticsTest.test_ignores_processes_outside_owned_group) ... ok
+2026-10-04T08:43:14.6699917Z test_skips_linux_diagnostics_on_other_platforms (test_run_tests.TimeoutDiagnosticsTest.test_skips_linux_diagnostics_on_other_platforms) ... ok
+2026-10-04T08:43:14.6701277Z test_heavy_jobs_separate_and_all_jobs_execute_once (test_run_tests.WeightedShardTest.test_heavy_jobs_separate_and_all_jobs_execute_once) ... ok
+2026-10-04T08:43:14.6702459Z test_new_jobs_use_median_and_ties_use_shard_number (test_run_tests.WeightedShardTest.test_new_jobs_use_median_and_ties_use_shard_number) ... ok
+2026-10-04T08:43:14.6749690Z test_profile_rejects_bad_weights_and_empty_preserves_original (test_run_tests.WeightedShardTest.test_profile_rejects_bad_weights_and_empty_preserves_original) ... ok
+2026-10-04T08:43:14.6751064Z test_debugger_uses_the_runner_filter_and_no_shell (test_run_tests.WindowsCrashDiagnosticsTests.test_debugger_uses_the_runner_filter_and_no_shell) ... ok
+2026-10-04T08:43:14.6799970Z test_non_utf8_console_preserves_unencodable_diagnostics (test_run_tests.WindowsCrashDiagnosticsTests.test_non_utf8_console_preserves_unencodable_diagnostics) ... ok
+2026-10-04T08:43:14.6801784Z test_only_native_crashes_are_replayed (test_run_tests.WindowsCrashDiagnosticsTests.test_only_native_crashes_are_replayed) ... ok
+2026-10-04T08:43:14.6802851Z test_signed_windows_status_is_also_a_crash (test_run_tests.WindowsCrashDiagnosticsTests.test_signed_windows_status_is_also_a_crash) ... ok
+2026-10-04T08:43:14.6816934Z test_ewmh_identity_alone_does_not_launch_the_test (test_run_tests.XvfbSessionTest.test_ewmh_identity_alone_does_not_launch_the_test) ... ok
+2026-10-04T08:43:14.6835434Z test_missing_window_manager_readiness_fails_and_cleans_up (test_run_tests.XvfbSessionTest.test_missing_window_manager_readiness_fails_and_cleans_up) ... ok
+2026-10-04T08:43:14.6845663Z test_waits_for_window_manager_and_preserves_test_exit_status (test_run_tests.XvfbSessionTest.test_waits_for_window_manager_and_preserves_test_exit_status) ... ok
+2026-10-04T08:43:14.6846937Z 
+2026-10-04T08:43:14.6847408Z ----------------------------------------------------------------------
+2026-10-04T08:43:14.6848338Z Ran 36 tests in 2.799s
+2026-10-04T08:43:14.6848723Z 
+2026-10-04T08:43:14.6848885Z OK
+2026-10-04T08:43:14.6982791Z ##[endgroup]
+2026-10-04T08:43:14.6983466Z ##[group]failure aggregation contracts
+2026-10-04T08:43:14.7935778Z test_multiple_failures_are_reported_in_one_run (test_ci_failure_aggregation.CIFailureAggregationTests.test_multiple_failures_are_reported_in_one_run) ... ok
+2026-10-04T08:43:14.7936866Z 
+2026-10-04T08:43:14.7937181Z ----------------------------------------------------------------------
+2026-10-04T08:43:14.7937687Z Ran 1 test in 0.053s
+2026-10-04T08:43:14.7937839Z 
+2026-10-04T08:43:14.7937982Z OK
+2026-10-04T08:43:14.8012106Z ##[endgroup]
+2026-10-04T08:43:14.8012769Z ##[group]recording extraction contracts
+2026-10-04T08:43:14.8544285Z ss......
+2026-10-04T08:43:14.8545131Z ----------------------------------------------------------------------
+2026-10-04T08:43:14.8545992Z Ran 8 tests in 0.008s
+2026-10-04T08:43:14.8546251Z 
+2026-10-04T08:43:14.8546432Z OK (skipped=2)
+2026-10-04T08:43:14.8616374Z ##[endgroup]
+2026-10-04T08:43:14.8713879Z ##[group]Run python3 -m unittest discover -s test -p test_check_sim_revision.py -v
+2026-10-04T08:43:14.8714490Z [36;1mpython3 -m unittest discover -s test -p test_check_sim_revision.py -v[0m
+2026-10-04T08:43:14.8714986Z [36;1mpython3 test/check_sim_revision.py --base "$BASE_SHA"[0m
+2026-10-04T08:43:14.8753959Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:43:14.8754346Z env:
+2026-10-04T08:43:14.8754776Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:43:14.8755161Z   BASE_SHA: fa23fed7d5fb843a71d45b9f1f5fb3d487408e80
+2026-10-04T08:43:14.8755555Z ##[endgroup]
+2026-10-04T08:43:14.9703900Z test_bump_alone_with_new_record_passes (test_check_sim_revision.CheckSimRevisionTest.test_bump_alone_with_new_record_passes) ... ok
+2026-10-04T08:43:14.9900438Z test_bump_without_a_new_record_fails (test_check_sim_revision.CheckSimRevisionTest.test_bump_without_a_new_record_fails) ... ok
+2026-10-04T08:43:15.0157688Z test_record_matching_the_tree_passes (test_check_sim_revision.CheckSimRevisionTest.test_record_matching_the_tree_passes) ... ok
+2026-10-04T08:43:15.0356486Z test_revision_feeds_the_key (test_check_sim_revision.CheckSimRevisionTest.test_revision_feeds_the_key) ... ok
+2026-10-04T08:43:15.0795081Z test_revision_must_not_go_down (test_check_sim_revision.CheckSimRevisionTest.test_revision_must_not_go_down) ... ok
+2026-10-04T08:43:15.1278344Z test_trace_change_with_bump_and_new_record_passes (test_check_sim_revision.CheckSimRevisionTest.test_trace_change_with_bump_and_new_record_passes) ... ok
+2026-10-04T08:43:15.1726883Z test_trace_change_without_bump_fails (test_check_sim_revision.CheckSimRevisionTest.test_trace_change_without_bump_fails) ... ok
+2026-10-04T08:43:15.1727342Z 
+2026-10-04T08:43:15.1727501Z ----------------------------------------------------------------------
+2026-10-04T08:43:15.1727890Z Ran 7 tests in 0.248s
+2026-10-04T08:43:15.1728056Z 
+2026-10-04T08:43:15.1728341Z OK
+2026-10-04T08:43:15.2228597Z The sim version key matches the committed match record and follows every change of the golden trace
+2026-10-04T08:43:15.2309229Z ##[group]Run python3 tools/javascript/verify-vendor.py
+2026-10-04T08:43:15.2309673Z [36;1mpython3 tools/javascript/verify-vendor.py[0m
+2026-10-04T08:43:15.2349064Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:43:15.2349392Z env:
+2026-10-04T08:43:15.2349734Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:43:15.2350024Z ##[endgroup]
+2026-10-04T08:43:16.6420765Z quickjs-ng: 22 files reproduced at 6d46d07d04041b40f4f49eaa7fdebe44c314c699
+2026-10-04T08:43:16.6421339Z openlibm: 70 files reproduced at 5fe399749f9276eaa0b8403e507470da05cbbb3f
+2026-10-04T08:43:16.6568839Z ##[group]Run if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+2026-10-04T08:43:16.6569311Z [36;1mif [ "$GITHUB_EVENT_NAME" = pull_request ]; then[0m
+2026-10-04T08:43:16.6569760Z [36;1m  python3 .github/scripts/ci_changed_paths.py --base "$BASE_SHA"[0m
+2026-10-04T08:43:16.6570199Z [36;1melse[0m
+2026-10-04T08:43:16.6570541Z [36;1m  python3 .github/scripts/ci_changed_paths.py[0m
+2026-10-04T08:43:16.6570901Z [36;1mfi[0m
+2026-10-04T08:43:16.6607702Z shell: /usr/bin/bash -e {0}
+2026-10-04T08:43:16.6608203Z env:
+2026-10-04T08:43:16.6608525Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:43:16.6608865Z   BASE_SHA: fa23fed7d5fb843a71d45b9f1f5fb3d487408e80
+2026-10-04T08:43:16.6609191Z   BROWSER_ONLY: 
+2026-10-04T08:43:16.6609443Z   DRAFT: 
+2026-10-04T08:43:16.6609705Z   CI_CALLED_FULL: false
+2026-10-04T08:43:16.6609987Z   CI_TIERED_COVERAGE_ENABLED: 
+2026-10-04T08:43:16.6610311Z   CI_TIER_BASELINE_RUN_ID: 
+2026-10-04T08:43:16.6612771Z   GH_TOKEN: ***
+2026-10-04T08:43:16.6613183Z ##[endgroup]
+2026-10-04T08:43:17.0346013Z From https://github.com/Globulation2/glob2
+2026-10-04T08:43:17.0346815Z  * branch                fa23fed7d5fb843a71d45b9f1f5fb3d487408e80 -> FETCH_HEAD
+2026-10-04T08:43:17.0416565Z {
+2026-10-04T08:43:17.0417157Z   "schema": 3,
+2026-10-04T08:43:17.0417840Z   "verification_mode": "full",
+2026-10-04T08:43:17.0419041Z   "reused_run_id": null,
+2026-10-04T08:43:17.0419650Z   "selection": {
+2026-10-04T08:43:17.0420162Z     "native": true,
+2026-10-04T08:43:17.0421124Z     "browser": true,
+2026-10-04T08:43:17.0421784Z     "map_generators": true,
+2026-10-04T08:43:17.0422371Z     "deployment": true,
+2026-10-04T08:43:17.0422753Z     "cross_platform": true,
+2026-10-04T08:43:17.0423193Z     "android": true,
+2026-10-04T08:43:17.0423525Z     "windows": true,
+2026-10-04T08:43:17.0423914Z     "compatibility": true,
+2026-10-04T08:43:17.0424591Z     "variants": true,
+2026-10-04T08:43:17.0424947Z     "coverage": true,
+2026-10-04T08:43:17.0425298Z     "tsan": true,
+2026-10-04T08:43:17.0425658Z     "macos": true,
+2026-10-04T08:43:17.0426009Z     "platform": true,
+2026-10-04T08:43:17.0426388Z     "platform_stack": true
+2026-10-04T08:43:17.0426737Z   },
+2026-10-04T08:43:17.0427092Z   "event": "push",
+2026-10-04T08:43:17.0427522Z   "sha": "e958fe16e25091f177c2f280301d4cc3a509df71",
+2026-10-04T08:43:17.0428006Z   "full_matrix": true,
+2026-10-04T08:43:17.0428550Z   "desired": {
+2026-10-04T08:43:17.0428860Z     "native": true,
+2026-10-04T08:43:17.0429217Z     "browser": true,
+2026-10-04T08:43:17.0429554Z     "map_generators": true,
+2026-10-04T08:43:17.0429932Z     "deployment": true,
+2026-10-04T08:43:17.0430319Z     "cross_platform": true,
+2026-10-04T08:43:17.0430675Z     "android": true,
+2026-10-04T08:43:17.0431026Z     "windows": true,
+2026-10-04T08:43:17.0431399Z     "compatibility": true,
+2026-10-04T08:43:17.0431758Z     "variants": true,
+2026-10-04T08:43:17.0432126Z     "coverage": true,
+2026-10-04T08:43:17.0432458Z     "tsan": true,
+2026-10-04T08:43:17.0432790Z     "macos": true,
+2026-10-04T08:43:17.0433110Z     "platform": true,
+2026-10-04T08:43:17.0433441Z     "platform_stack": true,
+2026-10-04T08:43:17.0433856Z     "reasons": [],
+2026-10-04T08:43:17.0434204Z     "profile": "compatibility"
+2026-10-04T08:43:17.0434994Z   },
+2026-10-04T08:43:17.0435383Z   "effective": {
+2026-10-04T08:43:17.0435729Z     "native": true,
+2026-10-04T08:43:17.0436164Z     "browser": true,
+2026-10-04T08:43:17.0436522Z     "map_generators": true,
+2026-10-04T08:43:17.0436929Z     "deployment": true,
+2026-10-04T08:43:17.0437320Z     "cross_platform": true,
+2026-10-04T08:43:17.0437694Z     "android": true,
+2026-10-04T08:43:17.0438360Z     "windows": true,
+2026-10-04T08:43:17.0438749Z     "compatibility": true,
+2026-10-04T08:43:17.0439131Z     "variants": true,
+2026-10-04T08:43:17.0439573Z     "coverage": true,
+2026-10-04T08:43:17.0439929Z     "tsan": true,
+2026-10-04T08:43:17.0440356Z     "macos": true,
+2026-10-04T08:43:17.0440703Z     "platform": true,
+2026-10-04T08:43:17.0441060Z     "platform_stack": true,
+2026-10-04T08:43:17.0441734Z     "browsers_all": true,
+2026-10-04T08:43:17.0442125Z     "android_arches": [
+2026-10-04T08:43:17.0442551Z       "arm64-v8a",
+2026-10-04T08:43:17.0442941Z       "armeabi-v7a",
+2026-10-04T08:43:17.0443326Z       "x86_64"
+2026-10-04T08:43:17.0443710Z     ]
+2026-10-04T08:43:17.0444193Z   },
+2026-10-04T08:43:17.0444684Z   "tiers_enabled": false,
+2026-10-04T08:43:17.0445212Z   "draft": false,
+2026-10-04T08:43:17.0445683Z   "paths": [
+2026-10-04T08:43:17.0446204Z     "docs/development/headless-replays.md",
+2026-10-04T08:43:17.0446836Z     "docs/multiplayer/turn-protocol.md"
+2026-10-04T08:43:17.0447407Z   ],
+2026-10-04T08:43:17.0447869Z   "checkpoint": null,
+2026-10-04T08:43:17.0448864Z   "policy_fingerprint": "620ff88f0af08ea6c54d2f3e74bc3f4f2e29558bd52750dc0a4c684e4a1f13a4",
+2026-10-04T08:43:17.0449758Z   "inventory": {
+2026-10-04T08:43:17.0450242Z     "jobs": {
+2026-10-04T08:43:17.0450626Z       "native": true,
+2026-10-04T08:43:17.0451057Z       "browser": true,
+2026-10-04T08:43:17.0451429Z       "map_generators": true,
+2026-10-04T08:43:17.0451893Z       "deployment": true,
+2026-10-04T08:43:17.0452401Z       "cross_platform": true,
+2026-10-04T08:43:17.0452946Z       "android": true,
+2026-10-04T08:43:17.0453364Z       "windows": true,
+2026-10-04T08:43:17.0453749Z       "compatibility": true,
+2026-10-04T08:43:17.0454133Z       "variants": true,
+2026-10-04T08:43:17.0454596Z       "coverage": true,
+2026-10-04T08:43:17.0454994Z       "tsan": true,
+2026-10-04T08:43:17.0455387Z       "macos": true,
+2026-10-04T08:43:17.0455747Z       "platform": true,
+2026-10-04T08:43:17.0456108Z       "platform_stack": true
+2026-10-04T08:43:17.0456540Z     },
+2026-10-04T08:43:17.0456917Z     "native_secondary": "full",
+2026-10-04T08:43:17.0457335Z     "browsers": [
+2026-10-04T08:43:17.0457679Z       {
+2026-10-04T08:43:17.0458006Z         "name": "chromium 1/5",
+2026-10-04T08:43:17.0458944Z         "browsers": "chromium",
+2026-10-04T08:43:17.0459932Z         "command": "xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+2026-10-04T08:43:17.0460952Z       },
+2026-10-04T08:43:17.0461292Z       {
+2026-10-04T08:43:17.0461625Z         "name": "chromium 2/5",
+2026-10-04T08:43:17.0462091Z         "browsers": "chromium",
+2026-10-04T08:43:17.0463000Z         "command": "xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+2026-10-04T08:43:17.0463987Z       },
+2026-10-04T08:43:17.0464388Z       {
+2026-10-04T08:43:17.0464803Z         "name": "chromium 3/5",
+2026-10-04T08:43:17.0465348Z         "browsers": "chromium",
+2026-10-04T08:43:17.0466453Z         "command": "xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+2026-10-04T08:43:17.0467354Z       },
+2026-10-04T08:43:17.0467735Z       {
+2026-10-04T08:43:17.0468240Z         "name": "chromium 4/5",
+2026-10-04T08:43:17.0468713Z         "browsers": "chromium",
+2026-10-04T08:43:17.0469655Z         "command": "xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+2026-10-04T08:43:17.0470579Z       },
+2026-10-04T08:43:17.0470944Z       {
+2026-10-04T08:43:17.0471275Z         "name": "chromium torus",
+2026-10-04T08:43:17.0471753Z         "browsers": "chromium",
+2026-10-04T08:43:17.0472350Z         "command": "xvfb-run -a npx playwright test torus.spec.js --project=chromium"
+2026-10-04T08:43:17.0472987Z       },
+2026-10-04T08:43:17.0473384Z       {
+2026-10-04T08:43:17.0473736Z         "name": "chromium 5/5",
+2026-10-04T08:43:17.0474122Z         "browsers": "chromium",
+2026-10-04T08:43:17.0475092Z         "command": "xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+2026-10-04T08:43:17.0475978Z       },
+2026-10-04T08:43:17.0476496Z       {
+2026-10-04T08:43:17.0476853Z         "name": "chromium webgl2 match reload",
+2026-10-04T08:43:17.0477326Z         "browsers": "chromium",
+2026-10-04T08:43:17.0477755Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0478723Z         "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep-invert='@webgl2-reload-(b|c)'"
+2026-10-04T08:43:17.0479539Z       },
+2026-10-04T08:43:17.0479854Z       {
+2026-10-04T08:43:17.0480267Z         "name": "chromium webgl2 replay reload",
+2026-10-04T08:43:17.0480765Z         "browsers": "chromium",
+2026-10-04T08:43:17.0481161Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0481868Z         "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-c'"
+2026-10-04T08:43:17.0482608Z       },
+2026-10-04T08:43:17.0482946Z       {
+2026-10-04T08:43:17.0483322Z         "name": "chromium webgl2 viewport",
+2026-10-04T08:43:17.0483755Z         "browsers": "chromium",
+2026-10-04T08:43:17.0484129Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0484769Z         "command": "xvfb-run -a npx playwright test viewport.spec.js --project=chromium"
+2026-10-04T08:43:17.0485380Z       },
+2026-10-04T08:43:17.0485699Z       {
+2026-10-04T08:43:17.0486047Z         "name": "chromium webgl2 damaged load",
+2026-10-04T08:43:17.0486477Z         "browsers": "chromium",
+2026-10-04T08:43:17.0486900Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0487638Z         "command": "xvfb-run -a npx playwright test session-reload.spec.js --project=chromium --grep='@webgl2-reload-b'"
+2026-10-04T08:43:17.0488510Z       },
+2026-10-04T08:43:17.0488843Z       {
+2026-10-04T08:43:17.0489174Z         "name": "lifecycle",
+2026-10-04T08:43:17.0489681Z         "browsers": "chromium",
+2026-10-04T08:43:17.0491471Z         "command": "python3 ../test/ci_run_commands.py \\\n  --check 'browser unit tests' 'node --test unit/*.test.js' \\\n  --check 'software visibility' 'GLOB2_TEST_RENDERER=software xvfb-run -a npx playwright test --config visibility.config.js' \\\n  --check 'WebGL visibility' 'GLOB2_TEST_RENDERER=webgl2 xvfb-run -a npx playwright test --config visibility.config.js'\n"
+2026-10-04T08:43:17.0494076Z       },
+2026-10-04T08:43:17.0494403Z       {
+2026-10-04T08:43:17.0494744Z         "name": "chromium settings storage",
+2026-10-04T08:43:17.0495226Z         "browsers": "chromium",
+2026-10-04T08:43:17.0495886Z         "command": "xvfb-run -a npx playwright test settings-storage.spec.js --project=chromium"
+2026-10-04T08:43:17.0496584Z       },
+2026-10-04T08:43:17.0497007Z       {
+2026-10-04T08:43:17.0497404Z         "name": "chromium webgl2 responsive and startup",
+2026-10-04T08:43:17.0498079Z         "browsers": "chromium",
+2026-10-04T08:43:17.0498639Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0499425Z         "command": "xvfb-run -a npx playwright test responsive-presentation.spec.js runtime-build.spec.js --project=chromium"
+2026-10-04T08:43:17.0500399Z       },
+2026-10-04T08:43:17.0500755Z       {
+2026-10-04T08:43:17.0501145Z         "name": "webkit",
+2026-10-04T08:43:17.0501620Z         "browsers": "webkit",
+2026-10-04T08:43:17.0502965Z         "command": "xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js --project=webkit"
+2026-10-04T08:43:17.0504480Z       },
+2026-10-04T08:43:17.0504808Z       {
+2026-10-04T08:43:17.0505181Z         "name": "webkit scripting",
+2026-10-04T08:43:17.0505736Z         "browsers": "webkit",
+2026-10-04T08:43:17.0506528Z         "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='shared scripting corpus'"
+2026-10-04T08:43:17.0507300Z       },
+2026-10-04T08:43:17.0507638Z       {
+2026-10-04T08:43:17.0508225Z         "name": "chromium rendering",
+2026-10-04T08:43:17.0508699Z         "browsers": "chromium",
+2026-10-04T08:43:17.0509452Z         "command": "xvfb-run -a npx playwright test rendering.spec.js --project=chromium"
+2026-10-04T08:43:17.0510091Z       },
+2026-10-04T08:43:17.0510398Z       {
+2026-10-04T08:43:17.0510933Z         "name": "firefox",
+2026-10-04T08:43:17.0511367Z         "browsers": "firefox",
+2026-10-04T08:43:17.0512789Z         "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test runtime-build.spec.js threading.spec.js viewport.spec.js responsive-presentation.spec.js campaign-editor-storage.spec.js colony-skins.spec.js skin-assets.spec.js recording.spec.js --project=firefox"
+2026-10-04T08:43:17.0514170Z       },
+2026-10-04T08:43:17.0514489Z       {
+2026-10-04T08:43:17.0514861Z         "name": "firefox WSS and simulation",
+2026-10-04T08:43:17.0515315Z         "browsers": "firefox",
+2026-10-04T08:43:17.0516137Z         "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies'"
+2026-10-04T08:43:17.0517017Z       },
+2026-10-04T08:43:17.0517308Z       {
+2026-10-04T08:43:17.0517652Z         "name": "webkit WSS and simulation",
+2026-10-04T08:43:17.0518079Z         "browsers": "webkit",
+2026-10-04T08:43:17.0518988Z         "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies'"
+2026-10-04T08:43:17.0519697Z       },
+2026-10-04T08:43:17.0519981Z       {
+2026-10-04T08:43:17.0520305Z         "name": "firefox scripting",
+2026-10-04T08:43:17.0520692Z         "browsers": "firefox",
+2026-10-04T08:43:17.0521420Z         "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='shared scripting corpus'"
+2026-10-04T08:43:17.0522220Z       },
+2026-10-04T08:43:17.0522520Z       {
+2026-10-04T08:43:17.0522876Z         "name": "chromium webgl2 input",
+2026-10-04T08:43:17.0523272Z         "browsers": "chromium",
+2026-10-04T08:43:17.0523799Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0524289Z         "command": "xvfb-run -a npx playwright test input.spec.js --project=chromium"
+2026-10-04T08:43:17.0524868Z       },
+2026-10-04T08:43:17.0525194Z       {
+2026-10-04T08:43:17.0525544Z         "name": "chromium threaded colony skins",
+2026-10-04T08:43:17.0526006Z         "browsers": "chromium",
+2026-10-04T08:43:17.0526397Z         "renderer": "webgl2",
+2026-10-04T08:43:17.0527297Z         "command": "GLOB2_SKIN_TEST_THREADS=threaded xvfb-run -a npx playwright test colony-skins.spec.js skin-assets.spec.js --project=chromium"
+2026-10-04T08:43:17.0528059Z       }
+2026-10-04T08:43:17.0528520Z     ],
+2026-10-04T08:43:17.0528786Z     "android_arches": [
+2026-10-04T08:43:17.0529057Z       "arm64-v8a",
+2026-10-04T08:43:17.0529333Z       "armeabi-v7a",
+2026-10-04T08:43:17.0529607Z       "x86_64"
+2026-10-04T08:43:17.0529835Z     ]
+2026-10-04T08:43:17.0530191Z   },
+2026-10-04T08:43:17.0530859Z   "inventory_fingerprint": "2a724e83f281d8a6dfaaa0a9fbfe511e58e321a3d3097eaef622e75ccde9a53a",
+2026-10-04T08:43:17.0531877Z   "checkpoint_eligible": true
+2026-10-04T08:43:17.0532420Z }
+2026-10-04T08:43:17.0751284Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T08:43:17.0751545Z with:
+2026-10-04T08:43:17.0751755Z   name: ci-observation-selection
+2026-10-04T08:43:17.0752002Z   path: artifacts/ci-selection.json
+2026-10-04T08:43:17.0752245Z   if-no-files-found: warn
+2026-10-04T08:43:17.0752464Z   compression-level: 6
+2026-10-04T08:43:17.0752668Z   overwrite: false
+2026-10-04T08:43:17.0752875Z   include-hidden-files: false
+2026-10-04T08:43:17.0753086Z env:
+2026-10-04T08:43:17.0753258Z   GLOB2_DEV_MODE: isolated
+2026-10-04T08:43:17.0753460Z ##[endgroup]
+2026-10-04T08:43:17.2247212Z (node:2753) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T08:43:17.2247771Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T08:43:17.2289577Z With the provided path, there will be 1 file uploaded
+2026-10-04T08:43:17.2303936Z Artifact name is valid!
+2026-10-04T08:43:17.2304558Z Root directory input is valid!
+2026-10-04T08:43:17.5172152Z Beginning upload of artifact content to blob storage
+2026-10-04T08:43:17.5317137Z (node:2753) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T08:43:17.6632282Z Uploaded bytes 1530
+2026-10-04T08:43:17.7031130Z Finished uploading artifact content to blob storage!
+2026-10-04T08:43:17.7031641Z SHA256 digest of uploaded artifact zip is 1c9a97a8af2462f4c53939c990b8d52904af639ae136a48bc5336d14fa13a75f
+2026-10-04T08:43:17.7032593Z Finalizing artifact upload
+2026-10-04T08:43:17.9066199Z Artifact ci-observation-selection.zip successfully finalized. Artifact ID 11298595913
+2026-10-04T08:43:17.9067237Z Artifact ci-observation-selection has been successfully uploaded! Final size is 1530 bytes. Artifact ID is 11298595913
+2026-10-04T08:43:17.9072535Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37187008011/artifacts/11298595913
+2026-10-04T08:43:17.9250260Z Post job cleanup.
+2026-10-04T08:43:17.9984134Z [command]/usr/bin/git version
+2026-10-04T08:43:18.0018061Z git version 2.55.0
+2026-10-04T08:43:18.0159729Z Temporarily overriding HOME='/home/runner/work/_temp/f916302e-8abc-44f3-8789-3e8f471352e6' before making global git config changes
+2026-10-04T08:43:18.0160811Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T08:43:18.0161578Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T08:43:18.0197429Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T08:43:18.0228267Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T08:43:18.0443943Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T08:43:18.0463586Z http.https://github.com/.extraheader
+2026-10-04T08:43:18.0473996Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T08:43:18.0500763Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T08:43:18.0723028Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T08:43:18.0782800Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T08:43:18.1100203Z Evaluate and set job outputs
+2026-10-04T08:43:18.1113020Z Set output 'native'
+2026-10-04T08:43:18.1114866Z Set output 'browser'
+2026-10-04T08:43:18.1115695Z Set output 'map_generators'
+2026-10-04T08:43:18.1116040Z Set output 'deployment'
+2026-10-04T08:43:18.1116359Z Set output 'cross_platform'
+2026-10-04T08:43:18.1116667Z Set output 'platform'
+2026-10-04T08:43:18.1116967Z Set output 'platform_stack'
+2026-10-04T08:43:18.1117277Z Set output 'compatibility'
+2026-10-04T08:43:18.1117589Z Set output 'browsers_all'
+2026-10-04T08:43:18.1117888Z Set output 'android'
+2026-10-04T08:43:18.1130382Z Set output 'browser_matrix'
+2026-10-04T08:43:18.1130738Z Set output 'android_arches'
+2026-10-04T08:43:18.1131049Z Set output 'windows'
+2026-10-04T08:43:18.1131340Z Set output 'variants'
+2026-10-04T08:43:18.1131632Z Set output 'coverage'
+2026-10-04T08:43:18.1131921Z Set output 'tsan'
+2026-10-04T08:43:18.1132205Z Set output 'macos'
+2026-10-04T08:43:18.1132507Z Set output 'secondary_profile'
+2026-10-04T08:43:18.1132897Z Set output 'full_matrix'
+2026-10-04T08:43:18.1133205Z Set output 'draft'
+2026-10-04T08:43:18.1133506Z Set output 'verification_mode'
+2026-10-04T08:43:18.1134265Z Cleaning up orphan processes
+2026-10-04T08:43:18.1362904Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
