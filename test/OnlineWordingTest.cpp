@@ -63,7 +63,14 @@ std::vector<std::string> paintedTexts(std::unique_ptr<GAGGUI::Screen> owned,
 
 bool anyContains(const std::vector<std::string> &texts, const std::string &needle)
 {
-	return std::any_of(texts.begin(), texts.end(), [&](const std::string &t) { return t.find(needle) != std::string::npos; });
+	// Paragraphs can paint a phrase across multiple wrapped lines.
+	std::string text;
+	for (const auto &line : texts)
+	{
+		if (!text.empty()) text += ' ';
+		text += line;
+	}
+	return text.find(needle) != std::string::npos;
 }
 
 std::string joined(const std::vector<std::string> &texts)

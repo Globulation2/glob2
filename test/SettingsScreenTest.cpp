@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <vector>
 #include <string>
 #include <utility>
@@ -61,6 +62,7 @@ static void writeExpandedStrings()
 
 static void run(int width,int height,bool gl,bool expanded)
 {
+    glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
     if(expanded)writeExpandedStrings();
     glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=width,.height=height,.screenFlags=gl?Uint32(GraphicContext::USEGPU):0u};
     options.beforeLoad=[](GlobalContainer& globals){globals.settings.language="en";globals.settings.defaultFlagRadius[0]=0;};
