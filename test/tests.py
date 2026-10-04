@@ -31,6 +31,7 @@ ENGINE_TESTS = [
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     '#libgag/src/ScreenExecutionHarness.cpp',
     ('#libgag/src/MacScrollMonitorTest.mm', dict(require={'mac'})),
+    ('#libgag/src/MacScrollVisualHarness.cpp', dict(require={'mac'})),
     ('#src/ai/AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
 
     ('GameplayRecordingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
