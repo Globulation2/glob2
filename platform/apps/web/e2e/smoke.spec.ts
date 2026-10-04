@@ -120,10 +120,9 @@ test('home shows the colony, ways in, live stats, ladders, maps and matches', as
   await check(page, info, 'home');
 });
 
-test('home: the website strip never covers the header over the hero', async ({ page }) => {
+test('home: nothing covers the header over the hero', async ({ page }) => {
   await page.goto('/');
-  // Each header control must be the topmost element at its own centre (the
-  // website strip used to sit on top of the brand, the nav and Sign in).
+  // Each header control must be the topmost element at its own centre.
   for (const target of [
     page.locator('.site-header .brand'),
     page.getByRole('navigation', { name: 'Main' }).getByRole('link').first(),
@@ -140,12 +139,6 @@ test('home: the website strip never covers the header over the hero', async ({ p
       `(() => { const el = document.querySelector('[data-hit-probe]'); const hit = document.elementFromPoint(${x}, ${y}); el.removeAttribute('data-hit-probe'); return Boolean(hit && el.contains(hit)); })()`,
     );
     expect(topmost).toBe(true);
-  }
-  const site = page.getByRole('navigation', { name: 'Globulation 2 Online website' });
-  if ((await site.count()) > 0) {
-    const bar = await site.boundingBox();
-    const header = await page.locator('.site-header').boundingBox();
-    expect((header?.y ?? 0) + 0.5).toBeGreaterThanOrEqual((bar?.y ?? 0) + (bar?.height ?? 0));
   }
   // The hero card starts below the header.
   const card = await page.locator('.hero-card').boundingBox();

@@ -34,41 +34,6 @@
   flex-direction: column;
 }
 
-/* -------------------------------------------- website strip (site bar) */
-
-/* Joins the app and the public website: the same strip, the same look, on both. */
-.site-bar {
-  position: relative;
-  z-index: 6;
-  background: rgba(12, 26, 16, 0.82);
-  color: var(--on-grass);
-  font-size: var(--text-sm);
-  font-weight: 700;
-}
-.site-bar .wrap {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--sp-1);
-}
-.site-bar a {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  padding: 0 var(--sp-2);
-  color: var(--on-grass);
-  text-decoration: none;
-  border-radius: var(--r-sm);
-}
-.site-bar a:hover {
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-}
-.site-bar a:focus-visible {
-  outline-color: var(--accent);
-  outline-offset: -3px;
-}
-
 /* ---------------------------------------------------------------- header */
 
 .site-header {
@@ -287,7 +252,6 @@ main:focus {
 }
 /* Finger-sized links on touch screens (WCAG 2.5.5 / the app's 44px rule). */
 @media (pointer: coarse) {
-  .site-bar a,
   .site-footer li a {
     min-height: var(--target);
   }

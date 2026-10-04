@@ -145,28 +145,6 @@ interface NavItem {
   art?: ArtName;
 }
 
-/**
- * The strip above the header that joins this app to the public website
- * (Globulation 2 Online): the website shows the same strip pointing here.
- * Only when the website is hosted apart from the app (VITE_WEBSITE_URL).
- */
-function SiteBar() {
-  if (!WEBSITE_URL) return null;
-  return (
-    <nav className="site-bar" aria-label="Globulation 2 Online website">
-      <div className="wrap">
-        <a href={WEBSITE_URL}>
-          <span aria-hidden="true">←</span> Website
-        </a>
-        <a href={websitePage('/game/')}>The game</a>
-        <a href={websitePage('/learn/')}>Learn</a>
-        <a href={websitePage('/news/')}>News</a>
-        <a href={DOWNLOAD_URL}>Downloads</a>
-      </div>
-    </nav>
-  );
-}
-
 function Footer() {
   return (
     <footer className="site-footer">
@@ -251,8 +229,8 @@ function Layout() {
   const home = section === 'home';
   const main = useRef<HTMLElement>(null);
   const top = useRef<HTMLDivElement>(null);
-  // The home hero runs under the website strip and the header; it keeps its
-  // content clear of them by their measured height (they wrap on phones).
+  // The home hero runs under the header; it keeps its content clear of the
+  // header by its measured height (it wraps on phones).
   useEffect(() => {
     const element = top.current;
     if (!element || typeof ResizeObserver === 'undefined') return;
@@ -304,13 +282,20 @@ function Layout() {
       </a>
       <div className="world-band" aria-hidden="true" />
       <div className="site-top" ref={top}>
-        <SiteBar />
         <header className="site-header">
           <div className="wrap">
-            <Link className="brand" to="/" aria-label={`${name}, home`}>
-              <img src={GLOB_ICON} width={34} height={34} alt="" />
-              <Wordmark label={null} />
-            </Link>
+            {/* The logo leads to the public website when there is one; Home stays in the nav. */}
+            {WEBSITE_URL ? (
+              <a className="brand" href={WEBSITE_URL} aria-label="Globulation 2 Online website">
+                <img src={GLOB_ICON} width={34} height={34} alt="" />
+                <Wordmark label={null} />
+              </a>
+            ) : (
+              <Link className="brand" to="/" aria-label={`${name}, home`}>
+                <img src={GLOB_ICON} width={34} height={34} alt="" />
+                <Wordmark label={null} />
+              </Link>
+            )}
             <nav className="nav" aria-label="Main">
               {nav.map((item) => (
                 <Link

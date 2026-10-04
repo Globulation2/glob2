@@ -1,7 +1,7 @@
 /* Home page: the colony hero and the sections under it. */
 
-/* The website strip and the header float over the hero's colony; the hero
-   keeps its content below them (App.tsx measures --site-top-height). */
+/* The header floats over the hero's colony; the hero
+   keeps its content below it (App.tsx measures --site-top-height). */
 .site.home .site-top {
   position: absolute;
   inset: 0 0 auto;
