@@ -185,26 +185,31 @@ export async function skinModerationRoutes(app: FastifyInstance, identity: Ident
       });
     },
   );
-  app.get<{ Params: { id: string } }>(
-    '/api/v1/admin/skins/versions/:id/texture',
-    async (request, reply) => {
-      await requireRole(identity, request, 'moderator');
-      const row = await db
-        .selectFrom('colony_skin_versions as v')
-        .innerJoin('blobs as b', 'b.sha256', 'v.texture_sha256')
-        .select('b.storage_key')
-        .where('v.id', '=', uuid(request.params.id))
-        .executeTakeFirst();
-      if (!row) throw apiError('not_found', 'Skin version not found.');
-      const stream = await app.services.blobs.get(row.storage_key);
-      if (!stream) throw apiError('not_found', 'Texture not found.');
-      return reply
-        .type('image/png')
-        .header('Cache-Control', 'private, no-store')
-        .header('X-Content-Type-Options', 'nosniff')
-        .send(stream);
-    },
-  );
+  // Moderators can inspect disabled skins' colour atlas and material map too.
+  for (const [route, column, missing] of [
+    ['texture', 'v.texture_sha256', 'Texture not found.'],
+    ['material', 'v.material_sha256', 'Material map not found.'],
+  ] as const)
+    app.get<{ Params: { id: string } }>(
+      `/api/v1/admin/skins/versions/:id/${route}`,
+      async (request, reply) => {
+        await requireRole(identity, request, 'moderator');
+        const row = await db
+          .selectFrom('colony_skin_versions as v')
+          .innerJoin('blobs as b', 'b.sha256', column)
+          .select('b.storage_key')
+          .where('v.id', '=', uuid(request.params.id))
+          .executeTakeFirst();
+        if (!row) throw apiError('not_found', 'Skin version not found.');
+        const stream = await app.services.blobs.get(row.storage_key);
+        if (!stream) throw apiError('not_found', missing);
+        return reply
+          .type('image/png')
+          .header('Cache-Control', 'private, no-store')
+          .header('X-Content-Type-Options', 'nosniff')
+          .send(stream);
+      },
+    );
   app.post<{ Params: { id: string } }>('/api/v1/admin/skins/:id/moderation', async (request) => {
     const { account } = await requireRole(identity, request, 'moderator');
     const input = body(ModerateSkinRequest, request.body);

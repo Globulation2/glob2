@@ -7,6 +7,7 @@
     "revision",
     "name",
     "imageBase64",
+    "materialBase64",
     "buildingColor",
     "swarmMesh"
   ],
@@ -27,6 +28,11 @@
       "maxLength": 64
     },
     "imageBase64": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 1398104
+    },
+    "materialBase64": {
       "type": "string",
       "minLength": 4,
       "maxLength": 349528

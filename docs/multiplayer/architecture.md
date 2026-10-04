@@ -193,10 +193,11 @@ belong to the feature that owns them, not to the policy.
 ## Colony skin ownership
 
 Skin identity (`colony_skins`) is separate from immutable published paint
-(`colony_skin_versions`). Versions reference texture blobs, a model/UV layout,
-building color and manifest digest. Database triggers reject edits and deletion
-of published versions; moderation disables the parent skin. Blob garbage
-collection retains published textures. Account deletion removes private drafts
+(`colony_skin_versions`). Each version references two blobs, a colour atlas
+(`texture_sha256`) and a material map (`material_sha256`), plus the layout
+`colony-v2`, building color and manifest digest. Database triggers reject edits
+and deletion of published versions; moderation disables the parent skin. Blob
+garbage collection retains both images of every published version. Account deletion removes private drafts
 and equipment, replaces owned skin names with “Deleted skin” and disables their
 paint while preserving immutable version identifiers for match history. Guest
 retention keeps accounts referenced by skin reports so moderation records remain
@@ -223,10 +224,22 @@ plus an optional RGB building color. The chosen color is independent of the
 immutable preset paint and is frozen/signed alongside the version for a match.
 `POST /api/v1/skins/publish` requires the designer entitlement. It accepts a name,
 optional owned skin ID for another version, RGB building color, optional swarm
-mesh, and base64 PNG or WebP. Images must be still 256×256 pixels and at most
-256 KiB. The server re-encodes them as opaque sRGB PNGs without metadata before hashing/storage.
-`GET /api/v1/skins/versions/:id/texture` serves published paint for other clients;
-disabled skins return 404. Raw uploads and arbitrary blob keys are never served
+mesh, and two base64 PNG or WebP images in layout `colony-v2`. Both are still
+512×512 pixels made of four 256×256 quadrants: worker top-left, warrior
+top-right, explorer bottom-left, swarm bottom-right.
+
+- `imageBase64`, the colour atlas, is at most 1 MiB. The server re-encodes it as
+  an opaque sRGB PNG without metadata.
+- `materialBase64`, the material map, is at most 256 KiB. Every pixel is grey
+  (R = G = B), opaque, and a material id: 0 glossy, 1 matte, 2 metallic,
+  3 hairy. Anything else is a 400. The server re-encodes it as an 8-bit
+  greyscale PNG.
+
+The version's `manifestSha256` is described below; native clients recompute it.
+Publishing identical content again returns the existing version.
+`GET /api/v1/skins/versions/:id/texture` serves the colour atlas and
+`GET /api/v1/skins/versions/:id/material` the material map, both as `image/png`
+with the blob SHA-256 as ETag; disabled skins return 404. Raw uploads and arbitrary blob keys are never served
 by these endpoints. The designer can open any owned version or copy a preset
 into a new design. Publishing an edit updates the design's display name and
 creates an immutable content version; previously equipped versions and frozen
@@ -248,9 +261,10 @@ Each version also names the swarm mesh its paint is laid out for (`swarmMesh`):
 the same order. Because paint is laid out per mesh, the mesh belongs to the
 immutable version, and the same paint on two meshes is two versions. The manifest
 digest is SHA-256 over the compact JSON object `skinId`, `textureSha256`,
-`layout`, `buildingColor`, followed by `swarmMesh` only when it is not `classic`;
-game clients recompute it before showing a skin. Versions published before mesh
-choice therefore keep their digest. Clients without mesh choice reject skins for
+`materialSha256`, `layout`, `buildingColor`, in exactly that key order, followed
+by `swarmMesh` only when it is not `classic`; game clients recompute it before
+showing a skin. The swarm's paint and materials always come from the swarm
+quadrant, whichever mesh is chosen. Clients without mesh choice reject skins for
 other meshes and show classic art for that team, rather than painting them onto
 the classic swarm. Likewise, an API that finds a stored mesh id it does not know
 (after a rollback) omits that version from skin lists and match appearances
@@ -258,9 +272,9 @@ instead of signing it, and restores such a draft on the classic swarm.
 
 Registered active accounts can save one private working canvas with
 `PUT /api/v1/skins/draft` and restore it with `GET /api/v1/skins/draft`, without
-buying the designer unlock. Drafts use the same image validation as publishing;
-one bounded PNG is stored per account and is never served by public texture
-routes. A save supplies the last observed revision (null for the first save).
+buying the designer unlock. Drafts carry `imageBase64` and `materialBase64` with
+the same validation as publishing; one bounded atlas and material map are stored
+per account and are never served by public image routes. A save supplies the last observed revision (null for the first save).
 Drafts may also retain an owned skin ID so edits resume as new versions of that
 design, and they keep the chosen swarm mesh. Concurrent or stale saves return
 409 rather than overwrite another device's work. The designer also offers a separate account-scoped device draft for offline
@@ -278,9 +292,9 @@ or disable a skin using `POST /api/v1/admin/skins/:id/moderation`.
 Disabling affects the entire design, including every published version. Public
 texture requests return 404, equip/publish checks refuse it, and refreshed match
 assertions omit it. Frozen snapshot rows and immutable images remain intact, so
-restoration uses the original content. The private moderator texture endpoint
-`GET /api/v1/admin/skins/versions/:id/texture` permits review of disabled paint
-with `private, no-store` caching. Existing clients still require moderation refresh
+restoration uses the original content. The private moderator endpoints
+`GET /api/v1/admin/skins/versions/:id/texture` and `.../material` permit review
+of disabled paint with `private, no-store` caching. Existing clients still require moderation refresh
 and a local hide control before this provides complete in-match moderation.
 
 ## Data model
@@ -736,7 +750,8 @@ live in `src/net/NetTransport.cpp`, `src/net/WssTransport.cpp`,
 ## Colony skin payments
 
 Stripe-hosted checkout uses three server-defined products: `designer`, `stripes`,
-and `spots`. The API seeds two immutable preset textures with stable IDs;
+and `spots`. The API seeds two immutable presets (colour atlas and material map
+from `platform/apps/api/assets/skins/`) with stable IDs;
 existing versions and moderation decisions are never overwritten at startup.
 The web designer includes the store, account purchase history, and explicit
 payment reconciliation after returning from Checkout. Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and the
@@ -796,16 +811,16 @@ required before enabling a store.
 ### Game client appearance loading
 
 Match assignments carry signed `glob2-colony-skin+jwt` assertions, bound to the
-instance, match, team, account, immutable texture manifest and chosen building
-color. `SkinAuthorization` verifies Ed25519 with OpenSSL natively and asynchronous
+instance, match, team, account, immutable version (colour atlas and material
+map hashes and manifest) and chosen building color. `SkinAuthorization` verifies Ed25519 with OpenSSL natively and asynchronous
 WebCrypto in the browser. Assertions have a maximum 24-hour lifetime, with
 30 seconds of clock tolerance. The client derives download URLs from its trusted
 instance origin and verified version ID; an assignment cannot supply a texture
 or key-server URL.
 
-`SkinDownloads` fetches JWKS with a 64 KiB limit and PNG textures with a 256 KiB
-limit, four at a time. It verifies the signed SHA-256 and 256×256 PNG dimensions
-before image decoding. The loader stays attached to the view and refreshes the
+`SkinDownloads` fetches JWKS with a 64 KiB limit, then each version's colour
+atlas (1 MiB limit) and material map (256 KiB limit), four at a time. It verifies
+the signed SHA-256 values and 512×512 PNG dimensions before image decoding. The loader stays attached to the view and refreshes the
 trusted match appearance endpoint every minute, with a 512 KiB response limit.
 A complete valid snapshot removes omitted teams immediately; additions require
 fresh signature and texture verification. Failed or malformed refreshes retain
@@ -819,7 +834,7 @@ available in Settings > Display and the in-game Options dialog. Turning it off
 immediately restores classic units, swarms and building colors locally; verified
 appearance refreshes continue, so turning it back on uses current authorization.
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
-designer's UV layout. The browser ships them in an on-demand `skins` package
+designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package
 requested when visible paint is available. Classic rendering continues during
 the download; hidden or unskinned colonies do not initiate it. Failed package requests retry at most every ten
 seconds without stopping the match.

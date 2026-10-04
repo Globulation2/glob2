@@ -38,6 +38,7 @@ test('online replay uses fresh signed match appearance without a preview overrid
   expect(seen).toContain(`/api/v1/matches/${seed.featuredMatch}/skins`);
   expect(seen).toContain('/.well-known/jwks.json');
   expect(seen.some(path => /^\/api\/v1\/skins\/versions\/[^/]+\/texture$/.test(path))).toBe(true);
+  expect(seen.some(path => /^\/api\/v1\/skins\/versions\/[^/]+\/material$/.test(path))).toBe(true);
   expect(await page.evaluate(() => glob2Diagnostics.snapshot().renderContext.error)).toBe(0);
   expect(errors).toEqual([]);
   await page.screenshot({path:info.outputPath('online-replay-skins.png')});

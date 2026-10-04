@@ -81,16 +81,19 @@ SkinAuthorization::SkinAuthorization(const std::string &token,const std::string 
         if(!uuid(skin.accountId)||claims.at("sub")!=skin.accountId)return;
         const auto &version=claims.at("version");
         skin.versionId=version.at("id").get<std::string>();skin.skinId=version.at("skinId").get<std::string>();
-        skin.textureHash=version.at("textureSha256").get<std::string>();skin.manifestHash=version.at("manifestSha256").get<std::string>();
-        if(!uuid(skin.versionId)||!uuid(skin.skinId)||!Sha256::isHexDigest(skin.textureHash)||!Sha256::isHexDigest(skin.manifestHash)||version.at("layout")!="colony-v1")return;
+        skin.textureHash=version.at("textureSha256").get<std::string>();skin.materialHash=version.at("materialSha256").get<std::string>();
+        skin.manifestHash=version.at("manifestSha256").get<std::string>();
+        if(!uuid(skin.versionId)||!uuid(skin.skinId)||!Sha256::isHexDigest(skin.textureHash)||!Sha256::isHexDigest(skin.materialHash)||
+           !Sha256::isHexDigest(skin.manifestHash)||version.at("layout")!="colony-v2")return;
         const auto defaultColor=number(version.at("buildingColor"),0xffffff);
         skin.buildingColor=number(claims.at("buildingColor"),0xffffff);skin.team=team;
         skin.swarmMesh=swarmMeshIndex(version.value("swarmMesh",std::string(SWARM_MESHES[0].id)));
         if(skin.swarmMesh<0)return;
-        nlohmann::ordered_json manifest={{"skinId",skin.skinId},{"textureSha256",skin.textureHash},{"layout","colony-v1"},{"buildingColor",defaultColor}};
-        // Classic skins keep the original manifest, so versions published before
-        // mesh choice still verify; older clients reject other meshes outright
-        // instead of drawing their paint on the classic swarm.
+        // Same key order as the API's JSON.stringify of the manifest. Classic
+        // skins leave swarmMesh out; clients that do not know other meshes
+        // reject them outright instead of drawing their paint on the classic swarm.
+        nlohmann::ordered_json manifest={{"skinId",skin.skinId},{"textureSha256",skin.textureHash},{"materialSha256",skin.materialHash},
+                                         {"layout","colony-v2"},{"buildingColor",defaultColor}};
         if(skin.swarmMesh)manifest["swarmMesh"]=std::string(SWARM_MESHES[skin.swarmMesh].id);
         if(Sha256::hex(manifest.dump())!=skin.manifestHash)return;
         const auto kid=header.at("kid").get<std::string>();

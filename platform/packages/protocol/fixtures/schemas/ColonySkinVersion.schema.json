@@ -7,6 +7,7 @@
     "id",
     "skinId",
     "textureSha256",
+    "materialSha256",
     "manifestSha256",
     "layout",
     "buildingColor",
@@ -28,6 +29,11 @@
       "pattern": "^[0-9a-f]{64}$",
       "description": "Lowercase hexadecimal SHA-256 digest."
     },
+    "materialSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
     "manifestSha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$",
@@ -35,7 +41,7 @@
     },
     "layout": {
       "type": "string",
-      "const": "colony-v1"
+      "const": "colony-v2"
     },
     "buildingColor": {
       "type": "integer",
