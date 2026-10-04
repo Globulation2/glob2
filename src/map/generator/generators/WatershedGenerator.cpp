@@ -1971,7 +1971,7 @@ GeneratorDefinition watershedDefinition()
 		 // The farmland along the rivers (wheat and wood each), stone outcrops, fruit groves at
 		 // the confluences and algae off the mouths and shallows. Every colony's starter kit
 		 // stays as it is.
-		 GeneratorControl::choice("frozen-crossings", "Frozen crossings", {"Off", "Half frozen", "All frozen"}, 0, ControlGroup::Layout),
+		 GeneratorControl::choice("frozen-crossings", "Frozen crossings", {"Off", "Half frozen", "All frozen"}, 0, ControlGroup::Layout).withSearchValues({0}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

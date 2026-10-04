@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/render/PrototypeTerrainRenderTest.cpp', dict(require={'opengl'}, cxxflags=['-fno-access-control'])),
     '#src/map/TerrainCompatibilityTest.cpp',
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
@@ -154,6 +155,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#libgag/src/TextStreamTest.cpp',
     '#libgag/src/FontMetricsTest.cpp',
     '#libgag/src/PackedArrayTest.cpp',
     '#libgag/src/EventQueueTest.cpp',

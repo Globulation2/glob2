@@ -1008,7 +1008,7 @@ GeneratorDefinition fjordContinentDefinition()
 		 // The ambient scatter, the core's stone and fruit, the lake's and open sea's algae and
 		 // the fjord banks' extra deposits. Starter kits and each bank's guaranteed wheat and
 		 // wood stay as they are.
-		 GeneratorControl::toggle("ice-bridges", "Ice bridges", false, ControlGroup::Terrain),
+		 GeneratorControl::toggle("ice-bridges", "Ice bridges", false, ControlGroup::Terrain).withSearchValues({0}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

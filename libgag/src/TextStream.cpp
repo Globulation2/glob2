@@ -199,7 +199,12 @@ namespace GAGCore
 					
 					case ':':
 					nextChar();
-					token = Token(Token::COLON);
+					if (next == ':')
+					{
+						nextChar();
+						token = Token(Token::VAL, "::");
+					}
+					else token = Token(Token::COLON);
 					break;
 					
 					case '"':
@@ -351,6 +356,17 @@ namespace GAGCore
 						
 						nextToken();
 						CHECK_NOT_EOF
+						// Historical end-of-game statistics use C++ scoped field names.
+						// A single colon still denotes section inheritance below.
+						while (token.type == Token::VAL && token.val == "::")
+						{
+							nextToken();
+							CHECK_NOT_EOF
+							CHECK_VAL
+							id += "::" + token.val;
+							nextToken();
+							CHECK_NOT_EOF
+						}
 					}
 					
 					if (token.type == Token::EQUAL)

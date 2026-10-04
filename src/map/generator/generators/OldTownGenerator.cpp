@@ -557,7 +557,7 @@ GeneratorDefinition oldTownDefinition()
 		 waterCrossingsControl(), cropCrossingsControl(),
 		 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain)
 			 .withSearchValues({0, 1}),
-		 GeneratorControl::toggle("cobblestone-streets", "Cobblestone streets", false, ControlGroup::Terrain),
+		 GeneratorControl::toggle("cobblestone-streets", "Cobblestone streets", false, ControlGroup::Terrain).withSearchValues({0}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

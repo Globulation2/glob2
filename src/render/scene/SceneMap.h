@@ -37,6 +37,7 @@ public:
 	const void *cacheKey() const { return sourceKey; }
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
+	bool hasPrototypeTerrainLayers() const { return !terrainLayerCounts.empty(); }
 	int prototypeTerrainLayers(int x, int y, Uint16 layers[3]) const
 	{
 		if (terrainLayerCounts.empty()) return 0;

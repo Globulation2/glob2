@@ -34,7 +34,9 @@ original tile its other corners make, then lays a cobblestone and then an ice ed
 it (304-415 ice, 416-527 cobblestone: 14 corner shapes, 8 variants). The edge sprites are cut
 to the alpha of the sand-over-water tiles of the same shape, so they meet other terrain with a
 beach's ragged outline. Variants come from the tile position, never the synchronized RNG, so
-drawing changes nothing in the simulation.
+drawing changes nothing in the simulation. Prototype scenes bypass the flat-tile software and
+OpenGL terrain caches so that single-corner overlays remain visible; this can increase
+rendering cost on those maps.
 
 `tools/placeholder_terrain.py` draws all of these from the game's own art: ice is the water
 tiles recoloured pale with faint cracks, cobblestone is rounded stones carrying the sand
@@ -58,6 +60,9 @@ terrains off:
 - **Fjord continent**, *Ice bridges*: ice spans the middle of every fjord from grass to grass,
   a short way to a neighbour besides the walk round through the core.
 
+Automatic map searches retain the existing terrain defaults; these prototype options must
+be selected explicitly.
+
 ## AI awareness
 
 Only the basics: every AI that places buildings through `Map::checkTile` sees cobblestone as
@@ -78,4 +83,7 @@ retains completed pending publications and their fixed deadlines. Maps without t
 types keep the existing optimized land/water path. Binary/text saves, continuation, scene
 isolation and eager/resumed fields are covered by `PrototypeTerrain/*`; terrain painting and
 rules are covered by `TerrainResources/*`. Platform checksum equivalence and human balance
-review remain separate requirements.
+review remain separate requirements. `PrototypeTerrainRender/*` compares cached-path
+rendering with direct layers in software and OpenGL. Text saves retain historical scoped
+statistics keys, and the parser distinguishes their double colons from section inheritance;
+`TextStream/*` covers both forms.

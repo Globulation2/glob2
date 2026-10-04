@@ -88,7 +88,7 @@ bool SoftwareTerrainCache::prepare(const SceneMap &map, GAGCore::Sprite &terrain
 	copies.clear();
 	++frame;
 	paintBounds = {left * 32, top * 32, (right - left + 1) * 32, (bottom - top + 1) * 32};
-	if (!enabled || map.getW() < ChunkTiles || map.getH() < ChunkTiles)
+	if (!enabled || map.hasPrototypeTerrainLayers() || map.getW() < ChunkTiles || map.getH() < ChunkTiles)
 		return false;
 	const int x0 = chunkOf(left + vx), x1 = chunkOf(right + vx);
 	const int y0 = chunkOf(top + vy), y1 = chunkOf(bottom + vy);

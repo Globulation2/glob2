@@ -1674,7 +1674,7 @@ GeneratorDefinition cityStatesDefinition()
 			 .withSearchValues({1}),
 		 // Every home's ambient fields, outcrops and grove, and the commons;
 		 // every home's kit, the islets' wheat and the causeways' stone stay as they are.
-		 GeneratorControl::choice("road-surface", "Road surface", {"Sand", "Cobblestone"}, 0, ControlGroup::Layout),
+		 GeneratorControl::choice("road-surface", "Road surface", {"Sand", "Cobblestone"}, 0, ControlGroup::Layout).withSearchValues({0}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

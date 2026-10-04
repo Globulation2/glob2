@@ -189,7 +189,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 	Uint32 visibleTeams = Team::teamNumberToMask(localTeam); // the local team's Team::me
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
-    if (drawCachedTerrain(sceneMap.cacheKey(), globalContainer->terrain, left, top, right, bot,
+    if (!sceneMap.hasPrototypeTerrainLayers() && drawCachedTerrain(sceneMap.cacheKey(), globalContainer->terrain, left, top, right, bot,
             viewportX, viewportY, sceneMap.getMaskW(), sceneMap.getMaskH(), [&](int x, int y)
             {
                 bool visible = (drawOptions & DRAW_WHOLE_MAP) ||
