@@ -3,7 +3,6 @@
 #include "field/UniformTraversal.h"
 #include "AITelemetryFields.h"
 #include "AIMaxima.h"
-#include "AIFarmAreas.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Unit.h"
@@ -952,6 +951,8 @@ void Maxima::release_farming_protection(Context& runtime)
 	std::fill(wheat_farm_protection_mask.begin(),
 		wheat_farm_protection_mask.end(), 0);
 	RemoveArea* removals=new RemoveArea(ForbiddenArea);
+	RemoveArea* farm_removals=map->farmAreasEnabled() ? new RemoveArea(FarmArea) : nullptr;
+	int farms_removed=0;
 	int removed=0;
 	for(int index=0; index<map->getW()*map->getH(); ++index)
 	{
@@ -962,71 +963,16 @@ void Maxima::release_farming_protection(Context& runtime)
 			removals->add_location(x, y);
 			++removed;
 		}
+		if(farm_removals && map->isFarmArea(x, y, runtime.player->team->me))
+		{
+			farm_removals->add_location(x, y);
+			++farms_removed;
+		}
 		applied_farm_protection_mask[index]=0;
 	}
 	if(removed) runtime.add_management_order(removals); else delete removals;
-	release_farm_areas(runtime);
+	if(farms_removed) runtime.add_management_order(farm_removals); else delete farm_removals;
 	farming_urgent=false;
-}
-
-void Maxima::release_farm_areas(Context& runtime)
-{
-	Map* map=runtime.player->map;
-	if(!map->farmAreasEnabled()) return;
-	const Uint32 me=runtime.player->team->me;
-	RemoveArea* removals=new RemoveArea(FarmArea);
-	int removed=0;
-	for(int y=0; y<map->getH(); ++y)
-		for(int x=0; x<map->getW(); ++x)
-			if(map->isFarmArea(x, y, me))
-			{
-				removals->add_location(x, y);
-				++removed;
-			}
-	if(removed) runtime.add_management_order(removals); else delete removals;
-}
-
-void Maxima::apply_farm_areas(Context& runtime, FarmProtectionPlan& plan,
-	int& added, int& removed)
-{
-	added=0;
-	removed=0;
-	Map* map=runtime.player->map;
-	if(!map->farmAreasEnabled()) return;
-	MapInfo map_info(runtime);
-	const int w=map->getW();
-	const int size=w*map->getH();
-	const Uint32 me=runtime.player->team->me;
-	// The farm covers each managed wheat field and the ring it grows into. It
-	// keeps every tile's seed itself, so the forbidden wheat pattern goes, and
-	// it clears wood inside it, so no forbidden paint may stay there either.
-	const int radius=budget.farming_management_radius;
-	const std::vector<Uint8> nearby=radius>0
-		? farm_management_area(runtime, radius) : std::vector<Uint8>(size, 1);
-	AddArea* additions=new AddArea(FarmArea);
-	RemoveArea* removals=new RemoveArea(FarmArea);
-	for(int index=0; index<size; ++index)
-	{
-		const int x=index%w;
-		const int y=index/w;
-		if(!map_info.is_discovered(x, y)) continue;
-		const bool actual=map->isFarmArea(x, y, me);
-		const bool farm=AIFarmAreas::wantsFarm(*map, x, y) && (nearby[index] || actual);
-		if(farm || map->getResource(x, y).type==WHEAT)
-			plan.forbidden[index]=0;
-		if(farm && !actual)
-		{
-			additions->add_location(x, y);
-			++added;
-		}
-		else if(!farm && actual)
-		{
-			removals->add_location(x, y);
-			++removed;
-		}
-	}
-	if(added) runtime.add_management_order(additions); else delete additions;
-	if(removed) runtime.add_management_order(removals); else delete removals;
 }
 
 bool Maxima::has_hard_farming_contract(int index) const
@@ -1332,6 +1278,10 @@ void Maxima::apply_farming_protection(Context& runtime,
 	const int size=w*map->getH();
 	AddArea* additions=new AddArea(ForbiddenArea);
 	RemoveArea* removals=new RemoveArea(ForbiddenArea);
+	const bool farms=map->farmAreasEnabled();
+	AddArea* farm_additions=farms ? new AddArea(FarmArea) : nullptr;
+	RemoveArea* farm_removals=farms ? new RemoveArea(FarmArea) : nullptr;
+	bool farm_added=false, farm_removed=false, forbidden_added=false, forbidden_removed=false;
 	added=0;
 	removed=0;
 	for(int index=0; index<size; ++index)
@@ -1339,21 +1289,48 @@ void Maxima::apply_farming_protection(Context& runtime,
 		const int x=index%w;
 		const int y=index/w;
 		if(!map_info.is_discovered(x, y)) continue;
+		const bool wheat=plan.protected_wheat[index];
+		if(farms)
+		{
+			const bool wanted=plan.forbidden[index] && wheat && map->canPaintFarmArea(x, y);
+			const bool farmed=map->isFarmArea(x, y, runtime.player->team->me);
+			if(wanted && !farmed)
+			{
+				farm_additions->add_location(x, y);
+				farm_added=true;
+				++added;
+			}
+			else if(!wanted && farmed)
+			{
+				farm_removals->add_location(x, y);
+				farm_removed=true;
+				++removed;
+			}
+		}
 		const bool actual=map_info.is_forbidden_area(x, y);
-		if(plan.forbidden[index] && !actual)
+		const bool forbidden=plan.forbidden[index]
+			&& !(farms && wheat);
+		if(forbidden && !actual)
 		{
 			additions->add_location(x, y);
+			forbidden_added=true;
 			++added;
 		}
-		else if(!plan.forbidden[index] && applied_farm_protection_mask[index] && actual)
+		else if(!forbidden && applied_farm_protection_mask[index] && actual)
 		{
 			removals->add_location(x, y);
+			forbidden_removed=true;
 			++removed;
 		}
-		applied_farm_protection_mask[index]=plan.forbidden[index];
+		applied_farm_protection_mask[index]=forbidden;
 	}
-	if(added) runtime.add_management_order(additions); else delete additions;
-	if(removed) runtime.add_management_order(removals); else delete removals;
+	if(forbidden_added) runtime.add_management_order(additions); else delete additions;
+	if(forbidden_removed) runtime.add_management_order(removals); else delete removals;
+	if(farms)
+	{
+		if(farm_added) runtime.add_management_order(farm_additions); else delete farm_additions;
+		if(farm_removed) runtime.add_management_order(farm_removals); else delete farm_removals;
+	}
 	farm_protection_mask=plan.forbidden;
 	wheat_farm_protection_mask=plan.protected_wheat;
 }
@@ -1395,14 +1372,9 @@ void Maxima::update_farming(Context& runtime)
 	}
 
 	resolve_wheat_invasion_clearing(runtime, plan);
-	int farms_added=0;
-	int farms_removed=0;
-	apply_farm_areas(runtime, plan, farms_added, farms_removed);
 	int added=0;
 	int removed=0;
 	apply_farming_protection(runtime, plan, added, removed);
-	added+=farms_added;
-	removed+=farms_removed;
 	// This pass satisfies the clearing campaign's urgent farming request;
 	// subsequent evaluations resume the ordinary cadence.
 	if(farming_urgent)
