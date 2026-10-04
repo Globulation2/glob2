@@ -1,5 +1,6 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
+#include "ExperimentalFeatures.h"
 #include <algorithm>
 #include "GlobalContainer.h"
 #include "Game.h"
@@ -679,6 +680,38 @@ void farmingRespectsDiscovery()
 
 TEST_SUITE("Maxima.FarmingIntegration")
 {
+	TEST_CASE("farm zones use the final wheat protection plan including empty frontier cells")
+	{
+		glob2test::HeadlessGlobals globals;
+		Fixture f;auto& ai=*f.ai;auto& map=f.game.map;
+		for(int y=0; y<64; ++y) map.setTerrain(10,y,256);
+		for(int y=20; y<24; ++y) for(int x=11; x<15; ++x) setYoungResource(map,x,y,WHEAT);
+		for(int y=40; y<44; ++y) for(int x=11; x<15; ++x) setYoungResource(map,x,y,WOOD);
+		ai.budget.farming_enabled=true;ai.budget.farming_protection_enabled=true;
+		ai.budget.farming_management_radius=0;
+		ai.update_farming(ai.context);
+		const auto original=ai.farm_protection_mask;
+		const auto wheat=ai.wheat_farm_protection_mask;
+		std::set<int> expected;
+		int frontier=0;
+		for(int i=0; i<64*64; ++i)
+			if(original[i] && wheat[i] && map.canPaintFarmArea(i%64,i/64))
+			{
+				expected.insert(i);
+				frontier+=map.getResource(i%64,i/64).type==NO_RES_TYPE;
+			}
+		REQUIRE(!expected.empty()); REQUIRE(frontier>0);
+		ai.context.managementOrders.clear();
+		f.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
+		ai.update_farming(ai.context);
+		CHECK(ai.farm_protection_mask==original);
+		std::set<int> actual;
+		for(const auto& order:ai.context.managementOrders)
+			if(auto add=std::dynamic_pointer_cast<Management::AddArea>(order))
+				if(add->areaType==FarmArea)
+					for(const auto& cell:add->locations) actual.insert(cell.y*64+cell.x);
+		CHECK(actual==expected);
+	}
 	TEST_CASE("permanent wheat layout") { glob2test::HeadlessGlobals globals; permanentWheatLayout(); }
 	TEST_CASE("firebreak management radius") { glob2test::HeadlessGlobals globals; firebreakManagementRadius(); }
 	TEST_CASE("farm management radius") { glob2test::HeadlessGlobals globals; farmManagementRadius(); }

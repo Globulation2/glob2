@@ -120,13 +120,14 @@ tint as the other zones, a light green chosen to stand out from grass.
 
 ## AIs
 
-In a game with the experiment, every AI that farms wheat paints a farm area
-instead of its forbidden-zone pattern: Nicowar, Econo, Maxima, Cortex, Cabino and
-Warrush. Each keeps its own idea of which fields to farm (near water, within its
-managed territory) and adds the shared rule `AIFarmAreas::wantsFarm`
-(`src/ai/AIFarmAreas.h`): ground the farm can grow on that holds wheat or touches
-it, so the farm covers the field and the ring it grows into. Forbidden paint stays
-for wood outside farms, and an AI removes its old wheat paint when it switches.
+In a game with the experiment, every AI that farms wheat uses farm paint
+for wheat protection: Nicowar, Econo, Maxima, Cortex, Cabino and
+Warrush. Each uses exactly its existing wheat-protection pattern and selection rules
+(near water, within its managed territory), painting farm areas on the selected
+wheat tiles instead of forbidden zones, including Maxima's selected empty wheat
+frontier cells. The engine's ground eligibility rule still
+applies. There is no extra field expansion or surrounding ring. Forbidden paint
+stays for wood, and an AI removes its old wheat paint when it switches.
 Cortex erases its farm for a wheat blitz, and Maxima when farming is disabled.
 Without the experiment every AI farms exactly as before.
 
