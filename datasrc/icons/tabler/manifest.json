@@ -248,6 +248,71 @@
       "name": "heart",
       "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/heart.svg",
       "sha256": "f9f42a4d4ae0aca8f01dde4a7a255eff7af26ed0ee133b1458e9d3ff257464d6"
+    },
+    {
+      "name": "dice-5",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/dice-5.svg",
+      "sha256": "d7ebfa6580489571a9ff6363f1c39112a6b020298006e3a5159a0deea3c9178b"
+    },
+    {
+      "name": "restore",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/restore.svg",
+      "sha256": "6dbc3eed31812bf6ca30ba3d9b8802db71fddeace397288162cbec00e99b3de7"
+    },
+    {
+      "name": "chevron-right",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/chevron-right.svg",
+      "sha256": "26b321e42c7c7ed5d5161d9af061033df1d49ef33b5d2fc2309e2f6ee3d4c81a"
+    },
+    {
+      "name": "chevron-down",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/chevron-down.svg",
+      "sha256": "06bd20b8cbe565b97046c5d0ec917f11ed6b29c0e4885a82ae057325c972bf9a"
+    },
+    {
+      "name": "mountain",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/mountain.svg",
+      "sha256": "ba55ca4c46b6c3345f27c1c462894c85d344527f86b4908c120553dd7ab2453e"
+    },
+    {
+      "name": "diamond",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/diamond.svg",
+      "sha256": "8bcae54bc07d758ad6295de1afa591e27f392169932c628a68b36a770763c9dd"
+    },
+    {
+      "name": "layout-grid",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/layout-grid.svg",
+      "sha256": "234f17d3e6212587c7a97a4fb1a68f824adf13365a9ac330dbae42e624488794"
+    },
+    {
+      "name": "list-details",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/list-details.svg",
+      "sha256": "a0b73d173f0494c96fb9f23690ff366e1e06c952d4fed0a83d6e4f7904a86fd5"
+    },
+    {
+      "name": "list-check",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/list-check.svg",
+      "sha256": "ae5a54fef119adc6b63e6a5aeb374535ee7c4a8f266dfa86cef6e769496a2996"
+    },
+    {
+      "name": "swords",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/swords.svg",
+      "sha256": "056a09258110ffaa6e33b4c3e34279be13e51a8aa49cf13d5d5b1e4a7d065396"
+    },
+    {
+      "name": "coins",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/coins.svg",
+      "sha256": "e95bc6abd9d8db7f4132ca936bcc2aae9e33454842d197dfb6f2d9de1354e86f"
+    },
+    {
+      "name": "eye",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/eye.svg",
+      "sha256": "49dc6603fb775c31b004431972b66075b1a239dc98489f638db73c66386702e4"
+    },
+    {
+      "name": "users-group",
+      "upstream": "https://raw.githubusercontent.com/tabler/tabler-icons/v3.48.0/icons/outline/users-group.svg",
+      "sha256": "2d196e620662a694bf579893db6a4d3b42557a2a6484174fe46029f2bcbae731"
     }
   ]
 }

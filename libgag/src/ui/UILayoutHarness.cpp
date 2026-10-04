@@ -518,6 +518,38 @@ void checkChoicePopup()
 	require(!f.host.popupOpen() && picked == 2, "clicking outside dismisses without picking");
 }
 
+void checkIconSegmentsAndChoice()
+{
+	auto asset = std::make_shared<IconAsset>();
+	asset->name = "option";
+	asset->rasters.push_back({24, {}});
+	Fixture segmented([&](const Presentation &)
+					  { return segments("mode", {"One", "Two"}, 0, [](int) {}, {}, {asset, asset}); }, 300, 60);
+	auto segmentPaint = segmented.paint();
+	require(segmentPaint.icons.size() == 2, "each segment paints its icon");
+	require(segmented.host.bounds("mode/0").contains(segmentPaint.icons[0].bounds) &&
+				segmented.host.bounds("mode/1").contains(segmentPaint.icons[1].bounds),
+			"segment icons stay inside their buttons");
+
+	ChoiceOptions options;
+	options.icons = {asset, asset, asset};
+	Fixture f([&](const Presentation &) { return choice("pick", {"Alpha", "Beta", "Gamma"}, 1, [](int) {}, options); },
+			  300, 400);
+	auto closed = f.paint();
+	require(closed.icons.size() == 1 && f.host.bounds("pick").contains(closed.icons[0].bounds),
+			"a choice paints the selected option's icon inside the control");
+	for (const auto &line : closed.texts)
+		if (line.second == "Beta")
+			require(line.first.x >= closed.icons[0].bounds.right() + 6, "the value text clears the icon");
+	f.click(f.host.bounds("pick").center());
+	require(f.host.popupOpen(), "an icon choice opens its popup");
+	require(f.paint().icons.size() == 1 + 3, "every popup row paints its icon");
+
+	options.compactLabel = "More";
+	Fixture compact([&](const Presentation &) { return choice("more", {"Alpha"}, 0, [](int) {}, options); }, 300, 60);
+	require(compact.paint().icons.empty(), "a compact label replaces the option icon");
+}
+
 void checkTextField()
 {
 	std::string model = "ab";
@@ -922,6 +954,7 @@ TEST_SUITE("UILayout")
 	TEST_CASE("press survives resize") { checkPressSurvivesResize(); }
 	TEST_CASE("focus and keyboard") { checkFocusAndKeyboard(); }
 	TEST_CASE("choice popup") { checkChoicePopup(); }
+	TEST_CASE("icon segments and choices") { checkIconSegmentsAndChoice(); }
 	TEST_CASE("text field") { checkTextField(); }
 	TEST_CASE("list view") { checkListView(); }
 	TEST_CASE("copy field") { checkCopyField(); }
