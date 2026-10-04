@@ -1,3 +1,4 @@
+require('./browser-stall-diagnostics');
 const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
