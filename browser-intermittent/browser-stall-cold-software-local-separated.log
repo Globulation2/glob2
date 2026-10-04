@@ -1,0 +1,90 @@
+Cold-browser explicit-software storage attempt 1
+
+Running 1 test using 1 worker
+
+(node:903358) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (32.5s)
+
+  1 passed (33.6s)
+Cold-browser explicit-software storage attempt 2
+
+Running 1 test using 1 worker
+
+(node:903640) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (32.4s)
+
+  1 passed (33.5s)
+Cold-browser explicit-software storage attempt 3
+
+Running 1 test using 1 worker
+
+(node:903853) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (32.6s)
+
+  1 passed (33.7s)
+Cold-browser explicit-software storage attempt 4
+
+Running 1 test using 1 worker
+
+(node:904096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (33.5s)
+
+  1 passed (34.6s)
+Cold-browser explicit-software storage attempt 5
+
+Running 1 test using 1 worker
+
+(node:904416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (32.0s)
+
+  1 passed (33.1s)
+Cold-browser explicit-software storage attempt 6
+
+Running 1 test using 1 worker
+
+(node:904656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (33.1s)
+
+  1 passed (34.1s)
+Cold-browser explicit-software storage attempt 7
+
+Running 1 test using 1 worker
+
+(node:904908) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (31.7s)
+
+  1 passed (32.8s)
+Cold-browser explicit-software storage attempt 8
+
+Running 1 test using 1 worker
+
+(node:905206) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (48.1s)
+
+  1 passed (49.3s)
+Cold-browser explicit-software storage attempt 9
+
+Running 1 test using 1 worker
+
+(node:905619) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (1.2m)
+
+  1 passed (1.2m)
+Cold-browser explicit-software storage attempt 10
+
+Running 1 test using 1 worker
+
+(node:906133) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-cold-local/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (1.1m)
+
+  1 passed (1.2m)

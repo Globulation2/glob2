@@ -1,0 +1,90 @@
+Cold-browser two reported cores storage attempt 1
+
+Running 1 test using 1 worker
+
+(node:907333) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.6s)
+
+  1 passed (33.8s)
+Cold-browser two reported cores storage attempt 2
+
+Running 1 test using 1 worker
+
+(node:907620) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.8s)
+
+  1 passed (33.9s)
+Cold-browser two reported cores storage attempt 3
+
+Running 1 test using 1 worker
+
+(node:907814) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.4s)
+
+  1 passed (33.4s)
+Cold-browser two reported cores storage attempt 4
+
+Running 1 test using 1 worker
+
+(node:908083) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.8s)
+
+  1 passed (33.8s)
+Cold-browser two reported cores storage attempt 5
+
+Running 1 test using 1 worker
+
+(node:908436) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.6s)
+
+  1 passed (33.7s)
+Cold-browser two reported cores storage attempt 6
+
+Running 1 test using 1 worker
+
+(node:908685) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.3s)
+
+  1 passed (33.3s)
+Cold-browser two reported cores storage attempt 7
+
+Running 1 test using 1 worker
+
+(node:908911) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (32.3s)
+
+  1 passed (33.4s)
+Cold-browser two reported cores storage attempt 8
+
+Running 1 test using 1 worker
+
+(node:909171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (33.2s)
+
+  1 passed (34.2s)
+Cold-browser two reported cores storage attempt 9
+
+Running 1 test using 1 worker
+
+(node:909399) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (31.3s)
+
+  1 passed (32.4s)
+Cold-browser two reported cores storage attempt 10
+
+Running 1 test using 1 worker
+
+(node:909721) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-stall-two-core-local/storage.spec.js:29:40 › abort failure retains the previous durable save and can retry (33.0s)
+
+  1 passed (34.1s)

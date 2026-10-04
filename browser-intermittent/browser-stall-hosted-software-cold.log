@@ -1,0 +1,1718 @@
+﻿2026-10-04T09:07:36.7947028Z Current runner version: '2.337.0'
+2026-10-04T09:07:36.7965294Z ##[group]Runner Image Provisioner
+2026-10-04T09:07:36.7965834Z Hosted Compute Agent
+2026-10-04T09:07:36.7966180Z Version: 20260901.588
+2026-10-04T09:07:36.7966650Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T09:07:36.7967096Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T09:07:36.7967571Z Worker ID: {c95b3631-6a38-4807-ae63-3d12174bebad}
+2026-10-04T09:07:36.7968015Z Azure Region: centralus
+2026-10-04T09:07:36.7968380Z ##[endgroup]
+2026-10-04T09:07:36.7969446Z ##[group]Operating System
+2026-10-04T09:07:36.7969818Z Ubuntu
+2026-10-04T09:07:36.7970173Z 24.04.5
+2026-10-04T09:07:36.7970502Z LTS
+2026-10-04T09:07:36.7970820Z ##[endgroup]
+2026-10-04T09:07:36.7971223Z ##[group]Runner Image
+2026-10-04T09:07:36.7971595Z Image: ubuntu-24.04
+2026-10-04T09:07:36.7971994Z Version: 20260927.320.1
+2026-10-04T09:07:36.7972743Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-04T09:07:36.7973702Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-04T09:07:36.7974355Z ##[endgroup]
+2026-10-04T09:07:36.7975085Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T09:07:36.7976261Z Actions: read
+2026-10-04T09:07:36.7976967Z Contents: read
+2026-10-04T09:07:36.7977326Z Metadata: read
+2026-10-04T09:07:36.7977666Z ##[endgroup]
+2026-10-04T09:07:36.7979252Z Secret source: Actions
+2026-10-04T09:07:36.7979861Z Cache mode: write
+2026-10-04T09:07:36.7980331Z Prepare workflow directory
+2026-10-04T09:07:36.8222466Z Prepare all required actions
+2026-10-04T09:07:36.8254113Z Getting action download info
+2026-10-04T09:07:37.1180033Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T09:07:37.2128807Z Download action repository 'actions/setup-node@v4' (SHA:49933ea5288caeca8642d1e84afbd3f7d6820020)
+2026-10-04T09:07:37.3105445Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-04T09:07:37.7918338Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T09:07:37.9770370Z Complete job name: chromium
+2026-10-04T09:07:38.0229243Z ##[group]Run actions/checkout@v4
+2026-10-04T09:07:38.0229709Z with:
+2026-10-04T09:07:38.0229971Z   repository: Globulation2/glob2
+2026-10-04T09:07:38.0232148Z   token: ***
+2026-10-04T09:07:38.0232400Z   ssh-strict: true
+2026-10-04T09:07:38.0232665Z   ssh-user: git
+2026-10-04T09:07:38.0232932Z   persist-credentials: true
+2026-10-04T09:07:38.0233220Z   clean: true
+2026-10-04T09:07:38.0233485Z   sparse-checkout-cone-mode: true
+2026-10-04T09:07:38.0233791Z   fetch-depth: 1
+2026-10-04T09:07:38.0234051Z   fetch-tags: false
+2026-10-04T09:07:38.0234316Z   show-progress: true
+2026-10-04T09:07:38.0234591Z   lfs: false
+2026-10-04T09:07:38.0234845Z   submodules: false
+2026-10-04T09:07:38.0235114Z   set-safe-directory: true
+2026-10-04T09:07:38.0235416Z   allow-unsafe-pr-checkout: false
+2026-10-04T09:07:38.0235807Z env:
+2026-10-04T09:07:38.0236058Z   GLOB2_TEST_RENDERER: software
+2026-10-04T09:07:38.0236350Z ##[endgroup]
+2026-10-04T09:07:38.0913452Z Syncing repository: Globulation2/glob2
+2026-10-04T09:07:38.0915153Z ##[group]Getting Git version info
+2026-10-04T09:07:38.0915787Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-04T09:07:38.0916731Z [command]/usr/bin/git version
+2026-10-04T09:07:38.0993786Z git version 2.55.0
+2026-10-04T09:07:38.1008215Z ##[endgroup]
+2026-10-04T09:07:38.1020075Z Temporarily overriding HOME='/home/runner/work/_temp/afd5069e-5736-41d8-8e5a-ba10d4e857fe' before making global git config changes
+2026-10-04T09:07:38.1021549Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T09:07:38.1024042Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T09:07:38.1070375Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-04T09:07:38.1075300Z ##[group]Initializing the repository
+2026-10-04T09:07:38.1076067Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-04T09:07:38.1177335Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T09:07:38.1180938Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T09:07:38.1182865Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T09:07:38.1184238Z hint: call:
+2026-10-04T09:07:38.1185388Z hint:
+2026-10-04T09:07:38.1186137Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T09:07:38.1186975Z hint:
+2026-10-04T09:07:38.1187596Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T09:07:38.1188588Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T09:07:38.1191054Z hint:
+2026-10-04T09:07:38.1191666Z hint: 	git branch -m <name>
+2026-10-04T09:07:38.1192226Z hint:
+2026-10-04T09:07:38.1193011Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T09:07:38.1228433Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-04T09:07:38.1241323Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-04T09:07:38.1319166Z ##[endgroup]
+2026-10-04T09:07:38.1319915Z ##[group]Disabling automatic garbage collection
+2026-10-04T09:07:38.1322371Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T09:07:38.1351327Z ##[endgroup]
+2026-10-04T09:07:38.1352001Z ##[group]Setting up auth
+2026-10-04T09:07:38.1356471Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T09:07:38.1385528Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T09:07:38.1683903Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T09:07:38.1711392Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T09:07:38.1882685Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T09:07:38.1909456Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T09:07:38.2079836Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T09:07:38.2112248Z ##[endgroup]
+2026-10-04T09:07:38.2117831Z ##[group]Fetching the repository
+2026-10-04T09:07:38.2118821Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d491166c76680b4b78254cc48e353c6323e4fdfa:refs/remotes/origin/codex/diagnose-browser-stalls
+2026-10-04T09:07:42.1526153Z From https://github.com/Globulation2/glob2
+2026-10-04T09:07:42.1526972Z  * [new ref]         d491166c76680b4b78254cc48e353c6323e4fdfa -> origin/codex/diagnose-browser-stalls
+2026-10-04T09:07:42.1529309Z ##[endgroup]
+2026-10-04T09:07:42.1529678Z ##[group]Determining the checkout info
+2026-10-04T09:07:42.1531577Z ##[endgroup]
+2026-10-04T09:07:42.1535775Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T09:07:42.1581037Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T09:07:42.1606186Z ##[group]Checking out the ref
+2026-10-04T09:07:42.1609250Z [command]/usr/bin/git checkout --progress --force -B codex/diagnose-browser-stalls refs/remotes/origin/codex/diagnose-browser-stalls
+2026-10-04T09:07:43.1704980Z Updating files:  99% (13872/13875)
+2026-10-04T09:07:43.1705374Z Updating files: 100% (13875/13875)
+2026-10-04T09:07:43.1705671Z Updating files: 100% (13875/13875), done.
+2026-10-04T09:07:43.1777802Z Switched to a new branch 'codex/diagnose-browser-stalls'
+2026-10-04T09:07:43.1782689Z branch 'codex/diagnose-browser-stalls' set up to track 'origin/codex/diagnose-browser-stalls'.
+2026-10-04T09:07:43.1809967Z ##[endgroup]
+2026-10-04T09:07:43.1849740Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T09:07:43.1872805Z d491166c76680b4b78254cc48e353c6323e4fdfa
+2026-10-04T09:07:43.2123417Z ##[group]Run actions/setup-node@v4
+2026-10-04T09:07:43.2123589Z with:
+2026-10-04T09:07:43.2123717Z   node-version: 22
+2026-10-04T09:07:43.2123841Z   always-auth: false
+2026-10-04T09:07:43.2123967Z   check-latest: false
+2026-10-04T09:07:43.2125298Z   token: ***
+2026-10-04T09:07:43.2125412Z env:
+2026-10-04T09:07:43.2125529Z   GLOB2_TEST_RENDERER: software
+2026-10-04T09:07:43.2125673Z ##[endgroup]
+2026-10-04T09:07:43.3023428Z Found in cache @ /opt/hostedtoolcache/node/22.23.3/x64
+2026-10-04T09:07:43.3026458Z (node:2089) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T09:07:43.3026852Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T09:07:43.3028542Z ##[group]Environment details
+2026-10-04T09:07:43.5886958Z node: v22.23.3
+2026-10-04T09:07:43.5887229Z npm: 10.9.9
+2026-10-04T09:07:43.5887391Z yarn: 1.22.22
+2026-10-04T09:07:43.5887942Z ##[endgroup]
+2026-10-04T09:07:43.6011953Z ##[group]Run actions/download-artifact@v4
+2026-10-04T09:07:43.6012135Z with:
+2026-10-04T09:07:43.6012250Z   name: web-client
+2026-10-04T09:07:43.6012371Z   run-id: 37187146428
+2026-10-04T09:07:43.6013810Z   github-token: ***
+2026-10-04T09:07:43.6013945Z   path: build/emscripten/client/release
+2026-10-04T09:07:43.6014109Z   merge-multiple: false
+2026-10-04T09:07:43.6014258Z   repository: Globulation2/glob2
+2026-10-04T09:07:43.6014399Z env:
+2026-10-04T09:07:43.6014515Z   GLOB2_TEST_RENDERER: software
+2026-10-04T09:07:43.6014657Z ##[endgroup]
+2026-10-04T09:07:43.7006319Z Downloading single artifact
+2026-10-04T09:07:43.7045983Z (node:2120) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T09:07:43.7046488Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T09:07:43.7185760Z (node:2120) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T09:07:43.9300689Z Preparing to download the following artifacts:
+2026-10-04T09:07:43.9301831Z - web-client (ID: 11298151834, Size: 144038100, Expected Digest: sha256:b778f574bf0712764785d4df3ed47fc38fab675b168c3a8a880d7b2afe9740cd)
+2026-10-04T09:07:43.9325714Z Downloading artifact '11298151834' from 'Globulation2/glob2'
+2026-10-04T09:07:44.0831430Z Redirecting to blob download url: https://productionresultssa17.blob.core.windows.net/actions-results/87f6bbbc-9af9-4599-a147-e01cbd57ca97/workflow-job-run-a1e7a591-075c-53da-bc37-937e50af0038/artifacts/278290161bdc18b74f81bc21bbf56d461b1aa5a01dc25b928b985b3f38a8fa2c.zip
+2026-10-04T09:07:44.0832289Z Starting download of artifact to: /home/runner/work/glob2/glob2/build/emscripten/client/release
+2026-10-04T09:07:44.2733139Z (node:2120) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T09:07:46.5100317Z SHA256 digest of downloaded artifact is b778f574bf0712764785d4df3ed47fc38fab675b168c3a8a880d7b2afe9740cd
+2026-10-04T09:07:46.5100850Z Artifact download completed successfully.
+2026-10-04T09:07:46.5101139Z Total of 1 artifact(s) downloaded
+2026-10-04T09:07:46.5104461Z Download artifact has finished successfully
+2026-10-04T09:07:46.5235540Z ##[group]Run npm ci
+2026-10-04T09:07:46.5235726Z [36;1mnpm ci[0m
+2026-10-04T09:07:46.5235894Z [36;1mnpx playwright install --with-deps chromium[0m
+2026-10-04T09:07:46.5467668Z shell: /usr/bin/bash -e {0}
+2026-10-04T09:07:46.5467820Z env:
+2026-10-04T09:07:46.5467943Z   GLOB2_TEST_RENDERER: software
+2026-10-04T09:07:46.5468088Z ##[endgroup]
+2026-10-04T09:07:47.2258368Z 
+2026-10-04T09:07:47.2259260Z added 3 packages, and audited 4 packages in 636ms
+2026-10-04T09:07:47.2263469Z 
+2026-10-04T09:07:47.2263632Z found 0 vulnerabilities
+2026-10-04T09:07:47.7062205Z Installing dependencies...
+2026-10-04T09:07:47.7113940Z Switching to root user to install dependencies...
+2026-10-04T09:07:47.7709169Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T09:07:47.8120180Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-04T09:07:47.8162564Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-04T09:07:47.8189861Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-04T09:07:47.8207210Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-04T09:07:47.8207918Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-04T09:07:47.9027767Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1364 kB]
+2026-10-04T09:07:47.9134273Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [304 kB]
+2026-10-04T09:07:47.9152728Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [181 kB]
+2026-10-04T09:07:47.9170295Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1699 kB]
+2026-10-04T09:07:47.9249768Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [341 kB]
+2026-10-04T09:07:47.9268378Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+2026-10-04T09:07:47.9279529Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1720 kB]
+2026-10-04T09:07:47.9357855Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [394 kB]
+2026-10-04T09:07:47.9378695Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+2026-10-04T09:07:47.9475239Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5736 B]
+2026-10-04T09:07:47.9831728Z Get:18 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.6 kB]
+2026-10-04T09:07:47.9870972Z Get:19 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [458 kB]
+2026-10-04T09:07:47.9929890Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+2026-10-04T09:07:47.9940004Z Get:20 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [511 kB]
+2026-10-04T09:07:48.0201832Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1069 kB]
+2026-10-04T09:07:48.0249598Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [221 kB]
+2026-10-04T09:07:48.0262750Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.5 kB]
+2026-10-04T09:07:48.0271518Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1216 kB]
+2026-10-04T09:07:48.0321826Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [244 kB]
+2026-10-04T09:07:48.0337577Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
+2026-10-04T09:07:48.0348865Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1566 kB]
+2026-10-04T09:07:48.0411502Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [361 kB]
+2026-10-04T09:07:53.6723053Z Fetched 12.6 MB in 1s (12.3 MB/s)
+2026-10-04T09:07:54.1989181Z Reading package lists...
+2026-10-04T09:07:54.2178792Z Reading package lists...
+2026-10-04T09:07:54.3896342Z Building dependency tree...
+2026-10-04T09:07:54.3901373Z Reading state information...
+2026-10-04T09:07:54.4935431Z libasound2t64 is already the newest version (1.2.11-1ubuntu0.3).
+2026-10-04T09:07:54.4936006Z libasound2t64 set to manually installed.
+2026-10-04T09:07:54.4937010Z libatk-bridge2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-04T09:07:54.4937453Z libatk-bridge2.0-0t64 set to manually installed.
+2026-10-04T09:07:54.4937899Z libatk1.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-04T09:07:54.4938310Z libatk1.0-0t64 set to manually installed.
+2026-10-04T09:07:54.4938722Z libatspi2.0-0t64 is already the newest version (2.52.0-1build1).
+2026-10-04T09:07:54.4939336Z libatspi2.0-0t64 set to manually installed.
+2026-10-04T09:07:54.4939741Z libcairo2 is already the newest version (1.18.0-3build1).
+2026-10-04T09:07:54.4940127Z libcairo2 set to manually installed.
+2026-10-04T09:07:54.4940546Z libcups2t64 is already the newest version (2.4.7-1.2ubuntu7.14).
+2026-10-04T09:07:54.4940877Z libcups2t64 set to manually installed.
+2026-10-04T09:07:54.4941275Z libdbus-1-3 is already the newest version (1.14.10-4ubuntu4.1).
+2026-10-04T09:07:54.4941580Z libdbus-1-3 set to manually installed.
+2026-10-04T09:07:54.4941850Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-04T09:07:54.4942068Z libdrm2 set to manually installed.
+2026-10-04T09:07:54.4942279Z libglib2.0-0t64 is already the newest version (2.80.0-6ubuntu3.9).
+2026-10-04T09:07:54.4942495Z libglib2.0-0t64 set to manually installed.
+2026-10-04T09:07:54.4942711Z libnspr4 is already the newest version (2:4.35-1.1build1).
+2026-10-04T09:07:54.4942909Z libnspr4 set to manually installed.
+2026-10-04T09:07:54.4943106Z libnss3 is already the newest version (2:3.98-1ubuntu0.2).
+2026-10-04T09:07:54.4943297Z libnss3 set to manually installed.
+2026-10-04T09:07:54.4943506Z libpango-1.0-0 is already the newest version (1.52.1+ds-1build1).
+2026-10-04T09:07:54.4943723Z libpango-1.0-0 set to manually installed.
+2026-10-04T09:07:54.4943925Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-10-04T09:07:54.4944192Z libx11-6 set to manually installed.
+2026-10-04T09:07:54.4944466Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-04T09:07:54.4944654Z libxcb1 set to manually installed.
+2026-10-04T09:07:54.4944866Z libxcomposite1 is already the newest version (1:0.4.5-1build3).
+2026-10-04T09:07:54.4945082Z libxcomposite1 set to manually installed.
+2026-10-04T09:07:54.4945293Z libxdamage1 is already the newest version (1:1.1.6-1build1).
+2026-10-04T09:07:54.4945493Z libxdamage1 set to manually installed.
+2026-10-04T09:07:54.4945692Z libxext6 is already the newest version (2:1.3.4-1build2).
+2026-10-04T09:07:54.4945883Z libxext6 set to manually installed.
+2026-10-04T09:07:54.4946084Z libxfixes3 is already the newest version (1:6.0.0-2build1).
+2026-10-04T09:07:54.4946282Z libxfixes3 set to manually installed.
+2026-10-04T09:07:54.4946488Z libxkbcommon0 is already the newest version (1.6.0-1build1).
+2026-10-04T09:07:54.4946691Z libxkbcommon0 set to manually installed.
+2026-10-04T09:07:54.4946991Z libxrandr2 is already the newest version (2:1.5.2-2build1).
+2026-10-04T09:07:54.4947189Z libxrandr2 set to manually installed.
+2026-10-04T09:07:54.4947393Z xvfb is already the newest version (2:21.1.12-1ubuntu1.8).
+2026-10-04T09:07:54.4947669Z fonts-noto-color-emoji is already the newest version (2.047-0ubuntu0.24.04.1).
+2026-10-04T09:07:54.4947954Z libfontconfig1 is already the newest version (2.15.0-1.1ubuntu2).
+2026-10-04T09:07:54.4948167Z libfontconfig1 set to manually installed.
+2026-10-04T09:07:54.4948393Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-10-04T09:07:54.4948610Z libfreetype6 set to manually installed.
+2026-10-04T09:07:54.4948824Z fonts-liberation is already the newest version (1:2.1.5-3).
+2026-10-04T09:07:54.4949221Z fonts-liberation set to manually installed.
+2026-10-04T09:07:54.4949740Z The following additional packages will be installed:
+2026-10-04T09:07:54.4950132Z   libgl1-mesa-dri libglx-mesa0 mesa-libgallium xfonts-encodings xfonts-utils
+2026-10-04T09:07:54.4950458Z Recommended packages:
+2026-10-04T09:07:54.4950687Z   fonts-ipafont-mincho fonts-tlwg-loma
+2026-10-04T09:07:54.5084207Z The following NEW packages will be installed:
+2026-10-04T09:07:54.5085019Z   fonts-freefont-ttf fonts-ipafont-gothic fonts-tlwg-loma-otf fonts-unifont
+2026-10-04T09:07:54.5086912Z   fonts-wqy-zenhei xfonts-cyrillic xfonts-encodings xfonts-scalable
+2026-10-04T09:07:54.5087282Z   xfonts-utils
+2026-10-04T09:07:54.5089389Z The following packages will be upgraded:
+2026-10-04T09:07:54.5091884Z   libgbm1 libgl1-mesa-dri libglx-mesa0 mesa-libgallium
+2026-10-04T09:07:54.5212030Z 4 upgraded, 9 newly installed, 0 to remove and 21 not upgraded.
+2026-10-04T09:07:54.5212262Z Need to get 32.1 MB of archives.
+2026-10-04T09:07:54.5212481Z After this operation, 79.5 MB of additional disk space will be used.
+2026-10-04T09:07:54.5212772Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T09:07:54.5674721Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-ipafont-gothic all 00303-21ubuntu1 [3513 kB]
+2026-10-04T09:07:54.9613418Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-freefont-ttf all 20211204+svn4273-2 [5641 kB]
+2026-10-04T09:07:55.0884373Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-tlwg-loma-otf all 1:0.7.3-1 [107 kB]
+2026-10-04T09:07:55.1161520Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-unifont all 1:15.1.01-1build1 [2993 kB]
+2026-10-04T09:07:55.1878013Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-wqy-zenhei all 0.9.45-8 [7472 kB]
+2026-10-04T09:07:55.3149119Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgl1-mesa-dri amd64 25.2.8-0ubuntu0.24.04.4 [38.0 kB]
+2026-10-04T09:07:55.3422943Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libglx-mesa0 amd64 25.2.8-0ubuntu0.24.04.4 [110 kB]
+2026-10-04T09:07:55.3698212Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgbm1 amd64 25.2.8-0ubuntu0.24.04.4 [34.2 kB]
+2026-10-04T09:07:55.3970786Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 mesa-libgallium amd64 25.2.8-0ubuntu0.24.04.4 [10.8 MB]
+2026-10-04T09:07:55.5415145Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-10-04T09:07:55.5732042Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-10-04T09:07:55.6009950Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xfonts-cyrillic all 1:1.0.5+nmu1 [384 kB]
+2026-10-04T09:07:55.6313920Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-scalable all 1:1.0.3-1.3 [304 kB]
+2026-10-04T09:07:55.8171284Z Fetched 32.1 MB in 1s (28.6 MB/s)
+2026-10-04T09:07:55.8343233Z Selecting previously unselected package fonts-ipafont-gothic.
+2026-10-04T09:07:55.8590599Z (Reading database ... 
+2026-10-04T09:07:55.8590823Z (Reading database ... 5%
+2026-10-04T09:07:55.8590977Z (Reading database ... 10%
+2026-10-04T09:07:55.8591124Z (Reading database ... 15%
+2026-10-04T09:07:55.8591264Z (Reading database ... 20%
+2026-10-04T09:07:55.8594147Z (Reading database ... 25%
+2026-10-04T09:07:55.8594735Z (Reading database ... 30%
+2026-10-04T09:07:55.8594965Z (Reading database ... 35%
+2026-10-04T09:07:55.8595190Z (Reading database ... 40%
+2026-10-04T09:07:55.8595402Z (Reading database ... 45%
+2026-10-04T09:07:55.8595543Z (Reading database ... 50%
+2026-10-04T09:07:55.8627443Z (Reading database ... 55%
+2026-10-04T09:07:55.9079148Z (Reading database ... 60%
+2026-10-04T09:07:56.0861726Z (Reading database ... 65%
+2026-10-04T09:07:56.2480906Z (Reading database ... 70%
+2026-10-04T09:07:56.4487841Z (Reading database ... 75%
+2026-10-04T09:07:56.5217551Z (Reading database ... 80%
+2026-10-04T09:07:56.6439798Z (Reading database ... 85%
+2026-10-04T09:07:56.7260472Z (Reading database ... 90%
+2026-10-04T09:07:56.8111989Z (Reading database ... 95%
+2026-10-04T09:07:56.8112287Z (Reading database ... 100%
+2026-10-04T09:07:56.8112697Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T09:07:56.8147174Z Preparing to unpack .../00-fonts-ipafont-gothic_00303-21ubuntu1_all.deb ...
+2026-10-04T09:07:56.8224927Z Unpacking fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-04T09:07:57.0389602Z Selecting previously unselected package fonts-freefont-ttf.
+2026-10-04T09:07:57.0486356Z Preparing to unpack .../01-fonts-freefont-ttf_20211204+svn4273-2_all.deb ...
+2026-10-04T09:07:57.0493294Z Unpacking fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-04T09:07:57.1372333Z Selecting previously unselected package fonts-tlwg-loma-otf.
+2026-10-04T09:07:57.1467551Z Preparing to unpack .../02-fonts-tlwg-loma-otf_1%3a0.7.3-1_all.deb ...
+2026-10-04T09:07:57.1476010Z Unpacking fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-04T09:07:57.1652845Z Selecting previously unselected package fonts-unifont.
+2026-10-04T09:07:57.1749459Z Preparing to unpack .../03-fonts-unifont_1%3a15.1.01-1build1_all.deb ...
+2026-10-04T09:07:57.1756632Z Unpacking fonts-unifont (1:15.1.01-1build1) ...
+2026-10-04T09:07:57.3601315Z Selecting previously unselected package fonts-wqy-zenhei.
+2026-10-04T09:07:57.3696925Z Preparing to unpack .../04-fonts-wqy-zenhei_0.9.45-8_all.deb ...
+2026-10-04T09:07:57.3779169Z Unpacking fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-04T09:07:57.8093172Z Preparing to unpack .../05-libgl1-mesa-dri_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T09:07:57.8208740Z Unpacking libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T09:07:57.8610820Z Preparing to unpack .../06-libglx-mesa0_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T09:07:57.8639704Z Unpacking libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T09:07:57.8934569Z Preparing to unpack .../07-libgbm1_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T09:07:57.8953755Z Unpacking libgbm1:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T09:07:57.9244068Z Preparing to unpack .../08-mesa-libgallium_25.2.8-0ubuntu0.24.04.4_amd64.deb ...
+2026-10-04T09:07:57.9263884Z Unpacking mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.4) over (25.2.8-0ubuntu0.24.04.2) ...
+2026-10-04T09:07:58.2386077Z Selecting previously unselected package xfonts-encodings.
+2026-10-04T09:07:58.2481293Z Preparing to unpack .../09-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-10-04T09:07:58.2487539Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-04T09:07:58.2693475Z Selecting previously unselected package xfonts-utils.
+2026-10-04T09:07:58.2785351Z Preparing to unpack .../10-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-10-04T09:07:58.2790938Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-10-04T09:07:58.3063324Z Selecting previously unselected package xfonts-cyrillic.
+2026-10-04T09:07:58.3154641Z Preparing to unpack .../11-xfonts-cyrillic_1%3a1.0.5+nmu1_all.deb ...
+2026-10-04T09:07:58.3160591Z Unpacking xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-04T09:07:58.3508616Z Selecting previously unselected package xfonts-scalable.
+2026-10-04T09:07:58.3598866Z Preparing to unpack .../12-xfonts-scalable_1%3a1.0.3-1.3_all.deb ...
+2026-10-04T09:07:58.3605245Z Unpacking xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-04T09:07:58.3960938Z Setting up mesa-libgallium:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T09:07:58.3976695Z Setting up libgbm1:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T09:07:58.3990827Z Setting up libgl1-mesa-dri:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T09:07:58.4044645Z Setting up fonts-wqy-zenhei (0.9.45-8) ...
+2026-10-04T09:07:58.4130529Z Setting up fonts-freefont-ttf (20211204+svn4273-2) ...
+2026-10-04T09:07:58.4144855Z Setting up fonts-tlwg-loma-otf (1:0.7.3-1) ...
+2026-10-04T09:07:58.4158417Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-10-04T09:07:58.4173399Z Setting up fonts-ipafont-gothic (00303-21ubuntu1) ...
+2026-10-04T09:07:58.4220966Z update-alternatives: using /usr/share/fonts/opentype/ipafont-gothic/ipag.ttf to provide /usr/share/fonts/truetype/fonts-japanese-gothic.ttf (fonts-japanese-gothic.ttf) in auto mode
+2026-10-04T09:07:58.4233587Z Setting up fonts-unifont (1:15.1.01-1build1) ...
+2026-10-04T09:07:58.4247866Z Setting up libglx-mesa0:amd64 (25.2.8-0ubuntu0.24.04.4) ...
+2026-10-04T09:07:58.4262749Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-10-04T09:07:58.4294653Z Setting up xfonts-cyrillic (1:1.0.5+nmu1) ...
+2026-10-04T09:07:58.4516878Z Setting up xfonts-scalable (1:1.0.3-1.3) ...
+2026-10-04T09:07:58.4768627Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-04T09:07:58.6903255Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-04T09:07:58.6920954Z Not building database; man-db/auto-update is not 'true'.
+2026-10-04T09:07:58.6931149Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-10-04T09:07:59.2095068Z 
+2026-10-04T09:07:59.2095663Z Running kernel seems to be up-to-date.
+2026-10-04T09:07:59.2095900Z 
+2026-10-04T09:07:59.2096031Z No services need to be restarted.
+2026-10-04T09:07:59.2096178Z 
+2026-10-04T09:07:59.2096306Z No containers need to be restarted.
+2026-10-04T09:07:59.2096451Z 
+2026-10-04T09:07:59.2096591Z No user sessions are running outdated binaries.
+2026-10-04T09:07:59.2096762Z 
+2026-10-04T09:07:59.2096995Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T09:07:59.8590792Z Downloading Chrome for Testing 153.0.8010.12 (playwright chromium v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-linux64.zip
+2026-10-04T09:08:00.1893893Z |                                                                                |   0% of 186.8 MiB
+2026-10-04T09:08:00.5018073Z |■■■■■■■■                                                                        |  10% of 186.8 MiB
+2026-10-04T09:08:00.5560620Z |■■■■■■■■■■■■■■■■                                                                |  20% of 186.8 MiB
+2026-10-04T09:08:00.5895774Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 186.8 MiB
+2026-10-04T09:08:00.6427064Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 186.8 MiB
+2026-10-04T09:08:00.6992295Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 186.8 MiB
+2026-10-04T09:08:00.7465794Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 186.8 MiB
+2026-10-04T09:08:00.7974576Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 186.8 MiB
+2026-10-04T09:08:00.8490246Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 186.8 MiB
+2026-10-04T09:08:00.9107388Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 186.8 MiB
+2026-10-04T09:08:00.9584152Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 186.8 MiB
+2026-10-04T09:08:02.6671827Z Chrome for Testing 153.0.8010.12 (playwright chromium v1243) downloaded to /home/runner/.cache/ms-playwright/chromium-1243
+2026-10-04T09:08:02.6674015Z Downloading FFmpeg (playwright ffmpeg v1011) from https://cdn.playwright.dev/dbazure/download/playwright/builds/ffmpeg/1011/ffmpeg-linux.zip
+2026-10-04T09:08:02.9266020Z |                                                                                |   0% of 2.3 MiB
+2026-10-04T09:08:02.9587104Z |■■■■■■■■                                                                        |  10% of 2.3 MiB
+2026-10-04T09:08:02.9711549Z |■■■■■■■■■■■■■■■■                                                                |  20% of 2.3 MiB
+2026-10-04T09:08:02.9822676Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 2.3 MiB
+2026-10-04T09:08:02.9913976Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 2.3 MiB
+2026-10-04T09:08:02.9976169Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 2.3 MiB
+2026-10-04T09:08:03.0030250Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 2.3 MiB
+2026-10-04T09:08:03.0072587Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 2.3 MiB
+2026-10-04T09:08:03.0137555Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 2.3 MiB
+2026-10-04T09:08:03.0144058Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 2.3 MiB
+2026-10-04T09:08:03.0195222Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 2.3 MiB
+2026-10-04T09:08:03.0576869Z FFmpeg (playwright ffmpeg v1011) downloaded to /home/runner/.cache/ms-playwright/ffmpeg-1011
+2026-10-04T09:08:03.0579482Z Downloading Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) from https://cdn.playwright.dev/builds/cft/153.0.8010.12/linux64/chrome-headless-shell-linux64.zip
+2026-10-04T09:08:03.3620483Z |                                                                                |   0% of 114.3 MiB
+2026-10-04T09:08:03.6305329Z |■■■■■■■■                                                                        |  10% of 114.3 MiB
+2026-10-04T09:08:03.6657679Z |■■■■■■■■■■■■■■■■                                                                |  20% of 114.3 MiB
+2026-10-04T09:08:03.7067289Z |■■■■■■■■■■■■■■■■■■■■■■■■                                                        |  30% of 114.3 MiB
+2026-10-04T09:08:03.7555668Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                                |  40% of 114.3 MiB
+2026-10-04T09:08:03.8332945Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                        |  50% of 114.3 MiB
+2026-10-04T09:08:03.8795273Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                                |  60% of 114.3 MiB
+2026-10-04T09:08:03.9468124Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                        |  70% of 114.3 MiB
+2026-10-04T09:08:03.9894715Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■                |  80% of 114.3 MiB
+2026-10-04T09:08:04.0554367Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■        |  90% of 114.3 MiB
+2026-10-04T09:08:04.0964158Z |■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■| 100% of 114.3 MiB
+2026-10-04T09:08:05.3606243Z Chrome Headless Shell 153.0.8010.12 (playwright chromium-headless-shell v1243) downloaded to /home/runner/.cache/ms-playwright/chromium_headless_shell-1243
+2026-10-04T09:08:05.3916397Z ##[group]Run for attempt in $(seq 1 30); do
+2026-10-04T09:08:05.3916637Z [36;1mfor attempt in $(seq 1 30); do[0m
+2026-10-04T09:08:05.3916829Z [36;1m  echo "Cold-browser storage attempt $attempt"[0m
+2026-10-04T09:08:05.3917141Z [36;1m  npx playwright test tests/storage.spec.js --project=chromium --grep 'abort failure' || exit $?[0m
+2026-10-04T09:08:05.3917414Z [36;1mdone[0m
+2026-10-04T09:08:05.3971727Z shell: /usr/bin/bash -e {0}
+2026-10-04T09:08:05.3971875Z env:
+2026-10-04T09:08:05.3972003Z   GLOB2_TEST_RENDERER: software
+2026-10-04T09:08:05.3972148Z ##[endgroup]
+2026-10-04T09:08:05.4330437Z Cold-browser storage attempt 1
+2026-10-04T09:08:06.0231489Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET / HTTP/1.1" 200 -
+2026-10-04T09:08:06.1096040Z 
+2026-10-04T09:08:06.1096455Z Running 1 test using 1 worker
+2026-10-04T09:08:06.1096620Z 
+2026-10-04T09:08:06.5673912Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:08:06.5956896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:08:06.6255329Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:08:06.6487343Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:06.6520046Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:06.6530390Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:06.6541172Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:06.6616462Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:06.7084558Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:08:06.7900208Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:08:06.9129645Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:06] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:08:10.1056489Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:10] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:08:10.1301039Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:10] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:08:10.2188609Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:10] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:08:10.3450242Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:10] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:08:10.3870491Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:10] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:08:11.6380784Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:17.1805387Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.0964477Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:08:22.1503414Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.1794164Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.1974252Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.1998766Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.2013427Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.2027506Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:22.2135233Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:22] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:27.7179883Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:08:27.7318238Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:08:27.7440190Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:27.7665193Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:27.7681429Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:27.7700198Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:27.7740768Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:27.7770504Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:30.9090472Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (24.4s)
+2026-10-04T09:08:30.9731184Z 
+2026-10-04T09:08:30.9733409Z   1 passed (25.1s)
+2026-10-04T09:08:31.0035924Z Cold-browser storage attempt 2
+2026-10-04T09:08:31.5660216Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:31] "GET / HTTP/1.1" 200 -
+2026-10-04T09:08:31.5844444Z 
+2026-10-04T09:08:31.5844870Z Running 1 test using 1 worker
+2026-10-04T09:08:31.5845065Z 
+2026-10-04T09:08:31.9388872Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:31] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:08:31.9652263Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:31] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:08:31.9886830Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:31] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:08:32.0177970Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:32.0219733Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:32.0241956Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:32.0292030Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:32.0385885Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:32.1284361Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:08:32.2139286Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:08:32.3057603Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:32] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:08:35.4935043Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:35] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:08:35.5157515Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:35] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:08:35.5826540Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:35] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:08:35.6710579Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:35] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:08:35.7012010Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:35] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:08:37.1471551Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:42.7443565Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:42] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.8087314Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:08:47.8380852Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.8726586Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.8937733Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.8947340Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.8974156Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.8986957Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:47.9093895Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:47] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:52.3697189Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:08:52.3801067Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:08:52.3960332Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:52.4163523Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:52.4174233Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:52.4184905Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:52.4203317Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:52.4229870Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:52] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:55.5079525Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.6s)
+2026-10-04T09:08:55.5771494Z 
+2026-10-04T09:08:55.5773786Z   1 passed (24.1s)
+2026-10-04T09:08:55.6093661Z Cold-browser storage attempt 3
+2026-10-04T09:08:56.1565807Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET / HTTP/1.1" 200 -
+2026-10-04T09:08:56.1740060Z 
+2026-10-04T09:08:56.1740499Z Running 1 test using 1 worker
+2026-10-04T09:08:56.1741002Z 
+2026-10-04T09:08:56.5268248Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:08:56.5555360Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:08:56.5935839Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:08:56.6170142Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:56.6201545Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:56.6217368Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:56.6255828Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:08:56.6442677Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:08:56.6613938Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:08:56.7250556Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:08:56.9441944Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:08:56] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:09:00.0500910Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:00] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:09:00.0726688Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:00] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:09:00.1411883Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:00] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:09:00.2220605Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:00] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:09:00.2577941Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:00] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:09:01.5942954Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:06.1005863Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:06] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:10.9814828Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:10] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:09:11.0062464Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:09:11.0328625Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:11.0610465Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:11.0674753Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:11.0708552Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:11.0719138Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:11.0788907Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:11] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:09:16.5838385Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:09:16.5949590Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:09:16.6100505Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:16.6327324Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:16.6375132Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:16.6400191Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:16.6441058Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:16.6446567Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:16] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:09:19.7744759Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.3s)
+2026-10-04T09:09:19.8401509Z 
+2026-10-04T09:09:19.8404022Z   1 passed (23.8s)
+2026-10-04T09:09:19.8706237Z Cold-browser storage attempt 4
+2026-10-04T09:09:20.4298162Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET / HTTP/1.1" 200 -
+2026-10-04T09:09:20.4460405Z 
+2026-10-04T09:09:20.4460713Z Running 1 test using 1 worker
+2026-10-04T09:09:20.4460883Z 
+2026-10-04T09:09:20.8123331Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:09:20.8399848Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:09:20.8796247Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:09:20.9073390Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:20.9120733Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:20.9132544Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:20.9141459Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:20.9301011Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:09:20.9941622Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:20] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:09:21.0161224Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:21] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:09:21.1692914Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:21] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:09:24.5061645Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:24] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:09:24.5232443Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:24] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:09:24.5943632Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:24] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:09:24.6841468Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:24] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:09:24.7277787Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:24] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:09:25.9755284Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:30.4133371Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.0446179Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:09:35.0718229Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.1087197Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.1263426Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.1331077Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.1332012Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.1358125Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:35.1434355Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:35] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:09:39.6150627Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:09:39.6216493Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:09:39.6368551Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:39.6538173Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:39.6560117Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:09:39.6590066Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:39.6627249Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:39.6640983Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:42.7715538Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.0s)
+2026-10-04T09:09:42.8354554Z 
+2026-10-04T09:09:42.8357122Z   1 passed (22.5s)
+2026-10-04T09:09:42.8648403Z Cold-browser storage attempt 5
+2026-10-04T09:09:43.4050853Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET / HTTP/1.1" 200 -
+2026-10-04T09:09:43.4224732Z 
+2026-10-04T09:09:43.4225031Z Running 1 test using 1 worker
+2026-10-04T09:09:43.4225267Z 
+2026-10-04T09:09:43.7830866Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:09:43.8110581Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:09:43.8523317Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:09:43.8880313Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:43.8880697Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:43.8881237Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:43.8908574Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:43.8980753Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:43] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:09:44.0260694Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:44] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:09:44.0929258Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:44] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:09:44.1978017Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:44] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:09:47.5173050Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:47] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:09:47.5422708Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:47] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:09:47.6106562Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:47] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:09:47.7002572Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:47] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:09:47.7630627Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:47] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:09:48.8625032Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:48] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:53.4477660Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.3400900Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:09:58.3637196Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.4058117Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.4318481Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.4377799Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.4396537Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.4408210Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:09:58.4491855Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:09:58] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:02.8970272Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:10:02.9052964Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:10:02.9195622Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:02.9390463Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:02.9419919Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:02.9423106Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:02.9460903Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:02.9482500Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:02] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:06.0438232Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.3s)
+2026-10-04T09:10:06.1172041Z 
+2026-10-04T09:10:06.1174583Z   1 passed (22.8s)
+2026-10-04T09:10:06.1477745Z Cold-browser storage attempt 6
+2026-10-04T09:10:06.7189245Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:06] "GET / HTTP/1.1" 200 -
+2026-10-04T09:10:06.7367828Z 
+2026-10-04T09:10:06.7368129Z Running 1 test using 1 worker
+2026-10-04T09:10:06.7368313Z 
+2026-10-04T09:10:07.1193364Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:10:07.1554011Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:10:07.1917328Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:10:07.2151910Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:07.2162677Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:07.2186338Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:07.2230403Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:07.2346513Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:07.2830940Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:10:07.3198785Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:10:07.4863598Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:07] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:10:10.6743452Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:10] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:10:10.6961553Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:10] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:10:10.7590651Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:10] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:10:10.8450928Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:10] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:10:10.8791763Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:10] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:10:12.2630368Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:12] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:16.9610896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:21.9086925Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:21] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:10:21.9377560Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:21] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:10:21.9859448Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:22.0008561Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:22.0056133Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:22.0081912Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:22.0140294Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:22.0205479Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:22] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:27.4994385Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:10:27.5076390Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:10:27.5232028Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:27.5444393Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:27.5449281Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:27.5454933Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:27.5473509Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:27.5510217Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:30.6244844Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.6s)
+2026-10-04T09:10:30.6952890Z 
+2026-10-04T09:10:30.6955139Z   1 passed (24.1s)
+2026-10-04T09:10:30.7269970Z Cold-browser storage attempt 7
+2026-10-04T09:10:31.2861119Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET / HTTP/1.1" 200 -
+2026-10-04T09:10:31.3043621Z 
+2026-10-04T09:10:31.3043965Z Running 1 test using 1 worker
+2026-10-04T09:10:31.3044212Z 
+2026-10-04T09:10:31.6892141Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:10:31.7180758Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:10:31.7570204Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:10:31.7881066Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:31.7910643Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:31.7940524Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:31.7959987Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:31.8036072Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:31.9391474Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:10:31.9633370Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:31] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:10:32.0710689Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:32] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:10:35.2420654Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:35] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:10:35.2592427Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:35] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:10:35.3290698Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:35] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:10:35.4128078Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:35] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:10:35.4470620Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:35] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:10:36.7540983Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:36] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:41.5897344Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.3449551Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:10:46.3724580Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.3997765Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.4180962Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.4193618Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.4221768Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.4228326Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:46.4390404Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:46] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:50.8947325Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:10:50.9023587Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:10:50.9220471Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:50.9367297Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:50.9404933Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:50.9437088Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:50.9440735Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:50.9453987Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:54.0560628Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.4s)
+2026-10-04T09:10:54.1231272Z 
+2026-10-04T09:10:54.1233498Z   1 passed (23.0s)
+2026-10-04T09:10:54.1528031Z Cold-browser storage attempt 8
+2026-10-04T09:10:54.6977983Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:54] "GET / HTTP/1.1" 200 -
+2026-10-04T09:10:54.7142844Z 
+2026-10-04T09:10:54.7143163Z Running 1 test using 1 worker
+2026-10-04T09:10:54.7143377Z 
+2026-10-04T09:10:55.0843482Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:10:55.1124188Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:10:55.1632979Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:10:55.1900993Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:55.1936428Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:55.1951943Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:55.2000546Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:10:55.2215361Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:10:55.2670366Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:10:55.2751749Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:10:55.4841134Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:55] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:10:58.6402821Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:58] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:10:58.6631022Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:58] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:10:58.7275863Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:58] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:10:58.8144197Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:58] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:10:58.8431023Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:10:58] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:11:00.1932797Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:04.6970673Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.5870208Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:11:09.6123766Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.6472332Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.6685106Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.6703338Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.6720389Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.6731618Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:09.6834463Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:09] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:11:14.1621072Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:11:14.1723630Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:11:14.1876749Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:14.2041135Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:14.2064929Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:11:14.2078377Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:14.2126192Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:14.2210174Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:17.3179333Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.3s)
+2026-10-04T09:11:17.3914151Z 
+2026-10-04T09:11:17.3916424Z   1 passed (22.8s)
+2026-10-04T09:11:17.4216384Z Cold-browser storage attempt 9
+2026-10-04T09:11:17.9633716Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:17] "GET / HTTP/1.1" 200 -
+2026-10-04T09:11:17.9796783Z 
+2026-10-04T09:11:17.9797370Z Running 1 test using 1 worker
+2026-10-04T09:11:17.9797500Z 
+2026-10-04T09:11:18.3497673Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:11:18.3772045Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:11:18.4105990Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:11:18.4400105Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:18.4451250Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:18.4490291Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:18.4520272Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:18.4630472Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:11:18.5014329Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:11:18.5080747Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:11:18.7480568Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:18] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:11:22.0080209Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:22] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:11:22.0280580Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:22] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:11:22.1055517Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:22] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:11:22.1921253Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:22] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:11:22.2314590Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:22] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:11:23.4725305Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:23] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:28.2110429Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:32.9058594Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:11:32.9313419Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:11:32.9619755Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:32.9843152Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:32.9895468Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:32.9941591Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:32.9942393Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:33.0097503Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:33] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:11:37.5089479Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:11:37.5163619Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:11:37.5311777Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:37.5472352Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:37.5502154Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:37.5519658Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:11:37.5549808Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:37.5564220Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:40.6785928Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.4s)
+2026-10-04T09:11:40.7505840Z 
+2026-10-04T09:11:40.7508183Z   1 passed (22.9s)
+2026-10-04T09:11:40.7816540Z Cold-browser storage attempt 10
+2026-10-04T09:11:41.3350134Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET / HTTP/1.1" 200 -
+2026-10-04T09:11:41.3539279Z 
+2026-10-04T09:11:41.3539596Z Running 1 test using 1 worker
+2026-10-04T09:11:41.3539739Z 
+2026-10-04T09:11:41.7218443Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:11:41.7528677Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:11:41.7934530Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:11:41.8263691Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:41.8296130Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:41.8330454Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:41.8348162Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:41.8405121Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:11:41.9170709Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:11:41.9371848Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:41] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:11:42.0750687Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:42] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:11:45.4209693Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:45] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:11:45.4450965Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:45] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:11:45.5154026Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:45] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:11:45.6052535Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:45] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:11:45.6420640Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:45] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:11:46.8207308Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:52.3908715Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:52] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.0567822Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:11:57.0867482Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.1150432Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.1356670Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.1416151Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.1455192Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.1456153Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:11:57.1544254Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:11:57] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:01.6120590Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:12:01.6204984Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:12:01.6333017Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:01.6516671Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:01.6564970Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:01.6565777Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:01.6574149Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:01.6610329Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:04.7373990Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.1s)
+2026-10-04T09:12:04.8068429Z 
+2026-10-04T09:12:04.8072439Z   1 passed (23.6s)
+2026-10-04T09:12:04.8381936Z Cold-browser storage attempt 11
+2026-10-04T09:12:05.4126634Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET / HTTP/1.1" 200 -
+2026-10-04T09:12:05.4297286Z 
+2026-10-04T09:12:05.4297734Z Running 1 test using 1 worker
+2026-10-04T09:12:05.4297936Z 
+2026-10-04T09:12:05.7913243Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:12:05.8205457Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:12:05.8593325Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:12:05.8858070Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:05.8930853Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:05.8941550Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:05.8980235Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:05.9111738Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:05.9690505Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:12:05.9947853Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:05] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:12:06.1539220Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:06] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:12:09.4593427Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:09] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:12:09.4860691Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:09] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:12:09.5525661Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:09] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:12:09.6453364Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:09] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:12:09.6756333Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:09] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:12:10.8706442Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:10] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:15.6064755Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:15] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.3057702Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:12:20.3359537Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.3626247Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.3881595Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.3920714Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.3923066Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.3923770Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:20.4065045Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:20] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:25.8796848Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:12:25.8923941Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:12:25.9085345Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:25.9272666Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:25.9310367Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:25.9340415Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:25.9488702Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:25.9490253Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:29.0192285Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.3s)
+2026-10-04T09:12:29.0924916Z 
+2026-10-04T09:12:29.0927219Z   1 passed (23.8s)
+2026-10-04T09:12:29.1249140Z Cold-browser storage attempt 12
+2026-10-04T09:12:29.6922806Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:29] "GET / HTTP/1.1" 200 -
+2026-10-04T09:12:29.7088002Z 
+2026-10-04T09:12:29.7088280Z Running 1 test using 1 worker
+2026-10-04T09:12:29.7088459Z 
+2026-10-04T09:12:30.0865553Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:12:30.1116777Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:12:30.1556890Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:12:30.1892093Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:30.1937495Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:30.1938469Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:30.1995813Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:30.2044541Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:30.2649549Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:12:30.2950344Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:12:30.4373536Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:30] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:12:33.7778837Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:33] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:12:33.8012857Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:33] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:12:33.8690843Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:33] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:12:33.9550866Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:33] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:12:33.9951076Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:33] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:12:35.2244061Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:39.8550242Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.5120337Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:12:44.5392718Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.5781538Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.5974069Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.5996018Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.6022046Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.6043530Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:44.6126090Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:44] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:49.0878001Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:12:49.0970089Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:12:49.1114417Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:49.1307442Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:49.1312799Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:49.1331547Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:49.1348210Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:49.1366831Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:52.2390066Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.2s)
+2026-10-04T09:12:52.3048785Z 
+2026-10-04T09:12:52.3051184Z   1 passed (22.7s)
+2026-10-04T09:12:52.3353014Z Cold-browser storage attempt 13
+2026-10-04T09:12:52.9475301Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:52] "GET / HTTP/1.1" 200 -
+2026-10-04T09:12:52.9651701Z 
+2026-10-04T09:12:52.9652072Z Running 1 test using 1 worker
+2026-10-04T09:12:52.9652214Z 
+2026-10-04T09:12:53.3269982Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:12:53.3558887Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:12:53.3879362Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:12:53.4255591Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:53.4270515Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:53.4277413Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:53.4309073Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:12:53.4452243Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:12:53.5340775Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:12:53.5886289Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:12:53.7022087Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:53] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:12:56.9322287Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:56] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:12:56.9520763Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:56] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:12:57.0212284Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:57] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:12:57.1070187Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:57] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:12:57.1401239Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:57] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:12:58.4129423Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:12:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:03.1661854Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:03] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.1189997Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:13:08.1470405Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.1945483Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.2222329Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.2310664Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.2313604Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.2324915Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:08.2398484Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:08] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:13:13.9943641Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:13] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:13:14.0025689Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:13:14.0166086Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:14.0321764Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:14.0375460Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:13:14.0384632Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:14.0411676Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:14.0449876Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:17.1700973Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.9s)
+2026-10-04T09:13:17.2303208Z 
+2026-10-04T09:13:17.2305837Z   1 passed (24.4s)
+2026-10-04T09:13:17.2608745Z Cold-browser storage attempt 14
+2026-10-04T09:13:17.8255015Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:17] "GET / HTTP/1.1" 200 -
+2026-10-04T09:13:17.8467123Z 
+2026-10-04T09:13:17.8467508Z Running 1 test using 1 worker
+2026-10-04T09:13:17.8467659Z 
+2026-10-04T09:13:18.2293488Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:13:18.2601387Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:13:18.3015217Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:13:18.3370353Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:18.3398178Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:18.3451754Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:18.3472171Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:18.3569484Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:13:18.4311096Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:13:18.4998823Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:13:18.6027404Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:18] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:13:21.9582280Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:21] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:13:22.0010921Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:21] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:13:22.0824665Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:22] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:13:22.1708688Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:22] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:13:22.2161772Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:22] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:13:23.3031515Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:23] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:27.7850142Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.4669618Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:13:32.4933678Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.5320554Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.5512111Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.5537013Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.5562808Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.5571139Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:32.5643891Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:32] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:13:37.3115688Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:13:37.3201617Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:13:37.3355249Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:37.3536046Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:37.3580947Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:13:37.3608701Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:37.3640263Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:37.3670217Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:40.5037851Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.3s)
+2026-10-04T09:13:40.5686244Z 
+2026-10-04T09:13:40.5688470Z   1 passed (22.9s)
+2026-10-04T09:13:40.5992295Z Cold-browser storage attempt 15
+2026-10-04T09:13:41.1506580Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET / HTTP/1.1" 200 -
+2026-10-04T09:13:41.1689879Z 
+2026-10-04T09:13:41.1690157Z Running 1 test using 1 worker
+2026-10-04T09:13:41.1690294Z 
+2026-10-04T09:13:41.5311040Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:13:41.5627139Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:13:41.6106622Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:13:41.6297664Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:41.6327484Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:41.6357512Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:41.6390133Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:41.6505678Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:13:41.7049827Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:13:41.7804326Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:13:41.8910384Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:41] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:13:45.1110465Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:45] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:13:45.1302640Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:45] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:13:45.1986716Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:45] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:13:45.2836598Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:45] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:13:45.3242909Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:45] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:13:46.5740411Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:51.2999596Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.0207369Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:13:56.0502450Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.0800687Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.0991251Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.1021212Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.1046007Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.1068584Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:13:56.1224986Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:13:56] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:01.6080963Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:14:01.6156874Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:14:01.6325238Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:01.6522568Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:01.6605382Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:01.6640167Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:01.6653328Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:01.6654164Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:04.7888435Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.3s)
+2026-10-04T09:14:04.8560758Z 
+2026-10-04T09:14:04.8563232Z   1 passed (23.8s)
+2026-10-04T09:14:04.8866145Z Cold-browser storage attempt 16
+2026-10-04T09:14:05.4591551Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET / HTTP/1.1" 200 -
+2026-10-04T09:14:05.4773396Z 
+2026-10-04T09:14:05.4775873Z Running 1 test using 1 worker
+2026-10-04T09:14:05.4776495Z 
+2026-10-04T09:14:05.8553957Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:14:05.8836027Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:14:05.9254373Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:14:05.9570461Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:05.9600342Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:05.9650096Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:05.9710693Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:05.9727841Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:05.9855098Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:05] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:14:06.0390586Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:06] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:14:06.2370340Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:06] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:14:09.5727706Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:09] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:14:09.5990869Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:09] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:14:09.6737581Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:09] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:14:09.7835138Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:09] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:14:09.8244091Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:09] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:14:11.0170354Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:11] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:15.8527527Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:15] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.6346280Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:14:20.6651238Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.6971328Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.7200710Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.7225617Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.7235601Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.7246983Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:20.7455006Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:20] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:26.5272416Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:14:26.5367587Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:14:26.5509396Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:26.5672982Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:26.5702048Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:26.5715600Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:26.5716425Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:26.5730155Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:26] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:29.7092190Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.9s)
+2026-10-04T09:14:29.7734187Z 
+2026-10-04T09:14:29.7736902Z   1 passed (24.4s)
+2026-10-04T09:14:29.8050229Z Cold-browser storage attempt 17
+2026-10-04T09:14:30.3675860Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET / HTTP/1.1" 200 -
+2026-10-04T09:14:30.3858901Z 
+2026-10-04T09:14:30.3859445Z Running 1 test using 1 worker
+2026-10-04T09:14:30.3859777Z 
+2026-10-04T09:14:30.7642889Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:14:30.7933649Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:14:30.8291088Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:14:30.8526643Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:30.8583060Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:30.8623302Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:30.8661921Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:30.8801241Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:30.9117161Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:14:30.9220359Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:30] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:14:31.1197785Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:31] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:14:34.5460580Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:34] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:14:34.5663378Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:34] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:14:34.6385539Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:34] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:14:34.7280772Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:34] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:14:34.7579681Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:34] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:14:35.9435816Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:35] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:40.7497385Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.6338016Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:14:45.6645208Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.6857800Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.7070583Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.7093771Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.7100005Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.7124101Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:45.7245132Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:45] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:51.1994030Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:14:51.2066369Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:14:51.2206701Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:51.2431764Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:51.2432732Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:51.2478913Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:51.2493863Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:51.2513608Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:54.3389448Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.6s)
+2026-10-04T09:14:54.4110788Z 
+2026-10-04T09:14:54.4113607Z   1 passed (24.2s)
+2026-10-04T09:14:54.4440585Z Cold-browser storage attempt 18
+2026-10-04T09:14:55.0622764Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET / HTTP/1.1" 200 -
+2026-10-04T09:14:55.0806517Z 
+2026-10-04T09:14:55.0807239Z Running 1 test using 1 worker
+2026-10-04T09:14:55.0807437Z 
+2026-10-04T09:14:55.4606125Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:14:55.4872788Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:14:55.5260345Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:14:55.5560219Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:55.5593931Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:55.5630348Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:55.5639334Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:14:55.5687283Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:14:55.6730542Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:14:55.6910311Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:14:55.8336875Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:55] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:14:59.0513871Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:59] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:14:59.0714256Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:59] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:14:59.1383247Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:59] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:14:59.2270605Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:59] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:14:59.2570017Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:14:59] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:15:00.5370460Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:05.0004961Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.6609665Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:15:09.6881018Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.7234942Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.7481459Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.7507757Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.7531123Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.7532191Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:09.7636417Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:09] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:15:14.2353633Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:15:14.2439836Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:15:14.2565873Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:14.2764494Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:14.2850426Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:15:14.2851545Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:14.2855233Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:14.2869282Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:17.3740803Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.0s)
+2026-10-04T09:15:17.4423437Z 
+2026-10-04T09:15:17.4425840Z   1 passed (22.5s)
+2026-10-04T09:15:17.4734537Z Cold-browser storage attempt 19
+2026-10-04T09:15:18.0232737Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET / HTTP/1.1" 200 -
+2026-10-04T09:15:18.0409341Z 
+2026-10-04T09:15:18.0409542Z Running 1 test using 1 worker
+2026-10-04T09:15:18.0409717Z 
+2026-10-04T09:15:18.4136667Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:15:18.4419491Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:15:18.4882661Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:15:18.5186044Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:18.5237709Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:18.5238401Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:18.5277690Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:18.5309761Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:15:18.5471083Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:15:18.5791788Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:15:18.7722552Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:18] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:15:22.0533361Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:22] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:15:22.0712600Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:22] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:15:22.1456284Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:22] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:15:22.2380492Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:22] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:15:22.2717267Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:22] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:15:23.5595482Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:23] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:28.2974357Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:32.9657507Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:32] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:15:32.9931708Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:32] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:15:33.0300582Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:33.0501223Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:33.0533960Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:33.0559453Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:33.0560540Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:33.0682067Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:33] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:15:37.5319965Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:15:37.5389114Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:15:37.5504256Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:37.5706726Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:37.5716690Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:15:37.5731900Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:37.5752526Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:37.5785230Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:37] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:40.6745493Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.3s)
+2026-10-04T09:15:40.7370556Z 
+2026-10-04T09:15:40.7372580Z   1 passed (22.8s)
+2026-10-04T09:15:40.7674292Z Cold-browser storage attempt 20
+2026-10-04T09:15:41.3077274Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET / HTTP/1.1" 200 -
+2026-10-04T09:15:41.3251873Z 
+2026-10-04T09:15:41.3252284Z Running 1 test using 1 worker
+2026-10-04T09:15:41.3252540Z 
+2026-10-04T09:15:41.6730595Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:15:41.7051983Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:15:41.7510353Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:15:41.7800702Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:41.7830527Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:41.7890259Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:41.7920144Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:41.7976154Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:15:41.8370659Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:15:41.8376637Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:41] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:15:42.0430546Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:42] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:15:45.1836468Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:45] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:15:45.2052587Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:45] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:15:45.2753733Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:45] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:15:45.3677848Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:45] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:15:45.4015644Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:45] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:15:46.8810271Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:46] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:51.5958893Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:51] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5006023Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:15:56.5248219Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5528331Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5716817Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5750249Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5766518Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5800717Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:15:56.5930461Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:15:56] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:01.3046528Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:16:01.3129622Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:16:01.3309228Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:01.3491592Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:01.3513210Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:01.3518890Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:01.3528566Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:01.3545705Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:01] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:04.4762459Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.9s)
+2026-10-04T09:16:04.5467900Z 
+2026-10-04T09:16:04.5471610Z   1 passed (23.4s)
+2026-10-04T09:16:04.5793845Z Cold-browser storage attempt 21
+2026-10-04T09:16:05.1600473Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET / HTTP/1.1" 200 -
+2026-10-04T09:16:05.1785346Z 
+2026-10-04T09:16:05.1786151Z Running 1 test using 1 worker
+2026-10-04T09:16:05.1786305Z 
+2026-10-04T09:16:05.5590861Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:16:05.5889230Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:16:05.6310518Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:16:05.6614163Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:05.6650539Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:05.6663822Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:05.6728749Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:05.6784638Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:05.7751565Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:16:05.8280362Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:16:05.9301160Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:05] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:16:09.3101301Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:09] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:16:09.3308283Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:09] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:16:09.3986825Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:09] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:16:09.4860607Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:09] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:16:09.5257028Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:09] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:16:10.7423894Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:10] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:16.2987361Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:16] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.0756725Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:16:21.0994066Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.1403328Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.1595183Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.1650423Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.1655801Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.1678791Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:21.1772240Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:21] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:25.6655975Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:16:25.6736812Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:16:25.6940293Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:25.7137828Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:25.7172775Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:25.7184894Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:25.7205525Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:25.7222793Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:25] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:28.8241621Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.3s)
+2026-10-04T09:16:28.8940768Z 
+2026-10-04T09:16:28.8943149Z   1 passed (23.9s)
+2026-10-04T09:16:28.9237704Z Cold-browser storage attempt 22
+2026-10-04T09:16:29.4920879Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET / HTTP/1.1" 200 -
+2026-10-04T09:16:29.5102432Z 
+2026-10-04T09:16:29.5104478Z Running 1 test using 1 worker
+2026-10-04T09:16:29.5104688Z 
+2026-10-04T09:16:29.8785440Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:16:29.9098411Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:16:29.9521415Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:16:29.9776403Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:29.9812198Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:29.9829647Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:29.9839154Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:29.9940437Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:29] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:30.0991867Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:30] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:16:30.1295331Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:30] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:16:30.2498245Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:30] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:16:33.5006417Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:33] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:16:33.5190553Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:33] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:16:33.5874138Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:33] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:16:33.6649224Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:33] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:16:33.7013239Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:33] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:16:34.9449506Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:34] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:39.6760151Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.0587931Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:16:44.0896198Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.1408535Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.1745122Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.1783216Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.1804880Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.1805657Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:44.2020666Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:44] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:49.6618885Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:16:49.6701753Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:16:49.6890160Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:49.7045121Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:49.7075213Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:49.7100108Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:49.7138067Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:49.7164177Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:52.7997780Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.0s)
+2026-10-04T09:16:52.8826823Z 
+2026-10-04T09:16:52.8829137Z   1 passed (23.5s)
+2026-10-04T09:16:52.9244973Z Cold-browser storage attempt 23
+2026-10-04T09:16:53.5093896Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET / HTTP/1.1" 200 -
+2026-10-04T09:16:53.5270074Z 
+2026-10-04T09:16:53.5270382Z Running 1 test using 1 worker
+2026-10-04T09:16:53.5270524Z 
+2026-10-04T09:16:53.8892667Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:16:53.9205024Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:16:53.9570518Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:16:53.9814634Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:53.9835109Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:53.9850775Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:53.9870560Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:16:54.0028891Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:54] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:16:54.0571067Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:54] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:16:54.0973629Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:54] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:16:54.2690603Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:54] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:16:57.5730624Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:57] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:16:57.5940558Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:57] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:16:57.6600328Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:57] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:16:57.7403552Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:57] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:16:57.7810539Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:57] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:16:58.9960444Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:16:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:03.5290530Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:03] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.4447657Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:17:08.4740424Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.5080478Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.5339224Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.5383644Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.5407231Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.5420082Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:08.5518190Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:08] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:17:13.0293587Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:17:13.0390608Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:17:13.0539695Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:13.0700562Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:13.0748834Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:13.0753816Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:13.0775473Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:13.0783408Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:13] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:17:16.1765208Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.3s)
+2026-10-04T09:17:16.2504402Z 
+2026-10-04T09:17:16.2507005Z   1 passed (22.9s)
+2026-10-04T09:17:16.2826833Z Cold-browser storage attempt 24
+2026-10-04T09:17:16.8470076Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:16] "GET / HTTP/1.1" 200 -
+2026-10-04T09:17:16.8654037Z 
+2026-10-04T09:17:16.8654446Z Running 1 test using 1 worker
+2026-10-04T09:17:16.8654652Z 
+2026-10-04T09:17:17.2386199Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:17:17.2680438Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:17:17.3108510Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:17:17.3384830Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:17.3514987Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:17.3516137Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:17.3516851Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:17.3633262Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:17:17.3762805Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:17:17.4081878Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:17:17.6100384Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:17] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:17:20.9099912Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:20] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:17:20.9299776Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:20] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:17:20.9961180Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:20] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:17:21.0804831Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:21] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:17:21.1120689Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:21] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:17:22.3472052Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:22] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:27.1743753Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:27] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.8640717Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:17:31.8898821Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.9154752Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.9385252Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.9417369Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.9434016Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.9436754Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:31.9547957Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:31] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:17:36.4446455Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:17:36.4526692Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:17:36.4699368Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:36.4930821Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:36.4939341Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:36.4949751Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:17:36.4951034Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:36.4972733Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:36] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:39.6014797Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.4s)
+2026-10-04T09:17:39.6787454Z 
+2026-10-04T09:17:39.6791151Z   1 passed (23.0s)
+2026-10-04T09:17:39.7099240Z Cold-browser storage attempt 25
+2026-10-04T09:17:40.2578430Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET / HTTP/1.1" 200 -
+2026-10-04T09:17:40.2759533Z 
+2026-10-04T09:17:40.2762046Z Running 1 test using 1 worker
+2026-10-04T09:17:40.2762632Z 
+2026-10-04T09:17:40.6352717Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:17:40.6619767Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:17:40.6990863Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:17:40.7330881Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:40.7380175Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:40.7380839Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:40.7399977Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:40.7519753Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:17:40.7800572Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:17:40.8362873Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:40] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:17:41.0031970Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:41] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:17:44.2599436Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:44] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:17:44.2801195Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:44] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:17:44.3500889Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:44] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:17:44.4440867Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:44] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:17:44.4984802Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:44] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:17:45.6314380Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:45] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:50.4729874Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.1427742Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:17:55.1734039Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.2103626Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.2362937Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.2370406Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.2382560Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.2395017Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:17:55.2546480Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:17:55] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:00.7297631Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:18:00.7372519Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:18:00.7526447Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:00.7723461Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:00.7735587Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:00.7741403Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:00.7800772Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:00.7832116Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:00] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:03.8760589Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.3s)
+2026-10-04T09:18:03.9473248Z 
+2026-10-04T09:18:03.9475851Z   1 passed (23.8s)
+2026-10-04T09:18:03.9766610Z Cold-browser storage attempt 26
+2026-10-04T09:18:04.5263124Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:04] "GET / HTTP/1.1" 200 -
+2026-10-04T09:18:04.5440908Z 
+2026-10-04T09:18:04.5441376Z Running 1 test using 1 worker
+2026-10-04T09:18:04.5441672Z 
+2026-10-04T09:18:04.9120600Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:04] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:18:04.9447105Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:04] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:18:04.9840401Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:04] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:18:05.0111740Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:05.0210612Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:05.0250476Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:05.0281918Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:05.0332760Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:05.1391322Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:18:05.1776700Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:18:05.2804551Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:05] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:18:08.4769240Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:08] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:18:08.4957157Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:08] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:18:08.5701266Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:08] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:18:08.6535491Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:08] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:18:08.6829381Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:08] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:18:09.9840414Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:09] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:14.6891471Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.5859803Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:18:19.6102888Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.6450378Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.6694926Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.6713364Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.6765561Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.6790151Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:19.6875554Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:19] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:24.4144410Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:18:24.4224416Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:18:24.4380508Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:24.4530618Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:24.4540192Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:24.4552977Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:24.4627988Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:24.4628629Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:24] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:27.5375387Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (22.7s)
+2026-10-04T09:18:27.6014000Z 
+2026-10-04T09:18:27.6016440Z   1 passed (23.2s)
+2026-10-04T09:18:27.6347061Z Cold-browser storage attempt 27
+2026-10-04T09:18:28.1883867Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET / HTTP/1.1" 200 -
+2026-10-04T09:18:28.2066656Z 
+2026-10-04T09:18:28.2068792Z Running 1 test using 1 worker
+2026-10-04T09:18:28.2069207Z 
+2026-10-04T09:18:28.5642057Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:18:28.5951775Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:18:28.6351211Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:18:28.6632664Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:28.6670112Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:28.6698009Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:28.6720303Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:28.6829114Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:28.7760220Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:18:28.8510556Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:18:28.9672087Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:28] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:18:32.3586028Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:32] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:18:32.3777019Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:32] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:18:32.4550561Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:32] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:18:32.5456984Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:32] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:18:32.5840771Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:32] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:18:34.6436374Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:34] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:39.4548451Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:39] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.4734196Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:18:44.5030561Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.5267727Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.5515979Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.5549227Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.5582226Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.5607185Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:44.5686641Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:44] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:50.0463285Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:18:50.0579101Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:18:50.0806510Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:50.0985606Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:50.1010552Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:50.1036732Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:50.1069402Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:50.1126342Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:50] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:53.1817770Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (24.7s)
+2026-10-04T09:18:53.2601235Z 
+2026-10-04T09:18:53.2603426Z   1 passed (25.2s)
+2026-10-04T09:18:53.2920168Z Cold-browser storage attempt 28
+2026-10-04T09:18:53.8421035Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:53] "GET / HTTP/1.1" 200 -
+2026-10-04T09:18:53.8594422Z 
+2026-10-04T09:18:53.8594808Z Running 1 test using 1 worker
+2026-10-04T09:18:53.8594994Z 
+2026-10-04T09:18:54.2123094Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:18:54.2398850Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:18:54.2770777Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:18:54.2967064Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:54.3039246Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:54.3070634Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:54.3101927Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:18:54.3249299Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:18:54.3591229Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:18:54.3908146Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:18:54.5967397Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:54] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:18:57.8395059Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:57] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:18:57.8580417Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:57] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:18:57.9257028Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:57] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:18:58.0170559Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:58] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:18:58.0544688Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:58] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:18:59.3661040Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:18:59] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:04.0719915Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.7580335Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:19:08.7833665Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.8232829Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.8519932Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.8544301Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.8546487Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.8571200Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:08.8705815Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:08] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:19:14.4120303Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:19:14.4240734Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:19:14.4399473Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:14.4577238Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:19:14.4584846Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:14.4590295Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:14.4603328Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:14.4693036Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:14] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:17.5591213Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.4s)
+2026-10-04T09:19:17.6246400Z 
+2026-10-04T09:19:17.6248560Z   1 passed (23.9s)
+2026-10-04T09:19:17.6575986Z Cold-browser storage attempt 29
+2026-10-04T09:19:18.2176409Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET / HTTP/1.1" 200 -
+2026-10-04T09:19:18.2353548Z 
+2026-10-04T09:19:18.2353917Z Running 1 test using 1 worker
+2026-10-04T09:19:18.2354062Z 
+2026-10-04T09:19:18.6023426Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:19:18.6286263Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:19:18.6680513Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:19:18.6942381Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:18.6979504Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:18.7031530Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:18.7039146Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:18.7157269Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:19:18.7766043Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:19:18.8521994Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:19:18.9610883Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:18] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:19:22.2348779Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:22] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:19:22.2526384Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:22] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:19:22.3252969Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:22] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:19:22.4140128Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:22] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:19:22.4430577Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:22] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:19:23.7538503Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:23] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:28.2571774Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:28] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.1684085Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:19:33.1938135Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.2307397Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.2515289Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.2530547Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.2542764Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.2600389Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:33.2664229Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:33] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:19:38.7499636Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:19:38.7596901Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:19:38.7763725Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:38.7940937Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:38.7951483Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:38.7953556Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:19:38.8000210Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:38.8060203Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:38] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:41.9057423Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (23.4s)
+2026-10-04T09:19:41.9829343Z 
+2026-10-04T09:19:41.9831856Z   1 passed (23.9s)
+2026-10-04T09:19:42.0133176Z Cold-browser storage attempt 30
+2026-10-04T09:19:42.5736658Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:42] "GET / HTTP/1.1" 200 -
+2026-10-04T09:19:42.5902193Z 
+2026-10-04T09:19:42.5902619Z Running 1 test using 1 worker
+2026-10-04T09:19:42.5902812Z 
+2026-10-04T09:19:42.9502803Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:42] "GET /?renderer=software HTTP/1.1" 200 -
+2026-10-04T09:19:42.9829481Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:42] "GET /loader.js HTTP/1.1" 200 -
+2026-10-04T09:19:43.0237156Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /threaded/index.js HTTP/1.1" 200 -
+2026-10-04T09:19:43.0637863Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:43.0700825Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:43.0744194Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:43.0780140Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:43.0802820Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:19:43.1500621Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /assets/core.521f92f4b98d1237.data HTTP/1.1" 200 -
+2026-10-04T09:19:43.2100263Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /assets/game-1.2243ee30594b4c78.data HTTP/1.1" 200 -
+2026-10-04T09:19:43.3319114Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:43] "GET /assets/game-2.8bee8ce8e9ba062a.data HTTP/1.1" 200 -
+2026-10-04T09:19:46.7696011Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:46] "GET /assets/menu-music.9fde75cab8b2dd19.data HTTP/1.1" 200 -
+2026-10-04T09:19:46.7922005Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:46] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+2026-10-04T09:19:46.8730594Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:46] "GET /assets/translations-1.0c5d9fcc3e4a2560.data HTTP/1.1" 200 -
+2026-10-04T09:19:46.9676210Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:46] "GET /assets/translations-2.aa3ea21111988d71.data HTTP/1.1" 200 -
+2026-10-04T09:19:47.0050602Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:47] "GET /assets/music.ad3fd96c261940c8.data HTTP/1.1" 200 -
+2026-10-04T09:19:49.1040536Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:49] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:53.9543052Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:53] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.6205171Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:19:58.6497741Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.6972274Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.7209192Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.7269061Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.7287008Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.7351842Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:19:58.7454594Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:19:58] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:20:04.2569475Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /?renderer=software HTTP/1.1" 304 -
+2026-10-04T09:20:04.2670744Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /loader.js HTTP/1.1" 304 -
+2026-10-04T09:20:04.2859781Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:20:04.3053778Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:20:04.3060043Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /threaded/index.wasm HTTP/1.1" 200 -
+2026-10-04T09:20:04.3062061Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:20:04.3076291Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:20:04.3109892Z [WebServer] 127.0.0.1 - - [04/Oct/2026 09:20:04] "GET /threaded/index.js HTTP/1.1" 304 -
+2026-10-04T09:20:07.4344707Z   ✓  1 [chromium] › tests/storage.spec.js:17:40 › abort failure retains the previous durable save and can retry (24.5s)
+2026-10-04T09:20:07.5013936Z 
+2026-10-04T09:20:07.5016288Z   1 passed (25.0s)
+2026-10-04T09:20:07.5371202Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T09:20:07.5371368Z with:
+2026-10-04T09:20:07.5371496Z   name: browser-stall-diagnostics
+2026-10-04T09:20:07.5371686Z   path: build/browser-test-results
+build/browser-test-report
+
+2026-10-04T09:20:07.5371877Z   if-no-files-found: warn
+2026-10-04T09:20:07.5372006Z   compression-level: 6
+2026-10-04T09:20:07.5372125Z   overwrite: false
+2026-10-04T09:20:07.5372261Z   include-hidden-files: false
+2026-10-04T09:20:07.5372389Z env:
+2026-10-04T09:20:07.5372496Z   GLOB2_TEST_RENDERER: software
+2026-10-04T09:20:07.5372628Z ##[endgroup]
+2026-10-04T09:20:07.6436601Z (node:8397) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T09:20:07.6437429Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T09:20:07.6511984Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-04T09:20:07.6513487Z The least common ancestor is /home/runner/work/glob2/glob2/build. This will be the root directory of the artifact
+2026-10-04T09:20:07.6514239Z With the provided path, there will be 2 files uploaded
+2026-10-04T09:20:07.6514929Z Artifact name is valid!
+2026-10-04T09:20:07.6515295Z Root directory input is valid!
+2026-10-04T09:20:07.9124247Z Beginning upload of artifact content to blob storage
+2026-10-04T09:20:07.9366256Z (node:8397) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T09:20:08.2278714Z Uploaded bytes 275033
+2026-10-04T09:20:08.2677120Z Finished uploading artifact content to blob storage!
+2026-10-04T09:20:08.2677529Z SHA256 digest of uploaded artifact zip is 64a62af76a96f90d0c50d6e96bd78a8b7edaf03ed800e7409272e30ac5db8c91
+2026-10-04T09:20:08.2678806Z Finalizing artifact upload
+2026-10-04T09:20:08.5113598Z Artifact browser-stall-diagnostics.zip successfully finalized. Artifact ID 11299311999
+2026-10-04T09:20:08.5114095Z Artifact browser-stall-diagnostics has been successfully uploaded! Final size is 275033 bytes. Artifact ID is 11299311999
+2026-10-04T09:20:08.5117305Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37191128127/artifacts/11299311999
+2026-10-04T09:20:08.5263283Z Post job cleanup.
+2026-10-04T09:20:08.6015761Z (node:8412) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T09:20:08.6016603Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T09:20:08.6142361Z Post job cleanup.
+2026-10-04T09:20:08.6700556Z [command]/usr/bin/git version
+2026-10-04T09:20:08.6732302Z git version 2.55.0
+2026-10-04T09:20:08.6761385Z Temporarily overriding HOME='/home/runner/work/_temp/94406edc-8be5-4441-8583-ac92270d298b' before making global git config changes
+2026-10-04T09:20:08.6762212Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T09:20:08.6765025Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T09:20:08.6792878Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T09:20:08.6818824Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T09:20:08.7021968Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T09:20:08.7045721Z http.https://github.com/.extraheader
+2026-10-04T09:20:08.7054194Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T09:20:08.7082988Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T09:20:08.7284793Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T09:20:08.7314819Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T09:20:08.7614306Z Cleaning up orphan processes
+2026-10-04T09:20:08.7818486Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-node@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
