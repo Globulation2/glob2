@@ -1340,6 +1340,12 @@ Cortex
 يمكنك أنت والذكاء الاصطناعي إصدار الأوامر. يستهلك ذلك خانتين للمتحكمين.
 [You vs all]
 أنت ضد الجميع
+[%0 vs %1]
+%0 ضد %1
+[%0 vs all]
+%0 ضد الجميع
+[You will watch this match.]
+ستشاهد هذه المباراة.
 [Your maps]
 خرائطك
 [colonies]
@@ -1398,8 +1404,6 @@ Cortex
 عرض الطارة تلقائيًا
 [toggle torus view]
 التبديل بين العرض ثنائي الأبعاد والطارة
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-يتطلب نمط 2 ضد 2 أربع مستعمرات مشاركة. ويتطلب نمط «أنت ضد الجميع» لاعبًا بشريًا.
 [Alliance]
 التحالف
 [Choose a rule to change it.]

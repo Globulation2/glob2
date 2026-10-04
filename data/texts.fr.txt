@@ -1340,6 +1340,12 @@ Vous + IA
 Vous et l’IA donnez tous deux des ordres. Occupe deux places de joueur.
 [You vs all]
 Vous contre tous
+[%0 vs %1]
+%0 contre %1
+[%0 vs all]
+%0 contre tous
+[You will watch this match.]
+Vous regarderez cette partie.
 [Your maps]
 Vos cartes
 [colonies]
@@ -1398,8 +1404,6 @@ Aperçu indisponible. Modifiez les paramètres ou lancez le jeu pour réessayer.
 Vue torique automatique
 [toggle torus view]
 Basculer entre les vues 2D et torique
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contre 2 nécessite quatre colonies ouvertes. Vous contre tous nécessite un joueur humain.
 [Alliance]
 Alliance
 [Choose a rule to change it.]

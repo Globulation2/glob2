@@ -1340,6 +1340,12 @@ AIの命令なし
 あなたとAIの両方が命令を出します。操作担当を2枠使用します。
 [You vs all]
 あなた対全員
+[%0 vs %1]
+%0対%1
+[%0 vs all]
+%0対全員
+[You will watch this match.]
+この試合を観戦します。
 [Your maps]
 自作マップ
 [colonies]
@@ -1398,8 +1404,6 @@ AIの命令なし
 自動トーラス表示
 [toggle torus view]
 2D／トーラス表示を切り替え
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2対2には参加するコロニーが4つ必要です。「あなた対全員」には人間のプレイヤーが必要です。
 [Alliance]
 同盟
 [Choose a rule to change it.]

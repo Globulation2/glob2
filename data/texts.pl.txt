@@ -1340,6 +1340,12 @@ Ty + SI
 Ty i SI możecie wydawać rozkazy. Zajmuje dwa miejsca dla graczy i SI.
 [You vs all]
 Ty przeciwko wszystkim
+[%0 vs %1]
+%0 na %1
+[%0 vs all]
+%0 przeciwko wszystkim
+[You will watch this match.]
+Będziesz oglądać ten mecz.
 [Your maps]
 Twoje mapy
 [colonies]
@@ -1398,8 +1404,6 @@ Podgląd niedostępny. Zmień ustawienia lub uruchom grę, aby spróbować ponow
 Automatyczny widok torusa
 [toggle torus view]
 Przełącz widok 2D / torusa
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 na 2 wymaga czterech otwartych kolonii. Ty przeciw wszystkim wymaga gracza ludzkiego.
 [Alliance]
 Sojusz
 [Choose a rule to change it.]

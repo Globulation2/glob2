@@ -1340,6 +1340,12 @@ Dig + AI
 Både du og AI giver ordrer. Bruger to pladser til spillere og AI.
 [You vs all]
 Dig mod alle
+[%0 vs %1]
+%0 mod %1
+[%0 vs all]
+%0 mod alle
+[You will watch this match.]
+Du ser denne kamp.
 [Your maps]
 Dine kort
 [colonies]
@@ -1398,8 +1404,6 @@ Forhåndsvisning er ikke tilgængelig. Skift indstillingerne, eller start spille
 Automatisk torusvisning
 [toggle torus view]
 Skift mellem 2D- og torusvisning
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 mod 2 kræver fire åbne kolonier. Du mod alle kræver en menneskelig spiller.
 [Alliance]
 Alliance
 [Choose a rule to change it.]

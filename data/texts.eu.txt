@@ -1340,6 +1340,12 @@ Zu + AI
 Zuk eta AI-ak aginduak ematen dituzue. Bi kontrolatzaile-leku erabiltzen ditu.
 [You vs all]
 Zu denen aurka
+[%0 vs %1]
+%0 vs. %1
+[%0 vs all]
+%0 denen aurka
+[You will watch this match.]
+Partida hau ikusiko duzu.
 [Your maps]
 Zure mapak
 [colonies]
@@ -1398,8 +1404,6 @@ Aurrebista ez dago erabilgarri. Aldatu ezarpenak edo abiarazi jokoa berriro saia
 Toroide-ikuspegi automatikoa
 [toggle torus view]
 Aldatu 2D eta toroide-ikuspegien artean
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs. 2 aukerak lau kolonia ireki behar ditu. Zu denen aurka aukerak giza jokalari bat behar du.
 [Alliance]
 Aliantza
 [Choose a rule to change it.]

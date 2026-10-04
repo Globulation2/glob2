@@ -1340,6 +1340,12 @@ Vi + AI
 Vi kaj la AI ambaŭ donas ordonojn. Uzas du ludantlokojn.
 [You vs all]
 Vi kontraŭ ĉiuj
+[%0 vs %1]
+%0 kontraŭ %1
+[%0 vs all]
+%0 kontraŭ ĉiuj
+[You will watch this match.]
+Vi spektos ĉi tiun matĉon.
 [Your maps]
 Viaj mapoj
 [colonies]
@@ -1398,8 +1404,6 @@ Antaŭrigardo nedisponebla. Ŝanĝu la agordojn aŭ lanĉu la ludon por provi de
 Aŭtomata tora vido
 [toggle torus view]
 Ŝanĝi inter 2D kaj tora vido
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 kontraŭ 2 bezonas kvar malfermitajn koloniojn. Vi kontraŭ ĉiuj bezonas homan ludanton.
 [Alliance]
 Alianco
 [Choose a rule to change it.]

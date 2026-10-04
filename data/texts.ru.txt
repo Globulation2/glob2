@@ -1340,6 +1340,12 @@ Cortex
 Вы и ИИ можете отдавать приказы. Занимает два места для игроков и ИИ.
 [You vs all]
 Вы против всех
+[%0 vs %1]
+%0 на %1
+[%0 vs all]
+%0 против всех
+[You will watch this match.]
+Вы будете наблюдать за этим матчем.
 [Your maps]
 Ваши карты
 [colonies]
@@ -1398,8 +1404,6 @@ Cortex
 Автоматический вид тора
 [toggle torus view]
 Переключить вид 2D / тора
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-Для режима «2 на 2» нужны четыре открытые колонии. Для режима «Вы против всех» нужен человек.
 [Alliance]
 Альянс
 [Choose a rule to change it.]

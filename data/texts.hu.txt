@@ -1340,6 +1340,12 @@ Te + MI
 Te és az MI is adhattok parancsokat. Két játékos- vagy MI-helyet foglal.
 [You vs all]
 Te mindenki ellen
+[%0 vs %1]
+%0 – %1
+[%0 vs all]
+%0 mindenki ellen
+[You will watch this match.]
+Ezt a meccset nézőként követed.
 [Your maps]
 A térképeid
 [colonies]
@@ -1398,8 +1404,6 @@ Az előnézet nem érhető el. Módosítsd a beállításokat, vagy indítsd el 
 Automatikus tórusznézet
 [toggle torus view]
 Váltás 2D és tórusznézet között
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-A 2 a 2 ellen négy nyitott kolóniát igényel. A Te mindenki ellen módhoz emberi játékos kell.
 [Alliance]
 Szövetség
 [Choose a rule to change it.]

@@ -1340,6 +1340,12 @@ Tu + IA
 Tu și IA puteți da ordine. Ocupă două locuri pentru jucători și IA.
 [You vs all]
 Tu contra tuturor
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra tuturor
+[You will watch this match.]
+Vei urmări acest meci.
 [Your maps]
 Hărțile voastre
 [colonies]
@@ -1398,8 +1404,6 @@ Previzualizare indisponibilă. Schimbați setările sau lansați jocul pentru a 
 Vizualizare toroidală automată
 [toggle torus view]
 Comută vizualizarea 2D / toroidală
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 necesită patru colonii deschise. Tu contra tuturor necesită un jucător uman.
 [Alliance]
 Alianță
 [Choose a rule to change it.]

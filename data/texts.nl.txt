@@ -1340,6 +1340,12 @@ Jij + AI
 Jij en de AI geven allebei bevelen. Gebruikt twee spelersplaatsen.
 [You vs all]
 Jij tegen iedereen
+[%0 vs %1]
+%0 tegen %1
+[%0 vs all]
+%0 tegen iedereen
+[You will watch this match.]
+Je kijkt naar deze wedstrijd.
 [Your maps]
 Jouw kaarten
 [colonies]
@@ -1398,8 +1404,6 @@ Voorbeeld niet beschikbaar. Wijzig de instellingen of start om het opnieuw te pr
 Automatische torusweergave
 [toggle torus view]
 Wissel tussen 2D- en torusweergave
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 tegen 2 heeft vier open kolonies nodig. Jij tegen iedereen heeft een mens nodig.
 [Alliance]
 Alliantie
 [Choose a rule to change it.]

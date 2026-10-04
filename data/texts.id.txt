@@ -1340,6 +1340,12 @@ Anda + AI
 Anda dan AI sama-sama memberi perintah. Memakai dua tempat pengendali.
 [You vs all]
 Anda lawan semua
+[%0 vs %1]
+%0 lawan %1
+[%0 vs all]
+%0 lawan semua
+[You will watch this match.]
+Anda akan menonton pertandingan ini.
 [Your maps]
 Peta Anda
 [colonies]
@@ -1398,8 +1404,6 @@ Pratinjau tidak tersedia. Ubah pengaturan atau mulai untuk mencoba lagi.
 Tampilan torus otomatis
 [toggle torus view]
 Beralih tampilan 2D / torus
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 lawan 2 memerlukan empat koloni terbuka. Anda lawan semua memerlukan pemain manusia.
 [Alliance]
 Aliansi
 [Choose a rule to change it.]
