@@ -3544,6 +3544,8 @@ Stanze
 Classifica
 [hub play with friends]
 Gioca con gli amici
+[hub also search %0]
+Cerca anche in %0
 [hub online now %0 %1]
 %0 giocatori online · %1 in cerca in questa coda
 [hub show in open rooms]

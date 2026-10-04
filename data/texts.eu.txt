@@ -3544,6 +3544,8 @@ Gelak
 Sailkapena
 [hub play with friends]
 Jokatu lagunekin
+[hub also search %0]
+Bilatu %0 ilaran ere
 [hub online now %0 %1]
 %0 jokalari linean · %1 ilara honetan bilatzen
 [hub show in open rooms]

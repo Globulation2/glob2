@@ -3544,6 +3544,8 @@ Huoneet
 Sijoitus
 [hub play with friends]
 Pelaa ystävien kanssa
+[hub also search %0]
+Etsi myös jonosta %0
 [hub online now %0 %1]
 %0 pelaajaa paikalla · %1 etsii tästä jonosta
 [hub show in open rooms]

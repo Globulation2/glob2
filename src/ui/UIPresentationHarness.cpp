@@ -188,6 +188,7 @@ std::vector<Fixture> fixtures()
 		{"lan-room", lanRoom},
 		{"online-hub", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubFixture(s); }},
 		{"online-hub-searching", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSearching(s); }},
+		{"online-hub-registered", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSection(s, OnlineHubScreen::Section::Play); }},
 		{"online-hub-rooms", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSection(s, OnlineHubScreen::Section::Rooms); }},
 		{"online-hub-leaderboard", [](GAGGUI::ScreenStack &s) { return OnlineUIFixtures::hubSection(s, OnlineHubScreen::Section::Leaderboard); }},
 		{"online-hub-signin", [](GAGGUI::ScreenStack &s)

@@ -3544,6 +3544,8 @@ OpenGL недоступен в этой сборке.
 Рейтинг
 [hub play with friends]
 Играть с друзьями
+[hub also search %0]
+Искать также в %0
 [hub online now %0 %1]
 %0 игроков онлайн · %1 ищут в этой очереди
 [hub show in open rooms]
