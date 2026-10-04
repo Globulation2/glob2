@@ -4260,6 +4260,10 @@ Co jest nie tak z tą mapą?
 Szukaj map lub autorów
 [maps none found]
 Brak pasujących map.
+[maps catalog empty]
+Na tym serwerze nikt jeszcze nie udostępnił mapy.
+[maps clear filters]
+Wyczyść filtry
 [maps any colonies]
 Dowolna liczba kolonii
 [maps checking]

@@ -174,6 +174,8 @@ def configure(env, server_only, relay=False):
         env.Append(LIBS=["ws2_32", "mswsock", "crypt32"])
     elif sys.platform == 'darwin':
         env.Append(FRAMEWORKS=["Security", "CoreFoundation"])
+        if not server_only:
+            env.Append(FRAMEWORKS=["AppKit"])
 
     
 

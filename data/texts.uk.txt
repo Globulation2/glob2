@@ -4260,6 +4260,10 @@ OpenGL недоступний у цій збірці.
 Пошук карт або авторів
 [maps none found]
 Карт не знайдено.
+[maps catalog empty]
+На цьому сервері ще ніхто не поділився картами.
+[maps clear filters]
+Скинути фільтри
 [maps any colonies]
 Будь-яка кількість колоній
 [maps checking]

@@ -344,6 +344,20 @@ inline std::unique_ptr<GAGGUI::Screen> quickMatch(GAGGUI::ScreenStack &stack, bo
 	return std::make_unique<QuickMatchScreen>(stack, m, queues(), "https://app.glob2online.com", "Bradley");
 }
 
+// The hub with a casual search running behind it: the search strip.
+inline std::unique_ptr<GAGGUI::Screen> hubSearching(GAGGUI::ScreenStack &stack)
+{
+	auto &m = model(10);
+	const auto now = Glob2UI::wallClockMs();
+	auto searching = status(now);
+	searching.queueId = queues()[2].id;
+	m.presentSearching(queues()[2], searching, now - 21000);
+	auto hub = std::make_unique<OnlineHubScreen>(stack, false);
+	hub->preview(hubModel());
+	hub->previewSearching(m);
+	return hub;
+}
+
 inline Online::Json proposalJson(bool ranked, std::int64_t now)
 {
 	Online::Json seats = Online::Json::array();
@@ -547,6 +561,14 @@ inline OnlineMapsScreen::Data mapsData(const std::string &root)
 inline std::unique_ptr<GAGGUI::Screen> maps(GAGGUI::ScreenStack &stack, OnlineMapsScreen::Tab tab, const std::string &root)
 {
 	return std::make_unique<OnlineMapsScreen>(stack, tab, mapsData(root));
+}
+
+// A server whose catalog has no maps yet: the empty state offers Upload.
+inline std::unique_ptr<GAGGUI::Screen> mapsEmpty(GAGGUI::ScreenStack &stack)
+{
+	auto data = mapsData("");
+	data.browse.clear();
+	return std::make_unique<OnlineMapsScreen>(stack, OnlineMapsScreen::Tab::Browse, std::move(data));
 }
 
 inline std::unique_ptr<GAGGUI::Screen> share(int stage)

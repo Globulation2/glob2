@@ -177,7 +177,7 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 	}
 	Online::OnlineMatch::Context context;
 	context.fromRoom = false;
-	if (const auto &queue = Online::quickMatch().queue())
+	if (const auto &queue = searchModel().queue())
 	{
 		context.label = queue->name.empty() ? queue->id : queue->name;
 		context.label += " · " + tr(queue->rated ? "[hub ranked]" : "[hub unrated]");
@@ -217,6 +217,11 @@ void OnlineHubScreen::openMaps(bool mine)
 Online::PlatformClient &OnlineHubScreen::client()
 {
 	return Online::services().client;
+}
+
+Online::QuickMatch &OnlineHubScreen::searchModel()
+{
+	return previewSearch ? *previewSearch : Online::quickMatch();
 }
 
 void OnlineHubScreen::preview(Model model)
@@ -379,6 +384,7 @@ void OnlineHubScreen::onTimer(Uint32 tick)
 	}
 	if (previewing)
 		return;
+	watchSearch();
 	syncFromClient();
 	refresh(false);
 	// Invite links that arrived while the game runs (or at launch) land here.
@@ -521,9 +527,35 @@ void OnlineHubScreen::findMatch(int queueIndex)
 		showToast(tr("[hub quick match unavailable]"));
 		return;
 	}
-	auto &search = Online::quickMatch();
+	auto &search = searchModel();
 	search.search(*info, search.allowAiOpponent());
+	// The hub shows the search as a strip (SearchStrip); Details opens its screen.
+	invalidate();
+}
+
+void OnlineHubScreen::openSearch()
+{
 	screens.push(std::make_unique<QuickMatchScreen>(screens), [this](GAGGUI::Screen &, int result) { quickMatchClosed(result); });
+}
+
+void OnlineHubScreen::watchSearch()
+{
+	auto &search = searchModel();
+	if (searchTicker.due(search))
+		invalidate();
+	// What changed without the player doing anything (an opponent declined, the
+	// search ended or failed) becomes a toast here, on every way back to the hub.
+	if (const std::string notice = QuickMatchScreen::noticeText(search); !notice.empty())
+	{
+		search.dismissNotice();
+		showToast(notice);
+	}
+	if (search.phase() == Online::QuickMatch::Phase::Failed)
+	{
+		const std::string reason = QuickMatchScreen::failureText(search);
+		search.cancel();
+		showToast(reason);
+	}
 }
 
 void OnlineHubScreen::quickMatchClosed(int result)
@@ -534,15 +566,8 @@ void OnlineHubScreen::quickMatchClosed(int result)
 		startMatch(*match);
 		return;
 	}
-	auto &search = Online::quickMatch();
-	if (result == QuickMatchScreen::SEARCH_ENDED)
-	{
-		const std::string notice = QuickMatchScreen::noticeText(search);
-		search.dismissNotice();
-		if (!notice.empty())
-			showToast(notice);
-	}
-	else if (result == QuickMatchScreen::ACCOUNT)
+	// A search that ended or failed there reaches the hub as a toast (watchSearch).
+	if (result == QuickMatchScreen::ACCOUNT)
 	{
 		if (data.accountKind == "registered")
 			openAccountMenu(true);
@@ -626,7 +651,12 @@ void OnlineHubScreen::onEscape()
 		invalidate();
 	}
 	else
+	{
+		// Leaving Online ends the search: nothing outside it shows or cancels it.
+		if (searchModel().active())
+			searchModel().cancel();
 		endExecute(0);
+	}
 }
 
 // --------------------------------------------------------------------- build
@@ -714,7 +744,7 @@ Element OnlineHubScreen::quickMatch(const Presentation &p, bool phone)
 		{
 			ButtonOptions find;
 			find.primary = index == defaultQueue();
-			find.enabled = enabled;
+			find.enabled = enabled && !searchModel().active();
 			action = button("queue/" + std::to_string(i), tr("[hub find match]"), [this, index] { findMatch(index); }, find);
 		}
 		cards.push_back(card(column({row({icon(uiIcon(queue.value("rated", false) ? UIIcon::Bolt : UIIcon::Robot), {18}), label(queueDisplayName(queue.value("id", ""), queue.value("name", "")), {FontRole::Body})}, {p.pt(6), CrossAlign::Center}),
@@ -753,7 +783,7 @@ Element OnlineHubScreen::roomList(const Presentation &p, bool phone)
 		rows.push_back(divider());
 	}
 	if (shown == 0)
-		rows.push_back(paragraph(tr("[hub no rooms]"), {FontRole::Support, true}));
+		rows.push_back(emptyState(uiIcon(UIIcon::Users), tr("[hub no rooms]"), {}, p));
 	std::vector<Element> head{expanded(heading(tr("[hub open rooms]")))};
 	if (!phone)
 		// A width that holds both labels on one line ("Free seat" used to wrap, H-1).
@@ -815,7 +845,7 @@ Element OnlineHubScreen::leaderboardTeaser(const Presentation &p)
 						   {p.pt(8), CrossAlign::Center}));
 	}
 	if (rows.empty())
-		rows.push_back(paragraph(tr("[hub leaderboard empty]"), {FontRole::Support, true}));
+		rows.push_back(emptyState(uiIcon(UIIcon::Trophy), tr("[hub leaderboard empty]"), {}, p));
 	std::vector<Element> foot;
 	if (data.accountKind == "guest")
 		foot.push_back(expanded(paragraph(tr("[hub guests not ranked]"), {FontRole::Support, true})));
@@ -928,7 +958,7 @@ Element OnlineHubScreen::queuePicker(const Presentation &p, bool stacked)
 			parts.push_back(button("queue/signin", tr("[hub sign in]"), [this] { openSignIn(); }, {.primary = true, .icon = uiIcon(UIIcon::SignIn)}));
 		}
 		else
-			parts.push_back(button("queue/find", tr("[hub find match]"), [this, chosen] { findMatch(chosen); }, {.primary = true, .enabled = canPlay(), .icon = uiIcon(UIIcon::Bolt)}));
+			parts.push_back(button("queue/find", tr("[hub find match]"), [this, chosen] { findMatch(chosen); }, {.primary = true, .enabled = canPlay() && !searchModel().active(), .icon = uiIcon(UIIcon::Bolt)}));
 	}
 	return parts.empty() ? nullptr : column(std::move(parts), {p.pt(6)});
 }
@@ -1010,6 +1040,10 @@ Element OnlineHubScreen::build(const Presentation &p)
 		// (Back, Join code, Room) keeps its full height.
 		const bool crowded = !p.landscape() && p.points(p.safe.h) < 500 * p.textGrowth;
 		std::vector<Element> list;
+		// First in the scrolled list rather than fixed above it: a small phone with
+		// large text has no height to spare for its buttons.
+		if (auto strip = SearchStrip::build(searchModel(), p, [this] { openSearch(); }))
+			list.push_back(strip);
 		if (auto b = banner(p))
 			list.push_back(b);
 		if (crowded)
@@ -1085,6 +1119,9 @@ Element OnlineHubScreen::build(const Presentation &p)
 	std::vector<Element> page{headline};
 	for (auto &t : toast)
 		page.push_back(t);
+	if (!overlay)
+		if (auto strip = SearchStrip::build(searchModel(), p, [this] { openSearch(); }))
+			page.push_back(strip);
 	page.push_back(expanded(body));
 	page.push_back(divider());
 	page.push_back(footerRow);

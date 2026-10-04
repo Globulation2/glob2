@@ -4260,6 +4260,10 @@ Nahlásiť…
 Hľadať mapy alebo autorov
 [maps none found]
 Žiadne zodpovedajúce mapy.
+[maps catalog empty]
+Na tomto serveri zatiaľ nikto nezdieľal žiadnu mapu.
+[maps clear filters]
+Zrušiť filtre
 [maps any colonies]
 Ľubovoľný počet kolónií
 [maps checking]

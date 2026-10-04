@@ -4260,6 +4260,10 @@ OpenGL غير متوفر في هذا الإصدار.
 ابحث في الخرائط أو المؤلفين
 [maps none found]
 لا توجد خرائط مطابقة.
+[maps catalog empty]
+لم تتم مشاركة أي خرائط على هذا الخادم بعد.
+[maps clear filters]
+مسح عوامل التصفية
 [maps any colonies]
 أي عدد من المستعمرات
 [maps checking]

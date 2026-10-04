@@ -176,9 +176,7 @@ void QuickMatchScreen::setAllowAi(bool allow)
 
 void QuickMatchScreen::back()
 {
-	// Leaving the quick-match section ends the search, as closing the hub does.
-	if (model.active())
-		model.cancel();
+	// The search keeps running: the hub shows it as a strip with Cancel.
 	endExecute(BACK);
 }
 
@@ -231,12 +229,14 @@ std::string QuickMatchScreen::noticeText(const QuickMatch &model)
 	}
 }
 
+std::string QuickMatchScreen::failureText(const QuickMatch &model)
+{
+	return errorText(model.error(), model.cooldownUntil());
+}
+
 void QuickMatchScreen::onEscape()
 {
-	if (model.active())
-		cancelSearch();
-	else
-		back();
+	back();
 }
 
 void QuickMatchScreen::onTimer(Uint32 tick)
@@ -355,8 +355,8 @@ Element QuickMatchScreen::searchPanel(const Presentation &p, bool phone)
 	}
 	auto allowAi = toggle("qm/allow-ai", phone ? tr("[qm allow ai short]") : tr("[qm allow ai]"), model.allowAiOpponent(),
 						  [this](bool value) { setAllowAi(value); }, bool(queue.aiBackfillSeconds));
+	// Escape is Back (the search keeps running); cancelling is this button only.
 	ButtonOptions cancelOptions;
-	cancelOptions.shortcut = SDLK_ESCAPE;
 	auto cancel = button("qm/cancel", phone ? tr("[qm cancel]") : tr("[qm cancel search]"),
 						 [this] { cancelSearch(); }, cancelOptions);
 
@@ -508,6 +508,61 @@ Element QuickMatchScreen::build(const Presentation &p)
 	panel.thumbBlock = thumb;
 	return onlinePanel(std::move(panel), p);
 }
+
+// ============================================================ search strip
+
+namespace SearchStrip
+{
+Element build(QuickMatch &model, const Presentation &p, std::function<void()> details)
+{
+	if (!model.active() || !model.queue())
+		return nullptr;
+	const auto &palette = frontendTheme().palette;
+	const auto &queue = *model.queue();
+	std::string phaseText = tr("[qm searching]");
+	if (model.phase() == QuickMatch::Phase::Probing)
+		phaseText = tr("[qm measuring relays]");
+	else if (model.phase() == QuickMatch::Phase::Joining)
+		phaseText = tr("[qm joining queue]");
+	const std::string line = phaseText + " \xC2\xB7 " + queueTitle(queue) + " \xC2\xB7 " + clockText(model.waitedSeconds());
+	// What happens if nobody is found: the honest reason the wait has an end.
+	std::string next;
+	if (queue.aiBackfillSeconds)
+	{
+		if (!model.allowAiOpponent())
+			next = tr("[qm waiting for a person]");
+		else if (const auto remaining = model.backfillInMs())
+			next = FormattableString(tr(queue.rated ? "[qm ai in %0 rated]" : "[qm ai in %0]")).arg(clockText((*remaining + 999) / 1000));
+	}
+	auto words = column({label(line, {FontRole::Body}), next.empty() ? nullptr : caption(next)}, {p.pt(2)});
+	auto cancel = button("strip/cancel", tr("[qm cancel search]"), [&model] { model.cancel(); });
+	Element more = details ? button("strip/details", tr("[Details]"), details) : nullptr;
+	const bool phone = p.touch && p.compact();
+	Element content;
+	if (phone)
+		content = column({row({icon(uiIcon(UIIcon::Spinner), {18, palette.accent}), expanded(words)}, {p.pt(8), CrossAlign::Center}),
+						  row({more ? expanded(more) : nullptr, expanded(cancel)}, {p.pt(8)})},
+						 {p.pt(6)});
+	else
+		content = row({icon(uiIcon(UIIcon::Spinner), {20, palette.accent}), expanded(words), more, cancel}, {p.pt(8), CrossAlign::Center});
+	CardOptions options;
+	options.shadow = false;
+	options.border = palette.accent;
+	options.color = palette.field;
+	options.padding = p.pt(8);
+	return card(content, options);
+}
+
+bool Ticker::due(const QuickMatch &model)
+{
+	const int now = model.active() ? int(wallClockMs() / 1000) : -1;
+	if (model.revision() == seen && now == second)
+		return false;
+	seen = model.revision();
+	second = now;
+	return true;
+}
+} // namespace SearchStrip
 
 // ============================================================ match found
 

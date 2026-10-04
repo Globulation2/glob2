@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include <GestureScroll.h>
 #include <GameplayRecording.h>
 #include <ApplicationHost.h>
 #include <algorithm>
@@ -165,7 +166,7 @@ void UIScreen::handleExecutionEvent(SDL_Event event)
 		endExecute(QUIT_APPLICATION);
 		return;
 	}
-	if (event.type == SDL_EVENT_MOUSE_WHEEL && !scrollWheelEnabled)
+	if ((event.type == SDL_EVENT_MOUSE_WHEEL || GAGCore::scrollGesture(event)) && !scrollWheelEnabled)
 		return;
 	refreshPresentation();
 	if (interceptEvent(event))

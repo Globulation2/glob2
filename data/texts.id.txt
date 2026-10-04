@@ -4260,6 +4260,10 @@ Apa masalah peta ini?
 Cari peta atau pembuat
 [maps none found]
 Tidak ada peta yang cocok.
+[maps catalog empty]
+Belum ada peta yang dibagikan di server ini.
+[maps clear filters]
+Hapus filter
 [maps any colonies]
 Semua jumlah koloni
 [maps checking]

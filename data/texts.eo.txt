@@ -4260,6 +4260,10 @@ Kio estas malĝusta pri ĉi tiu mapo?
 Serĉi mapojn aŭ aŭtorojn
 [maps none found]
 Neniu mapo kongruas.
+[maps catalog empty]
+Neniu mapo estas ankoraŭ kundividita en ĉi tiu servilo.
+[maps clear filters]
+Forigi filtrilojn
 [maps any colonies]
 Ajna nombro de kolonioj
 [maps checking]

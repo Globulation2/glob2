@@ -4260,6 +4260,10 @@ Kaj je narobe s tem zemljevidom?
 Iskanje zemljevidov ali avtorjev
 [maps none found]
 Ni ustreznih zemljevidov.
+[maps catalog empty]
+Na tem strežniku še nihče ni delil zemljevida.
+[maps clear filters]
+Počisti filtre
 [maps any colonies]
 Poljubno število kolonij
 [maps checking]

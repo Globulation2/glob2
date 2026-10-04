@@ -4260,6 +4260,10 @@ Zer gertatzen da mapa honekin?
 Bilatu mapak edo egileak
 [maps none found]
 Ez dago bat datorren maparik.
+[maps catalog empty]
+Oraindik ez da maparik partekatu zerbitzari honetan.
+[maps clear filters]
+Garbitu iragazkiak
 [maps any colonies]
 Edozein kolonia kopuru
 [maps checking]

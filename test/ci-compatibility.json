@@ -17,6 +17,7 @@
     "*ImageAsset*/*",
     "HiveMind*/*",
     "GameplayRecording*/*",
+    "MacScrollMonitor/*",
     "GameDiagnostics/*",
     "WinProbability/*",
     "AIRules/*"

@@ -4260,6 +4260,10 @@ Wat is er mis met deze kaart?
 Zoek kaarten of makers
 [maps none found]
 Geen kaarten gevonden.
+[maps catalog empty]
+Er zijn nog geen kaarten gedeeld op deze server.
+[maps clear filters]
+Filters wissen
 [maps any colonies]
 Elk aantal kolonies
 [maps checking]

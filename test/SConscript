@@ -42,6 +42,8 @@ provenance_header = register_test_provenance(test_env, env['BUILDDIR'])
 
 def available(options):
     required = options.get('require', ())
+    if 'mac' in required and (env['PLATFORM'] != 'darwin' or env.get('mingw') or env.get('mingwcross')):
+        return False
     if 'wss' in required and not env.get('wss', True):
         return False
     if 'not-mingw' in required and env.get('mingw'):

@@ -2,6 +2,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <ScrollPhysics.h>
+#include <GestureScroll.h>
 #include <TouchInput.h>
 #include "BrushHUD.h"
 #include <memory>
@@ -87,6 +88,12 @@ class PhoneEditor
 	// the plain `offset` and `inspectorScroll` variables in step.
 	GAGCore::ScrollMotion mapMotion;
 	GAGCore::TrackedScrollAxis trayAxis, inspectorAxis;
+	GAGCore::GestureScrollController nativeScroll;
+	Uint64 nativeSequence = 0;
+	int nativeSurface = 0; // 1 tray, 2 inspector; retained for cancelled tails
+	bool nativeScrolling = false;
+	GAGCore::TrackedScrollAxis &nativeAxis() { return nativeSurface == 2 ? inspectorAxis : trayAxis; }
+	double &nativeOffset() { return nativeSurface == 2 ? inspectorScroll : offset; }
 	Uint64 lastTick = 0;
 	bool fingerIsTouch = false; // momentum follows real fingers, not the mouse
 	void syncTray();

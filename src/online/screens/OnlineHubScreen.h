@@ -7,6 +7,7 @@ namespace Online
 {
 class PlatformScope;
 }
+#include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
 #include <ScreenStack.h>
 #include <functional>
@@ -85,6 +86,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// Harness: shows a fixed model without touching the network.
 	void preview(Model model);
 	const Model &model() const { return data; }
+	// Harnesses: show this search (a model with presentSearching) instead of the shared one.
+	void previewSearching(Online::QuickMatch &search) { previewSearch = &search; invalidate(); }
 
 	// Semantic entry points (harnesses, tests and the phone thumb block).
 	void createRoom();
@@ -139,10 +142,17 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// search that queue again ("Find another match") once its screens close.
 	std::string matchQueueId;
 	bool queueAgain = false;
+	SearchStrip::Ticker searchTicker;
+	Online::QuickMatch *previewSearch = nullptr;
+	Online::QuickMatch &searchModel();
 
 	Online::PlatformClient &client();
+	// The running search's screen (the strip's Details).
+	void openSearch();
 	// After the quick-match search screen closes (QuickMatchScreen result codes).
 	void quickMatchClosed(int result);
+	// Rebuilds for the search strip and turns search notices and failures into toasts.
+	void watchSearch();
 	void refresh(bool force);
 	void syncFromClient();
 	void showToast(const std::string &text);

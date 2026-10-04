@@ -4260,6 +4260,10 @@ Qual é o problema deste mapa?
 Buscar mapas ou autores
 [maps none found]
 Nenhum mapa encontrado.
+[maps catalog empty]
+Nenhum mapa foi compartilhado neste servidor ainda.
+[maps clear filters]
+Limpar filtros
 [maps any colonies]
 Qualquer nº de colônias
 [maps checking]

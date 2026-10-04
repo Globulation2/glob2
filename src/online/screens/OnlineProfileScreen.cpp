@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "online/ReplayAppearance.h"
 #include "OnlineProfileScreen.h"
+#include "QuickMatch.h"
+#include "QuickMatchScreen.h"
 
 #include "FormatableString.h"
 #include "MapCatalog.h"
@@ -102,6 +104,9 @@ void OnlineProfileScreen::onEscape()
 
 void OnlineProfileScreen::onTimer(Uint32)
 {
+	// A quick-match search running behind this screen stays visible (SearchStrip).
+	if (live && searchTicker.due(Online::quickMatch()))
+		invalidate();
 	if (!live || started)
 		return;
 	auto &client = Online::services().client;
@@ -466,6 +471,9 @@ Element OnlineProfileScreen::build(const Presentation &p)
 	web.icon = uiIcon(UIIcon::ExternalLink);
 	if (!phone)
 		panel.headerRight = button("profile/web", tr("[profile full profile web]"), [this] { openWebProfile(); }, web);
+	if (live)
+		if (auto strip = SearchStrip::build(Online::quickMatch(), p))
+			body.insert(body.begin(), strip);
 	panel.body = scroll("profile/body", column(std::move(body), {p.pt(10)}));
 	panel.note = tr("[profile replays note]");
 	panel.actions = {{"back", (backText.empty() ? tr("[results back to online]") : backText), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};

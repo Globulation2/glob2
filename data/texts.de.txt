@@ -4260,6 +4260,10 @@ Was stimmt mit dieser Karte nicht?
 Karten oder Autoren suchen
 [maps none found]
 Keine passenden Karten.
+[maps catalog empty]
+Auf diesem Server wurden noch keine Karten geteilt.
+[maps clear filters]
+Filter zurücksetzen
 [maps any colonies]
 Beliebig viele Kolonien
 [maps checking]

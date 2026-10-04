@@ -4260,6 +4260,10 @@ Emoji
 جستجوی نقشه‌ها یا سازندگان
 [maps none found]
 نقشه‌ای پیدا نشد.
+[maps catalog empty]
+هنوز هیچ نقشه‌ای در این سرور به اشتراک گذاشته نشده است.
+[maps clear filters]
+پاک کردن فیلترها
 [maps any colonies]
 هر تعداد مستعمره
 [maps checking]

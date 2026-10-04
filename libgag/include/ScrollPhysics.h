@@ -163,6 +163,7 @@ class TrackedScrollAxis
 {
   public:
 	ScrollAxis axis;
+	bool externallyMoved(double value) const { return value != written; }
 	void sync(double &value, double maximum, double extent)
 	{
 		if (value != written)

@@ -7,6 +7,7 @@
 
 namespace GAGCore
 {
+// Gesture scroll payloads are values inside SDL_Event and survive these copies.
 // SDL3 owns text-event strings only until another event pump. Keep the payloads
 // used by our input handlers alive through batched dispatch and deferred ticks.
 class EventQueue

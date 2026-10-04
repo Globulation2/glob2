@@ -4260,6 +4260,10 @@ AI 대전
 지도 또는 제작자 검색
 [maps none found]
 일치하는 지도가 없습니다.
+[maps catalog empty]
+이 서버에는 아직 공유된 지도가 없습니다.
+[maps clear filters]
+필터 지우기
 [maps any colonies]
 식민지 수 무관
 [maps checking]

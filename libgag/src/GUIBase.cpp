@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GestureScroll.h>
 #include <GameplayRecording.h>
 #include <ApplicationHost.h>
 #include <typeinfo>
@@ -110,7 +111,7 @@ namespace GAGGUI
 			}
 #endif
 		}
-		if (event.type == SDL_EVENT_MOUSE_WHEEL && !scrollWheelEnabled) return;
+		if ((event.type == SDL_EVENT_MOUSE_WHEEL || GAGCore::scrollGesture(event)) && !scrollWheelEnabled) return;
 		onSDLEvent(&event);
 	}
 

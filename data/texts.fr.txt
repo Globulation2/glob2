@@ -4260,6 +4260,10 @@ Quel est le problème avec cette carte ?
 Chercher des cartes ou des auteurs
 [maps none found]
 Aucune carte ne correspond.
+[maps catalog empty]
+Aucune carte n'a encore été partagée sur ce serveur.
+[maps clear filters]
+Effacer les filtres
 [maps any colonies]
 Toutes colonies
 [maps checking]

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 The Globulation 2 Authors
 
-#include "AIFarmAreas.h"
 #include "field/UniformTraversal.h"
 #include "CortexWheat.h"
 
@@ -51,7 +50,7 @@ namespace Cortex
 		Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
-		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll)
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll, bool farmPaint)
 	{
 		WheatScanResult res;
 
@@ -102,13 +101,12 @@ namespace Cortex
 				if (isField(x, y))
 					fieldTiles.push_back(static_cast<int>(map.coordToIndex(x, y)));
 		res.fieldTileCount = static_cast<Sint32>(fieldTiles.size());
-		res.field = fieldTiles;
 		if (wantDebug)
 		{
 			res.classOf.assign(static_cast<size_t>(w) * h, WC_NONE);
 			res.depthOf.assign(static_cast<size_t>(w) * h, -1);
 		}
-		if (fieldTiles.empty())
+		if (fieldTiles.empty() && !farmPaint)
 			return res;
 
 		// --- Land+wheat BFS from the consumer's walkable exit ring. ---
@@ -187,7 +185,8 @@ namespace Cortex
 			// reconcile then un-forbids the WHOLE field. Iteration order, BFS, depths,
 			// and the add/del diff are untouched, so determinism is preserved.
 			Uint8 cls;
-			if (!liftAll && ((x + y) & 1) == WHEAT_PARITY)
+			if (!liftAll && ((x + y) & 1) == WHEAT_PARITY
+			    && (!farmPaint || map.canPaintFarmArea(x, y)))
 			{
 				cls = WC_FORBIDDEN;
 				res.desired.push_back(idx);
@@ -241,10 +240,10 @@ namespace Cortex
 		for (int y = boxMinY; y <= boxMaxY; y++)
 			for (int x = boxMinX; x <= boxMaxX; x++)
 			{
-				if (!map.isForbidden(x, y, teamMask))
+				if (!(farmPaint ? map.isFarmArea(x, y, teamMask) : map.isForbidden(x, y, teamMask)))
 					continue;
 				const Uint16 gid = map.getBuilding(x, y);
-				if (gid != NOGBID && BuildingUtils::GIDtoTeam(gid) == teamNumber)
+				if (!farmPaint && gid != NOGBID && BuildingUtils::GIDtoTeam(gid) == teamNumber)
 					continue; // our footprint, not wheat paint.
 				const int idx = static_cast<int>(map.coordToIndex(x, y));
 				currentBit[idx] = true;
@@ -282,7 +281,8 @@ namespace Cortex
 				const int y = idx / w;
 				if (!ignoreFOW && !map.isFOWDiscovered(x, y, teamMask))
 					continue; // in fog: confirmation pending, leave the paint.
-				if (isWheat(map, x, y))
+				if (isWheat(map, x, y) && (!farmPaint ||
+				    (((x + y) & 1) == WHEAT_PARITY && map.canPaintFarmArea(x, y))))
 					continue; // still field wheat: keep protecting it.
 			}
 			res.del.push_back(idx);
@@ -294,7 +294,7 @@ namespace Cortex
 	}
 
 	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
-	                                       bool liftAll)
+	                                       bool liftAll, bool farmPaint)
 	{
 		WheatReconcile out;
 		if (player == NULL || player->team == NULL || player->team->game == NULL)
@@ -364,11 +364,10 @@ namespace Cortex
 		WheatScanResult r = scanWheatForbidden(
 			map, teamMask, teamNumber, seeds,
 			boxMinX, boxMinY, boxMaxX, boxMaxY,
-			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false, liftAll);
+			openMargin, /*ignoreFOW=*/false, /*wantDebug=*/false, liftAll, farmPaint);
 
 		out.addCount = r.addCount;
 		out.delCount = r.delCount;
-		out.field = std::move(r.field);
 		if (buildMasks)
 		{
 			// Accumulate the ADD/DEL tile lists (already in index order) into the
@@ -382,45 +381,4 @@ namespace Cortex
 		return out;
 	}
 
-	FarmReconcile reconcileWheatFarm(Player* player, const std::vector<int>& field, bool liftAll,
-	                                 bool buildMasks)
-	{
-		FarmReconcile out;
-		if (player == NULL || player->team == NULL || player->team->game == NULL)
-			return out;
-		Map& map = player->team->game->map;
-		const int w = map.getW();
-		const int size = w * map.getH();
-		const Uint32 me = player->team->me;
-		std::vector<Uint8> desired(static_cast<size_t>(size), 0);
-		if (!liftAll)
-			for (int idx : field)
-				for (int dy = -1; dy <= 1; dy++)
-					for (int dx = -1; dx <= 1; dx++)
-					{
-						const int x = (idx % w + dx) & map.getMaskW();
-						const int y = (idx / w + dy) & map.getMaskH();
-						if (AIFarmAreas::wantsFarm(map, x, y))
-							desired[map.coordToIndex(x, y)] = 1;
-					}
-		for (int idx = 0; idx < size; idx++)
-		{
-			const bool actual = map.isFarmArea(idx % w, idx / w, me);
-			if (desired[idx] == actual)
-				continue;
-			if (desired[idx])
-			{
-				out.addCount++;
-				if (buildMasks)
-					out.add.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
-			}
-			else
-			{
-				out.delCount++;
-				if (buildMasks)
-					out.del.applyBrush(BrushApplication(idx % w, idx / w, 0), &map);
-			}
-		}
-		return out;
-	}
 }

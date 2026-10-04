@@ -8,6 +8,7 @@
 #include "Utilities.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
+#include <algorithm>
 #include <functional>
 #include <set>
 
@@ -150,6 +151,57 @@ FarmCount farmCount(Game& game)
 
 TEST_SUITE("AIDecisionCoverage")
 {
+    TEST_CASE("farm areas reuse each AI's forbidden wheat placement on an unchanged colony")
+    {
+        glob2test::HeadlessGlobals globals;
+        // Keep terrain, resources and colony state fixed: harvesting/growth would
+        // otherwise make the two experiments diverge before their next upkeep.
+        auto placement=[](AI::ImplementationID id, bool farms)
+        {
+            World fixture(id,false,713,true);
+            auto& game=fixture.world.game;
+            game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, farms);
+            std::fill(game.map.fogOfWar,game.map.fogOfWar+game.map.getW()*game.map.getH(),~Uint32(0));
+            for(int i=0; i<2048; ++i)
+            {
+                game.stepCounter=i;
+                auto order=game.players[0]->ai->getOrder(false);
+                REQUIRE(order != nullptr);
+                const int type=order->getOrderType();
+                if(type==ORDER_ALTER_FORBIDDEN || type==ORDER_ALTER_FARM_AREA
+                   || type==ORDER_ALTER_CLEAR_AREA)
+                {
+                    order->sender=0;
+                    game.executeOrder(order,0);
+                }
+            }
+            std::set<int> tiles;
+            const Uint32 me=game.teams[0]->me;
+            for(int y=0; y<game.map.getH(); ++y)
+                for(int x=0; x<game.map.getW(); ++x)
+                {
+                    const bool wheat=game.map.getResource(x,y).type==WHEAT;
+                    if(farms && game.map.isFarmArea(x,y,me))
+                    {
+                        CHECK((wheat || (id==AI::MAXIMA && game.map.getResource(x,y).type==NO_RES_TYPE)));
+                        if(wheat) tiles.insert(game.map.coordToIndex(x,y));
+                    }
+                    if(!farms && wheat && game.map.isForbidden(x,y,me)
+                       && game.map.canPaintFarmArea(x,y))
+                        tiles.insert(game.map.coordToIndex(x,y));
+                    if(farms && wheat) CHECK_FALSE(game.map.isForbidden(x,y,me));
+                }
+            return tiles;
+        };
+        for(auto id : {AI::ECONO,AI::NICOWAR,AI::CORTEX,AI::CABINO,AI::MAXIMA,AI::WARRUSH})
+        {
+            CAPTURE(id);
+            const auto forbidden=placement(id,false);
+            const auto farms=placement(id,true);
+            REQUIRE(!forbidden.empty());
+            CHECK(farms==forbidden);
+        }
+    }
     TEST_CASE("with the farm-areas experiment every farming AI farms its wheat with a farm area and survives save-load")
     {
         glob2test::HeadlessGlobals globals;

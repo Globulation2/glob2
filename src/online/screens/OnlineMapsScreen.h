@@ -3,6 +3,7 @@
 #include "MapCache.h"
 #include "MapCatalog.h"
 #include "OnlineResources.h"
+#include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
 
 #include <cstdint>
@@ -81,6 +82,7 @@ class OnlineMapsScreen : public Glob2UI::Screen
 	void setSort(int index);
 	void setSize(int index);
 	void setColonies(int index);
+	void clearFilters();
 	void useInRoom();
 	void toggleLike();
 	void openMapPage();
@@ -132,6 +134,7 @@ class OnlineMapsScreen : public Glob2UI::Screen
 	// fixture screens never touch the platform).
 	std::unique_ptr<Online::PlatformScope> scope;
 	Online::PlatformScope &calls();
+	SearchStrip::Ticker searchTicker;
 	bool started = false;
 };
 
