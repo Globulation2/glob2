@@ -37,7 +37,7 @@ vec3 skinShade(vec3 albedo, vec3 surfaceNormal, vec2 uv) {
   vec3 h = normalize(l + vec3(0.0, 0.0, 1.0));
   float diffuse = max(0.0, dot(n, l));
   float nh = max(0.0, dot(n, h));
-  return albedo * (0.42 + 0.8 * diffuse) + vec3(0.75 * pow(nh, 4.0));
+  return albedo * (0.24 + 0.66 * diffuse) + vec3(0.42 * pow(nh, 4.0));
 }
 // END skin-material
 `;
