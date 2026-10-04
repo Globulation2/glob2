@@ -8,7 +8,7 @@
 //! Resampling/interpolation state for one player's incoming voice stream.
 //!
 //! The speex narrowband decoder produces 8 kHz float samples; the SDL mixer
-//! consumes them at the 44.1 kHz stereo output rate via linear interpolation
+//! consumes them at the 48 kHz stereo output rate via linear interpolation
 //! between two consecutive input samples (voiceVal0, voiceVal1) using the
 //! fractional cursor voiceSubIndex.
 //!

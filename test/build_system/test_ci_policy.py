@@ -93,7 +93,7 @@ class PolicyTest(unittest.TestCase):
             self.assertFalse(self.select([path])['platform_stack'], path)
 
     def test_shared_unknown_and_unavailable_inputs_fail_closed(self):
-        for path in ['src/app/Version.h','libgag/include/Surface.h','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
+        for path in ['src/app/Version.h','libgag/include/Surface.h','libgag/include/AudioFormat.h','scons/opus_dependencies.py','SConstruct','unmapped/new.cpp','test/ci_native_shard_plan.py']:
             self.assertEqual(self.select([path]), policy.full(), path)
         self.assertEqual(policy.select([], known=False)[0], policy.full())
         self.assertFalse(any(self.select([]).values()))

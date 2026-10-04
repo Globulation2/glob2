@@ -12,7 +12,7 @@ API::
     parts = demucs.separate(mix, 'htdemucs', cache_dir=ctx.work_dir / 'demucs')
     parts['drums'], parts['bass'], parts['other'], parts['vocals']   # (frames, 2) float64
 
-* ``mix`` is the decoded ``(frames, 2)`` array at 44.1 kHz (``adapt.stems.decode``),
+* ``mix`` is the decoded ``(frames, 2)`` array at 48 kHz (``adapt.stems.decode``),
   not a path. Separating the very array the recipe mixes with keeps stems and mix on
   one timeline to the frame; no decoder offset can creep in.
 * ``model`` is ``'htdemucs'`` (drums, bass, other, vocals: the cleanest drums and
@@ -69,8 +69,12 @@ def run_model(net, mix, shifts=2, overlap=0.25, seed=0, device='cpu'):
     import random
     import torch
     from demucs.apply import apply_model
+    from scipy.signal import resample_poly
+    from math import gcd
+    original_frames = len(mix)
+    divisor = gcd(net.samplerate, SAMPLE_RATE)
     if net.samplerate != SAMPLE_RATE:
-        raise ValueError(f'model runs at {net.samplerate} Hz, the pipeline at {SAMPLE_RATE} Hz')
+        mix = resample_poly(mix, net.samplerate // divisor, SAMPLE_RATE // divisor, axis=0)
     random.seed(seed)
     torch.manual_seed(seed)
     wav = torch.from_numpy(np.ascontiguousarray(np.asarray(mix, dtype=np.float32).T))
@@ -80,13 +84,19 @@ def run_model(net, mix, shifts=2, overlap=0.25, seed=0, device='cpu'):
         out = apply_model(net, ((wav - mean) / std)[None], shifts=shifts, split=True, overlap=overlap,
                           device=device, progress=False)
     out = (out * std + mean)[0].cpu().numpy()
-    return {name: out[i].T.astype(np.float64) for i, name in enumerate(net.sources)}
+    stems = {}
+    for i, name in enumerate(net.sources):
+        y = out[i].T.astype(np.float64)
+        if net.samplerate != SAMPLE_RATE:
+            y = resample_poly(y, SAMPLE_RATE // divisor, net.samplerate // divisor, axis=0)
+        stems[name] = y[:original_frames]
+    return stems
 
 
 def _cache_key(mix, model, params):
     import demucs
     h = hashlib.sha256(np.ascontiguousarray(mix, dtype=np.float32).tobytes())
-    h.update(json.dumps([model, params, demucs.__version__], sort_keys=True).encode())
+    h.update(json.dumps([model, params, demucs.__version__, SAMPLE_RATE], sort_keys=True).encode())
     return h.hexdigest()[:20]
 
 

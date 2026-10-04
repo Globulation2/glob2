@@ -15,7 +15,7 @@ player reaching for the volume. True peak above -1 dBTP risks clipping in the ga
 16-bit mixing and in lossy re-encoding (Android/web bundles).
 
 Thresholds: the targets and the -1 dBTP ceiling come from the soundtrack brief; the
-+-1 LU tolerance is wide enough for Vorbis encoding (which itself moves loudness by
++-1 LU tolerance is wide enough for Opus encoding (which itself moves loudness by
 under 0.1 LU) plus the build's static true-peak trims after encoding, and narrow
 enough to keep the ladder intact. Every pipeline-mastered corpus mood lies within
 0.4 LU of its target, except woodland combat at -0.8 LU, which carries a 0.73 dB

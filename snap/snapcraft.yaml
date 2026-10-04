@@ -64,7 +64,8 @@ parts:
       - libpulse-dev
       - libwayland-dev
       - libxkbcommon-dev
-      - libvorbis-dev
+      - libopusfile-dev
+      - libopus-dev
       - libogg-dev
       - libspeex-dev
       - libboost-dev
@@ -92,7 +93,8 @@ parts:
       - libpng16-16t64
       - libjpeg-turbo8
       - libfreetype6
-      - libvorbisfile3
+      - libopusfile0
+      - libopus0
       - libogg0
       - libspeex1
       - libfribidi0

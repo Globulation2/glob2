@@ -1,5 +1,5 @@
 Globulation 2 soundtrack set "apple-cider": Apple Cider
-Files: a1.ogg (calm), a2.ogg (building), a3.ogg (combat)
+Files: a1.opus (calm), a2.opus (building), a3.opus (combat)
 
 Licence: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
 

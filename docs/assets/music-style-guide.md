@@ -11,8 +11,8 @@ maintainer who listened to it.
 
 ## How the game uses music
 
-A set is three loops of equal length in `data/zik/<set>/`. `a1.ogg` is calm,
-`a2.ogg` is building and `a3.ogg` is combat. The mixer (`src/audio/SoundMixer.cpp`)
+A set is three loops of equal length in `data/zik/<set>/`. `a1.opus` is calm,
+`a2.opus` is building and `a3.opus` is combat. The mixer (`src/audio/SoundMixer.cpp`)
 switches mood by crossfading into another file at the same playback position, and
 every file loops forever. So:
 

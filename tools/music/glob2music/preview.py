@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Listening previews: calm -> building -> combat -> calm at aligned positions.
 
-Pipeline role: every build writes ``preview.ogg`` next to the trio so a human can
+Pipeline role: every build writes ``preview.opus`` next to the trio so a human can
 judge a set in about two and a half minutes without starting the game. The preview
 imitates the game's mixer: one shared playback position runs through all three
 files (wrapping at the loop length, so the seam is heard too) and each mood change is
@@ -11,7 +11,7 @@ both moods agree, and ``crossfade_s=0.37`` reproduces the game exactly.
 """
 import numpy as np
 
-from .audio import Trio, read_trio, write_ogg
+from .audio import Trio, read_trio, write_opus
 from .loop import equal_power
 from .spec import MOODS, SAMPLE_RATE
 
@@ -53,10 +53,10 @@ def render(trio, order=DEFAULT_ORDER, segment_s=40.0, crossfade_s=3.0, fade_out_
     return out
 
 
-def make(trio_or_dir, out_path, quality=5, **kwargs):
-    """Write a preview Ogg for a ``Trio`` or a directory holding a1/a2/a3.ogg.
+def make(trio_or_dir, out_path, **kwargs):
+    """Write a preview Ogg for a ``Trio`` or a directory holding a1/a2/a3.opus.
 
     Keyword arguments go to ``render``. Returns the output path.
     """
     trio = trio_or_dir if isinstance(trio_or_dir, Trio) else read_trio(trio_or_dir)
-    return write_ogg(render(trio, **kwargs), out_path, quality=quality)
+    return write_opus(render(trio, **kwargs), out_path)

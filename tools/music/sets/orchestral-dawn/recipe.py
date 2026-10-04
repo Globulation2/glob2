@@ -47,13 +47,13 @@ GENERATION = acestep.Request(
 #: RTX 2070 SUPER: turbo DiT in float16, LM in bfloat16). Not committed (15 MB).
 GENERATION_SHA256 = '7fd51ef7a6bdd6d566bd3c0ff3fd879ba144d3b5f25f9d669b1f79850ea69e32'
 
-#: Loop frames at 44.1 kHz: 24.056 s .. 94.807 s, two tracked beats 112 beats (28 bars)
+#: Loop frames at 48 kHz: 24.056 s .. 94.807 s, two tracked beats 112 beats (28 bars)
 #: apart. The window was chosen by a loop search that compared the bar before each
 #: end with the bar before each start (chroma, MFCC, level), after skipping the intro
 #: and the ending.
-LOOP_START, LOOP_END = 1060870, 4180989
+LOOP_START, LOOP_END = round(1060870 * 48000 / 44100), round(4180989 * 48000 / 44100)
 #: Seam crossfade: 4 beats at 95.7 bpm.
-CROSSFADE = 110603          # 2.508 s
+CROSSFADE = round(110603 * 48000 / 44100)          # 2.508 s
 
 #: Mood gains in dB per layer (None = layer absent), and the building drums' high-pass.
 MOODS = {
@@ -67,7 +67,7 @@ BUILDING_DRUMS_HIGHPASS_HZ = 300.0
 def build(ctx):
     wav = acestep.generate(GENERATION, ctx.cache_dir, expected_sha256=GENERATION_SHA256, logger=ctx.log,
                            allow_mismatch=ctx.allow_regenerate)
-    # stems.decode resamples 48 kHz -> 44.1 kHz with ffmpeg; Demucs separates that same
+    # stems.decode resamples 48 kHz -> 48 kHz with ffmpeg; Demucs separates that same
     # array, so mix and stems share frames exactly. overlap=0.5 matches the approved build.
     mix = stems.decode(wav)
     parts = demucs.separate(mix, 'htdemucs_6s', cache_dir=ctx.work_dir / 'demucs', overlap=0.5)

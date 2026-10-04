@@ -11,7 +11,7 @@ import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
 import web_assets
 
-PORTS = ['--use-port=vorbis', '--use-port=zlib']
+PORTS = ['--use-port=zlib']
 
 
 def _build_variant(directory, identity, arguments, threaded=False, packaged=None):
@@ -35,7 +35,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     sdl_prefix = output / 'sdl3/prefix'
     build_environment = dict(os.environ)
     # Cache is target/config-specific, including port downloads and compiled system libraries.
-    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json'], [PORTS, threaded])) if not isolated() else output
+    shared_cache = cache(root, 'emscripten-' + key(root, ['browser/toolchain.json', 'scons/sdl3-versions.json', 'scons/sdl3-vendored.json', 'scons/opus-versions.json', 'scons/opus_dependencies.py'], [PORTS, threaded])) if not isolated() else output
     build_environment['EM_CACHE'] = str(shared_cache / 'cache')
     build_environment['EM_PORTS'] = str(shared_cache / 'ports')
     # emsdk's template derives paths from EM_CONFIG; anchor it to the selected
@@ -50,6 +50,10 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     (output / 'tmp').mkdir(parents=True, exist_ok=True)
     if not GetOption('clean'):
         build_sdl3(sdl_prefix, output / 'sdl3/sources', 2, emscripten, build_environment, threaded=threaded)
+    from opus_dependencies import build as build_opus, LIBRARIES as OPUS_LIBRARIES
+    opus_prefix = output / 'opus/prefix'
+    if not GetOption('clean') and not GetOption('no_exec'):
+        build_opus(opus_prefix, output / 'opus/sources', emscripten, build_environment, threaded)
     env = Environment(platform='posix', tools=['gcc', 'g++', 'ar', 'gnulink', 'compilation_db'],
                       ENV=build_environment, CC=command_path(emscripten / 'emcc'), CXX=command_path(compiler),
                       LINK=command_path(compiler), AR=command_path(emscripten / 'emar'), RANLIB=command_path(emscripten / 'emranlib'))
@@ -77,7 +81,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
 #define PRIMARY_FONT "sans.ttf"
 ''')
     include_paths = [str(output / 'include'), str(sdl_prefix / 'include')] + list(INCLUDE_DIRECTORIES)
-    env.Append(CPPPATH=include_paths + ["#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)),
+    env.Append(CPPPATH=include_paths + [str(opus_prefix / 'include'), str(opus_prefix / 'include/opus'), "#third_party/quickjs-ng"], CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)),
                CXXFLAGS=['-std=gnu++20', '-fwasm-exceptions', '-g2', '-O2' if identity['mode']=='release' else '-O0'] + PORTS)
     env.Append(LINKFLAGS=['-fwasm-exceptions', '-O2' if identity['mode']=='release' else '-O0',
         '-sLEGACY_GL_EMULATION=1', '-sFETCH=1', '-sMIN_WEBGL_VERSION=2', '-sMAX_WEBGL_VERSION=2',
@@ -124,6 +128,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         assets, asset_manifest, asset_root = packaged
     env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])
     env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
+    env.Append(LIBS=[env.File(str(opus_prefix / 'lib' / ('lib' + name + '.a'))) for name in OPUS_LIBRARIES])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
         # Warm serial system ports before requesting their threaded variants.
@@ -260,7 +265,9 @@ def build_web(directory, identity, arguments):
     recording_worker = env.Install(directory, ['browser/recording-worker.js','browser/recording-storage.js','browser/recording-video.js'])
     recording_notices = [env.Install(str(Path(directory)/'licenses/recording'),str(p))
         for p in (recording_prefix/'share/licenses/recording').glob('*')]
-    env.Depends(page, [recording_program, recording_worker, recording_notices])
+    opus_notices = [env.Install(str(Path(directory)/'licenses/opus'), str(p))
+        for p in (Path(directory)/'opus/prefix/share/licenses/opus').glob('*')]
+    env.Depends(page, [recording_program, recording_worker, recording_notices, opus_notices])
     # Assistant programs never execute in the live game's WebAssembly memory.
     hive = env.Clone()
     hive['LIBS'] = []

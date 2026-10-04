@@ -32,7 +32,7 @@ using namespace GAGCore;
 //! Length of a music fade in Sint16 samples, both channels interleaved.
 //! Independent of the device buffer size: a fade spans as many callbacks as
 //! it takes to cover this many samples.
-#define FADE_SAMPLE_COUNT 4096*8
+#define FADE_SAMPLE_COUNT SoundMixer::FadeSampleCount
 //! Maximum frames per mixing chunk, independent of the playback device buffer.
 #define DEVICE_FRAME_COUNT 1024
 #define INTERPOLATION_RANGE 65535
@@ -42,12 +42,6 @@ using namespace GAGCore;
 //! seconds (2000 samples are 200 ms). One speaker talking in real time stays far
 //! below it; a client flooding voice orders would otherwise grow the queue forever.
 #define MAX_VOICE_BACKLOG_SAMPLES 100000
-
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define OGG_BYTEORDER 0
-#else
-#define OGG_BYTEORDER 1
-#endif
 
 static int interpolationTable[FADE_SAMPLE_COUNT];
 
@@ -65,20 +59,91 @@ static void initInterpolationTable(void)
 	}
 }
 
-//! Ramp value for the i-th sample of a callback that starts `fadePos` samples
-//! into the fade.
-//! Open an Ogg Vorbis file from a FILE* obtained through FileManager. On MSVC the
-//! FILE* must not cross into libvorbisfile's CRT (vcpkg builds can link another
-//! one), so the stdio callbacks are compiled here instead of inside ov_open.
-static int openOggFile(FILE *fp, OggVorbis_File *oggFile)
+// Callbacks live in the application CRT, including on Windows. A successful
+// open owns fp; failures close it here (opusfile does not close on open failure).
+static OggOpusFile *openMusicFile(FILE *fp)
 {
-#ifdef _MSC_VER
-	return ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT);
+	static const OpusFileCallbacks callbacks = {
+		[](void *source, unsigned char *data, int size) -> int {
+			auto *file = static_cast<FILE *>(source);
+			const auto count = fread(data, 1, size, file);
+			return ferror(file) ? -1 : static_cast<int>(count);
+		},
+		[](void *source, opus_int64 offset, int origin) -> int {
+#ifdef _WIN32
+			return _fseeki64(static_cast<FILE *>(source), offset, origin);
 #else
-	return ov_open(fp, oggFile, NULL, 0);
+			return fseeko(static_cast<FILE *>(source), offset, origin);
 #endif
+		},
+		[](void *source) -> opus_int64 {
+#ifdef _WIN32
+			return _ftelli64(static_cast<FILE *>(source));
+#else
+			return ftello(static_cast<FILE *>(source));
+#endif
+		},
+		[](void *source) -> int { return fclose(static_cast<FILE *>(source)); }
+	};
+	int error = 0;
+	auto *track = op_open_callbacks(fp, &callbacks, nullptr, 0, &error);
+	if (!track)
+	{
+		fclose(fp);
+		return nullptr;
+	}
+	if (!op_seekable(track) || op_link_count(track) != 1 ||
+		op_channel_count(track, 0) != 2 || op_pcm_total(track, -1) <= 0)
+	{
+		op_free(track);
+		return nullptr;
+	}
+	return track;
 }
 
+// opusfile 0.12's short forward seek can retain PCM buffered before the seek.
+// Reset that buffer first; then PCM seek retains pre-roll and trimmed positions.
+// This is necessary when switching into a mood previously played in this loop.
+static bool seekMusic(OggOpusFile *track, ogg_int64_t frame)
+{
+    return track && frame >= 0 && op_raw_seek(track, 0) == 0 && op_pcm_seek(track, frame) == 0;
+}
+
+// Fill native-endian, interleaved stereo samples. Decoder returns frames, not
+// interleaved sample counts. Bound holes and EOFs without progress so malformed
+// streams cannot spin indefinitely on the audio thread.
+static void readMusic(SoundMixer &mixer, Sint16 *output, int count, int &index, bool advance)
+{
+	int failures = 0;
+	while (count > 0)
+	{
+		auto *track = index >= 0 && static_cast<size_t>(index) < mixer.tracks.size()
+			? mixer.tracks[index] : nullptr;
+		if (!track) break;
+		const int frames = op_read_stereo(track, output, count);
+		if (frames > 0)
+		{
+			output += frames * 2;
+			count -= frames * 2;
+			failures = 0;
+			continue;
+		}
+		if (++failures > 4) break;
+		if (frames == OP_HOLE) continue;
+		if (frames < 0) break;
+		if (advance) index = mixer.nextTrack;
+		track = index >= 0 && static_cast<size_t>(index) < mixer.tracks.size()
+			? mixer.tracks[index] : nullptr;
+		if (!seekMusic(track, 0)) break;
+	}
+	if (count > 0)
+	{
+		std::fill_n(output, count, 0);
+		std::cerr << "SoundMixer: unable to decode/loop music track " << index << std::endl;
+	}
+}
+
+//! Ramp value for the i-th sample of a callback starting at fadePos.
 static inline int fadeValue(unsigned fadePos, unsigned i)
 {
 	unsigned p = fadePos + i;
@@ -125,54 +190,18 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 	{
 		Sint16 *track0 = reinterpret_cast<Sint16 *>(alloca(len));
 		Sint16 *track1 = reinterpret_cast<Sint16 *>(alloca(len));
-		long rest;
-		char *p;
-
-		// align the incoming track to the outgoing one once, at fade start;
-		// afterwards both advance by the same amount every callback
+		// Align moods once at fade start, using Opus's trimmed 48 kHz timeline.
+		bool aligned = true;
 		if (mixer->fadePos == 0)
-			ov_pcm_seek(mixer->tracks[mixer->nextTrack], ov_pcm_tell(mixer->tracks[mixer->actTrack]));
-
-		// read first ogg
-		rest = len;
-		p = reinterpret_cast<char *>(track0);
-		while(rest > 0)
+			aligned = seekMusic(mixer->tracks[mixer->nextTrack],
+				op_pcm_tell(mixer->tracks[mixer->actTrack]));
+		readMusic(*mixer, track0, nsamples, mixer->actTrack, false);
+		if (aligned)
+			readMusic(*mixer, track1, nsamples, mixer->nextTrack, false);
+		else
 		{
-			int bs;
-			long ret = ov_read(mixer->tracks[mixer->actTrack], p, rest, OGG_BYTEORDER, 2, 1, &bs);
-			if (ret == 0) // EOF
-			{
-				ov_pcm_seek(mixer->tracks[mixer->actTrack], 0);
-			}
-			else if (ret < 0) // stream error
-			{
-			}
-			else
-			{
-				rest -= ret;
-				p += ret;
-			}
-		}
-
-		// read second ogg
-		rest = len;
-		p = reinterpret_cast<char *>(track1);
-		while(rest > 0)
-		{
-			int bs;
-			long ret = ov_read(mixer->tracks[mixer->nextTrack], p, rest, OGG_BYTEORDER, 2, 1, &bs);
-			if (ret == 0) // EOF
-			{
-				ov_pcm_seek(mixer->tracks[mixer->nextTrack], 0);
-			}
-			else if (ret < 0) // stream error
-			{
-			}
-			else
-			{
-				rest -= ret;
-				p += ret;
-			}
+			std::fill_n(track1, nsamples, 0);
+			std::cerr << "SoundMixer: unable to align incoming music track" << std::endl;
 		}
 
 		// mix
@@ -208,27 +237,7 @@ void mixaudio(void *voidMixer, Uint8 *stream, int len)
 	}
 	else
 	{
-		// read ogg
-		long rest = len;
-		char *p = reinterpret_cast<char *>(mix);
-		while(rest > 0)
-		{
-			int bs;
-			long ret = ov_read(mixer->tracks[mixer->actTrack], p, rest, OGG_BYTEORDER, 2, 1, &bs);
-			if (ret == 0) // EOF
-			{
-				mixer->actTrack = mixer->nextTrack;
-				ov_pcm_seek(mixer->tracks[mixer->actTrack], 0);
-			}
-			else if (ret < 0) // stream error
-			{
-			}
-			else
-			{
-				rest -= ret;
-				p += ret;
-			}
-		}
+		readMusic(*mixer, mix, nsamples, mixer->actTrack, true);
 
 		// volume & fading
 		if (mixer->mode == SoundMixer::MODE_NORMAL)
@@ -314,7 +323,7 @@ void SoundMixer::openAudio(void)
 {
 	// Initialize recording callback storage before the audio device starts.
 	GAGCore::Recording::recorder();
-	const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, 44100};
+	const SDL_AudioSpec spec{SDL_AUDIO_S16, 2, GAGCore::AudioSampleRate};
     audioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, streamAudio, this);
     soundEnabled = audioStream != nullptr;
     if (!soundEnabled) {
@@ -353,7 +362,7 @@ SoundMixer::SoundMixer(unsigned musicvol, unsigned voicevol, bool mute)
 	initInterpolationTable();
 	
 	// While muted there is nothing to play, so leave the device closed; the
-	// audio thread and its Ogg decoding never start, and there is nothing for
+	// audio thread and its Opus decoding never start, and there is nothing for
 	// SDL_DestroyAudioStream to wait for at exit. setVolume() opens it on unmute.
 	if (mute)
 	{
@@ -380,8 +389,7 @@ SoundMixer::~SoundMixer()
 	{
 		if (!tracks[i])
 			continue;
-		ov_clear(tracks[i]);
-		delete tracks[i];
+		op_free(tracks[i]);
 	}
 }
 
@@ -394,41 +402,35 @@ int SoundMixer::loadTrack(const std::string name, int index)
 		return -1;
 	}
 
-	// Hold the OggVorbis_File in a unique_ptr until ownership transfers into
-	// `tracks` via release(). If ov_open fails, the unique_ptr's destructor frees
-	// it on return — fixing the leak that existed when this was raw `new`.
-	auto oggFile = std::make_unique<OggVorbis_File>();
-	if (openOggFile(fp, oggFile.get()) < 0)
+	auto *track = openMusicFile(fp);
+	if (!track)
 	{
-		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
-		fclose(fp);
+		std::cerr << "SoundMixer: File " << name << " is not a usable stereo Ogg Opus stream." << std::endl;
 		return -2;
 	}
-	// ov_open succeeded: the OggVorbis_File now owns `fp` and will close it via ov_clear.
 
-	SDL_LockAudioStream(audioStream);
+	if (audioStream) SDL_LockAudioStream(audioStream);
 	if (index >= 0 && index< (int)tracks.size())
 	{
 		if (tracks[index])
 		{
-			ov_clear(tracks[index]);
-			delete tracks[index];
+			op_free(tracks[index]);
 		}
-		tracks[index] = oggFile.release();
+		tracks[index] = track;
 	}
 	else if (index >= 0)
 	{
 		// A slot whose earlier tracks are missing (the browser installs the
 		// menu music after startup) keeps its index; empty slots never play.
 		tracks.resize(index + 1, nullptr);
-		tracks[index] = oggFile.release();
+		tracks[index] = track;
 	}
 	else
 	{
-		tracks.push_back(oggFile.release());
+		tracks.push_back(track);
 		index = (int)tracks.size()-1;
 	}
-	SDL_UnlockAudioStream(audioStream);
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
 	
 	return index;
 }
@@ -441,7 +443,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		return;
 
 	bool resume = false;
-	SDL_LockAudioStream(audioStream);
+	if (audioStream) SDL_LockAudioStream(audioStream);
 
 	// A fade now spans many callbacks, so a track change can be asked for while
 	// one is still running — GameMusicController can emit on consecutive 40 ms
@@ -449,8 +451,18 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 	// queue the request and let mixaudio() start it when this fade lands.
 	if (soundEnabled && mode == MODE_EARLY_CHANGE)
 	{
-		pendingTrack = static_cast<int>(i);
-		SDL_UnlockAudioStream(audioStream);
+		pendingTrack = static_cast<int>(i) == nextTrack ? -1 : static_cast<int>(i);
+		if (audioStream) SDL_UnlockAudioStream(audioStream);
+		return;
+	}
+
+	// Repeated mood events must not mix a decoder with itself.
+	if (soundEnabled && static_cast<int>(i) == actTrack &&
+		(mode == MODE_NORMAL || mode == MODE_START))
+	{
+		nextTrack = actTrack;
+		pendingTrack = -1;
+		if (audioStream) SDL_UnlockAudioStream(audioStream);
 		return;
 	}
 
@@ -481,7 +493,7 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 		}
 	}
 
-	SDL_UnlockAudioStream(audioStream);
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
 	if (resume) SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(audioStream));
 }
 
@@ -506,7 +518,7 @@ std::vector<std::string> SoundMixer::getMusicSets()
 		bool complete = true;
 		for (int i = 1; i <= 3; ++i)
 		{
-			FILE *file = files->openFP(directory + "/a" + std::to_string(i) + ".ogg");
+			FILE *file = files->openFP(directory + "/a" + std::to_string(i) + ".opus");
 			if (file)
 				fclose(file);
 			else
@@ -539,12 +551,12 @@ namespace
 {
 	struct OggTrackCloser
 	{
-		void operator()(OggVorbis_File *track) const { ov_clear(track); delete track; }
+		void operator()(OggOpusFile *track) const { op_free(track); }
 	};
-	using OggTrack = std::unique_ptr<OggVorbis_File, OggTrackCloser>;
+	using OggTrack = std::unique_ptr<OggOpusFile, OggTrackCloser>;
 	using MusicSetTrio = std::array<OggTrack, 3>;
 
-	//! Open the three in-game tracks of `name`. They must all be 44100 Hz stereo,
+	//! Open the three in-game tracks of `name`. They must all be 48 kHz decoded stereo,
 	//! one logical stream, and of equal length, so the mixer can cross over between
 	//! moods at the same position. On failure `trio` holds no usable set.
 	bool openMusicSet(const std::string& name, MusicSetTrio& trio)
@@ -552,24 +564,20 @@ namespace
 		ogg_int64_t frames = 0;
 		for (unsigned i = 0; i < trio.size(); ++i)
 		{
-			const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".ogg";
+			const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".opus";
 			FILE *file = Toolkit::getFileManager()->openFP(path);
 			if (!file)
 				return false;
-			auto track = std::make_unique<OggVorbis_File>();
-			if (openOggFile(file, track.get()) < 0)
+			trio[i].reset(openMusicFile(file));
+			if (!trio[i])
 			{
-				fclose(file);
-				std::cerr << "SoundMixer : music set " << name << " has an unreadable " << path << std::endl;
+				std::cerr << "SoundMixer: music set " << name << " has an unusable " << path << std::endl;
 				return false;
 			}
-			trio[i].reset(track.release());
-			const auto *info = ov_info(trio[i].get(), -1);
-			const auto length = ov_pcm_total(trio[i].get(), -1);
-			if (!info || info->rate != 44100 || info->channels != 2 || length <= 0 ||
-				(i > 0 && length != frames) || ov_streams(trio[i].get()) != 1)
+			const auto length = op_pcm_total(trio[i].get(), -1);
+			if (i > 0 && length != frames)
 			{
-				std::cerr << "SoundMixer : music set " << name << " has an unusable " << path << std::endl;
+				std::cerr << "SoundMixer: music set " << name << " has mismatched lengths" << std::endl;
 				return false;
 			}
 			frames = length;
@@ -660,7 +668,7 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		justOpened = soundEnabled;
 	}
 
-	SDL_LockAudioStream(audioStream);
+	if (audioStream) SDL_LockAudioStream(audioStream);
 	if (mute)
 	{
 		this->musicVolume = 0;
@@ -671,7 +679,7 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 		this->musicVolume = musicVolume;
 		this->voiceVolume = voiceVolume;
 	}
-	SDL_UnlockAudioStream(audioStream);
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
 
 	// start the track that was selected while the device was closed, once the
 	// volumes are in place so the fade-in is not silent
@@ -682,24 +690,24 @@ void SoundMixer::setVolume(unsigned musicVolume, unsigned voiceVolume, bool mute
 // mode is read by mixaudio() on the audio thread; the write must hold the lock.
 void SoundMixer::stopMusic(void)
 {
-	SDL_LockAudioStream(audioStream);
+	if (audioStream) SDL_LockAudioStream(audioStream);
 	fadePos = 0;
 	pendingTrack = -1;
 	mode = MODE_STOP;
-	SDL_UnlockAudioStream(audioStream);
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
 }
 
 
 
 bool SoundMixer::isPlayerTransmittingVoice(int player)
 {
-	SDL_LockAudioStream(audioStream);
+	if (audioStream) SDL_LockAudioStream(audioStream);
 	if(voices.find(player) != voices.end())
 	{
-		SDL_UnlockAudioStream(audioStream);
+		if (audioStream) SDL_UnlockAudioStream(audioStream);
 		return true;
 	}
-	SDL_UnlockAudioStream(audioStream);
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
 	return false;
 }
 
@@ -709,12 +717,12 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_NO_VOICE)
 	if (soundEnabled)
 	{
-		SDL_LockAudioStream(audioStream);
+		if (audioStream) SDL_LockAudioStream(audioStream);
 		// get or create the voice
 		PlayerVoice &pv = voices[order->sender];
 		if (pv.voiceData.size() >= MAX_VOICE_BACKLOG_SAMPLES)
 		{
-			SDL_UnlockAudioStream(audioStream);
+			if (audioStream) SDL_UnlockAudioStream(audioStream);
 			return;
 		}
 		// insert 200 ms silence to let packets come if we aer the first
@@ -740,7 +748,7 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 		}
 		speex_bits_destroy(&bits);
 		
-		SDL_UnlockAudioStream(audioStream);
+		if (audioStream) SDL_UnlockAudioStream(audioStream);
 	}
 #endif
 }
