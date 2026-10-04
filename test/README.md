@@ -137,8 +137,8 @@ rule is exact and repeatable (`libgag/src/ScrollPhysicsTest.cpp`,
 timestamp carry no velocity, which is why older synthetic gestures never coast.
 
 Mac gesture scrolling uses the same injected timestamps and frame clocks. Run
-`GestureScroll/*`, `ScrollPhysics/*`, `UILayout/*`, `EventQueue/*` and
-`ScreenStack/*` with the unit runner. The Mac-only engine suite
+`GestureScroll/*`, `ScrollPhysics/*`, `UILayout/*` and `EventQueue/*` with the unit runner. Use the engine runner for
+`ScreenExecution/*`, which exercises screen-stack lifecycle and queued dispatch. The Mac-only engine suite
 `MacScrollMonitor/*` uses synthetic Cocoa samples to check phase conversion,
 zero-delta termination, native momentum sequence continuity, conventional-wheel
 pass-through and teardown. The `GameGUITouch` scroll-physics display case also

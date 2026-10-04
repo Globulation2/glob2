@@ -76,7 +76,7 @@ class Host
 	bool interacting() const { return popup != nullptr || !pressedKey.empty() || !capturedKey.empty(); }
 	// Scrolled content is coasting or bouncing after a touch; screens shorten
 	// their frame budget while this holds so the motion stays smooth.
-	bool animating() const { return scrolling && (scrolling->axis.isAnimating() || (gestureScrolling && scrollGestureMotion.pending())); }
+	bool animating() const { return scrolling && (scrolling->axis.isAnimating() || (gestureScrolling && scrollGestureMotion.needsFrames())); }
 	void scrollIntoView(const std::string &key);
 
 	// Queries, also for harnesses.

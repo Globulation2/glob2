@@ -141,7 +141,7 @@ void PhoneEditor::stopScrolling()
 }
 bool PhoneEditor::animating() const
 {
-	return (nativeScrolling && nativeScroll.pending()) || mapMotion.isAnimating() || trayAxis.axis.isAnimating() || inspectorAxis.axis.isAnimating();
+	return (nativeScrolling && nativeScroll.needsFrames()) || mapMotion.isAnimating() || trayAxis.axis.isAnimating() || inspectorAxis.axis.isAnimating();
 }
 void PhoneEditor::advance(Uint32 tick)
 {

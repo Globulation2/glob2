@@ -90,6 +90,9 @@ GLOB2_TEST_CASE("native phases and delta normalization; wheel pass-through; tear
 		CHECK(take().sequence == sequence);
 		source.momentumPhase = NSEventPhaseNone;
 		CHECK(route() == (NSEvent *)source); // Precise but phase-less wheel.
+		source.momentumPhase = NSEventPhaseBegan;
+		CHECK(route() == (NSEvent *)source); // Momentum-only mice stay on the wheel path too.
+		source.momentumPhase = NSEventPhaseNone;
 		source.hasPreciseScrollingDeltas = NO; source.phase = NSEventPhaseBegan;
 		CHECK(route() == (NSEvent *)source); // Conventional wheel.
 		source.hasPreciseScrollingDeltas = YES; source.phase = NSEventPhaseMayBegin;

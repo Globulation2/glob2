@@ -8,6 +8,7 @@ namespace
 {
 id monitor = nil;
 Uint64 sequence = 0;
+bool phasedSequence = false;
 std::optional<Uint64> timestampOffset;
 ScrollGesturePhase phase(NSEventPhase value)
 {
@@ -20,14 +21,25 @@ ScrollGesturePhase phase(NSEventPhase value)
 } // namespace
 NSEvent *MacScrollDetail::routeScroll(SDL_WindowID windowID, NSWindow *native, NSEvent *event)
 {
-	if (event.window != native || (!event.phase && !event.momentumPhase) || !event.hasPreciseScrollingDeltas)
+	if (event.window != native) return event;
+	if ((!event.phase && !event.momentumPhase) || !event.hasPreciseScrollingDeltas)
+	{
+		phasedSequence = false;
 		return event;
+	}
 	GestureScrollEvent sample;
 	sample.phase = phase(event.phase);
 	sample.momentum = phase(event.momentumPhase);
 	// MayBegin is a hover/preflight notification, not a captured gesture.
 	if (sample.phase == ScrollGesturePhase::None && sample.momentum == ScrollGesturePhase::None) return event;
-	if (sample.phase == ScrollGesturePhase::Began) ++sequence;
+	if (sample.phase == ScrollGesturePhase::Began)
+	{
+		++sequence;
+		phasedSequence = true;
+	}
+	// Some gesture mice provide momentum but no direct-contact phases. Keep
+	// their entire stream on SDL's wheel path; they cannot capture a UI gesture.
+	if (!phasedSequence) return event;
 	sample.sequence = sequence;
 	sample.windowID = windowID;
 	const Uint64 now = SDL_GetTicksNS();
@@ -50,13 +62,16 @@ NSEvent *MacScrollDetail::routeScroll(SDL_WindowID windowID, NSWindow *native, N
 	sample.wheelY = float(sample.dy * 0.1);
 	sample.direction = event.isDirectionInvertedFromDevice ? SDL_MOUSEWHEEL_FLIPPED : SDL_MOUSEWHEEL_NORMAL;
 	auto queued = gestureScrollEvent(sample);
-	return SDL_PushEvent(&queued) ? nil : event;
+	if (!SDL_PushEvent(&queued)) { phasedSequence = false; return event; }
+	if (sample.momentum == ScrollGesturePhase::Ended) phasedSequence = false;
+	return nil;
 }
 void removeMacScrollMonitor()
 {
 	if (monitor) [NSEvent removeMonitor:monitor];
 	monitor = nil;
 	timestampOffset.reset();
+	phasedSequence = false;
 	// Value payloads need no cleanup. Remove queued samples for the old window.
 	SDL_FlushEvent(gestureScrollEventType());
 }

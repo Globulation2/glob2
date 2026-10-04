@@ -225,7 +225,7 @@ void GameGUITouch::dismissMapPanels()
 
 bool GameGUITouch::scrollAnimating() const
 {
-	return (nativeScrolling && nativeScroll.pending()) || mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
+	return (nativeScrolling && nativeScroll.needsFrames()) || mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
 		   actionAxis.axis.isAnimating() || tutorialAxis.axis.isAnimating();
 }
 Uint64 GameGUITouch::eventTime(const SDL_Event &event) const

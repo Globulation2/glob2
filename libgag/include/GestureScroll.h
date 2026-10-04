@@ -46,6 +46,7 @@ class GestureScrollController
 	bool begins(const GestureScrollEvent &e) const { return e.phase == ScrollGesturePhase::Began && e.sequence != sequence; }
 	bool owns(const GestureScrollEvent &e) const { return sequence != 0 && e.sequence == sequence; }
 	bool pending() const { return active && !down; }
+	bool needsFrames() const { return active; }
 	void begin(const GestureScrollEvent &e, ScrollAxis &axis, double offset, double maximum, double extent, bool horizontal = false);
 	void handle(const GestureScrollEvent &e, ScrollAxis &axis, double scale = 1, double sign = 1);
 	void update(Ticks now, ScrollAxis &axis);

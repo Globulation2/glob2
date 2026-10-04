@@ -416,13 +416,16 @@ On macOS, phased trackpad and gesture-mouse scroll events use native momentum
 and a gentler rubber band (half the touch coefficient). The AppKit local monitor
 in libgag intercepts only precise events with gesture or momentum phases and
 queues a value-only `GestureScrollEvent`; ordinary wheels remain SDL wheel events.
+Devices with momentum phases but no direct-contact phases also retain the wheel
+path throughout, since they cannot establish gesture capture.
 `GestureScrollController` feeds those deltas into the existing axis without adding
 another fling. Native point deltas are converted into logical coordinates once.
 
 The deepest scrollable at gesture start owns the whole sequence, including its
 momentum after the pointer leaves. Stable-key rebuilds retain that capture; removal,
 modal changes, focus loss, viewport changes and external scroll jumps cancel it
-and consume the remaining tail. Content stretches while fingers pull past an edge;
+and consume the remaining tail. Active Mac gestures request 16 ms frames during
+contact and the short wait for native momentum. Content stretches while fingers pull past an edge;
 release or momentum reaching an edge starts the spring and stops further tail
 movement. A 150 ms gap after release or during momentum closes an incomplete
 sequence; a resting finger never times out. Horizontal editor trays choose the
