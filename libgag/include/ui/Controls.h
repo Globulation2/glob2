@@ -73,6 +73,8 @@ struct ChoiceOptions
 	// Shown instead of the selected option (icon-like compact controls).
 	std::string compactLabel;
 	bool controlEnabled = true;
+	// One per option, drawn before its label in the control and the popup.
+	std::vector<IconRef> icons;
 };
 // Current value with a disclosure; opens a popup list on activation.
 Element choice(const std::string &key, const std::vector<std::string> &options, int selected,
@@ -80,8 +82,10 @@ Element choice(const std::string &key, const std::vector<std::string> &options, 
 // A value chosen elsewhere (a modal); shows the value and an ellipsis.
 Element chooser(const std::string &key, const std::string &value, std::function<void()> open,
 				bool enabled = true);
+// `icons`, when given, holds one icon per option, drawn before its label.
 Element segments(const std::string &key, const std::vector<std::string> &options, int selected,
-				 std::function<void(int)> change, std::vector<bool> enabled = {});
+				 std::function<void(int)> change, std::vector<bool> enabled = {},
+				 std::vector<IconRef> icons = {});
 
 struct StepperOptions
 {

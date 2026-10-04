@@ -391,6 +391,20 @@ void InGameOptionScreen::setMute(bool value)
 	invalidate();
 }
 
+bool InGameOptionScreen::setMusicSet(const std::string &name)
+{
+	if (!globalContainer->mix->selectMusicSet(name))
+	{
+		musicSetStatus = fe::tr("[music set failed]");
+		invalidate();
+		return false;
+	}
+	globalContainer->settings.musicSet = name;
+	musicSetStatus.clear();
+	invalidate();
+	return true;
+}
+
 void InGameOptionScreen::setGameSpeed(int speed)
 {
 	if (!adjustableGameSpeed)
@@ -434,6 +448,21 @@ Element InGameOptionScreen::build(const Presentation &p)
 									   applyVolume();
 								   },
 								   voice));
+	}
+	{
+		auto sets = SoundMixer::getMusicSets();
+		sets.insert(sets.begin(), "");
+		std::vector<std::string> labels{fe::tr("[random music set]")};
+		for (size_t i = 1; i < sets.size(); ++i)
+			labels.push_back(SoundMixer::musicSetLabel(sets[i]));
+		const auto selected = std::find(sets.begin(), sets.end(), settings.musicSet);
+		parts.push_back(fe::label(fe::tr("[music set]")));
+		parts.push_back(fe::segments("music-set", labels,
+			selected == sets.end() ? 0 : int(selected - sets.begin()),
+			[this, sets](int index) { if (index >= 0 && index < int(sets.size())) setMusicSet(sets[index]); }));
+		parts.push_back(fe::paragraph(musicSetStatus.empty()
+			? std::string(GAGCore::FormattableString(fe::tr("[playing music set %0]"))
+				.arg(SoundMixer::musicSetLabel(globalContainer->mix->getMusicSet()))) : musicSetStatus));
 	}
 	if (adjustableGameSpeed)
 	{

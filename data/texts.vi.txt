@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ sẵn sàng
 Về trực tuyến
 [results back to room]
 Về phòng
+[results find another match]
+Tìm trận khác
 [results defeat]
 Thất bại
 [results ladder rating %0]

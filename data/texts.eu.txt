@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ joan da
 Itzuli sarera
 [results back to room]
 Itzuli gelara
+[results find another match]
+Bilatu beste partida bat
 [results defeat]
 Porrota
 [results ladder rating %0]

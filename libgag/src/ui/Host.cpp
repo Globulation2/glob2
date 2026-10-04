@@ -882,6 +882,8 @@ Element Host::buildPopup(const PopupSpec &spec)
 		options.selected = int(i) == spec.selected;
 		options.flat = true;
 		options.alignLeft = true;
+		if (i < spec.icons.size())
+			options.icon = spec.icons[i];
 		rows.push_back(button("popup/" + std::to_string(i), spec.options[i],
 							  [this, i] { pickPopup(int(i)); }, options));
 	}
@@ -913,8 +915,11 @@ void Host::layoutPopup()
 	const int margin = metricsValue.padding;
 	const auto &anchor = popup->spec.anchor;
 	int width = std::max(anchor.w, popup->spec.help.empty() ? 0 : current.pt(330));
+	const auto &icons = popup->spec.icons;
+	const bool hasIcons = std::any_of(icons.begin(), icons.end(), [](const IconRef &icon) { return icon && icon->available(); });
+	const int iconExtra = hasIcons ? current.pt(ButtonOptions{}.iconSize) + current.pt(6) : 0;
 	for (const auto &option : popup->spec.options)
-		width = std::max(width, ctx.text.width(FontRole::Body, option) + metricsValue.padding * 2 + metricsValue.scrollbar);
+		width = std::max(width, ctx.text.width(FontRole::Body, option) + iconExtra + metricsValue.padding * 2 + metricsValue.scrollbar);
 	width = std::max(1, std::min(width, safe.w - 2 * margin));
 	const int maxHeight = std::max(metricsValue.control, safe.h - 2 * margin);
 	const Size measured = popup->tree->measure(ctx, {width, 0, width, maxHeight});

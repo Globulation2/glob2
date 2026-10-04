@@ -235,6 +235,16 @@ python3 test/run_tests.py --filter 'GameGUISelection/*'
 python3 test/run_tests.py --filter 'ClientChannels/*'
 ```
 
+The HUD turns those events into coalesced notification rows (`src/hud/GameEventFeed.h`).
+The `GameEventFeed` suite (`src/hud/GameEventFeedTest.cpp`, unit binary) covers which
+reports share a row, warp-safe attack areas, the eight-row cap, expiry once both the
+game-time linger and the wall-clock floor have passed (normal speed, maximum speed,
+pause), fading, and GoToEvent stepping through rows by recency, with explicit times:
+
+```sh
+python3 test/run_tests.py --filter 'GameEventFeed/*'
+```
+
 For AddressSanitizer and UndefinedBehaviorSanitizer on macOS or Linux, build the
 engine tests into a separate directory with the sanitizer flags and run the same filter:
 
@@ -1616,3 +1626,13 @@ For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
 opt-in assertion checks each AI order when selected and reports unavailable work
 without filtering it. A repair can finish while its order waits in the network
 queue, so replay-time building health alone cannot classify upgrade intentions.
+
+### Soundtrack selection
+
+`MusicSet/*` exercises installed soundtrack discovery, atomic decoder failure,
+queued mood replacement, live dummy-audio switching, muted changes and saved
+preferences through the current in-game dialog API. `Settings/*` also covers the
+Audio selector and captures its layout. The mixer selection regression suite is
+`SoundMixerTrackSelection/*`. These display cases run in isolated runner processes.
+Only Original ships, so `MusicSet/*` builds its extra valid and broken sets from copies
+of the shipped Oggs in the disposable profile.

@@ -140,6 +140,19 @@ const Online::MapInfo *OnlineMapsScreen::selectedMap() const
 	return selected >= 0 && selected < int(maps.size()) ? &maps[selected] : nullptr;
 }
 
+std::string OnlineMapsScreen::backLabel() const
+{
+	switch (origin)
+	{
+	case Origin::Hub:
+		return tr("[results back to online]");
+	case Origin::Room:
+		return tr("[results back to room]");
+	default:
+		return tr("[Back]");
+	}
+}
+
 void OnlineMapsScreen::onEscape()
 {
 	if (reporting)
@@ -177,7 +190,21 @@ void OnlineMapsScreen::onTimer(Uint32)
 				const auto &map = *downloading;
 				Online::RoomMapChoice choice{map.id, map.latestVersion->hash, map.title, map.latestVersion->width,
 											 map.latestVersion->height, map.latestVersion->teamCount};
-				status = Online::useMapInRoom(choice) ? std::string() : tr("[maps saved for next room]");
+				if (Online::useMapInRoom(choice))
+				{
+					download.reset();
+					downloading.reset();
+					endExecute(USED_IN_ROOM);
+					return;
+				}
+				if (origin == Origin::Hub)
+				{
+					download.reset();
+					downloading.reset();
+					endExecute(OPEN_ROOM);
+					return;
+				}
+				status = tr("[maps saved for next room]");
 			}
 			else
 				status = download->error().empty() ? tr("[maps download failed]") : download->error();
@@ -767,12 +794,12 @@ Element OnlineMapsScreen::build(const Presentation &p)
 	panel.note = tab == Tab::Browse
 					 ? std::string(FormattableString(tr("[maps browse note %0]")).arg(originHost(data.instance)))
 					 : tr("[maps visibility note]");
-	panel.actions = {{"back", tr("[results back to online]"), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};
+	panel.actions = {{"back", backLabel(), [this] { endExecute(BACK); }, false, SDLK_ESCAPE}};
 	if (phone)
 	{
 		ButtonOptions backOptions;
 		backOptions.icon = uiIcon(UIIcon::Back);
-		backOptions.accessibleLabel = tr("[results back to online]");
+		backOptions.accessibleLabel = backLabel();
 		backOptions.shortcut = SDLK_ESCAPE;
 		Element backButton = width(p.pt(56), button("back", "", [this] { onEscape(); }, backOptions));
 		if (tab == Tab::Mine)

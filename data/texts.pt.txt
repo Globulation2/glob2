@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ saiu
 Voltar ao menu online
 [results back to room]
 Voltar à sala
+[results find another match]
+Procurar outra partida
 [results defeat]
 Derrota
 [results ladder rating %0]

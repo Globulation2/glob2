@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ kilépett
 Vissza az online menübe
 [results back to room]
 Vissza a szobába
+[results find another match]
+Újabb mérkőzés keresése
 [results defeat]
 Vereség
 [results ladder rating %0]

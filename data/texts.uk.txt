@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ OpenGL недоступний у цій збірці.
 Назад до онлайну
 [results back to room]
 Назад до кімнати
+[results find another match]
+Знайти ще матч
 [results defeat]
 Поразка
 [results ladder rating %0]

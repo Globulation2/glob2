@@ -384,7 +384,11 @@ void RoomScreen::editSetup(int customGameTab)
 			if (result == RoomMapPickerScreen::MoreOptions)
 				openCustomGame(0);
 			else if (result == RoomMapPickerScreen::Catalog)
-				screens.push(std::make_unique<OnlineMapsScreen>(screens));
+			{
+				auto maps = std::make_unique<OnlineMapsScreen>(screens);
+				maps->setOrigin(OnlineMapsScreen::Origin::Room);
+				screens.push(std::move(maps));
+			}
 			else if (result == RoomMapPickerScreen::Chosen && picker.choseGenerated())
 				online->useGeneratedMap(picker.generatedSetup());
 			else if (result == RoomMapPickerScreen::Chosen)

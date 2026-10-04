@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ odešel
 Zpět do online hry
 [results back to room]
 Zpět do místnosti
+[results find another match]
+Najít další zápas
 [results defeat]
 Porážka
 [results ladder rating %0]

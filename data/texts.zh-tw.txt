@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ AI
 返回線上
 [results back to room]
 返回房間
+[results find another match]
+再找一場對局
 [results defeat]
 失敗
 [results ladder rating %0]

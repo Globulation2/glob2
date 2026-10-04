@@ -190,7 +190,11 @@ void QuickMatchScreen::handOff()
 void QuickMatchScreen::openProfile()
 {
 	if (live)
-		screens.push(std::make_unique<OnlineProfileScreen>(screens));
+	{
+		auto profile = std::make_unique<OnlineProfileScreen>(screens);
+		profile->setBackLabel(tr("[Back]"));
+		screens.push(std::move(profile));
+	}
 }
 
 void QuickMatchScreen::openMaps()

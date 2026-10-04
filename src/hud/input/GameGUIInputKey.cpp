@@ -6,6 +6,7 @@
 #include <algorithm>
 
 #include <SDL3/SDL_keycode.h>
+#include <SDL3/SDL_timer.h>
 
 #include <FormatableString.h>
 #include <GameplayRecording.h>
@@ -277,37 +278,18 @@ void GameGUI::handleKey(SDL_KeyboardEvent key, bool pressed, bool repeat)
 				break;
 				case GameGUIKeyActions::GoToEvent:
 				{
+					// The most recently reported notification first; further
+					// presses step through the others.
 					eventGoTypeIterator = eventGoType;
-					int evX = eventGoPosX;
-					int evY = eventGoPosY;
-
-					int oldViewportX = viewportX;
-					int oldViewportY = viewportY;
-
-					int sw = globalContainer->gfx->getW();
-					int sh = globalContainer->gfx->getH();
-					stopViewportMotion();
-					viewportX = evX-int(camera.visibleW()/64);
-					viewportY = evY-int(camera.visibleH()/64);
-
-					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
+					if (const GameEventFeed::Row *row = eventFeed.nextJumpTarget(SDL_GetTicks()))
+						centerViewportOn(row->x, row->y);
+					else
+						centerViewportOn(eventGoPosX, eventGoPosY);
 				}
 				break;
 				case GameGUIKeyActions::GoToHome:
 				{
-					int evX = localTeam->startPosX;
-					int evY = localTeam->startPosY;
-
-					int oldViewportX = viewportX;
-					int oldViewportY = viewportY;
-
-				    int sw = globalContainer->gfx->getW();
-					int sh = globalContainer->gfx->getH();
-					stopViewportMotion();
-					viewportX = evX-int(camera.visibleW()/64);
-					viewportY = evY-int(camera.visibleH()/64);
-
-					viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
+					centerViewportOn(localTeam->startPosX, localTeam->startPosY);
 				}
 				break;
 				case GameGUIKeyActions::PauseGame:

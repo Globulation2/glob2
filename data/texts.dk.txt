@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ gået
 Tilbage til online
 [results back to room]
 Tilbage til rummet
+[results find another match]
+Find en ny kamp
 [results defeat]
 Nederlag
 [results ladder rating %0]

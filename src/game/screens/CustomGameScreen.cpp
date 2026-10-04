@@ -47,6 +47,16 @@ std::vector<std::string> localized(std::vector<std::string> v)
 		s = tr(s);
 	return v;
 }
+// Rows of short side-by-side labels (tabs, segments) keep icons only where the
+// labels still fit on one line beside them: not on the smallest phones or with large text.
+bool rowIcons(const Presentation &p)
+{
+	return p.safe.w >= p.textPt(400);
+}
+fe::IconRef rowIcon(const Presentation &p, fe::UIIcon icon)
+{
+	return rowIcons(p) ? fe::uiIcon(icon) : fe::IconRef{};
+}
 } // namespace
 
 // AI profile / choice screen ---------------------------------------------------------
@@ -103,8 +113,8 @@ Element CustomGameChoiceScreen::build(const Presentation &p)
 		});
 	const std::string useLabel = tr("Use") + (choices.empty() ? std::string() : " " + names[std::size_t(current)]);
 	return fe::page(title, body,
-					fe::actions({{"profile/back", tr("Back"), [this] { endExecute(-2); }, false, SDLK_ESCAPE},
-								 {"profile/use", useLabel, [this] { use(); }, true, SDLK_RETURN, !choices.empty()}},
+					fe::actions({{"profile/back", tr("Back"), [this] { endExecute(-2); }, false, SDLK_ESCAPE, true, fe::uiIcon(fe::UIIcon::Back)},
+								 {"profile/use", useLabel, [this] { use(); }, true, SDLK_RETURN, !choices.empty(), fe::uiIcon(fe::UIIcon::Check)}},
 								p),
 					p, 1000);
 }
@@ -912,6 +922,9 @@ Element CustomGameScreen::build(const Presentation &p)
 		// Tabs use the body font; large text on a narrow screen would break the titles mid-word.
 		if (narrow && p.textGrowth > 1.2)
 			options.role = fe::FontRole::Support;
+		static constexpr fe::UIIcon tabIcons[] = {fe::UIIcon::Map, fe::UIIcon::Users, fe::UIIcon::Rules};
+		options.icon = rowIcon(p, tabIcons[i]);
+		options.iconSize = narrow || topActions ? 20 : 24;
 		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
 		// Desktop tabs carry their current choice underneath, as before.
 		tabs.push_back(fe::expanded(narrow || topActions ? tab : fe::column({tab, fe::caption(details[std::size_t(i)])}, {p.pt(2)})));
@@ -928,22 +941,27 @@ Element CustomGameScreen::build(const Presentation &p)
 		ready = setup.validation().empty() && (setup.random || validMap);
 	std::string startLabel = !setup.humanColony() ? tr("Watch game")
 												: tr(setup.random ? "Play this map" : "Start game");
+	fe::UIIcon startIcon = setup.humanColony() ? fe::UIIcon::Start : fe::UIIcon::Watch;
 	if (forRoom)
+	{
 		startLabel = tr("Use in room");
+		startIcon = fe::UIIcon::Check;
+	}
+	const auto backIcon = fe::uiIcon(fe::UIIcon::Back);
 	std::vector<fe::MenuAction> footerActions;
 	if (phoneFlow)
 	{
 		const int tab = currentTab;
-		footerActions.push_back({"back", tr("Back"), [this, tab] { tab > 0 ? selectTab(tab - 1) : endExecute(CANCEL); }, false, SDLK_ESCAPE});
+		footerActions.push_back({"back", tr("Back"), [this, tab] { tab > 0 ? selectTab(tab - 1) : endExecute(CANCEL); }, false, SDLK_ESCAPE, true, backIcon});
 		if (tab < 2)
-			footerActions.push_back({"start", tr("Next"), [this, tab] { selectTab(tab + 1); }, true, SDLK_RETURN});
+			footerActions.push_back({"start", tr("Next"), [this, tab] { selectTab(tab + 1); }, true, SDLK_RETURN, true, fe::uiIcon(fe::UIIcon::ChevronRight)});
 		else
-			footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
+			footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready, fe::uiIcon(startIcon)});
 	}
 	else
 	{
-		footerActions.push_back({"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE});
-		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
+		footerActions.push_back({"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE, true, backIcon});
+		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready, fe::uiIcon(startIcon)});
 	}
 	auto actionRow = fe::actions(std::move(footerActions), p);
 	// Short landscape phones keep their few lines for the tab: the tabs already say it all.
@@ -980,26 +998,31 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> left;
 	// Content-sized pills at the left on desktop, stretched segments on touch.
-	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, int selected, std::function<void(int)> change)
+	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, const std::vector<fe::UIIcon> &icons,
+					 int selected, std::function<void(int)> change)
 	{
+		std::vector<fe::IconRef> iconRefs;
+		for (auto icon : icons)
+			iconRefs.push_back(rowIcon(p, icon));
 		if (p.touch)
-			return fe::segments(key, labels, selected, change);
+			return fe::segments(key, labels, selected, change, {}, iconRefs);
 		std::vector<Element> buttons;
 		for (int i = 0; i < int(labels.size()); ++i)
 		{
 			fe::ButtonOptions options;
 			options.selected = selected == i;
+			options.icon = iconRefs[std::size_t(i)];
 			buttons.push_back(fe::constrained({p.pt(120), 0, fe::Constraints::Unbounded, fe::Constraints::Unbounded},
 											  fe::padding(fe::Insets::symmetric(p.pt(8), 0),
 														  fe::button(key + "/" + std::to_string(i), labels[std::size_t(i)], [change, i] { change(i); }, options))));
 		}
 		return fe::row(std::move(buttons), {p.pt(8), fe::CrossAlign::Center, fe::MainAlign::Start});
 	};
-	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), setup.random, [this](int value) { setMapMode(value); }));
+	left.push_back(pills("map/mode", localized({"Premade maps", "Random map"}), {fe::UIIcon::Map, fe::UIIcon::Dice}, setup.random, [this](int value) { setMapMode(value); }));
 	if (!setup.random)
 	{
 		if (separateMapLibraries)
-			left.push_back(pills("map/library", localized({"Built-in maps", "Your maps"}), userMaps,
+			left.push_back(pills("map/library", localized({"Built-in maps", "Your maps"}), {fe::UIIcon::Tutorial, fe::UIIcon::Player}, userMaps,
 								 [this](int value)
 								 {
 									 if (userMaps != bool(value))
@@ -1028,7 +1051,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 									listOptions));
 		if (validMap)
 			left.push_back(fe::button("map/parameters", tr("Size and parameters"), [this] { repeatCurrentMap(); },
-				{false, false, !previewBusy(), true, true}));
+				{.enabled = !previewBusy(), .flat = true, .alignLeft = true, .icon = fe::uiIcon(fe::UIIcon::Settings)}));
 	}
 	else
 	{
@@ -1043,8 +1066,10 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		GenerationRequest defaults;
 		defaults.setMethodDefaults(g.method);
 		const bool atDefaults = g.options == defaults.options && g.wDec == defaults.wDec && g.hDec == defaults.hDec && setup.capacity == defaults.nbTeams;
-		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); }, {false, false, !atDefaults}),
-								 fe::button("generator/random", tr("Random parameters"), [this] { randomizeParameters(); })},
+		left.push_back(fe::wrap({fe::button("generator/reset", tr("Reset to defaults"), [this] { resetParameters(); },
+											{.enabled = !atDefaults, .icon = fe::uiIcon(fe::UIIcon::Reset)}),
+								 fe::button("generator/random", tr("Random parameters"), [this] { randomizeParameters(); },
+											{.icon = fe::uiIcon(fe::UIIcon::Dice)})},
 								{-1, p.pt(150)}));
 		auto discrete = [&](const GenerationRequest::Control &c, const std::string &id)
 		{
@@ -1075,8 +1100,13 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			fe::ButtonOptions header;
 			header.selected = expanded[section];
 			header.alignLeft = true;
-			left.push_back(fe::button("generator/section/" + std::to_string(section), std::string(expanded[section] ? "-  " : "+  ") + tr(sectionName),
-									  [this, section] { expanded[section] = !expanded[section]; }, header));
+			header.icon = fe::uiIcon(section == 0 ? fe::UIIcon::Terrain : section == 1 ? fe::UIIcon::Resources : fe::UIIcon::Layout);
+			// The chevron at the right edge shows whether the section is open.
+			auto chevron = fe::uiIcon(expanded[section] ? fe::UIIcon::ChevronDown : fe::UIIcon::ChevronRight);
+			left.push_back(fe::stack({fe::button("generator/section/" + std::to_string(section), tr(sectionName),
+												 [this, section] { expanded[section] = !expanded[section]; }, header),
+									  fe::padding(fe::Insets::symmetric(p.pt(10), 0),
+												  fe::row({fe::expanded(fe::spacer()), fe::icon(chevron)}, {0, fe::CrossAlign::Center}))}));
 			if (!expanded[section])
 				continue;
 			bool any = false;
@@ -1130,7 +1160,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 			// construction settings. Keep it after the advanced layout fields.
 			if (section == 2 && !forRoom)
 				left.push_back(fe::button("generator/repeat", tr("Size and parameters"), [this] { repeatCurrentMap(); },
-					{false, false, validMap && !previewBusy(), true, true}));
+					{.enabled = validMap && !previewBusy(), .flat = true, .alignLeft = true, .icon = fe::uiIcon(fe::UIIcon::Settings)}));
 		}
 	}
 	auto leftParts = left;
@@ -1153,9 +1183,10 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 		infoRow.push_back(p.touch ? fe::compactButton(
 										"quality/info", tr("Start quality"), fe::UIIcon::Info,
 										[this] { showStartQuality(); }, p)
-								  : fe::button("quality/info", "i", [this] { showStartQuality(); },
-											   {false, false, true, false, false, false,
-												SDLK_UNKNOWN, fe::FontRole::Support, 24}));
+								  : fe::button("quality/info", "", [this] { showStartQuality(); },
+											   {.flat = true, .role = fe::FontRole::Support, .minHeight = 24,
+												.tooltip = tr("Start quality"), .accessibleLabel = tr("Start quality"),
+												.icon = fe::uiIcon(fe::UIIcon::Info)}));
 	}
 	right.push_back(fe::row(std::move(infoRow), {p.pt(6), fe::CrossAlign::Center}));
 	// A reroll invalidates the launch snapshot, not the image being displayed.
@@ -1185,7 +1216,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 								  invalidatePreview();
 								  previewDue = SDL_GetTicks();
 							  },
-							  p, {false, false, setup.validation().empty() && !previewBusy()})));
+							  p, {.enabled = setup.validation().empty() && !previewBusy(), .icon = fe::uiIcon(fe::UIIcon::Refresh)})));
 	auto rightColumn = fe::column(std::move(right), {p.pt(8)});
 	if (narrow)
 	{
@@ -1217,6 +1248,8 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 	fe::ChoiceOptions controllerOptions;
 	controllerOptions.enabled = enabled;
 	controllerOptions.help = tr("Shared control needs a free controller slot (maximum %0).");
+	for (auto icon : {fe::UIIcon::Player, fe::UIIcon::Robot, fe::UIIcon::Users, fe::UIIcon::Lock})
+		controllerOptions.icons.push_back(fe::uiIcon(icon));
 	auto controller = fe::choice(id + "/controller", controllerNames, c.controller,
 								 [this, i](int value) { setup.setController(i, (CustomGameSetup::Controller)value); }, controllerOptions);
 	std::vector<std::string> teams;
@@ -1241,7 +1274,9 @@ CustomGameScreen::ColonyFields CustomGameScreen::colonyFields(int i, const Prese
 			{
 				auto ai = fe::choice(id + "/ai", names, selectedAI,
 									 [this, i](int value) { selectAI(i, value); });
-				auto info = fe::button(id + "/info", tr("AI strategy"), [this, i] { showAIProfile(i); });
+				// Touch: an icon-only button, leaving the AI name room on one line.
+				auto info = fe::compactButton(id + "/info", tr("AI strategy"), fe::UIIcon::Info,
+											  [this, i] { showAIProfile(i); }, p, {.icon = fe::uiIcon(fe::UIIcon::Info)});
 				if (available.w < p.textPt(300))
 					return fe::column({ai, info}, {p.pt(6)});
 				return fe::row({fe::expanded(ai), info}, {p.pt(6), fe::CrossAlign::Center});
@@ -1259,7 +1294,8 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	std::vector<Element> parts;
 	const int selectedFormat = setup.format == "FFA" ? 0 : setup.format == "2 vs 2" ? 1 : setup.format == "You vs all" ? 2 : -1;
 	parts.push_back(fe::segments("format", localized({"FFA", "2 vs 2", "You vs all"}), selectedFormat, [this](int i) { setup.presetTeams(i); },
-								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1}));
+								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1},
+								 {rowIcon(p, fe::UIIcon::FreeForAll), rowIcon(p, fe::UIIcon::Users), rowIcon(p, fe::UIIcon::Crown)}));
 	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / " + std::to_string(Team::MAX_COUNT) + " " + tr("controllers")));
 	for (int i = 0; i < setup.capacity; ++i)
 	{
@@ -1331,6 +1367,22 @@ std::vector<std::string> optionTexts(const Rule &rule)
 	return texts;
 }
 
+fe::UIIcon groupIcon(Group group)
+{
+	switch (group)
+	{
+	case Group::Match:
+		return fe::UIIcon::Trophy;
+	case Group::Start:
+		return fe::UIIcon::Campaign;
+	case Group::Economy:
+		return fe::UIIcon::Economy;
+	case Group::Combat:
+		break;
+	}
+	return fe::UIIcon::Combat;
+}
+
 // A paragraph led by the warning icon, in the warning colour.
 Element warning(const std::string &text, const Presentation &p, const fe::Theme &theme)
 {
@@ -1352,7 +1404,7 @@ Element RulesetChoiceScreen::build(const Presentation &p)
 									[this, i] { endExecute(i); }, p));
 	}
 	return fe::page(tr("Choose a ruleset"), fe::scroll("rulesets/list", fe::column(std::move(cards), {p.pt(6)})),
-					fe::actions({{"rulesets/back", tr("Back"), [this] { endExecute(-2); }, false, SDLK_ESCAPE}}, p), p, 720);
+					fe::actions({{"rulesets/back", tr("Back"), [this] { endExecute(-2); }, false, SDLK_ESCAPE, true, fe::uiIcon(fe::UIIcon::Back)}}, p), p, 720);
 }
 
 void RulesetChoiceScreen::onTimer(Uint32)
@@ -1450,17 +1502,17 @@ Element CustomGameScreen::ruleRow(const Rule &rule, const Presentation &p, bool 
 		options.tooltip = FormattableString(tr("Reset to %0")).arg(original);
 		options.accessibleLabel = label + ": " + options.tooltip;
 		auto action = [this, &rule] { setRuleValue(rule, setup.baseRuleset().value(rule, setup)); };
-		// Touch: a 48-point icon; pointer hosts name the action.
+		options.icon = fe::uiIcon(fe::UIIcon::Reset);
+		// Touch: a 48-point icon; pointer hosts name the action beside it.
 		if (p.touch)
 		{
-			options.icon = fe::uiIcon(fe::UIIcon::Back);
 			options.minHeight = 48;
 			reset = fe::button(key + "/reset", "", action, options);
 		}
 		else
 			reset = fe::button(key + "/reset", tr("Reset"), action, options);
 	}
-	const int resetWidth = p.touch ? p.pt(48) : p.textPt(70);
+	const int resetWidth = p.touch ? p.pt(48) : p.textPt(70) + p.pt(26);
 	Element noteText = note.empty() ? nullptr : fe::hint(note);
 	const bool toggle = rule.kind == Kind::Toggle && applies;
 
@@ -1513,7 +1565,9 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 		if (groupFilter && group != rulesGroup)
 			continue;
 		// A filtered layout's group menu already names the group.
-		std::vector<Element> rows{groupFilter ? nullptr : fe::heading(tr(CustomGameRules::groupLabel(group)))};
+		std::vector<Element> rows{groupFilter ? nullptr
+											  : fe::row({fe::icon(fe::uiIcon(groupIcon(group)), {24}), fe::heading(tr(CustomGameRules::groupLabel(group)))},
+														{p.pt(8), fe::CrossAlign::Center})};
 		for (const auto &rule : CustomGameRules::rules())
 		{
 			if (rule.group != group || (forRoom && rule.inRooms == CustomGameRules::InRooms::Hidden))
@@ -1553,7 +1607,8 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 		body.push_back(stackGroups(std::move(groups)));
 	if (!all && hidden > 0)
 		body.push_back(fe::row({fe::expanded(fe::hint(FormattableString(tr("%0 more rules are at their Standard values.")).arg(hidden))),
-								fe::button("rules/all", tr("Show all rules"), [this] { setRulesView(RulesView::All); })},
+								fe::button("rules/all", tr("Show all rules"), [this] { setRulesView(RulesView::All); },
+										   {.icon = rowIcon(p, fe::UIIcon::AllRules)})},
 							   {p.pt(8), fe::CrossAlign::Center}));
 	auto rulesList = [&body, &p] { return fe::scroll("lobby/rules", fe::column(body, {p.pt(8)})); };
 
@@ -1561,11 +1616,13 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 	{
 		fe::ButtonOptions options;
 		options.flat = !p.touch;
+		options.icon = fe::uiIcon(fe::UIIcon::Reset);
 		return fe::button("rules/reset", FormattableString(tr("Reset to %0")).arg(fe::tr(base.name)),
 						  [this] { selectRuleset(setup.rulesetId); }, options);
 	};
 	auto setView = [this](int v) { setRulesView(v == 0 ? RulesView::Summary : RulesView::All); };
 	const auto views = localized({"Summary", "All rules"});
+	const std::vector<fe::IconRef> viewIcons{rowIcon(p, fe::UIIcon::Summary), rowIcon(p, fe::UIIcon::AllRules)};
 
 	if (rail)
 	{
@@ -1574,7 +1631,7 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 			cards.push_back(rulesetCard("ruleset/" + ruleset.id, ruleset, ruleset.id == base.id, false,
 										[this, id = ruleset.id] { selectRuleset(id); }, p));
 		auto header = fe::row({fe::expanded(fe::heading(setup.rulesetTitle(forRoom))), changed ? resetAll() : nullptr,
-							   fe::width(p.textPt(240), fe::segments("rules/view", views, int(rulesView), setView))},
+							   fe::width(p.textPt(240) + p.pt(52), fe::segments("rules/view", views, int(rulesView), setView, {}, viewIcons))},
 							  {p.pt(10), fe::CrossAlign::Center});
 		// Summary rows stay near their labels instead of spanning the whole window.
 		Element list = rulesList();
@@ -1595,26 +1652,33 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 	if (groupFilter)
 	{
 		std::vector<std::string> names;
+		fe::ChoiceOptions groupOptions;
 		for (Group group : CustomGameRules::groups)
+		{
 			names.push_back(tr(CustomGameRules::groupLabel(group)));
+			groupOptions.icons.push_back(fe::uiIcon(groupIcon(group)));
+		}
 		groupChoice = fe::choice("rules/group", names, int(rulesGroup),
 								 [this](int g)
 								 {
 									 rulesGroup = CustomGameRules::groups[std::size_t(g)];
 									 invalidate();
-								 });
+								 },
+								 groupOptions);
 	}
 	if (sidePanel)
 	{
 		// Short landscape phones: the ruleset and view at the left, the rules beside them. The
 		// view is a menu here; two segments would wrap in the narrow pane.
-		controls.push_back(fe::choice("rules/view", views, int(rulesView), setView));
+		fe::ChoiceOptions viewOptions;
+		viewOptions.icons = viewIcons;
+		controls.push_back(fe::choice("rules/view", views, int(rulesView), setView, viewOptions));
 		controls.push_back(groupChoice);
 		const int side = std::min(p.textPt(230), p.safe.w * 2 / 5);
 		return fe::row({fe::width(side, fe::scroll("rules/controls", fe::column(std::move(controls), {p.pt(6)}))), fe::expanded(rulesList())},
 					   {p.pt(12), fe::CrossAlign::Stretch});
 	}
-	auto viewSegments = fe::segments("rules/view", views, int(rulesView), setView);
+	auto viewSegments = fe::segments("rules/view", views, int(rulesView), setView, {}, viewIcons);
 	// The group menu shares the view's row when both fit, else goes under it.
 	if (groupChoice && p.safe.w < p.textPt(480))
 	{

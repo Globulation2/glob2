@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ AI
 オンラインに戻る
 [results back to room]
 ルームに戻る
+[results find another match]
+次の対戦を探す
 [results defeat]
 敗北
 [results ladder rating %0]

@@ -17,6 +17,7 @@ struct Handoffs
 	RoomMapHandler roomMap;
 	std::optional<RoomMapChoice> pendingRoomMap;
 	RematchHandler rematch;
+	QueueAgainHandler queueAgain;
 };
 Handoffs &handoffs()
 {
@@ -126,6 +127,20 @@ bool requestRematch(const RematchRequest &request)
 	if (!h.rematch)
 		return false;
 	h.rematch(request);
+	return true;
+}
+
+void setQueueAgainHandler(QueueAgainHandler handler)
+{
+	handoffs().queueAgain = std::move(handler);
+}
+
+bool requestQueueAgain()
+{
+	auto &h = handoffs();
+	if (!h.queueAgain)
+		return false;
+	h.queueAgain();
 	return true;
 }
 } // namespace Online

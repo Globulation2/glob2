@@ -309,6 +309,10 @@ must not load filenames. `icon(asset, {20})` creates a decorative element whose 
 is in points. `ButtonOptions::icon` adds an icon before the button label with a
 6-point gap; `iconSize` defaults to 20 points. The icon takes the button's resolved
 ink colour, including disabled, primary and danger states.
+`segments(..., enabled, icons)` and `ChoiceOptions::icons` take one icon per option:
+segments pass it to each button, and a choice draws the selected option's icon before
+its value and every option's icon in its popup. `MenuAction::icon` does the same for
+action rows.
 
 For an icon-only button, pass empty visible text and a translated
 `accessibleLabel`; unnamed icon-only buttons are rejected. Set `tooltip` to the
@@ -343,6 +347,10 @@ pointer hosts, a 24-point icon in a button at least 48 points square on touch
 hosts, with a diagnostic name, tooltip and visible-text fallback. Mobile chat
 uses Send and Close icons, the compact landscape picker uses a Back arrow, and
 custom-game previews use Refresh and Info icons for reroll and start quality.
+The custom-game lobby labels its tabs, footer actions, map-mode pills, parameter
+buttons, section headers (with a chevron for open or closed), team formats, colony
+controllers, rule groups and rule views with icons beside their text; rule values
+stay text-only.
 Launch/confirmation choices, parameter operations and immediate file deletion
 keep their labels. Landscape parameter fields widen with mobile text size so
 numeric choices remain readable. The gameplay action strip retains its

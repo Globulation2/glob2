@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ OpenGL غير متوفر في هذا الإصدار.
 العودة إلى اللعب عبر الإنترنت
 [results back to room]
 العودة إلى الغرفة
+[results find another match]
+ابحث عن مباراة أخرى
 [results defeat]
 هزيمة
 [results ladder rating %0]

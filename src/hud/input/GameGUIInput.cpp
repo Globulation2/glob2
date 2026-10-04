@@ -295,6 +295,29 @@ void GameGUI::handleMenuIconClick(SDL_MouseButtonEvent mouseEvent)
 	}
 }
 
+void GameGUI::centerViewportOn(int x, int y)
+{
+	const int oldViewportX = viewportX;
+	const int oldViewportY = viewportY;
+	stopViewportMotion();
+	viewportX = x-int(camera.visibleW()/64);
+	viewportY = y-int(camera.visibleH()/64);
+	viewportChanged(oldViewportX, viewportX, oldViewportY, viewportY);
+}
+
+bool GameGUI::handleEventFeedClick(int mx, int my)
+{
+	for (const EventFeedHit &hit : eventFeedHits)
+	{
+		if (mx >= hit.x && mx < hit.x + hit.w && my >= hit.y && my < hit.y + hit.h)
+		{
+			centerViewportOn(hit.mapX, hit.mapY);
+			return true;
+		}
+	}
+	return false;
+}
+
 // Mouse-button press on the game view (only reached when no in-game menu is
 // open): right-click view cycling, left-click dispatch to menu panel / replay
 // bar / map, middle-click panning, and legacy wheel buttons 4/5.
@@ -316,6 +339,10 @@ void GameGUI::handleMouseButtonDown(SDL_MouseButtonEvent mouseEvent)
 		cycleGameSpeed(button==SDL_BUTTON_LEFT);
 		return;
 	}
+
+	// A game-event notification row jumps the view to where it happened.
+	if (button==SDL_BUTTON_LEFT && handleEventFeedClick(mouseEvent.x, mouseEvent.y))
+		return;
 
 	if (button==SDL_BUTTON_RIGHT)
 	{

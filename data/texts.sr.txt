@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ LAN домаћин није доступан. Проверите дозволу 
 Назад на мрежу
 [results back to room]
 Назад у собу
+[results find another match]
+Нађи још један меч
 [results defeat]
 Пораз
 [results ladder rating %0]

@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ gegangen
 Zurück zu Online
 [results back to room]
 Zurück zum Raum
+[results find another match]
+Weiteres Match suchen
 [results defeat]
 Niederlage
 [results ladder rating %0]

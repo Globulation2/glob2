@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ ayrıldı
 Çevrimiçine dön
 [results back to room]
 Odaya dön
+[results find another match]
+Başka maç bul
 [results defeat]
 Yenilgi
 [results ladder rating %0]

@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ odšel
 Nazaj na splet
 [results back to room]
 Nazaj v sobo
+[results find another match]
+Poišči novo tekmo
 [results defeat]
 Poraz
 [results ladder rating %0]

@@ -1,3 +1,15 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
 [settings Edge scrolling]
 
 [settings Edge scrolling in fullscreen]
@@ -3634,6 +3646,8 @@ keluar
 Kembali ke daring
 [results back to room]
 Kembali ke ruang
+[results find another match]
+Cari pertandingan lain
 [results defeat]
 Kekalahan
 [results ladder rating %0]

@@ -280,27 +280,8 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	}
 
 	assert(localTeam);
-	// The simulation forwards GameEvents through ClientEvents; show the ones
-	// for the team being viewed, oldest first.
 	const int viewedTeam = localTeam->teamNumber;
-	if (viewedTeam >= 0 && viewedTeam < Team::MAX_COUNT)
-	{
-		auto &teamEvents = pendingTeamEvents[viewedTeam];
-		while (!teamEvents.empty())
-		{
-			const GameEvent gevent = std::move(teamEvents.front());
-			teamEvents.pop_front();
-			addMessage(gevent.formatColor(), gevent.formatMessage(game), false);
-			eventGoPosX = gevent.getX();
-			eventGoPosY = gevent.getY();
-			eventGoType = gevent.getEventType();
-			// In the strategic view an attack is too small to notice on the map
-			// itself, so it raises the same pulsing mark a player's ping does.
-			if (view.render.detail.strategic > 0 &&
-				(eventGoType == GEUnitUnderAttack || eventGoType == GEBuildingUnderAttack))
-				markManager.addMark(Mark(gevent.getX(), gevent.getY(), GAGCore::Color(255, 48, 32)));
-		}
-	}
+	stepEventFeed(viewedTeam);
 
 	// voice step
 	std::shared_ptr<OrderVoiceData> orderVoiceData;
@@ -370,6 +351,42 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 		anyPlayerWaitedTimeFor++;
 	else
 		anyPlayerWaitedTimeFor = 0;
+}
+
+void GameGUI::stepEventFeed(int viewedTeam)
+{
+	if (eventFeed.team() != viewedTeam)
+		eventFeed.clear(viewedTeam);
+	if (viewedTeam < 0 || viewedTeam >= Team::MAX_COUNT)
+		return;
+
+	// The simulation forwards GameEvents through ClientEvents; coalesce the
+	// ones for the team being viewed, oldest first.
+	const Uint64 nowMs = SDL_GetTicks();
+	const auto distanceSquared = [this](int px, int py, int qx, int qy) -> std::int64_t
+	{ return game.map.warpDistSquare(px, py, qx, qy); };
+	auto &teamEvents = pendingTeamEvents[viewedTeam];
+	while (!teamEvents.empty())
+	{
+		const GameEvent gevent = std::move(teamEvents.front());
+		teamEvents.pop_front();
+		const GameEventType type = gevent.getEventType();
+		const bool conversion = type == GEUnitLostConversion || type == GEUnitGainedConversion;
+		eventFeed.ingest({type, conversion ? gevent.getOtherTeamNumber() : gevent.getTypeNum(), gevent.getStep(),
+						  gevent.getX(), gevent.getY(), gevent.formatMessage(game), gevent.formatColor()},
+						 nowMs, distanceSquared);
+		eventGoPosX = gevent.getX();
+		eventGoPosY = gevent.getY();
+		eventGoType = type;
+		// In the strategic view an attack is too small to notice on the map
+		// itself, so it raises the same pulsing mark a player's ping does.
+		if (view.render.detail.strategic > 0 && (type == GEUnitUnderAttack || type == GEBuildingUnderAttack))
+			markManager.addMark(Mark(gevent.getX(), gevent.getY(), GAGCore::Color(255, 48, 32)));
+	}
+
+	const ClientEvents::TickPulse pulse = clientEvents.pulse();
+	if (pulse.valid)
+		eventFeed.expire(pulse.tick, nowMs);
 }
 
 void GameGUI::syncStep(void)
