@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run a display test with an EWMH window manager inside an owned Xvfb session."""
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -16,17 +17,22 @@ def run(command):
         raise RuntimeError('Linux display tests require openbox and x11-utils alongside xvfb')
     # Keep children in the runner's process group so timeout cleanup also kills
     # the window manager. Each xvfb-run invocation owns its separate display.
-    wm = subprocess.Popen([manager, '--sm-disable'], stdout=subprocess.DEVNULL,
+    # The EWMH identity is published before Openbox finishes configuring and
+    # listening for client events. Its startup hook runs after that work.
+    ready_atom = '_GLOB2_TEST_WM_READY'
+    startup = shlex.join([xprop, '-root', '-f', ready_atom, '32c', '-set', ready_atom, '1'])
+    wm = subprocess.Popen([manager, '--sm-disable', '--startup', startup], stdout=subprocess.DEVNULL,
                           stderr=None)
     try:
         deadline = time.monotonic() + 5
         while True:
             if wm.poll() is not None:
                 raise RuntimeError(f'Openbox exited before readiness with status {wm.returncode}')
-            state = subprocess.run([xprop, '-root', '_NET_SUPPORTING_WM_CHECK'],
+            state = subprocess.run([xprop, '-root', '_NET_SUPPORTING_WM_CHECK', ready_atom],
                                    capture_output=True, text=True, timeout=2)
             match = re.search(r'window id #\s*(0x[0-9a-fA-F]+)', state.stdout)
-            if state.returncode == 0 and match and int(match.group(1), 16):
+            ready = re.search(rf'{ready_atom}\(CARDINAL\)\s*=\s*1\b', state.stdout)
+            if state.returncode == 0 and match and int(match.group(1), 16) and ready:
                 break
             if time.monotonic() >= deadline:
                 raise RuntimeError('Openbox did not establish an EWMH window manager')

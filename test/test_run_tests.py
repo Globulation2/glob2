@@ -441,7 +441,7 @@ class XvfbSessionTest(unittest.TestCase):
     def test_waits_for_window_manager_and_preserves_test_exit_status(self):
         wm = mock.MagicMock()
         wm.poll.return_value = None
-        state = subprocess.CompletedProcess([], 0, '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002')
+        state = subprocess.CompletedProcess([], 0, '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002\n_GLOB2_TEST_WM_READY(CARDINAL) = 1')
         with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
              mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm) as launch, \
              mock.patch.object(xvfb_session.subprocess, 'run', return_value=state), \
@@ -451,6 +451,30 @@ class XvfbSessionTest(unittest.TestCase):
         wm.terminate.assert_called_once()
         wm.wait.assert_called_once_with(timeout=5)
         self.assertIsNone(launch.call_args.kwargs['stderr'])
+        self.assertEqual(launch.call_args.args[0], [
+            'openbox', '--sm-disable', '--startup',
+            'xprop -root -f _GLOB2_TEST_WM_READY 32c -set _GLOB2_TEST_WM_READY 1'])
+
+    def test_ewmh_identity_alone_does_not_launch_the_test(self):
+        wm = mock.MagicMock()
+        wm.poll.return_value = None
+        identity = '_NET_SUPPORTING_WM_CHECK(WINDOW): window id # 0x400002'
+        states = [subprocess.CompletedProcess([], 0, identity),
+                  subprocess.CompletedProcess([], 0, identity + '\n_GLOB2_TEST_WM_READY(CARDINAL) = 1')]
+        with mock.patch.object(xvfb_session.shutil, 'which', side_effect=lambda name: name), \
+             mock.patch.object(xvfb_session.subprocess, 'Popen', return_value=wm), \
+             mock.patch.object(xvfb_session.subprocess, 'call', return_value=0) as test, \
+             mock.patch.object(xvfb_session.time, 'sleep') as sleep:
+            def inspect(*args, **kwargs):
+                test.assert_not_called()
+                return states.pop(0)
+            with mock.patch.object(xvfb_session.subprocess, 'run', side_effect=inspect) as state:
+                self.assertEqual(xvfb_session.run(['test-binary']), 0)
+            self.assertEqual(state.call_count, 2)
+            sleep.assert_called_once_with(0.05)
+            test.assert_called_once_with(['test-binary'])
+        wm.terminate.assert_called_once()
+        wm.wait.assert_called_once_with(timeout=5)
 
     def test_missing_window_manager_readiness_fails_and_cleans_up(self):
         wm = mock.MagicMock()
