@@ -586,8 +586,20 @@ namespace GAGCore
 				float x = float(sample->x), y = float(sample->y);
 				_gc->windowToLogical(x, y);
 				sample->x = x; sample->y = y;
-				sample->dx *= _gc->logicalUnitsPerPoint();
-				sample->dy *= _gc->logicalUnitsPerPoint();
+				// Deltas use the inverse window transform, without its letterbox
+				// translation. Layout points are not window points at UI scale > 1.
+				if (_gc->nativeDesktop && _gc->windowW > 0 && _gc->windowH > 0)
+				{
+					sample->dx *= double(_gc->getW()) / _gc->windowW;
+					sample->dy *= double(_gc->getH()) / _gc->windowH;
+				}
+				else if (_gc->isScalingActive())
+				{
+					const double scale = std::min(double(_gc->windowW) / _gc->sdlsurface->w,
+						double(_gc->windowH) / _gc->sdlsurface->h);
+					sample->dx /= scale;
+					sample->dy /= scale;
+				}
 				sample->logical = true;
 				*event = gestureScrollEvent(*sample);
 			}

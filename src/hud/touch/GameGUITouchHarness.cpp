@@ -3906,6 +3906,7 @@ class GameGUITouchHarness
 		for (float y : {along(60), py, along(-30), along(40), along(-40)})
 			require(!gui.touch->paletteItemAt({px, y}), "The gestures avoid palette items");
 		// Mac gestures capture the HUD even when the pointer later crosses the map.
+		const double nativeUnit = gfx->logicalUnitsPerPoint();
 		GAGCore::GestureScrollEvent native;
 		native.sequence = 101; native.x = px; native.y = py; native.logical = true;
 		native.phase = GAGCore::ScrollGesturePhase::Began; native.timestamp = SDL_MS_TO_NS(now);
@@ -3913,7 +3914,7 @@ class GameGUITouchHarness
 		gui.processEvent(&nativeEvent);
 		const double zoomBeforeNative = gui.camera.zoom;
 		native.phase = GAGCore::ScrollGesturePhase::Changed;
-		native.dy = -40 * unit * sign;
+		native.dy = -40 * nativeUnit * sign;
 		native.x = 400; native.y = 100;
 		nativeEvent = GAGCore::gestureScrollEvent(native);
 		gui.processEvent(&nativeEvent);
@@ -3922,7 +3923,7 @@ class GameGUITouchHarness
 		native.phase = GAGCore::ScrollGesturePhase::Ended; native.dy = 0;
 		nativeEvent = GAGCore::gestureScrollEvent(native); gui.processEvent(&nativeEvent);
 		native.phase = GAGCore::ScrollGesturePhase::None; native.momentum = GAGCore::ScrollGesturePhase::Began;
-		native.dy = -100 * unit * sign;
+		native.dy = -100 * nativeUnit * sign;
 		const double nativeStretch = gui.touch->panelScroll;
 		nativeEvent = GAGCore::gestureScrollEvent(native); gui.processEvent(&nativeEvent);
 		require(gui.touch->panelScroll == nativeStretch, "Native momentum does not add another HUD overshoot");
@@ -4238,6 +4239,22 @@ class GameGUITouchHarness
 		glob2test::HeadlessGlobals globals(options);
 		auto *gfx = globalContainer->gfx;
 		REQUIRE(gfx->setUiScale(2));
+		GAGCore::GestureScrollEvent native;
+		native.sequence = 401; native.x = 200; native.y = 200; native.dx = 3.25; native.dy = 7.75;
+		float fromX = 200, fromY = 200, toX = 203.25f, toY = 207.75f;
+		GAGCore::GraphicContext::translateMouseCoordinates(fromX, fromY);
+		GAGCore::GraphicContext::translateMouseCoordinates(toX, toY);
+		auto nativeEvent = GAGCore::gestureScrollEvent(native);
+		GAGCore::GraphicContext::translateMouseEvent(&nativeEvent);
+		auto translated = *GAGCore::scrollGesture(nativeEvent);
+		require(std::abs(translated.dx - (toX - fromX)) < .001 &&
+			std::abs(translated.dy - (toY - fromY)) < .001,
+			"Native deltas use the same window-to-logical transform as pointer positions");
+		require(translated.logical, "Native coordinate conversion is marked complete");
+		GAGCore::GraphicContext::translateMouseEvent(&nativeEvent);
+		require(GAGCore::scrollGesture(nativeEvent)->dy == translated.dy,
+			"Repeated dispatch does not scale a native sample twice");
+
 		GameGUI gui;
 		gui.openDialog(GameGUI::IGM_SAVE, std::make_unique<LoadSaveDialog>(
 			"games", "game", false, "Save game", "Scaled", glob2FilenameToName, glob2NameToFilename));
