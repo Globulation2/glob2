@@ -4258,6 +4258,10 @@ CPU %0%
 Αναζήτηση χαρτών ή δημιουργών
 [maps none found]
 Κανένας χάρτης δεν ταιριάζει.
+[maps catalog empty]
+Δεν έχουν κοινοποιηθεί ακόμη χάρτες σε αυτόν τον διακομιστή.
+[maps clear filters]
+Εκκαθάριση φίλτρων
 [maps any colonies]
 Όλες οι αποικίες
 [maps checking]

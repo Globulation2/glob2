@@ -4258,6 +4258,10 @@ Hvad er der galt med dette kort?
 Søg efter kort eller forfattere
 [maps none found]
 Ingen kort matcher.
+[maps catalog empty]
+Der er endnu ikke delt nogen kort på denne server.
+[maps clear filters]
+Ryd filtre
 [maps any colonies]
 Alle koloniantal
 [maps checking]

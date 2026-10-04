@@ -4258,6 +4258,10 @@ Bu haritada sorun ne?
 Harita veya yapımcı ara
 [maps none found]
 Eşleşen harita yok.
+[maps catalog empty]
+Bu sunucuda henüz hiç harita paylaşılmadı.
+[maps clear filters]
+Filtreleri temizle
 [maps any colonies]
 Her koloni sayısı
 [maps checking]

@@ -4258,6 +4258,10 @@ Bản đồ này có vấn đề gì?
 Tìm bản đồ hoặc tác giả
 [maps none found]
 Không có bản đồ phù hợp.
+[maps catalog empty]
+Chưa có bản đồ nào được chia sẻ trên máy chủ này.
+[maps clear filters]
+Xóa bộ lọc
 [maps any colonies]
 Mọi số thuộc địa
 [maps checking]

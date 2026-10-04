@@ -4258,6 +4258,10 @@ Mikä tässä kartassa on vialla?
 Hae karttoja tai tekijöitä
 [maps none found]
 Ei osuvia karttoja.
+[maps catalog empty]
+Tälle palvelimelle ei ole vielä jaettu karttoja.
+[maps clear filters]
+Tyhjennä suodattimet
 [maps any colonies]
 Kaikki siirtokuntamäärät
 [maps checking]

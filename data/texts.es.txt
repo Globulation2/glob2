@@ -4258,6 +4258,10 @@ Denunciar…
 Buscar mapas o autores
 [maps none found]
 Ningún mapa coincide.
+[maps catalog empty]
+Todavía no se ha compartido ningún mapa en este servidor.
+[maps clear filters]
+Borrar filtros
 [maps any colonies]
 Cualquier n.º de colonias
 [maps checking]

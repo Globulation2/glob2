@@ -243,6 +243,15 @@ and requires approval from `genixpro` before the job can access its variables
 and secrets. Allow the dispatching owner to approve because that account is
 the sole reviewer.
 
+After setting or rotating credentials, run **Actions → Check Windows Store
+credentials → Run workflow** on the mirror's `master` branch. Supply the
+Application (client) ID and Directory (tenant) ID from the Entra app overview;
+the secret's ID is not the application ID. This manual check uses the same
+restricted environment, rejects accidental whitespace, compares the stored IDs,
+and requests a token for PackageUploader's API resource. It logs neither secrets
+nor tokens and does not upload or publish packages. A passing check verifies
+authentication; the product's publishing permissions are checked during upload.
+
 When a permanent organization tenant is ready, associate it with the same Partner
 Center account, register a new product-scoped publishing application there, and
 replace the three `STORE_*` upload secrets in the release mirror environment.

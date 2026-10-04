@@ -4258,6 +4258,10 @@ AI 補位
 搜尋地圖或作者
 [maps none found]
 沒有符合的地圖。
+[maps catalog empty]
+這個伺服器上還沒有人分享地圖。
+[maps clear filters]
+清除篩選
 [maps any colonies]
 任何殖民地數
 [maps checking]

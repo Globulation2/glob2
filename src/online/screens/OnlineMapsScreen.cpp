@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineMapsScreen.h"
+#include "QuickMatch.h"
+#include "QuickMatchScreen.h"
 
 #include "ChooseMapScreen.h"
 #include "Engine.h"
@@ -168,6 +170,9 @@ void OnlineMapsScreen::onEscape()
 
 void OnlineMapsScreen::onTimer(Uint32)
 {
+	// A quick-match search running behind this screen stays visible (SearchStrip).
+	if (live && searchTicker.due(Online::quickMatch()))
+		invalidate();
 	if (live && !started)
 	{
 		auto &client = Online::services().client;
@@ -360,6 +365,14 @@ void OnlineMapsScreen::openDetail(bool open)
 {
 	detailOpen = open && selectedMap();
 	reporting = false;
+	invalidate();
+}
+
+void OnlineMapsScreen::clearFilters()
+{
+	query.search.clear();
+	sizeChoice = coloniesChoice = 0;
+	reload();
 	invalidate();
 }
 
@@ -654,10 +667,22 @@ Element OnlineMapsScreen::browseBody(const Presentation &p, bool phone)
 		cards.push_back(mapCard(i, p, phone));
 	if (!cursor[0].empty())
 		cards.push_back(button("maps/more", tr("[online load more]"), [this] { loadMore(); }));
-	Element grid = cards.empty()
-					   ? paragraph(loading ? tr("[online loading]") : problem.empty() ? tr("[maps none found]") : problem,
-								   {FontRole::Body, true})
-					   : wrap(std::move(cards), {p.pt(8), p.pt(phone ? 130 : 140), phone ? 2 : 4});
+	// An empty catalog is not a search without matches: say which, and offer the
+	// way forward (sharing a map, or clearing the filters).
+	const bool filtered = !query.search.empty() || sizeChoice != 0 || coloniesChoice != 0;
+	Element grid;
+	if (!cards.empty())
+		grid = wrap(std::move(cards), {p.pt(8), p.pt(phone ? 130 : 140), phone ? 2 : 4});
+	else if (loading || !problem.empty())
+		grid = paragraph(loading ? tr("[online loading]") : problem, {FontRole::Body, true});
+	else if (filtered)
+		grid = emptyState(uiIcon(UIIcon::Search), tr("[maps none found]"),
+						  {button("maps/clear-filters", tr("[maps clear filters]"), [this] { clearFilters(); })}, p);
+	else
+		grid = emptyState(uiIcon(UIIcon::Map), tr("[maps catalog empty]"),
+						  {button("maps/empty-upload", tr("[maps upload a map]"), [this] { selectTab(Tab::Mine); upload(); },
+								  {.icon = uiIcon(UIIcon::Upload), .iconSize = 16})},
+						  p);
 	if (phone)
 	{
 		if (detailOpen)
@@ -671,6 +696,9 @@ Element OnlineMapsScreen::browseBody(const Presentation &p, bool phone)
 												[this](int i) { setColonies(i); })),
 						width(p.pt(170), choice("maps/sort", labels(SORT_LABELS, 4), sortChoice, [this](int i) { setSort(i); }))},
 					   {p.pt(8), CrossAlign::Center});
+	// Nothing to select: the empty state takes the width instead of a details pane.
+	if (data.browse.empty())
+		return column({filters, grid}, {p.pt(10)});
 	return column({filters, row({expanded(grid, 3), expanded(detailPanel(p, false), 2)}, {p.pt(12), CrossAlign::Start})},
 				  {p.pt(10)});
 }
@@ -790,6 +818,9 @@ Element OnlineMapsScreen::build(const Presentation &p)
 	panel.title = tr("[maps title]");
 	// Under the title on a crowded phone (onlinePanel), the tabs take the full width.
 	panel.headerRight = p.points(p.safe.w) < 260 * p.textGrowth ? tabs : width(p.pt(phone ? 190 : 300), tabs);
+	if (live)
+		if (auto strip = SearchStrip::build(Online::quickMatch(), p))
+			body.insert(body.begin(), strip);
 	panel.body = scroll("maps/body", column(std::move(body), {p.pt(10)}));
 	panel.note = tab == Tab::Browse
 					 ? std::string(FormattableString(tr("[maps browse note %0]")).arg(originHost(data.instance)))

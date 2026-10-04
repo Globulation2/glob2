@@ -4,6 +4,7 @@
 #include "ui/FrontendUI.h"
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -24,12 +25,14 @@ class MapPreview;
 // the timer, rating window, relay region and the AI backfill countdown with
 // "Allow an AI opponent".
 //
-// The Online hub owns the queue cards and pushes this screen when a search
-// starts; it closes again (back to the hub) when the search ends or hands off
-// to a match, so the results lead back to the hub, not to a second Online
-// screen. The search itself lives in Online::quickMatch(), so it keeps running
-// while the player opens Profile or Maps from here, and the match-found prompt
-// appears over whichever screen is in front (QuickMatchPresenter).
+// The Online hub owns the queue cards and shows a running search as a strip
+// (SearchStrip); its Details opens this screen. Back returns to the hub and
+// keeps the search running; only Cancel ends it. The screen closes by itself
+// when the search ends or hands off to a match, so the results lead back to the
+// hub, not to a second Online screen. The search lives in Online::quickMatch(),
+// so it keeps running while the player opens Profile or Maps, and the
+// match-found prompt appears over whichever screen is in front
+// (QuickMatchPresenter).
 class QuickMatchScreen : public Glob2UI::Screen
 {
   public:
@@ -65,6 +68,8 @@ class QuickMatchScreen : public Glob2UI::Screen
 	void openAccount();
 	// The toast for the model's current notice; empty for none.
 	static std::string noticeText(const Online::QuickMatch &model);
+	// Why a failed search failed, for a toast.
+	static std::string failureText(const Online::QuickMatch &model);
 
   protected:
 	void onEscape() override;
@@ -89,6 +94,26 @@ class QuickMatchScreen : public Glob2UI::Screen
 	// This screen's platform calls, cancelled when it closes.
 	std::unique_ptr<Online::PlatformScope> calls;
 };
+
+// The running search as a strip at the top of the online screens (hub, maps,
+// profile), so it stays visible and cancellable while the player browses:
+// the queue, the timer, when an AI joins, Cancel and (on the hub) Details,
+// which opens QuickMatchScreen. Null when no search is running.
+namespace SearchStrip
+{
+Glob2UI::Element build(Online::QuickMatch &model, const Glob2UI::Presentation &p, std::function<void()> details = {});
+// Whether a screen showing the strip should rebuild: the search changed, or
+// its clock moved to the next second.
+class Ticker
+{
+  public:
+	bool due(const Online::QuickMatch &model);
+
+  private:
+	std::uint64_t seen = ~std::uint64_t(0);
+	int second = -1;
+};
+}
 
 // The prompt when the queue found a match: ranked queues ask both players
 // to accept within the countdown; AI-backfilled and casual matches show who

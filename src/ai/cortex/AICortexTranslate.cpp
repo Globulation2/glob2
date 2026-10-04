@@ -627,24 +627,28 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	(void)obs; // reserved: the gate already ran in CortexPolicy::wantWheatProtection /
 	           // wantWheatBlitzLift; liftAll selects the wheat-blitz full-lift mode.
 
-	// Rebuild the ADD/DEL checkerboard masks for our wheat (the bounded colony-region
-	// scan, RNG-free) at the per-game open-margin and emit one OrderAlterForbidden
-	// per non-empty diff. No build cooldown: these are area-paint orders, not
-	// OrderCreates, and the reconcile is self-correcting — a paint already in place
-	// yields an empty diff next cycle, so re-running it every cycle is free. The
-	// margin is the AICortex member (the seeded per-game N), == obs.wheatOpenMargin.
-	// In liftAll (wheat-blitz) mode `desired` is forced empty, so only the DEL mask is
-	// non-empty — the whole field is un-forbidden for a one-time food burst.
-	//
-	// With the farm-areas experiment the field is farmed with a farm area instead:
-	// the checkerboard is always lifted (the scan runs in liftAll mode, so any old
-	// paint is removed), and enqueueWheatFarm paints the farm, or erases it for a
-	// wheat blitz.
+	// Both area types use the same wheat checkerboard and upkeep. Retire legacy
+	// wheat forbidden paint when using farms, including saves from the prototype.
 	const Map* map = &player->team->game->map;
 	const bool farms = map->farmAreasEnabled() && !player->game->gameHeader.isResourceGrowthDisabled();
 	Cortex::WheatReconcile wr =
-		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll || farms);
+		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll, farms);
 	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
+	if (farms)
+	{
+		Cortex::WheatReconcile legacy = Cortex::reconcileWheatForbidden(
+			player, wheatOpenMargin, /*buildMasks=*/true, /*liftAll=*/true);
+		if (legacy.del.getApplicationCount() > 0)
+			orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(
+				teamNumber, BrushTool::MODE_DEL, &legacy.del, map)));
+		if (wr.del.getApplicationCount() > 0)
+			orderQueue.push(shared_ptr<Order>(new OrderAlterFarmArea(
+				teamNumber, BrushTool::MODE_DEL, &wr.del, map)));
+		if (wr.add.getApplicationCount() > 0)
+			orderQueue.push(shared_ptr<Order>(new OrderAlterFarmArea(
+				teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
+		return;
+	}
 	// DEL first so freeing dead tiles never races the ADD of fresh ones.
 	if (wr.del.getApplicationCount() > 0)
 		orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(
@@ -652,17 +656,4 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	if (wr.add.getApplicationCount() > 0)
 		orderQueue.push(shared_ptr<Order>(new OrderAlterForbidden(
 			teamNumber, BrushTool::MODE_ADD, &wr.add, map)));
-	if (farms)
-		enqueueWheatFarm(wr.field, liftAll);
-}
-
-void AICortex::enqueueWheatFarm(const std::vector<int>& field, bool liftAll)
-{
-	Cortex::FarmReconcile fr = Cortex::reconcileWheatFarm(player, field, liftAll, /*buildMasks=*/true);
-	const Map* map = &player->team->game->map;
-	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);
-	if (fr.del.getApplicationCount() > 0)
-		orderQueue.push(shared_ptr<Order>(new OrderAlterFarmArea(teamNumber, BrushTool::MODE_DEL, &fr.del, map)));
-	if (fr.add.getApplicationCount() > 0)
-		orderQueue.push(shared_ptr<Order>(new OrderAlterFarmArea(teamNumber, BrushTool::MODE_ADD, &fr.add, map)));
 }
