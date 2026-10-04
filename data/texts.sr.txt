@@ -3626,6 +3626,8 @@ LAN домаћин није доступан. Проверите дозволу 
 Назад на мрежу
 [results back to room]
 Назад у собу
+[results find another match]
+Нађи још један меч
 [results defeat]
 Пораз
 [results ladder rating %0]

@@ -3626,6 +3626,8 @@ Emoji
 بازگشت به آنلاین
 [results back to room]
 بازگشت به اتاق
+[results find another match]
+یافتن مسابقهٔ دیگر
 [results defeat]
 شکست
 [results ladder rating %0]

@@ -3626,6 +3626,8 @@ CPU %0%
 Πίσω στο διαδίκτυο
 [results back to room]
 Πίσω στην αίθουσα
+[results find another match]
+Εύρεση άλλου αγώνα
 [results defeat]
 Ήττα
 [results ladder rating %0]

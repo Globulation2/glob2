@@ -3626,6 +3626,8 @@ wyszedł
 Wróć do gry online
 [results back to room]
 Wróć do pokoju
+[results find another match]
+Znajdź kolejny mecz
 [results defeat]
 Porażka
 [results ladder rating %0]

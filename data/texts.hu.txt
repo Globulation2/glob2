@@ -3626,6 +3626,8 @@ kilépett
 Vissza az online menübe
 [results back to room]
 Vissza a szobába
+[results find another match]
+Újabb mérkőzés keresése
 [results defeat]
 Vereség
 [results ladder rating %0]

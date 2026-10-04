@@ -3626,6 +3626,8 @@ se fue
 Volver al menú en línea
 [results back to room]
 Volver a la sala
+[results find another match]
+Buscar otra partida
 [results defeat]
 Derrota
 [results ladder rating %0]

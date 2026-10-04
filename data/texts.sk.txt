@@ -3626,6 +3626,8 @@ odišiel
 Späť do online hry
 [results back to room]
 Späť do miestnosti
+[results find another match]
+Nájsť ďalší zápas
 [results defeat]
 Prehra
 [results ladder rating %0]

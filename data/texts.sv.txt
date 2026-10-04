@@ -3626,6 +3626,8 @@ lämnade
 Tillbaka till online
 [results back to room]
 Tillbaka till rummet
+[results find another match]
+Hitta en ny match
 [results defeat]
 Förlust
 [results ladder rating %0]

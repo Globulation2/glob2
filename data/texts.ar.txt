@@ -3626,6 +3626,8 @@ OpenGL غير متوفر في هذا الإصدار.
 العودة إلى اللعب عبر الإنترنت
 [results back to room]
 العودة إلى الغرفة
+[results find another match]
+ابحث عن مباراة أخرى
 [results defeat]
 هزيمة
 [results ladder rating %0]

@@ -3626,6 +3626,8 @@ saiu
 Voltar ao menu online
 [results back to room]
 Voltar à sala
+[results find another match]
+Procurar outra partida
 [results defeat]
 Derrota
 [results ladder rating %0]

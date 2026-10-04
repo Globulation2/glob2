@@ -3626,6 +3626,8 @@ gået
 Tilbage til online
 [results back to room]
 Tilbage til rummet
+[results find another match]
+Find en ny kamp
 [results defeat]
 Nederlag
 [results ladder rating %0]

@@ -3626,6 +3626,8 @@ joan da
 Itzuli sarera
 [results back to room]
 Itzuli gelara
+[results find another match]
+Bilatu beste partida bat
 [results defeat]
 Porrota
 [results ladder rating %0]

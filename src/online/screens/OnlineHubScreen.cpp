@@ -27,6 +27,7 @@
 #include <FormatableString.h>
 #include <Toolkit.h>
 #include <random>
+#include <utility>
 
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
@@ -145,6 +146,7 @@ OnlineHubScreen::OnlineHubScreen(GAGGUI::ScreenStack &screens, bool connect) : s
 		Online::setRematchHandler([this](const Online::RematchRequest &request) {
 			rematchRoom = Online::PlatformRoom::rematch(client(), Online::services().maps, Online::services().storage, request.matchId);
 		});
+		Online::setQueueAgainHandler([this] { queueAgain = true; });
 		syncFromClient();
 		refresh(true);
 	}
@@ -156,6 +158,7 @@ OnlineHubScreen::~OnlineHubScreen()
 	{
 		Online::setMatchHandler({});
 		Online::setRematchHandler({});
+		Online::setQueueAgainHandler({});
 	}
 	// calls (a member) cancels this screen's requests and listeners.
 }
@@ -180,12 +183,17 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 		context.label += " · " + tr(queue->rated ? "[hub ranked]" : "[hub unrated]");
 		context.rated = queue->rated;
 		context.ladder = queue->id;
+		matchQueueId = queue->id;
 	}
+	queueAgain = false;
 	auto match = std::make_shared<Online::OnlineMatch>(client(), Online::services().maps, Online::services().storage, assignment, context);
 	screens.push(std::make_unique<MatchStartScreen>(screens, match), [this](GAGGUI::Screen &, int) {
 		// Rematch from the results screen: its room opens once the match has closed.
 		if (auto room = std::move(rematchRoom))
 			enterRoom(std::move(room));
+		// "Find another match": the same queue, from the hub the results return to.
+		else if (std::exchange(queueAgain, false))
+			findMatch(queueIndex(matchQueueId));
 		refresh(true);
 	});
 }
@@ -197,7 +205,13 @@ void OnlineHubScreen::openProfile()
 
 void OnlineHubScreen::openMaps(bool mine)
 {
-	screens.push(std::make_unique<OnlineMapsScreen>(screens, mine ? OnlineMapsScreen::Tab::Mine : OnlineMapsScreen::Tab::Browse));
+	auto maps = std::make_unique<OnlineMapsScreen>(screens, mine ? OnlineMapsScreen::Tab::Mine : OnlineMapsScreen::Tab::Browse);
+	maps->setOrigin(OnlineMapsScreen::Origin::Hub);
+	screens.push(std::move(maps), [this](GAGGUI::Screen &, int result) {
+		// "Use in a room": the map is kept for the next room this player hosts (Online::useMapInRoom).
+		if (result == OnlineMapsScreen::OPEN_ROOM)
+			createRoom();
+	});
 }
 
 Online::PlatformClient &OnlineHubScreen::client()
@@ -384,6 +398,30 @@ bool OnlineHubScreen::canPlay() const
 	return data.link == Model::Link::Online && !data.accountId.empty();
 }
 
+bool OnlineHubScreen::canQueue(const Json &queue) const
+{
+	return canPlay() && !(queue.value("rated", false) && data.accountKind == "guest");
+}
+
+int OnlineHubScreen::defaultQueue() const
+{
+	if (!data.queues.is_array())
+		return 0;
+	for (std::size_t i = 0; i < data.queues.size(); ++i)
+		if (!(data.queues[i].value("rated", false) && data.accountKind == "guest"))
+			return int(i);
+	return 0;
+}
+
+int OnlineHubScreen::queueIndex(const std::string &queueId) const
+{
+	if (data.queues.is_array())
+		for (std::size_t i = 0; i < data.queues.size(); ++i)
+			if (data.queues[i].value("id", "") == queueId)
+				return int(i);
+	return -1;
+}
+
 void OnlineHubScreen::enterRoom(std::shared_ptr<RoomBackend> room)
 {
 	screens.push(std::make_unique<RoomScreen>(screens, std::move(room)), [this](GAGGUI::Screen &, int result) {
@@ -466,6 +504,11 @@ void OnlineHubScreen::findMatch(int queueIndex)
 	if (!canPlay() || !data.queues.is_array() || queueIndex < 0 || queueIndex >= int(data.queues.size()))
 		return;
 	const Json &queue = data.queues[std::size_t(queueIndex)];
+	if (!canQueue(queue))
+	{
+		openSignIn();
+		return;
+	}
 	if (const auto &start = quickMatchStarter())
 	{
 		start(screens, queue, true);
@@ -646,13 +689,27 @@ Element OnlineHubScreen::quickMatch(const Presentation &p, bool phone)
 		std::string detail = queue.value("rated", false) ? tr("[hub ranked]") : tr("[hub unrated]");
 		if (queue.contains("aiBackfillSeconds") && queue["aiBackfillSeconds"].is_number_integer())
 			detail += " · " + formatted("[hub ai joins after %0]", clockText(queue["aiBackfillSeconds"].get<int>()));
-		ButtonOptions find;
-		find.primary = i == 0;
-		find.enabled = enabled;
 		const int index = int(i);
+		// Guests see why Ranked is closed to them and the way in, rather than an
+		// error after the search starts.
+		const bool open = canQueue(queue);
+		Element action;
+		if (enabled && !open)
+		{
+			detail = tr("[qm sign in to play ranked]");
+			action = button("queue/" + std::to_string(i) + "/signin", tr("[hub sign in]"), [this] { openSignIn(); },
+							{.icon = uiIcon(UIIcon::SignIn), .iconSize = 16});
+		}
+		else
+		{
+			ButtonOptions find;
+			find.primary = index == defaultQueue();
+			find.enabled = enabled;
+			action = button("queue/" + std::to_string(i), tr("[hub find match]"), [this, index] { findMatch(index); }, find);
+		}
 		cards.push_back(card(column({row({icon(uiIcon(queue.value("rated", false) ? UIIcon::Bolt : UIIcon::Robot), {18}), label(queueDisplayName(queue.value("id", ""), queue.value("name", "")), {FontRole::Body})}, {p.pt(6), CrossAlign::Center}),
 									 caption(detail),
-									 button("queue/" + std::to_string(i), tr("[hub find match]"), [this, index] { findMatch(index); }, find)},
+									 action},
 									{p.pt(6)}),
 							 {.color = theme().palette.field, .padding = p.pt(10), .shadow = false, .border = theme().palette.line}));
 	}
@@ -717,6 +774,17 @@ Element OnlineHubScreen::recentMatches(const Presentation &p, bool phone)
 		std::vector<Element> cells{badge, expanded(column({label(line.title), caption(line.detail)}, {0})), caption(line.rating, false)};
 		if (line.verified)
 			cells.push_back(icon(uiIcon(UIIcon::ShieldCheck), {14, palette.success}));
+		// The match page has the full result (timeline, economy, replay).
+		if (const std::string id = data.recent[i].value("id", ""); !id.empty() && !data.origin.empty())
+		{
+			ButtonOptions details;
+			details.icon = uiIcon(UIIcon::ExternalLink);
+			details.iconSize = 16;
+			details.accessibleLabel = tr("[profile match page]");
+			details.tooltip = details.accessibleLabel;
+			cells.push_back(width(p.pt(p.touch ? 48 : 34), button("recent/" + std::to_string(i) + "/page", "",
+																  [origin = data.origin, id] { openInstancePage(origin, "/matches/" + id); }, details)));
+		}
 		rows.push_back(row(std::move(cells), {p.pt(8), CrossAlign::Center}));
 	}
 	return column({heading(tr("[hub recent matches]")), column(std::move(rows), {p.pt(6)})}, {p.pt(6)});
@@ -826,7 +894,8 @@ Element OnlineHubScreen::queuePicker(const Presentation &p, bool stacked)
 	{
 		if (!p.landscape())
 			parts.push_back(caption(tr("[hub quick match]")));
-		selectedQueue = std::clamp(selectedQueue, 0, int(names.size()) - 1);
+		// Until the player picks one, the default follows the account (guests: Casual).
+		const int chosen = std::clamp(selectedQueue < 0 ? defaultQueue() : selectedQueue, 0, int(names.size()) - 1);
 		if (stacked)
 			// One full-width choice per line: three side by side do not hold their
 			// names on a narrow phone with large text.
@@ -834,11 +903,17 @@ Element OnlineHubScreen::queuePicker(const Presentation &p, bool stacked)
 			{
 				const int index = int(i);
 				parts.push_back(button("queue/choice/" + std::to_string(i), names[i], [this, index] { selectedQueue = index; invalidate(); },
-									   {.selected = index == selectedQueue}));
+									   {.selected = index == chosen}));
 			}
 		else
-			parts.push_back(segments("queue/choice", names, selectedQueue, [this](int v) { selectedQueue = v; invalidate(); }));
-		parts.push_back(button("queue/find", tr("[hub find match]"), [this] { findMatch(selectedQueue); }, {.primary = true, .enabled = canPlay(), .icon = uiIcon(UIIcon::Bolt)}));
+			parts.push_back(segments("queue/choice", names, chosen, [this](int v) { selectedQueue = v; invalidate(); }));
+		if (canPlay() && !canQueue(data.queues[std::size_t(chosen)]))
+		{
+			parts.push_back(caption(tr("[qm sign in to play ranked]")));
+			parts.push_back(button("queue/signin", tr("[hub sign in]"), [this] { openSignIn(); }, {.primary = true, .icon = uiIcon(UIIcon::SignIn)}));
+		}
+		else
+			parts.push_back(button("queue/find", tr("[hub find match]"), [this, chosen] { findMatch(chosen); }, {.primary = true, .enabled = canPlay(), .icon = uiIcon(UIIcon::Bolt)}));
 	}
 	return parts.empty() ? nullptr : column(std::move(parts), {p.pt(6)});
 }

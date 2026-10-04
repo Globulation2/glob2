@@ -3626,6 +3626,8 @@ ha marxat
 Torna al joc en línia
 [results back to room]
 Torna a la sala
+[results find another match]
+Busca una altra partida
 [results defeat]
 Derrota
 [results ladder rating %0]

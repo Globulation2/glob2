@@ -1815,6 +1815,7 @@
 [match player left]
 [results back to online]
 [results back to room]
+[results find another match]
 [results defeat]
 [results ladder rating %0]
 [results left]

@@ -8,6 +8,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace GAGGUI
@@ -56,6 +57,8 @@ class OnlineProfileScreen : public Glob2UI::Screen
 		std::optional<Online::PlayerProfile> profile;
 	};
 	OnlineProfileScreen(GAGGUI::ScreenStack &screens, Data data);
+	// Back names the screen it returns to; the hub's "Back to online" by default.
+	void setBackLabel(std::string label) { backText = std::move(label); }
 	~OnlineProfileScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 	void onTimer(Uint32 tick) override;
@@ -97,4 +100,5 @@ class OnlineProfileScreen : public Glob2UI::Screen
 	// fixture screens never touch the platform).
 	std::unique_ptr<Online::PlatformScope> scope;
 	Online::PlatformScope &calls();
+	std::string backText;
 };

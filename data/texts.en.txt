@@ -3638,6 +3638,8 @@ left
 Back to online
 [results back to room]
 Back to room
+[results find another match]
+Find another match
 [results defeat]
 Defeat
 [results ladder rating %0]

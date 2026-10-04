@@ -3626,6 +3626,8 @@ poistui
 Takaisin verkkopeliin
 [results back to room]
 Takaisin huoneeseen
+[results find another match]
+Etsi uusi ottelu
 [results defeat]
 Tappio
 [results ladder rating %0]

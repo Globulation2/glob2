@@ -3626,6 +3626,8 @@ a plecat
 Înapoi la online
 [results back to room]
 Înapoi la cameră
+[results find another match]
+Caută alt meci
 [results defeat]
 Înfrângere
 [results ladder rating %0]
