@@ -12,6 +12,8 @@
 #include <boost/beast/http.hpp>
 #include <algorithm>
 #include <stdexcept>
+#include <cstdlib>
+#include <iostream>
 
 namespace
 {
@@ -240,6 +242,7 @@ class WssTransport final : public NetTransport
 				return false; // Preserve the original error across canceled callbacks.
 			if (error)
 			{
+				std::cerr << "WSS failure accepted=" << accepted << " error=" << error.message() << '\n';
 				failure = error.message();
 				cancel();
 			}
@@ -247,6 +250,13 @@ class WssTransport final : public NetTransport
 		}
 		void cancel()
 		{
+			if (status == State::Connected && outgoingBytes == 0)
+			{
+				Error result;
+				if (!std::getenv("GLOB2_LAN_ABORTIVE_CLOSE"))
+					beast::get_lowest_layer(socket).socket().shutdown(tcp::socket::shutdown_send, result);
+				std::cerr << "WSS close accepted=" << accepted << " shutdown=" << result.message() << '\n';
+			}
 			status = State::Closed;
 			resolver.cancel();
 			connectDeadline.cancel();
