@@ -1146,8 +1146,6 @@ Strategi utama: Membagi produksi unit antara pembangunan, peningkatan, pertahana
 Mengoordinasikan pertumbuhan koloni dan serangan terlatih, menyasar perawatan dan pangan dahulu.
 [Algae]
 Ganggang
-[Alliances]
-Aliansi
 [Beach size]
 Ukuran pantai
 [Blue]
@@ -1156,8 +1154,6 @@ Biru
 Cokelat
 [Built-in maps]
 Peta bawaan
-[Can change in game]
-Dapat berubah dalam permainan
 [Closed]
 Tertutup
 [Colonies]
@@ -1186,8 +1182,6 @@ Sian
 Bobot gurun
 [Easy]
 Mudah
-[Explore as you play]
-Jelajahi sambil bermain
 [Extra colony assignments are retained for larger maps.]
 Penugasan koloni tambahan dipertahankan untuk peta yang lebih besar.
 [Extra islands]
@@ -1230,14 +1224,10 @@ Lanskap
 Koloni terakhir yang bertahan
 [Layout]
 Tata Letak
-[Locked teams]
-Tim yang terkunci
 [Magenta]
 Merah keunguan
 [Map]
 Peta
-[Map knowledge]
-Pengetahuan medan
 [Match finished]
 Pertandingan selesai
 [Medium]
@@ -1284,10 +1274,6 @@ Merah
 Ulangi lanskap
 [Resources]
 Sumber daya
-[Restore standard rules]
-Kembalikan aturan standar
-[Revealed terrain does not reveal all enemy activity.]
-Medan yang terungkap tidak mengungkapkan semua aktivitas musuh.
 [River]
 Sungai
 [River width]
@@ -1314,10 +1300,6 @@ Rawa
 Tim
 [Terrain]
 Medan
-[Terrain revealed]
-Medan terungkap
-[Try a ruleset, then make it your own.]
-Cobalah seperangkat aturan, lalu buatlah aturan Anda sendiri.
 [Victory]
 Kemenangan
 [Watch game]
@@ -1342,12 +1324,6 @@ Anda melawan semua orang
 Peta Anda
 [colonies]
 koloni
-[* Changed from standard.]
-* Berubah dari standar.
-[World & diplomacy]
-Dunia & diplomasi
-[Starting conditions & pace]
-Kondisi & kecepatan awal
 [Inactive]
 Tidak aktif
 [8 workers / 2x speed]
@@ -1370,8 +1346,6 @@ Unit awal yang ditentukan peta
 Tidak ada peta dalam koleksi ini.
 [Premade maps retain their authored starting units.]
 Peta siap pakai tetap memakai unit awal yang ditetapkan pembuatnya.
-[Premade: only speed changes (2x)]
-Peta siap pakai: hanya kecepatan berubah (2x)
 [Start with terrain known]
 Mulailah dengan medan yang diketahui
 [This colony will not join the match.]
@@ -2138,38 +2112,20 @@ Statistik 2/3 >
 Halaman (P)
 [Map preview choose another]
 Pilih peta
-[Resources never grow or spread across the map.]
-Sumber daya tidak pernah tumbuh atau menyebar di peta.
 [Building sites complete immediately, skipping delivery.]
 Lokasi pembangunan selesai langsung, tanpa tahap pengiriman.
-[Units never grow hungry and never starve.]
-Unit tidak pernah lapar dan tidak pernah kelaparan.
-[Slows how often resources grow or spread across the map.]
-Memperlambat seberapa sering sumber daya tumbuh atau menyebar di peta.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Mengisi cadangan pasar/pertukaran bersama tiap tim di awal permainan.
-[Grow normally]
-Tumbuh normal
 [No growth]
 Tidak tumbuh
-[Normal construction]
-Konstruksi normal
-[Instant]
-Instan
 [Units get hungry]
 Unit menjadi lapar
 [No hunger]
 Tidak ada rasa lapar
-[Off (today's growth)]
-Nonaktif (pertumbuhan saat ini)
 [Scarce (2x slower)]
 Langka (2x lebih lambat)
 [Very scarce (4x slower)]
 Sangat langka (4x lebih lambat)
 [Extremely scarce (8x slower)]
 Amat langka (8x lebih lambat)
-[None (today's default)]
-Tidak ada (baku saat ini)
 [Small (+50 each)]
 Kecil (+50 masing-masing)
 [Medium (+150 each)]
@@ -2180,50 +2136,20 @@ Besar (+300 masing-masing)
 Tidak ada pertumbuhan sumber daya
 [Economy]
 Ekonomi
-[Scarce resources]
-Sumber daya langka
 [Instant construction]
 Konstruksi instan
-[Stockpile start]
-Cadangan awal
-[Units still visit schools but never gain a level.]
-Unit tetap pergi ke sekolah, tetapi tidak pernah naik tingkat.
-[Units fight to the death instead of retreating to heal.]
-Unit bertarung sampai mati alih-alih mundur untuk menyembuhkan diri.
-[Units are never permanently lost -- HP just stops at 1.]
-Unit tidak pernah hilang secara permanen -- HP-nya hanya berhenti di 1.
-[Disables all combat between every team.]
-Menonaktifkan semua pertarungan antar semua tim.
-[Higher tiers deal more damage but have less HP and armor.]
-Tingkat yang lebih tinggi memberikan lebih banyak kerusakan tetapi memiliki lebih sedikit HP dan zirah.
 [Higher tiers give every building much more HP.]
 Tingkat yang lebih tinggi memberikan HP jauh lebih banyak pada setiap bangunan.
 [Starting units spawn already leveled up. Changes the generated map.]
 Unit awal muncul dengan tingkat yang sudah dinaikkan. Mengubah peta yang dihasilkan.
-[Trains normally]
-Berlatih secara normal
 [No upgrades]
 Tanpa peningkatan
-[Retreats when damaged]
-Mundur saat terluka
-[Fearless]
-Tak kenal takut
-[Can die permanently]
-Bisa mati secara permanen
 [No permadeath]
 Tanpa kematian permanen
-[Normal combat]
-Pertarungan normal
-[Peaceful mode]
-Mode damai
-[Off (today's balance)]
-Nonaktif (keseimbangan saat ini)
 [Glass cannon x2]
 Meriam kaca x2
 [Glass cannon x3]
 Meriam kaca x3
-[Off (today's HP)]
-Nonaktif (HP saat ini)
 [Fortress x5]
 Benteng x5
 [Fortress x10]
@@ -2238,10 +2164,6 @@ Legendaris
 Pertarungan
 [Glass cannon]
 Meriam kaca
-[Fortress buildings]
-Bangunan berbenteng
-[Veteran/Fast start]
-Veteran/Awal cepat
 [Match ends at the timer; highest prestige at that instant wins.]
 Pertandingan berakhir saat waktu habis; yang memiliki prestise tertinggi saat itu menang.
 [Off (no timer)]
@@ -2254,8 +2176,6 @@ Nonaktif (tanpa pengatur waktu)
 45 menit
 [60 minutes]
 60 menit
-[Sudden-death timer]
-Pengatur waktu kematian mendadak
 [Stats page three]
 Statistik 3/3 >
 [Stats blocked units]
@@ -2984,10 +2904,6 @@ Lapang
 Lainnya
 [No items]
 Tidak ada item
-[Opponents]
-Lawan
-[Review]
-Ringkasan
 [Review & Play]
 Tinjau dan mainkan
 [Edit opponents]
@@ -3430,8 +3346,6 @@ Momentum peta
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3824,21 +3738,9 @@ Momentum peta
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4538,20 +4440,6 @@ Momentum peta
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4672,6 +4560,26 @@ Nonaktifkan untuk menggunakan unit, kawanan, dan warna bangunan klasik di perang
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4744,3 +4652,119 @@ Ulangi peta secara vertikal
 markas
 [bases per colony]
 Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beserta bangunan dan unitnya
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

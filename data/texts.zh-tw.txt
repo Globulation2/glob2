@@ -146,54 +146,6 @@ Break 鍵
 任務簡報
 [build %0 level %1]
 建造 %0，等級 %1
-[build barracks level 0]
-建造兵營 1
-[build barracks level 1]
-建造兵營 2
-[build barracks level 2]
-建造兵營 3
-[build defencetower level 0]
-建造防禦塔 1
-[build defencetower level 1]
-建造防禦塔 2
-[build defencetower level 2]
-建造防禦塔 3
-[build hospital level 0]
-建造醫院 1
-[build hospital level 1]
-建造醫院 2
-[build hospital level 2]
-建造醫院 3
-[build inn level 0]
-建造客棧 1
-[build inn level 1]
-建造客棧 2
-[build inn level 2]
-建造客棧 3
-[build market level 0]
-建造市場
-[build racetrack level 0]
-建造跑道 1
-[build racetrack level 1]
-建造跑道 2
-[build racetrack level 2]
-建造跑道 3
-[build school level 0]
-建造學校 1
-[build school level 1]
-建造學校 2
-[build school level 2]
-建造學校 3
-[build stonewall level 0]
-建造石牆
-[build swarm level 0]
-建造孢子堆
-[build swimmingpool level 0]
-建造游泳池 1
-[build swimmingpool level 1]
-建造游泳池 2
-[build swimmingpool level 2]
-建造游泳池 3
 [Build]
 建造
 [Building Defaults]
@@ -222,12 +174,6 @@ Ctrl + 拖曳 = 直線
 無法加入：遊戲已開始
 [Can't join game, game is full]
 無法加入：遊戲人數已滿
-[Can't join game, missmatching game parameters]
-無法加入遊戲，遊戲參數失對。
-[Can't join game, timeout]
-無法加入遊戲，過時。
-[Can't join game, wrong game version]
-無法加入遊戲，版本錯誤。
 [cancel destroy]
 取消摧毀
 [cancel repair]
@@ -316,12 +262,6 @@ Ctrl - 直線
 敵方單位和建築
 [defencetower explanation]
 攻擊附近的
-[defencetower level 0]
-防禦塔 1
-[defencetower level 1]
-防禦塔 2
-[defencetower level 2]
-防禦塔 3
 [defencetower]
 防禦塔
 [Defense Map]
@@ -492,12 +432,6 @@ Home 鍵
 
 [inn explanation]
 餵飽你的單位
-[inn level 0]
-客棧 1
-[inn level 1]
-客棧 2
-[inn level 2]
-客棧 3
 [inn]
 客棧
 [insert]
@@ -576,8 +510,6 @@ zh-tw
 地圖寬度
 [map size y]
 地圖高度
-[maps available]
-可用的地圖
 [mark map]
 為盟友標示地圖
 [market explanation 2]
@@ -618,8 +550,6 @@ meta-%0
 否
 [Number Of Buildings]
 建築物數量
-[number of players: %0]
-%0 玩家再線.
 [number of teams]
 隊伍數量
 [Number Of Units]
@@ -718,8 +648,6 @@ Print Screen 鍵
 射程
 [ratios]
 比例
-[Register a new YOG user with password]
-註冊一個新 YOG 帳號和密碼。 (不穩定)
 [remember unit]
 記住單位配置數量
 [remove map]
@@ -906,8 +834,6 @@ V: 按住以使用語音交談
 
 [swarm explanation]
 製造新單位
-[swarm level 0]
-孢子堆
 [swarm]
 孢子堆
 [Swim]
@@ -1120,8 +1046,6 @@ Tab 鍵
 水面
 [Wheat]
 小麥
-[wheat]
-小麥
 [Won : you defeated your opponents]
 贏: 你打敗了你的對手
 [Won : you have the most prestige]
@@ -1222,8 +1146,6 @@ AI策略與對抗
 協調殖民地成長與訓練部隊的進攻，先破壞治療和食物。
 [Algae]
 海藻
-[Alliances]
-聯盟
 [Beach size]
 海灘尺寸
 [Blue]
@@ -1232,8 +1154,6 @@ AI策略與對抗
 棕色
 [Built-in maps]
 內建地圖
-[Can change in game]
-遊戲中可以改變
 [Closed]
 關閉
 [Colonies]
@@ -1262,8 +1182,6 @@ AI策略與對抗
 沙漠權重
 [Easy]
 簡單
-[Explore as you play]
-邊玩邊探索
 [Extra colony assignments are retained for larger maps.]
 多餘的殖民地設定會保留，以便切回更大的地圖時恢復。
 [Extra islands]
@@ -1306,14 +1224,10 @@ AI策略與對抗
 最後的殖民地
 [Layout]
 佈局
-[Locked teams]
-鎖定隊伍
 [Magenta]
 洋紅色
 [Map]
 地圖
-[Map knowledge]
-地形可見性
 [Match finished]
 比賽結束
 [Medium]
@@ -1360,10 +1274,6 @@ AI策略與對抗
 重複地形
 [Resources]
 資源
-[Restore standard rules]
-恢復標準規則
-[Revealed terrain does not reveal all enemy activity.]
-揭示的地形並不能揭示所有敵人的活動。
 [River]
 河流
 [River width]
@@ -1390,10 +1300,6 @@ AI策略與對抗
 隊伍
 [Terrain]
 地形
-[Terrain revealed]
-地形顯露
-[Try a ruleset, then make it your own.]
-嘗試一個規則集，然後將其變成你自己的。
 [Victory]
 勝利
 [Watch game]
@@ -1418,12 +1324,6 @@ AI策略與對抗
 你的地圖
 [colonies]
 殖民地
-[* Changed from standard.]
-* 從標準更改。
-[World & diplomacy]
-世界與外交
-[Starting conditions & pace]
-起始條件和速度
 [Inactive]
 不活躍
 [8 workers / 2x speed]
@@ -1446,8 +1346,6 @@ AI策略與對抗
 此地圖清單為空。
 [Premade maps retain their authored starting units.]
 預製地圖保留作者設定的初始單位。
-[Premade: only speed changes (2x)]
-預製:僅速度變化 (2x)
 [Start with terrain known]
 從已知地形開始
 [This colony will not join the match.]
@@ -2214,38 +2112,20 @@ OpenGL 在此版本中不可用。
 頁面 (P)
 [Map preview choose another]
 選擇地圖
-[Resources never grow or spread across the map.]
-資源永遠不會在地圖上生長或擴散。
 [Building sites complete immediately, skipping delivery.]
 建築工地會立即完成，跳過運送階段。
-[Units never grow hungry and never starve.]
-單位永遠不會肚子餓，也不會挨餓。
-[Slows how often resources grow or spread across the map.]
-降低資源在地圖上生長或擴散的頻率。
-[Seeds each team's shared market/exchange resource pool at game start.]
-在遊戲開始時，為每支隊伍補滿共用的市場/交易資源儲備。
-[Grow normally]
-正常生長
 [No growth]
 不生長
-[Normal construction]
-正常建造
-[Instant]
-立即
 [Units get hungry]
 單位會肚子餓
 [No hunger]
 沒有飢餓
-[Off (today's growth)]
-關閉（目前的生長速度）
 [Scarce (2x slower)]
 稀少（慢 2x）
 [Very scarce (4x slower)]
 非常稀少（慢 4x）
 [Extremely scarce (8x slower)]
 極度稀少（慢 8x）
-[None (today's default)]
-無（目前預設值）
 [Small (+50 each)]
 小（各 +50）
 [Medium (+150 each)]
@@ -2256,50 +2136,20 @@ OpenGL 在此版本中不可用。
 資源不生長
 [Economy]
 經濟
-[Scarce resources]
-資源稀少
 [Instant construction]
 立即建造
-[Stockpile start]
-起始儲備
-[Units still visit schools but never gain a level.]
-單位仍然會去學校上課，但永遠不會升級。
-[Units fight to the death instead of retreating to heal.]
-單位會戰鬥至死，而不是撤退治療。
-[Units are never permanently lost -- HP just stops at 1.]
-單位永遠不會永久消失——生命值只會停在1。
-[Disables all combat between every team.]
-停用所有隊伍之間的戰鬥。
-[Higher tiers deal more damage but have less HP and armor.]
-更高的等級會造成更多傷害，但生命值和護甲較低。
 [Higher tiers give every building much more HP.]
 更高的等級會讓每座建築物獲得更多生命值。
 [Starting units spawn already leveled up. Changes the generated map.]
 初始單位一開始就已經升級。會改變生成的地圖。
-[Trains normally]
-正常訓練
 [No upgrades]
 不升級
-[Retreats when damaged]
-受傷時撤退
-[Fearless]
-無畏
-[Can die permanently]
-可能永久死亡
 [No permadeath]
 不會永久死亡
-[Normal combat]
-正常戰鬥
-[Peaceful mode]
-和平模式
-[Off (today's balance)]
-關閉（目前的平衡）
 [Glass cannon x2]
 玻璃大炮 x2
 [Glass cannon x3]
 玻璃大炮 x3
-[Off (today's HP)]
-關閉（目前的生命值）
 [Fortress x5]
 堡壘 x5
 [Fortress x10]
@@ -2314,10 +2164,6 @@ OpenGL 在此版本中不可用。
 戰鬥
 [Glass cannon]
 玻璃大炮
-[Fortress buildings]
-堡壘化建築
-[Veteran/Fast start]
-老兵/快速開局
 [Match ends at the timer; highest prestige at that instant wins.]
 比賽在計時器歸零時結束；那一刻聲望最高者獲勝。
 [Off (no timer)]
@@ -2330,8 +2176,6 @@ OpenGL 在此版本中不可用。
 45 分鐘
 [60 minutes]
 60 分鐘
-[Sudden-death timer]
-驟死計時器
 [Stats page three]
 統計 3/3 >
 [Stats blocked units]
@@ -3060,10 +2904,6 @@ Emoji
 更多
 [No items]
 沒有項目
-[Opponents]
-對手
-[Review]
-總覽
 [Review & Play]
 檢查並開始遊戲
 [Edit opponents]
@@ -3506,8 +3346,6 @@ CPU %0%
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3900,21 +3738,9 @@ CPU %0%
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4614,20 +4440,6 @@ CPU %0%
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4748,6 +4560,26 @@ CPU %0%
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4820,3 +4652,119 @@ CPU %0%
 基地
 [bases per colony]
 每個殖民地的基地數；一個基地是地圖原樣中的一支團隊及其建築和單位
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

@@ -119,11 +119,11 @@ void Game::drawPointBar(int x, int y, BarOrientation orientation, int maxLength,
 }
 
 
-void Game::anchorBars(int x, int y, bool exception, MapRenderState* drawnRender, float opacity)
+void Game::anchorBars(int x, int y, MapRenderState* drawnRender, float opacity)
 {
 	if (drawnRender)
 		drawnRender->overlays.anchor(*globalContainer->gfx, x, y,
-			(exception ? drawnRender->detail.barException : drawnRender->detail.barAll) * opacity);
+			drawnRender->detail.barAll * opacity);
 }
 
 
@@ -515,18 +515,18 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 						if (type->hpMax)
 						{
 							float hpRatio=(float)building->hp/(float)building->effectiveMaxHp;
-							anchorBars(x+type->width*16, y+decy, building->hp!=building->effectiveMaxHp, drawnRender);
+							anchorBars(x+type->width*16, y+decy, drawnRender);
 							drawHealthBar(x+healDecx+6, y+decy-4, 16, 1+(int)(15.0f*hpRatio), hpRatio, drawnRender);
 						}
 
-						anchorBars(x+type->width*32, y, false, drawnRender);
+						anchorBars(x+type->width*32, y, drawnRender);
 						if (building->maxUnitInside>0)
 							drawPointBar(x+type->width*32-4, y+1, BOTTOM_TO_TOP, building->maxUnitInside, building->unitsInside, 255, 255, 255, 2, drawnRender);
-						anchorBars(x+type->width*16, y, false, drawnRender);
+						anchorBars(x+type->width*16, y, drawnRender);
 						if (building->maxUnitWorking>0)
 							drawPointBar(x+type->width*16-((3*building->maxUnitWorking)>>1), y+1,LEFT_TO_RIGHT , building->maxUnitWorking, building->unitsWorking, 255, 255, 255, 2, drawnRender);
 
-						anchorBars(x, y, false, drawnRender);
+						anchorBars(x, y, drawnRender);
 						if ((type->canFeedUnit) || (type->unitProductionTime))
 							drawBuildingResourceBar(x+1, y+1, type, type->maxResource[WHEAT], building->resources[WHEAT], 255, 255, 120, drawnRender);
 					}

@@ -4,7 +4,7 @@ const {gameURL} = require('./main-menu');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const exists = (page, path) => page.evaluate(path => FS.analyzePath(path).exists, path);
 
-test('the loading page shows download progress and the game starts from the core package', async ({page}) => {
+test('the loading page shows download progress and the game starts with core and game sprites', async ({page}) => {
   let release;
   const gate = new Promise(resolve => { release = resolve; });
   await page.route('**/assets/core.*.data', async route => {
@@ -20,6 +20,7 @@ test('the loading page shows download progress and the game starts from the core
   await navigation;
   await expect.poll(async () => (await snapshot(page)).screen).toContain('MainMenuScreen');
   expect((await snapshot(page)).assets.core).toBe('ready');
+  expect((await snapshot(page)).assets.game).toBe('ready');
   // Simulation data starts with the game; build files never ship.
   for (const path of ['/data/maxima/base.strategy', '/data/nicowar.txt', '/data/usl/Glob2/Runtime/Game.usl',
                       '/data/texts.list.txt', '/data/fonts/sans.ttf', '/maps', '/campaigns/Tutorial_Campaign.txt'])
@@ -34,14 +35,14 @@ test('the loading page shows download progress and the game starts from the core
   else await expect.poll(async () => (await snapshot(page)).assets.hd, {timeout: 120000}).toBe('ready');
 });
 
-test('a failed data download says so and offers to try again', async ({page}) => {
-  await page.route('**/assets/core.*.data', route => route.fulfill({status: 503, body: ''}));
+for (const name of ['core', 'game']) test(`a failed ${name} download says so and offers to try again`, async ({page}) => {
+  await page.route(`**/assets/${name}*.data`, route => route.fulfill({status: 503, body: ''}));
   await page.goto(gameURL());
   await expect(page.locator('#loading-status')).toHaveText('The game could not be downloaded.');
   await expect(page.locator('#loading-detail')).toContainText('HTTP 503');
   await expect(page.locator('#loading-retry')).toBeVisible();
-  expect((await snapshot(page)).assets.core).toBe('failed');
-  await page.unroute('**/assets/core.*.data');
+  expect((await snapshot(page)).assets[name]).toBe('failed');
+  await page.unroute(`**/assets/${name}*.data`);
   await page.locator('#loading-retry').click();
   await expect.poll(async () => (await snapshot(page)).screen, {timeout: 60000}).toContain('MainMenuScreen');
 });
@@ -52,8 +53,10 @@ test('a second visit starts from the packages cached on the device', async ({pag
   test.skip(browserName === 'webkit', 'automation WebKit does not keep Cache Storage across reloads');
   await page.goto(gameURL());
   await expect.poll(async () => (await snapshot(page)).screen).toContain('MainMenuScreen');
-  // Every background package, including the artwork where it is wanted.
-  await expect.poll(async () => Object.values((await snapshot(page)).assets).every(state => state === 'ready' || state === 'skipped'),
+  // Every background package, including artwork where it is wanted. Skin meshes
+  // are requested only on demand and intentionally stay idle on this menu.
+  await expect.poll(async () => Object.entries((await snapshot(page)).assets)
+    .filter(([name]) => name !== 'skins').every(([, state]) => state === 'ready' || state === 'skipped'),
     {timeout: 180000}).toBe(true);
   const downloads = [];
   page.on('request', request => { if (/\/assets\/.*\.data$/.test(request.url())) downloads.push(request.url()); });

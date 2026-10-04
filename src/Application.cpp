@@ -13,6 +13,8 @@
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
 #include "SettingsScreen.h"
+#include "KeyboardManager.h"
+#include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
 #include "EditorMainMenu.h"
 #include "LANMenuScreen.h"
@@ -24,12 +26,32 @@
 #include "OnlineServices.h"
 #include "RelayTransport.h"
 #include <algorithm>
+#include <optional>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
 
 namespace
 {
+// The recording hotkey works on every screen, so its single-key bindings from the
+// game layout are matched here, before any screen sees the key.
+bool isRecordingShortcut(const SDL_KeyboardEvent &key)
+{
+	static std::vector<KeyPress> bindings;
+	static std::optional<unsigned> loaded;
+	if (loaded != KeyboardManager::revision())
+	{
+		bindings.clear();
+		KeyboardManager layout(GameGUIShortcuts);
+		for (const auto &shortcut : layout.getKeyboardShortcuts())
+			if (shortcut.getAction() == GameGUIKeyActions::ToggleRecording && shortcut.getKeyPressCount() == 1)
+				bindings.push_back(KeyPress(shortcut.getKeyPress(0), true));
+		loaded = KeyboardManager::revision();
+	}
+	const KeyPress pressed(key, true);
+	return std::find(bindings.begin(), bindings.end(), pressed) != bindings.end();
+}
+
 // Keep graphics and the host alive until final writes have reached storage.
 // The gameplay stack is destroyed first, so its destructor writes are included.
 class ShutdownScreen : public Glob2UI::Screen
@@ -119,6 +141,9 @@ Application::Application()
 	: frontend(std::make_unique<FrontendTheme>()), screens(*globalContainer->gfx),
 	  shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
+	// Learn early whether FFmpeg can record, so the in-game menu and hotkey are ready.
+	if (GAGCore::Recording::supported())
+		GAGCore::Recording::probeEncoder();
 	if (GAGCore::ApplicationHost::storageRestoreFailed())
 	{
 		auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -261,8 +286,8 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 				  [](const SDL_Event &event)
 				  {
 					  if ((event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_KEY_UP) &&
-						  event.key.key == SDLK_R && (event.key.mod & SDL_KMOD_CTRL) &&
-						  (event.key.mod & SDL_KMOD_SHIFT) && GAGCore::Recording::supported())
+						  isRecordingShortcut(event.key) &&
+						  (GAGCore::Recording::available() || GAGCore::Recording::recorder().active()))
 					  {
 						  if (event.type == SDL_EVENT_KEY_DOWN && !event.key.repeat)
 							  GAGCore::Recording::toggle();

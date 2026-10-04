@@ -1,8 +1,8 @@
 const {test, expect} = require('@playwright/test');
 const {gameURL, clickMainMenu, clickCustomGameStart} = require('./main-menu');
 
-// Data that follows the main menu (scons/web_assets.py): the in-game sprites, the
-// full font and the menu music. Native builds load all of it at startup.
+// Data packages (scons/web_assets.py): startup sprites, the full font and menu
+// music. Native builds load all of it at startup.
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
 const screen = (page, name, timeout = 60000) =>
   expect.poll(async () => (await snapshot(page)).screen, {timeout}).toContain(name);
@@ -32,24 +32,36 @@ async function chooseLanguage(page, code) {
   await page.waitForTimeout(1500);
 }
 
-test('the menus work before the game sprites arrive, and a match waits for them', async ({page}) => {
+test('game sprites stay under download progress until the live menu can start', async ({page}, info) => {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
   page.on('console', message => { if (/Can't load sprite|abort/i.test(message.text())) errors.push(message.text()); });
   const release = await hold(page, 'game');
+  const releaseMusic = await hold(page, 'menu-music');
   await page.goto(gameURL());
-  await screen(page, 'MainMenuScreen');
+  await expect.poll(async () => (await snapshot(page)).assets.core).toBe('ready');
+  await expect(page.locator('#loading-status')).toHaveText('Downloading the game…');
+  await page.waitForTimeout(3000);
+  expect((await snapshot(page)).screen).toBe('loading');
   expect((await snapshot(page)).assets.game).toBe('downloading');
+  expect(await page.locator('body').evaluate(body => body.classList.contains('ready'))).toBe(false);
+  release();
+  await screen(page, 'MainMenuScreen');
+  await expect(page.locator('body')).toHaveClass(/ready/);
+  expect((await snapshot(page)).assets.game).toBe('ready');
+  // This region contains only colony terrain and units. It must animate as
+  // soon as the menu appears, even while every later package is still held.
+  const firstLoop = (await snapshot(page)).loop;
+  await expect.poll(async () => (await snapshot(page)).loop).toBeGreaterThan(firstLoop + 1);
+  const clip = {x:800, y:200, width:350, height:500};
+  const first = await page.screenshot({clip, animations:'disabled', path:info.outputPath('colony-first.png')});
+  await expect.poll(async () => (await page.screenshot({clip, animations:'disabled'})).equals(first),
+    {timeout:5000}).toBe(false);
+  await page.screenshot({clip, animations:'disabled', path:info.outputPath('colony-moving.png')});
+  releaseMusic();
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
   await clickCustomGameStart(page);
-  await screen(page, 'GameLoadScreen');
-  // The load screen waits ("Loading game graphics") without starting the match.
-  await page.waitForTimeout(3000);
-  expect((await snapshot(page)).screen).toContain('GameLoadScreen');
-  expect((await snapshot(page)).tick).toBe(0);
-  release();
-  await expect.poll(async () => (await snapshot(page)).assets.game, {timeout: 60000}).toBe('ready');
   await expect.poll(async () => (await snapshot(page)).tick, {timeout: 60000}).toBeGreaterThan(25);
   expect(errors).toEqual([]);
 });

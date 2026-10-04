@@ -174,12 +174,6 @@ No es pot crear la partida: el port %0 està ocupat
 No es pot entrar: la partida ja ha començat
 [Can't join game, game is full]
 No es pot entrar: la partida és plena
-[Can't join game, missmatching game parameters]
-No pots unirte a la partida, falten parametres
-[Can't join game, timeout]
-No pots unirte a la partida, el servidor no respon
-[Can't join game, wrong game version]
-No pots unirte a la partida, la versió no es correcte
 [cancel destroy]
 Cancelar destrucció
 [cancel repair]
@@ -556,8 +550,6 @@ Sense creixement
 No
 [Number Of Buildings]
 Nombre d'edificis
-[number of players: %0]
-%0 nombre de jugadors
 [number of teams]
 Nombre d' equips
 [Number Of Units]
@@ -656,8 +648,6 @@ Poliesportiu
 Abast
 [ratios]
 Proporció
-[Register a new YOG user with password]
-Registrar un nou jugador YOG amb contrasenya (insegur)
 [remember unit]
 Recorda les assignacions
 [remove map]
@@ -1056,8 +1046,6 @@ Observant:
 Aigua
 [Wheat]
 Blat
-[wheat]
-blat
 [Won : you defeated your opponents]
 Vencedor: Has destruit als teus enemics
 [Won : you have the most prestige]
@@ -1158,8 +1146,6 @@ Estratègia principal: Reparteix producció entre construcció, millores, defens
 Coordina creixement i atacs entrenats, prioritzant curació i menjar.
 [Algae]
 algues
-[Alliances]
-Aliances
 [Beach size]
 Mida de la platja
 [Blue]
@@ -1168,8 +1154,6 @@ Blau
 Marró
 [Built-in maps]
 Mapes integrats
-[Can change in game]
-Pot canviar en el joc
 [Closed]
 Tancat
 [Colonies]
@@ -1198,8 +1182,6 @@ Cian
 Pes del desert
 [Easy]
 Fàcil
-[Explore as you play]
-Explora mentre jugues
 [Extra colony assignments are retained for larger maps.]
 Les assignacions de colònies addicionals es conserven per a mapes més grans.
 [Extra islands]
@@ -1242,14 +1224,10 @@ Paisatge
 Última colònia en peu
 [Layout]
 Disseny
-[Locked teams]
-Equips tancats
 [Magenta]
 Magenta
 [Map]
 Mapa
-[Map knowledge]
-Coneixement cartogràfic
 [Match finished]
 Partida acabada
 [Medium]
@@ -1296,10 +1274,6 @@ Vermell
 Repetir paisatge
 [Resources]
 Recursos
-[Restore standard rules]
-Restaurar les regles estàndard
-[Revealed terrain does not reveal all enemy activity.]
-El terreny revelat no revela tota l'activitat de l'enemic.
 [River]
 riu
 [River width]
@@ -1326,10 +1300,6 @@ pantà
 Equip
 [Terrain]
 Terreny
-[Terrain revealed]
-Terreny revelat
-[Try a ruleset, then make it your own.]
-Proveu un conjunt de regles i feu-ne el vostre.
 [Victory]
 Victòria
 [Watch game]
@@ -1354,12 +1324,6 @@ Tu contra tothom
 Els teus mapes
 [colonies]
 colònies
-[* Changed from standard.]
-* Canviat de l'estàndard.
-[World & diplomacy]
-Món i diplomàcia
-[Starting conditions & pace]
-Condicions de sortida i ritme
 [Inactive]
 Inactiu
 [8 workers / 2x speed]
@@ -1382,8 +1346,6 @@ Unitats inicials definides pel mapa
 No hi ha cap mapa en aquesta biblioteca.
 [Premade maps retain their authored starting units.]
 Els mapes predissenyats conserven les unitats inicials triades pel seu autor.
-[Premade: only speed changes (2x)]
-Mapa predissenyat: només canvia la velocitat (2x)
 [Start with terrain known]
 Comenceu amb el terreny conegut
 [This colony will not join the match.]
@@ -2150,38 +2112,20 @@ Estadístiques 2/3 >
 Pàgina (P)
 [Map preview choose another]
 Tria un mapa
-[Resources never grow or spread across the map.]
-Els recursos mai no creixen ni s'escampen pel mapa.
 [Building sites complete immediately, skipping delivery.]
 Les obres es completen immediatament, sense fase de repartiment.
-[Units never grow hungry and never starve.]
-Les unitats mai no passen gana ni moren de fam.
-[Slows how often resources grow or spread across the map.]
-Alenteix la freqüència amb què els recursos creixen o s'escampen pel mapa.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Estableix la reserva inicial del mercat/intercanvi compartit de cada equip a l'inici de la partida.
-[Grow normally]
-Creixement normal
 [No growth]
 Sense creixement
-[Normal construction]
-Construcció normal
-[Instant]
-Instantània
 [Units get hungry]
 Les unitats passen gana
 [No hunger]
 Sense gana
-[Off (today's growth)]
-Desactivat (creixement actual)
 [Scarce (2x slower)]
 Escàs (2x més lent)
 [Very scarce (4x slower)]
 Molt escàs (4x més lent)
 [Extremely scarce (8x slower)]
 Extremament escàs (8x més lent)
-[None (today's default)]
-Cap (per defecte actual)
 [Small (+50 each)]
 Petit (+50 cadascun)
 [Medium (+150 each)]
@@ -2192,50 +2136,20 @@ Gran (+300 cadascun)
 Sense creixement de recursos
 [Economy]
 Economia
-[Scarce resources]
-Recursos escassos
 [Instant construction]
 Construcció instantània
-[Stockpile start]
-Reserva inicial
-[Units still visit schools but never gain a level.]
-Les unitats continuen anant a l'escola, però mai pugen de nivell.
-[Units fight to the death instead of retreating to heal.]
-Les unitats lluiten fins a la mort en lloc de retirar-se per curar-se.
-[Units are never permanently lost -- HP just stops at 1.]
-Les unitats mai es perden definitivament -- la vida simplement s'atura a 1.
-[Disables all combat between every team.]
-Desactiva tot el combat entre tots els equips.
-[Higher tiers deal more damage but have less HP and armor.]
-Els nivells superiors infligeixen més mal però tenen menys vida i armadura.
 [Higher tiers give every building much more HP.]
 Els nivells superiors donen molta més vida a cada edifici.
 [Starting units spawn already leveled up. Changes the generated map.]
 Les unitats inicials apareixen ja amb el nivell pujat. Canvia el mapa generat.
-[Trains normally]
-S'entrena normalment
 [No upgrades]
 Sense millores
-[Retreats when damaged]
-Es retira quan està ferida
-[Fearless]
-Sense por
-[Can die permanently]
-Pot morir definitivament
 [No permadeath]
 Sense mort definitiva
-[Normal combat]
-Combat normal
-[Peaceful mode]
-Mode pacífic
-[Off (today's balance)]
-Desactivat (equilibri actual)
 [Glass cannon x2]
 Canó de vidre x2
 [Glass cannon x3]
 Canó de vidre x3
-[Off (today's HP)]
-Desactivat (vida actual)
 [Fortress x5]
 Fortalesa x5
 [Fortress x10]
@@ -2250,10 +2164,6 @@ Llegendari
 Combat
 [Glass cannon]
 Canó de vidre
-[Fortress buildings]
-Edificis fortificats
-[Veteran/Fast start]
-Veterà/Inici ràpid
 [Match ends at the timer; highest prestige at that instant wins.]
 La partida acaba al temporitzador; guanya qui tingui més prestigi en aquell instant.
 [Off (no timer)]
@@ -2266,8 +2176,6 @@ Desactivat (sense temporitzador)
 45 minuts
 [60 minutes]
 60 minuts
-[Sudden-death timer]
-Temporitzador de mort sobtada
 [Stats page three]
 Estadístiques 3/3 >
 [Stats blocked units]
@@ -2996,10 +2904,6 @@ Espaiosa
 Més
 [No items]
 Cap element
-[Opponents]
-Adversaris
-[Review]
-Resum
 [Review & Play]
 Revisa i juga
 [Edit opponents]
@@ -3442,8 +3346,6 @@ Inèrcia del mapa
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3836,21 +3738,9 @@ Inèrcia del mapa
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4550,20 +4440,6 @@ Inèrcia del mapa
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4684,6 +4560,26 @@ Desactiva-ho per utilitzar les unitats, els eixams i els colors dels edificis cl
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4756,3 +4652,119 @@ Repeteix el mapa verticalment
 bases
 [bases per colony]
 Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb els seus edificis i unitats
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

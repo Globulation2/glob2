@@ -133,7 +133,7 @@ TEST_CASE("Team-capacity change rejects released replays and enforces acceptance
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
 	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 127);
-	CHECK(VERSION_MINOR == 132);
+	CHECK(VERSION_MINOR == 133);
 	CHECK(NET_PROTOCOL_VERSION == 54);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);

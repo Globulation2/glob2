@@ -17,23 +17,25 @@ class TorusView
     ~TorusView();
     // Manual mode stays flat until toggled; automatic mode can follow movement.
     bool active() const { return target || moving || amount > 0; }
-    // Switched on by hand: the wheel zooms the ring.
+    // Switched on by hand: the ring is the map view, at the 2D camera's zoom.
     bool enabled() const { return target; }
     bool overviewSettled() const { return amount == 1; }
     bool available() const;
     // Drop camera, picking and GPU state before loading another game.
     void reset();
     void toggle();
-    void resetCamera();
-    bool event(const SDL_Event &event, int width);
     bool pick(int x, int y, int &worldPixelX, int &worldPixelY) const;
     void setViewport(int x, int y);
+    // The viewport moved without the focus moving: the camera zoomed about it.
+    void rebaseViewport(int x, int y);
     void notifyMove();
     void stopMoving() { moving = false; }
     void setPointerHeld(bool held) { pointerHeld = held; }
     // Middle-button panning is a held gesture even between motion events.
     void setPanHeld(bool held) { panHeld = held; }
-    // False requests the ordinary 2D renderer on this same frame.
+    // False requests the ordinary 2D renderer on this same frame. The ring
+    // shows its focus at `flatZoom`, the 2D camera's zoom, so both views share
+    // one zoom and one level of detail.
     bool draw(Game &game, int team, unsigned options, int &viewportX, int &viewportY, int width,
               int height, float flatZoom = 1, float fractionX = 0, float fractionY = 0);
 
@@ -49,13 +51,15 @@ class TorusView
     float pickU = 0, pickV = 0;
     int pickWidth = 0, pickHeight = 0;
     bool target;
+    // An automatic reveal pulls back to the whole ring, whatever the zoom.
+    bool wholeRing = false;
     bool moving = false, pointerHeld = false, panHeld = false;
     Uint32 lastMove = 0;
-    float amount, zoom;
+    float amount;
     float travelU, travelV;
-    float cameraU = 0, cameraV = 0, cameraZoom = 1;
+    float cameraU = 0, cameraV = 0;
     float viewAspect = 1.6f, ringAspect = 0, ringMapAspect = 0;
-    float ringWidth = 1, ringHeight = 1;
+    float ringWidth = 1, ringHeight = 1, focusGain = 1;
     int baseViewportX, baseViewportY, worldW, worldH;
     std::vector<TorusTextureTiles::Tile> tiles;
     int pixelsPerCell = 32;

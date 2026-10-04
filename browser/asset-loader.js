@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Writes the game's data packages (built by scons/web_assets.py) into the virtual
-// file system. The core package is a run dependency: main() starts only after it
-// is installed, exactly as with Emscripten's --preload-file. Optional packages
+// file system. Core and game are run dependencies: main() starts only after
+// both are installed, exactly as with Emscripten's --preload-file. Optional packages
 // (in-game music, high-resolution artwork) are fetched only when the page asks,
 // part by part, and become visible to the game all at once when complete.
 //
@@ -176,11 +176,19 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
     onProgress: (name, loaded, total) => Module.glob2AssetProgress?.(name, loaded, total),
   });
   Module.glob2Assets = loader;
-  // Start the core download while the runtime and WebAssembly are still loading.
-  const core = loader.download('core');
-  loader.states.core = 'downloading';
+  // Fetch both startup packages alongside WebAssembly, rather than making the
+  // live menu wait for another download after the loading page disappears.
+  const startup = new Map();
+  for (const name of ['core', 'game']) {
+    if (!loader.manifest.packages.some(entry => entry.name === name)) continue;
+    loader.states[name] = 'downloading';
+    const contents = loader.download(name);
+    // A fast failure can precede preRun; requireNow reports it below.
+    contents.catch(() => {});
+    startup.set(name, contents);
+  }
   // Startup packages are run dependencies, like --preload-file: main() waits for
-  // them. Core always; the page may add others (the full font for a Chinese,
+  // them. Core and game always; the page may add others (the full font for a Chinese,
   // Japanese or Korean interface) until the runtime starts. They install in
   // request order, so a later package can replace a core file.
   const required = new Set(), queued = [];
@@ -199,7 +207,7 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
     const dependency = 'glob2-assets-' + name;
     addRunDependency(dependency);
     loader.states[name] = 'downloading';
-    const contents = name === 'core' ? core : loader.download(name);
+    const contents = startup.get(name) || loader.download(name);
     installing = installing.then(async () => {
       try {
         loader.install(name, await contents);
@@ -213,6 +221,7 @@ if (typeof Module !== 'undefined' && Module.glob2AssetManifest && typeof window 
   (Module.preRun ??= []).push(() => {
     preRunDone = true;
     requireNow('core');
+    if (startup.has('game')) requireNow('game');
     for (const name of queued.splice(0)) requireNow(name);
   });
 }

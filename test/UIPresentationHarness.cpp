@@ -120,6 +120,15 @@ std::vector<Fixture> fixtures()
 			 lobby->selectTab(2);
 			 return lobby;
 		 }},
+		{"custom-game-rules-all", [](GAGGUI::ScreenStack &s)
+		 {
+			 auto lobby = std::make_unique<CustomGameScreen>(s);
+			 lobby->selectTab(2);
+			 lobby->selectRuleset("blitz");
+			 lobby->setRulesView(CustomGameScreen::RulesView::All);
+			 return lobby;
+		 }},
+		{"ruleset-choice", [](GAGGUI::ScreenStack &) { return std::make_unique<RulesetChoiceScreen>("blitz"); }},
 		{"new-map", [](GAGGUI::ScreenStack &s) { return std::make_unique<NewMapScreen>(GeneratorRegistry::builtins(), &s); }},
 		{"landscape-navigation", [](GAGGUI::ScreenStack &)
 		 {
@@ -253,6 +262,18 @@ std::vector<Fixture> fixtures()
 		 {
 			 auto settings = std::make_unique<SettingsScreen>();
 			 settings->selectCategory(SettingsScreen::Category::Online);
+			 return settings;
+		 }},
+		{"settings-hive-mind", [](GAGGUI::ScreenStack &)
+		 {
+			 auto settings = std::make_unique<SettingsScreen>();
+			 settings->selectCategory(SettingsScreen::Category::HiveMind);
+			 return settings;
+		 }},
+		{"settings-recording", [](GAGGUI::ScreenStack &)
+		 {
+			 auto settings = std::make_unique<SettingsScreen>();
+			 settings->selectCategory(SettingsScreen::Category::Recording);
 			 return settings;
 		 }},
 		// Online screens (quick match, profile, maps) on canned data.

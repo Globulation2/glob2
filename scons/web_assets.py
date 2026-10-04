@@ -11,8 +11,8 @@ the game reads at run time into content-addressed packages under `assets/`, and
   the font without its CJK outlines, the menu backdrop as a JPEG and the wordmark
   without the area the menu never shows.
 - `game`: the in-game sprites (GlobalContainer::loadGameGraphics and the building
-  artwork). The page downloads it first after the main menu is up; matches and the
-  editor wait for it ("Loading game graphics").
+  artwork). The page downloads it alongside core and WebAssembly before revealing
+  the live main menu.
 - `font-cjk`: the full font, replacing the core copy. A startup package for a
   Chinese, Japanese or Korean interface; otherwise it follows in the background so
   CJK player names and language names get their glyphs.
@@ -256,7 +256,7 @@ def write_packages(root, output, source=None):
         data = {path: contents(root, name, path, substitutes, source) for path in paths}
         sizes = {path: len(value) for path, value in data.items()}
         groups = [paths] if name == 'core' else split(paths, sizes, PART_BYTES)
-        entry = {'name': name, 'optional': name != 'core', 'size': sum(sizes.values()), 'parts': []}
+        entry = {'name': name, 'optional': name not in ('core', 'game'), 'size': sum(sizes.values()), 'parts': []}
         for index, group in enumerate(groups):
             blob, files = bytearray(), []
             for path in group:

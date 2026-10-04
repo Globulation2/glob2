@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "MainMenuScreen.h"
-#include "ui/RecordingControls.h"
 #include "GlobalContainer.h"
 #include <algorithm>
 #include <cmath>
@@ -64,42 +63,41 @@ Element MainMenuScreen::build(const Presentation &p)
 	auto choose = [this](int code) { return [this, code] { endExecute(code); }; };
 	auto action = [&](const char *key, int code, ButtonOptions options)
 	{
-		if (code == GAME_SETUP)
+		// Every destination carries its icon on every host.
+		switch (code)
 		{
-			options.icon = uiIcon(UIIcon::Settings);
-		}
-		if (code == EDITOR)
-			options.icon = uiIcon(UIIcon::Editor);
-		if (code == LOAD_GAME)
+		case CUSTOM:
+			options.icon = uiIcon(UIIcon::CustomGame);
+			break;
+		case CAMPAIGN:
+			options.icon = uiIcon(UIIcon::Campaign);
+			break;
+		case LOAD_GAME:
 			options.icon = uiIcon(UIIcon::LoadGame);
-		if (p.touch)
-		{
-			switch (code)
-			{
-			case CUSTOM:
-				options.icon = uiIcon(UIIcon::CustomGame);
-				break;
-			case CAMPAIGN:
-				options.icon = uiIcon(UIIcon::Campaign);
-				break;
-			case TUTORIAL:
-				options.icon = uiIcon(UIIcon::Tutorial);
-				break;
-			case PLAY_ONLINE:
-				options.icon = uiIcon(UIIcon::Online);
-				break;
-			case MULTIPLAYERS_LAN:
-				options.icon = uiIcon(UIIcon::LAN);
-				break;
-			case CREDITS:
-				options.icon = uiIcon(UIIcon::Credits);
-				break;
-			case QUIT:
-				options.icon = uiIcon(UIIcon::Quit);
-				break;
-			default:
-				break;
-			}
+			break;
+		case TUTORIAL:
+			options.icon = uiIcon(UIIcon::Tutorial);
+			break;
+		case PLAY_ONLINE:
+			options.icon = uiIcon(UIIcon::Online);
+			break;
+		case MULTIPLAYERS_LAN:
+			options.icon = uiIcon(UIIcon::LAN);
+			break;
+		case GAME_SETUP:
+			options.icon = uiIcon(UIIcon::Settings);
+			break;
+		case EDITOR:
+			options.icon = uiIcon(UIIcon::Editor);
+			break;
+		case CREDITS:
+			options.icon = uiIcon(UIIcon::Credits);
+			break;
+		case QUIT:
+			options.icon = uiIcon(UIIcon::Quit);
+			break;
+		default:
+			break;
 		}
 		return button("menu/" + std::to_string(code), tr(key), choose(code), options);
 	};
@@ -171,8 +169,6 @@ Element MainMenuScreen::build(const Presentation &p)
 #endif
 			content.push_back(action("[editor]", EDITOR, rowStyle));
 			content.push_back(action("[credits]", CREDITS, rowStyle));
-			if (GAGCore::Recording::supported())
-				content.push_back(recordingControls());
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 			content.push_back(button("menu/privacy", "Privacy policy", [] {
 #if defined(GLOB2_AMAZON_RELEASE)
@@ -244,8 +240,6 @@ Element MainMenuScreen::build(const Presentation &p)
 	grid.maxColumns = 2;
 	grid.minChildWidth = 1;
 	content.push_back(wrap(std::move(utilities), grid));
-	if (GAGCore::Recording::supported())
-		content.push_back(recordingControls());
 	cardOptions.padding = p.pt(compact ? 16 : 24);
 	auto panel = sized({panelW, panelH},
 					   card(column({expanded(scroll("menu/scroll", column(std::move(content), {p.pt(compact ? 4 : 6)}))), caption(PACKAGE_VERSION)}, {p.pt(6)}),

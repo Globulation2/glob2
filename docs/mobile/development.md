@@ -80,8 +80,8 @@ metric arrows under the thumb and current counters; × or pulling it down closes
 it. Spacious layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
-leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
-independent. A completed tap on empty map space dismisses open toolboxes,
+leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`, and dialogs over a match use the
+matching `inGameTheme()`; frontend paper styling remains independent. A completed tap on empty map space dismisses open toolboxes,
 statistics and inspection together, without reopening a previous palette. An
 outside tap on the map peek likewise dismisses its underlying tools; its explicit
 Done button can return to them. Tapping another object switches selection;

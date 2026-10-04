@@ -552,8 +552,6 @@ Bez wzrostu
 Nie
 [Number Of Buildings]
 Liczba budynków
-[number of players: %0]
-%0 graczy dołączyło do gry.
 [number of teams]
 Ilość drużyn
 [Number Of Units]
@@ -652,8 +650,6 @@ Tor wyścigowy
 Zasięg
 [ratios]
 Proporcje
-[Register a new YOG user with password]
-Rejestruj nowego użytkownika YOG z hasłem. (niebezpieczne)
 [remember unit]
 Pamiętaj liczby jednostek
 [remove map]
@@ -1150,8 +1146,6 @@ Podstawowa strategia: Dzieli produkcję jednostek między budowę, ulepszenia, o
 Koordynuje wzrost kolonii i wyszkolone ataki, najpierw niszcząc leczenie i żywienie.
 [Algae]
 Algi
-[Alliances]
-Sojusze
 [Beach size]
 Rozmiar plaży
 [Blue]
@@ -1160,8 +1154,6 @@ Niebieski
 Brązowy
 [Built-in maps]
 Wbudowane mapy
-[Can change in game]
-Możliwość zmiany w grze
 [Closed]
 Zamknięte
 [Colonies]
@@ -1190,8 +1182,6 @@ Cyjan
 Waga pustyni
 [Easy]
 Łatwy
-[Explore as you play]
-Eksploruj podczas gry
 [Extra colony assignments are retained for larger maps.]
 Dodatkowe przydziały kolonii są zachowywane w przypadku większych map.
 [Extra islands]
@@ -1234,14 +1224,10 @@ Krajobraz
 Ostatnia ocalała kolonia
 [Layout]
 Układ
-[Locked teams]
-Stałe drużyny
 [Magenta]
 Magenta
 [Map]
 Mapa
-[Map knowledge]
-Znajomość mapy
 [Match finished]
 Mecz zakończony
 [Medium]
@@ -1288,10 +1274,6 @@ Czerwony
 Powtarzanie krajobrazu
 [Resources]
 Zasoby
-[Restore standard rules]
-Przywróć standardowe zasady
-[Revealed terrain does not reveal all enemy activity.]
-Odkryty teren nie ujawnia całej aktywności wroga.
 [River]
 Rzeka
 [River width]
@@ -1318,10 +1300,6 @@ Bagno
 Drużyna
 [Terrain]
 Teren
-[Terrain revealed]
-Teren ujawniony
-[Try a ruleset, then make it your own.]
-Wypróbuj zestaw reguł, a następnie stwórz własny.
 [Victory]
 Zwycięstwo
 [Watch game]
@@ -1346,12 +1324,6 @@ Ty przeciwko wszystkim
 Twoje mapy
 [colonies]
 kolonie
-[* Changed from standard.]
-* Zmieniono w stosunku do standardu.
-[World & diplomacy]
-Świat i dyplomacja
-[Starting conditions & pace]
-Warunki początkowe i tempo
 [Inactive]
 Nieaktywny
 [8 workers / 2x speed]
@@ -1374,8 +1346,6 @@ Jednostki początkowe zdefiniowane na mapie
 Brak map w tej bibliotece.
 [Premade maps retain their authored starting units.]
 Gotowe mapy zachowują swoje autorskie jednostki początkowe.
-[Premade: only speed changes (2x)]
-Gotowa mapa: zmienia się tylko prędkość (2x)
 [Start with terrain known]
 Zacznij od znanego terenu
 [This colony will not join the match.]
@@ -2142,38 +2112,20 @@ Statystyki 2/3 >
 Strona (P)
 [Map preview choose another]
 Wybierz mapę
-[Resources never grow or spread across the map.]
-Zasoby nigdy nie rosną ani nie rozprzestrzeniają się po mapie.
 [Building sites complete immediately, skipping delivery.]
 Place budowy kończą się natychmiast, pomijając dostawę.
-[Units never grow hungry and never starve.]
-Jednostki nigdy nie odczuwają głodu i nigdy nie umierają z głodu.
-[Slows how often resources grow or spread across the map.]
-Spowalnia, jak często zasoby rosną lub rozprzestrzeniają się po mapie.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Na początku gry zasila wspólną pulę zasobów bazaru/wymiany każdej drużyny.
-[Grow normally]
-Normalny wzrost
 [No growth]
 Brak wzrostu
-[Normal construction]
-Normalna budowa
-[Instant]
-Natychmiastowa
 [Units get hungry]
 Jednostki odczuwają głód
 [No hunger]
 Brak głodu
-[Off (today's growth)]
-Wyłączony (dzisiejszy wzrost)
 [Scarce (2x slower)]
 Skąpe (2x wolniej)
 [Very scarce (4x slower)]
 Bardzo skąpe (4x wolniej)
 [Extremely scarce (8x slower)]
 Skrajnie skąpe (8x wolniej)
-[None (today's default)]
-Brak (obecna wartość domyślna)
 [Small (+50 each)]
 Mały (+50 każdy)
 [Medium (+150 each)]
@@ -2184,50 +2136,20 @@ Duży (+300 każdy)
 Brak wzrostu zasobów
 [Economy]
 Gospodarka
-[Scarce resources]
-Skąpe zasoby
 [Instant construction]
 Natychmiastowa budowa
-[Stockpile start]
-Zapas początkowy
-[Units still visit schools but never gain a level.]
-Jednostki nadal chodzą do szkoły, ale nigdy nie awansują na wyższy poziom.
-[Units fight to the death instead of retreating to heal.]
-Jednostki walczą na śmierć i życie zamiast wycofywać się, by się leczyć.
-[Units are never permanently lost -- HP just stops at 1.]
-Jednostki nigdy nie są tracone na stałe -- ich punkty życia po prostu zatrzymują się na 1.
-[Disables all combat between every team.]
-Wyłącza wszystkie walki między wszystkimi drużynami.
-[Higher tiers deal more damage but have less HP and armor.]
-Wyższe poziomy zadają więcej obrażeń, ale mają mniej punktów życia i zbroi.
 [Higher tiers give every building much more HP.]
 Wyższe poziomy dają każdemu budynkowi znacznie więcej punktów życia.
 [Starting units spawn already leveled up. Changes the generated map.]
 Jednostki startowe pojawiają się już na wyższym poziomie. Zmienia wygenerowaną mapę.
-[Trains normally]
-Trenuje normalnie
 [No upgrades]
 Brak ulepszeń
-[Retreats when damaged]
-Wycofuje się, gdy jest ranna
-[Fearless]
-Nieustraszona
-[Can die permanently]
-Może zginąć na stałe
 [No permadeath]
 Bez trwałej śmierci
-[Normal combat]
-Normalna walka
-[Peaceful mode]
-Tryb pokojowy
-[Off (today's balance)]
-Wyłączone (dzisiejszy balans)
 [Glass cannon x2]
 Szklane działo x2
 [Glass cannon x3]
 Szklane działo x3
-[Off (today's HP)]
-Wyłączone (dzisiejsze punkty życia)
 [Fortress x5]
 Forteca x5
 [Fortress x10]
@@ -2242,10 +2164,6 @@ Legendarny
 Walka
 [Glass cannon]
 Szklane działo
-[Fortress buildings]
-Ufortyfikowane budynki
-[Veteran/Fast start]
-Weteran/Szybki start
 [Match ends at the timer; highest prestige at that instant wins.]
 Mecz kończy się wraz z zegarem; wygrywa gracz z najwyższym prestiżem w tym momencie.
 [Off (no timer)]
@@ -2258,8 +2176,6 @@ Wyłączone (bez zegara)
 45 minut
 [60 minutes]
 60 minut
-[Sudden-death timer]
-Zegar nagłej śmierci
 [Stats page three]
 Statystyki 3/3 >
 [Stats blocked units]
@@ -2988,10 +2904,6 @@ Przestronny
 Więcej
 [No items]
 Brak elementów
-[Opponents]
-Przeciwnicy
-[Review]
-Podsumowanie
 [Review & Play]
 Sprawdź i graj
 [Edit opponents]
@@ -3434,8 +3346,6 @@ Rozpęd mapy
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3828,21 +3738,9 @@ Rozpęd mapy
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4542,20 +4440,6 @@ Rozpęd mapy
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4676,6 +4560,26 @@ Wyłącz, aby na tym urządzeniu używać klasycznych jednostek, rojów i kolor�
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4748,3 +4652,119 @@ Powtórz mapę w pionie
 bazy
 [bases per colony]
 Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budynkami i jednostkami
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

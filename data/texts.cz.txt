@@ -550,8 +550,6 @@ Bez růstu
 Ne
 [Number Of Buildings]
 Počet budov
-[number of players: %0]
-%0 hráčů se připojilo.
 [number of teams]
 Počet týmů
 [Number Of Units]
@@ -650,8 +648,6 @@ Závodní dráha
 Dosah
 [ratios]
 Poměry
-[Register a new YOG user with password]
-Registrace nového YOG uživatele s heslem. (nezabezpečené)
 [remember unit]
 Pamatovat počty jednotek
 [remove map]
@@ -1150,8 +1146,6 @@ Základní strategie: Rozděluje produkci jednotek mezi stavbu, vylepšování, 
 Koordinuje růst kolonie a vycvičené útoky, přednostně ničí léčení a jídlo.
 [Algae]
 Řasy
-[Alliances]
-Spojenectví
 [Beach size]
 Velikost pláže
 [Blue]
@@ -1160,8 +1154,6 @@ Modrá
 Hnědá
 [Built-in maps]
 Vestavěné mapy
-[Can change in game]
-Může se změnit ve hře
 [Closed]
 Zavřeno
 [Colonies]
@@ -1190,8 +1182,6 @@ Azurová
 Váha pouště
 [Easy]
 Lehká
-[Explore as you play]
-Prozkoumejte během hraní
 [Extra colony assignments are retained for larger maps.]
 Přiřazení dalších kolonií zůstávají uložená pro větší mapy.
 [Extra islands]
@@ -1234,14 +1224,10 @@ Krajina
 Poslední přeživší kolonie
 [Layout]
 Rozložení
-[Locked teams]
-Zamčené týmy
 [Magenta]
 Purpurová
 [Map]
 Mapa
-[Map knowledge]
-Znalost mapy
 [Match finished]
 Zápas ukončen
 [Medium]
@@ -1288,10 +1274,6 @@ Náhodná mapa
 Opakování krajiny
 [Resources]
 Zdroje
-[Restore standard rules]
-Obnovit standardní pravidla
-[Revealed terrain does not reveal all enemy activity.]
-Odhalený terén neodhalí veškerou nepřátelskou aktivitu.
 [River]
 Řeka
 [River width]
@@ -1318,10 +1300,6 @@ Bažina
 Tým
 [Terrain]
 Terén
-[Terrain revealed]
-Terén odhalen
-[Try a ruleset, then make it your own.]
-Vyzkoušejte sadu pravidel a poté si ji vytvořte podle sebe.
 [Victory]
 Vítězství
 [Watch game]
@@ -1346,12 +1324,6 @@ Vy proti všem
 Vaše mapy
 [colonies]
 kolonie
-[* Changed from standard.]
-* Změněno oproti standardu.
-[World & diplomacy]
-Svět a diplomacie
-[Starting conditions & pace]
-Startovní podmínky a tempo
 [Inactive]
 Neaktivní
 [8 workers / 2x speed]
@@ -1374,8 +1346,6 @@ Startovní jednotky definované mapou
 V této knihovně nejsou žádné mapy.
 [Premade maps retain their authored starting units.]
 Předpřipravené mapy si zachovávají své původní výchozí jednotky.
-[Premade: only speed changes (2x)]
-Hotová mapa: mění se jen rychlost (2x)
 [Start with terrain known]
 Začněte se známým terénem
 [This colony will not join the match.]
@@ -2142,38 +2112,20 @@ Statistiky 2/3 >
 Stránka (P)
 [Map preview choose another]
 Vyberte mapu
-[Resources never grow or spread across the map.]
-Zdroje na mapě nikdy nerostou ani se nešíří.
 [Building sites complete immediately, skipping delivery.]
 Staveniště se dokončí okamžitě, bez fáze dovozu materiálu.
-[Units never grow hungry and never starve.]
-Jednotky nikdy nemají hlad a nikdy neumírají hladem.
-[Slows how often resources grow or spread across the map.]
-Zpomaluje, jak často zdroje na mapě rostou nebo se šíří.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Na začátku hry naplní sdílenou zásobu tržiště/burzy každého týmu.
-[Grow normally]
-Normální růst
 [No growth]
 Bez růstu
-[Normal construction]
-Normální stavba
-[Instant]
-Okamžitá
 [Units get hungry]
 Jednotky mají hlad
 [No hunger]
 Bez hladu
-[Off (today's growth)]
-Vypnuto (dnešní růst)
 [Scarce (2x slower)]
 Vzácné (2x pomaleji)
 [Very scarce (4x slower)]
 Velmi vzácné (4x pomaleji)
 [Extremely scarce (8x slower)]
 Extrémně vzácné (8x pomaleji)
-[None (today's default)]
-Žádné (dnešní výchozí)
 [Small (+50 each)]
 Malé (+50 od každého)
 [Medium (+150 each)]
@@ -2184,50 +2136,20 @@ Velké (+300 od každého)
 Bez růstu zdrojů
 [Economy]
 Ekonomika
-[Scarce resources]
-Vzácné zdroje
 [Instant construction]
 Okamžitá stavba
-[Stockpile start]
-Počáteční zásoba
-[Units still visit schools but never gain a level.]
-Jednotky stále navštěvují školu, ale nikdy nezískávají úroveň.
-[Units fight to the death instead of retreating to heal.]
-Jednotky bojují až do smrti, místo aby se stáhly a léčily se.
-[Units are never permanently lost -- HP just stops at 1.]
-Jednotky nikdy nejsou trvale ztraceny -- životy se prostě zastaví na 1.
-[Disables all combat between every team.]
-Vypíná veškerý boj mezi všemi týmy.
-[Higher tiers deal more damage but have less HP and armor.]
-Vyšší úrovně způsobují více poškození, ale mají méně životů a brnění.
 [Higher tiers give every building much more HP.]
 Vyšší úrovně dávají každé budově mnohem více životů.
 [Starting units spawn already leveled up. Changes the generated map.]
 Počáteční jednotky se objeví už s vyšší úrovní. Mění vygenerovanou mapu.
-[Trains normally]
-Trénuje normálně
 [No upgrades]
 Žádná vylepšení
-[Retreats when damaged]
-Stáhne se při zranění
-[Fearless]
-Nebojácná
-[Can die permanently]
-Může trvale zemřít
 [No permadeath]
 Žádná trvalá smrt
-[Normal combat]
-Normální boj
-[Peaceful mode]
-Mírový režim
-[Off (today's balance)]
-Vypnuto (dnešní vyváženost)
 [Glass cannon x2]
 Skleněné dělo x2
 [Glass cannon x3]
 Skleněné dělo x3
-[Off (today's HP)]
-Vypnuto (dnešní životy)
 [Fortress x5]
 Pevnost x5
 [Fortress x10]
@@ -2242,10 +2164,6 @@ Legendární
 Boj
 [Glass cannon]
 Skleněné dělo
-[Fortress buildings]
-Opevněné budovy
-[Veteran/Fast start]
-Veterán/Rychlý start
 [Match ends at the timer; highest prestige at that instant wins.]
 Zápas končí časovačem; vyhrává ten, kdo má v tu chvíli nejvyšší prestiž.
 [Off (no timer)]
@@ -2258,8 +2176,6 @@ Vypnuto (bez časovače)
 45 minut
 [60 minutes]
 60 minut
-[Sudden-death timer]
-Časovač náhlé smrti
 [Stats page three]
 Statistiky 3/3 >
 [Stats blocked units]
@@ -2988,10 +2904,6 @@ Prostorné
 Více
 [No items]
 Žádné položky
-[Opponents]
-Soupeři
-[Review]
-Přehled
 [Review & Play]
 Zkontrolovat a hrát
 [Edit opponents]
@@ -3434,8 +3346,6 @@ Setrvačnost mapy
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3828,21 +3738,9 @@ Setrvačnost mapy
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4542,20 +4440,6 @@ Setrvačnost mapy
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4676,6 +4560,26 @@ Vypnutím obnovíte na tomto zařízení klasické jednotky, roje a barvy budov.
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4748,3 +4652,119 @@ Opakovat mapu svisle
 základny
 [bases per colony]
 Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s jeho budovami a jednotkami
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

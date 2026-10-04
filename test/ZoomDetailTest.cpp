@@ -21,7 +21,6 @@ TEST_SUITE("ZoomDetail")
 			const ZoomDetail detail = ZoomDetail::forView(zoom, 1, false);
 			CHECK_EQ(zoom, detail.overlayScale);
 			CHECK_EQ(1.f, detail.barAll);
-			CHECK_EQ(1.f, detail.barException);
 			CHECK_EQ(0.f, detail.statusPip);
 			CHECK_EQ(1.f, detail.zonePattern);
 			CHECK_EQ(0.f, detail.zoneTint);
@@ -59,7 +58,6 @@ TEST_SUITE("ZoomDetail")
 			const ZoomDetail detail = ZoomDetail::forView(zoom, 1, true);
 			// Detail only ever appears while zooming in.
 			CHECK(detail.barAll >= previous.barAll);
-			CHECK(detail.barException >= previous.barException);
 			CHECK(detail.zonePattern >= previous.zonePattern);
 			CHECK(detail.zoneOutline >= previous.zoneOutline);
 			CHECK(detail.unitSprite >= previous.unitSprite);
@@ -73,7 +71,6 @@ TEST_SUITE("ZoomDetail")
 			// Overlays never shrink while zooming in.
 			CHECK(detail.overlayScale >= previous.overlayScale);
 			// An element always has a representation.
-			CHECK(detail.barException >= detail.barAll);
 			CHECK_EQ(doctest::Approx(1.0), detail.zonePattern + detail.zoneTint);
 			CHECK_EQ(doctest::Approx(1.0), detail.unitSprite + detail.unitMarker);
 			previous = detail;
@@ -110,7 +107,7 @@ TEST_SUITE("ZoomDetail")
 	{
 		const ZoomDetail detail = ZoomDetail::forView(0.06, 1, true);
 		CHECK_EQ(0.f, detail.barAll);
-		CHECK_EQ(0.f, detail.barException);
+		CHECK_EQ(0.f, detail.statusPip);
 		CHECK_EQ(0.f, detail.zonePattern);
 		CHECK_EQ(0.f, detail.zoneOutline);
 		CHECK_EQ(1.f, detail.terrainOverview);
@@ -132,7 +129,8 @@ TEST_SUITE("ZoomDetail")
 			CHECK_EQ(1.f, far.unitMarker);
 			CHECK_EQ(1.f, far.buildingIcon);
 			CHECK_EQ(0.f, far.zonePattern);
-			CHECK_EQ(0.f, far.barException);
+			CHECK_EQ(0.f, far.barAll);
+			CHECK_EQ(0.f, far.statusPip);
 			// Detail still only ever appears while zooming in from there.
 			ZoomDetail previous = far;
 			for (double zoom = minimumZoom; zoom <= 5.0; zoom *= 1.02)
@@ -146,6 +144,47 @@ TEST_SUITE("ZoomDetail")
 				previous = detail;
 			}
 		}
+	}
+
+	TEST_CASE("The two looks cross-fade inside one narrow window")
+	{
+		// Whatever the map's size, everything that differs between the detailed
+		// map and the overview changes within the same few wheel notches, and
+		// the overview holds over a range of zooms below them.
+		for (double smallestTile : {1.5, 6.25, 12.5, 17.5})
+		{
+			const double minimumZoom = smallestTile / 32;
+			double fadeBottom = 0, fadeTop = 0;
+			for (double zoom = minimumZoom; zoom <= 5.0; zoom *= 1.005)
+			{
+				const ZoomDetail detail = ZoomDetail::forView(zoom, 1, true, minimumZoom);
+				CHECK_EQ(detail.unitSprite, detail.buildingSprite);
+				CHECK_EQ(doctest::Approx(1.0), detail.unitSprite + detail.terrainOverview);
+				CHECK_EQ(detail.terrainOverview, detail.strategic);
+				CHECK_EQ(detail.terrainOverview, detail.flagIcon);
+				// Bars are gone before the overview starts to show.
+				if (detail.terrainOverview > 0)
+					CHECK_EQ(0.f, detail.barAll);
+				if (detail.terrainOverview == 1)
+					fadeBottom = zoom;
+				if (detail.terrainOverview > 0)
+					fadeTop = zoom;
+			}
+			CHECK(fadeTop / fadeBottom < 1.35);
+			CHECK(fadeBottom / minimumZoom >= 1.09);
+		}
+	}
+
+	TEST_CASE("Every bar fades together, leaving a pip on what needs attention")
+	{
+		bool pipAlone = false;
+		for (double zoom = 0.05; zoom <= 5.0; zoom *= 1.02)
+		{
+			const ZoomDetail detail = ZoomDetail::forView(zoom, 1, true);
+			CHECK(detail.statusPip + detail.barAll <= 1.001f);
+			pipAlone |= detail.statusPip == 1 && detail.barAll == 0;
+		}
+		CHECK(pipAlone);
 	}
 
 	TEST_CASE("A map that zooms out far enough is unaffected by its minimum zoom")

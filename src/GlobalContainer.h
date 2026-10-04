@@ -48,9 +48,9 @@ public:
 	void parseArgs(int argc, char *argv[]);
 	void loadClient(void);
 	//! Load the in-game sprites (terrain, units, buildings, game interface) if
-	//! they are not loaded yet. Native builds load them in loadClient; the
-	//! browser installs them after the main menu is up, so this returns false
-	//! until GAGCore::ApplicationHost::assetPackageReady("game"). Always true
+	//! they are not loaded yet. Native and browser builds load them in loadClient;
+	//! hosts staging sprites later return false until
+	//! GAGCore::ApplicationHost::assetPackageReady("game"). Always true
 	//! without graphics (runNoX).
 	bool ensureGameGraphics(void);
 	//! Standalone tool startup, after selecting SDL drivers, on the graphics thread.
