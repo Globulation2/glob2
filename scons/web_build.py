@@ -85,7 +85,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
-        '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/runtime.js'] + PORTS)
+        '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/recording.js', '--pre-js', 'browser/runtime.js'] + PORTS)
     if arguments.get('web_profile') == '1':
         # Preserve function names for browser CPU profiles without changing optimization.
         env.Append(LINKFLAGS=['--profiling-funcs'])
@@ -138,9 +138,9 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     ports = env.Command(str(output / 'ports-ready.o'), [Value(lock), Value(PORTS), Value(threaded)],
                         Action(prepare_ports, 'Preparing pinned Emscripten ports'))
     files = ['src/' + s for s in CLIENT_SOURCES if s not in ('VoiceRecorder.cpp', 'net/NetTransport.cpp', 'net/TcpTransport.cpp', 'net/WssTransport.cpp', 'net/LanIdentity.cpp', 'online/HttpFetch.cpp')]
-    files += ['libgag/src/' + s for s in GAG_SOURCES if s != 'ApplicationHost.cpp']
+    files += ['libgag/src/' + s for s in GAG_SOURCES if s not in ('ApplicationHost.cpp', 'RecordingEncoder.cpp', 'RecordingSession.cpp')]
     files += ['libusl/src/' + s for s in USL_SOURCES]
-    files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
+    files += ['browser/HiveBrowserHost.cpp', 'browser/VoiceRecorder.cpp', 'browser/ApplicationHost.cpp', 'browser/RecordingPlatform.cpp', 'browser/NetTransport.cpp', 'browser/Launcher.cpp', 'browser/HttpFetch.cpp']
     if threaded:
         files += ['browser/Audio.cpp']
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
@@ -207,7 +207,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             tests.Depends(harness, 'browser/threaded-egl.js')
         env.Alias('web-tests', harness)
 
-    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/runtime.js',
+    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js',
                           'browser/asset-loader.js', 'browser/toolchain.json', assets])
     if threaded:
         env.Depends(program, 'browser/threaded-egl.js')
@@ -235,6 +235,31 @@ def build_web(directory, identity, arguments):
         return 0
     page = env.Command(str(Path(directory) / 'index.html'),
         ['browser/shell.html', 'browser/loader.js', serial, threaded], Action(shell, 'Packaging browser runtimes'))
+    # One recording module serves both game runtimes, and is fetched only on use.
+    from recording_dependencies import build as build_recording, attach as attach_recording
+    recording_prefix = Path(directory) / 'recording/prefix'
+    if not GetOption('clean') and not GetOption('no_exec'):
+        build_recording(recording_prefix, Path(directory) / 'recording/sources',
+            cc=env['CC'], cxx=env['CXX'], ar=env['AR'], ranlib=env['RANLIB'],
+            target='wasm', arch='wasm32', sdk_identity=json.loads(Path('browser/toolchain.json').read_text()), cflags=['-msimd128', '-fwasm-exceptions'], environment=env['ENV'])
+    recording = env.Clone()
+    recording['LIBS'] = []
+    recording['CCFLAGS'] = ['-O3', '-msimd128']
+    recording['CXXFLAGS'] = ['-std=gnu++20', '-fwasm-exceptions']
+    recording['LINKFLAGS'] = ['-O3', '-msimd128', '-fwasm-exceptions', '--no-entry',
+        '-sMODULARIZE=1', '-sEXPORT_NAME=createRecordingRuntime', '-sENVIRONMENT=worker',
+        '-sFILESYSTEM=0', '-sALLOW_MEMORY_GROWTH=1', '-sINITIAL_MEMORY=33554432',
+        '-sMAXIMUM_MEMORY=1073741824', '-sSTACK_SIZE=8388608',
+        '-sEXPORTED_FUNCTIONS=["_malloc","_free"]', '-sEXPORTED_RUNTIME_METHODS=["ccall","HEAPU8"]']
+    attach_recording(recording, recording_prefix, 'wasm')
+    recording_objects = [recording.Object(str(Path(directory) / 'recording-obj' / (source + '.o')), source)
+        for source in ('browser/RecordingWorker.cpp', 'libgag/src/RecordingEncoder.cpp', 'libgag/src/RecordingSession.cpp', 'libgag/src/RecordingMetadata.cpp')]
+    recording_program = recording.Program(str(Path(directory) / 'recording-runtime.js'), recording_objects)
+    recording.SideEffect(str(Path(directory) / 'recording-runtime.wasm'), recording_program)
+    recording_worker = env.Install(directory, ['browser/recording-worker.js','browser/recording-storage.js','browser/recording-video.js'])
+    recording_notices = [env.Install(str(Path(directory)/'licenses/recording'),str(p))
+        for p in (recording_prefix/'share/licenses/recording').glob('*')]
+    env.Depends(page, [recording_program, recording_worker, recording_notices])
     # Assistant programs never execute in the live game's WebAssembly memory.
     hive = env.Clone()
     hive['LIBS'] = []

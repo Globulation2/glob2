@@ -1027,3 +1027,16 @@ the exported payload; retain APK/AAB verification after AAPT packaging and after
 installing an update, which must not keep an obsolete PNG in front of a new WebP.
 
 Candidate validation uses `python3 mobile/android_release.py check-candidate`; this checks identity and build recipes without requiring a new publication tag. `check` retains strict tag-collision and version-code checks for release publication.
+
+## Recording libraries and exports
+
+Mobile SCons builds compile the pinned minimal FFmpeg/x264 recording libraries
+for each ABI and SDK; Xcode links the archives and VideoToolbox, while Android
+links MediaCodec through the NDK. Compiler, SDK, flags and source hashes invalidate
+the dependency cache. App packages include recording dependency notices.
+
+Recordings stay in app-private storage. The Recordings screen hands a file path
+to the native document picker and streams Android exports, avoiding a full video
+copy in game memory. Execution suspension preserves timestamp gaps; background
+execution and hardware/thermal qualification require physical device testing.
+See [gameplay footage](../features/gameplay-recording.md).

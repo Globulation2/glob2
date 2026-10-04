@@ -4584,6 +4584,10 @@ AI 상대: %0
 녹화
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 게임을 소리가 포함된 MP4 동영상으로 녹화합니다. 녹화하려면 libx264 및 AAC 인코더가 포함된 FFmpeg가 필요합니다.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg가 준비되었습니다.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

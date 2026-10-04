@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <mutex>
+#include <thread>
 #ifdef HAVE_CONFIG_H
 #include <glob2/BuildConfig.h>
 #endif
@@ -18,6 +19,25 @@
 
 namespace GAGCore::ApplicationHost
 {
+bool exportFilePath(const std::string &path)
+{
+#ifdef GLOB2_MOBILE
+	return MobileDocuments::platformExportPath(path, Toolkit::getStringTable()->getString("[export failed]"));
+#else
+	auto source = new std::string(path);
+	SDL_ShowSaveFileDialog([](void *opaque,const char *const *files,int)
+	{
+		std::unique_ptr<std::string> source(static_cast<std::string *>(opaque));
+		if (!files || !files[0]) return;
+		std::thread([source = *source, destination = std::string(files[0])]
+		{
+			try { std::filesystem::copy_file(std::filesystem::u8path(source),std::filesystem::u8path(destination),std::filesystem::copy_options::overwrite_existing); }
+			catch (const std::exception &e) { SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,"Export: %s",e.what()); }
+		}).detach();
+	}, source, nullptr, nullptr, 0, path.c_str());
+	return true;
+#endif
+}
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 {
 	for (;;)

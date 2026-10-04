@@ -4584,6 +4584,10 @@ Stop kommandør
 Optagelse
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Optag dine spil som MP4-videoer med lyd. Optagelse kræver FFmpeg med libx264- og AAC-koderne.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg er klar.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

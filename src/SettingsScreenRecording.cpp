@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Settings > Recording: the recording controls, their hotkey and whether FFmpeg works.
+// Settings > Recording: embedded recording controls, hotkey and output location.
 #include "SettingsScreen.h"
 #include "GameGUIKeyActions.h"
 #include "ui/RecordingControls.h"
@@ -13,27 +13,9 @@ using namespace Glob2UI;
 void SettingsScreen::buildRecording()
 {
 	namespace Rec = GAGCore::Recording;
-	const auto encoder = Rec::encoder();
-	recordingEncoder = int(encoder);
-	info(tr("Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders."));
-	if (encoder == Rec::Encoder::Available)
-		info(tr("FFmpeg is ready."));
-	else if (encoder == Rec::Encoder::Missing)
-	{
-		const std::string problem = Rec::encoderProblem();
-		custom("", [this, problem](const Presentation &p)
-			   {
-				   TextOptions warning;
-				   warning.color = theme().palette.warning;
-				   std::vector<Element> parts{paragraph(tr("FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again."), warning)};
-				   if (!problem.empty())
-					   parts.push_back(paragraph(problem, {FontRole::Support, true}));
-				   return column(std::move(parts), {p.pt(2)});
-			   });
-		button("recording.check", tr("Check for FFmpeg again"), [] { Rec::probeEncoder(true); });
-	}
-	else
-		info(tr("Checking for FFmpeg…"));
+	recordingState = int(Rec::recorder().status().state);
+	info(tr("Record your games as MP4 videos with sound."));
+	info(tr("Recording uses the full rendered resolution at 30 FPS."));
 	custom("recording/toggle", [](const Presentation &) { return recordingControls(true); });
 
 	std::string hotkey;

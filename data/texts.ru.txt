@@ -4584,6 +4584,10 @@ OpenGL недоступен в этой сборке.
 Запись
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Записывайте игры в видео MP4 со звуком. Для записи нужен FFmpeg с кодировщиками libx264 и AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg готов.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

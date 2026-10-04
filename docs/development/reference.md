@@ -1545,3 +1545,21 @@ replacement: if it fails, the new local file remains available for export while
 the previously persisted browser copy remains intact. A retry creates a new save
 operation; each operation's terminal state is sticky and its success callback
 runs once. Other background string writers still keep the newest queued snapshot.
+
+## Embedded recording dependencies
+
+Client builds compile a pinned minimal FFmpeg/x264 stack through
+`scons/recording_dependencies.py`; the source SHA-256 lock is
+`scons/recording-versions.json`. Native builds need NASM on x86 targets and
+`pkg-config`; Linux builds with `libva` development headers include VAAPI. NVIDIA
+headers are pinned with the other sources. Mobile archives use the target compiler,
+ABI and SDK, including assembly flags; browser archives use standalone wasm32
+SIMD without pthreads. Codec optimization flags remain confined to these archives.
+
+Installed archive hashes, source inputs, recipe, compiler, assembler version, target, SDK and feature
+flags form the recording cache identity. A mismatching cache is rebuilt rather
+than reused. Release source distributions contain the pinned original archives
+under `third_party/recording-sources/`, allowing offline rebuilds. Packages include
+codec license notices and configuration. Recording capture has a
+`recording.capture` performance scope; simulation and replay checksums must match
+with recording enabled and disabled. See [gameplay footage](../features/gameplay-recording.md).

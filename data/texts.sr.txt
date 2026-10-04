@@ -4584,6 +4584,10 @@ LAN домаћин није доступан. Проверите дозволу 
 Снимање
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Снимајте игре као MP4 видео са звуком. За снимање је потребан FFmpeg са кодерима libx264 и AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg је спреман.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

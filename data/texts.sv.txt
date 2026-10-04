@@ -4584,6 +4584,10 @@ Stoppa befälhavaren
 Inspelning
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Spela in dina spel som MP4-videor med ljud. Inspelning kräver FFmpeg med kodarna libx264 och AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg är redo.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

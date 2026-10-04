@@ -935,6 +935,7 @@ namespace GAGCore
 			SDL_SetWindowTitle(window, title.c_str());
 		if (!capture.wantsFrame())
 			return;
+		PERF_SCOPE_TIME(RecordingCapture);
 		try
 		{
 			std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> pixels(nullptr,
@@ -944,7 +945,7 @@ namespace GAGCore
 				renderer->flush();
 				pixels.reset(renderer->capture());
 			}
-#if defined(HAVE_OPENGL) && !defined(GLOB2_WEBGL2)
+#if defined(HAVE_OPENGL)
 			else if (optionFlags & USEGPU)
 			{
 				GLint viewport[4], alignment, rowLength;
@@ -955,30 +956,26 @@ namespace GAGCore
 				if (!pixels)
 					throw std::runtime_error(SDL_GetError());
 				glGetIntegerv(GL_PACK_ALIGNMENT, &alignment);
+#if !defined(GLOB2_WEBGL2)
 				glGetIntegerv(GL_PACK_ROW_LENGTH, &rowLength);
+#endif
 				glPixelStorei(GL_PACK_ALIGNMENT, 1);
+#if !defined(GLOB2_WEBGL2)
 				glPixelStorei(GL_PACK_ROW_LENGTH, pixels->pitch / 4);
+#endif
 				glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA,
 							 GL_UNSIGNED_BYTE, pixels->pixels);
 				glPixelStorei(GL_PACK_ALIGNMENT, alignment);
+#if !defined(GLOB2_WEBGL2)
 				glPixelStorei(GL_PACK_ROW_LENGTH, rowLength);
-				std::vector<unsigned char> row(pixels->pitch);
-				auto *data = static_cast<unsigned char *>(pixels->pixels);
-				for (int y = 0; y < pixels->h / 2; ++y)
-				{
-					auto *top = data + y * pixels->pitch;
-					auto *bottom = data + (pixels->h - y - 1) * pixels->pitch;
-					std::memcpy(row.data(), top, row.size());
-					std::memcpy(top, bottom, row.size());
-					std::memcpy(bottom, row.data(), row.size());
-				}
+#endif
 			}
 #endif
 			else
-				pixels.reset(SDL_ConvertSurface(sdlsurface, SDL_PIXELFORMAT_RGBA32));
+			{ capture.frame(*sdlsurface); return; }
 			if (!pixels)
 				throw std::runtime_error(SDL_GetError());
-			capture.frame(*pixels);
+			capture.frame(*pixels, !renderer && (optionFlags & USEGPU));
 		}
 		catch (const std::exception &error)
 		{

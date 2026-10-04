@@ -6,7 +6,7 @@
 #include <vector>
 namespace GAGCore::Recording
 {
-// Shell-free child with private stdin and a diagnostic log. All calls on a worker.
+// Test-only, shell-free independent media validator. Never linked into the game.
 class Process
 {
   public:

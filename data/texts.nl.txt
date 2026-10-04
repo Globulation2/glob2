@@ -4584,6 +4584,10 @@ Commandant stoppen
 Opnemen
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Neem je spellen op als MP4-video's met geluid. Opnemen vereist FFmpeg met de encoders libx264 en AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg is klaar.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

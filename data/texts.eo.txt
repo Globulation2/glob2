@@ -4584,6 +4584,10 @@ Haltigi komandanton
 Registrado
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Registri viajn ludojn kiel MP4-videojn kun sono. Registrado bezonas FFmpeg kun la kodiloj libx264 kaj AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg pretas.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

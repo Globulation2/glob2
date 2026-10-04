@@ -14,6 +14,7 @@
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
 #include "SettingsScreen.h"
+#include "RecordingFilesScreen.h"
 #include "KeyboardManager.h"
 #include "GameGUIKeyActions.h"
 #include "CreditScreen.h"
@@ -152,9 +153,6 @@ Application::Application()
 	: frontend(themedFrontend()), screens(*globalContainer->gfx),
 	  shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
-	// Learn early whether FFmpeg can record, so the in-game menu and hotkey are ready.
-	if (GAGCore::Recording::supported())
-		GAGCore::Recording::probeEncoder();
 	if (GAGCore::ApplicationHost::storageRestoreFailed())
 	{
 		auto &strings = *GAGCore::Toolkit::getStringTable();
@@ -273,6 +271,7 @@ void Application::installStagedAssets()
 bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incoming)
 {
 	lastFrame = tick;
+	if (GAGCore::Recording::takeFilesRequest()) screens.push(std::make_unique<RecordingFilesScreen>());
 	// Invite links opened while running (macOS and iOS URL events) arrive as
 	// dropped "files"; they become the pending join instead. SDL3 owns the
 	// event's text, so nothing is freed here.

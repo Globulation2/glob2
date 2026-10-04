@@ -676,6 +676,13 @@ int main(int argc, char **argv)
 				main.key(SDLK_RETURN);
 				require(main.result() == std::atoi(order[i].c_str() + 5), "main keyboard route");
 			}
+			Preview<SettingsScreen> settings;
+			settings.selectCategory(SettingsScreen::Category::Recording);
+			settings.render();
+			const auto recordingOrder = settings.GAGGUI::ui::UIScreen::host().focusOrder();
+			if (GAGCore::Recording::supported())
+				require(std::find(recordingOrder.begin(), recordingOrder.end(), "recording/toggle") != recordingOrder.end(),
+						"Settings recording control is reachable by keyboard");
 		}
 		{
 			FrontendScope scope;

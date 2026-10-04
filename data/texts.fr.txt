@@ -4584,6 +4584,10 @@ Arrêter le commandant
 Enregistrement
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Enregistrez vos parties en vidéos MP4 avec le son. L'enregistrement nécessite FFmpeg avec les encodeurs libx264 et AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg est prêt.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

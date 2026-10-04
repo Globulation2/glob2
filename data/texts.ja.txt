@@ -4584,6 +4584,10 @@ AIの相手：%0
 録画
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 ゲームを音声付きのMP4動画として録画します。録画にはlibx264とAACエンコーダーを含むFFmpegが必要です。
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpegを利用できます。
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

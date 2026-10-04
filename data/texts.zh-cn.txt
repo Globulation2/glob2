@@ -4584,6 +4584,10 @@ AI 对手：%0
 录制
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 将你的游戏录制为带声音的 MP4 视频。录制需要带有 libx264 和 AAC 编码器的 FFmpeg。
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg 已就绪。
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

@@ -4584,6 +4584,10 @@ Oprește comandantul
 Înregistrare
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Înregistrați jocurile ca videoclipuri MP4 cu sunet. Înregistrarea necesită FFmpeg cu codificatoarele libx264 și AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg este pregătit.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

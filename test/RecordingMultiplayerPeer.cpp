@@ -42,10 +42,8 @@ int main(int argc, char **argv)
 			throw std::runtime_error(SDL_GetError());
 		globals.networkInitialized = true;
 		auto &recorder = GAGCore::Recording::recorder();
-		const char *encoder = SDL_getenv("GLOB2_TEST_FFMPEG");
-		if (encoder)
+		if (std::string(argv[3]) != "-")
 		{
-			recorder.options.ffmpeg = encoder;
 			recorder.options.fps = 30;
 			recorder.options.chapterTicks = 40;
 			if (!recorder.start(argv[3]))
@@ -174,7 +172,7 @@ int main(int argc, char **argv)
 		}
 		recorder.stop();
 		recorder.shutdown();
-		if (encoder && recorder.status().state != GAGCore::Recording::State::Complete)
+		if (std::string(argv[3]) != "-" && recorder.status().state != GAGCore::Recording::State::Complete)
 			throw std::runtime_error(recorder.status().error);
 		globalContainer = nullptr;
 		std::cout << "MULTIPLAYER RECORDING PASS" << std::endl;

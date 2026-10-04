@@ -4584,6 +4584,10 @@ Detener comandante
 Grabación
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Graba tus partidas como vídeos MP4 con sonido. La grabación necesita FFmpeg con los codificadores libx264 y AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg está listo.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

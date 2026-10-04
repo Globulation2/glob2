@@ -42,22 +42,35 @@ def package(source, destination):
     hive = {name: (source / name).read_bytes() for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if (source / name).exists()}
     if hive and len(hive) != 3:
         raise ValueError("Incomplete Hive Mind runtime")
+    recording = {name: (source / name).read_bytes() for name in
+                 ('recording-worker.js', 'recording-storage.js', 'recording-video.js', 'recording-runtime.js', 'recording-runtime.wasm') if (source / name).exists()}
+    if recording and len(recording) != 5:
+        raise ValueError("Incomplete recording runtime")
     version = hashlib.sha256(
-        POLICY + b"".join(hive.values()) + b"".join(files.values()) + b"".join(name.encode() for name in packages)
+        POLICY + b"".join(hive.values()) + b"".join(recording.values()) + b"".join(files.values()) + b"".join(name.encode() for name in packages)
     ).hexdigest()[:16]
     names = {ext: f"index-{version}.{ext}" for ext in ("js", "wasm")}
-    script = files["js"].decode()
+    recording_names = {name: name.replace("recording-", f"recording-{version}-", 1) for name in recording}
+    def recording_references(text):
+        for old, new in recording_names.items():
+            text = text.replace(old, new)
+        return text
+    recording = {recording_names[name]: recording_references(data.decode()).encode() if name.endswith(".js") else data for name, data in recording.items()}
+    script = recording_references(files["js"].decode())
     script = script.replace('"index.wasm"', f'"{names["wasm"]}"')
     html = files["html"].decode().replace('src="index.js"', f'src="{names["js"]}"')
     html = html.replace("src=index.js>", f'src="{names["js"]}">')
     if not threaded and names["js"] not in html:
         raise ValueError("Expected Emscripten script tag")
+    notices = {p.relative_to(source).as_posix(): p.read_bytes() for p in sorted((source / "licenses/recording").glob("*")) if p.is_file()}
     contents = {
         "index.html": html.encode(),
         names["js"]: script.encode(),
         names["wasm"]: files["wasm"],
         **packages,
         **hive,
+        **recording,
+        **notices,
     }
     if threaded:
         loader = f"loader-{version}.js"
@@ -69,7 +82,7 @@ def package(source, destination):
             tag + f'<script src="{loader}"></script>',
         ).encode()
         contents[loader] = files["loader"]
-        thread_script = files["threaded/js"].decode()
+        thread_script = recording_references(files["threaded/js"].decode())
         thread_script = thread_script.replace('"index.wasm"', f'"{names["wasm"]}"')
         contents["threaded/" + names["js"]] = thread_script.encode()
         contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
@@ -191,6 +204,11 @@ def verify(directory):
     if not any(name.startswith("assets/") for name in names):
         raise ValueError("Static package lacks game data packages")
     names += [name for name in ("hive-worker.js", "hive-runtime.js", "hive-runtime.wasm") if name in expected]
+    recording = [f"recording-{marker['version']}-{suffix}" for suffix in
+                 ("worker.js", "storage.js", "video.js", "runtime.js", "runtime.wasm")]
+    if any(name.startswith("recording-") for name in expected):
+        names += recording
+    names += [name for name in expected if name.startswith("licenses/recording/") and not name.endswith(".gz")]
     if marker.get("threaded"):
         names += [f"loader-{marker['version']}.js"] + [
             f"threaded/index-{marker['version']}.{ext}" for ext in ("js", "wasm")

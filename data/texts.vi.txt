@@ -4584,6 +4584,10 @@ Dừng chỉ huy
 Quay video
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Quay trận đấu thành video MP4 có âm thanh. Cần FFmpeg với bộ mã hóa libx264 và AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg đã sẵn sàng.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

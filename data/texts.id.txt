@@ -4584,6 +4584,10 @@ Hentikan komandan
 Perekaman
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Rekam permainan Anda sebagai video MP4 bersuara. Perekaman memerlukan FFmpeg dengan enkoder libx264 dan AAC.
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 FFmpeg siap.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]

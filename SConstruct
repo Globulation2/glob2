@@ -442,6 +442,23 @@ def main():
             env.Append(LINKFLAGS=[r'-Wl,-rpath,\$$ORIGIN/../lib/glob2'])
     configure(env, server_only, relay)
 
+    if not server_only:
+        from recording_dependencies import build as build_recording, attach as attach_recording
+        recording_target = 'mingw32' if env['mingw'] or env['mingwcross'] or isWindowsPlatform else 'darwin' if isDarwinPlatform else 'linux'
+        shared_recording = Path(sdl_prefix) / 'recording' if sdl_prefix else None
+        recording_prefix = Path(os.environ['GLOB2_RECORDING_PREFIX']) if os.environ.get('GLOB2_RECORDING_PREFIX') else shared_recording if shared_recording and (shared_recording/'recording-manifest.json').exists() else Path(bdir)/'recording/prefix'
+        # Variant SConscript files resolve relative CPPPATH entries locally.
+        # Keep pinned headers and archives rooted at the dependency installation.
+        recording_prefix = recording_prefix.resolve()
+        if not GetOption('clean') and not GetOption('no_exec'):
+            build_recording(recording_prefix, Path(bdir) / 'recording/sources',
+                cc=env['CC'], cxx=env['CXX'], ar=env['AR'], ranlib=env.get('RANLIB', 'ranlib'),
+                target=recording_target, environment=env['ENV'], jobs=2)
+        attach_recording(env, recording_prefix, recording_target)
+        env['RECORDING_PREFIX'] = str(recording_prefix.resolve())
+        for notice in (recording_prefix / 'share/licenses/recording').glob('*'):
+            env.Alias('install', env.Install(str(Path(env['INSTALLDIR']) / 'glob2/licenses/recording'), str(notice)))
+
     env.Append(CPPPATH=['#'+path for path in INCLUDE_DIRECTORIES])
     env.Append(CXXFLAGS=["-Wall", "-fPIC"])
     # Uninitialized-read diagnostics: DET_INIT=zero|pattern forces deterministic
