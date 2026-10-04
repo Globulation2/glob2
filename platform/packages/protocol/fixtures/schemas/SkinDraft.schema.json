@@ -73,6 +73,11 @@
           "const": "bloom"
         }
       ]
+    },
+    "swarmViewAngle": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 359
     }
   }
 }

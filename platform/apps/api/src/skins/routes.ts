@@ -63,6 +63,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
         'v.layout',
         'v.building_color as buildingColor',
         'v.swarm_mesh as swarmMesh',
+        'v.swarm_view_angle as swarmViewAngle',
       ])
       .where('s.disabled_at', 'is', null)
       .where((eb) =>
@@ -172,6 +173,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
           layout: 'colony-v2',
           buildingColor: input.buildingColor,
           swarmMesh: input.swarmMesh ?? 'classic',
+          swarmViewAngle: input.swarmViewAngle ?? 0,
         };
         const digest = skinManifestSha256(content);
         let version = await trx
@@ -189,6 +191,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
               layout: 'colony-v2',
               building_color: input.buildingColor,
               swarm_mesh: content.swarmMesh,
+              swarm_view_angle: content.swarmViewAngle ?? 0,
               manifest_sha256: digest,
             })
             .returning('id')

@@ -47,6 +47,15 @@ TEST_SUITE("SkinAuthorization")
         CHECK(mesh(f["swarm"]["classic"])==0);
         CHECK(SWARM_MESHES[mesh(f["swarm"]["crown"])].id=="crown");
     }
+    TEST_CASE("the final camera angle is signed and legacy angles default to zero")
+    {
+        const auto f=fixture();
+        for (const auto &entry : {std::pair<const char *,unsigned>{"angle",127}, {"classic",0}}) {
+            SkinAuthorization auth(f["swarm"][entry.first],f["jwks"].dump(),"https://example.test",f["claims"]["matchId"],2,1700000000);
+            REQUIRE(auth.state()==SkinAuthorization::State::Verified);
+            CHECK(auth.skin()->swarmViewAngle==entry.second);
+        }
+    }
     TEST_CASE("untrusted key sets and bounded malformed inputs fail closed")
     {
         auto f=fixture();

@@ -305,6 +305,7 @@ function Layout() {
       </div>
     </>
   );
+  if (section === 'skins') return <Suspense fallback={<Loading />}>{page}</Suspense>;
   return (
     <div className={`site app-shell${home ? ' home' : ''}${collapsed ? ' sidebar-collapsed' : ''}`}>
       <a className="skip-link" href="#main">

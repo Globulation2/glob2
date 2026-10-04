@@ -3,3 +3,5 @@ dist
 coverage
 package-lock.json
 packages/protocol/fixtures
+# Generated, hash-bound camera metadata; identical to native asset sidecars.
+apps/web/public/skins/models/*.view.json

@@ -77,7 +77,7 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
     method: 'PUT',
     url,
     headers,
-    payload: { ...payload, revision, name: 'Next', swarmMesh: 'skep' },
+    payload: { ...payload, revision, name: 'Next', swarmMesh: 'skep', swarmViewAngle: 127 },
   });
   expect(update.statusCode, update.body).toBe(200);
   expect(update.json().revision).not.toBe(revision);
@@ -92,6 +92,9 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
     { materialBase64: undefined },
     { buildingColor: -1 },
     { swarmMesh: 'pyramid' },
+    { swarmViewAngle: -1 },
+    { swarmViewAngle: 360 },
+    { swarmViewAngle: 12.5 },
   ]) {
     expect(
       (
@@ -107,6 +110,7 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   expect((await app.inject({ url, headers })).json().draft).toMatchObject({
     name: 'Next',
     swarmMesh: 'skep',
+    swarmViewAngle: 127,
   });
   expect(
     await harness.database.db.selectFrom('colony_skin_drafts').selectAll().execute(),

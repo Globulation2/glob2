@@ -224,7 +224,7 @@ plus an optional RGB building color. The chosen color is independent of the
 immutable preset paint and is frozen/signed alongside the version for a match.
 `POST /api/v1/skins/publish` requires the designer entitlement. It accepts a name,
 optional owned skin ID for another version, RGB building color, optional swarm
-mesh, and two base64 PNG or WebP images in layout `colony-v2`. Both are still
+mesh and integer `swarmViewAngle` (0–359, default 0), and two base64 PNG or WebP images in layout `colony-v2`. Both are still
 512×512 pixels made of four 256×256 quadrants: worker top-left, warrior
 top-right, explorer bottom-left, swarm bottom-right.
 
@@ -246,13 +246,32 @@ creates an immutable content version; previously equipped versions and frozen
 match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
+The `/skins` route opens Colony Studio, a full-window mesh painting workspace.
+Brush, eraser and eyedropper operate directly on visible geometry. Right-drag,
+Alt-drag or the Orbit tool navigates; touch uses explicit Paint/Orbit tools and
+two-finger navigation. The view menu and +/− keys also adjust inspection zoom.
+Animation starts paused and painting freezes its displayed
+pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
+material swatches, model and pose strips float over the viewport; shop, saved
+skins, settings and patterns are dialogs that preserve the document.
+
 Glob meshes share paint coordinates across matching front/back and top/bottom
-surfaces, including limb pairs exchanged by their flipping gait. Canvas and model
-painting, erasing and patterns therefore preserve symmetry automatically; no
-symmetry toggle or server-side pixel normalization is needed. The designer
-previews worker walk/swim/harvest, warrior walk/swim/fight and explorer flight,
-with direction and paused-frame controls using the same mesh bytes as the game.
-Swarm paint and the separate building color retain their own behavior.
+surfaces, including limb pairs exchanged by their flipping gait. A depth-tested
+projection excludes hidden geometry, but changing a shared texel still changes
+all matching surfaces. The closest visible contributor wins deterministically.
+Pattern previews always render the baked atlas, including this repetition.
+Camera-projected stripes, spots, checker, chevrons, waves and speckles use the
+paused pose and chosen inspection angle. Curated solid, mirrored bands/spots and
+mottled fills use per-mesh rest-space compatibility charts, with limited sizes and
+densities. Both keep the existing atlas layouts. No UV painting UI or layers are
+exposed. Copying raw paint between models is a separate action with a result preview.
+
+Paint cameras freely orbit, including above and below the model. The swarm's
+separate **Choose final view** mode changes only azimuth around its standardized
+camera ring; accepting it restores the inspection camera. Unit game rendering
+continues to select animation directions normally. Building color is separate
+from painted color and also colors the rendered material swatches. Without
+WebGL2, saved skins and the shop remain accessible while the viewport offers a retry.
 
 Each version also names the swarm mesh its paint is laid out for (`swarmMesh`):
 `classic`, the original swarm and the default, or one of the generated shapes
@@ -262,7 +281,10 @@ the same order. Because paint is laid out per mesh, the mesh belongs to the
 immutable version, and the same paint on two meshes is two versions. The manifest
 digest is SHA-256 over the compact JSON object `skinId`, `textureSha256`,
 `materialSha256`, `layout`, `buildingColor`, in exactly that key order, followed
-by `swarmMesh` only when it is not `classic`; game clients recompute it before
+by `swarmMesh` only when it is not `classic`, then `swarmViewAngle` only when it is
+nonzero. Zero therefore retains all existing manifest hashes. Older clients reject
+nonzero angles through their manifest check and use classic cosmetic fallback;
+current game clients recompute the complete manifest before
 showing a skin. The swarm's paint and materials always come from the swarm
 quadrant, whichever mesh is chosen. Clients without mesh choice reject skins for
 other meshes and show classic art for that team, rather than painting them onto
@@ -276,9 +298,13 @@ buying the designer unlock. Drafts carry `imageBase64` and `materialBase64` with
 the same validation as publishing; one bounded atlas and material map are stored
 per account and are never served by public image routes. A save supplies the last observed revision (null for the first save).
 Drafts may also retain an owned skin ID so edits resume as new versions of that
-design, and they keep the chosen swarm mesh. Concurrent or stale saves return
+design, and they keep the chosen swarm mesh and final view angle. Concurrent or stale saves return
 409 rather than overwrite another device's work. The designer also offers a separate account-scoped device draft for offline
-backup before resolving conflicts. Publishing and equipping remain explicit.
+backup before resolving conflicts. A debounced recovery record is stored separately
+from the explicit device checkpoint, scoped by account, including the last known
+account revision. Async restore/open operations preserve any newer local edits
+instead of overwriting them. Checkout saves recovery
+before navigation and returns to the Shop dialog. Publishing and equipping remain explicit.
 
 Match pages show their frozen colony looks and let signed-in players submit a
 reason to `POST /api/v1/skins/versions/:id/reports`. Each account reports a version
@@ -848,6 +874,20 @@ original art, for `classic`, or `swarm-<id>.gsk` for a shape generated by
 [unit animation tooling](../../tools/unit-animation/README.md)). A skin naming a
 mesh this client does not know is rejected like any other invalid assertion, and
 a mesh file that fails to load leaves that colony's swarm on the classic sprite.
+A nonzero final angle reconstructs model-space positions, rotates around the
+world vertical axis, then applies the same game projection. Normals rotate with
+the model. Each transformed mesh receives a fresh render-cache identity. Height,
+target, radius, scale and ground alignment stay fixed around the ring. These are
+appearance-only changes; simulation state and version gates are unchanged.
+
+`tools/skins/export_views.py` (pinned Blender 3.6.23) emits versioned `.view.json`
+sidecars bound to each GSK SHA-256 and the corresponding native constants in
+`src/online/SkinViewTransforms.h`. It recovers the original unit/source camera and
+separate depth scaling without changing GSK payloads, UVs, topology or poses.
+Regenerate sidecars/constants whenever source mesh exports change. The web
+viewport, brush and pattern engine share these transforms; the native rendering
+path uses the generated swarm constants. `studio_thumbnails.py` regenerates the
+model and action thumbnails from the shipped meshes.
 
 Online replay recordings and native profile downloads have an optional
 `<recording>.appearance.json` companion containing format version 1, instance

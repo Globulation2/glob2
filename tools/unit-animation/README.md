@@ -255,15 +255,36 @@ front/back and top/bottom folded chart. Swarm geometry and UVs are unchanged.
 surface contracts and provenance into `data/skins/colony-v1`, and copies all unit
 actions into the web designer. Preset paint remains reproducible through
 `make_paint.py`; changing UVs alone does not require replacing immutable preset
-texture bytes. The web preview offers action, direction, animation and paused
-frame controls. Scrubbing keeps the loaded GPU model; selecting an action loads
-the corresponding runtime mesh. The mesh UV layout remains experimental `colony-v1`;
+texture bytes. Colony Studio offers free camera orbit, action, animation and paused-frame
+controls. Scrubbing keeps the loaded GPU model; selecting an action loads the
+corresponding runtime mesh. Painting freezes the displayed pose; the swarm's
+separate final-view mode changes only the standardized game camera azimuth. The mesh UV layout remains experimental `colony-v1`;
 skins paint each model through its quadrant of a `colony-v2` atlas.
 
 GSK1 stores a bounded little-endian header (magic, vertex count, index count,
 one static pose or 256 unit poses, logical canvas size), shared UV float pairs, uint32 triangle indices,
 then camera-space position/normal float sextuples for each vertex of each pose.
 UVs use a top-left image origin. Directions and phases follow `unitAnimationFrame`.
+The editor reconstructs model space using versioned, hash-bound `.view.json`
+sidecars; rotating raw GSK positions would distort their independently scaled
+depth. After changing any mesh export, regenerate these camera transforms and
+native swarm constants with the pinned Blender executable:
+
+```sh
+blender-3.6.23 --background --factory-startup -t 1 --python-exit-code 1 \
+  --python tools/skins/export_views.py
+python3 tools/skins/studio_thumbnails.py  # requires NumPy
+```
+
+The first command leaves existing GSK payloads untouched, writes the sidecars to
+both installed/native and web model directories, and updates
+`src/online/SkinViewTransforms.h`. The asset contract checks their mesh hashes,
+matching copies and generated native matrices. `studio_thumbnails.py` updates the
+model/action selectors under the web public assets directory. The skin projection
+unit suite checks depth coverage, seam margins, curated fill masks and full-ring
+bounds; `SkinMesh` native tests verify world height, normals and cache isolation
+for transformed views. Shader parity checks use `skins/materialShader.ts`.
+
 The renderer performs depth-tested mesh rasterization into a transparent GPU
 atlas, then composites into the existing sprite order. A visible-scene prepass
 shares identical pose/paint tiles across frames and groups geometry uploads.

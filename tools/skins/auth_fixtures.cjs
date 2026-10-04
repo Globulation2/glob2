@@ -24,7 +24,7 @@ const jwk={...createPublicKey(key).export({format:'jwk'}),kid:'skin-fixture',alg
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 // Mirrors skinManifestSha256 (platform/apps/api/src/skins/manifest.ts): exactly
 // these keys in this order (JSON.stringify), and classic omits swarmMesh.
-const manifest=(v,swarmMesh)=>sha(JSON.stringify({skinId:v.skinId,textureSha256:v.textureSha256,materialSha256:v.materialSha256,layout:v.layout,buildingColor:v.buildingColor,...(swarmMesh&&swarmMesh!=='classic'?{swarmMesh}:{})}));
+const manifest=(v,swarmMesh)=>sha(JSON.stringify({skinId:v.skinId,textureSha256:v.textureSha256,materialSha256:v.materialSha256,layout:v.layout,buildingColor:v.buildingColor,...(swarmMesh&&swarmMesh!=='classic'?{swarmMesh}:{}),...(v.swarmViewAngle?{swarmViewAngle:v.swarmViewAngle}:{})}));
 const version={id:'11111111-1111-4111-8111-111111111111',skinId:'22222222-2222-4222-8222-222222222222',textureSha256:sha(texture),materialSha256:sha(material),layout:'colony-v2',buildingColor:0x334455};
 version.manifestSha256=manifest(version);
 const crown={...version,swarmMesh:'crown',manifestSha256:manifest(version,'crown')};
@@ -51,5 +51,9 @@ invalid.algorithm=token(claims,{...header,alg:'none'});
 invalid.unknownKey=token(claims,{...header,kid:'unknown'});
 const valid=token();
 const swarm={crown:token({...claims,version:crown}),classic:token({...claims,version:{...version,swarmMesh:'classic'}})};
+const angleVersion={...crown,swarmViewAngle:127}; angleVersion.manifestSha256=manifest(angleVersion,'crown');
+swarm.angle=token({...claims,version:angleVersion});
+for(const value of [-1,360,12.5,'90']) invalid['angle'+String(value)]=token({...claims,version:{...angleVersion,swarmViewAngle:value}});
+invalid.angleOutsideManifest=token({...claims,version:{...crown,swarmViewAngle:127}});
 const teams=Array.from({length:32},(_,team)=>token({...claims,team}));invalid.signature=valid.slice(0,-5)+'AAAAA';
 writeFileSync(process.env.SKIN_FIXTURE_OUTPUT||'test/fixtures/skins/authorization.json',JSON.stringify({textureHex:texture.toString('hex'),materialHex:material.toString('hex'),teams,jwks:{keys:[jwk]},claims,valid,swarm,invalid},null,2)+'\n');
