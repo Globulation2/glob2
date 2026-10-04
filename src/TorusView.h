@@ -3,6 +3,7 @@
 #ifndef GLOB2_TORUS_VIEW_H
 #define GLOB2_TORUS_VIEW_H
 #include "TorusPicking.h"
+#include "TorusTextureTiles.h"
 #include "DynamicClouds.h"
 #include <SDL3/SDL.h>
 #include "render/MapRenderState.h"
@@ -18,6 +19,7 @@ class TorusView
     bool active() const { return target || moving || amount > 0; }
     // Switched on by hand: the wheel zooms the ring.
     bool enabled() const { return target; }
+    bool overviewSettled() const { return amount == 1; }
     bool available() const;
     // Drop camera, picking and GPU state before loading another game.
     void reset();
@@ -55,7 +57,12 @@ class TorusView
     float viewAspect = 1.6f, ringAspect = 0, ringMapAspect = 0;
     float ringWidth = 1, ringHeight = 1;
     int baseViewportX, baseViewportY, worldW, worldH;
-    int atlasW, atlasH;
+    std::vector<TorusTextureTiles::Tile> tiles;
+    int pixelsPerCell = 32;
+    // Private test seams: simulate smaller hardware and allocation pressure.
+    int textureLimit = 2048, allocationPixelLimit = 0;
+    float tileOffsetU = -100, tileOffsetV = -100;
+    bool tileMeshDirty = true;
     Uint32 lastFrame;
     DynamicClouds clouds;
     // Map animation state for games drawn without a GameGUI (whose view owns it).
@@ -64,8 +71,9 @@ class TorusView
     int cloudW = 0, cloudH = 0;
     SDL_GLContext graphicsContext = nullptr;
     unsigned graphicsGeneration = 0;
-    unsigned texture, cloudTexture, framebuffer, material;
+    unsigned cloudTexture, framebuffer, material;
     unsigned meshBuffer, cloudBuffer, indexBuffer;
+    unsigned tileBuffer = 0;
     float meshKey[9];
     bool failed;
     int originX, originY;

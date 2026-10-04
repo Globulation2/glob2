@@ -55,6 +55,7 @@ test('WebGL2 switches between the flat map and the torus overview', async ({page
 
   await toggle(page);
   await expect.poll(async () => (await state(page)).torus).toBe(true);
+  await expect.poll(async () => (await state(page)).torusSettled, transition).toBe(true);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);
   await page.screenshot({path: info.outputPath('torus-overview.png')});
   expect(await glError(page)).toBe(0);
@@ -73,6 +74,7 @@ test('the torus overview recovers after WebGL context loss', async ({page}) => {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await startMatch(page, 'webgl2');
   await toggle(page);
+  await expect.poll(async () => (await state(page)).torusSettled, transition).toBe(true);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);
 
   await page.evaluate(() => Module._glob2_context_action(0));
@@ -80,6 +82,7 @@ test('the torus overview recovers after WebGL context loss', async ({page}) => {
   await page.evaluate(() => Module._glob2_context_action(1));
   await expect.poll(async () => (await state(page)).contextRestores).toBe(1);
   await expect.poll(async () => (await state(page)).torus, transition).toBe(true);
+  await expect.poll(async () => (await state(page)).torusSettled, transition).toBe(true);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);
   expect(await glError(page)).toBe(0);
   expect(errors).toEqual([]);

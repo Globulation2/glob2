@@ -426,7 +426,11 @@ static int run(int argc, char **argv)
                 view.setViewport((x + 1) & gui.game.map.getMaskW(), (y + 1) & gui.game.map.getMaskH());
                 assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height));
             });
-            std::printf("atlas=%dx%d cloud=%dx%d\n", view.atlasW, view.atlasH, view.cloudW, view.cloudH);
+            size_t bytes = 0;
+            for (const auto &tile : view.tiles) bytes += size_t(tile.textureW) * tile.textureH * 4;
+            std::printf("capture=%dx%d tiles=%zu pixels/cell=%d texture_bytes=%zu cloud=%dx%d\n",
+                        view.worldW * view.pixelsPerCell, view.worldH * view.pixelsPerCell,
+                        view.tiles.size(), view.pixelsPerCell, bytes, view.cloudW, view.cloudH);
             if (clouds) captureFramebuffer();
             view.reset();
         }

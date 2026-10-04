@@ -427,7 +427,7 @@ Object.defineProperty(window, 'glob2Diagnostics', {value: Object.freeze({
   snapshot() {
     return Object.freeze({version:1, executionMode:Module.executionMode || 'loading', threadFallback:Module.threadFallback || null, workerCount:Module.glob2ApplicationStarted ? (Module._glob2_worker_count?.() || 0) : 0, renderer:Module.renderer || 'loading', renderContext:Module.glob2RenderContext || null, contextLost:Boolean(Module.gpuLost), contextRestores:Module.gpuRestores || 0, screen:Module.glob2Screen || 'loading',
       screenClass:Module.glob2ScreenClass || '', roomCanStart:Boolean(Module.glob2RoomCanStart), customGameReady:Boolean(Module.glob2CustomGameReady), tick:Module.glob2Tick || 0, frames:Module.glob2Frames || 0, loop:Module.glob2Loop || 0,
-      paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), width:Module.glob2RenderContext?.width || canvas.width, height:Module.glob2RenderContext?.height || canvas.height,
+      paused:Boolean(Module.glob2Paused), torus:Module.glob2Screen === 'match' && Boolean(Module.glob2Torus), torusSettled:Module.glob2Screen === 'match' && Boolean(Module.glob2TorusSettled), width:Module.glob2RenderContext?.width || canvas.width, height:Module.glob2RenderContext?.height || canvas.height,
       restore:Module.storageRestore || 'restoring',
       watchReplay:watchReplay ? watchReplay.status : 'none',
       import:Module.importState || 'idle',

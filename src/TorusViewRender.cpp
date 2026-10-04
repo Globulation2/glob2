@@ -40,8 +40,7 @@
 
 namespace
 {
-// Bound overview detail independently of map area. Normal 2D keeps native detail.
-const int atlasLimit = 4096, cloudGridLimit = 128;
+const int cloudGridLimit = 128;
 const float pi = 3.14159265358979323846f;
 float clamp(float x, float a, float b) { return std::max(a, std::min(b, x)); }
 float smooth(float x)
@@ -265,8 +264,10 @@ void TorusView::releaseResources()
             glDeleteBuffers(1, &indexBuffer);
         if (material)
             glDeleteProgram(material);
-        if (texture)
-            glDeleteTextures(1, &texture);
+        for (auto &tile : tiles)
+            glDeleteTextures(1, &tile.texture);
+        if (tileBuffer)
+            glDeleteBuffers(1, &tileBuffer);
         if (cloudTexture)
             glDeleteTextures(1, &cloudTexture);
         if (framebuffer)
@@ -274,8 +275,10 @@ void TorusView::releaseResources()
     }
 #endif
     graphicsContext = nullptr;
-    texture = cloudTexture = framebuffer = material = meshBuffer = cloudBuffer = indexBuffer = 0;
-    atlasW = atlasH = 0;
+    cloudTexture = framebuffer = material = meshBuffer = cloudBuffer = indexBuffer = tileBuffer = 0;
+    tiles.clear();
+    pixelsPerCell = 32;
+    tileMeshDirty = true;
     cloudW = cloudH = 0;
     vertices.clear();
     cloudVertices.clear();
@@ -300,48 +303,74 @@ bool TorusView::prepareRenderTarget()
     GLint maximumTexture = 0, maximumViewport[2] = {0, 0};
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maximumTexture);
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, maximumViewport);
-    int nextW = std::min(worldW * 32, std::min(atlasLimit, std::min(maximumTexture, maximumViewport[0])));
-    int nextH = std::min(worldH * 32, std::min(atlasLimit, std::min(maximumTexture, maximumViewport[1])));
-    if (!texture || atlasW != nextW || atlasH != nextH)
+    const int limit = std::min({textureLimit, maximumTexture, maximumViewport[0], maximumViewport[1]});
+    if (tiles.empty() && !failed)
     {
-        if (texture)
-            glDeleteTextures(1, &texture);
-        if (framebuffer)
-            glDeleteFramebuffers(1, &framebuffer);
-        atlasW = nextW;
-        atlasH = nextH;
 #ifdef GLOB2_WEBGL2
         const TextureState textureState;
 #else
         glPushAttrib(GL_TEXTURE_BIT);
 #endif
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlasW, atlasH, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+        GLint oldFramebuffer;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
         glGenFramebuffers(1, &framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        for (pixelsPerCell = 32; pixelsPerCell >= 1; pixelsPerCell /= 2)
         {
-            target = moving = false;
-            amount = 0;
-            failed = true;
-            fprintf(stderr, "Torus view: offscreen framebuffer is unavailable\n");
+            auto candidate = TorusTextureTiles::layout(worldW * 32, worldH * 32, limit, pixelsPerCell);
+            bool okay = !candidate.empty();
+            size_t allocatedPixels = 0;
+            for (auto &tile : candidate)
+            {
+                if (!okay) break;
+                allocatedPixels += size_t(tile.textureW) * tile.textureH;
+                if (allocationPixelLimit && allocatedPixels > size_t(allocationPixelLimit))
+                { okay = false; break; }
+                glGenTextures(1, &tile.texture);
+                glBindTexture(GL_TEXTURE_2D, tile.texture);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tile.textureW, tile.textureH, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+                GLenum error = glGetError();
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tile.texture, 0);
+                okay = error == GL_NO_ERROR && glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+                // Consume allocation errors so a successful retry leaves clean GL state.
+                for (int i = 0; i < 16 && glGetError() != GL_NO_ERROR; ++i) {}
+            }
+            if (okay)
+            {
+                tiles = std::move(candidate);
+                tileMeshDirty = true;
+                if (pixelsPerCell < 32)
+                    fprintf(stderr, "Torus view: allocation pressure reduced capture to %d pixels per map cell\n", pixelsPerCell);
+                break;
+            }
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+            for (auto &tile : candidate)
+                if (tile.texture) glDeleteTextures(1, &tile.texture);
         }
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer);
 #ifdef GLOB2_WEBGL2
         textureState.restore();
 #else
         glPopAttrib();
 #endif
-        if (!failed && !material)
-            material = createMaterial();
-        if (!material)
+        if (tiles.empty())
+        {
             failed = true;
+            fprintf(stderr, "Torus view: full and reduced-resolution render targets unavailable\n");
+        }
+        if (!failed && !material) material = createMaterial();
+        if (!material) failed = true;
+        if (failed)
+        {
+            for (auto &tile : tiles) glDeleteTextures(1, &tile.texture);
+            tiles.clear();
+            glDeleteFramebuffers(1, &framebuffer);
+            framebuffer = 0;
+        }
     }
     return !failed;
 #else
@@ -498,31 +527,51 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glDisable(GL_SCISSOR_TEST);
         glDisable(GL_DEPTH_TEST);
         glDepthMask(GL_TRUE);
+        GLint oldFramebuffer;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &oldFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glViewport(0, 0, atlasW, atlasH);
-        glOrtho(0, game.map.getW() * 32, game.map.getH() * 32, 0, -1, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-        // Lines rasterise in the pixels of whatever is being drawn into. Here
-        // that is the atlas, at its own texels per world pixel, not the factor
-        // the window stretches the interface by.
-        gfx->setRenderTargetScale(std::min(float(atlasW) / (game.map.getW() * 32),
-                                           float(atlasH) / (game.map.getH() * 32)));
-        // Capture the normal map and cloud shadows,
-        // respecting the same graphics-quality setting as the 2D view.
-        if (game.gui)
-            game.gui->drawTorusMap(originX, originY, team, options | Game::DRAW_NO_CLOUD_LAYER, cloudGridLimit);
-        else
+        Game::ViewState mapView;
+        if (!game.gui) mapView.render = std::move(standaloneRender);
+        Game::ViewState &captureView = game.gui ? game.gui->view : mapView;
+        const Scene *previousScene = captureView.scene;
+        const unsigned captureOptions = options | Game::DRAW_NO_CLOUD_LAYER;
+        game.prepareMapCapture(team, captureView, captureOptions, game.gui && game.gui->gamePaused);
+        captureView.scene = previousScene ? previousScene : &captureView.render.ownScene;
+        if (game.gui) game.gui->toolManager.setDrawnScene(captureView.scene);
+        bool advancePreviews = true;
+        for (const auto &tile : tiles)
         {
-            Game::ViewState mapView;
-            mapView.render = std::move(standaloneRender);
-            game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
-                         originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
-                         nullptr, nullptr, false, cloudGridLimit);
-            standaloneRender = std::move(mapView.render);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tile.texture, 0);
+            glViewport(0, 0, tile.textureW, tile.textureH);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0, tile.w + 64, tile.h + 64, 0, -1, 1);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glClear(GL_COLOR_BUFFER_BIT);
+            gfx->setRenderTargetScale(float(pixelsPerCell) / 32);
+            // Drawing helpers also clip in logical coordinates, not window pixels.
+            gfx->setClipRect(0, 0, tile.w + 64, tile.h + 64);
+            glDisable(GL_SCISSOR_TEST);
+            const int tx = (originX + tile.x / 32 - 1) & game.map.getMaskW();
+            const int ty = (originY + tile.y / 32 - 1) & game.map.getMaskH();
+            if (game.gui)
+                game.gui->drawTorusMap(tx, ty, tile.w + 64, tile.h + 64, team, captureOptions, cloudGridLimit, advancePreviews);
+            else
+                game.drawMap(0, 0, tile.w + 64, tile.h + 64, 0, 0, tx, ty, team,
+                             captureView, captureOptions, nullptr, nullptr, false, cloudGridLimit, true);
+            Sprite::flushBatches(gfx);
+            advancePreviews = false;
         }
-        Sprite::flushBatches(gfx);
+        Game::finishMapCapture(captureView, captureOptions, game.gui && game.gui->gamePaused);
+        captureView.scene = previousScene;
+        if (!game.gui) standaloneRender = std::move(mapView.render);
         gfx->setRenderTargetScale(0);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        gfx->setClipRect();
+        // Capture disables scissoring directly while the 2D cache remembers it
+        // enabled. Restore that agreement before saving state for the ring/HUD.
+        glEnable(GL_SCISSOR_TEST);
+        glBindFramebuffer(GL_FRAMEBUFFER, oldFramebuffer);
     }
     const bool drawClouds =
         globalContainer->settings.clouds;
@@ -551,7 +600,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glDisable(GL_CULL_FACE);
     glDisable(GL_TEXTURE_RECTANGLE_ARB);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, tiles.front().texture);
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -606,7 +655,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     {
         glUseProgram(material);
         glUniform1i(glGetUniformLocation(material, "world"), 0);
-        glUniform2f(glGetUniformLocation(material, "mapOffset"), anchorU, 1 - anchorV);
+        glUniform2f(glGetUniformLocation(material, "mapOffset"), 0, 0);
         // A low sun far to the left and a little above; the eye looks along +z.
         // The highlight sits where the normal bisects the two, on the left flank.
         float lx = -1.0f, ly = 0.25f, lz = 0.15f;
@@ -682,6 +731,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glBufferData(GL_ARRAY_BUFFER, cloudVertices.size() * sizeof(MeshVertex), cloudVertices.data(),
                      GL_DYNAMIC_DRAW);
         std::memcpy(meshKey, key, sizeof(key));
+        tileMeshDirty = true;
     }
     if (!indexBuffer)
     {
@@ -698,21 +748,32 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(MeshIndex), indices.data(),
                      GL_STATIC_DRAW);
     }
-    glBindBuffer(GL_ARRAY_BUFFER, meshBuffer);
+    if (tileMeshDirty || tileOffsetU != anchorU || tileOffsetV != 1 - anchorV)
+    {
+        auto partitioned = TorusTextureTiles::partition(tiles, vertices, U, V, worldW * 32, worldH * 32,
+                                                       anchorU, 1 - anchorV);
+        if (!tileBuffer) glGenBuffers(1, &tileBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, tileBuffer);
+        glBufferData(GL_ARRAY_BUFFER, partitioned.size() * sizeof(MeshVertex), partitioned.data(), GL_DYNAMIC_DRAW);
+        tileOffsetU = anchorU; tileOffsetV = 1 - anchorV;
+        tileMeshDirty = false;
+    }
+    glBindBuffer(GL_ARRAY_BUFFER, tileBuffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_COLOR_ARRAY);
     glClientActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
-    glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex),
-                    reinterpret_cast<void *>(offsetof(MeshVertex, position)));
+    glVertexPointer(4, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, position)));
     glColorPointer(3, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, color)));
     glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
     glNormalPointer(GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, normal)));
-    // Both navigation axes only change texture offsets. Unfolding or resizing
-    // rebuilds the shared surface and cloud geometry.
-    glDrawElements(GL_TRIANGLES, U * V * 6, meshIndexType, nullptr);
+    for (const auto &tile : tiles)
+    {
+        glBindTexture(GL_TEXTURE_2D, tile.texture);
+        glDrawArrays(GL_TRIANGLES, tile.first, tile.count);
+    }
     if (drawClouds && cloudTexture)
     {
         // White clouds lit like the ground, blended over it without writing depth.
@@ -733,6 +794,7 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                         reinterpret_cast<void *>(offsetof(MeshVertex, position)));
         glColorPointer(3, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, color)));
         glTexCoordPointer(2, GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
+        glNormalPointer(GL_FLOAT, sizeof(MeshVertex), reinterpret_cast<void *>(offsetof(MeshVertex, normal)));
         glDrawElements(GL_TRIANGLES, U * V * 6, meshIndexType, nullptr);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);

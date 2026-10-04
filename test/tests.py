@@ -230,6 +230,7 @@ UNIT_TESTS = [
     'RuntimeBuildingOrderSaveLoadTest.cpp',
     'TorusGeometryTest.cpp',
     'TorusPickingTest.cpp',
+    'TorusTextureTilesTest.cpp',
     'TriboolTest.cpp',
     'WinningConditionDecodeTest.cpp',
     'WinningConditionPrestigeToggleTest.cpp',

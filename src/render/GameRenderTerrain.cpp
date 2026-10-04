@@ -401,7 +401,7 @@ void Game::drawMapDebugAreas(int left, int top, int right, int bot, int sw, int 
 /**
  * Draws the visible (viewport) part of the given map
  */
-void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap)
+void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, int viewportX, int viewportY, int localTeam, Uint32 drawOptions, ViewState& view, const SceneMap& sceneMap, bool advanceAnimation)
 {
 	PERF_SCOPE_TIME(Overlay);
 	int &areaAnimationTick = view.render.areaAnimationTick;
@@ -435,7 +435,7 @@ void Game::drawMapAreas(int left, int top, int right, int bot, int sw, int sh, i
 						}
 				}
 			}
-		areaAnimationTick++;
+		if (advanceAnimation) areaAnimationTick++;
 	}
 }
 
