@@ -277,6 +277,21 @@ public:
         globalContainer->replaying=false;
         {
             MapEdit editor;REQUIRE(editor.load("maps/Archipelago.map"));editor.minimap.setGame(editor.game);editor.updateCamera();
+            auto& settings = globalContainer->settings;
+            const bool previousEdgeScroll = settings.edgeScrollWindowed;
+            REQUIRE_FALSE(bool(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+            editor.mouseX = editor.mouseY = 1;
+            settings.edgeScrollWindowed = false;
+            editor.handleMapScroll();
+            REQUIRE(editor.xSpeed == 0); REQUIRE(editor.ySpeed == 0);
+            settings.edgeScrollWindowed = true;
+            editor.handleMapScroll();
+            REQUIRE(editor.xSpeed == -1); REQUIRE(editor.ySpeed == -1);
+            settings.edgeScrollWindowed = false;
+            editor.handleMapScroll();
+            REQUIRE(editor.xSpeed == 0); REQUIRE(editor.ySpeed == 0);
+            settings.edgeScrollWindowed = previousEdgeScroll;
+            editor.mouseX = editor.mouseY = 300;
             const auto checksum=editor.game.checkSum(nullptr,nullptr,nullptr,true);
             for(double zoom:{editor.camera.minimumZoom(),.5,1.,2.,MapCamera::MAX_ZOOM})
             {

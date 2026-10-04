@@ -196,6 +196,25 @@ TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [displa
         gui.game.gameHeader.getBasePlayer(0).type=BasePlayer::P_LOCAL;
         REQUIRE(gui.targetTickRate()==25);
         settings.gameSpeed=8;
+        // Windowed edge scrolling is opt-in; changing it takes effect even
+        // when the last motion event left an active edge velocity.
+        REQUIRE_FALSE(bool(globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN));
+        SDL_Event edge{}; edge.type = SDL_EVENT_MOUSE_MOTION;
+        edge.motion.x = 0; edge.motion.y = 200;
+        Uint64 edgeTime = SDL_GetTicks();
+        gui.step({edge}, edgeTime);
+        const int stationaryX = gui.viewportX;
+        gui.step({}, edgeTime + 80);
+        REQUIRE(gui.viewportX == stationaryX);
+        settings.edgeScrollWindowed = true;
+        gui.step({edge}, edgeTime + 80);
+        gui.step({}, edgeTime + 160);
+        REQUIRE(gui.viewportX != stationaryX);
+        settings.edgeScrollWindowed = false;
+        const int stoppedX = gui.viewportX;
+        gui.step({}, edgeTime + 240);
+        REQUIRE(gui.viewportX == stoppedX);
+        settings.edgeScrollWindowed = true;
         // The same elapsed time with different GUI call rates should scroll equally.
         int distance[2];
         for(int pass=0;pass<2;++pass) {
