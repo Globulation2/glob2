@@ -326,7 +326,6 @@ void nativeDisplay(bool gpu)
 	Context gfx(gpu,1280,640);
 	const auto context = gfx.current();
 	const auto window = gfx.windowID();
-	int savedW=gfx.getRequestedW(), savedH=gfx.getRequestedH();
 	if (!gpu) require(!gfx.canDrawStretchedSprite() && !gfx.hasPortableRenderer(),"Native software exposed GPU-only capabilities");
 	for (float scale : {1.25f,1.5f,2.0f,1.0f})
 	{
@@ -370,6 +369,10 @@ void nativeDisplay(bool gpu)
 	}
 	if (glob2test::fullscreenEnabled())
 	{
+		// Live scale changes can enlarge the window to satisfy the layout floor.
+		int savedW=0, savedH=0;
+		require(SDL_GetWindowSize(SDL_GetWindowFromID(window), &savedW, &savedH),
+				"Read current window dimensions before fullscreen");
 		std::vector<bool> modes;
 		gfx.setDisplayPreferenceCallback([&](int w,int h,bool fullscreen){
 			require(w==savedW && h==savedH,"Fullscreen overwrote remembered window size");

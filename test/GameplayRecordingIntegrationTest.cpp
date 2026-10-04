@@ -78,8 +78,9 @@ TEST_SUITE("GameplayRecording.Integration")
 				MainMenuScreen menu;
 				menu.beginExecution(globals->gfx);
 				const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
-				while (recorder.status().state == GAGCore::Recording::State::Starting &&
-					   std::chrono::steady_clock::now() < deadline)
+				// Recorder initialization and menu-scene loading are independent workers.
+				while ((recorder.status().state == GAGCore::Recording::State::Starting ||
+						!frontend.colony->ready()) && std::chrono::steady_clock::now() < deadline)
 					show(menu, 20);
 				REQUIRE(recorder.status().state == GAGCore::Recording::State::Recording);
 				REQUIRE(frontend.colony->ready());

@@ -661,21 +661,24 @@ int main(int argc, char **argv)
 			Preview<MainMenuScreen> probe;
 			probe.render();
 			const auto order = probe.GAGGUI::ui::UIScreen::host().focusOrder();
-			require(order.size() == std::size(actions) + (GAGCore::Recording::supported() ? 1 : 0),
-					"main menu exposes navigation and recording controls to the keyboard");
+			require(order.size() == std::size(actions),
+					"main menu exposes navigation controls to the keyboard");
 			for (size_t i = 0; i < order.size(); ++i)
 			{
 				Preview<MainMenuScreen> main;
 				main.render();
 				for (size_t t = 0; t <= i; ++t)
 					main.key(SDLK_TAB);
-				// The recorder is exercised by GameplayRecording.Integration;
-				// this loop verifies routes that leave the menu.
-				if (order[i] == "recording/toggle")
-					continue;
 				main.key(SDLK_RETURN);
 				require(main.result() == std::atoi(order[i].c_str() + 5), "main keyboard route");
 			}
+			Preview<SettingsScreen> settings;
+			settings.selectCategory(SettingsScreen::Category::Recording);
+			settings.render();
+			const auto recordingOrder = settings.GAGGUI::ui::UIScreen::host().focusOrder();
+			if (GAGCore::Recording::supported())
+				require(std::find(recordingOrder.begin(), recordingOrder.end(), "recording/toggle") != recordingOrder.end(),
+						"Settings recording control is reachable by keyboard");
 		}
 		{
 			FrontendScope scope;
