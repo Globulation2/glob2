@@ -47,6 +47,16 @@ std::vector<std::string> localized(std::vector<std::string> v)
 		s = tr(s);
 	return v;
 }
+// Rows of short side-by-side labels (tabs, segments) keep icons only where the
+// labels still fit on one line beside them: not on the smallest phones or with large text.
+bool rowIcons(const Presentation &p)
+{
+	return p.safe.w >= p.textPt(400);
+}
+fe::IconRef rowIcon(const Presentation &p, fe::UIIcon icon)
+{
+	return rowIcons(p) ? fe::uiIcon(icon) : fe::IconRef{};
+}
 } // namespace
 
 // AI profile / choice screen ---------------------------------------------------------
@@ -913,7 +923,7 @@ Element CustomGameScreen::build(const Presentation &p)
 		if (narrow && p.textGrowth > 1.2)
 			options.role = fe::FontRole::Support;
 		static constexpr fe::UIIcon tabIcons[] = {fe::UIIcon::Map, fe::UIIcon::Users, fe::UIIcon::Rules};
-		options.icon = fe::uiIcon(tabIcons[i]);
+		options.icon = rowIcon(p, tabIcons[i]);
 		options.iconSize = narrow || topActions ? 20 : 24;
 		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
 		// Desktop tabs carry their current choice underneath, as before.
@@ -993,7 +1003,7 @@ Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 	{
 		std::vector<fe::IconRef> iconRefs;
 		for (auto icon : icons)
-			iconRefs.push_back(fe::uiIcon(icon));
+			iconRefs.push_back(rowIcon(p, icon));
 		if (p.touch)
 			return fe::segments(key, labels, selected, change, {}, iconRefs);
 		std::vector<Element> buttons;
@@ -1285,7 +1295,7 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	const int selectedFormat = setup.format == "FFA" ? 0 : setup.format == "2 vs 2" ? 1 : setup.format == "You vs all" ? 2 : -1;
 	parts.push_back(fe::segments("format", localized({"FFA", "2 vs 2", "You vs all"}), selectedFormat, [this](int i) { setup.presetTeams(i); },
 								 {true, setup.activeColonies() == 4, bool(setup.humanColony()) && setup.activeColonies() > 1},
-								 {fe::uiIcon(fe::UIIcon::FreeForAll), fe::uiIcon(fe::UIIcon::Users), fe::uiIcon(fe::UIIcon::Crown)}));
+								 {rowIcon(p, fe::UIIcon::FreeForAll), rowIcon(p, fe::UIIcon::Users), rowIcon(p, fe::UIIcon::Crown)}));
 	parts.push_back(fe::caption(std::to_string(setup.controllerCount()) + " / " + std::to_string(Team::MAX_COUNT) + " " + tr("controllers")));
 	for (int i = 0; i < setup.capacity; ++i)
 	{
@@ -1598,7 +1608,7 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 	if (!all && hidden > 0)
 		body.push_back(fe::row({fe::expanded(fe::hint(FormattableString(tr("%0 more rules are at their Standard values.")).arg(hidden))),
 								fe::button("rules/all", tr("Show all rules"), [this] { setRulesView(RulesView::All); },
-										   {.icon = fe::uiIcon(fe::UIIcon::AllRules)})},
+										   {.icon = rowIcon(p, fe::UIIcon::AllRules)})},
 							   {p.pt(8), fe::CrossAlign::Center}));
 	auto rulesList = [&body, &p] { return fe::scroll("lobby/rules", fe::column(body, {p.pt(8)})); };
 
@@ -1612,7 +1622,7 @@ Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 	};
 	auto setView = [this](int v) { setRulesView(v == 0 ? RulesView::Summary : RulesView::All); };
 	const auto views = localized({"Summary", "All rules"});
-	const std::vector<fe::IconRef> viewIcons{fe::uiIcon(fe::UIIcon::Summary), fe::uiIcon(fe::UIIcon::AllRules)};
+	const std::vector<fe::IconRef> viewIcons{rowIcon(p, fe::UIIcon::Summary), rowIcon(p, fe::UIIcon::AllRules)};
 
 	if (rail)
 	{
