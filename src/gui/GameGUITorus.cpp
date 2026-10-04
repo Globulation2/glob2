@@ -74,62 +74,68 @@ bool GameGUI::handleTorusPointer(const SDL_Event &event)
     return true;
 }
 
-void GameGUI::drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit)
+void GameGUI::drawTorusMap(int originX, int originY, int width, int height, int team, unsigned options, int cloudGridLimit, bool advancePreviews)
 {
-    game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
-                 originX, originY, team, view, options, nullptr, &buildingGuiState, gamePaused, cloudGridLimit);
+    game.drawMap(0, 0, width, height, 0, 0,
+                 originX, originY, team, view, options, nullptr, &buildingGuiState, gamePaused, cloudGridLimit, true);
     if (globalContainer->replaying)
         return;
+    const int oldW = game.map.displayViewportW, oldH = game.map.displayViewportH;
+    game.map.displayViewportW = width; game.map.displayViewportH = height;
     ghostManager.drawAll(originX, originY, localTeamNo);
-    int px, py;
-    if ((selectionMode == TOOL_SELECTION || (selectionMode == BRUSH_SELECTION && !touch->usesHUD())) &&
-        torusView.pick(mouseX, mouseY, px, py))
-    {
-        int mx = (px - originX * 32) & (game.map.getW() * 32 - 1);
-        int my = (py - originY * 32) & (game.map.getH() * 32 - 1);
-        toolManager.drawTool(mx, my, localTeamNo, originX, originY, inputState.modifiers());
-    }
-    // The ring replaces the 2D map transform, so the selection markers the flat
-    // view paints over the map belong on the surface itself, anchored to it.
-    const Scene &scene = drawnScene();
-    if (selectionMode == BUILDING_SELECTION && scene.panels.building.valid)
-    {
-        const SceneBuildingPanel &b = scene.panels.building;
-        int x, y;
-        game.map.buildingPosToCursor(displayedPosX(b), displayedPosY(b), b.type->width, b.type->height, &x, &y,
-                                     originX, originY);
-        if (b.owner.teamNumber == localTeamNo)
-            globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 0, 0, 190);
-        else if (scene.panels.local.allies & b.owner.me)
-            globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 255, 196, 0);
-        else if (!b.type->isVirtual)
-            globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 190, 0, 0);
+    game.map.displayViewportW = oldW; game.map.displayViewportH = oldH;
+    globalContainer->gfx->drawMapCopies(game.map.getW() * 32, game.map.getH() * 32, width, height, [&]() {
 
-        // draw a white circle around units that are working at building
-        if (showUnitWorkingToBuilding && (b.owner.allies & (Team::teamNumberToMask(localTeamNo))))
-            for (Uint16 worker : scene.entities.selectedBuilding.unitsWorking)
-            {
-                const SceneUnit *unit = scene.entities.unit(worker);
-                if (!unit)
-                    continue;
-                int ux, uy;
-                scene.map.mapCaseToDisplayable(unit->posX, unit->posY, &ux, &uy, originX, originY);
-                int deltaLeft = 255 - drawnUnitDelta(*unit, view.render.unitMotion);
-                if (unit->action < BUILD)
-                {
-                    ux -= (unit->dx * deltaLeft) >> 3;
-                    uy -= (unit->dy * deltaLeft) >> 3;
-                }
-                globalContainer->gfx->drawCircle(ux + 16, uy + 16, 16, 255, 255, 255, 180);
-            }
-    }
-    else if (selectionMode == RESOURCE_SELECTION)
-    {
-        int resource = selectionResource();
-        int rx = resource & game.map.getMaskW();
-        int ry = resource >> game.map.getShiftW();
         int px, py;
-        game.map.mapCaseToDisplayable(rx, ry, &px, &py, originX, originY);
-        globalContainer->gfx->drawCircle(px + 16, py + 16, 16, 0, 0, 190);
-    }
+        if ((selectionMode == TOOL_SELECTION || (selectionMode == BRUSH_SELECTION && !touch->usesHUD())) &&
+            torusView.pick(mouseX, mouseY, px, py))
+        {
+            int mx = (px - originX * 32) & (game.map.getW() * 32 - 1);
+            int my = (py - originY * 32) & (game.map.getH() * 32 - 1);
+            toolManager.drawTool(mx, my, localTeamNo, originX, originY, inputState.modifiers());
+        }
+        // The ring replaces the 2D map transform, so the selection markers the flat
+        // view paints over the map belong on the surface itself, anchored to it.
+        const Scene &scene = drawnScene();
+        if (selectionMode == BUILDING_SELECTION && scene.panels.building.valid)
+        {
+            const SceneBuildingPanel &b = scene.panels.building;
+            int x, y;
+            game.map.buildingPosToCursor(displayedPosX(b), displayedPosY(b), b.type->width, b.type->height, &x, &y,
+                                         originX, originY);
+            if (b.owner.teamNumber == localTeamNo)
+                globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 0, 0, 190);
+            else if (scene.panels.local.allies & b.owner.me)
+                globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 255, 196, 0);
+            else if (!b.type->isVirtual)
+                globalContainer->gfx->drawCircle(x, y, b.type->width * 16, 190, 0, 0);
+
+            // draw a white circle around units that are working at building
+            if (showUnitWorkingToBuilding && (b.owner.allies & (Team::teamNumberToMask(localTeamNo))))
+                for (Uint16 worker : scene.entities.selectedBuilding.unitsWorking)
+                {
+                    const SceneUnit *unit = scene.entities.unit(worker);
+                    if (!unit)
+                        continue;
+                    int ux, uy;
+                    scene.map.mapCaseToDisplayable(unit->posX, unit->posY, &ux, &uy, originX, originY);
+                    int deltaLeft = 255 - drawnUnitDelta(*unit, view.render.unitMotion);
+                    if (unit->action < BUILD)
+                    {
+                        ux -= (unit->dx * deltaLeft) >> 3;
+                        uy -= (unit->dy * deltaLeft) >> 3;
+                    }
+                    globalContainer->gfx->drawCircle(ux + 16, uy + 16, 16, 255, 255, 255, 180);
+                }
+        }
+        else if (selectionMode == RESOURCE_SELECTION)
+        {
+            int resource = selectionResource();
+            int rx = resource & game.map.getMaskW();
+            int ry = resource >> game.map.getShiftW();
+            int px, py;
+            game.map.mapCaseToDisplayable(rx, ry, &px, &py, originX, originY);
+            globalContainer->gfx->drawCircle(px + 16, py + 16, 16, 0, 0, 190);
+        }
+    }, advancePreviews);
 }

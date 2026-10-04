@@ -162,12 +162,14 @@ namespace GAGCore
 #endif
 	}
 
-    void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw)
+    void GraphicContext::drawMapCopies(int pw,int ph,int vw,int vh,const std::function<void()> &draw, bool advance)
     {
 		if (renderBatch)
 			renderBatch->stateChange();
 		if (renderer) prepareDraw();
+        periodicCopy = !advance;
         draw();
+        periodicCopy = false;
         if (renderer && pw>0 && ph>0) {
             SDL_Rect bounds{mapClipX,mapClipY,mapClipW,mapClipH};
             periodicCopy=true;

@@ -39,6 +39,137 @@
 class TorusRenderIntegrationTest
 {
 public:
+static void tiledCapture()
+{
+#ifdef HAVE_OPENGL
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true,
+        .width = 1120, .height = 720, .screenFlags = Uint32(GraphicContext::USEGPU)});
+    Game game(nullptr);
+    makeTorusMapFixture(game, 64, 64);
+    REQUIRE(game.addUnit(29, 29, 0, EXPLORER, 0, 128, 1, 1));
+    REQUIRE(game.addUnit(63, 63, 0, EXPLORER, 0, 128, 1, 1));
+    REQUIRE(game.addBuilding(29, 31, globalContainer->buildingsTypes.getFinishedTypeNum("swarm"), 0));
+    game.map.setMapDiscovered();
+    for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x)
+    {
+        const int index = game.map.coordToIndex(x, y);
+        const bool unknown = y >= 10 && y < 16;
+        const Uint32 visible = unknown || (x >= 30 && x < 32) || (x >= 60 && x < 62) ? 0 : 1;
+        game.map.fogOfWarA[index] = game.map.fogOfWarB[index] = visible;
+        game.map.mapDiscovered[index] = unknown ? 0 : 1;
+    }
+    TorusView view;
+    view.textureLimit = 1024;
+    view.toggle();
+    int vx = 17, vy = 21; // Initial capture origin is (0,0), boundaries are at cells 30 and 60.
+    const unsigned options = Game::DRAW_AREA;
+    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.tiles.size() == 9);
+    REQUIRE(view.pixelsPerCell == 32);
+    REQUIRE(view.standaloneRender.animationTime == 1);
+    REQUIRE(view.standaloneRender.areaAnimationTick == 1);
+    GLint oldViewport[4]; glGetIntegerv(GL_VIEWPORT, oldViewport);
+    GLuint reference, framebuffer;
+    glGenTextures(1, &reference);
+    glBindTexture(GL_TEXTURE_2D, reference);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2048, 2048, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, reference, 0);
+    REQUIRE(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+    glViewport(0, 0, 2048, 2048);
+    glMatrixMode(GL_PROJECTION); glPushMatrix(); glLoadIdentity(); glOrtho(0, 2048, 2048, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW); glPushMatrix(); glLoadIdentity();
+    glUseProgram(0); glDisable(GL_DEPTH_TEST); glDisable(GL_SCISSOR_TEST);
+    globalContainer->gfx->setRenderTargetScale(1);
+    Game::ViewState baseline;
+    baseline.render.animationTime = view.standaloneRender.animationTime;
+    baseline.render.areaAnimationTick = 0;
+    game.drawMap(0, 0, 2048, 2048, 0, 0, view.originX, view.originY, 0,
+                 baseline, options | Game::DRAW_NO_CLOUD_LAYER, nullptr, nullptr, true, 128);
+    Sprite::flushBatches(globalContainer->gfx);
+    std::vector<unsigned char> pixels(2048 * 2048 * 4);
+    glReadPixels(0, 0, 2048, 2048, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data());
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    int maximumDifference = 0;
+    for (const auto &tile : view.tiles)
+    {
+        std::vector<unsigned char> actual(size_t(tile.textureW) * tile.textureH * 4);
+        glBindTexture(GL_TEXTURE_2D, tile.texture);
+        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, actual.data());
+        // Compare interiors AND gutters against the full-world renderer. This
+        // checks wrap seams and subregion rendering independently of the mesh.
+        for (int y = 0; y < tile.textureH; ++y) for (int x = 0; x < tile.textureW; ++x)
+        {
+            int worldX = (tile.x + x - 32 + 2048) % 2048;
+            int worldY = (tile.y + tile.textureH - 1 - y - 32 + 2048) % 2048;
+            for (int c = 0; c < 3; ++c)
+                maximumDifference = std::max(maximumDifference, std::abs(int(actual[(size_t(y)*tile.textureW+x)*4+c])
+                    - int(pixels[(size_t(2047-worldY)*2048+worldX)*4+c])));
+        }
+    }
+    std::cout << "Native tiled capture maximum RGB difference: " << maximumDifference << "/255\n";
+    REQUIRE(maximumDifference <= 1);
+    glDeleteTextures(1, &reference); glDeleteFramebuffers(1, &framebuffer);
+    globalContainer->gfx->setRenderTargetScale(0);
+    glMatrixMode(GL_MODELVIEW); glPopMatrix(); glMatrixMode(GL_PROJECTION); glPopMatrix(); glMatrixMode(GL_MODELVIEW);
+    glViewport(oldViewport[0], oldViewport[1], oldViewport[2], oldViewport[3]);
+    REQUIRE(glGetError() == GL_NO_ERROR);
+    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.standaloneRender.animationTime == 2);
+    REQUIRE(view.standaloneRender.areaAnimationTick == 2);
+    view.reset();
+    view.allocationPixelLimit = 1500000; // Some native tiles allocate before retrying.
+    view.toggle();
+    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.pixelsPerCell == 16);
+    REQUIRE(view.tiles.size() == 4);
+    std::vector<GLuint> oldTextures;
+    for (const auto &tile : view.tiles) oldTextures.push_back(tile.texture);
+    view.reset();
+    for (GLuint texture : oldTextures) REQUIRE(glIsTexture(texture) == GL_FALSE);
+    view.allocationPixelLimit = 5000;
+    view.toggle();
+    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.pixelsPerCell == 1);
+    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.pixelsPerCell == 1); // Retain the successful level until reset.
+    view.reset();
+    view.allocationPixelLimit = 1;
+    view.toggle();
+    REQUIRE(!view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.tiles.empty());
+    REQUIRE(view.framebuffer == 0);
+    REQUIRE(!view.active());
+    view.reset(); view.allocationPixelLimit = 0;
+    view.toggle();
+    REQUIRE(view.draw(game, 0, options, vx, vy, 960, 720));
+    REQUIRE(view.pixelsPerCell == 32);
+    REQUIRE(glGetError() == GL_NO_ERROR);
+    // Preview opacity is frame state too: a region that cannot see the mouse
+    // still participates in capture, but must not advance the preview again.
+    GameGUI gui;
+    gui.init();
+    makeTorusMapFixture(gui.game, 64, 64);
+    for (int y = 0; y < 64; ++y) for (int x = 0; x < 64; ++x)
+        gui.game.map.setUMatPos(x, y, GRASS, 1);
+    gui.localPlayer = gui.localTeamNo = 0;
+    gui.adjustLocalTeam();
+    gui.selectionMode = GameGUI::TOOL_SELECTION;
+    gui.toolManager.activateBuildingTool("swarm");
+    gui.mouseX = 480; gui.mouseY = 368;
+    gui.torusView.textureLimit = 1024;
+    gui.torusView.toggle();
+    int gx = 17, gy = 21;
+    REQUIRE(gui.torusView.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
+    REQUIRE(gui.torusView.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
+    REQUIRE(std::abs(gui.toolManager.highlightStrength - .1f) < .00001f);
+    REQUIRE(gui.torusView.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, gx, gy, 960, 720));
+    REQUIRE(std::abs(gui.toolManager.highlightStrength - .2f) < .00001f);
+    REQUIRE(glGetError() == GL_NO_ERROR);
+#endif
+}
+
 static void run(bool gpu, int width, int height)
 {
     SDL_SetHint(SDL_HINT_MAC_BACKGROUND_APP, "1");
@@ -371,7 +502,7 @@ static void run(bool gpu, int width, int height)
                 view.lastFrame = SDL_GetTicks();
                 const auto randomState=syncRandEngine();
                 const auto gameRandom=gui.game.syncRandom;
-                REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+                REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
                 REQUIRE(glGetError() == GL_NO_ERROR);
                 REQUIRE((syncRandEngine()==randomState && gui.game.syncRandom==gameRandom));
             };
@@ -395,16 +526,19 @@ static void run(bool gpu, int width, int height)
             saveFrame("torus-native.bmp");
             gui.gamePaused = true;
             const int pausedTime = gui.view.render.animationTime;
+            const int pausedAreas = gui.view.render.areaAnimationTick;
             draw(1);
             const auto pausedClouds = view.cloudPixels;
             draw(1);
             REQUIRE(gui.view.render.animationTime == pausedTime);
+            REQUIRE(gui.view.render.areaAnimationTick == pausedAreas);
             REQUIRE(pausedClouds.size() == view.cloudPixels.size());
             for (size_t i = 0; i < pausedClouds.size(); ++i)
                 REQUIRE(pausedClouds[i] == view.cloudPixels[i]);
             gui.gamePaused = false;
             draw(1);
-            REQUIRE(gui.view.render.animationTime > pausedTime);
+            REQUIRE(gui.view.render.animationTime == pausedTime + 1);
+            REQUIRE(gui.view.render.areaAnimationTick == pausedAreas + 1);
             // Selection markers are painted into the atlas, which is measured in
             // world pixels. The factor the window stretches the interface by must
             // not reach their line width, and every marker the flat view paints
@@ -419,14 +553,21 @@ static void run(bool gpu, int width, int height)
                 gui.setSelection(GameGUI::BUILDING_SELECTION, selected);
                 REQUIRE(gui.view.selectedBuilding == selected);
                 const int worldW = gui.game.map.getW() * 32, worldH = gui.game.map.getH() * 32;
-                std::vector<unsigned char> atlas;
+                std::vector<std::vector<unsigned char>> atlas;
                 // The atlas holds one upright copy of the world; GL hands rows back bottom-up.
                 auto texel = [&](int worldX, int worldY)
                 {
-                    const int col = ((worldX % worldW) + worldW) % worldW * view.atlasW / worldW;
-                    const int row = view.atlasH - 1 -
-                        ((worldY % worldH) + worldH) % worldH * view.atlasH / worldH;
-                    return &atlas[(size_t(row) * view.atlasW + col) * 4];
+                    const int x = ((worldX % worldW) + worldW) % worldW;
+                    const int y = ((worldY % worldH) + worldH) % worldH;
+                    for (size_t i = 0; i < view.tiles.size(); ++i)
+                    {
+                        const auto &tile = view.tiles[i];
+                        if (x < tile.x || x >= tile.x + tile.w || y < tile.y || y >= tile.y + tile.h) continue;
+                        const int col = (x - tile.x + 32) * view.pixelsPerCell / 32;
+                        const int row = tile.textureH - 1 - (y - tile.y + 32) * view.pixelsPerCell / 32;
+                        return &atlas[i][(size_t(row) * tile.textureW + col) * 4];
+                    }
+                    return static_cast<unsigned char *>(nullptr);
                 };
                 // Drawing reads the GUI's Scene; drawAll would extract it first.
                 Scene scene;
@@ -439,9 +580,14 @@ static void run(bool gpu, int width, int height)
                     // Software GL renders on worker threads, and the readback below has been
                     // seen to return the previous frame's atlas: wait for the frame first.
                     glFinish();
-                    atlas.assign(size_t(view.atlasW) * view.atlasH * 4, 0);
-                    glBindTexture(GL_TEXTURE_2D, view.texture);
-                    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas.data());
+                    atlas.resize(view.tiles.size());
+                    for (size_t i = 0; i < view.tiles.size(); ++i)
+                    {
+                        const auto &tile = view.tiles[i];
+                        atlas[i].resize(size_t(tile.textureW) * tile.textureH * 4);
+                        glBindTexture(GL_TEXTURE_2D, tile.texture);
+                        glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas[i].data());
+                    }
                     REQUIRE(glGetError() == GL_NO_ERROR);
                 };
                 // A worker circle is white over whatever it covers, so count the
@@ -515,7 +661,7 @@ static void run(bool gpu, int width, int height)
             view.toggle();
             view.lastFrame = SDL_GetTicks() - 100;
             view.amount = .04f;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(!view.active());
             // Automatic motion opens slowly and returns quickly after inactivity.
             globalContainer->settings.automaticTorus = true;
@@ -525,18 +671,18 @@ static void run(bool gpu, int width, int height)
             view.amount = .25f;
             view.lastMove = SDL_GetTicks();
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE((view.amount > .25f && view.amount <= .28f));
             // Neither folding nor automatic return changes an active gesture's projection.
             view.setPointerHeld(true);
             float heldAmount = view.amount;
             view.lastMove = SDL_GetTicks() - 300;
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(view.amount == heldAmount);
             view.setPointerHeld(false);
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(view.amount < heldAmount - .2f);
             // G pins the overview even when no movement notifications arrive.
             view.toggle();
@@ -546,7 +692,7 @@ static void run(bool gpu, int width, int height)
             view.toggle();
             view.amount = .1f;
             view.lastFrame = SDL_GetTicks() - 100;
-            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, 960, 720));
+            REQUIRE(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP | Game::DRAW_AREA, x, y, 960, 720));
             REQUIRE(!view.active());
             // Disabling the preference clears an automatic reveal before its first frame.
             view.notifyMove();
@@ -698,6 +844,7 @@ static void run(bool gpu, int width, int height)
 
 TEST_SUITE("TorusRender")
 {
+    TEST_CASE("native tiled capture pixels and allocation fallback [display]") { TorusRenderIntegrationTest::tiledCapture(); }
 	TEST_CASE("game rendering; picking and cache changes in software rendering [writes-preferences]") { TorusRenderIntegrationTest::run(false, 1120, 720); }
 	TEST_CASE("game rendering; picking and cache changes in OpenGL [display][writes-preferences]") { TorusRenderIntegrationTest::run(true, 1120, 720); }
 	TEST_CASE("game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]")

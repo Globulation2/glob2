@@ -683,7 +683,7 @@ void GameGUI::drawAll(int team)
 		torusView.draw(game, localTeamNo, drawOptions, viewportX, viewportY,
 			globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, globalContainer->gfx->getH(),
 			camera.zoom, camera.fractionX(), camera.fractionY());
-	GAGCore::ApplicationHost::overviewDrawn(drewTorus);
+	GAGCore::ApplicationHost::overviewDrawn(drewTorus, drewTorus && torusView.overviewSettled());
 	if (!drewTorus)
 	{
 		const int cloudGridLimit = DynamicClouds::gridLimitForZoom(game.map.getW(), game.map.getH(),

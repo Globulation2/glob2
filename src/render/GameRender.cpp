@@ -214,11 +214,44 @@ bool drawPreparedWater(const GameRenderFrame &frame, const SoftwareTerrainCache 
 }
 } // namespace
 
+void Game::prepareMapCapture(int team, ViewState &view, Uint32 options, bool paused)
+{
+    if (!view.scene)
+    {
+        SceneRequest request;
+        request.localTeam = team;
+        request.includeScriptAreas = options & DRAW_SCRIPT_AREAS;
+        request.selectedBuilding = refOf(view.selectedBuilding);
+        request.selectedUnit = refOf(view.selectedUnit);
+        extractScene(*this, request, view.render.ownScene);
+    }
+    prepareSceneMapFrame(view.scene ? *view.scene : view.render.ownScene, team, view, options, paused);
+}
+
+void Game::prepareSceneMapFrame(const Scene &scene, int localTeam, ViewState &view, Uint32 drawOptions, bool paused)
+{
+    view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
+    view.render.skinPreview().poll();
+    if (!paused) ++view.render.animationTime;
+    const Uint32 visibleTeams = globalContainer->isViewingGame() ? globalContainer->replayVisibleTeams
+        : scene.entities.teams[localTeam].me;
+    if (globalContainer->settings.smoothFog && !(drawOptions & DRAW_WHOLE_MAP))
+        view.render.fogFade.update(scene.map, visibleTeams, scene.tick,
+            scene.tick + unitMotionFraction(scene, SDL_GetTicks()));
+    else if (view.render.fogFade.active()) view.render.fogFade.reset();
+}
+
+void Game::finishMapCapture(ViewState &view, Uint32 options, bool paused)
+{
+    if (!paused && (options & DRAW_AREA) && (!globalContainer->isViewingGame() || globalContainer->replayShowAreas))
+        ++view.render.areaAnimationTick;
+}
+
 void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargin, int viewportX,
 				   int viewportY, int localTeam, ViewState &view, Uint32 drawOptions,
 				   std::set<Uint16> *visibleBuildings,
 				   const BuildingGuiStateMap *buildingGuiState, bool animationsPaused,
-				   int cloudGridLimit)
+				   int cloudGridLimit, bool preparedCapture)
 {
 	// Draw the scene the simulation published, else extract one now (serial callers).
 	if (!view.scene)
@@ -232,16 +265,16 @@ void Game::drawMap(int sx, int sy, int sw, int sh, int rightMargin, int topMargi
 	}
 	drawSceneMap(view.scene ? *view.scene : view.render.ownScene, sx, sy, sw, sh,
 		rightMargin, topMargin, viewportX, viewportY, localTeam, view, drawOptions,
-		visibleBuildings, buildingGuiState, animationsPaused, cloudGridLimit);
+		visibleBuildings, buildingGuiState, animationsPaused, cloudGridLimit, preparedCapture);
 }
 
 void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	int rightMargin, int topMargin, int viewportX, int viewportY, int localTeam,
 	ViewState& view, Uint32 drawOptions, std::set<Uint16>* visibleBuildings,
-	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit)
+	const BuildingGuiStateMap* buildingGuiState, bool animationsPaused, int cloudGridLimit, bool preparedCapture)
 {
-    view.render.skinPreview().setVisible(globalContainer->settings.showColonySkins);
-    view.render.skinPreview().poll();
+    if (!preparedCapture)
+        prepareSceneMapFrame(scene, localTeam, view, drawOptions, animationsPaused);
 	const Scene* previous = view.scene;
 	view.scene = &scene;
 	struct RestoreScene { ViewState& view; const Scene* previous; ~RestoreScene() { view.scene = previous; } } restore{view, previous};
@@ -253,8 +286,6 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	int right = ((sx + sw + 31) >> 5);
 	int bot = ((sy + sh + 31) >> 5);
 
-	if (!animationsPaused)
-		time++;
 	view.render.detail = ZoomDetail::forView(globalContainer->gfx->mapTransformScale(),
 		globalContainer->gfx->logicalUnitsPerPoint(), globalContainer->settings.adaptiveZoomDetail,
 		view.render.minimumZoom);
@@ -290,16 +321,6 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 														   : scene.entities.teams[localTeam].me,
 						  !(globalContainer->gfx->getOptionFlags() &
 							(GraphicContext::USEGPU | GraphicContext::PORTABLEGPU))};
-	// Smooth fog: follow the drawn Scene's fog once per frame, before any pass reads
-	// it. Fades run in game time; unitMotionFraction is clamped to 1, so a paused
-	// game holds the fade at most one tick ahead, where the next tick resumes it
-	// without a jump. When the fade is not drawn, forget it, so that turning it back
-	// on starts settled rather than fading through every change it missed.
-	if (globalContainer->settings.smoothFog && (drawOptions & DRAW_WHOLE_MAP) == 0)
-		view.render.fogFade.update(scene.map, frame.visibleTeams, scene.tick,
-			scene.tick + unitMotionFraction(scene, SDL_GetTicks()));
-	else if (view.render.fogFade.active())
-		view.render.fogFade.reset();
     view.render.skinPreview().prepare(frame.target, scene, left, top, right, bot,
         viewportX, viewportY, localTeam, frame.visibleTeams, drawOptions & DRAW_WHOLE_MAP,
         view.render.unitMotion, view.render.detail.unitSprite > 0, view.render.detail.buildingSprite > 0, &view.render.fogFade);
@@ -392,7 +413,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	}
 
 	scenePass(&Game::drawMapFogOfWar, view.render, scene);
-	scenePass(&Game::drawMapAreas, view, scene.map);
+	scenePass(&Game::drawMapAreas, view, scene.map, !preparedCapture);
 	scenePass(&Game::drawMapOverlayMaps, view);
 
 	scenePass(&Game::drawUnitPathLines, view, scene);
@@ -409,7 +430,7 @@ void Game::drawSceneMap(const Scene& scene, int sx, int sy, int sw, int sh,
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
 
 	const SceneBuilding *selectedBuilding = entities.building(entities.selectedBuilding.ref.gid);
-	if(selectedBuilding && entities.isSelected(*selectedBuilding) && (entities.owner(*selectedBuilding).sharedVisionOther & visibleTeams))
+	if(!preparedCapture && selectedBuilding && entities.isSelected(*selectedBuilding) && (entities.owner(*selectedBuilding).sharedVisionOther & visibleTeams))
 	{
 		for (Uint16 worker : entities.selectedBuilding.unitsWorking)
 		{
