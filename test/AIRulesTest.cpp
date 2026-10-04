@@ -15,6 +15,7 @@
 #include "Order.h"
 #include "RessourceType.h"
 #include "ReplayReader.h"
+#include "Version.h"
 #include <FileManager.h>
 #include <cstdlib>
 #include "OrderValidation.h"
@@ -230,6 +231,46 @@ TEST_CASE("restored controller queues discard unavailable work and release prere
     CHECK(nicowar.placement_queue.empty());CHECK(nicowar.construction_queue.empty());
     CHECK(nicowar.buildings_under_construction_per_type[NewNicowar::RegularInn]==0);
 }
+TEST_CASE("Cabino migrates legacy warrior reservations only when training is disabled")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w(6,6,2);
+    auto* flag=w.addBuilding("warflag",4,4);
+    Cabino::AICabino old(w.game.players[0]);
+    auto* manager=static_cast<Cabino::DistributedUnitManager*>(old.getUnitModule());
+    auto& record=manager->module_records["legacy"];
+    record.requested[WARRIOR][ATTACK_STRENGTH][2]=7;
+    record.reservedUnits[WARRIOR][ATTACK_STRENGTH][2]=5;
+    record.usingUnits[WARRIOR][ATTACK_STRENGTH][2]=3;
+    manager->buildings[flag->gid]={"legacy",unsigned(flag->posX),unsigned(flag->posY),
+        unsigned(flag->type->shortTypeNum),unsigned(flag->type->level),ATTACK_STRENGTH,WARRIOR,2,3};
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream out(backend);manager->save(&out);out.flush();
+    const auto bytes=backend->takeContents();
+    for(bool disabled:{false,true})
+    {
+        w.game.gameHeader.setUnitUpgradesDisabled(disabled);
+        Cabino::AICabino restored(w.game.players[0]);
+        auto* loaded=static_cast<Cabino::DistributedUnitManager*>(restored.getUnitModule());
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        in.seekFromStart(0);
+        REQUIRE(loaded->load(&in,w.game.players[0],VERSION_MINOR));
+        const unsigned bucket=disabled?0:2;
+        auto& migrated=loaded->module_records["legacy"];
+        CHECK(migrated.requested[WARRIOR][ATTACK_STRENGTH][bucket]==7);
+        CHECK(migrated.reservedUnits[WARRIOR][ATTACK_STRENGTH][bucket]==5);
+        CHECK(migrated.usingUnits[WARRIOR][ATTACK_STRENGTH][bucket]==3);
+        CHECK(migrated.reservedUnits[WARRIOR][ATTACK_STRENGTH][disabled?2:0]==0);
+        CHECK(loaded->buildings[flag->gid].minimum_level==bucket);
+        // Releasing both saved claims must subtract from their migrated bucket,
+        // rather than wrapping an unsigned zero and starving later army requests.
+        loaded->unreserve("legacy",WARRIOR,ATTACK_STRENGTH,3,5);
+        REQUIRE(loaded->request("legacy",WARRIOR,ATTACK_STRENGTH,3,0,flag->gid));
+        CHECK(migrated.reservedUnits[WARRIOR][ATTACK_STRENGTH][bucket]==0);
+        CHECK(migrated.usingUnits[WARRIOR][ATTACK_STRENGTH][bucket]==0);
+        CHECK(loaded->buildings.count(flag->gid)==0);
+    }
+}
 TEST_CASE("rule parser and script observations use effective match values")
 {
     glob2test::HeadlessGlobals globals;
@@ -255,8 +296,8 @@ TEST_CASE("JavaScript profiles can inspect rules and issue useful orders")
         w.game.gameHeader.setUnitUpgradesDisabled(true);
         w.addBuilding("swarm",4,4);
         const std::string source=profile==1
-            ? "export function step(c,s){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"
-            : "export function metadata(){return {apiVersion:2,name:'Rule-aware smoke'};} export function step(c){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');c.game.buildings({team:c.myTeam})[0].workers=3;}";
+            ? "export function step(c,s){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');try{r.noUpgrades=0;}catch(e){}if(r.noUpgrades!==1)throw Error('mutable rules');return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"
+            : "export function metadata(){return {apiVersion:2,name:'Rule-aware smoke'};} export function step(c){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');try{r.noUpgrades=0;}catch(e){}if(r.noUpgrades!==1)throw Error('mutable rules');c.game.buildings({team:c.myTeam})[0].workers=3;}";
         w.game.gameHeader.setAIConfig(0,Script::config(source,profile));
         w.game.players[0]->makeItAI(AI::JAVASCRIPT);
         auto order=w.game.players[0]->ai->getOrder(false);

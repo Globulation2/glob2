@@ -164,6 +164,8 @@ UpgradeRepair::UpgradeRepair(int id) : id(id)
 void UpgradeRepair::modify(Runtime& runtime)
 {
 	auto* building=runtime.get_building_register().get_building(id);
+	// Construction means repair for damaged buildings and upgrade for healthy
+	// ones. Do not register an upgrade wait when authoritative rules reject it.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()
 		&& building->hp>=building->getEffectiveMaxHp()) return;
 	runtime.push_order(shared_ptr<Order>(new OrderConstruction(building->gid,1,1)));

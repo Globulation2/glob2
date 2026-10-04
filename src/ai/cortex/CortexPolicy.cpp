@@ -166,6 +166,8 @@ namespace Cortex
 		// colony. foodSaturated is the complementary famine slice (mature BUT starving):
 		// the population has overshot what the wheat catchment can feed. The two are
 		// mutually exclusive and partition economyEstablished by f.starving.
+		// No hunger removes the inn prerequisite as well as starvation scores;
+		// otherwise the controller waits forever for feeding capacity it no longer builds.
 		f.economyEstablished = ((obs.hungerDisabled || innEstablished)
 		                           && f.swarms >= COMBAT_ECON_MIN_SWARMS
 		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS);

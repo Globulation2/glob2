@@ -18,6 +18,8 @@ using std::shared_ptr;
 bool AICastor::addProject(Project *project)
 {
 	telemetry.count(AITrace::AI2::AICastor_addProject_calls);
+	// Reject the project before adding its critical wait and workforce reservation.
+	// An unavailable bootstrap project must not hold every later expansion hostage.
 	if (!AIRules::usefulBuilding(game->gameHeader, project->shortTypeNum)
 		|| (game->gameHeader.isHungerDisabled() && project->shortTypeNum==IntBuildingType::FOOD_BUILDING)
 		|| buildingSum[project->shortTypeNum][0]>=project->amount)

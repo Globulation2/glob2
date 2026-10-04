@@ -475,6 +475,9 @@ struct Environment
 				return list.release();
 			}
 			auto value = e.toJS(result);
+			// rules() is appended at index 13 in both dispatch tables below. Freeze
+			// its detached snapshot in both profiles: observing match capabilities
+			// must never offer a script a way to change authoritative game rules.
 			if ((e.host->profile == 2 || magic == 13) && JS_IsObject(value))
 				e.readonly(value);
 			return value;

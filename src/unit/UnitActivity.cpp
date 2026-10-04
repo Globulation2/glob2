@@ -12,12 +12,12 @@
 
 void Unit::handleActivity(void)
 {
-    // A pre-rule save may still have a unit walking to training. Cancel its
-    // subscription before entering; feeding and healing use the same activity.
-    if (owner->game->gameHeader.isUnitUpgradesDisabled() && activity==ACT_UPGRADING
-        && destinationPurpose!=FEED && destinationPurpose!=HEAL
-        && displacement==DIS_GOING_TO_BUILDING && attachedBuilding)
-        stopAttachedForBuilding(true);
+	// A pre-rule save may still have a unit walking to training. Cancel its
+	// subscription before entering; feeding and healing use the same activity.
+	if (owner->game->gameHeader.isUnitUpgradesDisabled() && activity==ACT_UPGRADING
+		&& destinationPurpose!=FEED && destinationPurpose!=HEAL
+		&& displacement==DIS_GOING_TO_BUILDING && attachedBuilding)
+		stopAttachedForBuilding(true);
 	// freeze unit health when inside a building
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
             || ((displacement==DIS_EXITING_BUILDING)

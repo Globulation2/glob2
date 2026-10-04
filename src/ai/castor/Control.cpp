@@ -238,6 +238,8 @@ std::shared_ptr<Order>AICastor::controlFood()
 			worstCare=wheatCare;
 	}
 	
+	// Sparse wheat normally needs a recovery pause. With no regrowth, waiting
+	// cannot improve this catchment; keep harvesting its remaining finite stock.
 	if (!game->gameHeader.isResourceGrowthDisabled() && worstCare>AI_CASTOR_WHEATCARE_STOP_THRESHOLD)
 	{
 		if (b->maxUnitWorking!=0)

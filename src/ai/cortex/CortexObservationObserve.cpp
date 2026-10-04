@@ -36,6 +36,8 @@ namespace Cortex
 
 		Team* team = player->team;
 		Game* game = team->game;
+		// Capabilities belong to the effective match header, not saved policy state.
+		// Include them in the observation so scorers, facts and ML masks agree.
 		obs.upgradesDisabled=game->gameHeader.isUnitUpgradesDisabled();
 		obs.hungerDisabled=game->gameHeader.isHungerDisabled();
 		obs.combatDisabled=game->gameHeader.isPeacefulModeEnabled();

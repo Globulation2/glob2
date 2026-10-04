@@ -61,6 +61,11 @@ The random game setup (`Engine::createRandomGame`) creates one local player + N 
 
 ### `GLOB2_TEST_RULES`
 
+The same names and ranges are accepted by repeatable `--rule name=value`
+arguments to structured `--run-game` commands. A saved game already carries its
+rules, so `--rule` overrides are rejected when using `--load-game`. Effective
+values are written to `result.json` under `resolved.rules`.
+
 Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as comma-separated `name=value` pairs. An unknown name or a value outside its range stops the run.
 
 | Name | Values | Rule |
@@ -77,6 +82,7 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `peaceful` | 0-1 | Peaceful mode |
 | `fortress` | 0-2 | Fortress buildings (x5, x10 building HP) |
 | `suddenDeathTick` | 0-100000000 | Sudden-death timer at this tick (0 = off; the lobby offers 30-90 minutes, 45,000-135,000 ticks) |
+| `winProbabilityPermille` | 0 or 501-1000 | Estimated win-probability condition (0 = off); distinct from the sudden-death timer |
 | `<experiment key>` | 0-1 | An [experimental feature](../features/experimental-features.md) by its key, e.g. `guard-area-balancing`. The profile's Settings > Experiments apply first; a rule here overrides that one experiment |
 
 ```bash

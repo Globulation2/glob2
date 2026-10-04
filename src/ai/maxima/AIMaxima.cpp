@@ -695,6 +695,9 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	state.visible_enemy_attack_explorers=intel.visibleAttackExplorers;
 	state.visible_colony_threat=intel.visibleColonyThreat;
 	state.visible_colony_explorer_threat=intel.visibleColonyExplorerThreat;
+	// In this snapshot trained_warriors measures usable production capacity,
+	// not engine levels. No training means all standing warriors clear the
+	// backlog; actual starting levels stay intact for combat calculations.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) state.trained_warriors=state.warriors;
 	return state;
 }
@@ -2661,6 +2664,8 @@ void Maxima::build_policy_bids()
 void Maxima::arbitrate_policy_bids()
 {
 	const auto& rules=context.player->game->gameHeader;
+	// Capability gates precede arbitration: an impossible technology bid would
+	// otherwise win scarce labour and crowd out attainable economic projects.
 	if (rules.isUnitUpgradesDisabled())
 	{
 		policy_bids[PolicyTechnology]=PolicyBid();

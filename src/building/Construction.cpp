@@ -98,7 +98,9 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		}
 		else
 		{
-			// This rule disables building upgrades too; damaged buildings still repair.
+			// Enforce the rule here as well as in order validation: local callers
+			// may reach this boundary directly. The damaged-building branch above
+			// remains a repair, which does not grant an unavailable building level.
 			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return;
 			if ((type->nextLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(UPGRADE))
 				return;

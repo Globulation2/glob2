@@ -170,6 +170,8 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 	// Feeding capacity is irrelevant without hunger; keep an inn for useful fruit.
 	if (game->gameHeader.isHungerDisabled() && buildingType==IntBuildingType::FOOD_BUILDING
 		&& team->stats.getLatestStat()->numberBuildingPerType[buildingType]>0) return std::make_shared<NullOrder>();
+	// This method handles construction and staffing. Skipping here prevents
+	// repeated worker assignments to a training building retained in an old save.
 	if (!AIRules::usefulBuilding(game->gameHeader, buildingType)) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_buildingType, buildingType);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_workers, workers);

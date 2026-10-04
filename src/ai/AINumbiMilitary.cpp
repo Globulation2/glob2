@@ -282,7 +282,8 @@ std::shared_ptr<Order> tryUpgradeRung(
 // NullOrder if neither rung is eligible.
 std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
-	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	// Both building upgrades and their trained-worker prerequisites are unavailable.
+	// Gate before collecting inventory, which also shuffles the default candidates.
 	if (game->gameHeader.isUnitUpgradesDisabled()) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ntrigger, ntrigger);
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ptrigger, ptrigger);

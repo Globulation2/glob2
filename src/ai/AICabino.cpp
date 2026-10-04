@@ -232,7 +232,8 @@ void AICabino::save(GAGCore::OutputStream *stream)
 std::shared_ptr<Order>AICabino::getOrder(void)
 {
 
-	//See if there is an existing order that the AI wanted to have done
+	// Saved orders can predate the capability gates. Drain obsolete work before
+	// resuming modules; rejecting it in the engine would keep queue state stale.
 	while (!orders.empty() && !AIRules::permittedQueuedOrder(*game, *orders.front())) orders.pop();
 	if (!orders.empty())
 	{
@@ -1151,7 +1152,8 @@ SimpleBuildingDefense::SimpleBuildingDefense(AICabino& ai) : ai(ai)
 
 bool SimpleBuildingDefense::perform(unsigned int time_slice_n)
 {
-	// Disabled capability must not leave strategic jobs or level waits behind.
+	// Peaceful combat cannot injure colonies. Skip before reserving defenders
+	// or creating flags, so economic modules can still use the standing army.
 	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::SimpleBuildingDefense_perform_input_time_slice_n, time_slice_n);
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_perform_calls);
@@ -1440,7 +1442,8 @@ GeneralsDefense::GeneralsDefense(AICabino& ai) : ai(ai)
 
 bool GeneralsDefense::perform(unsigned int time_slice_n)
 {
-	// Disabled capability must not leave strategic jobs or level waits behind.
+	// Retaliation flags and their unit reservations have no purpose without
+	// combat; do not let this defense module consume economic planning turns.
 	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::GeneralsDefense_perform_input_time_slice_n, time_slice_n);
 	ai.telemetry.count(AITrace::AI8::GeneralsDefense_perform_calls);
@@ -1622,7 +1625,8 @@ PrioritizedBuildingAttack::PrioritizedBuildingAttack(AICabino& ai) : ai(ai)
 
 bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 {
-	// Disabled capability must not leave strategic jobs or level waits behind.
+	// Target selection also reserves warriors. Gate the whole attack pipeline
+	// rather than dropping its flag order after those reservations are made.
 	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::PrioritizedBuildingAttack_perform_input_time_slice_n,
 					 time_slice_n);
@@ -3376,6 +3380,21 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 			}
 			stream->readLeaveSection();
 		}
+		// Older no-upgrades saves can retain higher-level warrior reservations.
+		// All live requests now recruit from the base level; migrate the matching
+		// counters too, or releasing an old reservation would subtract from zero
+		// and wrap the unsigned count, permanently withholding the army.
+		if (ai.game->gameHeader.isUnitUpgradesDisabled())
+			for (int ability=0; ability<NB_ABILITY; ++ability)
+				for (int level=1; level<NB_UNIT_LEVELS; ++level)
+				{
+					mr.requested[WARRIOR][ability][0]+=mr.requested[WARRIOR][ability][level];
+					mr.reservedUnits[WARRIOR][ability][0]+=mr.reservedUnits[WARRIOR][ability][level];
+					mr.usingUnits[WARRIOR][ability][0]+=mr.usingUnits[WARRIOR][ability][level];
+					mr.requested[WARRIOR][ability][level]=0;
+					mr.reservedUnits[WARRIOR][ability][level]=0;
+					mr.usingUnits[WARRIOR][ability][level]=0;
+				}
 		module_records[name]=mr;
 		// FIXME : clear the container before load
 		stream->readLeaveSection();
@@ -3399,6 +3418,10 @@ bool DistributedUnitManager::load(GAGCore::InputStream *stream, Player *player, 
 		ur.minimum_level=stream->readUint32("minimum_level");
 		ur.number=stream->readUint32("number");
 		if (ur.unit_type >= NB_UNIT_TYPE || ur.ability >= NB_ABILITY || ur.minimum_level >= NB_UNIT_LEVELS || ur.level >= NB_UNIT_LEVELS || ur.type >= IntBuildingType::NB_BUILDING) return false;
+		// Keep each usage record in the same bucket as its migrated usingUnits
+		// counter; reassignment and removal subtract through this stored index.
+		if (ai.game->gameHeader.isUnitUpgradesDisabled() && ur.unit_type==WARRIOR)
+			ur.minimum_level=0;
 		buildings[gid]=ur;
 		// FIXME : clear the container before load
 		stream->readLeaveSection();

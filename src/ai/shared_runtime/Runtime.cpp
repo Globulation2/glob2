@@ -165,6 +165,8 @@ void Runtime::update_building_orders()
 {
 	for(std::vector<std::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
 	{
+		// A restored placement owns a register entry even before a building exists.
+		// Release both pieces before evaluating prerequisites that can never pass.
 		if (!AIRules::usefulBuilding(player->game->gameHeader,(*i)->get_building_type()))
 		{ br.remove_building((*i)->id); i=building_orders.erase(i); continue; }
 		tribool passes=(*i)->passes_conditions(*this);

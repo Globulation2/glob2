@@ -47,32 +47,36 @@ inline void applyGameRule(GameHeader& header, const std::string& item)
 	// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
 	for (const auto& definition : experimentDefinitions())
 		rules.push_back({definition.key, 1, [id = definition.id](GameHeader& h, int v) { h.getExperiments().set(id, v != 0); }});
-    const size_t equals=item.find('=');
-    const std::string name=item.substr(0, equals);
-    const Rule* rule=nullptr;
-    for (const auto& candidate:rules) if (name==candidate.name) rule=&candidate;
-    char* end=nullptr;
-    errno=0;
-    const long value=equals==std::string::npos ? -1 : strtol(item.c_str()+equals+1, &end, 10);
-    if (!rule || equals==std::string::npos || errno || *end || end==item.c_str()+equals+1
-        || value<0 || value>rule->maximum
-        || (name=="winProbabilityPermille" && value!=0 && value<501))
-        throw std::invalid_argument("invalid game rule: "+item);
-    rule->apply(header, int(value));
+	// Keep validation here identical for the legacy driver and structured CLI.
+	// In particular, reject trailing junk and overflow before narrowing to int.
+	const size_t equals=item.find('=');
+	const std::string name=item.substr(0, equals);
+	const Rule* rule=nullptr;
+	for (const auto& candidate:rules) if (name==candidate.name) rule=&candidate;
+	char* end=nullptr;
+	errno=0;
+	const long value=equals==std::string::npos ? -1 : strtol(item.c_str()+equals+1, &end, 10);
+	if (!rule || equals==std::string::npos || errno || *end || end==item.c_str()+equals+1
+		|| value<0 || value>rule->maximum
+		|| (name=="winProbabilityPermille" && value!=0 && value<501))
+		throw std::invalid_argument("invalid game rule: "+item);
+	rule->apply(header, int(value));
 }
 
+// Observe the loaded header, not setup defaults: saves and map scripts may
+// carry rules and timer conditions different from the current user profile.
 inline std::vector<std::pair<std::string, int>> gameRuleValues(const GameHeader& h)
 {
-    int timer=0, probability=0;
-    for (const auto& c:h.getWinningConditions())
-    {
-        if(c->getType()==WCSuddenDeath) timer=int(static_cast<const WinningConditionSuddenDeath&>(*c).endStepTick);
-        if(c->getType()==WCWinProbability) probability=int(static_cast<const WinningConditionWinProbability&>(*c).thresholdPermille);
-    }
-    return {{"noGrowth", h.isResourceGrowthDisabled()}, {"scarcity", h.getResourceScarcityLevel()},
-        {"instantConstruction", h.isInstantConstructionEnabled()}, {"stockpile", h.getStockpileStartLevel()},
-        {"noHunger", h.isHungerDisabled()}, {"noUpgrades", h.isUnitUpgradesDisabled()},
-        {"glassCannon", h.getGlassCannonLevel()}, {"fearless", h.isUnitsFearless()},
-        {"noPermadeath", h.isPermadeathDisabled()}, {"peaceful", h.isPeacefulModeEnabled()},
-        {"fortress", h.getBuildingHpLevel()}, {"suddenDeathTick", timer}, {"winProbabilityPermille", probability}};
+	int timer=0, probability=0;
+	for (const auto& c:h.getWinningConditions())
+	{
+		if(c->getType()==WCSuddenDeath) timer=int(static_cast<const WinningConditionSuddenDeath&>(*c).endStepTick);
+		if(c->getType()==WCWinProbability) probability=int(static_cast<const WinningConditionWinProbability&>(*c).thresholdPermille);
+	}
+	return {{"noGrowth", h.isResourceGrowthDisabled()}, {"scarcity", h.getResourceScarcityLevel()},
+		{"instantConstruction", h.isInstantConstructionEnabled()}, {"stockpile", h.getStockpileStartLevel()},
+		{"noHunger", h.isHungerDisabled()}, {"noUpgrades", h.isUnitUpgradesDisabled()},
+		{"glassCannon", h.getGlassCannonLevel()}, {"fearless", h.isUnitsFearless()},
+		{"noPermadeath", h.isPermadeathDisabled()}, {"peaceful", h.isPeacefulModeEnabled()},
+		{"fortress", h.getBuildingHpLevel()}, {"suddenDeathTick", timer}, {"winProbabilityPermille", probability}};
 }

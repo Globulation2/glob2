@@ -518,11 +518,13 @@ struct HeadlessRunner
 		result << "],\"experiments\":[";
 		comma=false;
 		for(const auto &key:game.gameHeader.getExperiments().keys()) { if(comma)result<<',';comma=true;result<<quote(key); }
-        result << "],\"rules\":{";
-        comma=false;
-        for(const auto& [name,value]:gameRuleValues(game.gameHeader))
-        { if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
-        result << "}},";
+		// Results must describe the effective header so a variant can be reproduced
+		// even when its initial state came from a saved game.
+		result << "],\"rules\":{";
+		comma=false;
+		for(const auto& [name,value]:gameRuleValues(game.gameHeader))
+		{ if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
+		result << "}},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		if(fs::exists(output/"generated/result.json"))
 		{

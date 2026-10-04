@@ -331,7 +331,9 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_INSIDE)
 			{
-				// we stay inside while the unit upgrades.
+				// Feed and heal visits share this displacement state with training.
+				// A saved trainee must use the normal exit path to release its room,
+				// without waiting for an upgrade timer or recording a training gain.
 				if (insideTimeout>=0 || (owner->game->gameHeader.isUnitUpgradesDisabled()
 					&& destinationPurpose!=FEED && destinationPurpose!=HEAL))
 				{

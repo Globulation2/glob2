@@ -91,6 +91,25 @@ build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
   --telemetry checksums --output-dir /tmp/played
 ```
 
+To exercise a custom profile, append repeatable rule arguments to a new game:
+
+```sh
+build/src/glob2 --run-game --map-file maps/SmallForTwo.map.gz \
+  --game-seed 19 --player cortex --player maxima \
+  --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
+  --ticks 30000 --save initial --save final --replay true \
+  --telemetry checksums --output-dir /tmp/custom-rules
+```
+
+For distributed game jobs, put the same settings in `config.rules`, with integer
+values such as `{"noUpgrades": 1, "noHunger": 1, "peaceful": 1}`. The adapter emits
+rule arguments in name order; the engine validates names and ranges. Effective
+settings, including defaults for rules not overridden, appear in `resolved.rules`.
+Saved-game jobs retain their original rules and reject overrides. A capped
+peaceful conquest-only game can finish without a winner; use crashes, unavailable
+orders and stalled useful planning as correctness signals, with win rates as
+strategy diagnostics.
+
 Generator options:
 
 | Argument | Meaning/default |

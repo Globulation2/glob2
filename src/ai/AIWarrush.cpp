@@ -553,7 +553,8 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	
 std::shared_ptr<Order> AIWarrush::farm()
 {
-	// Disabled capability must not leave strategic jobs or level waits behind.
+	// This checkerboard reserves seed tiles for future growth. Without regrowth,
+	// protecting those finite resources would make them permanently unusable.
 	if (game->gameHeader.isResourceGrowthDisabled()) return std::make_shared<NullOrder>();
 	telemetry.count(AITrace::AI3::AIWarrush_farm_calls);
 	// Algorithm initially stolen from Nicowar.

@@ -95,6 +95,9 @@ void NewNicowar::check_phases(Runtime& runtime)
 	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	int barracks_count=barracks.count_buildings();
 
+	// Standard phases wait for trained warriors and sufficient barracks. With
+	// training disabled neither requirement can become true through investment,
+	// so progress uses the standing army and omits the barracks prerequisite.
 	int warrior_count=rules.isUnitUpgradesDisabled() ? stat->numberUnitPerType[WARRIOR] : 0;
 	for(int i=rules.isUnitUpgradesDisabled() ? AI_NICOWAR_MAX_UPGRADE_LEVEL+1 : strategy.minimum_warrior_level_for_trained; i<=AI_NICOWAR_MAX_UPGRADE_LEVEL; ++i)
 	{
