@@ -1,0 +1,24 @@
+Settings::load("preferences.txt") : error, can't open file.
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=synthetic checkerboard 64x128 viewport=1120x800 frames=20
+WARMUP frame=0 elapsed_ms=5.134 process_cpu_ms=40.134
+WARMUP frame=1 elapsed_ms=3.310 process_cpu_ms=34.207
+WARMUP frame=2 elapsed_ms=2.926 process_cpu_ms=37.252
+2D no clouds median=2.855 ms p95=3.935 ms
+2D no clouds process_cpu_median=33.566 ms process_cpu_p95=35.558 ms
+WARMUP frame=0 elapsed_ms=84.302 process_cpu_ms=289.493
+WARMUP frame=1 elapsed_ms=24.684 process_cpu_ms=232.877
+WARMUP frame=2 elapsed_ms=26.116 process_cpu_ms=226.232
+Torus no clouds median=26.915 ms p95=31.357 ms
+Torus no clouds process_cpu_median=228.892 ms process_cpu_p95=237.450 ms
+capture=2048x4096 tiles=6 pixels/cell=32 texture_bytes=37322752 cloud=0x0
+WARMUP frame=0 elapsed_ms=10.155 process_cpu_ms=78.652
+WARMUP frame=1 elapsed_ms=14.284 process_cpu_ms=84.027
+WARMUP frame=2 elapsed_ms=14.204 process_cpu_ms=83.555
+2D clouds median=14.568 ms p95=16.609 ms
+2D clouds process_cpu_median=82.169 ms process_cpu_p95=84.573 ms
+WARMUP frame=0 elapsed_ms=90.843 process_cpu_ms=426.934
+WARMUP frame=1 elapsed_ms=43.132 process_cpu_ms=390.753
+WARMUP frame=2 elapsed_ms=46.148 process_cpu_ms=388.290
+Torus clouds median=55.027 ms p95=68.733 ms
+Torus clouds process_cpu_median=390.494 ms process_cpu_p95=406.604 ms
+capture=2048x4096 tiles=6 pixels/cell=32 texture_bytes=37322752 cloud=64x128

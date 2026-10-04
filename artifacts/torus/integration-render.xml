@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="13" failures="0" errors="0" skipped="0"><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="26.7976" status="run" />
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="1.02278" status="run" />
+  </testsuite><testsuite name="MapRenderResize"><testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in OpenGL [display:1920x1200]" time="7.92421" status="run" />
+  <testcase classname="MapRenderResize" name="repeated map copies; settings and credits after resizing in software rendering" time="0.579077" status="run" />
+  </testsuite><testsuite name="PortableRenderer"><testcase classname="PortableRenderer" name="each accelerated backend uploads surface revisions independently [display]" time="0.30631" status="run" />
+  <testcase classname="PortableRenderer" name="live scale retains portable viewport ownership [display]" time="0.268503" status="run" />
+  <testcase classname="PortableRenderer" name="software targets resize and destroy safely during an active transform [display]" time="0.453862" status="run" />
+  <testcase classname="PortableRenderer" name="zone boundaries; UI transforms and portable rendering paths [display]" time="1.28625" status="run" />
+  </testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.004002" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="25.9086" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="24.8569" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.58517" status="run" />
+  <testcase classname="TorusRender" name="native tiled capture pixels and allocation fallback [display]" time="4.65804" status="run" />
+  </testsuite></testsuites>

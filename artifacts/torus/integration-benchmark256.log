@@ -1,0 +1,24 @@
+Settings::load("preferences.txt") : error, can't open file.
+GPU=llvmpipe (LLVM 21.1.8, 256 bits) map=maps/Oazis.map 256x256 viewport=1120x800 frames=20
+WARMUP frame=0 elapsed_ms=125.169 process_cpu_ms=165.147
+WARMUP frame=1 elapsed_ms=10.115 process_cpu_ms=51.216
+WARMUP frame=2 elapsed_ms=6.753 process_cpu_ms=49.167
+2D no clouds median=5.579 ms p95=6.377 ms
+2D no clouds process_cpu_median=44.339 ms process_cpu_p95=47.901 ms
+WARMUP frame=0 elapsed_ms=194.785 process_cpu_ms=1673.426
+WARMUP frame=1 elapsed_ms=119.971 process_cpu_ms=1615.689
+WARMUP frame=2 elapsed_ms=123.647 process_cpu_ms=1588.814
+Torus no clouds median=118.160 ms p95=132.513 ms
+Torus no clouds process_cpu_median=1581.649 ms process_cpu_p95=1606.485 ms
+capture=8192x8192 tiles=25 pixels/cell=32 texture_bytes=289816576 cloud=0x0
+WARMUP frame=0 elapsed_ms=12.145 process_cpu_ms=84.711
+WARMUP frame=1 elapsed_ms=14.746 process_cpu_ms=86.007
+WARMUP frame=2 elapsed_ms=14.335 process_cpu_ms=86.890
+2D clouds median=14.845 ms p95=17.148 ms
+2D clouds process_cpu_median=86.086 ms process_cpu_p95=89.416 ms
+WARMUP frame=0 elapsed_ms=229.922 process_cpu_ms=2249.379
+WARMUP frame=1 elapsed_ms=186.651 process_cpu_ms=2222.924
+WARMUP frame=2 elapsed_ms=190.531 process_cpu_ms=2223.443
+Torus clouds median=193.961 ms p95=199.787 ms
+Torus clouds process_cpu_median=2240.881 ms process_cpu_p95=2247.389 ms
+capture=8192x8192 tiles=25 pixels/cell=32 texture_bytes=289816576 cloud=128x128

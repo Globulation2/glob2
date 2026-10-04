@@ -1,0 +1,10 @@
+PASS glob2-unit-tests CloudField (1 cases) (0.0s)
+PASS glob2-unit-tests FogFade (7 cases) (0.0s)
+PASS glob2-unit-tests ZoomDetail (12 cases) (0.0s)
+PASS glob2-unit-tests MapRenderGeometry (2 cases) (0.0s)
+PASS glob2-unit-tests TorusGeometry (1 cases) (0.1s)
+PASS glob2-unit-tests TorusPicking (1 cases) (0.3s)
+PASS glob2-unit-tests TorusTextureTiles (2 cases) (0.5s)
+
+7 passed, 0 failed, 0 skipped (0.9s of test time)
+[run_tests] JUnit report: artifacts/torus/integration-unit.xml (26 cases)

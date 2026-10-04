@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="26" failures="0" errors="0" skipped="0"><testsuite name="CloudField"><testcase classname="CloudField" name="world coordinates; wrapped seams; magnification and draw-independent animation" time="0.003848" status="run" />
+  </testsuite><testsuite name="FogFade"><testcase classname="FogFade" name="The first update settles every tile without fading" time="0" status="run" />
+    <testcase classname="FogFade" name="Darkening and revealing fade monotonically over their durations" time="0" status="run" />
+    <testcase classname="FogFade" name="Changing back mid-fade continues from the level reached" time="0" status="run" />
+    <testcase classname="FogFade" name="A short gap between ticks keeps fading from the new tick" time="0" status="run" />
+    <testcase classname="FogFade" name="A repeated tick changes nothing" time="0" status="run" />
+    <testcase classname="FogFade" name="A new map, other teams, a jump in time or a reset settle every tile" time="0" status="run" />
+    <testcase classname="FogFade" name="Shade alphas stack to the plain fog shade" time="0" status="run" />
+  </testsuite><testsuite name="MapRenderGeometry"><testcase classname="MapRenderGeometry" name="whole-world buildings; seam overhang and repeated viewport copies" time="0.00886" status="run" />
+    <testcase classname="MapRenderGeometry" name="cloud detail follows camera zoom without changing normal detail" time="0" status="run" />
+  </testsuite><testsuite name="TorusGeometry"><testcase classname="TorusGeometry" name="planar endpoints; seams; ring geometry; navigation and hovering camera" time="0.100565" status="run" />
+  </testsuite><testsuite name="TorusPicking"><testcase classname="TorusPicking" name="perspective picking; nearest surface; empty sky; seams and unfolding round trips" time="0.238516" status="run" />
+  </testsuite><testsuite name="TorusTextureTiles"><testcase classname="TorusTextureTiles" name="native layout covers each cell once with wrapped padding and respects limits" time="0.402767" status="run" />
+    <testcase classname="TorusTextureTiles" name="partition preserves coverage and perspective picking across texture and wrap seams" time="0.002806" status="run" />
+  </testsuite><testsuite name="ZoomDetail"><testcase classname="ZoomDetail" name="Disabled reproduces uniform scaling at every zoom" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Normal zoom draws the detailed map with every bar" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Curves are monotonic and replacements cross-fade" time="0.000236" status="run" />
+    <testcase classname="ZoomDetail" name="Overlays hold their size zoomed out and grow slowly zoomed in" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Thresholds are measured in points, not logical units" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Far zoom is the strategic view" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="Fully zoomed out is the strategic view on a map of any size" time="0.000169" status="run" />
+    <testcase classname="ZoomDetail" name="The two looks cross-fade inside one narrow window" time="0.000603" status="run" />
+    <testcase classname="ZoomDetail" name="Every bar fades together, leaving a pip on what needs attention" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="A map that zooms out far enough is unaffected by its minimum zoom" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="A map legible when fully zoomed out stays detailed" time="0" status="run" />
+    <testcase classname="ZoomDetail" name="A small map keeps its normal look at its closer zooms" time="0" status="run" />
+  </testsuite></testsuites>
