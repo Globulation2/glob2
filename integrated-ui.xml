@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="24" failures="0" errors="0" skipped="0"><testsuite name="OnlineWording"><testcase classname="OnlineWording" name="a pairing link's fingerprint becomes a short code" time="0" status="run" />
+  <testcase classname="OnlineWording" name="an unrated search shows no ratings; a ranked one explains its range [display]" time="1.21382" status="run" />
+  <testcase classname="OnlineWording" name="an unserved version blames the side that is out of date [display]" time="1.33998" status="run" />
+  <testcase classname="OnlineWording" name="menus read larger on big desktop windows that follow the desktop scale" time="0" status="run" />
+  <testcase classname="OnlineWording" name="queue names, durations and estimates read the same everywhere" time="0.116237" status="run" />
+  <testcase classname="OnlineWording" name="the room reads positively and hides seeds and pairing strings [display]" time="1.34491" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.52213" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="3.64465" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="9.62214" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.25138" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.70978" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.60261" status="run" />
+  </testsuite><testsuite name="UIPresentation"><testcase classname="UIPresentation" name="every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow]" time="590.767" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]" time="412.753" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="65.4659" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="67.6878" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow]" time="373.653" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="284.642" status="run" />
+  </testsuite><testsuite name="WinProbability"><testcase classname="WinProbability" name="calling an early loser cannot change later teams' decision inputs" time="0.003936" status="run" />
+  <testcase classname="WinProbability" name="enabled rule preserves the per-tick checksum trace across its decision boundary [golden][artifacts]" time="0.004512" status="run" />
+  <testcase classname="WinProbability" name="equal alliances share chances and eliminated allies contribute nothing" time="0.004704" status="run" />
+  <testcase classname="WinProbability" name="native arithmetic reproduces every published calibration sample" time="0.0002" status="run" />
+  <testcase classname="WinProbability" name="rule serialization gates the new tag and rejects ambiguous thresholds" time="0" status="run" />
+  <testcase classname="WinProbability" name="the rule waits for the minimum tick and sample boundary then ends all teams" time="0.002105" status="run" />
+  </testsuite></testsuites>

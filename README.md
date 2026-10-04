@@ -70,3 +70,22 @@ LD_LIBRARY_PATH=/home/bradley/glob2-verify/integrator/sdl3/prefix/lib GLOB2_HIVE
 ```
 
 Master advanced to `c55a84a6a4b3ab4e2bdd3e871ef3d79889d5272a` with all translations completed. Merge `63632b9c20fccd156fb5652d3acb184d86fcb259` resolves the pending-list conflict with the empty completed list. `python3 data/check_translations.py --strict` reports zero untranslated/pending/missing/obsolete keys and zero structural errors; `python3 -m unittest discover -s test -p test_translations.py -v` passes five cases. Integration UI checks run on that clean revision and are added separately.
+
+## Final integrated repair revision
+
+Repair HEAD `4aeafff02f04aec19051bad5b4391e4303500ea9`, master base `c55a84a6a4b3ab4e2bdd3e871ef3d79889d5272a`. Final native binaries were built at clean merge revision `63632b9c20fccd156fb5652d3acb184d86fcb259`; the only subsequent change regenerates the browser core font and its language-name fingerprint. Native sources and full native font are identical.
+
+```sh
+GLOB2_SDL3_PREFIX=/home/bradley/glob2-verify/integrator/sdl3/prefix scons -j12 release=1 server=0 tests
+LD_LIBRARY_PATH=/home/bradley/glob2-verify/integrator/sdl3/prefix/lib LP_NUM_THREADS=2 python3 test/run_tests.py --filter 'UIPresentation/*' --filter 'Settings/*' --filter 'OnlineWording/*' --filter 'WinProbability/*' --display-jobs 2 --fullscreen --junit artifacts/ci-repair/integrated-ui.xml --artifacts artifacts/ci-repair/integrated-ui
+```
+
+Exit 0: 24 groups/cases, no failures or skips. All six complete presentation sweeps pass against the completed translation catalogs, alongside all selected Settings, OnlineWording and WinProbability cases. See `integrated-ui.log` and XML.
+
+The completed translation catalogs changed the language-name glyph set, leaving master's committed browser subset/fingerprint stale. Regenerated `browser/assets/sans-core.ttf` using existing `browser.derive_assets.font_subset` with pinned FontTools 4.64.0, and updated only its `languageNames` SHA-256 in `sources.json`. Fourteen browser asset contracts pass, including preservation of glyph outlines and layout tables (`font-contracts.log`). Final full build-system contracts use the bundled encoder Python/Pillow and isolated FontTools:
+
+```sh
+PYTHONPATH="$(artifacts/ci-repair/font-runtime/bin/python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')" "$(python3 tools/package_assets.py --encoder-python)" -m unittest discover -s tests/build_system -v
+```
+
+Exit 0: 291 tests, two existing skips (`build-system-integrated.log`). Final strict translation audit and five translation tests also pass. Full hosted PR run 37170132194 is running against exact final repair HEAD; its platform results and the post-merge full master run supply the remaining hosted coverage.
