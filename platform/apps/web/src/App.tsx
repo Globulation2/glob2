@@ -1,3 +1,4 @@
+import { Players } from './pages/Players.tsx';
 import { Skins } from './pages/Skins.tsx';
 import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
@@ -23,6 +24,7 @@ const Maps = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.Map
 const MapPage = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapPage })));
 const MapUpload = lazy(() => import('./pages/Maps.tsx').then((m) => ({ default: m.MapUpload })));
 const Match = lazy(() => import('./pages/Match.tsx').then((m) => ({ default: m.Match })));
+const AiPlayer = lazy(() => import('./pages/Player.tsx').then((m) => ({ default: m.AiPlayer })));
 const Player = lazy(() => import('./pages/Player.tsx').then((m) => ({ default: m.Player })));
 const Account = lazy(() => import('./pages/Account.tsx').then((m) => ({ default: m.Account })));
 
@@ -38,6 +40,13 @@ interface Route {
 }
 
 export const ROUTES: Route[] = [
+  { pattern: '/players', section: 'players', title: 'Players', render: () => <Players /> },
+  {
+    pattern: '/players/ai/:aiId',
+    section: 'players',
+    title: 'AI player',
+    render: (p) => <AiPlayer key={p['aiId']} id={p['aiId'] ?? ''} />,
+  },
   { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
   {
     pattern: '/map-studio',
@@ -212,6 +221,7 @@ function Layout() {
   const nav: NavItem[] = [
     { to: '/', id: 'home', name: 'Home' },
     { to: '/leaderboard', id: 'leaderboard', name: 'Leaderboard', art: 'warFlag' },
+    { to: '/players', id: 'players', name: 'Players', art: 'school' },
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
     { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
@@ -265,7 +275,7 @@ function Layout() {
         {['Play', 'Create', 'Manage'].map((group) => {
           const items = nav.filter((item) =>
             group === 'Play'
-              ? ['home', 'leaderboard', 'matches'].includes(item.id)
+              ? ['home', 'leaderboard', 'players', 'matches'].includes(item.id)
               : group === 'Create'
                 ? ['maps', 'skins', 'studio'].includes(item.id)
                 : item.id === 'admin',

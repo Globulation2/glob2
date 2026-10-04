@@ -1,6 +1,10 @@
+import { aiHref, versionLabel } from '../playerLinks.ts';
+import { versionKey } from '../format.ts';
 import { useState } from 'react';
 import type {
   EconomyCurve,
+  AiProfile,
+  AiEconomyCurve,
   MatchSummary,
   PlayerAggregates,
   PlayerProfile,
@@ -11,9 +15,9 @@ import { api } from '../api.ts';
 import { GameArt } from '../art.tsx';
 import { seriesInk } from '../colors.ts';
 import { LineChart } from '../components/LineChart.tsx';
-import { Avatar, Loaded, MatchListView } from '../components/common.tsx';
+import { Avatar, ErrorNotice, Loaded, MatchListView } from '../components/common.tsx';
 import { date, duration, percent, queueName, rating, tickTime } from '../format.ts';
-import { Link } from '../router.tsx';
+import { Link, useRouter } from '../router.tsx';
 import { isModerator, useLoad, useSession } from '../state.tsx';
 import { useTheme } from '../theme.tsx';
 
@@ -72,18 +76,18 @@ function WinRates({ title, rows }: { title: string; rows: WinRate[] }) {
   );
 }
 
-function Economy({ curve }: { curve: EconomyCurve }) {
+function Economy({ curve }: { curve: EconomyCurve | AiEconomyCurve }) {
   const { theme } = useTheme();
   const at = (pick: (p: EconomyCurve['points'][number]) => number) =>
     curve.points.map((p) => ({ x: p.tick, y: pick(p) }));
   return (
     <div className="grid2">
       <LineChart
-        title="Units: latest verified match against your average"
+        title="Units: latest verified match against recent average"
         series={[
           { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.units) },
           {
-            name: 'Your average',
+            name: 'Average',
             color: seriesInk(1, theme),
             points: at((p) => p.averageUnits),
             dashed: true,
@@ -93,11 +97,11 @@ function Economy({ curve }: { curve: EconomyCurve }) {
         height={200}
       />
       <LineChart
-        title="Buildings: latest verified match against your average"
+        title="Buildings: latest verified match against recent average"
         series={[
           { name: 'This match', color: seriesInk(0, theme), points: at((p) => p.buildings) },
           {
-            name: 'Your average',
+            name: 'Average',
             color: seriesInk(1, theme),
             points: at((p) => p.averageBuildings),
             dashed: true,
@@ -110,7 +114,7 @@ function Economy({ curve }: { curve: EconomyCurve }) {
   );
 }
 
-function Aggregates({ aggregates }: { aggregates: PlayerAggregates }) {
+function Aggregates({ aggregates }: { aggregates: PlayerAggregates | AiProfile['aggregates'] }) {
   const by = (dimension: WinRate['dimension']) =>
     aggregates.winRates.filter((r) => r.dimension === dimension);
   return (
@@ -136,7 +140,13 @@ function Aggregates({ aggregates }: { aggregates: PlayerAggregates }) {
   );
 }
 
-function Tiles({ profile }: { profile: PlayerProfile }) {
+function Tiles({
+  profile,
+}: {
+  profile: Pick<PlayerProfile, 'ratings'> & {
+    aggregates?: PlayerAggregates | AiProfile['aggregates'];
+  };
+}) {
   const { instance } = useSession();
   const a = profile.aggregates;
   const best = a?.winRates
@@ -150,7 +160,9 @@ function Tiles({ profile }: { profile: PlayerProfile }) {
           <div className="caption">{queueName(instance?.queues, r.ladder)}</div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, flexWrap: 'wrap' }}>
             <span className="v">{rating(r.rating)}</span>
-            {r.rank !== undefined && <span className="caption">#{r.rank}</span>}
+            {(r.overallRank ?? r.rank) !== undefined && (
+              <span className="caption">#{r.overallRank ?? r.rank}</span>
+            )}
             {r.provisional && <span className="badge warn">provisional</span>}
           </div>
           <div className="caption">
@@ -196,28 +208,38 @@ function Tiles({ profile }: { profile: PlayerProfile }) {
   );
 }
 
-function Matches({ id, initial: first }: { id: string; initial: MatchSummary[] }) {
+function Matches({
+  id,
+  initial: first,
+  aiVersion,
+}: {
+  id: string;
+  initial: MatchSummary[];
+  aiVersion?: string;
+}) {
   const { instance } = useSession();
   const [queue, setQueue] = useState('');
-  const [pages, setPages] = useState<string[]>([]);
+  const [cursor, setCursor] = useState<string>();
+  const [earlier, setEarlier] = useState<MatchSummary[]>([]);
   const load = useLoad(
-    async (signal) => {
-      const out: MatchSummary[] = [];
-      let cursor: string | undefined;
-      for (let i = 0; i <= pages.length; i++) {
-        const page = await api.playerMatches(id, { queue, cursor, limit: 20 }, signal);
-        out.push(...page.items);
-        cursor = page.nextCursor;
-        if (!cursor) break;
-      }
-      return { items: out, nextCursor: cursor };
-    },
-    [id, queue, pages.length],
+    (signal) =>
+      aiVersion
+        ? api.aiMatches(id, { simVersion: aiVersion, queue, cursor, limit: 20 }, signal)
+        : api.playerMatches(id, { queue, cursor, limit: 20 }, signal),
+    [id, aiVersion, queue, cursor],
   );
+  const matches =
+    load.status === 'ready'
+      ? [...earlier, ...load.data.items]
+      : earlier.length
+        ? earlier
+        : queue === ''
+          ? first
+          : [];
   const filters = [
     { id: '', name: 'All' },
     ...(instance?.queues.map((q) => ({ id: q.id, name: q.name })) ?? []),
-    { id: 'room', name: 'Rooms' },
+    ...(!aiVersion ? [{ id: 'room', name: 'Rooms' }] : []),
   ];
   return (
     <>
@@ -233,7 +255,8 @@ function Matches({ id, initial: first }: { id: string; initial: MatchSummary[] }
               aria-pressed={queue === f.id}
               onClick={() => {
                 setQueue(f.id);
-                setPages([]);
+                setEarlier([]);
+                setCursor(undefined);
               }}
             >
               {f.name}
@@ -241,25 +264,31 @@ function Matches({ id, initial: first }: { id: string; initial: MatchSummary[] }
           ))}
         </span>
       </div>
-      {load.status === 'loading' && queue === '' && pages.length === 0 ? (
-        <MatchListView matches={first} accountId={id} />
-      ) : (
-        <Loaded load={load}>
-          {(data) => (
-            <>
-              <MatchListView matches={data.items} accountId={id} />
-              {data.nextCursor && (
-                <button
-                  className="small"
-                  style={{ marginTop: 'var(--sp-3)' }}
-                  onClick={() => setPages([...pages, data.nextCursor ?? ''])}
-                >
-                  Show more
-                </button>
-              )}
-            </>
-          )}
-        </Loaded>
+      {(matches.length > 0 || load.status === 'ready') && (
+        <MatchListView matches={matches} {...(aiVersion ? { aiId: id } : { accountId: id })} />
+      )}
+      {load.status === 'loading' && (
+        <p role="status" className="caption">
+          Loading matches…
+        </p>
+      )}
+      {load.status === 'error' && (
+        <>
+          <ErrorNotice error={load.error} />
+          <button onClick={load.reload}>Try again</button>
+        </>
+      )}
+      {load.status === 'ready' && load.data.nextCursor && (
+        <button
+          className="small"
+          style={{ marginTop: 'var(--sp-3)' }}
+          onClick={() => {
+            setEarlier(matches);
+            setCursor(load.data.nextCursor);
+          }}
+        >
+          Show more
+        </button>
       )}
     </>
   );
@@ -318,10 +347,79 @@ export function Player({ id }: { id: string }) {
                 )}
               </>
             )}
-            <Matches id={profile.account.id} initial={profile.recentMatches} />
+            <Matches
+              key={profile.account.id}
+              id={profile.account.id}
+              initial={profile.recentMatches}
+            />
           </>
         );
       }}
+    </Loaded>
+  );
+}
+
+export function AiPlayer({ id }: { id: string }) {
+  const { location, navigate } = useRouter();
+  const { instance } = useSession();
+  const version = location.search.get('simVersion') ?? undefined;
+  const load = useLoad((signal) => api.aiProfile(id, version, signal), [id, version]);
+  return (
+    <Loaded load={load} page="AI player">
+      {(profile) => (
+        <>
+          <div className="profile-head">
+            <GameArt name="school" size={80} />
+            <div className="grow">
+              <h1>
+                {profile.displayName} <span className="badge">AI</span>
+              </h1>
+              <p className="caption">AI opponent · ratings and games belong to this game version</p>
+            </div>
+            {profile.versions.length > 0 && (
+              <label className="field">
+                Game version
+                <select
+                  value={profile.simVersion ? versionKey(profile.simVersion) : ''}
+                  onChange={(e) => navigate(aiHref(id, e.target.value))}
+                >
+                  {profile.versions.map((v) => (
+                    <option key={versionKey(v.simVersion)} value={versionKey(v.simVersion)}>
+                      {versionLabel(v.simVersion)} {v.current ? '(current)' : '(older version)'}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+          </div>
+          <Tiles profile={profile} />
+          {profile.ratingHistory.length > 0 && (
+            <>
+              <h2>Rating</h2>
+              <RatingGraph
+                history={profile.ratingHistory}
+                queues={[...new Set(profile.ratingHistory.map((p) => p.ladder))].map((l) =>
+                  queueName(instance?.queues, l),
+                )}
+              />
+            </>
+          )}
+          {profile.aggregates.games > 0 && <Aggregates aggregates={profile.aggregates} />}
+          {!profile.recentMatches.length && (
+            <p className="notice">
+              No games yet. This AI’s results will appear here after it plays.
+            </p>
+          )}
+          {profile.simVersion && (
+            <Matches
+              key={`${id}:${versionKey(profile.simVersion)}`}
+              id={id}
+              aiVersion={versionKey(profile.simVersion)}
+              initial={profile.recentMatches}
+            />
+          )}
+        </>
+      )}
     </Loaded>
   );
 }

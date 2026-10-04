@@ -20,6 +20,7 @@ export function hasRole(account: Account, role: Role): boolean {
 }
 
 export interface AdminEffects {
+  removeAvatars?(keys: string[]): Promise<void>;
   /** Ends every session of the account (tokens, web sessions, sockets). */
   endSessions(accountId: string, reason: string): Promise<void>;
 }
@@ -187,7 +188,7 @@ export class AdminService {
       // Skin publication and draft saves lock this account before committing.
       const current = await tx
         .selectFrom('accounts')
-        .select('status')
+        .select(['status', 'avatar_key', 'gravatar_key'])
         .where('id', '=', id)
         .forUpdate()
         .executeTakeFirstOrThrow();
@@ -299,6 +300,11 @@ export class AdminService {
       const account = await tx
         .updateTable('accounts')
         .set({
+          avatar_source: 'initials',
+          avatar_key: null,
+          gravatar_key: null,
+          gravatar_fingerprint: null,
+          gravatar_checked_at: null,
           status: 'deleted',
           role: 'user',
           display_name: DELETED_NAME,
@@ -328,10 +334,17 @@ export class AdminService {
       if (nameList.length > 0) {
         await sql`SELECT scrub_audit_log_account(${id}::uuid, ${nameList}::text[])`.execute(tx);
       }
-      return { account, removedMaps };
+      return {
+        account,
+        removedMaps,
+        avatarKeys: [current.avatar_key, current.gravatar_key].filter(
+          (key): key is string => key !== null,
+        ),
+      };
     });
+    await this.effects.removeAvatars?.(result.avatarKeys);
     await this.effects.endSessions(target.id, 'deleted');
-    return result;
+    return { account: result.account, removedMaps: result.removedMaps };
   }
 
   async rename(actor: Account | undefined, target: Account, name: string, reason?: string) {

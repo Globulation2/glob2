@@ -86,5 +86,24 @@ export async function collectBlobs(
       }
     }
   }
+  // Account images use unique keys, so failed uploads/replacements cannot overwrite
+  // another account's image. Reap bytes left behind by a crash or failed deletion.
+  if (store.list) {
+    const cutoff = Date.now() - graceDays * 86_400_000;
+    for await (const entry of store.list('avatars/')) {
+      if (entry.modifiedAt.getTime() >= cutoff) continue;
+      const known = await db
+        .selectFrom('accounts')
+        .select('id')
+        .where((eb) =>
+          eb.or([eb('avatar_key', '=', entry.key), eb('gravatar_key', '=', entry.key)]),
+        )
+        .executeTakeFirst();
+      if (!known) {
+        await store.delete(entry.key);
+        deletedOrphanFiles++;
+      }
+    }
+  }
   return { deletedBlobs, deletedOrphanFiles };
 }

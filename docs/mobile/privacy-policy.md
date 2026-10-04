@@ -64,6 +64,7 @@ match on their devices. LAN games do not use an account and do not contact us.
 | Data | Why |
 | --- | --- |
 | **Account:** an account number, display name, guest or registered status, creation time, when you were last online, when you last renamed, and any moderation status (role, mute, ban) | To run your account and show who you are to other players. |
+| **Profile photo:** the cropped photo you upload, or a cached Gravatar image, and your photo preference | To display a public photo alongside your name. Uploaded originals and image metadata are not retained. You can choose initials instead. |
 | **Sign-in:** for a guest, a device credential, of which we store only a one-way hash, and the kind of device (desktop, Android, iOS, browser). If you link a sign-in provider: the provider's name, its identifier for you and, when the provider shares it, your e-mail address. A new account takes the display name the provider suggests. If you use a username and password: the username and a password hash (argon2id); we never store the password itself. | To sign you in, keep you signed in, and let moderators find an account by its linked e-mail address. |
 | **Sessions:** refresh tokens and web-session cookies (stored only as hashes), sign-in attempts from the game to your browser, with a confirmation code and a cookie that binds the attempt to that browser | To keep you signed in safely and detect stolen sign-ins. |
 | **Rooms and chat:** rooms you create or join (name, settings, members, seats), room chat messages, and your round trip to each server region | To run rooms and pick a server close to the players. |
@@ -77,14 +78,22 @@ The game also tells the service its version and platform when it connects, so th
 service can check that it can play with others.
 
 Voice chat in online matches (the mobile apps do not record voice) passes through the
-match server to the other players live and is not stored. We do not use your data for advertising, and we do not combine it
-with data from other sources.
+match server to the other players live and is not stored. We do not use your data for advertising. If automatic profile photos are enabled,
+we use Gravatar to find a photo associated with your linked e-mail address.
+
+Automatic photos are enabled by default. Our server sends Gravatar a SHA-256 hash
+of each linked e-mail address it tries, never the plain address, and caches the
+result for 24 hours before checking again on a later request. Photos are served
+through our server, so viewing a profile does not send the viewer's browser to
+Gravatar. In account settings, upload a replacement or choose **Use initials** to
+stop automatic lookups. Replacing or removing a photo deletes our stored copy;
+account deletion removes profile photos too.
 
 ### What other people can see
 
-- **Public:** your display name; your profile page (ratings, rating history, match
+- **Public:** your display name and profile photo; your profile page (ratings, rating history, match
   history and statistics; guests have only a minimal profile); leaderboards (registered
-  accounts only); match pages, including each player's connection quality; match
+  accounts and labelled AI opponents); match pages, including each player's connection quality; match
   replays and verification results, which contain the names players had in the game
   and in-game text chat; public rooms and their names; maps you publish.
 - **Other players in a room or match:** your display name, room chat, and what you

@@ -1,3 +1,5 @@
+import { aiHref } from '../playerLinks.ts';
+import { versionKey } from '../format.ts';
 import { MatchSkinLooks } from '../skins/Reporting.tsx';
 import { useState, type CSSProperties } from 'react';
 import {
@@ -122,7 +124,10 @@ function Participants({ detail }: { detail: MatchDetail }) {
                     <Link to={`/players/${p.accountId}`}>{p.displayName}</Link>
                   ) : p.kind === 'ai' ? (
                     <>
-                      {aiName(p.ai)} <span className="badge">AI</span>
+                      <Link to={aiHref(p.ai ?? 'none', versionKey(detail.match.simVersion))}>
+                        {aiName(p.ai)}
+                      </Link>{' '}
+                      <span className="badge">AI</span>
                     </>
                   ) : (
                     p.displayName

@@ -1,3 +1,5 @@
+import { PublicPlayers, participantFilter } from './players.ts';
+import { resolveQueue } from '@glob2/core';
 // History, leaderboard and profile REST (read only; see service.ts for the
 // visibility rules), the moderators' match lookup and the administrators'
 // verification re-run.
@@ -41,25 +43,58 @@ export async function historyRoutes(app: FastifyInstance, identity: Identity): P
     currentSimVersions: () => supportedSimVersions(services.db),
   });
 
+  const players = new PublicPlayers(
+    services.db,
+    new Map(services.config.instance.queues.map((q) => [q.id, q.name])),
+    [...new Set(services.config.instance.queues.flatMap((q) => resolveQueue(q).aiPool))],
+    () => supportedSimVersions(services.db),
+  );
+  app.get<{ Querystring: PageQuery & { q?: string; participants?: string } }>(
+    '/api/v1/players',
+    async (request) =>
+      players.directory({
+        q: request.query.q ?? '',
+        participants: participantFilter(request.query.participants),
+        limit: pageLimit(request.query.limit, 24, 100),
+        ...(request.query.cursor ? { cursor: request.query.cursor } : {}),
+      }),
+  );
+  app.get<{ Params: { aiId: string }; Querystring: { simVersion?: string } }>(
+    '/api/v1/players/ai/:aiId',
+    async (request) => players.profile(request.params.aiId, request.query.simVersion),
+  );
+  app.get<{ Params: { aiId: string }; Querystring: PageQuery & { simVersion?: string } }>(
+    '/api/v1/players/ai/:aiId/matches',
+    async (request) => {
+      const queue = queueFilter(request.query.queue);
+      return players.matches(request.params.aiId, request.query.simVersion, {
+        limit: pageLimit(request.query.limit, 20, 100),
+        ...(request.query.cursor ? { cursor: request.query.cursor } : {}),
+        ...(queue ? { queue } : {}),
+      });
+    },
+  );
+
   const viewerOf = async (request: FastifyRequest): Promise<Viewer | undefined> => {
     const caller = await authenticate(identity, request);
     return caller ? { account: caller.account } : undefined;
   };
 
-  app.get<{ Params: { ladder: string }; Querystring: PageQuery & { provisional?: string } }>(
-    '/api/v1/leaderboards/:ladder',
-    async (request): Promise<LeaderboardPage> => {
-      const { provisional = 'include' } = request.query;
-      if (provisional !== 'include' && provisional !== 'exclude') {
-        throw apiError('bad_request', 'provisional must be include or exclude.');
-      }
-      return history.leaderboard(request.params.ladder, {
-        ...(request.query.cursor ? { cursor: request.query.cursor } : {}),
-        limit: pageLimit(request.query.limit, 50, 200),
-        provisional,
-      });
-    },
-  );
+  app.get<{
+    Params: { ladder: string };
+    Querystring: PageQuery & { provisional?: string; participants?: string };
+  }>('/api/v1/leaderboards/:ladder', async (request): Promise<LeaderboardPage> => {
+    const { provisional = 'include' } = request.query;
+    if (provisional !== 'include' && provisional !== 'exclude') {
+      throw apiError('bad_request', 'provisional must be include or exclude.');
+    }
+    return history.leaderboard(request.params.ladder, {
+      ...(request.query.cursor ? { cursor: request.query.cursor } : {}),
+      limit: pageLimit(request.query.limit, 50, 200),
+      provisional,
+      participants: participantFilter(request.query.participants, 'humans'),
+    });
+  });
 
   app.get<{ Params: { ladder: string } }>(
     '/api/v1/leaderboards/:ladder/ai',

@@ -1,0 +1,15 @@
+{
+  "ai": "castor",
+  "displayName": "Castor",
+  "versions": [],
+  "ratings": [],
+  "ratingHistory": [],
+  "recentMatches": [],
+  "aggregates": {
+    "windowDays": 90,
+    "games": 0,
+    "wins": 0,
+    "losses": 0,
+    "winRates": []
+  }
+}

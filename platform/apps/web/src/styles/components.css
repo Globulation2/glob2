@@ -819,3 +819,87 @@ table.data th.num {
 .legend .line.dash {
   border-top-style: dashed;
 }
+
+/* Player identity is shared across profiles, discovery and rankings. */
+.avatar {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.directory-search {
+  display: grid;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+}
+.player-search {
+  width: 100%;
+  font-size: var(--text-lg);
+  padding: 16px;
+}
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: var(--sp-3);
+}
+.player-grid[hidden] {
+  display: none;
+}
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.player-card .grow {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.player-card:hover,
+.player-card.selected {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+.player-card mark {
+  background: #f6d782;
+  color: #322506;
+  border-radius: 3px;
+}
+.profile-photo-preview {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+.photo-dialog {
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--ink);
+}
+.photo-dialog::backdrop {
+  background: #0009;
+}
+.photo-crop {
+  position: relative;
+  height: min(360px, 45dvh);
+  background: #202825;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-block: 16px;
+}
+.photo-dialog .toolbar {
+  justify-content: flex-end;
+}

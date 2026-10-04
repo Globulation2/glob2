@@ -72,6 +72,12 @@ export function createIdentity(services: ApiServices): Identity {
   const hub = new RealtimeHub(db, services.pubsub, logger);
   handoff.notify = (attemptId) => hub.publish({ t: 'handoff', attemptId });
   const admin = new AdminService(db, accounts, {
+    async removeAvatars(keys) {
+      for (const key of keys)
+        await services.blobs
+          .delete(key)
+          .catch((error) => logger.warn({ error, key }, 'avatar cleanup failed'));
+    },
     async endSessions(accountId, reason) {
       await tokens.revokeAccount(accountId);
       await webSessions.revokeAccount(accountId);

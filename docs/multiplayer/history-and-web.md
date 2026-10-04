@@ -9,14 +9,21 @@ and [architecture](architecture.md#engine-agents).
 
 ## REST
 
+Directory search uses PostgreSQL’s trusted `pg_trgm` extension, installed by migration
+0036 alongside the name and substring-search indexes. Deploy migrations and the API
+before deploying the web app that consumes the additive endpoints.
+
 All shapes are in `platform/packages/protocol/src/history.ts` (with JSON Schema
 and fixtures under `fixtures/`). Lists are newest first and page with an opaque
 `cursor`; `limit` is optional.
 
 | Endpoint | Returns |
 | --- | --- |
-| `GET /api/v1/leaderboards/{queueId}?provisional=include\|exclude` | `LeaderboardPage`: registered, active accounts ranked by ordinal; provisional ratings flagged, or left out with `exclude` |
+| `GET /api/v1/leaderboards/{queueId}?provisional=include\|exclude&participants=humans\|all\|ai` | `LeaderboardPage`: ordinal-ranked participants with rated games; defaults to humans for existing clients, while the web app requests all |
 | `GET /api/v1/leaderboards/{queueId}/ai` | `AiLeaderboard`: AI entities grouped by sim version, newest first; `current` marks versions an engine agent serves |
+| `GET /api/v1/players?q=&participants=all\|humans\|ai` | `PlayerDirectory`: active registered accounts and configured AIs; exact names before prefixes and substring matches, alphabetical browsing without a query |
+| `GET /api/v1/players/ai/{aiId}?simVersion=` | `AiProfile`: version selector, ratings, history and verified queue-game statistics; defaults to a supported build, or the highest historical version when no agent is available |
+| `GET /api/v1/players/ai/{aiId}/matches?simVersion=&queue=` | `MatchList` of this AI revision’s matchmaking games |
 | `GET /api/v1/players/{accountId}` | `PlayerProfile`: ratings (with rank), rating history (oldest first), ten recent matches, aggregates |
 | `GET /api/v1/players/{accountId}/matches?queue=` | `MatchList`; `queue` is a queue id or `room` |
 | `GET /api/v1/matches?queue=` | `MatchList` of recent public matches: ended quick-match games and matches of public rooms |
@@ -51,9 +58,22 @@ whose relay sent no summary.
 
 ### Visibility
 
-- Leaderboards show registered, active accounts only. Guests are never ranked;
-  banned accounts drop off. AI entities are listed separately and never combined
-  across sim versions.
+- Human leaderboard entries are active registered accounts. Guests and banned
+  accounts are excluded. Combined and AI-only views include supported AI versions
+  with rated games; each revision remains a separate participant. Positions are
+  recomputed within the selected participant/provisional filters. Profiles expose
+  `overallRank` for the combined view while preserving legacy human `rank`.
+- The directory excludes guests, banned and deleted accounts. Configured AIs are
+  searchable even before their first game. Older AI versions remain in their profiles;
+  AI history and aggregates cover queue matches only and never mix versions.
+  Directory cursors seek past the last result (relevance, case-insensitive name,
+  participant kind and ID), so later pages do not rescan earlier pages. Each SQL
+  branch returns at most one page plus a lookahead row.
+- The AI default prefers the highest supported minor/protocol version. When those
+  numbers tie, it uses the most recently introduced build among engine-agent
+  records (earliest `started_at` per build); the opaque data hash is only a stable
+  tie-breaker, not a simulation-revision number. Restarting all agents for an old
+  build can affect this fallback. Explicit profile version links stay stable.
 - Profiles of deleted accounts do not exist. Banned accounts answer 404 except to
   moderators, who also see the account status. Guests get a minimal profile
   (`detail: "minimal"`): their account and matches, no ratings or aggregates.
@@ -106,7 +126,9 @@ pages carry an OpenGraph image for link previews.
 | Route | Page |
 | --- | --- |
 | `/` | App dashboard with play in browser, download and join-with-code, live stats, recent public matches, most liked maps, leaderboard teasers and instance |
-| `/leaderboard`, `/leaderboard/{queueId}` | Ladder of a rated queue, then its AI ladder |
+| `/leaderboard`, `/leaderboard/{queueId}` | Combined ranking with All / Humans / AI filters |
+| `/players` | Searchable player directory with keyboard autocomplete and pagination |
+| `/players/ai/{aiId}?simVersion=` | AI profile, version selector and matchmaking history |
 | `/players/{accountId}` | Ratings, rating graph, aggregates, economy curves, match history |
 | `/matches`, `/matches/{id}` | Recent matches; match page with replay actions, players, rating changes and timelines; verification and connection diagnostics are expandable |
 | `/maps`, `/maps/mine`, `/maps/new`, `/maps/{id}` | Map catalog, my maps, upload, map page (preview, versions, like, report, owner edits) |
