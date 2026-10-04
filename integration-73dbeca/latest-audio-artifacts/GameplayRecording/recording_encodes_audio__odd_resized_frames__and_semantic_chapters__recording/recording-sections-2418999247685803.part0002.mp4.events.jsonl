@@ -1,0 +1,2 @@
+{"time_us":0,"kind":"chapter","id":1,"phase":"gameplay","screen":"game_session","dialog":"","match":1,"mode":"multiplayer","map":"chapter test","team":2,"tick":20005,"era_start":20000,"era_end":30000}
+{"time_us":100000,"kind":"chapter","id":2,"phase":"results","screen":"end_game","dialog":"","match":1,"mode":"multiplayer","map":"chapter test","team":2,"tick":20005}

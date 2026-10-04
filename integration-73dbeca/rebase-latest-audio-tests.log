@@ -1,0 +1,12 @@
+PASS glob2-unit-tests GameMusicController (7 cases) (0.0s)
+PASS glob2-unit-tests PlayerVoiceDrain (5 cases) (0.0s)
+PASS glob2-unit-tests SoundMixerTrackSelection (2 cases) (0.1s)
+PASS glob2-unit-tests RecordingSession (11 cases) (0.4s)
+PASS GameplayRecording.Integration/global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences] (1.8s)
+PASS MusicSet/discovery atomic replacement queued moods and muted preferences [display][writes-preferences] (2.8s)
+PASS glob2-unit-tests GameplayRecording (5 cases) (3.7s)
+PASS GameplayRecording.Integration/production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording] (4.8s)
+PASS GameplayRecording.Integration/threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording] (6.5s)
+
+9 passed, 0 failed, 0 skipped (20.1s of test time)
+[run_tests] JUnit report: artifacts/opus/rebase-latest-audio-tests.xml (34 cases)
