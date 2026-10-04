@@ -1,0 +1,19 @@
+{
+  "head": "c90e5548e3d9db0a15deada05c6ecae73531a391",
+  "base": "75c7426224496c9758c23d3796f011e605dd4d53",
+  "source_hashes": {
+    "tools/skins/preview.cpp": "ddf1b7997684badbb84ba2efc0af01a6b9353bd580242cf911ca02a305183c97",
+    "tools/unit-animation/README.md": "d4e90aabb82cd2190d7f9ec42a71574a850d195915fb2b583564a28c85b2bb15",
+    "data/skins/colony-v1/worker-walk.gsk": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
+    "artifacts/skins/benchmark-old/worker-walk.gsk": "08b1395ce6302ab848945b107c5efba6a93bb72260911350c3898e28042dc593"
+  },
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "os": "Linux 7.0.0-31-generic x86_64 GNU/Linux",
+  "command": "GLOB2_SDL3_PREFIX=\"$PWD/artifacts/skins/native-deps\" scons -j6 release=1 skin-preview",
+  "coverage": "RTX 2070 SUPER hardware OpenGL and Chromium WebGL2; desktop/phone layouts, not physical mobile hardware; isolated 512-unit benchmark, not crowded full-game simulation",
+  "tested_feature_commit": "8a4aecff7c6fea0776af7c2efd5bb001d46ea95e",
+  "integration_base": "d0a8fe311297c211c6feba870307f0cc22764b88",
+  "integration_state": "Final PR head combined with fetched master; merge-tree exactly matches tested integration index",
+  "integration_tree": "5224487a7f2512b51df5b556764bee08c460c0be",
+  "integration_native_binary_sha256": "d7ddc148c4102a840ab65775294dade177f885199f208a630612bff09b545268"
+}

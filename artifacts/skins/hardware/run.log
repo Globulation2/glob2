@@ -1,0 +1,78 @@
+[
+  {
+    "mode": "--benchmark",
+    "path": "immediate",
+    "old": {
+      "median_ms": 4.2106200000000005,
+      "min_ms": 3.40154,
+      "max_ms": 7.2441,
+      "runs": 10
+    },
+    "new": {
+      "median_ms": 3.86364,
+      "min_ms": 3.65888,
+      "max_ms": 5.50329,
+      "runs": 10
+    },
+    "change_percent": -8.24059164683586
+  },
+  {
+    "mode": "--benchmark",
+    "path": "atlas",
+    "old": {
+      "median_ms": 2.896395,
+      "min_ms": 2.34793,
+      "max_ms": 4.39733,
+      "runs": 10
+    },
+    "new": {
+      "median_ms": 2.79067,
+      "min_ms": 2.44861,
+      "max_ms": 4.74699,
+      "runs": 10
+    },
+    "change_percent": -3.650227265272865
+  },
+  {
+    "mode": "--benchmark-pages",
+    "path": "immediate",
+    "old": {
+      "median_ms": 4.39462,
+      "min_ms": 2.56429,
+      "max_ms": 7.01424,
+      "runs": 10
+    },
+    "new": {
+      "median_ms": 3.5494649999999996,
+      "min_ms": 2.64243,
+      "max_ms": 7.37472,
+      "runs": 10
+    },
+    "change_percent": -19.231583163049372
+  },
+  {
+    "mode": "--benchmark-pages",
+    "path": "atlas",
+    "old": {
+      "median_ms": 2.807105,
+      "min_ms": 1.90256,
+      "max_ms": 4.30024,
+      "runs": 10
+    },
+    "new": {
+      "median_ms": 3.065985,
+      "min_ms": 1.89163,
+      "max_ms": 5.3768,
+      "runs": 10
+    },
+    "change_percent": 9.222312667320963
+  }
+]
+white: 57 capture pages
+stripes: 57 capture pages
+spots: 57 capture pages
+patch: 57 capture pages
+Cache hits, paint updates, address reuse and overflow passed
+
+Opacity composites reuse cached geometry; zero alpha draws nothing
+

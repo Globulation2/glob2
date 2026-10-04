@@ -1,0 +1,19 @@
+[WebServer] (node:1792960) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:1795494) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › platform/apps/web/e2e/skins.spec.ts:4:1 › account drafts restore across devices and refuse stale saves (11.5s)
+  ✓  2 [desktop] › platform/apps/web/e2e/skins.spec.ts:66:1 › reopens published paint, resumes an edit and publishes immutable versions (9.2s)
+  ✓  3 [desktop] › platform/apps/web/e2e/skins.spec.ts:143:1 › reports match paint and moderates it without rewriting the original (4.3s)
+  ✓  4 [desktop] › platform/apps/web/e2e/skins.spec.ts:203:1 › inspects every action and paints a paused model with undo and erase (8.8s)
+(node:1799346) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [phone] › platform/apps/web/e2e/skins.spec.ts:4:1 › account drafts restore across devices and refuse stale saves (8.9s)
+  ✓  6 [phone] › platform/apps/web/e2e/skins.spec.ts:66:1 › reopens published paint, resumes an edit and publishes immutable versions (5.6s)
+  ✓  7 [phone] › platform/apps/web/e2e/skins.spec.ts:143:1 › reports match paint and moderates it without rewriting the original (4.2s)
+  ✓  8 [phone] › platform/apps/web/e2e/skins.spec.ts:203:1 › inspects every action and paints a paused model with undo and erase (8.3s)
+
+  8 passed (1.2m)

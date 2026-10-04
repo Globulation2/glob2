@@ -1,0 +1,26 @@
+[
+  {
+    "pattern": "white",
+    "pages": 57,
+    "mean_absolute_channel_error_255": 0.036614901001690424,
+    "worst_page_mean_error_255": 0.06097005208333334
+  },
+  {
+    "pattern": "stripes",
+    "pages": 57,
+    "mean_absolute_channel_error_255": 0.038115431876675196,
+    "worst_page_mean_error_255": 0.06262715657552083
+  },
+  {
+    "pattern": "spots",
+    "pages": 57,
+    "mean_absolute_channel_error_255": 0.03901133992750974,
+    "worst_page_mean_error_255": 0.06374003092447916
+  },
+  {
+    "pattern": "patch",
+    "pages": 57,
+    "mean_absolute_channel_error_255": 0.036725335372121706,
+    "worst_page_mean_error_255": 0.06109246148003472
+  }
+]

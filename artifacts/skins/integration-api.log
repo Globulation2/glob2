@@ -1,0 +1,13 @@
+
+> test
+> vitest run apps/api/test/skins.test.ts apps/api/test/skinPublishing.test.ts apps/api/test/skinDrafts.test.ts
+
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/d86e/glob2/platform
+
+
+ Test Files  3 passed (3)
+      Tests  5 passed (5)
+   Start at  15:50:27
+   Duration  11.60s (tests 40%, import 38%, transform 22%)
+

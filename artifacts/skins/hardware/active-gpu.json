@@ -1,0 +1,9 @@
+[
+  {
+    "gpu": "00000000:42:00.0",
+    "uuid": "GPU-78234fbe-b975-9f64-2209-9bd4acec265b",
+    "name": "NVIDIA GeForce RTX 2070 SUPER",
+    "application": "skin-preview",
+    "source": "gpu-state.xml"
+  }
+]

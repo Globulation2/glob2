@@ -1,0 +1,3 @@
+video_driver=x11 gl_vendor=NVIDIA Corporation gl_renderer=NVIDIA GeForce RTX 2070 SUPER/PCIe/SSE2 gl_version=4.6.0 NVIDIA 580.178.04
+immediate sprites=512 unique=512 frames=40 mean_ms=3.66297 draws_per_frame=516
+atlas sprites=512 unique=512 frames=40 mean_ms=4.67654 draws_per_frame=512

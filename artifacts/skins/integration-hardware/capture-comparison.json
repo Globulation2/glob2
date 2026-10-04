@@ -1,0 +1,287 @@
+[
+  {
+    "file": "review-worker-walk-phase-0.png",
+    "meanAbsoluteChannelError255": 0.034429931640625,
+    "sha256": "c3be5534c1daadc87d603baa0ecbee96accbfaf742b8ee28fd45cb6cb88d724d"
+  },
+  {
+    "file": "review-worker-walk-phase-4.png",
+    "meanAbsoluteChannelError255": 0.03615993923611111,
+    "sha256": "5b238b704f0f955b4d20f11c70ec63da6a379ca304abb3c135e8c1b14d372f4d"
+  },
+  {
+    "file": "review-worker-walk-phase-8.png",
+    "meanAbsoluteChannelError255": 0.03632982042100694,
+    "sha256": "0e535d1013ba7feb038b34b09b6a800d8f71658e5a9df8a5ce37eb106b3575a1"
+  },
+  {
+    "file": "review-worker-walk-phase-12.png",
+    "meanAbsoluteChannelError255": 0.03357476128472223,
+    "sha256": "58f17e2f40b03ce90fdef9276d1fe1f036d5bb4110464b048e8fc2d167e69f53"
+  },
+  {
+    "file": "review-worker-walk-phase-16.png",
+    "meanAbsoluteChannelError255": 0.03348592122395833,
+    "sha256": "03383a6c6f6d2fbfe88d1e0df3e8c85da6043365d0e16a80a3570c5e2839a43d"
+  },
+  {
+    "file": "review-worker-walk-phase-20.png",
+    "meanAbsoluteChannelError255": 0.03619961208767361,
+    "sha256": "678dc5669d3e810ceb3a355e1733c75f83844bc69ae48f59d267f6338948bbad"
+  },
+  {
+    "file": "review-worker-walk-phase-24.png",
+    "meanAbsoluteChannelError255": 0.03665703667534723,
+    "sha256": "cec3e59f8847229998cefff0e20a7b003130dcbcf79e1498e97b46cf5ef3efae"
+  },
+  {
+    "file": "review-worker-walk-phase-28.png",
+    "meanAbsoluteChannelError255": 0.0349945068359375,
+    "sha256": "c1e50e1befb3e347a6d38509e1d2b4f98f2d80f67e4214a01c3dc25e9e498859"
+  },
+  {
+    "file": "review-worker-swim-phase-0.png",
+    "meanAbsoluteChannelError255": 0.01873508029513889,
+    "sha256": "50f7dd9c927f6df131a3925d7d12e29a37a46cf9677e081bcb990e65f0a34dfd"
+  },
+  {
+    "file": "review-worker-swim-phase-4.png",
+    "meanAbsoluteChannelError255": 0.016889105902777778,
+    "sha256": "974b8bfbd36184b77039ddd08bf1cd2ac17ea910d7c1e0235228f86745765e64"
+  },
+  {
+    "file": "review-worker-swim-phase-8.png",
+    "meanAbsoluteChannelError255": 0.015285237630208332,
+    "sha256": "094f20a1ef62e4474cf1168001c1a6c512f57eb9e50469366f380c026325be94"
+  },
+  {
+    "file": "review-worker-swim-phase-12.png",
+    "meanAbsoluteChannelError255": 0.01726718478732639,
+    "sha256": "1c8394cddc619a768930f4a62e321bc01747904f0bb85756ce152bd330966655"
+  },
+  {
+    "file": "review-worker-swim-phase-16.png",
+    "meanAbsoluteChannelError255": 0.019987318250868056,
+    "sha256": "66ce0169b7cdc18c23ca34354032c9c8523c29e4601da6d95b8f61e487fa8f01"
+  },
+  {
+    "file": "review-worker-swim-phase-20.png",
+    "meanAbsoluteChannelError255": 0.0204498291015625,
+    "sha256": "2dd0c00cd0b89a0412f35792fff490a8930f324a98849d3b82fe2bafdb190b04"
+  },
+  {
+    "file": "review-worker-swim-phase-24.png",
+    "meanAbsoluteChannelError255": 0.021210055881076387,
+    "sha256": "83feaec2b3cbb77b78ddeb2c8ba334bd3b0fb6a9e9f10de53326958554dcf06e"
+  },
+  {
+    "file": "review-worker-swim-phase-28.png",
+    "meanAbsoluteChannelError255": 0.021047295464409723,
+    "sha256": "2d8ffb88124463168f43abd0e251a8678b695d6724de3a2cdbb2a18090cdf318"
+  },
+  {
+    "file": "review-worker-harvest-phase-0.png",
+    "meanAbsoluteChannelError255": 0.03530341254340278,
+    "sha256": "00846a43cec8bb26e192836a1f9c0fa915b74bbde95aafdcd70203ebc44f70e8"
+  },
+  {
+    "file": "review-worker-harvest-phase-4.png",
+    "meanAbsoluteChannelError255": 0.0379547119140625,
+    "sha256": "123af2ef5d3ec94cfa824fa684e7f87dadf34e6fe33d15ec2a1bc452046e98a6"
+  },
+  {
+    "file": "review-worker-harvest-phase-8.png",
+    "meanAbsoluteChannelError255": 0.03885837131076389,
+    "sha256": "cca6c5baf6b28440cc3f6a89f5cffc92e32229e9017e2efbbb913fdccc22c02c"
+  },
+  {
+    "file": "review-worker-harvest-phase-12.png",
+    "meanAbsoluteChannelError255": 0.041876559787326385,
+    "sha256": "3abe355f78f92a515994dc4d872971d70cdffa5451bd93f2d72200fa69abc2f6"
+  },
+  {
+    "file": "review-worker-harvest-phase-16.png",
+    "meanAbsoluteChannelError255": 0.039473809136284725,
+    "sha256": "5d73b44367d21ca862ac0dd2eafb3f9b5d93764692606b493b08522a8f6d96cc"
+  },
+  {
+    "file": "review-worker-harvest-phase-20.png",
+    "meanAbsoluteChannelError255": 0.03881632486979167,
+    "sha256": "d6acca79e537f5ec6780504f1f4d2c073b66e5a8a49558e90ae6c451765a4e87"
+  },
+  {
+    "file": "review-worker-harvest-phase-24.png",
+    "meanAbsoluteChannelError255": 0.03746575249565973,
+    "sha256": "b4c2e836f9877999cebc364279d53319ebdf9c50d4471d9c0066b4fc1ecfd78c"
+  },
+  {
+    "file": "review-worker-harvest-phase-28.png",
+    "meanAbsoluteChannelError255": 0.03483784993489583,
+    "sha256": "1a17074c446c91ab1fd268967243facf4aae9eea5e1b459989b391dfe78b1138"
+  },
+  {
+    "file": "review-warrior-walk-phase-0.png",
+    "meanAbsoluteChannelError255": 0.057229275173611115,
+    "sha256": "36cb3912e9e48eaeec293155c69f8fcc7dbb4eb97f68719b22a1742c65ed4a12"
+  },
+  {
+    "file": "review-warrior-walk-phase-4.png",
+    "meanAbsoluteChannelError255": 0.06097005208333334,
+    "sha256": "04e4f54f9dcaf094c11f94da9b4e89e0ed2d4f9114fd7415197c414703695299"
+  },
+  {
+    "file": "review-warrior-walk-phase-8.png",
+    "meanAbsoluteChannelError255": 0.06071845160590278,
+    "sha256": "a836d945ae16f128a75eb28344cb8ff641a99166b37abf9ba5d31c4708ebda24"
+  },
+  {
+    "file": "review-warrior-walk-phase-12.png",
+    "meanAbsoluteChannelError255": 0.06074998643663195,
+    "sha256": "7cfb23c874a3e26defed2a772ded28ce1b5401ef1786c9791934de35b4842237"
+  },
+  {
+    "file": "review-warrior-walk-phase-16.png",
+    "meanAbsoluteChannelError255": 0.05966932508680556,
+    "sha256": "0922078a0bb49e1ddef780b029b809126544d460294f0c5185f2659caa8307ec"
+  },
+  {
+    "file": "review-warrior-walk-phase-20.png",
+    "meanAbsoluteChannelError255": 0.0599578857421875,
+    "sha256": "da453c0ff93b7a5f582cfb8fb4d9cc1e74a8f1fb34a60878b2f888a531b82c7f"
+  },
+  {
+    "file": "review-warrior-walk-phase-24.png",
+    "meanAbsoluteChannelError255": 0.06088799370659723,
+    "sha256": "38837dbb227947b8983112693bbb13da13b95138024d3a8c45517dbf864a2fe9"
+  },
+  {
+    "file": "review-warrior-walk-phase-28.png",
+    "meanAbsoluteChannelError255": 0.0570831298828125,
+    "sha256": "80ae438afac8a7690cfb8890387222ebd905c20509d82dabf94980f5902d92c0"
+  },
+  {
+    "file": "review-warrior-swim-phase-0.png",
+    "meanAbsoluteChannelError255": 0.03305223253038195,
+    "sha256": "4f063cf46242e58c81b5ad7ab8e2005fbeade78472c6b13931f98fa7019e35d6"
+  },
+  {
+    "file": "review-warrior-swim-phase-4.png",
+    "meanAbsoluteChannelError255": 0.023966471354166668,
+    "sha256": "c7953a2f5f5f1096b6dbe927c3242de2ad225969322b60398f7ccd3609124850"
+  },
+  {
+    "file": "review-warrior-swim-phase-8.png",
+    "meanAbsoluteChannelError255": 0.017587280273437502,
+    "sha256": "a37dec04a642c1aeb69510302a6f7b789039db67755e70460f2fb99bf7559c32"
+  },
+  {
+    "file": "review-warrior-swim-phase-12.png",
+    "meanAbsoluteChannelError255": 0.019478352864583336,
+    "sha256": "beb35b2933a64daf6a0c1832a7c93ad898c9c34c1ec05febaf1077da988caa95"
+  },
+  {
+    "file": "review-warrior-swim-phase-16.png",
+    "meanAbsoluteChannelError255": 0.0320648193359375,
+    "sha256": "7ef44601076485b9434cd3120abeeeb9cfa90d345f00f21d74de32d7b1247889"
+  },
+  {
+    "file": "review-warrior-swim-phase-20.png",
+    "meanAbsoluteChannelError255": 0.03259107801649305,
+    "sha256": "291bb8c0ce79d6e22e7952f8c85589dcca640b171cee40583a5f1bec0da9726b"
+  },
+  {
+    "file": "review-warrior-swim-phase-24.png",
+    "meanAbsoluteChannelError255": 0.03360799153645833,
+    "sha256": "bf686c88df49d5926a46f39f75d2636bc04a1bac7d58b06a41305e79c60c6038"
+  },
+  {
+    "file": "review-warrior-swim-phase-28.png",
+    "meanAbsoluteChannelError255": 0.034419420030381946,
+    "sha256": "9c7e1dbd6e2edf24d4e2acd017357df9a9b70a4cf80f89a4329c443382fc7acd"
+  },
+  {
+    "file": "review-warrior-fight-phase-0.png",
+    "meanAbsoluteChannelError255": 0.05694580078125,
+    "sha256": "00adc9852f43cebc5942cb756c9ebc84a2b23dd58d75cd372391be90862f2aaf"
+  },
+  {
+    "file": "review-warrior-fight-phase-4.png",
+    "meanAbsoluteChannelError255": 0.058739895290798615,
+    "sha256": "cd3f7f77a76bfbb98bdb135d3bbf1671f8a160d67588fbd2695ba3037bc7b8b3"
+  },
+  {
+    "file": "review-warrior-fight-phase-8.png",
+    "meanAbsoluteChannelError255": 0.05783250596788194,
+    "sha256": "8a97dfe1d081c24acd7a2cf87bf60bc3f21da84f9e6c848c03a638456a2e9f88"
+  },
+  {
+    "file": "review-warrior-fight-phase-12.png",
+    "meanAbsoluteChannelError255": 0.05596177842881944,
+    "sha256": "d8582f15c6710cd22065aca8f1a920e667a637e6ef4af47811aa7ae7203efedc"
+  },
+  {
+    "file": "review-warrior-fight-phase-16.png",
+    "meanAbsoluteChannelError255": 0.05819668240017361,
+    "sha256": "1e3d25709ac75022e3f220906121bdf930e593848c5b70e289364f3061ad8ecd"
+  },
+  {
+    "file": "review-warrior-fight-phase-20.png",
+    "meanAbsoluteChannelError255": 0.06028883192274306,
+    "sha256": "96ccd3ece310956599f0340190f22f18f17b3dc51c9e75b55ec98728af2bbaca"
+  },
+  {
+    "file": "review-warrior-fight-phase-24.png",
+    "meanAbsoluteChannelError255": 0.058789062499999996,
+    "sha256": "df5757cfc271bac4fcd6d6a10270e1db36bf97578af2db5fc15658c8724a3cf9"
+  },
+  {
+    "file": "review-warrior-fight-phase-28.png",
+    "meanAbsoluteChannelError255": 0.05846591525607639,
+    "sha256": "fc68a752f3539393353e5d77c531c4dbf04b080ea9fcd85df87564a100a896f9"
+  },
+  {
+    "file": "review-explorer-fly-phase-0.png",
+    "meanAbsoluteChannelError255": 0.019379001193576387,
+    "sha256": "d84695764c33615bbcc8e23f35752e39aab32f04202d0bf883a9af2c64b5ebbb"
+  },
+  {
+    "file": "review-explorer-fly-phase-4.png",
+    "meanAbsoluteChannelError255": 0.01870795355902778,
+    "sha256": "5f1a86192eb6bfb11f72b729db654782e50ccf39fae71030e79a62459d9b1003"
+  },
+  {
+    "file": "review-explorer-fly-phase-8.png",
+    "meanAbsoluteChannelError255": 0.01855400933159722,
+    "sha256": "59c925aa80dbb5e74b4d16c9a5055c6f825febdc5739507f6c30725ad062cef0"
+  },
+  {
+    "file": "review-explorer-fly-phase-12.png",
+    "meanAbsoluteChannelError255": 0.019017198350694445,
+    "sha256": "a29ee750efafa9d0ac6b105b111adb48c0222707be96ca5c1d104b9223908bdb"
+  },
+  {
+    "file": "review-explorer-fly-phase-16.png",
+    "meanAbsoluteChannelError255": 0.01988491482204861,
+    "sha256": "5dc96eea08185935b4f88a6a08f864a2b0b98f06140df6b73054b49f983fc1d2"
+  },
+  {
+    "file": "review-explorer-fly-phase-20.png",
+    "meanAbsoluteChannelError255": 0.01925930447048611,
+    "sha256": "bc3f7e2ea492844cb6892e6e6e620342ce23519fff41dfd09ca4fa5ae9aaa02a"
+  },
+  {
+    "file": "review-explorer-fly-phase-24.png",
+    "meanAbsoluteChannelError255": 0.019243028428819444,
+    "sha256": "885ccf81ed7643bee33ab993492f465a709e4eae320b3a5ecf8a85f432ce50fb"
+  },
+  {
+    "file": "review-explorer-fly-phase-28.png",
+    "meanAbsoluteChannelError255": 0.019505479600694445,
+    "sha256": "e0ba9be254842f3b73ba458677b089128e740ad7d6c2efee3269af87c5792628"
+  },
+  {
+    "file": "review-swarm-phase-0.png",
+    "meanAbsoluteChannelError255": 0.026954820421006942,
+    "sha256": "4031e1843c92c0275cc68324c53aa532d3806c703c461c6bc76303cae3c17983"
+  }
+]

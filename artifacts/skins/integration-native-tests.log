@@ -1,0 +1,5 @@
+[run_tests] /home/bradley/.codex/worktrees/d86e/glob2/build/linux/client/release/test/glob2-engine-tests is not built; skipping
+PASS glob2-unit-tests SkinMesh (3 cases) (0.0s)
+
+1 passed, 0 failed, 0 skipped (0.0s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/d86e/glob2/artifacts/tests/junit.xml (3 cases)
