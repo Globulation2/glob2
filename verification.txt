@@ -1,0 +1,25 @@
+Local / VM verification for PR #706
+
+Tested commit: 8f1be4380bf16745f5db41bc3b52e595708b166f
+Base checkout: 8bc1b897ff7b30b094d35dd86c3230828988c457 (PR head, not a merged build).
+Fetched master before final validation: cd6ab247ac0feb48a5c90000ae39b3c3060e9891.
+Integration assessment: git merge-tree --write-tree HEAD origin/master passed with no conflicts. New master changes do not modify the settings, camera input or editor scrolling files. The SConstruct change is limited to Linux runtime packaging; newer platform/network fixes and main-menu logo sizing do not change the macOS settings/camera build inputs tested here. No rebase for unrelated advancement.
+Environment: macOS 26.6.2 (25G83), arm64, Apple clang 21.0.0, Python 3.14.7.
+Dependencies: SDL3 3.4.16, SDL3_ttf 3.2.2, SDL3_image 3.4.6, SDL3_net 3.2.0, pinned recording dependencies; native Homebrew support libraries. SDL prefix: /Users/bradley/glob2/artifacts/recording-sdl3/prefix.
+Build configuration: native client release, GNU C++20, -O3, debug symbols, OpenGL and software rendering; optional PortAudio disabled.
+
+Commands and results:
+GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix scons -j8 release=1 tests
+Passed (exit 0). Full initial build and final committed-revision incremental build logs included.
+
+python3 test/run_tests.py --binary engine --filter 'SettingsGraphics/*' --filter 'Settings/*' --filter 'GameSpeed/*' --filter 'HighResolutionIntegration/*' --artifacts artifacts/edge-scrolling/tests --junit artifacts/edge-scrolling/junit.xml --keep-profiles
+14 passed, 0 failed, 0 skipped (exit 0), against the committed revision.
+
+python3 data/check_translations.py --strict
+Passed, zero structural errors (exit 0).
+python3 test/test_translations.py
+5 passed (exit 0).
+
+Coverage rationale: legacy profiles use the new defaults, independent preference round trips and live settings toggles, six settings layout configurations including software rendering and expanded wording, windowed edge suppression/opt-in and immediate stopping, editor edge-control behavior, and existing camera/replay/render regressions. New controls were visually inspected in the attached captures. Existing missing menu-wheel translation labels visible in captures predate this change.
+Omissions: other platforms, physical fullscreen edge interaction, full engine/unit runtime suites and cross-platform checksum matrices. The change only controls local camera movement; simulation rules, saves, replay and network formats are unchanged. Both native test binaries were built. Hosted CI is cheap-contract-only unless explicitly requested; it does not replace this local evidence.
+Maintainer acceptance: accepted by the author for the requested merge under the repository's local verification policy.
