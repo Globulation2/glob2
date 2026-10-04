@@ -354,6 +354,7 @@ or explicit settings. Explicit `generator_params` and generator ablation overrid
 take precedence over sampled values. Search sampling requires `searchValues` in
 the bundle catalog; older bundles fail explicitly rather than silently sampling
 legal ranges. Explicit `grid`, `sample` and `one_parameter` lists remain unrestricted.
+Stress sweeps inherit `generator_params`; explicitly swept keys override those settings.
 
 AI comparison, fairness and ablation planners draw a reproducible parameter set
 from each map seed and reuse the map across players, rotations and build cohorts.

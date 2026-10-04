@@ -73,6 +73,7 @@ class Planner:
             variants += [(f'grid-{i}', params) for i,params in enumerate(grid(config['grid']))] if config.get('grid') else []
             variants += [(f'sample-{i}', params) for i,params in enumerate(seeded_samples(config['sample'], config.get('samples',32), config.get('sample_seed',1)))] if config.get('sample') else []
             for build, method, seed, (name, params) in itertools.product(self.builds, methods, seeds, variants):
+                params = config.get('generator_params', {}) | params
                 self.jobs.append(job('generate_map',build,seeds={'map':seed},
                                      config={'generator':method,'params':params,'candidates':config.get('candidates',0)},
                                      outputs=config.get('outputs',{}), limits={'timeout_seconds':config.get('timeout_seconds',60)},

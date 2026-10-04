@@ -367,7 +367,7 @@ class ParameterSampling(unittest.TestCase):
         self.assertTrue(all(j['config']['params']['roads'] == 2 for j in sampled))
         self.assertTrue(all(j['config']['params']['width'] == 6 for j in sampled))
         explicit = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('sample-')]
-        self.assertTrue(all(j['config']['params'] == {'roads': 1, 'shape': 2} for j in explicit))
+        self.assertTrue(all(j['config']['params'] == {'width': 6, 'roads': 1, 'shape': 2} for j in explicit))
         config['parameter_domain'] = 'legal'
         manifest = Planner('generator_stress', config, [self.bundle()]).plan()
         sampled = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('catalog-')]
