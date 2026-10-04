@@ -3544,6 +3544,8 @@ Místnosti
 Pořadí
 [hub play with friends]
 Hrát s přáteli
+[hub also search %0]
+Hledat také v %0
 [hub online now %0 %1]
 %0 hráčů online · %1 hledá v této frontě
 [hub show in open rooms]

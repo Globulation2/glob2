@@ -233,6 +233,14 @@ creates an immutable content version; previously equipped versions and frozen
 match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
+Glob meshes share paint coordinates across matching front/back and top/bottom
+surfaces, including limb pairs exchanged by their flipping gait. Canvas and model
+painting, erasing and patterns therefore preserve symmetry automatically; no
+symmetry toggle or server-side pixel normalization is needed. The designer
+previews worker walk/swim/harvest, warrior walk/swim/fight and explorer flight,
+with direction and paused-frame controls using the same mesh bytes as the game.
+Swarm paint and the separate building color retain their own behavior.
+
 Each version also names the swarm mesh its paint is laid out for (`swarmMesh`):
 `classic`, the original swarm and the default, or one of the generated shapes
 `crown`, `clutch`, `toadstool`, `coral`, `skep` and `bloom`. The protocol's

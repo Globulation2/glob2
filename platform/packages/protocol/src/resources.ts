@@ -305,6 +305,13 @@ export const InstanceInfo = Open(
     authProviders: Type.Array(AuthProviderInfo),
     queues: Type.Array(QueueInfo),
     guestsAllowed: Type.Boolean(),
+    features: Type.Optional(
+      Type.Array(Type.String({ maxLength: 64 }), {
+        maxItems: 64,
+        description:
+          "Optional behaviours this instance supports, for clients that would otherwise send a request an older server rejects. 'queue.multi': queue.join takes queueIds (one search in several queues).",
+      }),
+    ),
   },
   { description: 'Public description of a platform instance.' },
 );

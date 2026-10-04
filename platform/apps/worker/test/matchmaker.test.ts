@@ -632,6 +632,128 @@ describe('matchmaker', () => {
   });
 });
 
+describe('searches in several queues', () => {
+  // One player in Ranked and Casual together (queue.join queueIds).
+  async function enqueueBoth(h: Harness, name: string) {
+    const accountId = await createAccount(database.db, name);
+    const result = await joinQueue(database.db, {
+      accountId,
+      queue: RANKED,
+      alsoQueues: [CASUAL],
+      simVersion: SIM_A,
+      regions: [{ region: 'eu-west', rttMs: 30 }],
+      now: h.clock.now(),
+    });
+    if (!result.ok) throw new Error(`join failed: ${result.code}`);
+    expect(result.tickets.map((t) => t.queueId)).toEqual([RANKED.id, CASUAL.id]);
+    const [ranked, casual] = result.tickets;
+    return {
+      accountId,
+      ranked: ranked!.ticketId,
+      casual: casual!.ticketId,
+      searchId: result.searchId,
+    };
+  }
+
+  it('holds the other queues while one is in a prompt and closes them when its match starts', async () => {
+    const h = harness();
+    const both = await enqueueBoth(h, 'Both');
+    const ranked = await enqueue(h, RANKED, { name: 'RankedOnly' });
+    const casual = await enqueue(h, CASUAL, { name: 'CasualOnly' });
+    await h.matchmaker.tick();
+    // Ranked is grouped first; the casual ticket of the same search is held back.
+    const pending = await proposals();
+    expect(pending).toHaveLength(1);
+    expect(pending[0]!.queue_id).toBe(RANKED.id);
+    expect((await ticketStatus(both.casual)).status).toBe('waiting');
+    expect((await ticketStatus(casual.ticketId)).status).toBe('waiting');
+    // No status for the held ticket while the prompt is open.
+    expect(
+      h.notifier.of('queue.status', both.accountId).every((e) => e.data.ticketId !== both.casual),
+    ).toBe(true);
+
+    await respondToProposal(database.db, both.accountId, pending[0]!.id, true, h.clock.now());
+    await respondToProposal(database.db, ranked.accountId, pending[0]!.id, true, h.clock.now());
+    await h.matchmaker.tick();
+    expect((await ticketStatus(both.ranked)).status).toBe('matched');
+    expect((await ticketStatus(both.casual)).status).toBe('cancelled');
+    expect((await ticketStatus(casual.ticketId)).status).toBe('waiting');
+  });
+
+  it('resumes the other queues, in place, when the prompt falls through', async () => {
+    const h = harness();
+    const both = await enqueueBoth(h, 'Both');
+    h.clock.advance(5);
+    const decliner = await enqueue(h, RANKED, { name: 'Decliner' });
+    await h.matchmaker.tick();
+    const [proposal] = await proposals();
+    await respondToProposal(database.db, decliner.accountId, proposal!.id, false, h.clock.now());
+    h.clock.advance(1);
+    await h.matchmaker.tick();
+    const joinedAt = new Date('2026-10-01T12:00:00Z');
+    expect(await ticketStatus(both.ranked)).toMatchObject({
+      status: 'waiting',
+      created_at: joinedAt,
+    });
+    expect(await ticketStatus(both.casual)).toMatchObject({
+      status: 'waiting',
+      created_at: joinedAt,
+    });
+  });
+
+  it('ends the whole search when the player declines', async () => {
+    const h = harness();
+    const both = await enqueueBoth(h, 'Both');
+    await enqueue(h, RANKED, { name: 'Other' });
+    await h.matchmaker.tick();
+    const [proposal] = await proposals();
+    await respondToProposal(database.db, both.accountId, proposal!.id, false, h.clock.now());
+    await h.matchmaker.tick();
+    expect((await ticketStatus(both.ranked)).status).toBe('declined');
+    expect((await ticketStatus(both.casual)).status).toBe('cancelled');
+  });
+
+  it('leaves and updates every queue of the search', async () => {
+    const h = harness();
+    const both = await enqueueBoth(h, 'Both');
+    expect(await updateTicket(database.db, both.accountId, both.ranked, false, h.clock.now())).toBe(
+      'updated',
+    );
+    const flags = await database.db
+      .selectFrom('queue_tickets')
+      .select('allow_ai_opponent')
+      .where('search_id', '=', both.searchId)
+      .execute();
+    expect(flags.map((f) => f.allow_ai_opponent)).toEqual([false, false]);
+    expect(await leaveQueue(database.db, both.accountId, both.casual, h.clock.now())).toBe('left');
+    expect((await ticketStatus(both.ranked)).status).toBe('cancelled');
+    expect((await ticketStatus(both.casual)).status).toBe('cancelled');
+  });
+
+  it('allows one search per account, and keeps guests out of it when it has a rated queue', async () => {
+    const h = harness();
+    const both = await enqueueBoth(h, 'Both');
+    const again = await joinQueue(database.db, {
+      accountId: both.accountId,
+      queue: CASUAL,
+      simVersion: SIM_A,
+      regions: [],
+      now: h.clock.now(),
+    });
+    expect(again).toEqual({ ok: false, code: 'already_queued' });
+    const guest = await createAccount(database.db, 'Guest', 'guest');
+    const mixed = await joinQueue(database.db, {
+      accountId: guest,
+      queue: CASUAL,
+      alsoQueues: [RANKED],
+      simVersion: SIM_A,
+      regions: [],
+      now: h.clock.now(),
+    });
+    expect(mixed).toEqual({ ok: false, code: 'guest_not_allowed' });
+  });
+});
+
 describe('matchmaker liveness', () => {
   it('keeps grouping while a start waits for its map, and starts each proposal once', async () => {
     const clock = new FakeClock();

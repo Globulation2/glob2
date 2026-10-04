@@ -5,49 +5,109 @@
   "experimental": true,
   "meshes": {
     "worker-walk.gsk": {
-      "sha256": "08b1395ce6302ab848945b107c5efba6a93bb72260911350c3898e28042dc593",
+      "sha256": "eeec5b14febea9f134652135af122d113656405aed7faa10b671e3764606555b",
       "source": "datasrc/gfx/originals/units/glob-worker-walk.blend",
       "sourceSha256": "c63b1a4ae627147f20911f7c7abe2b61ff8a2b0d6719ade4ee6c3434b3e6d344",
-      "vertices": 1086,
-      "triangles": 1472
+      "vertices": 2834,
+      "triangles": 5664,
+      "surface": {
+        "definition": "datasrc/gfx/authored/skins/limb-surfaces.json",
+        "definitionSha256": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "exporter": "tools/skins/export_units.py",
+        "exporterSha256": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "builder": "tools/skins/limb_surface.py",
+        "builderSha256": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "contract": "worker-surface.json",
+        "contractSha256": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f"
+      }
     },
     "worker-swim.gsk": {
-      "sha256": "44f00c64dd4811ca36d84f7f6e0225e15d5d9ff64e1b57982660ad3ab2c14b26",
+      "sha256": "9069fdb7dc94c2ef334f65d8fcf876d567d713561a190d4659bcb8111f041f96",
       "source": "datasrc/gfx/originals/units/glob-worker-swim.blend",
       "sourceSha256": "47d23824ec18dce121a39e60a2d584ddfffb2ce63e375fe22cfdaddaaf40b92a",
-      "vertices": 1086,
-      "triangles": 1472
+      "vertices": 2834,
+      "triangles": 5664,
+      "surface": {
+        "definition": "datasrc/gfx/authored/skins/limb-surfaces.json",
+        "definitionSha256": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "exporter": "tools/skins/export_units.py",
+        "exporterSha256": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "builder": "tools/skins/limb_surface.py",
+        "builderSha256": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "contract": "worker-surface.json",
+        "contractSha256": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f"
+      }
     },
     "worker-harvest.gsk": {
-      "sha256": "1ca1e12ece4c01583d79127535eb9c21183c0d2d3009cb08c8580f172a8f4feb",
+      "sha256": "90d0fb8799c14ba7756092b3893e08db69f4b5a9433cd4b6720f49331e83e4a5",
       "source": "datasrc/gfx/originals/units/glob-worker-harvest.blend",
       "sourceSha256": "d518ff2528f2043a24548342a1632c510059deab1e7d237177666e0023ee8233",
-      "vertices": 1086,
-      "triangles": 1472
+      "vertices": 2834,
+      "triangles": 5664,
+      "surface": {
+        "definition": "datasrc/gfx/authored/skins/limb-surfaces.json",
+        "definitionSha256": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "exporter": "tools/skins/export_units.py",
+        "exporterSha256": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "builder": "tools/skins/limb_surface.py",
+        "builderSha256": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "contract": "worker-surface.json",
+        "contractSha256": "93724036aefc90e5a64719a1840227a4e5531c778371124667c691f1231cf81f"
+      }
     },
     "warrior-walk.gsk": {
-      "sha256": "d8bd793135b43cf252797fc83a6130aa37f7b87bb381f382d7b1bf46133a89e3",
+      "sha256": "9162c46c1a6ab662aa00985f2886e472d1a4d0bc940d89b72088f8d4e8d5373c",
       "source": "datasrc/gfx/originals/units/glob-warrior-walk.blend",
       "sourceSha256": "f7c9d2f9d2693c4f73c5e5ccea2063fd256509740fe6f755e658511fff744943",
-      "vertices": 816,
-      "triangles": 984
+      "vertices": 2450,
+      "triangles": 4896,
+      "surface": {
+        "definition": "datasrc/gfx/authored/skins/limb-surfaces.json",
+        "definitionSha256": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "exporter": "tools/skins/export_units.py",
+        "exporterSha256": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "builder": "tools/skins/limb_surface.py",
+        "builderSha256": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "contract": "warrior-surface.json",
+        "contractSha256": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052"
+      }
     },
     "warrior-swim.gsk": {
-      "sha256": "760a2cdc28545affe5cb74eef948e38aef2326a674fa8dc45f9708bcba1efd47",
+      "sha256": "027c4f5ff3a364e8335927ef09e8e32984225a83a1dfa86c4f1a549a534f5d4a",
       "source": "datasrc/gfx/originals/units/glob-warrior-swim.blend",
       "sourceSha256": "f83fab5f221099a35cb12385d3235356d2c43f292cc7a7943ba6f7eb4b29a727",
-      "vertices": 816,
-      "triangles": 984
+      "vertices": 2450,
+      "triangles": 4896,
+      "surface": {
+        "definition": "datasrc/gfx/authored/skins/limb-surfaces.json",
+        "definitionSha256": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "exporter": "tools/skins/export_units.py",
+        "exporterSha256": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "builder": "tools/skins/limb_surface.py",
+        "builderSha256": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "contract": "warrior-surface.json",
+        "contractSha256": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052"
+      }
     },
     "warrior-fight.gsk": {
-      "sha256": "39d48bdf3955d619ba7e28f2830d8164469676ec98748dadd6d71d45a3802fbd",
+      "sha256": "68ec86d000cdccc09279239742ec9a478e984e62cde68318c911574882f8792f",
       "source": "datasrc/gfx/originals/units/glob-warrior-fight.blend",
       "sourceSha256": "f7997e783103c989539d71b2e94f1f5eb99c124692b2c7f3d63ec1798d1c02ca",
-      "vertices": 816,
-      "triangles": 984
+      "vertices": 2450,
+      "triangles": 4896,
+      "surface": {
+        "definition": "datasrc/gfx/authored/skins/limb-surfaces.json",
+        "definitionSha256": "a1ea321dfe7462c6af4bd70cccd76c9b1a94337ef18754a89c53f9834d52fd38",
+        "exporter": "tools/skins/export_units.py",
+        "exporterSha256": "d9eeab2165559c625b6f7cba4d2d8616690bc37c86ba1cbc36923b206f21b9bb",
+        "builder": "tools/skins/limb_surface.py",
+        "builderSha256": "c98143edba1cdcde9d3e91ed1f93eb29626d4c2b026af4d7d08e662d84354d1e",
+        "contract": "warrior-surface.json",
+        "contractSha256": "b84e4ed34500a17fd314c1265ea567c2acfd6df8e4a971706b255044d866e052"
+      }
     },
     "explorer-fly.gsk": {
-      "sha256": "7d1140f79d0b757b3e1a5806e47f3d8bb01b8a47d012671826d5d88ccfa3ef33",
+      "sha256": "1b46c97e0303b5317083d218414fa5c3c86654037f5a502c84b57a55ac3a5a49",
       "source": "datasrc/gfx/originals/units/explorer.blend",
       "sourceSha256": "4d6913061c1e25861a12d45cea72f14d5c8bd8ab603158a2e1077cff70cd959d",
       "vertices": 1330,

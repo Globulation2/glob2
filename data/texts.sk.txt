@@ -3544,6 +3544,8 @@ Miestnosti
 Poradie
 [hub play with friends]
 Hrať s priateľmi
+[hub also search %0]
+Hľadať aj v %0
 [hub online now %0 %1]
 %0 hráčov online · %1 hľadá v tomto rade
 [hub show in open rooms]

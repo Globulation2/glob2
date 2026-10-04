@@ -3544,6 +3544,8 @@ Räume
 Rangliste
 [hub play with friends]
 Mit Freunden spielen
+[hub also search %0]
+Auch in %0 suchen
 [hub online now %0 %1]
 %0 Spieler online · %1 suchen in dieser Warteschlange
 [hub show in open rooms]

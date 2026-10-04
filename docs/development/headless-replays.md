@@ -375,8 +375,8 @@ Performance records describe this execution session and are not stored in saves.
 ### Gradient scheduling compatibility
 
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
-after seeding, with one background worker by default. Saves retain completed
-pending fields and their remaining deadlines without publishing them early;
+after seeding. The current default is two background workers. Saves retain
+completed pending fields and their remaining deadlines without publishing them early;
 older saves remain loadable and start with an empty queue. The save compatibility
 floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay

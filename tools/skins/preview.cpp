@@ -4,6 +4,9 @@
 #include <GraphicContext.h>
 #include <SkinMesh.h>
 #include <SDL3/SDL.h>
+#ifdef HAVE_OPENGL
+#include <SDL3/SDL_opengl.h>
+#endif
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -18,6 +21,16 @@ int main(int argc, char **argv)
     Toolkit::init("glob2-skin-preview");
     struct CloseToolkit { ~CloseToolkit() { Toolkit::close(); } } closeToolkit;
     auto *gfx = Toolkit::initGraphic(1024, 960, GraphicContext::USEGPU, "Colony skin feasibility");
+    // Let the desktop map and present the window before recording captures.
+    // Hardware readback can otherwise capture the compositor's opening animation.
+    for (int frame = 0; frame < 25; ++frame)
+    {
+        SDL_PumpEvents();
+        gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
+        gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
+        gfx->nextFrame();
+        SDL_Delay(20);
+    }
     {
         DrawableSurface paint(std::string(argv[1])+"/paint.png");
         if (paint.getW() != 256 || paint.getH() != 256) return 3;
@@ -91,6 +104,12 @@ int main(int argc, char **argv)
         }
         if (argc == 4 && (std::string(argv[3]) == "--benchmark" || std::string(argv[3]) == "--benchmark-pages"))
         {
+#ifdef HAVE_OPENGL
+            std::cout << "video_driver=" << SDL_GetCurrentVideoDriver()
+                      << " gl_vendor=" << glGetString(GL_VENDOR)
+                      << " gl_renderer=" << glGetString(GL_RENDERER)
+                      << " gl_version=" << glGetString(GL_VERSION) << std::endl;
+#endif
             const unsigned phases = std::string(argv[3]) == "--benchmark-pages" ? 128 : 32;
             SkinMesh mesh; std::string error;
             if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
@@ -146,20 +165,26 @@ int main(int argc, char **argv)
             SkinMesh mesh; std::string error;
             if (!mesh.load(std::string(argv[1])+"/"+names[clip]+".gsk",error))
             { std::cerr << error << '\n'; return 4; }
-            gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
-            gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
-            for (int direction=0; direction<8; ++direction)
-                for (int sample=0; sample<4; ++sample)
-                {
-                    int x=direction*128, y=sample*240, frame=mesh.frames == 1 ? 0 : direction*32+sample*8;
-                    const int size = clip == 7 ? 114 : mesh.logicalSize * 3, inset = (128-size)/2;
-                    if (clip != 7) gfx->drawSprite(x+inset,y+6,size,size,classic,bases[clip]*4+frame);
-                    if (!gfx->drawSkinMesh(mesh,frame,paint,x+inset,y+126,size,size,
-                        clip == 7 ? nullptr : classic->baseFrame(bases[clip]*4+frame)))
-                    { std::cerr << "GPU mesh draw unavailable\n"; return 5; }
-                }
-            gfx->printScreen(std::string(argv[2])+"-"+names[clip]+".bmp");
-            gfx->nextFrame();
+            const bool allPhases = argc == 4 && std::string(argv[3]) == "--all-phases";
+            const int pages = allPhases && clip != 7 ? 8 : 1;
+            for (int page=0; page<pages; ++page)
+            {
+                gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
+                gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
+                for (int direction=0; direction<8; ++direction)
+                    for (int sample=0; sample<4; ++sample)
+                    {
+                        int x=direction*128, y=sample*240, frame=mesh.frames == 1 ? 0 : direction*32+(allPhases ? page*4+sample : sample*8);
+                        const int size = clip == 7 ? 114 : mesh.logicalSize * 3, inset = (128-size)/2;
+                        if (clip != 7) gfx->drawSprite(x+inset,y+6,size,size,classic,bases[clip]*4+frame);
+                        if (!gfx->drawSkinMesh(mesh,frame,paint,x+inset,y+126,size,size,
+                            clip == 7 ? nullptr : classic->baseFrame(bases[clip]*4+frame)))
+                        { std::cerr << "GPU mesh draw unavailable\n"; return 5; }
+                    }
+                gfx->printScreen(std::string(argv[2])+"-"+names[clip]+
+                    (allPhases ? "-phase-"+std::to_string(page*4) : "")+".bmp");
+                gfx->nextFrame();
+            }
         }
     }
     return 0;

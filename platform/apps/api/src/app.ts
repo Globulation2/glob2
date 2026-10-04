@@ -203,6 +203,7 @@ export async function buildApp(
           maps: [...new Set(queue.mapPool.map((entry) => entry.generatorId))].slice(0, 64),
         })),
       guestsAllowed: config.instance.guests.enabled,
+      features: ['queue.multi'],
     };
   });
 

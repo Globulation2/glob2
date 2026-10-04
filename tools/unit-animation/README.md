@@ -180,7 +180,9 @@ From the repository root, using Blender **3.6.23**:
 blender -b --disable-autoexec --python-exit-code 1 --python tools/skins/export_units.py -- \
   --output artifacts/skins/units
 python3 tools/skins/make_paint.py artifacts/skins/units/paint.png
+cp data/skins/colony-v1/swarm.gsk artifacts/skins/units/
 python3 tools/skins/test_export.py artifacts/skins/units
+python3 tools/skins/install_units.py artifacts/skins/units
 scons release=1 skin-preview
 build/linux/client/release/src/skin-preview artifacts/skins/units artifacts/skins/comparison
 GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/src/glob2
@@ -189,7 +191,13 @@ GLOB2_SKIN_PREVIEW_DIR="$PWD/artifacts/skins/units" build/linux/client/release/s
 Validate the installed package with `python3 tools/skins/test_export.py
 data/skins/colony-v1`. This checks retained source and mesh hashes, complete clip
 coverage, shared paint coordinates across actions, animation in all headings,
-unclipped geometry, normalized lighting normals, and identical designer models.
+unclipped geometry, normalized lighting normals, and identical designer models for
+all seven unit actions and the swarm. Workers and warriors additionally require
+one closed connected surface, separate limb regions, matching front/back and
+top/bottom UVs and triangle interpolation, noncollapsed connection triangles,
+and a continuous flip-cycle boundary. `test/build_system/test_skin_surface_contract.py`
+injects broken paint, a cross-foot triangle and a collapsed joint to check these
+regressions are rejected.
 The build-system test suite runs this check too.
 
 The modern Blender importer converts the legacy cyclic IPO key times to
@@ -200,23 +208,51 @@ clip. Other poses retain their quarter-frame times; canonical topology and UVs
 remain unchanged, so published paint stays attached to the same vertices.
 
 The comparison harness writes all seven action sheets with classic poses
-above live GPU-rendered poses, at three times logical size. Generated files stay
+above live GPU-rendered poses, at three times logical size. Add `--all-phases`
+to write eight numbered pages per action covering all 32 phases in every
+heading (the static swarm has one page). Run it with white, stripes, spots and
+an isolated patch to review both geometry and paint attachment. Generated files stay
 under `artifacts/`. `make_paint.py --pattern stripes` and `--pattern spots` provide
 simple alternative opaque textures; omit the option for a checkerboard with a
 pink registration stripe.
 
-`export_units.py` preserves all original source bytes. It evaluates a canonical
-surface once per unit type, unwraps it once, and transfers that fixed surface through the
-original named metaball centers and scales in the shared body orientation.
-Individual spherical components have no meaningful rotation; ignoring their
-independent bone rolls avoids twisting a welded surface between gait cycles.
-The explorer's ellipsoid body and wings retain their own orientations and field
-axes, so their animated rotation deforms the attached surface.
-Four fixed normalized influences
-per vertex preserve texture attachment and vertex identity across actions. This
-approximates the changing metaball surface; review silhouettes, seams and motion
-before approving an asset. Re-exported topology is versioned as an experimental
-UV layout, not yet a published customer paint format.
+`export_units.py` preserves all original source bytes. Worker and warrior surfaces
+are constructed from the retained definition in
+`datasrc/gfx/authored/skins/limb-surfaces.json` and `tools/skins/limb_surface.py`.
+A spherical torso has four shared socket rims; each limb follows an explicit
+path through its named source components (indices follow sorted `Mball` names).
+Section rings follow their own limb path with a minimum neck radius, a smooth
+transition from the exact socket rim and a spherical terminal cap. Small socket
+openings retain the surrounding torso shell. Each clip aligns the body axes to
+its source rig; swimming sources use a different rest orientation. Parallel
+transport keeps ring orientation continuous when a fighting arm bends along the
+body's front axis. Vertices then fit the shared torso/proximal-component field
+and their own distal limb field, with analytic field normals to smooth connections.
+Other limbs' joints and tips never influence that limb's surface. This
+keeps distinct feet from acquiring a welded bridge and prevents a warrior arm
+from being pulled toward another limb. Topology and vertex identity stay fixed
+across all actions; source centers, scales, cameras and gait samples are retained.
+These surfaces approximate the original metaballs, so silhouette and motion
+review remain necessary alongside structural checks.
+
+Workers and warriors share a virtual body chart: counterpart front/back and
+top/bottom surfaces sample identical UVs, including the upper/lower limbs exchanged
+by a flip. Reflection-invariant center fans avoid different interpolation on
+opposite sides of a quad. Painting either the texture or the preview therefore
+preserves symmetry without a symmetry switch, duplicate stamps or server-side
+texture rewriting. This also applies to fill, erase and arbitrary uploaded paint.
+The retained surface contracts record reflection partners and limb regions.
+The explorer retains its original geometry, normal calculation and four-influence
+transfer, including ellipsoid orientations; only its UVs change to a body-space
+front/back and top/bottom folded chart. Swarm geometry and UVs are unchanged.
+
+`install_units.py` validates all three generated sets before copying unit meshes,
+surface contracts and provenance into `data/skins/colony-v1`, and copies all unit
+actions into the web designer. Preset paint remains reproducible through
+`make_paint.py`; changing UVs alone does not require replacing immutable preset
+texture bytes. The web preview offers action, direction, animation and paused
+frame controls. Scrubbing keeps the loaded GPU model; selecting an action loads
+the corresponding runtime mesh. The layout remains experimental `colony-v1`.
 
 GSK1 stores a bounded little-endian header (magic, vertex count, index count,
 one static pose or 256 unit poses, logical canvas size), shared UV float pairs, uint32 triangle indices,
@@ -247,7 +283,9 @@ animation phases can populate up to four persistent atlas pages. Each compares
 on-demand tile preparation against the visible-scene prepass using the same
 128-pixel raster resolution, warms up five frames, and measures forty frames.
 Draw-count assertions catch missing work, and final BMP captures permit pixel
-comparison. Report renderer/hardware and inspect captures alongside timings;
+comparison. The helper lets the desktop window settle before captures and prints
+the actual SDL video driver, OpenGL vendor, renderer and version in benchmark logs.
+Report renderer/hardware and inspect captures alongside timings;
 these isolated measurements do not establish crowded-game performance.
 `--validate-cache` instead checks paint edits, texture address reuse and overflow;
 it saves cold/hit/repaint/eviction images for comparison. Identical cache hits

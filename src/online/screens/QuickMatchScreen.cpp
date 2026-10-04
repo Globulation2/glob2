@@ -524,7 +524,15 @@ Element build(QuickMatch &model, const Presentation &p, std::function<void()> de
 		phaseText = tr("[qm measuring relays]");
 	else if (model.phase() == QuickMatch::Phase::Joining)
 		phaseText = tr("[qm joining queue]");
-	const std::string line = phaseText + " \xC2\xB7 " + queueTitle(queue) + " \xC2\xB7 " + clockText(model.waitedSeconds());
+	// Every queue of a search in several, until one of them finds the match.
+	std::string titles = queueTitle(queue);
+	if (model.queues().size() > 1 && model.phase() != QuickMatch::Phase::Proposed && model.phase() != QuickMatch::Phase::Starting)
+	{
+		titles.clear();
+		for (const auto &each : model.queues())
+			titles += (titles.empty() ? "" : " / ") + queueTitle(each);
+	}
+	const std::string line = phaseText + " \xC2\xB7 " + titles + " \xC2\xB7 " + clockText(model.waitedSeconds());
 	// What happens if nobody is found: the honest reason the wait has an end.
 	std::string next;
 	if (queue.aiBackfillSeconds)

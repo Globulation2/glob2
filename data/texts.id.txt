@@ -3544,6 +3544,8 @@ Ruang
 Peringkat
 [hub play with friends]
 Main bersama teman
+[hub also search %0]
+Cari juga di %0
 [hub online now %0 %1]
 %0 pemain online · %1 mencari di antrean ini
 [hub show in open rooms]
