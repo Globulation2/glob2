@@ -4,6 +4,7 @@
 #include <PerformanceTelemetry.h>
 #include <algorithm>
 #include <cstring>
+#include <string>
 
 #ifdef HAVE_OPENGL
 // The desktop compatibility context exposes the EXT framebuffer entry points.
@@ -37,8 +38,49 @@ constexpr unsigned TileSize = 128, AtlasSize = 2048;
 constexpr unsigned Columns = AtlasSize / TileSize, SlotsPerPage = Columns * Columns;
 constexpr unsigned MaxPages = 4, MaxSlots = SkinAtlasCache::Capacity;
 constexpr float Padding = 1.25f;
-GLuint compileShader(GLenum type, const char *source)
+// Shared verbatim with the web designer preview (MeshPreview.tsx); keep the
+// marked block identical. Normals are camera space; the camera is orthographic.
+const char *const SkinMaterialGLSL = R"GLSL(
+// BEGIN skin-material
+float skinHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float skinNoise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  vec2 s = f * f * (3.0 - 2.0 * f);
+  return mix(mix(skinHash(i), skinHash(i + vec2(1.0, 0.0)), s.x),
+             mix(skinHash(i + vec2(0.0, 1.0)), skinHash(i + vec2(1.0, 1.0)), s.x), s.y);
+}
+// The original glob material bumps its normals with Stucci noise (norfac 5).
+float skinStucci(vec2 p) { return skinNoise(p) + 0.5 * skinNoise(p * 2.03 + 17.0); }
+vec3 skinBump(vec3 n, vec2 uv, float amount, float frequency) {
+  float e = 0.25 / frequency;
+  float h = skinStucci(uv * frequency);
+  float gu = (skinStucci((uv + vec2(e, 0.0)) * frequency) - h) / e;
+  float gv = (skinStucci((uv + vec2(0.0, e)) * frequency) - h) / e;
+  // Express the UV height gradient in screen directions, independent of resolution.
+  vec2 du = vec2(dFdx(uv.x), dFdy(uv.x));
+  vec2 dv = vec2(dFdx(uv.y), dFdy(uv.y));
+  float density = max(0.5 * (length(du) + length(dv)), 1e-6);
+  vec2 g = amount * (gu * du + gv * dv) / density;
+  // Stretched UV regions exaggerate the gradient; keep the tilt bounded.
+  g *= min(1.0, 0.7 / max(length(g), 1e-6));
+  return normalize(n - vec3(g, 0.0));
+}
+// Classic glossy: the original glob material's bumped body and broad white
+// streaks (specular 0.5, hardness 2), lit like the classic sprites.
+vec3 skinShade(vec3 albedo, vec3 surfaceNormal, vec2 uv) {
+  vec3 n = skinBump(normalize(surfaceNormal), uv, 0.08, 12.0);
+  vec3 l = normalize(vec3(-0.4, 0.7, 1.0));
+  vec3 h = normalize(l + vec3(0.0, 0.0, 1.0));
+  float diffuse = max(0.0, dot(n, l));
+  float nh = max(0.0, dot(n, h));
+  return albedo * (0.42 + 0.8 * diffuse) + vec3(0.75 * pow(nh, 4.0));
+}
+// END skin-material
+)GLSL";
+GLuint compileShader(GLenum type, const std::string &text)
 {
+    const char *source = text.c_str();
     const GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, nullptr);
     glCompileShader(shader);
@@ -174,16 +216,18 @@ void GraphicContext::prepareSkinMeshes(const std::vector<SkinMeshRequest> &reque
             "layout(location=0) in vec3 position;layout(location=1) in vec3 surfaceNormal;layout(location=2) in vec2 texcoord;\n"
             "out vec2 uv;out vec3 normal;void main(){uv=texcoord;normal=surfaceNormal;gl_Position=vec4(position.xy/1.25,position.z,1.0);}\n");
         const auto fragment = compileShader(GL_FRAGMENT_SHADER,
-            "#version 300 es\nprecision highp float;\n"
+            std::string("#version 300 es\nprecision highp float;\n")+
             "uniform sampler2D paint;in vec2 uv;in vec3 normal;out vec4 color;\n"
-            "void main(){float light=0.45+0.55*max(0.0,dot(normalize(normal),normalize(vec3(-0.4,0.7,1.0))));color=vec4(texture(paint,uv).rgb*light,1.0);}\n");
+            + std::string(SkinMaterialGLSL) +
+            "void main(){color=vec4(skinShade(texture(paint,uv).rgb,normal,uv),1.0);}\n");
 #else
         const auto vertex = compileShader(GL_VERTEX_SHADER,
             "#version 120\nvarying vec2 uv;varying vec3 normal;\n"
             "void main(){uv=gl_MultiTexCoord0.xy;normal=gl_Normal;gl_Position=vec4(gl_Vertex.xy/1.25,gl_Vertex.z,1.0);}\n");
         const auto fragment = compileShader(GL_FRAGMENT_SHADER,
-            "#version 120\nuniform sampler2D paint;varying vec2 uv;varying vec3 normal;\n"
-            "void main(){float light=0.45+0.55*max(0.0,dot(normalize(normal),normalize(vec3(-0.4,0.7,1.0))));gl_FragColor=vec4(texture2D(paint,uv).rgb*light,1.0);}\n");
+            std::string("#version 120\nuniform sampler2D paint;varying vec2 uv;varying vec3 normal;\n")
+            + std::string(SkinMaterialGLSL) +
+            "void main(){gl_FragColor=vec4(skinShade(texture2D(paint,uv).rgb,normal,uv),1.0);}\n");
 #endif
         if (vertex && fragment)
         {
