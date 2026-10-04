@@ -1,10 +1,13 @@
 # High-resolution runtime pack
 
-1860 registered frames, including 1,792 unit poses across seven animation sets.
-Unit textures render onto a fixed 128x128 pixel canvas from the preserved Blender originals, without AI
-(4x for the 32px-native explorer set, ~3.37x for the 38px-native worker sets, 3.2x for the 40px-native warrior sets).
-Native-resolution sprites remain in `data/gfx`; logical geometry, team colors and animation timing are preserved.
+2287 registered frames combine approved original-derived artwork, 1,792
+unit poses rendered from preserved Blender sources, eight SVG farm markers,
+AI-enhanced sprite finals, generated terrain/water materials and resampled masks.
+Native sprites remain in `data/gfx`; logical sizes, team colors and animation
+cadence are preserved. Unsupported backends and missing frames use classic art.
 
-Approved inputs live in `datasrc/gfx/production`; package them with `tools/artwork/package_runtime.py`.
-See `manifest.json` for all frame/layer/source hashes, `tools/unit-animation/README.md` for unit render recipes,
-and `datasrc/gfx/RECOVERED-RUNTIME.md` for world-art exports.
+Approved inputs live in `datasrc/gfx/production`; package them with
+`tools/artwork/package_runtime.py`. `manifest.json` records provenance and hashes;
+`frames.txt` is the runtime lookup. Terrain/resource atlases contain padded mip
+levels matching these frames. See `docs/assets/high-resolution/README.md`,
+`tools/artwork/ai/README.md`, and `tools/unit-animation/README.md` for maintenance.
