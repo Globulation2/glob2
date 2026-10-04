@@ -33,13 +33,13 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
             },
             "netProtocol": {
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "NET_PROTOCOL_VERSION in src/Version.h."
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
             },
             "dataHash": {
               "type": "string",
@@ -152,13 +152,13 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
             },
             "netProtocol": {
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "NET_PROTOCOL_VERSION in src/Version.h."
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
             },
             "dataHash": {
               "type": "string",
@@ -262,13 +262,13 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
             },
             "netProtocol": {
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "NET_PROTOCOL_VERSION in src/Version.h."
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
             },
             "dataHash": {
               "type": "string",
@@ -339,13 +339,13 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
             },
             "netProtocol": {
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "NET_PROTOCOL_VERSION in src/Version.h."
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
             },
             "dataHash": {
               "type": "string",
@@ -409,13 +409,13 @@
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
             },
             "netProtocol": {
               "type": "integer",
               "minimum": 0,
               "maximum": 65535,
-              "description": "NET_PROTOCOL_VERSION in src/Version.h."
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
             },
             "dataHash": {
               "type": "string",
@@ -468,13 +468,13 @@
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 65535,
-                      "description": "VERSION_MINOR in src/Version.h (save and simulation format)."
+                      "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
                     },
                     "netProtocol": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 65535,
-                      "description": "NET_PROTOCOL_VERSION in src/Version.h."
+                      "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
                     },
                     "dataHash": {
                       "type": "string",
