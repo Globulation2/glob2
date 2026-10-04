@@ -134,6 +134,7 @@ ENGINE_TESTS = [
     'SettingsScreenTest.cpp',
     'SettingsGraphicsTest.cpp',
     'SettingsExperimentsTest.cpp',
+    'SystemLanguageTest.cpp',
     'GuardAreaBalanceTest.cpp',
     ('FarmAreaTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'GameSpeedTest.cpp',
@@ -170,6 +171,7 @@ UNIT_TESTS = [
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
+    'BidiTextTest.cpp',
     'SceneBufferTest.cpp',
     'BrushAccumulatorTest.cpp',
     'BrushCoverageTest.cpp',

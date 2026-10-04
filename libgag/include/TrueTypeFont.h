@@ -100,7 +100,7 @@ namespace GAGCore
 		void updateRenderScale(void);
 		//! Apply the current style to both the metrics and the rasterisation font
 		void applyStyle(void);
-		//! The text as it is handed to SDL_ttf: reordered where fribidi is available
+		//! The text as it is handed to SDL_ttf: shaped and in display order (fribidi, or BidiText without it)
 		std::string shapeText(const std::string &text) const;
 #ifdef HAVE_FRIBIDI
 		char *getBIDIString (const std::string text);

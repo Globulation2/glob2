@@ -276,8 +276,8 @@ var Module = {
       // The core package's font covers every interface language except Chinese,
       // Japanese and Korean; those need the full font before any text is drawn.
       // Core has English and, of the other languages, only their names.
-      const language = savedPreference('language');
-      if (language && language !== 'en') Module.glob2RequireAsset?.('translations');
+      // A profile without a saved language follows the browser's (src/SystemLanguage.cpp).
+      if (!/^en\b/i.test(interfaceLanguage())) Module.glob2RequireAsset?.('translations');
       if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
       removeRunDependency('browser-saves');
     });
@@ -356,7 +356,10 @@ function savedPreference(name) {
     return match ? match[1].trim() : null;
   } catch (_) { return null; }
 }
-function cjkInterface() { return /^(zh|ja|ko)\b/.test(savedPreference('language') || ''); }
+function interfaceLanguage() {
+  return savedPreference('language') || (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+}
+function cjkInterface() { return /^(zh|ja|ko)\b/i.test(interfaceLanguage()); }
 // After the menu is up, the rest of the game data downloads in the background,
 // most needed first (scons/web_assets.py):
 // Core and game sprites already arrived together under the loading page.
