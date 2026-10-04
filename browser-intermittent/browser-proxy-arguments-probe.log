@@ -1,0 +1,48 @@
+Healthy proxy calls 76324
+[
+  {
+    "funcIndex": 0,
+    "emAsmAddr": 1575136,
+    "callingThread": 0,
+    "numCallArgs": 0,
+    "args": 0,
+    "expected": 1,
+    "target": "$0=>{if(Module.hiveWorker)Module.hiveWorker.terminate();Module.hiveResult=null;Module.hiveWorker=new Worker(new URL(\"hive-worker.js\",document.baseURI));Module.hiveWorker.onmessage=e=>{Module.hiveResult=JSON.stringify(e.data);Module.hiveWorker.terminate()};Module.hiveWorker.onerror=()=>{Module.hiveResult='{\"ok\":false}';Module.hiveWorker.terminate()};Module.hiveWorker.postMessage(UTF8ToString($0));clearTimeout(Module.hiveTimeout);Module.hiveTimeout=setTimeout(()=>{if(Module.hiveResult===null){Module.hiveWorker.terminate();Module.hiveResult='{\"ok\":false}'}},5e3)}",
+    "stack": "Error\n    at wrapped (artifacts/ci-repair/browser-proxy-arguments-init.js:16:70)\n    at eval (eval at evaluate (:311:30), <anonymous>:3:9)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+    "memoryBytes": 134217728,
+    "heap": [
+      1668509029,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+]

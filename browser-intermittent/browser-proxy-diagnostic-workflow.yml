@@ -1,0 +1,73 @@
+name: Browser stall diagnostics
+on:
+  workflow_dispatch:
+concurrency:
+  group: browser-proxy-arguments-diagnostics
+  cancel-in-progress: false
+permissions:
+  contents: read
+  actions: read
+jobs:
+  chromium:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
+    timeout-minutes: 45
+    env:
+      GLOB2_TEST_RENDERER: software
+      GLOB2_DEV_MODE: isolated
+      GLOB2_FIREFOX_HEADED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-client
+          run-id: 37187146428
+          github-token: ${{ github.token }}
+          path: build/emscripten/client/release
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-native
+          run-id: 37187008011
+          github-token: ${{ github.token }}
+          path: artifacts/ci-native
+      - name: Install the same native libraries and display as the failing shard
+        run: |
+          tar -xzf artifacts/ci-native/web-native.tar.gz
+          sudo apt-get update -qq
+          xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
+          python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
+      - name: Install the pinned browser test runtime
+        working-directory: browser
+        run: |
+          npm ci --ignore-scripts
+          npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Start the original Firefox silent audio service
+        if: matrix.browser == 'firefox'
+        run: |
+          sudo apt-get install -y pulseaudio
+          pulseaudio --start --exit-idle-time=-1 --load='module-null-sink sink_name=glob2_ci'
+      - name: Repeat the original storage and renderer cases with failure stack capture
+        working-directory: browser
+        run: |
+          for attempt in $(seq 1 5); do
+            echo "Complete shard attempt $attempt"
+            if [ '${{ matrix.browser }}' = chromium ]; then
+              xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js' || exit $?
+            else
+              xvfb-run -a npx playwright test tests/viewport.spec.js --project=firefox --grep 'running match survives' || exit $?
+            fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-proxy-diagnostics-${{ matrix.browser }}
+          path: |
+            build/browser-test-results
+            build/browser-test-report

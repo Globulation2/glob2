@@ -1,0 +1,20 @@
+
+Running 5 tests using 1 worker
+
+(node:912001) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › artifacts/ci-repair/browser-proxy-malloc-local/storage.spec.js:23:40 › abort failure retains the previous durable save and can retry (33.3s)
+(node:912192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [chromium] › artifacts/ci-repair/browser-proxy-malloc-local/storage.spec.js:23:40 › abort failure retains the previous durable save and can retry (32.9s)
+(node:912431) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [chromium] › artifacts/ci-repair/browser-proxy-malloc-local/storage.spec.js:23:40 › abort failure retains the previous durable save and can retry (32.7s)
+(node:912614) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › artifacts/ci-repair/browser-proxy-malloc-local/storage.spec.js:23:40 › abort failure retains the previous durable save and can retry (32.6s)
+(node:912874) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [chromium] › artifacts/ci-repair/browser-proxy-malloc-local/storage.spec.js:23:40 › abort failure retains the previous durable save and can retry (33.9s)
+
+  5 passed (2.8m)

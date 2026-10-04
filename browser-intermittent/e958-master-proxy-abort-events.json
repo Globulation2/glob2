@@ -1,0 +1,77 @@
+[
+  {
+    "type": "console",
+    "messageType": "error",
+    "text": "Game stopped: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js",
+    "args": [
+      {
+        "preview": "Game stopped: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js",
+        "value": "Game stopped: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js"
+      }
+    ],
+    "location": {
+      "url": "http://127.0.0.1:8770/?renderer=software",
+      "lineNumber": 260,
+      "columnNumber": 65
+    },
+    "time": 22363.941,
+    "pageId": "page@2556f221f453e9e810dc7b02d8829b5f"
+  },
+  {
+    "type": "console",
+    "messageType": "error",
+    "text": "Aborted(Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js)",
+    "args": [
+      {
+        "preview": "Aborted(Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js)",
+        "value": "Aborted(Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js)"
+      }
+    ],
+    "location": {
+      "url": "http://127.0.0.1:8770/?renderer=software",
+      "lineNumber": 260,
+      "columnNumber": 65
+    },
+    "time": 22367.791,
+    "pageId": "page@2556f221f453e9e810dc7b02d8829b5f"
+  },
+  {
+    "type": "console",
+    "messageType": "error",
+    "text": "Game stopped: Error: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js",
+    "args": [
+      {
+        "preview": "Game stopped: Error: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js",
+        "value": "Game stopped: Error: Assertion failed: Call args mismatch in _emscripten_receive_on_main_thread_js"
+      }
+    ],
+    "location": {
+      "url": "http://127.0.0.1:8770/?renderer=software",
+      "lineNumber": 260,
+      "columnNumber": 65
+    },
+    "time": 22367.841,
+    "pageId": "page@2556f221f453e9e810dc7b02d8829b5f"
+  },
+  {
+    "type": "event",
+    "time": 22368.506,
+    "class": "BrowserContext",
+    "method": "pageError",
+    "params": {
+      "error": {
+        "error": {
+          "message": "unreachable",
+          "stack": "RuntimeError: unreachable\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[492]:0x20d37\n    at abort (http://127.0.0.1:8770/threaded/index.js:1:249207)\n    at assert (http://127.0.0.1:8770/threaded/index.js:1:241133)\n    at __emscripten_receive_on_main_thread_js (http://127.0.0.1:8770/threaded/index.js:1:336246)\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[18979]:0xde45cf\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[18977]:0xde4410\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[18973]:0xde41ae\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[18961]:0xde3b20\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[18955]:0xde3917\n    at http://127.0.0.1:8770/threaded/index.wasm:wasm-function[18961]:0xde3b11",
+          "name": "RuntimeError"
+        }
+      },
+      "location": {
+        "url": "http://127.0.0.1:8770/threaded/index.wasm",
+        "line": 0,
+        "column": 134455
+      }
+    },
+    "pageId": "page@2556f221f453e9e810dc7b02d8829b5f"
+  }
+]
