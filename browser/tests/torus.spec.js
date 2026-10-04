@@ -22,6 +22,14 @@ async function startMatch(page, renderer) {
   await clickMainMenu(page, 'custom'); await screen(page, 'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick, {timeout: 60000}).toBeGreaterThan(25);
+  if (renderer === 'webgl2') {
+    // Both views now share the camera zoom. Fit the map before inspecting the
+    // ring silhouette; at 100% the focus fills the window in either view.
+    const before = (await state(page)).frames;
+    await page.mouse.move(520, 450);
+    await page.mouse.wheel(0, 20000);
+    await expect.poll(async () => (await state(page)).frames).toBeGreaterThan(before + 2);
+  }
 }
 
 // Share of a clip matching the overview's sky clear colour, rgb(6, 9, 15). The
