@@ -202,9 +202,10 @@ engine or I/O failure; both write a `result.json` with `status` and `diagnostic`
 partition verification jobs by it; the definition of the data hash is in the
 [turn protocol](../multiplayer/turn-protocol.md#simulation-version).
 
-CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows and in
+CI verifies `test/fixtures/multiplayer/FourSquares1.g2mr` on Linux, Windows, macOS and in
 three browsers (`test/run-browser-determinism.py` and `browser/tests/determinism.spec.js`)
-and requires the six `checksums.txt` traces to be identical. The committed
+and requires every selected `checksums.txt` trace to be identical. Full verification
+compares seven traces: two Linux builds, Windows, macOS and three browsers. The committed
 `FourSquares1.verify-trace.txt` is the expected trace, and CI fails when the platforms
 agree on a different one; the engine test that checks it also regenerates both files
 under `--update-fixtures`. A change that moves the trace changed the simulation and
