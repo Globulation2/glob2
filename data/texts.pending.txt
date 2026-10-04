@@ -12,3 +12,8 @@
 [music set failed]
 [settings Music set]
 [settings Random each match]
+[hub finish in browser, game continues]
+[hub browser did not open]
+[hub compare code %0]
+[hub code copied]
+[settings Finish in your browser. The game continues by itself.]

@@ -108,16 +108,15 @@ async function guestSocket() {
   return { client, session };
 }
 
-/** A browser that reaches the instance through replica B. */
+/** A browser that reaches the instance through replica B, on the game's network. */
 const browserViaB = () => new Browser({ [ORIGIN]: b.url });
 
-/** Codes the "game" shows, by attempt: what the player types into the browser. */
-const codes = new Map<string, string>();
+/** The same, from another network (a phone on mobile data, or someone sent a link). */
+const browserElsewhere = () => new Browser({ [ORIGIN]: b.url }, '203.0.113.7');
 
 async function beginHandoff(client: RealtimeClient, params: object = {}) {
   const result = await client.ok('auth.handoff.begin', params);
   expect(check('RealtimeAuthHandoffBeginResult', result).stage).toBe('ok');
-  codes.set(result['attemptId'] as string, result['confirmationCode'] as string);
   return result as {
     attemptId: string;
     signInUrl: string;
@@ -127,34 +126,39 @@ async function beginHandoff(client: RealtimeClient, params: object = {}) {
 }
 
 /**
- * Opens the sign-in link and types the game's code, as the player does;
- * returns the page that offers the sign-in methods.
+ * Opens the sign-in link as the player does. On the game's network it binds
+ * at once; elsewhere the page shows the game's code and the player confirms
+ * with one click. Returns where the bound browser is sent next.
  */
-async function enterCode(browser: Browser, signInUrl: string, code?: string) {
+async function openLink(browser: Browser, signInUrl: string, code?: string) {
   const attempt = new URL(signInUrl).searchParams.get('attempt')!;
-  const ask = await browser.get(signInUrl);
-  expect(ask.status).toBe(200);
-  const askText = await ask.text();
-  // The browser never shows the code: the player brings it from the game.
-  expect(askText).toContain('Enter the code from your game');
-  expect(askText).not.toContain(codes.get(attempt));
-  const typed =
-    code ??
-    codes
-      .get(attempt)!
-      .toLowerCase()
-      .replace(/^(...)/, '$1 ');
-  const confirm = await browser.post(`${ORIGIN}/signin/confirm`, { attempt, code: typed });
+  const opened = await browser.get(signInUrl);
+  if (opened.status === 303) return opened.headers.get('location')!;
+  expect(opened.status).toBe(200);
+  const page = await opened.text();
+  expect(page).toContain('Yes, continue');
+  const shown = /<p class="code"><strong>([^<]+)<\/strong>/.exec(page)![1]!;
+  const confirm = await browser.post(`${ORIGIN}/signin/confirm`, {
+    attempt,
+    code: code ?? shown,
+  });
   expect(confirm.status).toBe(303);
-  const page = await browser.get(signInUrl);
-  expect(page.status).toBe(200);
-  return page.text();
+  return confirm.headers.get('location')!;
 }
 
 /** Runs the provider sign-in in the browser; returns the final page. */
 async function providerSignIn(browser: Browser, signInUrl: string, provider = 'mock') {
-  const html = await enterCode(browser, signInUrl);
   const attempt = new URL(signInUrl).searchParams.get('attempt')!;
+  const next = await openLink(browser, signInUrl);
+  // Straight to the provider picked in the game, or the page that offers them all.
+  let html: string | undefined;
+  if (next.startsWith('/signin?')) {
+    const page = await browser.get(`${ORIGIN}${next}`);
+    expect(page.status).toBe(200);
+    html = await page.text();
+  } else {
+    expect(next).toBe(`/auth/${provider}/start?attempt=${attempt}`);
+  }
   const start = await browser.get(`${ORIGIN}/auth/${provider}/start?attempt=${attempt}`);
   expect(start.status).toBe(302);
   const authorize = await fetch(start.headers.get('location')!, { redirect: 'manual' });
@@ -288,7 +292,8 @@ describe('browser sign-in handoff', () => {
 
     const browser = browserViaB();
     const { html, final, text } = await providerSignIn(browser, attempt.signInUrl);
-    expect(html).toContain('Code accepted');
+    // The game picked the provider, and the browser is on its network: no page in between.
+    expect(html).toBeUndefined();
     expect(final.status).toBe(200);
     expect(text).toContain('Alice Example');
     expect(final.headers.get('content-security-policy')).toContain("default-src 'none'");
@@ -391,12 +396,18 @@ describe('browser sign-in handoff', () => {
     client.close();
   });
 
-  it('offers nothing before the code, and binds the attempt to the browser that enters it', async () => {
+  it('asks a browser on another network to confirm the code, and binds the first browser', async () => {
     const { client } = await guestSocket();
-    const attempt = await beginHandoff(client);
-    const victim = browserViaB();
-    // A link alone (say, one a phisher sent) offers no way to sign in.
-    const page = await (await victim.get(attempt.signInUrl)).text();
+    const attempt = await beginHandoff(client, { provider: 'mock' });
+    const victim = browserElsewhere();
+    // A link alone (say, one a phisher sent) shows the code and offers nothing else.
+    const opened = await victim.get(attempt.signInUrl);
+    expect(opened.status).toBe(200);
+    const page = await opened.text();
+    expect(page).toContain(
+      `${attempt.confirmationCode.slice(0, 3)} · ${attempt.confirmationCode.slice(3)}`,
+    );
+    expect(page).toContain('If someone sent you this link');
     expect(page).not.toContain('/auth/mock/start');
     expect(page).not.toContain('action="/signin/local"');
     expect(
@@ -423,28 +434,89 @@ describe('browser sign-in handoff', () => {
       ).status,
     ).toBe(403);
 
+    // One click, and on to the provider the game picked.
+    const player = browserElsewhere();
+    expect(await openLink(player, attempt.signInUrl)).toBe(
+      `/auth/mock/start?attempt=${attempt.attemptId}`,
+    );
+    // Any other browser, on any network, is now refused.
+    for (const other of [browserViaB(), browserElsewhere()]) {
+      expect((await other.get(attempt.signInUrl)).status).toBe(409);
+      expect(
+        (
+          await other.post(`${ORIGIN}/signin/confirm`, {
+            attempt: attempt.attemptId,
+            code: attempt.confirmationCode,
+          })
+        ).status,
+      ).toBe(409);
+      expect(
+        (await other.get(`${ORIGIN}/auth/mock/start?attempt=${attempt.attemptId}`)).status,
+      ).toBe(410);
+    }
+    // Coming back to the link (say, after backing out of the provider) offers the choices.
+    const back = await player.get(attempt.signInUrl);
+    expect(back.status).toBe(200);
+    expect(await back.text()).toContain('/auth/mock/start');
+    client.close();
+  });
+
+  it('binds a browser on the game network at once, refusing a later one', async () => {
+    const { client } = await guestSocket();
+    const attempt = await beginHandoff(client);
     const player = browserViaB();
-    await enterCode(player, attempt.signInUrl);
-    const other = browserViaB();
-    expect((await other.get(attempt.signInUrl)).status).toBe(409);
+    expect(await openLink(player, attempt.signInUrl)).toBe(`/signin?attempt=${attempt.attemptId}`);
+    const page = await (await player.get(attempt.signInUrl)).text();
+    expect(page).toContain('Choose how to sign in');
+    expect(page).toContain('action="/signin/local"');
+    expect((await browserViaB().get(attempt.signInUrl)).status).toBe(409);
+    client.close();
+  });
+
+  it('hands the game the account this browser is already signed in to', async () => {
+    issuer.nextUser = { sub: 'mock-returning', name: 'Returning Player' };
+    const first = await RealtimeClient.connect(a.url);
+    await first.hello();
+    const browser = browserViaB();
+    await providerSignIn(browser, (await beginHandoff(first, { provider: 'mock' })).signInUrl);
+    const account = (
+      (await first.event('auth.handoff.completed'))['session'] as { account: { id: string } }
+    ).account.id;
+    first.close();
+
+    // A new game signs in with no provider picked: one click on the browser's session.
+    const game = await RealtimeClient.connect(a.url);
+    await game.hello();
+    const attempt = await beginHandoff(game);
+    expect(await openLink(browser, attempt.signInUrl)).toBe(`/signin?attempt=${attempt.attemptId}`);
+    const page = await (await browser.get(attempt.signInUrl)).text();
+    expect(page).toContain('Continue as Returning Player');
+    // Not from another site, nor from a browser the attempt is not bound to.
     expect(
       (
-        await other.post(`${ORIGIN}/signin/confirm`, {
-          attempt: attempt.attemptId,
-          code: attempt.confirmationCode,
-        })
+        await browser.post(
+          `${ORIGIN}/signin/continue`,
+          { attempt: attempt.attemptId },
+          'https://evil.example',
+        )
       ).status,
-    ).toBe(409);
-    expect((await other.get(`${ORIGIN}/auth/mock/start?attempt=${attempt.attemptId}`)).status).toBe(
-      410,
-    );
-    client.close();
+    ).toBe(403);
+    expect(
+      (await browserViaB().post(`${ORIGIN}/signin/continue`, { attempt: attempt.attemptId }))
+        .status,
+    ).toBe(410);
+    const done = await browser.post(`${ORIGIN}/signin/continue`, { attempt: attempt.attemptId });
+    expect(done.status).toBe(200);
+    expect(await done.text()).toContain('Returning Player');
+    const completed = await game.event('auth.handoff.completed');
+    expect((completed['session'] as { account: { id: string } }).account.id).toBe(account);
+    game.close();
   });
 
   it('stops a sign-in after too many wrong codes', async () => {
     const { client } = await guestSocket();
     const attempt = await beginHandoff(client);
-    const guesser = browserViaB();
+    const guesser = browserElsewhere();
     const statuses = [];
     for (let i = 0; i < 5; i++) {
       statuses.push(
@@ -577,7 +649,8 @@ describe('browser sign-in handoff', () => {
     const { client, session } = await guestSocket();
     const attempt = await beginHandoff(client);
     const browser = browserViaB();
-    const page = await enterCode(browser, attempt.signInUrl);
+    const next = await openLink(browser, attempt.signInUrl);
+    const page = await (await browser.get(`${ORIGIN}${next}`)).text();
     expect(page).toContain('Create account');
     const short = await browser.post(`${ORIGIN}/signin/local`, {
       attempt: attempt.attemptId,
@@ -589,7 +662,7 @@ describe('browser sign-in handoff', () => {
     // Not a dead end: the same page again, still for this sign-in, the problem
     // on the password field and the username kept (never the password).
     const shortPage = await short.text();
-    expect(shortPage).toContain('Code accepted');
+    expect(shortPage).toContain('Choose how to sign in');
     expect(shortPage).toContain(
       'This password is too short: it has 5 characters, and passwords need at least 10.',
     );

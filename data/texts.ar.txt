@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ OpenGL غير متوفر في هذا الإصدار.
 تعذر الوصول إلى %0.
 [hub change server]
 غيّر الخادم…
-[hub check code]
-عندما يُطلب منك رمز، أدخل هذا الرمز:
 [hub code placeholder]
 رمز أو رابط دعوة
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ OpenGL غير متوفر في هذا الإصدار.
 أنشئ غرفة
 [hub find match]
 ابحث عن مباراة
-[hub finish in browser]
-أكمل تسجيل الدخول في الصفحة التي فُتحت في متصفحك.
 [hub free seat]
 مقعد شاغر
 [hub get update]
@@ -3544,8 +3550,6 @@ OpenGL غير متوفر في هذا الإصدار.
 ترتيبك #%0 · التقييم %1
 [hub not placed]
 ليس لديك ترتيب هنا بعد. العب مباريات مصنفة لتحصل عليه.
-[hub page opened at %0]
-فُتحت %0. لا حاجة لكتابة شيء في اللعبة؛ ستسجّل دخولك تلقائيًا.
 [hub queues unavailable]
 تظهر المباراة السريعة عندما يستجيب الخادم.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ OpenGL غير متوفر في هذا الإصدار.
 احذف حسابي
 [settings Enter an https:// address.]
 أدخل عنوانًا يبدأ بـ https://.
-[settings Finish in your browser. It shows the code %0.]
-أكمل في متصفحك: اكتب الرمز %0 عندما يُطلب منك.
 [settings Forget]
 انسَ
 [settings Guests keep a generated name; sign in to choose one.]

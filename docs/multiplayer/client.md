@@ -99,8 +99,14 @@ still grants transient activation; a browser that refuses the new tab anyway
 (Safari counts only the DOM event itself) gets a real link at the bottom of
 the page (`glob2OpenUrl` in `browser/shell.html`), which the player taps.
 `glob2Diagnostics.snapshot().opened` lists what opened and how
-(`browser/tests/online-links.spec.js`). The hub also keeps an "Open page
-again" button calling `openSignInPage()`. After a reconnect the client
+(`browser/tests/online-links.spec.js`). The sign-in page's address only
+arrives with the server's reply, after the click has run out, so the hub and
+Settings call `prepareUrlWindow()` during the click. In the browser that opens
+an empty tab (`glob2PrepareWindow`), and the next `openUrl` loads the page there;
+an unused empty tab closes after 30 seconds. On native hosts it does nothing. While waiting, the hub
+says the game will continue by itself and shows the code only for comparing, with a Copy
+button. It keeps an "Open page again" button calling `openSignInPage()`, which
+becomes the main button when the browser did not open. After a reconnect the client
 sends `auth.handoff.resume`, so a phone that lost its socket while the browser
 was in front still receives `auth.handoff.completed`. Without a result the
 attempt fails locally as `expired` one minute after its expiry.

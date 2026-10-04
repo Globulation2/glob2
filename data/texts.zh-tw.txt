@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Ping 值
 無法連上 %0。
 [hub change server]
 變更伺服器…
-[hub check code]
-要求輸入代碼時，請輸入這組：
 [hub code placeholder]
 代碼或邀請連結
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Ping 值
 建立房間
 [hub find match]
 尋找對局
-[hub finish in browser]
-請在瀏覽器開啟的頁面上完成登入。
 [hub free seat]
 空位
 [hub get update]
@@ -3544,8 +3550,6 @@ Ping 值
 你排名第 %0 · 積分 %1
 [hub not placed]
 你在這裡還沒有排名。進行積分對局即可獲得排名。
-[hub page opened at %0]
-已開啟 %0。不需在遊戲中輸入任何內容，它會自動幫你登入。
 [hub queues unavailable]
 伺服器回應後就會顯示快速配對。
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ AI：%0
 刪除我的帳號
 [settings Enter an https:// address.]
 請輸入 https:// 位址。
-[settings Finish in your browser. It shows the code %0.]
-請在瀏覽器中完成：要求輸入時請輸入代碼 %0。
 [settings Forget]
 忘記
 [settings Guests keep a generated name; sign in to choose one.]

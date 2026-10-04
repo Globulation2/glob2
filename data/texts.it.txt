@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Tutte
 Impossibile raggiungere %0.
 [hub change server]
 Cambia server…
-[hub check code]
-Quando ti chiede un codice, inserisci questo:
 [hub code placeholder]
 Codice o link d'invito
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Continua con %0
 Crea stanza
 [hub find match]
 Trova partita
-[hub finish in browser]
-Completa l'accesso nella pagina aperta nel browser.
 [hub free seat]
 Posto libero
 [hub get update]
@@ -3544,8 +3550,6 @@ Ultima partita
 Sei il n. %0 · punteggio %1
 [hub not placed]
 Non hai ancora una posizione qui. Gioca partite classificate per ottenerla.
-[hub page opened at %0]
-Aperto %0. Non devi digitare nulla nel gioco: l'accesso avviene da solo.
 [hub queues unavailable]
 La partita rapida appare quando il server risponde.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Nome visualizzato
 Elimina il mio account
 [settings Enter an https:// address.]
 Inserisci un indirizzo https://.
-[settings Finish in your browser. It shows the code %0.]
-Completa nel browser: digita il codice %0 quando richiesto.
 [settings Forget]
 Dimentica
 [settings Guests keep a generated name; sign in to choose one.]

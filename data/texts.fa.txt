@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Emoji
 دسترسی به %0 ممکن نیست.
 [hub change server]
 تغییر سرور…
-[hub check code]
-وقتی کد خواست، این را وارد کنید:
 [hub code placeholder]
 کد یا پیوند دعوت
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Emoji
 ساختن اتاق
 [hub find match]
 یافتن مسابقه
-[hub finish in browser]
-ورود را در صفحه‌ای که در مرورگرتان باز شد تمام کنید.
 [hub free seat]
 جای خالی
 [hub get update]
@@ -3544,8 +3550,6 @@ Emoji
 رتبهٔ شما #%0 · امتیاز %1
 [hub not placed]
 هنوز اینجا رتبه‌ای ندارید. برای رتبه گرفتن مسابقه‌های رتبه‌بندی بازی کنید.
-[hub page opened at %0]
-%0 باز شد. در بازی چیزی لازم نیست تایپ کنید؛ خودش شما را وارد می‌کند.
 [hub queues unavailable]
 مسابقهٔ سریع وقتی سرور پاسخ دهد نمایش داده می‌شود.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Emoji
 حذف حساب من
 [settings Enter an https:// address.]
 یک نشانی https:// وارد کنید.
-[settings Finish in your browser. It shows the code %0.]
-در مرورگرتان کار را تمام کنید: وقتی کد خواست، %0 را وارد کنید.
 [settings Forget]
 فراموش کردن
 [settings Guests keep a generated name; sign in to choose one.]

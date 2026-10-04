@@ -159,6 +159,7 @@ export async function realtimeRoutes(
         mode,
         requestingAccountId: mode === 'link' ? connection.account?.id : undefined,
         platform: connection.platform,
+        ip: connection.ip,
       });
       watch(connection, attempt.id, attempt.expiresAt);
       const url = new URL('/signin', identity.origin);

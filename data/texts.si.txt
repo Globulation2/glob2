@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Vse
 %0 ni dosegljiv.
 [hub change server]
 Zamenjaj strežnik …
-[hub check code]
-Ko vas vpraša za kodo, vnesite to:
 [hub code placeholder]
 Koda ali povezava povabila
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Nadaljuj z %0
 Ustvari sobo
 [hub find match]
 Poišči tekmo
-[hub finish in browser]
-Prijavo dokončajte na strani, ki se je odprla v brskalniku.
 [hub free seat]
 Prosto mesto
 [hub get update]
@@ -3544,8 +3550,6 @@ Zadnja tekma
 Si na %0. mestu · ocena %1
 [hub not placed]
 Tu še nimate uvrstitve. Igrajte rangirane tekme, da se uvrstite.
-[hub page opened at %0]
-Odprto: %0. V igri ni treba ničesar vnesti; prijavi vas samodejno.
 [hub queues unavailable]
 Hitra tekma se prikaže, ko se strežnik odzove.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Prikazno ime
 Izbriši moj račun
 [settings Enter an https:// address.]
 Vnesite naslov https://.
-[settings Finish in your browser. It shows the code %0.]
-Dokončajte v brskalniku: ko vas vpraša, vnesite kodo %0.
 [settings Forget]
 Pozabi
 [settings Guests keep a generated name; sign in to choose one.]

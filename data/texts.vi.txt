@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Tất cả
 Không thể kết nối tới %0.
 [hub change server]
 Đổi máy chủ…
-[hub check code]
-Khi được hỏi mã, hãy nhập mã này:
 [hub code placeholder]
 Mã hoặc liên kết mời
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Tiếp tục với %0
 Tạo phòng
 [hub find match]
 Tìm trận
-[hub finish in browser]
-Hoàn tất đăng nhập trên trang vừa mở trong trình duyệt.
 [hub free seat]
 Chỗ trống
 [hub get update]
@@ -3544,8 +3550,6 @@ Trận gần nhất
 Bạn hạng #%0 · điểm %1
 [hub not placed]
 Bạn chưa có hạng ở đây. Hãy chơi các trận xếp hạng để được xếp hạng.
-[hub page opened at %0]
-Đã mở %0. Không cần nhập gì trong trò chơi; nó sẽ tự đăng nhập cho bạn.
 [hub queues unavailable]
 Đấu nhanh sẽ xuất hiện khi máy chủ phản hồi.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Tên hiển thị
 Xóa tài khoản của tôi
 [settings Enter an https:// address.]
 Nhập một địa chỉ https://.
-[settings Finish in your browser. It shows the code %0.]
-Hoàn tất trong trình duyệt: nhập mã %0 khi được hỏi.
 [settings Forget]
 Quên
 [settings Guests keep a generated name; sign in to choose one.]

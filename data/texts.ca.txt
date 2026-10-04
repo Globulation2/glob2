@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Totes
 No es pot accedir a %0.
 [hub change server]
 Canvia de servidor…
-[hub check code]
-Quan et demani un codi, introdueix aquest:
 [hub code placeholder]
 Codi o enllaç d'invitació
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Continua amb %0
 Crea una sala
 [hub find match]
 Busca partida
-[hub finish in browser]
-Acaba d'iniciar la sessió a la pàgina que s'ha obert al navegador.
 [hub free seat]
 Plaça lliure
 [hub get update]
@@ -3544,8 +3550,6 @@ Darrera partida
 Ets el núm. %0 · puntuació %1
 [hub not placed]
 Encara no tens posició aquí. Juga partides classificatòries per obtenir-ne una.
-[hub page opened at %0]
-S'ha obert %0. No cal escriure res al joc; la sessió s'inicia sola.
 [hub queues unavailable]
 La partida ràpida apareixerà quan el servidor respongui.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Nom visible
 Suprimeix el meu compte
 [settings Enter an https:// address.]
 Introdueix una adreça https://.
-[settings Finish in your browser. It shows the code %0.]
-Acaba al navegador: escriu el codi %0 quan te'l demani.
 [settings Forget]
 Oblida
 [settings Guests keep a generated name; sign in to choose one.]

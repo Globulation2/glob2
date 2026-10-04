@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Denak
 Ezin da %0 zerbitzarira iritsi.
 [hub change server]
 Aldatu zerbitzaria…
-[hub check code]
-Kodea eskatzen dizunean, sartu hau:
 [hub code placeholder]
 Kodea edo gonbidapen-esteka
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Jarraitu %0 erabiliz
 Sortu gela
 [hub find match]
 Bilatu partida
-[hub finish in browser]
-Amaitu saio-hasiera nabigatzailean ireki den orrian.
 [hub free seat]
 Leku librea
 [hub get update]
@@ -3544,8 +3550,6 @@ Azken partida
 %0. postuan zaude · puntuazioa %1
 [hub not placed]
 Oraindik ez duzu postu bat hemen. Jokatu sailkatutako partidak postua lortzeko.
-[hub page opened at %0]
-Ireki da: %0. Ez duzu ezer idatzi behar jokoan; saioa berez hasiko da.
 [hub queues unavailable]
 Partida azkarra zerbitzariak erantzutean agertuko da.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Bistaratzeko izena
 Ezabatu nire kontua
 [settings Enter an https:// address.]
 Sartu https:// helbide bat.
-[settings Finish in your browser. It shows the code %0.]
-Amaitu nabigatzailean: idatzi %0 kodea eskatzen dizunean.
 [settings Forget]
 Ahaztu
 [settings Guests keep a generated name; sign in to choose one.]

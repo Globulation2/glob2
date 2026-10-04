@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Semua
 Tidak dapat menjangkau %0.
 [hub change server]
 Ganti server…
-[hub check code]
-Saat diminta kode, masukkan kode ini:
 [hub code placeholder]
 Kode atau tautan undangan
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Lanjutkan dengan %0
 Buat ruang
 [hub find match]
 Cari pertandingan
-[hub finish in browser]
-Selesaikan proses masuk di halaman yang terbuka di peramban Anda.
 [hub free seat]
 Kursi kosong
 [hub get update]
@@ -3544,8 +3550,6 @@ Pertandingan terakhir
 Peringkat Anda #%0 · rating %1
 [hub not placed]
 Anda belum punya peringkat di sini. Mainkan pertandingan berperingkat untuk mendapatkannya.
-[hub page opened at %0]
-%0 telah dibuka. Tidak perlu mengetik apa pun di permainan; Anda akan masuk secara otomatis.
 [hub queues unavailable]
 Pertandingan cepat muncul setelah server menjawab.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Nama tampilan
 Hapus akun saya
 [settings Enter an https:// address.]
 Masukkan alamat https://.
-[settings Finish in your browser. It shows the code %0.]
-Selesaikan di peramban Anda: ketik kode %0 saat diminta.
 [settings Forget]
 Lupakan
 [settings Guests keep a generated name; sign in to choose one.]

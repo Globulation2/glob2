@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ Tümü
 Ulaşılamıyor: %0.
 [hub change server]
 Sunucuyu değiştir…
-[hub check code]
-Kod sorulduğunda şunu girin:
 [hub code placeholder]
 Kod veya davet bağlantısı
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ Kod veya davet bağlantısı
 Oda oluştur
 [hub find match]
 Maç bul
-[hub finish in browser]
-Tarayıcınızda açılan sayfada oturum açmayı tamamlayın.
 [hub free seat]
 Boş yer
 [hub get update]
@@ -3544,8 +3550,6 @@ Son maç
 %0. sıradasınız · puan %1
 [hub not placed]
 Henüz burada bir sıralamanız yok. Sıralamaya girmek için dereceli maçlar oynayın.
-[hub page opened at %0]
-Açıldı: %0. Oyunda bir şey yazmanıza gerek yok; oturumunuz kendiliğinden açılır.
 [hub queues unavailable]
 Hızlı maç, sunucu yanıt verdiğinde görünür.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ Görünen ad
 Hesabımı sil
 [settings Enter an https:// address.]
 Bir https:// adresi girin.
-[settings Finish in your browser. It shows the code %0.]
-Tarayıcınızda tamamlayın; kod sorulduğunda %0 yazın.
 [settings Forget]
 Unut
 [settings Guests keep a generated name; sign in to choose one.]

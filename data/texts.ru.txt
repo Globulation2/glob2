@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ OpenGL недоступен в этой сборке.
 Не удаётся связаться с %0.
 [hub change server]
 Сменить сервер…
-[hub check code]
-Когда попросят код, введите этот:
 [hub code placeholder]
 Код или ссылка-приглашение
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ OpenGL недоступен в этой сборке.
 Создать комнату
 [hub find match]
 Найти матч
-[hub finish in browser]
-Завершите вход на странице, открывшейся в браузере.
 [hub free seat]
 Свободное место
 [hub get update]
@@ -3544,8 +3550,6 @@ OpenGL недоступен в этой сборке.
 Вы на %0-м месте · рейтинг %1
 [hub not placed]
 У вас пока нет места в рейтинге. Сыграйте рейтинговые матчи, чтобы попасть в него.
-[hub page opened at %0]
-Открыто: %0. В игре ничего вводить не нужно — вход выполнится сам.
 [hub queues unavailable]
 Быстрый матч появится, когда сервер ответит.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ OpenGL недоступен в этой сборке.
 Удалить мой аккаунт
 [settings Enter an https:// address.]
 Введите адрес https://.
-[settings Finish in your browser. It shows the code %0.]
-Завершите в браузере: введите код %0, когда его попросят.
 [settings Forget]
 Забыть
 [settings Guests keep a generated name; sign in to choose one.]

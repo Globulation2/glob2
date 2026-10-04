@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ LAN домаћин није доступан. Проверите дозволу 
 %0 није доступан.
 [hub change server]
 Промени сервер…
-[hub check code]
-Када буде затражен кôд, унесите овај:
 [hub code placeholder]
 Кôд или линк позивнице
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Направи собу
 [hub find match]
 Нађи меч
-[hub finish in browser]
-Довршите пријаву на страници која се отворила у прегледачу.
 [hub free seat]
 Слободно место
 [hub get update]
@@ -3544,8 +3550,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Ви сте #%0 · рејтинг %1
 [hub not placed]
 Још немате ранг овде. Играјте рангиране мечеве да бисте се рангирали.
-[hub page opened at %0]
-Отворено: %0. У игри не треба ништа куцати; пријава се обавља сама.
 [hub queues unavailable]
 Брзи меч ће се појавити када сервер одговори.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ LAN домаћин није доступан. Проверите дозволу 
 Обриши мој налог
 [settings Enter an https:// address.]
 Унесите https:// адресу.
-[settings Finish in your browser. It shows the code %0.]
-Довршите у прегледачу: унесите кôд %0 када буде затражен.
 [settings Forget]
 Заборави
 [settings Guests keep a generated name; sign in to choose one.]

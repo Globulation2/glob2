@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+Finish signing in in your browser. The game continues by itself once you are done.
+[hub browser did not open]
+Your browser did not open. Open the sign-in page to continue.
+[hub compare code %0]
+If the page asks, check that it shows %0.
+[hub code copied]
+Code copied
+[settings Finish in your browser. The game continues by itself.]
+Finish in your browser. The game continues by itself.
 [music set]
 Music set
 [random music set]
@@ -3488,8 +3498,6 @@ All
 Can't reach %0.
 [hub change server]
 Change server…
-[hub check code]
-When it asks for a code, enter this one:
 [hub code placeholder]
 Code or invite link
 [hub connecting to %0]
@@ -3500,8 +3508,6 @@ Continue with %0
 Create room
 [hub find match]
 Find match
-[hub finish in browser]
-Finish signing in on the page that opened in your browser.
 [hub free seat]
 Free seat
 [hub get update]
@@ -3552,8 +3558,6 @@ Last match
 You are #%0 · rating %1
 [hub not placed]
 You don't have a rank here yet. Play ranked matches to place.
-[hub page opened at %0]
-Opened %0. Nothing to type in the game; it signs you in by itself.
 [hub queues unavailable]
 Quick match appears when the server answers.
 [hub quick match unavailable]
@@ -3878,8 +3882,6 @@ Display name
 Delete my account
 [settings Enter an https:// address.]
 Enter an https:// address.
-[settings Finish in your browser. It shows the code %0.]
-Finish in your browser: type the code %0 when it asks.
 [settings Forget]
 Forget
 [settings Guests keep a generated name; sign in to choose one.]

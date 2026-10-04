@@ -89,6 +89,7 @@ export interface SigninAttemptsTable {
   delivered_at: NullableTimestamp;
   code_confirmed_at: NullableTimestamp;
   code_failures: Defaulted<number>;
+  requesting_network_hash: Nullable<string>;
 }
 
 export interface WebSessionsTable {

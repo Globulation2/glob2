@@ -198,6 +198,15 @@ std::vector<Fixture> fixtures()
 													 m.confirmationCode = "KXQ742";
 												 });
 		 }},
+		{"online-hub-signin-blocked", [](GAGGUI::ScreenStack &s)
+		 {
+			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)
+												 {
+													 m.signIn = OnlineHubScreen::Model::SignIn::Waiting;
+													 m.confirmationCode = "KXQ742";
+													 m.browserOpened = false;
+												 });
+		 }},
 		{"online-hub-offline", [](GAGGUI::ScreenStack &s)
 		 {
 			 return OnlineUIFixtures::hubFixture(s, [](OnlineHubScreen::Model &m)

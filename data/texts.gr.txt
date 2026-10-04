@@ -1,3 +1,13 @@
+[hub finish in browser, game continues]
+
+[hub browser did not open]
+
+[hub compare code %0]
+
+[hub code copied]
+
+[settings Finish in your browser. The game continues by itself.]
+
 [music set]
 
 [random music set]
@@ -3480,8 +3490,6 @@ CPU %0%
 Αδύνατη η πρόσβαση στο %0.
 [hub change server]
 Αλλαγή διακομιστή…
-[hub check code]
-Όταν σας ζητηθεί κωδικός, εισαγάγετε αυτόν:
 [hub code placeholder]
 Κωδικός ή σύνδεσμος πρόσκλησης
 [hub connecting to %0]
@@ -3492,8 +3500,6 @@ CPU %0%
 Νέα αίθουσα
 [hub find match]
 Εύρεση αγώνα
-[hub finish in browser]
-Ολοκληρώστε τη σύνδεση στη σελίδα που άνοιξε στο πρόγραμμα περιήγησής σας.
 [hub free seat]
 Ελεύθερη θέση
 [hub get update]
@@ -3544,8 +3550,6 @@ CPU %0%
 Είσαι #%0 · βαθμολογία %1
 [hub not placed]
 Δεν έχεις ακόμη κατάταξη εδώ. Παίξε αγώνες κατάταξης για να καταταγείς.
-[hub page opened at %0]
-Άνοιξε το %0. Δεν χρειάζεται να πληκτρολογήσετε τίποτα στο παιχνίδι· η σύνδεση γίνεται αυτόματα.
 [hub queues unavailable]
 Ο γρήγορος αγώνας εμφανίζεται όταν απαντήσει ο διακομιστής.
 [hub quick match unavailable]
@@ -3870,8 +3874,6 @@ CPU %0%
 Διαγραφή λογαριασμού
 [settings Enter an https:// address.]
 Εισαγάγετε μια διεύθυνση https://.
-[settings Finish in your browser. It shows the code %0.]
-Ολοκληρώστε στο πρόγραμμα περιήγησης: πληκτρολογήστε τον κωδικό %0 όταν σας ζητηθεί.
 [settings Forget]
 Διαγραφή
 [settings Guests keep a generated name; sign in to choose one.]
