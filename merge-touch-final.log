@@ -1,0 +1,10 @@
+
+Running 3 tests using 1 worker
+
+(node:66023) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [phone] › apps/web/e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (light) (12.2s)
+  ✓  2 [phone] › apps/web/e2e/a11y.spec.ts:59:3 › every page passes axe and fits the screen (dark) (12.1s)
+  ✓  3 [phone] › apps/web/e2e/smoke.spec.ts:388:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets (16.7s)
+
+  3 passed (41.9s)

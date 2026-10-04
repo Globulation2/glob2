@@ -1,0 +1,11 @@
+# App workspace verification for PR #737
+
+Author accepted local evidence; user approved merge and production deployment. macOS 26.6.2 arm64, Node 26.0.0, npm workspace dependencies from the committed lockfile; Playwright 1.63 Chromium. Latest integrated head fa55f127e8c74867fdf25312ec31034f98ca7568, base b72fdef271fb298ba03612a428690f8f47a921eb.
+
+Final integration: `npm run typecheck`, `npx vitest run apps/web/test` (30 passed), `npm run --workspace @glob2/web build` passed. New upstream Maps local/multiplayer launch dialog reviewed; focused browser results linked alongside this report.
+
+Prior final layout verification at 7ca454c4957f59629735c97f056e0201cfc84588: web typechecking, ESLint, Prettier, production build and 28 component tests passed. `npx playwright test -c e2e/playwright.config.ts workspace.spec.ts --project=desktop` passed 13 cases: both themes at 320/390/900/1100/1440/1920, focus on resize, keyboard drawer and route navigation. `npx playwright test -c e2e/playwright.config.ts skins.spec.ts studio.spec.ts` passed 14 desktop/phone cases: drafts, revisions, canvas/undo, per-model material painting, mobile overflow, Studio generation and previews. Smoke/a11y combined run passed 39, skipped 4, failed one native radio indicator target-size measurement. The corrective commit a93036d8768ba3bc13adb941a928762969cb8f0a gives clickable skin choice labels explicit 44px targets and audits the actual labels. Production build and focused phone accessibility/tap targets passed 3 cases on that revision, superseding the sole failure; original failure log retained transparently.
+
+Browser commands used `PORT=4289`, seeded PostgreSQL on loopback 55432, unique `--output` directories, screenshots via SCREENSHOT_DIR. Final map integration uses fresh port4293. Logs and images are retained here for review. Two peer agents reviewed and revised shell and creative flows over multiple iterations.
+
+Omissions: actual browser-game replay playback skipped because its build was unavailable (two projects); replay links verified. Two additional skips are viewport-specific checks. No native simulation, save/network compatibility testing: this PR changes web layout only relative to integrated master; upstream launch/game changes are preserved. Hosting workflow separately builds the deployed client. No production billing actions used for tests.

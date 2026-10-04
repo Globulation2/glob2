@@ -1,0 +1,20 @@
+
+Running 13 tests using 1 worker
+
+(node:63295) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 320px light (1.5s)
+  ✓   2 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 320px dark (1.4s)
+  ✓   3 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 390px light (1.4s)
+  ✓   4 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 390px dark (1.5s)
+  ✓   5 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 900px light (1.7s)
+  ✓   6 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 900px dark (1.7s)
+  ✓   7 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 1100px light (1.5s)
+  ✓   8 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 1100px dark (1.4s)
+  ✓   9 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 1440px light (1.3s)
+  ✓  10 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 1440px dark (1.4s)
+  ✓  11 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 1920px light (1.5s)
+  ✓  12 [desktop] › apps/web/e2e/workspace.spec.ts:8:5 › workspace 1920px dark (1.5s)
+  ✓  13 [desktop] › apps/web/e2e/workspace.spec.ts:63:1 › drawer closes across breakpoints without trapping focus (997ms)
+
+  13 passed (20.8s)

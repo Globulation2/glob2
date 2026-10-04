@@ -1,0 +1,19 @@
+
+Running 14 tests using 1 worker
+
+  ✓   1 [desktop] › e2e/skins.spec.ts:4:1 › account drafts restore across devices and refuse stale saves (16.3s)
+  ✓   2 [desktop] › e2e/skins.spec.ts:72:1 › reopens published paint, resumes an edit and publishes immutable versions (8.2s)
+  ✓   3 [desktop] › e2e/skins.spec.ts:168:1 › publishes each model with its own paintable material map (2.7s)
+  ✓   4 [desktop] › e2e/skins.spec.ts:206:1 › reports match paint and moderates it without rewriting the original (1.3s)
+  ✓   5 [desktop] › e2e/skins.spec.ts:266:1 › inspects every action and paints a paused model with undo and erase (13.0s)
+  ✓   6 [desktop] › e2e/skins.spec.ts:334:1 › model painting controls fit a 320px screen (749ms)
+  ✓   7 [desktop] › e2e/studio.spec.ts:8:1 › design conversation, private versions and explicit generation fit desktop and phone (1.6s)
+  ✓   8 [phone] › e2e/skins.spec.ts:4:1 › account drafts restore across devices and refuse stale saves (4.5s)
+  ✓   9 [phone] › e2e/skins.spec.ts:72:1 › reopens published paint, resumes an edit and publishes immutable versions (4.2s)
+  ✓  10 [phone] › e2e/skins.spec.ts:168:1 › publishes each model with its own paintable material map (2.1s)
+  ✓  11 [phone] › e2e/skins.spec.ts:206:1 › reports match paint and moderates it without rewriting the original (1.4s)
+  ✓  12 [phone] › e2e/skins.spec.ts:266:1 › inspects every action and paints a paused model with undo and erase (6.8s)
+  ✓  13 [phone] › e2e/skins.spec.ts:334:1 › model painting controls fit a 320px screen (899ms)
+  ✓  14 [phone] › e2e/studio.spec.ts:8:1 › design conversation, private versions and explicit generation fit desktop and phone (1.5s)
+
+  14 passed (1.1m)
