@@ -18,6 +18,8 @@
 #include <string>
 #include <vector>
 
+#include "TeamLayout.h"
+
 struct CustomGameSetup;
 
 namespace Online
@@ -53,6 +55,7 @@ void applyRulesToSetup(const Json& rules, CustomGameSetup& setup);
 /// matches, or empty. applyRulesToSetup() bases a room's draft on it (Standard when none
 /// matches), so a room reads "Blitz" or "Standard + 2 changes" like the lobby.
 std::string matchingRuleset(const CustomGameSetup& setup);
-/// "2 vs 2", "FFA" or "Custom teams" from the alliances of `teams` (SetupTeam list).
-std::string formatName(const Json& teams);
+/// The shape of the alliances of `teams` (SetupTeam list), in team order. `ai` flags the
+/// AI seats by team index, so that people against AIs reads as Humans vs AI.
+TeamLayout::Layout teamLayout(const Json& teams, const std::vector<bool>& ai = {});
 } // namespace Online

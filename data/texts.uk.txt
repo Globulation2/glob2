@@ -1320,6 +1320,12 @@ Tab
 Ви та ШІ можете віддавати накази. Займає два місця для гравців і ШІ.
 [You vs all]
 Ви проти всіх
+[%0 vs %1]
+%0 проти %1
+[%0 vs all]
+%0 проти всіх
+[You will watch this match.]
+Ви спостерігатимете за цим матчем.
 [Your maps]
 Ваші карти
 [colonies]
@@ -1378,8 +1384,6 @@ Tab
 Автоматичний вигляд тора
 [toggle torus view]
 Перемкнути вигляд 2D / тора
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-Для режиму 2 проти 2 потрібні чотири відкриті колонії. Для режиму Ви проти всіх потрібна людина.
 [Alliance]
 Альянс
 [Choose a rule to change it.]

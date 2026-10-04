@@ -1320,6 +1320,12 @@ Siz + Yapay zekâ
 Siz ve yapay zekâ birlikte emir verebilirsiniz. İki kontrolcü yeri kullanılır.
 [You vs all]
 Siz herkese karşı
+[%0 vs %1]
+%0 karşı %1
+[%0 vs all]
+%0 herkese karşı
+[You will watch this match.]
+Bu maçı izleyeceksiniz.
 [Your maps]
 Haritalarınız
 [colonies]
@@ -1378,8 +1384,6 @@ Harita oluşturulamadı. Ayarları değiştirin veya tekrar denemek için Başla
 Otomatik torus görünümü
 [toggle torus view]
 2B / torus görünümünü değiştir
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2’ye karşı 2 için dört açık koloni gerekir. Siz herkese karşı için bir insan oyuncu gerekir.
 [Alliance]
 İttifak
 [Choose a rule to change it.]

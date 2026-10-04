@@ -1314,6 +1314,12 @@ You + AI
 You and the AI both issue orders. Uses two controller slots.
 [You vs all]
 You vs all
+[%0 vs %1]
+%0 vs %1
+[%0 vs all]
+%0 vs all
+[You will watch this match.]
+You will watch this match.
 [Your maps]
 Your maps
 [colonies]
@@ -1372,8 +1378,6 @@ Preview unavailable. Adjust settings or start to retry.
 Automatic torus view
 [toggle torus view]
 Toggle 2D / torus view
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs 2 needs four open colonies. You vs all needs a human.
 [Alliance]
 Alliance
 [Choose a rule to change it.]

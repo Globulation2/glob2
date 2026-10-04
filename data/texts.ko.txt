@@ -1320,6 +1320,12 @@ AI 명령 없음
 플레이어와 AI가 모두 명령을 내립니다. 조종자 자리 2개를 사용합니다.
 [You vs all]
 나 대 모두
+[%0 vs %1]
+%0 대 %1
+[%0 vs all]
+%0 대 모두
+[You will watch this match.]
+이 경기를 관전합니다.
 [Your maps]
 내 지도
 [colonies]
@@ -1378,8 +1384,6 @@ AI 명령 없음
 자동 토러스 보기
 [toggle torus view]
 2D / 토러스 보기 전환
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 대 2에는 참가 식민지 4개가 필요합니다. 나 대 모두에는 사람 플레이어가 필요합니다.
 [Alliance]
 동맹
 [Choose a rule to change it.]

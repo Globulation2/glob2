@@ -1320,6 +1320,12 @@ Du + AI
 Både du och AI kan ge order. Tar två platser för spelare och AI.
 [You vs all]
 Du mot alla
+[%0 vs %1]
+%0 mot %1
+[%0 vs all]
+%0 mot alla
+[You will watch this match.]
+Du tittar på den här matchen.
 [Your maps]
 Dina kartor
 [colonies]
@@ -1378,8 +1384,6 @@ Förhandsvisning saknas. Ändra inställningarna eller starta för att försöka
 Automatisk torusvy
 [toggle torus view]
 Växla mellan 2D- och torusvy
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 mot 2 kräver fyra öppna kolonier. Du mot alla kräver en mänsklig spelare.
 [Alliance]
 Allians
 [Choose a rule to change it.]

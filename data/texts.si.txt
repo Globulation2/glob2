@@ -1320,6 +1320,12 @@ Vi + UI
 Vi in UI lahko izdajate ukaze. Zasede dve mesti za igralce in UI.
 [You vs all]
 Vi proti vsem
+[%0 vs %1]
+%0 proti %1
+[%0 vs all]
+%0 proti vsem
+[You will watch this match.]
+To tekmo boste gledali.
 [Your maps]
 Vaši zemljevidi
 [colonies]
@@ -1378,8 +1384,6 @@ Predogled ni na voljo. Prilagodite nastavitve ali za nov poskus začnite igro.
 Samodejni torusni pogled
 [toggle torus view]
 Preklopi med 2D in torusnim pogledom
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 proti 2 zahteva štiri odprte kolonije. Vi proti vsem zahteva človeškega igralca.
 [Alliance]
 Zavezništvo
 [Choose a rule to change it.]

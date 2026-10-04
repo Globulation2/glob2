@@ -441,6 +441,7 @@ CLIENT_SOURCES = (
     'replay/ReplayTelemetry.cpp',
     'resource/Ressource.cpp',
     'game/rules/RulesetCatalog.cpp',
+    'game/rules/TeamLayout.cpp',
     'resource/Resources.cpp',
     'scripting/map/ScriptEditorScreen.cpp',
     'game/Sector.cpp',

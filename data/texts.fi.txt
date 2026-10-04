@@ -1320,6 +1320,12 @@ Sinä + tekoäly
 Sinä ja tekoäly voitte antaa käskyjä. Vie kaksi pelaaja- tai tekoälypaikkaa.
 [You vs all]
 Sinä kaikkia vastaan
+[%0 vs %1]
+%0 vs. %1
+[%0 vs all]
+%0 kaikkia vastaan
+[You will watch this match.]
+Katselet tätä ottelua.
 [Your maps]
 Omat kartat
 [colonies]
@@ -1378,8 +1384,6 @@ Esikatselu ei ole käytettävissä. Muuta asetuksia tai yritä uudelleen aloitta
 Automaattinen torusnäkymä
 [toggle torus view]
 Vaihda 2D- ja torusnäkymän välillä
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 vs. 2 vaatii neljä avointa siirtokuntaa. Sinä kaikkia vastaan vaatii ihmispelaajan.
 [Alliance]
 Liitto
 [Choose a rule to change it.]

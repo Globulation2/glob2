@@ -1320,6 +1320,12 @@ Vy + UI
 Vy aj UI môžete vydávať rozkazy. Zaberá dve miesta pre hráčov a UI.
 [You vs all]
 Vy proti všetkým
+[%0 vs %1]
+%0 proti %1
+[%0 vs all]
+%0 proti všetkým
+[You will watch this match.]
+Tento zápas budete sledovať.
 [Your maps]
 Vaše mapy
 [colonies]
@@ -1378,8 +1384,6 @@ Náhľad nie je k dispozícii. Zmeňte nastavenia alebo spustite hru a skúste t
 Automatické toroidné zobrazenie
 [toggle torus view]
 Prepnúť 2D / toroidné zobrazenie
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 proti 2 vyžaduje štyri otvorené kolónie. Vy proti všetkým vyžaduje ľudského hráča.
 [Alliance]
 Aliancia
 [Choose a rule to change it.]

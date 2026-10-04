@@ -1320,6 +1320,12 @@ AI 策略与应对
 你与 AI 都可以下达指令，占用两个操控者名额。
 [You vs all]
 你对抗所有人
+[%0 vs %1]
+%0 对 %1
+[%0 vs all]
+%0 对抗所有人
+[You will watch this match.]
+你将观看这场比赛。
 [Your maps]
 你的地图
 [colonies]
@@ -1378,8 +1384,6 @@ AI 策略与应对
 自动环面视图
 [toggle torus view]
 切换 2D／环面视图
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 对 2 需要 4 个开放的殖民地。“你对抗所有人”需要一名人类玩家。
 [Alliance]
 联盟
 [Choose a rule to change it.]

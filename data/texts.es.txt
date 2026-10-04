@@ -1320,6 +1320,12 @@ Tú + IA
 Tanto tú como la IA dais órdenes. Ocupa dos plazas de jugador.
 [You vs all]
 Tú contra todos
+[%0 vs %1]
+%0 contra %1
+[%0 vs all]
+%0 contra todos
+[You will watch this match.]
+Verás esta partida.
 [Your maps]
 Tus mapas
 [colonies]
@@ -1378,8 +1384,6 @@ Vista previa no disponible. Cambia la configuración o inicia el juego para volv
 Vista toroidal automática
 [toggle torus view]
 Alternar vista 2D / toroidal
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contra 2 requiere cuatro colonias abiertas. Tú contra todos requiere un jugador humano.
 [Alliance]
 Alianza
 [Choose a rule to change it.]

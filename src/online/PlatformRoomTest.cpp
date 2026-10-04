@@ -15,6 +15,7 @@
 #include "PlatformClient.h"
 #include "PlatformRoom.h"
 #include "CustomGameSetup.h"
+#include "RoomSetup.h"
 
 #include <StringTable.h>
 #include <Toolkit.h>
@@ -288,5 +289,35 @@ TEST_SUITE("PlatformRoom")
 		CHECK_FALSE(r->localUnseated());
 		CHECK(r->unseatedMembers().empty());
 		CHECK(r->readyBlocker().empty());
+	}
+
+	TEST_CASE("a room's teams are named from their alliances, in team order")
+	{
+		Fixture f; // the string table the names are read from
+		using TeamLayout::Layout;
+		auto teams = [](std::vector<std::pair<int, int>> pairs) {
+			Json result = Json::array();
+			for (const auto &[team, alliance] : pairs)
+				result.push_back(Json{{"team", team}, {"alliance", alliance}});
+			return result;
+		};
+		CHECK(Online::teamLayout(teams({{0, 0}, {1, 1}, {2, 2}})).kind == Layout::FreeForAll);
+		CHECK(Online::teamLayout(Json::array()).kind == Layout::FreeForAll);
+		const auto threes = Online::teamLayout(teams({{0, 0}, {1, 0}, {2, 0}, {3, 1}, {4, 1}, {5, 1}}));
+		CHECK(threes == Layout{Layout::Split, {3, 3}, -1});
+		// Listed out of order, the lone team is still found by its index.
+		const auto lone = Online::teamLayout(teams({{3, 1}, {0, 0}, {2, 0}, {1, 0}}));
+		CHECK(lone == Layout{Layout::Split, {1, 3}, 3});
+		const auto mixed = teams({{0, 0}, {1, 0}, {2, 1}, {3, 1}});
+		CHECK(Online::teamLayout(mixed, {false, false, true, true}).kind == Layout::HumansVsAI);
+		CHECK(Online::teamLayout(mixed, {false, true, false, true}) == Layout{Layout::Split, {2, 2}, -1});
+		// Every name is a translated phrase, never a missing key.
+		for (const auto &layout : {threes, Layout{Layout::Split, {2, 2, 2}, -1}, Layout{Layout::HumansVsAI, {}, -1},
+								   Layout{Layout::Custom, {}, -1}, lone})
+		{
+			const auto name = TeamLayout::label(layout, false, "Kestrel");
+			CHECK((!name.empty() && name.find('[') == std::string::npos && name.find('%') == std::string::npos));
+		}
+		CHECK(TeamLayout::label(lone, false, "Kestrel").find("Kestrel") != std::string::npos);
 	}
 }

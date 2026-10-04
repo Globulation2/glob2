@@ -1320,6 +1320,12 @@ Tu + IA
 Tu e l’IA impartite entrambi ordini. Occupa due posti giocatore.
 [You vs all]
 Tu contro tutti
+[%0 vs %1]
+%0 contro %1
+[%0 vs all]
+%0 contro tutti
+[You will watch this match.]
+Guarderai questa partita.
 [Your maps]
 Le tue mappe
 [colonies]
@@ -1378,8 +1384,6 @@ Anteprima non disponibile. Modifica le impostazioni o avvia il gioco per riprova
 Vista toroidale automatica
 [toggle torus view]
 Alterna vista 2D / toroidale
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 contro 2 richiede quattro colonie aperte. Tu contro tutti richiede un giocatore umano.
 [Alliance]
 Alleanza
 [Choose a rule to change it.]

@@ -1320,6 +1320,12 @@ Bạn + AI
 Bạn và AI đều có thể ra lệnh. Chiếm hai chỗ điều khiển.
 [You vs all]
 Bạn đấu tất cả
+[%0 vs %1]
+%0 đấu %1
+[%0 vs all]
+%0 đấu tất cả
+[You will watch this match.]
+Bạn sẽ xem trận đấu này.
 [Your maps]
 Bản đồ của bạn
 [colonies]
@@ -1378,8 +1384,6 @@ Không có bản xem trước. Hãy chỉnh thiết lập hoặc bắt đầu đ
 Chế độ xem hình xuyến tự động
 [toggle torus view]
 Chuyển chế độ xem 2D / hình xuyến
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 đấu 2 cần bốn thuộc địa tham gia. Bạn đấu tất cả cần một người chơi thật.
 [Alliance]
 Liên minh
 [Choose a rule to change it.]

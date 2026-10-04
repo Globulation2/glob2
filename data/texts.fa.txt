@@ -1320,6 +1320,12 @@ Cortex
 شما و هوش مصنوعی هر دو فرمان می‌دهید. دو جایگاه کنترل‌کننده اشغال می‌شود.
 [You vs all]
 شما علیه همه
+[%0 vs %1]
+%0 در برابر %1
+[%0 vs all]
+%0 علیه همه
+[You will watch this match.]
+این مسابقه را تماشا خواهید کرد.
 [Your maps]
 نقشه‌های شما
 [colonies]
@@ -1378,8 +1384,6 @@ Cortex
 نمای خودکار چنبره
 [toggle torus view]
 تغییر بین نمای دوبعدی و چنبره
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-«۲ در برابر ۲» به چهار مستعمرهٔ باز نیاز دارد. «شما علیه همه» به یک بازیکن انسانی نیاز دارد.
 [Alliance]
 اتحاد
 [Choose a rule to change it.]

@@ -1320,6 +1320,12 @@ Sie + KI
 Sie und die KI erteilen beide Befehle. Belegt zwei Spielerplätze.
 [You vs all]
 Sie gegen alle
+[%0 vs %1]
+%0 gegen %1
+[%0 vs all]
+%0 gegen alle
+[You will watch this match.]
+Sie sehen diesem Spiel zu.
 [Your maps]
 Ihre Karten
 [colonies]
@@ -1378,8 +1384,6 @@ Vorschau nicht verfügbar. Ändern Sie die Einstellungen oder starten Sie das Sp
 Automatische Torusansicht
 [toggle torus view]
 2D-/Torusansicht umschalten
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 gegen 2 benötigt vier offene Kolonien. „Sie gegen alle“ benötigt einen menschlichen Spieler.
 [Alliance]
 Allianz
 [Choose a rule to change it.]

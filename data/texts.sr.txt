@@ -1320,6 +1320,12 @@ Cortex
 Ви и ВИ можете издавати наређења. Заузима два места за играче и ВИ.
 [You vs all]
 Ви против свих
+[%0 vs %1]
+%0 против %1
+[%0 vs all]
+%0 против свих
+[You will watch this match.]
+Гледаћете овај меч.
 [Your maps]
 Ваше мапе
 [colonies]
@@ -1378,8 +1384,6 @@ Cortex
 Аутоматски торусни приказ
 [toggle torus view]
 Промени 2D / торусни приказ
-[2 vs 2 needs four open colonies. You vs all needs a human.]
-2 против 2 захтева четири отворене колоније. Ви против свих захтева људског играча.
 [Alliance]
 Савез
 [Choose a rule to change it.]
