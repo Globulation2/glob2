@@ -1,0 +1,8 @@
+PASS glob2-unit-tests SkinMesh (3 cases) (0.0s)
+PASS glob2-unit-tests BuildingFailureDisplay (1 cases) (0.0s)
+PASS glob2-unit-tests SkinAtlasCache (2 cases) (0.0s)
+PASS glob2-unit-tests SkinDownloads (13 cases) (0.1s)
+PASS glob2-unit-tests SkinAuthorization (3 cases) (0.1s)
+
+5 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: /home/bradley/glob2-swarm-variants/artifacts/tests/junit.xml (22 cases)

@@ -1,0 +1,25 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts skins.spec.ts smoke.spec.ts -g colony|skin|draft|touch targets|reopens|reports
+
+[WebServer] <claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
+
+Running 14 tests using 1 worker
+
+  ✓   1 [desktop] › e2e/skins.spec.ts:4:1 › account drafts restore across devices and refuse stale saves (22.1s)
+  ✓   2 [desktop] › e2e/skins.spec.ts:66:1 › reopens published paint, resumes an edit and publishes immutable versions (12.1s)
+  ✓   3 [desktop] › e2e/skins.spec.ts:156:1 › reports match paint and moderates it without rewriting the original (3.6s)
+  ✓   4 [desktop] › e2e/skins.spec.ts:216:1 › inspects every action and paints a paused model with undo and erase (56.3s)
+  ✓   5 [desktop] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (6.9s)
+  ✓   6 [desktop] › e2e/smoke.spec.ts:351:1 › the colony moves, can be paused, and keeps still for reduced motion (1.5s)
+  -   7 [desktop] › e2e/smoke.spec.ts:368:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets
+  ✓   8 [phone] › e2e/skins.spec.ts:4:1 › account drafts restore across devices and refuse stale saves (15.6s)
+  ✓   9 [phone] › e2e/skins.spec.ts:66:1 › reopens published paint, resumes an edit and publishes immutable versions (14.5s)
+  ✓  10 [phone] › e2e/skins.spec.ts:156:1 › reports match paint and moderates it without rewriting the original (4.2s)
+  ✓  11 [phone] › e2e/skins.spec.ts:216:1 › inspects every action and paints a paused model with undo and erase (45.0s)
+  ✓  12 [phone] › e2e/smoke.spec.ts:101:1 › home shows the colony, ways in, live stats, ladders, maps and matches (5.7s)
+  ✓  13 [phone] › e2e/smoke.spec.ts:351:1 › the colony moves, can be paused, and keeps still for reduced motion (1.2s)
+  ✓  14 [phone] › e2e/smoke.spec.ts:368:1 › phones: no sideways scrolling at 320 and 430 px, 44 px touch targets (25.8s)
+
+  1 skipped
+  13 passed (3.8m)
