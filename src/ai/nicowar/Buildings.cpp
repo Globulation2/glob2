@@ -229,7 +229,7 @@ void NewNicowar::queue_hospitals(Runtime& runtime)
 	int demand=0;
 	if(runtime.player->team->stats.getLatestStat()->needHeal > 0)
 		demand += strategy.base_number_of_hospitals;
-	if(war_preparation || (runtime.player->game->gameHeader.isUnitUpgradesDisabled() && war))
+	if(war_preparation || war)
 	{
 		demand+=total_warrior/strategy.war_preparation_phase_warriors_per_hospital;
 	}
