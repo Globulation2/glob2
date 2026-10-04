@@ -3544,6 +3544,8 @@ CPU %0%
 Κατάταξη
 [hub play with friends]
 Παίξε με φίλους
+[hub also search %0]
+Αναζήτηση και στο %0
 [hub online now %0 %1]
 %0 παίκτες συνδεδεμένοι · %1 ψάχνουν σε αυτή την ουρά
 [hub show in open rooms]

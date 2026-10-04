@@ -3544,6 +3544,8 @@ Odalar
 Sıralama
 [hub play with friends]
 Arkadaşlarla oyna
+[hub also search %0]
+%0 kuyruğunda da ara
 [hub online now %0 %1]
 %0 oyuncu çevrimiçi · %1 bu kuyrukta arıyor
 [hub show in open rooms]

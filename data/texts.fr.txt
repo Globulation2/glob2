@@ -3544,6 +3544,8 @@ Salons
 Classement
 [hub play with friends]
 Jouer entre amis
+[hub also search %0]
+Chercher aussi en %0
 [hub online now %0 %1]
 %0 joueurs en ligne · %1 cherchent dans cette file
 [hub show in open rooms]

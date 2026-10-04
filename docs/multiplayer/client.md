@@ -128,7 +128,9 @@ also offer **Share online…**.
 | Share a map | `src/online/screens/OnlineMapsScreen.cpp` (`MapShareScreen`) | Title, description and visibility (Unlisted by default), then the upload and the server's validation and preview. |
 
 **Search state.** `Online::QuickMatch` (`src/online/QuickMatch.h`) holds the one
-search: it probes the relays (`RelayProbe`), sends `queue.join`, follows
+search, in one queue or (on `'queue.multi'` instances, with the hub's **Also
+search …** toggles) in several, keeping each queue's ticket and status and showing
+the queue whose match prompt opens: it probes the relays (`RelayProbe`), sends `queue.join`, follows
 `queue.status`, answers `queue.proposal` with `queue.respond`, toggles backfill
 with `queue.update` and leaves with `queue.leave`. It lives in the online
 services and is pumped by `Online::pump()`, so a search continues while the

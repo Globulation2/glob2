@@ -3544,6 +3544,8 @@ Rum
 Rankning
 [hub play with friends]
 Spela med vänner
+[hub also search %0]
+Sök även i %0
 [hub online now %0 %1]
 %0 spelare online · %1 söker i den här kön
 [hub show in open rooms]

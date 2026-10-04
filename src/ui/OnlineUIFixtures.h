@@ -218,6 +218,7 @@ inline OnlineHubScreen::Model hubModel()
 							 {{"displayName", "tuxboy"}, {"outcome", "lost"}}});
 	m.recent = Json::array({{{"id", "m1"}, {"origin", "queue"}, {"queueId", "1 vs 1"}, {"rated", true}, {"verification", "verified"}, {"mapTitle", "Even Ground"}, {"durationTicks", 31500}, {"participants", won}},
 							{{"id", "m2"}, {"origin", "room"}, {"rated", false}, {"verification", "not_applicable"}, {"mapTitle", "Marchland"}, {"durationTicks", 72000}, {"participants", room}}});
+	m.multiQueue = true;
 	m.playersOnline = 7;
 	m.searching = {{"ranked-1v1", 1}, {"ranked-2v2", 0}, {"casual-1v1", 1}};
 	m.leaderboardName = "1 vs 1";

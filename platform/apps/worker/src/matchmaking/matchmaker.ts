@@ -49,6 +49,14 @@ import {
   tryReadStored,
 } from '@glob2/play';
 
+/**
+ * Tickets whose account has no ticket in a match prompt: a search entering several
+ * queues is offered one prompt at a time, the others waiting where they are.
+ */
+const IN_NO_PROMPT = sql<boolean>`NOT EXISTS (
+  SELECT 1 FROM queue_tickets AS prompted
+    WHERE prompted.account_id = queue_tickets.account_id AND prompted.status = 'proposed')`;
+
 type Db = Kysely<Database>;
 
 export interface MatchmakerOptions {
@@ -222,6 +230,8 @@ export class Matchmaker {
             .where('id', '=', seat.ticketId)
             .where('status', '=', 'proposed')
             .execute();
+          // Declining ends the whole search: its other queues would offer the next prompt.
+          await this.closeSiblings(trx, seat.ticketId, now);
           if (cooldownSeconds > 0) {
             await trx
               .insertInto('queue_cooldowns')
@@ -278,6 +288,26 @@ export class Matchmaker {
     });
   }
 
+  /**
+   * Cancels the other waiting tickets of a ticket's search: its match started, or
+   * the player declined. A search entering several queues ends with one outcome.
+   */
+  private async closeSiblings(
+    trx: Transaction<Database>,
+    ticketId: string,
+    now: Date,
+  ): Promise<void> {
+    await trx
+      .updateTable('queue_tickets')
+      .set({ status: 'cancelled', updated_at: now })
+      .where('search_id', '=', (eb) =>
+        eb.selectFrom('queue_tickets as t').select('t.search_id').where('t.id', '=', ticketId),
+      )
+      .where('id', '!=', ticketId)
+      .where('status', '=', 'waiting')
+      .execute();
+  }
+
   // ------------------------------------------------------------ grouping
 
   private async formGroups(queue: ResolvedQueue): Promise<number> {
@@ -296,6 +326,8 @@ export class Matchmaker {
       ])
       .where('queue_id', '=', queue.id)
       .where('status', '=', 'waiting')
+      // A player whose search is in a prompt in another queue is held back there.
+      .where(IN_NO_PROMPT)
       .orderBy('created_at')
       .orderBy('id')
       .execute();
@@ -367,9 +399,11 @@ export class Matchmaker {
             humans.map((t) => t.id),
           )
           .where('status', '=', 'waiting')
+          .where(IN_NO_PROMPT)
           .returning('id')
           .execute();
-        if (claimed.length !== humans.length) throw new Skip(); // someone left meanwhile
+        // Someone left meanwhile, or entered a prompt in another queue.
+        if (claimed.length !== humans.length) throw new Skip();
         for (const [slot, { member, side }] of members.entries()) {
           const human = member.kind === 'human';
           await trx
@@ -511,6 +545,7 @@ export class Matchmaker {
           .set({ status: 'matched', match_id: matchId, updated_at: now })
           .where('id', '=', seat.ticketId)
           .execute();
+        await this.closeSiblings(trx, seat.ticketId, now);
         await this.notifier.send(trx, seat.accountId, 'queue.matchFound', {
           ticketId: seat.ticketId,
           matchId,
@@ -541,6 +576,8 @@ export class Matchmaker {
         'allow_ai_opponent',
       ])
       .where('status', '=', 'waiting')
+      // The other queues of a search in a prompt stay quiet until it resolves.
+      .where(IN_NO_PROMPT)
       .execute();
     const live = new Set<string>();
     // Per call: the AI ladder of each queue and sim version, and each queue's typical wait.

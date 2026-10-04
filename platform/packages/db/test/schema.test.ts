@@ -486,6 +486,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'allow_ai_opponent',
     'proposal_id',
+    'search_id',
   ],
   rating_history: [
     'match_id',
@@ -687,6 +688,7 @@ describe('migrations', () => {
         '0030_skin_draft_source',
         '0031_skin_reports',
         '0032_signin_same_network',
+        '0033_queue_searches',
       ]);
       expect(
         (
@@ -739,7 +741,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(10);
+      expect(upgraded).toHaveLength(11);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -1045,15 +1047,19 @@ describe('data model', () => {
     await expect(
       db.insertInto('rating_entities').values({ kind: 'ai', ai_id: 'numbi' }).execute(),
     ).rejects.toThrow();
-    // One waiting queue ticket per account.
+    // One active ticket per account in each queue (a search may enter several queues).
     await db
       .insertInto('queue_tickets')
       .values({ queue_id: 'q', account_id: account.id, sim_version: SIM })
       .execute();
+    await db
+      .insertInto('queue_tickets')
+      .values({ queue_id: 'q2', account_id: account.id, sim_version: SIM })
+      .execute();
     await expect(
       db
         .insertInto('queue_tickets')
-        .values({ queue_id: 'q2', account_id: account.id, sim_version: SIM })
+        .values({ queue_id: 'q', account_id: account.id, sim_version: SIM })
         .execute(),
     ).rejects.toThrow(/queue_tickets_one_active_idx/);
     // A queue match must name its queue.

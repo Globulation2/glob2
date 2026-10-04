@@ -17,6 +17,7 @@ class PreviewImages;
 #include <ScreenStack.h>
 #include <functional>
 #include <map>
+#include <set>
 #include <memory>
 #include <optional>
 #include <string>
@@ -82,6 +83,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 		double myRating = 0;
 		// GET /api/v1/stats: players online (-1 until known) and players searching
 		// each queue (servers without per-queue counts leave it empty).
+		// The instance takes one search in several queues (InstanceInfo.features 'queue.multi').
+		bool multiQueue = false;
 		int playersOnline = -1;
 		std::map<std::string, int> searching;
 		// Browser sign-in: none, choosing a provider, or waiting for the browser.
@@ -137,6 +140,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	std::string joinDraft;
 	int roomFilter = 0;
 	int selectedQueue = -1; // -1: defaultQueue()
+	// Other queues searched with the chosen one ("Also search …"), by id.
+	std::set<std::string> alsoQueues;
 	Section section = Section::Play;
 	std::unique_ptr<Glob2UI::MapPictures> pictures;
 	bool accountMenu = false, joinField = false;
@@ -196,6 +201,9 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// The queue offered first: the first one this account can enter.
 	int defaultQueue() const;
 	int queueIndex(const std::string &queueId) const;
+	// The also-searched queues that apply with `chosen` (multi-queue servers only).
+	std::vector<std::string> searchAlso(int chosen) const;
+	Glob2UI::Element alsoToggles(int chosen, const Glob2UI::Presentation &p);
 
 	Glob2UI::Element accountChip(const Glob2UI::Presentation &p);
 	Glob2UI::Element banner(const Glob2UI::Presentation &p);

@@ -487,6 +487,8 @@ export interface QueueTicketsTable {
   updated_at: Timestamp;
   allow_ai_opponent: Defaulted<boolean>;
   proposal_id: Nullable<string>;
+  /** The search this ticket belongs to: tickets of one search enter different queues together. */
+  search_id: Generated<string>;
 }
 
 export type QueueTicketStatus =

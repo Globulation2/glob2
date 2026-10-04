@@ -332,6 +332,50 @@ TEST_SUITE("QuickMatch")
 		CHECK(f.quick->cooldownUntil() == parseTimestamp("2026-09-21T14:15:20Z"));
 	}
 
+	TEST_CASE("one search in several queues follows every ticket and names the queue that matched")
+	{
+		const std::string CASUAL_TICKET = "6e1f3d54-7b4f-4d9f-a9e2-0f3b8d5e4c21";
+		QueueInfo casual;
+		casual.id = "casual-1v1";
+		casual.name = "Casual 1v1";
+		casual.mode = "1v1";
+		casual.aiBackfillSeconds = 45;
+		Fixture f;
+		f.quick->search(std::vector<QueueInfo>{ranked(), casual}, true);
+		f.pump();
+		auto join = f.world.socket().find("queue.join");
+		REQUIRE(!join.is_null());
+		CHECK(join["params"]["queueId"] == "ranked-1v1");
+		CHECK(join["params"]["queueIds"] == Json::array({"casual-1v1"}));
+		f.world.socket().respond(join, Json{{"ticketId", TICKET},
+											{"joinedAt", "2026-09-21T14:13:20Z"},
+											{"tickets", Json::array({{{"queueId", "ranked-1v1"}, {"ticketId", TICKET}},
+																	 {{"queueId", "casual-1v1"}, {"ticketId", CASUAL_TICKET}}})}});
+		f.pump();
+		REQUIRE(f.quick->phase() == QuickMatch::Phase::Searching);
+		CHECK(f.quick->queues().size() == 2);
+		// Each queue reports on its own ticket; the soonest AI is the one shown.
+		f.event("queue.status", {{"ticketId", TICKET}, {"queueId", "ranked-1v1"}, {"waitedSeconds", 5},
+								 {"aiBackfillAt", "2026-09-21T14:14:50Z"}});
+		f.event("queue.status", {{"ticketId", CASUAL_TICKET}, {"queueId", "casual-1v1"}, {"waitedSeconds", 5},
+								 {"aiBackfillAt", "2026-09-21T14:14:05Z"}});
+		REQUIRE(f.quick->backfillInMs());
+		CHECK(*f.quick->backfillInMs() == 45000);
+		// The casual queue found the match: the search is about that queue now.
+		Json found = f.proposal(false);
+		found["ticketId"] = CASUAL_TICKET;
+		found["queueId"] = "casual-1v1";
+		f.event("queue.proposal", found);
+		CHECK(f.quick->phase() == QuickMatch::Phase::Starting);
+		REQUIRE(f.quick->queue());
+		CHECK(f.quick->queue()->id == "casual-1v1");
+		// Cancelling leaves the whole search through its first ticket.
+		f.quick->cancel();
+		auto leave = f.world.socket().find("queue.leave");
+		REQUIRE(!leave.is_null());
+		CHECK(leave["params"]["ticketId"] == TICKET);
+	}
+
 	TEST_CASE("cancelling before the queue answers leaves the ticket it gets")
 	{
 		Fixture f;

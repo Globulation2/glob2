@@ -3544,6 +3544,8 @@ Ping
 ランキング
 [hub play with friends]
 フレンドと遊ぶ
+[hub also search %0]
+%0 でも探す
 [hub online now %0 %1]
 %0 人がオンライン · %1 人がこのキューで検索中
 [hub show in open rooms]

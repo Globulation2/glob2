@@ -184,7 +184,7 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 		context.label += " · " + tr(queue->rated ? "[hub ranked]" : "[hub unrated]");
 		context.rated = queue->rated;
 		context.ladder = queue->id;
-		matchQueueId = queue->id;
+		matchQueueId = searchModel().queues().empty() ? queue->id : searchModel().queues().front().id;
 	}
 	queueAgain = false;
 	auto match = std::make_shared<Online::OnlineMatch>(client(), Online::services().maps, Online::services().storage, assignment, context);
@@ -194,6 +194,7 @@ void OnlineHubScreen::startMatch(const Json &assignment)
 			enterRoom(std::move(room));
 		// "Find another match": the same queue, from the hub the results return to.
 		else if (std::exchange(queueAgain, false))
+			// The same queue, with the same Also search choices.
 			findMatch(queueIndex(matchQueueId));
 		refresh(true);
 	});
@@ -311,6 +312,10 @@ void OnlineHubScreen::refresh(bool force)
 				return;
 			data.instanceName = r.result.value("name", "");
 			data.queues = r.result.value("queues", Json::array());
+			data.multiQueue = false;
+			for (const auto &feature : r.result.value("features", Json::array()))
+				if (feature == "queue.multi")
+					data.multiQueue = true;
 			data.providers = r.result.value("authProviders", Json::array());
 			invalidate();
 			// The leaderboard teaser needs the queue list.
@@ -444,6 +449,43 @@ bool OnlineHubScreen::canPlay() const
 	return data.link == Model::Link::Online && !data.accountId.empty();
 }
 
+std::vector<std::string> OnlineHubScreen::searchAlso(int chosen) const
+{
+	std::vector<std::string> ids;
+	if (!data.multiQueue || !data.queues.is_array())
+		return ids;
+	for (std::size_t i = 0; i < data.queues.size(); ++i)
+		if (int(i) != chosen && alsoQueues.count(data.queues[i].value("id", "")) && canQueue(data.queues[i]))
+			ids.push_back(data.queues[i].value("id", ""));
+	return ids;
+}
+
+Element OnlineHubScreen::alsoToggles(int chosen, const Presentation &p)
+{
+	// Servers that take one search in several queues: the first match found wins.
+	if (!data.multiQueue || !data.queues.is_array() || data.queues.size() < 2)
+		return nullptr;
+	std::vector<Element> toggles;
+	for (std::size_t i = 0; i < data.queues.size(); ++i)
+	{
+		const Json &queue = data.queues[i];
+		if (int(i) == chosen || !canQueue(queue))
+			continue;
+		const std::string id = queue.value("id", "");
+		toggles.push_back(toggle("queue/also/" + id, formatted("[hub also search %0]", queueDisplayName(id, queue.value("name", ""))),
+								 alsoQueues.count(id) > 0,
+								 [this, id](bool on) {
+									 if (on)
+										 alsoQueues.insert(id);
+									 else
+										 alsoQueues.erase(id);
+									 invalidate();
+								 },
+								 !searchModel().active()));
+	}
+	return toggles.empty() ? nullptr : column(std::move(toggles), {p.pt(2)});
+}
+
 bool OnlineHubScreen::canQueue(const Json &queue) const
 {
 	return canPlay() && !(queue.value("rated", false) && data.accountKind == "guest");
@@ -571,8 +613,14 @@ void OnlineHubScreen::findMatch(int queueIndex)
 		showToast(tr("[hub quick match unavailable]"));
 		return;
 	}
+	// The chosen queue first, then any others the player also wants to search.
+	std::vector<Online::QueueInfo> queues{*info};
+	for (const auto &id : searchAlso(queueIndex))
+		if (const int other = this->queueIndex(id); other >= 0)
+			if (auto also = Online::QueueInfo::fromJson(data.queues[std::size_t(other)]))
+				queues.push_back(*also);
 	auto &search = searchModel();
-	search.search(*info, search.allowAiOpponent());
+	search.search(queues, search.allowAiOpponent());
 	// The hub shows the search as a strip (SearchStrip); Details opens its screen.
 	invalidate();
 }
@@ -970,6 +1018,9 @@ Element OnlineHubScreen::quickMatchCard(const Presentation &p, bool phone)
 		parts.push_back(live);
 	if (auto pool = mapPool(queue, p, phone))
 		parts.push_back(pool);
+	if (open)
+		if (auto also = alsoToggles(chosen, p))
+			parts.push_back(also);
 	if (canPlay() && !open)
 		parts.push_back(button("queue/signin", tr("[hub sign in]"), [this] { openSignIn(); }, {.primary = true, .icon = uiIcon(UIIcon::SignIn)}));
 	else
@@ -1039,8 +1090,10 @@ Element OnlineHubScreen::playSection(const Presentation &p, bool phone)
 		const Json &queue = data.queues[std::size_t(chosen)];
 		auto live = liveLine(queue, p);
 		auto pool = mapPool(queue, p, true);
-		if (live || pool)
-			parts.push_back(column({heading(tr("[hub quick match]")), live, pool}, {p.pt(6)}));
+		// Here rather than in the thumb block, whose height a small phone cannot spare.
+		auto also = canQueue(queue) ? alsoToggles(chosen, p) : nullptr;
+		if (live || pool || also)
+			parts.push_back(column({heading(tr("[hub quick match]")), live, pool, also}, {p.pt(6)}));
 	}
 	if (auto last = lastMatchCard(p, phone))
 		parts.push_back(last);

@@ -3544,6 +3544,8 @@ Ludi
 Rangoj
 [hub play with friends]
 Ludi kun amikoj
+[hub also search %0]
+Serĉi ankaŭ en %0
 [hub online now %0 %1]
 %0 ludantoj enrete · %1 serĉas en ĉi tiu vico
 [hub show in open rooms]

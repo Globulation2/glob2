@@ -3544,6 +3544,8 @@ OpenGL غير متوفر في هذا الإصدار.
 الترتيب
 [hub play with friends]
 العب مع الأصدقاء
+[hub also search %0]
+ابحث أيضًا في %0
 [hub online now %0 %1]
 %0 لاعب متصل · %1 يبحثون في هذه القائمة
 [hub show in open rooms]

@@ -3544,6 +3544,8 @@ Pokoje
 Ranking
 [hub play with friends]
 Graj ze znajomymi
+[hub also search %0]
+Szukaj także w %0
 [hub online now %0 %1]
 %0 graczy online · %1 szuka w tej kolejce
 [hub show in open rooms]

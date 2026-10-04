@@ -3544,6 +3544,8 @@ Emoji
 رتبه‌ها
 [hub play with friends]
 بازی با دوستان
+[hub also search %0]
+جست‌وجو در %0 هم
 [hub online now %0 %1]
 %0 بازیکن آنلاین · %1 در این صف در جست‌وجو
 [hub show in open rooms]

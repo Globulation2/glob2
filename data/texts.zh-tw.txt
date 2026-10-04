@@ -3544,6 +3544,8 @@ Ping 值
 排名
 [hub play with friends]
 和朋友一起玩
+[hub also search %0]
+同時配對 %0
 [hub online now %0 %1]
 %0 名玩家在線 · %1 人正在此佇列配對
 [hub show in open rooms]

@@ -286,6 +286,14 @@ export const realtimeMethods = {
     description: 'Enter a quick-match queue (AccessPolicy.canQueue).',
     params: Strict({
       queueId: Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }),
+      queueIds: Type.Optional(
+        Type.Array(Type.String({ pattern: '^[a-z0-9][a-z0-9-]{0,31}$' }), {
+          minItems: 1,
+          maxItems: 4,
+          description:
+            "Instances with the 'queue.multi' feature: further queues of the same search. The player holds a ticket in queueId and in each of these; the first to reach a match prompt holds the others back, they close when its match starts and resume when it falls through. queue.leave and queue.update act on the whole search.",
+        }),
+      ),
       regions: RegionRtts,
       allowAiOpponent: Type.Optional(
         Type.Boolean({
@@ -294,7 +302,16 @@ export const realtimeMethods = {
         }),
       ),
     }),
-    result: Open({ ticketId: Uuid, joinedAt: Timestamp }),
+    result: Open({
+      ticketId: Uuid,
+      joinedAt: Timestamp,
+      searchId: Type.Optional(Uuid),
+      tickets: Type.Optional(
+        Type.Array(Open({ queueId: Type.String(), ticketId: Uuid }), {
+          description: 'Every ticket of the search, ticketId (of queueId) first.',
+        }),
+      ),
+    }),
   },
   'queue.respond': {
     description: 'Accept or decline a proposed ranked match (queue.proposal with requiresAccept).',
