@@ -70,7 +70,7 @@ jobs:
           echo "commit=$SOURCE_COMMIT" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Test Android release guards
-        run: python3 -m unittest discover -s tests/build_system -p test_android_release.py -v
+        run: python3 -m unittest discover -s test/build_system -p test_android_release.py -v
 
   apk:
     needs: preflight

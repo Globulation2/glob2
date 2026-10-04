@@ -35,8 +35,8 @@ Other parts are copyrighted to:
 ./libgag/:    Copyright Kevlin Henney, 1997. All rights reserved.
 ./src/AI/AIWarrush.cpp:  Copyright (C) 2005 Eli Dupree
 ./src/AI/AIWarrush.h:  Copyright (C) 2005 Eli Dupree
-./src/DynamicClouds.cpp: *  Copyright  2007  Leo Wandersleb
-./src/DynamicClouds.h: *  Copyright  2007  Leo Wandersleb
+./src/render/clouds/DynamicClouds.cpp: *  Copyright  2007  Leo Wandersleb
+./src/render/clouds/DynamicClouds.h: *  Copyright  2007  Leo Wandersleb
 ./src/HeightMapGenerator.cpp: *  Copyright  2006  Leo Wandersleb
 ./src/HeightMapGenerator.h: *  Copyright  2006  Leo Wandersleb
 ./src/PerlinNoise.cpp:// Copyright (c) 2001, Matt Zucker

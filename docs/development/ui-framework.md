@@ -163,7 +163,7 @@ desktop layouts are unchanged at 100% (`applyTextSize()` holds the rule).
   `logicalUnitsPerPoint()`, and grow rows that are sized by their text with
   `InGameTouchTheme::textGrowth()`.
 - A control's measured size must hold the text it paints at every text size.
-  `test/UILayoutHarness.cpp` and the presentation harness check that no
+  `libgag/src/ui/UILayoutHarness.cpp` and the presentation harness check that no
   painted line crosses a control's edge, at 100% and 150%.
 
 ### Containers and controls
@@ -290,7 +290,7 @@ compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
 
 Every shipped theme must keep `ink` on `paper` and on fields, and `hud.ink` on
 HUD panels, at WCAG AA (4.5:1), and `accentInk` on `accent` too;
-`test/ThemeCatalogTest.cpp` checks each one. Check a new theme in the review
+`src/ui/ThemeCatalogTest.cpp` checks each one. Check a new theme in the review
 gallery: `GLOB2_MENU_THEME=<id> GLOB2_GAME_THEME=<id>` select the themes for
 `mobile-gallery` captures.
 
@@ -409,7 +409,7 @@ turns momentum or bounce off, 50 is the researched default.
 ## Verification
 
 - `scons unit-tests` then `python3 test/run_tests.py --binary unit --filter 'UILayout/*'`
-  runs `test/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
+  runs `libgag/src/ui/UILayoutHarness.cpp`: pure layout with fixed-advance text and a
   recording canvas. Measure and arrange,
   adaptive re-choice after resize, footer folding, scroll clamping, wrapping,
   ellipsis, focus order, capture, tap versus pan, fling, overscroll and bounce
@@ -444,6 +444,6 @@ turns momentum or bounce off, 50 is the researched default.
    give each control a key and a callback that changes the model and
    invalidates.
 3. Add the screen to the presentation harness fixtures in
-   `test/UIPresentationHarness.cpp` and, for a reviewable capture, to
+   `src/ui/UIPresentationHarness.cpp` and, for a reviewable capture, to
    `tools/MobileGalleryHarness.cpp` and `tools/mobile_gallery/catalog.json`.
 4. Expose semantic entry points for interaction tests instead of coordinates.

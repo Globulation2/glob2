@@ -12,7 +12,7 @@ sys.path.insert(0, Dir('.').srcnode().abspath)
 import tests as registry
 
 test_env = env.Clone()
-test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#src/render'), Dir('#libgag/src'), Dir('#third_party/quickjs-ng')])
+test_env.Append(CPPPATH=[Dir('.').srcnode(), Dir('support').srcnode(), Dir('#libgag/src'), Dir('#third_party/quickjs-ng')])
 # Console entry point for every test binary: no -mwindows, SDL3 headers supply no separate main library.
 test_env['LINKFLAGS'] = [flag for flag in test_env.Split(test_env['LINKFLAGS']) if flag != '-mwindows']
 # Keep function names in native harnesses for crash backtraces; shipping programs

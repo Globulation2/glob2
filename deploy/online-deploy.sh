@@ -193,7 +193,7 @@ smoke)
 		set -- "$@" --website "$website"
 	fi
 	status=0
-	python3 tests/deployment/platform_stack_smoke.py "$@" || status=$?
+	python3 test/deployment/platform_stack_smoke.py "$@" || status=$?
 	echo "$status" > "$dir/smoke-exit"
 	exit "$status"
 	;;

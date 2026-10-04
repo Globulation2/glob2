@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+"""Structural acceptance tests for the standalone Maxima runtime."""
+
+from pathlib import Path
+import subprocess
+import unittest
+
+
+ROOT = Path(__file__).resolve().parents[3]
+
+import sys
+sys.path.insert(0, str(ROOT / 'tools'))
+from build_paths import native_binary, native_build_directory
+MAXIMA_FILES = [
+    ROOT / "src/ai/maxima/AIMaxima.h",
+    ROOT / "src/ai/maxima/AIMaxima.cpp",
+    ROOT / "src/ai/maxima/AIMaximaState.cpp",
+    ROOT / "src/ai/maxima/AIMaximaCombat.cpp",
+    ROOT / "src/ai/maxima/AIMaximaWorldHelpers.h",
+    ROOT / "src/ai/maxima/AIMaximaRecon.h",
+    ROOT / "src/ai/maxima/AIMaximaRecon.cpp",
+    ROOT / "src/ai/maxima/AIMaximaRuntime.h",
+    ROOT / "src/ai/maxima/AIMaximaRuntime.cpp",
+]
+
+
+class MaximaDecouplingTest(unittest.TestCase):
+    def test_runtime_sources_have_no_shared_runtime_dependency(self):
+        text = "\n".join(path.read_text() for path in MAXIMA_FILES)
+        for forbidden in ("AISharedRuntime", "shared_runtime/", "boost::logic", "tribool"):
+            self.assertNotIn(forbidden, text)
+
+    def test_direct_ai_and_typed_runtime_contracts(self):
+        header = (ROOT / "src/ai/maxima/AIMaxima.h").read_text()
+        runtime = (ROOT / "src/ai/maxima/AIMaximaRuntime.h").read_text()
+        implementation = (ROOT / "src/ai/maxima/AIMaximaRuntime.cpp").read_text()
+        self.assertIn("public AIImplementation", header)
+        self.assertIn("RuntimeEvent", runtime)
+        self.assertIn("PlacementResult", runtime)
+        self.assertRegex(implementation, r"if\s*\(\s*!\s*placement\.found\s*\)")
+        self.assertIn("seenByMask", implementation)
+        self.assertIn("queuedIndexes", runtime)
+
+    def test_built_objects_have_no_undefined_shared_runtime_symbols(self):
+        objects = [
+            native_build_directory() / "src/ai/maxima/AIMaxima.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaState.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaCombat.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaRecon.o",
+            native_build_directory() / "src/ai/maxima/AIMaximaRuntime.o",
+        ]
+        if not all(path.exists() for path in objects):
+            self.skipTest("optimized Maxima objects have not been built")
+        output = subprocess.check_output(["nm", "-u", *map(str, objects)], text=True)
+        self.assertNotIn("AISharedRuntime", output)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
-#include "scene/SceneExtract.h"
+#include "render/scene/SceneExtract.h"
 
 #include "FileManager.h"
 #include "AI.h"

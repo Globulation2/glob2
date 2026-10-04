@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check that the sim version key follows the simulation (src/SimRevision.h).
+"""Check that the sim version key follows the simulation (src/game/SimRevision.h).
 
 Two checks, both cheap and build-free:
 
@@ -28,8 +28,8 @@ ROOT = Path(__file__).resolve().parents[1]
 RECORD = 'test/fixtures/multiplayer/FourSquares1.g2mr'
 TRACE = 'test/fixtures/multiplayer/FourSquares1.verify-trace.txt'
 # What the sim version key is computed from (deploy/sim_version.py).
-KEY_INPUTS = ('src/Version.h', 'src/SimRevision.h')
-FIX = ('bump SIM_REVISION in src/SimRevision.h, then regenerate the record and trace with '
+KEY_INPUTS = ('src/app/Version.h', 'src/game/SimRevision.h')
+FIX = ('bump SIM_REVISION in src/game/SimRevision.h, then regenerate the record and trace with '
        "python3 test/run_tests.py --update-fixtures --filter 'TurnEngineHarness/the committed*'")
 
 
@@ -98,11 +98,11 @@ def check(root, base=None):
             if base_key == key:
                 problems.append(f'{" and ".join(moved)} changed, so the simulation changed, but the sim version '
                                 f'is still {key}; {FIX}')
-        base_revision = file_at(root, base, 'src/SimRevision.h')
+        base_revision = file_at(root, base, 'src/game/SimRevision.h')
         if base_revision is not None:
             with tempfile.TemporaryDirectory() as scratch:
-                (Path(scratch) / 'src').mkdir()
-                (Path(scratch) / 'src/SimRevision.h').write_bytes(base_revision)
+                (Path(scratch) / 'src/game').mkdir(parents=True)
+                (Path(scratch) / 'src/game/SimRevision.h').write_bytes(base_revision)
                 before = sim_version.sim_revision(scratch)
             if sim_version.sim_revision(root) < before:
                 problems.append(f'SIM_REVISION went down from {before}; it only ever increases')

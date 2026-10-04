@@ -135,10 +135,10 @@ mark the last blockage and defence checks.
 ## What the player sees
 
 Everything shown to players comes from one table, the metric catalog
-(`src/stats/MetricCatalog.cpp`). Each entry names a metric, the group it belongs
+(`src/team/stats/MetricCatalog.cpp`). Each entry names a metric, the group it belongs
 to (population, food and wellbeing, resources, buildings, military, land, score),
 where its numbers come from in the recorded history, and how it is shown. The
-arithmetic is in `src/stats/MetricSeries.cpp`. The catalog only reads history
+arithmetic is in `src/team/stats/MetricSeries.cpp`. The catalog only reads history
 that is already recorded; adding a metric there changes neither the simulation
 nor the save format.
 
@@ -203,14 +203,14 @@ through the same metrics as charts of the player's own colony.
 ## Verification
 
 The existing `team-stats-save-test` and `savegame-safety-test` targets cover the
-new fields; both already run in Linux and Windows CI. `test/TeamLabourStatsTest.cpp`
+new fields; both already run in Linux and Windows CI. `src/team/stats/TeamLabourStatsTest.cpp`
 (suite `TeamStatsSave`) checks that each worker-tick lands in one bucket, compares
 place lookups with a scan of every building tile, and covers combat attribution,
 the defence snapshot and save round trips. Run locally with disposable
 profiles as described in `test/README.md`. The statistics harness also accepts
 `--screenshots OUTPUT_DIRECTORY` to render graph pages and a live-panel fixture
 at 640×480 and 1024×768 with the supported maximum of 16 teams, large totals and partial legacy history.
-`test/MetricSeriesTest.cpp` (in `glob2-unit-tests`) covers the catalog and its
+`src/team/stats/MetricSeriesTest.cpp` (in `glob2-unit-tests`) covers the catalog and its
 arithmetic: rates, bands, percentages, coverage gaps and axes.
 `python3 test/check_telemetry_simulation.py build/src/glob2` compares the complete
 1,024-tick four-AI and 2,048-tick 12-team checksum sidecars against compressed

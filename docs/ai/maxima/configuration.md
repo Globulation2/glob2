@@ -32,7 +32,7 @@ MaximaStrategyDump --dump-maxima-strategy --maxima-format 2v2 \
     --maxima-layer custom.strategy --maxima-overrides 'tactics.min_force=8'
 ```
 
-The executable is built from `test/maxima/MaximaStrategyDump.cpp` by the
+The executable is built from `src/ai/maxima/MaximaStrategyDump.cpp` by the
 [Maxima test runner](../../../test/maxima/README.md).
 
 | Parameter groups | Decisions |

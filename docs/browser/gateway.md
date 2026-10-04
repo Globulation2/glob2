@@ -90,21 +90,21 @@ separate ACCESS_LOCAL_NETWORK permission flow.
 ```sh
 scons release=1 transport-test -j4
 python3 test/run-network-transport-tests.py
-python3 -m unittest discover -s tests/transport -v
+python3 -m unittest discover -s test/transport -v
 ```
 
 `net-connection-test` covers `NetConnection` framing, malformed input and queue
 limits on a fake transport, then a native WSS round trip, a TCP listener and
-transport backpressure on loopback. `tests/transport/` drives the WSS client and
+transport backpressure on loopback. `test/transport/` drives the WSS client and
 listener harnesses with real certificates: verified clients/listeners, explicit
 routes, certificate pinning, mutual TLS, Origin checks, binary framing, text
 mode, rejection, backpressure and stalled TLS cancellation.
-`tests/transport/test_http_fetch.py` drives the native `HttpFetch` client
+`test/transport/test_http_fetch.py` drives the native `HttpFetch` client
 (`src/online/HttpFetch.h`; `emscripten_fetch` in the browser) against local HTTP
 and HTTPS servers: methods, headers and bodies, error statuses, certificate
 trust, response limits, timeouts and cancellation. It shares WssTransport's TLS
 trust through `src/net/TlsSetup.h`.
 
 The relay's own listener and admission are covered by `glob2-relay-tests` and
-`tests/relay/` ([relay](../multiplayer/relay.md)), and the platform stack by
-`tests/deployment/platform_stack_smoke.py` ([hosting](../hosting/README.md)).
+`test/relay_service/` ([relay](../multiplayer/relay.md)), and the platform stack by
+`test/deployment/platform_stack_smoke.py` ([hosting](../hosting/README.md)).

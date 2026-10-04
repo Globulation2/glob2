@@ -87,9 +87,9 @@ def build_mobile(directory, identity, arguments):
     strict = env.Clone()
     strict.Append(CXXFLAGS=['-fno-fast-math', '-ffp-contract=off'])
     script_objects = javascript_objects(env, object_root / 'third_party', identity['mode'] == 'release', shared=identity['target'] == 'android')
-    files = ['src/' + name for name in CLIENT_SOURCES if name != 'VoiceRecorder.cpp']
+    files = ['src/' + name for name in CLIENT_SOURCES if name != 'audio/VoiceRecorder.cpp']
     if identity['target'] == 'ios':
-        files.remove('src/Glob2.cpp')
+        files.remove('src/app/Glob2.cpp')
         files += ['mobile/ios/SafeArea.mm', 'mobile/ios/Documents.mm', 'mobile/ios/LaunchLinks.mm', 'mobile/ios/CertificateTrust.cpp']
     files += ['libgag/src/' + name for name in GAG_SOURCES]
     files += ['libusl/src/' + name for name in USL_SOURCES]
@@ -99,8 +99,8 @@ def build_mobile(directory, identity, arguments):
         env.Append(LIBS=['android', 'log', 'dl', 'm'])
         env['_LIBFLAGS'] = '-Wl,--start-group ' + env['_LIBFLAGS'] + ' -Wl,--end-group'
         # SDL3/SDL_main.h supplies Android entry-point routing.
-        objects = [(strict if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp' else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
-        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
+        objects = [(strict if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp' else env).SharedObject(str(object_root / (name + '.o')), name) for name in files] + script_objects
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
         program = env.SharedLibrary(str(output / 'lib/main'), objects)
         if 'android-tests' in COMMAND_LINE_TARGETS:
             # Cross-compile the two doctest binaries from test/tests.py as Android PIE
@@ -112,9 +112,9 @@ def build_mobile(directory, identity, arguments):
             import tests as registry
             tests = env.Clone()
             tests['CPPDEFINES'] = ['HAVE_CONFIG_H']  # TestMain.cpp defines SDL_MAIN_HANDLED itself
-            tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+            tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
             by_source = dict(zip(files, objects))
-            client_objects = [obj for name, obj in by_source.items() if name != 'src/Glob2.cpp'] + script_objects
+            client_objects = [obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp'] + script_objects
             library_objects = [obj for name, obj in by_source.items()
                                if name.startswith('libgag/') or name.startswith('libusl/')] + script_objects
 
@@ -134,7 +134,7 @@ def build_mobile(directory, identity, arguments):
                         compile_env = tests.Clone()
                         compile_env.Append(CXXFLAGS=options.get('cxxflags', []))
                         compile_env.Append(CPPDEFINES=options.get('defines', []))
-                    path = source[1:] if source.startswith('#') else 'test/' + source
+                    path = registry.source_path(source)
                     name = prefix + path.replace('/', '_').rsplit('.', 1)[0]
                     targets = compile_env.Object(str(object_root / 'tests' / (name + '.o')), path)
                     if source.endswith('TestMain.cpp'):
@@ -165,8 +165,8 @@ def build_mobile(directory, identity, arguments):
         # Xcode links the archive with the SDL startup and system frameworks.
         objc = env.Clone()
         objc.Append(CCFLAGS=['-fobjc-arc'])
-        objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp' else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
-        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/script/') or name == 'src/ai/AIJavaScript.cpp'])
+        objects = [(objc if name == 'mobile/ios/Documents.mm' else strict if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp' else env).Object(str(object_root / archive_object_name(name)), name) for name in files] + script_objects
+        numeric_guard(strict, [obj for name, obj in zip(files, objects) if name.startswith('src/scripting/javascript/') or name == 'src/ai/javascript/AIJavaScript.cpp'])
         # ar replaces matching members but otherwise retains obsolete names.
         # Recreate this owned output so renamed/removed sources cannot survive.
         env['ARCOM'] = [Delete('$TARGET'), env['ARCOM']]
@@ -176,7 +176,7 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))
             import tests as registry
             tests = env.Clone()
-            tests.Append(CPPPATH=['test', 'test/support', 'src/render', 'libgag/src'])
+            tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
             test_objects = []
             for entry in registry.SUPPORT + registry.ENGINE_SUPPORT + registry.scripting_entries():
                 source, options = (entry, {}) if isinstance(entry, str) else entry
@@ -185,7 +185,7 @@ def build_mobile(directory, identity, arguments):
                 local.Append(CPPDEFINES=options.get('defines', []))
                 if source == 'support/TestMain.cpp':
                     local.Append(CPPDEFINES=[('main', 'glob2ScriptTestMain')])
-                path = 'test/' + source
+                path = registry.source_path(source)
                 targets = local.Object(str(object_root / 'tests' / archive_object_name(path)), path)
                 if source.endswith('TestMain.cpp'):
                     local.Depends(targets, provenance_header)

@@ -17,7 +17,7 @@ export const MAX_DECOMPRESSED_MAP_BYTES = 64 * 1024 * 1024;
 export const MAX_GZIP_RATIO = 256;
 export const MIN_UNPACKED_ALLOWANCE = 4 * 1024 * 1024;
 
-/** VERSION_MAJOR and MINIMUM_VERSION_MINOR in src/Version.h: older files no longer load. */
+/** VERSION_MAJOR and MINIMUM_VERSION_MINOR in src/app/Version.h: older files no longer load. */
 export const MAP_VERSION_MAJOR = 0;
 export const MINIMUM_MAP_VERSION_MINOR = 58;
 

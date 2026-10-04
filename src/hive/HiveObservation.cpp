@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiveObservation.h"
-#include "script/ScriptObservations.h"
+#include "scripting/javascript/ScriptObservations.h"
 #include "Game.h"
 namespace Hive
 {

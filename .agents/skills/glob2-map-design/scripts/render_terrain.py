@@ -9,7 +9,7 @@ the game will see. Make one with the structured command (sizes are exponents, 8 
       --param width=8 --param height=8 --report terrain --output-dir /tmp/dump
   python3 render_terrain.py /tmp/dump/terrain.txt fort.png --centre 113 136 --radius 40 --scale 10
 
-Codes (src/MapStudy.cpp): 0 pure grass, 1 pure sand, 2 pure water, 3 mixed (a beach or a
+Codes (src/app/cli/MapStudy.cpp): 0 pure grass, 1 pure sand, 2 pure water, 3 mixed (a beach or a
 one-corner sand line: walkable, unbuildable, crops never cross it), 4 wheat, 5 wood, 6 stone,
 7 building, 8 fruit, 9 algae. A resource hides the terrain under it.
 """

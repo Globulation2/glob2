@@ -71,7 +71,7 @@ comments can say "because grass may not touch water" and a reader can check it h
 | Fruit (cherry, orange, prune) | Stocked in inns. Each kind an inn holds raises its happiness level (`Building::availableHappynessLevel`), and a hungry unit that can see a happier enemy inn than any of its own walks there and is converted to that team (`Team::findNearestFood`); traded at markets. A unit that ate fruit also carries less armour for it (`armorReductionPerHappyness`) | Grass | Regrows in place wherever it stands; never spreads, never cleared |
 
 The growth test lives in `Map::growResources` (`src/map/MapStep.cpp`), the resource table in
-`src/game/entities/Resources.cpp`, and building needs in `src/game/entities/BuildingTypes*.cpp`.
+`src/resource/Resources.cpp`, and building needs in `src/building/types/BuildingTypes*.cpp`.
 
 Consequences a generator has to design around:
 

@@ -2,7 +2,7 @@
 #include "DrownedForestGenerator.h"
 #include "Contact.h"
 #include "Building.h"
-#include "game/entities/BuildingType.h"
+#include "BuildingType.h"
 #include "Team.h"
 #include "Drawing.h"
 #include "Farmland.h"

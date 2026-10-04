@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Glob2Test.h"
-#include "script/ScriptValue.h"
+#include "scripting/javascript/ScriptValue.h"
 #include <bit>
 #include <iomanip>
 #include <locale>

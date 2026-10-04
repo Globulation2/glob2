@@ -158,8 +158,8 @@ export function buildFixtureFiles(): Map<string, string> {
   const tickets = ticketFiles();
   for (const [path, content] of tickets.files) files.set(path, content);
 
-  // The connection-quality table, for the C++ copy in src/gui/ConnectionQuality.h
-  // (test/ConnectionQualityTest.cpp compares the two).
+  // The connection-quality table, for the C++ copy in src/net/ConnectionQuality.h
+  // (src/net/ConnectionQualityTest.cpp compares the two).
   files.set(
     'connection-quality.json',
     json({

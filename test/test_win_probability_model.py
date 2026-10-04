@@ -18,7 +18,7 @@ sys.path.insert(0, str(ROOT))
 
 from tools import win_probability_model as W
 
-HEADER = ROOT / 'src' / 'WinProbabilityModel.h'
+HEADER = ROOT / 'src' / 'team' / 'stats' / 'WinProbabilityModel.h'
 SAMPLES = Path(__file__).resolve().parent / 'data' / 'win-probability-engine-samples.txt'
 
 try:
@@ -191,7 +191,7 @@ class Engine(unittest.TestCase):
             self.assertEqual(value, W.to_fixed(item['coefficient']), item['name'])
 
     def test_the_minimum_decision_tick_agrees_with_the_engine(self):
-        header = (ROOT / 'src' / 'WinProbability.h').read_text()
+        header = (ROOT / 'src' / 'team' / 'stats' / 'WinProbability.h').read_text()
         value = int(re.search(r'MINIMUM_DECISION_TICK = (\d+);', header)[1])
         self.assertEqual(value, W.MINIMUM_DECISION_TICK)
 

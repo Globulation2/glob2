@@ -178,7 +178,7 @@ abridged:
   English in `data/texts.en.txt`, a blank line in every other catalog and the key in
   `data/texts.pending.txt` (see the [UI framework](../../development/ui-framework.md)).
   `data/check_translations.py` fails on a key the file uses but the catalogs lack.
-- Rule ids and values come from the registry in `src/CustomGameRules.cpp`. Toggles
+- Rule ids and values come from the registry in `src/game/rules/CustomGameRules.cpp`. Toggles
   take only `true`/`false` (`combat`, `hunger`, `revealTerrain`, `alliancesChange`,
   `instantConstruction`, `woundedRetreat`, `unitsCanDie`, `unitTraining`); `workers`
   takes 1 to 8; the others take an option id: `victory` (`prestige`, `conquest`),
