@@ -10,3 +10,5 @@ Focused verification used the unmodified web-client artifact from run 3718420026
 - `GLOB2_TEST_URL=http://127.0.0.1:8775 npx playwright test tests/viewport.spec.js --project=firefox --grep 'running match survives' --repeat-each=12`: 12 passed (16.7m), no retries; retained HTML report.
 
 These passing repetitions do not establish a root cause or fix. Full exact latest-master verification follows separately.
+
+Extended Chromium stress used 50 batches of eight simultaneous contexts: another 400 successful startups (480 stress launches total). The script and log are retained; copy the script to `artifacts/ci-repair/` in the product checkout before running so its relative Playwright dependency path resolves. It records debugger stacks on a failure; none was captured. This increases reproduction coverage but still does not identify a root cause.
