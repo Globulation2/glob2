@@ -29,7 +29,11 @@ ColonySkinPreview::ColonySkinPreview()
     textures[0] = std::make_unique<GAGCore::DrawableSurface>(root + "/paint.png");
     if (textures[0]->getW()!=256 || textures[0]->getH()!=256) textures[0].reset();
     if (const char *swarm = std::getenv("GLOB2_SKIN_PREVIEW_SWARM"))
-        swarmChoice[0] = std::max(0, Online::swarmMeshIndex(swarm));
+    {
+        const int index = Online::swarmMeshIndex(swarm);
+        if (index < 0) std::cerr << "Colony skin preview: unknown swarm mesh " << swarm << '\n';
+        swarmChoice[0] = std::max(0, index);
+    }
 }
 bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 {

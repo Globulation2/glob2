@@ -3,7 +3,7 @@
 """Measure how well a static GSK1 swarm mesh takes paint, as the game shows it.
 
 Needs NumPy (Blender's bundled Python has it):
-  python3 tools/skins/swarm_metrics.py MESH.gsk [...] [--size 128] [--preview DIR]
+  python3 tools/skins/swarm_metrics.py MESH.gsk [...] [--size 128] [--preview DIR [--paint PNG]]
 
 Rasterizes each mesh with a depth buffer from the game camera at --size
 pixels (the swarm sprite's on-screen size at normal zoom), so only surface the
@@ -227,5 +227,5 @@ if __name__ == '__main__':
         preview = None
         if args.preview:
             args.preview.mkdir(parents=True, exist_ok=True)
-            preview = args.preview / ('-'.join(mesh.parts[-3:-1]) + '.png')
+            preview = args.preview / (mesh.stem + '.png')
         print(json.dumps(measure(mesh, args.size, preview, paint)), flush=True)

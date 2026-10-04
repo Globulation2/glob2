@@ -17,8 +17,8 @@ close (the manifest records both).
 
 Each design is written as swarm-<design>.gsk with a paint layout projected
 along the game camera (see unwrap). Designs are the skin catalog's swarm mesh
-ids; add one to DESIGNS, src/online/SwarmMeshCatalog.h and the platform's
-SWARM_MESHES together.
+ids: keep DESIGNS in the order of src/online/SwarmMeshCatalog.h and the
+platform protocol's SwarmMesh (tools/skins/test_export.py checks this).
 """
 import argparse
 import hashlib
@@ -231,15 +231,13 @@ def surface(design, resolution):
 
 def decimate(obj):
     obj.data.calc_loop_triangles()
-    before = len(obj.data.loop_triangles)
     modifier = obj.modifiers.new('SkinSurfaceBudget', 'DECIMATE')
-    modifier.ratio = min(1.0, TRIANGLES / before)
+    modifier.ratio = min(1.0, TRIANGLES / len(obj.data.loop_triangles))
     bpy.ops.object.modifier_apply(modifier=modifier.name)
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
     bpy.ops.mesh.normals_make_consistent(inside=False)
     bpy.ops.object.mode_set(mode='OBJECT')
-    return before
 
 
 def camera_fit():
@@ -288,13 +286,11 @@ def weight(obj):
 
 def fit(obj):
     """Scale uniformly about the ground centre to the shared screen coverage."""
-    coverage, volume = weight(obj)
-    factor = math.sqrt(COVERAGE / coverage)
+    factor = math.sqrt(COVERAGE / weight(obj)[0])
     for vertex in obj.data.vertices:
         vertex.co *= factor
-    fitted = weight(obj)
-    return {'designCoverage': round(coverage, 1), 'designVolume': round(volume, 4), 'fitScale': round(factor, 4),
-            'coveragePx': round(fitted[0], 1), 'volume': round(fitted[1], 4)}
+    coverage, volume = weight(obj)
+    return {'coveragePx': round(coverage, 1), 'volume': round(volume, 4), 'fitScale': round(factor, 4)}
 
 
 def unwrap(view):
@@ -350,7 +346,7 @@ def generate(name, output, resolution):
         'sourceSha256': sha256(here / 'generate_swarms.py'),
         'dependencies': {'tools/skins/swarm_metrics.py': sha256(here / 'swarm_metrics.py')},
         'design': name, 'seed': seed, 'metaballResolution': resolution,
-        'coveragePx': fitted['coveragePx'], 'volume': fitted['volume'], 'fitScale': fitted['fitScale'],
+        **fitted,
         'vertices': vertices, 'triangles': triangles,
     }
 
