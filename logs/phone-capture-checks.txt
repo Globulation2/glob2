@@ -1,0 +1,8 @@
+custom-390x844 before: FAIL: control within screen: generator/section/1 at 26,832 328x34
+custom-390x844 after:  FAIL: control within screen: generator/section/1 at 26,842 328x34
+custom-players-390x844 before: FAIL: control within screen: colony/3/team at 36,846 308x34
+custom-players-390x844 after:  FAIL: control within screen: colony/3/ai at 36,826 173x44
+custom-844x390 before: FAIL: control within screen: generator/colonies at 51,414 389x34
+custom-844x390 after:  FAIL: control within screen: generator/colonies at 51,414 389x34
+custom-players-844x390 before: FAIL: control within screen: colony/2/controller at 219,400 150x34
+custom-players-844x390 after:  FAIL: control within screen: colony/2/controller at 219,400 150x34

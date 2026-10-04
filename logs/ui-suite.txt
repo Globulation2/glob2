@@ -1,0 +1,8 @@
+PASS UIPresentation/every screen lays out; navigates and captures at small landscape across presentations and insets [display:1600x1400][artifacts][slow] (41.0s)
+PASS UIPresentation/every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow] (42.0s)
+PASS CustomGameSetup/custom game screens; captures and translated keys [slow][display:1024x768][artifacts][writes-preferences] (76.1s)
+PASS UIPresentation/every screen lays out; navigates and captures at tablet portrait across presentations and insets [display:1600x1400][artifacts][slow] (180.6s)
+PASS UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (213.0s)
+PASS UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (226.9s)
+PASS UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] (267.5s)
+7 passed, 0 failed, 0 skipped (1047.1s of test time)
