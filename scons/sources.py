@@ -606,6 +606,7 @@ GAG_SOURCES = (
     'TextStream.cpp',
     'Toolkit.cpp',
     'TrueTypeFont.cpp',
+    'BidiText.cpp',
     'win32_dirent.cpp',
     'TextSort.cpp',
     'ApplicationHost.cpp',

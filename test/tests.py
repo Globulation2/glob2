@@ -168,6 +168,7 @@ UNIT_TESTS = [
     # Former CppUnit suite (TestsRunner).
     'AllyTeamWidgetIndexTest.cpp',
     'BitArrayTest.cpp',
+    'BidiTextTest.cpp',
     'SceneBufferTest.cpp',
     'BrushAccumulatorTest.cpp',
     'BrushCoverageTest.cpp',
