@@ -1,0 +1,4 @@
+PASS UIPresentation/every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow] (293.8s)
+
+17 passed, 0 failed, 0 skipped (401.3s of test time)
+[run_tests] JUnit report: /home/bradley/glob2-signin/artifacts/tests/junit.xml (44 cases)

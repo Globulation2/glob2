@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="44" failures="0" errors="0" skipped="0"><testsuite name="OnlineResult"><testcase classname="OnlineResult" name="a result waits for the players, then for the verifier, and says when it is slow" time="0.000176" status="run" />
+  <testcase classname="OnlineResult" name="recent matches: the history page, refreshed and led by live summaries" time="0.000155" status="run" />
+  </testsuite><testsuite name="OnlineScreenLifetime"><testcase classname="OnlineScreenLifetime" name="online screens closed with platform calls in flight are never called back" time="0.237085" status="run" />
+  </testsuite><testsuite name="OnlineServices"><testcase classname="OnlineServices" name="an owner's services are the ones services() returns, until the owner goes" time="0.000103" status="run" />
+  <testcase classname="OnlineServices" name="pump hooks run on update and stop once removed" time="0" status="run" />
+  </testsuite><testsuite name="OnlineWording"><testcase classname="OnlineWording" name="a pairing link's fingerprint becomes a short code" time="0" status="run" />
+  <testcase classname="OnlineWording" name="an unrated search shows no ratings; a ranked one explains its range [display]" time="1.90508" status="run" />
+  <testcase classname="OnlineWording" name="an unserved version blames the side that is out of date [display]" time="1.98664" status="run" />
+  <testcase classname="OnlineWording" name="menus read larger on big desktop windows that follow the desktop scale" time="0" status="run" />
+  <testcase classname="OnlineWording" name="queue names, durations and estimates read the same everywhere" time="0.215878" status="run" />
+  <testcase classname="OnlineWording" name="the room reads positively and hides seeds and pairing strings [display]" time="1.91054" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="11.2851" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="11.6167" status="run" />
+  </testsuite><testsuite name="UIPresentation"><testcase classname="UIPresentation" name="every screen lays out; navigates and captures at laptop across presentations and insets [display:1600x1400][artifacts][slow]" time="293.749" status="run" />
+  <testcase classname="UIPresentation" name="every screen lays out; navigates and captures at small portrait across presentations and insets [display:1600x1400][artifacts][slow]" time="77.1833" status="run" />
+  </testsuite><testsuite name="OnlineResources"><testcase classname="OnlineResources" name="every valid queue, match and catalog fixture parses" time="0.007387" status="run" />
+    <testcase classname="OnlineResources" name="queue status and proposals carry what the search panel and prompt show" time="0.005173" status="run" />
+    <testcase classname="OnlineResources" name="match details and catalog maps" time="0.002643" status="run" />
+    <testcase classname="OnlineResources" name="player profiles give ratings with rank, the trend and the aggregates" time="0.00175" status="run" />
+    <testcase classname="OnlineResources" name="the profile summary follows the ladders and recent results" time="0" status="run" />
+  </testsuite><testsuite name="PlatformClient"><testcase classname="PlatformClient" name="first start creates a guest, keeps its credential and says hello with the token" time="0.000278" status="run" />
+    <testcase classname="PlatformClient" name="an unsupported sim version says which side is out of date" time="0.000698" status="run" />
+    <testcase classname="PlatformClient" name="a returning player signs in with the device credential or refresh token" time="0" status="run" />
+    <testcase classname="PlatformClient" name="without consent to sign in, the socket connects anonymously" time="0" status="run" />
+    <testcase classname="PlatformClient" name="responses reach their own requests; timeouts and events are delivered" time="0.000224" status="run" />
+    <testcase classname="PlatformClient" name="requests made before the socket is online wait for it" time="0.000116" status="run" />
+    <testcase classname="PlatformClient" name="lost connections retry with growing, jittered backoff" time="0.000201" status="run" />
+    <testcase classname="PlatformClient" name="a connection that never opens times out and retries" time="0" status="run" />
+    <testcase classname="PlatformClient" name="tokens refresh before expiry, rotate the stored token and re-authenticate the socket" time="0.000209" status="run" />
+    <testcase classname="PlatformClient" name="a refused refresh token falls back to the device credential" time="0" status="run" />
+    <testcase classname="PlatformClient" name="a refresh that fails on the network is retried while the token lasts" time="0.000125" status="run" />
+    <testcase classname="PlatformClient" name="a refused token at hello continues anonymously and signs in again" time="0.000105" status="run" />
+    <testcase classname="PlatformClient" name="update_required stops retrying" time="0" status="run" />
+    <testcase classname="PlatformClient" name="an idle socket is checked with session.ping and replaced when silent" time="0.000169" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in opens the page, survives a reconnect and adopts the session" time="0.000359" status="run" />
+    <testcase classname="PlatformClient" name="browser sign-in failures, cancellation and expiry" time="0.000775" status="run" />
+    <testcase classname="PlatformClient" name="session.revoked signs out and stops automatic sign-in" time="0.000133" status="run" />
+    <testcase classname="PlatformClient" name="sign-out revokes the refresh token, reconnects anonymously and stays signed out" time="0.000223" status="run" />
+    <testcase classname="PlatformClient" name="stop cancels everything and credentials stay per instance" time="0.000113" status="run" />
+    <testcase classname="PlatformClient" name="rename patches the account" time="0.000137" status="run" />
+    <testcase classname="PlatformClient" name="REST calls return an id that cancels them; a cancelled call never calls back" time="0.000267" status="run" />
+    <testcase classname="PlatformClient" name="the instance description is fetched once per start and shared" time="0" status="run" />
+    <testcase classname="PlatformClient" name="a scope cancels its owner's calls and listeners when the owner goes away" time="0.000174" status="run" />
+    <testcase classname="PlatformClient" name="a handler that destroys another owner in the same update does not reach it" time="0.000114" status="run" />
+  </testsuite></testsuites>
