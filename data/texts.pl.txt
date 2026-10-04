@@ -4564,6 +4564,10 @@ Wyłącz, aby na tym urządzeniu używać klasycznych jednostek, rojów i kolor�
 
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5130,9 +5134,6 @@ Bazy na kolonię; baza to jedna drużyna mapy w narysowanej postaci, z jej budyn
 
 [Units gain levels at schools.]
 
-[settings Record your games as MP4 videos with sound.]
-
-[settings Recording uses the full rendered resolution at 30 FPS.]
 [stat group work]
 
 [stat worker time]

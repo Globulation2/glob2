@@ -4564,6 +4564,10 @@ Kikapcsolva ezen az eszközön a klasszikus egységek, rajok és épületszínek
 
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
 [settings FFmpeg is ready.]
 
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5130,9 +5134,6 @@ Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épület
 
 [Units gain levels at schools.]
 
-[settings Record your games as MP4 videos with sound.]
-
-[settings Recording uses the full rendered resolution at 30 FPS.]
 [stat group work]
 
 [stat worker time]

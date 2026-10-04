@@ -4576,6 +4576,10 @@ Stop commander
 Recording
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
 Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.
+[settings Record your games as MP4 videos with sound.]
+Record your games as MP4 videos with sound.
+[settings Recording uses the full rendered resolution at 30 FPS.]
+Recording uses the full rendered resolution at 30 FPS.
 [settings FFmpeg is ready.]
 FFmpeg is ready.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
@@ -5130,10 +5134,6 @@ Hurt units go back to heal instead of fighting to the death.
 Units die when they run out of HP. Turn off to stop them at 1 HP.
 [Units gain levels at schools.]
 Units gain levels at schools.
-[settings Record your games as MP4 videos with sound.]
-Record your games as MP4 videos with sound.
-[settings Recording uses the full rendered resolution at 30 FPS.]
-Recording uses the full rendered resolution at 30 FPS.
 [stat group work]
 Workers' time
 [stat worker time]
