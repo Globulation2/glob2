@@ -443,6 +443,7 @@ CLIENT_SOURCES = (
     'ScriptEditorScreen.cpp',
     'Sector.cpp',
     'Settings.cpp',
+    'SystemLanguage.cpp',
     'TorusView.cpp',
     'TorusViewRender.cpp',
     'gui/GameGUITorus.cpp',

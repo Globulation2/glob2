@@ -67,6 +67,9 @@ namespace glob2test
 		globals.settings.screenWidth = options.width;
 		globals.settings.screenHeight = options.height;
 		globals.settings.screenFlags = options.screenFlags;
+		// Tests read English text unless they choose otherwise, whatever the host's locale.
+		if (globals.settings.language.empty())
+			globals.settings.language = "en";
 		if (options.beforeLoad)
 			options.beforeLoad(globals);
 		if (options.display || options.loadStrings)
