@@ -573,13 +573,13 @@ above. Both use the same production report serializer.
 ## Ending decided games early
 
 `"win_probability_permille": 970` in an experiment design turns on the optional
-[win probability](win-probability-model.md) winning condition for its games, so a
+[win probability](../ai/win-probability-model.md) winning condition for its games, so a
 match that is already decided is not played out. It is off by default, because it
 changes the outcome that gets measured and so must be asked for.
 
-On the campaign it was fitted from, 970 returned about a fifth of the compute and
-named a different winner than the full game would have in 2.3% of the games it
-ended; 990 returns about a tenth for 0.8%. Games it ended report a `termination`
+Historical calibration is described in the model guide; it has not been rerun
+against current AI and game rules. The threshold accepts 0 (off) or 501–1000.
+Experiment `rules` also pass through the shared `--rule` interface. Games it ended report a `termination`
 of `win_probability` rather than `engine_end`, and `observations()` carries the
 raw termination through, so analysis can pool, exclude or compare them but can
 never mistake the model's opinion for a win the rules declared. Do not compare
@@ -591,7 +591,8 @@ job IDs; keep AI source/settings and map distributions comparable yourself. Othe
 formats retain their earlier sequential Elo and penalized finishing-order fits.
 For another batch, choose a new sample seed, audit map-seed/job-ID overlap, retain
 both side-swapped games, and refit the concatenated outcomes. Never average the
-batch ratings or restart from the old rounded UI scores.
+batch ratings or restart from the old rounded UI scores. Bootstrap draws that omit competitors or have no finite
+fit report unavailable uncertainty rather than silently biasing the intervals.
 
 ## Gameplay, AI and performance telemetry
 

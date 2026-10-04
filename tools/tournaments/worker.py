@@ -48,10 +48,10 @@ def installed_bundle(path):
     path = Path(path)
     if not path.is_dir():
         raise ValueError('bundle is not installed')
-    manifest = read_json(path / 'bundle.json')
-    if manifest.get('id') != path.name:
+    manifest = inspect_bundle(path, verify=False)
+    if manifest['id'] != path.name:
         raise ValueError('installed bundle identity mismatch')
-    return manifest | {'directory': str(path.resolve())}
+    return manifest
 
 
 def outcome_only(result):
@@ -81,27 +81,15 @@ class Worker:
             CREATE TABLE IF NOT EXISTS controls (experiment TEXT PRIMARY KEY, mode TEXT NOT NULL);
         ''')
         path = self.root / 'host.json'
-        self._host_config_path = path
-        self._host_config_mtime = path.stat().st_mtime if path.exists() else None
         self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
 
     def close(self):
         self.db.close()
 
     def reload_config(self):
-        """Pick up host.json edits (e.g. from `configure`) without a daemon restart.
-
-        A persistent daemon's Worker instance is constructed once at startup and
-        otherwise never re-reads host.json; a `configure` RPC updates the file via
-        a separate, short-lived Worker instance for that single call. Without this,
-        slot/build/budget changes silently have no effect until the daemon happens
-        to be restarted for an unrelated reason.
-        """
-        path = self._host_config_path
-        mtime = path.stat().st_mtime if path.exists() else None
-        if mtime != self._host_config_mtime:
-            self._host_config_mtime = mtime
-            self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
+        """Host limits are live controls, including rapid atomic file replacements."""
+        path = self.root / 'host.json'
+        self.config = HOST_DEFAULTS | (read_json(path) if path.exists() else {})
 
     def configure(self, values):
         unknown = set(values) - set(HOST_DEFAULTS)
@@ -499,7 +487,7 @@ def rpc(root, request):
             # atomically renames it to this final path. Re-hashing the complete
             # installed bundle for every job starves short-game pipelines: the
             # presence of the published directory is the durable install marker.
-            return {'present': path.is_dir()}
+            return {'present': path.is_dir() and bool(installed_bundle(path))}
         if op == 'cleanup':
             # Objects may be referenced by queued jobs or unacknowledged results.
             active = worker.db.execute("SELECT count(*) FROM queue WHERE state NOT IN ('acknowledged','cancelled')").fetchone()[0]

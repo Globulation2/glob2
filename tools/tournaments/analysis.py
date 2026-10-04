@@ -84,6 +84,7 @@ def observations(records, policy):
         competitors = ['+'.join(sorted(groups[key])) for key in keys]
         rows.append({'job_id': job['id'], 'format': fmt, 'block': str(labels.get('block', digest(job['inputs']))),
                      'map': labels.get('map', labels.get('map_seed')), 'build': job['build'],
+                     'seeds': job['seeds'],
                      'variant': labels.get('variant', 'baseline'), 'pair': labels.get('pair'),
                      'held_out': labels.get('held_out', False), 'rotation': labels.get('rotation', 0), 'generator': labels.get('generator'),
                      'subject_group': next((t['alliance'] if fmt == '2v2' else t['team'] for t in result['teams'] if t['team'] == labels.get('subject_player',0)), keys[0]),

@@ -48,6 +48,20 @@ class RuleJobs(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'cannot override'):
             adapter.validate(request)
 
+    def test_probability_threshold_matches_engine_range(self):
+        from tools.tournaments.jobs import EngineJob
+        for threshold in (True, -1, 1, 500, 1001):
+            request = job('game', 'a'*64, config={'generator': 15,
+                'players': ['numbi', 'castor'], 'win_probability_permille': threshold},
+                seeds={'map': 1, 'game': 1})
+            with self.assertRaisesRegex(ValueError, '501'):
+                EngineJob('game').validate(request)
+        for threshold in (0, 501, 970, 1000):
+            request = job('game', 'a'*64, config={'generator': 15,
+                'players': ['numbi', 'castor'], 'win_probability_permille': threshold},
+                seeds={'map': 1, 'game': 1})
+            EngineJob('game').validate(request)
+
     def test_rules_require_integer_values(self):
         from tools.tournaments.jobs import EngineJob
         for rules in ([1], {'noUpgrades': True}, {'scarcity': '3'}, {1: 0}):
@@ -244,8 +258,10 @@ class Fixture(unittest.TestCase):
 
     def test_installed_bundle_is_not_rehashed_per_job(self):
         path = self.root / 'bundles' / self.bundle['id']
-        with patch('tools.tournaments.worker.inspect_bundle', side_effect=AssertionError('bundle rehashed')):
+        from tools.tournaments.bundles import inspect_bundle
+        with patch('tools.tournaments.worker.inspect_bundle', wraps=inspect_bundle) as inspect:
             manifest = installed_bundle(path)
+        inspect.assert_called_once_with(path, verify=False)
         self.assertEqual(manifest['id'], self.bundle['id'])
         self.assertEqual(manifest['directory'], str(path.resolve()))
 
@@ -354,7 +370,9 @@ class InventoryTests(unittest.TestCase):
     def test_reap_requires_confirm_and_only_stops_named_pid(self):
         from tools.tournaments.inventory import reap
         import subprocess, sys
-        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
+        worker_root = self.root / 'other-session' / 'workers' / 'pkg'
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)',
+                                    'daemon', str(worker_root)])
         try:
             directory = self.install('other-session', process.pid)
             host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
@@ -525,6 +543,22 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(j['config']['params']['width'], 7)
             self.assertEqual(j['config']['params']['height'], 8)
             self.assertEqual(j['labels']['format'], 'ffa')
+
+    def test_sampled_pairs_keep_parameter_sampling_and_explicit_rules(self):
+        from tools.tournaments.experiments import Planner
+        bundle = {'id': 'a'*64, 'capabilities': {
+            'ais': [{'id': 1, 'name': 'numbi'}, {'id': 2, 'name': 'castor'}],
+            'generators': [{'method': 15, 'editorOnly': False}]}}
+        design = {'id': 'sample', 'sample_games': 2, 'balanced_duels': True,
+                  'randomize_parameters': True, 'rules': {'peaceful': 1}}
+        with patch.object(Planner, 'parameter_samples', return_value=[{'fruit': 7}]):
+            games = Planner('ai_comparison', design, [bundle]).plan()['jobs']
+        self.assertEqual(games[0]['config']['params'], games[1]['config']['params'])
+        self.assertEqual(games[0]['config']['params']['fruit'], 7)
+        self.assertEqual(games[0]['config']['rules'], {'peaceful': 1})
+        for count in (0, -1, True):
+            with self.assertRaisesRegex(ValueError, 'positive integer'):
+                Planner('ai_comparison', dict(design, sample_games=count), [bundle]).plan()
 
     def test_balanced_duels_cover_all_generators_and_swapped_pairs(self):
         from collections import Counter, defaultdict

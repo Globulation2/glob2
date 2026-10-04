@@ -68,17 +68,22 @@ class Planner:
             players = rng.sample(ais, n) if len(ais) >= n else [rng.choice(ais) for _ in range(n)]
             alliances = None
         method = rng.choice(methods)
-        params = dict(rng.choice(sizes), teams=n)
-        params.update(config.get('generator_overrides', {}).get(str(method), {}))
         map_seed, game_seed = rng.getrandbits(32), rng.getrandbits(32)
+        size = rng.choice(sizes)
         if paired is not None:
             players, map_seed, game_seed = paired
+        params = (self.parameter_samples(self.map_build, method, 1, map_seed)[0]
+                  if config.get('randomize_parameters') else {})
+        params.update(size)
+        params.update(config.get('generator_overrides', {}).get(str(method), {}))
+        params['teams'] = n
         labels = {'format': fmt, 'generator': method, 'map_seed': map_seed, 'map': f'{method}:{map_seed}',
                   'rotation': 0, 'variant': 'baseline', 'subject_player': config.get('player', 0),
                   'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{game_seed}'}
         value = job('game', build, seeds={'map': map_seed, 'game': game_seed},
                     config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
                             'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
+                            **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
                             **({'win_probability_permille': config['win_probability_permille']}
                                if config.get('win_probability_permille') else {})},
@@ -89,7 +94,7 @@ class Planner:
     def balanced_duels(self, rng, ais, methods, sizes):
         """Balance generators and matchups, with same-map seat-swapped pairs."""
         count = self.config['sample_games']
-        if type(count) is not int or count <= 0 or count % 2 or len(ais) < 2:
+        if type(count) is not int or count <= 0 or count % 2 or len(set(ais)) < 2:
             raise ValueError('balanced duels need a positive even game count and at least two AIs')
         methods = sorted(set(methods))
         if not methods or len(sizes) != 1:
@@ -127,6 +132,7 @@ class Planner:
                     depends_on=[generated['id']], seeds={'game': seed},
                     config={'players': players, 'ticks': config.get('ticks', 90000),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
+                            **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'win_probability_permille': config['win_probability_permille']}
                                if config.get('win_probability_permille') else {})},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
@@ -199,7 +205,11 @@ class Planner:
             formats = config.get('formats',['1v1'])
             for fmt in formats:
                 if fmt not in ('1v1','2v2','ffa'): raise ValueError('unknown format')
-            if config.get('sample_games'):
+            if 'sample_games' in config:
+                if type(config['sample_games']) is not int or config['sample_games'] <= 0:
+                    raise ValueError('sample_games must be a positive integer')
+                if not methods or not formats:
+                    raise ValueError('sample games need generators and formats')
                 # A bounded random sample instead of the exhaustive cross product
                 # below: each of sample_games draws its own format/matchup/
                 # generator/size independently, rather than every combination of

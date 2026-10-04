@@ -9,13 +9,14 @@ every install shares, regardless of which package/protocol version it runs --
 it never speaks that install's RPC protocol, only reads its on-disk state, so
 a version mismatch between concurrent sessions' bundles can't break audit.
 """
+
 import json
 import time
 from .transport import Transport
 
 MAX_DEPTH = 6
 
-_DISCOVER_SCRIPT = f'''
+_DISCOVER_SCRIPT = f"""
 import json, os, sqlite3, sys
 home = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser('~')
 results = []
@@ -32,7 +33,7 @@ for dirpath, dirnames, filenames in os.walk(home):
         continue
     pid = daemon.get('pid')
     alive = False
-    if isinstance(pid, int):
+    if type(pid) is int and pid > 1:
         try:
             os.kill(pid, 0); alive = True
         except ProcessLookupError:
@@ -53,25 +54,36 @@ for dirpath, dirnames, filenames in os.walk(home):
             pass
     # dirpath is .../workers/<package_id>; its grandparent is the --hosts "directory".
     directory = os.path.dirname(os.path.dirname(dirpath))
-    results.append({{'directory': directory, 'package_id': daemon.get('package_id'), 'pid': pid,
+    results.append({{'directory': directory, 'package_id': daemon.get('package_id'), 'worker_root': dirpath, 'pid': pid,
                      'alive': alive, 'slots': host.get('slots'), 'last_activity': activity,
                      'running': running, 'queued': queued}})
 print(json.dumps(results))
-'''
+"""
 
-_KILL_SCRIPT = '''
-import os, sys
+_KILL_SCRIPT = """
+import os, subprocess, sys
 pid = int(sys.argv[1])
+root = sys.argv[2]
+if pid <= 1:
+    raise ValueError('invalid daemon PID')
+# Reject stale PID reuse before signalling a process from a persisted record.
+command = subprocess.run(['ps', '-p', str(pid), '-o', 'args='],
+                         capture_output=True, text=True, check=False).stdout.strip()
+if not command:
+    print('already gone')
+    sys.exit(0)
+if 'daemon ' + root not in command:
+    raise ValueError('PID no longer identifies the selected worker daemon')
 try:
     os.kill(pid, 15)
     print('signalled')
 except ProcessLookupError:
     print('already gone')
-'''
+"""
 
 
 def discover(transport, root=None):
-    args = [transport.python, '-c', _DISCOVER_SCRIPT] + ([root] if root else [])
+    args = [transport.python, "-c", _DISCOVER_SCRIPT] + ([root] if root else [])
     output = transport.call(args)
     return json.loads(output)
 
@@ -88,20 +100,26 @@ def audit(hosts, stale_hours=24.0, root=None):
     now = time.time()
     report = []
     for config in hosts:
-        transport = Transport(config, '/dev/null')
-        entry = {'host': config['name'], 'own_directory': config['directory']}
+        transport = Transport(config, "/dev/null")
+        entry = {"host": config["name"], "own_directory": config["directory"]}
         try:
             installs = discover(transport, root)
             for install in installs:
-                install['own'] = install['directory'] == config['directory']
-                age_hours = (now - install['last_activity']) / 3600 if install['last_activity'] else None
-                install['idle_hours'] = age_hours
-                idle_no_work = not install.get('running') and not install.get('queued')
+                install["own"] = install["directory"] == config["directory"]
+                age_hours = (
+                    (now - install["last_activity"]) / 3600
+                    if install["last_activity"]
+                    else None
+                )
+                install["idle_hours"] = age_hours
+                idle_no_work = not install.get("running") and not install.get("queued")
                 old_enough = age_hours is not None and age_hours >= stale_hours
-                install['stale'] = (not install['alive']) or (idle_no_work and old_enough)
-            entry['installs'] = installs
+                install["stale"] = (not install["alive"]) or (
+                    idle_no_work and old_enough
+                )
+            entry["installs"] = installs
         except Exception as error:
-            entry['error'] = str(error)
+            entry["error"] = str(error)
         report.append(entry)
     return report
 
@@ -112,16 +130,40 @@ def reap(host_config, directory, confirm=False, root=None):
     process; deleting the install's files is a separate, deliberate decision
     left to a human, never done here.
     """
-    transport = Transport(host_config, '/dev/null')
+    transport = Transport(host_config, "/dev/null")
     installs = discover(transport, root)
-    target = next((i for i in installs if i['directory'] == directory), None)
+    target = next((i for i in installs if i["directory"] == directory), None)
     if target is None:
-        raise ValueError(f'no worker install at {directory!r} on {host_config["name"]!r}')
-    if not target['alive']:
-        return {'host': host_config['name'], 'directory': directory, 'action': 'none', 'reason': 'daemon not running'}
+        raise ValueError(
+            f'no worker install at {directory!r} on {host_config["name"]!r}'
+        )
+    if not target["alive"]:
+        return {
+            "host": host_config["name"],
+            "directory": directory,
+            "action": "none",
+            "reason": "daemon not running",
+        }
     if not confirm:
-        return {'host': host_config['name'], 'directory': directory, 'action': 'dry-run',
-                'pid': target['pid'], 'note': 'pass confirm=True / --confirm to actually stop it'}
-    output = transport.call([transport.python, '-c', _KILL_SCRIPT, str(target['pid'])])
-    return {'host': host_config['name'], 'directory': directory, 'pid': target['pid'],
-            'action': output.decode().strip()}
+        return {
+            "host": host_config["name"],
+            "directory": directory,
+            "action": "dry-run",
+            "pid": target["pid"],
+            "note": "pass confirm=True / --confirm to actually stop it",
+        }
+    output = transport.call(
+        [
+            transport.python,
+            "-c",
+            _KILL_SCRIPT,
+            str(target["pid"]),
+            target["worker_root"],
+        ]
+    )
+    return {
+        "host": host_config["name"],
+        "directory": directory,
+        "pid": target["pid"],
+        "action": output.decode().strip(),
+    }
