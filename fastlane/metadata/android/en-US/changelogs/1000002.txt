@@ -1,1 +1,0 @@
-Globulation 2 0.10.0.0: online play with quick match, rooms and ratings, new AI options, match recording, redesigned statistics, interface themes and complete translations.

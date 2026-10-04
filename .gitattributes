@@ -1,3 +1,0 @@
-# Debian's current package is maintained in Salsa. Do not put this historical
-# packaging directory into the upstream orig tarball.
-debian/ export-ignore

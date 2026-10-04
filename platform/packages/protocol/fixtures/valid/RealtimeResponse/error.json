@@ -1,9 +1,0 @@
-{
-  "type": "response",
-  "id": "7",
-  "ok": false,
-  "error": {
-    "code": "update_required",
-    "message": "This instance needs a newer game version."
-  }
-}

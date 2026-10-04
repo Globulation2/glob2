@@ -1,6 +1,0 @@
-{
-  "version": "3.4.16",
-  "url": "https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.4.16.tar.gz",
-  "sha512": "d815b28f72d60e4d83e31d878bcf2dd52089353637a4ffd0fd094deaafaaa5b5ee797caad9eeb952f6c28a2bbe26253092c294ce1aefbeb92d85469f35229ed1",
-  "directory": "SDL-release-3.4.16"
-}

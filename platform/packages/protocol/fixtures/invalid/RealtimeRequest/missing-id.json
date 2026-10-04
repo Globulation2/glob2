@@ -1,7 +1,0 @@
-{
-  "type": "request",
-  "method": "room.join",
-  "params": {
-    "code": "K7QX2M"
-  }
-}

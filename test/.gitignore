@@ -1,3 +1,0 @@
-# Test binaries build under build/<toolchain>/client/release/test/; nothing is
-# generated inside this directory any more.
-testResults.xml

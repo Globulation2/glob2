@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="101" failures="0" errors="0" skipped="1"><testsuite name="AIDecisionCoverage"><testcase classname="AIDecisionCoverage" name="Cabino specialist modules survive save-load" time="0.429569" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Castor and Maxima growth and shortage resume at early and active checkpoints" time="1.48398" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Cortex economy and food shortage survive save-load" time="0.592574" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Econo adds new swarms as its colony grows" time="0.00742" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Econo retains wheat-starved swarms while still retiring starved inns" time="0.009655" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Econo shared runtime survives save-load" time="0.415674" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Nicowar shared runtime survives save-load" time="0.357793" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Numbi growth and attack preparation survive save-load" time="0.456562" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Warrush growth and attack preparation survive save-load" time="0.453314" status="run" />
+  <testcase classname="AIDecisionCoverage" name="farm areas reuse each AI's forbidden wheat placement on an unchanged colony" time="1.46249" status="run" />
+  <testcase classname="AIDecisionCoverage" name="long AI campaigns resume with identical orders state and game RNG [slow][artifacts]" time="5.09336" status="run" />
+  <testcase classname="AIDecisionCoverage" name="with the farm-areas experiment every farming AI farms its wheat with a farm area and survives save-load" time="1.05238" status="run" />
+  </testsuite><testsuite name="AIRecoveryCoverage"><testcase classname="AIRecoveryCoverage" name="Cabino defense records create assign deduplicate and retire actual flags" time="0.001789" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Castor food lock backs off growth and boot projects wait for their cadence" time="0.002492" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Castor projects deduplicate replace and decline already satisfied requests" time="0.00133" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex amphibious assessment distinguishes land water and blocked targets" time="0.001308" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex farm checkerboard retires prototype paint and wheat blitz releases it" time="0.002013" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex shore harvest differs from inaccessible algae and swimming opens islands" time="0.001368" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex wheat protection emits real area orders and food burst releases only our paint" time="0.001849" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar defense flags materialize once and withdraw when the threat disappears" time="0.001385" status="run" />
+  </testsuite><testsuite name="AIRules"><testcase classname="AIRules" name="Cabino migrates legacy warrior reservations only when training is disabled" time="0.001347" status="run" />
+  <testcase classname="AIRules" name="Cortex excludes unavailable technology from scoring and feeding prerequisites" time="0" status="run" />
+  <testcase classname="AIRules" name="JavaScript profiles can inspect rules and issue useful orders" time="0.003662" status="run" />
+  <testcase classname="AIRules" name="Maxima removes disabled reserves while retaining finite production supply" time="0.002883" status="run" />
+  <testcase classname="AIRules" name="engine prevents training and upgrades while retaining repairs and starting levels" time="0.003171" status="run" />
+  <testcase classname="AIRules" name="native controllers exclude disabled work and continue after reload [slow]" time="11.9945" status="run" />
+  <testcase classname="AIRules" name="no growth farms harvest their finite seed rather than waiting forever" time="0.001359" status="run" />
+  <testcase classname="AIRules" name="restored controller queues discard unavailable work and release prerequisites" time="0.001319" status="run" />
+  <testcase classname="AIRules" name="retained tournament replay contains no unavailable orders" time="0" status="run" />
+  <testcase classname="AIRules" name="rule parser and script observations use effective match values" time="0.001499" status="run" />
+  </testsuite><testsuite name="AIStateContinuation"><testcase classname="AIStateContinuation" name="Cabino specialist modules survive save-load" time="7.60658" status="run" />
+  <testcase classname="AIStateContinuation" name="Castor and Maxima active full games preserve decisions and RNG [slow]" time="3.17108" status="run" />
+  <testcase classname="AIStateContinuation" name="Cortex economy and food shortage survive save-load" time="0.764694" status="run" />
+  <testcase classname="AIStateContinuation" name="Econo shared runtime survives save-load" time="3.11762" status="run" />
+  <testcase classname="AIStateContinuation" name="Nicowar shared runtime survives save-load" time="7.49875" status="run" />
+  <testcase classname="AIStateContinuation" name="Numbi growth and attack preparation survive save-load" time="4.81627" status="run" />
+  <testcase classname="AIStateContinuation" name="Warrush growth and attack preparation survive save-load" time="9.19166" status="run" />
+  <testcase classname="AIStateContinuation" name="all controllers continue alongside another AI and a shared-team controller [slow]" time="3.26719" status="run" />
+  </testsuite><testsuite name="FarmAreas"><testcase classname="FarmAreas" name="a farm area survives a save and load [save-format]" time="0.045504" status="run" />
+  <testcase classname="FarmAreas" name="a farm gives up its surplus and keeps every tile, where the same unfarmed field loses its rim" time="0.001761" status="run" />
+  <testcase classname="FarmAreas" name="a worker out of reach of any wheat, or on an exhausted field, gets nothing" time="0.001541" status="run" />
+  <testcase classname="FarmAreas" name="an empty gap ends the field, so nothing is taken across it" time="0.002858" status="run" />
+  <testcase classname="FarmAreas" name="clearing stays on the touched tile inside a farm" time="0.001547" status="run" />
+  <testcase classname="FarmAreas" name="growth ignores the farm mask" time="0.005149" status="run" />
+  <testcase classname="FarmAreas" name="harvesting a farm takes from the ripest tile of the field, not the touched one" time="0.003342" status="run" />
+  <testcase classname="FarmAreas" name="off a farm, and for another team's farm, the original harvest is unchanged, phantom grain included" time="0.002653" status="run" />
+  <testcase classname="FarmAreas" name="standing still flattens what the worker can reach down to the seed, then stops" time="0.001563" status="run" />
+  <testcase classname="FarmAreas" name="the brush refuses ground that can never grow, and a refused tile connects nothing" time="0.002629" status="run" />
+  <testcase classname="FarmAreas" name="the target emptying during the animation is not a failure while the field is in reach" time="0.001545" status="run" />
+  <testcase classname="FarmAreas" name="without the experiment the default game's checksums are unchanged [golden]" time="0.035288" status="run" />
+  <testcase classname="FarmAreas" name="without the experiment the order is rejected and a painted mask is inert" time="0.001743" status="run" />
+  <testcase classname="FarmAreas" name="wood inside a farm is a clearing target and the crop never is" time="0.001692" status="run" />
+  <testcase classname="FarmAreas" name="wood is not farmed; algae are" time="0.001583" status="run" />
+  <testcase classname="FarmAreas" name="workers keep every tile of a farmed field alive" time="0.218992" status="run" />
+  <testcase classname="FarmAreas" name="workers on a farm worked down to its seed carry nothing away" time="0.138774" status="run" />
+  <testcase classname="FarmAreas" name="farm overlay beside the other zones at every zoom tier [display:1024x768][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="LegacyAIState"><testcase classname="LegacyAIState" name="Cabino preserves stale gradients module latches and fruit memories" time="0.007977" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino saving leaves its pending FIFO intact" time="0.00186" status="run" />
+  <testcase classname="LegacyAIState" name="Cortex saved policy and model supersede the current process selection" time="0.002344" status="run" />
+  <testcase classname="LegacyAIState" name="Nicowar explorer phases and full construction counts survive" time="0.002497" status="run" />
+  <testcase classname="LegacyAIState" name="Numbi phase clock survives and advances on the original poll" time="0.002543" status="run" />
+  <testcase classname="LegacyAIState" name="Numbi wrapper preserves an active phase clock and the next decision" time="0.004192" status="run" />
+  <testcase classname="LegacyAIState" name="Warrush timers and constructors round-trip at boundaries" time="0.001658" status="run" />
+  <testcase classname="LegacyAIState" name="Warrush wrapper preserves the next decision and its random stream" time="0.003126" status="run" />
+  <testcase classname="LegacyAIState" name="new timer records reject out-of-range missing and malformed values" time="0.004189" status="run" />
+  <testcase classname="LegacyAIState" name="old layouts default omitted clocks without consuming the following field" time="0.002567" status="run" />
+  <testcase classname="LegacyAIState" name="pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex" time="0.003092" status="run" />
+  <testcase classname="LegacyAIState" name="shared runtime reload replaces queues and registrations in binary and text" time="0.00376" status="run" />
+  </testsuite><testsuite name="Maxima.FarmingIntegration"><testcase classname="Maxima.FarmingIntegration" name="aligned pattern transitions" time="0.010812" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="archipelago harvest does not seal wheat" time="0.044663" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="coastal wheat crosses fertility dips" time="0.010199" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="expansion leaves harvest lanes open" time="0.011177" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm management radius" time="0.004539" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farm zones use the final wheat protection plan including empty frontier cells" time="0.004835" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="farming respects discovery" time="0.029957" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="firebreak management radius" time="0.005122" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="initial flag staffing" time="0.005506" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="maintenance protection agreement" time="0.007254" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="permanent wheat layout" time="0.019078" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="seed stability across maps" time="0.280562" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="seed survival" time="0.00866" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve survives own farm protection" time="0.004042" status="run" />
+  <testcase classname="Maxima.FarmingIntegration" name="wood reserve survives wheat pincer" time="0.016658" status="run" />
+  </testsuite><testsuite name="NicowarFarming"><testcase classname="NicowarFarming" name="farm areas reuse wheat protection while wood keeps its existing forbidden and clearing rules" time="0.001971" status="run" />
+  <testcase classname="NicowarFarming" name="zone boundaries; eight-way adjacency; wrap seams; discovery; protection and building clearance" time="0.001818" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="1.21435" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="5.57704" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="1.7569" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="0.660774" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="0.283924" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="0.828413" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="1.05948" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="3.315" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="0.728649" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="2.04228" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="0.708715" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="0.693942" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.360278" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="2.31892" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="1.33017" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="0.424887" status="run" />
+  </testsuite></testsuites>

@@ -1,9 +1,0 @@
-{
-  "type": "response",
-  "id": "7",
-  "ok": false,
-  "error": {
-    "code": "oops",
-    "message": "x"
-  }
-}

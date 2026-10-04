@@ -1,2 +1,0 @@
-# Build-time encoder only; never installed in the shipped application.
-Pillow==12.2.0
