@@ -1,0 +1,13 @@
+✔ fresh browser profiles use the game hosting origin (3.340958ms)
+✔ official cutover preserves credentials under their original origin (0.339917ms)
+✔ custom selections and corrupt or future-version storage are left intact (0.260375ms)
+✔ browser launches the selected mode with exact map and serving origin (4.665666ms)
+✔ invalid launches cannot select a different destination or malformed map (0.333583ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262.415417

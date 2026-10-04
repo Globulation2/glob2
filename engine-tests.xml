@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences]" time="0.336223" status="run" />
+  </testsuite><testsuite name="PlatformRoom"><testcase classname="PlatformRoom" name="a map change is announced once; a status change is not" time="0.289588" status="run" />
+  <testcase classname="PlatformRoom" name="a member without a seat is listed, and Ready says why it is unavailable" time="0.304007" status="run" />
+  <testcase classname="PlatformRoom" name="a premade map is uploaded and chosen for the room, then named by the server" time="0.305999" status="run" />
+  <testcase classname="PlatformRoom" name="a room's teams are named from their alliances, in team order" time="0.309535" status="run" />
+  <testcase classname="PlatformRoom" name="catalog launch creates the room with its map in the initial request" time="0.297382" status="run" />
+  <testcase classname="PlatformRoom" name="the server's start notice is shown once in the room chat" time="0.307173" status="run" />
+  </testsuite></testsuites>

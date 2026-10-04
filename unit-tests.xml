@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="19" failures="0" errors="0" skipped="0"><testsuite name="InstanceConfig"><testcase classname="InstanceConfig" name="origins normalize to scheme, host and non-default port" time="0.000177" status="run" />
+    <testcase classname="InstanceConfig" name="defaults to the official instance with nothing remembered" time="0" status="run" />
+    <testcase classname="InstanceConfig" name="selection, credentials and trust persist per instance" time="0.000188" status="run" />
+    <testcase classname="InstanceConfig" name="malformed files keep the configuration; unknown fields and bad origins are skipped" time="0.000137" status="run" />
+    <testcase classname="InstanceConfig" name="a stored former official origin moves to the official one; credentials stay" time="0" status="run" />
+    <testcase classname="InstanceConfig" name="a failed write is reported and not persisted" time="0" status="run" />
+  </testsuite><testsuite name="InviteLink"><testcase classname="InviteLink" name="catalog launches preserve mode origin and exact version across URL forms" time="0.000147" status="run" />
+    <testcase classname="InviteLink" name="catalog CLI arguments open the selected destination" time="0" status="run" />
+    <testcase classname="InviteLink" name="the latest invite or map launch replaces the older destination" time="0" status="run" />
+    <testcase classname="InviteLink" name="glob2:// links name the instance and code" time="0.000102" status="run" />
+    <testcase classname="InviteLink" name="https links are &lt;instance&gt;/j/&lt;code&gt;" time="0" status="run" />
+    <testcase classname="InviteLink" name="former official origins mean the official instance" time="0" status="run" />
+    <testcase classname="InviteLink" name="bare codes use the given instance; links format back" time="0" status="run" />
+    <testcase classname="InviteLink" name="the newest link becomes the pending join until taken" time="0" status="run" />
+    <testcase classname="InviteLink" name="launch arguments: bare links, --join and --instance" time="0" status="run" />
+  </testsuite><testsuite name="MapCache"><testcase classname="MapCache" name="maps are stored by the hash of their decompressed bytes" time="0.000593" status="run" />
+    <testcase classname="MapCache" name="least recently used maps are evicted beyond the cap" time="0.000573" status="run" />
+    <testcase classname="MapCache" name="the index survives restarts; orphans and vanished files are cleaned up" time="0.000195" status="run" />
+    <testcase classname="MapCache" name="downloads fetch the blob, verify it and serve it from the cache" time="0.000385" status="run" />
+  </testsuite></testsuites>

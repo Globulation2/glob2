@@ -1,0 +1,10 @@
+PASS PlatformRoom/a room's teams are named from their alliances, in team order (0.4s)
+PASS PlatformRoom/a member without a seat is listed, and Ready says why it is unavailable (0.4s)
+PASS PlatformRoom/a map change is announced once; a status change is not (0.3s)
+PASS PlatformRoom/catalog launch creates the room with its map in the initial request (0.4s)
+PASS PlatformRoom/a premade map is uploaded and chosen for the room, then named by the server (0.4s)
+PASS PlatformRoom/the server's start notice is shown once in the room chat (0.4s)
+PASS CustomGameSetup/catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences] (0.4s)
+
+7 passed, 0 failed, 0 skipped (2.6s of test time)
+[run_tests] JUnit report: artifacts/map-launch/merge/engine-tests.xml (7 cases)

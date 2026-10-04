@@ -1,0 +1,56 @@
+{
+  "head": "eafecdada951c444c91b491f065c50a1e1e1ada0",
+  "fetched_master": "11124f736befac9880dfb7b3448df79129ed9206",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "toolchain": "Apple LLVM 21.0.0 (clang-2100.3.34.2), Node 24.14.0",
+  "commands": {
+    "native_build": "GLOB2_SDL3_PREFIX=/Users/bradley/glob2/artifacts/recording-sdl3/prefix scons -j8 release=1 server=0 unit-tests custom-setup-test build/darwin/client/release/src/glob2",
+    "native_unit": "python3 test/run_tests.py --binary unit --filter 'InviteLink/*' --filter 'InstanceConfig/*' --filter 'MapCache/*' --junit artifacts/map-launch/merge/unit-tests.xml --artifacts artifacts/map-launch/merge/native-unit",
+    "native_engine": "python3 test/run_tests.py --binary engine --filter 'PlatformRoom/*' --filter 'CustomGameSetup/catalog local*' --junit artifacts/map-launch/merge/engine-tests.xml --artifacts artifacts/map-launch/merge/native-engine",
+    "web_unit_api": "cd platform && npx vitest run apps/web/test/forms.test.tsx apps/api/test/history.test.ts",
+    "web_e2e": "cd platform && PATH=/Users/bradley/.nvm/versions/node/v24.14.0/bin:$PATH PORT=4283 CI=1 SCREENSHOT_DIR=/Users/bradley/.codex/worktrees/6aed/glob2/artifacts/map-launch/merge/screenshots AXE_REPORT=/Users/bradley/.codex/worktrees/6aed/glob2/artifacts/map-launch/merge/axe-final.jsonl npm run e2e -w @glob2/web -- --grep \"map catalog\"",
+    "web_typecheck": "cd platform && npm run typecheck",
+    "web_lint": "cd platform && npx eslint apps/web/src/pages/Maps.tsx apps/web/test/forms.test.tsx apps/web/e2e/smoke.spec.ts apps/api/src/web/appLinks.ts apps/api/test/history.test.ts",
+    "browser_arguments": "node --test browser/unit/map-launch.test.js browser/unit/instance-config.test.js",
+    "android_manifest": "PYTHONPATH=test/build_system python3 -m unittest test_android_release.InviteLinkManifestTests test_android_release.AndroidReleaseTests",
+    "web_build": "cd platform && npm run build -w @glob2/web"
+  },
+  "results": {
+    "native_unit_cases": 19,
+    "native_engine_cases": 7,
+    "web_api_cases": 27,
+    "e2e_projects": [
+      "desktop Chromium",
+      "Pixel 7 Chromium"
+    ],
+    "browser_argument_cases": 5,
+    "android_manifest_cases": 2,
+    "typecheck": "passed",
+    "lint": "passed",
+    "native_build": "passed",
+    "web_build": "passed",
+    "android_manifest_release": "See android-manifest-final.log for exact count; passed."
+  },
+  "coverage": "Native URL and argument parsing, latest launch replacement, cache storage, actual Custom Game loading and invalid-map blocking, initial catalog room creation and existing room flows; web modal layout, keyboard focus, accessibility, route payloads and mobile association contracts.",
+  "limitations": [
+    "Native Windows/Linux/Android/iOS and browser WASM runtime were not built or exercised on devices. Shared C++ launch behavior was built and tested on macOS arm64; browser shell argument translation and phone viewport UI were tested separately.",
+    "No simulation algorithms or save/replay/network formats changed; cross-platform simulation checksum comparisons were not applicable."
+  ],
+  "integration": "Feature branch merged with master, including release 0.10.0.1; no conflicts.",
+  "dependencies": {
+    "SDL": "3.4.16",
+    "SDL_image": "3.4.6",
+    "SDL_ttf": "3.2.2",
+    "SDL_net": "3.2.0",
+    "SCons": "4.11.1",
+    "Python": "3.14.7",
+    "platform": "platform/package-lock.json at tested revision",
+    "PostgreSQL": "16.15"
+  },
+  "validation_notes": [
+    "Initial integrated Vitest run timed out waiting for lazy map page; rerun and final revision pass. Initial Playwright run reused a pre-existing server serving the old app; fresh server on isolated port passes.",
+    "Typecheck, scoped ESLint, Vite build and browser argument tests passed at 771bb281a17685870953ade1381bf37822afad1b. Release metadata integration changes no web/browser source or dependency inputs; those results reused. Native build/harnesses, web/API tests, Android release/manifest tests and fresh-server desktop/phone E2E refreshed at final head."
+  ],
+  "exit_status": "All successful commands exit 0; earlier failure logs retained separately."
+}

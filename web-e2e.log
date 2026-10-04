@@ -1,0 +1,82 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts --grep map catalog
+
+
+Running 2 tests using 1 worker
+
+(node:51923) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/smoke.spec.ts:255:1 › map catalog, map page and signed-in like (2.0m)
+(node:52770) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [phone] › e2e/smoke.spec.ts:255:1 › map catalog, map page and signed-in like (1ms)
+
+
+  1) [desktop] › e2e/smoke.spec.ts:255:1 › map catalog, map page and signed-in like ────────────────
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: 'Play this map' })
+
+
+      269 |   await expect(page.getByTestId('likes')).toHaveText('1');
+      270 |   await check(page, info, 'map');
+    > 271 |   await page.getByRole('button', { name: 'Play this map' }).click();
+          |                                                             ^
+      272 |   const choices = page.getByRole('dialog', { name: 'How would you like to play?' });
+      273 |   await expect(choices).toBeVisible();
+      274 |   await expect(choices.getByRole('link', { name: /Play Locally in Custom Game/ })).toHaveAttribute(
+        at /Users/bradley/.codex/worktrees/6aed/glob2/platform/apps/web/e2e/smoke.spec.ts:271:61
+
+    Error Context: ../../../artifacts/web-app/test-results/smoke-map-catalog-map-page-and-signed-in-like-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/smoke-map-catalog-map-page-and-signed-in-like-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/smoke-map-catalog-map-page-and-signed-in-like-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [phone] › e2e/smoke.spec.ts:255:1 › map catalog, map page and signed-in like ──────────────────
+
+    Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:4280
+    Call log:
+      - → GET http://127.0.0.1:4280/__seed
+        - user-agent: Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.8010.12 Mobile Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+
+
+      20 |
+      21 | test.beforeAll(async ({ request }) => {
+    > 22 |   seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+         |                                ^
+      23 | });
+      24 |
+      25 | // Screenshots and axe runs see the globs parked (reduced motion), so the
+        at /Users/bradley/.codex/worktrees/6aed/glob2/platform/apps/web/e2e/smoke.spec.ts:22:32
+
+    Error Context: ../../../artifacts/web-app/test-results/smoke-map-catalog-map-page-and-signed-in-like-phone/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/smoke-map-catalog-map-page-and-signed-in-like-phone/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/smoke-map-catalog-map-page-and-signed-in-like-phone/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop] › e2e/smoke.spec.ts:255:1 › map catalog, map page and signed-in like ─────────────────
+    [phone] › e2e/smoke.spec.ts:255:1 › map catalog, map page and signed-in like ───────────────────
+npm error Lifecycle script `e2e` failed with error:
+npm error code 1
+npm error path /Users/bradley/.codex/worktrees/6aed/glob2/platform/apps/web
+npm error workspace @glob2/web@0.1.0
+npm error location /Users/bradley/.codex/worktrees/6aed/glob2/platform/apps/web
+npm error command failed
+npm error command sh -c playwright test -c e2e/playwright.config.ts --grep 'map catalog'

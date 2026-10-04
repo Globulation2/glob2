@@ -1,0 +1,45 @@
+
+> @glob2/web@0.1.0 build
+> vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 768 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                        1.17 kB │ gzip:   0.58 kB
+dist/assets/hospital-CZ8mxl8H.webp                     4.16 kB
+dist/assets/glob-64-DRYAgOz9.png                       4.51 kB
+dist/assets/school-3kPEHozp.webp                       4.60 kB
+dist/assets/war-flag-ClpBapaP.webp                     4.61 kB
+dist/assets/exploration-flag-DEYVuIyb.webp             5.54 kB
+dist/assets/wood-BvhIq-A_.webp                         5.59 kB
+dist/assets/clearing-flag-Dr2FX3nZ.webp                5.94 kB
+dist/assets/stone-CR7HLFDE.webp                        6.14 kB
+dist/assets/racetrack-BEfp0i51.webp                    6.45 kB
+dist/assets/inn-pEFHk1BY.webp                          6.51 kB
+dist/assets/fruit-C8P4nJfl.webp                        7.36 kB
+dist/assets/papyrus-sl-e5iDV.webp                      7.49 kB
+dist/assets/algae-Cf7k497T.webp                        7.53 kB
+dist/assets/swarm-C7Cw-oud.webp                        9.26 kB
+dist/assets/wordmark-letters-Cs-rHGsD.webp            14.87 kB
+dist/assets/explorer-west-DFIszYPU.webp               20.89 kB
+dist/assets/worker-east-Bqinqqlq.webp                 22.38 kB
+dist/assets/worker-west-DG0XWj8f.webp                 23.28 kB
+dist/assets/warrior-east-BQEGqC40.webp                29.46 kB
+dist/assets/nunito-latin-wght-normal-BzFMHfZw.woff2   39.12 kB
+dist/assets/colony-960-CjmrWzyt.webp                  96.84 kB
+dist/assets/colony-1600-CJWZJSba.webp                220.64 kB
+dist/assets/index-By_l3RNq.css                        45.64 kB │ gzip:  13.20 kB
+dist/assets/Account-ChjC8_Gb.js                        3.57 kB │ gzip:   1.49 kB │ map:     8.67 kB
+dist/assets/LineChart-Dlv3Yuyg.js                      4.34 kB │ gzip:   1.90 kB │ map:    16.64 kB
+dist/assets/Player-D_XfO4dH.js                         7.08 kB │ gzip:   2.51 kB │ map:    21.11 kB
+dist/assets/MapStudio-CP1u-oVU.js                     10.71 kB │ gzip:   3.77 kB │ map:    35.08 kB
+dist/assets/Admin-C1_rBJ_y.js                         10.80 kB │ gzip:   3.37 kB │ map:    31.68 kB
+dist/assets/Match-vYzgdV0G.js                         15.81 kB │ gzip:   5.03 kB │ map:    46.00 kB
+dist/assets/Maps-D3Zxgn37.js                          18.81 kB │ gzip:   5.73 kB │ map:    55.44 kB
+dist/assets/index-C8-9QeLW.js                        474.89 kB │ gzip: 148.84 kB │ map: 2,421.43 kB
+
+[33m[INEFFECTIVE_DYNAMIC_IMPORT] [0m../../packages/protocol/src/index.ts is dynamically imported by src/api.ts but also statically imported by src/pages/Match.tsx, src/pages/Skins.tsx, src/skins/swarmShapes.ts, dynamic import will not move module into another chunk.
+
+✓ built in 2.46s

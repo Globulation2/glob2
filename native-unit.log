@@ -1,0 +1,6 @@
+PASS glob2-unit-tests InviteLink (9 cases) (0.0s)
+PASS glob2-unit-tests MapCache (4 cases) (0.0s)
+PASS glob2-unit-tests InstanceConfig (6 cases) (0.0s)
+
+3 passed, 0 failed, 0 skipped (0.1s of test time)
+[run_tests] JUnit report: artifacts/map-launch/merge/unit-tests.xml (19 cases)
