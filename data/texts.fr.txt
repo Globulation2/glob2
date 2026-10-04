@@ -1,11 +1,11 @@
 [AI strategy]
 Stratégie IA
 [start recording]
-
+Démarrer l'enregistrement
 [stop recording]
-
+Arrêter l'enregistrement
 [finalizing recording]
-
+Finalisation de l'enregistrement…
 [AIMaxima-Summary]
 Équilibre croissance durable et entraînement, puis rassemble ses armées en vagues.
 [AIMaxima-Profile]
@@ -23,19 +23,19 @@ Stratégie principale: Traite nourriture, ouvrières, naissances, entraînement,
 [%0 units can't access resource]
 %0 unités ne peuvent accéder aux ressources
 [%0 units not available]
-%0 unités non disponible
+%0 unités non disponibles
 [%0 units too far from building]
-%0 unités trop loin de bâtiment
+%0 unités trop loin du bâtiment
 [%0 units too far from flag]
 %0 unités trop loin du drapeau
 [%0 units too far from fruit]
-%0 unités trop loin de fruit
+%0 unités trop loin du fruit
 [%0 units too far from resource]
-%0 unités trop loin de ressource
+%0 unités trop loin de la ressource
 [%0 units too low level]
-%0 unités niveau trop bas
+%0 unités de niveau trop bas
 [%0% Uploaded]
-%0% envoyer
+%0% envoyé
 [%0's team unit got converted to your team]
 Une unité de l'équipe %0 s'est convertie à votre équipe
 [abreaviation explanation A]
@@ -43,17 +43,17 @@ A : Alliés
 [abreaviation explanation C]
 C : Envoyer les messages à
 [abreaviation explanation fV]
-fV : Montrer toutes les auberges (pour voler des unités)
+fV : Vision des auberges (pour voler des unités)
 [abreaviation explanation mV]
-mV : Montrer tous les marchés (pour échanger des fruits)
+mV : Vision des marchés (pour échanger des fruits)
 [abreaviation explanation V]
-V : Montrer tous les batiments
+V : Vision de tous les bâtiments
 [add map]
 Ajouter carte
 [add shortcut]
-Ajouter raccourcis
+Ajouter un raccourci
 [AI Descriptions]
-Description de l'AI
+Descriptions des IA
 [AI]
 IA
 [ai]
@@ -61,27 +61,27 @@ IA
 [AICastor-Description]
 Construit et entraîne ses unités en adaptant sa croissance aux réserves de nourriture.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
-Développe sa population, entraîne des guerriers, puis attaque.
+Développe sa population, entraîne des guerrières, puis attaque.
 [AINicowar]
 Nicowar
 [AINone-Description]
-Description de AINone
+Aucune - Ne fait rien.
 [AINone]
-AINone
+Aucune
 [AINumbi-Description]
 Un adversaire indulgent qui continue à s’étendre et à attaquer.
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
-S’étend et cherche à convertir des unités sans produire de guerriers.
+S'étend et cherche à convertir des unités sans produire de guerrières.
 [AIEcono]
 Econo
 [AIWarrush-Description]
 Des attaques rapides qui mettent vos premières défenses à l’épreuve.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 Un bâtisseur solide qui déploie des forces d’attaque entraînées.
 [AICabino]
@@ -91,13 +91,13 @@ JavaScript
 [AIJavaScript-Description]
 Un contrôleur utilisant un module de code JavaScript intégré.
 [Alga]
-Algue
+Algues
 [algae]
 Algues
 [alliances]
 Alliances
 [alt %0]
-alt %0
+alt-%0
 [and]
 et
 [any explorer]
@@ -107,17 +107,17 @@ meurent de faim
 [are hungry]
 ont faim
 [are ok]
-sont ok
+vont bien
 [are wonded]
 sont blessées
 [armor]
 Armure
 [assigned]
-assigné
+Affectées
 [At. speed]
-Vitesse at.
+Vitesse att.
 [At. strength]
-Force at.
+Force att.
 [Attack]
 Attaque
 [audio]
@@ -127,9 +127,9 @@ Sauvegarde automatique
 [available lan games]
 Parties locales disponibles
 [away:]
-absent:
+absent :
 [Back]
-retour
+Retour
 [backspace]
 retour arrière
 [barracks explanation 2]
@@ -139,41 +139,41 @@ Améliore le niveau
 [barracks]
 Camp d'entraînement
 [beach size]
-taille de la plage
+Taille de la plage
 [break]
-casser
+pause
 [briefing]
-briefing
+Briefing
 [build %0 level %1]
-construire %0 niveau %1
+Construire %0 niveau %1
 [Build]
 Construire
 [Building Defaults]
-Défauts des bâtiments
+Bâtiments par défaut
 [building settings]
-Réglages unités
+Réglages des bâtiments
 [building site]
 chantier
 [Building Tool Box Explanation]
-explication de la boîte d'outils des bâtiments
+Maj + glisser = rectangle
 [Building Tool Line Explanation]
-explication de la ligne d'outils des bâtiments
+Ctrl + glisser = ligne
 [Buildings]
 Bâtiments
 [Bullets]
 Boulets
 [campaign editor]
-Editeur de campagne
+Éditeur de campagne
 [campaign]
 Campagne
 [Can't connect, can't find host]
-Impossible de se connecter, impossible de trouver l'host
+Impossible de se connecter : hôte introuvable
 [Can't host game, port %0 in use]
-Impossible de joindre le jeu, le port %0 est utilisé
+Impossible d'héberger la partie, le port %0 est utilisé
 [Can't join game, game has started]
-Impossible de joindre le jeu, le jeu a commencer
+Impossible de rejoindre la partie, elle a déjà commencé
 [Can't join game, game is full]
-Impossible de joindre le jeu, le jeu est complet
+Impossible de rejoindre la partie, elle est complète
 [cancel destroy]
 Annuler destruction
 [cancel repair]
@@ -183,7 +183,7 @@ Annuler amélioration
 [Cancel]
 Annuler
 [caps lock]
-verouillage majuscule
+Verr. maj
 [carry]
 Transporte :
 [Change Area Name]
@@ -201,7 +201,7 @@ Zone de défrichage
 [farm area]
 Zone de culture
 [Clearing:]
-Défrichage de:
+Défrichage :
 [clearingflag explanation 2]
 
 [clearingflag explanation]
@@ -223,19 +223,19 @@ Calcul de la fertilité
 [connect]
 Connecter
 [connecting to game]
-connection au jeu
+Connexion à la partie
 [connecting to]
-Connection à
+Connexion à
 [Construction Site Defaults]
-Défauts des chantiers
+Chantiers par défaut
 [Continue playing]
 Continuer à jouer
 [control %0]
-contrôle %0
+ctrl-%0
 [Corn]
 Blé
 [crater density]
-densité des cratères
+Nombre de cratères
 [crater lakes terrain]
 Lacs de cratère
 [create map]
@@ -247,17 +247,17 @@ Ctrl - ligne
 [current speed]
 Vitesse actuelle
 [custom game]
-Jeu libre
+Partie personnalisée
 [customcur]
-Curseur personalisé
+Curseur personnalisé
 [damage]
-Dommages
+Dégâts
 [Damaged Map]
 Carte des blessés
 [decrease units working]
 Affecter moins d'unités
 [Defeat Your Oppenents]
-Vainquez vos ennemis
+Vainquez vos adversaires
 [defencetower explanation 2]
 bâtiments ennemis proches
 [defencetower explanation]
@@ -269,27 +269,27 @@ Carte de défense
 [Defense]
 Défense
 [Delete game]
-Effacer le jeu séléctionné
+Supprimer la partie sélectionnée
 [delete]
-Effacer
+Supprimer
 [desert]
 Désert
 [destroy building]
-Détruire batiment
+Détruire le bâtiment sélectionné
 [destroy]
 Détruire
 [display]
 Affichage
 [do nothing]
-Ne fait rien
+Ne rien faire
 [don't carry anything]
 Ne transporte rien
 [down]
 Bas
 [edit map]
-Editer la carte
+Éditer la carte
 [editing map]
-Edition de la carte
+Édition de la carte
 [editor shortcuts]
 Éditeur
 [editor]
@@ -299,11 +299,11 @@ Fin
 [enter]
 Entrée
 [equals]
-Egal
+Égal
 [ERROR_CANT_LOAD_MAP]
 Impossible de charger la carte : le fichier est endommagé ou sa version est incompatible.
 [escape]
-Echapement
+Échap
 [explorationflag explanation 2]
 
 [explorationflag explanation]
@@ -311,13 +311,13 @@ Attire des exploratrices
 [explorationflag]
 Drapeau d'exploration
 [Explorer Ratio]
-Rapport des exploratrices
+Proportion d'exploratrices
 [Explorer]
 Exploratrice
 [explorers]
 exploratrices
 [extra islands]
-Iles vides
+Îles vides
 [f10]
 F10
 [f11]
@@ -351,7 +351,7 @@ F9
 [Fertility Map]
 Carte de fertilité
 [Flag Defaults]
-Défauts des drapeaux
+Drapeaux par défaut
 [flag settings explanation]
 Le rayon par défaut du drapeau
 [fog of war]
@@ -365,23 +365,23 @@ En forme
 [free]
 libres
 [from:]
-de:
+de :
 [fruit]
 Fruit
 [fullscreen]
 Plein écran
 [game full]
-Partie pleine
+Partie complète
 [game shortcuts]
 Jeu
 [Game]
 Jeu
 [general settings]
-Réglages globaux
+Réglages généraux
 [go to event]
-Aller à l'évenement
+Aller à l'événement
 [go to home]
-Aller à la maison
+Aller à la base
 [goto main menu]
 Menu principal
 [grass]
@@ -399,13 +399,13 @@ Carte faite à la main
 [Happyness]
 Satisfaction
 [hard pause]
-Pause dur
+Pause forcée
 [Harvest]
 Récolte
 [high priority]
 haute priorité
 [hints]
-astuces
+Astuces
 [home]
 Maison
 [hospital explanation 2]
@@ -425,7 +425,7 @@ humain
 [hungry]
 faim
 [hungryness]
-Conso. nourriture
+Faim
 [In way]
 En chemin
 [increase units working]
@@ -443,19 +443,19 @@ Dedans
 [islands size]
 taille des îles
 [islands terrain]
-Iles de type 1
+Îles
 [isles terrain]
-Iles de type 2
+Îlots
 [iterate selection]
-Itérer la séléction
+Sélection suivante
 [jobs]
 Travaux
 [join a game]
-Joindre une partie
+Rejoindre une partie
 [keyboard settings]
 Réglages clavier
 [lan]
-Jeu en réseau local
+Partie en réseau local
 [language incomplete]
 Français - Incomplet
 [language-code]
@@ -477,7 +477,7 @@ Niveaux
 [load campaign]
 Charger la campagne
 [load game]
-Charger jeu
+Charger une partie
 [load map]
 Charger la carte
 [load replay]
@@ -497,9 +497,9 @@ basse priorité
 [lowquality]
 Basse qualité
 [Magic At. Air]
-Dmg. air
+Dég. air
 [Magic At. Ground]
-Dmg. sol
+Dég. sol
 [map description]
 Description de la carte
 [Map Discovered]
@@ -513,7 +513,7 @@ Largeur de la carte
 [map size y]
 Hauteur de la carte
 [mark map]
-Marquer la carte
+Marquer la carte pour les alliés
 [market explanation 2]
 des fruits avec les autres
 [market explanation]
@@ -523,9 +523,9 @@ Marché
 [medium priority]
 priorité moyenne
 [meta %0]
-meta-%0
+méta-%0
 [Min required level:]
-Niveau minimum requis:
+Niveau minimum requis :
 [Minimum Level To Flag]
 Niv. min. unités
 [Music volume]
@@ -537,17 +537,17 @@ muet
 [new campaign]
 Nouvelle campagne
 [new map]
-Nouveau
+Nouvelle carte
 [no fullscreen]
 * uniquement en mode fenêtré
 [No Hints]
-Pas d'allusions
+Pas d'indices
 [no key]
 Aucune touche
 [No Objectives]
 Pas d'objectifs
 [no ressources growth areas]
-Sans croissance
+Sans zones de croissance
 [No]
 Non
 [Number Of Buildings]
@@ -557,31 +557,31 @@ nombre d'équipes
 [Number Of Units]
 Nombre d'unités
 [numlock]
-Verouillage du pavé numérique
+Verr. num
 [objectives]
 Objectifs
 [of which]
 dont
 [ok]
-Accepter
+OK
 [old islands terrain]
 Archipel accidenté
 [old random terrain]
 Côte morcelée
 [on press]
-Appuyer
+À l'appui
 [On the spot]
 Sur place
 [on unpress]
-Relâcher
+Au relâchement
 [open chat box]
-Ouvrir boîte de discussion
+Ouvrir la discussion
 [open load menu]
-Ouvrir menu de chargement
+Ouvrir le menu de chargement
 [open save menu]
-Ouvrir menu de sauvegarde
+Ouvrir le menu de sauvegarde
 [open scenario editor]
-Ouvrir éditeur de scénario
+Ouvrir l'éditeur de scénario
 [open teams editor]
 Ouvrir l'éditeur d'équipes
 [open]
@@ -595,7 +595,7 @@ options
 [Orange]
 Orange
 [Other Options]
-Autres option
+Autres options
 [page down]
 Page suivante
 [page up]
@@ -613,23 +613,23 @@ Nom du joueur
 [players]
 Joueurs
 [please wait]
-Attendre SVP
+Veuillez patienter
 [power]
 Puissance
 [press space]
-Appuyer sur espace pour continuer.
+Appuyez sur Espace pour continuer.
 [Prestige Score]
-Résultat du prestige
+Points de prestige
 [Prestige Win Enabled]
-Victoire par préstige activée
+Victoire par prestige activée
 [Prestige]
 Prestige
 [Primary Objectives]
-Objectifs primaire
+Principaux
 [print screen]
-Impriment l'écran
+Impr. écran
 [priority]
-priorité
+Priorité
 [Prune]
 Prune
 [quit the editor]
@@ -655,9 +655,9 @@ Mémoriser les affectations
 [remove map]
 Enlever la carte
 [remove shortcut]
-Enlever le raccourcis
+Enlever le raccourci
 [repair building]
-Réparer la bâtiment
+Lancer/arrêter la réparation
 [repair]
 Réparer
 [repeat area]
@@ -673,7 +673,7 @@ Retour au jeu
 [return to replay]
 Retourner au replay
 [return]
-Retour
+Entrée
 [right meta]
 Méta droite
 [right super]
@@ -687,13 +687,13 @@ Rivière
 [sand]
 Sable
 [save before quit?]
-Voulez-vous sauver avant de quitter ?
+Voulez-vous sauvegarder avant de quitter ?
 [save game]
-Sauvegarder jeu
+Sauvegarder la partie
 [save map]
 Sauvegarder la carte
 [save replay]
-Sauvegarder replay
+Sauvegarder le replay
 [save script]
 Sauvegarder le script
 [Save]
@@ -707,85 +707,85 @@ Améliore le niveau de
 [Script Areas]
 Zones du script
 [scroll lock]
-Verouillage de défilement
+Arrêt défil
 [scroll wheel enabled]
 Roulette de la souris activée
 [Secondary Objectives]
-Objectifs secondaires
+Secondaires
 [seeking a job]
 cherchent du travail
 [seeking]
 recherche
 [select barracks building]
-Choisir camp d'entraînement
+Sélectionner un camp d'entraînement
 [select clearingflag]
-Choisir drapeau de défrichage
+Sélectionner un drapeau de défrichage
 [select construct barracks]
 Construire un camp d'entraînement
 [select construct defencetower]
-Choisir construire une tourelle
+Construire une tourelle
 [select construct hospital]
-Choisir construire un hôpital
+Construire un hôpital
 [select construct inn]
-Choisir construire une auberge
+Construire une auberge
 [select construct market]
-Choisir construire un marché
+Construire un marché
 [select construct racetrack]
-Choisir construire une piste de course
+Construire une piste de course
 [select construct school]
-Choisir construire une école
+Construire une école
 [select construct stonewall]
-Choisir construire un mur de pierre
+Construire un mur de pierre
 [select construct swarm]
-Choisir construire une ruche
+Construire une ruche
 [select construct swimmingpool]
-Choisir construire une piscine
+Construire une piscine
 [select delete tool]
-Choisir outil d'effacement
+Choisir l'outil de suppression
 [select explorationflag]
-Choisir drapeau d'exploration
+Sélectionner un drapeau d'exploration
 [select hospital building]
-Choisir hôpital
+Sélectionner un hôpital
 [select inn building]
-Choisir auberge
+Sélectionner une auberge
 [select market building]
-Choisir marché
+Sélectionner un marché
 [select place clearing area]
-Choisir placer une zone de défrichage
+Placer une zone de défrichage
 [select place farm area]
-Choisir placer une zone de culture
+Placer une zone de culture
 [select place clearingflag]
 Placer un drapeau de défrichage
 [select place explorationflag]
 Placer un drapeau d'exploration
 [select place forbidden area]
-Choisir placer une zone d'interdiction
+Placer une zone interdite
 [select place guard area]
-Choisir placer une zone de garde
+Placer une zone de garde
 [select place warflag]
-Choisir placer un drapeau de guerre
+Placer un drapeau de guerre
 [select racetrack building]
-Choisir une piste de course
+Sélectionner une piste de course
 [select school building]
-Sélectionner l’école
+Sélectionner une école
 [select swarm building]
-Selectionner construction d'une ruche
+Sélectionner une ruche
 [select swimmingpool building]
-Choisir une piscine
+Sélectionner une piscine
 [select tower building]
-Selectionner construction d'une tour
+Sélectionner une tourelle
 [select wall building]
-Selectionner construction d'un mur
+Sélectionner un mur
 [select warflag]
-Selectionner drapeau de guerre
+Sélectionner un drapeau de guerre
 [settings]
 Paramètres
 [shift %0]
-shift-%0
+maj-%0
 [shortcut explanation enter]
-touche enter : envoyer un message
+Entrée : envoyer un message
 [shortcut explanation v]
-touche v : presser pour parler
+V : maintenir pour parler
 [show areas]
 Zones
 [show flags]
@@ -803,11 +803,11 @@ Démarrer la mission
 [start new campaign]
 Démarrer la campagne
 [Start]
-Départ
+Démarrer
 [Starving Map]
 Carte de famine
 [starving]
-trop faim
+affamées
 [Statistics]
 Statistiques
 [Still (i)]
@@ -879,99 +879,99 @@ Sys Req
 [tab]
 Tab
 [teams editor]
-Editeur d'équipe
+Éditeur d'équipes
 [Teams Fixed]
-Equipes fixes
+Équipes fixes
 [teams]
  équipes
 [the barracks is finished]
-Le camp d'entraînement est terminé
+Le camp d'entraînement est terminé.
 [the barracks is under attack]
-Le camp d'entraînement est attaqué
+Le camp d'entraînement est attaqué.
 [the building is finished]
-Le bâtiment est terminé
+Le bâtiment est terminé.
 [the building is under attack]
-Le bâtiment est attaqué
+Le bâtiment est attaqué.
 [the clearingflag is finished]
-Drapeau de défrichage terminé
+Drapeau de défrichage placé.
 [the clearingflag is under attack]
-Drapeau de défrichage attaqué
+Le drapeau de défrichage est attaqué.
 [the defencetower is finished]
-La tour de défense est terminée
+La tourelle est terminée.
 [the defencetower is under attack]
-Vos défenses sont attaquées
+La tourelle est attaquée.
 [the explorationflag is finished]
-Drapeau d'exploration terminé
+Drapeau d'exploration placé.
 [the explorationflag is under attack]
-Drapeau d'exploration attaqué
+Le drapeau d'exploration est attaqué.
 [The game has not been finished]
-La partie n'a pas été terminée
+La partie n'est pas terminée.
 [the games]
 Parties
 [the hospital is finished]
-L'hôpital est terminé
+L'hôpital est terminé.
 [the hospital is under attack]
-L'hôpital est attaqué
+L'hôpital est attaqué.
 [The host has cancelled the game]
-L'host a annuler le jeu
+L'hôte a annulé la partie.
 [the inn is finished]
-L'auberge est terminée
+L'auberge est terminée.
 [the inn is under attack]
-L'auberge est attaquée
+L'auberge est attaquée.
 [the maps]
 Cartes
 [the market is finished]
-Le marché est terminé
+Le marché est terminé.
 [the market is under attack]
-Le marché est attaqué
+Le marché est attaqué.
 [the racetrack is finished]
-La piste de course est terminée
+La piste de course est terminée.
 [the racetrack is under attack]
-La piste de course est attaquée
+La piste de course est attaquée.
 [the replays]
-Les replays
+Replays
 [the school is finished]
-L'école est terminée
+L'école est terminée.
 [the school is under attack]
-L'école est attaquée
+L'école est attaquée.
 [the stonewall is finished]
-Un élément de mur est terminé
+Une section de mur est terminée.
 [the stonewall is under attack]
-L'ennemi est à vos murs
+L'ennemi est à vos murs.
 [the swarm is finished]
-La ruche est terminée
+La ruche est terminée.
 [the swarm is under attack]
-La ruche est attaquée
+La ruche est attaquée.
 [the swimmingpool is finished]
-La piscine est terminée
+La piscine est terminée.
 [the swimmingpool is under attack]
-La piscine est attaquée
+La piscine est attaquée.
 [the warflag is finished]
-Drapeau de guerre terminé
+Drapeau de guerre placé.
 [the warflag is under attack]
-Drapeau de guerre attaqué
+Le drapeau de guerre est attaqué.
 [time]
-temps
+Temps
 [to:]
-à:
+à :
 [toggle draw accessibility aids]
 Afficher/masquer n° d'équipe
 [toggle draw information]
-Basculer l'affichage des informations
+Afficher/masquer les informations
 [toggle draw unit paths]
 Afficher/masquer les trajets
 [toggle menu screen]
-Basculer l'écran du menu
+Afficher/masquer le menu
 [toggle recording voice]
-Basculer la transmission de la voix
+Activer/désactiver la transmission vocale
 [Total Attack Power]
-Total de la force d'attaque
+Force d'attaque totale
 [Total Defence Power]
-Total de la force de défense
+Force de défense totale
 [Total Hitpoints]
-Total des points de vie
+Points de vie totaux
 [Total prestige reached]
-Le prestige total a été atteint
+Prestige total atteint
 [Total]
 Total
 [tutorial text 1]
@@ -979,13 +979,13 @@ Bienvenue dans le didacticiel principal de Globulation 2 ! Ce didacticiel couvri
 [tutorial text 2]
 Maintenant que vous maîtrisez les bases, il est temps de vous habituer à d'autres bâtiments comme les pistes de course, les piscines et les écoles.
 [tutorial text 3]
-Vous avez bien progressé jusqu'ici. Passons maintenant aux guerriers, aux camps d'entraînement et aux améliorations.
+Vous avez bien progressé jusqu'ici. Passons maintenant aux guerrières, aux camps d'entraînement et aux améliorations.
 [tutorial text 4]
 Vous avez presque terminé. Il ne reste que les drapeaux et l'attaque. Vous en saurez alors assez pour vous aventurer dans les parties personnalisées et, éventuellement, jouer en ligne contre certains des meilleurs joueurs de Globulation 2.
 [tutorial]
 Didacticiel
 [Uncontrolled]
-Incontrôlé
+Non contrôlé
 [undo]
 Annuler
 [uniform terrain]
@@ -993,23 +993,23 @@ Terrain uniforme
 [Unit editor]
 Éditeur d'unité
 [unit settings explanation]
-Editeur d'unité
+Nombre d'unités affectées par défaut
 [units working]
  unités travaillent
 [Units]
 Unités
 [unlocked at start]
-débloqué au démarrage
+Débloqué au départ
 [unlocked by]
-Dévérouille par
+Débloqué par
 [Unnamed Area]
 Zone sans nom
 [up]
 Haut
 [upgrade building]
-Améliorer le bâtiment
+Lancer/arrêter l'amélioration
 [Upgrade Defaults]
-Défauts des amélioration
+Améliorations par défaut
 [upgrade]
 Améliorer
 [username]
@@ -1019,11 +1019,11 @@ Version
 [view history]
 Voir l'historique
 [Voice volume]
-Volume de la voie
+Volume (voix)
 [waiting for %0]
-Attente de %0
+En attente de %0
 [waiting for key]
-Attend une touche
+En attente d'une touche...
 [Walk]
 Marche
 [warflag explanation 2]
@@ -1035,7 +1035,7 @@ Drapeau de guerre
 [Warning, you need to reboot the game for changes to take effect]
 Attention, il faut relancer le jeu pour que les changements soient pris en compte
 [Warrior Ratio]
-Rapport des guerrières
+Proportion de guerrières
 [Warrior]
 Guerrière
 [warriors]
@@ -1059,25 +1059,25 @@ Bois
 [wood]
 Forêt
 [Worker Ratio]
-Rapport des travailleuses
+Proportion d'ouvrières
 [Worker]
 Ouvrière
 [workers]
-Ouvrières
+ouvrières
 [working]
-Travaillant
+Au travail
 [wounded]
 blessées
 [Yes]
 Oui
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Le metaserveur YOG a refusé la connexion car votre version de globulation2 est trop ancienne pour communiquer avec.
+Le métaserveur YOG a refusé la connexion car votre client Globulation 2 est obsolète. Téléchargez la dernière version sur www.globulation2.org pour jouer en ligne.
 [you have lost]
-Vous avez perdu!
+Vous avez perdu !
 [you have won]
-Vous avez gagné!
+Vous avez gagné !
 [You where kicked from the game]
-Vous venez de vous faire ejecter du jeu
+Vous avez été expulsé de la partie
 [Your %0 are under attack]
 Votre %0 est attaquée
 [Your unit got converted to %0's team]
@@ -1087,7 +1087,7 @@ Vitesse du jeu
 [maximum game speed]
 Maximale
 [game speed help]
-En solo et dans les rediffusions uniquement. Le multijoueur reste à 1x.
+En solo et dans les replays uniquement. Le multijoueur reste à 1x.
 [multiplayer game speed]
 Vitesse : 1x (multijoueur)
 [decrease game speed]
@@ -1095,9 +1095,9 @@ Réduire la vitesse du jeu
 [increase game speed]
 Augmenter la vitesse du jeu
 [AICortex-Description]
-Des vagues de guerriers regroupés, soutenues par la nourriture et les soins.
+Des vagues de guerrières regroupées, soutenues par la nourriture et les soins.
 [AIMaxima-Description]
-Explore, développe ses réserves de nourriture et regroupe des vagues de guerriers.
+Explore, développe ses réserves de nourriture et regroupe des vagues de guerrières.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1105,7 +1105,7 @@ Impossible d'enregistrer la campagne. Vérifiez que le dossier de destination ex
 [AICortex]
 Cortex
 [Units still inside: %0]
-Dedans : %0
+Encore dedans : %0
 [Units still working: %0]
 Travaillent encore : %0
 [2 vs 2]
@@ -1235,7 +1235,7 @@ Moyen
 [Medium - Experimental]
 Moyen - Expérimental
 [No AI orders]
-Aucun ordre de l’IA
+Aucun ordre de l'IA
 [Old islands]
 Archipel accidenté
 [Old random]
@@ -1253,7 +1253,7 @@ Joueurs et équipes
 [Premade maps]
 Cartes prédéfinies
 [Preview ready. Start plays this exact map.]
-Aperçu prêt. Le démarrage du jeu utilise cette carte exacte.
+Aperçu prêt. Démarrer lance exactement cette carte.
 [Regenerate all]
 Tout régénérer
 [Generating preview...]
@@ -1283,13 +1283,13 @@ Poids du sable
 [Select a valid map.]
 Sélectionnez une carte valide.
 [Shared control needs a free controller slot (maximum %0).]
-Le contrôle partagé nécessite une place de joueur humain ou IA libre (maximum %0).
+Le contrôle partagé nécessite une place de joueur libre (maximum %0).
 [Smoothing]
 Lissage
 [Standard]
 Standard
 [Start game]
-Commencer le jeu
+Lancer la partie
 [Starting workers]
 Ouvrières initiales
 [Starting workers: Game Rules tab.]
@@ -1347,7 +1347,7 @@ Aucune carte dans cette bibliothèque.
 [Premade maps retain their authored starting units.]
 Les cartes prédéfinies conservent les unités de départ choisies par leur auteur.
 [Start with terrain known]
-Commencez par un terrain connu
+Terrain connu au départ
 [This colony will not join the match.]
 Cette colonie ne rejoindra pas la partie.
 [This landscape uses a fixed terrain recipe.]
@@ -1361,7 +1361,7 @@ Vous contrôlez cette colonie.
 [controllers]
 joueurs humains et IA
 [Use]
-Sélectionnez
+Utiliser
 [Lime]
 Vert citron
 [Teal]
@@ -1401,13 +1401,13 @@ Source de la carte
 [Map-defined]
 Défini par la carte
 [Match format]
-Format de jeu
+Format de partie
 [No current preview]
 Aucun aperçu actuel
 [Quick clash: 2x speed; generated maps start with 8 workers.]
 Bataille rapide : double vitesse ; les cartes générées commencent avec 8 ouvrières.
 [Reroll]
-Générer une autre carte
+Relancer
 [Randomize]
 Générer aléatoirement
 [Reset to defaults]
@@ -1417,7 +1417,7 @@ Ensemble de règles
 [Select a map from the library.]
 Sélectionnez une carte dans la bibliothèque.
 [Starting workers affects generated maps only.]
-Le nombre initial de ouvrières s'applique uniquement aux cartes générées.
+Le nombre initial d'ouvrières ne s'applique qu'aux cartes générées.
 [Unavailable]
 Indisponible
 [Use selection]
@@ -1427,15 +1427,15 @@ Bataille rapide sur des cartes prédéfinies : seule la vitesse change (double v
 [Generate a preview to explore this world.]
 Générez un aperçu pour explorer ce monde.
 [More workers jump-start colony growth. Changes the generated map.]
-Un plus grand nombre d’ouvrières accélère la croissance des colonies. Ce paramètre modifie la carte générée.
+Plus d'ouvrières accélèrent la croissance des colonies. Modifie la carte générée.
 [No warriors]
-Sans guerriers
+Sans guerrières
 [settings Add key to sequence]
 Ajouter une touche à la séquence
 [settings Add shortcut]
 Ajouter un raccourci
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Utilisez la molette de la souris pour modifier le nombre d'unités attribuées. Si cette option est désactivée, maintenez la touche Ctrl enfoncée pour utiliser la molette. Maintenez la touche Maj enfoncée pour ajuster le rayon du drapeau. Cette option contrôle également la saisie avec la molette de la souris dans d'autres menus.
+La molette ajuste les unités affectées. Désactivé : maintenez Ctrl. Maj ajuste le rayon des drapeaux. Contrôle aussi la molette dans les autres menus.
 [settings Adjust music and voice volume.]
 Ajustez le volume de la musique et de la voix.
 [settings Adjust the pace of play.]
@@ -1471,7 +1471,7 @@ Bâtiments terminés
 [settings Construction]
 Construction
 [settings Controls]
-Commandes de jeu
+Commandes
 [settings Could not change display mode. The previous mode was restored.]
 Impossible de changer le mode d'affichage. Le mode précédent a été restauré.
 [settings Could not save]
@@ -1551,7 +1551,7 @@ Nom du joueur
 [settings Press]
 À l’appui
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Appuyez sur une touche du clavier. Appuyer sur la touche Échap annule la capture d'entrée. Pour attribuer la touche Échap, sélectionnez "Attribuer la touche Échap".
+Appuyez sur une touche. Échap annule la capture. Utilisez « Attribuer la touche Échap » pour attribuer Échap.
 [settings Radius]
 Rayon
 [settings Reduced]
@@ -1567,13 +1567,13 @@ Supprimer la touche
 [settings Remove shortcut]
 Supprimer le raccourci
 [settings Renderer]
-Moteur de rendu graphique
+Moteur de rendu
 [settings Replace conflicting bindings]
 Remplacer les raccourcis clavier conflictuels
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
 Remplacer les raccourcis de ce contexte par ceux par défaut ? Les modifications seront enregistrées immédiatement.
 [settings Resolution]
-Résolution d'écran
+Résolution
 [settings Restore default shortcuts]
 Restaurer les raccourcis par défaut
 [settings Retry]
@@ -1597,7 +1597,7 @@ Choisissez votre langue et votre nom de joueur.
 [settings Settings]
 Paramètres
 [settings Single-player and replays only. Multiplayer runs at 1x.]
-En solo et dans les rediffusions uniquement. Le multijoueur reste à 1x.
+En solo et dans les replays uniquement. Le multijoueur reste à 1x.
 [settings Software]
 Rendu logiciel
 [settings Starting unit counts and radius for newly placed flags.]
@@ -1605,9 +1605,9 @@ Nombre initial d’unités et rayon des nouveaux drapeaux.
 [settings This shortcut conflicts with existing bindings:]
 Ce raccourci clavier est en conflit avec les raccourcis existants :
 [settings Trigger]
-Événement d'activation
+Déclenchement
 [settings Unbound]
-Aucun raccourci attribué
+Non attribué
 [settings Unit counts assigned to new construction sites.]
 Nombre d'unités attribuées aux nouveaux chantiers de construction.
 [settings Unit counts for completed buildings.]
@@ -1621,11 +1621,11 @@ Améliorations
 [settings Use game cursor]
 Utiliser le curseur de jeu
 [settings Voice volume]
-Volume de la voix
+Volume (voix)
 [settings Window mode]
 Mode fenêtre
 [settings Window-only sizes also switch the game to windowed mode.]
-La sélection d'une résolution qui prend uniquement en charge le mode fenêtré fait également passer le jeu en mode fenêtré.
+Les tailles réservées au mode fenêtré font aussi passer le jeu en mode fenêtré.
 [settings Windowed]
 Fenêtré
 [settings Windowed only]
@@ -1641,7 +1641,7 @@ Appliquer les graphismes au prochain chargement d’une partie ou de l’éditeu
 [settings Automatic torus view]
 Vue torique automatique
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
-Afficher automatiquement l'aperçu de la carte en forme de tore tout en vous déplaçant sur la carte (OpenGL).
+Afficher automatiquement la vue torique en vous déplaçant sur la carte (OpenGL).
 [settings Autosave]
 Sauvegarde automatique
 [settings Save the game automatically about every 10 seconds.]
@@ -1803,9 +1803,9 @@ Mur des cours
 [Plaza size]
 Taille de la place
 [Starting tower level]
-Niveau des tours de départ
+Niveau des tourelles de départ
 [Towers per colony]
-Tours par colonie
+Tourelles par colonie
 [Rings]
 Anneaux
 [Ramp width]
@@ -2085,13 +2085,13 @@ Dégâts reçus
 [Stats HP restored]
 PV restaurés
 [Stats since tick]
-Depuis le pas
+Depuis le tic
 [Stats combat deaths]
 Combat
 [Stats clearing deaths]
-Blessure de déblaiement
+Blessure de défrichage
 [Stats trapped deaths]
-Piégés
+Emprisonnées
 [Stats unknown deaths]
 Autre/inconnu
 [Stats conversions]
@@ -2219,9 +2219,9 @@ Unités S
 [Stats structural buildings]
 Bâtiments S
 [Stats low HP ranges]
-PV: <=25/50/75%
+PV ≤25/50/75%
 [Stats low food ranges]
-Nourriture: <=25/50/75%
+Nourriture ≤25/50/75%
 [Emoji]
 Emoji
 [Emoji character]
@@ -2595,7 +2595,7 @@ Oasis cachée
 [Pond algae]
 Algues de l'étang
 [Starting towers]
-Tours de départ
+Tourelles de départ
 [Starting school]
 École de départ
 [Mesas]
@@ -2777,7 +2777,7 @@ Chargement des équipes...
 [Loading terrain]
 Chargement du terrain...
 [Building gradients]
-Génération des dégradés...
+Calcul des gradients...
 [Loading players]
 Chargement des joueurs...
 [Loading scripts]
@@ -2789,7 +2789,7 @@ La carte n'a pas pu être générée. Essayez d'autres paramètres de générati
 [Loading units]
 Chargement des unités...
 [Loading buildings]
-Chargement des constructions...
+Chargement des bâtiments...
 [Resolving team links]
 Résolution des liens d'équipe...
 [saving to storage]
@@ -2841,7 +2841,7 @@ Sauvegarde finale non confirmée. Réessayez, ou quittez sans sauvegarder.
 [quit without saving]
 Quitter sans sauvegarder
 [game closed]
-Partie terminée. Vous pouvez fermer cette fenêtre ou recharger pour rejouer.
+Jeu fermé. Vous pouvez fermer cette fenêtre ou recharger pour rejouer.
 [campaign editor save failed]
 Sauvegarde non confirmée. OK réessaie ; Annuler revient au menu de l'éditeur.
 [Actions]
@@ -2865,7 +2865,7 @@ Outils
 [Pan map]
 Déplacer la carte
 [Edit map]
-Editer la carte
+Éditer la carte
 [Editor map]
 Carte
 [Flags]
@@ -2897,7 +2897,7 @@ Disposition de l’interface
 [settings Automatic]
 Automatique
 [settings Compact]
-Rapprochés
+Compacte
 [settings Spacious]
 Spacieuse
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
@@ -3035,9 +3035,9 @@ Fermer
 [Forbidden]
 Interdit
 [Guard]
-Garder
+Garde
 [Clear]
-Défricher
+Défrichage
 [Farm]
 Culture
 [Paint]
@@ -3163,7 +3163,7 @@ Choisir un paysage
 [%0 · Team %1]
 %0 · Équipe %1
 [Colonies: %0]
-Colonies: %0
+Colonies : %0
 [%0 colonies · %1 AI]
 %0 colonies · %1 IA
 [%0 · %1]
@@ -3175,23 +3175,23 @@ Niveau %0
 [settings Match the desktop %0]
 Comme le bureau (%0)
 [settings Current display %0 %1 %2 %3]
-Affichage actuel: %0 × %1 · %2 · %3
+Affichage actuel : %0 × %1 · %2 · %3
 [Fairness: %0]
-Équité: %0
+Équité : %0
 [Colony %0]
 Colonie %0
 [Win chance: %0 · Fitness: %1]
-Chance de victoire: %0 · Aptitude: %1
+Chance de victoire : %0 · Aptitude : %1
 [%0 · Contribution: %1]
-%0 · Contribution: %1
+%0 · Contribution : %1
 [Min required level %0]
-Niveau minimum requis: %0
+Niveau minimum requis : %0
 [Confirm %0]
-Accepter: %0
+OK : %0
 [%0 %1]
 %0 %1
 [resume game]
-Reprendre le jeu
+Reprendre la partie
 [Add AI]
 Ajouter une IA
 [settings Experiments]
@@ -3209,11 +3209,11 @@ Expérimentations
 [experiment guard-area-balancing]
 Équilibrage des zones de garde
 [experiment guard-area-balancing help]
-Les guerriers libres se répartissent entre les zones de garde peintes au lieu de tous rejoindre la plus proche : une zone plus grande en reçoit davantage, et une zone surpeuplée se vide peu à peu vers les autres.
+Les guerrières libres se répartissent entre les zones de garde peintes au lieu de toutes rejoindre la plus proche : une zone plus grande en reçoit davantage, et une zone surpeuplée se vide peu à peu vers les autres.
 [experiment farm-areas]
 Zones de culture
 [experiment farm-areas help]
-Ajoute une zone de culture aux pinceaux de zone. Les ouvriers qui récoltent à l'intérieur prennent sur la case la plus mûre du champ connexe et laissent un grain sur chaque case, si bien que le champ repousse au lieu d'être mangé par les bords. Le bois qui pousse dans la zone est défriché.
+Ajoute une zone de culture aux pinceaux de zone. Les ouvrières qui récoltent à l'intérieur prennent sur la case la plus mûre du champ connexe et laissent un grain sur chaque case, si bien que le champ repousse au lieu d'être mangé par les bords. Le bois qui pousse dans la zone est défriché.
 [settings Touch scrolling]
 Défilement tactile
 [settings List momentum]
@@ -3235,1419 +3235,1419 @@ Sensation du défilement tactile. 0 désactive un effet ; 50 est la valeur par d
 [List bounce]
 Rebond des listes
 [lan pairing field]
-
+Code d'appairage de l'hôte (ou URL WSS de confiance)
 [lan pairing connect]
-
+Appairer et connecter
 [lan discovery instructions]
-
+Choisissez un hôte, puis collez son code d'appairage pour vérifier son identité.
 [lan discovery unavailable]
-
+La découverte LAN est indisponible. Vérifiez l'autorisation réseau local ou collez un code d'appairage d'hôte.
 [lan discovered host %0]
-
+Hôte %0 découvert — appairez-le pour voir les parties
 [lan connection unavailable]
-
+Impossible de joindre l'hôte LAN. Vérifiez l'autorisation réseau local et le code d'appairage de l'hôte.
 [lan connection verification failed %0]
-
+Impossible de vérifier l'hôte LAN ou de s'y connecter : %0
 [lan lobby endpoint required]
-
+Utilisez l'adresse du salon de l'hôte
 [settings Artwork]
-
+Graphismes
 [settings Original]
-
+Originaux
 [settings High resolution]
-
+Haute résolution
 [settings Clouds]
-
+Nuages
 [settings Show cloud cover above the map.]
-
+Afficher les nuages au-dessus de la carte.
 [settings Cloud shadows]
-
+Ombres des nuages
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Afficher les ombres des nuages au sol, indépendamment des nuages.
 [settings Building particles]
-
+Particules des bâtiments
 [settings Show smoke and other building particles.]
-
+Afficher la fumée et les autres particules des bâtiments.
 [settings Magic effects]
-
+Effets magiques
 [settings Choose animated magic effects or a simple visible effect.]
-
+Choisir des effets magiques animés ou un effet simple et visible.
 [settings Simple]
-
+Simples
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Nécessite le rendu OpenGL. Votre choix enregistré est conservé.
 [settings Interface appearance]
-
+Apparence de l'interface
 [settings Panels]
-
+Panneaux
 [settings Choose translucent or opaque interface panels.]
-
+Choisir des panneaux d'interface translucides ou opaques.
 [settings Opaque]
-
+Opaques
 [settings Translucent]
-
+Translucides
 [settings Advanced graphics]
-
+Graphismes avancés
 [settings Path lines]
-
+Lignes de trajet
 [settings Choose translucent or opaque unit path lines.]
-
+Choisir des lignes de trajet des unités translucides ou opaques.
 [settings Smooth progress indicators]
-
+Indicateurs de progression lissés
 [settings Smooth the moving edges of progress indicators.]
-
+Lisser les bords mobiles des indicateurs de progression.
 [settings Decorative interface animation]
-
+Animations décoratives
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animer l'illustration de victoire. Le mode « mouvements réduits » désactive aussi cette animation.
 [settings Smooth unit motion]
-
+Mouvement fluide des unités
 [settings Experimental: move and animate units between game ticks.]
-
+Expérimental : déplacer et animer les unités entre les tics du jeu.
 [settings Smooth fog of war]
-
+Brouillard de guerre progressif
 [settings Fade the map into and out of the fog of war gradually.]
-
+Faire entrer et sortir la carte du brouillard de guerre en fondu.
 [settings Adaptive zoom detail]
-
+Détails adaptés au zoom
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Simplifier barres, zones, terrain et unités en dézoomant, et les garder petits en zoomant.
 [settings Text size]
-
+Taille du texte
 [settings Enlarge interface text without changing the map scale.]
-
+Agrandir le texte de l'interface sans changer l'échelle de la carte.
 [Map momentum]
 Élan de la carte
 [turn reconnecting]
-
+Connexion à l'hôte perdue. Reconnexion...
 [turn waiting for players]
-
+En attente du chargement de tous les joueurs...
 [turn rejoining]
-
+Retour dans la partie...
 [turn catching up %0]
-
+Rattrapage : %0 tours de retard
 [turn player reconnecting %0]
-
+%0 se reconnecte...
 [turn player lagging %0]
-
+%0 a du retard
 [turn player resyncing %0]
-
+%0 rattrape son retard
 [turn player not connected %0]
-
+%0 n'est pas encore connecté
 [lan host left]
-
+L'hôte a quitté la partie.
 [lan host lost]
-
+La connexion à l'hôte a été perdue.
 [lan version mismatch %0]
-
+L'hôte utilise une autre version de Globulation 2 (%0).
 [lan cannot host %0]
-
+Impossible d'héberger une partie LAN : %0
 [play online]
-
+Jouer en ligne
 [Use in room]
-
+Utiliser dans le salon
 [conn ai]
-
+IA
 [conn behind %0]
-
+Retard %0
 [conn behind explanation %0 %1]
-
+Retard : de combien le jeu d'un joueur est en retard sur l'horloge de la partie, délai compris. Moins de %0 est normal ; à partir de %1, le joueur est signalé comme lent.
 [conn behind]
-
+Retard
 [conn card catching up]
-
+Rattrapage
 [conn card colony works]
-
+Votre colonie continue de travailler seule : les unités terminent leurs tâches et les bâtiments continuent de fonctionner.
 [conn card desync detail]
-
+Retour dans la partie depuis son enregistrement, pour voir ce que voient les autres. Un rapport a été envoyé automatiquement.
 [conn card desync]
-
+Votre jeu s'est désynchronisé
 [conn card grace %0]
-
+Votre colonie continue de travailler seule : les unités terminent leurs tâches et les bâtiments continuent de fonctionner. Vous avez %0 pour revenir avant d'être retiré de la partie.
 [conn card input paused]
-
+Rattrapage en cours · commandes en pause
 [conn card lost]
-
+Connexion perdue
 [conn card progress %0 %1 %2]
-
+%0 % · %1 sur %2 tics
 [conn card reconnecting %0]
-
+Reconnexion à la partie… tentative %0
 [conn card replaying %0]
-
+Rejeu de ce que vous avez manqué (%0). L'écran se mettra à jour une fois revenu au présent.
 [conn card seconds left %0]
-
+environ %0 s restantes
 [conn connections]
-
+Connexions
 [conn connection]
-
+Connexion
 [conn delay explanation %0 %1]
-
+Délai : le temps entre votre clic et son effet, pour tout le monde. Il dépend de votre propre connexion, pas de celle des autres joueurs. Bon sous %0, mauvais à partir de %1.
 [conn fair]
-
+Moyen
 [conn good]
-
+Bon
 [conn grid legend]
-
+Avec plus de quatre joueurs, le panneau affiche le ping de chaque joueur en millisecondes, ou son retard en secondes.
 [conn jitter %0]
-
+gigue %0
 [conn leave match]
-
+Quitter la partie
 [conn left]
-
+Parti
 [conn notice back %0]
-
+%0 est de retour.
 [conn notice left %0]
-
+%0 a quitté la partie.
 [conn notice lost %0 %1]
-
+%0 a perdu la connexion. La partie continue ; sa colonie continue de travailler pendant la reconnexion (encore %1).
 [conn ping explanation %0 %1]
-
+Ping : l'aller-retour entre un joueur et le relais. Bon sous %0, mauvais à partir de %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Joueurs
 [conn poor]
-
+Mauvais
 [conn reconnecting]
-
+Reconnexion
 [conn relay %0]
-
+Relais : %0
 [conn resyncing]
-
+Retour en jeu
 [conn slow]
-
+Lent
 [conn unstable]
-
+instable
 [conn waiting]
-
+Connexion…
 [conn you %0]
-
+%0 (vous)
 [conn you]
-
+Vous
 [conn your delay %0]
-
+Votre délai %0
 [hub account menu]
-
+Compte
 [hub ai joins after %0]
-
+L'IA rejoint après %0
 [hub all rooms]
-
+Tous
 [hub browse maps]
-
+Parcourir les cartes
 [hub cant reach %0]
-
+Impossible de joindre %0.
 [hub change server]
-
+Changer de serveur…
 [hub check code]
-
+Quand un code est demandé, saisissez celui-ci :
 [hub code placeholder]
-
+Code ou lien d'invitation
 [hub connecting to %0]
-
+%0 · connexion…
 [hub continue with %0]
-
+Continuer avec %0
 [hub create room]
-
+Créer un salon
 [hub find match]
-
+Trouver une partie
 [hub finish in browser]
-
+Terminez la connexion sur la page ouverte dans votre navigateur.
 [hub free seat]
-
+Place libre
 [hub get update]
-
+Obtenir la mise à jour
 [hub guest kept on device]
-
+Invité · conservé sur cet appareil
 [hub invalid code]
-
+Ce n'est ni un code ni un lien d'invitation.
 [hub join by code]
-
+Rejoindre par code
 [hub join code]
-
+Code d'accès
 [hub join]
-
+Rejoindre
 [hub leaderboard]
-
+Classement
 [hub linked %0]
-
+Comptes liés · %0
 [hub linked accounts]
-
+Comptes liés
 [hub maps]
-
+Cartes
 [hub no queues]
-
+Ce serveur n'a pas de file de partie rapide.
 [hub no rooms]
-
+Aucun salon ouvert pour l'instant. Créez-en un et partagez l'invitation.
 [hub offline at %0]
-
+%0 · hors ligne
 [hub offline detail %0]
-
+Nouvel essai dans %0 s. La partie rapide et les salons en ligne sont indisponibles. Les parties LAN du menu principal n'ont pas besoin de ce serveur.
 [hub online at %0]
-
+%0 · en ligne
 [hub online settings]
-
+Paramètres en ligne
 [hub online]
-
+En ligne
 [hub open page again]
-
+Rouvrir la page
 [hub open rooms]
-
+Salons ouverts
 [hub page opened at %0]
-
+Page %0 ouverte. Rien à saisir dans le jeu ; la connexion se fait toute seule.
 [hub queues unavailable]
-
+La partie rapide apparaîtra quand le serveur répondra.
 [hub quick match unavailable]
-
+La partie rapide n'est pas encore disponible dans cette version.
 [hub quick match]
-
+Partie rapide
 [hub ranked]
-
+Classée
 [hub recent matches]
-
+Parties récentes
 [hub refresh]
-
+Actualiser
 [hub retry now]
-
+Réessayer
 [hub room match]
-
+Salon
 [hub room name %0]
-
+Salon de %0
 [hub room]
-
+Salon
 [hub seats %0 %1]
-
+%0/%1 places
 [hub server %0]
-
+Serveur : %0
 [hub sign in browser]
-
+Ouvrir la page de connexion
 [hub sign in conflict]
-
+Cet identifiant appartient déjà à un autre compte.
 [hub sign in failed %0]
-
+La connexion n'a pas abouti (%0).
 [hub sign in intro]
-
+Connectez-vous ou créez un compte dans votre navigateur. Vos parties d'invité vous suivent.
 [hub sign in]
-
+Se connecter
 [hub sign out]
-
+Se déconnecter sur cet appareil
 [hub signed in as %0]
-
+Connecté en tant que %0.
 [hub signed in on %0]
-
+Connecté sur %0
 [hub signing in]
-
+Connexion…
 [hub sim %0]
-
+simu %0
 [hub unrated]
-
+Non classée
 [hub update required at %0]
-
+%0 · mise à jour requise
 [hub update required detail %0]
-
+%0 utilise une version plus récente : cette copie ne peut pas rejoindre de parties en ligne avant d'être mise à jour. Les parties LAN fonctionnent toujours.
 [hub update required]
-
+Mise à jour requise
 [hub server behind]
-
+Mise à jour du serveur en attente
 [hub server behind at %0]
-
+%0 · mise à jour du serveur en attente
 [hub server behind detail %0]
-
+Cette copie est plus récente que %0, qui n'a pas encore été mis à jour. Les parties en ligne ouvriront dès la mise à jour du serveur. Les parties LAN fonctionnent toujours.
 [hub version mismatch]
-
+Version différente
 [hub version mismatch at %0]
-
+%0 · version différente
 [hub version mismatch detail %0]
-
+%0 utilise une autre version du jeu : cette copie ne peut pas rejoindre de parties en ligne. Les parties LAN fonctionnent toujours.
 [hub versus %0]
-
+contre %0
 [match ai]
-
+IA
 [match downloading map %0]
-
+Téléchargement de la carte %0
 [match failed]
-
+La partie n'a pas pu démarrer.
 [match leave]
-
+Quitter
 [match loading]
-
+Chargement de la partie
 [Loading game graphics]
-
+Chargement des graphismes
 [match map cached]
-
+déjà sur cet appareil
 [match map]
-
+Téléchargement de la carte
 [match relay %0]
-
+Connecté au relais %0
 [match seat confirmed]
-
+Place confirmée
 [match starting]
-
+Démarrage de la partie
 [match tip flags]
-
+Astuce : les drapeaux d'exploration envoient des exploratrices révéler la carte ; les drapeaux de guerre rassemblent vos guerrières.
 [match tip input]
-
+Astuce : vos ordres parviennent à tous après votre propre délai ; la connexion des autres joueurs ne vous ralentit pas.
 [match tip select]
-
+Astuce : double-cliquez sur un bâtiment pour sélectionner tous les bâtiments de ce type.
 [match waiting for players]
-
+En attente de tous les joueurs
 [match you %0]
-
+%0 (vous)
 [match player map]
-
+carte
 [match player loading]
-
+chargement
 [match player connecting]
-
+connexion
 [match player ready]
-
+prêt
 [match player left]
-
+parti
 [results back to online]
-
+Retour en ligne
 [results back to room]
-
+Retour au salon
 [results defeat]
-
+Défaite
 [results ladder rating %0]
-
+Cote %0
 [results left]
-
+Vous avez quitté la partie
 [results match over]
-
+Partie terminée
 [results match page]
-
+Page de la partie
 [results minutes %0]
-
+%0 min
 [results no change]
-
+inchangée
 [results ranked]
-
+Classée
 [results recording]
-
+Enregistrement du résultat…
 [results room unrated]
-
+Partie de salon · non classée
 [results saved to history]
-
+Enregistrée dans votre historique
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+Le serveur n'a pas pu reproduire cette partie : elle ne compte pour la cote de personne. Elle a été signalée pour analyse ; vous n'avez rien à faire.
 [results verified provisional]
-
+Vérifiée · provisoire
 [results verified]
-
+Vérifiée
 [results verifying detail]
-
+Le serveur rejoue la partie pour la confirmer. Généralement moins d'une minute.
 [results verifying]
-
+Vérification du résultat…
 [results victory]
-
+Victoire
 [room address]
-
+Adresse
 [room ai %0]
-
+IA : %0
 [room browser pairing]
-
+Appairage par navigateur
 [room catalog map]
-
+Carte du catalogue
 [room change map]
-
+Changer de carte…
 [room change rules]
-
+Changer les règles…
 [room chat]
-
+Discussion
 [room closed seat detail]
-
+Fermée par l'hôte
 [room closed seat]
-
+Fermée
 [room colonies]
-
+Colonies
 [room connecting]
-
+Connexion au salon…
 [room copy]
-
+Copier
 [room disconnected]
-
+déconnecté
 [room downloading %0]
-
+Téléchargement de la carte %0 %
 [room downloading map]
-
+Téléchargement de la carte…
 [room expired]
-
+Le salon a fermé.
 [room generated on server]
-
+Générée une fois sur le serveur, pour que tous jouent exactement cette carte.
 [room guest]
-
+invité
 [room host %0]
-
+hôte %0
 [room host closed]
-
+L'hôte a fermé le salon.
 [room host]
-
+hôte
 [room humans vs ai]
-
+Humains contre IA
 [room invite code %0]
-
+Code %0 · s'ouvre dans l'appli, sur téléphone ou dans un navigateur
 [room invite not found]
-
+Cette invitation a expiré ou n'existe pas.
 [room invite only]
-
+Sur invitation
 [room invite]
-
+Inviter
 [room joining on network]
-
+Connexion sur ce réseau
 [room lan badge]
-
+Réseau local · non classée
 [room lan list hint %0]
-
+Les autres joueurs du même réseau voient %0 dans la liste des parties LAN du menu principal.
 [room leave]
-
+Quitter
 [room map changed %0]
-
+La carte est maintenant %0.
 [room map failed]
-
+La carte n'a pas pu être préparée
 [room match label]
-
+Salon
 [room member joined %0]
-
+%0 est arrivé.
 [room member left %0]
-
+%0 est parti.
 [room member ready %0]
-
+%0 est prêt.
 [room needs two seats]
-
+Invitez un ami ou ajoutez une IA pour commencer
 [room no map]
-
+Pas encore de carte
 [room not ready]
-
+Pas prêt
 [room open for a person]
-
+Ouverte à un joueur
 [room open seat detail]
-
+Toute personne invitée peut la prendre
 [room open seat]
-
+Place libre
 [room person]
-
+Joueur
 [room preparing map]
-
+Préparation de la carte sur le serveur…
 [room public]
-
+Ouvert à tous
 [room ready?]
-
+Prêt
 [room ready]
-
+✓ Prêt
 [room remove from room]
-
+Retirer du salon
 [room rule off]
-
+Non
 [room rule on]
-
+Oui
 [room rules changed]
-
+Les règles ont changé.
 [room rules]
-
+Règles
 [room say something]
-
+Écrire un message…
 [room seat hint]
-
+Les joueurs peuvent passer eux-mêmes à une place libre. Changez d'équipe pour rééquilibrer.
 [room seat options]
-
+Options de la place
 [room seats summary %0 %1 %2]
-
+%0 joueurs · %1 IA · %2 libres
 [room seats]
-
+Places
 [room seed]
-
+Graine
 [room send]
-
+Envoyer
 [room set by host]
-
+Choisi par l'hôte
 [room share text %0]
-
+Rejoignez mon salon Globulation 2 : %0
 [room share]
-
+Partager…
 [room size]
-
+Taille
 [room starting match]
-
+Démarrage de la partie…
 [room take seat]
-
+Prendre la place
 [room team %0]
-
+Équipe %0
 [room update required]
-
+Ce salon utilise une autre version du jeu. Mettez à jour pour le rejoindre.
 [room uploaded map]
-
+Carte envoyée
 [room waiting for %0]
-
+En attente que %0 soit prêt
 [room waiting for you]
-
+Appuyez sur Prêt quand vous l'êtes
 [room match over]
-
+Partie terminée. Déclarez-vous prêt pour une autre manche !
 [room waiting for host]
-
+En attente du lancement par l'hôte
 [room waiting for players %0]
-
+En attente que %0 joueurs soient prêts
 [room who can find it]
-
+Qui peut le trouver
 [room you created]
-
+Vous avez créé le salon.
 [room you joined %0]
-
+Vous avez rejoint %0.
 [room you were removed]
-
+L'hôte vous a retiré du salon.
 [room you]
-
+vous
 [settings Online]
-
+En ligne
 [settings Another server]
-
+Autre serveur
 [settings Check]
-
+Vérifier
 [settings Checking…]
-
+Vérification…
 [settings Choose which server you play on and how you sign in to it.]
-
+Choisissez le serveur sur lequel vous jouez et comment vous y connecter.
 [settings Connecting…]
-
+Connexion…
 [settings Could not reach this server.]
-
+Impossible de joindre ce serveur.
 [settings Display name saved.]
-
+Pseudo enregistré.
 [settings Display name]
-
+Pseudo
 [settings Download or delete my data]
-
+Supprimer mon compte
 [settings Enter an https:// address.]
-
+Saisissez une adresse https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Terminez dans votre navigateur : saisissez le code %0 quand il est demandé.
 [settings Forget]
-
+Oublier
 [settings Guests keep a generated name; sign in to choose one.]
-
+Les invités gardent un nom généré ; connectez-vous pour en choisir un.
 [settings Link]
-
+Lier
 [settings Not a Globulation 2 server.]
-
+Ce n'est pas un serveur Globulation 2.
 [settings Not linked]
-
+Non lié
 [settings Not signed in.]
-
+Non connecté.
 [settings Open]
-
+Ouvrir
 [settings Opens your account page on %0.]
-
+Ouvre la page de votre compte sur %0, où vous pouvez le supprimer.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Géré par une communauté, un club ou vous-même. Collez son adresse.
 [settings Save]
-
+Enregistrer
 [settings Server]
-
+Serveur
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Affiché dans les salons, les parties et le classement. Modifiable une fois tous les 30 jours.
 [settings Sign in with: %0 · queues: %1]
-
+Connexion avec : %0 · files : %1
 [settings Sign out on this device]
-
+Se déconnecter sur cet appareil
 [settings Sign out]
-
+Se déconnecter
 [settings Switch to this server]
-
+Passer à ce serveur
 [settings The last sign-in method can't be unlinked.]
-
+Impossible de délier la dernière méthode de connexion.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Le serveur officiel de Globulation 2 · files classées, classements, catalogue de cartes
 [settings Unlink]
-
+Délier
 [settings Unlinking is done on the account page.]
-
+La dissociation se fait sur la page du compte.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Vous serez un nouvel invité jusqu'à votre prochaine connexion. Votre compte et vos parties restent sur le serveur.
 [settings Your account on %0]
-
+Votre compte sur %0
 [settings compatible with this version]
-
+compatible avec cette version
 [settings connected]
-
+connecté
 [settings connecting…]
-
+connexion…
 [settings guest]
-
+invité
 [settings linked]
-
+lié
 [settings plays another version]
-
+utilise une autre version
 [settings trusted]
-
+de confiance
 [settings used before]
-
+déjà utilisé
 [settings you were %0 there]
-
+vous y étiez %0
 [trust invited to room %0]
-
+Invité dans le salon %0
 [trust join as guest]
-
+Rejoindre en invité
 [trust not official]
-
+Ce serveur n'est pas géré par le projet Globulation 2.
 [trust remember]
-
+Mémoriser ce serveur
 [trust separate identity %0]
-
+Vous y entrerez en tant qu'invité. Votre compte %0, votre cote et votre historique restent où ils sont.
 [trust title]
-
+Rejoindre une partie sur un autre serveur ?
 [trust what it sees]
-
+Le serveur voit votre pseudo, l'adresse de votre connexion et les parties que vous y jouez.
 [settings not connected]
-
+non connecté
 [settings Open Play online to connect.]
-
+Ouvrez Jouer en ligne pour vous connecter.
 [hub code]
-
+Code
 [results draw]
-
+Égalité
 [qm 2 vs 2]
-
+2 contre 2
 [qm 1 vs 1]
-
+1 contre 1
 [qm ping about]
-
+Ping d'environ
 [qm ranked]
-
+Classée
 [qm casual %0]
-
+Amicale %0
 [qm rated]
-
+Classée
 [qm unrated]
-
+Non classée
 [qm solo queue]
-
+file solo
 [qm ai joins after %0]
-
+L'IA rejoint après %0
 [qm fair maps %0]
-
+Cartes : %0
 [qm cooldown %0]
-
+Vous avez refusé une partie. Vous pourrez chercher à nouveau dans %0.
 [qm sign in to play ranked]
-
+Les files classées sont réservées aux comptes connectés ; connectez-vous d'abord.
 [online update required]
-
+Cette version du jeu est trop ancienne pour le serveur ; mettez à jour pour jouer en ligne.
 [online server behind]
-
+Le serveur n'a pas encore été mis à jour vers cette version ; le jeu en ligne ouvrira ensuite.
 [online version mismatch]
-
+Le serveur utilise une autre version du jeu ; le jeu en ligne n'est pas disponible avec cette copie.
 [qm already searching]
-
+Vous cherchez déjà une partie ou êtes déjà en partie.
 [online connection problem]
-
+Impossible de joindre le serveur.
 [qm find match]
-
+Trouver une partie
 [qm opponents rated %0 to %1]
-
+Adversaires cotés de %0 à %1
 [qm region %0]
-
+Région %0
 [qm searching]
-
+Recherche
 [qm measuring relays]
-
+Mesure des relais
 [qm joining queue]
-
+Entrée dans la file
 [qm waiting for a person]
-
+En attente d'un joueur : les adversaires IA sont désactivés.
 [qm ai in %0 rated]
-
+Si personne n'est trouvé, vous affronterez l'IA de cote la plus proche dans %0
 [qm ai in %0]
-
+Si personne n'est trouvé, une IA rejoint dans %0
 [qm ai after %0]
-
+Si personne n'est trouvé, une IA prend la place après %0
 [qm allow ai short]
-
+Autoriser l'IA
 [qm allow ai]
-
+Autoriser un adversaire IA
 [qm cancel]
-
+Annuler
 [qm cancel search]
-
+Annuler la recherche
 [qm usual wait %0]
-
+attente habituelle %0
 [qm widening]
-
+s'élargit avec l'attente
 [qm ais are rated]
-
+(classée : les IA ont aussi une cote)
 [qm opponent declined]
-
+Votre adversaire n'a pas accepté. Vous êtes de retour en tête de file.
 [qm %0 did not accept]
-
+%0 n'a pas accepté. Vous êtes de retour en tête de file.
 [qm start failed]
-
+La partie n'a pas pu démarrer. Nouvelle recherche en cours.
 [qm you declined]
-
+Vous avez refusé la partie. Vous pourrez chercher à nouveau après une courte attente.
 [qm you did not answer]
-
+Vous n'avez pas accepté à temps. Vous pourrez chercher à nouveau après une courte attente.
 [qm search ended]
-
+La recherche est terminée.
 [qm try again]
-
+Réessayer
 [online connecting]
-
+Connexion…
 [qm no queues]
-
+Ce serveur n'a pas de file de partie rapide.
 [qm quick match]
-
+Partie rapide
 [qm phone searching note]
-
+La recherche continue si vous quittez cet écran.
 [qm phone intro]
-
+Choisissez une file ci-dessous ; la recherche continue pendant que vous naviguez.
 [qm online]
-
+En ligne
 [qm keeps running note]
-
+La recherche continue si vous quittez cet écran.
 [qm ai]
-
+IA
 [qm provisional]
-
+provisoire
 [qm accepted]
-
+✓ accepté
 [qm declined]
-
+refusé
 [qm waiting]
-
+en attente…
 [qm ai badge]
-
+IA
 [qm match found]
-
+Partie trouvée
 [qm playing an ai]
-
+Partie contre une IA
 [qm vs]
-
+contre
 [qm ai explanation rated]
-
+Personne dans votre fourchette de cote ne cherchait. Vous affronterez l'IA de cote la plus proche ; le résultat compte pour votre cote et celle de l'IA.
 [qm ai explanation]
-
+Personne ne cherchait. Vous affronterez l'IA de cote la plus proche ; cette partie n'est pas classée.
 [qm casual explanation]
-
+La partie démarre aussitôt ; les parties amicales ne sont pas classées.
 [qm accepted button]
-
+Acceptée
 [qm accept]
-
+Accepter
 [qm decline]
-
+Refuser
 [qm both must accept]
-
+Les deux doivent accepter
 [qm accept explanation]
-
+Les deux joueurs doivent accepter. Refuser ou laisser expirer le délai vous renvoie en fin de file.
 [qm starting in %0]
-
+Début dans %0…
 [qm preparing match]
-
+Préparation de la partie…
 [qm match assigned %0 %1]
-
+La partie %0 est prête sur %1, mais cette version ne peut pas encore se connecter aux parties en ligne.
 [online jan]
-
+janv.
 [online feb]
-
+févr.
 [online mar]
-
+mars
 [online apr]
-
+avr.
 [online may]
-
+mai
 [online jun]
-
+juin
 [online jul]
-
+juil.
 [online aug]
-
+août
 [online sep]
-
+sept.
 [online oct]
-
+oct.
 [online nov]
-
+nov.
 [online dec]
-
+déc.
 [profile win letter]
-
+V
 [profile loss letter]
-
+D
 [profile draw letter]
-
+N
 [profile history unavailable]
-
+Ce serveur ne propose pas encore d'historique des parties.
 [profile downloading replay]
-
+Téléchargement du replay…
 [profile no replay]
-
+Aucun replay n'est disponible pour cette partie.
 [profile room with %0]
-
+Salon · %0 colonies
 [profile with %0 vs %1]
-
+avec %0 contre %1
 [profile vs %0]
-
+contre %0
 [profile room]
-
+Salon
 [profile casual]
-
+Amicale
 [profile ai filled]
-
+Complétée par IA
 [profile provisional %0 games]
-
+provisoire · %0 parties
 [profile unrated]
-
+non classée
 [profile checking]
-
+vérification…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Page de la partie
 [profile replay]
-
+Revoir
 [profile win rate last %0]
-
+Taux de victoire, %0 dernières
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 D · %2 nuls
 [profile typical game]
-
+Partie type
 [profile median length]
-
+votre durée médiane
 [profile best map]
-
+Meilleure carte
 [profile %0 w %1 l]
-
+%0 V · %1 D
 [profile no rated games]
-
+Jouez une partie classée pour obtenir une cote.
 [profile all]
-
+Toutes
 [profile rooms]
-
+Salons
 [profile vs ai]
-
+contre IA
 [profile matches]
-
+Parties
 [online loading]
-
+Chargement…
 [profile no matches]
-
+Aucune partie pour l'instant.
 [online load more]
-
+Charger plus
 [profile title]
-
+Profil
 [profile guest]
-
+invité
 [profile playing since %0]
-
+joue depuis %0
 [profile full profile web]
-
+Profil complet sur le web
 [profile replays note]
-
+Les replays sont téléchargés depuis le serveur à l'ouverture ; ceux enregistrés localement restent dans Charger une partie → Replays.
 [profile web profile]
-
+Profil web
 [maps most played]
-
+Plus jouées
 [maps most liked]
-
+Plus aimées
 [maps newest]
-
+Plus récentes
 [maps most downloaded]
-
+Plus téléchargées
 [maps any size]
-
+Toute taille
 [maps up to 128]
-
+Jusqu'à 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 et plus
 [maps report broken]
-
+Elle ne fonctionne pas
 [maps report offensive]
-
+Choquante
 [maps report copyright]
-
+C'est le travail de quelqu'un d'autre
 [maps report other]
-
+Autre chose
 [maps public]
-
+Publique
 [maps unlisted]
-
+Non répertoriée
 [maps private]
-
+Privée
 [maps cannot read file]
-
+Le fichier de carte n'a pas pu être lu.
 [maps file too large]
-
+Le fichier de carte est trop gros pour être partagé.
 [maps saved for next room]
-
+La carte est téléchargée ; elle sera utilisée à l'ouverture d'un salon.
 [maps download failed]
-
+La carte n'a pas pu être téléchargée.
 [maps %0 colonies]
-
+%0 colonies
 [maps version %0]
-
+version %0
 [maps updated %0]
-
+mise à jour %0
 [maps downloading]
-
+Téléchargement de la carte…
 [maps like needs account]
-
+Il faut un compte connecté pour aimer des cartes.
 [maps report sent]
-
+Merci ; les modérateurs vont l'examiner.
 [maps select a map]
-
+Sélectionnez une carte pour voir ses détails.
 [maps by %0]
-
+par %0
 [maps stats %0 %1 %2]
-
+▶ %0 parties · ⬇ %1 téléchargements · ♥ %2
 [maps use in room]
-
+Utiliser dans un salon
 [maps liked]
-
+Aimée
 [maps like]
-
+J'aime
 [maps map page]
-
+Page de la carte
 [maps reported]
-
+Signalée
 [maps report]
-
+Signaler…
 [maps report why]
-
+Quel est le problème avec cette carte ?
 [maps search placeholder]
-
+Chercher des cartes ou des auteurs
 [maps none found]
-
+Aucune carte ne correspond.
 [maps any colonies]
-
+Toutes colonies
 [maps checking]
-
+Vérification…
 [maps no version yet]
-
+Aucune version n'a encore été envoyée.
 [maps rejected]
-
+Refusée
 [maps did not load %0]
-
+La carte ne s'est pas chargée : %0
 [maps unknown reason]
-
+aucune raison n'a été donnée
 [maps fix and upload again]
-
+corrigez-la dans l'éditeur, puis renvoyez-la
 [maps uploaded just now]
-
+envoyée à l'instant
 [maps loading on server]
-
+chargement sur le serveur
 [maps %0 plays]
-
+%0 parties
 [maps hidden]
-
+Masquée
 [maps upload again]
-
+Renvoyer…
 [maps delete]
-
+Supprimer
 [maps update]
-
+Mettre à jour…
 [maps upload a map]
-
+Envoyer une carte…
 [maps upload hint]
-
+fichiers .map de votre dossier de cartes ou de l'éditeur
 [maps no maps yet]
-
+Vous n'avez encore partagé aucune carte.
 [maps my maps]
-
+Mes cartes
 [maps my maps %0]
-
+Mes cartes (%0)
 [maps browse]
-
+Parcourir
 [maps title]
-
+Cartes
 [maps browse note %0]
-
+Catalogue %0 · seules les cartes compatibles avec cette version sont affichées
 [maps visibility note]
-
+Les cartes publiques apparaissent dans Parcourir. Les cartes non répertoriées marchent dans vos salons et via leur lien. Les cartes privées, seulement dans vos propres salons.
 [maps use %0]
-
+Utiliser %0
 [maps %0 kb]
-
+%0 Ko
 [maps field title]
-
+Titre
 [maps field description]
-
+Description
 [maps who can use it]
-
+Qui peut l'utiliser
 [maps guests unlisted]
-
+Les invités peuvent partager des cartes non répertoriées et privées ; connectez-vous pour publier dans Parcourir.
 [maps visibility help]
-
+Les cartes non répertoriées marchent dans vos salons et via leur lien ; les cartes publiques apparaissent aussi dans Parcourir.
 [maps new version of %0]
-
+Envoyer ce fichier comme nouvelle version de %0.
 [maps upload]
-
+Envoyer
 [maps uploading]
-
+Envoi…
 [maps checking detail]
-
+Le serveur charge la carte et dessine son aperçu. D'ici là, la carte n'est pas utilisable.
 [maps ready]
-
+Prête
 [maps ready public]
-
+La carte est prête et listée dans Parcourir.
 [maps ready unlisted]
-
+La carte est prête. Les cartes non répertoriées marchent dans vos salons et via leur lien.
 [maps ready private]
-
+La carte est prête. Les cartes privées ne marchent que dans vos propres salons.
 [maps upload failed]
-
+L'envoi a échoué
 [maps server read %0 %1]
-
+Le serveur l'a lue comme %0 avec %1 colonies.
 [maps continue in background]
-
+Fermer
 [maps upload a map title]
-
+Envoyer une carte
 [maps update map title]
-
+Mettre à jour une carte
 [maps upload note]
-
+Le serveur charge chaque envoi avant qu'il ne soit utilisable.
 [online just now]
-
+à l'instant
 [online today %0]
-
+aujourd'hui %0
 [online yesterday]
-
+hier
 [online sun]
-
+dim.
 [online mon]
-
+lun.
 [online tue]
-
+mar.
 [online wed]
-
+mer.
 [online thu]
-
+jeu.
 [online fri]
-
+ven.
 [online sat]
-
+sam.
 [online %0 weeks ago]
-
+il y a %0 semaines
 [online %0 months ago]
-
+il y a %0 mois
 [online %0 years ago]
-
+il y a %0 ans
 [maps share online]
-
+Partager en ligne…
 [maps mine]
-
+Les miennes
 [results waiting for players]
-
+En attente du départ des autres joueurs…
 [results waiting detail]
-
+Le résultat est enregistré une fois que tout le monde a quitté la partie.
 [results waiting slow]
-
+Un joueur qui a perdu la connexion a jusqu'à 3 minutes pour revenir. Le résultat apparaîtra dans votre historique et sur la page de la partie.
 [results verifying slow]
-
+La vérification prend plus de temps que d'habitude. Le résultat apparaîtra dans votre historique et sur la page de la partie.
 [results rematch]
-
+Revanche
 [results join rematch %0]
-
+Rejoindre la revanche de %0
 [hub profile history]
-
+Profil et historique
 [hub my maps]
-
+Mes cartes
 [hub leaderboard %0]
-
+Classement · %0
 [hub leaderboard empty]
-
+Aucun joueur classé pour l'instant.
 [hub guests not ranked]
-
+Les invités ne sont pas classés. Connectez-vous pour apparaître ici.
 [hub full leaderboard]
-
+Classement complet
 [settings %0 is no longer linked.]
-
+%0 n'est plus lié.
 [room map read failed]
-
+Ce fichier de carte n'a pas pu être lu.
 [room map upload failed]
-
+La carte n'a pas pu être partagée avec le salon.
 [room map upload failed %0]
-
+La carte n'a pas pu être partagée avec le salon : %0
 [room uploading map]
-
+Partage de la carte avec le salon…
 [room premade map shared]
-
+Tout le salon joue ce fichier de carte ; il est téléchargé avant la partie.
 [room take a seat to play]
-
+Prenez une place libre pour jouer
 [room waiting for a seat]
-
+Toutes les places sont prises. Vous pourrez en prendre une dès qu'elle se libère.
 [room not seated]
-
+Sans place
 [room copied]
-
+Copié
 [room copy failed]
-
+Copie impossible
 [room closed title]
-
+Salon fermé
 [room removed title]
-
+Retiré du salon
 [room back to online]
-
+Retour en ligne
 [leave match]
-
+Quitter la partie
 [leave match title]
-
+Quitter cette partie ?
 [leave lan title]
-
+Quitter cette partie LAN ?
 [leave rated body]
-
+Vous perdez cette partie classée et votre cote baisse. Les autres continuent et vous ne pourrez pas y revenir.
 [leave casual body]
-
+Cette partie rapide compte comme une défaite pour vous. Les autres continuent et vous ne pourrez pas y revenir.
 [leave room body]
-
+Vous quittez la partie du salon et elle compte comme une défaite dans votre historique. Les autres continuent et vous ne pourrez pas y revenir.
 [leave lan body]
-
+Les autres continuent sans vous et vous ne pourrez pas revenir dans cette partie.
 [leave match confirm]
-
+Quitter la partie
 [keep playing]
-
+Continuer à jouer
 [results team]
-
+Équipe
 [results quick unrated]
-
+Partie rapide · non classée
 [conn card cannot keep up]
-
+Votre appareil ne suit pas le rythme de cette partie
 [conn card cannot keep up body]
-
+Il rejoue la partie plus lentement qu'elle ne se déroule et ne la rattrapera donc pas. Vous pouvez quitter la partie, ou baisser les réglages graphiques et continuer d'attendre.
 [conn card not gaining]
-
+ne rattrape pas
 [results reason opponents left]
-
+Vos adversaires ont quitté la partie.
 [results reason victory]
-
+Toutes les colonies adverses ont été vaincues.
 [results reason defeat]
-
+Votre colonie a été vaincue.
 [results reason you left]
-
+Vous avez quitté la partie. Cela compte comme une défaite.
 [results final after end]
-
+Résultat définitif à la fin de la partie.
 [pause none left]
-
+Plus de pauses
 [pause game left %0]
-
+Mettre en pause (%0 restantes)
 [pause by %0]
-
+En pause par %0
 [pause by %0 resumes in %1]
-
+En pause par %0 · reprise dans %1
 [turn too many actions]
-
+Trop d'actions : certaines attendent encore d'être envoyées
 [turn no pauses left]
-
+Vous n'avez plus de pauses dans cette partie
 [turn pause time used %0]
-
+%0 a utilisé tout son temps de pause : la partie reprend
 [room seats one person %0 %1]
-
+1 joueur · %0 IA · %1 libres
 [room rules otherwise standard]
-
+Toutes les autres règles sont celles de Standard.
 [room browser link]
-
+Lien pour les joueurs sur navigateur
 [room browser link hint]
-
+Les joueurs sur navigateur collent ce lien pour rejoindre.
 [room browser link code %0]
-
+Les joueurs sur navigateur collent ce lien pour rejoindre. Leur jeu affiche le code %0.
 [room copy link]
-
+Copier le lien
 [room lan open seat detail]
-
+Toute personne sur ce réseau peut la prendre
 [room close title]
-
+Fermer le salon ?
 [room close body one]
-
+Partir ferme le salon pour tout le monde, y compris l'autre joueur présent.
 [room close body %0]
-
+Partir ferme le salon pour tout le monde, y compris les %0 autres joueurs présents.
 [room close confirm]
-
+Fermer le salon
 [room stay]
-
+Rester
 [room colours changed]
-
+La nouvelle carte a donné de nouvelles couleurs aux places. Vérifiez la vôtre avant de commencer.
 [room copy by hand]
-
+La copie n'a pas marché. Copiez l'invitation vous-même :
 [room copy by hand close]
-
+Fermer
 [room copy by hand touch]
-
+Touchez longuement le lien, puis choisissez Copier.
 [room copy by hand keys]
-
+Le lien est sélectionné : appuyez sur Ctrl+C (⌘C sur Mac).
 [room code]
-
+Code
 [online under a minute]
-
+moins d'une minute
 [online about %0 min]
-
+environ %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+Adversaire IA : %0
 [match relay connected]
-
+Connecté au serveur de jeu
 [room picker title]
-
+Choisir une carte
 [room picker for one]
-
+Pour le joueur du salon
 [room picker for %0]
-
+Pour les %0 joueurs du salon
 [room picker generated]
-
+Générée
 [room picker premade]
-
+Prédéfinie
 [room picker catalog]
-
+Catalogue
 [room picker size]
-
+Taille
 [room picker colonies]
-
+Colonies
 [room picker fair]
-
+Départ équitable pour chaque colonie
 [room picker does not fit]
-
+Ne convient pas à cette taille ; essayez-en une autre
 [room picker preparing]
-
+Préparation de l'aperçu…
 [room picker generated note]
-
+Chaque paysage offre à chaque colonie un départ aussi bon, et le serveur crée la même carte pour tous.
 [room picker players %0]
-
+%0 joueurs
 [room picker unreadable]
-
+illisible
 [room picker no premade]
-
+Aucune carte prédéfinie trouvée.
 [room picker too small %0]
-
+Cette carte a moins de colonies que les %0 joueurs du salon.
 [room picker pick premade]
-
+Choisissez une carte pour la voir ici.
 [room picker catalog intro]
-
+Cartes partagées par d'autres joueurs. Ouvrez-en une et choisissez Utiliser dans un salon.
 [room picker browse catalog]
-
+Parcourir les cartes partagées
 [room picker more options]
-
+Plus d'options…
 [room picker use]
-
+Utiliser cette carte
 [room map ready title %0]
-
+Jouer %0
 [room map ready unnamed]
-
+cette carte
 [room map ready body]
-
+Créez un salon et invitez vos amis : le salon jouera cette carte.
 [game draw]
-
+Égalité
 [settings Show colony skins]
 Afficher les apparences des colonies
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Désactivez pour utiliser les unités, les essaims et les couleurs de bâtiments classiques sur cet appareil.
+Désactivez pour utiliser les unités, les ruches et les couleurs de bâtiments classiques sur cet appareil.
 [settings Hive Mind]
-
+Esprit de ruche
 [settings Enable commander shortcuts]
-
+Activer les raccourcis du commandant
 [settings Command your colony without opening a menu.]
-
+Commandez votre colonie sans ouvrir de menu.
 [settings Allow supervision for new commands]
-
+Autoriser le suivi des nouveaux ordres
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Le commandant peut assurer le suivi des ordres permanents. Les suivis consomment des crédits ; les ordres installés continuent sans crédits.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Raccourcis par défaut : Ctrl+Entrée pour donner un ordre ; Ctrl+Maj+Entrée pour arrêter le commandant. Modifiez-les dans Commandes. Les cartes d'ordres permanents ont leurs propres boutons de pause et d'annulation.
 [settings Commander account and credits]
-
+Compte et crédits du commandant
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Gérez crédits et achats dans votre navigateur. L'aide du commandant est autorisée en partie classée.
 [open commander]
-
+Ouvrir le commandant
 [stop commander]
-
+Arrêter le commandant
 [settings Recording]
-
+Enregistrement
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Enregistrez vos parties en vidéos MP4 avec le son. L'enregistrement nécessite FFmpeg avec les encodeurs libx264 et AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg est prêt.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg n'est pas disponible, l'enregistrement est donc désactivé. Installez FFmpeg, vérifiez qu'il est dans votre PATH, puis vérifiez à nouveau.
 [settings Check for FFmpeg again]
-
+Rechercher FFmpeg à nouveau
 [settings Checking for FFmpeg…]
-
+Recherche de FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Raccourci : %0. Il fonctionne aussi dans les menus et l'éditeur.
 [settings Change the hotkey]
-
+Changer le raccourci
 [settings Recordings are saved in %0]
-
+Les enregistrements sont sauvegardés dans %0
 [toggle recording]
-
+Démarrer ou arrêter l'enregistrement
 [File selection is unavailable.]
-
+La sélection de fichier est indisponible.
 [Saving custom AI…]
-
+Enregistrement de l'IA personnalisée…
 [Could not read the selected JavaScript file.]
-
+Impossible de lire le fichier JavaScript sélectionné.
 [Custom AI library saved.]
-
+Bibliothèque d'IA personnalisées enregistrée.
 [Storage could not be saved. The previous library is retained.]
-
+Le stockage n'a pas pu être enregistré. La bibliothèque précédente est conservée.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importez un fichier d'IA JavaScript unique, puis sélectionnez-le en préparant une partie locale.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Les imports gardent une copie dans Glob2. Mettre à jour remplace cette copie pour les parties futures ; les sauvegardes gardent leur IA d'origine.
 [Waiting for file selection or storage…]
-
+En attente de la sélection du fichier ou du stockage…
 [Import JavaScript AI]
-
+Importer une IA JavaScript
 [Link development file]
-
+Lier un fichier de développement
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Les fichiers liés sont lus au début de la partie. Recompilez avant de lancer une nouvelle partie. Retirer un lien ne supprime jamais votre fichier.
 [Example AI and authoring guide]
-
+Exemple d'IA et guide de création
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Aucune IA personnalisée pour l'instant. Importez un fichier .js empaqueté pour commencer.
 [Relink]
-
+Relier
 [Update]
-
+Mettre à jour
 [Validate]
-
+Valider
 [AI startup and persistent globals are valid.]
-
+Le démarrage de l'IA et les variables globales persistantes sont valides.
 [Remove from library]
-
+Retirer de la bibliothèque
 [AI telemetry]
-
+Télémétrie de l'IA
 [No accessible AI telemetry.]
-
+Aucune télémétrie d'IA accessible.
 [Search fields]
-
+Chercher des champs
 [Telemetry unavailable for this recording or controller.]
-
+Télémétrie indisponible pour cet enregistrement ou ce contrôleur.
 [Linked]
-
+Lié
 [Imported]
-
+Importé
 [Player]
-
+Joueur
 [Updated at tick %0]
-
+Mis à jour au tic %0
 [No values published yet.]
-
+Aucune valeur publiée pour l'instant.
 [No fields match your search.]
-
+Aucun champ ne correspond à votre recherche.
 [settings Custom AIs]
-
+IA personnalisées
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Ajoutez des IA JavaScript dans Paramètres → IA personnalisées. Elles apparaissent dans le choix d'IA de chaque colonie.
 [Missing custom AI]
-
+IA personnalisée manquante
 [Map repetition failed]
-
+Impossible de répéter cette carte. Utilisez une carte de départ sans script, ou réduisez les répétitions et les bases.
 [repeat map horizontally]
 Répéter la carte horizontalement
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ bases
 [bases per colony]
 Bases par colonie ; une base est une équipe de la carte telle que dessinée, avec ses bâtiments et ses unités
 [stat group population]
-
+Population
 [stat group food]
-
+Nourriture et bien-être
 [stat group resources]
-
+Ressources
 [stat group buildings]
-
+Bâtiments
 [stat group military]
-
+Armée
 [stat group map]
-
+Territoire
 [stat group score]
-
+Score
 [stat overview]
-
+Vue d'ensemble
 [stat overview about]
-
+Les chiffres de chaque colonie sur toute la partie. Le plus élevé est mis en évidence quand plus vaut mieux ; cliquez sur un en-tête de colonne pour voir son évolution.
 [stat population]
-
+Population
 [stat population about]
-
+Combien d'unités vivantes la colonie avait : ouvrières, exploratrices et guerrières ensemble.
 [stat births]
-
+Unités nées
 [stat births about]
-
+Le rythme de production de nouvelles unités par les ruches. Détaillez pour voir ouvrières, exploratrices et guerrières séparément.
 [stat deaths]
-
+Unités perdues
 [stat deaths about]
-
+Le rythme de perte d'unités de la colonie, quelle qu'en soit la cause : combat, famine, blessures en défrichant ou emprisonnement.
 [stat net growth]
-
+Croissance
 [stat net growth about]
-
+Unités nées moins unités perdues. Au-dessus de zéro la colonie grandissait ; en dessous elle diminuait.
 [stat death causes]
-
+Causes de décès
 [stat death causes about]
-
+Ce dont sont mortes les unités de la colonie : combats, famine, blessures en défrichant des ressources, emprisonnement sans issue, ou autres causes.
 [stat conversions]
-
+Conversions nettes
 [stat conversions about]
-
+Unités gagnées sur d'autres colonies moins unités perdues à leur profit. Les unités changent de camp quand une autre colonie les nourrit mieux.
 [stat hunger]
-
+Réserves de nourriture
 [stat hunger about]
-
+Combien de nourriture les unités de la colonie portaient en elles. Chaque unité est classée selon ce qui reste de sa réserve : presque vide (un quart ou moins), basse (jusqu'à la moitié), à moitié pleine (jusqu'aux trois quarts) ou bien nourrie. Les unités cherchent une auberge quand leur réserve baisse, donc une colonie en a toujours quelques-unes en réserve basse.
 [stat health]
-
+Santé
 [stat health about]
-
+L'état de santé des unités de la colonie. Chaque unité est classée selon ses points de vie restants : critique (un quart ou moins), blessée (jusqu'à la moitié), touchée (jusqu'aux trois quarts) ou en bonne santé.
 [stat seeking food]
-
+Unités cherchant à manger
 [stat seeking food about]
-
+Unités ayant arrêté le travail pour trouver une auberge. Celles qui, en plus, ne sont pas en pleine santé sont comptées comme en train de s'affaiblir.
 [stat in care]
-
+Unités en repas ou en soins
 [stat in care about]
-
+Unités mangeant dans une auberge ou soignées dans un hôpital, et donc pas au travail.
 [stat wheat harvested]
-
+Blé récolté
 [stat wheat harvested about]
-
+Charges de blé cueillies par les ouvrières. Les auberges transforment le blé en repas.
 [stat wheat stored]
-
+Blé en stock
 [stat wheat stored about]
-
+Blé présent dans les bâtiments de la colonie, prêt à être servi ou utilisé.
 [stat meals]
-
+Repas servis
 [stat meals about]
-
+Repas servis par les auberges de la colonie, à ses propres unités et aux visiteurs d'autres colonies.
 [stat starvation]
-
+Morts de faim
 [stat starvation about]
-
+Unités mortes faute d'avoir trouvé de la nourriture à temps.
 [stat healing]
-
+Santé rendue
 [stat healing about]
-
+Points de vie rendus aux unités blessées par les hôpitaux de la colonie.
 [stat gathered]
-
+Ressources récoltées
 [stat gathered about]
-
+Charges de chaque ressource ramassées par les ouvrières. Détaillez pour voir chaque ressource.
 [stat stored]
-
+Ressources en stock
 [stat stored about]
-
+Ressources présentes dans les bâtiments de la colonie. Détaillez pour voir chaque ressource.
 [stat spending]
-
+Dépenses de ressources
 [stat spending about]
-
+Où sont allées les ressources livrées : repas, nouvelles unités, munitions des tourelles, nouveaux bâtiments ou améliorations.
 [stat delivered]
-
+Ressources livrées
 [stat delivered about]
-
+Charges apportées dans les bâtiments par les ouvrières.
 [stat traded]
-
+Commerce net
 [stat traded about]
-
+Ressources reçues par les marchés moins ressources données.
 [stat buildings]
-
+Bâtiments debout
 [stat buildings about]
-
+Bâtiments terminés que la colonie possédait. Détaillez pour voir chaque type de bâtiment.
 [stat construction]
-
+Travaux terminés
 [stat construction about]
-
+Travaux de construction terminés : nouveaux bâtiments, améliorations et réparations.
 [stat buildings lost]
-
+Bâtiments perdus
 [stat buildings lost about]
-
+Bâtiments détruits par l'ennemi ou démolis par la colonie elle-même.
 [stat blocked buildings]
-
+Bâtiments inaccessibles
 [stat blocked buildings about]
-
+Bâtiments dont les entrées étaient bloquées, empêchant les unités d'entrer ou de sortir.
 [stat attack]
-
+Force d'attaque
 [stat attack about]
-
+Une note de la puissance de combat cumulée des guerrières de la colonie : la force et la vitesse de leurs coups.
 [stat defence]
-
+Force défensive
 [stat defence about]
-
+Une note de la puissance de feu cumulée des tourelles de la colonie.
 [stat hit points]
-
+Points de vie totaux
 [stat hit points about]
-
+Les points de vie de toutes les unités et de tous les bâtiments de la colonie additionnés.
 [stat damage dealt]
-
+Dégâts infligés
 [stat damage dealt about]
-
+Dégâts infligés par la colonie aux unités et bâtiments ennemis. Détaillez pour voir guerrières, magie et tourelles.
 [stat damage taken]
-
+Dégâts subis
 [stat damage taken about]
-
+Dégâts infligés par l'ennemi aux unités et bâtiments de la colonie.
 [stat damage traded]
-
+Bilan des dégâts
 [stat damage traded about]
-
+Dégâts infligés moins dégâts subis. Au-dessus de zéro, la colonie gagnait ses combats.
 [stat combat deaths]
-
+Unités tuées au combat
 [stat combat deaths about]
-
+Unités de cette colonie tuées par l'ennemi. Détaillez pour voir ouvrières, exploratrices et guerrières séparément.
 [stat accuracy]
-
+Tirs réussis
 [stat accuracy about]
-
+La part des tirs des tourelles et des exploratrices de la colonie qui ont touché leur cible.
 [stat training]
-
+Formation
 [stat training about]
-
+Visites d'unités dans les écoles, camps d'entraînement, pistes de course et piscines pour apprendre une compétence.
 [stat skills]
-
+Compétences acquises
 [stat skills about]
-
+Niveaux de compétence gagnés par les unités de la colonie grâce à la formation.
 [stat growth nearby]
-
+Pousse des ressources près de la colonie
 [stat growth nearby about]
-
+Combien le blé, le bois et les autres ressources ont poussé à moins de 32 cases des bâtiments de la colonie, en points de croissance et non en charges. Détaillez pour voir à quelle distance elles ont poussé.
 [stat growth map]
-
+Pousse des ressources sur la carte
 [stat growth map about]
-
+Combien les ressources ont poussé partout sur la carte, en points de croissance et non en charges. C'est pareil pour toutes les colonies.
 [stat stranded]
-
+Unités bloquées
 [stat stranded about]
-
+Unités coincées sans aucune case libre où avancer.
 [stat cleared]
-
+Ressources défrichées
 [stat cleared about]
-
+Ressources retirées par les ouvrières dans les zones de défrichage pour faire de la place.
 [stat prestige]
-
+Prestige
 [stat prestige about]
-
+Le prestige de la colonie, gagné grâce aux bâtiments de niveau maximal. Une partie avec un objectif de prestige se termine quand il est atteint.
 [stat band combat]
-
+Combats
 [stat band starvation]
-
+Famine
 [stat band clearing]
-
+Blessures de défrichage
 [stat band trapped]
-
+Emprisonnement
 [stat band other]
-
+Autre
 [stat band starving]
-
+Presque vide
 [stat band hungry]
-
+Basse
 [stat band peckish]
-
+À moitié pleine
 [stat band fed]
-
+Bien nourrie
 [stat band critical]
-
+Critique
 [stat band wounded]
-
+Blessée
 [stat band hurt]
-
+Touchée
 [stat band healthy]
-
+En bonne santé
 [stat band weakening]
-
+S'affaiblit
 [stat band looking]
-
+Cherche une auberge
 [stat band eating]
-
+Mange
 [stat band healing]
-
+En soins
 [stat band meals]
-
+Repas
 [stat band new units]
-
+Nouvelles unités
 [stat band ammunition]
-
+Munitions
 [stat band construction]
-
+Nouveaux bâtiments
 [stat band upgrades]
-
+Améliorations
 [stat band built]
-
+Construits
 [stat band upgraded]
-
+Améliorés
 [stat band repaired]
-
+Réparés
 [stat band destroyed]
-
+Détruits
 [stat band demolished]
-
+Démolis
 [stat band melee]
-
+Guerrières
 [stat band magic]
-
+Magie
 [stat band towers]
-
+Tourelles
 [stat band within 8]
-
+À moins de 8 cases
 [stat band 8 to 16]
-
+De 8 à 16 cases
 [stat band 16 to 32]
-
+De 16 à 32 cases
 [stat unit units]
-
+unités
 [stat unit wheat]
-
+blé
 [stat unit meals]
-
+repas
 [stat unit hit points]
-
+points de vie
 [stat unit resources]
-
+ressources
 [stat unit buildings]
-
+bâtiments
 [stat unit strength]
-
+points
 [stat unit damage]
-
+dégâts
 [stat unit shots]
-
+tirs
 [stat unit visits]
-
+visites
 [stat unit skills]
-
+niveaux de compétence
 [stat unit prestige]
-
+points de prestige
 [stat axis percent of %0]
-
+% de %0
 [stat axis share of all teams]
-
+% de toutes les colonies
 [stat axis percent of units]
-
+% des unités de la colonie
 [stat axis %0 per minute per 100 units]
-
+%0 par minute, pour 100 unités de la colonie
 [stat axis %0 per 100 units]
-
+%0 pour 100 unités de la colonie
 [stat axis %0 per minute]
-
+%0 par minute
 [stat axis %0 so far]
-
+%0, cumul
 [stat axis %0 minute average]
-
+moyenne sur %0 minutes
 [stat view per minute]
-
+Par minute
 [stat view total]
-
+Cumul
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Par type
 [stat view percentages]
-
+En % du total
 [stat view percent of units]
-
+En % de la colonie
 [stat view per 100 units]
-
+Selon la taille de la colonie
 [stat view share]
-
+Part de toutes les colonies
 [stat view highlight none]
-
+Surligner : rien
 [stat column peak units]
-
+Unités max
 [stat column born]
-
+Nées
 [stat column lost]
-
+Perdues
 [stat column wheat]
-
+Blé
 [stat column damage dealt]
-
+Dégâts infligés
 [stat column damage taken]
-
+Dégâts subis
 [stat column built]
-
+Construits
 [stat column buildings lost]
-
+Bâtiments perdus
 [stat column prestige]
-
+Prestige
 [stat marker wiped out]
-
+dernière unité perdue
 [stat marker first combat death]
-
+première unité tuée au combat
 [stat marker first building destroyed]
-
+premier bâtiment détruit
 [stat not recorded for this match]
-
+Cette statistique n'a pas été enregistrée pour cette partie.
 [results reason beyond doubt]
-
+Le résultat ne faisait plus aucun doute.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Colonie
 [stat page %0 of %1]
-
+%0 sur %1  >
 [stat band workers]
-
+Ouvrières
 [stat band explorers]
-
+Exploratrices
 [stat band warriors]
-
+Guerrières
 [stat unit deaths]
-
+morts
 [stat unit growth]
-
+croissance
 [stat view by unit type]
-
+Par type d'unité
 [stat view by state]
-
+Par état
 [stat view by resource]
-
+Par ressource
 [stat view by building]
-
+Par bâtiment
 [stat view by work]
-
+Par type de travail
 [stat view by cause]
-
+Par cause
 [stat view by weapon]
-
+Par arme
 [stat view by distance]
-
+Par distance
 [stat nothing to show]
-
+Rien à afficher : cela ne s'est pas produit dans cette partie.
 [stat %0 nothing]
-
+%0 (aucun)
 [Match]
-
+Partie
 [Time limit]
-
+Durée limite
 [Alliances can change]
-
+Alliances modifiables
 [Reveal terrain]
-
+Révéler le terrain
 [Starting unit level]
-
+Niveau initial des unités
 [Starting stockpile]
-
+Réserve initiale
 [Regrowth]
-
+Repousse
 [Building strength]
-
+Solidité des bâtiments
 [Wounded units retreat]
-
+Retraite des blessés
 [Units can die]
-
+Les unités peuvent mourir
 [Unit training]
-
+Formation des unités
 [No stockpile]
-
+Aucune
 [No glass cannon]
-
+Non
 [How quickly harvested resources grow back and spread.]
-
+Vitesse à laquelle les ressources récoltées repoussent et s'étendent.
 [Units must eat to keep working.]
-
+Les unités doivent manger pour continuer à travailler.
 [Summary]
-
+Résumé
 [All rules]
-
+Toutes les règles
 [Show all rules]
-
+Afficher toutes les règles
 [Choose a ruleset]
-
+Choisir des règles
 [Reset to %0]
-
+Revenir à %0
 [ruleset one change %0]
-
+%0 + 1 modification
 [ruleset changes %0 %1]
-
+%0 + %1 modifications
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Cette partie ne peut pas se terminer. Activez la victoire par prestige ou fixez une durée limite.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Le prestige apparaît généralement après 13 à 28 minutes : une limite de 30 minutes finit souvent en égalité.
 [Blitz]
-
+Éclair
 [ruleset blitz description]
-
+Départ rapide, fin précoce
 [Gentle]
-
+Douceur
 [ruleset gentle description]
-
+Règles indulgentes pour une première partie
 [Sandbox]
-
+Bac à sable
 [ruleset sandbox description]
-
+Pas de combat, pas de famine, construction libre
 [Bloodbath]
-
+Carnage
 [ruleset bloodbath description]
-
+Armées fragiles et intrépides
 [Siege]
-
+Siège
 [ruleset siege description]
-
+Remparts et guerres longues
 [Lean years]
-
+Vaches maigres
 [ruleset lean years description]
-
+Les ressources repoussent à peine
 [Gold rush]
-
+Ruée vers l'or
 [ruleset gold rush description]
-
+Seul ce qui est sur la carte existe
 [Elite ranks]
-
+Élite
 [ruleset elite ranks description]
-
+Déjà formées, sans formation possible
 [Shifting alliances]
-
+Alliances mouvantes
 [ruleset shifting alliances description]
-
+Équipes changeantes dans une course de 60 minutes
 [Probability victory]
-
+Victoire probable
 [Off (play it out)]
-
+Non (jouer jusqu'au bout)
 [95% sure]
-
+Sûre à 95 %
 [97% sure]
-
+Sûre à 97 %
 [99% sure]
-
+Sûre à 99 %
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Termine la partie quand le modèle atteint la certitude choisie. Les spectateurs voient les chances de victoire prédites dans les statistiques.
 [Changed from %0: %1]
-
+Modifié par rapport à %0 : %1
 [Combat is off, so the rules below have no effect.]
-
+Le combat est désactivé : les règles ci-dessous sont sans effet.
 [%0 more rules are at their Standard values.]
-
+%0 autres règles ont leur valeur Standard.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Les joueurs voient le terrain de la carte dès le départ ; les unités ennemies restent cachées.
 [Each team starts with extra resources in its shared pool.]
-
+Chaque équipe commence avec des ressources en plus dans sa réserve commune.
 [Units hit harder but have less HP and armor.]
-
+Les unités frappent plus fort mais ont moins de PV et d'armure.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Les équipes peuvent s'attaquer. Désactivez pour une partie pacifique.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Les unités blessées vont se soigner au lieu de combattre jusqu'à la mort.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Les unités meurent quand elles n'ont plus de PV. Désactivez pour les arrêter à 1 PV.
 [Units gain levels at schools.]
-
+Les unités gagnent des niveaux dans les écoles.
 [stat group work]
-
+Temps des ouvrières
 [stat worker time]
-
+Emploi du temps des ouvrières
 [stat worker time about]
-
+Ce que faisaient les ouvrières de la colonie, à chaque instant : travail pour un bâtiment, travail à un drapeau, formation, repas, soins, attente affamée ou blessée faute d'auberge ou d'hôpital libre, ou inactivité. Une colonie en bonne santé garde la plupart de ses ouvrières au travail, peu d'inactives et aucune en attente.
 [stat idle workers]
-
+Ouvrières inactives
 [stat idle workers about]
-
+La part du temps des ouvrières passé sans rien à faire. Une valeur élevée signifie plus d'ouvrières que de travail ; proche de zéro, toutes les ouvrières sont occupées et des tâches attendent peut-être.
 [stat work by job]
-
+Sur quoi travaillaient les ouvrières
 [stat work by job about]
-
+Combien d'ouvrières approvisionnaient chaque type de bâtiment : ruches (pour créer des unités), auberges (pour préparer des repas), bâtiments en construction ou en amélioration, ou autres bâtiments comme tourelles, écoles et camps d'entraînement.
 [stat haul distance]
-
+Distance aux ressources
 [stat haul distance about]
-
+La distance moyenne, en cases de carte à vol d'oiseau, entre une ouvrière qui récolte et le bâtiment qu'elle approvisionne.
 [stat hauling]
-
+Aller chercher et transporter
 [stat hauling about]
-
+Comment les ouvrières approvisionnant des bâtiments se répartissaient entre marcher vers une ressource, la récolter, la rapporter, et la livrer ou attendre une ressource accessible. La marche domine : plus les ressources sont proches, plus le travail avance.
 [stat eating time]
-
+Ouvrières allant manger
 [stat eating time about]
-
+Combien d'ouvrières avaient quitté le travail pour manger : en route vers une auberge, en train d'y manger, ou affamées sans auberge pour les accueillir. Des ouvrières sans auberge signifient que la colonie a dépassé la capacité de ses auberges ou de leur nourriture.
 [stat inn distance]
-
+Distance à l'auberge
 [stat inn distance about]
-
+La distance moyenne, sur leur trajet, entre les ouvrières affamées et l'auberge visée, en cases de carte à vol d'oiseau. Un aller-retour fait environ le double. Une valeur élevée signifie que les auberges sont loin des lieux de travail.
 [stat warriors]
-
+Guerrières
 [stat warriors about]
-
+Combien de guerrières avait la colonie. Détaillez pour voir combien étaient près de chez elles, près d'une colonie ennemie ou en terrain découvert. Le terrain proche des deux colonies compte comme chez soi.
 [stat warrior level]
-
+Niveau d'attaque moyen des guerrières
 [stat warrior level about]
-
+Le niveau d'attaque moyen des guerrières de la colonie, vitesse et force d'attaque comptant à parts égales, sur l'échelle de 1 à 4 du jeu. Les camps d'entraînement l'augmentent ; les nouvelles guerrières non formées le font baisser.
 [stat warrior duties]
-
+Ce que faisaient les guerrières
 [stat warrior duties about]
-
+Comment les guerrières de la colonie se répartissaient entre celles envoyées à un drapeau de guerre, celles assez blessées pour quitter le combat vers un hôpital (y compris celles en soins), et celles libres.
 [stat intruders]
-
+Guerrières ennemies chez soi
 [stat intruders about]
-
+Combien de guerrières ennemies étaient à moins de 16 cases des bâtiments de la colonie. Quand deux colonies sont proches, chacune compte les défenseurs de l'autre.
 [stat home defence]
-
+Marge de défense du territoire
 [stat home defence about]
-
+La force des guerrières de la colonie près de ses bâtiments moins celle des guerrières ennemies présentes, en comptant chaque guerrière et chacun de ses niveaux d'attaque. Sous zéro, la colonie était dominée chez elle.
 [stat combat death places]
-
+Lieux des pertes au combat
 [stat combat death places about]
-
+Où se trouvaient les unités de la colonie quand elles ont été tuées : près de ses propres bâtiments, près des bâtiments d'un ennemi, ou en terrain découvert entre les colonies. Des pertes chez soi signifient que la colonie était attaquée ; des pertes chez l'ennemi, qu'elle attaquait. Le terrain proche des deux colonies compte comme chez soi.
 [stat band working]
-
+Au travail
 [stat band flag work]
-
+À un drapeau
 [stat band idle]
-
+Inactives
 [stat band training]
-
+En formation
 [stat band unserved]
-
+Ni auberge ni hôpital libre
 [stat band swarms]
-
+Ruches
 [stat band inns]
-
+Auberges
 [stat band sites]
-
+Construction et amélioration
 [stat band other buildings]
-
+Autres bâtiments
 [stat band to resource]
-
+Vers une ressource
 [stat band harvesting]
-
+Récolte
 [stat band carrying]
-
+Retour chargé
 [stat band delivering]
-
+Livraison ou attente
 [stat band walking to inn]
-
+En route vers une auberge
 [stat band no inn]
-
+Aucune auberge libre
 [stat band at home]
-
+Chez soi
 [stat band at enemy]
-
+Chez l'ennemi
 [stat band in the open]
-
+En terrain découvert
 [stat band war flag]
-
+Sur un drapeau de guerre
 [stat band seeking healing]
-
+Cherche des soins
 [stat band free]
-
+Libres
 [stat unit workers]
-
+ouvrières
 [stat unit worker time]
-
+temps des ouvrières
 [stat unit working workers]
-
+ouvrières approvisionnant des bâtiments
 [stat unit squares]
-
+cases
 [stat unit warriors]
-
+guerrières
 [stat unit attack level]
-
+niveau d'attaque
 [stat unit enemy warriors]
-
+guerrières ennemies
 [stat unit strength count]
-
+force
 [stat view by place]
-
+Par lieu

@@ -1,15 +1,15 @@
 [AI strategy]
 Strategija UI
 [start recording]
-
+Začni snemanje
 [stop recording]
-
+Ustavi snemanje
 [finalizing recording]
-
+Dokončevanje posnetka …
 [AIMaxima-Summary]
 Uravnoteži vzdržno rast in urjenje, nato zbira vojske v valove.
 [AIMaxima-Profile]
-Osnovna strategija: Hrano, delavce, rojstva, urjenje, gradnjo in boj obravnava kot tekmujoče potrebe. Velikost vojske delno prilagodi ocenjeni sovražnikovi moči, nato jo poskuša učinkovito pripeljati v boj.\n\nGospodarstvo in razvoj: Rojstva načrtuje glede na hrano in delovno silo, ohranja prosti čas za urjenje in neha dodajati odvečne delavce, ko potrebuje vojaško proizvodnjo. Prilagaja zmogljivost urjenja in preprečuje, da bi nadgradnje izključile preveč infrastrukture.\n\nIzvidovanje in odločitve: Sovražne sile ocenjuje iz vidnih enot in zapomnjenih opažanj s prilagojenim modelom. Cilji so odvisni od vrednosti, razdalje, stolpov, izpostavljenih delavcev in vztrajanja pri cilju. Odprave po sadje podpirajo raznolikost hrane in prestope.\n\nNapad in obramba: Vojake rezervira za urjenje in obrambo, nato pred pošiljanjem valov zbere primerne kopenske sile ob lastni prehranski infrastrukturi. Uporablja lokalne obrambne odzive in ocenjuje dostope do kolonije.\n\nKo se napadi ustavijo: Po štirih zaporednih neuspehih pri dostavi valov preklopi na stalno okrepljene napadalne zastave. Tudi amfibijski napadi lahko uporabljajo neprekinjene okrepitve. Ta nadomestni način ne reši vsake zapore, preden nastane zbirališče.\n\nPrimerjava z drugimi AI: Tesneje povezuje hrano, urjenje, podatke o sovražniku in razporejanje. Cabino poudarja več napadov na stavbe; Maxima ocenjene potrebe in dostavo zbranih sil.\n\nPrednosti in slabosti: Vzdržuje rast in nadomeščanje vojske ter se prilagaja prehranskemu pritisku in opaženim grožnjam. Potrebuje hrano, zmogljivost urjenja in odprt zbirni prostor; zastoji in dolge poti lahko ovirajo dostavo sil.\n\nKako se zoperstaviti: Borite se za izpostavljeno pšenico, restavracije in vojašnice, preden se zberejo valovi. Oskrbovane branilce držite skupaj in prekinjajte poti okrepitev. Po prvem valu pričakujte ponoven pritisk.\n\nIzvidovanje: Ocene sil uporabljajo opažanja in njihovo zgodovino, ne skritih skupnih števil sovražnih enot.
+Osnovna strategija: Hrano, delavce, rojstva, urjenje, gradnjo in boj obravnava kot tekmujoče potrebe. Velikost vojske delno prilagodi ocenjeni sovražnikovi moči, nato jo poskuša učinkovito pripeljati v boj.\n\nGospodarstvo in razvoj: Rojstva načrtuje glede na hrano in delovno silo, ohranja prosti čas za urjenje in neha dodajati odvečne delavce, ko potrebuje vojaško proizvodnjo. Prilagaja zmogljivost urjenja in preprečuje, da bi nadgradnje izključile preveč infrastrukture.\n\nIzvidovanje in odločitve: Sovražne sile ocenjuje iz vidnih enot in zapomnjenih opažanj s prilagojenim modelom. Cilji so odvisni od vrednosti, razdalje, stolpov, izpostavljenih delavcev in vztrajanja pri cilju. Odprave po sadje podpirajo raznolikost hrane in prestope.\n\nNapad in obramba: Vojake rezervira za urjenje in obrambo, nato pred pošiljanjem valov zbere primerne kopenske sile ob lastni prehranski infrastrukturi. Uporablja lokalne obrambne odzive in ocenjuje dostope do kolonije.\n\nKo se napadi ustavijo: Po štirih zaporednih neuspehih pri dostavi valov preklopi na stalno okrepljene napadalne zastave. Tudi amfibijski napadi lahko uporabljajo neprekinjene okrepitve. Ta nadomestni način ne reši vsake zapore, preden nastane zbirališče.\n\nPrimerjava z drugimi UI: Tesneje povezuje hrano, urjenje, podatke o sovražniku in razporejanje. Cabino poudarja več napadov na zgradbe; Maxima ocenjene potrebe in dostavo zbranih sil.\n\nPrednosti in slabosti: Vzdržuje rast in nadomeščanje vojske ter se prilagaja prehranskemu pritisku in opaženim grožnjam. Potrebuje hrano, zmogljivost urjenja in odprt zbirni prostor; zastoji in dolge poti lahko ovirajo dostavo sil.\n\nKako se zoperstaviti: Borite se za izpostavljeno pšenico, restavracije in vojašnice, preden se zberejo valovi. Oskrbovane branilce držite skupaj in prekinjajte poti okrepitev. Po prvem valu pričakujte ponoven pritisk.\n\nIzvidovanje: Ocene sil uporabljajo opažanja in njihovo zgodovino, ne skritih skupnih števil sovražnih enot.
 [%0 has left the game]
 %0 je zapustil igro.
 [%0 level %1]
@@ -61,9 +61,9 @@ UI
 [AICastor-Description]
 Gradi in uri vojsko, rast pa prilagaja zalogam hrane.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
-Povečuje prebivalstvo, uri bojevnike in nato napade.
+Povečuje prebivalstvo, uri vojake in nato napade.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -73,15 +73,15 @@ Brez UI
 [AINumbi-Description]
 Prizanesljiv nasprotnik, ki se vseeno širi in napada.
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
-Širi se in pridobiva tuje enote brez ustvarjanja bojevnikov.
+Širi se in pridobiva tuje enote brez ustvarjanja vojakov.
 [AIEcono]
 Econo
 [AIWarrush-Description]
 Hitri napadi preverijo vašo zgodnjo obrambo.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 Spreten graditelj, ki uporablja izurjene napadalne sile.
 [AICabino]
@@ -91,7 +91,7 @@ JavaScript
 [AIJavaScript-Description]
 Krmilnik, ki uporablja vgrajen modul izvorne kode JavaScript.
 [Alga]
-Alga
+Alge
 [algae]
 alge
 [alliances]
@@ -103,13 +103,13 @@ in
 [any explorer]
 katerikoli raziskovalec
 [are dying hungry]
-umirajo od lakote
+s hudo lakoto
 [are hungry]
-so lačni
+z lakoto
 [are ok]
-so v redu
+v redu
 [are wonded]
-so ranjeni
+s poškodbami
 [armor]
 Oklep
 [assigned]
@@ -125,7 +125,7 @@ Zvok
 [auto save]
 Samodejno shrani
 [available lan games]
-Razpoložljive omrežne igre
+Razpoložljive lokalne igre
 [away:]
 odsoten:
 [Back]
@@ -133,7 +133,7 @@ Nazaj
 [backspace]
 Backspace
 [barracks explanation 2]
-tvojih vojakov
+vaših vojakov
 [barracks explanation]
 Izboljša bojno raven
 [barracks]
@@ -159,7 +159,7 @@ Shift + vlečenje = pravokotnik
 [Building Tool Line Explanation]
 Ctrl + vlečenje = črta
 [Buildings]
-Stavbe
+Zgradbe
 [Bullets]
 Naboji
 [campaign editor]
@@ -185,7 +185,7 @@ Prekliči
 [caps lock]
 Caps Lock
 [carry]
-Nosi :
+Nosi:
 [Change Area Name]
 Spremeni ime območja
 [Cherry]
@@ -195,7 +195,7 @@ Izberi kampanjo
 [choose game]
 Izberi igro
 [choose map]
-Izberi mapo
+Izberi zemljevid
 [clear area]
 Območje čiščenja
 [farm area]
@@ -225,7 +225,7 @@ Vzpostavi povezavo
 [connecting to game]
 Povezovanje z igro
 [connecting to]
-Povezujem na
+Povezovanje z
 [Construction Site Defaults]
 Privzete nastavitve gradbišč
 [Continue playing]
@@ -239,9 +239,9 @@ Pšenica
 [crater lakes terrain]
 Kraterska jezera
 [create map]
-Ustvari mapo
+Ustvari zemljevid
 [credits]
-Zasluge
+Avtorji
 [ctrl - line]
 Ctrl – črta
 [current speed]
@@ -259,11 +259,11 @@ Zmanjšaj število dodeljenih enot
 [Defeat Your Oppenents]
 Premagajte nasprotnike
 [defencetower explanation 2]
-tako enote kot stavbe
+tako enote kot zgradbe
 [defencetower explanation]
 Napada bližnje sovražnike
 [defencetower]
-Obrambni Stolp
+Obrambni stolp
 [Defense Map]
 Zemljevid obrambe
 [Defense]
@@ -291,7 +291,7 @@ Uredi zemljevid
 [editing map]
 Urejanje zemljevida
 [editor shortcuts]
-Za urejevalnik
+Bližnjice urejevalnika
 [editor]
 Urejevalnik
 [end]
@@ -357,11 +357,11 @@ Megla vojne
 [food]
 Hrana
 [forbidden area]
-Prepovedano področje
+Prepovedano območje
 [Free]
 Zdrave
 [free]
-prost/ih
+brez dela
 [from:]
 od:
 [fruit]
@@ -381,23 +381,23 @@ Pojdi na dogodek
 [go to home]
 Pojdi v domačo bazo
 [goto main menu]
-Nazaj v glavni menu
+Nazaj v glavni meni
 [grass]
 Trava
 [ground attack]
 napad na tleh
 [guard area]
-Nadzorovano področje
+Stražno območje
 [GUIMapPreview text 0]
 Izberite
 [GUIMapPreview text 1]
 zemljevid
 [handmade map]
-Ročno izdelana mapa
+Ročno izdelan zemljevid
 [Happyness]
 Zadovoljstvo
 [hard pause]
-Povsem začasno ustavi
+Popoln premor
 [Harvest]
 Žetev
 [high priority]
@@ -409,7 +409,7 @@ Home
 [hospital explanation 2]
 
 [hospital explanation]
-Zdravi tvoje enote
+Zdravi vaše enote
 [hospital]
 Bolnišnica
 [host]
@@ -431,7 +431,7 @@ Povečaj število dodeljenih enot
 [inn explanation 2]
 
 [inn explanation]
-Nahranjuje tvoje enote
+Hrani vaše enote
 [inn]
 Restavracija
 [insert]
@@ -449,13 +449,13 @@ Izberi naslednji predmet
 [jobs]
 opravila
 [join a game]
-Vključi se v igro
+Pridruži se igri
 [keyboard settings]
 Nastavitve tipkovnice
 [lan]
-LAN Igra
+Igra v LAN
 [language incomplete]
-Slovenščina - Incomplete
+Slovenščina – nepopolno
 [language-code]
 si
 [language-tr]
@@ -487,7 +487,7 @@ Naloži
 [look around]
 Ozri se naokrog
 [Lost : %0 has more prestige than you]
-Izgubil si : %0 ima več ugleda kot ti
+Poraz: %0 ima več ugleda kot vi
 [Lost : your colony is dead]
 Poraz: vaša kolonija je izumrla
 [low priority]
@@ -507,9 +507,9 @@ Ime
 [map script]
 Skript zemljevida
 [map size x]
-Širina mape
+Širina zemljevida
 [map size y]
-Višina mape
+Višina zemljevida
 [mark map]
 Označi mesto za zaveznike
 [market explanation 2]
@@ -523,9 +523,9 @@ srednja
 [meta %0]
 meta-%0
 [Min required level:]
-Najnižja zahtevana stopnja
+Najnižja zahtevana stopnja:
 [Minimum Level To Flag]
-Najnižja raven enot
+Najnižja stopnja enot
 [Music volume]
 Glasnost glasbe
 [Mute]
@@ -535,7 +535,7 @@ utišaj
 [new campaign]
 Nova kampanja
 [new map]
-Nova
+Nov zemljevid
 [no fullscreen]
 * samo v okenskem načinu
 [No Hints]
@@ -559,7 +559,7 @@ Num Lock
 [objectives]
 Cilji
 [of which]
-od katerih
+od tega
 [ok]
 Potrdi
 [old islands terrain]
@@ -611,7 +611,7 @@ Ime igralca
 [players]
 Igralci
 [please wait]
-Prosim počakaj
+Počakajte
 [power]
 vklop
 [press space]
@@ -629,7 +629,7 @@ Print Screen
 [priority]
 Prednost
 [Prune]
-Slive
+Sliva
 [quit the editor]
 Zapusti urejevalnik
 [quit the game]
@@ -639,7 +639,7 @@ Končaj predvajanje
 [quit]
 Izhod
 [racetrack explanation 2]
-tvojih enot
+vaših enot
 [racetrack explanation]
 Izboljša hitrost hoje
 [racetrack]
@@ -667,7 +667,7 @@ Obnovi privzete bližnjice
 [return to editor]
 Vrni se v urejevalnik
 [return to game]
-Vrnitev v igro
+Vrni se v igro
 [return to replay]
 Vrni se k predvajanju
 [return]
@@ -685,7 +685,7 @@ Reka
 [sand]
 Pesek
 [save before quit?]
-Želiš shraniti preden odideš?
+Želite pred izhodom shraniti igro?
 [save game]
 Shrani igro
 [save map]
@@ -697,7 +697,7 @@ Shrani skript
 [Save]
 Shrani
 [school explanation 2]
-tvojih delavcev
+vaših delavcev
 [school explanation]
 Izboljša stopnjo grajenja
 [school]
@@ -711,17 +711,17 @@ Omogoči kolešček miške
 [Secondary Objectives]
 Stranski
 [seeking a job]
-iščejo službo
+v iskanju dela
 [seeking]
-Iščem
+iščejo
 [select barracks building]
-Izberi stavbo: Vojašnica
+Izberi zgradbo: Vojašnica
 [select clearingflag]
 Izberi zastavo čiščenja
 [select construct barracks]
 Izberi gradnjo: Vojašnica
 [select construct defencetower]
-Izberi gradnjo: Obrambni Stolp
+Izberi gradnjo: Obrambni stolp
 [select construct hospital]
 Izberi gradnjo: Bolnišnica
 [select construct inn]
@@ -743,11 +743,11 @@ Izberi orodje za brisanje
 [select explorationflag]
 Izberi zastavo: Raziskovalna zastava
 [select hospital building]
-Izberi stavbo: Bolnišnica
+Izberi zgradbo: Bolnišnica
 [select inn building]
-Izberi stavbo: Restavracija
+Izberi zgradbo: Restavracija
 [select market building]
-Izberi stavbo: Tržnica
+Izberi zgradbo: Tržnica
 [select place clearing area]
 Postavi območje: Območje čiščenja
 [select place farm area]
@@ -763,17 +763,17 @@ Označi stražno območje
 [select place warflag]
 Postavi zastavo: Vojaška zastava
 [select racetrack building]
-Izberi stavbo: Tekaška steza
+Izberi zgradbo: Tekaška steza
 [select school building]
-Izberi stavbo: Šola
+Izberi zgradbo: Šola
 [select swarm building]
-Izberi stavbo: Porodnišnica
+Izberi zgradbo: Porodnišnica
 [select swimmingpool building]
-Izberi stavbo: Bazen
+Izberi zgradbo: Bazen
 [select tower building]
-Izberi stavbo: Obrambni Stolp
+Izberi zgradbo: Obrambni stolp
 [select wall building]
-Izberi stavbo: Kamniti zid
+Izberi zgradbo: Kamniti zid
 [select warflag]
 Izberi zastavo: Vojaška zastava
 [settings]
@@ -821,13 +821,13 @@ Kamenje
 [stone]
 kamen
 [stonewall explanation 2]
-obrambni sistem
+obrambni element
 [stonewall explanation]
-Pasiven
+Pasivni
 [stonewall]
 Kamniti zid
 [svr hostname]
-Strežnikovo ime
+Ime strežnika
 [swamp terrain]
 Močvirje
 [swarm explanation 2]
@@ -839,7 +839,7 @@ Porodnišnica
 [Swim]
 Plavanje
 [swimmingpool explanation 2]
-tvojih enot
+vaših enot
 [swimmingpool explanation]
 Poveča hitrost plavanja
 [swimmingpool]
@@ -863,7 +863,7 @@ Izberi čopič za območja: 7
 [switch to area brush 8]
 Izberi čopič za območja: 8
 [switch to building view]
-Prikaži stavbe
+Prikaži zgradbe
 [switch to flag view]
 Prikaži zastave
 [switch to removing areas]
@@ -887,11 +887,11 @@ Vojašnica je zgrajena
 [the barracks is under attack]
 Vojašnica je napadena
 [the building is finished]
-Stavba je zgrajena
+Zgradba je zgrajena
 [the building is under attack]
-Stavba je napadena
+Zgradba je napadena
 [the clearingflag is finished]
-Zastava čiščenja je pripravljena
+Zastava čiščenja je postavljena
 [the clearingflag is under attack]
 Zastava čiščenja je napadena
 [the defencetower is finished]
@@ -899,7 +899,7 @@ Obrambni stolp je zgrajen
 [the defencetower is under attack]
 Obrambni stolp je napaden.
 [the explorationflag is finished]
-Raziskovalna zastava je zgrajena
+Raziskovalna zastava je postavljena
 [the explorationflag is under attack]
 Raziskovalna zastava je napadena
 [The game has not been finished]
@@ -933,9 +933,9 @@ Posnetki iger
 [the school is under attack]
 Šola je napadena
 [the stonewall is finished]
-Kamniti zid je zgrajen
+Odsek zidu je zgrajen
 [the stonewall is under attack]
-Kamniti zid je napaden
+Sovražnik je pred vašim obzidjem
 [the swarm is finished]
 Porodnišnica je zgrajena
 [the swarm is under attack]
@@ -945,7 +945,7 @@ Bazen je zgrajen
 [the swimmingpool is under attack]
 Bazen je napaden
 [the warflag is finished]
-Vojaška zastava je zgrajena
+Vojaška zastava je postavljena
 [the warflag is under attack]
 Vojaška zastava je napadena
 [time]
@@ -999,7 +999,7 @@ Enote
 [unlocked at start]
 Odklenjeno ob začetku
 [unlocked by]
-Odklene dokončanje
+Odklene ga
 [Unnamed Area]
 {Neimenovano območje}
 [up]
@@ -1019,9 +1019,9 @@ Prikaži zgodovino
 [Voice volume]
 Glasnost govora
 [waiting for %0]
-Čakam %0
+Čakanje na %0
 [waiting for key]
-čakanje na tipko...
+čakanje na tipko …
 [Walk]
 Hoja
 [warflag explanation 2]
@@ -1031,7 +1031,7 @@ Privlači vojake
 [warflag]
 Vojaška zastava
 [Warning, you need to reboot the game for changes to take effect]
-Pozor, da bi nastavitve stopile v veljavo moraš ponovno zagnati igro
+Pozor: spremembe začnejo veljati po ponovnem zagonu igre
 [Warrior Ratio]
 Delež vojakov
 [Warrior]
@@ -1047,11 +1047,11 @@ Voda
 [Wheat]
 Pšenica
 [Won : you defeated your opponents]
-Zmagal si : premagal si vse nasprotnike
+Zmaga: premagali ste nasprotnike
 [Won : you have the most prestige]
-Zmagal si : imaš najvišji ugled
+Zmaga: imate največ ugleda
 [Won : your ally %0 has the most prestige]
-Zmagal si : tvoj zaveznik %0 ima najvišji ugled
+Zmaga: vaš zaveznik %0 ima največ ugleda
 [Wood]
 Les
 [wood]
@@ -1069,15 +1069,15 @@ ranjen
 [Yes]
 Da
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metastrežnik je zavrnil povezavo ker je verzija globulation2 prestara.
+Metastrežnik YOG je zavrnil povezavo, ker je vaš odjemalec Globulation 2 zastarel. Za igro na spletu si najnovejšo različico prenesite z www.globulation2.org.
 [you have lost]
-Izgubil si!
+Izgubili ste!
 [you have won]
-Zmagal si!
+Zmagali ste!
 [You where kicked from the game]
 Izključeni ste bili iz igre
 [Your %0 are under attack]
-Napadena je vaša enota: %0
+Pod napadom: %0
 [Your unit got converted to %0's team]
 Vaša enota je prestopila v ekipo igralca %0
 [game speed]
@@ -1093,9 +1093,9 @@ Hitrost: 1x (več igralcev)
 [game speed help]
 Samo za enega igralca in posnetke. Igra za več igralcev poteka pri hitrosti 1x.
 [AICortex-Description]
-Strnjeni valovi bojevnikov s podporo hrane in zdravljenja.
+Strnjeni valovi vojakov s podporo hrane in zdravljenja.
 [AIMaxima-Description]
-Izviduje, razvija oskrbo s hrano in zbira valove bojevnikov.
+Izviduje, razvija oskrbo s hrano in zbira valove vojakov.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1113,35 +1113,35 @@ Znotraj: %0
 [AI strategy & counterplay]
 Strategija UI in protiigra
 [AICastor-Profile]
-Osnovna strategija: Vlaga v produktivno kolonijo in tehnologijo, preden začne večje napade. Naselbino razvija z gradbenimi projekti po prednostnem vrstnem redu; razvoj, vojaška infrastruktura in čas povečujejo pripravljenost na vojno.\n\nGospodarstvo in razvoj: Preučuje navlaženost, rast pšenice, ovire in doseg delavcev. Poleg proizvodnje upravlja širitev oskrbe s hrano, nadgradnje in obrambo.\n\nNapad in obramba: Ocenjuje napadalno moč zdravih vojakov in začne napade ob izpolnjenih pogojih glede moči ali časa. Daje prednost že opaženim dostopnim stavbam, zlasti vojašnicam in šolam, ter premika napadalne zastave k dragocenim ciljem.\n\nPrimerjava z drugimi AI: Bolj premišljeno kot Numbi upošteva teren in vrednost ciljev. Je potrpežljivejši kot Warrush ter zamenja zgodnji pritisk za razvito bazo in močnejše enote.\n\nPrednosti in slabosti: Obsežno načrtovanje infrastrukture in pomembni vojaški cilji dajejo napadom namen. Priprave zahtevajo čas, zato se lahko hitrejši nasprotniki borijo za vire, preden je glavna vojska pripravljena.\n\nKako se zoperstaviti: Zgodaj tekmujte za območja širitve. Poleg hrane zaščitite vojašnice in šole ter ob napadu na razvito naselbino ohranite rezervo.
+Osnovna strategija: Vlaga v produktivno kolonijo in tehnologijo, preden začne večje napade. Naselbino razvija z gradbenimi projekti po prednostnem vrstnem redu; razvoj, vojaška infrastruktura in čas povečujejo pripravljenost na vojno.\n\nGospodarstvo in razvoj: Preučuje navlaženost, rast pšenice, ovire in doseg delavcev. Poleg proizvodnje upravlja širitev oskrbe s hrano, nadgradnje in obrambo.\n\nNapad in obramba: Ocenjuje napadalno moč zdravih vojakov in začne napade ob izpolnjenih pogojih glede moči ali časa. Daje prednost že opaženim dostopnim zgradbam, zlasti vojašnicam in šolam, ter premika napadalne zastave k dragocenim ciljem.\n\nPrimerjava z drugimi UI: Bolj premišljeno kot Numbi upošteva teren in vrednost ciljev. Je potrpežljivejši kot Warrush ter zamenja zgodnji pritisk za razvito bazo in močnejše enote.\n\nPrednosti in slabosti: Obsežno načrtovanje infrastrukture in pomembni vojaški cilji dajejo napadom namen. Priprave zahtevajo čas, zato se lahko hitrejši nasprotniki borijo za surovine, preden je glavna vojska pripravljena.\n\nKako se zoperstaviti: Zgodaj tekmujte za območja širitve. Poleg hrane zaščitite vojašnice in šole ter ob napadu na razvito naselbino ohranite rezervo.
 [AICastor-Summary]
-Razvije utrjeno kolonijo, nato napade vojaške in znanstvene stavbe.
+Razvije utrjeno kolonijo, nato napade vojaške in znanstvene zgradbe.
 [AICortex-Profile]
-Osnovna strategija: S prednostnimi nalogami, ki se odzivajo na razmere, razvija delujoče gospodarstvo in proste delavce usmerja v hrano, tehnologijo in vojaški pritisk. Običajno odločanje temelji na pravilih; poskusi z naučenim odločanjem zahtevajo ločeno nastavitev.\n\nGospodarstvo in razvoj: Proizvodnjo delavcev prilagaja potrebam po osebju in ohranja rojevanje. Težave s hrano omejijo porabo za širitev in tehnologijo. Doda plavanje, ko dostop čez vodo občutno pomaga.\n\nNapad in obramba: Napade pripravlja glede na opaženo sovražnikovo tehnologijo in razpoložljive enote. Pohodi čez vodo potrebujejo vojake, ki znajo plavati. Dolge pohode podpira s prednjimi restavracijami in bolnišnicami ter lahko pred napredovanjem zbere sile.\n\nVztrajnost in nujne razmere: Ofenzivo nadaljuje kljub manjšim nadlegovanjem, namesto da bi se stalno vračal domov. Resni napadi lahko prikličejo branilce. Zgodnje krize lahko sprožijo proizvodnjo samo vojakov in gradnjo bolnišnice; lakota lahko sproži manjši obupan napad.\n\nPrimerjava z drugimi AI: Bolj kot Warrush skrbi za prednjo podporo. Maxima gre dlje pri načrtovanju vzdržnega rojevanja, urjenja in razporejanja glede na ocenjeno sovražnikovo moč.\n\nPrednosti in slabosti: Povezuje pritisk s hrano, zdravljenjem in dosegljivostjo. Prednja infrastruktura mora ostati oskrbljena, nadaljnja rojstva pa lahko dodatno obremenjujejo omejeno hrano. Nujne prednostne naloge silijo v izbiro med rastjo in preživetjem.\n\nKako se zoperstaviti: Borite se za prednje restavracije, bolnišnice in pšenico. Branilce držite skupaj proti prodoru; manjše nadlegovanje ga morda ne bo prepričalo v umik.\n\nIzvidovanje: Uporablja odkrite sovražnikove stavbe in opažene sovražnikove enote.
+Osnovna strategija: S prednostnimi nalogami, ki se odzivajo na razmere, razvija delujoče gospodarstvo in proste delavce usmerja v hrano, tehnologijo in vojaški pritisk. Običajno odločanje temelji na pravilih; poskusi z naučenim odločanjem zahtevajo ločeno nastavitev.\n\nGospodarstvo in razvoj: Proizvodnjo delavcev prilagaja potrebam po osebju in ohranja rojevanje. Težave s hrano omejijo porabo za širitev in tehnologijo. Doda plavanje, ko dostop čez vodo občutno pomaga.\n\nNapad in obramba: Napade pripravlja glede na opaženo sovražnikovo tehnologijo in razpoložljive enote. Pohodi čez vodo potrebujejo vojake, ki znajo plavati. Dolge pohode podpira s prednjimi restavracijami in bolnišnicami ter lahko pred napredovanjem zbere sile.\n\nVztrajnost in nujne razmere: Ofenzivo nadaljuje kljub manjšim nadlegovanjem, namesto da bi se stalno vračal domov. Resni napadi lahko prikličejo branilce. Zgodnje krize lahko sprožijo proizvodnjo samo vojakov in gradnjo bolnišnice; lakota lahko sproži manjši obupan napad.\n\nPrimerjava z drugimi UI: Bolj kot Warrush skrbi za prednjo podporo. Maxima gre dlje pri načrtovanju vzdržnega rojevanja, urjenja in razporejanja glede na ocenjeno sovražnikovo moč.\n\nPrednosti in slabosti: Povezuje pritisk s hrano, zdravljenjem in dosegljivostjo. Prednja infrastruktura mora ostati oskrbljena, nadaljnja rojstva pa lahko dodatno obremenjujejo omejeno hrano. Nujne prednostne naloge silijo v izbiro med rastjo in preživetjem.\n\nKako se zoperstaviti: Borite se za prednje restavracije, bolnišnice in pšenico. Branilce držite skupaj proti prodoru; manjše nadlegovanje ga morda ne bo prepričalo v umik.\n\nIzvidovanje: Uporablja odkrite sovražnikove zgradbe in opažene sovražnikove enote.
 [AICortex-Summary]
 Vztrajne vojaške prodore podpira s prednjo oskrbo s hrano in zdravljenjem.
 [AINicowar-Profile]
-Osnovna strategija: Združuje rast, urjenje, nadgradnje in vojno s prekrivajočimi se pogoji. Lahko napada med širitvijo in ob težavah s hranjenjem preusmeri gospodarska prizadevanja v okrevanje.\n\nZačetek: Priloženi napadalni profil začne vojne priprave pri skupno petih enotah in dovoli vojno pri petih vojakih, tudi ničelne ravni. Cilja na tri napadalne zastave s po petimi vojaki. Prilagojene strateške datoteke lahko te pragove spremenijo.\n\nGospodarstvo in razvoj: Povečuje zmogljivosti za hrano in rojevanje, uri delavce, razvija plavanje in gibanje ter nadgrajuje stavbe. Prilagaja delavce pri oskrbi s hrano, se odziva na stradanje in pridobiva sadje.\n\nNapad in obramba: Naključno izbira dosegljive sovražnikove stavbe za napad. S čistilnimi zastavami lahko odpre poti, ki jih zapirajo viri. Obrambne zastave pokrivajo skupine ogroženih enot in stavb. Pozneje izurjeni raziskovalci s kopenskim napadom ciljajo skupine sovražnih enot.\n\nPrimerjava z drugimi AI: Deli zgodnjo napadalnost Warrush, a ima širši načrt nadaljevanja. V nasprotju s Cabino ne daje dosledne prednosti bolnišnicam in restavracijam.\n\nPrednosti in slabosti: Širok nabor taktik združuje zgodnji pritisk z nadaljnjim razvojem. Naključna izbira ciljev lahko troši trud za manj pomembne stavbe. Njegovi pragovi ne zagotavljajo podrobne ocene nasprotnikove bojne moči, ki jo uporablja Maxima.\n\nKako se zoperstaviti: Pričakujte zgodnji napad. Zaščitite hrano in delavce, ovirajte širitev in se pripravite na napade raziskovalcev, če doseže napredno urjenje.
+Osnovna strategija: Združuje rast, urjenje, nadgradnje in vojno s prekrivajočimi se pogoji. Lahko napada med širitvijo in ob težavah s hranjenjem preusmeri gospodarska prizadevanja v okrevanje.\n\nZačetek: Priloženi napadalni profil začne vojne priprave pri skupno petih enotah in dovoli vojno pri petih vojakih, tudi ničelne ravni. Cilja na tri napadalne zastave s po petimi vojaki. Prilagojene strateške datoteke lahko te pragove spremenijo.\n\nGospodarstvo in razvoj: Povečuje zmogljivosti za hrano in rojevanje, uri delavce, razvija plavanje in gibanje ter nadgrajuje zgradbe. Prilagaja delavce pri oskrbi s hrano, se odziva na stradanje in pridobiva sadje.\n\nNapad in obramba: Naključno izbira dosegljive sovražnikove zgradbe za napad. Z zastavami čiščenja lahko odpre poti, ki jih zapirajo surovine. Obrambne zastave pokrivajo skupine ogroženih enot in zgradb. Pozneje izurjeni raziskovalci s kopenskim napadom ciljajo skupine sovražnih enot.\n\nPrimerjava z drugimi UI: Deli zgodnjo napadalnost Warrush, a ima širši načrt nadaljevanja. V nasprotju s Cabino ne daje dosledne prednosti bolnišnicam in restavracijam.\n\nPrednosti in slabosti: Širok nabor taktik združuje zgodnji pritisk z nadaljnjim razvojem. Naključna izbira ciljev lahko troši trud za manj pomembne zgradbe. Njegovi pragovi ne zagotavljajo podrobne ocene nasprotnikove bojne moči, ki jo uporablja Maxima.\n\nKako se zoperstaviti: Pričakujte zgodnji napad. Zaščitite hrano in delavce, ovirajte širitev in se pripravite na napade raziskovalcev, če doseže napredno urjenje.
 [AINicowar-Summary]
 Zgodnji naval podpira s kmetijstvom, nadgradnjami, obrambo in napadi raziskovalcev.
 [AINone-Profile]
-Strategija: AI ne daje nobenih ukazov.\n\nPrednosti: predvidljiv, neaktiven nasprotnik za eksperimente.\n\nSlabosti: Ne širi se ali prilagaja.
+Osnovna strategija: Ne izdaja nobenih ukazov.\n\nPrednosti: Predvidljiv nedejaven nasprotnik za eksperimente.\n\nSlabosti: Se ne širi in se ne prilagaja.
 [AINone-Summary]
 Nedejavna kolonija za eksperimente.
 [AINumbi-Profile]
-Osnovna strategija: Najprej gradi oskrbo s hrano in prebivalstvo, doda zdravljenje, znanost in urjenje, nato se usmeri v vojno. Glavne faze napredujejo s časom, ne z nasprotnikovim napredkom.\n\nGospodarstvo in razvoj: Potrebe po stavbah prilagaja prebivalstvu in ocenjuje bližnjo pšenico. Poznejše faze dodajo nadgradnje, obrambo in širitev za podporo rastoči vojski.\n\nNapad in obramba: Napade, ko ima dovolj zdravih borcev ali poteče časovna omejitev. Vojne zastave postavlja na izbrane sovražnikove stavbe. Ko bojna moč preveč pade, odstrani napadalne zastave in zviša pragove za naslednji poskus.\n\nPrimerjava z drugimi AI: Bolj predvidljiv kot Castor ali Nicowar. Castor skrbneje upošteva teren in vrednost ciljev; Nicowar pritiska veliko prej.\n\nPrednosti in slabosti: Obsežna podporna infrastruktura ga lahko po nemotenem razvoju naredi nevarnega, a časovni načrt morda ne ustreza bitki. Preprosta izbira ciljev in daljši premori po izgubah olajšajo predvidevanje napadov.\n\nKako se zoperstaviti: Pritiskajte pred njegovo vojaško fazo. V zaledju svojih napadov razvijajte hrano in urjenje ter izkoristite premor po odbitem napadu.\n\nIzvidovanje: Napadalna rutina neposredno bere položaje sovražnikovih stavb brez preverjanja vidljivosti.
+Osnovna strategija: Najprej gradi oskrbo s hrano in prebivalstvo, doda zdravljenje, znanost in urjenje, nato se usmeri v vojno. Glavne faze napredujejo s časom, ne z nasprotnikovim napredkom.\n\nGospodarstvo in razvoj: Potrebe po zgradbah prilagaja prebivalstvu in ocenjuje bližnjo pšenico. Poznejše faze dodajo nadgradnje, obrambo in širitev za podporo rastoči vojski.\n\nNapad in obramba: Napade, ko ima dovolj zdravih borcev ali poteče časovna omejitev. Vojaške zastave postavlja na izbrane sovražnikove zgradbe. Ko bojna moč preveč pade, odstrani napadalne zastave in zviša pragove za naslednji poskus.\n\nPrimerjava z drugimi UI: Bolj predvidljiv kot Castor ali Nicowar. Castor skrbneje upošteva teren in vrednost ciljev; Nicowar pritiska veliko prej.\n\nPrednosti in slabosti: Obsežna podporna infrastruktura ga lahko po nemotenem razvoju naredi nevarnega, a časovni načrt morda ne ustreza bitki. Preprosta izbira ciljev in daljši premori po izgubah olajšajo predvidevanje napadov.\n\nKako se zoperstaviti: Pritiskajte pred njegovo vojaško fazo. V zaledju svojih napadov razvijajte hrano in urjenje ter izkoristite premor po odbitem napadu.\n\nIzvidovanje: Napadalna rutina neposredno bere položaje sovražnikovih zgradb brez preverjanja vidljivosti.
 [AINumbi-Summary]
 Postopoma gradi kolonijo po časovnem načrtu, nato napade s številčno močjo.
 [AIEcono-Profile]
-Osnovna strategija: Proizvaja delavce in raziskovalce, širi gospodarstvo ter s hrano in sadjem privablja sovražnikove enote. Nima običajne vojaške ofenzive.\n\nGospodarstvo in razvoj: Ob pšenici gradi restavracije in porodnišnice, dodaja izobraževanje in urjenje gibanja ter nadgrajuje infrastrukturo. Spremlja zaloge hrane in zamenja stare restavracije in porodnišnice, ko se njihov dostop do virov poslabša.\n\nKmetijstvo in prestopi: Varuje obnovljivo pšenico in les ob vodi. Raziskovalce pošilja k sadju in sovražnikovim kolonijam ter pri pridobivanju sadja sovražnikom oglašuje hrano. Boljša hrana in sadje lahko privabita prestopnike.\n\nPrimerjava z drugimi AI: Gospodarsko najbolj specializiran nasprotnik. Tudi Cabino in Maxima pridobivata sadje, vendar ga združujeta z vojsko.\n\nPrednosti in slabosti: Lahko raste, medtem ko se vojaški nasprotniki izčrpavajo, prestopi pa omogočajo drug način tekmovanja. Ne proizvaja vojakov za odgovor na vztrajen napad. Hrana, sadje, geografija in pravila zmage močno vplivajo na njegove možnosti.\n\nKako se zoperstaviti: Pritiskajte na nezaščiteno širitev. Lastne restavracije oskrbujte s hrano in sadjem, da obdržite enote. Ne izčrpavajte kolonije z nepotrebnimi boji, medtem ko on raste.
+Osnovna strategija: Proizvaja delavce in raziskovalce, širi gospodarstvo ter s hrano in sadjem privablja sovražnikove enote. Nima običajne vojaške ofenzive.\n\nGospodarstvo in razvoj: Ob pšenici gradi restavracije in porodnišnice, dodaja izobraževanje in urjenje gibanja ter nadgrajuje infrastrukturo. Spremlja zaloge hrane in zamenja stare restavracije in porodnišnice, ko se njihov dostop do surovin poslabša.\n\nKmetijstvo in prestopi: Varuje obnovljivo pšenico in les ob vodi. Raziskovalce pošilja k sadju in sovražnikovim kolonijam ter pri pridobivanju sadja sovražnikom oglašuje hrano. Boljša hrana in sadje lahko privabita prestopnike.\n\nPrimerjava z drugimi UI: Gospodarsko najbolj specializiran nasprotnik. Tudi Cabino in Maxima pridobivata sadje, vendar ga združujeta z vojsko.\n\nPrednosti in slabosti: Lahko raste, medtem ko se vojaški nasprotniki izčrpavajo, prestopi pa omogočajo drug način tekmovanja. Ne proizvaja vojakov za odgovor na vztrajen napad. Hrana, sadje, geografija in pravila zmage močno vplivajo na njegove možnosti.\n\nKako se zoperstaviti: Pritiskajte na nezaščiteno širitev. Lastne restavracije oskrbujte s hrano in sadjem, da obdržite enote. Ne izčrpavajte kolonije z nepotrebnimi boji, medtem ko on raste.
 [AIEcono-Summary]
 Razvija kolonijo z obilico hrane in privablja prestopnike brez proizvodnje vojakov.
 [AIWarrush-Profile]
-Osnovna strategija: Napada, preden nasprotniki končajo dolg gospodarski ali tehnološki razvoj. Pričakuje, da bo boj odločil igro, preden bo potrebno veliko podporno omrežje.\n\nGospodarstvo in razvoj: Ko šest enot zna žeti, nastavi proizvodno razmerje na štiri delavce, enega raziskovalca in tri vojake. Ko se urjenje zapolni, dodaja vojašnice, a omejuje nove restavracije. Proste gradbene zmogljivosti pogosto porabi za bolnišnice in urjenje gibanja.\n\nNapad in obramba: Odkrite sovražnikove stavbe označi s stražnimi območji, da vojaki vzdržujejo pritisk. Ne čaka na skrbno sestavljen val. Odstranjuje ovirajoči les in varuje nekatere obnovljive vire.\n\nRavnanje s sadjem: Prepoveduje nabiranje sadja, s čimer se izogne z njim povezanim kaznim za oklep in zavrne strategijo prestopov, ki jo uporablja Econo.\n\nPrimerjava z drugimi AI: Bolj kot Numbi ali Castor se zanaša na zgodnji pritisk. Tudi Nicowar začne napadalno, a nadaljuje s širšim programom nadgradenj in taktik.\n\nPrednosti in slabosti: Kaznuje počasne začetke in prisili v zgodnje obrambne izdatke. Omejeno sistematično nadgrajevanje in skromna oskrba s hrano naredita zaustavljeno ofenzivo drago. Teren in dolge poti lahko zmanjšajo zgodnjo prednost.\n\nKako se zoperstaviti: Zgodaj zaščitite restavracije in porodnišnice. Nadomeščajte delavce in branilce, razvijajte urjenje in nato izvedite protinapad, ko naval izgubi zagon.\n\nIzvidovanje: Začetne raziskovalne zastave neposredno uporabljajo začetne položaje sovražnikov. Poznejše postavljanje napadalnih območij zahteva vidljivost.
+Osnovna strategija: Napada, preden nasprotniki končajo dolg gospodarski ali tehnološki razvoj. Pričakuje, da bo boj odločil igro, preden bo potrebno veliko podporno omrežje.\n\nGospodarstvo in razvoj: Ko šest enot zna žeti, nastavi proizvodno razmerje na štiri delavce, enega raziskovalca in tri vojake. Ko se urjenje zapolni, dodaja vojašnice, a omejuje nove restavracije. Proste gradbene zmogljivosti pogosto porabi za bolnišnice in urjenje gibanja.\n\nNapad in obramba: Odkrite sovražnikove zgradbe označi s stražnimi območji, da vojaki vzdržujejo pritisk. Ne čaka na skrbno sestavljen val. Odstranjuje ovirajoči les in varuje nekatere obnovljive surovine.\n\nRavnanje s sadjem: Prepoveduje nabiranje sadja, s čimer se izogne z njim povezanim kaznim za oklep in zavrne strategijo prestopov, ki jo uporablja Econo.\n\nPrimerjava z drugimi UI: Bolj kot Numbi ali Castor se zanaša na zgodnji pritisk. Tudi Nicowar začne napadalno, a nadaljuje s širšim programom nadgradenj in taktik.\n\nPrednosti in slabosti: Kaznuje počasne začetke in prisili v zgodnje obrambne izdatke. Omejeno sistematično nadgrajevanje in skromna oskrba s hrano naredita zaustavljeno ofenzivo drago. Teren in dolge poti lahko zmanjšajo zgodnjo prednost.\n\nKako se zoperstaviti: Zgodaj zaščitite restavracije in porodnišnice. Nadomeščajte delavce in branilce, razvijajte urjenje in nato izvedite protinapad, ko naval izgubi zagon.\n\nIzvidovanje: Začetne raziskovalne zastave neposredno uporabljajo začetne položaje sovražnikov. Poznejše postavljanje napadalnih območij zahteva vidljivost.
 [AIWarrush-Summary]
 Zgodnji pritisk vojakov podpira z namerno varčnim podpornim gospodarstvom.
 [AICabino-Profile]
-Osnovna strategija: Proizvodnjo enot deli med gradnjo, nadgradnje, obrambo, napade in raziskovanje. Ločeni upravljavci zahtevajo in rezervirajo enote ter skupaj razvijajo gospodarstvo in vojsko.\n\nGospodarstvo in razvoj: Gradi in nadgrajuje obsežno naselbino, upravlja osebje restavracij in stolpov, čisti okolico stavb in varuje obnovljive vire. Išče sadje in oglašuje hrano, da tekmuje za prestopnike.\n\nNapad in obramba: Izbere sovražnika in daje prednost bolnišnicam, nato restavracijam in vojašnicam. Podpira do štiri napade, običajno z osmimi do dvajsetimi vojaki na cilj glede na razpoložljivost in bližnje sovražnike. Okoli ogroženih stavb uporablja ločene obrambne zastave.\n\nUrjenje: Za napad zahteva dovolj ustreznih vojakov in dokončano vojašnico, vendar ne čaka na najvišjo tehnologijo. Nadaljnje nadgradnje in urjenje okrepijo poznejše napade.\n\nPrimerjava z drugimi AI: Bolj načrtno kot Nicowar ruši podporne stavbe. Napade razprši bolj kot zbrani valovi Maxima in z rezervacijami enot upravlja tekmujoče potrebe.\n\nPrednosti in slabosti: Združuje rast, urjenje, obrambo in več napadov. Uničenje hrane in zdravljenja lahko oslabi celotno kolonijo. Naključna izbira nasprotnika in stalne prednostne stavbe lahko zgrešijo priložnosti; več napadov lahko razdeli sile.\n\nKako se zoperstaviti: Branite bolnišnice in restavracije. Ovirajte nezaščiteno širitev in združite branilce proti posameznim napadom. Poškodujte oskrbo ali urjenje, preden vzdržuje več front.\n\nIzvidovanje: Izbiranje napadov bere sezname sovražnikovih stavb brez izrecnega preverjanja vidljivosti. Nekatere gospodarske primerjave neposredno uporabljajo sovražnikove statistike.
+Osnovna strategija: Proizvodnjo enot deli med gradnjo, nadgradnje, obrambo, napade in raziskovanje. Ločeni upravljavci zahtevajo in rezervirajo enote ter skupaj razvijajo gospodarstvo in vojsko.\n\nGospodarstvo in razvoj: Gradi in nadgrajuje obsežno naselbino, upravlja osebje restavracij in stolpov, čisti okolico zgradb in varuje obnovljive surovine. Išče sadje in oglašuje hrano, da tekmuje za prestopnike.\n\nNapad in obramba: Izbere sovražnika in daje prednost bolnišnicam, nato restavracijam in vojašnicam. Podpira do štiri napade, običajno z osmimi do dvajsetimi vojaki na cilj glede na razpoložljivost in bližnje sovražnike. Okoli ogroženih zgradb uporablja ločene obrambne zastave.\n\nUrjenje: Za napad zahteva dovolj ustreznih vojakov in dokončano vojašnico, vendar ne čaka na najvišjo tehnologijo. Nadaljnje nadgradnje in urjenje okrepijo poznejše napade.\n\nPrimerjava z drugimi UI: Bolj načrtno kot Nicowar ruši podporne zgradbe. Napade razprši bolj kot zbrani valovi Maxima in z rezervacijami enot upravlja tekmujoče potrebe.\n\nPrednosti in slabosti: Združuje rast, urjenje, obrambo in več napadov. Uničenje hrane in zdravljenja lahko oslabi celotno kolonijo. Naključna izbira nasprotnika in stalne prednostne zgradbe lahko zgrešijo priložnosti; več napadov lahko razdeli sile.\n\nKako se zoperstaviti: Branite bolnišnice in restavracije. Ovirajte nezaščiteno širitev in združite branilce proti posameznim napadom. Poškodujte oskrbo ali urjenje, preden vzdržuje več front.\n\nIzvidovanje: Izbiranje napadov bere sezname sovražnikovih zgradb brez izrecnega preverjanja vidljivosti. Nekatere gospodarske primerjave neposredno uporabljajo sovražnikove statistike.
 [AICabino-Summary]
 Usklajuje rast kolonije in izurjene napade ter najprej cilja zdravljenje in hrano.
 [Algae]
@@ -1165,7 +1165,7 @@ Ločeni otoki
 [Conquest only]
 Samo osvajanje
 [Conquest or prestige]
-Osvajanje ali prestiž
+Osvajanje ali ugled
 [Could not launch this map. Your setup is retained; try again.]
 Zemljevida ni bilo mogoče zagnati. Nastavitve so ohranjene; poskusite znova.
 [Could not load this map. Choose another map or retry.]
@@ -1257,7 +1257,7 @@ Predogled pripravljen. Začetek igre uporablja točno ta zemljevid.
 [Regenerate all]
 Znova ustvari vse
 [Generating preview...]
-Ustvarjanje predogleda ...
+Ustvarjanje predogleda …
 [Preview unavailable]
 Predogled ni na voljo
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
@@ -1273,7 +1273,7 @@ Rdeča
 [Repeat landscape]
 Ponavljanje pokrajine
 [Resources]
-Viri
+Surovine
 [River]
 Reka
 [River width]
@@ -1303,7 +1303,7 @@ Teren
 [Victory]
 Zmaga
 [Watch game]
-Oglejte si igro
+Glej igro
 [Water weight]
 Utež vode
 [White]
@@ -1353,7 +1353,7 @@ Ta kolonija se ne bo pridružila tekmi.
 [This landscape uses a fixed terrain recipe.]
 Ta pokrajina uporablja recept fiksnega terena.
 [This landscape uses fixed resource placement.]
-Ta pokrajina uporablja fiksno postavitev virov.
+Ta pokrajina uporablja fiksno postavitev surovin.
 [Win through conquest]
 Zmagajte z osvajanjem
 [You control this colony.]
@@ -1361,7 +1361,7 @@ Vi nadzorujete to kolonijo.
 [controllers]
 igralci in UI
 [Use]
-Izberite
+Uporabi
 [Lime]
 Limetno zelena
 [Teal]
@@ -1369,11 +1369,11 @@ Modrozelena
 [Azure]
 Nebeško modra
 [Updating map preview...]
-Posodabljanje predogleda zemljevida ...
+Posodabljanje predogleda zemljevida …
 [Generation failed. Adjust settings or press Start to retry.]
-Generiranje ni uspelo. Prilagodite nastavitve ali pritisnite Start za ponovni poskus.
+Ustvarjanje ni uspelo. Prilagodite nastavitve ali za nov poskus pritisnite Začni.
 [Preview unavailable. Adjust settings or start to retry.]
-Predogled ni na voljo. Spremenite nastavitve ali zaženite igro, da poskusite znova.
+Predogled ni na voljo. Prilagodite nastavitve ali za nov poskus začnite igro.
 [automatic torus view]
 Samodejni torusni pogled
 [toggle torus view]
@@ -1385,7 +1385,7 @@ Zavezništvo
 [Choose a rule to change it.]
 Izberite pravilo, da ga spremenite.
 [Conquest only removes prestige victory; map scripts still apply.]
-Zmaga samo za osvojitev onemogoči prestižno zmago; skripti zemljevidov še vedno veljajo.
+Samo osvajanje odstrani zmago z ugledom; skripti zemljevidov še vedno veljajo.
 [Control]
 Upravljanje
 [Controller]
@@ -1393,7 +1393,7 @@ Upravlja
 [Generate preview]
 Ustvari predogled
 [Generation failed. Adjust settings or try again.]
-Generiranje ni uspelo. Prilagodite nastavitve ali poskusite znova.
+Ustvarjanje ni uspelo. Prilagodite nastavitve ali poskusite znova.
 [Map settings changed. Generate a new preview or start.]
 Nastavitve zemljevida spremenjene. Ustvarite nov predogled ali začnite.
 [Map source]
@@ -1401,13 +1401,13 @@ Vir zemljevida
 [Map-defined]
 Določeno na zemljevidu
 [Match format]
-Oblika igre
+Oblika tekme
 [No current preview]
 Ni trenutnega predogleda
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Hitra bitka: dvojna hitrost; generirani zemljevidi se začnejo z 8 delavci.
+Hitra bitka: dvojna hitrost; ustvarjeni zemljevidi se začnejo z 8 delavci.
 [Reroll]
-Ustvarite drug zemljevid
+Drug zemljevid
 [Randomize]
 Naključno ustvari
 [Reset to defaults]
@@ -1417,7 +1417,7 @@ Nabor pravil
 [Select a map from the library.]
 Izberite zemljevid iz knjižnice.
 [Starting workers affects generated maps only.]
-Začetno število delavcev velja samo za generirane zemljevide.
+Začetno število delavcev velja samo za ustvarjene zemljevide.
 [Unavailable]
 Ni na voljo
 [Use selection]
@@ -1429,7 +1429,7 @@ Ustvarite predogled za raziskovanje tega sveta.
 [More workers jump-start colony growth. Changes the generated map.]
 Več delavcev pospeši rast kolonije. Ta nastavitev spremeni ustvarjeni zemljevid.
 [No warriors]
-Brez bojevnikov
+Brez vojakov
 [settings Add key to sequence]
 Dodaj tipko v zaporedje
 [settings Add shortcut]
@@ -1585,9 +1585,9 @@ Povrnitev čez
 [settings Save shortcut]
 Shrani bližnjico na tipkovnici
 [settings Saved — restart required]
-Shranjeno — potreben ponovni zagon
+Shranjeno – potreben ponovni zagon
 [settings Saving…]
-Shranjevanje…
+Shranjevanje …
 [settings Scroll wheel enabled]
 Miškino kolesce omogočeno
 [settings Set starting unit assignments by building type and level.]
@@ -1689,7 +1689,7 @@ Razgibanost obale
 [Lake connects to fjords]
 Jezero povezano s fjordi
 [Resource islands]
-Otoki z viri
+Otoki s surovinami
 [Watershed]
 Porečje
 [River density]
@@ -1723,7 +1723,7 @@ Nasipi
 [Lakes]
 Jezera
 [Resource richness]
-Bogastvo virov
+Bogastvo surovin
 [Symmetric arena needs 2, 4 or 8 colonies.]
 Simetrična arena potrebuje 2, 4 ali 8 kolonij.
 [Eight colonies need a square map in the symmetric arena.]
@@ -1803,7 +1803,7 @@ Zid dvorišč
 [Plaza size]
 Velikost trga
 [Starting tower level]
-Raven začetnih stolpov
+Stopnja začetnih stolpov
 [Towers per colony]
 Stolpi na kolonijo
 [Rings]
@@ -2053,7 +2053,7 @@ Povlecite za premik čez robove. Kolešček za povečavo. Desni ali dvojni klik 
 [Map preview drag help]
 Povlecite za premik; kolešček za povečavo.
 [Map preview loading]
-Nalaganje...
+Nalaganje …
 [Map preview failed]
 Predogled ni uspel
 [Map preview retry]
@@ -2121,19 +2121,19 @@ Enote postanejo lačne
 [No hunger]
 Brez lakote
 [Scarce (2x slower)]
-Redki (2x počasneje)
+Redko (2x počasneje)
 [Very scarce (4x slower)]
-Zelo redki (4x počasneje)
+Zelo redko (4x počasneje)
 [Extremely scarce (8x slower)]
-Izjemno redki (8x počasneje)
+Izjemno redko (8x počasneje)
 [Small (+50 each)]
-Majhna (+50 vsak)
+Majhna (+50 vsake surovine)
 [Medium (+150 each)]
-Srednja (+150 vsak)
+Srednja (+150 vsake surovine)
 [Large (+300 each)]
-Velika (+300 vsak)
+Velika (+300 vsake surovine)
 [No resource growth]
-Brez rasti virov
+Brez rasti surovin
 [Economy]
 Gospodarstvo
 [Instant construction]
@@ -2143,7 +2143,7 @@ Višje stopnje dajo vsaki zgradbi veliko več zdravja.
 [Starting units spawn already leveled up. Changes the generated map.]
 Začetne enote se pojavijo že na višji stopnji. Spremeni ustvarjeni zemljevid.
 [No upgrades]
-Brez izboljšav
+Brez nadgradenj
 [No permadeath]
 Brez trajne smrti
 [Glass cannon x2]
@@ -2179,49 +2179,49 @@ Izklopljeno (brez odštevalnika)
 [Stats page three]
 Statistika 3/3 >
 [Stats blocked units]
-Enote S/C
+Blokirane enote S/C
 [Stats blocked buildings]
-Stavbe S/C
+Blokirane zgradbe S/C
 [Stats blocked buildings swim]
-Plavanje S/C
+Plavalni izhodi S/C
 [Stats current blocked units]
-Enote C
+Trenutno blokirane enote
 [Stats current blocked buildings]
-Stavbe C
+Trenutno blokirane zgradbe
 [Stats growth global]
-Viri +
+Dodana rast
 [Stats growth new tiles]
-Viri +#
+Nova polja surovin
 [Stats growth reductions]
-Viri -
+Naravna zmanjšanja
 [Stats growth per minute]
-Pšenica +/min
+Rast pšenice/min
 [Stats growth near 8]
-Viri + <=8
+Rast do 8 polj
 [Stats growth near 16]
-Viri + <=16
+Rast do 16 polj
 [Stats growth near 32]
-Viri + <=32
+Rast do 32 polj
 [Stats low HP 25]
-Zdravje <=25%
+Enote z zdravjem ≤25 %
 [Stats low HP 50]
-Zdravje <=50%
+Enote z zdravjem ≤50 %
 [Stats low HP 75]
-Zdravje <=75%
+Enote z zdravjem ≤75 %
 [Stats low food 25]
-Hrana <=25%
+Enote z zalogo hrane ≤25 %
 [Stats low food 50]
-Hrana <=50%
+Enote z zalogo hrane ≤50 %
 [Stats low food 75]
-Hrana <=75%
+Enote z zalogo hrane ≤75 %
 [Stats structural units]
-Enote S
+Strukturno blokirane enote
 [Stats structural buildings]
-Stavbe S
+Strukturno blokirane zgradbe
 [Stats low HP ranges]
-Zdravje: <=25/50/75%
+Zdravje ≤25/50/75 %
 [Stats low food ranges]
-Hrana: <=25/50/75%
+Hrana ≤25/50/75 %
 [Emoji]
 Emoji
 [Emoji character]
@@ -2771,29 +2771,29 @@ Začetek vsake kolonije se meri na dokončanem zemljevidu: pot do pšenice in do
 [ERROR_CANT_SAVE_MAP]
 Zemljevida ni bilo mogoče shraniti. Preverite cilj in razpoložljiv prostor. Vaše spremembe so še vedno odprte.
 [Loading headers]
-Nalaganje glav...
+Nalaganje glav …
 [Loading teams]
-Nalaganje ekip...
+Nalaganje ekip …
 [Loading terrain]
-Nalaganje terena...
+Nalaganje terena …
 [Building gradients]
-Ustvarjanje gradientov...
+Ustvarjanje gradientov …
 [Loading players]
-Nalaganje igralcev...
+Nalaganje igralcev …
 [Loading scripts]
-Nalaganje skriptov...
+Nalaganje skriptov …
 [Generating map]
-Ustvarjanje zemljevida...
+Ustvarjanje zemljevida …
 [ERROR_CANT_GENERATE_MAP]
 Zemljevida ni bilo mogoče ustvariti. Poskusite druge nastavitve ustvarjanja.
 [Loading units]
-Nalaganje enot...
+Nalaganje enot …
 [Loading buildings]
-Nalaganje stavb...
+Nalaganje zgradb …
 [Resolving team links]
-Razreševanje povezav ekip...
+Razreševanje povezav ekip …
 [saving to storage]
-Shranjevanje...
+Shranjevanje …
 [save failed retry]
 Shranjevanje ni uspelo. Poskusite znova.
 [export save]
@@ -2811,7 +2811,7 @@ Uvozi
 [select import file]
 Izberite datoteko za uvoz
 [validating import]
-Preverjanje datoteke...
+Preverjanje datoteke …
 [import succeeded]
 Datoteka uvožena
 [import cancelled]
@@ -2819,7 +2819,7 @@ Uvoz preklican
 [import failed]
 Uvoz ni uspel: neveljavna ali nepodprta datoteka
 [import persistence failed]
-Ni shranjeno: izberite Uvozi za nov poskus, ali Izvozi datoteko
+Ni shranjeno: izberite Uvozi za nov poskus ali Izvozi datoteko
 [import progress]
 Napredek uvoza
 [export progress]
@@ -2827,11 +2827,11 @@ Napredek izvoza
 [retry save]
 Poskusi znova shraniti
 [campaign save failed]
-Napredek pohoda ni bil shranjen. Poskusite znova ali izvozite varnostno kopijo.
+Napredek kampanje ni bil shranjen. Poskusite znova ali izvozite varnostno kopijo.
 [leave without saving]
 Izhod brez shranjevanja
 [campaign import failed]
-Neveljavna datoteka napredka ali druga različica pohoda
+Neveljavna datoteka napredka ali druga različica kampanje
 [settings continue]
 Nadaljuj
 [settings save failed]
@@ -2887,7 +2887,7 @@ Uporabi to pokrajino
 [Reset]
 Ponastavi
 [Generating...]
-Ustvarjanje...
+Ustvarjanje …
 [Players]
 Igralci
 [Rules]
@@ -2897,7 +2897,7 @@ Postavitev vmesnika
 [settings Automatic]
 Samodejno
 [settings Compact]
-Majhen
+Strnjena
 [settings Spacious]
 Prostorna
 [More]
@@ -2917,7 +2917,7 @@ Končano
 [Contribution]
 Prispevek
 [Choose who controls this colony]
-Izberi, kdo nadzoruje to kolonijo
+Izberite, kdo nadzoruje to kolonijo
 [Settings]
 Nastavitve
 [settings Back]
@@ -2925,7 +2925,7 @@ Nazaj
 [settings Save the game automatically about every minute.]
 Samodejno shrani igro približno vsako minuto.
 [AI opponents]
-Računalniški nasprotniki
+Nasprotniki UI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.
 [settings One-finger zoom]
@@ -2963,9 +2963,9 @@ Igralec %0
 [Team %0]
 Ekipa %0
 [Your colony]
-Tvoja kolonija
+Vaša kolonija
 [%0 / %1 HP · %2]
-%0 / %1 ŽT · %2
+Zdravje %0 / %1 · %2
 [Units: %0]
 Enote: %0
 [Buildings: %0]
@@ -3035,9 +3035,9 @@ Zapri
 [Forbidden]
 Prepovedano
 [Guard]
-Straži
+Straža
 [Clear]
-Počisti
+Čiščenje
 [Farm]
 Njiva
 [Paint]
@@ -3045,9 +3045,9 @@ Riši
 [Erase]
 Briši
 [Release on valid terrain to place]
-Spusti nad veljavnim terenom za postavitev
+Spustite nad veljavnim terenom za postavitev
 [Paint on the map; two fingers move]
-Riši po zemljevidu; premikaj z dvema prstoma
+Rišite po zemljevidu; premikajte z dvema prstoma
 [Tutorial ▸]
 Vadnica ▸
 [Back to tools]
@@ -3075,7 +3075,7 @@ Izberi
 [Show palette]
 Prikaži paleto
 [Release to place]
-Spusti za postavitev
+Spustite za postavitev
 [Blocked placement]
 Postavitev blokirana
 [File name]
@@ -3091,9 +3091,9 @@ Ni še shranjenih datotek
 [Export]
 Izvozi
 [Tap to write the mission briefing]
-Tapni za pisanje navodil misije
+Tapnite za pisanje navodil misije
 [Tap to write the map script]
-Tapni za pisanje skripta zemljevida
+Tapnite za pisanje skripta zemljevida
 [Script]
 Skript
 [Previous]
@@ -3101,15 +3101,15 @@ Prejšnji
 [Compile]
 Prevedi
 [Tap to write this hint]
-Tapni za pisanje tega namiga
+Tapnite za pisanje tega namiga
 [Tap to write this objective]
-Tapni za pisanje tega cilja
+Tapnite za pisanje tega cilja
 [Mission briefing · tap to edit, swipe to scroll]
-Navodila misije · tapni za urejanje, podrsaj za pomikanje
+Navodila misije · tapnite za urejanje, podrsajte za pomikanje
 [Not enough recorded history yet.]
 Za zdaj ni dovolj zabeležene zgodovine.
 [Select a team to show its history.]
-Izberi ekipo za prikaz njene zgodovine.
+Izberite ekipo za prikaz njene zgodovine.
 [Back to chart]
 Nazaj na graf
 [Expand chart]
@@ -3159,17 +3159,17 @@ Izberite pokrajino
 [%0 / Browse]
 %0 / Prebrskaj
 [%0 colonies · %1]
-%0 kolonije · %1
+Kolonije: %0 · %1
 [%0 · Team %1]
 %0 · Ekipa %1
 [Colonies: %0]
 Kolonije: %0
 [%0 colonies · %1 AI]
-%0 kolonije · %1 UI
+Kolonije: %0 · UI: %1
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Enote
+%0 · enote: %1
 [settings Level %0]
 Stopnja %0
 [settings Match the desktop %0]
@@ -3185,7 +3185,7 @@ Možnost zmage: %0 · Moč: %1
 [%0 · Contribution: %1]
 %0 · Prispevek: %1
 [Min required level %0]
-Najnižja zahtevana stopnja %0
+Najnižja zahtevana stopnja: %0
 [Confirm %0]
 Potrdi: %0
 [%0 %1]
@@ -3207,9 +3207,9 @@ V tej različici ni poskusov.
 [Experiments]
 Poskusi
 [experiment guard-area-balancing]
-Uravnoteženje stražarskih območij
+Uravnoteženje stražnih območij
 [experiment guard-area-balancing help]
-Prosti bojevniki se porazdelijo med narisana stražarska območja, namesto da bi vsi šli v najbližje: večje območje jih dobi več, prenatrpano pa se postopoma prazni v druga.
+Prosti vojaki se porazdelijo med narisana stražna območja, namesto da bi vsi šli v najbližje: večje območje jih dobi več, prenatrpano pa se postopoma prazni v druga.
 [experiment farm-areas]
 Območja obdelovanja
 [experiment farm-areas help]
@@ -3235,1419 +3235,1419 @@ Zagon seznamov
 [List bounce]
 Odboj seznamov
 [lan pairing field]
-
+Niz za seznanitev z gostiteljem (ali zaupanja vreden WSS URL)
 [lan pairing connect]
-
+Seznani in poveži
 [lan discovery instructions]
-
+Izberite gostitelja in prilepite njegov niz za seznanitev, da preverite njegovo identiteto.
 [lan discovery unavailable]
-
+Iskanje v LAN ni na voljo. Preverite dovoljenje za lokalno omrežje ali prilepite gostiteljev niz za seznanitev.
 [lan discovered host %0]
-
+Najden gostitelj %0 – seznanite se za ogled iger
 [lan connection unavailable]
-
+Gostitelja v LAN ni mogoče doseči. Preverite dovoljenje za lokalno omrežje in gostiteljev niz za seznanitev.
 [lan connection verification failed %0]
-
+Gostitelja v LAN ni mogoče preveriti ali se z njim povezati: %0
 [lan lobby endpoint required]
-
+Uporabite končno točko gostiteljevega preddverja
 [settings Artwork]
-
+Grafika
 [settings Original]
-
+Izvirna
 [settings High resolution]
-
+Visoka ločljivost
 [settings Clouds]
-
+Oblaki
 [settings Show cloud cover above the map.]
-
+Prikaži oblake nad zemljevidom.
 [settings Cloud shadows]
-
+Sence oblakov
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Prikaži sence oblakov na tleh neodvisno od oblakov.
 [settings Building particles]
-
+Delci zgradb
 [settings Show smoke and other building particles.]
-
+Prikaži dim in druge delce zgradb.
 [settings Magic effects]
-
+Čarobni učinki
 [settings Choose animated magic effects or a simple visible effect.]
-
+Izberite animirane čarobne učinke ali preprost viden učinek.
 [settings Simple]
-
+Preprosto
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Zahteva upodabljalnik OpenGL. Vaša shranjena izbira se ohrani.
 [settings Interface appearance]
-
+Videz vmesnika
 [settings Panels]
-
+Plošče
 [settings Choose translucent or opaque interface panels.]
-
+Izberite prosojne ali neprosojne plošče vmesnika.
 [settings Opaque]
-
+Neprosojno
 [settings Translucent]
-
+Prosojno
 [settings Advanced graphics]
-
+Napredna grafika
 [settings Path lines]
-
+Črte poti
 [settings Choose translucent or opaque unit path lines.]
-
+Izberite prosojne ali neprosojne črte poti enot.
 [settings Smooth progress indicators]
-
+Gladki kazalniki napredka
 [settings Smooth the moving edges of progress indicators.]
-
+Zgladi premikajoče se robove kazalnikov napredka.
 [settings Decorative interface animation]
-
+Okrasne animacije vmesnika
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animiraj sliko zmage. Zmanjšano gibanje prav tako izklopi to animacijo.
 [settings Smooth unit motion]
-
+Gladko gibanje enot
 [settings Experimental: move and animate units between game ticks.]
-
+Preizkusno: premikaj in animiraj enote med koraki igre.
 [settings Smooth fog of war]
-
+Gladka megla vojne
 [settings Fade the map into and out of the fog of war gradually.]
-
+Postopno prehajanje zemljevida v meglo vojne in iz nje.
 [settings Adaptive zoom detail]
-
+Prilagodljive podrobnosti povečave
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Poenostavi vrstice, območja, teren in enote ob oddaljevanju zemljevida in jih ob povečavi ohrani majhne.
 [settings Text size]
-
+Velikost besedila
 [settings Enlarge interface text without changing the map scale.]
-
+Povečaj besedilo vmesnika brez spreminjanja merila zemljevida.
 [Map momentum]
 Zagon zemljevida
 [turn reconnecting]
-
+Povezava z gostiteljem je prekinjena. Ponovno povezovanje …
 [turn waiting for players]
-
+Čakanje, da vsi igralci naložijo …
 [turn rejoining]
-
+Ponovno pridruževanje igri …
 [turn catching up %0]
-
+Dohitevanje (zaostanek v potezah: %0)
 [turn player reconnecting %0]
-
+%0 se ponovno povezuje …
 [turn player lagging %0]
-
+%0 zaostaja
 [turn player resyncing %0]
-
+%0 dohiteva
 [turn player not connected %0]
-
+%0 se še ni povezal
 [lan host left]
-
+Gostitelj je zapustil igro.
 [lan host lost]
-
+Povezava z gostiteljem je bila prekinjena.
 [lan version mismatch %0]
-
+Gostitelj uporablja drugo različico Globulation 2 (%0).
 [lan cannot host %0]
-
+Igre v LAN ni mogoče gostiti: %0
 [play online]
-
+Igraj na spletu
 [Use in room]
-
+Uporabi v sobi
 [conn ai]
-
+UI
 [conn behind %0]
-
+Zaostanek %0
 [conn behind explanation %0 %1]
-
+Zaostanek: koliko igralčeva igra zaostaja za uro tekme; vključuje njegovo zakasnitev. Pod %0 je normalno; od %1 je igralec označen kot počasen.
 [conn behind]
-
+Zaostanek
 [conn card catching up]
-
+Dohitevanje
 [conn card colony works]
-
+Vaša kolonija dela naprej sama: enote dokončajo svoja opravila in zgradbe delujejo naprej.
 [conn card desync detail]
-
+Ponovno pridruževanje iz zapisa tekme, da vidite isto kot vsi drugi. Poročilo je bilo poslano samodejno.
 [conn card desync]
-
+Vaša igra ni več usklajena
 [conn card grace %0]
-
+Vaša kolonija dela naprej sama: enote dokončajo svoja opravila in zgradbe delujejo naprej. Za vrnitev imate še %0, preden boste odstranjeni iz tekme.
 [conn card input paused]
-
+Dohitevate · vnos je začasno ustavljen
 [conn card lost]
-
+Povezava prekinjena
 [conn card progress %0 %1 %2]
-
+%0 % · %1 od %2 korakov
 [conn card reconnecting %0]
-
+Ponovno povezovanje s tekmo … poskus %0
 [conn card replaying %0]
-
+Predvajanje zamujenega dela (%0). Zaslon se posodobi, ko dohitite sedanjost.
 [conn card seconds left %0]
-
+še približno %0 s
 [conn connections]
-
+Povezave
 [conn connection]
-
+Povezava
 [conn delay explanation %0 %1]
-
+Zakasnitev: čas od vašega klika do izvedbe, za vse. Odvisna je od vaše povezave, ne od povezav drugih igralcev. Dobra pod %0, slaba od %1.
 [conn fair]
-
+Zadovoljiva
 [conn good]
-
+Dobra
 [conn grid legend]
-
+Pri več kot štirih igralcih plošča prikaže ping vsakega igralca v milisekundah ali koliko sekund zaostaja.
 [conn jitter %0]
-
+nihanje %0
 [conn leave match]
-
+Zapusti tekmo
 [conn left]
-
+Odšel
 [conn notice back %0]
-
+%0 je spet tu.
 [conn notice left %0]
-
+%0 je zapustil tekmo.
 [conn notice lost %0 %1]
-
+%0 je izgubil povezavo. Igra se nadaljuje; njegova kolonija dela naprej, medtem ko se ponovno povezuje (še %1).
 [conn ping explanation %0 %1]
-
+Ping: čas povratne poti med igralcem in posrednikom. Dober pod %0, slab od %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Igralci
 [conn poor]
-
+Slaba
 [conn reconnecting]
-
+Ponovno povezovanje
 [conn relay %0]
-
+Posrednik: %0
 [conn resyncing]
-
+Pridruževanje
 [conn slow]
-
+Počasen
 [conn unstable]
-
+nestabilna
 [conn waiting]
-
+Povezovanje …
 [conn you %0]
-
+%0 (vi)
 [conn you]
-
+Vi
 [conn your delay %0]
-
+Vaša zakasnitev %0
 [hub account menu]
-
+Račun
 [hub ai joins after %0]
-
+UI se pridruži čez %0
 [hub all rooms]
-
+Vse
 [hub browse maps]
-
+Prebrskaj zemljevide
 [hub cant reach %0]
-
+%0 ni dosegljiv.
 [hub change server]
-
+Zamenjaj strežnik …
 [hub check code]
-
+Ko vas vpraša za kodo, vnesite to:
 [hub code placeholder]
-
+Koda ali povezava povabila
 [hub connecting to %0]
-
+%0 · povezovanje …
 [hub continue with %0]
-
+Nadaljuj z %0
 [hub create room]
-
+Ustvari sobo
 [hub find match]
-
+Poišči tekmo
 [hub finish in browser]
-
+Prijavo dokončajte na strani, ki se je odprla v brskalniku.
 [hub free seat]
-
+Prosto mesto
 [hub get update]
-
+Prenesi posodobitev
 [hub guest kept on device]
-
+Gost · shranjeno na tej napravi
 [hub invalid code]
-
+To ni koda ali povezava povabila.
 [hub join by code]
-
+Pridruži se s kodo
 [hub join code]
-
+Koda za pridružitev
 [hub join]
-
+Pridruži se
 [hub leaderboard]
-
+Lestvica
 [hub linked %0]
-
+Povezani računi · %0
 [hub linked accounts]
-
+Povezani računi
 [hub maps]
-
+Zemljevidi
 [hub no queues]
-
+Ta strežnik nima čakalnih vrst za hitro tekmo.
 [hub no rooms]
-
+Trenutno ni odprtih sob. Ustvarite eno in delite povabilo.
 [hub offline at %0]
-
+%0 · nedosegljiv
 [hub offline detail %0]
-
+Nov poskus čez %0 s. Hitra tekma in spletne sobe niso na voljo. Igra v LAN v glavnem meniju tega strežnika ne potrebuje.
 [hub online at %0]
-
+%0 · povezan
 [hub online settings]
-
+Spletne nastavitve
 [hub online]
-
+Na spletu
 [hub open page again]
-
+Znova odpri stran
 [hub open rooms]
-
+Odprte sobe
 [hub page opened at %0]
-
+Odprto: %0. V igri ni treba ničesar vnesti; prijavi vas samodejno.
 [hub queues unavailable]
-
+Hitra tekma se prikaže, ko se strežnik odzove.
 [hub quick match unavailable]
-
+Hitra tekma v tej različici še ni na voljo.
 [hub quick match]
-
+Hitra tekma
 [hub ranked]
-
+Rangirano
 [hub recent matches]
-
+Nedavne tekme
 [hub refresh]
-
+Osveži
 [hub retry now]
-
+Poskusi zdaj
 [hub room match]
-
+Soba
 [hub room name %0]
-
+Soba: %0
 [hub room]
-
+Soba
 [hub seats %0 %1]
-
+Mesta: %0/%1
 [hub server %0]
-
+Strežnik: %0
 [hub sign in browser]
-
+Odpri stran za prijavo
 [hub sign in conflict]
-
+Ta prijava že pripada drugemu računu.
 [hub sign in failed %0]
-
+Prijava ni bila dokončana (%0).
 [hub sign in intro]
-
+Prijavite se ali ustvarite račun v brskalniku. Vaše tekme kot gost se prenesejo z vami.
 [hub sign in]
-
+Prijava
 [hub sign out]
-
+Odjava na tej napravi
 [hub signed in as %0]
-
+Prijavljeni kot %0.
 [hub signed in on %0]
-
+Prijavljeni na %0
 [hub signing in]
-
+Prijavljanje …
 [hub sim %0]
-
+simulacija %0
 [hub unrated]
-
+Nerangirano
 [hub update required at %0]
-
+%0 · potrebna posodobitev
 [hub update required detail %0]
-
+%0 uporablja novejšo različico, zato se ta kopija ne more pridružiti spletnim igram, dokler je ne posodobite. Igre v LAN še delujejo.
 [hub update required]
-
+Potrebna posodobitev
 [hub server behind]
-
+Posodobitev strežnika v teku
 [hub server behind at %0]
-
+%0 · posodobitev strežnika v teku
 [hub server behind detail %0]
-
+Ta kopija je novejša od strežnika %0, ki še ni posodobljen. Spletne igre bodo na voljo, ko se strežnik posodobi. Igre v LAN še delujejo.
 [hub version mismatch]
-
+Drugačna različica
 [hub version mismatch at %0]
-
+%0 · drugačna različica
 [hub version mismatch detail %0]
-
+%0 uporablja drugačno različico igre, zato se ta kopija ne more pridružiti spletnim igram. Igre v LAN še delujejo.
 [hub versus %0]
-
+proti %0
 [match ai]
-
+UI
 [match downloading map %0]
-
+Prenašanje zemljevida %0
 [match failed]
-
+Tekme ni bilo mogoče začeti.
 [match leave]
-
+Zapusti
 [match loading]
-
+Nalaganje igre
 [Loading game graphics]
-
+Nalaganje grafike igre
 [match map cached]
-
+že na tej napravi
 [match map]
-
+Prenašanje zemljevida
 [match relay %0]
-
+Povezano s posrednikom %0
 [match seat confirmed]
-
+Mesto potrjeno
 [match starting]
-
+Začenjanje tekme
 [match tip flags]
-
+Namig: raziskovalne zastave pošljejo raziskovalce odkrivat zemljevid; vojaške zastave zberejo vaše vojake.
 [match tip input]
-
+Namig: vaši ukazi dosežejo vse po vaši zakasnitvi vnosa; povezave drugih igralcev vas ne upočasnijo.
 [match tip select]
-
+Namig: dvokliknite zgradbo, da izberete vse zgradbe te vrste.
 [match waiting for players]
-
+Čakanje na vse igralce
 [match you %0]
-
+%0 (vi)
 [match player map]
-
+zemljevid
 [match player loading]
-
+nalaganje
 [match player connecting]
-
+povezovanje
 [match player ready]
-
+pripravljen
 [match player left]
-
+odšel
 [results back to online]
-
+Nazaj na splet
 [results back to room]
-
+Nazaj v sobo
 [results defeat]
-
+Poraz
 [results ladder rating %0]
-
+Ocena: %0
 [results left]
-
+Zapustili ste tekmo
 [results match over]
-
+Tekma končana
 [results match page]
-
+Stran tekme
 [results minutes %0]
-
+%0 min
 [results no change]
-
+brez spremembe
 [results ranked]
-
+Rangirano
 [results recording]
-
+Beleženje izida …
 [results room unrated]
-
+Tekma v sobi · nerangirano
 [results saved to history]
-
+Shranjeno v vašo zgodovino
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+Strežnik te tekme ni mogel ponoviti, zato ne šteje v nobeno oceno. Prijavljena je bila v preiskavo; vam ni treba storiti ničesar.
 [results verified provisional]
-
+Preverjeno · začasno
 [results verified]
-
+Preverjeno
 [results verifying detail]
-
+Strežnik ponovno predvaja tekmo, da jo potrdi. Običajno v manj kot minuti.
 [results verifying]
-
+Preverjanje izida …
 [results victory]
-
+Zmaga
 [room address]
-
+Naslov
 [room ai %0]
-
+UI: %0
 [room browser pairing]
-
+Seznanitev z brskalnikom
 [room catalog map]
-
+Zemljevid iz kataloga
 [room change map]
-
+Zamenjaj zemljevid …
 [room change rules]
-
+Spremeni pravila …
 [room chat]
-
+Klepet
 [room closed seat detail]
-
+Zaprl gostitelj
 [room closed seat]
-
+Zaprto
 [room colonies]
-
+Kolonije
 [room connecting]
-
+Povezovanje s sobo …
 [room copy]
-
+Kopiraj
 [room disconnected]
-
+brez povezave
 [room downloading %0]
-
+Prenašanje zemljevida %0 %
 [room downloading map]
-
+Prenašanje zemljevida …
 [room expired]
-
+Soba se je zaprla.
 [room generated on server]
-
+Ustvarjen enkrat na strežniku, zato vsi igrajo natanko ta zemljevid.
 [room guest]
-
+gost
 [room host %0]
-
+gostitelj %0
 [room host closed]
-
+Gostitelj je zaprl sobo.
 [room host]
-
+gostitelj
 [room humans vs ai]
-
+Ljudje proti UI
 [room invite code %0]
-
+Koda %0 · odpre se v aplikaciji, na telefonih ali v brskalniku
 [room invite not found]
-
+To povabilo je poteklo ali ne obstaja.
 [room invite only]
-
+Samo s povabilom
 [room invite]
-
+Povabi
 [room joining on network]
-
+Pridruževanje v tem omrežju
 [room lan badge]
-
+Lokalno omrežje · nerangirano
 [room lan list hint %0]
-
+Drugi v istem omrežju vidijo %0 na seznamu iger v LAN v glavnem meniju.
 [room leave]
-
+Zapusti
 [room map changed %0]
-
+Zemljevid je zamenjan: %0.
 [room map failed]
-
+Zemljevida ni bilo mogoče pripraviti
 [room match label]
-
+Soba
 [room member joined %0]
-
+%0 se je pridružil.
 [room member left %0]
-
+%0 je odšel.
 [room member ready %0]
-
+%0 je pripravljen.
 [room needs two seats]
-
+Za začetek povabite prijatelja ali dodajte UI
 [room no map]
-
+Še ni zemljevida
 [room not ready]
-
+Ni pripravljen
 [room open for a person]
-
+Odprto za človeka
 [room open seat detail]
-
+Zasede ga lahko vsak s povabilom
 [room open seat]
-
+Prosto mesto
 [room person]
-
+Človek
 [room preparing map]
-
+Pripravljanje zemljevida na strežniku …
 [room public]
-
+Javno
 [room ready?]
-
+Pripravljen
 [room ready]
-
+✓ Pripravljen
 [room remove from room]
-
+Odstrani iz sobe
 [room rule off]
-
+Izklopljeno
 [room rule on]
-
+Vklopljeno
 [room rules changed]
-
+Pravila so se spremenila.
 [room rules]
-
+Pravila
 [room say something]
-
+Napišite kaj …
 [room seat hint]
-
+Igralci se lahko sami premaknejo na prosto mesto. Za uravnoteženje spremenite ekipo.
 [room seat options]
-
+Možnosti mesta
 [room seats summary %0 %1 %2]
-
+Igralci: %0 · UI: %1 · prosto: %2
 [room seats]
-
+Mesta
 [room seed]
-
+Seme
 [room send]
-
+Pošlji
 [room set by host]
-
+Določi gostitelj
 [room share text %0]
-
+Pridruži se moji sobi v Globulation 2: %0
 [room share]
-
+Deli …
 [room size]
-
+Velikost
 [room starting match]
-
+Začenjanje tekme …
 [room take seat]
-
+Zasedi mesto
 [room team %0]
-
+Ekipa %0
 [room update required]
-
+Ta soba uporablja drugo različico igre. Za pridružitev posodobite igro.
 [room uploaded map]
-
+Naložen zemljevid
 [room waiting for %0]
-
+Čakanje, da bo %0 pripravljen
 [room waiting for you]
-
+Ko boste nared, pritisnite Pripravljen
 [room match over]
-
+Tekma je končana. Pripravite se na nov krog!
 [room waiting for host]
-
+Čakanje, da gostitelj začne
 [room waiting for players %0]
-
+Čakanje na pripravljenost igralcev: %0
 [room who can find it]
-
+Kdo jo lahko najde
 [room you created]
-
+Ustvarili ste sobo.
 [room you joined %0]
-
+Pridružili ste se: %0.
 [room you were removed]
-
+Gostitelj vas je odstranil iz sobe.
 [room you]
-
+vi
 [settings Online]
-
+Splet
 [settings Another server]
-
+Drug strežnik
 [settings Check]
-
+Preveri
 [settings Checking…]
-
+Preverjanje …
 [settings Choose which server you play on and how you sign in to it.]
-
+Izberite, na katerem strežniku igrate in kako se nanj prijavite.
 [settings Connecting…]
-
+Povezovanje …
 [settings Could not reach this server.]
-
+Tega strežnika ni bilo mogoče doseči.
 [settings Display name saved.]
-
+Prikazno ime je shranjeno.
 [settings Display name]
-
+Prikazno ime
 [settings Download or delete my data]
-
+Izbriši moj račun
 [settings Enter an https:// address.]
-
+Vnesite naslov https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Dokončajte v brskalniku: ko vas vpraša, vnesite kodo %0.
 [settings Forget]
-
+Pozabi
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gostje obdržijo samodejno ustvarjeno ime; za izbiro imena se prijavite.
 [settings Link]
-
+Poveži
 [settings Not a Globulation 2 server.]
-
+To ni strežnik Globulation 2.
 [settings Not linked]
-
+Ni povezano
 [settings Not signed in.]
-
+Niste prijavljeni.
 [settings Open]
-
+Odpri
 [settings Opens your account page on %0.]
-
+Odpre stran vašega računa na %0, kjer ga lahko izbrišete.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Upravlja ga skupnost, klub ali vi. Prilepite njegov naslov.
 [settings Save]
-
+Shrani
 [settings Server]
-
+Strežnik
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Prikazano v sobah, tekmah in na lestvici. Spremenite ga lahko enkrat na 30 dni.
 [settings Sign in with: %0 · queues: %1]
-
+Prijava z: %0 · vrste: %1
 [settings Sign out on this device]
-
+Odjava na tej napravi
 [settings Sign out]
-
+Odjava
 [settings Switch to this server]
-
+Preklopi na ta strežnik
 [settings The last sign-in method can't be unlinked.]
-
+Zadnjega načina prijave ni mogoče odstraniti.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Uradni strežnik Globulation 2 · rangirane vrste, lestvice, katalog zemljevidov
 [settings Unlink]
-
+Odstrani povezavo
 [settings Unlinking is done on the account page.]
-
+Povezave se odstranjujejo na strani računa.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Dokler se ponovno ne prijavite, boste nov gost. Vaš račun in tekme ostanejo na strežniku.
 [settings Your account on %0]
-
+Vaš račun na %0
 [settings compatible with this version]
-
+združljiv s to različico
 [settings connected]
-
+povezano
 [settings connecting…]
-
+povezovanje …
 [settings guest]
-
+gost
 [settings linked]
-
+povezano
 [settings plays another version]
-
+uporablja drugo različico
 [settings trusted]
-
+zaupanja vreden
 [settings used before]
-
+že uporabljen
 [settings you were %0 there]
-
+tam ste bili %0
 [trust invited to room %0]
-
+Povabljeni ste v sobo %0
 [trust join as guest]
-
+Pridruži se kot gost
 [trust not official]
-
+Tega strežnika ne upravlja projekt Globulation 2.
 [trust remember]
-
+Zapomni si ta strežnik
 [trust separate identity %0]
-
+Tam se boste pridružili kot gost. Vaš račun %0, ocena in zgodovina ostanejo, kjer so.
 [trust title]
-
+Se pridružite igri na drugem strežniku?
 [trust what it sees]
-
+Strežnik vidi vaše prikazno ime, naslov vaše povezave in igre, ki jih igrate na njem.
 [settings not connected]
-
+ni povezano
 [settings Open Play online to connect.]
-
+Za povezavo odprite Igraj na spletu.
 [hub code]
-
+Koda
 [results draw]
-
+Neodločeno
 [qm 2 vs 2]
-
+2 proti 2
 [qm 1 vs 1]
-
+1 proti 1
 [qm ping about]
-
+Ping približno
 [qm ranked]
-
+Rangirano
 [qm casual %0]
-
+Sproščeno %0
 [qm rated]
-
+Rangirano
 [qm unrated]
-
+Nerangirano
 [qm solo queue]
-
+posamična vrsta
 [qm ai joins after %0]
-
+UI se pridruži čez %0
 [qm fair maps %0]
-
+Zemljevidi: %0
 [qm cooldown %0]
-
+Tekmo ste zavrnili. Ponovno lahko iščete čez %0.
 [qm sign in to play ranked]
-
+Rangirane vrste so za prijavljene račune; najprej se prijavite.
 [online update required]
-
+Ta različica igre je prestara za strežnik; za igro na spletu jo posodobite.
 [online server behind]
-
+Strežnik še ni posodobljen na to različico; igra na spletu bo na voljo, ko bo.
 [online version mismatch]
-
+Strežnik uporablja drugo različico igre; igra na spletu s to kopijo ni na voljo.
 [qm already searching]
-
+Že iščete ali ste v tekmi.
 [online connection problem]
-
+Strežnika ni bilo mogoče doseči.
 [qm find match]
-
+Poišči tekmo
 [qm opponents rated %0 to %1]
-
+Nasprotniki z oceno od %0 do %1
 [qm region %0]
-
+Regija %0
 [qm searching]
-
+Iskanje
 [qm measuring relays]
-
+Merjenje posrednikov
 [qm joining queue]
-
+Vstop v vrsto
 [qm waiting for a person]
-
+Čakanje na človeka: nasprotniki UI so izklopljeni.
 [qm ai in %0 rated]
-
+Če ne najdemo nikogar, boste čez %0 igrali proti UI z najbližjo oceno
 [qm ai in %0]
-
+Če ne najdemo nikogar, se UI pridruži čez %0
 [qm ai after %0]
-
+Če ne najdemo nikogar, mesto čez %0 zasede UI
 [qm allow ai short]
-
+Dovoli UI
 [qm allow ai]
-
+Dovoli nasprotnika UI
 [qm cancel]
-
+Prekliči
 [qm cancel search]
-
+Prekliči iskanje
 [qm usual wait %0]
-
+običajno čakanje %0
 [qm widening]
-
+med čakanjem se razširja
 [qm ais are rated]
-
+(rangirano: tudi UI imajo ocene)
 [qm opponent declined]
-
+Nasprotnik ni sprejel. Spet ste na začetku vrste.
 [qm %0 did not accept]
-
+%0 ni sprejel. Spet ste na začetku vrste.
 [qm start failed]
-
+Tekme ni bilo mogoče začeti. Ponovno iščete.
 [qm you declined]
-
+Tekmo ste zavrnili. Po kratkem čakanju lahko ponovno iščete.
 [qm you did not answer]
-
+Niste pravočasno sprejeli. Po kratkem čakanju lahko ponovno iščete.
 [qm search ended]
-
+Iskanje je končano.
 [qm try again]
-
+Poskusi znova
 [online connecting]
-
+Povezovanje …
 [qm no queues]
-
+Ta strežnik nima čakalnih vrst za hitro tekmo.
 [qm quick match]
-
+Hitra tekma
 [qm phone searching note]
-
+Iskanje se nadaljuje, tudi če zapustite ta zaslon.
 [qm phone intro]
-
+Spodaj izberite vrsto; iskanje teče, medtem ko brskate.
 [qm online]
-
+Na spletu
 [qm keeps running note]
-
+Iskanje se nadaljuje, tudi če zapustite ta zaslon.
 [qm ai]
-
+UI
 [qm provisional]
-
+začasno
 [qm accepted]
-
+✓ sprejeto
 [qm declined]
-
+zavrnjeno
 [qm waiting]
-
+čakanje …
 [qm ai badge]
-
+UI
 [qm match found]
-
+Tekma najdena
 [qm playing an ai]
-
+Igra proti UI
 [qm vs]
-
+proti
 [qm ai explanation rated]
-
+V vašem razponu ocen ni iskal nihče. Igrali boste proti UI z oceno, najbližjo vaši; izid šteje za vašo oceno in za oceno UI.
 [qm ai explanation]
-
+Nihče ni iskal. Igrali boste proti UI z oceno, najbližjo vaši; ta igra ni rangirana.
 [qm casual explanation]
-
+Tekma se začne takoj; sproščene igre niso rangirane.
 [qm accepted button]
-
+Sprejeto
 [qm accept]
-
+Sprejmi
 [qm decline]
-
+Zavrni
 [qm both must accept]
-
+Sprejeti morata oba
 [qm accept explanation]
-
+Oba igralca morata sprejeti. Če zavrnete ali pustite, da čas poteče, se uvrstite na konec vrste.
 [qm starting in %0]
-
+Začetek čez %0 …
 [qm preparing match]
-
+Pripravljanje tekme …
 [qm match assigned %0 %1]
-
+Tekma %0 je pripravljena na %1, vendar se ta različica še ne more povezati s spletnimi tekmami.
 [online jan]
-
+jan.
 [online feb]
-
+feb.
 [online mar]
-
+mar.
 [online apr]
-
+apr.
 [online may]
-
+maj
 [online jun]
-
+jun.
 [online jul]
-
+jul.
 [online aug]
-
+avg.
 [online sep]
-
+sep.
 [online oct]
-
+okt.
 [online nov]
-
+nov.
 [online dec]
-
+dec.
 [profile win letter]
-
+Z
 [profile loss letter]
-
+P
 [profile draw letter]
-
+N
 [profile history unavailable]
-
+Ta strežnik še ne ponuja zgodovine tekem.
 [profile downloading replay]
-
+Prenašanje posnetka …
 [profile no replay]
-
+Za to tekmo ni na voljo posnetka.
 [profile room with %0]
-
+Soba · kolonije: %0
 [profile with %0 vs %1]
-
+z %0 proti %1
 [profile vs %0]
-
+proti %0
 [profile room]
-
+Soba
 [profile casual]
-
+Sproščeno
 [profile ai filled]
-
+Dopolnjeno z UI
 [profile provisional %0 games]
-
+začasno · igre: %0
 [profile unrated]
-
+nerangirano
 [profile checking]
-
+preverjanje …
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Stran tekme
 [profile replay]
-
+Posnetek
 [profile win rate last %0]
-
+Delež zmag, zadnjih %0
 [profile %0 w %1 l %2 d]
-
+Z: %0 · P: %1 · N: %2
 [profile typical game]
-
+Običajna igra
 [profile median length]
-
+vaša mediana trajanja
 [profile best map]
-
+Najboljši zemljevid
 [profile %0 w %1 l]
-
+Z: %0 · P: %1
 [profile no rated games]
-
+Za oceno odigrajte rangirano tekmo.
 [profile all]
-
+Vse
 [profile rooms]
-
+Sobe
 [profile vs ai]
-
+proti UI
 [profile matches]
-
+Tekme
 [online loading]
-
+Nalaganje …
 [profile no matches]
-
+Še ni tekem.
 [online load more]
-
+Naloži več
 [profile title]
-
+Profil
 [profile guest]
-
+gost
 [profile playing since %0]
-
+igra od %0
 [profile full profile web]
-
+Celoten profil na spletu
 [profile replays note]
-
+Posnetki se prenesejo s strežnika, ko jih odprete; lokalno shranjeni ostanejo v Naloži igro → Posnetki.
 [profile web profile]
-
+Spletni profil
 [maps most played]
-
+Najbolj igrani
 [maps most liked]
-
+Najbolj všečni
 [maps newest]
-
+Najnovejši
 [maps most downloaded]
-
+Največ prenosov
 [maps any size]
-
+Vse velikosti
 [maps up to 128]
-
+Do 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 in več
 [maps report broken]
-
+Ne deluje
 [maps report offensive]
-
+Žaljiva vsebina
 [maps report copyright]
-
+Delo nekoga drugega
 [maps report other]
-
+Nekaj drugega
 [maps public]
-
+Javno
 [maps unlisted]
-
+Nenavedeno
 [maps private]
-
+Zasebno
 [maps cannot read file]
-
+Datoteke zemljevida ni bilo mogoče prebrati.
 [maps file too large]
-
+Datoteka zemljevida je prevelika za deljenje.
 [maps saved for next room]
-
+Zemljevid je prenesen; uporabljen bo, ko odprete sobo.
 [maps download failed]
-
+Zemljevida ni bilo mogoče prenesti.
 [maps %0 colonies]
-
+Kolonije: %0
 [maps version %0]
-
+različica %0
 [maps updated %0]
-
+posodobljeno %0
 [maps downloading]
-
+Prenašanje zemljevida …
 [maps like needs account]
-
+Za všečkanje zemljevidov se morate prijaviti.
 [maps report sent]
-
+Hvala; moderatorji si ga bodo ogledali.
 [maps select a map]
-
+Izberite zemljevid za ogled podrobnosti.
 [maps by %0]
-
+avtor: %0
 [maps stats %0 %1 %2]
-
+▶ iger: %0 · ⬇ prenosov: %1 · ♥ %2
 [maps use in room]
-
+Uporabi v sobi
 [maps liked]
-
+Všečkano
 [maps like]
-
+Všečkaj
 [maps map page]
-
+Stran zemljevida
 [maps reported]
-
+Prijavljeno
 [maps report]
-
+Prijavi …
 [maps report why]
-
+Kaj je narobe s tem zemljevidom?
 [maps search placeholder]
-
+Iskanje zemljevidov ali avtorjev
 [maps none found]
-
+Ni ustreznih zemljevidov.
 [maps any colonies]
-
+Poljubno število kolonij
 [maps checking]
-
+Preverjanje …
 [maps no version yet]
-
+Naložena ni bila še nobena različica.
 [maps rejected]
-
+Zavrnjeno
 [maps did not load %0]
-
+Zemljevid se ni naložil: %0
 [maps unknown reason]
-
+razlog ni bil podan
 [maps fix and upload again]
-
+popravite ga v urejevalniku in ga znova naložite
 [maps uploaded just now]
-
+pravkar naloženo
 [maps loading on server]
-
+nalaganje na strežniku
 [maps %0 plays]
-
+Iger: %0
 [maps hidden]
-
+Skrito
 [maps upload again]
-
+Znova naloži …
 [maps delete]
-
+Izbriši
 [maps update]
-
+Posodobi …
 [maps upload a map]
-
+Naloži zemljevid …
 [maps upload hint]
-
+Datoteke .map iz mape z zemljevidi ali iz urejevalnika
 [maps no maps yet]
-
+Delili niste še nobenega zemljevida.
 [maps my maps]
-
+Moji zemljevidi
 [maps my maps %0]
-
+Moji zemljevidi (%0)
 [maps browse]
-
+Brskaj
 [maps title]
-
+Zemljevidi
 [maps browse note %0]
-
+Katalog %0 · prikazani so le zemljevidi, ki se naložijo v tej različici
 [maps visibility note]
-
+Javni zemljevidi so prikazani v zavihku Brskaj. Nenavedeni delujejo v vaših sobah in prek svoje povezave. Zasebni le v vaših sobah.
 [maps use %0]
-
+Uporabi %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Naslov
 [maps field description]
-
+Opis
 [maps who can use it]
-
+Kdo ga lahko uporablja
 [maps guests unlisted]
-
+Gostje lahko delijo nenavedene in zasebne zemljevide; za objavo v zavihku Brskaj se prijavite.
 [maps visibility help]
-
+Nenavedeni zemljevidi delujejo v vaših sobah in prek svoje povezave; javni so prikazani tudi v zavihku Brskaj.
 [maps new version of %0]
-
+Naloži to datoteko kot novo različico zemljevida %0.
 [maps upload]
-
+Naloži
 [maps uploading]
-
+Nalaganje …
 [maps checking detail]
-
+Strežnik nalaga zemljevid in riše njegov predogled. Do takrat zemljevida ni mogoče uporabiti.
 [maps ready]
-
+Pripravljeno
 [maps ready public]
-
+Zemljevid je pripravljen in naveden v zavihku Brskaj.
 [maps ready unlisted]
-
+Zemljevid je pripravljen. Nenavedeni zemljevidi delujejo v vaših sobah in prek svoje povezave.
 [maps ready private]
-
+Zemljevid je pripravljen. Zasebni zemljevidi delujejo le v vaših sobah.
 [maps upload failed]
-
+Nalaganje ni uspelo
 [maps server read %0 %1]
-
+Strežnik ga je prebral kot %0 (kolonije: %1).
 [maps continue in background]
-
+Zapri
 [maps upload a map title]
-
+Naloži zemljevid
 [maps update map title]
-
+Posodobi zemljevid
 [maps upload note]
-
+Strežnik vsako naloženo datoteko najprej odpre in preveri, šele nato jo je mogoče uporabiti.
 [online just now]
-
+pravkar
 [online today %0]
-
+danes ob %0
 [online yesterday]
-
+včeraj
 [online sun]
-
+ned.
 [online mon]
-
+pon.
 [online tue]
-
+tor.
 [online wed]
-
+sre.
 [online thu]
-
+čet.
 [online fri]
-
+pet.
 [online sat]
-
+sob.
 [online %0 weeks ago]
-
+pred %0 ted.
 [online %0 months ago]
-
+pred %0 mes.
 [online %0 years ago]
-
+pred %0 l.
 [maps share online]
-
+Deli na spletu …
 [maps mine]
-
+Moji
 [results waiting for players]
-
+Čakanje, da drugi igralci odidejo …
 [results waiting detail]
-
+Izid se zabeleži, ko vsi zapustijo tekmo.
 [results waiting slow]
-
+Igralec, ki je izgubil povezavo, ima do 3 minute časa za vrnitev. Izid se bo prikazal v vaši zgodovini in na strani tekme.
 [results verifying slow]
-
+Preverjanje traja dlje kot običajno. Izid se bo prikazal v vaši zgodovini in na strani tekme.
 [results rematch]
-
+Povratna tekma
 [results join rematch %0]
-
+Pridruži se povratni tekmi (%0)
 [hub profile history]
-
+Profil in zgodovina
 [hub my maps]
-
+Moji zemljevidi
 [hub leaderboard %0]
-
+Lestvica · %0
 [hub leaderboard empty]
-
+Še ni rangiranih igralcev.
 [hub guests not ranked]
-
+Gostje niso rangirani. Prijavite se, da se prikažete tukaj.
 [hub full leaderboard]
-
+Celotna lestvica
 [settings %0 is no longer linked.]
-
+%0 ni več povezan.
 [room map read failed]
-
+Te datoteke zemljevida ni bilo mogoče prebrati.
 [room map upload failed]
-
+Zemljevida ni bilo mogoče deliti s sobo.
 [room map upload failed %0]
-
+Zemljevida ni bilo mogoče deliti s sobo: %0
 [room uploading map]
-
+Deljenje zemljevida s sobo …
 [room premade map shared]
-
+Vsi v sobi igrajo to datoteko zemljevida; prenese se pred tekmo.
 [room take a seat to play]
-
+Za igro zasedite prosto mesto
 [room waiting for a seat]
-
+Vsa mesta so zasedena. Ko se katero sprosti, ga lahko zasedete.
 [room not seated]
-
+Brez mesta
 [room copied]
-
+Kopirano
 [room copy failed]
-
+Kopiranje ni uspelo
 [room closed title]
-
+Soba zaprta
 [room removed title]
-
+Odstranjeni iz sobe
 [room back to online]
-
+Nazaj na splet
 [leave match]
-
+Zapusti tekmo
 [leave match title]
-
+Zapustim to tekmo?
 [leave lan title]
-
+Zapustim to igro v LAN?
 [leave rated body]
-
+To rangirano tekmo izgubite in vaša ocena pade. Drugi igrajo naprej, vi pa se ne morete vrniti.
 [leave casual body]
-
+Ta hitra tekma šteje kot vaš poraz. Drugi igrajo naprej, vi pa se ne morete vrniti.
 [leave room body]
-
+Zapustite tekmo sobe in v vaši zgodovini šteje kot poraz. Drugi igrajo naprej, vi pa se ne morete vrniti.
 [leave lan body]
-
+Drugi igrajo naprej brez vas, vi pa se v to igro ne morete vrniti.
 [leave match confirm]
-
+Zapusti tekmo
 [keep playing]
-
+Igraj naprej
 [results team]
-
+Ekipa
 [results quick unrated]
-
+Hitra tekma · nerangirano
 [conn card cannot keep up]
-
+Vaša naprava ne zmore slediti tej tekmi
 [conn card cannot keep up body]
-
+Tekmo predvaja počasneje, kot ta teče, zato je ne bo dohitela. Lahko zapustite tekmo ali znižate grafične nastavitve in čakate naprej.
 [conn card not gaining]
-
+ne dohiteva
 [results reason opponents left]
-
+Vaši nasprotniki so zapustili tekmo.
 [results reason victory]
-
+Vse nasprotne kolonije so poražene.
 [results reason defeat]
-
+Vaša kolonija je poražena.
 [results reason you left]
-
+Zapustili ste tekmo. Šteje kot poraz.
 [results final after end]
-
+Končni izid po koncu tekme.
 [pause none left]
-
+Ni več premorov
 [pause game left %0]
-
+Premor (preostalo: %0)
 [pause by %0]
-
+Premor: %0
 [pause by %0 resumes in %1]
-
+Premor: %0 · nadaljevanje čez %1
 [turn too many actions]
-
+Preveč dejanj: nekatera še čakajo na pošiljanje
 [turn no pauses left]
-
+V tej tekmi nimate več premorov
 [turn pause time used %0]
-
+%0 je porabil ves čas za premore: igra se nadaljuje
 [room seats one person %0 %1]
-
+1 igralec · UI: %0 · prosto: %1
 [room rules otherwise standard]
-
+Vsa druga pravila so kot pri Standardnih.
 [room browser link]
-
+Povezava za igralce v brskalniku
 [room browser link hint]
-
+Igralci v brskalniku prilepijo to povezavo, da se pridružijo.
 [room browser link code %0]
-
+Igralci v brskalniku prilepijo to povezavo, da se pridružijo. Njihova igra prikaže kodo %0.
 [room copy link]
-
+Kopiraj povezavo
 [room lan open seat detail]
-
+Zasede ga lahko kdorkoli v tem omrežju
 [room close title]
-
+Zaprem sobo?
 [room close body one]
-
+Z odhodom se soba zapre za vse, tudi za drugega igralca v njej.
 [room close body %0]
-
+Z odhodom se soba zapre za vse, tudi za druge igralce v njej (%0).
 [room close confirm]
-
+Zapri sobo
 [room stay]
-
+Ostani
 [room colours changed]
-
+Novi zemljevid je mestom dodelil nove barve. Pred začetkom preverite svojo.
 [room copy by hand]
-
+Kopiranje ni uspelo. Povabilo kopirajte sami:
 [room copy by hand close]
-
+Zapri
 [room copy by hand touch]
-
+Dotaknite se povezave in jo pridržite, nato izberite Kopiraj.
 [room copy by hand keys]
-
+Povezava je izbrana: pritisnite Ctrl+C (⌘C na Macu).
 [room code]
-
+Koda
 [online under a minute]
-
+manj kot minuta
 [online about %0 min]
-
+približno %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+Nasprotnik UI: %0
 [match relay connected]
-
+Povezano s strežnikom igre
 [room picker title]
-
+Izberite zemljevid
 [room picker for one]
-
+Za 1 igralca v sobi
 [room picker for %0]
-
+Za igralce v sobi: %0
 [room picker generated]
-
+Ustvarjeni
 [room picker premade]
-
+Pripravljeni
 [room picker catalog]
-
+Katalog
 [room picker size]
-
+Velikost
 [room picker colonies]
-
+Kolonije
 [room picker fair]
-
+Pošten začetek za vsako kolonijo
 [room picker does not fit]
-
+Ne ustreza tej velikosti; poskusite drugo
 [room picker preparing]
-
+Pripravljanje predogleda …
 [room picker generated note]
-
+Vsaka pokrajina da vsaki koloniji enako dober začetek, strežnik pa vsem ustvari enak zemljevid.
 [room picker players %0]
-
+Igralci: %0
 [room picker unreadable]
-
+ni berljiv
 [room picker no premade]
-
+Ni najdenih pripravljenih zemljevidov.
 [room picker too small %0]
-
+Ta zemljevid ima manj kolonij, kot je igralcev v sobi (%0).
 [room picker pick premade]
-
+Izberite zemljevid za prikaz tukaj.
 [room picker catalog intro]
-
+Zemljevidi, ki so jih delili drugi igralci. Odprite enega in izberite Uporabi v sobi.
 [room picker browse catalog]
-
+Prebrskaj deljene zemljevide
 [room picker more options]
-
+Več možnosti …
 [room picker use]
-
+Uporabi ta zemljevid
 [room map ready title %0]
-
+Igraj %0
 [room map ready unnamed]
-
+ta zemljevid
 [room map ready body]
-
+Ustvarite sobo in povabite prijatelje: soba bo igrala ta zemljevid.
 [game draw]
-
+Neodločeno
 [settings Show colony skins]
 Prikaži preobleke kolonij
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Izklopite za uporabo klasičnih enot, rojev in barv stavb v tej napravi.
+Izklopite za uporabo klasičnih enot, porodnišnic in barv zgradb na tej napravi.
 [settings Hive Mind]
-
+Kolektivni um
 [settings Enable commander shortcuts]
-
+Omogoči bližnjice poveljnika
 [settings Command your colony without opening a menu.]
-
+Poveljujte koloniji, ne da bi odprli meni.
 [settings Allow supervision for new commands]
-
+Dovoli nadzor novih ukazov
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Poveljnik lahko spremlja trajne ukaze in ukrepa. Nadaljnji ukrepi porabljajo kredite; nameščeni ukazi delujejo naprej brez kreditov.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Privzete bližnjice: Ctrl+Enter za ukaz; Ctrl+Shift+Enter za ustavitev dela poveljnika. Spremenite jih pod Kontrolniki. Kartice trajnih ukazov imajo ločena gumba za premor in preklic.
 [settings Commander account and credits]
-
+Račun poveljnika in krediti
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Kredite in nakupe upravljajte v brskalniku. Pomoč poveljnika je dovoljena v rangiranih igrah.
 [open commander]
-
+Odpri poveljnika
 [stop commander]
-
+Ustavi poveljnika
 [settings Recording]
-
+Snemanje
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Snemajte igre kot videoposnetke MP4 z zvokom. Snemanje potrebuje FFmpeg s kodirnikoma libx264 in AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg je pripravljen.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg ni na voljo, zato je snemanje izklopljeno. Namestite FFmpeg, poskrbite, da je v PATH, nato znova preverite.
 [settings Check for FFmpeg again]
-
+Znova preveri FFmpeg
 [settings Checking for FFmpeg…]
-
+Preverjanje FFmpeg …
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Bližnjica: %0. Deluje tudi v menijih in urejevalniku.
 [settings Change the hotkey]
-
+Spremeni bližnjico
 [settings Recordings are saved in %0]
-
+Posnetki se shranijo v %0
 [toggle recording]
-
+Začni ali ustavi snemanje
 [File selection is unavailable.]
-
+Izbira datotek ni na voljo.
 [Saving custom AI…]
-
+Shranjevanje lastne UI …
 [Could not read the selected JavaScript file.]
-
+Izbrane datoteke JavaScript ni bilo mogoče prebrati.
 [Custom AI library saved.]
-
+Knjižnica lastnih UI je shranjena.
 [Storage could not be saved. The previous library is retained.]
-
+Shranjevanje ni uspelo. Prejšnja knjižnica je ohranjena.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Uvozite eno datoteko UI v JavaScriptu in jo izberite pri pripravi lokalne igre.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Uvoz shrani kopijo v Glob2. Posodobi zamenja to kopijo za prihodnje igre; shranjene igre obdržijo izvirno UI.
 [Waiting for file selection or storage…]
-
+Čakanje na izbiro datoteke ali shranjevanje …
 [Import JavaScript AI]
-
+Uvozi UI v JavaScriptu
 [Link development file]
-
+Poveži razvojno datoteko
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Povezane datoteke se preberejo ob začetku igre. Pred novo igro jih ponovno zgradite. Odstranitev povezave nikoli ne izbriše vaše datoteke.
 [Example AI and authoring guide]
-
+Primer UI in vodnik za pisanje
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Še ni lastnih UI. Za začetek uvozite združeno datoteko .js.
 [Relink]
-
+Ponovno poveži
 [Update]
-
+Posodobi
 [Validate]
-
+Preveri
 [AI startup and persistent globals are valid.]
-
+Zagon UI in trajne globalne spremenljivke so veljavni.
 [Remove from library]
-
+Odstrani iz knjižnice
 [AI telemetry]
-
+Telemetrija UI
 [No accessible AI telemetry.]
-
+Ni dostopne telemetrije UI.
 [Search fields]
-
+Iskanje polj
 [Telemetry unavailable for this recording or controller.]
-
+Telemetrija za ta posnetek ali upravljavca ni na voljo.
 [Linked]
-
+Povezano
 [Imported]
-
+Uvoženo
 [Player]
-
+Igralec
 [Updated at tick %0]
-
+Posodobljeno v koraku %0
 [No values published yet.]
-
+Objavljena ni še nobena vrednost.
 [No fields match your search.]
-
+Nobeno polje ne ustreza iskanju.
 [settings Custom AIs]
-
+Lastne UI
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+UI v JavaScriptu dodajte v Nastavitve → Lastne UI. Prikažejo se v izbirniku UI vsake kolonije.
 [Missing custom AI]
-
+Manjkajoča lastna UI
 [Map repetition failed]
-
+Tega zemljevida ni mogoče ponoviti. Uporabite začetni zemljevid brez skripte ali zmanjšajte število ponovitev in baz.
 [repeat map horizontally]
 Ponovi zemljevid vodoravno
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ baze
 [bases per colony]
 Baze na kolonijo; baza je ena ekipa zemljevida, kot je narisan, z njenimi zgradbami in enotami
 [stat group population]
-
+Prebivalstvo
 [stat group food]
-
+Hrana in počutje
 [stat group resources]
-
+Surovine
 [stat group buildings]
-
+Zgradbe
 [stat group military]
-
+Vojska
 [stat group map]
-
+Ozemlje
 [stat group score]
-
+Točke
 [stat overview]
-
+Pregled
 [stat overview about]
-
+Podatki vsake kolonije za celotno tekmo. Kjer je več bolje, je najvišja vrednost poudarjena; kliknite naslov stolpca, da vidite spreminjanje skozi čas.
 [stat population]
-
+Prebivalstvo
 [stat population about]
-
+Koliko živih enot je imela kolonija: delavci, raziskovalci in vojaki skupaj.
 [stat births]
-
+Rojene enote
 [stat births about]
-
+Kako hitro so porodnišnice ustvarjale nove enote. Razdelite, da vidite delavce, raziskovalce in vojake posebej.
 [stat deaths]
-
+Izgubljene enote
 [stat deaths about]
-
+Kako hitro je kolonija izgubljala enote, ne glede na vzrok: boj, stradanje, poškodbe pri čiščenju ali ujetost.
 [stat net growth]
-
+Rast prebivalstva
 [stat net growth about]
-
+Rojene enote minus izgubljene. Nad ničlo je kolonija rasla, pod ničlo se je krčila.
 [stat death causes]
-
+Vzroki smrti
 [stat death causes about]
-
+Zakaj so enote kolonije umrle: boj, stradanje, poškodbe pri odstranjevanju surovin, ujetost brez izhoda ali drugi vzroki.
 [stat conversions]
-
+Neto prestopi
 [stat conversions about]
-
+Enote, pridobljene od drugih kolonij, minus enote, izgubljene v njihovo korist. Enote prestopijo, ko jih druga kolonija bolje hrani.
 [stat hunger]
-
+Zaloge hrane
 [stat hunger about]
-
+Koliko hrane so enote kolonije nosile v sebi. Vsaka enota je razvrščena glede na preostanek zaloge hrane: skoraj prazna (četrtina ali manj), nizka (do polovice), napol polna (do treh četrtin) ali sita. Ko zaloga upada, enote iščejo restavracijo, zato ima kolonija vedno nekaj enot z nizko zalogo.
 [stat health]
-
+Zdravje
 [stat health about]
-
+Kako zdrave so bile enote kolonije. Vsaka enota je razvrščena glede na preostalo zdravje: kritična (četrtina ali manj), ranjena (do polovice), poškodovana (do treh četrtin) ali zdrava.
 [stat seeking food]
-
+Enote, ki iščejo hrano
 [stat seeking food about]
-
+Enote, ki so prekinile delo, da bi poiskale restavracijo. Tiste, ki tudi niso povsem zdrave, so štete kot oslabele.
 [stat in care]
-
+Enote pri jedi ali zdravljenju
 [stat in care about]
-
+Enote, ki jedo v restavraciji ali se zdravijo v bolnišnici in zato ne delajo.
 [stat wheat harvested]
-
+Požeta pšenica
 [stat wheat harvested about]
-
+Tovori pšenice, ki so jih nabrali delavci. Restavracije iz pšenice pripravljajo obroke.
 [stat wheat stored]
-
+Pšenica v skladišču
 [stat wheat stored about]
-
+Pšenica v zgradbah kolonije, pripravljena za postrežbo ali uporabo.
 [stat meals]
-
+Postreženi obroki
 [stat meals about]
-
+Obroki, ki so jih postregle restavracije kolonije, njenim enotam in obiskovalcem iz drugih kolonij.
 [stat starvation]
-
+Smrti zaradi lakote
 [stat starvation about]
-
+Enote, ki so umrle, ker niso pravočasno našle hrane.
 [stat healing]
-
+Obnovljeno zdravje
 [stat healing about]
-
+Zdravje, ki so ga bolnišnice kolonije vrnile ranjenim enotam.
 [stat gathered]
-
+Zbrane surovine
 [stat gathered about]
-
+Tovori vseh surovin, ki so jih pobrali delavci. Razdelite, da vidite vsako surovino.
 [stat stored]
-
+Surovine v skladišču
 [stat stored about]
-
+Surovine v zgradbah kolonije. Razdelite, da vidite vsako surovino.
 [stat spending]
-
+Poraba surovin
 [stat spending about]
-
+Kam so šle dostavljene surovine: obroki, nove enote, strelivo stolpov, nove zgradbe ali nadgradnje.
 [stat delivered]
-
+Dostavljene surovine
 [stat delivered about]
-
+Tovori, ki so jih delavci prinesli v zgradbe.
 [stat traded]
-
+Neto trgovina
 [stat traded about]
-
+Surovine, prejete prek tržnic, minus oddane surovine.
 [stat buildings]
-
+Stoječe zgradbe
 [stat buildings about]
-
+Dokončane zgradbe kolonije. Razdelite, da vidite vsako vrsto zgradbe.
 [stat construction]
-
+Opravljena gradbena dela
 [stat construction about]
-
+Opravljena gradbena dela: nove zgradbe, nadgradnje in popravila.
 [stat buildings lost]
-
+Izgubljene zgradbe
 [stat buildings lost about]
-
+Zgradbe, ki so jih uničili sovražniki ali jih je porušila kolonija sama.
 [stat blocked buildings]
-
+Zgradbe brez vhoda
 [stat blocked buildings about]
-
+Zgradbe z zaprtimi vhodi, v katere enote niso mogle vstopiti ali iz njih izstopiti.
 [stat attack]
-
+Napadalna moč
 [stat attack about]
-
+Ocena skupne bojne moči vojakov kolonije: kako močno in kako hitro udarjajo.
 [stat defence]
-
+Obrambna moč
 [stat defence about]
-
+Ocena skupne ognjene moči obrambnih stolpov kolonije.
 [stat hit points]
-
+Skupno zdravje
 [stat hit points about]
-
+Seštevek zdravja vseh enot in zgradb kolonije.
 [stat damage dealt]
-
+Povzročena škoda
 [stat damage dealt about]
-
+Škoda, ki jo je kolonija povzročila sovražnim enotam in zgradbam. Razdelite, da vidite vojake, čarovnijo in stolpe.
 [stat damage taken]
-
+Prejeta škoda
 [stat damage taken about]
-
+Škoda, ki so jo sovražniki povzročili enotam in zgradbam kolonije.
 [stat damage traded]
-
+Bilanca škode
 [stat damage traded about]
-
+Povzročena škoda minus prejeta škoda. Nad ničlo je kolonija zmagovala v spopadih.
 [stat combat deaths]
-
+Enote, padle v boju
 [stat combat deaths about]
-
+Enote te kolonije, ki so jih ubili sovražniki. Razdelite, da vidite delavce, raziskovalce in vojake posebej.
 [stat accuracy]
-
+Zadetki
 [stat accuracy about]
-
+Delež strelov stolpov in raziskovalcev kolonije, ki so zadeli cilj.
 [stat training]
-
+Urjenje
 [stat training about]
-
+Obiski enot v šolah, vojašnicah, tekaških stezah in bazenih za učenje veščin.
 [stat skills]
-
+Pridobljene veščine
 [stat skills about]
-
+Stopnje veščin, ki so jih enote kolonije pridobile z urjenjem.
 [stat growth nearby]
-
+Rast surovin blizu kolonije
 [stat growth nearby about]
-
+Koliko pšenice, lesa in drugih surovin je zraslo v razdalji 32 polj od zgradb kolonije, v točkah rasti in ne v tovorih. Razdelite, da vidite, kako blizu doma so zrasle.
 [stat growth map]
-
+Rast surovin na zemljevidu
 [stat growth map about]
-
+Koliko surovin je zraslo kjerkoli na zemljevidu, v točkah rasti in ne v tovorih. Za vse kolonije je enako.
 [stat stranded]
-
+Enote, ki se ne morejo premikati
 [stat stranded about]
-
+Ujete enote brez prostega polja, na katerega bi lahko stopile.
 [stat cleared]
-
+Odstranjene surovine
 [stat cleared about]
-
+Surovine, ki so jih delavci odstranili na območjih čiščenja, da so naredili prostor.
 [stat prestige]
-
+Ugled
 [stat prestige about]
-
+Ugled kolonije, pridobljen z zgradbami najvišje stopnje. Tekma s ciljem ugleda se konča, ko je cilj dosežen.
 [stat band combat]
-
+Boj
 [stat band starvation]
-
+Stradanje
 [stat band clearing]
-
+Poškodbe pri čiščenju
 [stat band trapped]
-
+Ujetost
 [stat band other]
-
+Drugo
 [stat band starving]
-
+Skoraj prazna
 [stat band hungry]
-
+Nizka
 [stat band peckish]
-
+Napol polna
 [stat band fed]
-
+Sita
 [stat band critical]
-
+Kritična
 [stat band wounded]
-
+Ranjena
 [stat band hurt]
-
+Poškodovana
 [stat band healthy]
-
+Zdrava
 [stat band weakening]
-
+Oslabele
 [stat band looking]
-
+Iščejo restavracijo
 [stat band eating]
-
+Jedo
 [stat band healing]
-
+Se zdravijo
 [stat band meals]
-
+Obroki
 [stat band new units]
-
+Nove enote
 [stat band ammunition]
-
+Strelivo
 [stat band construction]
-
+Nove zgradbe
 [stat band upgrades]
-
+Nadgradnje
 [stat band built]
-
+Zgrajeno
 [stat band upgraded]
-
+Nadgrajeno
 [stat band repaired]
-
+Popravljeno
 [stat band destroyed]
-
+Uničeno
 [stat band demolished]
-
+Porušeno
 [stat band melee]
-
+Vojaki
 [stat band magic]
-
+Čarovnija
 [stat band towers]
-
+Stolpi
 [stat band within 8]
-
+Do 8 polj
 [stat band 8 to 16]
-
+8 do 16 polj
 [stat band 16 to 32]
-
+16 do 32 polj
 [stat unit units]
-
+enote
 [stat unit wheat]
-
+pšenica
 [stat unit meals]
-
+obroki
 [stat unit hit points]
-
+zdravje
 [stat unit resources]
-
+surovine
 [stat unit buildings]
-
+zgradbe
 [stat unit strength]
-
+ocena
 [stat unit damage]
-
+škoda
 [stat unit shots]
-
+streli
 [stat unit visits]
-
+obiski
 [stat unit skills]
-
+stopnje veščin
 [stat unit prestige]
-
+ugled
 [stat axis percent of %0]
-
+% od %0
 [stat axis share of all teams]
-
+% vseh kolonij
 [stat axis percent of units]
-
+% enot kolonije
 [stat axis %0 per minute per 100 units]
-
+%0 na minuto na 100 enot kolonije
 [stat axis %0 per 100 units]
-
+%0 na 100 enot kolonije
 [stat axis %0 per minute]
-
+%0 na minuto
 [stat axis %0 so far]
-
+%0, skupno doslej
 [stat axis %0 minute average]
-
+povprečje %0 min
 [stat view per minute]
-
+Na minuto
 [stat view total]
-
+Skupaj
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Po vrstah
 [stat view percentages]
-
+Kot % skupnega
 [stat view percent of units]
-
+Kot % kolonije
 [stat view per 100 units]
-
+Glede na velikost kolonije
 [stat view share]
-
+Delež vseh kolonij
 [stat view highlight none]
-
+Poudarek: brez
 [stat column peak units]
-
+Največ enot
 [stat column born]
-
+Rojeni
 [stat column lost]
-
+Izgubljeni
 [stat column wheat]
-
+Pšenica
 [stat column damage dealt]
-
+Povzročena škoda
 [stat column damage taken]
-
+Prejeta škoda
 [stat column built]
-
+Zgrajeno
 [stat column buildings lost]
-
+Izgubljene zgradbe
 [stat column prestige]
-
+Ugled
 [stat marker wiped out]
-
+izgubljena zadnja enota
 [stat marker first combat death]
-
+prva enota, padla v boju
 [stat marker first building destroyed]
-
+prva uničena zgradba
 [stat not recorded for this match]
-
+Ta statistika za to tekmo ni bila zabeležena.
 [results reason beyond doubt]
-
+Izid ni bil več vprašljiv.
 [stat per minute short]
-
+na min
 [stat page colony]
-
+Kolonija
 [stat page %0 of %1]
-
+%0 od %1  >
 [stat band workers]
-
+Delavci
 [stat band explorers]
-
+Raziskovalci
 [stat band warriors]
-
+Vojaki
 [stat unit deaths]
-
+smrti
 [stat unit growth]
-
+rast
 [stat view by unit type]
-
+Po vrsti enot
 [stat view by state]
-
+Po stanju
 [stat view by resource]
-
+Po surovini
 [stat view by building]
-
+Po zgradbi
 [stat view by work]
-
+Po vrsti dela
 [stat view by cause]
-
+Po vzroku
 [stat view by weapon]
-
+Po orožju
 [stat view by distance]
-
+Po razdalji
 [stat nothing to show]
-
+Ni česa prikazati: v tej tekmi se to ni zgodilo.
 [stat %0 nothing]
-
+%0 (nič)
 [Match]
-
+Tekma
 [Time limit]
-
+Časovna omejitev
 [Alliances can change]
-
+Zavezništva se lahko menjajo
 [Reveal terrain]
-
+Razkrij teren
 [Starting unit level]
-
+Začetna stopnja enot
 [Starting stockpile]
-
+Začetna zaloga
 [Regrowth]
-
+Obnavljanje
 [Building strength]
-
+Trdnost zgradb
 [Wounded units retreat]
-
+Ranjene enote se umaknejo
 [Units can die]
-
+Enote lahko umrejo
 [Unit training]
-
+Urjenje enot
 [No stockpile]
-
+Brez
 [No glass cannon]
-
+Izklopljeno
 [How quickly harvested resources grow back and spread.]
-
+Kako hitro nabrane surovine ponovno zrastejo in se širijo.
 [Units must eat to keep working.]
-
+Enote morajo jesti, da lahko delajo naprej.
 [Summary]
-
+Povzetek
 [All rules]
-
+Vsa pravila
 [Show all rules]
-
+Prikaži vsa pravila
 [Choose a ruleset]
-
+Izberite nabor pravil
 [Reset to %0]
-
+Ponastavi na %0
 [ruleset one change %0]
-
+%0 + 1 sprememba
 [ruleset changes %0 %1]
-
+%0 + sprememb: %1
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Ta tekma se ne more končati. Vklopite zmago z ugledom ali nastavite časovno omejitev.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Ugled se običajno pojavi po 13 do 28 minutah, zato se omejitev 30 minut pogosto konča neodločeno.
 [Blitz]
-
+Blisk
 [ruleset blitz description]
-
+Hiter začetek, zgodnji konec
 [Gentle]
-
+Prizanesljivo
 [ruleset gentle description]
-
+Prizanesljiva pravila za prvo tekmo
 [Sandbox]
-
+Peskovnik
 [ruleset sandbox description]
-
+Brez bojev, brez stradanja, gradite vse
 [Bloodbath]
-
+Krvava kopel
 [ruleset bloodbath description]
-
+Krhke, neustrašne vojske
 [Siege]
-
+Obleganje
 [ruleset siege description]
-
+Trdnjavsko obzidje in dolge vojne
 [Lean years]
-
+Suha leta
 [ruleset lean years description]
-
+Surovine se komaj obnavljajo
 [Gold rush]
-
+Zlata mrzlica
 [ruleset gold rush description]
-
+Kar je na zemljevidu, je vse, kar je
 [Elite ranks]
-
+Elitne vrste
 [ruleset elite ranks description]
-
+Začnite izurjeni, nadaljnjega urjenja ni
 [Shifting alliances]
-
+Spremenljiva zavezništva
 [ruleset shifting alliances description]
-
+Ekipe se lahko menjajo v 60-minutni dirki
 [Probability victory]
-
+Verjetnostna zmaga
 [Off (play it out)]
-
+Izklopljeno (igraj do konca)
 [95% sure]
-
+Gotovost 95 %
 [97% sure]
-
+Gotovost 97 %
 [99% sure]
-
+Gotovost 99 %
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Konča tekmo, ko model doseže izbrano gotovost. Gledalci lahko napovedane možnosti za zmago vidijo v statistiki.
 [Changed from %0: %1]
-
+Spremenjeno glede na %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Boj je izklopljen, zato spodnja pravila nimajo učinka.
 [%0 more rules are at their Standard values.]
-
+Druga pravila s standardnimi vrednostmi: %0.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Igralci vidijo teren zemljevida od začetka; sovražne enote ostanejo skrite.
 [Each team starts with extra resources in its shared pool.]
-
+Vsaka ekipa začne z dodatnimi surovinami v skupni zalogi.
 [Units hit harder but have less HP and armor.]
-
+Enote udarjajo močneje, a imajo manj zdravja in oklepa.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Ekipe se lahko napadajo. Za miroljubno tekmo izklopite.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Poškodovane enote se gredo zdravit, namesto da se borijo do smrti.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Enote umrejo, ko jim zmanjka zdravja. Izklopite, da se ustavijo pri 1 točki zdravja.
 [Units gain levels at schools.]
-
+Enote v šolah pridobivajo stopnje.
 [stat group work]
-
+Čas delavcev
 [stat worker time]
-
+Kako so delavci porabili čas
 [stat worker time about]
-
+Kaj so delavci kolonije počeli iz trenutka v trenutek: delali za zgradbo, delali pri zastavi, se urili, jedli, se zdravili, lačni ali poškodovani čakali, ker ni bilo proste restavracije ali bolnišnice, ali brez dela postopali. Zdrava kolonija ima večino delavcev pri delu, malo brez dela in nobenega na čakanju.
 [stat idle workers]
-
+Nezaposleni delavci
 [stat idle workers about]
-
+Delež časa delavcev brez dela. Visoke vrednosti pomenijo več delavcev kot dela; blizu nič pomeni, da so vsi delavci zaposleni in delo morda čaka.
 [stat work by job]
-
+Na čem so delali delavci
 [stat work by job about]
-
+Koliko delavcev je oskrbovalo posamezno vrsto zgradb: porodnišnice (za nove enote), restavracije (za obroke), zgradbe v gradnji ali nadgradnji ali druge zgradbe, kot so stolpi, šole in vojašnice.
 [stat haul distance]
-
+Razdalja do surovin
 [stat haul distance about]
-
+Kako daleč je bil delavec pri nabiranju povprečno od zgradbe, ki jo je oskrboval, v poljih zemljevida v ravni črti.
 [stat hauling]
-
+Hoja in prenašanje
 [stat hauling about]
-
+Kako so se delavci, ki oskrbujejo zgradbe, razdelili med hojo do surovine, nabiranje, prenašanje nazaj ter dostavo ali čakanje na dosegljivo surovino. Večina je hoje, zato bližje kot so surovine, več se postori.
 [stat eating time]
-
+Delavci na poti k jedi
 [stat eating time about]
-
+Koliko delavcev je bilo odsotnih z dela zaradi jedi: na poti v restavracijo, pri jedi v njej ali lačnih brez restavracije, ki bi jih sprejela. Delavci brez restavracije pomenijo, da je kolonija prerasla svoje restavracije ali njihovo hrano.
 [stat inn distance]
-
+Razdalja do restavracije
 [stat inn distance about]
-
+Kako daleč so bili lačni delavci povprečno med hojo od restavracije, h kateri so šli, v poljih zemljevida v ravni črti. Cela pot je približno dvakrat daljša. Visoke vrednosti pomenijo, da so restavracije daleč od kraja dela.
 [stat warriors]
-
+Vojaki
 [stat warriors about]
-
+Koliko vojakov je imela kolonija. Razdelite, da vidite, koliko jih je bilo blizu doma, blizu sovražne kolonije ali na odprtem. Ozemlje blizu obeh kolonij šteje kot dom.
 [stat warrior level]
-
+Povprečna napadalna stopnja vojakov
 [stat warrior level about]
-
+Povprečna napadalna stopnja vojakov kolonije, pri kateri hitrost in moč napada štejeta enako, na lestvici od 1 do 4, kot jo prikazuje igra. Vojašnice jo zvišujejo; novi neizurjeni vojaki jo znižujejo.
 [stat warrior duties]
-
+Kaj so počeli vojaki
 [stat warrior duties about]
-
+Kako so se vojaki kolonije razdelili med poslane k vojaški zastavi, tiste, ki so bili tako poškodovani, da so boj zapustili zaradi bolnišnice (vključno s tistimi na zdravljenju), in proste.
 [stat intruders]
-
+Sovražni vojaki doma
 [stat intruders about]
-
+Koliko sovražnih vojakov je bilo v razdalji 16 polj od zgradb kolonije. Kjer sta dve koloniji blizu, vsaka šteje branilce druge.
 [stat home defence]
-
+Prednost obrambe doma
 [stat home defence about]
-
+Moč lastnih vojakov kolonije blizu njenih zgradb minus moč tamkajšnjih sovražnih vojakov, pri čemer šteje vsak vojak in vsaka njegova napadalna stopnja. Pod ničlo je bila kolonija doma v podrejenem položaju.
 [stat combat death places]
-
+Kje so enote padle v boju
 [stat combat death places about]
-
+Kje so bile enote kolonije, ko so bile ubite: blizu lastnih zgradb, blizu sovražnikovih zgradb ali na odprtem med kolonijami. Izgube doma pomenijo, da je bila kolonija napadena; izgube pri sovražni koloniji, da je napadala. Ozemlje blizu obeh kolonij šteje kot dom.
 [stat band working]
-
+Delo
 [stat band flag work]
-
+Pri zastavi
 [stat band idle]
-
+Brez dela
 [stat band training]
-
+Urjenje
 [stat band unserved]
-
+Ni proste restavracije ali bolnišnice
 [stat band swarms]
-
+Porodnišnice
 [stat band inns]
-
+Restavracije
 [stat band sites]
-
+Gradnja in nadgradnja
 [stat band other buildings]
-
+Druge zgradbe
 [stat band to resource]
-
+Hoja do surovine
 [stat band harvesting]
-
+Nabiranje
 [stat band carrying]
-
+Prenašanje nazaj
 [stat band delivering]
-
+Dostava ali čakanje
 [stat band walking to inn]
-
+Hoja v restavracijo
 [stat band no inn]
-
+Ni proste restavracije
 [stat band at home]
-
+Doma
 [stat band at enemy]
-
+Pri sovražni koloniji
 [stat band in the open]
-
+Na odprtem
 [stat band war flag]
-
+Pri vojaški zastavi
 [stat band seeking healing]
-
+Iščejo zdravljenje
 [stat band free]
-
+Prosti
 [stat unit workers]
-
+delavci
 [stat unit worker time]
-
+čas delavcev
 [stat unit working workers]
-
+delavci, ki oskrbujejo zgradbe
 [stat unit squares]
-
+polja
 [stat unit warriors]
-
+vojaki
 [stat unit attack level]
-
+napadalna stopnja
 [stat unit enemy warriors]
-
+sovražni vojaki
 [stat unit strength count]
-
+moč
 [stat view by place]
-
+Po kraju

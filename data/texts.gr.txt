@@ -1,17 +1,17 @@
 [AI strategy]
 Στρατηγική ΤΝ
 [start recording]
-
+Έναρξη εγγραφής
 [stop recording]
-
+Διακοπή εγγραφής
 [finalizing recording]
-
+Ολοκλήρωση εγγραφής…
 [AIMaxima-Summary]
 Ισορροπεί βιώσιμη ανάπτυξη και εκπαίδευση και έπειτα συγκεντρώνει στρατούς σε κύματα.
 [AIMaxima-Profile]
 Βασική στρατηγική: Αντιμετωπίζει τροφή, εργάτες, γεννήσεις, εκπαίδευση, κατασκευή και μάχη ως ανταγωνιστικές ανάγκες. Καθορίζει το μέγεθος του στρατού εν μέρει βάσει της εκτιμώμενης εχθρικής ισχύος και προσπαθεί να τον φέρει αποτελεσματικά στον στόχο.\n\nΟικονομία και ανάπτυξη: Προσαρμόζει τις γεννήσεις στην τροφή και στην εργασία, διατηρεί ελεύθερο χρόνο για εκπαίδευση και σταματά να προσθέτει πλεονάζοντες εργάτες όταν χρειάζεται στρατιωτική παραγωγή. Αυξάνει τη δυνατότητα εκπαίδευσης και αποφεύγει να βγάζει ταυτόχρονα εκτός λειτουργίας υπερβολικές υποδομές για αναβάθμιση.\n\nΑναγνώριση και αποφάσεις: Εκτιμά τις εχθρικές δυνάμεις από ορατές μονάδες και απομνημονευμένες εμφανίσεις με προσαρμοσμένο μοντέλο. Οι στόχοι εξαρτώνται από αξία, απόσταση, πύργους, εκτεθειμένους εργάτες και επιμονή. Οι αποστολές φρούτων στηρίζουν διατροφική ποικιλία και μεταστροφή.\n\nΕπίθεση και άμυνα: Κρατά πολεμιστές για εκπαίδευση και άμυνα, έπειτα συγκεντρώνει κατάλληλες χερσαίες δυνάμεις κοντά σε φιλικές υποδομές τροφής πριν εξαπολύσει κύματα. Αντιδρά τοπικά στην άμυνα και αξιολογεί τις προσβάσεις προς την αποικία.\n\nΌταν οι επιθέσεις κολλούν: Μετά από τέσσερις διαδοχικές αποτυχίες άφιξης κυμάτων, στρέφεται σε επιθετικές σημαίες που ενισχύονται συνεχώς. Και οι αμφίβιες επιθέσεις μπορούν να χρησιμοποιούν συνεχή ενίσχυση. Αυτή η εφεδρική λύση δεν αντιμετωπίζει κάθε εμπόδιο πριν μπορέσει να σχηματιστεί συγκέντρωση.\n\nΣύγκριση με άλλες ΤΝ: Συνδέει στενότερα τροφή, εκπαίδευση, πληροφορίες και ανάπτυξη δυνάμεων. Το Cabino δίνει έμφαση σε επιθέσεις κατά πολλών κτιρίων· το Maxima στην εκτιμώμενη ανάγκη και στην άφιξη συγκεντρωμένων δυνάμεων.\n\nΔυνατά και αδύνατα σημεία: Διατηρεί ανάπτυξη και αναπλήρωση στρατού, προσαρμοζόμενο στην πίεση τροφής και στις παρατηρημένες απειλές. Χρειάζεται τροφή, δυνατότητες εκπαίδευσης και ανοιχτό χώρο συγκέντρωσης· συνωστισμός και μακρινές διαδρομές μπορούν να εμποδίσουν την άφιξη.\n\nΠιθανή αντιμετώπιση: Διεκδικήστε εκτεθειμένο σιτάρι, πανδοχεία και στρατώνες πριν συγκεντρωθούν τα κύματα. Κρατήστε μαζί μια εφοδιασμένη αμυντική δύναμη και διαταράξτε τις οδούς ενίσχυσης. Περιμένετε επαναλαμβανόμενη πίεση μετά το πρώτο κύμα.\n\nΑναγνώριση: Οι εκτιμήσεις ισχύος χρησιμοποιούν εμφανίσεις και ιστορικό παρατήρησης, όχι κρυφούς συνολικούς αριθμούς εχθρικών στρατευμάτων.
 [%0 has left the game]
-%0 έχει τερματίσει το παιχνίδι.
+Ο/Η %0 αποχώρησε από το παιχνίδι.
 [%0 level %1]
 %0 επιπέδου %1
 [%0 units can't access building]
@@ -35,13 +35,13 @@
 [%0 units too low level]
 %0 μονάδες έχουν πολύ χαμηλό επίπεδο
 [%0% Uploaded]
-Απεστάλη το %0%
+Ανέβηκε το %0%
 [%0's team unit got converted to your team]
 Μια μονάδα της ομάδας του %0 προσχώρησε στην ομάδα σας
 [abreaviation explanation A]
 A: Σύμμαχοι
 [abreaviation explanation C]
-C: Στείλτε chat μηνύματα στο
+C: Αποστολή μηνυμάτων συνομιλίας σε
 [abreaviation explanation fV]
 fV: Κοινή χρήση ορατότητας πανδοχείων (για προσέλκυση μονάδων)
 [abreaviation explanation mV]
@@ -55,13 +55,13 @@ V: Κοινή χρήση ορατότητας όλων των κτιρίων
 [AI Descriptions]
 Περιγραφές ΤΝ
 [AI]
-AI
+ΤΝ
 [ai]
-AI
+ΤΝ
 [AICastor-Description]
 Χτίζει και εκπαιδεύει, προσαρμόζοντας την ανάπτυξη στα τρόφιμα.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
 Αυξάνει τον πληθυσμό, εκπαιδεύει πολεμιστές και μετά επιτίθεται.
 [AINicowar]
@@ -73,15 +73,15 @@ Nicowar
 [AINumbi-Description]
 Ένας επιεικής αντίπαλος που όμως επεκτείνεται και επιτίθεται.
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
 Επεκτείνεται και προσελκύει ξένες μονάδες χωρίς πολεμιστές.
 [AIEcono]
-ΦτάσεΣτοΆπειρο
+Econo
 [AIWarrush-Description]
 Γρήγορες επιθέσεις που δοκιμάζουν την πρώιμη άμυνά σας.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 Ισχυρός οικοδόμος που παρατάσσει εκπαιδευμένες επιθετικές δυνάμεις.
 [AICabino]
@@ -147,7 +147,7 @@ backspace
 [build %0 level %1]
 Κατασκευή: %0 επιπέδου %1
 [Build]
-Κτίσμα
+Κατασκευή
 [Building Defaults]
 Προεπιλογές κτιρίων
 [building settings]
@@ -177,7 +177,7 @@ Ctrl + σύρσιμο = Γραμμή
 [cancel destroy]
 Ακύρωση καταστροφής
 [cancel repair]
-Ακύρωση επιδιόρθωσης
+Ακύρωση επισκευής
 [cancel upgrade]
 Ακύρωση αναβάθμισης
 [Cancel]
@@ -187,15 +187,15 @@ caps lock
 [carry]
 Μεταφορά:
 [Change Area Name]
-Αλλαγή Ονόματος Περιοχής
+Αλλαγή ονόματος περιοχής
 [Cherry]
 Κεράσι
 [choose campaign]
-Επιλέξτε μία εκστρατεία
+Επιλέξτε εκστρατεία
 [choose game]
-Επιλέξτε ένα παιχνίδι
+Επιλέξτε παιχνίδι
 [choose map]
-Επιλέξτε ένα χάρτη
+Επιλέξτε χάρτη
 [clear area]
 Καθαρισμός περιοχής
 [farm area]
@@ -205,7 +205,7 @@ caps lock
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Καθαρισμός Πόρων
+Καθαρίζει πόρους
 [clearingflag]
 Σημαία καθαρισμού
 [closed]
@@ -213,7 +213,7 @@ caps lock
 [combined vision]
 Κοινή ορατότητα
 [compile]
-Μεταγλώττιση script
+Μεταγλώττιση σεναρίου
 [compose]
 Compose
 [Computing Fertility]
@@ -241,11 +241,11 @@ control-%0
 [create map]
 Δημιουργία χάρτη
 [credits]
-Εύσημα
+Συντελεστές
 [ctrl - line]
 Ctrl - Γραμμή
 [current speed]
-Τωρινή ταχύτητα
+Τρέχουσα ταχύτητα
 [custom game]
 Προσαρμοσμένο παιχνίδι
 [customcur]
@@ -255,7 +255,7 @@ Ctrl - Γραμμή
 [Damaged Map]
 Χάρτης τραυματισμένων
 [decrease units working]
-Μείωση Εργαζόμενων Μονάδων
+Μείωση εργαζόμενων μονάδων
 [Defeat Your Oppenents]
 Νικήστε τους αντιπάλους σας
 [defencetower explanation 2]
@@ -263,35 +263,35 @@ Ctrl - Γραμμή
 [defencetower explanation]
 Επιτίθεται σε κοντινές
 [defencetower]
-Αμυντικός Πύργος
+Αμυντικός πύργος
 [Defense Map]
-Χάρτης Άμυνας
+Χάρτης άμυνας
 [Defense]
 Άμυνα
 [Delete game]
 Διαγραφή του επιλεγμένου παιχνιδιού
 [delete]
-διαγραφή
+Διαγραφή
 [desert]
 έρημος
 [destroy building]
-Καταστροφή Επιλεγμένου Κτιρίου
+Καταστροφή επιλεγμένου κτιρίου
 [destroy]
 Καταστροφή
 [display]
 Εμφάνιση
 [do nothing]
-Μην κάνεις τίποτα
+Καμία ενέργεια
 [don't carry anything]
 Δεν μεταφέρει τίποτα
 [down]
 κάτω
 [edit map]
-Επεξεργασία Χάρτη
+Επεξεργασία χάρτη
 [editing map]
-Επεξεργασία Χάρτη
+Επεξεργασία χάρτη
 [editor shortcuts]
-Επεξεργαστής
+Συντομεύσεις επεξεργαστή
 [editor]
 Επεξεργαστής
 [end]
@@ -307,7 +307,7 @@ Enter
 [explorationflag explanation]
 Έλκει εξερευνητές
 [explorationflag]
-Σημαία Εξερεύνησης
+Σημαία εξερεύνησης
 [Explorer Ratio]
 Αναλογία εξερευνητών
 [Explorer]
@@ -347,7 +347,7 @@ f8
 [f9]
 f9
 [Fertility Map]
-Χάρτης Γονιμότητας
+Χάρτης γονιμότητας
 [Flag Defaults]
 Προεπιλογές σημαιών
 [flag settings explanation]
@@ -367,21 +367,21 @@ f9
 [fruit]
 φρούτο
 [fullscreen]
-Πλήρης Οθόνη
+Πλήρης οθόνη
 [game full]
 Το παιχνίδι είναι πλήρες
 [game shortcuts]
-Παιχνίδι
+Συντομεύσεις παιχνιδιού
 [Game]
 Παιχνίδι
 [general settings]
-Γενικές Ρυθμίσεις
+Γενικές ρυθμίσεις
 [go to event]
-Πήγαινε στο Συμβάν
+Μετάβαση στο συμβάν
 [go to home]
 Μετάβαση στη βάση
 [goto main menu]
-Πήγαινε πίσω στο κυρίως μενού
+Επιστροφή στο κύριο μενού
 [grass]
 Γρασίδι
 [ground attack]
@@ -391,7 +391,7 @@ f9
 [GUIMapPreview text 0]
 Παρακαλώ επιλέξτε
 [GUIMapPreview text 1]
-ένα χάρτη
+έναν χάρτη
 [handmade map]
 Χειροποίητος χάρτης
 [Happyness]
@@ -413,11 +413,11 @@ Home
 [hospital]
 Νοσοκομείο
 [host]
-Παροχή ενός παιχνιδιού
+Φιλοξενία παιχνιδιού
 [hp]
 HP
 [Human]
-άνθρωπος
+Άνθρωπος
 [human]
 άνθρωπος
 [hungry]
@@ -427,7 +427,7 @@ HP
 [In way]
 Στον δρόμο
 [increase units working]
-Αύξηση Εργαζόμενων Μονάδων
+Αύξηση εργαζόμενων μονάδων
 [inn explanation 2]
 
 [inn explanation]
@@ -445,17 +445,17 @@ HP
 [isles terrain]
 Νησίδες
 [iterate selection]
-Προχώρησε στην Επόμενη Επιλογή
+Μετάβαση στην επόμενη επιλογή
 [jobs]
 εργασίες
 [join a game]
-Συμμετοχή σε ένα παιχνίδι
+Συμμετοχή σε παιχνίδι
 [keyboard settings]
-Ρυθμίσεις Πληκτρολογίου
+Ρυθμίσεις πληκτρολογίου
 [lan]
 Παιχνίδι LAN
 [language incomplete]
-Ελληνικά - Ελλιπή
+Ελληνικά - ελλιπής μετάφραση
 [language-code]
 gr
 [language-tr]
@@ -487,7 +487,7 @@ gr
 [look around]
 Περιήγηση
 [Lost : %0 has more prestige than you]
-Ήττα: ο %0 έχει περισσότερο κύρος από εσάς
+Ήττα: ο/η %0 έχει περισσότερο κύρος από εσάς
 [Lost : your colony is dead]
 Ήττα: η αποικία σας καταστράφηκε
 [low priority]
@@ -509,9 +509,9 @@ gr
 [map size x]
 Πλάτος χάρτη
 [map size y]
-Μήκος χάρτη
+Ύψος χάρτη
 [mark map]
-Σημείωση Χάρτη για Συμμάχους
+Σήμανση χάρτη για συμμάχους
 [market explanation 2]
 φρούτων με άλλους
 [market explanation]
@@ -529,13 +529,13 @@ meta-%0
 [Music volume]
 Ένταση (μουσική)
 [Mute]
-σίγαση
+Σίγαση
 [mute]
 σίγαση
 [new campaign]
-Νέα Εκστρατεία
+Νέα εκστρατεία
 [new map]
-Νέα
+Νέος χάρτης
 [no fullscreen]
 * μόνο σε λειτουργία παραθύρου
 [No Hints]
@@ -545,7 +545,7 @@ meta-%0
 [No Objectives]
 Δεν υπάρχουν στόχοι
 [no ressources growth areas]
-Χωρίς ανάπτυξη
+Χωρίς ζώνες ανάπτυξης
 [No]
 Όχι
 [Number Of Buildings]
@@ -573,13 +573,13 @@ numlock
 [on unpress]
 Άφημα
 [open chat box]
-Άνοιγμα παραθύρου chat
+Άνοιγμα συνομιλίας
 [open load menu]
-Άνοιγμα Μενού Φόρτωσης
+Άνοιγμα μενού φόρτωσης
 [open save menu]
-Άνοιγμα Μενού Αποθήκευσης
+Άνοιγμα μενού αποθήκευσης
 [open scenario editor]
-Άνοιγμα Επεξεργαστή Script
+Άνοιγμα επεξεργαστή σεναρίου
 [open teams editor]
 Άνοιγμα επεξεργαστή ομάδων
 [open]
@@ -605,7 +605,7 @@ page up
 [pause]
 παύση
 [Paused]
-Σταματημένο
+Σε παύση
 [player name]
 Όνομα παίκτη
 [players]
@@ -651,13 +651,13 @@ print screen
 [remember unit]
 Αποθ. πλήθους μονάδων
 [remove map]
-Αφαίρεση Χάρτη
+Αφαίρεση χάρτη
 [remove shortcut]
-Διαγραφή
+Αφαίρεση συντόμευσης
 [repair building]
-Εκκίνηση/Παύση Επιδιόρθωσης
+Έναρξη/διακοπή επισκευής
 [repair]
-Επιδιόρθωση
+Επισκευή
 [repeat area]
 φορές το ίδιο περιβάλλον
 [replay ended]
@@ -665,7 +665,7 @@ print screen
 [restore default shortcuts]
 Επαναφορά συντομεύσεων
 [return to editor]
-Επιστροφή στον Επεξεργαστή
+Επιστροφή στον επεξεργαστή
 [return to game]
 Επιστροφή στο παιχνίδι
 [return to replay]
@@ -677,7 +677,7 @@ Enter
 [right super]
 δεξί πλήκτρο windows
 [right]
-δεξί
+δεξιά
 [river diameter]
 πλάτος ποταμού
 [river terrain]
@@ -685,7 +685,7 @@ Enter
 [sand]
 Άμμος
 [save before quit?]
-Θέλετε να αποθηκεύσετε πρίν τερματίσετε;
+Θέλετε να αποθηκεύσετε πριν τερματίσετε;
 [save game]
 Αποθήκευση παιχνιδιού
 [save map]
@@ -719,35 +719,35 @@ scroll lock
 [select clearingflag]
 Επιλογή σημαίας καθαρισμού
 [select construct barracks]
-Επιλογή Κατασκευή Στρατώνων
+Κατασκευή στρατώνων
 [select construct defencetower]
 Κατασκευή αμυντικού πύργου
 [select construct hospital]
-Επιλογή Κατασκευή Νοσοκομείου
+Κατασκευή νοσοκομείου
 [select construct inn]
-Επιλογή Κατασκευή Πανδοχείου
+Κατασκευή πανδοχείου
 [select construct market]
-Επιλογή Κατασκευή Αγοράς
+Κατασκευή αγοράς
 [select construct racetrack]
 Κατασκευή στίβου
 [select construct school]
-Επιλογή Κατασκευή Σχολείου
+Κατασκευή σχολείου
 [select construct stonewall]
 Κατασκευή πέτρινου τείχους
 [select construct swarm]
-Επιλογή Κατασκευή Σμήνους
+Κατασκευή σμήνους
 [select construct swimmingpool]
-Επιλογή Κατασκευή Πισίνας
+Κατασκευή πισίνας
 [select delete tool]
 Επιλογή εργαλείου διαγραφής
 [select explorationflag]
 Επιλογή σημαίας εξερεύνησης
 [select hospital building]
-Επιλογή Νοσοκομείου
+Επιλογή νοσοκομείου
 [select inn building]
-Επιλογή Πανδοχείου
+Επιλογή πανδοχείου
 [select market building]
-Επιλογή Αγοράς
+Επιλογή αγοράς
 [select place clearing area]
 Τοποθέτηση ζώνης καθαρισμού
 [select place farm area]
@@ -755,7 +755,7 @@ scroll lock
 [select place clearingflag]
 Τοποθέτηση σημαίας καθαρισμού
 [select place explorationflag]
-Σημαία εξερεύνησης: τοποθέτηση
+Τοποθέτηση σημαίας εξερεύνησης
 [select place forbidden area]
 Τοποθέτηση απαγορευμένης ζώνης
 [select place guard area]
@@ -765,13 +765,13 @@ scroll lock
 [select racetrack building]
 Επιλογή στίβου
 [select school building]
-Επιλογή Σχολείου
+Επιλογή σχολείου
 [select swarm building]
-Επιλογή Σμήνους
+Επιλογή σμήνους
 [select swimmingpool building]
-Επιλογή Πισίνας
+Επιλογή πισίνας
 [select tower building]
-Επιλογή Πύργου
+Επιλογή αμυντικού πύργου
 [select wall building]
 Επιλογή τείχους
 [select warflag]
@@ -789,21 +789,21 @@ V: κρατήστε πατημένο για να μιλήσετε
 [show flags]
 Εμφάνιση σημαιών
 [show main menu]
-Εμφάνιση Κυρίως Μενού
+Εμφάνιση κύριου μενού
 [skin]
 Εμφάνιση
 [smoothing]
-Πιο ομαλό
+Εξομάλυνση
 [space]
 κενό
 [start mission]
-Εκκίνηση Αποστολής
+Έναρξη αποστολής
 [start new campaign]
-Εκκίνηση Νέας Εκστρατείας
+Έναρξη νέας εκστρατείας
 [Start]
 Εκκίνηση
 [Starving Map]
-Χάρτης Λιμοκτονούντων
+Χάρτης λιμοκτονούντων
 [starving]
 λιμοκτονούν
 [Statistics]
@@ -825,9 +825,9 @@ V: κρατήστε πατημένο για να μιλήσετε
 [stonewall explanation]
 Στοιχείο
 [stonewall]
-Πέτρινο Τείχος
+Πέτρινο τείχος
 [svr hostname]
-Όνομα εξυπηρετητή
+Όνομα διακομιστή
 [swamp terrain]
 Βάλτος
 [swarm explanation 2]
@@ -845,33 +845,33 @@ V: κρατήστε πατημένο για να μιλήσετε
 [swimmingpool]
 Πισίνα
 [switch to adding areas]
-Αλλαγή Σε Πρόσθεση Περιοχών
+Αλλαγή σε προσθήκη περιοχών
 [switch to area brush 1]
-Αλλαγή Σε Βούρτσα Περιοχής 1
+Αλλαγή σε βούρτσα περιοχής 1
 [switch to area brush 2]
-Αλλαγή Σε Βούρτσα Περιοχής 2
+Αλλαγή σε βούρτσα περιοχής 2
 [switch to area brush 3]
-Αλλαγή Σε Βούρτσα Περιοχής 3
+Αλλαγή σε βούρτσα περιοχής 3
 [switch to area brush 4]
-Αλλαγή Σε Βούρτσα Περιοχής 4
+Αλλαγή σε βούρτσα περιοχής 4
 [switch to area brush 5]
-Αλλαγή Σε Βούρτσα Περιοχής 5
+Αλλαγή σε βούρτσα περιοχής 5
 [switch to area brush 6]
-Αλλαγή Σε Βούρτσα Περιοχής 6
+Αλλαγή σε βούρτσα περιοχής 6
 [switch to area brush 7]
-Αλλαγή Σε Βούρτσα Περιοχής 7
+Αλλαγή σε βούρτσα περιοχής 7
 [switch to area brush 8]
-Αλλαγή Σε Βούρτσα Περιοχής 8
+Αλλαγή σε βούρτσα περιοχής 8
 [switch to building view]
-Αλλαγή Σε Εμφάνιση Κτιρίων
+Αλλαγή σε εμφάνιση κτιρίων
 [switch to flag view]
 Αλλαγή σε εμφάνιση σημαιών
 [switch to removing areas]
-Αλλαγή Σε Αφαίρεση Περιοχών
+Αλλαγή σε αφαίρεση περιοχών
 [switch to teams view]
-Αλλαγή Σε Εμφάνιση Ομάδων
+Αλλαγή σε εμφάνιση ομάδων
 [switch to terrain view]
-Αλλαγή Σε Εμφάνιση Πεδίου
+Αλλαγή σε εμφάνιση εδάφους
 [sys req]
 sys req
 [tab]
@@ -887,7 +887,7 @@ tab
 [the barracks is under attack]
 Οι στρατώνες δέχονται επίθεση
 [the building is finished]
-Το κτίσιμο ολοκληρώθηκε
+Το κτίριο ολοκληρώθηκε
 [the building is under attack]
 Το κτίριο δέχεται επίθεση
 [the clearingflag is finished]
@@ -897,7 +897,7 @@ tab
 [the defencetower is finished]
 Ο αμυντικός πύργος ολοκληρώθηκε
 [the defencetower is under attack]
-Ο αμυντικός πύργος δέχεται επίθεση.
+Ο αμυντικός πύργος δέχεται επίθεση
 [the explorationflag is finished]
 Η σημαία εξερεύνησης είναι έτοιμη
 [the explorationflag is under attack]
@@ -911,7 +911,7 @@ tab
 [the hospital is under attack]
 Το νοσοκομείο δέχεται επίθεση
 [The host has cancelled the game]
-Ο διοργανωτής ακύρωσε το παιχνίδι.
+Ο οικοδεσπότης ακύρωσε το παιχνίδι.
 [the inn is finished]
 Το πανδοχείο ολοκληρώθηκε
 [the inn is under attack]
@@ -933,9 +933,9 @@ tab
 [the school is under attack]
 Το σχολείο δέχεται επίθεση
 [the stonewall is finished]
-Το τείχος ολοκληρώθηκε
+Ένα τμήμα τείχους ολοκληρώθηκε
 [the stonewall is under attack]
-Το πέτρινο τείχος δέχεται επίθεση
+Ο εχθρός είναι στα τείχη σας
 [the swarm is finished]
 Το σμήνος ολοκληρώθηκε
 [the swarm is under attack]
@@ -959,9 +959,9 @@ tab
 [toggle draw unit paths]
 Εμφάνιση/απόκρυψη διαδρομών
 [toggle menu screen]
-Εναλλαγή Οθόνης Μενού
+Εναλλαγή οθόνης μενού
 [toggle recording voice]
-Εναλλαγή Εγγραφής Φωνής
+Εναλλαγή εγγραφής φωνής
 [Total Attack Power]
 Συνολική ισχύς επίθεσης
 [Total Defence Power]
@@ -983,7 +983,7 @@ tab
 [tutorial]
 Εκμάθηση
 [Uncontrolled]
-Εκτός Ελέγχου
+Εκτός ελέγχου
 [undo]
 Αναίρεση
 [uniform terrain]
@@ -1005,17 +1005,17 @@ tab
 [up]
 πάνω
 [upgrade building]
-Εκκίνηση/Παύση Αναβάθμισης
+Έναρξη/διακοπή αναβάθμισης
 [Upgrade Defaults]
 Προεπιλογές αναβάθμισης
 [upgrade]
 Αναβάθμιση
 [username]
-Όνομα Χρήστη
+Όνομα χρήστη
 [Version]
 Έκδοση
 [view history]
-Εμφάνιση Ιστορικού
+Εμφάνιση ιστορικού
 [Voice volume]
 Ένταση φωνής
 [waiting for %0]
@@ -1023,13 +1023,13 @@ tab
 [waiting for key]
 αναμονή για πλήκτρο...
 [Walk]
-Περπάτα
+Βάδιση
 [warflag explanation 2]
 
 [warflag explanation]
 Έλκει πολεμιστές
 [warflag]
-Σημαία Πολέμου
+Σημαία πολέμου
 [Warning, you need to reboot the game for changes to take effect]
 Προσοχή, πρέπει να επανεκκινήσετε το παιχνίδι για να ισχύσουν οι αλλαγές
 [Warrior Ratio]
@@ -1047,11 +1047,11 @@ tab
 [Wheat]
 Σιτάρι
 [Won : you defeated your opponents]
-Νίκη: κέρδισες τους αντιπάλους σου
+Νίκη: νικήσατε τους αντιπάλους σας
 [Won : you have the most prestige]
-Νίκη: έχεις το περισσότερο κύρος
+Νίκη: έχετε το περισσότερο κύρος
 [Won : your ally %0 has the most prestige]
-Νίκη: ο σύμμαχος %0 έχει το περισσότερο κύρος
+Νίκη: ο σύμμαχός σας %0 έχει το περισσότερο κύρος
 [Wood]
 Ξύλο
 [wood]
@@ -1069,7 +1069,7 @@ tab
 [Yes]
 Ναι
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Ο YOG metaserver αρνήθηκε την σύνδεση γιατί το globulation2 client σας είναι παλιό.
+Ο μεταδιακομιστής YOG αρνήθηκε τη σύνδεση επειδή η έκδοση του Globulation 2 που έχετε είναι παλιά. Κατεβάστε την τελευταία έκδοση από το www.globulation2.org για να παίξετε διαδικτυακά.
 [you have lost]
 Χάσατε!
 [you have won]
@@ -1077,7 +1077,7 @@ tab
 [You where kicked from the game]
 Αποβληθήκατε από το παιχνίδι
 [Your %0 are under attack]
-Η μονάδα σας (%0) δέχεται επίθεση
+Δέχεται επίθεση: %0
 [Your unit got converted to %0's team]
 Η μονάδα σας προσχώρησε στην ομάδα του %0
 [game speed]
@@ -1111,7 +1111,7 @@ Cortex
 [2 vs 2]
 2 έναντι 2
 [AI strategy & counterplay]
-Στρατηγική AI και αντιμετώπιση
+Στρατηγική ΤΝ και αντιμετώπιση
 [AICastor-Profile]
 Βασική στρατηγική: Επενδύει σε παραγωγική αποικία και τεχνολογία πριν εξαπολύσει μεγάλες επιθέσεις. Ιεραρχημένα κατασκευαστικά έργα αναπτύσσουν τον οικισμό· η ανάπτυξη, η στρατιωτική υποδομή και ο χρόνος αυξάνουν την πολεμική ετοιμότητα.\n\nΟικονομία και ανάπτυξη: Μελετά την υγρασία, την ανάπτυξη του σιταριού, τα εμπόδια και την εμβέλεια των εργατών. Διαχειρίζεται την επέκταση της τροφοδοσίας, τις αναβαθμίσεις και την άμυνα παράλληλα με την παραγωγή.\n\nΕπίθεση και άμυνα: Εκτιμά την επιθετική ισχύ των υγιών πολεμιστών και αρχίζει τις επιδρομές όταν εκπληρώνονται συνθήκες ισχύος ή χρόνου. Προτιμά προσβάσιμα κτίρια που έχει δει, ιδίως στρατώνες και σχολεία, και μετακινεί τις επιθετικές σημαίες προς πολύτιμους στόχους.\n\nΣύγκριση με άλλες ΤΝ: Εξετάζει το έδαφος και την αξία των στόχων πιο μεθοδικά από το Numbi. Είναι πιο υπομονετικό από το Warrush, ανταλλάσσοντας την πρώιμη πίεση με ανεπτυγμένη βάση και ισχυρότερα στρατεύματα.\n\nΔυνατά και αδύνατα σημεία: Ο ευρύς σχεδιασμός υποδομών και οι πολύτιμοι στρατιωτικοί στόχοι δίνουν σκοπό στις επιδρομές του. Η προετοιμασία χρειάζεται χρόνο, επιτρέποντας σε ταχύτερους αντιπάλους να διεκδικήσουν πόρους πριν ετοιμαστεί η κύρια δύναμη.\n\nΠιθανή αντιμετώπιση: Εμποδίστε νωρίς την επέκτασή του. Προστατεύστε στρατώνες και σχολεία μαζί με την τροφή και κρατήστε εφεδρείες όταν επιτίθεστε στον ανεπτυγμένο οικισμό του.
 [AICastor-Summary]
@@ -1125,7 +1125,7 @@ Cortex
 [AINicowar-Summary]
 Πρώιμη έφοδος με καλλιέργεια, αναβαθμίσεις, άμυνα και επιθέσεις εξερευνητών.
 [AINone-Profile]
-Στρατηγική: Το AI δεν δίνει εντολές.\n\nΔυνατά σημεία: Ένας προβλέψιμος, ανενεργός αντίπαλος για πειράματα.\n\nΑδυναμίες: Δεν επεκτείνεται ούτε προσαρμόζεται.
+Βασική στρατηγική: Δεν δίνει εντολές ΤΝ.\n\nΔυνατά σημεία: Ένας προβλέψιμος, ανενεργός αντίπαλος για πειράματα.\n\nΑδυναμίες: Δεν επεκτείνεται ούτε προσαρμόζεται.
 [AINone-Summary]
 Μια αδρανής αποικία για πειράματα.
 [AINumbi-Profile]
@@ -1167,11 +1167,11 @@ Cortex
 [Conquest or prestige]
 Κατάκτηση ή κύρος
 [Could not launch this map. Your setup is retained; try again.]
-Δεν ήταν δυνατή η εκκίνηση αυτού του χάρτη. Η ρύθμισή σας διατηρείται. δοκιμάστε ξανά.
+Δεν ήταν δυνατή η εκκίνηση αυτού του χάρτη. Η ρύθμισή σας διατηρείται· δοκιμάστε ξανά.
 [Could not load this map. Choose another map or retry.]
-Δεν ήταν δυνατή η φόρτωση αυτού του χάρτη. Επιλέξτε άλλο χάρτη ή δοκιμάστε ξανά.
+Δεν ήταν δυνατή η φόρτωση αυτού του χάρτη. Επιλέξτε άλλον χάρτη ή δοκιμάστε ξανά.
 [Crater lakes]
-Λίμνες κρατήρα
+Λίμνες κρατήρων
 [Custom]
 Προσαρμοσμένο
 [Custom teams]
@@ -1195,11 +1195,11 @@ Cortex
 [Game speed]
 Ταχύτητα παιχνιδιού
 [Generate & play]
-Δημιουργήστε και παίξτε
+Δημιουργία και παιχνίδι
 [Give at least one terrain type a nonzero weight.]
 Δώστε σε τουλάχιστον έναν τύπο εδάφους μη μηδενικό βάρος.
 [Grass weight]
-Στάθμιση χλόης
+Στάθμιση γρασιδιού
 [Gray]
 Γκρι
 [Green]
@@ -1235,7 +1235,7 @@ Cortex
 [Medium - Experimental]
 Μεσαίο - Πειραματικό
 [No AI orders]
-Χωρίς εντολές AI
+Χωρίς εντολές ΤΝ
 [Old islands]
 Τραχύ Αρχιπέλαγος
 [Old random]
@@ -1243,17 +1243,17 @@ Cortex
 [Open at least one colony to start a match.]
 Ανοίξτε τουλάχιστον μία αποικία για να ξεκινήσετε έναν αγώνα.
 [Open book]
-Αποκαλυφμένος κόσμος
+Αποκαλυμμένος κόσμος
 [Pink]
 Ροζ
 [Play this map]
-Παίξτε σε αυτόν τον χάρτη
+Παίξτε αυτόν τον χάρτη
 [Players & Teams]
-Παίκτες & Ομάδες
+Παίκτες και ομάδες
 [Premade maps]
-Προκατασκευασμένοι χάρτες
+Έτοιμοι χάρτες
 [Preview ready. Start plays this exact map.]
-Έτοιμη η προεπισκόπηση. Η έναρξη του παιχνιδιού χρησιμοποιεί αυτόν ακριβώς τον χάρτη.
+Η προεπισκόπηση είναι έτοιμη. Με την Έναρξη παίζετε ακριβώς αυτόν τον χάρτη.
 [Regenerate all]
 Αναδημιουργία όλων
 [Generating preview...]
@@ -1283,13 +1283,13 @@ Cortex
 [Select a valid map.]
 Επιλέξτε έναν έγκυρο χάρτη.
 [Shared control needs a free controller slot (maximum %0).]
-Ο κοινός έλεγχος απαιτεί διαθέσιμη θέση για παίκτη ή AI (έως %0).
+Ο κοινός έλεγχος απαιτεί διαθέσιμη θέση για παίκτη ή ΤΝ (έως %0).
 [Smoothing]
 Εξομάλυνση
 [Standard]
 Τυπικό
 [Start game]
-Ξεκινήστε το παιχνίδι
+Έναρξη παιχνιδιού
 [Starting workers]
 Αρχικοί εργάτες
 [Starting workers: Game Rules tab.]
@@ -1303,7 +1303,7 @@ Cortex
 [Victory]
 Νίκη
 [Watch game]
-Παρακολουθήστε το παιχνίδι
+Παρακολούθηση παιχνιδιού
 [Water weight]
 Στάθμιση νερού
 [White]
@@ -1313,11 +1313,11 @@ Cortex
 [Yellow]
 Κίτρινο
 [You]
-Εσύ
+Εσείς
 [You + AI]
-Εσείς + AI
+Εσείς + ΤΝ
 [You and the AI both issue orders. Uses two controller slots.]
-Εσείς και η AI δίνετε εντολές. Καταλαμβάνει δύο θέσεις παικτών και AI.
+Εσείς και η ΤΝ δίνετε εντολές. Καταλαμβάνει δύο θέσεις παικτών και ΤΝ.
 [You vs all]
 Εσείς εναντίον όλων
 [Your maps]
@@ -1337,7 +1337,7 @@ Cortex
 [Dimensions and colony count are set above.]
 Οι διαστάσεις και ο αριθμός αποικιών ορίζονται παραπάνω.
 [Generate & watch]
-Δημιουργήστε και παρακολουθήστε
+Δημιουργία και παρακολούθηση
 [Info]
 Πληροφορίες
 [Map-defined starting units]
@@ -1355,13 +1355,13 @@ Cortex
 [This landscape uses fixed resource placement.]
 Αυτό το τοπίο χρησιμοποιεί σταθερή τοποθέτηση πόρων.
 [Win through conquest]
-Νίκη μέσω της κατάκτησης
+Νίκη μέσω κατάκτησης
 [You control this colony.]
 Εσείς ελέγχετε αυτήν την αποικία.
 [controllers]
-παίκτες και AI
+παίκτες και ΤΝ
 [Use]
-Επιλέξτε
+Χρήση
 [Lime]
 Πράσινο λάιμ
 [Teal]
@@ -1379,13 +1379,13 @@ Cortex
 [toggle torus view]
 Εναλλαγή 2D / τοροειδούς προβολής
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-Το 2 εναντίον 2 απαιτεί τέσσερις ανοιχτές αποικίες. Το Εσείς εναντίον όλων απαιτεί ανθρώπινο παίκτη.
+Το 2 έναντι 2 απαιτεί τέσσερις ανοιχτές αποικίες. Το Εσείς εναντίον όλων απαιτεί ανθρώπινο παίκτη.
 [Alliance]
 Συμμαχία
 [Choose a rule to change it.]
 Επιλέξτε έναν κανόνα για να τον αλλάξετε.
 [Conquest only removes prestige victory; map scripts still apply.]
-Η νίκη μόνο για κατάκτηση απενεργοποιεί τη νίκη κύρους. Τα σενάρια χαρτών εξακολουθούν να ισχύουν.
+Η επιλογή «Μόνο κατάκτηση» καταργεί τη νίκη μέσω κύρους· τα σενάρια χαρτών εξακολουθούν να ισχύουν.
 [Control]
 Έλεγχος
 [Controller]
@@ -1401,13 +1401,13 @@ Cortex
 [Map-defined]
 Καθορισμένο από τον χάρτη
 [Match format]
-Μορφή παιχνιδιού
+Μορφή αγώνα
 [No current preview]
 Δεν υπάρχει τρέχουσα προεπισκόπηση
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Γρήγορη μάχη: διπλή ταχύτητα. οι χάρτες που δημιουργούνται ξεκινούν με 8 εργαζόμενους.
+Γρήγορη μάχη: διπλή ταχύτητα· οι παραγόμενοι χάρτες ξεκινούν με 8 εργάτες.
 [Reroll]
-Δημιουργήστε έναν άλλο χάρτη
+Άλλος χάρτης
 [Randomize]
 Τυχαία δημιουργία
 [Reset to defaults]
@@ -1417,17 +1417,17 @@ Cortex
 [Select a map from the library.]
 Επιλέξτε έναν χάρτη από τη βιβλιοθήκη.
 [Starting workers affects generated maps only.]
-Ο αρχικός αριθμός εργαζομένων ισχύει μόνο για χάρτες που δημιουργούνται.
+Οι αρχικοί εργάτες ισχύουν μόνο για παραγόμενους χάρτες.
 [Unavailable]
 Μη διαθέσιμο
 [Use selection]
-Χρησιμοποιήστε την επιλογή
+Χρήση επιλογής
 [Quick clash on premade maps: only speed changes (2x).]
-Γρήγορη μάχη σε προκατασκευασμένους χάρτες: αλλάζει μόνο η ταχύτητα (διπλή ταχύτητα).
+Γρήγορη μάχη σε έτοιμους χάρτες: αλλάζει μόνο η ταχύτητα (2x).
 [Generate a preview to explore this world.]
 Δημιουργήστε μια προεπισκόπηση για να εξερευνήσετε αυτόν τον κόσμο.
 [More workers jump-start colony growth. Changes the generated map.]
-Περισσότεροι εργαζόμενοι επιταχύνουν την ανάπτυξη των αποικιών. Αυτή η ρύθμιση αλλάζει τον χάρτη που δημιουργείται.
+Περισσότεροι εργάτες επιταχύνουν την ανάπτυξη των αποικιών. Αλλάζει τον παραγόμενο χάρτη.
 [No warriors]
 Χωρίς πολεμιστές
 [settings Add key to sequence]
@@ -1435,7 +1435,7 @@ Cortex
 [settings Add shortcut]
 Νέα συντόμευση
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Χρησιμοποιήστε τον τροχό του ποντικιού για να αλλάξετε τον αριθμό των εκχωρημένων μονάδων. Εάν αυτή η επιλογή είναι απενεργοποιημένη, κρατήστε πατημένο το πλήκτρο Ctrl για να χρησιμοποιήσετε τον τροχό. Κρατήστε πατημένο το πλήκτρο Shift για να ρυθμίσετε την ακτίνα σημαίας. Αυτή η επιλογή ελέγχει επίσης την είσοδο με τον τροχό του ποντικιού σε άλλα μενού.
+Ρύθμιση των ανατεθειμένων μονάδων με τον τροχό. Όταν είναι ανενεργό, κρατήστε πατημένο το Ctrl. Το Shift ρυθμίζει την ακτίνα της σημαίας. Ελέγχει επίσης τον τροχό σε άλλα μενού.
 [settings Adjust music and voice volume.]
 Ρυθμίστε την ένταση της μουσικής και της φωνής.
 [settings Adjust the pace of play.]
@@ -1605,9 +1605,9 @@ Cortex
 [settings This shortcut conflicts with existing bindings:]
 Αυτή η συντόμευση πληκτρολογίου έρχεται σε διένεξη με τις υπάρχουσες συντομεύσεις:
 [settings Trigger]
-Συμβάν ενεργοποίησης
+Ενεργοποίηση
 [settings Unbound]
-Δεν έχει εκχωρηθεί συντόμευση
+Χωρίς συντόμευση
 [settings Unit counts assigned to new construction sites.]
 Αριθμός μονάδων που ανατίθενται σε νέα εργοτάξια.
 [settings Unit counts for completed buildings.]
@@ -2127,11 +2127,11 @@ Cortex
 [Extremely scarce (8x slower)]
 Εξαιρετικά σπάνιοι (8x πιο αργά)
 [Small (+50 each)]
-Μικρό (+50 έκαστος)
+Μικρό (+50 ανά πόρο)
 [Medium (+150 each)]
-Μεσαίο (+150 έκαστος)
+Μεσαίο (+150 ανά πόρο)
 [Large (+300 each)]
-Μεγάλο (+300 έκαστος)
+Μεγάλο (+300 ανά πόρο)
 [No resource growth]
 Καμία ανάπτυξη πόρων
 [Economy]
@@ -2139,7 +2139,7 @@ Cortex
 [Instant construction]
 Άμεση κατασκευή
 [Higher tiers give every building much more HP.]
-Τα υψηλότερα επίπεδα δίνουν σε κάθε κτίριο πολύ περισσότερα HP.
+Τα υψηλότερα επίπεδα δίνουν σε κάθε κτίριο πολύ περισσότερους πόντους ζωής.
 [Starting units spawn already leveled up. Changes the generated map.]
 Οι αρχικές μονάδες εμφανίζονται ήδη ανεβασμένες επίπεδο. Αλλάζει τον παραγόμενο χάρτη.
 [No upgrades]
@@ -2195,7 +2195,7 @@ Cortex
 [Stats growth reductions]
 Πόροι -
 [Stats growth per minute]
-Σιτάρι +/min
+Σιτάρι +/λεπ.
 [Stats growth near 8]
 Πόροι + <=8
 [Stats growth near 16]
@@ -2357,7 +2357,7 @@ Emoji
 [Home oasis size]
 Μέγεθος πατρικής όασης
 [Caravanserais per colony]
-Καραβάν-σεράγια ανά αποικία
+Καραβανσεράγια ανά αποικία
 [Desert]
 Έρημος
 [Open erg]
@@ -2657,7 +2657,7 @@ Emoji
 [Compact]
 Κοντινοί
 [Balanced]
-Ισορροπημένη
+Ισορροπημένοι
 [Spread]
 Αραιοί
 [The Gauntlet]
@@ -2865,7 +2865,7 @@ Emoji
 [Pan map]
 Μετακίνηση χάρτη
 [Edit map]
-Επεξεργασία Χάρτη
+Επεξεργασία χάρτη
 [Editor map]
 Χάρτης
 [Flags]
@@ -2895,9 +2895,9 @@ Emoji
 [settings Interface layout]
 Διάταξη διεπαφής
 [settings Automatic]
-Αυτόματο
+Αυτόματη
 [settings Compact]
-Κοντινοί
+Συμπαγής
 [settings Spacious]
 Ευρύχωρη
 [More]
@@ -2925,7 +2925,7 @@ Emoji
 [settings Save the game automatically about every minute.]
 Αυτόματη αποθήκευση του παιχνιδιού περίπου κάθε λεπτό.
 [AI opponents]
-Αντίπαλοι υπολογιστή
+Αντίπαλοι ΤΝ
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.
 [settings One-finger zoom]
@@ -2965,7 +2965,7 @@ Emoji
 [Your colony]
 Η αποικία σας
 [%0 / %1 HP · %2]
-%0 / %1 ΖΩ · %2
+%0 / %1 HP · %2
 [Units: %0]
 Μονάδες: %0
 [Buildings: %0]
@@ -3165,11 +3165,11 @@ CPU %0%
 [Colonies: %0]
 Αποικίες: %0
 [%0 colonies · %1 AI]
-%0 αποικίες · %1 AI
+%0 αποικίες · %1 ΤΝ
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Μονάδες
+%0 · %1 μονάδες
 [settings Level %0]
 Επίπεδο %0
 [settings Match the desktop %0]
@@ -3193,7 +3193,7 @@ CPU %0%
 [resume game]
 Συνέχιση παιχνιδιού
 [Add AI]
-Προσθήκη AI
+Προσθήκη ΤΝ
 [settings Experiments]
 Πειράματα
 [settings Try features we are still testing. They can change balance and pacing.]
@@ -3235,1419 +3235,1419 @@ CPU %0%
 [List bounce]
 Αναπήδηση λιστών
 [lan pairing field]
-
+Κωδικός σύζευξης οικοδεσπότη (ή αξιόπιστο URL WSS)
 [lan pairing connect]
-
+Σύζευξη και σύνδεση
 [lan discovery instructions]
-
+Επιλέξτε οικοδεσπότη και επικολλήστε τον κωδικό σύζευξής του για να επαληθεύσετε την ταυτότητά του.
 [lan discovery unavailable]
-
+Η ανίχνευση LAN δεν είναι διαθέσιμη. Ελέγξτε την άδεια τοπικού δικτύου ή επικολλήστε κωδικό σύζευξης οικοδεσπότη.
 [lan discovered host %0]
-
+Βρέθηκε οικοδεσπότης %0 — κάντε σύζευξη για να δείτε παιχνίδια
 [lan connection unavailable]
-
+Αδύνατη η σύνδεση με τον οικοδεσπότη LAN. Ελέγξτε την άδεια τοπικού δικτύου και τον κωδικό σύζευξης.
 [lan connection verification failed %0]
-
+Αδύνατη η επαλήθευση ή η σύνδεση με τον οικοδεσπότη LAN: %0
 [lan lobby endpoint required]
-
+Χρησιμοποιήστε τη διεύθυνση αίθουσας του οικοδεσπότη
 [settings Artwork]
-
+Γραφικά
 [settings Original]
-
+Αρχικά
 [settings High resolution]
-
+Υψηλή ανάλυση
 [settings Clouds]
-
+Σύννεφα
 [settings Show cloud cover above the map.]
-
+Εμφάνιση νεφοκάλυψης πάνω από τον χάρτη.
 [settings Cloud shadows]
-
+Σκιές σύννεφων
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Εμφάνιση σκιών σύννεφων στο έδαφος ανεξάρτητα από τη νεφοκάλυψη.
 [settings Building particles]
-
+Σωματίδια κτιρίων
 [settings Show smoke and other building particles.]
-
+Εμφάνιση καπνού και άλλων σωματιδίων κτιρίων.
 [settings Magic effects]
-
+Μαγικά εφέ
 [settings Choose animated magic effects or a simple visible effect.]
-
+Επιλέξτε κινούμενα μαγικά εφέ ή ένα απλό ορατό εφέ.
 [settings Simple]
-
+Απλά
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Απαιτεί απόδοση OpenGL. Η αποθηκευμένη επιλογή σας διατηρείται.
 [settings Interface appearance]
-
+Εμφάνιση διεπαφής
 [settings Panels]
-
+Πλαίσια
 [settings Choose translucent or opaque interface panels.]
-
+Επιλέξτε ημιδιαφανή ή αδιαφανή πλαίσια διεπαφής.
 [settings Opaque]
-
+Αδιαφανή
 [settings Translucent]
-
+Ημιδιαφανή
 [settings Advanced graphics]
-
+Προηγμένα γραφικά
 [settings Path lines]
-
+Γραμμές διαδρομής
 [settings Choose translucent or opaque unit path lines.]
-
+Επιλέξτε ημιδιαφανείς ή αδιαφανείς γραμμές διαδρομής μονάδων.
 [settings Smooth progress indicators]
-
+Ομαλές ενδείξεις προόδου
 [settings Smooth the moving edges of progress indicators.]
-
+Εξομάλυνση των κινούμενων άκρων στις ενδείξεις προόδου.
 [settings Decorative interface animation]
-
+Διακοσμητική κίνηση διεπαφής
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Κίνηση στην εικόνα νίκης. Η μειωμένη κίνηση την απενεργοποιεί επίσης.
 [settings Smooth unit motion]
-
+Ομαλή κίνηση μονάδων
 [settings Experimental: move and animate units between game ticks.]
-
+Πειραματικό: κίνηση των μονάδων ανάμεσα στα βήματα του παιχνιδιού.
 [settings Smooth fog of war]
-
+Ομαλή ομίχλη πολέμου
 [settings Fade the map into and out of the fog of war gradually.]
-
+Σταδιακή μετάβαση του χάρτη μέσα και έξω από την ομίχλη πολέμου.
 [settings Adaptive zoom detail]
-
+Προσαρμοστική λεπτομέρεια ζουμ
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Απλοποίηση ράβδων, ζωνών, εδάφους και μονάδων όταν ο χάρτης απομακρύνεται, και μικρό μέγεθος όταν πλησιάζει.
 [settings Text size]
-
+Μέγεθος κειμένου
 [settings Enlarge interface text without changing the map scale.]
-
+Μεγέθυνση του κειμένου της διεπαφής χωρίς αλλαγή της κλίμακας του χάρτη.
 [Map momentum]
 Ορμή χάρτη
 [turn reconnecting]
-
+Η σύνδεση με τον οικοδεσπότη χάθηκε. Επανασύνδεση...
 [turn waiting for players]
-
+Αναμονή για τη φόρτωση όλων των παικτών...
 [turn rejoining]
-
+Επανένταξη στο παιχνίδι...
 [turn catching up %0]
-
+Συγχρονισμός: %0 γύροι πίσω
 [turn player reconnecting %0]
-
+Ο/Η %0 επανασυνδέεται...
 [turn player lagging %0]
-
+Ο/Η %0 καθυστερεί
 [turn player resyncing %0]
-
+Ο/Η %0 συγχρονίζεται
 [turn player not connected %0]
-
+Ο/Η %0 δεν έχει συνδεθεί ακόμη
 [lan host left]
-
+Ο οικοδεσπότης αποχώρησε από το παιχνίδι.
 [lan host lost]
-
+Η σύνδεση με τον οικοδεσπότη χάθηκε.
 [lan version mismatch %0]
-
+Ο οικοδεσπότης έχει διαφορετική έκδοση του Globulation 2 (%0).
 [lan cannot host %0]
-
+Αδύνατη η φιλοξενία παιχνιδιού LAN: %0
 [play online]
-
+Διαδικτυακό παιχνίδι
 [Use in room]
-
+Χρήση στην αίθουσα
 [conn ai]
-
+ΤΝ
 [conn behind %0]
-
+Υστέρηση %0
 [conn behind explanation %0 %1]
-
+Υστέρηση: πόσο πίσω από το ρολόι του αγώνα τρέχει το παιχνίδι ενός παίκτη· περιλαμβάνει την καθυστέρησή του. Κάτω από %0 είναι φυσιολογικό· από %1 ο παίκτης σημειώνεται ως αργός.
 [conn behind]
-
+Υστέρηση
 [conn card catching up]
-
+Συγχρονισμός
 [conn card colony works]
-
+Η αποικία σας συνεχίζει μόνη της: οι μονάδες ολοκληρώνουν τις εργασίες τους και τα κτίρια λειτουργούν.
 [conn card desync detail]
-
+Επανένταξη από το αρχείο του αγώνα, ώστε να βλέπετε ό,τι βλέπουν και οι άλλοι. Μια αναφορά στάλθηκε αυτόματα.
 [conn card desync]
-
+Το παιχνίδι σας αποσυγχρονίστηκε
 [conn card grace %0]
-
+Η αποικία σας συνεχίζει μόνη της: οι μονάδες ολοκληρώνουν τις εργασίες τους και τα κτίρια λειτουργούν. Έχετε %0 για να επιστρέψετε πριν αποβληθείτε από τον αγώνα.
 [conn card input paused]
-
+Συγχρονίζεστε · οι εντολές σε παύση
 [conn card lost]
-
+Η σύνδεση χάθηκε
 [conn card progress %0 %1 %2]
-
+%0 % · %1 από %2 βήματα
 [conn card reconnecting %0]
-
+Επανασύνδεση στον αγώνα… προσπάθεια %0
 [conn card replaying %0]
-
+Αναπαραγωγή των %0 που χάσατε. Η οθόνη ενημερώνεται μόλις φτάσετε στο παρόν.
 [conn card seconds left %0]
-
+απομένουν περίπου %0 δ
 [conn connections]
-
+Συνδέσεις
 [conn connection]
-
+Σύνδεση
 [conn delay explanation %0 %1]
-
+Καθυστέρηση: ο χρόνος από το κλικ σας έως ότου συμβεί, για όλους. Εξαρτάται από τη δική σας σύνδεση, όχι των άλλων παικτών. Καλή κάτω από %0, κακή από %1.
 [conn fair]
-
+Μέτρια
 [conn good]
-
+Καλή
 [conn grid legend]
-
+Με περισσότερους από τέσσερις παίκτες, το πλαίσιο δείχνει το πινγκ κάθε παίκτη σε χιλιοστά του δευτερολέπτου ή πόσα δευτερόλεπτα υστερεί.
 [conn jitter %0]
-
+διακύμανση %0
 [conn leave match]
-
+Αποχώρηση
 [conn left]
-
+Αποχώρησε
 [conn notice back %0]
-
+Ο/Η %0 επέστρεψε.
 [conn notice left %0]
-
+Ο/Η %0 αποχώρησε από τον αγώνα.
 [conn notice lost %0 %1]
-
+Ο/Η %0 έχασε τη σύνδεση. Το παιχνίδι συνεχίζεται· η αποικία του/της λειτουργεί όσο επανασυνδέεται (απομένουν %1).
 [conn ping explanation %0 %1]
-
+Πινγκ: ο χρόνος μετάβασης και επιστροφής μεταξύ παίκτη και αναμεταδότη. Καλό κάτω από %0, κακό από %1.
 [conn ping]
-
+Πινγκ
 [conn players]
-
+Παίκτες
 [conn poor]
-
+Κακή
 [conn reconnecting]
-
+Επανασύνδεση
 [conn relay %0]
-
+Αναμεταδότης: %0
 [conn resyncing]
-
+Επανένταξη
 [conn slow]
-
+Αργός
 [conn unstable]
-
+ασταθής
 [conn waiting]
-
+Σύνδεση…
 [conn you %0]
-
+%0 (εσείς)
 [conn you]
-
+Εσείς
 [conn your delay %0]
-
+Η καθυστέρησή σας %0
 [hub account menu]
-
+Λογαριασμός
 [hub ai joins after %0]
-
+Η ΤΝ μπαίνει μετά από %0
 [hub all rooms]
-
+Όλες
 [hub browse maps]
-
+Περιήγηση χαρτών
 [hub cant reach %0]
-
+Αδύνατη η πρόσβαση στο %0.
 [hub change server]
-
+Αλλαγή διακομιστή…
 [hub check code]
-
+Όταν σας ζητηθεί κωδικός, εισαγάγετε αυτόν:
 [hub code placeholder]
-
+Κωδικός ή σύνδεσμος πρόσκλησης
 [hub connecting to %0]
-
+%0 · σύνδεση…
 [hub continue with %0]
-
+Συνέχεια με %0
 [hub create room]
-
+Νέα αίθουσα
 [hub find match]
-
+Εύρεση αγώνα
 [hub finish in browser]
-
+Ολοκληρώστε τη σύνδεση στη σελίδα που άνοιξε στο πρόγραμμα περιήγησής σας.
 [hub free seat]
-
+Ελεύθερη θέση
 [hub get update]
-
+Λήψη ενημέρωσης
 [hub guest kept on device]
-
+Επισκέπτης · αποθηκεύεται σε αυτή τη συσκευή
 [hub invalid code]
-
+Αυτό δεν είναι κωδικός ή σύνδεσμος πρόσκλησης.
 [hub join by code]
-
+Συμμετοχή με κωδικό
 [hub join code]
-
+Κωδικός συμμετοχής
 [hub join]
-
+Συμμετοχή
 [hub leaderboard]
-
+Κατάταξη
 [hub linked %0]
-
+Διασυνδεδεμένοι λογαριασμοί · %0
 [hub linked accounts]
-
+Διασυνδεδεμένοι λογαριασμοί
 [hub maps]
-
+Χάρτες
 [hub no queues]
-
+Αυτός ο διακομιστής δεν έχει ουρές γρήγορου αγώνα.
 [hub no rooms]
-
+Δεν υπάρχουν ανοιχτές αίθουσες. Δημιουργήστε μία και μοιραστείτε την πρόσκληση.
 [hub offline at %0]
-
+%0 · εκτός σύνδεσης
 [hub offline detail %0]
-
+Νέα προσπάθεια σε %0 δ. Ο γρήγορος αγώνας και οι διαδικτυακές αίθουσες δεν είναι διαθέσιμα. Το παιχνίδι LAN στο κύριο μενού δεν χρειάζεται αυτόν τον διακομιστή.
 [hub online at %0]
-
+%0 · συνδεδεμένο
 [hub online settings]
-
+Ρυθμίσεις διαδικτύου
 [hub online]
-
+Διαδίκτυο
 [hub open page again]
-
+Ανοίξτε ξανά τη σελίδα
 [hub open rooms]
-
+Ανοιχτές αίθουσες
 [hub page opened at %0]
-
+Άνοιξε το %0. Δεν χρειάζεται να πληκτρολογήσετε τίποτα στο παιχνίδι· η σύνδεση γίνεται αυτόματα.
 [hub queues unavailable]
-
+Ο γρήγορος αγώνας εμφανίζεται όταν απαντήσει ο διακομιστής.
 [hub quick match unavailable]
-
+Ο γρήγορος αγώνας δεν είναι ακόμη διαθέσιμος σε αυτή την έκδοση.
 [hub quick match]
-
+Γρήγορος αγώνας
 [hub ranked]
-
+Βαθμολογούμενος
 [hub recent matches]
-
+Πρόσφατοι αγώνες
 [hub refresh]
-
+Ανανέωση
 [hub retry now]
-
+Νέα προσπάθεια
 [hub room match]
-
+Αίθουσα
 [hub room name %0]
-
+Αίθουσα του/της %0
 [hub room]
-
+Αίθουσα
 [hub seats %0 %1]
-
+%0/%1 θέσεις
 [hub server %0]
-
+Διακομιστής: %0
 [hub sign in browser]
-
+Άνοιγμα σελίδας σύνδεσης
 [hub sign in conflict]
-
+Αυτά τα στοιχεία σύνδεσης ανήκουν ήδη σε άλλο λογαριασμό.
 [hub sign in failed %0]
-
+Η σύνδεση δεν ολοκληρώθηκε (%0).
 [hub sign in intro]
-
+Συνδεθείτε ή δημιουργήστε λογαριασμό στο πρόγραμμα περιήγησης. Οι αγώνες σας ως επισκέπτη μεταφέρονται μαζί σας.
 [hub sign in]
-
+Σύνδεση
 [hub sign out]
-
+Αποσύνδεση από αυτή τη συσκευή
 [hub signed in as %0]
-
+Συνδεδεμένος ως %0.
 [hub signed in on %0]
-
+Συνδεδεμένος στο %0
 [hub signing in]
-
+Σύνδεση…
 [hub sim %0]
-
+προσομ. %0
 [hub unrated]
-
+Χωρίς βαθμολογία
 [hub update required at %0]
-
+%0 · απαιτείται ενημέρωση
 [hub update required detail %0]
-
+Το %0 τρέχει νεότερη έκδοση, οπότε αυτό το αντίγραφο δεν μπορεί να μπει σε διαδικτυακά παιχνίδια μέχρι να ενημερωθεί. Τα παιχνίδια LAN λειτουργούν κανονικά.
 [hub update required]
-
+Απαιτείται ενημέρωση
 [hub server behind]
-
+Εκκρεμεί ενημέρωση διακομιστή
 [hub server behind at %0]
-
+%0 · εκκρεμεί ενημέρωση διακομιστή
 [hub server behind detail %0]
-
+Αυτό το αντίγραφο είναι νεότερο από το %0, που δεν έχει ενημερωθεί ακόμη. Τα διαδικτυακά παιχνίδια θα ανοίξουν μόλις ενημερωθεί ο διακομιστής. Τα παιχνίδια LAN λειτουργούν κανονικά.
 [hub version mismatch]
-
+Διαφορετική έκδοση
 [hub version mismatch at %0]
-
+%0 · διαφορετική έκδοση
 [hub version mismatch detail %0]
-
+Το %0 τρέχει διαφορετική έκδοση του παιχνιδιού, οπότε αυτό το αντίγραφο δεν μπορεί να μπει σε διαδικτυακά παιχνίδια. Τα παιχνίδια LAN λειτουργούν κανονικά.
 [hub versus %0]
-
+εναντίον %0
 [match ai]
-
+ΤΝ
 [match downloading map %0]
-
+Λήψη χάρτη %0
 [match failed]
-
+Ο αγώνας δεν μπόρεσε να ξεκινήσει.
 [match leave]
-
+Αποχώρηση
 [match loading]
-
+Φόρτωση παιχνιδιού
 [Loading game graphics]
-
+Φόρτωση γραφικών παιχνιδιού
 [match map cached]
-
+υπάρχει ήδη στη συσκευή
 [match map]
-
+Λήψη χάρτη
 [match relay %0]
-
+Συνδέθηκε στον αναμεταδότη %0
 [match seat confirmed]
-
+Η θέση επιβεβαιώθηκε
 [match starting]
-
+Έναρξη αγώνα
 [match tip flags]
-
+Συμβουλή: οι σημαίες εξερεύνησης στέλνουν εξερευνητές να αποκαλύψουν τον χάρτη· οι σημαίες πολέμου συγκεντρώνουν τους πολεμιστές σας.
 [match tip input]
-
+Συμβουλή: οι εντολές σας φτάνουν σε όλους μετά τη δική σας καθυστέρηση εισόδου· οι συνδέσεις των άλλων παικτών δεν σας επιβραδύνουν.
 [match tip select]
-
+Συμβουλή: κάντε διπλό κλικ σε ένα κτίριο για να επιλέξετε όλα τα κτίρια του ίδιου τύπου.
 [match waiting for players]
-
+Αναμονή για όλους τους παίκτες
 [match you %0]
-
+%0 (εσείς)
 [match player map]
-
+χάρτης
 [match player loading]
-
+φόρτωση
 [match player connecting]
-
+σύνδεση
 [match player ready]
-
+έτοιμος
 [match player left]
-
+αποχώρησε
 [results back to online]
-
+Πίσω στο διαδίκτυο
 [results back to room]
-
+Πίσω στην αίθουσα
 [results defeat]
-
+Ήττα
 [results ladder rating %0]
-
+Βαθμολογία %0
 [results left]
-
+Αποχωρήσατε από τον αγώνα
 [results match over]
-
+Τέλος αγώνα
 [results match page]
-
+Σελίδα αγώνα
 [results minutes %0]
-
+%0 λεπ.
 [results no change]
-
+καμία αλλαγή
 [results ranked]
-
+Βαθμολογούμενος
 [results recording]
-
+Καταγραφή αποτελέσματος…
 [results room unrated]
-
+Αγώνας αίθουσας · χωρίς βαθμολογία
 [results saved to history]
-
+Αποθηκεύτηκε στο ιστορικό σας
 [results seconds %0]
-
+%0 δ
 [results unverifiable]
-
+Ο διακομιστής δεν μπόρεσε να αναπαράγει αυτόν τον αγώνα, οπότε δεν μετράει στη βαθμολογία κανενός. Έχει αναφερθεί για διερεύνηση· δεν χρειάζεται να κάνετε τίποτα.
 [results verified provisional]
-
+Επαληθεύτηκε · προσωρινά
 [results verified]
-
+Επαληθεύτηκε
 [results verifying detail]
-
+Ο διακομιστής αναπαράγει τον αγώνα για να τον επιβεβαιώσει. Συνήθως διαρκεί λιγότερο από ένα λεπτό.
 [results verifying]
-
+Επαλήθευση αποτελέσματος…
 [results victory]
-
+Νίκη
 [room address]
-
+Διεύθυνση
 [room ai %0]
-
+ΤΝ: %0
 [room browser pairing]
-
+Σύζευξη μέσω προγράμματος περιήγησης
 [room catalog map]
-
+Χάρτης καταλόγου
 [room change map]
-
+Αλλαγή χάρτη…
 [room change rules]
-
+Αλλαγή κανόνων…
 [room chat]
-
+Συζήτηση
 [room closed seat detail]
-
+Κλειστή από τον οικοδεσπότη
 [room closed seat]
-
+Κλειστή
 [room colonies]
-
+Αποικίες
 [room connecting]
-
+Σύνδεση στην αίθουσα…
 [room copy]
-
+Αντιγραφή
 [room disconnected]
-
+αποσυνδέθηκε
 [room downloading %0]
-
+Λήψη χάρτη %0 %
 [room downloading map]
-
+Λήψη χάρτη…
 [room expired]
-
+Η αίθουσα έκλεισε.
 [room generated on server]
-
+Δημιουργείται μία φορά στον διακομιστή, ώστε όλοι να παίζουν ακριβώς αυτόν τον χάρτη.
 [room guest]
-
+επισκέπτης
 [room host %0]
-
+οικοδεσπότης %0
 [room host closed]
-
+Ο οικοδεσπότης έκλεισε την αίθουσα.
 [room host]
-
+οικοδεσπότης
 [room humans vs ai]
-
+Άνθρωποι εναντίον ΤΝ
 [room invite code %0]
-
+Κωδικός %0 · ανοίγει στην εφαρμογή, σε κινητά ή σε πρόγραμμα περιήγησης
 [room invite not found]
-
+Αυτή η πρόσκληση έχει λήξει ή δεν υπάρχει.
 [room invite only]
-
+Μόνο με πρόσκληση
 [room invite]
-
+Πρόσκληση
 [room joining on network]
-
+Συμμετοχή σε αυτό το δίκτυο
 [room lan badge]
-
+Τοπικό δίκτυο · χωρίς βαθμολογία
 [room lan list hint %0]
-
+Όσοι βρίσκονται στο ίδιο δίκτυο βλέπουν το %0 στη λίστα παιχνιδιών LAN στο κύριο μενού.
 [room leave]
-
+Αποχώρηση
 [room map changed %0]
-
+Ο χάρτης άλλαξε σε %0.
 [room map failed]
-
+Δεν ήταν δυνατή η προετοιμασία του χάρτη
 [room match label]
-
+Αίθουσα
 [room member joined %0]
-
+Ο/Η %0 μπήκε.
 [room member left %0]
-
+Ο/Η %0 αποχώρησε.
 [room member ready %0]
-
+Ο/Η %0 είναι έτοιμος/η.
 [room needs two seats]
-
+Προσκαλέστε έναν φίλο ή προσθέστε ΤΝ για να ξεκινήσετε
 [room no map]
-
+Δεν υπάρχει χάρτης ακόμη
 [room not ready]
-
+Όχι έτοιμος
 [room open for a person]
-
+Ανοιχτή για άνθρωπο
 [room open seat detail]
-
+Μπορεί να την πάρει όποιος έχει την πρόσκληση
 [room open seat]
-
+Ανοιχτή θέση
 [room person]
-
+Άνθρωπος
 [room preparing map]
-
+Προετοιμασία χάρτη στον διακομιστή…
 [room public]
-
+Δημόσια
 [room ready?]
-
+Έτοιμος
 [room ready]
-
+✓ Έτοιμος
 [room remove from room]
-
+Αφαίρεση από την αίθουσα
 [room rule off]
-
+Όχι
 [room rule on]
-
+Ναι
 [room rules changed]
-
+Οι κανόνες άλλαξαν.
 [room rules]
-
+Κανόνες
 [room say something]
-
+Γράψτε κάτι…
 [room seat hint]
-
+Οι παίκτες μπορούν να μετακινηθούν μόνοι τους σε ανοιχτή θέση. Αλλάξτε ομάδα για εξισορρόπηση.
 [room seat options]
-
+Επιλογές θέσης
 [room seats summary %0 %1 %2]
-
+%0 παίκτες · %1 ΤΝ · %2 ανοιχτές
 [room seats]
-
+Θέσεις
 [room seed]
-
+Σπόρος
 [room send]
-
+Αποστολή
 [room set by host]
-
+Ορίζεται από τον οικοδεσπότη
 [room share text %0]
-
+Ελάτε στην αίθουσά μου στο Globulation 2: %0
 [room share]
-
+Κοινοποίηση…
 [room size]
-
+Μέγεθος
 [room starting match]
-
+Έναρξη αγώνα…
 [room take seat]
-
+Κατάληψη θέσης
 [room team %0]
-
+Ομάδα %0
 [room update required]
-
+Αυτή η αίθουσα τρέχει άλλη έκδοση του παιχνιδιού. Ενημερώστε για να συμμετάσχετε.
 [room uploaded map]
-
+Ανεβασμένος χάρτης
 [room waiting for %0]
-
+Αναμονή μέχρι να ετοιμαστεί ο/η %0
 [room waiting for you]
-
+Πατήστε «Έτοιμος» όταν είστε έτοιμοι
 [room match over]
-
+Τέλος αγώνα. Δηλώστε έτοιμοι για άλλον γύρο!
 [room waiting for host]
-
+Αναμονή για έναρξη από τον οικοδεσπότη
 [room waiting for players %0]
-
+Αναμονή μέχρι να ετοιμαστούν %0 παίκτες
 [room who can find it]
-
+Ποιος μπορεί να τη βρει
 [room you created]
-
+Δημιουργήσατε την αίθουσα.
 [room you joined %0]
-
+Μπήκατε στην %0.
 [room you were removed]
-
+Ο οικοδεσπότης σας αφαίρεσε από την αίθουσα.
 [room you]
-
+εσείς
 [settings Online]
-
+Διαδίκτυο
 [settings Another server]
-
+Άλλος διακομιστής
 [settings Check]
-
+Έλεγχος
 [settings Checking…]
-
+Έλεγχος…
 [settings Choose which server you play on and how you sign in to it.]
-
+Επιλέξτε σε ποιον διακομιστή παίζετε και πώς συνδέεστε σε αυτόν.
 [settings Connecting…]
-
+Σύνδεση…
 [settings Could not reach this server.]
-
+Αδύνατη η πρόσβαση σε αυτόν τον διακομιστή.
 [settings Display name saved.]
-
+Το εμφανιζόμενο όνομα αποθηκεύτηκε.
 [settings Display name]
-
+Εμφανιζόμενο όνομα
 [settings Download or delete my data]
-
+Διαγραφή λογαριασμού
 [settings Enter an https:// address.]
-
+Εισαγάγετε μια διεύθυνση https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Ολοκληρώστε στο πρόγραμμα περιήγησης: πληκτρολογήστε τον κωδικό %0 όταν σας ζητηθεί.
 [settings Forget]
-
+Διαγραφή
 [settings Guests keep a generated name; sign in to choose one.]
-
+Οι επισκέπτες έχουν αυτόματο όνομα· συνδεθείτε για να επιλέξετε δικό σας.
 [settings Link]
-
+Διασύνδεση
 [settings Not a Globulation 2 server.]
-
+Δεν είναι διακομιστής Globulation 2.
 [settings Not linked]
-
+Μη διασυνδεδεμένο
 [settings Not signed in.]
-
+Δεν έχετε συνδεθεί.
 [settings Open]
-
+Άνοιγμα
 [settings Opens your account page on %0.]
-
+Ανοίγει τη σελίδα του λογαριασμού σας στο %0, όπου μπορείτε να τον διαγράψετε.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Τον διαχειρίζεται μια κοινότητα, ένας σύλλογος ή εσείς. Επικολλήστε τη διεύθυνσή του.
 [settings Save]
-
+Αποθήκευση
 [settings Server]
-
+Διακομιστής
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Εμφανίζεται σε αίθουσες, αγώνες και στην κατάταξη. Αλλάζει μία φορά ανά 30 ημέρες.
 [settings Sign in with: %0 · queues: %1]
-
+Σύνδεση με: %0 · ουρές: %1
 [settings Sign out on this device]
-
+Αποσύνδεση από αυτή τη συσκευή
 [settings Sign out]
-
+Αποσύνδεση
 [settings Switch to this server]
-
+Μετάβαση σε αυτόν τον διακομιστή
 [settings The last sign-in method can't be unlinked.]
-
+Η τελευταία μέθοδος σύνδεσης δεν μπορεί να καταργηθεί.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Ο επίσημος διακομιστής του Globulation 2 · ουρές με βαθμολογία, κατατάξεις, κατάλογος χαρτών
 [settings Unlink]
-
+Κατάργηση
 [settings Unlinking is done on the account page.]
-
+Η κατάργηση διασύνδεσης γίνεται στη σελίδα του λογαριασμού.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Θα είστε νέος επισκέπτης μέχρι να συνδεθείτε ξανά. Ο λογαριασμός και οι αγώνες σας παραμένουν στον διακομιστή.
 [settings Your account on %0]
-
+Ο λογαριασμός σας στο %0
 [settings compatible with this version]
-
+συμβατός με αυτή την έκδοση
 [settings connected]
-
+συνδεδεμένος
 [settings connecting…]
-
+σύνδεση…
 [settings guest]
-
+επισκέπτης
 [settings linked]
-
+διασυνδεδεμένο
 [settings plays another version]
-
+τρέχει άλλη έκδοση
 [settings trusted]
-
+αξιόπιστος
 [settings used before]
-
+χρησιμοποιήθηκε παλιότερα
 [settings you were %0 there]
-
+εκεί ήσασταν %0
 [trust invited to room %0]
-
+Πρόσκληση στην αίθουσα %0
 [trust join as guest]
-
+Συμμετοχή ως επισκέπτης
 [trust not official]
-
+Αυτόν τον διακομιστή δεν τον διαχειρίζεται το έργο Globulation 2.
 [trust remember]
-
+Απομνημόνευση διακομιστή
 [trust separate identity %0]
-
+Θα συμμετάσχετε εκεί ως επισκέπτης. Ο λογαριασμός σας στο %0, η βαθμολογία και το ιστορικό σας μένουν ως έχουν.
 [trust title]
-
+Συμμετοχή σε παιχνίδι σε άλλο διακομιστή;
 [trust what it sees]
-
+Ο διακομιστής βλέπει το εμφανιζόμενο όνομά σας, τη διεύθυνση της σύνδεσής σας και τα παιχνίδια που παίζετε σε αυτόν.
 [settings not connected]
-
+μη συνδεδεμένος
 [settings Open Play online to connect.]
-
+Ανοίξτε το «Διαδικτυακό παιχνίδι» για να συνδεθείτε.
 [hub code]
-
+Κωδικός
 [results draw]
-
+Ισοπαλία
 [qm 2 vs 2]
-
+2 έναντι 2
 [qm 1 vs 1]
-
+1 έναντι 1
 [qm ping about]
-
+Πινγκ περίπου
 [qm ranked]
-
+Βαθμολογούμενος
 [qm casual %0]
-
+Χαλαρός %0
 [qm rated]
-
+Βαθμολογούμενος
 [qm unrated]
-
+Χωρίς βαθμολογία
 [qm solo queue]
-
+ατομική ουρά
 [qm ai joins after %0]
-
+Η ΤΝ μπαίνει μετά από %0
 [qm fair maps %0]
-
+Χάρτες: %0
 [qm cooldown %0]
-
+Απορρίψατε έναν αγώνα. Μπορείτε να ψάξετε ξανά σε %0.
 [qm sign in to play ranked]
-
+Οι βαθμολογούμενες ουρές είναι για συνδεδεμένους λογαριασμούς· συνδεθείτε πρώτα.
 [online update required]
-
+Αυτή η έκδοση του παιχνιδιού είναι πολύ παλιά για τον διακομιστή· ενημερώστε για να παίξετε διαδικτυακά.
 [online server behind]
-
+Ο διακομιστής δεν έχει ενημερωθεί ακόμη σε αυτή την έκδοση· το διαδικτυακό παιχνίδι θα ανοίξει μόλις ενημερωθεί.
 [online version mismatch]
-
+Ο διακομιστής τρέχει διαφορετική έκδοση του παιχνιδιού· το διαδικτυακό παιχνίδι δεν είναι διαθέσιμο με αυτό το αντίγραφο.
 [qm already searching]
-
+Ήδη ψάχνετε ή είστε σε αγώνα.
 [online connection problem]
-
+Αδύνατη η πρόσβαση στον διακομιστή.
 [qm find match]
-
+Εύρεση αγώνα
 [qm opponents rated %0 to %1]
-
+Αντίπαλοι με βαθμολογία %0 έως %1
 [qm region %0]
-
+Περιοχή %0
 [qm searching]
-
+Αναζήτηση
 [qm measuring relays]
-
+Μέτρηση αναμεταδοτών
 [qm joining queue]
-
+Είσοδος στην ουρά
 [qm waiting for a person]
-
+Αναμονή για άνθρωπο: οι αντίπαλοι ΤΝ είναι απενεργοποιημένοι.
 [qm ai in %0 rated]
-
+Αν δεν βρεθεί κανείς, θα παίξετε με την ΤΝ με την πλησιέστερη βαθμολογία σε %0
 [qm ai in %0]
-
+Αν δεν βρεθεί κανείς, μια ΤΝ μπαίνει σε %0
 [qm ai after %0]
-
+Αν δεν βρεθεί κανείς, μια ΤΝ παίρνει τη θέση μετά από %0
 [qm allow ai short]
-
+Να επιτρέπεται ΤΝ
 [qm allow ai]
-
+Να επιτρέπεται αντίπαλος ΤΝ
 [qm cancel]
-
+Ακύρωση
 [qm cancel search]
-
+Ακύρωση αναζήτησης
 [qm usual wait %0]
-
+συνήθης αναμονή %0
 [qm widening]
-
+διευρύνεται όσο περιμένετε
 [qm ais are rated]
-
+(με βαθμολογία: και οι ΤΝ έχουν βαθμολογία)
 [qm opponent declined]
-
+Ο αντίπαλός σας δεν αποδέχτηκε. Επιστρέψατε στην αρχή της ουράς.
 [qm %0 did not accept]
-
+Ο/Η %0 δεν αποδέχτηκε. Επιστρέψατε στην αρχή της ουράς.
 [qm start failed]
-
+Ο αγώνας δεν μπόρεσε να ξεκινήσει. Η αναζήτηση συνεχίζεται.
 [qm you declined]
-
+Απορρίψατε τον αγώνα. Μπορείτε να ψάξετε ξανά μετά από λίγο.
 [qm you did not answer]
-
+Δεν αποδεχτήκατε εγκαίρως. Μπορείτε να ψάξετε ξανά μετά από λίγο.
 [qm search ended]
-
+Η αναζήτηση τελείωσε.
 [qm try again]
-
+Δοκιμάστε ξανά
 [online connecting]
-
+Σύνδεση…
 [qm no queues]
-
+Αυτός ο διακομιστής δεν έχει ουρές γρήγορου αγώνα.
 [qm quick match]
-
+Γρήγορος αγώνας
 [qm phone searching note]
-
+Η αναζήτηση συνεχίζεται αν φύγετε από αυτή την οθόνη.
 [qm phone intro]
-
+Επιλέξτε μια ουρά παρακάτω· η αναζήτηση συνεχίζεται όσο περιηγείστε.
 [qm online]
-
+Διαδίκτυο
 [qm keeps running note]
-
+Η αναζήτηση συνεχίζεται αν φύγετε από αυτή την οθόνη.
 [qm ai]
-
+ΤΝ
 [qm provisional]
-
+προσωρινή
 [qm accepted]
-
+✓ αποδέχτηκε
 [qm declined]
-
+απέρριψε
 [qm waiting]
-
+αναμονή…
 [qm ai badge]
-
+ΤΝ
 [qm match found]
-
+Βρέθηκε αγώνας
 [qm playing an ai]
-
+Αγώνας με ΤΝ
 [qm vs]
-
+εναντίον
 [qm ai explanation rated]
-
+Κανείς στο εύρος βαθμολογίας σας δεν έψαχνε. Θα παίξετε με την ΤΝ που είναι πιο κοντά στη βαθμολογία σας· το αποτέλεσμα μετράει για τη δική σας βαθμολογία και της ΤΝ.
 [qm ai explanation]
-
+Κανείς δεν έψαχνε. Θα παίξετε με την ΤΝ που είναι πιο κοντά στη βαθμολογία σας· αυτό το παιχνίδι δεν βαθμολογείται.
 [qm casual explanation]
-
+Ο αγώνας ξεκινά αμέσως· τα χαλαρά παιχνίδια δεν βαθμολογούνται.
 [qm accepted button]
-
+Αποδεχτήκατε
 [qm accept]
-
+Αποδοχή
 [qm decline]
-
+Απόρριψη
 [qm both must accept]
-
+Πρέπει να αποδεχτούν και οι δύο
 [qm accept explanation]
-
+Πρέπει να αποδεχτούν και οι δύο παίκτες. Αν απορρίψετε ή λήξει ο χρόνος, πηγαίνετε στο τέλος της ουράς.
 [qm starting in %0]
-
+Έναρξη σε %0…
 [qm preparing match]
-
+Προετοιμασία αγώνα…
 [qm match assigned %0 %1]
-
+Ο αγώνας %0 είναι έτοιμος στο %1, αλλά αυτή η έκδοση δεν μπορεί ακόμη να συνδεθεί σε διαδικτυακούς αγώνες.
 [online jan]
-
+Ιαν
 [online feb]
-
+Φεβ
 [online mar]
-
+Μαρ
 [online apr]
-
+Απρ
 [online may]
-
+Μαΐ
 [online jun]
-
+Ιουν
 [online jul]
-
+Ιουλ
 [online aug]
-
+Αυγ
 [online sep]
-
+Σεπ
 [online oct]
-
+Οκτ
 [online nov]
-
+Νοε
 [online dec]
-
+Δεκ
 [profile win letter]
-
+Ν
 [profile loss letter]
-
+Η
 [profile draw letter]
-
+Ι
 [profile history unavailable]
-
+Αυτός ο διακομιστής δεν προσφέρει ακόμη ιστορικό αγώνων.
 [profile downloading replay]
-
+Λήψη επανάληψης…
 [profile no replay]
-
+Δεν υπάρχει διαθέσιμη επανάληψη για αυτόν τον αγώνα.
 [profile room with %0]
-
+Αίθουσα · %0 αποικίες
 [profile with %0 vs %1]
-
+με %0 εναντίον %1
 [profile vs %0]
-
+εναντίον %0
 [profile room]
-
+Αίθουσα
 [profile casual]
-
+Χαλαρός
 [profile ai filled]
-
+Με ΤΝ
 [profile provisional %0 games]
-
+προσωρινή · %0 παιχνίδια
 [profile unrated]
-
+χωρίς βαθμολογία
 [profile checking]
-
+έλεγχος…
 [profile %0 min]
-
+%0 λεπ.
 [profile match page]
-
+Σελίδα αγώνα
 [profile replay]
-
+Επανάληψη
 [profile win rate last %0]
-
+Ποσοστό νικών, τελευταία %0
 [profile %0 w %1 l %2 d]
-
+%0 Ν · %1 Η · %2 ισοπαλίες
 [profile typical game]
-
+Τυπικό παιχνίδι
 [profile median length]
-
+η διάμεση διάρκειά σας
 [profile best map]
-
+Καλύτερος χάρτης
 [profile %0 w %1 l]
-
+%0 Ν · %1 Η
 [profile no rated games]
-
+Παίξτε έναν βαθμολογούμενο αγώνα για να αποκτήσετε βαθμολογία.
 [profile all]
-
+Όλοι
 [profile rooms]
-
+Αίθουσες
 [profile vs ai]
-
+Εναντίον ΤΝ
 [profile matches]
-
+Αγώνες
 [online loading]
-
+Φόρτωση…
 [profile no matches]
-
+Δεν υπάρχουν αγώνες ακόμη.
 [online load more]
-
+Περισσότερα
 [profile title]
-
+Προφίλ
 [profile guest]
-
+επισκέπτης
 [profile playing since %0]
-
+παίζει από %0
 [profile full profile web]
-
+Πλήρες προφίλ στον ιστό
 [profile replays note]
-
+Οι επαναλήψεις λαμβάνονται από τον διακομιστή όταν τις ανοίγετε· όσες αποθηκεύσατε τοπικά παραμένουν στο Φόρτωση παιχνιδιού → Επαναλήψεις.
 [profile web profile]
-
+Προφίλ στον ιστό
 [maps most played]
-
+Πιο δημοφιλείς
 [maps most liked]
-
+Πιο αγαπημένοι
 [maps newest]
-
+Νεότεροι
 [maps most downloaded]
-
+Περισσότερες λήψεις
 [maps any size]
-
+Οποιοδήποτε μέγεθος
 [maps up to 128]
-
+Έως 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 και μεγαλύτεροι
 [maps report broken]
-
+Δεν λειτουργεί
 [maps report offensive]
-
+Προσβλητικός
 [maps report copyright]
-
+Έργο άλλου
 [maps report other]
-
+Κάτι άλλο
 [maps public]
-
+Δημόσιος
 [maps unlisted]
-
+Μη καταχωρισμένος
 [maps private]
-
+Ιδιωτικός
 [maps cannot read file]
-
+Δεν ήταν δυνατή η ανάγνωση του αρχείου χάρτη.
 [maps file too large]
-
+Το αρχείο χάρτη είναι πολύ μεγάλο για κοινή χρήση.
 [maps saved for next room]
-
+Ο χάρτης λήφθηκε· θα χρησιμοποιηθεί όταν ανοίξετε μια αίθουσα.
 [maps download failed]
-
+Δεν ήταν δυνατή η λήψη του χάρτη.
 [maps %0 colonies]
-
+%0 αποικίες
 [maps version %0]
-
+έκδοση %0
 [maps updated %0]
-
+ενημερώθηκε %0
 [maps downloading]
-
+Λήψη χάρτη…
 [maps like needs account]
-
+Για να δηλώσετε ότι σας αρέσει ένας χάρτης, πρέπει να συνδεθείτε.
 [maps report sent]
-
+Ευχαριστούμε· οι συντονιστές θα το εξετάσουν.
 [maps select a map]
-
+Επιλέξτε έναν χάρτη για να δείτε τις λεπτομέρειές του.
 [maps by %0]
-
+από %0
 [maps stats %0 %1 %2]
-
+▶ %0 παιχνίδια · ⬇ %1 λήψεις · ♥ %2
 [maps use in room]
-
+Χρήση σε αίθουσα
 [maps liked]
-
+Σας αρέσει
 [maps like]
-
+Μου αρέσει
 [maps map page]
-
+Σελίδα χάρτη
 [maps reported]
-
+Αναφέρθηκε
 [maps report]
-
+Αναφορά…
 [maps report why]
-
+Τι πρόβλημα έχει αυτός ο χάρτης;
 [maps search placeholder]
-
+Αναζήτηση χαρτών ή δημιουργών
 [maps none found]
-
+Κανένας χάρτης δεν ταιριάζει.
 [maps any colonies]
-
+Όλες οι αποικίες
 [maps checking]
-
+Έλεγχος…
 [maps no version yet]
-
+Δεν έχει ανέβει ακόμη καμία έκδοση.
 [maps rejected]
-
+Απορρίφθηκε
 [maps did not load %0]
-
+Ο χάρτης δεν φορτώθηκε: %0
 [maps unknown reason]
-
+δεν δόθηκε αιτία
 [maps fix and upload again]
-
+διορθώστε τον στον επεξεργαστή και ανεβάστε τον ξανά
 [maps uploaded just now]
-
+ανέβηκε μόλις τώρα
 [maps loading on server]
-
+φορτώνεται στον διακομιστή
 [maps %0 plays]
-
+%0 παιχνίδια
 [maps hidden]
-
+Κρυφός
 [maps upload again]
-
+Νέο ανέβασμα…
 [maps delete]
-
+Διαγραφή
 [maps update]
-
+Ενημέρωση…
 [maps upload a map]
-
+Ανέβασμα χάρτη…
 [maps upload hint]
-
+αρχεία .map από τον φάκελο χαρτών ή τον επεξεργαστή
 [maps no maps yet]
-
+Δεν έχετε μοιραστεί ακόμη χάρτες.
 [maps my maps]
-
+Οι χάρτες μου
 [maps my maps %0]
-
+Οι χάρτες μου (%0)
 [maps browse]
-
+Περιήγηση
 [maps title]
-
+Χάρτες
 [maps browse note %0]
-
+Κατάλογος %0 · εμφανίζονται μόνο χάρτες που φορτώνουν σε αυτή την έκδοση
 [maps visibility note]
-
+Οι δημόσιοι χάρτες εμφανίζονται στην Περιήγηση. Οι μη καταχωρισμένοι λειτουργούν στις αίθουσές σας και μέσω του συνδέσμου τους. Οι ιδιωτικοί μόνο στις δικές σας αίθουσες.
 [maps use %0]
-
+Χρήση %0
 [maps %0 kb]
-
+%0 KB
 [maps field title]
-
+Τίτλος
 [maps field description]
-
+Περιγραφή
 [maps who can use it]
-
+Ποιος μπορεί να τον χρησιμοποιήσει
 [maps guests unlisted]
-
+Οι επισκέπτες μπορούν να μοιράζονται μη καταχωρισμένους και ιδιωτικούς χάρτες· συνδεθείτε για δημοσίευση στην Περιήγηση.
 [maps visibility help]
-
+Οι μη καταχωρισμένοι χάρτες λειτουργούν στις αίθουσές σας και μέσω του συνδέσμου τους· οι δημόσιοι εμφανίζονται επίσης στην Περιήγηση.
 [maps new version of %0]
-
+Ανέβασμα αυτού του αρχείου ως νέα έκδοση του %0.
 [maps upload]
-
+Ανέβασμα
 [maps uploading]
-
+Ανέβασμα…
 [maps checking detail]
-
+Ο διακομιστής φορτώνει τον χάρτη και σχεδιάζει την προεπισκόπησή του. Μέχρι τότε ο χάρτης δεν μπορεί να χρησιμοποιηθεί.
 [maps ready]
-
+Έτοιμος
 [maps ready public]
-
+Ο χάρτης είναι έτοιμος και εμφανίζεται στην Περιήγηση.
 [maps ready unlisted]
-
+Ο χάρτης είναι έτοιμος. Οι μη καταχωρισμένοι χάρτες λειτουργούν στις αίθουσές σας και μέσω του συνδέσμου τους.
 [maps ready private]
-
+Ο χάρτης είναι έτοιμος. Οι ιδιωτικοί χάρτες λειτουργούν μόνο στις δικές σας αίθουσες.
 [maps upload failed]
-
+Το ανέβασμα απέτυχε
 [maps server read %0 %1]
-
+Ο διακομιστής τον αναγνώρισε ως %0 με %1 αποικίες.
 [maps continue in background]
-
+Κλείσιμο
 [maps upload a map title]
-
+Ανέβασμα χάρτη
 [maps update map title]
-
+Ενημέρωση χάρτη
 [maps upload note]
-
+Ο διακομιστής φορτώνει κάθε ανέβασμα πριν μπορέσει να χρησιμοποιηθεί.
 [online just now]
-
+μόλις τώρα
 [online today %0]
-
+σήμερα %0
 [online yesterday]
-
+χθες
 [online sun]
-
+Κυρ
 [online mon]
-
+Δευ
 [online tue]
-
+Τρί
 [online wed]
-
+Τετ
 [online thu]
-
+Πέμ
 [online fri]
-
+Παρ
 [online sat]
-
+Σάβ
 [online %0 weeks ago]
-
+πριν από %0 εβδομάδες
 [online %0 months ago]
-
+πριν από %0 μήνες
 [online %0 years ago]
-
+πριν από %0 χρόνια
 [maps share online]
-
+Κοινοποίηση στο διαδίκτυο…
 [maps mine]
-
+Δικοί μου
 [results waiting for players]
-
+Αναμονή για αποχώρηση των άλλων παικτών…
 [results waiting detail]
-
+Το αποτέλεσμα καταγράφεται μόλις αποχωρήσουν όλοι από τον αγώνα.
 [results waiting slow]
-
+Ένας παίκτης που έχασε τη σύνδεση έχει έως 3 λεπτά για να επιστρέψει. Το αποτέλεσμα θα εμφανιστεί στο ιστορικό σας και στη σελίδα του αγώνα.
 [results verifying slow]
-
+Η επαλήθευση διαρκεί περισσότερο από το συνηθισμένο. Το αποτέλεσμα θα εμφανιστεί στο ιστορικό σας και στη σελίδα του αγώνα.
 [results rematch]
-
+Ρεβάνς
 [results join rematch %0]
-
+Συμμετοχή στη ρεβάνς του/της %0
 [hub profile history]
-
+Προφίλ και ιστορικό
 [hub my maps]
-
+Οι χάρτες μου
 [hub leaderboard %0]
-
+Κατάταξη · %0
 [hub leaderboard empty]
-
+Δεν υπάρχουν ακόμη παίκτες στην κατάταξη.
 [hub guests not ranked]
-
+Οι επισκέπτες δεν κατατάσσονται. Συνδεθείτε για να εμφανιστείτε εδώ.
 [hub full leaderboard]
-
+Πλήρης κατάταξη
 [settings %0 is no longer linked.]
-
+Το %0 δεν είναι πλέον διασυνδεδεμένο.
 [room map read failed]
-
+Δεν ήταν δυνατή η ανάγνωση αυτού του αρχείου χάρτη.
 [room map upload failed]
-
+Δεν ήταν δυνατή η κοινοποίηση του χάρτη στην αίθουσα.
 [room map upload failed %0]
-
+Δεν ήταν δυνατή η κοινοποίηση του χάρτη στην αίθουσα: %0
 [room uploading map]
-
+Κοινοποίηση χάρτη στην αίθουσα…
 [room premade map shared]
-
+Όλοι στην αίθουσα παίζουν αυτό το αρχείο χάρτη· λαμβάνεται πριν από τον αγώνα.
 [room take a seat to play]
-
+Πάρτε μια ανοιχτή θέση για να παίξετε
 [room waiting for a seat]
-
+Όλες οι θέσεις είναι πιασμένες. Μπορείτε να πάρετε μία όταν ελευθερωθεί.
 [room not seated]
-
+Χωρίς θέση
 [room copied]
-
+Αντιγράφηκε
 [room copy failed]
-
+Αδύνατη η αντιγραφή
 [room closed title]
-
+Η αίθουσα έκλεισε
 [room removed title]
-
+Αφαιρεθήκατε από την αίθουσα
 [room back to online]
-
+Πίσω στο διαδίκτυο
 [leave match]
-
+Αποχώρηση από τον αγώνα
 [leave match title]
-
+Αποχώρηση από αυτόν τον αγώνα;
 [leave lan title]
-
+Αποχώρηση από αυτό το παιχνίδι LAN;
 [leave rated body]
-
+Χάνετε αυτόν τον βαθμολογούμενο αγώνα και η βαθμολογία σας πέφτει. Οι άλλοι συνεχίζουν και δεν μπορείτε να επιστρέψετε.
 [leave casual body]
-
+Αυτός ο γρήγορος αγώνας μετράει ως ήττα για εσάς. Οι άλλοι συνεχίζουν και δεν μπορείτε να επιστρέψετε.
 [leave room body]
-
+Αποχωρείτε από τον αγώνα της αίθουσας και μετράει ως ήττα στο ιστορικό σας. Οι άλλοι συνεχίζουν και δεν μπορείτε να επιστρέψετε.
 [leave lan body]
-
+Οι άλλοι συνεχίζουν χωρίς εσάς και δεν μπορείτε να επιστρέψετε σε αυτό το παιχνίδι.
 [leave match confirm]
-
+Αποχώρηση
 [keep playing]
-
+Συνέχεια παιχνιδιού
 [results team]
-
+Ομάδα
 [results quick unrated]
-
+Γρήγορος αγώνας · χωρίς βαθμολογία
 [conn card cannot keep up]
-
+Η συσκευή σας δεν μπορεί να ακολουθήσει αυτόν τον αγώνα
 [conn card cannot keep up body]
-
+Αναπαράγει τον αγώνα πιο αργά απ' ό,τι εξελίσσεται, οπότε δεν θα τον προλάβει. Μπορείτε να αποχωρήσετε ή να μειώσετε τις ρυθμίσεις γραφικών και να περιμένετε.
 [conn card not gaining]
-
+χωρίς πρόοδο
 [results reason opponents left]
-
+Οι αντίπαλοί σας αποχώρησαν από τον αγώνα.
 [results reason victory]
-
+Όλες οι αντίπαλες αποικίες ηττήθηκαν.
 [results reason defeat]
-
+Η αποικία σας ηττήθηκε.
 [results reason you left]
-
+Αποχωρήσατε από τον αγώνα. Μετράει ως ήττα.
 [results final after end]
-
+Τελικό αποτέλεσμα μετά το τέλος του αγώνα.
 [pause none left]
-
+Δεν απομένουν παύσεις
 [pause game left %0]
-
+Παύση (απομένουν %0)
 [pause by %0]
-
+Παύση από %0
 [pause by %0 resumes in %1]
-
+Παύση από %0 · συνέχεια σε %1
 [turn too many actions]
-
+Πάρα πολλές ενέργειες: κάποιες περιμένουν ακόμη να σταλούν
 [turn no pauses left]
-
+Δεν σας απομένουν παύσεις σε αυτόν τον αγώνα
 [turn pause time used %0]
-
+Ο/Η %0 εξάντλησε τον χρόνο παύσης: το παιχνίδι συνεχίζεται
 [room seats one person %0 %1]
-
+1 παίκτης · %0 ΤΝ · %1 ανοιχτές
 [room rules otherwise standard]
-
+Όλοι οι άλλοι κανόνες είναι όπως στο Τυπικό.
 [room browser link]
-
+Σύνδεσμος για παίκτες σε πρόγραμμα περιήγησης
 [room browser link hint]
-
+Οι παίκτες σε πρόγραμμα περιήγησης επικολλούν αυτόν τον σύνδεσμο για να συμμετάσχουν.
 [room browser link code %0]
-
+Οι παίκτες σε πρόγραμμα περιήγησης επικολλούν αυτόν τον σύνδεσμο για να συμμετάσχουν. Το παιχνίδι τους δείχνει τον κωδικό %0.
 [room copy link]
-
+Αντιγραφή συνδέσμου
 [room lan open seat detail]
-
+Μπορεί να την πάρει οποιοσδήποτε σε αυτό το δίκτυο
 [room close title]
-
+Κλείσιμο αίθουσας;
 [room close body one]
-
+Αν φύγετε, η αίθουσα κλείνει για όλους, μαζί και για τον άλλο παίκτη σε αυτήν.
 [room close body %0]
-
+Αν φύγετε, η αίθουσα κλείνει για όλους, μαζί και για τους %0 άλλους παίκτες σε αυτήν.
 [room close confirm]
-
+Κλείσιμο αίθουσας
 [room stay]
-
+Παραμονή
 [room colours changed]
-
+Ο νέος χάρτης έδωσε νέα χρώματα στις θέσεις. Ελέγξτε το δικό σας πριν ξεκινήσετε.
 [room copy by hand]
-
+Η αντιγραφή απέτυχε. Αντιγράψτε την πρόσκληση μόνοι σας:
 [room copy by hand close]
-
+Κλείσιμο
 [room copy by hand touch]
-
+Πατήστε παρατεταμένα τον σύνδεσμο και επιλέξτε Αντιγραφή.
 [room copy by hand keys]
-
+Ο σύνδεσμος είναι επιλεγμένος: πατήστε Ctrl+C (⌘C σε Mac).
 [room code]
-
+Κωδικός
 [online under a minute]
-
+λιγότερο από ένα λεπτό
 [online about %0 min]
-
+περίπου %0 λεπ.
 [online %0 s]
-
+%0 δ
 [online %0 min %1 s]
-
+%0 λεπ. %1 δ
 [qm ai opponent %0]
-
+Αντίπαλος ΤΝ: %0
 [match relay connected]
-
+Συνδέθηκε στον διακομιστή παιχνιδιού
 [room picker title]
-
+Επιλέξτε χάρτη
 [room picker for one]
-
+Για τον 1 παίκτη της αίθουσας
 [room picker for %0]
-
+Για τους %0 παίκτες της αίθουσας
 [room picker generated]
-
+Παραγόμενος
 [room picker premade]
-
+Έτοιμος
 [room picker catalog]
-
+Κατάλογος
 [room picker size]
-
+Μέγεθος
 [room picker colonies]
-
+Αποικίες
 [room picker fair]
-
+Δίκαιη αφετηρία για κάθε αποικία
 [room picker does not fit]
-
+Δεν χωράει σε αυτό το μέγεθος· δοκιμάστε άλλο
 [room picker preparing]
-
+Προετοιμασία προεπισκόπησης…
 [room picker generated note]
-
+Κάθε τοπίο δίνει σε κάθε αποικία εξίσου καλή αφετηρία, και ο διακομιστής φτιάχνει τον ίδιο χάρτη για όλους.
 [room picker players %0]
-
+%0 παίκτες
 [room picker unreadable]
-
+δεν διαβάζεται
 [room picker no premade]
-
+Δεν βρέθηκαν έτοιμοι χάρτες.
 [room picker too small %0]
-
+Αυτός ο χάρτης έχει λιγότερες αποικίες από τους %0 παίκτες της αίθουσας.
 [room picker pick premade]
-
+Επιλέξτε έναν χάρτη για να τον δείτε εδώ.
 [room picker catalog intro]
-
+Χάρτες που μοιράστηκαν άλλοι παίκτες. Ανοίξτε έναν και επιλέξτε «Χρήση σε αίθουσα».
 [room picker browse catalog]
-
+Περιήγηση κοινόχρηστων χαρτών
 [room picker more options]
-
+Περισσότερες επιλογές…
 [room picker use]
-
+Χρήση αυτού του χάρτη
 [room map ready title %0]
-
+Παίξτε %0
 [room map ready unnamed]
-
+αυτόν τον χάρτη
 [room map ready body]
-
+Δημιουργήστε μια αίθουσα και προσκαλέστε τους φίλους σας: η αίθουσα παίζει αυτόν τον χάρτη.
 [game draw]
-
+Ισοπαλία
 [settings Show colony skins]
-Εμφάνιση εμφανίσεων αποικιών
+Εμφάνιση στυλ αποικιών
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Απενεργοποιήστε για να χρησιμοποιείτε κλασικές μονάδες, σμήνη και χρώματα κτιρίων σε αυτή τη συσκευή.
 [settings Hive Mind]
-
+Συλλογικός Νους
 [settings Enable commander shortcuts]
-
+Συντομεύσεις διοικητή
 [settings Command your colony without opening a menu.]
-
+Διοικήστε την αποικία σας χωρίς να ανοίγετε μενού.
 [settings Allow supervision for new commands]
-
+Επίβλεψη νέων εντολών
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Ο διοικητής μπορεί να παρακολουθεί τις πάγιες εντολές. Οι παρεμβάσεις καταναλώνουν πιστώσεις· οι εγκατεστημένες εντολές συνεχίζουν χωρίς πιστώσεις.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Προεπιλεγμένες συντομεύσεις: Ctrl+Enter για εντολή· Ctrl+Shift+Enter για διακοπή του διοικητή. Αλλάξτε τες στα Χειριστήρια παιχνιδιού. Οι κάρτες πάγιων εντολών έχουν ξεχωριστά κουμπιά παύσης και ακύρωσης.
 [settings Commander account and credits]
-
+Λογαριασμός και πιστώσεις διοικητή
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Διαχειριστείτε πιστώσεις και αγορές στο πρόγραμμα περιήγησης. Η βοήθεια του διοικητή επιτρέπεται στους βαθμολογούμενους αγώνες.
 [open commander]
-
+Άνοιγμα διοικητή
 [stop commander]
-
+Διακοπή διοικητή
 [settings Recording]
-
+Εγγραφή
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Εγγραφή των παιχνιδιών σας ως βίντεο MP4 με ήχο. Η εγγραφή απαιτεί FFmpeg με τους κωδικοποιητές libx264 και AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+Το FFmpeg είναι έτοιμο.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+Το FFmpeg δεν είναι διαθέσιμο, οπότε η εγγραφή είναι απενεργοποιημένη. Εγκαταστήστε το FFmpeg, βεβαιωθείτε ότι βρίσκεται στο PATH και ελέγξτε ξανά.
 [settings Check for FFmpeg again]
-
+Νέος έλεγχος για FFmpeg
 [settings Checking for FFmpeg…]
-
+Έλεγχος για FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Πλήκτρο συντόμευσης: %0. Λειτουργεί και στα μενού και στον επεξεργαστή.
 [settings Change the hotkey]
-
+Αλλαγή πλήκτρου συντόμευσης
 [settings Recordings are saved in %0]
-
+Οι εγγραφές αποθηκεύονται στο %0
 [toggle recording]
-
+Έναρξη ή διακοπή εγγραφής
 [File selection is unavailable.]
-
+Η επιλογή αρχείου δεν είναι διαθέσιμη.
 [Saving custom AI…]
-
+Αποθήκευση προσαρμοσμένης ΤΝ…
 [Could not read the selected JavaScript file.]
-
+Δεν ήταν δυνατή η ανάγνωση του επιλεγμένου αρχείου JavaScript.
 [Custom AI library saved.]
-
+Η βιβλιοθήκη προσαρμοσμένων ΤΝ αποθηκεύτηκε.
 [Storage could not be saved. The previous library is retained.]
-
+Δεν ήταν δυνατή η αποθήκευση. Η προηγούμενη βιβλιοθήκη διατηρείται.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Εισαγάγετε ένα μεμονωμένο αρχείο ΤΝ σε JavaScript και επιλέξτε το όταν ρυθμίζετε ένα τοπικό παιχνίδι.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Η εισαγωγή κρατά ένα αντίγραφο στο Glob2. Η ενημέρωση αντικαθιστά αυτό το αντίγραφο για τα επόμενα παιχνίδια· οι αποθηκεύσεις κρατούν την αρχική τους ΤΝ.
 [Waiting for file selection or storage…]
-
+Αναμονή για επιλογή αρχείου ή αποθήκευση…
 [Import JavaScript AI]
-
+Εισαγωγή ΤΝ JavaScript
 [Link development file]
-
+Σύνδεση αρχείου ανάπτυξης
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Τα συνδεδεμένα αρχεία διαβάζονται στην έναρξη του παιχνιδιού. Κάντε νέα μεταγλώττιση πριν ξεκινήσετε νέο παιχνίδι. Η αφαίρεση μιας σύνδεσης δεν διαγράφει ποτέ το αρχείο σας.
 [Example AI and authoring guide]
-
+Παράδειγμα ΤΝ και οδηγός συγγραφής
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Δεν υπάρχουν ακόμη προσαρμοσμένες ΤΝ. Εισαγάγετε ένα ενιαίο αρχείο .js για να ξεκινήσετε.
 [Relink]
-
+Επανασύνδεση
 [Update]
-
+Ενημέρωση
 [Validate]
-
+Επικύρωση
 [AI startup and persistent globals are valid.]
-
+Η εκκίνηση της ΤΝ και οι μόνιμες καθολικές μεταβλητές είναι έγκυρες.
 [Remove from library]
-
+Αφαίρεση από τη βιβλιοθήκη
 [AI telemetry]
-
+Τηλεμετρία ΤΝ
 [No accessible AI telemetry.]
-
+Δεν υπάρχει προσβάσιμη τηλεμετρία ΤΝ.
 [Search fields]
-
+Αναζήτηση πεδίων
 [Telemetry unavailable for this recording or controller.]
-
+Η τηλεμετρία δεν είναι διαθέσιμη για αυτή την εγγραφή ή τον ελεγκτή.
 [Linked]
-
+Συνδεδεμένη
 [Imported]
-
+Εισηγμένη
 [Player]
-
+Παίκτης
 [Updated at tick %0]
-
+Ενημερώθηκε στο βήμα %0
 [No values published yet.]
-
+Δεν έχουν δημοσιευτεί ακόμη τιμές.
 [No fields match your search.]
-
+Κανένα πεδίο δεν ταιριάζει με την αναζήτησή σας.
 [settings Custom AIs]
-
+Προσαρμοσμένες ΤΝ
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Προσθέστε ΤΝ JavaScript στις Ρυθμίσεις → Προσαρμοσμένες ΤΝ. Εμφανίζονται στην επιλογή ΤΝ κάθε αποικίας.
 [Missing custom AI]
-
+Λείπει η προσαρμοσμένη ΤΝ
 [Map repetition failed]
-
+Ο χάρτης δεν μπορεί να επαναληφθεί. Χρησιμοποιήστε αρχικό χάρτη χωρίς σενάριο ή μειώστε τις επαναλήψεις και τις βάσεις.
 [repeat map horizontally]
 Επανάληψη χάρτη οριζόντια
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ CPU %0%
 [bases per colony]
 Βάσεις ανά αποικία· βάση είναι μία ομάδα του χάρτη όπως σχεδιάστηκε, με τα κτίρια και τις μονάδες της
 [stat group population]
-
+Πληθυσμός
 [stat group food]
-
+Τροφή και ευεξία
 [stat group resources]
-
+Πόροι
 [stat group buildings]
-
+Κτίρια
 [stat group military]
-
+Στρατός
 [stat group map]
-
+Έδαφος
 [stat group score]
-
+Βαθμολογία
 [stat overview]
-
+Επισκόπηση
 [stat overview about]
-
+Τα στοιχεία κάθε αποικίας για όλο τον αγώνα. Η υψηλότερη τιμή επισημαίνεται όπου το περισσότερο είναι καλύτερο· κάντε κλικ σε μια επικεφαλίδα στήλης για να δείτε πώς άλλαξε με τον χρόνο.
 [stat population]
-
+Πληθυσμός
 [stat population about]
-
+Πόσες ζωντανές μονάδες είχε η αποικία: εργάτες, εξερευνητές και πολεμιστές μαζί.
 [stat births]
-
+Γεννήσεις μονάδων
 [stat births about]
-
+Πόσο γρήγορα τα σμήνη παρήγαγαν νέες μονάδες. Αναλύστε το για να δείτε ξεχωριστά εργάτες, εξερευνητές και πολεμιστές.
 [stat deaths]
-
+Απώλειες μονάδων
 [stat deaths about]
-
+Πόσο γρήγορα η αποικία έχανε μονάδες, για οποιαδήποτε αιτία: μάχη, πείνα, τραυματισμοί κατά τον καθαρισμό ή εγκλωβισμός.
 [stat net growth]
-
+Αύξηση πληθυσμού
 [stat net growth about]
-
+Γεννήσεις μονάδων μείον απώλειες. Πάνω από το μηδέν η αποικία μεγάλωνε· κάτω από το μηδέν συρρικνωνόταν.
 [stat death causes]
-
+Αιτίες θανάτου
 [stat death causes about]
-
+Από τι πέθαναν οι μονάδες της αποικίας: μάχη, πείνα, τραυματισμοί κατά τον καθαρισμό πόρων, εγκλωβισμός χωρίς διέξοδο ή άλλες αιτίες.
 [stat conversions]
-
+Καθαρές προσχωρήσεις
 [stat conversions about]
-
+Μονάδες που προσχώρησαν από άλλες αποικίες μείον όσες χάθηκαν προς αυτές. Οι μονάδες αλλάζουν πλευρά όταν μια άλλη αποικία τις ταΐζει καλύτερα.
 [stat hunger]
-
+Αποθέματα τροφής
 [stat hunger about]
-
+Πόση τροφή κουβαλούσαν μέσα τους οι μονάδες της αποικίας. Κάθε μονάδα κατατάσσεται ανάλογα με το πόσο από το απόθεμα τροφής της απομένει: σχεδόν άδειο (έως ένα τέταρτο), χαμηλό (έως το μισό), μισογεμάτο (έως τρία τέταρτα) ή καλά ταϊσμένη. Οι μονάδες ψάχνουν πανδοχείο καθώς το απόθεμά τους μειώνεται, οπότε μια αποικία έχει πάντα κάποιες με χαμηλό απόθεμα.
 [stat health]
-
+Υγεία
 [stat health about]
-
+Πόσο υγιείς ήταν οι μονάδες της αποικίας. Κάθε μονάδα κατατάσσεται ανάλογα με τους πόντους ζωής που της απομένουν: κρίσιμη (έως ένα τέταρτο), τραυματισμένη (έως το μισό), χτυπημένη (έως τρία τέταρτα) ή υγιής.
 [stat seeking food]
-
+Μονάδες που ψάχνουν τροφή
 [stat seeking food about]
-
+Μονάδες που είχαν σταματήσει τη δουλειά για να βρουν πανδοχείο. Όσες έχουν επίσης μειωμένη υγεία μετρώνται ως εξασθενημένες.
 [stat in care]
-
+Μονάδες που τρώνε ή θεραπεύονται
 [stat in care about]
-
+Μονάδες μέσα σε πανδοχείο που τρώνε ή σε νοσοκομείο που θεραπεύονται, και άρα δεν εργάζονται.
 [stat wheat harvested]
-
+Θερισμένο σιτάρι
 [stat wheat harvested about]
-
+Φορτία σιταριού που μάζεψαν οι εργάτες. Τα πανδοχεία μετατρέπουν το σιτάρι σε γεύματα.
 [stat wheat stored]
-
+Αποθηκευμένο σιτάρι
 [stat wheat stored about]
-
+Σιτάρι στα κτίρια της αποικίας, έτοιμο να σερβιριστεί ή να χρησιμοποιηθεί.
 [stat meals]
-
+Γεύματα που σερβιρίστηκαν
 [stat meals about]
-
+Γεύματα που σέρβιραν τα πανδοχεία της αποικίας, στις δικές της μονάδες και σε επισκέπτες από άλλες αποικίες.
 [stat starvation]
-
+Θάνατοι από πείνα
 [stat starvation about]
-
+Μονάδες που πέθαναν επειδή δεν βρήκαν τροφή εγκαίρως.
 [stat healing]
-
+Αποκατεστημένη υγεία
 [stat healing about]
-
+Πόντοι ζωής που απέδωσαν τα νοσοκομεία της αποικίας στις τραυματισμένες μονάδες.
 [stat gathered]
-
+Συλλεγμένοι πόροι
 [stat gathered about]
-
+Φορτία κάθε πόρου που μάζεψαν οι εργάτες. Αναλύστε το για να δείτε κάθε πόρο.
 [stat stored]
-
+Αποθηκευμένοι πόροι
 [stat stored about]
-
+Πόροι στα κτίρια της αποικίας. Αναλύστε το για να δείτε κάθε πόρο.
 [stat spending]
-
+Δαπάνη πόρων
 [stat spending about]
-
+Πού πήγαν οι πόροι που παραδόθηκαν: γεύματα, νέες μονάδες, πυρομαχικά πύργων, νέα κτίρια ή αναβαθμίσεις.
 [stat delivered]
-
+Παραδομένοι πόροι
 [stat delivered about]
-
+Φορτία που μετέφεραν οι εργάτες στα κτίρια.
 [stat traded]
-
+Καθαρό εμπόριο
 [stat traded about]
-
+Πόροι που ελήφθησαν μέσω αγορών μείον πόροι που δόθηκαν.
 [stat buildings]
-
+Κτίρια σε λειτουργία
 [stat buildings about]
-
+Ολοκληρωμένα κτίρια της αποικίας. Αναλύστε το για να δείτε κάθε είδος κτιρίου.
 [stat construction]
-
+Ολοκληρωμένες εργασίες
 [stat construction about]
-
+Ολοκληρωμένες οικοδομικές εργασίες: νέα κτίρια, αναβαθμίσεις και επισκευές.
 [stat buildings lost]
-
+Χαμένα κτίρια
 [stat buildings lost about]
-
+Κτίρια που κατέστρεψαν εχθροί ή κατεδάφισε η ίδια η αποικία.
 [stat blocked buildings]
-
+Κτίρια χωρίς πρόσβαση
 [stat blocked buildings about]
-
+Κτίρια με φραγμένες εισόδους, ώστε οι μονάδες δεν μπορούσαν να μπουν ή να βγουν.
 [stat attack]
-
+Επιθετική ισχύς
 [stat attack about]
-
+Βαθμολογία για τη συνολική μαχητική ισχύ των πολεμιστών της αποικίας: πόσο δυνατά και πόσο γρήγορα χτυπούν.
 [stat defence]
-
+Αμυντική ισχύς
 [stat defence about]
-
+Βαθμολογία για τη συνολική δύναμη πυρός των αμυντικών πύργων της αποικίας.
 [stat hit points]
-
+Συνολικοί πόντοι ζωής
 [stat hit points about]
-
+Οι πόντοι ζωής όλων των μονάδων και κτιρίων της αποικίας μαζί.
 [stat damage dealt]
-
+Ζημιά που προκλήθηκε
 [stat damage dealt about]
-
+Ζημιά που προκάλεσε η αποικία σε εχθρικές μονάδες και κτίρια. Αναλύστε το για να δείτε πολεμιστές, μαγεία και πύργους.
 [stat damage taken]
-
+Ζημιά που δέχτηκε
 [stat damage taken about]
-
+Ζημιά που προκάλεσαν οι εχθροί στις μονάδες και τα κτίρια της αποικίας.
 [stat damage traded]
-
+Ισοζύγιο ζημιάς
 [stat damage traded about]
-
+Ζημιά που προκλήθηκε μείον ζημιά που δέχτηκε. Πάνω από το μηδέν η αποικία κέρδιζε τις μάχες της.
 [stat combat deaths]
-
+Μονάδες νεκρές σε μάχη
 [stat combat deaths about]
-
+Μονάδες αυτής της αποικίας που σκότωσαν οι εχθροί. Αναλύστε το για να δείτε ξεχωριστά εργάτες, εξερευνητές και πολεμιστές.
 [stat accuracy]
-
+Εύστοχες βολές
 [stat accuracy about]
-
+Το ποσοστό των βολών από τους πύργους και τους εξερευνητές της αποικίας που βρήκαν τον στόχο τους.
 [stat training]
-
+Εκπαίδευση
 [stat training about]
-
+Επισκέψεις μονάδων σε σχολεία, στρατώνες, στίβους και πισίνες για να μάθουν μια δεξιότητα.
 [stat skills]
-
+Αποκτημένες δεξιότητες
 [stat skills about]
-
+Επίπεδα δεξιοτήτων που απέκτησαν οι μονάδες της αποικίας μέσω εκπαίδευσης.
 [stat growth nearby]
-
+Ανάπτυξη πόρων κοντά στην αποικία
 [stat growth nearby about]
-
+Πόσο σιτάρι, ξύλο και άλλοι πόροι αναπτύχθηκαν σε απόσταση 32 τετραγώνων από τα κτίρια της αποικίας, σε πόντους ανάπτυξης και όχι σε φορτία. Αναλύστε το για να δείτε πόσο κοντά στη βάση αναπτύχθηκαν.
 [stat growth map]
-
+Ανάπτυξη πόρων σε όλο τον χάρτη
 [stat growth map about]
-
+Πόσο αναπτύχθηκαν οι πόροι οπουδήποτε στον χάρτη, σε πόντους ανάπτυξης και όχι σε φορτία. Είναι ίδιο για κάθε αποικία.
 [stat stranded]
-
+Ακινητοποιημένες μονάδες
 [stat stranded about]
-
+Μονάδες εγκλωβισμένες χωρίς ελεύθερο τετράγωνο για να πατήσουν.
 [stat cleared]
-
+Πόροι που καθαρίστηκαν
 [stat cleared about]
-
+Πόροι που αφαίρεσαν οι εργάτες σε ζώνες καθαρισμού για να ανοίξουν χώρο.
 [stat prestige]
-
+Κύρος
 [stat prestige about]
-
+Το κύρος της αποικίας, που κερδίζεται από κτίρια ανώτατου επιπέδου. Ένας αγώνας με στόχο κύρους τελειώνει όταν αυτός επιτευχθεί.
 [stat band combat]
-
+Μάχη
 [stat band starvation]
-
+Πείνα
 [stat band clearing]
-
+Τραύματα καθαρισμού
 [stat band trapped]
-
+Εγκλωβισμός
 [stat band other]
-
+Άλλο
 [stat band starving]
-
+Σχεδόν άδειο
 [stat band hungry]
-
+Χαμηλό
 [stat band peckish]
-
+Μισογεμάτο
 [stat band fed]
-
+Καλά ταϊσμένες
 [stat band critical]
-
+Σε κρίσιμη κατάσταση
 [stat band wounded]
-
+Τραυματισμένες
 [stat band hurt]
-
+Χτυπημένες
 [stat band healthy]
-
+Υγιείς
 [stat band weakening]
-
+Εξασθενημένες
 [stat band looking]
-
+Ψάχνουν πανδοχείο
 [stat band eating]
-
+Τρώνε
 [stat band healing]
-
+Θεραπεύονται
 [stat band meals]
-
+Γεύματα
 [stat band new units]
-
+Νέες μονάδες
 [stat band ammunition]
-
+Πυρομαχικά
 [stat band construction]
-
+Νέα κτίρια
 [stat band upgrades]
-
+Αναβαθμίσεις
 [stat band built]
-
+Χτίστηκαν
 [stat band upgraded]
-
+Αναβαθμίστηκαν
 [stat band repaired]
-
+Επισκευάστηκαν
 [stat band destroyed]
-
+Καταστράφηκαν
 [stat band demolished]
-
+Κατεδαφίστηκαν
 [stat band melee]
-
+Πολεμιστές
 [stat band magic]
-
+Μαγεία
 [stat band towers]
-
+Πύργοι
 [stat band within 8]
-
+Έως 8 τετράγωνα
 [stat band 8 to 16]
-
+8 έως 16 τετράγωνα
 [stat band 16 to 32]
-
+16 έως 32 τετράγωνα
 [stat unit units]
-
+μονάδες
 [stat unit wheat]
-
+σιτάρι
 [stat unit meals]
-
+γεύματα
 [stat unit hit points]
-
+πόντοι ζωής
 [stat unit resources]
-
+πόροι
 [stat unit buildings]
-
+κτίρια
 [stat unit strength]
-
+βαθμοί
 [stat unit damage]
-
+ζημιά
 [stat unit shots]
-
+βολές
 [stat unit visits]
-
+επισκέψεις
 [stat unit skills]
-
+επίπεδα δεξιοτήτων
 [stat unit prestige]
-
+κύρος
 [stat axis percent of %0]
-
+% (%0)
 [stat axis share of all teams]
-
+% όλων των αποικιών
 [stat axis percent of units]
-
+% των μονάδων της αποικίας
 [stat axis %0 per minute per 100 units]
-
+%0 ανά λεπτό, ανά 100 μονάδες της αποικίας
 [stat axis %0 per 100 units]
-
+%0 ανά 100 μονάδες της αποικίας
 [stat axis %0 per minute]
-
+%0 ανά λεπτό
 [stat axis %0 so far]
-
+%0, σωρευτικά
 [stat axis %0 minute average]
-
+μέσος όρος %0 λεπτών
 [stat view per minute]
-
+Ανά λεπτό
 [stat view total]
-
+Σύνολο
 [stat view %0 min]
-
+%0 λεπ.
 [stat view split]
-
+Ανάλυση ανά είδος
 [stat view percentages]
-
+Ως % του συνόλου
 [stat view percent of units]
-
+Ως % της αποικίας
 [stat view per 100 units]
-
+Σε σχέση με το μέγεθος
 [stat view share]
-
+Μερίδιο όλων των αποικιών
 [stat view highlight none]
-
+Επισήμανση: καμία
 [stat column peak units]
-
+Μέγιστες μονάδες
 [stat column born]
-
+Γεννήσεις
 [stat column lost]
-
+Απώλειες
 [stat column wheat]
-
+Σιτάρι
 [stat column damage dealt]
-
+Ζημιά που προκλήθηκε
 [stat column damage taken]
-
+Ζημιά που δέχτηκε
 [stat column built]
-
+Χτίστηκαν
 [stat column buildings lost]
-
+Χαμένα κτίρια
 [stat column prestige]
-
+Κύρος
 [stat marker wiped out]
-
+χάθηκε η τελευταία μονάδα
 [stat marker first combat death]
-
+πρώτη μονάδα νεκρή σε μάχη
 [stat marker first building destroyed]
-
+πρώτο κτίριο που καταστράφηκε
 [stat not recorded for this match]
-
+Αυτό το στατιστικό δεν καταγράφηκε σε αυτόν τον αγώνα.
 [results reason beyond doubt]
-
+Το αποτέλεσμα δεν ήταν πλέον αμφίβολο.
 [stat per minute short]
-
+/λεπ.
 [stat page colony]
-
+Αποικία
 [stat page %0 of %1]
-
+%0 από %1  >
 [stat band workers]
-
+Εργάτες
 [stat band explorers]
-
+Εξερευνητές
 [stat band warriors]
-
+Πολεμιστές
 [stat unit deaths]
-
+θάνατοι
 [stat unit growth]
-
+ανάπτυξη
 [stat view by unit type]
-
+Ανά τύπο μονάδας
 [stat view by state]
-
+Ανά κατάσταση
 [stat view by resource]
-
+Ανά πόρο
 [stat view by building]
-
+Ανά κτίριο
 [stat view by work]
-
+Ανά είδος εργασίας
 [stat view by cause]
-
+Ανά αιτία
 [stat view by weapon]
-
+Ανά όπλο
 [stat view by distance]
-
+Ανά απόσταση
 [stat nothing to show]
-
+Τίποτα για εμφάνιση: αυτό δεν συνέβη σε αυτόν τον αγώνα.
 [stat %0 nothing]
-
+%0 (κανένα)
 [Match]
-
+Αγώνας
 [Time limit]
-
+Χρονικό όριο
 [Alliances can change]
-
+Οι συμμαχίες αλλάζουν
 [Reveal terrain]
-
+Αποκάλυψη εδάφους
 [Starting unit level]
-
+Αρχικό επίπεδο μονάδων
 [Starting stockpile]
-
+Αρχικό απόθεμα
 [Regrowth]
-
+Αναγέννηση
 [Building strength]
-
+Αντοχή κτιρίων
 [Wounded units retreat]
-
+Υποχώρηση τραυματιών
 [Units can die]
-
+Οι μονάδες πεθαίνουν
 [Unit training]
-
+Εκπαίδευση μονάδων
 [No stockpile]
-
+Κανένα
 [No glass cannon]
-
+Όχι
 [How quickly harvested resources grow back and spread.]
-
+Πόσο γρήγορα οι πόροι που συλλέχθηκαν ξαναφυτρώνουν και εξαπλώνονται.
 [Units must eat to keep working.]
-
+Οι μονάδες πρέπει να τρώνε για να συνεχίζουν να εργάζονται.
 [Summary]
-
+Σύνοψη
 [All rules]
-
+Όλοι οι κανόνες
 [Show all rules]
-
+Εμφάνιση όλων των κανόνων
 [Choose a ruleset]
-
+Επιλέξτε σύνολο κανόνων
 [Reset to %0]
-
+Επαναφορά σε %0
 [ruleset one change %0]
-
+%0 + 1 αλλαγή
 [ruleset changes %0 %1]
-
+%0 + %1 αλλαγές
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Αυτός ο αγώνας δεν μπορεί να τελειώσει. Ενεργοποιήστε τη νίκη μέσω κύρους ή ορίστε χρονικό όριο.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Το κύρος εμφανίζεται συνήθως μετά από 13 έως 28 λεπτά, οπότε ένα όριο 30 λεπτών συχνά καταλήγει σε ισοπαλία.
 [Blitz]
-
+Αστραπή
 [ruleset blitz description]
-
+Γρήγορη αρχή, σύντομο τέλος
 [Gentle]
-
+Ήπιο
 [ruleset gentle description]
-
+Επιεικείς κανόνες για τον πρώτο αγώνα
 [Sandbox]
-
+Αμμοδοχείο
 [ruleset sandbox description]
-
+Χωρίς μάχες, χωρίς πείνα, χτίστε ό,τι θέλετε
 [Bloodbath]
-
+Λουτρό αίματος
 [ruleset bloodbath description]
-
+Εύθραυστοι, ατρόμητοι στρατοί
 [Siege]
-
+Πολιορκία
 [ruleset siege description]
-
+Οχυρά τείχη και μακροί πόλεμοι
 [Lean years]
-
+Ισχνές χρονιές
 [ruleset lean years description]
-
+Οι πόροι μόλις που αναγεννώνται
 [Gold rush]
-
+Πυρετός του χρυσού
 [ruleset gold rush description]
-
+Ό,τι υπάρχει στον χάρτη, αυτό είναι όλο
 [Elite ranks]
-
+Επίλεκτοι
 [ruleset elite ranks description]
-
+Ξεκινούν εκπαιδευμένοι, χωρίς περαιτέρω εκπαίδευση
 [Shifting alliances]
-
+Ρευστές συμμαχίες
 [ruleset shifting alliances description]
-
+Οι ομάδες αλλάζουν σε έναν αγώνα 60 λεπτών
 [Probability victory]
-
+Νίκη κατά πιθανότητα
 [Off (play it out)]
-
+Όχι (ως το τέλος)
 [95% sure]
-
+95% βεβαιότητα
 [97% sure]
-
+97% βεβαιότητα
 [99% sure]
-
+99% βεβαιότητα
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Τερματίζει τον αγώνα όταν το μοντέλο φτάσει την επιλεγμένη βεβαιότητα. Οι θεατές βλέπουν τις προβλεπόμενες πιθανότητες νίκης στα στατιστικά.
 [Changed from %0: %1]
-
+Άλλαξε από %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Η μάχη είναι απενεργοποιημένη, οπότε οι παρακάτω κανόνες δεν έχουν επίδραση.
 [%0 more rules are at their Standard values.]
-
+%0 ακόμη κανόνες έχουν τις Τυπικές τιμές τους.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Οι παίκτες βλέπουν το έδαφος του χάρτη από την αρχή· οι εχθρικές μονάδες παραμένουν κρυφές.
 [Each team starts with extra resources in its shared pool.]
-
+Κάθε ομάδα ξεκινά με επιπλέον πόρους στο κοινό της απόθεμα.
 [Units hit harder but have less HP and armor.]
-
+Οι μονάδες χτυπούν πιο δυνατά αλλά έχουν λιγότερους πόντους ζωής και θωράκιση.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Οι ομάδες μπορούν να επιτεθούν η μία στην άλλη. Απενεργοποιήστε για ειρηνικό αγώνα.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Οι τραυματισμένες μονάδες επιστρέφουν για θεραπεία αντί να πολεμούν μέχρι θανάτου.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Οι μονάδες πεθαίνουν όταν εξαντλήσουν τους πόντους ζωής τους. Απενεργοποιήστε για να σταματούν σε 1 πόντο ζωής.
 [Units gain levels at schools.]
-
+Οι μονάδες ανεβαίνουν επίπεδο στα σχολεία.
 [stat group work]
-
+Χρόνος εργατών
 [stat worker time]
-
+Πώς πέρασαν τον χρόνο τους οι εργάτες
 [stat worker time about]
-
+Τι έκαναν οι εργάτες της αποικίας κάθε στιγμή: δουλειά για ένα κτίριο, δουλειά σε σημαία, εκπαίδευση, φαγητό, θεραπεία, αναμονή πεινασμένοι ή τραυματισμένοι χωρίς ελεύθερο πανδοχείο ή νοσοκομείο, ή αδράνεια χωρίς τίποτα να κάνουν. Μια υγιής αποικία κρατά τους περισσότερους εργάτες της απασχολημένους, λίγους αδρανείς και κανέναν σε αναμονή.
 [stat idle workers]
-
+Αδρανείς εργάτες
 [stat idle workers about]
-
+Το ποσοστό του χρόνου των εργατών χωρίς τίποτα να κάνουν. Υψηλές τιμές σημαίνουν περισσότερους εργάτες από δουλειά· κοντά στο μηδέν σημαίνει ότι όλοι οι εργάτες είναι απασχολημένοι και ίσως υπάρχουν εργασίες σε αναμονή.
 [stat work by job]
-
+Σε τι δούλευαν οι εργάτες
 [stat work by job about]
-
+Πόσοι εργάτες τροφοδοτούσαν κάθε είδος κτιρίου: σμήνη (για νέες μονάδες), πανδοχεία (για γεύματα), κτίρια υπό κατασκευή ή αναβάθμιση, ή άλλα κτίρια όπως πύργους, σχολεία και στρατώνες.
 [stat haul distance]
-
+Απόσταση από τους πόρους
 [stat haul distance about]
-
+Πόσο μακριά, κατά μέσο όρο, βρισκόταν ένας εργάτης που συλλέγει από το κτίριο που τροφοδοτούσε, σε τετράγωνα χάρτη σε ευθεία γραμμή.
 [stat hauling]
-
+Συλλογή και μεταφορά
 [stat hauling about]
-
+Πώς μοιράζονταν οι εργάτες που τροφοδοτούν κτίρια ανάμεσα στο περπάτημα προς έναν πόρο, τη συλλογή του, τη μεταφορά του πίσω και την παράδοση ή την αναμονή για έναν προσβάσιμο πόρο. Το μεγαλύτερο μέρος είναι περπάτημα, οπότε όσο πιο κοντά οι πόροι, τόσο περισσότερη δουλειά γίνεται.
 [stat eating time]
-
+Εργάτες που πάνε να φάνε
 [stat eating time about]
-
+Πόσοι εργάτες έλειπαν από τη δουλειά για να φάνε: περπατούσαν προς πανδοχείο, έτρωγαν μέσα σε ένα ή πεινούσαν χωρίς πανδοχείο να τους δεχτεί. Εργάτες χωρίς πανδοχείο σημαίνει ότι η αποικία ξεπέρασε τα πανδοχεία της ή την τροφή τους.
 [stat inn distance]
-
+Απόσταση από το πανδοχείο
 [stat inn distance about]
-
+Πόσο μακριά ήταν οι πεινασμένοι εργάτες, κατά μέσο όρο στη διαδρομή τους, από το πανδοχείο προς το οποίο κατευθύνονταν, σε τετράγωνα χάρτη σε ευθεία γραμμή. Μια ολόκληρη διαδρομή είναι περίπου το διπλάσιο. Υψηλές τιμές σημαίνουν ότι τα πανδοχεία είναι μακριά από εκεί όπου δουλεύουν οι εργάτες.
 [stat warriors]
-
+Πολεμιστές
 [stat warriors about]
-
+Πόσους πολεμιστές είχε η αποικία. Αναλύστε το για να δείτε πόσοι ήταν κοντά στη βάση, κοντά σε εχθρική αποικία ή σε ανοιχτό έδαφος. Έδαφος κοντά και στις δύο αποικίες μετράει ως βάση.
 [stat warrior level]
-
+Μέσο επίπεδο επίθεσης πολεμιστών
 [stat warrior level about]
-
+Το μέσο επίπεδο επίθεσης των πολεμιστών της αποικίας, μετρώντας εξίσου ταχύτητα και δύναμη επίθεσης, στην κλίμακα 1 έως 4 που δείχνει το παιχνίδι. Οι στρατώνες το ανεβάζουν· οι νέοι ανεκπαίδευτοι πολεμιστές το ρίχνουν.
 [stat warrior duties]
-
+Τι έκαναν οι πολεμιστές
 [stat warrior duties about]
-
+Πώς μοιράζονταν οι πολεμιστές της αποικίας ανάμεσα σε όσους στάλθηκαν σε σημαία πολέμου, όσους τραυματίστηκαν αρκετά ώστε να αφήσουν τη μάχη για νοσοκομείο (μαζί με όσους θεραπεύονται) και όσους ήταν ελεύθεροι.
 [stat intruders]
-
+Εχθρικοί πολεμιστές στη βάση
 [stat intruders about]
-
+Πόσοι εχθρικοί πολεμιστές βρίσκονταν σε απόσταση 16 τετραγώνων από τα κτίρια της αποικίας. Όπου δύο αποικίες είναι κοντά, η καθεμία μετράει τους αμυνόμενους της άλλης.
 [stat home defence]
-
+Περιθώριο ισχύος άμυνας βάσης
 [stat home defence about]
-
+Η ισχύς των πολεμιστών της αποικίας κοντά στα κτίριά της μείον αυτή των εχθρικών πολεμιστών εκεί, μετρώντας κάθε πολεμιστή και κάθε επίπεδο επίθεσής του. Κάτω από το μηδέν η αποικία ήταν σε μειονεκτική θέση στη βάση της.
 [stat combat death places]
-
+Πού έπεσαν μονάδες σε μάχη
 [stat combat death places about]
-
+Πού βρίσκονταν οι μονάδες της αποικίας όταν σκοτώθηκαν: κοντά στα δικά της κτίρια, κοντά σε εχθρικά κτίρια ή σε ανοιχτό έδαφος ανάμεσα σε αποικίες. Απώλειες στη βάση σημαίνουν ότι η αποικία δεχόταν επίθεση· απώλειες σε εχθρική αποικία σημαίνουν ότι επιτιθόταν. Έδαφος κοντά και στις δύο αποικίες μετράει ως βάση.
 [stat band working]
-
+Εργάζονται
 [stat band flag work]
-
+Σε σημαία
 [stat band idle]
-
+Αδρανείς
 [stat band training]
-
+Εκπαίδευση
 [stat band unserved]
-
+Χωρίς ελεύθερο πανδοχείο ή νοσοκομείο
 [stat band swarms]
-
+Σμήνη
 [stat band inns]
-
+Πανδοχεία
 [stat band sites]
-
+Κατασκευή και αναβάθμιση
 [stat band other buildings]
-
+Άλλα κτίρια
 [stat band to resource]
-
+Προς έναν πόρο
 [stat band harvesting]
-
+Συλλογή
 [stat band carrying]
-
+Μεταφορά πίσω
 [stat band delivering]
-
+Παράδοση ή αναμονή
 [stat band walking to inn]
-
+Προς πανδοχείο
 [stat band no inn]
-
+Χωρίς ελεύθερο πανδοχείο
 [stat band at home]
-
+Στη βάση
 [stat band at enemy]
-
+Σε εχθρική αποικία
 [stat band in the open]
-
+Σε ανοιχτό έδαφος
 [stat band war flag]
-
+Σε σημαία πολέμου
 [stat band seeking healing]
-
+Αναζητούν θεραπεία
 [stat band free]
-
+Ελεύθεροι
 [stat unit workers]
-
+εργάτες
 [stat unit worker time]
-
+χρόνος εργατών
 [stat unit working workers]
-
+εργάτες που τροφοδοτούν κτίρια
 [stat unit squares]
-
+τετράγωνα
 [stat unit warriors]
-
+πολεμιστές
 [stat unit attack level]
-
+επίπεδο επίθεσης
 [stat unit enemy warriors]
-
+εχθρικοί πολεμιστές
 [stat unit strength count]
-
+ισχύς
 [stat view by place]
-
+Ανά τοποθεσία

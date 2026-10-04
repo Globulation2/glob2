@@ -1,15 +1,15 @@
 [AI strategy]
 AI-strategio
 [start recording]
-
+Komenci registradon
 [stop recording]
-
+Haltigi registradon
 [finalizing recording]
-
+Finpretigante la registraĵon…
 [AIMaxima-Summary]
 Ekvilibrigas daŭrigeblajn kreskon kaj trejnadon, poste kolektas armeojn en ondojn.
 [AIMaxima-Profile]
-Kerna strategio: Traktas nutraĵon, laboristojn, naskiĝojn, trejnadon, konstruadon kaj batalon kiel konkurencajn bezonojn. Parte adaptas armegrandecon al taksita malamika forto, poste provas efike liveri tiun armeon al batalo.\n\nEkonomio kaj disvolviĝo: Planas naskiĝojn laŭ nutraĵo kaj laborforto, konservas liberajn okazojn por trejnado kaj ĉesas aldoni superfluajn laboristojn kiam milita produktado necesas. Adaptas trejnkapablon kaj evitas malfunkciigi tro da infrastrukturo por plibonigoj.\n\nEsplorado kaj decidoj: Taksas malamikajn fortojn el videblaj unuoj kaj memoritaj vidaĵoj per adaptita modelo. Celoj dependas de valoro, distanco, turoj, senprotektaj laboristoj kaj persisto ĉe celo. Fruktmisioj subtenas nutraĵdiversecon kaj transfuĝon.\n\nAtako kaj defendo: Rezervas militistojn por trejnado kaj defendo, poste kolektas elekteblajn terajn fortojn apud propra nutraĵa infrastrukturo antaŭ lanĉi ondojn. Uzas lokajn defendajn reagojn kaj taksas alirvojojn al la kolonio.\n\nKiam atakoj haltas: Post kvar sinsekvaj malsukcesoj liveri ondojn, ŝanĝas al senĉese plifortigataj atakflagoj. Amfibiaj atakoj ankaŭ povas uzi senĉesajn plifortigojn. Ĉi tiu rezerva metodo ne solvas ĉiun blokadon antaŭ ol kolektiĝo povas formiĝi.\n\nKompare kun aliaj AI: Pli firme kunligas nutraĵon, trejnadon, informojn kaj deplojadon. Cabino emfazas plurajn konstruatakojn; Maxima emfazas taksitan bezonon kaj liveradon de kolektitaj fortoj.\n\nFortoj kaj malfortoj: Daŭrigas kreskon kaj militistan anstataŭigon dum adaptiĝo al nutraĵpremo kaj observitaj minacoj. Bezonas nutraĵon, trejnkapablon kaj liberan kolektejon; ŝtopiĝoj kaj longaj vojoj povas malhelpi liveradon.\n\nEbla kontraŭludo: Disputu senprotektajn tritikon, manĝejojn kaj militistejojn antaŭ ol ondoj kolektiĝas. Tenu provizitan defendan forton kune kaj interrompu plifortigajn vojojn. Atendu ripetan premon post la unua ondo.\n\nEsplorado: Fortotaksoj uzas vidaĵojn kaj observhistorion anstataŭ kaŝitajn totalojn de malamikaj trupoj.
+Kerna strategio: Traktas nutraĵon, laboristojn, naskiĝojn, trejnadon, konstruadon kaj batalon kiel konkurencajn bezonojn. Parte adaptas armegrandecon al taksita malamika forto, poste provas efike liveri tiun armeon al batalo.\n\nEkonomio kaj disvolviĝo: Planas naskiĝojn laŭ nutraĵo kaj laborforto, konservas liberajn okazojn por trejnado kaj ĉesas aldoni superfluajn laboristojn kiam milita produktado necesas. Adaptas trejnkapablon kaj evitas malfunkciigi tro da infrastrukturo por plibonigoj.\n\nEsplorado kaj decidoj: Taksas malamikajn fortojn el videblaj globuloj kaj memoritaj vidaĵoj per adaptita modelo. Celoj dependas de valoro, distanco, turoj, senprotektaj laboristoj kaj persisto ĉe celo. Fruktmisioj subtenas nutraĵdiversecon kaj transfuĝon.\n\nAtako kaj defendo: Rezervas militistojn por trejnado kaj defendo, poste kolektas elekteblajn terajn fortojn apud propra nutraĵa infrastrukturo antaŭ lanĉi ondojn. Uzas lokajn defendajn reagojn kaj taksas alirvojojn al la kolonio.\n\nKiam atakoj haltas: Post kvar sinsekvaj malsukcesoj liveri ondojn, ŝanĝas al senĉese plifortigataj atakmarkiloj. Amfibiaj atakoj ankaŭ povas uzi senĉesajn plifortigojn. Ĉi tiu rezerva metodo ne solvas ĉiun blokadon antaŭ ol kolektiĝo povas formiĝi.\n\nKompare kun aliaj AI: Pli firme kunligas nutraĵon, trejnadon, informojn kaj deplojadon. Cabino emfazas plurajn konstruatakojn; Maxima emfazas taksitan bezonon kaj liveradon de kolektitaj fortoj.\n\nFortoj kaj malfortoj: Daŭrigas kreskon kaj militistan anstataŭigon dum adaptiĝo al nutraĵpremo kaj observitaj minacoj. Bezonas nutraĵon, trejnkapablon kaj liberan kolektejon; ŝtopiĝoj kaj longaj vojoj povas malhelpi liveradon.\n\nEbla kontraŭludo: Disputu senprotektajn tritikon, manĝejojn kaj militistejojn antaŭ ol ondoj kolektiĝas. Tenu provizitan defendan forton kune kaj interrompu plifortigajn vojojn. Atendu ripetan premon post la unua ondo.\n\nEsplorado: Fortotaksoj uzas vidaĵojn kaj observhistorion anstataŭ kaŝitajn totalojn de malamikaj trupoj.
 [%0 has left the game]
 %0 forlasis la ludon.
 [%0 level %1]
@@ -21,7 +21,7 @@ Kerna strategio: Traktas nutraĵon, laboristojn, naskiĝojn, trejnadon, konstrua
 [%0 units can't access fruit]
 %0 da globuloj ne povas atingi la frukton
 [%0 units can't access resource]
-%0 da globuloj ne povas atingi la rezervaĵon
+%0 da globuloj ne povas atingi la rimedon
 [%0 units not available]
 %0 da globuloj ne estas disponeblaj
 [%0 units too far from building]
@@ -31,27 +31,27 @@ Kerna strategio: Traktas nutraĵon, laboristojn, naskiĝojn, trejnadon, konstrua
 [%0 units too far from fruit]
 %0 da globuloj estas tro malproksime de la frukto
 [%0 units too far from resource]
-%0 da globuloj estas tro malproksime de la rezervaĵo
+%0 da globuloj estas tro malproksime de la rimedo
 [%0 units too low level]
-%0 da globuloj havas tre malgrandajn nivelojn
+%0 da globuloj havas tro malaltan nivelon
 [%0% Uploaded]
-%0% jam alŝutita
+%0% alŝutita
 [%0's team unit got converted to your team]
-Vi konvertigis globulon de teamo %0 al via.
+Globulo el la teamo de %0 aliĝis al via teamo
 [abreaviation explanation A]
-A (Allies): Kunpacanoj
+A: Aliancanoj
 [abreaviation explanation C]
-C (Chat): Ebligi babiladon
+C: Sendi babilmesaĝojn al
 [abreaviation explanation fV]
-fV (FoodVision): Doni Vidon al Manĝejoj (por ŝteli globulojn)
+fV: Montri vidon por manĝejoj (por ŝteli globulojn)
 [abreaviation explanation mV]
-mV (MarketVision): Doni Vidon al Vendejoj (por interŝanĝi fruktojn)
+mV: Montri vidon por komercejoj (por interŝanĝi fruktojn)
 [abreaviation explanation V]
-V (Vision): Doni Vidon al ĉiuj konstruaĵoj
+V: Montri vidon por ĉiuj konstruaĵoj
 [add map]
-Aldoni Karton
+Aldoni mapon
 [add shortcut]
-Aldoni Taskklavon
+Aldoni ŝparvojon
 [AI Descriptions]
 Priskriboj de AI-oj
 [AI]
@@ -61,25 +61,25 @@ AI
 [AICastor-Description]
 Konstruas kaj trejnas, adaptante kreskon al la nutraĵprovizo.
 [AICastor]
-Kastoro
+Castor
 [AINicowar-Description]
 Kreskigas sian loĝantaron, trejnas militistojn, poste atakas.
 [AINicowar]
 Nicowar
 [AINone-Description]
-Nenio; Nenion faras!
+Neniu – nenion faras.
 [AINone]
-Nenio
+Neniu
 [AINumbi-Description]
 Pardonema kontraŭulo, kiu tamen vastiĝas kaj atakas.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Vastiĝas kaj varbas fremdajn unuojn sen produkti militistojn.
+Vastiĝas kaj konkurencas pri transfuĝantoj sen produkti militistojn.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Rapidaj atakoj provas vian fruan defendon.
+Rapidaj atakoj, kiuj provas vian fruan defendon.
 [AIWarrush]
 Warrush
 [AICabino-Description]
@@ -91,11 +91,11 @@ JavaScript
 [AIJavaScript-Description]
 Regilo uzanta enkorpigitan JavaScript-fontmodulon.
 [Alga]
-Algo
+Algoj
 [algae]
 algo
 [alliances]
-Kunpacado
+Aliancoj
 [alt %0]
 alt-%0
 [and]
@@ -107,23 +107,23 @@ malsatega(j)
 [are hungry]
 malsata(j)
 [are ok]
-Estas bona(j)
+bona(j)
 [are wonded]
 vundita(j)
 [armor]
-Defendpovo
+Kiraso
 [assigned]
 Atribuita(j)
 [At. speed]
-Rapideco de Atako
+Atakrapido
 [At. strength]
-Fortece de Atako
+Atakforto
 [Attack]
 Atakado
 [audio]
-Aŭdaĵo
+Sono
 [auto save]
-Memkonservita
+Aŭtomata konservo
 [available lan games]
 Lokaj ludoj disponeblaj
 [away:]
@@ -139,55 +139,55 @@ Tiu konstruaĵo plibonigas la
 [barracks]
 Militistejo
 [beach size]
-Larĝeco de Marbordo
+Grandeco de strando
 [break]
 rompklavo
 [briefing]
 Resumo
 [build %0 level %1]
-Konstruado de %0 je %1a nivelo
+Konstrui %0 je nivelo %1
 [Build]
 Konstruado
 [Building Defaults]
-Antaŭemetaĵoj pri Konstruaĵoj
+Defaŭltoj por konstruaĵoj
 [building settings]
 Konstruaĵoj
 [building site]
 konstruejo
 [Building Tool Box Explanation]
-Tenu na Majuskl suben kaj tiru la montrilon por konstrui kiel kadro
+Shift + tiri = kadro
 [Building Tool Line Explanation]
-Tenu na Ktrl suben kaj tiru la montrilon por konstrui kiel linio
+Ctrl + tiri = linio
 [Buildings]
 Konstruaĵoj
 [Bullets]
 Kugloj
 [campaign editor]
-Redakti Kampanjon
+Kampanjoredaktilo
 [campaign]
 Kampanjo
 [Can't connect, can't find host]
-Ne eblas kontakti: Gastiganto ne troviĝis!
+Ne eblas konektiĝi: gastiganto ne troviĝis
 [Can't host game, port %0 in use]
-Ne eblas gastigi ludon: La konektejo %0 jam estas uzata!
+Ne eblas gastigi ludon: pordo %0 jam estas uzata
 [Can't join game, game has started]
-Ne eblas aliĝi ludon: La ludo jam komencis!
+Ne eblas aliĝi al la ludo: ĝi jam komenciĝis
 [Can't join game, game is full]
-Ne eblas aliĝi ludon: La ludo jam estas plena!
+Ne eblas aliĝi al la ludo: ĝi estas plena
 [cancel destroy]
 Nuligi la detruadon
 [cancel repair]
-Nuligi la rebonigadon
+Nuligi la riparadon
 [cancel upgrade]
 Nuligi la plibonigadon
 [Cancel]
 Nuligi
 [caps lock]
-caps lock
+majuskloŝlosklavo
 [carry]
-Portante na:
+Portas:
 [Change Area Name]
-Ŝanĝi la Areonomon
+Ŝanĝi la areonomon
 [Cherry]
 Ĉerizo
 [choose campaign]
@@ -195,15 +195,15 @@ Elektu kampanjon
 [choose game]
 Elektu ludon
 [choose map]
-Elektu karton
+Elektu mapon
 [clear area]
 Elviŝata areo
 [farm area]
 Kultivata areo
 [Clearing:]
-Viŝante na:
+Viŝas:
 [clearingflag explanation 2]
-viŝi la rezervaĵojn
+viŝi la rimedojn
 [clearingflag explanation]
 Vokas laboristojn por
 [clearingflag]
@@ -213,59 +213,59 @@ Fermita
 [combined vision]
 Kombinita vido
 [compile]
-Skripton Kompili
+Kompili skripton
 [compose]
-`
+komponklavo
 [Computing Fertility]
-Kalkulante la Fekundecon...
+Kalkulante la fekundecon...
 [concrete islands terrain]
 Apartaj insuloj
 [connect]
-Kontakti
+Konekti
 [connecting to game]
-Kontaktante al Ludo
+Konektante al ludo
 [connecting to]
-Kontaktante al
+Konektante al
 [Construction Site Defaults]
-Antaŭemetaĵoj pri Konstruejoj
+Defaŭltoj por konstruejoj
 [Continue playing]
-Daŭrigi Ludon
+Daŭrigi ludon
 [control %0]
 ktrl-%0
 [Corn]
 Tritiko
 [crater density]
-Nombro de Krateroj
+Nombro de krateroj
 [crater lakes terrain]
 Kraterlagoj
 [create map]
-Fari Karton
+Krei mapon
 [credits]
 Kunfarantoj
 [ctrl - line]
 Ktrl - Linio
 [current speed]
-Nuna Rapideco
+Nuna rapido
 [custom game]
 Liberludo
 [customcur]
-Speciala Montrilo
+Propra montrilo
 [damage]
-Difekto
+Damaĝo
 [Damaged Map]
 Mapo de vunditoj
 [decrease units working]
-Malpliigi je globuloj laborantaj
+Malpliigi laborantajn globulojn
 [Defeat Your Oppenents]
-Venku via(j)n kontraŭano(j)n
+Venku viajn kontraŭulojn
 [defencetower explanation 2]
-globulojn kaj konstruaĵojn
+globulojn aŭ konstruaĵojn
 [defencetower explanation]
 Atakas apudajn malamikajn
 [defencetower]
 Defendturo
 [Defense Map]
-Karto de Defendo
+Mapo de defendo
 [Defense]
 Defendado
 [Delete game]
@@ -275,11 +275,11 @@ viŝklavo
 [desert]
 Dezerto
 [destroy building]
-Detruadi elektitan konstruaĵon
+Detrui elektitan konstruaĵon
 [destroy]
 Detrui
 [display]
-Vidaĵo
+Ekrano
 [do nothing]
 Nenion fari
 [don't carry anything]
@@ -287,9 +287,9 @@ Portante nenion
 [down]
 malsuprenklavo
 [edit map]
-Redakti Karton
+Redakti mapon
 [editing map]
-Redaktante Karton
+Redaktante mapon
 [editor shortcuts]
 Redaktilo
 [editor]
@@ -297,9 +297,9 @@ Redaktilo
 [end]
 finklavo
 [enter]
-enigklavo de numerklavaro
+enigklavo
 [equals]
-egalas je
+egalsigno
 [ERROR_CANT_LOAD_MAP]
 Ne eblis ŝargi la mapon: la dosiero estas difektita aŭ havas nekongruan version.
 [escape]
@@ -317,7 +317,7 @@ Esploristo
 [explorers]
 esploristoj
 [extra islands]
-Malplenaj Insuloj
+Malplenaj insuloj
 [f10]
 F10
 [f11]
@@ -349,11 +349,11 @@ F8
 [f9]
 F9
 [Fertility Map]
-Karto de Fekundeco
+Mapo de fekundeco
 [Flag Defaults]
-Antaŭemetaĵoj pri Markiloj
+Defaŭltoj por markiloj
 [flag settings explanation]
-Antaŭemetita radiuso de Markilo
+Defaŭlta radiuso de la markilo
 [fog of war]
 Milita nebulo
 [food]
@@ -371,7 +371,7 @@ frukto
 [fullscreen]
 Plenekrana
 [game full]
-La ludo jam estas plena!
+Ludo plena
 [game shortcuts]
 Ludo
 [Game]
@@ -379,31 +379,31 @@ Ludo
 [general settings]
 Ĝeneralaj
 [go to event]
-Aliri okazen
+Iri al evento
 [go to home]
-Aliri hejmen
+Iri hejmen
 [goto main menu]
-Reen al ĉefmenuon
+Reen al la ĉefmenuo
 [grass]
-Gazono
+Herbo
 [ground attack]
-Alteratako
+Teratako
 [guard area]
 Defendata areo
 [GUIMapPreview text 0]
 Bv. elekti
 [GUIMapPreview text 1]
-karton
+mapon
 [handmade map]
-Manefarita karto
+Manfarita mapo
 [Happyness]
 Feliĉeco
 [hard pause]
-Durpaŭzi
+Forta paŭzo
 [Harvest]
 Rikoltado
 [high priority]
-multa
+alta
 [hints]
 Konsiletoj
 [home]
@@ -415,9 +415,9 @@ Tiu konstruaĵo resanigas
 [hospital]
 Malsanejo
 [host]
-Gastigi Ludon
+Gastigi ludon
 [hp]
-VPo
+VP
 [Human]
 Homo
 [human]
@@ -425,11 +425,11 @@ homo
 [hungry]
 malsata
 [hungryness]
-Malsateco
+Malsato
 [In way]
-Jam venante
+Survoje
 [increase units working]
-Pliigi je globuloj laborantaj
+Pliigi laborantajn globulojn
 [inn explanation 2]
 la globulojn
 [inn explanation]
@@ -441,7 +441,7 @@ enmetklavo
 [inside]
 Ene
 [islands size]
-Grandeco de Insulo
+Grandeco de insuloj
 [islands terrain]
 Insuloj
 [isles terrain]
@@ -451,11 +451,11 @@ Pasi al la sekva elekto
 [jobs]
 laboroj
 [join a game]
-Aliĝi Ludon
+Aliĝi al ludo
 [keyboard settings]
 Klavaro
 [lan]
-Loka Ludo
+LAN-ludo
 [language incomplete]
 Esperanto - Nekompleta
 [language-code]
@@ -475,45 +475,45 @@ Nivelo
 [levels]
 Niveloj
 [load campaign]
-Ŝargi Kampanjon
+Ŝargi kampanjon
 [load game]
-Ŝargi Ludon
+Ŝargi ludon
 [load map]
-Ŝargi Karton
+Ŝargi mapon
 [load replay]
-Ŝargi Replay-on
+Ŝargi reludon
 [load script]
-Ŝargi Skripton
+Ŝargi skripton
 [load]
 Ŝargi
 [look around]
 Ĉirkaŭrigardi
 [Lost : %0 has more prestige than you]
-Vi malgajnis: %0a prestiĝo estas pli ol via!
+Vi malgajnis: %0 havas pli da prestiĝo ol vi
 [Lost : your colony is dead]
-Vi malgajnis: via kolonio estas ekstermita!
+Vi malgajnis: via kolonio estas ekstermita
 [low priority]
-malmulta
+malalta
 [lowquality]
 Malaltkvalita
 [Magic At. Air]
-Aera Difekto
+Aera damaĝo
 [Magic At. Ground]
-Altera Difekto
+Tera damaĝo
 [map description]
 Priskribo
 [Map Discovered]
-Karto esti Malkovrita
+Mapo malkovrita
 [map name]
-Titolo
+Nomo
 [map script]
-Kartskripto
+Mapskripto
 [map size x]
-Larĝeco de Karto
+Larĝo de mapo
 [map size y]
-Alteco de Karto
+Alto de mapo
 [mark map]
-Marki karton por kunpacanoj
+Marki mapon por aliancanoj
 [market explanation 2]
 komerci fruktojn kun aliaj
 [market explanation]
@@ -529,45 +529,45 @@ Minimuma bezonata nivelo:
 [Minimum Level To Flag]
 Min. globulnivelo
 [Music volume]
-Laŭteco de Muziko
+Laŭteco de muziko
 [Mute]
 Silenta
 [mute]
 Silenta
 [new campaign]
-Novan Kampanjon
+Nova kampanjo
 [new map]
-Novan Karton
+Nova mapo
 [no fullscreen]
-* Nur kiel fenestro
+* nur en fenestra reĝimo
 [No Hints]
-Neniu Konsileto
+Neniu konsileto
 [no key]
-Jam neniu klavo
+ankoraŭ neniu klavo
 [No Objectives]
-Neniu Celtabulo
+Neniuj celoj
 [no ressources growth areas]
-Malfekundaj Areoj
+Malfekundaj areoj
 [No]
 Ne
 [Number Of Buildings]
-Nombro de Konstruaĵoj
+Nombro de konstruaĵoj
 [number of teams]
-Nombro de Teamoj
+Nombro de teamoj
 [Number Of Units]
-Nombro de Globuloj
+Nombro de globuloj
 [numlock]
 numerŝlosklavo
 [objectives]
-Celtabulo
+Celoj
 [of which]
 da kiuj, estas
 [ok]
-Bone!
+Bone
 [old islands terrain]
-Kruta Insularo
+Kruta insularo
 [old random terrain]
-Fragmentita Marbordo
+Fragmentita marbordo
 [on press]
 Premo
 [On the spot]
@@ -575,27 +575,27 @@ Premo
 [on unpress]
 Malpremo
 [open chat box]
-Malfermi Babilkadron
+Malfermi babilkadron
 [open load menu]
-Malfermi Ŝargmenuon
+Malfermi ŝargmenuon
 [open save menu]
-Malfermi Konservmenuon
+Malfermi konservmenuon
 [open scenario editor]
-Redakti Scenaron
+Malfermi scenaroredaktilon
 [open teams editor]
-Redakti Teamojn
+Malfermi teamoredaktilon
 [open]
-nefermita
+malfermita
 [OpenGL]
-uzi na OpenGL
+OpenGL
 [Options]
-Elektaĵoj
+Opcioj
 [options]
-Elektaĵoj
+opcioj
 [Orange]
 Oranĝo
 [Other Options]
-Pluaj Elektaĵoj
+Aliaj opcioj
 [page down]
 paĝonmalsuprenklavo
 [page up]
@@ -603,7 +603,7 @@ paĝonsuprenklavo
 [Papyrus]
 Papiruso
 [pause game]
-Paŭzi ludon
+Paŭzigi ludon
 [pause]
 paŭzklavo
 [Paused]
@@ -621,23 +621,23 @@ Premu spacklavon por daŭrigi.
 [Prestige Score]
 Prestiĝo
 [Prestige Win Enabled]
-Ebligi gajnon per Prestiĝo
+Prestiĝa venko ebligita
 [Prestige]
 Prestiĝo
 [Primary Objectives]
-Unue:
+Ĉefaj
 [print screen]
 ekranfotklavo
 [priority]
-Antaŭeco
+Prioritato
 [Prune]
 Pruno
 [quit the editor]
-Eliri la Redaktilon
+Forlasi la redaktilon
 [quit the game]
-Eliri la Ludon
+Forlasi la ludon
 [quit the replay]
-Forlasi la replay-on
+Forlasi la reludon
 [quit]
 Eliri
 [racetrack explanation 2]
@@ -649,29 +649,29 @@ Kuregejo
 [range]
 Atingopovo
 [ratios]
-Rilatumoj
+Proporcioj
 [remember unit]
-Memori unuokvantojn
+Memori nombrojn de globuloj
 [remove map]
-Viŝi Karton
+Forigi mapon
 [remove shortcut]
-Viŝi Taskklavon
+Forigi ŝparvojon
 [repair building]
-Komenci/halti je rebonigo
+Komenci/halti riparon
 [repair]
-Rebonigi
+Ripari
 [repeat area]
 -oble la saman pejzaĝon
 [replay ended]
-Replay Finiĝis
+Reludo finiĝis
 [restore default shortcuts]
-Remeti antaŭemetitajn Taskklavojn
+Restarigi defaŭltajn ŝparvojojn
 [return to editor]
-Reveni al Redaktilon
+Reveni al la redaktilo
 [return to game]
-Reveni Luden
+Reveni al la ludo
 [return to replay]
-Reveni al la replay
+Reveni al la reludo
 [return]
 enigklavo
 [right meta]
@@ -681,7 +681,7 @@ dekstra vindozklavo
 [right]
 dekstrenklavo
 [river diameter]
-Larĝeco de Rivero
+Larĝo de rivero
 [river terrain]
 Rivero
 [sand]
@@ -691,11 +691,11 @@ Sablo
 [save game]
 Konservi ludon
 [save map]
-Konservi Karton
+Konservi mapon
 [save replay]
-Konservi Replay-on
+Konservi reludon
 [save script]
-Konservi Skripton
+Konservi skripton
 [Save]
 Konservi
 [school explanation 2]
@@ -705,119 +705,119 @@ Plibonigas la konstrunivelon
 [school]
 Lernejo
 [Script Areas]
-SkriptAreoj
+Skriptaj areoj
 [scroll lock]
 rulŝlosklavo
 [scroll wheel enabled]
-Ebligi Musradon
+Musrado ebligita
 [Secondary Objectives]
-Due:
+Kromaj
 [seeking a job]
-Serĉanta(j) laboron
+serĉanta(j) laboron
 [seeking]
 serĉantaj
 [select barracks building]
-Elekti Militistejon
+Elekti militistejon
 [select clearingflag]
-Elekti Viŝmarkilon
+Elekti viŝmarkilon
 [select construct barracks]
-Elekti je konstruado de Militistejo
+Elekti konstruadon de militistejo
 [select construct defencetower]
-Elekti je konstruado de Defendturo
+Elekti konstruadon de defendturo
 [select construct hospital]
-Elekti je konstruado de Malsanejo
+Elekti konstruadon de malsanejo
 [select construct inn]
-Elekti je konstruado de Manĝejo
+Elekti konstruadon de manĝejo
 [select construct market]
-Elekti je konstruado de Komercejo
+Elekti konstruadon de komercejo
 [select construct racetrack]
-Elekti je konstruado de Kuregejo
+Elekti konstruadon de kuregejo
 [select construct school]
-Elekti je konstruado de Lernejo
+Elekti konstruadon de lernejo
 [select construct stonewall]
-Elekti je konstruado de Ŝtonmuro
+Elekti konstruadon de ŝtonmuro
 [select construct swarm]
-Elekti je konstruado de Globulejo
+Elekti konstruadon de globulejo
 [select construct swimmingpool]
-Elekti je konstruado de Naĝejo
+Elekti konstruadon de naĝejo
 [select delete tool]
 Elekti viŝilon
 [select explorationflag]
-Elekti Esplormarkilon
+Elekti esplormarkilon
 [select hospital building]
-Elekti Malsanejon
+Elekti malsanejon
 [select inn building]
-Elekti Manĝejon
+Elekti manĝejon
 [select market building]
-Elekti Komercejon
+Elekti komercejon
 [select place clearing area]
-Elekti je metado de Elviŝata areo
+Elekti metadon de elviŝata areo
 [select place farm area]
-Elekti je metado de Kultivata areo
+Elekti metadon de kultivata areo
 [select place clearingflag]
-Elekti je metado de Viŝmarkilo
+Elekti metadon de viŝmarkilo
 [select place explorationflag]
-Elekti je metado de Esplormarkilo
+Elekti metadon de esplormarkilo
 [select place forbidden area]
-Meti malpermesatan areon
+Elekti metadon de malpermesata areo
 [select place guard area]
-Elekti je metado de Defendata areo
+Elekti metadon de defendata areo
 [select place warflag]
-Elekti je metado de Militmarkilo
+Elekti metadon de militmarkilo
 [select racetrack building]
-Elekti Kuregejon
+Elekti kuregejon
 [select school building]
-Elekti Lernejon
+Elekti lernejon
 [select swarm building]
-Elekti Globulejon
+Elekti globulejon
 [select swimmingpool building]
-Elekti Naĝejon
+Elekti naĝejon
 [select tower building]
-Elekti Defendturon
+Elekti defendturon
 [select wall building]
-Elekti Ŝtonmuron
+Elekti ŝtonmuron
 [select warflag]
-Elekti Militmarkilon
+Elekti militmarkilon
 [settings]
-Elektaĵoj
+Agordoj
 [shift %0]
 majuskl-%0
 [shortcut explanation enter]
-Uzu enigklavon por babili.
+Enigklavo: sendi babilmesaĝon
 [shortcut explanation v]
-Tenu na V suben por paroli.
+V: teni por paroli
 [show areas]
 Montri areojn
 [show flags]
-Montri flagojn
+Montri markilojn
 [show main menu]
 Montri ĉefmenuon
 [skin]
-Vidaĵo
+Ekrano
 [smoothing]
-Glatigi
+Glatigo
 [space]
 spacklavo
 [start mission]
-Komenci Mision
+Komenci mision
 [start new campaign]
-Komenci Novan Kampanjon
+Komenci novan kampanjon
 [Start]
 Komenci
 [Starving Map]
-Karto de Malsateco
+Mapo de malsato
 [starving]
 malsatega
 [Statistics]
-Statistiko
+Statistikoj
 [Still (i)]
-Jam
+Ankoraŭ
 [still (w)]
-Jam
+Ankoraŭ
 [still one unit working]
-Unu globulo jam laboras
+Ankoraŭ unu globulo laboras
 [Still one]
-Jam unu
+Ankoraŭ unu
 [Stone]
 Ŝtono
 [stone]
@@ -829,7 +829,7 @@ Tiu konstruaĵo paceme
 [stonewall]
 Ŝtonmuro
 [svr hostname]
-Gastigantnomo de Servilo
+Gastigantnomo de servilo
 [swamp terrain]
 Marĉo
 [swarm explanation 2]
@@ -849,39 +849,39 @@ Naĝejo
 [switch to adding areas]
 Ŝanĝi al metado de areoj
 [switch to area brush 1]
-Ŝanĝi al areobroso 1a formo
+Ŝanĝi al areobroso 1
 [switch to area brush 2]
-Ŝanĝi al areobroso 2a formo
+Ŝanĝi al areobroso 2
 [switch to area brush 3]
-Ŝanĝi al areobroso 3a formo
+Ŝanĝi al areobroso 3
 [switch to area brush 4]
-Ŝanĝi al areobroso 4a formo
+Ŝanĝi al areobroso 4
 [switch to area brush 5]
-Ŝanĝi al areobroso 5a formo
+Ŝanĝi al areobroso 5
 [switch to area brush 6]
-Ŝanĝi al areobroso 6a formo
+Ŝanĝi al areobroso 6
 [switch to area brush 7]
-Ŝanĝi al areobroso 7a formo
+Ŝanĝi al areobroso 7
 [switch to area brush 8]
-Ŝanĝi al areobroso 8a formo
+Ŝanĝi al areobroso 8
 [switch to building view]
-Ŝanĝi al vido de Konstruaĵoj
+Ŝanĝi al vido de konstruaĵoj
 [switch to flag view]
-Ŝanĝi al vido de Markiloj
+Ŝanĝi al vido de markiloj
 [switch to removing areas]
 Ŝanĝi al viŝado de areoj
 [switch to teams view]
-Ŝanĝi al vido de Teamoj
+Ŝanĝi al vido de teamoj
 [switch to terrain view]
-Ŝanĝi al vido de Terenoj
+Ŝanĝi al vido de tereno
 [sys req]
 sys-req-klavo
 [tab]
 tabklavo
 [teams editor]
-Redakti Teamojn
+Teamoredaktilo
 [Teams Fixed]
-Teamoj esti fiksaj
+Fiksaj teamoj
 [teams]
  teamoj
 [the barracks is finished]
@@ -905,7 +905,7 @@ La esplormarkilo estas starigita.
 [the explorationflag is under attack]
 La esplormarkilo estas atakata!
 [The game has not been finished]
-La ludo jam ne finiĝis.
+La ludo ne estas finita.
 [the games]
 Ludoj
 [the hospital is finished]
@@ -919,7 +919,7 @@ La manĝejo ĵus finiĝis.
 [the inn is under attack]
 La manĝejo estas atakata!
 [the maps]
-Kartoj
+Mapoj
 [the market is finished]
 La komercejo ĵus finiĝis.
 [the market is under attack]
@@ -929,7 +929,7 @@ La kuregejo ĵus finiĝis.
 [the racetrack is under attack]
 La kuregejo estas atakata!
 [the replays]
-Replay-oj
+Reludoj
 [the school is finished]
 La lernejo ĵus finiĝis.
 [the school is under attack]
@@ -961,27 +961,27 @@ Montri/kaŝi informaĵon
 [toggle draw unit paths]
 Montri/kaŝi irvojojn de globuloj
 [toggle menu screen]
-Montri/kaŝi ĉefmenuon
+Montri/kaŝi menuon
 [toggle recording voice]
-Ŝalti mikrofonon
+Ŝalti/malŝalti voĉregistradon
 [Total Attack Power]
-Tuta Atakpovo
+Tuta atakpovo
 [Total Defence Power]
-Tuta Defendpovo
+Tuta defendpovo
 [Total Hitpoints]
-Tutaj Vivpunktoj
+Sumo de vivpoentoj
 [Total prestige reached]
-Tuta Prestiĝo atingita
+Tuta prestiĝo atingita
 [Total]
 ĉiuj
 [tutorial text 1]
-Bonvenon al la elementa lernludejo de Globulation2! Ĉi tiu lernludo enhavos ĉion kiel konstrui manĝejojn, esplori terzonojn, kaj detrui la kontraŭanojn. Estas neniu manko de utilaj sciindaĵoj tien!
+Bonvenon al la ĉefa lernludo de Globulation 2! Ĉi tiu lernludo instruas ĉion, de konstruado de manĝejoj kaj esplorado de zonoj ĝis detruado de malamikoj! Ne mankas utilaj scioj ĉi tie!
 [tutorial text 2]
-Nun ke vi superis la principaĵojn, estas tempo konatiĝi al la aliaj konstraĵoj kiel la kuregejoj, la naĝejoj, kaj la lernejoj.
+Nun kiam vi regas la bazaĵojn, estas tempo konatiĝi kun aliaj konstruaĵoj, kiel kuregejoj, naĝejoj kaj lernejoj.
 [tutorial text 3]
-Vi ja faris bone atingi tien ĉi. Nun ni iru al la militistoj, la militistejoj, kaj la plibonigadoj.
+Vi bone sukcesis atingi ĉi tien. Nun ni pluiru al militistoj, militistejoj kaj plibonigoj.
 [tutorial text 4]
-Vi preskaŭ faris la tutan! Nur restas la markiloj kaj la atakado. Poste, vi sufiĉe scios por daŭri al la liberludoj, kaj finfine ludi surrete kontraŭ la plej bonaj ludantoj de Globulation2!
+Vi preskaŭ finis. Restas nur markiloj kaj atakado. Poste vi scios sufiĉe por provi liberludojn kaj fine ludi rete kontraŭ kelkaj el la plej bonaj ludantoj de Globulation 2.
 [tutorial]
 Lernludo
 [Uncontrolled]
@@ -989,27 +989,27 @@ Nekontrolata
 [undo]
 malfari
 [uniform terrain]
-Tereno Unuforma
+Unuforma tereno
 [Unit editor]
 Globulredaktilo
 [unit settings explanation]
-Antaŭemetitaj nombro da Globuloj atribuitaj
+Defaŭlta nombro de asignitaj globuloj
 [units working]
  globuloj laboras
 [Units]
 Globuloj
 [unlocked at start]
-Malŝlosita ĉe Komenco
+Malŝlosita ĉe komenco
 [unlocked by]
 Malŝlosita per
 [Unnamed Area]
-{Sennoma Areo}
+{Sennoma areo}
 [up]
 suprenklavo
 [upgrade building]
-Komenci/halti je plibonigo
+Komenci/halti plibonigon
 [Upgrade Defaults]
-Antaŭemetaĵoj pri Plibonigado
+Defaŭltoj por plibonigoj
 [upgrade]
 Plibonigi
 [username]
@@ -1017,11 +1017,11 @@ Uzulnomo
 [Version]
 Versio
 [view history]
-Rigardi antaŭajn mesaĝojn
+Vidi historion
 [Voice volume]
-Laŭteco de Voĉo
+Laŭteco de voĉo
 [waiting for %0]
-Atendante je %0
+Atendante %0
 [waiting for key]
 Atendante klavon...
 [Walk]
@@ -1033,7 +1033,7 @@ Vokas militistojn
 [warflag]
 Militmarkilo
 [Warning, you need to reboot the game for changes to take effect]
-Averton: vi devas rekomenci la ludon por ke la ŝanĝoj estu aplikataj.
+Averto: vi devas restartigi la ludon por ke la ŝanĝoj efiku.
 [Warrior Ratio]
 Militistprocento
 [Warrior]
@@ -1049,11 +1049,11 @@ Akvo
 [Wheat]
 Tritiko
 [Won : you defeated your opponents]
-Vi gajnis: Vi venkis via(j)n kontraŭano(j)n.
+Vi gajnis: vi venkis viajn kontraŭulojn.
 [Won : you have the most prestige]
-Vi gajnis: Vi havas la plej multan prestiĝon.
+Vi gajnis: vi havas la plej multe da prestiĝo.
 [Won : your ally %0 has the most prestige]
-Vi gajnis: Via kunpacano %0 havas la plej multan prestiĝon.
+Vi gajnis: via aliancano %0 havas la plej multe da prestiĝo.
 [Wood]
 Ligno
 [wood]
@@ -1071,17 +1071,17 @@ vundita
 [Yes]
 Jes
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-La YOG-superservilo malakceptis la konekton, ĉar via Globulation2-kliento estas tro malnova. Bv. preni la plej novan version el www.globulation2.org por ke vi povus ludi surrete.
+La YOG-metaservilo rifuzis la konekton, ĉar via kliento de Globulation 2 estas malaktuala. Bonvolu akiri la plej novan version ĉe www.globulation2.org por ludi rete.
 [you have lost]
 Vi malgajnis!
 [you have won]
 Vi gajnis!
 [You where kicked from the game]
-Vi ĵetiĝis el la ludo.
+Vi estis elĵetita el la ludo.
 [Your %0 are under attack]
 Via %0 estas atakata!
 [Your unit got converted to %0's team]
-Teamo %0 konvertigis globulon de vi al sia!
+Via globulo aliĝis al la teamo de %0
 [game speed]
 Ludrapido
 [decrease game speed]
@@ -1105,7 +1105,7 @@ Ne eblis konservi la kampanjon. Kontrolu, ke la cela dosierujo ekzistas, estas s
 [AICortex]
 Cortex
 [Units still inside: %0]
-Interne: %0
+Ankoraŭ interne: %0
 [Units still working: %0]
 Ankoraŭ laborantaj: %0
 [2 vs 2]
@@ -1113,7 +1113,7 @@ Ankoraŭ laborantaj: %0
 [AI strategy & counterplay]
 AI-strategio kaj kontraŭludo
 [AICastor-Profile]
-Kerna strategio: Investas en produktiva kolonio kaj teknologio antaŭ grandaj atakoj. Prioritatigitaj konstruprojektoj disvolvas ĝian setlejon; disvolviĝo, milita infrastrukturo kaj tempo pliigas militpretecon.\n\nEkonomio kaj disvolviĝo: Studas humidecon, tritikkreskon, obstaklojn kaj laboristan atingopovon. Krom produktado, administras vastigon de nutraĵprovizo, plibonigojn kaj defendojn.\n\nAtako kaj defendo: Taksas la atakforton de sanaj militistoj kaj komencas frapojn kiam fortaj aŭ tempaj kondiĉoj plenumiĝas. Preferas antaŭe viditajn atingeblajn konstruaĵojn, precipe militistejojn kaj lernejojn, kaj movas atakflagojn al valoraj celoj.\n\nKompare kun aliaj AI: Pli zorge konsideras terenon kaj celvaloron ol Numbi. Pli pacienca ol Warrush, interŝanĝante fruan premon kontraŭ evoluinta bazo kaj pli fortaj trupoj.\n\nFortoj kaj malfortoj: Ampleksa infrastruktura planado kaj valoraj militaj celoj donas celon al ĝiaj frapoj. Preparado bezonas tempon, ebligante al pli rapidaj kontraŭuloj disputi rimedojn antaŭ ol la ĉefa forto pretas.\n\nEbla kontraŭludo: Frue disputu vastigejojn. Protektu militistejojn kaj lernejojn same kiel nutraĵon, kaj konservu rezervon atakante ĝian evoluintan setlejon.
+Kerna strategio: Investas en produktiva kolonio kaj teknologio antaŭ grandaj atakoj. Prioritatigitaj konstruprojektoj disvolvas ĝian setlejon; disvolviĝo, milita infrastrukturo kaj tempo pliigas militpretecon.\n\nEkonomio kaj disvolviĝo: Studas humidecon, tritikkreskon, obstaklojn kaj laboristan atingopovon. Krom produktado, administras vastigon de nutraĵprovizo, plibonigojn kaj defendojn.\n\nAtako kaj defendo: Taksas la atakforton de sanaj militistoj kaj komencas frapojn kiam fortaj aŭ tempaj kondiĉoj plenumiĝas. Preferas antaŭe viditajn atingeblajn konstruaĵojn, precipe militistejojn kaj lernejojn, kaj movas atakmarkilojn al valoraj celoj.\n\nKompare kun aliaj AI: Pli zorge konsideras terenon kaj celvaloron ol Numbi. Pli pacienca ol Warrush, interŝanĝante fruan premon kontraŭ evoluinta bazo kaj pli fortaj trupoj.\n\nFortoj kaj malfortoj: Ampleksa infrastruktura planado kaj valoraj militaj celoj donas celon al ĝiaj frapoj. Preparado bezonas tempon, ebligante al pli rapidaj kontraŭuloj disputi rimedojn antaŭ ol la ĉefa forto pretas.\n\nEbla kontraŭludo: Frue disputu vastigejojn. Protektu militistejojn kaj lernejojn same kiel nutraĵon, kaj konservu rezervon atakante ĝian evoluintan setlejon.
 [AICastor-Summary]
 Disvolvas fortikigitan kolonion, poste frapas militajn kaj sciencajn konstruaĵojn.
 [AICortex-Profile]
@@ -1121,7 +1121,7 @@ Kerna strategio: Uzas reagajn prioritatojn por kreskigi funkciantan ekonomion ka
 [AICortex-Summary]
 Subtenas persistajn militajn ofensivojn per antaŭaj nutraĵprovizo kaj kuracado.
 [AINicowar-Profile]
-Kerna strategio: Kombinas kreskon, trejnadon, plibonigojn kaj militon per interkovrantaj kondiĉoj. Povas ataki dum vastigo kaj redirekti ekonomian penadon al resaniĝo kiam nutrado malsukcesas.\n\nKomenco: La liverita agresema profilo komencas militpreparon ĉe kvin entutaj unuoj kaj permesas militon ĉe kvin militistoj, inkluzive de nulnivelaj militistoj. Celas tri atakflagojn kun po kvin militistoj. Propraj strategiaj dosieroj povas ŝanĝi ĉi tiujn sojlojn.\n\nEkonomio kaj disvolviĝo: Vastigas nutraĵan kaj naskiĝan kapablon, trejnas laboristojn, disvolvas naĝadon kaj movadon kaj plibonigas konstruaĵojn. Adaptas nutraĵan personaron, reagas al malsatado kaj akiras fruktojn.\n\nAtako kaj defendo: Hazarde elektas atingeblajn malamikajn konstruaĵojn por atakoj. Povas uzi malbarajn flagojn por malfermi vojojn blokitajn de rimedoj. Defendaj flagoj kovras grupojn de minacataj unuoj kaj konstruaĵoj. Poste trejnitaj esploristoj kapablaj ataki surteren celas malamikajn unuogrupojn.\n\nKompare kun aliaj AI: Kunhavas la fruan agresemon de Warrush sed havas pli ampleksan daŭrigon. Male al Cabino, ne konstante prioritatas malsanejojn kaj manĝejojn.\n\nFortoj kaj malfortoj: Ampleksa taktika repertuaro kombinas fruan premon kun daŭra disvolviĝo. Hazarda celelekto povas elspezi penadon por malpli valoraj konstruaĵoj. Ĝiaj sojloj ne donas la detalan takson de kontraŭa batalforto de Maxima.\n\nEbla kontraŭludo: Atendu fruan atakon. Protektu nutraĵon kaj laboristojn, disputu vastigon kaj preparu vin por esploristaj atakoj se ĝi atingas altnivelan trejnadon.
+Kerna strategio: Kombinas kreskon, trejnadon, plibonigojn kaj militon per interkovrantaj kondiĉoj. Povas ataki dum vastigo kaj redirekti ekonomian penadon al resaniĝo kiam nutrado malsukcesas.\n\nKomenco: La liverita agresema profilo komencas militpreparon ĉe kvin entutaj globuloj kaj permesas militon ĉe kvin militistoj, inkluzive de nulnivelaj militistoj. Celas tri atakmarkilojn kun po kvin militistoj. Propraj strategiaj dosieroj povas ŝanĝi ĉi tiujn sojlojn.\n\nEkonomio kaj disvolviĝo: Vastigas nutraĵan kaj naskiĝan kapablon, trejnas laboristojn, disvolvas naĝadon kaj movadon kaj plibonigas konstruaĵojn. Adaptas nutraĵan personaron, reagas al malsatado kaj akiras fruktojn.\n\nAtako kaj defendo: Hazarde elektas atingeblajn malamikajn konstruaĵojn por atakoj. Povas uzi viŝmarkilojn por malfermi vojojn blokitajn de rimedoj. Defendaj markiloj kovras grupojn de minacataj globuloj kaj konstruaĵoj. Poste trejnitaj esploristoj kapablaj ataki surteren celas malamikajn globulgrupojn.\n\nKompare kun aliaj AI: Kunhavas la fruan agresemon de Warrush sed havas pli ampleksan daŭrigon. Male al Cabino, ne konstante prioritatas malsanejojn kaj manĝejojn.\n\nFortoj kaj malfortoj: Ampleksa taktika repertuaro kombinas fruan premon kun daŭra disvolviĝo. Hazarda celelekto povas elspezi penadon por malpli valoraj konstruaĵoj. Ĝiaj sojloj ne donas la detalan takson de kontraŭa batalforto de Maxima.\n\nEbla kontraŭludo: Atendu fruan atakon. Protektu nutraĵon kaj laboristojn, disputu vastigon kaj preparu vin por esploristaj atakoj se ĝi atingas altnivelan trejnadon.
 [AINicowar-Summary]
 Frua sturmo subtenata de kultivado, plibonigoj, defendo kaj esploristaj atakoj.
 [AINone-Profile]
@@ -1129,25 +1129,25 @@ Strategio: La AI donas neniujn ordonojn.\n\nFortoj: Antaŭvidebla, neaktiva kont
 [AINone-Summary]
 Neaktiva kolonio por eksperimentoj.
 [AINumbi-Profile]
-Kerna strategio: Unue konstruas nutraĵprovizon kaj loĝantaron, aldonas kuracadon, sciencon kaj trejnadon, poste transiras al milito. Ĝiaj ĉefaj fazoj antaŭeniras laŭ tempo anstataŭ laŭ la progreso de la kontraŭulo.\n\nEkonomio kaj disvolviĝo: Adaptas konstrubezonon al loĝantaro kaj taksas proksiman tritikon. Postaj fazoj aldonas plibonigojn, defendojn kaj vastigon por subteni la kreskantan armeon.\n\nAtako kaj defendo: Atakas kiam sufiĉe da sanaj batalantoj ekzistas aŭ tempolimo finiĝas. Metas militflagojn sur elektitajn malamikajn konstruaĵojn. Kiam ĝia batalforto tro malaltiĝas, forigas atakflagojn kaj altigas la sojlojn por alia provo.\n\nKompare kun aliaj AI: Pli antaŭvidebla ol Castor aŭ Nicowar. Castor pli zorge konsideras terenon kaj celvaloron; Nicowar premas multe pli frue.\n\nFortoj kaj malfortoj: Ampleksa subtena infrastrukturo povas fari ĝin danĝera post seninterrompa disvolviĝo, sed ĝia horaro eble ne kongruas kun la batalo. Simpla celelekto kaj pli longaj paŭzoj post perdoj faciligas antaŭvidi ĝiajn atakojn.\n\nEbla kontraŭludo: Premu antaŭ ĝia milita fazo. Disvolvu nutraĵon kaj trejnadon malantaŭ viaj atakoj kaj ekspluatu la paŭzon post venkita sturmo.\n\nEsplorado: Ĝia atakrutino rekte legas malamikajn konstrupoziciojn sen videbleca kontrolo.
+Kerna strategio: Unue konstruas nutraĵprovizon kaj loĝantaron, aldonas kuracadon, sciencon kaj trejnadon, poste transiras al milito. Ĝiaj ĉefaj fazoj antaŭeniras laŭ tempo anstataŭ laŭ la progreso de la kontraŭulo.\n\nEkonomio kaj disvolviĝo: Adaptas konstrubezonon al loĝantaro kaj taksas proksiman tritikon. Postaj fazoj aldonas plibonigojn, defendojn kaj vastigon por subteni la kreskantan armeon.\n\nAtako kaj defendo: Atakas kiam sufiĉe da sanaj batalantoj ekzistas aŭ tempolimo finiĝas. Metas militmarkilojn sur elektitajn malamikajn konstruaĵojn. Kiam ĝia batalforto tro malaltiĝas, forigas atakmarkilojn kaj altigas la sojlojn por alia provo.\n\nKompare kun aliaj AI: Pli antaŭvidebla ol Castor aŭ Nicowar. Castor pli zorge konsideras terenon kaj celvaloron; Nicowar premas multe pli frue.\n\nFortoj kaj malfortoj: Ampleksa subtena infrastrukturo povas fari ĝin danĝera post seninterrompa disvolviĝo, sed ĝia horaro eble ne kongruas kun la batalo. Simpla celelekto kaj pli longaj paŭzoj post perdoj faciligas antaŭvidi ĝiajn atakojn.\n\nEbla kontraŭludo: Premu antaŭ ĝia milita fazo. Disvolvu nutraĵon kaj trejnadon malantaŭ viaj atakoj kaj ekspluatu la paŭzon post venkita sturmo.\n\nEsplorado: Ĝia atakrutino rekte legas malamikajn konstrupoziciojn sen videbleca kontrolo.
 [AINumbi-Summary]
 Laŭgrade konstruas kolonion laŭ horaro, poste atakas nombre.
 [AIEcono-Profile]
-Kerna strategio: Produktas laboristojn kaj esploristojn, vastigas sian ekonomion kaj allogas malamikajn unuojn per nutraĵo kaj fruktoj. Ne havas kutiman militistan ofensivon.\n\nEkonomio kaj disvolviĝo: Konstruas manĝejojn kaj globulejojn apud tritiko, aldonas edukadon kaj movtrejnadon kaj plibonigas infrastrukturon. Spuras nutraĵprovizojn kaj anstataŭigas malnovajn manĝejojn kaj globulejojn kiam ilia rimeda situacio malboniĝas.\n\nKultivado kaj transfuĝo: Protektas renovigeblajn tritikon kaj lignon apud akvo. Sendas esploristojn al fruktejoj kaj malamikaj kolonioj kaj reklamas nutraĵon al malamikoj dum akirado de fruktoprovizo. Pli bona nutraĵo kaj fruktoj povas helpi allogi transfuĝantojn.\n\nKompare kun aliaj AI: La plej specialiĝinta ekonomia kontraŭulo. Cabino kaj Maxima ankaŭ akiras fruktojn, sed kombinas tion kun armeoj.\n\nFortoj kaj malfortoj: Povas kreski dum militaj kontraŭuloj elĉerpas sin, kun transfuĝo kiel alia konkurenca rimedo. Produktas neniujn militistojn por respondi al daŭra atako. Nutraĵo, fruktoj, geografio kaj venkoreguloj forte influas ĝiajn ŝancojn.\n\nEbla kontraŭludo: Premu senprotektan vastigon. Tenu viajn proprajn manĝejojn provizitaj per nutraĵo kaj fruktoj por reteni unuojn. Evitu elĉerpi vian kolonion per nenecesaj bataloj dum ĝi kreskas.
+Kerna strategio: Produktas laboristojn kaj esploristojn, vastigas sian ekonomion kaj allogas malamikajn globulojn per nutraĵo kaj fruktoj. Ne havas kutiman militistan ofensivon.\n\nEkonomio kaj disvolviĝo: Konstruas manĝejojn kaj globulejojn apud tritiko, aldonas edukadon kaj movtrejnadon kaj plibonigas infrastrukturon. Spuras nutraĵprovizojn kaj anstataŭigas malnovajn manĝejojn kaj globulejojn kiam ilia rimeda situacio malboniĝas.\n\nKultivado kaj transfuĝo: Protektas renovigeblajn tritikon kaj lignon apud akvo. Sendas esploristojn al fruktejoj kaj malamikaj kolonioj kaj reklamas nutraĵon al malamikoj dum akirado de fruktoprovizo. Pli bona nutraĵo kaj fruktoj povas helpi allogi transfuĝantojn.\n\nKompare kun aliaj AI: La plej specialiĝinta ekonomia kontraŭulo. Cabino kaj Maxima ankaŭ akiras fruktojn, sed kombinas tion kun armeoj.\n\nFortoj kaj malfortoj: Povas kreski dum militaj kontraŭuloj elĉerpas sin, kun transfuĝo kiel alia konkurenca rimedo. Produktas neniujn militistojn por respondi al daŭra atako. Nutraĵo, fruktoj, geografio kaj venkoreguloj forte influas ĝiajn ŝancojn.\n\nEbla kontraŭludo: Premu senprotektan vastigon. Tenu viajn proprajn manĝejojn provizitaj per nutraĵo kaj fruktoj por reteni globulojn. Evitu elĉerpi vian kolonion per nenecesaj bataloj dum ĝi kreskas.
 [AIEcono-Summary]
 Kreskigas nutraĵriĉan kolonion kaj konkurencas pri transfuĝantoj sen produkti militistojn.
 [AIWarrush-Profile]
-Kerna strategio: Atakas antaŭ ol kontraŭuloj finas longan ekonomian aŭ teknologian disvolviĝon. Atendas ke batalo decidu la ludon antaŭ ol granda subtena reto necesas.\n\nEkonomio kaj disvolviĝo: Kiam ses unuoj povas rikolti, agordas produktadon laŭ proporcio kvar laboristoj, unu esploristo kaj tri militistoj. Aldonas militistejojn kiam trejnado pleniĝas, sed limigas novajn manĝejojn. Libera konstrukapablo ofte iras al malsanejoj kaj movtrejnado.\n\nAtako kaj defendo: Markas malkovritajn malamikajn konstruaĵojn per gardareoj por ke militistoj konstante premu. Ne atendas zorge kunmetitan ondon. Forigas obstaklan lignon kaj protektas kelkajn renovigeblajn rimedojn.\n\nFruktopolitiko: Malpermesas fruktorikoltadon, evitante fruktorilatajn kirasajn punojn kaj rifuzante la transfuĝan strategion de Econo.\n\nKompare kun aliaj AI: Pli engaĝita al frua premo ol Numbi aŭ Castor. Nicowar ankaŭ komencas agreseme, sed daŭrigas per pli ampleksa pliboniga kaj taktika programo.\n\nFortoj kaj malfortoj: Punas malrapidajn komencojn kaj devigas fruajn defendajn elspezojn. Limigita sistema plibonigado kaj ŝparema nutraĵsubteno faras haltintan ofensivon multekosta. Tereno kaj longaj vojaĝoj povas erozii ĝian fruan avantaĝon.\n\nEbla kontraŭludo: Frue protektu manĝejojn kaj globulejojn. Anstataŭigu laboristojn same kiel defendantojn, disvolvu trejnadon, poste kontraŭataku kiam la sturmo perdas impeton.\n\nEsplorado: Komencaj esplorflagoj rekte uzas malamikajn startpoziciojn. Posta lokado de atakareoj postulas videblecon.
+Kerna strategio: Atakas antaŭ ol kontraŭuloj finas longan ekonomian aŭ teknologian disvolviĝon. Atendas ke batalo decidu la ludon antaŭ ol granda subtena reto necesas.\n\nEkonomio kaj disvolviĝo: Kiam ses globuloj povas rikolti, agordas produktadon laŭ proporcio kvar laboristoj, unu esploristo kaj tri militistoj. Aldonas militistejojn kiam trejnado pleniĝas, sed limigas novajn manĝejojn. Libera konstrukapablo ofte iras al malsanejoj kaj movtrejnado.\n\nAtako kaj defendo: Markas malkovritajn malamikajn konstruaĵojn per gardareoj por ke militistoj konstante premu. Ne atendas zorge kunmetitan ondon. Forigas obstaklan lignon kaj protektas kelkajn renovigeblajn rimedojn.\n\nFruktopolitiko: Malpermesas fruktorikoltadon, evitante fruktorilatajn kirasajn punojn kaj rifuzante la transfuĝan strategion de Econo.\n\nKompare kun aliaj AI: Pli engaĝita al frua premo ol Numbi aŭ Castor. Nicowar ankaŭ komencas agreseme, sed daŭrigas per pli ampleksa pliboniga kaj taktika programo.\n\nFortoj kaj malfortoj: Punas malrapidajn komencojn kaj devigas fruajn defendajn elspezojn. Limigita sistema plibonigado kaj ŝparema nutraĵsubteno faras haltintan ofensivon multekosta. Tereno kaj longaj vojaĝoj povas erozii ĝian fruan avantaĝon.\n\nEbla kontraŭludo: Frue protektu manĝejojn kaj globulejojn. Anstataŭigu laboristojn same kiel defendantojn, disvolvu trejnadon, poste kontraŭataku kiam la sturmo perdas impeton.\n\nEsplorado: Komencaj esplormarkiloj rekte uzas malamikajn startpoziciojn. Posta lokado de atakareoj postulas videblecon.
 [AIWarrush-Summary]
 Frua militista premo subtenata de intence ŝparema subtena ekonomio.
 [AICabino-Profile]
-Kerna strategio: Dividas unuoproduktadon inter konstruado, plibonigoj, defendo, atakoj kaj esplorado. Apartaj administrantoj petas kaj rezervas unuojn, disvolvante ekonomion kaj militistaron kune.\n\nEkonomio kaj disvolviĝo: Konstruas kaj plibonigas ampleksan setlejon, administras personaron de manĝejoj kaj turoj, malbaras konstruaĵajn ĉirkaŭaĵojn kaj protektas renovigeblajn rimedojn. Esploras fruktojn kaj reklamas nutraĵon por konkurenci pri transfuĝantoj.\n\nAtako kaj defendo: Elektas malamikon kaj prioritatas malsanejojn, poste manĝejojn, poste militistejojn. Subtenas ĝis kvar atakojn, kutime asignante ok ĝis dudek militistojn por ĉiu celo laŭ disponeblo kaj proksimaj malamikoj. Uzas apartajn defendajn flagojn ĉirkaŭ minacataj konstruaĵoj.\n\nTrejnado: Postulas sufiĉe da taŭgaj militistoj kaj finitan militistejon por ataki, sed ne atendas maksimuman teknologion. Daŭraj plibonigoj kaj trejnado fortigas postajn atakojn.\n\nKompare kun aliaj AI: Pli celkonscie malmuntas subtenajn konstruaĵojn ol Nicowar. Disigas atakojn pli ol la kolektitaj ondoj de Maxima, uzante unuorezervojn por administri konkurencajn bezonojn.\n\nFortoj kaj malfortoj: Kombinas kreskon, trejnadon, defendon kaj plurajn atakojn. Detruado de nutraĵo kaj kuracado povas malfortigi tutan kolonion. Hazarda kontraŭulelekto kaj fiksaj konstruprioritatoj povas maltrafi ŝancojn; pluraj atakoj povas dividi ĝian forton.\n\nEbla kontraŭludo: Defendu malsanejojn kaj manĝejojn. Disputu senprotektan vastigon kaj koncentru defendantojn kontraŭ unuopaj atakoj. Difektu nutraĵon aŭ trejnadon antaŭ ol ĝi povas subteni plurajn frontojn.\n\nEsplorado: Ĝia atakelektilo legas malamikajn konstrulistojn sen eksplicita videbleca kontrolo. Kelkaj ekonomiaj komparoj rekte uzas malamikajn statistikojn.
+Kerna strategio: Dividas globulproduktadon inter konstruado, plibonigoj, defendo, atakoj kaj esplorado. Apartaj administrantoj petas kaj rezervas globulojn, disvolvante ekonomion kaj militistaron kune.\n\nEkonomio kaj disvolviĝo: Konstruas kaj plibonigas ampleksan setlejon, administras personaron de manĝejoj kaj turoj, malbaras konstruaĵajn ĉirkaŭaĵojn kaj protektas renovigeblajn rimedojn. Esploras fruktojn kaj reklamas nutraĵon por konkurenci pri transfuĝantoj.\n\nAtako kaj defendo: Elektas malamikon kaj prioritatas malsanejojn, poste manĝejojn, poste militistejojn. Subtenas ĝis kvar atakojn, kutime asignante ok ĝis dudek militistojn por ĉiu celo laŭ disponeblo kaj proksimaj malamikoj. Uzas apartajn defendajn markilojn ĉirkaŭ minacataj konstruaĵoj.\n\nTrejnado: Postulas sufiĉe da taŭgaj militistoj kaj finitan militistejon por ataki, sed ne atendas maksimuman teknologion. Daŭraj plibonigoj kaj trejnado fortigas postajn atakojn.\n\nKompare kun aliaj AI: Pli celkonscie malmuntas subtenajn konstruaĵojn ol Nicowar. Disigas atakojn pli ol la kolektitaj ondoj de Maxima, uzante globulrezervojn por administri konkurencajn bezonojn.\n\nFortoj kaj malfortoj: Kombinas kreskon, trejnadon, defendon kaj plurajn atakojn. Detruado de nutraĵo kaj kuracado povas malfortigi tutan kolonion. Hazarda kontraŭulelekto kaj fiksaj konstruprioritatoj povas maltrafi ŝancojn; pluraj atakoj povas dividi ĝian forton.\n\nEbla kontraŭludo: Defendu malsanejojn kaj manĝejojn. Disputu senprotektan vastigon kaj koncentru defendantojn kontraŭ unuopaj atakoj. Difektu nutraĵon aŭ trejnadon antaŭ ol ĝi povas subteni plurajn frontojn.\n\nEsplorado: Ĝia atakelektilo legas malamikajn konstrulistojn sen eksplicita videbleca kontrolo. Kelkaj ekonomiaj komparoj rekte uzas malamikajn statistikojn.
 [AICabino-Summary]
 Kunordigas kolonian kreskon kaj trejnitajn atakojn, celante kuracadon kaj nutraĵon unue.
 [Algae]
-algo
+Algoj
 [Beach size]
-Grandeco de la plaĝo
+Grandeco de strando
 [Blue]
 Blua
 [Brown]
@@ -1163,7 +1163,7 @@ Kolonio
 [Concrete islands]
 Apartaj insuloj
 [Conquest only]
-Konkero nur
+Nur konkero
 [Conquest or prestige]
 Konkero aŭ prestiĝo
 [Could not launch this map. Your setup is retained; try again.]
@@ -1191,11 +1191,11 @@ Ekstraj insuloj
 [Fruit]
 Frukto
 [Game Rules]
-Ludaj Reguloj
+Ludaj reguloj
 [Game speed]
-Ludrapideco
+Ludrapido
 [Generate & play]
-Generu kaj ludu
+Generi kaj ludi
 [Give at least one terrain type a nonzero weight.]
 Donu almenaŭ al unu terentipo nenulan pezon.
 [Grass weight]
@@ -1221,7 +1221,7 @@ Laga denseco
 [Landscape]
 Pejzaĝo
 [Last colony standing]
-Lasta kolonio staranta
+Lasta pluvivanta kolonio
 [Layout]
 Aranĝo
 [Magenta]
@@ -1237,9 +1237,9 @@ Meza - Eksperimenta
 [No AI orders]
 Neniuj AI-komandoj
 [Old islands]
-Kruta Insularo
+Kruta insularo
 [Old random]
-Fragmentita Marbordo
+Fragmentita marbordo
 [Open at least one colony to start a match.]
 Malfermu almenaŭ unu kolonion por komenci matĉon.
 [Open book]
@@ -1247,19 +1247,19 @@ Malkaŝita mondo
 [Pink]
 Rozkolora
 [Play this map]
-Ludu ĉi tiun mapon
+Ludi ĉi tiun mapon
 [Players & Teams]
-Ludantoj kaj Teamoj
+Ludantoj kaj teamoj
 [Premade maps]
 Antaŭfaritaj mapoj
 [Preview ready. Start plays this exact map.]
-Antaŭrigardo preta. Komenci la ludon uzas ĉi tiun precizan mapon.
+Antaŭrigardo preta. Komenci ludas ĝuste ĉi tiun mapon.
 [Regenerate all]
 Regeneri ĉion
 [Generating preview...]
-Kreante antaŭprezenton...
+Generante antaŭrigardon...
 [Preview unavailable]
-Antaŭprezento ne disponebla
+Antaŭrigardo ne disponeblas
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Ĉiu pejzaĝo estas montrata kiel vera mapo laŭ via nuna grandeco kaj nombro de kolonioj. Elektu unu por ludi la montritan mapon.
 [Purple]
@@ -1271,7 +1271,7 @@ Hazarda mapo
 [Red]
 Ruĝa
 [Repeat landscape]
-Ripetu pejzaĝon
+Ripeti pejzaĝon
 [Resources]
 Rimedoj
 [River]
@@ -1285,15 +1285,15 @@ Elektu validan mapon.
 [Shared control needs a free controller slot (maximum %0).]
 Komuna regado bezonas liberan lokon por homa aŭ AI-ludanto (maksimume %0).
 [Smoothing]
-Glatigado
+Glatigo
 [Standard]
 Norma
 [Start game]
-Komencu ludon
+Komenci ludon
 [Starting workers]
 Komencaj laboristoj
 [Starting workers: Game Rules tab.]
-Komencaj laboristoj: langeto de Ludaj Reguloj.
+Komencaj laboristoj: langeto Ludaj reguloj.
 [Swamp]
 Marĉo
 [Team]
@@ -1303,7 +1303,7 @@ Tereno
 [Victory]
 Venko
 [Watch game]
-Rigardu ludon
+Rigardi ludon
 [Water weight]
 Akva pezo
 [White]
@@ -1335,19 +1335,19 @@ Elektu ĉu teamoj povas ŝanĝiĝi dum la matĉo.
 [Classic colony building]
 Tradicia kolonia evoluo
 [Dimensions and colony count are set above.]
-Dimensioj kaj kolonikalkulo estas fiksitaj supre.
+Grandeco kaj nombro de kolonioj estas agordataj supre.
 [Generate & watch]
-Generu kaj spektu
+Generi kaj spekti
 [Info]
-Info
+Informoj
 [Map-defined starting units]
-Map-difinitaj startunuoj
+Komencaj globuloj laŭ la mapo
 [No maps in this library.]
 Neniuj mapoj en ĉi tiu biblioteko.
 [Premade maps retain their authored starting units.]
-Antaŭfaritaj mapoj konservas la komencajn unuojn elektitajn de sia aŭtoro.
+Antaŭfaritaj mapoj konservas la komencajn globulojn elektitajn de sia aŭtoro.
 [Start with terrain known]
-Komencu kun tereno konata
+Komenci kun konata tereno
 [This colony will not join the match.]
 Ĉi tiu kolonio ne aliĝos al la matĉo.
 [This landscape uses a fixed terrain recipe.]
@@ -1361,7 +1361,7 @@ Vi regas ĉi tiun kolonion.
 [controllers]
 homaj kaj AI-ludantoj
 [Use]
-Elektu
+Uzi
 [Lime]
 Limetverda
 [Teal]
@@ -1369,15 +1369,15 @@ Bluverda
 [Azure]
 Ĉielbluo
 [Updating map preview...]
-Ĝisdatigante mapantaŭprezenton...
+Ĝisdatigante la antaŭrigardon de la mapo...
 [Generation failed. Adjust settings or press Start to retry.]
-Generado malsukcesis. Ŝanĝu la agordojn aŭ premu Komencu por reprovi.
+Generado malsukcesis. Ŝanĝu la agordojn aŭ premu Komenci por reprovi.
 [Preview unavailable. Adjust settings or start to retry.]
 Antaŭrigardo nedisponebla. Ŝanĝu la agordojn aŭ lanĉu la ludon por provi denove.
 [automatic torus view]
 Aŭtomata tora vido
 [toggle torus view]
-Ŝalti inter 2D kaj tora vido
+Ŝanĝi inter 2D kaj tora vido
 [2 vs 2 needs four open colonies. You vs all needs a human.]
 2 kontraŭ 2 bezonas kvar malfermitajn koloniojn. Vi kontraŭ ĉiuj bezonas homan ludanton.
 [Alliance]
@@ -1385,13 +1385,13 @@ Alianco
 [Choose a rule to change it.]
 Elektu regulon por ŝanĝi ĝin.
 [Conquest only removes prestige victory; map scripts still apply.]
-Konker-nur-venko malfunkciigas prestiĝan venkon; mapskriptoj ankoraŭ validas.
+«Nur konkero» forigas prestiĝan venkon; mapskriptoj ankoraŭ validas.
 [Control]
 Kolonia kontrolo
 [Controller]
 Regata de
 [Generate preview]
-Generu antaŭrigardon
+Generi antaŭrigardon
 [Generation failed. Adjust settings or try again.]
 Generado malsukcesis. Ŝanĝu la agordojn aŭ provu denove.
 [Map settings changed. Generate a new preview or start.]
@@ -1399,17 +1399,17 @@ Mapo-agordoj ŝanĝitaj. Generu novan antaŭrigardon aŭ komencu.
 [Map source]
 Mapfonto
 [Map-defined]
-Map-difinita
+Laŭ la mapo
 [Match format]
-Ludformato
+Matĉoformato
 [No current preview]
-Neniu aktuala antaŭvido
+Neniu aktuala antaŭrigardo
 [Quick clash: 2x speed; generated maps start with 8 workers.]
 Rapida batalo: duobla rapido; generitaj mapoj komenciĝas per 8 laboristoj.
 [Reroll]
 Generu alian mapon
 [Randomize]
-Generu hazarde
+Hazardigi
 [Reset to defaults]
 Restarigi defaŭltajn valorojn
 [Ruleset]
@@ -1421,7 +1421,7 @@ La komenca nombro da laboristoj validas nur por generitaj mapoj.
 [Unavailable]
 Nedisponebla
 [Use selection]
-Uzu elekton
+Uzi elekton
 [Quick clash on premade maps: only speed changes (2x).]
 Rapida batalo sur antaŭfaritaj mapoj: nur la rapideco ŝanĝiĝas (duobla rapideco).
 [Generate a preview to explore this world.]
@@ -1435,7 +1435,7 @@ Aldoni klavon al la sinsekvo
 [settings Add shortcut]
 Aldoni ŝparvojon
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Alĝustigu la nombron de asignitaj unuoj per la musrado. Kiam la opcio estas malŝaltita, tenu Ctrl. Tenu Shift por alĝustigi la flagradiuson. Ĉi tiu opcio ankaŭ regas la musradon en aliaj menuoj.
+Alĝustigu la nombron de asignitaj globuloj per la musrado. Kiam la opcio estas malŝaltita, tenu Ctrl. Tenu Shift por alĝustigi la radiuson de markiloj. Ĉi tiu opcio ankaŭ regas la musradon en aliaj menuoj.
 [settings Adjust music and voice volume.]
 Alĝustigu la laŭtecon de muziko kaj voĉo.
 [settings Adjust the pace of play.]
@@ -1459,7 +1459,7 @@ Nuligi
 [settings Changes you make during play update these defaults for future games.]
 Ŝanĝoj faritaj dum ludado ĝisdatigas ĉi tiujn defaŭltajn agordojn por estontaj ludoj.
 [settings Changing the renderer requires a restart.]
-Ŝanĝi la bildilon postulas rekomencon.
+Ŝanĝi la bildigilon postulas restartigon.
 [settings Choose a binding to change it, or add another shortcut for an action.]
 Elektu klavaran ŝparvojon por redakti ĝin, aŭ aldonu alian ŝparvojon por ago.
 [settings Choose a window or fill the screen.]
@@ -1479,13 +1479,13 @@ Ne eblis konservi
 [settings Current display]
 Nunaj ekranagordoj
 [settings Default]
-Defaŭlte
+Defaŭlta
 [settings Display]
-Vidaĵo
+Ekrano
 [settings Display & graphics]
 Montriĝo kaj grafikaĵoj
 [settings Display the Globulation 2 cursor.]
-Montru la kursoron de Globulation 2.
+Montri la kursoron de Globulation 2.
 [settings Done]
 Farita
 [settings Edit shortcut]
@@ -1493,7 +1493,7 @@ Redakti klavaran ŝparvojon
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
 Multipliku la ekranan skalon de la operaciumo por menuoj, teksto kaj la flanka panelo.
 [settings Flags]
-Flagoj
+Markiloj
 [settings Full]
 Plenaj detaloj
 [settings Fullscreen]
@@ -1535,7 +1535,7 @@ Kiel la labortablo
 [settings Missing font]
 Mankas tiparo
 [settings Music volume]
-Laŭteco de Muziko
+Laŭteco de muziko
 [settings Mute audio]
 Silentigi sonon
 [settings Name shown to other players.]
@@ -1561,13 +1561,13 @@ Reduktitaj detaloj malŝaltas nubojn kaj iliajn ombrojn, simpligas magiajn efiko
 [settings Release]
 Ĉe malpremo
 [settings Remember assignments between games]
-Memori asignojn de unuoj inter ludoj
+Memori asignojn de globuloj inter ludoj
 [settings Remove key]
 Forigi klavon
 [settings Remove shortcut]
 Forigi ŝparvojon
 [settings Renderer]
-Grafika bildilo
+Bildigilo
 [settings Replace conflicting bindings]
 Anstataŭigi konfliktajn klavarajn ŝparvojojn
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
@@ -1585,23 +1585,23 @@ Restarigo post
 [settings Save shortcut]
 Konservi klavaran ŝparvojon
 [settings Saved — restart required]
-Konservite — necesas rekomenco
+Konservite — necesas restartigo
 [settings Saving…]
 Konservante…
 [settings Scroll wheel enabled]
-Ebligi Musradon
+Ebligi musradon
 [settings Set starting unit assignments by building type and level.]
-Agordu la komencan nombron de asignitaj unuoj laŭ konstruaĵa tipo kaj nivelo.
+Agordu la komencan nombron de asignitaj globuloj laŭ konstruaĵa tipo kaj nivelo.
 [settings Set your language and player name.]
 Agordu vian lingvon kaj ludantonomon.
 [settings Settings]
-Elektaĵoj
+Agordoj
 [settings Single-player and replays only. Multiplayer runs at 1x.]
 Nur por unuludantaj ludoj kaj reludoj. Plurludantaj ludoj funkcias je 1x.
 [settings Software]
 Programara bildigo
 [settings Starting unit counts and radius for newly placed flags.]
-Komenca nombro de unuoj kaj radiuso por nove metitaj flagoj.
+Komenca nombro de globuloj kaj radiuso por nove metitaj markiloj.
 [settings This shortcut conflicts with existing bindings:]
 Ĉi tiu klavara ŝparvojo konfliktas kun ekzistantaj ŝparvojoj:
 [settings Trigger]
@@ -1609,11 +1609,11 @@ Aktiviga evento
 [settings Unbound]
 Neniu ŝparvojo asignita
 [settings Unit counts assigned to new construction sites.]
-Nombro de unuoj asignitaj al novaj konstruejoj.
+Nombro de globuloj asignitaj al novaj konstruejoj.
 [settings Unit counts for completed buildings.]
-Nombro de unuoj asignitaj al finitaj konstruaĵoj.
+Nombro de globuloj asignitaj al finitaj konstruaĵoj.
 [settings Unit counts while a building is being upgraded.]
-Nombro de unuoj asignitaj al konstruaĵo dum ĝia plibonigo.
+Nombro de globuloj asignitaj al konstruaĵo dum ĝia plibonigo.
 [settings Units]
 Globuloj
 [settings Upgrades]
@@ -1621,7 +1621,7 @@ Plibonigoj de konstruaĵoj
 [settings Use game cursor]
 Uzi ludkursoron
 [settings Voice volume]
-Laŭteco de Voĉo
+Laŭteco de voĉo
 [settings Window mode]
 Fenestra reĝimo
 [settings Window-only sizes also switch the game to windowed mode.]
@@ -1633,7 +1633,7 @@ Nur fenestra
 [settings seconds]
 sekundoj
 [settings Flag]
-Flago
+Markilo
 [settings High-resolution artwork]
 Alt-rezoluciaj bildoj
 [settings Apply artwork on the next game or editor load (OpenGL).]
@@ -2055,7 +2055,7 @@ Trenu por movi; rulumu por zomi.
 [Map preview loading]
 Ŝargante...
 [Map preview failed]
-Antaŭvido malsukcesis
+Antaŭrigardo malsukcesis
 [Map preview retry]
 Alklaku por reprovi
 [Map preview please wait]
@@ -2085,11 +2085,11 @@ Ricevita damaĝo
 [Stats HP restored]
 Restarigita sano
 [Stats since tick]
-Ekde paŝo
+Ekde takto
 [Stats combat deaths]
 Batalo
 [Stats clearing deaths]
-Vundo dum purigado
+Vundo dum viŝado
 [Stats trapped deaths]
 Kaptitaj
 [Stats unknown deaths]
@@ -2117,7 +2117,7 @@ Konstruejoj kompletiĝas tuj, preterlasante la liveradon.
 [No growth]
 Neniu kresko
 [Units get hungry]
-Unuoj malsatiĝas
+Globuloj malsatiĝas
 [No hunger]
 Neniu malsato
 [Scarce (2x slower)]
@@ -2127,11 +2127,11 @@ Tre malabunda (4x pli malrapida)
 [Extremely scarce (8x slower)]
 Ekstreme malabunda (8x pli malrapida)
 [Small (+50 each)]
-Malgranda (+50 ĉiu)
+Malgranda (po +50)
 [Medium (+150 each)]
-Meza (+150 ĉiu)
+Meza (po +150)
 [Large (+300 each)]
-Granda (+300 ĉiu)
+Granda (po +300)
 [No resource growth]
 Neniu rimedkresko
 [Economy]
@@ -2139,7 +2139,7 @@ Ekonomio
 [Instant construction]
 Tuja konstruado
 [Higher tiers give every building much more HP.]
-Pli altaj niveloj donas multe pli da VPo al ĉiu konstruaĵo.
+Pli altaj niveloj donas multe pli da vivpoentoj al ĉiu konstruaĵo.
 [Starting units spawn already leveled up. Changes the generated map.]
 Komencaj globuloj aperas jam altnivelaj. Ŝanĝas la generitan mapon.
 [No upgrades]
@@ -2165,7 +2165,7 @@ Batalo
 [Glass cannon]
 Vitra kanono
 [Match ends at the timer; highest prestige at that instant wins.]
-La ludo finiĝas ĉe la kronometro; venkas tiu, kiu havas la plej altan prestiĝon je tiu momento.
+La matĉo finiĝas kiam la templimo pasas; venkas tiu, kiu havas la plej altan prestiĝon en tiu momento.
 [Off (no timer)]
 Malŝaltita (neniu kronometro)
 [90 minutes]
@@ -2203,11 +2203,11 @@ Rimedoj + <=16
 [Stats growth near 32]
 Rimedoj + <=32
 [Stats low HP 25]
-VPo <=25%
+VP <=25%
 [Stats low HP 50]
-VPo <=50%
+VP <=50%
 [Stats low HP 75]
-VPo <=75%
+VP <=75%
 [Stats low food 25]
 Nutraĵo <=25%
 [Stats low food 50]
@@ -2219,11 +2219,11 @@ Globuloj S
 [Stats structural buildings]
 Konstruaĵoj S
 [Stats low HP ranges]
-VPo: <=25/50/75%
+VP: <=25/50/75%
 [Stats low food ranges]
 Nutraĵo: <=25/50/75%
 [Emoji]
-Emoji
+Emoĝioj
 [Emoji character]
 Emoĝia signo
 [Smiley]
@@ -2321,7 +2321,7 @@ La Glaciso
 [Allotments]
 Ĝardenparceloj
 [Caravanserai]
-Karavanejo
+Karavanserajo
 [Mixed]
 Miksita
 [Fort size]
@@ -2335,7 +2335,7 @@ Kvinpinta
 [Six-pointed]
 Sespinta
 [Glacis width]
-Larĝo de glacio
+Larĝo de glaciso
 [Gates]
 Pordegoj
 [Site size]
@@ -2457,7 +2457,7 @@ Monteta radiuso
 [Contour band width]
 Larĝo de nivelaj bendoj
 [Stairs per hill]
-Ŝtuparoj por monteto
+Ŝtuparoj po monteto
 [Valley river]
 Vala rivero
 [Hills]
@@ -2761,13 +2761,13 @@ Larĝo de la arbaretoj
 [Fertility]
 Fekundeco
 [Deposits]
-Rezervoj
+Kuŝejoj
 [Room]
 Spaco
 [Isolation]
 Izoliteco
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-La komenco de ĉiu kolonio estas mezurata sur la finita mapo: la vojo al tritiko kaj al ligno, kiel bone ĝia tero rekreskas, la rezervoj kaj konstruejoj atingeblaj, kaj ĝia distanco de rivaloj. Ĉiu faktoro ricevas poenton de 0 ĝis 1 kontraŭ fiksa mezurilo, la sumo pezas ilin, la justeco estas la sumo de la plej malbona kolonio dividita per tiu de la plej bona, kaj la poentaro estas la plej malbona sumo multiplikita per la justeco.
+La komenco de ĉiu kolonio estas mezurata sur la finita mapo: la vojo al tritiko kaj al ligno, kiel bone ĝia tero rekreskas, la atingeblaj kuŝejoj kaj konstruejoj, kaj ĝia distanco de rivaloj. Ĉiu faktoro ricevas poenton de 0 ĝis 1 kontraŭ fiksa mezurilo, la sumo pezas ilin, la justeco estas la sumo de la plej malbona kolonio dividita per tiu de la plej bona, kaj la poentaro estas la plej malbona sumo multiplikita per la justeco.
 [ERROR_CANT_SAVE_MAP]
 La mapo ne povis esti konservita. Kontrolu la celon kaj la disponeblan spacon. Viaj redaktoj ankoraŭ estas malfermitaj.
 [Loading headers]
@@ -2787,7 +2787,7 @@ Generante mapon...
 [ERROR_CANT_GENERATE_MAP]
 La mapo ne povis esti generita. Provu aliajn generajn agordojn.
 [Loading units]
-Ŝargante unuojn...
+Ŝargante globulojn...
 [Loading buildings]
 Ŝargante konstruaĵojn...
 [Resolving team links]
@@ -2865,17 +2865,17 @@ Iloj
 [Pan map]
 Movi mapon
 [Edit map]
-Redakti Karton
+Redakti mapon
 [Editor map]
 Mapo
 [Flags]
-Flagoj
+Markiloj
 [Pause]
 Paŭzo
 [Speed]
 Rapido
 [Objectives]
-Celtabulo
+Celoj
 [Menu]
 Menuo
 [Goals]
@@ -2887,7 +2887,7 @@ Uzi ĉi tiun pejzaĝon
 [Reset]
 Restarigi
 [Generating...]
-Generado...
+Generante...
 [Players]
 Ludantoj
 [Rules]
@@ -2897,7 +2897,7 @@ Interfaca aranĝo
 [settings Automatic]
 Aŭtomata
 [settings Compact]
-Proksimaj
+Kompakta
 [settings Spacious]
 Vasta
 [More]
@@ -2919,13 +2919,13 @@ Kontribuo
 [Choose who controls this colony]
 Elektu, kiu regas ĉi tiun kolonion
 [Settings]
-Elektaĵoj
+Agordoj
 [settings Back]
 Reen
 [settings Save the game automatically about every minute.]
 Aŭtomate konservi la ludon proksimume ĉiun minuton.
 [AI opponents]
-Komputilaj kontraŭuloj
+AI-kontraŭuloj
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.
 [settings One-finger zoom]
@@ -2967,7 +2967,7 @@ Via kolonio
 [%0 / %1 HP · %2]
 %0 / %1 VP · %2
 [Units: %0]
-Unuoj: %0
+Globuloj: %0
 [Buildings: %0]
 Konstruaĵoj: %0
 [Need food: %0]
@@ -3013,9 +3013,9 @@ Alianco kaj komuna vidado estas fiksitaj por ĉi tiu ludo.
 [Share vision]
 Kunhavigi vidon
 [Share food vision]
-Kunhavigi manĝovidon
+Kunhavigi vidon de manĝejoj
 [Share market vision]
-Kunhavigi merkatvidon
+Kunhavigi vidon de komercejoj
 [Chat]
 Babilado
 [No other players have editable diplomatic settings in this match.]
@@ -3049,7 +3049,7 @@ Lasu sur valida tereno por loki
 [Paint on the map; two fingers move]
 Pentru sur la mapo; movu per du fingroj
 [Tutorial ▸]
-Instruilo ▸
+Lernludo ▸
 [Back to tools]
 Reen al iloj
 [Starvation overlay]
@@ -3061,7 +3061,7 @@ Defenda tavolo
 [Fertility overlay]
 Fekundeca tavolo
 [Health and food bars]
-Sanaj kaj manĝaj bretoj
+Stangoj de sano kaj nutraĵo
 [Message history]
 Mesaĝhistorio
 [Mark map for allies]
@@ -3187,7 +3187,7 @@ Kolonio %0
 [Min required level %0]
 Minimuma bezonata nivelo: %0
 [Confirm %0]
-Bone!: %0
+Bone: %0
 [%0 %1]
 %0 %1
 [resume game]
@@ -3235,1419 +3235,1419 @@ Inercio de listoj
 [List bounce]
 Resalto de listoj
 [lan pairing field]
-
+Parigokodo de gastiganto (aŭ fidinda WSS-URL)
 [lan pairing connect]
-
+Parigi kaj konekti
 [lan discovery instructions]
-
+Elektu gastiganton, poste algluu ĝian parigokodon por kontroli ĝian identecon.
 [lan discovery unavailable]
-
+LAN-serĉado ne disponeblas. Kontrolu la permeson por loka reto aŭ algluu parigokodon de gastiganto.
 [lan discovered host %0]
-
+Trovita gastiganto %0 — parigu por vidi ludojn
 [lan connection unavailable]
-
+Ne eblas atingi la LAN-gastiganton. Kontrolu la permeson por loka reto kaj la parigokodon de la gastiganto.
 [lan connection verification failed %0]
-
+Ne eblas kontroli aŭ konektiĝi al la LAN-gastiganto: %0
 [lan lobby endpoint required]
-
+Uzu la vestiblan finpunkton de la gastiganto
 [settings Artwork]
-
+Artaĵoj
 [settings Original]
-
+Originalaj
 [settings High resolution]
-
+Alta rezolucio
 [settings Clouds]
-
+Nuboj
 [settings Show cloud cover above the map.]
-
+Montri nubaron super la mapo.
 [settings Cloud shadows]
-
+Nubaj ombroj
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Montri nubajn ombrojn sur la tero sendepende de la nubaro.
 [settings Building particles]
-
+Konstruaĵaj partikloj
 [settings Show smoke and other building particles.]
-
+Montri fumon kaj aliajn partiklojn de konstruaĵoj.
 [settings Magic effects]
-
+Magiaj efikoj
 [settings Choose animated magic effects or a simple visible effect.]
-
+Elektu animaciajn magiajn efikojn aŭ simplan videblan efikon.
 [settings Simple]
-
+Simplaj
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Bezonas la OpenGL-bildigilon. Via konservita elekto restas.
 [settings Interface appearance]
-
+Aspekto de la interfaco
 [settings Panels]
-
+Paneloj
 [settings Choose translucent or opaque interface panels.]
-
+Elektu travideblajn aŭ opakajn interfacajn panelojn.
 [settings Opaque]
-
+Opakaj
 [settings Translucent]
-
+Travideblaj
 [settings Advanced graphics]
-
+Altnivela grafiko
 [settings Path lines]
-
+Vojlinioj
 [settings Choose translucent or opaque unit path lines.]
-
+Elektu travideblajn aŭ opakajn vojliniojn de globuloj.
 [settings Smooth progress indicators]
-
+Glataj progresindikiloj
 [settings Smooth the moving edges of progress indicators.]
-
+Glatigi la moviĝantajn randojn de progresindikiloj.
 [settings Decorative interface animation]
-
+Ornama interfaca animacio
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animacii la venkan grafikaĵon. Malpliigita movado ankaŭ malŝaltas ĉi tiun animacion.
 [settings Smooth unit motion]
-
+Glata movado de globuloj
 [settings Experimental: move and animate units between game ticks.]
-
+Eksperimente: movi kaj animacii globulojn inter ludaj taktoj.
 [settings Smooth fog of war]
-
+Glata milita nebulo
 [settings Fade the map into and out of the fog of war gradually.]
-
+Iom post iom kaŝi kaj malkaŝi la mapon en la milita nebulo.
 [settings Adaptive zoom detail]
-
+Adapta detaleco laŭ zomo
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Simpligi stangojn, zonojn, terenon kaj globulojn kiam la mapo malzomiĝas, kaj teni ilin malgrandaj kiam zomite.
 [settings Text size]
-
+Tekstogrando
 [settings Enlarge interface text without changing the map scale.]
-
+Pligrandigi la interfacan tekston sen ŝanĝi la skalon de la mapo.
 [Map momentum]
 Inercio de la mapo
 [turn reconnecting]
-
+Konekto al la gastiganto perdiĝis. Rekonektante...
 [turn waiting for players]
-
+Atendante, ke ĉiuj ludantoj ŝargu...
 [turn rejoining]
-
+Realiĝante al la ludo...
 [turn catching up %0]
-
+Atingante: %0 vicoj malantaŭe
 [turn player reconnecting %0]
-
+%0 rekonektiĝas...
 [turn player lagging %0]
-
+%0 malfruas
 [turn player resyncing %0]
-
+%0 atingas la aliajn
 [turn player not connected %0]
-
+%0 ankoraŭ ne konektiĝis
 [lan host left]
-
+La gastiganto forlasis la ludon.
 [lan host lost]
-
+La konekto al la gastiganto perdiĝis.
 [lan version mismatch %0]
-
+La gastiganto uzas alian version de Globulation 2 (%0).
 [lan cannot host %0]
-
+Ne eblas gastigi LAN-ludon: %0
 [play online]
-
+Ludi rete
 [Use in room]
-
+Uzi en ĉambro
 [conn ai]
-
+AI
 [conn behind %0]
-
+Malfruo %0
 [conn behind explanation %0 %1]
-
+Malfruo: kiom la ludo de ludanto postiĝas al la matĉa horloĝo; ĝi inkluzivas ties prokraston. Sub %0 estas normale; ekde %1 la ludanto estas markita malrapida.
 [conn behind]
-
+Malfruo
 [conn card catching up]
-
+Atingante
 [conn card colony works]
-
+Via kolonio plu laboras memstare: globuloj finas siajn taskojn kaj konstruaĵoj plu funkcias.
 [conn card desync detail]
-
+Realiĝante el la matĉa registro, por ke vi vidu tion, kion ĉiuj aliaj vidas. Raporto estis sendita aŭtomate.
 [conn card desync]
-
+Via ludo malsinkroniĝis
 [conn card grace %0]
-
+Via kolonio plu laboras memstare: globuloj finas siajn taskojn kaj konstruaĵoj plu funkcias. Vi havas %0 por reveni antaŭ ol vi estos forigita el la matĉo.
 [conn card input paused]
-
+Vi atingas la aliajn · enigo paŭzigita
 [conn card lost]
-
+Konekto perdiĝis
 [conn card progress %0 %1 %2]
-
+%0 % · %1 el %2 taktoj
 [conn card reconnecting %0]
-
+Rekonektante al la matĉo… provo %0
 [conn card replaying %0]
-
+Reludante la maltrafitan tempon (%0). La ekrano ĝisdatiĝos kiam vi revenos al la nuno.
 [conn card seconds left %0]
-
+ĉirkaŭ %0 s restas
 [conn connections]
-
+Konektoj
 [conn connection]
-
+Konekto
 [conn delay explanation %0 %1]
-
+Prokrasto: la tempo de via klako ĝis ĝi okazas, por ĉiuj. Ĝi dependas de via propra konekto, ne de tiu de la aliaj ludantoj. Bona sub %0, malbona ekde %1.
 [conn fair]
-
+Akceptebla
 [conn good]
-
+Bona
 [conn grid legend]
-
+Kun pli ol kvar ludantoj la panelo montras la pingon de ĉiu ludanto en milisekundoj, aŭ kiom da sekundoj ili malfruas.
 [conn jitter %0]
-
+fluktuo %0
 [conn leave match]
-
+Forlasi matĉon
 [conn left]
-
+Foriris
 [conn notice back %0]
-
+%0 revenis.
 [conn notice left %0]
-
+%0 forlasis la matĉon.
 [conn notice lost %0 %1]
-
+%0 perdis la konekton. La ludo daŭras; ties kolonio plu laboras dum la rekonektado (restas %1).
 [conn ping explanation %0 %1]
-
+Pingo: la irotempo inter ludanto kaj la relajso. Bona sub %0, malbona ekde %1.
 [conn ping]
-
+Pingo
 [conn players]
-
+Ludantoj
 [conn poor]
-
+Malbona
 [conn reconnecting]
-
+Rekonektante
 [conn relay %0]
-
+Relajso: %0
 [conn resyncing]
-
+Realiĝante
 [conn slow]
-
+Malrapida
 [conn unstable]
-
+malstabila
 [conn waiting]
-
+Konektante…
 [conn you %0]
-
+%0 (vi)
 [conn you]
-
+Vi
 [conn your delay %0]
-
+Via prokrasto %0
 [hub account menu]
-
+Konto
 [hub ai joins after %0]
-
+AI aliĝos post %0
 [hub all rooms]
-
+Ĉiuj
 [hub browse maps]
-
+Foliumi mapojn
 [hub cant reach %0]
-
+Ne eblas atingi %0.
 [hub change server]
-
+Ŝanĝi servilon…
 [hub check code]
-
+Kiam ĝi petos kodon, enigu ĉi tiun:
 [hub code placeholder]
-
+Kodo aŭ invita ligilo
 [hub connecting to %0]
-
+%0 · konektante…
 [hub continue with %0]
-
+Daŭrigi per %0
 [hub create room]
-
+Krei ĉambron
 [hub find match]
-
+Trovi matĉon
 [hub finish in browser]
-
+Finu la ensaluton en la paĝo, kiu malfermiĝis en via retumilo.
 [hub free seat]
-
+Libera loko
 [hub get update]
-
+Akiri la ĝisdatigon
 [hub guest kept on device]
-
+Gasto · konservita en ĉi tiu aparato
 [hub invalid code]
-
+Tio ne estas invita kodo aŭ ligilo.
 [hub join by code]
-
+Aliĝi per kodo
 [hub join code]
-
+Aliĝkodo
 [hub join]
-
+Aliĝi
 [hub leaderboard]
-
+Rangotabelo
 [hub linked %0]
-
+Ligitaj kontoj · %0
 [hub linked accounts]
-
+Ligitaj kontoj
 [hub maps]
-
+Mapoj
 [hub no queues]
-
+Ĉi tiu servilo ne havas vicojn por rapida matĉo.
 [hub no rooms]
-
+Nun ne estas malfermitaj ĉambroj. Kreu unu kaj dividu la inviton.
 [hub offline at %0]
-
+%0 · eksterrete
 [hub offline detail %0]
-
+Reprovo post %0 s. Rapida matĉo kaj retaj ĉambroj ne disponeblas. LAN-ludo en la ĉefmenuo ne bezonas ĉi tiun servilon.
 [hub online at %0]
-
+%0 · enrete
 [hub online settings]
-
+Retaj agordoj
 [hub online]
-
+Rete
 [hub open page again]
-
+Malfermi la paĝon denove
 [hub open rooms]
-
+Malfermitaj ĉambroj
 [hub page opened at %0]
-
+Malfermis %0. Nenion necesas tajpi en la ludo; ĝi mem ensalutigas vin.
 [hub queues unavailable]
-
+Rapida matĉo aperos kiam la servilo respondos.
 [hub quick match unavailable]
-
+Rapida matĉo ankoraŭ ne disponeblas en ĉi tiu versio.
 [hub quick match]
-
+Rapida matĉo
 [hub ranked]
-
+Rangigita
 [hub recent matches]
-
+Lastaj matĉoj
 [hub refresh]
-
+Aktualigi
 [hub retry now]
-
+Reprovi nun
 [hub room match]
-
+Ĉambro
 [hub room name %0]
-
+Ĉambro de %0
 [hub room]
-
+Ĉambro
 [hub seats %0 %1]
-
+%0/%1 lokoj
 [hub server %0]
-
+Servilo: %0
 [hub sign in browser]
-
+Malfermi la ensalutan paĝon
 [hub sign in conflict]
-
+Tiu ensaluto jam apartenas al alia konto.
 [hub sign in failed %0]
-
+La ensaluto ne finiĝis (%0).
 [hub sign in intro]
-
+Ensalutu aŭ kreu konton en via retumilo. Viaj gastaj matĉoj venos kun vi.
 [hub sign in]
-
+Ensaluti
 [hub sign out]
-
+Elsaluti en ĉi tiu aparato
 [hub signed in as %0]
-
+Ensalutinta kiel %0.
 [hub signed in on %0]
-
+Ensalutinta ĉe %0
 [hub signing in]
-
+Ensalutante…
 [hub sim %0]
-
+simulado %0
 [hub unrated]
-
+Netaksita
 [hub update required at %0]
-
+%0 · ĝisdatigo necesas
 [hub update required detail %0]
-
+%0 uzas pli novan version, do ĉi tiu kopio ne povas aliĝi al retaj ludoj ĝis ĝi ĝisdatiĝos. LAN-ludoj ankoraŭ funkcias.
 [hub update required]
-
+Ĝisdatigo necesas
 [hub server behind]
-
+Servila ĝisdatigo atendata
 [hub server behind at %0]
-
+%0 · servila ĝisdatigo atendata
 [hub server behind detail %0]
-
+Ĉi tiu kopio estas pli nova ol %0, kiu ankoraŭ ne estas ĝisdatigita. Retaj ludoj malfermiĝos kiam la servilo ĝisdatiĝos. LAN-ludoj ankoraŭ funkcias.
 [hub version mismatch]
-
+Alia versio
 [hub version mismatch at %0]
-
+%0 · alia versio
 [hub version mismatch detail %0]
-
+%0 uzas alian version de la ludo, do ĉi tiu kopio ne povas aliĝi al retaj ludoj. LAN-ludoj ankoraŭ funkcias.
 [hub versus %0]
-
+kontraŭ %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+Elŝutante la mapon %0
 [match failed]
-
+La matĉo ne povis komenciĝi.
 [match leave]
-
+Foriri
 [match loading]
-
+Ŝargante la ludon
 [Loading game graphics]
-
+Ŝargante la ludografikon
 [match map cached]
-
+jam en ĉi tiu aparato
 [match map]
-
+Elŝutante la mapon
 [match relay %0]
-
+Konektita al relajso %0
 [match seat confirmed]
-
+Loko konfirmita
 [match starting]
-
+Komencante la matĉon
 [match tip flags]
-
+Konsilo: esplormarkiloj sendas esploristojn por malkaŝi la mapon; militmarkiloj kunvenigas viajn militistojn.
 [match tip input]
-
+Konsilo: viaj ordonoj atingas ĉiujn post via propra eniga prokrasto; la konektoj de aliaj ludantoj ne malrapidigas vin.
 [match tip select]
-
+Konsilo: duoble alklaku konstruaĵon por elekti ĉiujn konstruaĵojn de tiu tipo.
 [match waiting for players]
-
+Atendante ĉiujn ludantojn
 [match you %0]
-
+%0 (vi)
 [match player map]
-
+mapo
 [match player loading]
-
+ŝargas
 [match player connecting]
-
+konektiĝas
 [match player ready]
-
+preta
 [match player left]
-
+foriris
 [results back to online]
-
+Reen al reta ludo
 [results back to room]
-
+Reen al la ĉambro
 [results defeat]
-
+Malvenko
 [results ladder rating %0]
-
+Takso (%0)
 [results left]
-
+Vi forlasis la matĉon
 [results match over]
-
+Matĉo finiĝis
 [results match page]
-
+Matĉa paĝo
 [results minutes %0]
-
+%0 min
 [results no change]
-
+sen ŝanĝo
 [results ranked]
-
+Rangigita
 [results recording]
-
+Registrante la rezulton…
 [results room unrated]
-
+Ĉambra matĉo · netaksita
 [results saved to history]
-
+Konservita en via historio
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+La servilo ne povis reprodukti ĉi tiun matĉon, do ĝi ne kalkuliĝas por ies takso. Ĝi estis raportita por esplorado; vi nenion devas fari.
 [results verified provisional]
-
+Kontrolita · provizora
 [results verified]
-
+Kontrolita
 [results verifying detail]
-
+La servilo reludas la matĉon por konfirmi ĝin. Kutime malpli ol minuto.
 [results verifying]
-
+Kontrolante la rezulton…
 [results victory]
-
+Venko
 [room address]
-
+Adreso
 [room ai %0]
-
+AI · %0
 [room browser pairing]
-
+Parigo per retumilo
 [room catalog map]
-
+Kataloga mapo
 [room change map]
-
+Ŝanĝi mapon…
 [room change rules]
-
+Ŝanĝi regulojn…
 [room chat]
-
+Babilo
 [room closed seat detail]
-
+Fermita de la gastiganto
 [room closed seat]
-
+Fermita
 [room colonies]
-
+Kolonioj
 [room connecting]
-
+Konektante al la ĉambro…
 [room copy]
-
+Kopii
 [room disconnected]
-
+malkonektita
 [room downloading %0]
-
+Elŝutante la mapon %0 %
 [room downloading map]
-
+Elŝutante la mapon…
 [room expired]
-
+La ĉambro fermiĝis.
 [room generated on server]
-
+Generita unufoje en la servilo, do ĉiuj ludas ĝuste ĉi tiun mapon.
 [room guest]
-
+gasto
 [room host %0]
-
+gastiganto %0
 [room host closed]
-
+La gastiganto fermis la ĉambron.
 [room host]
-
+gastiganto
 [room humans vs ai]
-
+Homoj kontraŭ AI
 [room invite code %0]
-
+Kodo %0 · malfermiĝas en la aplikaĵo, en telefonoj aŭ en retumilo
 [room invite not found]
-
+Ĉi tiu invito eksvalidiĝis aŭ ne ekzistas.
 [room invite only]
-
+Nur per invito
 [room invite]
-
+Inviti
 [room joining on network]
-
+Aliĝante en ĉi tiu reto
 [room lan badge]
-
+Loka reto · ne taksata
 [room lan list hint %0]
-
+Aliaj en la sama reto vidas %0 en la listo de LAN-ludoj en la ĉefmenuo.
 [room leave]
-
+Foriri
 [room map changed %0]
-
+La mapo ŝanĝiĝis al %0.
 [room map failed]
-
+Ne eblis prepari la mapon
 [room match label]
-
+Ĉambro
 [room member joined %0]
-
+%0 aliĝis.
 [room member left %0]
-
+%0 foriris.
 [room member ready %0]
-
+%0 estas preta.
 [room needs two seats]
-
+Invitu amikon aŭ aldonu AI por komenci
 [room no map]
-
+Ankoraŭ neniu mapo
 [room not ready]
-
+Ne preta
 [room open for a person]
-
+Malfermita por homo
 [room open seat detail]
-
+Iu ajn kun la invito povas preni ĝin
 [room open seat]
-
+Libera loko
 [room person]
-
+Homo
 [room preparing map]
-
+Preparante la mapon en la servilo…
 [room public]
-
+Publika
 [room ready?]
-
+Preta
 [room ready]
-
+✓ Preta
 [room remove from room]
-
+Forigi el la ĉambro
 [room rule off]
-
+Malŝaltita
 [room rule on]
-
+Ŝaltita
 [room rules changed]
-
+La reguloj ŝanĝiĝis.
 [room rules]
-
+Reguloj
 [room say something]
-
+Diru ion…
 [room seat hint]
-
+Ludantoj povas mem moviĝi al libera loko. Ŝanĝu la teamon por reekvilibrigi.
 [room seat options]
-
+Opcioj de loko
 [room seats summary %0 %1 %2]
-
+%0 ludantoj · %1 AI · %2 liberaj
 [room seats]
-
+Lokoj
 [room seed]
-
+Semo
 [room send]
-
+Sendi
 [room set by host]
-
+Agordita de la gastiganto
 [room share text %0]
-
+Aliĝu al mia ĉambro de Globulation 2: %0
 [room share]
-
+Dividi…
 [room size]
-
+Grando
 [room starting match]
-
+Komencante la matĉon…
 [room take seat]
-
+Preni lokon
 [room team %0]
-
+Teamo %0
 [room update required]
-
+Ĉi tiu ĉambro uzas alian version de la ludo. Ĝisdatigu por aliĝi.
 [room uploaded map]
-
+Alŝutita mapo
 [room waiting for %0]
-
+Atendante, ke %0 pretiĝu
 [room waiting for you]
-
+Premu Preta kiam vi pretas
 [room match over]
-
+Matĉo finiĝis. Pretiĝu por plia rondo!
 [room waiting for host]
-
+Atendante, ke la gastiganto komencu
 [room waiting for players %0]
-
+Atendante, ke %0 ludantoj pretiĝu
 [room who can find it]
-
+Kiu povas trovi ĝin
 [room you created]
-
+Vi kreis la ĉambron.
 [room you joined %0]
-
+Vi aliĝis al %0.
 [room you were removed]
-
+La gastiganto forigis vin el la ĉambro.
 [room you]
-
+vi
 [settings Online]
-
+Rete
 [settings Another server]
-
+Alia servilo
 [settings Check]
-
+Kontroli
 [settings Checking…]
-
+Kontrolante…
 [settings Choose which server you play on and how you sign in to it.]
-
+Elektu, en kiu servilo vi ludas kaj kiel vi ensalutas al ĝi.
 [settings Connecting…]
-
+Konektante…
 [settings Could not reach this server.]
-
+Ne eblis atingi ĉi tiun servilon.
 [settings Display name saved.]
-
+Montrata nomo konservita.
 [settings Display name]
-
+Montrata nomo
 [settings Download or delete my data]
-
+Forigi mian konton
 [settings Enter an https:// address.]
-
+Enigu https://-adreson.
 [settings Finish in your browser. It shows the code %0.]
-
+Finu en via retumilo: tajpu la kodon %0 kiam ĝi petos.
 [settings Forget]
-
+Forgesi
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gastoj havas generitan nomon; ensalutu por elekti propran.
 [settings Link]
-
+Ligi
 [settings Not a Globulation 2 server.]
-
+Ne estas servilo de Globulation 2.
 [settings Not linked]
-
+Ne ligita
 [settings Not signed in.]
-
+Ne ensalutinta.
 [settings Open]
-
+Malfermi
 [settings Opens your account page on %0.]
-
+Malfermas vian kontopaĝon ĉe %0, kie vi povas forigi ĝin.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Administrata de komunumo, klubo aŭ vi mem. Algluu ĝian adreson.
 [settings Save]
-
+Konservi
 [settings Server]
-
+Servilo
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Montrata en ĉambroj, matĉoj kaj la rangotabelo. Ŝanĝebla unufoje ĉiujn 30 tagojn.
 [settings Sign in with: %0 · queues: %1]
-
+Ensaluto per: %0 · vicoj: %1
 [settings Sign out on this device]
-
+Elsaluti en ĉi tiu aparato
 [settings Sign out]
-
+Elsaluti
 [settings Switch to this server]
-
+Ŝanĝi al ĉi tiu servilo
 [settings The last sign-in method can't be unlinked.]
-
+La lasta ensalutmetodo ne povas esti malligita.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+La oficiala servilo de Globulation 2 · rangigitaj vicoj, rangotabeloj, mapkatalogo
 [settings Unlink]
-
+Malligi
 [settings Unlinking is done on the account page.]
-
+Malligado okazas en la kontopaĝo.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Vi estos nova gasto ĝis vi denove ensalutos. Via konto kaj matĉoj restas en la servilo.
 [settings Your account on %0]
-
+Via konto ĉe %0
 [settings compatible with this version]
-
+kongrua kun ĉi tiu versio
 [settings connected]
-
+konektita
 [settings connecting…]
-
+konektante…
 [settings guest]
-
+gasto
 [settings linked]
-
+ligita
 [settings plays another version]
-
+uzas alian version
 [settings trusted]
-
+fidata
 [settings used before]
-
+uzita antaŭe
 [settings you were %0 there]
-
+tie vi estis %0
 [trust invited to room %0]
-
+Invitita al ĉambro %0
 [trust join as guest]
-
+Aliĝi kiel gasto
 [trust not official]
-
+Ĉi tiu servilo ne estas administrata de la projekto Globulation 2.
 [trust remember]
-
+Memori ĉi tiun servilon
 [trust separate identity %0]
-
+Vi aliĝos tie kiel gasto. Via konto, takso kaj historio ĉe %0 restas kie ili estas.
 [trust title]
-
+Ĉu aliĝi al ludo en alia servilo?
 [trust what it sees]
-
+La servilo vidas vian montratan nomon, la adreson de via konekto kaj la ludojn, kiujn vi ludas en ĝi.
 [settings not connected]
-
+ne konektita
 [settings Open Play online to connect.]
-
+Malfermu «Ludi rete» por konektiĝi.
 [hub code]
-
+Kodo
 [results draw]
-
+Egalludo
 [qm 2 vs 2]
-
+2 kontraŭ 2
 [qm 1 vs 1]
-
+1 kontraŭ 1
 [qm ping about]
-
+Pingo ĉirkaŭ
 [qm ranked]
-
+Rangigita
 [qm casual %0]
-
+Senstreĉa %0
 [qm rated]
-
+Rangigita
 [qm unrated]
-
+Netaksita
 [qm solo queue]
-
+solluda vico
 [qm ai joins after %0]
-
+AI aliĝos post %0
 [qm fair maps %0]
-
+Mapoj: %0
 [qm cooldown %0]
-
+Vi rifuzis matĉon. Vi povos serĉi denove post %0.
 [qm sign in to play ranked]
-
+Rangigitaj vicoj estas por ensalutintaj kontoj; unue ensalutu.
 [online update required]
-
+Ĉi tiu versio de la ludo estas tro malnova por la servilo; ĝisdatigu por ludi rete.
 [online server behind]
-
+La servilo ankoraŭ ne estas ĝisdatigita al ĉi tiu versio; reta ludo malfermiĝos tiam.
 [online version mismatch]
-
+La servilo uzas alian version de la ludo; reta ludo ne disponeblas kun ĉi tiu kopio.
 [qm already searching]
-
+Vi jam serĉas aŭ estas en matĉo.
 [online connection problem]
-
+Ne eblis atingi la servilon.
 [qm find match]
-
+Trovi matĉon
 [qm opponents rated %0 to %1]
-
+Kontraŭuloj kun takso de %0 ĝis %1
 [qm region %0]
-
+Regiono %0
 [qm searching]
-
+Serĉante
 [qm measuring relays]
-
+Mezurante relajsojn
 [qm joining queue]
-
+Enviciĝante
 [qm waiting for a person]
-
+Atendante homon: AI-kontraŭuloj estas malŝaltitaj.
 [qm ai in %0 rated]
-
+Se neniu troviĝos, vi ludos kontraŭ la AI kun plej proksima takso post %0
 [qm ai in %0]
-
+Se neniu troviĝos, AI aliĝos post %0
 [qm ai after %0]
-
+Se neniu troviĝos, AI prenos la lokon post %0
 [qm allow ai short]
-
+Permesi AI
 [qm allow ai]
-
+Permesi AI-kontraŭulon
 [qm cancel]
-
+Nuligi
 [qm cancel search]
-
+Nuligi serĉon
 [qm usual wait %0]
-
+kutima atendo %0
 [qm widening]
-
+plivastiĝas dum vi atendas
 [qm ais are rated]
-
+(taksata: ankaŭ AI-oj havas taksojn)
 [qm opponent declined]
-
+Via kontraŭulo ne akceptis. Vi denove estas ĉe la komenco de la vico.
 [qm %0 did not accept]
-
+%0 ne akceptis. Vi denove estas ĉe la komenco de la vico.
 [qm start failed]
-
+La matĉo ne povis komenciĝi. Vi denove serĉas.
 [qm you declined]
-
+Vi rifuzis la matĉon. Vi povos serĉi denove post mallonga atendo.
 [qm you did not answer]
-
+Vi ne akceptis ĝustatempe. Vi povos serĉi denove post mallonga atendo.
 [qm search ended]
-
+La serĉo finiĝis.
 [qm try again]
-
+Reprovi
 [online connecting]
-
+Konektante…
 [qm no queues]
-
+Ĉi tiu servilo ne havas vicojn por rapida matĉo.
 [qm quick match]
-
+Rapida matĉo
 [qm phone searching note]
-
+La serĉo daŭras se vi forlasas ĉi tiun ekranon.
 [qm phone intro]
-
+Elektu vicon sube; la serĉo daŭras dum vi foliumas.
 [qm online]
-
+Rete
 [qm keeps running note]
-
+La serĉo daŭras se vi forlasas ĉi tiun ekranon.
 [qm ai]
-
+AI
 [qm provisional]
-
+provizora
 [qm accepted]
-
+✓ akceptis
 [qm declined]
-
+rifuzis
 [qm waiting]
-
+atendante…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Matĉo trovita
 [qm playing an ai]
-
+Ludante kontraŭ AI
 [qm vs]
-
+kontraŭ
 [qm ai explanation rated]
-
+Neniu en via taksa intervalo serĉis. Vi ludos kontraŭ la AI kun takso plej proksima al via; la rezulto kalkuliĝas por via takso kaj por tiu de la AI.
 [qm ai explanation]
-
+Neniu serĉis. Vi ludos kontraŭ la AI kun takso plej proksima al via; ĉi tiu ludo ne estas taksata.
 [qm casual explanation]
-
+La matĉo komenciĝas tuj; senstreĉaj ludoj ne estas taksataj.
 [qm accepted button]
-
+Akceptita
 [qm accept]
-
+Akcepti
 [qm decline]
-
+Rifuzi
 [qm both must accept]
-
+Ambaŭ devas akcepti
 [qm accept explanation]
-
+Ambaŭ ludantoj devas akcepti. Rifuzo aŭ elĉerpiĝo de la tempo metas vin al la fino de la vico.
 [qm starting in %0]
-
+Komenciĝos post %0…
 [qm preparing match]
-
+Preparante la matĉon…
 [qm match assigned %0 %1]
-
+Matĉo %0 estas preta ĉe %1, sed ĉi tiu versio ankoraŭ ne povas konektiĝi al retaj matĉoj.
 [online jan]
-
+jan
 [online feb]
-
+feb
 [online mar]
-
+mar
 [online apr]
-
+apr
 [online may]
-
+maj
 [online jun]
-
+jun
 [online jul]
-
+jul
 [online aug]
-
+aŭg
 [online sep]
-
+sep
 [online oct]
-
+okt
 [online nov]
-
+nov
 [online dec]
-
+dec
 [profile win letter]
-
+V
 [profile loss letter]
-
+M
 [profile draw letter]
-
+E
 [profile history unavailable]
-
+Ĉi tiu servilo ankoraŭ ne proponas matĉan historion.
 [profile downloading replay]
-
+Elŝutante la reludon…
 [profile no replay]
-
+Neniu reludo disponeblas por ĉi tiu matĉo.
 [profile room with %0]
-
+Ĉambro · %0 kolonioj
 [profile with %0 vs %1]
-
+kun %0 kontraŭ %1
 [profile vs %0]
-
+kontraŭ %0
 [profile room]
-
+Ĉambro
 [profile casual]
-
+Senstreĉa
 [profile ai filled]
-
+Kompletigita per AI
 [profile provisional %0 games]
-
+provizora · %0 ludoj
 [profile unrated]
-
+netaksita
 [profile checking]
-
+kontrolante…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Matĉa paĝo
 [profile replay]
-
+Reludo
 [profile win rate last %0]
-
+Venkoproporcio, lastaj %0
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 M · %2 egalaj
 [profile typical game]
-
+Tipa ludo
 [profile median length]
-
+via mediana daŭro
 [profile best map]
-
+Plej bona mapo
 [profile %0 w %1 l]
-
+%0 V · %1 M
 [profile no rated games]
-
+Ludu rangigitan matĉon por ricevi takson.
 [profile all]
-
+Ĉiuj
 [profile rooms]
-
+Ĉambroj
 [profile vs ai]
-
+kontraŭ AI
 [profile matches]
-
+Matĉoj
 [online loading]
-
+Ŝargante…
 [profile no matches]
-
+Ankoraŭ neniuj matĉoj.
 [online load more]
-
+Ŝargi pli
 [profile title]
-
+Profilo
 [profile guest]
-
+gasto
 [profile playing since %0]
-
+ludas ekde %0
 [profile full profile web]
-
+Plena profilo en la reto
 [profile replays note]
-
+Reludoj estas elŝutataj el la servilo kiam vi malfermas ilin; tiuj, kiujn vi konservis loke, restas en Ŝargi ludon → Reludoj.
 [profile web profile]
-
+Retprofilo
 [maps most played]
-
+Plej luditaj
 [maps most liked]
-
+Plej ŝatataj
 [maps newest]
-
+Plej novaj
 [maps most downloaded]
-
+Plej elŝutitaj
 [maps any size]
-
+Ajna grando
 [maps up to 128]
-
+Ĝis 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 kaj pli grandaj
 [maps report broken]
-
+Ĝi ne funkcias
 [maps report offensive]
-
+Ofenda
 [maps report copyright]
-
+Ies alia verko
 [maps report other]
-
+Io alia
 [maps public]
-
+Publika
 [maps unlisted]
-
+Nelistigita
 [maps private]
-
+Privata
 [maps cannot read file]
-
+Ne eblis legi la mapdosieron.
 [maps file too large]
-
+La mapdosiero estas tro granda por dividi.
 [maps saved for next room]
-
+La mapo estas elŝutita; ĝi estos uzata kiam vi malfermos ĉambron.
 [maps download failed]
-
+Ne eblis elŝuti la mapon.
 [maps %0 colonies]
-
+%0 kolonioj
 [maps version %0]
-
+versio %0
 [maps updated %0]
-
+ĝisdatigita %0
 [maps downloading]
-
+Elŝutante la mapon…
 [maps like needs account]
-
+Por ŝati mapojn necesas ensalutinta konto.
 [maps report sent]
-
+Dankon; la moderigantoj rigardos ĝin.
 [maps select a map]
-
+Elektu mapon por vidi ĝiajn detalojn.
 [maps by %0]
-
+de %0
 [maps stats %0 %1 %2]
-
+▶ %0 ludoj · ⬇ %1 elŝutoj · ♥ %2
 [maps use in room]
-
+Uzi en ĉambro
 [maps liked]
-
+Ŝatita
 [maps like]
-
+Ŝati
 [maps map page]
-
+Mapa paĝo
 [maps reported]
-
+Raportita
 [maps report]
-
+Raporti…
 [maps report why]
-
+Kio estas malĝusta pri ĉi tiu mapo?
 [maps search placeholder]
-
+Serĉi mapojn aŭ aŭtorojn
 [maps none found]
-
+Neniu mapo kongruas.
 [maps any colonies]
-
+Ajna nombro de kolonioj
 [maps checking]
-
+Kontrolante…
 [maps no version yet]
-
+Ankoraŭ neniu versio estis alŝutita.
 [maps rejected]
-
+Malakceptita
 [maps did not load %0]
-
+La mapo ne ŝargiĝis: %0
 [maps unknown reason]
-
+neniu kialo estis donita
 [maps fix and upload again]
-
+riparu ĝin en la redaktilo, poste alŝutu denove
 [maps uploaded just now]
-
+ĵus alŝutita
 [maps loading on server]
-
+ŝargante ĝin en la servilo
 [maps %0 plays]
-
+%0 ludoj
 [maps hidden]
-
+Kaŝita
 [maps upload again]
-
+Alŝuti denove…
 [maps delete]
-
+Forigi
 [maps update]
-
+Ĝisdatigi…
 [maps upload a map]
-
+Alŝuti mapon…
 [maps upload hint]
-
+.map-dosieroj el via mapdosierujo aŭ la redaktilo
 [maps no maps yet]
-
+Vi ankoraŭ ne dividis mapojn.
 [maps my maps]
-
+Miaj mapoj
 [maps my maps %0]
-
+Miaj mapoj (%0)
 [maps browse]
-
+Foliumi
 [maps title]
-
+Mapoj
 [maps browse note %0]
-
+Katalogo de %0 · nur mapoj, kiuj ŝargiĝas en ĉi tiu versio, estas montrataj
 [maps visibility note]
-
+Publikaj mapoj aperas en Foliumi. Nelistigitaj mapoj funkcias en viaj ĉambroj kaj per sia ligilo. Privataj mapoj nur en viaj propraj ĉambroj.
 [maps use %0]
-
+Uzi %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Titolo
 [maps field description]
-
+Priskribo
 [maps who can use it]
-
+Kiu povas uzi ĝin
 [maps guests unlisted]
-
+Gastoj povas dividi nelistigitajn kaj privatajn mapojn; ensalutu por publikigi en Foliumi.
 [maps visibility help]
-
+Nelistigitaj mapoj funkcias en viaj ĉambroj kaj per sia ligilo; publikaj mapoj ankaŭ aperas en Foliumi.
 [maps new version of %0]
-
+Alŝuti ĉi tiun dosieron kiel novan version de %0.
 [maps upload]
-
+Alŝuti
 [maps uploading]
-
+Alŝutante…
 [maps checking detail]
-
+La servilo ŝargas la mapon kaj desegnas ĝian antaŭrigardon. Ĝis tiam la mapo ne estas uzebla.
 [maps ready]
-
+Preta
 [maps ready public]
-
+La mapo estas preta kaj listigita en Foliumi.
 [maps ready unlisted]
-
+La mapo estas preta. Nelistigitaj mapoj funkcias en viaj ĉambroj kaj per sia ligilo.
 [maps ready private]
-
+La mapo estas preta. Privataj mapoj funkcias nur en viaj propraj ĉambroj.
 [maps upload failed]
-
+La alŝuto malsukcesis
 [maps server read %0 %1]
-
+La servilo legis ĝin kiel %0 kun %1 kolonioj.
 [maps continue in background]
-
+Fermi
 [maps upload a map title]
-
+Alŝuti mapon
 [maps update map title]
-
+Ĝisdatigi mapon
 [maps upload note]
-
+La servilo ŝargas ĉiun alŝutaĵon antaŭ ol ĝi estas uzebla.
 [online just now]
-
+ĵus
 [online today %0]
-
+hodiaŭ %0
 [online yesterday]
-
+hieraŭ
 [online sun]
-
+dim
 [online mon]
-
+lun
 [online tue]
-
+mar
 [online wed]
-
+mer
 [online thu]
-
+ĵaŭ
 [online fri]
-
+ven
 [online sat]
-
+sab
 [online %0 weeks ago]
-
+antaŭ %0 semajnoj
 [online %0 months ago]
-
+antaŭ %0 monatoj
 [online %0 years ago]
-
+antaŭ %0 jaroj
 [maps share online]
-
+Dividi rete…
 [maps mine]
-
+Miaj
 [results waiting for players]
-
+Atendante, ke la aliaj ludantoj foriru…
 [results waiting detail]
-
+La rezulto estas registrata post kiam ĉiuj forlasis la matĉon.
 [results waiting slow]
-
+Ludanto, kiu perdis la konekton, havas ĝis 3 minutoj por reveni. La rezulto aperos en via historio kaj en la matĉa paĝo.
 [results verifying slow]
-
+La kontrolado daŭras pli longe ol kutime. La rezulto aperos en via historio kaj en la matĉa paĝo.
 [results rematch]
-
+Revanĉo
 [results join rematch %0]
-
+Aliĝi al la revanĉo de %0
 [hub profile history]
-
+Profilo kaj historio
 [hub my maps]
-
+Miaj mapoj
 [hub leaderboard %0]
-
+Rangotabelo · %0
 [hub leaderboard empty]
-
+Ankoraŭ neniuj rangigitaj ludantoj.
 [hub guests not ranked]
-
+Gastoj ne estas rangigitaj. Ensalutu por aperi ĉi tie.
 [hub full leaderboard]
-
+Plena rangotabelo
 [settings %0 is no longer linked.]
-
+%0 ne plu estas ligita.
 [room map read failed]
-
+Ne eblis legi ĉi tiun mapdosieron.
 [room map upload failed]
-
+Ne eblis dividi la mapon kun la ĉambro.
 [room map upload failed %0]
-
+Ne eblis dividi la mapon kun la ĉambro: %0
 [room uploading map]
-
+Dividante la mapon kun la ĉambro…
 [room premade map shared]
-
+Ĉiuj en la ĉambro ludas ĉi tiun mapdosieron; ĝi elŝutiĝas antaŭ la matĉo.
 [room take a seat to play]
-
+Prenu liberan lokon por ludi
 [room waiting for a seat]
-
+Ĉiuj lokoj estas okupitaj. Vi povos preni unu kiam ĝi liberiĝos.
 [room not seated]
-
+Sen loko
 [room copied]
-
+Kopiita
 [room copy failed]
-
+Ne eblis kopii
 [room closed title]
-
+Ĉambro fermita
 [room removed title]
-
+Forigita el la ĉambro
 [room back to online]
-
+Reen al reta ludo
 [leave match]
-
+Forlasi matĉon
 [leave match title]
-
+Ĉu forlasi ĉi tiun matĉon?
 [leave lan title]
-
+Ĉu forlasi ĉi tiun LAN-ludon?
 [leave rated body]
-
+Vi perdos ĉi tiun rangigitan matĉon kaj via takso malaltiĝos. La aliaj plu ludas, kaj vi ne povos reveni.
 [leave casual body]
-
+Ĉi tiu rapida matĉo kalkuliĝas kiel malvenko por vi. La aliaj plu ludas, kaj vi ne povos reveni.
 [leave room body]
-
+Vi forlasos la matĉon de la ĉambro kaj ĝi kalkuliĝos kiel malvenko en via historio. La aliaj plu ludas, kaj vi ne povos reveni.
 [leave lan body]
-
+La aliaj plu ludas sen vi, kaj vi ne povos reveni al ĉi tiu ludo.
 [leave match confirm]
-
+Forlasi matĉon
 [keep playing]
-
+Plu ludi
 [results team]
-
+Teamo
 [results quick unrated]
-
+Rapida matĉo · netaksita
 [conn card cannot keep up]
-
+Via aparato ne sukcesas sekvi ĉi tiun matĉon
 [conn card cannot keep up body]
-
+Ĝi reludas la matĉon pli malrapide ol la matĉo progresas, do ĝi ne atingos ĝin. Vi povas forlasi la matĉon, aŭ malaltigi la grafikajn agordojn kaj plu atendi.
 [conn card not gaining]
-
+ne proksimiĝas
 [results reason opponents left]
-
+Viaj kontraŭuloj forlasis la matĉon.
 [results reason victory]
-
+Ĉiuj kontraŭaj kolonioj estis venkitaj.
 [results reason defeat]
-
+Via kolonio estis venkita.
 [results reason you left]
-
+Vi forlasis la matĉon. Tio kalkuliĝas kiel malvenko.
 [results final after end]
-
+Fina rezulto post la fino de la matĉo.
 [pause none left]
-
+Neniuj paŭzoj restas
 [pause game left %0]
-
+Paŭzigi ludon (restas %0)
 [pause by %0]
-
+Paŭzigita de %0
 [pause by %0 resumes in %1]
-
+Paŭzigita de %0 · daŭriĝos post %1
 [turn too many actions]
-
+Tro da agoj: kelkaj ankoraŭ atendas sendon
 [turn no pauses left]
-
+Vi ne plu havas paŭzojn en ĉi tiu matĉo
 [turn pause time used %0]
-
+%0 eluzis sian tutan paŭzotempon: la ludo daŭriĝas
 [room seats one person %0 %1]
-
+1 ludanto · %0 AI · %1 liberaj
 [room rules otherwise standard]
-
+Ĉiuj aliaj reguloj estas kiel en Norma.
 [room browser link]
-
+Ligilo por retumilaj ludantoj
 [room browser link hint]
-
+Ludantoj en retumilo algluas ĉi tiun ligilon por aliĝi.
 [room browser link code %0]
-
+Ludantoj en retumilo algluas ĉi tiun ligilon por aliĝi. Ilia ludo montras la kodon %0.
 [room copy link]
-
+Kopii ligilon
 [room lan open seat detail]
-
+Iu ajn en ĉi tiu reto povas preni ĝin
 [room close title]
-
+Ĉu fermi la ĉambron?
 [room close body one]
-
+Foriro fermas la ĉambron por ĉiuj, inkluzive de la alia ludanto en ĝi.
 [room close body %0]
-
+Foriro fermas la ĉambron por ĉiuj, inkluzive de la %0 aliaj ludantoj en ĝi.
 [room close confirm]
-
+Fermi ĉambron
 [room stay]
-
+Resti
 [room colours changed]
-
+La nova mapo donis novajn kolorojn al la lokoj. Kontrolu la vian antaŭ ol komenci.
 [room copy by hand]
-
+Kopiado ne funkciis. Kopiu la inviton mem:
 [room copy by hand close]
-
+Fermi
 [room copy by hand touch]
-
+Tuŝu kaj tenu la ligilon, poste elektu Kopii.
 [room copy by hand keys]
-
+La ligilo estas elektita: premu Ctrl+C (⌘C ĉe Mac).
 [room code]
-
+Kodo
 [online under a minute]
-
+malpli ol minuto
 [online about %0 min]
-
+ĉirkaŭ %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+AI-kontraŭulo: %0
 [match relay connected]
-
+Konektita al la ludservilo
 [room picker title]
-
+Elektu mapon
 [room picker for one]
-
+Por la 1 ludanto en la ĉambro
 [room picker for %0]
-
+Por la %0 ludantoj en la ĉambro
 [room picker generated]
-
+Generita
 [room picker premade]
-
+Antaŭfarita
 [room picker catalog]
-
+Katalogo
 [room picker size]
-
+Grando
 [room picker colonies]
-
+Kolonioj
 [room picker fair]
-
+Justa komenco por ĉiu kolonio
 [room picker does not fit]
-
+Ne taŭgas por ĉi tiu grando; provu alian
 [room picker preparing]
-
+Preparante la antaŭrigardon…
 [room picker generated note]
-
+Ĉiu pejzaĝo donas al ĉiu kolonio egale bonan komencon, kaj la servilo faras la saman mapon por ĉiuj.
 [room picker players %0]
-
+%0 ludantoj
 [room picker unreadable]
-
+ne legebla
 [room picker no premade]
-
+Neniuj antaŭfaritaj mapoj troviĝis.
 [room picker too small %0]
-
+Ĉi tiu mapo havas malpli da kolonioj ol la %0 ludantoj en la ĉambro.
 [room picker pick premade]
-
+Elektu mapon por vidi ĝin ĉi tie.
 [room picker catalog intro]
-
+Mapoj dividitaj de aliaj ludantoj. Malfermu unu kaj elektu Uzi en ĉambro.
 [room picker browse catalog]
-
+Foliumi dividitajn mapojn
 [room picker more options]
-
+Pliaj opcioj…
 [room picker use]
-
+Uzi ĉi tiun mapon
 [room map ready title %0]
-
+Ludi %0
 [room map ready unnamed]
-
+ĉi tiun mapon
 [room map ready body]
-
+Kreu ĉambron kaj invitu viajn amikojn: la ĉambro ludos ĉi tiun mapon.
 [game draw]
-
+Egalludo
 [settings Show colony skins]
 Montri aspektojn de kolonioj
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Malŝaltu por uzi klasikajn unuojn, svarmojn kaj konstruaĵajn kolorojn en ĉi tiu aparato.
+Malŝaltu por uzi klasikajn kolorojn de globuloj, globulejoj kaj konstruaĵoj en ĉi tiu aparato.
 [settings Hive Mind]
-
+Kolektiva menso
 [settings Enable commander shortcuts]
-
+Ŝalti komandantajn ŝparvojojn
 [settings Command your colony without opening a menu.]
-
+Komandi vian kolonion sen malfermi menuon.
 [settings Allow supervision for new commands]
-
+Permesi superrigardon por novaj komandoj
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+La komandanto rajtas daŭrigi daŭrajn ordonojn. Daŭrigoj uzas kreditojn; instalitaj ordonoj plu funkcias sen kreditoj.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Defaŭltaj ŝparvojoj: Ctrl+Enter por doni ordonon; Ctrl+Shift+Enter por haltigi la laboron de la komandanto. Ŝanĝu ilin sub Ludaj kontroloj. Kartoj de daŭraj ordonoj havas apartajn regilojn por paŭzigi kaj nuligi.
 [settings Commander account and credits]
-
+Konto kaj kreditoj de komandanto
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Administru kreditojn kaj aĉetojn en via retumilo. Helpo de la komandanto estas permesata en rangigitaj ludoj.
 [open commander]
-
+Malfermi komandanton
 [stop commander]
-
+Haltigi komandanton
 [settings Recording]
-
+Registrado
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Registri viajn ludojn kiel MP4-videojn kun sono. Registrado bezonas FFmpeg kun la kodiloj libx264 kaj AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg pretas.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg ne disponeblas, do registrado estas malŝaltita. Instalu FFmpeg kaj certigu, ke ĝi estas en via PATH, poste kontrolu denove.
 [settings Check for FFmpeg again]
-
+Serĉi FFmpeg denove
 [settings Checking for FFmpeg…]
-
+Serĉante FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Fulmoklavo: %0. Ĝi funkcias ankaŭ en menuoj kaj la redaktilo.
 [settings Change the hotkey]
-
+Ŝanĝi la fulmoklavon
 [settings Recordings are saved in %0]
-
+Registraĵoj estas konservataj en %0
 [toggle recording]
-
+Komenci aŭ haltigi registradon
 [File selection is unavailable.]
-
+Dosierelekto ne disponeblas.
 [Saving custom AI…]
-
+Konservante propran AI…
 [Could not read the selected JavaScript file.]
-
+Ne eblis legi la elektitan JavaScript-dosieron.
 [Custom AI library saved.]
-
+Biblioteko de propraj AI-oj konservita.
 [Storage could not be saved. The previous library is retained.]
-
+Ne eblis konservi la memoron. La antaŭa biblioteko restas.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importu unu JavaScript-AI-dosieron, poste elektu ĝin dum la agordado de loka ludo.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Importoj konservas kopion en Glob2. Ĝisdatigo anstataŭigas tiun kopion por estontaj ludoj; konservitaj ludoj tenas sian originalan AI.
 [Waiting for file selection or storage…]
-
+Atendante dosierelekton aŭ memoron…
 [Import JavaScript AI]
-
+Importi JavaScript-AI
 [Link development file]
-
+Ligi programadan dosieron
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Ligitaj dosieroj estas legataj ĉe la komenco de la ludo. Rekonstruu antaŭ ol komenci novan ludon. Forigo de ligilo neniam forigas vian dosieron.
 [Example AI and authoring guide]
-
+Ekzempla AI kaj verkogvidilo
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Ankoraŭ neniuj propraj AI-oj. Importu kunpakitan .js-dosieron por komenci.
 [Relink]
-
+Religi
 [Update]
-
+Ĝisdatigi
 [Validate]
-
+Kontroli
 [AI startup and persistent globals are valid.]
-
+La lanĉo kaj daŭraj mallokaj variabloj de la AI validas.
 [Remove from library]
-
+Forigi el la biblioteko
 [AI telemetry]
-
+AI-telemetrio
 [No accessible AI telemetry.]
-
+Neniu alirebla AI-telemetrio.
 [Search fields]
-
+Serĉi kampojn
 [Telemetry unavailable for this recording or controller.]
-
+Telemetrio ne disponeblas por ĉi tiu registraĵo aŭ reganto.
 [Linked]
-
+Ligita
 [Imported]
-
+Importita
 [Player]
-
+Ludanto
 [Updated at tick %0]
-
+Ĝisdatigita je takto %0
 [No values published yet.]
-
+Ankoraŭ neniuj valoroj publikigitaj.
 [No fields match your search.]
-
+Neniu kampo kongruas kun via serĉo.
 [settings Custom AIs]
-
+Propraj AI-oj
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Aldonu JavaScript-AI-ojn en Agordoj → Propraj AI-oj. Ili aperas en la AI-elektilo de ĉiu kolonio.
 [Missing custom AI]
-
+Mankas propra AI
 [Map repetition failed]
-
+Ne eblas ripeti ĉi tiun mapon. Uzu komencan mapon sen skripto, aŭ malpliigu la ripetojn kaj bazojn.
 [repeat map horizontally]
 Ripeti la mapon horizontale
 [repeat map vertically]
@@ -4655,596 +4655,596 @@ Ripeti la mapon vertikale
 [bases]
 bazoj
 [bases per colony]
-Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj konstruaĵoj kaj unuoj
+Bazoj po kolonio; bazo estas unu teamo de la mapo kiel desegnite, kun ĝiaj konstruaĵoj kaj globuloj
 [stat group population]
-
+Loĝantaro
 [stat group food]
-
+Nutraĵo kaj bonfarto
 [stat group resources]
-
+Rimedoj
 [stat group buildings]
-
+Konstruaĵoj
 [stat group military]
-
+Militaro
 [stat group map]
-
+Tero
 [stat group score]
-
+Poentoj
 [stat overview]
-
+Superrigardo
 [stat overview about]
-
+La ciferoj de ĉiu kolonio por la tuta matĉo. La plej alta estas emfazita kie pli estas pli bone; alklaku kolumnan titolon por vidi kiel ĝi ŝanĝiĝis laŭ la tempo.
 [stat population]
-
+Loĝantaro
 [stat population about]
-
+Kiom da vivantaj globuloj la kolonio havis: laboristoj, esploristoj kaj militistoj kune.
 [stat births]
-
+Naskitaj globuloj
 [stat births about]
-
+Kiom rapide globulejoj produktis novajn globulojn. Disigu ĝin por vidi laboristojn, esploristojn kaj militistojn aparte.
 [stat deaths]
-
+Perditaj globuloj
 [stat deaths about]
-
+Kiom rapide la kolonio perdis globulojn, kia ajn la kaŭzo: batalo, malsato, vundoj dum viŝado, aŭ enkaptiĝo.
 [stat net growth]
-
+Loĝantara kresko
 [stat net growth about]
-
+Naskitaj globuloj minus perditaj globuloj. Super nulo la kolonio kreskis; sub nulo ĝi ŝrumpis.
 [stat death causes]
-
+Mortokaŭzoj
 [stat death causes about]
-
+Pro kio mortis la globuloj de la kolonio: batalo, malsato, vundoj dum viŝado de rimedoj, enkaptiĝo sen elirvojo, aŭ aliaj kaŭzoj.
 [stat conversions]
-
+Neta transfuĝo
 [stat conversions about]
-
+Globuloj gajnitaj de aliaj kolonioj minus globuloj perditaj al ili. Globuloj ŝanĝas flankon kiam alia kolonio nutras ilin pli bone.
 [stat hunger]
-
+Nutraĵrezervoj
 [stat hunger about]
-
+Kiom da nutraĵo la globuloj de la kolonio portis en si. Ĉiu globulo estas klasita laŭ kiom de sia nutraĵrezervo restas: preskaŭ malplena (kvarono aŭ malpli), malalta (ĝis duono), duonplena (ĝis tri kvaronoj) aŭ bone nutrita. Globuloj serĉas manĝejon kiam ilia rezervo malpleniĝas, do kolonio ĉiam havas kelkajn kun malalta rezervo.
 [stat health]
-
+Sano
 [stat health about]
-
+Kiom sanaj estis la globuloj de la kolonio. Ĉiu globulo estas klasita laŭ kiom de siaj vivpoentoj restas: kritika (kvarono aŭ malpli), vundita (ĝis duono), vundeta (ĝis tri kvaronoj) aŭ sana.
 [stat seeking food]
-
+Globuloj serĉantaj nutraĵon
 [stat seeking food about]
-
+Globuloj, kiuj ĉesis labori por trovi manĝejon. Tiuj, kiuj ankaŭ ne estas plene sanaj, estas kalkulataj kiel malfortiĝantaj.
 [stat in care]
-
+Globuloj manĝantaj aŭ kuraciĝantaj
 [stat in care about]
-
+Globuloj en manĝejo manĝantaj aŭ en malsanejo kuraciĝantaj, kaj do ne laborantaj.
 [stat wheat harvested]
-
+Rikoltita tritiko
 [stat wheat harvested about]
-
+Ŝarĝoj de tritiko rikoltitaj de laboristoj. El tritiko manĝejoj faras manĝojn.
 [stat wheat stored]
-
+Stokita tritiko
 [stat wheat stored about]
-
+Tritiko en la konstruaĵoj de la kolonio, preta por servado aŭ uzo.
 [stat meals]
-
+Servitaj manĝoj
 [stat meals about]
-
+Manĝoj servitaj de la manĝejoj de la kolonio, al ĝiaj propraj globuloj kaj al vizitantoj el aliaj kolonioj.
 [stat starvation]
-
+Mortoj pro malsato
 [stat starvation about]
-
+Globuloj, kiuj mortis ĉar ili ne trovis nutraĵon ĝustatempe.
 [stat healing]
-
+Restarigita sano
 [stat healing about]
-
+Vivpoentoj, kiujn la malsanejoj de la kolonio redonis al vunditaj globuloj.
 [stat gathered]
-
+Kolektitaj rimedoj
 [stat gathered about]
-
+Ŝarĝoj de ĉiu rimedo kolektitaj de laboristoj. Disigu ĝin por vidi ĉiun rimedon.
 [stat stored]
-
+Stokitaj rimedoj
 [stat stored about]
-
+Rimedoj en la konstruaĵoj de la kolonio. Disigu ĝin por vidi ĉiun rimedon.
 [stat spending]
-
+Elspezo de rimedoj
 [stat spending about]
-
+Kien iris liveritaj rimedoj: manĝoj, novaj globuloj, municio por turoj, novaj konstruaĵoj aŭ plibonigoj.
 [stat delivered]
-
+Liveritaj rimedoj
 [stat delivered about]
-
+Ŝarĝoj, kiujn laboristoj portis en konstruaĵojn.
 [stat traded]
-
+Neta komerco
 [stat traded about]
-
+Rimedoj ricevitaj per komercejoj minus rimedoj fordonitaj.
 [stat buildings]
-
+Starantaj konstruaĵoj
 [stat buildings about]
-
+Finitaj konstruaĵoj, kiujn la kolonio havis. Disigu ĝin por vidi ĉiun specon de konstruaĵo.
 [stat construction]
-
+Farita konstrulaboro
 [stat construction about]
-
+Farita konstrulaboro: novaj konstruaĵoj, plibonigoj kaj riparoj.
 [stat buildings lost]
-
+Perditaj konstruaĵoj
 [stat buildings lost about]
-
+Konstruaĵoj detruitaj de malamikoj aŭ malkonstruitaj de la kolonio mem.
 [stat blocked buildings]
-
+Konstruaĵoj sen enirejo
 [stat blocked buildings about]
-
+Konstruaĵoj, kies enirejoj estis baritaj, tiel ke globuloj ne povis eniri aŭ eliri.
 [stat attack]
-
+Atakforto
 [stat attack about]
-
+Poentaro por la kuna batalpovo de la militistoj de la kolonio: kiom forte kaj kiom rapide ili frapas.
 [stat defence]
-
+Defendforto
 [stat defence about]
-
+Poentaro por la kuna pafpovo de la defendturoj de la kolonio.
 [stat hit points]
-
+Sumo de vivpoentoj
 [stat hit points about]
-
+La vivpoentoj de ĉiuj globuloj kaj konstruaĵoj de la kolonio, kunadiciitaj.
 [stat damage dealt]
-
+Kaŭzita damaĝo
 [stat damage dealt about]
-
+Damaĝo, kiun la kolonio kaŭzis al malamikaj globuloj kaj konstruaĵoj. Disigu ĝin por vidi militistojn, magion kaj turojn.
 [stat damage taken]
-
+Suferita damaĝo
 [stat damage taken about]
-
+Damaĝo, kiun malamikoj kaŭzis al la globuloj kaj konstruaĵoj de la kolonio.
 [stat damage traded]
-
+Damaĝa bilanco
 [stat damage traded about]
-
+Kaŭzita damaĝo minus suferita damaĝo. Super nulo la kolonio venkadis en siaj bataloj.
 [stat combat deaths]
-
+Globuloj mortigitaj en batalo
 [stat combat deaths about]
-
+Globuloj de ĉi tiu kolonio mortigitaj de malamikoj. Disigu ĝin por vidi laboristojn, esploristojn kaj militistojn aparte.
 [stat accuracy]
-
+Trafaj pafoj
 [stat accuracy about]
-
+La proporcio de pafoj de la turoj kaj esploristoj de la kolonio, kiuj trafis sian celon.
 [stat training]
-
+Trejnado
 [stat training about]
-
+Vizitoj de globuloj al lernejoj, militistejoj, kuregejoj kaj naĝejoj por lerni kapablon.
 [stat skills]
-
+Akiritaj kapabloj
 [stat skills about]
-
+Kapabloniveloj, kiujn la globuloj de la kolonio akiris per trejnado.
 [stat growth nearby]
-
+Rimedkresko apud la kolonio
 [stat growth nearby about]
-
+Kiom da tritiko, ligno kaj aliaj rimedoj kreskis ene de 32 kvadratoj de la konstruaĵoj de la kolonio, en kreskopoentoj anstataŭ ŝarĝoj. Disigu ĝin por vidi kiom proksime al la hejmo ili kreskis.
 [stat growth map]
-
+Rimedkresko tra la mapo
 [stat growth map about]
-
+Kiom da rimedoj kreskis ie ajn sur la mapo, en kreskopoentoj anstataŭ ŝarĝoj. Tio estas sama por ĉiu kolonio.
 [stat stranded]
-
+Globuloj nekapablaj moviĝi
 [stat stranded about]
-
+Globuloj enfermitaj sen libera kvadrato por paŝi sur ĝin.
 [stat cleared]
-
+Viŝitaj rimedoj
 [stat cleared about]
-
+Rimedoj forigitaj de laboristoj en viŝataj areoj por fari lokon.
 [stat prestige]
-
+Prestiĝo
 [stat prestige about]
-
+La prestiĝo de la kolonio, gajnita per plej altnivelaj konstruaĵoj. Matĉo kun prestiĝa celo finiĝas kiam ĝi estas atingita.
 [stat band combat]
-
+Batalo
 [stat band starvation]
-
+Malsato
 [stat band clearing]
-
+Vundoj dum viŝado
 [stat band trapped]
-
+Enkaptitaj
 [stat band other]
-
+Aliaj
 [stat band starving]
-
+Preskaŭ malplena
 [stat band hungry]
-
+Malalta
 [stat band peckish]
-
+Duonplena
 [stat band fed]
-
+Bone nutrita
 [stat band critical]
-
+Kritika
 [stat band wounded]
-
+Vundita
 [stat band hurt]
-
+Vundeta
 [stat band healthy]
-
+Sana
 [stat band weakening]
-
+Malfortiĝanta
 [stat band looking]
-
+Serĉanta manĝejon
 [stat band eating]
-
+Manĝanta
 [stat band healing]
-
+Kuraciĝanta
 [stat band meals]
-
+Manĝoj
 [stat band new units]
-
+Novaj globuloj
 [stat band ammunition]
-
+Municio
 [stat band construction]
-
+Novaj konstruaĵoj
 [stat band upgrades]
-
+Plibonigoj
 [stat band built]
-
+Konstruitaj
 [stat band upgraded]
-
+Plibonigitaj
 [stat band repaired]
-
+Riparitaj
 [stat band destroyed]
-
+Detruitaj
 [stat band demolished]
-
+Malkonstruitaj
 [stat band melee]
-
+Militistoj
 [stat band magic]
-
+Magio
 [stat band towers]
-
+Turoj
 [stat band within 8]
-
+Ene de 8 kvadratoj
 [stat band 8 to 16]
-
+8 ĝis 16 kvadratoj
 [stat band 16 to 32]
-
+16 ĝis 32 kvadratoj
 [stat unit units]
-
+globuloj
 [stat unit wheat]
-
+tritiko
 [stat unit meals]
-
+manĝoj
 [stat unit hit points]
-
+vivpoentoj
 [stat unit resources]
-
+rimedoj
 [stat unit buildings]
-
+konstruaĵoj
 [stat unit strength]
-
+poentaro
 [stat unit damage]
-
+damaĝo
 [stat unit shots]
-
+pafoj
 [stat unit visits]
-
+vizitoj
 [stat unit skills]
-
+kapabloniveloj
 [stat unit prestige]
-
+prestiĝo
 [stat axis percent of %0]
-
+% de %0
 [stat axis share of all teams]
-
+% de ĉiuj kolonioj
 [stat axis percent of units]
-
+% de la globuloj de la kolonio
 [stat axis %0 per minute per 100 units]
-
+%0 po minuto, po 100 globuloj en la kolonio
 [stat axis %0 per 100 units]
-
+%0 po 100 globuloj en la kolonio
 [stat axis %0 per minute]
-
+%0 po minuto
 [stat axis %0 so far]
-
+%0, kumula sumo
 [stat axis %0 minute average]
-
+%0-minuta mezumo
 [stat view per minute]
-
+Po minuto
 [stat view total]
-
+Sumo
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Disigi laŭ speco
 [stat view percentages]
-
+Kiel % de sumo
 [stat view percent of units]
-
+Kiel % de kolonio
 [stat view per 100 units]
-
+Relative al kolonigrando
 [stat view share]
-
+Parto de ĉiuj kolonioj
 [stat view highlight none]
-
+Emfazo: neniu
 [stat column peak units]
-
+Maks. globuloj
 [stat column born]
-
+Naskitaj
 [stat column lost]
-
+Perditaj
 [stat column wheat]
-
+Tritiko
 [stat column damage dealt]
-
+Kaŭzita damaĝo
 [stat column damage taken]
-
+Suferita damaĝo
 [stat column built]
-
+Konstruitaj
 [stat column buildings lost]
-
+Perditaj konstruaĵoj
 [stat column prestige]
-
+Prestiĝo
 [stat marker wiped out]
-
+lasta globulo perdita
 [stat marker first combat death]
-
+unua globulo mortigita en batalo
 [stat marker first building destroyed]
-
+unua konstruaĵo detruita
 [stat not recorded for this match]
-
+Ĉi tiu statistiko ne estis registrita por ĉi tiu matĉo.
 [results reason beyond doubt]
-
+La rezulto ne plu estis dubinda.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Kolonio
 [stat page %0 of %1]
-
+%0 el %1  >
 [stat band workers]
-
+Laboristoj
 [stat band explorers]
-
+Esploristoj
 [stat band warriors]
-
+Militistoj
 [stat unit deaths]
-
+mortoj
 [stat unit growth]
-
+kresko
 [stat view by unit type]
-
+Laŭ globulspeco
 [stat view by state]
-
+Laŭ stato
 [stat view by resource]
-
+Laŭ rimedo
 [stat view by building]
-
+Laŭ konstruaĵo
 [stat view by work]
-
+Laŭ laborspeco
 [stat view by cause]
-
+Laŭ kaŭzo
 [stat view by weapon]
-
+Laŭ armilo
 [stat view by distance]
-
+Laŭ distanco
 [stat nothing to show]
-
+Nenio por montri: tio ne okazis en ĉi tiu matĉo.
 [stat %0 nothing]
-
+%0 (neniom)
 [Match]
-
+Matĉo
 [Time limit]
-
+Templimo
 [Alliances can change]
-
+Aliancoj povas ŝanĝiĝi
 [Reveal terrain]
-
+Malkaŝi terenon
 [Starting unit level]
-
+Komenca nivelo de globuloj
 [Starting stockpile]
-
+Komenca stoko
 [Regrowth]
-
+Rekresko
 [Building strength]
-
+Forto de konstruaĵoj
 [Wounded units retreat]
-
+Vunditaj globuloj retiriĝas
 [Units can die]
-
+Globuloj povas morti
 [Unit training]
-
+Trejnado de globuloj
 [No stockpile]
-
+Neniu
 [No glass cannon]
-
+Malŝaltita
 [How quickly harvested resources grow back and spread.]
-
+Kiom rapide rikoltitaj rimedoj rekreskas kaj disvastiĝas.
 [Units must eat to keep working.]
-
+Globuloj devas manĝi por plu labori.
 [Summary]
-
+Resumo
 [All rules]
-
+Ĉiuj reguloj
 [Show all rules]
-
+Montri ĉiujn regulojn
 [Choose a ruleset]
-
+Elektu regularon
 [Reset to %0]
-
+Restarigi al %0
 [ruleset one change %0]
-
+%0 + 1 ŝanĝo
 [ruleset changes %0 %1]
-
+%0 + %1 ŝanĝoj
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Ĉi tiu matĉo ne povas finiĝi. Ŝaltu prestiĝan venkon aŭ agordu templimon.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Prestiĝo kutime aperas post 13 ĝis 28 minutoj, do 30-minuta limo ofte finiĝas per egalludo.
 [Blitz]
-
+Fulmludo
 [ruleset blitz description]
-
+Rapida komenco, frua fino
 [Gentle]
-
+Milda
 [ruleset gentle description]
-
+Indulgaj reguloj por unua matĉo
 [Sandbox]
-
+Sablokesto
 [ruleset sandbox description]
-
+Sen batalo, sen malsato, konstruu ion ajn
 [Bloodbath]
-
+Sangobano
 [ruleset bloodbath description]
-
+Fragilaj, sentimaj armeoj
 [Siege]
-
+Sieĝo
 [ruleset siege description]
-
+Fortikaĵaj muroj kaj longaj militoj
 [Lean years]
-
+Malgrasaj jaroj
 [ruleset lean years description]
-
+Rimedoj apenaŭ rekreskas
 [Gold rush]
-
+Orfebro
 [ruleset gold rush description]
-
+Kio estas sur la mapo, estas ĉio
 [Elite ranks]
-
+Elitaj vicoj
 [ruleset elite ranks description]
-
+Komenci trejnite, ne trejni plu
 [Shifting alliances]
-
+Ŝanĝiĝemaj aliancoj
 [ruleset shifting alliances description]
-
+Teamoj povas ŝanĝiĝi en 60-minuta vetkuro
 [Probability victory]
-
+Probabla venko
 [Off (play it out)]
-
+Malŝaltita (ludi ĝis fino)
 [95% sure]
-
+95% certa
 [97% sure]
-
+97% certa
 [99% sure]
-
+99% certa
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Finas la matĉon kiam la modelo atingas la elektitan certecon. Spektantoj povas vidi la antaŭdiritajn venkoŝancojn en la statistikoj.
 [Changed from %0: %1]
-
+Ŝanĝita kompare kun %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Batalo estas malŝaltita, do la subaj reguloj ne efikas.
 [%0 more rules are at their Standard values.]
-
+%0 pliaj reguloj havas siajn normajn valorojn.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Ludantoj vidas la terenon de la mapo ekde la komenco; malamikaj globuloj restas kaŝitaj.
 [Each team starts with extra resources in its shared pool.]
-
+Ĉiu teamo komencas kun kromaj rimedoj en sia komuna stoko.
 [Units hit harder but have less HP and armor.]
-
+Globuloj frapas pli forte sed havas malpli da vivpoentoj kaj kiraso.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Teamoj povas ataki unu la alian. Malŝaltu por paca matĉo.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Vunditaj globuloj iras kuraciĝi anstataŭ batali ĝis la morto.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Globuloj mortas kiam iliaj vivpoentoj elĉerpiĝas. Malŝaltu por haltigi ilin je 1 vivpoento.
 [Units gain levels at schools.]
-
+Globuloj akiras nivelojn en lernejoj.
 [stat group work]
-
+Tempo de laboristoj
 [stat worker time]
-
+Kiel laboristoj uzis sian tempon
 [stat worker time about]
-
+Kion faris la laboristoj de la kolonio, momenton post momento: laboris por konstruaĵo, laboris ĉe markilo, trejniĝis, manĝis, kuraciĝis, atendis malsataj aŭ vunditaj sen libera manĝejo aŭ malsanejo, aŭ senokupe havis nenion por fari. Sana kolonio tenas la plimulton de siaj laboristoj laborantaj, malmultajn senokupaj kaj neniun atendanta.
 [stat idle workers]
-
+Senokupaj laboristoj
 [stat idle workers about]
-
+La parto de la tempo de laboristoj pasigita sen io por fari. Altaj valoroj signifas pli da laboristoj ol laboro; preskaŭ nulo signifas, ke ĉiu laboristo estas okupata kaj taskoj eble atendas.
 [stat work by job]
-
+Pri kio laboristoj laboris
 [stat work by job about]
-
+Kiom da laboristoj provizis ĉiun specon de konstruaĵo: globulejojn (por fari novajn globulojn), manĝejojn (por fari manĝojn), konstruaĵojn konstruatajn aŭ plibonigatajn, aŭ aliajn konstruaĵojn kiel turojn, lernejojn kaj militistejojn.
 [stat haul distance]
-
+Distanco al rimedoj
 [stat haul distance about]
-
+Kiom malproksime, averaĝe, rikoltanta laboristo estis de la konstruaĵo, kiun ĝi provizis, en mapkvadratoj laŭ rekta linio.
 [stat hauling]
-
+Alportado kaj portado
 [stat hauling about]
-
+Kiel la laboristoj provizantaj konstruaĵojn dividiĝis inter irado al rimedo, rikoltado de ĝi, reportado, kaj liverado aŭ atendado de rimedo atingebla por ili. Plej multe estas irado, do ju pli proksimaj la rimedoj, des pli estas farite.
 [stat eating time]
-
+Laboristoj irantaj manĝi
 [stat eating time about]
-
+Kiom da laboristoj forestis de la laboro por manĝi: irantaj al manĝejo, manĝantaj en ĝi, aŭ malsataj sen manĝejo, kiu povis akcepti ilin. Laboristoj sen manĝejo signifas, ke la kolonio superkreskis siajn manĝejojn aŭ ties nutraĵon.
 [stat inn distance]
-
+Distanco de la manĝejo
 [stat inn distance about]
-
+Kiom malproksime malsataj laboristoj estis, averaĝe dum sia irado, de la manĝejo al kiu ili iris, en mapkvadratoj laŭ rekta linio. Tuta vojaĝo estas proksimume duoble pli. Altaj valoroj signifas, ke manĝejoj estas malproksime de kie laboristoj laboras.
 [stat warriors]
-
+Militistoj
 [stat warriors about]
-
+Kiom da militistoj la kolonio havis. Disigu ĝin por vidi kiom estis apud la hejmo, apud malamika kolonio aŭ sur malfermita tereno. Tereno proksima al ambaŭ kolonioj kalkuliĝas kiel hejmo.
 [stat warrior level]
-
+Meza ataknivelo de militistoj
 [stat warrior level about]
-
+La meza ataknivelo de la militistoj de la kolonio, kalkulante atakrapidon kaj atakforton egale, laŭ la skalo de 1 ĝis 4, kiun la ludo montras. Militistejoj altigas ĝin; novaj netrejnitaj militistoj malaltigas ĝin.
 [stat warrior duties]
-
+Kion militistoj faris
 [stat warrior duties about]
-
+Kiel la militistoj de la kolonio dividiĝis inter tiuj senditaj al militmarkilo, tiuj tiel vunditaj ke ili forlasis la batalon por malsanejo (inkluzive de tiuj kuracataj), kaj tiuj liberaj.
 [stat intruders]
-
+Malamikaj militistoj hejme
 [stat intruders about]
-
+Kiom da malamikaj militistoj estis ene de 16 kvadratoj de la konstruaĵoj de la kolonio. Kie du kolonioj estas proksimaj, ĉiu kalkulas la defendantojn de la alia.
 [stat home defence]
-
+Fortomarĝeno de hejma defendo
 [stat home defence about]
-
+La forto de la propraj militistoj de la kolonio apud ĝiaj konstruaĵoj minus tiu de la malamikaj militistoj tie, kalkulante ĉiun militiston kaj ĉiun el ĝiaj atakniveloj. Sub nulo la kolonio estis superfortita hejme.
 [stat combat death places]
-
+Kie globuloj falis en batalo
 [stat combat death places about]
-
+Kie la globuloj de la kolonio estis kiam ili estis mortigitaj: apud ĝiaj propraj konstruaĵoj, apud konstruaĵoj de malamiko, aŭ sur malfermita tereno inter kolonioj. Perdoj hejme signifas, ke la kolonio estis atakata; perdoj ĉe malamika kolonio signifas, ke ĝi atakis. Tereno proksima al ambaŭ kolonioj kalkuliĝas kiel hejmo.
 [stat band working]
-
+Laborantaj
 [stat band flag work]
-
+Ĉe markilo
 [stat band idle]
-
+Senokupaj
 [stat band training]
-
+Trejniĝantaj
 [stat band unserved]
-
+Neniu libera manĝejo aŭ malsanejo
 [stat band swarms]
-
+Globulejoj
 [stat band inns]
-
+Manĝejoj
 [stat band sites]
-
+Konstruado kaj plibonigo
 [stat band other buildings]
-
+Aliaj konstruaĵoj
 [stat band to resource]
-
+Irante al rimedo
 [stat band harvesting]
-
+Rikoltante
 [stat band carrying]
-
+Reportante
 [stat band delivering]
-
+Liverante aŭ atendante
 [stat band walking to inn]
-
+Irante al manĝejo
 [stat band no inn]
-
+Neniu libera manĝejo
 [stat band at home]
-
+Hejme
 [stat band at enemy]
-
+Ĉe malamika kolonio
 [stat band in the open]
-
+Sur malfermita tereno
 [stat band war flag]
-
+Ĉe militmarkilo
 [stat band seeking healing]
-
+Serĉante kuracadon
 [stat band free]
-
+Liberaj
 [stat unit workers]
-
+laboristoj
 [stat unit worker time]
-
+tempo de laboristoj
 [stat unit working workers]
-
+laboristoj provizantaj konstruaĵojn
 [stat unit squares]
-
+kvadratoj
 [stat unit warriors]
-
+militistoj
 [stat unit attack level]
-
+ataknivelo
 [stat unit enemy warriors]
-
+malamikaj militistoj
 [stat unit strength count]
-
+forto
 [stat view by place]
-
+Laŭ loko

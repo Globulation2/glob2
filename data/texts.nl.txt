@@ -1,59 +1,59 @@
 [AI strategy]
 AI-strategie
 [start recording]
-
+Opname starten
 [stop recording]
-
+Opname stoppen
 [finalizing recording]
-
+Opname afronden…
 [AIMaxima-Summary]
 Balanceert duurzame groei en training en verzamelt legers daarna in golven.
 [AIMaxima-Profile]
-Kernstrategie: Behandelt voedsel, werkers, geboorten, training, bouw en strijd als concurrerende behoeften. Bepaalt legeromvang deels tegenover geschatte vijandelijke kracht en probeert dat leger effectief ter plaatse te krijgen.\n\nEconomie en ontwikkeling: Begroot geboorten op voedsel en arbeid, bewaart vrije tijd voor training en stopt overtollige werkersproductie bij militaire behoefte. Schaalt training op en vermijdt dat te veel infrastructuur voor verbetering buiten werking staat.\n\nVerkenning en beslissingen: Schat vijandelijke krachten uit zichtbare eenheden en onthouden waarnemingen met een aangepast model. Doelen hangen af van waarde, afstand, torens, onbeschermde werkers en volharding. Fruitmissies bevorderen voedselvariatie en bekering.\n\nAanval en verdediging: Reserveert soldaten voor training en verdediging en verzamelt geschikte landtroepen bij bevriende voedselinfrastructuur vóór aanvalsgolven. Reageert lokaal ter verdediging en beoordeelt toegangen tot de kolonie.\n\nAls aanvallen vastlopen: Na vier opeenvolgende mislukte aankomsten van golven schakelt het over op voortdurend versterkte aanvalsvlaggen. Amfibische aanvallen kunnen ook voortdurende versterking gebruiken. Deze terugval lost niet elke blokkade vóór een mogelijke verzameling op.\n\nVergelijking met andere AI's: Integreert voedsel, training, informatie en inzet nauwer. Cabino benadrukt meerdere gebouwaanvallen; Maxima geschatte behoefte en het overbrengen van verzamelde troepen.\n\nSterke en zwakke punten: Onderhoudt groei en militaire vervanging terwijl het zich aanpast aan voedseldruk en waargenomen dreigingen. Vereist voedsel, training en open verzamelruimte; opstoppingen en lange routes kunnen aankomst belemmeren.\n\nMogelijk tegenspel: Betwist onbeschermd graan, herbergen en kazernes vóór de golven verzamelen. Houd een bevoorrade verdediging bijeen en verstoor versterkingsroutes. Verwacht herhaalde druk na de eerste golf.\n\nVerkenning: Krachtschattingen gebruiken waarnemingen en observatiegeschiedenis, geen verborgen totale vijandelijke troepenaantallen.
+Kernstrategie: Behandelt voedsel, werkers, geboorten, training, bouw en strijd als concurrerende behoeften. Bepaalt legeromvang deels tegenover geschatte vijandelijke kracht en probeert dat leger effectief ter plaatse te krijgen.\n\nEconomie en ontwikkeling: Begroot geboorten op voedsel en arbeid, bewaart vrije tijd voor training en stopt overtollige werkersproductie bij militaire behoefte. Schaalt training op en vermijdt dat te veel infrastructuur voor verbetering buiten werking staat.\n\nVerkenning en beslissingen: Schat vijandelijke krachten uit zichtbare eenheden en onthouden waarnemingen met een aangepast model. Doelen hangen af van waarde, afstand, torens, onbeschermde werkers en volharding. Fruitmissies bevorderen voedselvariatie en bekering.\n\nAanval en verdediging: Reserveert soldaten voor training en verdediging en verzamelt geschikte landtroepen bij bevriende voedselinfrastructuur vóór aanvalsgolven. Reageert lokaal ter verdediging en beoordeelt toegangen tot de kolonie.\n\nAls aanvallen vastlopen: Na vier opeenvolgende mislukte aankomsten van golven schakelt het over op voortdurend versterkte aanvalsvlaggen. Amfibische aanvallen kunnen ook voortdurende versterking gebruiken. Deze terugval lost niet elke blokkade vóór een mogelijke verzameling op.\n\nVergelijking met andere AI's: Integreert voedsel, training, informatie en inzet nauwer. Cabino benadrukt meerdere gebouwaanvallen; Maxima geschatte behoefte en het overbrengen van verzamelde troepen.\n\nSterke en zwakke punten: Onderhoudt groei en militaire vervanging terwijl het zich aanpast aan voedseldruk en waargenomen dreigingen. Vereist voedsel, training en open verzamelruimte; opstoppingen en lange routes kunnen aankomst belemmeren.\n\nMogelijk tegenspel: Betwist onbeschermde tarwe, herbergen en kazernes vóór de golven verzamelen. Houd een bevoorrade verdediging bijeen en verstoor versterkingsroutes. Verwacht herhaalde druk na de eerste golf.\n\nVerkenning: Krachtschattingen gebruiken waarnemingen en observatiegeschiedenis, geen verborgen totale vijandelijke troepenaantallen.
 [%0 has left the game]
-%0 heeft het spel verlaten
+%0 heeft het spel verlaten.
 [%0 level %1]
 %0 niveau %1
 [%0 units can't access building]
-%0 globs kunnen het gebouw niet bereiken
+%0 eenheden kunnen het gebouw niet bereiken
 [%0 units can't access flag]
-%0 globs kunnen de vlag niet bereiken
+%0 eenheden kunnen de vlag niet bereiken
 [%0 units can't access fruit]
-%0 globs kunnen het fruit niet bereiken
+%0 eenheden kunnen het fruit niet bereiken
 [%0 units can't access resource]
-%0 globs kunnen de bron niet bereiken
+%0 eenheden kunnen de grondstof niet bereiken
 [%0 units not available]
-%0 globs zijn niet beschikbaar
+%0 eenheden niet beschikbaar
 [%0 units too far from building]
-%0 globs zijn te ver van het gebouw
+%0 eenheden te ver van het gebouw
 [%0 units too far from flag]
-%0 globs zijn te ver van de vlag
+%0 eenheden te ver van de vlag
 [%0 units too far from fruit]
-%0 globs zijn te ver van fruit
+%0 eenheden te ver van het fruit
 [%0 units too far from resource]
-%0 globs zijn te ver van de bron
+%0 eenheden te ver van de grondstof
 [%0 units too low level]
-%0 globs hebben te laag niveau
+%0 eenheden met te laag niveau
 [%0% Uploaded]
 %0% geüpload
 [%0's team unit got converted to your team]
-Een glob van %0's team is overgelopen naar jou
+Een eenheid van het team van %0 is naar jouw team overgelopen
 [abreaviation explanation A]
-A: Alliantie
+A: Bondgenoten
 [abreaviation explanation C]
 C: Stuur berichten naar
 [abreaviation explanation fV]
-fV: Toon alle herbergen (steelt hongerige globs)
+fV: Zicht op herbergen (om eenheden te stelen)
 [abreaviation explanation mV]
-mV: Toon alle markten (om handel te drijven)
+mV: Zicht op markten (om fruit te ruilen)
 [abreaviation explanation V]
-V: Toon alle gebouwen
+V: Zicht op alle gebouwen
 [add map]
-Toevoegen
+Kaart toevoegen
 [add shortcut]
 Sneltoets toevoegen
 [AI Descriptions]
-AI beschrijvingen
+AI-beschrijvingen
 [AI]
 AI
 [ai]
@@ -63,7 +63,7 @@ Bouwt en traint, met groei afgestemd op de voedselvoorziening.
 [AICastor]
 Castor
 [AINicowar-Description]
-Vergroot zijn bevolking, traint krijgers en valt dan aan.
+Vergroot zijn bevolking, traint soldaten en valt dan aan.
 [AINicowar]
 Nicowar
 [AINone-Description]
@@ -75,7 +75,7 @@ Een vergevingsgezinde tegenstander die toch uitbreidt en aanvalt.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Breidt uit en probeert eenheden te bekeren zonder krijgers te maken.
+Breidt uit en probeert eenheden te bekeren zonder soldaten te maken.
 [AIEcono]
 Econo
 [AIWarrush-Description]
@@ -123,9 +123,9 @@ Aanval
 [audio]
 Geluid
 [auto save]
-Autosave
+Automatisch opslaan
 [available lan games]
-Beschikbare LAN spellen
+Beschikbare lokale spellen
 [away:]
 weg:
 [Back]
@@ -133,9 +133,9 @@ Terug
 [backspace]
 backspace
 [barracks explanation 2]
-beter aanvallen
+van je soldaten
 [barracks explanation]
-Leert je eenheden
+Verbetert het vechtniveau
 [barracks]
 Kazerne
 [beach size]
@@ -151,29 +151,29 @@ Bouwen
 [Building Defaults]
 Gebouwen
 [building settings]
-Bouw-standaarden
+Gebouwinstellingen
 [building site]
 bouwplaats
 [Building Tool Box Explanation]
-Shift + Slepen = Vierkant
+Shift + slepen = rechthoek
 [Building Tool Line Explanation]
-Ctrl + Slepen = Lijn
+Ctrl + slepen = lijn
 [Buildings]
 Gebouwen
 [Bullets]
 Kogels
 [campaign editor]
-Campagne bewerken
+Campagne-editor
 [campaign]
 Campagne
 [Can't connect, can't find host]
 Verbinding mislukt: kan de host niet vinden
 [Can't host game, port %0 in use]
-Kan geen spel maken want poort %0 is in gebruik
+Kan geen spel hosten: poort %0 is in gebruik
 [Can't join game, game has started]
-Kan niet deelnemen aan dit spel want het is reeds gestart
+Kan niet meedoen: het spel is al begonnen
 [Can't join game, game is full]
-Kan niet deelnemen aan dit spel want het zit vol.
+Kan niet meedoen: het spel is vol
 [cancel destroy]
 Stop vernietigen
 [cancel repair]
@@ -191,33 +191,33 @@ Hernoem gebied
 [Cherry]
 Kersen
 [choose campaign]
-Kies een missie
+Kies een campagne
 [choose game]
 Kies een spel
 [choose map]
-Kies een speelveld
+Kies een kaart
 [clear area]
-Grondstoffenzone
+Ontruimingsgebied
 [farm area]
 Akkerzone
 [Clearing:]
-ontruimen:
+Ontruimen:
 [clearingflag explanation 2]
-grondstoffen te ontruimen
+
 [clearingflag explanation]
-Roept werkers op om
+Ruimt grondstoffen op
 [clearingflag]
 Ontruimingsvlag
 [closed]
 Gesloten
 [combined vision]
-Zicht op iedereen
+Gedeeld zicht
 [compile]
 Compileer script
 [compose]
 stel samen
 [Computing Fertility]
-Vruchtbaarheid berekenen...
+Vruchtbaarheid berekenen
 [concrete islands terrain]
 Afzonderlijke eilanden
 [connect]
@@ -235,11 +235,11 @@ Ctrl-%0
 [Corn]
 Tarwe
 [crater density]
-Krater dichtheid
+Aantal kraters
 [crater lakes terrain]
 Kraters en meren
 [create map]
-Bewerk speelveld
+Kaart maken
 [credits]
 Met dank aan...
 [ctrl - line]
@@ -259,9 +259,9 @@ Minder eenheden laten werken
 [Defeat Your Oppenents]
 Versla je vijanden
 [defencetower explanation 2]
-die in de buurt komen
+eenheden of gebouwen aan
 [defencetower explanation]
-Valt vijanden aan
+Valt nabije vijandelijke
 [defencetower]
 Toren
 [Defense Map]
@@ -281,19 +281,19 @@ Vernietig
 [display]
 Beeld
 [do nothing]
-doe niets
+Niets doen
 [don't carry anything]
 Draagt niets
 [down]
 beneden
 [edit map]
-Bewerken
+Kaart bewerken
 [editing map]
-Speelveld bewerken
+Kaart bewerken
 [editor shortcuts]
-Kaarteditor
+Editor-sneltoetsen
 [editor]
-Bewerk speelvelden
+Kaarteditor
 [end]
 einde
 [enter]
@@ -301,17 +301,17 @@ Enter
 [equals]
 is gelijk aan
 [ERROR_CANT_LOAD_MAP]
-De kaart kon niet worden geladen: het bestand is beschadigd of heeft een ongeschikte versie.
+De kaart kon niet worden geladen: het bestand is beschadigd of heeft een incompatibele versie.
 [escape]
 Esc
 [explorationflag explanation 2]
-het terrein te verkennen
+
 [explorationflag explanation]
 Roept verkenners op
 [explorationflag]
 Verkenningsvlag
 [Explorer Ratio]
-Verkenner ratio
+Aandeel verkenners
 [Explorer]
 Verkenner
 [explorers]
@@ -353,7 +353,7 @@ Vruchtbaarheid
 [Flag Defaults]
 Vlaggen
 [flag settings explanation]
-De standaard straal van de vlag:
+De standaardstraal van de vlag
 [fog of war]
 Oorlogsmist
 [food]
@@ -369,19 +369,19 @@ van:
 [fruit]
 Fruit
 [fullscreen]
-Volledig Scherm
+Volledig scherm
 [game full]
 Spel is vol
 [game shortcuts]
-Spel
+Spelsneltoetsen
 [Game]
 Spel
 [general settings]
 Algemeen
 [go to event]
-Ga naar laatste gebeurtenis
+Naar gebeurtenis
 [go to home]
-Ga naar basis
+Naar basis
 [goto main menu]
 Terug naar hoofdmenu
 [grass]
@@ -391,11 +391,11 @@ Grondaanval
 [guard area]
 Verdedigingszone
 [GUIMapPreview text 0]
-Selecteer links
+Kies
 [GUIMapPreview text 1]
-een spel/speelveld
+een kaart
 [handmade map]
-Zelfgemaakt speelveld
+Zelfgemaakte kaart
 [Happyness]
 Tevredenheid
 [hard pause]
@@ -403,7 +403,7 @@ Harde pauze
 [Harvest]
 Verzamelen
 [high priority]
-Hoge prioriteit
+hoog
 [hints]
 Tips
 [home]
@@ -415,9 +415,9 @@ Geneest je eenheden
 [hospital]
 Ziekenhuis
 [host]
-Start een server
+Spel hosten
 [hp]
-Sterkte
+Leven
 [Human]
 Mens
 [human]
@@ -429,7 +429,7 @@ Honger
 [In way]
 Op weg
 [increase units working]
-Verhoog aantal werkende eenheden
+Meer eenheden laten werken
 [inn explanation 2]
 
 [inn explanation]
@@ -441,7 +441,7 @@ Insert
 [inside]
 Binnen
 [islands size]
-Eiland grootte
+Eilandgrootte
 [islands terrain]
 Eilanden
 [isles terrain]
@@ -451,13 +451,13 @@ Selecteer volgende
 [jobs]
 werk
 [join a game]
-Verbind met server
+Meedoen aan een spel
 [keyboard settings]
 Toetsenbord
 [lan]
-LAN Spel
+LAN-spel
 [language incomplete]
-Nederlands - Onvolledig
+Nederlands - onvolledig
 [language-code]
 nl
 [language-tr]
@@ -467,7 +467,7 @@ Nederlands
 [left meta]
 Linker Meta
 [left super]
-Linker Super
+Linker Windows-toets
 [left]
 Links
 [level]
@@ -477,23 +477,23 @@ Niveaus
 [load campaign]
 Campagne laden
 [load game]
-Laden
+Spel laden
 [load map]
-Speelveld laden
+Kaart laden
 [load replay]
-Laad herhaling
+Herhaling laden
 [load script]
-Laad script
+Script laden
 [load]
 Laden
 [look around]
 Kijk nog wat rond
 [Lost : %0 has more prestige than you]
-Verloren: %0 heeft meer roem dan jou
+Verloren: %0 heeft meer roem dan jij
 [Lost : your colony is dead]
 Verloren: je kolonie is dood
 [low priority]
-Lage prioriteit
+laag
 [lowquality]
 Lage kwaliteit
 [Magic At. Air]
@@ -503,25 +503,25 @@ Grondschade
 [map description]
 Beschrijving
 [Map Discovered]
-Speelveld volledig zichtbaar
+Kaart onthuld
 [map name]
 Naam
 [map script]
 Script
 [map size x]
-Breedte van speelveld
+Kaartbreedte
 [map size y]
-Hoogte van speelveld
+Kaarthoogte
 [mark map]
-Markeer speelveld voor bondgenoten
+Kaart markeren voor bondgenoten
 [market explanation 2]
-met anderen
+fruit met anderen mogelijk
 [market explanation]
-Verhandel fruit
+Maakt het ruilen van
 [market]
 Markt
 [medium priority]
-Gemiddelde prioriteit
+gemiddeld
 [meta %0]
 Meta-%0
 [Min required level:]
@@ -531,23 +531,23 @@ Min. eenheidsniveau
 [Music volume]
 Volume (muziek)
 [Mute]
-Stilte
+Dempen
 [mute]
-stilte
+dempen
 [new campaign]
 Nieuwe campagne
 [new map]
-Nieuw speelveld
+Nieuwe kaart
 [no fullscreen]
 * niet in volledig scherm
 [No Hints]
 Geen hints
 [no key]
-Geen sleutel
+nog geen toets
 [No Objectives]
 Geen doelen
 [no ressources growth areas]
-niet-groeigebieden
+Geen groeigebieden
 [No]
 Nee
 [Number Of Buildings]
@@ -565,9 +565,9 @@ waarvan
 [ok]
 Ok
 [old islands terrain]
-Ruige Archipel
+Ruige archipel
 [old random terrain]
-Versplinterde Kust
+Versplinterde kust
 [on press]
 Indrukken
 [On the spot]
@@ -575,15 +575,15 @@ Hier
 [on unpress]
 Loslaten
 [open chat box]
-Open chatbox
+Chatvenster openen
 [open load menu]
-Open menu laden
+Laadmenu openen
 [open save menu]
-Open menu opslaan
+Opslagmenu openen
 [open scenario editor]
-Open scriptbewerker
+Scenario-editor openen
 [open teams editor]
-Open teambewerker
+Team-editor openen
 [open]
 Open
 [OpenGL]
@@ -603,25 +603,25 @@ Page up
 [Papyrus]
 Papyrus
 [pause game]
-Pauzeer het spel
+Spel pauzeren
 [pause]
 pauze
 [Paused]
 Gepauzeerd
 [player name]
-Naam speler
+Spelersnaam
 [players]
 Spelers
 [please wait]
-Even geduld alstublieft
+Even geduld
 [power]
 Kracht
 [press space]
-Druk op spatie om verder te gaan
+Druk op spatie om verder te gaan.
 [Prestige Score]
-Roem-score
+Roemscore
 [Prestige Win Enabled]
-Winnen door roem mogelijk
+Winnen door roem aan
 [Prestige]
 Roem
 [Primary Objectives]
@@ -633,27 +633,27 @@ Prioriteit
 [Prune]
 Pruimen
 [quit the editor]
-Verlaat bewerker
+Editor verlaten
 [quit the game]
-Verlaat dit spel
+Spel verlaten
 [quit the replay]
 Verlaat de herhaling
 [quit]
 Afsluiten
 [racetrack explanation 2]
-sneller lopen
+van je eenheden
 [racetrack explanation]
-Leert je eenheden
+Verbetert de loopsnelheid
 [racetrack]
 Racebaan
 [range]
 Bereik
 [ratios]
-Afmetingen
+Verhoudingen
 [remember unit]
 Onthoud eenheidsaantal
 [remove map]
-Verwijderen
+Kaart verwijderen
 [remove shortcut]
 Verwijder sneltoets
 [repair building]
@@ -661,37 +661,37 @@ Start/Stop repareren
 [repair]
 Repareren
 [repeat area]
-Herhaling van speelveld
+keer hetzelfde landschap
 [replay ended]
 Einde van de herhaling
 [restore default shortcuts]
-Herstel standaard toetsbindingen
+Standaardsneltoetsen herstellen
 [return to editor]
-Terug naar bewerker
+Terug naar editor
 [return to game]
 Speel verder
 [return to replay]
 Terug naar herhaling
 [return]
-Terug
+Enter
 [right meta]
 Rechter Meta
 [right super]
-Rechter Super
+Rechter Windows-toets
 [right]
 Rechts
 [river diameter]
-Breedte van rivier
+Rivierbreedte
 [river terrain]
 Rivier
 [sand]
 Zand
 [save before quit?]
-Wil je spel opslaan voordat je aflsuiten?
+Wil je opslaan voordat je afsluit?
 [save game]
-Opslaan
+Spel opslaan
 [save map]
-Speelveld opslaan
+Kaart opslaan
 [save replay]
 Herhaling opslaan
 [save script]
@@ -699,9 +699,9 @@ Script opslaan
 [Save]
 Opslaan
 [school explanation 2]
-beter bouwen
+van je werkers
 [school explanation]
-Leert je eenheden
+Verbetert het bouwniveau
 [school]
 School
 [Script Areas]
@@ -711,7 +711,7 @@ Scroll Lock
 [scroll wheel enabled]
 Muiswiel ingeschakeld
 [Secondary Objectives]
-Randdoelen
+Nevendoelen
 [seeking a job]
 werkzoekend
 [seeking]
@@ -783,15 +783,15 @@ Instellingen
 [shift %0]
 Shift-%0
 [shortcut explanation enter]
-Enter-toets: stuur een bericht
+Enter: stuur een chatbericht
 [shortcut explanation v]
-V-toets: ingedrukt houden om te spreken
+V: ingedrukt houden om te spreken
 [show areas]
-Toon gebieden
+Gebieden tonen
 [show flags]
-Toon vlaggen
+Vlaggen tonen
 [show main menu]
-Toon Hoofdmenu
+Hoofdmenu tonen
 [skin]
 Uiterlijk
 [smoothing]
@@ -799,15 +799,15 @@ Egalisering
 [space]
 Spatie
 [start mission]
-Start missie
+Missie starten
 [start new campaign]
-Start nieuwe campagne
+Nieuwe campagne starten
 [Start]
 Starten
 [Starving Map]
-Uitgehongerd
+Hongerkaart
 [starving]
-stervende
+uitgehongerd
 [Statistics]
 Statistieken
 [Still (i)]
@@ -837,17 +837,17 @@ Moeras
 [swarm explanation]
 Maakt nieuwe eenheden
 [swarm]
-zwerm
+Zwerm
 [Swim]
 Zwemmen
 [swimmingpool explanation 2]
-sneller zwemmen
+van je eenheden
 [swimmingpool explanation]
-Leert je eenheden
+Verbetert de zwemsnelheid
 [swimmingpool]
 Zwembad
 [switch to adding areas]
-Voeg gebieden toe
+Gebieden toevoegen
 [switch to area brush 1]
 Gebruik patroon 1
 [switch to area brush 2]
@@ -865,21 +865,21 @@ Gebruik patroon 7
 [switch to area brush 8]
 Gebruik patroon 8
 [switch to building view]
-Schakel naar gebouwen scherm
+Naar gebouwenweergave
 [switch to flag view]
-Schakel naar vlaggen scherm
+Naar vlaggenweergave
 [switch to removing areas]
-Verwijder gebieden
+Gebieden verwijderen
 [switch to teams view]
-Schakel naar teams scherm
+Naar teamweergave
 [switch to terrain view]
-Schakel naar terrein scherm
+Naar terreinweergave
 [sys req]
 Sys req
 [tab]
 Tab
 [teams editor]
-Team-bewerker
+Team-editor
 [Teams Fixed]
 Vaste teams
 [teams]
@@ -899,7 +899,7 @@ De ontruimingsvlag wordt aangevallen
 [the defencetower is finished]
 De toren is voltooid
 [the defencetower is under attack]
-Je defensie ligt onder vuur
+De toren wordt aangevallen
 [the explorationflag is finished]
 De verkenningsvlag is klaar
 [the explorationflag is under attack]
@@ -913,13 +913,13 @@ Het ziekenhuis is voltooid
 [the hospital is under attack]
 Het ziekenhuis wordt aangevallen
 [The host has cancelled the game]
-De host heeft het spel geannulleerd
+De host heeft het spel geannuleerd
 [the inn is finished]
 De herberg is voltooid
 [the inn is under attack]
 De herberg wordt aangevallen
 [the maps]
-Speelvelden
+Kaarten
 [the market is finished]
 De markt is voltooid
 [the market is under attack]
@@ -937,7 +937,7 @@ De school wordt aangevallen
 [the stonewall is finished]
 Er is een stuk muur af
 [the stonewall is under attack]
-De vijand nadert je muren
+De vijand staat bij je muren
 [the swarm is finished]
 De zwerm is voltooid
 [the swarm is under attack]
@@ -957,13 +957,13 @@ aan:
 [toggle draw accessibility aids]
 Teamnummers aan/uit
 [toggle draw information]
-Tekeninformatie aan/uitschakelen
+Informatie tonen aan/uit
 [toggle draw unit paths]
 Eenheidspaden aan/uit
 [toggle menu screen]
-Menu scherm aan/uitschakelen
+Menuscherm aan/uit
 [toggle recording voice]
-Spraak opname aan/uitschakelen
+Spraakopname aan/uit
 [Total Attack Power]
 Totale aanvalskracht
 [Total Defence Power]
@@ -971,17 +971,17 @@ Totale verdedigingskracht
 [Total Hitpoints]
 Totale levenspunten
 [Total prestige reached]
-Roem-limiet bereikt
+Totale roem bereikt
 [Total]
 Totaal
 [tutorial text 1]
-Welkom bij Globulation 2! Deze tutorial zal u alles leren over het bouwen van herbergen, het verkennen van gebieden en het vernietigen van uw vijanden! Als dit de eerste keer is dat u dit spel speelt is dit een absolute aanrader!
+Welkom bij de basistutorial van Globulation 2! Hier leer je alles, van herbergen bouwen en gebieden verkennen tot vijanden vernietigen. Er valt genoeg nuttigs te leren!
 [tutorial text 2]
 Nu je je al wat thuis voelt in Globulation 2 is het eens tijd om gebouwen zoals racebanen, zwembaden en scholen te leren kennen.
 [tutorial text 3]
-Je kan al goed met Globulation 2 onderweg. In deze tutorial worden je meerster over krijgers, kazernes en upgrades.
+Goed gedaan dat je zo ver bent gekomen. Nu gaan we verder met soldaten, kazernes en verbeteringen.
 [tutorial text 4]
-Je bent er bijna. Nu komt het leukste deel: aanvallen! Daarna weet je genoeg over Globulation 2 om zelf spellen tegen de computer te spelen en uiteindelijk het online op de Ysagoon (YOG) server het tegen Globulation 2's beste spelers op te nemen.
+Je bent bijna klaar. Alleen vlaggen en aanvallen blijven nog over. Daarna weet je genoeg om aangepaste spellen te proberen en uiteindelijk online te spelen tegen de beste spelers van Globulation 2.
 [tutorial]
 Tutorial
 [Uncontrolled]
@@ -991,9 +991,9 @@ Ongedaan maken
 [uniform terrain]
 Effen terrein
 [Unit editor]
-Eenheid bewerken
+Eenheden-editor
 [unit settings explanation]
-Het standaard aantal werkende eenheden:
+Het standaardaantal toegewezen eenheden
 [units working]
  werkende eenheden
 [Units]
@@ -1009,7 +1009,7 @@ Omhoog
 [upgrade building]
 Start/Stop verbeteren
 [Upgrade Defaults]
-Upgrades
+Verbeteringen
 [upgrade]
 Verbeter
 [username]
@@ -1023,19 +1023,19 @@ Volume (spraak)
 [waiting for %0]
 Wachten op %0
 [waiting for key]
-Wachten op sleutel
+Wachten op toets...
 [Walk]
 Lopen
 [warflag explanation 2]
-om aan te vallen
+
 [warflag explanation]
 Roept soldaten op
 [warflag]
 Oorlogsvlag
 [Warning, you need to reboot the game for changes to take effect]
-Let op, je moet het spel opnieuw opstarten om de veranderingen te activeren
+Let op: start het spel opnieuw om de wijzigingen toe te passen
 [Warrior Ratio]
-Soldaat ratio
+Aandeel soldaten
 [Warrior]
 Soldaat
 [warriors]
@@ -1043,7 +1043,7 @@ soldaten
 [watch again]
 Bekijk opnieuw
 [watching:]
-Speler:
+Je bekijkt:
 [water]
 Water
 [Wheat]
@@ -1057,13 +1057,13 @@ Gewonnen: je bondgenoot %0 heeft de meeste roem
 [Wood]
 Hout
 [wood]
-Hout
+hout
 [Worker Ratio]
-Werker ratio
+Aandeel werkers
 [Worker]
 Werker
 [workers]
-Werkers
+werkers
 [working]
 Werkend
 [wounded]
@@ -1071,17 +1071,17 @@ gewond
 [Yes]
 Ja
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-De verbinding met de YOG is geweigerd omdat uw globulation2 client te oud is.
+De YOG-metaserver heeft de verbinding geweigerd omdat je Globulation 2-client verouderd is. Download de nieuwste versie via www.globulation2.org om online te spelen.
 [you have lost]
 Je hebt verloren!
 [you have won]
 Je hebt gewonnen!
 [You where kicked from the game]
-Je werd uit het spel geschopt door de host!
+Je bent uit het spel verwijderd
 [Your %0 are under attack]
-Je %0 wordt aangevallen
+Aanval op je eenheid: %0
 [Your unit got converted to %0's team]
-Een van jouw globs is overgelopen naar %0's team
+Een van je eenheden is overgelopen naar het team van %0
 [game speed]
 Spelsnelheid
 [decrease game speed]
@@ -1095,9 +1095,9 @@ Snelheid: 1x (multiplayer)
 [game speed help]
 Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
 [AICortex-Description]
-Verzamelde golven krijgers met voedsel en genezing als steun.
+Verzamelde golven soldaten met voedsel en genezing als steun.
 [AIMaxima-Description]
-Verkent, bouwt de voedselvoorziening uit en verzamelt golven krijgers.
+Verkent, bouwt de voedselvoorziening uit en verzamelt golven soldaten.
 [AIMaxima]
 Maxima
 [ERROR_CANT_SAVE_CAMPAIGN]
@@ -1113,27 +1113,27 @@ Nog aan het werk: %0
 [AI strategy & counterplay]
 AI-strategie en tegenspel
 [AICastor-Profile]
-Kernstrategie: Investeert in een productieve kolonie en technologie vóór grote aanvallen. Bouwprojecten op prioriteit ontwikkelen de nederzetting; ontwikkeling, militaire infrastructuur en tijd vergroten de oorlogsbereidheid.\n\nEconomie en ontwikkeling: Onderzoekt vochtigheid, graangroei, obstakels en bereik van werkers. Beheert voedseluitbreiding, verbeteringen en verdediging naast productie.\n\nAanval en verdediging: Schat de aanvalskracht van gezonde soldaten en valt aan wanneer kracht- of tijdvoorwaarden gelden. Verkiest bereikbare, eerder geziene gebouwen, vooral kazernes en scholen, en verplaatst aanvalsvlaggen naar waardevolle doelen.\n\nVergelijking met andere AI's: Zorgvuldiger met terrein en doelwaarde dan Numbi. Geduldiger dan Warrush; ruilt vroege druk in voor een ontwikkelde basis en sterke troepen.\n\nSterke en zwakke punten: Brede infrastructuurplanning en waardevolle militaire doelen geven aanvallen richting. Voorbereiding kost tijd, zodat snelle tegenstanders grondstoffen kunnen betwisten voordat de hoofdmacht klaar is.\n\nMogelijk tegenspel: Betwist uitbreiding vroeg. Bescherm kazernes, scholen en voedsel en houd reserves bij aanvallen op de ontwikkelde nederzetting.
+Kernstrategie: Investeert in een productieve kolonie en technologie vóór grote aanvallen. Bouwprojecten op prioriteit ontwikkelen de nederzetting; ontwikkeling, militaire infrastructuur en tijd vergroten de oorlogsbereidheid.\n\nEconomie en ontwikkeling: Onderzoekt vochtigheid, tarwegroei, obstakels en bereik van werkers. Beheert voedseluitbreiding, verbeteringen en verdediging naast productie.\n\nAanval en verdediging: Schat de aanvalskracht van gezonde soldaten en valt aan wanneer kracht- of tijdvoorwaarden gelden. Verkiest bereikbare, eerder geziene gebouwen, vooral kazernes en scholen, en verplaatst aanvalsvlaggen naar waardevolle doelen.\n\nVergelijking met andere AI's: Zorgvuldiger met terrein en doelwaarde dan Numbi. Geduldiger dan Warrush; ruilt vroege druk in voor een ontwikkelde basis en sterke troepen.\n\nSterke en zwakke punten: Brede infrastructuurplanning en waardevolle militaire doelen geven aanvallen richting. Voorbereiding kost tijd, zodat snelle tegenstanders grondstoffen kunnen betwisten voordat de hoofdmacht klaar is.\n\nMogelijk tegenspel: Betwist uitbreiding vroeg. Bescherm kazernes, scholen en voedsel en houd reserves bij aanvallen op de ontwikkelde nederzetting.
 [AICastor-Summary]
 Ontwikkelt een versterkte kolonie en valt daarna militaire en wetenschappelijke gebouwen aan.
 [AICortex-Profile]
-Kernstrategie: Gebruikt reactieve prioriteiten voor een werkende economie en zet vrije arbeid om in voedsel, technologie en militaire druk. Het normale beleid gebruikt regels; experimenten met geleerd beleid vereisen aparte configuratie.\n\nEconomie en ontwikkeling: Stemt werkersproductie af op personeelsvraag en houdt geboorten gaande. Voedselproblemen remmen uitgaven aan uitbreiding en technologie. Voegt zwemmen toe wanneer toegang via water duidelijk helpt.\n\nAanval en verdediging: Bereidt aanvallen voor op basis van waargenomen vijandelijke technologie en beschikbare troepen. Veldtochten over water vragen zwemmende soldaten. Ondersteunt lange veldtochten met vooruitgeschoven herbergen en ziekenhuizen en kan troepen verzamelen vóór de opmars.\n\nVolharding en noodsituaties: Zet een offensief door ondanks kleine verstoringen, zonder telkens huiswaarts te marcheren. Ernstige aanvallen kunnen verdedigers terugroepen. Vroege nood kan uitsluitend soldatenproductie en een ziekenhuis activeren; hongersnood kan een kleinere wanhoopsaanval veroorzaken.\n\nVergelijking met andere AI's: Meer aandacht voor vooruitgeschoven steun dan Warrush. Maxima gaat verder in duurzame geboorten, training en inzet tegenover geschatte vijandelijke kracht.\n\nSterke en zwakke punten: Verbindt druk met voedsel, genezing en bereikbaarheid. Vooruitgeschoven infrastructuur moet bevoorraad blijven en voortdurende geboorten kunnen beperkt voedsel belasten. Noodprioriteiten dwingen keuzes tussen groei en overleven.\n\nMogelijk tegenspel: Betwist vooruitgeschoven herbergen, ziekenhuizen en graan. Houd verdedigers bijeen; kleine verstoringen overtuigen het mogelijk niet om terug te trekken.\n\nVerkenning: Gebruikt ontdekte vijandelijke gebouwen en waargenomen vijandelijke troepen.
+Kernstrategie: Gebruikt reactieve prioriteiten voor een werkende economie en zet vrije arbeid om in voedsel, technologie en militaire druk. Het normale beleid gebruikt regels; experimenten met geleerd beleid vereisen aparte configuratie.\n\nEconomie en ontwikkeling: Stemt werkersproductie af op personeelsvraag en houdt geboorten gaande. Voedselproblemen remmen uitgaven aan uitbreiding en technologie. Voegt zwemmen toe wanneer toegang via water duidelijk helpt.\n\nAanval en verdediging: Bereidt aanvallen voor op basis van waargenomen vijandelijke technologie en beschikbare troepen. Veldtochten over water vragen zwemmende soldaten. Ondersteunt lange veldtochten met vooruitgeschoven herbergen en ziekenhuizen en kan troepen verzamelen vóór de opmars.\n\nVolharding en noodsituaties: Zet een offensief door ondanks kleine verstoringen, zonder telkens huiswaarts te marcheren. Ernstige aanvallen kunnen verdedigers terugroepen. Vroege nood kan uitsluitend soldatenproductie en een ziekenhuis activeren; hongersnood kan een kleinere wanhoopsaanval veroorzaken.\n\nVergelijking met andere AI's: Meer aandacht voor vooruitgeschoven steun dan Warrush. Maxima gaat verder in duurzame geboorten, training en inzet tegenover geschatte vijandelijke kracht.\n\nSterke en zwakke punten: Verbindt druk met voedsel, genezing en bereikbaarheid. Vooruitgeschoven infrastructuur moet bevoorraad blijven en voortdurende geboorten kunnen beperkt voedsel belasten. Noodprioriteiten dwingen keuzes tussen groei en overleven.\n\nMogelijk tegenspel: Betwist vooruitgeschoven herbergen, ziekenhuizen en tarwe. Houd verdedigers bijeen; kleine verstoringen overtuigen het mogelijk niet om terug te trekken.\n\nVerkenning: Gebruikt ontdekte vijandelijke gebouwen en waargenomen vijandelijke troepen.
 [AICortex-Summary]
 Ondersteunt volgehouden offensieven met vooruitgeschoven voedsel en genezing.
 [AINicowar-Profile]
-Kernstrategie: Combineert groei, training, verbeteringen en oorlog via overlappende voorwaarden. Kan aanvallen tijdens uitbreiding en de economie naar herstel sturen wanneer voeding faalt.\n\nOpening: Het meegeleverde agressieve profiel bereidt oorlog voor bij vijf eenheden totaal en staat oorlog toe met vijf soldaten, ook van niveau nul. Streeft naar drie aanvalsvlaggen met elk vijf soldaten. Aangepaste strategiebestanden kunnen deze drempels wijzigen.\n\nEconomie en ontwikkeling: Breidt voedsel- en geboortecapaciteit uit, traint werkers, ontwikkelt zwemmen en beweging en verbetert gebouwen. Past voedselbezetting aan, reageert op verhongering en zoekt fruit.\n\nAanval en verdediging: Neemt een steekproef van bereikbare vijandelijke gebouwen als doelen. Kan met ruimvlaggen door grondstoffen geblokkeerde routes openen. Verdedigingsvlaggen dekken groepen bedreigde eenheden en gebouwen. Later vallen voor grondaanvallen getrainde verkenners vijandelijke groepen aan.\n\nVergelijking met andere AI's: Deelt Warrushs vroege agressie met meer vervolgontwikkeling. Anders dan Cabino geeft het niet systematisch voorrang aan ziekenhuizen en herbergen.\n\nSterke en zwakke punten: Brede tactieken combineren vroege druk met verdere ontwikkeling. Willekeurige doelen kunnen inspanning verspillen aan minder waardevolle gebouwen. De drempels geven niet Maxima's gedetailleerde schatting van vijandelijke slagkracht.\n\nMogelijk tegenspel: Verwacht een vroege aanval. Bescherm voedsel en werkers, betwist uitbreiding en bereid je bij geavanceerde training voor op verkennersaanvallen.
+Kernstrategie: Combineert groei, training, verbeteringen en oorlog via overlappende voorwaarden. Kan aanvallen tijdens uitbreiding en de economie naar herstel sturen wanneer voeding faalt.\n\nOpening: Het meegeleverde agressieve profiel bereidt oorlog voor bij vijf eenheden totaal en staat oorlog toe met vijf soldaten, ook van niveau nul. Streeft naar drie aanvalsvlaggen met elk vijf soldaten. Aangepaste strategiebestanden kunnen deze drempels wijzigen.\n\nEconomie en ontwikkeling: Breidt voedsel- en geboortecapaciteit uit, traint werkers, ontwikkelt zwemmen en beweging en verbetert gebouwen. Past voedselbezetting aan, reageert op verhongering en zoekt fruit.\n\nAanval en verdediging: Neemt een steekproef van bereikbare vijandelijke gebouwen als doelen. Kan met ontruimingsvlaggen door grondstoffen geblokkeerde routes openen. Verdedigingsvlaggen dekken groepen bedreigde eenheden en gebouwen. Later vallen voor grondaanvallen getrainde verkenners vijandelijke groepen aan.\n\nVergelijking met andere AI's: Deelt Warrushs vroege agressie met meer vervolgontwikkeling. Anders dan Cabino geeft het niet systematisch voorrang aan ziekenhuizen en herbergen.\n\nSterke en zwakke punten: Brede tactieken combineren vroege druk met verdere ontwikkeling. Willekeurige doelen kunnen inspanning verspillen aan minder waardevolle gebouwen. De drempels geven niet Maxima's gedetailleerde schatting van vijandelijke slagkracht.\n\nMogelijk tegenspel: Verwacht een vroege aanval. Bescherm voedsel en werkers, betwist uitbreiding en bereid je bij geavanceerde training voor op verkennersaanvallen.
 [AINicowar-Summary]
 Vroege stormloop gesteund door landbouw, verbeteringen, verdediging en verkennersaanvallen.
 [AINone-Profile]
-Strategie: De AI geeft geen commando's.\n\nSterke punten: Een voorspelbare, inactieve tegenstander voor experimenten.\n\nZwakke punten: breidt zich niet uit en past zich niet aan.
+Kernstrategie: Geeft geen AI-opdrachten.\n\nSterke punten: Een voorspelbare, inactieve tegenstander voor experimenten.\n\nZwakke punten: Breidt niet uit en past zich niet aan.
 [AINone-Summary]
 Een inactieve kolonie voor experimenten.
 [AINumbi-Profile]
-Kernstrategie: Ontwikkelt eerst voedsel en bevolking, voegt genezing, wetenschap en training toe en schakelt dan over op oorlog. De grote fasen volgen de tijd, niet de voortgang van de tegenstander.\n\nEconomie en ontwikkeling: Stemt de behoefte aan gebouwen af op de bevolking en schat nabijgelegen graan. Latere fasen voegen verbeteringen, verdediging en uitbreiding toe voor het groeiende leger.\n\nAanval en verdediging: Valt aan met genoeg gezonde strijders of na een tijdslimiet. Plaatst oorlogsvlaggen op een steekproef van vijandelijke gebouwen. Bij te weinig strijdkracht verwijdert het aanvalsvlaggen en verhoogt het de drempels voor een nieuwe poging.\n\nVergelijking met andere AI's: Voorspelbaarder dan Castor of Nicowar. Castor let beter op terrein en doelwaarde; Nicowar zet veel eerder druk.\n\nSterke en zwakke punten: Brede ondersteuning kan het gevaarlijk maken na ongestoorde opbouw, maar het tijdschema past niet altijd bij de strijd. Eenvoudige doelkeuze en langere pauzes na verliezen maken aanvallen voorspelbaar.\n\nMogelijk tegenspel: Zet druk vóór de militaire fase. Ontwikkel voedsel en training achter je aanvallen en benut de pauze nadat je een aanval afslaat.\n\nVerkenning: De aanvalsroutine leest vijandelijke gebouwposities rechtstreeks zonder zichtcontrole.
+Kernstrategie: Ontwikkelt eerst voedsel en bevolking, voegt genezing, wetenschap en training toe en schakelt dan over op oorlog. De grote fasen volgen de tijd, niet de voortgang van de tegenstander.\n\nEconomie en ontwikkeling: Stemt de behoefte aan gebouwen af op de bevolking en schat nabijgelegen tarwe. Latere fasen voegen verbeteringen, verdediging en uitbreiding toe voor het groeiende leger.\n\nAanval en verdediging: Valt aan met genoeg gezonde strijders of na een tijdslimiet. Plaatst oorlogsvlaggen op een steekproef van vijandelijke gebouwen. Bij te weinig strijdkracht verwijdert het aanvalsvlaggen en verhoogt het de drempels voor een nieuwe poging.\n\nVergelijking met andere AI's: Voorspelbaarder dan Castor of Nicowar. Castor let beter op terrein en doelwaarde; Nicowar zet veel eerder druk.\n\nSterke en zwakke punten: Brede ondersteuning kan het gevaarlijk maken na ongestoorde opbouw, maar het tijdschema past niet altijd bij de strijd. Eenvoudige doelkeuze en langere pauzes na verliezen maken aanvallen voorspelbaar.\n\nMogelijk tegenspel: Zet druk vóór de militaire fase. Ontwikkel voedsel en training achter je aanvallen en benut de pauze nadat je een aanval afslaat.\n\nVerkenning: De aanvalsroutine leest vijandelijke gebouwposities rechtstreeks zonder zichtcontrole.
 [AINumbi-Summary]
 Bouwt de kolonie geleidelijk volgens een tijdschema en valt daarna massaal aan.
 [AIEcono-Profile]
-Kernstrategie: Produceert werkers en verkenners, breidt de economie uit en lokt vijandelijke eenheden met voedsel en fruit. Heeft geen gewoon soldatenoffensief.\n\nEconomie en ontwikkeling: Bouwt herbergen en zwermen bij graan, voegt onderwijs en bewegingstraining toe en verbetert infrastructuur. Volgt voedselvoorraden en vervangt oude herbergen en zwermen als hun grondstoffenpositie verslechtert.\n\nLandbouw en bekering: Beschermt hernieuwbaar graan en hout bij water. Stuurt verkenners naar fruit en vijandelijke kolonies en biedt vijanden voedsel aan bij het zoeken naar fruit. Beter voedsel en fruit kunnen overlopers aantrekken.\n\nVergelijking met andere AI's: De meest gespecialiseerde economische tegenstander. Cabino en Maxima zoeken ook fruit, maar combineren dat met legers.\n\nSterke en zwakke punten: Kan groeien terwijl militaire tegenstanders uitgeput raken, met bekering als extra concurrentie. Produceert geen soldaten tegen een langdurige aanval. Voedsel, fruit, geografie en overwinningsregels bepalen de kansen sterk.\n\nMogelijk tegenspel: Zet druk op onbeschermde uitbreiding. Bevoorraad eigen herbergen met voedsel en fruit om eenheden te behouden. Put je kolonie niet uit met onnodige gevechten terwijl het groeit.
+Kernstrategie: Produceert werkers en verkenners, breidt de economie uit en lokt vijandelijke eenheden met voedsel en fruit. Heeft geen gewoon soldatenoffensief.\n\nEconomie en ontwikkeling: Bouwt herbergen en zwermen bij tarwe, voegt onderwijs en bewegingstraining toe en verbetert infrastructuur. Volgt voedselvoorraden en vervangt oude herbergen en zwermen als hun grondstoffenpositie verslechtert.\n\nLandbouw en bekering: Beschermt hernieuwbare tarwe en hout bij water. Stuurt verkenners naar fruit en vijandelijke kolonies en biedt vijanden voedsel aan bij het zoeken naar fruit. Beter voedsel en fruit kunnen overlopers aantrekken.\n\nVergelijking met andere AI's: De meest gespecialiseerde economische tegenstander. Cabino en Maxima zoeken ook fruit, maar combineren dat met legers.\n\nSterke en zwakke punten: Kan groeien terwijl militaire tegenstanders uitgeput raken, met bekering als extra concurrentie. Produceert geen soldaten tegen een langdurige aanval. Voedsel, fruit, geografie en overwinningsregels bepalen de kansen sterk.\n\nMogelijk tegenspel: Zet druk op onbeschermde uitbreiding. Bevoorraad eigen herbergen met voedsel en fruit om eenheden te behouden. Put je kolonie niet uit met onnodige gevechten terwijl het groeit.
 [AIEcono-Summary]
 Bouwt een voedselrijke kolonie en werft overlopers zonder soldaten te produceren.
 [AIWarrush-Profile]
@@ -1145,7 +1145,7 @@ Kernstrategie: Verdeelt productie over bouw, verbeteringen, verdediging, aanvall
 [AICabino-Summary]
 Coördineert groei en getrainde aanvallen en richt zich eerst op genezing en voedsel.
 [Algae]
-zeewier
+Zeewier
 [Beach size]
 Strandgrootte
 [Blue]
@@ -1165,9 +1165,9 @@ Afzonderlijke eilanden
 [Conquest only]
 Alleen verovering
 [Conquest or prestige]
-Verovering of prestige
+Verovering of roem
 [Could not launch this map. Your setup is retained; try again.]
-Kan deze kaart niet starten. Uw instellingen blijven behouden; probeer het opnieuw.
+Kan deze kaart niet starten. Je instellingen blijven behouden; probeer het opnieuw.
 [Could not load this map. Choose another map or retry.]
 Kan deze kaart niet laden. Kies een andere kaart of probeer het opnieuw.
 [Crater lakes]
@@ -1187,7 +1187,7 @@ Extra kolonietoewijzingen blijven behouden voor grotere kaarten.
 [Extra islands]
 Extra eilanden
 [FFA]
-Iedereen tegen iedereen
+Ieder voor zich
 [Fruit]
 Vruchten
 [Game Rules]
@@ -1211,17 +1211,17 @@ Hoogte
 [Invalid colony count.]
 Ongeldig aantal kolonies.
 [Island size]
-Grootte van het eiland
+Eilandgrootte
 [Islands]
 Eilanden
 [Isles]
-Kleine eilandjes
+Eilandjes
 [Lake density]
 Merendichtheid
 [Landscape]
 Landschap
 [Last colony standing]
-Laatste kolonie die nog overeind staat
+Laatste kolonie over
 [Layout]
 Indeling
 [Magenta]
@@ -1237,23 +1237,23 @@ Gemiddeld - Experimenteel
 [No AI orders]
 Geen AI-opdrachten
 [Old islands]
-Ruige Archipel
+Ruige archipel
 [Old random]
-Versplinterde Kust
+Versplinterde kust
 [Open at least one colony to start a match.]
 Open minstens één kolonie om een wedstrijd te starten.
 [Open book]
-Geopenbaarde wereld
+Open boek
 [Pink]
 Roze
 [Play this map]
 Speel deze kaart
 [Players & Teams]
-Spelers & Teams
+Spelers en teams
 [Premade maps]
-Vooraf gemaakte kaarten
+Kant-en-klare kaarten
 [Preview ready. Start plays this exact map.]
-Voorbeeld klaar. Bij het starten van het spel wordt deze exacte kaart gebruikt.
+Voorbeeld klaar. Start speelt precies deze kaart.
 [Regenerate all]
 Alles opnieuw genereren
 [Generating preview...]
@@ -1273,7 +1273,7 @@ Rood
 [Repeat landscape]
 Herhaal landschap
 [Resources]
-Hulpbronnen
+Grondstoffen
 [River]
 Rivier
 [River width]
@@ -1303,7 +1303,7 @@ Terrein
 [Victory]
 Overwinning
 [Watch game]
-Bekijk spel
+Spel bekijken
 [Water weight]
 Wateraandeel
 [White]
@@ -1333,9 +1333,9 @@ Verandert het tempo van de hele simulatie.
 [Choose whether teams can change during the match.]
 Kies of teams tijdens de wedstrijd kunnen wisselen.
 [Classic colony building]
-Traditionele kolonieontwikkeling
+Klassieke kolonieopbouw
 [Dimensions and colony count are set above.]
-Afmetingen en kolonietelling zijn hierboven ingesteld.
+Afmetingen en aantal kolonies stel je hierboven in.
 [Generate & watch]
 Genereer en bekijk
 [Info]
@@ -1345,7 +1345,7 @@ Kaartgedefinieerde starteenheden
 [No maps in this library.]
 Geen kaarten in deze bibliotheek.
 [Premade maps retain their authored starting units.]
-Bestaande kaarten behouden de starteenheden die de maker heeft gekozen.
+Kant-en-klare kaarten behouden de starteenheden van de maker.
 [Start with terrain known]
 Begin met bekend terrein
 [This colony will not join the match.]
@@ -1361,7 +1361,7 @@ Jij bestuurt deze kolonie.
 [controllers]
 mensen en AI’s
 [Use]
-Selecteer
+Gebruiken
 [Lime]
 Limoengroen
 [Teal]
@@ -1373,21 +1373,21 @@ Kaartvoorbeeld bijwerken...
 [Generation failed. Adjust settings or press Start to retry.]
 Generatie mislukt. Pas de instellingen aan of druk op Start om het opnieuw te proberen.
 [Preview unavailable. Adjust settings or start to retry.]
-Voorbeeld niet beschikbaar. Wijzig de instellingen of start het spel om het opnieuw te proberen.
+Voorbeeld niet beschikbaar. Wijzig de instellingen of start om het opnieuw te proberen.
 [automatic torus view]
 Automatische torusweergave
 [toggle torus view]
 Wissel tussen 2D- en torusweergave
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 tegen 2 heeft vier open kolonies nodig. Jij versus iedereen heeft een mens nodig.
+2 tegen 2 heeft vier open kolonies nodig. Jij tegen iedereen heeft een mens nodig.
 [Alliance]
 Alliantie
 [Choose a rule to change it.]
 Kies een regel om deze te wijzigen.
 [Conquest only removes prestige victory; map scripts still apply.]
-Overwinning alleen door verovering schakelt prestige-overwinning uit; kaartscripts zijn nog steeds van toepassing.
+Alleen verovering schakelt de roemoverwinning uit; kaartscripts blijven gelden.
 [Control]
-Koloniebesturing
+Besturing
 [Controller]
 Bestuurd door
 [Generate preview]
@@ -1401,13 +1401,13 @@ Kaartbron
 [Map-defined]
 Kaartgedefinieerd
 [Match format]
-Spelformaat
+Wedstrijdvorm
 [No current preview]
 Geen actueel voorbeeld
 [Quick clash: 2x speed; generated maps start with 8 workers.]
 Snelle strijd: dubbele snelheid; gegenereerde kaarten beginnen met 8 werkers.
 [Reroll]
-Genereer nog een kaart
+Opnieuw
 [Randomize]
 Willekeurig genereren
 [Reset to defaults]
@@ -1417,33 +1417,33 @@ Regelset
 [Select a map from the library.]
 Selecteer een kaart uit de bibliotheek.
 [Starting workers affects generated maps only.]
-Het initiële aantal werkers geldt alleen voor gegenereerde kaarten.
+Werkers bij aanvang gelden alleen voor gegenereerde kaarten.
 [Unavailable]
 Niet beschikbaar
 [Use selection]
 Gebruik selectie
 [Quick clash on premade maps: only speed changes (2x).]
-Snelle strijd op vooraf gemaakte kaarten: alleen de snelheid verandert (dubbele snelheid).
+Snelle strijd op kant-en-klare kaarten: alleen de snelheid verandert (2x).
 [Generate a preview to explore this world.]
 Genereer een voorbeeld om deze wereld te verkennen.
 [More workers jump-start colony growth. Changes the generated map.]
-Meer werkers versnellen de groei van de kolonie. Deze instelling verandert de gegenereerde kaart.
+Meer werkers geven de kolonie een vliegende start. Verandert de gegenereerde kaart.
 [No warriors]
-Geen krijgers
+Geen soldaten
 [settings Add key to sequence]
 Toets aan reeks toevoegen
 [settings Add shortcut]
 Sneltoets toevoegen
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Gebruik het muiswiel om het aantal toegewezen eenheden te wijzigen. Als deze optie is uitgeschakeld, houdt u de Ctrl-toets ingedrukt om het wiel te gebruiken. Houd de Shift-toets ingedrukt om de vlagradius aan te passen. Deze optie regelt ook de muiswielinvoer in andere menu's.
+Wijzig toegewezen eenheden met het muiswiel. Uit: houd Ctrl ingedrukt. Shift past de vlagstraal aan. Geldt ook voor het muiswiel in andere menu's.
 [settings Adjust music and voice volume.]
 Pas het muziek- en stemvolume aan.
 [settings Adjust the pace of play.]
 Pas de snelheid van het spel aan.
 [settings Advanced binding]
-Geavanceerde sneltoetsinstellingen
+Geavanceerd toewijzen
 [settings Artwork & effects]
-Grafische vormgeving en effecten
+Graphics en effecten
 [settings Audio]
 Geluid
 [settings Bind Escape]
@@ -1451,27 +1451,27 @@ Escape-toets toewijzen
 [settings Building]
 Gebouw
 [settings Building defaults]
-Standaardinstellingen voor gebouwen
+Gebouwstandaarden
 [settings Cancel]
 Annuleren
 [settings Changes saved automatically]
 Wijzigingen worden automatisch opgeslagen
 [settings Changes you make during play update these defaults for future games.]
-Wijzigingen tijdens het spelen werken deze standaardinstellingen bij voor toekomstige partijen.
+Wijzigingen tijdens het spelen werken deze standaarden bij voor toekomstige spellen.
 [settings Changing the renderer requires a restart.]
 Het wijzigen van de renderer vereist een herstart.
 [settings Choose a binding to change it, or add another shortcut for an action.]
-Selecteer een sneltoets om deze te bewerken, of voeg een andere sneltoets voor een actie toe.
+Kies een sneltoets om hem te wijzigen, of voeg er nog een toe voor een actie.
 [settings Choose a window or fill the screen.]
 Kies tussen een venster en volledig scherm.
 [settings Choose how the game looks on your screen.]
-Kies hoe het spel er op uw scherm uitziet.
+Kies hoe het spel er op je scherm uitziet.
 [settings Completed]
-Voltooide gebouwen
+Voltooid
 [settings Construction]
 Bouw
 [settings Controls]
-Spelbesturing
+Besturing
 [settings Could not change display mode. The previous mode was restored.]
 Kon de weergavemodus niet wijzigen. De vorige modus is hersteld.
 [settings Could not save]
@@ -1483,7 +1483,7 @@ Standaard
 [settings Display]
 Beeld
 [settings Display & graphics]
-Beeld en grafische instellingen
+Beeld en graphics
 [settings Display the Globulation 2 cursor.]
 Geef de Globulation 2-cursor weer.
 [settings Done]
@@ -1495,7 +1495,7 @@ Vermenigvuldig de schermschaal van het besturingssysteem voor menu’s, tekst en
 [settings Flags]
 Vlaggen
 [settings Full]
-Volledige details
+Volledig
 [settings Fullscreen]
 Volledig scherm
 [settings Game]
@@ -1507,7 +1507,7 @@ Spelverloop
 [settings Graphics detail]
 Grafische details
 [settings Interface scale]
-Schaal van de interface
+Interfaceschaal
 [settings Keep]
 Behouden
 [settings Keep this display mode?]
@@ -1523,7 +1523,7 @@ De toetsen vormen een geordende reeks. Elke toets kan bij indrukken of loslaten 
 [settings Language]
 Taal
 [settings Language & player]
-Taal & speler
+Taal en speler
 [settings Language used throughout the interface.]
 Taal die in de hele interface wordt gebruikt.
 [settings Level]
@@ -1535,7 +1535,7 @@ Zoals het bureaublad
 [settings Missing font]
 Ontbrekend lettertype
 [settings Music volume]
-Volume (muziek)
+Muziekvolume
 [settings Mute audio]
 Audio dempen
 [settings Name shown to other players.]
@@ -1547,39 +1547,39 @@ Aan
 [settings OpenGL is not available in this build.]
 OpenGL is niet beschikbaar in deze build.
 [settings Player name]
-Naam speler
+Spelersnaam
 [settings Press]
 Bij indrukken
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Druk op een toets. Escape annuleert de invoer. Kies "Escape-toets toewijzen" om Escape toe te wijzen.
+Druk op een toets. Escape annuleert. Gebruik “Escape-toets toewijzen” om Escape toe te wijzen.
 [settings Radius]
 Straal
 [settings Reduced]
-Minder details
+Beperkt
 [settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
-Met minder details worden wolken en hun schaduwen uitgeschakeld, magische effecten vereenvoudigd en de transparantie verminderd.
+Beperkte details schakelen wolken en hun schaduwen uit, vereenvoudigen magische effecten en verminderen transparantie.
 [settings Release]
 Bij loslaten
 [settings Remember assignments between games]
-Eenheidstoewijzingen tussen partijen onthouden
+Toewijzingen tussen spellen onthouden
 [settings Remove key]
 Toets verwijderen
 [settings Remove shortcut]
-Verwijder sneltoets
+Sneltoets verwijderen
 [settings Renderer]
 Grafische renderer
 [settings Replace conflicting bindings]
-Vervang conflicterende sneltoetsen
+Conflicterende sneltoetsen vervangen
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
 Sneltoetsen in deze context vervangen door de standaardinstellingen? De wijziging wordt onmiddellijk opgeslagen.
 [settings Resolution]
-Schermresolutie
+Resolutie
 [settings Restore default shortcuts]
 Standaardsneltoetsen herstellen
 [settings Retry]
-Probeer het opnieuw
+Opnieuw proberen
 [settings Revert]
-Wijzigingen terugdraaien
+Terugdraaien
 [settings Reverting in]
 Herstellen over
 [settings Save shortcut]
@@ -1591,9 +1591,9 @@ Opslaan…
 [settings Scroll wheel enabled]
 Muiswiel ingeschakeld
 [settings Set starting unit assignments by building type and level.]
-Stel het aanvankelijke aantal toegewezen eenheden in per gebouwtype en niveau.
+Stel het beginaantal toegewezen eenheden in per gebouwtype en niveau.
 [settings Set your language and player name.]
-Stel uw taal en spelersnaam in.
+Stel je taal en spelersnaam in.
 [settings Settings]
 Instellingen
 [settings Single-player and replays only. Multiplayer runs at 1x.]
@@ -1601,15 +1601,15 @@ Alleen voor één speler en herhalingen. Multiplayer draait op 1x.
 [settings Software]
 Softwarematige weergave
 [settings Starting unit counts and radius for newly placed flags.]
-Aanvankelijk aantal eenheden en straal voor nieuwe vlaggen.
+Beginaantal eenheden en straal voor nieuw geplaatste vlaggen.
 [settings This shortcut conflicts with existing bindings:]
 Deze sneltoets is in conflict met bestaande sneltoetsen:
 [settings Trigger]
-Activeringsgebeurtenis
+Activering
 [settings Unbound]
 Niet toegewezen
 [settings Unit counts assigned to new construction sites.]
-Aantal eenheden toegewezen aan nieuwe bouwlocaties.
+Aantal eenheden voor nieuwe bouwplaatsen.
 [settings Unit counts for completed buildings.]
 Aantal eenheden voor voltooide gebouwen.
 [settings Unit counts while a building is being upgraded.]
@@ -1617,17 +1617,17 @@ Aantal eenheden tijdens het verbeteren van een gebouw.
 [settings Units]
 Eenheden
 [settings Upgrades]
-Upgrades van gebouwen
+Verbeteringen
 [settings Use game cursor]
-Gebruik de spelcursor
+Spelcursor gebruiken
 [settings Voice volume]
-Volume (spraak)
+Spraakvolume
 [settings Window mode]
 Venstermodus
 [settings Window-only sizes also switch the game to windowed mode.]
-Als u een resolutie kiest die alleen in een venster werkt, schakelt het spel ook naar de venstermodus.
+Resoluties die alleen in een venster werken, zetten het spel ook in venstermodus.
 [settings Windowed]
-In een venster
+Venster
 [settings Windowed only]
 Alleen in een venster
 [settings seconds]
@@ -1635,17 +1635,17 @@ seconden
 [settings Flag]
 Vlag
 [settings High-resolution artwork]
-Beelden in hoge resolutie
+Graphics in hoge resolutie
 [settings Apply artwork on the next game or editor load (OpenGL).]
-Pas de grafische beelden toe wanneer een volgende partij of de kaarteditor wordt geladen (OpenGL).
+Wordt toegepast bij het volgende laden van een spel of de editor (OpenGL).
 [settings Automatic torus view]
 Automatische torusweergave
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
-Toon automatisch het torusvormige kaartoverzicht terwijl u over de kaart beweegt (OpenGL).
+Toon automatisch het torusoverzicht terwijl je over de kaart beweegt (OpenGL).
 [settings Autosave]
 Automatisch opslaan
 [settings Save the game automatically about every 10 seconds.]
-Slaat het spel ongeveer elke 10 seconden automatisch op.
+Sla het spel ongeveer elke 10 seconden automatisch op.
 [Channel width]
 Kanaalbreedte
 [Land bridge width]
@@ -1747,7 +1747,7 @@ Breedte van de zeestraat
 [Valleys]
 Valleien
 [Frontier richness]
-Rijkdom van de Nieuwe Wereld
+Rijkdom grensgebied
 [City states need at least one colony.]
 Stadstaten hebben minstens één kolonie nodig.
 [Stone walls]
@@ -1885,7 +1885,7 @@ Hoeveelheid steen
 [Algae amount]
 Hoeveelheid zeewier
 [Fruit amount]
-Hoeveelheid vruchten
+Hoeveelheid fruit
 [Stone on hilltops]
 Steen op heuveltoppen
 [Winding river]
@@ -1915,7 +1915,7 @@ Rivierdelta
 [Meandering rivers]
 Meanderende rivieren
 [Fruit in home valleys]
-Vruchten in de startdalen
+Fruit in de startdalen
 [Moat]
 Slotgracht
 [Stone in the orchard]
@@ -2053,7 +2053,7 @@ Sleep om over de randen te bewegen. Muiswiel om te zoomen. Rechtsklik of dubbelk
 [Map preview drag help]
 Sleep om te bewegen; muiswiel om te zoomen.
 [Map preview loading]
-Bezig met laden...
+Laden...
 [Map preview failed]
 Voorbeeld mislukt
 [Map preview retry]
@@ -2083,13 +2083,13 @@ Toegebrachte schade
 [Stats damage received]
 Ontvangen schade
 [Stats HP restored]
-Herstelde gezondheid
+Herstelde levenspunten
 [Stats since tick]
-Sinds stap
+Sinds tik
 [Stats combat deaths]
 Gevecht
 [Stats clearing deaths]
-Opruimletsel
+Letsel bij ontruimen
 [Stats trapped deaths]
 Opgesloten
 [Stats unknown deaths]
@@ -2105,9 +2105,9 @@ Voedsel/min
 [Stats occupancy]
 Eten / genezen
 [Stats page one]
-Statistieken 1/3 >
+Statistieken 1/3  >
 [Stats page two]
-Statistieken 2/3 >
+Statistieken 2/3  >
 [Stats next page]
 Pagina (P)
 [Map preview choose another]
@@ -2139,11 +2139,11 @@ Economie
 [Instant construction]
 Directe bouw
 [Higher tiers give every building much more HP.]
-Hogere niveaus geven elk gebouw veel meer sterkte.
+Hogere niveaus geven elk gebouw veel meer levenspunten.
 [Starting units spawn already leveled up. Changes the generated map.]
-Startende eenheden verschijnen al met een hoger niveau. Verandert de gegenereerde kaart.
+Starteenheden beginnen al op een hoger niveau. Verandert de gegenereerde kaart.
 [No upgrades]
-Geen upgrades
+Geen verbeteringen
 [No permadeath]
 Geen permanente dood
 [Glass cannon x2]
@@ -2165,7 +2165,7 @@ Gevecht
 [Glass cannon]
 Glazen kanon
 [Match ends at the timer; highest prestige at that instant wins.]
-De partij eindigt bij de timer; wie op dat moment de meeste roem heeft, wint.
+De wedstrijd eindigt bij de timer; wie op dat moment de meeste roem heeft, wint.
 [Off (no timer)]
 Uit (geen timer)
 [90 minutes]
@@ -2177,51 +2177,51 @@ Uit (geen timer)
 [60 minutes]
 60 minuten
 [Stats page three]
-Statistieken 3/3 >
+Statistieken 3/3  >
 [Stats blocked units]
-Eenheden S/C
+Eenheden geblokkeerd S/C
 [Stats blocked buildings]
-Gebouwen S/C
+Gebouwen geblokkeerd S/C
 [Stats blocked buildings swim]
-Zwemmen S/C
+Zwemuitgangen S/C
 [Stats current blocked units]
-Eenheden C
+Nu geblokkeerde eenheden
 [Stats current blocked buildings]
-Gebouwen C
+Nu geblokkeerde gebouwen
 [Stats growth global]
-Hulpbronnen +
+Toegevoegde groei
 [Stats growth new tiles]
-Hulpbronnen +#
+Nieuwe grondstoftegels
 [Stats growth reductions]
-Hulpbronnen -
+Natuurlijke afname
 [Stats growth per minute]
-Tarwe +/min
+Tarwegroei/min
 [Stats growth near 8]
-Hulpbronnen + <=8
+Groei binnen 8 tegels
 [Stats growth near 16]
-Hulpbronnen + <=16
+Groei binnen 16 tegels
 [Stats growth near 32]
-Hulpbronnen + <=32
+Groei binnen 32 tegels
 [Stats low HP 25]
-Sterkte <=25%
+Eenheden op 25% leven
 [Stats low HP 50]
-Sterkte <=50%
+Eenheden op 50% leven
 [Stats low HP 75]
-Sterkte <=75%
+Eenheden op 75% leven
 [Stats low food 25]
-Voedsel <=25%
+Eenheden op 25% voedselreserve
 [Stats low food 50]
-Voedsel <=50%
+Eenheden op 50% voedselreserve
 [Stats low food 75]
-Voedsel <=75%
+Eenheden op 75% voedselreserve
 [Stats structural units]
-Eenheden S
+Structureel geblokkeerde eenheden
 [Stats structural buildings]
-Gebouwen S
+Structureel geblokkeerde gebouwen
 [Stats low HP ranges]
-Sterkte: <=25/50/75%
+Leven ≤25/50/75%
 [Stats low food ranges]
-Voedsel: <=25/50/75%
+Voedsel ≤25/50/75%
 [Emoji]
 Emoji
 [Emoji character]
@@ -2369,7 +2369,7 @@ Canyonland
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
 Een fort kan zijn voorde niet bereiken; gebruik een grotere kaart of minder kolonies.
 [A wall would stand on a beach; try another seed.]
-Een muur zou op een strand staan; probeer een ander zaadje.
+Een muur zou op een strand staan; probeer een andere startwaarde.
 [The fort is too small for its gardens; raise Fort size.]
 Het fort is te klein voor zijn tuinen; verhoog de fortgrootte.
 [The home oasis is too small; raise Home oasis size.]
@@ -2667,7 +2667,7 @@ Dikte van de scheidingsmuren
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
 De beproevingsarena heeft een grotere kaart of minder kolonies nodig om twee bewaakte ingangen per kolonie te kunnen plaatsen.
 [The Comb]
-De Kam
+De kam
 [Peninsulas per shore]
 Schiereilanden per oever
 [Encircled Kingdom]
@@ -2701,7 +2701,7 @@ De stad heeft te weinig bruikbare kruisingen.
 [A city neighbourhood lacks reachable crops or building room.]
 Een stadswijk mist bereikbare gewassen of bouwruimte.
 [The city neighbourhoods are too unequal; try another seed.]
-De stadswijken zijn te ongelijkwaardig; probeer een ander zaadje.
+De stadswijken zijn te ongelijkwaardig; probeer een andere startwaarde.
 [The fractured civic plaza did not survive.]
 Het gebroken stadsplein is niet behouden gebleven.
 [Who Ate the Map?]
@@ -2769,7 +2769,7 @@ Afzondering
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 De start van elke kolonie wordt gemeten op de voltooide kaart: de loop naar tarwe en naar hout, hoe goed haar grond teruggroeit, de voorraden en bouwplaatsen binnen bereik, en haar afstand tot rivalen. Elke factor scoort van 0 tot 1 tegen een vaste maatstaf, het totaal weegt ze, de eerlijkheid is het totaal van de slechtste kolonie gedeeld door dat van de beste, en de waardering is het slechtste totaal maal de eerlijkheid.
 [ERROR_CANT_SAVE_MAP]
-De kaart kon niet worden opgeslagen. Controleer de bestemming en beschikbare ruimte. Uw wijzigingen staan nog open.
+De kaart kon niet worden opgeslagen. Controleer de bestemming en beschikbare ruimte. Je wijzigingen staan nog open.
 [Loading headers]
 Kopgegevens worden geladen...
 [Loading teams]
@@ -2799,7 +2799,7 @@ Opslaan mislukt. Probeer opnieuw.
 [export save]
 Opgeslagen spel exporteren
 [storage restore failed]
-De browseropslag kon niet worden hersteld. Bestaande opgeslagen gegevens zijn niet gewijzigd. U kunt deze sessie voortzetten, maar lokale wijzigingen kunnen niet worden bewaard. Exporteer belangrijke opgeslagen spellen via het opslagfout-dialoogvenster. Herlaad om het herstellen van de opslag opnieuw te proberen.
+De browseropslag kon niet worden hersteld. Bestaande opgeslagen gegevens zijn niet gewijzigd. Je kunt deze sessie voortzetten, maar lokale wijzigingen kunnen niet worden bewaard. Exporteer belangrijke opgeslagen spellen via het opslagfout-dialoogvenster. Herlaad om het herstellen van de opslag opnieuw te proberen.
 [continue]
 Doorgaan
 [export file]
@@ -2841,7 +2841,7 @@ Laatste keer opslaan niet bevestigd. Probeer opnieuw, of sluit af zonder op te s
 [quit without saving]
 Afsluiten zonder op te slaan
 [game closed]
-Spel gesloten. U kunt dit venster sluiten of herladen om opnieuw te spelen.
+Spel gesloten. Je kunt dit venster sluiten of herladen om opnieuw te spelen.
 [campaign editor save failed]
 Opslaan niet bevestigd. OK probeert opnieuw; Annuleren gaat terug naar het editormenu.
 [Actions]
@@ -2865,7 +2865,7 @@ Gereedschap
 [Pan map]
 Kaart verschuiven
 [Edit map]
-Bewerken
+Kaart bewerken
 [Editor map]
 Kaart
 [Flags]
@@ -2897,7 +2897,7 @@ Interface-indeling
 [settings Automatic]
 Automatisch
 [settings Compact]
-Dicht bijeen
+Compact
 [settings Spacious]
 Ruim
 [More]
@@ -2923,11 +2923,11 @@ Instellingen
 [settings Back]
 Terug
 [settings Save the game automatically about every minute.]
-Het spel ongeveer elke minuut automatisch opslaan.
+Sla het spel ongeveer elke minuut automatisch op.
 [AI opponents]
 AI-tegenstanders
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
-De ruime indeling gebruikt een zijpaneel als er plaats is. De compacte indeling gebruikt een werkbalk en uitklapbare panelen.
+Ruim gebruikt een zijpaneel als er plaats is. Compact gebruikt een werkbalk en uitklappanelen.
 [settings One-finger zoom]
 Zoomen met één vinger
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -2947,7 +2947,7 @@ Rechts
 [settings Left]
 Links
 [Undo stroke]
-Ongedaan
+Ongedaan maken
 [No overlay]
 Geen laag
 [zoom factor %0]
@@ -3037,7 +3037,7 @@ Verboden
 [Guard]
 Bewaken
 [Clear]
-Opruimen
+Ontruimen
 [Farm]
 Akker
 [Paint]
@@ -3049,7 +3049,7 @@ Laat los op geldig terrein om te plaatsen
 [Paint on the map; two fingers move]
 Schilder op de kaart; verplaats met twee vingers
 [Tutorial ▸]
-Handleiding ▸
+Tutorial ▸
 [Back to tools]
 Terug naar gereedschap
 [Starvation overlay]
@@ -3169,7 +3169,7 @@ Kolonies: %0
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Eenheden
+%0 · %1 eenheden
 [settings Level %0]
 Niveau %0
 [settings Match the desktop %0]
@@ -3191,7 +3191,7 @@ Ok: %0
 [%0 %1]
 %0 %1
 [resume game]
-Hervat het spel
+Spel hervatten
 [Add AI]
 AI toevoegen
 [settings Experiments]
@@ -3209,11 +3209,11 @@ Experimenten
 [experiment guard-area-balancing]
 Balans van bewakingsgebieden
 [experiment guard-area-balancing help]
-Vrije krijgers verdelen zich over de geschilderde bewakingsgebieden in plaats van allemaal het dichtstbijzijnde te kiezen: een groter gebied krijgt er meer, en een overvol gebied loopt langzaam leeg naar de andere.
+Vrije soldaten verdelen zich over de geschilderde bewakingsgebieden in plaats van allemaal het dichtstbijzijnde te kiezen: een groter gebied krijgt er meer, en een overvol gebied loopt langzaam leeg naar de andere.
 [experiment farm-areas]
 Akkerzones
 [experiment farm-areas help]
-Voegt een akkerzone toe aan de zonepenselen. Arbeiders die erin oogsten nemen van het rijpste vak van de aaneengesloten akker en laten op elk vak één korrel staan, zodat de akker teruggroeit in plaats van vanaf de rand te worden opgegeten. Hout dat de akker in groeit, wordt gekapt.
+Voegt een akkerzone toe aan de zonepenselen. Werkers die erin oogsten nemen van het rijpste vak van de aaneengesloten akker en laten op elk vak één korrel staan, zodat de akker teruggroeit in plaats van vanaf de rand te worden opgegeten. Hout dat de akker in groeit, wordt gekapt.
 [settings Touch scrolling]
 Scrollen met aanraking
 [settings List momentum]
@@ -3235,1419 +3235,1419 @@ Vaart van lijsten
 [List bounce]
 Terugvering van lijsten
 [lan pairing field]
-
+Koppelcode van host (of vertrouwde WSS-URL)
 [lan pairing connect]
-
+Koppelen en verbinden
 [lan discovery instructions]
-
+Kies een host en plak daarna zijn koppelcode om zijn identiteit te controleren.
 [lan discovery unavailable]
-
+LAN-detectie is niet beschikbaar. Controleer de toestemming voor het lokale netwerk of plak een koppelcode van een host.
 [lan discovered host %0]
-
+Host %0 gevonden — koppel om spellen te zien
 [lan connection unavailable]
-
+Kan de LAN-host niet bereiken. Controleer de toestemming voor het lokale netwerk en de koppelcode van de host.
 [lan connection verification failed %0]
-
+Kan de LAN-host niet controleren of er geen verbinding mee maken: %0
 [lan lobby endpoint required]
-
+Gebruik het lobby-adres van de host
 [settings Artwork]
-
+Graphics
 [settings Original]
-
+Origineel
 [settings High resolution]
-
+Hoge resolutie
 [settings Clouds]
-
+Wolken
 [settings Show cloud cover above the map.]
-
+Toon wolken boven de kaart.
 [settings Cloud shadows]
-
+Wolkenschaduw
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Toon wolkenschaduw op de grond, los van de wolken zelf.
 [settings Building particles]
-
+Gebouwdeeltjes
 [settings Show smoke and other building particles.]
-
+Toon rook en andere deeltjes bij gebouwen.
 [settings Magic effects]
-
+Magische effecten
 [settings Choose animated magic effects or a simple visible effect.]
-
+Kies geanimeerde magische effecten of een eenvoudig zichtbaar effect.
 [settings Simple]
-
+Eenvoudig
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Vereist de OpenGL-renderer. Je opgeslagen keuze blijft behouden.
 [settings Interface appearance]
-
+Uiterlijk interface
 [settings Panels]
-
+Panelen
 [settings Choose translucent or opaque interface panels.]
-
+Kies doorschijnende of ondoorzichtige interfacepanelen.
 [settings Opaque]
-
+Ondoorzichtig
 [settings Translucent]
-
+Doorschijnend
 [settings Advanced graphics]
-
+Geavanceerde graphics
 [settings Path lines]
-
+Padlijnen
 [settings Choose translucent or opaque unit path lines.]
-
+Kies doorschijnende of ondoorzichtige padlijnen van eenheden.
 [settings Smooth progress indicators]
-
+Vloeiende voortgangsbalken
 [settings Smooth the moving edges of progress indicators.]
-
+Maak de bewegende randen van voortgangsbalken vloeiend.
 [settings Decorative interface animation]
-
+Decoratieve animatie
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animeer de overwinningsafbeelding. Minder beweging schakelt deze animatie ook uit.
 [settings Smooth unit motion]
-
+Vloeiende beweging
 [settings Experimental: move and animate units between game ticks.]
-
+Experimenteel: beweeg en animeer eenheden tussen speltikken.
 [settings Smooth fog of war]
-
+Vloeiende oorlogsmist
 [settings Fade the map into and out of the fog of war gradually.]
-
+Laat de kaart geleidelijk in en uit de oorlogsmist vervagen.
 [settings Adaptive zoom detail]
-
+Adaptief zoomdetail
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Vereenvoudig balken, zones, terrein en eenheden bij uitzoomen en houd ze klein bij inzoomen.
 [settings Text size]
-
+Tekstgrootte
 [settings Enlarge interface text without changing the map scale.]
-
+Vergroot de interfacetekst zonder de kaartschaal te wijzigen.
 [Map momentum]
 Vaart van de kaart
 [turn reconnecting]
-
+Verbinding met de host verbroken. Opnieuw verbinden...
 [turn waiting for players]
-
+Wachten tot alle spelers geladen zijn...
 [turn rejoining]
-
+Opnieuw deelnemen aan het spel...
 [turn catching up %0]
-
+Inhalen: %0 beurten achter
 [turn player reconnecting %0]
-
+%0 maakt opnieuw verbinding...
 [turn player lagging %0]
-
+%0 loopt achter
 [turn player resyncing %0]
-
+%0 haalt in
 [turn player not connected %0]
-
+%0 is nog niet verbonden
 [lan host left]
-
+De host heeft het spel verlaten.
 [lan host lost]
-
+De verbinding met de host is verbroken.
 [lan version mismatch %0]
-
+De host gebruikt een andere versie van Globulation 2 (%0).
 [lan cannot host %0]
-
+Kan geen LAN-spel hosten: %0
 [play online]
-
+Online spelen
 [Use in room]
-
+Gebruik in kamer
 [conn ai]
-
+AI
 [conn behind %0]
-
+Achter %0
 [conn behind explanation %0 %1]
-
+Achterstand: hoe ver het spel van een speler achterloopt op de wedstrijdklok, inclusief vertraging. Onder %0 is normaal; vanaf %1 wordt de speler als traag gemarkeerd.
 [conn behind]
-
+Achter
 [conn card catching up]
-
+Inhalen
 [conn card colony works]
-
+Je kolonie werkt zelfstandig door: eenheden maken hun taken af en gebouwen blijven draaien.
 [conn card desync detail]
-
+Opnieuw deelnemen vanuit het wedstrijdverslag, zodat je ziet wat de anderen zien. Er is automatisch een rapport verstuurd.
 [conn card desync]
-
+Je spel is niet meer synchroon
 [conn card grace %0]
-
+Je kolonie werkt zelfstandig door: eenheden maken hun taken af en gebouwen blijven draaien. Je hebt %0 om terug te komen voordat je uit de wedstrijd wordt verwijderd.
 [conn card input paused]
-
+Je bent aan het inhalen · invoer gepauzeerd
 [conn card lost]
-
+Verbinding verbroken
 [conn card progress %0 %1 %2]
-
+%0 % · %1 van %2 tikken
 [conn card reconnecting %0]
-
+Opnieuw verbinden met de wedstrijd… poging %0
 [conn card replaying %0]
-
+De gemiste %0 wordt opnieuw afgespeeld. Het scherm wordt bijgewerkt zodra je weer bij bent.
 [conn card seconds left %0]
-
+nog ongeveer %0 s
 [conn connections]
-
+Verbindingen
 [conn connection]
-
+Verbinding
 [conn delay explanation %0 %1]
-
+Vertraging: de tijd tussen je klik en het moment waarop die voor iedereen gebeurt. Hangt af van je eigen verbinding, niet die van anderen. Goed onder %0, slecht vanaf %1.
 [conn fair]
-
+Redelijk
 [conn good]
-
+Goed
 [conn grid legend]
-
+Met meer dan vier spelers toont het paneel per speler de ping in milliseconden, of hoeveel seconden die achterloopt.
 [conn jitter %0]
-
+schommeling %0
 [conn leave match]
-
+Wedstrijd verlaten
 [conn left]
-
+Vertrokken
 [conn notice back %0]
-
+%0 is terug.
 [conn notice left %0]
-
+%0 heeft de wedstrijd verlaten.
 [conn notice lost %0 %1]
-
+%0 heeft geen verbinding meer. Het spel gaat door; de kolonie blijft werken terwijl de speler opnieuw verbindt (nog %1).
 [conn ping explanation %0 %1]
-
+Ping: de heen-en-terugtijd tussen een speler en de relay. Goed onder %0, slecht vanaf %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Spelers
 [conn poor]
-
+Slecht
 [conn reconnecting]
-
+Opnieuw verbinden
 [conn relay %0]
-
+Relay: %0
 [conn resyncing]
-
+Opnieuw deelnemen
 [conn slow]
-
+Traag
 [conn unstable]
-
+instabiel
 [conn waiting]
-
+Verbinden…
 [conn you %0]
-
+%0 (jij)
 [conn you]
-
+Jij
 [conn your delay %0]
-
+Jouw vertraging %0
 [hub account menu]
-
+Account
 [hub ai joins after %0]
-
+AI doet mee na %0
 [hub all rooms]
-
+Alle
 [hub browse maps]
-
+Kaarten bekijken
 [hub cant reach %0]
-
+Kan %0 niet bereiken.
 [hub change server]
-
+Server wijzigen…
 [hub check code]
-
+Voer deze code in als erom gevraagd wordt:
 [hub code placeholder]
-
+Code of uitnodigingslink
 [hub connecting to %0]
-
+%0 · verbinden…
 [hub continue with %0]
-
+Doorgaan met %0
 [hub create room]
-
+Kamer maken
 [hub find match]
-
+Wedstrijd zoeken
 [hub finish in browser]
-
+Rond het inloggen af op de pagina die in je browser is geopend.
 [hub free seat]
-
+Vrije plaats
 [hub get update]
-
+Update ophalen
 [hub guest kept on device]
-
+Gast · bewaard op dit apparaat
 [hub invalid code]
-
+Dat is geen uitnodigingscode of -link.
 [hub join by code]
-
+Meedoen met code
 [hub join code]
-
+Code om mee te doen
 [hub join]
-
+Meedoen
 [hub leaderboard]
-
+Ranglijst
 [hub linked %0]
-
+Gekoppelde accounts · %0
 [hub linked accounts]
-
+Gekoppelde accounts
 [hub maps]
-
+Kaarten
 [hub no queues]
-
+Deze server heeft geen wachtrijen voor snel spelen.
 [hub no rooms]
-
+Nu geen open kamers. Maak er een en deel de uitnodiging.
 [hub offline at %0]
-
+%0 · offline
 [hub offline detail %0]
-
+Nieuwe poging over %0 s. Snel spelen en online kamers zijn niet beschikbaar. Een LAN-spel via het hoofdmenu heeft deze server niet nodig.
 [hub online at %0]
-
+%0 · online
 [hub online settings]
-
+Online-instellingen
 [hub online]
-
+Online
 [hub open page again]
-
+Pagina opnieuw openen
 [hub open rooms]
-
+Open kamers
 [hub page opened at %0]
-
+%0 geopend. Je hoeft niets in te typen in het spel; het logt je vanzelf in.
 [hub queues unavailable]
-
+Snel spelen verschijnt zodra de server antwoordt.
 [hub quick match unavailable]
-
+Snel spelen is in deze versie nog niet beschikbaar.
 [hub quick match]
-
+Snel spelen
 [hub ranked]
-
+Competitief
 [hub recent matches]
-
+Recente wedstrijden
 [hub refresh]
-
+Vernieuwen
 [hub retry now]
-
+Nu opnieuw proberen
 [hub room match]
-
+Kamer
 [hub room name %0]
-
+Kamer van %0
 [hub room]
-
+Kamer
 [hub seats %0 %1]
-
+%0/%1 plaatsen
 [hub server %0]
-
+Server: %0
 [hub sign in browser]
-
+Inlogpagina openen
 [hub sign in conflict]
-
+Die login hoort al bij een ander account.
 [hub sign in failed %0]
-
+Inloggen is niet afgerond (%0).
 [hub sign in intro]
-
+Log in of maak een account aan in je browser. Je gastwedstrijden gaan mee.
 [hub sign in]
-
+Inloggen
 [hub sign out]
-
+Uitloggen op dit apparaat
 [hub signed in as %0]
-
+Ingelogd als %0.
 [hub signed in on %0]
-
+Ingelogd op %0
 [hub signing in]
-
+Inloggen…
 [hub sim %0]
-
+sim-versie %0
 [hub unrated]
-
+Zonder rating
 [hub update required at %0]
-
+%0 · update vereist
 [hub update required detail %0]
-
+%0 draait een nieuwere versie, dus deze kopie kan pas online spelen na een update. LAN-spellen werken nog wel.
 [hub update required]
-
+Update vereist
 [hub server behind]
-
+Serverupdate volgt
 [hub server behind at %0]
-
+%0 · serverupdate volgt
 [hub server behind detail %0]
-
+Deze kopie is nieuwer dan %0, die nog niet is bijgewerkt. Online spellen gaan open zodra de server is bijgewerkt. LAN-spellen werken nog wel.
 [hub version mismatch]
-
+Andere versie
 [hub version mismatch at %0]
-
+%0 · andere versie
 [hub version mismatch detail %0]
-
+%0 draait een andere versie van het spel, dus deze kopie kan niet online spelen. LAN-spellen werken nog wel.
 [hub versus %0]
-
+tegen %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+Kaart %0 downloaden
 [match failed]
-
+De wedstrijd kon niet starten.
 [match leave]
-
+Verlaten
 [match loading]
-
+Spel laden
 [Loading game graphics]
-
+Spelgraphics laden
 [match map cached]
-
+al op dit apparaat
 [match map]
-
+Kaart downloaden
 [match relay %0]
-
+Verbonden met relayserver %0
 [match seat confirmed]
-
+Plaats bevestigd
 [match starting]
-
+Wedstrijd start
 [match tip flags]
-
+Tip: verkenningsvlaggen sturen verkenners om de kaart te onthullen; oorlogsvlaggen verzamelen je soldaten.
 [match tip input]
-
+Tip: je opdrachten bereiken iedereen na je eigen invoervertraging; de verbinding van anderen vertraagt jou niet.
 [match tip select]
-
+Tip: dubbelklik op een gebouw om alle gebouwen van dat type te selecteren.
 [match waiting for players]
-
+Wachten op alle spelers
 [match you %0]
-
+%0 (jij)
 [match player map]
-
+kaart
 [match player loading]
-
+laden
 [match player connecting]
-
+verbinden
 [match player ready]
-
+klaar
 [match player left]
-
+vertrokken
 [results back to online]
-
+Terug naar online
 [results back to room]
-
+Terug naar kamer
 [results defeat]
-
+Nederlaag
 [results ladder rating %0]
-
+%0-rating
 [results left]
-
+Je hebt de wedstrijd verlaten
 [results match over]
-
+Wedstrijd voorbij
 [results match page]
-
+Wedstrijdpagina
 [results minutes %0]
-
+%0 min
 [results no change]
-
+geen verandering
 [results ranked]
-
+Competitief
 [results recording]
-
+Resultaat vastleggen…
 [results room unrated]
-
+Kamerwedstrijd · zonder rating
 [results saved to history]
-
+Opgeslagen in je geschiedenis
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+De server kon deze wedstrijd niet reproduceren, dus telt hij voor niemands rating mee. Hij is gemeld voor onderzoek; je hoeft niets te doen.
 [results verified provisional]
-
+Geverifieerd · voorlopig
 [results verified]
-
+Geverifieerd
 [results verifying detail]
-
+De server speelt de wedstrijd opnieuw af ter controle. Meestal binnen een minuut.
 [results verifying]
-
+Resultaat controleren…
 [results victory]
-
+Overwinning
 [room address]
-
+Adres
 [room ai %0]
-
+AI: %0
 [room browser pairing]
-
+Koppelen via browser
 [room catalog map]
-
+Kaart uit catalogus
 [room change map]
-
+Kaart wijzigen…
 [room change rules]
-
+Regels wijzigen…
 [room chat]
-
+Chat
 [room closed seat detail]
-
+Gesloten door de host
 [room closed seat]
-
+Gesloten
 [room colonies]
-
+Kolonies
 [room connecting]
-
+Verbinden met de kamer…
 [room copy]
-
+Kopiëren
 [room disconnected]
-
+verbroken
 [room downloading %0]
-
+Kaart downloaden %0 %
 [room downloading map]
-
+Kaart downloaden…
 [room expired]
-
+De kamer is gesloten.
 [room generated on server]
-
+Eenmalig op de server gegenereerd, zodat iedereen precies deze kaart speelt.
 [room guest]
-
+gast
 [room host %0]
-
+host %0
 [room host closed]
-
+De host heeft de kamer gesloten.
 [room host]
-
+host
 [room humans vs ai]
-
+Mensen tegen AI
 [room invite code %0]
-
+Code %0 · opent in de app, op telefoons of in een browser
 [room invite not found]
-
+Deze uitnodiging is verlopen of bestaat niet.
 [room invite only]
-
+Alleen op uitnodiging
 [room invite]
-
+Uitnodigen
 [room joining on network]
-
+Meedoen via dit netwerk
 [room lan badge]
-
+Lokaal netwerk · zonder rating
 [room lan list hint %0]
-
+Anderen op hetzelfde netwerk zien %0 in de lijst met LAN-spellen in het hoofdmenu.
 [room leave]
-
+Verlaten
 [room map changed %0]
-
+De kaart is gewijzigd in %0.
 [room map failed]
-
+De kaart kon niet worden voorbereid
 [room match label]
-
+Kamer
 [room member joined %0]
-
+%0 doet mee.
 [room member left %0]
-
+%0 is vertrokken.
 [room member ready %0]
-
+%0 is klaar.
 [room needs two seats]
-
+Nodig een vriend uit of voeg een AI toe om te starten
 [room no map]
-
+Nog geen kaart
 [room not ready]
-
+Niet klaar
 [room open for a person]
-
+Open voor een speler
 [room open seat detail]
-
+Iedereen met de uitnodiging kan deze plaats nemen
 [room open seat]
-
+Open plaats
 [room person]
-
+Speler
 [room preparing map]
-
+Kaart wordt op de server voorbereid…
 [room public]
-
+Openbaar
 [room ready?]
-
+Klaar
 [room ready]
-
+✓ Klaar
 [room remove from room]
-
+Uit kamer verwijderen
 [room rule off]
-
+Uit
 [room rule on]
-
+Aan
 [room rules changed]
-
+De regels zijn gewijzigd.
 [room rules]
-
+Regels
 [room say something]
-
+Zeg iets…
 [room seat hint]
-
+Spelers kunnen zelf naar een open plaats gaan. Wijzig het team om te herverdelen.
 [room seat options]
-
+Plaatsopties
 [room seats summary %0 %1 %2]
-
+%0 spelers · %1 AI · %2 open
 [room seats]
-
+Plaatsen
 [room seed]
-
+Startwaarde
 [room send]
-
+Versturen
 [room set by host]
-
+Ingesteld door de host
 [room share text %0]
-
+Doe mee in mijn Globulation 2-kamer: %0
 [room share]
-
+Delen…
 [room size]
-
+Grootte
 [room starting match]
-
+Wedstrijd wordt gestart…
 [room take seat]
-
+Plaats nemen
 [room team %0]
-
+Team %0
 [room update required]
-
+Deze kamer speelt een andere versie van het spel. Werk bij om mee te doen.
 [room uploaded map]
-
+Geüploade kaart
 [room waiting for %0]
-
+Wachten tot %0 klaar is
 [room waiting for you]
-
+Druk op Klaar als je zover bent
 [room match over]
-
+Wedstrijd voorbij. Meld je klaar voor nog een ronde!
 [room waiting for host]
-
+Wachten tot de host start
 [room waiting for players %0]
-
+Wachten tot %0 spelers klaar zijn
 [room who can find it]
-
+Wie kan hem vinden
 [room you created]
-
+Je hebt de kamer gemaakt.
 [room you joined %0]
-
+Je doet mee in %0.
 [room you were removed]
-
+De host heeft je uit de kamer verwijderd.
 [room you]
-
+jij
 [settings Online]
-
+Online
 [settings Another server]
-
+Andere server
 [settings Check]
-
+Controleren
 [settings Checking…]
-
+Controleren…
 [settings Choose which server you play on and how you sign in to it.]
-
+Kies op welke server je speelt en hoe je erop inlogt.
 [settings Connecting…]
-
+Verbinden…
 [settings Could not reach this server.]
-
+Kan deze server niet bereiken.
 [settings Display name saved.]
-
+Weergavenaam opgeslagen.
 [settings Display name]
-
+Weergavenaam
 [settings Download or delete my data]
-
+Mijn account verwijderen
 [settings Enter an https:// address.]
-
+Voer een https://-adres in.
 [settings Finish in your browser. It shows the code %0.]
-
+Rond het af in je browser: typ de code %0 als erom gevraagd wordt.
 [settings Forget]
-
+Vergeten
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gasten houden een gegenereerde naam; log in om er zelf een te kiezen.
 [settings Link]
-
+Koppelen
 [settings Not a Globulation 2 server.]
-
+Geen Globulation 2-server.
 [settings Not linked]
-
+Niet gekoppeld
 [settings Not signed in.]
-
+Niet ingelogd.
 [settings Open]
-
+Openen
 [settings Opens your account page on %0.]
-
+Opent je accountpagina op %0, waar je het account kunt verwijderen.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Beheerd door een community, een club of jezelf. Plak het adres.
 [settings Save]
-
+Opslaan
 [settings Server]
-
+Server
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Zichtbaar in kamers, wedstrijden en de ranglijst. Eens per 30 dagen te wijzigen.
 [settings Sign in with: %0 · queues: %1]
-
+Inloggen met: %0 · wachtrijen: %1
 [settings Sign out on this device]
-
+Uitloggen op dit apparaat
 [settings Sign out]
-
+Uitloggen
 [settings Switch to this server]
-
+Naar deze server overschakelen
 [settings The last sign-in method can't be unlinked.]
-
+De laatste inlogmethode kan niet worden ontkoppeld.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+De officiële Globulation 2-server · competitieve wachtrijen, ranglijsten, kaartcatalogus
 [settings Unlink]
-
+Ontkoppelen
 [settings Unlinking is done on the account page.]
-
+Ontkoppelen doe je op de accountpagina.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Je bent een nieuwe gast tot je weer inlogt. Je account en wedstrijden blijven op de server.
 [settings Your account on %0]
-
+Je account op %0
 [settings compatible with this version]
-
+compatibel met deze versie
 [settings connected]
-
+verbonden
 [settings connecting…]
-
+verbinden…
 [settings guest]
-
+gast
 [settings linked]
-
+gekoppeld
 [settings plays another version]
-
+speelt een andere versie
 [settings trusted]
-
+vertrouwd
 [settings used before]
-
+eerder gebruikt
 [settings you were %0 there]
-
+je was daar %0
 [trust invited to room %0]
-
+Uitgenodigd voor kamer %0
 [trust join as guest]
-
+Meedoen als gast
 [trust not official]
-
+Deze server wordt niet beheerd door het Globulation 2-project.
 [trust remember]
-
+Deze server onthouden
 [trust separate identity %0]
-
+Je doet daar mee als gast. Je %0-account, rating en geschiedenis blijven waar ze zijn.
 [trust title]
-
+Meedoen aan een spel op een andere server?
 [trust what it sees]
-
+De server ziet je weergavenaam, het adres van je verbinding en de spellen die je erop speelt.
 [settings not connected]
-
+niet verbonden
 [settings Open Play online to connect.]
-
+Open Online spelen om te verbinden.
 [hub code]
-
+Code
 [results draw]
-
+Gelijkspel
 [qm 2 vs 2]
-
+2 tegen 2
 [qm 1 vs 1]
-
+1 tegen 1
 [qm ping about]
-
+Ping ongeveer
 [qm ranked]
-
+Competitief
 [qm casual %0]
-
+Vrij %0
 [qm rated]
-
+Competitief
 [qm unrated]
-
+Zonder rating
 [qm solo queue]
-
+solowachtrij
 [qm ai joins after %0]
-
+AI doet mee na %0
 [qm fair maps %0]
-
+Kaarten: %0
 [qm cooldown %0]
-
+Je hebt een wedstrijd geweigerd. Je kunt over %0 opnieuw zoeken.
 [qm sign in to play ranked]
-
+Competitieve wachtrijen zijn voor ingelogde accounts; log eerst in.
 [online update required]
-
+Deze versie van het spel is te oud voor de server; werk bij om online te spelen.
 [online server behind]
-
+De server is nog niet bijgewerkt naar deze versie; online spelen gaat open zodra dat gebeurd is.
 [online version mismatch]
-
+De server speelt een andere versie van het spel; online spelen kan niet met deze kopie.
 [qm already searching]
-
+Je bent al aan het zoeken of in een wedstrijd.
 [online connection problem]
-
+De server kon niet worden bereikt.
 [qm find match]
-
+Wedstrijd zoeken
 [qm opponents rated %0 to %1]
-
+Tegenstanders met rating %0 tot %1
 [qm region %0]
-
+Regio %0
 [qm searching]
-
+Zoeken
 [qm measuring relays]
-
+Relayservers meten
 [qm joining queue]
-
+Aanmelden bij de wachtrij
 [qm waiting for a person]
-
+Wachten op een speler: AI-tegenstanders staan uit.
 [qm ai in %0 rated]
-
+Als er niemand gevonden wordt, speel je over %0 tegen de AI met de dichtstbijzijnde rating
 [qm ai in %0]
-
+Als er niemand gevonden wordt, doet er over %0 een AI mee
 [qm ai after %0]
-
+Als er niemand gevonden wordt, neemt een AI na %0 de plaats in
 [qm allow ai short]
-
+AI toestaan
 [qm allow ai]
-
+AI-tegenstander toestaan
 [qm cancel]
-
+Annuleren
 [qm cancel search]
-
+Zoeken annuleren
 [qm usual wait %0]
-
+gewoonlijk %0 wachten
 [qm widening]
-
+wordt ruimer naarmate je wacht
 [qm ais are rated]
-
+(met rating: AI's hebben ook een rating)
 [qm opponent declined]
-
+Je tegenstander heeft niet geaccepteerd. Je staat weer vooraan in de wachtrij.
 [qm %0 did not accept]
-
+%0 heeft niet geaccepteerd. Je staat weer vooraan in de wachtrij.
 [qm start failed]
-
+De wedstrijd kon niet starten. Je zoekt opnieuw.
 [qm you declined]
-
+Je hebt de wedstrijd geweigerd. Je kunt na een korte wachttijd opnieuw zoeken.
 [qm you did not answer]
-
+Je hebt niet op tijd geaccepteerd. Je kunt na een korte wachttijd opnieuw zoeken.
 [qm search ended]
-
+Het zoeken is gestopt.
 [qm try again]
-
+Opnieuw proberen
 [online connecting]
-
+Verbinden…
 [qm no queues]
-
+Deze server heeft geen wachtrijen voor snel spelen.
 [qm quick match]
-
+Snel spelen
 [qm phone searching note]
-
+Het zoeken gaat door als je dit scherm verlaat.
 [qm phone intro]
-
+Kies hieronder een wachtrij; het zoeken loopt door terwijl je rondkijkt.
 [qm online]
-
+Online
 [qm keeps running note]
-
+Het zoeken gaat door als je dit scherm verlaat.
 [qm ai]
-
+AI
 [qm provisional]
-
+voorlopig
 [qm accepted]
-
+✓ geaccepteerd
 [qm declined]
-
+geweigerd
 [qm waiting]
-
+wachten…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Wedstrijd gevonden
 [qm playing an ai]
-
+Tegen een AI
 [qm vs]
-
+tegen
 [qm ai explanation rated]
-
+Niemand in je ratingbereik was aan het zoeken. Je speelt tegen de AI met de rating die het dichtst bij de jouwe ligt; de uitslag telt mee voor jouw rating en die van de AI.
 [qm ai explanation]
-
+Niemand was aan het zoeken. Je speelt tegen de AI met de rating die het dichtst bij de jouwe ligt; dit spel telt niet mee voor de rating.
 [qm casual explanation]
-
+De wedstrijd begint meteen; vrije spellen tellen niet mee voor de rating.
 [qm accepted button]
-
+Geaccepteerd
 [qm accept]
-
+Accepteren
 [qm decline]
-
+Weigeren
 [qm both must accept]
-
+Beide moeten accepteren
 [qm accept explanation]
-
+Beide spelers moeten accepteren. Wie weigert of de tijd laat verlopen, gaat achteraan in de wachtrij.
 [qm starting in %0]
-
+Start over %0…
 [qm preparing match]
-
+Wedstrijd voorbereiden…
 [qm match assigned %0 %1]
-
+Wedstrijd %0 staat klaar op %1, maar deze versie kan nog geen verbinding maken met online wedstrijden.
 [online jan]
-
+jan
 [online feb]
-
+feb
 [online mar]
-
+mrt
 [online apr]
-
+apr
 [online may]
-
+mei
 [online jun]
-
+jun
 [online jul]
-
+jul
 [online aug]
-
+aug
 [online sep]
-
+sep
 [online oct]
-
+okt
 [online nov]
-
+nov
 [online dec]
-
+dec
 [profile win letter]
-
+W
 [profile loss letter]
-
+V
 [profile draw letter]
-
+G
 [profile history unavailable]
-
+Deze server biedt nog geen wedstrijdgeschiedenis.
 [profile downloading replay]
-
+Herhaling downloaden…
 [profile no replay]
-
+Er is geen herhaling beschikbaar voor deze wedstrijd.
 [profile room with %0]
-
+Kamer · %0 kolonies
 [profile with %0 vs %1]
-
+met %0 tegen %1
 [profile vs %0]
-
+tegen %0
 [profile room]
-
+Kamer
 [profile casual]
-
+Vrij
 [profile ai filled]
-
+Aangevuld met AI
 [profile provisional %0 games]
-
+voorlopig · %0 spellen
 [profile unrated]
-
+zonder rating
 [profile checking]
-
+controleren…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Wedstrijdpagina
 [profile replay]
-
+Herhaling
 [profile win rate last %0]
-
+Winstpercentage, laatste %0
 [profile %0 w %1 l %2 d]
-
+%0 W · %1 V · %2 gelijk
 [profile typical game]
-
+Typisch spel
 [profile median length]
-
+je mediane duur
 [profile best map]
-
+Beste kaart
 [profile %0 w %1 l]
-
+%0 W · %1 V
 [profile no rated games]
-
+Speel een competitieve wedstrijd om een rating te krijgen.
 [profile all]
-
+Alle
 [profile rooms]
-
+Kamers
 [profile vs ai]
-
+tegen AI
 [profile matches]
-
+Wedstrijden
 [online loading]
-
+Laden…
 [profile no matches]
-
+Nog geen wedstrijden.
 [online load more]
-
+Meer laden
 [profile title]
-
+Profiel
 [profile guest]
-
+gast
 [profile playing since %0]
-
+speelt sinds %0
 [profile full profile web]
-
+Volledig profiel op het web
 [profile replays note]
-
+Herhalingen worden van de server gedownload als je ze opent; lokaal opgeslagen herhalingen blijven in Spel laden → Herhalingen.
 [profile web profile]
-
+Webprofiel
 [maps most played]
-
+Meest gespeeld
 [maps most liked]
-
+Meest geliket
 [maps newest]
-
+Nieuwste
 [maps most downloaded]
-
+Meest gedownload
 [maps any size]
-
+Elke grootte
 [maps up to 128]
-
+Tot 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 en groter
 [maps report broken]
-
+Werkt niet
 [maps report offensive]
-
+Aanstootgevend
 [maps report copyright]
-
+Werk van iemand anders
 [maps report other]
-
+Iets anders
 [maps public]
-
+Openbaar
 [maps unlisted]
-
+Niet vermeld
 [maps private]
-
+Privé
 [maps cannot read file]
-
+Het kaartbestand kon niet worden gelezen.
 [maps file too large]
-
+Het kaartbestand is te groot om te delen.
 [maps saved for next room]
-
+De kaart is gedownload; hij wordt gebruikt zodra je een kamer opent.
 [maps download failed]
-
+De kaart kon niet worden gedownload.
 [maps %0 colonies]
-
+%0 kolonies
 [maps version %0]
-
+versie %0
 [maps updated %0]
-
+bijgewerkt %0
 [maps downloading]
-
+Kaart downloaden…
 [maps like needs account]
-
+Om kaarten te liken moet je ingelogd zijn.
 [maps report sent]
-
+Bedankt; de moderators gaan ernaar kijken.
 [maps select a map]
-
+Selecteer een kaart om de details te zien.
 [maps by %0]
-
+door %0
 [maps stats %0 %1 %2]
-
+▶ %0 keer gespeeld · ⬇ %1 downloads · ♥ %2
 [maps use in room]
-
+Gebruik in een kamer
 [maps liked]
-
+Geliket
 [maps like]
-
+Liken
 [maps map page]
-
+Kaartpagina
 [maps reported]
-
+Gemeld
 [maps report]
-
+Melden…
 [maps report why]
-
+Wat is er mis met deze kaart?
 [maps search placeholder]
-
+Zoek kaarten of makers
 [maps none found]
-
+Geen kaarten gevonden.
 [maps any colonies]
-
+Elk aantal kolonies
 [maps checking]
-
+Controleren…
 [maps no version yet]
-
+Er is nog geen versie geüpload.
 [maps rejected]
-
+Afgewezen
 [maps did not load %0]
-
+De kaart is niet geladen: %0
 [maps unknown reason]
-
+er is geen reden opgegeven
 [maps fix and upload again]
-
+herstel hem in de editor en upload opnieuw
 [maps uploaded just now]
-
+zojuist geüpload
 [maps loading on server]
-
+wordt op de server geladen
 [maps %0 plays]
-
+%0 keer gespeeld
 [maps hidden]
-
+Verborgen
 [maps upload again]
-
+Opnieuw uploaden…
 [maps delete]
-
+Verwijderen
 [maps update]
-
+Bijwerken…
 [maps upload a map]
-
+Kaart uploaden…
 [maps upload hint]
-
+.map-bestanden uit je kaartenmap of de editor
 [maps no maps yet]
-
+Je hebt nog geen kaarten gedeeld.
 [maps my maps]
-
+Mijn kaarten
 [maps my maps %0]
-
+Mijn kaarten (%0)
 [maps browse]
-
+Bladeren
 [maps title]
-
+Kaarten
 [maps browse note %0]
-
+Catalogus van %0 · alleen kaarten die in deze versie laden worden getoond
 [maps visibility note]
-
+Openbare kaarten verschijnen bij Bladeren. Niet-vermelde kaarten werken in je kamers en via hun link. Privékaarten alleen in je eigen kamers.
 [maps use %0]
-
+Gebruik %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Titel
 [maps field description]
-
+Beschrijving
 [maps who can use it]
-
+Wie mag hem gebruiken
 [maps guests unlisted]
-
+Gasten kunnen niet-vermelde en privékaarten delen; log in om bij Bladeren te publiceren.
 [maps visibility help]
-
+Niet-vermelde kaarten werken in je kamers en via hun link; openbare kaarten verschijnen ook bij Bladeren.
 [maps new version of %0]
-
+Upload dit bestand als nieuwe versie van %0.
 [maps upload]
-
+Uploaden
 [maps uploading]
-
+Uploaden…
 [maps checking detail]
-
+De server laadt de kaart en tekent het voorbeeld. Tot dan kan de kaart niet worden gebruikt.
 [maps ready]
-
+Klaar
 [maps ready public]
-
+De kaart is klaar en staat bij Bladeren.
 [maps ready unlisted]
-
+De kaart is klaar. Niet-vermelde kaarten werken in je kamers en via hun link.
 [maps ready private]
-
+De kaart is klaar. Privékaarten werken alleen in je eigen kamers.
 [maps upload failed]
-
+Het uploaden is mislukt
 [maps server read %0 %1]
-
+De server las het als %0 met %1 kolonies.
 [maps continue in background]
-
+Sluiten
 [maps upload a map title]
-
+Kaart uploaden
 [maps update map title]
-
+Kaart bijwerken
 [maps upload note]
-
+De server laadt elke upload voordat die gebruikt kan worden.
 [online just now]
-
+zojuist
 [online today %0]
-
+vandaag %0
 [online yesterday]
-
+gisteren
 [online sun]
-
+zo
 [online mon]
-
+ma
 [online tue]
-
+di
 [online wed]
-
+wo
 [online thu]
-
+do
 [online fri]
-
+vr
 [online sat]
-
+za
 [online %0 weeks ago]
-
+%0 weken geleden
 [online %0 months ago]
-
+%0 maanden geleden
 [online %0 years ago]
-
+%0 jaar geleden
 [maps share online]
-
+Online delen…
 [maps mine]
-
+Van mij
 [results waiting for players]
-
+Wachten tot de andere spelers vertrekken…
 [results waiting detail]
-
+De uitslag wordt vastgelegd zodra iedereen de wedstrijd heeft verlaten.
 [results waiting slow]
-
+Een speler die de verbinding verloor, heeft tot 3 minuten om terug te komen. De uitslag verschijnt in je geschiedenis en op de wedstrijdpagina.
 [results verifying slow]
-
+Het controleren duurt langer dan normaal. De uitslag verschijnt in je geschiedenis en op de wedstrijdpagina.
 [results rematch]
-
+Revanche
 [results join rematch %0]
-
+Doe mee met de revanche van %0
 [hub profile history]
-
+Profiel en geschiedenis
 [hub my maps]
-
+Mijn kaarten
 [hub leaderboard %0]
-
+Ranglijst · %0
 [hub leaderboard empty]
-
+Nog geen spelers op de ranglijst.
 [hub guests not ranked]
-
+Gasten staan niet op de ranglijst. Log in om hier te verschijnen.
 [hub full leaderboard]
-
+Volledige ranglijst
 [settings %0 is no longer linked.]
-
+%0 is niet meer gekoppeld.
 [room map read failed]
-
+Dit kaartbestand kon niet worden gelezen.
 [room map upload failed]
-
+De kaart kon niet met de kamer worden gedeeld.
 [room map upload failed %0]
-
+De kaart kon niet met de kamer worden gedeeld: %0
 [room uploading map]
-
+Kaart delen met de kamer…
 [room premade map shared]
-
+Iedereen in de kamer speelt dit kaartbestand; het wordt vóór de wedstrijd gedownload.
 [room take a seat to play]
-
+Neem een open plaats om te spelen
 [room waiting for a seat]
-
+Alle plaatsen zijn bezet. Je kunt er een nemen zodra er een vrijkomt.
 [room not seated]
-
+Geen plaats
 [room copied]
-
+Gekopieerd
 [room copy failed]
-
+Kopiëren mislukt
 [room closed title]
-
+Kamer gesloten
 [room removed title]
-
+Uit de kamer verwijderd
 [room back to online]
-
+Terug naar online
 [leave match]
-
+Wedstrijd verlaten
 [leave match title]
-
+Deze wedstrijd verlaten?
 [leave lan title]
-
+Dit LAN-spel verlaten?
 [leave rated body]
-
+Je verliest deze competitieve wedstrijd en je rating daalt. De anderen spelen door en je kunt niet terugkeren.
 [leave casual body]
-
+Deze snelle wedstrijd telt als verlies voor jou. De anderen spelen door en je kunt niet terugkeren.
 [leave room body]
-
+Je verlaat de wedstrijd van de kamer en het telt als verlies in je geschiedenis. De anderen spelen door en je kunt niet terugkeren.
 [leave lan body]
-
+De anderen spelen zonder jou door en je kunt niet terugkeren naar dit spel.
 [leave match confirm]
-
+Wedstrijd verlaten
 [keep playing]
-
+Verder spelen
 [results team]
-
+Team
 [results quick unrated]
-
+Snelle wedstrijd · zonder rating
 [conn card cannot keep up]
-
+Je apparaat kan deze wedstrijd niet bijhouden
 [conn card cannot keep up body]
-
+Het speelt de wedstrijd langzamer af dan die loopt, dus het haalt niet in. Je kunt de wedstrijd verlaten, of de grafische instellingen verlagen en blijven wachten.
 [conn card not gaining]
-
+loopt niet in
 [results reason opponents left]
-
+Je tegenstanders hebben de wedstrijd verlaten.
 [results reason victory]
-
+Alle vijandelijke kolonies zijn verslagen.
 [results reason defeat]
-
+Je kolonie is verslagen.
 [results reason you left]
-
+Je hebt de wedstrijd verlaten. Het telt als verlies.
 [results final after end]
-
+Definitieve uitslag na afloop van de wedstrijd.
 [pause none left]
-
+Geen pauzes meer
 [pause game left %0]
-
+Pauzeren (nog %0)
 [pause by %0]
-
+Gepauzeerd door %0
 [pause by %0 resumes in %1]
-
+Gepauzeerd door %0 · gaat verder over %1
 [turn too many actions]
-
+Te veel acties: sommige wachten nog om verstuurd te worden
 [turn no pauses left]
-
+Je hebt geen pauzes meer in deze wedstrijd
 [turn pause time used %0]
-
+%0 heeft alle pauzetijd gebruikt: het spel gaat verder
 [room seats one person %0 %1]
-
+1 speler · %0 AI · %1 open
 [room rules otherwise standard]
-
+Alle andere regels zijn zoals bij Standaard.
 [room browser link]
-
+Link voor browserspelers
 [room browser link hint]
-
+Spelers in een browser plakken deze link om mee te doen.
 [room browser link code %0]
-
+Spelers in een browser plakken deze link om mee te doen. Hun spel toont code %0.
 [room copy link]
-
+Link kopiëren
 [room lan open seat detail]
-
+Iedereen op dit netwerk kan deze plaats nemen
 [room close title]
-
+De kamer sluiten?
 [room close body one]
-
+Vertrekken sluit de kamer voor iedereen, ook voor de andere speler erin.
 [room close body %0]
-
+Vertrekken sluit de kamer voor iedereen, ook voor de %0 andere spelers erin.
 [room close confirm]
-
+Kamer sluiten
 [room stay]
-
+Blijven
 [room colours changed]
-
+De nieuwe kaart gaf de plaatsen nieuwe kleuren. Controleer de jouwe voor je begint.
 [room copy by hand]
-
+Kopiëren is niet gelukt. Kopieer de uitnodiging zelf:
 [room copy by hand close]
-
+Sluiten
 [room copy by hand touch]
-
+Houd de link ingedrukt en kies Kopiëren.
 [room copy by hand keys]
-
+De link is geselecteerd: druk op Ctrl+C (⌘C op een Mac).
 [room code]
-
+Code
 [online under a minute]
-
+minder dan een minuut
 [online about %0 min]
-
+ongeveer %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+AI-tegenstander: %0
 [match relay connected]
-
+Verbonden met de spelserver
 [room picker title]
-
+Kies een kaart
 [room picker for one]
-
+Voor de 1 speler in de kamer
 [room picker for %0]
-
+Voor de %0 spelers in de kamer
 [room picker generated]
-
+Gegenereerd
 [room picker premade]
-
+Kant-en-klaar
 [room picker catalog]
-
+Catalogus
 [room picker size]
-
+Grootte
 [room picker colonies]
-
+Kolonies
 [room picker fair]
-
+Eerlijke start voor elke kolonie
 [room picker does not fit]
-
+Past niet bij deze grootte; probeer een andere
 [room picker preparing]
-
+Voorbeeld voorbereiden…
 [room picker generated note]
-
+Elk landschap geeft elke kolonie een even goede start, en de server maakt voor iedereen dezelfde kaart.
 [room picker players %0]
-
+%0 spelers
 [room picker unreadable]
-
+onleesbaar
 [room picker no premade]
-
+Er zijn geen kant-en-klare kaarten gevonden.
 [room picker too small %0]
-
+Deze kaart heeft minder kolonies dan de %0 spelers in de kamer.
 [room picker pick premade]
-
+Kies een kaart om hem hier te zien.
 [room picker catalog intro]
-
+Kaarten die andere spelers deelden. Open er een en kies Gebruik in een kamer.
 [room picker browse catalog]
-
+Gedeelde kaarten bekijken
 [room picker more options]
-
+Meer opties…
 [room picker use]
-
+Deze kaart gebruiken
 [room map ready title %0]
-
+Speel %0
 [room map ready unnamed]
-
+deze kaart
 [room map ready body]
-
+Maak een kamer en nodig je vrienden uit: de kamer speelt deze kaart.
 [game draw]
-
+Gelijkspel
 [settings Show colony skins]
 Kolonie-uiterlijk tonen
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Schakel uit om op dit apparaat klassieke eenheden, zwermen en gebouwkleuren te gebruiken.
 [settings Hive Mind]
-
+Zwermgeest
 [settings Enable commander shortcuts]
-
+Sneltoetsen voor commandant
 [settings Command your colony without opening a menu.]
-
+Geef je kolonie bevelen zonder een menu te openen.
 [settings Allow supervision for new commands]
-
+Toezicht op nieuwe bevelen toestaan
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+De commandant mag vaste bevelen opvolgen. Opvolging kost tegoed; ingestelde bevelen blijven zonder tegoed lopen.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Standaardsneltoetsen: Ctrl+Enter om een bevel te geven; Ctrl+Shift+Enter om de commandant te stoppen. Wijzig ze onder Besturing. Kaarten met vaste bevelen hebben eigen knoppen om te pauzeren en te annuleren.
 [settings Commander account and credits]
-
+Commandantaccount en tegoed
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Beheer tegoed en aankopen in je browser. Hulp van de commandant is toegestaan in competitieve spellen.
 [open commander]
-
+Commandant openen
 [stop commander]
-
+Commandant stoppen
 [settings Recording]
-
+Opnemen
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Neem je spellen op als MP4-video's met geluid. Opnemen vereist FFmpeg met de encoders libx264 en AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg is klaar.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg is niet beschikbaar, dus opnemen staat uit. Installeer FFmpeg, zorg dat het in je PATH staat en controleer opnieuw.
 [settings Check for FFmpeg again]
-
+Opnieuw zoeken naar FFmpeg
 [settings Checking for FFmpeg…]
-
+Zoeken naar FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Sneltoets: %0. Werkt ook in menu's en de editor.
 [settings Change the hotkey]
-
+Sneltoets wijzigen
 [settings Recordings are saved in %0]
-
+Opnames worden opgeslagen in %0
 [toggle recording]
-
+Opname starten of stoppen
 [File selection is unavailable.]
-
+Bestandskeuze is niet beschikbaar.
 [Saving custom AI…]
-
+Eigen AI opslaan…
 [Could not read the selected JavaScript file.]
-
+Kan het gekozen JavaScript-bestand niet lezen.
 [Custom AI library saved.]
-
+Bibliotheek met eigen AI's opgeslagen.
 [Storage could not be saved. The previous library is retained.]
-
+Opslag kon niet worden bewaard. De vorige bibliotheek blijft behouden.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importeer één JavaScript-AI-bestand en kies het bij het opzetten van een lokaal spel.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Een import bewaart een kopie in Glob2. Bijwerken vervangt die kopie voor toekomstige spellen; opgeslagen spellen houden hun oorspronkelijke AI.
 [Waiting for file selection or storage…]
-
+Wachten op bestandskeuze of opslag…
 [Import JavaScript AI]
-
+JavaScript-AI importeren
 [Link development file]
-
+Ontwikkelbestand koppelen
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Gekoppelde bestanden worden bij de start van het spel gelezen. Bouw opnieuw voordat je een nieuw spel start. Een koppeling verwijderen wist nooit je bestand.
 [Example AI and authoring guide]
-
+Voorbeeld-AI en handleiding
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Nog geen eigen AI's. Importeer een gebundeld .js-bestand om te beginnen.
 [Relink]
-
+Opnieuw koppelen
 [Update]
-
+Bijwerken
 [Validate]
-
+Valideren
 [AI startup and persistent globals are valid.]
-
+Opstarten van de AI en blijvende globale variabelen zijn geldig.
 [Remove from library]
-
+Uit bibliotheek verwijderen
 [AI telemetry]
-
+AI-telemetrie
 [No accessible AI telemetry.]
-
+Geen toegankelijke AI-telemetrie.
 [Search fields]
-
+Velden zoeken
 [Telemetry unavailable for this recording or controller.]
-
+Telemetrie niet beschikbaar voor deze opname of besturing.
 [Linked]
-
+Gekoppeld
 [Imported]
-
+Geïmporteerd
 [Player]
-
+Speler
 [Updated at tick %0]
-
+Bijgewerkt bij tik %0
 [No values published yet.]
-
+Nog geen waarden gepubliceerd.
 [No fields match your search.]
-
+Geen velden komen overeen met je zoekopdracht.
 [settings Custom AIs]
-
+Eigen AI's
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Voeg JavaScript-AI's toe via Instellingen → Eigen AI's. Ze verschijnen in de AI-keuze van elke kolonie.
 [Missing custom AI]
-
+Eigen AI ontbreekt
 [Map repetition failed]
-
+Kan deze kaart niet herhalen. Gebruik een startkaart zonder script, of verminder de herhalingen en bases.
 [repeat map horizontally]
 Kaart horizontaal herhalen
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ bases
 [bases per colony]
 Bases per kolonie; een basis is één team van de kaart zoals getekend, met zijn gebouwen en eenheden
 [stat group population]
-
+Bevolking
 [stat group food]
-
+Voedsel en welzijn
 [stat group resources]
-
+Grondstoffen
 [stat group buildings]
-
+Gebouwen
 [stat group military]
-
+Leger
 [stat group map]
-
+Gebied
 [stat group score]
-
+Score
 [stat overview]
-
+Overzicht
 [stat overview about]
-
+De cijfers van elke kolonie over de hele wedstrijd. Waar meer beter is, is de hoogste gemarkeerd; klik op een kolomkop om het verloop in de tijd te zien.
 [stat population]
-
+Bevolking
 [stat population about]
-
+Hoeveel eenheden de kolonie in leven had: werkers, verkenners en soldaten samen.
 [stat births]
-
+Geboren eenheden
 [stat births about]
-
+Hoe snel zwermen nieuwe eenheden maakten. Splits het om werkers, verkenners en soldaten apart te zien.
 [stat deaths]
-
+Verloren eenheden
 [stat deaths about]
-
+Hoe snel de kolonie eenheden verloor, door welke oorzaak ook: gevechten, honger, verwondingen bij het ontruimen of opgesloten raken.
 [stat net growth]
-
+Bevolkingsgroei
 [stat net growth about]
-
+Geboren eenheden min verloren eenheden. Boven nul groeide de kolonie; onder nul kromp ze.
 [stat death causes]
-
+Doodsoorzaken
 [stat death causes about]
-
+Waaraan de eenheden van de kolonie stierven: gevechten, honger, verwondingen bij het ontruimen van grondstoffen, opgesloten raken zonder uitweg, of andere oorzaken.
 [stat conversions]
-
+Netto overlopers
 [stat conversions about]
-
+Eenheden die van andere kolonies zijn overgelopen min eenheden die naar hen overliepen. Eenheden wisselen van kant als een andere kolonie ze beter voedt.
 [stat hunger]
-
+Voedselreserves
 [stat hunger about]
-
+Hoeveel voedsel de eenheden van de kolonie in zich droegen. Elke eenheid wordt ingedeeld naar wat er van haar voedselreserve over is: bijna leeg (een kwart of minder), laag (tot de helft), halfvol (tot driekwart) of goed gevoed. Eenheden gaan een herberg zoeken als hun reserve opraakt, dus een kolonie heeft er altijd een paar met weinig.
 [stat health]
-
+Gezondheid
 [stat health about]
-
+Hoe gezond de eenheden van de kolonie waren. Elke eenheid wordt ingedeeld naar hoeveel levenspunten ze nog heeft: kritiek (een kwart of minder), gewond (tot de helft), geraakt (tot driekwart) of gezond.
 [stat seeking food]
-
+Eenheden op zoek naar voedsel
 [stat seeking food about]
-
+Eenheden die gestopt waren met werken om een herberg te zoeken. Wie ook niet volledig gezond is, telt als verzwakkend.
 [stat in care]
-
+Eenheden die eten of genezen
 [stat in care about]
-
+Eenheden die in een herberg eten of in een ziekenhuis genezen, en dus niet werken.
 [stat wheat harvested]
-
+Tarwe geoogst
 [stat wheat harvested about]
-
+Ladingen tarwe geplukt door werkers. Herbergen maken van tarwe maaltijden.
 [stat wheat stored]
-
+Tarwe in opslag
 [stat wheat stored about]
-
+Tarwe in de gebouwen van de kolonie, klaar om te serveren of te gebruiken.
 [stat meals]
-
+Maaltijden geserveerd
 [stat meals about]
-
+Maaltijden die de herbergen van de kolonie serveerden, aan eigen eenheden en aan bezoekers van andere kolonies.
 [stat starvation]
-
+Hongerdoden
 [stat starvation about]
-
+Eenheden die stierven omdat ze niet op tijd voedsel vonden.
 [stat healing]
-
+Gezondheid hersteld
 [stat healing about]
-
+Levenspunten die de ziekenhuizen van de kolonie teruggaven aan gewonde eenheden.
 [stat gathered]
-
+Grondstoffen verzameld
 [stat gathered about]
-
+Ladingen van elke grondstof die werkers hebben opgehaald. Splits het om elke grondstof te zien.
 [stat stored]
-
+Grondstoffen in opslag
 [stat stored about]
-
+Grondstoffen in de gebouwen van de kolonie. Splits het om elke grondstof te zien.
 [stat spending]
-
+Grondstofverbruik
 [stat spending about]
-
+Waar geleverde grondstoffen heen gingen: maaltijden, nieuwe eenheden, torenmunitie, nieuwe gebouwen of verbeteringen.
 [stat delivered]
-
+Grondstoffen geleverd
 [stat delivered about]
-
+Ladingen die werkers naar gebouwen brachten.
 [stat traded]
-
+Netto handel
 [stat traded about]
-
+Grondstoffen ontvangen via markten min weggegeven grondstoffen.
 [stat buildings]
-
+Staande gebouwen
 [stat buildings about]
-
+Voltooide gebouwen van de kolonie. Splits het om elk soort gebouw te zien.
 [stat construction]
-
+Bouwwerk voltooid
 [stat construction about]
-
+Voltooid bouwwerk: nieuwe gebouwen, verbeteringen en reparaties.
 [stat buildings lost]
-
+Verloren gebouwen
 [stat buildings lost about]
-
+Gebouwen die door vijanden zijn vernietigd of door de kolonie zelf zijn afgebroken.
 [stat blocked buildings]
-
+Onbereikbare gebouwen
 [stat blocked buildings about]
-
+Gebouwen waarvan de ingangen versperd waren, zodat eenheden er niet in of uit konden.
 [stat attack]
-
+Aanvalskracht
 [stat attack about]
-
+Een score voor de gezamenlijke vechtkracht van de soldaten van de kolonie: hoe hard en hoe snel ze toeslaan.
 [stat defence]
-
+Verdedigingskracht
 [stat defence about]
-
+Een score voor de gezamenlijke vuurkracht van de verdedigingstorens van de kolonie.
 [stat hit points]
-
+Totaal levenspunten
 [stat hit points about]
-
+De levenspunten van alle eenheden en gebouwen van de kolonie bij elkaar opgeteld.
 [stat damage dealt]
-
+Schade toegebracht
 [stat damage dealt about]
-
+Schade die de kolonie aan vijandelijke eenheden en gebouwen toebracht. Splits het om soldaten, magie en torens te zien.
 [stat damage taken]
-
+Schade opgelopen
 [stat damage taken about]
-
+Schade die vijanden aan de eenheden en gebouwen van de kolonie toebrachten.
 [stat damage traded]
-
+Schadebalans
 [stat damage traded about]
-
+Toegebrachte min opgelopen schade. Boven nul won de kolonie haar gevechten.
 [stat combat deaths]
-
+Gesneuvelde eenheden
 [stat combat deaths about]
-
+Eenheden van deze kolonie die door vijanden zijn gedood. Splits het om werkers, verkenners en soldaten apart te zien.
 [stat accuracy]
-
+Treffers
 [stat accuracy about]
-
+Het aandeel schoten van de torens en verkenners van de kolonie dat het doel raakte.
 [stat training]
-
+Training
 [stat training about]
-
+Bezoeken van eenheden aan scholen, kazernes, racebanen en zwembaden om een vaardigheid te leren.
 [stat skills]
-
+Vaardigheden geleerd
 [stat skills about]
-
+Vaardigheidsniveaus die de eenheden van de kolonie door training behaalden.
 [stat growth nearby]
-
+Groei van grondstoffen bij de kolonie
 [stat growth nearby about]
-
+Hoeveel tarwe, hout en andere grondstoffen groeiden binnen 32 vakjes van de gebouwen van de kolonie, in groeipunten in plaats van ladingen. Splits het om te zien hoe dicht bij huis ze groeiden.
 [stat growth map]
-
+Groei van grondstoffen op de kaart
 [stat growth map about]
-
+Hoeveel grondstoffen er ergens op de kaart groeiden, in groeipunten in plaats van ladingen. Dit is voor elke kolonie gelijk.
 [stat stranded]
-
+Eenheden die vastzitten
 [stat stranded about]
-
+Ingesloten eenheden zonder vrij vakje om naartoe te stappen.
 [stat cleared]
-
+Grondstoffen weggeruimd
 [stat cleared about]
-
+Grondstoffen die werkers in ontruimingsgebieden weghaalden om ruimte te maken.
 [stat prestige]
-
+Roem
 [stat prestige about]
-
+De roem van de kolonie, verdiend met gebouwen van het hoogste niveau. Een wedstrijd met een roemdoel eindigt als dat bereikt is.
 [stat band combat]
-
+Gevecht
 [stat band starvation]
-
+Honger
 [stat band clearing]
-
+Letsel bij ontruimen
 [stat band trapped]
-
+Opgesloten
 [stat band other]
-
+Overig
 [stat band starving]
-
+Bijna leeg
 [stat band hungry]
-
+Laag
 [stat band peckish]
-
+Halfvol
 [stat band fed]
-
+Goed gevoed
 [stat band critical]
-
+Kritiek
 [stat band wounded]
-
+Gewond
 [stat band hurt]
-
+Geraakt
 [stat band healthy]
-
+Gezond
 [stat band weakening]
-
+Verzwakkend
 [stat band looking]
-
+Zoekt herberg
 [stat band eating]
-
+Eet
 [stat band healing]
-
+Geneest
 [stat band meals]
-
+Maaltijden
 [stat band new units]
-
+Nieuwe eenheden
 [stat band ammunition]
-
+Munitie
 [stat band construction]
-
+Nieuwe gebouwen
 [stat band upgrades]
-
+Verbeteringen
 [stat band built]
-
+Gebouwd
 [stat band upgraded]
-
+Verbeterd
 [stat band repaired]
-
+Gerepareerd
 [stat band destroyed]
-
+Vernietigd
 [stat band demolished]
-
+Afgebroken
 [stat band melee]
-
+Soldaten
 [stat band magic]
-
+Magie
 [stat band towers]
-
+Torens
 [stat band within 8]
-
+Binnen 8 vakjes
 [stat band 8 to 16]
-
+8 tot 16 vakjes
 [stat band 16 to 32]
-
+16 tot 32 vakjes
 [stat unit units]
-
+eenheden
 [stat unit wheat]
-
+tarwe
 [stat unit meals]
-
+maaltijden
 [stat unit hit points]
-
+levenspunten
 [stat unit resources]
-
+grondstoffen
 [stat unit buildings]
-
+gebouwen
 [stat unit strength]
-
+punten
 [stat unit damage]
-
+schade
 [stat unit shots]
-
+schoten
 [stat unit visits]
-
+bezoeken
 [stat unit skills]
-
+vaardigheidsniveaus
 [stat unit prestige]
-
+roem
 [stat axis percent of %0]
-
+% van %0
 [stat axis share of all teams]
-
+% van alle kolonies
 [stat axis percent of units]
-
+% van de eenheden van de kolonie
 [stat axis %0 per minute per 100 units]
-
+%0 per minuut, per 100 eenheden in de kolonie
 [stat axis %0 per 100 units]
-
+%0 per 100 eenheden in de kolonie
 [stat axis %0 per minute]
-
+%0 per minuut
 [stat axis %0 so far]
-
+%0, lopend totaal
 [stat axis %0 minute average]
-
+%0-minutengemiddelde
 [stat view per minute]
-
+Per minuut
 [stat view total]
-
+Totaal
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Per soort
 [stat view percentages]
-
+Als % van totaal
 [stat view percent of units]
-
+Als % van kolonie
 [stat view per 100 units]
-
+Naar koloniegrootte
 [stat view share]
-
+Aandeel van alle kolonies
 [stat view highlight none]
-
+Markeren: geen
 [stat column peak units]
-
+Max. eenheden
 [stat column born]
-
+Geboren
 [stat column lost]
-
+Verloren
 [stat column wheat]
-
+Tarwe
 [stat column damage dealt]
-
+Toegebracht
 [stat column damage taken]
-
+Opgelopen
 [stat column built]
-
+Gebouwd
 [stat column buildings lost]
-
+Gebouwen verloren
 [stat column prestige]
-
+Roem
 [stat marker wiped out]
-
+laatste eenheid verloren
 [stat marker first combat death]
-
+eerste eenheid gesneuveld
 [stat marker first building destroyed]
-
+eerste gebouw vernietigd
 [stat not recorded for this match]
-
+Deze statistiek is voor deze wedstrijd niet bijgehouden.
 [results reason beyond doubt]
-
+De uitslag stond niet meer ter discussie.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Kolonie
 [stat page %0 of %1]
-
+%0 van %1  >
 [stat band workers]
-
+Werkers
 [stat band explorers]
-
+Verkenners
 [stat band warriors]
-
+Soldaten
 [stat unit deaths]
-
+doden
 [stat unit growth]
-
+groei
 [stat view by unit type]
-
+Per eenheidstype
 [stat view by state]
-
+Per toestand
 [stat view by resource]
-
+Per grondstof
 [stat view by building]
-
+Per gebouw
 [stat view by work]
-
+Per soort werk
 [stat view by cause]
-
+Per oorzaak
 [stat view by weapon]
-
+Per wapen
 [stat view by distance]
-
+Per afstand
 [stat nothing to show]
-
+Niets te tonen: dit is in deze wedstrijd niet gebeurd.
 [stat %0 nothing]
-
+%0 (geen)
 [Match]
-
+Wedstrijd
 [Time limit]
-
+Tijdslimiet
 [Alliances can change]
-
+Allianties kunnen wisselen
 [Reveal terrain]
-
+Terrein onthullen
 [Starting unit level]
-
+Startniveau eenheden
 [Starting stockpile]
-
+Startvoorraad
 [Regrowth]
-
+Teruggroei
 [Building strength]
-
+Sterkte gebouwen
 [Wounded units retreat]
-
+Gewonden trekken terug
 [Units can die]
-
+Eenheden kunnen sterven
 [Unit training]
-
+Training van eenheden
 [No stockpile]
-
+Geen
 [No glass cannon]
-
+Uit
 [How quickly harvested resources grow back and spread.]
-
+Hoe snel geoogste grondstoffen teruggroeien en zich verspreiden.
 [Units must eat to keep working.]
-
+Eenheden moeten eten om te blijven werken.
 [Summary]
-
+Samenvatting
 [All rules]
-
+Alle regels
 [Show all rules]
-
+Alle regels tonen
 [Choose a ruleset]
-
+Kies een regelset
 [Reset to %0]
-
+Terugzetten naar %0
 [ruleset one change %0]
-
+%0 + 1 wijziging
 [ruleset changes %0 %1]
-
+%0 + %1 wijzigingen
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Deze wedstrijd kan niet eindigen. Zet roemoverwinning aan of stel een tijdslimiet in.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Roem verschijnt meestal na 13 tot 28 minuten, dus een limiet van 30 minuten eindigt vaak in gelijkspel.
 [Blitz]
-
+Blitz
 [ruleset blitz description]
-
+Snelle start, vroeg einde
 [Gentle]
-
+Mild
 [ruleset gentle description]
-
+Vergevingsgezinde regels voor een eerste wedstrijd
 [Sandbox]
-
+Zandbak
 [ruleset sandbox description]
-
+Niet vechten, niet verhongeren, alles bouwen
 [Bloodbath]
-
+Bloedbad
 [ruleset bloodbath description]
-
+Kwetsbare, onverschrokken legers
 [Siege]
-
+Belegering
 [ruleset siege description]
-
+Vestingmuren en lange oorlogen
 [Lean years]
-
+Magere jaren
 [ruleset lean years description]
-
+Grondstoffen groeien nauwelijks terug
 [Gold rush]
-
+Goudkoorts
 [ruleset gold rush description]
-
+Wat op de kaart ligt, is alles wat er is
 [Elite ranks]
-
+Elitetroepen
 [ruleset elite ranks description]
-
+Getraind beginnen, niet verder trainen
 [Shifting alliances]
-
+Wisselende allianties
 [ruleset shifting alliances description]
-
+Teams kunnen wisselen in een race van 60 minuten
 [Probability victory]
-
+Kansoverwinning
 [Off (play it out)]
-
+Uit (uitspelen)
 [95% sure]
-
+95% zeker
 [97% sure]
-
+97% zeker
 [99% sure]
-
+99% zeker
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Beëindigt de wedstrijd zodra het model de gekozen zekerheid bereikt. Toeschouwers zien de voorspelde winkansen in de statistieken.
 [Changed from %0: %1]
-
+Gewijzigd t.o.v. %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Gevechten staan uit, dus de regels hieronder hebben geen effect.
 [%0 more rules are at their Standard values.]
-
+Nog %0 regels staan op hun standaardwaarde.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Spelers zien het terrein van de kaart vanaf het begin; vijandelijke eenheden blijven verborgen.
 [Each team starts with extra resources in its shared pool.]
-
+Elk team begint met extra grondstoffen in de gedeelde voorraad.
 [Units hit harder but have less HP and armor.]
-
+Eenheden slaan harder, maar hebben minder levenspunten en pantser.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Teams kunnen elkaar aanvallen. Zet uit voor een vreedzame wedstrijd.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Gewonde eenheden gaan terug om te genezen in plaats van tot de dood te vechten.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Eenheden sterven als hun levenspunten op zijn. Zet uit om ze op 1 levenspunt te laten stoppen.
 [Units gain levels at schools.]
-
+Eenheden stijgen in niveau op scholen.
 [stat group work]
-
+Tijd van werkers
 [stat worker time]
-
+Hoe werkers hun tijd besteedden
 [stat worker time about]
-
+Wat de werkers van de kolonie van moment tot moment deden: werken voor een gebouw, werken bij een vlag, trainen, eten, genezen, hongerig of gewond wachten omdat er geen herberg of ziekenhuis vrij is, of niets doen bij gebrek aan werk. Een gezonde kolonie houdt de meeste werkers aan het werk, weinig inactief en niemand wachtend.
 [stat idle workers]
-
+Inactieve werkers
 [stat idle workers about]
-
+Het deel van de tijd van werkers zonder iets te doen. Hoge waarden betekenen meer werkers dan werk; bijna nul betekent dat elke werker bezig is en er misschien taken wachten.
 [stat work by job]
-
+Waar werkers aan werkten
 [stat work by job about]
-
+Hoeveel werkers elk soort gebouw bevoorraadden: zwermen (voor nieuwe eenheden), herbergen (voor maaltijden), gebouwen in aanbouw of verbetering, of andere gebouwen zoals torens, scholen en kazernes.
 [stat haul distance]
-
+Afstand tot grondstoffen
 [stat haul distance about]
-
+Hoe ver een oogstende werker gemiddeld van het gebouw dat ze bevoorraadde was, in kaartvakjes in rechte lijn.
 [stat hauling]
-
+Halen en dragen
 [stat hauling about]
-
+Hoe de werkers die gebouwen bevoorraden zich verdeelden over lopen naar een grondstof, oogsten, terugdragen, en afleveren of wachten op een bereikbare grondstof. Het meeste is lopen, dus hoe dichter de grondstoffen, hoe meer er gedaan wordt.
 [stat eating time]
-
+Werkers die gaan eten
 [stat eating time about]
-
+Hoeveel werkers weg waren van hun werk om te eten: lopend naar een herberg, etend in een herberg, of hongerig zonder herberg die hen kon opnemen. Werkers zonder herberg betekent dat de kolonie haar herbergen of hun voedsel ontgroeid is.
 [stat inn distance]
-
+Afstand tot de herberg
 [stat inn distance about]
-
+Hoe ver hongerige werkers gemiddeld tijdens hun tocht van de herberg waren waar ze heen gingen, in kaartvakjes in rechte lijn. Een hele rit is ongeveer het dubbele. Hoge waarden betekenen dat herbergen ver van het werk liggen.
 [stat warriors]
-
+Soldaten
 [stat warriors about]
-
+Hoeveel soldaten de kolonie had. Splits het om te zien hoeveel er dicht bij huis waren, bij een vijandelijke kolonie of op open terrein. Terrein dicht bij beide kolonies telt als thuis.
 [stat warrior level]
-
+Gemiddeld aanvalsniveau soldaten
 [stat warrior level about]
-
+Het gemiddelde aanvalsniveau van de soldaten van de kolonie, waarbij aanvalssnelheid en aanvalskracht even zwaar tellen, op de schaal van 1 tot 4 die het spel toont. Kazernes verhogen het; nieuwe ongetrainde soldaten halen het omlaag.
 [stat warrior duties]
-
+Wat soldaten deden
 [stat warrior duties about]
-
+Hoe de soldaten van de kolonie verdeeld waren over wie naar een oorlogsvlag gestuurd was, wie zo gewond was dat die het gevecht verliet voor een ziekenhuis (inclusief wie genezen werd), en wie vrij was.
 [stat intruders]
-
+Vijandelijke soldaten thuis
 [stat intruders about]
-
+Hoeveel vijandelijke soldaten binnen 16 vakjes van de gebouwen van de kolonie waren. Waar twee kolonies dicht bij elkaar liggen, telt elk de verdedigers van de ander.
 [stat home defence]
-
+Krachtmarge thuisverdediging
 [stat home defence about]
-
+De kracht van de eigen soldaten bij de gebouwen van de kolonie min die van de vijandelijke soldaten daar, waarbij elke soldaat en elk van zijn aanvalsniveaus telt. Onder nul was de kolonie thuis in de minderheid.
 [stat combat death places]
-
+Waar eenheden sneuvelden
 [stat combat death places about]
-
+Waar de eenheden van de kolonie waren toen ze werden gedood: bij de eigen gebouwen, bij vijandelijke gebouwen of op open terrein tussen kolonies. Verliezen thuis betekenen dat de kolonie werd aangevallen; verliezen bij een vijandelijke kolonie betekenen dat ze aanviel. Terrein dicht bij beide kolonies telt als thuis.
 [stat band working]
-
+Aan het werk
 [stat band flag work]
-
+Bij een vlag
 [stat band idle]
-
+Inactief
 [stat band training]
-
+Trainen
 [stat band unserved]
-
+Geen herberg of ziekenhuis vrij
 [stat band swarms]
-
+Zwermen
 [stat band inns]
-
+Herbergen
 [stat band sites]
-
+Bouwen en verbeteren
 [stat band other buildings]
-
+Andere gebouwen
 [stat band to resource]
-
+Loopt naar grondstof
 [stat band harvesting]
-
+Oogsten
 [stat band carrying]
-
+Terugdragen
 [stat band delivering]
-
+Afleveren of wachten
 [stat band walking to inn]
-
+Loopt naar herberg
 [stat band no inn]
-
+Geen herberg vrij
 [stat band at home]
-
+Thuis
 [stat band at enemy]
-
+Bij een vijandelijke kolonie
 [stat band in the open]
-
+Op open terrein
 [stat band war flag]
-
+Bij een oorlogsvlag
 [stat band seeking healing]
-
+Zoekt genezing
 [stat band free]
-
+Vrij
 [stat unit workers]
-
+werkers
 [stat unit worker time]
-
+tijd van werkers
 [stat unit working workers]
-
+werkers die gebouwen bevoorraden
 [stat unit squares]
-
+vakjes
 [stat unit warriors]
-
+soldaten
 [stat unit attack level]
-
+aanvalsniveau
 [stat unit enemy warriors]
-
+vijandelijke soldaten
 [stat unit strength count]
-
+kracht
 [stat view by place]
-
+Per plaats

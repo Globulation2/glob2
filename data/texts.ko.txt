@@ -1,11 +1,11 @@
 [AI strategy]
 AI 전략
 [start recording]
-
+녹화 시작
 [stop recording]
-
+녹화 중지
 [finalizing recording]
-
+녹화 마무리 중…
 [AIMaxima-Summary]
 지속 가능한 성장과 훈련의 균형을 맞춘 뒤 군대를 모아 파상 공격합니다.
 [AIMaxima-Profile]
@@ -245,7 +245,7 @@ Ctrl-%0
 [crater density]
 분화구 수
 [crater lakes terrain]
-화구호
+분화구 호수
 [create map]
 지도 만들기
 [credits]
@@ -609,7 +609,7 @@ OpenGL
 [options]
 옵션
 [Orange]
-오렌지
+주황색
 [Other Options]
 기타 옵션
 [page down]
@@ -811,7 +811,7 @@ V: 누른 채로 말하기
 [skin]
 화면
 [smoothing]
-평활화
+스무딩
 [space]
 스페이스
 [start mission]
@@ -1121,15 +1121,15 @@ AI 전략 및 대응
 [AICortex-Summary]
 전방의 식량과 치료로 지속적인 공세를 지원합니다.
 [AINicowar-Profile]
-핵심 전략: 겹치는 조건을 통해 성장, 훈련, 업그레이드, 전쟁을 함께 추진합니다. 확장하면서 공격할 수 있고 식량 공급이 무너지면 경제 역량을 회복에 돌립니다.\n\n초반 운영: 기본으로 제공되는 공격적 설정은 전체 유닛 5명부터 전쟁을 준비하며 전사 5명이면 전쟁을 허용합니다. 0레벨 전사도 포함됩니다. 전사 5명씩 배정된 공격 깃발 3개를 목표로 합니다. 사용자 전략 파일로 이 기준을 바꿀 수 있습니다.\n\n경제와 발전: 식량과 출생 능력을 확장하고, 일꾼을 훈련하며, 수영과 이동을 발전시키고 건물을 업그레이드합니다. 식량 담당 인력을 조절하고 굶주림에 대응하며 과일을 확보합니다.\n\n공격과 방어: 접근 가능한 적 건물 중에서 공격 대상을 무작위로 고릅니다. 제거 깃발로 자원에 막힌 길을 열 수 있습니다. 방어 깃발은 위협받는 유닛과 건물 무리를 보호합니다. 후반에는 지상 공격 훈련을 받은 탐험가가 적 유닛 무리를 노립니다.\n\n다른 AI와의 비교: Warrush처럼 초반부터 공격적이지만 이후 운영이 더 풍부합니다. Cabino와 달리 병원과 여관을 일관되게 우선하지는 않습니다.\n\n강점과 약점: 다양한 전술로 초반 압박과 지속적인 발전을 결합합니다. 무작위 표적 선택으로 덜 중요한 건물에 힘을 낭비할 수 있습니다. 기준값만 사용하므로 Maxima처럼 상대 전투력을 세밀하게 추정하지 않습니다.\n\n시도할 대응책: 이른 공격을 예상하세요. 식량과 일꾼을 보호하고 확장을 견제하며, 고급 훈련에 도달하면 탐험가 공격에 대비하세요.
+핵심 전략: 겹치는 조건을 통해 성장, 훈련, 업그레이드, 전쟁을 함께 추진합니다. 확장하면서 공격할 수 있고 식량 공급이 무너지면 경제 역량을 회복에 돌립니다.\n\n초반 운영: 기본으로 제공되는 공격적 설정은 전체 유닛 5명부터 전쟁을 준비하며 전사 5명이면 전쟁을 허용합니다. 0레벨 전사도 포함됩니다. 전사 5명씩 배정된 공격 깃발 3개를 목표로 합니다. 사용자 전략 파일로 이 기준을 바꿀 수 있습니다.\n\n경제와 발전: 식량과 출생 능력을 확장하고, 일꾼을 훈련하며, 수영과 이동을 발전시키고 건물을 업그레이드합니다. 식량 담당 인력을 조절하고 굶주림에 대응하며 과일을 확보합니다.\n\n공격과 방어: 접근 가능한 적 건물 중에서 공격 대상을 무작위로 고릅니다. 정리 깃발로 자원에 막힌 길을 열 수 있습니다. 방어 깃발은 위협받는 유닛과 건물 무리를 보호합니다. 후반에는 지상 공격 훈련을 받은 탐험가가 적 유닛 무리를 노립니다.\n\n다른 AI와의 비교: Warrush처럼 초반부터 공격적이지만 이후 운영이 더 풍부합니다. Cabino와 달리 병원과 여관을 일관되게 우선하지는 않습니다.\n\n강점과 약점: 다양한 전술로 초반 압박과 지속적인 발전을 결합합니다. 무작위 표적 선택으로 덜 중요한 건물에 힘을 낭비할 수 있습니다. 기준값만 사용하므로 Maxima처럼 상대 전투력을 세밀하게 추정하지 않습니다.\n\n시도할 대응책: 이른 공격을 예상하세요. 식량과 일꾼을 보호하고 확장을 견제하며, 고급 훈련에 도달하면 탐험가 공격에 대비하세요.
 [AINicowar-Summary]
 농업, 업그레이드, 방어, 탐험가 공격이 뒷받침하는 초반 돌격.
 [AINone-Profile]
-전략: AI는 명령을 내리지 않습니다.\n\n강점: 실험을 위한 예측 가능하고 활동적이지 않은 상대입니다.\n\n약점: 확장하거나 적응하지 못합니다.
+핵심 전략: AI 명령을 내리지 않습니다.\n\n강점: 실험용으로 쓰기 좋은, 예측 가능하고 아무것도 하지 않는 상대입니다.\n\n약점: 확장하거나 적응하지 않습니다.
 [AINone-Summary]
 실험용으로 사용할 수 있는, 행동하지 않는 식민지입니다.
 [AINumbi-Profile]
-핵심 전략: 먼저 식량과 인구를 늘리고 치료, 과학, 훈련을 갖춘 뒤 전쟁으로 전환합니다. 큰 단계는 상대의 발전보다 시간에 따라 진행됩니다.\n\n경제와 발전: 인구에 비례해 건물 수요를 늘리고 주변 밀을 추산합니다. 후반 단계에서는 업그레이드, 방어, 확장을 더해 커지는 군대를 지원합니다.\n\n공격과 방어: 건강한 전투원이 충분하거나 대기 시간이 끝나면 공격합니다. 무작위로 고른 적 건물에 전쟁 깃발을 놓습니다. 전력이 너무 줄면 공격 깃발을 제거하고 다음 시도의 기준을 높입니다.\n\n다른 AI와의 비교: Castor나 Nicowar보다 예측하기 쉽습니다. Castor는 지형과 표적 가치를 더 신중히 고려하고 Nicowar는 훨씬 일찍 압박합니다.\n\n강점과 약점: 방해 없이 성장하면 폭넓은 지원 시설 덕에 위협적이지만 시간표가 전황과 맞지 않을 수 있습니다. 단순한 표적 선택과 패배 후 길어진 휴지기로 공격을 예측하기 쉽습니다.\n\n시도할 대응책: 군사 단계 전에 압박하세요. 공격하는 동안 후방에서 식량과 훈련을 발전시키고, 공세를 격퇴한 뒤의 공백을 활용하세요.\n\n정찰: 공격 절차는 시야 확인 없이 적 건물 위치를 직접 읽습니다.
+핵심 전략: 먼저 식량과 인구를 늘리고 치료, 과학, 훈련을 갖춘 뒤 전쟁으로 전환합니다. 큰 단계는 상대의 발전보다 시간에 따라 진행됩니다.\n\n경제와 발전: 인구에 비례해 건물 수요를 늘리고 주변 밀을 추산합니다. 후반 단계에서는 업그레이드, 방어, 확장을 더해 커지는 군대를 지원합니다.\n\n공격과 방어: 건강한 전투원이 충분하거나 대기 시간이 끝나면 공격합니다. 무작위로 고른 적 건물에 전투 깃발을 놓습니다. 전력이 너무 줄면 공격 깃발을 제거하고 다음 시도의 기준을 높입니다.\n\n다른 AI와의 비교: Castor나 Nicowar보다 예측하기 쉽습니다. Castor는 지형과 표적 가치를 더 신중히 고려하고 Nicowar는 훨씬 일찍 압박합니다.\n\n강점과 약점: 방해 없이 성장하면 폭넓은 지원 시설 덕에 위협적이지만 시간표가 전황과 맞지 않을 수 있습니다. 단순한 표적 선택과 패배 후 길어진 휴지기로 공격을 예측하기 쉽습니다.\n\n시도할 대응책: 군사 단계 전에 압박하세요. 공격하는 동안 후방에서 식량과 훈련을 발전시키고, 공세를 격퇴한 뒤의 공백을 활용하세요.\n\n정찰: 공격 절차는 시야 확인 없이 적 건물 위치를 직접 읽습니다.
 [AINumbi-Summary]
 시간표에 따라 식민지를 차근차근 키운 뒤 수로 밀어붙입니다.
 [AIEcono-Profile]
@@ -1137,7 +1137,7 @@ AI 전략 및 대응
 [AIEcono-Summary]
 전사를 만들지 않고 식량이 풍부한 식민지를 키워 적 유닛을 전향시킵니다.
 [AIWarrush-Profile]
-핵심 전략: 상대가 긴 경제 또는 기술 발전을 마치기 전에 공격합니다. 큰 지원망이 필요해지기 전에 전투로 승부를 내려고 합니다.\n\n경제와 발전: 수확 가능한 유닛이 6명이 되면 생산 비율을 일꾼 4, 탐험가 1, 전사 3으로 설정합니다. 훈련 수용량이 차면 병영을 늘리지만 새 여관은 제한합니다. 남는 건설 역량은 병원과 이동 훈련에 쓰이는 경우가 많습니다.\n\n공격과 방어: 발견한 적 건물에 경비 구역을 표시해 전사가 계속 압박하게 합니다. 신중하게 모은 공격대가 준비되기를 기다리지 않습니다. 장애가 되는 나무를 치우고 일부 재생 자원을 보호합니다.\n\n과일 정책: 과일 채집을 금지해 과일에 따른 방어력 불이익을 피하고 Econo의 전향 전략은 채택하지 않습니다.\n\n다른 AI와의 비교: Numbi나 Castor보다 초반 압박에 집중합니다. Nicowar도 공격적으로 시작하지만 이후에는 더 폭넓은 업그레이드와 전술을 이어 갑니다.\n\n강점과 약점: 느린 시작을 응징하고 조기 방어 지출을 강요합니다. 체계적인 업그레이드가 적고 식량 지원도 빠듯해 공세가 멈추면 손실이 큽니다. 지형과 긴 이동은 초반 이점을 약화할 수 있습니다.\n\n시도할 대응책: 여관과 둥지를 일찍 보호하세요. 수비대뿐 아니라 일꾼도 보충하고 훈련을 발전시킨 뒤 돌격의 기세가 꺾이면 반격하세요.\n\n정찰: 초기 탐험 깃발은 적 시작 위치를 직접 이용합니다. 이후 공격 구역을 놓으려면 시야가 필요합니다.
+핵심 전략: 상대가 긴 경제 또는 기술 발전을 마치기 전에 공격합니다. 큰 지원망이 필요해지기 전에 전투로 승부를 내려고 합니다.\n\n경제와 발전: 수확 가능한 유닛이 6명이 되면 생산 비율을 일꾼 4, 탐험가 1, 전사 3으로 설정합니다. 훈련 수용량이 차면 병영을 늘리지만 새 여관은 제한합니다. 남는 건설 역량은 병원과 이동 훈련에 쓰이는 경우가 많습니다.\n\n공격과 방어: 발견한 적 건물에 경계 구역을 표시해 전사가 계속 압박하게 합니다. 신중하게 모은 공격대가 준비되기를 기다리지 않습니다. 장애가 되는 나무를 치우고 일부 재생 자원을 보호합니다.\n\n과일 정책: 과일 채집을 금지해 과일에 따른 방어력 불이익을 피하고 Econo의 전향 전략은 채택하지 않습니다.\n\n다른 AI와의 비교: Numbi나 Castor보다 초반 압박에 집중합니다. Nicowar도 공격적으로 시작하지만 이후에는 더 폭넓은 업그레이드와 전술을 이어 갑니다.\n\n강점과 약점: 느린 시작을 응징하고 조기 방어 지출을 강요합니다. 체계적인 업그레이드가 적고 식량 지원도 빠듯해 공세가 멈추면 손실이 큽니다. 지형과 긴 이동은 초반 이점을 약화할 수 있습니다.\n\n시도할 대응책: 여관과 둥지를 일찍 보호하세요. 수비대뿐 아니라 일꾼도 보충하고 훈련을 발전시킨 뒤 돌격의 기세가 꺾이면 반격하세요.\n\n정찰: 초기 탐험 깃발은 적 시작 위치를 직접 이용합니다. 이후 공격 구역을 놓으려면 시야가 필요합니다.
 [AIWarrush-Summary]
 의도적으로 줄인 지원 경제를 바탕으로 전사가 초반 압박을 가합니다.
 [AICabino-Profile]
@@ -1149,7 +1149,7 @@ AI 전략 및 대응
 [Beach size]
 해변 크기
 [Blue]
-파랑
+파란색
 [Brown]
 갈색
 [Built-in maps]
@@ -1167,17 +1167,17 @@ AI 전략 및 대응
 [Conquest or prestige]
 정복 또는 명성
 [Could not launch this map. Your setup is retained; try again.]
-이 지도를 실행할 수 없습니다. 귀하의 설정은 유지됩니다. 다시 시도해 보세요.
+이 지도를 실행할 수 없습니다. 설정은 유지됩니다. 다시 시도하세요.
 [Could not load this map. Choose another map or retry.]
-이 지도를 로드할 수 없습니다. 다른 지도를 선택하거나 다시 시도하세요.
+이 지도를 불러올 수 없습니다. 다른 지도를 선택하거나 다시 시도하세요.
 [Crater lakes]
 분화구 호수
 [Custom]
-맞춤
+사용자 지정
 [Custom teams]
-맞춤형 팀
+사용자 지정 팀
 [Cyan]
-청록색
+시안
 [Desert weight]
 사막 비중
 [Easy]
@@ -1195,13 +1195,13 @@ AI 전략 및 대응
 [Game speed]
 게임 속도
 [Generate & play]
-생성 및 플레이
+생성 후 플레이
 [Give at least one terrain type a nonzero weight.]
-하나 이상의 지형 유형에 0이 아닌 가중치를 부여합니다.
+지형 유형 하나 이상에 0보다 큰 비중을 주세요.
 [Grass weight]
 초지 비중
 [Gray]
-그레이
+회색
 [Green]
 녹색
 [Hard]
@@ -1225,7 +1225,7 @@ AI 전략 및 대응
 [Layout]
 레이아웃
 [Magenta]
-마젠타
+자홍색
 [Map]
 지도
 [Match finished]
@@ -1241,17 +1241,17 @@ AI 명령 없음
 [Old random]
 갈라진 해안
 [Open at least one colony to start a match.]
-매치를 시작하려면 콜로니를 하나 이상 여세요.
+경기를 시작하려면 식민지를 하나 이상 여세요.
 [Open book]
 드러난 세계
 [Pink]
-핑크
+분홍색
 [Play this map]
-이 지도를 플레이하세요
+이 지도로 플레이
 [Players & Teams]
 플레이어 및 팀
 [Premade maps]
-미리 만들어진 지도
+미리 만든 지도
 [Preview ready. Start plays this exact map.]
 미리보기가 준비되었습니다. 게임을 시작할 때 이 정확한 지도를 사용합니다.
 [Regenerate all]
@@ -1291,9 +1291,9 @@ AI 명령 없음
 [Start game]
 게임 시작
 [Starting workers]
-초기 작업자
+초기 일꾼
 [Starting workers: Game Rules tab.]
-초기 작업자: 게임 규칙 탭.
+초기 일꾼: 게임 규칙 탭.
 [Swamp]
 늪
 [Team]
@@ -1309,13 +1309,13 @@ AI 명령 없음
 [White]
 흰색
 [Width]
-폭
+너비
 [Yellow]
 노란색
 [You]
-당신
+나
 [You + AI]
-당신 + AI
+나 + AI
 [You and the AI both issue orders. Uses two controller slots.]
 플레이어와 AI가 모두 명령을 내립니다. 조종자 자리 2개를 사용합니다.
 [You vs all]
@@ -1327,7 +1327,7 @@ AI 명령 없음
 [Inactive]
 비활성
 [8 workers / 2x speed]
-작업자 8명 / 속도 2배
+일꾼 8명 / 속도 2배
 [Changes the pace of the whole simulation.]
 전체 시뮬레이션의 속도를 변경합니다.
 [Choose whether teams can change during the match.]
@@ -1335,9 +1335,9 @@ AI 명령 없음
 [Classic colony building]
 전통적인 식민지 개발
 [Dimensions and colony count are set above.]
-크기와 콜로니 수는 위에서 설정됩니다.
+크기와 식민지 수는 위에서 설정됩니다.
 [Generate & watch]
-생성 및 시청
+생성 후 관전
 [Info]
 정보
 [Map-defined starting units]
@@ -1345,9 +1345,9 @@ AI 명령 없음
 [No maps in this library.]
 이 목록에는 지도가 없습니다.
 [Premade maps retain their authored starting units.]
-미리 만들어진 지도는 제작된 시작 유닛을 유지합니다.
+미리 만든 지도는 제작된 시작 유닛을 유지합니다.
 [Start with terrain known]
-알려진 지형부터 시작하세요
+지형을 아는 상태로 시작
 [This colony will not join the match.]
 이 식민지는 경기에 참여하지 않습니다.
 [This landscape uses a fixed terrain recipe.]
@@ -1355,15 +1355,15 @@ AI 명령 없음
 [This landscape uses fixed resource placement.]
 이 지형 유형은 자원 배치가 고정되어 있습니다.
 [Win through conquest]
-정복을 통해 승리하라
+정복으로 승리
 [You control this colony.]
-당신은 이 식민지를 통제합니다.
+이 식민지를 직접 조종합니다.
 [controllers]
 조종자
 [Use]
 선택
 [Lime]
-라임 그린
+라임색
 [Teal]
 청록색
 [Azure]
@@ -1373,13 +1373,13 @@ AI 명령 없음
 [Generation failed. Adjust settings or press Start to retry.]
 생성에 실패했습니다. 설정을 조정하거나 시작을 눌러 다시 시도하세요.
 [Preview unavailable. Adjust settings or start to retry.]
-미리보기를 사용할 수 없습니다. 설정을 변경하거나 게임을 실행해 다시 시도해 보세요.
+미리보기를 사용할 수 없습니다. 설정을 조정하거나 시작해서 다시 시도하세요.
 [automatic torus view]
 자동 토러스 보기
 [toggle torus view]
 2D / 토러스 보기 전환
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 대 2에는 참가 식민지 4개가 필요합니다. 나 대 모두에는 인간 플레이어가 필요합니다.
+2 대 2에는 참가 식민지 4개가 필요합니다. 나 대 모두에는 사람 플레이어가 필요합니다.
 [Alliance]
 동맹
 [Choose a rule to change it.]
@@ -1401,11 +1401,11 @@ AI 명령 없음
 [Map-defined]
 지도 설정에 따름
 [Match format]
-게임 형식
+경기 형식
 [No current preview]
 현재 미리보기 없음
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-빠른 전투: 속도 2배; 생성된 맵은 8명의 작업자로 시작합니다.
+빠른 전투: 속도 2배; 생성된 지도는 일꾼 8명으로 시작합니다.
 [Reroll]
 다른 지도 생성
 [Randomize]
@@ -1417,13 +1417,13 @@ AI 명령 없음
 [Select a map from the library.]
 라이브러리에서 지도를 선택하세요.
 [Starting workers affects generated maps only.]
-초기 작업자 수는 생성된 맵에만 적용됩니다.
+초기 일꾼 수는 생성된 지도에만 적용됩니다.
 [Unavailable]
 이용 불가
 [Use selection]
 이 AI 선택
 [Quick clash on premade maps: only speed changes (2x).]
-미리 만들어진 지도에서의 빠른 전투: 속도만 변경됩니다(2배 속도).
+미리 만든 지도에서의 빠른 전투: 속도만 변경됩니다(2배 속도).
 [Generate a preview to explore this world.]
 이 세계를 탐험하려면 미리보기를 생성하세요.
 [More workers jump-start colony growth. Changes the generated map.]
@@ -1431,15 +1431,15 @@ AI 명령 없음
 [No warriors]
 전사 없음
 [settings Add key to sequence]
-시퀀스에 키보드 키 추가
+시퀀스에 키 추가
 [settings Add shortcut]
 단축키 추가
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
 마우스 휠로 배정할 유닛 수를 조정합니다. 이 옵션이 꺼져 있으면 Ctrl 키를 누른 채 휠을 사용하세요. Shift 키를 누른 채 조작하면 깃발 반경을 조정합니다. 다른 메뉴의 휠 조작에도 적용됩니다.
 [settings Adjust music and voice volume.]
-음악 및 음성 볼륨을 조정합니다.
+음악과 음성 음량을 조정합니다.
 [settings Adjust the pace of play.]
-게임 속도를 조절하세요.
+게임 속도를 조절합니다.
 [settings Advanced binding]
 고급 단축키 편집
 [settings Artwork & effects]
@@ -1455,13 +1455,13 @@ Esc 키 할당
 [settings Cancel]
 취소
 [settings Changes saved automatically]
-변경사항이 자동으로 저장됨
+변경 사항이 자동으로 저장됨
 [settings Changes you make during play update these defaults for future games.]
-플레이 중에 변경한 내용은 향후 게임에 대한 기본값을 업데이트합니다.
+플레이 중에 바꾼 설정은 이후 게임의 기본값에 반영됩니다.
 [settings Changing the renderer requires a restart.]
 렌더러를 변경하려면 다시 시작해야 합니다.
 [settings Choose a binding to change it, or add another shortcut for an action.]
-키보드 단축키를 선택하여 편집하거나 작업에 대한 다른 단축키를 추가하세요.
+단축키를 선택해 변경하거나, 동작에 다른 단축키를 추가하세요.
 [settings Choose a window or fill the screen.]
 창 모드 또는 전체 화면 모드를 선택하세요.
 [settings Choose how the game looks on your screen.]
@@ -1489,7 +1489,7 @@ Globulation 2 커서를 표시합니다.
 [settings Done]
 완료
 [settings Edit shortcut]
-키보드 단축키 수정
+단축키 수정
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
 메뉴, 텍스트, 사이드바에 적용할 운영 체제의 화면 배율을 곱합니다.
 [settings Flags]
@@ -1505,15 +1505,15 @@ Globulation 2 커서를 표시합니다.
 [settings Gameplay]
 게임플레이
 [settings Graphics detail]
-그래픽 디테일
+그래픽 세부 수준
 [settings Interface scale]
 인터페이스 배율
 [settings Keep]
-변경사항 유지
+유지
 [settings Keep this display mode?]
 이 표시 모드를 유지하시겠습니까?
 [settings Keep your volume levels while silencing audio.]
-저장된 볼륨 레벨을 변경하지 않고 모든 사운드를 음소거합니다.
+음량 설정은 그대로 두고 모든 소리를 끕니다.
 [settings Key]
 키
 [settings Keyboard shortcuts]
@@ -1551,25 +1551,25 @@ Globulation 2 커서를 표시합니다.
 [settings Press]
 누를 때
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-키보드 키를 누릅니다. Esc 키를 누르면 입력 캡처가 취소됩니다. Esc 키를 할당하려면 "Esc 키 할당"을 선택하세요.
+키를 누르세요. Esc 키를 누르면 입력이 취소됩니다. Esc 키를 할당하려면 "Esc 키 할당"을 사용하세요.
 [settings Radius]
 반경
 [settings Reduced]
 간소화
 [settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
-디테일을 줄이면 구름과 그림자가 비활성화되고 마법 효과가 단순화되며 투명도가 감소합니다.
+세부 수준을 낮추면 구름과 그 그림자가 꺼지고, 마법 효과가 단순해지며, 투명도가 줄어듭니다.
 [settings Release]
 뗄 때
 [settings Remember assignments between games]
 게임 간 유닛 할당 기억
 [settings Remove key]
-키보드 키 제거
+키 제거
 [settings Remove shortcut]
 단축키 삭제
 [settings Renderer]
 그래픽 렌더러
 [settings Replace conflicting bindings]
-충돌하는 키보드 단축키 바꾸기
+충돌하는 단축키 바꾸기
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
 이 조작 대상의 단축키를 기본값으로 되돌리시겠습니까? 변경 사항은 즉시 저장됩니다.
 [settings Resolution]
@@ -1579,11 +1579,11 @@ Globulation 2 커서를 표시합니다.
 [settings Retry]
 다시 시도
 [settings Revert]
-변경사항 되돌리기
+되돌리기
 [settings Reverting in]
 되돌리기까지
 [settings Save shortcut]
-키보드 단축키 저장
+단축키 저장
 [settings Saved — restart required]
 저장됨 - 다시 시작해야 함
 [settings Saving…]
@@ -1603,7 +1603,7 @@ Globulation 2 커서를 표시합니다.
 [settings Starting unit counts and radius for newly placed flags.]
 새로 배치하는 깃발에 처음 배정할 유닛 수와 반경.
 [settings This shortcut conflicts with existing bindings:]
-이 키보드 단축키는 기존 단축키와 충돌합니다.
+이 단축키는 기존 단축키와 충돌합니다:
 [settings Trigger]
 반응 시점
 [settings Unbound]
@@ -1747,7 +1747,7 @@ Globulation 2 커서를 표시합니다.
 [Valleys]
 계곡
 [Frontier richness]
-변경의 풍요로움
+변방 자원 풍부도
 [City states need at least one colony.]
 도시 국가에는 최소 한 개의 식민지가 필요합니다.
 [Stone walls]
@@ -2089,7 +2089,7 @@ Globulation 2 커서를 표시합니다.
 [Stats combat deaths]
 전투
 [Stats clearing deaths]
-제거 작업 부상
+정리 작업 부상
 [Stats trapped deaths]
 갇힘
 [Stats unknown deaths]
@@ -2113,7 +2113,7 @@ Globulation 2 커서를 표시합니다.
 [Map preview choose another]
 지도 선택
 [Building sites complete immediately, skipping delivery.]
-건설 현장은 배송 단계를 건너뛰고 즉시 완료됩니다.
+건설 현장이 자원 운반 없이 즉시 완료됩니다.
 [No growth]
 성장 없음
 [Units get hungry]
@@ -2121,11 +2121,11 @@ Globulation 2 커서를 표시합니다.
 [No hunger]
 배고픔 없음
 [Scarce (2x slower)]
-희소 (2x 느림)
+희소 (2배 느림)
 [Very scarce (4x slower)]
-매우 희소 (4x 느림)
+매우 희소 (4배 느림)
 [Extremely scarce (8x slower)]
-극도로 희소 (8x 느림)
+극도로 희소 (8배 느림)
 [Small (+50 each)]
 소 (각 +50)
 [Medium (+150 each)]
@@ -2195,7 +2195,7 @@ Globulation 2 커서를 표시합니다.
 [Stats growth reductions]
 자원 -
 [Stats growth per minute]
-밀 +/min
+밀 +/분
 [Stats growth near 8]
 자원 + <=8
 [Stats growth near 16]
@@ -2223,7 +2223,7 @@ Globulation 2 커서를 표시합니다.
 [Stats low food ranges]
 식량: <=25/50/75%
 [Emoji]
-Emoji
+이모지
 [Emoji character]
 이모지 종류
 [Smiley]
@@ -2355,9 +2355,9 @@ Emoji
 [Some]
 약간
 [Home oasis size]
-고향 오아시스 크기
+본거지 오아시스 크기
 [Caravanserais per colony]
-식민지당 대상 숙소
+식민지당 카라반사라이
 [Desert]
 사막
 [Open erg]
@@ -2367,13 +2367,13 @@ Emoji
 [Canyon country]
 협곡 지대
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
-요새가 여울에 닿을 수 없습니다. 더 큰 맵이나 더 적은 식민지를 사용하세요.
+요새가 여울에 닿을 수 없습니다. 더 큰 지도나 더 적은 식민지를 사용하세요.
 [A wall would stand on a beach; try another seed.]
 성벽이 모래밭 위에 서게 됩니다. 다른 시드를 시도하세요.
 [The fort is too small for its gardens; raise Fort size.]
 요새가 텃밭에 비해 너무 작습니다. 요새 크기를 늘리세요.
 [The home oasis is too small; raise Home oasis size.]
-고향 오아시스가 너무 작습니다. 고향 오아시스 크기를 늘리세요.
+본거지 오아시스가 너무 작습니다. 본거지 오아시스 크기를 늘리세요.
 [Braided river]
 망상 하천
 [Braid width]
@@ -2543,7 +2543,7 @@ Emoji
 [Four gates]
 네 개의 문
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
-강이 본거지 사이로 길을 찾지 못했습니다. 더 큰 맵이나 더 적은 식민지를 사용하세요.
+강이 본거지 사이로 길을 찾지 못했습니다. 더 큰 지도나 더 적은 식민지를 사용하세요.
 [River meander]
 강의 굽이
 [Flooded terraces]
@@ -2629,27 +2629,27 @@ Emoji
 [The colonies could not be spread out on this map.]
 이 지도에서는 식민지를 흩어 놓을 수 없었습니다.
 [Marchland]
-변경
+변방
 [Prizes on the rope]
 줄 위의 상품
 [March width]
-변경 너비
+변방 너비
 [Levelling]
 균등화
 [A march needs a country on each side; use at least two colonies.]
-변경에는 양쪽에 나라가 있어야 합니다. 식민지를 최소 두 개 사용하세요.
+변방에는 양쪽에 나라가 있어야 합니다. 식민지를 최소 두 개 사용하세요.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
 이 지도가 각 식민지에 본토를 주기에는 식민지가 너무 많습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
 이 지도에는 식민지를 흩어 놓을 공간이 없습니다. 더 큰 지도를 사용하거나 식민지 수를 줄이세요.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-어떤 식민지의 본토에 변경으로 나가는 길이 없습니다. 더 큰 지도를 사용하거나 변경을 더 좁게 하세요.
+어떤 식민지의 본토에 변방으로 나가는 길이 없습니다. 더 큰 지도를 사용하거나 변방을 더 좁게 하세요.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-어떤 식민지의 본토에 둥지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 좁게 하세요.
+어떤 식민지의 본토에 둥지를 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변방을 더 좁게 하세요.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-변경에 경합 지역이 너무 적어 그만큼의 상품을 둘 수 없습니다. 상품을 줄이거나, 변경을 더 넓게 하거나, 더 큰 지도를 사용하세요.
+변방에 경합 지역이 너무 적어 그만큼의 상품을 둘 수 없습니다. 상품을 줄이거나, 변방을 더 넓게 하거나, 더 큰 지도를 사용하세요.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-변경에 상품을 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변경을 더 넓게 하세요.
+변방에 상품을 둘 공간이 없습니다. 더 큰 지도를 사용하거나, 식민지 수를 줄이거나, 변방을 더 넓게 하세요.
 [Orchard Commons]
 공동 과수원
 [Orchard spacing]
@@ -2749,7 +2749,7 @@ Emoji
 [Outlying islands]
 주변 섬
 [The Hungry Marches]
-굶주린 변경
+굶주린 변방
 [Opening ration]
 초기 식량
 [Central concentration]
@@ -2769,7 +2769,7 @@ Emoji
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 각 식민지의 시작 지점은 완성된 지도에서 측정됩니다: 밀과 목재까지의 거리, 땅이 얼마나 잘 다시 자라는지, 닿을 수 있는 매장량과 건설 부지, 그리고 경쟁자와의 거리입니다. 각 요소는 고정된 기준에 대해 0에서 1로 점수가 매겨지고, 합계는 이를 가중하며, 공정성은 최저 식민지의 합계를 최고 식민지의 합계로 나눈 값이고, 점수는 최저 합계에 공정성을 곱한 값입니다.
 [ERROR_CANT_SAVE_MAP]
-맵을 저장할 수 없습니다. 저장 위치와 사용 가능한 공간을 확인하세요. 편집 내용은 아직 열려 있습니다.
+지도를 저장할 수 없습니다. 저장 위치와 사용 가능한 공간을 확인하세요. 편집 내용은 아직 열려 있습니다.
 [Loading headers]
 헤더 불러오는 중...
 [Loading teams]
@@ -2783,9 +2783,9 @@ Emoji
 [Loading scripts]
 스크립트 불러오는 중...
 [Generating map]
-맵 생성 중...
+지도 생성 중...
 [ERROR_CANT_GENERATE_MAP]
-맵을 생성할 수 없습니다. 다른 생성 설정을 시도해 보세요.
+지도를 생성할 수 없습니다. 다른 생성 설정을 시도해 보세요.
 [Loading units]
 유닛 불러오는 중...
 [Loading buildings]
@@ -2925,7 +2925,7 @@ Emoji
 [settings Save the game automatically about every minute.]
 약 1분마다 게임을 자동으로 저장합니다.
 [AI opponents]
-컴퓨터 상대
+AI 상대
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.
 [settings One-finger zoom]
@@ -3035,7 +3035,7 @@ CPU %0%
 [Forbidden]
 금지
 [Guard]
-경비
+경계
 [Clear]
 정리
 [Farm]
@@ -3065,7 +3065,7 @@ CPU %0%
 [Message history]
 메시지 기록
 [Mark map for allies]
-아군을 위해 지도에 표시
+동맹에게 위치 표시
 [Show zones]
 구역 표시
 [Pan]
@@ -3143,11 +3143,11 @@ CPU %0%
 [Generated]
 생성됨
 [Preview]
-미리 보기
+미리보기
 [Selected landscape]
 선택한 지형
 [Representative preview]
-대표 미리 보기
+대표 미리보기
 [Starting terrain]
 시작 지형
 [Hide parameters]
@@ -3159,13 +3159,13 @@ CPU %0%
 [%0 / Browse]
 %0 / 찾아보기
 [%0 colonies · %1]
-%0 식민지 · %1
+식민지 %0개 · %1
 [%0 · Team %1]
 %0 · 팀 %1
 [Colonies: %0]
 식민지: %0
 [%0 colonies · %1 AI]
-%0 식민지 · %1 AI
+식민지 %0개 · AI %1
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
@@ -3207,9 +3207,9 @@ AI 추가
 [Experiments]
 실험 기능
 [experiment guard-area-balancing]
-경비 구역 분산
+경계 구역 분산
 [experiment guard-area-balancing help]
-자유로운 전사들이 가장 가까운 경비 구역에 모두 몰리는 대신 칠해진 경비 구역들 사이에 나뉘어 배치됩니다. 더 큰 구역이 더 많은 전사를 받고, 너무 붐비는 구역은 다른 구역으로 서서히 빠져나갑니다.
+자유로운 전사들이 가장 가까운 경계 구역에 모두 몰리는 대신 칠해진 경계 구역들 사이에 나뉘어 배치됩니다. 더 큰 구역이 더 많은 전사를 받고, 너무 붐비는 구역은 다른 구역으로 서서히 빠져나갑니다.
 [experiment farm-areas]
 경작 구역
 [experiment farm-areas help]
@@ -3235,2016 +3235,2016 @@ AI 추가
 [List bounce]
 목록 바운스
 [lan pairing field]
-
+호스트 페어링 문자열 (또는 신뢰할 수 있는 WSS URL)
 [lan pairing connect]
-
+페어링 후 연결
 [lan discovery instructions]
-
+호스트를 선택한 다음, 신원을 확인하려면 해당 호스트의 페어링 문자열을 붙여 넣으세요.
 [lan discovery unavailable]
-
+LAN 검색을 사용할 수 없습니다. 로컬 네트워크 권한을 확인하거나 호스트 페어링 문자열을 붙여 넣으세요.
 [lan discovered host %0]
-
+발견한 호스트: %0 — 게임을 보려면 페어링하세요
 [lan connection unavailable]
-
+LAN 호스트에 연결할 수 없습니다. 로컬 네트워크 권한과 호스트 페어링 문자열을 확인하세요.
 [lan connection verification failed %0]
-
+LAN 호스트를 확인하거나 연결할 수 없습니다: %0
 [lan lobby endpoint required]
-
+호스트 로비 주소를 사용하세요
 [settings Artwork]
-
+그래픽 스타일
 [settings Original]
-
+원본
 [settings High resolution]
-
+고해상도
 [settings Clouds]
-
+구름
 [settings Show cloud cover above the map.]
-
+지도 위에 구름을 표시합니다.
 [settings Cloud shadows]
-
+구름 그림자
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+구름 표시 여부와 관계없이 지면에 구름 그림자를 표시합니다.
 [settings Building particles]
-
+건물 입자 효과
 [settings Show smoke and other building particles.]
-
+건물의 연기 등 입자 효과를 표시합니다.
 [settings Magic effects]
-
+마법 효과
 [settings Choose animated magic effects or a simple visible effect.]
-
+애니메이션 마법 효과와 단순한 표시 효과 중에서 선택합니다.
 [settings Simple]
-
+단순
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+OpenGL 렌더러가 필요합니다. 저장된 선택은 유지됩니다.
 [settings Interface appearance]
-
+인터페이스 모양
 [settings Panels]
-
+패널
 [settings Choose translucent or opaque interface panels.]
-
+인터페이스 패널을 반투명 또는 불투명으로 선택합니다.
 [settings Opaque]
-
+불투명
 [settings Translucent]
-
+반투명
 [settings Advanced graphics]
-
+고급 그래픽
 [settings Path lines]
-
+경로선
 [settings Choose translucent or opaque unit path lines.]
-
+유닛 경로선을 반투명 또는 불투명으로 선택합니다.
 [settings Smooth progress indicators]
-
+부드러운 진행 표시
 [settings Smooth the moving edges of progress indicators.]
-
+진행 표시기의 움직이는 가장자리를 부드럽게 처리합니다.
 [settings Decorative interface animation]
-
+장식용 인터페이스 애니메이션
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+승리 그림에 애니메이션을 적용합니다. 동작 줄이기를 켜도 이 애니메이션이 꺼집니다.
 [settings Smooth unit motion]
-
+부드러운 유닛 움직임
 [settings Experimental: move and animate units between game ticks.]
-
+실험 기능: 게임 틱 사이에도 유닛을 움직이고 애니메이션을 재생합니다.
 [settings Smooth fog of war]
-
+부드러운 전장의 안개
 [settings Fade the map into and out of the fog of war gradually.]
-
+지도가 전장의 안개 속으로 서서히 사라지고 나타나게 합니다.
 [settings Adaptive zoom detail]
-
+확대 수준별 세부 묘사
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+지도를 축소하면 막대, 구역, 지형, 유닛을 단순하게 표시하고, 확대하면 작게 유지합니다.
 [settings Text size]
-
+글자 크기
 [settings Enlarge interface text without changing the map scale.]
-
+지도 배율은 그대로 두고 인터페이스 글자를 키웁니다.
 [Map momentum]
 지도 관성
 [turn reconnecting]
-
+호스트와의 연결이 끊겼습니다. 다시 연결하는 중...
 [turn waiting for players]
-
+모든 플레이어가 불러오기를 마치기를 기다리는 중...
 [turn rejoining]
-
+게임에 다시 참가하는 중...
 [turn catching up %0]
-
+따라잡는 중: %0턴 뒤처짐
 [turn player reconnecting %0]
-
+%0 님이 다시 연결하는 중...
 [turn player lagging %0]
-
+%0 님의 연결이 지연되고 있습니다
 [turn player resyncing %0]
-
+%0 님이 따라잡는 중입니다
 [turn player not connected %0]
-
+%0 님이 아직 연결하지 않았습니다
 [lan host left]
-
+호스트가 게임을 나갔습니다.
 [lan host lost]
-
+호스트와의 연결이 끊겼습니다.
 [lan version mismatch %0]
-
+호스트가 다른 버전의 Globulation 2를 실행 중입니다 (%0).
 [lan cannot host %0]
-
+LAN 게임을 만들 수 없습니다: %0
 [play online]
-
+온라인 플레이
 [Use in room]
-
+방에서 사용
 [conn ai]
-
+AI
 [conn behind %0]
-
+뒤처짐 %0
 [conn behind explanation %0 %1]
-
+뒤처짐: 플레이어의 게임이 경기 시계보다 얼마나 뒤처져 있는지를 나타내며, 입력 지연 시간을 포함합니다. %0 미만은 정상이고, %1부터는 느린 플레이어로 표시됩니다.
 [conn behind]
-
+뒤처짐
 [conn card catching up]
-
+따라잡는 중
 [conn card colony works]
-
+식민지는 스스로 계속 일합니다. 유닛은 작업을 마치고 건물도 계속 가동됩니다.
 [conn card desync detail]
-
+다른 모든 플레이어와 같은 화면을 보도록 경기 기록에서 다시 참가하는 중입니다. 보고서가 자동으로 전송되었습니다.
 [conn card desync]
-
+게임 동기화가 어긋났습니다
 [conn card grace %0]
-
+식민지는 스스로 계속 일합니다. 유닛은 작업을 마치고 건물도 계속 가동됩니다. 경기에서 제외되기 전까지 돌아올 수 있는 시간: %0
 [conn card input paused]
-
+따라잡는 중 · 입력 일시 중지됨
 [conn card lost]
-
+연결 끊김
 [conn card progress %0 %1 %2]
-
+%0 % · 틱 %1/%2
 [conn card reconnecting %0]
-
+경기에 다시 연결하는 중… %0번째 시도
 [conn card replaying %0]
-
+놓친 %0 동안의 진행을 재생하는 중입니다. 현재 시점으로 돌아오면 화면이 갱신됩니다.
 [conn card seconds left %0]
-
+약 %0초 남음
 [conn connections]
-
+연결
 [conn connection]
-
+연결
 [conn delay explanation %0 %1]
-
+지연 시간: 클릭한 뒤 모두에게 실제로 반영되기까지 걸리는 시간입니다. 다른 플레이어가 아닌 내 연결 상태에 따라 달라집니다. %0 미만은 좋음, %1부터는 나쁨입니다.
 [conn fair]
-
+보통
 [conn good]
-
+좋음
 [conn grid legend]
-
+플레이어가 4명을 넘으면 패널에 각 플레이어의 핑(밀리초) 또는 몇 초 뒤처져 있는지가 표시됩니다.
 [conn jitter %0]
-
+지터 %0
 [conn leave match]
-
+경기 나가기
 [conn left]
-
+나감
 [conn notice back %0]
-
+%0 님이 돌아왔습니다.
 [conn notice left %0]
-
+%0 님이 경기를 나갔습니다.
 [conn notice lost %0 %1]
-
+%0 님의 연결이 끊겼습니다. 게임은 계속되며, 다시 연결하는 동안 해당 식민지는 계속 일합니다 (남은 시간 %1).
 [conn ping explanation %0 %1]
-
+핑: 플레이어와 릴레이 사이의 왕복 시간입니다. %0 미만은 좋음, %1부터는 나쁨입니다.
 [conn ping]
-
+핑
 [conn players]
-
+플레이어
 [conn poor]
-
+나쁨
 [conn reconnecting]
-
+다시 연결 중
 [conn relay %0]
-
+릴레이: %0
 [conn resyncing]
-
+다시 참가 중
 [conn slow]
-
+느림
 [conn unstable]
-
+불안정
 [conn waiting]
-
+연결 중…
 [conn you %0]
-
+%0 (나)
 [conn you]
-
+나
 [conn your delay %0]
-
+내 지연 시간 %0
 [hub account menu]
-
+계정
 [hub ai joins after %0]
-
+%0 후 AI 참가
 [hub all rooms]
-
+전체
 [hub browse maps]
-
+지도 찾아보기
 [hub cant reach %0]
-
+%0에 연결할 수 없습니다.
 [hub change server]
-
+서버 변경…
 [hub check code]
-
+코드를 물으면 다음 코드를 입력하세요:
 [hub code placeholder]
-
+코드 또는 초대 링크
 [hub connecting to %0]
-
+%0 · 연결 중…
 [hub continue with %0]
-
+%0(으)로 계속
 [hub create room]
-
+방 만들기
 [hub find match]
-
+경기 찾기
 [hub finish in browser]
-
+브라우저에서 열린 페이지에서 로그인을 완료하세요.
 [hub free seat]
-
+빈자리
 [hub get update]
-
+업데이트 받기
 [hub guest kept on device]
-
+게스트 · 이 기기에 보관됨
 [hub invalid code]
-
+올바른 초대 코드나 링크가 아닙니다.
 [hub join by code]
-
+코드로 참가
 [hub join code]
-
+참가 코드
 [hub join]
-
+참가
 [hub leaderboard]
-
+순위표
 [hub linked %0]
-
+연결된 계정 · %0
 [hub linked accounts]
-
+연결된 계정
 [hub maps]
-
+지도
 [hub no queues]
-
+이 서버에는 빠른 대전 대기열이 없습니다.
 [hub no rooms]
-
+지금은 열린 방이 없습니다. 방을 만들고 초대를 공유하세요.
 [hub offline at %0]
-
+%0 · 오프라인
 [hub offline detail %0]
-
+%0초 후 다시 시도합니다. 빠른 대전과 온라인 방을 사용할 수 없습니다. 주 메뉴의 LAN 게임은 이 서버가 필요하지 않습니다.
 [hub online at %0]
-
+%0 · 온라인
 [hub online settings]
-
+온라인 설정
 [hub online]
-
+온라인
 [hub open page again]
-
+페이지 다시 열기
 [hub open rooms]
-
+열린 방
 [hub page opened at %0]
-
+%0을(를) 열었습니다. 게임에서 입력할 것은 없으며, 자동으로 로그인됩니다.
 [hub queues unavailable]
-
+서버가 응답하면 빠른 대전이 표시됩니다.
 [hub quick match unavailable]
-
+이 버전에서는 아직 빠른 대전을 사용할 수 없습니다.
 [hub quick match]
-
+빠른 대전
 [hub ranked]
-
+랭크전
 [hub recent matches]
-
+최근 경기
 [hub refresh]
-
+새로 고침
 [hub retry now]
-
+지금 다시 시도
 [hub room match]
-
+방
 [hub room name %0]
-
+%0 님의 방
 [hub room]
-
+방
 [hub seats %0 %1]
-
+자리 %0/%1
 [hub server %0]
-
+서버: %0
 [hub sign in browser]
-
+로그인 페이지 열기
 [hub sign in conflict]
-
+이 로그인은 이미 다른 계정에 연결되어 있습니다.
 [hub sign in failed %0]
-
+로그인을 완료하지 못했습니다 (%0).
 [hub sign in intro]
-
+브라우저에서 로그인하거나 계정을 만드세요. 게스트로 한 경기 기록도 함께 옮겨집니다.
 [hub sign in]
-
+로그인
 [hub sign out]
-
+이 기기에서 로그아웃
 [hub signed in as %0]
-
+%0(으)로 로그인했습니다.
 [hub signed in on %0]
-
+%0에 로그인됨
 [hub signing in]
-
+로그인 중…
 [hub sim %0]
-
+시뮬레이션 %0
 [hub unrated]
-
+비랭크
 [hub update required at %0]
-
+%0 · 업데이트 필요
 [hub update required detail %0]
-
+%0은(는) 더 새로운 버전을 사용하므로, 이 게임을 업데이트하기 전까지 온라인 게임에 참가할 수 없습니다. LAN 게임은 계속 사용할 수 있습니다.
 [hub update required]
-
+업데이트 필요
 [hub server behind]
-
+서버 업데이트 대기 중
 [hub server behind at %0]
-
+%0 · 서버 업데이트 대기 중
 [hub server behind detail %0]
-
+이 게임이 %0보다 새로운 버전이며, 서버가 아직 업데이트되지 않았습니다. 서버가 업데이트되면 온라인 게임이 열립니다. LAN 게임은 계속 사용할 수 있습니다.
 [hub version mismatch]
-
+다른 버전
 [hub version mismatch at %0]
-
+%0 · 다른 버전
 [hub version mismatch detail %0]
-
+%0은(는) 다른 버전의 게임을 사용하므로, 이 게임으로는 온라인 게임에 참가할 수 없습니다. LAN 게임은 계속 사용할 수 있습니다.
 [hub versus %0]
-
+상대: %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+지도 다운로드 중: %0
 [match failed]
-
+경기를 시작할 수 없습니다.
 [match leave]
-
+나가기
 [match loading]
-
+게임 불러오는 중
 [Loading game graphics]
-
+게임 그래픽 불러오는 중
 [match map cached]
-
+이미 이 기기에 있음
 [match map]
-
+지도 다운로드 중
 [match relay %0]
-
+릴레이 %0에 연결됨
 [match seat confirmed]
-
+자리 확정
 [match starting]
-
+경기 시작 중
 [match tip flags]
-
+팁: 탐험 깃발은 탐험가를 보내 지도를 밝히고, 전투 깃발은 전사를 모읍니다.
 [match tip input]
-
+팁: 명령은 내 입력 지연 시간이 지난 뒤 모두에게 반영됩니다. 다른 플레이어의 연결 상태 때문에 내가 느려지지는 않습니다.
 [match tip select]
-
+팁: 건물을 두 번 클릭하면 같은 종류의 건물을 모두 선택합니다.
 [match waiting for players]
-
+모든 플레이어를 기다리는 중
 [match you %0]
-
+%0 (나)
 [match player map]
-
+지도
 [match player loading]
-
+불러오는 중
 [match player connecting]
-
+연결 중
 [match player ready]
-
+준비 완료
 [match player left]
-
+나감
 [results back to online]
-
+온라인으로 돌아가기
 [results back to room]
-
+방으로 돌아가기
 [results defeat]
-
+패배
 [results ladder rating %0]
-
+레이팅 %0
 [results left]
-
+경기를 나갔습니다
 [results match over]
-
+경기 종료
 [results match page]
-
+경기 페이지
 [results minutes %0]
-
+%0분
 [results no change]
-
+변동 없음
 [results ranked]
-
+랭크전
 [results recording]
-
+결과 기록 중…
 [results room unrated]
-
+방 경기 · 비랭크
 [results saved to history]
-
+기록에 저장됨
 [results seconds %0]
-
+%0초
 [results unverifiable]
-
+서버가 이 경기를 재현하지 못해 누구의 레이팅에도 반영되지 않습니다. 조사를 위해 보고되었으니 따로 하실 일은 없습니다.
 [results verified provisional]
-
+검증됨 · 잠정
 [results verified]
-
+검증됨
 [results verifying detail]
-
+서버가 경기를 다시 재생해 확인하는 중입니다. 보통 1분 이내에 끝납니다.
 [results verifying]
-
+결과 검증 중…
 [results victory]
-
+승리
 [room address]
-
+주소
 [room ai %0]
-
+AI %0
 [room browser pairing]
-
+브라우저 페어링
 [room catalog map]
-
+카탈로그 지도
 [room change map]
-
+지도 변경…
 [room change rules]
-
+규칙 변경…
 [room chat]
-
+채팅
 [room closed seat detail]
-
+호스트가 닫음
 [room closed seat]
-
+닫힘
 [room colonies]
-
+식민지
 [room connecting]
-
+방에 연결하는 중…
 [room copy]
-
+복사
 [room disconnected]
-
+연결 끊김
 [room downloading %0]
-
+지도 다운로드 중 %0 %
 [room downloading map]
-
+지도 다운로드 중…
 [room expired]
-
+방이 닫혔습니다.
 [room generated on server]
-
+서버에서 한 번 생성되므로 모두가 정확히 이 지도로 플레이합니다.
 [room guest]
-
+게스트
 [room host %0]
-
+호스트 %0
 [room host closed]
-
+호스트가 방을 닫았습니다.
 [room host]
-
+호스트
 [room humans vs ai]
-
+사람 대 AI
 [room invite code %0]
-
+코드 %0 · 앱, 휴대폰 또는 브라우저에서 열림
 [room invite not found]
-
+만료되었거나 존재하지 않는 초대입니다.
 [room invite only]
-
+초대 전용
 [room invite]
-
+초대
 [room joining on network]
-
+이 네트워크에서 참가 중
 [room lan badge]
-
+로컬 네트워크 · 비랭크
 [room lan list hint %0]
-
+같은 네트워크의 다른 사람은 주 메뉴의 LAN 게임 목록에서 %0을(를) 볼 수 있습니다.
 [room leave]
-
+나가기
 [room map changed %0]
-
+지도가 %0(으)로 변경되었습니다.
 [room map failed]
-
+지도를 준비할 수 없습니다
 [room match label]
-
+방
 [room member joined %0]
-
+%0 님이 참가했습니다.
 [room member left %0]
-
+%0 님이 나갔습니다.
 [room member ready %0]
-
+%0 님이 준비되었습니다.
 [room needs two seats]
-
+시작하려면 친구를 초대하거나 AI를 추가하세요
 [room no map]
-
+아직 지도 없음
 [room not ready]
-
+준비 안 됨
 [room open for a person]
-
+사람에게 개방
 [room open seat detail]
-
+초대받은 누구나 앉을 수 있습니다
 [room open seat]
-
+빈자리
 [room person]
-
+사람
 [room preparing map]
-
+서버에서 지도 준비 중…
 [room public]
-
+공개
 [room ready?]
-
+준비
 [room ready]
-
+✓ 준비 완료
 [room remove from room]
-
+방에서 내보내기
 [room rule off]
-
+꺼짐
 [room rule on]
-
+켜짐
 [room rules changed]
-
+규칙이 변경되었습니다.
 [room rules]
-
+규칙
 [room say something]
-
+메시지 입력…
 [room seat hint]
-
+플레이어는 직접 빈자리로 옮길 수 있습니다. 팀을 바꿔 균형을 맞추세요.
 [room seat options]
-
+자리 옵션
 [room seats summary %0 %1 %2]
-
+플레이어 %0 · AI %1 · 빈자리 %2
 [room seats]
-
+자리
 [room seed]
-
+시드
 [room send]
-
+보내기
 [room set by host]
-
+호스트가 설정함
 [room share text %0]
-
+내 Globulation 2 방에 참가하세요: %0
 [room share]
-
+공유…
 [room size]
-
+크기
 [room starting match]
-
+경기를 시작하는 중…
 [room take seat]
-
+자리에 앉기
 [room team %0]
-
+팀 %0
 [room update required]
-
+이 방은 다른 버전의 게임을 사용합니다. 참가하려면 업데이트하세요.
 [room uploaded map]
-
+업로드한 지도
 [room waiting for %0]
-
+%0 님의 준비를 기다리는 중
 [room waiting for you]
-
+준비되면 준비를 누르세요
 [room match over]
-
+경기가 끝났습니다. 한 판 더 하려면 준비하세요!
 [room waiting for host]
-
+호스트가 시작하기를 기다리는 중
 [room waiting for players %0]
-
+플레이어 %0명의 준비를 기다리는 중
 [room who can find it]
-
+공개 범위
 [room you created]
-
+방을 만들었습니다.
 [room you joined %0]
-
+%0에 참가했습니다.
 [room you were removed]
-
+호스트가 방에서 내보냈습니다.
 [room you]
-
+나
 [settings Online]
-
+온라인
 [settings Another server]
-
+다른 서버
 [settings Check]
-
+확인
 [settings Checking…]
-
+확인 중…
 [settings Choose which server you play on and how you sign in to it.]
-
+플레이할 서버와 로그인 방법을 선택합니다.
 [settings Connecting…]
-
+연결 중…
 [settings Could not reach this server.]
-
+이 서버에 연결할 수 없습니다.
 [settings Display name saved.]
-
+표시 이름을 저장했습니다.
 [settings Display name]
-
+표시 이름
 [settings Download or delete my data]
-
+내 계정 삭제
 [settings Enter an https:// address.]
-
+https:// 주소를 입력하세요.
 [settings Finish in your browser. It shows the code %0.]
-
+브라우저에서 완료하세요. 코드를 물으면 %0을(를) 입력하세요.
 [settings Forget]
-
+삭제
 [settings Guests keep a generated name; sign in to choose one.]
-
+게스트는 자동 생성된 이름을 사용합니다. 이름을 정하려면 로그인하세요.
 [settings Link]
-
+연결
 [settings Not a Globulation 2 server.]
-
+Globulation 2 서버가 아닙니다.
 [settings Not linked]
-
+연결 안 됨
 [settings Not signed in.]
-
+로그인하지 않았습니다.
 [settings Open]
-
+열기
 [settings Opens your account page on %0.]
-
+%0의 계정 페이지를 엽니다. 여기서 계정을 삭제할 수 있습니다.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+커뮤니티, 동호회 또는 직접 운영하는 서버입니다. 주소를 붙여 넣으세요.
 [settings Save]
-
+저장
 [settings Server]
-
+서버
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+방, 경기, 순위표에 표시됩니다. 30일에 한 번 변경할 수 있습니다.
 [settings Sign in with: %0 · queues: %1]
-
+로그인 방법: %0 · 대기열: %1
 [settings Sign out on this device]
-
+이 기기에서 로그아웃
 [settings Sign out]
-
+로그아웃
 [settings Switch to this server]
-
+이 서버로 전환
 [settings The last sign-in method can't be unlinked.]
-
+마지막 로그인 방법은 연결 해제할 수 없습니다.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+공식 Globulation 2 서버 · 랭크전 대기열, 순위표, 지도 카탈로그
 [settings Unlink]
-
+연결 해제
 [settings Unlinking is done on the account page.]
-
+연결 해제는 계정 페이지에서 할 수 있습니다.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+다시 로그인할 때까지 새 게스트로 플레이합니다. 계정과 경기 기록은 서버에 남아 있습니다.
 [settings Your account on %0]
-
+%0의 내 계정
 [settings compatible with this version]
-
+이 버전과 호환됨
 [settings connected]
-
+연결됨
 [settings connecting…]
-
+연결 중…
 [settings guest]
-
+게스트
 [settings linked]
-
+연결됨
 [settings plays another version]
-
+다른 버전 사용
 [settings trusted]
-
+신뢰함
 [settings used before]
-
+이전에 사용함
 [settings you were %0 there]
-
+이 서버에서의 이름: %0
 [trust invited to room %0]
-
+%0 방에 초대됨
 [trust join as guest]
-
+게스트로 참가
 [trust not official]
-
+이 서버는 Globulation 2 프로젝트에서 운영하지 않습니다.
 [trust remember]
-
+이 서버 기억하기
 [trust separate identity %0]
-
+그 서버에는 게스트로 참가합니다. %0 계정, 레이팅, 기록은 그대로 유지됩니다.
 [trust title]
-
+다른 서버의 게임에 참가할까요?
 [trust what it sees]
-
+서버는 표시 이름, 연결 주소, 해당 서버에서 플레이한 게임을 볼 수 있습니다.
 [settings not connected]
-
+연결 안 됨
 [settings Open Play online to connect.]
-
+연결하려면 온라인 플레이를 여세요.
 [hub code]
-
+코드
 [results draw]
-
+무승부
 [qm 2 vs 2]
-
+2 대 2
 [qm 1 vs 1]
-
+1 대 1
 [qm ping about]
-
+예상 핑
 [qm ranked]
-
+랭크전
 [qm casual %0]
-
+일반전 %0
 [qm rated]
-
+랭크전
 [qm unrated]
-
+비랭크
 [qm solo queue]
-
+솔로 대기열
 [qm ai joins after %0]
-
+%0 후 AI 참가
 [qm fair maps %0]
-
+지도: %0
 [qm cooldown %0]
-
+경기를 거절했습니다. %0 후에 다시 찾을 수 있습니다.
 [qm sign in to play ranked]
-
+랭크전 대기열은 로그인한 계정만 이용할 수 있습니다. 먼저 로그인하세요.
 [online update required]
-
+이 게임 버전은 서버에 비해 너무 오래되었습니다. 온라인으로 플레이하려면 업데이트하세요.
 [online server behind]
-
+서버가 아직 이 버전으로 업데이트되지 않았습니다. 업데이트되면 온라인 플레이가 열립니다.
 [online version mismatch]
-
+서버가 다른 버전의 게임을 사용하므로, 이 게임으로는 온라인 플레이를 할 수 없습니다.
 [qm already searching]
-
+이미 경기를 찾고 있거나 경기 중입니다.
 [online connection problem]
-
+서버에 연결할 수 없습니다.
 [qm find match]
-
+경기 찾기
 [qm opponents rated %0 to %1]
-
+상대 레이팅 %0~%1
 [qm region %0]
-
+지역 %0
 [qm searching]
-
+찾는 중
 [qm measuring relays]
-
+릴레이 측정 중
 [qm joining queue]
-
+대기열 참가 중
 [qm waiting for a person]
-
+사람 상대를 기다리는 중: AI 상대가 꺼져 있습니다.
 [qm ai in %0 rated]
-
+상대를 찾지 못하면 %0 후 레이팅이 가장 가까운 AI와 대전합니다
 [qm ai in %0]
-
+상대를 찾지 못하면 %0 후 AI가 참가합니다
 [qm ai after %0]
-
+상대를 찾지 못하면 %0 후 AI가 자리를 채웁니다
 [qm allow ai short]
-
+AI 허용
 [qm allow ai]
-
+AI 상대 허용
 [qm cancel]
-
+취소
 [qm cancel search]
-
+찾기 취소
 [qm usual wait %0]
-
+평균 대기 %0
 [qm widening]
-
+기다릴수록 범위 확대
 [qm ais are rated]
-
+(레이팅 반영: AI에도 레이팅이 있습니다)
 [qm opponent declined]
-
+상대가 수락하지 않았습니다. 대기열 맨 앞으로 돌아갑니다.
 [qm %0 did not accept]
-
+%0 님이 수락하지 않았습니다. 대기열 맨 앞으로 돌아갑니다.
 [qm start failed]
-
+경기를 시작할 수 없습니다. 다시 찾는 중입니다.
 [qm you declined]
-
+경기를 거절했습니다. 잠시 후 다시 찾을 수 있습니다.
 [qm you did not answer]
-
+제시간에 수락하지 않았습니다. 잠시 후 다시 찾을 수 있습니다.
 [qm search ended]
-
+찾기가 종료되었습니다.
 [qm try again]
-
+다시 시도
 [online connecting]
-
+연결 중…
 [qm no queues]
-
+이 서버에는 빠른 대전 대기열이 없습니다.
 [qm quick match]
-
+빠른 대전
 [qm phone searching note]
-
+이 화면을 나가도 찾기는 계속됩니다.
 [qm phone intro]
-
+아래에서 대기열을 고르세요. 다른 화면을 보는 동안에도 찾기가 계속됩니다.
 [qm online]
-
+온라인
 [qm keeps running note]
-
+이 화면을 나가도 찾기는 계속됩니다.
 [qm ai]
-
+AI
 [qm provisional]
-
+잠정
 [qm accepted]
-
+✓ 수락함
 [qm declined]
-
+거절함
 [qm waiting]
-
+대기 중…
 [qm ai badge]
-
+AI
 [qm match found]
-
+경기를 찾았습니다
 [qm playing an ai]
-
+AI와 대전
 [qm vs]
-
+대
 [qm ai explanation rated]
-
+레이팅 범위 안에서 찾는 사람이 없었습니다. 레이팅이 가장 가까운 AI와 대전하며, 결과는 나와 AI의 레이팅에 모두 반영됩니다.
 [qm ai explanation]
-
+찾는 사람이 없었습니다. 레이팅이 가장 가까운 AI와 대전하며, 이 게임은 레이팅에 반영되지 않습니다.
 [qm casual explanation]
-
+경기가 바로 시작됩니다. 일반전은 레이팅에 반영되지 않습니다.
 [qm accepted button]
-
+수락함
 [qm accept]
-
+수락
 [qm decline]
-
+거절
 [qm both must accept]
-
+양쪽 모두 수락해야 합니다
 [qm accept explanation]
-
+두 플레이어 모두 수락해야 합니다. 거절하거나 시간이 다 되면 대기열 맨 뒤로 갑니다.
 [qm starting in %0]
-
+%0 후 시작…
 [qm preparing match]
-
+경기 준비 중…
 [qm match assigned %0 %1]
-
+%1에서 경기 %0이(가) 준비되었지만, 이 빌드는 아직 온라인 경기에 연결할 수 없습니다.
 [online jan]
-
+1월
 [online feb]
-
+2월
 [online mar]
-
+3월
 [online apr]
-
+4월
 [online may]
-
+5월
 [online jun]
-
+6월
 [online jul]
-
+7월
 [online aug]
-
+8월
 [online sep]
-
+9월
 [online oct]
-
+10월
 [online nov]
-
+11월
 [online dec]
-
+12월
 [profile win letter]
-
+승
 [profile loss letter]
-
+패
 [profile draw letter]
-
+무
 [profile history unavailable]
-
+이 서버는 아직 경기 기록을 제공하지 않습니다.
 [profile downloading replay]
-
+리플레이 다운로드 중…
 [profile no replay]
-
+이 경기에는 리플레이가 없습니다.
 [profile room with %0]
-
+방 · 식민지 %0개
 [profile with %0 vs %1]
-
+아군 %0 · 상대 %1
 [profile vs %0]
-
+상대: %0
 [profile room]
-
+방
 [profile casual]
-
+일반전
 [profile ai filled]
-
+AI 충원
 [profile provisional %0 games]
-
+잠정 · %0게임
 [profile unrated]
-
+비랭크
 [profile checking]
-
+확인 중…
 [profile %0 min]
-
+%0분
 [profile match page]
-
+경기 페이지
 [profile replay]
-
+리플레이
 [profile win rate last %0]
-
+최근 %0게임 승률
 [profile %0 w %1 l %2 d]
-
+%0승 · %1패 · %2무
 [profile typical game]
-
+일반적인 게임
 [profile median length]
-
+내 게임 시간 중앙값
 [profile best map]
-
+최고 성적 지도
 [profile %0 w %1 l]
-
+%0승 · %1패
 [profile no rated games]
-
+레이팅을 받으려면 랭크전을 플레이하세요.
 [profile all]
-
+전체
 [profile rooms]
-
+방
 [profile vs ai]
-
+AI 대전
 [profile matches]
-
+경기
 [online loading]
-
+불러오는 중…
 [profile no matches]
-
+아직 경기가 없습니다.
 [online load more]
-
+더 불러오기
 [profile title]
-
+프로필
 [profile guest]
-
+게스트
 [profile playing since %0]
-
+플레이 시작: %0
 [profile full profile web]
-
+웹에서 전체 프로필 보기
 [profile replays note]
-
+리플레이는 열 때 서버에서 다운로드됩니다. 로컬에 저장한 리플레이는 게임 불러오기 → 리플레이에 남아 있습니다.
 [profile web profile]
-
+웹 프로필
 [maps most played]
-
+가장 많이 플레이됨
 [maps most liked]
-
+좋아요 많은 순
 [maps newest]
-
+최신순
 [maps most downloaded]
-
+다운로드 많은 순
 [maps any size]
-
+모든 크기
 [maps up to 128]
-
+128 × 128 이하
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 이상
 [maps report broken]
-
+작동하지 않음
 [maps report offensive]
-
+불쾌한 내용
 [maps report copyright]
-
+다른 사람의 작품
 [maps report other]
-
+기타
 [maps public]
-
+공개
 [maps unlisted]
-
+목록 미표시
 [maps private]
-
+비공개
 [maps cannot read file]
-
+지도 파일을 읽을 수 없습니다.
 [maps file too large]
-
+지도 파일이 너무 커서 공유할 수 없습니다.
 [maps saved for next room]
-
+지도를 다운로드했습니다. 방을 열 때 사용됩니다.
 [maps download failed]
-
+지도를 다운로드할 수 없습니다.
 [maps %0 colonies]
-
+식민지 %0개
 [maps version %0]
-
+버전 %0
 [maps updated %0]
-
+업데이트: %0
 [maps downloading]
-
+지도 다운로드 중…
 [maps like needs account]
-
+지도에 좋아요를 누르려면 로그인해야 합니다.
 [maps report sent]
-
+감사합니다. 관리자가 확인할 예정입니다.
 [maps select a map]
-
+자세한 정보를 보려면 지도를 선택하세요.
 [maps by %0]
-
+제작: %0
 [maps stats %0 %1 %2]
-
+▶ 플레이 %0회 · ⬇ 다운로드 %1회 · ♥ %2
 [maps use in room]
-
+방에서 사용
 [maps liked]
-
+좋아요 누름
 [maps like]
-
+좋아요
 [maps map page]
-
+지도 페이지
 [maps reported]
-
+신고됨
 [maps report]
-
+신고…
 [maps report why]
-
+이 지도에 어떤 문제가 있나요?
 [maps search placeholder]
-
+지도 또는 제작자 검색
 [maps none found]
-
+일치하는 지도가 없습니다.
 [maps any colonies]
-
+식민지 수 무관
 [maps checking]
-
+확인 중…
 [maps no version yet]
-
+아직 업로드된 버전이 없습니다.
 [maps rejected]
-
+거부됨
 [maps did not load %0]
-
+지도를 불러오지 못했습니다: %0
 [maps unknown reason]
-
+이유가 제공되지 않았습니다
 [maps fix and upload again]
-
+편집기에서 수정한 뒤 다시 업로드하세요
 [maps uploaded just now]
-
+방금 업로드됨
 [maps loading on server]
-
+서버에서 불러오는 중
 [maps %0 plays]
-
+플레이 %0회
 [maps hidden]
-
+숨김
 [maps upload again]
-
+다시 업로드…
 [maps delete]
-
+삭제
 [maps update]
-
+업데이트…
 [maps upload a map]
-
+지도 업로드…
 [maps upload hint]
-
+지도 폴더나 편집기의 .map 파일
 [maps no maps yet]
-
+아직 공유한 지도가 없습니다.
 [maps my maps]
-
+내 지도
 [maps my maps %0]
-
+내 지도 (%0)
 [maps browse]
-
+찾아보기
 [maps title]
-
+지도
 [maps browse note %0]
-
+%0 카탈로그 · 이 버전에서 불러올 수 있는 지도만 표시됩니다
 [maps visibility note]
-
+공개 지도는 찾아보기에 표시됩니다. 목록 미표시 지도는 내 방과 링크로 사용할 수 있습니다. 비공개 지도는 내 방에서만 사용할 수 있습니다.
 [maps use %0]
-
+%0 사용
 [maps %0 kb]
-
+%0KB
 [maps field title]
-
+제목
 [maps field description]
-
+설명
 [maps who can use it]
-
+사용 가능 대상
 [maps guests unlisted]
-
+게스트는 목록 미표시 및 비공개 지도를 공유할 수 있습니다. 찾아보기에 게시하려면 로그인하세요.
 [maps visibility help]
-
+목록 미표시 지도는 내 방과 링크로 사용할 수 있고, 공개 지도는 찾아보기에도 표시됩니다.
 [maps new version of %0]
-
+이 파일을 %0의 새 버전으로 업로드합니다.
 [maps upload]
-
+업로드
 [maps uploading]
-
+업로드 중…
 [maps checking detail]
-
+서버가 지도를 불러와 미리보기를 그리는 중입니다. 그전까지는 지도를 사용할 수 없습니다.
 [maps ready]
-
+준비됨
 [maps ready public]
-
+지도가 준비되어 찾아보기에 표시됩니다.
 [maps ready unlisted]
-
+지도가 준비되었습니다. 목록 미표시 지도는 내 방과 링크로 사용할 수 있습니다.
 [maps ready private]
-
+지도가 준비되었습니다. 비공개 지도는 내 방에서만 사용할 수 있습니다.
 [maps upload failed]
-
+업로드에 실패했습니다
 [maps server read %0 %1]
-
+서버가 이 지도를 식민지 %1개인 %0(으)로 읽었습니다.
 [maps continue in background]
-
+닫기
 [maps upload a map title]
-
+지도 업로드
 [maps update map title]
-
+지도 업데이트
 [maps upload note]
-
+서버는 업로드된 모든 지도를 먼저 불러와 확인한 뒤 사용할 수 있게 합니다.
 [online just now]
-
+방금
 [online today %0]
-
+오늘 %0
 [online yesterday]
-
+어제
 [online sun]
-
+일
 [online mon]
-
+월
 [online tue]
-
+화
 [online wed]
-
+수
 [online thu]
-
+목
 [online fri]
-
+금
 [online sat]
-
+토
 [online %0 weeks ago]
-
+%0주 전
 [online %0 months ago]
-
+%0개월 전
 [online %0 years ago]
-
+%0년 전
 [maps share online]
-
+온라인 공유…
 [maps mine]
-
+내 지도
 [results waiting for players]
-
+다른 플레이어가 나가기를 기다리는 중…
 [results waiting detail]
-
+모두가 경기를 나가면 결과가 기록됩니다.
 [results waiting slow]
-
+연결이 끊긴 플레이어는 최대 3분 안에 돌아올 수 있습니다. 결과는 기록과 경기 페이지에 표시됩니다.
 [results verifying slow]
-
+검증이 평소보다 오래 걸리고 있습니다. 결과는 기록과 경기 페이지에 표시됩니다.
 [results rematch]
-
+재대결
 [results join rematch %0]
-
+%0 님의 재대결 참가
 [hub profile history]
-
+프로필 및 기록
 [hub my maps]
-
+내 지도
 [hub leaderboard %0]
-
+순위표 · %0
 [hub leaderboard empty]
-
+아직 순위에 오른 플레이어가 없습니다.
 [hub guests not ranked]
-
+게스트는 순위에 오르지 않습니다. 여기에 표시되려면 로그인하세요.
 [hub full leaderboard]
-
+전체 순위표
 [settings %0 is no longer linked.]
-
+%0 연결이 해제되었습니다.
 [room map read failed]
-
+이 지도 파일을 읽을 수 없습니다.
 [room map upload failed]
-
+지도를 방에 공유할 수 없습니다.
 [room map upload failed %0]
-
+지도를 방에 공유할 수 없습니다: %0
 [room uploading map]
-
+방에 지도를 공유하는 중…
 [room premade map shared]
-
+방의 모든 사람이 이 지도 파일로 플레이합니다. 경기 전에 다운로드됩니다.
 [room take a seat to play]
-
+플레이하려면 빈자리에 앉으세요
 [room waiting for a seat]
-
+모든 자리가 찼습니다. 자리가 나면 앉을 수 있습니다.
 [room not seated]
-
+자리 없음
 [room copied]
-
+복사됨
 [room copy failed]
-
+복사할 수 없음
 [room closed title]
-
+방이 닫힘
 [room removed title]
-
+방에서 내보내짐
 [room back to online]
-
+온라인으로 돌아가기
 [leave match]
-
+경기 나가기
 [leave match title]
-
+이 경기를 나갈까요?
 [leave lan title]
-
+이 LAN 게임을 나갈까요?
 [leave rated body]
-
+이 랭크전에서 패배 처리되고 레이팅이 내려갑니다. 다른 플레이어는 계속 플레이하며, 다시 돌아올 수 없습니다.
 [leave casual body]
-
+이 빠른 대전은 패배로 처리됩니다. 다른 플레이어는 계속 플레이하며, 다시 돌아올 수 없습니다.
 [leave room body]
-
+방 경기를 나가면 기록에 패배로 남습니다. 다른 플레이어는 계속 플레이하며, 다시 돌아올 수 없습니다.
 [leave lan body]
-
+다른 플레이어는 나 없이 계속 플레이하며, 이 게임으로 다시 돌아올 수 없습니다.
 [leave match confirm]
-
+경기 나가기
 [keep playing]
-
+계속 플레이
 [results team]
-
+팀
 [results quick unrated]
-
+빠른 대전 · 비랭크
 [conn card cannot keep up]
-
+기기가 이 경기를 따라가지 못합니다
 [conn card cannot keep up body]
-
+경기가 진행되는 속도보다 다시 재생하는 속도가 느려서 따라잡을 수 없습니다. 경기를 나가거나, 그래픽 설정을 낮추고 계속 기다릴 수 있습니다.
 [conn card not gaining]
-
+따라잡지 못하는 중
 [results reason opponents left]
-
+상대가 경기를 나갔습니다.
 [results reason victory]
-
+모든 상대 식민지를 물리쳤습니다.
 [results reason defeat]
-
+식민지가 패배했습니다.
 [results reason you left]
-
+경기를 나갔습니다. 패배로 처리됩니다.
 [results final after end]
-
+최종 결과는 경기가 끝난 뒤 확정됩니다.
 [pause none left]
-
+남은 일시 정지 없음
 [pause game left %0]
-
+일시 정지 (%0 남음)
 [pause by %0]
-
+%0 님이 일시 정지함
 [pause by %0 resumes in %1]
-
+%0 님이 일시 정지함 · %1 후 재개
 [turn too many actions]
-
+동작이 너무 많습니다: 일부는 아직 전송 대기 중입니다
 [turn no pauses left]
-
+이 경기에서 남은 일시 정지가 없습니다
 [turn pause time used %0]
-
+%0 님이 일시 정지 시간을 모두 사용했습니다: 게임을 재개합니다
 [room seats one person %0 %1]
-
+플레이어 1 · AI %0 · 빈자리 %1
 [room rules otherwise standard]
-
+나머지 규칙은 모두 표준과 같습니다.
 [room browser link]
-
+브라우저 플레이어용 링크
 [room browser link hint]
-
+브라우저 플레이어는 이 링크를 붙여 넣어 참가합니다.
 [room browser link code %0]
-
+브라우저 플레이어는 이 링크를 붙여 넣어 참가합니다. 그 게임에는 코드 %0이(가) 표시됩니다.
 [room copy link]
-
+링크 복사
 [room lan open seat detail]
-
+이 네트워크의 누구나 앉을 수 있습니다
 [room close title]
-
+방을 닫을까요?
 [room close body one]
-
+나가면 방에 있는 다른 플레이어를 포함해 모두에게 방이 닫힙니다.
 [room close body %0]
-
+나가면 방에 있는 다른 플레이어 %0명을 포함해 모두에게 방이 닫힙니다.
 [room close confirm]
-
+방 닫기
 [room stay]
-
+머무르기
 [room colours changed]
-
+새 지도로 자리 색상이 바뀌었습니다. 시작하기 전에 내 색상을 확인하세요.
 [room copy by hand]
-
+복사하지 못했습니다. 초대를 직접 복사하세요:
 [room copy by hand close]
-
+닫기
 [room copy by hand touch]
-
+링크를 길게 누른 다음 복사를 선택하세요.
 [room copy by hand keys]
-
+링크가 선택되었습니다: Ctrl+C(Mac에서는 ⌘C)를 누르세요.
 [room code]
-
+코드
 [online under a minute]
-
+1분 미만
 [online about %0 min]
-
+약 %0분
 [online %0 s]
-
+%0초
 [online %0 min %1 s]
-
+%0분 %1초
 [qm ai opponent %0]
-
+AI 상대: %0
 [match relay connected]
-
+게임 서버에 연결됨
 [room picker title]
-
+지도 선택
 [room picker for one]
-
+방에 있는 플레이어 1명용
 [room picker for %0]
-
+방에 있는 플레이어 %0명용
 [room picker generated]
-
+생성
 [room picker premade]
-
+미리 만든 지도
 [room picker catalog]
-
+카탈로그
 [room picker size]
-
+크기
 [room picker colonies]
-
+식민지
 [room picker fair]
-
+모든 식민지에 공정한 시작
 [room picker does not fit]
-
+이 크기에 맞지 않습니다. 다른 것을 시도하세요
 [room picker preparing]
-
+미리보기 준비 중…
 [room picker generated note]
-
+각 지형은 모든 식민지에 똑같이 좋은 시작을 제공하며, 서버가 모두에게 같은 지도를 만들어 줍니다.
 [room picker players %0]
-
+플레이어 %0명
 [room picker unreadable]
-
+읽을 수 없음
 [room picker no premade]
-
+미리 만든 지도를 찾지 못했습니다.
 [room picker too small %0]
-
+이 지도의 식민지 수가 방에 있는 플레이어 %0명보다 적습니다.
 [room picker pick premade]
-
+지도를 고르면 여기에 표시됩니다.
 [room picker catalog intro]
-
+다른 플레이어가 공유한 지도입니다. 하나를 열고 방에서 사용을 선택하세요.
 [room picker browse catalog]
-
+공유 지도 찾아보기
 [room picker more options]
-
+추가 옵션…
 [room picker use]
-
+이 지도 사용
 [room map ready title %0]
-
+%0 플레이
 [room map ready unnamed]
-
+이 지도
 [room map ready body]
-
+방을 만들고 친구를 초대하세요. 방에서 이 지도로 플레이합니다.
 [game draw]
-
+무승부
 [settings Show colony skins]
-군체 스킨 표시
+식민지 스킨 표시
 [settings Turn off to use classic units, swarms and building colors on this device.]
-끄면 이 기기에서 기본 유닛, 무리 및 건물 색상을 사용합니다.
+끄면 이 기기에서 기존 유닛, 둥지, 건물 색상을 사용합니다.
 [settings Hive Mind]
-
+하이브 마인드
 [settings Enable commander shortcuts]
-
+지휘관 단축키 사용
 [settings Command your colony without opening a menu.]
-
+메뉴를 열지 않고 식민지에 명령합니다.
 [settings Allow supervision for new commands]
-
+새 명령에 감독 허용
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+지휘관이 상시 명령을 후속 관리할 수 있습니다. 후속 관리에는 크레딧이 사용되며, 이미 설치된 명령은 크레딧 없이 계속 실행됩니다.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+기본 단축키: Ctrl+Enter로 명령하고, Ctrl+Shift+Enter로 지휘관 작업을 중지합니다. 조작에서 변경할 수 있습니다. 상시 명령 카드에는 별도의 일시 정지 및 취소 버튼이 있습니다.
 [settings Commander account and credits]
-
+지휘관 계정 및 크레딧
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+크레딧과 구매는 브라우저에서 관리합니다. 랭크전에서도 지휘관의 도움을 받을 수 있습니다.
 [open commander]
-
+지휘관 열기
 [stop commander]
-
+지휘관 중지
 [settings Recording]
-
+녹화
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+게임을 소리가 포함된 MP4 동영상으로 녹화합니다. 녹화하려면 libx264 및 AAC 인코더가 포함된 FFmpeg가 필요합니다.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg가 준비되었습니다.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg를 사용할 수 없어 녹화가 꺼져 있습니다. FFmpeg를 설치하고 PATH에 있는지 확인한 다음 다시 확인하세요.
 [settings Check for FFmpeg again]
-
+FFmpeg 다시 확인
 [settings Checking for FFmpeg…]
-
+FFmpeg 확인 중…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+단축키: %0. 메뉴와 편집기에서도 작동합니다.
 [settings Change the hotkey]
-
+단축키 변경
 [settings Recordings are saved in %0]
-
+녹화 파일 저장 위치: %0
 [toggle recording]
-
+녹화 시작/중지
 [File selection is unavailable.]
-
+파일 선택을 사용할 수 없습니다.
 [Saving custom AI…]
-
+사용자 지정 AI 저장 중…
 [Could not read the selected JavaScript file.]
-
+선택한 JavaScript 파일을 읽을 수 없습니다.
 [Custom AI library saved.]
-
+사용자 지정 AI 라이브러리를 저장했습니다.
 [Storage could not be saved. The previous library is retained.]
-
+저장소를 저장할 수 없습니다. 이전 라이브러리가 유지됩니다.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+JavaScript AI 파일 하나를 가져온 다음, 로컬 게임을 설정할 때 선택하세요.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+가져온 파일은 Glob2에 사본이 보관됩니다. 업데이트하면 이후 게임에서 사용할 사본이 교체되며, 저장된 게임은 원래 AI를 유지합니다.
 [Waiting for file selection or storage…]
-
+파일 선택 또는 저장소를 기다리는 중…
 [Import JavaScript AI]
-
+JavaScript AI 가져오기
 [Link development file]
-
+개발용 파일 연결
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+연결된 파일은 게임 시작 시 읽힙니다. 새 게임을 시작하기 전에 다시 빌드하세요. 연결을 제거해도 파일은 삭제되지 않습니다.
 [Example AI and authoring guide]
-
+예제 AI 및 제작 안내서
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+아직 사용자 지정 AI가 없습니다. 시작하려면 번들된 .js 파일을 가져오세요.
 [Relink]
-
+다시 연결
 [Update]
-
+업데이트
 [Validate]
-
+검사
 [AI startup and persistent globals are valid.]
-
+AI 시작 및 영구 전역 변수가 유효합니다.
 [Remove from library]
-
+라이브러리에서 제거
 [AI telemetry]
-
+AI 원격 측정
 [No accessible AI telemetry.]
-
+볼 수 있는 AI 원격 측정 데이터가 없습니다.
 [Search fields]
-
+필드 검색
 [Telemetry unavailable for this recording or controller.]
-
+이 기록이나 컨트롤러에는 원격 측정 데이터가 없습니다.
 [Linked]
-
+연결됨
 [Imported]
-
+가져옴
 [Player]
-
+플레이어
 [Updated at tick %0]
-
+%0틱에 업데이트됨
 [No values published yet.]
-
+아직 게시된 값이 없습니다.
 [No fields match your search.]
-
+검색과 일치하는 필드가 없습니다.
 [settings Custom AIs]
-
+사용자 지정 AI
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+설정 → 사용자 지정 AI에서 JavaScript AI를 추가하세요. 각 식민지의 AI 선택 목록에 표시됩니다.
 [Missing custom AI]
-
+사용자 지정 AI 없음
 [Map repetition failed]
-
+이 지도를 반복할 수 없습니다. 스크립트가 없는 시작 지도를 사용하거나 반복 및 기지 수를 줄이세요.
 [repeat map horizontally]
-맵을 가로로 반복
+지도를 가로로 반복
 [repeat map vertically]
-맵을 세로로 반복
+지도를 세로로 반복
 [bases]
 기지
 [bases per colony]
-식민지당 기지 수; 기지는 그려진 맵의 한 팀과 그 건물 및 유닛입니다
+식민지당 기지 수; 기지는 그려진 지도의 한 팀과 그 건물 및 유닛입니다
 [stat group population]
-
+인구
 [stat group food]
-
+식량과 건강
 [stat group resources]
-
+자원
 [stat group buildings]
-
+건물
 [stat group military]
-
+군사
 [stat group map]
-
+영토
 [stat group score]
-
+점수
 [stat overview]
-
+개요
 [stat overview about]
-
+경기 전체에 대한 각 식민지의 수치입니다. 클수록 좋은 항목은 가장 높은 값이 강조됩니다. 열 제목을 클릭하면 시간에 따른 변화를 볼 수 있습니다.
 [stat population]
-
+인구
 [stat population about]
-
+식민지에 살아 있던 유닛 수입니다: 일꾼, 탐험가, 전사를 모두 합친 수입니다.
 [stat births]
-
+태어난 유닛
 [stat births about]
-
+둥지가 새 유닛을 만들어 낸 속도입니다. 나누어 보면 일꾼, 탐험가, 전사를 따로 볼 수 있습니다.
 [stat deaths]
-
+잃은 유닛
 [stat deaths about]
-
+원인과 관계없이 식민지가 유닛을 잃은 속도입니다: 전투, 굶주림, 정리 작업 중 부상, 갇힘 등.
 [stat net growth]
-
+인구 증가
 [stat net growth about]
-
+태어난 유닛에서 잃은 유닛을 뺀 값입니다. 0보다 크면 식민지가 성장했고, 0보다 작으면 줄어들었습니다.
 [stat death causes]
-
+사망 원인
 [stat death causes about]
-
+식민지 유닛의 사망 원인입니다: 전투, 굶주림, 자원 정리 중 부상, 빠져나갈 길 없이 갇힘, 기타 원인.
 [stat conversions]
-
+순 전향
 [stat conversions about]
-
+다른 식민지에서 데려온 유닛에서 다른 식민지에 빼앗긴 유닛을 뺀 값입니다. 다른 식민지가 더 잘 먹여 주면 유닛이 편을 바꿉니다.
 [stat hunger]
-
+식량 비축
 [stat hunger about]
-
+식민지 유닛이 몸속에 지니고 있던 식량의 양입니다. 각 유닛은 남은 식량 비축량에 따라 분류됩니다: 거의 바닥(4분의 1 이하), 부족(절반 이하), 절반(4분의 3 이하), 충분. 유닛은 비축량이 줄어들면 여관을 찾아가므로, 식민지에는 항상 식량이 부족한 유닛이 어느 정도 있습니다.
 [stat health]
-
+체력
 [stat health about]
-
+식민지 유닛이 얼마나 건강했는지를 나타냅니다. 각 유닛은 남은 체력에 따라 분류됩니다: 위독(4분의 1 이하), 부상(절반 이하), 경상(4분의 3 이하), 건강.
 [stat seeking food]
-
+식량을 찾는 유닛
 [stat seeking food about]
-
+일을 멈추고 여관을 찾아 나선 유닛입니다. 그중 체력도 가득 차지 않은 유닛은 쇠약해지는 중으로 집계됩니다.
 [stat in care]
-
+식사 또는 치료 중인 유닛
 [stat in care about]
-
+여관에서 식사하거나 병원에서 치료받고 있어 일하지 않는 유닛입니다.
 [stat wheat harvested]
-
+수확한 밀
 [stat wheat harvested about]
-
+일꾼이 수확한 밀의 운반 횟수입니다. 여관은 밀로 식사를 만듭니다.
 [stat wheat stored]
-
+저장된 밀
 [stat wheat stored about]
-
+식민지 건물에 보관되어 제공하거나 사용할 수 있는 밀입니다.
 [stat meals]
-
+제공한 식사
 [stat meals about]
-
+식민지의 여관이 자기 유닛과 다른 식민지에서 온 방문자에게 제공한 식사입니다.
 [stat starvation]
-
+굶주림으로 인한 사망
 [stat starvation about]
-
+제때 식량을 찾지 못해 죽은 유닛입니다.
 [stat healing]
-
+회복한 체력
 [stat healing about]
-
+식민지의 병원이 부상 유닛에게 회복시켜 준 체력입니다.
 [stat gathered]
-
+모은 자원
 [stat gathered about]
-
+일꾼이 모은 모든 자원의 운반 횟수입니다. 나누어 보면 자원별로 볼 수 있습니다.
 [stat stored]
-
+저장된 자원
 [stat stored about]
-
+식민지 건물에 보관된 자원입니다. 나누어 보면 자원별로 볼 수 있습니다.
 [stat spending]
-
+자원 사용
 [stat spending about]
-
+배달된 자원이 쓰인 곳입니다: 식사, 새 유닛, 탑 탄약, 새 건물, 업그레이드.
 [stat delivered]
-
+배달한 자원
 [stat delivered about]
-
+일꾼이 건물로 운반한 횟수입니다.
 [stat traded]
-
+순 교역
 [stat traded about]
-
+시장을 통해 받은 자원에서 내준 자원을 뺀 값입니다.
 [stat buildings]
-
+보유 건물
 [stat buildings about]
-
+식민지가 보유한 완성된 건물입니다. 나누어 보면 건물 종류별로 볼 수 있습니다.
 [stat construction]
-
+완료한 건설 작업
 [stat construction about]
-
+완료한 건설 작업입니다: 새 건물, 업그레이드, 수리.
 [stat buildings lost]
-
+잃은 건물
 [stat buildings lost about]
-
+적에게 파괴되었거나 식민지가 직접 철거한 건물입니다.
 [stat blocked buildings]
-
+들어갈 길이 없는 건물
 [stat blocked buildings about]
-
+입구가 막혀 유닛이 드나들 수 없었던 건물입니다.
 [stat attack]
-
+공격력
 [stat attack about]
-
+식민지 전사들의 전투력을 합친 점수입니다: 얼마나 세게, 얼마나 빨리 공격하는지를 나타냅니다.
 [stat defence]
-
+방어력
 [stat defence about]
-
+식민지 방어탑의 화력을 합친 점수입니다.
 [stat hit points]
-
+총 체력
 [stat hit points about]
-
+식민지의 모든 유닛과 건물의 체력을 합한 값입니다.
 [stat damage dealt]
-
+준 피해
 [stat damage dealt about]
-
+식민지가 적 유닛과 건물에 준 피해입니다. 나누어 보면 전사, 마법, 탑을 따로 볼 수 있습니다.
 [stat damage taken]
-
+받은 피해
 [stat damage taken about]
-
+적이 식민지의 유닛과 건물에 준 피해입니다.
 [stat damage traded]
-
+피해 수지
 [stat damage traded about]
-
+준 피해에서 받은 피해를 뺀 값입니다. 0보다 크면 식민지가 전투에서 이기고 있었습니다.
 [stat combat deaths]
-
+전투에서 죽은 유닛
 [stat combat deaths about]
-
+적에게 죽은 이 식민지의 유닛입니다. 나누어 보면 일꾼, 탐험가, 전사를 따로 볼 수 있습니다.
 [stat accuracy]
-
+명중한 공격
 [stat accuracy about]
-
+식민지의 탑과 탐험가가 쏜 공격 중 목표에 명중한 비율입니다.
 [stat training]
-
+훈련
 [stat training about]
-
+유닛이 기술을 배우려고 학교, 병영, 달리기 훈련장, 수영장을 방문한 횟수입니다.
 [stat skills]
-
+얻은 기술
 [stat skills about]
-
+식민지 유닛이 훈련으로 얻은 기술 레벨입니다.
 [stat growth nearby]
-
+식민지 주변 자원 성장
 [stat growth nearby about]
-
+식민지 건물에서 32칸 이내에서 밀, 나무 등 자원이 자란 양으로, 운반 횟수가 아닌 성장 점수로 나타냅니다. 나누어 보면 기지에서 얼마나 가까운 곳에서 자랐는지 볼 수 있습니다.
 [stat growth map]
-
+지도 전체 자원 성장
 [stat growth map about]
-
+지도 어디에서든 자원이 자란 양으로, 운반 횟수가 아닌 성장 점수로 나타냅니다. 모든 식민지에 같은 값입니다.
 [stat stranded]
-
+움직일 수 없는 유닛
 [stat stranded about]
-
+갇혀서 발을 디딜 빈칸이 없는 유닛입니다.
 [stat cleared]
-
+정리한 자원
 [stat cleared about]
-
+일꾼이 공간을 만들려고 정리 구역에서 제거한 자원입니다.
 [stat prestige]
-
+명성
 [stat prestige about]
-
+최고 레벨 건물로 얻는 식민지의 명성입니다. 명성 목표가 있는 경기는 목표에 도달하면 끝납니다.
 [stat band combat]
-
+전투
 [stat band starvation]
-
+굶주림
 [stat band clearing]
-
+정리 중 부상
 [stat band trapped]
-
+갇힘
 [stat band other]
-
+기타
 [stat band starving]
-
+거의 바닥
 [stat band hungry]
-
+부족
 [stat band peckish]
-
+절반
 [stat band fed]
-
+충분
 [stat band critical]
-
+위독
 [stat band wounded]
-
+부상
 [stat band hurt]
-
+경상
 [stat band healthy]
-
+건강
 [stat band weakening]
-
+쇠약해지는 중
 [stat band looking]
-
+여관을 찾는 중
 [stat band eating]
-
+식사 중
 [stat band healing]
-
+치료 중
 [stat band meals]
-
+식사
 [stat band new units]
-
+새 유닛
 [stat band ammunition]
-
+탄약
 [stat band construction]
-
+새 건물
 [stat band upgrades]
-
+업그레이드
 [stat band built]
-
+건설
 [stat band upgraded]
-
+업그레이드
 [stat band repaired]
-
+수리
 [stat band destroyed]
-
+파괴됨
 [stat band demolished]
-
+철거됨
 [stat band melee]
-
+전사
 [stat band magic]
-
+마법
 [stat band towers]
-
+탑
 [stat band within 8]
-
+8칸 이내
 [stat band 8 to 16]
-
+8~16칸
 [stat band 16 to 32]
-
+16~32칸
 [stat unit units]
-
+유닛
 [stat unit wheat]
-
+밀
 [stat unit meals]
-
+식사
 [stat unit hit points]
-
+체력
 [stat unit resources]
-
+자원
 [stat unit buildings]
-
+건물
 [stat unit strength]
-
+점수
 [stat unit damage]
-
+피해
 [stat unit shots]
-
+발
 [stat unit visits]
-
+방문
 [stat unit skills]
-
+기술 레벨
 [stat unit prestige]
-
+명성
 [stat axis percent of %0]
-
+%0 대비 %
 [stat axis share of all teams]
-
+전체 식민지 대비 %
 [stat axis percent of units]
-
+식민지 유닛 대비 %
 [stat axis %0 per minute per 100 units]
-
+식민지 유닛 100기당 분당 %0
 [stat axis %0 per 100 units]
-
+식민지 유닛 100기당 %0
 [stat axis %0 per minute]
-
+분당 %0
 [stat axis %0 so far]
-
+%0 누적
 [stat axis %0 minute average]
-
+%0분 평균
 [stat view per minute]
-
+분당
 [stat view total]
-
+합계
 [stat view %0 min]
-
+%0분
 [stat view split]
-
+종류별로 나누기
 [stat view percentages]
-
+합계 대비 %
 [stat view percent of units]
-
+식민지 대비 %
 [stat view per 100 units]
-
+식민지 크기 대비
 [stat view share]
-
+전체 식민지 대비 비율
 [stat view highlight none]
-
+강조: 없음
 [stat column peak units]
-
+최대 유닛
 [stat column born]
-
+탄생
 [stat column lost]
-
+손실
 [stat column wheat]
-
+밀
 [stat column damage dealt]
-
+준 피해
 [stat column damage taken]
-
+받은 피해
 [stat column built]
-
+건설
 [stat column buildings lost]
-
+잃은 건물
 [stat column prestige]
-
+명성
 [stat marker wiped out]
-
+마지막 유닛 잃음
 [stat marker first combat death]
-
+첫 전투 사망
 [stat marker first building destroyed]
-
+첫 건물 파괴
 [stat not recorded for this match]
-
+이 경기에서는 이 통계가 기록되지 않았습니다.
 [results reason beyond doubt]
-
+결과가 더 이상 바뀔 수 없게 되었습니다.
 [stat per minute short]
-
+/분
 [stat page colony]
-
+식민지
 [stat page %0 of %1]
-
+%0/%1쪽  >
 [stat band workers]
-
+일꾼
 [stat band explorers]
-
+탐험가
 [stat band warriors]
-
+전사
 [stat unit deaths]
-
+사망
 [stat unit growth]
-
+성장
 [stat view by unit type]
-
+유닛 종류별
 [stat view by state]
-
+상태별
 [stat view by resource]
-
+자원별
 [stat view by building]
-
+건물별
 [stat view by work]
-
+작업 종류별
 [stat view by cause]
-
+원인별
 [stat view by weapon]
-
+무기별
 [stat view by distance]
-
+거리별
 [stat nothing to show]
-
+표시할 내용 없음: 이 경기에서는 일어나지 않았습니다.
 [stat %0 nothing]
-
+%0 (없음)
 [Match]
-
+경기
 [Time limit]
-
+제한 시간
 [Alliances can change]
-
+동맹 변경 가능
 [Reveal terrain]
-
+지형 공개
 [Starting unit level]
-
+시작 유닛 레벨
 [Starting stockpile]
-
+시작 비축 자원
 [Regrowth]
-
+자원 재생
 [Building strength]
-
+건물 내구도
 [Wounded units retreat]
-
+부상 유닛 후퇴
 [Units can die]
-
+유닛 사망 가능
 [Unit training]
-
+유닛 훈련
 [No stockpile]
-
+없음
 [No glass cannon]
-
+꺼짐
 [How quickly harvested resources grow back and spread.]
-
+수확한 자원이 다시 자라고 퍼지는 속도입니다.
 [Units must eat to keep working.]
-
+유닛이 계속 일하려면 먹어야 합니다.
 [Summary]
-
+요약
 [All rules]
-
+모든 규칙
 [Show all rules]
-
+모든 규칙 보기
 [Choose a ruleset]
-
+규칙 세트 선택
 [Reset to %0]
-
+%0(으)로 초기화
 [ruleset one change %0]
-
+%0 + 변경 1개
 [ruleset changes %0 %1]
-
+%0 + 변경 %1개
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+이 경기는 끝날 수 없습니다. 명성 승리를 켜거나 제한 시간을 설정하세요.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+명성은 보통 13~28분 후에 나타나므로, 30분 제한이면 무승부로 끝나는 경우가 많습니다.
 [Blitz]
-
+속전속결
 [ruleset blitz description]
-
+빠른 시작, 이른 종료
 [Gentle]
-
+입문
 [ruleset gentle description]
-
+첫 경기를 위한 너그러운 규칙
 [Sandbox]
-
+샌드박스
 [ruleset sandbox description]
-
+전투 없음, 굶주림 없음, 무엇이든 건설
 [Bloodbath]
-
+혈전
 [ruleset bloodbath description]
-
+약하지만 두려움 없는 군대
 [Siege]
-
+공성전
 [ruleset siege description]
-
+요새 성벽과 긴 전쟁
 [Lean years]
-
+흉년
 [ruleset lean years description]
-
+자원이 거의 다시 자라지 않음
 [Gold rush]
-
+골드 러시
 [ruleset gold rush description]
-
+지도에 있는 자원이 전부
 [Elite ranks]
-
+정예 부대
 [ruleset elite ranks description]
-
+훈련된 상태로 시작, 추가 훈련 없음
 [Shifting alliances]
-
+변하는 동맹
 [ruleset shifting alliances description]
-
+60분 경주 동안 팀 변경 가능
 [Probability victory]
-
+확률 승리
 [Off (play it out)]
-
+꺼짐 (끝까지 진행)
 [95% sure]
-
+95% 확신
 [97% sure]
-
+97% 확신
 [99% sure]
-
+99% 확신
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+모델이 선택한 확신도에 도달하면 경기를 끝냅니다. 관전자는 통계에서 예상 승률을 볼 수 있습니다.
 [Changed from %0: %1]
-
+%0에서 변경됨: %1
 [Combat is off, so the rules below have no effect.]
-
+전투가 꺼져 있어 아래 규칙은 적용되지 않습니다.
 [%0 more rules are at their Standard values.]
-
+나머지 규칙 %0개는 표준 값입니다.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+플레이어는 처음부터 지도의 지형을 볼 수 있으며, 적 유닛은 계속 숨겨집니다.
 [Each team starts with extra resources in its shared pool.]
-
+각 팀은 공용 비축에 추가 자원을 가지고 시작합니다.
 [Units hit harder but have less HP and armor.]
-
+유닛의 공격력이 강해지지만 체력과 방어력이 줄어듭니다.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+팀끼리 서로 공격할 수 있습니다. 평화로운 경기를 원하면 끄세요.
 [Hurt units go back to heal instead of fighting to the death.]
-
+다친 유닛은 죽을 때까지 싸우는 대신 치료하러 돌아갑니다.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+체력이 다 떨어지면 유닛이 죽습니다. 끄면 체력 1에서 멈춥니다.
 [Units gain levels at schools.]
-
+유닛이 학교에서 레벨을 올립니다.
 [stat group work]
-
+일꾼의 시간
 [stat worker time]
-
+일꾼의 시간 사용
 [stat worker time about]
-
+식민지 일꾼이 매 순간 하던 일입니다: 건물을 위한 작업, 깃발 작업, 훈련, 식사, 치료, 빈 여관이나 병원이 없어 배고프거나 다친 채 대기, 할 일 없이 쉬기. 건강한 식민지는 대부분의 일꾼이 일하고, 쉬는 일꾼은 적으며, 대기하는 일꾼은 없습니다.
 [stat idle workers]
-
+쉬는 일꾼
 [stat idle workers about]
-
+일꾼이 할 일 없이 보낸 시간의 비율입니다. 값이 높으면 일보다 일꾼이 많다는 뜻이고, 0에 가까우면 모든 일꾼이 바빠서 일이 밀려 있을 수 있습니다.
 [stat work by job]
-
+일꾼의 작업 대상
 [stat work by job about]
-
+각 건물 종류에 자원을 공급한 일꾼 수입니다: 둥지(새 유닛 생산), 여관(식사 준비), 건설 또는 업그레이드 중인 건물, 탑, 학교, 병영 등 기타 건물.
 [stat haul distance]
-
+자원까지의 거리
 [stat haul distance about]
-
+수확하는 일꾼이 공급 대상 건물에서 평균적으로 얼마나 떨어져 있었는지를 지도 칸 수의 직선거리로 나타냅니다.
 [stat hauling]
-
+가져오기와 운반
 [stat hauling about]
-
+건물에 자원을 공급하는 일꾼이 자원까지 걸어가기, 수확하기, 가지고 돌아오기, 배달하거나 닿을 수 있는 자원을 기다리기에 시간을 어떻게 나눴는지 보여 줍니다. 대부분은 걷는 시간이므로 자원이 가까울수록 더 많은 일을 합니다.
 [stat eating time]
-
+식사하러 가는 일꾼
 [stat eating time about]
-
+식사하느라 일에서 빠진 일꾼 수입니다: 여관으로 걸어가는 중, 여관에서 식사 중, 받아 줄 여관이 없어 배고픈 상태. 여관이 없는 일꾼이 남아 있다면 식민지가 여관이나 그 식량보다 커졌다는 뜻입니다.
 [stat inn distance]
-
+여관까지의 거리
 [stat inn distance about]
-
+배고픈 일꾼이 걸어가는 동안 목적지 여관에서 평균적으로 얼마나 떨어져 있었는지를 지도 칸 수의 직선거리로 나타냅니다. 전체 이동 거리는 대략 이 값의 두 배입니다. 값이 높으면 여관이 일꾼의 작업 장소에서 멀다는 뜻입니다.
 [stat warriors]
-
+전사
 [stat warriors about]
-
+식민지의 전사 수입니다. 나누어 보면 기지 근처, 적 식민지 근처, 개활지에 각각 몇 명이 있었는지 볼 수 있습니다. 두 식민지 모두에 가까운 곳은 기지로 셉니다.
 [stat warrior level]
-
+전사 평균 공격 레벨
 [stat warrior level about]
-
+식민지 전사의 평균 공격 레벨로, 공격 속도와 공격력을 같은 비중으로 계산해 게임에 표시되는 1~4 단계로 나타냅니다. 병영은 이 값을 올리고, 훈련받지 않은 새 전사는 낮춥니다.
 [stat warrior duties]
-
+전사의 활동
 [stat warrior duties about]
-
+식민지 전사가 전투 깃발로 보내진 전사, 심하게 다쳐 전투를 떠나 병원으로 가는 전사(치료 중 포함), 자유로운 전사로 어떻게 나뉘었는지 보여 줍니다.
 [stat intruders]
-
+기지에 온 적 전사
 [stat intruders about]
-
+식민지 건물에서 16칸 이내에 있던 적 전사 수입니다. 두 식민지가 가까이 붙어 있으면 서로 상대의 수비 전사를 셉니다.
 [stat home defence]
-
+기지 방어 전력 차이
 [stat home defence about]
-
+건물 근처에 있는 아군 전사의 전력에서 그곳에 있는 적 전사의 전력을 뺀 값으로, 각 전사와 각 공격 레벨을 셉니다. 0보다 작으면 식민지가 기지에서 열세였습니다.
 [stat combat death places]
-
+전투에서 유닛이 쓰러진 곳
 [stat combat death places about]
-
+식민지 유닛이 죽은 장소입니다: 자기 건물 근처, 적 건물 근처, 식민지 사이의 개활지. 기지에서의 손실은 공격을 받았다는 뜻이고, 적 식민지에서의 손실은 공격하고 있었다는 뜻입니다. 두 식민지 모두에 가까운 곳은 기지로 셉니다.
 [stat band working]
-
+작업 중
 [stat band flag work]
-
+깃발 작업
 [stat band idle]
-
+쉬는 중
 [stat band training]
-
+훈련 중
 [stat band unserved]
-
+빈 여관/병원 없음
 [stat band swarms]
-
+둥지
 [stat band inns]
-
+여관
 [stat band sites]
-
+건설 및 업그레이드
 [stat band other buildings]
-
+기타 건물
 [stat band to resource]
-
+자원으로 이동
 [stat band harvesting]
-
+수확
 [stat band carrying]
-
+운반
 [stat band delivering]
-
+배달 또는 대기
 [stat band walking to inn]
-
+여관으로 이동
 [stat band no inn]
-
+빈 여관 없음
 [stat band at home]
-
+기지
 [stat band at enemy]
-
+적 식민지
 [stat band in the open]
-
+개활지
 [stat band war flag]
-
+전투 깃발
 [stat band seeking healing]
-
+치료받으러 이동
 [stat band free]
-
+대기
 [stat unit workers]
-
+일꾼
 [stat unit worker time]
-
+일꾼 시간
 [stat unit working workers]
-
+공급 중인 일꾼
 [stat unit squares]
-
+칸
 [stat unit warriors]
-
+전사
 [stat unit attack level]
-
+공격 레벨
 [stat unit enemy warriors]
-
+적 전사
 [stat unit strength count]
-
+전력
 [stat view by place]
-
+장소별

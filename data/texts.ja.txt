@@ -1,15 +1,15 @@
 [AI strategy]
 AIの戦略
 [start recording]
-
+録画を開始
 [stop recording]
-
+録画を停止
 [finalizing recording]
-
+録画を仕上げています…
 [AIMaxima-Summary]
 持続可能な成長と訓練を両立させ、軍を集めて波状攻撃を行います。
 [AIMaxima-Profile]
-基本戦略: 食料、労働者、出生、訓練、建設、戦闘を競合する需要として扱います。敵の推定戦力も考慮して軍の規模を決め、その軍を効果的に送り届けようとします。\n\n経済と発展: 食料と労働力に合わせて出生を配分し、訓練に使える余暇を残し、軍事生産が必要になると余剰労働者を増やすのを止めます。訓練能力を拡張し、改良で停止する施設が多くなりすぎないようにします。\n\n偵察と判断: 見えているユニットと記憶した目撃情報から、データに合わせて調整したモデルで敵戦力を推定します。標的は価値、距離、塔、無防備な労働者、攻撃の継続性で決まります。果物任務は食事の多様性と引き抜きを支えます。\n\n攻撃と防御: 訓練と防御の戦士を確保し、適格な地上部隊を味方の食料施設の近くに集めてから波状攻撃を始めます。局所的な防御対応を行い、コロニーへの接近経路を評価します。\n\n攻撃が停滞した場合: 波状攻撃の部隊送り出しに4回連続で失敗すると、継続的に増援する攻撃旗に切り替えます。水を渡る攻撃でも継続的な増援を使えます。ただしこの代替策でも、集結前に生じるすべての閉塞を解決できるわけではありません。\n\n他のAIとの比較: 食料、訓練、情報、部隊展開をより密接に統合します。Cabinoが複数建物への攻撃を重視するのに対し、Maximaは必要戦力の推定と集結した部隊を送り届けることを重視します。\n\n強みと弱点: 食料の逼迫と観測した脅威に対応しながら成長と軍の補充を維持します。食料、訓練能力、開けた集結場所が必要で、混雑と長い経路は部隊の到着を妨げます。\n\n試したい対抗策: 部隊が集結する前に、手薄な小麦、食堂、兵舎を争いましょう。補給のある守備隊をまとめ、増援経路を妨害しましょう。最初の波の後も繰り返す圧力を想定しましょう。\n\n偵察: 戦力推定には隠れた敵兵の総数ではなく、目撃情報と観測履歴を使います。
+基本戦略: 食料、労働者、出生、訓練、建設、戦闘を競合する需要として扱います。敵の推定戦力も考慮して軍の規模を決め、その軍を効果的に送り届けようとします。\n\n経済と発展: 食料と労働力に合わせて出生を配分し、訓練に使える余暇を残し、軍事生産が必要になると余剰労働者を増やすのを止めます。訓練能力を拡張し、改良で停止する施設が多くなりすぎないようにします。\n\n偵察と判断: 見えているユニットと記憶した目撃情報から、データに合わせて調整したモデルで敵戦力を推定します。標的は価値、距離、防衛塔、無防備な労働者、攻撃の継続性で決まります。果物任務は食事の多様性と引き抜きを支えます。\n\n攻撃と防御: 訓練と防御の戦士を確保し、適格な地上部隊を味方の食料施設の近くに集めてから波状攻撃を始めます。局所的な防御対応を行い、コロニーへの接近経路を評価します。\n\n攻撃が停滞した場合: 波状攻撃の部隊送り出しに4回連続で失敗すると、継続的に増援する攻撃用の旗に切り替えます。水を渡る攻撃でも継続的な増援を使えます。ただしこの代替策でも、集結前に生じるすべての閉塞を解決できるわけではありません。\n\n他のAIとの比較: 食料、訓練、情報、部隊展開をより密接に統合します。Cabinoが複数建物への攻撃を重視するのに対し、Maximaは必要戦力の推定と集結した部隊を送り届けることを重視します。\n\n強みと弱点: 食料の逼迫と観測した脅威に対応しながら成長と軍の補充を維持します。食料、訓練能力、開けた集結場所が必要で、混雑と長い経路は部隊の到着を妨げます。\n\n試したい対抗策: 部隊が集結する前に、手薄な小麦、食堂、兵舎を争いましょう。補給のある守備隊をまとめ、増援経路を妨害しましょう。最初の波の後も繰り返す圧力を想定しましょう。\n\n偵察: 戦力推定には隠れた敵兵の総数ではなく、目撃情報と観測履歴を使います。
 [%0 has left the game]
 %0がゲームから退出しました。
 [%0 level %1]
@@ -79,7 +79,7 @@ AIなし：何もしません。
 [AINone]
 なし
 [AINumbi-Description]
-比較的手ごわくない相手ですが、拡張も攻撃も行います。
+手ごわすぎない相手ですが、拡張も攻撃も行います。
 [AINumbi]
 Numbi
 [AIEcono-Description]
@@ -147,7 +147,7 @@ Backspace
 [barracks]
 兵舎
 [beach size]
-浜辺の広さ
+砂浜の広さ
 [break]
 Break
 [briefing]
@@ -257,7 +257,7 @@ Ctrl：直線
 [custom game]
 カスタムゲーム
 [customcur]
-独自のカーソル
+カスタムカーソル
 [damage]
 ダメージ
 [Damaged Map]
@@ -1101,9 +1101,9 @@ Globulation 2のバージョンが古いため、YOGメタサーバーが接続�
 [You where kicked from the game]
 ゲームから追放されました
 [Your %0 are under attack]
-味方の%0が攻撃されています
+自軍の%0が攻撃されています
 [Your unit got converted to %0's team]
-味方のユニットが%0のチームに移りました
+自軍のユニットが%0のチームに移りました
 [Units still inside: %0]
 建物内：%0体
 [Units still working: %0]
@@ -1113,7 +1113,7 @@ Globulation 2のバージョンが古いため、YOGメタサーバーが接続�
 [AI strategy & counterplay]
 AIの戦略と対抗策
 [AICastor-Profile]
-基本戦略: 生産力のあるコロニーと技術に投資してから、本格的な攻撃に移ります。優先順位を付けた建設計画で集落を育て、発展、軍事施設、時間の経過に応じて戦争への備えを進めます。\n\n経済と発展: 水分、小麦の成長、障害物、労働者の到達範囲を調べます。生産と並行して食料供給の拡張、改良、防御を管理します。\n\n攻撃と防御: 健康な戦士の攻撃力を見積もり、戦力または時間の条件が満たされると攻撃します。発見済みで到達可能な建物、特に兵舎と学校を好み、価値の高い標的へ攻撃旗を移します。\n\n他のAIとの比較: Numbiより地形と標的の価値を慎重に考慮します。Warrushよりも辛抱強く、序盤の圧力を抑えて、発展した拠点と強い兵力を整えます。\n\n強みと弱点: 幅広い施設計画と重要な軍事目標の選択により、狙いのある攻撃を行います。ただし準備に時間がかかるため、主力が整う前に素早い相手に資源を争われます。\n\n試したい対抗策: 序盤から拡張先を争いましょう。食料だけでなく兵舎と学校も守り、発展した集落を攻める際には予備兵力を残しましょう。
+基本戦略: 生産力のあるコロニーと技術に投資してから、本格的な攻撃に移ります。優先順位を付けた建設計画で集落を育て、発展、軍事施設、時間の経過に応じて戦争への備えを進めます。\n\n経済と発展: 水分、小麦の成長、障害物、労働者の到達範囲を調べます。生産と並行して食料供給の拡張、改良、防御を管理します。\n\n攻撃と防御: 健康な戦士の攻撃力を見積もり、戦力または時間の条件が満たされると攻撃します。発見済みで到達可能な建物、特に兵舎と学校を好み、価値の高い標的へ攻撃用の旗を移します。\n\n他のAIとの比較: Numbiより地形と標的の価値を慎重に考慮します。Warrushよりも辛抱強く、序盤の圧力を抑えて、発展した拠点と強い兵力を整えます。\n\n強みと弱点: 幅広い施設計画と重要な軍事目標の選択により、狙いのある攻撃を行います。ただし準備に時間がかかるため、主力が整う前に素早い相手に資源を争われます。\n\n試したい対抗策: 序盤から拡張先を争いましょう。食料だけでなく兵舎と学校も守り、発展した集落を攻める際には予備兵力を残しましょう。
 [AICastor-Summary]
 要塞化したコロニーを発展させ、軍事・科学施設を狙います。
 [AICortex-Profile]
@@ -1121,7 +1121,7 @@ AIの戦略と対抗策
 [AICortex-Summary]
 前線の食料と治療で、攻勢を持続させます。
 [AINicowar-Profile]
-基本戦略: 複数の条件を並行して判定し、成長、訓練、改良、戦争を組み合わせます。拡張しながら攻撃し、給食が破綻すれば経済を立て直しに振り向けます。\n\n序盤: 同梱の攻撃的な設定では、ユニット総数が5になると戦争準備を始め、戦士が5になると戦争が可能です。レベル0の戦士も数えます。それぞれ戦士5人の攻撃旗を3本用意することを目指します。独自の戦略ファイルでこれらのしきい値を変更できます。\n\n経済と発展: 食料と出生の能力を増やし、労働者を訓練し、水泳と移動を発達させ、建物を改良します。食料担当の人員を調整し、飢餓に対応し、果物を求めます。\n\n攻撃と防御: 到達可能な敵建物から標的を抽選します。伐採・除去旗で資源に塞がれた道を開くことができます。防御旗は危険にさらされたユニットや建物の集まりを守ります。後半には地上攻撃を訓練した偵察兵が敵部隊の集団を狙います。\n\n他のAIとの比較: Warrushと同じく序盤から攻撃的ですが、その後の展開が豊富です。Cabinoと違い、病院と食堂を常に優先するわけではありません。\n\n強みと弱点: 多彩な戦術で序盤の圧力と継続的な発展を両立します。無作為な標的選択により、価値の低い建物に労力を費やす場合があります。そのしきい値にはMaximaのような詳細な敵戦力推定はありません。\n\n試したい対抗策: 早期の攻撃を想定しましょう。食料と労働者を守り、拡張を争い、高度な訓練まで進まれたら偵察兵の攻撃に備えましょう。
+基本戦略: 複数の条件を並行して判定し、成長、訓練、改良、戦争を組み合わせます。拡張しながら攻撃し、食料の供給が破綻すれば経済を立て直しに振り向けます。\n\n序盤: 同梱の攻撃的な設定では、ユニット総数が5になると戦争準備を始め、戦士が5になると戦争が可能です。レベル0の戦士も数えます。それぞれ戦士5人の攻撃用の旗を3本用意することを目指します。独自の戦略ファイルでこれらのしきい値を変更できます。\n\n経済と発展: 食料と出生の能力を増やし、労働者を訓練し、水泳と移動を発達させ、建物を改良します。食料担当の人員を調整し、飢餓に対応し、果物を求めます。\n\n攻撃と防御: 到達可能な敵建物から標的を抽選します。資源除去の旗で資源に塞がれた道を開くことができます。防衛用の旗は危険にさらされたユニットや建物の集まりを守ります。後半には地上攻撃を訓練した偵察兵が敵部隊の集団を狙います。\n\n他のAIとの比較: Warrushと同じく序盤から攻撃的ですが、その後の展開が豊富です。Cabinoと違い、病院と食堂を常に優先するわけではありません。\n\n強みと弱点: 多彩な戦術で序盤の圧力と継続的な発展を両立します。無作為な標的選択により、価値の低い建物に労力を費やす場合があります。そのしきい値にはMaximaのような詳細な敵戦力推定はありません。\n\n試したい対抗策: 早期の攻撃を想定しましょう。食料と労働者を守り、拡張を争い、高度な訓練まで進まれたら偵察兵の攻撃に備えましょう。
 [AINicowar-Summary]
 農業、改良、防御、偵察兵の攻撃で支える早期ラッシュ。
 [AINone-Profile]
@@ -1129,7 +1129,7 @@ AIの戦略と対抗策
 [AINone-Summary]
 実験用の、何も行動しないコロニー。
 [AINumbi-Profile]
-基本戦略: まず食料と人口を増やし、治療、科学、訓練を加えてから戦争へ移ります。大まかな段階は相手の進歩ではなく、時間の経過で進みます。\n\n経済と発展: 人口に応じて必要な建物数を増やし、近くの小麦を見積もります。後の段階では改良、防御、拡張を加えて増大する軍を支えます。\n\n攻撃と防御: 健康な戦闘員が十分にいるか、待ち時間が切れると攻撃します。抽選した敵建物に戦争旗を立てます。戦力が減りすぎると攻撃旗を撤去し、次の攻撃のしきい値を上げます。\n\n他のAIとの比較: CastorやNicowarより予測しやすい相手です。Castorは地形と標的の価値をより慎重に考慮し、Nicowarはずっと早くから圧力をかけます。\n\n強みと弱点: 邪魔されずに発展すると幅広い支援施設が脅威になりますが、その時間割が戦況に合うとは限りません。単純な標的選択と敗北後の長い休止により、攻撃を予測しやすくなります。\n\n試したい対抗策: 軍事段階に入る前に圧力をかけましょう。攻撃の背後で食料と訓練を充実させ、襲撃を撃退した後の休止を利用しましょう。\n\n偵察: 攻撃処理は視認確認なしに敵建物の位置を直接読み取ります。
+基本戦略: まず食料と人口を増やし、治療、科学、訓練を加えてから戦争へ移ります。大まかな段階は相手の進歩ではなく、時間の経過で進みます。\n\n経済と発展: 人口に応じて必要な建物数を増やし、近くの小麦を見積もります。後の段階では改良、防御、拡張を加えて増大する軍を支えます。\n\n攻撃と防御: 健康な戦闘員が十分にいるか、待ち時間が切れると攻撃します。抽選した敵建物に戦闘の旗を立てます。戦力が減りすぎると攻撃用の旗を撤去し、次の攻撃のしきい値を上げます。\n\n他のAIとの比較: CastorやNicowarより予測しやすい相手です。Castorは地形と標的の価値をより慎重に考慮し、Nicowarはずっと早くから圧力をかけます。\n\n強みと弱点: 邪魔されずに発展すると幅広い支援施設が脅威になりますが、その時間割が戦況に合うとは限りません。単純な標的選択と敗北後の長い休止により、攻撃を予測しやすくなります。\n\n試したい対抗策: 軍事段階に入る前に圧力をかけましょう。攻撃の背後で食料と訓練を充実させ、襲撃を撃退した後の休止を利用しましょう。\n\n偵察: 攻撃処理は視認確認なしに敵建物の位置を直接読み取ります。
 [AINumbi-Summary]
 時間割に沿ってコロニーを徐々に育て、数で攻めます。
 [AIEcono-Profile]
@@ -1137,11 +1137,11 @@ AIの戦略と対抗策
 [AIEcono-Summary]
 戦士を作らず、食料豊富なコロニーを育てて敵ユニットを引き抜きます。
 [AIWarrush-Profile]
-基本戦略: 相手が長い経済・技術開発を終える前に攻撃します。大きな支援網が必要になる前に戦闘で勝負を決めることを狙います。\n\n経済と発展: 収穫できるユニットが6になると、生産比率を労働者4、偵察兵1、戦士3にします。訓練が埋まると兵舎を追加しますが、新しい食堂は制限します。余った建設能力は病院や移動訓練に回ることが多くなります。\n\n攻撃と防御: 発見した敵建物に警備区域を設定して、戦士に継続的な圧力をかけさせます。慎重に部隊を集めた波状攻撃を待ちません。邪魔な木を除去し、一部の再生可能な資源を守ります。\n\n果物の方針: 果物採集を禁止し、果物による防御力の低下を避け、Econoの引き抜き戦略は採用しません。\n\n他のAIとの比較: NumbiやCastorより序盤の圧力を重視します。Nicowarも攻撃的に始めますが、その後はより幅広い改良と戦術を展開します。\n\n強みと弱点: 遅い立ち上がりを突き、早期の防御支出を強います。体系的な改良が乏しく食料支援も薄いため、攻勢が止まると高くつきます。地形と長距離移動は序盤の優位を損ないます。\n\n試したい対抗策: 序盤から食堂と巣を守りましょう。守備隊だけでなく労働者も補充し、訓練を進め、ラッシュが勢いを失ったら反撃しましょう。\n\n偵察: 序盤の探索旗は敵の開始位置を直接利用します。その後の攻撃区域の配置には視認が必要です。
+基本戦略: 相手が長い経済・技術開発を終える前に攻撃します。大きな支援網が必要になる前に戦闘で勝負を決めることを狙います。\n\n経済と発展: 収穫できるユニットが6になると、生産比率を労働者4、偵察兵1、戦士3にします。訓練が埋まると兵舎を追加しますが、新しい食堂は制限します。余った建設能力は病院や移動訓練に回ることが多くなります。\n\n攻撃と防御: 発見した敵建物に警備領域を設定して、戦士に継続的な圧力をかけさせます。慎重に部隊を集めた波状攻撃を待ちません。邪魔な木を除去し、一部の再生可能な資源を守ります。\n\n果物の方針: 果物採集を禁止し、果物による防御力の低下を避け、Econoの引き抜き戦略は採用しません。\n\n他のAIとの比較: NumbiやCastorより序盤の圧力を重視します。Nicowarも攻撃的に始めますが、その後はより幅広い改良と戦術を展開します。\n\n強みと弱点: 遅い立ち上がりを突き、早期の防御支出を強います。体系的な改良が乏しく食料支援も薄いため、攻勢が止まると高くつきます。地形と長距離移動は序盤の優位を損ないます。\n\n試したい対抗策: 序盤から食堂と巣を守りましょう。守備隊だけでなく労働者も補充し、訓練を進め、ラッシュが勢いを失ったら反撃しましょう。\n\n偵察: 序盤の偵察の旗は敵の開始位置を直接利用します。その後の攻撃用の警備領域の配置には視認が必要です。
 [AIWarrush-Summary]
 意図的に絞った支援経済を背景に、戦士で序盤から圧力をかけます。
 [AICabino-Profile]
-基本戦略: ユニット生産を建設、改良、防御、攻撃、探索に配分します。別々の管理役がユニットを要求・予約し、経済と軍事を一緒に発展させます。\n\n経済と発展: 幅広い集落を建設・改良し、食堂と塔の人員を管理し、建物周辺を整地し、再生可能な資源を守ります。果物を偵察し、食料を宣伝して引き抜きを争います。\n\n攻撃と防御: 相手を選び、病院、食堂、兵舎の順に優先します。最大4つの攻撃を支え、通常は利用可能な兵力と近くの敵に応じて、標的ごとに戦士8～20人を割り当てます。危険な建物の周囲には別の防御旗を使います。\n\n訓練: 攻撃には十分な適性のある戦士と完成した兵舎が必要ですが、最高技術までは待ちません。継続的な改良と訓練が後の攻撃を強化します。\n\n他のAIとの比較: Nicowarよりも支援施設の破壊を明確に狙います。Maximaの集結した波状攻撃より攻撃を分散し、ユニットの予約で競合する需要を調整します。\n\n強みと弱点: 成長、訓練、防御、複数の攻撃を組み合わせます。食料と治療を破壊するとコロニー全体を弱らせられます。無作為な相手選択と固定された建物優先順位で好機を逃すことがあり、複数の攻撃は兵力を分散させます。\n\n試したい対抗策: 病院と食堂を守りましょう。手薄な拡張先を争い、個々の攻撃に守備隊を集中しましょう。複数戦線を維持できるようになる前に食料か訓練を損ないましょう。\n\n偵察: 攻撃の標的選択は明示的な視認確認なしに敵の建物一覧を読み取ります。一部の経済比較は敵の統計を直接使います。
+基本戦略: ユニット生産を建設、改良、防御、攻撃、探索に配分します。別々の管理役がユニットを要求・予約し、経済と軍事を一緒に発展させます。\n\n経済と発展: 幅広い集落を建設・改良し、食堂と防衛塔の人員を管理し、建物周辺を整地し、再生可能な資源を守ります。果物を偵察し、食料を宣伝して引き抜きを争います。\n\n攻撃と防御: 相手を選び、病院、食堂、兵舎の順に優先します。最大4つの攻撃を支え、通常は利用可能な兵力と近くの敵に応じて、標的ごとに戦士8～20人を割り当てます。危険な建物の周囲には別の防衛用の旗を使います。\n\n訓練: 攻撃には十分な適性のある戦士と完成した兵舎が必要ですが、最高技術までは待ちません。継続的な改良と訓練が後の攻撃を強化します。\n\n他のAIとの比較: Nicowarよりも支援施設の破壊を明確に狙います。Maximaの集結した波状攻撃より攻撃を分散し、ユニットの予約で競合する需要を調整します。\n\n強みと弱点: 成長、訓練、防御、複数の攻撃を組み合わせます。食料と治療を破壊するとコロニー全体を弱らせられます。無作為な相手選択と固定された建物優先順位で好機を逃すことがあり、複数の攻撃は兵力を分散させます。\n\n試したい対抗策: 病院と食堂を守りましょう。手薄な拡張先を争い、個々の攻撃に守備隊を集中しましょう。複数戦線を維持できるようになる前に食料か訓練を損ないましょう。\n\n偵察: 攻撃の標的選択は明示的な視認確認なしに敵の建物一覧を読み取ります。一部の経済比較は敵の統計を直接使います。
 [AICabino-Summary]
 コロニーの成長と訓練済み部隊の攻撃を調整し、治療と食料を最初に狙います。
 [Algae]
@@ -1171,7 +1171,7 @@ AIの戦略と対抗策
 [Could not load this map. Choose another map or retry.]
 このマップを読み込めませんでした。別のマップを選択するか、再試行してください。
 [Crater lakes]
-クレーター湖
+火口湖
 [Custom]
 カスタム
 [Custom teams]
@@ -1189,15 +1189,15 @@ AIの戦略と対抗策
 [FFA]
 個人戦
 [Fruit]
-フルーツ
+果物
 [Game Rules]
 ゲームルール
 [Game speed]
-ゲームスピード
+ゲーム速度
 [Generate & play]
 生成して遊ぶ
 [Give at least one terrain type a nonzero weight.]
-少なくとも 1 つの地形タイプにゼロ以外の重みを与えます。
+少なくとも1つの地形タイプの割合を0より大きくしてください。
 [Grass weight]
 草地の割合
 [Gray]
@@ -1211,7 +1211,7 @@ AIの戦略と対抗策
 [Invalid colony count.]
 コロニー数が無効です。
 [Island size]
-島のサイズ
+島の大きさ
 [Islands]
 島々
 [Isles]
@@ -1247,13 +1247,13 @@ AIの命令なし
 [Pink]
 ピンク
 [Play this map]
-このマップをプレイする
+このマップでプレイ
 [Players & Teams]
 プレイヤーとチーム
 [Premade maps]
 既製のマップ
 [Preview ready. Start plays this exact map.]
-プレビューの準備ができました。ゲームを開始すると、この正確なマップが使用されます。
+プレビューの準備ができました。開始すると、このマップでそのままプレイします。
 [Regenerate all]
 すべて再生成
 [Generating preview...]
@@ -1261,7 +1261,7 @@ AIの命令なし
 [Preview unavailable]
 プレビューを利用できません
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
-各地形は、現在のサイズとコロニー数で実際に生成したマップとして表示されます。1 つ選ぶと、表示されたマップでプレイできます。
+各地形は、現在のサイズとコロニー数で実際に生成したマップとして表示されます。1つ選ぶと、表示されたマップでプレイできます。
 [Purple]
 紫
 [Quick clash]
@@ -1289,11 +1289,11 @@ AIの命令なし
 [Standard]
 標準
 [Start game]
-ゲームを開始する
+ゲームを開始
 [Starting workers]
-初期ワーカー
+初期労働者
 [Starting workers: Game Rules tab.]
-初期ワーカー: 「ゲーム ルール」タブ。
+初期労働者：「ゲームルール」タブ。
 [Swamp]
 沼地
 [Team]
@@ -1327,7 +1327,7 @@ AIの命令なし
 [Inactive]
 非アクティブ
 [8 workers / 2x speed]
-8 ワーカー / 2 倍速
+労働者8人 / 2倍速
 [Changes the pace of the whole simulation.]
 シミュレーション全体のペースを変更します。
 [Choose whether teams can change during the match.]
@@ -1335,7 +1335,7 @@ AIの命令なし
 [Classic colony building]
 伝統的なコロニー開発
 [Dimensions and colony count are set above.]
-寸法とコロニー数は上記で設定されています。
+大きさとコロニー数は上で設定します。
 [Generate & watch]
 生成して観戦
 [Info]
@@ -1347,7 +1347,7 @@ AIの命令なし
 [Premade maps retain their authored starting units.]
 既製マップでは、作者が設定した初期ユニットを使用します。
 [Start with terrain known]
-既知の地形から始める
+地形を公開して開始
 [This colony will not join the match.]
 このコロニーは試合に参加しません。
 [This landscape uses a fixed terrain recipe.]
@@ -1369,7 +1369,7 @@ AIの命令なし
 [Azure]
 スカイブルー
 [Updating map preview...]
-マップ プレビューを更新しています...
+マッププレビューを更新しています...
 [Generation failed. Adjust settings or press Start to retry.]
 生成に失敗しました。設定を調整するか、「開始」を押して再試行してください。
 [Preview unavailable. Adjust settings or start to retry.]
@@ -1395,19 +1395,19 @@ AIの命令なし
 [Generation failed. Adjust settings or try again.]
 生成に失敗しました。設定を調整するか、もう一度試してください。
 [Map settings changed. Generate a new preview or start.]
-マップの設定が変更されました。新しいプレビューを生成するか開始します。
+マップの設定が変更されました。新しいプレビューを生成するか、開始してください。
 [Map source]
 マップソース
 [Map-defined]
 マップの設定に従う
 [Match format]
-ゲーム形式
+試合形式
 [No current preview]
 現在のプレビューはありません
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-クイックバトル:2倍速。生成されたマップは 8 人のワーカーから始まります。
+クイックバトル：2倍速。生成されたマップは労働者8人で始まります。
 [Reroll]
-別のマップを生成する
+再生成
 [Randomize]
 ランダム生成
 [Reset to defaults]
@@ -1417,7 +1417,7 @@ AIの命令なし
 [Select a map from the library.]
 ライブラリからマップを選択してください。
 [Starting workers affects generated maps only.]
-ワーカーの初期数は、生成されたマップにのみ適用されます。
+初期労働者は生成されたマップにのみ適用されます。
 [Unavailable]
 利用不可
 [Use selection]
@@ -1425,9 +1425,9 @@ AIの命令なし
 [Quick clash on premade maps: only speed changes (2x).]
 既製マップでのクイックバトル：速度だけが2倍になります。
 [Generate a preview to explore this world.]
-この世界を探索するためのプレビューを生成します。
+プレビューを生成すると、この世界を見られます。
 [More workers jump-start colony growth. Changes the generated map.]
-働き手が増えるとコロニーの成長が加速します。この設定により、生成されるマップが変更されます。
+労働者が多いとコロニーの成長が加速します。この設定により、生成されるマップが変更されます。
 [No warriors]
 戦士なし
 [settings Add key to sequence]
@@ -1457,11 +1457,11 @@ Escキーを割り当てる
 [settings Changes saved automatically]
 変更は自動的に保存されます
 [settings Changes you make during play update these defaults for future games.]
-プレイ中に変更を加えると、今後のゲームのデフォルトが更新されます。
+プレイ中の変更は、今後のゲーム用のこれらの既定値に反映されます。
 [settings Changing the renderer requires a restart.]
-レンダラを変更するには再起動が必要です。
+レンダラーを変更するには再起動が必要です。
 [settings Choose a binding to change it, or add another shortcut for an action.]
-キーボード ショートカットを選択して編集するか、アクションに別のショートカットを追加します。
+変更するショートカットを選ぶか、操作に別のショートカットを追加します。
 [settings Choose a window or fill the screen.]
 ウィンドウ表示か全画面表示を選択します。
 [settings Choose how the game looks on your screen.]
@@ -1485,11 +1485,11 @@ Escキーを割り当てる
 [settings Display & graphics]
 ディスプレイとグラフィックス
 [settings Display the Globulation 2 cursor.]
-Globulation 2 のカーソルを表示します。
+Globulation 2のカーソルを表示します。
 [settings Done]
 完了
 [settings Edit shortcut]
-キーボードショートカットを編集する
+ショートカットを編集
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
 メニュー、文字、サイドバーに適用するOSの表示倍率をさらに調整します。
 [settings Flags]
@@ -1511,7 +1511,7 @@ Globulation 2 のカーソルを表示します。
 [settings Keep]
 変更を保持する
 [settings Keep this display mode?]
-この表示モードを維持しますか?
+この表示モードを維持しますか？
 [settings Keep your volume levels while silencing audio.]
 保存された音量レベルを変更せずに、すべてのサウンドをミュートします。
 [settings Key]
@@ -1525,7 +1525,7 @@ Globulation 2 のカーソルを表示します。
 [settings Language & player]
 言語とプレイヤー
 [settings Language used throughout the interface.]
-インターフェース全体で使用される言語。
+インターフェース全体で使う言語です。
 [settings Level]
 レベル
 [settings Map editor]
@@ -1545,13 +1545,13 @@ Globulation 2 のカーソルを表示します。
 [settings On]
 オン
 [settings OpenGL is not available in this build.]
-このビルドでは OpenGL は利用できません。
+このビルドではOpenGLを利用できません。
 [settings Player name]
 プレイヤー名
 [settings Press]
 押したとき
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-キーボードのキーを押します。 Esc キーを押すと入力キャプチャがキャンセルされます。 Esc キーを割り当てるには、「Escキーを割り当てる」を選択します。
+キーを押してください。Escキーで入力を取り消します。Escキーを割り当てるには「Escキーを割り当てる」を使います。
 [settings Radius]
 半径
 [settings Reduced]
@@ -1567,9 +1567,9 @@ Globulation 2 のカーソルを表示します。
 [settings Remove shortcut]
 ショートカットを削除
 [settings Renderer]
-グラフィックスレンダラー
+レンダラー
 [settings Replace conflicting bindings]
-競合するキーボード ショートカットを置き換える
+競合するショートカットを置き換える
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
 この操作対象のショートカットを既定値に戻しますか？変更はすぐに保存されます。
 [settings Resolution]
@@ -1583,7 +1583,7 @@ Globulation 2 のカーソルを表示します。
 [settings Reverting in]
 元に戻すまで
 [settings Save shortcut]
-キーボードショートカットを保存
+ショートカットを保存
 [settings Saved — restart required]
 保存済み — 再起動が必要です
 [settings Saving…]
@@ -1603,21 +1603,21 @@ Globulation 2 のカーソルを表示します。
 [settings Starting unit counts and radius for newly placed flags.]
 新しく配置する旗に最初に割り当てるユニット数と半径。
 [settings This shortcut conflicts with existing bindings:]
-このキーボード ショートカットは既存のショートカットと競合します。
+このショートカットは次の既存のショートカットと競合します：
 [settings Trigger]
 反応するタイミング
 [settings Unbound]
-ショートカットが割り当てられていません
+未割り当て
 [settings Unit counts assigned to new construction sites.]
-新しい建設現場に割り当てられたユニット数。
+新しい建設現場に割り当てるユニット数。
 [settings Unit counts for completed buildings.]
 完成した建物に割り当てるユニット数。
 [settings Unit counts while a building is being upgraded.]
-建物のアップグレード中に割り当てるユニット数。
+建物の改良中に割り当てるユニット数。
 [settings Units]
 ユニット
 [settings Upgrades]
-建物のアップグレード
+改良
 [settings Use game cursor]
 ゲームカーソルを使用する
 [settings Voice volume]
@@ -1625,7 +1625,7 @@ Globulation 2 のカーソルを表示します。
 [settings Window mode]
 ウィンドウモード
 [settings Window-only sizes also switch the game to windowed mode.]
-ウィンドウ モードのみをサポートする解像度を選択すると、ゲームもウィンドウ モードに切り替わります。
+ウィンドウ専用のサイズを選ぶと、ゲームもウィンドウモードに切り替わります。
 [settings Windowed]
 ウィンドウ表示
 [settings Windowed only]
@@ -1637,11 +1637,11 @@ Globulation 2 のカーソルを表示します。
 [settings High-resolution artwork]
 高解像度のアートワーク
 [settings Apply artwork on the next game or editor load (OpenGL).]
-アートワークは次回ゲームまたはマップエディターを読み込む際に適用されます (OpenGL)。
+アートワークは次にゲームまたはマップエディターを読み込むときに適用されます（OpenGL）。
 [settings Automatic torus view]
 自動トーラス表示
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
-マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動的に表示します (OpenGL)。
+マップ内を移動するときに、トーラス（ドーナツ）形状のマップ全体図を自動で表示します（OpenGL）。
 [settings Autosave]
 自動保存
 [settings Save the game automatically about every 10 seconds.]
@@ -1749,7 +1749,7 @@ Globulation 2 のカーソルを表示します。
 [Frontier richness]
 辺境の豊かさ
 [City states need at least one colony.]
-都市国家には少なくとも一つのコロニーが必要です。
+都市国家には少なくとも1つのコロニーが必要です。
 [Stone walls]
 石の城壁
 [Sand patches]
@@ -1769,9 +1769,9 @@ Globulation 2 のカーソルを表示します。
 [Sloughs]
 沼沢
 [Everglades need at least one colony.]
-湿地帯には少なくとも一つのコロニーが必要です。
+湿地帯には少なくとも1つのコロニーが必要です。
 [Too many colonies for this map; use a bigger map or fewer colonies.]
-この地図にはコロニーが多すぎます。より大きな地図にするか、コロニーを減らしてください。
+このマップにはコロニーが多すぎます。より大きなマップを使うか、コロニーを減らしてください。
 [Coral]
 サンゴ
 [Fork angle]
@@ -1803,9 +1803,9 @@ Globulation 2 のカーソルを表示します。
 [Plaza size]
 広場の大きさ
 [Starting tower level]
-初期タワーのレベル
+初期防衛塔のレベル
 [Towers per colony]
-コロニーごとのタワー数
+コロニーごとの防衛塔数
 [Rings]
 環の数
 [Ramp width]
@@ -1837,11 +1837,11 @@ Globulation 2 のカーソルを表示します。
 [An amphitheatre needs at least two colonies.]
 円形闘技場には少なくとも2つのコロニーが必要です。
 [The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
-回転木馬はこの地図に収まりません。より大きな地図、より小さな本拠地、またはより少ないコロニーにしてください。
+回転木馬がこのマップに収まりません。より大きなマップ、より小さな本拠地、またはより少ないコロニーにしてください。
 [The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
-つづら折りはこの地図に収まりません。より大きな地図、より小さな台地、より狭い山道、またはより少ないコロニーにしてください。
+つづら折りがこのマップに収まりません。より大きなマップ、より小さな台地、より狭い山道、またはより少ないコロニーにしてください。
 [The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
-円形闘技場はこの地図に収まりません。より大きな地図、より少ない環、より狭い段、またはより少ないコロニーにしてください。
+円形闘技場がこのマップに収まりません。より大きなマップ、より少ない環、より狭い段、またはより少ないコロニーにしてください。
 [Spider web]
 クモの巣
 [Spokes per colony]
@@ -1871,7 +1871,7 @@ Globulation 2 のカーソルを表示します。
 [Central island]
 中央の島
 [Tidal flats need at least one colony.]
-干潟には少なくとも一つのコロニーが必要です。
+干潟には少なくとも1つのコロニーが必要です。
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 母島がこのマップに収まりません。より大きなマップ、より少ないコロニー、またはより小さな島を使ってください。
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
@@ -1885,7 +1885,7 @@ Globulation 2 のカーソルを表示します。
 [Algae amount]
 藻の量
 [Fruit amount]
-フルーツの量
+果物の量
 [Stone on hilltops]
 丘の上の石
 [Winding river]
@@ -1915,7 +1915,7 @@ Globulation 2 のカーソルを表示します。
 [Meandering rivers]
 蛇行する川筋
 [Fruit in home valleys]
-開始地点の谷のフルーツ
+開始地点の谷の果物
 [Moat]
 堀
 [Stone in the orchard]
@@ -2025,9 +2025,9 @@ Globulation 2 のカーソルを表示します。
 [Block shape]
 街区の形
 [Random parameters]
-ランダムなパラメータ
+ランダムなパラメーター
 [Randomize parameters]
-パラメータをランダム化
+パラメーターをランダム化
 [Start quality]
 開始地点の質
 [Fairness]
@@ -2075,7 +2075,7 @@ Globulation 2 のカーソルを表示します。
 [Stats new buildings]
 新しい建物
 [Stats upgrades]
-アップグレード
+改良
 [Stats training]
 訓練回数
 [Stats damage dealt]
@@ -2083,7 +2083,7 @@ Globulation 2 のカーソルを表示します。
 [Stats damage received]
 受けたダメージ
 [Stats HP restored]
-回復したHP
+回復した体力
 [Stats since tick]
 記録開始ステップ
 [Stats combat deaths]
@@ -2109,11 +2109,11 @@ Globulation 2 のカーソルを表示します。
 [Stats page two]
 統計 2/3 >
 [Stats next page]
-ページ (P)
+ページ（P）
 [Map preview choose another]
 マップを選択
 [Building sites complete immediately, skipping delivery.]
-建設現場は配送段階を省略し、即座に完成します。
+建設現場は資源の運搬を待たずに即座に完成します。
 [No growth]
 成長なし
 [Units get hungry]
@@ -2121,11 +2121,11 @@ Globulation 2 のカーソルを表示します。
 [No hunger]
 空腹なし
 [Scarce (2x slower)]
-希少（2x遅い）
+希少（2倍遅い）
 [Very scarce (4x slower)]
-非常に希少（4x遅い）
+非常に希少（4倍遅い）
 [Extremely scarce (8x slower)]
-極めて希少（8x遅い）
+極めて希少（8倍遅い）
 [Small (+50 each)]
 小（各+50）
 [Medium (+150 each)]
@@ -2139,7 +2139,7 @@ Globulation 2 のカーソルを表示します。
 [Instant construction]
 即時建設
 [Higher tiers give every building much more HP.]
-上位のティアはすべての建物の体力を大幅に増加させます。
+段階が上がるほど、すべての建物の体力が大幅に増えます。
 [Starting units spawn already leveled up. Changes the generated map.]
 開始時のユニットは最初からレベルが上がった状態で出現します。生成されるマップが変わります。
 [No upgrades]
@@ -2165,7 +2165,7 @@ Globulation 2 のカーソルを表示します。
 [Glass cannon]
 ガラスの大砲
 [Match ends at the timer; highest prestige at that instant wins.]
-試合はタイマーで終了し、その瞬間に名声が最も高いプレイヤーが勝利する。
+制限時間で試合が終了し、その時点で名声が最も高いプレイヤーが勝利します。
 [Off (no timer)]
 オフ（タイマーなし）
 [90 minutes]
@@ -2195,7 +2195,7 @@ Globulation 2 のカーソルを表示します。
 [Stats growth reductions]
 資源 -
 [Stats growth per minute]
-小麦 +/min
+小麦 +/分
 [Stats growth near 8]
 資源 + <=8
 [Stats growth near 16]
@@ -2219,11 +2219,11 @@ Globulation 2 のカーソルを表示します。
 [Stats structural buildings]
 建物 S
 [Stats low HP ranges]
-体力: <=25/50/75%
+体力 ≤25/50/75%
 [Stats low food ranges]
-食料: <=25/50/75%
+食料 ≤25/50/75%
 [Emoji]
-Emoji
+絵文字
 [Emoji character]
 絵文字の種類
 [Smiley]
@@ -2355,9 +2355,9 @@ Emoji
 [Some]
 いくつか
 [Home oasis size]
-故郷のオアシスの大きさ
+本拠地のオアシスの大きさ
 [Caravanserais per colony]
-植民地ごとの隊商宿
+コロニーごとのキャラバンサライ
 [Desert]
 砂漠
 [Open erg]
@@ -2367,13 +2367,13 @@ Emoji
 [Canyon country]
 峡谷地帯
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
-要塞が浅瀬に届きません。より大きなマップか、より少ない植民地を使ってください。
+要塞が浅瀬に届きません。より大きなマップを使うか、コロニーを減らしてください。
 [A wall would stand on a beach; try another seed.]
 壁が砂浜の上に立ってしまいます。別のシードを試してください。
 [The fort is too small for its gardens; raise Fort size.]
-要塞が菜園には小さすぎます。要塞の大きさを上げてください。
+要塞が菜園に対して小さすぎます。「要塞の大きさ」を上げてください。
 [The home oasis is too small; raise Home oasis size.]
-故郷のオアシスが小さすぎます。故郷のオアシスの大きさを上げてください。
+本拠地のオアシスが小さすぎます。「本拠地のオアシスの大きさ」を上げてください。
 [Braided river]
 網状河川
 [Braid width]
@@ -2385,9 +2385,9 @@ Emoji
 [Moraine hummocks]
 モレーンの小丘
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
-網状帯が本拠地に残す段丘が少なすぎます。より大きな地図を使うか、網状帯を狭くしてください。
+網状帯が本拠地に残す段丘が少なすぎます。より大きなマップを使うか、網状帯を狭くしてください。
 [The map is too narrow across for a braid; use a bigger map.]
-地図の幅が網状河川には狭すぎます。より大きな地図を使ってください。
+マップの幅が網状河川には狭すぎます。より大きなマップを使ってください。
 [Drumlin field]
 ドラムリン地帯
 [Drumlin spacing]
@@ -2399,7 +2399,7 @@ Emoji
 [Esker loops]
 エスカーの環
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
-エスカーで全てのドラムリンをつなげませんでした。水域の幅を狭くするか、より大きな地図にしてください。
+エスカーですべてのドラムリンをつなげませんでした。水域の幅を狭くするか、より大きなマップにしてください。
 [Continents]
 世界の大陸
 [Continent]
@@ -2543,7 +2543,7 @@ Emoji
 [Four gates]
 四つの門
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
-本拠地の間に川を通せません。より大きなマップか、より少ない植民地を使ってください。
+本拠地の間に川を通せません。より大きなマップを使うか、コロニーを減らしてください。
 [River meander]
 川の蛇行
 [Flooded terraces]
@@ -2595,7 +2595,7 @@ Emoji
 [Pond algae]
 池の藻
 [Starting towers]
-初期タワー
+初期防衛塔
 [Starting school]
 初期の学校
 [Mesas]
@@ -2767,7 +2767,7 @@ Emoji
 [Isolation]
 隔離度
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-各コロニーの開始地点は完成したマップ上で測定されます: 小麦と木材までの道のり、地面の再生の良さ、手の届く範囲の資源量と建設地、そしてライバルまでの距離です。各要素は固定の基準に対して0から1で採点され、合計はそれらを重み付けし、公平性は最低のコロニーの合計を最高のもので割った値、スコアは最低の合計に公平性を掛けた値です。
+各コロニーの開始地点は完成したマップ上で測定されます：小麦と木材までの道のり、地面の再生の良さ、手の届く範囲の資源量と建設地、そしてライバルまでの距離です。各要素は固定の基準に対して0から1で採点され、合計はそれらを重み付けし、公平性は最低のコロニーの合計を最高のもので割った値、スコアは最低の合計に公平性を掛けた値です。
 [ERROR_CANT_SAVE_MAP]
 マップを保存できませんでした。保存先と空き容量を確認してください。編集内容はまだ開いています。
 [Loading headers]
@@ -2799,7 +2799,7 @@ Emoji
 [export save]
 セーブデータをエクスポート
 [storage restore failed]
-ブラウザのストレージを復元できませんでした。既存の保存データは変更されていません。このセッションは続行できますが、ローカルの変更は保存できません。保存失敗ダイアログから重要なセーブデータをエクスポートしてください。再読み込みしてストレージの復元を再試行してください。
+ブラウザーのストレージを復元できませんでした。既存の保存データは変更されていません。このセッションは続行できますが、ローカルの変更は保存できません。保存失敗ダイアログから重要なセーブデータをエクスポートしてください。再読み込みするとストレージの復元を再試行します。
 [continue]
 続ける
 [export file]
@@ -2817,9 +2817,9 @@ Emoji
 [import cancelled]
 インポートをキャンセルしました
 [import failed]
-インポートに失敗しました: 無効またはサポートされていないファイルです
+インポートに失敗しました：無効または対応していないファイルです
 [import persistence failed]
-未保存: 再試行するには「インポート」、またはファイルをエクスポートしてください
+未保存：再試行するには「インポート」を選ぶか、ファイルをエクスポートしてください
 [import progress]
 インポートの進行状況
 [export progress]
@@ -2843,7 +2843,7 @@ Emoji
 [game closed]
 ゲームが終了しました。このウィンドウを閉じるか、再読み込みして再度プレイできます。
 [campaign editor save failed]
-保存が確認されていません。OKで再試行、キャンセルでエディタメニューに戻ります。
+保存が確認されていません。OKで再試行、キャンセルでエディターメニューに戻ります。
 [Actions]
 操作
 [Minimap]
@@ -2897,7 +2897,7 @@ Emoji
 [settings Automatic]
 自動
 [settings Compact]
-狭い
+コンパクト
 [settings Spacious]
 ゆったり
 [More]
@@ -2929,7 +2929,7 @@ AI対戦相手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。
 [settings One-finger zoom]
-片手ズーム
+1本指ズーム
 [settings Double-tap the map, hold, then drag to zoom.]
 マップをダブルタップしたまま、ドラッグしてズームします。
 [settings Platform default]
@@ -3009,7 +3009,7 @@ CPU %0%
 [Read-only building]
 閲覧専用の建物
 [Alliance and shared vision are fixed for this match.]
-この対戦では同盟と共有視界は固定されています。
+この試合では同盟と視界の共有は固定されています。
 [Share vision]
 視界を共有
 [Share food vision]
@@ -3019,9 +3019,9 @@ CPU %0%
 [Chat]
 チャット
 [No other players have editable diplomatic settings in this match.]
-この対戦では他のプレイヤーの外交設定を変更できません。
+この試合では他のプレイヤーの外交設定を変更できません。
 [No briefing for this match.]
-この対戦には概要がありません。
+この試合には作戦説明がありません。
 [Chat · recipients selected in Teams]
 チャット · チームで宛先を選択
 [Filename]
@@ -3047,7 +3047,7 @@ CPU %0%
 [Release on valid terrain to place]
 配置可能な地形で指を離すと配置
 [Paint on the map; two fingers move]
-地図に描画、2本指で移動
+マップに描画、2本指で移動
 [Tutorial ▸]
 チュートリアル ▸
 [Back to tools]
@@ -3065,9 +3065,9 @@ CPU %0%
 [Message history]
 メッセージ履歴
 [Mark map for allies]
-味方のために地図に印を付ける
+味方に場所を知らせる
 [Show zones]
-区域を表示
+領域を表示
 [Pan]
 移動
 [Select]
@@ -3081,9 +3081,9 @@ CPU %0%
 [File name]
 ファイル名
 [Load map]
-地図を読み込む
+マップを読み込む
 [Save map]
-地図を保存
+マップを保存
 [No files in this folder]
 このフォルダーにファイルはありません
 [No files saved yet]
@@ -3091,9 +3091,9 @@ CPU %0%
 [Export]
 エクスポート
 [Tap to write the mission briefing]
-タップして任務の概要を入力
+タップして作戦説明を入力
 [Tap to write the map script]
-タップして地図のスクリプトを入力
+タップしてマップのスクリプトを入力
 [Script]
 スクリプト
 [Previous]
@@ -3105,7 +3105,7 @@ CPU %0%
 [Tap to write this objective]
 タップしてこの目標を入力
 [Mission briefing · tap to edit, swipe to scroll]
-任務の概要 · タップで編集、スワイプでスクロール
+作戦説明 · タップで編集、スワイプでスクロール
 [Not enough recorded history yet.]
 記録された履歴がまだ不十分です。
 [Select a team to show its history.]
@@ -3139,7 +3139,7 @@ CPU %0%
 [Parameters]
 パラメーター
 [Blank map]
-空の地図
+空のマップ
 [Generated]
 自動生成
 [Preview]
@@ -3163,7 +3163,7 @@ CPU %0%
 [%0 · Team %1]
 %0 · チーム %1
 [Colonies: %0]
-コロニー: %0
+コロニー：%0
 [%0 colonies · %1 AI]
 %0コロニー · AI %1
 [%0 · %1]
@@ -3173,21 +3173,21 @@ CPU %0%
 [settings Level %0]
 レベル %0
 [settings Match the desktop %0]
-デスクトップに合わせる (%0)
+デスクトップに合わせる（%0）
 [settings Current display %0 %1 %2 %3]
-現在の表示設定: %0 × %1 · %2 · %3
+現在の表示設定：%0 × %1 · %2 · %3
 [Fairness: %0]
-公平性: %0
+公平性：%0
 [Colony %0]
 コロニー %0
 [Win chance: %0 · Fitness: %1]
-勝率: %0 · 強さ: %1
+勝率：%0 · 強さ：%1
 [%0 · Contribution: %1]
-%0 · 寄与度: %1
+%0 · 寄与度：%1
 [Min required level %0]
-最低必要レベル： %0
+最低必要レベル：%0
 [Confirm %0]
-OK: %0
+OK：%0
 [%0 %1]
 %0 %1
 [resume game]
@@ -3207,13 +3207,13 @@ AIを追加
 [Experiments]
 実験機能
 [experiment guard-area-balancing]
-警備エリアの分散
+警備領域の分散
 [experiment guard-area-balancing help]
-自由な戦士は最も近い警備エリアに全員集まるのではなく、塗られた警備エリアの間で分散します。大きなエリアほど多くの戦士を受け入れ、混みすぎたエリアからは他のエリアへ少しずつ移動します。
+手の空いた戦士は最も近い警備領域に全員集まるのではなく、描いた警備領域の間に分散します。大きな領域ほど多くの戦士が集まり、混みすぎた領域からは他の領域へ移っていきます。
 [experiment farm-areas]
 農地領域
 [experiment farm-areas help]
-ゾーンブラシに農地領域を追加します。その中で収穫する作業員は、つながった畑のうち最も実った区画から取り、各区画に一粒ずつ残すので、畑は端から食べ尽くされずに再び育ちます。農地に生えてきた木は除去されます。
+領域ブラシに農地領域を追加します。その中で収穫する労働者は、つながった畑のうち最も実ったマスから取り、各マスに一粒ずつ残すので、畑は端から食べ尽くされずに再び育ちます。農地に生えてきた木は除去されます。
 [settings Touch scrolling]
 タッチスクロール
 [settings List momentum]
@@ -3235,1419 +3235,1419 @@ AIを追加
 [List bounce]
 リストのバウンス
 [lan pairing field]
-
+ホストのペアリング文字列（または信頼できるWSS URL）
 [lan pairing connect]
-
+ペアリングして接続
 [lan discovery instructions]
-
+ホストを選び、そのペアリング文字列を貼り付けて身元を確認してください。
 [lan discovery unavailable]
-
+LAN検出を利用できません。ローカルネットワークの権限を確認するか、ホストのペアリング文字列を貼り付けてください。
 [lan discovered host %0]
-
+ホスト%0を検出しました — ペアリングしてゲームを表示
 [lan connection unavailable]
-
+LANホストに接続できません。ローカルネットワークの権限とホストのペアリング文字列を確認してください。
 [lan connection verification failed %0]
-
+LANホストを確認できないか、接続できません：%0
 [lan lobby endpoint required]
-
+ホストのロビーのエンドポイントを使用してください
 [settings Artwork]
-
+アートワーク
 [settings Original]
-
+オリジナル
 [settings High resolution]
-
+高解像度
 [settings Clouds]
-
+雲
 [settings Show cloud cover above the map.]
-
+マップの上に雲を表示します。
 [settings Cloud shadows]
-
+雲の影
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+雲の表示とは別に、地面に雲の影を表示します。
 [settings Building particles]
-
+建物のパーティクル
 [settings Show smoke and other building particles.]
-
+建物の煙などのパーティクルを表示します。
 [settings Magic effects]
-
+魔法エフェクト
 [settings Choose animated magic effects or a simple visible effect.]
-
+アニメーション付きの魔法エフェクトか、簡易な表示かを選択します。
 [settings Simple]
-
+簡易
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+OpenGLレンダラーが必要です。保存済みの選択は保持されます。
 [settings Interface appearance]
-
+インターフェースの外観
 [settings Panels]
-
+パネル
 [settings Choose translucent or opaque interface panels.]
-
+インターフェースのパネルを半透明にするか不透明にするかを選択します。
 [settings Opaque]
-
+不透明
 [settings Translucent]
-
+半透明
 [settings Advanced graphics]
-
+詳細なグラフィック
 [settings Path lines]
-
+経路線
 [settings Choose translucent or opaque unit path lines.]
-
+ユニットの経路線を半透明にするか不透明にするかを選択します。
 [settings Smooth progress indicators]
-
+なめらかな進行表示
 [settings Smooth the moving edges of progress indicators.]
-
+進行表示の動く端をなめらかにします。
 [settings Decorative interface animation]
-
+装飾アニメーション
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+勝利画面のアートをアニメーションさせます。「動きを減らす」でもこのアニメーションは無効になります。
 [settings Smooth unit motion]
-
+なめらかなユニットの動き
 [settings Experimental: move and animate units between game ticks.]
-
+試験的機能：ゲームのステップの間もユニットを移動・アニメーションさせます。
 [settings Smooth fog of war]
-
+なめらかな戦場の霧
 [settings Fade the map into and out of the fog of war gradually.]
-
+戦場の霧の出入りをゆっくりフェードさせます。
 [settings Adaptive zoom detail]
-
+ズームに応じた詳細度
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+縮小時はバー、領域、地形、ユニットを簡略化し、拡大時は小さく保ちます。
 [settings Text size]
-
+文字サイズ
 [settings Enlarge interface text without changing the map scale.]
-
+マップの縮尺を変えずにインターフェースの文字を拡大します。
 [Map momentum]
 マップの慣性
 [turn reconnecting]
-
+ホストとの接続が切れました。再接続しています...
 [turn waiting for players]
-
+全プレイヤーの読み込みを待っています...
 [turn rejoining]
-
+ゲームに再参加しています...
 [turn catching up %0]
-
+追いつき中：%0ターン遅れ
 [turn player reconnecting %0]
-
+%0が再接続しています...
 [turn player lagging %0]
-
+%0が遅延しています
 [turn player resyncing %0]
-
+%0が追いつき中です
 [turn player not connected %0]
-
+%0はまだ接続していません
 [lan host left]
-
+ホストがゲームから退出しました。
 [lan host lost]
-
+ホストとの接続が切れました。
 [lan version mismatch %0]
-
+ホストは別のバージョンのGlobulation 2（%0）を実行しています。
 [lan cannot host %0]
-
+LANゲームを作成できません：%0
 [play online]
-
+オンラインでプレイ
 [Use in room]
-
+ルームで使用
 [conn ai]
-
+AI
 [conn behind %0]
-
+遅れ %0
 [conn behind explanation %0 %1]
-
+遅れ：プレイヤーのゲームが試合の時計からどれだけ遅れているかで、遅延を含みます。%0未満は正常で、%1以上だとそのプレイヤーは低速と表示されます。
 [conn behind]
-
+遅れ
 [conn card catching up]
-
+追いつき中
 [conn card colony works]
-
+コロニーは自動で活動を続けます。ユニットは作業を終え、建物も稼働し続けます。
 [conn card desync detail]
-
+試合の記録から再参加し、他の全員と同じ状態を表示します。報告は自動で送信されました。
 [conn card desync]
-
+ゲームの同期がずれました
 [conn card grace %0]
-
+コロニーは自動で活動を続けます。ユニットは作業を終え、建物も稼働し続けます。%0以内に戻らないと試合から除外されます。
 [conn card input paused]
-
+追いつき中 · 操作は一時停止中
 [conn card lost]
-
+接続が切れました
 [conn card progress %0 %1 %2]
-
+%0% · %2ステップ中%1
 [conn card reconnecting %0]
-
+試合に再接続しています… %0回目
 [conn card replaying %0]
-
+見逃した%0を再生しています。現在に追いつくと画面が更新されます。
 [conn card seconds left %0]
-
+残り約%0秒
 [conn connections]
-
+接続
 [conn connection]
-
+接続
 [conn delay explanation %0 %1]
-
+遅延：クリックしてから全員の画面で実行されるまでの時間です。他のプレイヤーではなく、あなた自身の接続によって決まります。%0未満は良好、%1以上は不良です。
 [conn fair]
-
+普通
 [conn good]
-
+良好
 [conn grid legend]
-
+5人以上のときは、パネルに各プレイヤーのPing値（ミリ秒）または遅れている秒数を表示します。
 [conn jitter %0]
-
+ジッター %0
 [conn leave match]
-
+試合から退出
 [conn left]
-
+退出
 [conn notice back %0]
-
+%0が戻りました。
 [conn notice left %0]
-
+%0が試合から退出しました。
 [conn notice lost %0 %1]
-
+%0の接続が切れました。ゲームは続行し、再接続を待つ間もそのコロニーは活動を続けます（残り%1）。
 [conn ping explanation %0 %1]
-
+Ping：プレイヤーとリレー間の往復時間です。%0未満は良好、%1以上は不良です。
 [conn ping]
-
+Ping
 [conn players]
-
+プレイヤー
 [conn poor]
-
+不良
 [conn reconnecting]
-
+再接続中
 [conn relay %0]
-
+リレー：%0
 [conn resyncing]
-
+再参加中
 [conn slow]
-
+低速
 [conn unstable]
-
+不安定
 [conn waiting]
-
+接続中…
 [conn you %0]
-
+%0（あなた）
 [conn you]
-
+あなた
 [conn your delay %0]
-
+あなたの遅延 %0
 [hub account menu]
-
+アカウント
 [hub ai joins after %0]
-
+%0後にAIが参加
 [hub all rooms]
-
+すべて
 [hub browse maps]
-
+マップを探す
 [hub cant reach %0]
-
+%0に接続できません。
 [hub change server]
-
+サーバーを変更…
 [hub check code]
-
+コードを求められたら、次のコードを入力してください：
 [hub code placeholder]
-
+コードまたは招待リンク
 [hub connecting to %0]
-
+%0 · 接続中…
 [hub continue with %0]
-
+%0で続ける
 [hub create room]
-
+ルームを作成
 [hub find match]
-
+対戦を探す
 [hub finish in browser]
-
+ブラウザーで開いたページでサインインを完了してください。
 [hub free seat]
-
+空き席
 [hub get update]
-
+アップデートを入手
 [hub guest kept on device]
-
+ゲスト · この端末に保存
 [hub invalid code]
-
+招待コードまたはリンクではありません。
 [hub join by code]
-
+コードで参加
 [hub join code]
-
+参加コード
 [hub join]
-
+参加
 [hub leaderboard]
-
+ランキング
 [hub linked %0]
-
+連携アカウント · %0
 [hub linked accounts]
-
+連携アカウント
 [hub maps]
-
+マップ
 [hub no queues]
-
+このサーバーにはクイックマッチのキューがありません。
 [hub no rooms]
-
+現在、参加できるルームはありません。ルームを作成して招待を共有しましょう。
 [hub offline at %0]
-
+%0 · オフライン
 [hub offline detail %0]
-
+%0秒後に再試行します。クイックマッチとオンラインのルームは利用できません。メインメニューのLANゲームにはこのサーバーは不要です。
 [hub online at %0]
-
+%0 · オンライン
 [hub online settings]
-
+オンライン設定
 [hub online]
-
+オンライン
 [hub open page again]
-
+ページをもう一度開く
 [hub open rooms]
-
+参加可能なルーム
 [hub page opened at %0]
-
+%0を開きました。ゲーム内で入力する必要はなく、自動でサインインします。
 [hub queues unavailable]
-
+サーバーが応答するとクイックマッチが表示されます。
 [hub quick match unavailable]
-
+このバージョンではまだクイックマッチを利用できません。
 [hub quick match]
-
+クイックマッチ
 [hub ranked]
-
+ランク戦
 [hub recent matches]
-
+最近の試合
 [hub refresh]
-
+更新
 [hub retry now]
-
+今すぐ再試行
 [hub room match]
-
+ルーム
 [hub room name %0]
-
+%0のルーム
 [hub room]
-
+ルーム
 [hub seats %0 %1]
-
+%0/%1席
 [hub server %0]
-
+サーバー：%0
 [hub sign in browser]
-
+サインインページを開く
 [hub sign in conflict]
-
+そのサインインはすでに別のアカウントに使われています。
 [hub sign in failed %0]
-
+サインインが完了しませんでした（%0）。
 [hub sign in intro]
-
+ブラウザーでサインインするか、アカウントを作成してください。ゲストでの試合も引き継がれます。
 [hub sign in]
-
+サインイン
 [hub sign out]
-
+この端末でサインアウト
 [hub signed in as %0]
-
+%0としてサインインしました。
 [hub signed in on %0]
-
+%0にサインイン中
 [hub signing in]
-
+サインイン中…
 [hub sim %0]
-
+シム %0
 [hub unrated]
-
+レートなし
 [hub update required at %0]
-
+%0 · アップデートが必要
 [hub update required detail %0]
-
+%0は新しいバージョンで動作しているため、アップデートするまでオンラインゲームに参加できません。LANゲームは引き続き遊べます。
 [hub update required]
-
+アップデートが必要
 [hub server behind]
-
+サーバーの更新待ち
 [hub server behind at %0]
-
+%0 · サーバーの更新待ち
 [hub server behind detail %0]
-
+このゲームは%0より新しく、サーバーがまだ更新されていません。サーバーが更新されるとオンラインゲームを開けます。LANゲームは引き続き遊べます。
 [hub version mismatch]
-
+バージョン違い
 [hub version mismatch at %0]
-
+%0 · バージョン違い
 [hub version mismatch detail %0]
-
+%0は別のバージョンのゲームで動作しているため、オンラインゲームに参加できません。LANゲームは引き続き遊べます。
 [hub versus %0]
-
+対 %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+マップ%0をダウンロード中
 [match failed]
-
+試合を開始できませんでした。
 [match leave]
-
+退出
 [match loading]
-
+ゲームを読み込み中
 [Loading game graphics]
-
+ゲームのグラフィックを読み込み中
 [match map cached]
-
+この端末に保存済み
 [match map]
-
+マップをダウンロード中
 [match relay %0]
-
+リレー%0に接続しました
 [match seat confirmed]
-
+席が確定しました
 [match starting]
-
+試合を開始中
 [match tip flags]
-
+ヒント：偵察の旗は偵察兵を送ってマップを明らかにし、戦闘の旗は戦士を集めます。
 [match tip input]
-
+ヒント：あなたの命令は自分の入力遅延の後に全員に届きます。他のプレイヤーの接続で遅くなることはありません。
 [match tip select]
-
+ヒント：建物をダブルクリックすると、同じ種類の建物をすべて選択できます。
 [match waiting for players]
-
+全プレイヤーを待っています
 [match you %0]
-
+%0（あなた）
 [match player map]
-
+マップ
 [match player loading]
-
+読み込み中
 [match player connecting]
-
+接続中
 [match player ready]
-
+準備完了
 [match player left]
-
+退出
 [results back to online]
-
+オンラインに戻る
 [results back to room]
-
+ルームに戻る
 [results defeat]
-
+敗北
 [results ladder rating %0]
-
+%0のレート
 [results left]
-
+試合から退出しました
 [results match over]
-
+試合終了
 [results match page]
-
+試合ページ
 [results minutes %0]
-
+%0分
 [results no change]
-
+変動なし
 [results ranked]
-
+ランク戦
 [results recording]
-
+結果を記録しています…
 [results room unrated]
-
+ルーム戦 · レートなし
 [results saved to history]
-
+履歴に保存しました
 [results seconds %0]
-
+%0秒
 [results unverifiable]
-
+サーバーがこの試合を再現できなかったため、誰のレートにも反映されません。調査のために報告済みなので、対応は不要です。
 [results verified provisional]
-
+検証済み · 暫定
 [results verified]
-
+検証済み
 [results verifying detail]
-
+サーバーが試合を再生して確認しています。通常は1分以内に終わります。
 [results verifying]
-
+結果を検証しています…
 [results victory]
-
+勝利
 [room address]
-
+アドレス
 [room ai %0]
-
+AI：%0
 [room browser pairing]
-
+ブラウザーのペアリング
 [room catalog map]
-
+カタログのマップ
 [room change map]
-
+マップを変更…
 [room change rules]
-
+ルールを変更…
 [room chat]
-
+チャット
 [room closed seat detail]
-
+ホストが閉鎖
 [room closed seat]
-
+閉鎖
 [room colonies]
-
+コロニー
 [room connecting]
-
+ルームに接続しています…
 [room copy]
-
+コピー
 [room disconnected]
-
+切断
 [room downloading %0]
-
+マップをダウンロード中 %0%
 [room downloading map]
-
+マップをダウンロードしています…
 [room expired]
-
+ルームは閉じられました。
 [room generated on server]
-
+サーバーで一度だけ生成されるため、全員がまったく同じマップで遊びます。
 [room guest]
-
+ゲスト
 [room host %0]
-
+ホスト %0
 [room host closed]
-
+ホストがルームを閉じました。
 [room host]
-
+ホスト
 [room humans vs ai]
-
+人間対AI
 [room invite code %0]
-
+コード %0 · アプリ、スマートフォン、ブラウザーで開けます
 [room invite not found]
-
+この招待は期限切れか、存在しません。
 [room invite only]
-
+招待のみ
 [room invite]
-
+招待
 [room joining on network]
-
+このネットワークで参加中
 [room lan badge]
-
+ローカルネットワーク · レートなし
 [room lan list hint %0]
-
+同じネットワーク上の他のプレイヤーには、メインメニューのLANゲーム一覧に%0が表示されます。
 [room leave]
-
+退出
 [room map changed %0]
-
+マップが%0に変更されました。
 [room map failed]
-
+マップを準備できませんでした
 [room match label]
-
+ルーム
 [room member joined %0]
-
+%0が参加しました。
 [room member left %0]
-
+%0が退出しました。
 [room member ready %0]
-
+%0の準備ができました。
 [room needs two seats]
-
+開始するには友達を招待するかAIを追加してください
 [room no map]
-
+マップ未選択
 [room not ready]
-
+準備中
 [room open for a person]
-
+人間に開放
 [room open seat detail]
-
+招待を持っていれば誰でも座れます
 [room open seat]
-
+空き席
 [room person]
-
+人間
 [room preparing map]
-
+サーバーでマップを準備しています…
 [room public]
-
+公開
 [room ready?]
-
+準備完了
 [room ready]
-
+✓ 準備完了
 [room remove from room]
-
+ルームから外す
 [room rule off]
-
+オフ
 [room rule on]
-
+オン
 [room rules changed]
-
+ルールが変更されました。
 [room rules]
-
+ルール
 [room say something]
-
+メッセージを入力…
 [room seat hint]
-
+プレイヤーは自分で空き席に移動できます。バランスを取るにはチームを変更してください。
 [room seat options]
-
+席のオプション
 [room seats summary %0 %1 %2]
-
+プレイヤー%0人 · AI %1 · 空き%2
 [room seats]
-
+席
 [room seed]
-
+シード
 [room send]
-
+送信
 [room set by host]
-
+ホストが設定
 [room share text %0]
-
+Globulation 2のルームに参加しよう：%0
 [room share]
-
+共有…
 [room size]
-
+サイズ
 [room starting match]
-
+試合を開始しています…
 [room take seat]
-
+席に着く
 [room team %0]
-
+チーム%0
 [room update required]
-
+このルームは別のバージョンのゲームを使っています。参加するにはアップデートしてください。
 [room uploaded map]
-
+アップロードされたマップ
 [room waiting for %0]
-
+%0の準備を待っています
 [room waiting for you]
-
+準備ができたら「準備完了」を押してください
 [room match over]
-
+試合終了。次の試合の準備をしましょう！
 [room waiting for host]
-
+ホストの開始を待っています
 [room waiting for players %0]
-
+%0人のプレイヤーの準備を待っています
 [room who can find it]
-
+公開範囲
 [room you created]
-
+ルームを作成しました。
 [room you joined %0]
-
+%0に参加しました。
 [room you were removed]
-
+ホストによってルームから外されました。
 [room you]
-
+あなた
 [settings Online]
-
+オンライン
 [settings Another server]
-
+別のサーバー
 [settings Check]
-
+確認
 [settings Checking…]
-
+確認中…
 [settings Choose which server you play on and how you sign in to it.]
-
+プレイするサーバーとそのサインイン方法を選択します。
 [settings Connecting…]
-
+接続中…
 [settings Could not reach this server.]
-
+このサーバーに接続できませんでした。
 [settings Display name saved.]
-
+表示名を保存しました。
 [settings Display name]
-
+表示名
 [settings Download or delete my data]
-
+アカウントを削除
 [settings Enter an https:// address.]
-
+https:// で始まるアドレスを入力してください。
 [settings Finish in your browser. It shows the code %0.]
-
+ブラウザーで完了してください。コードを求められたら%0と入力します。
 [settings Forget]
-
+削除
 [settings Guests keep a generated name; sign in to choose one.]
-
+ゲストには自動生成された名前が使われます。名前を選ぶにはサインインしてください。
 [settings Link]
-
+連携
 [settings Not a Globulation 2 server.]
-
+Globulation 2のサーバーではありません。
 [settings Not linked]
-
+未連携
 [settings Not signed in.]
-
+サインインしていません。
 [settings Open]
-
+開く
 [settings Opens your account page on %0.]
-
+%0のアカウントページを開きます。そこでアカウントを削除できます。
 [settings Run by a community, a club or yourself. Paste its address.]
-
+コミュニティ、クラブ、または自分で運営するサーバーです。アドレスを貼り付けてください。
 [settings Save]
-
+保存
 [settings Server]
-
+サーバー
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+ルーム、試合、ランキングに表示されます。30日に1回変更できます。
 [settings Sign in with: %0 · queues: %1]
-
+サインイン方法：%0 · キュー：%1
 [settings Sign out on this device]
-
+この端末でサインアウト
 [settings Sign out]
-
+サインアウト
 [settings Switch to this server]
-
+このサーバーに切り替え
 [settings The last sign-in method can't be unlinked.]
-
+最後のサインイン方法は連携を解除できません。
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Globulation 2の公式サーバー · ランク戦キュー、ランキング、マップカタログ
 [settings Unlink]
-
+連携解除
 [settings Unlinking is done on the account page.]
-
+連携の解除はアカウントページで行います。
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+再びサインインするまで新しいゲストになります。アカウントと試合はサーバーに残ります。
 [settings Your account on %0]
-
+%0のアカウント
 [settings compatible with this version]
-
+このバージョンに対応
 [settings connected]
-
+接続済み
 [settings connecting…]
-
+接続中…
 [settings guest]
-
+ゲスト
 [settings linked]
-
+連携済み
 [settings plays another version]
-
+別のバージョン
 [settings trusted]
-
+信頼済み
 [settings used before]
-
+使用履歴あり
 [settings you were %0 there]
-
+そこでの名前：%0
 [trust invited to room %0]
-
+ルーム%0に招待されました
 [trust join as guest]
-
+ゲストとして参加
 [trust not official]
-
+このサーバーはGlobulation 2プロジェクトが運営するものではありません。
 [trust remember]
-
+このサーバーを記憶する
 [trust separate identity %0]
-
+そこではゲストとして参加します。%0のアカウント、レート、履歴はそのまま残ります。
 [trust title]
-
+別のサーバーのゲームに参加しますか？
 [trust what it sees]
-
+サーバーには、表示名、接続元アドレス、そのサーバーで遊んだゲームが見えます。
 [settings not connected]
-
+未接続
 [settings Open Play online to connect.]
-
+接続するには「オンラインでプレイ」を開いてください。
 [hub code]
-
+コード
 [results draw]
-
+引き分け
 [qm 2 vs 2]
-
+2対2
 [qm 1 vs 1]
-
+1対1
 [qm ping about]
-
+Ping 約
 [qm ranked]
-
+ランク戦
 [qm casual %0]
-
+カジュアル %0
 [qm rated]
-
+ランク戦
 [qm unrated]
-
+レートなし
 [qm solo queue]
-
+ソロキュー
 [qm ai joins after %0]
-
+%0後にAIが参加
 [qm fair maps %0]
-
+マップ：%0
 [qm cooldown %0]
-
+試合を辞退しました。%0後に再び検索できます。
 [qm sign in to play ranked]
-
+ランク戦のキューはサインインしたアカウント専用です。先にサインインしてください。
 [online update required]
-
+このバージョンのゲームはサーバーに対して古すぎます。オンラインで遊ぶにはアップデートしてください。
 [online server behind]
-
+サーバーがまだこのバージョンに更新されていません。更新されるとオンラインプレイが可能になります。
 [online version mismatch]
-
+サーバーは別のバージョンのゲームで動作しています。このゲームではオンラインプレイを利用できません。
 [qm already searching]
-
+すでに検索中か、試合中です。
 [online connection problem]
-
+サーバーに接続できませんでした。
 [qm find match]
-
+対戦を探す
 [qm opponents rated %0 to %1]
-
+相手のレート：%0～%1
 [qm region %0]
-
+地域：%0
 [qm searching]
-
+検索中
 [qm measuring relays]
-
+リレーを測定中
 [qm joining queue]
-
+キューに参加中
 [qm waiting for a person]
-
+人間の相手を待っています（AI対戦はオフ）。
 [qm ai in %0 rated]
-
+相手が見つからなければ、%0後にレートの最も近いAIと対戦します
 [qm ai in %0]
-
+相手が見つからなければ、%0後にAIが参加します
 [qm ai after %0]
-
+相手が見つからなければ、%0後にAIが席に着きます
 [qm allow ai short]
-
+AIを許可
 [qm allow ai]
-
+AIとの対戦を許可
 [qm cancel]
-
+キャンセル
 [qm cancel search]
-
+検索をキャンセル
 [qm usual wait %0]
-
+通常の待ち時間 %0
 [qm widening]
-
+待つほど範囲が広がります
 [qm ais are rated]
-
+（レートあり：AIにもレートがあります）
 [qm opponent declined]
-
+相手が承諾しませんでした。キューの先頭に戻りました。
 [qm %0 did not accept]
-
+%0が承諾しませんでした。キューの先頭に戻りました。
 [qm start failed]
-
+試合を開始できませんでした。再び検索しています。
 [qm you declined]
-
+試合を辞退しました。少し待つと再び検索できます。
 [qm you did not answer]
-
+時間内に承諾しませんでした。少し待つと再び検索できます。
 [qm search ended]
-
+検索が終了しました。
 [qm try again]
-
+再試行
 [online connecting]
-
+接続中…
 [qm no queues]
-
+このサーバーにはクイックマッチのキューがありません。
 [qm quick match]
-
+クイックマッチ
 [qm phone searching note]
-
+この画面を離れても検索は続きます。
 [qm phone intro]
-
+下からキューを選んでください。他の画面を見ている間も検索は続きます。
 [qm online]
-
+オンライン
 [qm keeps running note]
-
+この画面を離れても検索は続きます。
 [qm ai]
-
+AI
 [qm provisional]
-
+暫定
 [qm accepted]
-
+✓ 承諾済み
 [qm declined]
-
+辞退
 [qm waiting]
-
+待機中…
 [qm ai badge]
-
+AI
 [qm match found]
-
+対戦相手が見つかりました
 [qm playing an ai]
-
+AIと対戦
 [qm vs]
-
+対
 [qm ai explanation rated]
-
+あなたのレート範囲で検索中の人がいませんでした。レートの最も近いAIと対戦し、結果はあなたとAIのレートに反映されます。
 [qm ai explanation]
-
+検索中の人がいませんでした。レートの最も近いAIと対戦します。このゲームはレートに影響しません。
 [qm casual explanation]
-
+試合はすぐに始まります。カジュアル戦はレートに影響しません。
 [qm accepted button]
-
+承諾済み
 [qm accept]
-
+承諾
 [qm decline]
-
+辞退
 [qm both must accept]
-
+両者の承諾が必要です
 [qm accept explanation]
-
+両プレイヤーの承諾が必要です。辞退するか時間切れになると、キューの最後尾に回ります。
 [qm starting in %0]
-
+%0後に開始…
 [qm preparing match]
-
+試合を準備しています…
 [qm match assigned %0 %1]
-
+試合%0が%1で準備できましたが、このビルドはまだオンライン試合に接続できません。
 [online jan]
-
+1月
 [online feb]
-
+2月
 [online mar]
-
+3月
 [online apr]
-
+4月
 [online may]
-
+5月
 [online jun]
-
+6月
 [online jul]
-
+7月
 [online aug]
-
+8月
 [online sep]
-
+9月
 [online oct]
-
+10月
 [online nov]
-
+11月
 [online dec]
-
+12月
 [profile win letter]
-
+勝
 [profile loss letter]
-
+敗
 [profile draw letter]
-
+分
 [profile history unavailable]
-
+このサーバーはまだ試合履歴に対応していません。
 [profile downloading replay]
-
+リプレイをダウンロードしています…
 [profile no replay]
-
+この試合のリプレイはありません。
 [profile room with %0]
-
+ルーム · %0コロニー
 [profile with %0 vs %1]
-
+味方 %0 対 %1
 [profile vs %0]
-
+対 %0
 [profile room]
-
+ルーム
 [profile casual]
-
+カジュアル
 [profile ai filled]
-
+AIが補充
 [profile provisional %0 games]
-
+暫定 · %0試合
 [profile unrated]
-
+レートなし
 [profile checking]
-
+確認中…
 [profile %0 min]
-
+%0分
 [profile match page]
-
+試合ページ
 [profile replay]
-
+リプレイ
 [profile win rate last %0]
-
+勝率（直近%0）
 [profile %0 w %1 l %2 d]
-
+%0勝 · %1敗 · %2分
 [profile typical game]
-
+標準的な試合
 [profile median length]
-
+試合時間の中央値
 [profile best map]
-
+得意マップ
 [profile %0 w %1 l]
-
+%0勝 · %1敗
 [profile no rated games]
-
+ランク戦をプレイするとレートが付きます。
 [profile all]
-
+すべて
 [profile rooms]
-
+ルーム
 [profile vs ai]
-
+対AI
 [profile matches]
-
+試合
 [online loading]
-
+読み込み中…
 [profile no matches]
-
+まだ試合はありません。
 [online load more]
-
+さらに読み込む
 [profile title]
-
+プロフィール
 [profile guest]
-
+ゲスト
 [profile playing since %0]
-
+%0からプレイ
 [profile full profile web]
-
+Webで完全なプロフィールを見る
 [profile replays note]
-
+リプレイは開くときにサーバーからダウンロードされます。ローカルに保存したリプレイは「ゲームを読み込む」→「リプレイ」にあります。
 [profile web profile]
-
+Webプロフィール
 [maps most played]
-
+プレイ数順
 [maps most liked]
-
+いいね順
 [maps newest]
-
+新着順
 [maps most downloaded]
-
+ダウンロード数順
 [maps any size]
-
+すべてのサイズ
 [maps up to 128]
-
+128×128まで
 [maps 256]
-
+256×256
 [maps 512 and larger]
-
+512以上
 [maps report broken]
-
+動作しない
 [maps report offensive]
-
+不快な内容
 [maps report copyright]
-
+他人の作品
 [maps report other]
-
+その他
 [maps public]
-
+公開
 [maps unlisted]
-
+限定公開
 [maps private]
-
+非公開
 [maps cannot read file]
-
+マップファイルを読み込めませんでした。
 [maps file too large]
-
+マップファイルが大きすぎて共有できません。
 [maps saved for next room]
-
+マップをダウンロードしました。ルームを開くと使用されます。
 [maps download failed]
-
+マップをダウンロードできませんでした。
 [maps %0 colonies]
-
+%0コロニー
 [maps version %0]
-
+バージョン %0
 [maps updated %0]
-
+%0更新
 [maps downloading]
-
+マップをダウンロードしています…
 [maps like needs account]
-
+マップに「いいね」するにはサインインが必要です。
 [maps report sent]
-
+ありがとうございます。モデレーターが確認します。
 [maps select a map]
-
+マップを選択すると詳細が表示されます。
 [maps by %0]
-
+作者：%0
 [maps stats %0 %1 %2]
-
+▶ %0回プレイ · ⬇ %1回ダウンロード · ♥ %2
 [maps use in room]
-
+ルームで使用
 [maps liked]
-
+いいね済み
 [maps like]
-
+いいね
 [maps map page]
-
+マップページ
 [maps reported]
-
+報告済み
 [maps report]
-
+報告…
 [maps report why]
-
+このマップの問題は何ですか？
 [maps search placeholder]
-
+マップや作者を検索
 [maps none found]
-
+該当するマップはありません。
 [maps any colonies]
-
+コロニー数指定なし
 [maps checking]
-
+確認中…
 [maps no version yet]
-
+まだバージョンがアップロードされていません。
 [maps rejected]
-
+却下
 [maps did not load %0]
-
+マップを読み込めませんでした：%0
 [maps unknown reason]
-
+理由は示されませんでした
 [maps fix and upload again]
-
+エディターで修正して、もう一度アップロードしてください
 [maps uploaded just now]
-
+アップロード直後
 [maps loading on server]
-
+サーバーで読み込み中
 [maps %0 plays]
-
+%0回プレイ
 [maps hidden]
-
+非表示
 [maps upload again]
-
+再アップロード…
 [maps delete]
-
+削除
 [maps update]
-
+更新…
 [maps upload a map]
-
+マップをアップロード…
 [maps upload hint]
-
+マップフォルダーまたはエディターの.mapファイル
 [maps no maps yet]
-
+まだマップを共有していません。
 [maps my maps]
-
+マイマップ
 [maps my maps %0]
-
+マイマップ（%0）
 [maps browse]
-
+探す
 [maps title]
-
+マップ
 [maps browse note %0]
-
+%0のカタログ · このバージョンで読み込めるマップのみ表示
 [maps visibility note]
-
+公開マップは「探す」に表示されます。限定公開マップは自分のルームとリンクから使えます。非公開マップは自分のルームでのみ使えます。
 [maps use %0]
-
+%0を使用
 [maps %0 kb]
-
+%0KB
 [maps field title]
-
+タイトル
 [maps field description]
-
+説明
 [maps who can use it]
-
+利用できる人
 [maps guests unlisted]
-
+ゲストは限定公開と非公開のマップを共有できます。「探す」に公開するにはサインインしてください。
 [maps visibility help]
-
+限定公開マップは自分のルームとリンクから使えます。公開マップは「探す」にも表示されます。
 [maps new version of %0]
-
+このファイルを%0の新しいバージョンとしてアップロードします。
 [maps upload]
-
+アップロード
 [maps uploading]
-
+アップロード中…
 [maps checking detail]
-
+サーバーがマップを読み込み、プレビューを作成しています。完了するまでマップは使えません。
 [maps ready]
-
+準備完了
 [maps ready public]
-
+マップの準備ができ、「探す」に掲載されました。
 [maps ready unlisted]
-
+マップの準備ができました。限定公開マップは自分のルームとリンクから使えます。
 [maps ready private]
-
+マップの準備ができました。非公開マップは自分のルームでのみ使えます。
 [maps upload failed]
-
+アップロードに失敗しました
 [maps server read %0 %1]
-
+サーバーは%0（%1コロニー）として読み込みました。
 [maps continue in background]
-
+閉じる
 [maps upload a map title]
-
+マップをアップロード
 [maps update map title]
-
+マップを更新
 [maps upload note]
-
+アップロードしたマップは、サーバーが読み込んでから使えるようになります。
 [online just now]
-
+たった今
 [online today %0]
-
+今日 %0
 [online yesterday]
-
+昨日
 [online sun]
-
+日
 [online mon]
-
+月
 [online tue]
-
+火
 [online wed]
-
+水
 [online thu]
-
+木
 [online fri]
-
+金
 [online sat]
-
+土
 [online %0 weeks ago]
-
+%0週間前
 [online %0 months ago]
-
+%0か月前
 [online %0 years ago]
-
+%0年前
 [maps share online]
-
+オンラインで共有…
 [maps mine]
-
+自分のマップ
 [results waiting for players]
-
+他のプレイヤーの退出を待っています…
 [results waiting detail]
-
+全員が試合から退出すると結果が記録されます。
 [results waiting slow]
-
+接続が切れたプレイヤーは最大3分間戻ることができます。結果は履歴と試合ページに表示されます。
 [results verifying slow]
-
+検証に通常より時間がかかっています。結果は履歴と試合ページに表示されます。
 [results rematch]
-
+再戦
 [results join rematch %0]
-
+%0の再戦に参加
 [hub profile history]
-
+プロフィールと履歴
 [hub my maps]
-
+マイマップ
 [hub leaderboard %0]
-
+ランキング · %0
 [hub leaderboard empty]
-
+ランク付けされたプレイヤーはまだいません。
 [hub guests not ranked]
-
+ゲストはランク付けされません。ここに表示されるにはサインインしてください。
 [hub full leaderboard]
-
+ランキング全体
 [settings %0 is no longer linked.]
-
+%0の連携を解除しました。
 [room map read failed]
-
+このマップファイルを読み込めませんでした。
 [room map upload failed]
-
+マップをルームと共有できませんでした。
 [room map upload failed %0]
-
+マップをルームと共有できませんでした：%0
 [room uploading map]
-
+マップをルームと共有しています…
 [room premade map shared]
-
+ルームの全員がこのマップファイルで遊びます。試合前にダウンロードされます。
 [room take a seat to play]
-
+プレイするには空き席に着いてください
 [room waiting for a seat]
-
+すべての席が埋まっています。空いたら着席できます。
 [room not seated]
-
+未着席
 [room copied]
-
+コピーしました
 [room copy failed]
-
+コピーできませんでした
 [room closed title]
-
+ルームは閉じられました
 [room removed title]
-
+ルームから外されました
 [room back to online]
-
+オンラインに戻る
 [leave match]
-
+試合から退出
 [leave match title]
-
+この試合から退出しますか？
 [leave lan title]
-
+このLANゲームから退出しますか？
 [leave rated body]
-
+このランク戦は敗北となり、レートが下がります。他のプレイヤーは試合を続け、あなたは戻れません。
 [leave casual body]
-
+このクイックマッチはあなたの敗北として記録されます。他のプレイヤーは試合を続け、あなたは戻れません。
 [leave room body]
-
+ルームの試合から退出し、履歴には敗北として記録されます。他のプレイヤーは試合を続け、あなたは戻れません。
 [leave lan body]
-
+他のプレイヤーはあなた抜きで続行し、このゲームには戻れません。
 [leave match confirm]
-
+退出する
 [keep playing]
-
+プレイを続ける
 [results team]
-
+チーム
 [results quick unrated]
-
+クイックマッチ · レートなし
 [conn card cannot keep up]
-
+この端末では試合に追いつけません
 [conn card cannot keep up body]
-
+試合の進行より再生が遅いため、追いつくことができません。試合から退出するか、グラフィック設定を下げて待ち続けてください。
 [conn card not gaining]
-
+追いついていません
 [results reason opponents left]
-
+相手が試合から退出しました。
 [results reason victory]
-
+敵のコロニーをすべて倒しました。
 [results reason defeat]
-
+あなたのコロニーは倒されました。
 [results reason you left]
-
+試合から退出しました。敗北として記録されます。
 [results final after end]
-
+最終結果は試合終了後に確定します。
 [pause none left]
-
+一時停止の残りなし
 [pause game left %0]
-
+一時停止（残り%0）
 [pause by %0]
-
+%0が一時停止中
 [pause by %0 resumes in %1]
-
+%0が一時停止中 · %1後に再開
 [turn too many actions]
-
+操作が多すぎます：一部はまだ送信待ちです
 [turn no pauses left]
-
+この試合で使える一時停止はもう残っていません
 [turn pause time used %0]
-
+%0は一時停止時間を使い切りました：ゲームを再開します
 [room seats one person %0 %1]
-
+プレイヤー1人 · AI %0 · 空き%1
 [room rules otherwise standard]
-
+その他のルールはすべて標準と同じです。
 [room browser link]
-
+ブラウザーのプレイヤー用リンク
 [room browser link hint]
-
+ブラウザーのプレイヤーはこのリンクを貼り付けて参加します。
 [room browser link code %0]
-
+ブラウザーのプレイヤーはこのリンクを貼り付けて参加します。その画面にはコード%0が表示されます。
 [room copy link]
-
+リンクをコピー
 [room lan open seat detail]
-
+このネットワーク上の誰でも座れます
 [room close title]
-
+ルームを閉じますか？
 [room close body one]
-
+退出すると、中にいるもう1人のプレイヤーを含め全員に対してルームが閉じられます。
 [room close body %0]
-
+退出すると、中にいる他の%0人のプレイヤーを含め全員に対してルームが閉じられます。
 [room close confirm]
-
+ルームを閉じる
 [room stay]
-
+とどまる
 [room colours changed]
-
+新しいマップで席の色が変わりました。開始前に自分の色を確認してください。
 [room copy by hand]
-
+コピーできませんでした。招待を手動でコピーしてください：
 [room copy by hand close]
-
+閉じる
 [room copy by hand touch]
-
+リンクを長押しして「コピー」を選んでください。
 [room copy by hand keys]
-
+リンクが選択されています：Ctrl+C（Macでは⌘C）を押してください。
 [room code]
-
+コード
 [online under a minute]
-
+1分未満
 [online about %0 min]
-
+約%0分
 [online %0 s]
-
+%0秒
 [online %0 min %1 s]
-
+%0分%1秒
 [qm ai opponent %0]
-
+AIの相手：%0
 [match relay connected]
-
+ゲームサーバーに接続しました
 [room picker title]
-
+マップを選択
 [room picker for one]
-
+ルームのプレイヤー1人用
 [room picker for %0]
-
+ルームのプレイヤー%0人用
 [room picker generated]
-
+生成
 [room picker premade]
-
+既製
 [room picker catalog]
-
+カタログ
 [room picker size]
-
+サイズ
 [room picker colonies]
-
+コロニー
 [room picker fair]
-
+すべてのコロニーに公平なスタート
 [room picker does not fit]
-
+このサイズには収まりません。別のものを試してください
 [room picker preparing]
-
+プレビューを準備しています…
 [room picker generated note]
-
+どの地形でも全コロニーが同等に良い条件で始まり、サーバーが全員に同じマップを作ります。
 [room picker players %0]
-
+%0人
 [room picker unreadable]
-
+読み込めません
 [room picker no premade]
-
+既製のマップが見つかりませんでした。
 [room picker too small %0]
-
+このマップのコロニー数は、ルームのプレイヤー%0人より少なくなっています。
 [room picker pick premade]
-
+マップを選ぶとここに表示されます。
 [room picker catalog intro]
-
+他のプレイヤーが共有したマップです。1つ開いて「ルームで使用」を選んでください。
 [room picker browse catalog]
-
+共有マップを探す
 [room picker more options]
-
+その他のオプション…
 [room picker use]
-
+このマップを使用
 [room map ready title %0]
-
+%0をプレイ
 [room map ready unnamed]
-
+このマップ
 [room map ready body]
-
+ルームを作成して友達を招待しましょう。ルームではこのマップで遊びます。
 [game draw]
-
+引き分け
 [settings Show colony skins]
 コロニーのスキンを表示
 [settings Turn off to use classic units, swarms and building colors on this device.]
-オフにすると、この端末では従来のユニット、群れ、建物の色を使用します。
+オフにすると、この端末では従来のユニット、巣、建物の色を使用します。
 [settings Hive Mind]
-
+ハイブマインド
 [settings Enable commander shortcuts]
-
+コマンダーのショートカットを有効化
 [settings Command your colony without opening a menu.]
-
+メニューを開かずにコロニーに指示します。
 [settings Allow supervision for new commands]
-
+新しい命令の監督を許可
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+コマンダーが継続命令のフォローアップを行えるようにします。フォローアップにはクレジットを使いますが、設定済みの命令はクレジットなしで動き続けます。
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+既定のショートカット：Ctrl+Enterで命令、Ctrl+Shift+Enterでコマンダーの作業を停止します。「ゲームコントロール」で変更できます。継続命令のカードには個別の一時停止とキャンセルのボタンがあります。
 [settings Commander account and credits]
-
+コマンダーのアカウントとクレジット
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+クレジットと購入はブラウザーで管理します。ランク戦でもコマンダーの支援は許可されています。
 [open commander]
-
+コマンダーを開く
 [stop commander]
-
+コマンダーを停止
 [settings Recording]
-
+録画
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+ゲームを音声付きのMP4動画として録画します。録画にはlibx264とAACエンコーダーを含むFFmpegが必要です。
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpegを利用できます。
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpegを利用できないため、録画はオフになっています。FFmpegをインストールしてPATHに含まれていることを確認し、もう一度確認してください。
 [settings Check for FFmpeg again]
-
+FFmpegを再確認
 [settings Checking for FFmpeg…]
-
+FFmpegを確認しています…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+ホットキー：%0。メニューやエディターでも使えます。
 [settings Change the hotkey]
-
+ホットキーを変更
 [settings Recordings are saved in %0]
-
+録画の保存先：%0
 [toggle recording]
-
+録画の開始・停止
 [File selection is unavailable.]
-
+ファイルを選択できません。
 [Saving custom AI…]
-
+カスタムAIを保存しています…
 [Could not read the selected JavaScript file.]
-
+選択したJavaScriptファイルを読み込めませんでした。
 [Custom AI library saved.]
-
+カスタムAIライブラリを保存しました。
 [Storage could not be saved. The previous library is retained.]
-
+ストレージを保存できませんでした。以前のライブラリが保持されます。
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+JavaScriptのAIファイルを1つ読み込み、ローカルゲームの設定時に選択してください。
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+読み込んだファイルはGlob2内にコピーが保存されます。「更新」は今後のゲーム用にそのコピーを置き換えます。保存データは元のAIを保持します。
 [Waiting for file selection or storage…]
-
+ファイルの選択またはストレージを待っています…
 [Import JavaScript AI]
-
+JavaScript AIを読み込む
 [Link development file]
-
+開発用ファイルをリンク
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+リンクしたファイルはゲーム開始時に読み込まれます。新しいゲームを始める前に再ビルドしてください。リンクを外してもファイルは削除されません。
 [Example AI and authoring guide]
-
+AIの例と作成ガイド
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+カスタムAIはまだありません。バンドルされた.jsファイルを読み込んで始めましょう。
 [Relink]
-
+再リンク
 [Update]
-
+更新
 [Validate]
-
+検証
 [AI startup and persistent globals are valid.]
-
+AIの起動処理と永続グローバル変数は有効です。
 [Remove from library]
-
+ライブラリから削除
 [AI telemetry]
-
+AIテレメトリー
 [No accessible AI telemetry.]
-
+参照できるAIテレメトリーはありません。
 [Search fields]
-
+項目を検索
 [Telemetry unavailable for this recording or controller.]
-
+この記録または操作者のテレメトリーは利用できません。
 [Linked]
-
+リンク済み
 [Imported]
-
+読み込み済み
 [Player]
-
+プレイヤー
 [Updated at tick %0]
-
+ステップ%0で更新
 [No values published yet.]
-
+まだ値が公開されていません。
 [No fields match your search.]
-
+検索に一致する項目はありません。
 [settings Custom AIs]
-
+カスタムAI
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加したAIは各コロニーのAI選択に表示されます。
 [Missing custom AI]
-
+カスタムAIが見つかりません
 [Map repetition failed]
-
+このマップは繰り返せません。スクリプトのない開始マップを使うか、繰り返し数と拠点数を減らしてください。
 [repeat map horizontally]
 マップを横に繰り返す
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ AIを追加
 [bases per colony]
 コロニーあたりの拠点数。拠点とは描かれたマップの1チームで、その建物とユニットを含みます
 [stat group population]
-
+人口
 [stat group food]
-
+食料と健康
 [stat group resources]
-
+資源
 [stat group buildings]
-
+建物
 [stat group military]
-
+軍事
 [stat group map]
-
+領土
 [stat group score]
-
+得点
 [stat overview]
-
+概要
 [stat overview about]
-
+試合全体での各コロニーの数値です。多いほど良い項目では最大値が強調表示されます。列見出しをクリックすると時間による変化を見られます。
 [stat population]
-
+人口
 [stat population about]
-
+コロニーの生存ユニット数（労働者、偵察兵、戦士の合計）です。
 [stat births]
-
+誕生したユニット
 [stat births about]
-
+巣が新しいユニットを生み出した速さです。分割すると労働者、偵察兵、戦士を個別に見られます。
 [stat deaths]
-
+失ったユニット
 [stat deaths about]
-
+原因を問わず、コロニーがユニットを失った速さです（戦闘、飢餓、除去作業中の負傷、閉じ込め）。
 [stat net growth]
-
+人口増加
 [stat net growth about]
-
+誕生したユニット数から失ったユニット数を引いた値です。0より上ならコロニーは成長し、下なら縮小していました。
 [stat death causes]
-
+死因
 [stat death causes about]
-
+コロニーのユニットの死因です：戦闘、飢餓、資源除去中の負傷、出口のない閉じ込め、その他。
 [stat conversions]
-
+引き抜きの収支
 [stat conversions about]
-
+他のコロニーから引き抜いたユニット数から、引き抜かれたユニット数を引いた値です。ユニットは別のコロニーの方がよく食べさせてくれると寝返ります。
 [stat hunger]
-
+食料の蓄え
 [stat hunger about]
-
+コロニーのユニットが体内に蓄えていた食料の量です。各ユニットは食料の残量で分類されます：ほぼ空（4分の1以下）、少ない（半分まで）、半分（4分の3まで）、満腹。蓄えが減るとユニットは食堂を探しに行くので、少ないユニットは常にいくらかいます。
 [stat health]
-
+体力
 [stat health about]
-
+コロニーのユニットの健康状態です。各ユニットは残りの体力で分類されます：瀕死（4分の1以下）、重傷（半分まで）、軽傷（4分の3まで）、健康。
 [stat seeking food]
-
+食料を探すユニット
 [stat seeking food about]
-
+作業をやめて食堂を探していたユニットです。体力も満タンでないものは衰弱中として数えます。
 [stat in care]
-
+食事・治療中のユニット
 [stat in care about]
-
+食堂で食事中、または病院で治療中で、働いていないユニットです。
 [stat wheat harvested]
-
+収穫した小麦
 [stat wheat harvested about]
-
+労働者が収穫した小麦の運搬数です。小麦は食堂で食事になります。
 [stat wheat stored]
-
+貯蔵中の小麦
 [stat wheat stored about]
-
+コロニーの建物にあり、提供や使用を待っている小麦です。
 [stat meals]
-
+提供した食事
 [stat meals about]
-
+コロニーの食堂が自軍のユニットと他コロニーからの訪問者に提供した食事の数です。
 [stat starvation]
-
+餓死
 [stat starvation about]
-
+時間内に食料を見つけられずに死んだユニットです。
 [stat healing]
-
+回復した体力
 [stat healing about]
-
+コロニーの病院が負傷ユニットに回復させた体力です。
 [stat gathered]
-
+採集した資源
 [stat gathered about]
-
+労働者が拾ったすべての資源の運搬数です。分割すると資源ごとに見られます。
 [stat stored]
-
+貯蔵中の資源
 [stat stored about]
-
+コロニーの建物にある資源です。分割すると資源ごとに見られます。
 [stat spending]
-
+資源の使い道
 [stat spending about]
-
+届けられた資源の行き先です：食事、新しいユニット、防衛塔の弾薬、新しい建物、改良。
 [stat delivered]
-
+届けた資源
 [stat delivered about]
-
+労働者が建物に運び込んだ運搬数です。
 [stat traded]
-
+交易の収支
 [stat traded about]
-
+市場を通じて受け取った資源から、渡した資源を引いた値です。
 [stat buildings]
-
+現存する建物
 [stat buildings about]
-
+コロニーが持っていた完成済みの建物です。分割すると建物の種類ごとに見られます。
 [stat construction]
-
+完了した建築作業
 [stat construction about]
-
+完了した建築作業です：新しい建物、改良、修理。
 [stat buildings lost]
-
+失った建物
 [stat buildings lost about]
-
+敵に破壊された建物、またはコロニー自身が取り壊した建物です。
 [stat blocked buildings]
-
+入れない建物
 [stat blocked buildings about]
-
+入口がふさがれ、ユニットが出入りできなかった建物です。
 [stat attack]
-
+攻撃力
 [stat attack about]
-
+コロニーの戦士の総合的な戦闘力を表す数値です：攻撃の強さと速さ。
 [stat defence]
-
+防御力
 [stat defence about]
-
+コロニーの防衛塔の総合的な火力を表す数値です。
 [stat hit points]
-
+総体力
 [stat hit points about]
-
+コロニーのすべてのユニットと建物の体力の合計です。
 [stat damage dealt]
-
+与えたダメージ
 [stat damage dealt about]
-
+コロニーが敵のユニットと建物に与えたダメージです。分割すると戦士、魔法、防衛塔ごとに見られます。
 [stat damage taken]
-
+受けたダメージ
 [stat damage taken about]
-
+敵がコロニーのユニットと建物に与えたダメージです。
 [stat damage traded]
-
+ダメージ収支
 [stat damage traded about]
-
+与えたダメージから受けたダメージを引いた値です。0より上ならコロニーは戦闘で優勢でした。
 [stat combat deaths]
-
+戦死したユニット
 [stat combat deaths about]
-
+敵に倒されたこのコロニーのユニットです。分割すると労働者、偵察兵、戦士を個別に見られます。
 [stat accuracy]
-
+命中した攻撃
 [stat accuracy about]
-
+コロニーの防衛塔と偵察兵が放った攻撃のうち、標的に命中した割合です。
 [stat training]
-
+訓練
 [stat training about]
-
+ユニットが技能を学ぶために学校、兵舎、走路、プールを訪れた回数です。
 [stat skills]
-
+習得した技能
 [stat skills about]
-
+コロニーのユニットが訓練で上げた技能レベルです。
 [stat growth nearby]
-
+コロニー付近の資源の成長
 [stat growth nearby about]
-
+コロニーの建物から32マス以内で小麦、木材などの資源がどれだけ成長したかを、運搬数ではなく成長ポイントで示します。分割すると拠点からの距離別に見られます。
 [stat growth map]
-
+マップ全体の資源の成長
 [stat growth map about]
-
+マップ上のどこかで資源がどれだけ成長したかを、運搬数ではなく成長ポイントで示します。全コロニーで同じ値です。
 [stat stranded]
-
+動けないユニット
 [stat stranded about]
-
+囲まれて、踏み出せる空きマスがないユニットです。
 [stat cleared]
-
+除去した資源
 [stat cleared about]
-
+場所を空けるため、資源除去領域で労働者が取り除いた資源です。
 [stat prestige]
-
+名声
 [stat prestige about]
-
+最高レベルの建物によって得られるコロニーの名声です。名声目標のある試合は、目標に達すると終了します。
 [stat band combat]
-
+戦闘
 [stat band starvation]
-
+飢餓
 [stat band clearing]
-
+除去中の負傷
 [stat band trapped]
-
+閉じ込め
 [stat band other]
-
+その他
 [stat band starving]
-
+ほぼ空
 [stat band hungry]
-
+少ない
 [stat band peckish]
-
+半分
 [stat band fed]
-
+満腹
 [stat band critical]
-
+瀕死
 [stat band wounded]
-
+重傷
 [stat band hurt]
-
+軽傷
 [stat band healthy]
-
+健康
 [stat band weakening]
-
+衰弱中
 [stat band looking]
-
+食堂を探し中
 [stat band eating]
-
+食事中
 [stat band healing]
-
+治療中
 [stat band meals]
-
+食事
 [stat band new units]
-
+新しいユニット
 [stat band ammunition]
-
+弾薬
 [stat band construction]
-
+新しい建物
 [stat band upgrades]
-
+改良
 [stat band built]
-
+建設
 [stat band upgraded]
-
+改良
 [stat band repaired]
-
+修理
 [stat band destroyed]
-
+破壊
 [stat band demolished]
-
+取り壊し
 [stat band melee]
-
+戦士
 [stat band magic]
-
+魔法
 [stat band towers]
-
+防衛塔
 [stat band within 8]
-
+8マス以内
 [stat band 8 to 16]
-
+8～16マス
 [stat band 16 to 32]
-
+16～32マス
 [stat unit units]
-
+ユニット
 [stat unit wheat]
-
+小麦
 [stat unit meals]
-
+食事
 [stat unit hit points]
-
+体力
 [stat unit resources]
-
+資源
 [stat unit buildings]
-
+建物
 [stat unit strength]
-
+スコア
 [stat unit damage]
-
+ダメージ
 [stat unit shots]
-
+攻撃
 [stat unit visits]
-
+訪問
 [stat unit skills]
-
+技能レベル
 [stat unit prestige]
-
+名声
 [stat axis percent of %0]
-
+%0に対する%
 [stat axis share of all teams]
-
+全コロニーに対する%
 [stat axis percent of units]
-
+コロニーのユニットに対する%
 [stat axis %0 per minute per 100 units]
-
+1分あたり・コロニーのユニット100体あたりの%0
 [stat axis %0 per 100 units]
-
+コロニーのユニット100体あたりの%0
 [stat axis %0 per minute]
-
+1分あたりの%0
 [stat axis %0 so far]
-
+%0（累計）
 [stat axis %0 minute average]
-
+%0分間の平均
 [stat view per minute]
-
+1分あたり
 [stat view total]
-
+合計
 [stat view %0 min]
-
+%0分
 [stat view split]
-
+種類別
 [stat view percentages]
-
+合計に対する%
 [stat view percent of units]
-
+コロニーに対する%
 [stat view per 100 units]
-
+コロニー規模に対する相対値
 [stat view share]
-
+全コロニー中の割合
 [stat view highlight none]
-
+強調表示：なし
 [stat column peak units]
-
+最大ユニット数
 [stat column born]
-
+誕生
 [stat column lost]
-
+損失
 [stat column wheat]
-
+小麦
 [stat column damage dealt]
-
+与ダメージ
 [stat column damage taken]
-
+被ダメージ
 [stat column built]
-
+建設
 [stat column buildings lost]
-
+失った建物
 [stat column prestige]
-
+名声
 [stat marker wiped out]
-
+最後のユニットを喪失
 [stat marker first combat death]
-
+最初の戦死
 [stat marker first building destroyed]
-
+最初の建物破壊
 [stat not recorded for this match]
-
+この試合ではこの統計は記録されていません。
 [results reason beyond doubt]
-
+勝敗が確定しました。
 [stat per minute short]
-
+/分
 [stat page colony]
-
+コロニー
 [stat page %0 of %1]
-
+%0/%1  >
 [stat band workers]
-
+労働者
 [stat band explorers]
-
+偵察兵
 [stat band warriors]
-
+戦士
 [stat unit deaths]
-
+死亡
 [stat unit growth]
-
+成長
 [stat view by unit type]
-
+ユニット種別
 [stat view by state]
-
+状態別
 [stat view by resource]
-
+資源別
 [stat view by building]
-
+建物別
 [stat view by work]
-
+作業の種類別
 [stat view by cause]
-
+原因別
 [stat view by weapon]
-
+武器別
 [stat view by distance]
-
+距離別
 [stat nothing to show]
-
+表示する内容がありません：この試合では発生しませんでした。
 [stat %0 nothing]
-
+%0（なし）
 [Match]
-
+試合
 [Time limit]
-
+制限時間
 [Alliances can change]
-
+同盟の変更を許可
 [Reveal terrain]
-
+地形を公開
 [Starting unit level]
-
+初期ユニットのレベル
 [Starting stockpile]
-
+初期備蓄
 [Regrowth]
-
+再生
 [Building strength]
-
+建物の強度
 [Wounded units retreat]
-
+負傷ユニットの撤退
 [Units can die]
-
+ユニットの死亡
 [Unit training]
-
+ユニットの訓練
 [No stockpile]
-
+なし
 [No glass cannon]
-
+オフ
 [How quickly harvested resources grow back and spread.]
-
+収穫された資源が再生して広がる速さです。
 [Units must eat to keep working.]
-
+ユニットは働き続けるために食事が必要です。
 [Summary]
-
+概要
 [All rules]
-
+すべてのルール
 [Show all rules]
-
+すべてのルールを表示
 [Choose a ruleset]
-
+ルールセットを選択
 [Reset to %0]
-
+%0に戻す
 [ruleset one change %0]
-
+%0 + 変更1件
 [ruleset changes %0 %1]
-
+%0 + 変更%1件
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+この試合は終了できません。名声による勝利をオンにするか、制限時間を設定してください。
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+名声は通常13～28分後に得られるため、30分の制限時間では引き分けになることがよくあります。
 [Blitz]
-
+電撃戦
 [ruleset blitz description]
-
+速い序盤、早い決着
 [Gentle]
-
+やさしい
 [ruleset gentle description]
-
+初めての試合向けの寛容なルール
 [Sandbox]
-
+サンドボックス
 [ruleset sandbox description]
-
+戦闘なし、飢えなし、何でも建設可能
 [Bloodbath]
-
+血戦
 [ruleset bloodbath description]
-
+もろく、恐れを知らない軍勢
 [Siege]
-
+包囲戦
 [ruleset siege description]
-
+要塞の壁と長い戦争
 [Lean years]
-
+不作の年
 [ruleset lean years description]
-
+資源がほとんど再生しない
 [Gold rush]
-
+ゴールドラッシュ
 [ruleset gold rush description]
-
+マップにある資源がすべて
 [Elite ranks]
-
+精鋭部隊
 [ruleset elite ranks description]
-
+訓練済みで開始、以後の訓練なし
 [Shifting alliances]
-
+移ろう同盟
 [ruleset shifting alliances description]
-
+チームが変わりうる60分の競争
 [Probability victory]
-
+確率による勝利
 [Off (play it out)]
-
+オフ（最後まで戦う）
 [95% sure]
-
+確信度95%
 [97% sure]
-
+確信度97%
 [99% sure]
-
+確信度99%
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+予測モデルが選んだ確信度に達すると試合を終了します。観戦者は統計で予測勝率を見られます。
 [Changed from %0: %1]
-
+%0からの変更：%1
 [Combat is off, so the rules below have no effect.]
-
+戦闘がオフのため、以下のルールは効果がありません。
 [%0 more rules are at their Standard values.]
-
+他の%0個のルールは標準の値です。
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+プレイヤーは最初からマップの地形を見られます。敵ユニットは隠れたままです。
 [Each team starts with extra resources in its shared pool.]
-
+各チームは共有の備蓄に追加の資源を持って始まります。
 [Units hit harder but have less HP and armor.]
-
+ユニットの攻撃力が上がる代わりに、体力と装甲が減ります。
 [Teams can attack each other. Turn off for a peaceful match.]
-
+チーム同士が攻撃できます。平和な試合にするにはオフにします。
 [Hurt units go back to heal instead of fighting to the death.]
-
+傷ついたユニットは死ぬまで戦わず、治療に戻ります。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+体力がなくなるとユニットは死亡します。オフにすると体力1で止まります。
 [Units gain levels at schools.]
-
+ユニットは学校でレベルが上がります。
 [stat group work]
-
+労働者の時間
 [stat worker time]
-
+労働者の時間の使い方
 [stat worker time about]
-
+コロニーの労働者がその時々に何をしていたかです：建物のための作業、旗での作業、訓練、食事、治療、空腹や負傷のまま空いた食堂や病院を待つ、仕事がなく待機する。健全なコロニーでは、ほとんどの労働者が働き、待機は少なく、食堂や病院を待つ者はいません。
 [stat idle workers]
-
+待機中の労働者
 [stat idle workers about]
-
+労働者が何もせずに過ごした時間の割合です。高い値は仕事より労働者が多いことを、0に近い値は全員が忙しく仕事が滞っている可能性を示します。
 [stat work by job]
-
+労働者の作業内容
 [stat work by job about]
-
+建物の種類ごとに補給していた労働者の数です：巣（新しいユニットの生産）、食堂（食事作り）、建設中・改良中の建物、防衛塔、学校、兵舎などのその他の建物。
 [stat haul distance]
-
+資源までの距離
 [stat haul distance about]
-
+収穫中の労働者と補給先の建物との平均距離です（マップのマス数、直線距離）。
 [stat hauling]
-
+採集と運搬
 [stat hauling about]
-
+建物に補給している労働者が、資源への移動、収穫、運搬、納入または到達できる資源の待機にどう分かれていたかです。ほとんどは移動なので、資源が近いほど多くの仕事がこなせます。
 [stat eating time]
-
+食事に行く労働者
 [stat eating time about]
-
+食事のために仕事を離れていた労働者の数です：食堂へ移動中、食堂で食事中、受け入れられる食堂がなく空腹のまま。食堂のない労働者がいるのは、コロニーが食堂やその食料の規模を超えて大きくなった印です。
 [stat inn distance]
-
+食堂からの距離
 [stat inn distance about]
-
+空腹の労働者が向かっていた食堂から、移動中に平均してどれだけ離れていたかです（マップのマス数、直線距離）。往復全体はおよそこの2倍です。高い値は、食堂が労働者の作業場所から遠いことを示します。
 [stat warriors]
-
+戦士
 [stat warriors about]
-
+コロニーの戦士の数です。分割すると、拠点付近、敵コロニー付近、空き地にいた数を見られます。両方のコロニーに近い場所は拠点として数えます。
 [stat warrior level]
-
+戦士の平均攻撃レベル
 [stat warrior level about]
-
+コロニーの戦士の平均攻撃レベルで、攻撃速度と攻撃力を同じ重みで数え、ゲーム内表示と同じ1～4の尺度で示します。兵舎で上がり、訓練していない新しい戦士がいると下がります。
 [stat warrior duties]
-
+戦士の行動
 [stat warrior duties about]
-
+コロニーの戦士が、戦闘の旗に送られた者、ひどく傷ついて戦闘を離れ病院へ向かった者（治療中を含む）、手の空いた者にどう分かれていたかです。
 [stat intruders]
-
+拠点にいる敵の戦士
 [stat intruders about]
-
+コロニーの建物から16マス以内にいた敵の戦士の数です。2つのコロニーが近い場合、互いの守備隊を数え合います。
 [stat home defence]
-
+拠点防衛の戦力差
 [stat home defence about]
-
+建物付近にいる自軍の戦士の戦力から、そこにいる敵の戦士の戦力を引いた値で、各戦士とその攻撃レベルを数えます。0より下なら拠点で劣勢でした。
 [stat combat death places]
-
+ユニットが戦死した場所
 [stat combat death places about]
-
+コロニーのユニットが倒されたときにいた場所です：自分の建物付近、敵の建物付近、コロニー間の空き地。拠点での損失は攻撃を受けていたこと、敵コロニーでの損失は攻撃していたことを意味します。両方のコロニーに近い場所は拠点として数えます。
 [stat band working]
-
+作業中
 [stat band flag work]
-
+旗で作業
 [stat band idle]
-
+待機
 [stat band training]
-
+訓練中
 [stat band unserved]
-
+空いた食堂・病院なし
 [stat band swarms]
-
+巣
 [stat band inns]
-
+食堂
 [stat band sites]
-
+建設・改良
 [stat band other buildings]
-
+その他の建物
 [stat band to resource]
-
+資源へ移動
 [stat band harvesting]
-
+収穫中
 [stat band carrying]
-
+運搬中
 [stat band delivering]
-
+納入・待機
 [stat band walking to inn]
-
+食堂へ移動
 [stat band no inn]
-
+空いた食堂なし
 [stat band at home]
-
+拠点
 [stat band at enemy]
-
+敵コロニー
 [stat band in the open]
-
+空き地
 [stat band war flag]
-
+戦闘の旗
 [stat band seeking healing]
-
+治療へ向かう
 [stat band free]
-
+待機中
 [stat unit workers]
-
+労働者
 [stat unit worker time]
-
+労働者の時間
 [stat unit working workers]
-
+建物に補給する労働者
 [stat unit squares]
-
+マス
 [stat unit warriors]
-
+戦士
 [stat unit attack level]
-
+攻撃レベル
 [stat unit enemy warriors]
-
+敵の戦士
 [stat unit strength count]
-
+戦力
 [stat view by place]
-
+場所別

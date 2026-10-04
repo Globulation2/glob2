@@ -1,15 +1,15 @@
 [AI strategy]
-AAren taktika
+AI-aren estrategia
 [start recording]
-
+Hasi grabatzen
 [stop recording]
-
+Gelditu grabazioa
 [finalizing recording]
-
+Grabazioa amaitzen…
 [AIMaxima-Summary]
 Hazkunde iraunkorra eta entrenamendua orekatzen ditu, eta gero armadak olatuetan biltzen ditu.
 [AIMaxima-Profile]
-Oinarrizko estrategia: Janaria, langileak, jaiotzak, entrenamendua, eraikuntza eta borroka elkarren lehian dauden behar gisa hartzen ditu. Armadaren tamaina neurri batean kalkulatutako etsai-indarraren arabera egokitzen du, eta gero armada hori borrokara eraginkortasunez eramaten saiatzen da.\n\nEkonomia eta garapena: Jaiotzak janariaren eta lan-indarraren arabera planifikatzen ditu, entrenatzeko tarte libreak gordetzen ditu eta soberako langileak gehitzeari uzten dio ekoizpen militarra behar denean. Entrenamendu-ahalmena egokitzen du eta hobekuntzengatik azpiegitura gehiegi aldi berean gelditzea saihesten du.\n\nMiaketa eta erabakiak: Unitate ikusgaietatik eta gogoratutako behaketetatik kalkulatzen ditu etsai-indarrak, doitutako eredu bat erabiliz. Helburuak balioaren, distantziaren, dorreen, babesik gabeko langileen eta helburuari eustearen araberakoak dira. Fruta-misioek janari-aniztasuna eta aldez aldatzea sostengatzen dituzte.\n\nErasoa eta defentsa: Soldaduak entrenamendurako eta defentsarako erreserbatzen ditu, eta gero lurreko indar egokiak biltzen ditu bere janari-azpiegituraren ondoan olatuak bidali aurretik. Tokiko defentsa-erantzunak erabiltzen ditu eta koloniarako sarbideak ebaluatzen ditu.\n\nErasoak gelditzen direnean: Olatuak eramateko lau porrot jarraituen ondoren, etengabe indartutako eraso-banderetara aldatzen da. Eraso anfibioek ere etengabeko errefortzuak erabil ditzakete. Ordezko modu horrek ez ditu blokeo guztiak konpontzen bilketa eratu aurretik.\n\nBeste AAekin alderatuta: Janaria, entrenamendua, informazioa eta hedapen militarra estuago lotzen ditu. Cabino-k eraikinen aurkako hainbat eraso azpimarratzen ditu; Maxima-k kalkulatutako beharra eta bildutako indarrak eramatea.\n\nIndarguneak eta ahulguneak: Hazkundea eta soldaduen ordezkapena mantentzen ditu janari-presiora eta behatutako mehatxuetara egokituz. Janaria, entrenamendu-ahalmena eta biltzeko espazio irekia behar ditu; pilaketek eta ibilbide luzeek indarrak eramatea oztopa dezakete.\n\nAurre egiteko aholkuak: Lehiatu babesik gabeko gariagatik, ostatuengatik eta barrakoiengatik olatuak bildu aurretik. Mantendu hornitutako defentsa-indarra elkartuta eta eten errefortzuen bideak. Espero presio errepikatua lehen olatuaren ondoren.\n\nMiaketa: Indar-kalkuluek ikusitakoa eta behaketen historia erabiltzen dituzte, ez etsaien tropa guztien kopuru ezkutuak.
+Oinarrizko estrategia: Janaria, langileak, jaiotzak, entrenamendua, eraikuntza eta borroka elkarren lehian dauden behar gisa hartzen ditu. Armadaren tamaina neurri batean kalkulatutako etsai-indarraren arabera egokitzen du, eta gero armada hori borrokara eraginkortasunez eramaten saiatzen da.\n\nEkonomia eta garapena: Jaiotzak janariaren eta lan-indarraren arabera planifikatzen ditu, entrenatzeko tarte libreak gordetzen ditu eta soberako langileak gehitzeari uzten dio ekoizpen militarra behar denean. Entrenamendu-ahalmena egokitzen du eta hobekuntzengatik azpiegitura gehiegi aldi berean gelditzea saihesten du.\n\nMiaketa eta erabakiak: Unitate ikusgaietatik eta gogoratutako behaketetatik kalkulatzen ditu etsai-indarrak, doitutako eredu bat erabiliz. Helburuak balioaren, distantziaren, dorreen, babesik gabeko langileen eta helburuari eustearen araberakoak dira. Fruta-misioek janari-aniztasuna eta aldez aldatzea sostengatzen dituzte.\n\nErasoa eta defentsa: Gerlariak entrenamendurako eta defentsarako erreserbatzen ditu, eta gero lurreko indar egokiak biltzen ditu bere janari-azpiegituraren ondoan olatuak bidali aurretik. Tokiko defentsa-erantzunak erabiltzen ditu eta koloniarako sarbideak ebaluatzen ditu.\n\nErasoak gelditzen direnean: Olatuak eramateko lau porrot jarraituen ondoren, etengabe indartutako eraso-banderetara aldatzen da. Eraso anfibioek ere etengabeko errefortzuak erabil ditzakete. Ordezko modu horrek ez ditu blokeo guztiak konpontzen bilketa eratu aurretik.\n\nBeste AI-ekin alderatuta: Janaria, entrenamendua, informazioa eta hedapen militarra estuago lotzen ditu. Cabino-k eraikinen aurkako hainbat eraso azpimarratzen ditu; Maxima-k kalkulatutako beharra eta bildutako indarrak eramatea.\n\nIndarguneak eta ahulguneak: Hazkundea eta gerlarien ordezkapena mantentzen ditu janari-presiora eta behatutako mehatxuetara egokituz. Janaria, entrenamendu-ahalmena eta biltzeko espazio irekia behar ditu; pilaketek eta ibilbide luzeek indarrak eramatea oztopa dezakete.\n\nAurre egiteko aholkuak: Lehiatu babesik gabeko gariagatik, ostatuengatik eta barrakoiengatik olatuak bildu aurretik. Mantendu hornitutako defentsa-indarra elkartuta eta eten errefortzuen bideak. Espero presio errepikatua lehen olatuaren ondoren.\n\nMiaketa: Indar-kalkuluek ikusitakoa eta behaketen historia erabiltzen dituzte, ez etsaien tropa guztien kopuru ezkutuak.
 [%0 has left the game]
 %0(e)k partida utzi du.
 [%0 level %1]
@@ -35,7 +35,7 @@ Oinarrizko estrategia: Janaria, langileak, jaiotzak, entrenamendua, eraikuntza e
 [%0 units too low level]
 %0 unitateren maila baxuegia da
 [%0% Uploaded]
-%0% igota
+% %0 igota
 [%0's team unit got converted to your team]
 %0(r)en unitatea zure taldera pasatu da
 [abreaviation explanation A]
@@ -47,11 +47,11 @@ fV: Bistaratu ostatuen ikuspegia (unitateak lapurtzeko)
 [abreaviation explanation mV]
 mV: Bistaratu merkatuen ikuspegia (frutak trukatzeko)
 [abreaviation explanation V]
-V: Bistaratu eraikuntza guztien ikuspegia
+V: Bistaratu eraikin guztien ikuspegia
 [add map]
 Gehitu mapa
 [add shortcut]
-Gehitu laster-tekla
+Gehitu lasterbidea
 [AI Descriptions]
 AI moten deskribapenak
 [AI]
@@ -59,9 +59,9 @@ AI
 [ai]
 AI
 [AICastor-Description]
-Eraiki eta entrenatzen du, hazkundea elikagai-hornidurara egokituz.
+Eraiki eta prestatzen du, hazkundea janari-hornidurari lotuta.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
 Biztanleria handitzen du, gerlariak entrenatzen ditu eta gero erasotzen du.
 [AINicowar]
@@ -73,7 +73,7 @@ Bat ere ez
 [AINumbi-Description]
 Aurkari samurra da, baina hedatu eta eraso egiten du.
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
 Hedatu eta unitateak bereganatzeko lehiatzen da gerlaririk sortu gabe.
 [AIEcono]
@@ -81,7 +81,7 @@ Econo
 [AIWarrush-Description]
 Hasierako defentsak probatzen dituzten eraso azkarrak.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 Eraikitzaile indartsua, entrenatutako eraso-indarrak bidaltzen dituena.
 [AICabino]
@@ -135,7 +135,7 @@ atzera-tekla
 [barracks explanation 2]
 maila hobetzen du
 [barracks explanation]
-Soldaduen borroka
+Gerlarien borroka
 [barracks]
 Barrakoia
 [beach size]
@@ -159,7 +159,7 @@ Maius + arrastatu = laukizuzena
 [Building Tool Line Explanation]
 Ktrl + arrastatu = lerroa
 [Buildings]
-Eraikuntzak
+Eraikinak
 [Bullets]
 Balak
 [campaign editor]
@@ -179,7 +179,7 @@ Ezeztatu suntsipena
 [cancel repair]
 Ezeztatu konponketa
 [cancel upgrade]
-Ezeztatu eguneraketa
+Ezeztatu hobekuntza
 [Cancel]
 Utzi
 [caps lock]
@@ -191,7 +191,7 @@ Aldatu zonalde izena
 [Cherry]
 Gerezia
 [choose campaign]
-Kanpaina aukeratu
+Aukeratu kanpaina
 [choose game]
 Aukeratu partida
 [choose map]
@@ -207,7 +207,7 @@ Garbitu:
 [clearingflag explanation]
 Baliabideak garbitzeko
 [clearingflag]
-Garbiketa bandera
+Garbiketa-bandera
 [closed]
 Itxita
 [combined vision]
@@ -229,15 +229,15 @@ Hona konektatzen:
 [Construction Site Defaults]
 Obren lehenespenak
 [Continue playing]
-Jolasten jarraitu
+Jarraitu jokatzen
 [control %0]
 control-%0
 [Corn]
 Garia
 [crater density]
-krater zenbaketa
+krater kopurua
 [crater lakes terrain]
-Krater Lakuak
+Krater-lakuak
 [create map]
 Sortu mapa
 [credits]
@@ -263,19 +263,19 @@ hurbilak erasotzen ditu
 [defencetower explanation]
 Etsai-unitate eta eraikin
 [defencetower]
-Babes dorrea
+Babes-dorrea
 [Defense Map]
 Babes mapa
 [Defense]
 Babesa
 [Delete game]
-Ezabatu aukeratutako partida
+Ezabatu hautatutako partida
 [delete]
 Ezabatu
 [desert]
-desertua
+basamortua
 [destroy building]
-Suntsitu aukeratutako eraikuntza
+Suntsitu hautatutako eraikina
 [destroy]
 Suntsitu
 [display]
@@ -291,7 +291,7 @@ Editatu mapa
 [editing map]
 Mapa editatzen
 [editor shortcuts]
-Editore teklak
+Editorearen lasterbideak
 [editor]
 Editorea
 [end]
@@ -301,13 +301,13 @@ sartu
 [equals]
 berdin
 [escape]
-ihes
+ihes-tekla
 [explorationflag explanation 2]
 
 [explorationflag explanation]
 Miatzaileak erakartzeko
 [explorationflag]
-Miatze bandera
+Miatze-bandera
 [Explorer Ratio]
 Miatzaileen proportzioa
 [Explorer]
@@ -315,7 +315,7 @@ Miatzailea
 [explorers]
 miatzaile
 [extra islands]
-irla hutsak
+uharte hutsak
 [f10]
 f10
 [f11]
@@ -371,7 +371,7 @@ Pantaila osoa
 [game full]
 Partida beteta
 [game shortcuts]
-Partida teklak
+Partidako lasterbideak
 [Game]
 Partida
 [general settings]
@@ -383,13 +383,13 @@ Joan basera
 [goto main menu]
 Menu nagusira itzuli
 [grass]
-Bedarra
+Belarra
 [ground attack]
 Lurrezko erasoa
 [guard area]
 Babes zonaldea
 [GUIMapPreview text 0]
-Mesedez aukeratu
+Aukeratu
 [GUIMapPreview text 1]
 mapa bat
 [handmade map]
@@ -411,13 +411,13 @@ hasiera
 [hospital explanation]
 Unitateak sendatzeko
 [hospital]
-Hospitala
+Ospitalea
 [host]
-Partida bat ostatatu
+Sortu partida bat
 [hp]
-Osotasuna
+Bizia
 [Human]
-gizakia
+Gizakia
 [human]
 gizakia
 [hungry]
@@ -439,7 +439,7 @@ txertatu
 [inside]
 Barruan
 [islands size]
-irla tamaina
+uharteen tamaina
 [islands terrain]
 Uharteak
 [isles terrain]
@@ -449,13 +449,13 @@ Joan hurrengo hautapenera
 [jobs]
 lanak
 [join a game]
-Partidara bat egin
+Sartu partida batean
 [keyboard settings]
 Teklatu ezarpenak
 [lan]
 LAN partida
 [language incomplete]
-Euskara - Incomplete
+Euskara - Osatu gabea
 [language-code]
 eu
 [language-tr]
@@ -469,7 +469,7 @@ ezkerreko Windows tekla
 [left]
 ezkerrera
 [level]
-Maila:
+Maila
 [levels]
 Mailak
 [load campaign]
@@ -487,7 +487,7 @@ Kargatu
 [look around]
 Begiratu ingurura
 [Lost : %0 has more prestige than you]
-Galdu duzu: %0 zuk baino izen on gehiago du
+Galdu duzu: %0(e)k zuk baino ospe gehiago du
 [Lost : your colony is dead]
 Galdu duzu: zure kolonia hil da
 [low priority]
@@ -535,7 +535,7 @@ Isilik
 [new campaign]
 Kanpaina berria
 [new map]
-Berria
+Mapa berria
 [no fullscreen]
 * leiho-moduan soilik
 [No Hints]
@@ -563,9 +563,9 @@ hauetatik
 [ok]
 Ados
 [old islands terrain]
-Artxipelago Malkartsua
+Artxipelago malkartsua
 [old random terrain]
-Kostalde Zatikatua
+Kostalde zatikatua
 [on press]
 Sakatzean
 [On the spot]
@@ -579,7 +579,7 @@ Ireki kargatzeko menua
 [open save menu]
 Ireki gordetzeko menua
 [open scenario editor]
-Ireki Script editorea
+Ireki eszenatoki-editorea
 [open teams editor]
 Ireki talde-editorea
 [open]
@@ -601,11 +601,11 @@ orria gora
 [Papyrus]
 Papiroa
 [pause game]
-Gelditu partida
+Pausatu partida
 [pause]
 pausa
 [Paused]
-Geldituta
+Pausatuta
 [player name]
 Jokalari izena
 [players]
@@ -615,7 +615,7 @@ Mesedez itxaron
 [power]
 piztu
 [press space]
-Zanpatu espazio barra jarraitzeko
+Sakatu zuriune-tekla jarraitzeko.
 [Prestige Score]
 Ospe-puntuazioa
 [Prestige Win Enabled]
@@ -653,7 +653,7 @@ Gogoratu esleipenak
 [remove map]
 Ezabatu mapa
 [remove shortcut]
-Kendu laster-tekla
+Kendu lasterbidea
 [repair building]
 Konponketa hasi/gelditu
 [repair]
@@ -663,7 +663,7 @@ aldiz lurzoru bera
 [replay ended]
 Errepikapena amaituta
 [restore default shortcuts]
-Lehenetsitako teklak berezarri
+Berrezarri lasterbide lehenetsiak
 [return to editor]
 Itzuli editorera
 [return to game]
@@ -683,9 +683,9 @@ errekaren zabalera
 [river terrain]
 Erreka
 [sand]
-Area
+Harea
 [save before quit?]
-Partida gorde irten aurretik?
+Partida gorde nahi duzu irten aurretik?
 [save game]
 Gorde partida
 [save map]
@@ -703,7 +703,7 @@ Langileen eraikuntza
 [school]
 Eskola
 [Script Areas]
-Script Zonaldeak
+Script zonaldeak
 [scroll lock]
 korritze-blokeoa
 [scroll wheel enabled]
@@ -717,13 +717,13 @@ bila
 [select barracks building]
 Barrakoia aukeratu
 [select clearingflag]
-Garbiketa bandera aukeratu
+Garbiketa-bandera aukeratu
 [select construct barracks]
 Hautatu eraikuntza: Barrakoia
 [select construct defencetower]
-Hautatu eraikuntza: Babes dorrea
+Hautatu eraikuntza: Babes-dorrea
 [select construct hospital]
-Hautatu eraikuntza: Hospitala
+Hautatu eraikuntza: Ospitalea
 [select construct inn]
 Hautatu eraikuntza: Ostatua
 [select construct market]
@@ -733,7 +733,7 @@ Hautatu eraikuntza: Zirkuitoa
 [select construct school]
 Hautatu eraikuntza: Eskola
 [select construct stonewall]
-Hautatu eraikuntza: Harrizko orma
+Hautatu eraikuntza: Harrizko horma
 [select construct swarm]
 Hautatu eraikuntza: Kofoina
 [select construct swimmingpool]
@@ -741,9 +741,9 @@ Hautatu eraikuntza: Igerilekua
 [select delete tool]
 Hautatu ezabatzeko tresna
 [select explorationflag]
-Miatze bandera aukeratu
+Miatze-bandera aukeratu
 [select hospital building]
-Hospitala aukeratu
+Ospitalea aukeratu
 [select inn building]
 Ostatua aukeratu
 [select market building]
@@ -753,15 +753,15 @@ Jarri eremua: Garbiketa zonaldea
 [select place farm area]
 Jarri eremua: Labore zonaldea
 [select place clearingflag]
-Jarri bandera: Garbiketa bandera
+Jarri bandera: Garbiketa-bandera
 [select place explorationflag]
-Jarri bandera: Miatze bandera
+Jarri bandera: Miatze-bandera
 [select place forbidden area]
 Jarri eremua: Debekatutako zonaldea
 [select place guard area]
 Jarri eremua: Babes zonaldea
 [select place warflag]
-Jarri bandera: Gerra bandera
+Jarri bandera: Gerra-bandera
 [select racetrack building]
 Zirkuitoa aukeratu
 [select school building]
@@ -771,11 +771,11 @@ Kofoina aukeratu
 [select swimmingpool building]
 Igerilekua aukeratu
 [select tower building]
-Babes dorrea aukeratu
+Babes-dorrea aukeratu
 [select wall building]
-Harrizko orma aukeratu
+Harrizko horma aukeratu
 [select warflag]
-Gerra bandera aukeratu
+Gerra-bandera aukeratu
 [settings]
 Ezarpenak
 [shift %0]
@@ -783,7 +783,7 @@ shift-%0
 [shortcut explanation enter]
 Enter: Txat mezua bidali
 [shortcut explanation v]
-V: mantendu hitzegiteko
+V: eutsi hitz egiteko
 [show areas]
 Erakutsi eremuak
 [show flags]
@@ -793,7 +793,7 @@ Erakutsi menu nagusia
 [skin]
 Bistaratzea
 [smoothing]
-Suabetzea
+Leuntzea
 [space]
 zuriunea
 [start mission]
@@ -825,7 +825,7 @@ elementua
 [stonewall explanation]
 Defentsa pasiboko
 [stonewall]
-Harrizko orma
+Harrizko horma
 [svr hostname]
 Zerbitzari izena
 [swamp terrain]
@@ -863,7 +863,7 @@ Hautatu eremu-pintzela: 7
 [switch to area brush 8]
 Hautatu eremu-pintzela: 8
 [switch to building view]
-Eraikuntza ikuspegira aldatu
+Eraikin ikuspegira aldatu
 [switch to flag view]
 Bandera ikuspegira aldatu
 [switch to removing areas]
@@ -883,71 +883,71 @@ Talde finkoak
 [teams]
  talde
 [the barracks is finished]
-Barrakoia bukatuta dago
+Barrakoia amaituta dago.
 [the barracks is under attack]
-Barrakoia erasopean dago
+Barrakoia erasopean dago.
 [the building is finished]
-Eraikuntza bukatuta dago
+Eraikina amaituta dago.
 [the building is under attack]
-Eraikuntza erasopean dago
+Eraikina erasopean dago.
 [the clearingflag is finished]
-?? Clearing flag finished ??
+Garbiketa-bandera jarrita.
 [the clearingflag is under attack]
-?? Clearing flag under attack ??
+Garbiketa-bandera erasopean dago.
 [the defencetower is finished]
-Babes dorrea bukatuta dago
+Babes-dorrea amaituta dago.
 [the defencetower is under attack]
-Babes dorrea erasopean dago
+Babes-dorrea erasopean dago.
 [the explorationflag is finished]
-?? Exploration flag finished ??
+Miatze-bandera jarrita.
 [the explorationflag is under attack]
-?? Exploration flag under attack ??
+Miatze-bandera erasopean dago.
 [The game has not been finished]
-Partida ez da bukatu
+Partida ez da amaitu.
 [the games]
 Partidak
 [the hospital is finished]
-Hospitala bukatuta dago
+Ospitalea amaituta dago.
 [the hospital is under attack]
-Hospitala erasopean dago
+Ospitalea erasopean dago.
 [The host has cancelled the game]
 Ostalariak partida bertan behera utzi du.
 [the inn is finished]
-Ostatua bukatuta dago
+Ostatua amaituta dago.
 [the inn is under attack]
-Ostatua erasopean dago
+Ostatua erasopean dago.
 [the maps]
 Mapak
 [the market is finished]
-Merkatua bukatuta dago
+Merkatua amaituta dago.
 [the market is under attack]
-Merkatua erasopean dago
+Merkatua erasopean dago.
 [the racetrack is finished]
-Zirkuitoa bukatuta dago
+Zirkuitoa amaituta dago.
 [the racetrack is under attack]
-Zirkuitoa erasopean dago
+Zirkuitoa erasopean dago.
 [the replays]
 Errepikapenak
 [the school is finished]
-Eskola bukatuta dago
+Eskola amaituta dago.
 [the school is under attack]
-Eskola erasopean dago
+Eskola erasopean dago.
 [the stonewall is finished]
-Horma zati bat bukatuta dago
+Horma zati bat amaituta dago.
 [the stonewall is under attack]
-Harrizko orma erasopean dago
+Etsaia zure hormetan dago.
 [the swarm is finished]
-Kofoina bukatuta dago
+Kofoina amaituta dago.
 [the swarm is under attack]
-Kofoina erasopean dago
+Kofoina erasopean dago.
 [the swimmingpool is finished]
-Igerilekua bukatuta dago
+Igerilekua amaituta dago.
 [the swimmingpool is under attack]
-Igerilekua erasopean dago
+Igerilekua erasopean dago.
 [the warflag is finished]
-?? War flag finished ??
+Gerra-bandera jarrita.
 [the warflag is under attack]
-?? War flag under attack ??
+Gerra-bandera erasopean dago.
 [time]
 Denbora
 [to:]
@@ -961,7 +961,7 @@ Erakutsi/ezkutatu unitateen bideak
 [toggle menu screen]
 Erakutsi/ezkutatu menu-pantaila
 [toggle recording voice]
-Aktibatu/desaktibatu ahots grabaketa
+Aktibatu/desaktibatu ahots-grabazioa
 [Total Attack Power]
 Eraso-indar osoa
 [Total Defence Power]
@@ -977,7 +977,7 @@ Ongi etorri Globulation 2ren oinarrizko tutorialera! Ostatuak eraikitzen, eremua
 [tutorial text 2]
 Oinarriak menderatu dituzunez, beste eraikin batzuk ezagutzeko garaia da: zirkuituak, igerilekuak eta eskolak.
 [tutorial text 3]
-Ongi iritsi zara honaino. Orain soldaduak, barrakoiak eta hobekuntzak landuko ditugu.
+Ongi iritsi zara honaino. Orain gerlariak, barrakoiak eta hobekuntzak landuko ditugu.
 [tutorial text 4]
 Ia amaitu duzu. Banderak eta erasoak baino ez dira falta. Ondoren, nahikoa jakingo duzu partida pertsonalizatuak probatzeko eta, geroago, sarean Globulation 2ko jokalari onenetako batzuen aurka jokatzeko.
 [tutorial]
@@ -1005,11 +1005,11 @@ Desblokeatzailea:
 [up]
 gora
 [upgrade building]
-Eguneraketa hasi/gelditu
+Hobekuntza hasi/gelditu
 [Upgrade Defaults]
 Hobekuntzen lehenespenak
 [upgrade]
-Eguneratu
+Hobetu
 [username]
 Erabiltzaile izena
 [Version]
@@ -1019,7 +1019,7 @@ Ikusi historia
 [Voice volume]
 Ahotsaren bolumena
 [waiting for %0]
-%0(r)i itxaroten
+%0(r)en zain
 [waiting for key]
 teklaren zain...
 [Walk]
@@ -1027,17 +1027,17 @@ Ibili
 [warflag explanation 2]
 
 [warflag explanation]
-Soldaduak erakartzeko
+Gerlariak erakartzeko
 [warflag]
-Gerra bandera
+Gerra-bandera
 [Warning, you need to reboot the game for changes to take effect]
-Oharra, programa berrabiarazi behar duzu aldaketak aplikatzeko
+Oharra: jokoa berrabiarazi behar duzu aldaketak aplika daitezen
 [Warrior Ratio]
-Soldaduen proportzioa
+Gerlarien proportzioa
 [Warrior]
-Soldadua
+Gerlaria
 [warriors]
-soldadu
+gerlari
 [watch again]
 Ikusi berriro
 [watching:]
@@ -1047,11 +1047,11 @@ Ura
 [Wheat]
 Garia
 [Won : you defeated your opponents]
-Irabazi duzu: aurkariak zanpatu dituzu
+Irabazi duzu: aurkariak garaitu dituzu
 [Won : you have the most prestige]
-Irabazi duzu: zuk duzu inork baino izen on gehiago
+Irabazi duzu: zuk duzu ospe gehien
 [Won : your ally %0 has the most prestige]
-Irabazi duzu: %0 zure aliatuak izen on gehien du
+Irabazi duzu: %0 zure aliatuak du ospe gehien
 [Wood]
 Egurra
 [wood]
@@ -1095,7 +1095,7 @@ Jokalari bakarreko jokoetarako eta errepikapenetarako soilik. Jokalari anitzeko 
 [AICortex-Description]
 Gerlari-olatuak biltzen ditu, elikagai eta sendaketa laguntzarekin.
 [AIMaxima-Description]
-Esploratu, elikagai-hornidura garatu eta gerlari-olatuak biltzen ditu.
+Esploratu, janari-hornidura garatu eta gerlari-olatuak biltzen ditu.
 [AIMaxima]
 Maxima
 [ERROR_CANT_LOAD_MAP]
@@ -1109,43 +1109,43 @@ Barruan: %0
 [Units still working: %0]
 Oraindik lanean: %0
 [2 vs 2]
-2ren aurka 2
+2 vs. 2
 [AI strategy & counterplay]
 AI estrategia eta kontrajokoa
 [AICastor-Profile]
-Oinarrizko estrategia: Kolonia emankorrean eta teknologian inbertitzen du eraso handiak hasi aurretik. Lehentasunen araberako eraikuntza-proiektuek kokalekua garatzen dute; garapenak, azpiegitura militarrak eta denborak gerrarako prestasuna handitzen dute.\n\nEkonomia eta garapena: Hezetasuna, gariaren hazkundea, oztopoak eta langileen irismena aztertzen ditu. Ekoizpenarekin batera elikagai-horniduraren hedapena, hobekuntzak eta defentsak kudeatzen ditu.\n\nErasoa eta defentsa: Soldadu osasuntsuen eraso-indarra kalkulatzen du, eta indarraren edo denboraren baldintzak betetzean erasotzen du. Aurretik ikusitako eraikin irisgarriak lehenesten ditu, bereziki barrakoiak eta eskolak, eta eraso-banderak helburu baliotsuetara mugitzen ditu.\n\nBeste AAekin alderatuta: Numbi-k baino arreta handiagoz aztertzen ditu lurra eta helburuen balioa. Warrush baino pazientzia handiagokoa da: hasierako presioaren ordez base garatua eta tropa indartsuagoak bilatzen ditu.\n\nIndarguneak eta ahulguneak: Azpiegituren plangintza zabalak eta helburu militar baliotsuek zentzua ematen diete erasoei. Prestaketak denbora behar du, eta aurkari azkarragoek baliabideengatik borroka dezakete indar nagusia prest egon aurretik.\n\nAurre egiteko aholkuak: Lehiatu hedapen-eremuengatik hasieratik. Babestu barrakoiak eta eskolak, baita janaria ere, eta gorde erreserba bat kokaleku garatuari erasotzean.
+Oinarrizko estrategia: Kolonia emankorrean eta teknologian inbertitzen du eraso handiak hasi aurretik. Lehentasunen araberako eraikuntza-proiektuek kokalekua garatzen dute; garapenak, azpiegitura militarrak eta denborak gerrarako prestasuna handitzen dute.\n\nEkonomia eta garapena: Hezetasuna, gariaren hazkundea, oztopoak eta langileen irismena aztertzen ditu. Ekoizpenarekin batera elikagai-horniduraren hedapena, hobekuntzak eta defentsak kudeatzen ditu.\n\nErasoa eta defentsa: Gerlari osasuntsuen eraso-indarra kalkulatzen du, eta indarraren edo denboraren baldintzak betetzean erasotzen du. Aurretik ikusitako eraikin irisgarriak lehenesten ditu, bereziki barrakoiak eta eskolak, eta eraso-banderak helburu baliotsuetara mugitzen ditu.\n\nBeste AI-ekin alderatuta: Numbi-k baino arreta handiagoz aztertzen ditu lurra eta helburuen balioa. Warrush baino pazientzia handiagokoa da: hasierako presioaren ordez base garatua eta tropa indartsuagoak bilatzen ditu.\n\nIndarguneak eta ahulguneak: Azpiegituren plangintza zabalak eta helburu militar baliotsuek zentzua ematen diete erasoei. Prestaketak denbora behar du, eta aurkari azkarragoek baliabideengatik borroka dezakete indar nagusia prest egon aurretik.\n\nAurre egiteko aholkuak: Lehiatu hedapen-eremuengatik hasieratik. Babestu barrakoiak eta eskolak, baita janaria ere, eta gorde erreserba bat kokaleku garatuari erasotzean.
 [AICastor-Summary]
 Kolonia gotortua garatzen du, eta gero eraikin militar eta zientifikoak erasotzen ditu.
 [AICortex-Profile]
-Oinarrizko estrategia: Egoerari erantzuten dioten lehentasunak erabiltzen ditu ekonomia eraginkorra hazteko eta langile libreak janarira, teknologiara eta presio militarrera bideratzeko. Ohiko erabakiak arauetan oinarritzen dira; ikasitako erabaki-politiken esperimentuek konfigurazio bereizia behar dute.\n\nEkonomia eta garapena: Langileen ekoizpena langile-premiara egokitzen du eta jaiotzak mantentzen ditu. Janari-arazoek hedapenean eta teknologian gastatzea mugatzen dute. Igeriketa gehitzen du uretatik sartzeak nabarmen laguntzen duenean.\n\nErasoa eta defentsa: Behatutako etsai-teknologiaren eta eskuragarri dauden tropen arabera prestatzen ditu erasoak. Ura zeharkatzen duten kanpainek igeri egin dezaketen soldaduak behar dituzte. Kanpaina luzeak aurrealdeko ostatuekin eta ospitaleekin sostengatzen ditu, eta aurrera egin aurretik indarrak bil ditzake.\n\nIraunkortasuna eta larrialdiak: Jazarpen txikien aurrean erasoa mantentzen du, behin eta berriz etxera itzuli ordez. Eraso larriek defendatzaileak itzularaz ditzakete. Hasierako larrialdiek soldaduak soilik ekoiztea eta ospitale bat eraikitzea eragin dezakete; goseteak etsipenezko eraso txikiagoa eragin dezake.\n\nBeste AAekin alderatuta: Warrush baino gehiago arduratzen da aurrealdeko laguntzaz. Maxima urrunago doa jaiotza iraunkorrak, entrenamendua eta hedapen militarra kalkulatutako etsai-indarraren arabera planifikatzean.\n\nIndarguneak eta ahulguneak: Presioa janariarekin, sendaketarekin eta irisgarritasunarekin lotzen du. Aurrealdeko azpiegiturak hornituta egon behar du, eta jaiotza jarraituek janari mugatuaren gaineko presioa mantendu dezakete. Larrialdietako lehentasunek hazkundearen eta biziraupenaren artean aukeratzera behartzen dute.\n\nAurre egiteko aholkuak: Lehiatu aurrealdeko ostatuengatik, ospitaleengatik eta gariagatik. Mantendu defendatzaileak elkartuta haren aurrerapenaren aurka; jazarpen txikiak agian ez du atzera eginaraziko.\n\nMiaketa: Aurkitutako etsai-eraikinak eta behatutako etsai-tropak erabiltzen ditu.
+Oinarrizko estrategia: Egoerari erantzuten dioten lehentasunak erabiltzen ditu ekonomia eraginkorra hazteko eta langile libreak janarira, teknologiara eta presio militarrera bideratzeko. Ohiko erabakiak arauetan oinarritzen dira; ikasitako erabaki-politiken esperimentuek konfigurazio bereizia behar dute.\n\nEkonomia eta garapena: Langileen ekoizpena langile-premiara egokitzen du eta jaiotzak mantentzen ditu. Janari-arazoek hedapenean eta teknologian gastatzea mugatzen dute. Igeriketa gehitzen du uretatik sartzeak nabarmen laguntzen duenean.\n\nErasoa eta defentsa: Behatutako etsai-teknologiaren eta eskuragarri dauden tropen arabera prestatzen ditu erasoak. Ura zeharkatzen duten kanpainek igeri egin dezaketen gerlariak behar dituzte. Kanpaina luzeak aurrealdeko ostatuekin eta ospitaleekin sostengatzen ditu, eta aurrera egin aurretik indarrak bil ditzake.\n\nIraunkortasuna eta larrialdiak: Jazarpen txikien aurrean erasoa mantentzen du, behin eta berriz etxera itzuli ordez. Eraso larriek defendatzaileak itzularaz ditzakete. Hasierako larrialdiek gerlariak soilik ekoiztea eta ospitale bat eraikitzea eragin dezakete; goseteak etsipenezko eraso txikiagoa eragin dezake.\n\nBeste AI-ekin alderatuta: Warrush baino gehiago arduratzen da aurrealdeko laguntzaz. Maxima urrunago doa jaiotza iraunkorrak, entrenamendua eta hedapen militarra kalkulatutako etsai-indarraren arabera planifikatzean.\n\nIndarguneak eta ahulguneak: Presioa janariarekin, sendaketarekin eta irisgarritasunarekin lotzen du. Aurrealdeko azpiegiturak hornituta egon behar du, eta jaiotza jarraituek janari mugatuaren gaineko presioa mantendu dezakete. Larrialdietako lehentasunek hazkundearen eta biziraupenaren artean aukeratzera behartzen dute.\n\nAurre egiteko aholkuak: Lehiatu aurrealdeko ostatuengatik, ospitaleengatik eta gariagatik. Mantendu defendatzaileak elkartuta haren aurrerapenaren aurka; jazarpen txikiak agian ez du atzera eginaraziko.\n\nMiaketa: Aurkitutako etsai-eraikinak eta behatutako etsai-tropak erabiltzen ditu.
 [AICortex-Summary]
 Eraso militar iraunkorrak aurrealdeko janariarekin eta sendaketarekin sostengatzen ditu.
 [AINicowar-Profile]
-Oinarrizko estrategia: Hazkundea, entrenamendua, hobekuntzak eta gerra konbinatzen ditu gainjartzen diren baldintzen bidez. Hedatzen ari den bitartean eraso dezake, eta elikadurak huts egitean ahalegin ekonomikoa susperraldira bideratu.\n\nHasiera: Banatutako profil oldarkorrak bost unitate guztira izatean hasten du gerra-prestaketa, eta bost soldadu izatean gerra baimentzen du, zero mailakoak ere zenbatuta. Bost soldadu dituzten hiru eraso-bandera lortzea du helburu. Estrategia-fitxategi pertsonalizatuek atalase horiek alda ditzakete.\n\nEkonomia eta garapena: Janariaren eta jaiotzen ahalmena zabaltzen du, langileak entrenatzen ditu, igeriketa eta mugimendua garatzen ditu eta eraikinak hobetzen ditu. Janari-lanetako langile kopurua egokitzen du, goseari erantzuten dio eta fruta bilatzen du.\n\nErasoa eta defentsa: Etsai-eraikin irisgarriak ausaz hautatzen ditu erasotzeko. Garbiketa-banderak erabil ditzake baliabideek blokeatutako bideak irekitzeko. Defentsa-banderek arriskuan dauden unitateen eta eraikinen taldeak estaltzen dituzte. Geroago, lurreko erasoan entrenatutako miatzaileek etsai-unitateen taldeak erasotzen dituzte.\n\nBeste AAekin alderatuta: Warrush-en hasierako oldarkortasuna du, baina jarraipen zabalagoarekin. Cabino-k ez bezala, ez ditu ospitaleak eta ostatuak etengabe lehenesten.\n\nIndarguneak eta ahulguneak: Taktika sorta zabalak hasierako presioa eta garapen jarraitua konbinatzen ditu. Helburuak ausaz hautatzeak balio gutxiagoko eraikinetan ahalegina xahutu dezake. Haren atalaseek ez dute Maxima-ren aurkariaren borroka-indarraren kalkulu zehatza eskaintzen.\n\nAurre egiteko aholkuak: Espero eraso goiztiarra. Babestu janaria eta langileak, oztopatu hedapena eta prestatu miatzaileen erasoetarako entrenamendu aurreratua lortzen badu.
+Oinarrizko estrategia: Hazkundea, entrenamendua, hobekuntzak eta gerra konbinatzen ditu gainjartzen diren baldintzen bidez. Hedatzen ari den bitartean eraso dezake, eta elikadurak huts egitean ahalegin ekonomikoa susperraldira bideratu.\n\nHasiera: Banatutako profil oldarkorrak bost unitate guztira izatean hasten du gerra-prestaketa, eta bost gerlari izatean gerra baimentzen du, zero mailakoak ere zenbatuta. Bost gerlari dituzten hiru eraso-bandera lortzea du helburu. Estrategia-fitxategi pertsonalizatuek atalase horiek alda ditzakete.\n\nEkonomia eta garapena: Janariaren eta jaiotzen ahalmena zabaltzen du, langileak entrenatzen ditu, igeriketa eta mugimendua garatzen ditu eta eraikinak hobetzen ditu. Janari-lanetako langile kopurua egokitzen du, goseari erantzuten dio eta fruta bilatzen du.\n\nErasoa eta defentsa: Etsai-eraikin irisgarriak ausaz hautatzen ditu erasotzeko. Garbiketa-banderak erabil ditzake baliabideek blokeatutako bideak irekitzeko. Defentsa-banderek arriskuan dauden unitateen eta eraikinen taldeak estaltzen dituzte. Geroago, lurreko erasoan entrenatutako miatzaileek etsai-unitateen taldeak erasotzen dituzte.\n\nBeste AI-ekin alderatuta: Warrush-en hasierako oldarkortasuna du, baina jarraipen zabalagoarekin. Cabino-k ez bezala, ez ditu ospitaleak eta ostatuak etengabe lehenesten.\n\nIndarguneak eta ahulguneak: Taktika sorta zabalak hasierako presioa eta garapen jarraitua konbinatzen ditu. Helburuak ausaz hautatzeak balio gutxiagoko eraikinetan ahalegina xahutu dezake. Haren atalaseek ez dute Maxima-ren aurkariaren borroka-indarraren kalkulu zehatza eskaintzen.\n\nAurre egiteko aholkuak: Espero eraso goiztiarra. Babestu janaria eta langileak, oztopatu hedapena eta prestatu miatzaileen erasoetarako entrenamendu aurreratua lortzen badu.
 [AINicowar-Summary]
 Hasierako oldarraldia nekazaritzak, hobekuntzek, defentsak eta miatzaileen erasoek sostengatzen dute.
 [AINone-Profile]
-Estrategia: AIak ez du agindurik ematen.\n\nIndarguneak: esperimentuetarako aurkari aurreikusgarria eta inaktiboa.\n\nAhuleziak: Ez da zabaltzen edo egokitzen.
+Oinarrizko estrategia: Ez du AI agindurik ematen.\n\nIndarguneak: Esperimentuetarako aurkari aurreikusgarri eta inaktiboa.\n\nAhulguneak: Ez da hedatzen eta ez da egokitzen.
 [AINone-Summary]
 Esperimentuetarako kolonia inaktiboa.
 [AINumbi-Profile]
-Oinarrizko estrategia: Lehenik janaria eta biztanleria garatzen ditu, sendaketa, zientzia eta entrenamendua gehitzen ditu, eta gero gerrara jotzen du. Fase nagusiek denborarekin egiten dute aurrera, ez aurkariaren aurrerapenarekin.\n\nEkonomia eta garapena: Eraikinen beharra biztanleriara egokitzen du eta inguruko garia kalkulatzen du. Ondorengo faseek hobekuntzak, defentsak eta hedapena gehitzen dituzte hazten ari den armada sostengatzeko.\n\nErasoa eta defentsa: Borrokalari osasuntsu nahikoa dagoenean edo denbora-muga amaitzean erasotzen du. Gerra-banderak jartzen ditu hautatutako etsai-eraikinetan. Borroka-indarra gehiegi jaisten denean, eraso-banderak kentzen ditu eta hurrengo saiakeraren atalaseak igotzen ditu.\n\nBeste AAekin alderatuta: Castor edo Nicowar baino aurreikusgarriagoa da. Castor-ek arreta handiagoz aztertzen ditu lurra eta helburuaren balioa; Nicowar-ek askoz lehenago egiten du presioa.\n\nIndarguneak eta ahulguneak: Laguntza-azpiegitura zabalak arriskutsu bihur dezake etenik gabeko garapenaren ondoren, baina egutegia agian ez dator bat borrokarekin. Helburu-hautaketa sinpleak eta galeren ondorengo etenaldi luzeagoek erasoak aurreikustea errazten dute.\n\nAurre egiteko aholkuak: Egin presioa haren fase militarra baino lehen. Garatu janaria eta entrenamendua zure erasoen atzean, eta aprobetxatu oldarraldi bat garaitu ondoko etenaldia.\n\nMiaketa: Eraso-errutinak etsai-eraikinen kokapenak zuzenean irakurtzen ditu, ikusgarritasuna egiaztatu gabe.
+Oinarrizko estrategia: Lehenik janaria eta biztanleria garatzen ditu, sendaketa, zientzia eta entrenamendua gehitzen ditu, eta gero gerrara jotzen du. Fase nagusiek denborarekin egiten dute aurrera, ez aurkariaren aurrerapenarekin.\n\nEkonomia eta garapena: Eraikinen beharra biztanleriara egokitzen du eta inguruko garia kalkulatzen du. Ondorengo faseek hobekuntzak, defentsak eta hedapena gehitzen dituzte hazten ari den armada sostengatzeko.\n\nErasoa eta defentsa: Borrokalari osasuntsu nahikoa dagoenean edo denbora-muga amaitzean erasotzen du. Gerra-banderak jartzen ditu hautatutako etsai-eraikinetan. Borroka-indarra gehiegi jaisten denean, eraso-banderak kentzen ditu eta hurrengo saiakeraren atalaseak igotzen ditu.\n\nBeste AI-ekin alderatuta: Castor edo Nicowar baino aurreikusgarriagoa da. Castor-ek arreta handiagoz aztertzen ditu lurra eta helburuaren balioa; Nicowar-ek askoz lehenago egiten du presioa.\n\nIndarguneak eta ahulguneak: Laguntza-azpiegitura zabalak arriskutsu bihur dezake etenik gabeko garapenaren ondoren, baina egutegia agian ez dator bat borrokarekin. Helburu-hautaketa sinpleak eta galeren ondorengo etenaldi luzeagoek erasoak aurreikustea errazten dute.\n\nAurre egiteko aholkuak: Egin presioa haren fase militarra baino lehen. Garatu janaria eta entrenamendua zure erasoen atzean, eta aprobetxatu oldarraldi bat garaitu ondoko etenaldia.\n\nMiaketa: Eraso-errutinak etsai-eraikinen kokapenak zuzenean irakurtzen ditu, ikusgarritasuna egiaztatu gabe.
 [AINumbi-Summary]
 Kolonia pixkanaka eraikitzen du egutegi bati jarraituz, eta gero kopuruaren indarrez erasotzen du.
 [AIEcono-Profile]
-Oinarrizko estrategia: Langileak eta miatzaileak ekoizten ditu, ekonomia zabaltzen du eta etsai-unitateak erakartzen ditu janariaren eta frutaren bidez. Ez du ohiko soldadu-erasorik.\n\nEkonomia eta garapena: Ostatuak eta kofoinak eraikitzen ditu gariaren ondoan, hezkuntza eta mugimendu-entrenamendua gehitzen ditu eta azpiegitura hobetzen du. Janari-hornidura jarraitzen du eta ostatu eta kofoin zaharrak ordezten ditu baliabideetarako sarbidea okertzen denean.\n\nNekazaritza eta aldez aldatzea: Uraren ondoko gari eta zur berriztagarriak babesten ditu. Miatzaileak bidaltzen ditu fruta dagoen tokietara eta etsai-kolonietara, eta janaria iragartzen die etsaiei fruta-hornidura bilatzen duenean. Janari hobeak eta frutak desertoreak erakartzen lagun dezakete.\n\nBeste AAekin alderatuta: Ekonomian espezializatuen dagoen aurkaria da. Cabino-k eta Maxima-k ere fruta bilatzen dute, baina armadekin konbinatzen dute.\n\nIndarguneak eta ahulguneak: Haz daiteke aurkari militarrak agortzen diren bitartean, eta aldez aldatzeak beste lehiatzeko modu bat ematen dio. Ez du soldadurik ekoizten eraso iraunkor bati erantzuteko. Janariak, frutak, geografiak eta garaipen-arauek eragin handia dute haren aukeretan.\n\nAurre egiteko aholkuak: Egin presioa babesik gabeko hedapenean. Hornitu zure ostatuak janariz eta frutaz unitateak mantentzeko. Ez agortu kolonia alferrikako borroketan, hura hazten ari den bitartean.
+Oinarrizko estrategia: Langileak eta miatzaileak ekoizten ditu, ekonomia zabaltzen du eta etsai-unitateak erakartzen ditu janariaren eta frutaren bidez. Ez du ohiko gerlari-erasorik.\n\nEkonomia eta garapena: Ostatuak eta kofoinak eraikitzen ditu gariaren ondoan, hezkuntza eta mugimendu-entrenamendua gehitzen ditu eta azpiegitura hobetzen du. Janari-hornidura jarraitzen du eta ostatu eta kofoin zaharrak ordezten ditu baliabideetarako sarbidea okertzen denean.\n\nNekazaritza eta aldez aldatzea: Uraren ondoko gari eta zur berriztagarriak babesten ditu. Miatzaileak bidaltzen ditu fruta dagoen tokietara eta etsai-kolonietara, eta janaria iragartzen die etsaiei fruta-hornidura bilatzen duenean. Janari hobeak eta frutak desertoreak erakartzen lagun dezakete.\n\nBeste AI-ekin alderatuta: Ekonomian espezializatuen dagoen aurkaria da. Cabino-k eta Maxima-k ere fruta bilatzen dute, baina armadekin konbinatzen dute.\n\nIndarguneak eta ahulguneak: Haz daiteke aurkari militarrak agortzen diren bitartean, eta aldez aldatzeak beste lehiatzeko modu bat ematen dio. Ez du gerlaririk ekoizten eraso iraunkor bati erantzuteko. Janariak, frutak, geografiak eta garaipen-arauek eragin handia dute haren aukeretan.\n\nAurre egiteko aholkuak: Egin presioa babesik gabeko hedapenean. Hornitu zure ostatuak janariz eta frutaz unitateak mantentzeko. Ez agortu kolonia alferrikako borroketan, hura hazten ari den bitartean.
 [AIEcono-Summary]
-Janari ugariko kolonia hazten du eta desertoreengatik lehiatzen da soldadurik ekoitzi gabe.
+Janari ugariko kolonia hazten du eta desertoreengatik lehiatzen da gerlaririk ekoitzi gabe.
 [AIWarrush-Profile]
-Oinarrizko estrategia: Aurkariek garapen ekonomiko edo teknologiko luzea amaitu baino lehen erasotzen du. Laguntza-sare handia beharrezkoa izan aurretik borrokak partida erabakitzea espero du.\n\nEkonomia eta garapena: Sei unitatek uzta bil dezaketenean, ekoizpen-proportzioa lau langile, miatzaile bat eta hiru soldadutan ezartzen du. Entrenamendua betetzen denean barrakoiak gehitzen ditu, baina ostatu berriak mugatzen ditu. Eraikuntza-ahalmen librea ospitaleetara eta mugimendu-entrenamendura bideratzen du maiz.\n\nErasoa eta defentsa: Aurkitutako etsai-eraikinak zaintza-eremuekin markatzen ditu soldaduek presio jarraitua egin dezaten. Ez du arretaz osatutako olatu baten zain egoten. Oztopatzen duen zura kentzen du eta baliabide berriztagarri batzuk babesten ditu.\n\nFrutarekiko politika: Fruta biltzea debekatzen du, frutarekin lotutako armadura-zigorrak saihestuz eta Econo-ren aldez aldatzeko estrategia baztertuz.\n\nBeste AAekin alderatuta: Numbi edo Castor baino gehiago oinarritzen da hasierako presioan. Nicowar-ek ere oldarkor hasten du partida, baina hobekuntza eta taktika programa zabalagoarekin jarraitzen du.\n\nIndarguneak eta ahulguneak: Hasiera motelak zigortzen ditu eta defentsan goiz gastatzera behartzen du. Hobekuntza sistematiko mugatuek eta janari-laguntza urriak garesti bihurtzen dute gelditutako erasoa. Lurrak eta bidaia luzeek hasierako abantaila higatu dezakete.\n\nAurre egiteko aholkuak: Babestu ostatuak eta kofoinak hasieratik. Ordeztu langileak zein defendatzaileak, garatu entrenamendua eta kontraeraso egin oldarraldiak indarra galtzen duenean.\n\nMiaketa: Hasierako miaketa-banderek etsaien hasierako kokapenak zuzenean erabiltzen dituzte. Geroagoko eraso-eremuen kokapenak ikusgarritasuna behar du.
+Oinarrizko estrategia: Aurkariek garapen ekonomiko edo teknologiko luzea amaitu baino lehen erasotzen du. Laguntza-sare handia beharrezkoa izan aurretik borrokak partida erabakitzea espero du.\n\nEkonomia eta garapena: Sei unitatek uzta bil dezaketenean, ekoizpen-proportzioa lau langile, miatzaile bat eta hiru gerlaritan ezartzen du. Entrenamendua betetzen denean barrakoiak gehitzen ditu, baina ostatu berriak mugatzen ditu. Eraikuntza-ahalmen librea ospitaleetara eta mugimendu-entrenamendura bideratzen du maiz.\n\nErasoa eta defentsa: Aurkitutako etsai-eraikinak zaintza-eremuekin markatzen ditu gerlariek presio jarraitua egin dezaten. Ez du arretaz osatutako olatu baten zain egoten. Oztopatzen duen zura kentzen du eta baliabide berriztagarri batzuk babesten ditu.\n\nFrutarekiko politika: Fruta biltzea debekatzen du, frutarekin lotutako armadura-zigorrak saihestuz eta Econo-ren aldez aldatzeko estrategia baztertuz.\n\nBeste AI-ekin alderatuta: Numbi edo Castor baino gehiago oinarritzen da hasierako presioan. Nicowar-ek ere oldarkor hasten du partida, baina hobekuntza eta taktika programa zabalagoarekin jarraitzen du.\n\nIndarguneak eta ahulguneak: Hasiera motelak zigortzen ditu eta defentsan goiz gastatzera behartzen du. Hobekuntza sistematiko mugatuek eta janari-laguntza urriak garesti bihurtzen dute gelditutako erasoa. Lurrak eta bidaia luzeek hasierako abantaila higatu dezakete.\n\nAurre egiteko aholkuak: Babestu ostatuak eta kofoinak hasieratik. Ordeztu langileak zein defendatzaileak, garatu entrenamendua eta kontraeraso egin oldarraldiak indarra galtzen duenean.\n\nMiaketa: Hasierako miatze-banderek etsaien hasierako kokapenak zuzenean erabiltzen dituzte. Geroagoko eraso-eremuen kokapenak ikusgarritasuna behar du.
 [AIWarrush-Summary]
-Soldaduen hasierako presioa, nahita laguntza-ekonomia urriarekin sostengatua.
+Gerlarien hasierako presioa, nahita laguntza-ekonomia urriarekin sostengatua.
 [AICabino-Profile]
-Oinarrizko estrategia: Unitateen ekoizpena eraikuntzaren, hobekuntzen, defentsaren, erasoen eta miaketaren artean banatzen du. Kudeatzaile bereiziek unitateak eskatzen eta erreserbatzen dituzte, ekonomia eta armada batera garatuz.\n\nEkonomia eta garapena: Kokaleku zabala eraikitzen eta hobetzen du, ostatuetako eta dorreetako langileak kudeatzen ditu, eraikinen inguruak garbitzen ditu eta baliabide berriztagarriak babesten ditu. Fruta bilatzen du eta janaria iragartzen du desertoreengatik lehiatzeko.\n\nErasoa eta defentsa: Etsai bat hautatzen du eta ospitaleak lehenesten ditu, gero ostatuak eta gero barrakoiak. Lau eraso arte sostengatzen ditu, normalean zortzi eta hogei soldadu artean esleituz helburu bakoitzari, eskuragarritasunaren eta inguruko etsaien arabera. Defentsa-bandera bereiziak erabiltzen ditu mehatxatutako eraikinen inguruan.\n\nEntrenamendua: Erasotzeko soldadu egoki nahikoa eta barrakoi amaitua behar ditu, baina ez du teknologia gorenera iritsi arte itxaroten. Hobekuntza eta entrenamendu jarraituek geroagoko erasoak indartzen dituzte.\n\nBeste AAekin alderatuta: Nicowar baino asmo argiagoz suntsitzen ditu laguntza-eraikinak. Maxima-ren olatu bilduak baino gehiago sakabanatzen ditu erasoak, unitate-erreserbak erabiliz elkarren lehian dauden beharrak kudeatzeko.\n\nIndarguneak eta ahulguneak: Hazkundea, entrenamendua, defentsa eta hainbat eraso konbinatzen ditu. Janaria eta sendaketa suntsitzeak kolonia osoa ahuldu dezake. Aurkaria ausaz hautatzeak eta eraikin-lehentasun finkoek aukerak gal ditzakete; hainbat erasok indarra bana dezakete.\n\nAurre egiteko aholkuak: Defendatu ospitaleak eta ostatuak. Oztopatu babesik gabeko hedapena eta bildu defendatzaileak eraso indibidualen aurka. Kaltetu janaria edo entrenamendua hainbat fronte sostengatu aurretik.\n\nMiaketa: Eraso-hautatzaileak etsai-eraikinen zerrendak irakurtzen ditu ikusgarritasuna esplizituki egiaztatu gabe. Konparazio ekonomiko batzuek etsaien estatistikak zuzenean erabiltzen dituzte.
+Oinarrizko estrategia: Unitateen ekoizpena eraikuntzaren, hobekuntzen, defentsaren, erasoen eta miaketaren artean banatzen du. Kudeatzaile bereiziek unitateak eskatzen eta erreserbatzen dituzte, ekonomia eta armada batera garatuz.\n\nEkonomia eta garapena: Kokaleku zabala eraikitzen eta hobetzen du, ostatuetako eta dorreetako langileak kudeatzen ditu, eraikinen inguruak garbitzen ditu eta baliabide berriztagarriak babesten ditu. Fruta bilatzen du eta janaria iragartzen du desertoreengatik lehiatzeko.\n\nErasoa eta defentsa: Etsai bat hautatzen du eta ospitaleak lehenesten ditu, gero ostatuak eta gero barrakoiak. Lau eraso arte sostengatzen ditu, normalean zortzi eta hogei gerlari artean esleituz helburu bakoitzari, eskuragarritasunaren eta inguruko etsaien arabera. Defentsa-bandera bereiziak erabiltzen ditu mehatxatutako eraikinen inguruan.\n\nEntrenamendua: Erasotzeko gerlari egoki nahikoa eta barrakoi amaitua behar ditu, baina ez du teknologia gorenera iritsi arte itxaroten. Hobekuntza eta entrenamendu jarraituek geroagoko erasoak indartzen dituzte.\n\nBeste AI-ekin alderatuta: Nicowar baino asmo argiagoz suntsitzen ditu laguntza-eraikinak. Maxima-ren olatu bilduak baino gehiago sakabanatzen ditu erasoak, unitate-erreserbak erabiliz elkarren lehian dauden beharrak kudeatzeko.\n\nIndarguneak eta ahulguneak: Hazkundea, entrenamendua, defentsa eta hainbat eraso konbinatzen ditu. Janaria eta sendaketa suntsitzeak kolonia osoa ahuldu dezake. Aurkaria ausaz hautatzeak eta eraikin-lehentasun finkoek aukerak gal ditzakete; hainbat erasok indarra bana dezakete.\n\nAurre egiteko aholkuak: Defendatu ospitaleak eta ostatuak. Oztopatu babesik gabeko hedapena eta bildu defendatzaileak eraso indibidualen aurka. Kaltetu janaria edo entrenamendua hainbat fronte sostengatu aurretik.\n\nMiaketa: Eraso-hautatzaileak etsai-eraikinen zerrendak irakurtzen ditu ikusgarritasuna esplizituki egiaztatu gabe. Konparazio ekonomiko batzuek etsaien estatistikak zuzenean erabiltzen dituzte.
 [AICabino-Summary]
 Koloniaren hazkundea eta eraso entrenatuak koordinatzen ditu, sendaketa eta janaria lehenetsiz.
 [Algae]
-algak
+Algak
 [Beach size]
 Hondartzaren tamaina
 [Blue]
@@ -1165,13 +1165,13 @@ Uharte bereiziak
 [Conquest only]
 Konkista bakarrik
 [Conquest or prestige]
-Konkista edo prestigioa
+Konkista edo ospea
 [Could not launch this map. Your setup is retained; try again.]
 Ezin izan da mapa hau abiarazi. Zure konfigurazioa mantentzen da; saiatu berriro.
 [Could not load this map. Choose another map or retry.]
 Ezin izan da mapa hau kargatu. Aukeratu beste mapa bat edo saiatu berriro.
 [Crater lakes]
-Krater lakuak
+Krater-lakuak
 [Custom]
 Pertsonalizatua
 [Custom teams]
@@ -1191,15 +1191,15 @@ Denak denen aurka
 [Fruit]
 Fruta
 [Game Rules]
-Joko Arauak
+Joko-arauak
 [Game speed]
 Jokoaren abiadura
 [Generate & play]
-Sortu eta jolastu
+Sortu eta jokatu
 [Give at least one terrain type a nonzero weight.]
 Eman gutxienez lur mota bati zero ez den pisua.
 [Grass weight]
-Belar pisua
+Belarraren pisua
 [Gray]
 Grisa
 [Green]
@@ -1209,7 +1209,7 @@ Zaila
 [Height]
 Altuera
 [Invalid colony count.]
-Kolonia-zenbaketa baliogabea.
+Kolonia kopuru baliogabea.
 [Island size]
 Uhartearen tamaina
 [Islands]
@@ -1229,17 +1229,17 @@ Magenta
 [Map]
 Mapa
 [Match finished]
-Partidua amaitu da
+Partida amaitu da
 [Medium]
 Ertaina
 [Medium - Experimental]
 Ertaina - Esperimentala
 [No AI orders]
-Ez dago AI komandorik
+Ez dago AI agindurik
 [Old islands]
-Artxipelago Malkartsua
+Artxipelago malkartsua
 [Old random]
-Kostalde Zatikatua
+Kostalde zatikatua
 [Open at least one colony to start a match.]
 Ireki gutxienez kolonia bat partida bat hasteko.
 [Open book]
@@ -1279,7 +1279,7 @@ Erreka
 [River width]
 Ibaiaren zabalera
 [Sand weight]
-Harea pisua
+Harearen pisua
 [Select a valid map.]
 Hautatu baliozko mapa bat.
 [Shared control needs a free controller slot (maximum %0).]
@@ -1289,11 +1289,11 @@ Leuntzea
 [Standard]
 Estandarra
 [Start game]
-Hasi jokoa
+Hasi partida
 [Starting workers]
 Hasierako langileak
 [Starting workers: Game Rules tab.]
-Hasierako langileak: Joko Arauak fitxa.
+Hasierako langileak: Joko-arauak fitxa.
 [Swamp]
 Padura
 [Team]
@@ -1303,7 +1303,7 @@ Lurra
 [Victory]
 Garaipena
 [Watch game]
-Ikusi jokoa
+Ikusi partida
 [Water weight]
 Uraren pisua
 [White]
@@ -1313,11 +1313,11 @@ Zabalera
 [Yellow]
 Horia
 [You]
-Zuk
+Zu
 [You + AI]
-Zuk + AI
+Zu + AI
 [You and the AI both issue orders. Uses two controller slots.]
-Zuk eta AIk aginduak ematen dituzue. Bi jokalari-leku erabiltzen ditu.
+Zuk eta AI-ak aginduak ematen dituzue. Bi kontrolatzaile-leku erabiltzen ditu.
 [You vs all]
 Zu denen aurka
 [Your maps]
@@ -1325,7 +1325,7 @@ Zure mapak
 [colonies]
 koloniak
 [Inactive]
-Inaktibo
+Inaktiboa
 [8 workers / 2x speed]
 8 langile / 2x abiadura
 [Changes the pace of the whole simulation.]
@@ -1361,7 +1361,7 @@ Kolonia hau kontrolatzen duzu.
 [controllers]
 giza eta AI jokalariak
 [Use]
-Hautatu
+Erabili
 [Lime]
 Lima berdea
 [Teal]
@@ -1379,13 +1379,13 @@ Toroide-ikuspegi automatikoa
 [toggle torus view]
 Aldatu 2D eta toroide-ikuspegien artean
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2ren aurka 2 aukerak lau kolonia ireki behar ditu. Zu denen aurka aukerak giza jokalari bat behar du.
+2 vs. 2 aukerak lau kolonia ireki behar ditu. Zu denen aurka aukerak giza jokalari bat behar du.
 [Alliance]
 Aliantza
 [Choose a rule to change it.]
 Aukeratu arau bat aldatzeko.
 [Conquest only removes prestige victory; map scripts still apply.]
-Konkista soilik lortutako garaipenak prestigiozko garaipena desgaitzen du; mapa-gidoiak oraindik ere aplikatzen dira.
+Konkista bakarrik aukerak ospe bidezko garaipena baino ez du kentzen; maparen scriptek aplikatzen jarraitzen dute.
 [Control]
 Kolonien kontrola
 [Controller]
@@ -1401,7 +1401,7 @@ Maparen iturria
 [Map-defined]
 Mapak zehaztuta
 [Match format]
-Joko formatua
+Partidaren formatua
 [No current preview]
 Ez dago oraingo aurrebistarik
 [Quick clash: 2x speed; generated maps start with 8 workers.]
@@ -1429,11 +1429,11 @@ Sortu aurrebista mundu hau esploratzeko.
 [More workers jump-start colony growth. Changes the generated map.]
 Langile gehiagok koloniaren hazkundea bizkortzen dute. Ezarpen honek sortutako mapa aldatzen du.
 [No warriors]
-Gudaririk gabe
+Gerlaririk gabe
 [settings Add key to sequence]
 Gehitu tekla sekuentziari
 [settings Add shortcut]
-Gehitu laster-tekla
+Gehitu lasterbidea
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
 Erabili saguaren gurpila esleitutako unitateen kopurua aldatzeko. Aukera hau desaktibatuta badago, eduki sakatuta Ctrl tekla gurpila erabiltzeko. Eduki sakatuta Shift tekla banderaren erradioa doitzeko. Aukera honek beste menuetako saguaren gurpilaren erabilera ere kontrolatzen du.
 [settings Adjust music and voice volume.]
@@ -1471,7 +1471,7 @@ Amaitutako eraikinak
 [settings Construction]
 Eraikuntza
 [settings Controls]
-Joko kontrolak
+Kontrolak
 [settings Could not change display mode. The previous mode was restored.]
 Ezin izan da bistaratzeko modua aldatu. Aurreko modua leheneratu zen.
 [settings Could not save]
@@ -1565,7 +1565,7 @@ Gogoratu unitateen esleipenak partiden artean
 [settings Remove key]
 Kendu tekla
 [settings Remove shortcut]
-Kendu laster-tekla
+Kendu lasterbidea
 [settings Renderer]
 Errendatzaile grafikoa
 [settings Replace conflicting bindings]
@@ -1607,7 +1607,7 @@ Teklatuko lasterbide hau lehendik dauden lasterbideekin gatazkan dago:
 [settings Trigger]
 Aktibazio-gertaera
 [settings Unbound]
-Ez da lasterbiderik esleitu
+Esleitu gabe
 [settings Unit counts assigned to new construction sites.]
 Eraikuntza-gune berriei esleitutako unitate kopurua.
 [settings Unit counts for completed buildings.]
@@ -1767,7 +1767,7 @@ Soilgunearen tamaina
 [Levee]
 Dikea
 [Sloughs]
-Zingirak
+Ur-geldiak
 [Everglades need at least one colony.]
 Zingirek gutxienez kolonia bat behar dute.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
@@ -1851,7 +1851,7 @@ Eraztunen arteko tartea
 [Thread width]
 Harien zabalera
 [Sag]
-Makurdura
+Zintzilikadura
 [Torn strands]
 Hari hautsiak
 [Hub size]
@@ -1867,7 +1867,7 @@ Hondar-bankuak
 [Tide pools]
 Marea-putzuak
 [Lagoons]
-Aintzirak
+Albuferak
 [Central island]
 Erdiko uhartea
 [Tidal flats need at least one colony.]
@@ -2049,7 +2049,7 @@ Okerrena
 [Best]
 Onena
 [Map preview controls]
-Arrastatu ertzak zeharkatzeko. Erabili gurpila zooma egiteko. Eskuineko edo klik bikoitza berrezartzeko.
+Arrastatu ertzak zeharkatzeko. Erabili gurpila zooma egiteko. Egin eskuineko klik edo klik bikoitza berrezartzeko.
 [Map preview drag help]
 Arrastatu mugitzeko; gurpila zooma egiteko.
 [Map preview loading]
@@ -2077,7 +2077,7 @@ Eraikin berriak
 [Stats upgrades]
 Hobekuntzak
 [Stats training]
-Entrenamendu bisitak
+Entrenamendu-bisitak
 [Stats damage dealt]
 Eragindako kaltea
 [Stats damage received]
@@ -2089,7 +2089,7 @@ Urrats honetatik
 [Stats combat deaths]
 Borroka
 [Stats clearing deaths]
-Garbiketa lesioak
+Garbiketako zauriak
 [Stats trapped deaths]
 Harrapatuta
 [Stats unknown deaths]
@@ -2105,9 +2105,9 @@ Janaria/min
 [Stats occupancy]
 Elikadura / sendaketa
 [Stats page one]
-Estatistikak 1/3 >
+Estatistikak 1/3  >
 [Stats page two]
-Estatistikak 2/3 >
+Estatistikak 2/3  >
 [Stats next page]
 Orria (P)
 [Map preview choose another]
@@ -2117,9 +2117,9 @@ Eraikuntza-guneak berehala amaitzen dira, banaketa saltatuz.
 [No growth]
 Hazkunderik ez
 [Units get hungry]
-Unitateak gose dira
+Unitateek gosea dute
 [No hunger]
-Gose gabe
+Goserik ez
 [Scarce (2x slower)]
 Urria (2x motelagoa)
 [Very scarce (4x slower)]
@@ -2139,7 +2139,7 @@ Ekonomia
 [Instant construction]
 Berehalako eraikuntza
 [Higher tiers give every building much more HP.]
-Maila altuagoek osotasun askoz gehiago ematen diote eraikin bakoitzari.
+Maila altuagoek askoz bizi-puntu gehiago ematen dizkiote eraikin bakoitzari.
 [Starting units spawn already leveled up. Changes the generated map.]
 Hasierako unitateak jada mailaz igota sortzen dira. Sortutako mapa aldatzen du.
 [No upgrades]
@@ -2151,11 +2151,11 @@ Beirazko kanoia x2
 [Glass cannon x3]
 Beirazko kanoia x3
 [Fortress x5]
-Gotorleku x5
+Gotorlekua x5
 [Fortress x10]
-Gotorleku x10
+Gotorlekua x10
 [Veteran]
-Beterano
+Beteranoa
 [Elite]
 Elitea
 [Legendary]
@@ -2165,7 +2165,7 @@ Borroka
 [Glass cannon]
 Beirazko kanoia
 [Match ends at the timer; highest prestige at that instant wins.]
-Partida tenporizadorean amaitzen da; unetxo horretan ospe handiena duenak irabazten du.
+Partida tenporizadorearekin amaitzen da; une horretan ospe handiena duenak irabazten du.
 [Off (no timer)]
 Desaktibatuta (tenporizadorerik gabe)
 [90 minutes]
@@ -2177,51 +2177,51 @@ Desaktibatuta (tenporizadorerik gabe)
 [60 minutes]
 60 minutu
 [Stats page three]
-Estatistikak 3/3 >
+Estatistikak 3/3  >
 [Stats blocked units]
-Unitateak S/C
+Unitate blokeatuak S/C
 [Stats blocked buildings]
-Eraikuntzak S/C
+Eraikin blokeatuak S/C
 [Stats blocked buildings swim]
-Igeri S/C
+Igeri-irteerak S/C
 [Stats current blocked units]
-Unitateak C
+Orain blokeatutako unitateak
 [Stats current blocked buildings]
-Eraikuntzak C
+Orain blokeatutako eraikinak
 [Stats growth global]
-Baliabideak +
+Hazkundearen kopurua
 [Stats growth new tiles]
-Baliabideak +#
+Baliabide-lauki berriak
 [Stats growth reductions]
-Baliabideak -
+Murrizketa naturalak
 [Stats growth per minute]
-Garia +/min
+Gari-hazkundea/min
 [Stats growth near 8]
-Baliabideak + <=8
+Hazkundea 8 laukiko tartean
 [Stats growth near 16]
-Baliabideak + <=16
+Hazkundea 16 laukiko tartean
 [Stats growth near 32]
-Baliabideak + <=32
+Hazkundea 32 laukiko tartean
 [Stats low HP 25]
-Osotasuna <=25%
+Bizia ≤ % 25 duten unitateak
 [Stats low HP 50]
-Osotasuna <=50%
+Bizia ≤ % 50 duten unitateak
 [Stats low HP 75]
-Osotasuna <=75%
+Bizia ≤ % 75 duten unitateak
 [Stats low food 25]
-Janaria <=25%
+Janari-erreserba ≤ % 25 duten unitateak
 [Stats low food 50]
-Janaria <=50%
+Janari-erreserba ≤ % 50 duten unitateak
 [Stats low food 75]
-Janaria <=75%
+Janari-erreserba ≤ % 75 duten unitateak
 [Stats structural units]
-Unitateak S
+Egituraz blokeatutako unitateak
 [Stats structural buildings]
-Eraikuntzak S
+Egituraz blokeatutako eraikinak
 [Stats low HP ranges]
-Osotasuna: <=25/50/75%
+Bizia ≤ % 25/50/75
 [Stats low food ranges]
-Janaria: <=25/50/75%
+Janaria ≤ % 25/50/75
 [Emoji]
 Emoji
 [Emoji character]
@@ -2301,7 +2301,7 @@ Pasabideen arteko tartea
 [Breachable highlands]
 Zuloak ireki daitezkeen goi-lurrak
 [Ridge depth]
-Mendilerroen lodiera
+Mendilerroen sakonera
 [Extra open passes]
 Mendate ireki gehigarriak
 [Wooded saddles]
@@ -2443,7 +2443,7 @@ Ur-putzuak
 [Dry patches]
 Eremu lehorrak
 [Sparse]
-Gutxi
+Bakan
 [Normal]
 Normala
 [Many]
@@ -2611,7 +2611,7 @@ Mendigunea ez da mapa honetan sartzen; erabili mapa handiagoa edo kolonia gutxia
 [The pond has no room for that much algae; use a bigger pond.]
 Urmaelak ez du hainbeste algarentzako lekurik; erabili urmael handiagoa.
 [Even Ground]
-Lur berdina
+Lur parekatua
 [Balance]
 Orekatzea
 [Tight passes]
@@ -2655,11 +2655,11 @@ Fruta-baratze komunalak
 [Orchard spacing]
 Fruta-baratzeen arteko tartea
 [Compact]
-Hurbil
+Trinkoa
 [Balanced]
 Orekatua
 [Spread]
-Sakabanatuta
+Sakabanatua
 [The Gauntlet]
 Erronken arena
 [Partition thickness]
@@ -2841,7 +2841,7 @@ Azken gordetzea ez da berretsi. Saiatu berriro, edo irten gorde gabe.
 [quit without saving]
 Irten gorde gabe
 [game closed]
-Jokoa itxi da. Leiho hau itxi dezakezu edo orria berritu berriro jolasteko.
+Jokoa itxi da. Leiho hau itxi dezakezu edo orria berriz kargatu berriro jokatzeko.
 [campaign editor save failed]
 Gordetzea ez da berretsi. Ados-ek berriro saiatzen du; Utzi-k editorearen menura itzultzen du.
 [Actions]
@@ -2897,7 +2897,7 @@ Interfazearen diseinua
 [settings Automatic]
 Automatikoa
 [settings Compact]
-Hurbil
+Trinkoa
 [settings Spacious]
 Zabala
 [More]
@@ -2957,11 +2957,11 @@ Esleituta %0 · Helburua %1
 [Range: %0]
 Irismena: %0
 [Player %0]
-%0 jokalaria
+%0. jokalaria
 [Brush %0]
-%0 eskuila
+%0 pintzela
 [Team %0]
-%0 taldea
+%0. taldea
 [Your colony]
 Zure kolonia
 [%0 / %1 HP · %2]
@@ -2981,25 +2981,25 @@ Defentsa: %0
 [Food: %0 / %1]
 Janaria: %0 / %1
 [View team %0]
-Ikusi %0 taldea
+Ikusi %0. taldea
 [P %0/%1/%2]
 P %0/%1/%2
 [CPU load %0]
-CPU %0%
+CPU % %0
 [Brush %0x%1]
-%0x%1 eskuila
+%0x%1 pintzela
 [Level %0]
-%0 maila
+%0. maila
 [Manage teams (%0)]
 Kudeatu taldeak (%0)
 [Team %0 / Level %1]
-%0 taldea / %1 maila
+%0. taldea / %1. maila
 [Files · %0]
 Fitxategiak · %0
 [Hint %0]
-%0 pista
+%0. pista
 [Objective %0]
-%0 helburua
+%0. helburua
 [Entry %0 of 8 · empty entries are omitted]
 8tik %0 sarrera · sarrera hutsak ez dira erakusten
 [Teams %0/%1]
@@ -3119,7 +3119,7 @@ Lekua
 [Color]
 Kolorea
 [Player / AI]
-Jokalaria / AA
+Jokalaria / AI
 [Group]
 Taldea
 [Forbid]
@@ -3159,19 +3159,19 @@ Aukeratu paisaia bat
 [%0 / Browse]
 %0 / Arakatu
 [%0 colonies · %1]
-%0 koloniak · %1
+%0 kolonia · %1
 [%0 · Team %1]
-%0 · %1 taldea
+%0 · %1. taldea
 [Colonies: %0]
 Koloniak: %0
 [%0 colonies · %1 AI]
-%0 koloniak · %1 AI
+%0 kolonia · %1 AI
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Unitateak
+%0 · %1 unitate
 [settings Level %0]
-Maila %0
+%0. maila
 [settings Match the desktop %0]
 Mahaigainaren arabera (%0)
 [settings Current display %0 %1 %2 %3]
@@ -3179,7 +3179,7 @@ Uneko pantaila-ezarpenak: %0 × %1 · %2 · %3
 [Fairness: %0]
 Zuzentasuna: %0
 [Colony %0]
-Kolonia %0
+%0. kolonia
 [Win chance: %0 · Fitness: %1]
 Irabazteko aukera: %0 · Egokitasuna: %1
 [%0 · Contribution: %1]
@@ -3235,1419 +3235,1419 @@ Zerrenden inertzia
 [List bounce]
 Zerrenden errebotea
 [lan pairing field]
-
+Ostalariaren parekatze-katea (edo WSS URL fidagarria)
 [lan pairing connect]
-
+Parekatu eta konektatu
 [lan discovery instructions]
-
+Hautatu ostalari bat eta itsatsi haren parekatze-katea nortasuna egiaztatzeko.
 [lan discovery unavailable]
-
+LAN bilaketa ez dago erabilgarri. Egiaztatu sare lokalaren baimena edo itsatsi ostalariaren parekatze-katea.
 [lan discovered host %0]
-
+%0 ostalaria aurkitu da — parekatu partidak ikusteko
 [lan connection unavailable]
-
+Ezin da LAN ostalarira iritsi. Egiaztatu sare lokalaren baimena eta ostalariaren parekatze-katea.
 [lan connection verification failed %0]
-
+Ezin izan da LAN ostalaria egiaztatu edo hartara konektatu: %0
 [lan lobby endpoint required]
-
+Erabili ostalariaren egongelaren helbidea
 [settings Artwork]
-
+Artelana
 [settings Original]
-
+Jatorrizkoa
 [settings High resolution]
-
+Bereizmen handia
 [settings Clouds]
-
+Hodeiak
 [settings Show cloud cover above the map.]
-
+Erakutsi hodeiak maparen gainean.
 [settings Cloud shadows]
-
+Hodeien itzalak
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Erakutsi hodeien itzalak lurrean, hodeiak erakutsi edo ez.
 [settings Building particles]
-
+Eraikinen partikulak
 [settings Show smoke and other building particles.]
-
+Erakutsi kea eta eraikinen beste partikula batzuk.
 [settings Magic effects]
-
+Efektu magikoak
 [settings Choose animated magic effects or a simple visible effect.]
-
+Aukeratu efektu magiko animatuak edo efektu ikusgai soil bat.
 [settings Simple]
-
+Soila
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+OpenGL errendatzailea behar du. Gordetako aukera mantentzen da.
 [settings Interface appearance]
-
+Interfazearen itxura
 [settings Panels]
-
+Panelak
 [settings Choose translucent or opaque interface panels.]
-
+Aukeratu interfazeko panel zeharrargitsuak edo opakuak.
 [settings Opaque]
-
+Opakua
 [settings Translucent]
-
+Zeharrargitsua
 [settings Advanced graphics]
-
+Grafiko aurreratuak
 [settings Path lines]
-
+Ibilbide-lerroak
 [settings Choose translucent or opaque unit path lines.]
-
+Aukeratu unitateen ibilbide-lerro zeharrargitsuak edo opakuak.
 [settings Smooth progress indicators]
-
+Aurrerapen-adierazle leunak
 [settings Smooth the moving edges of progress indicators.]
-
+Leundu aurrerapen-adierazleen ertz mugikorrak.
 [settings Decorative interface animation]
-
+Interfazeko animazio apaingarria
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animatu garaipeneko artelana. Mugimendu murriztuak ere desgaitzen du animazio hau.
 [settings Smooth unit motion]
-
+Unitateen mugimendu leuna
 [settings Experimental: move and animate units between game ticks.]
-
+Esperimentala: mugitu eta animatu unitateak jokoaren urratsen artean.
 [settings Smooth fog of war]
-
+Gerra-laino leuna
 [settings Fade the map into and out of the fog of war gradually.]
-
+Mapa pixkanaka sartu eta atera gerra-lainotik.
 [settings Adaptive zoom detail]
-
+Zoomaren araberako xehetasuna
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Sinplifikatu barrak, eremuak, lurra eta unitateak mapa urruntzean, eta mantendu txiki hurbiltzean.
 [settings Text size]
-
+Testuaren tamaina
 [settings Enlarge interface text without changing the map scale.]
-
+Handitu interfazeko testua maparen eskala aldatu gabe.
 [Map momentum]
 Maparen inertzia
 [turn reconnecting]
-
+Ostalariarekiko konexioa galdu da. Berriro konektatzen...
 [turn waiting for players]
-
+Jokalari guztiek kargatu arte itxaroten...
 [turn rejoining]
-
+Partidara itzultzen...
 [turn catching up %0]
-
+Berreskuratzen: %0 txanda atzeratuta
 [turn player reconnecting %0]
-
+%0 berriro konektatzen ari da...
 [turn player lagging %0]
-
+%0 atzeratuta dabil
 [turn player resyncing %0]
-
+%0 berreskuratzen ari da
 [turn player not connected %0]
-
+%0 oraindik ez da konektatu
 [lan host left]
-
+Ostalariak partida utzi du.
 [lan host lost]
-
+Ostalariarekiko konexioa galdu da.
 [lan version mismatch %0]
-
+Ostalariak Globulation 2-ren beste bertsio bat darabil (%0).
 [lan cannot host %0]
-
+Ezin da LAN partida sortu: %0
 [play online]
-
+Jokatu sarean
 [Use in room]
-
+Erabili gelan
 [conn ai]
-
+AI
 [conn behind %0]
-
+Atzeratuta: %0
 [conn behind explanation %0 %1]
-
+Atzerapena: jokalari baten jokoa partidaren erlojuaren atzetik zenbat doan; haren latentzia barne. %0 baino gutxiago normala da; %1 edo gehiagorekin jokalaria motel gisa markatzen da.
 [conn behind]
-
+Atzerapena
 [conn card catching up]
-
+Berreskuratzen
 [conn card colony works]
-
+Zure koloniak bere kabuz lanean jarraitzen du: unitateek beren lanak amaitzen dituzte eta eraikinek martxan jarraitzen dute.
 [conn card desync detail]
-
+Partidaren erregistrotik berriro sartzen, besteek ikusten dutena ikus dezazun. Txosten bat automatikoki bidali da.
 [conn card desync]
-
+Zure jokoa desinkronizatu egin da
 [conn card grace %0]
-
+Zure koloniak bere kabuz lanean jarraitzen du: unitateek beren lanak amaitzen dituzte eta eraikinek martxan jarraitzen dute. %0 dituzu itzultzeko, partidatik kanporatu aurretik.
 [conn card input paused]
-
+Berreskuratzen ari zara · aginduak pausatuta
 [conn card lost]
-
+Konexioa galdu da
 [conn card progress %0 %1 %2]
-
+% %0 · %1/%2 urrats
 [conn card reconnecting %0]
-
+Partidara berriro konektatzen… %0. saiakera
 [conn card replaying %0]
-
+Galdutako %0 erreproduzitzen. Pantaila eguneratuko da orainaldira itzultzean.
 [conn card seconds left %0]
-
+%0 s inguru falta dira
 [conn connections]
-
+Konexioak
 [conn connection]
-
+Konexioa
 [conn delay explanation %0 %1]
-
+Latentzia: zure klikatik denentzat gertatu arte igarotzen den denbora. Zure konexioaren araberakoa da, ez besteena. Ona %0 azpitik, txarra %1 edo gehiagorekin.
 [conn fair]
-
+Onargarria
 [conn good]
-
+Ona
 [conn grid legend]
-
+Lau jokalari baino gehiago daudenean, panelak jokalari bakoitzaren ping-a erakusten du milisegundotan, edo zenbat segundo atzeratuta dagoen.
 [conn jitter %0]
-
+jitter-a %0
 [conn leave match]
-
+Utzi partida
 [conn left]
-
+Joan da
 [conn notice back %0]
-
+%0 itzuli da.
 [conn notice left %0]
-
+%0(e)k partida utzi du.
 [conn notice lost %0 %1]
-
+%0(e)k konexioa galdu du. Partidak jarraitzen du; haren koloniak lanean jarraitzen du berriro konektatu bitartean (%1 falta).
 [conn ping explanation %0 %1]
-
+Ping-a: jokalari baten eta errelearen arteko joan-etorria. Ona %0 azpitik, txarra %1 edo gehiagorekin.
 [conn ping]
-
+Ping-a
 [conn players]
-
+Jokalariak
 [conn poor]
-
+Txarra
 [conn reconnecting]
-
+Berriro konektatzen
 [conn relay %0]
-
+Errelea: %0
 [conn resyncing]
-
+Itzultzen
 [conn slow]
-
+Motela
 [conn unstable]
-
+ezegonkorra
 [conn waiting]
-
+Konektatzen…
 [conn you %0]
-
+%0 (zu)
 [conn you]
-
+Zu
 [conn your delay %0]
-
+Zure latentzia: %0
 [hub account menu]
-
+Kontua
 [hub ai joins after %0]
-
+AI %0 barru sartuko da
 [hub all rooms]
-
+Denak
 [hub browse maps]
-
+Arakatu mapak
 [hub cant reach %0]
-
+Ezin da %0 zerbitzarira iritsi.
 [hub change server]
-
+Aldatu zerbitzaria…
 [hub check code]
-
+Kodea eskatzen dizunean, sartu hau:
 [hub code placeholder]
-
+Kodea edo gonbidapen-esteka
 [hub connecting to %0]
-
+%0 · konektatzen…
 [hub continue with %0]
-
+Jarraitu %0 erabiliz
 [hub create room]
-
+Sortu gela
 [hub find match]
-
+Bilatu partida
 [hub finish in browser]
-
+Amaitu saio-hasiera nabigatzailean ireki den orrian.
 [hub free seat]
-
+Leku librea
 [hub get update]
-
+Lortu eguneraketa
 [hub guest kept on device]
-
+Gonbidatua · gailu honetan gordeta
 [hub invalid code]
-
+Hori ez da gonbidapen-kode edo -esteka bat.
 [hub join by code]
-
+Sartu kodearekin
 [hub join code]
-
+Sartzeko kodea
 [hub join]
-
+Sartu
 [hub leaderboard]
-
+Sailkapena
 [hub linked %0]
-
+Lotutako kontuak · %0
 [hub linked accounts]
-
+Lotutako kontuak
 [hub maps]
-
+Mapak
 [hub no queues]
-
+Zerbitzari honek ez du partida azkarreko ilararik.
 [hub no rooms]
-
+Ez dago gela irekirik orain. Sortu bat eta partekatu gonbidapena.
 [hub offline at %0]
-
+%0 · lineaz kanpo
 [hub offline detail %0]
-
+Berriro saiatuko da %0 s barru. Partida azkarra eta sareko gelak ez daude erabilgarri. Menu nagusiko LAN partidak ez du zerbitzari hau behar.
 [hub online at %0]
-
+%0 · linean
 [hub online settings]
-
+Sareko ezarpenak
 [hub online]
-
+Sarean
 [hub open page again]
-
+Ireki orria berriro
 [hub open rooms]
-
+Gela irekiak
 [hub page opened at %0]
-
+Ireki da: %0. Ez duzu ezer idatzi behar jokoan; saioa berez hasiko da.
 [hub queues unavailable]
-
+Partida azkarra zerbitzariak erantzutean agertuko da.
 [hub quick match unavailable]
-
+Partida azkarra ez dago oraindik erabilgarri bertsio honetan.
 [hub quick match]
-
+Partida azkarra
 [hub ranked]
-
+Sailkapenekoa
 [hub recent matches]
-
+Azken partidak
 [hub refresh]
-
+Freskatu
 [hub retry now]
-
+Saiatu orain
 [hub room match]
-
+Gela
 [hub room name %0]
-
+%0(r)en gela
 [hub room]
-
+Gela
 [hub seats %0 %1]
-
+%0/%1 leku
 [hub server %0]
-
+Zerbitzaria: %0
 [hub sign in browser]
-
+Ireki saio-hasierako orria
 [hub sign in conflict]
-
+Saio-hasiera hori beste kontu batena da jada.
 [hub sign in failed %0]
-
+Saio-hasiera ez da amaitu (%0).
 [hub sign in intro]
-
+Hasi saioa edo sortu kontu bat nabigatzailean. Gonbidatu gisa jokatutako partidak zurekin datoz.
 [hub sign in]
-
+Hasi saioa
 [hub sign out]
-
+Itxi saioa gailu honetan
 [hub signed in as %0]
-
+Saioa hasita: %0.
 [hub signed in on %0]
-
+Saioa hasita hemen: %0
 [hub signing in]
-
+Saioa hasten…
 [hub sim %0]
-
+sim. %0
 [hub unrated]
-
+Puntuatu gabea
 [hub update required at %0]
-
+%0 · eguneraketa behar da
 [hub update required detail %0]
-
+%0 zerbitzariak bertsio berriagoa darabil; beraz, kopia honek ezin du sareko partidetan sartu eguneratu arte. LAN partidek funtzionatzen dute oraindik.
 [hub update required]
-
+Eguneraketa behar da
 [hub server behind]
-
+Zerbitzaria eguneratzeke
 [hub server behind at %0]
-
+%0 · zerbitzaria eguneratzeke
 [hub server behind detail %0]
-
+Kopia hau %0 baino berriagoa da, eta zerbitzaria oraindik ez da eguneratu. Sareko partidak zerbitzaria eguneratzean irekiko dira. LAN partidek funtzionatzen dute oraindik.
 [hub version mismatch]
-
+Bertsio desberdina
 [hub version mismatch at %0]
-
+%0 · bertsio desberdina
 [hub version mismatch detail %0]
-
+%0 zerbitzariak jokoaren beste bertsio bat darabil; beraz, kopia honek ezin du sareko partidetan sartu. LAN partidek funtzionatzen dute oraindik.
 [hub versus %0]
-
+%0(r)en aurka
 [match ai]
-
+AI
 [match downloading map %0]
-
+%0 mapa deskargatzen
 [match failed]
-
+Ezin izan da partida hasi.
 [match leave]
-
+Irten
 [match loading]
-
+Jokoa kargatzen
 [Loading game graphics]
-
+Jokoaren grafikoak kargatzen
 [match map cached]
-
+gailu honetan dago jada
 [match map]
-
+Mapa deskargatzen
 [match relay %0]
-
+%0 errelera konektatuta
 [match seat confirmed]
-
+Lekua berretsita
 [match starting]
-
+Partida hasten
 [match tip flags]
-
+Aholkua: miatze-banderek miatzaileak bidaltzen dituzte mapa ezagutzera; gerra-banderek zure gerlariak biltzen dituzte.
 [match tip input]
-
+Aholkua: zure aginduak denengana iristen dira zure latentziaren ondoren; beste jokalarien konexioek ez zaituzte moteltzen.
 [match tip select]
-
+Aholkua: egin klik bikoitza eraikin batean mota horretako eraikin guztiak hautatzeko.
 [match waiting for players]
-
+Jokalari guztien zain
 [match you %0]
-
+%0 (zu)
 [match player map]
-
+mapa
 [match player loading]
-
+kargatzen
 [match player connecting]
-
+konektatzen
 [match player ready]
-
+prest
 [match player left]
-
+joan da
 [results back to online]
-
+Itzuli sarera
 [results back to room]
-
+Itzuli gelara
 [results defeat]
-
+Porrota
 [results ladder rating %0]
-
+%0 puntuazioa
 [results left]
-
+Partida utzi duzu
 [results match over]
-
+Partida amaitu da
 [results match page]
-
+Partidaren orria
 [results minutes %0]
-
+%0 min
 [results no change]
-
+aldaketarik ez
 [results ranked]
-
+Sailkapenekoa
 [results recording]
-
+Emaitza erregistratzen…
 [results room unrated]
-
+Gelako partida · puntuatu gabea
 [results saved to history]
-
+Zure historian gordeta
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+Zerbitzariak ezin izan du partida hau erreproduzitu; beraz, ez du inoren puntuazioan eraginik. Ikertzeko jakinarazi da; ez duzu ezer egin behar.
 [results verified provisional]
-
+Egiaztatua · behin-behinekoa
 [results verified]
-
+Egiaztatua
 [results verifying detail]
-
+Zerbitzaria partida berriro erreproduzitzen ari da hura berresteko. Normalean minutu bat baino gutxiago.
 [results verifying]
-
+Emaitza egiaztatzen…
 [results victory]
-
+Garaipena
 [room address]
-
+Helbidea
 [room ai %0]
-
+AI-a: %0
 [room browser pairing]
-
+Nabigatzailearekin parekatzea
 [room catalog map]
-
+Katalogoko mapa
 [room change map]
-
+Aldatu mapa…
 [room change rules]
-
+Aldatu arauak…
 [room chat]
-
+Txata
 [room closed seat detail]
-
+Ostalariak itxita
 [room closed seat]
-
+Itxita
 [room colonies]
-
+Koloniak
 [room connecting]
-
+Gelara konektatzen…
 [room copy]
-
+Kopiatu
 [room disconnected]
-
+deskonektatuta
 [room downloading %0]
-
+Mapa deskargatzen: % %0
 [room downloading map]
-
+Mapa deskargatzen…
 [room expired]
-
+Gela itxi da.
 [room generated on server]
-
+Zerbitzarian behin sortua; beraz, denek mapa hau bera jokatzen dute.
 [room guest]
-
+gonbidatua
 [room host %0]
-
+ostalaria: %0
 [room host closed]
-
+Ostalariak gela itxi du.
 [room host]
-
+ostalaria
 [room humans vs ai]
-
+Gizakiak AI-aren aurka
 [room invite code %0]
-
+%0 kodea · aplikazioan, telefonoetan edo nabigatzailean irekitzen da
 [room invite not found]
-
+Gonbidapen hau iraungita dago edo ez da existitzen.
 [room invite only]
-
+Gonbidapenez soilik
 [room invite]
-
+Gonbidatu
 [room joining on network]
-
+Sare honetan sartzen
 [room lan badge]
-
+Sare lokala · puntuatu gabea
 [room lan list hint %0]
-
+Sare bereko besteek %0 ikusiko dute menu nagusiko LAN partiden zerrendan.
 [room leave]
-
+Irten
 [room map changed %0]
-
+Mapa aldatu da: %0.
 [room map failed]
-
+Ezin izan da mapa prestatu
 [room match label]
-
+Gela
 [room member joined %0]
-
+%0 sartu da.
 [room member left %0]
-
+%0 joan da.
 [room member ready %0]
-
+%0 prest dago.
 [room needs two seats]
-
+Gonbidatu lagun bat edo gehitu AI bat hasteko
 [room no map]
-
+Oraindik ez dago maparik
 [room not ready]
-
+Ez dago prest
 [room open for a person]
-
+Pertsona batentzat irekita
 [room open seat detail]
-
+Gonbidapena duen edonork har dezake
 [room open seat]
-
+Leku irekia
 [room person]
-
+Pertsona
 [room preparing map]
-
+Mapa zerbitzarian prestatzen…
 [room public]
-
+Publikoa
 [room ready?]
-
+Prest
 [room ready]
-
+✓ Prest
 [room remove from room]
-
+Kendu gelatik
 [room rule off]
-
+Ez
 [room rule on]
-
+Bai
 [room rules changed]
-
+Arauak aldatu dira.
 [room rules]
-
+Arauak
 [room say something]
-
+Esan zerbait…
 [room seat hint]
-
+Jokalariak beraiek alda daitezke leku ireki batera. Aldatu taldea orekatzeko.
 [room seat options]
-
+Lekuaren aukerak
 [room seats summary %0 %1 %2]
-
+%0 jokalari · %1 AI · %2 libre
 [room seats]
-
+Lekuak
 [room seed]
-
+Hazia
 [room send]
-
+Bidali
 [room set by host]
-
+Ostalariak ezarria
 [room share text %0]
-
+Sartu nire Globulation 2 gelan: %0
 [room share]
-
+Partekatu…
 [room size]
-
+Tamaina
 [room starting match]
-
+Partida hasten…
 [room take seat]
-
+Hartu lekua
 [room team %0]
-
+%0. taldea
 [room update required]
-
+Gela honetan jokoaren beste bertsio bat jokatzen da. Eguneratu bertan sartzeko.
 [room uploaded map]
-
+Igotako mapa
 [room waiting for %0]
-
+%0 prest egon arte itxaroten
 [room waiting for you]
-
+Sakatu «Prest» gertu zaudenean
 [room match over]
-
+Partida amaitu da. Jarri prest beste txanda baterako!
 [room waiting for host]
-
+Ostalariak hasi arte itxaroten
 [room waiting for players %0]
-
+%0 jokalari prest egon arte itxaroten
 [room who can find it]
-
+Nork aurki dezakeen
 [room you created]
-
+Gela sortu duzu.
 [room you joined %0]
-
+%0 gelan sartu zara.
 [room you were removed]
-
+Ostalariak gelatik kendu zaitu.
 [room you]
-
+zu
 [settings Online]
-
+Sarean
 [settings Another server]
-
+Beste zerbitzari bat
 [settings Check]
-
+Egiaztatu
 [settings Checking…]
-
+Egiaztatzen…
 [settings Choose which server you play on and how you sign in to it.]
-
+Aukeratu zein zerbitzaritan jokatzen duzun eta nola hasten duzun saioa bertan.
 [settings Connecting…]
-
+Konektatzen…
 [settings Could not reach this server.]
-
+Ezin izan da zerbitzari honetara iritsi.
 [settings Display name saved.]
-
+Bistaratzeko izena gordeta.
 [settings Display name]
-
+Bistaratzeko izena
 [settings Download or delete my data]
-
+Ezabatu nire kontua
 [settings Enter an https:// address.]
-
+Sartu https:// helbide bat.
 [settings Finish in your browser. It shows the code %0.]
-
+Amaitu nabigatzailean: idatzi %0 kodea eskatzen dizunean.
 [settings Forget]
-
+Ahaztu
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gonbidatuek sortutako izen bat dute; hasi saioa izen bat aukeratzeko.
 [settings Link]
-
+Lotu
 [settings Not a Globulation 2 server.]
-
+Ez da Globulation 2 zerbitzari bat.
 [settings Not linked]
-
+Lotu gabe
 [settings Not signed in.]
-
+Saioa ez dago hasita.
 [settings Open]
-
+Ireki
 [settings Opens your account page on %0.]
-
+Zure kontuaren orria irekitzen du %0 zerbitzarian, eta bertan ezaba dezakezu.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Komunitate batek, klub batek edo zuk zeuk kudeatua. Itsatsi haren helbidea.
 [settings Save]
-
+Gorde
 [settings Server]
-
+Zerbitzaria
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Geletan, partidetan eta sailkapenean erakusten da. 30 egunean behin alda daiteke.
 [settings Sign in with: %0 · queues: %1]
-
+Saioa hasteko: %0 · ilarak: %1
 [settings Sign out on this device]
-
+Itxi saioa gailu honetan
 [settings Sign out]
-
+Itxi saioa
 [settings Switch to this server]
-
+Aldatu zerbitzari honetara
 [settings The last sign-in method can't be unlinked.]
-
+Azken saio-hasiera metodoa ezin da desestekatu.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Globulation 2-ren zerbitzari ofiziala · sailkapeneko ilarak, sailkapenak, mapa-katalogoa
 [settings Unlink]
-
+Desestekatu
 [settings Unlinking is done on the account page.]
-
+Desestekatzea kontuaren orrian egiten da.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Gonbidatu berria izango zara berriro saioa hasi arte. Zure kontua eta partidak zerbitzarian geratzen dira.
 [settings Your account on %0]
-
+Zure kontua %0 zerbitzarian
 [settings compatible with this version]
-
+bertsio honekin bateragarria
 [settings connected]
-
+konektatuta
 [settings connecting…]
-
+konektatzen…
 [settings guest]
-
+gonbidatua
 [settings linked]
-
+lotuta
 [settings plays another version]
-
+beste bertsio bat darabil
 [settings trusted]
-
+fidagarria
 [settings used before]
-
+lehen erabilia
 [settings you were %0 there]
-
+bertan %0 izena zenuen
 [trust invited to room %0]
-
+%0 gelara gonbidatuta
 [trust join as guest]
-
+Sartu gonbidatu gisa
 [trust not official]
-
+Zerbitzari hau ez du Globulation 2 proiektuak kudeatzen.
 [trust remember]
-
+Gogoratu zerbitzari hau
 [trust separate identity %0]
-
+Bertan gonbidatu gisa sartuko zara. Zure %0 kontua, puntuazioa eta historia dauden lekuan geratzen dira.
 [trust title]
-
+Beste zerbitzari bateko partida batean sartu?
 [trust what it sees]
-
+Zerbitzariak zure bistaratzeko izena, zure konexioaren helbidea eta bertan jokatzen dituzun partidak ikusten ditu.
 [settings not connected]
-
+konektatu gabe
 [settings Open Play online to connect.]
-
+Ireki «Jokatu sarean» konektatzeko.
 [hub code]
-
+Kodea
 [results draw]
-
+Berdinketa
 [qm 2 vs 2]
-
+2 vs. 2
 [qm 1 vs 1]
-
+1 vs. 1
 [qm ping about]
-
+Ping-a gutxi gorabehera
 [qm ranked]
-
+Sailkapenekoa
 [qm casual %0]
-
+Lagunartekoa %0
 [qm rated]
-
+Sailkapenekoa
 [qm unrated]
-
+Puntuatu gabea
 [qm solo queue]
-
+bakarkako ilara
 [qm ai joins after %0]
-
+AI %0 barru sartuko da
 [qm fair maps %0]
-
+Mapak: %0
 [qm cooldown %0]
-
+Partida bat baztertu duzu. %0 barru bilatu ahal izango duzu berriro.
 [qm sign in to play ranked]
-
+Sailkapeneko ilarak saioa hasita duten kontuentzat dira; hasi saioa lehenik.
 [online update required]
-
+Jokoaren bertsio hau zaharregia da zerbitzariarentzat; eguneratu sarean jokatzeko.
 [online server behind]
-
+Zerbitzaria oraindik ez da bertsio honetara eguneratu; sareko jokoa eguneratzean irekiko da.
 [online version mismatch]
-
+Zerbitzariak jokoaren beste bertsio bat darabil; kopia honekin ezin da sarean jokatu.
 [qm already searching]
-
+Dagoeneko bilatzen ari zara edo partida batean zaude.
 [online connection problem]
-
+Ezin izan da zerbitzarira iritsi.
 [qm find match]
-
+Bilatu partida
 [qm opponents rated %0 to %1]
-
+%0 eta %1 arteko puntuazioa duten aurkariak
 [qm region %0]
-
+%0 eskualdea
 [qm searching]
-
+Bilatzen
 [qm measuring relays]
-
+Erreleak neurtzen
 [qm joining queue]
-
+Ilaran sartzen
 [qm waiting for a person]
-
+Pertsona baten zain: AI aurkariak desaktibatuta daude.
 [qm ai in %0 rated]
-
+Inor aurkitzen ez bada, puntuazio hurbilena duen AI-aren aurka jokatuko duzu %0 barru
 [qm ai in %0]
-
+Inor aurkitzen ez bada, AI bat sartuko da %0 barru
 [qm ai after %0]
-
+Inor aurkitzen ez bada, AI batek hartuko du lekua %0 igaro ondoren
 [qm allow ai short]
-
+Baimendu AI
 [qm allow ai]
-
+Baimendu AI aurkaria
 [qm cancel]
-
+Utzi
 [qm cancel search]
-
+Utzi bilaketa
 [qm usual wait %0]
-
+ohiko itxaronaldia: %0
 [qm widening]
-
+zabaltzen itxaron ahala
 [qm ais are rated]
-
+(puntuatua: AI-ek ere badute puntuazioa)
 [qm opponent declined]
-
+Zure aurkariak ez du onartu. Ilararen buruan zaude berriro.
 [qm %0 did not accept]
-
+%0(e)k ez du onartu. Ilararen buruan zaude berriro.
 [qm start failed]
-
+Ezin izan da partida hasi. Berriro bilatzen ari zara.
 [qm you declined]
-
+Partida baztertu duzu. Itxaronaldi labur baten ondoren bilatu ahal izango duzu berriro.
 [qm you did not answer]
-
+Ez duzu garaiz onartu. Itxaronaldi labur baten ondoren bilatu ahal izango duzu berriro.
 [qm search ended]
-
+Bilaketa amaitu da.
 [qm try again]
-
+Saiatu berriro
 [online connecting]
-
+Konektatzen…
 [qm no queues]
-
+Zerbitzari honek ez du partida azkarreko ilararik.
 [qm quick match]
-
+Partida azkarra
 [qm phone searching note]
-
+Bilaketak jarraitzen du pantaila honetatik irtenda ere.
 [qm phone intro]
-
+Aukeratu ilara bat behean; bilaketak jarraitzen du nabigatzen duzun bitartean.
 [qm online]
-
+Sarean
 [qm keeps running note]
-
+Bilaketak jarraitzen du pantaila honetatik irtenda ere.
 [qm ai]
-
+AI
 [qm provisional]
-
+behin-behinekoa
 [qm accepted]
-
+✓ onartuta
 [qm declined]
-
+baztertuta
 [qm waiting]
-
+zain…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Partida aurkitu da
 [qm playing an ai]
-
+AI baten aurka jokatzen
 [qm vs]
-
+vs.
 [qm ai explanation rated]
-
+Zure puntuazio-tartean ez zegoen inor bilatzen. Zure puntuaziotik hurbilen dagoen AI-aren aurka jokatuko duzu; emaitzak zure eta AI-aren puntuazioan eragina du.
 [qm ai explanation]
-
+Ez zegoen inor bilatzen. Zure puntuaziotik hurbilen dagoen AI-aren aurka jokatuko duzu; partida hau ez da puntuatzen.
 [qm casual explanation]
-
+Partida berehala hasten da; lagunarteko partidak ez dira puntuatzen.
 [qm accepted button]
-
+Onartuta
 [qm accept]
-
+Onartu
 [qm decline]
-
+Baztertu
 [qm both must accept]
-
+Biek onartu behar dute
 [qm accept explanation]
-
+Bi jokalariek onartu behar dute. Baztertzen baduzu edo denbora agortzen uzten baduzu, ilararen atzera joango zara.
 [qm starting in %0]
-
+%0 barru hasiko da…
 [qm preparing match]
-
+Partida prestatzen…
 [qm match assigned %0 %1]
-
+%0 partida prest dago %1 zerbitzarian, baina konpilazio honek ezin du oraindik sareko partidetara konektatu.
 [online jan]
-
+Urt.
 [online feb]
-
+Ots.
 [online mar]
-
+Mar.
 [online apr]
-
+Api.
 [online may]
-
+Mai.
 [online jun]
-
+Eka.
 [online jul]
-
+Uzt.
 [online aug]
-
+Abu.
 [online sep]
-
+Ira.
 [online oct]
-
+Urr.
 [online nov]
-
+Aza.
 [online dec]
-
+Abe.
 [profile win letter]
-
+I
 [profile loss letter]
-
+G
 [profile draw letter]
-
+B
 [profile history unavailable]
-
+Zerbitzari honek ez du oraindik partiden historiarik eskaintzen.
 [profile downloading replay]
-
+Errepikapena deskargatzen…
 [profile no replay]
-
+Ez dago errepikapenik partida honetarako.
 [profile room with %0]
-
+Gela · %0 kolonia
 [profile with %0 vs %1]
-
+%0(r)ekin, %1(r)en aurka
 [profile vs %0]
-
+%0(r)en aurka
 [profile room]
-
+Gela
 [profile casual]
-
+Lagunartekoa
 [profile ai filled]
-
+AI-ak betea
 [profile provisional %0 games]
-
+behin-behinekoa · %0 partida
 [profile unrated]
-
+puntuatu gabea
 [profile checking]
-
+egiaztatzen…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Partidaren orria
 [profile replay]
-
+Errepikapena
 [profile win rate last %0]
-
+Garaipen-tasa, azken %0
 [profile %0 w %1 l %2 d]
-
+%0 I · %1 G · %2 berdinketa
 [profile typical game]
-
+Partida tipikoa
 [profile median length]
-
+zure iraupen medianoa
 [profile best map]
-
+Mapa onena
 [profile %0 w %1 l]
-
+%0 I · %1 G
 [profile no rated games]
-
+Jokatu sailkapeneko partida bat puntuazioa lortzeko.
 [profile all]
-
+Denak
 [profile rooms]
-
+Gelak
 [profile vs ai]
-
+AI-aren aurka
 [profile matches]
-
+Partidak
 [online loading]
-
+Kargatzen…
 [profile no matches]
-
+Oraindik ez dago partidarik.
 [online load more]
-
+Kargatu gehiago
 [profile title]
-
+Profila
 [profile guest]
-
+gonbidatua
 [profile playing since %0]
-
+%0 geroztik jokatzen
 [profile full profile web]
-
+Profil osoa sarean
 [profile replays note]
-
+Errepikapenak zerbitzaritik deskargatzen dira irekitzean; lokalki gordetakoak Kargatu partida → Errepikapenak atalean geratzen dira.
 [profile web profile]
-
+Web profila
 [maps most played]
-
+Jokatuenak
 [maps most liked]
-
+Gogokoenak
 [maps newest]
-
+Berrienak
 [maps most downloaded]
-
+Deskargatuenak
 [maps any size]
-
+Edozein tamaina
 [maps up to 128]
-
+128 × 128 arte
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 eta handiagoak
 [maps report broken]
-
+Ez du funtzionatzen
 [maps report offensive]
-
+Iraingarria
 [maps report copyright]
-
+Beste norbaiten lana
 [maps report other]
-
+Beste zerbait
 [maps public]
-
+Publikoa
 [maps unlisted]
-
+Zerrendatu gabea
 [maps private]
-
+Pribatua
 [maps cannot read file]
-
+Ezin izan da mapa-fitxategia irakurri.
 [maps file too large]
-
+Mapa-fitxategia handiegia da partekatzeko.
 [maps saved for next room]
-
+Mapa deskargatuta dago; gela bat irekitzean erabiliko da.
 [maps download failed]
-
+Ezin izan da mapa deskargatu.
 [maps %0 colonies]
-
+%0 kolonia
 [maps version %0]
-
+%0 bertsioa
 [maps updated %0]
-
+eguneratua: %0
 [maps downloading]
-
+Mapa deskargatzen…
 [maps like needs account]
-
+Mapak gogoko egiteko saioa hasita izan behar duzu.
 [maps report sent]
-
+Eskerrik asko; moderatzaileek begiratuko dute.
 [maps select a map]
-
+Hautatu mapa bat haren xehetasunak ikusteko.
 [maps by %0]
-
+Egilea: %0
 [maps stats %0 %1 %2]
-
+▶ %0 partida · ⬇ %1 deskarga · ♥ %2
 [maps use in room]
-
+Erabili gela batean
 [maps liked]
-
+Gogokoa
 [maps like]
-
+Gogoko dut
 [maps map page]
-
+Maparen orria
 [maps reported]
-
+Salatuta
 [maps report]
-
+Salatu…
 [maps report why]
-
+Zer gertatzen da mapa honekin?
 [maps search placeholder]
-
+Bilatu mapak edo egileak
 [maps none found]
-
+Ez dago bat datorren maparik.
 [maps any colonies]
-
+Edozein kolonia kopuru
 [maps checking]
-
+Egiaztatzen…
 [maps no version yet]
-
+Oraindik ez da bertsiorik igo.
 [maps rejected]
-
+Baztertua
 [maps did not load %0]
-
+Mapa ez da kargatu: %0
 [maps unknown reason]
-
+ez da arrazoirik eman
 [maps fix and upload again]
-
+konpondu editorean eta igo berriro
 [maps uploaded just now]
-
+oraintxe igoa
 [maps loading on server]
-
+zerbitzarian kargatzen
 [maps %0 plays]
-
+%0 partida
 [maps hidden]
-
+Ezkutatua
 [maps upload again]
-
+Igo berriro…
 [maps delete]
-
+Ezabatu
 [maps update]
-
+Eguneratu…
 [maps upload a map]
-
+Igo mapa bat…
 [maps upload hint]
-
+Zure mapen karpetako edo editoreko .map fitxategiak
 [maps no maps yet]
-
+Oraindik ez duzu maparik partekatu.
 [maps my maps]
-
+Nire mapak
 [maps my maps %0]
-
+Nire mapak (%0)
 [maps browse]
-
+Arakatu
 [maps title]
-
+Mapak
 [maps browse note %0]
-
+%0 katalogoa · bertsio honetan kargatzen diren mapak soilik erakusten dira
 [maps visibility note]
-
+Mapa publikoak Arakatu atalean agertzen dira. Zerrendatu gabeek zure geletan eta beren estekaren bidez funtzionatzen dute. Pribatuek zure geletan soilik.
 [maps use %0]
-
+Erabili %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Izenburua
 [maps field description]
-
+Deskribapena
 [maps who can use it]
-
+Nork erabil dezakeen
 [maps guests unlisted]
-
+Gonbidatuek mapa zerrendatu gabeak eta pribatuak parteka ditzakete; hasi saioa Arakatu atalean argitaratzeko.
 [maps visibility help]
-
+Zerrendatu gabeko mapek zure geletan eta beren estekaren bidez funtzionatzen dute; publikoak Arakatu atalean ere agertzen dira.
 [maps new version of %0]
-
+Igo fitxategi hau %0 maparen bertsio berri gisa.
 [maps upload]
-
+Igo
 [maps uploading]
-
+Igotzen…
 [maps checking detail]
-
+Zerbitzaria mapa kargatzen eta haren aurrebista marrazten ari da. Ordura arte ezin da mapa erabili.
 [maps ready]
-
+Prest
 [maps ready public]
-
+Mapa prest dago eta Arakatu atalean zerrendatuta.
 [maps ready unlisted]
-
+Mapa prest dago. Zerrendatu gabeko mapek zure geletan eta beren estekaren bidez funtzionatzen dute.
 [maps ready private]
-
+Mapa prest dago. Mapa pribatuek zure geletan soilik funtzionatzen dute.
 [maps upload failed]
-
+Igoerak huts egin du
 [maps server read %0 %1]
-
+Zerbitzariak %0 gisa irakurri du, %1 koloniarekin.
 [maps continue in background]
-
+Itxi
 [maps upload a map title]
-
+Igo mapa bat
 [maps update map title]
-
+Eguneratu mapa bat
 [maps upload note]
-
+Zerbitzariak igoera bakoitza kargatzen du erabili aurretik.
 [online just now]
-
+oraintxe
 [online today %0]
-
+gaur %0
 [online yesterday]
-
+atzo
 [online sun]
-
+Ig.
 [online mon]
-
+Al.
 [online tue]
-
+Ar.
 [online wed]
-
+Az.
 [online thu]
-
+Og.
 [online fri]
-
+Or.
 [online sat]
-
+Lr.
 [online %0 weeks ago]
-
+duela %0 aste
 [online %0 months ago]
-
+duela %0 hilabete
 [online %0 years ago]
-
+duela %0 urte
 [maps share online]
-
+Partekatu sarean…
 [maps mine]
-
+Nireak
 [results waiting for players]
-
+Beste jokalariak irten arte itxaroten…
 [results waiting detail]
-
+Emaitza denak partidatik irten ondoren erregistratzen da.
 [results waiting slow]
-
+Konexioa galdu duen jokalari batek 3 minutu ditu gehienez itzultzeko. Emaitza zure historian eta partidaren orrian agertuko da.
 [results verifying slow]
-
+Egiaztapenak ohi baino gehiago irauten du. Emaitza zure historian eta partidaren orrian agertuko da.
 [results rematch]
-
+Errebantxa
 [results join rematch %0]
-
+Sartu %0(r)en errebantxan
 [hub profile history]
-
+Profila eta historia
 [hub my maps]
-
+Nire mapak
 [hub leaderboard %0]
-
+Sailkapena · %0
 [hub leaderboard empty]
-
+Oraindik ez dago jokalari sailkaturik.
 [hub guests not ranked]
-
+Gonbidatuak ez dira sailkatzen. Hasi saioa hemen agertzeko.
 [hub full leaderboard]
-
+Sailkapen osoa
 [settings %0 is no longer linked.]
-
+%0 ez dago lotuta jada.
 [room map read failed]
-
+Ezin izan da mapa-fitxategi hau irakurri.
 [room map upload failed]
-
+Ezin izan da mapa gelarekin partekatu.
 [room map upload failed %0]
-
+Ezin izan da mapa gelarekin partekatu: %0
 [room uploading map]
-
+Mapa gelarekin partekatzen…
 [room premade map shared]
-
+Gelako denek mapa-fitxategi hau jokatzen dute; partida aurretik deskargatzen da.
 [room take a seat to play]
-
+Hartu leku libre bat jokatzeko
 [room waiting for a seat]
-
+Leku guztiak hartuta daude. Bat libratzean har dezakezu.
 [room not seated]
-
+Lekurik gabe
 [room copied]
-
+Kopiatuta
 [room copy failed]
-
+Ezin izan da kopiatu
 [room closed title]
-
+Gela itxita
 [room removed title]
-
+Gelatik kendua
 [room back to online]
-
+Itzuli sarera
 [leave match]
-
+Utzi partida
 [leave match title]
-
+Partida hau utzi?
 [leave lan title]
-
+LAN partida hau utzi?
 [leave rated body]
-
+Sailkapeneko partida hau galduko duzu eta zure puntuazioa jaitsiko da. Besteek jokatzen jarraituko dute, eta ezin izango zara itzuli.
 [leave casual body]
-
+Partida azkar hau porrot gisa zenbatuko da. Besteek jokatzen jarraituko dute, eta ezin izango zara itzuli.
 [leave room body]
-
+Gelako partidatik irtengo zara eta porrot gisa zenbatuko da zure historian. Besteek jokatzen jarraituko dute, eta ezin izango zara itzuli.
 [leave lan body]
-
+Besteek zu gabe jokatzen jarraituko dute, eta ezin izango zara partida honetara itzuli.
 [leave match confirm]
-
+Utzi partida
 [keep playing]
-
+Jarraitu jokatzen
 [results team]
-
+Taldea
 [results quick unrated]
-
+Partida azkarra · puntuatu gabea
 [conn card cannot keep up]
-
+Zure gailuak ezin dio partida honi eutsi
 [conn card cannot keep up body]
-
+Partida bera baino motelago erreproduzitzen du; beraz, ez du harrapatuko. Partida utz dezakezu, edo grafiko-ezarpenak jaitsi eta itxaroten jarraitu.
 [conn card not gaining]
-
+ez da aurreratzen
 [results reason opponents left]
-
+Zure aurkariek partida utzi dute.
 [results reason victory]
-
+Aurkarien kolonia guztiak garaitu dira.
 [results reason defeat]
-
+Zure kolonia garaitu dute.
 [results reason you left]
-
+Partida utzi duzu. Porrot gisa zenbatzen da.
 [results final after end]
-
+Behin betiko emaitza partida amaitzean.
 [pause none left]
-
+Ez da pausarik geratzen
 [pause game left %0]
-
+Pausatu partida (%0 geratzen)
 [pause by %0]
-
+%0(e)k pausatua
 [pause by %0 resumes in %1]
-
+%0(e)k pausatua · %1 barru jarraituko du
 [turn too many actions]
-
+Ekintza gehiegi: batzuk bidaltzeko zain daude oraindik
 [turn no pauses left]
-
+Ez zaizu pausarik geratzen partida honetan
 [turn pause time used %0]
-
+%0(e)k pausa-denbora guztia erabili du: partidak jarraitzen du
 [room seats one person %0 %1]
-
+Jokalari 1 · %0 AI · %1 libre
 [room rules otherwise standard]
-
+Gainerako arau guztiak Estandarrean bezala dira.
 [room browser link]
-
+Nabigatzaileko jokalarientzako esteka
 [room browser link hint]
-
+Nabigatzaileko jokalariek esteka hau itsasten dute sartzeko.
 [room browser link code %0]
-
+Nabigatzaileko jokalariek esteka hau itsasten dute sartzeko. Haien jokoak %0 kodea erakusten du.
 [room copy link]
-
+Kopiatu esteka
 [room lan open seat detail]
-
+Sare honetako edonork har dezake
 [room close title]
-
+Gela itxi?
 [room close body one]
-
+Irteteak gela ixten du denentzat, barruan dagoen beste jokalaria barne.
 [room close body %0]
-
+Irteteak gela ixten du denentzat, barruan dauden beste %0 jokalariak barne.
 [room close confirm]
-
+Itxi gela
 [room stay]
-
+Geratu
 [room colours changed]
-
+Mapa berriak kolore berriak eman dizkie lekuei. Egiaztatu zurea hasi aurretik.
 [room copy by hand]
-
+Kopiatzeak ez du funtzionatu. Kopiatu gonbidapena zuk zeuk:
 [room copy by hand close]
-
+Itxi
 [room copy by hand touch]
-
+Eduki sakatuta esteka eta aukeratu Kopiatu.
 [room copy by hand keys]
-
+Esteka hautatuta dago: sakatu Ctrl+C (⌘C Mac-ean).
 [room code]
-
+Kodea
 [online under a minute]
-
+minutu bat baino gutxiago
 [online about %0 min]
-
+%0 minutu inguru
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+AI aurkaria: %0
 [match relay connected]
-
+Joko-zerbitzarira konektatuta
 [room picker title]
-
+Aukeratu mapa
 [room picker for one]
-
+Gelako jokalari bakarrarentzat
 [room picker for %0]
-
+Gelako %0 jokalarientzat
 [room picker generated]
-
+Sortua
 [room picker premade]
-
+Aurrez egina
 [room picker catalog]
-
+Katalogoa
 [room picker size]
-
+Tamaina
 [room picker colonies]
-
+Koloniak
 [room picker fair]
-
+Hasiera bidezkoa kolonia guztientzat
 [room picker does not fit]
-
+Ez da tamaina honetara egokitzen; probatu beste bat
 [room picker preparing]
-
+Aurrebista prestatzen…
 [room picker generated note]
-
+Paisaia bakoitzak hasiera berdin ona ematen dio kolonia bakoitzari, eta zerbitzariak mapa bera sortzen du denentzat.
 [room picker players %0]
-
+%0 jokalari
 [room picker unreadable]
-
+ezin da irakurri
 [room picker no premade]
-
+Ez da aurrez egindako maparik aurkitu.
 [room picker too small %0]
-
+Mapa honek gelako %0 jokalariek baino kolonia gutxiago ditu.
 [room picker pick premade]
-
+Aukeratu mapa bat hemen ikusteko.
 [room picker catalog intro]
-
+Beste jokalariek partekatutako mapak. Ireki bat eta aukeratu «Erabili gela batean».
 [room picker browse catalog]
-
+Arakatu partekatutako mapak
 [room picker more options]
-
+Aukera gehiago…
 [room picker use]
-
+Erabili mapa hau
 [room map ready title %0]
-
+Jokatu %0
 [room map ready unnamed]
-
+mapa hau
 [room map ready body]
-
+Sortu gela bat eta gonbidatu zure lagunak: gelak mapa hau jokatuko du.
 [game draw]
-
+Berdinketa
 [settings Show colony skins]
 Erakutsi kolonien itxurak
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Desaktibatu gailu honetan unitate, erle-saldo eta eraikinen kolore klasikoak erabiltzeko.
+Desaktibatu gailu honetan unitate, kofoin eta eraikinen kolore klasikoak erabiltzeko.
 [settings Hive Mind]
-
+Erlauntz-adimena
 [settings Enable commander shortcuts]
-
+Gaitu komandantearen lasterbideak
 [settings Command your colony without opening a menu.]
-
+Agindu zure koloniari menurik ireki gabe.
 [settings Allow supervision for new commands]
-
+Baimendu agindu berrien gainbegiratzea
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Komandanteak agindu iraunkorren jarraipena egin dezake. Jarraipenek kredituak erabiltzen dituzte; instalatutako aginduek krediturik gabe jarraitzen dute.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Lasterbide lehenetsiak: Ctrl+Enter agindu bat emateko; Ctrl+Shift+Enter komandantearen lana gelditzeko. Aldatu Kontrolak atalean. Agindu iraunkorren txartelek pausatzeko eta ezeztatzeko kontrol bereiziak dituzte.
 [settings Commander account and credits]
-
+Komandantearen kontua eta kredituak
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Kudeatu kredituak eta erosketak nabigatzailean. Komandantearen laguntza baimenduta dago sailkapeneko partidetan.
 [open commander]
-
+Ireki komandantea
 [stop commander]
-
+Gelditu komandantea
 [settings Recording]
-
+Grabazioa
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Grabatu zure partidak soinudun MP4 bideo gisa. Grabatzeko FFmpeg behar da, libx264 eta AAC kodetzaileekin.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg prest dago.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg ez dago erabilgarri; beraz, grabazioa desaktibatuta dago. Instalatu FFmpeg, ziurtatu PATH-ean dagoela eta egiaztatu berriro.
 [settings Check for FFmpeg again]
-
+Egiaztatu FFmpeg berriro
 [settings Checking for FFmpeg…]
-
+FFmpeg egiaztatzen…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Laster-tekla: %0. Menuetan eta editorean ere funtzionatzen du.
 [settings Change the hotkey]
-
+Aldatu laster-tekla
 [settings Recordings are saved in %0]
-
+Grabazioak hemen gordetzen dira: %0
 [toggle recording]
-
+Hasi edo gelditu grabazioa
 [File selection is unavailable.]
-
+Fitxategiak hautatzea ez dago erabilgarri.
 [Saving custom AI…]
-
+AI pertsonalizatua gordetzen…
 [Could not read the selected JavaScript file.]
-
+Ezin izan da hautatutako JavaScript fitxategia irakurri.
 [Custom AI library saved.]
-
+AI pertsonalizatuen liburutegia gordeta.
 [Storage could not be saved. The previous library is retained.]
-
+Ezin izan da biltegia gorde. Aurreko liburutegia mantentzen da.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Inportatu JavaScript AI fitxategi bakar bat, eta hautatu partida lokal bat prestatzean.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Inportazioek kopia bat gordetzen dute Glob2-n. Eguneratzeak kopia hori ordezkatzen du etorkizuneko partidetarako; gordetako partidek jatorrizko AI-a mantentzen dute.
 [Waiting for file selection or storage…]
-
+Fitxategi-hautaketaren edo biltegiaren zain…
 [Import JavaScript AI]
-
+Inportatu JavaScript AI-a
 [Link development file]
-
+Lotu garapen-fitxategia
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Lotutako fitxategiak partida hastean irakurtzen dira. Berreraiki partida berri bat hasi aurretik. Esteka kentzeak ez du inoiz zure fitxategia ezabatzen.
 [Example AI and authoring guide]
-
+AI adibidea eta idazteko gida
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Oraindik ez dago AI pertsonalizaturik. Inportatu .js fitxategi bildu bat hasteko.
 [Relink]
-
+Lotu berriro
 [Update]
-
+Eguneratu
 [Validate]
-
+Balidatu
 [AI startup and persistent globals are valid.]
-
+AI-aren abiaraztea eta aldagai global iraunkorrak baliozkoak dira.
 [Remove from library]
-
+Kendu liburutegitik
 [AI telemetry]
-
+AI-aren telemetria
 [No accessible AI telemetry.]
-
+Ez dago AI telemetria eskuragarririk.
 [Search fields]
-
+Bilatu eremuak
 [Telemetry unavailable for this recording or controller.]
-
+Telemetria ez dago erabilgarri grabazio edo kontrolatzaile honetarako.
 [Linked]
-
+Lotuta
 [Imported]
-
+Inportatuta
 [Player]
-
+Jokalaria
 [Updated at tick %0]
-
+%0. urratsean eguneratua
 [No values published yet.]
-
+Oraindik ez da baliorik argitaratu.
 [No fields match your search.]
-
+Ez dago bilaketarekin bat datorren eremurik.
 [settings Custom AIs]
-
+AI pertsonalizatuak
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Gehitu JavaScript AI-ak Ezarpenak → AI pertsonalizatuak atalean. Kolonia bakoitzaren AI hautatzailean agertzen dira.
 [Missing custom AI]
-
+AI pertsonalizatua falta da
 [Map repetition failed]
-
+Ezin da mapa hau errepikatu. Erabili scriptik gabeko hasierako mapa bat, edo murriztu errepikapenak eta baseak.
 [repeat map horizontally]
 Errepikatu mapa horizontalki
 [repeat map vertically]
@@ -4655,596 +4655,596 @@ Errepikatu mapa bertikalki
 [bases]
 baseak
 [bases per colony]
-Oinarriak koloniako; oinarria marraztutako maparen talde bat da, bere eraikin eta unitateekin
+Baseak koloniako; base bat marraztutako maparen talde bat da, bere eraikin eta unitateekin
 [stat group population]
-
+Biztanleria
 [stat group food]
-
+Janaria eta ongizatea
 [stat group resources]
-
+Baliabideak
 [stat group buildings]
-
+Eraikinak
 [stat group military]
-
+Armada
 [stat group map]
-
+Lurraldea
 [stat group score]
-
+Puntuazioa
 [stat overview]
-
+Ikuspegi orokorra
 [stat overview about]
-
+Kolonia bakoitzaren zifrak partida osorako. Altuena nabarmentzen da gehiago hobea denean; sakatu zutabe-goiburu bat denboran nola aldatu den ikusteko.
 [stat population]
-
+Biztanleria
 [stat population about]
-
+Koloniak bizirik zenbat unitate zituen: langileak, miatzaileak eta gerlariak batera.
 [stat births]
-
+Jaiotako unitateak
 [stat births about]
-
+Kofoinek zein abiaduratan sortzen zituzten unitate berriak. Banatu langileak, miatzaileak eta gerlariak bereiz ikusteko.
 [stat deaths]
-
+Galdutako unitateak
 [stat deaths about]
-
+Koloniak zein abiaduratan galtzen zituen unitateak, edozein arrazoirengatik: borroka, gosea, garbiketan izandako zauriak edo harrapatuta geratzea.
 [stat net growth]
-
+Biztanleriaren hazkundea
 [stat net growth about]
-
+Jaiotako unitateak ken galdutakoak. Zerotik gora kolonia hazten ari zen; zerotik behera, txikitzen.
 [stat death causes]
-
+Heriotza-kausak
 [stat death causes about]
-
+Zerk hil zituen koloniaren unitateak: borrokak, goseak, baliabideak garbitzean izandako zauriek, irteerarik gabe harrapatuta geratzeak edo beste kausa batzuek.
 [stat conversions]
-
+Bihurketa garbiak
 [stat conversions about]
-
+Beste kolonietatik irabazitako unitateak ken haiei galdutakoak. Unitateek aldez aldatzen dute beste kolonia batek hobeto elikatzen dituenean.
 [stat hunger]
-
+Janari-erreserbak
 [stat hunger about]
-
+Koloniaren unitateek barruan zenbat janari zeramaten. Unitate bakoitza janari-erreserbatik zenbat geratzen zaion kontuan hartuta sailkatzen da: ia hutsik (laurdena edo gutxiago), baxua (erdira arte), erdi beteta (hiru laurdenera arte) edo ondo elikatua. Unitateak ostatu baten bila joaten dira erreserba agortu ahala; beraz, kolonia batek beti ditu batzuk maila baxuan.
 [stat health]
-
+Osasuna
 [stat health about]
-
+Koloniaren unitateak zein osasuntsu zeuden. Unitate bakoitza zenbat bizi-puntu geratzen zaizkion kontuan hartuta sailkatzen da: larria (laurdena edo gutxiago), zauritua (erdira arte), mindua (hiru laurdenera arte) edo osasuntsua.
 [stat seeking food]
-
+Janari bila dauden unitateak
 [stat seeking food about]
-
+Lana utzi duten unitateak ostatu baten bila. Osasun osoa ez dutenak ahultzen ari diren gisa zenbatzen dira.
 [stat in care]
-
+Jaten edo sendatzen ari diren unitateak
 [stat in care about]
-
+Ostatu batean jaten edo ospitale batean sendatzen ari diren unitateak, eta beraz lanean ez daudenak.
 [stat wheat harvested]
-
+Bildutako garia
 [stat wheat harvested about]
-
+Langileek jasotako gari-zamak. Ostatuek gariarekin egiten dituzte otorduak.
 [stat wheat stored]
-
+Gordetako garia
 [stat wheat stored about]
-
+Koloniaren eraikinetan dagoen garia, zerbitzatzeko edo erabiltzeko prest.
 [stat meals]
-
+Zerbitzatutako otorduak
 [stat meals about]
-
+Koloniaren ostatuek zerbitzatutako otorduak, bai bere unitateei bai beste kolonietako bisitariei.
 [stat starvation]
-
+Goseak hildakoak
 [stat starvation about]
-
+Garaiz janaririk aurkitu ez zutelako hildako unitateak.
 [stat healing]
-
+Berreskuratutako osasuna
 [stat healing about]
-
+Koloniaren ospitaleek unitate zaurituei itzulitako bizi-puntuak.
 [stat gathered]
-
+Bildutako baliabideak
 [stat gathered about]
-
+Langileek jasotako baliabide guztien zamak. Banatu baliabide bakoitza ikusteko.
 [stat stored]
-
+Gordetako baliabideak
 [stat stored about]
-
+Koloniaren eraikinetan dauden baliabideak. Banatu baliabide bakoitza ikusteko.
 [stat spending]
-
+Baliabideen gastua
 [stat spending about]
-
+Nora joan ziren entregatutako baliabideak: otorduetara, unitate berrietara, dorreen munizioetara, eraikin berrietara edo hobekuntzetara.
 [stat delivered]
-
+Entregatutako baliabideak
 [stat delivered about]
-
+Langileek eraikinetara eramandako zamak.
 [stat traded]
-
+Merkataritza garbia
 [stat traded about]
-
+Merkatuen bidez jasotako baliabideak ken emandakoak.
 [stat buildings]
-
+Zutik dauden eraikinak
 [stat buildings about]
-
+Koloniak zituen eraikin amaituak. Banatu eraikin mota bakoitza ikusteko.
 [stat construction]
-
+Amaitutako eraikuntza-lanak
 [stat construction about]
-
+Amaitutako eraikuntza-lanak: eraikin berriak, hobekuntzak eta konponketak.
 [stat buildings lost]
-
+Galdutako eraikinak
 [stat buildings lost about]
-
+Etsaiek suntsitutako edo koloniak berak eraitsitako eraikinak.
 [stat blocked buildings]
-
+Sarbiderik gabeko eraikinak
 [stat blocked buildings about]
-
+Sarrerak blokeatuta zituzten eraikinak; unitateak ezin ziren sartu edo atera.
 [stat attack]
-
+Eraso-indarra
 [stat attack about]
-
+Koloniaren gerlarien borroka-indar osoaren puntuazioa: zein gogor eta zein azkar jotzen duten.
 [stat defence]
-
+Defentsa-indarra
 [stat defence about]
-
+Koloniaren babes-dorreen su-indar osoaren puntuazioa.
 [stat hit points]
-
+Bizi-puntuak guztira
 [stat hit points about]
-
+Koloniaren unitate eta eraikin guztien bizi-puntuak batuta.
 [stat damage dealt]
-
+Eragindako kaltea
 [stat damage dealt about]
-
+Koloniak etsaien unitate eta eraikinei eragindako kaltea. Banatu gerlariak, magia eta dorreak ikusteko.
 [stat damage taken]
-
+Jasandako kaltea
 [stat damage taken about]
-
+Etsaiek koloniaren unitate eta eraikinei eragindako kaltea.
 [stat damage traded]
-
+Kalte-balantzea
 [stat damage traded about]
-
+Eragindako kaltea ken jasandakoa. Zerotik gora kolonia borrokak irabazten ari zen.
 [stat combat deaths]
-
+Borrokan hildako unitateak
 [stat combat deaths about]
-
+Etsaiek hildako kolonia honetako unitateak. Banatu langileak, miatzaileak eta gerlariak bereiz ikusteko.
 [stat accuracy]
-
+Asmatutako tiroak
 [stat accuracy about]
-
+Koloniaren dorreek eta miatzaileek egindako tiroetatik helburua jo zutenen proportzioa.
 [stat training]
-
+Entrenamendua
 [stat training about]
-
+Unitateek eskoletara, barrakoietara, zirkuituetara eta igerilekuetara trebetasun bat ikasteko egindako bisitak.
 [stat skills]
-
+Lortutako trebetasunak
 [stat skills about]
-
+Koloniaren unitateek entrenamenduaren bidez lortutako trebetasun-mailak.
 [stat growth nearby]
-
+Baliabideen hazkundea koloniatik gertu
 [stat growth nearby about]
-
+Koloniaren eraikinetatik 32 laukiko tartean zenbat gari, egur eta beste baliabide hazi ziren, hazkunde-puntutan eta ez zamatan. Banatu etxetik zein gertu hazi ziren ikusteko.
 [stat growth map]
-
+Baliabideen hazkundea mapa osoan
 [stat growth map about]
-
+Mapako edozein lekutan baliabideak zenbat hazi ziren, hazkunde-puntutan eta ez zamatan. Berdina da kolonia guztientzat.
 [stat stranded]
-
+Mugitu ezin diren unitateak
 [stat stranded about]
-
+Inguratuta dauden unitateak, zapaltzeko lauki librerik gabe.
 [stat cleared]
-
+Garbitutako baliabideak
 [stat cleared about]
-
+Langileek garbiketa-eremuetan lekua egiteko kendutako baliabideak.
 [stat prestige]
-
+Ospea
 [stat prestige about]
-
+Koloniaren ospea, goi-mailako eraikinekin irabazia. Ospe-helburua duen partida helburua lortzean amaitzen da.
 [stat band combat]
-
+Borroka
 [stat band starvation]
-
+Gosea
 [stat band clearing]
-
+Garbiketako zauriak
 [stat band trapped]
-
+Harrapatuta
 [stat band other]
-
+Besteak
 [stat band starving]
-
+Ia hutsik
 [stat band hungry]
-
+Baxua
 [stat band peckish]
-
+Erdi beteta
 [stat band fed]
-
+Ondo elikatua
 [stat band critical]
-
+Larria
 [stat band wounded]
-
+Zauritua
 [stat band hurt]
-
+Mindua
 [stat band healthy]
-
+Osasuntsua
 [stat band weakening]
-
+Ahultzen
 [stat band looking]
-
+Ostatu bila
 [stat band eating]
-
+Jaten
 [stat band healing]
-
+Sendatzen
 [stat band meals]
-
+Otorduak
 [stat band new units]
-
+Unitate berriak
 [stat band ammunition]
-
+Munizioa
 [stat band construction]
-
+Eraikin berriak
 [stat band upgrades]
-
+Hobekuntzak
 [stat band built]
-
+Eraikiak
 [stat band upgraded]
-
+Hobetuak
 [stat band repaired]
-
+Konponduak
 [stat band destroyed]
-
+Suntsituak
 [stat band demolished]
-
+Eraitsiak
 [stat band melee]
-
+Gerlariak
 [stat band magic]
-
+Magia
 [stat band towers]
-
+Dorreak
 [stat band within 8]
-
+8 laukiko tartean
 [stat band 8 to 16]
-
+8tik 16 laukira
 [stat band 16 to 32]
-
+16tik 32 laukira
 [stat unit units]
-
+unitate
 [stat unit wheat]
-
+gari
 [stat unit meals]
-
+otordu
 [stat unit hit points]
-
+bizi-puntu
 [stat unit resources]
-
+baliabide
 [stat unit buildings]
-
+eraikin
 [stat unit strength]
-
+puntuazioa
 [stat unit damage]
-
+kaltea
 [stat unit shots]
-
+tiro
 [stat unit visits]
-
+bisita
 [stat unit skills]
-
+trebetasun-maila
 [stat unit prestige]
-
+ospea
 [stat axis percent of %0]
-
+%0(r)en %
 [stat axis share of all teams]
-
+Kolonia guztien %
 [stat axis percent of units]
-
+Koloniaren unitateen %
 [stat axis %0 per minute per 100 units]
-
+%0 minutuko, koloniako 100 unitateko
 [stat axis %0 per 100 units]
-
+%0 koloniako 100 unitateko
 [stat axis %0 per minute]
-
+%0 minutuko
 [stat axis %0 so far]
-
+%0, guztira orain arte
 [stat axis %0 minute average]
-
+%0 minutuko batez bestekoa
 [stat view per minute]
-
+Minutuko
 [stat view total]
-
+Guztira
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Banatu motaka
 [stat view percentages]
-
+Guztiaren % gisa
 [stat view percent of units]
-
+Koloniaren % gisa
 [stat view per 100 units]
-
+Koloniaren tamainaren arabera
 [stat view share]
-
+Kolonia guztien zatia
 [stat view highlight none]
-
+Nabarmendu: bat ere ez
 [stat column peak units]
-
+Unitate gehienez
 [stat column born]
-
+Jaioak
 [stat column lost]
-
+Galduak
 [stat column wheat]
-
+Garia
 [stat column damage dealt]
-
+Eragindako kaltea
 [stat column damage taken]
-
+Jasandako kaltea
 [stat column built]
-
+Eraikiak
 [stat column buildings lost]
-
+Galdutako eraikinak
 [stat column prestige]
-
+Ospea
 [stat marker wiped out]
-
+azken unitatea galdua
 [stat marker first combat death]
-
+borrokan hildako lehen unitatea
 [stat marker first building destroyed]
-
+suntsitutako lehen eraikina
 [stat not recorded for this match]
-
+Estatistika hau ez da erregistratu partida honetan.
 [results reason beyond doubt]
-
+Emaitza jada ez zegoen zalantzan.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Kolonia
 [stat page %0 of %1]
-
+%0 / %1  >
 [stat band workers]
-
+Langileak
 [stat band explorers]
-
+Miatzaileak
 [stat band warriors]
-
+Gerlariak
 [stat unit deaths]
-
+heriotza
 [stat unit growth]
-
+hazkundea
 [stat view by unit type]
-
+Unitate motaka
 [stat view by state]
-
+Egoeraka
 [stat view by resource]
-
+Baliabideka
 [stat view by building]
-
+Eraikinka
 [stat view by work]
-
+Lan motaka
 [stat view by cause]
-
+Kausaka
 [stat view by weapon]
-
+Armaka
 [stat view by distance]
-
+Distantziaka
 [stat nothing to show]
-
+Ez dago ezer erakusteko: hau ez da gertatu partida honetan.
 [stat %0 nothing]
-
+%0 (bat ere ez)
 [Match]
-
+Partida
 [Time limit]
-
+Denbora-muga
 [Alliances can change]
-
+Aliantzak alda daitezke
 [Reveal terrain]
-
+Erakutsi lurrak
 [Starting unit level]
-
+Unitateen hasierako maila
 [Starting stockpile]
-
+Hasierako biltegia
 [Regrowth]
-
+Berriro haztea
 [Building strength]
-
+Eraikinen sendotasuna
 [Wounded units retreat]
-
+Zaurituak erretiratzen dira
 [Units can die]
-
+Unitateak hil daitezke
 [Unit training]
-
+Unitateen entrenamendua
 [No stockpile]
-
+Bat ere ez
 [No glass cannon]
-
+Desaktibatuta
 [How quickly harvested resources grow back and spread.]
-
+Bildutako baliabideak zein azkar hazten diren berriro eta hedatzen diren.
 [Units must eat to keep working.]
-
+Unitateek jan egin behar dute lanean jarraitzeko.
 [Summary]
-
+Laburpena
 [All rules]
-
+Arau guztiak
 [Show all rules]
-
+Erakutsi arau guztiak
 [Choose a ruleset]
-
+Aukeratu arau multzoa
 [Reset to %0]
-
+Berrezarri %0
 [ruleset one change %0]
-
+%0 + aldaketa 1
 [ruleset changes %0 %1]
-
+%0 + %1 aldaketa
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Partida hau ezin da amaitu. Aktibatu ospe bidezko garaipena edo ezarri denbora-muga bat.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Ospea normalean 13-28 minuturen buruan agertzen da; beraz, 30 minutuko mugak askotan berdinketan amaitzen du.
 [Blitz]
-
+Tximista
 [ruleset blitz description]
-
+Hasiera azkarra, amaiera goiztiarra
 [Gentle]
-
+Leuna
 [ruleset gentle description]
-
+Arau barkaberak lehen partida baterako
 [Sandbox]
-
+Jolastokia
 [ruleset sandbox description]
-
+Borrokarik ez, goserik ez, eraiki edozer
 [Bloodbath]
-
+Odol-bainua
 [ruleset bloodbath description]
-
+Armada hauskor eta beldurgabeak
 [Siege]
-
+Setioa
 [ruleset siege description]
-
+Gotorleku-hormak eta gerra luzeak
 [Lean years]
-
+Urte urriak
 [ruleset lean years description]
-
+Baliabideak nekez berritzen dira
 [Gold rush]
-
+Urrearen sukarra
 [ruleset gold rush description]
-
+Mapan dagoena da dagoen guztia
 [Elite ranks]
-
+Elite-mailak
 [ruleset elite ranks description]
-
+Hasi trebatuta, ez trebatu gehiago
 [Shifting alliances]
-
+Aliantza aldakorrak
 [ruleset shifting alliances description]
-
+Taldeak alda daitezke 60 minutuko lasterketan
 [Probability victory]
-
+Garaipen probabilistikoa
 [Off (play it out)]
-
+Desaktibatuta (jokatu amaitu arte)
 [95% sure]
-
+% 95eko ziurtasuna
 [97% sure]
-
+% 97ko ziurtasuna
 [99% sure]
-
+% 99ko ziurtasuna
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Partida amaitzen du ereduak hautatutako ziurtasuna lortzean. Ikusleek aurreikusitako garaipen-aukerak ikus ditzakete estatistiketan.
 [Changed from %0: %1]
-
+%0 arau multzotik aldatua: %1
 [Combat is off, so the rules below have no effect.]
-
+Borroka desaktibatuta dago; beraz, beheko arauek ez dute eraginik.
 [%0 more rules are at their Standard values.]
-
+Beste %0 arau Estandarreko balioetan daude.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Jokalariek maparen lurrak hasieratik ikusten dituzte; etsaien unitateak ezkutuan geratzen dira.
 [Each team starts with extra resources in its shared pool.]
-
+Talde bakoitza baliabide gehigarriekin hasten da bere biltegi partekatuan.
 [Units hit harder but have less HP and armor.]
-
+Unitateek gogorrago jotzen dute, baina bizi-puntu eta blindaje gutxiago dute.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Taldeek elkarri eraso diezaiokete. Desaktibatu partida baketsu baterako.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Unitate zaurituak sendatzera itzultzen dira hil arte borrokatu beharrean.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Unitateak hil egiten dira bizi-puntuak agortzean. Desaktibatu bizi-puntu 1ean gelditzeko.
 [Units gain levels at schools.]
-
+Unitateek mailak irabazten dituzte eskoletan.
 [stat group work]
-
+Langileen denbora
 [stat worker time]
-
+Langileek nola erabili zuten denbora
 [stat worker time about]
-
+Koloniaren langileak zertan ari ziren unean-unean: eraikin baterako lanean, bandera batean lanean, entrenatzen, jaten, sendatzen, goseak edo zaurituta zain ostatu edo ospitale librerik gabe, edo geldirik egitekorik gabe. Kolonia osasuntsu batek langile gehienak lanean ditu, gutxi geldirik eta bat ere ez zain.
 [stat idle workers]
-
+Langile geldiak
 [stat idle workers about]
-
+Langileek egitekorik gabe igarotako denboraren zatia. Balio altuek lana baino langile gehiago daudela esan nahi dute; zerotik gertu, langile guztiak lanpetuta daude eta lanak zain egon daitezke.
 [stat work by job]
-
+Langileak zertan ari ziren
 [stat work by job about]
-
+Zenbat langilek hornitzen zuten eraikin mota bakoitza: kofoinak (unitate berriak sortzeko), ostatuak (otorduak egiteko), eraikitzen edo hobetzen ari ziren eraikinak, edo beste eraikin batzuk, hala nola dorreak, eskolak eta barrakoiak.
 [stat haul distance]
-
+Baliabideetarako distantzia
 [stat haul distance about]
-
+Batez beste, uzta biltzen ari zen langile bat hornitzen zuen eraikinetik zein urrun zegoen, mapako laukitan lerro zuzenean.
 [stat hauling]
-
+Bila joan eta eraman
 [stat hauling about]
-
+Eraikinak hornitzen zituzten langileak nola banatzen ziren: baliabide batera oinez, hura biltzen, itzultzen eta entregatzen edo iritsi daitekeen baliabide baten zain. Gehiena oinez ibiltzea da; beraz, zenbat eta gertuago baliabideak, orduan eta gehiago egiten da.
 [stat eating time]
-
+Jatera doazen langileak
 [stat eating time about]
-
+Zenbat langile zeuden lanetik kanpo jateko: ostatu batera oinez, ostatu baten barruan jaten, edo gose, haiek har ditzakeen ostaturik gabe. Ostaturik gabeko langileek esan nahi dute kolonia bere ostatuak edo haien janaria baino handiagoa dela.
 [stat inn distance]
-
+Ostaturako distantzia
 [stat inn distance about]
-
+Batez beste bidean, langile goseak zihoazen ostatutik zein urrun zeuden, mapako laukitan lerro zuzenean. Bidaia osoa hau baino bi aldiz handiagoa da gutxi gorabehera. Balio altuek esan nahi dute ostatuak langileen lanlekutik urrun daudela.
 [stat warriors]
-
+Gerlariak
 [stat warriors about]
-
+Koloniak zenbat gerlari zituen. Banatu zenbat zeuden etxetik gertu, etsaien kolonia batetik gertu edo lur irekian ikusteko. Bi kolonietatik gertu dagoen lurra etxetzat hartzen da.
 [stat warrior level]
-
+Gerlarien batez besteko eraso-maila
 [stat warrior level about]
-
+Koloniaren gerlarien batez besteko eraso-maila, eraso-abiadura eta eraso-indarra berdin kontatuz, jokoak erakusten duen 1etik 4rako eskalan. Barrakoiek igotzen dute; entrenatu gabeko gerlari berriek jaisten dute.
 [stat warrior duties]
-
+Gerlariak zertan ari ziren
 [stat warrior duties about]
-
+Koloniaren gerlariak nola banatzen ziren: gerra-bandera batera bidaliak, borroka ospitale baterako uzteko adina zaurituak (sendatzen ari direnak barne) eta libreak.
 [stat intruders]
-
+Etsaien gerlariak etxean
 [stat intruders about]
-
+Zenbat etsai-gerlari zeuden koloniaren eraikinetatik 16 laukiko tartean. Bi kolonia elkarren ondoan daudenean, bakoitzak bestearen defendatzaileak zenbatzen ditu.
 [stat home defence]
-
+Etxeko defentsa-indarraren aldea
 [stat home defence about]
-
+Koloniaren gerlariek bere eraikinen ondoan duten indarra ken bertako etsai-gerlariena, gerlari bakoitza eta haren eraso-maila bakoitza kontatuz. Zerotik behera, kolonia etxean gainditua zegoen.
 [stat combat death places]
-
+Non hil ziren unitateak borrokan
 [stat combat death places about]
-
+Koloniaren unitateak non zeuden hil zituztenean: bere eraikinetatik gertu, etsai baten eraikinetatik gertu edo kolonien arteko lur irekian. Etxeko galerek kolonia erasotzen ari zirela esan nahi dute; etsai-kolonia batekoek, berak erasotzen zuela. Bi kolonietatik gertu dagoen lurra etxetzat hartzen da.
 [stat band working]
-
+Lanean
 [stat band flag work]
-
+Bandera batean
 [stat band idle]
-
+Geldirik
 [stat band training]
-
+Entrenatzen
 [stat band unserved]
-
+Ostatu edo ospitale librerik ez
 [stat band swarms]
-
+Kofoinak
 [stat band inns]
-
+Ostatuak
 [stat band sites]
-
+Eraikitzen eta hobetzen
 [stat band other buildings]
-
+Beste eraikinak
 [stat band to resource]
-
+Baliabide batera oinez
 [stat band harvesting]
-
+Biltzen
 [stat band carrying]
-
+Itzultzen zamarekin
 [stat band delivering]
-
+Entregatzen edo zain
 [stat band walking to inn]
-
+Ostatu batera oinez
 [stat band no inn]
-
+Ostatu librerik ez
 [stat band at home]
-
+Etxean
 [stat band at enemy]
-
+Etsaien kolonia batean
 [stat band in the open]
-
+Lur irekian
 [stat band war flag]
-
+Gerra-bandera batean
 [stat band seeking healing]
-
+Sendatzeko bila
 [stat band free]
-
+Libre
 [stat unit workers]
-
+langile
 [stat unit worker time]
-
+langileen denbora
 [stat unit working workers]
-
+eraikinak hornitzen dituzten langileak
 [stat unit squares]
-
+lauki
 [stat unit warriors]
-
+gerlari
 [stat unit attack level]
-
+eraso-maila
 [stat unit enemy warriors]
-
+etsai-gerlari
 [stat unit strength count]
-
+indarra
 [stat view by place]
-
+Lekuka

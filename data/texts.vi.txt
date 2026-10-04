@@ -1,11 +1,11 @@
 [AI strategy]
-Chiến thuật AI
+Chiến lược AI
 [start recording]
-
+Bắt đầu quay
 [stop recording]
-
+Dừng quay
 [finalizing recording]
-
+Đang hoàn tất bản quay…
 [AIMaxima-Summary]
 Cân bằng tăng trưởng bền vững và huấn luyện, rồi tập hợp quân thành từng đợt.
 [AIMaxima-Profile]
@@ -55,9 +55,9 @@ Thêm phím tắt
 [AI Descriptions]
 Mô tả AI
 [AI]
-trí tuệ nhân tạo
+AI
 [ai]
-trí tuệ nhân tạo
+AI
 [AICastor-Description]
 Xây dựng và huấn luyện, điều chỉnh tăng trưởng theo nguồn lương thực.
 [AICastor]
@@ -217,7 +217,7 @@ Dọn tài nguyên
 [clearingflag]
 Cờ khai quang
 [closed]
-Đóng
+Đã đóng
 [combined vision]
 Tầm nhìn chung
 [compile]
@@ -581,9 +581,9 @@ trong đó có
 [ok]
 Đồng ý
 [old islands terrain]
-Quần Đảo Gồ Ghề
+Quần đảo gồ ghề
 [old random terrain]
-Bờ Biển Chia Cắt
+Bờ biển chia cắt
 [on press]
 Khi nhấn
 [On the spot]
@@ -1121,7 +1121,7 @@ Chiến lược chính: Dùng ưu tiên phản ứng theo tình hình để phá
 [AICortex-Summary]
 Duy trì các mũi tiến công bằng lương thực và chữa trị ở tiền tuyến.
 [AINicowar-Profile]
-Chiến lược chính: Kết hợp tăng trưởng, huấn luyện, nâng cấp và chiến tranh qua các điều kiện chồng lấn. Có thể vừa mở rộng vừa đánh, rồi chuyển nỗ lực kinh tế sang hồi phục khi nuôi quân thất bại.\n\nMở đầu: Cấu hình hiếu chiến đi kèm trò chơi bắt đầu chuẩn bị chiến tranh khi có tổng cộng năm đơn vị, cho phép đánh khi có năm chiến binh, kể cả cấp không. Nhắm tới ba cờ tấn công, mỗi cờ năm chiến binh. Tệp chiến lược tùy chỉnh có thể đổi các ngưỡng này.\n\nKinh tế và phát triển: Mở rộng năng lực lương thực và sinh sản, huấn luyện công nhân, phát triển bơi và di chuyển, nâng cấp công trình. Điều chỉnh nhân lực cung cấp thức ăn, phản ứng với đói và tìm trái cây.\n\nTấn công và phòng thủ: Chọn ngẫu nhiên công trình địch có thể tới để đánh. Có thể dùng cờ dọn dẹp mở đường bị tài nguyên chắn. Cờ phòng thủ che chở các cụm đơn vị và công trình bị đe dọa. Về sau, trinh sát được huấn luyện đánh mặt đất nhắm vào các nhóm đơn vị địch.\n\nSo với các AI khác: Có tính hiếu chiến sớm như Warrush nhưng phát triển tiếp toàn diện hơn. Khác Cabino, không nhất quán ưu tiên bệnh viện và quán trọ.\n\nĐiểm mạnh và yếu: Nhiều chiến thuật kết hợp áp lực sớm với phát triển liên tục. Chọn mục tiêu ngẫu nhiên có thể tốn sức vào công trình kém giá trị. Các ngưỡng không cung cấp ước tính chi tiết về sức chiến đấu đối phương như Maxima.\n\nCách đối phó nên thử: Dự liệu một đợt đánh sớm. Bảo vệ lương thực và công nhân, tranh chấp mở rộng, chuẩn bị chống trinh sát tấn công nếu nó đạt huấn luyện cao cấp.
+Chiến lược chính: Kết hợp tăng trưởng, huấn luyện, nâng cấp và chiến tranh qua các điều kiện chồng lấn. Có thể vừa mở rộng vừa đánh, rồi chuyển nỗ lực kinh tế sang hồi phục khi nuôi quân thất bại.\n\nMở đầu: Cấu hình hiếu chiến đi kèm trò chơi bắt đầu chuẩn bị chiến tranh khi có tổng cộng năm đơn vị, cho phép đánh khi có năm chiến binh, kể cả cấp không. Nhắm tới ba cờ tấn công, mỗi cờ năm chiến binh. Tệp chiến lược tùy chỉnh có thể đổi các ngưỡng này.\n\nKinh tế và phát triển: Mở rộng năng lực lương thực và sinh sản, huấn luyện công nhân, phát triển bơi và di chuyển, nâng cấp công trình. Điều chỉnh nhân lực cung cấp thức ăn, phản ứng với đói và tìm trái cây.\n\nTấn công và phòng thủ: Chọn ngẫu nhiên công trình địch có thể tới để đánh. Có thể dùng cờ khai quang mở đường bị tài nguyên chắn. Cờ phòng thủ che chở các cụm đơn vị và công trình bị đe dọa. Về sau, trinh sát được huấn luyện đánh mặt đất nhắm vào các nhóm đơn vị địch.\n\nSo với các AI khác: Có tính hiếu chiến sớm như Warrush nhưng phát triển tiếp toàn diện hơn. Khác Cabino, không nhất quán ưu tiên bệnh viện và quán trọ.\n\nĐiểm mạnh và yếu: Nhiều chiến thuật kết hợp áp lực sớm với phát triển liên tục. Chọn mục tiêu ngẫu nhiên có thể tốn sức vào công trình kém giá trị. Các ngưỡng không cung cấp ước tính chi tiết về sức chiến đấu đối phương như Maxima.\n\nCách đối phó nên thử: Dự liệu một đợt đánh sớm. Bảo vệ lương thực và công nhân, tranh chấp mở rộng, chuẩn bị chống trinh sát tấn công nếu nó đạt huấn luyện cao cấp.
 [AINicowar-Summary]
 Đánh nhanh đầu trận, được hỗ trợ bởi nông nghiệp, nâng cấp, phòng thủ và đòn đánh trinh sát.
 [AINone-Profile]
@@ -1129,7 +1129,7 @@ Chiến lược: AI không đưa ra mệnh lệnh.\n\nĐiểm mạnh: Một đ�
 [AINone-Summary]
 Một thuộc địa nhàn rỗi cho các thí nghiệm.
 [AINumbi-Profile]
-Chiến lược chính: Xây nền lương thực và dân số trước, bổ sung chữa trị, khoa học và huấn luyện, rồi chuyển sang chiến tranh. Các giai đoạn lớn tiến theo thời gian thay vì tiến độ đối phương.\n\nKinh tế và phát triển: Tăng nhu cầu công trình theo dân số và ước tính lúa mì gần đó. Các giai đoạn sau bổ sung nâng cấp, phòng thủ và mở rộng để nuôi đội quân đang lớn.\n\nTấn công và phòng thủ: Đánh khi đủ quân khỏe mạnh hoặc hết thời gian chờ. Đặt cờ chiến tranh lên công trình địch được chọn ngẫu nhiên. Khi sức chiến đấu xuống quá thấp, gỡ cờ tấn công và tăng ngưỡng cho lần sau.\n\nSo với các AI khác: Dễ dự đoán hơn Castor hay Nicowar. Castor xét địa hình và giá trị mục tiêu kỹ hơn; Nicowar gây áp lực sớm hơn nhiều.\n\nĐiểm mạnh và yếu: Hạ tầng hỗ trợ rộng có thể khiến nó nguy hiểm sau giai đoạn phát triển không bị cản, nhưng thời gian biểu có thể lệch diễn biến chiến trận. Chọn mục tiêu đơn giản và nghỉ lâu hơn sau tổn thất khiến các đòn đánh dễ đoán.\n\nCách đối phó nên thử: Gây áp lực trước giai đoạn quân sự. Phát triển lương thực và huấn luyện phía sau các đợt tấn công của bạn, tận dụng khoảng nghỉ sau khi đẩy lùi một cuộc đánh.\n\nTrinh sát: Quy trình tấn công đọc trực tiếp vị trí công trình địch mà không kiểm tra tầm nhìn.
+Chiến lược chính: Xây nền lương thực và dân số trước, bổ sung chữa trị, khoa học và huấn luyện, rồi chuyển sang chiến tranh. Các giai đoạn lớn tiến theo thời gian thay vì tiến độ đối phương.\n\nKinh tế và phát triển: Tăng nhu cầu công trình theo dân số và ước tính lúa mì gần đó. Các giai đoạn sau bổ sung nâng cấp, phòng thủ và mở rộng để nuôi đội quân đang lớn.\n\nTấn công và phòng thủ: Đánh khi đủ quân khỏe mạnh hoặc hết thời gian chờ. Đặt cờ chiến đấu lên công trình địch được chọn ngẫu nhiên. Khi sức chiến đấu xuống quá thấp, gỡ cờ tấn công và tăng ngưỡng cho lần sau.\n\nSo với các AI khác: Dễ dự đoán hơn Castor hay Nicowar. Castor xét địa hình và giá trị mục tiêu kỹ hơn; Nicowar gây áp lực sớm hơn nhiều.\n\nĐiểm mạnh và yếu: Hạ tầng hỗ trợ rộng có thể khiến nó nguy hiểm sau giai đoạn phát triển không bị cản, nhưng thời gian biểu có thể lệch diễn biến chiến trận. Chọn mục tiêu đơn giản và nghỉ lâu hơn sau tổn thất khiến các đòn đánh dễ đoán.\n\nCách đối phó nên thử: Gây áp lực trước giai đoạn quân sự. Phát triển lương thực và huấn luyện phía sau các đợt tấn công của bạn, tận dụng khoảng nghỉ sau khi đẩy lùi một cuộc đánh.\n\nTrinh sát: Quy trình tấn công đọc trực tiếp vị trí công trình địch mà không kiểm tra tầm nhìn.
 [AINumbi-Summary]
 Xây thuộc địa dần theo thời gian biểu, rồi tấn công bằng số đông.
 [AIEcono-Profile]
@@ -1137,7 +1137,7 @@ Chiến lược chính: Sản xuất công nhân và trinh sát, mở rộng kin
 [AIEcono-Summary]
 Phát triển thuộc địa dồi dào thức ăn và thu hút đơn vị đổi phe mà không tạo chiến binh.
 [AIWarrush-Profile]
-Chiến lược chính: Đánh trước khi đối thủ hoàn thành quá trình phát triển kinh tế hoặc công nghệ dài. Mong giao tranh quyết định ván đấu trước khi cần mạng lưới hỗ trợ lớn.\n\nKinh tế và phát triển: Khi sáu đơn vị có thể thu hoạch, đặt tỷ lệ sản xuất thành bốn công nhân, một trinh sát và ba chiến binh. Thêm doanh trại khi chỗ huấn luyện đầy, nhưng hạn chế quán trọ mới. Năng lực xây dựng dư thường dành cho bệnh viện và huấn luyện di chuyển.\n\nTấn công và phòng thủ: Đánh dấu công trình địch đã khám phá bằng vùng canh gác để chiến binh liên tục gây áp lực. Không chờ một đợt quân được tập hợp cẩn thận. Dọn gỗ cản đường và bảo vệ một phần tài nguyên tái sinh.\n\nChính sách trái cây: Cấm thu hoạch trái cây để tránh giảm giáp do trái cây, không theo chiến lược thu hút đổi phe của Econo.\n\nSo với các AI khác: Chú trọng áp lực sớm hơn Numbi hay Castor. Nicowar cũng mở đầu hiếu chiến nhưng tiếp tục bằng chương trình nâng cấp và chiến thuật rộng hơn.\n\nĐiểm mạnh và yếu: Trừng phạt mở đầu chậm và buộc chi sớm cho phòng thủ. Nâng cấp hệ thống hạn chế cùng hỗ trợ thức ăn ít khiến tấn công đình trệ rất tốn kém. Địa hình và hành trình dài có thể bào mòn lợi thế ban đầu.\n\nCách đối phó nên thử: Bảo vệ quán trọ và tổ từ sớm. Bù công nhân lẫn quân thủ, phát triển huấn luyện, rồi phản công khi đợt đánh nhanh mất đà.\n\nTrinh sát: Cờ khám phá mở đầu dùng trực tiếp vị trí xuất phát của địch. Việc đặt vùng tấn công về sau cần tầm nhìn.
+Chiến lược chính: Đánh trước khi đối thủ hoàn thành quá trình phát triển kinh tế hoặc công nghệ dài. Mong giao tranh quyết định ván đấu trước khi cần mạng lưới hỗ trợ lớn.\n\nKinh tế và phát triển: Khi sáu đơn vị có thể thu hoạch, đặt tỷ lệ sản xuất thành bốn công nhân, một trinh sát và ba chiến binh. Thêm doanh trại khi chỗ huấn luyện đầy, nhưng hạn chế quán trọ mới. Năng lực xây dựng dư thường dành cho bệnh viện và huấn luyện di chuyển.\n\nTấn công và phòng thủ: Đánh dấu công trình địch đã khám phá bằng vùng canh gác để chiến binh liên tục gây áp lực. Không chờ một đợt quân được tập hợp cẩn thận. Dọn gỗ cản đường và bảo vệ một phần tài nguyên tái sinh.\n\nChính sách trái cây: Cấm thu hoạch trái cây để tránh giảm giáp do trái cây, không theo chiến lược thu hút đổi phe của Econo.\n\nSo với các AI khác: Chú trọng áp lực sớm hơn Numbi hay Castor. Nicowar cũng mở đầu hiếu chiến nhưng tiếp tục bằng chương trình nâng cấp và chiến thuật rộng hơn.\n\nĐiểm mạnh và yếu: Trừng phạt mở đầu chậm và buộc chi sớm cho phòng thủ. Nâng cấp hệ thống hạn chế cùng hỗ trợ thức ăn ít khiến tấn công đình trệ rất tốn kém. Địa hình và hành trình dài có thể bào mòn lợi thế ban đầu.\n\nCách đối phó nên thử: Bảo vệ quán trọ và tổ từ sớm. Bù công nhân lẫn quân thủ, phát triển huấn luyện, rồi phản công khi đợt đánh nhanh mất đà.\n\nTrinh sát: Cờ thám hiểm mở đầu dùng trực tiếp vị trí xuất phát của địch. Việc đặt vùng tấn công về sau cần tầm nhìn.
 [AIWarrush-Summary]
 Áp lực chiến binh đầu trận dựa trên nền kinh tế hỗ trợ cố ý tinh gọn.
 [AICabino-Profile]
@@ -1165,7 +1165,7 @@ Các đảo riêng biệt
 [Conquest only]
 Chỉ chinh phục
 [Conquest or prestige]
-Chinh phục hay uy tín
+Chinh phục hoặc uy danh
 [Could not launch this map. Your setup is retained; try again.]
 Không thể khởi chạy bản đồ này. Thiết lập của bạn được giữ lại; thử lại.
 [Could not load this map. Choose another map or retry.]
@@ -1181,13 +1181,13 @@ Lục lam
 [Desert weight]
 Trọng số sa mạc
 [Easy]
-Dễ dàng
+Dễ
 [Extra colony assignments are retained for larger maps.]
 Thiết lập của các thuộc địa dư ra được giữ lại để khôi phục khi chọn bản đồ lớn hơn.
 [Extra islands]
 Đảo phụ
 [FFA]
-Mọi người chống lại mọi người
+Hỗn chiến
 [Fruit]
 Trái cây
 [Game Rules]
@@ -1201,9 +1201,9 @@ Tạo và chơi
 [Grass weight]
 Trọng số đồng cỏ
 [Gray]
-Màu xám
+Xám
 [Green]
-Xanh lá cây
+Xanh lá
 [Hard]
 Khó
 [Height]
@@ -1237,13 +1237,13 @@ Trung bình - Thử nghiệm
 [No AI orders]
 Không có lệnh AI
 [Old islands]
-Quần Đảo Gồ Ghề
+Quần đảo gồ ghề
 [Old random]
-Bờ Biển Chia Cắt
+Bờ biển chia cắt
 [Open at least one colony to start a match.]
 Mở ít nhất một thuộc địa để bắt đầu trận đấu.
 [Open book]
-Thế giới được tiết lộ
+Bản đồ mở
 [Pink]
 Hồng
 [Play this map]
@@ -1251,9 +1251,9 @@ Chơi bản đồ này
 [Players & Teams]
 Người chơi & Đội
 [Premade maps]
-Bản đồ được tạo sẵn
+Bản đồ có sẵn
 [Preview ready. Start plays this exact map.]
-Xem trước đã sẵn sàng. Bắt đầu trò chơi sử dụng bản đồ chính xác này.
+Đã có bản xem trước. Bắt đầu sẽ chơi đúng bản đồ này.
 [Regenerate all]
 Tạo lại tất cả
 [Generating preview...]
@@ -1263,7 +1263,7 @@ Không có bản xem trước
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Mỗi địa hình được hiển thị như một bản đồ thật với kích thước và số thuộc địa hiện tại của bạn. Chọn một để chơi bản đồ được hiển thị.
 [Purple]
-Màu tím
+Tím
 [Quick clash]
 Trận chiến nhanh
 [Random map]
@@ -1271,7 +1271,7 @@ Bản đồ ngẫu nhiên
 [Red]
 Đỏ
 [Repeat landscape]
-Lặp lại phong cảnh
+Lặp lại địa hình
 [Resources]
 Tài nguyên
 [River]
@@ -1303,7 +1303,7 @@ Công nhân ban đầu: thẻ Luật chơi.
 [Victory]
 Chiến thắng
 [Watch game]
-Xem trò chơi
+Xem trận
 [Water weight]
 Trọng số nước
 [White]
@@ -1359,21 +1359,21 @@ Chiến thắng nhờ chinh phục
 [You control this colony.]
 Bạn kiểm soát thuộc địa này.
 [controllers]
-người hoặc AI điều khiển
+bên điều khiển
 [Use]
 Chọn
 [Lime]
-Màu xanh chanh
+Xanh chanh
 [Teal]
-Màu xanh mòng két
+Xanh két
 [Azure]
 Xanh da trời
 [Updating map preview...]
 Đang cập nhật bản xem trước bản đồ...
 [Generation failed. Adjust settings or press Start to retry.]
-Tạo bản đồ thất bại. Điều chỉnh cài đặt hoặc nhấn Bắt đầu để thử lại.
+Tạo bản đồ thất bại. Hãy chỉnh thiết lập hoặc nhấn Bắt đầu để thử lại.
 [Preview unavailable. Adjust settings or start to retry.]
-Xem trước không có sẵn. Thay đổi cài đặt hoặc khởi chạy trò chơi để thử lại.
+Không có bản xem trước. Hãy chỉnh thiết lập hoặc bắt đầu để thử lại.
 [automatic torus view]
 Chế độ xem hình xuyến tự động
 [toggle torus view]
@@ -1385,29 +1385,29 @@ Liên minh
 [Choose a rule to change it.]
 Chọn một quy tắc để thay đổi nó.
 [Conquest only removes prestige victory; map scripts still apply.]
-Chỉ chinh phục vô hiệu hóa chiến thắng bằng uy tín; tập lệnh bản đồ vẫn có hiệu lực.
+Chỉ chinh phục sẽ bỏ thắng bằng uy danh; kịch bản bản đồ vẫn có hiệu lực.
 [Control]
-Kiểm soát thuộc địa
+Điều khiển
 [Controller]
 Bên điều khiển
 [Generate preview]
 Tạo bản xem trước
 [Generation failed. Adjust settings or try again.]
-Tạo bản đồ thất bại. Điều chỉnh cài đặt hoặc thử lại.
+Tạo bản đồ thất bại. Hãy chỉnh thiết lập hoặc thử lại.
 [Map settings changed. Generate a new preview or start.]
-Cài đặt bản đồ đã thay đổi. Tạo bản xem trước mới hoặc bắt đầu.
+Thiết lập bản đồ đã thay đổi. Hãy tạo bản xem trước mới hoặc bắt đầu.
 [Map source]
 Nguồn bản đồ
 [Map-defined]
 Theo bản đồ
 [Match format]
-Hình thức trò chơi
+Thể thức trận
 [No current preview]
 Không có bản xem trước hiện tại
 [Quick clash: 2x speed; generated maps start with 8 workers.]
 Trận chiến nhanh: tốc độ gấp đôi; bản đồ được tạo bắt đầu với 8 công nhân.
 [Reroll]
-Tạo một bản đồ khác
+Tạo lại
 [Randomize]
 Tạo ngẫu nhiên
 [Reset to defaults]
@@ -1419,15 +1419,15 @@ Chọn bản đồ từ thư viện.
 [Starting workers affects generated maps only.]
 Số lượng công nhân ban đầu chỉ áp dụng cho các bản đồ được tạo.
 [Unavailable]
-Không có sẵn
+Không khả dụng
 [Use selection]
 Sử dụng lựa chọn
 [Quick clash on premade maps: only speed changes (2x).]
-Trận chiến nhanh trên bản đồ được tạo sẵn: chỉ có tốc độ thay đổi (tốc độ gấp đôi).
+Trận chiến nhanh trên bản đồ có sẵn: chỉ đổi tốc độ (2x).
 [Generate a preview to explore this world.]
 Tạo bản xem trước để khám phá thế giới này.
 [More workers jump-start colony growth. Changes the generated map.]
-Nhiều công nhân hơn đẩy nhanh sự phát triển của thuộc địa. Cài đặt này thay đổi bản đồ được tạo.
+Nhiều công nhân hơn đẩy nhanh sự phát triển của thuộc địa. Thiết lập này thay đổi bản đồ được tạo.
 [No warriors]
 Không có chiến binh
 [settings Add key to sequence]
@@ -1435,13 +1435,13 @@ Thêm phím vào chuỗi
 [settings Add shortcut]
 Thêm phím tắt
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Dùng con lăn chuột để điều chỉnh số đơn vị được phân bổ. Khi tùy chọn này tắt, hãy giữ Ctrl. Giữ Shift để điều chỉnh bán kính cờ. Tùy chọn này cũng điều khiển việc dùng con lăn trong các menu khác.
+Dùng con lăn chuột để chỉnh số đơn vị được phân công. Khi tắt, hãy giữ Ctrl. Shift chỉnh bán kính cờ. Tùy chọn này cũng điều khiển con lăn trong các trình đơn khác.
 [settings Adjust music and voice volume.]
 Điều chỉnh âm lượng nhạc và giọng nói.
 [settings Adjust the pace of play.]
 Điều chỉnh tốc độ của trò chơi.
 [settings Advanced binding]
-Chỉnh sửa phím tắt nâng cao
+Gán phím nâng cao
 [settings Artwork & effects]
 Hình ảnh & hiệu ứng
 [settings Audio]
@@ -1467,17 +1467,17 @@ Chọn chế độ cửa sổ hoặc toàn màn hình.
 [settings Choose how the game looks on your screen.]
 Chọn giao diện của trò chơi trên màn hình của bạn.
 [settings Completed]
-Công trình đã hoàn thành
+Đã xây xong
 [settings Construction]
 Đang xây dựng
 [settings Controls]
-Điều khiển trò chơi
+Điều khiển
 [settings Could not change display mode. The previous mode was restored.]
 Không thể thay đổi chế độ hiển thị. Chế độ trước đó đã được khôi phục.
 [settings Could not save]
 Không thể lưu
 [settings Current display]
-Thiết lập hiển thị hiện tại
+Màn hình hiện tại
 [settings Default]
 Mặc định
 [settings Display]
@@ -1491,11 +1491,11 @@ Xong
 [settings Edit shortcut]
 Chỉnh sửa phím tắt
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
-Nhân tỷ lệ hiển thị của hệ điều hành cho menu, văn bản và thanh bên.
+Nhân tỷ lệ hiển thị của hệ điều hành cho trình đơn, chữ và thanh bên.
 [settings Flags]
 Cờ
 [settings Full]
-Đầy đủ chi tiết
+Đầy đủ
 [settings Fullscreen]
 Toàn màn hình
 [settings Game]
@@ -1509,7 +1509,7 @@ Chi tiết đồ họa
 [settings Interface scale]
 Tỷ lệ giao diện
 [settings Keep]
-Giữ các thay đổi
+Giữ
 [settings Keep this display mode?]
 Giữ chế độ hiển thị này?
 [settings Keep your volume levels while silencing audio.]
@@ -1529,7 +1529,7 @@ Ngôn ngữ được sử dụng xuyên suốt giao diện.
 [settings Level]
 Cấp
 [settings Map editor]
-Trình chỉnh sửa bản đồ
+Trình biên tập bản đồ
 [settings Match the desktop]
 Theo màn hình nền
 [settings Missing font]
@@ -1555,9 +1555,9 @@ Nhấn một phím. Escape hủy việc ghi nhận phím. Để gán Escape, ch�
 [settings Radius]
 Bán kính
 [settings Reduced]
-Giảm chi tiết
+Giản lược
 [settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
-Giảm chi tiết sẽ vô hiệu hóa các đám mây và bóng của chúng, đơn giản hóa các hiệu ứng ma thuật và giảm độ trong suốt.
+Chế độ giản lược tắt mây và bóng mây, đơn giản hóa hiệu ứng phép thuật và giảm độ trong suốt.
 [settings Release]
 Khi thả
 [settings Remember assignments between games]
@@ -1567,25 +1567,25 @@ Xóa phím
 [settings Remove shortcut]
 Xóa phím tắt
 [settings Renderer]
-Trình kết xuất đồ họa
+Trình kết xuất
 [settings Replace conflicting bindings]
 Thay thế các phím tắt xung đột
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
 Khôi phục phím tắt mặc định cho ngữ cảnh này? Thay đổi sẽ được lưu ngay lập tức.
 [settings Resolution]
-Độ phân giải màn hình
+Độ phân giải
 [settings Restore default shortcuts]
 Khôi phục phím tắt mặc định
 [settings Retry]
 Thử lại
 [settings Revert]
-Hoàn nguyên các thay đổi
+Hoàn tác
 [settings Reverting in]
 Khôi phục sau
 [settings Save shortcut]
 Lưu phím tắt
 [settings Saved — restart required]
-Đã lưu - cần khởi động lại
+Đã lưu — cần khởi động lại
 [settings Saving…]
 Đang lưu…
 [settings Scroll wheel enabled]
@@ -1599,13 +1599,13 @@ Thiết lập
 [settings Single-player and replays only. Multiplayer runs at 1x.]
 Chỉ cho chơi đơn và bản ghi. Chơi mạng dùng tốc độ 1x.
 [settings Software]
-Kết xuất phần mềm
+Phần mềm
 [settings Starting unit counts and radius for newly placed flags.]
 Số đơn vị ban đầu và bán kính cho cờ mới đặt.
 [settings This shortcut conflicts with existing bindings:]
 Phím tắt này xung đột với các phím tắt hiện có:
 [settings Trigger]
-Sự kiện kích hoạt
+Kích hoạt
 [settings Unbound]
 Chưa gán
 [settings Unit counts assigned to new construction sites.]
@@ -1617,7 +1617,7 @@ Số đơn vị được phân bổ trong khi công trình đang nâng cấp.
 [settings Units]
 Đơn vị
 [settings Upgrades]
-Nâng cấp công trình
+Nâng cấp
 [settings Use game cursor]
 Sử dụng con trỏ trò chơi
 [settings Voice volume]
@@ -1637,7 +1637,7 @@ Cờ
 [settings High-resolution artwork]
 Hình ảnh độ phân giải cao
 [settings Apply artwork on the next game or editor load (OpenGL).]
-Hình ảnh được áp dụng khi tải ván chơi hoặc trình chỉnh sửa bản đồ lần tiếp theo (OpenGL).
+Hình ảnh được áp dụng khi tải trận hoặc trình biên tập lần tới (OpenGL).
 [settings Automatic torus view]
 Chế độ xem hình xuyến tự động
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
@@ -1757,7 +1757,7 @@ Bãi cát
 [Tidal flats]
 Bãi triều
 [Everglades]
-Đầm lầy
+Đồng lầy
 [Pool spacing]
 Khoảng cách các ao
 [Pool size]
@@ -1767,9 +1767,9 @@ Kích thước khoảng trống
 [Levee]
 Đê
 [Sloughs]
-Đầm lầy
+Lạch lầy
 [Everglades need at least one colony.]
-Đầm lầy cần ít nhất một thuộc địa.
+Đồng lầy cần ít nhất một thuộc địa.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Quá nhiều thuộc địa cho bản đồ này; hãy dùng bản đồ lớn hơn hoặc ít thuộc địa hơn.
 [Coral]
@@ -1793,7 +1793,7 @@ San hô cần bản đồ rộng ít nhất 128 ô.
 [Carousel]
 Vòng quay ngựa gỗ
 [Amphitheatre]
-Đấu trường
+Khán đài
 [Switchbacks]
 Đường đèo
 [Court size]
@@ -1835,13 +1835,13 @@ Vòng quay ngựa gỗ cần ít nhất hai thuộc địa.
 [Switchbacks need at least two colonies.]
 Đường đèo cần ít nhất hai thuộc địa.
 [An amphitheatre needs at least two colonies.]
-Đấu trường cần ít nhất hai thuộc địa.
+Khán đài cần ít nhất hai thuộc địa.
 [The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
 Vòng quay ngựa gỗ không vừa bản đồ này; hãy dùng bản đồ lớn hơn, căn cứ nhỏ hơn hoặc ít thuộc địa hơn.
 [The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
 Đường đèo không vừa bản đồ này; hãy dùng bản đồ lớn hơn, cao nguyên nhỏ hơn, lối mòn hẹp hơn hoặc ít thuộc địa hơn.
 [The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
-Đấu trường không vừa bản đồ này; hãy dùng bản đồ lớn hơn, ít vòng hơn, bậc hẹp hơn hoặc ít thuộc địa hơn.
+Khán đài không vừa bản đồ này; hãy dùng bản đồ lớn hơn, ít vòng hơn, bậc hẹp hơn hoặc ít thuộc địa hơn.
 [Spider web]
 Mạng nhện
 [Spokes per colony]
@@ -1873,7 +1873,7 @@ Vũng triều
 [Tidal flats need at least one colony.]
 Bãi triều cần ít nhất một thuộc địa.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
-Các đảo quê hương không vừa với bản đồ này; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc đảo nhỏ hơn.
+Các đảo khởi đầu không vừa bản đồ này; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn hoặc đảo nhỏ hơn.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
 Vùng đất chung và eo biển để lại quá ít chỗ cho các căn cứ; hãy dùng bản đồ lớn hơn, ít thuộc địa hơn, vùng đất chung nhỏ hơn hoặc eo biển hẹp hơn.
 [Wheat amount]
@@ -1891,7 +1891,7 @@ Lượng trái cây
 [Winding river]
 Sông uốn khúc
 [Sandy beaches]
-Bãi cát
+Bãi biển cát
 [Land bridges]
 Cầu đất
 [Colony meadows]
@@ -1939,7 +1939,7 @@ Bước sóng
 [Pattern]
 Kiểu mẫu
 [Labyrinth]
-Mê cung
+Mê lộ
 [Channels]
 Rãnh
 [Barrier]
@@ -1951,11 +1951,11 @@ Nước
 [Rain shadow]
 Bóng mưa
 [Ridges]
-Dãy núi
+Sống núi
 [Slant]
 Độ xiên
 [Ridge thickness]
-Độ dày dãy núi
+Độ dày sống núi
 [Pass spacing]
 Khoảng cách đèo
 [Lee width]
@@ -2085,11 +2085,11 @@ Sát thương nhận vào
 [Stats HP restored]
 Máu hồi phục
 [Stats since tick]
-Từ bước
+Từ nhịp
 [Stats combat deaths]
 Chiến đấu
 [Stats clearing deaths]
-Bị thương khi dọn
+Bị thương khi khai quang
 [Stats trapped deaths]
 Mắc kẹt
 [Stats unknown deaths]
@@ -2195,7 +2195,7 @@ Tài nguyên +#
 [Stats growth reductions]
 Tài nguyên -
 [Stats growth per minute]
-Lúa mì +/min
+Lúa mì +/phút
 [Stats growth near 8]
 Tài nguyên + <=8
 [Stats growth near 16]
@@ -2355,7 +2355,7 @@ Bỏ hoang
 [Some]
 Vài
 [Home oasis size]
-Kích thước ốc đảo quê nhà
+Kích thước ốc đảo khởi đầu
 [Caravanserais per colony]
 Lữ quán mỗi thuộc địa
 [Desert]
@@ -2371,9 +2371,9 @@ Một pháo đài không tới được chỗ lội của nó; hãy dùng bản 
 [A wall would stand on a beach; try another seed.]
 Một bức tường sẽ nằm trên bãi cát; hãy thử hạt giống khác.
 [The fort is too small for its gardens; raise Fort size.]
-Pháo đài quá nhỏ cho các khu vườn; hãy tăng kích thước pháo đài.
+Pháo đài quá nhỏ cho các khu vườn; hãy tăng Kích thước pháo đài.
 [The home oasis is too small; raise Home oasis size.]
-Ốc đảo quê nhà quá nhỏ; hãy tăng kích thước ốc đảo quê nhà.
+Ốc đảo khởi đầu quá nhỏ; hãy tăng Kích thước ốc đảo khởi đầu.
 [Braided river]
 Sông bện
 [Braid width]
@@ -2389,17 +2389,17 @@ Dải bện để lại quá ít thềm cho các căn cứ; hãy dùng bản đ�
 [The map is too narrow across for a braid; use a bigger map.]
 Bản đồ quá hẹp theo chiều ngang cho một dải bện; hãy dùng bản đồ lớn hơn.
 [Drumlin field]
-Cánh đồng drumlin
+Đồng đồi băng tích
 [Drumlin spacing]
-Khoảng cách drumlin
+Khoảng cách đồi băng tích
 [Drumlin length]
-Chiều dài drumlin
+Chiều dài đồi băng tích
 [Water gap]
 Khoảng nước
 [Esker loops]
-Vòng esker
+Vòng gờ băng tích
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
-Các esker không thể nối mọi drumlin; hãy dùng khoảng nước nhỏ hơn hoặc bản đồ lớn hơn.
+Các gờ băng tích không thể nối mọi đồi băng tích; hãy dùng khoảng nước nhỏ hơn hoặc bản đồ lớn hơn.
 [Continents]
 Các lục địa
 [Continent]
@@ -2427,7 +2427,7 @@ Dãy núi
 [Great rivers]
 Sông lớn
 [Islets]
-Đảo nhỏ
+Cù lao
 [Oases]
 Ốc đảo
 [The world atlas has no such continent.]
@@ -2749,7 +2749,7 @@ Kích thước đồn điền
 [Outlying islands]
 Đảo ngoại vi
 [The Hungry Marches]
-Miền Biên Ải Đói Kém
+Miền biên ải đói kém
 [Opening ration]
 Khẩu phần ban đầu
 [Central concentration]
@@ -2763,7 +2763,7 @@ Bề rộng lùm cây
 [Deposits]
 Trữ lượng
 [Room]
-Không gian
+Mặt bằng
 [Isolation]
 Cách biệt
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
@@ -2777,7 +2777,7 @@ Không thể lưu bản đồ. Hãy kiểm tra đích lưu và dung lượng tr�
 [Loading terrain]
 Đang tải địa hình...
 [Building gradients]
-Đang dựng gradient...
+Đang dựng trường dẫn đường...
 [Loading players]
 Đang tải người chơi...
 [Loading scripts]
@@ -2843,7 +2843,7 @@ Thoát mà không lưu
 [game closed]
 Trò chơi đã đóng. Bạn có thể đóng cửa sổ này hoặc tải lại để chơi tiếp.
 [campaign editor save failed]
-Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về menu trình chỉnh sửa.
+Chưa xác nhận lưu. Đồng ý sẽ thử lại; Hủy sẽ quay về trình đơn biên tập.
 [Actions]
 Thao tác
 [Minimap]
@@ -2897,7 +2897,7 @@ Bố cục giao diện
 [settings Automatic]
 Tự động
 [settings Compact]
-Gần nhau
+Gọn
 [settings Spacious]
 Rộng rãi
 [More]
@@ -2925,7 +2925,7 @@ Quay lại
 [settings Save the game automatically about every minute.]
 Tự động lưu trò chơi khoảng mỗi phút.
 [AI opponents]
-Đối thủ máy
+Đối thủ AI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.
 [settings One-finger zoom]
@@ -2983,7 +2983,7 @@ Thức ăn: %0 / %1
 [View team %0]
 Xem đội %0
 [P %0/%1/%2]
-Uy tín %0/%1/%2
+Uy danh %0/%1/%2
 [CPU load %0]
 CPU %0%
 [Brush %0x%1]
@@ -3037,7 +3037,7 @@ Cấm
 [Guard]
 Canh gác
 [Clear]
-Dọn dẹp
+Khai quang
 [Farm]
 Canh tác
 [Paint]
@@ -3059,7 +3059,7 @@ Lớp thiệt hại
 [Defense overlay]
 Lớp phòng thủ
 [Fertility overlay]
-Lớp màu mỡ
+Lớp phì nhiêu
 [Health and food bars]
 Thanh máu và thức ăn
 [Message history]
@@ -3093,9 +3093,9 @@ Xuất
 [Tap to write the mission briefing]
 Chạm để viết hướng dẫn nhiệm vụ
 [Tap to write the map script]
-Chạm để viết tập lệnh bản đồ
+Chạm để viết kịch bản bản đồ
 [Script]
-Tập lệnh
+Kịch bản
 [Previous]
 Trước
 [Compile]
@@ -3165,7 +3165,7 @@ Chọn địa hình
 [Colonies: %0]
 Thuộc địa: %0
 [%0 colonies · %1 AI]
-%0 thuộc địa · %1 trí tuệ nhân tạo
+%0 thuộc địa · %1 AI
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
@@ -3175,7 +3175,7 @@ Cấp %0
 [settings Match the desktop %0]
 Theo màn hình nền (%0)
 [settings Current display %0 %1 %2 %3]
-Thiết lập hiển thị hiện tại: %0 × %1 · %2 · %3
+Màn hình hiện tại: %0 × %1 · %2 · %3
 [Fairness: %0]
 Công bằng: %0
 [Colony %0]
@@ -3193,13 +3193,13 @@ Cấp tối thiểu: %0
 [resume game]
 Tiếp tục trò chơi
 [Add AI]
-Thêm trí tuệ nhân tạo
+Thêm AI
 [settings Experiments]
 Thử nghiệm
 [settings Try features we are still testing. They can change balance and pacing.]
 Hãy thử các tính năng chúng tôi vẫn đang thử nghiệm. Chúng có thể thay đổi cân bằng và nhịp độ.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
-Thử nghiệm áp dụng cho các ván mới bạn bắt đầu hoặc làm chủ, không bao giờ cho nhiệm vụ chiến dịch. Ván đã lưu giữ các thử nghiệm mà nó bắt đầu cùng.
+Thử nghiệm áp dụng cho các trận mới bạn bắt đầu hoặc tổ chức, không bao giờ cho nhiệm vụ chiến dịch. Trận đã lưu giữ nguyên các thử nghiệm lúc bắt đầu.
 [Experiments set by the host]
 Thử nghiệm do chủ phòng chọn
 [settings No experiments in this build.]
@@ -3235,1419 +3235,1419 @@ Quán tính danh sách
 [List bounce]
 Nảy của danh sách
 [lan pairing field]
-
+Chuỗi ghép nối của máy chủ (hoặc URL WSS tin cậy)
 [lan pairing connect]
-
+Ghép nối và kết nối
 [lan discovery instructions]
-
+Chọn một máy chủ, rồi dán chuỗi ghép nối của nó để xác minh danh tính.
 [lan discovery unavailable]
-
+Không thể dò tìm trong LAN. Hãy kiểm tra quyền mạng cục bộ hoặc dán chuỗi ghép nối của máy chủ.
 [lan discovered host %0]
-
+Đã tìm thấy máy chủ %0 — ghép nối để xem các trận
 [lan connection unavailable]
-
+Không thể kết nối tới máy chủ LAN. Hãy kiểm tra quyền mạng cục bộ và chuỗi ghép nối của máy chủ.
 [lan connection verification failed %0]
-
+Không thể xác minh hoặc kết nối tới máy chủ LAN: %0
 [lan lobby endpoint required]
-
+Hãy dùng địa chỉ sảnh chờ của máy chủ
 [settings Artwork]
-
+Hình ảnh
 [settings Original]
-
+Nguyên bản
 [settings High resolution]
-
+Độ phân giải cao
 [settings Clouds]
-
+Mây
 [settings Show cloud cover above the map.]
-
+Hiện lớp mây phía trên bản đồ.
 [settings Cloud shadows]
-
+Bóng mây
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Hiện bóng mây trên mặt đất, không phụ thuộc vào lớp mây.
 [settings Building particles]
-
+Hạt hiệu ứng công trình
 [settings Show smoke and other building particles.]
-
+Hiện khói và các hạt hiệu ứng khác của công trình.
 [settings Magic effects]
-
+Hiệu ứng phép thuật
 [settings Choose animated magic effects or a simple visible effect.]
-
+Chọn hiệu ứng phép thuật động hoặc một hiệu ứng đơn giản dễ thấy.
 [settings Simple]
-
+Đơn giản
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Cần trình kết xuất OpenGL. Lựa chọn đã lưu của bạn vẫn được giữ.
 [settings Interface appearance]
-
+Giao diện
 [settings Panels]
-
+Bảng
 [settings Choose translucent or opaque interface panels.]
-
+Chọn bảng giao diện trong mờ hoặc đục.
 [settings Opaque]
-
+Đục
 [settings Translucent]
-
+Trong mờ
 [settings Advanced graphics]
-
+Đồ họa nâng cao
 [settings Path lines]
-
+Đường đi
 [settings Choose translucent or opaque unit path lines.]
-
+Chọn đường đi của đơn vị trong mờ hoặc đục.
 [settings Smooth progress indicators]
-
+Thanh tiến độ mượt
 [settings Smooth the moving edges of progress indicators.]
-
+Làm mượt mép chuyển động của thanh tiến độ.
 [settings Decorative interface animation]
-
+Hoạt ảnh trang trí
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Tạo hoạt ảnh cho hình chiến thắng. Chế độ giảm chuyển động cũng tắt hoạt ảnh này.
 [settings Smooth unit motion]
-
+Đơn vị di chuyển mượt
 [settings Experimental: move and animate units between game ticks.]
-
+Thử nghiệm: di chuyển và tạo hoạt ảnh cho đơn vị giữa các nhịp trò chơi.
 [settings Smooth fog of war]
-
+Sương mù chiến tranh mượt
 [settings Fade the map into and out of the fog of war gradually.]
-
+Cho bản đồ chìm vào và hiện ra khỏi sương mù chiến tranh từ từ.
 [settings Adaptive zoom detail]
-
+Chi tiết theo mức thu phóng
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Đơn giản hóa thanh, vùng, địa hình và đơn vị khi thu nhỏ bản đồ, và giữ chúng nhỏ gọn khi phóng to.
 [settings Text size]
-
+Cỡ chữ
 [settings Enlarge interface text without changing the map scale.]
-
+Phóng to chữ giao diện mà không đổi tỉ lệ bản đồ.
 [Map momentum]
 Quán tính bản đồ
 [turn reconnecting]
-
+Mất kết nối tới máy chủ. Đang kết nối lại...
 [turn waiting for players]
-
+Đang chờ mọi người chơi tải xong...
 [turn rejoining]
-
+Đang vào lại trận đấu...
 [turn catching up %0]
-
+Đang bắt kịp: chậm %0 lượt
 [turn player reconnecting %0]
-
+%0 đang kết nối lại...
 [turn player lagging %0]
-
+%0 đang bị trễ
 [turn player resyncing %0]
-
+%0 đang bắt kịp
 [turn player not connected %0]
-
+%0 chưa kết nối
 [lan host left]
-
+Chủ phòng đã rời trận đấu.
 [lan host lost]
-
+Đã mất kết nối tới máy chủ.
 [lan version mismatch %0]
-
+Máy chủ chạy phiên bản Globulation 2 khác (%0).
 [lan cannot host %0]
-
+Không thể tạo trận LAN: %0
 [play online]
-
+Chơi trực tuyến
 [Use in room]
-
+Dùng trong phòng
 [conn ai]
-
+AI
 [conn behind %0]
-
+Chậm %0
 [conn behind explanation %0 %1]
-
+Độ chậm: trận đấu của một người chơi chạy sau đồng hồ trận bao xa; đã gồm cả độ trễ của họ. Dưới %0 là bình thường; từ %1 người chơi bị đánh dấu là chậm.
 [conn behind]
-
+Độ chậm
 [conn card catching up]
-
+Đang bắt kịp
 [conn card colony works]
-
+Thuộc địa của bạn vẫn tự hoạt động: đơn vị hoàn thành việc và công trình vẫn chạy.
 [conn card desync detail]
-
+Đang vào lại từ bản ghi trận để bạn thấy đúng như mọi người. Một báo cáo đã được tự động gửi đi.
 [conn card desync]
-
+Trận đấu của bạn bị mất đồng bộ
 [conn card grace %0]
-
+Thuộc địa của bạn vẫn tự hoạt động: đơn vị hoàn thành việc và công trình vẫn chạy. Bạn còn %0 để quay lại trước khi bị loại khỏi trận.
 [conn card input paused]
-
+Bạn đang bắt kịp · tạm khóa thao tác
 [conn card lost]
-
+Mất kết nối
 [conn card progress %0 %1 %2]
-
+%0 % · %1 / %2 nhịp
 [conn card reconnecting %0]
-
+Đang kết nối lại trận đấu… lần thử %0
 [conn card replaying %0]
-
+Đang phát lại %0 bạn đã bỏ lỡ. Màn hình sẽ cập nhật khi bạn bắt kịp hiện tại.
 [conn card seconds left %0]
-
+còn khoảng %0 giây
 [conn connections]
-
+Kết nối
 [conn connection]
-
+Kết nối
 [conn delay explanation %0 %1]
-
+Độ trễ: thời gian từ lúc bạn nhấp đến lúc lệnh diễn ra, với mọi người. Nó phụ thuộc vào kết nối của chính bạn, không phải của người khác. Tốt khi dưới %0, kém từ %1.
 [conn fair]
-
+Khá
 [conn good]
-
+Tốt
 [conn grid legend]
-
+Khi có hơn bốn người chơi, bảng hiện ping của từng người tính bằng mili giây, hoặc họ chậm bao nhiêu giây.
 [conn jitter %0]
-
+dao động %0
 [conn leave match]
-
+Rời trận
 [conn left]
-
+Đã rời
 [conn notice back %0]
-
+%0 đã quay lại.
 [conn notice left %0]
-
+%0 đã rời trận.
 [conn notice lost %0 %1]
-
+%0 bị mất kết nối. Trận đấu vẫn tiếp tục; thuộc địa của họ vẫn hoạt động trong lúc họ kết nối lại (còn %1).
 [conn ping explanation %0 %1]
-
+Ping: thời gian đi và về giữa người chơi và máy chuyển tiếp. Tốt khi dưới %0, kém từ %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Người chơi
 [conn poor]
-
+Kém
 [conn reconnecting]
-
+Đang kết nối lại
 [conn relay %0]
-
+Máy chuyển tiếp: %0
 [conn resyncing]
-
+Đang vào lại
 [conn slow]
-
+Chậm
 [conn unstable]
-
+không ổn định
 [conn waiting]
-
+Đang kết nối…
 [conn you %0]
-
+%0 (bạn)
 [conn you]
-
+Bạn
 [conn your delay %0]
-
+Độ trễ của bạn %0
 [hub account menu]
-
+Tài khoản
 [hub ai joins after %0]
-
+AI vào sau %0
 [hub all rooms]
-
+Tất cả
 [hub browse maps]
-
+Duyệt bản đồ
 [hub cant reach %0]
-
+Không thể kết nối tới %0.
 [hub change server]
-
+Đổi máy chủ…
 [hub check code]
-
+Khi được hỏi mã, hãy nhập mã này:
 [hub code placeholder]
-
+Mã hoặc liên kết mời
 [hub connecting to %0]
-
+%0 · đang kết nối…
 [hub continue with %0]
-
+Tiếp tục với %0
 [hub create room]
-
+Tạo phòng
 [hub find match]
-
+Tìm trận
 [hub finish in browser]
-
+Hoàn tất đăng nhập trên trang vừa mở trong trình duyệt.
 [hub free seat]
-
+Chỗ trống
 [hub get update]
-
+Tải bản cập nhật
 [hub guest kept on device]
-
+Khách · lưu trên thiết bị này
 [hub invalid code]
-
+Đó không phải mã hay liên kết mời.
 [hub join by code]
-
+Vào bằng mã
 [hub join code]
-
+Mã vào phòng
 [hub join]
-
+Tham gia
 [hub leaderboard]
-
+Bảng xếp hạng
 [hub linked %0]
-
+Tài khoản liên kết · %0
 [hub linked accounts]
-
+Tài khoản liên kết
 [hub maps]
-
+Bản đồ
 [hub no queues]
-
+Máy chủ này không có hàng chờ đấu nhanh.
 [hub no rooms]
-
+Hiện chưa có phòng nào mở. Hãy tạo một phòng và gửi lời mời.
 [hub offline at %0]
-
+%0 · ngoại tuyến
 [hub offline detail %0]
-
+Thử lại sau %0 giây. Đấu nhanh và phòng trực tuyến hiện không khả dụng. Chơi LAN ở trình đơn chính không cần máy chủ này.
 [hub online at %0]
-
+%0 · trực tuyến
 [hub online settings]
-
+Thiết lập trực tuyến
 [hub online]
-
+Trực tuyến
 [hub open page again]
-
+Mở lại trang
 [hub open rooms]
-
+Phòng đang mở
 [hub page opened at %0]
-
+Đã mở %0. Không cần nhập gì trong trò chơi; nó sẽ tự đăng nhập cho bạn.
 [hub queues unavailable]
-
+Đấu nhanh sẽ xuất hiện khi máy chủ phản hồi.
 [hub quick match unavailable]
-
+Đấu nhanh chưa có trong phiên bản này.
 [hub quick match]
-
+Đấu nhanh
 [hub ranked]
-
+Xếp hạng
 [hub recent matches]
-
+Trận gần đây
 [hub refresh]
-
+Làm mới
 [hub retry now]
-
+Thử lại ngay
 [hub room match]
-
+Phòng
 [hub room name %0]
-
+Phòng của %0
 [hub room]
-
+Phòng
 [hub seats %0 %1]
-
+%0/%1 chỗ
 [hub server %0]
-
+Máy chủ: %0
 [hub sign in browser]
-
+Mở trang đăng nhập
 [hub sign in conflict]
-
+Thông tin đăng nhập đó đã thuộc về một tài khoản khác.
 [hub sign in failed %0]
-
+Đăng nhập chưa hoàn tất (%0).
 [hub sign in intro]
-
+Đăng nhập hoặc tạo tài khoản trong trình duyệt. Các trận đã chơi với tư cách khách sẽ được giữ lại.
 [hub sign in]
-
+Đăng nhập
 [hub sign out]
-
+Đăng xuất trên thiết bị này
 [hub signed in as %0]
-
+Đã đăng nhập với tên %0.
 [hub signed in on %0]
-
+Đã đăng nhập trên %0
 [hub signing in]
-
+Đang đăng nhập…
 [hub sim %0]
-
+mô phỏng %0
 [hub unrated]
-
+Không xếp hạng
 [hub update required at %0]
-
+%0 · cần cập nhật
 [hub update required detail %0]
-
+%0 chạy phiên bản mới hơn, nên bản này không thể vào trận trực tuyến cho đến khi được cập nhật. Chơi LAN vẫn hoạt động.
 [hub update required]
-
+Cần cập nhật
 [hub server behind]
-
+Máy chủ chờ cập nhật
 [hub server behind at %0]
-
+%0 · máy chủ chờ cập nhật
 [hub server behind detail %0]
-
+Bản này mới hơn %0, và máy chủ đó chưa được cập nhật. Trận trực tuyến sẽ mở khi máy chủ cập nhật. Chơi LAN vẫn hoạt động.
 [hub version mismatch]
-
+Khác phiên bản
 [hub version mismatch at %0]
-
+%0 · khác phiên bản
 [hub version mismatch detail %0]
-
+%0 chạy phiên bản trò chơi khác, nên bản này không thể vào trận trực tuyến. Chơi LAN vẫn hoạt động.
 [hub versus %0]
-
+đấu với %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+Đang tải bản đồ %0
 [match failed]
-
+Không thể bắt đầu trận đấu.
 [match leave]
-
+Rời đi
 [match loading]
-
+Đang tải trò chơi
 [Loading game graphics]
-
+Đang tải đồ họa trò chơi
 [match map cached]
-
+đã có trên thiết bị
 [match map]
-
+Đang tải bản đồ
 [match relay %0]
-
+Đã kết nối máy chuyển tiếp %0
 [match seat confirmed]
-
+Đã xác nhận chỗ
 [match starting]
-
+Đang bắt đầu trận
 [match tip flags]
-
+Mẹo: cờ thám hiểm gửi trinh sát đi khám phá bản đồ; cờ chiến đấu tập hợp chiến binh của bạn.
 [match tip input]
-
+Mẹo: lệnh của bạn đến mọi người sau độ trễ thao tác của chính bạn; kết nối của người khác không làm bạn chậm đi.
 [match tip select]
-
+Mẹo: nhấp đúp vào một công trình để chọn mọi công trình cùng loại.
 [match waiting for players]
-
+Đang chờ mọi người chơi
 [match you %0]
-
+%0 (bạn)
 [match player map]
-
+bản đồ
 [match player loading]
-
+đang tải
 [match player connecting]
-
+đang kết nối
 [match player ready]
-
+sẵn sàng
 [match player left]
-
+đã rời
 [results back to online]
-
+Về trực tuyến
 [results back to room]
-
+Về phòng
 [results defeat]
-
+Thất bại
 [results ladder rating %0]
-
+Điểm xếp hạng %0
 [results left]
-
+Bạn đã rời trận
 [results match over]
-
+Trận đấu kết thúc
 [results match page]
-
+Trang trận đấu
 [results minutes %0]
-
+%0 phút
 [results no change]
-
+không đổi
 [results ranked]
-
+Xếp hạng
 [results recording]
-
+Đang ghi nhận kết quả…
 [results room unrated]
-
+Trận trong phòng · không xếp hạng
 [results saved to history]
-
+Đã lưu vào lịch sử
 [results seconds %0]
-
+%0 giây
 [results unverifiable]
-
+Máy chủ không thể tái hiện trận này, nên nó không được tính vào điểm xếp hạng của ai. Trận đã được báo cáo để điều tra; bạn không cần làm gì cả.
 [results verified provisional]
-
+Đã xác minh · tạm tính
 [results verified]
-
+Đã xác minh
 [results verifying detail]
-
+Máy chủ đang phát lại trận đấu để xác nhận. Thường mất chưa tới một phút.
 [results verifying]
-
+Đang xác minh kết quả…
 [results victory]
-
+Chiến thắng
 [room address]
-
+Địa chỉ
 [room ai %0]
-
+AI: %0
 [room browser pairing]
-
+Ghép nối trình duyệt
 [room catalog map]
-
+Bản đồ trong danh mục
 [room change map]
-
+Đổi bản đồ…
 [room change rules]
-
+Đổi luật…
 [room chat]
-
+Trò chuyện
 [room closed seat detail]
-
+Chủ phòng đã đóng
 [room closed seat]
-
+Đã đóng
 [room colonies]
-
+Thuộc địa
 [room connecting]
-
+Đang kết nối tới phòng…
 [room copy]
-
+Sao chép
 [room disconnected]
-
+mất kết nối
 [room downloading %0]
-
+Đang tải bản đồ %0 %
 [room downloading map]
-
+Đang tải bản đồ…
 [room expired]
-
+Phòng đã đóng.
 [room generated on server]
-
+Được tạo một lần trên máy chủ, nên mọi người chơi đúng bản đồ này.
 [room guest]
-
+khách
 [room host %0]
-
+chủ phòng %0
 [room host closed]
-
+Chủ phòng đã đóng phòng.
 [room host]
-
+chủ phòng
 [room humans vs ai]
-
+Người đấu AI
 [room invite code %0]
-
+Mã %0 · mở trong ứng dụng, trên điện thoại hoặc trình duyệt
 [room invite not found]
-
+Lời mời này đã hết hạn hoặc không tồn tại.
 [room invite only]
-
+Chỉ qua lời mời
 [room invite]
-
+Mời
 [room joining on network]
-
+Đang vào qua mạng này
 [room lan badge]
-
+Mạng nội bộ · không xếp hạng
 [room lan list hint %0]
-
+Người khác trong cùng mạng sẽ thấy %0 trong danh sách trận LAN ở trình đơn chính.
 [room leave]
-
+Rời phòng
 [room map changed %0]
-
+Bản đồ đã đổi thành %0.
 [room map failed]
-
+Không thể chuẩn bị bản đồ
 [room match label]
-
+Phòng
 [room member joined %0]
-
+%0 đã vào.
 [room member left %0]
-
+%0 đã rời đi.
 [room member ready %0]
-
+%0 đã sẵn sàng.
 [room needs two seats]
-
+Mời một người bạn hoặc thêm AI để bắt đầu
 [room no map]
-
+Chưa có bản đồ
 [room not ready]
-
+Chưa sẵn sàng
 [room open for a person]
-
+Mở cho người chơi
 [room open seat detail]
-
+Ai có lời mời đều có thể nhận chỗ
 [room open seat]
-
+Chỗ trống
 [room person]
-
+Người
 [room preparing map]
-
+Đang chuẩn bị bản đồ trên máy chủ…
 [room public]
-
+Công khai
 [room ready?]
-
+Sẵn sàng
 [room ready]
-
+✓ Sẵn sàng
 [room remove from room]
-
+Mời ra khỏi phòng
 [room rule off]
-
+Tắt
 [room rule on]
-
+Bật
 [room rules changed]
-
+Luật đã thay đổi.
 [room rules]
-
+Luật
 [room say something]
-
+Nói gì đó…
 [room seat hint]
-
+Người chơi có thể tự chuyển sang chỗ trống. Đổi Đội để cân bằng lại.
 [room seat options]
-
+Tùy chọn chỗ
 [room seats summary %0 %1 %2]
-
+%0 người chơi · %1 AI · %2 trống
 [room seats]
-
+Chỗ ngồi
 [room seed]
-
+Hạt giống
 [room send]
-
+Gửi
 [room set by host]
-
+Do chủ phòng đặt
 [room share text %0]
-
+Vào phòng Globulation 2 của tôi: %0
 [room share]
-
+Chia sẻ…
 [room size]
-
+Kích thước
 [room starting match]
-
+Đang bắt đầu trận đấu…
 [room take seat]
-
+Nhận chỗ
 [room team %0]
-
+Đội %0
 [room update required]
-
+Phòng này chạy phiên bản trò chơi khác. Hãy cập nhật để tham gia.
 [room uploaded map]
-
+Bản đồ tải lên
 [room waiting for %0]
-
+Đang chờ %0 sẵn sàng
 [room waiting for you]
-
+Nhấn Sẵn sàng khi bạn đã chuẩn bị xong
 [room match over]
-
+Trận đấu kết thúc. Sẵn sàng cho ván tiếp theo nào!
 [room waiting for host]
-
+Đang chờ chủ phòng bắt đầu
 [room waiting for players %0]
-
+Đang chờ %0 người chơi sẵn sàng
 [room who can find it]
-
+Ai có thể tìm thấy
 [room you created]
-
+Bạn đã tạo phòng.
 [room you joined %0]
-
+Bạn đã vào %0.
 [room you were removed]
-
+Chủ phòng đã mời bạn ra khỏi phòng.
 [room you]
-
+bạn
 [settings Online]
-
+Trực tuyến
 [settings Another server]
-
+Máy chủ khác
 [settings Check]
-
+Kiểm tra
 [settings Checking…]
-
+Đang kiểm tra…
 [settings Choose which server you play on and how you sign in to it.]
-
+Chọn máy chủ để chơi và cách đăng nhập vào đó.
 [settings Connecting…]
-
+Đang kết nối…
 [settings Could not reach this server.]
-
+Không thể kết nối tới máy chủ này.
 [settings Display name saved.]
-
+Đã lưu tên hiển thị.
 [settings Display name]
-
+Tên hiển thị
 [settings Download or delete my data]
-
+Xóa tài khoản của tôi
 [settings Enter an https:// address.]
-
+Nhập một địa chỉ https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Hoàn tất trong trình duyệt: nhập mã %0 khi được hỏi.
 [settings Forget]
-
+Quên
 [settings Guests keep a generated name; sign in to choose one.]
-
+Khách dùng tên được tạo tự động; hãy đăng nhập để tự chọn tên.
 [settings Link]
-
+Liên kết
 [settings Not a Globulation 2 server.]
-
+Không phải máy chủ Globulation 2.
 [settings Not linked]
-
+Chưa liên kết
 [settings Not signed in.]
-
+Chưa đăng nhập.
 [settings Open]
-
+Mở
 [settings Opens your account page on %0.]
-
+Mở trang tài khoản của bạn trên %0, nơi bạn có thể xóa tài khoản.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Do một cộng đồng, câu lạc bộ hoặc chính bạn vận hành. Hãy dán địa chỉ của nó.
 [settings Save]
-
+Lưu
 [settings Server]
-
+Máy chủ
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Hiển thị trong phòng, trận đấu và bảng xếp hạng. Đổi được mỗi 30 ngày một lần.
 [settings Sign in with: %0 · queues: %1]
-
+Đăng nhập bằng: %0 · hàng chờ: %1
 [settings Sign out on this device]
-
+Đăng xuất trên thiết bị này
 [settings Sign out]
-
+Đăng xuất
 [settings Switch to this server]
-
+Chuyển sang máy chủ này
 [settings The last sign-in method can't be unlinked.]
-
+Không thể hủy liên kết phương thức đăng nhập cuối cùng.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Máy chủ Globulation 2 chính thức · hàng chờ xếp hạng, bảng xếp hạng, danh mục bản đồ
 [settings Unlink]
-
+Hủy liên kết
 [settings Unlinking is done on the account page.]
-
+Việc hủy liên kết được thực hiện trên trang tài khoản.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Bạn sẽ là khách mới cho đến khi đăng nhập lại. Tài khoản và các trận đấu của bạn vẫn được lưu trên máy chủ.
 [settings Your account on %0]
-
+Tài khoản của bạn trên %0
 [settings compatible with this version]
-
+tương thích với phiên bản này
 [settings connected]
-
+đã kết nối
 [settings connecting…]
-
+đang kết nối…
 [settings guest]
-
+khách
 [settings linked]
-
+đã liên kết
 [settings plays another version]
-
+chạy phiên bản khác
 [settings trusted]
-
+tin cậy
 [settings used before]
-
+đã dùng trước đây
 [settings you were %0 there]
-
+bạn từng là %0 ở đó
 [trust invited to room %0]
-
+Được mời vào phòng %0
 [trust join as guest]
-
+Vào với tư cách khách
 [trust not official]
-
+Máy chủ này không do dự án Globulation 2 vận hành.
 [trust remember]
-
+Ghi nhớ máy chủ này
 [trust separate identity %0]
-
+Bạn sẽ vào đó với tư cách khách. Tài khoản %0, điểm xếp hạng và lịch sử của bạn vẫn giữ nguyên.
 [trust title]
-
+Vào trận trên máy chủ khác?
 [trust what it sees]
-
+Máy chủ sẽ thấy tên hiển thị, địa chỉ kết nối của bạn và các trận bạn chơi trên đó.
 [settings not connected]
-
+chưa kết nối
 [settings Open Play online to connect.]
-
+Mở Chơi trực tuyến để kết nối.
 [hub code]
-
+Mã
 [results draw]
-
+Hòa
 [qm 2 vs 2]
-
+2 đấu 2
 [qm 1 vs 1]
-
+1 đấu 1
 [qm ping about]
-
+Ping khoảng
 [qm ranked]
-
+Xếp hạng
 [qm casual %0]
-
+Giao hữu %0
 [qm rated]
-
+Xếp hạng
 [qm unrated]
-
+Không xếp hạng
 [qm solo queue]
-
+hàng chờ đơn
 [qm ai joins after %0]
-
+AI vào sau %0
 [qm fair maps %0]
-
+Bản đồ: %0
 [qm cooldown %0]
-
+Bạn đã từ chối một trận. Bạn có thể tìm lại sau %0.
 [qm sign in to play ranked]
-
+Hàng chờ xếp hạng chỉ dành cho tài khoản đã đăng nhập; hãy đăng nhập trước.
 [online update required]
-
+Phiên bản trò chơi này quá cũ so với máy chủ; hãy cập nhật để chơi trực tuyến.
 [online server behind]
-
+Máy chủ chưa được cập nhật lên phiên bản này; chơi trực tuyến sẽ mở khi máy chủ cập nhật.
 [online version mismatch]
-
+Máy chủ chạy phiên bản trò chơi khác; bản này không thể chơi trực tuyến.
 [qm already searching]
-
+Bạn đang tìm trận hoặc đang trong một trận.
 [online connection problem]
-
+Không thể kết nối tới máy chủ.
 [qm find match]
-
+Tìm trận
 [qm opponents rated %0 to %1]
-
+Đối thủ có điểm từ %0 đến %1
 [qm region %0]
-
+Khu vực %0
 [qm searching]
-
+Đang tìm
 [qm measuring relays]
-
+Đang đo máy chuyển tiếp
 [qm joining queue]
-
+Đang vào hàng chờ
 [qm waiting for a person]
-
+Đang chờ người chơi: đối thủ AI đã tắt.
 [qm ai in %0 rated]
-
+Nếu không tìm thấy ai, bạn sẽ đấu với AI có điểm gần nhất sau %0
 [qm ai in %0]
-
+Nếu không tìm thấy ai, một AI sẽ vào sau %0
 [qm ai after %0]
-
+Nếu không tìm thấy ai, một AI sẽ nhận chỗ sau %0
 [qm allow ai short]
-
+Cho phép AI
 [qm allow ai]
-
+Cho phép đối thủ AI
 [qm cancel]
-
+Hủy
 [qm cancel search]
-
+Hủy tìm
 [qm usual wait %0]
-
+thường chờ %0
 [qm widening]
-
+mở rộng dần khi bạn chờ
 [qm ais are rated]
-
+(có xếp hạng: AI cũng có điểm)
 [qm opponent declined]
-
+Đối thủ đã không chấp nhận. Bạn được đưa lại lên đầu hàng chờ.
 [qm %0 did not accept]
-
+%0 đã không chấp nhận. Bạn được đưa lại lên đầu hàng chờ.
 [qm start failed]
-
+Không thể bắt đầu trận đấu. Đang tìm lại.
 [qm you declined]
-
+Bạn đã từ chối trận đấu. Bạn có thể tìm lại sau một lúc.
 [qm you did not answer]
-
+Bạn đã không chấp nhận kịp. Bạn có thể tìm lại sau một lúc.
 [qm search ended]
-
+Đã dừng tìm trận.
 [qm try again]
-
+Thử lại
 [online connecting]
-
+Đang kết nối…
 [qm no queues]
-
+Máy chủ này không có hàng chờ đấu nhanh.
 [qm quick match]
-
+Đấu nhanh
 [qm phone searching note]
-
+Việc tìm trận vẫn tiếp tục nếu bạn rời màn hình này.
 [qm phone intro]
-
+Chọn một hàng chờ bên dưới; việc tìm trận chạy trong lúc bạn xem chỗ khác.
 [qm online]
-
+Trực tuyến
 [qm keeps running note]
-
+Việc tìm trận vẫn tiếp tục nếu bạn rời màn hình này.
 [qm ai]
-
+AI
 [qm provisional]
-
+tạm tính
 [qm accepted]
-
+✓ đã chấp nhận
 [qm declined]
-
+đã từ chối
 [qm waiting]
-
+đang chờ…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Đã tìm thấy trận
 [qm playing an ai]
-
+Đấu với AI
 [qm vs]
-
+đấu
 [qm ai explanation rated]
-
+Không có ai trong khoảng điểm của bạn đang tìm trận. Bạn sẽ đấu với AI có điểm gần bạn nhất; kết quả được tính vào điểm của bạn và của AI.
 [qm ai explanation]
-
+Không có ai đang tìm trận. Bạn sẽ đấu với AI có điểm gần bạn nhất; trận này không xếp hạng.
 [qm casual explanation]
-
+Trận đấu bắt đầu ngay; trận giao hữu không xếp hạng.
 [qm accepted button]
-
+Đã chấp nhận
 [qm accept]
-
+Chấp nhận
 [qm decline]
-
+Từ chối
 [qm both must accept]
-
+Cả hai phải chấp nhận
 [qm accept explanation]
-
+Cả hai người chơi phải chấp nhận. Từ chối hoặc để hết giờ sẽ đưa bạn xuống cuối hàng chờ.
 [qm starting in %0]
-
+Bắt đầu sau %0…
 [qm preparing match]
-
+Đang chuẩn bị trận đấu…
 [qm match assigned %0 %1]
-
+Trận %0 đã sẵn sàng trên %1, nhưng bản dựng này chưa thể kết nối vào trận trực tuyến.
 [online jan]
-
+Th1
 [online feb]
-
+Th2
 [online mar]
-
+Th3
 [online apr]
-
+Th4
 [online may]
-
+Th5
 [online jun]
-
+Th6
 [online jul]
-
+Th7
 [online aug]
-
+Th8
 [online sep]
-
+Th9
 [online oct]
-
+Th10
 [online nov]
-
+Th11
 [online dec]
-
+Th12
 [profile win letter]
-
+T
 [profile loss letter]
-
+B
 [profile draw letter]
-
+H
 [profile history unavailable]
-
+Máy chủ này chưa có lịch sử trận đấu.
 [profile downloading replay]
-
+Đang tải bản ghi trận đấu…
 [profile no replay]
-
+Trận này không có bản ghi.
 [profile room with %0]
-
+Phòng · %0 thuộc địa
 [profile with %0 vs %1]
-
+cùng %0 đấu %1
 [profile vs %0]
-
+đấu %0
 [profile room]
-
+Phòng
 [profile casual]
-
+Giao hữu
 [profile ai filled]
-
+AI lấp chỗ
 [profile provisional %0 games]
-
+tạm tính · %0 trận
 [profile unrated]
-
+không xếp hạng
 [profile checking]
-
+đang kiểm tra…
 [profile %0 min]
-
+%0 phút
 [profile match page]
-
+Trang trận đấu
 [profile replay]
-
+Bản ghi
 [profile win rate last %0]
-
+Tỷ lệ thắng, %0 trận gần nhất
 [profile %0 w %1 l %2 d]
-
+%0 T · %1 B · %2 hòa
 [profile typical game]
-
+Trận điển hình
 [profile median length]
-
+thời lượng trung vị của bạn
 [profile best map]
-
+Bản đồ tốt nhất
 [profile %0 w %1 l]
-
+%0 T · %1 B
 [profile no rated games]
-
+Chơi một trận xếp hạng để có điểm.
 [profile all]
-
+Tất cả
 [profile rooms]
-
+Phòng
 [profile vs ai]
-
+đấu AI
 [profile matches]
-
+Trận đấu
 [online loading]
-
+Đang tải…
 [profile no matches]
-
+Chưa có trận nào.
 [online load more]
-
+Tải thêm
 [profile title]
-
+Hồ sơ
 [profile guest]
-
+khách
 [profile playing since %0]
-
+chơi từ %0
 [profile full profile web]
-
+Hồ sơ đầy đủ trên web
 [profile replays note]
-
+Bản ghi trận đấu được tải từ máy chủ khi bạn mở; các bản đã lưu trên máy vẫn nằm trong Tải trận đấu → Bản ghi trận đấu.
 [profile web profile]
-
+Hồ sơ web
 [maps most played]
-
+Chơi nhiều nhất
 [maps most liked]
-
+Thích nhiều nhất
 [maps newest]
-
+Mới nhất
 [maps most downloaded]
-
+Tải nhiều nhất
 [maps any size]
-
+Mọi kích thước
 [maps up to 128]
-
+Tới 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 trở lên
 [maps report broken]
-
+Không hoạt động
 [maps report offensive]
-
+Phản cảm
 [maps report copyright]
-
+Tác phẩm của người khác
 [maps report other]
-
+Lý do khác
 [maps public]
-
+Công khai
 [maps unlisted]
-
+Không niêm yết
 [maps private]
-
+Riêng tư
 [maps cannot read file]
-
+Không thể đọc tệp bản đồ.
 [maps file too large]
-
+Tệp bản đồ quá lớn để chia sẻ.
 [maps saved for next room]
-
+Đã tải bản đồ; nó sẽ được dùng khi bạn mở phòng.
 [maps download failed]
-
+Không thể tải bản đồ.
 [maps %0 colonies]
-
+%0 thuộc địa
 [maps version %0]
-
+phiên bản %0
 [maps updated %0]
-
+cập nhật %0
 [maps downloading]
-
+Đang tải bản đồ…
 [maps like needs account]
-
+Cần đăng nhập tài khoản để thích bản đồ.
 [maps report sent]
-
+Cảm ơn bạn; người kiểm duyệt sẽ xem xét.
 [maps select a map]
-
+Chọn một bản đồ để xem chi tiết.
 [maps by %0]
-
+của %0
 [maps stats %0 %1 %2]
-
+▶ %0 lượt chơi · ⬇ %1 lượt tải · ♥ %2
 [maps use in room]
-
+Dùng trong phòng
 [maps liked]
-
+Đã thích
 [maps like]
-
+Thích
 [maps map page]
-
+Trang bản đồ
 [maps reported]
-
+Đã báo cáo
 [maps report]
-
+Báo cáo…
 [maps report why]
-
+Bản đồ này có vấn đề gì?
 [maps search placeholder]
-
+Tìm bản đồ hoặc tác giả
 [maps none found]
-
+Không có bản đồ phù hợp.
 [maps any colonies]
-
+Mọi số thuộc địa
 [maps checking]
-
+Đang kiểm tra…
 [maps no version yet]
-
+Chưa có phiên bản nào được tải lên.
 [maps rejected]
-
+Bị từ chối
 [maps did not load %0]
-
+Bản đồ không tải được: %0
 [maps unknown reason]
-
+không có lý do
 [maps fix and upload again]
-
+hãy sửa trong trình biên tập rồi tải lên lại
 [maps uploaded just now]
-
+vừa tải lên
 [maps loading on server]
-
+đang tải trên máy chủ
 [maps %0 plays]
-
+%0 lượt chơi
 [maps hidden]
-
+Đã ẩn
 [maps upload again]
-
+Tải lên lại…
 [maps delete]
-
+Xóa
 [maps update]
-
+Cập nhật…
 [maps upload a map]
-
+Tải lên bản đồ…
 [maps upload hint]
-
+Tệp .map từ thư mục bản đồ hoặc trình biên tập
 [maps no maps yet]
-
+Bạn chưa chia sẻ bản đồ nào.
 [maps my maps]
-
+Bản đồ của tôi
 [maps my maps %0]
-
+Bản đồ của tôi (%0)
 [maps browse]
-
+Duyệt
 [maps title]
-
+Bản đồ
 [maps browse note %0]
-
+Danh mục %0 · chỉ hiện các bản đồ tải được trong phiên bản này
 [maps visibility note]
-
+Bản đồ công khai xuất hiện trong Duyệt. Bản đồ không niêm yết dùng được trong phòng của bạn và qua liên kết. Bản đồ riêng tư chỉ dùng trong phòng của chính bạn.
 [maps use %0]
-
+Dùng %0
 [maps %0 kb]
-
+%0 KB
 [maps field title]
-
+Tiêu đề
 [maps field description]
-
+Mô tả
 [maps who can use it]
-
+Ai có thể dùng
 [maps guests unlisted]
-
+Khách có thể chia sẻ bản đồ không niêm yết và riêng tư; hãy đăng nhập để đăng lên Duyệt.
 [maps visibility help]
-
+Bản đồ không niêm yết dùng được trong phòng của bạn và qua liên kết; bản đồ công khai còn xuất hiện trong Duyệt.
 [maps new version of %0]
-
+Tải tệp này lên làm phiên bản mới của %0.
 [maps upload]
-
+Tải lên
 [maps uploading]
-
+Đang tải lên…
 [maps checking detail]
-
+Máy chủ đang tải bản đồ và vẽ ảnh xem trước. Trước khi xong, bản đồ chưa thể dùng.
 [maps ready]
-
+Sẵn sàng
 [maps ready public]
-
+Bản đồ đã sẵn sàng và có trong Duyệt.
 [maps ready unlisted]
-
+Bản đồ đã sẵn sàng. Bản đồ không niêm yết dùng được trong phòng của bạn và qua liên kết.
 [maps ready private]
-
+Bản đồ đã sẵn sàng. Bản đồ riêng tư chỉ dùng được trong phòng của chính bạn.
 [maps upload failed]
-
+Tải lên thất bại
 [maps server read %0 %1]
-
+Máy chủ đọc được là %0 với %1 thuộc địa.
 [maps continue in background]
-
+Đóng
 [maps upload a map title]
-
+Tải lên bản đồ
 [maps update map title]
-
+Cập nhật bản đồ
 [maps upload note]
-
+Máy chủ sẽ tải thử mọi bản đồ được tải lên trước khi cho phép dùng.
 [online just now]
-
+vừa xong
 [online today %0]
-
+hôm nay %0
 [online yesterday]
-
+hôm qua
 [online sun]
-
+CN
 [online mon]
-
+T2
 [online tue]
-
+T3
 [online wed]
-
+T4
 [online thu]
-
+T5
 [online fri]
-
+T6
 [online sat]
-
+T7
 [online %0 weeks ago]
-
+%0 tuần trước
 [online %0 months ago]
-
+%0 tháng trước
 [online %0 years ago]
-
+%0 năm trước
 [maps share online]
-
+Chia sẻ trực tuyến…
 [maps mine]
-
+Của tôi
 [results waiting for players]
-
+Đang chờ những người chơi khác rời trận…
 [results waiting detail]
-
+Kết quả được ghi nhận khi mọi người đã rời trận.
 [results waiting slow]
-
+Người chơi bị mất kết nối có tối đa 3 phút để quay lại. Kết quả sẽ xuất hiện trong lịch sử của bạn và trên trang trận đấu.
 [results verifying slow]
-
+Việc xác minh mất nhiều thời gian hơn bình thường. Kết quả sẽ xuất hiện trong lịch sử của bạn và trên trang trận đấu.
 [results rematch]
-
+Tái đấu
 [results join rematch %0]
-
+Vào trận tái đấu của %0
 [hub profile history]
-
+Hồ sơ & lịch sử
 [hub my maps]
-
+Bản đồ của tôi
 [hub leaderboard %0]
-
+Bảng xếp hạng · %0
 [hub leaderboard empty]
-
+Chưa có người chơi nào được xếp hạng.
 [hub guests not ranked]
-
+Khách không được xếp hạng. Hãy đăng nhập để xuất hiện ở đây.
 [hub full leaderboard]
-
+Bảng xếp hạng đầy đủ
 [settings %0 is no longer linked.]
-
+%0 không còn được liên kết.
 [room map read failed]
-
+Không thể đọc tệp bản đồ này.
 [room map upload failed]
-
+Không thể chia sẻ bản đồ với phòng.
 [room map upload failed %0]
-
+Không thể chia sẻ bản đồ với phòng: %0
 [room uploading map]
-
+Đang chia sẻ bản đồ với phòng…
 [room premade map shared]
-
+Mọi người trong phòng chơi tệp bản đồ này; nó sẽ được tải về trước trận.
 [room take a seat to play]
-
+Nhận một chỗ trống để chơi
 [room waiting for a seat]
-
+Mọi chỗ đã có người. Bạn có thể nhận chỗ khi có chỗ trống.
 [room not seated]
-
+Chưa có chỗ
 [room copied]
-
+Đã sao chép
 [room copy failed]
-
+Không thể sao chép
 [room closed title]
-
+Phòng đã đóng
 [room removed title]
-
+Đã bị mời ra khỏi phòng
 [room back to online]
-
+Về trực tuyến
 [leave match]
-
+Rời trận
 [leave match title]
-
+Rời trận đấu này?
 [leave lan title]
-
+Rời trận LAN này?
 [leave rated body]
-
+Bạn sẽ thua trận xếp hạng này và bị trừ điểm. Những người khác tiếp tục chơi, và bạn không thể quay lại.
 [leave casual body]
-
+Trận đấu nhanh này được tính là thua cho bạn. Những người khác tiếp tục chơi, và bạn không thể quay lại.
 [leave room body]
-
+Bạn rời trận của phòng và nó được tính là thua trong lịch sử của bạn. Những người khác tiếp tục chơi, và bạn không thể quay lại.
 [leave lan body]
-
+Những người khác tiếp tục chơi mà không có bạn, và bạn không thể quay lại trận này.
 [leave match confirm]
-
+Rời trận
 [keep playing]
-
+Tiếp tục chơi
 [results team]
-
+Đội
 [results quick unrated]
-
+Đấu nhanh · không xếp hạng
 [conn card cannot keep up]
-
+Thiết bị của bạn không theo kịp trận đấu này
 [conn card cannot keep up body]
-
+Thiết bị phát lại trận chậm hơn tốc độ trận đang diễn ra, nên sẽ không bắt kịp được. Bạn có thể rời trận, hoặc giảm thiết lập đồ họa và tiếp tục chờ.
 [conn card not gaining]
-
+không bắt kịp
 [results reason opponents left]
-
+Đối thủ của bạn đã rời trận.
 [results reason victory]
-
+Mọi thuộc địa đối phương đã bị đánh bại.
 [results reason defeat]
-
+Thuộc địa của bạn đã bị đánh bại.
 [results reason you left]
-
+Bạn đã rời trận. Trận được tính là thua.
 [results final after end]
-
+Kết quả cuối cùng có sau khi trận kết thúc.
 [pause none left]
-
+Hết lượt tạm dừng
 [pause game left %0]
-
+Tạm dừng (còn %0)
 [pause by %0]
-
+%0 đã tạm dừng
 [pause by %0 resumes in %1]
-
+%0 đã tạm dừng · tiếp tục sau %1
 [turn too many actions]
-
+Quá nhiều thao tác: một số vẫn đang chờ gửi đi
 [turn no pauses left]
-
+Bạn đã hết lượt tạm dừng trong trận này
 [turn pause time used %0]
-
+%0 đã dùng hết thời gian tạm dừng: trò chơi tiếp tục
 [room seats one person %0 %1]
-
+1 người chơi · %0 AI · %1 trống
 [room rules otherwise standard]
-
+Mọi luật khác giống như Tiêu chuẩn.
 [room browser link]
-
+Liên kết cho người chơi trên trình duyệt
 [room browser link hint]
-
+Người chơi trên trình duyệt dán liên kết này để tham gia.
 [room browser link code %0]
-
+Người chơi trên trình duyệt dán liên kết này để tham gia. Trò chơi của họ sẽ hiện mã %0.
 [room copy link]
-
+Sao chép liên kết
 [room lan open seat detail]
-
+Ai trong mạng này cũng có thể nhận chỗ
 [room close title]
-
+Đóng phòng?
 [room close body one]
-
+Nếu bạn rời đi, phòng sẽ đóng với mọi người, kể cả người chơi còn lại trong phòng.
 [room close body %0]
-
+Nếu bạn rời đi, phòng sẽ đóng với mọi người, kể cả %0 người chơi khác trong phòng.
 [room close confirm]
-
+Đóng phòng
 [room stay]
-
+Ở lại
 [room colours changed]
-
+Bản đồ mới đã đổi màu của các chỗ. Hãy kiểm tra màu của bạn trước khi bắt đầu.
 [room copy by hand]
-
+Không sao chép được. Hãy tự sao chép lời mời:
 [room copy by hand close]
-
+Đóng
 [room copy by hand touch]
-
+Chạm và giữ liên kết, rồi chọn Sao chép.
 [room copy by hand keys]
-
+Liên kết đã được chọn: nhấn Ctrl+C (⌘C trên Mac).
 [room code]
-
+Mã
 [online under a minute]
-
+dưới một phút
 [online about %0 min]
-
+khoảng %0 phút
 [online %0 s]
-
+%0 giây
 [online %0 min %1 s]
-
+%0 phút %1 giây
 [qm ai opponent %0]
-
+Đối thủ AI: %0
 [match relay connected]
-
+Đã kết nối máy chủ trò chơi
 [room picker title]
-
+Chọn bản đồ
 [room picker for one]
-
+Cho 1 người chơi trong phòng
 [room picker for %0]
-
+Cho %0 người chơi trong phòng
 [room picker generated]
-
+Tự tạo
 [room picker premade]
-
+Có sẵn
 [room picker catalog]
-
+Danh mục
 [room picker size]
-
+Kích thước
 [room picker colonies]
-
+Thuộc địa
 [room picker fair]
-
+Khởi đầu công bằng cho mọi thuộc địa
 [room picker does not fit]
-
+Không hợp với kích thước này; hãy thử cái khác
 [room picker preparing]
-
+Đang chuẩn bị bản xem trước…
 [room picker generated note]
-
+Mỗi địa hình cho mọi thuộc địa một khởi đầu tốt như nhau, và máy chủ tạo cùng một bản đồ cho mọi người.
 [room picker players %0]
-
+%0 người chơi
 [room picker unreadable]
-
+không đọc được
 [room picker no premade]
-
+Không tìm thấy bản đồ có sẵn nào.
 [room picker too small %0]
-
+Bản đồ này có ít thuộc địa hơn %0 người chơi trong phòng.
 [room picker pick premade]
-
+Chọn một bản đồ để xem ở đây.
 [room picker catalog intro]
-
+Bản đồ do người chơi khác chia sẻ. Mở một bản đồ và chọn Dùng trong phòng.
 [room picker browse catalog]
-
+Duyệt bản đồ được chia sẻ
 [room picker more options]
-
+Thêm tùy chọn…
 [room picker use]
-
+Dùng bản đồ này
 [room map ready title %0]
-
+Chơi %0
 [room map ready unnamed]
-
+bản đồ này
 [room map ready body]
-
+Tạo phòng và mời bạn bè: phòng sẽ chơi bản đồ này.
 [game draw]
-
+Hòa
 [settings Show colony skins]
 Hiển thị diện mạo thuộc địa
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Tắt để sử dụng đơn vị, bầy đàn và màu công trình cổ điển trên thiết bị này.
+Tắt để dùng đơn vị, tổ và màu công trình cổ điển trên thiết bị này.
 [settings Hive Mind]
-
+Ý thức tập thể
 [settings Enable commander shortcuts]
-
+Bật phím tắt chỉ huy
 [settings Command your colony without opening a menu.]
-
+Chỉ huy thuộc địa mà không cần mở trình đơn.
 [settings Allow supervision for new commands]
-
+Cho phép giám sát lệnh mới
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Chỉ huy có thể theo dõi tiếp các lệnh thường trực. Việc theo dõi tiếp tốn tín dụng; lệnh đã cài đặt vẫn chạy mà không cần tín dụng.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Phím tắt mặc định: Ctrl+Enter để ra lệnh; Ctrl+Shift+Enter để dừng việc của chỉ huy. Đổi chúng trong mục Điều khiển. Thẻ lệnh thường trực có nút tạm dừng và hủy riêng.
 [settings Commander account and credits]
-
+Tài khoản chỉ huy và tín dụng
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Quản lý tín dụng và giao dịch mua trong trình duyệt. Được phép dùng trợ giúp của chỉ huy trong trận xếp hạng.
 [open commander]
-
+Mở chỉ huy
 [stop commander]
-
+Dừng chỉ huy
 [settings Recording]
-
+Quay video
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Quay trận đấu thành video MP4 có âm thanh. Cần FFmpeg với bộ mã hóa libx264 và AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg đã sẵn sàng.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+Không có FFmpeg nên tính năng quay đã tắt. Hãy cài FFmpeg, đảm bảo nó nằm trong PATH, rồi kiểm tra lại.
 [settings Check for FFmpeg again]
-
+Kiểm tra lại FFmpeg
 [settings Checking for FFmpeg…]
-
+Đang kiểm tra FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Phím tắt: %0. Phím này cũng hoạt động trong trình đơn và trình biên tập.
 [settings Change the hotkey]
-
+Đổi phím tắt
 [settings Recordings are saved in %0]
-
+Bản quay được lưu trong %0
 [toggle recording]
-
+Bắt đầu hoặc dừng quay
 [File selection is unavailable.]
-
+Không thể chọn tệp.
 [Saving custom AI…]
-
+Đang lưu AI tùy chỉnh…
 [Could not read the selected JavaScript file.]
-
+Không thể đọc tệp JavaScript đã chọn.
 [Custom AI library saved.]
-
+Đã lưu thư viện AI tùy chỉnh.
 [Storage could not be saved. The previous library is retained.]
-
+Không thể lưu bộ nhớ. Thư viện trước đó vẫn được giữ.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Nhập một tệp AI JavaScript, rồi chọn nó khi thiết lập trận trên máy.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Tệp nhập được lưu một bản sao trong Glob2. Cập nhật sẽ thay bản sao đó cho các trận sau; bản lưu vẫn giữ AI ban đầu.
 [Waiting for file selection or storage…]
-
+Đang chờ chọn tệp hoặc lưu trữ…
 [Import JavaScript AI]
-
+Nhập AI JavaScript
 [Link development file]
-
+Liên kết tệp đang phát triển
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Tệp liên kết được đọc khi trận bắt đầu. Hãy dựng lại trước khi bắt đầu trận mới. Gỡ liên kết không bao giờ xóa tệp của bạn.
 [Example AI and authoring guide]
-
+AI mẫu và hướng dẫn viết AI
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Chưa có AI tùy chỉnh nào. Hãy nhập một tệp .js đã đóng gói để bắt đầu.
 [Relink]
-
+Liên kết lại
 [Update]
-
+Cập nhật
 [Validate]
-
+Kiểm tra
 [AI startup and persistent globals are valid.]
-
+Phần khởi động AI và các biến toàn cục bền vững đều hợp lệ.
 [Remove from library]
-
+Gỡ khỏi thư viện
 [AI telemetry]
-
+Số liệu theo dõi AI
 [No accessible AI telemetry.]
-
+Không có số liệu theo dõi AI nào truy cập được.
 [Search fields]
-
+Tìm trường
 [Telemetry unavailable for this recording or controller.]
-
+Không có số liệu theo dõi cho bản ghi hoặc bộ điều khiển này.
 [Linked]
-
+Đã liên kết
 [Imported]
-
+Đã nhập
 [Player]
-
+Người chơi
 [Updated at tick %0]
-
+Cập nhật ở nhịp %0
 [No values published yet.]
-
+Chưa có giá trị nào được công bố.
 [No fields match your search.]
-
+Không có trường nào khớp với tìm kiếm.
 [settings Custom AIs]
-
+AI tùy chỉnh
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Thêm AI JavaScript trong Thiết lập → AI tùy chỉnh. Chúng sẽ xuất hiện trong ô chọn AI của mỗi thuộc địa.
 [Missing custom AI]
-
+Thiếu AI tùy chỉnh
 [Map repetition failed]
-
+Không thể lặp lại bản đồ này. Hãy dùng bản đồ khởi đầu không có kịch bản, hoặc giảm số lần lặp và số căn cứ.
 [repeat map horizontally]
 Lặp bản đồ theo chiều ngang
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ căn cứ
 [bases per colony]
 Căn cứ mỗi thuộc địa; một căn cứ là một đội của bản đồ như đã vẽ, cùng các công trình và đơn vị của nó
 [stat group population]
-
+Dân số
 [stat group food]
-
+Thức ăn và sức khỏe
 [stat group resources]
-
+Tài nguyên
 [stat group buildings]
-
+Công trình
 [stat group military]
-
+Quân sự
 [stat group map]
-
+Lãnh thổ
 [stat group score]
-
+Điểm
 [stat overview]
-
+Tổng quan
 [stat overview about]
-
+Số liệu của mỗi thuộc địa trong cả trận. Giá trị cao nhất được tô sáng ở chỗ càng nhiều càng tốt; nhấp vào tiêu đề cột để xem nó thay đổi theo thời gian.
 [stat population]
-
+Dân số
 [stat population about]
-
+Số đơn vị còn sống của thuộc địa: tính cả công nhân, trinh sát và chiến binh.
 [stat births]
-
+Đơn vị sinh ra
 [stat births about]
-
+Tốc độ các tổ sinh ra đơn vị mới. Tách ra để xem riêng công nhân, trinh sát và chiến binh.
 [stat deaths]
-
+Đơn vị mất đi
 [stat deaths about]
-
+Tốc độ thuộc địa mất đơn vị, vì bất kỳ lý do nào: chiến đấu, chết đói, bị thương khi khai quang, hoặc bị mắc kẹt.
 [stat net growth]
-
+Tăng dân số
 [stat net growth about]
-
+Số đơn vị sinh ra trừ số đơn vị mất đi. Trên 0 là thuộc địa đang tăng; dưới 0 là đang giảm.
 [stat death causes]
-
+Nguyên nhân tử vong
 [stat death causes about]
-
+Các đơn vị của thuộc địa chết vì đâu: chiến đấu, chết đói, bị thương khi khai quang tài nguyên, bị mắc kẹt không lối thoát, hoặc nguyên nhân khác.
 [stat conversions]
-
+Chuyển phe ròng
 [stat conversions about]
-
+Số đơn vị lôi kéo được từ thuộc địa khác trừ số đơn vị bị chúng lôi kéo. Đơn vị đổi phe khi một thuộc địa khác cho chúng ăn tốt hơn.
 [stat hunger]
-
+Dự trữ thức ăn
 [stat hunger about]
-
+Lượng thức ăn các đơn vị của thuộc địa đang mang trong người. Mỗi đơn vị được xếp theo phần dự trữ thức ăn còn lại: gần cạn (một phần tư trở xuống), thấp (tới một nửa), lưng lửng (tới ba phần tư) hoặc no đủ. Đơn vị đi tìm quán trọ khi dự trữ cạn dần, nên thuộc địa luôn có một số đơn vị ở mức thấp.
 [stat health]
-
+Sức khỏe
 [stat health about]
-
+Các đơn vị của thuộc địa khỏe đến mức nào. Mỗi đơn vị được xếp theo lượng máu còn lại: nguy kịch (một phần tư trở xuống), bị thương (tới một nửa), xây xát (tới ba phần tư) hoặc khỏe mạnh.
 [stat seeking food]
-
+Đơn vị đang tìm thức ăn
 [stat seeking food about]
-
+Đơn vị đã ngừng làm việc để tìm quán trọ. Những đơn vị đồng thời không đầy máu được tính là đang suy yếu.
 [stat in care]
-
+Đơn vị đang ăn hoặc chữa trị
 [stat in care about]
-
+Đơn vị đang ăn trong quán trọ hoặc đang được chữa trị trong bệnh viện, nên không làm việc.
 [stat wheat harvested]
-
+Lúa mì thu hoạch
 [stat wheat harvested about]
-
+Số lượt lúa mì công nhân hái được. Quán trọ biến lúa mì thành bữa ăn.
 [stat wheat stored]
-
+Lúa mì trong kho
 [stat wheat stored about]
-
+Lúa mì nằm trong các công trình của thuộc địa, sẵn sàng để phục vụ hoặc sử dụng.
 [stat meals]
-
+Bữa ăn đã phục vụ
 [stat meals about]
-
+Số bữa ăn quán trọ của thuộc địa đã phục vụ, cho đơn vị của mình và cho khách từ thuộc địa khác.
 [stat starvation]
-
+Chết đói
 [stat starvation about]
-
+Đơn vị chết vì không tìm được thức ăn kịp thời.
 [stat healing]
-
+Máu hồi phục
 [stat healing about]
-
+Lượng máu bệnh viện của thuộc địa hồi lại cho đơn vị bị thương.
 [stat gathered]
-
+Tài nguyên thu thập
 [stat gathered about]
-
+Số lượt của mọi loại tài nguyên công nhân nhặt được. Tách ra để xem từng loại tài nguyên.
 [stat stored]
-
+Tài nguyên trong kho
 [stat stored about]
-
+Tài nguyên nằm trong các công trình của thuộc địa. Tách ra để xem từng loại tài nguyên.
 [stat spending]
-
+Chi tiêu tài nguyên
 [stat spending about]
-
+Tài nguyên được giao đã dùng vào đâu: bữa ăn, đơn vị mới, đạn cho tháp, công trình mới hoặc nâng cấp.
 [stat delivered]
-
+Tài nguyên đã giao
 [stat delivered about]
-
+Số lượt công nhân mang vào công trình.
 [stat traded]
-
+Giao thương ròng
 [stat traded about]
-
+Tài nguyên nhận được qua chợ trừ tài nguyên đã cho đi.
 [stat buildings]
-
+Công trình hiện có
 [stat buildings about]
-
+Các công trình đã hoàn thành của thuộc địa. Tách ra để xem từng loại công trình.
 [stat construction]
-
+Việc xây dựng hoàn thành
 [stat construction about]
-
+Việc xây dựng đã hoàn thành: công trình mới, nâng cấp và sửa chữa.
 [stat buildings lost]
-
+Công trình bị mất
 [stat buildings lost about]
-
+Công trình bị kẻ địch phá hủy hoặc do chính thuộc địa phá bỏ.
 [stat blocked buildings]
-
+Công trình bị chặn lối vào
 [stat blocked buildings about]
-
+Công trình có lối vào bị chặn, nên đơn vị không thể ra vào.
 [stat attack]
-
+Sức tấn công
 [stat attack about]
-
+Điểm cho tổng sức chiến đấu của các chiến binh trong thuộc địa: đánh mạnh và nhanh đến đâu.
 [stat defence]
-
+Sức phòng thủ
 [stat defence about]
-
+Điểm cho tổng hỏa lực của các tháp phòng thủ trong thuộc địa.
 [stat hit points]
-
+Tổng máu
 [stat hit points about]
-
+Tổng lượng máu của mọi đơn vị và công trình trong thuộc địa.
 [stat damage dealt]
-
+Sát thương gây ra
 [stat damage dealt about]
-
+Sát thương thuộc địa gây ra cho đơn vị và công trình của địch. Tách ra để xem chiến binh, phép thuật và tháp.
 [stat damage taken]
-
+Sát thương phải chịu
 [stat damage taken about]
-
+Sát thương kẻ địch gây ra cho đơn vị và công trình của thuộc địa.
 [stat damage traded]
-
+Cán cân sát thương
 [stat damage traded about]
-
+Sát thương gây ra trừ sát thương phải chịu. Trên 0 là thuộc địa đang thắng thế trong giao tranh.
 [stat combat deaths]
-
+Đơn vị tử trận
 [stat combat deaths about]
-
+Đơn vị của thuộc địa này bị kẻ địch giết. Tách ra để xem riêng công nhân, trinh sát và chiến binh.
 [stat accuracy]
-
+Phát bắn trúng
 [stat accuracy about]
-
+Tỷ lệ phát bắn của tháp và trinh sát trong thuộc địa trúng mục tiêu.
 [stat training]
-
+Huấn luyện
 [stat training about]
-
+Số lần đơn vị đến trường học, doanh trại, đường chạy và hồ bơi để học kỹ năng.
 [stat skills]
-
+Kỹ năng đạt được
 [stat skills about]
-
+Số cấp kỹ năng các đơn vị của thuộc địa đạt được qua huấn luyện.
 [stat growth nearby]
-
+Tài nguyên mọc gần thuộc địa
 [stat growth nearby about]
-
+Lượng lúa mì, gỗ và tài nguyên khác mọc trong phạm vi 32 ô quanh các công trình của thuộc địa, tính bằng điểm sinh trưởng thay vì lượt chở. Tách ra để xem chúng mọc gần nhà đến đâu.
 [stat growth map]
-
+Tài nguyên mọc trên bản đồ
 [stat growth map about]
-
+Lượng tài nguyên mọc ở mọi nơi trên bản đồ, tính bằng điểm sinh trưởng thay vì lượt chở. Giá trị này như nhau với mọi thuộc địa.
 [stat stranded]
-
+Đơn vị không di chuyển được
 [stat stranded about]
-
+Đơn vị bị vây kín, không còn ô trống nào để bước sang.
 [stat cleared]
-
+Tài nguyên đã khai quang
 [stat cleared about]
-
+Tài nguyên công nhân dọn đi trong vùng khai quang để lấy chỗ trống.
 [stat prestige]
-
+Uy danh
 [stat prestige about]
-
+Uy danh của thuộc địa, có được nhờ các công trình cấp cao nhất. Trận đấu có mục tiêu uy danh sẽ kết thúc khi đạt mục tiêu đó.
 [stat band combat]
-
+Chiến đấu
 [stat band starvation]
-
+Chết đói
 [stat band clearing]
-
+Thương do khai quang
 [stat band trapped]
-
+Mắc kẹt
 [stat band other]
-
+Khác
 [stat band starving]
-
+Gần cạn
 [stat band hungry]
-
+Thấp
 [stat band peckish]
-
+Lưng lửng
 [stat band fed]
-
+No đủ
 [stat band critical]
-
+Nguy kịch
 [stat band wounded]
-
+Bị thương
 [stat band hurt]
-
+Xây xát
 [stat band healthy]
-
+Khỏe mạnh
 [stat band weakening]
-
+Đang suy yếu
 [stat band looking]
-
+Đang tìm quán trọ
 [stat band eating]
-
+Đang ăn
 [stat band healing]
-
+Đang chữa trị
 [stat band meals]
-
+Bữa ăn
 [stat band new units]
-
+Đơn vị mới
 [stat band ammunition]
-
+Đạn
 [stat band construction]
-
+Công trình mới
 [stat band upgrades]
-
+Nâng cấp
 [stat band built]
-
+Xây mới
 [stat band upgraded]
-
+Nâng cấp
 [stat band repaired]
-
+Sửa chữa
 [stat band destroyed]
-
+Bị phá hủy
 [stat band demolished]
-
+Tự phá bỏ
 [stat band melee]
-
+Chiến binh
 [stat band magic]
-
+Phép thuật
 [stat band towers]
-
+Tháp
 [stat band within 8]
-
+Trong 8 ô
 [stat band 8 to 16]
-
+8 đến 16 ô
 [stat band 16 to 32]
-
+16 đến 32 ô
 [stat unit units]
-
+đơn vị
 [stat unit wheat]
-
+lúa mì
 [stat unit meals]
-
+bữa ăn
 [stat unit hit points]
-
+máu
 [stat unit resources]
-
+tài nguyên
 [stat unit buildings]
-
+công trình
 [stat unit strength]
-
+điểm
 [stat unit damage]
-
+sát thương
 [stat unit shots]
-
+phát bắn
 [stat unit visits]
-
+lượt đến
 [stat unit skills]
-
+cấp kỹ năng
 [stat unit prestige]
-
+uy danh
 [stat axis percent of %0]
-
+% của %0
 [stat axis share of all teams]
-
+% của mọi thuộc địa
 [stat axis percent of units]
-
+% số đơn vị của thuộc địa
 [stat axis %0 per minute per 100 units]
-
+%0 mỗi phút, trên 100 đơn vị của thuộc địa
 [stat axis %0 per 100 units]
-
+%0 trên 100 đơn vị của thuộc địa
 [stat axis %0 per minute]
-
+%0 mỗi phút
 [stat axis %0 so far]
-
+%0, cộng dồn
 [stat axis %0 minute average]
-
+trung bình %0 phút
 [stat view per minute]
-
+Mỗi phút
 [stat view total]
-
+Tổng
 [stat view %0 min]
-
+%0 phút
 [stat view split]
-
+Tách theo loại
 [stat view percentages]
-
+Theo % tổng
 [stat view percent of units]
-
+Theo % thuộc địa
 [stat view per 100 units]
-
+Theo quy mô thuộc địa
 [stat view share]
-
+Tỷ phần trên mọi thuộc địa
 [stat view highlight none]
-
+Tô sáng: không
 [stat column peak units]
-
+Đơn vị cao nhất
 [stat column born]
-
+Sinh ra
 [stat column lost]
-
+Mất đi
 [stat column wheat]
-
+Lúa mì
 [stat column damage dealt]
-
+Sát thương gây ra
 [stat column damage taken]
-
+Sát thương chịu
 [stat column built]
-
+Đã xây
 [stat column buildings lost]
-
+Công trình mất
 [stat column prestige]
-
+Uy danh
 [stat marker wiped out]
-
+mất đơn vị cuối cùng
 [stat marker first combat death]
-
+đơn vị đầu tiên tử trận
 [stat marker first building destroyed]
-
+công trình đầu tiên bị phá hủy
 [stat not recorded for this match]
-
+Thống kê này không được ghi lại trong trận này.
 [results reason beyond doubt]
-
+Kết quả đã không còn gì nghi ngờ.
 [stat per minute short]
-
+/phút
 [stat page colony]
-
+Thuộc địa
 [stat page %0 of %1]
-
+%0/%1 >
 [stat band workers]
-
+Công nhân
 [stat band explorers]
-
+Trinh sát
 [stat band warriors]
-
+Chiến binh
 [stat unit deaths]
-
+ca tử vong
 [stat unit growth]
-
+sinh trưởng
 [stat view by unit type]
-
+Theo loại đơn vị
 [stat view by state]
-
+Theo trạng thái
 [stat view by resource]
-
+Theo tài nguyên
 [stat view by building]
-
+Theo công trình
 [stat view by work]
-
+Theo loại công việc
 [stat view by cause]
-
+Theo nguyên nhân
 [stat view by weapon]
-
+Theo vũ khí
 [stat view by distance]
-
+Theo khoảng cách
 [stat nothing to show]
-
+Không có gì để hiển thị: điều này không xảy ra trong trận.
 [stat %0 nothing]
-
+%0 (không có)
 [Match]
-
+Trận đấu
 [Time limit]
-
+Giới hạn thời gian
 [Alliances can change]
-
+Liên minh có thể đổi
 [Reveal terrain]
-
+Hiện địa hình
 [Starting unit level]
-
+Cấp đơn vị ban đầu
 [Starting stockpile]
-
+Kho dự trữ ban đầu
 [Regrowth]
-
+Mọc lại
 [Building strength]
-
+Độ bền công trình
 [Wounded units retreat]
-
+Đơn vị bị thương rút lui
 [Units can die]
-
+Đơn vị có thể chết
 [Unit training]
-
+Huấn luyện đơn vị
 [No stockpile]
-
+Không có
 [No glass cannon]
-
+Tắt
 [How quickly harvested resources grow back and spread.]
-
+Tài nguyên đã khai thác mọc lại và lan rộng nhanh đến đâu.
 [Units must eat to keep working.]
-
+Đơn vị phải ăn để tiếp tục làm việc.
 [Summary]
-
+Tóm tắt
 [All rules]
-
+Mọi luật
 [Show all rules]
-
+Hiện mọi luật
 [Choose a ruleset]
-
+Chọn bộ quy tắc
 [Reset to %0]
-
+Đặt lại về %0
 [ruleset one change %0]
-
+%0 + 1 thay đổi
 [ruleset changes %0 %1]
-
+%0 + %1 thay đổi
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Trận này không thể kết thúc. Hãy bật thắng bằng uy danh hoặc đặt giới hạn thời gian.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Uy danh thường xuất hiện sau 13 đến 28 phút, nên giới hạn 30 phút hay kết thúc với tỉ số hòa.
 [Blitz]
-
+Chớp nhoáng
 [ruleset blitz description]
-
+Khởi đầu nhanh, kết thúc sớm
 [Gentle]
-
+Nhẹ nhàng
 [ruleset gentle description]
-
+Luật dễ dãi cho trận đầu tiên
 [Sandbox]
-
+Tự do
 [ruleset sandbox description]
-
+Không đánh nhau, không chết đói, xây gì cũng được
 [Bloodbath]
-
+Tắm máu
 [ruleset bloodbath description]
-
+Quân đội mong manh nhưng không biết sợ
 [Siege]
-
+Vây hãm
 [ruleset siege description]
-
+Tường thành kiên cố và chiến tranh dài
 [Lean years]
-
+Năm mất mùa
 [ruleset lean years description]
-
+Tài nguyên hầu như không mọc lại
 [Gold rush]
-
+Cơn sốt vàng
 [ruleset gold rush description]
-
+Trên bản đồ có gì thì chỉ có bấy nhiêu
 [Elite ranks]
-
+Tinh nhuệ
 [ruleset elite ranks description]
-
+Khởi đầu đã được huấn luyện, không huấn luyện thêm
 [Shifting alliances]
-
+Liên minh thay đổi
 [ruleset shifting alliances description]
-
+Đội có thể đổi trong cuộc đua 60 phút
 [Probability victory]
-
+Thắng theo xác suất
 [Off (play it out)]
-
+Tắt (chơi đến cùng)
 [95% sure]
-
+Chắc chắn 95%
 [97% sure]
-
+Chắc chắn 97%
 [99% sure]
-
+Chắc chắn 99%
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Kết thúc trận khi mô hình đạt độ tin cậy đã chọn. Người xem có thể thấy khả năng thắng dự đoán trong thống kê.
 [Changed from %0: %1]
-
+Thay đổi so với %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Chiến đấu đang tắt, nên các luật bên dưới không có tác dụng.
 [%0 more rules are at their Standard values.]
-
+%0 luật khác đang ở giá trị Tiêu chuẩn.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Người chơi thấy địa hình bản đồ ngay từ đầu; đơn vị địch vẫn bị ẩn.
 [Each team starts with extra resources in its shared pool.]
-
+Mỗi đội bắt đầu với thêm tài nguyên trong kho chung.
 [Units hit harder but have less HP and armor.]
-
+Đơn vị đánh mạnh hơn nhưng có ít máu và giáp hơn.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Các đội có thể tấn công nhau. Tắt để có trận hòa bình.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Đơn vị bị thương quay về chữa trị thay vì chiến đấu đến chết.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Đơn vị chết khi hết máu. Tắt để giữ chúng ở mức 1 máu.
 [Units gain levels at schools.]
-
+Đơn vị lên cấp ở trường học.
 [stat group work]
-
+Thời gian công nhân
 [stat worker time]
-
+Công nhân dùng thời gian thế nào
 [stat worker time about]
-
+Công nhân của thuộc địa đang làm gì theo từng thời điểm: làm việc cho công trình, làm việc ở cờ, huấn luyện, ăn, chữa trị, đói hoặc bị thương mà chờ vì không còn quán trọ hay bệnh viện trống, hoặc rảnh rỗi không có việc. Một thuộc địa khỏe mạnh giữ hầu hết công nhân làm việc, ít người rảnh và không ai phải chờ.
 [stat idle workers]
-
+Công nhân rảnh rỗi
 [stat idle workers about]
-
+Tỷ lệ thời gian công nhân không có việc gì làm. Giá trị cao nghĩa là thừa công nhân so với việc; gần 0 nghĩa là mọi công nhân đều bận và có thể có việc đang chờ.
 [stat work by job]
-
+Công nhân làm việc cho đâu
 [stat work by job about]
-
+Số công nhân cung cấp cho từng loại công trình: tổ (để tạo đơn vị mới), quán trọ (để làm bữa ăn), công trình đang xây hoặc nâng cấp, hoặc công trình khác như tháp, trường học và doanh trại.
 [stat haul distance]
-
+Khoảng cách tới tài nguyên
 [stat haul distance about]
-
+Trung bình một công nhân đang khai thác ở xa công trình mà nó cung cấp bao nhiêu, tính bằng số ô bản đồ theo đường thẳng.
 [stat hauling]
-
+Lấy và chở
 [stat hauling about]
-
+Công nhân cung cấp cho công trình chia thời gian ra sao giữa đi tới tài nguyên, khai thác, chở về, và giao hàng hoặc chờ tài nguyên mà chúng tới được. Phần lớn là đi bộ, nên tài nguyên càng gần thì làm được càng nhiều.
 [stat eating time]
-
+Công nhân đi ăn
 [stat eating time about]
-
+Số công nhân rời việc để đi ăn: đang đi tới quán trọ, đang ăn bên trong, hoặc đói mà không quán trọ nào nhận. Có công nhân không được quán trọ nhận nghĩa là thuộc địa đã phát triển vượt quá số quán trọ hoặc lượng thức ăn của chúng.
 [stat inn distance]
-
+Khoảng cách từ quán trọ
 [stat inn distance about]
-
+Công nhân đói ở xa quán trọ mà chúng đang tới bao nhiêu, tính trung bình trên quãng đường đi, bằng số ô bản đồ theo đường thẳng. Một chuyến đi trọn vẹn dài khoảng gấp đôi. Giá trị cao nghĩa là quán trọ ở xa nơi công nhân làm việc.
 [stat warriors]
-
+Chiến binh
 [stat warriors about]
-
+Số chiến binh của thuộc địa. Tách ra để xem bao nhiêu ở gần nhà, gần thuộc địa địch, hoặc ở vùng trống. Vùng gần cả hai thuộc địa được tính là nhà.
 [stat warrior level]
-
+Cấp tấn công trung bình của chiến binh
 [stat warrior level about]
-
+Cấp tấn công trung bình của chiến binh trong thuộc địa, tính tốc độ tấn công và sức tấn công ngang nhau, theo thang 1 đến 4 trong trò chơi. Doanh trại nâng mức này; chiến binh mới chưa huấn luyện kéo nó xuống.
 [stat warrior duties]
-
+Chiến binh đang làm gì
 [stat warrior duties about]
-
+Chiến binh của thuộc địa chia ra sao giữa những người được gửi tới cờ chiến đấu, những người bị thương đủ nặng để rời trận tới bệnh viện (kể cả người đang được chữa trị), và những người rảnh.
 [stat intruders]
-
+Chiến binh địch ở nhà
 [stat intruders about]
-
+Số chiến binh địch ở trong phạm vi 16 ô quanh các công trình của thuộc địa. Khi hai thuộc địa ở gần nhau, mỗi bên sẽ tính cả quân phòng thủ của bên kia.
 [stat home defence]
-
+Chênh lệch sức phòng thủ ở nhà
 [stat home defence about]
-
+Sức mạnh chiến binh của chính thuộc địa gần các công trình của nó trừ sức mạnh chiến binh địch ở đó, tính theo từng chiến binh và từng cấp tấn công của nó. Dưới 0 là thuộc địa bị áp đảo ngay tại nhà.
 [stat combat death places]
-
+Nơi đơn vị tử trận
 [stat combat death places about]
-
+Đơn vị của thuộc địa ở đâu khi bị giết: gần công trình của mình, gần công trình của địch, hoặc ở vùng trống giữa các thuộc địa. Tổn thất ở nhà nghĩa là thuộc địa đang bị tấn công; tổn thất ở thuộc địa địch nghĩa là nó đang tấn công. Vùng gần cả hai thuộc địa được tính là nhà.
 [stat band working]
-
+Đang làm việc
 [stat band flag work]
-
+Ở cờ
 [stat band idle]
-
+Rảnh rỗi
 [stat band training]
-
+Huấn luyện
 [stat band unserved]
-
+Không còn quán trọ hay bệnh viện trống
 [stat band swarms]
-
+Tổ
 [stat band inns]
-
+Quán trọ
 [stat band sites]
-
+Xây dựng và nâng cấp
 [stat band other buildings]
-
+Công trình khác
 [stat band to resource]
-
+Đi tới tài nguyên
 [stat band harvesting]
-
+Khai thác
 [stat band carrying]
-
+Chở về
 [stat band delivering]
-
+Giao hàng hoặc chờ
 [stat band walking to inn]
-
+Đi tới quán trọ
 [stat band no inn]
-
+Không còn quán trọ trống
 [stat band at home]
-
+Ở nhà
 [stat band at enemy]
-
+Ở thuộc địa địch
 [stat band in the open]
-
+Ở vùng trống
 [stat band war flag]
-
+Ở cờ chiến đấu
 [stat band seeking healing]
-
+Đi chữa trị
 [stat band free]
-
+Rảnh
 [stat unit workers]
-
+công nhân
 [stat unit worker time]
-
+thời gian công nhân
 [stat unit working workers]
-
+công nhân cung cấp cho công trình
 [stat unit squares]
-
+ô
 [stat unit warriors]
-
+chiến binh
 [stat unit attack level]
-
+cấp tấn công
 [stat unit enemy warriors]
-
+chiến binh địch
 [stat unit strength count]
-
+sức mạnh
 [stat view by place]
-
+Theo vị trí

@@ -1,11 +1,11 @@
 [AI strategy]
 AI-strategi
 [start recording]
-
+Starta inspelning
 [stop recording]
-
+Stoppa inspelning
 [finalizing recording]
-
+Slutför inspelningen…
 [AIMaxima-Summary]
 Balanserar hållbar tillväxt och träning och samlar sedan arméer i vågor.
 [AIMaxima-Profile]
@@ -61,7 +61,7 @@ AI
 [AICastor-Description]
 Bygger och tränar, med tillväxten anpassad till mattillgången.
 [AICastor]
-AICastor
+Castor
 [AINicowar-Description]
 Ökar befolkningen, tränar krigare och anfaller sedan.
 [AINicowar]
@@ -73,7 +73,7 @@ Ingen
 [AINumbi-Description]
 En förlåtande motståndare som ändå expanderar och anfaller.
 [AINumbi]
-AINumbi
+Numbi
 [AIEcono-Description]
 Expanderar och värvar omvända enheter utan att producera krigare.
 [AIEcono]
@@ -81,7 +81,7 @@ Econo
 [AIWarrush-Description]
 Snabba anfall som prövar ditt tidiga försvar.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
 En stark byggare som sätter in tränade anfallsstyrkor.
 [AICabino]
@@ -111,13 +111,13 @@ svälter
 [are wonded]
 är skadade
 [armor]
-Pansar
+Rustning
 [assigned]
 Tilldelad
 [At. speed]
 Attackhastighet
 [At. strength]
-Styrka
+Attackstyrka
 [Attack]
 Attack
 [audio]
@@ -147,7 +147,7 @@ Uppdragsbeskrivning
 [build %0 level %1]
 Bygg %0 nivå %1
 [Build]
-Bygga
+Bygg
 [Building Defaults]
 Standardinställningar för byggnader
 [building settings]
@@ -175,7 +175,7 @@ Kan inte gå med: spelet har börjat
 [Can't join game, game is full]
 Kan inte gå med: spelet är fullt
 [cancel destroy]
-Avbryt destruktion
+Avbryt förstörelse
 [cancel repair]
 Avbryt reparation
 [cancel upgrade]
@@ -187,7 +187,7 @@ caps lock
 [carry]
 Bär på:
 [Change Area Name]
-Ändra Områdesnamn
+Ändra områdesnamn
 [Cherry]
 Körsbär
 [choose campaign]
@@ -247,7 +247,7 @@ Ctrl - linje
 [current speed]
 Nuvarande hastighet
 [custom game]
-Eget Spel
+Eget spel
 [customcur]
 Egen pekare
 [damage]
@@ -259,7 +259,7 @@ Minska antalet arbetande enheter
 [Defeat Your Oppenents]
 Besegra dina motståndare
 [defencetower explanation 2]
-fiendeenheter och byggnader
+fiendeenheter eller -byggnader
 [defencetower explanation]
 Attackerar närliggande
 [defencetower]
@@ -287,13 +287,13 @@ Bär ingenting
 [down]
 ned
 [edit map]
-Editera Karta
+Redigera karta
 [editing map]
-Editerar Karta
+Redigerar karta
 [editor shortcuts]
-Kartredigerare
+Redigerarens genvägar
 [editor]
-Editor
+Redigerare
 [end]
 end
 [enter]
@@ -415,7 +415,7 @@ Sjukhus
 [host]
 Var värd för ett spel
 [hp]
-Hälsopoäng
+Träffpoäng
 [Human]
 Människa
 [human]
@@ -453,9 +453,9 @@ Gå med i ett spel
 [keyboard settings]
 Tangentbord
 [lan]
-LAN Spel
+LAN-spel
 [language incomplete]
-Svenska - Incomplete
+Svenska – ofullständig
 [language-code]
 sv
 [language-tr]
@@ -473,11 +473,11 @@ Nivå
 [levels]
 Nivåer
 [load campaign]
-Ladda Kampanj
+Ladda kampanj
 [load game]
 Ladda spel
 [load map]
-Ladda Karta
+Ladda karta
 [load replay]
 Ladda repris
 [load script]
@@ -487,7 +487,7 @@ Ladda
 [look around]
 Se dig omkring
 [Lost : %0 has more prestige than you]
-Förlust: %0 har mer prestige än dig
+Förlust: %0 har mer prestige än du
 [Lost : your colony is dead]
 Förlust: Din koloni är död
 [low priority]
@@ -511,7 +511,7 @@ Kartbredd
 [map size y]
 Karthöjd
 [mark map]
-Markera Karta För Allierade
+Markera karta för allierade
 [market explanation 2]
 frukt med andra
 [market explanation]
@@ -523,19 +523,19 @@ medel
 [meta %0]
 meta-%0
 [Min required level:]
-Lägsta tillåtna nivå:
+Lägsta nivå som krävs:
 [Minimum Level To Flag]
 Min. enhetsnivå
 [Music volume]
 Volym (musik)
 [Mute]
-tyst
+Tyst
 [mute]
 tyst
 [new campaign]
-Ny Kampanj
+Ny kampanj
 [new map]
-Ny
+Ny karta
 [no fullscreen]
 * endast i fönsterläge
 [No Hints]
@@ -579,7 +579,7 @@ Vid släpp
 [open save menu]
 Öppna sparmenyn
 [open scenario editor]
-Öppna Skript Editor
+Öppna scenarioredigeraren
 [open teams editor]
 Öppna lagredigeraren
 [open]
@@ -601,7 +601,7 @@ page up
 [Papyrus]
 Papyrus
 [pause game]
-Pausa Spel
+Pausa spel
 [pause]
 paus
 [Paused]
@@ -631,7 +631,7 @@ Prioritet
 [Prune]
 Plommon
 [quit the editor]
-Avsluta editorn
+Avsluta redigeraren
 [quit the game]
 Avsluta spelet
 [quit the replay]
@@ -651,11 +651,11 @@ Proportioner
 [remember unit]
 Kom ihåg tilldelningar
 [remove map]
-Ta Bort Karta
+Ta bort karta
 [remove shortcut]
 Ta bort genväg
 [repair building]
-Starta/Stoppa Reparation
+Starta/stoppa reparation
 [repair]
 Reparera
 [repeat area]
@@ -665,7 +665,7 @@ Reprisen avslutad
 [restore default shortcuts]
 Återställ standardgenvägar
 [return to editor]
-Återgå till editorn
+Återgå till redigeraren
 [return to game]
 Återgå till spelet
 [return to replay]
@@ -689,7 +689,7 @@ Vill du spara innan du avslutar?
 [save game]
 Spara spel
 [save map]
-Spara Karta
+Spara karta
 [save replay]
 Spara repris
 [save script]
@@ -703,7 +703,7 @@ Förbättrar byggnadsnivån
 [school]
 Skola
 [Script Areas]
-Skript Områden
+Skriptområden
 [scroll lock]
 scroll lock
 [scroll wheel enabled]
@@ -717,7 +717,7 @@ söker
 [select barracks building]
 Välj kasern
 [select clearingflag]
-Välj Röjningsflagga
+Välj röjningsflagga
 [select construct barracks]
 Välj bygge: Kasern
 [select construct defencetower]
@@ -741,13 +741,13 @@ Välj bygge: Simbassäng
 [select delete tool]
 Välj raderingsverktyg
 [select explorationflag]
-Välj Utforskningsflagga
+Välj utforskningsflagga
 [select hospital building]
-Välj Sjukhus
+Välj sjukhus
 [select inn building]
-Välj Värdshus
+Välj värdshus
 [select market building]
-Välj Marknad
+Välj marknad
 [select place clearing area]
 Placera område: Röjningsområde
 [select place farm area]
@@ -763,19 +763,19 @@ Placera område: Vaktområde
 [select place warflag]
 Placera flagga: Krigsflagga
 [select racetrack building]
-Välj Löparbana
+Välj löparbana
 [select school building]
 Välj skola
 [select swarm building]
-Välj Svärm
+Välj svärm
 [select swimmingpool building]
 Välj simbassäng
 [select tower building]
-Välj Försvarstorn
+Välj försvarstorn
 [select wall building]
-Välj Stenmur
+Välj stenmur
 [select warflag]
-Välj Krigsflagga
+Välj krigsflagga
 [settings]
 Inställningar
 [shift %0]
@@ -797,9 +797,9 @@ Uppmjukning
 [space]
 mellanslag
 [start mission]
-Starta Uppdrag
+Starta uppdrag
 [start new campaign]
-Starta Ny Kampanj
+Starta ny kampanj
 [Start]
 Starta
 [Starving Map]
@@ -827,7 +827,7 @@ Passivt
 [stonewall]
 Stenmur
 [svr hostname]
-Server värdnamn
+Serverns värdnamn
 [swamp terrain]
 Träsk
 [swarm explanation 2]
@@ -891,17 +891,17 @@ Byggnaden är färdig
 [the building is under attack]
 Byggnaden är under attack
 [the clearingflag is finished]
-?? Röjningsflaggan är klar ??
+Röjningsflagga placerad.
 [the clearingflag is under attack]
-?? Röjningsflaggan är under attack ??
+Röjningsflaggan anfalls.
 [the defencetower is finished]
 Försvarstornet är färdigt
 [the defencetower is under attack]
 Försvarstornet är under attack
 [the explorationflag is finished]
-?? Utforskningsflaggan är klar ??
+Utforskningsflagga placerad.
 [the explorationflag is under attack]
-?? Utforskningsflaggan är under attack ??
+Utforskningsflaggan anfalls.
 [The game has not been finished]
 Spelet är inte klart
 [the games]
@@ -945,9 +945,9 @@ Simbassängen är färdig
 [the swimmingpool is under attack]
 Simbassängen är under attack
 [the warflag is finished]
-?? Krigsflaggan är klar ??
+Krigsflagga placerad.
 [the warflag is under attack]
-?? Krigsflaggan är under attack ??
+Krigsflaggan anfalls.
 [time]
 Tid
 [to:]
@@ -967,7 +967,7 @@ Total anfallsstyrka
 [Total Defence Power]
 Total försvarsstyrka
 [Total Hitpoints]
-Totala livspoäng
+Totala träffpoäng
 [Total prestige reached]
 Total prestige uppnådd
 [Total]
@@ -981,7 +981,7 @@ Bra jobbat så här långt. Nu går vi vidare till krigare, kaserner och uppgrad
 [tutorial text 4]
 Du är nästan klar. Bara flaggor och anfall återstår. Sedan kan du tillräckligt för att prova anpassade spel och så småningom spela på nätet mot några av Globulation 2:s bästa spelare.
 [tutorial]
-Introduktion
+Handledning
 [Uncontrolled]
 Okontrollerad
 [undo]
@@ -989,7 +989,7 @@ Okontrollerad
 [uniform terrain]
 Enhetlig terräng
 [Unit editor]
-Enhetseditor
+Enhetsredigerare
 [unit settings explanation]
 Standardantal tilldelade enheter
 [units working]
@@ -999,13 +999,13 @@ Enheter
 [unlocked at start]
 Upplåst från början
 [unlocked by]
-Upplåst Av
+Upplåst av
 [Unnamed Area]
-{Namnlöst Område}
+{Namnlöst område}
 [up]
 upp
 [upgrade building]
-Starta/Stoppa Uppgradering
+Starta/stoppa uppgradering
 [Upgrade Defaults]
 Standardinställningar för uppgraderingar
 [upgrade]
@@ -1079,7 +1079,7 @@ Du blev utsparkad ur spelet
 [Your %0 are under attack]
 Din %0 är under attack
 [Your unit got converted to %0's team]
-Din enhet blev omvänd till %0s lag
+Din enhet gick över till %0s lag
 [game speed]
 Spelhastighet
 [decrease game speed]
@@ -1111,7 +1111,7 @@ Arbetar ännu: %0
 [2 vs 2]
 2 mot 2
 [AI strategy & counterplay]
-AI-strategi & motspel
+AI-strategi och motspel
 [AICastor-Profile]
 Grundstrategi: Investerar i en produktiv koloni och teknik före större anfall. Prioriterade byggprojekt utvecklar bosättningen; utveckling, militär infrastruktur och tid höjer krigsberedskapen.\n\nEkonomi och utveckling: Undersöker fuktighet, vetetillväxt, hinder och arbetares räckvidd. Hanterar matutbyggnad, uppgraderingar och försvar tillsammans med produktion.\n\nAnfall och försvar: Uppskattar friska krigares anfallskraft och anfaller när styrke- eller tidsvillkor uppfylls. Föredrar nåbara, tidigare sedda byggnader, särskilt kaserner och skolor, och flyttar anfallsflaggor mot värdefulla mål.\n\nJämfört med andra AI: Noggrannare med terräng och målvärde än Numbi. Tålmodigare än Warrush; byter tidig press mot en utvecklad bas och starkare trupper.\n\nStyrkor och svagheter: Bred infrastrukturplanering och värdefulla militära mål ger anfallen syfte. Förberedelser tar tid så snabba motståndare kan bestrida resurser innan huvudstyrkan är redo.\n\nMöjligt motspel: Bestrid expansion tidigt. Skydda kaserner, skolor och mat och behåll reserver när du anfaller den utvecklade bosättningen.
 [AICastor-Summary]
@@ -1125,7 +1125,7 @@ Grundstrategi: Kombinerar tillväxt, träning, uppgraderingar och krig genom öv
 [AINicowar-Summary]
 Tidig stormning med jordbruk, uppgraderingar, försvar och utforskaranfall.
 [AINone-Profile]
-Strategi: AI ger inga kommandon.\n\nStyrkor: En förutsägbar, inaktiv motståndare för experiment.\n\nSvagheter: expanderar eller anpassar sig inte.
+Grundstrategi: Ger inga AI-order.\n\nStyrkor: En förutsägbar, inaktiv motståndare för experiment.\n\nSvagheter: Expanderar inte och anpassar sig inte.
 [AINone-Summary]
 En inaktiv koloni för experiment.
 [AINumbi-Profile]
@@ -1203,7 +1203,7 @@ Gräsvikt
 [Gray]
 Grå
 [Green]
-Grönt
+Grön
 [Hard]
 Svårt
 [Height]
@@ -1253,7 +1253,7 @@ Spelare och lag
 [Premade maps]
 Färdiga kartor
 [Preview ready. Start plays this exact map.]
-Förhandsvisning klar. Starta spelet använder denna exakta karta.
+Förhandsvisningen är klar. Starta använder exakt den här kartan.
 [Regenerate all]
 Generera om alla
 [Generating preview...]
@@ -1291,9 +1291,9 @@ Standard
 [Start game]
 Starta spelet
 [Starting workers]
-Inledande arbetare
+Startarbetare
 [Starting workers: Game Rules tab.]
-Initiala arbetare: Fliken Spelregler.
+Startarbetare: fliken Spelregler.
 [Swamp]
 Träsk
 [Team]
@@ -1337,7 +1337,7 @@ Traditionell koloniutveckling
 [Dimensions and colony count are set above.]
 Mått och koloniantal anges ovan.
 [Generate & watch]
-Generera & titta
+Generera och titta
 [Info]
 Info
 [Map-defined starting units]
@@ -1371,9 +1371,9 @@ Himmelsblå
 [Updating map preview...]
 Uppdaterar förhandsvisning av kartan...
 [Generation failed. Adjust settings or press Start to retry.]
-Generering misslyckades. Justera inställningarna eller tryck på Start för att försöka igen.
+Generering misslyckades. Justera inställningarna eller tryck på Starta för att försöka igen.
 [Preview unavailable. Adjust settings or start to retry.]
-Förhandsgranskning inte tillgänglig. Ändra inställningarna eller starta spelet för att försöka igen.
+Förhandsvisning saknas. Ändra inställningarna eller starta för att försöka igen.
 [automatic torus view]
 Automatisk torusvy
 [toggle torus view]
@@ -1395,13 +1395,13 @@ Skapa förhandsvisning
 [Generation failed. Adjust settings or try again.]
 Generering misslyckades. Justera inställningarna eller försök igen.
 [Map settings changed. Generate a new preview or start.]
-Kartinställningar ändrade. Skapa en ny förhandsvisning eller börja.
+Kartinställningarna har ändrats. Skapa en ny förhandsvisning eller starta.
 [Map source]
 Kartkälla
 [Map-defined]
 Kartdefinierad
 [Match format]
-Spelformat
+Matchformat
 [No current preview]
 Ingen aktuell förhandsvisning
 [Quick clash: 2x speed; generated maps start with 8 workers.]
@@ -1417,7 +1417,7 @@ Regeluppsättning
 [Select a map from the library.]
 Välj en karta från biblioteket.
 [Starting workers affects generated maps only.]
-Det initiala antalet arbetare gäller endast genererade kartor.
+Antalet startarbetare gäller endast genererade kartor.
 [Unavailable]
 Ej tillgänglig
 [Use selection]
@@ -1435,7 +1435,7 @@ Lägg till tangent i sekvensen
 [settings Add shortcut]
 Lägg till kortkommando
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Använd mushjulet för att ändra antalet tilldelade enheter. Om det här alternativet är avstängt håller du ned Ctrl-tangenten för att använda hjulet. Håll ned Skift-tangenten för att justera flaggradien. Det här alternativet styr även mushjulsinmatning i andra menyer.
+Ändra tilldelade enheter med mushjulet. När det är avstängt: håll ned Ctrl. Skift ändrar flaggradien. Styr även mushjulet i andra menyer.
 [settings Adjust music and voice volume.]
 Justera musik- och röstvolymen.
 [settings Adjust the pace of play.]
@@ -1447,7 +1447,7 @@ Grafik och effekter
 [settings Audio]
 Ljud
 [settings Bind Escape]
-Tilldela Escape-tangenten
+Tilldela Escape
 [settings Building]
 Byggnad
 [settings Building defaults]
@@ -1467,7 +1467,7 @@ Välj mellan fönsterläge och helskärm.
 [settings Choose how the game looks on your screen.]
 Välj hur spelet ser ut på din skärm.
 [settings Completed]
-Färdigställda byggnader
+Färdiga
 [settings Construction]
 Byggande
 [settings Controls]
@@ -1477,7 +1477,7 @@ Kunde inte ändra visningsläge. Det tidigare läget återställdes.
 [settings Could not save]
 Kunde inte spara
 [settings Current display]
-Aktuella visningsinställningar
+Aktuell skärm
 [settings Default]
 Standard
 [settings Display]
@@ -1523,7 +1523,7 @@ Tangenterna bildar en ordnad sekvens. Varje tangent kan aktivera handlingen när
 [settings Language]
 Språk
 [settings Language & player]
-Språk & spelare
+Språk och spelare
 [settings Language used throughout the interface.]
 Språk som används i hela gränssnittet.
 [settings Level]
@@ -1533,13 +1533,13 @@ Kartredigerare
 [settings Match the desktop]
 Följ skrivbordet
 [settings Missing font]
-Saknar typsnitt
+Typsnitt saknas
 [settings Music volume]
 Volym (musik)
 [settings Mute audio]
 Stäng av ljudet
 [settings Name shown to other players.]
-Namnet visas för andra spelare.
+Namn som visas för andra spelare.
 [settings Off]
 Av
 [settings On]
@@ -1551,7 +1551,7 @@ Spelarnamn
 [settings Press]
 Vid nedtryckning
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Tryck på en tangent på tangentbordet. Genom att trycka på Escape-tangenten avbryts inmatning. För att tilldela Escape-tangenten, välj "Tilldela Escape-tangenten".
+Tryck på en tangent. Escape avbryter. Använd Tilldela Escape för att tilldela Escape.
 [settings Radius]
 Radie
 [settings Reduced]
@@ -1575,7 +1575,7 @@ Ersätta kortkommandona i detta sammanhang med standardinställningarna? Ändrin
 [settings Resolution]
 Skärmupplösning
 [settings Restore default shortcuts]
-Återställ standardkommandon
+Återställ standardkortkommandon
 [settings Retry]
 Försök igen
 [settings Revert]
@@ -1585,7 +1585,7 @@ Försök igen
 [settings Save shortcut]
 Spara kortkommando
 [settings Saved — restart required]
-Sparad – omstart krävs
+Sparat – omstart krävs
 [settings Saving…]
 Sparar...
 [settings Scroll wheel enabled]
@@ -1605,9 +1605,9 @@ Ursprungligt antal enheter och radie för nya flaggor.
 [settings This shortcut conflicts with existing bindings:]
 Detta kortkommando står i konflikt med befintliga kortkommandon:
 [settings Trigger]
-Aktiveringshändelse
+Utlösare
 [settings Unbound]
-Inget kortkommando tilldelat
+Ingen tangent
 [settings Unit counts assigned to new construction sites.]
 Antal enheter som tilldelas nya byggarbetsplatser.
 [settings Unit counts for completed buildings.]
@@ -1617,7 +1617,7 @@ Antal enheter medan en byggnad uppgraderas.
 [settings Units]
 Enheter
 [settings Upgrades]
-Byggnadsuppgraderingar
+Uppgraderingar
 [settings Use game cursor]
 Använd spelmarkören
 [settings Voice volume]
@@ -1851,7 +1851,7 @@ Ringavstånd
 [Thread width]
 Trådbredd
 [Sag]
-Nedhäng
+Nedhängning
 [Torn strands]
 Trasiga trådar
 [Hub size]
@@ -2139,9 +2139,9 @@ Ekonomi
 [Instant construction]
 Omedelbart byggande
 [Higher tiers give every building much more HP.]
-Högre nivåer ger varje byggnad mycket mer hälsopoäng.
+Högre nivåer ger varje byggnad mycket fler träffpoäng.
 [Starting units spawn already leveled up. Changes the generated map.]
-Startenheter dyker upp redan uppnivåerade. Ändrar den genererade kartan.
+Startenheterna börjar på högre nivå. Ändrar den genererade kartan.
 [No upgrades]
 Inga uppgraderingar
 [No permadeath]
@@ -2203,11 +2203,11 @@ Resurser + <=16
 [Stats growth near 32]
 Resurser + <=32
 [Stats low HP 25]
-Hälsopoäng <=25%
+HP <=25%
 [Stats low HP 50]
-Hälsopoäng <=50%
+HP <=50%
 [Stats low HP 75]
-Hälsopoäng <=75%
+HP <=75%
 [Stats low food 25]
 Mat <=25%
 [Stats low food 50]
@@ -2219,7 +2219,7 @@ Enheter S
 [Stats structural buildings]
 Byggnader S
 [Stats low HP ranges]
-Hälsopoäng: <=25/50/75%
+HP: <=25/50/75%
 [Stats low food ranges]
 Mat: <=25/50/75%
 [Emoji]
@@ -2865,7 +2865,7 @@ Verktyg
 [Pan map]
 Flytta kartan
 [Edit map]
-Editera Karta
+Redigera karta
 [Editor map]
 Karta
 [Flags]
@@ -2897,7 +2897,7 @@ Gränssnittets layout
 [settings Automatic]
 Automatisk
 [settings Compact]
-Tätt
+Kompakt
 [settings Spacious]
 Rymlig
 [More]
@@ -3169,13 +3169,13 @@ Kolonier: %0
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Enheter
+%0 · %1 enheter
 [settings Level %0]
 Nivå %0
 [settings Match the desktop %0]
 Följ skrivbordet (%0)
 [settings Current display %0 %1 %2 %3]
-Aktuella visningsinställningar: %0 × %1 · %2 · %3
+Aktuell skärm: %0 × %1 · %2 · %3
 [Fairness: %0]
 Rättvisa: %0
 [Colony %0]
@@ -3185,7 +3185,7 @@ Vinstchans: %0 · Styrka: %1
 [%0 · Contribution: %1]
 %0 · Bidrag: %1
 [Min required level %0]
-Lägsta tillåtna nivå: %0
+Lägsta nivå som krävs: %0
 [Confirm %0]
 Ok: %0
 [%0 %1]
@@ -3235,1419 +3235,1419 @@ Listornas fart
 [List bounce]
 Listornas studs
 [lan pairing field]
-
+Värdens parkopplingskod (eller betrodd WSS-URL)
 [lan pairing connect]
-
+Parkoppla och anslut
 [lan discovery instructions]
-
+Välj en värd och klistra sedan in dess parkopplingskod för att verifiera dess identitet.
 [lan discovery unavailable]
-
+LAN-sökning är inte tillgänglig. Kontrollera behörigheten för lokalt nätverk eller klistra in värdens parkopplingskod.
 [lan discovered host %0]
-
+Hittade värden %0 – parkoppla för att se spel
 [lan connection unavailable]
-
+Kan inte nå LAN-värden. Kontrollera behörigheten för lokalt nätverk och värdens parkopplingskod.
 [lan connection verification failed %0]
-
+Kan inte verifiera eller ansluta till LAN-värden: %0
 [lan lobby endpoint required]
-
+Använd värdens lobbyadress
 [settings Artwork]
-
+Grafik
 [settings Original]
-
+Ursprunglig
 [settings High resolution]
-
+Hög upplösning
 [settings Clouds]
-
+Moln
 [settings Show cloud cover above the map.]
-
+Visa molntäcke ovanför kartan.
 [settings Cloud shadows]
-
+Molnskuggor
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Visa molnskuggor på marken oberoende av molntäcket.
 [settings Building particles]
-
+Byggnadspartiklar
 [settings Show smoke and other building particles.]
-
+Visa rök och andra partiklar från byggnader.
 [settings Magic effects]
-
+Magieffekter
 [settings Choose animated magic effects or a simple visible effect.]
-
+Välj animerade magieffekter eller en enkel synlig effekt.
 [settings Simple]
-
+Enkel
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Kräver OpenGL-renderaren. Ditt sparade val behålls.
 [settings Interface appearance]
-
+Gränssnittets utseende
 [settings Panels]
-
+Paneler
 [settings Choose translucent or opaque interface panels.]
-
+Välj genomskinliga eller täckande paneler i gränssnittet.
 [settings Opaque]
-
+Täckande
 [settings Translucent]
-
+Genomskinlig
 [settings Advanced graphics]
-
+Avancerad grafik
 [settings Path lines]
-
+Väglinjer
 [settings Choose translucent or opaque unit path lines.]
-
+Välj genomskinliga eller täckande linjer för enheternas vägar.
 [settings Smooth progress indicators]
-
+Mjuka förloppsindikatorer
 [settings Smooth the moving edges of progress indicators.]
-
+Mjuka upp de rörliga kanterna på förloppsindikatorer.
 [settings Decorative interface animation]
-
+Dekorativ animering
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animera segerbilden. Minskad rörelse stänger också av den här animeringen.
 [settings Smooth unit motion]
-
+Mjuk enhetsrörelse
 [settings Experimental: move and animate units between game ticks.]
-
+Experimentellt: flytta och animera enheter mellan spelstegen.
 [settings Smooth fog of war]
-
+Mjuk krigsdimma
 [settings Fade the map into and out of the fog of war gradually.]
-
+Tona kartan gradvis in i och ut ur krigsdimman.
 [settings Adaptive zoom detail]
-
+Adaptiv zoomdetalj
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Förenkla staplar, zoner, terräng och enheter när kartan zoomas ut, och håll dem små när den är inzoomad.
 [settings Text size]
-
+Textstorlek
 [settings Enlarge interface text without changing the map scale.]
-
+Förstora gränssnittets text utan att ändra kartans skala.
 [Map momentum]
 Kartans fart
 [turn reconnecting]
-
+Anslutningen till värden bröts. Återansluter...
 [turn waiting for players]
-
+Väntar på att alla spelare ska läsa in...
 [turn rejoining]
-
+Återansluter till spelet...
 [turn catching up %0]
-
+Kommer ikapp: %0 omgångar efter
 [turn player reconnecting %0]
-
+%0 återansluter...
 [turn player lagging %0]
-
+%0 laggar
 [turn player resyncing %0]
-
+%0 kommer ikapp
 [turn player not connected %0]
-
+%0 har inte anslutit ännu
 [lan host left]
-
+Värden lämnade spelet.
 [lan host lost]
-
+Anslutningen till värden bröts.
 [lan version mismatch %0]
-
+Värden kör en annan version av Globulation 2 (%0).
 [lan cannot host %0]
-
+Kan inte vara värd för ett LAN-spel: %0
 [play online]
-
+Spela online
 [Use in room]
-
+Använd i rummet
 [conn ai]
-
+AI
 [conn behind %0]
-
+Efter %0
 [conn behind explanation %0 %1]
-
+Efter: hur långt en spelares spel ligger efter matchklockan; inklusive spelarens fördröjning. Under %0 är normalt; från %1 markeras spelaren som långsam.
 [conn behind]
-
+Efter
 [conn card catching up]
-
+Kommer ikapp
 [conn card colony works]
-
+Din koloni fortsätter arbeta på egen hand: enheterna slutför sina uppdrag och byggnaderna fortsätter att gå.
 [conn card desync detail]
-
+Återansluter från matchens logg så att du ser samma sak som alla andra. En rapport skickades automatiskt.
 [conn card desync]
-
+Ditt spel kom ur synk
 [conn card grace %0]
-
+Din koloni fortsätter arbeta på egen hand: enheterna slutför sina uppdrag och byggnaderna fortsätter att gå. Du har %0 på dig att komma tillbaka innan du tas bort från matchen.
 [conn card input paused]
-
+Du kommer ikapp · styrning pausad
 [conn card lost]
-
+Anslutningen bröts
 [conn card progress %0 %1 %2]
-
+%0 % · %1 av %2 steg
 [conn card reconnecting %0]
-
+Återansluter till matchen… försök %0
 [conn card replaying %0]
-
+Spelar upp de %0 du missade. Skärmen uppdateras när du är ikapp.
 [conn card seconds left %0]
-
+cirka %0 s kvar
 [conn connections]
-
+Anslutningar
 [conn connection]
-
+Anslutning
 [conn delay explanation %0 %1]
-
+Fördröjning: tiden från ditt klick tills det händer, för alla. Den beror på din egen anslutning, inte de andra spelarnas. Bra under %0, dålig från %1.
 [conn fair]
-
+Okej
 [conn good]
-
+Bra
 [conn grid legend]
-
+Med fler än fyra spelare visar panelen varje spelares ping i millisekunder, eller hur många sekunder efter de ligger.
 [conn jitter %0]
-
+jitter %0
 [conn leave match]
-
+Lämna matchen
 [conn left]
-
+Lämnade
 [conn notice back %0]
-
+%0 är tillbaka.
 [conn notice left %0]
-
+%0 lämnade matchen.
 [conn notice lost %0 %1]
-
+%0 tappade anslutningen. Spelet fortsätter; spelarens koloni arbetar vidare medan hen återansluter (%1 kvar).
 [conn ping explanation %0 %1]
-
+Ping: tiden tur och retur mellan en spelare och reläservern. Bra under %0, dålig från %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Spelare
 [conn poor]
-
+Dålig
 [conn reconnecting]
-
+Återansluter
 [conn relay %0]
-
+Relä: %0
 [conn resyncing]
-
+Går med igen
 [conn slow]
-
+Långsam
 [conn unstable]
-
+instabil
 [conn waiting]
-
+Ansluter…
 [conn you %0]
-
+%0 (du)
 [conn you]
-
+Du
 [conn your delay %0]
-
+Din fördröjning %0
 [hub account menu]
-
+Konto
 [hub ai joins after %0]
-
+AI ansluter efter %0
 [hub all rooms]
-
+Alla
 [hub browse maps]
-
+Bläddra bland kartor
 [hub cant reach %0]
-
+Kan inte nå %0.
 [hub change server]
-
+Byt server…
 [hub check code]
-
+När den ber om en kod anger du den här:
 [hub code placeholder]
-
+Kod eller inbjudningslänk
 [hub connecting to %0]
-
+%0 · ansluter…
 [hub continue with %0]
-
+Fortsätt med %0
 [hub create room]
-
+Skapa rum
 [hub find match]
-
+Hitta match
 [hub finish in browser]
-
+Slutför inloggningen på sidan som öppnades i webbläsaren.
 [hub free seat]
-
+Ledig plats
 [hub get update]
-
+Hämta uppdateringen
 [hub guest kept on device]
-
+Gäst · sparas på den här enheten
 [hub invalid code]
-
+Det är ingen inbjudningskod eller -länk.
 [hub join by code]
-
+Gå med via kod
 [hub join code]
-
+Kod för att gå med
 [hub join]
-
+Gå med
 [hub leaderboard]
-
+Topplista
 [hub linked %0]
-
+Länkade konton · %0
 [hub linked accounts]
-
+Länkade konton
 [hub maps]
-
+Kartor
 [hub no queues]
-
+Den här servern har inga snabbmatchköer.
 [hub no rooms]
-
+Inga öppna rum just nu. Skapa ett och dela inbjudan.
 [hub offline at %0]
-
+%0 · ej ansluten
 [hub offline detail %0]
-
+Försöker igen om %0 s. Snabbmatch och onlinerum är inte tillgängliga. LAN-spel i huvudmenyn behöver inte den här servern.
 [hub online at %0]
-
+%0 · ansluten
 [hub online settings]
-
+Onlineinställningar
 [hub online]
-
+Online
 [hub open page again]
-
+Öppna sidan igen
 [hub open rooms]
-
+Öppna rum
 [hub page opened at %0]
-
+Öppnade %0. Du behöver inte skriva något i spelet; det loggar in dig av sig självt.
 [hub queues unavailable]
-
+Snabbmatch visas när servern svarar.
 [hub quick match unavailable]
-
+Snabbmatch finns inte i den här versionen än.
 [hub quick match]
-
+Snabbmatch
 [hub ranked]
-
+Rankad
 [hub recent matches]
-
+Senaste matcher
 [hub refresh]
-
+Uppdatera
 [hub retry now]
-
+Försök nu
 [hub room match]
-
+Rum
 [hub room name %0]
-
+%0s rum
 [hub room]
-
+Rum
 [hub seats %0 %1]
-
+%0/%1 platser
 [hub server %0]
-
+Server: %0
 [hub sign in browser]
-
+Öppna inloggningssidan
 [hub sign in conflict]
-
+Den inloggningen tillhör redan ett annat konto.
 [hub sign in failed %0]
-
+Inloggningen slutfördes inte (%0).
 [hub sign in intro]
-
+Logga in eller skapa ett konto i webbläsaren. Dina gästmatcher följer med.
 [hub sign in]
-
+Logga in
 [hub sign out]
-
+Logga ut på den här enheten
 [hub signed in as %0]
-
+Inloggad som %0.
 [hub signed in on %0]
-
+Inloggad på %0
 [hub signing in]
-
+Loggar in…
 [hub sim %0]
-
+sim-version %0
 [hub unrated]
-
+Orankad
 [hub update required at %0]
-
+%0 · uppdatering krävs
 [hub update required detail %0]
-
+%0 kör en nyare version, så den här kopian kan inte gå med i onlinespel förrän den uppdateras. LAN-spel fungerar fortfarande.
 [hub update required]
-
+Uppdatering krävs
 [hub server behind]
-
+Serveruppdatering väntar
 [hub server behind at %0]
-
+%0 · serveruppdatering väntar
 [hub server behind detail %0]
-
+Den här kopian är nyare än %0, som inte har uppdaterats än. Onlinespel öppnas när servern uppdateras. LAN-spel fungerar fortfarande.
 [hub version mismatch]
-
+Annan version
 [hub version mismatch at %0]
-
+%0 · annan version
 [hub version mismatch detail %0]
-
+%0 kör en annan version av spelet, så den här kopian kan inte gå med i onlinespel. LAN-spel fungerar fortfarande.
 [hub versus %0]
-
+mot %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+Laddar ner kartan %0
 [match failed]
-
+Matchen kunde inte starta.
 [match leave]
-
+Lämna
 [match loading]
-
+Läser in spelet
 [Loading game graphics]
-
+Läser in spelets grafik
 [match map cached]
-
+finns redan på den här enheten
 [match map]
-
+Laddar ner kartan
 [match relay %0]
-
+Ansluten till reläservern %0
 [match seat confirmed]
-
+Plats bekräftad
 [match starting]
-
+Startar matchen
 [match tip flags]
-
+Tips: utforskningsflaggor skickar utforskare för att avslöja kartan; krigsflaggor samlar dina krigare.
 [match tip input]
-
+Tips: dina order når alla efter din egen fördröjning; andra spelares anslutningar gör dig inte långsammare.
 [match tip select]
-
+Tips: dubbelklicka på en byggnad för att markera alla byggnader av den typen.
 [match waiting for players]
-
+Väntar på alla spelare
 [match you %0]
-
+%0 (du)
 [match player map]
-
+karta
 [match player loading]
-
+läser in
 [match player connecting]
-
+ansluter
 [match player ready]
-
+redo
 [match player left]
-
+lämnade
 [results back to online]
-
+Tillbaka till online
 [results back to room]
-
+Tillbaka till rummet
 [results defeat]
-
+Förlust
 [results ladder rating %0]
-
+Ranking: %0
 [results left]
-
+Du lämnade matchen
 [results match over]
-
+Matchen är slut
 [results match page]
-
+Matchsida
 [results minutes %0]
-
+%0 min
 [results no change]
-
+ingen ändring
 [results ranked]
-
+Rankad
 [results recording]
-
+Registrerar resultatet…
 [results room unrated]
-
+Rumsmatch · orankad
 [results saved to history]
-
+Sparad i din historik
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+Servern kunde inte återskapa den här matchen, så den räknas inte till någons ranking. Den har rapporterats för utredning; du behöver inte göra något.
 [results verified provisional]
-
+Verifierad · preliminär
 [results verified]
-
+Verifierad
 [results verifying detail]
-
+Servern spelar upp matchen igen för att bekräfta den. Tar oftast under en minut.
 [results verifying]
-
+Verifierar resultatet…
 [results victory]
-
+Seger
 [room address]
-
+Adress
 [room ai %0]
-
+AI – %0
 [room browser pairing]
-
+Parkoppling i webbläsare
 [room catalog map]
-
+Katalogkarta
 [room change map]
-
+Byt karta…
 [room change rules]
-
+Ändra regler…
 [room chat]
-
+Chatt
 [room closed seat detail]
-
+Stängd av värden
 [room closed seat]
-
+Stängd
 [room colonies]
-
+Kolonier
 [room connecting]
-
+Ansluter till rummet…
 [room copy]
-
+Kopiera
 [room disconnected]
-
+frånkopplad
 [room downloading %0]
-
+Laddar ner karta %0 %
 [room downloading map]
-
+Laddar ner kartan…
 [room expired]
-
+Rummet har stängts.
 [room generated on server]
-
+Skapas en gång på servern, så att alla spelar exakt den här kartan.
 [room guest]
-
+gäst
 [room host %0]
-
+värd %0
 [room host closed]
-
+Värden stängde rummet.
 [room host]
-
+värd
 [room humans vs ai]
-
+Människor mot AI
 [room invite code %0]
-
+Kod %0 · öppnas i appen, på telefoner eller i en webbläsare
 [room invite not found]
-
+Inbjudan har gått ut eller finns inte.
 [room invite only]
-
+Endast inbjudna
 [room invite]
-
+Bjud in
 [room joining on network]
-
+Går med på det här nätverket
 [room lan badge]
-
+Lokalt nätverk · orankat
 [room lan list hint %0]
-
+Andra på samma nätverk ser %0 i listan över LAN-spel i huvudmenyn.
 [room leave]
-
+Lämna
 [room map changed %0]
-
+Kartan byttes till %0.
 [room map failed]
-
+Kartan kunde inte förberedas
 [room match label]
-
+Rum
 [room member joined %0]
-
+%0 gick med.
 [room member left %0]
-
+%0 lämnade.
 [room member ready %0]
-
+%0 är redo.
 [room needs two seats]
-
+Bjud in en vän eller lägg till en AI för att starta
 [room no map]
-
+Ingen karta än
 [room not ready]
-
+Inte redo
 [room open for a person]
-
+Öppen för en människa
 [room open seat detail]
-
+Alla med inbjudan kan ta den
 [room open seat]
-
+Ledig plats
 [room person]
-
+Människa
 [room preparing map]
-
+Förbereder kartan på servern…
 [room public]
-
+Offentligt
 [room ready?]
-
+Redo
 [room ready]
-
+✓ Redo
 [room remove from room]
-
+Ta bort från rummet
 [room rule off]
-
+Av
 [room rule on]
-
+På
 [room rules changed]
-
+Reglerna ändrades.
 [room rules]
-
+Regler
 [room say something]
-
+Skriv något…
 [room seat hint]
-
+Spelare kan själva flytta till en ledig plats. Byt lag för att jämna ut.
 [room seat options]
-
+Platsalternativ
 [room seats summary %0 %1 %2]
-
+%0 spelare · %1 AI · %2 lediga
 [room seats]
-
+Platser
 [room seed]
-
+Frö
 [room send]
-
+Skicka
 [room set by host]
-
+Bestäms av värden
 [room share text %0]
-
+Gå med i mitt Globulation 2-rum: %0
 [room share]
-
+Dela…
 [room size]
-
+Storlek
 [room starting match]
-
+Startar matchen…
 [room take seat]
-
+Ta plats
 [room team %0]
-
+Lag %0
 [room update required]
-
+Det här rummet kör en annan version av spelet. Uppdatera för att gå med.
 [room uploaded map]
-
+Uppladdad karta
 [room waiting for %0]
-
+Väntar på att %0 ska bli redo
 [room waiting for you]
-
+Tryck på Redo när du är klar
 [room match over]
-
+Matchen är slut. Gör dig redo för en ny omgång!
 [room waiting for host]
-
+Väntar på att värden ska starta
 [room waiting for players %0]
-
+Väntar på att %0 spelare ska bli redo
 [room who can find it]
-
+Vem som kan hitta det
 [room you created]
-
+Du skapade rummet.
 [room you joined %0]
-
+Du gick med i %0.
 [room you were removed]
-
+Värden tog bort dig från rummet.
 [room you]
-
+du
 [settings Online]
-
+Online
 [settings Another server]
-
+En annan server
 [settings Check]
-
+Kontrollera
 [settings Checking…]
-
+Kontrollerar…
 [settings Choose which server you play on and how you sign in to it.]
-
+Välj vilken server du spelar på och hur du loggar in på den.
 [settings Connecting…]
-
+Ansluter…
 [settings Could not reach this server.]
-
+Kunde inte nå den här servern.
 [settings Display name saved.]
-
+Visningsnamnet sparades.
 [settings Display name]
-
+Visningsnamn
 [settings Download or delete my data]
-
+Radera mitt konto
 [settings Enter an https:// address.]
-
+Ange en https://-adress.
 [settings Finish in your browser. It shows the code %0.]
-
+Slutför i webbläsaren: skriv koden %0 när den frågar.
 [settings Forget]
-
+Glöm
 [settings Guests keep a generated name; sign in to choose one.]
-
+Gäster behåller ett genererat namn; logga in för att välja ett.
 [settings Link]
-
+Länka
 [settings Not a Globulation 2 server.]
-
+Inte en Globulation 2-server.
 [settings Not linked]
-
+Inte länkat
 [settings Not signed in.]
-
+Inte inloggad.
 [settings Open]
-
+Öppna
 [settings Opens your account page on %0.]
-
+Öppnar din kontosida på %0, där du kan radera kontot.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Drivs av en gemenskap, en klubb eller dig själv. Klistra in dess adress.
 [settings Save]
-
+Spara
 [settings Server]
-
+Server
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Visas i rum, matcher och på topplistan. Kan ändras en gång var 30:e dag.
 [settings Sign in with: %0 · queues: %1]
-
+Logga in med: %0 · köer: %1
 [settings Sign out on this device]
-
+Logga ut på den här enheten
 [settings Sign out]
-
+Logga ut
 [settings Switch to this server]
-
+Byt till den här servern
 [settings The last sign-in method can't be unlinked.]
-
+Den sista inloggningsmetoden kan inte avlänkas.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Den officiella Globulation 2-servern · rankade köer, topplistor, kartkatalog
 [settings Unlink]
-
+Avlänka
 [settings Unlinking is done on the account page.]
-
+Avlänkning görs på kontosidan.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Du blir en ny gäst tills du loggar in igen. Ditt konto och dina matcher finns kvar på servern.
 [settings Your account on %0]
-
+Ditt konto på %0
 [settings compatible with this version]
-
+kompatibel med den här versionen
 [settings connected]
-
+ansluten
 [settings connecting…]
-
+ansluter…
 [settings guest]
-
+gäst
 [settings linked]
-
+länkat
 [settings plays another version]
-
+kör en annan version
 [settings trusted]
-
+betrodd
 [settings used before]
-
+använd tidigare
 [settings you were %0 there]
-
+du var %0 där
 [trust invited to room %0]
-
+Inbjuden till rummet %0
 [trust join as guest]
-
+Gå med som gäst
 [trust not official]
-
+Den här servern drivs inte av Globulation 2-projektet.
 [trust remember]
-
+Kom ihåg den här servern
 [trust separate identity %0]
-
+Du går med som gäst där. Ditt %0-konto, din ranking och din historik stannar där de är.
 [trust title]
-
+Gå med i ett spel på en annan server?
 [trust what it sees]
-
+Servern ser ditt visningsnamn, din anslutnings adress och de spel du spelar på den.
 [settings not connected]
-
+inte ansluten
 [settings Open Play online to connect.]
-
+Öppna Spela online för att ansluta.
 [hub code]
-
+Kod
 [results draw]
-
+Oavgjort
 [qm 2 vs 2]
-
+2 mot 2
 [qm 1 vs 1]
-
+1 mot 1
 [qm ping about]
-
+Ping cirka
 [qm ranked]
-
+Rankad
 [qm casual %0]
-
+Avslappnad %0
 [qm rated]
-
+Rankad
 [qm unrated]
-
+Orankad
 [qm solo queue]
-
+solokö
 [qm ai joins after %0]
-
+AI ansluter efter %0
 [qm fair maps %0]
-
+Kartor: %0
 [qm cooldown %0]
-
+Du tackade nej till en match. Du kan söka igen om %0.
 [qm sign in to play ranked]
-
+Rankade köer är för inloggade konton; logga in först.
 [online update required]
-
+Den här versionen av spelet är för gammal för servern; uppdatera för att spela online.
 [online server behind]
-
+Servern har inte uppdaterats till den här versionen än; onlinespel öppnas när den har det.
 [online version mismatch]
-
+Servern kör en annan version av spelet; onlinespel är inte tillgängligt med den här kopian.
 [qm already searching]
-
+Du söker redan eller är i en match.
 [online connection problem]
-
+Servern kunde inte nås.
 [qm find match]
-
+Hitta match
 [qm opponents rated %0 to %1]
-
+Motståndare med ranking %0 till %1
 [qm region %0]
-
+Region %0
 [qm searching]
-
+Söker
 [qm measuring relays]
-
+Mäter reläservrar
 [qm joining queue]
-
+Ställer dig i kön
 [qm waiting for a person]
-
+Väntar på en människa: AI-motståndare är avstängda.
 [qm ai in %0 rated]
-
+Om ingen hittas spelar du mot AI:n med närmast ranking om %0
 [qm ai in %0]
-
+Om ingen hittas ansluter en AI om %0
 [qm ai after %0]
-
+Om ingen hittas tar en AI platsen efter %0
 [qm allow ai short]
-
+Tillåt AI
 [qm allow ai]
-
+Tillåt en AI-motståndare
 [qm cancel]
-
+Avbryt
 [qm cancel search]
-
+Avbryt sökning
 [qm usual wait %0]
-
+vanlig väntetid %0
 [qm widening]
-
+breddas medan du väntar
 [qm ais are rated]
-
+(rankad: AI:er har också ranking)
 [qm opponent declined]
-
+Din motståndare accepterade inte. Du är tillbaka först i kön.
 [qm %0 did not accept]
-
+%0 accepterade inte. Du är tillbaka först i kön.
 [qm start failed]
-
+Matchen kunde inte starta. Du söker igen.
 [qm you declined]
-
+Du tackade nej till matchen. Du kan söka igen efter en kort stund.
 [qm you did not answer]
-
+Du accepterade inte i tid. Du kan söka igen efter en kort stund.
 [qm search ended]
-
+Sökningen avslutades.
 [qm try again]
-
+Försök igen
 [online connecting]
-
+Ansluter…
 [qm no queues]
-
+Den här servern har inga snabbmatchköer.
 [qm quick match]
-
+Snabbmatch
 [qm phone searching note]
-
+Sökningen fortsätter om du lämnar den här skärmen.
 [qm phone intro]
-
+Välj en kö nedan; sökningen pågår medan du bläddrar.
 [qm online]
-
+Online
 [qm keeps running note]
-
+Sökningen fortsätter om du lämnar den här skärmen.
 [qm ai]
-
+AI
 [qm provisional]
-
+preliminär
 [qm accepted]
-
+✓ accepterad
 [qm declined]
-
+nekad
 [qm waiting]
-
+väntar…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Match hittad
 [qm playing an ai]
-
+Spelar mot en AI
 [qm vs]
-
+mot
 [qm ai explanation rated]
-
+Ingen inom ditt rankingintervall sökte. Du spelar mot den AI som ligger närmast din ranking; resultatet räknas för både din och AI:ns ranking.
 [qm ai explanation]
-
+Ingen sökte. Du spelar mot den AI som ligger närmast din ranking; den här matchen är orankad.
 [qm casual explanation]
-
+Matchen startar direkt; avslappnade matcher är orankade.
 [qm accepted button]
-
+Accepterad
 [qm accept]
-
+Acceptera
 [qm decline]
-
+Avböj
 [qm both must accept]
-
+Båda måste acceptera
 [qm accept explanation]
-
+Båda spelarna måste acceptera. Om du avböjer eller låter tiden gå ut hamnar du sist i kön.
 [qm starting in %0]
-
+Startar om %0…
 [qm preparing match]
-
+Förbereder matchen…
 [qm match assigned %0 %1]
-
+Match %0 är redo på %1, men den här versionen kan inte ansluta till onlinematcher än.
 [online jan]
-
+jan
 [online feb]
-
+feb
 [online mar]
-
+mars
 [online apr]
-
+apr
 [online may]
-
+maj
 [online jun]
-
+juni
 [online jul]
-
+juli
 [online aug]
-
+aug
 [online sep]
-
+sep
 [online oct]
-
+okt
 [online nov]
-
+nov
 [online dec]
-
+dec
 [profile win letter]
-
+V
 [profile loss letter]
-
+F
 [profile draw letter]
-
+O
 [profile history unavailable]
-
+Den här servern erbjuder ingen matchhistorik än.
 [profile downloading replay]
-
+Laddar ner reprisen…
 [profile no replay]
-
+Ingen repris finns för den här matchen.
 [profile room with %0]
-
+Rum · %0 kolonier
 [profile with %0 vs %1]
-
+med %0 mot %1
 [profile vs %0]
-
+mot %0
 [profile room]
-
+Rum
 [profile casual]
-
+Avslappnad
 [profile ai filled]
-
+AI fyllde ut
 [profile provisional %0 games]
-
+preliminär · %0 matcher
 [profile unrated]
-
+orankad
 [profile checking]
-
+kontrollerar…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Matchsida
 [profile replay]
-
+Repris
 [profile win rate last %0]
-
+Vinstandel, senaste %0
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 F · %2 oavgjorda
 [profile typical game]
-
+Typisk match
 [profile median length]
-
+din medianlängd
 [profile best map]
-
+Bästa karta
 [profile %0 w %1 l]
-
+%0 V · %1 F
 [profile no rated games]
-
+Spela en rankad match för att få en ranking.
 [profile all]
-
+Alla
 [profile rooms]
-
+Rum
 [profile vs ai]
-
+mot AI
 [profile matches]
-
+Matcher
 [online loading]
-
+Läser in…
 [profile no matches]
-
+Inga matcher än.
 [online load more]
-
+Läs in fler
 [profile title]
-
+Profil
 [profile guest]
-
+gäst
 [profile playing since %0]
-
+spelar sedan %0
 [profile full profile web]
-
+Hela profilen på webben
 [profile replays note]
-
+Repriser laddas ner från servern när du öppnar dem; de du har sparat lokalt finns kvar under Ladda spel → Repriser.
 [profile web profile]
-
+Webbprofil
 [maps most played]
-
+Mest spelade
 [maps most liked]
-
+Mest gillade
 [maps newest]
-
+Nyaste
 [maps most downloaded]
-
+Mest nedladdade
 [maps any size]
-
+Alla storlekar
 [maps up to 128]
-
+Upp till 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 och större
 [maps report broken]
-
+Den fungerar inte
 [maps report offensive]
-
+Stötande
 [maps report copyright]
-
+Någon annans verk
 [maps report other]
-
+Något annat
 [maps public]
-
+Offentlig
 [maps unlisted]
-
+Olistad
 [maps private]
-
+Privat
 [maps cannot read file]
-
+Kartfilen kunde inte läsas.
 [maps file too large]
-
+Kartfilen är för stor för att delas.
 [maps saved for next room]
-
+Kartan är nedladdad; den används när du öppnar ett rum.
 [maps download failed]
-
+Kartan kunde inte laddas ner.
 [maps %0 colonies]
-
+%0 kolonier
 [maps version %0]
-
+version %0
 [maps updated %0]
-
+uppdaterad %0
 [maps downloading]
-
+Laddar ner kartan…
 [maps like needs account]
-
+Du måste vara inloggad för att gilla kartor.
 [maps report sent]
-
+Tack! Moderatorerna kommer att titta på det.
 [maps select a map]
-
+Välj en karta för att se detaljer.
 [maps by %0]
-
+av %0
 [maps stats %0 %1 %2]
-
+▶ %0 spelningar · ⬇ %1 nedladdningar · ♥ %2
 [maps use in room]
-
+Använd i ett rum
 [maps liked]
-
+Gillad
 [maps like]
-
+Gilla
 [maps map page]
-
+Kartsida
 [maps reported]
-
+Rapporterad
 [maps report]
-
+Rapportera…
 [maps report why]
-
+Vad är fel med den här kartan?
 [maps search placeholder]
-
+Sök kartor eller skapare
 [maps none found]
-
+Inga kartor matchar.
 [maps any colonies]
-
+Valfritt antal kolonier
 [maps checking]
-
+Kontrollerar…
 [maps no version yet]
-
+Ingen version har laddats upp än.
 [maps rejected]
-
+Avvisad
 [maps did not load %0]
-
+Kartan lästes inte in: %0
 [maps unknown reason]
-
+ingen orsak angavs
 [maps fix and upload again]
-
+rätta den i redigeraren och ladda sedan upp igen
 [maps uploaded just now]
-
+uppladdad nyss
 [maps loading on server]
-
+läses in på servern
 [maps %0 plays]
-
+%0 spelningar
 [maps hidden]
-
+Dold
 [maps upload again]
-
+Ladda upp igen…
 [maps delete]
-
+Radera
 [maps update]
-
+Uppdatera…
 [maps upload a map]
-
+Ladda upp en karta…
 [maps upload hint]
-
+.map-filer från din kartmapp eller redigeraren
 [maps no maps yet]
-
+Du har inte delat några kartor än.
 [maps my maps]
-
+Mina kartor
 [maps my maps %0]
-
+Mina kartor (%0)
 [maps browse]
-
+Bläddra
 [maps title]
-
+Kartor
 [maps browse note %0]
-
+%0-katalog · endast kartor som fungerar i den här versionen visas
 [maps visibility note]
-
+Offentliga kartor visas under Bläddra. Olistade kartor fungerar i dina rum och via sin länk. Privata kartor bara i dina egna rum.
 [maps use %0]
-
+Använd %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Titel
 [maps field description]
-
+Beskrivning
 [maps who can use it]
-
+Vem som kan använda den
 [maps guests unlisted]
-
+Gäster kan dela olistade och privata kartor; logga in för att publicera under Bläddra.
 [maps visibility help]
-
+Olistade kartor fungerar i dina rum och via sin länk; offentliga kartor visas även under Bläddra.
 [maps new version of %0]
-
+Ladda upp den här filen som en ny version av %0.
 [maps upload]
-
+Ladda upp
 [maps uploading]
-
+Laddar upp…
 [maps checking detail]
-
+Servern läser in kartan och ritar dess förhandsvisning. Tills dess kan kartan inte användas.
 [maps ready]
-
+Klar
 [maps ready public]
-
+Kartan är klar och listas under Bläddra.
 [maps ready unlisted]
-
+Kartan är klar. Olistade kartor fungerar i dina rum och via sin länk.
 [maps ready private]
-
+Kartan är klar. Privata kartor fungerar bara i dina egna rum.
 [maps upload failed]
-
+Uppladdningen misslyckades
 [maps server read %0 %1]
-
+Servern läste den som %0 med %1 kolonier.
 [maps continue in background]
-
+Stäng
 [maps upload a map title]
-
+Ladda upp en karta
 [maps update map title]
-
+Uppdatera en karta
 [maps upload note]
-
+Servern läser in varje uppladdning innan den kan användas.
 [online just now]
-
+nyss
 [online today %0]
-
+i dag %0
 [online yesterday]
-
+i går
 [online sun]
-
+sön
 [online mon]
-
+mån
 [online tue]
-
+tis
 [online wed]
-
+ons
 [online thu]
-
+tors
 [online fri]
-
+fre
 [online sat]
-
+lör
 [online %0 weeks ago]
-
+för %0 veckor sedan
 [online %0 months ago]
-
+för %0 månader sedan
 [online %0 years ago]
-
+för %0 år sedan
 [maps share online]
-
+Dela online…
 [maps mine]
-
+Mina
 [results waiting for players]
-
+Väntar på att de andra spelarna ska lämna…
 [results waiting detail]
-
+Resultatet registreras när alla har lämnat matchen.
 [results waiting slow]
-
+En spelare som tappade anslutningen har upp till 3 minuter på sig att komma tillbaka. Resultatet visas i din historik och på matchsidan.
 [results verifying slow]
-
+Verifieringen tar längre tid än vanligt. Resultatet visas i din historik och på matchsidan.
 [results rematch]
-
+Returmatch
 [results join rematch %0]
-
+Gå med i %0s returmatch
 [hub profile history]
-
+Profil och historik
 [hub my maps]
-
+Mina kartor
 [hub leaderboard %0]
-
+Topplista · %0
 [hub leaderboard empty]
-
+Inga rankade spelare än.
 [hub guests not ranked]
-
+Gäster rankas inte. Logga in för att synas här.
 [hub full leaderboard]
-
+Hela topplistan
 [settings %0 is no longer linked.]
-
+%0 är inte längre länkat.
 [room map read failed]
-
+Den här kartfilen kunde inte läsas.
 [room map upload failed]
-
+Kartan kunde inte delas med rummet.
 [room map upload failed %0]
-
+Kartan kunde inte delas med rummet: %0
 [room uploading map]
-
+Delar kartan med rummet…
 [room premade map shared]
-
+Alla i rummet spelar den här kartfilen; den laddas ner före matchen.
 [room take a seat to play]
-
+Ta en ledig plats för att spela
 [room waiting for a seat]
-
+Alla platser är tagna. Du kan ta en när den blir ledig.
 [room not seated]
-
+Ingen plats
 [room copied]
-
+Kopierat
 [room copy failed]
-
+Kunde inte kopiera
 [room closed title]
-
+Rummet stängt
 [room removed title]
-
+Borttagen från rummet
 [room back to online]
-
+Tillbaka till online
 [leave match]
-
+Lämna matchen
 [leave match title]
-
+Lämna den här matchen?
 [leave lan title]
-
+Lämna det här LAN-spelet?
 [leave rated body]
-
+Du förlorar den här rankade matchen och din ranking sjunker. De andra spelar vidare och du kan inte komma tillbaka.
 [leave casual body]
-
+Den här snabbmatchen räknas som en förlust för dig. De andra spelar vidare och du kan inte komma tillbaka.
 [leave room body]
-
+Du lämnar rummets match och den räknas som en förlust i din historik. De andra spelar vidare och du kan inte komma tillbaka.
 [leave lan body]
-
+De andra spelar vidare utan dig och du kan inte komma tillbaka till det här spelet.
 [leave match confirm]
-
+Lämna matchen
 [keep playing]
-
+Fortsätt spela
 [results team]
-
+Lag
 [results quick unrated]
-
+Snabbmatch · orankad
 [conn card cannot keep up]
-
+Din enhet hinner inte med den här matchen
 [conn card cannot keep up body]
-
+Den spelar upp matchen långsammare än matchen går, så den kommer inte ikapp. Du kan lämna matchen, eller sänka grafikinställningarna och fortsätta vänta.
 [conn card not gaining]
-
+knappar inte in
 [results reason opponents left]
-
+Dina motståndare lämnade matchen.
 [results reason victory]
-
+Alla motståndarkolonier besegrades.
 [results reason defeat]
-
+Din koloni besegrades.
 [results reason you left]
-
+Du lämnade matchen. Det räknas som en förlust.
 [results final after end]
-
+Slutresultat när matchen är slut.
 [pause none left]
-
+Inga pauser kvar
 [pause game left %0]
-
+Pausa spelet (%0 kvar)
 [pause by %0]
-
+Pausat av %0
 [pause by %0 resumes in %1]
-
+Pausat av %0 · fortsätter om %1
 [turn too many actions]
-
+För många handlingar: några väntar fortfarande på att skickas
 [turn no pauses left]
-
+Du har inga pauser kvar i den här matchen
 [turn pause time used %0]
-
+%0 har använt all sin paustid: spelet fortsätter
 [room seats one person %0 %1]
-
+1 spelare · %0 AI · %1 lediga
 [room rules otherwise standard]
-
+Alla andra regler är som i Standard.
 [room browser link]
-
+Länk för webbläsarspelare
 [room browser link hint]
-
+Spelare i en webbläsare klistrar in den här länken för att gå med.
 [room browser link code %0]
-
+Spelare i en webbläsare klistrar in den här länken för att gå med. Deras spel visar koden %0.
 [room copy link]
-
+Kopiera länk
 [room lan open seat detail]
-
+Alla på det här nätverket kan ta den
 [room close title]
-
+Stänga rummet?
 [room close body one]
-
+Om du lämnar stängs rummet för alla, även den andra spelaren i det.
 [room close body %0]
-
+Om du lämnar stängs rummet för alla, även de %0 andra spelarna i det.
 [room close confirm]
-
+Stäng rummet
 [room stay]
-
+Stanna
 [room colours changed]
-
+Den nya kartan gav platserna nya färger. Kontrollera din innan du startar.
 [room copy by hand]
-
+Kopieringen fungerade inte. Kopiera inbjudan själv:
 [room copy by hand close]
-
+Stäng
 [room copy by hand touch]
-
+Tryck och håll på länken och välj sedan Kopiera.
 [room copy by hand keys]
-
+Länken är markerad: tryck Ctrl+C (⌘C på en Mac).
 [room code]
-
+Kod
 [online under a minute]
-
+under en minut
 [online about %0 min]
-
+cirka %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+AI-motståndare: %0
 [match relay connected]
-
+Ansluten till spelservern
 [room picker title]
-
+Välj en karta
 [room picker for one]
-
+För den 1 spelaren i rummet
 [room picker for %0]
-
+För de %0 spelarna i rummet
 [room picker generated]
-
+Genererad
 [room picker premade]
-
+Färdiga
 [room picker catalog]
-
+Katalog
 [room picker size]
-
+Storlek
 [room picker colonies]
-
+Kolonier
 [room picker fair]
-
+Rättvis start för alla kolonier
 [room picker does not fit]
-
+Passar inte den här storleken; prova en annan
 [room picker preparing]
-
+Förbereder förhandsvisningen…
 [room picker generated note]
-
+Varje landskap ger alla kolonier en lika bra start, och servern skapar samma karta för alla.
 [room picker players %0]
-
+%0 spelare
 [room picker unreadable]
-
+kan inte läsas
 [room picker no premade]
-
+Inga färdiga kartor hittades.
 [room picker too small %0]
-
+Den här kartan har färre kolonier än de %0 spelarna i rummet.
 [room picker pick premade]
-
+Välj en karta för att se den här.
 [room picker catalog intro]
-
+Kartor som andra spelare har delat. Öppna en och välj Använd i ett rum.
 [room picker browse catalog]
-
+Bläddra bland delade kartor
 [room picker more options]
-
+Fler alternativ…
 [room picker use]
-
+Använd den här kartan
 [room map ready title %0]
-
+Spela %0
 [room map ready unnamed]
-
+den här kartan
 [room map ready body]
-
+Skapa ett rum och bjud in dina vänner: rummet spelar den här kartan.
 [game draw]
-
+Oavgjort
 [settings Show colony skins]
 Visa koloniernas utseenden
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Stäng av för att använda klassiska enheter, svärmar och byggnadsfärger på den här enheten.
 [settings Hive Mind]
-
+Svärmsinne
 [settings Enable commander shortcuts]
-
+Aktivera kortkommandon för befälhavaren
 [settings Command your colony without opening a menu.]
-
+Styr din koloni utan att öppna en meny.
 [settings Allow supervision for new commands]
-
+Tillåt uppföljning av nya order
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Befälhavaren får följa upp stående order. Uppföljningar kostar krediter; installerade order fortsätter utan krediter.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Standardkortkommandon: Ctrl+Enter för att ge en order; Ctrl+Shift+Enter för att stoppa befälhavarens arbete. Ändra dem under Spelkontroller. Kort för stående order har egna knappar för paus och avbryt.
 [settings Commander account and credits]
-
+Befälhavarkonto och krediter
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Hantera krediter och köp i webbläsaren. Befälhavarhjälp är tillåten i rankat spel.
 [open commander]
-
+Öppna befälhavaren
 [stop commander]
-
+Stoppa befälhavaren
 [settings Recording]
-
+Inspelning
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Spela in dina spel som MP4-videor med ljud. Inspelning kräver FFmpeg med kodarna libx264 och AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg är redo.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg är inte tillgängligt, så inspelning är avstängd. Installera FFmpeg och se till att det finns i din PATH, och kontrollera sedan igen.
 [settings Check for FFmpeg again]
-
+Sök efter FFmpeg igen
 [settings Checking for FFmpeg…]
-
+Söker efter FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Snabbtangent: %0. Den fungerar även i menyer och redigeraren.
 [settings Change the hotkey]
-
+Ändra snabbtangent
 [settings Recordings are saved in %0]
-
+Inspelningar sparas i %0
 [toggle recording]
-
+Starta eller stoppa inspelning
 [File selection is unavailable.]
-
+Filval är inte tillgängligt.
 [Saving custom AI…]
-
+Sparar egen AI…
 [Could not read the selected JavaScript file.]
-
+Kunde inte läsa den valda JavaScript-filen.
 [Custom AI library saved.]
-
+Biblioteket med egna AI:er sparades.
 [Storage could not be saved. The previous library is retained.]
-
+Lagringen kunde inte sparas. Det tidigare biblioteket behålls.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importera en enskild JavaScript-AI-fil och välj den sedan när du ställer in ett lokalt spel.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Importer behåller en kopia i Glob2. Uppdatera ersätter kopian för framtida spel; sparade spel behåller sin ursprungliga AI.
 [Waiting for file selection or storage…]
-
+Väntar på filval eller lagring…
 [Import JavaScript AI]
-
+Importera JavaScript-AI
 [Link development file]
-
+Länka utvecklingsfil
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Länkade filer läses när spelet startar. Bygg om innan du startar ett nytt spel. Att ta bort en länk raderar aldrig din fil.
 [Example AI and authoring guide]
-
+Exempel-AI och utvecklarguide
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Inga egna AI:er än. Importera en paketerad .js-fil för att komma igång.
 [Relink]
-
+Länka om
 [Update]
-
+Uppdatera
 [Validate]
-
+Validera
 [AI startup and persistent globals are valid.]
-
+AI:ns uppstart och beständiga globala variabler är giltiga.
 [Remove from library]
-
+Ta bort från biblioteket
 [AI telemetry]
-
+AI-telemetri
 [No accessible AI telemetry.]
-
+Ingen tillgänglig AI-telemetri.
 [Search fields]
-
+Sök bland fält
 [Telemetry unavailable for this recording or controller.]
-
+Telemetri är inte tillgänglig för den här inspelningen eller styrningen.
 [Linked]
-
+Länkad
 [Imported]
-
+Importerad
 [Player]
-
+Spelare
 [Updated at tick %0]
-
+Uppdaterad vid steg %0
 [No values published yet.]
-
+Inga värden publicerade än.
 [No fields match your search.]
-
+Inga fält matchar din sökning.
 [settings Custom AIs]
-
+Egna AI:er
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Lägg till JavaScript-AI:er under Inställningar → Egna AI:er. De visas i varje kolonis AI-väljare.
 [Missing custom AI]
-
+Egen AI saknas
 [Map repetition failed]
-
+Kan inte upprepa den här kartan. Använd en startkarta utan skript, eller minska antalet upprepningar och baser.
 [repeat map horizontally]
 Upprepa kartan vågrätt
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ baser
 [bases per colony]
 Baser per koloni; en bas är ett lag från kartan som den är ritad, med dess byggnader och enheter
 [stat group population]
-
+Befolkning
 [stat group food]
-
+Mat och välmående
 [stat group resources]
-
+Resurser
 [stat group buildings]
-
+Byggnader
 [stat group military]
-
+Militärt
 [stat group map]
-
+Territorium
 [stat group score]
-
+Poäng
 [stat overview]
-
+Översikt
 [stat overview about]
-
+Varje kolonis siffror för hela matchen. Det högsta värdet markeras där mer är bättre; klicka på en kolumnrubrik för att se hur det förändrades över tid.
 [stat population]
-
+Befolkning
 [stat population about]
-
+Hur många levande enheter kolonin hade: arbetare, utforskare och krigare tillsammans.
 [stat births]
-
+Födda enheter
 [stat births about]
-
+Hur snabbt svärmarna producerade nya enheter. Dela upp för att se arbetare, utforskare och krigare var för sig.
 [stat deaths]
-
+Förlorade enheter
 [stat deaths about]
-
+Hur snabbt kolonin förlorade enheter, oavsett orsak: strid, svält, skador vid röjning eller att de blev instängda.
 [stat net growth]
-
+Befolkningstillväxt
 [stat net growth about]
-
+Födda enheter minus förlorade enheter. Över noll växte kolonin; under noll krympte den.
 [stat death causes]
-
+Dödsorsaker
 [stat death causes about]
-
+Vad kolonins enheter dog av: strid, svält, skador vid röjning av resurser, att bli instängda utan väg ut, eller andra orsaker.
 [stat conversions]
-
+Nettoomvändelser
 [stat conversions about]
-
+Enheter som vunnits över från andra kolonier minus enheter som gått förlorade till dem. Enheter byter sida när en annan koloni ger dem bättre mat.
 [stat hunger]
-
+Matreserver
 [stat hunger about]
-
+Hur mycket mat kolonins enheter bar inom sig. Varje enhet placeras efter hur mycket av matreserven som är kvar: nästan tom (en fjärdedel eller mindre), låg (upp till hälften), halvfull (upp till tre fjärdedelar) eller mätt. Enheter letar upp ett värdshus när reserven sinar, så en koloni har alltid några som ligger lågt.
 [stat health]
-
+Hälsa
 [stat health about]
-
+Hur friska kolonins enheter var. Varje enhet placeras efter hur många av dess träffpoäng som är kvar: kritisk (en fjärdedel eller mindre), sårad (upp till hälften), skadad (upp till tre fjärdedelar) eller frisk.
 [stat seeking food]
-
+Enheter som söker mat
 [stat seeking food about]
-
+Enheter som hade slutat arbeta för att hitta ett värdshus. De som också har mindre än full hälsa räknas som försvagade.
 [stat in care]
-
+Enheter som äter eller läks
 [stat in care about]
-
+Enheter som äter i ett värdshus eller läks på ett sjukhus och därför inte arbetar.
 [stat wheat harvested]
-
+Skördat vete
 [stat wheat harvested about]
-
+Lass med vete som arbetarna plockat. Vete är det som värdshusen gör måltider av.
 [stat wheat stored]
-
+Lagrat vete
 [stat wheat stored about]
-
+Vete som ligger i kolonins byggnader, redo att serveras eller användas.
 [stat meals]
-
+Serverade måltider
 [stat meals about]
-
+Måltider som kolonins värdshus serverade, till de egna enheterna och till besökare från andra kolonier.
 [stat starvation]
-
+Döda av svält
 [stat starvation about]
-
+Enheter som dog för att de inte hittade mat i tid.
 [stat healing]
-
+Återställd hälsa
 [stat healing about]
-
+Träffpoäng som kolonins sjukhus gav tillbaka till sårade enheter.
 [stat gathered]
-
+Insamlade resurser
 [stat gathered about]
-
+Lass av alla resurser som arbetarna plockat upp. Dela upp för att se varje resurs.
 [stat stored]
-
+Lagrade resurser
 [stat stored about]
-
+Resurser som ligger i kolonins byggnader. Dela upp för att se varje resurs.
 [stat spending]
-
+Resursförbrukning
 [stat spending about]
-
+Vart levererade resurser tog vägen: måltider, nya enheter, tornammunition, nya byggnader eller uppgraderingar.
 [stat delivered]
-
+Levererade resurser
 [stat delivered about]
-
+Lass som arbetarna bar in i byggnader.
 [stat traded]
-
+Nettohandel
 [stat traded about]
-
+Resurser som tagits emot via marknader minus resurser som getts bort.
 [stat buildings]
-
+Stående byggnader
 [stat buildings about]
-
+Färdiga byggnader som kolonin hade. Dela upp för att se varje byggnadstyp.
 [stat construction]
-
+Utfört byggarbete
 [stat construction about]
-
+Utfört byggarbete: nya byggnader, uppgraderingar och reparationer.
 [stat buildings lost]
-
+Förlorade byggnader
 [stat buildings lost about]
-
+Byggnader som förstörts av fiender eller rivits av kolonin själv.
 [stat blocked buildings]
-
+Byggnader utan ingång
 [stat blocked buildings about]
-
+Byggnader vars ingångar var blockerade, så att enheter inte kunde ta sig in eller ut.
 [stat attack]
-
+Anfallsstyrka
 [stat attack about]
-
+Ett värde för den samlade stridskraften hos kolonins krigare: hur hårt och hur snabbt de slår.
 [stat defence]
-
+Försvarsstyrka
 [stat defence about]
-
+Ett värde för den samlade eldkraften hos kolonins försvarstorn.
 [stat hit points]
-
+Totala träffpoäng
 [stat hit points about]
-
+Träffpoängen för alla kolonins enheter och byggnader sammanlagt.
 [stat damage dealt]
-
+Utdelad skada
 [stat damage dealt about]
-
+Skada som kolonin gjorde på fiendens enheter och byggnader. Dela upp för att se krigare, magi och torn.
 [stat damage taken]
-
+Mottagen skada
 [stat damage taken about]
-
+Skada som fiender gjorde på kolonins enheter och byggnader.
 [stat damage traded]
-
+Skadebalans
 [stat damage traded about]
-
+Utdelad skada minus mottagen skada. Över noll vann kolonin sina strider.
 [stat combat deaths]
-
+Enheter dödade i strid
 [stat combat deaths about]
-
+Enheter i den här kolonin som dödats av fiender. Dela upp för att se arbetare, utforskare och krigare var för sig.
 [stat accuracy]
-
+Träffande skott
 [stat accuracy about]
-
+Andelen skott från kolonins torn och utforskare som träffade sitt mål.
 [stat training]
-
+Träning
 [stat training about]
-
+Besök av enheter på skolor, kaserner, löparbanor och simbassänger för att lära sig en färdighet.
 [stat skills]
-
+Vunna färdigheter
 [stat skills about]
-
+Färdighetsnivåer som kolonins enheter fått genom träning.
 [stat growth nearby]
-
+Resurstillväxt nära kolonin
 [stat growth nearby about]
-
+Hur mycket vete, trä och andra resurser som växte inom 32 rutor från kolonins byggnader, i tillväxtpoäng snarare än lass. Dela upp för att se hur nära hemmet de växte.
 [stat growth map]
-
+Resurstillväxt på hela kartan
 [stat growth map about]
-
+Hur mycket resurser som växte någonstans på kartan, i tillväxtpoäng snarare än lass. Detta är samma för alla kolonier.
 [stat stranded]
-
+Enheter som inte kan röra sig
 [stat stranded about]
-
+Inringade enheter utan någon ledig ruta att kliva till.
 [stat cleared]
-
+Röjda resurser
 [stat cleared about]
-
+Resurser som arbetare tagit bort i röjningsområden för att skapa utrymme.
 [stat prestige]
-
+Prestigevärde
 [stat prestige about]
-
+Kolonins prestige, som tjänas in av byggnader på högsta nivå. En match med ett prestigemål slutar när det nås.
 [stat band combat]
-
+Strid
 [stat band starvation]
-
+Svält
 [stat band clearing]
-
+Röjningsskador
 [stat band trapped]
-
+Instängda
 [stat band other]
-
+Annat
 [stat band starving]
-
+Nästan tom
 [stat band hungry]
-
+Låg
 [stat band peckish]
-
+Halvfull
 [stat band fed]
-
+Mätt
 [stat band critical]
-
+Kritisk
 [stat band wounded]
-
+Sårad
 [stat band hurt]
-
+Skadad
 [stat band healthy]
-
+Frisk
 [stat band weakening]
-
+Försvagad
 [stat band looking]
-
+Söker värdshus
 [stat band eating]
-
+Äter
 [stat band healing]
-
+Läks
 [stat band meals]
-
+Måltider
 [stat band new units]
-
+Nya enheter
 [stat band ammunition]
-
+Ammunition
 [stat band construction]
-
+Nya byggnader
 [stat band upgrades]
-
+Uppgraderingar
 [stat band built]
-
+Byggda
 [stat band upgraded]
-
+Uppgraderade
 [stat band repaired]
-
+Reparerade
 [stat band destroyed]
-
+Förstörda
 [stat band demolished]
-
+Rivna
 [stat band melee]
-
+Krigare
 [stat band magic]
-
+Magi
 [stat band towers]
-
+Torn
 [stat band within 8]
-
+Inom 8 rutor
 [stat band 8 to 16]
-
+8 till 16 rutor
 [stat band 16 to 32]
-
+16 till 32 rutor
 [stat unit units]
-
+enheter
 [stat unit wheat]
-
+vete
 [stat unit meals]
-
+måltider
 [stat unit hit points]
-
+träffpoäng
 [stat unit resources]
-
+resurser
 [stat unit buildings]
-
+byggnader
 [stat unit strength]
-
+värde
 [stat unit damage]
-
+skada
 [stat unit shots]
-
+skott
 [stat unit visits]
-
+besök
 [stat unit skills]
-
+färdighetsnivåer
 [stat unit prestige]
-
+prestigepoäng
 [stat axis percent of %0]
-
+% av %0
 [stat axis share of all teams]
-
+% av alla kolonier
 [stat axis percent of units]
-
+% av kolonins enheter
 [stat axis %0 per minute per 100 units]
-
+%0 per minut, per 100 enheter i kolonin
 [stat axis %0 per 100 units]
-
+%0 per 100 enheter i kolonin
 [stat axis %0 per minute]
-
+%0 per minut
 [stat axis %0 so far]
-
+%0, löpande summa
 [stat axis %0 minute average]
-
+%0-minutersmedelvärde
 [stat view per minute]
-
+Per minut
 [stat view total]
-
+Totalt
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Uppdelat efter typ
 [stat view percentages]
-
+Som % av totalen
 [stat view percent of units]
-
+Som % av kolonin
 [stat view per 100 units]
-
+I förhållande till kolonins storlek
 [stat view share]
-
+Andel av alla kolonier
 [stat view highlight none]
-
+Markera: ingen
 [stat column peak units]
-
+Max enheter
 [stat column born]
-
+Födda
 [stat column lost]
-
+Förlorade
 [stat column wheat]
-
+Vete
 [stat column damage dealt]
-
+Utdelad skada
 [stat column damage taken]
-
+Mottagen skada
 [stat column built]
-
+Byggda
 [stat column buildings lost]
-
+Förlorade byggnader
 [stat column prestige]
-
+Prestige
 [stat marker wiped out]
-
+sista enheten förlorad
 [stat marker first combat death]
-
+första enheten dödad i strid
 [stat marker first building destroyed]
-
+första byggnaden förstörd
 [stat not recorded for this match]
-
+Den här statistiken registrerades inte för den här matchen.
 [results reason beyond doubt]
-
+Resultatet var inte längre osäkert.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Koloni
 [stat page %0 of %1]
-
+%0/%1  >
 [stat band workers]
-
+Arbetare
 [stat band explorers]
-
+Utforskare
 [stat band warriors]
-
+Krigare
 [stat unit deaths]
-
+dödsfall
 [stat unit growth]
-
+tillväxt
 [stat view by unit type]
-
+Efter enhetstyp
 [stat view by state]
-
+Efter tillstånd
 [stat view by resource]
-
+Efter resurs
 [stat view by building]
-
+Efter byggnad
 [stat view by work]
-
+Efter typ av arbete
 [stat view by cause]
-
+Efter orsak
 [stat view by weapon]
-
+Efter vapen
 [stat view by distance]
-
+Efter avstånd
 [stat nothing to show]
-
+Inget att visa: detta hände inte i den här matchen.
 [stat %0 nothing]
-
+%0 (inga)
 [Match]
-
+Match
 [Time limit]
-
+Tidsgräns
 [Alliances can change]
-
+Allianser kan ändras
 [Reveal terrain]
-
+Visa terrängen
 [Starting unit level]
-
+Enheternas startnivå
 [Starting stockpile]
-
+Startförråd
 [Regrowth]
-
+Återväxt
 [Building strength]
-
+Byggnaders hållfasthet
 [Wounded units retreat]
-
+Sårade enheter retirerar
 [Units can die]
-
+Enheter kan dö
 [Unit training]
-
+Träning av enheter
 [No stockpile]
-
+Inget
 [No glass cannon]
-
+Av
 [How quickly harvested resources grow back and spread.]
-
+Hur snabbt skördade resurser växer tillbaka och sprider sig.
 [Units must eat to keep working.]
-
+Enheter måste äta för att fortsätta arbeta.
 [Summary]
-
+Sammanfattning
 [All rules]
-
+Alla regler
 [Show all rules]
-
+Visa alla regler
 [Choose a ruleset]
-
+Välj en regeluppsättning
 [Reset to %0]
-
+Återställ till %0
 [ruleset one change %0]
-
+%0 + 1 ändring
 [ruleset changes %0 %1]
-
+%0 + %1 ändringar
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Den här matchen kan inte ta slut. Aktivera prestigeseger eller ange en tidsgräns.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Prestige brukar dyka upp efter 13 till 28 minuter, så en gräns på 30 minuter slutar ofta oavgjort.
 [Blitz]
-
+Blixtkrig
 [ruleset blitz description]
-
+Snabb start, tidigt slut
 [Gentle]
-
+Mild
 [ruleset gentle description]
-
+Förlåtande regler för en första match
 [Sandbox]
-
+Sandlåda
 [ruleset sandbox description]
-
+Ingen strid, ingen svält, bygg vad som helst
 [Bloodbath]
-
+Blodbad
 [ruleset bloodbath description]
-
+Sköra, orädda arméer
 [Siege]
-
+Belägring
 [ruleset siege description]
-
+Fästningsmurar och långa krig
 [Lean years]
-
+Magra år
 [ruleset lean years description]
-
+Resurserna växer knappt tillbaka
 [Gold rush]
-
+Guldrusch
 [ruleset gold rush description]
-
+Det som finns på kartan är allt som finns
 [Elite ranks]
-
+Elitförband
 [ruleset elite ranks description]
-
+Börja tränad, ingen vidare träning
 [Shifting alliances]
-
+Skiftande allianser
 [ruleset shifting alliances description]
-
+Lagen kan ändras i ett 60-minuterslopp
 [Probability victory]
-
+Seger på sannolikhet
 [Off (play it out)]
-
+Av (spela klart)
 [95% sure]
-
+95 % säker
 [97% sure]
-
+97 % säker
 [99% sure]
-
+99 % säker
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Avslutar matchen när modellen når den valda säkerheten. Åskådare kan se de förutsagda vinstchanserna i statistiken.
 [Changed from %0: %1]
-
+Ändrat från %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Strid är avstängd, så reglerna nedan har ingen effekt.
 [%0 more rules are at their Standard values.]
-
+%0 regler till har samma värden som i Standard.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Spelarna ser kartans terräng från början; fiendens enheter förblir dolda.
 [Each team starts with extra resources in its shared pool.]
-
+Varje lag börjar med extra resurser i sitt gemensamma förråd.
 [Units hit harder but have less HP and armor.]
-
+Enheter slår hårdare men har färre träffpoäng och mindre rustning.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Lagen kan anfalla varandra. Stäng av för en fredlig match.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Skadade enheter går tillbaka för att läkas i stället för att slåss till döden.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Enheter dör när träffpoängen tar slut. Stäng av för att stoppa dem vid 1 träffpoäng.
 [Units gain levels at schools.]
-
+Enheter går upp i nivå på skolor.
 [stat group work]
-
+Arbetarnas tid
 [stat worker time]
-
+Hur arbetarna använde sin tid
 [stat worker time about]
-
+Vad kolonins arbetare gjorde, ögonblick för ögonblick: arbetade för en byggnad, arbetade vid en flagga, tränade, åt, läktes, väntade hungriga eller skadade utan ledigt värdshus eller sjukhus, eller gick sysslolösa utan något att göra. En frisk koloni håller de flesta arbetarna i arbete, få sysslolösa och ingen väntande.
 [stat idle workers]
-
+Sysslolösa arbetare
 [stat idle workers about]
-
+Andelen av arbetarnas tid utan något att göra. Höga värden betyder fler arbetare än arbete; nära noll betyder att varje arbetare är upptagen och att uppgifter kan vänta.
 [stat work by job]
-
+Vad arbetarna arbetade med
 [stat work by job about]
-
+Hur många arbetare som försåg varje typ av byggnad: svärmar (för att skapa nya enheter), värdshus (för att laga måltider), byggnader under konstruktion eller uppgradering, eller andra byggnader som torn, skolor och kaserner.
 [stat haul distance]
-
+Avstånd till resurser
 [stat haul distance about]
-
+Hur långt en skördande arbetare i genomsnitt var från byggnaden den försåg, i kartrutor fågelvägen.
 [stat hauling]
-
+Hämtning och bärande
 [stat hauling about]
-
+Hur arbetarna som försåg byggnader fördelade sig mellan att gå till en resurs, skörda den, bära tillbaka den, och leverera den eller vänta på en resurs de kan nå. Det mesta är gång, så ju närmare resurserna är, desto mer blir gjort.
 [stat eating time]
-
+Arbetare som går och äter
 [stat eating time about]
-
+Hur många arbetare som var borta från arbetet för att äta: på väg till ett värdshus, åt i ett, eller hungriga utan något värdshus som kunde ta emot dem. Arbetare utan värdshus betyder att kolonin har vuxit ifrån sina värdshus eller deras mat.
 [stat inn distance]
-
+Avstånd från värdshuset
 [stat inn distance about]
-
+Hur långt hungriga arbetare i genomsnitt under sin promenad var från värdshuset de var på väg till, i kartrutor fågelvägen. En hel tur är ungefär det dubbla. Höga värden betyder att värdshusen ligger långt från där arbetarna arbetar.
 [stat warriors]
-
+Krigare
 [stat warriors about]
-
+Hur många krigare kolonin hade. Dela upp för att se hur många som var nära hemmet, nära en fiendekoloni eller i öppen terräng. Mark nära båda kolonierna räknas som hemma.
 [stat warrior level]
-
+Krigarnas genomsnittliga anfallsnivå
 [stat warrior level about]
-
+Den genomsnittliga anfallsnivån för kolonins krigare, där anfallshastighet och anfallsstyrka räknas lika, på skalan 1 till 4 som spelet visar. Kaserner höjer den; nya otränade krigare drar ner den.
 [stat warrior duties]
-
+Vad krigarna gjorde
 [stat warrior duties about]
-
+Hur kolonins krigare fördelade sig mellan de som skickats till en krigsflagga, de som skadats så svårt att de lämnat striden för ett sjukhus (inklusive de som läks), och de som var lediga.
 [stat intruders]
-
+Fiendekrigare hemma
 [stat intruders about]
-
+Hur många fiendekrigare som var inom 16 rutor från kolonins byggnader. Där två kolonier ligger nära varandra räknar var och en den andras försvarare.
 [stat home defence]
-
+Styrkemarginal i hemförsvaret
 [stat home defence about]
-
+Styrkan hos kolonins egna krigare nära dess byggnader minus styrkan hos fiendekrigarna där, där varje krigare och var och en av dess anfallsnivåer räknas. Under noll var kolonin underlägsen hemma.
 [stat combat death places]
-
+Var enheter föll i strid
 [stat combat death places about]
-
+Var kolonins enheter befann sig när de dödades: nära de egna byggnaderna, nära en fiendes byggnader, eller i öppen terräng mellan kolonierna. Förluster hemma betyder att kolonin blev anfallen; förluster vid en fiendekoloni betyder att den anföll. Mark nära båda kolonierna räknas som hemma.
 [stat band working]
-
+Arbetar
 [stat band flag work]
-
+Vid en flagga
 [stat band idle]
-
+Sysslolös
 [stat band training]
-
+Tränar
 [stat band unserved]
-
+Inget ledigt värdshus eller sjukhus
 [stat band swarms]
-
+Svärmar
 [stat band inns]
-
+Värdshus
 [stat band sites]
-
+Bygger och uppgraderar
 [stat band other buildings]
-
+Andra byggnader
 [stat band to resource]
-
+Går till en resurs
 [stat band harvesting]
-
+Skördar
 [stat band carrying]
-
+Bär tillbaka
 [stat band delivering]
-
+Levererar eller väntar
 [stat band walking to inn]
-
+Går till ett värdshus
 [stat band no inn]
-
+Inget ledigt värdshus
 [stat band at home]
-
+Hemma
 [stat band at enemy]
-
+Vid en fiendekoloni
 [stat band in the open]
-
+I öppen terräng
 [stat band war flag]
-
+Vid en krigsflagga
 [stat band seeking healing]
-
+Söker vård
 [stat band free]
-
+Lediga
 [stat unit workers]
-
+arbetare
 [stat unit worker time]
-
+arbetarnas tid
 [stat unit working workers]
-
+arbetare som förser byggnader
 [stat unit squares]
-
+rutor
 [stat unit warriors]
-
+krigare
 [stat unit attack level]
-
+anfallsnivå
 [stat unit enemy warriors]
-
+fiendekrigare
 [stat unit strength count]
-
+styrka
 [stat view by place]
-
+Efter plats

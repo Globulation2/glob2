@@ -1,11 +1,11 @@
 [AI strategy]
 Strategi AI
 [start recording]
-
+Mulai merekam
 [stop recording]
-
+Berhenti merekam
 [finalizing recording]
-
+Menyelesaikan rekaman…
 [AIMaxima-Summary]
 Menyeimbangkan pertumbuhan berkelanjutan dan pelatihan, lalu mengumpulkan tentara dalam gelombang.
 [AIMaxima-Profile]
@@ -33,7 +33,7 @@ Strategi utama: Menganggap pangan, pekerja, kelahiran, pelatihan, pembangunan, d
 [%0 units too far from resource]
 %0 unit terlalu jauh dari sumber daya
 [%0 units too low level]
-Tingkat %0 unit terlalu rendah
+%0 unit tingkatnya terlalu rendah
 [%0% Uploaded]
 %0% diunggah
 [%0's team unit got converted to your team]
@@ -83,11 +83,11 @@ Lawan yang cukup mudah, tetapi tetap meluas dan menyerang.
 [AINumbi]
 Numbi
 [AIEcono-Description]
-Meluas dan berebut pengikut tanpa menghasilkan prajurit.
+Meluas dan berebut pembelot tanpa menghasilkan prajurit.
 [AIEcono]
 Econo
 [AIWarrush-Description]
-Serangan cepat yang menguji pertahanan awalmu.
+Serangan cepat yang menguji pertahanan awal Anda.
 [AIWarrush]
 Warrush
 [AICabino-Description]
@@ -385,7 +385,7 @@ Layar penuh
 [game full]
 Permainan penuh
 [game shortcuts]
-Pintasan Gim
+Pintasan Permainan
 [game speed]
 Kecepatan permainan
 [Game]
@@ -513,9 +513,9 @@ rendah
 [lowquality]
 Kualitas rendah
 [Magic At. Air]
-Dmg. udara
+Sihir udara
 [Magic At. Ground]
-Dmg. darat
+Sihir darat
 [map description]
 Deskripsi
 [Map Discovered]
@@ -715,7 +715,7 @@ Simpan Skrip
 [Save]
 Simpan
 [school explanation 2]
-membangun para pekerja
+membangun pekerja
 [school explanation]
 Meningkatkan kemampuan
 [school]
@@ -1125,7 +1125,7 @@ Strategi utama: Menggabungkan pertumbuhan, pelatihan, peningkatan, dan perang me
 [AINicowar-Summary]
 Serbuan awal yang didukung pertanian, peningkatan, pertahanan, dan serangan penjelajah.
 [AINone-Profile]
-Strategi: AI tidak memberikan perintah.\n\nKekuatan: Lawan eksperimen yang dapat diprediksi dan tidak aktif.\n\nKelemahan: Tidak berkembang atau beradaptasi.
+Strategi utama: Tidak memberikan perintah AI apa pun.\n\nKekuatan: Lawan diam yang dapat diprediksi untuk eksperimen.\n\nKelemahan: Tidak berkembang atau beradaptasi.
 [AINone-Summary]
 Koloni yang diam untuk eksperimen.
 [AINumbi-Profile]
@@ -1161,7 +1161,7 @@ Koloni
 [Colony]
 Koloni
 [Concrete islands]
-Pulau Terpisah
+Pulau terpisah
 [Conquest only]
 Hanya penaklukan
 [Conquest or prestige]
@@ -1175,7 +1175,7 @@ Danau kawah
 [Custom]
 Kustom
 [Custom teams]
-Tim khusus
+Tim kustom
 [Cyan]
 Sian
 [Desert weight]
@@ -1187,7 +1187,7 @@ Penugasan koloni tambahan dipertahankan untuk peta yang lebih besar.
 [Extra islands]
 Pulau tambahan
 [FFA]
-Semua orang melawan semua orang
+Semua lawan semua
 [Fruit]
 Buah
 [Game Rules]
@@ -1215,7 +1215,7 @@ Ukuran pulau
 [Islands]
 Pulau
 [Isles]
-Pulau Kecil
+Pulau kecil
 [Lake density]
 Kepadatan danau
 [Landscape]
@@ -1243,7 +1243,7 @@ Pesisir Terpecah
 [Open at least one colony to start a match.]
 Buka setidaknya satu koloni untuk memulai pertandingan.
 [Open book]
-Dunia yang terungkap
+Peta terbuka
 [Pink]
 Merah Jambu
 [Play this map]
@@ -1251,7 +1251,7 @@ Mainkan peta ini
 [Players & Teams]
 Pemain & Tim
 [Premade maps]
-Peta yang sudah jadi
+Peta siap pakai
 [Preview ready. Start plays this exact map.]
 Pratinjau siap. Memulai permainan menggunakan peta persis ini.
 [Regenerate all]
@@ -1319,7 +1319,7 @@ Anda + AI
 [You and the AI both issue orders. Uses two controller slots.]
 Anda dan AI sama-sama memberi perintah. Memakai dua tempat pengendali.
 [You vs all]
-Anda melawan semua orang
+Anda lawan semua
 [Your maps]
 Peta Anda
 [colonies]
@@ -1347,7 +1347,7 @@ Tidak ada peta dalam koleksi ini.
 [Premade maps retain their authored starting units.]
 Peta siap pakai tetap memakai unit awal yang ditetapkan pembuatnya.
 [Start with terrain known]
-Mulailah dengan medan yang diketahui
+Mulai dengan medan terungkap
 [This colony will not join the match.]
 Koloni ini tidak akan ikut pertandingan.
 [This landscape uses a fixed terrain recipe.]
@@ -1373,13 +1373,13 @@ Memperbarui pratinjau peta...
 [Generation failed. Adjust settings or press Start to retry.]
 Pembuatan peta gagal. Sesuaikan pengaturan atau tekan Mulai untuk mencoba lagi.
 [Preview unavailable. Adjust settings or start to retry.]
-Pratinjau tidak tersedia. Ubah pengaturan atau luncurkan game untuk mencoba lagi.
+Pratinjau tidak tersedia. Ubah pengaturan atau mulai untuk mencoba lagi.
 [automatic torus view]
 Tampilan torus otomatis
 [toggle torus view]
 Beralih tampilan 2D / torus
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-2 lawan 2 memerlukan empat koloni aktif. Anda melawan semua memerlukan seorang pemain manusia.
+2 lawan 2 memerlukan empat koloni terbuka. Anda lawan semua memerlukan pemain manusia.
 [Alliance]
 Aliansi
 [Choose a rule to change it.]
@@ -1401,7 +1401,7 @@ Sumber peta
 [Map-defined]
 Ditentukan peta
 [Match format]
-Format permainan
+Format pertandingan
 [No current preview]
 Tidak ada pratinjau saat ini
 [Quick clash: 2x speed; generated maps start with 8 workers.]
@@ -1413,7 +1413,7 @@ Hasilkan secara acak
 [Reset to defaults]
 Pulihkan nilai baku
 [Ruleset]
-Aturan
+Set aturan
 [Select a map from the library.]
 Pilih peta dari koleksi.
 [Starting workers affects generated maps only.]
@@ -1421,9 +1421,9 @@ Jumlah pekerja awal hanya berlaku untuk peta yang dihasilkan.
 [Unavailable]
 Tidak tersedia
 [Use selection]
-Gunakan seleksi
+Gunakan pilihan
 [Quick clash on premade maps: only speed changes (2x).]
-Pertarungan cepat di peta yang telah dibuat sebelumnya: hanya kecepatannya yang berubah (kecepatan ganda).
+Pertarungan cepat di peta siap pakai: hanya kecepatan yang berubah (2x).
 [Generate a preview to explore this world.]
 Hasilkan pratinjau untuk menjelajahi dunia ini.
 [More workers jump-start colony growth. Changes the generated map.]
@@ -1461,13 +1461,13 @@ Perubahan selama bermain akan memperbarui setelan baku ini untuk permainan berik
 [settings Changing the renderer requires a restart.]
 Mengubah perender memerlukan mulai ulang.
 [settings Choose a binding to change it, or add another shortcut for an action.]
-Pilih pintasan keyboard untuk mengeditnya, atau tambahkan pintasan lain untuk suatu tindakan.
+Pilih pintasan untuk mengubahnya, atau tambahkan pintasan lain untuk suatu tindakan.
 [settings Choose a window or fill the screen.]
 Pilih mode jendela atau layar penuh.
 [settings Choose how the game looks on your screen.]
 Pilih tampilan permainan di layar Anda.
 [settings Completed]
-Bangunan yang sudah selesai
+Selesai
 [settings Construction]
 Pembangunan
 [settings Controls]
@@ -1477,19 +1477,19 @@ Tidak dapat mengubah mode tampilan. Mode sebelumnya telah dipulihkan.
 [settings Could not save]
 Tidak dapat menyimpan
 [settings Current display]
-Setelan tampilan saat ini
+Tampilan saat ini
 [settings Default]
 Baku
 [settings Display]
 Tampilan
 [settings Display & graphics]
-Tampilan & grafik
+Tampilan & grafis
 [settings Display the Globulation 2 cursor.]
 Menampilkan kursor Globulation 2.
 [settings Done]
 Selesai
 [settings Edit shortcut]
-Edit pintasan keyboard
+Edit pintasan
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
 Kalikan skala tampilan sistem operasi untuk menu, teks, dan bilah samping.
 [settings Flags]
@@ -1509,7 +1509,7 @@ Detail grafis
 [settings Interface scale]
 Skala antarmuka
 [settings Keep]
-Pertahankan perubahan
+Pertahankan
 [settings Keep this display mode?]
 Pertahankan mode tampilan ini?
 [settings Keep your volume levels while silencing audio.]
@@ -1517,7 +1517,7 @@ Mematikan semua suara tanpa mengubah tingkat volume yang disimpan.
 [settings Key]
 Tombol
 [settings Keyboard shortcuts]
-Pintasan keyboard
+Pintasan papan ketik
 [settings Keys form a sequence in order. Each key can trigger on press or release.]
 Tombol membentuk urutan sesuai susunannya. Setiap langkah dapat dipicu saat tombolnya ditekan atau dilepas.
 [settings Language]
@@ -1535,7 +1535,7 @@ Ikuti desktop
 [settings Missing font]
 Font tidak ditemukan
 [settings Music volume]
-Volume (musik)
+Volume musik
 [settings Mute audio]
 Bisukan audio
 [settings Name shown to other players.]
@@ -1557,19 +1557,19 @@ Radius
 [settings Reduced]
 Detail sederhana
 [settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
-Pengurangan detail akan menonaktifkan awan dan bayangannya, menyederhanakan efek ajaib, dan mengurangi transparansi.
+Detail sederhana menonaktifkan awan dan bayangannya, menyederhanakan efek sihir, dan mengurangi transparansi.
 [settings Release]
 Saat dilepas
 [settings Remember assignments between games]
 Ingat penugasan unit antarpermainan
 [settings Remove key]
-Hapus tombol keyboard
+Hapus tombol
 [settings Remove shortcut]
 Hapus Pintasan
 [settings Renderer]
 Perender grafis
 [settings Replace conflicting bindings]
-Ganti pintasan keyboard yang bertentangan
+Ganti pintasan yang bertentangan
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
 Ganti pintasan dalam konteks ini dengan pintasan baku? Perubahan akan langsung disimpan.
 [settings Resolution]
@@ -1579,11 +1579,11 @@ Pulihkan Pintasan Baku
 [settings Retry]
 Coba lagi
 [settings Revert]
-Kembalikan perubahan
+Kembalikan
 [settings Reverting in]
 Mengembalikan dalam
 [settings Save shortcut]
-Simpan pintasan keyboard
+Simpan pintasan
 [settings Saved — restart required]
 Tersimpan — perlu dimulai ulang
 [settings Saving…]
@@ -1603,7 +1603,7 @@ Perenderan perangkat lunak
 [settings Starting unit counts and radius for newly placed flags.]
 Jumlah unit awal dan radius untuk bendera yang baru ditempatkan.
 [settings This shortcut conflicts with existing bindings:]
-Pintasan keyboard ini bertentangan dengan pintasan yang ada:
+Pintasan ini bertentangan dengan pintasan yang ada:
 [settings Trigger]
 Pemicu
 [settings Unbound]
@@ -1617,11 +1617,11 @@ Jumlah unit yang ditugaskan selama bangunan ditingkatkan.
 [settings Units]
 Unit
 [settings Upgrades]
-Peningkatan bangunan
+Peningkatan
 [settings Use game cursor]
 Gunakan kursor permainan
 [settings Voice volume]
-Volume (suara)
+Volume suara
 [settings Window mode]
 Mode jendela
 [settings Window-only sizes also switch the game to windowed mode.]
@@ -1757,7 +1757,7 @@ Petak pasir
 [Tidal flats]
 Dataran pasang surut
 [Everglades]
-Rawa-rawa
+Lahan basah
 [Pool spacing]
 Jarak antar kolam
 [Pool size]
@@ -1769,7 +1769,7 @@ Tanggul
 [Sloughs]
 Rawa-rawa
 [Everglades need at least one colony.]
-Rawa-rawa membutuhkan setidaknya satu koloni.
+Lahan basah membutuhkan setidaknya satu koloni.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
 Terlalu banyak koloni untuk peta ini; gunakan peta lebih besar atau lebih sedikit koloni.
 [Coral]
@@ -1875,7 +1875,7 @@ Dataran pasang surut membutuhkan setidaknya satu koloni.
 [The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
 Pulau-pulau asal tidak muat di peta ini; gunakan peta yang lebih besar, koloni lebih sedikit, atau pulau lebih kecil.
 [The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
-Tanah bersama dan selat menyisakan terlalu sedikit ruang untuk pangkalan; gunakan peta yang lebih besar, koloni lebih sedikit, tanah bersama lebih kecil, atau selat lebih sempit.
+Tanah bersama dan selat menyisakan terlalu sedikit ruang untuk markas; gunakan peta yang lebih besar, koloni lebih sedikit, tanah bersama lebih kecil, atau selat lebih sempit.
 [Wheat amount]
 Jumlah gandum
 [Wood amount]
@@ -2083,7 +2083,7 @@ Kerusakan diberikan
 [Stats damage received]
 Kerusakan diterima
 [Stats HP restored]
-Kesehatan dipulihkan
+HP dipulihkan
 [Stats since tick]
 Sejak langkah
 [Stats combat deaths]
@@ -2161,13 +2161,13 @@ Elite
 [Legendary]
 Legendaris
 [Combat]
-Pertarungan
+Pertempuran
 [Glass cannon]
 Meriam kaca
 [Match ends at the timer; highest prestige at that instant wins.]
 Pertandingan berakhir saat waktu habis; yang memiliki prestise tertinggi saat itu menang.
 [Off (no timer)]
-Nonaktif (tanpa pengatur waktu)
+Nonaktif (tanpa batas waktu)
 [90 minutes]
 90 menit
 [30 minutes]
@@ -2195,7 +2195,7 @@ Sumber daya +#
 [Stats growth reductions]
 Sumber daya -
 [Stats growth per minute]
-Gandum +/min
+Gandum +/mnt
 [Stats growth near 8]
 Sumber daya + <=8
 [Stats growth near 16]
@@ -2235,7 +2235,7 @@ Wajah mengedip
 [Surprised face]
 Wajah terkejut
 [Heart eyes]
-Mata hati
+Mata cinta
 [Sunglasses]
 Kacamata hitam
 [Heart]
@@ -2865,7 +2865,7 @@ Alat
 [Pan map]
 Geser peta
 [Edit map]
-Edit Peta
+Edit peta
 [Editor map]
 Peta
 [Flags]
@@ -2897,7 +2897,7 @@ Tata letak antarmuka
 [settings Automatic]
 Otomatis
 [settings Compact]
-Rapat
+Ringkas
 [settings Spacious]
 Lapang
 [More]
@@ -2989,17 +2989,17 @@ CPU %0%
 [Brush %0x%1]
 Kuas %0x%1
 [Level %0]
-Level %0
+Tingkat %0
 [Manage teams (%0)]
 Kelola tim (%0)
 [Team %0 / Level %1]
-Tim %0 / Level %1
+Tim %0 / Tingkat %1
 [Files · %0]
 Berkas · %0
 [Hint %0]
 Petunjuk %0
 [Objective %0]
-Tujuan %0
+Sasaran %0
 [Entry %0 of 8 · empty entries are omitted]
 Entri %0 dari 8 · entri kosong diabaikan
 [Teams %0/%1]
@@ -3039,7 +3039,7 @@ Jaga
 [Clear]
 Bersihkan
 [Farm]
-Tani
+Ladang
 [Paint]
 Lukis
 [Erase]
@@ -3103,7 +3103,7 @@ Kompilasi
 [Tap to write this hint]
 Ketuk untuk menulis petunjuk ini
 [Tap to write this objective]
-Ketuk untuk menulis tujuan ini
+Ketuk untuk menulis sasaran ini
 [Mission briefing · tap to edit, swipe to scroll]
 Pengarahan misi · ketuk untuk mengedit, usap untuk menggulir
 [Not enough recorded history yet.]
@@ -3145,7 +3145,7 @@ Dihasilkan
 [Preview]
 Pratinjau
 [Selected landscape]
-Bentang alam terpilih
+Lanskap terpilih
 [Representative preview]
 Pratinjau contoh
 [Starting terrain]
@@ -3155,7 +3155,7 @@ Sembunyikan parameter
 [Size and parameters]
 Ukuran dan parameter
 [Choose a landscape]
-Pilih bentang alam
+Pilih lanskap
 [%0 / Browse]
 %0 / Jelajahi
 [%0 colonies · %1]
@@ -3175,7 +3175,7 @@ Tingkat %0
 [settings Match the desktop %0]
 Ikuti desktop (%0)
 [settings Current display %0 %1 %2 %3]
-Setelan tampilan saat ini: %0 × %1 · %2 · %3
+Tampilan saat ini: %0 × %1 · %2 · %3
 [Fairness: %0]
 Keadilan: %0
 [Colony %0]
@@ -3199,9 +3199,9 @@ Eksperimen
 [settings Try features we are still testing. They can change balance and pacing.]
 Coba fitur yang masih kami uji. Fitur ini dapat mengubah keseimbangan dan tempo.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
-Eksperimen berlaku untuk permainan baru yang Anda mulai atau jadi tuan rumahnya, tidak pernah untuk misi kampanye. Permainan tersimpan mempertahankan eksperimen yang dipakai saat dimulai.
+Eksperimen berlaku untuk permainan baru yang Anda mulai atau Anda jadi hosnya, tidak pernah untuk misi kampanye. Permainan tersimpan mempertahankan eksperimen yang dipakai saat dimulai.
 [Experiments set by the host]
-Eksperimen pilihan tuan rumah
+Eksperimen pilihan hos
 [settings No experiments in this build.]
 Tidak ada eksperimen dalam versi ini.
 [Experiments]
@@ -3235,1419 +3235,1419 @@ Momentum daftar
 [List bounce]
 Pantulan daftar
 [lan pairing field]
-
+String pemasangan hos (atau URL WSS tepercaya)
 [lan pairing connect]
-
+Pasangkan dan hubungkan
 [lan discovery instructions]
-
+Pilih hos, lalu tempelkan string pemasangannya untuk memverifikasi identitasnya.
 [lan discovery unavailable]
-
+Penemuan LAN tidak tersedia. Periksa izin jaringan lokal atau tempelkan string pemasangan hos.
 [lan discovered host %0]
-
+Hos %0 ditemukan — pasangkan untuk melihat permainan
 [lan connection unavailable]
-
+Tidak dapat menjangkau hos LAN. Periksa izin jaringan lokal dan string pemasangan hos.
 [lan connection verification failed %0]
-
+Tidak dapat memverifikasi atau terhubung ke hos LAN: %0
 [lan lobby endpoint required]
-
+Gunakan titik akhir lobi hos
 [settings Artwork]
-
+Gambar
 [settings Original]
-
+Asli
 [settings High resolution]
-
+Resolusi tinggi
 [settings Clouds]
-
+Awan
 [settings Show cloud cover above the map.]
-
+Tampilkan tutupan awan di atas peta.
 [settings Cloud shadows]
-
+Bayangan awan
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Tampilkan bayangan awan di tanah, terlepas dari tutupan awan.
 [settings Building particles]
-
+Partikel bangunan
 [settings Show smoke and other building particles.]
-
+Tampilkan asap dan partikel bangunan lainnya.
 [settings Magic effects]
-
+Efek sihir
 [settings Choose animated magic effects or a simple visible effect.]
-
+Pilih efek sihir beranimasi atau efek sederhana yang tetap terlihat.
 [settings Simple]
-
+Sederhana
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Memerlukan perender OpenGL. Pilihan tersimpan Anda tetap dipertahankan.
 [settings Interface appearance]
-
+Tampilan antarmuka
 [settings Panels]
-
+Panel
 [settings Choose translucent or opaque interface panels.]
-
+Pilih panel antarmuka tembus pandang atau buram.
 [settings Opaque]
-
+Buram
 [settings Translucent]
-
+Tembus pandang
 [settings Advanced graphics]
-
+Grafis lanjutan
 [settings Path lines]
-
+Garis jalur
 [settings Choose translucent or opaque unit path lines.]
-
+Pilih garis jalur unit tembus pandang atau buram.
 [settings Smooth progress indicators]
-
+Indikator kemajuan halus
 [settings Smooth the moving edges of progress indicators.]
-
+Haluskan tepi bergerak pada indikator kemajuan.
 [settings Decorative interface animation]
-
+Animasi hiasan antarmuka
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animasikan gambar kemenangan. Mode kurangi gerakan juga menonaktifkan animasi ini.
 [settings Smooth unit motion]
-
+Gerakan unit halus
 [settings Experimental: move and animate units between game ticks.]
-
+Eksperimental: gerakkan dan animasikan unit di antara langkah permainan.
 [settings Smooth fog of war]
-
+Kabut perang halus
 [settings Fade the map into and out of the fog of war gradually.]
-
+Pudarkan peta masuk dan keluar dari kabut perang secara bertahap.
 [settings Adaptive zoom detail]
-
+Detail zoom adaptif
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Sederhanakan bilah, zona, medan, dan unit saat peta diperkecil, dan tetap kecil saat diperbesar.
 [settings Text size]
-
+Ukuran teks
 [settings Enlarge interface text without changing the map scale.]
-
+Perbesar teks antarmuka tanpa mengubah skala peta.
 [Map momentum]
 Momentum peta
 [turn reconnecting]
-
+Koneksi ke hos terputus. Menghubungkan ulang...
 [turn waiting for players]
-
+Menunggu semua pemain selesai memuat...
 [turn rejoining]
-
+Bergabung kembali ke permainan...
 [turn catching up %0]
-
+Mengejar: tertinggal %0 giliran
 [turn player reconnecting %0]
-
+%0 sedang menghubungkan ulang...
 [turn player lagging %0]
-
+%0 tersendat
 [turn player resyncing %0]
-
+%0 sedang mengejar
 [turn player not connected %0]
-
+%0 belum terhubung
 [lan host left]
-
+Hos keluar dari permainan.
 [lan host lost]
-
+Koneksi ke hos terputus.
 [lan version mismatch %0]
-
+Hos menjalankan versi Globulation 2 yang berbeda (%0).
 [lan cannot host %0]
-
+Tidak dapat menjadi hos permainan LAN: %0
 [play online]
-
+Main daring
 [Use in room]
-
+Pakai di ruang
 [conn ai]
-
+AI
 [conn behind %0]
-
+Tertinggal %0
 [conn behind explanation %0 %1]
-
+Tertinggal: seberapa jauh permainan seorang pemain berjalan di belakang jam pertandingan; termasuk jedanya. Di bawah %0 normal; mulai %1 pemain ditandai lambat.
 [conn behind]
-
+Tertinggal
 [conn card catching up]
-
+Mengejar
 [conn card colony works]
-
+Koloni Anda tetap bekerja sendiri: unit menyelesaikan tugasnya dan bangunan tetap berjalan.
 [conn card desync detail]
-
+Bergabung kembali dari rekaman pertandingan agar Anda melihat hal yang sama dengan pemain lain. Laporan telah dikirim otomatis.
 [conn card desync]
-
+Permainan Anda tidak sinkron
 [conn card grace %0]
-
+Koloni Anda tetap bekerja sendiri: unit menyelesaikan tugasnya dan bangunan tetap berjalan. Anda punya waktu %0 untuk kembali sebelum dikeluarkan dari pertandingan.
 [conn card input paused]
-
+Anda sedang mengejar · masukan dijeda
 [conn card lost]
-
+Koneksi terputus
 [conn card progress %0 %1 %2]
-
+%0 % · %1 dari %2 langkah
 [conn card reconnecting %0]
-
+Menghubungkan ulang ke pertandingan… percobaan %0
 [conn card replaying %0]
-
+Memutar ulang %0 yang terlewat. Layar diperbarui saat Anda kembali ke saat ini.
 [conn card seconds left %0]
-
+sekitar %0 dtk lagi
 [conn connections]
-
+Koneksi
 [conn connection]
-
+Koneksi
 [conn delay explanation %0 %1]
-
+Jeda: waktu dari klik Anda hingga terjadi, bagi semua pemain. Bergantung pada koneksi Anda sendiri, bukan koneksi pemain lain. Baik di bawah %0, buruk mulai %1.
 [conn fair]
-
+Cukup
 [conn good]
-
+Baik
 [conn grid legend]
-
+Dengan lebih dari empat pemain, panel menampilkan ping tiap pemain dalam milidetik, atau berapa detik mereka tertinggal.
 [conn jitter %0]
-
+fluktuasi %0
 [conn leave match]
-
+Tinggalkan pertandingan
 [conn left]
-
+Keluar
 [conn notice back %0]
-
+%0 telah kembali.
 [conn notice left %0]
-
+%0 meninggalkan pertandingan.
 [conn notice lost %0 %1]
-
+Koneksi %0 terputus. Permainan berlanjut; koloninya tetap bekerja selama menghubungkan ulang (sisa %1).
 [conn ping explanation %0 %1]
-
+Ping: waktu pulang-pergi antara pemain dan relai. Baik di bawah %0, buruk mulai %1.
 [conn ping]
-
+Ping
 [conn players]
-
+Pemain
 [conn poor]
-
+Buruk
 [conn reconnecting]
-
+Menghubungkan ulang
 [conn relay %0]
-
+Relai: %0
 [conn resyncing]
-
+Bergabung kembali
 [conn slow]
-
+Lambat
 [conn unstable]
-
+tidak stabil
 [conn waiting]
-
+Menghubungkan…
 [conn you %0]
-
+%0 (Anda)
 [conn you]
-
+Anda
 [conn your delay %0]
-
+Jeda Anda %0
 [hub account menu]
-
+Akun
 [hub ai joins after %0]
-
+AI bergabung setelah %0
 [hub all rooms]
-
+Semua
 [hub browse maps]
-
+Jelajahi peta
 [hub cant reach %0]
-
+Tidak dapat menjangkau %0.
 [hub change server]
-
+Ganti server…
 [hub check code]
-
+Saat diminta kode, masukkan kode ini:
 [hub code placeholder]
-
+Kode atau tautan undangan
 [hub connecting to %0]
-
+%0 · menghubungkan…
 [hub continue with %0]
-
+Lanjutkan dengan %0
 [hub create room]
-
+Buat ruang
 [hub find match]
-
+Cari pertandingan
 [hub finish in browser]
-
+Selesaikan proses masuk di halaman yang terbuka di peramban Anda.
 [hub free seat]
-
+Kursi kosong
 [hub get update]
-
+Dapatkan pembaruan
 [hub guest kept on device]
-
+Tamu · disimpan di perangkat ini
 [hub invalid code]
-
+Itu bukan kode atau tautan undangan.
 [hub join by code]
-
+Gabung dengan kode
 [hub join code]
-
+Kode gabung
 [hub join]
-
+Gabung
 [hub leaderboard]
-
+Papan peringkat
 [hub linked %0]
-
+Akun tertaut · %0
 [hub linked accounts]
-
+Akun tertaut
 [hub maps]
-
+Peta
 [hub no queues]
-
+Server ini tidak memiliki antrean pertandingan cepat.
 [hub no rooms]
-
+Belum ada ruang terbuka. Buat satu dan bagikan undangannya.
 [hub offline at %0]
-
+%0 · luring
 [hub offline detail %0]
-
+Mencoba lagi dalam %0 dtk. Pertandingan cepat dan ruang daring tidak tersedia. Permainan LAN di menu utama tidak memerlukan server ini.
 [hub online at %0]
-
+%0 · daring
 [hub online settings]
-
+Pengaturan daring
 [hub online]
-
+Daring
 [hub open page again]
-
+Buka halaman lagi
 [hub open rooms]
-
+Ruang terbuka
 [hub page opened at %0]
-
+%0 telah dibuka. Tidak perlu mengetik apa pun di permainan; Anda akan masuk secara otomatis.
 [hub queues unavailable]
-
+Pertandingan cepat muncul setelah server menjawab.
 [hub quick match unavailable]
-
+Pertandingan cepat belum tersedia di versi ini.
 [hub quick match]
-
+Pertandingan cepat
 [hub ranked]
-
+Berperingkat
 [hub recent matches]
-
+Pertandingan terbaru
 [hub refresh]
-
+Segarkan
 [hub retry now]
-
+Coba lagi sekarang
 [hub room match]
-
+Ruang
 [hub room name %0]
-
+Ruang %0
 [hub room]
-
+Ruang
 [hub seats %0 %1]
-
+%0/%1 kursi
 [hub server %0]
-
+Server: %0
 [hub sign in browser]
-
+Buka halaman masuk
 [hub sign in conflict]
-
+Akun masuk itu sudah dimiliki akun lain.
 [hub sign in failed %0]
-
+Proses masuk tidak selesai (%0).
 [hub sign in intro]
-
+Masuk atau buat akun di peramban Anda. Pertandingan tamu Anda ikut terbawa.
 [hub sign in]
-
+Masuk
 [hub sign out]
-
+Keluar di perangkat ini
 [hub signed in as %0]
-
+Masuk sebagai %0.
 [hub signed in on %0]
-
+Masuk di %0
 [hub signing in]
-
+Sedang masuk…
 [hub sim %0]
-
+simulasi %0
 [hub unrated]
-
+Tanpa rating
 [hub update required at %0]
-
+%0 · perlu pembaruan
 [hub update required detail %0]
-
+%0 memakai versi yang lebih baru, jadi salinan ini tidak dapat bergabung ke permainan daring sampai diperbarui. Permainan LAN tetap berfungsi.
 [hub update required]
-
+Perlu pembaruan
 [hub server behind]
-
+Pembaruan server tertunda
 [hub server behind at %0]
-
+%0 · pembaruan server tertunda
 [hub server behind detail %0]
-
+Salinan ini lebih baru daripada %0, yang belum diperbarui ke versi ini. Permainan daring akan terbuka setelah server diperbarui. Permainan LAN tetap berfungsi.
 [hub version mismatch]
-
+Versi berbeda
 [hub version mismatch at %0]
-
+%0 · versi berbeda
 [hub version mismatch detail %0]
-
+%0 memakai versi permainan yang berbeda, jadi salinan ini tidak dapat bergabung ke permainan daring. Permainan LAN tetap berfungsi.
 [hub versus %0]
-
+lawan %0
 [match ai]
-
+AI
 [match downloading map %0]
-
+Mengunduh peta %0
 [match failed]
-
+Pertandingan tidak dapat dimulai.
 [match leave]
-
+Keluar
 [match loading]
-
+Memuat permainan
 [Loading game graphics]
-
+Memuat grafis permainan
 [match map cached]
-
+sudah ada di perangkat ini
 [match map]
-
+Mengunduh peta
 [match relay %0]
-
+Terhubung ke relai %0
 [match seat confirmed]
-
+Kursi dikonfirmasi
 [match starting]
-
+Memulai pertandingan
 [match tip flags]
-
+Tips: bendera penjelajahan mengirim penjelajah untuk membuka peta; bendera perang mengumpulkan prajurit Anda.
 [match tip input]
-
+Tips: perintah Anda sampai ke semua pemain setelah jeda masukan Anda sendiri; koneksi pemain lain tidak memperlambat Anda.
 [match tip select]
-
+Tips: klik dua kali sebuah bangunan untuk memilih semua bangunan sejenis.
 [match waiting for players]
-
+Menunggu semua pemain
 [match you %0]
-
+%0 (Anda)
 [match player map]
-
+peta
 [match player loading]
-
+memuat
 [match player connecting]
-
+menghubungkan
 [match player ready]
-
+siap
 [match player left]
-
+keluar
 [results back to online]
-
+Kembali ke daring
 [results back to room]
-
+Kembali ke ruang
 [results defeat]
-
+Kekalahan
 [results ladder rating %0]
-
+Rating %0
 [results left]
-
+Anda meninggalkan pertandingan
 [results match over]
-
+Pertandingan berakhir
 [results match page]
-
+Halaman pertandingan
 [results minutes %0]
-
+%0 mnt
 [results no change]
-
+tidak berubah
 [results ranked]
-
+Berperingkat
 [results recording]
-
+Mencatat hasil…
 [results room unrated]
-
+Pertandingan ruang · tanpa rating
 [results saved to history]
-
+Disimpan ke riwayat Anda
 [results seconds %0]
-
+%0 dtk
 [results unverifiable]
-
+Server tidak dapat mereproduksi pertandingan ini, jadi hasilnya tidak dihitung untuk rating siapa pun. Pertandingan ini telah dilaporkan untuk diselidiki; Anda tidak perlu melakukan apa pun.
 [results verified provisional]
-
+Terverifikasi · sementara
 [results verified]
-
+Terverifikasi
 [results verifying detail]
-
+Server sedang memutar ulang pertandingan untuk mengonfirmasinya. Biasanya kurang dari satu menit.
 [results verifying]
-
+Memverifikasi hasil…
 [results victory]
-
+Kemenangan
 [room address]
-
+Alamat
 [room ai %0]
-
+AI: %0
 [room browser pairing]
-
+Pemasangan peramban
 [room catalog map]
-
+Peta katalog
 [room change map]
-
+Ganti peta…
 [room change rules]
-
+Ganti aturan…
 [room chat]
-
+Obrolan
 [room closed seat detail]
-
+Ditutup oleh hos
 [room closed seat]
-
+Tertutup
 [room colonies]
-
+Koloni
 [room connecting]
-
+Menghubungkan ke ruang…
 [room copy]
-
+Salin
 [room disconnected]
-
+terputus
 [room downloading %0]
-
+Mengunduh peta %0 %
 [room downloading map]
-
+Mengunduh peta…
 [room expired]
-
+Ruang telah ditutup.
 [room generated on server]
-
+Dibuat sekali di server, jadi semua pemain memainkan peta yang persis sama.
 [room guest]
-
+tamu
 [room host %0]
-
+hos %0
 [room host closed]
-
+Hos menutup ruang.
 [room host]
-
+hos
 [room humans vs ai]
-
+Manusia lawan AI
 [room invite code %0]
-
+Kode %0 · terbuka di aplikasi, di ponsel, atau di peramban
 [room invite not found]
-
+Undangan ini sudah kedaluwarsa atau tidak ada.
 [room invite only]
-
+Hanya undangan
 [room invite]
-
+Undang
 [room joining on network]
-
+Bergabung di jaringan ini
 [room lan badge]
-
+Jaringan lokal · tanpa rating
 [room lan list hint %0]
-
+Pemain lain di jaringan yang sama melihat %0 di daftar permainan LAN pada menu utama.
 [room leave]
-
+Keluar
 [room map changed %0]
-
+Peta diganti menjadi %0.
 [room map failed]
-
+Peta tidak dapat disiapkan
 [room match label]
-
+Ruang
 [room member joined %0]
-
+%0 bergabung.
 [room member left %0]
-
+%0 keluar.
 [room member ready %0]
-
+%0 sudah siap.
 [room needs two seats]
-
+Undang teman atau tambahkan AI untuk memulai
 [room no map]
-
+Belum ada peta
 [room not ready]
-
+Belum siap
 [room open for a person]
-
+Terbuka untuk orang
 [room open seat detail]
-
+Siapa pun yang punya undangan dapat menempatinya
 [room open seat]
-
+Kursi terbuka
 [room person]
-
+Orang
 [room preparing map]
-
+Menyiapkan peta di server…
 [room public]
-
+Publik
 [room ready?]
-
+Siap
 [room ready]
-
+✓ Siap
 [room remove from room]
-
+Keluarkan dari ruang
 [room rule off]
-
+Nonaktif
 [room rule on]
-
+Aktif
 [room rules changed]
-
+Aturan telah diubah.
 [room rules]
-
+Aturan
 [room say something]
-
+Tulis sesuatu…
 [room seat hint]
-
+Pemain dapat pindah sendiri ke kursi terbuka. Ganti Tim untuk menyeimbangkan.
 [room seat options]
-
+Opsi kursi
 [room seats summary %0 %1 %2]
-
+%0 pemain · %1 AI · %2 terbuka
 [room seats]
-
+Kursi
 [room seed]
-
+Benih
 [room send]
-
+Kirim
 [room set by host]
-
+Diatur oleh hos
 [room share text %0]
-
+Gabung ke ruang Globulation 2 saya: %0
 [room share]
-
+Bagikan…
 [room size]
-
+Ukuran
 [room starting match]
-
+Memulai pertandingan…
 [room take seat]
-
+Ambil kursi
 [room team %0]
-
+Tim %0
 [room update required]
-
+Ruang ini memakai versi permainan lain. Perbarui untuk bergabung.
 [room uploaded map]
-
+Peta unggahan
 [room waiting for %0]
-
+Menunggu %0 siap
 [room waiting for you]
-
+Tekan Siap jika Anda sudah siap
 [room match over]
-
+Pertandingan selesai. Bersiaplah untuk ronde berikutnya!
 [room waiting for host]
-
+Menunggu hos memulai
 [room waiting for players %0]
-
+Menunggu %0 pemain siap
 [room who can find it]
-
+Siapa yang dapat menemukannya
 [room you created]
-
+Anda membuat ruang ini.
 [room you joined %0]
-
+Anda bergabung ke %0.
 [room you were removed]
-
+Hos mengeluarkan Anda dari ruang.
 [room you]
-
+Anda
 [settings Online]
-
+Daring
 [settings Another server]
-
+Server lain
 [settings Check]
-
+Periksa
 [settings Checking…]
-
+Memeriksa…
 [settings Choose which server you play on and how you sign in to it.]
-
+Pilih server tempat Anda bermain dan cara masuk ke server itu.
 [settings Connecting…]
-
+Menghubungkan…
 [settings Could not reach this server.]
-
+Tidak dapat menjangkau server ini.
 [settings Display name saved.]
-
+Nama tampilan disimpan.
 [settings Display name]
-
+Nama tampilan
 [settings Download or delete my data]
-
+Hapus akun saya
 [settings Enter an https:// address.]
-
+Masukkan alamat https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Selesaikan di peramban Anda: ketik kode %0 saat diminta.
 [settings Forget]
-
+Lupakan
 [settings Guests keep a generated name; sign in to choose one.]
-
+Tamu memakai nama buatan otomatis; masuk untuk memilih nama sendiri.
 [settings Link]
-
+Tautkan
 [settings Not a Globulation 2 server.]
-
+Bukan server Globulation 2.
 [settings Not linked]
-
+Belum ditautkan
 [settings Not signed in.]
-
+Belum masuk.
 [settings Open]
-
+Buka
 [settings Opens your account page on %0.]
-
+Membuka halaman akun Anda di %0, tempat Anda dapat menghapusnya.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Dijalankan oleh komunitas, klub, atau Anda sendiri. Tempelkan alamatnya.
 [settings Save]
-
+Simpan
 [settings Server]
-
+Server
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Ditampilkan di ruang, pertandingan, dan papan peringkat. Dapat diubah sekali setiap 30 hari.
 [settings Sign in with: %0 · queues: %1]
-
+Masuk dengan: %0 · antrean: %1
 [settings Sign out on this device]
-
+Keluar di perangkat ini
 [settings Sign out]
-
+Keluar
 [settings Switch to this server]
-
+Pindah ke server ini
 [settings The last sign-in method can't be unlinked.]
-
+Metode masuk terakhir tidak dapat dilepas tautannya.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Server resmi Globulation 2 · antrean berperingkat, papan peringkat, katalog peta
 [settings Unlink]
-
+Lepas tautan
 [settings Unlinking is done on the account page.]
-
+Pelepasan tautan dilakukan di halaman akun.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Anda akan menjadi tamu baru sampai masuk lagi. Akun dan pertandingan Anda tetap tersimpan di server.
 [settings Your account on %0]
-
+Akun Anda di %0
 [settings compatible with this version]
-
+kompatibel dengan versi ini
 [settings connected]
-
+terhubung
 [settings connecting…]
-
+menghubungkan…
 [settings guest]
-
+tamu
 [settings linked]
-
+tertaut
 [settings plays another version]
-
+memakai versi lain
 [settings trusted]
-
+tepercaya
 [settings used before]
-
+pernah dipakai
 [settings you were %0 there]
-
+di sana Anda bernama %0
 [trust invited to room %0]
-
+Diundang ke ruang %0
 [trust join as guest]
-
+Gabung sebagai tamu
 [trust not official]
-
+Server ini tidak dijalankan oleh proyek Globulation 2.
 [trust remember]
-
+Ingat server ini
 [trust separate identity %0]
-
+Anda akan bergabung sebagai tamu di sana. Akun, rating, dan riwayat %0 Anda tetap di tempatnya.
 [trust title]
-
+Gabung permainan di server lain?
 [trust what it sees]
-
+Server dapat melihat nama tampilan Anda, alamat koneksi Anda, dan permainan yang Anda mainkan di sana.
 [settings not connected]
-
+tidak terhubung
 [settings Open Play online to connect.]
-
+Buka Main daring untuk terhubung.
 [hub code]
-
+Kode
 [results draw]
-
+Seri
 [qm 2 vs 2]
-
+2 lawan 2
 [qm 1 vs 1]
-
+1 lawan 1
 [qm ping about]
-
+Ping sekitar
 [qm ranked]
-
+Berperingkat
 [qm casual %0]
-
+Santai %0
 [qm rated]
-
+Berperingkat
 [qm unrated]
-
+Tanpa rating
 [qm solo queue]
-
+antrean solo
 [qm ai joins after %0]
-
+AI bergabung setelah %0
 [qm fair maps %0]
-
+Peta: %0
 [qm cooldown %0]
-
+Anda menolak pertandingan. Anda dapat mencari lagi dalam %0.
 [qm sign in to play ranked]
-
+Antrean berperingkat khusus untuk akun yang sudah masuk; masuk terlebih dahulu.
 [online update required]
-
+Versi permainan ini terlalu lama untuk server; perbarui untuk bermain daring.
 [online server behind]
-
+Server belum diperbarui ke versi ini; permainan daring akan terbuka setelah diperbarui.
 [online version mismatch]
-
+Server memakai versi permainan yang berbeda; permainan daring tidak tersedia dengan salinan ini.
 [qm already searching]
-
+Anda sudah sedang mencari atau berada dalam pertandingan.
 [online connection problem]
-
+Server tidak dapat dijangkau.
 [qm find match]
-
+Cari pertandingan
 [qm opponents rated %0 to %1]
-
+Lawan dengan rating %0 sampai %1
 [qm region %0]
-
+Wilayah %0
 [qm searching]
-
+Mencari
 [qm measuring relays]
-
+Mengukur relai
 [qm joining queue]
-
+Masuk antrean
 [qm waiting for a person]
-
+Menunggu pemain manusia: lawan AI dinonaktifkan.
 [qm ai in %0 rated]
-
+Jika tidak ada yang ditemukan, Anda akan melawan AI dengan rating terdekat dalam %0
 [qm ai in %0]
-
+Jika tidak ada yang ditemukan, AI bergabung dalam %0
 [qm ai after %0]
-
+Jika tidak ada yang ditemukan, AI mengisi kursi setelah %0
 [qm allow ai short]
-
+Izinkan AI
 [qm allow ai]
-
+Izinkan lawan AI
 [qm cancel]
-
+Batal
 [qm cancel search]
-
+Batalkan pencarian
 [qm usual wait %0]
-
+biasanya menunggu %0
 [qm widening]
-
+makin luas selama menunggu
 [qm ais are rated]
-
+(berperingkat: AI juga punya rating)
 [qm opponent declined]
-
+Lawan Anda tidak menerima. Anda kembali ke depan antrean.
 [qm %0 did not accept]
-
+%0 tidak menerima. Anda kembali ke depan antrean.
 [qm start failed]
-
+Pertandingan tidak dapat dimulai. Anda mencari lagi.
 [qm you declined]
-
+Anda menolak pertandingan. Anda dapat mencari lagi setelah menunggu sebentar.
 [qm you did not answer]
-
+Anda tidak menerima tepat waktu. Anda dapat mencari lagi setelah menunggu sebentar.
 [qm search ended]
-
+Pencarian berakhir.
 [qm try again]
-
+Coba lagi
 [online connecting]
-
+Menghubungkan…
 [qm no queues]
-
+Server ini tidak memiliki antrean pertandingan cepat.
 [qm quick match]
-
+Pertandingan cepat
 [qm phone searching note]
-
+Pencarian tetap berjalan meskipun Anda meninggalkan layar ini.
 [qm phone intro]
-
+Pilih antrean di bawah; pencarian berjalan selama Anda menjelajah.
 [qm online]
-
+Daring
 [qm keeps running note]
-
+Pencarian tetap berjalan meskipun Anda meninggalkan layar ini.
 [qm ai]
-
+AI
 [qm provisional]
-
+sementara
 [qm accepted]
-
+✓ diterima
 [qm declined]
-
+ditolak
 [qm waiting]
-
+menunggu…
 [qm ai badge]
-
+AI
 [qm match found]
-
+Pertandingan ditemukan
 [qm playing an ai]
-
+Melawan AI
 [qm vs]
-
+lawan
 [qm ai explanation rated]
-
+Tidak ada pemain dalam rentang rating Anda yang sedang mencari. Anda akan melawan AI dengan rating terdekat; hasilnya dihitung untuk rating Anda dan rating AI.
 [qm ai explanation]
-
+Tidak ada yang sedang mencari. Anda akan melawan AI dengan rating terdekat; permainan ini tanpa rating.
 [qm casual explanation]
-
+Pertandingan langsung dimulai; permainan santai tidak memakai rating.
 [qm accepted button]
-
+Diterima
 [qm accept]
-
+Terima
 [qm decline]
-
+Tolak
 [qm both must accept]
-
+Keduanya harus menerima
 [qm accept explanation]
-
+Kedua pemain harus menerima. Menolak atau membiarkan waktu habis menempatkan Anda di belakang antrean.
 [qm starting in %0]
-
+Dimulai dalam %0…
 [qm preparing match]
-
+Menyiapkan pertandingan…
 [qm match assigned %0 %1]
-
+Pertandingan %0 siap di %1, tetapi build ini belum dapat terhubung ke pertandingan daring.
 [online jan]
-
+Jan
 [online feb]
-
+Feb
 [online mar]
-
+Mar
 [online apr]
-
+Apr
 [online may]
-
+Mei
 [online jun]
-
+Jun
 [online jul]
-
+Jul
 [online aug]
-
+Agu
 [online sep]
-
+Sep
 [online oct]
-
+Okt
 [online nov]
-
+Nov
 [online dec]
-
+Des
 [profile win letter]
-
+M
 [profile loss letter]
-
+K
 [profile draw letter]
-
+S
 [profile history unavailable]
-
+Server ini belum menyediakan riwayat pertandingan.
 [profile downloading replay]
-
+Mengunduh rekaman…
 [profile no replay]
-
+Tidak ada rekaman untuk pertandingan ini.
 [profile room with %0]
-
+Ruang · %0 koloni
 [profile with %0 vs %1]
-
+bersama %0 lawan %1
 [profile vs %0]
-
+lawan %0
 [profile room]
-
+Ruang
 [profile casual]
-
+Santai
 [profile ai filled]
-
+diisi AI
 [profile provisional %0 games]
-
+sementara · %0 permainan
 [profile unrated]
-
+tanpa rating
 [profile checking]
-
+memeriksa…
 [profile %0 min]
-
+%0 mnt
 [profile match page]
-
+Halaman pertandingan
 [profile replay]
-
+Rekaman
 [profile win rate last %0]
-
+Rasio menang, %0 terakhir
 [profile %0 w %1 l %2 d]
-
+%0 M · %1 K · %2 seri
 [profile typical game]
-
+Permainan tipikal
 [profile median length]
-
+median durasi Anda
 [profile best map]
-
+Peta terbaik
 [profile %0 w %1 l]
-
+%0 M · %1 K
 [profile no rated games]
-
+Mainkan pertandingan berperingkat untuk mendapat rating.
 [profile all]
-
+Semua
 [profile rooms]
-
+Ruang
 [profile vs ai]
-
+lawan AI
 [profile matches]
-
+Pertandingan
 [online loading]
-
+Memuat…
 [profile no matches]
-
+Belum ada pertandingan.
 [online load more]
-
+Muat lagi
 [profile title]
-
+Profil
 [profile guest]
-
+tamu
 [profile playing since %0]
-
+bermain sejak %0
 [profile full profile web]
-
+Profil lengkap di web
 [profile replays note]
-
+Rekaman diunduh dari server saat Anda membukanya; rekaman yang Anda simpan secara lokal tetap ada di Muat permainan → Rekaman.
 [profile web profile]
-
+Profil web
 [maps most played]
-
+Paling sering dimainkan
 [maps most liked]
-
+Paling disukai
 [maps newest]
-
+Terbaru
 [maps most downloaded]
-
+Paling banyak diunduh
 [maps any size]
-
+Semua ukuran
 [maps up to 128]
-
+Hingga 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 dan lebih besar
 [maps report broken]
-
+Tidak berfungsi
 [maps report offensive]
-
+Menyinggung
 [maps report copyright]
-
+Karya orang lain
 [maps report other]
-
+Hal lain
 [maps public]
-
+Publik
 [maps unlisted]
-
+Tidak terdaftar
 [maps private]
-
+Pribadi
 [maps cannot read file]
-
+Berkas peta tidak dapat dibaca.
 [maps file too large]
-
+Berkas peta terlalu besar untuk dibagikan.
 [maps saved for next room]
-
+Peta telah diunduh; peta ini akan dipakai saat Anda membuka ruang.
 [maps download failed]
-
+Peta tidak dapat diunduh.
 [maps %0 colonies]
-
+%0 koloni
 [maps version %0]
-
+versi %0
 [maps updated %0]
-
+diperbarui %0
 [maps downloading]
-
+Mengunduh peta…
 [maps like needs account]
-
+Menyukai peta memerlukan akun yang sudah masuk.
 [maps report sent]
-
+Terima kasih; moderator akan memeriksanya.
 [maps select a map]
-
+Pilih peta untuk melihat detailnya.
 [maps by %0]
-
+oleh %0
 [maps stats %0 %1 %2]
-
+▶ %0 kali dimainkan · ⬇ %1 unduhan · ♥ %2
 [maps use in room]
-
+Pakai di ruang
 [maps liked]
-
+Disukai
 [maps like]
-
+Suka
 [maps map page]
-
+Halaman peta
 [maps reported]
-
+Dilaporkan
 [maps report]
-
+Laporkan…
 [maps report why]
-
+Apa masalah peta ini?
 [maps search placeholder]
-
+Cari peta atau pembuat
 [maps none found]
-
+Tidak ada peta yang cocok.
 [maps any colonies]
-
+Semua jumlah koloni
 [maps checking]
-
+Memeriksa…
 [maps no version yet]
-
+Belum ada versi yang diunggah.
 [maps rejected]
-
+Ditolak
 [maps did not load %0]
-
+Peta tidak dapat dimuat: %0
 [maps unknown reason]
-
+tidak ada alasan yang diberikan
 [maps fix and upload again]
-
+perbaiki di editor, lalu unggah lagi
 [maps uploaded just now]
-
+baru saja diunggah
 [maps loading on server]
-
+sedang dimuat di server
 [maps %0 plays]
-
+%0 kali dimainkan
 [maps hidden]
-
+Tersembunyi
 [maps upload again]
-
+Unggah lagi…
 [maps delete]
-
+Hapus
 [maps update]
-
+Perbarui…
 [maps upload a map]
-
+Unggah peta…
 [maps upload hint]
-
+berkas .map dari folder peta Anda atau dari editor
 [maps no maps yet]
-
+Anda belum membagikan peta apa pun.
 [maps my maps]
-
+Peta saya
 [maps my maps %0]
-
+Peta saya (%0)
 [maps browse]
-
+Jelajahi
 [maps title]
-
+Peta
 [maps browse note %0]
-
+Katalog %0 · hanya peta yang dapat dimuat di versi ini yang ditampilkan
 [maps visibility note]
-
+Peta publik muncul di Jelajahi. Peta tidak terdaftar dapat dipakai di ruang Anda dan lewat tautannya. Peta pribadi hanya di ruang Anda sendiri.
 [maps use %0]
-
+Pakai %0
 [maps %0 kb]
-
+%0 KB
 [maps field title]
-
+Judul
 [maps field description]
-
+Deskripsi
 [maps who can use it]
-
+Siapa yang dapat memakainya
 [maps guests unlisted]
-
+Tamu dapat membagikan peta tidak terdaftar dan pribadi; masuk untuk menerbitkan ke Jelajahi.
 [maps visibility help]
-
+Peta tidak terdaftar dapat dipakai di ruang Anda dan lewat tautannya; peta publik juga muncul di Jelajahi.
 [maps new version of %0]
-
+Unggah berkas ini sebagai versi baru dari %0.
 [maps upload]
-
+Unggah
 [maps uploading]
-
+Mengunggah…
 [maps checking detail]
-
+Server sedang memuat peta dan menggambar pratinjaunya. Sampai selesai, peta belum dapat dipakai.
 [maps ready]
-
+Siap
 [maps ready public]
-
+Peta siap dan tercantum di Jelajahi.
 [maps ready unlisted]
-
+Peta siap. Peta tidak terdaftar dapat dipakai di ruang Anda dan lewat tautannya.
 [maps ready private]
-
+Peta siap. Peta pribadi hanya dapat dipakai di ruang Anda sendiri.
 [maps upload failed]
-
+Unggahan gagal
 [maps server read %0 %1]
-
+Server membacanya sebagai %0 dengan %1 koloni.
 [maps continue in background]
-
+Tutup
 [maps upload a map title]
-
+Unggah peta
 [maps update map title]
-
+Perbarui peta
 [maps upload note]
-
+Server memuat setiap unggahan sebelum dapat dipakai.
 [online just now]
-
+baru saja
 [online today %0]
-
+hari ini %0
 [online yesterday]
-
+kemarin
 [online sun]
-
+Min
 [online mon]
-
+Sen
 [online tue]
-
+Sel
 [online wed]
-
+Rab
 [online thu]
-
+Kam
 [online fri]
-
+Jum
 [online sat]
-
+Sab
 [online %0 weeks ago]
-
+%0 minggu lalu
 [online %0 months ago]
-
+%0 bulan lalu
 [online %0 years ago]
-
+%0 tahun lalu
 [maps share online]
-
+Bagikan daring…
 [maps mine]
-
+Milik saya
 [results waiting for players]
-
+Menunggu pemain lain keluar…
 [results waiting detail]
-
+Hasil dicatat setelah semua pemain keluar dari pertandingan.
 [results waiting slow]
-
+Pemain yang koneksinya terputus punya waktu hingga 3 menit untuk kembali. Hasilnya akan muncul di riwayat Anda dan di halaman pertandingan.
 [results verifying slow]
-
+Verifikasi memakan waktu lebih lama dari biasanya. Hasilnya akan muncul di riwayat Anda dan di halaman pertandingan.
 [results rematch]
-
+Tanding ulang
 [results join rematch %0]
-
+Gabung tanding ulang %0
 [hub profile history]
-
+Profil & riwayat
 [hub my maps]
-
+Peta saya
 [hub leaderboard %0]
-
+Papan peringkat · %0
 [hub leaderboard empty]
-
+Belum ada pemain berperingkat.
 [hub guests not ranked]
-
+Tamu tidak diberi peringkat. Masuk untuk tampil di sini.
 [hub full leaderboard]
-
+Papan peringkat lengkap
 [settings %0 is no longer linked.]
-
+%0 tidak lagi tertaut.
 [room map read failed]
-
+Berkas peta ini tidak dapat dibaca.
 [room map upload failed]
-
+Peta tidak dapat dibagikan ke ruang.
 [room map upload failed %0]
-
+Peta tidak dapat dibagikan ke ruang: %0
 [room uploading map]
-
+Membagikan peta ke ruang…
 [room premade map shared]
-
+Semua pemain di ruang memainkan berkas peta ini; peta diunduh sebelum pertandingan.
 [room take a seat to play]
-
+Ambil kursi terbuka untuk bermain
 [room waiting for a seat]
-
+Semua kursi terisi. Anda dapat mengambil kursi saat ada yang kosong.
 [room not seated]
-
+Belum duduk
 [room copied]
-
+Tersalin
 [room copy failed]
-
+Tidak dapat menyalin
 [room closed title]
-
+Ruang ditutup
 [room removed title]
-
+Dikeluarkan dari ruang
 [room back to online]
-
+Kembali ke daring
 [leave match]
-
+Tinggalkan pertandingan
 [leave match title]
-
+Tinggalkan pertandingan ini?
 [leave lan title]
-
+Tinggalkan permainan LAN ini?
 [leave rated body]
-
+Anda kalah dalam pertandingan berperingkat ini dan rating Anda turun. Pemain lain tetap bermain, dan Anda tidak dapat kembali.
 [leave casual body]
-
+Pertandingan cepat ini dihitung sebagai kekalahan bagi Anda. Pemain lain tetap bermain, dan Anda tidak dapat kembali.
 [leave room body]
-
+Anda meninggalkan pertandingan ruang dan ini dihitung sebagai kekalahan di riwayat Anda. Pemain lain tetap bermain, dan Anda tidak dapat kembali.
 [leave lan body]
-
+Pemain lain tetap bermain tanpa Anda, dan Anda tidak dapat kembali ke permainan ini.
 [leave match confirm]
-
+Tinggalkan
 [keep playing]
-
+Terus bermain
 [results team]
-
+Tim
 [results quick unrated]
-
+Pertandingan cepat · tanpa rating
 [conn card cannot keep up]
-
+Perangkat Anda tidak dapat mengikuti pertandingan ini
 [conn card cannot keep up body]
-
+Perangkat memutar ulang pertandingan lebih lambat daripada jalannya pertandingan, jadi tidak akan bisa mengejar. Anda dapat meninggalkan pertandingan, atau menurunkan pengaturan grafis dan terus menunggu.
 [conn card not gaining]
-
+tidak bertambah dekat
 [results reason opponents left]
-
+Lawan Anda meninggalkan pertandingan.
 [results reason victory]
-
+Semua koloni lawan telah dikalahkan.
 [results reason defeat]
-
+Koloni Anda telah dikalahkan.
 [results reason you left]
-
+Anda meninggalkan pertandingan. Ini dihitung sebagai kekalahan.
 [results final after end]
-
+Hasil akhir setelah pertandingan berakhir.
 [pause none left]
-
+Jatah jeda habis
 [pause game left %0]
-
+Jeda permainan (sisa %0)
 [pause by %0]
-
+Dijeda oleh %0
 [pause by %0 resumes in %1]
-
+Dijeda oleh %0 · lanjut dalam %1
 [turn too many actions]
-
+Terlalu banyak tindakan: sebagian masih menunggu dikirim
 [turn no pauses left]
-
+Jatah jeda Anda di pertandingan ini sudah habis
 [turn pause time used %0]
-
+%0 telah memakai seluruh waktu jedanya: permainan dilanjutkan
 [room seats one person %0 %1]
-
+1 pemain · %0 AI · %1 terbuka
 [room rules otherwise standard]
-
+Semua aturan lain sama seperti Standar.
 [room browser link]
-
+Tautan untuk pemain peramban
 [room browser link hint]
-
+Pemain di peramban menempelkan tautan ini untuk bergabung.
 [room browser link code %0]
-
+Pemain di peramban menempelkan tautan ini untuk bergabung. Permainan mereka menampilkan kode %0.
 [room copy link]
-
+Salin tautan
 [room lan open seat detail]
-
+Siapa pun di jaringan ini dapat menempatinya
 [room close title]
-
+Tutup ruang?
 [room close body one]
-
+Keluar akan menutup ruang untuk semua orang, termasuk satu pemain lain di dalamnya.
 [room close body %0]
-
+Keluar akan menutup ruang untuk semua orang, termasuk %0 pemain lain di dalamnya.
 [room close confirm]
-
+Tutup ruang
 [room stay]
-
+Tetap di sini
 [room colours changed]
-
+Peta baru memberi warna baru pada kursi. Periksa warna Anda sebelum mulai.
 [room copy by hand]
-
+Penyalinan gagal. Salin undangan secara manual:
 [room copy by hand close]
-
+Tutup
 [room copy by hand touch]
-
+Sentuh dan tahan tautan, lalu pilih Salin.
 [room copy by hand keys]
-
+Tautan sudah dipilih: tekan Ctrl+C (⌘C di Mac).
 [room code]
-
+Kode
 [online under a minute]
-
+kurang dari semenit
 [online about %0 min]
-
+sekitar %0 mnt
 [online %0 s]
-
+%0 dtk
 [online %0 min %1 s]
-
+%0 mnt %1 dtk
 [qm ai opponent %0]
-
+Lawan AI: %0
 [match relay connected]
-
+Terhubung ke server permainan
 [room picker title]
-
+Pilih peta
 [room picker for one]
-
+Untuk 1 pemain di ruang
 [room picker for %0]
-
+Untuk %0 pemain di ruang
 [room picker generated]
-
+Buatan
 [room picker premade]
-
+Siap pakai
 [room picker catalog]
-
+Katalog
 [room picker size]
-
+Ukuran
 [room picker colonies]
-
+Koloni
 [room picker fair]
-
+Awal yang adil untuk setiap koloni
 [room picker does not fit]
-
+Tidak muat di ukuran ini; coba yang lain
 [room picker preparing]
-
+Menyiapkan pratinjau…
 [room picker generated note]
-
+Setiap lanskap memberi semua koloni awal yang sama baiknya, dan server membuat peta yang sama untuk semua pemain.
 [room picker players %0]
-
+%0 pemain
 [room picker unreadable]
-
+tidak dapat dibaca
 [room picker no premade]
-
+Tidak ditemukan peta siap pakai.
 [room picker too small %0]
-
+Peta ini punya lebih sedikit koloni daripada %0 pemain di ruang.
 [room picker pick premade]
-
+Pilih peta untuk melihatnya di sini.
 [room picker catalog intro]
-
+Peta yang dibagikan pemain lain. Buka salah satu dan pilih Pakai di ruang.
 [room picker browse catalog]
-
+Jelajahi peta bersama
 [room picker more options]
-
+Opsi lainnya…
 [room picker use]
-
+Pakai peta ini
 [room map ready title %0]
-
+Mainkan %0
 [room map ready unnamed]
-
+peta ini
 [room map ready body]
-
+Buat ruang dan undang teman Anda: ruang itu memainkan peta ini.
 [game draw]
-
+Seri
 [settings Show colony skins]
-Tampilkan tampilan koloni
+Tampilkan corak koloni
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Nonaktifkan untuk menggunakan unit, kawanan, dan warna bangunan klasik di perangkat ini.
+Nonaktifkan untuk memakai unit, sarang, dan warna bangunan klasik di perangkat ini.
 [settings Hive Mind]
-
+Pikiran Kawanan
 [settings Enable commander shortcuts]
-
+Aktifkan pintasan komandan
 [settings Command your colony without opening a menu.]
-
+Perintahkan koloni Anda tanpa membuka menu.
 [settings Allow supervision for new commands]
-
+Izinkan pengawasan untuk perintah baru
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Komandan dapat menindaklanjuti perintah tetap. Tindak lanjut memakai kredit; perintah yang sudah terpasang tetap berjalan tanpa kredit.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Pintasan bawaan: Ctrl+Enter untuk memberi perintah; Ctrl+Shift+Enter untuk menghentikan kerja komandan. Ubah di Kontrol. Kartu perintah tetap memiliki kontrol jeda dan batal tersendiri.
 [settings Commander account and credits]
-
+Akun dan kredit komandan
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Kelola kredit dan pembelian di peramban Anda. Bantuan komandan diizinkan dalam permainan berperingkat.
 [open commander]
-
+Buka komandan
 [stop commander]
-
+Hentikan komandan
 [settings Recording]
-
+Perekaman
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Rekam permainan Anda sebagai video MP4 bersuara. Perekaman memerlukan FFmpeg dengan enkoder libx264 dan AAC.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+FFmpeg siap.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg tidak tersedia, jadi perekaman dinonaktifkan. Pasang FFmpeg dan pastikan ada di PATH Anda, lalu periksa lagi.
 [settings Check for FFmpeg again]
-
+Periksa FFmpeg lagi
 [settings Checking for FFmpeg…]
-
+Memeriksa FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Tombol pintas: %0. Juga berfungsi di menu dan editor.
 [settings Change the hotkey]
-
+Ubah tombol pintas
 [settings Recordings are saved in %0]
-
+Rekaman disimpan di %0
 [toggle recording]
-
+Mulai atau hentikan perekaman
 [File selection is unavailable.]
-
+Pemilihan berkas tidak tersedia.
 [Saving custom AI…]
-
+Menyimpan AI kustom…
 [Could not read the selected JavaScript file.]
-
+Berkas JavaScript yang dipilih tidak dapat dibaca.
 [Custom AI library saved.]
-
+Pustaka AI kustom disimpan.
 [Storage could not be saved. The previous library is retained.]
-
+Penyimpanan gagal. Pustaka sebelumnya tetap dipertahankan.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Impor satu berkas AI JavaScript, lalu pilih saat menyiapkan permainan lokal.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Impor menyimpan salinan di Glob2. Perbarui mengganti salinan itu untuk permainan berikutnya; simpanan tetap memakai AI aslinya.
 [Waiting for file selection or storage…]
-
+Menunggu pemilihan berkas atau penyimpanan…
 [Import JavaScript AI]
-
+Impor AI JavaScript
 [Link development file]
-
+Tautkan berkas pengembangan
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Berkas tertaut dibaca saat permainan dimulai. Bangun ulang sebelum memulai permainan baru. Menghapus tautan tidak pernah menghapus berkas Anda.
 [Example AI and authoring guide]
-
+Contoh AI dan panduan pembuatan
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Belum ada AI kustom. Impor berkas .js yang sudah dibundel untuk memulai.
 [Relink]
-
+Tautkan ulang
 [Update]
-
+Perbarui
 [Validate]
-
+Validasi
 [AI startup and persistent globals are valid.]
-
+Proses awal AI dan variabel global persisten valid.
 [Remove from library]
-
+Hapus dari pustaka
 [AI telemetry]
-
+Telemetri AI
 [No accessible AI telemetry.]
-
+Tidak ada telemetri AI yang dapat diakses.
 [Search fields]
-
+Cari kolom
 [Telemetry unavailable for this recording or controller.]
-
+Telemetri tidak tersedia untuk rekaman atau pengendali ini.
 [Linked]
-
+Tertaut
 [Imported]
-
+Diimpor
 [Player]
-
+Pemain
 [Updated at tick %0]
-
+Diperbarui pada langkah %0
 [No values published yet.]
-
+Belum ada nilai yang diterbitkan.
 [No fields match your search.]
-
+Tidak ada kolom yang cocok dengan pencarian Anda.
 [settings Custom AIs]
-
+AI kustom
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Tambahkan AI JavaScript di Pengaturan → AI kustom. AI tersebut muncul di pemilih AI setiap koloni.
 [Missing custom AI]
-
+AI kustom tidak ditemukan
 [Map repetition failed]
-
+Peta ini tidak dapat diulang. Gunakan peta awal tanpa skrip, atau kurangi pengulangan dan markas.
 [repeat map horizontally]
 Ulangi peta secara horizontal
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ markas
 [bases per colony]
 Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beserta bangunan dan unitnya
 [stat group population]
-
+Populasi
 [stat group food]
-
+Makanan dan kesejahteraan
 [stat group resources]
-
+Sumber daya
 [stat group buildings]
-
+Bangunan
 [stat group military]
-
+Militer
 [stat group map]
-
+Wilayah
 [stat group score]
-
+Skor
 [stat overview]
-
+Ringkasan
 [stat overview about]
-
+Angka setiap koloni untuk seluruh pertandingan. Nilai tertinggi disorot jika lebih banyak berarti lebih baik; klik judul kolom untuk melihat perubahannya dari waktu ke waktu.
 [stat population]
-
+Populasi
 [stat population about]
-
+Berapa banyak unit koloni yang hidup: pekerja, penjelajah, dan prajurit sekaligus.
 [stat births]
-
+Unit lahir
 [stat births about]
-
+Seberapa cepat sarang menghasilkan unit baru. Pisahkan untuk melihat pekerja, penjelajah, dan prajurit secara terpisah.
 [stat deaths]
-
+Unit hilang
 [stat deaths about]
-
+Seberapa cepat koloni kehilangan unit, apa pun penyebabnya: pertempuran, kelaparan, cedera saat membersihkan, atau terjebak.
 [stat net growth]
-
+Pertumbuhan populasi
 [stat net growth about]
-
+Unit lahir dikurangi unit hilang. Di atas nol koloni bertumbuh; di bawah nol koloni menyusut.
 [stat death causes]
-
+Penyebab kematian
 [stat death causes about]
-
+Penyebab kematian unit koloni: pertempuran, kelaparan, cedera saat membersihkan sumber daya, terjebak tanpa jalan keluar, atau sebab lain.
 [stat conversions]
-
+Konversi bersih
 [stat conversions about]
-
+Unit yang direbut dari koloni lain dikurangi unit yang direbut koloni lain. Unit berpindah pihak jika koloni lain memberi mereka makan lebih baik.
 [stat hunger]
-
+Cadangan makanan
 [stat hunger about]
-
+Berapa banyak makanan yang tersimpan di dalam tubuh unit koloni. Setiap unit digolongkan menurut sisa cadangan makanannya: hampir habis (seperempat atau kurang), rendah (hingga setengah), setengah penuh (hingga tiga perempat), atau kenyang. Unit mencari penginapan saat cadangannya menipis, jadi koloni selalu punya beberapa unit yang cadangannya rendah.
 [stat health]
-
+Kesehatan
 [stat health about]
-
+Seberapa sehat unit koloni. Setiap unit digolongkan menurut sisa HP-nya: kritis (seperempat atau kurang), terluka (hingga setengah), cedera ringan (hingga tiga perempat), atau sehat.
 [stat seeking food]
-
+Unit mencari makanan
 [stat seeking food about]
-
+Unit yang berhenti bekerja untuk mencari penginapan. Unit yang juga tidak dalam kesehatan penuh dihitung sebagai melemah.
 [stat in care]
-
+Unit makan atau dirawat
 [stat in care about]
-
+Unit yang sedang makan di penginapan atau dirawat di rumah sakit, sehingga tidak bekerja.
 [stat wheat harvested]
-
+Gandum dipanen
 [stat wheat harvested about]
-
+Muatan gandum yang dipetik pekerja. Gandum diolah penginapan menjadi makanan.
 [stat wheat stored]
-
+Gandum tersimpan
 [stat wheat stored about]
-
+Gandum yang ada di bangunan koloni, siap disajikan atau dipakai.
 [stat meals]
-
+Makanan disajikan
 [stat meals about]
-
+Porsi makanan yang disajikan penginapan koloni, untuk unitnya sendiri dan untuk pengunjung dari koloni lain.
 [stat starvation]
-
+Mati kelaparan
 [stat starvation about]
-
+Unit yang mati karena tidak menemukan makanan tepat waktu.
 [stat healing]
-
+Kesehatan dipulihkan
 [stat healing about]
-
+HP yang dikembalikan rumah sakit koloni kepada unit yang terluka.
 [stat gathered]
-
+Sumber daya dikumpulkan
 [stat gathered about]
-
+Muatan setiap sumber daya yang diambil pekerja. Pisahkan untuk melihat tiap sumber daya.
 [stat stored]
-
+Sumber daya tersimpan
 [stat stored about]
-
+Sumber daya yang ada di bangunan koloni. Pisahkan untuk melihat tiap sumber daya.
 [stat spending]
-
+Penggunaan sumber daya
 [stat spending about]
-
+Ke mana sumber daya yang diantar digunakan: makanan, unit baru, amunisi menara, bangunan baru, atau peningkatan.
 [stat delivered]
-
+Sumber daya diantar
 [stat delivered about]
-
+Muatan yang dibawa pekerja ke dalam bangunan.
 [stat traded]
-
+Perdagangan bersih
 [stat traded about]
-
+Sumber daya yang diterima lewat pasar dikurangi sumber daya yang diberikan.
 [stat buildings]
-
+Bangunan berdiri
 [stat buildings about]
-
+Bangunan jadi yang dimiliki koloni. Pisahkan untuk melihat tiap jenis bangunan.
 [stat construction]
-
+Pekerjaan bangunan selesai
 [stat construction about]
-
+Pekerjaan bangunan yang selesai: bangunan baru, peningkatan, dan perbaikan.
 [stat buildings lost]
-
+Bangunan hilang
 [stat buildings lost about]
-
+Bangunan yang dihancurkan musuh atau dibongkar oleh koloni sendiri.
 [stat blocked buildings]
-
+Bangunan tanpa jalan masuk
 [stat blocked buildings about]
-
+Bangunan yang pintu masuknya terhalang, sehingga unit tidak bisa masuk atau keluar.
 [stat attack]
-
+Kekuatan serang
 [stat attack about]
-
+Skor gabungan kekuatan tempur prajurit koloni: seberapa keras dan seberapa cepat mereka memukul.
 [stat defence]
-
+Kekuatan pertahanan
 [stat defence about]
-
+Skor gabungan daya tembak menara pertahanan koloni.
 [stat hit points]
-
+Total HP
 [stat hit points about]
-
+HP seluruh unit dan bangunan koloni dijumlahkan.
 [stat damage dealt]
-
+Kerusakan diberikan
 [stat damage dealt about]
-
+Kerusakan yang ditimbulkan koloni pada unit dan bangunan musuh. Pisahkan untuk melihat prajurit, sihir, dan menara.
 [stat damage taken]
-
+Kerusakan diterima
 [stat damage taken about]
-
+Kerusakan yang ditimbulkan musuh pada unit dan bangunan koloni.
 [stat damage traded]
-
+Neraca kerusakan
 [stat damage traded about]
-
+Kerusakan diberikan dikurangi kerusakan diterima. Di atas nol berarti koloni memenangi pertempurannya.
 [stat combat deaths]
-
+Unit tewas dalam pertempuran
 [stat combat deaths about]
-
+Unit koloni ini yang dibunuh musuh. Pisahkan untuk melihat pekerja, penjelajah, dan prajurit secara terpisah.
 [stat accuracy]
-
+Tembakan kena
 [stat accuracy about]
-
+Bagian tembakan dari menara dan penjelajah koloni yang mengenai sasaran.
 [stat training]
-
+Pelatihan
 [stat training about]
-
+Kunjungan unit ke sekolah, barak, lintasan lari, dan kolam renang untuk mempelajari keterampilan.
 [stat skills]
-
+Keterampilan diperoleh
 [stat skills about]
-
+Tingkat keterampilan yang diperoleh unit koloni melalui pelatihan.
 [stat growth nearby]
-
+Pertumbuhan sumber daya dekat koloni
 [stat growth nearby about]
-
+Seberapa banyak gandum, kayu, dan sumber daya lain tumbuh dalam jarak 32 petak dari bangunan koloni, dalam poin pertumbuhan, bukan muatan. Pisahkan untuk melihat seberapa dekat dari markas sumber daya itu tumbuh.
 [stat growth map]
-
+Pertumbuhan sumber daya di seluruh peta
 [stat growth map about]
-
+Seberapa banyak sumber daya tumbuh di mana pun di peta, dalam poin pertumbuhan, bukan muatan. Nilainya sama untuk setiap koloni.
 [stat stranded]
-
+Unit tidak bisa bergerak
 [stat stranded about]
-
+Unit yang terkurung tanpa petak kosong untuk dipijak.
 [stat cleared]
-
+Sumber daya dibersihkan
 [stat cleared about]
-
+Sumber daya yang disingkirkan pekerja di area pembersihan untuk membuka ruang.
 [stat prestige]
-
+Prestise
 [stat prestige about]
-
+Prestise koloni, diperoleh dari bangunan tingkat tertinggi. Pertandingan dengan target prestise berakhir saat target tercapai.
 [stat band combat]
-
+Pertempuran
 [stat band starvation]
-
+Kelaparan
 [stat band clearing]
-
+Cedera membersihkan
 [stat band trapped]
-
+Terjebak
 [stat band other]
-
+Lainnya
 [stat band starving]
-
+Hampir habis
 [stat band hungry]
-
+Rendah
 [stat band peckish]
-
+Setengah penuh
 [stat band fed]
-
+Kenyang
 [stat band critical]
-
+Kritis
 [stat band wounded]
-
+Terluka
 [stat band hurt]
-
+Cedera ringan
 [stat band healthy]
-
+Sehat
 [stat band weakening]
-
+Melemah
 [stat band looking]
-
+Mencari penginapan
 [stat band eating]
-
+Makan
 [stat band healing]
-
+Dirawat
 [stat band meals]
-
+Makanan
 [stat band new units]
-
+Unit baru
 [stat band ammunition]
-
+Amunisi
 [stat band construction]
-
+Bangunan baru
 [stat band upgrades]
-
+Peningkatan
 [stat band built]
-
+Dibangun
 [stat band upgraded]
-
+Ditingkatkan
 [stat band repaired]
-
+Diperbaiki
 [stat band destroyed]
-
+Dihancurkan
 [stat band demolished]
-
+Dibongkar
 [stat band melee]
-
+Prajurit
 [stat band magic]
-
+Sihir
 [stat band towers]
-
+Menara
 [stat band within 8]
-
+Dalam 8 petak
 [stat band 8 to 16]
-
+8 hingga 16 petak
 [stat band 16 to 32]
-
+16 hingga 32 petak
 [stat unit units]
-
+unit
 [stat unit wheat]
-
+gandum
 [stat unit meals]
-
+porsi makanan
 [stat unit hit points]
-
+HP
 [stat unit resources]
-
+sumber daya
 [stat unit buildings]
-
+bangunan
 [stat unit strength]
-
+skor
 [stat unit damage]
-
+kerusakan
 [stat unit shots]
-
+tembakan
 [stat unit visits]
-
+kunjungan
 [stat unit skills]
-
+tingkat keterampilan
 [stat unit prestige]
-
+prestise
 [stat axis percent of %0]
-
+% dari %0
 [stat axis share of all teams]
-
+% dari semua koloni
 [stat axis percent of units]
-
+% dari unit koloni
 [stat axis %0 per minute per 100 units]
-
+%0 per menit, per 100 unit di koloni
 [stat axis %0 per 100 units]
-
+%0 per 100 unit di koloni
 [stat axis %0 per minute]
-
+%0 per menit
 [stat axis %0 so far]
-
+%0, total berjalan
 [stat axis %0 minute average]
-
+Rata-rata %0 menit
 [stat view per minute]
-
+Per menit
 [stat view total]
-
+Jumlah
 [stat view %0 min]
-
+%0 mnt
 [stat view split]
-
+Pisah per jenis
 [stat view percentages]
-
+Sebagai % dari total
 [stat view percent of units]
-
+Sebagai % dari koloni
 [stat view per 100 units]
-
+Relatif terhadap ukuran koloni
 [stat view share]
-
+Bagian dari semua koloni
 [stat view highlight none]
-
+Sorot: tidak ada
 [stat column peak units]
-
+Unit puncak
 [stat column born]
-
+Lahir
 [stat column lost]
-
+Hilang
 [stat column wheat]
-
+Gandum
 [stat column damage dealt]
-
+Kerusakan diberikan
 [stat column damage taken]
-
+Kerusakan diterima
 [stat column built]
-
+Dibangun
 [stat column buildings lost]
-
+Bangunan hilang
 [stat column prestige]
-
+Prestise
 [stat marker wiped out]
-
+unit terakhir hilang
 [stat marker first combat death]
-
+unit pertama tewas dalam pertempuran
 [stat marker first building destroyed]
-
+bangunan pertama hancur
 [stat not recorded for this match]
-
+Statistik ini tidak dicatat untuk pertandingan ini.
 [results reason beyond doubt]
-
+Hasilnya sudah tidak diragukan lagi.
 [stat per minute short]
-
+/mnt
 [stat page colony]
-
+Koloni
 [stat page %0 of %1]
-
+%0/%1  >
 [stat band workers]
-
+Pekerja
 [stat band explorers]
-
+Penjelajah
 [stat band warriors]
-
+Prajurit
 [stat unit deaths]
-
+kematian
 [stat unit growth]
-
+pertumbuhan
 [stat view by unit type]
-
+Per jenis unit
 [stat view by state]
-
+Per keadaan
 [stat view by resource]
-
+Per sumber daya
 [stat view by building]
-
+Per bangunan
 [stat view by work]
-
+Per jenis pekerjaan
 [stat view by cause]
-
+Per penyebab
 [stat view by weapon]
-
+Per senjata
 [stat view by distance]
-
+Per jarak
 [stat nothing to show]
-
+Tidak ada yang ditampilkan: hal ini tidak terjadi di pertandingan ini.
 [stat %0 nothing]
-
+%0 (tidak ada)
 [Match]
-
+Pertandingan
 [Time limit]
-
+Batas waktu
 [Alliances can change]
-
+Aliansi dapat berubah
 [Reveal terrain]
-
+Ungkap medan
 [Starting unit level]
-
+Tingkat unit awal
 [Starting stockpile]
-
+Persediaan awal
 [Regrowth]
-
+Pertumbuhan kembali
 [Building strength]
-
+Kekuatan bangunan
 [Wounded units retreat]
-
+Unit terluka mundur
 [Units can die]
-
+Unit dapat mati
 [Unit training]
-
+Pelatihan unit
 [No stockpile]
-
+Tidak ada
 [No glass cannon]
-
+Nonaktif
 [How quickly harvested resources grow back and spread.]
-
+Seberapa cepat sumber daya yang dipanen tumbuh kembali dan menyebar.
 [Units must eat to keep working.]
-
+Unit harus makan agar tetap bekerja.
 [Summary]
-
+Ringkasan
 [All rules]
-
+Semua aturan
 [Show all rules]
-
+Tampilkan semua aturan
 [Choose a ruleset]
-
+Pilih set aturan
 [Reset to %0]
-
+Kembalikan ke %0
 [ruleset one change %0]
-
+%0 + 1 perubahan
 [ruleset changes %0 %1]
-
+%0 + %1 perubahan
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Pertandingan ini tidak dapat berakhir. Aktifkan kemenangan prestise atau tetapkan batas waktu.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Prestise biasanya muncul setelah 13 hingga 28 menit, jadi batas 30 menit sering berakhir seri.
 [Blitz]
-
+Kilat
 [ruleset blitz description]
-
+Mulai cepat, selesai lebih awal
 [Gentle]
-
+Ringan
 [ruleset gentle description]
-
+Aturan lunak untuk pertandingan pertama
 [Sandbox]
-
+Bebas
 [ruleset sandbox description]
-
+Tanpa pertempuran, tanpa kelaparan, bangun apa saja
 [Bloodbath]
-
+Banjir darah
 [ruleset bloodbath description]
-
+Pasukan rapuh tapi tak kenal takut
 [Siege]
-
+Pengepungan
 [ruleset siege description]
-
+Tembok benteng dan perang panjang
 [Lean years]
-
+Masa paceklik
 [ruleset lean years description]
-
+Sumber daya hampir tidak tumbuh kembali
 [Gold rush]
-
+Demam emas
 [ruleset gold rush description]
-
+Yang ada di peta hanya itu saja
 [Elite ranks]
-
+Pasukan elite
 [ruleset elite ranks description]
-
+Mulai terlatih, tanpa pelatihan lanjutan
 [Shifting alliances]
-
+Aliansi berubah-ubah
 [ruleset shifting alliances description]
-
+Tim dapat berganti dalam balapan 60 menit
 [Probability victory]
-
+Kemenangan berdasarkan peluang
 [Off (play it out)]
-
+Nonaktif (main sampai tuntas)
 [95% sure]
-
+95% yakin
 [97% sure]
-
+97% yakin
 [99% sure]
-
+99% yakin
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Mengakhiri pertandingan saat model mencapai tingkat keyakinan yang dipilih. Penonton dapat melihat prediksi peluang menang di statistik.
 [Changed from %0: %1]
-
+Diubah dari %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Pertempuran nonaktif, jadi aturan di bawah tidak berpengaruh.
 [%0 more rules are at their Standard values.]
-
+%0 aturan lain memakai nilai Standar.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Pemain melihat medan peta sejak awal; unit musuh tetap tersembunyi.
 [Each team starts with extra resources in its shared pool.]
-
+Setiap tim mulai dengan sumber daya tambahan di persediaan bersamanya.
 [Units hit harder but have less HP and armor.]
-
+Unit memukul lebih keras tetapi HP dan zirahnya lebih sedikit.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Tim dapat saling menyerang. Nonaktifkan untuk pertandingan damai.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Unit yang terluka kembali untuk dirawat alih-alih bertarung sampai mati.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Unit mati saat HP-nya habis. Nonaktifkan agar berhenti di 1 HP.
 [Units gain levels at schools.]
-
+Unit naik tingkat di sekolah.
 [stat group work]
-
+Waktu pekerja
 [stat worker time]
-
+Penggunaan waktu pekerja
 [stat worker time about]
-
+Apa yang dilakukan pekerja koloni dari waktu ke waktu: bekerja untuk bangunan, bekerja di bendera, berlatih, makan, dirawat, menunggu dalam keadaan lapar atau terluka tanpa penginapan atau rumah sakit yang kosong, atau menganggur tanpa pekerjaan. Koloni yang sehat membuat sebagian besar pekerjanya bekerja, sedikit yang menganggur, dan tidak ada yang menunggu.
 [stat idle workers]
-
+Pekerja menganggur
 [stat idle workers about]
-
+Bagian waktu pekerja yang dihabiskan tanpa pekerjaan. Nilai tinggi berarti pekerja lebih banyak daripada pekerjaan; mendekati nol berarti semua pekerja sibuk dan mungkin ada pekerjaan yang menunggu.
 [stat work by job]
-
+Apa yang dikerjakan pekerja
 [stat work by job about]
-
+Berapa banyak pekerja yang memasok tiap jenis bangunan: sarang (untuk membuat unit baru), penginapan (untuk membuat makanan), bangunan yang sedang dibangun atau ditingkatkan, atau bangunan lain seperti menara, sekolah, dan barak.
 [stat haul distance]
-
+Jarak ke sumber daya
 [stat haul distance about]
-
+Rata-rata jarak pekerja yang memanen dari bangunan yang dipasoknya, dalam petak peta secara garis lurus.
 [stat hauling]
-
+Mengambil dan membawa
 [stat hauling about]
-
+Pembagian pekerja yang memasok bangunan antara berjalan ke sumber daya, memanennya, membawanya kembali, dan mengantarkannya atau menunggu sumber daya yang dapat dijangkau. Sebagian besar waktunya untuk berjalan, jadi makin dekat sumber daya, makin banyak yang terselesaikan.
 [stat eating time]
-
+Pekerja pergi makan
 [stat eating time about]
-
+Berapa banyak pekerja yang meninggalkan pekerjaan untuk makan: berjalan ke penginapan, makan di dalamnya, atau lapar tanpa penginapan yang dapat menampungnya. Pekerja tanpa penginapan berarti koloni sudah terlalu besar untuk penginapan atau makanannya.
 [stat inn distance]
-
+Jarak dari penginapan
 [stat inn distance about]
-
+Rata-rata jarak pekerja yang lapar selama perjalanan dari penginapan yang dituju, dalam petak peta secara garis lurus. Satu perjalanan penuh kira-kira dua kali angka ini. Nilai tinggi berarti penginapan jauh dari tempat pekerja bekerja.
 [stat warriors]
-
+Prajurit
 [stat warriors about]
-
+Berapa banyak prajurit yang dimiliki koloni. Pisahkan untuk melihat berapa yang berada dekat markas, dekat koloni musuh, atau di area terbuka. Area yang dekat dengan kedua koloni dihitung sebagai markas.
 [stat warrior level]
-
+Rata-rata tingkat serang prajurit
 [stat warrior level about]
-
+Rata-rata tingkat serang prajurit koloni, menghitung kecepatan serang dan kekuatan serang secara setara, pada skala 1 sampai 4 yang ditampilkan permainan. Barak menaikkannya; prajurit baru yang belum terlatih menurunkannya.
 [stat warrior duties]
-
+Apa yang dilakukan prajurit
 [stat warrior duties about]
-
+Pembagian prajurit koloni antara yang dikirim ke bendera perang, yang terluka parah sehingga meninggalkan pertempuran menuju rumah sakit (termasuk yang sedang dirawat), dan yang bebas.
 [stat intruders]
-
+Prajurit musuh di markas
 [stat intruders about]
-
+Berapa banyak prajurit musuh dalam jarak 16 petak dari bangunan koloni. Jika dua koloni berdekatan, masing-masing menghitung pembela koloni lainnya.
 [stat home defence]
-
+Selisih kekuatan pertahanan markas
 [stat home defence about]
-
+Kekuatan prajurit koloni sendiri di dekat bangunannya dikurangi kekuatan prajurit musuh di sana, menghitung setiap prajurit dan setiap tingkat serangnya. Di bawah nol berarti koloni kalah kuat di markasnya.
 [stat combat death places]
-
+Tempat unit gugur dalam pertempuran
 [stat combat death places about]
-
+Lokasi unit koloni saat terbunuh: dekat bangunannya sendiri, dekat bangunan musuh, atau di area terbuka di antara koloni. Kerugian di markas berarti koloni sedang diserang; kerugian di koloni musuh berarti koloni sedang menyerang. Area yang dekat dengan kedua koloni dihitung sebagai markas.
 [stat band working]
-
+Bekerja
 [stat band flag work]
-
+Di bendera
 [stat band idle]
-
+Menganggur
 [stat band training]
-
+Berlatih
 [stat band unserved]
-
+Tak ada penginapan/rumah sakit kosong
 [stat band swarms]
-
+Sarang
 [stat band inns]
-
+Penginapan
 [stat band sites]
-
+Membangun dan meningkatkan
 [stat band other buildings]
-
+Bangunan lain
 [stat band to resource]
-
+Berjalan ke sumber daya
 [stat band harvesting]
-
+Memanen
 [stat band carrying]
-
+Membawa kembali
 [stat band delivering]
-
+Mengantar atau menunggu
 [stat band walking to inn]
-
+Berjalan ke penginapan
 [stat band no inn]
-
+Tak ada penginapan kosong
 [stat band at home]
-
+Di markas
 [stat band at enemy]
-
+Di koloni musuh
 [stat band in the open]
-
+Di area terbuka
 [stat band war flag]
-
+Di bendera perang
 [stat band seeking healing]
-
+Mencari perawatan
 [stat band free]
-
+Bebas
 [stat unit workers]
-
+pekerja
 [stat unit worker time]
-
+waktu pekerja
 [stat unit working workers]
-
+pekerja yang memasok bangunan
 [stat unit squares]
-
+petak
 [stat unit warriors]
-
+prajurit
 [stat unit attack level]
-
+tingkat serang
 [stat unit enemy warriors]
-
+prajurit musuh
 [stat unit strength count]
-
+kekuatan
 [stat view by place]
-
+Per tempat

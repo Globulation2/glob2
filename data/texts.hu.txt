@@ -1,15 +1,15 @@
 [AI strategy]
 MI-stratégia
 [start recording]
-
+Felvétel indítása
 [stop recording]
-
+Felvétel leállítása
 [finalizing recording]
-
+Felvétel véglegesítése…
 [AIMaxima-Summary]
 Egyensúlyozza a fenntartható növekedést és képzést, majd hullámokba gyűjti seregeit.
 [AIMaxima-Profile]
-Alapstratégia: Az élelmet, munkásokat, születéseket, képzést, építkezést és harcot versengő igényekként kezeli. Seregét részben a becsült ellenséges erőhöz méretezi, majd igyekszik hatékonyan célba juttatni.\n\nGazdaság és fejlődés: A születéseket az élelemhez és munkaerőhöz igazítja, szabad időt hagy a képzésre, és katonai termelési igény esetén nem termel további fölös munkásokat. Növeli a képzési kapacitást, és kerüli túl sok infrastruktúra egyidejű kivonását a fejlesztések miatt.\n\nFelderítés és döntések: Látható egységekből és korábbi észlelésekből, illesztett modellel becsüli az ellenség erejét. Céljait az érték, távolság, tornyok, védtelen munkások és a kitartás befolyásolja. A gyümölcsküldetések az étrendi változatosságot és áttérítést támogatják.\n\nTámadás és védelem: Harcosokat tart fenn képzésre és védelemre, majd alkalmas szárazföldi erőit saját élelmezési infrastruktúrája közelében gyűjti össze, mielőtt hullámokat indítana. Helyi védelmi válaszokat alkalmaz, és felméri a kolónia megközelítési útvonalait.\n\nHa elakadnak a támadások: Miután négy egymást követő támadóhullám nem jut el a céljához, folyamatosan megerősített támadózászlókra vált. Kétéltű támadások is használhatnak folyamatos utánpótlást. Ez a tartalékmegoldás nem old meg minden akadályt, amely már a gyülekezés létrejötte előtt jelentkezik.\n\nMás MI-khez képest: Szorosabban kapcsolja össze az élelmet, képzést, hírszerzést és bevetést. Cabino több épület támadását hangsúlyozza; Maxima a becsült igényt és az összegyűjtött erők célba juttatását.\n\nErősségek és gyengeségek: Fenntartja a növekedést és katonai utánpótlást, miközben alkalmazkodik az élelmezési nyomáshoz és megfigyelt fenyegetésekhez. Élelemre, képzési kapacitásra és nyílt gyülekezőhelyre van szüksége; torlódás és hosszú útvonalak akadályozhatják a célba érést.\n\nLehetséges ellenszer: Támadd a védtelen búzaterületeket, étkezdéket és laktanyákat a hullámok gyülekezése előtt. Tarts együtt egy ellátott védőerőt, és zavard az utánpótlási útvonalakat. Az első hullám után is számíts ismételt nyomásra.\n\nFelderítés: Erőbecslései észlelésekre és megfigyelési előzményekre épülnek, nem a rejtett ellenséges csapatok teljes létszámára.
+Alapstratégia: Az élelmet, dolgozókat, születéseket, képzést, építkezést és harcot versengő igényekként kezeli. Seregét részben a becsült ellenséges erőhöz méretezi, majd igyekszik hatékonyan célba juttatni.\n\nGazdaság és fejlődés: A születéseket az élelemhez és munkaerőhöz igazítja, szabad időt hagy a képzésre, és katonai termelési igény esetén nem termel további fölös dolgozókat. Növeli a képzési kapacitást, és kerüli túl sok infrastruktúra egyidejű kivonását a fejlesztések miatt.\n\nFelderítés és döntések: Látható egységekből és korábbi észlelésekből, illesztett modellel becsüli az ellenség erejét. Céljait az érték, távolság, tornyok, védtelen dolgozók és a kitartás befolyásolja. A gyümölcsküldetések az étrendi változatosságot és áttérítést támogatják.\n\nTámadás és védelem: Harcosokat tart fenn képzésre és védelemre, majd alkalmas szárazföldi erőit saját élelmezési infrastruktúrája közelében gyűjti össze, mielőtt hullámokat indítana. Helyi védelmi válaszokat alkalmaz, és felméri a kolónia megközelítési útvonalait.\n\nHa elakadnak a támadások: Miután négy egymást követő támadóhullám nem jut el a céljához, folyamatosan megerősített támadózászlókra vált. Kétéltű támadások is használhatnak folyamatos utánpótlást. Ez a tartalékmegoldás nem old meg minden akadályt, amely már a gyülekezés létrejötte előtt jelentkezik.\n\nMás MI-khez képest: Szorosabban kapcsolja össze az élelmet, képzést, hírszerzést és bevetést. Cabino több épület támadását hangsúlyozza; Maxima a becsült igényt és az összegyűjtött erők célba juttatását.\n\nErősségek és gyengeségek: Fenntartja a növekedést és katonai utánpótlást, miközben alkalmazkodik az élelmezési nyomáshoz és megfigyelt fenyegetésekhez. Élelemre, képzési kapacitásra és nyílt gyülekezőhelyre van szüksége; torlódás és hosszú útvonalak akadályozhatják a célba érést.\n\nLehetséges ellenszer: Támadd a védtelen búzaterületeket, étkezdéket és laktanyákat a hullámok gyülekezése előtt. Tarts együtt egy ellátott védőerőt, és zavard az utánpótlási útvonalakat. Az első hullám után is számíts ismételt nyomásra.\n\nFelderítés: Erőbecslései észlelésekre és megfigyelési előzményekre épülnek, nem a rejtett ellenséges csapatok teljes létszámára.
 [%0 has left the game]
 %0 kilépett a játékból.
 [%0 level %1]
@@ -49,9 +49,9 @@ mV: Piacok látóterének megosztása (gyümölcscseréhez)
 [abreaviation explanation V]
 V: Minden épület látóterének megosztása
 [add map]
-Pálya hozzáadása
+Térkép hozzáadása
 [add shortcut]
-Új gyorsbillentyű
+Új billentyűparancs
 [AI Descriptions]
 MI-leírások
 [AI]
@@ -61,7 +61,7 @@ MI
 [AICastor-Description]
 Épít és képez, a növekedést az élelemellátáshoz igazítva.
 [AICastor]
-MICastor
+Castor
 [AINicowar-Description]
 Növeli népességét, harcosokat képez, majd támad.
 [AINicowar]
@@ -73,7 +73,7 @@ Nincs MI
 [AINumbi-Description]
 Megengedő ellenfél, amely azért terjeszkedik és támad.
 [AINumbi]
-MINumbi
+Numbi
 [AIEcono-Description]
 Terjeszkedik és egységeket csábít át, harcosok nélkül.
 [AIEcono]
@@ -81,7 +81,7 @@ Econo
 [AIWarrush-Description]
 Gyors támadásai próbára teszik a korai védelmet.
 [AIWarrush]
-MIWarrush
+Warrush
 [AICabino-Description]
 Erős építő, amely képzett támadóerőket állít ki.
 [AICabino]
@@ -109,15 +109,15 @@ bármely felderítő
 [are ok]
 rendben van
 [are wonded]
-megsebesült
+sebesült
 [armor]
 Páncél
 [assigned]
 Hozzárendelve
 [At. speed]
-Támadási sebesség
+Tám. sebesség
 [At. strength]
-Támadási erő
+Tám. erő
 [Attack]
 Támadás
 [audio]
@@ -125,7 +125,7 @@ Audió
 [auto save]
 Automatikus mentés
 [available lan games]
-Elérhető hálózati játékok
+Elérhető helyi játékok
 [away:]
 távol van:
 [Back]
@@ -139,7 +139,7 @@ A harcosok harci szintjét
 [barracks]
 Laktanya
 [beach size]
-a partok méretei
+partok mérete
 [break]
 Break
 [briefing]
@@ -147,7 +147,7 @@ Eligazítás
 [build %0 level %1]
 %0 építése, %1. szint
 [Build]
-Épít
+Építés
 [Building Defaults]
 Épületek alapbeállításai
 [building settings]
@@ -175,17 +175,17 @@ Nem lehet csatlakozni: a játék már elkezdődött
 [Can't join game, game is full]
 Nem lehet csatlakozni: a játék megtelt
 [cancel destroy]
-Megsemmisítés megszakítása
+Lebontás megszakítása
 [cancel repair]
 Javítás megszakítása
 [cancel upgrade]
 Fejlesztés megszakítása
 [Cancel]
-Mégsem
+Mégse
 [caps lock]
 Caps Lock
 [carry]
-Szállít :
+Szállít:
 [Change Area Name]
 Terület átnevezése
 [Cherry]
@@ -205,7 +205,7 @@ Tisztítás:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
-Eltávolítja az erőforrásokat
+Eltávolítja a nyersanyagokat
 [clearingflag]
 Tisztító zászló
 [closed]
@@ -221,11 +221,11 @@ Termékenység kiszámítása
 [concrete islands terrain]
 Különálló szigetek
 [connect]
-Kapcsolódás
+Csatlakozás
 [connecting to game]
 Csatlakozás a játékhoz
 [connecting to]
-Kapcsolódás
+Csatlakozás:
 [Construction Site Defaults]
 Építkezések alapbeállításai
 [Continue playing]
@@ -247,11 +247,11 @@ Ctrl - Vonal
 [current speed]
 Aktuális sebesség
 [custom game]
-Szabadjáték
+Egyéni játék
 [customcur]
 Egyéni egérmutató
 [damage]
-Kár
+Sebzés
 [Damaged Map]
 Sérült egységek térképe
 [decrease units working]
@@ -263,7 +263,7 @@ Győzd le az ellenfeleidet
 [defencetower explanation]
 Közeli ellenséges egységeket
 [defencetower]
-Páncéltorony
+Védőtorony
 [Defense Map]
 Védelmi térkép
 [Defense]
@@ -277,7 +277,7 @@ sivatag
 [destroy building]
 Kijelölt épület lebontása
 [destroy]
-Megsemmisít
+Lebontás
 [display]
 Kijelző
 [do nothing]
@@ -287,13 +287,13 @@ Nem szállít semmit
 [down]
 le
 [edit map]
-Pálya szerkesztése
+Térkép szerkesztése
 [editing map]
-Pálya szerkesztése
+Térkép szerkesztése
 [editor shortcuts]
 Szerkesztő
 [editor]
-Editor
+Szerkesztő
 [end]
 End
 [enter]
@@ -305,7 +305,7 @@ Escape
 [explorationflag explanation 2]
 felderítőket
 [explorationflag explanation]
-Összevonja a
+Odavonzza a
 [explorationflag]
 Felderítő zászló
 [Explorer Ratio]
@@ -355,7 +355,7 @@ A zászló alapértelmezett sugara
 [fog of war]
 A háború köde
 [food]
-Élelmiszer
+Élelem
 [forbidden area]
 Tiltott terület
 [Free]
@@ -391,7 +391,7 @@ földi támadás
 [GUIMapPreview text 0]
 Válassz
 [GUIMapPreview text 1]
-egy pályát
+egy térképet
 [handmade map]
 Saját készítésű térkép
 [Happyness]
@@ -399,7 +399,7 @@ Boldogság
 [hard pause]
 Teljes szünet
 [Harvest]
-Betakarít
+Betakarítás
 [high priority]
 magas
 [hints]
@@ -413,9 +413,9 @@ Egységek gyógyítása
 [hospital]
 Kórház
 [host]
-Játék hostolása
+Játék létrehozása
 [hp]
-Életpont
+Életerő
 [Human]
 Ember
 [human]
@@ -453,7 +453,7 @@ Csatlakozás egy játékhoz
 [keyboard settings]
 Billentyűzet beállításai
 [lan]
-Játék a helyi hálózaton
+LAN-játék
 [language incomplete]
 Magyar - Hiányos
 [language-code]
@@ -477,19 +477,19 @@ Hadjárat betöltése
 [load game]
 Játék betöltése
 [load map]
-Pálya betöltése
+Térkép betöltése
 [load replay]
 Visszajátszás betöltése
 [load script]
 Szkript betöltése
 [load]
-Betölt
+Betöltés
 [look around]
 Körülnézés
 [Lost : %0 has more prestige than you]
 Veszítettél: %0 presztízse nagyobb a tiédnél.
 [Lost : your colony is dead]
-A kolóniád megsemmisült.
+Veszítettél: a kolóniád elpusztult.
 [low priority]
 alacsony
 [lowquality]
@@ -501,15 +501,15 @@ Földi sebzés
 [map description]
 Leírás
 [Map Discovered]
-Felderített pálya
+Felfedezett térkép
 [map name]
 Név
 [map script]
-Pályaszkript
+Térképszkript
 [map size x]
 Térkép szélessége
 [map size y]
-Térkép hosszúsága
+Térkép magassága
 [mark map]
 Jelzés a szövetségeseknek
 [market explanation 2]
@@ -535,7 +535,7 @@ némítás
 [new campaign]
 Új hadjárat
 [new map]
-Új
+Új térkép
 [no fullscreen]
 * csak ablakos módban
 [No Hints]
@@ -611,7 +611,7 @@ A játékos neve
 [players]
 Játékosok
 [please wait]
-Kérem várjon
+Kérlek, várj
 [power]
 bekapcsológomb
 [press space]
@@ -639,9 +639,9 @@ Kilépés a visszajátszásból
 [quit]
 Kilépés
 [racetrack explanation 2]
-fejlesztése
+sebességét fejleszti
 [racetrack explanation]
-Haladási sebesség
+Az egységek járási
 [racetrack]
 Versenypálya
 [range]
@@ -651,23 +651,23 @@ Arányok
 [remember unit]
 Egységszám tárolása
 [remove map]
-Pálya eltávolítása
+Térkép eltávolítása
 [remove shortcut]
 Törlés
 [repair building]
 Javítás indítása/leállítása
 [repair]
-Megjavítani
+Javítás
 [repeat area]
 azonos táj ismétlései
 [replay ended]
 Visszajátszás vége
 [restore default shortcuts]
-Alap gyorsbillentyűk visszaállítása
+Alapértelmezett billentyűparancsok visszaállítása
 [return to editor]
 Vissza a szerkesztőhöz
 [return to game]
-Visszalépés a játékba
+Vissza a játékhoz
 [return to replay]
 Vissza a visszajátszáshoz
 [return]
@@ -685,11 +685,11 @@ Folyó
 [sand]
 Homok
 [save before quit?]
-El kívánod a játékot menteni kilépés előtt?
+Mented a játékot kilépés előtt?
 [save game]
-Játék elmentése
+Játék mentése
 [save map]
-Pálya mentése
+Térkép mentése
 [save replay]
 Visszajátszás mentése
 [save script]
@@ -721,7 +721,7 @@ Zászló kijelölése: Tisztító zászló
 [select construct barracks]
 Építkezés kiválasztása: Laktanya
 [select construct defencetower]
-Építkezés kiválasztása: Páncéltorony
+Építkezés kiválasztása: Védőtorony
 [select construct hospital]
 Építkezés kiválasztása: Kórház
 [select construct inn]
@@ -737,7 +737,7 @@ Zászló kijelölése: Tisztító zászló
 [select construct swarm]
 Építkezés kiválasztása: Raj
 [select construct swimmingpool]
-Úszómedence építése
+Építkezés kiválasztása: Úszómedence
 [select delete tool]
 Törlőeszköz kiválasztása
 [select explorationflag]
@@ -771,7 +771,7 @@ Zászló elhelyezése: Hadizászló
 [select swimmingpool building]
 Épület kijelölése: Úszómedence
 [select tower building]
-Épület kijelölése: Páncéltorony
+Épület kijelölése: Védőtorony
 [select wall building]
 Épület kijelölése: Kőfal
 [select warflag]
@@ -837,11 +837,11 @@ Mocsár
 [swarm]
 Raj
 [Swim]
-Úszik
+Úszás
 [swimmingpool explanation 2]
-fejlesztése
+sebességét fejleszti
 [swimmingpool explanation]
-Úszási sebesség
+Az egységek úszási
 [swimmingpool]
 Úszómedence
 [switch to adding areas]
@@ -891,17 +891,17 @@ Az épület elkészült
 [the building is under attack]
 Megtámadták az épületet
 [the clearingflag is finished]
-A tisztító zászló elkészült
+Tisztító zászló elhelyezve.
 [the clearingflag is under attack]
-Megtámadták a tisztító zászlót
+Megtámadták a tisztító zászlót.
 [the defencetower is finished]
-A páncéltorony elkészült
+A védőtorony elkészült
 [the defencetower is under attack]
-Megtámadták a páncéltornyot
+Megtámadták a védőtornyot
 [the explorationflag is finished]
-A felderítőzászló elkészült
+Felderítő zászló elhelyezve.
 [the explorationflag is under attack]
-Megtámadták a felderítő zászlót
+Megtámadták a felderítő zászlót.
 [The game has not been finished]
 A játék nem fejeződött be
 [the games]
@@ -933,9 +933,9 @@ Az iskola elkészült
 [the school is under attack]
 Megtámadták az iskolát
 [the stonewall is finished]
-A kőfal elkészült
+Egy falszakasz elkészült.
 [the stonewall is under attack]
-Megtámadták a kőfalat
+Az ellenség a falaidnál van.
 [the swarm is finished]
 A raj elkészült
 [the swarm is under attack]
@@ -945,9 +945,9 @@ Az úszómedence elkészült
 [the swimmingpool is under attack]
 Megtámadták az úszómedencét
 [the warflag is finished]
-A hadizászló elkészült
+Hadizászló elhelyezve.
 [the warflag is under attack]
-Megtámadták a hadizászlót
+Megtámadták a hadizászlót.
 [time]
 Idő
 [to:]
@@ -987,7 +987,7 @@ Független
 [undo]
 visszavonás
 [uniform terrain]
-Egységes térkép
+Egységes terep
 [Unit editor]
 Egységszerkesztő
 [unit settings explanation]
@@ -1009,7 +1009,7 @@ Fejlesztés indítása/leállítása
 [Upgrade Defaults]
 Fejlesztések alapbeállításai
 [upgrade]
-Fejleszteni
+Fejlesztés
 [username]
 Felhasználónév
 [Version]
@@ -1019,11 +1019,11 @@ Előzmények megtekintése
 [Voice volume]
 Hangerő (beszéd)
 [waiting for %0]
-%0 -ra várva
+Várakozás: %0
 [waiting for key]
 billentyűre vár...
 [Walk]
-megy
+Járás
 [warflag explanation 2]
 harcosokat
 [warflag explanation]
@@ -1049,9 +1049,9 @@ Búza
 [Won : you defeated your opponents]
 Nyertél: legyőzted az ellenfeleidet.
 [Won : you have the most prestige]
-Nyertél: neked van a legnagyobb presztízsed.
+Nyertél: neked van a legtöbb presztízsed.
 [Won : your ally %0 has the most prestige]
-Nyertél: %0 szövetségesednek van a legtöbb presztízse.
+Nyertél: szövetségesednek (%0) van a legtöbb presztízse.
 [Wood]
 Fa
 [wood]
@@ -1069,7 +1069,7 @@ sebesült
 [Yes]
 Igen
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-A YOG metaszerver visszautasította a kapcsolatot, mivel a globulation 2 verziód túl régi a kapcsolat felvételéhez.
+A YOG metaszerver visszautasította a kapcsolatot, mert a Globulation 2 kliensed elavult. Az online játékhoz töltsd le a legújabb verziót a www.globulation2.org oldalról.
 [you have lost]
 Elvesztetted a játékot!
 [you have won]
@@ -1077,7 +1077,7 @@ Megnyerted a játékot!
 [You where kicked from the game]
 Eltávolítottak a játékból
 [Your %0 are under attack]
-Támadás alatt álló egységed: %0
+Megtámadták egy egységedet: %0
 [Your unit got converted to %0's team]
 Egy egységed átállt %0 csapatához
 [game speed]
@@ -1109,23 +1109,23 @@ Bent: %0
 [Units still working: %0]
 Még dolgozó egységek: %0
 [2 vs 2]
-2 vs 2
+2 a 2 ellen
 [AI strategy & counterplay]
 MI-stratégia és ellenjáték
 [AICastor-Profile]
-Alapstratégia: A jelentős támadások előtt termelékeny kolóniába és technológiába fektet. Rangsorolt építési projektek fejlesztik települését; a fejlődés, a katonai infrastruktúra és az idő növeli harckészültségét.\n\nGazdaság és fejlődés: Vizsgálja a nedvességet, a búza növekedését, az akadályokat és a munkások által elérhető területeket. A termelés mellett élelmezési bővítéseket, fejlesztéseket és védelmet szervez.\n\nTámadás és védelem: Megbecsüli egészséges harcosai támadóerejét, és az erő- vagy időfeltételek teljesülésekor csap le. A korábban látott, elérhető épületeket kedveli, különösen a laktanyákat és iskolákat; támadózászlóit az értékes célpontok felé mozgatja.\n\nMás MI-khez képest: Numbinál tudatosabban mérlegeli a terepet és a célpontok értékét. Warrushnál türelmesebb: a korai nyomást fejlett bázisra és erősebb csapatokra cseréli.\n\nErősségek és gyengeségek: Átfogó infrastruktúra-tervezése és értékes katonai célpontjai célt adnak csapásainak. A felkészülés időigényes, így a gyorsabb ellenfelek főereje elkészülte előtt vitathatják az erőforrások birtoklását.\n\nLehetséges ellenszer: Akadályozd korán a terjeszkedését. Az élelmezés mellett a laktanyákat és iskolákat is védd, és tarts tartalékot, amikor fejlett települését támadod.
+Alapstratégia: A jelentős támadások előtt termelékeny kolóniába és technológiába fektet. Rangsorolt építési projektek fejlesztik települését; a fejlődés, a katonai infrastruktúra és az idő növeli harckészültségét.\n\nGazdaság és fejlődés: Vizsgálja a nedvességet, a búza növekedését, az akadályokat és a dolgozók által elérhető területeket. A termelés mellett élelmezési bővítéseket, fejlesztéseket és védelmet szervez.\n\nTámadás és védelem: Megbecsüli egészséges harcosai támadóerejét, és az erő- vagy időfeltételek teljesülésekor csap le. A korábban látott, elérhető épületeket kedveli, különösen a laktanyákat és iskolákat; támadózászlóit az értékes célpontok felé mozgatja.\n\nMás MI-khez képest: Numbinál tudatosabban mérlegeli a terepet és a célpontok értékét. Warrushnál türelmesebb: a korai nyomást fejlett bázisra és erősebb csapatokra cseréli.\n\nErősségek és gyengeségek: Átfogó infrastruktúra-tervezése és értékes katonai célpontjai célt adnak csapásainak. A felkészülés időigényes, így a gyorsabb ellenfelek főereje elkészülte előtt vitathatják a nyersanyagok birtoklását.\n\nLehetséges ellenszer: Akadályozd korán a terjeszkedését. Az élelmezés mellett a laktanyákat és iskolákat is védd, és tarts tartalékot, amikor fejlett települését támadod.
 [AICastor-Summary]
 Megerősített kolóniát fejleszt, majd katonai és tudományos épületekre csap le.
 [AICortex-Profile]
-Alapstratégia: Helyzetfüggő prioritásokkal működő gazdaságot fejleszt, a szabad munkaerőt pedig élelemmé, technológiává és katonai nyomássá alakítja. Alapvető működése szabályalapú; a tanult döntési modellek kísérletei külön beállítást igényelnek.\n\nGazdaság és fejlődés: A munkástermelést a személyzeti igényekhez igazítja, és fenntartja a születéseket. Az élelmezési gondok visszafogják a terjeszkedési és technológiai kiadásokat. Úszást fejleszt, ha a vízi hozzáférés érdemben segít.\n\nTámadás és védelem: A megfigyelt ellenséges technológia és elérhető csapatok alapján készíti elő támadásait. A vízen átkelő hadjáratokhoz úszóképes harcosok kellenek. A hosszú hadjáratokat előretolt étkezdékkel és kórházakkal támogatja, és az előrenyomulás előtt gyülekeztethet.\n\nKitartás és vészhelyzetek: Kisebb zaklatás ellenére folytatja offenzíváját a folytonos hazamenetel helyett. Súlyos támadás visszahívhatja a védőket. Korai vészhelyzet kizárólagos harcostermelést és kórházépítést válthat ki; éhínség kisebb kétségbeesett támadást indíthat.\n\nMás MI-khez képest: Warrushnál jobban figyel az előretolt támogatásra. Maxima tovább megy a fenntartható születések, képzés és bevetés tervezésében a becsült ellenséges erőhöz képest.\n\nErősségek és gyengeségek: A nyomást élelmezéssel, gyógyítással és elérhetőséggel kapcsolja össze. Előretolt infrastruktúrája folyamatos ellátást igényel, a további születések pedig terhelhetik a szűk élelmezést. A vészhelyzeti prioritások választásra kényszerítenek növekedés és túlélés között.\n\nLehetséges ellenszer: Támadd előretolt étkezdéit, kórházait és búzáját. Tartsd együtt védőidet a nyomulása ellen; kisebb zaklatás nem feltétlenül készteti visszavonulásra.\n\nFelderítés: Felfedezett ellenséges épületekre és megfigyelt ellenséges csapatokra támaszkodik.
+Alapstratégia: Helyzetfüggő prioritásokkal működő gazdaságot fejleszt, a szabad munkaerőt pedig élelemmé, technológiává és katonai nyomássá alakítja. Alapvető működése szabályalapú; a tanult döntési modellek kísérletei külön beállítást igényelnek.\n\nGazdaság és fejlődés: A dolgozótermelést a személyzeti igényekhez igazítja, és fenntartja a születéseket. Az élelmezési gondok visszafogják a terjeszkedési és technológiai kiadásokat. Úszást fejleszt, ha a vízi hozzáférés érdemben segít.\n\nTámadás és védelem: A megfigyelt ellenséges technológia és elérhető csapatok alapján készíti elő támadásait. A vízen átkelő hadjáratokhoz úszóképes harcosok kellenek. A hosszú hadjáratokat előretolt étkezdékkel és kórházakkal támogatja, és az előrenyomulás előtt gyülekeztethet.\n\nKitartás és vészhelyzetek: Kisebb zaklatás ellenére folytatja offenzíváját a folytonos hazamenetel helyett. Súlyos támadás visszahívhatja a védőket. Korai vészhelyzet kizárólagos harcostermelést és kórházépítést válthat ki; éhínség kisebb kétségbeesett támadást indíthat.\n\nMás MI-khez képest: Warrushnál jobban figyel az előretolt támogatásra. Maxima tovább megy a fenntartható születések, képzés és bevetés tervezésében a becsült ellenséges erőhöz képest.\n\nErősségek és gyengeségek: A nyomást élelmezéssel, gyógyítással és elérhetőséggel kapcsolja össze. Előretolt infrastruktúrája folyamatos ellátást igényel, a további születések pedig terhelhetik a szűk élelmezést. A vészhelyzeti prioritások választásra kényszerítenek növekedés és túlélés között.\n\nLehetséges ellenszer: Támadd előretolt étkezdéit, kórházait és búzáját. Tartsd együtt védőidet a nyomulása ellen; kisebb zaklatás nem feltétlenül készteti visszavonulásra.\n\nFelderítés: Felfedezett ellenséges épületekre és megfigyelt ellenséges csapatokra támaszkodik.
 [AICortex-Summary]
 Előretolt élelmezéssel és gyógyítással támogatja kitartó katonai támadásait.
 [AINicowar-Profile]
-Alapstratégia: Egymást átfedő feltételekkel kapcsolja össze a növekedést, képzést, fejlesztést és hadviselést. Terjeszkedés közben is támadhat, és az élelmezés összeomlásakor a helyreállításra fordíthatja gazdasági erőfeszítéseit.\n\nNyitás: A mellékelt agresszív profil összesen öt egységnél kezd háborús felkészülésbe, és öt harcosnál engedélyez háborút, a nullás szintű harcosokat is beleszámítva. Három támadózászlót céloz meg, egyenként öt harcossal. Egyéni stratégiafájlok módosíthatják ezeket a küszöböket.\n\nGazdaság és fejlődés: Bővíti az élelmezési és születési kapacitást, munkásokat képez, fejleszti az úszást és mozgást, valamint javítja az épületeket. Igazítja az élelmezés munkaerejét, reagál az éhezésre, és gyümölcsöt keres.\n\nTámadás és védelem: Az elérhető ellenséges épületek közül véletlenszerűen választ támadási célokat. Tisztító zászlókkal nyithatja meg az erőforrásokkal elzárt útvonalakat. Védőzászlói veszélyeztetett egység- és épületcsoportokat fednek le. Később földi támadásra képzett felderítői ellenséges egységcsoportokat támadnak.\n\nMás MI-khez képest: Warrushhoz hasonlóan korán agresszív, de sokoldalúbb folytatásra képes. Cabinóval ellentétben nem részesíti következetesen előnyben a kórházakat és étkezdéket.\n\nErősségek és gyengeségek: Széles taktikai eszköztára korai nyomást és folyamatos fejlődést egyesít. Véletlen célválasztása kevésbé értékes épületekre pazarolhat erőt. Küszöbei nem adják Maxima részletes becslését az ellenfél harci erejéről.\n\nLehetséges ellenszer: Számíts korai támadásra. Védd az élelmet és a munkásokat, akadályozd a terjeszkedést, és készülj felderítőtámadásokra, ha eléri a fejlett képzést.
+Alapstratégia: Egymást átfedő feltételekkel kapcsolja össze a növekedést, képzést, fejlesztést és hadviselést. Terjeszkedés közben is támadhat, és az élelmezés összeomlásakor a helyreállításra fordíthatja gazdasági erőfeszítéseit.\n\nNyitás: A mellékelt agresszív profil összesen öt egységnél kezd háborús felkészülésbe, és öt harcosnál engedélyez háborút, a nullás szintű harcosokat is beleszámítva. Három támadózászlót céloz meg, egyenként öt harcossal. Egyéni stratégiafájlok módosíthatják ezeket a küszöböket.\n\nGazdaság és fejlődés: Bővíti az élelmezési és születési kapacitást, dolgozókat képez, fejleszti az úszást és mozgást, valamint javítja az épületeket. Igazítja az élelmezés munkaerejét, reagál az éhezésre, és gyümölcsöt keres.\n\nTámadás és védelem: Az elérhető ellenséges épületek közül véletlenszerűen választ támadási célokat. Tisztító zászlókkal nyithatja meg a nyersanyagokkal elzárt útvonalakat. Védőzászlói veszélyeztetett egység- és épületcsoportokat fednek le. Később földi támadásra képzett felderítői ellenséges egységcsoportokat támadnak.\n\nMás MI-khez képest: Warrushhoz hasonlóan korán agresszív, de sokoldalúbb folytatásra képes. Cabinóval ellentétben nem részesíti következetesen előnyben a kórházakat és étkezdéket.\n\nErősségek és gyengeségek: Széles taktikai eszköztára korai nyomást és folyamatos fejlődést egyesít. Véletlen célválasztása kevésbé értékes épületekre pazarolhat erőt. Küszöbei nem adják Maxima részletes becslését az ellenfél harci erejéről.\n\nLehetséges ellenszer: Számíts korai támadásra. Védd az élelmet és a dolgozókat, akadályozd a terjeszkedést, és készülj felderítőtámadásokra, ha eléri a fejlett képzést.
 [AINicowar-Summary]
 Korai roham gazdálkodással, fejlesztésekkel, védelemmel és felderítőtámadásokkal.
 [AINone-Profile]
-Stratégia: Az AI nem ad parancsokat.\n\nErősségek: Kiszámítható, inaktív ellenfél a kísérletekben.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
+Alapstratégia: Nem ad MI-parancsokat.\n\nErősségek: Kiszámítható, tétlen ellenfél kísérletekhez.\n\nGyengeségek: Nem terjeszkedik és nem alkalmazkodik.
 [AINone-Summary]
 Tétlen kolónia kísérletekhez.
 [AINumbi-Profile]
@@ -1133,15 +1133,15 @@ Alapstratégia: Először az élelmezést és a népességet fejleszti, majd gy�
 [AINumbi-Summary]
 Időrend szerint, fokozatosan építi fel kolóniáját, majd túlerővel támad.
 [AIEcono-Profile]
-Alapstratégia: Munkásokat és felderítőket termel, bővíti gazdaságát, és élelemmel, gyümölccsel csábítja át az ellenséges egységeket. Nincs hagyományos harcosoffenzívája.\n\nGazdaság és fejlődés: Búza közelébe épít étkezdéket és rajokat, oktatást és mozgásképzést hoz létre, és fejleszti infrastruktúráját. Figyeli az élelemkészleteket, és lecseréli a régi étkezdéket és rajokat, ha romlik erőforráshelyzetük.\n\nGazdálkodás és áttérítés: Védi a víz közelében megújuló búzát és fákat. Felderítőket küld a gyümölcslelőhelyekhez és ellenséges kolóniákhoz, és gyümölcsellátásának kiépítésekor élelmet hirdet az ellenfeleknek. A jobb étel és a gyümölcs áttérőket vonzhat.\n\nMás MI-khez képest: A leginkább gazdaságra szakosodott ellenfél. Cabino és Maxima is szerez gyümölcsöt, de sereggel egészíti ki.\n\nErősségek és gyengeségek: Növekedhet, miközben a katonai ellenfelek kimerítik magukat; az áttérítés másféle versengést kínál. Nem termel harcosokat a tartós roham kivédésére. Lehetőségeit erősen befolyásolja az élelem, a gyümölcs, a földrajz és a győzelmi szabályok.\n\nLehetséges ellenszer: Támadd a védtelen terjeszkedést. Tartsd saját étkezdéidet élelemmel és gyümölccsel ellátva, hogy megtartsd egységeidet. Ne merítsd ki kolóniádat felesleges csatákban, miközben ő növekszik.
+Alapstratégia: Dolgozókat és felderítőket termel, bővíti gazdaságát, és élelemmel, gyümölccsel csábítja át az ellenséges egységeket. Nincs hagyományos harcosoffenzívája.\n\nGazdaság és fejlődés: Búza közelébe épít étkezdéket és rajokat, oktatást és mozgásképzést hoz létre, és fejleszti infrastruktúráját. Figyeli az élelemkészleteket, és lecseréli a régi étkezdéket és rajokat, ha romlik nyersanyag-helyzetük.\n\nGazdálkodás és áttérítés: Védi a víz közelében megújuló búzát és fákat. Felderítőket küld a gyümölcslelőhelyekhez és ellenséges kolóniákhoz, és gyümölcsellátásának kiépítésekor élelmet hirdet az ellenfeleknek. A jobb étel és a gyümölcs áttérőket vonzhat.\n\nMás MI-khez képest: A leginkább gazdaságra szakosodott ellenfél. Cabino és Maxima is szerez gyümölcsöt, de sereggel egészíti ki.\n\nErősségek és gyengeségek: Növekedhet, miközben a katonai ellenfelek kimerítik magukat; az áttérítés másféle versengést kínál. Nem termel harcosokat a tartós roham kivédésére. Lehetőségeit erősen befolyásolja az élelem, a gyümölcs, a földrajz és a győzelmi szabályok.\n\nLehetséges ellenszer: Támadd a védtelen terjeszkedést. Tartsd saját étkezdéidet élelemmel és gyümölccsel ellátva, hogy megtartsd egységeidet. Ne merítsd ki kolóniádat felesleges csatákban, miközben ő növekszik.
 [AIEcono-Summary]
 Élelemben gazdag kolóniát növeszt, és harcosgyártás nélkül verseng az áttérőkért.
 [AIWarrush-Profile]
-Alapstratégia: Még az ellenfelek hosszú gazdasági vagy technológiai felkészülése előtt támad. Arra számít, hogy a harc eldönti a játékot, mielőtt nagy támogató hálózatra lenne szüksége.\n\nGazdaság és fejlődés: Amint hat egység képes gyűjteni, a termelési arányt négy munkásra, egy felderítőre és három harcosra állítja. A képzőhelyek megtelésekor laktanyákat ad hozzá, de korlátozza az új étkezdéket. A fennmaradó építési kapacitást gyakran kórházakra és mozgásképzésre fordítja.\n\nTámadás és védelem: Őrterületekkel jelöli a felfedezett ellenséges épületeket, hogy harcosai folyamatos nyomást fejtsenek ki. Nem vár gondosan összegyűjtött támadóhullámra. Eltakarítja az akadályozó fákat, és védi a megújuló erőforrások egy részét.\n\nGyümölcspolitika: Megtiltja a gyümölcsszedést, elkerülve a gyümölcs okozta páncélbüntetést, és nem követi Econo áttérítésre épülő stratégiáját.\n\nMás MI-khez képest: Numbinál vagy Castornál erősebben összpontosít a korai nyomásra. Nicowar is agresszívan nyit, de szélesebb fejlesztési és taktikai programmal folytatja.\n\nErősségek és gyengeségek: Bünteti a lassú kezdést, és korai védelmi kiadásokra kényszerít. A korlátozott rendszeres fejlesztés és a szűk élelmezés költségessé teszi az elakadt támadást. A terep és a hosszú utak felőrölhetik kezdeti előnyét.\n\nLehetséges ellenszer: Védd korán az étkezdéket és rajokat. A védők mellett a munkásokat is pótold, fejleszd a képzést, majd támadj vissza, amikor rohama veszít lendületéből.\n\nFelderítés: Kezdeti felderítőzászlói közvetlenül az ellenség indulóhelyeit használják. A későbbi támadóterületek kijelölése láthatóságot igényel.
+Alapstratégia: Még az ellenfelek hosszú gazdasági vagy technológiai felkészülése előtt támad. Arra számít, hogy a harc eldönti a játékot, mielőtt nagy támogató hálózatra lenne szüksége.\n\nGazdaság és fejlődés: Amint hat egység képes gyűjteni, a termelési arányt négy dolgozóra, egy felderítőre és három harcosra állítja. A képzőhelyek megtelésekor laktanyákat ad hozzá, de korlátozza az új étkezdéket. A fennmaradó építési kapacitást gyakran kórházakra és mozgásképzésre fordítja.\n\nTámadás és védelem: Őrterületekkel jelöli a felfedezett ellenséges épületeket, hogy harcosai folyamatos nyomást fejtsenek ki. Nem vár gondosan összegyűjtött támadóhullámra. Eltakarítja az akadályozó fákat, és védi a megújuló nyersanyagok egy részét.\n\nGyümölcspolitika: Megtiltja a gyümölcsszedést, elkerülve a gyümölcs okozta páncélbüntetést, és nem követi Econo áttérítésre épülő stratégiáját.\n\nMás MI-khez képest: Numbinál vagy Castornál erősebben összpontosít a korai nyomásra. Nicowar is agresszívan nyit, de szélesebb fejlesztési és taktikai programmal folytatja.\n\nErősségek és gyengeségek: Bünteti a lassú kezdést, és korai védelmi kiadásokra kényszerít. A korlátozott rendszeres fejlesztés és a szűk élelmezés költségessé teszi az elakadt támadást. A terep és a hosszú utak felőrölhetik kezdeti előnyét.\n\nLehetséges ellenszer: Védd korán az étkezdéket és rajokat. A védők mellett a dolgozókat is pótold, fejleszd a képzést, majd támadj vissza, amikor rohama veszít lendületéből.\n\nFelderítés: Kezdeti felderítőzászlói közvetlenül az ellenség indulóhelyeit használják. A későbbi támadóterületek kijelölése láthatóságot igényel.
 [AIWarrush-Summary]
 Korai harcosnyomás, szándékosan szűkre szabott támogató gazdasággal.
 [AICabino-Profile]
-Alapstratégia: Elosztja az egységtermelést építkezés, fejlesztés, védelem, támadás és felderítés között. Külön kezelők kérnek és foglalnak le egységeket, együtt fejlesztve a gazdaságot és a hadsereget.\n\nGazdaság és fejlődés: Sokoldalú települést épít és fejleszt, kezeli az étkezdék és tornyok személyzetét, megtisztítja az épületek környékét, és védi a megújuló erőforrásokat. Gyümölcsöt derít fel és élelmet hirdet az áttérőkért folyó versenyben.\n\nTámadás és védelem: Ellenfelet választ, és először a kórházakat, majd az étkezdéket, végül a laktanyákat célozza. Legfeljebb négy támadást tart fenn, általában célonként nyolc–húsz harcossal, az elérhetőség és a közeli ellenség függvényében. Külön védőzászlókat használ a veszélyeztetett épületek körül.\n\nKépzés: Támadásához elég alkalmas harcos és egy kész laktanya kell, de nem vár a legmagasabb technológiára. Folyamatos fejlesztés és képzés erősíti későbbi támadásait.\n\nMás MI-khez képest: Nicowarnál célzottabban rombolja a támogató épületeket. Maxima összegyűjtött hullámainál jobban szétosztja támadásait, és egységfoglalásokkal kezeli az egymással versengő igényeket.\n\nErősségek és gyengeségek: Növekedést, képzést, védelmet és több támadást egyesít. Az élelmezés és gyógyítás lerombolása az egész kolóniát gyengítheti. Véletlen ellenfélválasztása és rögzített épületprioritásai elszalaszthatnak alkalmakat; több támadás megoszthatja erejét.\n\nLehetséges ellenszer: Védd a kórházakat és étkezdéket. Támadd a védtelen terjeszkedést, és összpontosítsd a védőket az egyes támadásokra. Károsítsd az élelmezést vagy képzést, mielőtt több frontot tudna fenntartani.\n\nFelderítés: Támadásválasztója kifejezett láthatóságellenőrzés nélkül olvassa az ellenséges épületlistákat. Egyes gazdasági összehasonlítások közvetlenül az ellenség statisztikáit használják.
+Alapstratégia: Elosztja az egységtermelést építkezés, fejlesztés, védelem, támadás és felderítés között. Külön kezelők kérnek és foglalnak le egységeket, együtt fejlesztve a gazdaságot és a hadsereget.\n\nGazdaság és fejlődés: Sokoldalú települést épít és fejleszt, kezeli az étkezdék és tornyok személyzetét, megtisztítja az épületek környékét, és védi a megújuló nyersanyagokat. Gyümölcsöt derít fel és élelmet hirdet az áttérőkért folyó versenyben.\n\nTámadás és védelem: Ellenfelet választ, és először a kórházakat, majd az étkezdéket, végül a laktanyákat célozza. Legfeljebb négy támadást tart fenn, általában célonként nyolc–húsz harcossal, az elérhetőség és a közeli ellenség függvényében. Külön védőzászlókat használ a veszélyeztetett épületek körül.\n\nKépzés: Támadásához elég alkalmas harcos és egy kész laktanya kell, de nem vár a legmagasabb technológiára. Folyamatos fejlesztés és képzés erősíti későbbi támadásait.\n\nMás MI-khez képest: Nicowarnál célzottabban rombolja a támogató épületeket. Maxima összegyűjtött hullámainál jobban szétosztja támadásait, és egységfoglalásokkal kezeli az egymással versengő igényeket.\n\nErősségek és gyengeségek: Növekedést, képzést, védelmet és több támadást egyesít. Az élelmezés és gyógyítás lerombolása az egész kolóniát gyengítheti. Véletlen ellenfélválasztása és rögzített épületprioritásai elszalaszthatnak alkalmakat; több támadás megoszthatja erejét.\n\nLehetséges ellenszer: Védd a kórházakat és étkezdéket. Támadd a védtelen terjeszkedést, és összpontosítsd a védőket az egyes támadásokra. Károsítsd az élelmezést vagy képzést, mielőtt több frontot tudna fenntartani.\n\nFelderítés: Támadásválasztója kifejezett láthatóságellenőrzés nélkül olvassa az ellenséges épületlistákat. Egyes gazdasági összehasonlítások közvetlenül az ellenség statisztikáit használják.
 [AICabino-Summary]
 Összehangolja a növekedést és képzett támadásait; először gyógyítást és élelmet támad.
 [Algae]
@@ -1169,9 +1169,9 @@ Hódítás vagy presztízs
 [Could not launch this map. Your setup is retained; try again.]
 Nem sikerült elindítani ezt a térképet. A beállítás megmarad; próbáld újra.
 [Could not load this map. Choose another map or retry.]
-Nem sikerült betölteni ezt a térképet. Válasszon másik térképet, vagy próbálja újra.
+Nem sikerült betölteni ezt a térképet. Válassz másik térképet, vagy próbáld újra.
 [Crater lakes]
-Kráter tavak
+Krátertavak
 [Custom]
 Egyedi
 [Custom teams]
@@ -1193,11 +1193,11 @@ Gyümölcs
 [Game Rules]
 Játékszabályok
 [Game speed]
-A játék sebessége
+Játéksebesség
 [Generate & play]
 Generálás és játék
 [Give at least one terrain type a nonzero weight.]
-Legalább egy tereptípusnak adjon nullától eltérő súlyt.
+Legalább egy tereptípusnak adj nullától eltérő súlyt.
 [Grass weight]
 Fű súlyozása
 [Gray]
@@ -1241,7 +1241,7 @@ Csipkézett szigetvilág
 [Old random]
 Töredezett partvidék
 [Open at least one colony to start a match.]
-Nyisson meg legalább egy kolóniát a mérkőzés elindításához.
+Nyiss meg legalább egy kolóniát a mérkőzés indításához.
 [Open book]
 Felfedett világ
 [Pink]
@@ -1273,7 +1273,7 @@ Piros
 [Repeat landscape]
 Táj ismétlése
 [Resources]
-Erőforrások
+Nyersanyagok
 [River]
 Folyó
 [River width]
@@ -1281,7 +1281,7 @@ Folyó szélessége
 [Sand weight]
 Homok súlyozása
 [Select a valid map.]
-Válasszon érvényes térképet.
+Válassz érvényes térképet.
 [Shared control needs a free controller slot (maximum %0).]
 A közös irányításhoz szabad játékos- vagy MI-hely kell (legfeljebb %0).
 [Smoothing]
@@ -1289,11 +1289,11 @@ Simítás
 [Standard]
 Alapértelmezett
 [Start game]
-Indítsa el a játékot
+Játék indítása
 [Starting workers]
-Kezdeti munkások
+Kezdő dolgozók
 [Starting workers: Game Rules tab.]
-Kezdeti munkások: Játékszabályok lap.
+Kezdő dolgozók: Játékszabályok lap.
 [Swamp]
 Mocsár
 [Team]
@@ -1303,7 +1303,7 @@ Terep
 [Victory]
 Győzelem
 [Watch game]
-Nézd meg a játékot
+Játék megtekintése
 [Water weight]
 Víz súlyozása
 [White]
@@ -1327,15 +1327,15 @@ kolóniák
 [Inactive]
 Inaktív
 [8 workers / 2x speed]
-8 munkás / 2x sebesség
+8 dolgozó / 2x sebesség
 [Changes the pace of the whole simulation.]
 Módosítja az egész szimuláció ütemét.
 [Choose whether teams can change during the match.]
-Válassza ki, hogy a csapatok változhatnak-e a mérkőzés során.
+Válaszd ki, hogy a csapatok változhatnak-e a mérkőzés során.
 [Classic colony building]
-Hagyományos telepfejlesztés
+Hagyományos kolóniaépítés
 [Dimensions and colony count are set above.]
-A méretek és a telepek száma fent van beállítva.
+A méretet és a kolóniák számát fent állíthatod be.
 [Generate & watch]
 Generálás és megtekintés
 [Info]
@@ -1347,13 +1347,13 @@ Nincsenek térképek ebben a könyvtárban.
 [Premade maps retain their authored starting units.]
 Az előre elkészített térképek megtartják a kiindulási egységeiket.
 [Start with terrain known]
-Kezdje ismert tereppel
+Kezdés ismert tereppel
 [This colony will not join the match.]
 Ez a kolónia nem csatlakozik a mérkőzéshez.
 [This landscape uses a fixed terrain recipe.]
 Ez a táj rögzített terepreceptet használ.
 [This landscape uses fixed resource placement.]
-Ez a táj rögzített erőforrás-elhelyezést használ.
+Ez a táj rögzített nyersanyag-elhelyezést használ.
 [Win through conquest]
 Nyerj hódítással
 [You control this colony.]
@@ -1361,9 +1361,9 @@ Te irányítod ezt a kolóniát.
 [controllers]
 játékosok és MI-k
 [Use]
-Válassza ki
+Használat
 [Lime]
-Lime zöld
+Citromzöld
 [Teal]
 Kékeszöld
 [Azure]
@@ -1371,9 +1371,9 @@ Kékeszöld
 [Updating map preview...]
 Térkép előnézetének frissítése...
 [Generation failed. Adjust settings or press Start to retry.]
-A generálás nem sikerült. Módosítsa a beállításokat, vagy nyomja meg a Start gombot az újrapróbálkozáshoz.
+A generálás nem sikerült. Módosítsd a beállításokat, vagy nyomd meg a Kezdés gombot az újrapróbáláshoz.
 [Preview unavailable. Adjust settings or start to retry.]
-Az előnézet nem érhető el. Módosítsa a beállításokat, vagy indítsa el a játékot, és próbálja újra.
+Az előnézet nem érhető el. Módosítsd a beállításokat, vagy indítsd el a játékot az újrapróbáláshoz.
 [automatic torus view]
 Automatikus tórusznézet
 [toggle torus view]
@@ -1383,9 +1383,9 @@ A 2 a 2 ellen négy nyitott kolóniát igényel. A Te mindenki ellen módhoz emb
 [Alliance]
 Szövetség
 [Choose a rule to change it.]
-Válasszon egy szabályt a módosításhoz.
+Válassz egy szabályt a módosításhoz.
 [Conquest only removes prestige victory; map scripts still apply.]
-A csak a hódításon alapuló győzelem letiltja a presztízsgyőzelmet; a térképszkriptek továbbra is érvényesek.
+A Csak hódítás kikapcsolja a presztízsgyőzelmet; a térképszkriptek továbbra is érvényesek.
 [Control]
 Irányítás
 [Controller]
@@ -1393,21 +1393,21 @@ Irányító
 [Generate preview]
 Előnézet generálása
 [Generation failed. Adjust settings or try again.]
-A generálás nem sikerült. Módosítsa a beállításokat, vagy próbálja újra.
+A generálás nem sikerült. Módosítsd a beállításokat, vagy próbáld újra.
 [Map settings changed. Generate a new preview or start.]
-A térkép beállításai megváltoztak. Hozzon létre egy új előnézetet vagy kezdje el.
+A térkép beállításai megváltoztak. Készíts új előnézetet, vagy indítsd el a játékot.
 [Map source]
 Térkép forrása
 [Map-defined]
 Térkép által meghatározott
 [Match format]
-Játék formátum
+Mérkőzés formátuma
 [No current preview]
 Nincs aktuális előnézet
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Gyors csata: dupla sebesség; A generált térképek 8 munkással kezdődnek.
+Gyors csata: dupla sebesség; a generált térképek 8 dolgozóval kezdődnek.
 [Reroll]
-Hozzon létre egy másik térképet
+Újragenerálás
 [Randomize]
 Véletlenszerű generálás
 [Reset to defaults]
@@ -1415,31 +1415,31 @@ Alapértelmezett értékek visszaállítása
 [Ruleset]
 Szabálykészlet
 [Select a map from the library.]
-Válasszon térképet a könyvtárból.
+Válassz térképet a könyvtárból.
 [Starting workers affects generated maps only.]
 A dolgozók kezdeti száma csak a generált térképekre vonatkozik.
 [Unavailable]
 Nem elérhető
 [Use selection]
-Használja a kijelölést
+Kijelölés használata
 [Quick clash on premade maps: only speed changes (2x).]
 Gyors csata előre elkészített térképeken: csak a sebesség változik (dupla sebesség).
 [Generate a preview to explore this world.]
-Készítsen előnézetet a világ felfedezéséhez.
+Készíts előnézetet a világ felfedezéséhez.
 [More workers jump-start colony growth. Changes the generated map.]
-Több munkás felgyorsítja a kolóniák növekedését. Ez a beállítás módosítja a generált térképet.
+Több dolgozó felgyorsítja a kolóniák növekedését. Ez a beállítás módosítja a generált térképet.
 [No warriors]
 Harcosok nélkül
 [settings Add key to sequence]
 Billentyű hozzáadása a sorozathoz
 [settings Add shortcut]
-Új gyorsbillentyű
+Új billentyűparancs
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Az egérgörgővel módosíthatja a hozzárendelt egységek számát. Kikapcsolva tartsa lenyomva a Ctrl billentyűt. A Shift használatával a zászló sugarát állíthatja. Ez a beállítás más menükben is szabályozza a görgő használatát.
+Az egérgörgővel módosíthatod a hozzárendelt egységek számát. Kikapcsolva tartsd lenyomva a Ctrl billentyűt. A Shifttel a zászló sugarát állíthatod. Más menükben is ez szabályozza a görgőt.
 [settings Adjust music and voice volume.]
-Állítsa be a zene és a beszéd hangerejét.
+Állítsd be a zene és a beszéd hangerejét.
 [settings Adjust the pace of play.]
-Állítsa be a játék sebességét.
+Állítsd be a játék tempóját.
 [settings Advanced binding]
 Speciális billentyűbeállítások
 [settings Artwork & effects]
@@ -1453,19 +1453,19 @@ Escape hozzárendelése
 [settings Building defaults]
 Épületek alapbeállításai
 [settings Cancel]
-Mégsem
+Mégse
 [settings Changes saved automatically]
-A változtatások automatikusan mentésre kerülnek
+A módosítások automatikusan mentődnek
 [settings Changes you make during play update these defaults for future games.]
 A játék közben végrehajtott változtatások frissítik ezeket az alapértelmezett értékeket a jövőbeli játékokhoz.
 [settings Changing the renderer requires a restart.]
-A renderer megváltoztatása újraindítást igényel.
+A megjelenítő módosításához újraindítás szükséges.
 [settings Choose a binding to change it, or add another shortcut for an action.]
-Válasszon ki egy billentyűparancsot a szerkesztéshez, vagy adjon hozzá egy másik billentyűparancsot egy művelethez.
+Válassz egy billentyűparancsot a módosításhoz, vagy adj hozzá egy újat egy művelethez.
 [settings Choose a window or fill the screen.]
-Válasszon ablakos vagy teljes képernyős módot.
+Válassz ablakos vagy teljes képernyős módot.
 [settings Choose how the game looks on your screen.]
-Válassza ki, hogyan nézzen ki a játék a képernyőn.
+Válaszd ki, hogyan nézzen ki a játék a képernyődön.
 [settings Completed]
 Befejezett épületek
 [settings Construction]
@@ -1485,7 +1485,7 @@ Kijelző
 [settings Display & graphics]
 Kijelző és grafika
 [settings Display the Globulation 2 cursor.]
-Jelenítse meg a Globulation 2 kurzort.
+A Globulation 2 egérmutató megjelenítése.
 [settings Done]
 Kész
 [settings Edit shortcut]
@@ -1511,7 +1511,7 @@ Felület mérete
 [settings Keep]
 Megtartás
 [settings Keep this display mode?]
-Megtartja ezt a megjelenítési módot?
+Megtartod ezt a megjelenítési módot?
 [settings Keep your volume levels while silencing audio.]
 Minden hang elnémítása a mentett hangerőszint módosítása nélkül.
 [settings Key]
@@ -1545,13 +1545,13 @@ Kikapcsolva
 [settings On]
 Bekapcsolva
 [settings OpenGL is not available in this build.]
-Az OpenGL nem érhető el ebben a buildben.
+Az OpenGL nem érhető el ebben a változatban.
 [settings Player name]
 A játékos neve
 [settings Press]
 Lenyomáskor
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Nyomjon meg egy billentyűt. Az Escape megszakítja a rögzítést. Az Escape hozzárendeléséhez válassza az „Escape hozzárendelése” lehetőséget.
+Nyomj meg egy billentyűt. Az Escape megszakítja a rögzítést. Az Escape hozzárendeléséhez válaszd az „Escape hozzárendelése” lehetőséget.
 [settings Radius]
 Sugár
 [settings Reduced]
@@ -1571,7 +1571,7 @@ Grafikus megjelenítő
 [settings Replace conflicting bindings]
 Ütköző billentyűparancsok lecserélése
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
-Visszaállítja az alapértelmezett billentyűparancsokat ebben a környezetben? A változtatások azonnal mentésre kerülnek.
+Visszaállítod az alapértelmezett billentyűparancsokat ebben a környezetben? A változás azonnal mentődik.
 [settings Resolution]
 Képernyőfelbontás
 [settings Restore default shortcuts]
@@ -1579,7 +1579,7 @@ Alapértelmezett billentyűparancsok visszaállítása
 [settings Retry]
 Újra
 [settings Revert]
-Változtatások visszaállítása
+Visszaállítás
 [settings Reverting in]
 Visszaállítás ennyi idő múlva:
 [settings Save shortcut]
@@ -1591,15 +1591,15 @@ Mentés…
 [settings Scroll wheel enabled]
 Egérgörgő engedélyezve
 [settings Set starting unit assignments by building type and level.]
-Állítsa be a hozzárendelt egységek kezdeti számát az épület típusa és szintje szerint.
+Állítsd be a hozzárendelt egységek kezdeti számát épülettípus és szint szerint.
 [settings Set your language and player name.]
-Állítsa be a nyelvet és a játékos nevét.
+Állítsd be a nyelvet és a játékosnevedet.
 [settings Settings]
 Beállítások
 [settings Single-player and replays only. Multiplayer runs at 1x.]
 Csak egyjátékos módban és visszajátszáskor. A többjátékos mód sebessége 1x.
 [settings Software]
-Szoftveres renderelés
+Szoftveres
 [settings Starting unit counts and radius for newly placed flags.]
 Az újonnan elhelyezett zászlókhoz rendelt egységek kezdeti száma és a zászlók sugara.
 [settings This shortcut conflicts with existing bindings:]
@@ -1625,7 +1625,7 @@ Beszéd hangereje
 [settings Window mode]
 Ablakmód
 [settings Window-only sizes also switch the game to windowed mode.]
-Ha olyan felbontást választunk, amely csak az ablakos módot támogatja, akkor a játék is ablakos módba vált.
+A csak ablakban elérhető méretek a játékot is ablakos módba váltják.
 [settings Windowed]
 Ablakos
 [settings Windowed only]
@@ -1645,7 +1645,7 @@ A tórusz alakú térkép áttekintésének automatikus megjelenítése a térk�
 [settings Autosave]
 Automatikus mentés
 [settings Save the game automatically about every 10 seconds.]
-Körülbelül 10 másodpercenként automatikusan menti a játékot.
+A játék automatikus mentése körülbelül 10 másodpercenként.
 [Channel width]
 Csatorna szélessége
 [Land bridge width]
@@ -1667,11 +1667,11 @@ Küllők szélessége
 [Loopiness]
 Huroksűrűség
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
-A labirintusnak szélességben és magasságban is legalább két cellára van szüksége; használjon nagyobb térképet vagy kisebb cellákat.
+A labirintusnak szélességben és magasságban is legalább két cellára van szüksége; használj nagyobb térképet vagy kisebb cellákat.
 [Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Ilyen széles csatornák mellett minden cellában túl kevés fű marad; használjon keskenyebb csatornákat vagy nagyobb cellákat.
+Ilyen széles csatornák mellett minden cellában túl kevés fű marad; használj keskenyebb csatornákat vagy nagyobb cellákat.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
-A labirintusban túl kevés a zsákutca ennyi kolóniához; használjon nagyobb térképet vagy kisebb cellákat.
+A labirintusban túl kevés a zsákutca ennyi kolóniához; használj nagyobb térképet vagy kisebb cellákat.
 [Home island size]
 Kezdősziget mérete
 [Commons size]
@@ -1699,7 +1699,7 @@ Szárazság
 [Fords]
 Gázlók
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
-A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+A vízgyűjtőn túl kevés az ártér ennyi kolóniához; használj nagyobb térképet vagy kevesebb kolóniát.
 [Stone highlands]
 Köves felföld
 [Valley size]
@@ -1709,9 +1709,9 @@ Hágó szélessége
 [Pond size]
 Tavacska mérete
 [These valleys are too big for the map; use a bigger map or smaller valleys.]
-Ezek a völgyek túl nagyok a térképhez; használjon nagyobb térképet vagy kisebb völgyeket.
+Ezek a völgyek túl nagyok a térképhez; használj nagyobb térképet vagy kisebb völgyeket.
 [The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
-A felföldön túl kevés a hely ennyi kolóniához; használjon nagyobb térképet vagy kevesebb kolóniát.
+A felföldön túl kevés a hely ennyi kolóniához; használj nagyobb térképet vagy kevesebb kolóniát.
 [Symmetric arena]
 Szimmetrikus aréna
 [Centre size]
@@ -1729,17 +1729,17 @@ A szimmetrikus arénához 2, 4 vagy 8 kolónia kell.
 [Eight colonies need a square map in the symmetric arena.]
 Nyolc kolóniához négyzet alakú térkép kell a szimmetrikus arénában.
 [The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
-A középrész túl kicsi egy gyümölcsöshöz ezen a térképen; használjon nagyobb középrészt vagy nagyobb térképet.
+A középrész túl kicsi egy gyümölcsöshöz ezen a térképen; használj nagyobb középrészt vagy nagyobb térképet.
 [The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
-Az aréna túl kevés helyet hagy minden kolóniának; használjon nagyobb térképet, kisebb középrészt vagy keskenyebb várárkot.
+Az aréna túl kevés helyet hagy minden kolóniának; használj nagyobb térképet, kisebb középrészt vagy keskenyebb várárkot.
 [The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
-A töltésutak túl közel vannak egymáshoz; használjon kevesebb vagy keskenyebb töltésutat, vagy nagyobb középrészt.
+A töltésutak túl közel vannak egymáshoz; használj kevesebb vagy keskenyebb töltésutat, vagy nagyobb középrészt.
 [Ring world]
 Gyűrűvilág
 [Belt width]
 Öv szélessége
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
-Az öv túl rövid ennyi kolóniához; használjon hosszabb térképet vagy kevesebb kolóniát.
+Az öv túl rövid ennyi kolóniához; használj hosszabb térképet vagy kevesebb kolóniát.
 [City states]
 Városállamok
 [Strait width]
@@ -2049,17 +2049,17 @@ Leggyengébb
 [Best]
 Legjobb
 [Map preview controls]
-Húzással lépjen át a széleken. Görgővel nagyíthat. Jobb vagy dupla kattintással alaphelyzetbe állíthat.
+Húzással átléphetsz a széleken. Görgővel nagyíthatsz. Jobb vagy dupla kattintással alaphelyzetbe állíthatod.
 [Map preview drag help]
-Húzással mozgathat; görgővel nagyíthat.
+Húzással átléphetsz a széleken; görgővel nagyíthatsz.
 [Map preview loading]
 Betöltés...
 [Map preview failed]
 Az előnézet sikertelen
 [Map preview retry]
-Kattintson az újrapróbáláshoz
+Kattints az újrapróbáláshoz
 [Map preview please wait]
-Kérem, várjon
+Kérlek, várj
 [Stats births]
 Születések
 [Stats deaths]
@@ -2111,7 +2111,7 @@ Statisztika 2/3 >
 [Stats next page]
 Oldal (P)
 [Map preview choose another]
-Válasszon térképet
+Válassz térképet
 [Building sites complete immediately, skipping delivery.]
 Az építkezések azonnal befejeződnek, a szállítási szakasz kihagyásával.
 [No growth]
@@ -2133,13 +2133,13 @@ Közepes (+150 egyenként)
 [Large (+300 each)]
 Nagy (+300 egyenként)
 [No resource growth]
-Nincs erőforrás-növekedés
+Nincs nyersanyag-növekedés
 [Economy]
 Gazdaság
 [Instant construction]
 Azonnali építkezés
 [Higher tiers give every building much more HP.]
-A magasabb szintek sokkal több életpontot adnak minden épületnek.
+A magasabb szintek sokkal több életerőpontot adnak minden épületnek.
 [Starting units spawn already leveled up. Changes the generated map.]
 A kezdő egységek már feljebb léptetve jelennek meg. Megváltoztatja a generált térképet.
 [No upgrades]
@@ -2189,41 +2189,41 @@ Egységek C
 [Stats current blocked buildings]
 Épületek C
 [Stats growth global]
-Erőforrások +
+Nyersanyagok +
 [Stats growth new tiles]
-Erőforrások +#
+Nyersanyagok +#
 [Stats growth reductions]
-Erőforrások -
+Nyersanyagok -
 [Stats growth per minute]
-Búza +/min
+Búza +/perc
 [Stats growth near 8]
-Erőforrások + <=8
+Nyersanyagok + <=8
 [Stats growth near 16]
-Erőforrások + <=16
+Nyersanyagok + <=16
 [Stats growth near 32]
-Erőforrások + <=32
+Nyersanyagok + <=32
 [Stats low HP 25]
-Életpont <=25%
+Életerő <=25%
 [Stats low HP 50]
-Életpont <=50%
+Életerő <=50%
 [Stats low HP 75]
-Életpont <=75%
+Életerő <=75%
 [Stats low food 25]
-Élelmiszer <=25%
+Élelem <=25%
 [Stats low food 50]
-Élelmiszer <=50%
+Élelem <=50%
 [Stats low food 75]
-Élelmiszer <=75%
+Élelem <=75%
 [Stats structural units]
 Egységek S
 [Stats structural buildings]
 Épületek S
 [Stats low HP ranges]
-Életpont: <=25/50/75%
+Életerő: <=25/50/75%
 [Stats low food ranges]
-Élelmiszer: <=25/50/75%
+Élelem: <=25/50/75%
 [Emoji]
-Emoji
+Emodzsi
 [Emoji character]
 Emodzsi karakter
 [Smiley]
@@ -2355,7 +2355,7 @@ Kevés
 [Some]
 Néhány
 [Home oasis size]
-Szülőoázis mérete
+Kezdőoázis mérete
 [Caravanserais per colony]
 Karavánszerájok kolóniánként
 [Desert]
@@ -2369,11 +2369,11 @@ Kanyonvidék
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
 Egy erőd nem éri el a gázlóját; használj nagyobb térképet vagy kevesebb kolóniát.
 [A wall would stand on a beach; try another seed.]
-Egy fal homokparton állna; próbálj másik magot.
+Egy fal homokparton állna; próbálj másik kezdőértéket.
 [The fort is too small for its gardens; raise Fort size.]
 Az erőd túl kicsi a kertjeihez; növeld az erőd méretét.
 [The home oasis is too small; raise Home oasis size.]
-A szülőoázis túl kicsi; növeld a szülőoázis méretét.
+A kezdőoázis túl kicsi; növeld a kezdőoázis méretét.
 [Braided river]
 Fonatos folyó
 [Braid width]
@@ -2435,7 +2435,7 @@ A világatlaszban nincs ilyen kontinens.
 [The map is too small to hold a continent.]
 A térkép túl kicsi egy kontinenshez.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
-Ezen a kontinensen ekkora térképméretnél nincs hely ennyi kolóniának; használjon nagyobb térképet vagy kevesebb kolóniát.
+Ezen a kontinensen ekkora térképméretnél nincs hely ennyi kolóniának; használj nagyobb térképet vagy kevesebb kolóniát.
 [Savannah]
 Szavanna
 [Watering holes]
@@ -2701,7 +2701,7 @@ A városban túl kevés a használható csomópont.
 [A city neighbourhood lacks reachable crops or building room.]
 Egy városnegyedben nincs elérhető termény vagy elegendő hely az építkezéshez.
 [The city neighbourhoods are too unequal; try another seed.]
-A városnegyedek túl egyenlőtlenek; próbálj másik magot.
+A városnegyedek túl egyenlőtlenek; próbálj másik kezdőértéket.
 [The fractured civic plaza did not survive.]
 A szétszakadt városi tér nem maradt fenn.
 [Who Ate the Map?]
@@ -2723,17 +2723,17 @@ További ösvények
 [Portage Lakes needs sides between 64 and 512 tiles.]
 A térkép oldalainak 64 és 512 mező közé kell esniük.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
-Ezzel a maggal nem helyezhetők telepek a partokra.
+Ezzel a kezdőértékkel nem helyezhetők települések a partokra.
 [Portage Lakes cannot fit renewable shore fields beside every settlement.]
-Nem férnek el megújuló parti földek minden telep mellett.
+Nem férnek el megújuló parti földek minden település mellett.
 [Portage Lakes cannot connect its shoreline trails.]
 A parti ösvények nem köthetők össze.
 [Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
-Ezzel a maggal nem alakítható ki hasznos rövidítés száraz erdőn át.
+Ezzel a kezdőértékkel nem alakítható ki hasznos rövidítés száraz erdőn át.
 [Portage Lakes cannot fit a useful swimming shortcut on this seed.]
-Ezzel a maggal nem alakítható ki hasznos úszó rövidítés.
+Ezzel a kezdőértékkel nem alakítható ki hasznos úszó rövidítés.
 [Portage Lakes needs separate swimming lakes on this seed.]
-Ezzel a maggal az úszásra szolgáló tavaknak különállónak kell maradniuk.
+Ezzel a kezdőértékkel az úszásra szolgáló tavaknak különállónak kell maradniuk.
 [Drowned Forest]
 Elárasztott erdő
 [Sandbar connections]
@@ -2769,7 +2769,7 @@ Elszigeteltség
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 Minden kolónia kezdését a kész térképen mérjük: az út a búzáig és a fáig, mennyire nő vissza a talaja, az elérhető készletek és építési helyek, valamint a távolság a riválisoktól. Minden tényező 0-tól 1-ig pontoz egy rögzített mércéhez képest, az összeg súlyozza őket, a méltányosság a leggyengébb kolónia összege osztva a legjobbéval, a pontszám pedig a leggyengébb összeg szorozva a méltányossággal.
 [ERROR_CANT_SAVE_MAP]
-A térképet nem sikerült menteni. Ellenőrizze a célt és a rendelkezésre álló helyet. A szerkesztések továbbra is nyitva vannak.
+A térképet nem sikerült menteni. Ellenőrizd a célhelyet és a szabad tárhelyet. A szerkesztéseid továbbra is nyitva vannak.
 [Loading headers]
 Fejlécek betöltése...
 [Loading teams]
@@ -2777,7 +2777,7 @@ Csapatok betöltése...
 [Loading terrain]
 Terep betöltése...
 [Building gradients]
-Színátmenetek építése...
+Gradiensek számítása...
 [Loading players]
 Játékosok betöltése...
 [Loading scripts]
@@ -2785,7 +2785,7 @@ Szkriptek betöltése...
 [Generating map]
 Térkép generálása...
 [ERROR_CANT_GENERATE_MAP]
-A térképet nem sikerült legenerálni. Próbáljon más generálási beállításokat.
+A térképet nem sikerült legenerálni. Próbálj más generálási beállításokat.
 [Loading units]
 Egységek betöltése...
 [Loading buildings]
@@ -2795,11 +2795,11 @@ Csapatkapcsolatok feloldása...
 [saving to storage]
 Mentés...
 [save failed retry]
-A mentés sikertelen. Próbálja újra.
+A mentés sikertelen. Próbáld újra.
 [export save]
 Mentés exportálása
 [storage restore failed]
-A böngésző tárolóját nem sikerült helyreállítani. A meglévő mentett adatok nem változtak. Folytathatja ezt a munkamenetet, de a helyi változtatások nem menthetők meg tartósan. Exportálja a fontos mentéseket a mentési hiba párbeszédpaneléből. Töltse újra az oldalt, hogy újra megpróbálja helyreállítani a tárolót.
+A böngésző tárolóját nem sikerült helyreállítani. A meglévő mentett adatok nem változtak. Folytathatod ezt a munkamenetet, de a helyi változtatások nem menthetők tartósan. A fontos mentéseket exportáld a mentési hiba párbeszédablakából. Töltsd újra az oldalt a tároló újbóli helyreállításához.
 [continue]
 Folytatás
 [export file]
@@ -2809,7 +2809,7 @@ A fájl exportálása sikertelen
 [import file]
 Importálás
 [select import file]
-Válasszon importálandó fájlt
+Válassz importálandó fájlt
 [validating import]
 Fájl ellenőrzése...
 [import succeeded]
@@ -2819,7 +2819,7 @@ Az importálás megszakítva
 [import failed]
 Az importálás sikertelen: érvénytelen vagy nem támogatott fájl
 [import persistence failed]
-Nincs mentve: válassza az Importálás lehetőséget az újrapróbálkozáshoz, vagy a Fájl exportálását
+Nincs mentve: válaszd az Importálás lehetőséget az újrapróbáláshoz, vagy a Fájl exportálását
 [import progress]
 Importálás folyamata
 [export progress]
@@ -2827,7 +2827,7 @@ Exportálás folyamata
 [retry save]
 Mentés újrapróbálása
 [campaign save failed]
-A hadjárat haladása nem mentődött. Próbálja újra, vagy exportáljon biztonsági mentést.
+A hadjárat állása nem mentődött. Próbáld újra, vagy exportálj biztonsági mentést.
 [leave without saving]
 Kilépés mentés nélkül
 [campaign import failed]
@@ -2835,13 +2835,13 @@ Kilépés mentés nélkül
 [settings continue]
 Folytatás
 [settings save failed]
-A beállítások mentése nincs megerősítve. Próbálja újra, vagy folytassa.
+A beállítások mentése nincs megerősítve. Próbáld újra, vagy folytasd.
 [shutdown save failed]
-A végső mentés nincs megerősítve. Próbálja újra, vagy lépjen ki mentés nélkül.
+A végső mentés nincs megerősítve. Próbáld újra, vagy lépj ki mentés nélkül.
 [quit without saving]
 Kilépés mentés nélkül
 [game closed]
-A játék bezárult. Bezárhatja ezt az ablakot, vagy újratöltheti az oldalt az ismételt játékhoz.
+A játék bezárult. Bezárhatod ezt az ablakot, vagy újratöltheted az oldalt egy újabb játékhoz.
 [campaign editor save failed]
 A mentés nincs megerősítve. Az OK újra próbálkozik; a Mégse visszatér a szerkesztő menüjébe.
 [Actions]
@@ -2865,7 +2865,7 @@ Eszközök
 [Pan map]
 Térkép mozgatása
 [Edit map]
-Pálya szerkesztése
+Térkép szerkesztése
 [Editor map]
 Térkép
 [Flags]
@@ -2897,7 +2897,7 @@ Felület elrendezése
 [settings Automatic]
 Automatikus
 [settings Compact]
-Közeli
+Kompakt
 [settings Spacious]
 Tágas
 [More]
@@ -2925,7 +2925,7 @@ Vissza
 [settings Save the game automatically about every minute.]
 A játék automatikus mentése körülbelül percenként.
 [AI opponents]
-Gépi ellenfelek
+MI-ellenfelek
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A tágas elrendezés oldalsó panelt használ, ha van elég hely. A kompakt elrendezés eszköztárat és kinyitható paneleket használ.
 [settings One-finger zoom]
@@ -2953,7 +2953,7 @@ Nincs réteg
 [zoom factor %0]
 %0×
 [Assigned %0 · Target %1]
-Kiosztva %0 · Cél %1
+Kiosztva: %0 · Cél: %1
 [Range: %0]
 Hatótáv: %0
 [Player %0]
@@ -3139,7 +3139,7 @@ Feloldás
 [Parameters]
 Paraméterek
 [Blank map]
-Üres pálya
+Üres térkép
 [Generated]
 Generált
 [Preview]
@@ -3159,17 +3159,17 @@ Válassz tájat
 [%0 / Browse]
 %0 / Tallózás
 [%0 colonies · %1]
-%0 kolóniák · %1
+%0 kolónia · %1
 [%0 · Team %1]
 %0 · Csapat %1
 [Colonies: %0]
 Kolóniák: %0
 [%0 colonies · %1 AI]
-%0 kolóniák · %1 MI
+%0 kolónia · %1 MI
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Egységek
+%0 · %1 egység
 [settings Level %0]
 Szint %0
 [settings Match the desktop %0]
@@ -3199,7 +3199,7 @@ Kísérletek
 [settings Try features we are still testing. They can change balance and pacing.]
 Próbáld ki a még tesztelés alatt álló funkciókat. Megváltoztathatják az egyensúlyt és a tempót.
 [settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
-A kísérletek az általad indított vagy hosztolt új játékokra vonatkoznak, a kampányküldetésekre soha. A mentett játék megtartja azokat, amelyekkel elkezdődött.
+A kísérletek az általad indított vagy létrehozott új játékokra vonatkoznak, a hadjárat küldetéseire soha. A mentett játék megtartja azokat, amelyekkel elkezdődött.
 [Experiments set by the host]
 A házigazda által választott kísérletek
 [settings No experiments in this build.]
@@ -3213,7 +3213,7 @@ A szabad harcosok eloszlanak a kijelölt őrterületek között ahelyett, hogy m
 [experiment farm-areas]
 Termesztési területek
 [experiment farm-areas help]
-Termesztési területet ad a zónaecsetekhez. A benne arató munkások az összefüggő mező legérettebb mezejéről vesznek, és minden mezőn hagynak egy szemet, így a mező újranő ahelyett, hogy a szélétől felélnék. A területre benövő fát kivágják.
+Termesztési területet ad a zónaecsetekhez. A benne arató dolgozók az összefüggő mező legérettebb mezejéről vesznek, és minden mezőn hagynak egy szemet, így a mező újranő ahelyett, hogy a szélétől felélnék. A területre benövő fát kivágják.
 [settings Touch scrolling]
 Érintéses görgetés
 [settings List momentum]
@@ -3235,1419 +3235,1419 @@ Listák lendülete
 [List bounce]
 Listák visszapattanása
 [lan pairing field]
-
+A gazdagép párosítókódja (vagy megbízható WSS URL)
 [lan pairing connect]
-
+Párosítás és csatlakozás
 [lan discovery instructions]
-
+Válassz egy gazdagépet, majd illeszd be a párosítókódját a személyazonossága ellenőrzéséhez.
 [lan discovery unavailable]
-
+A helyi hálózati keresés nem érhető el. Ellenőrizd a helyi hálózati engedélyt, vagy illessz be egy párosítókódot.
 [lan discovered host %0]
-
+Talált gazdagép: %0 – párosítsd a játékok megtekintéséhez
 [lan connection unavailable]
-
+A LAN-gazdagép nem érhető el. Ellenőrizd a helyi hálózati engedélyt és a párosítókódot.
 [lan connection verification failed %0]
-
+Nem sikerült ellenőrizni a LAN-gazdagépet vagy csatlakozni hozzá: %0
 [lan lobby endpoint required]
-
+Használd a gazdagép előszobájának végpontját
 [settings Artwork]
-
+Grafika
 [settings Original]
-
+Eredeti
 [settings High resolution]
-
+Nagy felbontású
 [settings Clouds]
-
+Felhők
 [settings Show cloud cover above the map.]
-
+Felhőtakaró megjelenítése a térkép felett.
 [settings Cloud shadows]
-
+Felhőárnyékok
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Felhőárnyékok megjelenítése a talajon, a felhőtakarótól függetlenül.
 [settings Building particles]
-
+Épületrészecskék
 [settings Show smoke and other building particles.]
-
+Füst és más épületrészecskék megjelenítése.
 [settings Magic effects]
-
+Varázshatások
 [settings Choose animated magic effects or a simple visible effect.]
-
+Animált varázshatások vagy egyszerű, jól látható hatás.
 [settings Simple]
-
+Egyszerű
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+OpenGL megjelenítő szükséges hozzá. A mentett beállításod megmarad.
 [settings Interface appearance]
-
+Felület megjelenése
 [settings Panels]
-
+Panelek
 [settings Choose translucent or opaque interface panels.]
-
+Áttetsző vagy átlátszatlan felületpanelek.
 [settings Opaque]
-
+Átlátszatlan
 [settings Translucent]
-
+Áttetsző
 [settings Advanced graphics]
-
+Speciális grafika
 [settings Path lines]
-
+Útvonalak
 [settings Choose translucent or opaque unit path lines.]
-
+Áttetsző vagy átlátszatlan egységútvonalak.
 [settings Smooth progress indicators]
-
+Sima folyamatjelzők
 [settings Smooth the moving edges of progress indicators.]
-
+A folyamatjelzők mozgó széleinek simítása.
 [settings Decorative interface animation]
-
+Díszítő felületanimáció
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+A győzelmi kép animálása. A csökkentett mozgás ezt az animációt is kikapcsolja.
 [settings Smooth unit motion]
-
+Sima egységmozgás
 [settings Experimental: move and animate units between game ticks.]
-
+Kísérleti: az egységek mozgatása és animálása a játéklépések között.
 [settings Smooth fog of war]
-
+Sima háborús köd
 [settings Fade the map into and out of the fog of war gradually.]
-
+A térkép fokozatosan tűnik el a háború ködében és bukkan elő belőle.
 [settings Adaptive zoom detail]
-
+Nagyításfüggő részletesség
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Kicsinyítéskor egyszerűsíti a sávokat, zónákat, terepet és egységeket, nagyításkor pedig kicsiben tartja őket.
 [settings Text size]
-
+Szövegméret
 [settings Enlarge interface text without changing the map scale.]
-
+A felület szövegeinek nagyítása a térkép méretarányának módosítása nélkül.
 [Map momentum]
 Térkép lendülete
 [turn reconnecting]
-
+Megszakadt a kapcsolat a házigazdával. Újracsatlakozás...
 [turn waiting for players]
-
+Várakozás, amíg minden játékos betölt...
 [turn rejoining]
-
+Visszacsatlakozás a játékba...
 [turn catching up %0]
-
+Felzárkózás: %0 lépés lemaradás
 [turn player reconnecting %0]
-
+Újracsatlakozik: %0...
 [turn player lagging %0]
-
+Akadozik: %0
 [turn player resyncing %0]
-
+Felzárkózik: %0
 [turn player not connected %0]
-
+Még nem csatlakozott: %0
 [lan host left]
-
+A házigazda kilépett a játékból.
 [lan host lost]
-
+Megszakadt a kapcsolat a házigazdával.
 [lan version mismatch %0]
-
+A házigazda a Globulation 2 egy másik verzióját futtatja (%0).
 [lan cannot host %0]
-
+Nem sikerült LAN-játékot indítani: %0
 [play online]
-
+Online játék
 [Use in room]
-
+Használat a szobában
 [conn ai]
-
+MI
 [conn behind %0]
-
+Lemaradás: %0
 [conn behind explanation %0 %1]
-
+Lemaradás: mennyivel jár a játékos játéka a mérkőzés órája mögött; a késleltetést is tartalmazza. %0 alatt normális; %1 felett a játékos lassúnak számít.
 [conn behind]
-
+Lemaradás
 [conn card catching up]
-
+Felzárkózás
 [conn card colony works]
-
+A kolóniád magától dolgozik tovább: az egységek befejezik a feladataikat, az épületek tovább működnek.
 [conn card desync detail]
-
+Visszacsatlakozás a mérkőzés rögzítéséből, hogy azt lásd, amit mindenki más. Automatikusan jelentést küldtünk.
 [conn card desync]
-
+A játékod kiesett a szinkronból
 [conn card grace %0]
-
+A kolóniád magától dolgozik tovább: az egységek befejezik a feladataikat, az épületek tovább működnek. Ennyi időd van visszatérni, mielőtt kikerülsz a mérkőzésből: %0.
 [conn card input paused]
-
+Felzárkózás folyamatban · irányítás szüneteltetve
 [conn card lost]
-
+Megszakadt a kapcsolat
 [conn card progress %0 %1 %2]
-
+%0 % · %1 / %2 lépés
 [conn card reconnecting %0]
-
+Újracsatlakozás a mérkőzéshez… %0. kísérlet
 [conn card replaying %0]
-
+A kihagyott idő (%0) visszajátszása. A kép frissül, amikor utolérted a jelent.
 [conn card seconds left %0]
-
+kb. %0 mp van hátra
 [conn connections]
-
+Kapcsolatok
 [conn connection]
-
+Kapcsolat
 [conn delay explanation %0 %1]
-
+Késleltetés: a kattintásodtól a végrehajtásig eltelt idő, mindenki számára. A saját kapcsolatodtól függ, nem a többi játékosétól. %0 alatt jó, %1 felett gyenge.
 [conn fair]
-
+Közepes
 [conn good]
-
+Jó
 [conn grid legend]
-
+Négynél több játékos esetén a panel minden játékos pingjét ezredmásodpercben mutatja, vagy hogy hány másodperccel van lemaradva.
 [conn jitter %0]
-
+ingadozás: %0
 [conn leave match]
-
+Mérkőzés elhagyása
 [conn left]
-
+Kilépett
 [conn notice back %0]
-
+Visszatért: %0.
 [conn notice left %0]
-
+Kilépett a mérkőzésből: %0.
 [conn notice lost %0 %1]
-
+Megszakadt a kapcsolat: %0. A játék folytatódik; a kolóniája tovább dolgozik, amíg újracsatlakozik (hátralévő idő: %1).
 [conn ping explanation %0 %1]
-
+Ping: a játékos és a továbbító szerver közötti oda-vissza út ideje. %0 alatt jó, %1 felett gyenge.
 [conn ping]
-
+Ping
 [conn players]
-
+Játékosok
 [conn poor]
-
+Gyenge
 [conn reconnecting]
-
+Újracsatlakozás
 [conn relay %0]
-
+Továbbító: %0
 [conn resyncing]
-
+Visszacsatlakozás
 [conn slow]
-
+Lassú
 [conn unstable]
-
+instabil
 [conn waiting]
-
+Csatlakozás…
 [conn you %0]
-
+%0 (te)
 [conn you]
-
+Te
 [conn your delay %0]
-
+Késleltetésed: %0
 [hub account menu]
-
+Fiók
 [hub ai joins after %0]
-
+MI csatlakozik ennyi idő után: %0
 [hub all rooms]
-
+Összes
 [hub browse maps]
-
+Térképek böngészése
 [hub cant reach %0]
-
+Nem érhető el: %0.
 [hub change server]
-
+Szerver módosítása…
 [hub check code]
-
+Amikor kódot kér, ezt add meg:
 [hub code placeholder]
-
+Kód vagy meghívólink
 [hub connecting to %0]
-
+%0 · csatlakozás…
 [hub continue with %0]
-
+Folytatás ezzel: %0
 [hub create room]
-
+Szoba létrehozása
 [hub find match]
-
+Mérkőzés keresése
 [hub finish in browser]
-
+Fejezd be a bejelentkezést a böngésződben megnyílt oldalon.
 [hub free seat]
-
+Szabad hely
 [hub get update]
-
+Frissítés letöltése
 [hub guest kept on device]
-
+Vendég · ezen az eszközön tárolva
 [hub invalid code]
-
+Ez nem meghívókód vagy -link.
 [hub join by code]
-
+Csatlakozás kóddal
 [hub join code]
-
+Csatlakozási kód
 [hub join]
-
+Csatlakozás
 [hub leaderboard]
-
+Ranglista
 [hub linked %0]
-
+Kapcsolt fiókok · %0
 [hub linked accounts]
-
+Kapcsolt fiókok
 [hub maps]
-
+Térképek
 [hub no queues]
-
+Ezen a szerveren nincs gyorsmeccs-sor.
 [hub no rooms]
-
+Most nincs nyitott szoba. Hozz létre egyet, és oszd meg a meghívót.
 [hub offline at %0]
-
+%0 · nem elérhető
 [hub offline detail %0]
-
+Újrapróbálás %0 mp múlva. A gyorsmeccs és az online szobák nem érhetők el. A főmenü LAN-játékához nincs szükség erre a szerverre.
 [hub online at %0]
-
+%0 · elérhető
 [hub online settings]
-
+Online beállítások
 [hub online]
-
+Online
 [hub open page again]
-
+Oldal újbóli megnyitása
 [hub open rooms]
-
+Nyitott szobák
 [hub page opened at %0]
-
+Megnyitva: %0. A játékban semmit sem kell begépelned, magától bejelentkeztet.
 [hub queues unavailable]
-
+A gyorsmeccs akkor jelenik meg, amikor a szerver válaszol.
 [hub quick match unavailable]
-
+A gyorsmeccs ebben a verzióban még nem érhető el.
 [hub quick match]
-
+Gyorsmeccs
 [hub ranked]
-
+Rangsorolt
 [hub recent matches]
-
+Legutóbbi mérkőzések
 [hub refresh]
-
+Frissítés
 [hub retry now]
-
+Újrapróbálás most
 [hub room match]
-
+Szoba
 [hub room name %0]
-
+Szoba – %0
 [hub room]
-
+Szoba
 [hub seats %0 %1]
-
+%0/%1 hely
 [hub server %0]
-
+Szerver: %0
 [hub sign in browser]
-
+Bejelentkezési oldal megnyitása
 [hub sign in conflict]
-
+Ez a bejelentkezés már egy másik fiókhoz tartozik.
 [hub sign in failed %0]
-
+A bejelentkezés nem fejeződött be (%0).
 [hub sign in intro]
-
+Jelentkezz be vagy hozz létre fiókot a böngésződben. A vendégként játszott mérkőzéseid veled jönnek.
 [hub sign in]
-
+Bejelentkezés
 [hub sign out]
-
+Kijelentkezés ezen az eszközön
 [hub signed in as %0]
-
+Bejelentkezve: %0.
 [hub signed in on %0]
-
+Bejelentkezve itt: %0
 [hub signing in]
-
+Bejelentkezés…
 [hub sim %0]
-
+szim. %0
 [hub unrated]
-
+Nem rangsorolt
 [hub update required at %0]
-
+%0 · frissítés szükséges
 [hub update required detail %0]
-
+%0 újabb verziót futtat, így ez a példány a frissítéséig nem csatlakozhat online játékokhoz. A LAN-játékok továbbra is működnek.
 [hub update required]
-
+Frissítés szükséges
 [hub server behind]
-
+Szerverfrissítés függőben
 [hub server behind at %0]
-
+%0 · szerverfrissítés függőben
 [hub server behind detail %0]
-
+Ez a példány újabb, mint amire a szervert (%0) frissítették. Az online játékok a szerver frissítése után nyílnak meg. A LAN-játékok továbbra is működnek.
 [hub version mismatch]
-
+Eltérő verzió
 [hub version mismatch at %0]
-
+%0 · eltérő verzió
 [hub version mismatch detail %0]
-
+%0 a játék eltérő verzióját futtatja, így ez a példány nem csatlakozhat online játékokhoz. A LAN-játékok továbbra is működnek.
 [hub versus %0]
-
+ellenfél: %0
 [match ai]
-
+MI
 [match downloading map %0]
-
+Térkép letöltése: %0
 [match failed]
-
+A mérkőzést nem sikerült elindítani.
 [match leave]
-
+Kilépés
 [match loading]
-
+A játék betöltése
 [Loading game graphics]
-
+A játék grafikájának betöltése
 [match map cached]
-
+már megvan ezen az eszközön
 [match map]
-
+A térkép letöltése
 [match relay %0]
-
+Csatlakozva a továbbítóhoz: %0
 [match seat confirmed]
-
+Hely megerősítve
 [match starting]
-
+Mérkőzés indítása
 [match tip flags]
-
+Tipp: a felderítő zászlók felderítőket küldenek a térkép feltárására; a hadizászlók összegyűjtik a harcosaidat.
 [match tip input]
-
+Tipp: a parancsaid a saját késleltetésed után érnek el mindenkihez; a többi játékos kapcsolata nem lassít téged.
 [match tip select]
-
+Tipp: kattints duplán egy épületre az összes azonos típusú épület kijelöléséhez.
 [match waiting for players]
-
+Várakozás minden játékosra
 [match you %0]
-
+%0 (te)
 [match player map]
-
+térkép
 [match player loading]
-
+betöltés
 [match player connecting]
-
+csatlakozás
 [match player ready]
-
+kész
 [match player left]
-
+kilépett
 [results back to online]
-
+Vissza az online menübe
 [results back to room]
-
+Vissza a szobába
 [results defeat]
-
+Vereség
 [results ladder rating %0]
-
+Pontszám (%0)
 [results left]
-
+Kiléptél a mérkőzésből
 [results match over]
-
+A mérkőzés véget ért
 [results match page]
-
+Mérkőzés oldala
 [results minutes %0]
-
+%0 perc
 [results no change]
-
+nincs változás
 [results ranked]
-
+Rangsorolt
 [results recording]
-
+Eredmény rögzítése…
 [results room unrated]
-
+Szobamérkőzés · nem rangsorolt
 [results saved to history]
-
+Elmentve az előzményeid közé
 [results seconds %0]
-
+%0 mp
 [results unverifiable]
-
+A szerver nem tudta reprodukálni ezt a mérkőzést, ezért senkinek a pontszámába nem számít bele. Kivizsgálásra jelentettük; neked nincs teendőd.
 [results verified provisional]
-
+Ellenőrizve · ideiglenes
 [results verified]
-
+Ellenőrizve
 [results verifying detail]
-
+A szerver visszajátssza a mérkőzést az ellenőrzéshez. Általában egy percen belül kész.
 [results verifying]
-
+Eredmény ellenőrzése…
 [results victory]
-
+Győzelem
 [room address]
-
+Cím
 [room ai %0]
-
+MI: %0
 [room browser pairing]
-
+Böngészős párosítás
 [room catalog map]
-
+Katalógustérkép
 [room change map]
-
+Térkép módosítása…
 [room change rules]
-
+Szabályok módosítása…
 [room chat]
-
+Csevegés
 [room closed seat detail]
-
+A házigazda lezárta
 [room closed seat]
-
+Lezárva
 [room colonies]
-
+Kolóniák
 [room connecting]
-
+Csatlakozás a szobához…
 [room copy]
-
+Másolás
 [room disconnected]
-
+nincs kapcsolat
 [room downloading %0]
-
+Térkép letöltése: %0 %
 [room downloading map]
-
+A térkép letöltése…
 [room expired]
-
+A szoba bezárult.
 [room generated on server]
-
+Egyszer generálva a szerveren, így mindenki pontosan ezen a térképen játszik.
 [room guest]
-
+vendég
 [room host %0]
-
+házigazda: %0
 [room host closed]
-
+A házigazda bezárta a szobát.
 [room host]
-
+házigazda
 [room humans vs ai]
-
+Emberek az MI ellen
 [room invite code %0]
-
+Kód: %0 · megnyílik az alkalmazásban, telefonon vagy böngészőben
 [room invite not found]
-
+Ez a meghívó lejárt vagy nem létezik.
 [room invite only]
-
+Csak meghívóval
 [room invite]
-
+Meghívás
 [room joining on network]
-
+Csatlakozás ezen a hálózaton
 [room lan badge]
-
+Helyi hálózat · nem rangsorolt
 [room lan list hint %0]
-
+Az azonos hálózaton lévők a főmenü LAN-játékok listájában látják: %0.
 [room leave]
-
+Kilépés
 [room map changed %0]
-
+A térkép megváltozott: %0.
 [room map failed]
-
+A térképet nem sikerült előkészíteni
 [room match label]
-
+Szoba
 [room member joined %0]
-
+Csatlakozott: %0.
 [room member left %0]
-
+Kilépett: %0.
 [room member ready %0]
-
+Kész: %0.
 [room needs two seats]
-
+Hívj meg egy barátot, vagy adj hozzá egy MI-t az indításhoz
 [room no map]
-
+Még nincs térkép
 [room not ready]
-
+Nem kész
 [room open for a person]
-
+Nyitott emberi játékosnak
 [room open seat detail]
-
+Bárki elfoglalhatja, akinél ott a meghívó
 [room open seat]
-
+Szabad hely
 [room person]
-
+Ember
 [room preparing map]
-
+Térkép előkészítése a szerveren…
 [room public]
-
+Nyilvános
 [room ready?]
-
+Kész
 [room ready]
-
+✓ Kész
 [room remove from room]
-
+Eltávolítás a szobából
 [room rule off]
-
+Ki
 [room rule on]
-
+Be
 [room rules changed]
-
+A szabályok megváltoztak.
 [room rules]
-
+Szabályok
 [room say something]
-
+Írj valamit…
 [room seat hint]
-
+A játékosok maguk is átülhetnek egy szabad helyre. A csapat módosításával kiegyensúlyozhatod az erőket.
 [room seat options]
-
+Hely beállításai
 [room seats summary %0 %1 %2]
-
+%0 játékos · %1 MI · %2 szabad
 [room seats]
-
+Helyek
 [room seed]
-
+Kezdőérték
 [room send]
-
+Küldés
 [room set by host]
-
+A házigazda állítja be
 [room share text %0]
-
+Csatlakozz a Globulation 2 szobámhoz: %0
 [room share]
-
+Megosztás…
 [room size]
-
+Méret
 [room starting match]
-
+A mérkőzés indítása…
 [room take seat]
-
+Hely elfoglalása
 [room team %0]
-
+%0. csapat
 [room update required]
-
+Ez a szoba a játék egy másik verzióját használja. Frissíts a csatlakozáshoz.
 [room uploaded map]
-
+Feltöltött térkép
 [room waiting for %0]
-
+Várakozás, amíg kész lesz: %0
 [room waiting for you]
-
+Nyomd meg a Kész gombot, ha felkészültél
 [room match over]
-
+A mérkőzés véget ért. Jelezz készenlétet egy újabb körhöz!
 [room waiting for host]
-
+Várakozás, hogy a házigazda elindítsa
 [room waiting for players %0]
-
+Várakozás a játékosokra (még nem kész: %0)
 [room who can find it]
-
+Ki találhatja meg
 [room you created]
-
+Létrehoztad a szobát.
 [room you joined %0]
-
+Csatlakoztál: %0.
 [room you were removed]
-
+A házigazda eltávolított a szobából.
 [room you]
-
+te
 [settings Online]
-
+Online
 [settings Another server]
-
+Másik szerver
 [settings Check]
-
+Ellenőrzés
 [settings Checking…]
-
+Ellenőrzés…
 [settings Choose which server you play on and how you sign in to it.]
-
+Válaszd ki, melyik szerveren játszol, és hogyan jelentkezel be rá.
 [settings Connecting…]
-
+Csatlakozás…
 [settings Could not reach this server.]
-
+Ez a szerver nem érhető el.
 [settings Display name saved.]
-
+Megjelenített név elmentve.
 [settings Display name]
-
+Megjelenített név
 [settings Download or delete my data]
-
+Fiókom törlése
 [settings Enter an https:// address.]
-
+Adj meg egy https:// címet.
 [settings Finish in your browser. It shows the code %0.]
-
+Fejezd be a böngésződben: amikor kéri, írd be ezt a kódot: %0.
 [settings Forget]
-
+Elfelejtés
 [settings Guests keep a generated name; sign in to choose one.]
-
+A vendégek generált nevet kapnak; jelentkezz be, hogy sajátot választhass.
 [settings Link]
-
+Összekapcsolás
 [settings Not a Globulation 2 server.]
-
+Ez nem Globulation 2 szerver.
 [settings Not linked]
-
+Nincs összekapcsolva
 [settings Not signed in.]
-
+Nem vagy bejelentkezve.
 [settings Open]
-
+Megnyitás
 [settings Opens your account page on %0.]
-
+Megnyitja a fiókoldaladat itt: %0, ahol törölheted a fiókot.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Közösség, klub vagy saját magad által üzemeltetett. Illeszd be a címét.
 [settings Save]
-
+Mentés
 [settings Server]
-
+Szerver
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Megjelenik a szobákban, mérkőzéseken és a ranglistán. 30 naponta egyszer módosítható.
 [settings Sign in with: %0 · queues: %1]
-
+Bejelentkezés: %0 · sorok: %1
 [settings Sign out on this device]
-
+Kijelentkezés ezen az eszközön
 [settings Sign out]
-
+Kijelentkezés
 [settings Switch to this server]
-
+Váltás erre a szerverre
 [settings The last sign-in method can't be unlinked.]
-
+Az utolsó bejelentkezési mód nem választható le.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+A Globulation 2 hivatalos szervere · rangsorolt sorok, ranglisták, térképkatalógus
 [settings Unlink]
-
+Leválasztás
 [settings Unlinking is done on the account page.]
-
+A leválasztás a fiókoldalon történik.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Új vendég leszel, amíg újra be nem jelentkezel. A fiókod és a mérkőzéseid a szerveren maradnak.
 [settings Your account on %0]
-
+Fiókod itt: %0
 [settings compatible with this version]
-
+kompatibilis ezzel a verzióval
 [settings connected]
-
+csatlakozva
 [settings connecting…]
-
+csatlakozás…
 [settings guest]
-
+vendég
 [settings linked]
-
+összekapcsolva
 [settings plays another version]
-
+más verziót futtat
 [settings trusted]
-
+megbízható
 [settings used before]
-
+korábban használt
 [settings you were %0 there]
-
+ott ez volt a neved: %0
 [trust invited to room %0]
-
+Meghívás a szobába: %0
 [trust join as guest]
-
+Csatlakozás vendégként
 [trust not official]
-
+Ezt a szervert nem a Globulation 2 projekt üzemelteti.
 [trust remember]
-
+Szerver megjegyzése
 [trust separate identity %0]
-
+Ott vendégként csatlakozol. A fiókod (%0), a pontszámod és az előzményeid változatlanok maradnak.
 [trust title]
-
+Csatlakozol egy játékhoz egy másik szerveren?
 [trust what it sees]
-
+A szerver látja a megjelenített nevedet, a kapcsolatod címét és az általad rajta játszott játékokat.
 [settings not connected]
-
+nincs csatlakozva
 [settings Open Play online to connect.]
-
+A csatlakozáshoz nyisd meg az Online játék menüt.
 [hub code]
-
+Kód
 [results draw]
-
+Döntetlen
 [qm 2 vs 2]
-
+2 a 2 ellen
 [qm 1 vs 1]
-
+1 az 1 ellen
 [qm ping about]
-
+Ping kb.
 [qm ranked]
-
+Rangsorolt
 [qm casual %0]
-
+Barátságos %0
 [qm rated]
-
+Rangsorolt
 [qm unrated]
-
+Nem rangsorolt
 [qm solo queue]
-
+egyéni sor
 [qm ai joins after %0]
-
+MI csatlakozik ennyi idő után: %0
 [qm fair maps %0]
-
+Térképek: %0
 [qm cooldown %0]
-
+Elutasítottál egy mérkőzést. Ennyi idő múlva kereshetsz újra: %0.
 [qm sign in to play ranked]
-
+A rangsorolt sorok bejelentkezett fiókoknak szólnak; előbb jelentkezz be.
 [online update required]
-
+A játék ezen verziója túl régi a szerverhez; frissíts az online játékhoz.
 [online server behind]
-
+A szervert még nem frissítették erre a verzióra; az online játék a frissítés után nyílik meg.
 [online version mismatch]
-
+A szerver a játék eltérő verzióját futtatja; ezzel a példánnyal nem érhető el az online játék.
 [qm already searching]
-
+Már keresel, vagy mérkőzésben vagy.
 [online connection problem]
-
+A szerver nem érhető el.
 [qm find match]
-
+Mérkőzés keresése
 [qm opponents rated %0 to %1]
-
+Ellenfelek pontszáma: %0–%1
 [qm region %0]
-
+Régió: %0
 [qm searching]
-
+Keresés
 [qm measuring relays]
-
+Továbbítók mérése
 [qm joining queue]
-
+Belépés a sorba
 [qm waiting for a person]
-
+Várakozás emberi játékosra: az MI-ellenfelek ki vannak kapcsolva.
 [qm ai in %0 rated]
-
+Ha senki sem található, a pontszámban hozzád legközelebb álló MI ellen játszol ennyi idő múlva: %0
 [qm ai in %0]
-
+Ha senki sem található, ennyi idő múlva MI csatlakozik: %0
 [qm ai after %0]
-
+Ha senki sem található, ennyi idő múlva MI veszi át a helyet: %0
 [qm allow ai short]
-
+MI engedélyezése
 [qm allow ai]
-
+MI-ellenfél engedélyezése
 [qm cancel]
-
+Mégse
 [qm cancel search]
-
+Keresés megszakítása
 [qm usual wait %0]
-
+szokásos várakozás: %0
 [qm widening]
-
+várakozás közben bővül
 [qm ais are rated]
-
+(rangsorolt: az MI-knek is van pontszámuk)
 [qm opponent declined]
-
+Az ellenfeled nem fogadta el. Visszakerültél a sor elejére.
 [qm %0 did not accept]
-
+Nem fogadta el: %0. Visszakerültél a sor elejére.
 [qm start failed]
-
+A mérkőzést nem sikerült elindítani. Újra keresel.
 [qm you declined]
-
+Elutasítottad a mérkőzést. Rövid várakozás után kereshetsz újra.
 [qm you did not answer]
-
+Nem fogadtad el időben. Rövid várakozás után kereshetsz újra.
 [qm search ended]
-
+A keresés véget ért.
 [qm try again]
-
+Újra
 [online connecting]
-
+Csatlakozás…
 [qm no queues]
-
+Ezen a szerveren nincs gyorsmeccs-sor.
 [qm quick match]
-
+Gyorsmeccs
 [qm phone searching note]
-
+A keresés akkor is folytatódik, ha elhagyod ezt a képernyőt.
 [qm phone intro]
-
+Válassz egy sort lent; a keresés böngészés közben is fut.
 [qm online]
-
+Online
 [qm keeps running note]
-
+A keresés akkor is folytatódik, ha elhagyod ezt a képernyőt.
 [qm ai]
-
+MI
 [qm provisional]
-
+ideiglenes
 [qm accepted]
-
+✓ elfogadva
 [qm declined]
-
+elutasítva
 [qm waiting]
-
+várakozás…
 [qm ai badge]
-
+MI
 [qm match found]
-
+Megvan a mérkőzés
 [qm playing an ai]
-
+MI elleni játék
 [qm vs]
-
+vs.
 [qm ai explanation rated]
-
+A pontszámtartományodban senki sem keresett. A pontszámban hozzád legközelebb álló MI ellen játszol; az eredmény a te és az MI pontszámába is beleszámít.
 [qm ai explanation]
-
+Senki sem keresett. A pontszámban hozzád legközelebb álló MI ellen játszol; ez a játék nem rangsorolt.
 [qm casual explanation]
-
+A mérkőzés azonnal indul; a barátságos játékok nem rangsoroltak.
 [qm accepted button]
-
+Elfogadva
 [qm accept]
-
+Elfogadás
 [qm decline]
-
+Elutasítás
 [qm both must accept]
-
+Mindkét félnek el kell fogadnia
 [qm accept explanation]
-
+Mindkét játékosnak el kell fogadnia. Ha elutasítod vagy lejár az idő, a sor végére kerülsz.
 [qm starting in %0]
-
+Indulás: %0…
 [qm preparing match]
-
+A mérkőzés előkészítése…
 [qm match assigned %0 %1]
-
+A(z) %0 mérkőzés készen áll itt: %1, de ez a változat még nem tud online mérkőzésekhez csatlakozni.
 [online jan]
-
+jan.
 [online feb]
-
+febr.
 [online mar]
-
+márc.
 [online apr]
-
+ápr.
 [online may]
-
+máj.
 [online jun]
-
+jún.
 [online jul]
-
+júl.
 [online aug]
-
+aug.
 [online sep]
-
+szept.
 [online oct]
-
+okt.
 [online nov]
-
+nov.
 [online dec]
-
+dec.
 [profile win letter]
-
+Gy
 [profile loss letter]
-
+V
 [profile draw letter]
-
+D
 [profile history unavailable]
-
+Ez a szerver még nem kínál mérkőzés-előzményeket.
 [profile downloading replay]
-
+A visszajátszás letöltése…
 [profile no replay]
-
+Ehhez a mérkőzéshez nem érhető el visszajátszás.
 [profile room with %0]
-
+Szoba · %0 kolónia
 [profile with %0 vs %1]
-
+szövetségesek: %0 · ellenfelek: %1
 [profile vs %0]
-
+ellenfél: %0
 [profile room]
-
+Szoba
 [profile casual]
-
+Barátságos
 [profile ai filled]
-
+MI-vel kiegészítve
 [profile provisional %0 games]
-
+ideiglenes · %0 játék
 [profile unrated]
-
+nem rangsorolt
 [profile checking]
-
+ellenőrzés…
 [profile %0 min]
-
+%0 perc
 [profile match page]
-
+Mérkőzés oldala
 [profile replay]
-
+Visszajátszás
 [profile win rate last %0]
-
+Győzelmi arány, utolsó %0
 [profile %0 w %1 l %2 d]
-
+%0 Gy · %1 V · %2 döntetlen
 [profile typical game]
-
+Tipikus játék
 [profile median length]
-
+medián játékhosszod
 [profile best map]
-
+Legjobb térkép
 [profile %0 w %1 l]
-
+%0 Gy · %1 V
 [profile no rated games]
-
+Játssz egy rangsorolt mérkőzést, hogy pontszámot kapj.
 [profile all]
-
+Összes
 [profile rooms]
-
+Szobák
 [profile vs ai]
-
+MI ellen
 [profile matches]
-
+Mérkőzések
 [online loading]
-
+Betöltés…
 [profile no matches]
-
+Még nincsenek mérkőzések.
 [online load more]
-
+Továbbiak betöltése
 [profile title]
-
+Profil
 [profile guest]
-
+vendég
 [profile playing since %0]
-
+játszik: %0 óta
 [profile full profile web]
-
+Teljes profil a weben
 [profile replays note]
-
+A visszajátszások megnyitáskor töltődnek le a szerverről; a helyben mentettek a Játék betöltése → Visszajátszások alatt maradnak.
 [profile web profile]
-
+Webes profil
 [maps most played]
-
+Legtöbbet játszott
 [maps most liked]
-
+Legkedveltebb
 [maps newest]
-
+Legújabb
 [maps most downloaded]
-
+Legtöbbet letöltött
 [maps any size]
-
+Bármilyen méret
 [maps up to 128]
-
+Legfeljebb 128 × 128
 [maps 256]
-
+Kb. 256 × 256
 [maps 512 and larger]
-
+512 és nagyobb
 [maps report broken]
-
+Nem működik
 [maps report offensive]
-
+Sértő
 [maps report copyright]
-
+Más munkája
 [maps report other]
-
+Egyéb
 [maps public]
-
+Nyilvános
 [maps unlisted]
-
+Nem listázott
 [maps private]
-
+Privát
 [maps cannot read file]
-
+A térképfájl nem olvasható.
 [maps file too large]
-
+A térképfájl túl nagy a megosztáshoz.
 [maps saved for next room]
-
+A térkép letöltve; szoba megnyitásakor ezt fogod használni.
 [maps download failed]
-
+A térképet nem sikerült letölteni.
 [maps %0 colonies]
-
+%0 kolónia
 [maps version %0]
-
+%0. verzió
 [maps updated %0]
-
+frissítve: %0
 [maps downloading]
-
+A térkép letöltése…
 [maps like needs account]
-
+Térképek kedveléséhez be kell jelentkezned.
 [maps report sent]
-
+Köszönjük; a moderátorok megvizsgálják.
 [maps select a map]
-
+Válassz egy térképet a részletek megtekintéséhez.
 [maps by %0]
-
+készítő: %0
 [maps stats %0 %1 %2]
-
+▶ %0 játék · ⬇ %1 letöltés · ♥ %2
 [maps use in room]
-
+Használat szobában
 [maps liked]
-
+Kedvelve
 [maps like]
-
+Kedvelés
 [maps map page]
-
+Térkép oldala
 [maps reported]
-
+Jelentve
 [maps report]
-
+Jelentés…
 [maps report why]
-
+Mi a gond ezzel a térképpel?
 [maps search placeholder]
-
+Térképek vagy készítők keresése
 [maps none found]
-
+Nincs egyező térkép.
 [maps any colonies]
-
+Bármennyi kolónia
 [maps checking]
-
+Ellenőrzés…
 [maps no version yet]
-
+Még nincs feltöltött verzió.
 [maps rejected]
-
+Elutasítva
 [maps did not load %0]
-
+A térkép nem töltődött be: %0
 [maps unknown reason]
-
+nincs megadott ok
 [maps fix and upload again]
-
+javítsd ki a szerkesztőben, majd töltsd fel újra
 [maps uploaded just now]
-
+épp most feltöltve
 [maps loading on server]
-
+betöltés a szerveren
 [maps %0 plays]
-
+%0 játék
 [maps hidden]
-
+Rejtett
 [maps upload again]
-
+Újrafeltöltés…
 [maps delete]
-
+Törlés
 [maps update]
-
+Frissítés…
 [maps upload a map]
-
+Térkép feltöltése…
 [maps upload hint]
-
+.map fájlok a térképmappádból vagy a szerkesztőből
 [maps no maps yet]
-
+Még nem osztottál meg térképet.
 [maps my maps]
-
+Térképeim
 [maps my maps %0]
-
+Térképeim (%0)
 [maps browse]
-
+Böngészés
 [maps title]
-
+Térképek
 [maps browse note %0]
-
+Katalógus: %0 · csak az ebben a verzióban betölthető térképek láthatók
 [maps visibility note]
-
+A nyilvános térképek a Böngészés lapon jelennek meg. A nem listázott térképek a szobáidban és a linkjükkel működnek. A privát térképek csak a saját szobáidban.
 [maps use %0]
-
+Használat: %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Cím
 [maps field description]
-
+Leírás
 [maps who can use it]
-
+Ki használhatja
 [maps guests unlisted]
-
+Vendégként nem listázott és privát térképeket oszthatsz meg; a Böngészésben való közzétételhez jelentkezz be.
 [maps visibility help]
-
+A nem listázott térképek a szobáidban és a linkjükkel működnek; a nyilvánosak a Böngészés lapon is megjelennek.
 [maps new version of %0]
-
+A fájl feltöltése új verzióként ehhez: %0.
 [maps upload]
-
+Feltöltés
 [maps uploading]
-
+Feltöltés…
 [maps checking detail]
-
+A szerver betölti a térképet és elkészíti az előnézetét. Addig a térkép nem használható.
 [maps ready]
-
+Kész
 [maps ready public]
-
+A térkép kész, és megjelenik a Böngészés lapon.
 [maps ready unlisted]
-
+A térkép kész. A nem listázott térképek a szobáidban és a linkjükkel működnek.
 [maps ready private]
-
+A térkép kész. A privát térképek csak a saját szobáidban működnek.
 [maps upload failed]
-
+A feltöltés nem sikerült
 [maps server read %0 %1]
-
+A szerver szerint: %0, %1 kolóniával.
 [maps continue in background]
-
+Bezárás
 [maps upload a map title]
-
+Térkép feltöltése
 [maps update map title]
-
+Térkép frissítése
 [maps upload note]
-
+A szerver minden feltöltést betölt, mielőtt használható lenne.
 [online just now]
-
+épp most
 [online today %0]
-
+ma %0
 [online yesterday]
-
+tegnap
 [online sun]
-
+V
 [online mon]
-
+H
 [online tue]
-
+K
 [online wed]
-
+Sze
 [online thu]
-
+Cs
 [online fri]
-
+P
 [online sat]
-
+Szo
 [online %0 weeks ago]
-
+%0 hete
 [online %0 months ago]
-
+%0 hónapja
 [online %0 years ago]
-
+%0 éve
 [maps share online]
-
+Megosztás online…
 [maps mine]
-
+Sajátjaim
 [results waiting for players]
-
+Várakozás, amíg a többi játékos kilép…
 [results waiting detail]
-
+Az eredmény rögzítése akkor történik, amikor mindenki kilépett a mérkőzésből.
 [results waiting slow]
-
+Ha egy játékos kapcsolata megszakadt, legfeljebb 3 perce van visszatérni. Az eredmény megjelenik az előzményeidben és a mérkőzés oldalán.
 [results verifying slow]
-
+Az ellenőrzés a szokásosnál tovább tart. Az eredmény megjelenik az előzményeidben és a mérkőzés oldalán.
 [results rematch]
-
+Visszavágó
 [results join rematch %0]
-
+Csatlakozás a visszavágóhoz: %0
 [hub profile history]
-
+Profil és előzmények
 [hub my maps]
-
+Térképeim
 [hub leaderboard %0]
-
+Ranglista · %0
 [hub leaderboard empty]
-
+Még nincsenek rangsorolt játékosok.
 [hub guests not ranked]
-
+A vendégek nem kerülnek rangsorba. Jelentkezz be, hogy itt megjelenj.
 [hub full leaderboard]
-
+Teljes ranglista
 [settings %0 is no longer linked.]
-
+Leválasztva: %0.
 [room map read failed]
-
+Ez a térképfájl nem olvasható.
 [room map upload failed]
-
+A térképet nem sikerült megosztani a szobával.
 [room map upload failed %0]
-
+A térképet nem sikerült megosztani a szobával: %0
 [room uploading map]
-
+A térkép megosztása a szobával…
 [room premade map shared]
-
+A szobában mindenki ezen a térképfájlon játszik; a mérkőzés előtt letöltődik.
 [room take a seat to play]
-
+Foglalj el egy szabad helyet a játékhoz
 [room waiting for a seat]
-
+Minden hely foglalt. Elfoglalhatsz egyet, amikor felszabadul.
 [room not seated]
-
+Nincs helye
 [room copied]
-
+Másolva
 [room copy failed]
-
+Nem sikerült másolni
 [room closed title]
-
+A szoba bezárult
 [room removed title]
-
+Eltávolítva a szobából
 [room back to online]
-
+Vissza az online menübe
 [leave match]
-
+Mérkőzés elhagyása
 [leave match title]
-
+Elhagyod a mérkőzést?
 [leave lan title]
-
+Elhagyod ezt a LAN-játékot?
 [leave rated body]
-
+Elveszíted ezt a rangsorolt mérkőzést, és csökken a pontszámod. A többiek tovább játszanak, te pedig nem térhetsz vissza.
 [leave casual body]
-
+Ez a gyorsmeccs vereségnek számít. A többiek tovább játszanak, te pedig nem térhetsz vissza.
 [leave room body]
-
+Elhagyod a szoba mérkőzését, és ez vereségként kerül az előzményeidbe. A többiek tovább játszanak, te pedig nem térhetsz vissza.
 [leave lan body]
-
+A többiek nélküled játszanak tovább, és nem térhetsz vissza ebbe a játékba.
 [leave match confirm]
-
+Kilépés
 [keep playing]
-
+Játék folytatása
 [results team]
-
+Csapat
 [results quick unrated]
-
+Gyorsmeccs · nem rangsorolt
 [conn card cannot keep up]
-
+Az eszközöd nem bírja a mérkőzés tempóját
 [conn card cannot keep up body]
-
+Lassabban játssza vissza a mérkőzést, mint ahogy az zajlik, így nem fog felzárkózni. Elhagyhatod a mérkőzést, vagy csökkentheted a grafikai beállításokat, és várhatsz tovább.
 [conn card not gaining]
-
+nem zárkózik fel
 [results reason opponents left]
-
+Az ellenfeleid elhagyták a mérkőzést.
 [results reason victory]
-
+Minden ellenséges kolónia vereséget szenvedett.
 [results reason defeat]
-
+A kolóniád vereséget szenvedett.
 [results reason you left]
-
+Elhagytad a mérkőzést. Ez vereségnek számít.
 [results final after end]
-
+A végeredmény a mérkőzés vége után.
 [pause none left]
-
+Nincs több szünet
 [pause game left %0]
-
+Szünet (még %0)
 [pause by %0]
-
+Szüneteltette: %0
 [pause by %0 resumes in %1]
-
+Szüneteltette: %0 · folytatás: %1 múlva
 [turn too many actions]
-
+Túl sok művelet: néhány még küldésre vár
 [turn no pauses left]
-
+Ebben a mérkőzésben nincs több szüneted
 [turn pause time used %0]
-
+%0 felhasználta az összes szünetidejét: a játék folytatódik
 [room seats one person %0 %1]
-
+1 játékos · %0 MI · %1 szabad
 [room rules otherwise standard]
-
+Minden más szabály az Alapértelmezett szerint.
 [room browser link]
-
+Link a böngészős játékosoknak
 [room browser link hint]
-
+A böngészőben játszók ezt a linket illesztik be a csatlakozáshoz.
 [room browser link code %0]
-
+A böngészőben játszók ezt a linket illesztik be a csatlakozáshoz. A játékuk ezt a kódot mutatja: %0.
 [room copy link]
-
+Link másolása
 [room lan open seat detail]
-
+Bárki elfoglalhatja ezen a hálózaton
 [room close title]
-
+Bezárod a szobát?
 [room close body one]
-
+Ha kilépsz, a szoba mindenki számára bezárul, a benne lévő másik játékosnak is.
 [room close body %0]
-
+Ha kilépsz, a szoba mindenki számára bezárul, a benne lévő többi játékosnak (%0) is.
 [room close confirm]
-
+Szoba bezárása
 [room stay]
-
+Maradok
 [room colours changed]
-
+Az új térkép új színeket adott a helyeknek. Indítás előtt nézd meg a sajátodat.
 [room copy by hand]
-
+A másolás nem sikerült. Másold ki magad a meghívót:
 [room copy by hand close]
-
+Bezárás
 [room copy by hand touch]
-
+Érintsd meg és tartsd lenyomva a linket, majd válaszd a Másolás lehetőséget.
 [room copy by hand keys]
-
+A link ki van jelölve: nyomd meg a Ctrl+C billentyűket (Macen ⌘C).
 [room code]
-
+Kód
 [online under a minute]
-
+kevesebb mint egy perc
 [online about %0 min]
-
+kb. %0 perc
 [online %0 s]
-
+%0 mp
 [online %0 min %1 s]
-
+%0 perc %1 mp
 [qm ai opponent %0]
-
+MI-ellenfél: %0
 [match relay connected]
-
+Csatlakozva a játékszerverhez
 [room picker title]
-
+Térkép választása
 [room picker for one]
-
+A szobában lévő 1 játékosnak
 [room picker for %0]
-
+A szobában lévő %0 játékosnak
 [room picker generated]
-
+Generált
 [room picker premade]
-
+Előre készült
 [room picker catalog]
-
+Katalógus
 [room picker size]
-
+Méret
 [room picker colonies]
-
+Kolóniák
 [room picker fair]
-
+Egyenlő kezdés minden kolóniának
 [room picker does not fit]
-
+Nem fér el ebben a méretben; próbálj másikat
 [room picker preparing]
-
+Az előnézet készítése…
 [room picker generated note]
-
+Minden táj egyformán jó kezdést ad minden kolóniának, és a szerver mindenkinek ugyanazt a térképet készíti el.
 [room picker players %0]
-
+%0 játékos
 [room picker unreadable]
-
+nem olvasható
 [room picker no premade]
-
+Nem található előre készült térkép.
 [room picker too small %0]
-
+Ezen a térképen kevesebb kolónia van, mint a szobában lévő játékosok száma (%0).
 [room picker pick premade]
-
+Válassz egy térképet, hogy itt lásd.
 [room picker catalog intro]
-
+Más játékosok által megosztott térképek. Nyiss meg egyet, és válaszd a Használat szobában lehetőséget.
 [room picker browse catalog]
-
+Megosztott térképek böngészése
 [room picker more options]
-
+További lehetőségek…
 [room picker use]
-
+Térkép használata
 [room map ready title %0]
-
+Játék: %0
 [room map ready unnamed]
-
+ez a térkép
 [room map ready body]
-
+Hozz létre egy szobát, és hívd meg a barátaidat: a szoba ezen a térképen játszik.
 [game draw]
-
+Döntetlen
 [settings Show colony skins]
 Kolóniák kinézetének megjelenítése
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Kikapcsolva ezen az eszközön a klasszikus egységek, rajok és épületszínek jelennek meg.
 [settings Hive Mind]
-
+Kaptártudat
 [settings Enable commander shortcuts]
-
+Parancsnoki billentyűparancsok
 [settings Command your colony without opening a menu.]
-
+Irányítsd a kolóniádat menü megnyitása nélkül.
 [settings Allow supervision for new commands]
-
+Felügyelet engedélyezése új parancsokhoz
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+A parancsnok nyomon követheti az állandó parancsokat. A követés kreditet használ; a már beállított parancsok kredit nélkül is futnak tovább.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Alapértelmezett billentyűparancsok: Ctrl+Enter parancs kiadásához; Ctrl+Shift+Enter a parancsnok leállításához. Az Irányítás alatt módosíthatók. Az állandó parancsok kártyáin külön szüneteltetés és megszakítás gomb van.
 [settings Commander account and credits]
-
+Parancsnoki fiók és kreditek
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+A krediteket és vásárlásokat a böngésződben kezelheted. A parancsnok segítsége rangsorolt játékban is megengedett.
 [open commander]
-
+Parancsnok megnyitása
 [stop commander]
-
+Parancsnok leállítása
 [settings Recording]
-
+Felvétel
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Rögzítsd játékaidat hangos MP4 videóként. A felvételhez FFmpeg kell libx264 és AAC kódolóval.
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
 
 [settings FFmpeg is ready.]
-
+Az FFmpeg készen áll.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+Az FFmpeg nem érhető el, ezért a felvétel ki van kapcsolva. Telepítsd az FFmpeget, győződj meg róla, hogy szerepel a PATH-ban, majd ellenőrizd újra.
 [settings Check for FFmpeg again]
-
+FFmpeg újbóli keresése
 [settings Checking for FFmpeg…]
-
+FFmpeg keresése…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Gyorsbillentyű: %0. Menükben és a szerkesztőben is működik.
 [settings Change the hotkey]
-
+Gyorsbillentyű módosítása
 [settings Recordings are saved in %0]
-
+A felvételek mentési helye: %0
 [toggle recording]
-
+Felvétel indítása/leállítása
 [File selection is unavailable.]
-
+A fájlválasztás nem érhető el.
 [Saving custom AI…]
-
+Egyéni MI mentése…
 [Could not read the selected JavaScript file.]
-
+A kiválasztott JavaScript-fájl nem olvasható.
 [Custom AI library saved.]
-
+Egyéni MI-könyvtár elmentve.
 [Storage could not be saved. The previous library is retained.]
-
+A tárolót nem sikerült menteni. Az előző könyvtár megmarad.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importálj egy JavaScript MI-fájlt, majd válaszd ki helyi játék beállításakor.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Az importálás másolatot tárol a Glob2-ben. A frissítés lecseréli ezt a másolatot a jövőbeli játékokhoz; a mentések megtartják eredeti MI-jüket.
 [Waiting for file selection or storage…]
-
+Várakozás a fájlválasztásra vagy a tárolóra…
 [Import JavaScript AI]
-
+JavaScript MI importálása
 [Link development file]
-
+Fejlesztői fájl csatolása
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+A csatolt fájlok beolvasása a játék indulásakor történik. Új játék indítása előtt fordítsd újra. A csatolás eltávolítása sosem törli a fájlodat.
 [Example AI and authoring guide]
-
+Példa MI és fejlesztői útmutató
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Még nincsenek egyéni MI-k. Kezdésként importálj egy csomagolt .js fájlt.
 [Relink]
-
+Újracsatolás
 [Update]
-
+Frissítés
 [Validate]
-
+Ellenőrzés
 [AI startup and persistent globals are valid.]
-
+Az MI indítása és a tartós globális változók érvényesek.
 [Remove from library]
-
+Eltávolítás a könyvtárból
 [AI telemetry]
-
+MI-telemetria
 [No accessible AI telemetry.]
-
+Nincs elérhető MI-telemetria.
 [Search fields]
-
+Mezők keresése
 [Telemetry unavailable for this recording or controller.]
-
+Ehhez a felvételhez vagy irányítóhoz nem érhető el telemetria.
 [Linked]
-
+Csatolt
 [Imported]
-
+Importált
 [Player]
-
+Játékos
 [Updated at tick %0]
-
+Frissítve: %0. lépés
 [No values published yet.]
-
+Még nincsenek közzétett értékek.
 [No fields match your search.]
-
+Egy mező sem felel meg a keresésnek.
 [settings Custom AIs]
-
+Egyéni MI-k
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+JavaScript MI-ket a Beállítások → Egyéni MI-k alatt adhatsz hozzá. Minden kolónia MI-választójában megjelennek.
 [Missing custom AI]
-
+Hiányzó egyéni MI
 [Map repetition failed]
-
+Ez a térkép nem ismételhető. Használj szkript nélküli kezdőtérképet, vagy csökkentsd az ismétlések és bázisok számát.
 [repeat map horizontally]
 Térkép ismétlése vízszintesen
 [repeat map vertically]
@@ -4657,594 +4657,594 @@ bázis
 [bases per colony]
 Bázisok kolóniánként; egy bázis a megrajzolt térkép egy csapata, épületeivel és egységeivel
 [stat group population]
-
+Népesség
 [stat group food]
-
+Élelem és jólét
 [stat group resources]
-
+Nyersanyagok
 [stat group buildings]
-
+Épületek
 [stat group military]
-
+Katonaság
 [stat group map]
-
+Terület
 [stat group score]
-
+Pontszám
 [stat overview]
-
+Áttekintés
 [stat overview about]
-
+Az egyes kolóniák adatai a teljes mérkőzésre. Ahol a több a jobb, a legmagasabb érték ki van emelve; kattints egy oszlopfejlécre, hogy lásd, hogyan változott az idővel.
 [stat population]
-
+Népesség
 [stat population about]
-
+A kolónia élő egységeinek száma: dolgozók, felderítők és harcosok együtt.
 [stat births]
-
+Született egységek
 [stat births about]
-
+Milyen gyorsan termeltek új egységeket a rajok. Bontsd fel, hogy külön lásd a dolgozókat, felderítőket és harcosokat.
 [stat deaths]
-
+Elveszett egységek
 [stat deaths about]
-
+Milyen gyorsan veszített egységeket a kolónia, bármi okból: harc, éhezés, tisztítás közbeni sérülés vagy csapdába esés.
 [stat net growth]
-
+Népességnövekedés
 [stat net growth about]
-
+A született egységek mínusz az elveszettek. Nulla felett a kolónia növekedett, nulla alatt fogyott.
 [stat death causes]
-
+Halálokok
 [stat death causes about]
-
+Mibe haltak bele a kolónia egységei: harc, éhezés, nyersanyagok tisztítása közbeni sérülés, kiút nélküli csapdába esés vagy egyéb okok.
 [stat conversions]
-
+Nettó áttérítés
 [stat conversions about]
-
+Más kolóniáktól átcsábított egységek mínusz a hozzájuk átállt egységek. Az egységek oldalt váltanak, ha egy másik kolónia jobban eteti őket.
 [stat hunger]
-
+Élelemtartalék
 [stat hunger about]
-
+Mennyi élelmet hordtak magukban a kolónia egységei. Minden egységet az alapján sorolunk be, mennyi maradt az élelemtartalékából: majdnem üres (legfeljebb negyed), alacsony (legfeljebb fél), félig teli (legfeljebb háromnegyed) vagy jóllakott. Az egységek a tartalékuk fogyásával étkezdét keresnek, így egy kolóniában mindig van néhány alacsony tartalékú.
 [stat health]
-
+Egészség
 [stat health about]
-
+Mennyire voltak egészségesek a kolónia egységei. Minden egységet az alapján sorolunk be, mennyi életerőpontja maradt: kritikus (legfeljebb negyed), sebesült (legfeljebb fél), sérült (legfeljebb háromnegyed) vagy egészséges.
 [stat seeking food]
-
+Élelmet kereső egységek
 [stat seeking food about]
-
+Egységek, amelyek abbahagyták a munkát, hogy étkezdét keressenek. Amelyek közülük nincsenek teljes egészségben, gyengülőnek számítanak.
 [stat in care]
-
+Evő vagy gyógyuló egységek
 [stat in care about]
-
+Étkezdében evő vagy kórházban gyógyuló egységek, amelyek így nem dolgoznak.
 [stat wheat harvested]
-
+Learatott búza
 [stat wheat harvested about]
-
+A dolgozók által begyűjtött búzarakományok. Az étkezdék búzából készítenek ételt.
 [stat wheat stored]
-
+Tárolt búza
 [stat wheat stored about]
-
+A kolónia épületeiben lévő búza, felszolgálásra vagy felhasználásra készen.
 [stat meals]
-
+Felszolgált étkezések
 [stat meals about]
-
+A kolónia étkezdéiben felszolgált étkezések, saját egységeknek és más kolóniákból érkező látogatóknak.
 [stat starvation]
-
+Éhhalálok
 [stat starvation about]
-
+Egységek, amelyek meghaltak, mert nem találtak időben élelmet.
 [stat healing]
-
+Visszaadott életerő
 [stat healing about]
-
+A kolónia kórházai által a sebesült egységeknek visszaadott életerőpontok.
 [stat gathered]
-
+Begyűjtött nyersanyagok
 [stat gathered about]
-
+A dolgozók által begyűjtött összes nyersanyag rakományai. Bontsd fel, hogy minden nyersanyagot külön láss.
 [stat stored]
-
+Tárolt nyersanyagok
 [stat stored about]
-
+A kolónia épületeiben lévő nyersanyagok. Bontsd fel, hogy minden nyersanyagot külön láss.
 [stat spending]
-
+Nyersanyag-felhasználás
 [stat spending about]
-
+Mire mentek el a beszállított nyersanyagok: étkezésekre, új egységekre, toronylőszerre, új épületekre vagy fejlesztésekre.
 [stat delivered]
-
+Beszállított nyersanyagok
 [stat delivered about]
-
+A dolgozók által épületekbe szállított rakományok.
 [stat traded]
-
+Nettó kereskedelem
 [stat traded about]
-
+Piacokon kapott nyersanyagok mínusz az odaadottak.
 [stat buildings]
-
+Álló épületek
 [stat buildings about]
-
+A kolónia kész épületei. Bontsd fel, hogy minden épülettípust külön láss.
 [stat construction]
-
+Elvégzett építési munka
 [stat construction about]
-
+Elvégzett építési munka: új épületek, fejlesztések és javítások.
 [stat buildings lost]
-
+Elveszett épületek
 [stat buildings lost about]
-
+Ellenség által lerombolt vagy a kolónia által lebontott épületek.
 [stat blocked buildings]
-
+Megközelíthetetlen épületek
 [stat blocked buildings about]
-
+Épületek, amelyek bejárata el volt zárva, így az egységek nem tudtak be- vagy kijutni.
 [stat attack]
-
+Támadóerő
 [stat attack about]
-
+A kolónia harcosainak összesített harci ereje pontszámban: milyen erősen és milyen gyorsan sebeznek.
 [stat defence]
-
+Védelmi erő
 [stat defence about]
-
+A kolónia védőtornyainak összesített tűzereje pontszámban.
 [stat hit points]
-
+Összes életerőpont
 [stat hit points about]
-
+A kolónia összes egységének és épületének életerőpontjai összeadva.
 [stat damage dealt]
-
+Okozott sebzés
 [stat damage dealt about]
-
+A kolónia által az ellenséges egységeknek és épületeknek okozott sebzés. Bontsd fel, hogy külön lásd a harcosokat, a varázslatot és a tornyokat.
 [stat damage taken]
-
+Elszenvedett sebzés
 [stat damage taken about]
-
+Az ellenség által a kolónia egységeinek és épületeinek okozott sebzés.
 [stat damage traded]
-
+Sebzésmérleg
 [stat damage traded about]
-
+Okozott sebzés mínusz elszenvedett sebzés. Nulla felett a kolónia nyerte a harcait.
 [stat combat deaths]
-
+Harcban megölt egységek
 [stat combat deaths about]
-
+A kolónia ellenség által megölt egységei. Bontsd fel, hogy külön lásd a dolgozókat, felderítőket és harcosokat.
 [stat accuracy]
-
+Találatok
 [stat accuracy about]
-
+A kolónia tornyai és felderítői által leadott lövések közül a célba találók aránya.
 [stat training]
-
+Képzés
 [stat training about]
-
+Egységek látogatásai iskolákban, laktanyákban, versenypályákon és úszómedencékben képességek elsajátításához.
 [stat skills]
-
+Megszerzett képességek
 [stat skills about]
-
+A kolónia egységei által képzéssel szerzett képességszintek.
 [stat growth nearby]
-
+Nyersanyag-növekedés a kolónia körül
 [stat growth nearby about]
-
+Mennyi búza, fa és egyéb nyersanyag nőtt a kolónia épületeitől 32 mezőn belül, növekedési pontban, nem rakományban mérve. Bontsd fel, hogy lásd, milyen közel nőttek az otthonhoz.
 [stat growth map]
-
+Nyersanyag-növekedés a térképen
 [stat growth map about]
-
+Mennyi nyersanyag nőtt a térkép bármely pontján, növekedési pontban, nem rakományban mérve. Ez minden kolóniánál ugyanannyi.
 [stat stranded]
-
+Mozgásképtelen egységek
 [stat stranded about]
-
+Bekerített egységek, amelyeknek nincs szabad mező, ahová léphetnének.
 [stat cleared]
-
+Eltakarított nyersanyagok
 [stat cleared about]
-
+A dolgozók által a tisztítási területeken helycsinálás céljából eltávolított nyersanyagok.
 [stat prestige]
-
+Presztízs
 [stat prestige about]
-
+A kolónia presztízse, amelyet a legmagasabb szintű épületek hoznak. A presztízscélú mérkőzés a cél elérésekor véget ér.
 [stat band combat]
-
+Harc
 [stat band starvation]
-
+Éhezés
 [stat band clearing]
-
+Tisztítási sérülések
 [stat band trapped]
-
+Csapdába esett
 [stat band other]
-
+Egyéb
 [stat band starving]
-
+Majdnem üres
 [stat band hungry]
-
+Alacsony
 [stat band peckish]
-
+Félig teli
 [stat band fed]
-
+Jóllakott
 [stat band critical]
-
+Kritikus
 [stat band wounded]
-
+Sebesült
 [stat band hurt]
-
+Sérült
 [stat band healthy]
-
+Egészséges
 [stat band weakening]
-
+Gyengülő
 [stat band looking]
-
+Étkezdét keres
 [stat band eating]
-
+Eszik
 [stat band healing]
-
+Gyógyul
 [stat band meals]
-
+Étkezések
 [stat band new units]
-
+Új egységek
 [stat band ammunition]
-
+Lőszer
 [stat band construction]
-
+Új épületek
 [stat band upgrades]
-
+Fejlesztések
 [stat band built]
-
+Felépítve
 [stat band upgraded]
-
+Fejlesztve
 [stat band repaired]
-
+Javítva
 [stat band destroyed]
-
+Lerombolva
 [stat band demolished]
-
+Lebontva
 [stat band melee]
-
+Harcosok
 [stat band magic]
-
+Varázslat
 [stat band towers]
-
+Tornyok
 [stat band within 8]
-
+8 mezőn belül
 [stat band 8 to 16]
-
+8–16 mező
 [stat band 16 to 32]
-
+16–32 mező
 [stat unit units]
-
+egységek
 [stat unit wheat]
-
+búza
 [stat unit meals]
-
+étkezések
 [stat unit hit points]
-
+életerőpont
 [stat unit resources]
-
+nyersanyagok
 [stat unit buildings]
-
+épületek
 [stat unit strength]
-
+pontszám
 [stat unit damage]
-
+sebzés
 [stat unit shots]
-
+lövések
 [stat unit visits]
-
+látogatások
 [stat unit skills]
-
+képességszintek
 [stat unit prestige]
-
+presztízs
 [stat axis percent of %0]
-
+%0 aránya, %
 [stat axis share of all teams]
-
+az összes kolónia százalékában
 [stat axis percent of units]
-
+a kolónia egységeinek százalékában
 [stat axis %0 per minute per 100 units]
-
+%0 percenként, a kolónia 100 egységére
 [stat axis %0 per 100 units]
-
+%0 a kolónia 100 egységére
 [stat axis %0 per minute]
-
+%0 percenként
 [stat axis %0 so far]
-
+%0, göngyölített összeg
 [stat axis %0 minute average]
-
+%0 perces átlag
 [stat view per minute]
-
+Percenként
 [stat view total]
-
+Összesen
 [stat view %0 min]
-
+%0 perc
 [stat view split]
-
+Fajta szerint
 [stat view percentages]
-
+Százalékban
 [stat view percent of units]
-
+A kolónia százalékában
 [stat view per 100 units]
-
+Kolóniamérethez viszonyítva
 [stat view share]
-
+Arány az összes kolónián belül
 [stat view highlight none]
-
+Kiemelés: nincs
 [stat column peak units]
-
+Csúcslétszám
 [stat column born]
-
+Született
 [stat column lost]
-
+Elveszett
 [stat column wheat]
-
+Búza
 [stat column damage dealt]
-
+Okozott sebzés
 [stat column damage taken]
-
+Kapott sebzés
 [stat column built]
-
+Épült
 [stat column buildings lost]
-
+Elveszett épületek
 [stat column prestige]
-
+Presztízs
 [stat marker wiped out]
-
+utolsó egység elveszett
 [stat marker first combat death]
-
+első harcban megölt egység
 [stat marker first building destroyed]
-
+első lerombolt épület
 [stat not recorded for this match]
-
+Ezt a statisztikát nem rögzítettük ennél a mérkőzésnél.
 [results reason beyond doubt]
-
+Az eredmény már nem volt kétséges.
 [stat per minute short]
-
+/perc
 [stat page colony]
-
+Kolónia
 [stat page %0 of %1]
-
+%0/%1 >
 [stat band workers]
-
+Dolgozók
 [stat band explorers]
-
+Felderítők
 [stat band warriors]
-
+Harcosok
 [stat unit deaths]
-
+halálesetek
 [stat unit growth]
-
+növekedés
 [stat view by unit type]
-
+Egységtípus szerint
 [stat view by state]
-
+Állapot szerint
 [stat view by resource]
-
+Nyersanyag szerint
 [stat view by building]
-
+Épület szerint
 [stat view by work]
-
+Munkafajta szerint
 [stat view by cause]
-
+Ok szerint
 [stat view by weapon]
-
+Fegyver szerint
 [stat view by distance]
-
+Távolság szerint
 [stat nothing to show]
-
+Nincs mit mutatni: ez nem történt meg ebben a mérkőzésben.
 [stat %0 nothing]
-
+%0 (nincs)
 [Match]
-
+Mérkőzés
 [Time limit]
-
+Időkorlát
 [Alliances can change]
-
+Változó szövetségek
 [Reveal terrain]
-
+Terep felfedése
 [Starting unit level]
-
+Egységek kezdőszintje
 [Starting stockpile]
-
+Kezdőkészlet
 [Regrowth]
-
+Újranövés
 [Building strength]
-
+Épületek ellenállása
 [Wounded units retreat]
-
+Sebesültek visszavonulása
 [Units can die]
-
+Az egységek meghalhatnak
 [Unit training]
-
+Egységképzés
 [No stockpile]
-
+Nincs
 [No glass cannon]
-
+Kikapcsolva
 [How quickly harvested resources grow back and spread.]
-
+Milyen gyorsan nőnek vissza és terjednek a kitermelt nyersanyagok.
 [Units must eat to keep working.]
-
+Az egységeknek enniük kell, hogy dolgozni tudjanak.
 [Summary]
-
+Összegzés
 [All rules]
-
+Minden szabály
 [Show all rules]
-
+Minden szabály megjelenítése
 [Choose a ruleset]
-
+Szabálykészlet választása
 [Reset to %0]
-
+Visszaállítás: %0
 [ruleset one change %0]
-
+%0 + 1 módosítás
 [ruleset changes %0 %1]
-
+%0 + %1 módosítás
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Ez a mérkőzés nem érhet véget. Kapcsold be a presztízsgyőzelmet, vagy állíts be időkorlátot.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Presztízs általában 13–28 perc után jelenik meg, így a 30 perces korlát gyakran döntetlennel zárul.
 [Blitz]
-
+Villámháború
 [ruleset blitz description]
-
+Gyors kezdés, korai vége
 [Gentle]
-
+Kíméletes
 [ruleset gentle description]
-
+Elnéző szabályok az első mérkőzéshez
 [Sandbox]
-
+Homokozó
 [ruleset sandbox description]
-
+Nincs harc, nincs éhezés, bármi építhető
 [Bloodbath]
-
+Vérfürdő
 [ruleset bloodbath description]
-
+Törékeny, rettenthetetlen seregek
 [Siege]
-
+Ostrom
 [ruleset siege description]
-
+Erődfalak és hosszú háborúk
 [Lean years]
-
+Szűk esztendők
 [ruleset lean years description]
-
+A nyersanyagok alig nőnek vissza
 [Gold rush]
-
+Aranyláz
 [ruleset gold rush description]
-
+Ami a térképen van, az minden
 [Elite ranks]
-
+Elit alakulatok
 [ruleset elite ranks description]
-
+Képzetten kezdenek, tovább nem tanulnak
 [Shifting alliances]
-
+Változó szövetségek
 [ruleset shifting alliances description]
-
+Változó csapatok egy 60 perces versenyben
 [Probability victory]
-
+Valószínűségi győzelem
 [Off (play it out)]
-
+Kikapcsolva (végigjátszás)
 [95% sure]
-
+95% biztos
 [97% sure]
-
+97% biztos
 [99% sure]
-
+99% biztos
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Véget vet a mérkőzésnek, amikor a modell eléri a kiválasztott bizonyosságot. A nézők a statisztikában láthatják a becsült győzelmi esélyeket.
 [Changed from %0: %1]
-
+Eredeti érték (%0): %1
 [Combat is off, so the rules below have no effect.]
-
+A harc ki van kapcsolva, így az alábbi szabályoknak nincs hatásuk.
 [%0 more rules are at their Standard values.]
-
+További %0 szabály az Alapértelmezett értékén áll.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+A játékosok kezdettől látják a térkép terepét; az ellenséges egységek rejtve maradnak.
 [Each team starts with extra resources in its shared pool.]
-
+Minden csapat extra nyersanyagokkal kezd a közös készletében.
 [Units hit harder but have less HP and armor.]
-
+Az egységek nagyobbat ütnek, de kevesebb az életerejük és a páncéljuk.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+A csapatok megtámadhatják egymást. Kapcsold ki egy békés mérkőzéshez.
 [Hurt units go back to heal instead of fighting to the death.]
-
+A sérült egységek visszamennek gyógyulni ahelyett, hogy halálig harcolnának.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Az egységek meghalnak, ha elfogy az életerejük. Kikapcsolva 1 életerőpontnál megállnak.
 [Units gain levels at schools.]
-
+Az egységek az iskolákban szintet lépnek.
 [stat group work]
-
+Dolgozók ideje
 [stat worker time]
-
+Mivel töltötték idejüket a dolgozók
 [stat worker time about]
-
+Mit csináltak a kolónia dolgozói pillanatról pillanatra: dolgoztak egy épületért vagy egy zászlónál, tanultak, ettek, gyógyultak, éhesen vagy sérülten vártak, mert nem volt szabad étkezde vagy kórház, vagy tétlenül álltak munka nélkül. Egy egészséges kolóniában a dolgozók többsége dolgozik, kevés a tétlen, és senki sem vár.
 [stat idle workers]
-
+Tétlen dolgozók
 [stat idle workers about]
-
+A dolgozók idejének az a része, amikor nem volt dolguk. Magas érték esetén több a dolgozó, mint a munka; közel nulla esetén minden dolgozó elfoglalt, és munkák várakozhatnak.
 [stat work by job]
-
+Min dolgoztak a dolgozók
 [stat work by job about]
-
+Hány dolgozó látta el az egyes épületfajtákat: rajokat (új egységekhez), étkezdéket (ételekhez), épülő vagy fejlesztés alatt álló épületeket, vagy egyéb épületeket, például tornyokat, iskolákat és laktanyákat.
 [stat haul distance]
-
+Távolság a nyersanyagoktól
 [stat haul distance about]
-
+Átlagosan milyen messze volt egy gyűjtő dolgozó az általa ellátott épülettől, légvonalban, térképmezőkben mérve.
 [stat hauling]
-
+Gyűjtés és szállítás
 [stat hauling about]
-
+Hogyan oszlottak meg az épületeket ellátó dolgozók: nyersanyaghoz gyalogolnak, kitermelik, visszaviszik, vagy leadják, illetve elérhető nyersanyagra várnak. Az idő nagy része gyaloglás, így minél közelebb vannak a nyersanyagok, annál több munka készül el.
 [stat eating time]
-
+Enni induló dolgozók
 [stat eating time about]
-
+Hány dolgozó volt távol a munkától evés miatt: étkezdébe gyalogolt, ott evett, vagy éhes volt, de egyik étkezde sem tudta fogadni. Ha a dolgozók étkezde nélkül maradnak, a kolónia kinőtte étkezdéit vagy azok élelmét.
 [stat inn distance]
-
+Távolság az étkezdétől
 [stat inn distance about]
-
+Az éhes dolgozók útjuk során átlagosan milyen messze voltak a céljukul szolgáló étkezdétől, légvonalban, térképmezőkben mérve. Egy teljes út nagyjából ennek kétszerese. Magas érték esetén az étkezdék messze vannak a dolgozók munkahelyétől.
 [stat warriors]
-
+Harcosok
 [stat warriors about]
-
+Hány harcosa volt a kolóniának. Bontsd fel, hogy lásd, hányan voltak otthon, egy ellenséges kolónia közelében vagy nyílt terepen. A mindkét kolóniához közeli terep otthonnak számít.
 [stat warrior level]
-
+Harcosok átlagos támadási szintje
 [stat warrior level about]
-
+A kolónia harcosainak átlagos támadási szintje, a támadási sebességet és erőt egyenlő súllyal számolva, a játékban látható 1–4-es skálán. A laktanyák növelik; az új, képzetlen harcosok lehúzzák.
 [stat warrior duties]
-
+Mit csináltak a harcosok
 [stat warrior duties about]
-
+Hogyan oszlottak meg a kolónia harcosai: hadizászlóhoz küldöttek, a harcból kórházba távozó súlyos sérültek (a gyógyulók is) és a szabadok.
 [stat intruders]
-
+Ellenséges harcosok otthon
 [stat intruders about]
-
+Hány ellenséges harcos volt a kolónia épületeitől 16 mezőn belül. Ahol két kolónia közel van egymáshoz, mindkettő a másik védőit is beszámítja.
 [stat home defence]
-
+Otthoni védelem erőfölénye
 [stat home defence about]
-
+A kolónia saját harcosainak ereje az épületei közelében, mínusz az ott lévő ellenséges harcosoké, minden harcost és minden támadási szintjét beszámítva. Nulla alatt a kolónia otthon alulmaradt.
 [stat combat death places]
-
+Hol estek el egységek harcban
 [stat combat death places about]
-
+Hol voltak a kolónia egységei, amikor megölték őket: saját épületeik közelében, egy ellenség épületei közelében vagy a kolóniák közötti nyílt terepen. Az otthoni veszteségek azt jelentik, hogy a kolóniát támadták; az ellenséges kolóniánál elszenvedettek azt, hogy ő támadott. A mindkét kolóniához közeli terep otthonnak számít.
 [stat band working]
-
+Dolgozik
 [stat band flag work]
-
+Zászlónál
 [stat band idle]
-
+Tétlen
 [stat band training]
-
+Tanul
 [stat band unserved]
-
+Nincs szabad étkezde vagy kórház
 [stat band swarms]
-
+Rajok
 [stat band inns]
-
+Étkezdék
 [stat band sites]
-
+Építés és fejlesztés
 [stat band other buildings]
-
+Egyéb épületek
 [stat band to resource]
-
+Úton a nyersanyaghoz
 [stat band harvesting]
-
+Kitermelés
 [stat band carrying]
-
+Visszaszállítás
 [stat band delivering]
-
+Leadás vagy várakozás
 [stat band walking to inn]
-
+Úton az étkezdébe
 [stat band no inn]
-
+Nincs szabad étkezde
 [stat band at home]
-
+Otthon
 [stat band at enemy]
-
+Ellenséges kolóniánál
 [stat band in the open]
-
+Nyílt terepen
 [stat band war flag]
-
+Hadizászlónál
 [stat band seeking healing]
-
+Gyógyulni indul
 [stat band free]
-
+Szabad
 [stat unit workers]
-
+dolgozók
 [stat unit worker time]
-
+dolgozói idő
 [stat unit working workers]
-
+épületeket ellátó dolgozók
 [stat unit squares]
-
+mezők
 [stat unit warriors]
-
+harcosok
 [stat unit attack level]
-
+támadási szint
 [stat unit enemy warriors]
-
+ellenséges harcosok
 [stat unit strength count]
-
+erő
 [stat view by place]
-
+Hely szerint
