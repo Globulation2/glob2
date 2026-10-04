@@ -46,6 +46,7 @@ ENGINE_TESTS = [
     ('CortexPolicyCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('ScriptCompatibilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'ScriptIntegrationTest.cpp',
+    'AITelemetryDialogTest.cpp',
     'HiveIntegrationTest.cpp',
     'ScriptPresentationTest.cpp',
     'ScriptEditorTest.cpp',
@@ -149,6 +150,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    'FontMetricsTest.cpp',
     'PackedArrayTest.cpp',
     'EventQueueTest.cpp',
     'MapGeneratorGoldenCoverageTest.cpp',
