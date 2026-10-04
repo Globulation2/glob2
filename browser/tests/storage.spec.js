@@ -80,9 +80,13 @@ test('restore failure is explained before entering the game', async ({page},info
     const open=IDBFactory.prototype.open;
     window.restoreFault={attempts:0};
     IDBFactory.prototype.open=function(...args){
-      ++restoreFault.attempts;
-      if(!sessionStorage.getItem('restoreFaultDisabled'))
-        throw new DOMException('Injected storage refusal','SecurityError');
+      // Emscripten also opens a database for its asset cache. This fault and
+      // retry count belong to the mounted save directory only.
+      if(args[0]==='/home/web_user'){
+        ++restoreFault.attempts;
+        if(!sessionStorage.getItem('restoreFaultDisabled'))
+          throw new DOMException('Injected storage refusal','SecurityError');
+      }
       return open.apply(this,args);
     };
   });
