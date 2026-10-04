@@ -120,7 +120,13 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	// draw unit
 	Sprite *unitSprite = skin.sprite;
-	unitSprite->setBaseColor(entities.owner(*unit).color);
+	auto color = entities.owner(*unit).color;
+	// Software rendering keeps classic sprites, tinted with the colony's
+	// authorized skin color just like its buildings and classic swarm.
+	if (!(globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU))
+		if (const auto chosen = view.render.skinPreview().buildingColor(unit->team))
+			color = GAGCore::Color((*chosen >> 16) & 255, (*chosen >> 8) & 255, *chosen & 255);
+	unitSprite->setBaseColor(color);
 	int decX = (unitSprite->getW(imgid)-32)>>1;
 	int decY = (unitSprite->getH(imgid)-32)>>1;
 	// Too far out to make a unit out, it becomes a marker of constant size:
@@ -136,7 +142,6 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
 	if (detail.unitMarker > 0)
 	{
-		const GAGCore::Color &color = entities.owner(*unit).color;
 		const bool warrior = unit->typeNum==WARRIOR, explorer = unit->typeNum==EXPLORER;
 		view.render.overlays.marker(*globalContainer->gfx, px+16, py+16,
 			warrior ? MapOverlayQueue::Triangle : explorer ? MapOverlayQueue::Diamond : MapOverlayQueue::Dot,
