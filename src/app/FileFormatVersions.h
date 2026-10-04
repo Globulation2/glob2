@@ -91,9 +91,6 @@ static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
-/// The "with markets" twin of each resource gradient travels with the map
-/// runtime state, like the plain one.
-static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 134;
 
 //! The map's topology generation and each cached field's generation stamp
 //! (MapIO.cpp:350, 410, 451, 514).
@@ -195,3 +192,7 @@ static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 130;
 //! Worker time use, combat-death place and assignment, and the defence snapshot in
 //! gameplay measurements (diagnostic only; older saves start them at load).
 static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;
+
+/// The "with markets" twin of each resource gradient travels with the map
+/// runtime state, like the plain one.
+static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 134;

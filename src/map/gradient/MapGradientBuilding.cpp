@@ -170,8 +170,7 @@ void Map::updateRoundTripGradient(Building *building, int resourceType, int swim
 	assert(gradient);
 	building->roundTripGradientStep[resourceType][swimClass]=game->stepCounter;
 	const Uint16 *toBuilding=building->globalGradient[swimClass];
-	// Building::fetchesFromMarkets, spelled out: the YOG server links the map
-	// but not the building code.
+	// Markets replenish from natural resource tiles; other buildings may use stock.
 	const bool withMarkets=!building->type->canExchange;
 	const Uint16 *toResource=getResourceGradient(building->owner->teamNumber, resourceType, swimClass, withMarkets);
 	// Same obstacles as the resource gradient. A resource tile is seeded with

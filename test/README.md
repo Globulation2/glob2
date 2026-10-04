@@ -1613,3 +1613,15 @@ hiring pool when at least 20% of its team's living workers are idle. Below that
 threshold it keeps its building and selects the next delivery. Run it with
 `python3 test/run_tests.py --filter 'GigRelease/*'`; the inclusive threshold and
 busy-colony continuation are covered in the engine test registry.
+
+## Market fetching
+
+`MarketFetch` covers hiring and arrival at stocked markets, preference for a
+nearer natural resource, stock exhaustion, and binary/text preservation of market
+fields and pending gradient publications. Non-market buildings use these fields;
+markets themselves fetch from natural resources. The market fields participate
+in the existing one-field-per-tick round robin and optional fixed-delay gradient
+pipeline. Stock transitions invalidate pending market snapshots and request a
+refresh. Format 134 saves these fields and their scheduling flags; older saves
+load without them and allocate them on first use. Run
+`python3 test/run_tests.py --filter 'MarketFetch/*'`.
