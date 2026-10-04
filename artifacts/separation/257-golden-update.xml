@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.640882" status="run" />
+  </testsuite></testsuites>

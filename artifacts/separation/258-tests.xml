@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="95" failures="0" errors="0" skipped="1"><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.005331" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.002946" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.005348" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.002856" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.063271" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.003059" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="parallel fields" time="0.041206" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.004216" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.002814" status="run" />
+  </testsuite><testsuite name="ClearingFlagGradient"><testcase classname="ClearingFlagGradient" name="basic switches; all fruit; empty tiles; padding independence and swimming variants" time="0.007742" status="run" />
+  </testsuite><testsuite name="HiringBucket"><testcase classname="HiringBucket" name="hiring round is fair" time="0.002405" status="run" />
+  </testsuite><testsuite name="ImmobileUnitGradient"><testcase classname="ImmobileUnitGradient" name="fresh map has no immobile units" time="0.003656" status="run" />
+  <testcase classname="ImmobileUnitGradient" name="immobile unit blocks its own tile" time="0.003659" status="run" />
+  <testcase classname="ImmobileUnitGradient" name="painting forbidden area refreshes gradients" time="0.003592" status="run" />
+  </testsuite><testsuite name="InnSwap"><testcase classname="InnSwap" name="a good booking stays" time="0.003267" status="run" />
+  <testcase classname="InnSwap" name="the later booker trades with the one it would cross" time="0.0154" status="run" />
+  </testsuite><testsuite name="LevelGate"><testcase classname="LevelGate" name="completed buildings hire any worker while sites keep the schooling gate" time="0.004184" status="run" />
+  </testsuite><testsuite name="MapGradientInvalidation"><testcase classname="MapGradientInvalidation" name="forbidden edits invalidate exactly the affected fields and preserve the rest" time="0.575434" status="run" />
+  </testsuite><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/deliverer stays attached and fetches the next market delivery" time="0.002761" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="1.63779" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/stocked markets are resource goals, depleted markets are not" time="0.01057" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="0.892032" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.003817" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.008213" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.004223" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.011699" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.002886" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.005518" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.002417" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.006011" status="run" />
+  </testsuite><testsuite name="ResourceFetchTarget"><testcase classname="ResourceFetchTarget" name="a depleted target is refreshed after its gradient rebuild for every swim class" time="0.0044" status="run" />
+  </testsuite><testsuite name="RoundTripHungerGate"><testcase classname="RoundTripHungerGate" name="a unit is judged on the walk to the resource" time="0.002322" status="run" />
+  <testcase classname="RoundTripHungerGate" name="the fallback scores a whole round trip" time="0.002574" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="10.2685" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="1.31946" status="run" />
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="0.67338" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact team histories preserve samples across two batch boundaries" time="0.136585" status="run" />
+  <testcase classname="TeamStatsSave" name="Compact telemetry retains every sample across chunk boundaries" time="1.04561" status="run" />
+  <testcase classname="TeamStatsSave" name="combat deaths are attributed by place and assignment" time="0.004913" status="run" />
+  <testcase classname="TeamStatsSave" name="defence snapshot counts warriors by place and enemy warriors at home" time="0.004219" status="run" />
+  <testcase classname="TeamStatsSave" name="every live worker-tick lands in exactly one labour bucket" time="0.00269" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="0.054162" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="0.013836" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="0.007313" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.025556" status="run" />
+  <testcase classname="TeamStatsSave" name="place lookup agrees with a brute-force scan of every building tile" time="0.024345" status="run" />
+  <testcase classname="TeamStatsSave" name="places: own buildings first, then enemies; allies, flags and new buildings do not count" time="0.006597" status="run" />
+  <testcase classname="TeamStatsSave" name="measurement screenshots [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.319217" status="run" />
+  </testsuite><testsuite name="FieldGradient"><testcase classname="FieldGradient" name="Distance FIFO preserves order through wrap growth and scratch reuse" time="0.00109" status="run" />
+    <testcase classname="FieldGradient" name="Uniform fields preserve metrics obstacles and wrapping" time="0.002518" status="run" />
+    <testcase classname="FieldGradient" name="Ordered payload traversal stops on the threshold crossing cell" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Bounded traversal preserves unwrapped domain coordinates" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Directional sweep digests preserve original byte arithmetic and scan order" time="0.000204" status="run" />
+    <testcase classname="FieldGradient" name="Convergent influence agrees with an independent strongest first frontier" time="0.002303" status="run" />
+    <testcase classname="FieldGradient" name="Map independent weighted kernel agrees with a heap oracle" time="0.005328" status="run" />
+    <testcase classname="FieldGradient" name="FIFO discovery can stop without admitting later neighbours" time="0" status="run" />
+    <testcase classname="FieldGradient" name="FIFO visitor stop retains vector history and ring pending entries" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Priority traversal preserves zero costs stale entries and heap tie order" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Depth first traversal preserves stack discovery order" time="0" status="run" />
+  </testsuite><testsuite name="GlobalGradient"><testcase classname="GlobalGradient" name="check boundaries and obstacles" time="0.000279" status="run" />
+    <testcase classname="GlobalGradient" name="check inert fields" time="0.000788" status="run" />
+    <testcase classname="GlobalGradient" name="check random fields" time="1.63659" status="run" />
+  </testsuite><testsuite name="Gradient"><testcase classname="Gradient" name="OpenGridIsOctileOnTorus" time="0.000113" status="run" />
+    <testcase classname="Gradient" name="ObstaclesForcePathAround" time="0" status="run" />
+    <testcase classname="Gradient" name="WaterCostsBySwimClass" time="0" status="run" />
+    <testcase classname="Gradient" name="UnreachableCellsStayUnreachable" time="0" status="run" />
+    <testcase classname="Gradient" name="SeedBelowGoalPropagates" time="0" status="run" />
+    <testcase classname="Gradient" name="SeedsBeyondBucketWindow" time="0" status="run" />
+    <testcase classname="Gradient" name="MaxCostStopsPropagation" time="0" status="run" />
+    <testcase classname="Gradient" name="DirectionPrefersCheapestTotal" time="0" status="run" />
+    <testcase classname="Gradient" name="DirectionBlockedNeighbour" time="0" status="run" />
+    <testcase classname="Gradient" name="SwimClassFromSpeeds" time="0" status="run" />
+    <testcase classname="Gradient" name="RandomFieldsAgainstReference" time="0.015986" status="run" />
+    <testcase classname="Gradient" name="MatchesLegacyKernelOnLargeMaps" time="0.366678" status="run" />
+  </testsuite><testsuite name="GradientBFS"><testcase classname="GradientBFS" name="EmptyQueueIsNoop" time="0" status="run" />
+    <testcase classname="GradientBFS" name="SingleSourceMatchesChebyshev" time="0" status="run" />
+    <testcase classname="GradientBFS" name="WrapAroundSmallGrid" time="0" status="run" />
+    <testcase classname="GradientBFS" name="ObstacleNotOverwritten" time="0" status="run" />
+    <testcase classname="GradientBFS" name="MultipleSourcesUseMinimum" time="0" status="run" />
+    <testcase classname="GradientBFS" name="IsolatedCellRemainsUnreachable" time="0" status="run" />
+    <testcase classname="GradientBFS" name="QueueIsDrained" time="0" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="0.74272" status="run" />
+  </testsuite><testsuite name="PathGradient"><testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0" status="run" />
+    <testcase classname="PathGradient" name="analytic oracle" time="0.000101" status="run" />
+    <testcase classname="PathGradient" name="parallel searches" time="0.102001" status="run" />
+    <testcase classname="PathGradient" name="lazy building fields" time="0.046834" status="run" />
+    <testcase classname="PathGradient" name="boundary; random and exhaustive seeds against the heap oracle" time="0.274766" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.000868" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000368" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>

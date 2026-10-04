@@ -1,0 +1,2 @@
+Settings::load("preferences.txt") : error, can't open file.
+verify-match: verified; 702 checksums in 233 ms
