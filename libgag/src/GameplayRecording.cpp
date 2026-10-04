@@ -512,7 +512,9 @@ void Recorder::Impl::run(Options options)
 			if (stoppedAt) session.stop(stoppedAt);
 			if (!primed && haveFrame) { session.step(now()); primed = true; }
 			for (const auto &e : pending) session.event(e.time,e.kind,e.value);
-			for (;;)
+			// Audio may arrive faster than this worker can encode under pressure.
+			// Bound each batch so a continuously nonempty audio queue cannot starve video.
+			for (unsigned processed = 0; processed < 4; ++processed)
 			{
 				Audio block;
 				{
