@@ -26,14 +26,14 @@ def run(coordinator, hosts, collect_only=False):
     errors = (OSError, ValueError, subprocess.TimeoutExpired)
 
     def poll(name):
-        c = Coordinator(root)
+        c = Coordinator(root, repair=False, manifest=coordinator.manifest)
         try:
             return c.poll_host(configs[name], controls[name], collect_only)
         finally:
             c.close()
 
     def transfer(name, item, direction):
-        c = Coordinator(root)
+        c = Coordinator(root, repair=False, manifest=coordinator.manifest)
         t = Transport(configs[name], root / 'worker.pyz')
         # A successful control poll has already deployed/configured this package.
         t.deployed = True

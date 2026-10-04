@@ -22,9 +22,11 @@ TERMINAL_RESULTS = {'success', 'invalid_request', 'generation_failed'}
 
 
 class Coordinator:
-    def __init__(self, directory):
+    def __init__(self, directory, repair=True, manifest=None):
         self.root = Path(directory).resolve()
-        self.manifest = read_json(self.root / 'experiment.json')
+        # Pipeline lanes share this immutable object instead of reparsing the
+        # complete 20,000-job experiment for every short transfer task.
+        self.manifest = manifest if manifest is not None else read_json(self.root / 'experiment.json')
         if self.manifest['package_id'] != package_identity():
             raise ValueError('experiment pins another worker package; use its preserved worker.pyz or create a new experiment revision')
         self.settings = DEFAULTS | self.manifest.get('settings', {})
@@ -33,24 +35,33 @@ class Coordinator:
         # than everything else the coordinator does on a large experiment.
         self.bundles = {}
         self.db = database(self.root / 'state.sqlite')
-        self.db.executescript('''
-            CREATE TABLE IF NOT EXISTS jobs (
-                id TEXT PRIMARY KEY, ordinal INTEGER NOT NULL, spec TEXT NOT NULL,
-                state TEXT NOT NULL, active TEXT, accepted TEXT);
-            CREATE TABLE IF NOT EXISTS attempts (
-                id TEXT PRIMARY KEY, job_id TEXT NOT NULL REFERENCES jobs(id), host TEXT NOT NULL,
-                token TEXT NOT NULL UNIQUE, lease_until REAL NOT NULL, state TEXT NOT NULL,
-                record TEXT, created REAL NOT NULL, category TEXT);
-            CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
-            CREATE TABLE IF NOT EXISTS hosts (name TEXT PRIMARY KEY, updated REAL NOT NULL, status TEXT, error TEXT);
-        ''')
-        # Submission and exports are replayable if interrupted between files and SQLite.
-        with transaction(self.db):
-            for ordinal, job in enumerate(self.manifest['jobs']):
-                self.db.execute('INSERT OR IGNORE INTO jobs VALUES (?,?,?,\'pending\',NULL,NULL)',
-                                (job['id'], ordinal, canonical(job).decode()))
-            self.db.execute("INSERT OR IGNORE INTO settings VALUES ('mode','running')")
-        self.repair_exports()
+        if repair:
+            self.db.executescript('''
+                CREATE TABLE IF NOT EXISTS jobs (
+                    id TEXT PRIMARY KEY, ordinal INTEGER NOT NULL, spec TEXT NOT NULL,
+                    state TEXT NOT NULL, active TEXT, accepted TEXT);
+                CREATE TABLE IF NOT EXISTS attempts (
+                    id TEXT PRIMARY KEY, job_id TEXT NOT NULL REFERENCES jobs(id), host TEXT NOT NULL,
+                    token TEXT NOT NULL UNIQUE, lease_until REAL NOT NULL, state TEXT NOT NULL,
+                    record TEXT, created REAL NOT NULL, category TEXT);
+                CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
+                CREATE TABLE IF NOT EXISTS hosts (name TEXT PRIMARY KEY, updated REAL NOT NULL, status TEXT, error TEXT);
+            ''')
+            if self.db.execute("SELECT value FROM settings WHERE key='mode'").fetchone() is None:
+                if self.db.execute('SELECT count(*) FROM jobs').fetchone()[0]:
+                    raise ValueError('incomplete coordinator ledger')
+                # Seed the immutable manifest exactly once. Per-lane Coordinator
+                # connections must not replay this 20,000-row write transaction.
+                with transaction(self.db):
+                    for ordinal, job in enumerate(self.manifest['jobs']):
+                        self.db.execute('INSERT INTO jobs VALUES (?,?,?,\'pending\',NULL,NULL)',
+                                        (job['id'], ordinal, canonical(job).decode()))
+                    self.db.execute("INSERT INTO settings VALUES ('mode','running')")
+            # The primary coordinator repairs exports once. Pipeline lane
+            # connections only need the authoritative SQLite ledger.
+            self.repair_exports()
+        elif self.db.execute("SELECT value FROM settings WHERE key='mode'").fetchone() is None:
+            raise ValueError('coordinator ledger is not initialized')
 
     def close(self):
         self.db.close()
@@ -191,11 +202,16 @@ class Coordinator:
         count = len(computing)
         other_work = sum(item.get('experiment') != self.manifest['id'] and item.get('state') in ('queued','running') for item in status.get('attempts', []))
         room = status['slots'] * (1 + self.settings['prefetch']) - count - other_work
+        if room <= 0:
+            return []
         dispatched = []
         buffered_seconds = sum(json.loads(self.db.execute('SELECT spec FROM jobs WHERE id=?',
                                (r['job_id'],)).fetchone()[0])['limits'].get('estimated_seconds',60)
                                for r in computing)
-        for row in self.db.execute("SELECT * FROM jobs WHERE state='pending' ORDER BY ordinal").fetchall():
+        # Stream candidates and stop as soon as the host is full. This avoids
+        # materializing every pending job while still reaching eligible work
+        # after an arbitrarily long prefix assigned to another platform.
+        for row in self.db.execute("SELECT * FROM jobs WHERE state='pending' ORDER BY ordinal"):
             if len(dispatched) >= room:
                 break
             job = json.loads(row['spec'])

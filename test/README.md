@@ -887,6 +887,9 @@ See [pre-game preview behavior and compatibility](../docs/features/pre-game-map-
 
 ## Tournament execution and configuration
 
+`python3 test/test_duel_ratings.py` checks the standard-library batch duel fit:
+known odds, ties, input order, finite-fit boundaries, and paired bootstrap integrity.
+
 `python3 test/test_tournaments.py` exercises leases, duplicates, resumable transfers,
 worker queues, immutable builds and offline statistical policies using stdlib fixtures.
 `python3 test/test_map_fairness_tournament.py` retains the fairness estimator and repeat-selection regressions.

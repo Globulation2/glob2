@@ -2,6 +2,7 @@
 import argparse
 import itertools
 import json
+import random
 from pathlib import Path
 
 from .analysis import POLICIES, reanalyze
@@ -33,10 +34,13 @@ class Planner:
         config = self.config
         params = (self.parameter_samples(self.map_build, method, 1, seed)[0]
                   if config.get('randomize_parameters') else {})
+        if self.kind == 'ai_comparison':
+            params.update({'width': 7, 'height': 7})
         params.update(config.get('generator_params', {}))
         params['teams'] = n
         generator = {'generator': method, 'params': params,
                      'candidates': config.get('candidates', 5), 'rotations': n}
+        generator['params'].update(config.get('generator_overrides', {}).get(str(method), {}))
         if variant:
             generator['params'].update(variant)
         key = digest([generator, seed, self.map_build])
@@ -46,6 +50,75 @@ class Planner:
                         labels={'map_seed': seed, 'generator': method, 'map': f'{method}:{seed}', 'variant': key[:8]})
             self.jobs.append(value); self.maps[key] = value
         return self.maps[key]
+
+    def sampled_game(self, rng, build, ais, methods, sizes, formats, paired=None):
+        """One independently-drawn game: format, AI matchup, generator and map
+        size are each sampled fresh, using the engine's inline map-generation
+        (a single job, no separate generate_map dependency) -- for a broad but
+        bounded random sample instead of the exhaustive cross product plan()
+        otherwise builds. Reuses the same job/label shape as game() so
+        analysis.py's observations()/rate() need no changes to read either."""
+        config = self.config
+        fmt = rng.choice(formats)
+        n = 2 if fmt == '1v1' else 4
+        if fmt == '2v2':
+            a, b = rng.sample(ais, 2) if len(ais) >= 2 else (ais[0], ais[0])
+            players, alliances = [a, a, b, b], [1, 1, 2, 2]
+        else:
+            players = rng.sample(ais, n) if len(ais) >= n else [rng.choice(ais) for _ in range(n)]
+            alliances = None
+        method = rng.choice(methods)
+        map_seed, game_seed = rng.getrandbits(32), rng.getrandbits(32)
+        size = rng.choice(sizes)
+        if paired is not None:
+            players, map_seed, game_seed = paired
+        params = (self.parameter_samples(self.map_build, method, 1, map_seed)[0]
+                  if config.get('randomize_parameters') else {})
+        params.update(size)
+        params.update(config.get('generator_overrides', {}).get(str(method), {}))
+        params['teams'] = n
+        labels = {'format': fmt, 'generator': method, 'map_seed': map_seed, 'map': f'{method}:{map_seed}',
+                  'rotation': 0, 'variant': 'baseline', 'subject_player': config.get('player', 0),
+                  'symmetric_control': method == 15, 'block': f'{method}:{map_seed}:{game_seed}'}
+        value = job('game', build, seeds={'map': map_seed, 'game': game_seed},
+                    config={'generator': method, 'params': params, 'candidates': config.get('candidates', 5),
+                            'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
+                            **({'rules': config['rules']} if 'rules' in config else {}),
+                            **({'alliances': alliances} if alliances else {}),
+                            **({'win_probability_permille': config['win_probability_permille']}
+                               if config.get('win_probability_permille') else {})},
+                    outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
+                    labels=labels)
+        self.jobs.append(value)
+
+    def balanced_duels(self, rng, ais, methods, sizes):
+        """Balance generators and matchups, with same-map seat-swapped pairs."""
+        count = self.config['sample_games']
+        if type(count) is not int or count <= 0 or count % 2 or len(set(ais)) < 2:
+            raise ValueError('balanced duels need a positive even game count and at least two AIs')
+        methods = sorted(set(methods))
+        if not methods or len(sizes) != 1:
+            raise ValueError('balanced duels need generators and exactly one map size')
+        pairs = list(itertools.combinations(sorted(set(ais)), 2))
+        rng.shuffle(pairs)
+        rng.shuffle(methods)
+        blocks, offset = [], 0
+        for index, method in enumerate(methods):
+            quota = count // 2 // len(methods) + (index < count // 2 % len(methods))
+            for i in range(quota):
+                players = list(pairs[(offset + i) % len(pairs)])
+                rng.shuffle(players)
+                blocks.append((method, players, rng.getrandbits(32), rng.getrandbits(32)))
+            offset += quota
+        rng.shuffle(blocks)
+        # Repeated build IDs retain their weighting, while assignment order is
+        # randomized independently of generator, matchup and completion order.
+        builds = (self.builds * ((len(blocks) + len(self.builds) - 1) // len(self.builds)))[:len(blocks)]
+        rng.shuffle(builds)
+        for (method, players, map_seed, game_seed), build in zip(blocks, builds):
+            for side in (0, 1):
+                self.sampled_game(rng, build, ais, [method], sizes, ['1v1'],
+                                  (players if side == 0 else players[::-1], map_seed, game_seed))
 
     def game(self, generated, build, seed, players, rotation, fmt, variant='baseline', overrides=None, pair=None, held_out=False, alliances=None):
         config = self.config
@@ -58,14 +131,19 @@ class Planner:
                     inputs={'map': {'job': generated['id'], 'artifact': f'map-r{rotation}.map.gz'}},
                     depends_on=[generated['id']], seeds={'game': seed},
                     config={'players': players, 'ticks': config.get('ticks', 90000),
-                            'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {})},
+                            'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
+                            **({'rules': config['rules']} if 'rules' in config else {}),
+                            **({'win_probability_permille': config['win_probability_permille']}
+                               if config.get('win_probability_permille') else {})},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)
 
     def plan(self):
         config = self.config
-        methods = config.get('generators', [15])
+        default_methods = ([g['method'] for g in self.bundles[self.builds[0]]['capabilities']['generators']
+                            if not g.get('editorOnly')] if self.kind == 'ai_comparison' else [15])
+        methods = config.get('generators', default_methods)
         seeds = config.get('map_seeds', [1001])
         game_seeds = config.get('game_seeds', [1])
         if self.kind == 'generator_stress':
@@ -117,25 +195,56 @@ class Planner:
         else:
             ais = config.get('ais') or [a['name'] for a in self.bundles[self.builds[0]]['capabilities']['ais'] if a['id'] != 0]
             if not ais: raise ValueError('AI comparison needs selectable active AIs')
-            for fmt in config.get('formats',['1v1','2v2','ffa']):
+            # Ratings use the final game result. Keep the standard Elo sample
+            # lightweight so workers spend their capacity simulating duels rather
+            # than producing and transferring per-tick histories. Callers that
+            # need AI decision traces can still request telemetry explicitly.
+            config.setdefault('outputs', {})
+            # The standard Elo cohort is a cheap, directly comparable duel at one
+            # map size. Callers can still request teams or FFA explicitly.
+            formats = config.get('formats',['1v1'])
+            for fmt in formats:
                 if fmt not in ('1v1','2v2','ffa'): raise ValueError('unknown format')
-                n = 2 if fmt=='1v1' else 4
-                if fmt == '2v2':
-                    rosters = config.get('rosters') or [[ai,ai] for ai in ais]
-                    if any(len(roster)!=2 for roster in rosters): raise ValueError('2v2 rosters must contain two AIs')
-                    schedules = [(a+b,[1,1,2,2]) for a,b in itertools.combinations(rosters,2)]
-                elif fmt == '1v1':
-                    schedules = [(list(pair),None) for pair in itertools.combinations(ais,2)]
+            if 'sample_games' in config:
+                if type(config['sample_games']) is not int or config['sample_games'] <= 0:
+                    raise ValueError('sample_games must be a positive integer')
+                if not methods or not formats:
+                    raise ValueError('sample games need generators and formats')
+                # A bounded random sample instead of the exhaustive cross product
+                # below: each of sample_games draws its own format/matchup/
+                # generator/size independently, rather than every combination of
+                # every AI x format x generator x seed x size (which can reach
+                # hundreds of thousands of games -- see docs/tournaments.md).
+                rng = random.Random(config.get('sample_seed', 1))
+                sample_methods = methods
+                default_params = {'width': 7, 'height': 7}
+                sizes = config.get('sizes') or [config.get('generator_params', default_params)]
+                if config.get('balanced_duels'):
+                    if formats != ['1v1']:
+                        raise ValueError('balanced_duels requires the 1v1 format')
+                    self.balanced_duels(rng, ais, sample_methods, sizes)
                 else:
-                    selected = list(itertools.combinations(ais,n)) if len(ais)>=n else [tuple((ais*n)[:n])]
-                    schedules = [(list(group),None) for group in selected]
-                if not schedules: schedules=[(([ais[0]]*n),[1,1,2,2] if fmt=='2v2' else None)]
-                for method, map_seed in itertools.product(methods,seeds):
-                    generated = self.generated(method,map_seed,n)
-                    for build, game_seed, rotation, (players,allies), order in itertools.product(self.builds,game_seeds,range(n),schedules,range(n)):
-                        ordered = rotations(players)[order]
-                        groups = rotations(allies)[order] if allies else None
-                        self.game(generated,build,game_seed,ordered,rotation,fmt,alliances=groups)
+                    for _ in range(config['sample_games']):
+                        self.sampled_game(rng, rng.choice(self.builds), ais, sample_methods, sizes, formats)
+            else:
+                for fmt in formats:
+                    n = 2 if fmt=='1v1' else 4
+                    if fmt == '2v2':
+                        rosters = config.get('rosters') or [[ai,ai] for ai in ais]
+                        if any(len(roster)!=2 for roster in rosters): raise ValueError('2v2 rosters must contain two AIs')
+                        schedules = [(a+b,[1,1,2,2]) for a,b in itertools.combinations(rosters,2)]
+                    elif fmt == '1v1':
+                        schedules = [(list(pair),None) for pair in itertools.combinations(ais,2)]
+                    else:
+                        selected = list(itertools.combinations(ais,n)) if len(ais)>=n else [tuple((ais*n)[:n])]
+                        schedules = [(list(group),None) for group in selected]
+                    if not schedules: schedules=[(([ais[0]]*n),[1,1,2,2] if fmt=='2v2' else None)]
+                    for method, map_seed in itertools.product(methods,seeds):
+                        generated = self.generated(method,map_seed,n)
+                        for build, game_seed, rotation, (players,allies), order in itertools.product(self.builds,game_seeds,range(n),schedules,range(n)):
+                            ordered = rotations(players)[order]
+                            groups = rotations(allies)[order] if allies else None
+                            self.game(generated,build,game_seed,ordered,rotation,fmt,alliances=groups)
         # Cyclic rotations of homogeneous rosters can produce identical logical
         # jobs. Keep one occurrence: repeated identical attempts add no information.
         self.jobs = list({value['id']:value for value in self.jobs}.values())
