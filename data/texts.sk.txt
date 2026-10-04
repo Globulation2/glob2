@@ -1,15 +1,15 @@
 [AI strategy]
-Stratégia AI
+Stratégia UI
 [start recording]
-
+Spustiť nahrávanie
 [stop recording]
-
+Zastaviť nahrávanie
 [finalizing recording]
-
+Dokončuje sa nahrávka…
 [AIMaxima-Summary]
 Vyvažuje udržateľný rast a výcvik a potom zhromažďuje armády do vĺn.
 [AIMaxima-Profile]
-Základná stratégia: Jedlo, robotníkov, rodenie, výcvik, stavbu a boj považuje za súperiace požiadavky. Veľkosť armády čiastočne prispôsobuje odhadovanej sile nepriateľa a snaží sa ju účinne dopraviť do boja.\n\nHospodárstvo a rozvoj: Plánuje rodenie podľa jedla a pracovnej sily, zachováva voľný čas na výcvik a prestáva pridávať nadbytočných robotníkov, keď treba vojenskú produkciu. Prispôsobuje výcvikové kapacity a nevyraďuje pre vylepšenia priveľa infraštruktúry naraz.\n\nPrieskum a rozhodovanie: Odhaduje nepriateľské sily z viditeľných jednotiek a zapamätaných pozorovaní pomocou kalibrovaného modelu. Ciele závisia od hodnoty, vzdialenosti, veží, nechránených robotníkov a vytrvalosti pri sledovaní cieľa. Výpravy za ovocím podporujú pestrosť jedla a prebehlíctvo.\n\nÚtok a obrana: Rezervuje bojovníkov na výcvik a obranu, potom zhromaždí vhodné pozemné sily pri vlastnom zásobovaní a vyšle vlny. Používa miestne obranné reakcie a vyhodnocuje prístupové cesty ku kolónii.\n\nKeď sa útoky zastavia: Po štyroch po sebe idúcich zlyhaniach dopravenia vĺn prepne na priebežne posilňované útočné vlajky. Priebežné posily môžu používať aj obojživelné útoky. Táto náhrada nerieši všetky prekážky ešte pred vznikom zhromaždiska.\n\nPorovnanie s ostatnými AI: Užšie prepája jedlo, výcvik, spravodajstvo a nasadenie. Cabino zdôrazňuje niekoľko útokov na budovy; Maxima odhad potrieb a dopravenie zhromaždených síl.\n\nSilné a slabé stránky: Udržiava rast aj dopĺňanie armády a prispôsobuje sa nedostatku jedla a pozorovaným hrozbám. Potrebuje jedlo, výcvikové kapacity a voľný priestor na zhromaždenie; zápchy a dlhé trasy môžu narušiť dopravenie síl.\n\nMožná protihra: Bojujte o nechránenú pšenicu, jedálne a kasárne, kým sa vlny zhromaždia. Držte zásobenú obranu spolu a narúšajte trasy posíl. Po prvej vlne očakávajte ďalší tlak.\n\nPrieskum: Odhady síl používajú pozorovania a ich históriu, nie skryté celkové počty nepriateľských jednotiek.
+Základná stratégia: Jedlo, robotníkov, rodenie, výcvik, stavbu a boj považuje za súperiace požiadavky. Veľkosť armády čiastočne prispôsobuje odhadovanej sile nepriateľa a snaží sa ju účinne dopraviť do boja.\n\nHospodárstvo a rozvoj: Plánuje rodenie podľa jedla a pracovnej sily, zachováva voľný čas na výcvik a prestáva pridávať nadbytočných robotníkov, keď treba vojenskú produkciu. Prispôsobuje výcvikové kapacity a nevyraďuje pre vylepšenia priveľa infraštruktúry naraz.\n\nPrieskum a rozhodovanie: Odhaduje nepriateľské sily z viditeľných jednotiek a zapamätaných pozorovaní pomocou kalibrovaného modelu. Ciele závisia od hodnoty, vzdialenosti, veží, nechránených robotníkov a vytrvalosti pri sledovaní cieľa. Výpravy za ovocím podporujú pestrosť jedla a prebehlíctvo.\n\nÚtok a obrana: Rezervuje bojovníkov na výcvik a obranu, potom zhromaždí vhodné pozemné sily pri vlastnom zásobovaní a vyšle vlny. Používa miestne obranné reakcie a vyhodnocuje prístupové cesty ku kolónii.\n\nKeď sa útoky zastavia: Po štyroch po sebe idúcich zlyhaniach dopravenia vĺn prepne na priebežne posilňované útočné vlajky. Priebežné posily môžu používať aj obojživelné útoky. Táto náhrada nerieši všetky prekážky ešte pred vznikom zhromaždiska.\n\nPorovnanie s ostatnými UI: Užšie prepája jedlo, výcvik, spravodajstvo a nasadenie. Cabino zdôrazňuje niekoľko útokov na budovy; Maxima odhad potrieb a dopravenie zhromaždených síl.\n\nSilné a slabé stránky: Udržiava rast aj dopĺňanie armády a prispôsobuje sa nedostatku jedla a pozorovaným hrozbám. Potrebuje jedlo, výcvikové kapacity a voľný priestor na zhromaždenie; zápchy a dlhé trasy môžu narušiť dopravenie síl.\n\nMožná protihra: Bojujte o nechránenú pšenicu, jedálne a kasárne, kým sa vlny zhromaždia. Držte zásobenú obranu spolu a narúšajte trasy posíl. Po prvej vlne očakávajte ďalší tlak.\n\nPrieskum: Odhady síl používajú pozorovania a ich históriu, nie skryté celkové počty nepriateľských jednotiek.
 [%0 has left the game]
 %0 odišiel z hry.
 [%0 level %1]
@@ -21,7 +21,7 @@ Počet jednotiek bez prístupu k vlajke: %0
 [%0 units can't access fruit]
 Počet jednotiek bez prístupu k ovociu: %0
 [%0 units can't access resource]
-Počet jednotiek bez prístupu k zdroju: %0
+Počet jednotiek bez prístupu k surovine: %0
 [%0 units not available]
 Počet nedostupných jednotiek: %0
 [%0 units too far from building]
@@ -31,7 +31,7 @@ Počet jednotiek príliš ďaleko od vlajky: %0
 [%0 units too far from fruit]
 Počet jednotiek príliš ďaleko od ovocia: %0
 [%0 units too far from resource]
-Počet jednotiek príliš ďaleko od zdroja: %0
+Počet jednotiek príliš ďaleko od suroviny: %0
 [%0 units too low level]
 Počet jednotiek s príliš nízkou úrovňou: %0
 [%0% Uploaded]
@@ -53,7 +53,7 @@ Pridať mapu
 [add shortcut]
 Pridať skratku
 [AI Descriptions]
-Popisy umelej inteligencie
+Popisy UI
 [AI]
 UI
 [ai]
@@ -61,7 +61,7 @@ UI
 [AICastor-Description]
 Stavia a cvičí armádu, pričom rast prispôsobuje zásobám jedla.
 [AICastor]
-UICastor
+Castor
 [AINicowar-Description]
 Zvyšuje počet obyvateľov, cvičí bojovníkov a potom útočí.
 [AINicowar]
@@ -73,7 +73,7 @@ Nicowar
 [AINumbi-Description]
 Zhovievavý súper, ktorý sa napriek tomu rozširuje a útočí.
 [AINumbi]
-UINumbi
+Numbi
 [AIEcono-Description]
 Rozširuje sa a získava cudzie jednotky bez tvorby bojovníkov.
 [AIEcono]
@@ -81,7 +81,7 @@ Econo
 [AIWarrush-Description]
 Rýchle útoky preveria vašu počiatočnú obranu.
 [AIWarrush]
-UIWarrush
+Warrush
 [AICabino-Description]
 Silný staviteľ, ktorý nasadzuje vycvičené útočné sily.
 [AICabino]
@@ -89,7 +89,7 @@ Cabino
 [AIJavaScript]
 JavaScript
 [AIJavaScript-Description]
-Riadiaca jednotka používajúca vložený modul zdrojového kódu JavaScript.
+Ovládač, ktorý používa vložený zdrojový modul v JavaScripte.
 [Alga]
 Riasy
 [algae]
@@ -101,13 +101,13 @@ alt-%0
 [and]
 a
 [any explorer]
-hociktorý Prieskumník
+ktorýkoľvek prieskumník
 [are dying hungry]
 umierajú od hladu
 [are hungry]
 sú hladní
 [are ok]
-sú ok
+sú v poriadku
 [are wonded]
 sú zranení
 [armor]
@@ -133,9 +133,9 @@ Späť
 [backspace]
 Backspace
 [barracks explanation 2]
-tvojich Bojovníkov
+úroveň bojovníkov
 [barracks explanation]
-Učí lepšie bojovať
+Zvyšuje bojovú
 [barracks]
 Kasárne
 [beach size]
@@ -161,7 +161,7 @@ Ctrl + ťahanie = čiara
 [Buildings]
 Budovy
 [Bullets]
-Nábojov:
+Náboje
 [campaign editor]
 Editor kampaní
 [campaign]
@@ -175,11 +175,11 @@ Nedá sa pripojiť, hra sa už začala
 [Can't join game, game is full]
 Nedá sa pripojiť, hra je plná
 [cancel destroy]
-Odv. zničenie
+Zrušiť zničenie
 [cancel repair]
-Odvolať opravu
+Zrušiť opravu
 [cancel upgrade]
-Odv. zdokonaľovanie
+Zrušiť vylepšenie
 [Cancel]
 Zrušiť
 [caps lock]
@@ -191,11 +191,11 @@ Zmeniť názov oblasti
 [Cherry]
 Čerešňa
 [choose campaign]
-Vyber si kampaň
+Vyberte kampaň
 [choose game]
-Vyber si hru
+Vyberte hru
 [choose map]
-Vyber si mapu
+Vyberte mapu
 [clear area]
 Čistenie
 [farm area]
@@ -225,7 +225,7 @@ Pripojiť
 [connecting to game]
 Pripájanie k hre
 [connecting to]
-Pripája sa ku
+Pripája sa k
 [Construction Site Defaults]
 Predvolené nastavenia stavenísk
 [Continue playing]
@@ -239,17 +239,17 @@ počet kráterov
 [crater lakes terrain]
 Kráterové jazerá
 [create map]
-Vytvor mapu
+Vytvoriť mapu
 [credits]
 Autori
 [ctrl - line]
 Ctrl – čiara
 [current speed]
-Súčasná rýchlosť
+Aktuálna rýchlosť
 [custom game]
 Vlastná hra
 [customcur]
-Špeciálny kurzor
+Vlastný kurzor
 [damage]
 Poškodenie
 [Damaged Map]
@@ -259,9 +259,9 @@ Znížiť počet pracujúcich
 [Defeat Your Oppenents]
 Porazte svojich súperov
 [defencetower explanation 2]
-a budovy nepriateľa
+jednotky alebo budovy
 [defencetower explanation]
-Útočí na blízke jednotky
+Útočí na blízke nepriateľské
 [defencetower]
 Obr. veža
 [Defense Map]
@@ -305,7 +305,7 @@ Escape
 [explorationflag explanation 2]
 
 [explorationflag explanation]
-Priťahuje Prieskumníkov
+Priťahuje prieskumníkov
 [explorationflag]
 Vlajka prieskumu
 [Explorer Ratio]
@@ -375,13 +375,13 @@ Herné skratky
 [Game]
 Hra
 [general settings]
-Základ
+Všeobecné
 [go to event]
 Prejsť k udalosti
 [go to home]
 Prejsť na základňu
 [goto main menu]
-Návrat do menu
+Späť do hlavnej ponuky
 [grass]
 Tráva
 [ground attack]
@@ -389,7 +389,7 @@ Schopný útočiť na zem
 [guard area]
 Stráž
 [GUIMapPreview text 0]
-Vyber si
+Vyberte
 [GUIMapPreview text 1]
 mapu
 [handmade map]
@@ -413,7 +413,7 @@ Lieči jednotky
 [hospital]
 Nemocnica
 [host]
-Vytvor hru
+Vytvoriť hru
 [hp]
 Zdravie
 [Human]
@@ -437,9 +437,9 @@ Jedáleň
 [insert]
 Insert
 [inside]
-Vovnútri
+Vnútri
 [islands size]
-veľkosť ostrovu
+veľkosť ostrova
 [islands terrain]
 Ostrovy
 [isles terrain]
@@ -449,13 +449,13 @@ Vybrať ďalší objekt
 [jobs]
 úlohy
 [join a game]
-Vstúp do hry
+Pripojiť sa k hre
 [keyboard settings]
 Klávesnica
 [lan]
-LAN Hra
+Hra v LAN
 [language incomplete]
-Slovensky - Incomplete
+Slovensky – neúplné
 [language-code]
 sk
 [language-tr]
@@ -475,7 +475,7 @@ vľavo
 [load campaign]
 Načítať kampaň
 [load game]
-Nahrať hru
+Načítať hru
 [load map]
 Načítať mapu
 [load replay]
@@ -483,13 +483,13 @@ Načítať záznam hry
 [load script]
 Načítať skript
 [load]
-Nahrať
+Načítať
 [look around]
 Rozhliadnuť sa
 [Lost : %0 has more prestige than you]
-Prehra: %0 má väčšiu prestíž ako ty
+Prehra: %0 má väčšiu prestíž ako vy
 [Lost : your colony is dead]
-Prehra: Tvoja kolónia vymrela
+Prehra: vaša kolónia vymrela
 [low priority]
 nízka
 [lowquality]
@@ -513,9 +513,9 @@ Výška mapy
 [mark map]
 Označiť miesto pre spojencov
 [market explanation 2]
-s ostatnými hráčmi
+ovocia s ostatnými
 [market explanation]
-Umožňuje výmenu ovocia
+Umožňuje výmenu
 [market]
 Trhovisko
 [medium priority]
@@ -535,7 +535,7 @@ Stlmiť
 [new campaign]
 Nová kampaň
 [new map]
-Nová
+Nová mapa
 [no fullscreen]
 * iba v režime okna
 [No Hints]
@@ -561,7 +561,7 @@ Ciele
 [of which]
 z nich
 [ok]
-Ok
+OK
 [old islands terrain]
 Členité súostrovie
 [old random terrain]
@@ -605,17 +605,17 @@ Pozastaviť hru
 [pause]
 Pause
 [Paused]
-Zastavené
+Pozastavené
 [player name]
 Meno hráča
 [players]
 Hráči
 [please wait]
-Čakaj, prosím
+Čakajte, prosím
 [power]
 vypínač
 [press space]
-Pre pokračovanie stlač medzeru
+Pokračujte stlačením medzerníka.
 [Prestige Score]
 Skóre prestíže
 [Prestige Win Enabled]
@@ -639,7 +639,7 @@ Ukončiť prehrávanie
 [quit]
 Koniec
 [racetrack explanation 2]
-kráčania jednotiek
+chôdze jednotiek
 [racetrack explanation]
 Zvyšuje rýchlosť
 [racetrack]
@@ -663,11 +663,11 @@ opakovaní rovnakej krajiny
 [replay ended]
 Prehrávanie sa skončilo
 [restore default shortcuts]
-Pôvodné nastavenia klávesnice
+Obnoviť predvolené skratky
 [return to editor]
 Späť do editora
 [return to game]
-Nazad do hry
+Späť do hry
 [return to replay]
 Späť k prehrávaniu
 [return]
@@ -685,7 +685,7 @@ Rieka
 [sand]
 Piesok
 [save before quit?]
-Chceš pred ukončením uložiť zmeny?
+Chcete pred ukončením uložiť zmeny?
 [save game]
 Uložiť hru
 [save map]
@@ -781,9 +781,9 @@ Nastavenia
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-Enter: Pošli správu
+Enter: odoslať správu v chate
 [shortcut explanation v]
-V: Drž a rozprávaj
+V: podržte a hovorte
 [show areas]
 Zobraziť oblasti
 [show flags]
@@ -885,21 +885,21 @@ Pevné tímy
 [the barracks is finished]
 Kasárne dokončené
 [the barracks is under attack]
-Útočia ti na kasárne
+Útok na kasárne
 [the building is finished]
 Výstavba dokončená
 [the building is under attack]
-Útočia ti na budovu
+Útok na budovu
 [the clearingflag is finished]
-Vlajka čistenia dokončená
+Vlajka čistenia umiestnená
 [the clearingflag is under attack]
 Vlajka čistenia čelí útoku
 [the defencetower is finished]
 Obranná veža dokončená
 [the defencetower is under attack]
-Útočia ti na obrannú vežu
+Útok na obrannú vežu
 [the explorationflag is finished]
-Vlajka prieskumu dokončená
+Vlajka prieskumu umiestnená
 [the explorationflag is under attack]
 Vlajka prieskumu čelí útoku
 [The game has not been finished]
@@ -909,43 +909,43 @@ Hry
 [the hospital is finished]
 Nemocnica dokončená
 [the hospital is under attack]
-Útočia ti na Nemocnicu
+Útok na nemocnicu
 [The host has cancelled the game]
 Hostiteľ zrušil hru.
 [the inn is finished]
 Jedáleň dokončená
 [the inn is under attack]
-Útočia ti na Jedáleň
+Útok na jedáleň
 [the maps]
 Mapy
 [the market is finished]
 Trhovisko dokončené
 [the market is under attack]
-Útočia ti na Trhovisko
+Útok na trhovisko
 [the racetrack is finished]
 Bežecká dráha dokončená
 [the racetrack is under attack]
-Útočia ti na Bežeckú dráhu
+Útok na bežeckú dráhu
 [the replays]
 Záznamy hier
 [the school is finished]
 Škola dokončená
 [the school is under attack]
-Útočia ti na Školu
+Útok na školu
 [the stonewall is finished]
-Hradba dokončená
+Úsek hradby dokončený
 [the stonewall is under attack]
-Útočia ti na hradbu
+Nepriateľ je pri vašich hradbách
 [the swarm is finished]
 Hniezdo dokončené
 [the swarm is under attack]
-Útočia ti na Hniezdo
+Útok na hniezdo
 [the swimmingpool is finished]
 Bazén dokončený
 [the swimmingpool is under attack]
-Útočia ti na Bazén
+Útok na bazén
 [the warflag is finished]
-Vlajka vojny dokončená
+Vlajka vojny umiestnená
 [the warflag is under attack]
 Vlajka vojny čelí útoku
 [time]
@@ -981,7 +981,7 @@ Darí sa vám dobre. Teraz sa pozrieme na bojovníkov, kasárne a vylepšovanie.
 [tutorial text 4]
 Už ste takmer na konci. Zostávajú iba vlajky a útok. Potom budete vedieť dosť na vlastné hry a neskôr aj na hranie po sieti proti najlepším hráčom Globulation 2.
 [tutorial]
-Kurz
+Výučba
 [Uncontrolled]
 Neobsadené
 [undo]
@@ -1009,9 +1009,9 @@ Spustiť/zastaviť vylepšovanie
 [Upgrade Defaults]
 Predvolené nastavenia vylepšovania
 [upgrade]
-Zdokonaliť
+Vylepšiť
 [username]
-Meno hráča
+Používateľské meno
 [Version]
 Verzia
 [view history]
@@ -1023,11 +1023,11 @@ Hlasitosť hlasu
 [waiting for key]
 čakanie na kláves...
 [Walk]
-Kráčanie
+Chôdza
 [warflag explanation 2]
 
 [warflag explanation]
-Priťahuje Bojovníkov
+Priťahuje bojovníkov
 [warflag]
 Vlajka vojny
 [Warning, you need to reboot the game for changes to take effect]
@@ -1047,11 +1047,11 @@ Voda
 [Wheat]
 Pšenica
 [Won : you defeated your opponents]
-Výhra: Porazil si svojich nepriateľov
+Výhra: porazili ste svojich súperov
 [Won : you have the most prestige]
-Výhra: Máš najväčšiu prestíž
+Výhra: máte najväčšiu prestíž
 [Won : your ally %0 has the most prestige]
-Výhra: Tvoj spojenec %0 má najväčšiu prestíž
+Výhra: váš spojenec %0 má najväčšiu prestíž
 [Wood]
 Drevo
 [wood]
@@ -1069,17 +1069,17 @@ zranení
 [Yes]
 Áno
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-YOG metaserver odmietol spojenie, pretože je tvoj Globulation 2 klient zastaralý.
+Metaserver YOG odmietol spojenie, pretože váš klient Globulation 2 je zastaraný. Ak chcete hrať online, stiahnite si najnovšiu verziu z www.globulation2.org.
 [you have lost]
-Prehral(a) si!
+Prehrali ste!
 [you have won]
-Vyhral(a) si!
+Vyhrali ste!
 [You where kicked from the game]
 Boli ste vyhodení z hry
 [Your %0 are under attack]
-Vaša jednotka čelí útoku: %0
+Útok na vašu jednotku: %0
 [Your unit got converted to %0's team]
-Tvoja jednotka konvertovala k tímu %0
+Vaša jednotka prešla k tímu %0
 [game speed]
 Rýchlosť hry
 [decrease game speed]
@@ -1109,39 +1109,39 @@ Vnútri: %0
 [Units still working: %0]
 Ešte v práci: %0
 [2 vs 2]
-2 vs 2
+2 proti 2
 [AI strategy & counterplay]
-Stratégia AI a protihra
+Stratégia UI a protihra
 [AICastor-Profile]
-Základná stratégia: Investuje do produktívnej kolónie a technológií pred začatím väčších útokov. Osadu rozvíja stavebnými projektmi s určenými prioritami; rozvoj, vojenská infraštruktúra a čas zvyšujú pripravenosť na vojnu.\n\nHospodárstvo a rozvoj: Skúma zavlaženie, rast pšenice, prekážky a dosah robotníkov. Popri produkcii riadi rozširovanie zásobovania jedlom, vylepšovanie a obranu.\n\nÚtok a obrana: Odhaduje útočnú silu zdravých bojovníkov a začína útoky po splnení silových alebo časových podmienok. Uprednostňuje skôr spozorované dostupné budovy, najmä kasárne a školy, a presúva útočné vlajky k hodnotným cieľom.\n\nPorovnanie s ostatnými AI: Terén a hodnotu cieľov zvažuje dôkladnejšie než Numbi. Je trpezlivejší než Warrush a vymieňa počiatočný tlak za rozvinutú základňu a silnejšie jednotky.\n\nSilné a slabé stránky: Rozsiahle plánovanie infraštruktúry a hodnotné vojenské ciele dávajú útokom zmysel. Príprava trvá dlho, takže rýchlejší súperi môžu bojovať o suroviny pred pripravenosťou hlavnej sily.\n\nMožná protihra: Skoro súťažte o priestor na rozšírenie. Chráňte kasárne a školy aj jedlo a pri útoku na rozvinutú osadu si ponechajte zálohu.
+Základná stratégia: Investuje do produktívnej kolónie a technológií pred začatím väčších útokov. Osadu rozvíja stavebnými projektmi s určenými prioritami; rozvoj, vojenská infraštruktúra a čas zvyšujú pripravenosť na vojnu.\n\nHospodárstvo a rozvoj: Skúma zavlaženie, rast pšenice, prekážky a dosah robotníkov. Popri produkcii riadi rozširovanie zásobovania jedlom, vylepšovanie a obranu.\n\nÚtok a obrana: Odhaduje útočnú silu zdravých bojovníkov a začína útoky po splnení silových alebo časových podmienok. Uprednostňuje skôr spozorované dostupné budovy, najmä kasárne a školy, a presúva útočné vlajky k hodnotným cieľom.\n\nPorovnanie s ostatnými UI: Terén a hodnotu cieľov zvažuje dôkladnejšie než Numbi. Je trpezlivejší než Warrush a vymieňa počiatočný tlak za rozvinutú základňu a silnejšie jednotky.\n\nSilné a slabé stránky: Rozsiahle plánovanie infraštruktúry a hodnotné vojenské ciele dávajú útokom zmysel. Príprava trvá dlho, takže rýchlejší súperi môžu bojovať o suroviny pred pripravenosťou hlavnej sily.\n\nMožná protihra: Skoro súťažte o priestor na rozšírenie. Chráňte kasárne a školy aj jedlo a pri útoku na rozvinutú osadu si ponechajte zálohu.
 [AICastor-Summary]
 Rozvíja opevnenú kolóniu a potom útočí na vojenské a vedecké budovy.
 [AICortex-Profile]
-Základná stratégia: Pomocou priorít reagujúcich na situáciu rozvíja fungujúce hospodárstvo a využíva voľných robotníkov na jedlo, technológie a vojenský tlak. Bežné rozhodovanie sa opiera o pravidlá; pokusy s naučenými postupmi vyžadujú osobitné nastavenie.\n\nHospodárstvo a rozvoj: Prispôsobuje produkciu robotníkov potrebe pracovných miest a udržiava rodenie jednotiek. Problémy s jedlom obmedzujú výdavky na rozširovanie a technológie. Pridáva plávanie, ak prístup cez vodu výrazne pomôže.\n\nÚtok a obrana: Pripravuje útoky podľa pozorovanej nepriateľskej technológie a dostupných jednotiek. Ťaženia cez vodu potrebujú bojovníkov schopných plávať. Dlhé ťaženia podporuje predsunutými jedálňami a nemocnicami a pred postupom môže zhromaždiť sily.\n\nVytrvalosť a krízy: Pokračuje v ofenzíve aj pri drobnom obťažovaní namiesto opakovaného pochodu domov. Vážne útoky môžu privolať obrancov späť. Skoré krízy môžu spustiť výhradnú produkciu bojovníkov a stavbu nemocnice; hladomor môže vyvolať menší zúfalý útok.\n\nPorovnanie s ostatnými AI: Predsunutej podpore venuje viac pozornosti než Warrush. Maxima ide ďalej v plánovaní udržateľného rodenia, výcviku a nasadenia voči odhadovanej sile nepriateľa.\n\nSilné a slabé stránky: Spája tlak s jedlom, liečením a dostupnosťou cieľov. Predsunutá infraštruktúra musí zostať zásobená a pokračujúce rodenie môže ďalej zaťažovať obmedzené jedlo. Krízové priority nútia voliť medzi rastom a prežitím.\n\nMožná protihra: Bojujte o predsunuté jedálne, nemocnice a pšenicu. Proti postupu držte obrancov spolu; drobné obťažovanie ho nemusí presvedčiť na ústup.\n\nPrieskum: Používa objavené nepriateľské budovy a pozorované nepriateľské jednotky.
+Základná stratégia: Pomocou priorít reagujúcich na situáciu rozvíja fungujúce hospodárstvo a využíva voľných robotníkov na jedlo, technológie a vojenský tlak. Bežné rozhodovanie sa opiera o pravidlá; pokusy s naučenými postupmi vyžadujú osobitné nastavenie.\n\nHospodárstvo a rozvoj: Prispôsobuje produkciu robotníkov potrebe pracovných miest a udržiava rodenie jednotiek. Problémy s jedlom obmedzujú výdavky na rozširovanie a technológie. Pridáva plávanie, ak prístup cez vodu výrazne pomôže.\n\nÚtok a obrana: Pripravuje útoky podľa pozorovanej nepriateľskej technológie a dostupných jednotiek. Ťaženia cez vodu potrebujú bojovníkov schopných plávať. Dlhé ťaženia podporuje predsunutými jedálňami a nemocnicami a pred postupom môže zhromaždiť sily.\n\nVytrvalosť a krízy: Pokračuje v ofenzíve aj pri drobnom obťažovaní namiesto opakovaného pochodu domov. Vážne útoky môžu privolať obrancov späť. Skoré krízy môžu spustiť výhradnú produkciu bojovníkov a stavbu nemocnice; hladomor môže vyvolať menší zúfalý útok.\n\nPorovnanie s ostatnými UI: Predsunutej podpore venuje viac pozornosti než Warrush. Maxima ide ďalej v plánovaní udržateľného rodenia, výcviku a nasadenia voči odhadovanej sile nepriateľa.\n\nSilné a slabé stránky: Spája tlak s jedlom, liečením a dostupnosťou cieľov. Predsunutá infraštruktúra musí zostať zásobená a pokračujúce rodenie môže ďalej zaťažovať obmedzené jedlo. Krízové priority nútia voliť medzi rastom a prežitím.\n\nMožná protihra: Bojujte o predsunuté jedálne, nemocnice a pšenicu. Proti postupu držte obrancov spolu; drobné obťažovanie ho nemusí presvedčiť na ústup.\n\nPrieskum: Používa objavené nepriateľské budovy a pozorované nepriateľské jednotky.
 [AICortex-Summary]
 Podporuje vytrvalé vojenské útoky predsunutým zásobovaním a liečením.
 [AINicowar-Profile]
-Základná stratégia: Spája rast, výcvik, vylepšovanie a vojnu prostredníctvom prekrývajúcich sa podmienok. Môže útočiť počas rozširovania a pri zlyhaní zásobovania presmerovať hospodárske úsilie na obnovu.\n\nZačiatok: Dodávaný agresívny profil začína vojnové prípravy pri piatich jednotkách celkovo a povoľuje vojnu pri piatich bojovníkoch, vrátane úrovne nula. Usiluje sa o tri útočné vlajky s piatimi bojovníkmi na každej. Vlastné súbory stratégie môžu tieto prahy zmeniť.\n\nHospodárstvo a rozvoj: Rozširuje kapacitu jedla a rodenia, cvičí robotníkov, rozvíja plávanie a pohyb a vylepšuje budovy. Upravuje pracovné obsadenie zásobovania, reaguje na hladovanie a získava ovocie.\n\nÚtok a obrana: Náhodne vyberá dostupné nepriateľské budovy na útok. Čistiacimi vlajkami môže otvoriť cesty zablokované surovinami. Obranné vlajky chránia zhluky ohrozených jednotiek a budov. Neskôr vycvičení prieskumníci s pozemným útokom napádajú skupiny nepriateľských jednotiek.\n\nPorovnanie s ostatnými AI: Zdieľa počiatočnú agresivitu Warrush, ale má širšie pokračovanie. Na rozdiel od Cabino nedáva sústavne prednosť nemocniciam a jedálňam.\n\nSilné a slabé stránky: Široká škála taktík spája počiatočný tlak s ďalším rozvojom. Náhodný výber cieľov môže plytvať úsilím na menej hodnotné budovy. Jeho prahy nenahrádzajú podrobný odhad nepriateľskej bojovej sily, ktorý používa Maxima.\n\nMožná protihra: Očakávajte skorý útok. Chráňte jedlo a robotníkov, bráňte rozširovaniu a pripravte sa na útoky prieskumníkov, ak dosiahne pokročilý výcvik.
+Základná stratégia: Spája rast, výcvik, vylepšovanie a vojnu prostredníctvom prekrývajúcich sa podmienok. Môže útočiť počas rozširovania a pri zlyhaní zásobovania presmerovať hospodárske úsilie na obnovu.\n\nZačiatok: Dodávaný agresívny profil začína vojnové prípravy pri piatich jednotkách celkovo a povoľuje vojnu pri piatich bojovníkoch, vrátane úrovne nula. Usiluje sa o tri útočné vlajky s piatimi bojovníkmi na každej. Vlastné súbory stratégie môžu tieto prahy zmeniť.\n\nHospodárstvo a rozvoj: Rozširuje kapacitu jedla a rodenia, cvičí robotníkov, rozvíja plávanie a pohyb a vylepšuje budovy. Upravuje pracovné obsadenie zásobovania, reaguje na hladovanie a získava ovocie.\n\nÚtok a obrana: Náhodne vyberá dostupné nepriateľské budovy na útok. Čistiacimi vlajkami môže otvoriť cesty zablokované surovinami. Obranné vlajky chránia zhluky ohrozených jednotiek a budov. Neskôr vycvičení prieskumníci s pozemným útokom napádajú skupiny nepriateľských jednotiek.\n\nPorovnanie s ostatnými UI: Zdieľa počiatočnú agresivitu Warrush, ale má širšie pokračovanie. Na rozdiel od Cabino nedáva sústavne prednosť nemocniciam a jedálňam.\n\nSilné a slabé stránky: Široká škála taktík spája počiatočný tlak s ďalším rozvojom. Náhodný výber cieľov môže plytvať úsilím na menej hodnotné budovy. Jeho prahy nenahrádzajú podrobný odhad nepriateľskej bojovej sily, ktorý používa Maxima.\n\nMožná protihra: Očakávajte skorý útok. Chráňte jedlo a robotníkov, bráňte rozširovaniu a pripravte sa na útoky prieskumníkov, ak dosiahne pokročilý výcvik.
 [AINicowar-Summary]
 Počiatočný nápor podporuje poľnohospodárstvom, vylepšeniami, obranou a útokmi prieskumníkov.
 [AINone-Profile]
-Stratégia: AI nedáva žiadne príkazy.\n\nSilné stránky: Predvídateľný, neaktívny protivník na experimenty.\n\nSlabé stránky: Nerozširuje sa ani sa neprispôsobuje.
+Stratégia: UI nedáva žiadne príkazy.\n\nSilné stránky: Predvídateľný, neaktívny protivník na experimenty.\n\nSlabé stránky: Nerozširuje sa ani sa neprispôsobuje.
 [AINone-Summary]
 Nečinná kolónia na experimenty.
 [AINumbi-Profile]
-Základná stratégia: Najprv buduje zásobovanie a populáciu, pridáva liečenie, vedu a výcvik a potom prechádza k vojne. Hlavné fázy postupujú podľa času, nie podľa pokroku súpera.\n\nHospodárstvo a rozvoj: Prispôsobuje dopyt po budovách populácii a odhaduje blízku pšenicu. Neskoršie fázy pridávajú vylepšenia, obranu a rozširovanie na podporu rastúcej armády.\n\nÚtok a obrana: Útočí, keď má dosť zdravých bojovníkov alebo vyprší časový limit. Umiestňuje vojnové vlajky na vybrané nepriateľské budovy. Keď bojová sila príliš klesne, odstráni útočné vlajky a zvýši prahy pre ďalší pokus.\n\nPorovnanie s ostatnými AI: Predvídateľnejší než Castor alebo Nicowar. Castor dôkladnejšie zvažuje terén a hodnotu cieľa; Nicowar vytvára tlak oveľa skôr.\n\nSilné a slabé stránky: Široká podporná infraštruktúra ho po nerušenom rozvoji môže urobiť nebezpečným, ale časový plán nemusí zodpovedať bitke. Jednoduchý výber cieľov a dlhšie prestávky po stratách uľahčujú predvídanie útokov.\n\nMožná protihra: Vytvárajte tlak pred jeho vojenskou fázou. Za útokmi rozvíjajte zásobovanie a výcvik a po odrazení náporu využite prestávku.\n\nPrieskum: Útočná rutina číta polohy nepriateľských budov priamo bez kontroly viditeľnosti.
+Základná stratégia: Najprv buduje zásobovanie a populáciu, pridáva liečenie, vedu a výcvik a potom prechádza k vojne. Hlavné fázy postupujú podľa času, nie podľa pokroku súpera.\n\nHospodárstvo a rozvoj: Prispôsobuje dopyt po budovách populácii a odhaduje blízku pšenicu. Neskoršie fázy pridávajú vylepšenia, obranu a rozširovanie na podporu rastúcej armády.\n\nÚtok a obrana: Útočí, keď má dosť zdravých bojovníkov alebo vyprší časový limit. Umiestňuje vojnové vlajky na vybrané nepriateľské budovy. Keď bojová sila príliš klesne, odstráni útočné vlajky a zvýši prahy pre ďalší pokus.\n\nPorovnanie s ostatnými UI: Predvídateľnejší než Castor alebo Nicowar. Castor dôkladnejšie zvažuje terén a hodnotu cieľa; Nicowar vytvára tlak oveľa skôr.\n\nSilné a slabé stránky: Široká podporná infraštruktúra ho po nerušenom rozvoji môže urobiť nebezpečným, ale časový plán nemusí zodpovedať bitke. Jednoduchý výber cieľov a dlhšie prestávky po stratách uľahčujú predvídanie útokov.\n\nMožná protihra: Vytvárajte tlak pred jeho vojenskou fázou. Za útokmi rozvíjajte zásobovanie a výcvik a po odrazení náporu využite prestávku.\n\nPrieskum: Útočná rutina číta polohy nepriateľských budov priamo bez kontroly viditeľnosti.
 [AINumbi-Summary]
 Postupne buduje kolóniu podľa časového plánu a potom útočí početnou silou.
 [AIEcono-Profile]
-Základná stratégia: Produkuje robotníkov a prieskumníkov, rozširuje hospodárstvo a láka nepriateľské jednotky jedlom a ovocím. Nemá bežnú ofenzívu bojovníkov.\n\nHospodárstvo a rozvoj: Stavia jedálne a hniezda pri pšenici, pridáva vzdelávanie a pohybový výcvik a vylepšuje infraštruktúru. Sleduje zásoby jedla a nahrádza staré jedálne a hniezda, keď sa ich prístup k surovinám zhorší.\n\nPoľnohospodárstvo a prebehlíci: Chráni obnoviteľnú pšenicu a drevo pri vode. Posiela prieskumníkov k ovociu a nepriateľským kolóniám a pri získavaní ovocia ponúka jedlo nepriateľom. Lepšie jedlo a ovocie môžu prilákať prebehlíkov.\n\nPorovnanie s ostatnými AI: Najviac hospodársky špecializovaný súper. Cabino a Maxima tiež získavajú ovocie, ale kombinujú ho s armádami.\n\nSilné a slabé stránky: Môže rásť, kým sa vojenskí súperi vyčerpávajú, a prebehlíctvo ponúka ďalší spôsob súťaženia. Neprodukuje bojovníkov na odpoveď proti trvalému náporu. Jeho možnosti silne ovplyvňujú jedlo, ovocie, zemepis a pravidlá víťazstva.\n\nMožná protihra: Napádajte nechránené rozširovanie. Vlastné jedálne zásobujte jedlom a ovocím, aby ste si udržali jednotky. Nevyčerpávajte kolóniu zbytočnými bojmi, kým on rastie.
+Základná stratégia: Produkuje robotníkov a prieskumníkov, rozširuje hospodárstvo a láka nepriateľské jednotky jedlom a ovocím. Nemá bežnú ofenzívu bojovníkov.\n\nHospodárstvo a rozvoj: Stavia jedálne a hniezda pri pšenici, pridáva vzdelávanie a pohybový výcvik a vylepšuje infraštruktúru. Sleduje zásoby jedla a nahrádza staré jedálne a hniezda, keď sa ich prístup k surovinám zhorší.\n\nPoľnohospodárstvo a prebehlíci: Chráni obnoviteľnú pšenicu a drevo pri vode. Posiela prieskumníkov k ovociu a nepriateľským kolóniám a pri získavaní ovocia ponúka jedlo nepriateľom. Lepšie jedlo a ovocie môžu prilákať prebehlíkov.\n\nPorovnanie s ostatnými UI: Najviac hospodársky špecializovaný súper. Cabino a Maxima tiež získavajú ovocie, ale kombinujú ho s armádami.\n\nSilné a slabé stránky: Môže rásť, kým sa vojenskí súperi vyčerpávajú, a prebehlíctvo ponúka ďalší spôsob súťaženia. Neprodukuje bojovníkov na odpoveď proti trvalému náporu. Jeho možnosti silne ovplyvňujú jedlo, ovocie, zemepis a pravidlá víťazstva.\n\nMožná protihra: Napádajte nechránené rozširovanie. Vlastné jedálne zásobujte jedlom a ovocím, aby ste si udržali jednotky. Nevyčerpávajte kolóniu zbytočnými bojmi, kým on rastie.
 [AIEcono-Summary]
 Rozvíja kolóniu bohatú na jedlo a láka prebehlíkov bez produkcie bojovníkov.
 [AIWarrush-Profile]
-Základná stratégia: Útočí skôr, než súperi dokončia dlhý hospodársky alebo technologický rozvoj. Očakáva rozhodnutie hry bojom pred potrebou rozsiahlej podpornej siete.\n\nHospodárstvo a rozvoj: Keď šesť jednotiek dokáže žať, nastaví produkčný pomer na štyroch robotníkov, jedného prieskumníka a troch bojovníkov. Pri zaplnení výcviku pridáva kasárne, ale obmedzuje nové jedálne. Voľné stavebné kapacity často využíva na nemocnice a pohybový výcvik.\n\nÚtok a obrana: Označuje objavené nepriateľské budovy strážnymi oblasťami, aby bojovníci udržiavali tlak. Nečaká na dôkladne zostavenú vlnu. Odstraňuje prekážajúce drevo a chráni niektoré obnoviteľné suroviny.\n\nPrístup k ovociu: Zakazuje zber ovocia, čím sa vyhýba postihom brnenia spojeným s ovocím a odmieta stratégiu prebehlíkov, ktorú používa Econo.\n\nPorovnanie s ostatnými AI: Na počiatočný tlak sa sústredí viac než Numbi alebo Castor. Nicowar tiež začína agresívne, ale pokračuje širším programom vylepšení a taktík.\n\nSilné a slabé stránky: Trestá pomalé začiatky a vynucuje skoré obranné výdavky. Obmedzené systematické vylepšovanie a úsporné zásobovanie robia zastavenú ofenzívu nákladnou. Terén a dlhé cesty môžu oslabiť počiatočnú výhodu.\n\nMožná protihra: Skoro chráňte jedálne a hniezda. Nahrádzajte robotníkov aj obrancov, rozvíjajte výcvik a prejdite do protiútoku, keď nápor stratí silu.\n\nPrieskum: Počiatočné prieskumné vlajky používajú priamo štartové polohy nepriateľov. Neskoršie umiestnenie útočných oblastí vyžaduje viditeľnosť.
+Základná stratégia: Útočí skôr, než súperi dokončia dlhý hospodársky alebo technologický rozvoj. Očakáva rozhodnutie hry bojom pred potrebou rozsiahlej podpornej siete.\n\nHospodárstvo a rozvoj: Keď šesť jednotiek dokáže žať, nastaví produkčný pomer na štyroch robotníkov, jedného prieskumníka a troch bojovníkov. Pri zaplnení výcviku pridáva kasárne, ale obmedzuje nové jedálne. Voľné stavebné kapacity často využíva na nemocnice a pohybový výcvik.\n\nÚtok a obrana: Označuje objavené nepriateľské budovy strážnymi oblasťami, aby bojovníci udržiavali tlak. Nečaká na dôkladne zostavenú vlnu. Odstraňuje prekážajúce drevo a chráni niektoré obnoviteľné suroviny.\n\nPrístup k ovociu: Zakazuje zber ovocia, čím sa vyhýba postihom brnenia spojeným s ovocím a odmieta stratégiu prebehlíkov, ktorú používa Econo.\n\nPorovnanie s ostatnými UI: Na počiatočný tlak sa sústredí viac než Numbi alebo Castor. Nicowar tiež začína agresívne, ale pokračuje širším programom vylepšení a taktík.\n\nSilné a slabé stránky: Trestá pomalé začiatky a vynucuje skoré obranné výdavky. Obmedzené systematické vylepšovanie a úsporné zásobovanie robia zastavenú ofenzívu nákladnou. Terén a dlhé cesty môžu oslabiť počiatočnú výhodu.\n\nMožná protihra: Skoro chráňte jedálne a hniezda. Nahrádzajte robotníkov aj obrancov, rozvíjajte výcvik a prejdite do protiútoku, keď nápor stratí silu.\n\nPrieskum: Počiatočné prieskumné vlajky používajú priamo štartové polohy nepriateľov. Neskoršie umiestnenie útočných oblastí vyžaduje viditeľnosť.
 [AIWarrush-Summary]
 Skorý tlak bojovníkov so zámerne úsporným podporným hospodárstvom.
 [AICabino-Profile]
-Základná stratégia: Rozdeľuje produkciu jednotiek medzi stavbu, vylepšovanie, obranu, útoky a prieskum. Oddelení správcovia požadujú a rezervujú jednotky a rozvíjajú hospodárstvo spoločne s armádou.\n\nHospodárstvo a rozvoj: Buduje a vylepšuje rozsiahlu osadu, riadi obsadenie jedální a veží, čistí okolie budov a chráni obnoviteľné suroviny. Hľadá ovocie a ponúka jedlo, aby súťažil o prebehlíkov.\n\nÚtok a obrana: Vyberie nepriateľa a uprednostňuje nemocnice, potom jedálne a kasárne. Podporuje až štyri útoky, zvyčajne priraďuje osem až dvadsať bojovníkov na cieľ podľa dostupnosti a blízkych nepriateľov. Pri ohrozených budovách používa samostatné obranné vlajky.\n\nVýcvik: Na útok vyžaduje dosť vhodných bojovníkov a dokončené kasárne, ale nečaká na najvyššiu technológiu. Ďalšie vylepšovanie a výcvik posilňujú neskoršie útoky.\n\nPorovnanie s ostatnými AI: Ničenie podporných budov sleduje cielenejšie než Nicowar. Útoky rozdeľuje viac než zhromaždené vlny Maxima a rezerváciami jednotiek rieši súperiace požiadavky.\n\nSilné a slabé stránky: Spája rast, výcvik, obranu a niekoľko útokov. Zničenie zásobovania a liečenia môže oslabiť celú kolóniu. Náhodný výber súpera a pevné priority budov môžu prehliadnuť príležitosti; viac útokov môže rozdeliť sily.\n\nMožná protihra: Bráňte nemocnice a jedálne. Napádajte nechránené rozširovanie a sústreďte obrancov proti jednotlivým útokom. Poškoďte zásobovanie alebo výcvik, kým dokáže udržať viac frontov.\n\nPrieskum: Výber útokov číta zoznamy nepriateľských budov bez výslovnej kontroly viditeľnosti. Niektoré hospodárske porovnania používajú priamo nepriateľské štatistiky.
+Základná stratégia: Rozdeľuje produkciu jednotiek medzi stavbu, vylepšovanie, obranu, útoky a prieskum. Oddelení správcovia požadujú a rezervujú jednotky a rozvíjajú hospodárstvo spoločne s armádou.\n\nHospodárstvo a rozvoj: Buduje a vylepšuje rozsiahlu osadu, riadi obsadenie jedální a veží, čistí okolie budov a chráni obnoviteľné suroviny. Hľadá ovocie a ponúka jedlo, aby súťažil o prebehlíkov.\n\nÚtok a obrana: Vyberie nepriateľa a uprednostňuje nemocnice, potom jedálne a kasárne. Podporuje až štyri útoky, zvyčajne priraďuje osem až dvadsať bojovníkov na cieľ podľa dostupnosti a blízkych nepriateľov. Pri ohrozených budovách používa samostatné obranné vlajky.\n\nVýcvik: Na útok vyžaduje dosť vhodných bojovníkov a dokončené kasárne, ale nečaká na najvyššiu technológiu. Ďalšie vylepšovanie a výcvik posilňujú neskoršie útoky.\n\nPorovnanie s ostatnými UI: Ničenie podporných budov sleduje cielenejšie než Nicowar. Útoky rozdeľuje viac než zhromaždené vlny Maxima a rezerváciami jednotiek rieši súperiace požiadavky.\n\nSilné a slabé stránky: Spája rast, výcvik, obranu a niekoľko útokov. Zničenie zásobovania a liečenia môže oslabiť celú kolóniu. Náhodný výber súpera a pevné priority budov môžu prehliadnuť príležitosti; viac útokov môže rozdeliť sily.\n\nMožná protihra: Bráňte nemocnice a jedálne. Napádajte nechránené rozširovanie a sústreďte obrancov proti jednotlivým útokom. Poškoďte zásobovanie alebo výcvik, kým dokáže udržať viac frontov.\n\nPrieskum: Výber útokov číta zoznamy nepriateľských budov bez výslovnej kontroly viditeľnosti. Niektoré hospodárske porovnania používajú priamo nepriateľské štatistiky.
 [AICabino-Summary]
 Koordinuje rast kolónie a vycvičené útoky, prednostne ničí liečenie a jedlo.
 [Algae]
@@ -1185,7 +1185,7 @@ Váha púšte
 [Extra colony assignments are retained for larger maps.]
 Ďalšie priradenia kolónií sú zachované pre väčšie mapy.
 [Extra islands]
-Extra ostrovy
+Ďalšie ostrovy
 [FFA]
 Všetci proti všetkým
 [Fruit]
@@ -1233,9 +1233,9 @@ Zápas ukončený
 [Medium]
 Stredná
 [Medium - Experimental]
-Stredná - Experimentálna
+Stredná – experimentálna
 [No AI orders]
-Žiadne príkazy AI
+Žiadne príkazy UI
 [Old islands]
 Členité súostrovie
 [Old random]
@@ -1253,7 +1253,7 @@ Hráči a tímy
 [Premade maps]
 Predpripravené mapy
 [Preview ready. Start plays this exact map.]
-Ukážka pripravená. Pri spustení hry sa používa presne táto mapa.
+Náhľad pripravený. Spustenie použije presne túto mapu.
 [Regenerate all]
 Znova vygenerovať všetko
 [Generating preview...]
@@ -1273,7 +1273,7 @@ Náhodná mapa
 [Repeat landscape]
 Opakovanie krajiny
 [Resources]
-Zdroje
+Suroviny
 [River]
 Rieka
 [River width]
@@ -1283,7 +1283,7 @@ Váha piesku
 [Select a valid map.]
 Vyberte platnú mapu.
 [Shared control needs a free controller slot (maximum %0).]
-Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo AI (najviac %0).
+Zdieľané ovládanie vyžaduje voľné miesto pre hráča alebo UI (najviac %0).
 [Smoothing]
 Vyhladzovanie
 [Standard]
@@ -1291,9 +1291,9 @@ Vyhladzovanie
 [Start game]
 Spustiť hru
 [Starting workers]
-Počiatoční pracovníci
+Počiatoční robotníci
 [Starting workers: Game Rules tab.]
-Počiatoční pracovníci: karta Pravidlá hry.
+Počiatoční robotníci: karta Pravidlá hry.
 [Swamp]
 Močiar
 [Team]
@@ -1315,9 +1315,9 @@ Biela
 [You]
 Vy
 [You + AI]
-Vy + AI
+Vy + UI
 [You and the AI both issue orders. Uses two controller slots.]
-Vy aj AI môžete vydávať rozkazy. Zaberá dve miesta pre hráčov a AI.
+Vy aj UI môžete vydávať rozkazy. Zaberá dve miesta pre hráčov a UI.
 [You vs all]
 Vy proti všetkým
 [Your maps]
@@ -1327,7 +1327,7 @@ kolónie
 [Inactive]
 Neaktívne
 [8 workers / 2x speed]
-8 pracovníkov / 2x rýchlosť
+8 robotníkov / 2x rýchlosť
 [Changes the pace of the whole simulation.]
 Mení tempo celej simulácie.
 [Choose whether teams can change during the match.]
@@ -1341,27 +1341,27 @@ Generovať a sledovať
 [Info]
 Info
 [Map-defined starting units]
-Štartovacie jednotky definované mapou
+Počiatočné jednotky podľa mapy
 [No maps in this library.]
 V tejto knižnici nie sú žiadne mapy.
 [Premade maps retain their authored starting units.]
 Predpripravené mapy si zachovávajú svoje pôvodné počiatočné jednotky.
 [Start with terrain known]
-Začnite so známym terénom
+Začať so známym terénom
 [This colony will not join the match.]
 Táto kolónia sa nezapojí do zápasu.
 [This landscape uses a fixed terrain recipe.]
 Táto krajina používa pevný recept na terén.
 [This landscape uses fixed resource placement.]
-Táto krajina používa pevné umiestnenie zdrojov.
+Táto krajina používa pevné rozmiestnenie surovín.
 [Win through conquest]
-Vyhrajte dobývaním
+Víťazstvo dobytím
 [You control this colony.]
 Ovládate túto kolóniu.
 [controllers]
-hráči a AI
+hráči a UI
 [Use]
-Vyberte
+Použiť
 [Lime]
 Limetkovo zelená
 [Teal]
@@ -1373,7 +1373,7 @@ Aktualizuje sa náhľad mapy...
 [Generation failed. Adjust settings or press Start to retry.]
 Generovanie zlyhalo. Upravte nastavenia alebo spustite hru a skúste to znova.
 [Preview unavailable. Adjust settings or start to retry.]
-Ukážka nie je k dispozícii. Zmeňte nastavenia alebo spustite hru a skúste to znova.
+Náhľad nie je k dispozícii. Zmeňte nastavenia alebo spustite hru a skúste to znova.
 [automatic torus view]
 Automatické toroidné zobrazenie
 [toggle torus view]
@@ -1385,13 +1385,13 @@ Aliancia
 [Choose a rule to change it.]
 Vyberte pravidlo, ktoré chcete zmeniť.
 [Conquest only removes prestige victory; map scripts still apply.]
-Víťazstvo založené len na dobytí znemožňuje prestížne víťazstvo; stále platia mapové skripty.
+Iba dobytie vypína víťazstvo prestížou; skripty mapy stále platia.
 [Control]
 Ovládanie
 [Controller]
 Ovláda
 [Generate preview]
-Vygenerovať ukážku
+Vygenerovať náhľad
 [Generation failed. Adjust settings or try again.]
 Generovanie zlyhalo. Upravte nastavenia alebo to skúste znova.
 [Map settings changed. Generate a new preview or start.]
@@ -1399,15 +1399,15 @@ Nastavenia mapy sa zmenili. Vygenerujte nový náhľad alebo začnite.
 [Map source]
 Zdroj mapy
 [Map-defined]
-Mapovo definované
+Podľa mapy
 [Match format]
-Formát hry
+Formát zápasu
 [No current preview]
 Žiadny aktuálny náhľad
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Rýchla bitka: dvojnásobná rýchlosť; generované mapy začínajú s 8 pracovníkmi.
+Rýchla bitka: dvojnásobná rýchlosť; generované mapy začínajú s 8 robotníkmi.
 [Reroll]
-Vytvorte ďalšiu mapu
+Generovať znova
 [Randomize]
 Vygenerovať náhodne
 [Reset to defaults]
@@ -1417,15 +1417,15 @@ Pravidlá
 [Select a map from the library.]
 Vyberte mapu z knižnice.
 [Starting workers affects generated maps only.]
-Počiatočný počet pracovníkov sa vzťahuje len na vygenerované mapy.
+Počiatočný počet robotníkov sa vzťahuje len na vygenerované mapy.
 [Unavailable]
-nedostupné
+Nedostupné
 [Use selection]
 Použiť výber
 [Quick clash on premade maps: only speed changes (2x).]
 Rýchla bitka na vopred pripravených mapách: mení sa iba rýchlosť (dvojnásobná rýchlosť).
 [Generate a preview to explore this world.]
-Vytvorte ukážku na preskúmanie tohto sveta.
+Vygenerujte náhľad a preskúmajte tento svet.
 [More workers jump-start colony growth. Changes the generated map.]
 Viac robotníkov urýchľuje rast kolónií. Toto nastavenie zmení vygenerovanú mapu.
 [No warriors]
@@ -1555,7 +1555,7 @@ Stlačte kláves. Escape zruší snímanie vstupu. Ak chcete priradiť Escape, v
 [settings Radius]
 Polomer
 [settings Reduced]
-Obmedzené
+Znížené
 [settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
 Znížené detaily deaktivujú oblaky a ich tiene, zjednodušujú magické efekty a znižujú priehľadnosť.
 [settings Release]
@@ -1581,7 +1581,7 @@ Skúsiť znova
 [settings Revert]
 Vrátiť zmeny
 [settings Reverting in]
-Návrat o
+Vráti sa za
 [settings Save shortcut]
 Uložiť klávesovú skratku
 [settings Saved — restart required]
@@ -1631,7 +1631,7 @@ V okne
 [settings Windowed only]
 Iba v okne
 [settings seconds]
-sekúnd
+s
 [settings Flag]
 Vlajka
 [settings High-resolution artwork]
@@ -1645,7 +1645,7 @@ Automaticky zobraziť prehľad mapy v tvare torusu pri pohybe po mape (OpenGL).
 [settings Autosave]
 Automatické ukladanie
 [settings Save the game automatically about every 10 seconds.]
-Hru automaticky ukladá približne každých 10 sekúnd.
+Automaticky ukladať hru približne každých 10 sekúnd.
 [Channel width]
 Šírka prielivu
 [Land bridge width]
@@ -2127,13 +2127,13 @@ Veľmi vzácne (4x pomalšie)
 [Extremely scarce (8x slower)]
 Extrémne vzácne (8x pomalšie)
 [Small (+50 each)]
-Malé (+50 každý)
+Malé (+50 z každej)
 [Medium (+150 each)]
-Stredné (+150 každý)
+Stredné (+150 z každej)
 [Large (+300 each)]
-Veľké (+300 každý)
+Veľké (+300 z každej)
 [No resource growth]
-Žiadny rast zdrojov
+Žiadny rast surovín
 [Economy]
 Ekonomika
 [Instant construction]
@@ -2189,19 +2189,19 @@ Jednotky C
 [Stats current blocked buildings]
 Budovy C
 [Stats growth global]
-Zdroje +
+Suroviny +
 [Stats growth new tiles]
-Zdroje +#
+Suroviny +#
 [Stats growth reductions]
-Zdroje -
+Suroviny -
 [Stats growth per minute]
 Pšenica +/min
 [Stats growth near 8]
-Zdroje + <=8
+Suroviny + <=8
 [Stats growth near 16]
-Zdroje + <=16
+Suroviny + <=16
 [Stats growth near 32]
-Zdroje + <=32
+Suroviny + <=32
 [Stats low HP 25]
 Zdravie <=25%
 [Stats low HP 50]
@@ -2321,7 +2321,7 @@ Predpolie
 [Allotments]
 Záhradky
 [Caravanserai]
-Karavánseráj
+Karavanseraj
 [Mixed]
 Zmiešaná
 [Fort size]
@@ -2369,7 +2369,7 @@ Kaňonová krajina
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
 Pevnosť nedosiahne na svoj brod; použite väčšiu mapu alebo menej kolónií.
 [A wall would stand on a beach; try another seed.]
-Múr by stál na pláži; skúste iné semienko.
+Múr by stál na pláži; skúste iný seed.
 [The fort is too small for its gardens; raise Fort size.]
 Pevnosť je na svoje záhrady príliš malá; zväčšite veľkosť pevnosti.
 [The home oasis is too small; raise Home oasis size.]
@@ -2469,7 +2469,7 @@ Terasy na svah
 [Waviness]
 Zvlnenie
 [Stair spacing]
-Rozstup schodov
+Rozostup schodov
 [Locust]
 Kobylky
 [Plantations]
@@ -2701,7 +2701,7 @@ Mesto má príliš málo použiteľných križovatiek.
 [A city neighbourhood lacks reachable crops or building room.]
 Jednej mestskej štvrti chýbajú dostupné plodiny alebo priestor na stavby.
 [The city neighbourhoods are too unequal; try another seed.]
-Mestské štvrte sú príliš nevyvážené; skúste iné semienko.
+Mestské štvrte sú príliš nevyvážené; skúste iný seed.
 [The fractured civic plaza did not survive.]
 Rozlámané mestské námestie sa nezachovalo.
 [Who Ate the Map?]
@@ -2767,7 +2767,7 @@ Priestor
 [Isolation]
 Odlúčenosť
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
-Štart každej kolónie sa meria na hotovej mape: cesta k obiliu a k drevu, ako dobre jej pôda dorastá, zásoby a stavebné miesta v dosahu a vzdialenosť od súperov. Každý činiteľ dostane od 0 do 1 voči pevnej latke, celok ich váži, spravodlivosť je celok najhoršej kolónie delený celkom najlepšej a skóre je najhorší celok násobený spravodlivosťou.
+Štart každej kolónie sa meria na hotovej mape: cesta k pšenici a k drevu, ako dobre jej pôda dorastá, zásoby a stavebné miesta v dosahu a vzdialenosť od súperov. Každý činiteľ dostane od 0 do 1 voči pevnej latke, celok ich váži, spravodlivosť je celok najhoršej kolónie delený celkom najlepšej a skóre je najhorší celok násobený spravodlivosťou.
 [ERROR_CANT_SAVE_MAP]
 Mapu sa nepodarilo uložiť. Skontrolujte cieľ a dostupné miesto. Vaše úpravy sú stále otvorené.
 [Loading headers]
@@ -2895,9 +2895,9 @@ Pravidlá
 [settings Interface layout]
 Rozloženie rozhrania
 [settings Automatic]
-Automatický
+Automatické
 [settings Compact]
-Blízko seba
+Kompaktné
 [settings Spacious]
 Priestranné
 [More]
@@ -2925,7 +2925,7 @@ Späť
 [settings Save the game automatically about every minute.]
 Automaticky ukladať hru približne každú minútu.
 [AI opponents]
-Počítačoví súperi
+Súperi UI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Priestranné rozloženie používa bočný panel, ak je dosť miesta. Kompaktné používa panel nástrojov a vysúvacie panely.
 [settings One-finger zoom]
@@ -2963,9 +2963,9 @@ Hráč %0
 [Team %0]
 Tím %0
 [Your colony]
-Tvoja kolónia
+Vaša kolónia
 [%0 / %1 HP · %2]
-%0 / %1 ŽB · %2
+Zdravie %0 / %1 · %2
 [Units: %0]
 Jednotky: %0
 [Buildings: %0]
@@ -3009,7 +3009,7 @@ Uplynutý čas · %0
 [Read-only building]
 Budova len na čítanie
 [Alliance and shared vision are fixed for this match.]
-Spojenectvo a spoločný výhľad sú v tejto hre pevné.
+Spojenectvo a spoločný výhľad sú v tomto zápase pevne dané.
 [Share vision]
 Zdieľať výhľad
 [Share food vision]
@@ -3019,9 +3019,9 @@ Zdieľať výhľad na trhy
 [Chat]
 Chat
 [No other players have editable diplomatic settings in this match.]
-Žiadny ďalší hráč nemá v tejto hre upraviteľné diplomatické nastavenia.
+Žiadny ďalší hráč nemá v tomto zápase upraviteľné diplomatické nastavenia.
 [No briefing for this match.]
-Pre túto hru nie sú pokyny.
+Tento zápas nemá pokyny.
 [Chat · recipients selected in Teams]
 Chat · príjemcovia vybraní v Tímoch
 [Filename]
@@ -3119,7 +3119,7 @@ Pozícia
 [Color]
 Farba
 [Player / AI]
-Hráč / AI
+Hráč / UI
 [Group]
 Skupina
 [Forbid]
@@ -3159,17 +3159,17 @@ Vyberte krajinu
 [%0 / Browse]
 %0 / Prehľadávať
 [%0 colonies · %1]
-%0 kolónie · %1
+Kolónie: %0 · %1
 [%0 · Team %1]
 %0 · Tím %1
 [Colonies: %0]
 Kolónie: %0
 [%0 colonies · %1 AI]
-%0 kolónie · %1 UI
+Kolónie: %0 · UI: %1
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Jednotky
+%0 · jednotky: %1
 [settings Level %0]
 Úroveň %0
 [settings Match the desktop %0]
@@ -3187,7 +3187,7 @@ Kolónia %0
 [Min required level %0]
 Najnižšia potrebná úroveň: %0
 [Confirm %0]
-Ok: %0
+OK: %0
 [%0 %1]
 %0 %1
 [resume game]
@@ -3235,1415 +3235,1415 @@ Zotrvačnosť zoznamov
 [List bounce]
 Odraz zoznamov
 [lan pairing field]
-
+Párovací reťazec hostiteľa (alebo dôveryhodná WSS URL)
 [lan pairing connect]
-
+Spárovať a pripojiť
 [lan discovery instructions]
-
+Vyberte hostiteľa a potom vložte jeho párovací reťazec na overenie jeho identity.
 [lan discovery unavailable]
-
+Vyhľadávanie v LAN nie je dostupné. Skontrolujte povolenie pre lokálnu sieť alebo vložte párovací reťazec hostiteľa.
 [lan discovered host %0]
-
+Nájdený hostiteľ %0 – spárujte ho a uvidíte hry
 [lan connection unavailable]
-
+Hostiteľ v LAN je nedostupný. Skontrolujte povolenie pre lokálnu sieť a párovací reťazec hostiteľa.
 [lan connection verification failed %0]
-
+Hostiteľa v LAN nemožno overiť ani sa k nemu pripojiť: %0
 [lan lobby endpoint required]
-
+Použite adresu lobby hostiteľa
 [settings Artwork]
-
+Grafika
 [settings Original]
-
+Pôvodná
 [settings High resolution]
-
+Vysoké rozlíšenie
 [settings Clouds]
-
+Oblaky
 [settings Show cloud cover above the map.]
-
+Zobraziť oblaky nad mapou.
 [settings Cloud shadows]
-
+Tiene oblakov
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Zobraziť tiene oblakov na zemi nezávisle od oblakov.
 [settings Building particles]
-
+Častice budov
 [settings Show smoke and other building particles.]
-
+Zobraziť dym a ďalšie častice budov.
 [settings Magic effects]
-
+Magické efekty
 [settings Choose animated magic effects or a simple visible effect.]
-
+Vyberte animované magické efekty alebo jednoduchý viditeľný efekt.
 [settings Simple]
-
+Jednoduché
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Vyžaduje vykresľovanie cez OpenGL. Vaša uložená voľba sa zachová.
 [settings Interface appearance]
-
+Vzhľad rozhrania
 [settings Panels]
-
+Panely
 [settings Choose translucent or opaque interface panels.]
-
+Vyberte priesvitné alebo nepriehľadné panely rozhrania.
 [settings Opaque]
-
+Nepriehľadné
 [settings Translucent]
-
+Priesvitné
 [settings Advanced graphics]
-
+Pokročilá grafika
 [settings Path lines]
-
+Čiary trás
 [settings Choose translucent or opaque unit path lines.]
-
+Vyberte priesvitné alebo nepriehľadné čiary trás jednotiek.
 [settings Smooth progress indicators]
-
+Plynulé ukazovatele priebehu
 [settings Smooth the moving edges of progress indicators.]
-
+Vyhladiť pohyblivé okraje ukazovateľov priebehu.
 [settings Decorative interface animation]
-
+Dekoratívne animácie rozhrania
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Animovať grafiku víťazstva. Obmedzenie pohybu túto animáciu tiež vypne.
 [settings Smooth unit motion]
-
+Plynulý pohyb jednotiek
 [settings Experimental: move and animate units between game ticks.]
-
+Experimentálne: pohybovať a animovať jednotky medzi krokmi hry.
 [settings Smooth fog of war]
-
+Plynulá vojnová hmla
 [settings Fade the map into and out of the fog of war gradually.]
-
+Postupne zahaľovať mapu vojnovou hmlou a odkrývať ju.
 [settings Adaptive zoom detail]
-
+Prispôsobivé detaily priblíženia
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Pri oddialení mapy zjednodušiť ukazovatele, zóny, terén a jednotky a pri priblížení ich nechať malé.
 [settings Text size]
-
+Veľkosť textu
 [settings Enlarge interface text without changing the map scale.]
-
+Zväčšiť text rozhrania bez zmeny mierky mapy.
 [Map momentum]
 Zotrvačnosť mapy
 [turn reconnecting]
-
+Spojenie s hostiteľom sa prerušilo. Opätovné pripájanie...
 [turn waiting for players]
-
+Čaká sa, kým sa načítajú všetci hráči...
 [turn rejoining]
-
+Opätovné pripájanie k hre...
 [turn catching up %0]
-
+Dobiehanie: zaostávanie v ťahoch: %0
 [turn player reconnecting %0]
-
+%0 sa znova pripája...
 [turn player lagging %0]
-
+%0 zaostáva
 [turn player resyncing %0]
-
+%0 dobieha hru
 [turn player not connected %0]
-
+%0 sa ešte nepripojil
 [lan host left]
-
+Hostiteľ opustil hru.
 [lan host lost]
-
+Spojenie s hostiteľom sa prerušilo.
 [lan version mismatch %0]
-
+Hostiteľ používa inú verziu Globulation 2 (%0).
 [lan cannot host %0]
-
+Hru v LAN nemožno hostiť: %0
 [play online]
-
+Hrať online
 [Use in room]
-
+Použiť v miestnosti
 [conn ai]
-
+UI
 [conn behind %0]
-
+Oneskorenie %0
 [conn behind explanation %0 %1]
-
+Oneskorenie: o koľko hra hráča zaostáva za časom zápasu; zahŕňa aj jeho odozvu. Do %0 je to normálne; od %1 je hráč označený ako pomalý.
 [conn behind]
-
+Oneskorenie
 [conn card catching up]
-
+Dobiehanie
 [conn card colony works]
-
+Vaša kolónia pracuje ďalej sama: jednotky dokončia svoje úlohy a budovy fungujú ďalej.
 [conn card desync detail]
-
+Opätovné pripojenie zo záznamu zápasu, aby ste videli to isté čo ostatní. Hlásenie bolo odoslané automaticky.
 [conn card desync]
-
+Vaša hra stratila synchronizáciu
 [conn card grace %0]
-
+Vaša kolónia pracuje ďalej sama: jednotky dokončia svoje úlohy a budovy fungujú ďalej. Na návrat máte %0, potom budete zo zápasu odstránení.
 [conn card input paused]
-
+Dobiehate hru · ovládanie pozastavené
 [conn card lost]
-
+Spojenie stratené
 [conn card progress %0 %1 %2]
-
+%0 % · %1 z %2 krokov
 [conn card reconnecting %0]
-
+Opätovné pripájanie k zápasu… pokus %0
 [conn card replaying %0]
-
+Prehráva sa zmeškaný čas (%0). Obrazovka sa aktualizuje, keď dobehnete súčasnosť.
 [conn card seconds left %0]
-
+zostáva asi %0 s
 [conn connections]
-
+Spojenia
 [conn connection]
-
+Spojenie
 [conn delay explanation %0 %1]
-
+Odozva: čas od vášho kliknutia, kým sa akcia vykoná pre všetkých. Závisí od vášho pripojenia, nie od pripojenia ostatných hráčov. Dobrá pod %0, slabá od %1.
 [conn fair]
-
+Priemerné
 [conn good]
-
+Dobré
 [conn grid legend]
-
+Pri viac ako štyroch hráčoch panel ukazuje latenciu každého hráča v milisekundách alebo o koľko sekúnd zaostáva.
 [conn jitter %0]
-
+kolísanie %0
 [conn leave match]
-
+Opustiť zápas
 [conn left]
-
+Odišiel
 [conn notice back %0]
-
+%0 je späť.
 [conn notice left %0]
-
+%0 opustil zápas.
 [conn notice lost %0 %1]
-
+%0 stratil spojenie. Hra pokračuje; jeho kolónia pracuje ďalej, kým sa znova pripája (zostáva %1).
 [conn ping explanation %0 %1]
-
+Latencia: čas cesty tam a späť medzi hráčom a relay serverom. Dobrá pod %0, slabá od %1.
 [conn ping]
-
+Latencia
 [conn players]
-
+Hráči
 [conn poor]
-
+Slabé
 [conn reconnecting]
-
+Znova sa pripája
 [conn relay %0]
-
+Relay server: %0
 [conn resyncing]
-
+Opätovné pripájanie
 [conn slow]
-
+Pomalý
 [conn unstable]
-
+nestabilné
 [conn waiting]
-
+Pripája sa…
 [conn you %0]
-
+%0 (vy)
 [conn you]
-
+Vy
 [conn your delay %0]
-
+Vaša odozva %0
 [hub account menu]
-
+Účet
 [hub ai joins after %0]
-
+UI sa pridá o %0
 [hub all rooms]
-
+Všetky
 [hub browse maps]
-
+Prehľadávať mapy
 [hub cant reach %0]
-
+Server %0 je nedostupný.
 [hub change server]
-
+Zmeniť server…
 [hub check code]
-
+Keď sa stránka spýta na kód, zadajte tento:
 [hub code placeholder]
-
+Kód alebo odkaz pozvánky
 [hub connecting to %0]
-
+%0 · pripája sa…
 [hub continue with %0]
-
+Pokračovať cez %0
 [hub create room]
-
+Vytvoriť miestnosť
 [hub find match]
-
+Nájsť zápas
 [hub finish in browser]
-
+Dokončite prihlásenie na stránke, ktorá sa otvorila v prehliadači.
 [hub free seat]
-
+Voľné miesto
 [hub get update]
-
+Získať aktualizáciu
 [hub guest kept on device]
-
+Hosť · uložený v tomto zariadení
 [hub invalid code]
-
+Toto nie je kód ani odkaz pozvánky.
 [hub join by code]
-
+Pripojiť sa kódom
 [hub join code]
-
+Kód na pripojenie
 [hub join]
-
+Pripojiť sa
 [hub leaderboard]
-
+Rebríček
 [hub linked %0]
-
+Prepojené účty · %0
 [hub linked accounts]
-
+Prepojené účty
 [hub maps]
-
+Mapy
 [hub no queues]
-
+Tento server nemá fronty rýchlych zápasov.
 [hub no rooms]
-
+Momentálne nie sú otvorené žiadne miestnosti. Vytvorte jednu a pošlite pozvánku.
 [hub offline at %0]
-
+%0 · nedostupný
 [hub offline detail %0]
-
+Nový pokus o %0 s. Rýchly zápas a online miestnosti nie sú dostupné. Hra v LAN z hlavnej ponuky tento server nepotrebuje.
 [hub online at %0]
-
+%0 · dostupný
 [hub online settings]
-
+Nastavenia online
 [hub online]
-
+Online
 [hub open page again]
-
+Znova otvoriť stránku
 [hub open rooms]
-
+Otvorené miestnosti
 [hub page opened at %0]
-
+Otvorené: %0. V hre nemusíte nič písať; prihlási vás sama.
 [hub queues unavailable]
-
+Rýchly zápas sa zobrazí, keď server odpovie.
 [hub quick match unavailable]
-
+Rýchly zápas v tejto verzii zatiaľ nie je dostupný.
 [hub quick match]
-
+Rýchly zápas
 [hub ranked]
-
+Hodnotený
 [hub recent matches]
-
+Posledné zápasy
 [hub refresh]
-
+Obnoviť
 [hub retry now]
-
+Skúsiť znova
 [hub room match]
-
+Miestnosť
 [hub room name %0]
-
+Miestnosť hráča %0
 [hub room]
-
+Miestnosť
 [hub seats %0 %1]
-
+Miesta: %0/%1
 [hub server %0]
-
+Server %0
 [hub sign in browser]
-
+Otvoriť prihlasovaciu stránku
 [hub sign in conflict]
-
+Toto prihlásenie už patrí inému účtu.
 [hub sign in failed %0]
-
+Prihlásenie sa nedokončilo (%0).
 [hub sign in intro]
-
+Prihláste sa alebo si vytvorte účet v prehliadači. Vaše zápasy hosťa sa prenesú s vami.
 [hub sign in]
-
+Prihlásiť sa
 [hub sign out]
-
+Odhlásiť sa v tomto zariadení
 [hub signed in as %0]
-
+Prihlásený ako %0.
 [hub signed in on %0]
-
+Prihlásený na %0
 [hub signing in]
-
+Prihlasovanie…
 [hub sim %0]
-
+sim. %0
 [hub unrated]
-
+Nehodnotený
 [hub update required at %0]
-
+%0 · vyžaduje sa aktualizácia
 [hub update required detail %0]
-
+%0 používa novšiu verziu, takže táto kópia sa do online hier nepripojí, kým sa neaktualizuje. Hry v LAN fungujú ďalej.
 [hub update required]
-
+Vyžaduje sa aktualizácia
 [hub server behind]
-
+Čaká sa na aktualizáciu servera
 [hub server behind at %0]
-
+%0 · čaká sa na aktualizáciu servera
 [hub server behind detail %0]
-
+Táto kópia je novšia ako %0, ktorý ešte nebol aktualizovaný. Online hry sa sprístupnia po aktualizácii servera. Hry v LAN fungujú ďalej.
 [hub version mismatch]
-
+Iná verzia
 [hub version mismatch at %0]
-
+%0 · iná verzia
 [hub version mismatch detail %0]
-
+%0 používa inú verziu hry, takže táto kópia sa nemôže pripojiť do online hier. Hry v LAN fungujú ďalej.
 [hub versus %0]
-
+proti %0
 [match ai]
-
+UI
 [match downloading map %0]
-
+Sťahuje sa mapa %0
 [match failed]
-
+Zápas sa nepodarilo spustiť.
 [match leave]
-
+Odísť
 [match loading]
-
+Načítava sa hra
 [Loading game graphics]
-
+Načítava sa grafika hry
 [match map cached]
-
+už je v tomto zariadení
 [match map]
-
+Sťahuje sa mapa
 [match relay %0]
-
+Pripojené k relay serveru %0
 [match seat confirmed]
-
+Miesto potvrdené
 [match starting]
-
+Začína sa zápas
 [match tip flags]
-
+Tip: vlajky prieskumu posielajú prieskumníkov odhaľovať mapu; vlajky vojny zhromažďujú vašich bojovníkov.
 [match tip input]
-
+Tip: vaše príkazy sa ku všetkým dostanú po vašej vlastnej odozve; pripojenie ostatných hráčov vás nespomaľuje.
 [match tip select]
-
+Tip: dvojklikom na budovu vyberiete všetky budovy toho istého typu.
 [match waiting for players]
-
+Čaká sa na všetkých hráčov
 [match you %0]
-
+%0 (vy)
 [match player map]
-
+mapa
 [match player loading]
-
+načítava
 [match player connecting]
-
+pripája sa
 [match player ready]
-
+pripravený
 [match player left]
-
+odišiel
 [results back to online]
-
+Späť do online hry
 [results back to room]
-
+Späť do miestnosti
 [results defeat]
-
+Prehra
 [results ladder rating %0]
-
+Hodnotenie: %0
 [results left]
-
+Opustili ste zápas
 [results match over]
-
+Zápas skončil
 [results match page]
-
+Stránka zápasu
 [results minutes %0]
-
+%0 min
 [results no change]
-
+bez zmeny
 [results ranked]
-
+Hodnotený
 [results recording]
-
+Zaznamenáva sa výsledok…
 [results room unrated]
-
+Zápas v miestnosti · nehodnotený
 [results saved to history]
-
+Uložené do vašej histórie
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+Server nedokázal tento zápas zopakovať, preto sa nezapočíta do hodnotenia nikoho. Bol nahlásený na preverenie; nemusíte nič robiť.
 [results verified provisional]
-
+Overené · predbežné
 [results verified]
-
+Overené
 [results verifying detail]
-
+Server prehráva zápas, aby ho potvrdil. Zvyčajne to trvá menej ako minútu.
 [results verifying]
-
+Overuje sa výsledok…
 [results victory]
-
+Víťazstvo
 [room address]
-
+Adresa
 [room ai %0]
-
+UI: %0
 [room browser pairing]
-
+Párovanie s prehliadačom
 [room catalog map]
-
+Mapa z katalógu
 [room change map]
-
+Zmeniť mapu…
 [room change rules]
-
+Zmeniť pravidlá…
 [room chat]
-
+Chat
 [room closed seat detail]
-
+Zatvorené hostiteľom
 [room closed seat]
-
+Zatvorené
 [room colonies]
-
+Kolónie
 [room connecting]
-
+Pripája sa k miestnosti…
 [room copy]
-
+Kopírovať
 [room disconnected]
-
+odpojený
 [room downloading %0]
-
+Sťahuje sa mapa: %0 %
 [room downloading map]
-
+Sťahuje sa mapa…
 [room expired]
-
+Miestnosť bola zatvorená.
 [room generated on server]
-
+Vygenerovaná raz na serveri, takže všetci hrajú presne túto mapu.
 [room guest]
-
+hosť
 [room host %0]
-
+hostiteľ %0
 [room host closed]
-
+Hostiteľ zatvoril miestnosť.
 [room host]
-
+hostiteľ
 [room humans vs ai]
-
+Ľudia proti UI
 [room invite code %0]
-
+Kód %0 · otvorí sa v aplikácii, v telefóne alebo v prehliadači
 [room invite not found]
-
+Táto pozvánka vypršala alebo neexistuje.
 [room invite only]
-
+Len na pozvanie
 [room invite]
-
+Pozvať
 [room joining on network]
-
+Pripájanie v tejto sieti
 [room lan badge]
-
+Lokálna sieť · nehodnotené
 [room lan list hint %0]
-
+Ostatní v tej istej sieti uvidia %0 v zozname hier v LAN v hlavnej ponuke.
 [room leave]
-
+Odísť
 [room map changed %0]
-
+Mapa sa zmenila na %0.
 [room map failed]
-
+Mapu sa nepodarilo pripraviť
 [room match label]
-
+Miestnosť
 [room member joined %0]
-
+%0 sa pripojil.
 [room member left %0]
-
+%0 odišiel.
 [room member ready %0]
-
+%0 je pripravený.
 [room needs two seats]
-
+Na začatie pozvite priateľa alebo pridajte UI
 [room no map]
-
+Zatiaľ bez mapy
 [room not ready]
-
+Nepripravený
 [room open for a person]
-
+Otvorené pre hráča
 [room open seat detail]
-
+Môže ho obsadiť ktokoľvek s pozvánkou
 [room open seat]
-
+Voľné miesto
 [room person]
-
+Hráč
 [room preparing map]
-
+Mapa sa pripravuje na serveri…
 [room public]
-
+Verejná
 [room ready?]
-
+Pripravený
 [room ready]
-
+✓ Pripravený
 [room remove from room]
-
+Odstrániť z miestnosti
 [room rule off]
-
+Vyp.
 [room rule on]
-
+Zap.
 [room rules changed]
-
+Pravidlá sa zmenili.
 [room rules]
-
+Pravidlá
 [room say something]
-
+Napíšte niečo…
 [room seat hint]
-
+Hráči sa môžu sami presunúť na voľné miesto. Na vyváženie použite Zmeniť tím.
 [room seat options]
-
+Možnosti miesta
 [room seats summary %0 %1 %2]
-
+Hráči: %0 · UI: %1 · voľné: %2
 [room seats]
-
+Miesta
 [room seed]
-
+Seed mapy
 [room send]
-
+Odoslať
 [room set by host]
-
+Nastavuje hostiteľ
 [room share text %0]
-
+Pridajte sa do mojej miestnosti v Globulation 2: %0
 [room share]
-
+Zdieľať…
 [room size]
-
+Veľkosť
 [room starting match]
-
+Začína sa zápas…
 [room take seat]
-
+Obsadiť miesto
 [room team %0]
-
+Tím %0
 [room update required]
-
+Táto miestnosť používa inú verziu hry. Aktualizujte hru, aby ste sa mohli pripojiť.
 [room uploaded map]
-
+Nahraná mapa
 [room waiting for %0]
-
+Čaká sa, kým bude %0 pripravený
 [room waiting for you]
-
+Keď budete pripravení, stlačte Pripravený
 [room match over]
-
+Zápas skončil. Pripravte sa na ďalšie kolo!
 [room waiting for host]
-
+Čaká sa, kým hostiteľ začne
 [room waiting for players %0]
-
+Čaká sa na pripravenosť hráčov: %0
 [room who can find it]
-
+Kto ju môže nájsť
 [room you created]
-
+Vytvorili ste miestnosť.
 [room you joined %0]
-
+Pripojili ste sa do %0.
 [room you were removed]
-
+Hostiteľ vás odstránil z miestnosti.
 [room you]
-
+vy
 [settings Online]
-
+Online
 [settings Another server]
-
+Iný server
 [settings Check]
-
+Overiť
 [settings Checking…]
-
+Overuje sa…
 [settings Choose which server you play on and how you sign in to it.]
-
+Vyberte, na ktorom serveri hráte a ako sa naň prihlasujete.
 [settings Connecting…]
-
+Pripája sa…
 [settings Could not reach this server.]
-
+Tento server je nedostupný.
 [settings Display name saved.]
-
+Zobrazované meno uložené.
 [settings Display name]
-
+Zobrazované meno
 [settings Download or delete my data]
-
+Zrušiť môj účet
 [settings Enter an https:// address.]
-
+Zadajte adresu https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Dokončite to v prehliadači: keď sa spýta, zadajte kód %0.
 [settings Forget]
-
+Zabudnúť
 [settings Guests keep a generated name; sign in to choose one.]
-
+Hostia majú vygenerované meno; ak si chcete vybrať vlastné, prihláste sa.
 [settings Link]
-
+Prepojiť
 [settings Not a Globulation 2 server.]
-
+Toto nie je server Globulation 2.
 [settings Not linked]
-
+Neprepojené
 [settings Not signed in.]
-
+Neprihlásený.
 [settings Open]
-
+Otvoriť
 [settings Opens your account page on %0.]
-
+Otvorí stránku vášho účtu na %0, kde ho môžete zrušiť.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Prevádzkuje ho komunita, klub alebo vy sami. Vložte jeho adresu.
 [settings Save]
-
+Uložiť
 [settings Server]
-
+Server
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Zobrazuje sa v miestnostiach, zápasoch a rebríčku. Zmeniť ho možno raz za 30 dní.
 [settings Sign in with: %0 · queues: %1]
-
+Prihlásenie cez: %0 · fronty: %1
 [settings Sign out on this device]
-
+Odhlásiť sa v tomto zariadení
 [settings Sign out]
-
+Odhlásiť sa
 [settings Switch to this server]
-
+Prepnúť na tento server
 [settings The last sign-in method can't be unlinked.]
-
+Posledný spôsob prihlásenia nemožno odpojiť.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Oficiálny server Globulation 2 · hodnotené fronty, rebríčky, katalóg máp
 [settings Unlink]
-
+Odpojiť
 [settings Unlinking is done on the account page.]
-
+Odpojenie sa robí na stránke účtu.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Kým sa znova neprihlásite, budete nový hosť. Váš účet a zápasy zostanú na serveri.
 [settings Your account on %0]
-
+Váš účet na %0
 [settings compatible with this version]
-
+kompatibilný s touto verziou
 [settings connected]
-
+pripojené
 [settings connecting…]
-
+pripája sa…
 [settings guest]
-
+hosť
 [settings linked]
-
+prepojené
 [settings plays another version]
-
+používa inú verziu
 [settings trusted]
-
+dôveryhodný
 [settings used before]
-
+použitý predtým
 [settings you were %0 there]
-
+vaše meno tam: %0
 [trust invited to room %0]
-
+Pozvánka do miestnosti %0
 [trust join as guest]
-
+Pripojiť sa ako hosť
 [trust not official]
-
+Tento server neprevádzkuje projekt Globulation 2.
 [trust remember]
-
+Zapamätať si tento server
 [trust separate identity %0]
-
+Pripojíte sa tam ako hosť. Váš účet %0, hodnotenie a história zostanú tam, kde sú.
 [trust title]
-
+Pripojiť sa k hre na inom serveri?
 [trust what it sees]
-
+Server uvidí vaše zobrazované meno, adresu vášho pripojenia a hry, ktoré na ňom hráte.
 [settings not connected]
-
+nepripojené
 [settings Open Play online to connect.]
-
+Na pripojenie otvorte Hrať online.
 [hub code]
-
+Kód
 [results draw]
-
+Remíza
 [qm 2 vs 2]
-
+2 proti 2
 [qm 1 vs 1]
-
+1 proti 1
 [qm ping about]
-
+Latencia asi
 [qm ranked]
-
+Hodnotený
 [qm casual %0]
-
+Nezáväzne %0
 [qm rated]
-
+Hodnotený
 [qm unrated]
-
+Nehodnotený
 [qm solo queue]
-
+front jednotlivcov
 [qm ai joins after %0]
-
+UI sa pridá o %0
 [qm fair maps %0]
-
+Mapy: %0
 [qm cooldown %0]
-
+Odmietli ste zápas. Znova hľadať môžete o %0.
 [qm sign in to play ranked]
-
+Hodnotené fronty sú pre prihlásené účty; najprv sa prihláste.
 [online update required]
-
+Táto verzia hry je pre server príliš stará; ak chcete hrať online, aktualizujte ju.
 [online server behind]
-
+Server ešte nebol aktualizovaný na túto verziu; online hra sa sprístupní po jeho aktualizácii.
 [online version mismatch]
-
+Server používa inú verziu hry; s touto kópiou nemožno hrať online.
 [qm already searching]
-
+Už hľadáte zápas alebo ste v zápase.
 [online connection problem]
-
+Server je nedostupný.
 [qm find match]
-
+Nájsť zápas
 [qm opponents rated %0 to %1]
-
+Hodnotenie súperov %0 až %1
 [qm region %0]
-
+Región %0
 [qm searching]
-
+Hľadá sa
 [qm measuring relays]
-
+Meranie relay serverov
 [qm joining queue]
-
+Zaraďovanie do frontu
 [qm waiting for a person]
-
+Čaká sa na človeka: súperi UI sú vypnutí.
 [qm ai in %0 rated]
-
+Ak sa nikto nenájde, o %0 budete hrať proti UI s najbližším hodnotením
 [qm ai in %0]
-
+Ak sa nikto nenájde, o %0 sa pridá UI
 [qm ai after %0]
-
+Ak sa nikto nenájde, po %0 miesto obsadí UI
 [qm allow ai short]
-
+Povoliť UI
 [qm allow ai]
-
+Povoliť súpera UI
 [qm cancel]
-
+Zrušiť
 [qm cancel search]
-
+Zrušiť hľadanie
 [qm usual wait %0]
-
+bežné čakanie %0
 [qm widening]
-
+rozširuje sa s čakaním
 [qm ais are rated]
-
+(hodnotený: UI majú tiež hodnotenie)
 [qm opponent declined]
-
+Súper neprijal. Ste opäť na začiatku frontu.
 [qm %0 did not accept]
-
+%0 neprijal. Ste opäť na začiatku frontu.
 [qm start failed]
-
+Zápas sa nepodarilo spustiť. Hľadáte znova.
 [qm you declined]
-
+Odmietli ste zápas. Po krátkom čakaní môžete hľadať znova.
 [qm you did not answer]
-
+Neprijali ste včas. Po krátkom čakaní môžete hľadať znova.
 [qm search ended]
-
+Hľadanie sa skončilo.
 [qm try again]
-
+Skúsiť znova
 [online connecting]
-
+Pripája sa…
 [qm no queues]
-
+Tento server nemá fronty rýchlych zápasov.
 [qm quick match]
-
+Rýchly zápas
 [qm phone searching note]
-
+Hľadanie pokračuje, aj keď opustíte túto obrazovku.
 [qm phone intro]
-
+Vyberte front nižšie; hľadanie beží, kým prehliadate.
 [qm online]
-
+Online
 [qm keeps running note]
-
+Hľadanie pokračuje, aj keď opustíte túto obrazovku.
 [qm ai]
-
+UI
 [qm provisional]
-
+predbežné
 [qm accepted]
-
+✓ prijal
 [qm declined]
-
+odmietol
 [qm waiting]
-
+čaká sa…
 [qm ai badge]
-
+UI
 [qm match found]
-
+Zápas nájdený
 [qm playing an ai]
-
+Hra proti UI
 [qm vs]
-
+proti
 [qm ai explanation rated]
-
+Nikto vo vašom rozsahu hodnotenia nehľadal. Budete hrať proti UI s hodnotením najbližším vášmu; výsledok sa započíta do vášho hodnotenia aj hodnotenia UI.
 [qm ai explanation]
-
+Nikto nehľadal. Budete hrať proti UI s hodnotením najbližším vášmu; táto hra je nehodnotená.
 [qm casual explanation]
-
+Zápas začne hneď; nezáväzné hry sú nehodnotené.
 [qm accepted button]
-
+Prijaté
 [qm accept]
-
+Prijať
 [qm decline]
-
+Odmietnuť
 [qm both must accept]
-
+Obaja musia prijať
 [qm accept explanation]
-
+Obaja hráči musia prijať. Ak odmietnete alebo necháte uplynúť čas, zaradíte sa na koniec frontu.
 [qm starting in %0]
-
+Začiatok o %0…
 [qm preparing match]
-
+Pripravuje sa zápas…
 [qm match assigned %0 %1]
-
+Zápas %0 je pripravený na %1, ale táto zostava sa zatiaľ nevie pripojiť k online zápasom.
 [online jan]
-
+jan.
 [online feb]
-
+feb.
 [online mar]
-
+mar.
 [online apr]
-
+apr.
 [online may]
-
+máj
 [online jun]
-
+jún
 [online jul]
-
+júl
 [online aug]
-
+aug.
 [online sep]
-
+sep.
 [online oct]
-
+okt.
 [online nov]
-
+nov.
 [online dec]
-
+dec.
 [profile win letter]
-
+V
 [profile loss letter]
-
+P
 [profile draw letter]
-
+R
 [profile history unavailable]
-
+Tento server zatiaľ neposkytuje históriu zápasov.
 [profile downloading replay]
-
+Sťahuje sa záznam hry…
 [profile no replay]
-
+Pre tento zápas nie je dostupný záznam hry.
 [profile room with %0]
-
+Miestnosť · kolónie: %0
 [profile with %0 vs %1]
-
+s %0 proti %1
 [profile vs %0]
-
+proti %0
 [profile room]
-
+Miestnosť
 [profile casual]
-
+Nezáväzná
 [profile ai filled]
-
+Doplnené UI
 [profile provisional %0 games]
-
+predbežné · hry: %0
 [profile unrated]
-
+nehodnotený
 [profile checking]
-
+overuje sa…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Stránka zápasu
 [profile replay]
-
+Záznam hry
 [profile win rate last %0]
-
+Podiel výhier, posledných %0
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 P · %2 R
 [profile typical game]
-
+Typická hra
 [profile median length]
-
+váš medián dĺžky
 [profile best map]
-
+Najlepšia mapa
 [profile %0 w %1 l]
-
+%0 V · %1 P
 [profile no rated games]
-
+Na získanie hodnotenia odohrajte hodnotený zápas.
 [profile all]
-
+Všetky
 [profile rooms]
-
+Miestnosti
 [profile vs ai]
-
+proti UI
 [profile matches]
-
+Zápasy
 [online loading]
-
+Načítava sa…
 [profile no matches]
-
+Zatiaľ žiadne zápasy.
 [online load more]
-
+Načítať ďalšie
 [profile title]
-
+Profil
 [profile guest]
-
+hosť
 [profile playing since %0]
-
+hrá od %0
 [profile full profile web]
-
+Celý profil na webe
 [profile replays note]
-
+Záznamy hier sa sťahujú zo servera, keď ich otvoríte; tie, ktoré ste uložili lokálne, zostávajú v Načítať hru → Záznamy hier.
 [profile web profile]
-
+Webový profil
 [maps most played]
-
+Najhranejšie
 [maps most liked]
-
+Najobľúbenejšie
 [maps newest]
-
+Najnovšie
 [maps most downloaded]
-
+Najsťahovanejšie
 [maps any size]
-
+Ľubovoľná veľkosť
 [maps up to 128]
-
+Do 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 a väčšie
 [maps report broken]
-
+Nefunguje
 [maps report offensive]
-
+Urážlivá
 [maps report copyright]
-
+Cudzie dielo
 [maps report other]
-
+Niečo iné
 [maps public]
-
+Verejná
 [maps unlisted]
-
+Mimo zoznamu
 [maps private]
-
+Súkromná
 [maps cannot read file]
-
+Súbor mapy sa nepodarilo prečítať.
 [maps file too large]
-
+Súbor mapy je na zdieľanie príliš veľký.
 [maps saved for next room]
-
+Mapa je stiahnutá; použije sa, keď otvoríte miestnosť.
 [maps download failed]
-
+Mapu sa nepodarilo stiahnuť.
 [maps %0 colonies]
-
+Kolónie: %0
 [maps version %0]
-
+verzia %0
 [maps updated %0]
-
+aktualizované %0
 [maps downloading]
-
+Sťahuje sa mapa…
 [maps like needs account]
-
+Na označenie mapy „páči sa mi“ sa musíte prihlásiť.
 [maps report sent]
-
+Ďakujeme; moderátori si to pozrú.
 [maps select a map]
-
+Vyberte mapu a zobrazia sa jej podrobnosti.
 [maps by %0]
-
+autor: %0
 [maps stats %0 %1 %2]
-
+▶ hrania: %0 · ⬇ stiahnutia: %1 · ♥ %2
 [maps use in room]
-
+Použiť v miestnosti
 [maps liked]
-
+Obľúbená
 [maps like]
-
+Páči sa mi
 [maps map page]
-
+Stránka mapy
 [maps reported]
-
+Nahlásené
 [maps report]
-
+Nahlásiť…
 [maps report why]
-
+Čo je s touto mapou zle?
 [maps search placeholder]
-
+Hľadať mapy alebo autorov
 [maps none found]
-
+Žiadne zodpovedajúce mapy.
 [maps any colonies]
-
+Ľubovoľný počet kolónií
 [maps checking]
-
+Overuje sa…
 [maps no version yet]
-
+Zatiaľ nebola nahraná žiadna verzia.
 [maps rejected]
-
+Zamietnutá
 [maps did not load %0]
-
+Mapa sa nenačítala: %0
 [maps unknown reason]
-
+dôvod nebol uvedený
 [maps fix and upload again]
-
+opravte ju v editore a nahrajte znova
 [maps uploaded just now]
-
+práve nahraná
 [maps loading on server]
-
+načítava sa na serveri
 [maps %0 plays]
-
+Hrania: %0
 [maps hidden]
-
+Skrytá
 [maps upload again]
-
+Nahrať znova…
 [maps delete]
-
+Vymazať
 [maps update]
-
+Aktualizovať…
 [maps upload a map]
-
+Nahrať mapu…
 [maps upload hint]
-
+súbory .map z priečinka máp alebo z editora
 [maps no maps yet]
-
+Zatiaľ ste nezdieľali žiadne mapy.
 [maps my maps]
-
+Moje mapy
 [maps my maps %0]
-
+Moje mapy (%0)
 [maps browse]
-
+Prehľadávať
 [maps title]
-
+Mapy
 [maps browse note %0]
-
+Katalóg %0 · zobrazujú sa len mapy, ktoré sa v tejto verzii načítajú
 [maps visibility note]
-
+Verejné mapy sa zobrazujú v Prehľadávať. Mapy mimo zoznamu fungujú vo vašich miestnostiach a cez odkaz. Súkromné mapy len vo vašich vlastných miestnostiach.
 [maps use %0]
-
+Použiť %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Názov
 [maps field description]
-
+Popis
 [maps who can use it]
-
+Kto ju môže používať
 [maps guests unlisted]
-
+Hostia môžu zdieľať mapy mimo zoznamu a súkromné mapy; na zverejnenie v Prehľadávať sa prihláste.
 [maps visibility help]
-
+Mapy mimo zoznamu fungujú vo vašich miestnostiach a cez odkaz; verejné mapy sa navyše zobrazujú v Prehľadávať.
 [maps new version of %0]
-
+Nahrať tento súbor ako novú verziu mapy %0.
 [maps upload]
-
+Nahrať
 [maps uploading]
-
+Nahráva sa…
 [maps checking detail]
-
+Server načítava mapu a kreslí jej náhľad. Dovtedy mapu nemožno použiť.
 [maps ready]
-
+Pripravená
 [maps ready public]
-
+Mapa je pripravená a zobrazuje sa v Prehľadávať.
 [maps ready unlisted]
-
+Mapa je pripravená. Mapy mimo zoznamu fungujú vo vašich miestnostiach a cez odkaz.
 [maps ready private]
-
+Mapa je pripravená. Súkromné mapy fungujú len vo vašich vlastných miestnostiach.
 [maps upload failed]
-
+Nahrávanie zlyhalo
 [maps server read %0 %1]
-
+Server ju načítal ako %0 (kolónie: %1).
 [maps continue in background]
-
+Zavrieť
 [maps upload a map title]
-
+Nahrať mapu
 [maps update map title]
-
+Aktualizovať mapu
 [maps upload note]
-
+Server každú nahranú mapu pred použitím načíta.
 [online just now]
-
+práve teraz
 [online today %0]
-
+dnes %0
 [online yesterday]
-
+včera
 [online sun]
-
+ne
 [online mon]
-
+po
 [online tue]
-
+ut
 [online wed]
-
+st
 [online thu]
-
+št
 [online fri]
-
+pi
 [online sat]
-
+so
 [online %0 weeks ago]
-
+pred %0 týž.
 [online %0 months ago]
-
+pred %0 mes.
 [online %0 years ago]
-
+pred %0 r.
 [maps share online]
-
+Zdieľať online…
 [maps mine]
-
+Moje
 [results waiting for players]
-
+Čaká sa, kým ostatní hráči odídu…
 [results waiting detail]
-
+Výsledok sa zaznamená, keď všetci opustia zápas.
 [results waiting slow]
-
+Hráč, ktorý stratil spojenie, sa môže vrátiť do 3 minút. Výsledok sa objaví vo vašej histórii a na stránke zápasu.
 [results verifying slow]
-
+Overovanie trvá dlhšie ako zvyčajne. Výsledok sa objaví vo vašej histórii a na stránke zápasu.
 [results rematch]
-
+Odveta
 [results join rematch %0]
-
+Pripojiť sa k odvete hráča %0
 [hub profile history]
-
+Profil a história
 [hub my maps]
-
+Moje mapy
 [hub leaderboard %0]
-
+Rebríček · %0
 [hub leaderboard empty]
-
+Zatiaľ žiadni hodnotení hráči.
 [hub guests not ranked]
-
+Hostia nie sú v rebríčku. Ak sa tu chcete zobraziť, prihláste sa.
 [hub full leaderboard]
-
+Celý rebríček
 [settings %0 is no longer linked.]
-
+%0 už nie je prepojený.
 [room map read failed]
-
+Tento súbor mapy sa nepodarilo prečítať.
 [room map upload failed]
-
+Mapu sa nepodarilo zdieľať s miestnosťou.
 [room map upload failed %0]
-
+Mapu sa nepodarilo zdieľať s miestnosťou: %0
 [room uploading map]
-
+Mapa sa zdieľa s miestnosťou…
 [room premade map shared]
-
+Všetci v miestnosti hrajú tento súbor mapy; stiahne sa pred zápasom.
 [room take a seat to play]
-
+Ak chcete hrať, obsaďte voľné miesto
 [room waiting for a seat]
-
+Všetky miesta sú obsadené. Keď sa nejaké uvoľní, môžete ho obsadiť.
 [room not seated]
-
+Bez miesta
 [room copied]
-
+Skopírované
 [room copy failed]
-
+Kopírovanie zlyhalo
 [room closed title]
-
+Miestnosť zatvorená
 [room removed title]
-
+Odstránený z miestnosti
 [room back to online]
-
+Späť do online hry
 [leave match]
-
+Opustiť zápas
 [leave match title]
-
+Opustiť tento zápas?
 [leave lan title]
-
+Opustiť túto hru v LAN?
 [leave rated body]
-
+Tento hodnotený zápas prehráte a vaše hodnotenie klesne. Ostatní hrajú ďalej a vy sa doň nebudete môcť vrátiť.
 [leave casual body]
-
+Tento rýchly zápas sa vám započíta ako prehra. Ostatní hrajú ďalej a vy sa doň nebudete môcť vrátiť.
 [leave room body]
-
+Opustíte zápas miestnosti a vo vašej histórii sa započíta ako prehra. Ostatní hrajú ďalej a vy sa doň nebudete môcť vrátiť.
 [leave lan body]
-
+Ostatní hrajú ďalej bez vás a do tejto hry sa už nebudete môcť vrátiť.
 [leave match confirm]
-
+Opustiť zápas
 [keep playing]
-
+Hrať ďalej
 [results team]
-
+Tím
 [results quick unrated]
-
+Rýchly zápas · nehodnotený
 [conn card cannot keep up]
-
+Vaše zariadenie nestíha tento zápas
 [conn card cannot keep up body]
-
+Prehráva zápas pomalšie, ako zápas beží, takže ho nedobehne. Môžete zápas opustiť alebo znížiť nastavenia grafiky a čakať ďalej.
 [conn card not gaining]
-
+nedobieha
 [results reason opponents left]
-
+Vaši súperi opustili zápas.
 [results reason victory]
-
+Všetky nepriateľské kolónie boli porazené.
 [results reason defeat]
-
+Vaša kolónia bola porazená.
 [results reason you left]
-
+Opustili ste zápas. Počíta sa to ako prehra.
 [results final after end]
-
+Konečný výsledok po skončení zápasu.
 [pause none left]
-
+Žiadne prestávky nezostali
 [pause game left %0]
-
+Pozastaviť hru (zostáva %0)
 [pause by %0]
-
+Pozastavil %0
 [pause by %0 resumes in %1]
-
+Pozastavil %0 · pokračuje o %1
 [turn too many actions]
-
+Príliš veľa akcií: niektoré ešte čakajú na odoslanie
 [turn no pauses left]
-
+V tomto zápase vám nezostali žiadne prestávky
 [turn pause time used %0]
-
+%0 vyčerpal celý čas na prestávky: hra pokračuje
 [room seats one person %0 %1]
-
+1 hráč · UI: %0 · voľné: %1
 [room rules otherwise standard]
-
+Všetky ostatné pravidlá sú ako v Štandardných.
 [room browser link]
-
+Odkaz pre hráčov v prehliadači
 [room browser link hint]
-
+Hráči v prehliadači sa pripoja vložením tohto odkazu.
 [room browser link code %0]
-
+Hráči v prehliadači sa pripoja vložením tohto odkazu. Ich hra zobrazí kód %0.
 [room copy link]
-
+Kopírovať odkaz
 [room lan open seat detail]
-
+Môže ho obsadiť ktokoľvek v tejto sieti
 [room close title]
-
+Zatvoriť miestnosť?
 [room close body one]
-
+Odchodom zatvoríte miestnosť pre všetkých vrátane ďalšieho hráča v nej.
 [room close body %0]
-
+Odchodom zatvoríte miestnosť pre všetkých vrátane ostatných hráčov v nej (%0).
 [room close confirm]
-
+Zatvoriť miestnosť
 [room stay]
-
+Zostať
 [room colours changed]
-
+Nová mapa priradila miestam nové farby. Pred začatím si skontrolujte svoju.
 [room copy by hand]
-
+Kopírovanie nefungovalo. Skopírujte pozvánku sami:
 [room copy by hand close]
-
+Zavrieť
 [room copy by hand touch]
-
+Podržte prst na odkaze a potom vyberte Kopírovať.
 [room copy by hand keys]
-
+Odkaz je označený: stlačte Ctrl+C (⌘C na Macu).
 [room code]
-
+Kód
 [online under a minute]
-
+menej ako minúta
 [online about %0 min]
-
+asi %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min %1 s
 [qm ai opponent %0]
-
+Súper UI: %0
 [match relay connected]
-
+Pripojené k hernému serveru
 [room picker title]
-
+Vyberte mapu
 [room picker for one]
-
+Pre 1 hráča v miestnosti
 [room picker for %0]
-
+Pre hráčov v miestnosti: %0
 [room picker generated]
-
+Generovaná
 [room picker premade]
-
+Hotová
 [room picker catalog]
-
+Katalóg
 [room picker size]
-
+Veľkosť
 [room picker colonies]
-
+Kolónie
 [room picker fair]
-
+Spravodlivý začiatok pre každú kolóniu
 [room picker does not fit]
-
+Nehodí sa pre túto veľkosť; skúste inú
 [room picker preparing]
-
+Pripravuje sa náhľad…
 [room picker generated note]
-
+Každá krajina dáva všetkým kolóniám rovnako dobrý začiatok a server vytvorí pre všetkých rovnakú mapu.
 [room picker players %0]
-
+Hráči: %0
 [room picker unreadable]
-
+nedá sa prečítať
 [room picker no premade]
-
+Nenašli sa žiadne hotové mapy.
 [room picker too small %0]
-
+Táto mapa má menej kolónií, ako je hráčov v miestnosti (%0).
 [room picker pick premade]
-
+Vyberte mapu a zobrazí sa tu.
 [room picker catalog intro]
-
+Mapy, ktoré zdieľali iní hráči. Otvorte jednu a vyberte Použiť v miestnosti.
 [room picker browse catalog]
-
+Prehľadávať zdieľané mapy
 [room picker more options]
-
+Ďalšie možnosti…
 [room picker use]
-
+Použiť túto mapu
 [room map ready title %0]
-
+Hrať %0
 [room map ready unnamed]
-
+túto mapu
 [room map ready body]
-
+Vytvorte miestnosť a pozvite priateľov: miestnosť bude hrať túto mapu.
 [game draw]
-
+Remíza
 [settings Show colony skins]
 Zobrazovať vzhľady kolónií
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Vypnutím obnovíte na tomto zariadení klasické jednotky, roje a farby budov.
+Vypnutím obnovíte na tomto zariadení klasické jednotky, hniezda a farby budov.
 [settings Hive Mind]
-
+Kolektívna myseľ
 [settings Enable commander shortcuts]
-
+Zapnúť skratky veliteľa
 [settings Command your colony without opening a menu.]
-
+Velite kolónii bez otvárania ponuky.
 [settings Allow supervision for new commands]
-
+Povoliť dohľad nad novými príkazmi
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Veliteľ môže na trvalé príkazy nadväzovať. Nadväzujúce kroky míňajú kredity; nainštalované príkazy bežia ďalej aj bez kreditov.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Predvolené skratky: Ctrl+Enter vydá príkaz; Ctrl+Shift+Enter zastaví prácu veliteľa. Zmeniť ich môžete v časti Ovládanie hry. Karty trvalých príkazov majú samostatné tlačidlá na pozastavenie a zrušenie.
 [settings Commander account and credits]
-
+Účet veliteľa a kredity
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Kredity a nákupy spravujte v prehliadači. Pomoc veliteľa je v hodnotených hrách povolená.
 [open commander]
-
+Otvoriť veliteľa
 [stop commander]
-
+Zastaviť veliteľa
 [settings Recording]
-
+Nahrávanie
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Nahrávajte svoje hry ako videá MP4 so zvukom. Nahrávanie vyžaduje FFmpeg s kódovačmi libx264 a AAC.
 [settings FFmpeg is ready.]
-
+FFmpeg je pripravený.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg nie je dostupný, preto je nahrávanie vypnuté. Nainštalujte FFmpeg, uistite sa, že je v PATH, a skontrolujte znova.
 [settings Check for FFmpeg again]
-
+Znova hľadať FFmpeg
 [settings Checking for FFmpeg…]
-
+Hľadá sa FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Klávesová skratka: %0. Funguje aj v ponukách a v editore.
 [settings Change the hotkey]
-
+Zmeniť klávesovú skratku
 [settings Recordings are saved in %0]
-
+Nahrávky sa ukladajú do %0
 [toggle recording]
-
+Spustiť alebo zastaviť nahrávanie
 [File selection is unavailable.]
-
+Výber súboru nie je dostupný.
 [Saving custom AI…]
-
+Ukladá sa vlastná UI…
 [Could not read the selected JavaScript file.]
-
+Vybraný súbor JavaScript sa nepodarilo prečítať.
 [Custom AI library saved.]
-
+Knižnica vlastných UI uložená.
 [Storage could not be saved. The previous library is retained.]
-
+Úložisko sa nepodarilo uložiť. Predchádzajúca knižnica sa zachovala.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importujte jeden súbor UI v JavaScripte a potom ho vyberte pri nastavovaní lokálnej hry.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Import uchová kópiu v Glob2. Aktualizácia nahradí túto kópiu pre budúce hry; uložené hry si ponechajú pôvodnú UI.
 [Waiting for file selection or storage…]
-
+Čaká sa na výber súboru alebo úložisko…
 [Import JavaScript AI]
-
+Importovať UI v JavaScripte
 [Link development file]
-
+Prepojiť vývojový súbor
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Prepojené súbory sa čítajú pri spustení hry. Pred začatím novej hry ich znova zostavte. Odstránenie prepojenia nikdy nevymaže váš súbor.
 [Example AI and authoring guide]
-
+Ukážková UI a návod na tvorbu
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Zatiaľ žiadne vlastné UI. Začnite importom zostaveného súboru .js.
 [Relink]
-
+Znova prepojiť
 [Update]
-
+Aktualizovať
 [Validate]
-
+Overiť
 [AI startup and persistent globals are valid.]
-
+Spustenie UI a trvalé globálne premenné sú platné.
 [Remove from library]
-
+Odstrániť z knižnice
 [AI telemetry]
-
+Telemetria UI
 [No accessible AI telemetry.]
-
+Žiadna dostupná telemetria UI.
 [Search fields]
-
+Hľadať polia
 [Telemetry unavailable for this recording or controller.]
-
+Telemetria nie je pre tento záznam alebo ovládač dostupná.
 [Linked]
-
+Prepojené
 [Imported]
-
+Importované
 [Player]
-
+Hráč
 [Updated at tick %0]
-
+Aktualizované v kroku %0
 [No values published yet.]
-
+Zatiaľ neboli zverejnené žiadne hodnoty.
 [No fields match your search.]
-
+Vyhľadávaniu nezodpovedajú žiadne polia.
 [settings Custom AIs]
-
+Vlastné UI
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+UI v JavaScripte pridajte v Nastavenia → Vlastné UI. Zobrazia sa vo výbere UI každej kolónie.
 [Missing custom AI]
-
+Chýba vlastná UI
 [Map repetition failed]
-
+Túto mapu nemožno opakovať. Použite počiatočnú mapu bez skriptu alebo znížte počet opakovaní a základní.
 [repeat map horizontally]
 Opakovať mapu vodorovne
 [repeat map vertically]
@@ -4653,594 +4653,594 @@ základne
 [bases per colony]
 Základne na kolóniu; základňa je jeden tím mapy tak, ako bola nakreslená, s jeho budovami a jednotkami
 [stat group population]
-
+Populácia
 [stat group food]
-
+Jedlo a pohoda
 [stat group resources]
-
+Suroviny
 [stat group buildings]
-
+Budovy
 [stat group military]
-
+Armáda
 [stat group map]
-
+Územie
 [stat group score]
-
+Skóre
 [stat overview]
-
+Prehľad
 [stat overview about]
-
+Údaje každej kolónie za celý zápas. Kde je viac lepšie, je najvyššia hodnota zvýraznená; kliknutím na záhlavie stĺpca uvidíte, ako sa menila v čase.
 [stat population]
-
+Populácia
 [stat population about]
-
+Koľko živých jednotiek kolónia mala: robotníci, prieskumníci a bojovníci spolu.
 [stat births]
-
+Narodené jednotky
 [stat births about]
-
+Ako rýchlo hniezda vytvárali nové jednotky. Rozdelením uvidíte robotníkov, prieskumníkov a bojovníkov zvlášť.
 [stat deaths]
-
+Stratené jednotky
 [stat deaths about]
-
+Ako rýchlo kolónia strácala jednotky z akejkoľvek príčiny: boj, hlad, zranenia pri čistení alebo uviaznutie.
 [stat net growth]
-
+Rast populácie
 [stat net growth about]
-
+Narodené jednotky mínus stratené jednotky. Nad nulou kolónia rástla, pod nulou sa zmenšovala.
 [stat death causes]
-
+Príčiny smrti
 [stat death causes about]
-
+Na čo jednotky kolónie umierali: boj, hlad, zranenia pri čistení surovín, uviaznutie bez možnosti úniku alebo iné príčiny.
 [stat conversions]
-
+Čistý zisk jednotiek
 [stat conversions about]
-
+Jednotky získané od iných kolónií mínus jednotky, ktoré k nim prešli. Jednotky menia stranu, keď ich iná kolónia lepšie kŕmi.
 [stat hunger]
-
+Zásoby jedla
 [stat hunger about]
-
+Koľko jedla nosili jednotky kolónie v sebe. Každá jednotka sa zaradí podľa toho, koľko jej zásoby jedla zostáva: takmer prázdna (štvrtina alebo menej), nízka (do polovice), z polovice plná (do troch štvrtín) alebo dobre najedená. Keď sa im zásoba míňa, jednotky hľadajú jedáleň, takže kolónia má vždy niekoľko jednotiek s nízkou zásobou.
 [stat health]
-
+Zdravie
 [stat health about]
-
+Aké zdravé boli jednotky kolónie. Každá jednotka sa zaradí podľa toho, koľko bodov zdravia jej zostáva: kritický stav (štvrtina alebo menej), zranená (do polovice), poranená (do troch štvrtín) alebo zdravá.
 [stat seeking food]
-
+Jednotky hľadajúce jedlo
 [stat seeking food about]
-
+Jednotky, ktoré prerušili prácu a hľadajú jedáleň. Tie, ktoré navyše nemajú plné zdravie, sa počítajú ako slabnúce.
 [stat in care]
-
+Jednotky pri jedle alebo liečení
 [stat in care about]
-
+Jednotky, ktoré jedia v jedálni alebo sa liečia v nemocnici, a preto nepracujú.
 [stat wheat harvested]
-
+Zozbieraná pšenica
 [stat wheat harvested about]
-
+Náklady pšenice, ktoré nazbierali robotníci. Z pšenice robia jedálne jedlá.
 [stat wheat stored]
-
+Uskladnená pšenica
 [stat wheat stored about]
-
+Pšenica v budovách kolónie pripravená na podávanie alebo použitie.
 [stat meals]
-
+Podané jedlá
 [stat meals about]
-
+Jedlá, ktoré jedálne kolónie podali vlastným jednotkám aj návštevníkom z iných kolónií.
 [stat starvation]
-
+Úmrtia hladom
 [stat starvation about]
-
+Jednotky, ktoré zomreli, lebo včas nenašli jedlo.
 [stat healing]
-
+Obnovené zdravie
 [stat healing about]
-
+Body zdravia, ktoré nemocnice kolónie vrátili zraneným jednotkám.
 [stat gathered]
-
+Zozbierané suroviny
 [stat gathered about]
-
+Náklady všetkých surovín, ktoré zobrali robotníci. Rozdelením uvidíte jednotlivé suroviny.
 [stat stored]
-
+Uskladnené suroviny
 [stat stored about]
-
+Suroviny v budovách kolónie. Rozdelením uvidíte jednotlivé suroviny.
 [stat spending]
-
+Spotreba surovín
 [stat spending about]
-
+Na čo sa doručené suroviny použili: jedlá, nové jednotky, strelivo veží, nové budovy alebo vylepšenia.
 [stat delivered]
-
+Doručené suroviny
 [stat delivered about]
-
+Náklady, ktoré robotníci doniesli do budov.
 [stat traded]
-
+Čistý obchod
 [stat traded about]
-
+Suroviny prijaté cez trhoviská mínus odovzdané suroviny.
 [stat buildings]
-
+Stojace budovy
 [stat buildings about]
-
+Dokončené budovy, ktoré kolónia mala. Rozdelením uvidíte jednotlivé druhy budov.
 [stat construction]
-
+Dokončené stavebné práce
 [stat construction about]
-
+Dokončené stavebné práce: nové budovy, vylepšenia a opravy.
 [stat buildings lost]
-
+Stratené budovy
 [stat buildings lost about]
-
+Budovy zničené nepriateľmi alebo zbúrané samotnou kolóniou.
 [stat blocked buildings]
-
+Budovy bez vstupu
 [stat blocked buildings about]
-
+Budovy so zablokovaným vchodom, do ktorých jednotky nemohli vojsť ani z nich vyjsť.
 [stat attack]
-
+Útočná sila
 [stat attack about]
-
+Skóre spojenej bojovej sily bojovníkov kolónie: ako silno a ako rýchlo útočia.
 [stat defence]
-
+Obranná sila
 [stat defence about]
-
+Skóre spojenej palebnej sily obranných veží kolónie.
 [stat hit points]
-
+Celkové zdravie
 [stat hit points about]
-
+Súčet bodov zdravia všetkých jednotiek a budov kolónie.
 [stat damage dealt]
-
+Spôsobené poškodenie
 [stat damage dealt about]
-
+Poškodenie, ktoré kolónia spôsobila nepriateľským jednotkám a budovám. Rozdelením uvidíte bojovníkov, mágiu a veže.
 [stat damage taken]
-
+Utrpené poškodenie
 [stat damage taken about]
-
+Poškodenie, ktoré nepriatelia spôsobili jednotkám a budovám kolónie.
 [stat damage traded]
-
+Bilancia poškodenia
 [stat damage traded about]
-
+Spôsobené poškodenie mínus utrpené poškodenie. Nad nulou kolónia vyhrávala svoje boje.
 [stat combat deaths]
-
+Jednotky padlé v boji
 [stat combat deaths about]
-
+Jednotky tejto kolónie zabité nepriateľmi. Rozdelením uvidíte robotníkov, prieskumníkov a bojovníkov zvlášť.
 [stat accuracy]
-
+Zásahy
 [stat accuracy about]
-
+Podiel striel veží a prieskumníkov kolónie, ktoré zasiahli cieľ.
 [stat training]
-
+Výcvik
 [stat training about]
-
+Návštevy jednotiek v školách, kasárňach, bežeckých dráhach a bazénoch s cieľom naučiť sa zručnosť.
 [stat skills]
-
+Získané zručnosti
 [stat skills about]
-
+Úrovne zručností, ktoré jednotky kolónie získali výcvikom.
 [stat growth nearby]
-
+Rast surovín pri kolónii
 [stat growth nearby about]
-
+Koľko pšenice, dreva a iných surovín narástlo do 32 políčok od budov kolónie, v bodoch rastu, nie v nákladoch. Rozdelením uvidíte, ako blízko domova rástli.
 [stat growth map]
-
+Rast surovín na celej mape
 [stat growth map about]
-
+Koľko surovín narástlo kdekoľvek na mape, v bodoch rastu, nie v nákladoch. Pre všetky kolónie je to rovnaké.
 [stat stranded]
-
+Jednotky bez pohybu
 [stat stranded about]
-
+Jednotky uzavreté bez voľného políčka, na ktoré by mohli vstúpiť.
 [stat cleared]
-
+Vyčistené suroviny
 [stat cleared about]
-
+Suroviny, ktoré robotníci odstránili v oblastiach čistenia, aby uvoľnili miesto.
 [stat prestige]
-
+Prestíž
 [stat prestige about]
-
+Prestíž kolónie získaná budovami najvyššej úrovne. Zápas s cieľom prestíže sa skončí, keď sa cieľ dosiahne.
 [stat band combat]
-
+Boj
 [stat band starvation]
-
+Hlad
 [stat band clearing]
-
+Zranenia pri čistení
 [stat band trapped]
-
+Uviaznutie
 [stat band other]
-
+Iné
 [stat band starving]
-
+Takmer prázdne
 [stat band hungry]
-
+Nízke
 [stat band peckish]
-
+Z polovice plné
 [stat band fed]
-
+Dobre najedené
 [stat band critical]
-
+Kritický stav
 [stat band wounded]
-
+Zranené
 [stat band hurt]
-
+Poranené
 [stat band healthy]
-
+Zdravé
 [stat band weakening]
-
+Slabnúce
 [stat band looking]
-
+Hľadajú jedáleň
 [stat band eating]
-
+Jedia
 [stat band healing]
-
+Liečia sa
 [stat band meals]
-
+Jedlá
 [stat band new units]
-
+Nové jednotky
 [stat band ammunition]
-
+Strelivo
 [stat band construction]
-
+Nové budovy
 [stat band upgrades]
-
+Vylepšenia
 [stat band built]
-
+Postavené
 [stat band upgraded]
-
+Vylepšené
 [stat band repaired]
-
+Opravené
 [stat band destroyed]
-
+Zničené
 [stat band demolished]
-
+Zbúrané
 [stat band melee]
-
+Bojovníci
 [stat band magic]
-
+Mágia
 [stat band towers]
-
+Veže
 [stat band within 8]
-
+Do 8 políčok
 [stat band 8 to 16]
-
+8 až 16 políčok
 [stat band 16 to 32]
-
+16 až 32 políčok
 [stat unit units]
-
+jednotky
 [stat unit wheat]
-
+pšenica
 [stat unit meals]
-
+jedlá
 [stat unit hit points]
-
+body zdravia
 [stat unit resources]
-
+suroviny
 [stat unit buildings]
-
+budovy
 [stat unit strength]
-
+skóre
 [stat unit damage]
-
+poškodenie
 [stat unit shots]
-
+strely
 [stat unit visits]
-
+návštevy
 [stat unit skills]
-
+úrovne zručností
 [stat unit prestige]
-
+prestíž
 [stat axis percent of %0]
-
+%0 v %
 [stat axis share of all teams]
-
+% zo všetkých kolónií
 [stat axis percent of units]
-
+% jednotiek kolónie
 [stat axis %0 per minute per 100 units]
-
+%0 za minútu na 100 jednotiek kolónie
 [stat axis %0 per 100 units]
-
+%0 na 100 jednotiek kolónie
 [stat axis %0 per minute]
-
+%0 za minútu
 [stat axis %0 so far]
-
+%0, priebežný súčet
 [stat axis %0 minute average]
-
+priemer za %0 min
 [stat view per minute]
-
+Za minútu
 [stat view total]
-
+Spolu
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Podľa druhu
 [stat view percentages]
-
+V % z celku
 [stat view percent of units]
-
+V % z kolónie
 [stat view per 100 units]
-
+Vzhľadom na veľkosť kolónie
 [stat view share]
-
+Podiel zo všetkých kolónií
 [stat view highlight none]
-
+Zvýraznenie: žiadne
 [stat column peak units]
-
+Max. jednotiek
 [stat column born]
-
+Narodené
 [stat column lost]
-
+Stratené
 [stat column wheat]
-
+Pšenica
 [stat column damage dealt]
-
+Spôsobené poškodenie
 [stat column damage taken]
-
+Utrpené poškodenie
 [stat column built]
-
+Postavené
 [stat column buildings lost]
-
+Stratené budovy
 [stat column prestige]
-
+Prestíž
 [stat marker wiped out]
-
+stratená posledná jednotka
 [stat marker first combat death]
-
+prvá jednotka padlá v boji
 [stat marker first building destroyed]
-
+prvá zničená budova
 [stat not recorded for this match]
-
+Táto štatistika sa v tomto zápase nezaznamenávala.
 [results reason beyond doubt]
-
+O výsledku už nebolo pochýb.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Kolónia
 [stat page %0 of %1]
-
+%0 z %1  >
 [stat band workers]
-
+Robotníci
 [stat band explorers]
-
+Prieskumníci
 [stat band warriors]
-
+Bojovníci
 [stat unit deaths]
-
+úmrtia
 [stat unit growth]
-
+rast
 [stat view by unit type]
-
+Podľa typu jednotky
 [stat view by state]
-
+Podľa stavu
 [stat view by resource]
-
+Podľa suroviny
 [stat view by building]
-
+Podľa budovy
 [stat view by work]
-
+Podľa druhu práce
 [stat view by cause]
-
+Podľa príčiny
 [stat view by weapon]
-
+Podľa zbrane
 [stat view by distance]
-
+Podľa vzdialenosti
 [stat nothing to show]
-
+Nie je čo zobraziť: v tomto zápase sa to nestalo.
 [stat %0 nothing]
-
+%0 (žiadne)
 [Match]
-
+Zápas
 [Time limit]
-
+Časový limit
 [Alliances can change]
-
+Aliancie sa môžu meniť
 [Reveal terrain]
-
+Odkryť terén
 [Starting unit level]
-
+Počiatočná úroveň jednotiek
 [Starting stockpile]
-
+Počiatočné zásoby
 [Regrowth]
-
+Dorastanie
 [Building strength]
-
+Odolnosť budov
 [Wounded units retreat]
-
+Zranené jednotky ustupujú
 [Units can die]
-
+Jednotky môžu zomrieť
 [Unit training]
-
+Výcvik jednotiek
 [No stockpile]
-
+Žiadne
 [No glass cannon]
-
+Vypnuté
 [How quickly harvested resources grow back and spread.]
-
+Ako rýchlo zozbierané suroviny dorastajú a šíria sa.
 [Units must eat to keep working.]
-
+Jednotky musia jesť, aby mohli pracovať.
 [Summary]
-
+Súhrn
 [All rules]
-
+Všetky pravidlá
 [Show all rules]
-
+Zobraziť všetky pravidlá
 [Choose a ruleset]
-
+Vyberte pravidlá
 [Reset to %0]
-
+Obnoviť na %0
 [ruleset one change %0]
-
+%0 + 1 zmena
 [ruleset changes %0 %1]
-
+%0 + zmeny: %1
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Tento zápas sa nemôže skončiť. Zapnite víťazstvo prestížou alebo nastavte časový limit.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Prestíž sa zvyčajne objaví po 13 až 28 minútach, takže 30-minútový limit často končí remízou.
 [Blitz]
-
+Bleskovka
 [ruleset blitz description]
-
+Rýchly začiatok, skorý koniec
 [Gentle]
-
+Mierne
 [ruleset gentle description]
-
+Zhovievavé pravidlá na prvý zápas
 [Sandbox]
-
+Pieskovisko
 [ruleset sandbox description]
-
+Bez bojov, bez hladu, stavajte čokoľvek
 [Bloodbath]
-
+Krviprelievanie
 [ruleset bloodbath description]
-
+Krehké, nebojácne armády
 [Siege]
-
+Obliehanie
 [ruleset siege description]
-
+Hradby pevností a dlhé vojny
 [Lean years]
-
+Chudé roky
 [ruleset lean years description]
-
+Suroviny sa takmer neobnovujú
 [Gold rush]
-
+Zlatá horúčka
 [ruleset gold rush description]
-
+Čo je na mape, to je všetko
 [Elite ranks]
-
+Elitné rady
 [ruleset elite ranks description]
-
+Začnite vycvičení, ďalej necvičte
 [Shifting alliances]
-
+Premenlivé aliancie
 [ruleset shifting alliances description]
-
+Tímy sa môžu meniť v 60-minútových pretekoch
 [Probability victory]
-
+Víťazstvo podľa pravdepodobnosti
 [Off (play it out)]
-
+Vypnuté (dohrať)
 [95% sure]
-
+Istota 95 %
 [97% sure]
-
+Istota 97 %
 [99% sure]
-
+Istota 99 %
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Ukončí zápas, keď model dosiahne zvolenú istotu. Diváci vidia predpovedané šance na výhru v štatistikách.
 [Changed from %0: %1]
-
+Zmenené oproti %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Boj je vypnutý, takže pravidlá nižšie nemajú účinok.
 [%0 more rules are at their Standard values.]
-
+Ďalšie pravidlá so Štandardnými hodnotami: %0.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Hráči vidia terén mapy od začiatku; nepriateľské jednotky zostávajú skryté.
 [Each team starts with extra resources in its shared pool.]
-
+Každý tím začína s ďalšími surovinami v spoločných zásobách.
 [Units hit harder but have less HP and armor.]
-
+Jednotky udierajú silnejšie, ale majú menej zdravia a panciera.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Tímy na seba môžu útočiť. Pre pokojný zápas vypnite.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Zranené jednotky sa vracajú liečiť namiesto boja na život a na smrť.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Jednotky zomrú, keď im dôjde zdravie. Po vypnutí sa zastavia na 1 bode zdravia.
 [Units gain levels at schools.]
-
+Jednotky získavajú úrovne v školách.
 [stat group work]
-
+Čas robotníkov
 [stat worker time]
-
+Ako robotníci trávili čas
 [stat worker time about]
-
+Čo robotníci kolónie robili v každom okamihu: práca pre budovu, práca pri vlajke, výcvik, jedenie, liečenie, čakanie v hlade alebo zranení bez voľnej jedálne či nemocnice, alebo nečinnosť bez práce. Zdravá kolónia necháva väčšinu robotníkov pracovať, málo nečinných a žiadnych čakajúcich.
 [stat idle workers]
-
+Nečinní robotníci
 [stat idle workers about]
-
+Podiel času robotníkov bez práce. Vysoké hodnoty znamenajú viac robotníkov ako práce; takmer nula znamená, že každý robotník je zaneprázdnený a úlohy môžu čakať.
 [stat work by job]
-
+Na čom robotníci pracovali
 [stat work by job about]
-
+Koľko robotníkov zásobovalo jednotlivé druhy budov: hniezda (na nové jednotky), jedálne (na jedlá), stavané alebo vylepšované budovy či iné budovy, napríklad veže, školy a kasárne.
 [stat haul distance]
-
+Vzdialenosť k surovinám
 [stat haul distance about]
-
+Ako ďaleko bol zberajúci robotník v priemere od budovy, ktorú zásoboval, v políčkach mapy vzdušnou čiarou.
 [stat hauling]
-
+Zber a nosenie
 [stat hauling about]
-
+Ako sa robotníci zásobujúci budovy delili medzi chôdzu k surovine, jej zber, nosenie späť a doručovanie alebo čakanie na dostupnú surovinu. Väčšinu tvorí chôdza, takže čím bližšie sú suroviny, tým viac sa urobí.
 [stat eating time]
-
+Robotníci idúci jesť
 [stat eating time about]
-
+Koľko robotníkov bolo mimo práce kvôli jedlu: cestou do jedálne, pri jedle v nej alebo hladných bez jedálne, ktorá by ich prijala. Robotníci bez jedálne znamenajú, že kolónia prerástla svoje jedálne alebo ich zásoby jedla.
 [stat inn distance]
-
+Vzdialenosť od jedálne
 [stat inn distance about]
-
+Ako ďaleko boli hladní robotníci v priemere počas cesty od jedálne, do ktorej smerovali, v políčkach mapy vzdušnou čiarou. Celá cesta je zhruba dvojnásobná. Vysoké hodnoty znamenajú, že jedálne sú ďaleko od miest práce.
 [stat warriors]
-
+Bojovníci
 [stat warriors about]
-
+Koľko bojovníkov kolónia mala. Rozdelením uvidíte, koľko ich bolo pri domove, pri nepriateľskej kolónii alebo v otvorenom teréne. Územie blízko oboch kolónií sa počíta ako domov.
 [stat warrior level]
-
+Priemerná útočná úroveň bojovníkov
 [stat warrior level about]
-
+Priemerná útočná úroveň bojovníkov kolónie, pri ktorej sa rýchlosť a sila útoku počítajú rovnakým dielom, na stupnici 1 až 4, ktorú hra zobrazuje. Kasárne ju zvyšujú; noví nevycvičení bojovníci ju znižujú.
 [stat warrior duties]
-
+Čo robili bojovníci
 [stat warrior duties about]
-
+Ako sa bojovníci kolónie delili medzi poslaných k vlajke vojny, tak ťažko zranených, že odišli z boja do nemocnice (vrátane liečených), a voľných.
 [stat intruders]
-
+Nepriateľskí bojovníci doma
 [stat intruders about]
-
+Koľko nepriateľských bojovníkov bolo do 16 políčok od budov kolónie. Kde sú dve kolónie blízko seba, každá počíta obrancov tej druhej.
 [stat home defence]
-
+Prevaha obrany domova
 [stat home defence about]
-
+Sila vlastných bojovníkov kolónie pri jej budovách mínus sila nepriateľských bojovníkov tam, pričom sa počíta každý bojovník a každá jeho útočná úroveň. Pod nulou mal doma prevahu nepriateľ.
 [stat combat death places]
-
+Kde jednotky padli v boji
 [stat combat death places about]
-
+Kde boli jednotky kolónie, keď ich zabili: pri vlastných budovách, pri budovách nepriateľa alebo v otvorenom teréne medzi kolóniami. Straty doma znamenajú, že kolónia bola napadnutá; straty pri nepriateľskej kolónii znamenajú, že útočila. Územie blízko oboch kolónií sa počíta ako domov.
 [stat band working]
-
+Pracujú
 [stat band flag work]
-
+Pri vlajke
 [stat band idle]
-
+Nečinní
 [stat band training]
-
+Výcvik
 [stat band unserved]
-
+Žiadna voľná jedáleň ani nemocnica
 [stat band swarms]
-
+Hniezda
 [stat band inns]
-
+Jedálne
 [stat band sites]
-
+Stavba a vylepšovanie
 [stat band other buildings]
-
+Iné budovy
 [stat band to resource]
-
+Cesta k surovine
 [stat band harvesting]
-
+Zber
 [stat band carrying]
-
+Nosenie späť
 [stat band delivering]
-
+Doručovanie alebo čakanie
 [stat band walking to inn]
-
+Cesta do jedálne
 [stat band no inn]
-
+Žiadna voľná jedáleň
 [stat band at home]
-
+Doma
 [stat band at enemy]
-
+Pri nepriateľskej kolónii
 [stat band in the open]
-
+V otvorenom teréne
 [stat band war flag]
-
+Pri vlajke vojny
 [stat band seeking healing]
-
+Hľadajú liečenie
 [stat band free]
-
+Voľní
 [stat unit workers]
-
+robotníci
 [stat unit worker time]
-
+čas robotníkov
 [stat unit working workers]
-
+robotníci zásobujúci budovy
 [stat unit squares]
-
+políčka
 [stat unit warriors]
-
+bojovníci
 [stat unit attack level]
-
+útočná úroveň
 [stat unit enemy warriors]
-
+nepriateľskí bojovníci
 [stat unit strength count]
-
+sila
 [stat view by place]
-
+Podľa miesta
