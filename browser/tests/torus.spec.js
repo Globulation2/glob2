@@ -22,14 +22,18 @@ async function startMatch(page, renderer) {
   await clickMainMenu(page, 'custom'); await screen(page, 'CustomGameScreen');
   await clickCustomGameStart(page); // The lobby prepares its selected generated landscape.
   await expect.poll(async () => (await state(page)).tick, {timeout: 60000}).toBeGreaterThan(25);
-  if (renderer === 'webgl2') {
-    // Both views now share the camera zoom. Fit the map before inspecting the
-    // ring silhouette; at 100% the focus fills the window in either view.
-    const before = (await state(page)).frames;
-    await page.mouse.move(520, 450);
-    await page.mouse.wheel(0, 20000);
-    await expect.poll(async () => (await state(page)).frames).toBeGreaterThan(before + 2);
-  }
+}
+
+async function fitOverview(page) {
+  // Fit the settled manual overview. Wheel events do not focus the canvas;
+  // focus it and let the pointer move reach the game before sending the wheel.
+  await page.locator('#canvas').focus();
+  let before = (await state(page)).frames;
+  await page.mouse.move(520, 450);
+  await expect.poll(async () => (await state(page)).frames).toBeGreaterThan(before + 2);
+  before = (await state(page)).frames;
+  await page.mouse.wheel(0, 20000);
+  await expect.poll(async () => (await state(page)).frames).toBeGreaterThan(before + 2);
 }
 
 // Share of a clip matching the overview's sky clear colour, rgb(6, 9, 15). The
@@ -64,6 +68,7 @@ test('WebGL2 switches between the flat map and the torus overview', async ({page
   await toggle(page);
   await expect.poll(async () => (await state(page)).torus).toBe(true);
   await expect.poll(async () => (await state(page)).torusSettled, transition).toBe(true);
+  await fitOverview(page);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);
   await page.screenshot({path: info.outputPath('torus-overview.png')});
   expect(await glError(page)).toBe(0);
@@ -83,6 +88,7 @@ test('the torus overview recovers after WebGL context loss', async ({page}) => {
   await startMatch(page, 'webgl2');
   await toggle(page);
   await expect.poll(async () => (await state(page)).torusSettled, transition).toBe(true);
+  await fitOverview(page);
   await expect.poll(() => skyShare(page, corner), transition).toBeGreaterThan(0.6);
 
   await page.evaluate(() => Module._glob2_context_action(0));
