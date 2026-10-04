@@ -394,7 +394,7 @@ class InventoryTests(unittest.TestCase):
         try:
             directory = self.install('reused', process.pid)
             host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
-            with self.assertRaises(subprocess.CalledProcessError):
+            with self.assertRaisesRegex(ConnectionError, 'selected worker daemon'):
                 reap(host, str(directory), confirm=True, root=str(self.root))
             self.assertIsNone(process.poll())
         finally:
