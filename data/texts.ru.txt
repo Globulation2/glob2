@@ -1,11 +1,11 @@
 [AI strategy]
 Стратегия ИИ
 [start recording]
-
+Начать запись
 [stop recording]
-
+Остановить запись
 [finalizing recording]
-
+Завершение записи…
 [AIMaxima-Summary]
 Уравновешивает устойчивый рост и обучение, затем собирает армии в волны.
 [AIMaxima-Profile]
@@ -15,25 +15,25 @@
 [%0 level %1]
 %0 уровня %1
 [%0 units can't access building]
-%0 юнитов не могут достичь здания
+Юнитов без пути к зданию: %0
 [%0 units can't access flag]
-%0 юнитов не могут достичь флага
+Юнитов без пути к флагу: %0
 [%0 units can't access fruit]
-%0 юнитов не могут достичь фруктов
+Юнитов без пути к фруктам: %0
 [%0 units can't access resource]
-%0 юнитов не могут достичь ресурса
+Юнитов без пути к ресурсу: %0
 [%0 units not available]
-%0 юнитов недоступны
+Недоступно юнитов: %0
 [%0 units too far from building]
-%0 юнитов слишком далеки от здания
+Юнитов далеко от здания: %0
 [%0 units too far from flag]
-%0 юнитов слишком далеки от флага
+Юнитов далеко от флага: %0
 [%0 units too far from fruit]
-%0 юнитов слишком далеки от фруктов
+Юнитов далеко от фруктов: %0
 [%0 units too far from resource]
-%0 юнитов слишком далеки от ресурса
+Юнитов далеко от ресурса: %0
 [%0 units too low level]
-%0 юнитов слишком низкого уровня
+Юнитов низкого уровня: %0
 [%0% Uploaded]
 %0% загружено
 [%0's team unit got converted to your team]
@@ -41,19 +41,19 @@
 [abreaviation explanation A]
 A: Союзники
 [abreaviation explanation C]
-C: Послать сообщения в чате пользователю
+C: Отправлять сообщения в чате
 [abreaviation explanation fV]
-fV: Показ поля зрения для здания "Кабак" (переманивание юнитов)
+fV: Поле зрения кабаков (переманивание юнитов)
 [abreaviation explanation mV]
-mV: Показ поля зрения для здания "Рынок" (обмен фруктами)
+mV: Поле зрения рынков (обмен фруктами)
 [abreaviation explanation V]
-V: Показ поля зрения для всех зданий
+V: Поле зрения всех зданий
 [add map]
 Доб. карту
 [add shortcut]
 Доб. гор. клавишу
 [AI Descriptions]
-Описание AI
+Описание ИИ
 [AI]
 ИИ
 [ai]
@@ -67,7 +67,7 @@ Castor
 [AINicowar]
 Nicowar
 [AINone-Description]
-None - ничего не делает.
+Нет — ничего не делает.
 [AINone]
 Нет
 [AINumbi-Description]
@@ -125,7 +125,7 @@ alt-%0
 [auto save]
 Автосохранение
 [available lan games]
-Доступные сетевые игры
+Доступные локальные игры
 [away:]
 отсутствует:
 [Back]
@@ -147,11 +147,11 @@ break
 [build %0 level %1]
 Построить %0 уровня %1
 [Build]
-Строит
+Стройка
 [Building Defaults]
 Здания
 [building settings]
-Юниты
+Здания
 [building site]
 стройка
 [Building Tool Box Explanation]
@@ -163,7 +163,7 @@ Ctrl + Тянуть = Линия
 [Bullets]
 Боеприпасы
 [campaign editor]
-Редактор Кампаний
+Редактор кампаний
 [campaign]
 Кампания
 [Can't connect, can't find host]
@@ -175,11 +175,11 @@ Ctrl + Тянуть = Линия
 [Can't join game, game is full]
 Невозможно присоединиться к игре: игра уже заполнена
 [cancel destroy]
-Отмена уничтожения
+Отменить уничтожение
 [cancel repair]
-Отмена починки
+Отменить ремонт
 [cancel upgrade]
-Отмена улучшения
+Отменить улучшение
 [Cancel]
 Отмена
 [caps lock]
@@ -223,7 +223,7 @@ caps lock
 [connect]
 Подключиться
 [connecting to game]
-Подкючение к игре
+Подключение к игре
 [connecting to]
 Подключение к
 [Construction Site Defaults]
@@ -237,7 +237,7 @@ control-%0
 [crater density]
 число кратеров
 [crater lakes terrain]
-Кратерные озера
+Кратерные озёра
 [create map]
 Создать карту
 [credits]
@@ -251,7 +251,7 @@ Ctrl - Линия
 [customcur]
 Пользовательский курсор
 [damage]
-Повреждения
+Урон
 [Damaged Map]
 Карта раненых
 [decrease units working]
@@ -381,7 +381,7 @@ f9
 [go to event]
 Перейти к событию
 [go to home]
-Перейти к "дому"
+Перейти домой
 [goto main menu]
 В главное меню
 [grass]
@@ -399,13 +399,13 @@ f9
 [Happyness]
 Счастье
 [hard pause]
-"Полная" пауза
+Полная пауза
 [Harvest]
-Собирает
+Сбор
 [high priority]
 выс.
 [hints]
-Указания
+Подсказки
 [home]
 home
 [hospital explanation 2]
@@ -429,7 +429,7 @@ home
 [In way]
 В пути
 [increase units working]
-Увеличить количество рабочих
+Увеличить число работников
 [inn explanation 2]
 
 [inn explanation]
@@ -445,7 +445,7 @@ insert
 [islands terrain]
 Острова
 [isles terrain]
-Недоострова
+Островки
 [iterate selection]
 Перейти к следующему
 [jobs]
@@ -455,7 +455,7 @@ insert
 [keyboard settings]
 Клавиатура
 [lan]
-Сетевая игра
+Игра по LAN
 [language incomplete]
 Русский - неполный
 [language-code]
@@ -467,7 +467,7 @@ ru
 [left meta]
 левая Meta
 [left super]
-левая клавиша windows
+левая клавиша Windows
 [left]
 влево
 [level]
@@ -489,9 +489,9 @@ ru
 [look around]
 Осмотреться
 [Lost : %0 has more prestige than you]
-Поражение: У %0 больший престиж, чем у Вас.
+Поражение: у %0 больше престижа, чем у вас.
 [Lost : your colony is dead]
-Поражение: Ваша колония мертва.
+Поражение: ваша колония погибла.
 [low priority]
 низ.
 [lowquality]
@@ -541,7 +541,7 @@ meta-%0
 [no fullscreen]
 * только в оконном режиме
 [No Hints]
-Нет указаний
+Нет подсказок
 [no key]
 пока нет клавиши
 [No Objectives]
@@ -563,7 +563,7 @@ numlock
 [of which]
 из которых
 [ok]
-ок
+ОК
 [old islands terrain]
 Скалистый архипелаг
 [old random terrain]
@@ -581,7 +581,7 @@ numlock
 [open save menu]
 Открыть меню сохранения
 [open scenario editor]
-Редактор скриптов
+Редактор сценария
 [open teams editor]
 Редактор команд
 [open]
@@ -595,7 +595,7 @@ OpenGL
 [Orange]
 Апельсины
 [Other Options]
-Другие опции
+Другие настройки
 [page down]
 page down
 [page up]
@@ -617,7 +617,7 @@ pause
 [power]
 power
 [press space]
-Нажмите пробел для продолжения
+Нажмите пробел, чтобы продолжить.
 [Prestige Score]
 Очки престижа
 [Prestige Win Enabled]
@@ -647,7 +647,7 @@ print screen
 [racetrack]
 Стадион
 [range]
-Расстояние
+Дальность
 [ratios]
 Пропорции
 [remember unit]
@@ -657,9 +657,9 @@ print screen
 [remove shortcut]
 Удал. гор. клавишу
 [repair building]
-Начать/Остановить Починку
+Начать/остановить ремонт
 [repair]
-Починка
+Ремонт
 [repeat area]
 количество повторений ландшафта
 [replay ended]
@@ -695,13 +695,13 @@ enter
 [save replay]
 Сохранить повтор
 [save script]
-Сохр. cкрипт
+Сохр. скрипт
 [Save]
-Сохранение
+Сохранить
 [school explanation 2]
-уровень зданий
+строительства рабочих
 [school explanation]
-Повышает доступный
+Повышает навык
 [school]
 Школа
 [Script Areas]
@@ -721,35 +721,35 @@ scroll lock
 [select clearingflag]
 Выбор флага очистки
 [select construct barracks]
-Выбор постройки Казарм
+Выбор постройки казарм
 [select construct defencetower]
-Выбор постройки Защитной Башни
+Выбор постройки оборонительной башни
 [select construct hospital]
-Выбор постройки Госпиталя
+Выбор постройки госпиталя
 [select construct inn]
-Выбор постройки Кабака
+Выбор постройки кабака
 [select construct market]
-Выбор постройки Рынка
+Выбор постройки рынка
 [select construct racetrack]
-Выбор постройки Стадиона
+Выбор постройки стадиона
 [select construct school]
-Выбор постройки Школы
+Выбор постройки школы
 [select construct stonewall]
-Выбор постройки Каменной Стены
+Выбор постройки каменной стены
 [select construct swarm]
-Выбор постройки Роя
+Выбор постройки роя
 [select construct swimmingpool]
-Выбор постройки Бассейна
+Выбор постройки бассейна
 [select delete tool]
-Выбор инструмента "удалить"
+Выбор инструмента «Удалить»
 [select explorationflag]
 Выбор флага разведки
 [select hospital building]
-Выбор Госпиталя
+Выбор госпиталя
 [select inn building]
-Выбор Кабака
+Выбор кабака
 [select market building]
-Выбор Рынка
+Выбор рынка
 [select place clearing area]
 Выбор размещения зоны очистки
 [select place farm area]
@@ -757,25 +757,25 @@ scroll lock
 [select place clearingflag]
 Выбор размещения флага очистки
 [select place explorationflag]
-Разместить флаг разведки
+Выбор размещения флага разведки
 [select place forbidden area]
-Задать запретную зону
+Выбор размещения запретной зоны
 [select place guard area]
 Выбор размещения охранной зоны
 [select place warflag]
 Выбор размещения флага войны
 [select racetrack building]
-Выбор Стадиона
+Выбор стадиона
 [select school building]
-Выбор Школы
+Выбор школы
 [select swarm building]
-Выбор Роя
+Выбор роя
 [select swimmingpool building]
-Выбор Бассейна
+Выбор бассейна
 [select tower building]
-Выбор Башни
+Выбор оборонительной башни
 [select wall building]
-Выбор Стены
+Выбор стены
 [select warflag]
 Выбор флага войны
 [settings]
@@ -783,7 +783,7 @@ scroll lock
 [shift %0]
 shift-%0
 [shortcut explanation enter]
-Enter: Отправить сообщение в чате
+Enter: отправить сообщение в чате
 [shortcut explanation v]
 V: зажать для речевой связи
 [show areas]
@@ -805,7 +805,7 @@ V: зажать для речевой связи
 [Start]
 Старт
 [Starving Map]
-Карта истощенных
+Карта истощённых
 [starving]
 истощены
 [Statistics]
@@ -839,7 +839,7 @@ V: зажать для речевой связи
 [swarm]
 Рой
 [Swim]
-Плавает
+Плавание
 [swimmingpool explanation 2]
 плавания юнитов
 [swimmingpool explanation]
@@ -849,27 +849,27 @@ V: зажать для речевой связи
 [switch to adding areas]
 Добавлять области
 [switch to area brush 1]
-Переключится на Кисть 1
+Переключиться на кисть 1
 [switch to area brush 2]
-Переключится на Кисть 2
+Переключиться на кисть 2
 [switch to area brush 3]
-Переключится на Кисть 3
+Переключиться на кисть 3
 [switch to area brush 4]
-Переключится на Кисть 4
+Переключиться на кисть 4
 [switch to area brush 5]
-Переключится на Кисть 5
+Переключиться на кисть 5
 [switch to area brush 6]
-Переключится на Кисть 6
+Переключиться на кисть 6
 [switch to area brush 7]
-Переключится на Кисть 7
+Переключиться на кисть 7
 [switch to area brush 8]
-Переключится на Кисть 8
+Переключиться на кисть 8
 [switch to building view]
 Показать меню зданий
 [switch to flag view]
-Показать меню флаги
+Показать меню флагов
 [switch to removing areas]
-Показать меню удаление областей
+Удалять области
 [switch to teams view]
 Показать меню команд
 [switch to terrain view]
@@ -885,71 +885,71 @@ tab
 [teams]
  команды
 [the barracks is finished]
-Казармы построены
+Казармы построены.
 [the barracks is under attack]
-Казармы атакованы
+Казармы атакованы.
 [the building is finished]
-Здание построено
+Здание построено.
 [the building is under attack]
-Здание атаковано
+Здание атаковано.
 [the clearingflag is finished]
-Флаг очистки установлен
+Флаг очистки установлен.
 [the clearingflag is under attack]
-Флаг очистки атакован
+Флаг очистки атакован.
 [the defencetower is finished]
-Оборонительная башня построена
+Оборонительная башня построена.
 [the defencetower is under attack]
-Оборонительная башня атакована
+Оборонительная башня атакована.
 [the explorationflag is finished]
-Флаг разведки установлен
+Флаг разведки установлен.
 [the explorationflag is under attack]
-Флаг разведки атакован
+Флаг разведки атакован.
 [The game has not been finished]
-Игра не была закончена
+Игра не была закончена.
 [the games]
 Игры
 [the hospital is finished]
-Госпиталь построен
+Госпиталь построен.
 [the hospital is under attack]
-Госпиталь атакован
+Госпиталь атакован.
 [The host has cancelled the game]
-Хост отменил игру
+Хост отменил игру.
 [the inn is finished]
 Кабак построен.
 [the inn is under attack]
-Кабак атакован
+Кабак атакован.
 [the maps]
 Карты
 [the market is finished]
-Рынок построен
+Рынок построен.
 [the market is under attack]
-Рынок атакован
+Рынок атакован.
 [the racetrack is finished]
-Стадион построен
+Стадион построен.
 [the racetrack is under attack]
-Стадион атакован
+Стадион атакован.
 [the replays]
 Повторы
 [the school is finished]
-Школа построена
+Школа построена.
 [the school is under attack]
-Школа атакована
+Школа атакована.
 [the stonewall is finished]
-Каменная стена построена
+Участок стены построен.
 [the stonewall is under attack]
-Каменная стена атакована
+Враг у ваших стен.
 [the swarm is finished]
-Рой построен
+Рой построен.
 [the swarm is under attack]
-Рой атакован
+Рой атакован.
 [the swimmingpool is finished]
-Бассейн построен
+Бассейн построен.
 [the swimmingpool is under attack]
-Бассейн атакован
+Бассейн атакован.
 [the warflag is finished]
-Флаг войны установлен
+Флаг войны установлен.
 [the warflag is under attack]
-Флаг войны атакован
+Флаг войны атакован.
 [time]
 Время
 [to:]
@@ -975,13 +975,13 @@ tab
 [Total]
 Всего
 [tutorial text 1]
-Добро пожаловать в обучающее руководство Globulation 2! В этом руководстве будет описано всё от постройки Кабаков и зон разведки до уничтожения противников. Нет таких знаний, которые бы не охватывало данное руководство!
+Добро пожаловать в основное обучение Globulation 2! Здесь вы узнаете всё: от постройки кабаков и разведки местности до уничтожения противников. Полезных знаний здесь хватает!
 [tutorial text 2]
-Теперь, когда вы освоили основы, настало время познакомится с остальными постройками такими как Стадион, Бассейн и Школа.
+Теперь, когда вы освоили основы, настало время познакомиться с остальными постройками, такими как стадион, бассейн и школа.
 [tutorial text 3]
-Вы хорошо постарались, чтобы дойти так далеко. Сейчас давайте перейдем к Воинам, Казармам и улучшениям.
+Вы хорошо постарались, чтобы дойти так далеко. Теперь давайте перейдём к воинам, казармам и улучшениям.
 [tutorial text 4]
-Вы почти закончили. Остались только флаги и атака. После этого вы будете знать всё необходимое, чтобы отважиться сыграть в Одиночную игру и со временем сыграть on-line против одного из лучших игроков в Globulation 2.
+Вы почти закончили. Остались только флаги и атака. После этого вы будете знать всё необходимое, чтобы отважиться сыграть в Одиночную игру и со временем сыграть онлайн против лучших игроков Globulation 2.
 [tutorial]
 Обучение
 [Uncontrolled]
@@ -993,7 +993,7 @@ tab
 [Unit editor]
 Редактор юнитов
 [unit settings explanation]
-Количество назначеных юнитов по умолчанию
+Число назначенных юнитов по умолчанию
 [units working]
  юнитов работает
 [Units]
@@ -1007,7 +1007,7 @@ tab
 [up]
 вверх
 [upgrade building]
-Начать/Остановить улучшение
+Начать/остановить улучшение
 [Upgrade Defaults]
 Улучшения
 [upgrade]
@@ -1019,13 +1019,13 @@ tab
 [view history]
 Просмотр истории
 [Voice volume]
-громкость голоса
+Громкость голоса
 [waiting for %0]
 Ожидание %0
 [waiting for key]
 ожидание клавиши...
 [Walk]
-Идёт
+Ходьба
 [warflag explanation 2]
 
 [warflag explanation]
@@ -1049,11 +1049,11 @@ tab
 [Wheat]
 Пшеница
 [Won : you defeated your opponents]
-Победа: Вы победили всех соперников.
+Победа: вы победили всех соперников.
 [Won : you have the most prestige]
-Победа: у Вас самый большой престиж
+Победа: у вас больше всего престижа.
 [Won : your ally %0 has the most prestige]
-Победа: у союзника %0 самый большой престиж
+Победа: у союзника %0 больше всего престижа.
 [Wood]
 Дерево
 [wood]
@@ -1071,7 +1071,7 @@ tab
 [Yes]
 Да
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
-Метасервер YOG отказал в соединении, потому что ваша версия Globulation 2 устарела. Пожалуйста, возьмите последнюю версию с www.globulation2.org чтобы сыграть online.
+Метасервер YOG отказал в соединении, потому что ваша версия Globulation 2 устарела. Загрузите последнюю версию с www.globulation2.org, чтобы играть онлайн.
 [you have lost]
 Вы проиграли!
 [you have won]
@@ -1109,7 +1109,7 @@ Cortex
 [Units still working: %0]
 Ещё работают: %0
 [2 vs 2]
-2 против 2
+2 на 2
 [AI strategy & counterplay]
 Стратегия ИИ и контригра
 [AICastor-Profile]
@@ -1125,11 +1125,11 @@ Cortex
 [AINicowar-Summary]
 Ранний натиск с земледелием, улучшениями, обороной и атаками разведчиков.
 [AINone-Profile]
-Стратегия: ИИ не дает никаких команд.\n\nСильные стороны: Предсказуемый, неактивный противник для экспериментов.\n\nСлабые стороны: Не расширяется и не адаптируется.
+Основная стратегия: ИИ не отдаёт никаких приказов.\n\nСильные стороны: Предсказуемый бездействующий противник для экспериментов.\n\nСлабые стороны: Не расширяется и не адаптируется.
 [AINone-Summary]
 Бездействующая колония для экспериментов.
 [AINumbi-Profile]
-Основная стратегия: Сначала развивает питание и население, затем добавляет лечение, науку и обучение, после чего переходит к войне. Общие фазы меняются со временем, а не с прогрессом противника.\n\nЭкономика и развитие: Масштабирует потребность в зданиях по населению и оценивает близкую пшеницу. Поздние фазы добавляют улучшения, оборону и расширение для поддержки растущей армии.\n\nАтака и оборона: Атакует, когда хватает здоровых бойцов или истекает ожидание. Ставит военные флаги на случайно выбранные здания врага. При слишком сильном сокращении войск снимает атакующие флаги и повышает пороги следующей попытки.\n\nСравнение с другими ИИ: Предсказуемее Castor и Nicowar. Castor внимательнее учитывает местность и ценность целей, а Nicowar начинает давление намного раньше.\n\nСильные и слабые стороны: Широкая инфраструктура поддержки может сделать его опасным после беспрепятственного развития, но расписание не всегда соответствует сражению. Простой выбор целей и более долгие паузы после потерь облегчают предсказание атак.\n\nЧто попробовать против него: Давите до военной фазы. Развивайте питание и обучение за спиной наступающих войск и используйте паузу после отражённого штурма.\n\nРазведка: Алгоритм атаки читает позиции вражеских зданий напрямую, без проверки видимости.
+Основная стратегия: Сначала развивает питание и население, затем добавляет лечение, науку и обучение, после чего переходит к войне. Общие фазы меняются со временем, а не с прогрессом противника.\n\nЭкономика и развитие: Масштабирует потребность в зданиях по населению и оценивает близкую пшеницу. Поздние фазы добавляют улучшения, оборону и расширение для поддержки растущей армии.\n\nАтака и оборона: Атакует, когда хватает здоровых бойцов или истекает ожидание. Ставит флаги войны на случайно выбранные здания врага. При слишком сильном сокращении войск снимает атакующие флаги и повышает пороги следующей попытки.\n\nСравнение с другими ИИ: Предсказуемее Castor и Nicowar. Castor внимательнее учитывает местность и ценность целей, а Nicowar начинает давление намного раньше.\n\nСильные и слабые стороны: Широкая инфраструктура поддержки может сделать его опасным после беспрепятственного развития, но расписание не всегда соответствует сражению. Простой выбор целей и более долгие паузы после потерь облегчают предсказание атак.\n\nЧто попробовать против него: Давите до военной фазы. Развивайте питание и обучение за спиной наступающих войск и используйте паузу после отражённого штурма.\n\nРазведка: Алгоритм атаки читает позиции вражеских зданий напрямую, без проверки видимости.
 [AINumbi-Summary]
 Постепенно строит колонию по расписанию, затем атакует числом.
 [AIEcono-Profile]
@@ -1167,11 +1167,11 @@ Cortex
 [Conquest or prestige]
 Завоевание или престиж
 [Could not launch this map. Your setup is retained; try again.]
-Не удалось запустить эту карту. Ваши настройки сохраняются; Попробуйте еще раз.
+Не удалось запустить эту карту. Ваши настройки сохранены; попробуйте ещё раз.
 [Could not load this map. Choose another map or retry.]
 Не удалось загрузить эту карту. Выберите другую карту или повторите попытку.
 [Crater lakes]
-Кратерные озера
+Кратерные озёра
 [Custom]
 Пользовательский
 [Custom teams]
@@ -1203,7 +1203,7 @@ Cortex
 [Gray]
 Серый
 [Green]
-Зеленый
+Зелёный
 [Hard]
 Трудный
 [Height]
@@ -1229,7 +1229,7 @@ Cortex
 [Map]
 Карта
 [Match finished]
-Матч завершен
+Матч завершён
 [Medium]
 Средний
 [Medium - Experimental]
@@ -1253,13 +1253,13 @@ Cortex
 [Premade maps]
 Готовые карты
 [Preview ready. Start plays this exact map.]
-Предварительный просмотр готов. В начале игры используется именно эта карта.
+Превью готово. «Старт» запустит именно эту карту.
 [Regenerate all]
 Сгенерировать всё заново
 [Generating preview...]
-Создание предварительного просмотра...
+Создание превью...
 [Preview unavailable]
-Предварительный просмотр недоступен
+Превью недоступно
 [Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
 Каждый ландшафт показан как настоящая карта с вашим текущим размером и числом колоний. Выберите один, чтобы сыграть на показанной карте.
 [Purple]
@@ -1311,7 +1311,7 @@ Cortex
 [Width]
 Ширина
 [Yellow]
-Желтый
+Жёлтый
 [You]
 Вы
 [You + AI]
@@ -1327,7 +1327,7 @@ Cortex
 [Inactive]
 Неактивный
 [8 workers / 2x speed]
-8 рабочих/2x скорость
+8 рабочих / скорость 2x
 [Changes the pace of the whole simulation.]
 Изменяет темп всей симуляции.
 [Choose whether teams can change during the match.]
@@ -1347,7 +1347,7 @@ Cortex
 [Premade maps retain their authored starting units.]
 Готовые карты сохраняют начальных юнитов, заданных автором.
 [Start with terrain known]
-Начните с известной местности
+Местность известна с начала
 [This colony will not join the match.]
 Эта колония не присоединится к матчу.
 [This landscape uses a fixed terrain recipe.]
@@ -1369,17 +1369,17 @@ Cortex
 [Azure]
 Небесно-голубой
 [Updating map preview...]
-Обновление предварительного просмотра карты...
+Обновление превью карты...
 [Generation failed. Adjust settings or press Start to retry.]
-Генерация не удалась. Измените настройки или нажмите «Пуск», чтобы повторить попытку.
+Генерация не удалась. Измените настройки или нажмите «Старт», чтобы повторить.
 [Preview unavailable. Adjust settings or start to retry.]
-Предварительный просмотр недоступен. Измените настройки или запустите игру, чтобы повторить попытку.
+Превью недоступно. Измените настройки или начните игру, чтобы повторить.
 [automatic torus view]
 Автоматический вид тора
 [toggle torus view]
 Переключить вид 2D / тора
 [2 vs 2 needs four open colonies. You vs all needs a human.]
-Для режима 2 на 2 нужны четыре открытые колонии. Для режима Вы против всех нужен человек.
+Для режима «2 на 2» нужны четыре открытые колонии. Для режима «Вы против всех» нужен человек.
 [Alliance]
 Альянс
 [Choose a rule to change it.]
@@ -1391,23 +1391,23 @@ Cortex
 [Controller]
 Кто управляет
 [Generate preview]
-Создать предварительный просмотр
+Создать превью
 [Generation failed. Adjust settings or try again.]
 Генерация не удалась. Измените настройки или повторите попытку.
 [Map settings changed. Generate a new preview or start.]
-Настройки карты изменены. Создайте новый предварительный просмотр или начните.
+Настройки карты изменены. Создайте новое превью или начните игру.
 [Map source]
 Источник карты
 [Map-defined]
 Определено на карте
 [Match format]
-Формат игры
+Формат матча
 [No current preview]
-Нет текущего предварительного просмотра
+Нет превью
 [Quick clash: 2x speed; generated maps start with 8 workers.]
-Быстрый бой: двойная скорость; сгенерированные карты начинаются с 8 рабочих.
+Быстрая битва: скорость 2x; на генерируемых картах в начале 8 рабочих.
 [Reroll]
-Создать еще одну карту
+Другой вариант
 [Randomize]
 Случайная генерация
 [Reset to defaults]
@@ -1423,9 +1423,9 @@ Cortex
 [Use selection]
 Использовать выбор
 [Quick clash on premade maps: only speed changes (2x).]
-Быстрый бой на готовых картах: меняется только скорость (двойная скорость).
+Быстрая битва на готовых картах: меняется только скорость (2x).
 [Generate a preview to explore this world.]
-Создайте предварительный просмотр, чтобы исследовать этот мир.
+Создайте превью, чтобы исследовать этот мир.
 [More workers jump-start colony growth. Changes the generated map.]
 Больше рабочих ускоряет рост колонии. Этот параметр изменяет сгенерированную карту.
 [No warriors]
@@ -1435,7 +1435,7 @@ Cortex
 [settings Add shortcut]
 Добавить сочетание
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Используйте колесо мыши, чтобы изменить количество назначенных юнитов. Если эта опция отключена, удерживайте клавишу Ctrl, чтобы использовать колесо. Удерживайте клавишу Shift, чтобы отрегулировать радиус флага. Эта опция также управляет вводом с помощью колеса мыши в других меню.
+Колесо мыши меняет число назначенных юнитов. Если выключено — удерживайте Ctrl. Shift меняет радиус флага. Также влияет на колесо в других меню.
 [settings Adjust music and voice volume.]
 Отрегулируйте громкость музыки и голоса.
 [settings Adjust the pace of play.]
@@ -1467,7 +1467,7 @@ Cortex
 [settings Choose how the game looks on your screen.]
 Выберите, как игра будет выглядеть на вашем экране.
 [settings Completed]
-Завершенные здания
+Готовые
 [settings Construction]
 Строительство
 [settings Controls]
@@ -1483,7 +1483,7 @@ Cortex
 [settings Display]
 Экран
 [settings Display & graphics]
-Дисплей и графика
+Экран и графика
 [settings Display the Globulation 2 cursor.]
 Показывать курсор игры Globulation 2.
 [settings Done]
@@ -1509,11 +1509,11 @@ Cortex
 [settings Interface scale]
 Масштаб интерфейса
 [settings Keep]
-Сохранить изменения
+Оставить
 [settings Keep this display mode?]
 Сохранить этот режим отображения?
 [settings Keep your volume levels while silencing audio.]
-Отключите весь звук без изменения сохраненных уровней громкости.
+Выключить весь звук, сохранив уровни громкости.
 [settings Key]
 Клавиша
 [settings Keyboard shortcuts]
@@ -1567,7 +1567,7 @@ OpenGL недоступен в этой сборке.
 [settings Remove shortcut]
 Удалить сочетание
 [settings Renderer]
-Графический рендерер
+Рендерер
 [settings Replace conflicting bindings]
 Заменить конфликтующие сочетания
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
@@ -1605,7 +1605,7 @@ OpenGL недоступен в этой сборке.
 [settings This shortcut conflicts with existing bindings:]
 Это сочетание клавиш конфликтует с существующими сочетаниями клавиш:
 [settings Trigger]
-Событие активации
+Срабатывание
 [settings Unbound]
 Не назначено
 [settings Unit counts assigned to new construction sites.]
@@ -1625,13 +1625,13 @@ OpenGL недоступен в этой сборке.
 [settings Window mode]
 Оконный режим
 [settings Window-only sizes also switch the game to windowed mode.]
-Выбор разрешения, поддерживающего только оконный режим, также переключает игру в оконный режим.
+Размеры только для окна также переключают игру в оконный режим.
 [settings Windowed]
 В окне
 [settings Windowed only]
 Только в оконном режиме
 [settings seconds]
-секунд
+с
 [settings Flag]
 Флаг
 [settings High-resolution artwork]
@@ -1845,7 +1845,7 @@ OpenGL недоступен в этой сборке.
 [Spider web]
 Паутина
 [Spokes per colony]
-Радиусов на колонию
+Спиц на колонию
 [Ring spacing]
 Шаг колец
 [Thread width]
@@ -2055,7 +2055,7 @@ OpenGL недоступен в этой сборке.
 [Map preview loading]
 Загрузка...
 [Map preview failed]
-Ошибка предпросмотра
+Ошибка превью
 [Map preview retry]
 Нажмите, чтобы повторить
 [Map preview please wait]
@@ -2071,7 +2071,7 @@ OpenGL недоступен в этой сборке.
 [Stats wheat loads]
 Грузы пшеницы
 [Stats meals]
-Поданные блюда
+Подано порций
 [Stats new buildings]
 Новые здания
 [Stats upgrades]
@@ -2117,15 +2117,15 @@ OpenGL недоступен в этой сборке.
 [No growth]
 Без роста
 [Units get hungry]
-Отряды испытывают голод
+Юниты голодают
 [No hunger]
 Без голода
 [Scarce (2x slower)]
-Скудные (в 2x медленнее)
+Скудные (в 2 раза медленнее)
 [Very scarce (4x slower)]
-Очень скудные (в 4x медленнее)
+Очень скудные (в 4 раза медленнее)
 [Extremely scarce (8x slower)]
-Крайне скудные (в 8x медленнее)
+Крайне скудные (в 8 раз медленнее)
 [Small (+50 each)]
 Малый (+50 к каждому)
 [Medium (+150 each)]
@@ -2141,7 +2141,7 @@ OpenGL недоступен в этой сборке.
 [Higher tiers give every building much more HP.]
 Более высокие уровни дают каждому зданию гораздо больше здоровья.
 [Starting units spawn already leveled up. Changes the generated map.]
-Стартовые юниты появляются уже прокачанными. Меняет сгенерированную карту.
+Начальные юниты появляются с повышенным уровнем. Меняет сгенерированную карту.
 [No upgrades]
 Без улучшений
 [No permadeath]
@@ -2179,15 +2179,15 @@ OpenGL недоступен в этой сборке.
 [Stats page three]
 Статистика 3/3 >
 [Stats blocked units]
-Юниты S/C
+Блок. юниты S/C
 [Stats blocked buildings]
-Здания S/C
+Блок. здания S/C
 [Stats blocked buildings swim]
-Плавает S/C
+Выходы вплавь S/C
 [Stats current blocked units]
-Юниты C
+Блок. юниты сейчас
 [Stats current blocked buildings]
-Здания C
+Блок. здания сейчас
 [Stats growth global]
 Ресурсы +
 [Stats growth new tiles]
@@ -2195,7 +2195,7 @@ OpenGL недоступен в этой сборке.
 [Stats growth reductions]
 Ресурсы -
 [Stats growth per minute]
-Пшеница +/min
+Пшеница +/мин
 [Stats growth near 8]
 Ресурсы + <=8
 [Stats growth near 16]
@@ -2223,7 +2223,7 @@ OpenGL недоступен в этой сборке.
 [Stats low food ranges]
 Еда: <=25/50/75%
 [Emoji]
-Emoji
+Эмодзи
 [Emoji character]
 Символ эмодзи
 [Smiley]
@@ -2249,7 +2249,7 @@ Emoji
 [Grinning face]
 Смеющееся лицо
 [Kissing face]
-Целующее лицо
+Поцелуй
 [Angry face]
 Сердитое лицо
 [Tongue out]
@@ -2369,7 +2369,7 @@ Emoji
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
 Крепость не может дойти до своего брода; используйте карту побольше или меньше колоний.
 [A wall would stand on a beach; try another seed.]
-Стена стояла бы на пляже; попробуйте другое зерно.
+Стена стояла бы на пляже; попробуйте другой сид.
 [The fort is too small for its gardens; raise Fort size.]
 Крепость слишком мала для своих огородов; увеличьте размер крепости.
 [The home oasis is too small; raise Home oasis size.]
@@ -2475,7 +2475,7 @@ Emoji
 [Plantations]
 Плантации
 [Plot size]
-Размер участка под застройку
+Размер участка
 [Farm width]
 Ширина полей
 [Islands per colony]
@@ -2657,7 +2657,7 @@ Emoji
 [Compact]
 Близко
 [Balanced]
-Сбалансированное
+Средне
 [Spread]
 Далеко
 [The Gauntlet]
@@ -2701,7 +2701,7 @@ Emoji
 [A city neighbourhood lacks reachable crops or building room.]
 В одном из районов города не хватает доступных посевов или места для строительства.
 [The city neighbourhoods are too unequal; try another seed.]
-Районы города слишком неравноценны; попробуйте другое зерно.
+Районы города слишком неравноценны; попробуйте другой сид.
 [The fractured civic plaza did not survive.]
 Расколотая городская площадь не сохранилась.
 [Who Ate the Map?]
@@ -2723,17 +2723,17 @@ Emoji
 [Portage Lakes needs sides between 64 and 512 tiles.]
 Стороны этой карты должны быть от 64 до 512 клеток.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
-При этом начальном числе не удаётся разместить поселения у берегов.
+При этом сиде не удаётся разместить поселения у берегов.
 [Portage Lakes cannot fit renewable shore fields beside every settlement.]
 Рядом с каждым поселением не помещаются возобновляемые прибрежные поля.
 [Portage Lakes cannot connect its shoreline trails.]
 Не удаётся соединить прибрежные тропы.
 [Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
-При этом начальном числе не удаётся создать полезный короткий путь через сухой лес.
+При этом сиде не удаётся создать полезный короткий путь через сухой лес.
 [Portage Lakes cannot fit a useful swimming shortcut on this seed.]
-При этом начальном числе не удаётся создать полезный короткий путь вплавь.
+При этом сиде не удаётся создать полезный короткий путь вплавь.
 [Portage Lakes needs separate swimming lakes on this seed.]
-При этом начальном числе озёра для плавания должны оставаться раздельными.
+При этом сиде озёра для плавания должны оставаться раздельными.
 [Drowned Forest]
 Затопленный лес
 [Sandbar connections]
@@ -2897,7 +2897,7 @@ Emoji
 [settings Automatic]
 Автоматически
 [settings Compact]
-Близко
+Компактная
 [settings Spacious]
 Просторная
 [More]
@@ -2925,7 +2925,7 @@ Emoji
 [settings Save the game automatically about every minute.]
 Автоматически сохранять игру примерно каждую минуту.
 [AI opponents]
-Компьютерные соперники
+Соперники-ИИ
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторная компоновка использует боковую панель, если хватает места. Компактная — панель инструментов и выдвижные панели.
 [settings One-finger zoom]
@@ -2967,9 +2967,9 @@ Emoji
 [%0 / %1 HP · %2]
 %0 / %1 ОЗ · %2
 [Units: %0]
-Юниты: %0
+Юнитов: %0
 [Buildings: %0]
-Здания: %0
+Зданий: %0
 [Need food: %0]
 Нуждаются в еде: %0
 [Need healing: %0]
@@ -3143,7 +3143,7 @@ Emoji
 [Generated]
 Сгенерированная
 [Preview]
-Предпросмотр
+Превью
 [Selected landscape]
 Выбранный ландшафт
 [Representative preview]
@@ -3159,17 +3159,17 @@ Emoji
 [%0 / Browse]
 %0 / Обзор
 [%0 colonies · %1]
-%0 колонии · %1
+Колоний: %0 · %1
 [%0 · Team %1]
 %0 · Команда %1
 [Colonies: %0]
-Колонии: %0
+Колоний: %0
 [%0 colonies · %1 AI]
-%0 колонии · %1 ИИ
+Колоний: %0 · ИИ: %1
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 Юниты
+%0 · Юнитов: %1
 [settings Level %0]
 Уровень %0
 [settings Match the desktop %0]
@@ -3187,7 +3187,7 @@ Emoji
 [Min required level %0]
 Мин. необходимый уровень: %0
 [Confirm %0]
-ок: %0
+ОК: %0
 [%0 %1]
 %0 %1
 [resume game]
@@ -3235,1415 +3235,1415 @@ Emoji
 [List bounce]
 Отскок списков
 [lan pairing field]
-
+Строка сопряжения хоста (или доверенный WSS URL)
 [lan pairing connect]
-
+Сопрячь и подключиться
 [lan discovery instructions]
-
+Выберите хост и вставьте его строку сопряжения, чтобы подтвердить его подлинность.
 [lan discovery unavailable]
-
+Поиск в LAN недоступен. Проверьте разрешение на доступ к локальной сети или вставьте строку сопряжения хоста.
 [lan discovered host %0]
-
+Найден хост %0 — выполните сопряжение, чтобы увидеть игры
 [lan connection unavailable]
-
+Не удаётся связаться с хостом LAN. Проверьте разрешение на доступ к локальной сети и строку сопряжения хоста.
 [lan connection verification failed %0]
-
+Не удалось проверить хост LAN или подключиться к нему: %0
 [lan lobby endpoint required]
-
+Используйте адрес лобби хоста
 [settings Artwork]
-
+Графика
 [settings Original]
-
+Оригинальная
 [settings High resolution]
-
+Высокое разрешение
 [settings Clouds]
-
+Облака
 [settings Show cloud cover above the map.]
-
+Показывать облака над картой.
 [settings Cloud shadows]
-
+Тени облаков
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Показывать тени облаков на земле независимо от самих облаков.
 [settings Building particles]
-
+Частицы зданий
 [settings Show smoke and other building particles.]
-
+Показывать дым и другие частицы от зданий.
 [settings Magic effects]
-
+Магические эффекты
 [settings Choose animated magic effects or a simple visible effect.]
-
+Анимированные магические эффекты или простой заметный эффект.
 [settings Simple]
-
+Простые
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Требуется рендерер OpenGL. Сохранённый выбор не теряется.
 [settings Interface appearance]
-
+Вид интерфейса
 [settings Panels]
-
+Панели
 [settings Choose translucent or opaque interface panels.]
-
+Полупрозрачные или непрозрачные панели интерфейса.
 [settings Opaque]
-
+Непрозрачные
 [settings Translucent]
-
+Полупрозрачные
 [settings Advanced graphics]
-
+Доп. настройки графики
 [settings Path lines]
-
+Линии путей
 [settings Choose translucent or opaque unit path lines.]
-
+Полупрозрачные или непрозрачные линии путей юнитов.
 [settings Smooth progress indicators]
-
+Плавные индикаторы
 [settings Smooth the moving edges of progress indicators.]
-
+Сглаживать движущиеся края индикаторов прогресса.
 [settings Decorative interface animation]
-
+Декоративная анимация
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Анимировать картинку победы. Режим «Меньше движения» тоже отключает эту анимацию.
 [settings Smooth unit motion]
-
+Плавное движение юнитов
 [settings Experimental: move and animate units between game ticks.]
-
+Экспериментально: двигать и анимировать юнитов между игровыми тактами.
 [settings Smooth fog of war]
-
+Плавный туман войны
 [settings Fade the map into and out of the fog of war gradually.]
-
+Плавно скрывать карту в тумане войны и открывать её.
 [settings Adaptive zoom detail]
-
+Детали по масштабу
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Упрощать полосы, зоны, ландшафт и юнитов при отдалении карты и не увеличивать их при приближении.
 [settings Text size]
-
+Размер текста
 [settings Enlarge interface text without changing the map scale.]
-
+Увеличить текст интерфейса, не меняя масштаб карты.
 [Map momentum]
 Инерция карты
 [turn reconnecting]
-
+Связь с хостом потеряна. Переподключение...
 [turn waiting for players]
-
+Ожидание загрузки всех игроков...
 [turn rejoining]
-
+Возвращение в игру...
 [turn catching up %0]
-
+Догоняем, отставание в ходах: %0
 [turn player reconnecting %0]
-
+%0 переподключается...
 [turn player lagging %0]
-
+%0 отстаёт
 [turn player resyncing %0]
-
+%0 догоняет
 [turn player not connected %0]
-
+%0 ещё не подключился
 [lan host left]
-
+Хост покинул игру.
 [lan host lost]
-
+Связь с хостом потеряна.
 [lan version mismatch %0]
-
+У хоста другая версия Globulation 2 (%0).
 [lan cannot host %0]
-
+Не удалось создать игру в LAN: %0
 [play online]
-
+Играть онлайн
 [Use in room]
-
+В комнату
 [conn ai]
-
+ИИ
 [conn behind %0]
-
+Отставание %0
 [conn behind explanation %0 %1]
-
+Отставание: насколько игра игрока отстаёт от часов матча, включая его задержку. До %0 — норма; от %1 игрок помечается как медленный.
 [conn behind]
-
+Отставание
 [conn card catching up]
-
+Догоняем
 [conn card colony works]
-
+Ваша колония продолжает работать сама: юниты доделывают работу, здания продолжают действовать.
 [conn card desync detail]
-
+Возвращение по записи матча, чтобы вы видели то же, что и остальные. Отчёт отправлен автоматически.
 [conn card desync]
-
+Ваша игра рассинхронизировалась
 [conn card grace %0]
-
+Ваша колония продолжает работать сама: юниты доделывают работу, здания продолжают действовать. У вас есть %0, чтобы вернуться, иначе вас удалят из матча.
 [conn card input paused]
-
+Вы догоняете · ввод приостановлен
 [conn card lost]
-
+Связь потеряна
 [conn card progress %0 %1 %2]
-
+%0 % · %1 из %2 тактов
 [conn card reconnecting %0]
-
+Переподключение к матчу… попытка %0
 [conn card replaying %0]
-
+Воспроизводится пропущенное (%0). Экран обновится, когда вы догоните настоящее.
 [conn card seconds left %0]
-
+осталось около %0 с
 [conn connections]
-
+Соединения
 [conn connection]
-
+Соединение
 [conn delay explanation %0 %1]
-
+Задержка: время от вашего щелчка до его выполнения у всех. Зависит от вашего соединения, а не от соединений других игроков. Хорошо до %0, плохо от %1.
 [conn fair]
-
+Средне
 [conn good]
-
+Хорошо
 [conn grid legend]
-
+Если игроков больше четырёх, панель показывает пинг каждого в миллисекундах или отставание в секундах.
 [conn jitter %0]
-
+джиттер %0
 [conn leave match]
-
+Покинуть матч
 [conn left]
-
+Вышел
 [conn notice back %0]
-
+%0 вернулся.
 [conn notice left %0]
-
+%0 покинул матч.
 [conn notice lost %0 %1]
-
+%0 потерял связь. Игра продолжается; его колония работает, пока он переподключается (осталось %1).
 [conn ping explanation %0 %1]
-
+Пинг: время пути туда и обратно между игроком и ретранслятором. Хорошо до %0, плохо от %1.
 [conn ping]
-
+Пинг
 [conn players]
-
+Игроки
 [conn poor]
-
+Плохо
 [conn reconnecting]
-
+Переподключение
 [conn relay %0]
-
+Ретранслятор: %0
 [conn resyncing]
-
+Возвращение
 [conn slow]
-
+Медленно
 [conn unstable]
-
+нестабильно
 [conn waiting]
-
+Подключение…
 [conn you %0]
-
+%0 (вы)
 [conn you]
-
+Вы
 [conn your delay %0]
-
+Ваша задержка %0
 [hub account menu]
-
+Аккаунт
 [hub ai joins after %0]
-
+ИИ присоединится через %0
 [hub all rooms]
-
+Все
 [hub browse maps]
-
+Обзор карт
 [hub cant reach %0]
-
+Не удаётся связаться с %0.
 [hub change server]
-
+Сменить сервер…
 [hub check code]
-
+Когда попросят код, введите этот:
 [hub code placeholder]
-
+Код или ссылка-приглашение
 [hub connecting to %0]
-
+%0 · подключение…
 [hub continue with %0]
-
+Продолжить через %0
 [hub create room]
-
+Создать комнату
 [hub find match]
-
+Найти матч
 [hub finish in browser]
-
+Завершите вход на странице, открывшейся в браузере.
 [hub free seat]
-
+Свободное место
 [hub get update]
-
+Скачать обновление
 [hub guest kept on device]
-
+Гость · хранится на этом устройстве
 [hub invalid code]
-
+Это не код и не ссылка-приглашение.
 [hub join by code]
-
+Войти по коду
 [hub join code]
-
+Код входа
 [hub join]
-
+Присоединиться
 [hub leaderboard]
-
+Таблица лидеров
 [hub linked %0]
-
+Связанные аккаунты · %0
 [hub linked accounts]
-
+Связанные аккаунты
 [hub maps]
-
+Карты
 [hub no queues]
-
+На этом сервере нет очередей быстрого матча.
 [hub no rooms]
-
+Сейчас нет открытых комнат. Создайте свою и поделитесь приглашением.
 [hub offline at %0]
-
+%0 · не в сети
 [hub offline detail %0]
-
+Повтор через %0 с. Быстрый матч и онлайн-комнаты недоступны. Игре по LAN в главном меню этот сервер не нужен.
 [hub online at %0]
-
+%0 · в сети
 [hub online settings]
-
+Настройки онлайна
 [hub online]
-
+Онлайн
 [hub open page again]
-
+Открыть страницу снова
 [hub open rooms]
-
+Открытые комнаты
 [hub page opened at %0]
-
+Открыто: %0. В игре ничего вводить не нужно — вход выполнится сам.
 [hub queues unavailable]
-
+Быстрый матч появится, когда сервер ответит.
 [hub quick match unavailable]
-
+Быстрый матч пока недоступен в этой версии.
 [hub quick match]
-
+Быстрый матч
 [hub ranked]
-
+Рейтинговый
 [hub recent matches]
-
+Недавние матчи
 [hub refresh]
-
+Обновить
 [hub retry now]
-
+Повторить сейчас
 [hub room match]
-
+Комната
 [hub room name %0]
-
+Комната игрока %0
 [hub room]
-
+Комната
 [hub seats %0 %1]
-
+Мест: %0/%1
 [hub server %0]
-
+Сервер: %0
 [hub sign in browser]
-
+Открыть страницу входа
 [hub sign in conflict]
-
+Этот способ входа уже привязан к другому аккаунту.
 [hub sign in failed %0]
-
+Вход не завершён (%0).
 [hub sign in intro]
-
+Войдите или создайте аккаунт в браузере. Ваши гостевые матчи сохранятся.
 [hub sign in]
-
+Войти
 [hub sign out]
-
+Выйти на этом устройстве
 [hub signed in as %0]
-
+Вы вошли как %0.
 [hub signed in on %0]
-
+Вход выполнен на %0
 [hub signing in]
-
+Вход…
 [hub sim %0]
-
+сим. %0
 [hub unrated]
-
+Без рейтинга
 [hub update required at %0]
-
+%0 · нужно обновление
 [hub update required detail %0]
-
+%0 использует более новую версию, поэтому эта копия не может играть онлайн, пока не обновится. Игры по LAN работают.
 [hub update required]
-
+Нужно обновление
 [hub server behind]
-
+Ожидается обновление сервера
 [hub server behind at %0]
-
+%0 · ожидается обновление сервера
 [hub server behind detail %0]
-
+Эта копия новее, чем %0: сервер ещё не обновлён. Онлайн-игры откроются после обновления сервера. Игры по LAN работают.
 [hub version mismatch]
-
+Другая версия
 [hub version mismatch at %0]
-
+%0 · другая версия
 [hub version mismatch detail %0]
-
+%0 использует другую версию игры, поэтому эта копия не может играть онлайн. Игры по LAN работают.
 [hub versus %0]
-
+против %0
 [match ai]
-
+ИИ
 [match downloading map %0]
-
+Загрузка карты %0
 [match failed]
-
+Не удалось начать матч.
 [match leave]
-
+Выйти
 [match loading]
-
+Загрузка игры
 [Loading game graphics]
-
+Загрузка графики игры
 [match map cached]
-
+уже на этом устройстве
 [match map]
-
+Загрузка карты
 [match relay %0]
-
+Подключено к ретранслятору %0
 [match seat confirmed]
-
+Место подтверждено
 [match starting]
-
+Начало матча
 [match tip flags]
-
+Совет: флаги разведки отправляют разведчиков открывать карту, а флаги войны собирают ваших воинов.
 [match tip input]
-
+Совет: ваши приказы доходят до всех с вашей собственной задержкой ввода; соединения других игроков вас не замедляют.
 [match tip select]
-
+Совет: двойной щелчок по зданию выбирает все здания этого типа.
 [match waiting for players]
-
+Ожидание всех игроков
 [match you %0]
-
+%0 (вы)
 [match player map]
-
+карта
 [match player loading]
-
+загрузка
 [match player connecting]
-
+подключение
 [match player ready]
-
+готов
 [match player left]
-
+вышел
 [results back to online]
-
+Назад в онлайн
 [results back to room]
-
+Назад в комнату
 [results defeat]
-
+Поражение
 [results ladder rating %0]
-
+Рейтинг %0
 [results left]
-
+Вы покинули матч
 [results match over]
-
+Матч окончен
 [results match page]
-
+Страница матча
 [results minutes %0]
-
+%0 мин
 [results no change]
-
+без изменений
 [results ranked]
-
+Рейтинговый
 [results recording]
-
+Запись результата…
 [results room unrated]
-
+Матч в комнате · без рейтинга
 [results saved to history]
-
+Сохранено в историю
 [results seconds %0]
-
+%0 с
 [results unverifiable]
-
+Сервер не смог воспроизвести этот матч, поэтому он не влияет ни на чей рейтинг. О нём сообщено для проверки; вам ничего делать не нужно.
 [results verified provisional]
-
+Проверено · предварительно
 [results verified]
-
+Проверено
 [results verifying detail]
-
+Сервер воспроизводит матч для подтверждения. Обычно меньше минуты.
 [results verifying]
-
+Проверка результата…
 [results victory]
-
+Победа
 [room address]
-
+Адрес
 [room ai %0]
-
+ИИ: %0
 [room browser pairing]
-
+Сопряжение браузера
 [room catalog map]
-
+Карта из каталога
 [room change map]
-
+Сменить карту…
 [room change rules]
-
+Изменить правила…
 [room chat]
-
+Чат
 [room closed seat detail]
-
+Закрыто хостом
 [room closed seat]
-
+Закрыто
 [room colonies]
-
+Колонии
 [room connecting]
-
+Подключение к комнате…
 [room copy]
-
+Копировать
 [room disconnected]
-
+отключён
 [room downloading %0]
-
+Загрузка карты %0 %
 [room downloading map]
-
+Загрузка карты…
 [room expired]
-
+Комната закрыта.
 [room generated on server]
-
+Создана один раз на сервере, поэтому все играют именно на этой карте.
 [room guest]
-
+гость
 [room host %0]
-
+хост %0
 [room host closed]
-
+Хост закрыл комнату.
 [room host]
-
+хост
 [room humans vs ai]
-
+Люди против ИИ
 [room invite code %0]
-
+Код %0 · открывается в приложении, на телефоне или в браузере
 [room invite not found]
-
+Это приглашение истекло или не существует.
 [room invite only]
-
+По приглашению
 [room invite]
-
+Пригласить
 [room joining on network]
-
+Вход в этой сети
 [room lan badge]
-
+Локальная сеть · без рейтинга
 [room lan list hint %0]
-
+Другие игроки в той же сети увидят %0 в списке игр по LAN в главном меню.
 [room leave]
-
+Выйти
 [room map changed %0]
-
+Карта изменена на %0.
 [room map failed]
-
+Не удалось подготовить карту
 [room match label]
-
+Комната
 [room member joined %0]
-
+%0 присоединился.
 [room member left %0]
-
+%0 вышел.
 [room member ready %0]
-
+%0 готов.
 [room needs two seats]
-
+Чтобы начать, пригласите друга или добавьте ИИ
 [room no map]
-
+Карта не выбрана
 [room not ready]
-
+Не готов
 [room open for a person]
-
+Открыть для игрока
 [room open seat detail]
-
+Занять может любой с приглашением
 [room open seat]
-
+Свободное место
 [room person]
-
+Игрок
 [room preparing map]
-
+Подготовка карты на сервере…
 [room public]
-
+Публичная
 [room ready?]
-
+Готов
 [room ready]
-
+✓ Готов
 [room remove from room]
-
+Удалить из комнаты
 [room rule off]
-
+Выкл.
 [room rule on]
-
+Вкл.
 [room rules changed]
-
+Правила изменены.
 [room rules]
-
+Правила
 [room say something]
-
+Напишите что-нибудь…
 [room seat hint]
-
+Игроки могут сами пересесть на свободное место. Для баланса смените команду.
 [room seat options]
-
+Параметры места
 [room seats summary %0 %1 %2]
-
+Игроков: %0 · ИИ: %1 · свободно: %2
 [room seats]
-
+Места
 [room seed]
-
+Сид
 [room send]
-
+Отправить
 [room set by host]
-
+Задаёт хост
 [room share text %0]
-
+Заходи в мою комнату Globulation 2: %0
 [room share]
-
+Поделиться…
 [room size]
-
+Размер
 [room starting match]
-
+Начало матча…
 [room take seat]
-
+Занять место
 [room team %0]
-
+Команда %0
 [room update required]
-
+В этой комнате играют на другой версии игры. Обновитесь, чтобы войти.
 [room uploaded map]
-
+Загруженная карта
 [room waiting for %0]
-
+Ждём готовности игрока %0
 [room waiting for you]
-
+Нажмите «Готов», когда будете готовы
 [room match over]
-
+Матч окончен. Готовы к следующему раунду?
 [room waiting for host]
-
+Ждём, когда хост начнёт
 [room waiting for players %0]
-
+Ждём готовности игроков: %0
 [room who can find it]
-
+Кто может найти
 [room you created]
-
+Вы создали комнату.
 [room you joined %0]
-
+Вы вошли в %0.
 [room you were removed]
-
+Хост удалил вас из комнаты.
 [room you]
-
+вы
 [settings Online]
-
+Онлайн
 [settings Another server]
-
+Другой сервер
 [settings Check]
-
+Проверить
 [settings Checking…]
-
+Проверка…
 [settings Choose which server you play on and how you sign in to it.]
-
+Выберите сервер для игры и способ входа на него.
 [settings Connecting…]
-
+Подключение…
 [settings Could not reach this server.]
-
+Не удалось связаться с этим сервером.
 [settings Display name saved.]
-
+Имя сохранено.
 [settings Display name]
-
+Отображаемое имя
 [settings Download or delete my data]
-
+Удалить мой аккаунт
 [settings Enter an https:// address.]
-
+Введите адрес https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Завершите в браузере: введите код %0, когда его попросят.
 [settings Forget]
-
+Забыть
 [settings Guests keep a generated name; sign in to choose one.]
-
+У гостей имя создаётся автоматически; войдите, чтобы выбрать своё.
 [settings Link]
-
+Привязать
 [settings Not a Globulation 2 server.]
-
+Это не сервер Globulation 2.
 [settings Not linked]
-
+Не привязан
 [settings Not signed in.]
-
+Вход не выполнен.
 [settings Open]
-
+Открыть
 [settings Opens your account page on %0.]
-
+Открывает страницу вашего аккаунта на %0, где его можно удалить.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Сервер сообщества, клуба или ваш собственный. Вставьте его адрес.
 [settings Save]
-
+Сохранить
 [settings Server]
-
+Сервер
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Показывается в комнатах, матчах и таблице лидеров. Менять можно раз в 30 дней.
 [settings Sign in with: %0 · queues: %1]
-
+Вход через: %0 · очереди: %1
 [settings Sign out on this device]
-
+Выйти на этом устройстве
 [settings Sign out]
-
+Выйти
 [settings Switch to this server]
-
+Перейти на этот сервер
 [settings The last sign-in method can't be unlinked.]
-
+Последний способ входа нельзя отвязать.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+Официальный сервер Globulation 2 · рейтинговые очереди, таблицы лидеров, каталог карт
 [settings Unlink]
-
+Отвязать
 [settings Unlinking is done on the account page.]
-
+Отвязка выполняется на странице аккаунта.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+До повторного входа вы будете новым гостем. Ваш аккаунт и матчи останутся на сервере.
 [settings Your account on %0]
-
+Ваш аккаунт на %0
 [settings compatible with this version]
-
+совместим с этой версией
 [settings connected]
-
+подключено
 [settings connecting…]
-
+подключение…
 [settings guest]
-
+гость
 [settings linked]
-
+привязан
 [settings plays another version]
-
+другая версия игры
 [settings trusted]
-
+доверенный
 [settings used before]
-
+использовался ранее
 [settings you were %0 there]
-
+там вы были %0
 [trust invited to room %0]
-
+Приглашение в комнату %0
 [trust join as guest]
-
+Войти как гость
 [trust not official]
-
+Этот сервер не принадлежит проекту Globulation 2.
 [trust remember]
-
+Запомнить этот сервер
 [trust separate identity %0]
-
+Там вы войдёте как гость. Ваш аккаунт %0, рейтинг и история останутся на месте.
 [trust title]
-
+Присоединиться к игре на другом сервере?
 [trust what it sees]
-
+Сервер видит ваше отображаемое имя, адрес вашего подключения и игры, в которые вы на нём играете.
 [settings not connected]
-
+не подключено
 [settings Open Play online to connect.]
-
+Откройте «Играть онлайн», чтобы подключиться.
 [hub code]
-
+Код
 [results draw]
-
+Ничья
 [qm 2 vs 2]
-
+2 на 2
 [qm 1 vs 1]
-
+1 на 1
 [qm ping about]
-
+Пинг около
 [qm ranked]
-
+Рейтинговый
 [qm casual %0]
-
+Обычный %0
 [qm rated]
-
+Рейтинговый
 [qm unrated]
-
+Без рейтинга
 [qm solo queue]
-
+одиночная очередь
 [qm ai joins after %0]
-
+ИИ присоединится через %0
 [qm fair maps %0]
-
+Карты: %0
 [qm cooldown %0]
-
+Вы отклонили матч. Искать снова можно через %0.
 [qm sign in to play ranked]
-
+Рейтинговые очереди доступны только вошедшим в аккаунт; сначала войдите.
 [online update required]
-
+Эта версия игры слишком старая для сервера; обновитесь, чтобы играть онлайн.
 [online server behind]
-
+Сервер ещё не обновлён до этой версии; онлайн-игра откроется после обновления.
 [online version mismatch]
-
+На сервере другая версия игры; с этой копией онлайн-игра недоступна.
 [qm already searching]
-
+Вы уже ищете матч или играете.
 [online connection problem]
-
+Не удалось связаться с сервером.
 [qm find match]
-
+Найти матч
 [qm opponents rated %0 to %1]
-
+Соперники с рейтингом от %0 до %1
 [qm region %0]
-
+Регион %0
 [qm searching]
-
+Поиск
 [qm measuring relays]
-
+Замер ретрансляторов
 [qm joining queue]
-
+Вход в очередь
 [qm waiting for a person]
-
+Ждём живого соперника: ИИ-соперники отключены.
 [qm ai in %0 rated]
-
+Если никого не найдётся, через %0 вы сыграете с ИИ с ближайшим рейтингом
 [qm ai in %0]
-
+Если никого не найдётся, через %0 присоединится ИИ
 [qm ai after %0]
-
+Если никого не найдётся, через %0 место займёт ИИ
 [qm allow ai short]
-
+Разрешить ИИ
 [qm allow ai]
-
+Разрешить соперника-ИИ
 [qm cancel]
-
+Отмена
 [qm cancel search]
-
+Отменить поиск
 [qm usual wait %0]
-
+обычное ожидание %0
 [qm widening]
-
+расширяется по мере ожидания
 [qm ais are rated]
-
+(с рейтингом: у ИИ тоже есть рейтинг)
 [qm opponent declined]
-
+Соперник не принял матч. Вы снова в начале очереди.
 [qm %0 did not accept]
-
+%0 не принял матч. Вы снова в начале очереди.
 [qm start failed]
-
+Не удалось начать матч. Поиск продолжается.
 [qm you declined]
-
+Вы отклонили матч. Искать снова можно после небольшого ожидания.
 [qm you did not answer]
-
+Вы не приняли матч вовремя. Искать снова можно после небольшого ожидания.
 [qm search ended]
-
+Поиск завершён.
 [qm try again]
-
+Повторить
 [online connecting]
-
+Подключение…
 [qm no queues]
-
+На этом сервере нет очередей быстрого матча.
 [qm quick match]
-
+Быстрый матч
 [qm phone searching note]
-
+Поиск продолжится, даже если вы уйдёте с этого экрана.
 [qm phone intro]
-
+Выберите очередь ниже; поиск идёт, пока вы смотрите другие разделы.
 [qm online]
-
+Онлайн
 [qm keeps running note]
-
+Поиск продолжится, даже если вы уйдёте с этого экрана.
 [qm ai]
-
+ИИ
 [qm provisional]
-
+предварительный
 [qm accepted]
-
+✓ принял
 [qm declined]
-
+отклонил
 [qm waiting]
-
+ожидание…
 [qm ai badge]
-
+ИИ
 [qm match found]
-
+Матч найден
 [qm playing an ai]
-
+Игра против ИИ
 [qm vs]
-
+против
 [qm ai explanation rated]
-
+В вашем диапазоне рейтинга никто не искал матч. Вы сыграете с ИИ с ближайшим к вам рейтингом; результат повлияет на ваш рейтинг и рейтинг ИИ.
 [qm ai explanation]
-
+Никто не искал матч. Вы сыграете с ИИ с ближайшим к вам рейтингом; эта игра без рейтинга.
 [qm casual explanation]
-
+Матч начнётся сразу; обычные игры не влияют на рейтинг.
 [qm accepted button]
-
+Принято
 [qm accept]
-
+Принять
 [qm decline]
-
+Отклонить
 [qm both must accept]
-
+Оба должны принять
 [qm accept explanation]
-
+Оба игрока должны принять матч. Если отклонить или не успеть, вы окажетесь в конце очереди.
 [qm starting in %0]
-
+Начало через %0…
 [qm preparing match]
-
+Подготовка матча…
 [qm match assigned %0 %1]
-
+Матч %0 готов на %1, но эта сборка пока не умеет подключаться к онлайн-матчам.
 [online jan]
-
+янв
 [online feb]
-
+фев
 [online mar]
-
+мар
 [online apr]
-
+апр
 [online may]
-
+мая
 [online jun]
-
+июн
 [online jul]
-
+июл
 [online aug]
-
+авг
 [online sep]
-
+сен
 [online oct]
-
+окт
 [online nov]
-
+ноя
 [online dec]
-
+дек
 [profile win letter]
-
+В
 [profile loss letter]
-
+П
 [profile draw letter]
-
+Н
 [profile history unavailable]
-
+Этот сервер пока не предоставляет историю матчей.
 [profile downloading replay]
-
+Загрузка повтора…
 [profile no replay]
-
+Для этого матча нет повтора.
 [profile room with %0]
-
+Комната · колоний: %0
 [profile with %0 vs %1]
-
+с %0 против %1
 [profile vs %0]
-
+против %0
 [profile room]
-
+Комната
 [profile casual]
-
+Обычный
 [profile ai filled]
-
+С ИИ
 [profile provisional %0 games]
-
+предварительный · игр: %0
 [profile unrated]
-
+без рейтинга
 [profile checking]
-
+проверка…
 [profile %0 min]
-
+%0 мин
 [profile match page]
-
+Страница матча
 [profile replay]
-
+Повтор
 [profile win rate last %0]
-
+Доля побед, последние %0
 [profile %0 w %1 l %2 d]
-
+%0 В · %1 П · %2 Н
 [profile typical game]
-
+Типичная игра
 [profile median length]
-
+ваша медианная длительность
 [profile best map]
-
+Лучшая карта
 [profile %0 w %1 l]
-
+%0 В · %1 П
 [profile no rated games]
-
+Сыграйте рейтинговый матч, чтобы получить рейтинг.
 [profile all]
-
+Все
 [profile rooms]
-
+Комнаты
 [profile vs ai]
-
+против ИИ
 [profile matches]
-
+Матчи
 [online loading]
-
+Загрузка…
 [profile no matches]
-
+Матчей пока нет.
 [online load more]
-
+Загрузить ещё
 [profile title]
-
+Профиль
 [profile guest]
-
+гость
 [profile playing since %0]
-
+играет с %0
 [profile full profile web]
-
+Полный профиль на сайте
 [profile replays note]
-
+Повторы загружаются с сервера при открытии; сохранённые локально остаются в «Загрузить игру» → «Повторы».
 [profile web profile]
-
+Профиль на сайте
 [maps most played]
-
+По числу игр
 [maps most liked]
-
+По отметкам
 [maps newest]
-
+Новые
 [maps most downloaded]
-
+По скачиваниям
 [maps any size]
-
+Любой размер
 [maps up to 128]
-
+До 128 × 128
 [maps 256]
-
+256 × 256
 [maps 512 and larger]
-
+512 и больше
 [maps report broken]
-
+Не работает
 [maps report offensive]
-
+Оскорбительная
 [maps report copyright]
-
+Чужая работа
 [maps report other]
-
+Другое
 [maps public]
-
+Публичная
 [maps unlisted]
-
+По ссылке
 [maps private]
-
+Личная
 [maps cannot read file]
-
+Не удалось прочитать файл карты.
 [maps file too large]
-
+Файл карты слишком велик, чтобы им поделиться.
 [maps saved for next room]
-
+Карта загружена; она будет использована, когда вы откроете комнату.
 [maps download failed]
-
+Не удалось скачать карту.
 [maps %0 colonies]
-
+Колоний: %0
 [maps version %0]
-
+версия %0
 [maps updated %0]
-
+обновлено %0
 [maps downloading]
-
+Скачивание карты…
 [maps like needs account]
-
+Чтобы отмечать карты, нужно войти в аккаунт.
 [maps report sent]
-
+Спасибо, модераторы проверят.
 [maps select a map]
-
+Выберите карту, чтобы увидеть подробности.
 [maps by %0]
-
+автор: %0
 [maps stats %0 %1 %2]
-
+▶ игр: %0 · ⬇ скачиваний: %1 · ♥ %2
 [maps use in room]
-
+В комнату
 [maps liked]
-
+Нравится
 [maps like]
-
+Мне нравится
 [maps map page]
-
+Страница карты
 [maps reported]
-
+Жалоба отправлена
 [maps report]
-
+Пожаловаться…
 [maps report why]
-
+Что не так с этой картой?
 [maps search placeholder]
-
+Поиск карт или авторов
 [maps none found]
-
+Подходящих карт нет.
 [maps any colonies]
-
+Любое число колоний
 [maps checking]
-
+Проверка…
 [maps no version yet]
-
+Ни одна версия ещё не загружена.
 [maps rejected]
-
+Отклонена
 [maps did not load %0]
-
+Карта не загрузилась: %0
 [maps unknown reason]
-
+причина не указана
 [maps fix and upload again]
-
+исправьте её в редакторе и загрузите снова
 [maps uploaded just now]
-
+только что загружена
 [maps loading on server]
-
+загружается на сервере
 [maps %0 plays]
-
+Игр: %0
 [maps hidden]
-
+Скрыта
 [maps upload again]
-
+Загрузить снова…
 [maps delete]
-
+Удалить
 [maps update]
-
+Обновить…
 [maps upload a map]
-
+Загрузить карту…
 [maps upload hint]
-
+файлы .map из папки карт или из редактора
 [maps no maps yet]
-
+Вы ещё не поделились ни одной картой.
 [maps my maps]
-
+Мои карты
 [maps my maps %0]
-
+Мои карты (%0)
 [maps browse]
-
+Обзор
 [maps title]
-
+Карты
 [maps browse note %0]
-
+Каталог %0 · показаны только карты, которые загружаются в этой версии
 [maps visibility note]
-
+Публичные карты видны в «Обзоре». Карты по ссылке работают в ваших комнатах и по ссылке. Личные — только в ваших комнатах.
 [maps use %0]
-
+Использовать %0
 [maps %0 kb]
-
+%0 КБ
 [maps field title]
-
+Название
 [maps field description]
-
+Описание
 [maps who can use it]
-
+Кто может использовать
 [maps guests unlisted]
-
+Гости могут делиться картами по ссылке и личными; войдите, чтобы публиковать в «Обзоре».
 [maps visibility help]
-
+Карты по ссылке работают в ваших комнатах и по ссылке; публичные также видны в «Обзоре».
 [maps new version of %0]
-
+Загрузить этот файл как новую версию %0.
 [maps upload]
-
+Загрузить
 [maps uploading]
-
+Загрузка…
 [maps checking detail]
-
+Сервер загружает карту и рисует её превью. До этого карту нельзя использовать.
 [maps ready]
-
+Готово
 [maps ready public]
-
+Карта готова и видна в «Обзоре».
 [maps ready unlisted]
-
+Карта готова. Карты по ссылке работают в ваших комнатах и по ссылке.
 [maps ready private]
-
+Карта готова. Личные карты работают только в ваших комнатах.
 [maps upload failed]
-
+Загрузка не удалась
 [maps server read %0 %1]
-
+Сервер распознал её как %0, колоний: %1.
 [maps continue in background]
-
+Закрыть
 [maps upload a map title]
-
+Загрузка карты
 [maps update map title]
-
+Обновление карты
 [maps upload note]
-
+Сервер проверяет каждую загрузку, прежде чем её можно использовать.
 [online just now]
-
+только что
 [online today %0]
-
+сегодня %0
 [online yesterday]
-
+вчера
 [online sun]
-
+Вс
 [online mon]
-
+Пн
 [online tue]
-
+Вт
 [online wed]
-
+Ср
 [online thu]
-
+Чт
 [online fri]
-
+Пт
 [online sat]
-
+Сб
 [online %0 weeks ago]
-
+%0 нед. назад
 [online %0 months ago]
-
+%0 мес. назад
 [online %0 years ago]
-
+%0 г. назад
 [maps share online]
-
+Поделиться онлайн…
 [maps mine]
-
+Мои
 [results waiting for players]
-
+Ждём, пока остальные игроки выйдут…
 [results waiting detail]
-
+Результат записывается, когда все покинут матч.
 [results waiting slow]
-
+У игрока, потерявшего связь, есть до 3 минут на возвращение. Результат появится в вашей истории и на странице матча.
 [results verifying slow]
-
+Проверка идёт дольше обычного. Результат появится в вашей истории и на странице матча.
 [results rematch]
-
+Реванш
 [results join rematch %0]
-
+Принять реванш от %0
 [hub profile history]
-
+Профиль и история
 [hub my maps]
-
+Мои карты
 [hub leaderboard %0]
-
+Таблица лидеров · %0
 [hub leaderboard empty]
-
+Рейтинговых игроков пока нет.
 [hub guests not ranked]
-
+У гостей нет рейтинга. Войдите, чтобы попасть сюда.
 [hub full leaderboard]
-
+Вся таблица лидеров
 [settings %0 is no longer linked.]
-
+%0 больше не привязан.
 [room map read failed]
-
+Не удалось прочитать этот файл карты.
 [room map upload failed]
-
+Не удалось передать карту в комнату.
 [room map upload failed %0]
-
+Не удалось передать карту в комнату: %0
 [room uploading map]
-
+Передача карты в комнату…
 [room premade map shared]
-
+Все в комнате играют на этом файле карты; он скачивается перед матчем.
 [room take a seat to play]
-
+Займите свободное место, чтобы играть
 [room waiting for a seat]
-
+Все места заняты. Вы сможете занять место, когда оно освободится.
 [room not seated]
-
+Без места
 [room copied]
-
+Скопировано
 [room copy failed]
-
+Не удалось скопировать
 [room closed title]
-
+Комната закрыта
 [room removed title]
-
+Вы удалены из комнаты
 [room back to online]
-
+Назад в онлайн
 [leave match]
-
+Покинуть матч
 [leave match title]
-
+Покинуть этот матч?
 [leave lan title]
-
+Покинуть эту игру по LAN?
 [leave rated body]
-
+Вы проиграете этот рейтинговый матч, и ваш рейтинг снизится. Остальные продолжат игру, а вернуться вы не сможете.
 [leave casual body]
-
+Этот быстрый матч засчитается вам как поражение. Остальные продолжат игру, а вернуться вы не сможете.
 [leave room body]
-
+Вы покинете матч комнаты, и в истории он засчитается как поражение. Остальные продолжат игру, а вернуться вы не сможете.
 [leave lan body]
-
+Остальные продолжат игру без вас, а вернуться в неё вы не сможете.
 [leave match confirm]
-
+Покинуть матч
 [keep playing]
-
+Продолжить игру
 [results team]
-
+Команда
 [results quick unrated]
-
+Быстрый матч · без рейтинга
 [conn card cannot keep up]
-
+Ваше устройство не успевает за этим матчем
 [conn card cannot keep up body]
-
+Оно воспроизводит матч медленнее, чем тот идёт, поэтому не догонит. Можно покинуть матч или снизить настройки графики и ждать дальше.
 [conn card not gaining]
-
+не догоняет
 [results reason opponents left]
-
+Ваши соперники покинули матч.
 [results reason victory]
-
+Все колонии соперников побеждены.
 [results reason defeat]
-
+Ваша колония побеждена.
 [results reason you left]
-
+Вы покинули матч. Это засчитывается как поражение.
 [results final after end]
-
+Окончательный результат — после конца матча.
 [pause none left]
-
+Паузы закончились
 [pause game left %0]
-
+Пауза (осталось: %0)
 [pause by %0]
-
+Пауза: %0
 [pause by %0 resumes in %1]
-
+Пауза: %0 · продолжение через %1
 [turn too many actions]
-
+Слишком много действий: часть ещё ждёт отправки
 [turn no pauses left]
-
+В этом матче у вас не осталось пауз
 [turn pause time used %0]
-
+%0 израсходовал всё время пауз: игра продолжается
 [room seats one person %0 %1]
-
+1 игрок · ИИ: %0 · свободно: %1
 [room rules otherwise standard]
-
+Все остальные правила — как в наборе «Стандартный».
 [room browser link]
-
+Ссылка для игроков в браузере
 [room browser link hint]
-
+Игроки в браузере вставляют эту ссылку, чтобы войти.
 [room browser link code %0]
-
+Игроки в браузере вставляют эту ссылку, чтобы войти. Их игра покажет код %0.
 [room copy link]
-
+Копировать ссылку
 [room lan open seat detail]
-
+Занять может любой в этой сети
 [room close title]
-
+Закрыть комнату?
 [room close body one]
-
+Если вы выйдете, комната закроется для всех, включая другого игрока в ней.
 [room close body %0]
-
+Если вы выйдете, комната закроется для всех, включая других игроков в ней (%0).
 [room close confirm]
-
+Закрыть комнату
 [room stay]
-
+Остаться
 [room colours changed]
-
+С новой картой у мест новые цвета. Проверьте свой перед началом.
 [room copy by hand]
-
+Скопировать не удалось. Скопируйте приглашение сами:
 [room copy by hand close]
-
+Закрыть
 [room copy by hand touch]
-
+Нажмите и удерживайте ссылку, затем выберите «Копировать».
 [room copy by hand keys]
-
+Ссылка выделена: нажмите Ctrl+C (⌘C на Mac).
 [room code]
-
+Код
 [online under a minute]
-
+меньше минуты
 [online about %0 min]
-
+около %0 мин
 [online %0 s]
-
+%0 с
 [online %0 min %1 s]
-
+%0 мин %1 с
 [qm ai opponent %0]
-
+Соперник-ИИ: %0
 [match relay connected]
-
+Подключено к игровому серверу
 [room picker title]
-
+Выбор карты
 [room picker for one]
-
+Для 1 игрока в комнате
 [room picker for %0]
-
+Для игроков в комнате: %0
 [room picker generated]
-
+Генерируемая
 [room picker premade]
-
+Готовая
 [room picker catalog]
-
+Каталог
 [room picker size]
-
+Размер
 [room picker colonies]
-
+Колонии
 [room picker fair]
-
+Равный старт для каждой колонии
 [room picker does not fit]
-
+Не подходит для этого размера; попробуйте другой
 [room picker preparing]
-
+Подготовка превью…
 [room picker generated note]
-
+Каждый ландшафт даёт всем колониям одинаково хороший старт, а сервер создаёт одну и ту же карту для всех.
 [room picker players %0]
-
+Игроков: %0
 [room picker unreadable]
-
+не читается
 [room picker no premade]
-
+Готовые карты не найдены.
 [room picker too small %0]
-
+На этой карте меньше колоний, чем игроков в комнате (%0).
 [room picker pick premade]
-
+Выберите карту, чтобы увидеть её здесь.
 [room picker catalog intro]
-
+Карты, которыми поделились другие игроки. Откройте карту и выберите «В комнату».
 [room picker browse catalog]
-
+Карты игроков
 [room picker more options]
-
+Ещё параметры…
 [room picker use]
-
+Выбрать эту карту
 [room map ready title %0]
-
+Играть: %0
 [room map ready unnamed]
-
+эта карта
 [room map ready body]
-
+Создайте комнату и пригласите друзей: в комнате будет эта карта.
 [game draw]
-
+Ничья
 [settings Show colony skins]
 Показывать облики колоний
 [settings Turn off to use classic units, swarms and building colors on this device.]
 Отключите, чтобы использовать классические юниты, рои и цвета зданий на этом устройстве.
 [settings Hive Mind]
-
+Коллективный разум
 [settings Enable commander shortcuts]
-
+Горячие клавиши командира
 [settings Command your colony without opening a menu.]
-
+Командуйте колонией, не открывая меню.
 [settings Allow supervision for new commands]
-
+Разрешить контроль новых команд
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+Командир может отслеживать постоянные приказы. Отслеживание расходует кредиты; уже установленные приказы работают и без них.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Клавиши по умолчанию: Ctrl+Enter — отдать приказ; Ctrl+Shift+Enter — остановить работу командира. Изменить их можно в разделе «Управление игрой». На карточках постоянных приказов есть отдельные кнопки паузы и отмены.
 [settings Commander account and credits]
-
+Аккаунт командира и кредиты
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Управляйте кредитами и покупками в браузере. Помощь командира разрешена в рейтинговых играх.
 [open commander]
-
+Открыть командира
 [stop commander]
-
+Остановить командира
 [settings Recording]
-
+Запись
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Записывайте игры в видео MP4 со звуком. Для записи нужен FFmpeg с кодировщиками libx264 и AAC.
 [settings FFmpeg is ready.]
-
+FFmpeg готов.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg недоступен, поэтому запись отключена. Установите FFmpeg, убедитесь, что он есть в PATH, и проверьте снова.
 [settings Check for FFmpeg again]
-
+Проверить FFmpeg снова
 [settings Checking for FFmpeg…]
-
+Поиск FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Горячая клавиша: %0. Работает также в меню и в редакторе.
 [settings Change the hotkey]
-
+Сменить клавишу
 [settings Recordings are saved in %0]
-
+Записи сохраняются в %0
 [toggle recording]
-
+Начать/остановить запись
 [File selection is unavailable.]
-
+Выбор файла недоступен.
 [Saving custom AI…]
-
+Сохранение своего ИИ…
 [Could not read the selected JavaScript file.]
-
+Не удалось прочитать выбранный файл JavaScript.
 [Custom AI library saved.]
-
+Библиотека своих ИИ сохранена.
 [Storage could not be saved. The previous library is retained.]
-
+Не удалось сохранить хранилище. Прежняя библиотека сохранена.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Импортируйте один файл ИИ на JavaScript, затем выберите его при настройке локальной игры.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+При импорте копия хранится в Glob2. «Обновить» заменяет эту копию для будущих игр; сохранения сохраняют свой исходный ИИ.
 [Waiting for file selection or storage…]
-
+Ожидание выбора файла или хранилища…
 [Import JavaScript AI]
-
+Импорт ИИ на JavaScript
 [Link development file]
-
+Связать файл разработки
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Связанные файлы читаются при запуске игры. Пересоберите их перед новой игрой. Удаление связи никогда не удаляет сам файл.
 [Example AI and authoring guide]
-
+Пример ИИ и руководство
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Своих ИИ пока нет. Для начала импортируйте собранный файл .js.
 [Relink]
-
+Перепривязать
 [Update]
-
+Обновить
 [Validate]
-
+Проверить
 [AI startup and persistent globals are valid.]
-
+Запуск ИИ и постоянные глобальные переменные в порядке.
 [Remove from library]
-
+Убрать из библиотеки
 [AI telemetry]
-
+Телеметрия ИИ
 [No accessible AI telemetry.]
-
+Нет доступной телеметрии ИИ.
 [Search fields]
-
+Поиск полей
 [Telemetry unavailable for this recording or controller.]
-
+Телеметрия недоступна для этой записи или контроллера.
 [Linked]
-
+Связан
 [Imported]
-
+Импортирован
 [Player]
-
+Игрок
 [Updated at tick %0]
-
+Обновлено на такте %0
 [No values published yet.]
-
+Значения пока не опубликованы.
 [No fields match your search.]
-
+Нет полей, подходящих под поиск.
 [settings Custom AIs]
-
+Свои ИИ
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Добавляйте ИИ на JavaScript в разделе «Настройки» → «Свои ИИ». Они появятся в выборе ИИ для каждой колонии.
 [Missing custom AI]
-
+Свой ИИ не найден
 [Map repetition failed]
-
+Эту карту нельзя повторить. Используйте стартовую карту без сценария или уменьшите число повторов и баз.
 [repeat map horizontally]
 Повторить карту по горизонтали
 [repeat map vertically]
@@ -4653,594 +4653,594 @@ Emoji
 [bases per colony]
 Баз на колонию; база — это одна команда карты в нарисованном виде, с её зданиями и юнитами
 [stat group population]
-
+Население
 [stat group food]
-
+Еда и самочувствие
 [stat group resources]
-
+Ресурсы
 [stat group buildings]
-
+Здания
 [stat group military]
-
+Армия
 [stat group map]
-
+Территория
 [stat group score]
-
+Очки
 [stat overview]
-
+Обзор
 [stat overview about]
-
+Показатели каждой колонии за весь матч. Там, где больше — лучше, выделено наибольшее значение; щёлкните по заголовку столбца, чтобы увидеть изменение со временем.
 [stat population]
-
+Население
 [stat population about]
-
+Сколько живых юнитов было у колонии: рабочие, разведчики и воины вместе.
 [stat births]
-
+Рождено юнитов
 [stat births about]
-
+Как быстро рои производили новых юнитов. Разделите, чтобы увидеть рабочих, разведчиков и воинов отдельно.
 [stat deaths]
-
+Потеряно юнитов
 [stat deaths about]
-
+Как быстро колония теряла юнитов по любой причине: бои, голод, ранения при очистке или ловушка.
 [stat net growth]
-
+Прирост населения
 [stat net growth about]
-
+Рождённые юниты минус потерянные. Выше нуля — колония росла, ниже нуля — сокращалась.
 [stat death causes]
-
+Причины смерти
 [stat death causes about]
-
+От чего погибали юниты колонии: бои, голод, ранения при очистке ресурсов, ловушка без выхода или другие причины.
 [stat conversions]
-
+Баланс перебежчиков
 [stat conversions about]
-
+Юниты, переманенные из других колоний, минус юниты, ушедшие к ним. Юниты переходят на другую сторону, когда другая колония кормит их лучше.
 [stat hunger]
-
+Запас еды
 [stat hunger about]
-
+Сколько еды юниты колонии несли в себе. Каждый юнит относится к группе по остатку своего запаса еды: почти пусто (четверть или меньше), мало (до половины), наполовину (до трёх четвертей) или сыт. Когда запас кончается, юниты идут искать кабак, поэтому у колонии всегда есть голодные.
 [stat health]
-
+Здоровье
 [stat health about]
-
+Насколько здоровы были юниты колонии. Каждый юнит относится к группе по остатку очков здоровья: критично (четверть или меньше), ранены (до половины), легко ранены (до трёх четвертей) или здоровы.
 [stat seeking food]
-
+Ищут еду
 [stat seeking food about]
-
+Юниты, бросившие работу, чтобы найти кабак. Те из них, у кого здоровье не полное, считаются слабеющими.
 [stat in care]
-
+Едят или лечатся
 [stat in care about]
-
+Юниты, которые едят в кабаке или лечатся в госпитале и поэтому не работают.
 [stat wheat harvested]
-
+Собрано пшеницы
 [stat wheat harvested about]
-
+Грузы пшеницы, собранные рабочими. Из пшеницы кабаки готовят еду.
 [stat wheat stored]
-
+Пшеница на складе
 [stat wheat stored about]
-
+Пшеница в зданиях колонии, готовая к подаче или использованию.
 [stat meals]
-
+Подано порций
 [stat meals about]
-
+Порции, поданные кабаками колонии своим юнитам и гостям из других колоний.
 [stat starvation]
-
+Умерло от голода
 [stat starvation about]
-
+Юниты, которые погибли, не найдя еду вовремя.
 [stat healing]
-
+Восстановлено здоровья
 [stat healing about]
-
+Очки здоровья, которые госпитали колонии вернули раненым юнитам.
 [stat gathered]
-
+Собрано ресурсов
 [stat gathered about]
-
+Грузы всех ресурсов, собранные рабочими. Разделите, чтобы увидеть каждый ресурс.
 [stat stored]
-
+Ресурсы на складе
 [stat stored about]
-
+Ресурсы, лежащие в зданиях колонии. Разделите, чтобы увидеть каждый ресурс.
 [stat spending]
-
+Расход ресурсов
 [stat spending about]
-
+На что пошли доставленные ресурсы: еда, новые юниты, боеприпасы башен, новые здания или улучшения.
 [stat delivered]
-
+Доставлено ресурсов
 [stat delivered about]
-
+Грузы, которые рабочие принесли в здания.
 [stat traded]
-
+Баланс торговли
 [stat traded about]
-
+Ресурсы, полученные через рынки, минус отданные.
 [stat buildings]
-
+Стоящие здания
 [stat buildings about]
-
+Готовые здания колонии. Разделите, чтобы увидеть каждый тип зданий.
 [stat construction]
-
+Строительные работы
 [stat construction about]
-
+Завершённые строительные работы: новые здания, улучшения и ремонт.
 [stat buildings lost]
-
+Потеряно зданий
 [stat buildings lost about]
-
+Здания, разрушенные врагами или снесённые самой колонией.
 [stat blocked buildings]
-
+Здания без входа
 [stat blocked buildings about]
-
+Здания с заблокированными входами, куда юниты не могли войти и откуда не могли выйти.
 [stat attack]
-
+Сила атаки
 [stat attack about]
-
+Оценка общей боевой мощи воинов колонии: насколько сильно и быстро они бьют.
 [stat defence]
-
+Сила обороны
 [stat defence about]
-
+Оценка общей огневой мощи оборонительных башен колонии.
 [stat hit points]
-
+Всего очков здоровья
 [stat hit points about]
-
+Сумма очков здоровья всех юнитов и зданий колонии.
 [stat damage dealt]
-
+Нанесённый урон
 [stat damage dealt about]
-
+Урон, нанесённый колонией вражеским юнитам и зданиям. Разделите, чтобы увидеть воинов, магию и башни.
 [stat damage taken]
-
+Полученный урон
 [stat damage taken about]
-
+Урон, нанесённый врагами юнитам и зданиям колонии.
 [stat damage traded]
-
+Баланс урона
 [stat damage traded about]
-
+Нанесённый урон минус полученный. Выше нуля — колония выигрывала бои.
 [stat combat deaths]
-
+Убито в бою
 [stat combat deaths about]
-
+Юниты этой колонии, убитые врагами. Разделите, чтобы увидеть рабочих, разведчиков и воинов отдельно.
 [stat accuracy]
-
+Точные выстрелы
 [stat accuracy about]
-
+Доля выстрелов башен и разведчиков колонии, попавших в цель.
 [stat training]
-
+Обучение
 [stat training about]
-
+Посещения юнитами школ, казарм, стадионов и бассейнов для обучения навыкам.
 [stat skills]
-
+Получено навыков
 [stat skills about]
-
+Уровни навыков, полученные юнитами колонии при обучении.
 [stat growth nearby]
-
+Рост ресурсов у колонии
 [stat growth nearby about]
-
+Сколько пшеницы, дерева и других ресурсов выросло в пределах 32 клеток от зданий колонии — в очках роста, а не в грузах. Разделите, чтобы увидеть, насколько близко к дому они росли.
 [stat growth map]
-
+Рост ресурсов на карте
 [stat growth map about]
-
+Сколько ресурсов выросло по всей карте — в очках роста, а не в грузах. Это значение одинаково для всех колоний.
 [stat stranded]
-
+Юниты без хода
 [stat stranded about]
-
+Юниты, зажатые без единой свободной клетки, куда можно шагнуть.
 [stat cleared]
-
+Расчищено ресурсов
 [stat cleared about]
-
+Ресурсы, убранные рабочими в зонах очистки, чтобы освободить место.
 [stat prestige]
-
+Престиж
 [stat prestige about]
-
+Престиж колонии, который дают здания высшего уровня. Матч с целью по престижу заканчивается, когда она достигнута.
 [stat band combat]
-
+Бой
 [stat band starvation]
-
+Голод
 [stat band clearing]
-
+Ранения при очистке
 [stat band trapped]
-
+В ловушке
 [stat band other]
-
+Другое
 [stat band starving]
-
+Почти пусто
 [stat band hungry]
-
+Мало
 [stat band peckish]
-
+Наполовину
 [stat band fed]
-
+Сыты
 [stat band critical]
-
+Критично
 [stat band wounded]
-
+Ранены
 [stat band hurt]
-
+Легко ранены
 [stat band healthy]
-
+Здоровы
 [stat band weakening]
-
+Слабеют
 [stat band looking]
-
+Ищут кабак
 [stat band eating]
-
+Едят
 [stat band healing]
-
+Лечатся
 [stat band meals]
-
+Еда
 [stat band new units]
-
+Новые юниты
 [stat band ammunition]
-
+Боеприпасы
 [stat band construction]
-
+Новые здания
 [stat band upgrades]
-
+Улучшения
 [stat band built]
-
+Построено
 [stat band upgraded]
-
+Улучшено
 [stat band repaired]
-
+Отремонтировано
 [stat band destroyed]
-
+Разрушено
 [stat band demolished]
-
+Снесено
 [stat band melee]
-
+Воины
 [stat band magic]
-
+Магия
 [stat band towers]
-
+Башни
 [stat band within 8]
-
+До 8 клеток
 [stat band 8 to 16]
-
+8–16 клеток
 [stat band 16 to 32]
-
+16–32 клетки
 [stat unit units]
-
+юниты
 [stat unit wheat]
-
+пшеница
 [stat unit meals]
-
+порции
 [stat unit hit points]
-
+очки здоровья
 [stat unit resources]
-
+ресурсы
 [stat unit buildings]
-
+здания
 [stat unit strength]
-
+очки
 [stat unit damage]
-
+урон
 [stat unit shots]
-
+выстрелы
 [stat unit visits]
-
+посещения
 [stat unit skills]
-
+уровни навыков
 [stat unit prestige]
-
+престиж
 [stat axis percent of %0]
-
+% от %0
 [stat axis share of all teams]
-
+% от всех колоний
 [stat axis percent of units]
-
+% от юнитов колонии
 [stat axis %0 per minute per 100 units]
-
+%0 в минуту на 100 юнитов колонии
 [stat axis %0 per 100 units]
-
+%0 на 100 юнитов колонии
 [stat axis %0 per minute]
-
+%0 в минуту
 [stat axis %0 so far]
-
+%0, нарастающим итогом
 [stat axis %0 minute average]
-
+среднее за %0 мин
 [stat view per minute]
-
+В минуту
 [stat view total]
-
+Всего
 [stat view %0 min]
-
+%0 мин
 [stat view split]
-
+По видам
 [stat view percentages]
-
+В % от общего
 [stat view percent of units]
-
+В % от колонии
 [stat view per 100 units]
-
+С учётом размера колонии
 [stat view share]
-
+Доля среди колоний
 [stat view highlight none]
-
+Выделение: нет
 [stat column peak units]
-
+Макс. юнитов
 [stat column born]
-
+Рождено
 [stat column lost]
-
+Потеряно
 [stat column wheat]
-
+Пшеница
 [stat column damage dealt]
-
+Нанесено урона
 [stat column damage taken]
-
+Получено урона
 [stat column built]
-
+Построено
 [stat column buildings lost]
-
+Потеряно зданий
 [stat column prestige]
-
+Престиж
 [stat marker wiped out]
-
+потерян последний юнит
 [stat marker first combat death]
-
+первый юнит убит в бою
 [stat marker first building destroyed]
-
+первое здание разрушено
 [stat not recorded for this match]
-
+Этот показатель не записывался в этом матче.
 [results reason beyond doubt]
-
+Исход стал очевиден.
 [stat per minute short]
-
+/мин
 [stat page colony]
-
+Колония
 [stat page %0 of %1]
-
+%0 из %1  >
 [stat band workers]
-
+Рабочие
 [stat band explorers]
-
+Разведчики
 [stat band warriors]
-
+Воины
 [stat unit deaths]
-
+смерти
 [stat unit growth]
-
+рост
 [stat view by unit type]
-
+По типу юнитов
 [stat view by state]
-
+По состоянию
 [stat view by resource]
-
+По ресурсам
 [stat view by building]
-
+По зданиям
 [stat view by work]
-
+По виду работ
 [stat view by cause]
-
+По причинам
 [stat view by weapon]
-
+По оружию
 [stat view by distance]
-
+По расстоянию
 [stat nothing to show]
-
+Нечего показать: в этом матче такого не было.
 [stat %0 nothing]
-
+%0 (нет)
 [Match]
-
+Матч
 [Time limit]
-
+Лимит времени
 [Alliances can change]
-
+Смена союзов
 [Reveal terrain]
-
+Открыть местность
 [Starting unit level]
-
+Нач. уровень юнитов
 [Starting stockpile]
-
+Начальный запас
 [Regrowth]
-
+Восстановление
 [Building strength]
-
+Прочность зданий
 [Wounded units retreat]
-
+Раненые отступают
 [Units can die]
-
+Юниты смертны
 [Unit training]
-
+Обучение юнитов
 [No stockpile]
-
+Нет
 [No glass cannon]
-
+Выкл.
 [How quickly harvested resources grow back and spread.]
-
+Как быстро собранные ресурсы отрастают и распространяются.
 [Units must eat to keep working.]
-
+Юнитам нужно есть, чтобы работать.
 [Summary]
-
+Сводка
 [All rules]
-
+Все правила
 [Show all rules]
-
+Показать все правила
 [Choose a ruleset]
-
+Выбор набора правил
 [Reset to %0]
-
+Сбросить на %0
 [ruleset one change %0]
-
+%0 + 1 изменение
 [ruleset changes %0 %1]
-
+%0 + %1 изм.
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Этот матч не может закончиться. Включите победу по престижу или задайте лимит времени.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+Престиж обычно появляется через 13–28 минут, поэтому при лимите в 30 минут часто бывает ничья.
 [Blitz]
-
+Блиц
 [ruleset blitz description]
-
+Быстрый старт, ранний финиш
 [Gentle]
-
+Мягкий
 [ruleset gentle description]
-
+Щадящие правила для первого матча
 [Sandbox]
-
+Песочница
 [ruleset sandbox description]
-
+Ни боёв, ни голода, стройте что угодно
 [Bloodbath]
-
+Бойня
 [ruleset bloodbath description]
-
+Хрупкие и бесстрашные армии
 [Siege]
-
+Осада
 [ruleset siege description]
-
+Крепостные стены и долгие войны
 [Lean years]
-
+Голодные годы
 [ruleset lean years description]
-
+Ресурсы почти не восстанавливаются
 [Gold rush]
-
+Золотая лихорадка
 [ruleset gold rush description]
-
+Что есть на карте — то и всё
 [Elite ranks]
-
+Элита
 [ruleset elite ranks description]
-
+Старт обученными, дальше без обучения
 [Shifting alliances]
-
+Изменчивые союзы
 [ruleset shifting alliances description]
-
+Команды меняются в 60-минутной гонке
 [Probability victory]
-
+Победа по вероятности
 [Off (play it out)]
-
+Выкл. (доиграть)
 [95% sure]
-
+Уверенность 95%
 [97% sure]
-
+Уверенность 97%
 [99% sure]
-
+Уверенность 99%
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Завершает матч, когда модель достигает выбранной уверенности. Зрители видят прогноз шансов на победу в статистике.
 [Changed from %0: %1]
-
+Изменено относительно %0: %1
 [Combat is off, so the rules below have no effect.]
-
+Бои выключены, поэтому правила ниже не действуют.
 [%0 more rules are at their Standard values.]
-
+Ещё правил со стандартными значениями: %0.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Игроки видят местность карты с самого начала; вражеские юниты остаются скрыты.
 [Each team starts with extra resources in its shared pool.]
-
+Каждая команда начинает с дополнительными ресурсами в общем запасе.
 [Units hit harder but have less HP and armor.]
-
+Юниты бьют сильнее, но у них меньше здоровья и брони.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Команды могут нападать друг на друга. Выключите для мирного матча.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Раненые юниты уходят лечиться, а не сражаются до смерти.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Юниты погибают, когда здоровье кончается. Выключите, чтобы оно не опускалось ниже 1.
 [Units gain levels at schools.]
-
+Юниты повышают уровень в школах.
 [stat group work]
-
+Время рабочих
 [stat worker time]
-
+На что рабочие тратили время
 [stat worker time about]
-
+Чем были заняты рабочие колонии в каждый момент: работа для здания, работа у флага, обучение, еда, лечение, ожидание в голоде или ранении без свободного кабака или госпиталя, или простой без дела. В здоровой колонии большинство рабочих работает, простаивают немногие и никто не ждёт.
 [stat idle workers]
-
+Простой рабочих
 [stat idle workers about]
-
+Доля времени рабочих без дела. Высокие значения — рабочих больше, чем работы; около нуля — все заняты, и задания могут ждать.
 [stat work by job]
-
+Над чем работали рабочие
 [stat work by job about]
-
+Сколько рабочих снабжало каждый вид зданий: рои (новые юниты), кабаки (еда), строящиеся или улучшаемые здания и другие здания, например башни, школы и казармы.
 [stat haul distance]
-
+Расстояние до ресурсов
 [stat haul distance about]
-
+Насколько в среднем собирающий рабочий был далеко от снабжаемого здания, в клетках карты по прямой.
 [stat hauling]
-
+Сбор и доставка
 [stat hauling about]
-
+Как рабочие, снабжающие здания, распределялись между ходьбой к ресурсу, его сбором, переноской обратно и доставкой или ожиданием доступного ресурса. Больше всего времени уходит на ходьбу, так что чем ближе ресурсы, тем больше сделано.
 [stat eating time]
-
+Рабочие идут есть
 [stat eating time about]
-
+Сколько рабочих отлучилось поесть: шли к кабаку, ели в нём или голодали без кабака, который мог бы их принять. Рабочие без кабака — признак того, что колония переросла свои кабаки или их запасы еды.
 [stat inn distance]
-
+Расстояние до кабака
 [stat inn distance about]
-
+Насколько в среднем за путь голодные рабочие были далеко от кабака, к которому шли, в клетках карты по прямой. Весь путь примерно вдвое длиннее. Высокие значения — кабаки далеко от мест работы.
 [stat warriors]
-
+Воины
 [stat warriors about]
-
+Сколько воинов было у колонии. Разделите, чтобы увидеть, сколько было у дома, у вражеской колонии или на открытой местности. Местность рядом с обеими колониями считается домом.
 [stat warrior level]
-
+Средний уровень атаки воинов
 [stat warrior level about]
-
+Средний уровень атаки воинов колонии, где скорость и сила атаки учитываются поровну, по шкале от 1 до 4, как в игре. Казармы его повышают; новые необученные воины снижают.
 [stat warrior duties]
-
+Чем были заняты воины
 [stat warrior duties about]
-
+Как распределялись воины колонии: отправленные к флагу войны, раненные так, что ушли из боя в госпиталь (включая лечащихся), и свободные.
 [stat intruders]
-
+Вражеские воины у дома
 [stat intruders about]
-
+Сколько вражеских воинов было в пределах 16 клеток от зданий колонии. Если две колонии рядом, каждая считает защитников другой.
 [stat home defence]
-
+Перевес обороны дома
 [stat home defence about]
-
+Сила своих воинов возле зданий колонии минус сила вражеских воинов там же, с учётом каждого воина и каждого его уровня атаки. Ниже нуля — колония уступала у себя дома.
 [stat combat death places]
-
+Где юниты гибли в бою
 [stat combat death places about]
-
+Где находились юниты колонии, когда их убили: у своих зданий, у вражеских зданий или на открытой местности между колониями. Потери дома — колонию атаковали; потери у вражеской колонии — она атаковала. Местность рядом с обеими колониями считается домом.
 [stat band working]
-
+Работают
 [stat band flag work]
-
+У флага
 [stat band idle]
-
+Без дела
 [stat band training]
-
+Учатся
 [stat band unserved]
-
+Нет свободного кабака или госпиталя
 [stat band swarms]
-
+Рои
 [stat band inns]
-
+Кабаки
 [stat band sites]
-
+Стройка и улучшение
 [stat band other buildings]
-
+Другие здания
 [stat band to resource]
-
+Идут к ресурсу
 [stat band harvesting]
-
+Собирают
 [stat band carrying]
-
+Несут обратно
 [stat band delivering]
-
+Сдают или ждут
 [stat band walking to inn]
-
+Идут в кабак
 [stat band no inn]
-
+Нет свободного кабака
 [stat band at home]
-
+Дома
 [stat band at enemy]
-
+У вражеской колонии
 [stat band in the open]
-
+На открытой местности
 [stat band war flag]
-
+У флага войны
 [stat band seeking healing]
-
+Идут лечиться
 [stat band free]
-
+Свободны
 [stat unit workers]
-
+рабочие
 [stat unit worker time]
-
+время рабочих
 [stat unit working workers]
-
+рабочие, снабжающие здания
 [stat unit squares]
-
+клетки
 [stat unit warriors]
-
+воины
 [stat unit attack level]
-
+уровень атаки
 [stat unit enemy warriors]
-
+вражеские воины
 [stat unit strength count]
-
+сила
 [stat view by place]
-
+По месту

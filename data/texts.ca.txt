@@ -1,17 +1,17 @@
 [AI strategy]
-Estratègia IA
+Estratègia de la IA
 [start recording]
-
+Comença a gravar
 [stop recording]
-
+Atura la gravació
 [finalizing recording]
-
+Finalitzant la gravació…
 [AIMaxima-Summary]
 Equilibra creixement sostenible i entrenament, després reuneix exèrcits en onades.
 [AIMaxima-Profile]
 Estratègia principal: Tracta menjar, treballadors, naixements, entrenament, construcció i combat com demandes contraposades. Dimensiona part de l'exèrcit segons la força enemiga estimada i intenta portar-lo eficaçment al combat.\n\nEconomia i desenvolupament: Planifica naixements segons menjar i treball, preserva estones lliures per entrenar i deixa d'afegir treballadors sobrants quan cal producció militar. Amplia capacitat d'entrenament i evita paralitzar massa infraestructura per millorar-la.\n\nExploració i decisions: Estima forces enemigues amb unitats visibles i albiraments recordats mitjançant un model ajustat. Els objectius depenen de valor, distància, torres, treballadors exposats i persistència. Les missions de fruita afavoreixen varietat alimentària i conversió.\n\nAtac i defensa: Reserva guerrers per entrenament i defensa i reuneix forces terrestres aptes prop d'infraestructura alimentària amiga abans de llançar onades. Respon localment en defensa i avalua accessos a la colònia.\n\nQuan els atacs s'encallen: Després de quatre fallades consecutives d'arribada de les onades, passa a banderes reforçades contínuament. Els atacs amfibis també poden usar reforços continus. Aquesta alternativa no resol tots els bloquejos previs a formar una concentració.\n\nComparació amb altres IA: Integra més estretament alimentació, entrenament, informació i desplegament. Cabino prioritza atacs a diversos edificis; Maxima, demanda estimada i arribada de forces reunides.\n\nPunts forts i febles: Manté creixement i reposició militar adaptant-se a pressió alimentària i amenaces observades. Necessita menjar, entrenament i espai lliure de reunió; congestió i rutes llargues poden dificultar l'arribada.\n\nCom fer-hi front: Disputa blat, despenses i casernes exposats abans de reunir-se les onades. Mantén una defensa proveïda i unida i talla rutes de reforç. Espera pressió repetida després de la primera onada.\n\nExploració: Les estimacions usen albiraments i historial d'observacions, no totals ocults de tropes enemigues.
 [%0 has left the game]
-%0 ha marxat
+%0 ha sortit de la partida.
 [%0 level %1]
 %0 de nivell %1
 [%0 units can't access building]
@@ -41,7 +41,7 @@ Una unitat de %0 s'ha convertit al teu equip
 [abreaviation explanation A]
 A: Aliats
 [abreaviation explanation C]
-C : Envia un missatge de text a
+C: Envia missatges de xat a
 [abreaviation explanation fV]
 fV: Comparteix la visió de les despenses (per atraure unitats)
 [abreaviation explanation mV]
@@ -61,7 +61,7 @@ IA
 [AICastor-Description]
 Construeix i entrena, ajustant el creixement al subministrament de menjar.
 [AICastor]
-IACastor
+Castor
 [AINicowar-Description]
 Augmenta la població, entrena guerrers i després ataca.
 [AINicowar]
@@ -71,19 +71,19 @@ Cap: no fa res.
 [AINone]
 Cap
 [AINumbi-Description]
-Un rival benèvol que també s’expandeix i ataca.
+Un rival benèvol que també s'expandeix i ataca.
 [AINumbi]
-IANumbi
+Numbi
 [AIEcono-Description]
-S’expandeix i cerca conversions sense produir guerrers.
+S'expandeix i cerca conversions sense produir guerrers.
 [AIEcono]
 Econo
 [AIWarrush-Description]
 Atacs ràpids que posen a prova les primeres defenses.
 [AIWarrush]
-AIWarrush
+Warrush
 [AICabino-Description]
-Un constructor eficaç que desplega forces d’atac entrenades.
+Un constructor eficaç que desplega forces d'atac entrenades.
 [AICabino]
 Cabino
 [AIJavaScript]
@@ -101,7 +101,7 @@ alt-%0
 [and]
 i
 [any explorer]
-Qualsevol Explorador
+qualsevol explorador
 [are dying hungry]
 es moren de gana
 [are hungry]
@@ -121,13 +121,13 @@ Força d'atac
 [Attack]
 Atac
 [audio]
-Audio
+Àudio
 [auto save]
-Autodesar
+Desament automàtic
 [available lan games]
-jocs LAN disponibles
+Partides locals disponibles
 [away:]
-ausent:
+absent:
 [Back]
 Enrere
 [backspace]
@@ -147,13 +147,13 @@ Instruccions de la missió
 [build %0 level %1]
 Construeix %0 de nivell %1
 [Build]
-Construir
+Construcció
 [Building Defaults]
 Valors per defecte dels edificis
 [building settings]
 Configuració dels edificis
 [building site]
-Construint
+Obra
 [Building Tool Box Explanation]
 Maj + arrossegar = rectangle
 [Building Tool Line Explanation]
@@ -175,17 +175,17 @@ No es pot entrar: la partida ja ha començat
 [Can't join game, game is full]
 No es pot entrar: la partida és plena
 [cancel destroy]
-Cancelar destrucció
+Cancel·la la destrucció
 [cancel repair]
-Cancelar Reparació
+Cancel·la la reparació
 [cancel upgrade]
-Cancelar Millora
+Cancel·la la millora
 [Cancel]
-Cancelar
+Cancel·la
 [caps lock]
 bloq maj
 [carry]
-Transport :
+Transporta:
 [Change Area Name]
 Canvia el nom de l'àrea
 [Cherry]
@@ -197,23 +197,23 @@ Escull una partida
 [choose map]
 Escull un mapa
 [clear area]
-Area de Neteja
+Zona de neteja
 [farm area]
-Area de Conreu
+Zona de conreu
 [Clearing:]
-Netejant
+Neteja:
 [clearingflag explanation 2]
 
 [clearingflag explanation]
 Elimina recursos
 [clearingflag]
-Bandera de Neteja
+Bandera de neteja
 [closed]
 Tancat
 [combined vision]
 Visió combinada
 [compile]
-Compilar el script
+Compila l'script
 [compose]
 Compose
 [Computing Fertility]
@@ -229,7 +229,7 @@ Connectant a
 [Construction Site Defaults]
 Valors per defecte de les obres
 [Continue playing]
-Continuar jugant
+Continua jugant
 [control %0]
 control-%0
 [Corn]
@@ -239,7 +239,7 @@ nombre de cràters
 [crater lakes terrain]
 Llacs de cràter
 [create map]
-Crear mapa
+Crea un mapa
 [credits]
 Crèdits
 [ctrl - line]
@@ -247,7 +247,7 @@ Ctrl - línia
 [current speed]
 Velocitat actual
 [custom game]
-Joc personalitzat
+Partida personalitzada
 [customcur]
 Cursor personalitzat
 [damage]
@@ -277,13 +277,13 @@ desert
 [destroy building]
 Destrueix l'edifici seleccionat
 [destroy]
-Destruir
+Destrueix
 [display]
 Pantalla
 [do nothing]
 No facis res
 [don't carry anything]
-No Transporta res
+No transporta res
 [down]
 avall
 [edit map]
@@ -291,7 +291,7 @@ Edita el mapa
 [editing map]
 Editant el mapa
 [editor shortcuts]
-Editor
+Dreceres de l'editor
 [editor]
 Editor
 [end]
@@ -313,7 +313,7 @@ Proporció d'exploradors
 [Explorer]
 Explorador
 [explorers]
-Exploradors
+exploradors
 [extra islands]
 illes buides
 [f10]
@@ -357,7 +357,7 @@ Boira de guerra
 [food]
 Menjar
 [forbidden area]
-Area Prohibida
+Zona prohibida
 [Free]
 Sanes
 [free]
@@ -367,9 +367,9 @@ de:
 [fruit]
 fruita
 [fullscreen]
-Pantalla Completa
+Pantalla completa
 [game full]
-Partida Completa
+Partida completa
 [game shortcuts]
 Dreceres del joc
 [Game]
@@ -381,25 +381,25 @@ Vés a l'esdeveniment
 [go to home]
 Vés a la base
 [goto main menu]
-Tornar al menú principal
+Torna al menú principal
 [grass]
 Herba
 [ground attack]
 Atac terrestre
 [guard area]
-Area de Guardia
+Zona de guàrdia
 [GUIMapPreview text 0]
 Tria
 [GUIMapPreview text 1]
 un mapa
 [handmade map]
-Mapa Fet a Mà
+Mapa fet a mà
 [Happyness]
 Felicitat
 [hard pause]
 Pausa total
 [Harvest]
-Recol·lecta
+Recol·lecció
 [high priority]
 alta
 [hints]
@@ -413,7 +413,7 @@ Cura les teves
 [hospital]
 Hospital
 [host]
-Servir una partida
+Crea una partida
 [hp]
 Vida
 [Human]
@@ -431,7 +431,7 @@ Augmenta les unitats assignades
 [inn explanation 2]
 
 [inn explanation]
-Alimenta els teus glòbuls
+Alimenta les teves unitats
 [inn]
 Despensa
 [insert]
@@ -449,13 +449,13 @@ Passa a la selecció següent
 [jobs]
 feines
 [join a game]
-Unir-se a una partida
+Uneix-te a una partida
 [keyboard settings]
 Configuració del teclat
 [lan]
-Joc en LAN
+Partida LAN
 [language incomplete]
-Català - Incomplete
+Català - Incomplet
 [language-code]
 ca
 [language-tr]
@@ -483,7 +483,7 @@ Carrega una repetició
 [load script]
 Carrega un script
 [load]
-Carregar
+Carrega
 [look around]
 Mira al voltant
 [Lost : %0 has more prestige than you]
@@ -493,11 +493,11 @@ Has perdut: la teva colònia ha estat exterminada
 [low priority]
 baixa
 [lowquality]
-Qualitat Baixa
+Qualitat baixa
 [Magic At. Air]
-dany aeri
+Dany aeri
 [Magic At. Ground]
-dany terrestre
+Dany terrestre
 [map description]
 Descripció
 [Map Discovered]
@@ -535,7 +535,7 @@ Silenci
 [new campaign]
 Campanya nova
 [new map]
-Nou
+Mapa nou
 [no fullscreen]
 * només en mode finestra
 [No Hints]
@@ -551,7 +551,7 @@ No
 [Number Of Buildings]
 Nombre d'edificis
 [number of teams]
-Nombre d' equips
+Nombre d'equips
 [Number Of Units]
 Nombre d'unitats
 [numlock]
@@ -561,11 +561,11 @@ Objectius
 [of which]
 dels quals
 [ok]
-OK
+D'acord
 [old islands terrain]
-Arxipèlag Abrupte
+Arxipèlag abrupte
 [old random terrain]
-Costa Fragmentada
+Costa fragmentada
 [on press]
 En prémer
 [On the spot]
@@ -583,7 +583,7 @@ Obre l'editor d'escenaris
 [open teams editor]
 Obre l'editor d'equips
 [open]
-Obrir
+Obre
 [OpenGL]
 OpenGL
 [Options]
@@ -605,13 +605,13 @@ Pausa la partida
 [pause]
 pausa
 [Paused]
-Pausat
+En pausa
 [player name]
 Nom del jugador
 [players]
 Jugadors
 [please wait]
-Esperi un moment
+Espera un moment
 [power]
 engegada
 [press space]
@@ -633,13 +633,13 @@ Pruna
 [quit the editor]
 Surt de l'editor
 [quit the game]
-Sortir del joc
+Surt del joc
 [quit the replay]
 Surt de la repetició
 [quit]
-Sortir
+Surt
 [racetrack explanation 2]
-de marxa dels teus glòbuls
+de marxa de les teves unitats
 [racetrack explanation]
 Augmenta la velocitat
 [racetrack]
@@ -647,7 +647,7 @@ Poliesportiu
 [range]
 Abast
 [ratios]
-Proporció
+Proporcions
 [remember unit]
 Recorda les assignacions
 [remove map]
@@ -657,7 +657,7 @@ Suprimeix la drecera
 [repair building]
 Inicia/atura la reparació
 [repair]
-Reparar
+Repara
 [repeat area]
 vegades el mateix paisatge
 [replay ended]
@@ -667,7 +667,7 @@ Restaura les dreceres per defecte
 [return to editor]
 Torna a l'editor
 [return to game]
-Tornar al joc
+Torna a la partida
 [return to replay]
 Torna a la repetició
 [return]
@@ -679,15 +679,15 @@ tecla Windows dreta
 [right]
 dreta
 [river diameter]
-ample de riu
+amplada del riu
 [river terrain]
-riu
+Riu
 [sand]
 Sorra
 [save before quit?]
 Vols desar abans de sortir?
 [save game]
-Desar partida
+Desa la partida
 [save map]
 Desa el mapa
 [save replay]
@@ -695,7 +695,7 @@ Desa la repetició
 [save script]
 Desa l'script
 [Save]
-Desar
+Desa
 [school explanation 2]
 construcció dels treballadors
 [school explanation]
@@ -801,7 +801,7 @@ Inicia la missió
 [start new campaign]
 Inicia una campanya nova
 [Start]
-Començar
+Comença
 [Starving Map]
 Mapa de fam
 [starving]
@@ -829,17 +829,17 @@ Mur de pedra
 [svr hostname]
 Nom del servidor
 [swamp terrain]
-pantà
+Pantà
 [swarm explanation 2]
-exploradors i guerrers
+
 [swarm explanation]
-Produeix globuls treballadors,
+Crea unitats noves
 [swarm]
 Granja
 [Swim]
-Nedar
+Natació
 [swimmingpool explanation 2]
-de natació dels teus glòbuls
+de natació de les teves unitats
 [swimmingpool explanation]
 Augmenta la velocitat
 [swimmingpool]
@@ -881,73 +881,73 @@ Editor d'equips
 [Teams Fixed]
 Equips fixos
 [teams]
- Equips
+ equips
 [the barracks is finished]
-La caserna ja està construïda
+La caserna ja està construïda.
 [the barracks is under attack]
-Estan atacant la caserna
+Estan atacant la caserna.
 [the building is finished]
-Construcció finalitzada
+L'edifici ja està construït.
 [the building is under attack]
-L'edifici està sent atacat
+Estan atacant l'edifici.
 [the clearingflag is finished]
-?? Bandera de Neteja finalizada ??
+S'ha col·locat una bandera de neteja.
 [the clearingflag is under attack]
-?? La bandera de Neteja  està sent atacada ??
+Estan atacant la bandera de neteja.
 [the defencetower is finished]
-La TORRE ja està construida
+La torre de defensa ja està construïda.
 [the defencetower is under attack]
-La Torre està sent atacada
+Estan atacant la torre de defensa.
 [the explorationflag is finished]
-?? Bandera d' Exploració finalitzada ??
+S'ha col·locat una bandera d'exploració.
 [the explorationflag is under attack]
-?? La bandera d' Exploració està sent atacada ??
+Estan atacant la bandera d'exploració.
 [The game has not been finished]
-La partida no ha acabat
+La partida no ha acabat.
 [the games]
-Els Jocs
+Partides
 [the hospital is finished]
-L' HOSPITAL ja està construït
+L'hospital ja està construït.
 [the hospital is under attack]
-L' Hospital està sent atacat
+Estan atacant l'hospital.
 [The host has cancelled the game]
 L'amfitrió ha cancel·lat la partida.
 [the inn is finished]
-La despensa ja està construïda
+La despensa ja està construïda.
 [the inn is under attack]
-La Despensa està sent atacada
+Estan atacant la despensa.
 [the maps]
-Els Mapes
+Mapes
 [the market is finished]
-El MERCAT ja està construït
+El mercat ja està construït.
 [the market is under attack]
-El mercat està sent atacat
+Estan atacant el mercat.
 [the racetrack is finished]
-El poliesportiu ja està construït
+El poliesportiu ja està construït.
 [the racetrack is under attack]
-El Poliesportiu està sent atacat
+Estan atacant el poliesportiu.
 [the replays]
 Repeticions
 [the school is finished]
-L'escola ja està construïda
+L'escola ja està construïda.
 [the school is under attack]
-L' Escola està sent atacada
+Estan atacant l'escola.
 [the stonewall is finished]
-El MUR DE PEDRA ja està construït
+S'ha acabat un tram de mur.
 [the stonewall is under attack]
-L'enemic esta atacant la teva muralla
+L'enemic és a les teves muralles.
 [the swarm is finished]
-La GRANJA ja està construida
+La granja ja està construïda.
 [the swarm is under attack]
-La Granja està sent atacada
+Estan atacant la granja.
 [the swimmingpool is finished]
-La PISCINA ja està construida
+La piscina ja està construïda.
 [the swimmingpool is under attack]
-La Piscina està sent atacada
+Estan atacant la piscina.
 [the warflag is finished]
-?? Bandera de Guerra finalizada ??
+S'ha col·locat una bandera de guerra.
 [the warflag is under attack]
-?? La bandera de Guerra està sent atacada ??
+Estan atacant la bandera de guerra.
 [time]
 Temps
 [to:]
@@ -983,7 +983,7 @@ Ja gairebé has acabat. Només queden les banderes i els atacs. Després en sabr
 [tutorial]
 Tutorial
 [Uncontrolled]
-No Controlat
+Sense control
 [undo]
 desfés
 [uniform terrain]
@@ -993,7 +993,7 @@ Editor d'unitats
 [unit settings explanation]
 Nombre d'unitats assignades per defecte
 [units working]
- Unitats treballant
+ unitats treballant
 [Units]
 Unitats
 [unlocked at start]
@@ -1009,9 +1009,9 @@ Inicia/atura la millora
 [Upgrade Defaults]
 Valors per defecte de les millores
 [upgrade]
-Millorar
+Millora
 [username]
-Nom d' usuari
+Nom d'usuari
 [Version]
 Versió
 [view history]
@@ -1019,17 +1019,17 @@ Mostra l'historial
 [Voice volume]
 Volum de la veu
 [waiting for %0]
-Esperant a %0
+Esperant %0
 [waiting for key]
 esperant una tecla...
 [Walk]
-Caminar
+Marxa
 [warflag explanation 2]
 
 [warflag explanation]
 Atrau guerrers
 [warflag]
-Bandera de Guerra
+Bandera de guerra
 [Warning, you need to reboot the game for changes to take effect]
 Cal reiniciar el joc perquè els canvis tinguin efecte
 [Warrior Ratio]
@@ -1037,7 +1037,7 @@ Proporció de guerrers
 [Warrior]
 Guerrer
 [warriors]
-Guerrers
+guerrers
 [watch again]
 Torna a veure
 [watching:]
@@ -1047,7 +1047,7 @@ Aigua
 [Wheat]
 Blat
 [Won : you defeated your opponents]
-Vencedor: Has destruit als teus enemics
+Has guanyat: has derrotat els teus rivals
 [Won : you have the most prestige]
 Has guanyat: tens el prestigi més alt
 [Won : your ally %0 has the most prestige]
@@ -1061,7 +1061,7 @@ Proporció de treballadors
 [Worker]
 Treballador
 [workers]
-Treballadors
+treballadors
 [working]
 Treballant
 [wounded]
@@ -1071,13 +1071,13 @@ Sí
 [YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
 El metaservidor YOG ha rebutjat la connexió perquè el teu client Globulation 2 està obsolet. Descarrega la versió més recent de www.globulation2.org per jugar en línia.
 [you have lost]
-Has Perdut
+Has perdut!
 [you have won]
-Has guanyat
+Has guanyat!
 [You where kicked from the game]
 T'han expulsat de la partida
 [Your %0 are under attack]
-El teu %0 està sent atacat
+Estan atacant el teu %0
 [Your unit got converted to %0's team]
 Una unitat teva s'ha convertit a l'equip de %0
 [game speed]
@@ -1125,7 +1125,7 @@ Estratègia principal: Combina creixement, entrenament, millores i guerra amb co
 [AINicowar-Summary]
 Assalt primerenc amb agricultura, millores, defensa i atacs d'exploradors.
 [AINone-Profile]
-Estratègia: la IA no dóna ordres.\n\nPunts forts: un oponent previsible i inactiu per als experiments.\n\nDebilitats: No s'expandeix ni s'adapta.
+Estratègia principal: No dona cap ordre de la IA.\n\nPunts forts: Un rival previsible i inactiu per fer experiments.\n\nPunts febles: No s'expandeix ni s'adapta.
 [AINone-Summary]
 Una colònia ociosa per a experiments.
 [AINumbi-Profile]
@@ -1145,7 +1145,7 @@ Estratègia principal: Reparteix producció entre construcció, millores, defens
 [AICabino-Summary]
 Coordina creixement i atacs entrenats, prioritzant curació i menjar.
 [Algae]
-algues
+Algues
 [Beach size]
 Mida de la platja
 [Blue]
@@ -1167,9 +1167,9 @@ Només conquesta
 [Conquest or prestige]
 Conquesta o prestigi
 [Could not launch this map. Your setup is retained; try again.]
-No s'ha pogut iniciar aquest mapa. La vostra configuració es conserva; torna-ho a provar.
+No s'ha pogut iniciar aquest mapa. Es conserva la teva configuració; torna-ho a provar.
 [Could not load this map. Choose another map or retry.]
-No s'ha pogut carregar aquest mapa. Trieu un altre mapa o torneu-ho a provar.
+No s'ha pogut carregar aquest mapa. Tria'n un altre o torna-ho a provar.
 [Crater lakes]
 Llacs de cràter
 [Custom]
@@ -1195,9 +1195,9 @@ Regles del joc
 [Game speed]
 Velocitat del joc
 [Generate & play]
-Generar i jugar
+Genera i juga
 [Give at least one terrain type a nonzero weight.]
-Doneu almenys a un tipus de terreny un pes diferent de zero.
+Dona un pes diferent de zero almenys a un tipus de terreny.
 [Grass weight]
 Pes de l'herba
 [Gray]
@@ -1237,9 +1237,9 @@ Mitjana - Experimental
 [No AI orders]
 Sense ordres d'IA
 [Old islands]
-Arxipèlag Abrupte
+Arxipèlag abrupte
 [Old random]
-Costa Fragmentada
+Costa fragmentada
 [Open at least one colony to start a match.]
 Obre almenys una colònia per iniciar una partida.
 [Open book]
@@ -1253,7 +1253,7 @@ Jugadors i equips
 [Premade maps]
 Mapes predissenyats
 [Preview ready. Start plays this exact map.]
-Vista prèvia a punt. Per començar el joc s'utilitza aquest mapa exacte.
+Vista prèvia a punt. En començar, es juga exactament aquest mapa.
 [Regenerate all]
 Regenera-ho tot
 [Generating preview...]
@@ -1271,17 +1271,17 @@ Mapa aleatori
 [Red]
 Vermell
 [Repeat landscape]
-Repetir paisatge
+Repeteix el paisatge
 [Resources]
 Recursos
 [River]
-riu
+Riu
 [River width]
 Amplària del riu
 [Sand weight]
-Pes de sorra
+Pes de la sorra
 [Select a valid map.]
-Seleccioneu un mapa vàlid.
+Selecciona un mapa vàlid.
 [Shared control needs a free controller slot (maximum %0).]
 El control compartit necessita una plaça lliure per a un jugador humà o IA (màxim %0).
 [Smoothing]
@@ -1289,13 +1289,13 @@ Suavitzat
 [Standard]
 Estàndard
 [Start game]
-Comença el joc
+Comença la partida
 [Starting workers]
 Treballadors inicials
 [Starting workers: Game Rules tab.]
 Treballadors inicials: pestanya Regles del joc.
 [Swamp]
-pantà
+Pantà
 [Team]
 Equip
 [Terrain]
@@ -1303,7 +1303,7 @@ Terreny
 [Victory]
 Victòria
 [Watch game]
-Veure el joc
+Mira la partida
 [Water weight]
 Pes de l'aigua
 [White]
@@ -1331,7 +1331,7 @@ Inactiu
 [Changes the pace of the whole simulation.]
 Canvia el ritme de tota la simulació.
 [Choose whether teams can change during the match.]
-Trieu si els equips poden canviar durant la partida.
+Tria si els equips poden canviar durant la partida.
 [Classic colony building]
 Desenvolupament tradicional de colònies
 [Dimensions and colony count are set above.]
@@ -1347,7 +1347,7 @@ No hi ha cap mapa en aquesta biblioteca.
 [Premade maps retain their authored starting units.]
 Els mapes predissenyats conserven les unitats inicials triades pel seu autor.
 [Start with terrain known]
-Comenceu amb el terreny conegut
+Comença amb el terreny conegut
 [This colony will not join the match.]
 Aquesta colònia no s'unirà a la partida.
 [This landscape uses a fixed terrain recipe.]
@@ -1355,13 +1355,13 @@ Aquest paisatge utilitza una composició fixa del terreny.
 [This landscape uses fixed resource placement.]
 Aquest paisatge utilitza la col·locació fixa de recursos.
 [Win through conquest]
-Guanyar a través de la conquesta
+Victòria per conquesta
 [You control this colony.]
-Tu controles aquesta colònia.
+Controles aquesta colònia.
 [controllers]
 jugadors humans i IA
 [Use]
-Seleccioneu
+Usa
 [Lime]
 Verd llima
 [Teal]
@@ -1371,7 +1371,7 @@ Blau cel
 [Updating map preview...]
 S'està actualitzant la vista prèvia del mapa...
 [Generation failed. Adjust settings or press Start to retry.]
-La generació ha fallat. Ajusteu la configuració o premeu Inicia per tornar-ho a provar.
+La generació ha fallat. Ajusta la configuració o prem Comença per tornar-ho a provar.
 [Preview unavailable. Adjust settings or start to retry.]
 Vista prèvia no disponible. Canvia la configuració o inicia el joc per tornar-ho a provar.
 [automatic torus view]
@@ -1383,17 +1383,17 @@ Alterna entre vista 2D i toroidal
 [Alliance]
 Aliança
 [Choose a rule to change it.]
-Trieu una regla per canviar-la.
+Tria una regla per canviar-la.
 [Conquest only removes prestige victory; map scripts still apply.]
 La victòria només de conquesta inhabilita la victòria de prestigi; els scripts de mapes encara s'apliquen.
 [Control]
-Control de colònies
+Control
 [Controller]
 Controlat per
 [Generate preview]
 Genera una vista prèvia
 [Generation failed. Adjust settings or try again.]
-La generació ha fallat. Ajusteu la configuració o torneu-ho a provar.
+La generació ha fallat. Ajusta la configuració o torna-ho a provar.
 [Map settings changed. Generate a new preview or start.]
 La configuració del mapa ha canviat. Genera una nova vista prèvia o comença.
 [Map source]
@@ -1401,9 +1401,9 @@ Font del mapa
 [Map-defined]
 Definit pel mapa
 [Match format]
-Format de joc
+Format de partida
 [No current preview]
-No hi ha previsualització actual
+No hi ha cap vista prèvia actual
 [Quick clash: 2x speed; generated maps start with 8 workers.]
 Batalla ràpida: velocitat doble; els mapes generats comencen amb 8 treballadors.
 [Reroll]
@@ -1415,13 +1415,13 @@ Restaura els valors per defecte
 [Ruleset]
 Conjunt de regles
 [Select a map from the library.]
-Seleccioneu un mapa de la biblioteca.
+Selecciona un mapa de la biblioteca.
 [Starting workers affects generated maps only.]
 El nombre inicial de treballadors s'aplica només als mapes generats.
 [Unavailable]
 No disponible
 [Use selection]
-Utilitzeu la selecció
+Usa la selecció
 [Quick clash on premade maps: only speed changes (2x).]
 Batalla ràpida en mapes predissenyats: només canvia la velocitat (velocitat doble).
 [Generate a preview to explore this world.]
@@ -1435,9 +1435,9 @@ Afegeix una tecla a la seqüència
 [settings Add shortcut]
 Afegeix una drecera
 [settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
-Utilitzeu la roda del ratolí per canviar el nombre d'unitats assignades. Si aquesta opció està desactivada, manteniu premuda la tecla Ctrl per utilitzar la roda. Manteniu premuda la tecla Maj per ajustar el radi de la bandera. Aquesta opció també controla l'entrada amb la roda del ratolí en altres menús.
+Ajusta les unitats assignades amb la roda. Si està desactivat, mantén premut Ctrl. Maj ajusta el radi de la bandera. També controla la roda en altres menús.
 [settings Adjust music and voice volume.]
-Ajusteu el volum de la música i la veu.
+Ajusta el volum de la música i la veu.
 [settings Adjust the pace of play.]
 Ajusta la velocitat del joc.
 [settings Advanced binding]
@@ -1457,27 +1457,27 @@ Cancel·la
 [settings Changes saved automatically]
 Els canvis es desen automàticament
 [settings Changes you make during play update these defaults for future games.]
-Els canvis que feu durant una partida actualitzen aquests valors per defecte per a les partides futures.
+Els canvis que fas durant una partida actualitzen aquests valors per defecte per a les partides futures.
 [settings Changing the renderer requires a restart.]
 Canviar el renderitzador requereix un reinici.
 [settings Choose a binding to change it, or add another shortcut for an action.]
-Seleccioneu una drecera de teclat per editar-la o afegiu una altra drecera per a una acció.
+Tria una drecera per canviar-la, o afegeix-ne una altra per a una acció.
 [settings Choose a window or fill the screen.]
-Trieu entre el mode finestra i la pantalla completa.
+Tria entre finestra i pantalla completa.
 [settings Choose how the game looks on your screen.]
-Trieu com es veu el joc a la pantalla.
+Tria com es veu el joc a la pantalla.
 [settings Completed]
-Edificis acabats
+Acabats
 [settings Construction]
 Construcció
 [settings Controls]
-Controls del joc
+Controls
 [settings Could not change display mode. The previous mode was restored.]
 No s'ha pogut canviar el mode de visualització. S'ha restaurat el mode anterior.
 [settings Could not save]
 No s'ha pogut desar
 [settings Current display]
-Configuració de pantalla actual
+Pantalla actual
 [settings Default]
 Per defecte
 [settings Display]
@@ -1489,13 +1489,13 @@ Mostra el cursor Globulation 2.
 [settings Done]
 Fet
 [settings Edit shortcut]
-Edita la drecera del teclat
+Edita la drecera
 [settings Multiply the operating system display scale for menus, text and the sidebar.]
-Multiplica l’escala de pantalla del sistema operatiu per als menús, el text i la barra lateral.
+Multiplica l'escala de pantalla del sistema operatiu per als menús, el text i la barra lateral.
 [settings Flags]
 Banderes
 [settings Full]
-Tots els detalls
+Complet
 [settings Fullscreen]
 Pantalla completa
 [settings Game]
@@ -1509,9 +1509,9 @@ Detall gràfic
 [settings Interface scale]
 Escala de la interfície
 [settings Keep]
-Mantén els canvis
+Mantén
 [settings Keep this display mode?]
-Voleu mantenir aquest mode de visualització?
+Vols mantenir aquest mode de pantalla?
 [settings Keep your volume levels while silencing audio.]
 Silencia tot el so sense canviar els nivells de volum desats.
 [settings Key]
@@ -1519,7 +1519,7 @@ Tecla
 [settings Keyboard shortcuts]
 Dreceres de teclat
 [settings Keys form a sequence in order. Each key can trigger on press or release.]
-Les tecles formen una seqüència ordenada. Cada tecla pot activar l’acció en prémer-la o deixar-la anar.
+Les tecles formen una seqüència ordenada. Cada tecla pot activar l'acció en prémer-la o deixar-la anar.
 [settings Language]
 Llengua
 [settings Language & player]
@@ -1535,7 +1535,7 @@ Segueix l'escriptori
 [settings Missing font]
 Falta el tipus de lletra
 [settings Music volume]
-Volum (música)
+Volum de la música
 [settings Mute audio]
 Silencia l'àudio
 [settings Name shown to other players.]
@@ -1551,11 +1551,11 @@ Nom del jugador
 [settings Press]
 En prémer
 [settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
-Premeu una tecla. Esc cancel·la la captura. Per assignar Esc, seleccioneu "Assigna la tecla Esc".
+Prem una tecla. Esc cancel·la la captura. Usa «Assigna la tecla Esc» per assignar Esc.
 [settings Radius]
 Radi
 [settings Reduced]
-Detall reduït
+Reduït
 [settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
 El detall reduït desactiva els núvols i les seves ombres, simplifica els efectes màgics i redueix la transparència.
 [settings Release]
@@ -1567,23 +1567,23 @@ Elimina la tecla
 [settings Remove shortcut]
 Suprimeix la drecera
 [settings Renderer]
-Motor de renderització
+Renderitzador
 [settings Replace conflicting bindings]
-Substitueix les dreceres de teclat conflictives
+Substitueix les dreceres en conflicte
 [settings Replace shortcuts in this context with the defaults? This saves immediately.]
-Voleu substituir les dreceres d’aquest context per les predeterminades? Els canvis es desen immediatament.
+Vols substituir les dreceres d'aquest context per les predeterminades? Es desa immediatament.
 [settings Resolution]
-Resolució de pantalla
+Resolució
 [settings Restore default shortcuts]
 Restaura les dreceres per defecte
 [settings Retry]
 Torna-ho a provar
 [settings Revert]
-Reverteix els canvis
+Reverteix
 [settings Reverting in]
 Es revertirà en
 [settings Save shortcut]
-Desa la drecera del teclat
+Desa la drecera
 [settings Saved — restart required]
 Desat — cal reiniciar
 [settings Saving…]
@@ -1591,29 +1591,29 @@ S'està desant…
 [settings Scroll wheel enabled]
 Roda del ratolí activada
 [settings Set starting unit assignments by building type and level.]
-Establiu el nombre inicial d’unitats assignades per tipus i nivell d’edifici.
+Defineix les unitats assignades inicials per tipus i nivell d'edifici.
 [settings Set your language and player name.]
-Configureu la llengua i el nom del jugador.
+Configura la llengua i el nom del jugador.
 [settings Settings]
 Opcions
 [settings Single-player and replays only. Multiplayer runs at 1x.]
 Només per a un jugador i repeticions. Les partides multijugador van a 1x.
 [settings Software]
-Renderització per programari
+Programari
 [settings Starting unit counts and radius for newly placed flags.]
-Nombre inicial d’unitats i radi de les noves banderes.
+Nombre inicial d'unitats i radi de les noves banderes.
 [settings This shortcut conflicts with existing bindings:]
 Aquesta drecera de teclat entra en conflicte amb les dreceres existents:
 [settings Trigger]
-Esdeveniment d'activació
+Activació
 [settings Unbound]
-No s'ha assignat cap drecera
+Sense assignar
 [settings Unit counts assigned to new construction sites.]
-Nombre d’unitats assignades a les noves obres.
+Nombre d'unitats assignades a les noves obres.
 [settings Unit counts for completed buildings.]
-Nombre d’unitats per als edificis acabats.
+Nombre d'unitats per als edificis acabats.
 [settings Unit counts while a building is being upgraded.]
-Nombre d’unitats durant la millora d’un edifici.
+Nombre d'unitats durant la millora d'un edifici.
 [settings Units]
 Unitats
 [settings Upgrades]
@@ -1625,23 +1625,23 @@ Volum de la veu
 [settings Window mode]
 Mode finestra
 [settings Window-only sizes also switch the game to windowed mode.]
-Si seleccioneu una resolució que només admeti el mode de finestres, també canviarà el joc al mode de finestres.
+Les mides només per a finestra també posen el joc en mode finestra.
 [settings Windowed]
 En finestra
 [settings Windowed only]
-Només amb finestra
+Només en finestra
 [settings seconds]
 segons
 [settings Flag]
 Bandera
 [settings High-resolution artwork]
-Gràfics d’alta resolució
+Gràfics d'alta resolució
 [settings Apply artwork on the next game or editor load (OpenGL).]
-Aplica els gràfics quan es carregui la propera partida o l’editor de mapes (OpenGL).
+Aplica els gràfics quan es carregui la propera partida o l'editor de mapes (OpenGL).
 [settings Automatic torus view]
 Vista toroidal automàtica
 [settings Automatically show the torus overview while moving around the map (OpenGL).]
-Mostra automàticament la vista general toroidal mentre us desplaceu pel mapa (OpenGL).
+Mostra automàticament la vista general toroidal mentre et desplaces pel mapa (OpenGL).
 [settings Autosave]
 Desament automàtic
 [settings Save the game automatically about every 10 seconds.]
@@ -1667,11 +1667,11 @@ Amplada dels radis
 [Loopiness]
 Densitat de bucles
 [The maze needs at least two cells across and down; use a bigger map or smaller cells.]
-El laberint necessita almenys dues cel·les d'amplada i d'alçada; feu servir un mapa més gran o cel·les més petites.
+El laberint necessita almenys dues cel·les d'amplada i d'alçada; fes servir un mapa més gran o cel·les més petites.
 [Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
-Uns canals tan amples deixen massa poca herba a cada cel·la; feu servir canals més estrets o cel·les més grans.
+Uns canals tan amples deixen massa poca herba a cada cel·la; fes servir canals més estrets o cel·les més grans.
 [The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
-El laberint té massa pocs atzucacs per a tantes colònies; feu servir un mapa més gran o cel·les més petites.
+El laberint té massa pocs atzucacs per a tantes colònies; fes servir un mapa més gran o cel·les més petites.
 [Home island size]
 Mida de l'illa inicial
 [Commons size]
@@ -1699,7 +1699,7 @@ Aridesa
 [Fords]
 Guals
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
-La conca té massa poca plana al·luvial per a tantes colònies; feu servir un mapa més gran o menys colònies.
+La conca té massa poca plana al·luvial per a tantes colònies; fes servir un mapa més gran o menys colònies.
 [Stone highlands]
 Terres altes de pedra
 [Valley size]
@@ -1709,9 +1709,9 @@ Amplada del pas
 [Pond size]
 Mida de la bassa
 [These valleys are too big for the map; use a bigger map or smaller valleys.]
-Aquestes valls són massa grans per al mapa; feu servir un mapa més gran o valls més petites.
+Aquestes valls són massa grans per al mapa; fes servir un mapa més gran o valls més petites.
 [The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
-Les terres altes tenen massa poc espai per a tantes colònies; feu servir un mapa més gran o menys colònies.
+Les terres altes tenen massa poc espai per a tantes colònies; fes servir un mapa més gran o menys colònies.
 [Symmetric arena]
 Arena simètrica
 [Centre size]
@@ -1729,17 +1729,17 @@ L'arena simètrica necessita 2, 4 o 8 colònies.
 [Eight colonies need a square map in the symmetric arena.]
 Vuit colònies necessiten un mapa quadrat a l'arena simètrica.
 [The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
-El centre és massa petit per a un fruiterar en aquest mapa; feu servir un centre més gran o un mapa més gran.
+El centre és massa petit per a un fruiterar en aquest mapa; fes servir un centre més gran o un mapa més gran.
 [The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
-L'arena deixa massa poc espai per a cada colònia; feu servir un mapa més gran, un centre més petit o un fossat més estret.
+L'arena deixa massa poc espai per a cada colònia; fes servir un mapa més gran, un centre més petit o un fossat més estret.
 [The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
-Les calçades són massa a prop entre elles; feu servir menys calçades o més estretes, o un centre més gran.
+Les calçades són massa a prop entre elles; fes servir menys calçades o més estretes, o un centre més gran.
 [Ring world]
 Món anell
 [Belt width]
 Amplada del cinturó
 [The belt is too short for this many colonies; use a longer map or fewer colonies.]
-El cinturó és massa curt per a tantes colònies; feu servir un mapa més llarg o menys colònies.
+El cinturó és massa curt per a tantes colònies; fes servir un mapa més llarg o menys colònies.
 [City states]
 Ciutats estat
 [Strait width]
@@ -1767,11 +1767,11 @@ Mida de la clariana
 [Levee]
 Dic
 [Sloughs]
-Aiguamolls
+Braços morts
 [Everglades need at least one colony.]
 Els aiguamolls necessiten almenys una colònia.
 [Too many colonies for this map; use a bigger map or fewer colonies.]
-Massa colònies per a aquest mapa; useu un mapa més gran o menys colònies.
+Massa colònies per a aquest mapa; fes servir un mapa més gran o menys colònies.
 [Coral]
 Corall
 [Fork angle]
@@ -1781,7 +1781,7 @@ Inclinació
 [Home size]
 Mida de la base
 [The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
-El corall no cap en aquest mapa; utilitzeu un mapa més gran, estrets més estrets o menys colònies.
+El corall no cap en aquest mapa; utilitza un mapa més gran, estrets més estrets o menys colònies.
 [Branching]
 Ramificació
 [Branch width]
@@ -1833,15 +1833,15 @@ Camins de sorra entre els conreus
 [Carousels need at least two colonies.]
 El carrusel necessita almenys dues colònies.
 [Switchbacks need at least two colonies.]
-Els ziga-zagues necessiten almenys dues colònies.
+Les ziga-zagues necessiten almenys dues colònies.
 [An amphitheatre needs at least two colonies.]
 L'amfiteatre necessita almenys dues colònies.
 [The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
-El carrusel no cap en aquest mapa; useu un mapa més gran, bases més petites o menys colònies.
+El carrusel no cap en aquest mapa; usa un mapa més gran, bases més petites o menys colònies.
 [The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
-Els ziga-zagues no caben en aquest mapa; useu un mapa més gran, un altiplà més petit, camins més estrets o menys colònies.
+Les ziga-zagues no caben en aquest mapa; fes servir un mapa més gran, un altiplà més petit, camins més estrets o menys colònies.
 [The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
-L'amfiteatre no cap en aquest mapa; useu un mapa més gran, menys anells, graderies més estretes o menys colònies.
+L'amfiteatre no cap en aquest mapa; usa un mapa més gran, menys anells, graderies més estretes o menys colònies.
 [Spider web]
 Teranyina
 [Spokes per colony]
@@ -2027,7 +2027,7 @@ Forma de les illes de cases
 [Random parameters]
 Paràmetres aleatoris
 [Randomize parameters]
-Aleatoritzar paràmetres
+Aleatoritza els paràmetres
 [Start quality]
 Qualitat de l'inici
 [Fairness]
@@ -2055,7 +2055,7 @@ Arrossega per desplaçar; roda per ampliar.
 [Map preview loading]
 S'està carregant...
 [Map preview failed]
-Ha fallat la previsualització
+Ha fallat la vista prèvia
 [Map preview retry]
 Fes clic per tornar-ho a provar
 [Map preview please wait]
@@ -2077,7 +2077,7 @@ Edificis nous
 [Stats upgrades]
 Millores
 [Stats training]
-Visites d’entrenament
+Visites d'entrenament
 [Stats damage dealt]
 Dany causat
 [Stats damage received]
@@ -2085,7 +2085,7 @@ Dany rebut
 [Stats HP restored]
 Vida recuperada
 [Stats since tick]
-Des del pas
+Des del cicle
 [Stats combat deaths]
 Combat
 [Stats clearing deaths]
@@ -2179,29 +2179,29 @@ Desactivat (sense temporitzador)
 [Stats page three]
 Estadístiques 3/3 >
 [Stats blocked units]
-Unitats S/C
+Unitats bloquejades S/C
 [Stats blocked buildings]
-Edificis S/C
+Edificis bloquejats S/C
 [Stats blocked buildings swim]
-Nedar S/C
+Sortides nedant S/C
 [Stats current blocked units]
-Unitats C
+Unitats bloquejades ara
 [Stats current blocked buildings]
-Edificis C
+Edificis bloquejats ara
 [Stats growth global]
-Recursos +
+Creixement afegit
 [Stats growth new tiles]
-Recursos +#
+Caselles noves de recursos
 [Stats growth reductions]
-Recursos -
+Reduccions naturals
 [Stats growth per minute]
-Blat +/min
+Creixement de blat/min
 [Stats growth near 8]
-Recursos + <=8
+Creixement a 8 caselles
 [Stats growth near 16]
-Recursos + <=16
+Creixement a 16 caselles
 [Stats growth near 32]
-Recursos + <=32
+Creixement a 32 caselles
 [Stats low HP 25]
 Vida <=25%
 [Stats low HP 50]
@@ -2215,13 +2215,13 @@ Menjar <=50%
 [Stats low food 75]
 Menjar <=75%
 [Stats structural units]
-Unitats S
+Unitats bloquejades (estruct.)
 [Stats structural buildings]
-Edificis S
+Edificis bloquejats (estruct.)
 [Stats low HP ranges]
-Vida: <=25/50/75%
+Vida ≤25/50/75%
 [Stats low food ranges]
-Menjar: <=25/50/75%
+Menjar ≤25/50/75%
 [Emoji]
 Emoji
 [Emoji character]
@@ -2231,7 +2231,7 @@ Cara somrient
 [Sad face]
 Cara trista
 [Winking face]
-Picada d’ullet
+Picada d'ullet
 [Surprised face]
 Cara sorpresa
 [Heart eyes]
@@ -2273,13 +2273,13 @@ Bafarada
 [Shield]
 Escut
 [Emoji style]
-Estil de l’emoji
+Estil de l'emoji
 [Outline]
 Contorn
 [Filled]
 Ple
 [Emoji terrain]
-Terreny de l’emoji
+Terreny de l'emoji
 [Regular]
 Normal
 [Inverse]
@@ -2359,7 +2359,7 @@ Mida de l'oasi natal
 [Caravanserais per colony]
 Caravanserralls per colònia
 [Desert]
-Paisatge desèrtic
+Desert
 [Open erg]
 Erg obert
 [Dunes and mesas]
@@ -2367,13 +2367,13 @@ Dunes i meses
 [Canyon country]
 Terra de canyons
 [A fort cannot reach its ford; use a bigger map or fewer colonies.]
-Un fort no pot arribar al seu gual; feu servir un mapa més gran o menys colònies.
+Un fort no pot arribar al seu gual; fes servir un mapa més gran o menys colònies.
 [A wall would stand on a beach; try another seed.]
-Un mur quedaria sobre una platja; proveu una altra llavor.
+Un mur quedaria sobre una platja; prova una altra llavor.
 [The fort is too small for its gardens; raise Fort size.]
-El fort és massa petit per als seus horts; augmenteu la mida del fort.
+El fort és massa petit per als seus horts; augmenta la mida del fort.
 [The home oasis is too small; raise Home oasis size.]
-L'oasi natal és massa petit; augmenteu la mida de l'oasi natal.
+L'oasi natal és massa petit; augmenta la mida de l'oasi natal.
 [Braided river]
 Riu trenat
 [Braid width]
@@ -2385,9 +2385,9 @@ Guals extra
 [Moraine hummocks]
 Monticles de morrena
 [The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
-La trena deixa massa poca terrassa per a les bases; useu un mapa més gran o una trena més estreta.
+La trena deixa massa poca terrassa per a les bases; usa un mapa més gran o una trena més estreta.
 [The map is too narrow across for a braid; use a bigger map.]
-El mapa és massa estret per a una trena; useu un mapa més gran.
+El mapa és massa estret per a una trena; usa un mapa més gran.
 [Drumlin field]
 Camp de drumlins
 [Drumlin spacing]
@@ -2399,7 +2399,7 @@ Franja d'aigua
 [Esker loops]
 Bucles d'eskers
 [The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
-Els eskers no han pogut unir tots els drumlins; useu una franja d'aigua més estreta o un mapa més gran.
+Els eskers no han pogut unir tots els drumlins; usa una franja d'aigua més estreta o un mapa més gran.
 [Continents]
 Continents
 [Continent]
@@ -2435,7 +2435,7 @@ L'atles del món no té aquest continent.
 [The map is too small to hold a continent.]
 El mapa és massa petit per contenir un continent.
 [This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
-Aquest continent no té espai per a tantes colònies amb aquesta mida de mapa; feu servir un mapa més gran o menys colònies.
+Aquest continent no té espai per a tantes colònies amb aquesta mida de mapa; fes servir un mapa més gran o menys colònies.
 [Savannah]
 Sabana
 [Watering holes]
@@ -2449,7 +2449,7 @@ Normal
 [Many]
 Molts
 [Rice terraces]
-Terrasses d’arròs
+Terrasses d'arròs
 [Unoccupied hills]
 Turons desocupats
 [Hill radius]
@@ -2483,7 +2483,7 @@ Illes per colònia
 [Outpost inns]
 Despenses d'avançada
 [The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
-Les illes són massa petites per als seus solars; useu un mapa més gran, un solar més petit o menys colònies.
+Les illes són massa petites per als seus solars; usa un mapa més gran, un solar més petit o menys colònies.
 [Sierpiński Gardens]
 Jardins de Sierpiński
 [Hilbert River]
@@ -2543,7 +2543,7 @@ Tres portes
 [Four gates]
 Quatre portes
 [The rivers found no way between the homes; use a bigger map or fewer colonies.]
-Els rius no han trobat camí entre les bases; feu servir un mapa més gran o menys colònies.
+Els rius no han trobat camí entre les bases; fes servir un mapa més gran o menys colònies.
 [River meander]
 Meandres del riu
 [Flooded terraces]
@@ -2571,7 +2571,7 @@ Ventall llarg
 [Twin springs]
 Fonts bessones
 [The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
-Els ventalls al·luvials són massa estrets per a les bases; feu servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.
+Els ventalls al·luvials són massa estrets per a les bases; fes servir un mapa més gran, una separació més gran de les serralades, carenes més estretes o llacunes salades més petites.
 [Central Quarry]
 Pedrera central
 [Quarry size]
@@ -2583,13 +2583,13 @@ Bosc
 [Central Quarry needs at least two colonies.]
 Pedrera central necessita almenys dues colònies.
 [The lake does not fit this map; use a smaller lake or a bigger map.]
-El llac no cap en aquest mapa; utilitzeu un llac més petit o un mapa més gran.
+El llac no cap en aquest mapa; utilitza un llac més petit o un mapa més gran.
 [A sand bar did not reach the island.]
 Un banc de sorra no ha arribat a l'illa.
 [This map has no room for that many colonies; use a bigger map or fewer colonies.]
-Aquest mapa no té espai per a tantes colònies; utilitzeu un mapa més gran o menys colònies.
+Aquest mapa no té espai per a tantes colònies; utilitza un mapa més gran o menys colònies.
 [The island has no room for its quarry; use a bigger island.]
-L'illa no té espai per a la seva pedrera; utilitzeu una illa més gran.
+L'illa no té espai per a la seva pedrera; utilitza una illa més gran.
 [Hidden Oasis]
 Oasi amagat
 [Pond algae]
@@ -2607,9 +2607,9 @@ Oasi amagat necessita almenys dues colònies.
 [Hidden Oasis holds at most eight colonies.]
 Oasi amagat admet com a màxim vuit colònies.
 [The massif does not fit this map; use a bigger map or fewer colonies.]
-El massís no cap en aquest mapa; utilitzeu un mapa més gran o menys colònies.
+El massís no cap en aquest mapa; utilitza un mapa més gran o menys colònies.
 [The pond has no room for that much algae; use a bigger pond.]
-La bassa no té prou espai per a tantes algues; utilitzeu una bassa més gran.
+La bassa no té prou espai per a tantes algues; utilitza una bassa més gran.
 [Even Ground]
 Terreny igualat
 [Balance]
@@ -2623,9 +2623,9 @@ Breu
 [Patient]
 Pacient
 [This map is too small to solve on; use a bigger map.]
-Aquest mapa és massa petit per resoldre'l; utilitzeu un mapa més gran.
+Aquest mapa és massa petit per resoldre'l; utilitza un mapa més gran.
 [Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
-Massa colònies per equilibrar en un mapa d'aquesta mida; utilitzeu un mapa més gran o menys colònies.
+Massa colònies per equilibrar en un mapa d'aquesta mida; utilitza un mapa més gran o menys colònies.
 [The colonies could not be spread out on this map.]
 No s'han pogut repartir les colònies en aquest mapa.
 [Marchland]
@@ -2637,35 +2637,35 @@ Amplada de la terra de ningú
 [Levelling]
 Anivellament
 [A march needs a country on each side; use at least two colonies.]
-Una terra de ningú necessita un país a cada costat; utilitzeu almenys dues colònies.
+Una terra de ningú necessita un país a cada costat; utilitza almenys dues colònies.
 [Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
-Massa colònies perquè aquest mapa doni a cadascuna una terra natal; utilitzeu un mapa més gran o menys colònies.
+Massa colònies perquè aquest mapa doni a cadascuna una terra natal; utilitza un mapa més gran o menys colònies.
 [This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
-Aquest mapa no té espai per repartir les colònies; utilitzeu un mapa més gran o menys colònies.
+Aquest mapa no té espai per repartir les colònies; utilitza un mapa més gran o menys colònies.
 [A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
-La terra natal d'una colònia no té sortida a la terra de ningú; utilitzeu un mapa més gran o una terra de ningú més estreta.
+La terra natal d'una colònia no té sortida a la terra de ningú; utilitza un mapa més gran o una terra de ningú més estreta.
 [A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
-La terra natal d'una colònia no té espai per a una granja; utilitzeu un mapa més gran, menys colònies o una terra de ningú més estreta.
+La terra natal d'una colònia no té espai per a una granja; utilitza un mapa més gran, menys colònies o una terra de ningú més estreta.
 [The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
-La terra de ningú té massa poc terreny disputat per a tants premis; utilitzeu menys premis, una terra de ningú més ampla o un mapa més gran.
+La terra de ningú té massa poc terreny disputat per a tants premis; utilitza menys premis, una terra de ningú més ampla o un mapa més gran.
 [The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
-La terra de ningú no té espai per a un premi; utilitzeu un mapa més gran, menys colònies o una terra de ningú més ampla.
+La terra de ningú no té espai per a un premi; utilitza un mapa més gran, menys colònies o una terra de ningú més ampla.
 [Orchard Commons]
 Vergers comunals
 [Orchard spacing]
 Separació dels vergers
 [Compact]
-Propers
+Compacta
 [Balanced]
 Equilibrada
 [Spread]
-Separats
+Àmplia
 [The Gauntlet]
 Arena de proves
 [Partition thickness]
 Gruix de les parets divisòries
 [The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
-L’Arena de proves necessita un mapa més gran o menys colònies per encabir dues entrades defensades per colònia.
+L'Arena de proves necessita un mapa més gran o menys colònies per encabir dues entrades defensades per colònia.
 [The Comb]
 La Pinta
 [Peninsulas per shore]
@@ -2701,11 +2701,11 @@ La ciutat té massa pocs encreuaments utilitzables.
 [A city neighbourhood lacks reachable crops or building room.]
 Un barri de la ciutat no té conreus accessibles o espai per construir.
 [The city neighbourhoods are too unequal; try another seed.]
-Els barris de la ciutat són massa desiguals; proveu una altra llavor.
+Els barris de la ciutat són massa desiguals; prova una altra llavor.
 [The fractured civic plaza did not survive.]
 La plaça pública fracturada no ha sobreviscut.
 [Who Ate the Map?]
-Qui s’ha menjat el mapa?
+Qui s'ha menjat el mapa?
 [Appetite]
 Gana
 [A Little Nibble]
@@ -2721,7 +2721,7 @@ Gruix del pas boscós
 [Extra trails]
 Corriols addicionals
 [Portage Lakes needs sides between 64 and 512 tiles.]
-Els costats d’aquest mapa han de fer entre 64 i 512 caselles.
+Els costats d'aquest mapa han de fer entre 64 i 512 caselles.
 [Portage Lakes cannot fit shoreline settlements on this seed.]
 Aquesta llavor no permet situar colònies a les ribes.
 [Portage Lakes cannot fit renewable shore fields beside every settlement.]
@@ -2739,7 +2739,7 @@ Bosc inundat
 [Sandbar connections]
 Connexions de sorra
 [Wooded neck thickness]
-Gruix de les barreres d’arbres
+Gruix de les barreres d'arbres
 [Neutral clearing size]
 Mida de les clarianes neutrals
 [Bastion Keys]
@@ -2755,7 +2755,7 @@ Ració inicial
 [Central concentration]
 Concentració central
 [The Last Treeline]
-L’última franja de bosc
+L'última franja de bosc
 [Woodland depth]
 Amplada dels bosquets
 [Fertility]
@@ -2769,7 +2769,7 @@ Aïllament
 [Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
 L'inici de cada colònia es mesura sobre el mapa acabat: el camí fins al blat i fins a la fusta, com de bé rebrota el seu terreny, els dipòsits i els llocs de construcció a l'abast, i la distància als rivals. Cada factor puntua de 0 a 1 respecte a un llindar fix, el total els pondera, l'equitat és el total de la pitjor colònia dividit pel de la millor, i la puntuació és el pitjor total multiplicat per l'equitat.
 [ERROR_CANT_SAVE_MAP]
-No s'ha pogut desar el mapa. Comproveu la destinació i l'espai disponible. Les vostres edicions encara estan obertes.
+No s'ha pogut desar el mapa. Comprova la destinació i l'espai disponible. Les teves edicions encara estan obertes.
 [Loading headers]
 Carregant capçaleres...
 [Loading teams]
@@ -2785,21 +2785,21 @@ Carregant scripts...
 [Generating map]
 Generant el mapa...
 [ERROR_CANT_GENERATE_MAP]
-No s'ha pogut generar el mapa. Proveu altres paràmetres de generació.
+No s'ha pogut generar el mapa. Prova altres paràmetres de generació.
 [Loading units]
 Carregant unitats...
 [Loading buildings]
-Carregant construccions...
+Carregant edificis...
 [Resolving team links]
 Resolent enllaços d'equip...
 [saving to storage]
 Desant...
 [save failed retry]
-Ha fallat el desat. Torneu-ho a provar.
+Ha fallat el desament. Torna-ho a provar.
 [export save]
 Exporta la partida desada
 [storage restore failed]
-No s'ha pogut restaurar l'emmagatzematge del navegador. Les dades desades existents no s'han modificat. Podeu continuar aquesta sessió, però els canvis locals no es podran conservar. Exporteu les partides importants des del diàleg d'error de desat. Torneu a carregar per reintentar la restauració de l'emmagatzematge.
+No s'ha pogut restaurar l'emmagatzematge del navegador. Les dades desades existents no s'han modificat. Pots continuar aquesta sessió, però els canvis locals no es podran conservar. Exporta les partides importants des del diàleg d'error de desament. Torna a carregar la pàgina per reintentar la restauració.
 [continue]
 Continua
 [export file]
@@ -2809,7 +2809,7 @@ Ha fallat l'exportació del fitxer
 [import file]
 Importa
 [select import file]
-Trieu un fitxer per importar
+Tria un fitxer per importar
 [validating import]
 Validant el fitxer...
 [import succeeded]
@@ -2819,15 +2819,15 @@ Importació cancel·lada
 [import failed]
 Ha fallat la importació: fitxer no vàlid o no compatible
 [import persistence failed]
-No desat: trieu Importa per reintentar-ho, o Exporta el fitxer
+No desat: tria Importa per reintentar-ho, o Exporta el fitxer
 [import progress]
 Progrés de la importació
 [export progress]
 Progrés de l'exportació
 [retry save]
-Reintenta el desat
+Reintenta el desament
 [campaign save failed]
-El progrés de la campanya no s'ha desat. Torneu-ho a provar o exporteu una còpia de seguretat.
+El progrés de la campanya no s'ha desat. Torna-ho a provar o exporta una còpia de seguretat.
 [leave without saving]
 Surt sense desar
 [campaign import failed]
@@ -2835,15 +2835,15 @@ Fitxer de progrés no vàlid o versió de campanya diferent
 [settings continue]
 Continua
 [settings save failed]
-Desat dels ajustos no confirmat. Torneu-ho a provar, o continueu.
+No s'ha confirmat el desament de les opcions. Torna-ho a provar, o continua.
 [shutdown save failed]
-Desat final no confirmat. Torneu-ho a provar, o sortiu sense desar.
+No s'ha confirmat el desament final. Torna-ho a provar, o surt sense desar.
 [quit without saving]
 Surt sense desar
 [game closed]
-Partida tancada. Podeu tancar aquesta finestra o tornar a carregar per jugar de nou.
+Partida tancada. Pots tancar aquesta finestra o tornar a carregar per jugar de nou.
 [campaign editor save failed]
-Desat no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.
+Desament no confirmat. D'acord ho reintenta; Cancel·la torna al menú de l'editor.
 [Actions]
 Accions
 [Minimap]
@@ -2855,9 +2855,9 @@ Amaga el teclat
 [Player slot]
 Plaça de jugador
 [Team color]
-Color de l’equip
+Color de l'equip
 [Alliance group]
-Grup d’aliança
+Grup d'aliança
 [menu]
 Menú
 [Editor tools]
@@ -2887,7 +2887,7 @@ Fes servir aquest paisatge
 [Reset]
 Restableix
 [Generating...]
-S’està generant...
+S'està generant...
 [Players]
 Jugadors
 [Rules]
@@ -2897,7 +2897,7 @@ Disposició de la interfície
 [settings Automatic]
 Automàtica
 [settings Compact]
-Propers
+Compacta
 [settings Spacious]
 Espaiosa
 [More]
@@ -2907,7 +2907,7 @@ Cap element
 [Review & Play]
 Revisa i juga
 [Edit opponents]
-Edita els adversaris
+Edita els rivals
 [Map settings]
 Opcions del mapa
 [Next]
@@ -2925,9 +2925,9 @@ Enrere
 [settings Save the game automatically about every minute.]
 Desa la partida automàticament cada minut aproximadament.
 [AI opponents]
-Adversaris d’IA
+Rivals IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
-La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d’eines i panells desplegables.
+La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d'eines i panells desplegables.
 [settings One-finger zoom]
 Zoom amb un dit
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -2981,7 +2981,7 @@ Defensa: %0
 [Food: %0 / %1]
 Menjar: %0 / %1
 [View team %0]
-Mostra l’equip %0
+Mostra l'equip %0
 [P %0/%1/%2]
 P %0/%1/%2
 [CPU load %0]
@@ -3001,7 +3001,7 @@ Pista %0
 [Objective %0]
 Objectiu %0
 [Entry %0 of 8 · empty entries are omitted]
-Entrada %0 de 8 · s’ometen les entrades buides
+Entrada %0 de 8 · s'ometen les entrades buides
 [Teams %0/%1]
 Equips %0/%1
 [Elapsed time · %0]
@@ -3009,7 +3009,7 @@ Temps transcorregut · %0
 [Read-only building]
 Edifici de només lectura
 [Alliance and shared vision are fixed for this match.]
-L’aliança i la visió compartida són fixes en aquesta partida.
+L'aliança i la visió compartida són fixes en aquesta partida.
 [Share vision]
 Comparteix visió
 [Share food vision]
@@ -3035,7 +3035,7 @@ Tanca
 [Forbidden]
 Prohibit
 [Guard]
-Vigila
+Guàrdia
 [Clear]
 Neteja
 [Farm]
@@ -3093,7 +3093,7 @@ Exporta
 [Tap to write the mission briefing]
 Toca per escriure les instruccions de la missió
 [Tap to write the map script]
-Toca per escriure l’script del mapa
+Toca per escriure l'script del mapa
 [Script]
 Script
 [Previous]
@@ -3109,13 +3109,13 @@ Instruccions de missió · toca per editar, llisca per desplaçar
 [Not enough recorded history yet.]
 Encara no hi ha prou historial registrat.
 [Select a team to show its history.]
-Selecciona un equip per mostrar-ne l’historial.
+Selecciona un equip per mostrar-ne l'historial.
 [Back to chart]
 Torna al gràfic
 [Expand chart]
 Amplia el gràfic
 [Slot]
-Lloc
+Plaça
 [Color]
 Color
 [Player / AI]
@@ -3143,11 +3143,11 @@ Mapa buit
 [Generated]
 Generat
 [Preview]
-Previsualització
+Vista prèvia
 [Selected landscape]
 Paisatge seleccionat
 [Representative preview]
-Previsualització representativa
+Vista prèvia representativa
 [Starting terrain]
 Terreny inicial
 [Hide parameters]
@@ -3175,7 +3175,7 @@ Nivell %0
 [settings Match the desktop %0]
 Segueix l'escriptori (%0)
 [settings Current display %0 %1 %2 %3]
-Configuració de pantalla actual: %0 × %1 · %2 · %3
+Pantalla actual: %0 × %1 · %2 · %3
 [Fairness: %0]
 Equitat: %0
 [Colony %0]
@@ -3187,7 +3187,7 @@ Probabilitat de guanyar: %0 · Aptitud: %1
 [Min required level %0]
 Nivell mínim requerit: %0
 [Confirm %0]
-OK: %0
+D'acord: %0
 [%0 %1]
 %0 %1
 [resume game]
@@ -3235,1415 +3235,1415 @@ Inèrcia de les llistes
 [List bounce]
 Rebot de les llistes
 [lan pairing field]
-
+Codi d'aparellament de l'amfitrió (o URL WSS de confiança)
 [lan pairing connect]
-
+Aparella i connecta
 [lan discovery instructions]
-
+Selecciona un amfitrió i enganxa el seu codi d'aparellament per verificar-ne la identitat.
 [lan discovery unavailable]
-
+La detecció LAN no està disponible. Comprova el permís de xarxa local o enganxa un codi d'aparellament de l'amfitrió.
 [lan discovered host %0]
-
+Amfitrió trobat: %0 — aparella'l per veure'n les partides
 [lan connection unavailable]
-
+No es pot accedir a l'amfitrió LAN. Comprova el permís de xarxa local i el codi d'aparellament de l'amfitrió.
 [lan connection verification failed %0]
-
+No s'ha pogut verificar l'amfitrió LAN o connectar-s'hi: %0
 [lan lobby endpoint required]
-
+Fes servir l'adreça de la sala de l'amfitrió
 [settings Artwork]
-
+Gràfics
 [settings Original]
-
+Originals
 [settings High resolution]
-
+Alta resolució
 [settings Clouds]
-
+Núvols
 [settings Show cloud cover above the map.]
-
+Mostra els núvols damunt del mapa.
 [settings Cloud shadows]
-
+Ombres dels núvols
 [settings Show cloud shadows on the ground independently of cloud cover.]
-
+Mostra les ombres dels núvols a terra, independentment dels núvols.
 [settings Building particles]
-
+Partícules dels edificis
 [settings Show smoke and other building particles.]
-
+Mostra el fum i altres partícules dels edificis.
 [settings Magic effects]
-
+Efectes màgics
 [settings Choose animated magic effects or a simple visible effect.]
-
+Tria efectes màgics animats o un efecte visible senzill.
 [settings Simple]
-
+Senzill
 [settings Requires the OpenGL renderer. Your saved choice is retained.]
-
+Requereix el renderitzador OpenGL. Es conserva l'opció desada.
 [settings Interface appearance]
-
+Aspecte de la interfície
 [settings Panels]
-
+Panells
 [settings Choose translucent or opaque interface panels.]
-
+Tria panells de la interfície translúcids o opacs.
 [settings Opaque]
-
+Opacs
 [settings Translucent]
-
+Translúcids
 [settings Advanced graphics]
-
+Gràfics avançats
 [settings Path lines]
-
+Línies de camí
 [settings Choose translucent or opaque unit path lines.]
-
+Tria línies de camí de les unitats translúcides o opaques.
 [settings Smooth progress indicators]
-
+Indicadors de progrés suaus
 [settings Smooth the moving edges of progress indicators.]
-
+Suavitza les vores mòbils dels indicadors de progrés.
 [settings Decorative interface animation]
-
+Animació decorativa de la interfície
 [settings Animate victory artwork. Reduced motion also disables this animation.]
-
+Anima la il·lustració de la victòria. El moviment reduït també desactiva aquesta animació.
 [settings Smooth unit motion]
-
+Moviment suau de les unitats
 [settings Experimental: move and animate units between game ticks.]
-
+Experimental: mou i anima les unitats entre els cicles del joc.
 [settings Smooth fog of war]
-
+Boira de guerra suau
 [settings Fade the map into and out of the fog of war gradually.]
-
+Fa entrar i sortir el mapa de la boira de guerra gradualment.
 [settings Adaptive zoom detail]
-
+Detall adaptat al zoom
 [settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
-
+Simplifica barres, zones, terreny i unitats en allunyar el mapa, i les manté petites en apropar-lo.
 [settings Text size]
-
+Mida del text
 [settings Enlarge interface text without changing the map scale.]
-
+Augmenta el text de la interfície sense canviar l'escala del mapa.
 [Map momentum]
 Inèrcia del mapa
 [turn reconnecting]
-
+S'ha perdut la connexió amb l'amfitrió. S'està reconnectant...
 [turn waiting for players]
-
+S'està esperant que tots els jugadors carreguin...
 [turn rejoining]
-
+S'està tornant a la partida...
 [turn catching up %0]
-
+Recuperant: %0 torns de retard
 [turn player reconnecting %0]
-
+%0 s'està reconnectant...
 [turn player lagging %0]
-
+%0 va amb retard
 [turn player resyncing %0]
-
+%0 s'està posant al dia
 [turn player not connected %0]
-
+%0 encara no s'ha connectat
 [lan host left]
-
+L'amfitrió ha sortit de la partida.
 [lan host lost]
-
+S'ha perdut la connexió amb l'amfitrió.
 [lan version mismatch %0]
-
+L'amfitrió fa servir una altra versió de Globulation 2 (%0).
 [lan cannot host %0]
-
+No es pot crear una partida LAN: %0
 [play online]
-
+Juga en línia
 [Use in room]
-
+Usa a la sala
 [conn ai]
-
+IA
 [conn behind %0]
-
+Retard %0
 [conn behind explanation %0 %1]
-
+Retard: quant va endarrerit el joc d'un jugador respecte al rellotge de la partida; inclou el seu decalatge. Per sota de %0 és normal; a partir de %1 el jugador es marca com a lent.
 [conn behind]
-
+Retard
 [conn card catching up]
-
+Posant-se al dia
 [conn card colony works]
-
+La teva colònia continua treballant sola: les unitats acaben les feines i els edificis segueixen funcionant.
 [conn card desync detail]
-
+Tornant a entrar des del registre de la partida perquè vegis el mateix que els altres. S'ha enviat un informe automàticament.
 [conn card desync]
-
+La teva partida s'ha dessincronitzat
 [conn card grace %0]
-
+La teva colònia continua treballant sola: les unitats acaben les feines i els edificis segueixen funcionant. Tens %0 per tornar abans que et treguin de la partida.
 [conn card input paused]
-
+T'estàs posant al dia · ordres en pausa
 [conn card lost]
-
+Connexió perduda
 [conn card progress %0 %1 %2]
-
+%0 % · %1 de %2 cicles
 [conn card reconnecting %0]
-
+Reconnectant a la partida… intent %0
 [conn card replaying %0]
-
+Reproduint els %0 que t'has perdut. La pantalla s'actualitzarà quan tornis al present.
 [conn card seconds left %0]
-
+queden uns %0 s
 [conn connections]
-
+Connexions
 [conn connection]
-
+Connexió
 [conn delay explanation %0 %1]
-
+Decalatge: el temps entre el teu clic i el moment en què passa, per a tothom. Depèn de la teva connexió, no de la dels altres. Bo per sota de %0, dolent a partir de %1.
 [conn fair]
-
+Regular
 [conn good]
-
+Bona
 [conn grid legend]
-
+Amb més de quatre jugadors, el panell mostra la latència de cada jugador en mil·lisegons, o quants segons de retard porta.
 [conn jitter %0]
-
+variació %0
 [conn leave match]
-
+Abandona la partida
 [conn left]
-
+Ha marxat
 [conn notice back %0]
-
+%0 ha tornat.
 [conn notice left %0]
-
+%0 ha abandonat la partida.
 [conn notice lost %0 %1]
-
+%0 ha perdut la connexió. La partida continua; la seva colònia segueix treballant mentre es reconnecta (queden %1).
 [conn ping explanation %0 %1]
-
+Latència: el temps d'anada i tornada entre un jugador i el repetidor. Bona per sota de %0, dolenta a partir de %1.
 [conn ping]
-
+Latència
 [conn players]
-
+Jugadors
 [conn poor]
-
+Dolenta
 [conn reconnecting]
-
+Reconnectant
 [conn relay %0]
-
+Repetidor: %0
 [conn resyncing]
-
+Reincorporant
 [conn slow]
-
+Lent
 [conn unstable]
-
+inestable
 [conn waiting]
-
+Connectant…
 [conn you %0]
-
+%0 (tu)
 [conn you]
-
+Tu
 [conn your delay %0]
-
+El teu decalatge: %0
 [hub account menu]
-
+Compte
 [hub ai joins after %0]
-
+La IA s'hi uneix d'aquí a %0
 [hub all rooms]
-
+Totes
 [hub browse maps]
-
+Explora mapes
 [hub cant reach %0]
-
+No es pot accedir a %0.
 [hub change server]
-
+Canvia de servidor…
 [hub check code]
-
+Quan et demani un codi, introdueix aquest:
 [hub code placeholder]
-
+Codi o enllaç d'invitació
 [hub connecting to %0]
-
+%0 · connectant…
 [hub continue with %0]
-
+Continua amb %0
 [hub create room]
-
+Crea una sala
 [hub find match]
-
+Busca partida
 [hub finish in browser]
-
+Acaba d'iniciar la sessió a la pàgina que s'ha obert al navegador.
 [hub free seat]
-
+Plaça lliure
 [hub get update]
-
+Obtén l'actualització
 [hub guest kept on device]
-
+Convidat · desat en aquest dispositiu
 [hub invalid code]
-
+Això no és un codi ni un enllaç d'invitació.
 [hub join by code]
-
+Uneix-t'hi amb codi
 [hub join code]
-
+Codi per unir-se
 [hub join]
-
+Uneix-t'hi
 [hub leaderboard]
-
+Classificació
 [hub linked %0]
-
+Comptes enllaçats · %0
 [hub linked accounts]
-
+Comptes enllaçats
 [hub maps]
-
+Mapes
 [hub no queues]
-
+Aquest servidor no té cues de partida ràpida.
 [hub no rooms]
-
+Ara mateix no hi ha cap sala oberta. Crea'n una i comparteix la invitació.
 [hub offline at %0]
-
+%0 · fora de línia
 [hub offline detail %0]
-
+Es tornarà a provar d'aquí a %0 s. La partida ràpida i les sales en línia no estan disponibles. La partida LAN del menú principal no necessita aquest servidor.
 [hub online at %0]
-
+%0 · en línia
 [hub online settings]
-
+Opcions en línia
 [hub online]
-
+En línia
 [hub open page again]
-
+Torna a obrir la pàgina
 [hub open rooms]
-
+Sales obertes
 [hub page opened at %0]
-
+S'ha obert %0. No cal escriure res al joc; la sessió s'inicia sola.
 [hub queues unavailable]
-
+La partida ràpida apareixerà quan el servidor respongui.
 [hub quick match unavailable]
-
+La partida ràpida encara no està disponible en aquesta versió.
 [hub quick match]
-
+Partida ràpida
 [hub ranked]
-
+Classificatòria
 [hub recent matches]
-
+Partides recents
 [hub refresh]
-
+Actualitza
 [hub retry now]
-
+Torna-ho a provar ara
 [hub room match]
-
+Sala
 [hub room name %0]
-
+Sala de %0
 [hub room]
-
+Sala
 [hub seats %0 %1]
-
+%0/%1 places
 [hub server %0]
-
+Servidor: %0
 [hub sign in browser]
-
+Obre la pàgina d'inici de sessió
 [hub sign in conflict]
-
+Aquest inici de sessió ja pertany a un altre compte.
 [hub sign in failed %0]
-
+L'inici de sessió no s'ha completat (%0).
 [hub sign in intro]
-
+Inicia la sessió o crea un compte al navegador. Les teves partides com a convidat venen amb tu.
 [hub sign in]
-
+Inicia la sessió
 [hub sign out]
-
+Tanca la sessió en aquest dispositiu
 [hub signed in as %0]
-
+Has iniciat la sessió com a %0.
 [hub signed in on %0]
-
+Sessió iniciada a %0
 [hub signing in]
-
+Iniciant la sessió…
 [hub sim %0]
-
+simulació %0
 [hub unrated]
-
+Sense puntuació
 [hub update required at %0]
-
+%0 · cal actualitzar
 [hub update required detail %0]
-
+%0 fa servir una versió més nova, així que aquesta còpia no pot unir-se a partides en línia fins que s'actualitzi. Les partides LAN continuen funcionant.
 [hub update required]
-
+Cal actualitzar
 [hub server behind]
-
+Actualització del servidor pendent
 [hub server behind at %0]
-
+%0 · actualització del servidor pendent
 [hub server behind detail %0]
-
+Aquesta còpia és més nova que %0, que encara no s'ha actualitzat. Les partides en línia s'obriran quan el servidor s'actualitzi. Les partides LAN continuen funcionant.
 [hub version mismatch]
-
+Versió diferent
 [hub version mismatch at %0]
-
+%0 · versió diferent
 [hub version mismatch detail %0]
-
+%0 fa servir una versió diferent del joc, així que aquesta còpia no pot unir-se a partides en línia. Les partides LAN continuen funcionant.
 [hub versus %0]
-
+contra %0
 [match ai]
-
+IA
 [match downloading map %0]
-
+Baixant el mapa %0
 [match failed]
-
+No s'ha pogut iniciar la partida.
 [match leave]
-
+Surt
 [match loading]
-
+Carregant la partida
 [Loading game graphics]
-
+Carregant els gràfics del joc
 [match map cached]
-
+ja és en aquest dispositiu
 [match map]
-
+Baixant el mapa
 [match relay %0]
-
+Connectat al repetidor %0
 [match seat confirmed]
-
+Plaça confirmada
 [match starting]
-
+Començant la partida
 [match tip flags]
-
+Consell: les banderes d'exploració envien exploradors a descobrir el mapa; les banderes de guerra reuneixen els teus guerrers.
 [match tip input]
-
+Consell: les teves ordres arriben a tothom després del teu propi decalatge; les connexions dels altres jugadors no t'alenteixen.
 [match tip select]
-
+Consell: fes doble clic en un edifici per seleccionar tots els edificis d'aquest tipus.
 [match waiting for players]
-
+Esperant tots els jugadors
 [match you %0]
-
+%0 (tu)
 [match player map]
-
+mapa
 [match player loading]
-
+carregant
 [match player connecting]
-
+connectant
 [match player ready]
-
+a punt
 [match player left]
-
+ha marxat
 [results back to online]
-
+Torna al joc en línia
 [results back to room]
-
+Torna a la sala
 [results defeat]
-
+Derrota
 [results ladder rating %0]
-
+Puntuació %0
 [results left]
-
+Has abandonat la partida
 [results match over]
-
+Partida acabada
 [results match page]
-
+Pàgina de la partida
 [results minutes %0]
-
+%0 min
 [results no change]
-
+sense canvis
 [results ranked]
-
+Classificatòria
 [results recording]
-
+Registrant el resultat…
 [results room unrated]
-
+Partida de sala · sense puntuació
 [results saved to history]
-
+Desat al teu historial
 [results seconds %0]
-
+%0 s
 [results unverifiable]
-
+El servidor no ha pogut reproduir aquesta partida, així que no compta per a la puntuació de ningú. S'ha notificat perquè s'investigui; no cal que facis res.
 [results verified provisional]
-
+Verificat · provisional
 [results verified]
-
+Verificat
 [results verifying detail]
-
+El servidor està reproduint la partida per confirmar-la. Normalment triga menys d'un minut.
 [results verifying]
-
+Verificant el resultat…
 [results victory]
-
+Victòria
 [room address]
-
+Adreça
 [room ai %0]
-
+IA: %0
 [room browser pairing]
-
+Aparellament amb navegador
 [room catalog map]
-
+Mapa del catàleg
 [room change map]
-
+Canvia el mapa…
 [room change rules]
-
+Canvia les regles…
 [room chat]
-
+Xat
 [room closed seat detail]
-
+Tancada per l'amfitrió
 [room closed seat]
-
+Tancada
 [room colonies]
-
+Colònies
 [room connecting]
-
+Connectant a la sala…
 [room copy]
-
+Copia
 [room disconnected]
-
+desconnectat
 [room downloading %0]
-
+Baixant el mapa %0 %
 [room downloading map]
-
+Baixant el mapa…
 [room expired]
-
+La sala s'ha tancat.
 [room generated on server]
-
+Generat una sola vegada al servidor, perquè tothom jugui exactament aquest mapa.
 [room guest]
-
+convidat
 [room host %0]
-
+amfitrió %0
 [room host closed]
-
+L'amfitrió ha tancat la sala.
 [room host]
-
+amfitrió
 [room humans vs ai]
-
+Humans contra IA
 [room invite code %0]
-
+Codi %0 · s'obre a l'aplicació, al mòbil o al navegador
 [room invite not found]
-
+Aquesta invitació ha caducat o no existeix.
 [room invite only]
-
+Només amb invitació
 [room invite]
-
+Convida
 [room joining on network]
-
+Unint-se en aquesta xarxa
 [room lan badge]
-
+Xarxa local · sense puntuació
 [room lan list hint %0]
-
+Els altres de la mateixa xarxa veuen %0 a la llista de partides LAN del menú principal.
 [room leave]
-
+Surt
 [room map changed %0]
-
+El mapa ha canviat a %0.
 [room map failed]
-
+No s'ha pogut preparar el mapa
 [room match label]
-
+Sala
 [room member joined %0]
-
+%0 s'hi ha unit.
 [room member left %0]
-
+%0 ha marxat.
 [room member ready %0]
-
+%0 està a punt.
 [room needs two seats]
-
+Convida un amic o afegeix una IA per començar
 [room no map]
-
+Encara no hi ha mapa
 [room not ready]
-
+No està a punt
 [room open for a person]
-
+Oberta per a una persona
 [room open seat detail]
-
+Qualsevol amb la invitació la pot ocupar
 [room open seat]
-
+Plaça oberta
 [room person]
-
+Persona
 [room preparing map]
-
+Preparant el mapa al servidor…
 [room public]
-
+Pública
 [room ready?]
-
+A punt
 [room ready]
-
+✓ A punt
 [room remove from room]
-
+Treu de la sala
 [room rule off]
-
+No
 [room rule on]
-
+Sí
 [room rules changed]
-
+Les regles han canviat.
 [room rules]
-
+Regles
 [room say something]
-
+Digues alguna cosa…
 [room seat hint]
-
+Els jugadors poden moure's ells mateixos a una plaça oberta. Canvia d'equip per reequilibrar.
 [room seat options]
-
+Opcions de la plaça
 [room seats summary %0 %1 %2]
-
+%0 jugadors · %1 IA · %2 obertes
 [room seats]
-
+Places
 [room seed]
-
+Llavor
 [room send]
-
+Envia
 [room set by host]
-
+Definit per l'amfitrió
 [room share text %0]
-
+Uneix-te a la meva sala de Globulation 2: %0
 [room share]
-
+Comparteix…
 [room size]
-
+Mida
 [room starting match]
-
+Començant la partida…
 [room take seat]
-
+Ocupa la plaça
 [room team %0]
-
+Equip %0
 [room update required]
-
+Aquesta sala fa servir una altra versió del joc. Actualitza'l per unir-t'hi.
 [room uploaded map]
-
+Mapa pujat
 [room waiting for %0]
-
+Esperant que %0 estigui a punt
 [room waiting for you]
-
+Prem A punt quan estiguis preparat
 [room match over]
-
+Partida acabada. Prepareu-vos per a una altra ronda!
 [room waiting for host]
-
+Esperant que l'amfitrió comenci
 [room waiting for players %0]
-
+Esperant que %0 jugadors estiguin a punt
 [room who can find it]
-
+Qui la pot trobar
 [room you created]
-
+Has creat la sala.
 [room you joined %0]
-
+T'has unit a %0.
 [room you were removed]
-
+L'amfitrió t'ha tret de la sala.
 [room you]
-
+tu
 [settings Online]
-
+En línia
 [settings Another server]
-
+Un altre servidor
 [settings Check]
-
+Comprova
 [settings Checking…]
-
+Comprovant…
 [settings Choose which server you play on and how you sign in to it.]
-
+Tria a quin servidor jugues i com hi inicies la sessió.
 [settings Connecting…]
-
+Connectant…
 [settings Could not reach this server.]
-
+No s'ha pogut accedir a aquest servidor.
 [settings Display name saved.]
-
+S'ha desat el nom visible.
 [settings Display name]
-
+Nom visible
 [settings Download or delete my data]
-
+Suprimeix el meu compte
 [settings Enter an https:// address.]
-
+Introdueix una adreça https://.
 [settings Finish in your browser. It shows the code %0.]
-
+Acaba al navegador: escriu el codi %0 quan te'l demani.
 [settings Forget]
-
+Oblida
 [settings Guests keep a generated name; sign in to choose one.]
-
+Els convidats tenen un nom generat; inicia la sessió per triar-ne un.
 [settings Link]
-
+Enllaça
 [settings Not a Globulation 2 server.]
-
+No és un servidor de Globulation 2.
 [settings Not linked]
-
+No enllaçat
 [settings Not signed in.]
-
+No has iniciat la sessió.
 [settings Open]
-
+Obre
 [settings Opens your account page on %0.]
-
+Obre la pàgina del teu compte a %0, on el pots suprimir.
 [settings Run by a community, a club or yourself. Paste its address.]
-
+Gestionat per una comunitat, un club o tu mateix. Enganxa'n l'adreça.
 [settings Save]
-
+Desa
 [settings Server]
-
+Servidor
 [settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
-
+Es mostra a les sales, les partides i la classificació. Es pot canviar un cop cada 30 dies.
 [settings Sign in with: %0 · queues: %1]
-
+Inicia la sessió amb: %0 · cues: %1
 [settings Sign out on this device]
-
+Tanca la sessió en aquest dispositiu
 [settings Sign out]
-
+Tanca la sessió
 [settings Switch to this server]
-
+Canvia a aquest servidor
 [settings The last sign-in method can't be unlinked.]
-
+No es pot desenllaçar l'últim mètode d'inici de sessió.
 [settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
-
+El servidor oficial de Globulation 2 · cues classificatòries, classificacions, catàleg de mapes
 [settings Unlink]
-
+Desenllaça
 [settings Unlinking is done on the account page.]
-
+Per desenllaçar, ves a la pàgina del compte.
 [settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
-
+Seràs un convidat nou fins que tornis a iniciar la sessió. El teu compte i les teves partides es queden al servidor.
 [settings Your account on %0]
-
+El teu compte a %0
 [settings compatible with this version]
-
+compatible amb aquesta versió
 [settings connected]
-
+connectat
 [settings connecting…]
-
+connectant…
 [settings guest]
-
+convidat
 [settings linked]
-
+enllaçat
 [settings plays another version]
-
+fa servir una altra versió
 [settings trusted]
-
+de confiança
 [settings used before]
-
+usat abans
 [settings you were %0 there]
-
+hi eres %0
 [trust invited to room %0]
-
+Convidat a la sala %0
 [trust join as guest]
-
+Entra com a convidat
 [trust not official]
-
+Aquest servidor no el gestiona el projecte Globulation 2.
 [trust remember]
-
+Recorda aquest servidor
 [trust separate identity %0]
-
+Hi entraràs com a convidat. El teu compte de %0, la puntuació i l'historial es queden on són.
 [trust title]
-
+Vols unir-te a una partida en un altre servidor?
 [trust what it sees]
-
+El servidor veu el teu nom visible, l'adreça de la teva connexió i les partides que hi jugues.
 [settings not connected]
-
+no connectat
 [settings Open Play online to connect.]
-
+Obre Juga en línia per connectar-te.
 [hub code]
-
+Codi
 [results draw]
-
+Empat
 [qm 2 vs 2]
-
+2 contra 2
 [qm 1 vs 1]
-
+1 contra 1
 [qm ping about]
-
+Latència aprox.
 [qm ranked]
-
+Classificatòria
 [qm casual %0]
-
+Informal %0
 [qm rated]
-
+Classificatòria
 [qm unrated]
-
+Sense puntuació
 [qm solo queue]
-
+cua individual
 [qm ai joins after %0]
-
+La IA s'hi uneix d'aquí a %0
 [qm fair maps %0]
-
+Mapes: %0
 [qm cooldown %0]
-
+Has rebutjat una partida. Podràs tornar a buscar d'aquí a %0.
 [qm sign in to play ranked]
-
+Les cues classificatòries són per a comptes amb sessió iniciada; inicia la sessió primer.
 [online update required]
-
+Aquesta versió del joc és massa antiga per al servidor; actualitza-la per jugar en línia.
 [online server behind]
-
+El servidor encara no s'ha actualitzat a aquesta versió; el joc en línia s'obrirà quan ho faci.
 [online version mismatch]
-
+El servidor fa servir una versió diferent del joc; el joc en línia no està disponible amb aquesta còpia.
 [qm already searching]
-
+Ja estàs buscant partida o en una partida.
 [online connection problem]
-
+No s'ha pogut accedir al servidor.
 [qm find match]
-
+Busca partida
 [qm opponents rated %0 to %1]
-
+Rivals amb puntuació de %0 a %1
 [qm region %0]
-
+Regió %0
 [qm searching]
-
+Buscant
 [qm measuring relays]
-
+Mesurant els repetidors
 [qm joining queue]
-
+Entrant a la cua
 [qm waiting for a person]
-
+Esperant una persona: els rivals IA estan desactivats.
 [qm ai in %0 rated]
-
+Si no es troba ningú, jugaràs contra la IA amb la puntuació més propera d'aquí a %0
 [qm ai in %0]
-
+Si no es troba ningú, una IA s'hi unirà d'aquí a %0
 [qm ai after %0]
-
+Si no es troba ningú, una IA ocuparà la plaça d'aquí a %0
 [qm allow ai short]
-
+Permet IA
 [qm allow ai]
-
+Permet un rival IA
 [qm cancel]
-
+Cancel·la
 [qm cancel search]
-
+Cancel·la la cerca
 [qm usual wait %0]
-
+espera habitual %0
 [qm widening]
-
+s'amplia mentre esperes
 [qm ais are rated]
-
+(amb puntuació: les IA també en tenen)
 [qm opponent declined]
-
+El teu rival no ha acceptat. Tornes a estar al capdavant de la cua.
 [qm %0 did not accept]
-
+%0 no ha acceptat. Tornes a estar al capdavant de la cua.
 [qm start failed]
-
+No s'ha pogut iniciar la partida. Tornes a buscar.
 [qm you declined]
-
+Has rebutjat la partida. Podràs tornar a buscar després d'una breu espera.
 [qm you did not answer]
-
+No has acceptat a temps. Podràs tornar a buscar després d'una breu espera.
 [qm search ended]
-
+La cerca ha acabat.
 [qm try again]
-
+Torna-ho a provar
 [online connecting]
-
+Connectant…
 [qm no queues]
-
+Aquest servidor no té cues de partida ràpida.
 [qm quick match]
-
+Partida ràpida
 [qm phone searching note]
-
+La cerca continua si surts d'aquesta pantalla.
 [qm phone intro]
-
+Tria una cua a sota; la cerca continua mentre navegues.
 [qm online]
-
+En línia
 [qm keeps running note]
-
+La cerca continua si surts d'aquesta pantalla.
 [qm ai]
-
+IA
 [qm provisional]
-
+provisòria
 [qm accepted]
-
+✓ acceptat
 [qm declined]
-
+rebutjat
 [qm waiting]
-
+esperant…
 [qm ai badge]
-
+IA
 [qm match found]
-
+Partida trobada
 [qm playing an ai]
-
+Jugant contra una IA
 [qm vs]
-
+contra
 [qm ai explanation rated]
-
+Ningú del teu rang de puntuació estava buscant. Jugaràs contra la IA amb la puntuació més propera a la teva; el resultat compta per a la teva puntuació i la de la IA.
 [qm ai explanation]
-
+Ningú estava buscant. Jugaràs contra la IA amb la puntuació més propera a la teva; aquesta partida no puntua.
 [qm casual explanation]
-
+La partida comença de seguida; les partides informals no puntuen.
 [qm accepted button]
-
+Acceptada
 [qm accept]
-
+Accepta
 [qm decline]
-
+Rebutja
 [qm both must accept]
-
+Tots dos han d'acceptar
 [qm accept explanation]
-
+Tots dos jugadors han d'acceptar. Si rebutges o deixes que s'acabi el temps, passes al final de la cua.
 [qm starting in %0]
-
+Comença d'aquí a %0…
 [qm preparing match]
-
+Preparant la partida…
 [qm match assigned %0 %1]
-
+La partida %0 està a punt a %1, però aquesta versió encara no es pot connectar a partides en línia.
 [online jan]
-
+gen.
 [online feb]
-
+febr.
 [online mar]
-
+març
 [online apr]
-
+abr.
 [online may]
-
+maig
 [online jun]
-
+juny
 [online jul]
-
+jul.
 [online aug]
-
+ag.
 [online sep]
-
+set.
 [online oct]
-
+oct.
 [online nov]
-
+nov.
 [online dec]
-
+des.
 [profile win letter]
-
+V
 [profile loss letter]
-
+D
 [profile draw letter]
-
+E
 [profile history unavailable]
-
+Aquest servidor encara no ofereix historial de partides.
 [profile downloading replay]
-
+Baixant la repetició…
 [profile no replay]
-
+No hi ha cap repetició disponible per a aquesta partida.
 [profile room with %0]
-
+Sala · %0 colònies
 [profile with %0 vs %1]
-
+amb %0 contra %1
 [profile vs %0]
-
+contra %0
 [profile room]
-
+Sala
 [profile casual]
-
+Informal
 [profile ai filled]
-
+Completada amb IA
 [profile provisional %0 games]
-
+provisòria · %0 partides
 [profile unrated]
-
+sense puntuació
 [profile checking]
-
+comprovant…
 [profile %0 min]
-
+%0 min
 [profile match page]
-
+Pàgina de la partida
 [profile replay]
-
+Repetició
 [profile win rate last %0]
-
+Victòries, últimes %0
 [profile %0 w %1 l %2 d]
-
+%0 V · %1 D · %2 empats
 [profile typical game]
-
+Partida típica
 [profile median length]
-
+la teva durada mediana
 [profile best map]
-
+Millor mapa
 [profile %0 w %1 l]
-
+%0 V · %1 D
 [profile no rated games]
-
+Juga una partida classificatòria per obtenir una puntuació.
 [profile all]
-
+Totes
 [profile rooms]
-
+Sales
 [profile vs ai]
-
+contra IA
 [profile matches]
-
+Partides
 [online loading]
-
+Carregant…
 [profile no matches]
-
+Encara no hi ha partides.
 [online load more]
-
+Carrega'n més
 [profile title]
-
+Perfil
 [profile guest]
-
+convidat
 [profile playing since %0]
-
+juga des de %0
 [profile full profile web]
-
+Perfil complet al web
 [profile replays note]
-
+Les repeticions es baixen del servidor quan les obres; les que has desat localment es queden a Carrega una partida → Repeticions.
 [profile web profile]
-
+Perfil web
 [maps most played]
-
+Més jugats
 [maps most liked]
-
+Més valorats
 [maps newest]
-
+Més nous
 [maps most downloaded]
-
+Més baixats
 [maps any size]
-
+Qualsevol mida
 [maps up to 128]
-
+Fins a 128 × 128
 [maps 256]
-
+De 256 × 256
 [maps 512 and larger]
-
+512 o més
 [maps report broken]
-
+No funciona
 [maps report offensive]
-
+Ofensiu
 [maps report copyright]
-
+És obra d'una altra persona
 [maps report other]
-
+Una altra cosa
 [maps public]
-
+Públic
 [maps unlisted]
-
+No llistat
 [maps private]
-
+Privat
 [maps cannot read file]
-
+No s'ha pogut llegir el fitxer del mapa.
 [maps file too large]
-
+El fitxer del mapa és massa gran per compartir-lo.
 [maps saved for next room]
-
+El mapa s'ha baixat; es farà servir quan obris una sala.
 [maps download failed]
-
+No s'ha pogut baixar el mapa.
 [maps %0 colonies]
-
+%0 colònies
 [maps version %0]
-
+versió %0
 [maps updated %0]
-
+actualitzat %0
 [maps downloading]
-
+Baixant el mapa…
 [maps like needs account]
-
+Per valorar mapes cal un compte amb sessió iniciada.
 [maps report sent]
-
+Gràcies; els moderadors ho revisaran.
 [maps select a map]
-
+Selecciona un mapa per veure'n els detalls.
 [maps by %0]
-
+de %0
 [maps stats %0 %1 %2]
-
+▶ %0 partides · ⬇ %1 baixades · ♥ %2
 [maps use in room]
-
+Usa en una sala
 [maps liked]
-
+M'agrada ✓
 [maps like]
-
+M'agrada
 [maps map page]
-
+Pàgina del mapa
 [maps reported]
-
+Denunciat
 [maps report]
-
+Denuncia…
 [maps report why]
-
+Què li passa a aquest mapa?
 [maps search placeholder]
-
+Cerca mapes o autors
 [maps none found]
-
+Cap mapa coincideix.
 [maps any colonies]
-
+Qualsevol nombre de colònies
 [maps checking]
-
+Comprovant…
 [maps no version yet]
-
+Encara no s'ha pujat cap versió.
 [maps rejected]
-
+Rebutjat
 [maps did not load %0]
-
+El mapa no s'ha carregat: %0
 [maps unknown reason]
-
+no s'ha indicat cap motiu
 [maps fix and upload again]
-
+corregeix-lo a l'editor i torna'l a pujar
 [maps uploaded just now]
-
+pujat ara mateix
 [maps loading on server]
-
+carregant-lo al servidor
 [maps %0 plays]
-
+%0 partides
 [maps hidden]
-
+Ocult
 [maps upload again]
-
+Torna a pujar…
 [maps delete]
-
+Suprimeix
 [maps update]
-
+Actualitza…
 [maps upload a map]
-
+Puja un mapa…
 [maps upload hint]
-
+fitxers .map de la carpeta de mapes o de l'editor
 [maps no maps yet]
-
+Encara no has compartit cap mapa.
 [maps my maps]
-
+Els meus mapes
 [maps my maps %0]
-
+Els meus mapes (%0)
 [maps browse]
-
+Explora
 [maps title]
-
+Mapes
 [maps browse note %0]
-
+Catàleg de %0 · només es mostren els mapes que es carreguen en aquesta versió
 [maps visibility note]
-
+Els mapes públics apareixen a Explora. Els no llistats funcionen a les teves sales i amb el seu enllaç. Els privats, només a les teves sales.
 [maps use %0]
-
+Usa %0
 [maps %0 kb]
-
+%0 kB
 [maps field title]
-
+Títol
 [maps field description]
-
+Descripció
 [maps who can use it]
-
+Qui el pot fer servir
 [maps guests unlisted]
-
+Els convidats poden compartir mapes no llistats i privats; inicia la sessió per publicar a Explora.
 [maps visibility help]
-
+Els mapes no llistats funcionen a les teves sales i amb el seu enllaç; els públics també apareixen a Explora.
 [maps new version of %0]
-
+Puja aquest fitxer com a versió nova de %0.
 [maps upload]
-
+Puja
 [maps uploading]
-
+Pujant…
 [maps checking detail]
-
+El servidor està carregant el mapa i dibuixant-ne la vista prèvia. Fins aleshores no es pot fer servir.
 [maps ready]
-
+A punt
 [maps ready public]
-
+El mapa està a punt i apareix a Explora.
 [maps ready unlisted]
-
+El mapa està a punt. Els mapes no llistats funcionen a les teves sales i amb el seu enllaç.
 [maps ready private]
-
+El mapa està a punt. Els mapes privats només funcionen a les teves sales.
 [maps upload failed]
-
+La pujada ha fallat
 [maps server read %0 %1]
-
+El servidor l'ha llegit com a %0 amb %1 colònies.
 [maps continue in background]
-
+Tanca
 [maps upload a map title]
-
+Puja un mapa
 [maps update map title]
-
+Actualitza un mapa
 [maps upload note]
-
+El servidor carrega cada mapa pujat abans que es pugui fer servir.
 [online just now]
-
+ara mateix
 [online today %0]
-
+avui %0
 [online yesterday]
-
+ahir
 [online sun]
-
+dg.
 [online mon]
-
+dl.
 [online tue]
-
+dt.
 [online wed]
-
+dc.
 [online thu]
-
+dj.
 [online fri]
-
+dv.
 [online sat]
-
+ds.
 [online %0 weeks ago]
-
+fa %0 setmanes
 [online %0 months ago]
-
+fa %0 mesos
 [online %0 years ago]
-
+fa %0 anys
 [maps share online]
-
+Comparteix en línia…
 [maps mine]
-
+Meus
 [results waiting for players]
-
+Esperant que els altres jugadors surtin…
 [results waiting detail]
-
+El resultat es registra quan tothom ha sortit de la partida.
 [results waiting slow]
-
+Un jugador que ha perdut la connexió té fins a 3 minuts per tornar. El resultat apareixerà al teu historial i a la pàgina de la partida.
 [results verifying slow]
-
+La verificació triga més del normal. El resultat apareixerà al teu historial i a la pàgina de la partida.
 [results rematch]
-
+Revenja
 [results join rematch %0]
-
+Uneix-te a la revenja de %0
 [hub profile history]
-
+Perfil i historial
 [hub my maps]
-
+Els meus mapes
 [hub leaderboard %0]
-
+Classificació · %0
 [hub leaderboard empty]
-
+Encara no hi ha jugadors classificats.
 [hub guests not ranked]
-
+Els convidats no es classifiquen. Inicia la sessió per aparèixer-hi.
 [hub full leaderboard]
-
+Classificació completa
 [settings %0 is no longer linked.]
-
+%0 ja no està enllaçat.
 [room map read failed]
-
+No s'ha pogut llegir aquest fitxer de mapa.
 [room map upload failed]
-
+No s'ha pogut compartir el mapa amb la sala.
 [room map upload failed %0]
-
+No s'ha pogut compartir el mapa amb la sala: %0
 [room uploading map]
-
+Compartint el mapa amb la sala…
 [room premade map shared]
-
+Tothom a la sala juga aquest fitxer de mapa; es baixa abans de la partida.
 [room take a seat to play]
-
+Ocupa una plaça oberta per jugar
 [room waiting for a seat]
-
+Totes les places estan ocupades. En podràs ocupar una quan quedi lliure.
 [room not seated]
-
+Sense plaça
 [room copied]
-
+Copiat
 [room copy failed]
-
+No s'ha pogut copiar
 [room closed title]
-
+Sala tancada
 [room removed title]
-
+Tret de la sala
 [room back to online]
-
+Torna al joc en línia
 [leave match]
-
+Abandona la partida
 [leave match title]
-
+Vols abandonar aquesta partida?
 [leave lan title]
-
+Vols abandonar aquesta partida LAN?
 [leave rated body]
-
+Perds aquesta partida classificatòria i la teva puntuació baixa. Els altres continuen jugant i no hi podràs tornar.
 [leave casual body]
-
+Aquesta partida ràpida et compta com a derrota. Els altres continuen jugant i no hi podràs tornar.
 [leave room body]
-
+Surts de la partida de la sala i compta com a derrota al teu historial. Els altres continuen jugant i no hi podràs tornar.
 [leave lan body]
-
+Els altres continuen jugant sense tu i no podràs tornar a aquesta partida.
 [leave match confirm]
-
+Abandona
 [keep playing]
-
+Continua jugant
 [results team]
-
+Equip
 [results quick unrated]
-
+Partida ràpida · sense puntuació
 [conn card cannot keep up]
-
+El teu dispositiu no pot seguir el ritme d'aquesta partida
 [conn card cannot keep up body]
-
+Reprodueix la partida més lentament del que avança, així que no s'hi posarà al dia. Pots abandonar la partida, o baixar les opcions gràfiques i continuar esperant.
 [conn card not gaining]
-
+no avança
 [results reason opponents left]
-
+Els teus rivals han abandonat la partida.
 [results reason victory]
-
+Totes les colònies rivals han estat derrotades.
 [results reason defeat]
-
+La teva colònia ha estat derrotada.
 [results reason you left]
-
+Has abandonat la partida. Compta com a derrota.
 [results final after end]
-
+Resultat final quan acabi la partida.
 [pause none left]
-
+No queden pauses
 [pause game left %0]
-
+Pausa la partida (en queden %0)
 [pause by %0]
-
+Pausada per %0
 [pause by %0 resumes in %1]
-
+Pausada per %0 · es reprèn d'aquí a %1
 [turn too many actions]
-
+Massa accions: algunes encara esperen per enviar-se
 [turn no pauses left]
-
+No et queden pauses en aquesta partida
 [turn pause time used %0]
-
+%0 ha esgotat el temps de pausa: la partida es reprèn
 [room seats one person %0 %1]
-
+1 jugador · %0 IA · %1 obertes
 [room rules otherwise standard]
-
+La resta de regles són com a Estàndard.
 [room browser link]
-
+Enllaç per a jugadors al navegador
 [room browser link hint]
-
+Els jugadors al navegador enganxen aquest enllaç per unir-s'hi.
 [room browser link code %0]
-
+Els jugadors al navegador enganxen aquest enllaç per unir-s'hi. El seu joc mostra el codi %0.
 [room copy link]
-
+Copia l'enllaç
 [room lan open seat detail]
-
+Qualsevol d'aquesta xarxa la pot ocupar
 [room close title]
-
+Vols tancar la sala?
 [room close body one]
-
+Si surts, la sala es tanca per a tothom, inclòs l'altre jugador que hi ha.
 [room close body %0]
-
+Si surts, la sala es tanca per a tothom, inclosos els %0 altres jugadors que hi ha.
 [room close confirm]
-
+Tanca la sala
 [room stay]
-
+Queda't
 [room colours changed]
-
+El mapa nou ha donat colors nous a les places. Comprova el teu abans de començar.
 [room copy by hand]
-
+No s'ha pogut copiar. Copia la invitació tu mateix:
 [room copy by hand close]
-
+Tanca
 [room copy by hand touch]
-
+Mantén premut l'enllaç i tria Copia.
 [room copy by hand keys]
-
+L'enllaç està seleccionat: prem Ctrl+C (⌘C en un Mac).
 [room code]
-
+Codi
 [online under a minute]
-
+menys d'un minut
 [online about %0 min]
-
+uns %0 min
 [online %0 s]
-
+%0 s
 [online %0 min %1 s]
-
+%0 min i %1 s
 [qm ai opponent %0]
-
+Rival IA: %0
 [match relay connected]
-
+Connectat al servidor de joc
 [room picker title]
-
+Tria un mapa
 [room picker for one]
-
+Per a l'únic jugador de la sala
 [room picker for %0]
-
+Per als %0 jugadors de la sala
 [room picker generated]
-
+Generat
 [room picker premade]
-
+Predefinit
 [room picker catalog]
-
+Catàleg
 [room picker size]
-
+Mida
 [room picker colonies]
-
+Colònies
 [room picker fair]
-
+Inici equitatiu per a totes les colònies
 [room picker does not fit]
-
+No hi cap en aquesta mida; prova'n una altra
 [room picker preparing]
-
+Preparant la vista prèvia…
 [room picker generated note]
-
+Cada paisatge dona a totes les colònies un inici igual de bo, i el servidor genera el mateix mapa per a tothom.
 [room picker players %0]
-
+%0 jugadors
 [room picker unreadable]
-
+no es pot llegir
 [room picker no premade]
-
+No s'ha trobat cap mapa predefinit.
 [room picker too small %0]
-
+Aquest mapa té menys colònies que els %0 jugadors de la sala.
 [room picker pick premade]
-
+Tria un mapa per veure'l aquí.
 [room picker catalog intro]
-
+Mapes que han compartit altres jugadors. Obre'n un i tria Usa en una sala.
 [room picker browse catalog]
-
+Explora els mapes compartits
 [room picker more options]
-
+Més opcions…
 [room picker use]
-
+Usa aquest mapa
 [room map ready title %0]
-
+Juga a %0
 [room map ready unnamed]
-
+aquest mapa
 [room map ready body]
-
+Crea una sala i convida els teus amics: la sala jugarà aquest mapa.
 [game draw]
-
+Empat
 [settings Show colony skins]
 Mostra els aspectes de les colònies
 [settings Turn off to use classic units, swarms and building colors on this device.]
-Desactiva-ho per utilitzar les unitats, els eixams i els colors dels edificis clàssics en aquest dispositiu.
+Desactiva-ho per fer servir les unitats, les granges i els colors dels edificis clàssics en aquest dispositiu.
 [settings Hive Mind]
-
+Ment col·lectiva
 [settings Enable commander shortcuts]
-
+Activa les dreceres del comandant
 [settings Command your colony without opening a menu.]
-
+Dona ordres a la colònia sense obrir cap menú.
 [settings Allow supervision for new commands]
-
+Permet la supervisió de les ordres noves
 [settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
-
+El comandant pot fer el seguiment de les ordres permanents. Els seguiments gasten crèdits; les ordres instal·lades continuen funcionant sense crèdits.
 [settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
-
+Dreceres per defecte: Ctrl+Enter per donar una ordre; Ctrl+Shift+Enter per aturar la feina del comandant. Canvia-les a Controls. Les targetes d'ordres permanents tenen controls separats per pausar i cancel·lar.
 [settings Commander account and credits]
-
+Compte i crèdits del comandant
 [settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
-
+Gestiona els crèdits i les compres al navegador. L'ajuda del comandant està permesa a les partides classificatòries.
 [open commander]
-
+Obre el comandant
 [stop commander]
-
+Atura el comandant
 [settings Recording]
-
+Gravació
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
-
+Grava les partides com a vídeos MP4 amb so. La gravació necessita FFmpeg amb els codificadors libx264 i AAC.
 [settings FFmpeg is ready.]
-
+FFmpeg està a punt.
 [settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
-
+FFmpeg no està disponible, així que la gravació està desactivada. Instal·la FFmpeg, assegura't que és al PATH i torna-ho a comprovar.
 [settings Check for FFmpeg again]
-
+Torna a buscar FFmpeg
 [settings Checking for FFmpeg…]
-
+Buscant FFmpeg…
 [settings Hotkey: %0. It also works in menus and the editor.]
-
+Drecera: %0. També funciona als menús i a l'editor.
 [settings Change the hotkey]
-
+Canvia la drecera
 [settings Recordings are saved in %0]
-
+Les gravacions es desen a %0
 [toggle recording]
-
+Comença o atura la gravació
 [File selection is unavailable.]
-
+La selecció de fitxers no està disponible.
 [Saving custom AI…]
-
+Desant la IA personalitzada…
 [Could not read the selected JavaScript file.]
-
+No s'ha pogut llegir el fitxer JavaScript seleccionat.
 [Custom AI library saved.]
-
+S'ha desat la biblioteca d'IA personalitzades.
 [Storage could not be saved. The previous library is retained.]
-
+No s'ha pogut desar l'emmagatzematge. Es conserva la biblioteca anterior.
 [Import a single JavaScript AI file, then select it when setting up a local game.]
-
+Importa un únic fitxer d'IA en JavaScript i selecciona'l quan configuris una partida local.
 [Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
-
+Les importacions en desen una còpia a Glob2. Actualitza substitueix aquesta còpia per a les partides futures; les partides desades conserven la IA original.
 [Waiting for file selection or storage…]
-
+Esperant la selecció de fitxer o l'emmagatzematge…
 [Import JavaScript AI]
-
+Importa una IA JavaScript
 [Link development file]
-
+Enllaça un fitxer de desenvolupament
 [Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
-
+Els fitxers enllaçats es llegeixen en començar la partida. Recompila'ls abans de començar una partida nova. Treure un enllaç mai no esborra el fitxer.
 [Example AI and authoring guide]
-
+IA d'exemple i guia de creació
 [No custom AIs yet. Import a bundled .js file to get started.]
-
+Encara no hi ha IA personalitzades. Importa un fitxer .js empaquetat per començar.
 [Relink]
-
+Torna a enllaçar
 [Update]
-
+Actualitza
 [Validate]
-
+Valida
 [AI startup and persistent globals are valid.]
-
+L'inici de la IA i les variables globals persistents són vàlids.
 [Remove from library]
-
+Treu de la biblioteca
 [AI telemetry]
-
+Telemetria de la IA
 [No accessible AI telemetry.]
-
+No hi ha telemetria de la IA accessible.
 [Search fields]
-
+Cerca camps
 [Telemetry unavailable for this recording or controller.]
-
+Telemetria no disponible per a aquesta gravació o controlador.
 [Linked]
-
+Enllaçada
 [Imported]
-
+Importada
 [Player]
-
+Jugador
 [Updated at tick %0]
-
+Actualitzat al cicle %0
 [No values published yet.]
-
+Encara no s'ha publicat cap valor.
 [No fields match your search.]
-
+Cap camp coincideix amb la cerca.
 [settings Custom AIs]
-
+IA personalitzades
 [Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
-
+Afegeix IA JavaScript a Opcions → IA personalitzades. Apareixen al selector d'IA de cada colònia.
 [Missing custom AI]
-
+Falta la IA personalitzada
 [Map repetition failed]
-
+No es pot repetir aquest mapa. Fes servir un mapa inicial sense scripts, o redueix les repeticions i les bases.
 [repeat map horizontally]
 Repeteix el mapa horitzontalment
 [repeat map vertically]
@@ -4653,594 +4653,594 @@ bases
 [bases per colony]
 Bases per colònia; una base és un equip del mapa tal com està dibuixat, amb els seus edificis i unitats
 [stat group population]
-
+Població
 [stat group food]
-
+Menjar i benestar
 [stat group resources]
-
+Recursos
 [stat group buildings]
-
+Edificis
 [stat group military]
-
+Militar
 [stat group map]
-
+Territori
 [stat group score]
-
+Puntuació
 [stat overview]
-
+Resum
 [stat overview about]
-
+Les xifres de cada colònia per a tota la partida. Es destaca la més alta quan més és millor; fes clic a la capçalera d'una columna per veure com ha evolucionat.
 [stat population]
-
+Població
 [stat population about]
-
+Quantes unitats vives tenia la colònia: treballadors, exploradors i guerrers junts.
 [stat births]
-
+Unitats nascudes
 [stat births about]
-
+Amb quina rapidesa les granges produïen unitats noves. Desglossa-ho per veure treballadors, exploradors i guerrers per separat.
 [stat deaths]
-
+Unitats perdudes
 [stat deaths about]
-
+Amb quina rapidesa la colònia perdia unitats, per la causa que fos: combat, gana, ferides en netejar o quedar atrapades.
 [stat net growth]
-
+Creixement de la població
 [stat net growth about]
-
+Unitats nascudes menys unitats perdudes. Per sobre de zero, la colònia creixia; per sota de zero, s'encongia.
 [stat death causes]
-
+Causes de mort
 [stat death causes about]
-
+De què morien les unitats de la colònia: combats, gana, ferides en netejar recursos, quedar atrapades sense sortida o altres causes.
 [stat conversions]
-
+Conversions netes
 [stat conversions about]
-
+Unitats guanyades a altres colònies menys unitats perdudes a favor seu. Les unitats canvien de bàndol quan una altra colònia les alimenta millor.
 [stat hunger]
-
+Reserves de menjar
 [stat hunger about]
-
+Quant menjar portaven a dins les unitats de la colònia. Cada unitat es classifica segons la reserva de menjar que li queda: gairebé buida (un quart o menys), baixa (fins a la meitat), mig plena (fins a tres quarts) o ben alimentada. Les unitats van a buscar una despensa quan la reserva s'esgota, així que una colònia sempre en té algunes amb la reserva baixa.
 [stat health]
-
+Salut
 [stat health about]
-
+Com de sanes estaven les unitats de la colònia. Cada unitat es classifica segons els punts de vida que li queden: crítica (un quart o menys), ferida (fins a la meitat), tocada (fins a tres quarts) o sana.
 [stat seeking food]
-
+Unitats buscant menjar
 [stat seeking food about]
-
+Unitats que havien deixat de treballar per buscar una despensa. Les que a més no tenen la salut completa es compten com a debilitant-se.
 [stat in care]
-
+Unitats menjant o curant-se
 [stat in care about]
-
+Unitats dins d'una despensa menjant o dins d'un hospital curant-se, i per tant sense treballar.
 [stat wheat harvested]
-
+Blat collit
 [stat wheat harvested about]
-
+Càrregues de blat collides pels treballadors. El blat és el que les despenses converteixen en àpats.
 [stat wheat stored]
-
+Blat emmagatzemat
 [stat wheat stored about]
-
+Blat guardat als edificis de la colònia, a punt per servir-se o fer-se servir.
 [stat meals]
-
+Àpats servits
 [stat meals about]
-
+Àpats que han servit les despenses de la colònia, a les seves pròpies unitats i a visitants d'altres colònies.
 [stat starvation]
-
+Morts per gana
 [stat starvation about]
-
+Unitats que han mort perquè no han trobat menjar a temps.
 [stat healing]
-
+Salut restaurada
 [stat healing about]
-
+Punts de vida que els hospitals de la colònia han retornat a les unitats ferides.
 [stat gathered]
-
+Recursos recollits
 [stat gathered about]
-
+Càrregues de tots els recursos recollides pels treballadors. Desglossa-ho per veure cada recurs.
 [stat stored]
-
+Recursos emmagatzemats
 [stat stored about]
-
+Recursos guardats als edificis de la colònia. Desglossa-ho per veure cada recurs.
 [stat spending]
-
+Despesa de recursos
 [stat spending about]
-
+On han anat els recursos lliurats: àpats, unitats noves, munició de les torres, edificis nous o millores.
 [stat delivered]
-
+Recursos lliurats
 [stat delivered about]
-
+Càrregues que els treballadors han portat als edificis.
 [stat traded]
-
+Comerç net
 [stat traded about]
-
+Recursos rebuts a través dels mercats menys recursos cedits.
 [stat buildings]
-
+Edificis en peu
 [stat buildings about]
-
+Edificis acabats que tenia la colònia. Desglossa-ho per veure cada tipus d'edifici.
 [stat construction]
-
+Obres completades
 [stat construction about]
-
+Obres completades: edificis nous, millores i reparacions.
 [stat buildings lost]
-
+Edificis perduts
 [stat buildings lost about]
-
+Edificis destruïts per enemics o enderrocats per la mateixa colònia.
 [stat blocked buildings]
-
+Edificis sense accés
 [stat blocked buildings about]
-
+Edificis amb les entrades bloquejades, de manera que les unitats no hi podien entrar ni sortir.
 [stat attack]
-
+Força d'atac
 [stat attack about]
-
+Una puntuació del poder de combat conjunt dels guerrers de la colònia: com de fort i com de ràpid colpegen.
 [stat defence]
-
+Força de defensa
 [stat defence about]
-
+Una puntuació de la potència de foc conjunta de les torres de defensa de la colònia.
 [stat hit points]
-
+Punts de vida totals
 [stat hit points about]
-
+Els punts de vida de totes les unitats i edificis de la colònia sumats.
 [stat damage dealt]
-
+Dany causat
 [stat damage dealt about]
-
+Dany que la colònia ha fet a unitats i edificis enemics. Desglossa-ho per veure guerrers, màgia i torres.
 [stat damage taken]
-
+Dany rebut
 [stat damage taken about]
-
+Dany que els enemics han fet a les unitats i edificis de la colònia.
 [stat damage traded]
-
+Balanç de dany
 [stat damage traded about]
-
+Dany causat menys dany rebut. Per sobre de zero, la colònia guanyava els combats.
 [stat combat deaths]
-
+Unitats mortes en combat
 [stat combat deaths about]
-
+Unitats d'aquesta colònia mortes per enemics. Desglossa-ho per veure treballadors, exploradors i guerrers per separat.
 [stat accuracy]
-
+Trets encertats
 [stat accuracy about]
-
+La proporció de trets de les torres i els exploradors de la colònia que han tocat l'objectiu.
 [stat training]
-
+Entrenament
 [stat training about]
-
+Visites de les unitats a escoles, casernes, poliesportius i piscines per aprendre una habilitat.
 [stat skills]
-
+Habilitats guanyades
 [stat skills about]
-
+Nivells d'habilitat que les unitats de la colònia han guanyat entrenant.
 [stat growth nearby]
-
+Creixement de recursos prop de la colònia
 [stat growth nearby about]
-
+Quant han crescut el blat, la fusta i altres recursos a menys de 32 caselles dels edificis de la colònia, en punts de creixement i no en càrregues. Desglossa-ho per veure a quina distància de casa han crescut.
 [stat growth map]
-
+Creixement de recursos a tot el mapa
 [stat growth map about]
-
+Quant han crescut els recursos a qualsevol lloc del mapa, en punts de creixement i no en càrregues. És igual per a totes les colònies.
 [stat stranded]
-
+Unitats que no es poden moure
 [stat stranded about]
-
+Unitats encaixonades sense cap casella lliure on anar.
 [stat cleared]
-
+Recursos netejats
 [stat cleared about]
-
+Recursos que els treballadors han tret a les zones de neteja per fer lloc.
 [stat prestige]
-
+Prestigi
 [stat prestige about]
-
+El prestigi de la colònia, que s'obté amb edificis de nivell màxim. Una partida amb objectiu de prestigi acaba quan s'assoleix.
 [stat band combat]
-
+Combat
 [stat band starvation]
-
+Gana
 [stat band clearing]
-
+Ferides en netejar
 [stat band trapped]
-
+Atrapades
 [stat band other]
-
+Altres
 [stat band starving]
-
+Gairebé buides
 [stat band hungry]
-
+Reserva baixa
 [stat band peckish]
-
+Mig plenes
 [stat band fed]
-
+Ben alimentades
 [stat band critical]
-
+Crítiques
 [stat band wounded]
-
+Ferides
 [stat band hurt]
-
+Tocades
 [stat band healthy]
-
+Sanes
 [stat band weakening]
-
+Debilitant-se
 [stat band looking]
-
+Buscant una despensa
 [stat band eating]
-
+Menjant
 [stat band healing]
-
+Curant-se
 [stat band meals]
-
+Àpats
 [stat band new units]
-
+Unitats noves
 [stat band ammunition]
-
+Munició
 [stat band construction]
-
+Edificis nous
 [stat band upgrades]
-
+Millores
 [stat band built]
-
+Construïts
 [stat band upgraded]
-
+Millorats
 [stat band repaired]
-
+Reparats
 [stat band destroyed]
-
+Destruïts
 [stat band demolished]
-
+Enderrocats
 [stat band melee]
-
+Guerrers
 [stat band magic]
-
+Màgia
 [stat band towers]
-
+Torres
 [stat band within 8]
-
+A menys de 8 caselles
 [stat band 8 to 16]
-
+De 8 a 16 caselles
 [stat band 16 to 32]
-
+De 16 a 32 caselles
 [stat unit units]
-
+unitats
 [stat unit wheat]
-
+blat
 [stat unit meals]
-
+àpats
 [stat unit hit points]
-
+punts de vida
 [stat unit resources]
-
+recursos
 [stat unit buildings]
-
+edificis
 [stat unit strength]
-
+puntuació
 [stat unit damage]
-
+dany
 [stat unit shots]
-
+trets
 [stat unit visits]
-
+visites
 [stat unit skills]
-
+nivells d'habilitat
 [stat unit prestige]
-
+prestigi
 [stat axis percent of %0]
-
+% de %0
 [stat axis share of all teams]
-
+% de totes les colònies
 [stat axis percent of units]
-
+% de les unitats de la colònia
 [stat axis %0 per minute per 100 units]
-
+%0 per minut, per cada 100 unitats de la colònia
 [stat axis %0 per 100 units]
-
+%0 per cada 100 unitats de la colònia
 [stat axis %0 per minute]
-
+%0 per minut
 [stat axis %0 so far]
-
+%0, total acumulat
 [stat axis %0 minute average]
-
+Mitjana de %0 minuts
 [stat view per minute]
-
+Per minut
 [stat view total]
-
+Total
 [stat view %0 min]
-
+%0 min
 [stat view split]
-
+Per tipus
 [stat view percentages]
-
+En % del total
 [stat view percent of units]
-
+En % de la colònia
 [stat view per 100 units]
-
+Segons la mida de la colònia
 [stat view share]
-
+Part de totes les colònies
 [stat view highlight none]
-
+Destaca: cap
 [stat column peak units]
-
+Màx. unitats
 [stat column born]
-
+Nascudes
 [stat column lost]
-
+Perdudes
 [stat column wheat]
-
+Blat
 [stat column damage dealt]
-
+Dany causat
 [stat column damage taken]
-
+Dany rebut
 [stat column built]
-
+Construïts
 [stat column buildings lost]
-
+Edificis perduts
 [stat column prestige]
-
+Prestigi
 [stat marker wiped out]
-
+última unitat perduda
 [stat marker first combat death]
-
+primera unitat morta en combat
 [stat marker first building destroyed]
-
+primer edifici destruït
 [stat not recorded for this match]
-
+Aquesta estadística no es va registrar en aquesta partida.
 [results reason beyond doubt]
-
+El resultat ja no oferia dubtes.
 [stat per minute short]
-
+/min
 [stat page colony]
-
+Colònia
 [stat page %0 of %1]
-
+%0/%1  >
 [stat band workers]
-
+Treballadors
 [stat band explorers]
-
+Exploradors
 [stat band warriors]
-
+Guerrers
 [stat unit deaths]
-
+morts
 [stat unit growth]
-
+creixement
 [stat view by unit type]
-
+Per tipus d'unitat
 [stat view by state]
-
+Per estat
 [stat view by resource]
-
+Per recurs
 [stat view by building]
-
+Per edifici
 [stat view by work]
-
+Per tipus de feina
 [stat view by cause]
-
+Per causa
 [stat view by weapon]
-
+Per arma
 [stat view by distance]
-
+Per distància
 [stat nothing to show]
-
+Res a mostrar: això no ha passat en aquesta partida.
 [stat %0 nothing]
-
+%0 (cap)
 [Match]
-
+Partida
 [Time limit]
-
+Límit de temps
 [Alliances can change]
-
+Les aliances poden canviar
 [Reveal terrain]
-
+Terreny revelat
 [Starting unit level]
-
+Nivell inicial de les unitats
 [Starting stockpile]
-
+Reserva inicial
 [Regrowth]
-
+Recreixement
 [Building strength]
-
+Resistència dels edificis
 [Wounded units retreat]
-
+Les unitats ferides es retiren
 [Units can die]
-
+Les unitats poden morir
 [Unit training]
-
+Entrenament d'unitats
 [No stockpile]
-
+Cap
 [No glass cannon]
-
+No
 [How quickly harvested resources grow back and spread.]
-
+Amb quina rapidesa els recursos collits tornen a créixer i s'escampen.
 [Units must eat to keep working.]
-
+Les unitats han de menjar per continuar treballant.
 [Summary]
-
+Resum
 [All rules]
-
+Totes les regles
 [Show all rules]
-
+Mostra totes les regles
 [Choose a ruleset]
-
+Tria un conjunt de regles
 [Reset to %0]
-
+Restableix a %0
 [ruleset one change %0]
-
+%0 + 1 canvi
 [ruleset changes %0 %1]
-
+%0 + %1 canvis
 [This match cannot end. Turn on prestige victory or set a time limit.]
-
+Aquesta partida no pot acabar. Activa la victòria per prestigi o fixa un límit de temps.
 [Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
-
+El prestigi sol aparèixer entre els 13 i els 28 minuts, així que un límit de 30 minuts sovint acaba en empat.
 [Blitz]
-
+Llampec
 [ruleset blitz description]
-
+Inici ràpid, final aviat
 [Gentle]
-
+Suau
 [ruleset gentle description]
-
+Regles indulgents per a una primera partida
 [Sandbox]
-
+Lliure
 [ruleset sandbox description]
-
+Sense combats ni gana, construeix el que vulguis
 [Bloodbath]
-
+Carnisseria
 [ruleset bloodbath description]
-
+Exèrcits fràgils i intrèpids
 [Siege]
-
+Setge
 [ruleset siege description]
-
+Muralles de fortalesa i guerres llargues
 [Lean years]
-
+Anys magres
 [ruleset lean years description]
-
+Els recursos amb prou feines es recuperen
 [Gold rush]
-
+Febre de l'or
 [ruleset gold rush description]
-
+El que hi ha al mapa és tot el que hi haurà
 [Elite ranks]
-
+Elit
 [ruleset elite ranks description]
-
+Comença entrenat, sense més entrenament
 [Shifting alliances]
-
+Aliances canviants
 [ruleset shifting alliances description]
-
+Els equips poden canviar en una cursa de 60 minuts
 [Probability victory]
-
+Victòria per probabilitat
 [Off (play it out)]
-
+No (jugar fins al final)
 [95% sure]
-
+95% segur
 [97% sure]
-
+97% segur
 [99% sure]
-
+99% segur
 [Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
-
+Acaba la partida quan el model arriba a la confiança seleccionada. Els espectadors poden veure les probabilitats de victòria previstes a les estadístiques.
 [Changed from %0: %1]
-
+Canviat respecte a %0: %1
 [Combat is off, so the rules below have no effect.]
-
+El combat està desactivat, així que les regles de sota no tenen efecte.
 [%0 more rules are at their Standard values.]
-
+%0 regles més tenen els valors d'Estàndard.
 [Players see the map's terrain from the start; enemy units stay hidden.]
-
+Els jugadors veuen el terreny del mapa des del principi; les unitats enemigues continuen ocultes.
 [Each team starts with extra resources in its shared pool.]
-
+Cada equip comença amb recursos addicionals a la seva reserva compartida.
 [Units hit harder but have less HP and armor.]
-
+Les unitats colpegen més fort però tenen menys punts de vida i armadura.
 [Teams can attack each other. Turn off for a peaceful match.]
-
+Els equips es poden atacar entre ells. Desactiva-ho per a una partida pacífica.
 [Hurt units go back to heal instead of fighting to the death.]
-
+Les unitats ferides tornen a curar-se en lloc de lluitar fins a la mort.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
-
+Les unitats moren quan es queden sense punts de vida. Desactiva-ho per aturar-les a 1 punt de vida.
 [Units gain levels at schools.]
-
+Les unitats guanyen nivells a les escoles.
 [stat group work]
-
+Temps dels treballadors
 [stat worker time]
-
+Com van passar el temps els treballadors
 [stat worker time about]
-
+Què feien els treballadors de la colònia en cada moment: treballar per a un edifici, treballar en una bandera, entrenar, menjar, curar-se, esperar amb gana o ferits sense cap despensa ni hospital lliure, o estar ociosos sense res a fer. Una colònia sana té la majoria de treballadors treballant, pocs ociosos i cap esperant.
 [stat idle workers]
-
+Treballadors ociosos
 [stat idle workers about]
-
+La proporció del temps dels treballadors sense res a fer. Valors alts volen dir més treballadors que feina; prop de zero vol dir que tots estan ocupats i potser hi ha feines esperant.
 [stat work by job]
-
+En què treballaven els treballadors
 [stat work by job about]
-
+Quants treballadors proveïen cada tipus d'edifici: granges (per fer unitats noves), despenses (per fer àpats), edificis en construcció o millora, o altres edificis com torres, escoles i casernes.
 [stat haul distance]
-
+Distància als recursos
 [stat haul distance about]
-
+A quina distància mitjana estava un treballador recol·lector de l'edifici que proveïa, en caselles del mapa en línia recta.
 [stat hauling]
-
+Anar a buscar i portar
 [stat hauling about]
-
+Com es repartien els treballadors que proveïen edificis entre anar a un recurs, recollir-lo, portar-lo de tornada, i lliurar-lo o esperar un recurs que puguin assolir. La major part és caminar, així que com més a prop siguin els recursos, més feina es fa.
 [stat eating time]
-
+Treballadors que van a menjar
 [stat eating time about]
-
+Quants treballadors eren fora de la feina per menjar: caminant cap a una despensa, menjant-hi a dins, o amb gana sense cap despensa que els pogués acollir. Treballadors sense despensa vol dir que la colònia ha superat la capacitat de les despenses o del seu menjar.
 [stat inn distance]
-
+Distància a la despensa
 [stat inn distance about]
-
+A quina distància mitjana estaven els treballadors amb gana, durant el trajecte, de la despensa on anaven, en caselles del mapa en línia recta. Un viatge sencer és aproximadament el doble. Valors alts volen dir que les despenses són lluny d'on treballen els treballadors.
 [stat warriors]
-
+Guerrers
 [stat warriors about]
-
+Quants guerrers tenia la colònia. Desglossa-ho per veure quants eren prop de casa, prop d'una colònia enemiga o en terreny obert. El terreny proper a les dues colònies compta com a casa.
 [stat warrior level]
-
+Nivell d'atac mitjà dels guerrers
 [stat warrior level about]
-
+El nivell d'atac mitjà dels guerrers de la colònia, comptant igual la velocitat i la força d'atac, a l'escala de l'1 al 4 que mostra el joc. Les casernes l'augmenten; els guerrers nous sense entrenar el fan baixar.
 [stat warrior duties]
-
+Què feien els guerrers
 [stat warrior duties about]
-
+Com es repartien els guerrers de la colònia entre els enviats a una bandera de guerra, els prou ferits per deixar el combat i anar a un hospital (inclosos els que s'estan curant), i els lliures.
 [stat intruders]
-
+Guerrers enemics a casa
 [stat intruders about]
-
+Quants guerrers enemics hi havia a menys de 16 caselles dels edificis de la colònia. On dues colònies són a prop, cadascuna compta els defensors de l'altra.
 [stat home defence]
-
+Marge de força defensiva a casa
 [stat home defence about]
-
+La força dels guerrers propis prop dels edificis de la colònia menys la dels guerrers enemics que hi ha, comptant cada guerrer i cadascun dels seus nivells d'atac. Per sota de zero, la colònia estava en inferioritat a casa.
 [stat combat death places]
-
+On queien les unitats en combat
 [stat combat death places about]
-
+On eren les unitats de la colònia quan les van matar: prop dels seus edificis, prop dels edificis d'un enemic, o en terreny obert entre colònies. Pèrdues a casa volen dir que la colònia era atacada; pèrdues en una colònia enemiga volen dir que atacava. El terreny proper a les dues colònies compta com a casa.
 [stat band working]
-
+Treballant
 [stat band flag work]
-
+En una bandera
 [stat band idle]
-
+Ociosos
 [stat band training]
-
+Entrenant
 [stat band unserved]
-
+Sense despensa ni hospital lliure
 [stat band swarms]
-
+Granges
 [stat band inns]
-
+Despenses
 [stat band sites]
-
+Construcció i millora
 [stat band other buildings]
-
+Altres edificis
 [stat band to resource]
-
+Anant a un recurs
 [stat band harvesting]
-
+Recollint
 [stat band carrying]
-
+Portant-lo de tornada
 [stat band delivering]
-
+Lliurant o esperant
 [stat band walking to inn]
-
+Anant a una despensa
 [stat band no inn]
-
+Cap despensa lliure
 [stat band at home]
-
+A casa
 [stat band at enemy]
-
+En una colònia enemiga
 [stat band in the open]
-
+En terreny obert
 [stat band war flag]
-
+En una bandera de guerra
 [stat band seeking healing]
-
+Buscant curació
 [stat band free]
-
+Lliures
 [stat unit workers]
-
+treballadors
 [stat unit worker time]
-
+temps dels treballadors
 [stat unit working workers]
-
+treballadors proveint edificis
 [stat unit squares]
-
+caselles
 [stat unit warriors]
-
+guerrers
 [stat unit attack level]
-
+nivell d'atac
 [stat unit enemy warriors]
-
+guerrers enemics
 [stat unit strength count]
-
+força
 [stat view by place]
-
+Per lloc
