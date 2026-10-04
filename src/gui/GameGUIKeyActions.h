@@ -68,6 +68,7 @@ namespace GameGUIKeyActions
 		DecreaseGameSpeed,
 		OpenCommander,
 		StopCommander,
+		ToggleRecording,
 		ActionSize,
 	};
 

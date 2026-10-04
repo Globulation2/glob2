@@ -185,6 +185,8 @@ void Settings::load(std::string filename)
 			experiments = ExperimentSet::fromText(parsed["experiments"]);
 		READ_PARSED_INT(gameSpeed);
         READ_PARSED_INT(textSizePercent);
+        READ_PARSED_STRING(statsMetric);
+        READ_PARSED_INT(statsWindow);
         setTextSizePercent(textSizePercent);
         READ_PARSED_INT(touchScrollMomentum);
         READ_PARSED_INT(touchScrollBounce);
@@ -279,6 +281,8 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);
+        Utilities::streamprintf(stream,"statsMetric=%s\n",statsMetric.c_str());
+        Utilities::streamprintf(stream,"statsWindow=%d\n",statsWindow);
         Utilities::streamprintf(stream,"touchScrollMomentum=%d\n",touchScrollMomentum);
         Utilities::streamprintf(stream,"touchScrollBounce=%d\n",touchScrollBounce);
         Utilities::streamprintf(stream,"mapScrollMomentum=%d\n",mapScrollMomentum);

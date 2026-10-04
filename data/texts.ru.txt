@@ -470,8 +470,6 @@ ru
 левая клавиша windows
 [left]
 влево
-[Leo: nur ein erster Test]
-тест
 [level]
 Уровень
 [levels]
@@ -1148,8 +1146,6 @@ Cortex
 Согласует рост колонии и обученные атаки, сначала уничтожая лечение и пищу.
 [Algae]
 Водоросли
-[Alliances]
-Союзы
 [Beach size]
 Размер пляжа
 [Blue]
@@ -1158,8 +1154,6 @@ Cortex
 Коричневый
 [Built-in maps]
 Встроенные карты
-[Can change in game]
-Можно изменить в игре
 [Closed]
 Закрыто
 [Colonies]
@@ -1188,8 +1182,6 @@ Cortex
 Вес пустыни
 [Easy]
 Лёгкий
-[Explore as you play]
-Исследуйте во время игры
 [Extra colony assignments are retained for larger maps.]
 Дополнительные назначения колоний сохраняются для больших карт.
 [Extra islands]
@@ -1232,14 +1224,10 @@ Cortex
 Последняя выжившая колония
 [Layout]
 Расположение
-[Locked teams]
-Заблокированные команды
 [Magenta]
 Пурпурный
 [Map]
 Карта
-[Map knowledge]
-Изученность карты
 [Match finished]
 Матч завершен
 [Medium]
@@ -1286,10 +1274,6 @@ Cortex
 Повторение ландшафта
 [Resources]
 Ресурсы
-[Restore standard rules]
-Восстановить стандартные правила
-[Revealed terrain does not reveal all enemy activity.]
-Обнаруженная местность не раскрывает всю активность противника.
 [River]
 Река
 [River width]
@@ -1316,10 +1300,6 @@ Cortex
 Команда
 [Terrain]
 Местность
-[Terrain revealed]
-Ландшафт раскрыт
-[Try a ruleset, then make it your own.]
-Попробуйте набор правил, а затем настройте его по своему вкусу.
 [Victory]
 Победа
 [Watch game]
@@ -1344,12 +1324,6 @@ Cortex
 Ваши карты
 [colonies]
 колонии
-[* Changed from standard.]
-*Изменено по сравнению со стандартным.
-[World & diplomacy]
-Мир и дипломатия
-[Starting conditions & pace]
-Стартовые условия и темп
 [Inactive]
 Неактивный
 [8 workers / 2x speed]
@@ -1372,8 +1346,6 @@ Cortex
 В этой библиотеке нет карт.
 [Premade maps retain their authored starting units.]
 Готовые карты сохраняют начальных юнитов, заданных автором.
-[Premade: only speed changes (2x)]
-Готовая карта: меняется только скорость (2x)
 [Start with terrain known]
 Начните с известной местности
 [This colony will not join the match.]
@@ -2140,38 +2112,20 @@ OpenGL недоступен в этой сборке.
 Страница (P)
 [Map preview choose another]
 Выберите карту
-[Resources never grow or spread across the map.]
-Ресурсы никогда не растут и не распространяются по карте.
 [Building sites complete immediately, skipping delivery.]
 Стройки завершаются немедленно, без этапа доставки.
-[Units never grow hungry and never starve.]
-Отряды никогда не испытывают голода и никогда не умирают от голода.
-[Slows how often resources grow or spread across the map.]
-Замедляет частоту роста и распространения ресурсов по карте.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Пополняет общий запас рынка/обмена каждой команды в начале игры.
-[Grow normally]
-Обычный рост
 [No growth]
 Без роста
-[Normal construction]
-Обычное строительство
-[Instant]
-Мгновенное
 [Units get hungry]
 Отряды испытывают голод
 [No hunger]
 Без голода
-[Off (today's growth)]
-Выкл. (текущий рост)
 [Scarce (2x slower)]
 Скудные (в 2x медленнее)
 [Very scarce (4x slower)]
 Очень скудные (в 4x медленнее)
 [Extremely scarce (8x slower)]
 Крайне скудные (в 8x медленнее)
-[None (today's default)]
-Нет (текущее значение по умолчанию)
 [Small (+50 each)]
 Малый (+50 к каждому)
 [Medium (+150 each)]
@@ -2182,50 +2136,20 @@ OpenGL недоступен в этой сборке.
 Без роста ресурсов
 [Economy]
 Экономика
-[Scarce resources]
-Скудные ресурсы
 [Instant construction]
 Мгновенное строительство
-[Stockpile start]
-Начальный запас
-[Units still visit schools but never gain a level.]
-Юниты по-прежнему посещают школу, но никогда не получают новый уровень.
-[Units fight to the death instead of retreating to heal.]
-Юниты сражаются насмерть, вместо того чтобы отступить и вылечиться.
-[Units are never permanently lost -- HP just stops at 1.]
-Юниты никогда не теряются навсегда -- их здоровье просто останавливается на 1.
-[Disables all combat between every team.]
-Отключает любой бой между всеми командами.
-[Higher tiers deal more damage but have less HP and armor.]
-Более высокие уровни наносят больше урона, но имеют меньше здоровья и брони.
 [Higher tiers give every building much more HP.]
 Более высокие уровни дают каждому зданию гораздо больше здоровья.
 [Starting units spawn already leveled up. Changes the generated map.]
 Стартовые юниты появляются уже прокачанными. Меняет сгенерированную карту.
-[Trains normally]
-Обучается как обычно
 [No upgrades]
 Без улучшений
-[Retreats when damaged]
-Отступает при ранении
-[Fearless]
-Бесстрашный
-[Can die permanently]
-Может погибнуть навсегда
 [No permadeath]
 Без окончательной смерти
-[Normal combat]
-Обычный бой
-[Peaceful mode]
-Мирный режим
-[Off (today's balance)]
-Выкл. (текущий баланс)
 [Glass cannon x2]
 Стеклянная пушка x2
 [Glass cannon x3]
 Стеклянная пушка x3
-[Off (today's HP)]
-Выкл. (текущее здоровье)
 [Fortress x5]
 Крепость x5
 [Fortress x10]
@@ -2240,10 +2164,6 @@ OpenGL недоступен в этой сборке.
 Бой
 [Glass cannon]
 Стеклянная пушка
-[Fortress buildings]
-Укреплённые здания
-[Veteran/Fast start]
-Ветеран/Быстрый старт
 [Match ends at the timer; highest prestige at that instant wins.]
 Матч заканчивается по таймеру; побеждает тот, у кого в этот момент больше всего престижа.
 [Off (no timer)]
@@ -2256,8 +2176,6 @@ OpenGL недоступен в этой сборке.
 45 минут
 [60 minutes]
 60 минут
-[Sudden-death timer]
-Таймер внезапной смерти
 [Stats page three]
 Статистика 3/3 >
 [Stats blocked units]
@@ -2986,10 +2904,6 @@ Emoji
 Ещё
 [No items]
 Нет элементов
-[Opponents]
-Соперники
-[Review]
-Обзор
 [Review & Play]
 Проверить и играть
 [Edit opponents]
@@ -3432,8 +3346,6 @@ Emoji
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3826,21 +3738,9 @@ Emoji
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4540,20 +4440,6 @@ Emoji
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4674,6 +4560,26 @@ Emoji
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4746,3 +4652,481 @@ Emoji
 базы
 [bases per colony]
 Баз на колонию; база — это одна команда карты в нарисованном виде, с её зданиями и юнитами
+[stat group population]
+
+[stat group food]
+
+[stat group resources]
+
+[stat group buildings]
+
+[stat group military]
+
+[stat group map]
+
+[stat group score]
+
+[stat overview]
+
+[stat overview about]
+
+[stat population]
+
+[stat population about]
+
+[stat births]
+
+[stat births about]
+
+[stat deaths]
+
+[stat deaths about]
+
+[stat net growth]
+
+[stat net growth about]
+
+[stat death causes]
+
+[stat death causes about]
+
+[stat conversions]
+
+[stat conversions about]
+
+[stat hunger]
+
+[stat hunger about]
+
+[stat health]
+
+[stat health about]
+
+[stat seeking food]
+
+[stat seeking food about]
+
+[stat in care]
+
+[stat in care about]
+
+[stat wheat harvested]
+
+[stat wheat harvested about]
+
+[stat wheat stored]
+
+[stat wheat stored about]
+
+[stat meals]
+
+[stat meals about]
+
+[stat starvation]
+
+[stat starvation about]
+
+[stat healing]
+
+[stat healing about]
+
+[stat gathered]
+
+[stat gathered about]
+
+[stat stored]
+
+[stat stored about]
+
+[stat spending]
+
+[stat spending about]
+
+[stat delivered]
+
+[stat delivered about]
+
+[stat traded]
+
+[stat traded about]
+
+[stat buildings]
+
+[stat buildings about]
+
+[stat construction]
+
+[stat construction about]
+
+[stat buildings lost]
+
+[stat buildings lost about]
+
+[stat blocked buildings]
+
+[stat blocked buildings about]
+
+[stat attack]
+
+[stat attack about]
+
+[stat defence]
+
+[stat defence about]
+
+[stat hit points]
+
+[stat hit points about]
+
+[stat damage dealt]
+
+[stat damage dealt about]
+
+[stat damage taken]
+
+[stat damage taken about]
+
+[stat damage traded]
+
+[stat damage traded about]
+
+[stat combat deaths]
+
+[stat combat deaths about]
+
+[stat accuracy]
+
+[stat accuracy about]
+
+[stat training]
+
+[stat training about]
+
+[stat skills]
+
+[stat skills about]
+
+[stat growth nearby]
+
+[stat growth nearby about]
+
+[stat growth map]
+
+[stat growth map about]
+
+[stat stranded]
+
+[stat stranded about]
+
+[stat cleared]
+
+[stat cleared about]
+
+[stat prestige]
+
+[stat prestige about]
+
+[stat band combat]
+
+[stat band starvation]
+
+[stat band clearing]
+
+[stat band trapped]
+
+[stat band other]
+
+[stat band starving]
+
+[stat band hungry]
+
+[stat band peckish]
+
+[stat band fed]
+
+[stat band critical]
+
+[stat band wounded]
+
+[stat band hurt]
+
+[stat band healthy]
+
+[stat band weakening]
+
+[stat band looking]
+
+[stat band eating]
+
+[stat band healing]
+
+[stat band meals]
+
+[stat band new units]
+
+[stat band ammunition]
+
+[stat band construction]
+
+[stat band upgrades]
+
+[stat band built]
+
+[stat band upgraded]
+
+[stat band repaired]
+
+[stat band destroyed]
+
+[stat band demolished]
+
+[stat band melee]
+
+[stat band magic]
+
+[stat band towers]
+
+[stat band within 8]
+
+[stat band 8 to 16]
+
+[stat band 16 to 32]
+
+[stat unit units]
+
+[stat unit wheat]
+
+[stat unit meals]
+
+[stat unit hit points]
+
+[stat unit resources]
+
+[stat unit buildings]
+
+[stat unit strength]
+
+[stat unit damage]
+
+[stat unit shots]
+
+[stat unit visits]
+
+[stat unit skills]
+
+[stat unit prestige]
+
+[stat axis percent of %0]
+
+[stat axis share of all teams]
+
+[stat axis percent of units]
+
+[stat axis %0 per minute per 100 units]
+
+[stat axis %0 per 100 units]
+
+[stat axis %0 per minute]
+
+[stat axis %0 so far]
+
+[stat axis %0 minute average]
+
+[stat view per minute]
+
+[stat view total]
+
+[stat view %0 min]
+
+[stat view split]
+
+[stat view percentages]
+
+[stat view percent of units]
+
+[stat view per 100 units]
+
+[stat view share]
+
+[stat view highlight none]
+
+[stat column peak units]
+
+[stat column born]
+
+[stat column lost]
+
+[stat column wheat]
+
+[stat column damage dealt]
+
+[stat column damage taken]
+
+[stat column built]
+
+[stat column buildings lost]
+
+[stat column prestige]
+
+[stat marker wiped out]
+
+[stat marker first combat death]
+
+[stat marker first building destroyed]
+
+[stat not recorded for this match]
+
+[results reason beyond doubt]
+
+[stat per minute short]
+
+[stat page colony]
+
+[stat page %0 of %1]
+
+[stat band workers]
+
+[stat band explorers]
+
+[stat band warriors]
+
+[stat unit deaths]
+
+[stat unit growth]
+
+[stat view by unit type]
+
+[stat view by state]
+
+[stat view by resource]
+
+[stat view by building]
+
+[stat view by work]
+
+[stat view by cause]
+
+[stat view by weapon]
+
+[stat view by distance]
+
+[stat nothing to show]
+
+[stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

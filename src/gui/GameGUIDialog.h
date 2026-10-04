@@ -47,7 +47,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(RETURN_GAME); }
-	double maxWidth() const override { return classic() ? 300 : -1; }
+	double maxWidth() const override { return -1; }
 
   private:
 	bool replay, canSave, paused;
@@ -70,7 +70,7 @@ class InGameConfirmScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(CANCEL); }
-	double maxWidth() const override { return classic() ? 420 : -1; }
+	double maxWidth() const override { return -1; }
 
   private:
 	std::string title, body, confirmLabel, cancelLabel;
@@ -94,7 +94,7 @@ class InGameEndOfGameScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(canContinue ? CONTINUE : QUIT); }
-	double maxWidth() const override { return classic() ? 300 : -1; }
+	double maxWidth() const override { return -1; }
 
   private:
 	std::optional<GAGCore::Color> teamColor;
@@ -142,7 +142,7 @@ class InGameAllianceScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
-	double maxWidth() const override { return classic() ? (rows.size() > 8 ? 580 : 300) : 640; }
+	double maxWidth() const override { return 640; }
 	GAGGUI::ui::Rect available(const Glob2UI::Presentation &p, const GAGGUI::ui::Metrics &m) override
 	{ return insetAvailable(p, m); }
 
@@ -179,7 +179,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
-	double maxWidth() const override { return classic() ? 300 : -1; }
+	double maxWidth() const override { return -1; }
 
   private:
 	GameGUI *gameGUI;
@@ -204,7 +204,7 @@ class InGameTextInput : public Glob2UI::InGameDialog
   protected:
 	bool scrim() const override { return false; }
 	void onEscape() override { finish(1); }
-	double maxWidth() const override { return classic() ? 400 : 560; }
+	double maxWidth() const override { return 560; }
 	GAGGUI::ui::Rect available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics) override;
 	GAGGUI::ui::Rect place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area) override;
 
@@ -234,7 +234,7 @@ class InGameObjectivesScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(OK); }
-	double maxWidth() const override { return classic() ? 450 : 560; }
+	double maxWidth() const override { return 560; }
 	GAGGUI::ui::Rect available(const Glob2UI::Presentation &p, const GAGGUI::ui::Metrics &m) override
 	{ return insetAvailable(p, m); }
 

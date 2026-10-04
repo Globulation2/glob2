@@ -6,7 +6,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 132
+#define VERSION_MINOR 133
+// version 133 adds worker time use, combat-death places and the defence snapshot to team statistics.
 // version 132 preserves legacy AI clocks, specialist caches and learned policy state.
 // version 131 adds the optional win-probability winning-condition tag.
 // version 130 adds Tile::farmArea, the per-tile mask of the farm-areas experiment.

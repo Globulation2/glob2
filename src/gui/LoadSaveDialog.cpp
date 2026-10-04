@@ -15,8 +15,9 @@ using fe::Element;
 using fe::Presentation;
 
 LoadSaveDialog::LoadSaveDialog(const char *directory, const char *extension, bool isLoad, std::string title,
-							   const char *defaultFileName, NameFunction filenameToName, PathFunction nameToFilename)
-	: isLoad(isLoad), title(std::move(title)), filenameToName(filenameToName), nameToFilename(nameToFilename)
+							   const char *defaultFileName, NameFunction filenameToName, PathFunction nameToFilename,
+							   Glob2UI::Surface surface)
+	: InGameDialog(surface), isLoad(isLoad), title(std::move(title)), filenameToName(filenameToName), nameToFilename(nameToFilename)
 {
 	if (nameToFilename)
 	{
@@ -208,7 +209,7 @@ Element LoadSaveDialog::build(const Presentation &p)
 	if (busy)
 		list.enabled.assign(files.size(), false);
 	auto fileList = fe::listView("files", files, selected, [this](int index) { selectPresentedFile(index); }, list);
-	parts.push_back(classic() ? fileList : fe::expanded(fileList));
+	parts.push_back(fe::expanded(fileList));
 	if (!isLoad)
 	{
 		fe::TextFieldOptions entry;
@@ -222,10 +223,5 @@ Element LoadSaveDialog::build(const Presentation &p)
 	std::vector<fe::MenuAction> actions;
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirmPresentedFile(); }, true, SDLK_RETURN, !busy && !name.empty()});
 	actions.push_back({"cancel", fe::tr("[Cancel]"), [this] { cancelPresentedFile(); }, false, SDLK_ESCAPE, !busy});
-	if (classic())
-	{
-		parts.push_back(dialogActions(std::move(actions), p));
-		return fe::column(std::move(parts), {p.pt(10)});
-	}
 	return fe::footer(fe::column(std::move(parts), {p.pt(10)}), dialogActions(std::move(actions), p));
 }

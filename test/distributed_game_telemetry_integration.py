@@ -75,6 +75,9 @@ def run_host(host, output):
                 assert any(r['record']=='GLOB2_PERF_FINAL' for r in rows[identity])
                 assert any(r['record']=='GLOB2_MEASURE' and r['values']['final']==1 and
                            r['values']['tick']==700 for r in rows[identity])
+                final = next(r['values'] for r in rows[identity] if r['record']=='GLOB2_MEASURE' and r['values']['final']==1)
+                assert {'labour_coverage_start', 'labour_0', 'filling_0_0', 'combatDeathPlace_0_0',
+                        'warriors_0', 'intruders', 'defenceTick'} <= final.keys(), 'labour and defence fields exported'
         for record in records:
             j = record['job']
             if j['labels'].get('variant')=='on':

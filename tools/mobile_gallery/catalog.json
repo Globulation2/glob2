@@ -167,7 +167,19 @@
     {
       "id": "setup-rules",
       "title": "Setup \u00b7 rules",
-      "description": "Rules presets and game constraints.",
+      "description": "Ruleset and the Match rules, with any rule set away from Standard.",
+      "group": "Custom game setup"
+    },
+    {
+      "id": "setup-rules-all",
+      "title": "Setup \u00b7 all rules",
+      "description": "Every rule, grouped, starting from the Blitz ruleset.",
+      "group": "Custom game setup"
+    },
+    {
+      "id": "ruleset-picker",
+      "title": "Ruleset picker",
+      "description": "The rulesets as name and description cards; layouts too narrow for the list beside the rules open this.",
       "group": "Custom game setup"
     },
     {

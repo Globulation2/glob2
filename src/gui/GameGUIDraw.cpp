@@ -19,6 +19,7 @@
 
 #include "Game.h"
 #include "GameGUI.h"
+#include "TeamStatChart.h"
 #include "GameGUITouch.h"
 #include "GameGUIInternal.h"
 #include "GlobalContainer.h"
@@ -798,7 +799,7 @@ void GameGUI::drawAll(int team)
 		connectionOverlay->draw(touch->usesHUD(), area, unit);
 	}
 
-	if (!torusView.active() && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
+	if ((torusView.enabled() || !torusView.active()) && !touch->usesHUD()) drawMapZoomControls(camera, true, true);
 	// draw menu if any
 	if (inGameMenu)
 	{
@@ -899,21 +900,32 @@ void GameGUI::drawXPProgressBar(int x, int y, int act, int max)
 
 void GameGUI::drawStatisticsPage(int y)
 {
+	// Page 0 is the colony summary, then one page per group of the metric catalog;
+	// spectators get the win chances as a last page.
 	const int x = globalContainer->gfx->getW() - RIGHT_MENU_WIDTH + RIGHT_MENU_OFFSET;
-	globalContainer->gfx->drawString(
-		x + 4, y, globalContainer->littleFont,
-		Toolkit::getStringTable()->getString(measurementPage == 0 ? "[Stats page one]"
-													: measurementPage == 1 ? "[Stats page two]"
-													: measurementPage == 2 ? "[Stats page three]"
-													: "[Win chance]"));
-	if (measurementPage == 1)
-		teamStats->drawMeasurements(x, y + 16);
-	else if (measurementPage == 2)
-		teamStats->drawExpandedMeasurements(x, y + 16);
-	else if (measurementPage == 3)
+	const int pages = statisticsPages();
+	const bool chances = globalContainer->liveSpectating && measurementPage == pages - 1;
+	auto *strings = Toolkit::getStringTable();
+	const std::string name = strings->getString(measurementPage == 0 ? "[stat page colony]"
+												: chances			   ? "[Win chance]"
+																	   : Stats::groupKey(Stats::Group(measurementPage - 1)));
+	const std::string counter = FormattableString(strings->getString("[stat page %0 of %1]")).arg(measurementPage + 1).arg(pages);
+	Font *font = globalContainer->littleFont;
+	const int width = RIGHT_MENU_WIDTH - 2 * RIGHT_MENU_OFFSET;
+	const int counterWidth = font->getStringWidth(counter);
+	globalContainer->gfx->drawString(x + 4, y, font, name, width - counterWidth - 12);
+	globalContainer->gfx->drawString(x + width - 4 - counterWidth, y, font, counter);
+	if (measurementPage == 0)
+		teamStats->drawText(x, y);
+	else if (chances)
 		drawWinProbabilities(x, y);
 	else
-		teamStats->drawText(x, y);
+		TeamStatChart::paintReadings(*globalContainer->gfx, x, y + 16, width, *teamStats, Stats::Group(measurementPage - 1));
+}
+
+int GameGUI::statisticsPages() const
+{
+	return 1 + TeamStatChart::readingGroups + (globalContainer->liveSpectating ? 1 : 0);
 }
 
 void GameGUI::drawWinProbabilities(int x, int y)

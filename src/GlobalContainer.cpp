@@ -166,8 +166,8 @@ void GlobalContainer::updateLoadProgressScreen(int value)
 // glob2-client specific actions here.
 void GlobalContainer::loadClient(void)
 {
-	// Native builds have every data package; the browser installs the game
-	// sprites and menu music after the main menu is up (scons/web_assets.py).
+	// Native builds have every data package; the browser installs game sprites
+	// before startup and menu music afterward (scons/web_assets.py).
 	const bool gameData = GAGCore::ApplicationHost::assetPackageReady("game");
 	if (!runNoX)
 	{

@@ -71,7 +71,7 @@ function fitCanvas() {
 addEventListener('resize', fitCanvas);
 new MutationObserver(fitCanvas).observe(canvas, {attributes:true,attributeFilter:['width','height']});
 fitCanvas();
-// Download progress for the WebAssembly module and the core data package, with a
+// Download progress for the WebAssembly module and the startup data packages, with a
 // time estimate from the rate so far. Downloads report decoded bytes; responses
 // served from a compressed copy are scaled to its transfer size, which
 // browser/precompress.py records in data-wire-sizes, so the bar and estimate
@@ -231,7 +231,7 @@ var Module = {
   },
   glob2WireSize: wireSize,
   glob2AssetProgress(name, loaded, total) {
-    // Until the menu is up every download is a startup package (core; the full
+    // Until the menu is up every download is a startup package (core and game; the full
     // translations for an interface not in English; the full font for Chinese,
     // Japanese or Korean).
     if (document.body.classList.contains('ready')) return;
@@ -281,8 +281,6 @@ var Module = {
       if (cjkInterface()) Module.glob2RequireAsset?.('font-cjk');
       removeRunDependency('browser-saves');
     });
-    // A watched replay opens straight into the game, which needs its sprites.
-    if (watchReplay && watchReplay.bytes) Module.glob2RequireAsset?.('game');
     if (watchReplay && watchReplay.bytes) {
       addRunDependency('watch-replay');
       Module.setStatus('Downloading replay…');
@@ -361,8 +359,7 @@ function savedPreference(name) {
 function cjkInterface() { return /^(zh|ja|ko)\b/.test(savedPreference('language') || ''); }
 // After the menu is up, the rest of the game data downloads in the background,
 // most needed first (scons/web_assets.py):
-// - game: the in-game sprites. Every match and the editor wait for it ("Loading
-//   game graphics"); the menu shows the colony still image until it arrives.
+// Core and game sprites already arrived together under the loading page.
 // - menu-music, then font-cjk: the full font, so Chinese, Japanese and Korean
 //   player names and chat get their glyphs, then the other languages' full
 //   translations (English stands in for a language chosen before they arrive).
@@ -377,9 +374,9 @@ function loadStagedAssets(gpu) {
   if (!assets) return;
   const saveData = navigator.connection?.saveData === true;
   const artworkOff = savedPreference('highResolutionArtwork') === '0';
-  const required = new Set(['game', 'font-cjk', 'translations']);
+  const required = new Set(['font-cjk', 'translations']);
   const wanted = [];
-  for (const name of ['game', 'menu-music', 'font-cjk', 'translations', 'music', 'hd']) {
+  for (const name of ['menu-music', 'font-cjk', 'translations', 'music', 'hd']) {
     if (!assets.manifest.packages.some(entry => entry.name === name) || assets.states[name] === 'ready') continue;
     if (!required.has(name) && (saveData || (name === 'hd' && (!gpu || artworkOff)))) assets.states[name] = 'skipped';
     else wanted.push(name);
@@ -392,7 +389,7 @@ function loadStagedAssets(gpu) {
   (async () => {
     for (const name of wanted) {
       for (let attempt = 0; ; ++attempt) {
-        try { await assets.load(name, name === 'game' ? undefined : outsideMatch); break; }
+        try { await assets.load(name, outsideMatch); break; }
         catch (error) {
           Module.printErr('Game data unavailable (' + name + '): ' + (error?.message || error));
           if (!required.has(name)) break;

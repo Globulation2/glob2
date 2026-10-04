@@ -17,17 +17,22 @@ namespace Online
 class OnlineMatchResult;
 }
 
+//! A team of the finished match, as the results list it.
 struct TeamEntry
 {
 	int teamNum;
-	Uint64 endVal[36]{};
+	//! Whole-match figures for the overview, one per overview column
+	//! (overviewColumns in EndGameScreen.cpp), in the same order.
+	std::vector<double> summary;
 	GAGCore::Color color;
 	std::string name;
 	bool enabled = true;
 };
 
-//! The results after a match: one metric at a time as a chart over the match,
-//! with the teams to show chosen by the player, and a replay save.
+//! The results after a match: an overview of every team, then one metric at a
+//! time as a chart over the match, picked from the grouped metric catalog
+//! (stats/MetricCatalog.h), with the teams to show chosen by the player, and a
+//! replay save.
 class EndGameScreen : public GAGGUI::ui::UIScreen
 {
 	friend class GameGUITouchHarness;
@@ -37,10 +42,6 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	//! Return values passed by the screen's buttons
 	enum ButtonId
 	{
-		//! stat selector buttons use their int as id
-		STAT_BUTTON_FIRST = 0,
-		//! per-team toggle buttons use TEAM_TOGGLE_FIRST + row index
-		TEAM_TOGGLE_FIRST = EndOfGameStat::TYPE_NB_STATS,
 		QUIT = 38,
 		SAVE_REPLAY = 39
 	};
@@ -50,14 +51,29 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	void updateExecution(Uint32 tick) override;
 
 	// Semantic entry points shared with harnesses and captures.
+	//! Shows a metric of Stats::catalog() by index, or the overview for OVERVIEW.
 	void selectMetric(int metric);
+	static constexpr int OVERVIEW = -1;
+	//! Changes how the selected metric is shown; choices it does not offer are dropped.
+	void setView(Stats::View view);
+	const Stats::View &currentView() const { return view; }
+	//! Draws one team heavier than the rest, or none for -1.
+	void highlightTeam(int teamNum);
 	void toggleTeam(int row);
 	void expandChart(bool expanded);
 	void showTeamFilters(bool open);
-	// Inspect the chart at a viewport point (the value marker follows it).
+	// Inspect the chart at a viewport point (the value marker follows it). The
+	// chart must have been painted, which is what places it in the viewport.
 	void inspect(int x, int y);
-	// Legacy action codes: 100 opens the metric picker, 101 toggles the expanded
-	// chart, 102 the team filters, 200+ toggles a team row, else a ButtonId.
+	//! Action codes of activateResultControl(), besides the ButtonIds.
+	enum ResultControl
+	{
+		OPEN_GROUP_LIST = 100,		 //!< Compact layouts: the list of metric groups.
+		TOGGLE_EXPANDED_CHART = 101,
+		TOGGLE_TEAM_FILTERS = 102,
+		OPEN_METRIC_LIST = 103,		 //!< Compact layouts: the metrics of the selected group.
+		TOGGLE_TEAM_FIRST = 200		 //!< Plus the team's row.
+	};
 	void activateResultControl(int action);
 	//! Quick matches: opens (or joins) the unrated rematch room (Online::requestRematch)
 	//! and leaves the results; the room opens over the online screens.
@@ -97,12 +113,13 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	void afterPaint(Glob2UI::Canvas &canvas) override;
 	void viewportResized(int oldWidth, int oldHeight, int width, int height) override;
 
-	//! resort players
-	void sortAndSet(int type);
-	//! Translated short name of a stat type, used for its selector button and the graph label
-	static std::string statTypeName(int type);
 	std::vector<TeamEntry> teams;
-	int selectedMetric = 0;
+	//! Index into Stats::catalog(), or OVERVIEW.
+	int selectedMetric = OVERVIEW;
+	//! How the selected metric is shown; always one of the views it offers.
+	Stats::View view;
+	//! Team number drawn heavier than the rest, or -1.
+	int highlighted = -1;
 	bool expandedChart = false;
 	bool teamFiltersOpen = false;
 	//! pointer to the game, necessary for correctly saving replays
@@ -121,11 +138,25 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	// Chart-local pointer position, or -1 when outside.
 	int hoverX = -1, hoverY = -1;
 	Glob2UI::Rect chartBounds;
-	bool teamEnabled(int teamNum) const;
+	//! The selected metric, or null on the overview.
+	const Stats::Metric *metric() const;
+	//! Per metric of the catalog: nothing happened in this match for it to show.
+	std::vector<bool> nothingToShow;
+	//! A metric's name in the picker, saying so when it has nothing to show.
+	std::string pickerTitle(int index) const;
+	int enabledTeams() const;
 	void paintChart(Glob2UI::Canvas &canvas, Glob2UI::Rect r);
-	void paintCurves(GAGCore::DrawableSurface &surface, Glob2UI::Rect r);
-	void paintMeasurements(GAGCore::DrawableSurface &surface, Glob2UI::Rect r);
 	TeamStatChart::Options chartOptions() const;
-	void saveReplay(const char *dir, const char *ext);
+	// Parts of build(). Wide layouts list the metrics in a sidebar; compact ones
+	// pick them from two drop-downs in a header row.
+	Glob2UI::Element metricSidebar(const Glob2UI::Presentation &p);
+	Glob2UI::Element metricChoices(const Glob2UI::Presentation &p);
+	Glob2UI::Element compactHeader(const Glob2UI::Presentation &p);
 	Glob2UI::Element teamRows(const Glob2UI::Presentation &p);
+	Glob2UI::Element viewControls(const Glob2UI::Presentation &p);
+	Glob2UI::Element chartCanvas(const Glob2UI::Presentation &p);
+	Glob2UI::Element overview(const Glob2UI::Presentation &p, bool compact);
+	Glob2UI::Element actionBar(const Glob2UI::Presentation &p, bool compact);
+	void openMatchPage();
+	void saveReplay(const char *dir, const char *ext);
 };

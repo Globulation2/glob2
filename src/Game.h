@@ -365,7 +365,7 @@ private:
 	/// Return whether there is no overlap between any buildings
 	bool checkBuildingsDoNotOverlapAndHealMissing();
 	//! `opacity` fades an entity's bars and pips with it, as a unit fading into the fog of war.
-	static void anchorBars(int x, int y, bool exception = false, MapRenderState* drawnRender = nullptr, float opacity = 1.f);
+	static void anchorBars(int x, int y, MapRenderState* drawnRender = nullptr, float opacity = 1.f);
 	static void drawStatusPip(int x, int y, Uint8 r, Uint8 g, Uint8 b, MapRenderState* drawnRender = nullptr, float opacity = 1.f);
 	static void drawPointBar(int x, int y, BarOrientation orientation, int maxLength, int actLength, Uint8 r, Uint8 g, Uint8 b, int barWidth=2, MapRenderState* drawnRender=nullptr, float opacity = 1.f)
 	{

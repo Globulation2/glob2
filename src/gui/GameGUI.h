@@ -680,6 +680,9 @@ private:
 
 	TeamStats *teamStats;
 	int measurementPage = 0;
+	//! Pages of the statistics text view: the colony summary, the metric groups
+	//! and, when spectating, the win chances.
+	int statisticsPages() const;
 	void drawStatisticsPage(int y);
 	//! Each side's chance of winning, under the statistics. Drawn for live
 	//! spectators, independently of the game's winning conditions.

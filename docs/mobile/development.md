@@ -80,8 +80,8 @@ metric arrows under the thumb and current counters; × or pulling it down closes
 it. Spacious layouts and replays keep the tactical list;
 phone palettes float over the camera, while spacious touch layouts keep a
 content-sized palette open at the right. Both preserve the camera framing and
-leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`; frontend paper styling remains
-independent. A completed tap on empty map space dismisses open toolboxes,
+leave the world visible below short panels. In-game surfaces use `InGameTouchTheme.h`, and dialogs over a match use the
+matching `inGameTheme()`; frontend paper styling remains independent. A completed tap on empty map space dismisses open toolboxes,
 statistics and inspection together, without reopening a previous palette. An
 outside tap on the map peek likewise dismisses its underlying tools; its explicit
 Done button can return to them. Tapping another object switches selection;
@@ -241,12 +241,15 @@ that a drag out of the rail places a building rather than navigating back.
   history) are framework dialogs hosted by `GameGUI` on every presentation;
   touch and desktop render the same tree in the in-match theme. File operations
   keep their existing persistence and error/retry state machines.
-- `EndGameScreen` owns a chart, metric dropdown, team filters, expansion and replay
-  export on both desktop and touch. The chart itself is `TeamStatChart`, shared with
-  the compact in-match statistics sheet. `EndGameStat` retains history interpretation,
-  including explanations for missing measurement coverage. Compact layouts put metric
-  and team-filter entry points in one row, with scrollable filters over the plot.
-  Axis labels stay outside the curves.
+- `EndGameScreen` owns an overview, a chart, the metric picker, team filters,
+  expansion and replay export on both desktop and touch. The chart itself is
+  `TeamStatChart`, shared with the compact in-match statistics sheet; what it draws
+  comes from the metric catalog (`src/stats/`, see
+  [gameplay measurements](../ai/gameplay-statistics.md#what-the-player-sees)),
+  including the message for metrics a save has no coverage for. Wide layouts list the
+  metrics by group beside the chart; compact layouts put a group and a metric
+  drop-down and the team-filter entry point in one row, with scrollable filters over
+  the plot. Axis labels stay outside the curves.
 
 A session cannot commit after a second finger, focus loss, rotation, selection
 change, or release over UI. While a zone stroke is held or a paint tap waits, the

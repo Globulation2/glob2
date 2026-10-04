@@ -517,6 +517,12 @@ struct MobileGallerySetup
 		frame(stack);
 		lobby->selectTab(2);
 		stackShot(stack, "setup-rules");
+		lobby->selectRuleset("blitz");
+		lobby->setRulesView(CustomGameScreen::RulesView::All);
+		stackShot(stack, "setup-rules-all");
+		lobby->selectRuleset("standard");
+		lobby->setRulesView(CustomGameScreen::RulesView::Summary);
+		screenShot(stack, "ruleset-picker", std::make_unique<RulesetChoiceScreen>("standard"));
 		std::vector<std::string> aiChoices;
 		for (int id : AINames::selectionOrder())
 			aiChoices.push_back(AINames::getAISelectorText(id));
@@ -1084,7 +1090,9 @@ class MobileGalleryGameplay
 			auto results = std::make_unique<ResultsFixture>(&gui);
 			auto *view = results.get();
 			stack.push(std::move(results));
+			view->selectMetric(EndGameScreen::OVERVIEW);
 			stackShot(stack, "game-results");
+			view->selectMetric(Stats::findMetric("population"));
 			view->showFilters();
 			stackShot(stack, "game-results-filters");
 			view->inspectValue();
