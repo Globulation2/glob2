@@ -30,6 +30,9 @@ it('reports exact versions, resolves atomically, preserves content and restricts
   const version = catalog.items[0];
   const textureUrl = `/api/v1/skins/versions/${version.id}/texture`;
   const originalPaint = (await app.inject({ url: textureUrl })).rawPayload;
+  const materialUrl = `/api/v1/skins/versions/${version.id}/material`;
+  const originalMaterial = (await app.inject({ url: materialUrl })).rawPayload;
+  expect(originalMaterial.length).toBeGreaterThan(0);
   const url = `/api/v1/skins/versions/${version.id}/reports`;
   expect(
     (await app.inject({ method: 'POST', url, payload: { reason: 'Example' } })).statusCode,
@@ -70,6 +73,7 @@ it('reports exact versions, resolves atomically, preserves content and restricts
       .resolution,
   ).toBe('disabled');
   expect((await app.inject({ url: textureUrl })).statusCode).toBe(404);
+  expect((await app.inject({ url: materialUrl })).statusCode).toBe(404);
   expect(
     (
       await app.inject({
@@ -85,6 +89,12 @@ it('reports exact versions, resolves atomically, preserves content and restricts
   const reviewed = await app.inject({ url: review, headers: adminHeaders });
   expect(reviewed.rawPayload).toEqual(originalPaint);
   expect(reviewed.headers['cache-control']).toBe('private, no-store');
+  const materialReview = `/api/v1/admin/skins/versions/${version.id}/material`;
+  expect((await app.inject({ url: materialReview, headers })).statusCode).toBe(403);
+  const reviewedMaterial = await app.inject({ url: materialReview, headers: adminHeaders });
+  expect(reviewedMaterial.statusCode).toBe(200);
+  expect(reviewedMaterial.rawPayload).toEqual(originalMaterial);
+  expect(reviewedMaterial.headers['cache-control']).toBe('private, no-store');
   expect(
     (
       await app.inject({

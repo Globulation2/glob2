@@ -2,6 +2,7 @@ import sharp from 'sharp';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { createHarness, type Harness, type Instance } from './support.ts';
 import { registeredPlayer, type Player } from './playSupport.ts';
+import { colourAtlas, materialMap } from './skinImages.ts';
 let harness: Harness;
 let instance: Instance;
 let owner: Player;
@@ -26,16 +27,13 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   const url = '/api/v1/skins/draft';
   expect((await app.inject({ url })).statusCode).toBe(401);
   expect((await app.inject({ url, headers })).json()).toEqual({ draft: null });
-  const png = await sharp({
-    create: { width: 256, height: 256, channels: 4, background: '#ee224488' },
-  })
-    .png()
-    .toBuffer();
+  const png = await colourAtlas('#ee224488');
   const payload = {
     revision: null,
     name: ' My draft ',
     buildingColor: 0x123456,
     imageBase64: png.toString('base64'),
+    materialBase64: (await materialMap({ channels: 4 })).toString('base64'),
   };
   const saves = await Promise.all(
     [0, 1].map(() => app.inject({ method: 'PUT', url, headers, payload })),
@@ -53,6 +51,17 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   expect(
     (await sharp(Buffer.from(read.json().draft.imageBase64, 'base64')).metadata()).hasAlpha,
   ).toBe(false);
+  const materialPng = Buffer.from(read.json().draft.materialBase64, 'base64');
+  expect(await sharp(materialPng).metadata()).toMatchObject({
+    width: 512,
+    height: 512,
+    channels: 1,
+  });
+  const material = await sharp(materialPng)
+    .extractChannel(0)
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  expect(material.data[512 * 511 + 511]).toBe(3);
   expect((await app.inject({ url, headers: otherHeaders })).json()).toEqual({ draft: null });
   expect(
     (
@@ -79,6 +88,8 @@ it('keeps drafts private, canonical and independent of paid publishing, and reje
   for (const change of [
     { name: ' ' },
     { imageBase64: Buffer.from('<svg/>').toString('base64') },
+    { materialBase64: (await materialMap({ id: () => 4 })).toString('base64') },
+    { materialBase64: undefined },
     { buildingColor: -1 },
     { swarmMesh: 'pyramid' },
   ]) {

@@ -143,7 +143,8 @@ describe('deleting my account', () => {
       .values({
         skin_id: skin.id,
         texture_sha256: preset.texture_sha256,
-        layout: 'colony-v1',
+        material_sha256: preset.material_sha256,
+        layout: 'colony-v2',
         building_color: 123,
         manifest_sha256: 'fe'.repeat(32),
       })
@@ -161,6 +162,7 @@ describe('deleting my account', () => {
         name: 'Private paint',
         building_color: 123,
         image: Buffer.from('private draft'),
+        material: Buffer.from('private material'),
       })
       .execute();
     expect((await deleteMe(painter, painter.displayName)).status).toBe(204);
@@ -185,9 +187,10 @@ describe('deleting my account', () => {
         .where('id', '=', skin.id)
         .executeTakeFirstOrThrow(),
     ).toEqual({ name: 'Deleted skin', disabled_at: expect.any(Date) });
-    expect((await fetch(`${api.url}/api/v1/skins/versions/${version.id}/texture`)).status).toBe(
-      404,
-    );
+    for (const route of ['texture', 'material'])
+      expect((await fetch(`${api.url}/api/v1/skins/versions/${version.id}/${route}`)).status).toBe(
+        404,
+      );
     expect(
       await db
         .selectFrom('colony_skin_versions')

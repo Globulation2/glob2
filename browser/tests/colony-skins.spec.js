@@ -87,7 +87,10 @@ test('live colony meshes render through WebGL2 and survive context restoration',
       await route.fulfill({response,body:`(${installTracking.toString()})();\n${await response.text()}`});
     });
   }
-  const png = [...fs.readFileSync(path.resolve(__dirname, '../../platform/apps/api/assets/skins/stripes.png'))];
+  // colony-v2 preview pair: a 512x512 colour atlas and its material-id map.
+  const fixture = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../test/fixtures/skins/authorization.json'), 'utf8'));
+  const paint = [...Buffer.from(fixture.textureHex, 'hex')];
+  const material = [...Buffer.from(fixture.materialHex, 'hex')];
   // Use the current production shell even after a serial-only runtime build;
   // packaging index.html otherwise waits for the threaded runtime too.
   let shell = fs.readFileSync(path.resolve(__dirname, '../shell.html'), 'utf8')
@@ -96,7 +99,8 @@ test('live colony meshes render through WebGL2 and survive context restoration',
   shell = shell.replace('preRun: [function() {', `preRun: [function() {
     ENV.GLOB2_SKIN_PREVIEW_DIR='/data/skins/colony-v1';
     FS.mkdirTree('/data/skins/colony-v1');
-    FS.writeFile('/data/skins/colony-v1/paint.png',new Uint8Array(${JSON.stringify(png)}));`);
+    FS.writeFile('/data/skins/colony-v1/paint.png',new Uint8Array(${JSON.stringify(paint)}));
+    FS.writeFile('/data/skins/colony-v1/material.png',new Uint8Array(${JSON.stringify(material)}));`);
   await openRuntimeHost(page, shell);
   const state = async () => {
     if (errors.length) throw new Error(errors.join('\n'));

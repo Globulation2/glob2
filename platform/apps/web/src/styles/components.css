@@ -115,7 +115,8 @@ textarea::placeholder {
   color: var(--ink-2);
   opacity: 0.85;
 }
-input[type='checkbox'] {
+input[type='checkbox'],
+input[type='radio'] {
   width: 20px;
   height: 20px;
   min-height: 0;

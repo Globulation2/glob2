@@ -11,7 +11,7 @@ import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { equipSkin } from './equipment.ts';
-import { canonicalSkinImage } from './images.ts';
+import { canonicalMaterialMap, canonicalSkinImage } from './images.ts';
 import { knownSwarmMesh, skinManifestSha256, type SkinContent } from './manifest.ts';
 
 export async function skinRoutes(app: FastifyInstance, identity: Identity) {
@@ -58,6 +58,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
         's.entitlement',
         'v.id as id',
         'v.texture_sha256 as textureSha256',
+        'v.material_sha256 as materialSha256',
         'v.manifest_sha256 as manifestSha256',
         'v.layout',
         'v.building_color as buildingColor',
@@ -85,7 +86,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
   });
   app.post(
     '/api/v1/skins/publish',
-    { bodyLimit: 360000 },
+    { bodyLimit: 1600000 },
     async (request): Promise<ColonySkinVersion> => {
       const { account } = await requireAccount(identity, request);
       if (account.kind !== 'registered' || account.status !== 'active')
@@ -109,7 +110,9 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
       };
       await checkGrant();
       const image = await canonicalSkinImage(input.imageBase64);
+      const material = await canonicalMaterialMap(input.materialBase64);
       const stored = await putContent(blobs, image);
+      const storedMaterial = await putContent(blobs, material);
       return db.transaction().execute(async (trx) => {
         const current = await trx
           .selectFrom('accounts')
@@ -149,22 +152,24 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
             .returningAll()
             .executeTakeFirstOrThrow();
         }
-        await trx
-          .insertInto('blobs')
-          .values({
-            sha256: stored.sha256,
-            size: stored.size,
-            storage_key: stored.key,
-            content_type: 'image/png',
-            visibility: 'private',
-            owner_account_id: account.id,
-          })
-          .onConflict((oc) => oc.column('sha256').doNothing())
-          .execute();
+        for (const blob of [stored, storedMaterial])
+          await trx
+            .insertInto('blobs')
+            .values({
+              sha256: blob.sha256,
+              size: blob.size,
+              storage_key: blob.key,
+              content_type: 'image/png',
+              visibility: 'private',
+              owner_account_id: account.id,
+            })
+            .onConflict((oc) => oc.column('sha256').doNothing())
+            .execute();
         const content: SkinContent = {
           skinId: skin.id,
           textureSha256: stored.sha256,
-          layout: 'colony-v1',
+          materialSha256: storedMaterial.sha256,
+          layout: 'colony-v2',
           buildingColor: input.buildingColor,
           swarmMesh: input.swarmMesh ?? 'classic',
         };
@@ -180,7 +185,8 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
             .values({
               skin_id: skin.id,
               texture_sha256: stored.sha256,
-              layout: 'colony-v1',
+              material_sha256: storedMaterial.sha256,
+              layout: 'colony-v2',
               building_color: input.buildingColor,
               swarm_mesh: content.swarmMesh,
               manifest_sha256: digest,
@@ -191,28 +197,35 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
       });
     },
   );
-  app.get<{ Params: { id: string } }>(
-    '/api/v1/skins/versions/:id/texture',
-    async (request, reply) => {
-      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(request.params.id))
-        throw apiError('not_found', 'Skin not found.');
-      const row = await db
-        .selectFrom('colony_skin_versions as v')
-        .innerJoin('colony_skins as s', 's.id', 'v.skin_id')
-        .innerJoin('blobs as b', 'b.sha256', 'v.texture_sha256')
-        .select(['b.storage_key', 'b.sha256'])
-        .where('v.id', '=', request.params.id)
-        .where('s.disabled_at', 'is', null)
-        .executeTakeFirst();
-      if (!row) throw apiError('not_found', 'Skin not found.');
-      const stream = await blobs.get(row.storage_key);
-      if (!stream) throw apiError('not_found', 'Texture not found.');
-      return reply
-        .type('image/png')
-        .header('X-Content-Type-Options', 'nosniff')
-        .header('Cache-Control', 'public, max-age=300')
-        .header('ETag', `"${row.sha256}"`)
-        .send(stream);
-    },
-  );
+  // Public, cacheable content of enabled skins: the colour atlas and the material map.
+  for (const [route, column, missing] of [
+    ['texture', 'v.texture_sha256', 'Texture not found.'],
+    ['material', 'v.material_sha256', 'Material map not found.'],
+  ] as const)
+    app.get<{ Params: { id: string } }>(
+      `/api/v1/skins/versions/:id/${route}`,
+      async (request, reply) => {
+        if (
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(request.params.id)
+        )
+          throw apiError('not_found', 'Skin not found.');
+        const row = await db
+          .selectFrom('colony_skin_versions as v')
+          .innerJoin('colony_skins as s', 's.id', 'v.skin_id')
+          .innerJoin('blobs as b', 'b.sha256', column)
+          .select(['b.storage_key', 'b.sha256'])
+          .where('v.id', '=', request.params.id)
+          .where('s.disabled_at', 'is', null)
+          .executeTakeFirst();
+        if (!row) throw apiError('not_found', 'Skin not found.');
+        const stream = await blobs.get(row.storage_key);
+        if (!stream) throw apiError('not_found', missing);
+        return reply
+          .type('image/png')
+          .header('X-Content-Type-Options', 'nosniff')
+          .header('Cache-Control', 'public, max-age=300')
+          .header('ETag', `"${row.sha256}"`)
+          .send(stream);
+      },
+    );
 }

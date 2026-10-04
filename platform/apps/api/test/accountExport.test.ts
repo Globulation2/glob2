@@ -202,6 +202,7 @@ async function seed(owner: Player, other: Player) {
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZQmcAAAAASUVORK5CYII=',
     'base64',
   );
+  const draftMaterial = Buffer.from('a material map');
   for (const player of [owner, other]) {
     const hash = createHash('sha256').update(player.accountId).digest('hex');
     await db
@@ -228,7 +229,8 @@ async function seed(owner: Player, other: Player) {
       .values({
         skin_id: skin.id,
         texture_sha256: hash,
-        layout: 'colony-v1',
+        material_sha256: hash,
+        layout: 'colony-v2',
         building_color: 0x123456,
         manifest_sha256: createHash('sha256').update(`${hash}:manifest`).digest('hex'),
       })
@@ -247,6 +249,7 @@ async function seed(owner: Player, other: Player) {
         name: 'Private draft',
         building_color: 0x112233,
         image: draftImage,
+        material: draftMaterial,
       })
       .execute();
     await db
@@ -386,7 +389,13 @@ describe('downloading my data', () => {
     expect(skins.published).toEqual([
       expect.objectContaining({
         name: `${owner.displayName} paint`,
-        versions: [expect.objectContaining({ layout: 'colony-v1', buildingColor: 0x123456 })],
+        versions: [
+          expect.objectContaining({
+            layout: 'colony-v2',
+            buildingColor: 0x123456,
+            materialSha256: expect.stringMatching(/^[0-9a-f]{64}$/),
+          }),
+        ],
       }),
     ]);
     expect(skins.equipment).toEqual([expect.objectContaining({ buildingColor: 0x654321 })]);
@@ -395,6 +404,7 @@ describe('downloading my data', () => {
         name: 'Private draft',
         contentType: 'image/png',
         imageBase64: expect.any(String),
+        materialBase64: Buffer.from('a material map').toString('base64'),
       }),
     ]);
     expect(

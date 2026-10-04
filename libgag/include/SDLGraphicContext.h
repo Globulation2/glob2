@@ -655,7 +655,10 @@ namespace GAGCore
         // Render distinct visible poses before painting the map; composites retain painter order.
         void prepareSkinMeshes(const std::vector<SkinMeshRequest> &requests);
         // Returns false without drawing when the backend or assets are unavailable.
+        // texture is the team's colour atlas and material its material-id map;
+        // region (SkinRegion) selects the model's quadrant of both.
         bool drawSkinMesh(const SkinMesh &mesh, unsigned frame, DrawableSurface &texture,
+                          DrawableSurface &material, std::uint8_t region,
                           float x, float y, float w, float h, DrawableSurface *underlay = nullptr, Uint8 alpha = Color::ALPHA_OPAQUE);
 		
 		virtual void drawAlphaMap(const std::valarray<float> &map, int mapW, int mapH, int x, int y, int cellW, int cellH, const Color &color);

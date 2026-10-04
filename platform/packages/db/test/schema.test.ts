@@ -30,6 +30,7 @@ const typedColumns: ColumnLists = {
     'name',
     'building_color',
     'image',
+    'material',
     'updated_at',
     'skin_id',
     'swarm_mesh',
@@ -64,6 +65,7 @@ const typedColumns: ColumnLists = {
     'id',
     'skin_id',
     'texture_sha256',
+    'material_sha256',
     'layout',
     'building_color',
     'manifest_sha256',
@@ -692,6 +694,7 @@ describe('migrations', () => {
         '0032_signin_same_network',
         '0033_queue_searches',
         '0034_skin_swarm_mesh',
+        '0035_colony_skins_v2',
       ]);
       expect(
         (
@@ -744,7 +747,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(12);
+      expect(upgraded).toHaveLength(13);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -791,18 +794,21 @@ describe('migrations', () => {
           owner_account_id: owner.id,
         })
         .execute();
-      const paint = {
-        skin_id: skin.id,
-        texture_sha256: 'a'.repeat(64),
-        layout: 'colony-v1' as const,
-        building_color: 7,
-      };
-      const published = await existing.db
-        .insertInto('colony_skin_versions')
-        .values({ ...paint, manifest_sha256: 'b'.repeat(64) })
-        .returning('id')
-        .executeTakeFirstOrThrow();
-      expect(await migrateToLatest(existing.db)).toHaveLength(1);
+      // Colony-v1 rows predate the typed colony-v2 schema, so insert them directly.
+      const publish = (manifest: string, swarmMesh?: string) =>
+        sql<{ id: string }>`
+          INSERT INTO colony_skin_versions
+            (skin_id, texture_sha256, layout, building_color, manifest_sha256${
+              swarmMesh === undefined ? sql`` : sql`, swarm_mesh`
+            })
+          VALUES (${skin.id}, ${'a'.repeat(64)}, 'colony-v1', 7, ${manifest.repeat(64)}${
+            swarmMesh === undefined ? sql`` : sql`, ${swarmMesh}`
+          })
+          RETURNING id`.execute(existing.db);
+      const published = (await publish('b')).rows[0]!;
+      expect(
+        (await createMigrator(existing.db).migrateTo('0034_skin_swarm_mesh')).error,
+      ).toBeUndefined();
       expect(
         await existing.db
           .selectFrom('colony_skin_versions')
@@ -811,22 +817,130 @@ describe('migrations', () => {
           .executeTakeFirstOrThrow(),
       ).toEqual({ swarm_mesh: 'classic' });
       // The same paint may be published again for another mesh, but only once per mesh.
-      await existing.db
-        .insertInto('colony_skin_versions')
-        .values({ ...paint, swarm_mesh: 'crown', manifest_sha256: 'c'.repeat(64) })
+      await publish('c', 'crown');
+      await expect(publish('d', 'crown')).rejects.toThrow(/colony_skin_versions_content_key/);
+      await expect(publish('e', 'Crown!')).rejects.toThrow(/check constraint/);
+    } finally {
+      await existing.drop();
+    }
+  });
+
+  it('replaces colony-v1 skins with colony-v2, keeping purchases and preset products', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const db = existing.db;
+      expect((await createMigrator(db).migrateTo('0034_skin_swarm_mesh')).error).toBeUndefined();
+      const sha = (c: string) => c.repeat(64);
+      const v1 = await sql<{ account: string; preset: string; custom: string }>`
+        WITH account AS (
+          INSERT INTO accounts (kind, display_name) VALUES ('registered', 'V1 painter') RETURNING id
+        ), blob AS (
+          INSERT INTO blobs (sha256, size, content_type, storage_key)
+          VALUES (${sha('a')}, 1, 'image/png', 'sha256/a') RETURNING sha256
+        ), preset AS (
+          INSERT INTO colony_skins (kind, name, entitlement)
+          VALUES ('preset', 'Preset', 'skins:stripes') RETURNING id
+        ), custom AS (
+          INSERT INTO colony_skins (kind, owner_account_id, name, entitlement)
+          SELECT 'custom', id, 'Custom', 'skins:designer' FROM account RETURNING id
+        ), grant_ AS (
+          INSERT INTO entitlements (account_id, entitlement, source)
+          SELECT id, 'skins:designer', 'test' FROM account
+        )
+        SELECT (SELECT id FROM account) AS account, (SELECT id FROM preset) AS preset,
+          (SELECT id FROM custom) AS custom, (SELECT sha256 FROM blob) AS blob`.execute(db);
+      const { account, preset, custom } = v1.rows[0]!;
+      const version = await sql<{ id: string }>`
+        INSERT INTO colony_skin_versions
+          (skin_id, texture_sha256, layout, building_color, swarm_mesh, manifest_sha256)
+        VALUES (${custom}, ${sha('a')}, 'colony-v1', 1, 'crown', ${sha('b')}) RETURNING id`.execute(
+        db,
+      );
+      const versionId = version.rows[0]!.id;
+      await sql`INSERT INTO colony_skin_equipment (account_id, version_id) VALUES (${account}, ${versionId})`.execute(
+        db,
+      );
+      await sql`INSERT INTO colony_skin_reports (version_id, reporter_account_id, reason)
+        VALUES (${versionId}, ${account}, 'Report')`.execute(db);
+      await sql`INSERT INTO colony_skin_drafts (account_id, name, building_color, image, skin_id)
+        VALUES (${account}, 'Draft', 1, '\x01', ${custom})`.execute(db);
+
+      const upgraded = await migrateToLatest(db);
+      expect(upgraded.map((m) => [m.migrationName, m.status])).toEqual([
+        ['0035_colony_skins_v2', 'Success'],
+      ]);
+      for (const table of [
+        'colony_skin_versions',
+        'colony_skin_equipment',
+        'colony_skin_reports',
+        'colony_skin_drafts',
+        'match_colony_skins',
+      ] as const)
+        expect(await db.selectFrom(table).selectAll().execute(), table).toEqual([]);
+      expect((await db.selectFrom('colony_skins').select('id').execute()).map((r) => r.id)).toEqual(
+        [preset],
+      );
+      expect(
+        await db
+          .selectFrom('entitlements')
+          .select('entitlement')
+          .where('account_id', '=', account)
+          .execute(),
+      ).toEqual([{ entitlement: 'skins:designer' }]);
+
+      await db
+        .insertInto('blobs')
+        .values({ sha256: sha('c'), size: 1, content_type: 'image/png', storage_key: 'sha256/c' })
         .execute();
+      const v2 = {
+        skin_id: preset,
+        texture_sha256: sha('a'),
+        material_sha256: sha('c'),
+        layout: 'colony-v2' as const,
+        building_color: 1,
+      };
+      const inserted = await db
+        .insertInto('colony_skin_versions')
+        .values({ ...v2, manifest_sha256: sha('d') })
+        .returning('id')
+        .executeTakeFirstOrThrow();
       await expect(
-        existing.db
+        db
           .insertInto('colony_skin_versions')
-          .values({ ...paint, swarm_mesh: 'crown', manifest_sha256: 'd'.repeat(64) })
+          .values({ ...v2, manifest_sha256: sha('e') })
           .execute(),
       ).rejects.toThrow(/colony_skin_versions_content_key/);
+      // The same paint on another swarm mesh is a distinct version.
+      await db
+        .insertInto('colony_skin_versions')
+        .values({ ...v2, swarm_mesh: 'crown', manifest_sha256: sha('9') })
+        .execute();
       await expect(
-        existing.db
+        db
           .insertInto('colony_skin_versions')
-          .values({ ...paint, swarm_mesh: 'Crown!', manifest_sha256: 'e'.repeat(64) })
+          .values({ ...v2, layout: 'colony-v1' as 'colony-v2', manifest_sha256: sha('f') })
           .execute(),
-      ).rejects.toThrow(/check constraint/);
+      ).rejects.toThrow(/layout_check/);
+      await expect(
+        db.deleteFrom('colony_skin_versions').where('id', '=', inserted.id).execute(),
+      ).rejects.toThrow(/immutable/);
+      const draft = {
+        account_id: account,
+        revision: crypto.randomUUID(),
+        name: 'Draft',
+        building_color: 1,
+        image: Buffer.alloc(1048576, 1),
+      };
+      await expect(
+        db
+          .insertInto('colony_skin_drafts')
+          .values({ ...draft, material: Buffer.alloc(262145, 1) })
+          .execute(),
+      ).rejects.toThrow(/material_check/);
+      await db
+        .insertInto('colony_skin_drafts')
+        .values({ ...draft, material: Buffer.alloc(262144, 1) })
+        .execute();
     } finally {
       await existing.drop();
     }

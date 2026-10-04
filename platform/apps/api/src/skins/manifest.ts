@@ -5,7 +5,8 @@ import { SWARM_MESHES, type SwarmMeshId } from '@glob2/protocol';
 export interface SkinContent {
   skinId: string;
   textureSha256: string;
-  layout: 'colony-v1';
+  materialSha256: string;
+  layout: 'colony-v2';
   buildingColor: number;
   swarmMesh: SwarmMeshId;
 }
@@ -13,14 +14,14 @@ export interface SkinContent {
 /**
  * The manifest hash that game clients recompute (src/online/SkinAuthorization.cpp)
  * before showing a skin, so field order and spelling are part of the contract.
- * Classic swarm skins leave swarmMesh out: versions published before mesh choice
- * keep their hash, and older clients, which do not know other meshes, reject
- * those skins instead of painting them onto the classic swarm.
+ * Classic swarm skins leave swarmMesh out, and clients that do not know other
+ * meshes reject those skins instead of painting them onto the classic swarm.
  */
 export function skinManifestSha256(content: SkinContent): string {
   const manifest: Record<string, string | number> = {
     skinId: content.skinId,
     textureSha256: content.textureSha256,
+    materialSha256: content.materialSha256,
     layout: content.layout,
     buildingColor: content.buildingColor,
   };

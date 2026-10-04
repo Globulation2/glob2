@@ -17,7 +17,32 @@
 #include <FileManager.h>
 #include <StreamBackend.h>
 #include "online/SkinDownloads.h"
+#include <SDL3/SDL.h>
 #include <ctime>
+
+namespace
+{
+constexpr int AtlasSize = 512;
+bool atlasSized(GAGCore::DrawableSurface &surface)
+{
+    return surface.getSDLSurface() && surface.getW() == AtlasSize && surface.getH() == AtlasSize;
+}
+// Which model quadrants contain hairy (id 3) texels.
+std::array<bool,4> hairyRegions(GAGCore::DrawableSurface &material)
+{
+    std::array<bool,4> result{};
+    std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)> rgba(
+        SDL_ConvertSurface(material.getSDLSurface(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+    if (!rgba || !SDL_LockSurface(rgba.get())) return result;
+    const auto *pixels = static_cast<const Uint8 *>(rgba->pixels);
+    for (int y = 0; y < AtlasSize; ++y)
+        for (int x = 0; x < AtlasSize; ++x)
+            if (pixels[y*rgba->pitch + x*4] == 3)
+                result[(y >= AtlasSize/2 ? 2 : 0) + (x >= AtlasSize/2 ? 1 : 0)] = true;
+    SDL_UnlockSurface(rgba.get());
+    return result;
+}
+}
 
 ColonySkinPreview::ColonySkinPreview()
 {
@@ -26,14 +51,36 @@ ColonySkinPreview::ColonySkinPreview()
     const std::string root(directory);
     if (globalContainer && globalContainer->gfx && (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU)
         && GAGCore::ApplicationHost::assetPackageReady("skins")) ready = loadMeshes(root);
-    textures[0] = std::make_unique<GAGCore::DrawableSurface>(root + "/paint.png");
-    if (textures[0]->getW()!=256 || textures[0]->getH()!=256) textures[0].reset();
+    // The material map is optional here: a missing one previews as all glossy
+    // (a zero-filled surface); a present one must still be 512x512.
+    auto material = GAGCore::loadSkinMaterialMap(root + "/material.png");
+    if (!material) material = std::make_unique<GAGCore::DrawableSurface>(AtlasSize, AtlasSize);
+    if (!install(0, std::make_unique<GAGCore::DrawableSurface>(root + "/paint.png"), std::move(material)))
+        std::cerr << "Colony skin preview: paint.png and material.png must be " << AtlasSize << "x" << AtlasSize << '\n';
     if (const char *swarm = std::getenv("GLOB2_SKIN_PREVIEW_SWARM"))
     {
         const int index = Online::swarmMeshIndex(swarm);
         if (index < 0) std::cerr << "Colony skin preview: unknown swarm mesh " << swarm << '\n';
         swarmChoice[0] = std::max(0, index);
     }
+}
+bool ColonySkinPreview::install(int team, std::unique_ptr<GAGCore::DrawableSurface> texture,
+                                std::unique_ptr<GAGCore::DrawableSurface> material)
+{
+    if (team < 0 || team >= 32 || !texture || !material || !atlasSized(*texture) || !atlasSized(*material))
+        return false;
+    hairy[team] = hairyRegions(*material);
+    textures[team] = std::move(texture);
+    materials[team] = std::move(material);
+    return true;
+}
+void ColonySkinPreview::uninstall(int team)
+{
+    textures[team].reset();
+    materials[team].reset();
+    hairy[team] = {};
+    colors[team].reset();
+    swarmChoice[team] = 0;
 }
 bool ColonySkinPreview::loadMeshes(const std::string &root, bool installed)
 {
@@ -73,24 +120,21 @@ bool ColonySkinPreview::loadInstalledMeshes()
 void ColonySkinPreview::setDownloads(std::unique_ptr<Online::SkinDownloads> value)
 {
     downloads=std::move(value);
-    for(auto &texture:textures)texture.reset();
-    for(auto &color:colors)color.reset();
-    swarmChoice.fill(0);
+    for(int team=0;team<32;++team)uninstall(team);
 }
 void ColonySkinPreview::poll()
 {
     if (downloads)
     {
         downloads->poll(static_cast<std::int64_t>(std::time(nullptr)));
-        for (int team : downloads->takeRemoved()) { textures[team].reset(); colors[team].reset(); swarmChoice[team] = 0; }
+        for (int team : downloads->takeRemoved()) uninstall(team);
         for (auto &entry : downloads->takeReady())
-        {
-            auto texture = std::make_unique<GAGCore::DrawableSurface>(entry.path);
-            if (texture->getW()!=256 || texture->getH()!=256) continue;
-            textures[entry.skin.team]=std::move(texture);
-            colors[entry.skin.team]=entry.skin.buildingColor;
-            swarmChoice[entry.skin.team]=entry.skin.swarmMesh;
-        }
+            if (install(entry.skin.team, std::make_unique<GAGCore::DrawableSurface>(entry.path),
+                        GAGCore::loadSkinMaterialMap(entry.materialPath)))
+            {
+                colors[entry.skin.team]=entry.skin.buildingColor;
+                swarmChoice[entry.skin.team]=entry.skin.swarmMesh;
+            }
     }
     if (visible && !ready && !attemptedMeshes && globalContainer && globalContainer->gfx &&
         (globalContainer->gfx->getOptionFlags() & GAGCore::GraphicContext::USEGPU) &&
@@ -120,7 +164,8 @@ bool ColonySkinPreview::draw(GAGCore::GraphicContext &gfx, int type, int team,
     const float size = mesh->logicalSize;
     const float offset = (size - 32) / 2;
     return gfx.drawSkinMesh(*mesh, unitAnimationFrame(0, direction, delta),
-                            *textures[team], x-offset, y-offset, size, size, shadow, alpha);
+                            *textures[team], *materials[team], unitRegion(type),
+                            x-offset, y-offset, size, size, shadow, alpha);
 }
 
 bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
@@ -128,13 +173,21 @@ bool ColonySkinPreview::drawSwarm(GAGCore::GraphicContext &gfx, int team,
 {
     if (!visible || !ready || team < 0 || team >= 32 || !textures[team]) return false;
     const auto *mesh = swarmMesh(team);
-    return mesh && gfx.drawSkinMesh(*mesh, 0, *textures[team], x, y, width, height);
+    // Whichever mesh is chosen, the swarm is painted from the swarm quadrant.
+    return mesh && gfx.drawSkinMesh(*mesh, 0, *textures[team], *materials[team], GAGCore::SkinRegionSwarm,
+                                    x, y, width, height);
 }
 
 const GAGCore::SkinMesh *ColonySkinPreview::swarmMesh(int team) const
 {
     const auto &mesh = swarms[swarmChoice[team]];
     return mesh.identity ? &mesh : nullptr;
+}
+
+std::uint8_t ColonySkinPreview::unitRegion(int type)
+{
+    return type == WARRIOR ? GAGCore::SkinRegionWarrior :
+           type == EXPLORER ? GAGCore::SkinRegionExplorer : GAGCore::SkinRegionWorker;
 }
 
 const GAGCore::SkinMesh *ColonySkinPreview::unitMesh(int type, int action) const
@@ -188,7 +241,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                     }
                     const auto *mesh = unitMesh(unit->typeNum,unit->action);
                     if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
-                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get()});
+                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get(), materials[unit->team].get(), unitRegion(unit->typeNum)});
                 }
                 if (!drawBuildings) continue;
                 const auto *building = entities.building(map.getBuilding(mx,my));
@@ -198,7 +251,7 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Scene &scene
                 const auto *swarm = swarmMesh(building->team);
                 if (swarm && (wholeMap || building->team==localTeam || (building->seenByMask&visibleTeams) ||
                     map.isFOWDiscovered(mx,my,visibleTeams)))
-                    requests.push_back({swarm,0,textures[building->team].get()});
+                    requests.push_back({swarm,0,textures[building->team].get(),materials[building->team].get(),GAGCore::SkinRegionSwarm});
             }
     }
     gfx.prepareSkinMeshes(requests);

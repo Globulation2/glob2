@@ -427,6 +427,7 @@ export async function exportAccount(
           'building_color',
           'swarm_mesh',
           'image',
+          'material',
           'updated_at',
         ])
         .where('account_id', '=', id)
@@ -644,9 +645,10 @@ export async function exportAccount(
             versions: rows(skinVersions.filter((version) => version.skin_id === skin.id)),
           })),
           equipment: rows(skinEquipment),
-          drafts: skinDrafts.map(({ image, ...draft }) => ({
+          drafts: skinDrafts.map(({ image, material, ...draft }) => ({
             ...clean(draft),
             imageBase64: image.toString('base64'),
+            materialBase64: material.toString('base64'),
             contentType: 'image/png',
           })),
           matches: rows(skinMatches),

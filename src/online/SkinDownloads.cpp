@@ -9,13 +9,13 @@
 #include <nlohmann/json.hpp>
 namespace Online {
 namespace {
-constexpr std::size_t limit=256*1024;
+constexpr std::size_t textureLimit=1024*1024,materialLimit=256*1024;
 const std::string directory="online/skins/";
-bool validTexture(const std::string &bytes,const std::string &hash)
+bool validImage(const std::string &bytes,const std::string &hash,std::size_t limit)
 {
-    // Only canonical-size PNGs reach SDL_image. The decoder still validates CRCs
-    // and complete chunk structure; this check bounds its allocation first.
-    const unsigned char header[]={137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,1,0,0,0,1,0};
+    // Only canonical-size (512x512) PNGs reach SDL_image. The decoder still
+    // validates CRCs and complete chunk structure; this bounds its allocation first.
+    const unsigned char header[]={137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,2,0,0,0,2,0};
     return bytes.size()>=33&&bytes.size()<=limit&&
         std::memcmp(bytes.data(),header,sizeof(header))==0&&Sha256::hex(bytes)==hash;
 }
@@ -24,8 +24,10 @@ struct SkinDownloads::Impl {
     struct Entry {
         Ticket ticket;
         std::unique_ptr<SkinAuthorization> authorization;
-        std::unique_ptr<HttpFetch::Fetch> download;
-        bool finished=false;
+        // [0] colour atlas, [1] material map.
+        std::array<std::unique_ptr<HttpFetch::Fetch>,2> downloads;
+        std::array<bool,2> verified{};
+        bool wrote=false,finished=false;
     };
     OnlineStorage &storage;
     std::string origin,match,keys;
@@ -104,7 +106,7 @@ struct SkinDownloads::Impl {
         std::sort(files.begin(),files.end());
         std::set<std::string> retained;
         for(const auto &entry:entries)if(entry.authorization)
-            if(const auto *skin=entry.authorization->skin())retained.insert(skin->textureHash+".png");
+            if(const auto *skin=entry.authorization->skin()){retained.insert(skin->textureHash+".png");retained.insert(skin->materialHash+".png");}
         std::size_t count=files.size();
         for(const auto &file:files)if(count>64&&!retained.count(file)){storage.remove(directory+file);--count;}
     }
@@ -123,7 +125,7 @@ SkinDownloads::SkinDownloads(OnlineStorage &storage,std::string origin,std::stri
         for(auto &ticket:tickets){
             if(ticket.team<0||ticket.team>=32||used[ticket.team]||ticket.assertion.size()>8192){impl->failed=true;return;}
             used[ticket.team]=true;
-            impl->entries.push_back({std::move(ticket),nullptr,nullptr,false});
+            impl->entries.push_back({std::move(ticket),nullptr,{},{},false,false});
         }
         if(!tickets.empty()) {
             HttpFetch::Request request;request.url=impl->origin+"/.well-known/jwks.json";request.responseLimit=65536;
@@ -149,31 +151,49 @@ void SkinDownloads::poll(std::int64_t now)
         for(auto &entry:p.entries)entry.authorization=std::make_unique<SkinAuthorization>(entry.ticket.assertion,p.keys,p.origin,p.match,entry.ticket.team,now);
     }
     unsigned active=0;
-    for(const auto &entry:p.entries)if(entry.download)++active;
+    for(const auto &entry:p.entries)for(const auto &download:entry.downloads)if(download)++active;
+    const auto cancel=[&](Impl::Entry &entry){
+        for(auto &download:entry.downloads)if(download){download->cancel();download.reset();--active;}
+        entry.finished=true;
+    };
     for(auto &entry:p.entries){
         if(entry.finished||!entry.authorization)continue;
         if(entry.authorization->state()==SkinAuthorization::State::Pending)continue;
         const auto *skin=entry.authorization->skin();
-        if(!skin || now>=skin->expiresAt){if(entry.download)--active;entry.download.reset();entry.finished=true;continue;}
-        const std::string path=directory+skin->textureHash+".png";
-        if(entry.download){
-            const auto state=entry.download->state();
-            if(state==HttpFetch::State::Pending)continue;
-            if(state==HttpFetch::State::Done&&entry.download->response().status==200&&validTexture(entry.download->response().body,skin->textureHash)&&p.storage.write(path,entry.download->response().body)){
-                p.ready.push_back({*skin,p.storage.location(path)});p.trim();p.storage.persist();
+        if(!skin || now>=skin->expiresAt){cancel(entry);continue;}
+        const std::array<std::string,2> hashes{skin->textureHash,skin->materialHash};
+        const std::array<std::size_t,2> limits{textureLimit,materialLimit};
+        const std::array<const char*,2> kinds{"/texture","/material"};
+        for(std::size_t asset=0;asset<2&&!entry.finished;++asset){
+            if(entry.verified[asset])continue;
+            const std::string path=directory+hashes[asset]+".png";
+            auto &download=entry.downloads[asset];
+            if(download){
+                const auto state=download->state();
+                if(state==HttpFetch::State::Pending)continue;
+                const bool ok=state==HttpFetch::State::Done&&download->response().status==200&&
+                    validImage(download->response().body,hashes[asset],limits[asset])&&p.storage.write(path,download->response().body);
+                download.reset();--active;
+                // Either rejected asset leaves the whole team on classic art.
+                if(!ok){cancel(entry);if(entry.wrote)p.storage.persist();break;}
+                entry.verified[asset]=true;entry.wrote=true;
+            } else {
+                std::string cached;
+                if(p.storage.read(path,cached)){
+                    if(validImage(cached,hashes[asset],limits[asset])){entry.verified[asset]=true;continue;}
+                    p.storage.remove(path);
+                }
+                if(active>=4)continue;
+                HttpFetch::Request request;request.url=p.origin+"/api/v1/skins/versions/"+skin->versionId+kinds[asset];
+                request.responseLimit=limits[asset];request.timeout=std::chrono::seconds(15);
+                download=p.fetch(std::move(request));
+                if(download)++active;else{cancel(entry);break;}
             }
-            entry.download.reset();--active;entry.finished=true;
-        } else {
-            std::string cached;
-            if(p.storage.read(path,cached)){
-                if(validTexture(cached,skin->textureHash)){p.ready.push_back({*skin,p.storage.location(path)});entry.finished=true;continue;}
-                p.storage.remove(path);
-            }
-            if(active>=4)continue;
-            HttpFetch::Request request;request.url=p.origin+"/api/v1/skins/versions/"+skin->versionId+"/texture";
-            request.responseLimit=limit;request.timeout=std::chrono::seconds(15);
-            entry.download=p.fetch(std::move(request));
-            if(entry.download)++active;else entry.finished=true;
+        }
+        if(!entry.finished&&entry.verified[0]&&entry.verified[1]){
+            p.ready.push_back({*skin,p.storage.location(directory+hashes[0]+".png"),p.storage.location(directory+hashes[1]+".png")});
+            entry.finished=true;
+            if(entry.wrote){p.trim();p.storage.persist();}
         }
     }
 }

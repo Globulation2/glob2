@@ -22,6 +22,10 @@ TEST_SUITE("SkinAuthorization")
         CHECK(auth.skin()->buildingColor==0x112233);
         CHECK(auth.skin()->team==2);
         CHECK(auth.skin()->textureHash==f["claims"]["version"]["textureSha256"].get<std::string>());
+        CHECK(auth.skin()->materialHash==f["claims"]["version"]["materialSha256"].get<std::string>());
+        CHECK(auth.skin()->textureHash!=auth.skin()->materialHash);
+        for(const char *name:{"retiredLayout","materialHash","malformedMaterial","missingMaterial"})
+            CHECK(f["invalid"].contains(name));
         for(const auto &entry:f["invalid"].items())
         {
             INFO(entry.key());

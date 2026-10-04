@@ -664,7 +664,8 @@ export interface ColonySkinVersionsTable {
   id: Generated<string>;
   skin_id: string;
   texture_sha256: string;
-  layout: 'colony-v1';
+  material_sha256: string;
+  layout: 'colony-v2';
   building_color: number;
   /** Validated against the protocol's SWARM_MESHES by the API. */
   swarm_mesh: Defaulted<string>;
@@ -719,6 +720,7 @@ export interface ColonySkinDraftsTable {
   building_color: number;
   swarm_mesh: Defaulted<string>;
   image: Buffer;
+  material: Buffer;
   updated_at: Timestamp;
 }
 
