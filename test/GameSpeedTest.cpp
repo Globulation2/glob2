@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Game speed settings, controls and playback; the display cases need OpenGL.
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <vector>
 #include <string>
 #include <cmath>
@@ -93,6 +94,7 @@ TEST_CASE("presets; bounds; legacy settings and persistence")
 
 TEST_CASE("settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]")
 {
+    glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
     glob2test::HeadlessGlobals globals(displayOptions());
     auto& settings=globalContainer->settings;
     REQUIRE(NET_Init());

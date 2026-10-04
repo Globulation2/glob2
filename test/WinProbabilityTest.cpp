@@ -134,6 +134,9 @@ TEST_SUITE("WinProbability")
         world.addUnit(WORKER, 8, 8, 0);
         world.addUnit(WORKER, 20, 8, 1);
         auto &game = world.game;
+        // Keep the header at the format used to record this fixture: the map
+        // version contributes to Game::checkSum even when gameplay is unchanged.
+        game.mapHeader.versionMinor = FILE_FORMAT_VERSION_WIN_PROBABILITY_RULE;
         game.teams[0]->prestige = 1000;
         game.gameHeader.getWinningConditions().clear();
         WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 970);

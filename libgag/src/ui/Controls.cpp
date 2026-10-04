@@ -782,7 +782,8 @@ class TextField : public Node
 	{
 		const int natural = ctx.text.width(FontRole::Body, value.empty() ? options.placeholder : accessibleText()) + 2 * ctx.metrics.padding;
 		// Taller than the control height when large text needs it, as a toggle is.
-		const int height = std::max(ctx.metrics.control, ctx.text.lineHeight(FontRole::Body) + ctx.metrics.gap);
+		const int height = std::max({ctx.metrics.control, ctx.metrics.minTarget,
+								   ctx.text.lineHeight(FontRole::Body) + ctx.metrics.gap});
 		return c.clamp({c.boundedW() ? c.maxW : std::max(natural, ctx.presentation.pt(160)), height});
 	}
 	void paint(Frame &frame) override

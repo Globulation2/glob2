@@ -414,13 +414,13 @@ Value Spatial::query(const std::string &name, const std::vector<Value> &args,
 		Value result = Value::array();
 		for (const auto &[negative, i] : spots)
 		{
-			bool near = false;
+			bool nearby = false;
 			for (const auto &old : result.items)
-				near |=
+				nearby |=
 					std::max(std::abs(displacement(i % width, int(old.get("x").number), width)),
 							 std::abs(displacement(i / width, int(old.get("y").number), height))) <=
 					radius;
-			if (!near && int(result.items.size()) < limit)
+			if (!nearby && int(result.items.size()) < limit)
 				result.items.push_back(Value::object()
 										   .set("x", i % width)
 										   .set("y", i / width)
