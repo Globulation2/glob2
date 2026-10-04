@@ -1,3 +1,4 @@
+require('./browser-stall-diagnostics');
 const {clickCreateMap}=require('./editor-controls');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl}=require('./main-menu');
 const {test, expect} = require('@playwright/test');

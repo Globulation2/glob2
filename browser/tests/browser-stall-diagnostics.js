@@ -1,7 +1,11 @@
 const {test}=require('@playwright/test');
 const fs=require('node:fs/promises');
+test.beforeEach(async({context})=>{await context.addInitScript({path:require('node:path').join(__dirname,'browser-proxy-arguments-init.js')});});
 test.afterEach(async({browser,page},info)=>{
- if(info.status===info.expectedStatus || browser.browserType().name()!=='chromium')return;
+ if(info.status===info.expectedStatus)return;
+ const observations=[];for(const open of page.context().pages())observations.push(await open.evaluate(()=>({url:location.href,snapshot:glob2Diagnostics?.snapshot(),logs:Module?.browserLog,proxyCalls:glob2ProxyCalls,invalidProxyCalls:glob2InvalidProxyCalls})).catch(error=>({error:String(error)})));
+ await fs.writeFile(info.outputPath('proxy-arguments.json'),JSON.stringify(observations,null,2));
+ if(browser.browserType().name()!=='chromium')return;
  const records=[];let root;
  try{
   root=await browser.newBrowserCDPSession();
