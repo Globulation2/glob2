@@ -8,12 +8,15 @@
 #include "Unit.h"
 #include "Building.h"
 #include "Game.h"
+#include "Team.h"
 #include "MapInternal.h"
 
 #include <mutex>
 
 Uint16 *Map::getResourceGradient(int teamNumber, int resourceType, int swimClass, bool withMarkets)
 {
+	// Keep colonies without markets on the original field and refresh schedule.
+	if (withMarkets && game->teams[teamNumber]->canExchange.empty()) withMarkets=false;
 	// AI workers may request the same lazy field concurrently. Cover both
 	// allocation and pipeline invalidation before publishing the pointer.
 	std::lock_guard<std::mutex> lock(resourcesGradientMutex);
@@ -78,5 +81,8 @@ void Map::seedResourcesGradient(int teamNumber, Uint8 resourceType, int swimClas
 void Map::dirtyMarketGradients(int teamNumber, int resourceType)
 {
 	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
-		marketGradientDirty[teamNumber][resourceType][s]=true;
+		{
+			marketGradientDirty[teamNumber][resourceType][s]=true;
+			gradientRuntime->pipeline.invalidate(&marketResourcesGradient[teamNumber][resourceType][s]);
+		}
 }
