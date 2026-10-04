@@ -17,15 +17,36 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 
 class ChangedPathsTest(unittest.TestCase):
-    def assert_jobs(self, paths, platform=None, platform_stack=None, **expected):
+    def assert_jobs(self, paths, platform=None, platform_stack=None, music=None, **expected):
         # The TypeScript platform job runs on platform/ changes and with full CI.
         if platform is None:
             platform = all(expected.values())
         # The self-hosted stack smoke test runs on its own paths and with full CI.
         if platform_stack is None:
             platform_stack = not paths
+        # The music pipeline's tests run on tools/music/ changes and with full CI.
+        if music is None:
+            music = all(expected.values())
         self.assertEqual(ci_changed_paths.classify(paths),
-                         {**expected, "platform": platform, "platform_stack": platform_stack})
+                         {**expected, "platform": platform, "platform_stack": platform_stack, "music": music})
+
+    def test_music_pipeline_and_soundtrack_sets(self):
+        self.assert_jobs(
+            ["tools/music/glob2music/cli.py", "tools/music/requirements.txt"],
+            native=False, browser=False, map_generators=False,
+            deployment=False, cross_platform=False, music=True,
+        )
+        # A soundtrack set's files are packaged game data: native and browser builds.
+        self.assert_jobs(
+            ["data/zik/woodland/a1.ogg", "data/zik/woodland/LICENSE.txt"],
+            native=True, browser=True, map_generators=False,
+            deployment=False, cross_platform=False, music=False, platform=False,
+        )
+        # The shared data/zik/SConscript is a build input: every job.
+        self.assert_jobs(
+            ["data/zik/SConscript"], native=True, browser=True, map_generators=True,
+            deployment=True, cross_platform=True,
+        )
 
     def test_platform_stack_paths(self):
         for path in ("deploy/compose.yaml", "deploy/Caddyfile", "test/deployment/platform_stack_smoke.py"):

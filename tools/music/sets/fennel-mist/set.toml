@@ -1,0 +1,20 @@
+# Soundtrack set "fennel-mist": see composition.py for the score and its form.
+# Samples are pinned file by file in samples.lock; level references are frozen in levels.toml.
+title = "Fennel Mist"
+method = "symbolic-acoustic"
+license = "GPL-3.0-or-later"
+ai_generated = false
+shipped = true
+# 0 keeps the approved humanisation (seeded from the set id); any other value is a new performance.
+seed = 0
+description = """An original slow pastoral score in E Dorian (4/4, 72 bpm, 24 bars): bassoon and horn under a flute descant, with harp and strings. Calm is the low lead, descant, harp and quiet pads; building adds semiquaver harp, pizzicato and soft hand drums; combat hands the tune to horn over a semiquaver spiccato engine, tremolo violas, tuba and a drum line."""
+credits = [
+    "Composed for Globulation 2 as a score written in code (composition.py), performed and mixed by the glob2music pipeline.",
+    "Samples: VSCO 2 Community Edition and the Versilian Community Sample Library, Versilian Studios (Sam Gossner), CC0 1.0.",
+    "Rendered with sfizz 1.2.3 (BSD-2-Clause).",
+]
+
+# The bus chain in glob2music.score.mix already high-passes at 32 Hz; a second high-pass
+# in master.finish would only thin the low end the maintainer approved.
+[master]
+highpass_hz = 0.0

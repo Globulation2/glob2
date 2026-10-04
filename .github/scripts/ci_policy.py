@@ -7,7 +7,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
          'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos', 'platform',
-         'platform_stack')
+         'platform_stack', 'music')
+# Cheap jobs that run on pull requests without `ci:run`, like the selector's own
+# contracts: they compile nothing and gate no engine verification.
+# The music pipeline (Python tooling, never shipped): its own unit-test job only.
+MUSIC_TOOL_PATHS = ('tools/music/',)
+CHEAP_PATHS = {'music': MUSIC_TOOL_PATHS}
+CHEAP_FLAGS = tuple(CHEAP_PATHS)
 LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
 SIMULATION = ('src/ai/', 'src/unit/', 'src/building/', 'src/team/', 'src/map/',
               'src/scripting/sgsl/', 'src/engine/sim/', 'src/game/orders/')
@@ -53,6 +59,12 @@ RENDER = {'libgag/src/RenderBackend.cpp', 'libgag/src/SoftwareRenderBackend.cpp'
 # Their tests run with the rest of test/deployment whenever those are selected.
 MIRROR_DEPLOY_FILES = {'.github/workflows/deploy-online.yml', 'deploy/online-deploy.sh',
                        'deploy/online_remote.py', 'test/deployment/test_online_deploy.py'}
+
+
+def music_set_path(path):
+    """A file inside one soundtrack set directory, data/zik/<set>/...: game data that
+    the native and browser packaging checks cover (data/zik/SConscript stays shared)."""
+    return path.startswith('data/zik/') and path.count('/') >= 3
 
 
 def is_test_source(path):
@@ -110,6 +122,12 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'platform')
             else:
                 add(path, 'platform')
+            continue
+        if path.startswith(MUSIC_TOOL_PATHS):
+            add(path, 'music')
+            continue
+        if music_set_path(path):
+            add(path, 'native', 'browser')
             continue
         if path == 'test/map-generator-golden.txt':
             add(path, 'map_generators', 'compatibility')

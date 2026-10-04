@@ -1338,7 +1338,11 @@ the PR still require resolution.
 
 ### Hosted verification and regression detection
 
-Draft and ready PRs run the existing cheap contracts by default. Becoming ready
+Draft and ready PRs run the existing cheap contracts by default. Changes under `tools/music/` also run the cheap `music` job (the pipeline's
+Python unit tests in a venv from `requirements.txt`), on PRs without `ci:run` too; it
+gates no engine verification. Files inside a soundtrack set, `data/zik/<set>/`, select
+the native and browser checks when hosted verification is requested, while
+`data/zik/SConscript` stays on full CI. Becoming ready
 starts no expensive jobs. `ci:run` requests hosted affected checks; `ci:full`
 requests the complete development matrix, even in draft. `ci:windows`, `ci:android`
 and `ci:browsers` expand requested coverage but do not start verification alone.

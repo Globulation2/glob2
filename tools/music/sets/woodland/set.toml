@@ -1,0 +1,61 @@
+title = "Woodland"
+method = "adapted"
+license = "CC-BY-4.0"
+credits = [
+    "\"Woodland Music - Vol 1\" (Level theme) by JC Sounds, CC BY 4.0, https://opengameart.org/content/woodland-music-vol-1 - remixed from the author's stems into calm/building/combat arrangements for Globulation 2. No endorsement by JC Sounds is implied.",
+]
+shipped = true
+seed = 1
+description = """
+Adapted from the Level theme of JC Sounds' "Woodland Music - Vol 1" (130 bpm,
+B-flat minor), using the composer's own eight "Main Loop" stems: Choir, E Drums 1,
+Perc, Strings, WWind, Xperiments, Xtra Inst and Xtra Perc. The stems sum to the
+published master (residual -38 dB), so the moods are plain weighted sums of real
+stems on the composer's loop.
+
+Changes made (CC BY 4.0 requires saying so):
+- The 78-bar (144.0 s) loop is shortened to 60 bars (110.8 s) by removing bars
+  32-49, an 18-bar block (a multiple of the piece's 3-bar drum cycle), with a 12 ms
+  crossfade just before the bar line. Of every 14-30-bar block, this one joined
+  best (per-stem activity and chroma compared on both sides of the cut).
+- calm: woodwinds, choir and extra instruments; strings -4 dB low-passed at 4 kHz,
+  the synth texture -3 dB low-passed at 2.5 kHz, the electronic drums reduced to a
+  faint 500 Hz-low-passed pulse at -19 dB; no percussion.
+- building: electronic drums at -3 dB, light orchestral percussion (-9 dB,
+  low-passed at 5 kHz) and the extra percussion layer at -6 dB.
+- combat: the full arrangement with the electronic drums +3 dB, percussion +5 dB,
+  extra percussion +4 dB, woodwinds -2 dB and a +2 dB shelf above 4 kHz.
+- Mastered by the shared pipeline (-18/-17/-16 LUFS, true-peak limited).
+
+Listening verdict: approved by the maintainer by ear.
+"""
+
+[[sources]]
+name = "woodland-part-1"
+url = "https://opengameart.org/sites/default/files/woodland_music_part_1.zip"
+sha256 = "3631353b9be519c8d36608d73f71d2edaa21bfd037806492587612e07b052cd3"
+license = "CC-BY-4.0"
+author = "JC Sounds"
+title = "Woodland Music - Vol 1 (split archive, part 1 of 3)"
+note = "Page: https://opengameart.org/content/woodland-music-vol-1 (attribution notice: \"CC BY 4.0 - Credit: JC Sounds\")."
+
+[[sources]]
+name = "woodland-part-2"
+url = "https://opengameart.org/sites/default/files/woodland_music_part_2.zip"
+sha256 = "080e4f2639ac040d26d8e5b18f5a27a29df24232d8b084d59f91bc3958a6cca9"
+license = "CC-BY-4.0"
+author = "JC Sounds"
+title = "Woodland Music - Vol 1 (split archive, part 2 of 3)"
+
+[[sources]]
+name = "woodland-part-3"
+url = "https://opengameart.org/sites/default/files/woodland_music_part_3.zip"
+sha256 = "226c491a1defce6e155c7ecffe8dc8dde6dd8480d4d91763b78f018e1e93101f"
+license = "CC-BY-4.0"
+author = "JC Sounds"
+title = "Woodland Music - Vol 1 (split archive, part 3 of 3)"
+
+[qa.waivers]
+"seam.calm.gap" = "The composer's 3-bar phrases end in a decaying synth chord, so the loop restarts after a 0.6-1.25 s rest; this is the composer's own phrasing, approved by ear."
+"seam.building.gap" = "The composer's 3-bar phrases end in a decaying synth chord, so the loop restarts after a 0.6-1.25 s rest; this is the composer's own phrasing, approved by ear."
+"seam.combat.gap" = "The composer's 3-bar phrases end in a decaying synth chord, so the loop restarts after a 0.6-1.25 s rest; this is the composer's own phrasing, approved by ear."

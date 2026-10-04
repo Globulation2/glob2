@@ -1,0 +1,7 @@
+# Local virtual environments, download cache and build output of the music pipeline.
+/.venv/
+/.venv-*/
+/cache/
+/build/
+/out/
+__pycache__/

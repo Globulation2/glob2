@@ -63,6 +63,26 @@ class PolicyTest(unittest.TestCase):
         self.assertTrue(self.select(['src/engine/sim/SimulationRunner.cpp'])['tsan'])
         self.assertTrue(self.select(['src/render/scene/Scene.cpp'])['tsan'])
 
+    def test_music_pipeline_is_a_cheap_job_and_sets_are_packaged_data(self):
+        music = self.select(['tools/music/glob2music/qa/seam.py', 'tools/music/sets/woodland/set.toml'])
+        self.assertEqual({flag for flag, on in music.items() if on}, {'music'})
+        assets = self.select(['data/zik/woodland/a1.ogg', 'data/zik/woodland/LICENSE.txt'])
+        self.assertEqual({flag for flag, on in assets.items() if on}, {'native', 'browser'})
+        self.assertEqual(self.select(['data/zik/SConscript']), policy.full())
+        # Pull requests run the cheap music job without ci:run, and stay cheap-contracts.
+        report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py'])
+        self.assertEqual({flag for flag, on in report['selection'].items() if on}, {'music'})
+        self.assertEqual(report['verification_mode'], 'cheap-contracts')
+        report, _ = self.exercise('pull_request', ['tools/music/glob2music/cli.py', 'src/game/Game_sync.cpp'])
+        self.assertEqual({flag for flag, on in report['selection'].items() if on}, {'music'})
+        report, _ = self.exercise('pull_request', ['data/zik/woodland/a1.ogg'])
+        self.assertFalse(any(report['selection'].values()))
+        report, _ = self.exercise('pull_request', ['data/zik/woodland/a1.ogg'], labels=['ci:run'])
+        self.assertTrue(report['selection']['native'] and report['selection']['browser'])
+        self.assertFalse(report['selection']['music'])
+        report, _ = self.exercise('schedule', [], reused_run=123)
+        self.assertFalse(report['selection']['music'])
+
     def test_platform_stack_smoke_follows_the_stack_inputs(self):
         for path in ['deploy/compose.yaml', 'deploy/Dockerfile', 'test/deployment/platform_stack_smoke.py',
                      'src/relay/RelayServer.cpp', 'platform/packages/db/migrations/0006_room_kicks_lost_relays.sql',
