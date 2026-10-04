@@ -111,6 +111,7 @@ for (const runtime of ['threaded', 'serial']) {
       await online(page, baseURL);
       const popups = [];
       page.context().on('page', p => popups.push(p));
+      await clickControl(page, 'hub/section/leaderboard');
       await clickControl(page, 'leaderboard/full');
       const opened = await expectOpened(page, '/leaderboard');
       if (opened.via === 'tab') await expect.poll(() => popups.length).toBeGreaterThan(0);
@@ -131,6 +132,7 @@ for (const runtime of ['threaded', 'serial']) {
       await page.goto(url().slice(ORIGIN.length)); await screen(page, 'MainMenuScreen');
       expect((await snapshot(page)).executionMode).toBe(runtime);
       await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await clickControl(page, 'hub/section/leaderboard');
       await clickControl(page, 'leaderboard/full');
       await expectOpened(page, '/leaderboard');
       await page.bringToFront();
@@ -146,6 +148,7 @@ for (const runtime of ['threaded', 'serial']) {
       await page.addInitScript(() => { window.open = () => null; });
       await page.goto(url().slice(ORIGIN.length)); await screen(page, 'MainMenuScreen');
       await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await clickControl(page, 'hub/section/leaderboard');
       await clickControl(page, 'leaderboard/full');
       const opened = await expectOpened(page, '/leaderboard');
       expect(opened.via).toBe('offered');
@@ -169,8 +172,11 @@ for (const runtime of ['threaded', 'serial']) {
       // A registered account has no Sign in button, and the sign-in panel closed.
       await expect.poll(async () => {
         const controls = (await snapshot(page)).controls;
-        return !controls['account/signin'] && !controls['signin/cancel'] && Boolean(controls['leaderboard/full']);
+        return !controls['account/signin'] && !controls['signin/cancel'] && Boolean(controls['hub/section/play']);
       }, {timeout:30000}).toBe(true);
+      await clickControl(page, 'account/menu');
+      await expect.poll(async () => Boolean((await snapshot(page)).controls['account/signout'])).toBe(true);
+      await clickControl(page, 'account/close');
       await clickControl(page, 'back'); await screen(page, 'MainMenuScreen');
     });
   });
