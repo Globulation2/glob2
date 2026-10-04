@@ -2928,6 +2928,26 @@ Globulation 2のカーソルを表示します。
 AI対戦相手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 ゆったり配置は十分な空間があるときにサイドパネルを使います。コンパクト配置はツールバーと開閉式パネルを使います。
+[settings Menu theme]
+メニューのテーマ
+[settings Colours and backdrop of menus, lobbies and results.]
+メニュー、ロビー、結果画面の色と背景。
+[settings In-game theme]
+ゲーム中のテーマ
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+ゲーム中とエディターでのダイアログとタッチ操作画面の色。
+[theme light]
+ライト
+[theme dark]
+ダーク
+[theme classic]
+クラシック
+[theme ocean]
+オーシャン
+[theme dune]
+砂丘
+[theme high-contrast]
+ハイコントラスト
 [settings One-finger zoom]
 1本指ズーム
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 負傷ユニットの撤退
 [Units can die]
 ユニットの死亡
-[Unit training]
-ユニットの訓練
+[Upgrades]
+
 [No stockpile]
 なし
 [No glass cannon]
@@ -5132,8 +5152,8 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 傷ついたユニットは死ぬまで戦わず、治療に戻ります。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 体力がなくなるとユニットは死亡します。オフにすると体力1で止まります。
-[Units gain levels at schools.]
-ユニットは学校でレベルが上がります。
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 労働者の時間
 [stat worker time]

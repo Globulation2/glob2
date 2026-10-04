@@ -290,7 +290,7 @@ void NewNicowar::tick(Runtime& runtime)
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_UPGRADE_PHASE)
 	{
-		upgrade_buildings(runtime);
+		if (!runtime.player->game->gameHeader.isUnitUpgradesDisabled()) upgrade_buildings(runtime);
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_CONTROL_ATTACKS_PHASE)
 	{
@@ -298,7 +298,7 @@ void NewNicowar::tick(Runtime& runtime)
 	}
 	if(timer%AI_NICOWAR_DECISION_CYCLE_TICKS == AI_NICOWAR_DEFENSE_FLAG_PHASE)
 	{
-		compute_defense_flag_positioning(runtime);
+		if (!runtime.player->game->gameHeader.isPeacefulModeEnabled()) compute_defense_flag_positioning(runtime);
 	}
 	if(timer%AI_NICOWAR_FARMING_INTERVAL_TICKS == 0)
 	{
@@ -310,7 +310,7 @@ void NewNicowar::tick(Runtime& runtime)
 	}
 	if(timer%AI_NICOWAR_EXPLORER_ATTACK_INTERVAL_TICKS == AI_NICOWAR_EXPLORER_ATTACK_OFFSET)
 	{
-		compute_explorer_flag_attack_positioning(runtime);
+		if (!runtime.player->game->gameHeader.isPeacefulModeEnabled()) compute_explorer_flag_attack_positioning(runtime);
 	}
 
 	order_buildings(runtime);

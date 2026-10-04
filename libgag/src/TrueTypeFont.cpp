@@ -148,9 +148,17 @@ TTF_Font *TrueTypeFont::openFont(const std::string &filename, unsigned size)
 
 bool TrueTypeFont::load(const std::string filename, unsigned size)
 {
-	font = openFont(filename, size);
-	if (!font)
+	TTF_Font *replacement = openFont(filename, size);
+	if (!replacement)
 		return false;
+	clearCache();
+	clearMetrics();
+	for (const auto &[rasterSize, raster] : rasterFonts)
+		TTF_CloseFont(raster);
+	rasterFonts.clear();
+	if (font)
+		TTF_CloseFont(font);
+	font = replacement;
 	fontFilename = filename;
 	baseSize = size;
 	renderFont = font;
@@ -167,6 +175,7 @@ bool TrueTypeFont::reload(void)
 	if (!replacement)
 		return false;
 	clearCache();
+	clearMetrics();
 	for (const auto &[size, raster] : rasterFonts)
 		TTF_CloseFont(raster);
 	rasterFonts.clear();
@@ -255,39 +264,55 @@ std::string TrueTypeFont::shapeText(const std::string &text) const
 #endif
 }
 
+void TrueTypeFont::clearMetrics()
+{
+	metricsCache.clear();
+	metricsAge.clear();
+	metricsTextBytes = 0;
+}
+
+std::pair<int, int> TrueTypeFont::measureString(const std::string &text)
+{
+	assert(font);
+	assert(!styleStack.empty());
+	if (text.empty())
+		return {0, TTF_GetFontHeight(font)};
+	MetricsKey key{text, styleStack.top().shape};
+	auto found = metricsCache.find(key);
+	if (found != metricsCache.end())
+	{
+		metricsAge.splice(metricsAge.end(), metricsAge, found->second.age);
+		return {found->second.w, found->second.h};
+	}
+	int w = 0, h = 0;
+	const auto shaped = shapeText(text);
+	if (!TTF_GetStringSize(font, shaped.c_str(), 0, &w, &h))
+		return {0, 0};
+	constexpr size_t maximumEntries = 1024, maximumTextBytes = 1024 * 1024;
+	// A single oversized diagnostic string must not grow the cache beyond its budget.
+	if (text.size() > maximumTextBytes / 2)
+		return {w, h};
+	const size_t bytes = 2 * text.size();
+	while (metricsCache.size() >= maximumEntries || metricsTextBytes + bytes > maximumTextBytes)
+	{
+		metricsTextBytes -= 2 * metricsAge.front().first.size();
+		metricsCache.erase(metricsAge.front());
+		metricsAge.pop_front();
+	}
+	metricsAge.push_back(key);
+	metricsCache.emplace(std::move(key), MetricsData{w, h, std::prev(metricsAge.end())});
+	metricsTextBytes += bytes;
+	return {w, h};
+}
+
 int TrueTypeFont::getStringWidth(const std::string string)
 {
-	const CacheData *data = getStringCached(string, false);
-	int w;
-	if (data)
-	{
-		w = data->w;
-		cleanupCache();
-	}
-	else
-		w = 0;
-	return w;
+	return measureString(string).first;
 }
 
 int TrueTypeFont::getStringHeight(const std::string string)
 {
-	int h;
-	if (!string.empty())
-	{
-		const CacheData *data = getStringCached(string, false);
-		if (data)
-		{
-			h = data->h;
-			cleanupCache();
-		}
-		else
-			h = 0;
-	}
-	else
-	{
-		h = TTF_GetFontHeight(font);
-	}
-	return h;
+	return measureString(string).second;
 }
 
 bool TrueTypeFont::hasGlyphsFor(const std::string &utf8Text)

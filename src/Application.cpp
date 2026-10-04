@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <GameplayRecording.h>
 #include "Application.h"
+#include "ui/ThemeCatalog.h"
 #include "FrontendTheme.h"
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -138,8 +139,18 @@ class ShutdownScreen : public Glob2UI::Screen
 
 } // namespace
 
+namespace
+{
+// Themes are read once every data directory is known (after argument parsing).
+std::unique_ptr<FrontendTheme> themedFrontend()
+{
+	Glob2UI::applyThemes(globalContainer->settings.menuTheme, globalContainer->settings.gameTheme);
+	return std::make_unique<FrontendTheme>();
+}
+} // namespace
+
 Application::Application()
-	: frontend(std::make_unique<FrontendTheme>()), screens(*globalContainer->gfx),
+	: frontend(themedFrontend()), screens(*globalContainer->gfx),
 	  shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
 	if (GAGCore::ApplicationHost::storageRestoreFailed())

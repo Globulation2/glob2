@@ -641,7 +641,7 @@ void AICortex::enqueueWheatForbidden(const Cortex::CortexObservation& obs, bool 
 	// paint is removed), and enqueueWheatFarm paints the farm, or erases it for a
 	// wheat blitz.
 	const Map* map = &player->team->game->map;
-	const bool farms = map->farmAreasEnabled();
+	const bool farms = map->farmAreasEnabled() && !player->game->gameHeader.isResourceGrowthDisabled();
 	Cortex::WheatReconcile wr =
 		Cortex::reconcileWheatForbidden(player, wheatOpenMargin, /*buildMasks=*/true, liftAll || farms);
 	const Uint8 teamNumber = static_cast<Uint8>(player->team->teamNumber);

@@ -2928,6 +2928,26 @@ Tự động lưu trò chơi khoảng mỗi phút.
 Đối thủ AI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Bố cục rộng rãi dùng bảng bên khi đủ chỗ. Bố cục gọn dùng thanh công cụ và các bảng có thể mở rộng.
+[settings Menu theme]
+Chủ đề menu
+[settings Colours and backdrop of menus, lobbies and results.]
+Màu sắc và nền của menu, phòng chờ và kết quả.
+[settings In-game theme]
+Chủ đề trong trận
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Màu sắc của hộp thoại và giao diện cảm ứng trong trận và trong trình chỉnh sửa.
+[theme light]
+Sáng
+[theme dark]
+Tối
+[theme classic]
+Cổ điển
+[theme ocean]
+Đại dương
+[theme dune]
+Đụn cát
+[theme high-contrast]
+Độ tương phản cao
 [settings One-finger zoom]
 Thu phóng bằng một ngón
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Mọc lại
 Đơn vị bị thương rút lui
 [Units can die]
 Đơn vị có thể chết
-[Unit training]
-Huấn luyện đơn vị
+[Upgrades]
+
 [No stockpile]
 Không có
 [No glass cannon]
@@ -5132,8 +5152,8 @@ Các đội có thể tấn công nhau. Tắt để có trận hòa bình.
 Đơn vị bị thương quay về chữa trị thay vì chiến đấu đến chết.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Đơn vị chết khi hết máu. Tắt để giữ chúng ở mức 1 máu.
-[Units gain levels at schools.]
-Đơn vị lên cấp ở trường học.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Thời gian công nhân
 [stat worker time]

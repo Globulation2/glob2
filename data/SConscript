@@ -36,6 +36,7 @@ SConscript("fonts/SConscript")
 SConscript("gfx/SConscript")
 SConscript("skins/SConscript")
 SConscript("gui/SConscript")
+SConscript("themes/SConscript")
 SConscript("icons/SConscript")
 SConscript("zik/SConscript")
     

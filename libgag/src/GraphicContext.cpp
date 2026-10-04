@@ -525,7 +525,9 @@ namespace GAGCore
                 SDL_SetWindowResizable(window, (optionFlags & RESIZABLE) ? true : false);
                 SDL_SetWindowSize(window, requestedW, requestedH);
             }
-            if (nativeDesktop) applied = refreshNativeWindow();
+            // Fullscreen and its restoration resize can outlive the flag change.
+            // Read and persist dimensions only after both requests have settled.
+            if (nativeDesktop) applied = SDL_SyncWindow(window) && refreshNativeWindow();
         }
         if (!applied) {
             if (previous) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;

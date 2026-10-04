@@ -1040,7 +1040,9 @@ Maxima::WoodReserve Maxima::select_wood_reserve(Context& runtime) const
 	Map* map=runtime.player->map;
 	const int w=map->getW(), h=map->getH();
 	WoodReserve reserve(w*h);
-	if(!budget.farming_enabled || !budget.farming_protection_enabled) return reserve;
+	// No regrowth: protecting seed cells would permanently withhold finite wheat.
+	if(runtime.player->game->gameHeader.isResourceGrowthDisabled()
+		|| !budget.farming_enabled || !budget.farming_protection_enabled) return reserve;
 	// Placement can query before the farming cache has been rebuilt on load.
 	// Derive the same exact fertility without retaining new simulation state.
 	Farming::ExactFertilityCache rebuilt;
@@ -1362,7 +1364,9 @@ void Maxima::update_farming(Context& runtime)
 	const std::chrono::steady_clock::time_point started=
 		std::chrono::steady_clock::now();
 	initialize_farming_cache(runtime);
-	if(!budget.farming_enabled || !budget.farming_protection_enabled)
+	// No regrowth: protecting seed cells would permanently withhold finite wheat.
+	if(runtime.player->game->gameHeader.isResourceGrowthDisabled()
+		|| !budget.farming_enabled || !budget.farming_protection_enabled)
 	{
 		release_farming_protection(runtime);
 		return;

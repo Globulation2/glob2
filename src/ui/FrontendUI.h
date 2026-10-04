@@ -76,9 +76,9 @@ Element compactButton(const std::string &key, const std::string &label, UIIcon i
 					  std::function<void()> action, const Presentation &p,
 					  ButtonOptions options = {});
 
-// The paper look of the menus, the results and every other frontend screen.
+// The player's menu theme: menus, the results and every other frontend screen.
 const Theme &frontendTheme();
-// The aubergine, cream and gold in-match look, shared with the HUD.
+// The player's in-game theme, shared with the HUD.
 const Theme &inGameTheme();
 // Kinds of surfaces; themeFor() maps each to its theme in one place, so moving a
 // kind of surface to the other look is a one-line change.

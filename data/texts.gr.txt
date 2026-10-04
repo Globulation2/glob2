@@ -2928,6 +2928,26 @@ Emoji
 Αντίπαλοι ΤΝ
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Η ευρύχωρη διάταξη χρησιμοποιεί πλευρικό πίνακα όταν υπάρχει χώρος. Η συμπαγής χρησιμοποιεί γραμμή εργαλείων και αναπτυσσόμενους πίνακες.
+[settings Menu theme]
+Θέμα μενού
+[settings Colours and backdrop of menus, lobbies and results.]
+Χρώματα και φόντο των μενού, των αιθουσών και των αποτελεσμάτων.
+[settings In-game theme]
+Θέμα παιχνιδιού
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Χρώματα των παραθύρων διαλόγου και της διεπαφής αφής κατά το παιχνίδι και στον επεξεργαστή.
+[theme light]
+Φωτεινό
+[theme dark]
+Σκούρο
+[theme classic]
+Κλασικό
+[theme ocean]
+Ωκεανός
+[theme dune]
+Αμμόλοφος
+[theme high-contrast]
+Υψηλή αντίθεση
 [settings One-finger zoom]
 Ζουμ με ένα δάχτυλο
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ CPU %0%
 Υποχώρηση τραυματιών
 [Units can die]
 Οι μονάδες πεθαίνουν
-[Unit training]
-Εκπαίδευση μονάδων
+[Upgrades]
+
 [No stockpile]
 Κανένα
 [No glass cannon]
@@ -5132,8 +5152,8 @@ CPU %0%
 Οι τραυματισμένες μονάδες επιστρέφουν για θεραπεία αντί να πολεμούν μέχρι θανάτου.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Οι μονάδες πεθαίνουν όταν εξαντλήσουν τους πόντους ζωής τους. Απενεργοποιήστε για να σταματούν σε 1 πόντο ζωής.
-[Units gain levels at schools.]
-Οι μονάδες ανεβαίνουν επίπεδο στα σχολεία.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Χρόνος εργατών
 [stat worker time]

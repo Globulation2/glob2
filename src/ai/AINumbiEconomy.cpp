@@ -5,6 +5,7 @@
 #include "AITelemetryFields.h"
 #include "AINumbi.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -113,8 +114,9 @@ int AINumbi::estimateFood(Building *building)
 		return telemetry.returnedInt(AITrace::AI1::AINumbi_estimateFood_result, 0);
 }
 
-std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int warriors)
+std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const int nbWorkersFactor, const int workers, const int explorers, const int requestedWarriors)
 {
+	const int warriors=game->gameHeader.isPeacefulModeEnabled() ? 0 : requestedWarriors;
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_warriors, warriors);
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_explorers, explorers);
 	telemetry.set(AITrace::AI1::AINumbi_swarmsForWorkers_input_workers, workers);
@@ -165,6 +167,12 @@ std::shared_ptr<Order>AINumbi::swarmsForWorkers(const int minSwarmNumbers, const
 
 std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numbersInc, const int workers, const int buildingType)
 {
+	// Feeding capacity is irrelevant without hunger; keep an inn for useful fruit.
+	if (game->gameHeader.isHungerDisabled() && buildingType==IntBuildingType::FOOD_BUILDING
+		&& team->stats.getLatestStat()->numberBuildingPerType[buildingType]>0) return std::make_shared<NullOrder>();
+	// This method handles construction and staffing. Skipping here prevents
+	// repeated worker assignments to a training building retained in an old save.
+	if (!AIRules::usefulBuilding(game->gameHeader, buildingType)) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_buildingType, buildingType);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_workers, workers);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbersInc, numbersInc);

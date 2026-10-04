@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "AITelemetryFields.h"
+#include "Game.h"
 #include "AINicowar.h"
 #include "FormatableString.h"
 #include <string>
@@ -30,6 +31,8 @@ void NewNicowar::queue_buildings(Runtime& runtime)
 
 void NewNicowar::queue_inns(Runtime& runtime)
 {
+	// Feeding capacity cannot constrain production when units never need meals.
+	if (runtime.player->game->gameHeader.isHungerDisabled()) return;
 	//Get some statistics
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	int total_workers=stat->numberUnitPerType[WORKER];
@@ -104,6 +107,8 @@ void NewNicowar::queue_swarms(Runtime& runtime)
 
 void NewNicowar::queue_racetracks(Runtime& runtime)
 {
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::WALKSPEED_BUILDING));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -128,6 +133,8 @@ void NewNicowar::queue_racetracks(Runtime& runtime)
 
 void NewNicowar::queue_swimmingpools(Runtime& runtime)
 {
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -152,6 +159,8 @@ void NewNicowar::queue_swimmingpools(Runtime& runtime)
 
 void NewNicowar::queue_schools(Runtime& runtime)
 {
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -176,6 +185,9 @@ void NewNicowar::queue_schools(Runtime& runtime)
 
 void NewNicowar::queue_barracks(Runtime& runtime)
 {
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
+	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()
+		|| runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -233,6 +245,20 @@ void NewNicowar::queue_hospitals(Runtime& runtime)
 void NewNicowar::order_buildings(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_order_buildings_calls);
+	const auto& rules=runtime.player->game->gameHeader;
+	const auto unavailable=[&](BuildingPlacement b) {
+		return (rules.isUnitUpgradesDisabled() && (b==RegularSchool || b==RegularRacetrack || b==RegularSwimmingpool || b==RegularBarracks))
+			|| (rules.isPeacefulModeEnabled() && b==RegularBarracks)
+			|| (rules.isHungerDisabled() && (b==RegularInn || b==StarvingRecoveryInn));
+	};
+	// Restored queues can contain plans made before capability gates existed.
+	// Remove their bookkeeping as well, so unavailable work cannot block expansion.
+	placement_queue.remove_if(unavailable);
+	for(auto i=construction_queue.begin();i!=construction_queue.end();)
+		if(unavailable(*i)) {
+			--buildings_under_construction_per_type[int(*i)];
+			i=construction_queue.erase(i);
+		} else ++i;
 	while(!placement_queue.empty())
 	{
 		BuildingPlacement b=placement_queue.front();
@@ -766,7 +792,7 @@ void NewNicowar::manage_swarm(Runtime& runtime, int id)
 		to_assign*=2;
 
 	///Half units if world is hungry
-	if((total_starving_percent + total_hungry_percent) > strategy.base_swarm_hungry_reduce_trigger_percent)
+	if(!runtime.player->game->gameHeader.isHungerDisabled() && (total_starving_percent + total_hungry_percent) > strategy.base_swarm_hungry_reduce_trigger_percent)
 		to_assign/=2;
 	
 	///No units when the world is starving
@@ -804,7 +830,7 @@ void NewNicowar::manage_swarm(Runtime& runtime, int id)
 		explorer_ratio=0;
 
 	///Warriors are constructed during the war preparation phase
-	if(war_preparation)
+	if(!runtime.player->game->gameHeader.isPeacefulModeEnabled() && (war_preparation || (runtime.player->game->gameHeader.isUnitUpgradesDisabled() && war)))
 	{
 		warrior_ratio=strategy.war_preparation_swarm_warrior_ratio;
 	}

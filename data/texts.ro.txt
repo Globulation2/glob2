@@ -2928,6 +2928,26 @@ Salvează automat jocul aproximativ o dată pe minut.
 Adversari IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Aranjarea spațioasă folosește un panou lateral când există loc. Cea compactă folosește o bară de instrumente și panouri extensibile.
+[settings Menu theme]
+Tema meniurilor
+[settings Colours and backdrop of menus, lobbies and results.]
+Culorile și fundalul meniurilor, camerelor și rezultatelor.
+[settings In-game theme]
+Tema jocului
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Culorile dialogurilor și ale interfeței tactile în timpul jocului și în editor.
+[theme light]
+Luminos
+[theme dark]
+Întunecat
+[theme classic]
+Clasic
+[theme ocean]
+Ocean
+[theme dune]
+Dună
+[theme high-contrast]
+Contrast ridicat
 [settings One-finger zoom]
 Zoom cu un deget
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Rezistența clădirilor
 Unitățile rănite se retrag
 [Units can die]
 Unitățile pot muri
-[Unit training]
-Instruirea unităților
+[Upgrades]
+
 [No stockpile]
 Niciuna
 [No glass cannon]
@@ -5132,8 +5152,8 @@ Echipele se pot ataca între ele. Dezactivați pentru un meci pașnic.
 Unitățile rănite se întorc să se vindece în loc să lupte până la moarte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unitățile mor când rămân fără puncte de viață. Dezactivați pentru a le opri la 1 punct.
-[Units gain levels at schools.]
-Unitățile câștigă niveluri la școli.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Timpul lucrătorilor
 [stat worker time]

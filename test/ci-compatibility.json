@@ -8,6 +8,7 @@
     "*Gradient*/*",
     "ComputeExecutor/*",
     "*Script*/*",
+    "AITelemetryUI/*",
     "*Stream*/*",
     "*Net*/*",
     "*LAN*/*",
@@ -17,7 +18,8 @@
     "HiveMind*/*",
     "GameplayRecording*/*",
     "GameDiagnostics/*",
-    "WinProbability/*"
+    "WinProbability/*",
+    "AIRules/*"
   ],
   "unit_filters": [
     "*"

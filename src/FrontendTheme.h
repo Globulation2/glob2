@@ -3,6 +3,7 @@
 #include <GUIStyle.h>
 #include <GraphicContext.h>
 #include <memory>
+#include <string>
 class MenuColony;
 
 // The frontend presentation outside the framework: the live colony backdrop and
@@ -26,8 +27,15 @@ class FrontendTheme : public GAGGUI::Style
 	GAGGUI::Style *original;
 	GAGCore::Font::Style originalFonts[3];
 
+	// Copies the menu theme's colours into the legacy Style fields.
+	void syncPalette();
+	unsigned generation = 0;
+
   private:
+	GAGCore::DrawableSurface *backdropImage();
+	void terrain(GAGCore::DrawableSurface *);
 	bool attempted = false, painted = false;
+	std::string fallbackPath;
 	std::unique_ptr<GAGCore::DrawableSurface> fallback, fittedFallback;
 };
 
@@ -42,6 +50,9 @@ class FrontendScope
 	~FrontendScope();
 	FrontendScope(const FrontendScope &) = delete;
 	FrontendScope &operator=(const FrontendScope &) = delete;
+
+	// Re-applies the presentation after the menu theme changed.
+	static void refresh();
 
   private:
 	static void apply();

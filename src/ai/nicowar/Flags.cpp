@@ -152,7 +152,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 				// over a bigger area).
 				if ((px >= -RADIUS) && (px <= RADIUS) && (py >= -RADIUS) && (py <= RADIUS)) {
 					Uint16 guid = runtime.player->map->getGroundUnit(nx, ny);
-					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->enemies)
+					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->attackableTeams())
 					{
 						Unit* unit = runtime.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 						if(unit->typeNum == WARRIOR)
@@ -253,7 +253,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 				{
 						int ny = (b->posY + py + h)%h;
 						Uint16 guid = runtime.player->map->getGroundUnit(nx, ny);
-						if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->enemies)
+						if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->attackableTeams())
 						{
 								Unit* unit = runtime.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 								if(unit->typeNum == WARRIOR)

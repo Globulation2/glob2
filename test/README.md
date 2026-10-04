@@ -976,6 +976,20 @@ built-in implementation, shared-team player identities, controller generations,
 reassignment, exact numeric persistence, replay availability, and truncated fields.
 See [AI telemetry](../docs/ai/telemetry.md) for the capture/extension contract.
 
+`AITelemetryUI` exercises the real telemetry dialog with Maxima's full schema and
+the maximum presentation field count, using counted measurements and recorded
+painting to check that layout work stays bounded. It also covers selection,
+search, refresh state, and access revocation. `TextMetrics` verifies that font
+measurement creates no bitmap-cache misses, retains rendered text, matches styled
+UTF-8 raster dimensions, bounds its separate cache, and clears it on font reload.
+The display case `AITelemetryUI/telemetry full-game*` reports opening, sampled
+refresh, scrolling, and search timings for a saved Maxima game and a presentation
+stress fixture, and retains desktop/phone captures. Run it alone on a quiet machine
+for timing evidence. `GLOB2_TELEMETRY_BENCH_SAVE` selects the exact initial save for
+paired revisions; `GLOB2_TELEMETRY_BENCH_TRACE=1` emits per-tick checksums outside
+the measured UI work. Its eight-sample p95 is the largest observed sample;
+timing targets are review criteria, not assertions in CI.
+
 ## Performance telemetry
 
 ```sh
@@ -1563,3 +1577,19 @@ compatibility tests cover 127, 128, 132 and rejection of future format 133.
 For platform verification, run the same seeds and fixtures on macOS and Linux and
 compare the emitted TSV traces. A successful local run establishes local resumed
 equivalence; cross-platform equivalence requires both platform traces.
+
+## Custom-rule AI behavior
+
+`AIRules` exercises every native controller with disabled training, hunger and
+combat, checks emitted orders, and compares save/load continuation. It also
+covers authoritative upgrade rejection versus repairs, preserved starting levels,
+restored training subscriptions, JavaScript rule observations in both profiles,
+Cortex scoring gates, rule parsing, and harvesting the last finite farm seed.
+Run `python3 test/run_tests.py --filter 'AIRules/*'` with the appropriate build directory.
+Tournament job adapter tests cover repeatable rule arguments and saved-game override
+rejection in `test/test_tournaments.py`.
+
+For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
+opt-in assertion checks each AI order when selected and reports unavailable work
+without filtering it. A repair can finish while its order waits in the network
+queue, so replay-time building health alone cannot classify upgrade intentions.

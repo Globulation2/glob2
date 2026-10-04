@@ -51,16 +51,63 @@ struct Palette
 	GAGCore::Color placeholder{211, 223, 197};
 };
 
+// Colours of the in-match HUD drawn outside the framework controls (touch
+// toolbars, inspector, dial, lenses, readouts). Defaults are the dark theme's.
+struct HudPalette
+{
+	GAGCore::Color ink{249, 232, 187};
+	GAGCore::Color paper{43, 28, 66, 218};
+	GAGCore::Color field{65, 43, 88, 235};
+	GAGCore::Color selected{114, 78, 111, 245};
+	GAGCore::Color border{199, 165, 87};
+	GAGCore::Color readout{29, 18, 46, 240};
+	GAGCore::Color dialTrack{29, 20, 43, 225};
+	GAGCore::Color dialFill{199, 165, 87, 190};
+	GAGCore::Color dialPadFill{82, 56, 108, 245};
+	GAGCore::Color destroy{81, 36, 60, 235};
+	GAGCore::Color erasePreview{20, 14, 30, 140};
+};
+
+// What a menu screen draws behind its panels.
+struct Backdrop
+{
+	enum class Kind
+	{
+		// The live colony, or its still image while it loads.
+		Colony,
+		// One image, cropped to cover the window.
+		Image,
+		// The classic tiled grass of the original menus.
+		Terrain,
+		// Only the backdrop colour.
+		Solid
+	};
+	Kind kind = Kind::Colony;
+	// Image path for Kind::Image.
+	std::string image;
+	// Wash over the artwork (alpha included); fully transparent for none.
+	GAGCore::Color veil{240, 241, 223, 42};
+	// Optional wordmark image shown as is; empty recolours the shipped wordmark
+	// with the palette's ink and accent.
+	std::string wordmark;
+};
+
 class Canvas;
 struct ButtonPaintState
 {
 	bool primary = false, selected = false, enabled = true, hovered = false, pressed = false;
+	// Borderless buttons (list rows, tabs, toolbar items) usually keep the palette look.
+	bool flat = false;
 };
 
 // Metrics are host points; `Metrics` is their per-frame pixel resolution.
 struct Theme
 {
+	// Stable identifier (file name and preference value) and display name.
+	std::string id = "light", name = "Light";
 	Palette palette;
+	HudPalette hud;
+	Backdrop backdrop;
 	// Toolkit font names by role for pointer and touch presentations.
 	std::array<std::string, fontRoleCount> fonts{"menu", "menu", "standard", "little", "little"};
 	std::array<std::string, fontRoleCount> touchFonts{"menu", "menu", "frontend-body",

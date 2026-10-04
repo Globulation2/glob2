@@ -2928,6 +2928,26 @@ Guardar o jogo automaticamente a cada minuto, aproximadamente.
 Adversários de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A disposição espaçosa usa um painel lateral quando há espaço. A compacta usa uma barra de ferramentas e painéis retráteis.
+[settings Menu theme]
+Tema dos menus
+[settings Colours and backdrop of menus, lobbies and results.]
+Cores e fundo dos menus, salas e resultados.
+[settings In-game theme]
+Tema do jogo
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Cores das caixas de diálogo e da interface tátil durante o jogo e no editor.
+[theme light]
+Claro
+[theme dark]
+Escuro
+[theme classic]
+Clássico
+[theme ocean]
+Oceano
+[theme dune]
+Duna
+[theme high-contrast]
+Alto contraste
 [settings One-finger zoom]
 Zoom com um dedo
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Resistência dos edifícios
 Unidades feridas recuam
 [Units can die]
 Unidades podem morrer
-[Unit training]
-Treino das unidades
+[Upgrades]
+
 [No stockpile]
 Nenhuma
 [No glass cannon]
@@ -5132,8 +5152,8 @@ As equipas podem atacar-se. Desligue para uma partida pacífica.
 As unidades feridas recuam para se curarem em vez de lutarem até à morte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 As unidades morrem quando ficam sem PV. Desligue para pararem em 1 PV.
-[Units gain levels at schools.]
-As unidades ganham níveis nas escolas.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tempo dos trabalhadores
 [stat worker time]

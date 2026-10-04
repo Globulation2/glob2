@@ -204,7 +204,7 @@ void enemy_team_iterator::set_to_next()
 	const Game &game = *runtime->player->game;
 	const int count = game.teamsCount();
 	for (; team_number < count && game.teams[team_number] &&
-		!(runtime->player->team->enemies & game.teams[team_number]->me); ++team_number)
+		!(runtime->player->team->attackableTeams() & game.teams[team_number]->me); ++team_number)
 	{
 	}
 

@@ -7,8 +7,10 @@
 #include <map>
 #include "IntBuildingType.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
+#include "AIRuleOrders.h"
 #include <tuple>
 
 using namespace AISharedRuntime;
@@ -163,6 +165,10 @@ void Runtime::update_building_orders()
 {
 	for(std::vector<std::shared_ptr<Construction::BuildingOrder> >::iterator i=building_orders.begin(); i!=building_orders.end();)
 	{
+		// A restored placement owns a register entry even before a building exists.
+		// Release both pieces before evaluating prerequisites that can never pass.
+		if (!AIRules::usefulBuilding(player->game->gameHeader,(*i)->get_building_type()))
+		{ br.remove_building((*i)->id); i=building_orders.erase(i); continue; }
 		tribool passes=(*i)->passes_conditions(*this);
 		if(passes)
 		{
@@ -269,12 +275,13 @@ std::shared_ptr<Order> Runtime::getOrder(void)
 		br.initiate();
 		init_starting_buildings();
 		allies=player->team->allies;
-		enemies=player->team->enemies;
+		enemies=player->team->attackableTeams();
 		market_view=player->team->sharedVisionExchange;
 		inn_view=player->team->sharedVisionFood;
 		other_view=player->team->sharedVisionOther;
 	}
 
+	while (!orders.empty() && !AIRules::permittedQueuedOrder(*player->game, *orders.front())) orders.erase(orders.begin());
 	if(!orders.empty())
 	{
 		std::shared_ptr<Order> order=orders.front();

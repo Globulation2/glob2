@@ -2928,6 +2928,26 @@ Desa la partida automàticament cada minut aproximadament.
 Rivals IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposició espaiosa usa un panell lateral quan hi ha espai. La compacta usa una barra d'eines i panells desplegables.
+[settings Menu theme]
+Tema dels menús
+[settings Colours and backdrop of menus, lobbies and results.]
+Colors i fons dels menús, les sales i els resultats.
+[settings In-game theme]
+Tema de la partida
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Colors dels diàlegs i de la interfície tàctil durant la partida i a l'editor.
+[theme light]
+Clar
+[theme dark]
+Fosc
+[theme classic]
+Clàssic
+[theme ocean]
+Oceà
+[theme dune]
+Duna
+[theme high-contrast]
+Alt contrast
 [settings One-finger zoom]
 Zoom amb un dit
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Resistència dels edificis
 Les unitats ferides es retiren
 [Units can die]
 Les unitats poden morir
-[Unit training]
-Entrenament d'unitats
+[Upgrades]
+
 [No stockpile]
 Cap
 [No glass cannon]
@@ -5132,8 +5152,8 @@ Els equips es poden atacar entre ells. Desactiva-ho per a una partida pacífica.
 Les unitats ferides tornen a curar-se en lloc de lluitar fins a la mort.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Les unitats moren quan es queden sense punts de vida. Desactiva-ho per aturar-les a 1 punt de vida.
-[Units gain levels at schools.]
-Les unitats guanyen nivells a les escoles.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Temps dels treballadors
 [stat worker time]

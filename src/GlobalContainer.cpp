@@ -16,6 +16,7 @@
 #include "GameGUIKeyActions.h"
 #include "Glob2Style.h"
 #include "GlobalContainer.h"
+#include "ui/ThemeCatalog.h"
 #include "IntBuildingType.h"
 #include "KeyboardManager.h"
 #include "MapEditKeyActions.h"
@@ -52,6 +53,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 	fileManager->addWriteSubdir("logs");
 	fileManager->addWriteSubdir("scripts");
 	fileManager->addWriteSubdir("videoshots");
+	fileManager->addWriteSubdir("themes");
 
 #ifdef __EMSCRIPTEN__
 	// Start browser profiles quietly and without clouds. Saved preferences win.
@@ -59,6 +61,7 @@ GlobalContainer::GlobalContainer(const char *profileName)
 #endif
 	// load user preference
 	settings.load();
+	Glob2UI::applyThemes(settings.menuTheme, settings.gameTheme);
 
 	applyScrollTuning(settings, reducedMotion);
 	runNoX = false;

@@ -2928,6 +2928,26 @@ OpenGL недоступний у цій збірці.
 Суперники-ШІ
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Просторе компонування використовує бічну панель, якщо вистачає місця. Компактне — панель інструментів і висувні панелі.
+[settings Menu theme]
+Тема меню
+[settings Colours and backdrop of menus, lobbies and results.]
+Кольори й тло меню, кімнат і результатів.
+[settings In-game theme]
+Тема гри
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Кольори діалогів і сенсорного інтерфейсу під час гри та в редакторі.
+[theme light]
+Світла
+[theme dark]
+Темна
+[theme classic]
+Класична
+[theme ocean]
+Океан
+[theme dune]
+Дюна
+[theme high-contrast]
+Висока контрастність
 [settings One-finger zoom]
 Масштаб одним пальцем
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поранені відступають
 [Units can die]
 Істоти можуть гинути
-[Unit training]
-Навчання істот
+[Upgrades]
+
 [No stockpile]
 Немає
 [No glass cannon]
@@ -5132,8 +5152,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поранені істоти повертаються лікуватися, а не б’ються до смерті.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Істоти гинуть, коли здоров’я закінчується. Вимкніть, щоб у них залишалася 1 одиниця здоров’я.
-[Units gain levels at schools.]
-Істоти підвищують рівень у школах.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Час робітників
 [stat worker time]

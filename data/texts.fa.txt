@@ -2928,6 +2928,26 @@ Emoji
 حریفان هوش مصنوعی
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 چیدمان جادار در صورت وجود فضا از پنل کناری استفاده می‌کند. چیدمان فشرده از نوار ابزار و پنل‌های بازشو استفاده می‌کند.
+[settings Menu theme]
+پوستهٔ منوها
+[settings Colours and backdrop of menus, lobbies and results.]
+رنگ‌ها و پس‌زمینهٔ منوها، اتاق‌ها و نتایج.
+[settings In-game theme]
+پوستهٔ بازی
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+رنگ‌های پنجره‌ها و رابط لمسی در طول بازی و در ویرایشگر.
+[theme light]
+روشن
+[theme dark]
+تیره
+[theme classic]
+کلاسیک
+[theme ocean]
+اقیانوس
+[theme dune]
+تپهٔ شنی
+[theme high-contrast]
+کنتراست بالا
 [settings One-finger zoom]
 بزرگ‌نمایی با یک انگشت
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 عقب‌نشینی افراد زخمی
 [Units can die]
 افراد می‌توانند بمیرند
-[Unit training]
-آموزش افراد
+[Upgrades]
+
 [No stockpile]
 هیچ
 [No glass cannon]
@@ -5132,8 +5152,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 افراد آسیب‌دیده به‌جای جنگیدن تا پای مرگ برای درمان برمی‌گردند.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 افراد وقتی سلامتی‌شان تمام شود می‌میرند. خاموش کنید تا در ۱ سلامتی متوقف شوند.
-[Units gain levels at schools.]
-افراد در مدرسه‌ها سطح می‌گیرند.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 زمان کارگرها
 [stat worker time]

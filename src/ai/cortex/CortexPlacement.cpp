@@ -181,7 +181,7 @@ namespace Cortex
 	// unfogged enemy state — an undiscovered enemy base is invisible to this scan,
 	// exactly as it is on the player's minimap. The same enemy/alive test as the
 	// observation opponents loop (CortexObservation.cpp:171-172) selects which
-	// teams to scan: an enemy is (team->enemies & other->me) != 0 and alive is
+	// teams to scan: an enemy is (team->attackableTeams() & other->me) != 0 and alive is
 	// other->isAlive.
 	//
 	// SCORING (nearer == higher): we reuse scoreFromDistance on the Chebyshev
@@ -221,7 +221,7 @@ namespace Cortex
 			Team* other = game->teams[i];
 			if (other == NULL)
 				continue;
-			const bool isEnemy = (team->enemies & other->me) != 0;
+			const bool isEnemy = (team->attackableTeams() & other->me) != 0;
 			if (!isEnemy || !other->isAlive)
 				continue;
 

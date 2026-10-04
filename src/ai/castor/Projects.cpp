@@ -4,6 +4,7 @@
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -17,7 +18,11 @@ using std::shared_ptr;
 bool AICastor::addProject(Project *project)
 {
 	telemetry.count(AITrace::AI2::AICastor_addProject_calls);
-	if (buildingSum[project->shortTypeNum][0]>=project->amount)
+	// Reject the project before adding its critical wait and workforce reservation.
+	// An unavailable bootstrap project must not hold every later expansion hostage.
+	if (!AIRules::usefulBuilding(game->gameHeader, project->shortTypeNum)
+		|| (game->gameHeader.isHungerDisabled() && project->shortTypeNum==IntBuildingType::FOOD_BUILDING)
+		|| buildingSum[project->shortTypeNum][0]>=project->amount)
 	{
 		delete project;
 		return telemetry.returnedBool(AITrace::AI2::AICastor_addProject_result,
@@ -53,7 +58,7 @@ void AICastor::addProjects()
 
 	buildsAmount=-1;
 	
-	if (buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
+	if (!game->gameHeader.isHungerDisabled() && buildingSum[IntBuildingType::FOOD_BUILDING][0]==0)
 	{
 		Project *project=new Project(IntBuildingType::FOOD_BUILDING, "boot");
 
@@ -150,7 +155,8 @@ void AICastor::addProjects()
 		int upgradeSum=0;
 		for (int li=AI_CASTOR_FIRST_UPGRADE_LEVEL; li<NB_UNIT_LEVELS; li++)
 			upgradeSum+=buildingLevels[bi][0][li];
-		if (upgradeSum<strategy.build[bi].baseUpgrade)
+		if (!game->gameHeader.isUnitUpgradesDisabled() && AIRules::usefulBuilding(game->gameHeader, bi)
+			&& upgradeSum<strategy.build[bi].baseUpgrade)
 			return;
 	}
 	buildsAmount=2;
@@ -198,7 +204,8 @@ void AICastor::addProjects()
 			int upgradeSum=0;
 			for (int li=agi; li<NB_UNIT_LEVELS; li++)
 				upgradeSum+=buildingLevels[bi][0][li];
-			if (upgradeSum<upgradeGoal[bi])
+			if (!game->gameHeader.isUnitUpgradesDisabled() && AIRules::usefulBuilding(game->gameHeader, bi)
+				&& upgradeSum<upgradeGoal[bi])
 				return;
 		}
 
@@ -209,6 +216,9 @@ void AICastor::addProjects()
 std::shared_ptr<Order>AICastor::continueProject(Project *project)
 {
 	telemetry.count(AITrace::AI2::AICastor_continueProject_calls);
+	if (!AIRules::usefulBuilding(game->gameHeader, project->shortTypeNum)
+		|| (game->gameHeader.isHungerDisabled() && project->shortTypeNum==IntBuildingType::FOOD_BUILDING))
+	{ project->finished=true; return {}; }
 	telemetry.set(AITrace::AI2::project_shortTypeNum, project->shortTypeNum);
 	telemetry.set(AITrace::AI2::project_amount, project->amount);
 	telemetry.set(AITrace::AI2::project_subPhase, project->subPhase);

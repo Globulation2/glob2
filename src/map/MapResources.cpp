@@ -218,7 +218,9 @@ std::optional<size_t> Map::pickFarmHarvestTile(int x, int y, int resourceType, U
 		// still carry the flood, so the field does not split as it is worked down.
 		const Sint32 amount = tiles[index].resource.amount;
 		const Sint32 distance = warpDistSquare(x, y, tx, ty);
-		if (amount > FARM_SEED_AMOUNT
+		// No regrowth makes every grain finite supply, including the last seed.
+		const int seedAmount=game && game->gameHeader.isResourceGrowthDisabled() ? 0 : FARM_SEED_AMOUNT;
+		if (amount > seedAmount
 			&& (amount > bestAmount
 				|| (amount == bestAmount && distance < bestDistance)
 				|| (amount == bestAmount && distance == bestDistance && index < best)))

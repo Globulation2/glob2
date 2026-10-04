@@ -375,6 +375,7 @@ void nativeDisplay(bool gpu)
 				"Read current window dimensions before fullscreen");
 		std::vector<bool> modes;
 		gfx.setDisplayPreferenceCallback([&](int w,int h,bool fullscreen){
+			INFO("Fullscreen callback " << w << "x" << h << ", remembered " << savedW << "x" << savedH << ", fullscreen=" << fullscreen);
 			require(w==savedW && h==savedH,"Fullscreen overwrote remembered window size");
 			modes.push_back(fullscreen);
 		});

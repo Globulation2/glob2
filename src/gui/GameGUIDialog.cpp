@@ -642,16 +642,35 @@ Element InGameTextInput::build(const Presentation &p)
 	return fe::row({fe::expanded(entry), send, close}, {p.pt(6), fe::CrossAlign::Center});
 }
 
+void InGameAITelemetryScreen::resetFieldSelection()
+{
+	selectedField.clear();
+	for (const auto *key : {"telemetry/fields", "telemetry/details"})
+	{
+		if (auto *node = host().find(key))
+			node->scrollTo(0, host());
+		host().state(key).scroll = 0;
+	}
+}
+
 void InGameAITelemetryScreen::onUpdate(Uint32)
 {
 	const auto &scene = gui->drawnScene();
 	Uint32 players = 0;
 	for (const auto &record : scene.panels.aiTelemetry)
 		players |= Uint32(1) << record.player;
-	// Values are sampled every 32 ticks. Permission changes still refresh the
-	// dialog immediately, including when the viewer changes while paused.
-	if (sample != scene.tick / 32 || players != accessiblePlayers)
+	const bool accessChanged = players != accessiblePlayers;
+	if (accessChanged || sample != scene.tick / 32)
 	{
+		// Never leave private rows or their callbacks alive after access is revoked.
+		// Routine samples wait for gestures/coasting, retaining their newest tick.
+		if (accessChanged)
+		{
+			host().cancelInput();
+			host().closePopup();
+		}
+		else if (host().root() && (host().interacting() || host().animating()))
+			return;
 		sample = scene.tick / 32;
 		accessiblePlayers = players;
 		invalidate();
@@ -671,9 +690,15 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
 	}
 	std::vector<Element> rows;
 	if (records.empty())
+	{
+		resetFieldSelection();
+		player = -1;
 		rows.push_back(fe::paragraph(fe::tr("[No accessible AI telemetry.]")));
+	}
 	else
 	{
+		if (player != records[selected].player)
+			resetFieldSelection();
 		player = records[selected].player;
 		rows.push_back(fe::field(fe::tr("[Player]"),
 								 fe::choice("telemetry/player", names, selected,
@@ -681,27 +706,35 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
 											{
 												const auto &values =
 													gui->drawnScene().panels.aiTelemetry;
-												if (index >= 0 && size_t(index) < values.size())
+												if (index >= 0 && size_t(index) < values.size() &&
+													player != values[index].player)
+												{
+													resetFieldSelection();
 													player = values[index].player;
+												}
 												invalidate();
 											})));
 		rows.push_back(
 			fe::field(fe::tr("[Search fields]"), fe::textField("telemetry/search", search,
-															 [this](const std::string &value)
-															 {
-																 search = value;
-																 invalidate();
-															 })));
+															   [this](const std::string &value)
+															   {
+																   search = value;
+																   invalidate();
+															   })));
 		const auto &record = records[selected];
 		if (!record.available)
+		{
+			resetFieldSelection();
 			rows.push_back(
 				fe::paragraph(fe::tr("[Telemetry unavailable for this recording or controller.]")));
+		}
 		else
 		{
+			// Only the selected field becomes paragraphs. listView measures a fixed
+			// row height and paints visible rows, regardless of the schema's size.
 			auto values = record.values;
 			std::sort(values.begin(), values.end(),
 					  [](const auto &a, const auto &b) { return a.name < b.name; });
-			// ASCII folding preserves UTF-8 bytes and makes common API field names easy to find.
 			auto folded = [](std::string text)
 			{
 				for (char &c : text)
@@ -710,40 +743,77 @@ Element InGameAITelemetryScreen::build(const Presentation &p)
 				return text;
 			};
 			const auto query = folded(search);
-			bool matched = false;
-			std::string group;
+			std::vector<std::string> labels, fields;
+			std::vector<const AITelemetry::NamedValue *> matches;
+			int fieldIndex = 0;
 			for (const auto &value : values)
 			{
-				if (!search.empty() &&
+				if (!query.empty() &&
 					folded(value.name + " " + value.meaning + " " + value.value).find(query) ==
 						std::string::npos)
 					continue;
-				matched = true;
-				auto category = value.name.substr(0, value.name.find('.'));
-				if (category != group)
-				{
-					group = category;
-					rows.push_back(fe::paragraph(group, {fe::FontRole::Heading}));
-				}
-				rows.push_back(fe::paragraph(
-					value.name + ": " + value.value + (value.unit.empty() ? "" : " " + value.unit) +
-					"  · " +
-					std::string(GAGCore::FormattableString(fe::tr("[Updated at tick %0]"))
-									.arg(value.updated))));
-				if (!value.meaning.empty())
-					rows.push_back(fe::paragraph(value.meaning));
+				if (value.name == selectedField)
+					fieldIndex = int(matches.size());
+				matches.push_back(&value);
+				fields.push_back(value.name);
+				labels.push_back(value.name + ": " + value.value +
+								 (value.unit.empty() ? "" : " " + value.unit));
 			}
-			if (!matched)
-				rows.push_back(fe::paragraph(fe::tr(
-					search.empty() ? "[No values published yet.]" : "[No fields match your search.]")));
+			if (matches.empty())
+			{
+				selectedField.clear();
+				rows.push_back(
+					fe::paragraph(fe::tr(search.empty() ? "[No values published yet.]"
+														: "[No fields match your search.]")));
+			}
+			else
+			{
+				const auto &value = *matches[fieldIndex];
+				if (selectedField != value.name)
+				{
+					if (auto *details = host().find("telemetry/details"))
+						details->scrollTo(0, host());
+					host().state("telemetry/details").scroll = 0;
+				}
+				selectedField = value.name;
+				auto list = fe::listView("telemetry/fields", labels, fieldIndex,
+										 [this, fields = std::move(fields)](int index)
+										 {
+											 if (index >= 0 && size_t(index) < fields.size())
+												 selectedField = fields[index];
+											 if (auto *details = host().find("telemetry/details"))
+												 details->scrollTo(0, host());
+											 host().state("telemetry/details").scroll = 0;
+											 invalidate();
+										 });
+				std::vector<Element> details{
+					fe::paragraph(value.name, {fe::FontRole::Heading}),
+					fe::paragraph(value.value + (value.unit.empty() ? "" : " " + value.unit)),
+					fe::paragraph(
+						std::string(GAGCore::FormattableString(fe::tr("[Updated at tick %0]"))
+										.arg(value.updated)))};
+				if (!value.meaning.empty())
+					details.push_back(fe::paragraph(value.meaning));
+				auto detail =
+					fe::scroll("telemetry/details", fe::column(std::move(details), {p.pt(4)}));
+				rows.push_back(fe::expanded(fe::adaptive(
+					[list, detail](const fe::LayoutContext &ctx, fe::Size available)
+					{
+						return fe::column(
+							{fe::expanded(list), fe::constrained({0, 0, fe::Constraints::Unbounded,
+																  std::max(0, available.h / 3)},
+																 detail)},
+							{ctx.metrics.gap});
+					})));
+			}
 		}
 	}
 	fe::ButtonOptions close;
 	close.shortcut = SDLK_ESCAPE;
 	return fe::column({fe::paragraph(fe::tr("[AI telemetry]"), {fe::FontRole::Heading}),
-					   fe::expanded(fe::footer(
-						   fe::scroll("telemetry/scroll", fe::column(std::move(rows), {p.pt(8)})),
-						   fe::button(
-							   "telemetry/close", fe::tr("[Close]"), [this] { finish(0); }, close)))},
+					   fe::expanded(fe::footer(fe::column(std::move(rows), {p.pt(8)}),
+											   fe::button(
+												   "telemetry/close", fe::tr("[Close]"),
+												   [this] { finish(0); }, close)))},
 					  {p.pt(12)});
 }

@@ -1,0 +1,55 @@
+{
+	"schema": 1,
+	"id": "classic",
+	"name": "Classic",
+	"description": "The original look: tiled grass, gold buttons, gold frames and white text.",
+	"palette": {
+		"ink": "#ffffff",
+		"muted": "#e8e0c0",
+		"paper": "#1d6b1d",
+		"panel": "#00002878",
+		"field": "#00000040",
+		"rail": "#00000050",
+		"line": "#e2d094",
+		"accent": "#e2d094",
+		"accentInk": "#2a1e06",
+		"selected": "#4646a0",
+		"hover": "#c54343",
+		"focus": "#ffd878",
+		"scrim": "#00000090",
+		"disabled": "#3c3c3c80",
+		"danger": "#ff7b6e",
+		"success": "#6ee06e",
+		"warning": "#ffd878",
+		"shadow": "#00000000",
+		"pressed": "#ffffff30",
+		"backdrop": "#1d6b1d",
+		"neutral": "#8a9a8a",
+		"placeholder": "#2f5f2f"
+	},
+	"hud": {
+		"ink": "#ffffff",
+		"paper": "#00002ab4",
+		"field": "#000000c0",
+		"selected": "#4646a0f0",
+		"border": "#e2d094",
+		"readout": "#000014f0",
+		"dialTrack": "#000014e0",
+		"dialFill": "#e2d094c0",
+		"dialPadFill": "#282860f0",
+		"destroy": "#6a2020f0",
+		"erasePreview": "#0000008c"
+	},
+	"backdrop": {
+		"kind": "terrain",
+		"veil": "#00000000",
+		"wordmark": "data/themes/classic/title.png"
+	},
+	"buttons": {
+		"kind": "sprite",
+		"sprite": "data/gfx/guitheme"
+	},
+	"metrics": {
+		"radius": 0
+	}
+}

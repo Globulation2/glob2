@@ -106,8 +106,8 @@ void GameGUITouch::drawBuildPalette()
 		const auto rect = paletteItemRect(i);
 		gfx->setClipRect(clip.x, clip.y, clip.w, clip.h);
 		gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
-							items[i].enabled ? InGameTouchTheme::field : InGameTouchTheme::paper);
-		gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border);
+							items[i].enabled ? InGameTouchTheme::field() : InGameTouchTheme::paper());
+		gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
 		if (items[i].name.starts_with("zone:"))
 		{
 			const std::string zones[] = {Toolkit::getStringTable()->getString("[Forbid]"),
@@ -138,7 +138,7 @@ void GameGUITouch::drawBuildPalette()
 		const ViewRect help{content.x, std::max(layout().safe.y, content.y - 48 * unit), content.w,
 							48 * unit};
 		gfx->drawFilledRect(int(help.x), int(help.y), int(help.w), int(help.h),
-							InGameTouchTheme::paper);
+							InGameTouchTheme::paper());
 		drawPointLabel(help, Toolkit::getStringTable()->getString("[" + placement->building + "]"),
 					   .9);
 	}

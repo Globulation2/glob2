@@ -3,6 +3,7 @@
 
 #include "shared_runtime/Runtime.h"
 #include "Building.h"
+#include "Game.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include <tuple>
@@ -302,6 +303,11 @@ void BuildingRegister::tick()
 				found_buildings.erase(current);
 				continue;
 			}
+			// A saved indeterminate upgrade may have been drained by the rule
+			// gate. Release its wait once no construction is possible or pending.
+			if(player->game->gameHeader.isUnitUpgradesDisabled()
+				&& b->constructionResultState==::Building::NO_CONSTRUCTION
+				&& b->hp>=b->getEffectiveMaxHp()) std::get<4>(i->second)=false;
 			//True
 			if(std::get<4>(i->second))
 			{

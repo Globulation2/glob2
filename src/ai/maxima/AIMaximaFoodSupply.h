@@ -2,6 +2,7 @@
 #define AI_MAXIMA_FOOD_SUPPLY_H
 #include "field/UniformTraversal.h"
 #include "Map.h"
+#include "Game.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "AIMaximaFarming.h"
@@ -36,6 +37,16 @@ inline long long wheatStockFertilityEquivalent(int amount, int stockHorizonTicks
 	return 65536LL*amount*WheatGrowthPeriodTicks/std::max(1,stockHorizonTicks);
 }
 
+// Custom rules change only the renewable contribution: standing grain is still
+// real supply. Keep the default arithmetic identical and use the engine's tiers.
+inline long long effectiveWheatRegrowth(Map* map, long long fertility)
+{
+    if (!map->game) return fertility;
+    const auto& rules=map->game->gameHeader;
+    if (rules.isResourceGrowthDisabled()) return 0;
+    return fertility / (1 << rules.getResourceScarcityLevel());
+}
+
 // Recovery estimate used only when all local catchments are empty. Search once
 // from every completed food building, stopping one local radius beyond the
 // nearest growing wheat. Discount distant supply for the longer carrier trip.
@@ -65,7 +76,7 @@ inline long long distantFoodCapacity(Map* map,const std::vector<Building*>& buil
             if(map->isGrass(x,y)&&tile.resource.type==WHEAT&&tile.resource.amount>0)
             {
                 if(stop==size)stop=std::min(size,steps+localRadius);
-                capacity+=(static_cast<long long>(fertility.at(x,y))
+                capacity+=(effectiveWheatRegrowth(map,fertility.at(x,y))
                     +wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks))*localRadius
                     /std::max(localRadius,steps);
             }
@@ -109,7 +120,7 @@ inline long long reachableFoodCapacity(Map* map, Building* building,
 			const Tile& tile=map->getTile(x,y);
 			if(map->isGrass(x,y)&&tile.resource.type==WHEAT&&tile.resource.amount>0
 			   &&(!shared_tiles||shared_tiles->insert(index).second))
-				capacity+=fertility.at(x,y)+wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);
+				capacity+=effectiveWheatRegrowth(map,fertility.at(x,y))+wheatStockFertilityEquivalent(tile.resource.amount,stockHorizonTicks);
 			return distance[index]>=radius?field::Visit::Skip:field::Visit::Expand;
 		},[&](int index,int px,int py) {
 			const int nx=map->normalizeX(px),ny=map->normalizeY(py),adjacent=ny*width+nx;

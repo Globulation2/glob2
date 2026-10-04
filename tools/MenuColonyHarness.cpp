@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Generate the bundled colony and exercise the real simulation/presentation.
 #include "GlobalContainer.h"
+#include <Environment.h>
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include <StringTable.h>
@@ -473,6 +474,10 @@ int main(int argc, char **argv)
 {
 	require(argc >= 3, "usage: MenuColonyHarness generate PATH | check PATH | capture SCREEN "
 					   "OUTPUT [W H] | soak SECONDS");
+	const std::string mode = argv[1];
+	// These contracts exercise the complete desktop keyboard routes.
+	if (mode == "check" || mode == "navigation")
+		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);
 	const auto startupBegin = std::chrono::steady_clock::now();
 	GlobalContainer globals("glob2-frontend-test");
 	globalContainer = &globals;
@@ -483,7 +488,6 @@ int main(int argc, char **argv)
 	globals.load();
 	if (const char *lang = std::getenv("GLOB2_PREVIEW_LANGUAGE"))
 		Toolkit::getStringTable()->setLang(Toolkit::getStringTable()->getLangCode(lang));
-	const std::string mode = argv[1];
 	if (mode == "generate")
 	{
 		generate(argv[2]);
@@ -662,7 +666,7 @@ int main(int argc, char **argv)
 			probe.render();
 			const auto order = probe.GAGGUI::ui::UIScreen::host().focusOrder();
 			require(order.size() == std::size(actions),
-					"main menu exposes navigation controls to the keyboard");
+					"main menu exposes every navigation action to the keyboard");
 			for (size_t i = 0; i < order.size(); ++i)
 			{
 				Preview<MainMenuScreen> main;

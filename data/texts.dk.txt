@@ -2928,6 +2928,26 @@ Gem spillet automatisk cirka hvert minut.
 AI-modstandere
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rummelig bruger et sidepanel, når der er plads. Kompakt bruger en værktøjslinje og paneler, der kan foldes ud.
+[settings Menu theme]
+Menutema
+[settings Colours and backdrop of menus, lobbies and results.]
+Farver og baggrund i menuer, lobbyer og resultater.
+[settings In-game theme]
+Spiltema
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Farver på dialoger og berøringsfladen under spillet og i editoren.
+[theme light]
+Lyst
+[theme dark]
+Mørkt
+[theme classic]
+Klassisk
+[theme ocean]
+Ocean
+[theme dune]
+Klit
+[theme high-contrast]
+Høj kontrast
 [settings One-finger zoom]
 Zoom med én finger
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Bygningers styrke
 Sårede enheder trækker sig tilbage
 [Units can die]
 Enheder kan dø
-[Unit training]
-Enhedstræning
+[Upgrades]
+
 [No stockpile]
 Intet
 [No glass cannon]
@@ -5132,8 +5152,8 @@ Hold kan angribe hinanden. Slå fra for en fredelig kamp.
 Sårede enheder går tilbage for at blive helet i stedet for at kæmpe til døden.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enheder dør, når de løber tør for livspoint. Slå fra for at stoppe dem ved 1 livspoint.
-[Units gain levels at schools.]
-Enheder stiger i niveau på skoler.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Arbejdernes tid
 [stat worker time]

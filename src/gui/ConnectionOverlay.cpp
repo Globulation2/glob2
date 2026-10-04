@@ -48,7 +48,7 @@ struct Look
 Look look(bool touch)
 {
 	if (touch)
-		return {InGameTouchTheme::paper, InGameTouchTheme::border, InGameTouchTheme::ink, Color(190, 170, 140), InGameTouchTheme::selected};
+		return {InGameTouchTheme::paper(), InGameTouchTheme::border(), InGameTouchTheme::ink(), Color(190, 170, 140), InGameTouchTheme::selected()};
 	return {Color(8, 10, 40, 215), Color(200, 200, 230, 120), Color(240, 240, 240), Color(160, 165, 200), Color(52, 56, 112, 230)};
 }
 
@@ -552,7 +552,7 @@ void ConnectionOverlay::drawDetails(bool touch, SDL_Rect area, double unit)
 	const std::string close = text("[Close]");
 	const int buttonW = std::max(96, tw(font, close) + 32);
 	closeRect = {x + width - pad - buttonW, cy, buttonW, buttonH};
-	gfx->drawFilledRect(closeRect.x, closeRect.y, closeRect.w, closeRect.h, touch ? InGameTouchTheme::field : Color(60, 50, 20, 230));
+	gfx->drawFilledRect(closeRect.x, closeRect.y, closeRect.w, closeRect.h, touch ? InGameTouchTheme::field() : Color(60, 50, 20, 230));
 	gfx->drawRect(closeRect.x, closeRect.y, closeRect.w, closeRect.h, touch ? colors.edge : Color(220, 190, 90));
 	textAt(closeRect.x + (buttonW - tw(font, close)) / 2, closeRect.y + (buttonH - th(font, close)) / 2, font, close, colors.ink);
 }
@@ -653,7 +653,7 @@ void ConnectionOverlay::drawCard(bool touch, SDL_Rect area, double unit)
 		const std::string label = text("[conn leave match]");
 		const int buttonW = std::max(120, tw(font, label) + 32);
 		leaveRect = {x + width - pad - buttonW, cy, buttonW, buttonH};
-		gfx->drawFilledRect(leaveRect.x, leaveRect.y, leaveRect.w, leaveRect.h, touch ? InGameTouchTheme::field : Color(60, 50, 20, 230));
+		gfx->drawFilledRect(leaveRect.x, leaveRect.y, leaveRect.w, leaveRect.h, touch ? InGameTouchTheme::field() : Color(60, 50, 20, 230));
 		gfx->drawRect(leaveRect.x, leaveRect.y, leaveRect.w, leaveRect.h, touch ? colors.edge : Color(220, 190, 90));
 		textAt(leaveRect.x + (buttonW - tw(font, label)) / 2, leaveRect.y + (buttonH - th(font, label)) / 2, font, label, colors.ink);
 	}

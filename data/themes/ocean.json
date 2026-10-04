@@ -1,0 +1,48 @@
+{
+	"schema": 1,
+	"id": "ocean",
+	"name": "Ocean",
+	"extends": "dark",
+	"description": "Deep navy and teal panels with a coral accent.",
+	"palette": {
+		"ink": "#e6f4f1",
+		"muted": "#a3c2c6",
+		"paper": "#0f2233",
+		"panel": "#0f2233f4",
+		"field": "#18344a",
+		"rail": "#142c40",
+		"line": "#3fa7a0",
+		"accent": "#ff8a65",
+		"accentInk": "#1a0f0a",
+		"selected": "#1f5c66",
+		"hover": "#1d4a5e",
+		"focus": "#ffd166",
+		"scrim": "#050c14a0",
+		"disabled": "#1a2b38",
+		"danger": "#ff7a70",
+		"success": "#7ee0a8",
+		"warning": "#ffd166",
+		"shadow": "#050c143c",
+		"pressed": "#ff8a6532",
+		"backdrop": "#07131d",
+		"neutral": "#5f7a88",
+		"placeholder": "#1c3a4f"
+	},
+	"hud": {
+		"ink": "#e6f4f1",
+		"paper": "#0f2233da",
+		"field": "#18344aeb",
+		"selected": "#1f5c66f5",
+		"border": "#3fa7a0",
+		"readout": "#091826f0",
+		"dialTrack": "#091826e1",
+		"dialFill": "#ff8a65be",
+		"dialPadFill": "#1d4a5ef5",
+		"destroy": "#5a2430eb",
+		"erasePreview": "#050c148c"
+	},
+	"backdrop": {
+		"kind": "colony",
+		"veil": "#07131d70"
+	}
+}

@@ -6,6 +6,7 @@
 
 #include "AINumbi.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -16,6 +17,8 @@ using std::shared_ptr;
 
 std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested)
 {
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
+	if (game->gameHeader.isPeacefulModeEnabled()) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_numberRequested, numberRequested);
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalTimeout, criticalTimeout);
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalMass, criticalMass);
@@ -76,7 +79,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 			}
 
 		// We look for a specific enemy:
-		Uint32 enemies=player->team->enemies;
+		Uint32 enemies=player->team->attackableTeams();
 		int e=-1;
 		for (int i=0; i<game->mapHeader.getNumberOfTeams(); i++)
 			if (game->teams[i]->me & enemies)
@@ -279,6 +282,9 @@ std::shared_ptr<Order> tryUpgradeRung(
 // NullOrder if neither rung is eligible.
 std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
+	// Both building upgrades and their trained-worker prerequisites are unavailable.
+	// Gate before collecting inventory, which also shuffles the default candidates.
+	if (game->gameHeader.isUnitUpgradesDisabled()) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ntrigger, ntrigger);
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ptrigger, ptrigger);
 	telemetry.count(AITrace::AI1::AINumbi_mayUpgrade_calls);

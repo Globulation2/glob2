@@ -5,6 +5,7 @@
 #include "ExperimentalFeatures.h"
 #include "GlobalContainer.h"
 #include "SoundMixer.h"
+#include "ui/ThemeCatalog.h"
 #include <InterfacePresentation.h>
 #include <Toolkit.h>
 #include <StringTable.h>
@@ -135,6 +136,35 @@ void SettingsScreen::buildGeneral()
 		}
 #endif
 		section("Interface appearance");
+		{
+			// Menus and matches each wear their own theme; both apply at once.
+			const auto &themes = Glob2UI::ThemeCatalog::shared().themes();
+			std::vector<std::string> names;
+			// Shipped themes have translated names; a player's theme shows its own.
+			const auto *strings = Toolkit::getStringTable();
+			for (const auto &theme : themes)
+			{
+				const std::string key = "[theme " + theme.id + "]";
+				names.push_back(strings->doesStringExist(key) ? strings->getString(key) : theme.name);
+			}
+			auto themeChoice = [&](const char *id, const char *label, const char *help,
+								   std::string Settings::*field, const char *fallback)
+			{
+				const std::string &shown = Glob2UI::ThemeCatalog::shared().resolve(s.*field, fallback).id;
+				const auto current = std::find_if(themes.begin(), themes.end(),
+												  [&](const auto &theme) { return theme.id == shown; });
+				choice(id, label, help, int(current - themes.begin()), names, [this, field](int v)
+				{
+					const auto &list = Glob2UI::ThemeCatalog::shared().themes();
+					auto &settings = globalContainer->settings;
+					settings.*field = list.at(std::clamp(v, 0, int(list.size()) - 1)).id;
+					Glob2UI::applyThemes(settings.menuTheme, settings.gameTheme);
+					commit();
+				});
+			};
+			themeChoice("display.menutheme", "Menu theme", "Colours and backdrop of menus, lobbies and results.", &Settings::menuTheme, Glob2UI::ThemeCatalog::menuDefault);
+			themeChoice("display.gametheme", "In-game theme", "Colours of dialogs and the touch interface during a game and in the editor.", &Settings::gameTheme, Glob2UI::ThemeCatalog::gameDefault);
+		}
 		appearance("graphics.panels", "Panels", "Choose translucent or opaque interface panels.", &Settings::translucentPanels, "Opaque", "Translucent");
 		choice("display.textsize", "Text size", "Enlarge interface text without changing the map scale.",
 			   s.textSizePercent >= 150 ? 2 : s.textSizePercent >= 125 ? 1 : 0,

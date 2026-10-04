@@ -2928,6 +2928,26 @@ Aŭtomate konservi la ludon proksimume ĉiun minuton.
 AI-kontraŭuloj
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La vasta aranĝo uzas flankan panelon kiam estas spaco. La kompakta uzas ilobreton kaj malfermeblajn panelojn.
+[settings Menu theme]
+Etoso de menuoj
+[settings Colours and backdrop of menus, lobbies and results.]
+Koloroj kaj fono de menuoj, ĉambroj kaj rezultoj.
+[settings In-game theme]
+Etoso de ludo
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Koloroj de dialogoj kaj de la tuŝa interfaco dum ludo kaj en la redaktilo.
+[theme light]
+Hela
+[theme dark]
+Malhela
+[theme classic]
+Klasika
+[theme ocean]
+Oceano
+[theme dune]
+Duno
+[theme high-contrast]
+Alta kontrasto
 [settings One-finger zoom]
 Zomo per unu fingro
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Forto de konstruaĵoj
 Vunditaj globuloj retiriĝas
 [Units can die]
 Globuloj povas morti
-[Unit training]
-Trejnado de globuloj
+[Upgrades]
+
 [No stockpile]
 Neniu
 [No glass cannon]
@@ -5132,8 +5152,8 @@ Teamoj povas ataki unu la alian. Malŝaltu por paca matĉo.
 Vunditaj globuloj iras kuraciĝi anstataŭ batali ĝis la morto.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Globuloj mortas kiam iliaj vivpoentoj elĉerpiĝas. Malŝaltu por haltigi ilin je 1 vivpoento.
-[Units gain levels at schools.]
-Globuloj akiras nivelojn en lernejoj.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tempo de laboristoj
 [stat worker time]

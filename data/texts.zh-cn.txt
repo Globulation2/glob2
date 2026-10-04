@@ -2928,6 +2928,26 @@ OpenGL 在此版本中不可用。
 电脑对手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 宽敞布局在空间足够时使用侧边面板。紧凑布局使用工具栏和可展开的面板。
+[settings Menu theme]
+菜单主题
+[settings Colours and backdrop of menus, lobbies and results.]
+菜单、房间和结果界面的颜色与背景。
+[settings In-game theme]
+游戏主题
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+游戏中和编辑器中对话框与触控界面的颜色。
+[theme light]
+浅色
+[theme dark]
+深色
+[theme classic]
+经典
+[theme ocean]
+海洋
+[theme dune]
+沙丘
+[theme high-contrast]
+高对比度
 [settings One-finger zoom]
 单指缩放
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ AI 遥测
 受伤单位撤退
 [Units can die]
 单位会死亡
-[Unit training]
-单位训练
+[Upgrades]
+
 [No stockpile]
 无
 [No glass cannon]
@@ -5132,8 +5152,8 @@ AI 遥测
 受伤单位会返回治疗，而不是战斗到死。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 单位生命值耗尽时死亡。关闭后单位生命值最低保留 1。
-[Units gain levels at schools.]
-单位在学校中提升等级。
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 工人时间
 [stat worker time]

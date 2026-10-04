@@ -2928,6 +2928,26 @@ Salva automaticamente la partita circa ogni minuto.
 Avversari IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposizione spaziosa usa un pannello laterale quando c’è spazio. Quella compatta usa una barra degli strumenti e pannelli a scomparsa.
+[settings Menu theme]
+Tema dei menu
+[settings Colours and backdrop of menus, lobbies and results.]
+Colori e sfondo di menu, stanze e risultati.
+[settings In-game theme]
+Tema della partita
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Colori dei dialoghi e dell’interfaccia touch durante la partita e nell’editor.
+[theme light]
+Chiaro
+[theme dark]
+Scuro
+[theme classic]
+Classico
+[theme ocean]
+Oceano
+[theme dune]
+Duna
+[theme high-contrast]
+Contrasto elevato
 [settings One-finger zoom]
 Zoom con un dito
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ Robustezza edifici
 Ritirata dei feriti
 [Units can die]
 Le unità possono morire
-[Unit training]
-Addestramento unità
+[Upgrades]
+
 [No stockpile]
 Nessuna
 [No glass cannon]
@@ -5132,8 +5152,8 @@ Le squadre possono attaccarsi. Disattiva per una partita pacifica.
 Le unità ferite tornano a curarsi invece di combattere fino alla morte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Le unità muoiono quando finiscono i punti vita. Disattiva per fermarle a 1 punto vita.
-[Units gain levels at schools.]
-Le unità salgono di livello nelle scuole.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tempo degli operai
 [stat worker time]

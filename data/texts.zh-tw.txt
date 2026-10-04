@@ -2928,6 +2928,26 @@ Emoji
 AI 對手
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 寬敞配置會在空間足夠時使用側邊面板。精簡配置使用工具列和可展開的面板。
+[settings Menu theme]
+選單主題
+[settings Colours and backdrop of menus, lobbies and results.]
+選單、房間與結果畫面的顏色與背景。
+[settings In-game theme]
+遊戲主題
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+遊戲中與編輯器中對話框和觸控介面的顏色。
+[theme light]
+淺色
+[theme dark]
+深色
+[theme classic]
+經典
+[theme ocean]
+海洋
+[theme dune]
+沙丘
+[theme high-contrast]
+高對比
 [settings One-finger zoom]
 單指縮放
 [settings Double-tap the map, hold, then drag to zoom.]
@@ -5038,8 +5058,8 @@ AI 遙測
 受傷單位撤退
 [Units can die]
 單位會死亡
-[Unit training]
-單位訓練
+[Upgrades]
+
 [No stockpile]
 無
 [No glass cannon]
@@ -5132,8 +5152,8 @@ AI 遙測
 受傷單位會返回治療，而不是戰鬥到死。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 單位生命值耗盡時會死亡。關閉後單位會停在 1 點生命值。
-[Units gain levels at schools.]
-單位可在學校提升等級。
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 工人時間
 [stat worker time]
