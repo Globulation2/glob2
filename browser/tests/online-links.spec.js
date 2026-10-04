@@ -9,7 +9,7 @@
 // test server; the platform's REST API, realtime socket and web pages are stood
 // in here (context.route, context.routeWebSocket).
 const {test, expect} = require('@playwright/test');
-const {gameURL, clickMainMenu, clickControl} = require('./main-menu');
+const {gameURL, clickMainMenu, clickControl, control} = require('./main-menu');
 
 const ORIGIN = 'https://glob2.test';
 const base64url = value => Buffer.from(JSON.stringify(value)).toString('base64url');
@@ -104,6 +104,21 @@ for (const runtime of ['threaded', 'serial']) {
       return platform;
     };
 
+    const offline = async page => {
+      let failures = 0;
+      page.on('response', response => {
+        if (new URL(response.url()).pathname === '/api/v1/auth/guest' && response.status() >= 400) ++failures;
+      });
+      await page.goto(url().slice(ORIGIN.length)); await screen(page, 'MainMenuScreen');
+      expect((await snapshot(page)).executionMode).toBe(runtime);
+      await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      // Early reconnects replace the offline banner during a mouse press and
+      // move the link away from its release point. Four failures put the real
+      // client in a longer backoff window; wait for its offline layout too.
+      await expect.poll(() => failures, {timeout:30000}).toBeGreaterThanOrEqual(4);
+      await control(page, 'banner/retry');
+    };
+
     test('Full leaderboard opens the page and the game keeps running', async ({page, baseURL}) => {
       const errors = [];
       page.on('pageerror', error => errors.push(String(error)));
@@ -129,9 +144,7 @@ for (const runtime of ['threaded', 'serial']) {
       const errors = [];
       page.on('pageerror', error => errors.push(String(error)));
       page.on('console', message => { if (/is not defined/.test(message.text())) errors.push(message.text()); });
-      await page.goto(url().slice(ORIGIN.length)); await screen(page, 'MainMenuScreen');
-      expect((await snapshot(page)).executionMode).toBe(runtime);
-      await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await offline(page);
       await clickControl(page, 'hub/section/leaderboard');
       await clickControl(page, 'leaderboard/full');
       await expectOpened(page, '/leaderboard');
@@ -146,8 +159,7 @@ for (const runtime of ['threaded', 'serial']) {
     // counts): the page offers the link instead, and tapping it opens the page.
     test('a refused tab is offered as a link to tap', async ({page}) => {
       await page.addInitScript(() => { window.open = () => null; });
-      await page.goto(url().slice(ORIGIN.length)); await screen(page, 'MainMenuScreen');
-      await clickMainMenu(page, 'yog'); await screen(page, 'OnlineHubScreen');
+      await offline(page);
       await clickControl(page, 'hub/section/leaderboard');
       await clickControl(page, 'leaderboard/full');
       const opened = await expectOpened(page, '/leaderboard');
