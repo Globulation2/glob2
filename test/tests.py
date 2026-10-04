@@ -38,6 +38,7 @@ ENGINE_TESTS = [
     'LegacyAreaWaitTest.cpp',
     ('LegacyScriptCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'AIDecisionCoverageTest.cpp',
+    ('AIRulesTest.cpp', dict(cxxflags=['-fno-access-control'])),
     # Calls Cortex's and Numbi's private helpers to drive single offense decisions.
     ('AITargetTelemetryTest.cpp', dict(cxxflags=['-fno-access-control'])),
     'CastorContinuationTest.cpp',

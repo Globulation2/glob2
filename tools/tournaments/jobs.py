@@ -25,7 +25,7 @@ class EngineJob:
     def validate(self, job):
         config, seeds = job['config'], job['seeds']
         generation = {'generator', 'params', 'candidates'}
-        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions'} | generation
+        allowed = ({'players', 'ticks', 'ai_params', 'alliances', 'winning_conditions', 'rules'} | generation
                    if self.kind == 'game' else generation | {'rotations'})
         if set(config) - allowed:
             raise ValueError('unknown job configuration fields: ' + ', '.join(sorted(set(config) - allowed)))
@@ -45,8 +45,11 @@ class EngineJob:
                     raise ValueError('new game requires players and game seed')
             if 'map' in job['inputs'] and (not config.get('players') or 'game' not in seeds):
                 raise ValueError('new game requires players and game seed')
-            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions')):
+            if 'save' in job['inputs'] and any(k in config for k in ('players', 'alliances', 'ai_params', 'winning_conditions', 'rules')):
                 raise ValueError('cannot override a saved game configuration')
+            if not isinstance(config.get('rules', {}), dict) or any(
+                    not isinstance(k, str) or type(v) is not int for k, v in config.get('rules', {}).items()):
+                raise ValueError('rules must map names to integer values')
             if type(config.get('ticks', 90000)) is not int or config.get('ticks', 90000) < 1:
                 raise ValueError('ticks must be a positive integer')
             if config.get('alliances') and len(config['alliances']) != len(config.get('players', [])):
@@ -87,6 +90,8 @@ class EngineJob:
                 add('--alliance', group)
             for condition in config.get('winning_conditions', []):
                 add('--win-condition', condition)
+            for name, value in sorted(config.get('rules', {}).items()):
+                add('--rule', f'{name}={value}')
             for save in outputs.get('saves', []):
                 add('--save', save)
             for telemetry in outputs.get('telemetry', []):

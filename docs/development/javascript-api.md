@@ -54,7 +54,28 @@ ctx.game.unit({id, generation})
 ctx.game.building({id, generation})
 ctx.game.buildingTypes()
 ctx.game.experiments()
+ctx.game.rules()
 ```
+
+`rules()` returns a detached read-only snapshot of effective match settings in
+both AI API profiles. Keys and numeric ranges match [headless custom rules](headless-replays.md#glob2_test_rules):
+`noGrowth`, `scarcity`, `instantConstruction`, `stockpile`, `noHunger`,
+`noUpgrades`, `glassCannon`, `fearless`, `noPermadeath`, `peaceful`, `fortress`,
+`suddenDeathTick` and `winProbabilityPermille`. Experiments remain available through
+`experiments()`. Use these settings when selecting plans and prerequisites.
+`noUpgrades` disables both unit training and building upgrades, while repairs,
+healing, production and starting levels remain available. The engine rejects
+healthy-building upgrades even when a script does not adapt its strategy. The
+returned values cannot be changed by a script; requesting another snapshot reads
+the authoritative header again. No rule fields are added to serialized AI state.
+
+Read capabilities before allocating workers or waiting for prerequisites. For
+example, `ctx.game.rules().noUpgrades` should prevent a controller from requesting
+training-only buildings and from waiting for newly trained workers. It must not
+disable hospitals, swarm wheat deliveries or all uses of an existing barracks:
+healing and production remain available. The shipped
+[`ai.js`](../../examples/javascript/ai.js) demonstrates rule-aware staffing;
+arbitrary user scripts retain responsibility for their own strategic decisions.
 
 The filter record and all its fields are optional. `team` is a current team ID;
 `offset` and `limit` are integers in `0..32768`, defaulting to `0` and `32768`.

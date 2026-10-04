@@ -5,6 +5,7 @@
 #include "shared_runtime/Runtime.h"
 #include <algorithm>
 #include "IntBuildingType.h"
+#include "Game.h"
 #include <iterator>
 #include "Utilities.h"
 
@@ -19,6 +20,8 @@ using namespace AISharedRuntime::SearchTools;
 //Standard Inns near wheat
 void Econo::tick_inns_near_wheat(Runtime& runtime)
 {
+	// Feeding capacity cannot constrain production when units never need meals.
+	if (runtime.player->game->gameHeader.isHungerDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_inns_near_wheat_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_INN_INTERVAL_TICKS)==0 && (timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)!=0)
 	{
@@ -152,6 +155,8 @@ void Econo::tick_swarms_near_wheat(Runtime& runtime)
 //Standard racetrack near stone and wood
 void Econo::tick_racetrack_near_stone_wood(Runtime& runtime)
 {
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_racetrack_near_stone_wood_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_RACETRACK_OFFSET_TICKS)
 	{
@@ -199,6 +204,8 @@ void Econo::tick_racetrack_near_stone_wood(Runtime& runtime)
 //Standard swimming pool near wheat and wood
 void Econo::tick_swimmingpool_near_wheat_wood(Runtime& runtime)
 {
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_swimmingpool_near_wheat_wood_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_SWIMMINGPOOL_OFFSET_TICKS)
 	{
@@ -251,6 +258,8 @@ void Econo::tick_swimmingpool_near_wheat_wood(Runtime& runtime)
 //Standard school inland away from the enemies
 void Econo::tick_school_inland(Runtime& runtime)
 {
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_school_inland_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_BIG_CYCLE_TICKS)==AI_SHARED_RUNTIME_RTI_SCHOOL_OFFSET_TICKS)
 	{
@@ -294,6 +303,9 @@ void Econo::tick_school_inland(Runtime& runtime)
 //Level 1 to level 2 upgrades
 void Econo::tick_upgrade_l1_to_l2(Runtime& runtime)
 {
+	// Higher-tier buildings cannot be created under this rule. Skip the entire
+	// upgrade search, including its trained-worker and construction waits.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_upgrade_l1_to_l2_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_UPGRADE_INTERVAL_TICKS)==0)
 	{
@@ -359,6 +371,9 @@ void Econo::tick_upgrade_l1_to_l2(Runtime& runtime)
 //Level 2 to level 3 upgrades
 void Econo::tick_upgrade_l2_to_l3(Runtime& runtime)
 {
+	// Keep existing high-tier buildings useful, but do not schedule new tier
+	// transitions or reserve workers for an upgrade that cannot start.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_upgrade_l2_to_l3_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_UPGRADE_INTERVAL_TICKS)==0)
 	{

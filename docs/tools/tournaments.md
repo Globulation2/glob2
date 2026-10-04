@@ -91,6 +91,25 @@ build/src/glob2 --run-game --map-file /tmp/generated/map-r0.map.gz \
   --telemetry checksums --output-dir /tmp/played
 ```
 
+To exercise a custom profile, append repeatable rule arguments to a new game:
+
+```sh
+build/src/glob2 --run-game --map-file maps/SmallForTwo.map.gz \
+  --game-seed 19 --player cortex --player maxima \
+  --rule noUpgrades=1 --rule noHunger=1 --rule peaceful=1 \
+  --ticks 30000 --save initial --save final --replay true \
+  --telemetry checksums --output-dir /tmp/custom-rules
+```
+
+For distributed game jobs, put the same settings in `config.rules`, with integer
+values such as `{"noUpgrades": 1, "noHunger": 1, "peaceful": 1}`. The adapter emits
+rule arguments in name order; the engine validates names and ranges. Effective
+settings, including defaults for rules not overridden, appear in `resolved.rules`.
+Saved-game jobs retain their original rules and reject overrides. A capped
+peaceful conquest-only game can finish without a winner; use crashes, unavailable
+orders and stalled useful planning as correctness signals, with win rates as
+strategy diagnostics.
+
 Generator options:
 
 | Argument | Meaning/default |
@@ -118,6 +137,7 @@ Game options:
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
+| `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--compute-threads N` | Execution threads, 1–64 including main; default minimum of AI controllers, available hardware threads and 4 (at least 1) |
 | `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |

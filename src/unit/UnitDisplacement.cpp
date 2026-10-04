@@ -331,12 +331,15 @@ void Unit::handleDisplacement(void)
 			}
 			else if (displacement==DIS_INSIDE)
 			{
-				// we stay inside while the unit upgrades.
-				if (insideTimeout>=0)
+				// Feed and heal visits share this displacement state with training.
+				// A saved trainee must use the normal exit path to release its room,
+				// without waiting for an upgrade timer or recording a training gain.
+				if (insideTimeout>=0 || (owner->game->gameHeader.isUnitUpgradesDisabled()
+					&& destinationPurpose!=FEED && destinationPurpose!=HEAL))
 				{
 					displacement=DIS_EXITING_BUILDING;
 					validTarget=false;
-					if (destinationPurpose != FEED && destinationPurpose != HEAL)
+					if (!owner->game->gameHeader.isUnitUpgradesDisabled() && destinationPurpose != FEED && destinationPurpose != HEAL)
 						++owner->stats.measurements.trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
@@ -353,9 +356,8 @@ void Unit::handleDisplacement(void)
 						hp=performance[HP];
 						needToRecheckMedical=true;
 					}
-					// Custom-game "no upgrades" rule: the unit still visits the
-					// building and exits normally above, it just never gains
-					// the level.
+					// Restored units already inside exit safely without gaining a level.
+					// New training visits are rejected by Team::findBestUpgrade.
 					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
 						Sint32 previousLevels[NB_ABILITY];

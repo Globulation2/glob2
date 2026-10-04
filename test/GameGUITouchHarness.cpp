@@ -2609,6 +2609,22 @@ class GameGUITouchHarness
 				require(gui.game.checkSum() == stateBefore,
 						"Construction requests do not mutate simulation");
 			}
+			// Fortress HP and disabled upgrades must agree between the extracted scene
+			// and live action validation, while keeping damaged buildings repairable.
+			gui.game.gameHeader.setBuildingHpLevel(1);
+			gui.game.gameHeader.setUnitUpgradesDisabled(true);
+			building->hp = building->getEffectiveMaxHp();
+			openActions(building);
+			const auto forbidden = gui.touch->buildingActions();
+			require(std::none_of(forbidden.begin(), forbidden.end(), [](const auto& a) {return a.kind==3;}),
+				"Healthy fortress buildings offer neither repair nor disabled upgrade");
+			building->hp -= 1;
+			pressAction(3);
+			require(gui.orderQueue.size()==1 && std::dynamic_pointer_cast<OrderConstruction>(gui.orderQueue.front()),
+				"Damaged fortress buildings remain repairable with upgrades disabled");
+			gui.orderQueue.clear();
+			gui.game.gameHeader.setBuildingHpLevel(0);
+			gui.game.gameHeader.setUnitUpgradesDisabled(false);
 			building->hp = building->type->hpMax - 1;
 			auto repairPoint = actionPoint(3, 0);
 			finger(SDL_EVENT_FINGER_DOWN, 1, repairPoint.x, repairPoint.y);

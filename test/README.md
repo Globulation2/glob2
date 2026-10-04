@@ -1563,3 +1563,19 @@ compatibility tests cover 127, 128, 132 and rejection of future format 133.
 For platform verification, run the same seeds and fixtures on macOS and Linux and
 compare the emitted TSV traces. A successful local run establishes local resumed
 equivalence; cross-platform equivalence requires both platform traces.
+
+## Custom-rule AI behavior
+
+`AIRules` exercises every native controller with disabled training, hunger and
+combat, checks emitted orders, and compares save/load continuation. It also
+covers authoritative upgrade rejection versus repairs, preserved starting levels,
+restored training subscriptions, JavaScript rule observations in both profiles,
+Cortex scoring gates, rule parsing, and harvesting the last finite farm seed.
+Run `python3 test/run_tests.py --filter 'AIRules/*'` with the appropriate build directory.
+Tournament job adapter tests cover repeatable rule arguments and saved-game override
+rejection in `test/test_tournaments.py`.
+
+For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
+opt-in assertion checks each AI order when selected and reports unavailable work
+without filtering it. A repair can finish while its order waits in the network
+queue, so replay-time building health alone cannot classify upgrade intentions.

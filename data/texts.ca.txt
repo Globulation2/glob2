@@ -5054,8 +5054,8 @@ Resistència dels edificis
 Les unitats ferides es retiren
 [Units can die]
 Les unitats poden morir
-[Unit training]
-Entrenament d'unitats
+[Upgrades]
+
 [No stockpile]
 Cap
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Els equips es poden atacar entre ells. Desactiva-ho per a una partida pacífica.
 Les unitats ferides tornen a curar-se en lloc de lluitar fins a la mort.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Les unitats moren quan es queden sense punts de vida. Desactiva-ho per aturar-les a 1 punt de vida.
-[Units gain levels at schools.]
-Les unitats guanyen nivells a les escoles.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Temps dels treballadors
 [stat worker time]

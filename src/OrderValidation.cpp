@@ -161,6 +161,10 @@ Result validate(const Game& game, int senderPlayer, Order& order)
 		// The values travel as Uint32 and are applied as Sint32 worker counts.
 		if (o.unitWorking > Uint32(MAX_BUILDING_WORKER_REQUEST) || o.unitWorkingFuture > Uint32(MAX_BUILDING_WORKER_REQUEST))
 			return rejected(Reason::OutOfRange);
+		// Construction is also the repair command. Use rule-adjusted maximum HP
+		// to reject only a healthy building's upgrade, including fortress games.
+		if (c.game.gameHeader.isUnitUpgradesDisabled() && b && !b->type->isBuildingSite
+			&& b->hp >= b->getEffectiveMaxHp()) return rejected(Reason::BadState);
 		return accepted();
 	}
 

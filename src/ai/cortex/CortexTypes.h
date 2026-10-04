@@ -152,7 +152,8 @@ namespace Cortex
 	/// building). The forward-inn candidate anchor now prefers the staging point
 	/// (forward rally or amphibious landing) so warriors eat forward instead of
 	/// hunger-commuting home across the long march.
-	static const Uint32 OBSERVATION_VERSION = 20;
+	/// v21 adds effective rule capabilities to observation-only planning state.
+	static const Uint32 OBSERVATION_VERSION = 21;
 	/// Layout version of CortexAction. Bump on any field add/remove/resize.
 	/// v2 (2026-06-02) added ACTION_SET_PRODUCTION + productionRatio[].
 	/// v3 (2026-06-03) added the war-flag action kinds (ACTION_PLACE_WAR_FLAG,
@@ -258,6 +259,8 @@ namespace Cortex
 		Sint32 valid;         ///< 0 when no observation has been taken yet.
 
 		Sint32 tick;          ///< game->stepCounter at observation time.
+		// Effective capabilities, rebuilt from GameHeader; defaults retain the classic policy.
+		bool upgradesDisabled = false, hungerDisabled = false, combatDisabled = false, growthDisabled = false;
 
 		// --- own economy: population (TeamStat unless noted) ---
 		Sint32 totalUnit;     ///< stat->totalUnit.

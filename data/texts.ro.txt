@@ -5054,8 +5054,8 @@ Rezistența clădirilor
 Unitățile rănite se retrag
 [Units can die]
 Unitățile pot muri
-[Unit training]
-Instruirea unităților
+[Upgrades]
+
 [No stockpile]
 Niciuna
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Echipele se pot ataca între ele. Dezactivați pentru un meci pașnic.
 Unitățile rănite se întorc să se vindece în loc să lupte până la moarte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unitățile mor când rămân fără puncte de viață. Dezactivați pentru a le opri la 1 punct.
-[Units gain levels at schools.]
-Unitățile câștigă niveluri la școli.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Timpul lucrătorilor
 [stat worker time]

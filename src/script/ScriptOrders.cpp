@@ -80,6 +80,11 @@ std::shared_ptr<Order> order(Game &game, int team, const Value &d)
 		return std::make_shared<OrderDelete>(gid);
 	if (type == "cancelDelete")
 		return std::make_shared<OrderCancelDelete>(gid);
+	// Fail at the script API boundary instead of silently consuming a callback
+	// on an unavailable upgrade. The same command still repairs damaged buildings.
+	if (type == "construction" && game.gameHeader.isUnitUpgradesDisabled()
+		&& !b->type->isBuildingSite && b->hp >= b->getEffectiveMaxHp())
+		throw std::runtime_error("Building upgrades are disabled by game rules");
 	if (type == "construction")
 		return std::make_shared<OrderConstruction>(
 			gid, number("workers", 0, MAX_BUILDING_WORKER_REQUEST),

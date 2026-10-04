@@ -5054,8 +5054,8 @@ Solidité des bâtiments
 Retraite des blessés
 [Units can die]
 Les unités peuvent mourir
-[Unit training]
-Formation des unités
+[Upgrades]
+
 [No stockpile]
 Aucune
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Les équipes peuvent s'attaquer. Désactivez pour une partie pacifique.
 Les unités blessées vont se soigner au lieu de combattre jusqu'à la mort.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Les unités meurent quand elles n'ont plus de PV. Désactivez pour les arrêter à 1 PV.
-[Units gain levels at schools.]
-Les unités gagnent des niveaux dans les écoles.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Temps des ouvrières
 [stat worker time]

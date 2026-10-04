@@ -38,6 +38,8 @@ void Unit::selectPreferredGroundMovement(void)
 
 bool Unit::isUnitHungry(void)
 {
+	// A saved hungry unit must recover under no hunger rather than keep seeking food.
+	if (owner->game->gameHeader.isHungerDisabled()) return false;
 	int realTrigHungry;
 	if (carriedResource==-1)
 		realTrigHungry=trigHungry;
@@ -174,7 +176,7 @@ void Unit::handleMedical(void)
 	if ((typeNum == EXPLORER) && (displacement == DIS_EXITING_BUILDING))
 	{
 		medical=MED_FREE;
-		if ((destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
+		if (!owner->game->gameHeader.isHungerDisabled() && (destinationPurpose == HEAL) && (hungry < ((HUNGRY_MAX * EXPLORER_FORCE_FEED_RATIO_NUM) / EXPLORER_FORCE_FEED_RATIO_DEN)))
 		{
 			needToRecheckMedical = 1;
 			medical = MED_HUNGRY;

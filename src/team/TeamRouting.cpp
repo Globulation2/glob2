@@ -209,6 +209,8 @@ Building *Team::findNearestFood(Unit *unit)
 
 Building *Team::findBestUpgrade(Unit *unit)
 {
+	// No upgrades must not waste idle units on training visits with no benefit.
+	if (game->gameHeader.isUnitUpgradesDisabled()) return nullptr;
 	Building *choosen=NULL;
 	Sint32 score=Team::UPGRADE_SCORE_NONE;
 	int x=unit->posX;

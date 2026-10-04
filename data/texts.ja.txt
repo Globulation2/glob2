@@ -5054,8 +5054,8 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 負傷ユニットの撤退
 [Units can die]
 ユニットの死亡
-[Unit training]
-ユニットの訓練
+[Upgrades]
+
 [No stockpile]
 なし
 [No glass cannon]
@@ -5148,8 +5148,8 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 傷ついたユニットは死ぬまで戦わず、治療に戻ります。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 体力がなくなるとユニットは死亡します。オフにすると体力1で止まります。
-[Units gain levels at schools.]
-ユニットは学校でレベルが上がります。
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 労働者の時間
 [stat worker time]

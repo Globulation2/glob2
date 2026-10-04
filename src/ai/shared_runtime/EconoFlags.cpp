@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "AITelemetryFields.h"
+#include "Game.h"
 #include "shared_runtime/Runtime.h"
 #include "IntBuildingType.h"
 
@@ -125,6 +126,8 @@ void Econo::tick_explorer_flags_fruit(Runtime& runtime)
 //Place exploration flags on the enemy swarms
 void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 {
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
+	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_explorer_flags_enemies_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_ENEMY_SCAN_INTERVAL_TICKS)==0)
 	{
@@ -161,6 +164,8 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 //Farming wheat and wood near water
 void Econo::tick_farming_areas(Runtime& runtime)
 {
+	// Protecting growth cells would permanently withhold resources without regrowth.
+	if (runtime.player->game->gameHeader.isResourceGrowthDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_farming_areas_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_FARMING_INTERVAL_TICKS)==0)
 	{

@@ -5054,8 +5054,8 @@ Gebäudestärke
 Verwundete ziehen sich zurück
 [Units can die]
 Einheiten können sterben
-[Unit training]
-Ausbildung
+[Upgrades]
+
 [No stockpile]
 Keiner
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Teams können sich gegenseitig angreifen. Ausschalten für ein friedliches Match
 Verletzte Einheiten ziehen sich zum Heilen zurück, statt bis zum Tod zu kämpfen.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Einheiten sterben, wenn ihre Trefferpunkte aufgebraucht sind. Ausschalten, damit sie bei 1 Trefferpunkt stehen bleiben.
-[Units gain levels at schools.]
-Einheiten steigen in Schulen auf.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Arbeitszeit
 [stat worker time]

@@ -233,6 +233,8 @@ namespace Cortex
 	// overpopulation.
 	ScoredAction CortexPolicy::scoreFeedCapacity(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// Production still needs wheat, but population no longer needs feeding capacity.
+		if (obs.hungerDisabled) return cortexDecline();
 		if (f.innSites != 0)
 			return cortexDecline(); // one inn site at a time
 		const bool noInnYet      = (f.inns == 0 && obs.totalUnit > 0);

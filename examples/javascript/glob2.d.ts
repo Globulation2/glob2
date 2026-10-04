@@ -172,6 +172,12 @@ export interface GameRead {
   buildingTypes(): BuildingType[];
   /** Keys of the experimental features this game carries, e.g. ["farm-areas"]. */
   experiments(): string[];
+  /** Effective match rules, detached from engine state. 0/1 toggles and numeric tiers.
+   * noUpgrades disables unit training AND building upgrades; repairs remain allowed. */
+  rules(): Readonly<{noGrowth: number; scarcity: number; instantConstruction: number;
+    stockpile: number; noHunger: number; noUpgrades: number; glassCannon: number;
+    fearless: number; noPermadeath: number; peaceful: number; fortress: number;
+    suddenDeathTick: number; winProbabilityPermille: number}>;
   map: MapRead;
   // These methods exist on both contexts but throw in AI scripts.
   objectives(): Objective[];

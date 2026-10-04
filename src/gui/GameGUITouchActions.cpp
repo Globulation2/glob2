@@ -18,7 +18,7 @@ namespace
 	//! The construction action a building offers (cancel repair/upgrade, repair,
 	//! upgrade), or empty. One rule for the drawn panel and for input validation.
 	std::string constructionActionLabel(int constructionResultState, int buildingState, const BuildingType *type,
-										int hp, bool hardSpaceForRepair, bool hardSpaceForUpgrade, int maxBuildLevel)
+										int hp, bool hardSpaceForRepair, bool hardSpaceForUpgrade, int maxBuildLevel, int maxHp)
 	{
 		auto tr = [](const char *key) { return std::string(Toolkit::getStringTable()->getString(key)); };
 		if (constructionResultState == Building::REPAIR)
@@ -27,9 +27,9 @@ namespace
 			return tr("[cancel upgrade]");
 		if (buildingState == Building::ALIVE && !type->isBuildingSite)
 		{
-			if (hp < type->hpMax && type->regenerationSpeed == 0 && hardSpaceForRepair && maxBuildLevel >= type->level)
+			if (hp < maxHp && type->regenerationSpeed == 0 && hardSpaceForRepair && maxBuildLevel >= type->level)
 				return tr("[repair]");
-			if (hp == type->hpMax && type->nextLevel != -1 && hardSpaceForUpgrade && maxBuildLevel > type->level)
+			if (hp == maxHp && type->nextLevel != -1 && hardSpaceForUpgrade && maxBuildLevel > type->level)
 				return tr("[upgrade]");
 		}
 		return {};
@@ -43,7 +43,7 @@ namespace
 		return constructionActionLabel(b.constructionResultState, b.buildingState, b.type, b.hp,
 			offersConstruction && b.isHardSpaceForBuildingSite(Building::REPAIR),
 			offersConstruction && b.type->nextLevel != -1 && b.isHardSpaceForBuildingSite(Building::UPGRADE),
-			local.maxBuildLevel());
+			local.maxBuildLevel(), b.getEffectiveMaxHp());
 	}
 }
 
@@ -114,7 +114,7 @@ std::vector<GameGUITouch::BuildingAction> GameGUITouch::buildingActions() const
 			result.push_back({tr(names[i]), 2, i, gui.displayedMinLevelToFlag(*b) == i});
 	}
 	const std::string construction = constructionActionLabel(b->constructionResultState, b->buildingState, b->type, b->hp,
-		b->hardSpaceForRepair, b->hardSpaceForUpgrade, gui.drawnScene().panels.local.maxBuildLevel);
+		b->hardSpaceForRepair, b->hardSpaceForUpgrade, gui.drawnScene().panels.local.maxBuildLevel, b->effectiveMaxHp);
 	if (!construction.empty())
 		result.push_back({construction, 3});
 	if (b->buildingState == Building::WAITING_FOR_DESTRUCTION)

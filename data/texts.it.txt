@@ -5054,8 +5054,8 @@ Robustezza edifici
 Ritirata dei feriti
 [Units can die]
 Le unità possono morire
-[Unit training]
-Addestramento unità
+[Upgrades]
+
 [No stockpile]
 Nessuna
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Le squadre possono attaccarsi. Disattiva per una partita pacifica.
 Le unità ferite tornano a curarsi invece di combattere fino alla morte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Le unità muoiono quando finiscono i punti vita. Disattiva per fermarle a 1 punto vita.
-[Units gain levels at schools.]
-Le unità salgono di livello nelle scuole.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tempo degli operai
 [stat worker time]

@@ -5054,8 +5054,8 @@ Sterkte gebouwen
 Gewonden trekken terug
 [Units can die]
 Eenheden kunnen sterven
-[Unit training]
-Training van eenheden
+[Upgrades]
+
 [No stockpile]
 Geen
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Teams kunnen elkaar aanvallen. Zet uit voor een vreedzame wedstrijd.
 Gewonde eenheden gaan terug om te genezen in plaats van tot de dood te vechten.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Eenheden sterven als hun levenspunten op zijn. Zet uit om ze op 1 levenspunt te laten stoppen.
-[Units gain levels at schools.]
-Eenheden stijgen in niveau op scholen.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tijd van werkers
 [stat worker time]

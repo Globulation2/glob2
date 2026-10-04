@@ -5054,8 +5054,8 @@ Mọc lại
 Đơn vị bị thương rút lui
 [Units can die]
 Đơn vị có thể chết
-[Unit training]
-Huấn luyện đơn vị
+[Upgrades]
+
 [No stockpile]
 Không có
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Các đội có thể tấn công nhau. Tắt để có trận hòa bình.
 Đơn vị bị thương quay về chữa trị thay vì chiến đấu đến chết.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Đơn vị chết khi hết máu. Tắt để giữ chúng ở mức 1 máu.
-[Units gain levels at schools.]
-Đơn vị lên cấp ở trường học.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Thời gian công nhân
 [stat worker time]

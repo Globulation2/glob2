@@ -5054,8 +5054,8 @@ Forto de konstruaĵoj
 Vunditaj globuloj retiriĝas
 [Units can die]
 Globuloj povas morti
-[Unit training]
-Trejnado de globuloj
+[Upgrades]
+
 [No stockpile]
 Neniu
 [No glass cannon]
@@ -5148,8 +5148,8 @@ Teamoj povas ataki unu la alian. Malŝaltu por paca matĉo.
 Vunditaj globuloj iras kuraciĝi anstataŭ batali ĝis la morto.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Globuloj mortas kiam iliaj vivpoentoj elĉerpiĝas. Malŝaltu por haltigi ilin je 1 vivpoento.
-[Units gain levels at schools.]
-Globuloj akiras nivelojn en lernejoj.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tempo de laboristoj
 [stat worker time]

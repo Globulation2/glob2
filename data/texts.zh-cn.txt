@@ -5054,8 +5054,8 @@ AI 遥测
 受伤单位撤退
 [Units can die]
 单位会死亡
-[Unit training]
-单位训练
+[Upgrades]
+
 [No stockpile]
 无
 [No glass cannon]
@@ -5148,8 +5148,8 @@ AI 遥测
 受伤单位会返回治疗，而不是战斗到死。
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 单位生命值耗尽时死亡。关闭后单位生命值最低保留 1。
-[Units gain levels at schools.]
-单位在学校中提升等级。
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 工人时间
 [stat worker time]
