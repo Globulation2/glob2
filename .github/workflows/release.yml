@@ -84,7 +84,7 @@ jobs:
       - name: Validate F-Droid listing for publication
         run: python3 mobile/android_release.py check-listing
       - name: Test Android release preflight and package checks
-        run: python3 -m unittest test.build_system.test_android_release -v
+        run: python3 -m unittest discover -s test/build_system -p test_android_release.py -v
 
   source:
     needs: preflight
