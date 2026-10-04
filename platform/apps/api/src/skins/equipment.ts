@@ -24,6 +24,7 @@ export async function authorizedSkin(
       'v.id',
       'v.skin_id',
       'v.texture_sha256',
+      'v.material_sha256',
       'v.layout',
       'v.building_color',
       'v.swarm_mesh',

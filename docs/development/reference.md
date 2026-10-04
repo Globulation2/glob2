@@ -468,10 +468,13 @@ so desktop results do not qualify Android/iOS hardware performance.
 The `skin-game-preview` diagnostic measures the colony-skin path through the real
 Scene renderer. Build it with `scons release=1 skin-game-preview`, then set
 `SKIN_PREVIEW_SAVE` to a two-colony saved game, `GLOB2_SKIN_PREVIEW_DIR` to a
-mesh directory containing `paint.png`, `SKIN_PREVIEW_CAPTURE` to a capture name,
-and `SKIN_PREVIEW_BENCHMARK` to a relative capture prefix. Set
-`GLOB2_SKIN_PREVIEW_SWARM` to a swarm mesh id (such as `crown`) to draw team 0's
-swarm with that mesh; the directory then needs its `swarm-<id>.gsk`. Run with `-g -m
+mesh directory containing the colony-v2 `paint.png` (a 512x512 colour atlas with
+one 256x256 quadrant per model: worker, warrior, explorer, swarm) and optionally
+`material.png` (the matching 512x512 material-id map; absent means all glossy),
+`SKIN_PREVIEW_CAPTURE` to a capture name, and `SKIN_PREVIEW_BENCHMARK` to a
+relative capture prefix. Set `GLOB2_SKIN_PREVIEW_SWARM` to a swarm mesh id (such
+as `crown`) to draw team 0's swarm with that mesh; the directory then needs its
+`swarm-<id>.gsk`, and the swarm quadrant paints it. Run with `-g -m
 -s800x600` and an isolated `GLOB2_USER_DATA_DIR`. `SKIN_BENCH_FRAMES` and
 `SKIN_BENCH_WARMUP` control total and discarded warmup frames (defaults 45 and 5).
 The harness adds a crowded diagnostic colony, advances its animation phases,
@@ -486,11 +489,13 @@ Frame times include presentation; scope times measure CPU submission and driver
 work, not isolated GPU duration. Preserve the fixture, binaries, build inputs,
 resolution, driver, counters and captures for matched comparisons; run repeated
 alternating pairs without concurrent builds. Software GL results do not establish
-hardware performance. The smaller `skin-preview ASSET_DIRECTORY OUTPUT_PREFIX
---validate-opacity` diagnostic captures opaque, half-opacity and invisible mesh/shadow
+hardware performance. The smaller `skin-preview ASSET_DIRECTORY OUTPUT_PREFIX`
+renders every clip from the same 512x512 `paint.png` and optional `material.png`
+(create both with `python3 tools/skins/make_paint.py DIR --material mixed`), each
+clip sampling its own model quadrant. Its `--validate-opacity` diagnostic captures opaque, half-opacity and invisible mesh/shadow
 composites and verifies that opacity changes reuse cached poses. The
-`--validate-cache` diagnostic checks cache hits, repainting, texture address reuse
-and atlas overflow, and saves images for pixel comparison.
+`--validate-cache` diagnostic checks cache hits, repainting, material-map and
+region changes, texture address reuse and atlas overflow, and saves images for pixel comparison.
 
 Cloud patches in the flat game and editor views now use a coarser, world-anchored
 lattice when zooming out to half size or smaller. Patches retain at most their configured

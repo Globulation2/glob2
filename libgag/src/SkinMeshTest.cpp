@@ -3,6 +3,9 @@
 #include <SkinMesh.h>
 #include <SkinAtlasCache.h>
 #include <StreamBackend.h>
+#include <SDLGraphicContext.h>
+#include <Toolkit.h>
+#include <nlohmann/json.hpp>
 #include <bit>
 #include <cstdint>
 #include <limits>
@@ -106,27 +109,65 @@ TEST_SUITE("SkinAtlasCache")
         GAGCore::SkinAtlasCache cache;
         using Key = GAGCore::SkinAtlasCache::Key;
         for (unsigned i=0; i<cache.Capacity; ++i)
-            CHECK(cache.reserve(Key{1,i,1,1}) == i);
+            CHECK(cache.reserve(Key{1,i,1,1,1,1,0}) == i);
         // Protect the oldest half before admitting an equally large new set.
-        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.touch(Key{1,i,1,1}));
-        for (unsigned i=0; i<cache.Capacity/2; ++i) cache.reserve(Key{2,i,1,1});
+        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.touch(Key{1,i,1,1,1,1,0}));
+        for (unsigned i=0; i<cache.Capacity/2; ++i) cache.reserve(Key{2,i,1,1,1,1,0});
         CHECK(cache.size() == cache.Capacity);
         for (unsigned i=0; i<cache.Capacity; ++i)
-            CHECK(cache.find(Key{1,i,1,1}).has_value() == (i<cache.Capacity/2));
-        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.find(Key{2,i,1,1}));
+            CHECK(cache.find(Key{1,i,1,1,1,1,0}).has_value() == (i<cache.Capacity/2));
+        for (unsigned i=0; i<cache.Capacity/2; ++i) REQUIRE(cache.find(Key{2,i,1,1,1,1,0}));
     }
-    TEST_CASE("paint revision lifetime mesh and pose are independent cache keys")
+    TEST_CASE("paint and material revisions, lifetimes, region, mesh and pose are independent cache keys")
     {
-        GAGCore::SkinAtlasCache cache;
-        cache.reserve({1,0,1,1});
-        CHECK_FALSE(cache.find({1,0,1,2}));
-        CHECK_FALSE(cache.find({1,0,2,1}));
-        CHECK_FALSE(cache.find({2,0,1,1}));
-        CHECK_FALSE(cache.find({1,1,1,1}));
-        CHECK(cache.reserve({1,0,1,1}) == 0);
-        CHECK(cache.size() == 1);
+        using Cache = GAGCore::SkinAtlasCache;
+        Cache cache;
+        const auto base = Cache::key(1,0,1,1,1,1,0);
+        cache.reserve(base);
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,2,1,1,0)));  // paint revision
+        CHECK_FALSE(cache.find(Cache::key(1,0,2,1,1,1,0)));  // paint lifetime
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,1,2,0)));  // material revision
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,2,1,0)));  // material lifetime
+        for (std::uint8_t region=1; region<4; ++region)
+            CHECK_FALSE(cache.find(Cache::key(1,0,1,1,1,1,region)));
+        CHECK_FALSE(cache.find(Cache::key(2,0,1,1,1,1,0)));
+        CHECK_FALSE(cache.find(Cache::key(1,1,1,1,1,1,0)));
+        // A paint surface reused as a material (or vice versa) is a different key.
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,3,1,0)));
+        cache.reserve(Cache::key(1,0,3,1,1,1,0));
+        CHECK_FALSE(cache.find(Cache::key(1,0,1,1,3,1,0)));
+        CHECK(cache.reserve(base) == 0);
+        CHECK(cache.size() == 2);
         cache = {};
-        CHECK_FALSE(cache.find({1,0,1,1}));
-        CHECK(cache.reserve({1,0,1,1}) == 0);
+        CHECK_FALSE(cache.find(base));
+        CHECK(cache.reserve(base) == 0);
+    }
+}
+
+TEST_SUITE("SkinMaterialMap")
+{
+    TEST_CASE("greyscale material maps decode to exact ids")
+    {
+        glob2test::ToolkitScope toolkit; GAGCore::Toolkit::initGraphic(64,64,0,"skin material");
+        // The authorization fixture's 8-bit greyscale map cycles ids 0..3 in
+        // 32-row bands; SDL_image may decode it with an inexact grey palette.
+        const auto fixture=nlohmann::json::parse(glob2test::readFile(glob2test::sourceRoot()/"test/fixtures/skins/authorization.json"));
+        const auto hex=fixture["materialHex"].get<std::string>();
+        std::string bytes;
+        for (std::size_t i=0; i<hex.size(); i+=2) bytes.push_back(static_cast<char>(std::stoul(hex.substr(i,2),nullptr,16)));
+        glob2test::TempDir directory("skin-material");
+        glob2test::writeFile(directory.path/"material.png",bytes);
+        auto material=GAGCore::loadSkinMaterialMap((directory.path/"material.png").string());
+        REQUIRE(material);
+        CHECK(material->getW()==512);
+        CHECK(material->getH()==512);
+        auto *raw=material->getSDLSurface();
+        for (int band=0; band<16; ++band)
+        {
+            Uint8 r,g,b,a;
+            REQUIRE(SDL_ReadSurfacePixel(raw,7,band*32+5,&r,&g,&b,&a));
+            CHECK(r==band%4); CHECK(g==band%4); CHECK(b==band%4); CHECK(a==255);
+        }
+        CHECK_FALSE(GAGCore::loadSkinMaterialMap((directory.path/"missing.png").string()));
     }
 }

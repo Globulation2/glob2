@@ -10,8 +10,10 @@ class FogFade;
 namespace Online { class SkinDownloads; }
 namespace GAGCore { class GraphicContext; class DrawableSurface; }
 
-// Live colony geometry and authorized per-team appearance.
-// Assets are view-owned, never part of simulation state or persisted game data.
+// Live colony geometry and authorized per-team appearance (layout colony-v2:
+// a 512x512 colour atlas plus a 512x512 material-id map per team, one 256x256
+// quadrant per model). Assets are view-owned, never part of simulation state
+// or persisted game data.
 class ColonySkinPreview
 {
 public:
@@ -32,10 +34,19 @@ private:
     const GAGCore::SkinMesh *unitMesh(int type, int action) const;
     // The team's chosen swarm mesh, or null when it is unavailable.
     const GAGCore::SkinMesh *swarmMesh(int team) const;
+    static std::uint8_t unitRegion(int type);
+    // Installs both surfaces for a team, or neither when either is not 512x512.
+    bool install(int team, std::unique_ptr<GAGCore::DrawableSurface> texture,
+                 std::unique_ptr<GAGCore::DrawableSurface> material);
+    void uninstall(int team);
     bool loadMeshes(const std::string &root, bool installed = false);
     bool loadInstalledMeshes();
     std::unique_ptr<Online::SkinDownloads> downloads;
     std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> textures;
+    std::array<std::unique_ptr<GAGCore::DrawableSurface>,32> materials;
+    // Per team and SkinRegion: whether the material map has any hairy (id 3)
+    // texel. Computed once at install for the future fur pass.
+    std::array<std::array<bool,4>,32> hairy{};
     std::array<std::optional<std::uint32_t>,32> colors;
     std::array<int,32> swarmChoice{};
     bool attemptedMeshes = false;

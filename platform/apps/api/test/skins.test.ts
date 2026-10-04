@@ -33,15 +33,17 @@ describe('colony skin equipment', () => {
       .returning('id')
       .executeTakeFirstOrThrow();
     const hash = 'a'.repeat(64);
-    await db
-      .insertInto('blobs')
-      .values({
-        sha256: hash,
-        size: 100,
-        content_type: 'image/png',
-        storage_key: `sha256/aa/${hash}`,
-      })
-      .execute();
+    const materialHash = 'c'.repeat(64);
+    for (const sha256 of [hash, materialHash])
+      await db
+        .insertInto('blobs')
+        .values({
+          sha256,
+          size: 100,
+          content_type: 'image/png',
+          storage_key: `sha256/${sha256.slice(0, 2)}/${sha256}`,
+        })
+        .execute();
     const skin = await db
       .insertInto('colony_skins')
       .values({
@@ -57,7 +59,8 @@ describe('colony skin equipment', () => {
       .values({
         skin_id: skin.id,
         texture_sha256: hash,
-        layout: 'colony-v1',
+        material_sha256: materialHash,
+        layout: 'colony-v2',
         building_color: 0xff8800,
         swarm_mesh: 'crown',
         manifest_sha256: 'b'.repeat(64),
@@ -152,7 +155,13 @@ describe('colony skin equipment', () => {
       matchId: match.id,
       team: 0,
       accountId: account.id,
-      version: { id: version.id, swarmMesh: 'crown' },
+      version: {
+        id: version.id,
+        textureSha256: hash,
+        materialSha256: materialHash,
+        layout: 'colony-v2',
+        swarmMesh: 'crown',
+      },
     });
     expect(() =>
       keys.verify(appearance.assertion, { type: 'glob2-match+jwt', audience: 'glob2-relay' }),
@@ -220,7 +229,7 @@ describe('colony skin equipment', () => {
       .values({ kind: 'registered', display_name: 'Future' })
       .returning('id')
       .executeTakeFirstOrThrow();
-    const hash = 'c'.repeat(64);
+    const hash = 'e'.repeat(64);
     await db
       .insertInto('blobs')
       .values({ sha256: hash, size: 100, content_type: 'image/png', storage_key: `k/${hash}` })
@@ -241,7 +250,8 @@ describe('colony skin equipment', () => {
       .values({
         skin_id: skin.id,
         texture_sha256: hash,
-        layout: 'colony-v1',
+        material_sha256: hash,
+        layout: 'colony-v2',
         building_color: 0x123456,
         swarm_mesh: 'pyramid',
         manifest_sha256: 'd'.repeat(64),

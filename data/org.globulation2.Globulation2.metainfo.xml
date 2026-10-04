@@ -22,6 +22,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.10.0.1" date="2026-10-04">
+      <description>
+        <p>Packaging update for 0.10.0: Linux, Snap, Flatpak, RPM and Amazon Fire tablet builds.</p>
+      </description>
+    </release>
     <release version="0.10.0.0" date="2026-10-03">
       <description>
         <p>Online play on the Globulation 2 platform with quick match, rooms and ratings; the Hive Mind commander; custom JavaScript AIs; farm areas as an experiment; match recording; redesigned game rules and end-of-game statistics; interface themes; and complete translations.</p>

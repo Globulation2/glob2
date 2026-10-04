@@ -237,7 +237,8 @@ describe('retention', () => {
       .values({
         skin_id: reportedSkin.id,
         texture_sha256: 'ac'.repeat(32),
-        layout: 'colony-v1',
+        material_sha256: 'ac'.repeat(32),
+        layout: 'colony-v2',
         building_color: 123,
         manifest_sha256: 'ab'.repeat(32),
       })
@@ -422,6 +423,7 @@ describe('blob garbage collection', () => {
         .execute();
 
       const paint = await put('a published colony paint', 'old');
+      const paintMaterial = await put('a published colony material map', 'old');
       const skin = await database.db
         .insertInto('colony_skins')
         .values({ kind: 'preset', name: 'Test paint', entitlement: 'skins:test' })
@@ -432,7 +434,8 @@ describe('blob garbage collection', () => {
         .values({
           skin_id: skin.id,
           texture_sha256: paint.sha256,
-          layout: 'colony-v1',
+          material_sha256: paintMaterial.sha256,
+          layout: 'colony-v2',
           building_color: 123,
           manifest_sha256: 'ef'.repeat(32),
         })
@@ -498,6 +501,7 @@ describe('blob garbage collection', () => {
         artifact,
         playedMap,
         paint,
+        paintMaterial,
         studioMap,
         checkpoint,
         providerOutput,

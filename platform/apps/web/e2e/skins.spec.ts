@@ -91,7 +91,7 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   const swarmModel = page.waitForResponse((r) => r.url().endsWith('/skins/models/swarm-skep.gsk'));
   await page.getByRole('radio', { name: /^Skep/ }).check();
   expect((await swarmModel).status()).toBe(200);
-  await expect(page.getByLabel('Preview model')).toHaveValue('swarm');
+  await expect(page.getByRole('tab', { name: 'Swarm' })).toHaveAttribute('aria-selected', 'true');
   const firstResponse = page.waitForResponse(
     (r) => r.url().endsWith('/skins/publish') && r.request().method() === 'POST',
   );
@@ -165,6 +165,44 @@ test('reopens published paint, resumes an edit and publishes immutable versions'
   await page.screenshot({ path: test.info().outputPath('published-edit.png'), fullPage: true });
 });
 
+test('publishes each model with its own paintable material map', async ({
+  page,
+  request,
+  baseURL,
+}) => {
+  if (!baseURL) throw new Error('A test server URL is required.');
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await page
+    .context()
+    .addCookies([{ name: 'glob2_session', value: seed.userSession, url: baseURL }]);
+  await page.goto('/skins');
+  await page.getByRole('button', { name: 'My skins', exact: true }).click();
+  await page.getByRole('button', { name: 'Use as a starting point' }).first().click();
+  await page.getByLabel('Skin name').fill(`Materials ${test.info().project.name}`);
+  const publish = async (button: string) => {
+    const response = page.waitForResponse(
+      (r) => r.url().endsWith('/skins/publish') && r.request().method() === 'POST',
+    );
+    await page.getByRole('button', { name: button, exact: true }).click();
+    const result = await response;
+    expect(result.status()).toBe(200);
+    return (await result.json()) as { id: string; textureSha256: string; materialSha256: string };
+  };
+  const plain = await publish('Publish skin');
+  await page.getByRole('tab', { name: 'Warrior' }).click();
+  await page.getByLabel('Material', { exact: true }).check();
+  await page.getByLabel('Matte').check();
+  await page.getByRole('button', { name: 'Fill', exact: true }).click();
+  const matte = await publish('Publish new version');
+  // Only the warrior's material changed: same colour atlas, new material map.
+  expect(matte.textureSha256).toBe(plain.textureSha256);
+  expect(matte.materialSha256).not.toBe(plain.materialSha256);
+  const map = await page.request.get(`/api/v1/skins/versions/${matte.id}/material`);
+  expect(map.status()).toBe(200);
+  expect(map.headers()['content-type']).toContain('image/png');
+  await page.screenshot({ path: test.info().outputPath('skin-materials.png'), fullPage: true });
+});
+
 test('reports match paint and moderates it without rewriting the original', async ({
   page,
   browser,
@@ -232,7 +270,7 @@ test('inspects every action and paints a paused model with undo and erase', asyn
   });
   await page.goto('/skins');
   await expect(page.getByText('Glob paint repeats automatically', { exact: false })).toBeVisible();
-  const preview = page.getByLabel('Paint directly on the 3D colony model');
+  const preview = page.getByLabel(/^Paint directly on the 3D \w+ model$/);
   const texture = page.getByLabel('Paint texture');
   const image = () => texture.evaluate((c: { toDataURL(): string }) => c.toDataURL());
   const setFrame = async (direction: number, phase: number) => {
@@ -272,12 +310,12 @@ test('inspects every action and paints a paused model with undo and erase', asyn
   await expect.poll(image).toBe(original);
   await page.getByLabel('Erase to white', { exact: true }).uncheck();
   await page.getByRole('button', { name: 'Try stripes' }).click();
-  for (const [model, actions] of [
-    ['worker', ['walk', 'swim', 'harvest']],
-    ['warrior', ['walk', 'swim', 'fight']],
-    ['explorer', ['fly']],
+  for (const [model, tab, actions] of [
+    ['worker', 'Worker', ['walk', 'swim', 'harvest']],
+    ['warrior', 'Warrior', ['walk', 'swim', 'fight']],
+    ['explorer', 'Explorer', ['fly']],
   ] as const) {
-    await page.getByLabel('Preview model', { exact: true }).selectOption(model);
+    await page.getByRole('tab', { name: tab }).click();
     for (const action of actions) {
       await page.getByLabel('Action', { exact: true }).selectOption(action);
       await expect.poll(() => requests.includes(`/skins/models/${model}-${action}.gsk`)).toBe(true);
@@ -286,7 +324,7 @@ test('inspects every action and paints a paused model with undo and erase', asyn
       await preview.screenshot({ path: test.info().outputPath(`${model}-${action}-frame.png`) });
     }
   }
-  await page.getByLabel('Preview model', { exact: true }).selectOption('swarm');
+  await page.getByRole('tab', { name: 'Swarm' }).click();
   await expect(page.getByLabel('Action', { exact: true })).toHaveCount(0);
   await expect(page.getByLabel('Frame', { exact: true })).toBeDisabled();
   await expect(page.getByLabel('Direction', { exact: true })).toBeDisabled();

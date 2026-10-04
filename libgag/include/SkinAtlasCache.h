@@ -14,7 +14,14 @@ class SkinAtlasCache
 {
 public:
     static constexpr unsigned Capacity = 1024;
-    using Key = std::tuple<std::uint64_t, unsigned, std::uint64_t, std::uint64_t>;
+    // Mesh identity, pose, paint lifetime and revision, material lifetime and
+    // revision, atlas region. Any change rasterizes a fresh tile.
+    using Key = std::tuple<std::uint64_t, unsigned, std::uint64_t, std::uint64_t, std::uint64_t, std::uint64_t, std::uint8_t>;
+    static Key key(std::uint64_t mesh, unsigned frame, std::uint64_t paint, std::uint64_t paintRevision,
+                   std::uint64_t material, std::uint64_t materialRevision, std::uint8_t region)
+    {
+        return Key{mesh, frame, paint, paintRevision, material, materialRevision, region};
+    }
     SkinAtlasCache() = default;
     SkinAtlasCache(const SkinAtlasCache&) = delete;
     SkinAtlasCache& operator=(const SkinAtlasCache&) = delete;

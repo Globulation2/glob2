@@ -3,7 +3,8 @@ import { putContent } from '@glob2/core';
 import type { ApiServices } from '../services.ts';
 import { skinManifestSha256, type SkinContent } from './manifest.ts';
 
-/** Stable IDs and immutable PNG bytes: never overwrite a published preset. */
+/** Stable IDs and immutable PNG bytes (colour atlas `<sku>.png`, material map
+ * `<sku>-material.png`): never overwrite a published preset. */
 export const PRESETS = [
   {
     sku: 'stripes',
@@ -20,27 +21,31 @@ export const PRESETS = [
 ] as const;
 export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'blobs'>) {
   for (const preset of PRESETS) {
-    const image = await readFile(new URL(`../../assets/skins/${preset.sku}.png`, import.meta.url));
-    const stored = await putContent(blobs, image);
+    const asset = (name: string) =>
+      readFile(new URL(`../../assets/skins/${name}.png`, import.meta.url));
+    const texture = await putContent(blobs, await asset(preset.sku));
+    const material = await putContent(blobs, await asset(`${preset.sku}-material`));
     const content: SkinContent = {
       skinId: preset.skinId,
-      textureSha256: stored.sha256,
-      layout: 'colony-v1',
+      textureSha256: texture.sha256,
+      materialSha256: material.sha256,
+      layout: 'colony-v2',
       buildingColor: 0x2d73b4,
       swarmMesh: 'classic',
     };
     await db.transaction().execute(async (trx) => {
-      await trx
-        .insertInto('blobs')
-        .values({
-          sha256: stored.sha256,
-          size: stored.size,
-          storage_key: stored.key,
-          content_type: 'image/png',
-          visibility: 'public',
-        })
-        .onConflict((oc) => oc.column('sha256').doNothing())
-        .execute();
+      for (const stored of [texture, material])
+        await trx
+          .insertInto('blobs')
+          .values({
+            sha256: stored.sha256,
+            size: stored.size,
+            storage_key: stored.key,
+            content_type: 'image/png',
+            visibility: 'public',
+          })
+          .onConflict((oc) => oc.column('sha256').doNothing())
+          .execute();
       await trx
         .insertInto('colony_skins')
         .values({
@@ -56,8 +61,9 @@ export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'b
         .values({
           id: preset.versionId,
           skin_id: preset.skinId,
-          texture_sha256: stored.sha256,
-          layout: 'colony-v1',
+          texture_sha256: texture.sha256,
+          material_sha256: material.sha256,
+          layout: content.layout,
           building_color: content.buildingColor,
           swarm_mesh: content.swarmMesh,
           manifest_sha256: skinManifestSha256(content),

@@ -3,7 +3,7 @@ import { Open, Strict, Uuid, Sha256Hex, TeamIndex, Timestamp } from './common.ts
 
 // Swarm meshes a design can be painted for, mirroring src/online/SwarmMeshCatalog.h
 // (the game ships each as data/skins/colony-v1/swarm[-<id>].gsk). 'classic' is the
-// original swarm and the default; versions published before mesh choice use it.
+// original swarm and the default; the swarm is always painted from the atlas's swarm quadrant.
 export const SwarmMesh = Type.Union([
   Type.Literal('classic'),
   Type.Literal('crown'),
@@ -17,10 +17,29 @@ export type SwarmMeshId = Static<typeof SwarmMesh>;
 /** Catalog order: the game's mesh index, and the designer's picker order. */
 export const SWARM_MESHES = SwarmMesh.anyOf.map((mesh) => mesh.const) as readonly SwarmMeshId[];
 
+/** Colony skin layout colony-v2: 512x512 images of four 256x256 quadrants,
+ * worker (0,0), warrior (256,0), explorer (0,256) and swarm (256,256). */
+export const COLONY_SKIN_LAYOUT = 'colony-v2';
+/** Material ids of a material map pixel (grey level R=G=B). */
+export const COLONY_SKIN_MATERIALS = ['glossy', 'matte', 'metallic', 'hairy'] as const;
+/** Colour atlas: PNG or WebP, at most 1 MiB decoded. */
+const ColonyAtlasBase64 = Type.String({
+  minLength: 4,
+  maxLength: 1398104,
+  pattern: '^[A-Za-z0-9+/]+={0,2}$',
+});
+/** Material map: PNG or WebP of material ids, at most 256 KiB decoded. */
+const MaterialMapBase64 = Type.String({
+  minLength: 4,
+  maxLength: 349528,
+  pattern: '^[A-Za-z0-9+/]+={0,2}$',
+});
+
 export const PublishSkinRequest = Strict({
   name: Type.String({ minLength: 1, maxLength: 64 }),
   skinId: Type.Optional(Uuid),
-  imageBase64: Type.String({ minLength: 4, maxLength: 349528, pattern: '^[A-Za-z0-9+/]+={0,2}$' }),
+  imageBase64: ColonyAtlasBase64,
+  materialBase64: MaterialMapBase64,
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: Type.Optional(SwarmMesh),
 });
@@ -31,9 +50,14 @@ export const EquipSkinRequest = Strict({
 export const ColonySkinVersion = Open({
   id: Uuid,
   skinId: Uuid,
+  /** Colour atlas. */
   textureSha256: Sha256Hex,
+  /** Material map. */
+  materialSha256: Sha256Hex,
+  /** sha256 of JSON {skinId, textureSha256, materialSha256, layout, buildingColor}, in that order,
+   * followed by swarmMesh only when it is not 'classic'. */
   manifestSha256: Sha256Hex,
-  layout: Type.Literal('colony-v1'),
+  layout: Type.Literal(COLONY_SKIN_LAYOUT),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: SwarmMesh,
 });
@@ -68,7 +92,8 @@ export const SaveSkinDraftRequest = Strict({
   skinId: Type.Optional(Uuid),
   revision: Type.Union([Uuid, Type.Null()]),
   name: Type.String({ minLength: 1, maxLength: 64 }),
-  imageBase64: Type.String({ minLength: 4, maxLength: 349528, pattern: '^[A-Za-z0-9+/]+={0,2}$' }),
+  imageBase64: ColonyAtlasBase64,
+  materialBase64: MaterialMapBase64,
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: Type.Optional(SwarmMesh),
 });
@@ -76,7 +101,8 @@ export const SkinDraft = Open({
   skinId: Type.Optional(Uuid),
   revision: Uuid,
   name: Type.String({ minLength: 1, maxLength: 64 }),
-  imageBase64: Type.String({ minLength: 4, maxLength: 349528 }),
+  imageBase64: Type.String({ minLength: 4, maxLength: 1398104 }),
+  materialBase64: Type.String({ minLength: 4, maxLength: 349528 }),
   buildingColor: Type.Integer({ minimum: 0, maximum: 16777215 }),
   swarmMesh: SwarmMesh,
 });

@@ -32,13 +32,19 @@ int main(int argc, char **argv)
         SDL_Delay(20);
     }
     {
+        // colony-v2: a 512x512 colour atlas and an optional 512x512 material-id
+        // map (absent means all glossy), one 256x256 quadrant per model.
         DrawableSurface paint(std::string(argv[1])+"/paint.png");
-        if (paint.getW() != 256 || paint.getH() != 256) return 3;
+        if (paint.getW() != 512 || paint.getH() != 512) return 3;
+        auto loadedMaterial = loadSkinMaterialMap(std::string(argv[1])+"/material.png");
+        DrawableSurface glossy(512,512);
+        if (loadedMaterial && (loadedMaterial->getW() != 512 || loadedMaterial->getH() != 512)) return 3;
+        DrawableSurface &material = loadedMaterial ? *loadedMaterial : glossy;
         if (argc == 4 && std::string(argv[3]) == "--validate-opacity")
         {
             SkinMesh mesh; std::string error;
             if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
-            gfx->prepareSkinMeshes({{&mesh,0,&paint}});
+            gfx->prepareSkinMeshes({{&mesh,0,&paint,&material,SkinRegionWorker}});
             DrawableSurface shadow(256,256);
             shadow.drawFilledRect(0,0,256,256,Color(90,70,50));
             for (bool underlay : {false,true})
@@ -47,7 +53,7 @@ int main(int argc, char **argv)
                     gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
                     gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
                     gfx->resetDrawCallCount();
-                    if (!gfx->drawSkinMesh(mesh,0,paint,80,80,256,256,
+                    if (!gfx->drawSkinMesh(mesh,0,paint,material,SkinRegionWorker,80,80,256,256,
                                           underlay ? &shadow : nullptr, Uint8(alpha))) return 13;
                     // Opacity changes only the composite, never the cached pose.
                     if (!underlay && gfx->getDrawCallCount() != (alpha ? 1u : 0u)) return 14;
@@ -64,42 +70,50 @@ int main(int argc, char **argv)
             SkinMesh mesh; std::string error;
             if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
             alignas(DrawableSurface) unsigned char storage[sizeof(DrawableSurface)];
-            auto *reused = new(storage) DrawableSurface(256,256);
+            auto *reused = new(storage) DrawableSurface(512,512);
+            DrawableSurface materials(512,512);
+            std::uint8_t region = SkinRegionWorker;
             auto draw = [&](const char *name, unsigned expected) {
                 gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
                 gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
                 gfx->resetDrawCallCount();
-                gfx->prepareSkinMeshes({{&mesh,0,reused}});
-                if (!gfx->drawSkinMesh(mesh,0,*reused,80,80,256,256)
+                gfx->prepareSkinMeshes({{&mesh,0,reused,&materials,region}});
+                if (!gfx->drawSkinMesh(mesh,0,*reused,materials,region,80,80,256,256)
                     || gfx->getDrawCallCount()!=expected) return false;
                 gfx->printScreen(std::string(argv[2])+"-"+name+".bmp");
                 gfx->nextFrame();
                 return true;
             };
-            reused->drawFilledRect(0,0,256,256,Color(220,30,30));
+            reused->drawFilledRect(0,0,512,512,Color(220,30,30));
             if (!draw("cold",2) || !draw("hit",1)) return 8;
-            reused->drawFilledRect(0,0,256,256,Color(30,220,30));
+            reused->drawFilledRect(0,0,512,512,Color(30,220,30));
             if (!draw("repaint",2) || !draw("repaint-hit",1)) return 9;
+            // Material edits and a different quadrant are new rasterizations too.
+            materials.drawFilledRect(0,0,512,512,Color(2,2,2));
+            if (!draw("material",2) || !draw("material-hit",1)) return 16;
+            region = SkinRegionWarrior;
+            if (!draw("region",2) || !draw("region-hit",1)) return 17;
+            region = SkinRegionWorker;
             const auto identity = reused->lifetimeIdentity();
             reused->~DrawableSurface();
-            reused = new(storage) DrawableSurface(256,256);
-            reused->drawFilledRect(0,0,256,256,Color(30,30,220));
+            reused = new(storage) DrawableSurface(512,512);
+            reused->drawFilledRect(0,0,512,512,Color(30,30,220));
             if (reused->lifetimeIdentity()==identity || !draw("reused-address",2)) return 10;
             // Exceed the four-page bound and then revisit a replaced tile.
             std::array<std::unique_ptr<DrawableSurface>,5> paints;
             std::vector<SkinMeshRequest> requests;
             for (unsigned i=0; i<paints.size(); ++i)
             {
-                paints[i]=std::make_unique<DrawableSurface>(256,256);
-                paints[i]->drawFilledRect(0,0,256,256,Color(40+i*40,100,180));
-                for (unsigned frame=0; frame<256; ++frame) requests.push_back({&mesh,frame,paints[i].get()});
+                paints[i]=std::make_unique<DrawableSurface>(512,512);
+                paints[i]->drawFilledRect(0,0,512,512,Color(40+i*40,100,180));
+                for (unsigned frame=0; frame<256; ++frame) requests.push_back({&mesh,frame,paints[i].get(),&materials,SkinRegionWorker});
             }
             gfx->prepareSkinMeshes(requests);
             for (const auto &request : requests)
-                if (!gfx->drawSkinMesh(mesh,request.frame,*request.texture,0,0,32,32)) return 11;
+                if (!gfx->drawSkinMesh(mesh,request.frame,*request.texture,*request.material,request.region,0,0,32,32)) return 11;
             if (!draw("after-eviction",2) || !draw("after-eviction-hit",1)) return 12;
             reused->~DrawableSurface();
-            std::cout << "Cache hits, paint updates, address reuse and overflow passed\n";
+            std::cout << "Cache hits, paint and material updates, regions, address reuse and overflow passed\n";
             return 0;
         }
         if (argc == 4 && (std::string(argv[3]) == "--benchmark" || std::string(argv[3]) == "--benchmark-pages"))
@@ -115,14 +129,15 @@ int main(int argc, char **argv)
             if (!mesh.load(std::string(argv[1])+"/worker-walk.gsk",error)) return 4;
             struct MissingPaint : DrawableSurface { MissingPaint() : DrawableSurface() {} } missingPaint;
             gfx->resetDrawCallCount();
-            gfx->prepareSkinMeshes({{&mesh,0,&missingPaint}});
-            if (gfx->drawSkinMesh(mesh,0,missingPaint,0,0,32,32,&paint)
+            gfx->prepareSkinMeshes({{&mesh,0,&missingPaint,&material,SkinRegionWorker},{&mesh,0,&paint,&missingPaint,SkinRegionWorker}});
+            if (gfx->drawSkinMesh(mesh,0,missingPaint,material,SkinRegionWorker,0,0,32,32,&paint)
+                || gfx->drawSkinMesh(mesh,0,paint,missingPaint,SkinRegionWorker,0,0,32,32,&paint)
                 || gfx->getDrawCallCount() != 0) return 7;
             std::array<std::unique_ptr<DrawableSurface>,4> paints;
             for (unsigned i=0; i<paints.size(); ++i)
             {
                 paints[i] = std::make_unique<DrawableSurface>(std::string(argv[1])+"/paint.png");
-                paints[i]->drawFilledRect(0,0,256,256,Color(50+i*50,180-i*30,70+i*35));
+                paints[i]->drawFilledRect(0,0,512,512,Color(50+i*50,180-i*30,70+i*35));
             }
             for (bool atlas : {false,true})
             {
@@ -131,7 +146,7 @@ int main(int argc, char **argv)
                 {
                     std::vector<SkinMeshRequest> requests;
                     for (unsigned i=0; i<512; ++i)
-                        requests.push_back({&mesh,((i/4)%phases+iteration)%256,paints[i%4].get()});
+                        requests.push_back({&mesh,((i/4)%phases+iteration)%256,paints[i%4].get(),&material,SkinRegionWorker});
                     const auto start = SDL_GetPerformanceCounter();
                     gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
                     gfx->drawFilledRect(0,0,1024,960,Color(45,50,60));
@@ -140,7 +155,7 @@ int main(int argc, char **argv)
                     for (unsigned i=0; i<requests.size(); ++i)
                     {
                         const auto &request = requests[i];
-                        if (!gfx->drawSkinMesh(*request.mesh,request.frame,*request.texture,
+                        if (!gfx->drawSkinMesh(*request.mesh,request.frame,*request.texture,*request.material,request.region,
                             (i%32)*32,(i/32)*48,32,32)) return 5;
                     }
                     const auto count = gfx->getDrawCallCount();
@@ -160,6 +175,8 @@ int main(int argc, char **argv)
         const char *names[] = {"worker-walk", "worker-swim", "worker-harvest",
                                "warrior-walk", "warrior-swim", "warrior-fight", "explorer-fly", "swarm"};
         const int bases[] = {64,128,192,256,320,384,0,0};
+        const std::uint8_t regions[] = {SkinRegionWorker,SkinRegionWorker,SkinRegionWorker,SkinRegionWarrior,
+                                        SkinRegionWarrior,SkinRegionWarrior,SkinRegionExplorer,SkinRegionSwarm};
         for (int clip = 0; clip < 8; ++clip)
         {
             SkinMesh mesh; std::string error;
@@ -177,7 +194,7 @@ int main(int argc, char **argv)
                         int x=direction*128, y=sample*240, frame=mesh.frames == 1 ? 0 : direction*32+(allPhases ? page*4+sample : sample*8);
                         const int size = clip == 7 ? 114 : mesh.logicalSize * 3, inset = (128-size)/2;
                         if (clip != 7) gfx->drawSprite(x+inset,y+6,size,size,classic,bases[clip]*4+frame);
-                        if (!gfx->drawSkinMesh(mesh,frame,paint,x+inset,y+126,size,size,
+                        if (!gfx->drawSkinMesh(mesh,frame,paint,material,regions[clip],x+inset,y+126,size,size,
                             clip == 7 ? nullptr : classic->baseFrame(bases[clip]*4+frame)))
                         { std::cerr << "GPU mesh draw unavailable\n"; return 5; }
                     }

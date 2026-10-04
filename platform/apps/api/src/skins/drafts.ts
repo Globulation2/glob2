@@ -5,7 +5,7 @@ import { requireAccount, type Identity } from '../identity.ts';
 import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
-import { canonicalSkinImage } from './images.ts';
+import { canonicalMaterialMap, canonicalSkinImage } from './images.ts';
 import { knownSwarmMesh } from './manifest.ts';
 
 export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) {
@@ -30,11 +30,12 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
             buildingColor: row.building_color,
             swarmMesh: knownSwarmMesh(row.swarm_mesh) ?? 'classic',
             imageBase64: row.image.toString('base64'),
+            materialBase64: row.material.toString('base64'),
           }
         : null,
     };
   });
-  app.put('/api/v1/skins/draft', { bodyLimit: 360000 }, async (request, reply) => {
+  app.put('/api/v1/skins/draft', { bodyLimit: 1600000 }, async (request, reply) => {
     const { account } = await requireAccount(identity, request);
     if (account.kind !== 'registered' || account.status !== 'active')
       throw apiError('forbidden', 'Link an active recoverable account to sync drafts.');
@@ -42,6 +43,7 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
     if (!input.name.trim()) throw apiError('bad_request', 'Choose a skin name.');
     await enforce(saves, account.id, undefined, 'Too many draft saves.');
     const image = await canonicalSkinImage(input.imageBase64);
+    const material = await canonicalMaterialMap(input.materialBase64);
     reply.header('Cache-Control', 'private, no-store');
     return db.transaction().execute(async (trx) => {
       // Serialize first saves too, and recheck account eligibility after decoding.
@@ -81,6 +83,7 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
         building_color: input.buildingColor,
         swarm_mesh: input.swarmMesh ?? 'classic',
         image,
+        material,
         updated_at: new Date(),
       };
       await trx

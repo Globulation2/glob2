@@ -11,7 +11,9 @@ class OnlineStorage;
 class SkinDownloads {
 public:
     struct Ticket { int team; std::string assertion; };
-    struct Ready { AuthorizedSkin skin; std::string path; };
+    // colony-v2 skins install only once both the 512x512 colour atlas (path)
+    // and the 512x512 material-id map (materialPath) are cached and verified.
+    struct Ready { AuthorizedSkin skin; std::string path, materialPath; };
     using FetchStarter=std::function<std::unique_ptr<HttpFetch::Fetch>(HttpFetch::Request)>;
     SkinDownloads(OnlineStorage &, std::string origin, std::string match,
                   std::vector<Ticket>, FetchStarter fetch=HttpFetch::start, bool refresh=true);
