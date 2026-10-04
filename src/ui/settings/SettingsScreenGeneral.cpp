@@ -247,6 +247,22 @@ void SettingsScreen::buildGeneral()
 				   globalContainer->mix->setVolume(s.musicVolume, s.voiceVolume, s.mute);
 				   commit();
 			   });
+		{
+			auto sets = SoundMixer::getMusicSets();
+			sets.insert(sets.begin(), "");
+			std::vector<std::string> labels{tr("[random music set]")};
+			for (size_t i = 1; i < sets.size(); ++i) labels.push_back(SoundMixer::musicSetLabel(sets[i]));
+			const auto selected = std::find(sets.begin(), sets.end(), s.musicSet);
+			choice("audio.set", "[music set]", "[random music set]",
+				selected == sets.end() ? 0 : int(selected - sets.begin()), labels,
+				[this, sets](int index) {
+					if (index >= 0 && index < int(sets.size()) && globalContainer->mix->selectMusicSet(sets[index]))
+					{
+						globalContainer->settings.musicSet = sets[index];
+						commit();
+					}
+				});
+		}
 		for (int voice = 0; voice < 2; ++voice)
 		{
 			auto &r = add(voice ? "audio.voice" : "audio.music", Kind::Slider,

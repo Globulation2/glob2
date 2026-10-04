@@ -1605,3 +1605,14 @@ For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
 opt-in assertion checks each AI order when selected and reports unavailable work
 without filtering it. A repair can finish while its order waits in the network
 queue, so replay-time building health alone cannot classify upgrade intentions.
+
+### Soundtrack selection
+
+`MusicSet/*` exercises installed soundtrack discovery, atomic decoder failure,
+queued mood replacement, live dummy-audio switching, muted changes and saved
+preferences through the current in-game dialog API. `Settings/*` also covers the
+Audio selector and captures its layout. The mixer selection regression suite is
+`SoundMixerTrackSelection/*`. These display cases run in isolated runner processes.
+MIDI timing and atomic installer checks run with
+`python3 -m unittest discover -s music -p 'test_*.py'`; the FluidSynth repeat-render
+case skips when its pinned sound bank or shared library is unavailable.

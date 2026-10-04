@@ -563,13 +563,10 @@ bool SoundMixer::selectMusicSet(const std::string& preference)
 		frames = length;
 	}
 
-	SDL_LockAudio();
+	if (audioStream) SDL_LockAudioStream(audioStream);
 	const unsigned first = static_cast<unsigned>(MusicTrack::InGameDefault);
 	if (tracks.size() < static_cast<unsigned>(MusicTrack::Count))
-	{
-		SDL_UnlockAudio();
-		return false;
-	}
+		tracks.resize(static_cast<unsigned>(MusicTrack::Count), nullptr);
 	for (unsigned i = 0; i < replacement.size(); ++i)
 	{
 		auto *old = tracks[first + i];
@@ -580,13 +577,17 @@ bool SoundMixer::selectMusicSet(const std::string& preference)
 	if (actTrack >= static_cast<int>(first))
 	{
 		// Different sets need not share tempo or length. Start the same mood anew.
-		if (mode == MODE_EARLY_CHANGE && nextTrack >= static_cast<int>(first))
+		if (pendingTrack >= static_cast<int>(first))
+			actTrack = pendingTrack;
+		else if (mode == MODE_EARLY_CHANGE && nextTrack >= static_cast<int>(first))
 			actTrack = nextTrack;
 		nextTrack = actTrack;
 		if (mode != MODE_STOPPED)
 			mode = MODE_START;
 	}
-	SDL_UnlockAudio();
+	fadePos = 0;
+	pendingTrack = -1;
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
 	std::cerr << "selecting music dir " << name << std::endl;
 	return true;
 }

@@ -61,8 +61,8 @@ sets have independent tempos; only moods within a set are position-aligned.
 
 ```sh
 python3 -m unittest discover -s music -p 'test_*.py'
-scons --build=build-validation release=1 -j16 music-set-tests
-python3 test/run-music-set-tests.py
+scons release=1 -j6 engine-tests
+python3 test/run_tests.py --filter 'MusicSet/*' --filter 'SoundMixerTrackSelection/*'
 ```
 
 The game harness uses a disposable profile and dummy audio, and needs a graphical
