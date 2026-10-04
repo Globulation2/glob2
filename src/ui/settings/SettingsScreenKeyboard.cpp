@@ -48,12 +48,12 @@ void SettingsScreen::buildKeyboard()
                 commit();
             });
     }
-    section("Touch scrolling");
-    info(tr("Touch scrolling feel. 0 turns an effect off; 50 is the default."));
+    section("Gesture scrolling");
+    info(tr("Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default."));
     struct ScrollSlider{const char* id,*label,*help;int Settings::*field;};
     for(const auto& slider:{
-        ScrollSlider{"controls.momentum","List momentum","How far lists and panels keep scrolling after a flick.",&Settings::touchScrollMomentum},
-        ScrollSlider{"controls.bounce","List bounce","How much lists and panels stretch past their ends and spring back.",&Settings::touchScrollBounce},
+        ScrollSlider{"controls.momentum","List momentum","How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.",&Settings::touchScrollMomentum},
+        ScrollSlider{"controls.bounce","List bounce","How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.",&Settings::touchScrollBounce},
         ScrollSlider{"controls.mapmomentum","Map momentum","How far the map keeps panning after a flick.",&Settings::mapScrollMomentum}}){
         auto& r=add(slider.id,Kind::Slider,tr(slider.label),tr(slider.help));
         r.number=s.*slider.field;r.maximum=100;r.value=std::to_string(r.number)+"%";

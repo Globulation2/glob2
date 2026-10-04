@@ -21,7 +21,7 @@ UNCLASSIFIED_FILES = {'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map
                       'src/net/ConnectionOverlay.cpp', 'src/net/turn/TurnMatchPresenter.cpp',
                       'src/map/editor/screens/EditorMainMenu.cpp'}
 # Tests sit beside the code they test and are told apart by name.
-TEST_SOURCE = re.compile(r'(Test|Harness|Benchmark|Fixture)\.(cpp|py)$')
+TEST_SOURCE = re.compile(r'(Test|Harness|Benchmark|Fixture)\.(cpp|mm|py)$')
 TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_contracts.py', 'MapGeneratorStudy.cpp',
                      'RecordingMultiplayerPeer.cpp', 'OnlineProbeFileManager.cpp', 'PlatformClientProbe.cpp',
                      'OnlineScreensProbe.cpp', 'RelayTestMain.cpp'}

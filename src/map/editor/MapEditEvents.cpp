@@ -1,3 +1,4 @@
+#include <GestureScroll.h>
 #include "MapZoomControls.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -13,6 +14,7 @@
 void MapEdit::processEvent(SDL_Event& event)
 {
 	updateCamera();
+    if (GAGCore::scrollGesture(event) && !inputState.hasFocus()) return;
     inputState.observe(event);
     if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && event.type == SDL_EVENT_WINDOW_FOCUS_LOST) {
         suspendInput();
@@ -43,6 +45,11 @@ void MapEdit::processEvent(SDL_Event& event)
 		delegateMenu(event);
 		return;
 	}
+    else if (auto sample = GAGCore::scrollGesture(event))
+    {
+        auto wheel = GAGCore::gestureWheelFallback(*sample);
+        zoomMap(wheel.wheel.y * (wheel.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -1 : 1), mouseX, mouseY);
+    }
     else if(event.type==SDL_EVENT_MOUSE_WHEEL)
     {
         double delta=event.wheel.y;
