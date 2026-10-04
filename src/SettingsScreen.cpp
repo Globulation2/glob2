@@ -5,6 +5,7 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "SoundMixer.h"
+#include <GameplayRecording.h>
 #include <StringTable.h>
 #include <Toolkit.h>
 #include <algorithm>
@@ -87,7 +88,9 @@ std::string SettingsScreen::categoryName(Category category) const
 {
 	const char *names[] = {
 		"Display & graphics", "Audio",  "Gameplay",    "Building defaults", "Controls",
-		"Language & player",  "Online", "Experiments", "Custom AIs"};
+		"Language & player",  "Online", "Hive Mind",   "Recording",         "Experiments",
+		"Custom AIs"};
+	static_assert(std::size(names) == std::size_t(Category::CustomAIs) + 1, "a name for every settings category");
 	return tr(names[int(category)]);
 }
 
@@ -102,6 +105,10 @@ void SettingsScreen::buildRows()
 		buildKeyboard();
 	else if (current == Category::Online)
 		buildOnline();
+	else if (current == Category::HiveMind)
+		buildHiveMind();
+	else if (current == Category::Recording)
+		buildRecording();
 	else if (current == Category::CustomAIs)
 		buildCustomAIs();
 	else
@@ -189,7 +196,10 @@ std::vector<SettingsScreen::Category> SettingsScreen::visibleCategories() const
 	result.push_back(Category::Player);
 #if !defined(GLOB2_CHINA_RELEASE) && !defined(GLOB2_AMAZON_RELEASE)
 	result.push_back(Category::Online);
+	result.push_back(Category::HiveMind);
 #endif
+	if (GAGCore::Recording::supported())
+		result.push_back(Category::Recording);
 	result.push_back(Category::Experiments);
 	result.push_back(Category::CustomAIs);
 	return result;
@@ -369,6 +379,8 @@ void SettingsScreen::onTimer(Uint32 tick)
 	pollCustomAIs();
 	if (current == Category::Online)
 		pollOnline();
+	if (current == Category::Recording && int(GAGCore::Recording::recorder().status().state) != recordingState)
+		invalidate();
 	if (saveAt && Sint32(tick - saveAt) >= 0)
 		persist();
 	if (persistence)
@@ -478,7 +490,8 @@ Element SettingsScreen::categoryNavigation(const Presentation &p, bool sidebar)
 			static constexpr UIIcon icons[] = {
 				UIIcon::Display,   UIIcon::Audio,       UIIcon::Gameplay,
 				UIIcon::Buildings, UIIcon::Controls,    UIIcon::Player,
-				UIIcon::Online,    UIIcon::Experiments, UIIcon::Gameplay};
+				UIIcon::Online,    UIIcon::Crown,       UIIcon::Display,
+				UIIcon::Experiments, UIIcon::Gameplay};
 			static_assert(std::size(icons) == std::size_t(Category::CustomAIs) + 1,
 						  "an icon for every settings category");
 			options.icon = uiIcon(icons[int(category)]);
@@ -508,7 +521,7 @@ Element SettingsScreen::rowElement(const Row &r, const Presentation &p)
 	switch (r.kind)
 	{
 	case Kind::Section:
-		return padding({0, p.pt(12), 0, 0}, p.touch ? heading(r.label) : label(r.label, {FontRole::Body}));
+		return padding({0, p.pt(12), 0, 0}, heading(r.label));
 	case Kind::Info:
 		return paragraph(r.label, {FontRole::Body, true});
 	case Kind::Toggle:
@@ -692,7 +705,7 @@ Element SettingsScreen::build(const Presentation &p)
 			buttons.push_back({"cancel", tr("continue"), [this] { abandon(); }});
 		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : "Cancel"), [this] { dismiss(); }, true});
 	}
-	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p, ActionStyle::Compact)}, {-1, CrossAlign::Center});
+	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p)}, {-1, CrossAlign::Center});
 
 	// The rail only when the body keeps its room beside it (760 points at 100% text).
 	const bool sidebar = modal == Modal::None && !p.compact() && p.safe.w >= p.pt(584) + p.textPt(176);

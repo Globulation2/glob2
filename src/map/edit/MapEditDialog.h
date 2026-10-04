@@ -31,7 +31,7 @@ class MapEditMenuScreen : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(RETURN_EDITOR); }
-	double maxWidth() const override { return classic() ? 300 : -1; }
+	double maxWidth() const override { return -1; }
 };
 
 ///This is a text info box. It is used primarily for entering the names of the script areas,
@@ -56,7 +56,7 @@ class AskForTextInput : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(CANCEL); }
-	double maxWidth() const override { return classic() ? 280 : -1; }
+	double maxWidth() const override { return -1; }
 
   private:
 	std::string labelText;
@@ -97,8 +97,8 @@ class TeamsEditor : public Glob2UI::InGameDialog
 
   protected:
 	void onEscape() override { finish(CANCEL); }
-	bool fillHeight() const override { return !classic(); }
-	double maxWidth() const override { return classic() ? 480 : 760; }
+	bool fillHeight() const override { return true; }
+	double maxWidth() const override { return 760; }
 
   private:
 	Game *game;

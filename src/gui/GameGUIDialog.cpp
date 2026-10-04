@@ -44,29 +44,6 @@ Element InGameMainScreen::build(const Presentation &p)
 	// A networked match cannot be loaded over or saved: the relay owns its turns.
 	const bool files = !networked;
 	const std::string pauseText = !pauseLabel.empty() ? pauseLabel : fe::tr(paused ? "[resume game]" : "[pause game]");
-	if (classic())
-	{
-		// The classic desktop menu: a column of gold buttons, Return last.
-		std::vector<Element> buttons;
-		if (files)
-			buttons.push_back(classicButton("load", loadLabel, [this] { finish(LOAD_GAME); }));
-		if (files && !replay && canSave)
-			buttons.push_back(classicButton("save", fe::tr("[save game]"), [this] { finish(SAVE_GAME); }));
-		if(hiveMind)buttons.push_back(classicButton("hive", "Hive Mind", [this]{finish(HIVE_MIND);}));
-
-		buttons.push_back(
-			classicButton("telemetry", fe::tr("[AI telemetry]"), [this] { finish(AI_TELEMETRY); }));
-		buttons.push_back(classicButton("options", fe::tr("[Options]"), [this] { finish(OPTIONS); }));
-		// Single player pauses with its key; a network match shows the rule here
-		// too, as the touch sheet does.
-		if (networked)
-			buttons.push_back(classicButton("pause", pauseText, [this] { finish(PAUSE_GAME); }, SDLK_UNKNOWN, pauseEnabled));
-		buttons.push_back(classicButton("quit", quitLabel, [this] { finish(QUIT_GAME); }));
-		if (GAGCore::Recording::supported())
-			buttons.push_back(fe::recordingControls());
-		buttons.push_back(classicButton("return", returnLabel, [this] { finish(RETURN_GAME); }, SDLK_ESCAPE));
-		return fe::column(std::move(buttons), {p.pt(10)});
-	}
 	// The touch sheet: titled, Return highlighted at the bottom.
 	auto item = [&](const char *key, const std::string &label, int code, bool selected = false, SDL_Keycode shortcut = SDLK_UNKNOWN,
 					bool enabled = true)
@@ -88,7 +65,7 @@ Element InGameMainScreen::build(const Presentation &p)
 	buttons.push_back(item("telemetry", fe::tr("[AI telemetry]"), AI_TELEMETRY));
 	buttons.push_back(item("options", fe::tr("[Options]"), OPTIONS));
 	buttons.push_back(item("pause", pauseText, PAUSE_GAME, false, SDLK_UNKNOWN, pauseEnabled));
-	if (GAGCore::Recording::supported())
+	if (fe::recordingOffered())
 		buttons.push_back(fe::recordingControls());
 	// Leaving ends the list, away from the everyday choices (it asks first).
 	buttons.push_back(item("quit", quitLabel, QUIT_GAME));
@@ -112,24 +89,16 @@ Element InGameConfirmScreen::build(const Presentation &p)
 	parts.push_back(fe::paragraph(title, {fe::FontRole::Heading, false, fe::TextAlign::Center}));
 	parts.push_back(fe::paragraph(body, {fe::FontRole::Body}));
 	std::vector<Element> buttons;
-	if (classic())
-	{
-		buttons.push_back(classicButton("confirm", confirmLabel, [this] { finish(CONFIRM); }));
-		buttons.push_back(classicButton("cancel", cancelLabel, [this] { finish(CANCEL); }, SDLK_ESCAPE));
-	}
-	else
-	{
-		// Staying is the highlighted choice; leaving needs a deliberate tap.
-		fe::ButtonOptions stay;
-		stay.primary = true;
-		stay.shortcut = SDLK_ESCAPE;
-		stay.minHeight = 44;
-		fe::ButtonOptions go;
-		go.minHeight = 44;
-		buttons.push_back(fe::button("cancel", cancelLabel, [this] { finish(CANCEL); }, stay));
-		buttons.push_back(fe::button("confirm", confirmLabel, [this] { finish(CONFIRM); }, go));
-	}
-	parts.push_back(fe::column(std::move(buttons), {p.pt(classic() ? 10 : 8)}));
+	// Staying is the highlighted choice; leaving needs a deliberate tap.
+	fe::ButtonOptions stay;
+	stay.primary = true;
+	stay.shortcut = SDLK_ESCAPE;
+	stay.minHeight = 44;
+	fe::ButtonOptions go;
+	go.minHeight = 44;
+	buttons.push_back(fe::button("cancel", cancelLabel, [this] { finish(CANCEL); }, stay));
+	buttons.push_back(fe::button("confirm", confirmLabel, [this] { finish(CONFIRM); }, go));
+	parts.push_back(fe::column(std::move(buttons), {p.pt(8)}));
 	return fe::column(std::move(parts), {p.pt(12)});
 }
 
@@ -142,7 +111,7 @@ InGameEndOfGameScreen::InGameEndOfGameScreen(std::string title, bool canContinue
 Element InGameEndOfGameScreen::build(const Presentation &p)
 {
 	std::vector<Element> parts;
-	if (!classic() && teamColor && globalContainer->unitmini)
+	if (teamColor && globalContainer->unitmini)
 	{
 		const GAGCore::Color color = *teamColor;
 		const bool animate = won && globalContainer->settings.decorativeAnimations &&
@@ -162,9 +131,8 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 									   }
 								   }));
 	}
-	parts.push_back(fe::paragraph(title, {classic() ? fe::FontRole::Heading : fe::FontRole::Title, false, fe::TextAlign::Center}));
+	parts.push_back(fe::paragraph(title, {fe::FontRole::Title, false, fe::TextAlign::Center}));
 	std::vector<fe::MenuAction> actions;
-	// The classic order: Ok first, then the ways to stay.
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { finish(QUIT); }, true, SDLK_RETURN});
 	if (canContinue)
 	{
@@ -178,23 +146,18 @@ Element InGameEndOfGameScreen::build(const Presentation &p)
 	}
 	else if (globalContainer->replaying)
 		actions.push_back({"watch", fe::tr("[watch again]"), [this] { finish(WATCH_AGAIN); }});
-	if (!classic())
-		std::rotate(actions.begin(), actions.begin() + 1, actions.end());
+	// Ways to stay first, Ok last.
+	std::rotate(actions.begin(), actions.begin() + 1, actions.end());
 	std::vector<Element> buttons;
 	for (const auto &item : actions)
 	{
-		if (classic())
-		{
-			buttons.push_back(classicButton(item.key, item.label, item.action, item.shortcut));
-			continue;
-		}
 		fe::ButtonOptions options;
 		options.primary = item.primary;
 		options.shortcut = item.shortcut;
 		options.minHeight = 44;
 		buttons.push_back(fe::button(item.key, item.label, item.action, options));
 	}
-	parts.push_back(fe::column(std::move(buttons), {p.pt(classic() ? 10 : 8)}));
+	parts.push_back(fe::column(std::move(buttons), {p.pt(8)}));
 	return fe::column(std::move(parts), {p.pt(12)});
 }
 
@@ -297,45 +260,6 @@ Element InGameAllianceScreen::build(const Presentation &p)
 		notes.push_back(fe::paragraph(fe::tr("[shortcut explanation v]"), {fe::FontRole::Caption, true}));
 		return fe::column(std::move(notes), {p.pt(2)});
 	};
-	if (classic())
-	{
-		// The classic box: names in team colours, five checkbox columns under
-		// their abbreviations, the explanations below, Ok at the bottom.
-		const int nameWidth = p.pt(160), cell = p.pt(24);
-		std::vector<Element> header{fe::width(nameWidth, fe::empty())};
-		for (int s = 0; s < 5; ++s)
-			header.push_back(fe::width(cell, fe::label(shortLabels[s], {fe::FontRole::Body, false, fe::TextAlign::Center})));
-		std::vector<Element> table{fe::row(std::move(header), {p.pt(4), fe::CrossAlign::Center})};
-		for (auto &entry : rows)
-		{
-			fe::TextOptions nameStyle;
-			nameStyle.color = entry.color;
-			nameStyle.role = fe::FontRole::Heading;
-			std::vector<Element> cells{fe::width(nameWidth, fe::label(entry.name, nameStyle))};
-			for (int s = 0; s < 5; ++s)
-			{
-				const auto setting = Setting(s);
-				const bool locked = !entry.diplomacy && (setting == Alliance || setting == NormalVision);
-				const std::string key = "ally/" + std::to_string(entry.player) + "/" + shortLabels[s];
-				const int player = entry.player;
-				cells.push_back(fe::width(cell, locked ? fe::empty()
-														: fe::toggle(key, "", field(entry, setting),
-																	 [this, player, setting](bool value) { set(player, setting, value); }, editable)));
-			}
-			table.push_back(fe::row(std::move(cells), {p.pt(4), fe::CrossAlign::Center}));
-		}
-		std::vector<Element> parts{fe::column(std::move(table), {p.pt(2)})};
-		if (rows.empty())
-			parts.push_back(fe::paragraph(fe::tr("[No other players have editable diplomatic settings in this match.]"), {fe::FontRole::Body, true}));
-		else if (!rows.front().diplomacy)
-			parts.push_back(fe::paragraph(fe::tr("[Alliance and shared vision are fixed for this match.]"), {fe::FontRole::Support, true}));
-		parts.push_back(fe::spacer(p.pt(40)));
-		parts.push_back(notesColumn());
-		// The outer gutter limits height on short desktop windows too. Keep the
-		// footer reachable while the full diplomacy table and its legend scroll.
-		auto ok = classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN);
-		return fe::footer(fe::scroll("ally/scroll", fe::column(std::move(parts), {p.pt(10)})), ok);
-	}
 	std::vector<Element> list;
 	for (auto &entry : rows)
 	{
@@ -486,8 +410,7 @@ Element InGameOptionScreen::build(const Presentation &p)
 {
 	auto &settings = globalContainer->settings;
 	std::vector<Element> parts;
-	if (!classic())
-		parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
+	parts.push_back(fe::paragraph(fe::tr("[Options]"), {fe::FontRole::Heading, false, fe::TextAlign::Center}));
 	parts.push_back(fe::toggle("colony-skins", fe::tr("[settings Show colony skins]"), settings.showColonySkins,
         [this](bool value) { globalContainer->settings.showColonySkins = value; invalidate(); }));
 	parts.push_back(fe::toggle("mute", fe::tr("[Mute]"), settings.mute, [this](bool value) { setMute(value); }));
@@ -571,12 +494,6 @@ Element InGameOptionScreen::build(const Presentation &p)
 	else
 		oss << " SDL";
 	parts.push_back(fe::paragraph(oss.str(), {fe::FontRole::Caption, true, fe::TextAlign::Center}));
-	if (classic())
-	{
-		parts.push_back(fe::spacer(p.pt(10)));
-		parts.push_back(classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN));
-		return fe::column(std::move(parts), {p.pt(10)});
-	}
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;
 	okOptions.shortcut = SDLK_RETURN;
@@ -686,11 +603,6 @@ Element InGameObjectivesScreen::build(const Presentation &p)
 	}
 	auto header = fe::segments("objectives/tab", tabs, selected, [this, ids](int index) { showTab(ids[std::size_t(index)]); });
 	auto body = fe::scroll("objectives/scroll", fe::column(std::move(content), {p.pt(8)}));
-	if (classic())
-	{
-		auto ok = classicButton("ok", fe::tr("[ok]"), [this] { finish(OK); }, SDLK_RETURN);
-		return fe::column({header, fe::footer(body, ok)}, {p.pt(10)});
-	}
 	fe::ButtonOptions okOptions;
 	okOptions.primary = true;
 	okOptions.shortcut = SDLK_RETURN;
@@ -703,12 +615,7 @@ InGameTextInput::InGameTextInput(bool commander) : commander(commander) {}
 
 GAGGUI::ui::Rect InGameTextInput::available(const GAGGUI::ui::Presentation &presentation, const GAGGUI::ui::Metrics &metrics)
 {
-	if (!classic())
-		return InGameDialog::available(presentation, metrics);
-	// The classic composer sits at the bottom left of the map.
-	GAGGUI::ui::Rect area = presentation.dialog.inset(metrics.padding);
-	area.w = std::min(area.w, presentation.pt(maxWidth()));
-	return area;
+	return InGameDialog::available(presentation, metrics);
 }
 
 GAGGUI::ui::Rect InGameTextInput::place(GAGGUI::ui::Size measured, GAGGUI::ui::Rect area)
@@ -726,8 +633,6 @@ Element InGameTextInput::build(const Presentation &p)
 	options.placeholder = commander ? "Command your colony… Enter to send · Esc to close" : fe::tr("[Chat · recipients selected in Teams]");
 	options.submit = [this](const std::string &) { finish(0); };
 	auto entry = fe::textField("chat", text, [this](const std::string &value) { text = value; }, options);
-	if (classic())
-		return commander ? fe::column({fe::caption("Commander · Enter to send · Esc to close"),entry},{p.pt(4)}) : entry;
 	fe::ButtonOptions sendOptions;
 	sendOptions.primary = true;
 	auto send = fe::compactButton(

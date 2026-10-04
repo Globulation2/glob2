@@ -54,7 +54,7 @@ bool saveText(const std::string &filename, const std::string &text)
 } // namespace
 
 ScriptEditorScreen::ScriptEditorScreen(Game *game)
-	: sgslMapScript(&game->sgslScript), mapScript(&game->mapscript), game(game)
+	: InGameDialog(Glob2UI::Surface::Editor), sgslMapScript(&game->sgslScript), mapScript(&game->mapscript), game(game)
 {
 	scriptDrafts[0] = sgslMapScript->sourceCode;
 	const bool javascript = mapScript->getMapScriptMode() == MapScript::JavaScript;
@@ -367,7 +367,7 @@ void ScriptEditorScreen::loadSave(bool isLoad, const char *dir, const char *ext)
 		Toolkit::getStringTable()->getString(isLoad ? "[load script]" : "[save script]");
 	files = std::make_unique<LoadSaveDialog>(dir, ext, isLoad, title,
 											 game->mapHeader.getMapName().c_str(), filenameToName,
-											 glob2NameToFilename);
+											 glob2NameToFilename, Glob2UI::Surface::Editor);
 	if (!globalContainer->runNoX)
 		files->attach(*globalContainer->gfx);
 }
@@ -407,7 +407,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	options.lines = 14;
 	auto editorControl = fe::textEditor(
 		"script", script, [this](const std::string &value) { setScriptText(value); }, options);
-	auto editor = classic() ? editorControl : fe::expanded(editorControl);
+	auto editor = fe::expanded(editorControl);
 	fe::TextOptions resultStyle;
 	resultStyle.role = fe::FontRole::Support;
 	if (!compilation.empty())
@@ -443,7 +443,7 @@ Element ScriptEditorScreen::scriptTab(const Presentation &p)
 	tools.push_back({"load", fe::tr("[load]"), [this] { loadSave(true); }});
 	tools.push_back({"save", fe::tr("[Save]"), [this] { loadSave(false); }});
 	return fe::column(
-		{language, editor, status, fe::actions(std::move(tools), p, fe::ActionStyle::Compact)},
+		{language, editor, status, fe::actions(std::move(tools), p)},
 		{p.pt(6)});
 }
 
@@ -503,12 +503,8 @@ Element ScriptEditorScreen::build(const Presentation &p)
 	actions.push_back({"ok", fe::tr("[ok]"), [this] { confirm(); }, true});
 	actions.push_back(
 		{"cancel", fe::tr("[Cancel]"), [this] { finish(CANCEL); }, false, SDLK_ESCAPE});
-	if (classic())
-		return fe::column(
-			{header, body, fe::actions(std::move(actions), p, fe::ActionStyle::Compact)},
-			{p.pt(8)});
 	return fe::column(
 		{header, fe::expanded(fe::footer(
-					 body, fe::actions(std::move(actions), p, fe::ActionStyle::Compact)))},
+					 body, fe::actions(std::move(actions), p)))},
 		{p.pt(8)});
 }

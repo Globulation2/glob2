@@ -25,6 +25,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    'AIStateContinuationTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     'ScreenExecutionHarness.cpp',
     ('AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -92,6 +94,7 @@ ENGINE_TESTS = [
     'OrchardCommonsConversionTest.cpp',
     'PortableGameHarness.cpp',
     'TeamStatsSaveHarness.cpp',
+    'TeamLabourStatsTest.cpp',
     ('EngineSessionHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     'TurnNetConnectionTest.cpp',
     'RelayTransportTest.cpp',
@@ -203,6 +206,7 @@ UNIT_TESTS = [
     'OverlayFillTest.cpp',
     'ZoomDetailTest.cpp',
     'FogFadeTest.cpp',
+    'MetricSeriesTest.cpp',
     'PanelButtonHitTest.cpp',
     'ParticleCrossfadeTest.cpp',
     'PerlinNoiseTest.cpp',
@@ -307,6 +311,8 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/gradient/MapGradientPropagation.cpp',
     '#src/net/message/MessageRecipients.cpp',
     '#src/render/FogFade.cpp',
+    '#src/stats/MetricCatalog.cpp',
+    '#src/stats/MetricSeries.cpp',
     '#src/unit/UnitUtils.cpp',
     '#src/BasePlayer.cpp',
     '#src/BaseTeam.cpp',

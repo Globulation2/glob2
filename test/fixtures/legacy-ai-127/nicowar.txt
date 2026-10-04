@@ -1,0 +1,49 @@
+NewNicowar
+{
+	timer = 77;
+	strategy_name = "default";
+	growth_phase = 0;
+	skilled_work_phase = 0;
+	upgrading_phase_1 = 0;
+	upgrading_phase_2 = 0;
+	war_preperation = 0;
+	war = 0;
+	fruit_phase = 0;
+	starving_recovery = 0;
+	no_workers_phase = 0;
+	can_swim = 0;
+	starving_recovery_inns = 0;
+	buildings_under_construction = 0;
+	buildings_under_construction_per_type[0] = 0;
+	buildings_under_construction_per_type[1] = 0;
+	buildings_under_construction_per_type[2] = 0;
+	buildings_under_construction_per_type[3] = 0;
+	buildings_under_construction_per_type[4] = 0;
+	buildings_under_construction_per_type[5] = 0;
+	buildings_under_construction_per_type[6] = 0;
+	buildings_under_construction_per_type[7] = 0;
+	placement_queue
+	{
+		size = 0;
+	}
+	construction_queue
+	{
+		size = 0;
+	}
+	target = 255;
+	is_digging_out = 0;
+	attack_flags
+	{
+		size = 0;
+	}
+	defense_flags
+	{
+		size = 0;
+	}
+	explorer_attack_flags
+	{
+		size = 0;
+	}
+	exploration_on_fruit = 0;
+}
+sentinel = 305441741;

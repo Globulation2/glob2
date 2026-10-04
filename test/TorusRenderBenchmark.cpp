@@ -239,6 +239,8 @@ static int run(int argc, char **argv)
             MapCamera camera;
             camera.resize(width, height, gui.game.map.getW()*32, gui.game.map.getH()*32);
             camera.zoom = camera.minimumZoom();
+            // As the game's own view does, so the detail matches what a player sees.
+            gui.view.render.minimumZoom = camera.minimumZoom();
             if (std::getenv("GLOB2_BENCH_FULL_MAP"))
                 camera.zoom = std::min(double(width)/(gui.game.map.getW()*32), double(height)/(gui.game.map.getH()*32));
             // GLOB2_BENCH_ZOOM measures one zoom level instead of the minimum;
@@ -419,12 +421,18 @@ static int run(int argc, char **argv)
             });
             view.reset();
             view.toggle();
-            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height));
+            // The ring is drawn at the flat camera's zoom: fully zoomed out,
+            // the whole ring, unless GLOB2_BENCH_ZOOM names another.
+            float ringZoom = std::min(1.f, std::max(float(width) / (gui.game.map.getW() * 32), float(height) / (gui.game.map.getH() * 32)));
+            gui.view.render.minimumZoom = ringZoom;
+            if (const char *zoom = std::getenv("GLOB2_BENCH_ZOOM"))
+                ringZoom = std::clamp(float(std::atof(zoom)), ringZoom, float(MapCamera::MAX_ZOOM));
+            assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
             measure(clouds ? "Torus clouds" : "Torus no clouds", [&] {
                 view.amount = 1;
                 view.lastFrame = SDL_GetTicks();
                 view.setViewport((x + 1) & gui.game.map.getMaskW(), (y + 1) & gui.game.map.getMaskH());
-                assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height));
+                assert(view.draw(gui.game, 0, Game::DRAW_WHOLE_MAP, x, y, width, height, ringZoom));
             });
             std::printf("atlas=%dx%d cloud=%dx%d\n", view.atlasW, view.atlasH, view.cloudW, view.cloudH);
             if (clouds) captureFramebuffer();

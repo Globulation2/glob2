@@ -75,6 +75,9 @@ class Recorder
 std::int64_t timestamp();
 Recorder &recorder();
 bool supported();
+// Recording is built into supported clients; runtime storage/encoder failures
+// are reported by the session.
+bool available();
 // UI helper: unique profile output; returns false while finalization is pending.
 bool toggle();
 std::string controlLabel();

@@ -345,9 +345,19 @@ void GameGUI::updateCamera()
 bool GameGUI::zoomMap(double steps,int x,int y)
 {
     updateCamera();
-    if (torusView.active() || y<16 || !camera.contains(x,y)) return false;
-    camera.wheel(steps,x,y);
+    if (torusView.active())
+    {
+        // The ring shares the camera's zoom and stays centred on its focus,
+        // so it zooms about that point wherever the pointer is. An automatic
+        // reveal is over too soon to zoom.
+        const int width=globalContainer->gfx->getW()-RIGHT_MENU_WIDTH, height=globalContainer->gfx->getH();
+        if (!torusView.enabled() || x<0 || x>=width || y<16 || y>=height) return false;
+        camera.wheel(steps,width/2.0,(height+16)/2.0);
+    }
+    else if (y<16 || !camera.contains(x,y)) return false;
+    else camera.wheel(steps,x,y);
     viewportX=camera.tileX();viewportY=camera.tileY();
+    torusView.rebaseViewport(viewportX,viewportY);
     game.map.displayViewportW=std::ceil(camera.visibleW()+camera.fractionX());
     game.map.displayViewportH=std::ceil(camera.visibleH()+camera.fractionY());
     clientRequests.publishDisplaySize(game.map.displayViewportW,game.map.displayViewportH);

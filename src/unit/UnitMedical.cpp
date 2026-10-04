@@ -220,6 +220,8 @@ void Unit::handleMedical(void)
 		if (!isDead)
 		{
 			++owner->stats.measurements.deaths[typeNum][diagnosticDeathCause];
+			if (diagnosticDeathCause == GameplayMeasurements::COMBAT)
+				owner->stats.recordCombatDeath(this);
 			// disconnect from building
 			if (attachedBuilding)
 			{

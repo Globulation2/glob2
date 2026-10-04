@@ -25,6 +25,7 @@ Econo::Econo()
 
 bool Econo::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	flags_on_enemy.clear();
 	// Binary saves ignore section names; the numeric AI ID remains unchanged.
 	stream->readEnterSection("Econo");
 	timer=stream->readUint32("timer");
@@ -84,7 +85,7 @@ void Econo::tick(Runtime& runtime)
 	tick_school_inland(runtime);
 	tick_upgrade_l1_to_l2(runtime);
 	tick_upgrade_l2_to_l3(runtime);
-	tick_delete_old_inns_swarms(runtime);
+	tick_delete_old_inns(runtime);
 	tick_farming_areas(runtime);
 }
 

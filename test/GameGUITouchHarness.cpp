@@ -1617,8 +1617,8 @@ class GameGUITouchHarness
 				require(gui.touch->statsMetric == 1, "The sheet's arrow shows the next metric");
 				tap(centre(stats.previous).x, centre(stats.previous).y);
 				tap(centre(stats.previous).x, centre(stats.previous).y);
-				require(gui.touch->statsMetric == EndOfGameStat::TYPE_NB_STATS - 1, "Metrics wrap around");
-				gui.touch->statsMetric = EndOfGameStat::TYPE_UNITS;
+				require(gui.touch->statsMetric == int(Stats::catalog().size()) - 1, "Metrics wrap around");
+				gui.touch->statsMetric = 0;
 				gui.drawAll(0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
 				gfx->nextFrame();
@@ -2905,21 +2905,38 @@ class GameGUITouchHarness
 			stack.push(std::move(results));
 			stack.frame(SDL_GetTicks(), {});
 			require(!view->host().interactiveNodes().empty(), "Results exposes the shared chart controls");
-			view->activateResultControl(100);
-			require(view->metricPickerOpen(), "Metric selector opens an explicit dropdown");
 			SDL_Event key{};
 			key.type = SDL_EVENT_KEY_DOWN;
-			key.key.key = SDLK_END;
-			view->handleExecutionEvent(key);
-			key.key.key = SDLK_RETURN;
-			view->handleExecutionEvent(key);
-			require(view->selectedMetric == 35 && !view->metricPickerOpen(),
-					"Every metric is selectable without cycling pages");
+			if (view->host().find("group"))
+			{
+				// Narrow layouts pick a group, then a metric of that group.
+				view->activateResultControl(100);
+				require(view->metricPickerOpen(), "Metric selector opens an explicit dropdown");
+				key.key.key = SDLK_END;
+				view->handleExecutionEvent(key);
+				key.key.key = SDLK_RETURN;
+				view->handleExecutionEvent(key);
+				require(view->selectedMetric >= 0 && view->metric()->group == Stats::Group::Score && !view->metricPickerOpen(),
+						"Every group of metrics is selectable from the picker");
+				view->activateResultControl(103);
+				require(view->metricPickerOpen(), "The metrics of the group open in their own list");
+				key.key.key = SDLK_ESCAPE;
+				view->handleExecutionEvent(key);
+				stack.frame(SDL_GetTicks(), {});
+			}
+			else
+			{
+				// Wide layouts list every metric beside the chart.
+				auto *row = view->host().find("metric/1");
+				require(row, "Results lists the metrics beside the chart");
+				view->host().tapAt({row->bounds.x + row->bounds.w / 2, row->bounds.y + row->bounds.h / 2});
+				require(view->selectedMetric == 1 && !view->metricPickerOpen(), "A listed metric is selected directly");
+			}
 			if (!view->teams.empty())
 			{
 				const int team = view->teams.front().teamNum;
 				view->activateResultControl(200);
-				view->selectMetric(0);
+				view->selectMetric(1);
 				for (size_t i = 0; i < view->teams.size(); ++i)
 					if (view->teams[i].teamNum == team)
 						require(!view->teams[i].enabled,
@@ -2993,6 +3010,7 @@ class GameGUITouchHarness
 				resultsStack.push(std::move(results));
 				gfx->printScreen("localized-results-" + suffix + ".bmp");
 				resultsStack.frame(SDL_GetTicks(), {});
+				resultsView->selectMetric(0);
 				resultsView->activateResultControl(101);
 				require(resultsView->expandedChart, "Localized results retain chart expansion");
 				gfx->printScreen("localized-chart-" + suffix + ".bmp");

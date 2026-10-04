@@ -207,6 +207,14 @@ public:
 	void growResources(void);
 	void recordNaturalGrowth(int x, int y, int resourceType, int oldType, int oldAmount);
 	void rebuildGrowthCoverage();
+	//! Mask of teams with a non-flag building within GROWTH_COVERAGE_RADII[band] of
+	//! (x, y), as of each team's last 512-tick building snapshot. Call
+	//! rebuildGrowthCoverage() first; it repaints only what changed since.
+	Uint32 teamsWithBuildingsNear(int x, int y, int band) const
+	{
+		return Uint32(growthCoverage[coordToIndex(x, y)] >> (band * Team::MAX_COUNT)) &
+			((Uint32(1) << Team::MAX_COUNT) - 1);
+	}
 	//! Do a step associated with map (grow resources and process bullets)
 	void syncStep(Uint32 stepCounter);
 	//! Switch the Fog of War bufferResourceType

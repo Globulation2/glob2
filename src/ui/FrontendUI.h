@@ -76,11 +76,24 @@ Element compactButton(const std::string &key, const std::string &label, UIIcon i
 					  std::function<void()> action, const Presentation &p,
 					  ButtonOptions options = {});
 
+// The paper look of the menus, the results and every other frontend screen.
 const Theme &frontendTheme();
-// Dialogs over a match and the results: the frontend's paper look on every host.
+// The aubergine, cream and gold in-match look, shared with the HUD.
 const Theme &inGameTheme();
-// The classic navy in-match look with the sprite frame and gold buttons.
-const Theme &classicInGameTheme();
+// Kinds of surfaces; themeFor() maps each to its theme in one place, so moving a
+// kind of surface to the other look is a one-line change.
+enum class Surface
+{
+	// Menus, lobbies, settings and other screens outside a match.
+	Frontend,
+	// Dialogs over a match: the in-game menu, alliances, objectives, save/load.
+	Match,
+	// Dialogs over the map editor.
+	Editor,
+	// The after-game statistics screen.
+	Results
+};
+const Theme &themeFor(Surface surface);
 // Whether the touch (phone/tablet) presentation was requested for this run.
 bool touchPresentation();
 
@@ -127,45 +140,37 @@ class Dialog : public UIDialog
 	bool scrim() const override { return false; }
 };
 
-// A modal over gameplay or the editor, in the frontend's paper look on every host
-// (the same as the Online hub and the room).
+// A modal over gameplay or the editor, in the theme themeFor() picks for its surface.
 class InGameDialog : public UIDialog
 {
   public:
-	InGameDialog();
-	// Classic desktop look: no titles, fixed narrow boxes, gold 40-point buttons.
-	bool classic() const { return classicLook; }
+	explicit InGameDialog(Surface surface = Surface::Match);
 
   protected:
 	// Available content bounds with a visible 16-point gutter outside the panel.
 	GAGGUI::ui::Rect insetAvailable(const Presentation &p, const GAGGUI::ui::Metrics &m);
 	bool scrim() const override { return false; }
-	void paintPanel(GAGGUI::ui::Canvas &canvas, GAGGUI::ui::Rect panel) override;
-	// A classic button: 300 points wide, 40 tall, in the menu font.
-	Element classicButton(const std::string &key, const std::string &label, std::function<void()> action,
-						  SDL_Keycode shortcut = SDLK_UNKNOWN, bool enabled = true, double widthPoints = 300) const;
-	// Action row: 135-point classic buttons at the right on pointer hosts, the
-	// touch action grid otherwise.
+	// Action row: content-sized buttons at the right on pointer hosts, the touch
+	// action grid otherwise.
 	Element dialogActions(std::vector<MenuAction> items, const Presentation &p) const;
-
-  private:
-	bool classicLook;
 };
 
-// Title above a list of actions. Pointer hosts get the classic narrow panel of
-// 300-point menu-font buttons with the escape action pinned at the bottom;
-// touch hosts get a scrolling grid of large actions.
+// Typography conventions shared by every screen (see docs/development/ui-framework.md,
+// "Typography"): page titles are Heading and left-aligned; Title is kept for hero
+// content (the wordmark fallback, the result banner, big numbers); section headers
+// use heading(); body text, lists, fields and action buttons use Body; hints and
+// help use hint(); small metadata uses caption().
+Element pageTitle(const std::string &text);
+// Explanatory text under a control or section: Support size, muted ink.
+Element hint(const std::string &text);
+// Title above a list of actions. Pointer hosts get a narrow panel of 300-point
+// body-font buttons with the escape action pinned at the bottom; touch hosts get
+// a scrolling grid of large actions.
 Element menu(const std::string &titleText, std::vector<MenuAction> actions, const Presentation &p);
-enum class ActionStyle
-{
-	// 180-point menu-font buttons at the right, as the classic dialogs had.
-	Classic,
-	// Content-sized body-font buttons at the right, as settings and the lobby had.
-	Compact
-};
-// Action row; on touch hosts it becomes a wrapping grid of large buttons.
-Element actions(std::vector<MenuAction> actions, const Presentation &p, ActionStyle style = ActionStyle::Classic);
-// Classic dialog page: title, body and actions in the centered 640x480 paper
+// Action row of content-sized body-font buttons at the right; on touch hosts it
+// becomes a wrapping grid of large buttons.
+Element actions(std::vector<MenuAction> actions, const Presentation &p);
+// Dialog page: title, body and actions in the centered 640x480 paper
 // panel on pointer hosts; a content-sized card within the safe area on touch.
 Element page(const std::string &titleText, Element body, Element actionRow, const Presentation &p,
 			 double maxWidthPoints = 640);

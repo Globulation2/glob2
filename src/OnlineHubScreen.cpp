@@ -896,7 +896,7 @@ Element OnlineHubScreen::build(const Presentation &p)
 						   hostOf(data.origin));
 		break;
 	}
-	auto headline = row({expanded(column({phone ? heading(tr("[hub online]")) : title(tr("[hub online]")), caption(status)}, {0})), accountChip(p)}, {p.pt(8), CrossAlign::Center});
+	auto headline = row({expanded(column({heading(tr("[hub online]")), caption(status)}, {0})), accountChip(p)}, {p.pt(8), CrossAlign::Center});
 	if (p.compact())
 		// A narrow phone (or large text) gives the status line the full width under
 		// the title and account chip, rather than wrapping it word by word beside the
@@ -987,7 +987,7 @@ Element OnlineHubScreen::build(const Presentation &p)
 	// Where the two buttons and the version do not share a line (a portrait tablet
 	// with large text), the version goes above the buttons.
 	auto footerRow = adaptive([version = caption(instance + " · " + PACKAGE_VERSION),
-							   footerActions = actions(std::move(buttons), p, ActionStyle::Compact)](const LayoutContext &ctx, Size available) -> Element {
+							   footerActions = actions(std::move(buttons), p)](const LayoutContext &ctx, Size available) -> Element {
 		if (available.w < ctx.presentation.textPt(760))
 			return column({version, footerActions}, {ctx.presentation.pt(6)});
 		return row({expanded(version), footerActions}, {ctx.presentation.pt(8), CrossAlign::Center});

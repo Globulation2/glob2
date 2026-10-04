@@ -174,12 +174,6 @@ Ezin da partida sortu: %0 ataka erabileran dago
 Ezin da sartu: partida hasi da
 [Can't join game, game is full]
 Ezin da sartu: partida beteta dago
-[Can't join game, missmatching game parameters]
-Ezin da partidarekin bat egin, parametroak ez datoz bat
-[Can't join game, timeout]
-Ezin da partidarekin bat egin, denbora muga gainditu da
-[Can't join game, wrong game version]
-Ezin da partidarekin bat egin, bertsio desegokia
 [cancel destroy]
 Ezeztatu suntsipena
 [cancel repair]
@@ -516,8 +510,6 @@ Maparen scripta
 Maparen zabalera
 [map size y]
 Maparen altuera
-[maps available]
-Mapa eskuragarriak
 [mark map]
 Markatu mapa aliatuentzat
 [market explanation 2]
@@ -558,8 +550,6 @@ Hazkunderik gabe
 Ez
 [Number Of Buildings]
 Eraikin kopurua
-[number of players: %0]
-%0 jokalari daude bertan.
 [number of teams]
 talde kopurua
 [Number Of Units]
@@ -658,8 +648,6 @@ Zirkuitoa
 Hedadura
 [ratios]
 Proportzioak
-[Register a new YOG user with password]
-YOG erabiltzaile gisa izena eman pasahitza barne. (ez segurua)
 [remember unit]
 Gogoratu esleipenak
 [remove map]
@@ -1058,8 +1046,6 @@ Ikusten:
 Ura
 [Wheat]
 Garia
-[wheat]
-garia
 [Won : you defeated your opponents]
 Irabazi duzu: aurkariak zanpatu dituzu
 [Won : you have the most prestige]
@@ -1160,8 +1146,6 @@ Oinarrizko estrategia: Unitateen ekoizpena eraikuntzaren, hobekuntzen, defentsar
 Koloniaren hazkundea eta eraso entrenatuak koordinatzen ditu, sendaketa eta janaria lehenetsiz.
 [Algae]
 algak
-[Alliances]
-Aliantzak
 [Beach size]
 Hondartzaren tamaina
 [Blue]
@@ -1170,8 +1154,6 @@ Urdina
 Marroia
 [Built-in maps]
 Barneko mapak
-[Can change in game]
-Jokoan alda daiteke
 [Closed]
 Itxita
 [Colonies]
@@ -1200,8 +1182,6 @@ Zian
 Basamortuko pisua
 [Easy]
 Erraza
-[Explore as you play]
-Arakatu jolasten duzun bitartean
 [Extra colony assignments are retained for larger maps.]
 Kolonia gehigarriak mapa handiagoetarako gordetzen dira.
 [Extra islands]
@@ -1244,14 +1224,10 @@ Paisaia
 Zutik dagoen azken kolonia
 [Layout]
 Diseinua
-[Locked teams]
-Talde blokeatuak
 [Magenta]
 Magenta
 [Map]
 Mapa
-[Map knowledge]
-Maparen ezagutza
 [Match finished]
 Partidua amaitu da
 [Medium]
@@ -1298,10 +1274,6 @@ Gorria
 Errepikatu paisaia
 [Resources]
 Baliabideak
-[Restore standard rules]
-Arau estandarrak berreskuratu
-[Revealed terrain does not reveal all enemy activity.]
-Agerian dagoen lursailak ez du etsaien jarduera guztiak erakusten.
 [River]
 Erreka
 [River width]
@@ -1328,10 +1300,6 @@ Padura
 Taldea
 [Terrain]
 Lurra
-[Terrain revealed]
-Lurra agerian
-[Try a ruleset, then make it your own.]
-Saiatu arau multzo bat, eta egin ezazu zeurea.
 [Victory]
 Garaipena
 [Watch game]
@@ -1356,12 +1324,6 @@ Zu denen aurka
 Zure mapak
 [colonies]
 koloniak
-[* Changed from standard.]
-* Estandarretik aldatuta.
-[World & diplomacy]
-Mundua eta diplomazia
-[Starting conditions & pace]
-Hasierako baldintzak eta erritmoa
 [Inactive]
 Inaktibo
 [8 workers / 2x speed]
@@ -1384,8 +1346,6 @@ Mapek definitutako hasierako unitateak
 Liburutegi honetan ez dago maparik.
 [Premade maps retain their authored starting units.]
 Aurrez egindako mapek beren egilearen hasierako unitateak gordetzen dituzte.
-[Premade: only speed changes (2x)]
-Aurrez egina: abiadura aldaketak bakarrik (2x)
 [Start with terrain known]
 Hasi lurra ezagututa
 [This colony will not join the match.]
@@ -2152,38 +2112,20 @@ Estatistikak 2/3 >
 Orria (P)
 [Map preview choose another]
 Aukeratu mapa bat
-[Resources never grow or spread across the map.]
-Baliabideak ez dira inoiz hazten ez eta mapan zehar zabaltzen ere.
 [Building sites complete immediately, skipping delivery.]
 Eraikuntza-guneak berehala amaitzen dira, banaketa saltatuz.
-[Units never grow hungry and never starve.]
-Unitateak ez dira inoiz gose izaten eta ez dira inoiz gosez hiltzen.
-[Slows how often resources grow or spread across the map.]
-Baliabideak mapan zehar hazi edo zabaltzeko maiztasuna moteltzen du.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Talde bakoitzaren merkatu/truke baliabide-erreserba partekatua hasieratzen du jokoaren hasieran.
-[Grow normally]
-Hazkunde normala
 [No growth]
 Hazkunderik ez
-[Normal construction]
-Eraikuntza normala
-[Instant]
-Berehalakoa
 [Units get hungry]
 Unitateak gose dira
 [No hunger]
 Gose gabe
-[Off (today's growth)]
-Desaktibatuta (gaurko hazkundea)
 [Scarce (2x slower)]
 Urria (2x motelagoa)
 [Very scarce (4x slower)]
 Oso urria (4x motelagoa)
 [Extremely scarce (8x slower)]
 Izugarri urria (8x motelagoa)
-[None (today's default)]
-Bat ere ez (gaurko lehenetsia)
 [Small (+50 each)]
 Txikia (+50 bakoitzeko)
 [Medium (+150 each)]
@@ -2194,50 +2136,20 @@ Handia (+300 bakoitzeko)
 Baliabide-hazkunderik ez
 [Economy]
 Ekonomia
-[Scarce resources]
-Baliabide urriak
 [Instant construction]
 Berehalako eraikuntza
-[Stockpile start]
-Hasierako erreserba
-[Units still visit schools but never gain a level.]
-Unitateek eskolara joaten jarraitzen dute, baina inoiz ez dute mailarik igotzen.
-[Units fight to the death instead of retreating to heal.]
-Unitateek heriotzaraino borrokatzen dute, sendatzeko erretiratu ordez.
-[Units are never permanently lost -- HP just stops at 1.]
-Unitateak ez dira inoiz behin betiko galtzen -- osotasuna 1ean gelditzen da besterik gabe.
-[Disables all combat between every team.]
-Talde guztien arteko borroka guztia desgaitzen du.
-[Higher tiers deal more damage but have less HP and armor.]
-Maila altuagoek kalte gehiago eragiten dute, baina osotasun eta armadura gutxiago dute.
 [Higher tiers give every building much more HP.]
 Maila altuagoek osotasun askoz gehiago ematen diote eraikin bakoitzari.
 [Starting units spawn already leveled up. Changes the generated map.]
 Hasierako unitateak jada mailaz igota sortzen dira. Sortutako mapa aldatzen du.
-[Trains normally]
-Normal entrenatzen da
 [No upgrades]
 Hobekuntzarik ez
-[Retreats when damaged]
-Kaltetuta dagoenean erretiratzen da
-[Fearless]
-Beldurgabea
-[Can die permanently]
-Betiko hil daiteke
 [No permadeath]
 Betiko heriotzarik ez
-[Normal combat]
-Borroka normala
-[Peaceful mode]
-Modu baketsua
-[Off (today's balance)]
-Desaktibatuta (gaur egungo oreka)
 [Glass cannon x2]
 Beirazko kanoia x2
 [Glass cannon x3]
 Beirazko kanoia x3
-[Off (today's HP)]
-Desaktibatuta (gaur egungo osotasuna)
 [Fortress x5]
 Gotorleku x5
 [Fortress x10]
@@ -2252,10 +2164,6 @@ Legendarioa
 Borroka
 [Glass cannon]
 Beirazko kanoia
-[Fortress buildings]
-Eraikin gotortuak
-[Veteran/Fast start]
-Beterano/Hasiera azkarra
 [Match ends at the timer; highest prestige at that instant wins.]
 Partida tenporizadorean amaitzen da; unetxo horretan ospe handiena duenak irabazten du.
 [Off (no timer)]
@@ -2268,8 +2176,6 @@ Desaktibatuta (tenporizadorerik gabe)
 45 minutu
 [60 minutes]
 60 minutu
-[Sudden-death timer]
-Bat-bateko heriotzaren tenporizadorea
 [Stats page three]
 Estatistikak 3/3 >
 [Stats blocked units]
@@ -2998,10 +2904,6 @@ Zabala
 Gehiago
 [No items]
 Ez dago elementurik
-[Opponents]
-Aurkariak
-[Review]
-Laburpena
 [Review & Play]
 Berrikusi eta jokatu
 [Edit opponents]
@@ -3444,8 +3346,6 @@ Maparen inertzia
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3838,21 +3738,9 @@ Maparen inertzia
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4552,20 +4440,6 @@ Maparen inertzia
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4686,6 +4560,26 @@ Desaktibatu gailu honetan unitate, erle-saldo eta eraikinen kolore klasikoak era
 
 [stop commander]
 
+[settings Recording]
+
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+
+[settings FFmpeg is ready.]
+
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+
+[settings Check for FFmpeg again]
+
+[settings Checking for FFmpeg…]
+
+[settings Hotkey: %0. It also works in menus and the editor.]
+
+[settings Change the hotkey]
+
+[settings Recordings are saved in %0]
+
+[toggle recording]
+
 [File selection is unavailable.]
 
 [Saving custom AI…]
@@ -4758,3 +4652,481 @@ Errepikatu mapa bertikalki
 baseak
 [bases per colony]
 Oinarriak koloniako; oinarria marraztutako maparen talde bat da, bere eraikin eta unitateekin
+[stat group population]
+
+[stat group food]
+
+[stat group resources]
+
+[stat group buildings]
+
+[stat group military]
+
+[stat group map]
+
+[stat group score]
+
+[stat overview]
+
+[stat overview about]
+
+[stat population]
+
+[stat population about]
+
+[stat births]
+
+[stat births about]
+
+[stat deaths]
+
+[stat deaths about]
+
+[stat net growth]
+
+[stat net growth about]
+
+[stat death causes]
+
+[stat death causes about]
+
+[stat conversions]
+
+[stat conversions about]
+
+[stat hunger]
+
+[stat hunger about]
+
+[stat health]
+
+[stat health about]
+
+[stat seeking food]
+
+[stat seeking food about]
+
+[stat in care]
+
+[stat in care about]
+
+[stat wheat harvested]
+
+[stat wheat harvested about]
+
+[stat wheat stored]
+
+[stat wheat stored about]
+
+[stat meals]
+
+[stat meals about]
+
+[stat starvation]
+
+[stat starvation about]
+
+[stat healing]
+
+[stat healing about]
+
+[stat gathered]
+
+[stat gathered about]
+
+[stat stored]
+
+[stat stored about]
+
+[stat spending]
+
+[stat spending about]
+
+[stat delivered]
+
+[stat delivered about]
+
+[stat traded]
+
+[stat traded about]
+
+[stat buildings]
+
+[stat buildings about]
+
+[stat construction]
+
+[stat construction about]
+
+[stat buildings lost]
+
+[stat buildings lost about]
+
+[stat blocked buildings]
+
+[stat blocked buildings about]
+
+[stat attack]
+
+[stat attack about]
+
+[stat defence]
+
+[stat defence about]
+
+[stat hit points]
+
+[stat hit points about]
+
+[stat damage dealt]
+
+[stat damage dealt about]
+
+[stat damage taken]
+
+[stat damage taken about]
+
+[stat damage traded]
+
+[stat damage traded about]
+
+[stat combat deaths]
+
+[stat combat deaths about]
+
+[stat accuracy]
+
+[stat accuracy about]
+
+[stat training]
+
+[stat training about]
+
+[stat skills]
+
+[stat skills about]
+
+[stat growth nearby]
+
+[stat growth nearby about]
+
+[stat growth map]
+
+[stat growth map about]
+
+[stat stranded]
+
+[stat stranded about]
+
+[stat cleared]
+
+[stat cleared about]
+
+[stat prestige]
+
+[stat prestige about]
+
+[stat band combat]
+
+[stat band starvation]
+
+[stat band clearing]
+
+[stat band trapped]
+
+[stat band other]
+
+[stat band starving]
+
+[stat band hungry]
+
+[stat band peckish]
+
+[stat band fed]
+
+[stat band critical]
+
+[stat band wounded]
+
+[stat band hurt]
+
+[stat band healthy]
+
+[stat band weakening]
+
+[stat band looking]
+
+[stat band eating]
+
+[stat band healing]
+
+[stat band meals]
+
+[stat band new units]
+
+[stat band ammunition]
+
+[stat band construction]
+
+[stat band upgrades]
+
+[stat band built]
+
+[stat band upgraded]
+
+[stat band repaired]
+
+[stat band destroyed]
+
+[stat band demolished]
+
+[stat band melee]
+
+[stat band magic]
+
+[stat band towers]
+
+[stat band within 8]
+
+[stat band 8 to 16]
+
+[stat band 16 to 32]
+
+[stat unit units]
+
+[stat unit wheat]
+
+[stat unit meals]
+
+[stat unit hit points]
+
+[stat unit resources]
+
+[stat unit buildings]
+
+[stat unit strength]
+
+[stat unit damage]
+
+[stat unit shots]
+
+[stat unit visits]
+
+[stat unit skills]
+
+[stat unit prestige]
+
+[stat axis percent of %0]
+
+[stat axis share of all teams]
+
+[stat axis percent of units]
+
+[stat axis %0 per minute per 100 units]
+
+[stat axis %0 per 100 units]
+
+[stat axis %0 per minute]
+
+[stat axis %0 so far]
+
+[stat axis %0 minute average]
+
+[stat view per minute]
+
+[stat view total]
+
+[stat view %0 min]
+
+[stat view split]
+
+[stat view percentages]
+
+[stat view percent of units]
+
+[stat view per 100 units]
+
+[stat view share]
+
+[stat view highlight none]
+
+[stat column peak units]
+
+[stat column born]
+
+[stat column lost]
+
+[stat column wheat]
+
+[stat column damage dealt]
+
+[stat column damage taken]
+
+[stat column built]
+
+[stat column buildings lost]
+
+[stat column prestige]
+
+[stat marker wiped out]
+
+[stat marker first combat death]
+
+[stat marker first building destroyed]
+
+[stat not recorded for this match]
+
+[results reason beyond doubt]
+
+[stat per minute short]
+
+[stat page colony]
+
+[stat page %0 of %1]
+
+[stat band workers]
+
+[stat band explorers]
+
+[stat band warriors]
+
+[stat unit deaths]
+
+[stat unit growth]
+
+[stat view by unit type]
+
+[stat view by state]
+
+[stat view by resource]
+
+[stat view by building]
+
+[stat view by work]
+
+[stat view by cause]
+
+[stat view by weapon]
+
+[stat view by distance]
+
+[stat nothing to show]
+
+[stat %0 nothing]
+
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

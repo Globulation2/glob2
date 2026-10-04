@@ -311,11 +311,18 @@ namespace GAGCore
 			tileWidth = std::max(tileWidth, image->getW());
 			tileHeight = std::max(tileHeight, image->getH());
 		}
-		const int padding = allowVariableSizes ? 1 : 0;
+		// Even nearest sampling can reach just outside a frame at fractional
+		// zoom because of the texel tie bias. Isolate every frame, not only
+		// variable-size resource sprites.
+		const int padding = 1;
 		tileWidth += 2 * padding;
 		tileHeight += 2 * padding;
-		int sheetWidth = tileWidth * (static_cast<int>(sqrt(numImages)) + 1);
-		int sheetHeight = tileHeight * (static_cast<int>(sqrt(numImages)) + 1);
+		// Use only the cells needed. An extra empty column can make a padded
+		// power-of-two frame (notably water) double the GPU texture dimensions.
+		const int columns = static_cast<int>(std::ceil(std::sqrt(numImages)));
+		const int rows = (static_cast<int>(numImages) + columns - 1) / columns;
+		int sheetWidth = tileWidth * columns;
+		int sheetHeight = tileHeight * rows;
 		if (sheetWidth > maxTextureSize || sheetHeight > maxTextureSize)
 		{
 			std::cerr << "Warning: Sprite sheet " << fileName << " with size " << sheetWidth << "x" << sheetHeight
@@ -327,7 +334,6 @@ namespace GAGCore
 		for (auto image: images)
 		{
 			const int width = image->getW(), height = image->getH();
-			if (padding)
 			{
 				// Copy straight RGBA and extrude the border so linear filtering
 				// matches each standalone texture, without bleeding adjacent frames.
@@ -346,8 +352,6 @@ namespace GAGCore
 					}
 				SDL_SetSurfaceBlendMode(image->sdlsurface, blend);
 			}
-			else
-				atlas->drawSurface(x, y, image);
 			TextureInfo info = { this, x, y, width, height };
 			image->textureInfo = info;
 			image->texMultX = atlas->texMultX;

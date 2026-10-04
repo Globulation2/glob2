@@ -19,6 +19,7 @@
 #include "Order.h"
 #include "Player.h"
 #include "TeamStat.h"
+#include "stats/MetricCatalog.h"
 #include "render/Minimap.h"
 #include "render/UnitMotion.h"
 #include "render/UnitDrawGeometry.h"
@@ -1130,8 +1131,10 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			if (region == 45)
 				statsOpen = false;
 			else if (region != 48)
-				statsMetric = (statsMetric + (region == 47 ? 1 : EndOfGameStat::TYPE_NB_STATS - 1)) %
-							  EndOfGameStat::TYPE_NB_STATS;
+			{
+				const int count = int(Stats::catalog().size());
+				statsMetric = (statsMetric + (region == 47 ? 1 : count - 1)) % count;
+			}
 			return;
 		}
 	}

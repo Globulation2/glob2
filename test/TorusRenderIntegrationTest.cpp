@@ -380,6 +380,7 @@ static void run(bool gpu, int width, int height)
             draw(0);
             for (float phase : {.01f, .25f, .5f, .75f, 1.f})
                 draw(phase);
+            const auto saveFrame = [](const char *name)
             {
                 GLint viewport[4]; glGetIntegerv(GL_VIEWPORT,viewport);
                 const int w=viewport[2],h=viewport[3];
@@ -388,9 +389,10 @@ static void run(bool gpu, int width, int height)
                 for(int y=0;y<h;++y) std::copy_n(pixels.data()+size_t(y)*w*4,w*4,upright.data()+size_t(h-1-y)*w*4);
                 auto *frame=SDL_CreateSurfaceFrom(w,h,SDL_PIXELFORMAT_RGBA32,upright.data(),w*4);
                 REQUIRE(frame!=nullptr);
-                REQUIRE(SDL_SaveBMP(frame,(glob2test::artifactDir()/"torus-native.bmp").string().c_str()));
+                REQUIRE(SDL_SaveBMP(frame,(glob2test::artifactDir()/name).string().c_str()));
                 SDL_DestroySurface(frame);
-            }
+            };
+            saveFrame("torus-native.bmp");
             gui.gamePaused = true;
             const int pausedTime = gui.view.render.animationTime;
             draw(1);
@@ -581,6 +583,54 @@ static void run(bool gpu, int width, int height)
                 gui.torusView.reset();
                 gui.drawAll(0);
             }
+            // One zoom for both views: the wheel on the ring zooms the 2D
+            // camera about the ring's focus, the ring draws the detail of that
+            // zoom, and unfolding returns to the flat map at the zoom reached.
+            {
+                gui.camera.zoom = 1;
+                gui.updateCamera();
+                const int cx = (globalContainer->gfx->getW()-RIGHT_MENU_WIDTH)/2;
+                const int cy = (globalContainer->gfx->getH()+16)/2;
+                gui.torusView.reset();
+                gui.torusView.toggle();
+                for (float phase : {0.f, 1.f})
+                {
+                    gui.torusView.amount = phase;
+                    gui.torusView.lastFrame = SDL_GetTicks();
+                    gui.drawAll(0);
+                }
+                REQUIRE(gui.view.render.detail.strategic == 0);
+                int beforeX, beforeY, afterX, afterY;
+                REQUIRE(gui.torusView.pick(cx, cy, beforeX, beforeY));
+                const float closeUp = gui.torusView.meshKey[2];
+                gui.mouseX = cx + 150;
+                gui.mouseY = cy - 90;
+                SDL_Event wheel{};
+                wheel.type = SDL_EVENT_MOUSE_WHEEL;
+                wheel.wheel.y = -1;
+                for (int notch = 0; notch < 60; notch++)
+                    gui.processEvent(&wheel);
+                REQUIRE(gui.camera.zoom == gui.camera.minimumZoom());
+                gui.torusView.lastFrame = SDL_GetTicks();
+                gui.drawAll(0);
+                REQUIRE(gui.torusView.meshKey[2] < closeUp);
+                REQUIRE(gui.view.render.detail.strategic == 1);
+                REQUIRE(gui.torusView.pick(cx, cy, afterX, afterY));
+                REQUIRE(std::abs(TorusGeometry::wrappedDelta(beforeX, afterX, gui.game.map.getW()*32)) <= 2);
+                REQUIRE(std::abs(TorusGeometry::wrappedDelta(beforeY, afterY, gui.game.map.getH()*32)) <= 2);
+                REQUIRE(glGetError() == GL_NO_ERROR);
+                saveFrame("torus-overview.bmp");
+                gui.torusView.reset();
+                gui.drawAll(0);
+                REQUIRE(gui.camera.zoom == gui.camera.minimumZoom());
+                const auto center = gui.camera.screenToWorld(cx, cy);
+                REQUIRE(std::abs(TorusGeometry::wrappedDelta(beforeX, int(center.first), gui.game.map.getW()*32)) <= 34);
+                REQUIRE(std::abs(TorusGeometry::wrappedDelta(beforeY, int(center.second), gui.game.map.getH()*32)) <= 34);
+                saveFrame("flat-overview.bmp");
+                gui.camera.zoom = 1;
+                gui.updateCamera();
+                gui.drawAll(0);
+            }
             std::cout << "Manual/automatic modes, saved option and pointer hold passed\n";
             std::cout << "Navigation, GL state, picking and reload lifecycle passed\n";
             // Reuse the renderer across changing map shapes at one window size.
@@ -597,11 +647,14 @@ static void run(bool gpu, int width, int height)
                 rectangularView.reset();
                 rectangularView.toggle();
                 int vx = 0, vy = 0;
+                // The ring shares the flat view's zoom; fully zoomed out it
+                // fits the view, whatever the map's shape.
+                const float farthest = std::min(1.f, std::max(960.f / (size.first * 32), 720.f / (size.second * 32)));
                 for (float phase : {0.f, .1f, .5f, 1.f})
                 {
                     rectangularView.amount = phase;
                     rectangularView.lastFrame = SDL_GetTicks();
-                    REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
+                    REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720, farthest));
                     REQUIRE(glGetError() == GL_NO_ERROR);
                     // Picking the original screen center must still reach the
                     // same map location after each step of the transition.
@@ -621,7 +674,7 @@ static void run(bool gpu, int width, int height)
                     REQUIRE((x >= 0 && x <= 960)); // The distant rim may crop vertically.
                 }
                 rectangularView.setViewport(size.first - 1, size.second - 1);
-                REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720));
+                REQUIRE(rectangularView.draw(rectangular.game, 0, Game::DRAW_WHOLE_MAP, vx, vy, 960, 720, farthest));
                 int hits = 0;
                 for (int y = 100; y < 700; y += 40)
                     for (int x = 100; x < 900; x += 40)

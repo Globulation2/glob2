@@ -26,6 +26,8 @@ class SettingsScreen : public Glob2UI::Screen
 		Controls,
 		Player,
 		Online,
+		HiveMind,
+		Recording,
 		Experiments,
 		CustomAIs
 	};
@@ -134,6 +136,12 @@ class SettingsScreen : public Glob2UI::Screen
 	std::shared_ptr<OnlineState> online;
 	void buildOnline();
 	void pollOnline();
+	// Settings > Hive Mind (SettingsScreenOnline.cpp): commander shortcuts and account.
+	void buildHiveMind();
+	// Settings > Recording (SettingsScreenRecording.cpp): controls, hotkey, FFmpeg status.
+	void buildRecording();
+	// Rebuild the Recording tab when session state changes.
+	int recordingState = -1;
 	struct CustomAIState;
 	std::shared_ptr<CustomAIState> customAIs;
 	void buildCustomAIs();

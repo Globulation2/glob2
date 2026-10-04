@@ -549,6 +549,12 @@ attempts at most 16 geometry builds under a separate soft 2 ms budget; validated
 cache hits remain unrestricted. Deferred rows retain ordinary sprite batching.
 These time limits are soft because an individual driver call can exceed them.
 
+Native sprite atlases keep a one-texel extruded border around every frame,
+including equal-size terrain tiles. Fractional zoom and camera offsets can put
+a covered pixel arbitrarily close to a frame edge; the nearest-sampling tie
+bias must land in that frame's border rather than a neighboring frame. Keep
+the border copy unblended so transparent edges retain their original RGBA.
+
 Native array/cache optimizations require supported desktop OpenGL features.
 Software, portable SDL and unsupported native contexts retain their existing
 rendering paths. Desktop measurements must not be presented as phone performance.
@@ -998,10 +1004,16 @@ it is saved, checksummed or read by the simulation.
   high-density display and a desktop. Every threshold is a named constant there; each
   ramp is a smoothstep between two tile sizes, so representations cross-fade.
   `Game::drawMap` computes it once per frame into `MapRenderState::detail`.
-  A small map cannot zoom out far enough to reach the strategic view by tile size,
+  The map has two looks, the detailed map and the strategic overview. Everything
+  that differs between them (terrain, unit and building sprites, flags, zone
+  outlines, status pips, the territory wash) cross-fades inside one narrow window,
+  from 9 down to 7 points per tile, so each look is undistorted over a range of
+  zooms either side of it. Keep new representations on that window.
+  A small map cannot zoom out far enough to reach the overview by tile size,
   so the view's owner sets `MapRenderState::minimumZoom` and `ZoomDetail::rampTile`
-  compresses the far range: fully zoomed out is the full strategic view on a map of
-  any size, and from twice that tile size (at least 20 points) in nothing changes. A
+  remaps the far range: fully zoomed out is the full overview on a map of any size,
+  it holds up to 1.5 times that tile size (at most 16 points), the cross-fade above
+  it is as narrow as on a large map, and from normal size in nothing changes. A
   map still at 20 points or more per tile when fully zoomed out is left detailed.
   Overlay sizes always follow the true zoom. Disabled,
   it returns the values of uniform scaling and the passes take their original paths.
@@ -1012,9 +1024,10 @@ it is saved, checksummed or read by the simulation.
   every unit and building rather than interleaved with them. `Game::anchorBars` names
   the map point a bar keeps fixed while its size changes.
 - Bars hold their 100% size from 48 down to 20 points per tile and change slowly
-  outside that. Below 20 points only bars reporting a problem remain (a starving unit
-  or one at 60% health or less; a damaged building, one with under half its workers,
-  an inn without food, a tower without ammunition), then a status pip, then nothing.
+  outside that. Between 20 and 16 points every bar fades together. From there down
+  to the overview a status pip marks what needs attention (a starving unit or one at
+  60% health or less; a damaged building, one with under half its workers, an inn
+  without food, a tower without ammunition).
 - Zones cross-fade from pattern sprites with an outline to a flat translucent tint
   without one: an area keeps its shape at any scale where a one-pixel line cannot.
   `GraphicContext::drawMapFill` snaps fill edges to target pixels so translucent
@@ -1025,14 +1038,14 @@ it is saved, checksummed or read by the simulation.
   renderers place sprites at exact fractions, and a snapped fill beside them
   leaves hairline seams.
   The outline stroke stops thickening at two points.
-- Below 12 points per tile `Game::drawMapOverview` fades in one flat colour per tile
-  (terrain, or the resource's minimap colour over it); at 5 points it replaces the
-  water, terrain and resource passes. It is one image, a pixel per visible tile,
+- In the cross-fade `Game::drawMapOverview` fades in one flat colour per tile
+  (terrain, or the resource's minimap colour over it); in the overview it replaces
+  the water, terrain and resource passes. It is one image, a pixel per visible tile,
   stretched over the map in a single draw: as per-tile translucent fills it cost
   more than the terrain it covered during the cross-fade.
 - Units cross-fade to team-coloured markers (dot worker, triangle warrior, diamond
   explorer). Bullets, explosions, death animations, the magic effect and the
-  level-up number go with the unit sprites. Below 8 points per tile building sprites cross-fade to chips in the
+  level-up number go with the unit sprites. Building sprites cross-fade to chips in the
   team's colour carrying a white icon of the building's purpose, with a pip per
   upgrade level and a paler chip for a construction site; flags become discs of
   constant size; walls become plain team-coloured tiles. Chips are 15 to 26 points
@@ -1042,9 +1055,14 @@ it is saved, checksummed or read by the simulation.
   `datasrc/icons/map/` by `python3 tools/icons/export_map_icons.py` (needs
   `rsvg-convert`); the renderer draws the largest frame that fits, pixel for pixel.
   Frame order is shared between that script and `MapOverlayQueue.cpp`.
-- In the strategic view (below 6 points per tile) `Game::drawMapTerritory` washes
-  the land around each team's visible buildings in its colour, and an under-attack
-  event raises the same pulsing mark as a player's ping.
+- In the overview `Game::drawMapTerritory` washes the land around each team's
+  visible buildings in its colour, inside a solid border two points wide. The
+  team colour is brought up to a common brightness first, so a dark colour reads
+  as well as a light one. An under-attack event raises the same pulsing mark as a
+  player's ping.
+- The torus view draws its map texture through the same map transform at the
+  camera's zoom (`TorusView::draw`), so it shows the same detail, overlay sizes and
+  overview as the 2D view at that zoom.
 
 When tuning, capture the same save across zooms with `SoftwareRenderBenchmark`
 (`PROFILE_ZOOM`, `PROFILE_CAPTURE`); `PROFILE_ADAPTIVE_ZOOM=0` draws uniform scaling

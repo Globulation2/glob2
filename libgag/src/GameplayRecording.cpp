@@ -177,6 +177,7 @@ bool supported()
 	return true;
 #endif
 }
+bool available() { return supported(); }
 bool Recorder::start(const std::string &requestedPath)
 {
 	if (active() || impl->state == State::Finalizing)

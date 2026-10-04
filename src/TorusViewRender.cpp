@@ -8,6 +8,7 @@
 #include "Team.h"
 #include "TorusGeometry.h"
 #include <GraphicContext.h>
+#include <RenderStateScope.h>
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
@@ -452,7 +453,6 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     // the surface and picking; the sky shares only its horizontal movement.
     cameraU = TorusGeometry::follow(cameraU, travelU, dt, true);
     cameraV = TorusGeometry::follow(cameraV, travelV, dt, true);
-    cameraZoom = TorusGeometry::follow(cameraZoom, zoom, dt);
     if (amount == 0)
     {
         cameraU = travelU;
@@ -462,6 +462,61 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         TorusGeometry::destination(baseViewportX, baseViewportY, travelU, travelV, worldW, worldH);
     vx = destination.x;
     vy = destination.y;
+    float pull = smooth(amount);
+    float roll = smooth(amount);
+    float aspect = float(game.map.getW()) / game.map.getH();
+    const TorusGeometry::Shape shape(aspect);
+    float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
+    // The ring keeps one attitude on screen: the surface slides around the
+    // tube as the view pans, and turns about the axis as it scrolls.
+    viewAspect = float(width) / std::max(1, height - 16);
+    const float ringV = TorusGeometry::overviewLatitude(viewAspect, shape);
+    float cameraDistance = TorusGeometry::hoverDistance(ringV);
+    // Keep the focused landscape at screen center throughout the transition.
+    // The ring's silhouette is measured once per view shape in camera units,
+    // with how far the folded surface spreads the map at its focus.
+    if (ringAspect != viewAspect || ringMapAspect != aspect)
+    {
+        float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
+        const auto project = [&](float du, float dv)
+        {
+            auto p = TorusGeometry::overviewPoint(du, dv, 1, ringV, viewAspect, shape);
+            float w = 1 - p.z / cameraDistance;
+            return TorusGeometry::Point{p.x / w, p.y / w, 0};
+        };
+        for (int j = 0; j <= 40; ++j)
+            for (int i = 0; i <= 40; ++i)
+            {
+                auto p = project(i / 40.0f - 0.5f, TorusGeometry::meshOffset(j / 40.0f, ringV, shape));
+                minX = std::min(minX, p.x);
+                maxX = std::max(maxX, p.x);
+                minY = std::min(minY, p.y);
+                maxY = std::max(maxY, p.y);
+            }
+        ringWidth = maxX - minX;
+        ringHeight = maxY - minY;
+        focusGain = (project(0.001f, 0).x - project(-0.001f, 0).x) / 0.002f;
+        ringAspect = viewAspect;
+        ringMapAspect = aspect;
+    }
+    // The ring shows its focus at the 2D camera's zoom: folding the map
+    // neither zooms in nor out, and the wheel means the same in both views.
+    // Only an automatic reveal pulls back, to the whole ring.
+    const float mapPixels = game.map.getW() * 32.0f;
+    const float fit = 0.9f * std::min(width / ringWidth, (height - 16) / ringHeight);
+    float scale = mapPixels * flatZoom / focusGain;
+    // Fully zoomed out the whole ring is in view. The flat view of a very
+    // wide map stops zooming out before its ring would fit, so that ring is
+    // drawn smaller throughout by what it lacks there.
+    const float minimumZoom = std::min(1.0f, std::max(width / mapPixels, height / (game.map.getH() * 32.0f)));
+    scale *= std::min(1.0f, fit * focusGain / (mapPixels * minimumZoom));
+    if (wholeRing)
+        scale = std::min(scale, fit);
+    float sx = std::exp(mix(std::log(mapPixels * flatZoom / (8 * pi)), std::log(scale), pull));
+    float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
+    // The zoom the focus is seen at this frame decides how the map is drawn:
+    // zoomed out, the ring carries the same strategic overview as the 2D view.
+    const float shownZoom = std::exp(mix(std::log(flatZoom), std::log(scale * focusGain / mapPixels), pull));
     auto gfx = globalContainer->gfx;
     Sprite::flushBatches(gfx);
     gfx->setClipRect();
@@ -500,26 +555,37 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
         glDepthMask(GL_TRUE);
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glViewport(0, 0, atlasW, atlasH);
-        glOrtho(0, game.map.getW() * 32, game.map.getH() * 32, 0, -1, 1);
+        // The atlas is drawn as a screen whose logical units are the ones the
+        // focus is finally seen in, through the 2D view's own map transform:
+        // sprites, markers, bars and the overview then take the sizes and the
+        // detail they have at this zoom on the flat map.
+        const float unitsW = game.map.getW() * 32 * shownZoom, unitsH = game.map.getH() * 32 * shownZoom;
+        glOrtho(0, unitsW, unitsH, 0, -1, 1);
         glClear(GL_COLOR_BUFFER_BIT);
         // Lines rasterise in the pixels of whatever is being drawn into. Here
-        // that is the atlas, at its own texels per world pixel, not the factor
+        // that is the atlas, at its own texels per logical unit, not the factor
         // the window stretches the interface by.
-        gfx->setRenderTargetScale(std::min(float(atlasW) / (game.map.getW() * 32),
-                                           float(atlasH) / (game.map.getH() * 32)));
-        // Capture the normal map and cloud shadows,
-        // respecting the same graphics-quality setting as the 2D view.
-        if (game.gui)
-            game.gui->drawTorusMap(originX, originY, team, options | Game::DRAW_NO_CLOUD_LAYER, cloudGridLimit);
-        else
+        gfx->setRenderTargetScale(std::min(atlasW / unitsW, atlasH / unitsH));
         {
-            Game::ViewState mapView;
-            mapView.render = std::move(standaloneRender);
-            game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
-                         originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
-                         nullptr, nullptr, false, cloudGridLimit);
-            standaloneRender = std::move(mapView.render);
+            // The transform clips in window pixels, which mean nothing in the
+            // atlas: a clip reaching far past every edge leaves it all drawable.
+            const int reach = 30000;
+            GAGCore::MapTransformScope mapPass(*gfx, shownZoom, 0, 0, SDL_Rect{0, gfx->getH() - reach, reach, reach});
+            // Capture the normal map and cloud shadows,
+            // respecting the same graphics-quality setting as the 2D view.
+            if (game.gui)
+                game.gui->drawTorusMap(originX, originY, team, options | Game::DRAW_NO_CLOUD_LAYER, cloudGridLimit);
+            else
+            {
+                Game::ViewState mapView;
+                mapView.render = std::move(standaloneRender);
+                game.drawMap(0, 0, game.map.getW() * 32, game.map.getH() * 32, 0, 0,
+                             originX, originY, team, mapView, options | Game::DRAW_NO_CLOUD_LAYER,
+                             nullptr, nullptr, false, cloudGridLimit);
+                standaloneRender = std::move(mapView.render);
+            }
         }
+        gfx->setClipRect();
         Sprite::flushBatches(gfx);
         gfx->setRenderTargetScale(0);
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -559,42 +625,6 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    float pull = smooth(amount);
-    float roll = smooth(amount);
-    float aspect = float(game.map.getW()) / game.map.getH();
-    const TorusGeometry::Shape shape(aspect);
-    // One direct, restrained pullback. There is no intermediate zoom to a
-    // distant full-map sheet, then zoom back in to the torus.
-    float anchorU = focusU + cameraU, anchorV = focusV + cameraV;
-    // The ring keeps one attitude on screen: the surface slides around the
-    // tube as the view pans, and turns about the axis as it scrolls.
-    viewAspect = float(width) / std::max(1, height - 16);
-    const float ringV = TorusGeometry::overviewLatitude(viewAspect, shape);
-    float cameraDistance = TorusGeometry::hoverDistance(ringV);
-    // Keep the focused landscape at screen center throughout the transition.
-    // The ring's silhouette is measured once per view shape in camera units.
-    if (ringAspect != viewAspect || ringMapAspect != aspect)
-    {
-        float minX = 1e9f, maxX = -1e9f, minY = 1e9f, maxY = -1e9f;
-        for (int j = 0; j <= 40; ++j)
-            for (int i = 0; i <= 40; ++i)
-            {
-                float dv = TorusGeometry::meshOffset(j / 40.0f, ringV, shape);
-                auto p = TorusGeometry::overviewPoint(i / 40.0f - 0.5f, dv, 1, ringV, viewAspect, shape);
-                float w = 1 - p.z / cameraDistance;
-                minX = std::min(minX, p.x / w);
-                maxX = std::max(maxX, p.x / w);
-                minY = std::min(minY, p.y / w);
-                maxY = std::max(maxY, p.y / w);
-            }
-        ringWidth = maxX - minX;
-        ringHeight = maxY - minY;
-        ringAspect = viewAspect;
-        ringMapAspect = aspect;
-    }
-    float scale = 0.9f * std::min(width / ringWidth, (height - 16) / ringHeight) * mix(1, cameraZoom, roll);
-    float sx = std::exp(mix(std::log(game.map.getW() * 32 * flatZoom / (8 * pi)), std::log(scale), pull));
-    float sy = sx * TorusGeometry::verticalScale(focusU, focusV, roll, aspect);
     float cx = width * 0.5f;
     float cy = (height + 16) * 0.5f;
     float skyYaw = -(anchorU - 0.5f) * 2 * pi, pa = TorusGeometry::latitude(ringV, shape);
@@ -625,7 +655,9 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
     pickV = anchorV;
     pickWidth = width;
     pickHeight = height;
-    float key[9] = {roll, ringV, sx, sy, cx, cy, scale, cameraDistance, aspect};
+    // Depth only orders the surface; it must stay inside the projection's range at any zoom.
+    const float depthScale = 100;
+    float key[9] = {roll, ringV, sx, sy, cx, cy, depthScale, cameraDistance, aspect};
     GLint oldArrayBuffer, oldIndexBuffer;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &oldArrayBuffer);
     glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &oldIndexBuffer);
@@ -665,12 +697,12 @@ bool TorusView::draw(Game &game, int team, unsigned options, int &vx, int &vy, i
                 float light =
                     mix(1, 0.48f + 0.52f * clamp(-nx * 0.35f - ry * 0.45f + rz * 0.82f, 0, 1), roll);
                 float w = 1 - p.z * roll / cameraDistance;
-                vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * scale, w},
+                vertices[j * (U + 1) + i] = {{cx * w + p.x * sx, cy * w + p.y * sy, p.z * depthScale, w},
                                              {light, light, light},
                                              {du, -dv},
                                              {nx, ry, rz}};
                 float cw = 1 - c.z * roll / cameraDistance;
-                cloudVertices[j * (U + 1) + i] = {{cx * cw + c.x * sx, cy * cw + c.y * sy, c.z * scale, cw},
+                cloudVertices[j * (U + 1) + i] = {{cx * cw + c.x * sx, cy * cw + c.y * sy, c.z * depthScale, cw},
                                                   {light, light, light},
                                                   {du, -dv},
                                                   {nx, ry, rz}};

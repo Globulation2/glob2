@@ -117,6 +117,8 @@ void BuildingRegister::remove_building(int id)
 
 bool BuildingRegister::load(GAGCore::InputStream *stream, Player *player, Sint32 versionMinor)
 {
+	pending_buildings.clear();
+	found_buildings.clear();
 	stream->readEnterSection("BuildingRegister");
 
 	stream->readEnterSection("pending_buildings");

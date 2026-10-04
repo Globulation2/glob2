@@ -31,7 +31,7 @@ settings. Existing customized layouts gain missing default actions only when the
 | G | Switch views; reverse an animation already in progress |
 | Arrow keys / Ctrl+arrows / screen edges / minimap | Move within the current view |
 | Middle-drag | Pan within the current view |
-| Mouse wheel in torus mode | Zoom within 3D; press G to return to 2D |
+| Mouse wheel / zoom controls | Zoom; both views share one zoom |
 | Left-click / left-drag | Select, place buildings and flags, or paint areas |
 | Right-click | Normal game cancellation / deselection |
 
@@ -50,8 +50,15 @@ automatic fold. With software rendering, the option does not activate the torus.
 normal viewport renderer, without full-world texture captures or torus mesh
 updates. In 3D, both axes slide the map around a ring whose orientation stays
 fixed. The star field follows horizontal navigation only; vertical navigation
-rolls the map around the tube without tilting the sky. The overview fits the
-playable area and adapts its tilt to the window.
+rolls the map around the tube without tilting the sky.
+
+The two views share the 2D camera's zoom. Folding shows the focused landscape on
+the ring at the size it had on the flat map, and zooming on the ring, about its
+focus, carries back to 2D. Fully zoomed out the whole ring is in view. The ring
+draws the map as the 2D view does at that zoom, including the strategic overview
+when zoomed out (see [Adaptive zoom detail](../development/reference.md#adaptive-zoom-detail)).
+Only an automatic fold pulls back by itself, to the whole ring fitted to the
+playable area; the tilt adapts to the window.
 
 ## Rendering and interaction
 
@@ -92,10 +99,10 @@ without increasing its vertex count. Clouds and picking share this mapping;
 camera fitting and mesh caches include the map aspect ratio. The camera tilt
 fits the ring silhouette to the playable area, prioritizing the front-facing
 landscape over keeping the hole open. Wide windows can naturally obscure the
-hole of a fat torus; wheel zoom still allows closer views and cropped sides.
+hole of a fat torus; zooming in gives closer views and cropped sides.
 
-Keyboard steps and wheel zoom use a shared exponential camera response (about
-63 ms time constant). Surface rendering and picking share the rendered focus;
+Keyboard steps use an exponential camera response (about
+63 ms time constant); zoom applies at once, as in 2D. Surface rendering and picking share the rendered focus;
 the distant sky shares its horizontal component. Wrapped coordinates interpolate
 across the shortest seam.
 

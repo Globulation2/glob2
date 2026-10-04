@@ -13,8 +13,11 @@ Native builds prefer the platform hardware encoder and fall back to x264. Browse
 builds lazily load a dedicated recording worker, prefer WebCodecs after testing the
 actual configuration, and fall back to the same embedded software pipeline.
 
-Use **Start recording / Stop recording** in the main menu, in-game menu, or final
-statistics screen, or press **Ctrl+Shift+R**. Each UI start creates a unique MP4 in
+**Settings > Recording** shows recording controls, the hotkey and the output
+folder. The in-game menu offers **Start recording / Stop recording**, and the
+**Start or stop recording** hotkey (default **Ctrl+Shift+R**, rebindable under
+**Settings > Controls**) works on every screen. Encoder and storage errors appear
+in the recording controls. Each UI start creates a unique MP4 in
 `videoshots/` beneath the current user profile. The window title reports recording,
 finalization, or failure; that status is outside the captured image. Capture
 errors also appear in the recording controls and application log.
