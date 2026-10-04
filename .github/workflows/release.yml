@@ -489,7 +489,7 @@ jobs:
           if ($process.ExitCode -ne 0) { throw "Installer failed: $($process.ExitCode)" }
           $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
           & "$install/glob2.exe" --version
-          if ($LASTEXITCODE -ne 0) { throw 'Installed client could not load its runtime' }
+          if ($LASTEXITCODE -ne 0) { throw ('Installed client could not load its runtime (exit 0x{0:X8})' -f $LASTEXITCODE) }
           New-Item -ItemType Directory -Force "$install/games" | Out-Null
           Set-Content "$install/games/user.game" 'user save'
           Set-Content "$install/unrelated.txt" 'user content'
