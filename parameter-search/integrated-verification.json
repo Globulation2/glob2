@@ -1,0 +1,13 @@
+{
+  "tested_head": "fdbfbe1519cfcf58d52549b84b64399b57a353af",
+  "integrated_base": "ddb1fad60",
+  "latest_master": "7347d3114",
+  "mac": "Darwin ARM64 / Apple clang 21 / SDL3 cached prefix / release=1 -O3",
+  "linux": "Ubuntu x86_64 / GCC 15.2 / SDL3 cached prefix / release=1 -O3",
+  "python": "3.14.7",
+  "node": "24.14.0",
+  "binary_hashes": {
+    "build/darwin/client/release/src/glob2": "3d6744f5032a12f6da288deb3adcc2b3f0812b5459530dfb0794c21f59c51e26",
+    "build/darwin/client/release/test/glob2-engine-tests": "971582df1e2529c1e19ea9ad95895f6f03f14d805fb91b9a31abedc821815494"
+  }
+}
