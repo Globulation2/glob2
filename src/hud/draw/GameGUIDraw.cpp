@@ -463,6 +463,8 @@ void GameGUI::drawOverlayInfos(void)
 
 	}
 	// draw message List
+	// Feed rows are clickable only where they were drawn this frame.
+	eventFeedHits.clear();
 	// Suppress the "[waiting for X]" notice until the wait has lasted longer
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
@@ -561,6 +563,7 @@ void GameGUI::drawOverlayInfos(void)
 
 		ymesg += yinc+2;
 
+		ymesg = drawEventFeed(32, ymesg);
 		messageManager.drawAllGameMessages(32, ymesg);
 	}
 

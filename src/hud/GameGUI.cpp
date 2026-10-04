@@ -134,6 +134,8 @@ void GameGUI::init()
 	clientRequests.publishDisplaySize(game.map.displayViewportW, game.map.displayViewportH);
 	for (auto &queue : pendingTeamEvents)
 		queue.clear();
+	eventFeed.clear();
+	eventFeedHits.clear();
 	swallowSpaceKey=false;
 	scriptText.clear();
 	scriptTextUpdated = false;

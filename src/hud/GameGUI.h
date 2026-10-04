@@ -25,6 +25,7 @@ namespace Online { class SkinDownloads; }
 #include "KeyboardManager.h"
 #include "MarkManager.h"
 #include "GameGUIMessageManager.h"
+#include "GameEventFeed.h"
 #include "GameGUIDialog.h"
 #include "GameSpeedControl.h"
 #include "render/Minimap.h"
@@ -780,6 +781,20 @@ private:
 	int eventGoPosX, eventGoPosY; //!< position on map of last event
 	int eventGoType; //!< type of last event
 	int eventGoTypeIterator; //!< iterator to iter on ctrl + space press
+
+	/// Game-event notifications for the viewed team, one row per situation.
+	GameEventFeed eventFeed;
+	/// Screen rectangle of each eventFeed row as last drawn, for click-to-jump.
+	struct EventFeedHit { int x, y, w, h, mapX, mapY; };
+	std::vector<EventFeedHit> eventFeedHits;
+	/// Feed the viewed team's pending GameEvents into eventFeed and expire rows.
+	void stepEventFeed(int viewedTeam);
+	/// Draw the eventFeed rows from (x, y) down; returns the y below the last row.
+	int drawEventFeed(int x, int y);
+	/// Jump the camera to a feed row when (mx, my) hits one; true if it did.
+	bool handleEventFeedClick(int mx, int my);
+	/// Scroll so map tile (x, y) is at the centre of the view.
+	void centerViewportOn(int x, int y);
 	
 	//! Word-wrap \a input into \a output, breaking at spaces so each line fits the
 	//! message-panel pixel width (screen width minus right menu and side padding),
