@@ -40,7 +40,8 @@ timeout by tag, output captured and shown only on failure, and a check that the
 profile's preferences were not rewritten. `[display]` cases get a real video driver,
 under `xvfb-run` on Linux without `DISPLAY`, with an isolated Openbox window
 manager to apply SDL3 fullscreen requests. Install `xvfb`, `xauth`, `openbox` and
-`x11-utils`. Server resets are disabled so SDL can recreate contexts without racing
+`x11-utils`. The session waits for Openbox's startup callback so client-event
+initialization is complete before the test creates a window. Server resets are disabled so SDL can recreate contexts without racing
 X server reinitialization; they are skipped on Windows and with
 `--no-display`. Results merge into one JUnit file (`--junit`) and, under GitHub
 Actions, into the step summary with a `::error file=,line=` annotation per failure.
