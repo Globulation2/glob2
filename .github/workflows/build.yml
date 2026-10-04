@@ -1,4 +1,4 @@
-name: Focused Windows LAN diagnostics
+name: Focused Windows production verification
 'on':
   workflow_dispatch:
     inputs:
@@ -84,34 +84,21 @@ jobs:
         \ can load the client and every harness directly.\nfor directory in build/mingw/client/release/src\
         \ build/mingw/client/release/test; do\n  cp build/sdl3-ci/prefix/bin/*.dll\
         \ \"$directory/\"\ndone\n"
-    - name: Test send shutdown before socket close
-      run: 'mkdir -p artifacts/windows-lan
+    - name: Verify production unit tests
+      run: 'mkdir -p artifacts/windows-production
 
-        python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release
-        --filter ''LanMatchHarness/LAN WSS drop*'' --artifacts artifacts/windows-lan/after
-        --junit artifacts/windows-lan/after.xml > artifacts/windows-lan/after.log
-        2>&1
-
-        cat artifacts/windows-lan/after.log'
-    - name: Retain old-order control failure
+        python3 test/run_tests.py --binary unit --build-dir build/mingw/client/release
+        --artifacts artifacts/windows-production/unit --junit artifacts/windows-production/unit.xml'
+    - name: Verify production recording and LAN integration
       if: always()
-      run: 'mkdir -p artifacts/windows-lan
-
-        set +e
-
-        GLOB2_LAN_ABORTIVE_CLOSE=1 python3 test/run_tests.py --binary engine --build-dir
-        build/mingw/client/release --filter ''LanMatchHarness/LAN WSS drop*'' --artifacts
-        artifacts/windows-lan/before --junit artifacts/windows-lan/before.xml > artifacts/windows-lan/before.log
-        2>&1
-
-        cat artifacts/windows-lan/before.log
-
-        python3 -c "import xml.etree.ElementTree as E; cs=list(E.parse(''artifacts/windows-lan/before.xml'').iter(''testcase''));
-        assert len(cs)==1 and cs[0].find(''failure'') is not None"'
+      run: python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release
+        --filter 'LanMatchHarness/*' --filter 'GameplayRecording.Integration/*' --filter
+        'TurnEngineHarness/the committed*' --exclude-tag benchmark --artifacts artifacts/windows-production/engine
+        --junit artifacts/windows-production/engine.xml
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: windows-lan-diagnostics
+        name: windows-production-verification
         path: artifacts/
         if-no-files-found: error
     timeout-minutes: 30
