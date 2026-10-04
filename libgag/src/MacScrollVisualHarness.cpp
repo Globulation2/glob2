@@ -51,6 +51,9 @@ GLOB2_TEST_CASE("native widget glide and edge spring visual evidence", "[display
 		time += 16; host.update(time);
 		gfx->drawToSurface(pixels.get(), 1, [&]
 		{
+			// Offscreen passes start with a map transform, which deliberately fixes
+			// clipping to the map viewport. UI widgets need their own nested clips.
+			gfx->endMapTransform();
 			SurfaceCanvas canvas(*gfx, theme, presentation);
 			canvas.fillRect({0, 0, 640, 480}, theme.palette.paper);
 			host.paint(canvas, time);
