@@ -1,5 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "CustomGameScreen.h"
+#include "OnlineServices.h"
+#include "PlatformClient.h"
+#include "InstanceConfig.h"
 #include "ChooseMapScreen.h"
 #include "AINames.h"
 #include "CustomGamePreferences.h"
@@ -727,8 +730,73 @@ bool CustomGameScreen::generateMap()
 	}
 }
 
+void CustomGameScreen::loadCatalogMap(const Online::MapPlayRequest &request)
+{
+	GAGCore::ApplicationHost::customGameReady(false);
+	catalogDownload.reset();
+	if (candidates)
+		candidates.reset();
+	previewPending = false;
+	setup.random = false;
+	setup.premadeMap.clear();
+	source.clear();
+	generatedSnapshot.reset();
+	validMap = false;
+	currentTab = 0;
+	catalogRequest = request;
+	auto &services = Online::services();
+	// Restore a remembered account for private maps, without creating an account
+	// just to play a public map locally or switching away from an active client.
+	const auto *record = services.config.find(request.origin);
+	if (!services.maps.contains(request.map.hash) && services.client.connection() == Online::PlatformClient::Connection::Stopped &&
+		services.config.isTrusted(request.origin) && record && record->autoSignIn &&
+		(!record->refreshToken.empty() || !record->deviceCredential.empty()))
+		services.client.start(request.origin);
+	beginCatalogDownload();
+	message = tr("maps downloading");
+	invalidate();
+}
+
+void CustomGameScreen::beginCatalogDownload()
+{
+	if (!catalogRequest)
+		return;
+	auto &services = Online::services();
+	const auto &request = *catalogRequest;
+	if (!services.maps.contains(request.map.hash) && services.client.origin() == request.origin &&
+		services.client.auth() == Online::PlatformClient::Auth::SigningIn)
+		return;
+	HttpFetch::Headers headers;
+	if (services.client.origin() == request.origin && !services.client.accessToken().empty())
+		headers.emplace_back("Authorization", "Bearer " + services.client.accessToken());
+	catalogDownload = services.maps.fetch(request.origin, request.map.hash, headers);
+	catalogRequest.reset();
+}
+
 void CustomGameScreen::onTimer(Uint32 tick)
 {
+	beginCatalogDownload();
+	if (catalogRequest)
+		return;
+	if (catalogDownload)
+	{
+		const auto state = catalogDownload->state();
+		if (state == Online::MapCache::Download::State::Pending)
+			return;
+		if (state == Online::MapCache::Download::State::Done)
+		{
+			// User-directory storage names files relative to FileManager's write
+			// root; Custom Game also stats the file through std::filesystem.
+			std::filesystem::path path(catalogDownload->path());
+			if (path.is_relative())
+				path = std::filesystem::path(Toolkit::getFileManager()->getDir(0)) / path;
+			loadMap(path.string());
+		}
+		else
+			message = catalogDownload->error().empty() ? tr("maps download failed") : catalogDownload->error();
+		catalogDownload.reset();
+		invalidate();
+	}
 	const bool busyBefore = previewBusy();
 	const bool validBefore = validMap;
 	const std::string messageBefore = message;
@@ -897,6 +965,10 @@ void CustomGameScreen::showAIProfile(int colony)
 
 Element CustomGameScreen::build(const Presentation &p)
 {
+	if (catalogRequest || catalogDownload)
+		return fe::page(tr("custom game"), fe::hint(message),
+			fe::actions({{"back", tr("Back"), [this] { endExecute(CANCEL); }, false, SDLK_ESCAPE}}, p), p);
+
 	if (!forRoom && !aiLibrary)
 	{
 		try
@@ -941,13 +1013,14 @@ Element CustomGameScreen::build(const Presentation &p)
 	Element body = currentTab == 1 ? playersTab(p, narrow) : currentTab == 2 ? rulesTab(p, narrow) : mapTab(p, narrow);
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
-		error = tr("Select a valid map.");
+		error = "Select a valid map.";
 	// Desktop tabs already name the map, teams and rules underneath; elsewhere the footer does.
 	const std::string summary = !(narrow || topActions)
 									? tr("Game speed") + " " + speed.getGameSpeedText()
 									: teamsLabel(setup.teamLayout()) + "  /  " + std::to_string(setup.activeColonies()) + " " +
 										  tr("colonies") + "  /  " + rulesetTitle + "  /  " + speed.getGameSpeedText();
-	const std::string note = error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
+	const std::string note = !setup.random && !validMap && !message.empty() ? message
+		: error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
 	bool ready = error.empty();
 	if (forRoom)
 		ready = setup.validation().empty() && (setup.random || validMap);

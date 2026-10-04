@@ -160,6 +160,16 @@ window.fetch = function(input) {
 // for other origins. The file lives in memory (/tmp), never in saved storage.
 // The browser instance is the host serving the game, independent of an older
 // compiled official-instance default. Never move credentials between origins.
+function browserMapLaunchArguments(search, origin) {
+  const query = new URLSearchParams(search);
+  const map = query.get('map'), version = query.get('version'), mode = query.get('mode');
+  if (!map || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(map) ||
+      !version || !/^[0-9a-f]{64}$/i.test(version) || (mode && mode !== 'local' && mode !== 'multiplayer')) return [];
+  return [mode === 'local' ? '--local-map' : '--room-map', map, version.toLowerCase(),
+    (query.get('title') || '').slice(0, 128), '--instance', origin];
+}
+// End browser map launch arguments.
+
 function browserInstanceConfig(text, origin) {
   if (text === null) return JSON.stringify({version:1, selected:origin, instances:{}});
   let config;
@@ -316,12 +326,7 @@ var Module = {
     // instance serving this page is the one to join.
     const join = new URLSearchParams(location.search).get('join');
     const invite = join && /^[A-Za-z0-9]{6,16}$/.test(join) ? ['--join', join, '--instance', location.origin] : [];
-    // "Play this map" on a map page: ?map=<id>&version=<sha256>&title=<title> keeps the
-    // catalog map for the next room the player creates.
-    const query = new URLSearchParams(location.search);
-    const mapId = query.get('map'), mapVersion = query.get('version');
-    const roomMap = mapId && /^[0-9a-f-]{36}$/.test(mapId) && mapVersion && /^[0-9a-f]{64}$/.test(mapVersion)
-      ? ['--room-map', mapId, mapVersion, (query.get('title') || '').slice(0, 128)] : [];
+    const roomMap = browserMapLaunchArguments(location.search, location.origin);
     const args = ['-s', width + 'x' + height, '-F', '-C', gpu ? '-g' : '-G', ...invite, ...roomMap];
     if (watchReplay && watchReplay.status === 'ready') args.push('-replay', watchReplay.path);
     if (Module.storageRestore === 'ready') {

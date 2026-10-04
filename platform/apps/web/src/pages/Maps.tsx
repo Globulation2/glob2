@@ -1,6 +1,6 @@
 // Map catalog: browse public maps (filters, sorting), my maps, a map's page
 // (preview, versions, like, report, owner edits and new versions) and upload.
-import { useRef, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import type { MapDetail as MapDetailDoc, MapInfo, MapVisibility } from '@glob2/protocol';
 import { ApiError, api } from '../api.ts';
 import { GameArt } from '../art.tsx';
@@ -43,13 +43,116 @@ function MapCard({ map }: { map: MapInfo }) {
   );
 }
 
-/**
- * The browser game with this catalog version kept for the next room the player
- * creates (browser/shell.html turns the query into --room-map).
- */
-export function playMapUrl(mapId: string, hash: string, title: string): string {
-  const query = new URLSearchParams({ map: mapId, version: hash, title: title.slice(0, 128) });
+/** Same launch intent for browser games, desktop URL handlers and mobile app links. */
+export function playMapUrl(
+  mapId: string,
+  hash: string,
+  title: string,
+  mode: 'local' | 'multiplayer' = 'multiplayer',
+): string {
+  const query = new URLSearchParams({
+    map: mapId,
+    version: hash,
+    title: title.slice(0, 128),
+    mode,
+  });
   return `/play/?${query.toString()}`;
+}
+
+function MapPlayDialog({
+  mapId,
+  hash,
+  title,
+  close,
+}: {
+  mapId: string;
+  hash: string;
+  title: string;
+  close: () => void;
+}) {
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const element = dialog.current;
+    const opener = document.activeElement;
+    element?.showModal();
+    return () => {
+      element?.close();
+      if (opener instanceof HTMLElement) opener.focus();
+    };
+  }, []);
+  return (
+    <dialog
+      ref={dialog}
+      className="map-play-dialog"
+      aria-labelledby="map-play-heading"
+      onCancel={close}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) close();
+      }}
+    >
+      <div className="map-play-head">
+        <div>
+          <h2 id="map-play-heading">How would you like to play?</h2>
+          <p>{title}</p>
+        </div>
+        <button aria-label="Close play choices" onClick={close}>
+          ✕
+        </button>
+      </div>
+      <div className="map-play-choices">
+        {(['local', 'multiplayer'] as const).map((mode) => {
+          const url = playMapUrl(mapId, hash, title, mode);
+          const query = new URLSearchParams(url.split('?')[1]);
+          query.set('instance', window.location.origin);
+          return (
+            <div className={`map-play-choice ${mode}`} key={mode}>
+              <a className="map-play-card" href={url}>
+                <div className="map-play-art" aria-hidden="true">
+                  <svg viewBox="0 0 300 160" fill="none">
+                    {mode === 'local' ? (
+                      <>
+                        <rect x="52" y="12" width="196" height="120" rx="12" />
+                        <path d="M120 132v16h60v-16M98 148h104" />
+                      </>
+                    ) : (
+                      <>
+                        <path d="M150 44L64 116M150 44l86 72M64 116h172" strokeDasharray="7 7" />
+                        <circle cx="150" cy="44" r="38" />
+                        <circle cx="64" cy="116" r="38" />
+                        <circle cx="236" cy="116" r="38" />
+                      </>
+                    )}
+                  </svg>
+                  <GameArt
+                    name="swarm"
+                    size={mode === 'local' ? 84 : 58}
+                    className="play-colony center"
+                  />
+                  {mode === 'multiplayer' && (
+                    <>
+                      <GameArt name="swarm" size={58} className="play-colony left" />
+                      <GameArt name="swarm" size={58} className="play-colony right" />
+                    </>
+                  )}
+                </div>
+                <strong>
+                  {mode === 'local' ? 'Play Locally in Custom Game' : 'Play in Multiplayer'}
+                </strong>
+                <span>
+                  {mode === 'local'
+                    ? 'Set up your colonies and AI opponents.'
+                    : 'Create a new room with this map and invite friends.'}
+                </span>
+              </a>
+              <a className="map-play-native" href={`glob2://play?${query.toString()}`}>
+                Open in installed app
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </dialog>
+  );
 }
 
 const SORTS = [
@@ -399,6 +502,7 @@ export function MapPage({ id }: { id: string }) {
   const uploadFailed = location.search.get('upload') === 'failed';
   const load = useLoad((signal) => api.map(id, signal), [id]);
   const [reporting, setReporting] = useState(false);
+  const [choosingPlay, setChoosingPlay] = useState(false);
   const [reported, setReported] = useState(false);
   const [error, setError] = useState<Error>();
   return (
@@ -483,13 +587,22 @@ export function MapPage({ id }: { id: string }) {
                 <div className="toolbar" style={{ marginTop: 'var(--sp-4)' }}>
                   {v && v.validation === 'valid' && (
                     <>
-                      <a
-                        className="btn primary"
-                        href={playMapUrl(map.id, v.hash, map.title)}
+                      <button
+                        className="primary"
+                        onClick={() => setChoosingPlay(true)}
+                        aria-haspopup="dialog"
                         aria-describedby="play-map-note"
                       >
                         Play this map
-                      </a>
+                      </button>
+                      {choosingPlay && (
+                        <MapPlayDialog
+                          mapId={map.id}
+                          hash={v.hash}
+                          title={map.title}
+                          close={() => setChoosingPlay(false)}
+                        />
+                      )}
                       <a className="btn" href={v.downloadUrl} download>
                         Download
                       </a>
@@ -522,7 +635,7 @@ export function MapPage({ id }: { id: string }) {
                 </div>
                 {v && v.validation === 'valid' && (
                   <p className="caption" id="play-map-note">
-                    Opens the game in your browser; the next room you create plays this map.
+                    Choose a local custom game or a multiplayer room with this map.
                   </p>
                 )}
                 {error && <ErrorNotice error={error} />}

@@ -39,8 +39,19 @@ bool useMapInRoom(const RoomMapChoice &choice);
 std::optional<RoomMapChoice> takePendingRoomMap();
 // The kept choice without taking it (the next online room the player hosts uses it).
 const std::optional<RoomMapChoice> &pendingRoomMap();
-// "Play this map" from the web: `--room-map <mapId> <hash> <title>` keeps the catalog
-// map for the next room. Returns how many arguments were consumed (0: not ours).
+// Explicit map launches, separate from the map browser's room hand-off.
+struct MapPlayRequest
+{
+	enum class Mode { Local, Multiplayer };
+	RoomMapChoice map;
+	std::string origin;
+	Mode mode = Mode::Multiplayer;
+};
+bool validCatalogMap(const RoomMapChoice &map);
+void setPendingMapPlay(const MapPlayRequest &request);
+const std::optional<MapPlayRequest> &pendingMapPlay();
+std::optional<MapPlayRequest> takePendingMapPlay();
+// Browser shell / CLI: --local-map or --room-map <mapId> <hash> <title>.
 int acceptRoomMapArguments(int argc, char **argv, int index);
 
 // Rematch after a quick match (Q9): an unrated room with the same players.

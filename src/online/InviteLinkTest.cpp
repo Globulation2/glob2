@@ -4,11 +4,73 @@
 #include "Glob2Test.h"
 #include "InstanceConfig.h"
 #include "InviteLink.h"
+#include "OnlineHandoff.h"
 
 using namespace Online;
 
 TEST_SUITE("InviteLink")
 {
+	TEST_CASE("catalog launches preserve mode origin and exact version across URL forms")
+	{
+		const std::string query = "map=5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c&version=" + std::string(64, 'a') + "&title=Two+%26+Three";
+		for (const auto &prefix : {std::string("glob2://play?instance=https%3A%2F%2Fplay.example.org&"), std::string("https://play.example.org/play/?")})
+			for (const auto &mode : {std::string("local"), std::string("multiplayer")})
+			{
+				REQUIRE(acceptInviteText(prefix + query + "&mode=" + mode));
+				REQUIRE(pendingMapPlay());
+				CHECK_EQ(pendingMapPlay()->origin, "https://play.example.org");
+				CHECK_EQ(pendingMapPlay()->map.hash, std::string(64, 'a'));
+				CHECK_EQ(pendingMapPlay()->map.title, "Two & Three");
+				CHECK(pendingMapPlay()->mode == (mode == "local" ? MapPlayRequest::Mode::Local : MapPlayRequest::Mode::Multiplayer));
+				REQUIRE(takePendingMapPlay());
+				CHECK_FALSE(pendingMapPlay());
+			}
+		REQUIRE(acceptMapPlayText("https://play.example.org/play/?" + query));
+		CHECK(pendingMapPlay()->mode == MapPlayRequest::Mode::Multiplayer);
+		takePendingMapPlay();
+		for (const auto &bad : {"http://untrusted.example/play/?" + query, "https://user@play.example.org/play/?" + query,
+			"https://play.example.org/play/?" + query + "&mode=unknown", "glob2://play?" + query + "&instance=%ZZ",
+			"https://play.example.org/play/?map=x&version=" + std::string(64, 'a')})
+			CHECK_FALSE(acceptMapPlayText(bad));
+		CHECK_FALSE(pendingMapPlay());
+	}
+
+	TEST_CASE("catalog CLI arguments open the selected destination")
+	{
+		std::vector<std::string> args{"glob2", "--local-map", "5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", std::string(64, 'a'), "Map", "--instance", "https://play.example.org"};
+		std::vector<char *> argv;
+		for (auto &arg : args) argv.push_back(arg.data());
+		CHECK_EQ(acceptRoomMapArguments(argv.size(), argv.data(), 1), 4);
+		REQUIRE(pendingMapPlay());
+		CHECK(pendingMapPlay()->mode == MapPlayRequest::Mode::Local);
+		CHECK_EQ(pendingMapPlay()->origin, "https://play.example.org");
+		takePendingMapPlay();
+		args[1] = "--room-map";
+		argv[1] = args[1].data();
+		CHECK_EQ(acceptRoomMapArguments(argv.size(), argv.data(), 1), 4);
+		CHECK(pendingMapPlay()->mode == MapPlayRequest::Mode::Multiplayer);
+		takePendingMapPlay();
+	}
+
+	TEST_CASE("the latest invite or map launch replaces the older destination")
+	{
+		setPendingJoin({"https://play.example.org", "ABCDEF"});
+		setRoomMapHandler({});
+		CHECK_FALSE(useMapInRoom({"older", std::string(64, 'b'), "Earlier map"}));
+		REQUIRE(pendingRoomMap());
+		const std::string link = "glob2://play?map=5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c&version=" + std::string(64, 'a') + "&mode=local";
+		std::string argument = link;
+		char *argv[] = {argument.data()};
+		CHECK_EQ(acceptLaunchArguments(1, argv, 0), 1);
+		REQUIRE(pendingMapPlay());
+		CHECK_FALSE(pendingJoin());
+		CHECK_FALSE(pendingRoomMap());
+		REQUIRE(acceptInviteText("glob2://join?code=ABCDEF"));
+		CHECK_FALSE(pendingMapPlay());
+		CHECK_EQ(pendingJoin()->code, "ABCDEF");
+		clearPendingJoin();
+	}
+
 	TEST_CASE("glob2:// links name the instance and code")
 	{
 		auto invite = parseInviteLink("glob2://join?instance=https%3A%2F%2Fplay.example.org%3A8443&code=Ab12Cd34");

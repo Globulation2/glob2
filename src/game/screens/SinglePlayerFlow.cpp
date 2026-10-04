@@ -42,9 +42,12 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 		});
 }
 
-void SinglePlayerFlow::custom()
+void SinglePlayerFlow::custom(const std::optional<Online::MapPlayRequest> &map)
 {
-	screens.push(std::make_unique<CustomGameScreen>(screens),
+	auto setup = std::make_unique<CustomGameScreen>(screens);
+	if (map)
+		setup->loadCatalogMap(*map);
+	screens.push(std::move(setup),
 				 [this](GAGGUI::Screen &screen, int result)
 				 {
 					 if (result != CustomGameScreen::OK)

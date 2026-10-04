@@ -6,7 +6,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { App } from '../src/App.tsx';
 import { inviteCodeFrom } from '../src/pages/Home.tsx';
-import { titleFromFileName } from '../src/pages/Maps.tsx';
+import { playMapUrl, titleFromFileName } from '../src/pages/Maps.tsx';
 
 const SIM = { versionMinor: 125, netProtocol: 49, dataHash: 'ab'.repeat(32) };
 const NOW = '2026-10-01T12:00:00Z';
@@ -96,6 +96,101 @@ async function chooseFileAndUpload(name = 'SmallForTwo.map.gz') {
   fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
   return input;
 }
+
+describe('map play choices', () => {
+  const hash = 'd'.repeat(64);
+  it('keeps the exact catalog version and selected destination in the link', () => {
+    for (const mode of ['local', 'multiplayer'] as const) {
+      const url = new URL(playMapUrl(MAP_ID, hash, 'Two & Three', mode), 'https://example.org');
+      expect(url.pathname).toBe('/play/');
+      expect(Object.fromEntries(url.searchParams)).toEqual({
+        map: MAP_ID,
+        version: hash,
+        title: 'Two & Three',
+        mode,
+      });
+    }
+  });
+  it('opens a modal with browser and installed-app links for both choices', async () => {
+    Object.defineProperties(HTMLDialogElement.prototype, {
+      showModal: {
+        configurable: true,
+        value() {
+          this.open = true;
+        },
+      },
+      close: {
+        configurable: true,
+        value() {
+          this.open = false;
+        },
+      },
+    });
+    const show = vi.spyOn(HTMLDialogElement.prototype, 'showModal').mockImplementation(function (
+      this: HTMLDialogElement,
+    ) {
+      this.open = true;
+    });
+    vi.spyOn(HTMLDialogElement.prototype, 'close').mockImplementation(function (
+      this: HTMLDialogElement,
+    ) {
+      this.open = false;
+    });
+    const version = {
+      hash,
+      size: 1,
+      width: 128,
+      height: 128,
+      teamCount: 2,
+      validation: 'valid',
+      preview: 'ready',
+      downloadUrl: 'https://example.org/map.gz',
+      createdAt: NOW,
+    };
+    handlers[`GET /api/v1/maps/${MAP_ID}`] = () =>
+      Response.json({
+        map: {
+          id: MAP_ID,
+          owner: me,
+          title: 'Two & Three',
+          description: '',
+          visibility: 'public',
+          hidden: false,
+          madeWith: 'hand',
+          latestVersion: version,
+          stats: { plays: 0, downloads: 0, likes: 0 },
+          createdAt: NOW,
+          updatedAt: NOW,
+        },
+        versions: [version],
+        viewer: { owner: false, moderator: false, liked: false, reported: false },
+      });
+    open(`/maps/${MAP_ID}`);
+    const button = await screen.findByRole('button', { name: 'Play this map' });
+    fireEvent.click(button);
+    const modal = screen.getByRole('dialog', { name: 'How would you like to play?' });
+    expect(show).toHaveBeenCalled();
+    for (const [label, mode] of [
+      ['Play Locally in Custom Game', 'local'],
+      ['Play in Multiplayer', 'multiplayer'],
+    ] as const) {
+      const link = within(modal).getByRole('link', { name: new RegExp(label) });
+      expect(new URL(link.getAttribute('href')!, 'http://localhost').searchParams.get('mode')).toBe(
+        mode,
+      );
+    }
+    const native = within(modal).getAllByRole('link', { name: 'Open in installed app' });
+    expect(native).toHaveLength(2);
+    for (const link of native) {
+      const url = new URL(link.getAttribute('href')!);
+      expect(url.protocol).toBe('glob2:');
+      expect(url.searchParams.get('version')).toBe(hash);
+      expect(url.searchParams.get('instance')).toBe(window.location.origin);
+    }
+    fireEvent.click(within(modal).getByRole('button', { name: 'Close play choices' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+});
 
 describe('map upload', () => {
   it('fills the title without the file extension', async () => {

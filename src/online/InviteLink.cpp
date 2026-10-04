@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InviteLink.h"
+#include "OnlineHandoff.h"
 #include "InstanceConfig.h"
 
 #include <algorithm>
@@ -200,6 +201,7 @@ std::string formatWebLink(const InviteLink &invite)
 
 void setPendingJoin(const InviteLink &invite)
 {
+	takePendingMapPlay();
 	pending = invite;
 }
 
@@ -220,8 +222,60 @@ void clearPendingJoin()
 	pending.reset();
 }
 
+bool acceptMapPlayText(const std::string &input)
+{
+	if (input.size() > 2048 || std::any_of(input.begin(), input.end(), [](unsigned char c) { return c <= 32 || c >= 127; }))
+		return false;
+	std::string link = input.substr(0, input.find('#'));
+	const auto question = link.find('?');
+	if (question == std::string::npos)
+		return false;
+	const auto target = link.substr(0, question);
+	std::string origin = OFFICIAL_INSTANCE_ORIGIN;
+	const bool scheme = lowerPrefix(target, 6) == "glob2:";
+	if (scheme)
+	{
+		const auto action = lowerPrefix(target, target.size());
+		if (action != "glob2://play" && action != "glob2://play/" && action != "glob2:play")
+			return false;
+	}
+	else
+	{
+		const auto authority = target.find("://");
+		if (authority == std::string::npos)
+			return false;
+		const auto path = target.find('/', authority + 3);
+		if (path == std::string::npos || (target.substr(path) != "/play/" && target.substr(path) != "/play"))
+			return false;
+		origin = target.substr(0, path);
+	}
+	const auto query = link.substr(question + 1);
+	MapPlayRequest request;
+	std::string mode;
+	bool present;
+	if (!queryValue(query, "map", request.map.mapId, present) || !present ||
+		!queryValue(query, "version", request.map.hash, present) || !present ||
+		!queryValue(query, "title", request.map.title, present) ||
+		!queryValue(query, "mode", mode, present))
+		return false;
+	if (scheme && !queryValue(query, "instance", origin, present))
+		return false;
+	const auto normalized = normalizeOrigin(origin);
+	if (!normalized || !validCatalogMap(request.map) ||
+		(!mode.empty() && mode != "local" && mode != "multiplayer"))
+		return false;
+	request.origin = currentOrigin(*normalized);
+	request.map.title.resize(std::min<std::size_t>(request.map.title.size(), 128));
+	std::transform(request.map.hash.begin(), request.map.hash.end(), request.map.hash.begin(), [](unsigned char c) { return char(std::tolower(c)); });
+	request.mode = mode == "local" ? MapPlayRequest::Mode::Local : MapPlayRequest::Mode::Multiplayer;
+	setPendingMapPlay(request);
+	return true;
+}
+
 bool acceptInviteText(const std::string &text)
 {
+	if (acceptMapPlayText(text))
+		return true;
 	auto invite = parseInviteLink(text);
 	if (!invite)
 		return false;

@@ -144,6 +144,19 @@ struct Fixture
 
 TEST_SUITE("PlatformRoom")
 {
+	TEST_CASE("catalog launch creates the room with its map in the initial request")
+	{
+		Fixture f;
+		RoomMapChoice choice{"5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", HASH, "Linked map"};
+		auto room = PlatformRoom::create(f.client, f.maps, f.storage, "New room", false, defaultRoomSetup(2, 0), false, choice);
+		f.client.update();
+		const auto request = f.world.socket().find("room.create");
+		REQUIRE(!request.is_null());
+		CHECK(request["params"]["map"] == Json{{"kind", "catalog"}, {"hash", HASH}, {"mapId", choice.mapId}});
+		CHECK_EQ(request["params"]["visibility"], "link");
+		CHECK(f.world.socket().find("room.update").is_null());
+	}
+
 	TEST_CASE("a premade map is uploaded and chosen for the room, then named by the server")
 	{
 		Fixture f;

@@ -66,23 +66,28 @@ PlatformRoom::PlatformRoom(PlatformClient *client, MapCache &maps, OnlineStorage
 PlatformRoom::~PlatformRoom() = default;
 
 std::shared_ptr<PlatformRoom> PlatformRoom::create(PlatformClient &client, MapCache &maps, OnlineStorage &storage, const std::string &name,
-												   bool listed, const CustomGameSetup &setup, bool automaticMap)
+												   bool listed, const CustomGameSetup &setup, bool automaticMap, std::optional<RoomMapChoice> catalogMap)
 {
 	std::shared_ptr<PlatformRoom> room(new PlatformRoom(&client, maps, &storage));
-	room->automaticMap = automaticMap;
+	room->automaticMap = automaticMap && !catalogMap;
 	room->listen();
 	Json params{{"name", name.substr(0, 64)}, {"visibility", listed ? "public" : "link"}};
-	try
+	if (catalogMap)
+		params["map"] = Json{{"kind", "catalog"}, {"hash", catalogMap->hash}, {"mapId", catalogMap->mapId}};
+	else
 	{
-		params["map"] = Json{{"kind", "generated"}, {"generator", generatorDescriptor(setup, std::random_device{}())}};
-	}
-	catch (const std::exception &)
-	{
-		// A landscape the platform cannot generate: the room starts without a map and
-		// the host picks one.
+		try
+		{
+			params["map"] = Json{{"kind", "generated"}, {"generator", generatorDescriptor(setup, std::random_device{}())}};
+		}
+		catch (const std::exception &)
+		{
+			// A landscape the platform cannot generate: the room starts without a map and
+			// the host picks one.
+		}
 	}
 	params["rules"] = matchRules(setup);
-	room->call("room.create", params, [room = room.get(), teams = setupTeams(setup)](const Json &result) {
+	room->call("room.create", params, [room = room.get(), teams = catalogMap ? Json::array() : setupTeams(setup)](const Json &result) {
 		if (!result.contains("room"))
 			return;
 		room->adopt(result["room"]);
