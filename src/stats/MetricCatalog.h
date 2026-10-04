@@ -23,6 +23,7 @@ enum class Group
 {
 	Population,
 	Food,
+	Work,
 	Resources,
 	Buildings,
 	Military,
@@ -70,7 +71,7 @@ struct Metric
 	Extract minus = nullptr;
 	//! Counter `value` is a percentage of, over the averaging window (hits per
 	//! shot).
-	Extract ratioOf = nullptr;
+	Extract ratioOf = nullptr; //!< For a level, the level it is a percentage of.
 	//! The parts the metric can be split into; empty when it has none.
 	std::vector<Band> bands;
 	//! The bands are the metric: it is always shown split. Bands of the
@@ -97,6 +98,19 @@ struct Metric
 	//! A level that jumps from sample to sample: averaged over the view's
 	//! window, like a rate.
 	bool smoothed = false;
+	//! Recorded only since worker time use, combat-death places and the defence
+	//! snapshot exist (save format 133).
+	bool labour = false;
+	//! `ratioOf` counts what `value` sums: the metric is their quotient (the
+	//! mean distance of a walk), not a percentage.
+	bool mean = false;
+	//! Factor on a counter's rate. Worker time is counted in worker-ticks, so
+	//! its rate per minute times 1 / TICKS_PER_MINUTE is the number of workers
+	//! doing something, on average. Such a counter has no meaningful total.
+	double scale = 1;
+	//! A split metric whose bands are better read as shares of their whole than
+	//! in their own units: it opens as percentages.
+	bool percentByDefault = false;
 	//! Text key of the control that splits it into its bands ("By resource").
 	const char *splitKey = "[stat view split]";
 
@@ -157,6 +171,8 @@ struct TeamHistory
 	//! Tick from which measurements hold the extended statistics
 	//! (Metric::extended), or 0 when they always did.
 	Uint32 extendedCoverageStartTick = 0;
+	//! The same for worker time use and what was added with it (Metric::labour).
+	Uint32 labourCoverageStartTick = 0;
 };
 //! A team's sampled values and measurements joined by tick. The pointers refer
 //! into `stats`, which must outlive the history and not record meanwhile.

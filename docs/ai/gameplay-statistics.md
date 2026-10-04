@@ -160,10 +160,26 @@ How a metric is shown follows from what it is:
   offer the same split in absolute units.
 - **Net** metrics (births minus deaths, damage dealt minus taken) run above and
   below zero.
+- **Worker time** is counted in worker-ticks, one per worker per tick, so its
+  rate per minute divided by the ticks in a minute is the number of workers doing
+  something, on average. It is shown that way, or as shares of the workers' time,
+  and has no running total. Time spent hungry or hurt with no inn or hospital
+  free is its own band rather than part of eating or healing.
+- **Means** (distance to resources, distance from the inn, average warrior attack
+  level) divide what one counter summed by what another counted over the
+  averaging window, and leave a gap where nothing was counted. The warrior level
+  is recorded as two skills counted from 0 and shown as their average on the
+  game's 1 to 4 scale.
+- **The defence snapshot** (warriors by place, what they were doing, enemy
+  warriors at home) is charted as sampled, averaged over the window where it
+  jumps from sample to sample. Ground within 16 tiles of two colonies counts as
+  home for both, so close neighbours count each other's defenders as intruders;
+  the explanations say so.
 - Population, buildings, attack, defence and damage dealt can also be shown as
   each team's share of all teams.
 
-Samples from before a save gained measurement coverage are left out rather than
+Samples from before a save gained measurement coverage (or the later extended
+and worker-time coverage, each with its own start tick) are left out rather than
 drawn as zeros, and a metric with no covered samples says it was not recorded.
 
 The results screen after a match (`EndGameScreen`) opens on an overview of every

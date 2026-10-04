@@ -1311,8 +1311,7 @@ BraidedRiverOptions::BraidedRiverOptions(const GenerationRequest &r)
 
 GeneratorDefinition braidedRiverDefinition()
 {
-	return {
-			"braided-river",
+	return {"braided-river",
 			42,
 			"Braided river",
 			2,
@@ -1320,23 +1319,29 @@ GeneratorDefinition braidedRiverDefinition()
 			{// The belt of channels and bars as a share of the map's breadth; what is left either
 			 // side is terrace. Below 30 the braid is two threads; above 60 a 128 map has no
 			 // terrace left for a home.
-			 {"braid-width", "Braid width", 30, 60, 5, 40, ControlGroup::Terrain},
+			 GeneratorControl{"braid-width", "Braid width", 30, 60, 5, 40, ControlGroup::Terrain}
+				 .withSearchRange(35, 50),
 			 // Channel threads across the belt, as asked when the lanes come out 12 to 26 tiles
 			 // apart; a narrower belt drops threads and a wider one adds them, so the bars stay
 			 // bar-sized (3 on a 128 map, 6 on 256, 7 on 512 at the default width).
-			 {"channels", "Channels", 3, 9, 1, 6, ControlGroup::Terrain},
+			 GeneratorControl{"channels", "Channels", 3, 9, 1, 6, ControlGroup::Terrain}
+				 .withSearchRange(4, 8),
 			 // A bar's length along the river, in tiles: half the threads' period, rounded to a
 			 // whole number of periods round the map.
-			 {"bar-size", "Bar size", 24, 64, 4, 40, ControlGroup::Terrain},
+			 GeneratorControl{"bar-size", "Bar size", 24, 64, 4, 40, ControlGroup::Terrain}
+				 .withSearchRange(32, 52),
 			 // How many of the crossable stretches left over after the spanning tree get a riffle
 			 // too: at 0 the way across is a tree, at 100 every stretch long enough is open.
-			 {"extra-riffles", "Extra riffles", 0, 100, 5, 25, ControlGroup::Layout},
+			 GeneratorControl{"extra-riffles", "Extra riffles", 0, 100, 5, 25, ControlGroup::Layout}
+				 .withSearchRange(15, 60),
 			 // Sand patches on the dry terrace, a share of its inland grass: the look of a plain
 			 // that is dry, not another resource.
-			 {"dry-patches", "Dry patches", 0, 30, 1, 12, ControlGroup::Terrain},
+			 GeneratorControl{"dry-patches", "Dry patches", 0, 30, 1, 12, ControlGroup::Terrain}
+				 .withSearchRange(4, 18),
 			 // Off, the terrace edges are open bank; on, a broken line of stone hummocks four
 			 // tiles up each bank, with a gap at every riffle landing.
-			 GeneratorControl::toggle("moraine", "Moraine hummocks", true, ControlGroup::Layout),
+			 GeneratorControl::toggle("moraine", "Moraine hummocks", true, ControlGroup::Layout)
+				 .withSearchValues({0, 1}),
 			 // The bars' and bank strips' farmland, the dry terrace's woodlots and outcrops, the
 			 // deep bars' fruit and the channels' algae. Every home's kit, every promised bar's
 			 // wheat and wood, the bluffs and the moraine stay as they are.

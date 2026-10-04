@@ -60,16 +60,26 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition islandsDefinition()
 {
 	std::vector<GeneratorControl> controls{
-		{"water", "Water weight", 0, 100, 1, 55, ControlGroup::Terrain, false, true},
-		{"sand", "Sand weight", 0, 100, 1, 3, ControlGroup::Terrain, false, true},
-		{"grass", "Grass weight", 0, 100, 1, 75, ControlGroup::Terrain, false, true},
-		{"desert", "Desert weight", 0, 100, 1, 0, ControlGroup::Terrain, false, true},
-		{"smoothing", "Smoothing", 1, 8, 1, 4, ControlGroup::Terrain, false},
-		{"extra-islands", "Extra islands", 0, 8, 1, 0, ControlGroup::Terrain, false},
-		{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}};
+		GeneratorControl{"water", "Water weight", 0, 100, 1, 55, ControlGroup::Terrain, false, true}
+			.withSearchRange(40, 65),
+		GeneratorControl{"sand", "Sand weight", 0, 100, 1, 3, ControlGroup::Terrain, false, true}
+			.withSearchRange(1, 6),
+		GeneratorControl{"grass", "Grass weight", 0, 100, 1, 75, ControlGroup::Terrain, false, true}
+			.withSearchRange(60, 90),
+		GeneratorControl{"desert", "Desert weight", 0, 100, 1, 0, ControlGroup::Terrain, false,
+						 true}
+			.withSearchRange(0, 5),
+		GeneratorControl{"smoothing", "Smoothing", 1, 8, 1, 4, ControlGroup::Terrain, false}
+			.withSearchRange(3, 6),
+		GeneratorControl{"extra-islands", "Extra islands", 0, 8, 1, 0, ControlGroup::Terrain, false}
+			.withSearchRange(0, 4),
+		GeneratorControl{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}
+			.withSearchRange(2, 8)};
 	for (auto &c : heightFieldResourceControls())
 		controls.push_back(std::move(c));
-	controls.push_back({"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true});
+	controls.push_back(
+		GeneratorControl{"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true}
+			.withSearchRange(0, 1));
 	return {
 			"islands",
 			3,

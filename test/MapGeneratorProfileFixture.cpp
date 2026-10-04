@@ -3,9 +3,10 @@
 // generator for external sampling profilers (macOS `sample`, Linux `perf record`) and as
 // a coarse per-generator wall-clock comparison when validating optimizations.
 //
-//   MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...] [--telemetry] [--largest]
+//   MapGeneratorProfileFixture <profile-dir> <seed> <rounds> [generator-id...] [--telemetry] [--largest] [--domain=search|legal]
 //
 // Naming generator ids restricts the rounds to those generators, for profiling one of them.
+// --jsonl=PATH retains requests/outcomes; --report-every=N adds periodic full map reports.
 // --telemetry enables collection; --largest uses default controls at 512x512, 12 teams.
 //
 // Each round asks every registered generator (including editor-only ones) for one map at
@@ -31,6 +32,9 @@
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Race.h"
+#include "MapReport.h"
+#include <nlohmann/json.hpp>
+#include <fstream>
 #include "Utilities.h"
 #include <algorithm>
 #include <chrono>
@@ -55,7 +59,8 @@ struct GeneratorStats
 // generator's own options to GenerationRequest::randomizeControls; retries a bounded number
 // of times when no draw of the generator's own options validates at the drawn shared size.
 // Returns false, request unchanged, if nothing validated.
-bool randomizeRequest(GenerationRequest &request, std::mt19937 &rng, int sharedAttempts)
+bool randomizeRequest(GenerationRequest &request, std::mt19937 &rng, int sharedAttempts,
+					  GenerationRequest::ParameterDomain sampling)
 {
 	const auto &shared = GenerationRequest::sharedControls();
 	for (int attempt = 0; attempt < sharedAttempts; ++attempt)
@@ -63,11 +68,13 @@ bool randomizeRequest(GenerationRequest &request, std::mt19937 &rng, int sharedA
 		GenerationRequest draft = request;
 		for (const auto &c : shared)
 		{
-			const std::vector<int> domain = c.values();
+			const std::vector<int> domain = sampling == GenerationRequest::ParameterDomain::Search
+												? c.searchValues()
+												: c.values();
 			c.set(draft, domain[rng() % domain.size()]);
 		}
 		draft.seed = rng();
-		if (draft.randomizeControls(rng()))
+		if (draft.randomizeControls(rng(), 64, sampling))
 		{
 			request = draft;
 			return true;
@@ -81,7 +88,10 @@ int main(int argc, char **argv)
 {
 	if (argc < 4)
 	{
-		std::fprintf(stderr, "usage: %s <profile-dir> <seed> <rounds> [generator-id...] [--telemetry] [--largest]\n", argv[0]);
+		std::fprintf(stderr,
+					 "usage: %s <profile-dir> <seed> <rounds> [generator-id...] [--telemetry] "
+					 "[--largest] [--domain=search|legal]\n",
+					 argv[0]);
 		return 2;
 	}
 	const unsigned baseSeed = std::strtoul(argv[2], nullptr, 10);
@@ -96,11 +106,36 @@ int main(int argc, char **argv)
 	Race::loadDefault();
 
 	bool telemetry = false, largest = false, hasNamedGenerator = false;
+	std::string jsonlPath;
+	int reportEvery = 0;
+	auto sampling = GenerationRequest::ParameterDomain::Search;
 	for (int i = 4; i < argc; ++i)
 	{
 		hasNamedGenerator |= std::string(argv[i]).rfind("--", 0) != 0;
 		telemetry |= std::string(argv[i]) == "--telemetry";
 		largest |= std::string(argv[i]) == "--largest";
+		if (std::string(argv[i]).rfind("--jsonl=", 0) == 0)
+			jsonlPath = std::string(argv[i]).substr(8);
+		if (std::string(argv[i]).rfind("--report-every=", 0) == 0)
+			reportEvery = std::atoi(argv[i] + 15);
+		if (std::string(argv[i]) == "--domain=legal")
+			sampling = GenerationRequest::ParameterDomain::Legal;
+		else if (std::string(argv[i]).rfind("--domain=", 0) == 0 &&
+				 std::string(argv[i]) != "--domain=search")
+		{
+			std::fprintf(stderr, "domain must be search or legal\n");
+			return 2;
+		}
+	}
+	std::ofstream evidence;
+	if (!jsonlPath.empty())
+	{
+		evidence.open(jsonlPath);
+		if (!evidence)
+		{
+			std::fprintf(stderr, "cannot open evidence file\n");
+			return 2;
+		}
 	}
 	std::vector<int> methods;
 	for (int method : GeneratorRegistry::builtins().methods(true))
@@ -136,7 +171,7 @@ int main(int argc, char **argv)
 				request.nbTeams = 12;
 				request.seed = baseSeed + round;
 			}
-			else if (!randomizeRequest(request, rng, 32))
+			else if (!randomizeRequest(request, rng, 32, sampling))
 				continue;
 			++s.attempts;
 			Game game(nullptr);
@@ -151,6 +186,33 @@ int main(int argc, char **argv)
 				++s.generated;
 			else
 				++s.failed;
+			if (evidence.is_open())
+			{
+				using Json = nlohmann::json;
+				Json params = request.options;
+				params["width"] = request.wDec;
+				params["height"] = request.hDec;
+				params["teams"] = request.nbTeams;
+				params["workers"] = request.nbWorkers;
+				Json row{{"schema_version", 1},
+						 {"generator", s.id},
+						 {"method", request.method},
+						 {"seed", request.seed},
+						 {"params", params},
+						 {"round", round},
+						 {"domain", sampling == GenerationRequest::ParameterDomain::Search
+										? "search"
+										: "legal"},
+						 {"ok", bool(result)},
+						 {"seconds", ns / 1e9},
+						 {"diagnostic", result.diagnostic()}};
+				if (!result)
+					row["map_report"] = Json::parse(describeGenerationFailure(request, result));
+				else if (reportEvery > 0 && round % reportEvery == 0)
+					row["map_report"] = Json::parse(describeMap(game, &request, &result));
+				evidence << row.dump() << '\n';
+				evidence.flush();
+			}
 		}
 	const double elapsed =
 		std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();

@@ -1086,45 +1086,50 @@ EvenGroundOptions::EvenGroundOptions(const GenerationRequest &r)
 
 GeneratorDefinition evenGroundDefinition()
 {
-	return {"even-ground",
-			60,
-			"Even Ground",
-			2,
-			false,
-			// The sliders are the targets the solver is given, not the terrain it draws. Water share
-			// and the resource amounts are budgets it may arrange but never change; balance and
-			// tightness are what it trades off against each other. Water is a target rather than a
-			// figure - the brief multiplies it by this seed's wetness (kWetLeast to kWetMost), so
-			// the slider sets the middle of a band and one seed comes out a lake country and the
-			// next dry downland. What it still promises is its direction.
-			// The default is low for a map with this much shoreline: the search is asked for a few
-			// lobed bodies rather than one round sea, and every one takes a beach out of the
-			// buildable ground on both banks. Swept over three seed ranges of 16 at 256x256 with
-			// four colonies, fairness is flat from 10 to 20 per cent (about 0.906 either end) while
-			// the worst colony's building sites fall steadily with every extra lake: about 1470 at
-			// 10 per cent against 1200 at 20 and 750 at 35. So the water is kept to what gives the
-			// map its shape, not to what the search can still balance around.
-			//
-			// The ceiling is where the map stops being one, measured rather than guessed: over 80
-			// seeds at 256x256 with four colonies, a request refuses on none at 25 per cent, one at
-			// 30 and 35, and four at 40, and over 40 seeds it refuses on 10 per cent at 50, 15 at 55
-			// and 20 at 60 - colonies with no wood in reach, or too few building origins to settle.
-			// The band above 40 also buys less and less of what it asks: the flood saturates near 53
-			// per cent actual water however much more is requested, while the map's 4x4 building
-			// sites fall from about 13,000 at 40 to 7,700 at 60. So the range ends where the answers
-			// stop improving, and 40 is a wet map that is still a map.
-			{{"water-share", "Water", 0, 40, 5, 10, ControlGroup::Terrain},
-			 {"balance", "Balance", 0, 100, 10, 70, ControlGroup::Layout},
-			 {"passes", "Tight passes", 0, 100, 10, 40, ControlGroup::Layout},
-			 GeneratorControl::choice("effort", "Solver effort", {"Brief", "Normal", "Patient"}, 1,
-									  ControlGroup::Layout),
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate,
-			true,
-			latticeFailure,
-			validateWorld,
-			{"terrain:natural", "feature:lakes", "style:wide-open", "fairness:solved-catchment"}};
+	return {
+		"even-ground",
+		60,
+		"Even Ground",
+		2,
+		false,
+		// The sliders are the targets the solver is given, not the terrain it draws. Water share
+		// and the resource amounts are budgets it may arrange but never change; balance and
+		// tightness are what it trades off against each other. Water is a target rather than a
+		// figure - the brief multiplies it by this seed's wetness (kWetLeast to kWetMost), so
+		// the slider sets the middle of a band and one seed comes out a lake country and the
+		// next dry downland. What it still promises is its direction.
+		// The default is low for a map with this much shoreline: the search is asked for a few
+		// lobed bodies rather than one round sea, and every one takes a beach out of the
+		// buildable ground on both banks. Swept over three seed ranges of 16 at 256x256 with
+		// four colonies, fairness is flat from 10 to 20 per cent (about 0.906 either end) while
+		// the worst colony's building sites fall steadily with every extra lake: about 1470 at
+		// 10 per cent against 1200 at 20 and 750 at 35. So the water is kept to what gives the
+		// map its shape, not to what the search can still balance around.
+		//
+		// The ceiling is where the map stops being one, measured rather than guessed: over 80
+		// seeds at 256x256 with four colonies, a request refuses on none at 25 per cent, one at
+		// 30 and 35, and four at 40, and over 40 seeds it refuses on 10 per cent at 50, 15 at 55
+		// and 20 at 60 - colonies with no wood in reach, or too few building origins to settle.
+		// The band above 40 also buys less and less of what it asks: the flood saturates near 53
+		// per cent actual water however much more is requested, while the map's 4x4 building
+		// sites fall from about 13,000 at 40 to 7,700 at 60. So the range ends where the answers
+		// stop improving, and 40 is a wet map that is still a map.
+		{GeneratorControl{"water-share", "Water", 0, 40, 5, 10, ControlGroup::Terrain}
+			 .withSearchRange(5, 25),
+		 GeneratorControl{"balance", "Balance", 0, 100, 10, 70, ControlGroup::Layout}
+			 .withSearchRange(60, 100),
+		 GeneratorControl{"passes", "Tight passes", 0, 100, 10, 40, ControlGroup::Layout}
+			 .withSearchRange(30, 80),
+		 GeneratorControl::choice("effort", "Solver effort", {"Brief", "Normal", "Patient"}, 1,
+								  ControlGroup::Layout)
+			 .withSearchValues({1, 2}),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount")},
+		generate,
+		true,
+		latticeFailure,
+		validateWorld,
+		{"terrain:natural", "feature:lakes", "style:wide-open", "fairness:solved-catchment"}};
 }

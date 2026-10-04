@@ -824,7 +824,8 @@ GeneratorDefinition orchardCommonsDefinition()
 			3,
 			false,
 			{GeneratorControl::choice("orchard-spacing", "Orchard spacing",
-									  {"Compact", "Balanced", "Spread"}, 1, ControlGroup::Layout),
+									  {"Compact", "Balanced", "Spread"}, 1, ControlGroup::Layout)
+				 .withSearchValues({0, 1, 2}),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

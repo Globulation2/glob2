@@ -82,7 +82,8 @@ class GameGUI : public ClientCommandSink
 	friend class HighResolutionIntegrationHarness;
 	friend class FailingUnitMarkersHarness;
 public:
-    void drawTorusMap(int originX, int originY, int team, unsigned options, int cloudGridLimit);
+    friend class TorusView;
+    void drawTorusMap(int originX, int originY, int width, int height, int team, unsigned options, int cloudGridLimit, bool advancePreviews);
 	///Constructs a GameGUI
 	explicit GameGUI(bool persistPreferences = true);
 	

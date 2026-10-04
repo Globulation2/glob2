@@ -569,25 +569,31 @@ HedgerowCountryOptions::HedgerowCountryOptions(const GenerationRequest &r)
 GeneratorDefinition hedgerowCountryDefinition()
 {
 	return {
-			"hedgerow-country",
-			38,
-			"Hedgerow Country",
-			7,
-			false,
-			{{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout},
-		 {"hedge-thickness", "Hedge thickness", 2, 4, 1, 3, ControlGroup::Terrain},
-		 {"existing-gateways", "Existing gateways", 0, 100, 25, 25, ControlGroup::Layout},
-		 {"wooded-boundary-share", "Wooded boundary share", 50, 100, 10, 90, ControlGroup::Terrain},
+		"hedgerow-country",
+		38,
+		"Hedgerow Country",
+		7,
+		false,
+		{GeneratorControl{"field-size", "Field size", 48, 96, 16, 64, ControlGroup::Layout}
+			 .withSearchRange(48, 80),
+		 GeneratorControl{"hedge-thickness", "Hedge thickness", 2, 4, 1, 3, ControlGroup::Terrain}
+			 .withSearchRange(2, 4),
+		 GeneratorControl{"existing-gateways", "Existing gateways", 0, 100, 25, 25,
+						  ControlGroup::Layout}
+			 .withSearchRange(25, 75),
+		 GeneratorControl{"wooded-boundary-share", "Wooded boundary share", 50, 100, 10, 90,
+						  ControlGroup::Terrain}
+			 .withSearchRange(60, 100),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// Thin hedge lines subdividing fields, not a forest canopy.
-			{"terrain:natural", "feature:farmland", "style:tight-building",
-			 "fairness:stamped-lattice"}};
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// Thin hedge lines subdividing fields, not a forest canopy.
+		{"terrain:natural", "feature:farmland", "style:tight-building",
+		 "fairness:stamped-lattice"}};
 }

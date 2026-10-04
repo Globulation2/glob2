@@ -567,7 +567,7 @@ namespace GAGCore
         void drawMapTileSprite(int x, int y, int size, Sprite *sprite, unsigned index, Uint8 alpha = Color::ALPHA_OPAQUE);
         // Repeat a presentation-only pass. Its primary invocation advances visual
         // state once; subsequent invocations must only draw.
-        void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw);
+        void drawMapCopies(int periodW,int periodH,int viewW,int viewH,const std::function<void()> &draw, bool advance = true);
         bool isPeriodicCopy() const {return periodicCopy;}
 		void beginScreenOverlay(int &x,int &y,int &sx,int &sy,int &sw,int &sh);
 		//! Scale of the active map transform; 1 outside a map pass.

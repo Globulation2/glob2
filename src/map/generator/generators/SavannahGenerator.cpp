@@ -493,15 +493,16 @@ SavannahOptions::SavannahOptions(const GenerationRequest &r)
 }
 GeneratorDefinition savannahDefinition()
 {
-	return {
-			"savannah",
+	return {"savannah",
 			45,
 			"Savannah",
 			2,
 			false,
 			{GeneratorControl::choice("watering-holes", "Watering holes",
-									  {"Sparse", "Normal", "Many"}, 1, ControlGroup::Terrain),
-			 {"dry-patches", "Dry patches", 0, 20, 1, 8, ControlGroup::Terrain},
+									  {"Sparse", "Normal", "Many"}, 1, ControlGroup::Terrain)
+				 .withSearchValues({0, 1, 2}),
+			 GeneratorControl{"dry-patches", "Dry patches", 0, 20, 1, 8, ControlGroup::Terrain}
+				 .withSearchRange(3, 12),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

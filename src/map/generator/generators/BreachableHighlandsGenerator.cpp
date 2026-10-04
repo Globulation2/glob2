@@ -526,31 +526,38 @@ BreachableHighlandsOptions::BreachableHighlandsOptions(const GenerationRequest &
 GeneratorDefinition breachableHighlandsDefinition()
 {
 	return {
-			"breachable-highlands",
-			37,
-			"Breachable highlands",
-			5,
-			false,
-			{{"valley-size", "Valley size", 64, 96, 8, 64, ControlGroup::Layout},
-			 {"ridge-depth", "Ridge depth", 3, 11, 2, 5, ControlGroup::Terrain},
-			 {"pass-width", "Pass width", 6, 12, 2, 8, ControlGroup::Terrain},
-			 {"extra-passes", "Extra open passes", 0, 30, 10, 10, ControlGroup::Layout},
-			 {"wooded-saddles", "Wooded saddles", 25, 100, 25, 50, ControlGroup::Layout},
-			 {"warp", "Warp", 0, 100, 10, 80, ControlGroup::Terrain},
-			 {"pond-size", "Pond size", 3, 6, 1, 6, ControlGroup::Terrain},
-			 // Structural stone and saddle wood remain at every abundance. Ridge depth sets the
-			 // clearing investment; wood amount controls the renewable farm wood only.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// "Arena" is reserved for maps built around one shared, contested battleground
-			// (Carousel, Amphitheatre, ...); this is a lattice of separate walled valleys, each a
-			// colony's own stronghold, so it gets the other terrain value that pattern uses (Forts).
-			{"terrain:stronghold", "feature:mountains", "feature:stone-walls", "style:siege",
-			 "fairness:stamped-lattice"}};
+		"breachable-highlands",
+		37,
+		"Breachable highlands",
+		5,
+		false,
+		{GeneratorControl{"valley-size", "Valley size", 64, 96, 8, 64, ControlGroup::Layout}
+			 .withSearchRange(64, 80),
+		 GeneratorControl{"ridge-depth", "Ridge depth", 3, 11, 2, 5, ControlGroup::Terrain}
+			 .withSearchRange(3, 7),
+		 GeneratorControl{"pass-width", "Pass width", 6, 12, 2, 8, ControlGroup::Terrain}
+			 .withSearchRange(8, 12),
+		 GeneratorControl{"extra-passes", "Extra open passes", 0, 30, 10, 10, ControlGroup::Layout}
+			 .withSearchRange(10, 30),
+		 GeneratorControl{"wooded-saddles", "Wooded saddles", 25, 100, 25, 50, ControlGroup::Layout}
+			 .withSearchRange(25, 75),
+		 GeneratorControl{"warp", "Warp", 0, 100, 10, 80, ControlGroup::Terrain}.withSearchRange(
+			 40, 100),
+		 GeneratorControl{"pond-size", "Pond size", 3, 6, 1, 6, ControlGroup::Terrain}
+			 .withSearchRange(4, 6),
+		 // Structural stone and saddle wood remain at every abundance. Ridge depth sets the
+		 // clearing investment; wood amount controls the renewable farm wood only.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// "Arena" is reserved for maps built around one shared, contested battleground
+		// (Carousel, Amphitheatre, ...); this is a lattice of separate walled valleys, each a
+		// colony's own stronghold, so it gets the other terrain value that pattern uses (Forts).
+		{"terrain:stronghold", "feature:mountains", "feature:stone-walls", "style:siege",
+		 "fairness:stamped-lattice"}};
 }

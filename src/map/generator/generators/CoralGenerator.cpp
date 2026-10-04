@@ -922,25 +922,34 @@ CoralOptions::CoralOptions(const GenerationRequest &r)
 GeneratorDefinition coralDefinition()
 {
 	return {
-			"coral",
-			21,
-			"Coral",
-			1,
-			false,
-			// Forks from the trunk to the tips; how far each fork's children turn from their parent's
+		"coral",
+		21,
+		"Coral",
+		1,
+		false,
+		// Forks from the trunk to the tips; how far each fork's children turn from their parent's
 		// heading, in degrees either side; the trunk's width in tiles (branches taper from it); the
 		// water kept between any two pieces of land; how far every trunk is turned off the line to
 		// the map centre, in degrees; land bridges per pair of neighbours.
-		{{"branching", "Branching", 3, 9, 1, 6, ControlGroup::Terrain},
-		 {"fork-angle", "Fork angle", 10, 40, 2, 28, ControlGroup::Terrain},
-		 {"branch-width", "Branch width", 7, 17, 2, 11, ControlGroup::Terrain},
-		 {"strait-width", "Strait width", 3, 12, 1, 5, ControlGroup::Terrain},
-		 {"lean", "Lean", 0, 60, 5, 25, ControlGroup::Layout},
-		 {"land-bridges", "Land bridges", 0, 3, 1, 1, ControlGroup::Layout},
+		{GeneratorControl{"branching", "Branching", 3, 9, 1, 6, ControlGroup::Terrain}
+			 .withSearchRange(4, 8),
+		 GeneratorControl{"fork-angle", "Fork angle", 10, 40, 2, 28, ControlGroup::Terrain}
+			 .withSearchRange(20, 36),
+		 GeneratorControl{"branch-width", "Branch width", 7, 17, 2, 11, ControlGroup::Terrain}
+			 .withSearchRange(11, 17),
+		 GeneratorControl{"strait-width", "Strait width", 3, 12, 1, 5, ControlGroup::Terrain}
+			 .withSearchRange(3, 7),
+		 GeneratorControl{"lean", "Lean", 0, 60, 5, 25, ControlGroup::Layout}.withSearchRange(10,
+																							  45),
+		 GeneratorControl{"land-bridges", "Land bridges", 0, 3, 1, 1, ControlGroup::Layout}
+			 .withSearchRange(1, 3),
 		 // Each home pad's radius as a percentage of the standard pad.
-		 {"home-size", "Home size", 60, 200, 10, 130, ControlGroup::Layout},
+		 GeneratorControl{"home-size", "Home size", 60, 200, 10, 130, ControlGroup::Layout}
+			 .withSearchRange(120, 170),
 		 // Off, the branches are grass from shore to shore, with no sand road down the middle.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // The branches' standing wheat and wood, the forks' stone, the buds' fruit and the
 		 // shallows' algae; every pad's kit is unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -948,10 +957,10 @@ GeneratorDefinition coralDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling",
-			 "fairness:repeated-wedge"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:natural", "feature:islands", "feature:ocean", "style:sprawling",
+		 "fairness:repeated-wedge"}};
 }

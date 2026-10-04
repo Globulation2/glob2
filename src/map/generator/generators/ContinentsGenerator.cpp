@@ -726,34 +726,35 @@ ContinentsOptions::ContinentsOptions(const GenerationRequest &r)
 GeneratorDefinition continentsDefinition()
 {
 	return {
-			"continents",
-			44,
-			// 33 was Patchwork, retired 2026-09-13 and never reused
-			"Continents",
-			3, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
-			false,
-			{GeneratorControl::choice("continent", "Continent",
-									  {"Random", "North America", "South America", "Africa",
-									   "Europe", "Asia", "Oceania"},
-									  0),
-			 GeneratorControl::choice("orientation", "Orientation", {"Turn to fit", "Upright"}, 0),
-			 GeneratorControl::toggle("mountains", "Mountain ranges", true),
-			 GeneratorControl::toggle("rivers", "Great rivers", true),
-			 GeneratorControl::toggle("islets", "Islets", false),
-			 GeneratorControl::percentage("oases", "Oases", 200),
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// FEEDBACK 2026-09-17: "'continents' counts as a 'novelty' map given that its based on
-			// real GIS data and not attempting to be balanced" - the rendered map is a recognisable
-			// real coastline (this build's atlas draws Australia and New Zealand), the same kind of
-			// signature Emoji's drawn shapes are tagged novelty for, not a landscape designed for play.
-			{"terrain:natural", "terrain:novelty", "feature:river", "feature:mountains",
-			 "feature:desert", "feature:lakes", "style:wide-open"}};
+		"continents",
+		44,
+		// 33 was Patchwork, retired 2026-09-13 and never reused
+		"Continents",
+		3, // 3: the dry reserve's fields are dealt patchiest first, not from the top rows
+		false,
+		{GeneratorControl::choice(
+			 "continent", "Continent",
+			 {"Random", "North America", "South America", "Africa", "Europe", "Asia", "Oceania"}, 0)
+			 .withSearchValues({1, 2, 3, 4, 5, 6}),
+		 GeneratorControl::choice("orientation", "Orientation", {"Turn to fit", "Upright"}, 0)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl::toggle("mountains", "Mountain ranges", true).withSearchValues({0, 1}),
+		 GeneratorControl::toggle("rivers", "Great rivers", true).withSearchValues({0, 1}),
+		 GeneratorControl::toggle("islets", "Islets", false).withSearchValues({0, 1}),
+		 GeneratorControl::percentage("oases", "Oases", 200),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// FEEDBACK 2026-09-17: "'continents' counts as a 'novelty' map given that its based on
+		// real GIS data and not attempting to be balanced" - the rendered map is a recognisable
+		// real coastline (this build's atlas draws Australia and New Zealand), the same kind of
+		// signature Emoji's drawn shapes are tagged novelty for, not a landscape designed for play.
+		{"terrain:natural", "terrain:novelty", "feature:river", "feature:mountains",
+		 "feature:desert", "feature:lakes", "style:wide-open"}};
 }

@@ -671,16 +671,29 @@ FaultedCityOptions::FaultedCityOptions(const GenerationRequest &r)
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount")) {}
 GeneratorDefinition faultedCityDefinition()
 {
-	return {"faulted-city", 64, "The Faulted City", 3, false,
-		{{"fault-displacement", "Fault displacement", 4, 14, 1, 10, ControlGroup::Terrain},
-		 {"fault-width", "Fault width", 8, 16, 2, 12, ControlGroup::Terrain},
-		 {"ruin-density", "Ruin density", 20, 60, 5, 35, ControlGroup::Layout},
-		 GeneratorControl::choice("surviving-junctions", "Surviving junctions", {"Few", "Normal", "Many"}, 1, ControlGroup::Layout),
-		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-		 GeneratorControl::percentage("wood-amount", "Wood amount"),
-		 GeneratorControl::percentage("stone-amount", "Stone amount"),
-		 GeneratorControl::percentage("algae-amount", "Algae amount"),
-		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate, true, validateRequest, validateWorld,
-		{"terrain:urban", "feature:stone-walls", "feature:lakes", "style:expansion"}};
+	return {"faulted-city",
+			64,
+			"The Faulted City",
+			3,
+			false,
+			{GeneratorControl{"fault-displacement", "Fault displacement", 4, 14, 1, 10,
+							  ControlGroup::Terrain}
+				 .withSearchRange(6, 12),
+			 GeneratorControl{"fault-width", "Fault width", 8, 16, 2, 12, ControlGroup::Terrain}
+				 .withSearchRange(10, 14),
+			 GeneratorControl{"ruin-density", "Ruin density", 20, 60, 5, 35, ControlGroup::Layout}
+				 .withSearchRange(25, 45),
+			 GeneratorControl::choice("surviving-junctions", "Surviving junctions",
+									  {"Few", "Normal", "Many"}, 1, ControlGroup::Layout)
+				 .withSearchValues({0, 1, 2}),
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount"),
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+			generate,
+			true,
+			validateRequest,
+			validateWorld,
+			{"terrain:urban", "feature:stone-walls", "feature:lakes", "style:expansion"}};
 }

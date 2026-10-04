@@ -363,11 +363,16 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 GeneratorDefinition sierpinskiGardensDefinition()
 {
 	std::vector<GeneratorControl> controls{
-		{"maximum-nesting", "Maximum nesting", 1, 4, 1, 3, ControlGroup::Layout},
-		{"minimum-district-side", "Minimum terminal district side", 24, 48, 4, 24,
-		 ControlGroup::Layout},
-		{"lake-size", "Lake size", 75, 125, 5, 100, ControlGroup::Terrain},
-		{"major-crossing-pairs", "Major crossing pairs", 1, 3, 1, 2, ControlGroup::Layout}};
+		GeneratorControl{"maximum-nesting", "Maximum nesting", 1, 4, 1, 3, ControlGroup::Layout}
+			.withSearchRange(2, 3),
+		GeneratorControl{"minimum-district-side", "Minimum terminal district side", 24, 48, 4, 24,
+						 ControlGroup::Layout}
+			.withSearchRange(24, 40),
+		GeneratorControl{"lake-size", "Lake size", 75, 125, 5, 100, ControlGroup::Terrain}
+			.withSearchRange(85, 115),
+		GeneratorControl{"major-crossing-pairs", "Major crossing pairs", 1, 3, 1, 2,
+						 ControlGroup::Layout}
+			.withSearchRange(2, 3)};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
 	return {

@@ -881,36 +881,47 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition fjordContinentDefinition()
 {
 	return {
-			"fjord-continent",
-			12,
-			"Fjord continent",
-			13,
-			false,
-			{{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain},
-			 {"coast-roughness", "Coast roughness", 10, 35, 1, 22, ControlGroup::Terrain},
-			 {"fjord-width", "Fjord width", 2, 10, 1, 4, ControlGroup::Terrain},
-			 {"lake-size", "Lake size", 0, 90, 5, 45, ControlGroup::Terrain},
-			 GeneratorControl::toggle("lake-connected", "Lake connects to fjords", false,
-									  ControlGroup::Terrain),
-			 {"resource-islands", "Resource islands", 0, 20, 1, 2, ControlGroup::Resources},
-			 // Off, the lake has an ordinary beach instead of a wide ring of sand.
-			 GeneratorControl::toggle("sandy-lake-shore", "Sandy lake shore", true,
-									  ControlGroup::Terrain),
-			 // Off, each fjord bank keeps only its guaranteed wheat and wood.
-			 GeneratorControl::toggle("bank-deposits", "Fjord bank deposits", true,
-									  ControlGroup::Resources),
-			 // The ambient scatter, the core's stone and fruit, the lake's and open sea's algae and
-			 // the fjord banks' extra deposits. Starter kits and each bank's guaranteed wheat and
-			 // wood stay as they are.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			nullptr,
-			validateWorld,
-			{"terrain:natural", "feature:ocean", "feature:islands", "feature:lakes", "style:sprawling",
-			 "fairness:repeated-wedge"}};
+		"fjord-continent",
+		12,
+		"Fjord continent",
+		13,
+		false,
+		{GeneratorControl{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain}
+			 .withSearchRange(34, 38),
+		 GeneratorControl{"coast-roughness", "Coast roughness", 10, 35, 1, 22,
+						  ControlGroup::Terrain}
+			 .withSearchRange(15, 28),
+		 GeneratorControl{"fjord-width", "Fjord width", 2, 10, 1, 4, ControlGroup::Terrain}
+			 .withSearchRange(3, 4),
+		 GeneratorControl{"lake-size", "Lake size", 0, 90, 5, 45, ControlGroup::Terrain}
+			 .withSearchRange(25, 60),
+		 // Connected lakes and wide fjords compound lost home ground on narrow maps.
+		 GeneratorControl::toggle("lake-connected", "Lake connects to fjords", false,
+								  ControlGroup::Terrain)
+			 .withSearchValues({0}),
+		 GeneratorControl{"resource-islands", "Resource islands", 0, 20, 1, 2,
+						  ControlGroup::Resources}
+			 .withSearchRange(1, 5),
+		 // Off, the lake has an ordinary beach instead of a wide ring of sand.
+		 GeneratorControl::toggle("sandy-lake-shore", "Sandy lake shore", true,
+								  ControlGroup::Terrain)
+			 .withSearchValues({1}),
+		 // Off, each fjord bank keeps only its guaranteed wheat and wood.
+		 GeneratorControl::toggle("bank-deposits", "Fjord bank deposits", true,
+								  ControlGroup::Resources)
+			 .withSearchValues({1}),
+		 // The ambient scatter, the core's stone and fruit, the lake's and open sea's algae and
+		 // the fjord banks' extra deposits. Starter kits and each bank's guaranteed wheat and
+		 // wood stay as they are.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		nullptr,
+		validateWorld,
+		{"terrain:natural", "feature:ocean", "feature:islands", "feature:lakes", "style:sprawling",
+		 "fairness:repeated-wedge"}};
 }

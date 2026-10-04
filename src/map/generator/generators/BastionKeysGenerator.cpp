@@ -674,23 +674,27 @@ BastionKeysOptions::BastionKeysOptions(const GenerationRequest &r)
 }
 GeneratorDefinition bastionKeysDefinition()
 {
-	return {"bastion-keys",
-			68,
-			"Bastion Keys",
-			1,
-			false,
-			{{"home-size", "Home size", 13, 15, 1, 14, ControlGroup::Layout},
-			 {"plantation-size", "Plantation size", 14, 18, 2, 14, ControlGroup::Layout},
-			 {"outer-islands", "Outlying islands", 1, 5, 1, 3, ControlGroup::Layout},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			requestFailure,
-			validateWorld,
-			{"terrain:stronghold", "feature:islands", "feature:ocean", "feature:stone-walls",
-			 "style:siege", "style:fortified"}};
+	return {
+		"bastion-keys",
+		68,
+		"Bastion Keys",
+		1,
+		false,
+		{GeneratorControl{"home-size", "Home size", 13, 15, 1, 14, ControlGroup::Layout}
+			 .withSearchRange(13, 15),
+		 GeneratorControl{"plantation-size", "Plantation size", 14, 18, 2, 14, ControlGroup::Layout}
+			 .withSearchRange(14, 18),
+		 GeneratorControl{"outer-islands", "Outlying islands", 1, 5, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(2, 4),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		requestFailure,
+		validateWorld,
+		{"terrain:stronghold", "feature:islands", "feature:ocean", "feature:stone-walls",
+		 "style:siege", "style:fortified"}};
 }

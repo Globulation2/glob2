@@ -253,6 +253,140 @@ TEST_SUITE("MetricSeries views")
 	}
 }
 
+TEST_SUITE("MetricCatalog worker time and defence")
+{
+	using M = GameplayMeasurements;
+
+	TEST_CASE("Worker time reads as workers on average, and as shares of their time")
+	{
+		// Ten workers every tick: six filling a swarm (harvesting), three idle, one eating.
+		Recorded team;
+		for (int i = 0; i < 4; ++i)
+		{
+			auto &m = team.add(Uint32(i) * 512, 10);
+			m.filling[M::SWARM_JOB][M::HARVESTING] = Uint64(i) * 512 * 6;
+			m.labour[M::IDLE] = Uint64(i) * 512 * 3;
+			m.labour[M::EAT_INSIDE] = Uint64(i) * 512 * 1;
+		}
+		const Metric &time = metric("worker time");
+		// It opens as shares of the workers' time...
+		auto chart = Stats::buildChart(time, Stats::defaultView(time), {team.history});
+		CHECK(chart.stacked);
+		CHECK(chart.percent);
+		// Bands, bottom to top: working, at a flag, training, eating, healing,
+		// waiting with no inn or hospital free, other, idle.
+		REQUIRE(chart.bandKeys.size() == 8);
+		CHECK(sampleOf(chart.teams[0], 0, 3) == doctest::Approx(60)); // working
+		CHECK(sampleOf(chart.teams[0], 3, 3) == doctest::Approx(10)); // eating
+		CHECK(sampleOf(chart.teams[0], 7, 3) == doctest::Approx(30)); // idle
+		// ...and otherwise as the number of workers doing each thing.
+		Stats::View workers = Stats::defaultView(time);
+		workers.relative = false;
+		chart = Stats::buildChart(time, workers, {team.history});
+		CHECK_FALSE(chart.percent);
+		CHECK(sampleOf(chart.teams[0], 0, 3) == doctest::Approx(6));
+		CHECK(sampleOf(chart.teams[0], 7, 3) == doctest::Approx(3));
+		// A text panel reads the share of time spent working.
+		const auto reading = Stats::latestReading(time, Stats::defaultView(time), team.history);
+		CHECK(reading.percent);
+		CHECK(reading.value == doctest::Approx(60));
+
+		const Metric &idle = metric("idle workers");
+		chart = Stats::buildChart(idle, Stats::defaultView(idle), {team.history});
+		CHECK(chart.percent);
+		CHECK(sampleOf(chart.teams[0], 0, 2) == doctest::Approx(30));
+	}
+
+	TEST_CASE("Distances are means of what was summed and counted, with gaps where nothing was")
+	{
+		Recorded team;
+		for (int i = 0; i < 4; ++i)
+		{
+			auto &m = team.add(Uint32(i) * 512, 10);
+			// Nothing harvested until the second interval, then 12 squares a sample.
+			m.harvestSamples[M::INN_JOB] = i < 2 ? 0 : Uint64(i - 1) * 100;
+			m.harvestDistance[M::INN_JOB] = i < 2 ? 0 : Uint64(i - 1) * 1200;
+		}
+		const Metric &distance = metric("haul distance");
+		Stats::View view = Stats::defaultView(distance);
+		view.window = 1;
+		const auto chart = Stats::buildChart(distance, view, {team.history});
+		CHECK_FALSE(chart.percent);
+		CHECK(chart.decimals);
+		CHECK(std::isnan(sampleOf(chart.teams[0], 0, 1)));
+		CHECK(sampleOf(chart.teams[0], 0, 3) == doctest::Approx(12));
+		CHECK(chart.high == doctest::Approx(12));
+	}
+
+	TEST_CASE("The defence snapshot charts warriors by place, their state and the balance at home")
+	{
+		Recorded team;
+		for (int i = 0; i < 3; ++i)
+		{
+			auto &m = team.add(Uint32(i) * 512, 30);
+			m.warriors[M::HOME] = 6;
+			m.warriors[M::AWAY] = 4;
+			m.warriorLevels[M::HOME] = 12;
+			m.warriorLevels[M::AWAY] = 18;
+			m.warriorsHurt = 2;
+			m.intruders = 9;
+		}
+		const Metric &warriors = metric("warriors");
+		CHECK(sampleOf(Stats::buildChart(warriors, Stats::defaultView(warriors), {team.history}).teams[0], 0, 2) == doctest::Approx(10));
+		// Two skills counted from 0, 30 levels over 10 warriors: 1.5 each above the
+		// lowest level, so 2.5 on the game's 1 to 4 scale.
+		const Metric &level = metric("warrior level");
+		CHECK(sampleOf(Stats::buildChart(level, Stats::defaultView(level), {team.history}).teams[0], 0, 2) == doctest::Approx(2.5));
+		// On a flag, seeking healing, free: shares of the warriors.
+		const Metric &duties = metric("warrior duties");
+		const auto chart = Stats::buildChart(duties, Stats::defaultView(duties), {team.history});
+		CHECK(chart.stacked);
+		CHECK(chart.percent);
+		CHECK(sampleOf(chart.teams[0], 0, 2) == doctest::Approx(0));
+		CHECK(sampleOf(chart.teams[0], 1, 2) == doctest::Approx(20));
+		CHECK(sampleOf(chart.teams[0], 2, 2) == doctest::Approx(80));
+		// Six warriors with twelve levels at home against nine untrained intruders.
+		const Metric &margin = metric("home defence");
+		const auto ahead = Stats::buildChart(margin, Stats::defaultView(margin), {team.history});
+		CHECK(sampleOf(ahead.teams[0], 0, 2) == doctest::Approx(9));
+	}
+
+	TEST_CASE("Hungry workers with no inn free are waiting, not eating")
+	{
+		Recorded team;
+		for (int i = 0; i < 3; ++i)
+		{
+			auto &m = team.add(Uint32(i) * 512, 10);
+			m.labour[M::EAT_INSIDE] = Uint64(i) * 512 * 2;
+			m.labour[M::EAT_NO_INN] = Uint64(i) * 512 * 6;
+			m.labour[M::IDLE] = Uint64(i) * 512 * 2;
+		}
+		const Metric &time = metric("worker time");
+		auto chart = Stats::buildChart(time, Stats::defaultView(time), {team.history});
+		CHECK(sampleOf(chart.teams[0], 3, 2) == doctest::Approx(20)); // eating
+		CHECK(sampleOf(chart.teams[0], 5, 2) == doctest::Approx(60)); // no inn free
+		// The eating breakdown counts workers: none walking, two inside, six waiting.
+		const Metric &eating = metric("eating time");
+		chart = Stats::buildChart(eating, Stats::defaultView(eating), {team.history});
+		CHECK_FALSE(chart.percent);
+		CHECK(sampleOf(chart.teams[0], 1, 2) == doctest::Approx(2));
+		CHECK(sampleOf(chart.teams[0], 2, 2) == doctest::Approx(6));
+	}
+
+	TEST_CASE("Samples from before a save gained worker time are left out")
+	{
+		Recorded team;
+		for (int i = 0; i < 6; ++i)
+			team.add(Uint32(i) * 512, 10).labour[M::IDLE] = Uint64(i) * 512;
+		team.history.labourCoverageStartTick = 1536;
+		const Metric &idle = metric("idle workers");
+		CHECK(Stats::buildChart(idle, Stats::defaultView(idle), {team.history}).teams[0].ticks.front() == 2048);
+		// Older measurements are unaffected.
+		const Metric &births = metric("births");
+		CHECK(Stats::buildChart(births, Stats::defaultView(births), {team.history}).teams[0].ticks.front() == 512);
+	}
+}
+
 TEST_SUITE("MetricCatalog")
 {
 	TEST_CASE("Every metric has a unique id, a group and a source for its value")
@@ -283,8 +417,15 @@ TEST_SUITE("MetricCatalog")
 				CHECK(m.bands.size() >= 2);
 			if (m.perUnitsByDefault)
 				CHECK(m.perUnits);
+			// A ratio or a difference is of measurements: of two counters (hits per
+			// shot) or of two levels (hurt warriors among warriors).
 			if (m.ratioOf || m.minus)
-				CHECK((m.kind == Metric::Counter && m.value));
+				CHECK((m.sampled < 0 && m.value));
+			if (m.mean)
+				CHECK(m.ratioOf);
+			// Worker time has no total a player could read.
+			if (m.scale != 1)
+				CHECK_FALSE(Stats::canTotal(m));
 			CHECK(&Stats::metricById(m.id) == &m);
 		}
 		CHECK(Stats::findMetric("no such metric") == -1);

@@ -579,34 +579,43 @@ RiceTerracesOptions::RiceTerracesOptions(const GenerationRequest &r)
 GeneratorDefinition riceTerracesDefinition()
 {
 	return {
-			"rice-terraces",
-			52,
-			"Rice terraces",
-			3,
-			false,
-			// One hillside at a slant of one is a single terraced slope spiralling round the torus: on
-			// a 256 map it crosses twice. Terraces should be most of the map (a first render with two
-			// hillsides of four terraces was mostly grass); the `terraces` control asks for a count per
-			// slope but the room a slope actually holds, at a workable band width, wins (see
-			// rice.terraces.reduced telemetry) — a 256 map with one hillside fits about three at the
-			// default band width. Waviness is the long sway's amplitude in tiles.
-			{{"hillsides", "Hillsides", 1, 6, 1, 1, ControlGroup::Terrain},
-			 {"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain},
-			 {"terraces", "Terraces per slope", 2, 12, 1, 8, ControlGroup::Terrain},
-			 {"band-width", "Contour band width", 90, 140, 10, 100, ControlGroup::Terrain},
-			 {"waviness", "Waviness", 0, 20, 2, 16, ControlGroup::Terrain},
-			 {"stair-spacing", "Stair spacing", 24, 96, 8, 48, ControlGroup::Layout},
-			 {"home-size", "Home size", 10, 18, 1, 12, ControlGroup::Layout},
-			 GeneratorControl::toggle("valley-river", "Valley river", true, ControlGroup::Terrain),
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:natural", "feature:terraces", "feature:river", "style:tight-building",
-			 "fairness:stamped-lattice"}};
+		"rice-terraces",
+		52,
+		"Rice terraces",
+		3,
+		false,
+		// One hillside at a slant of one is a single terraced slope spiralling round the torus: on
+		// a 256 map it crosses twice. Terraces should be most of the map (a first render with two
+		// hillsides of four terraces was mostly grass); the `terraces` control asks for a count per
+		// slope but the room a slope actually holds, at a workable band width, wins (see
+		// rice.terraces.reduced telemetry) — a 256 map with one hillside fits about three at the
+		// default band width. Waviness is the long sway's amplitude in tiles.
+		{GeneratorControl{"hillsides", "Hillsides", 1, 6, 1, 1, ControlGroup::Terrain}
+			 .withSearchRange(1, 4),
+		 GeneratorControl{"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain}.withSearchRange(0,
+																							   3),
+		 GeneratorControl{"terraces", "Terraces per slope", 2, 12, 1, 8, ControlGroup::Terrain}
+			 .withSearchRange(5, 10),
+		 GeneratorControl{"band-width", "Contour band width", 90, 140, 10, 100,
+						  ControlGroup::Terrain}
+			 .withSearchRange(90, 120),
+		 GeneratorControl{"waviness", "Waviness", 0, 20, 2, 16, ControlGroup::Terrain}
+			 .withSearchRange(8, 20),
+		 GeneratorControl{"stair-spacing", "Stair spacing", 24, 96, 8, 48, ControlGroup::Layout}
+			 .withSearchRange(32, 64),
+		 GeneratorControl{"home-size", "Home size", 10, 18, 1, 12, ControlGroup::Layout}
+			 .withSearchRange(12, 18),
+		 GeneratorControl::toggle("valley-river", "Valley river", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:natural", "feature:terraces", "feature:river", "style:tight-building",
+		 "fairness:stamped-lattice"}};
 }

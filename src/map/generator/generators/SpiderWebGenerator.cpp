@@ -734,27 +734,38 @@ SpiderWebOptions::SpiderWebOptions(const GenerationRequest &r)
 GeneratorDefinition spiderWebDefinition()
 {
 	return {
-			"spider-web",
-			20,
-			"Spider web",
-			2,
-			false,
-			// Spokes per colony (more on a web with few colonies); the spacing between capture threads
+		"spider-web",
+		20,
+		"Spider web",
+		2,
+		false,
+		// Spokes per colony (more on a web with few colonies); the spacing between capture threads
 		// and every thread's width in tiles; how far the capture threads sag and the share of them
 		// torn, in percent; the hub's radius as a share of the half side; dew drops per colony.
-		{{"spokes", "Spokes per colony", 1, 3, 1, 2, ControlGroup::Layout},
-		 {"ring-spacing", "Ring spacing", 20, 40, 2, 28, ControlGroup::Terrain},
-		 {"thread-width", "Thread width", 7, 15, 2, 11, ControlGroup::Terrain},
-		 {"sag", "Sag", 0, 100, 10, 70, ControlGroup::Terrain},
-		 {"torn-strands", "Torn strands", 0, 60, 5, 15, ControlGroup::Terrain},
-		 {"hub-size", "Hub size", 8, 24, 1, 14, ControlGroup::Terrain},
-		 {"dew-drops", "Dew drops", 0, 4, 1, 2, ControlGroup::Layout},
+		{GeneratorControl{"spokes", "Spokes per colony", 1, 3, 1, 2, ControlGroup::Layout}
+			 .withSearchRange(2, 3),
+		 GeneratorControl{"ring-spacing", "Ring spacing", 20, 40, 2, 28, ControlGroup::Terrain}
+			 .withSearchRange(24, 34),
+		 GeneratorControl{"thread-width", "Thread width", 7, 15, 2, 11, ControlGroup::Terrain}
+			 .withSearchRange(11, 15),
+		 GeneratorControl{"sag", "Sag", 0, 100, 10, 70, ControlGroup::Terrain}.withSearchRange(30,
+																							   80),
+		 GeneratorControl{"torn-strands", "Torn strands", 0, 60, 5, 15, ControlGroup::Terrain}
+			 .withSearchRange(5, 30),
+		 GeneratorControl{"hub-size", "Hub size", 8, 24, 1, 14, ControlGroup::Terrain}
+			 .withSearchRange(12, 20),
+		 GeneratorControl{"dew-drops", "Dew drops", 0, 4, 1, 2, ControlGroup::Layout}
+			 .withSearchRange(1, 3),
 		 // Each home pad's radius as a percentage of the standard pad.
-		 {"home-size", "Home size", 60, 200, 10, 130, ControlGroup::Layout},
+		 GeneratorControl{"home-size", "Home size", 60, 200, 10, 130, ControlGroup::Layout}
+			 .withSearchRange(120, 170),
 		 // Off, the capture threads are closed rings rather than a spiral.
-		 GeneratorControl::toggle("spiral", "Spiral", true, ControlGroup::Layout),
+		 GeneratorControl::toggle("spiral", "Spiral", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
 		 // Off, the threads are grass from shore to shore, with no sand road down the middle.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // The threads' standing wheat and wood, the knots' stone and the drops' and hub's prizes;
 		 // every pad's kit is unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -762,9 +773,9 @@ GeneratorDefinition spiderWebDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:arena", "feature:islands", "style:contested-center", "fairness:repeated-wedge"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:arena", "feature:islands", "style:contested-center", "fairness:repeated-wedge"}};
 }

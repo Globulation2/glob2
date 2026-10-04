@@ -582,33 +582,39 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition contestedCommonsDefinition()
 {
 	return {
-			"contested-commons",
-			9,
-			"Contested commons",
-			3,
-			false,
-			// Home island size is a percentage of the closest colony spacing; commons size a
-			// percentage of the home radius (limited by the room the spread leaves); moat width a
-			// percentage of the home radius.
-			{{"home-island-size", "Home island size", 20, 35, 5, 25, ControlGroup::Terrain},
-			 {"commons-size", "Commons size", 250, 500, 50, 400, ControlGroup::Terrain},
-			 {"moat-width", "Moat width", 20, 50, 5, 35, ControlGroup::Terrain},
-			 {"bridge-count", "Bridge count", 1, 5, 1, 3, ControlGroup::Layout},
-			 // Off, no bridge crosses the commons' moat.
-			 GeneratorControl::toggle("moat-bridges", "Moat bridges", true, ControlGroup::Layout),
-			 // Off, the home islands and the commons are smooth rounds.
-			 GeneratorControl::toggle("jagged-coasts", "Jagged coastlines", true,
-									  ControlGroup::Terrain),
-			 // How many of the commons' zones are wheat, wood and fruit, the size of its quarry and
-			 // the moat's algae. Every home island's own starter fields stay as they are.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			nullptr,
-			validateWorld,
-			{"terrain:natural", "feature:islands", "style:contested-center"}};
+		"contested-commons",
+		9,
+		"Contested commons",
+		3,
+		false,
+		// Home island size is a percentage of the closest colony spacing; commons size a
+		// percentage of the home radius (limited by the room the spread leaves); moat width a
+		// percentage of the home radius.
+		{GeneratorControl{"home-island-size", "Home island size", 20, 35, 5, 25,
+						  ControlGroup::Terrain}
+			 .withSearchRange(25, 35),
+		 GeneratorControl{"commons-size", "Commons size", 250, 500, 50, 400, ControlGroup::Terrain}
+			 .withSearchRange(350, 450),
+		 GeneratorControl{"moat-width", "Moat width", 20, 50, 5, 35, ControlGroup::Terrain}
+			 .withSearchRange(25, 40),
+		 GeneratorControl{"bridge-count", "Bridge count", 1, 5, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(2, 4),
+		 // Off, no bridge crosses the commons' moat.
+		 GeneratorControl::toggle("moat-bridges", "Moat bridges", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
+		 // Off, the home islands and the commons are smooth rounds.
+		 GeneratorControl::toggle("jagged-coasts", "Jagged coastlines", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // How many of the commons' zones are wheat, wood and fruit, the size of its quarry and
+		 // the moat's algae. Every home island's own starter fields stay as they are.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		nullptr,
+		validateWorld,
+		{"terrain:natural", "feature:islands", "style:contested-center"}};
 }

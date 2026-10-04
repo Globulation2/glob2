@@ -819,11 +819,13 @@ inline void honeycombIsleContracts()
 {
 	const auto &definition =
 		GeneratorRegistry::builtins().at(GeneratorRegistry::builtins().idOf("honeycomb-isle"));
-	assert(definition.legacyId == 53 && definition.revision == 1);
+	assert(definition.legacyId == 53 && definition.revision == 2);
 	D request;
 	request.setMethodDefaults(definition.legacyId);
-	assert(request.option("block-shape") == 1 && request.option("river-width") == 12 &&
+	assert(request.option("block-shape") == 2 && request.option("river-width") == 12 &&
 		   request.option("blocks-per-colony") == 11 && request.option("crater-gardens") == 1);
+	request.options["block-shape"] =
+		1; // The following layout contract exercises explicit hexagons.
 	GenerationService service;
 	const auto make = [&](int wDec, int hDec, int teams, std::uint32_t seed)
 	{

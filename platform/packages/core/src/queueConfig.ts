@@ -70,7 +70,7 @@ const FAIR_GENERATORS: readonly {
   { id: 'allotments', revision: 2, fourColonies: true },
   { id: 'bajada', revision: 1, fourColonies: true },
   { id: 'breachable-highlands', revision: 5, fourColonies: false },
-  { id: 'caravanserai', revision: 2, fourColonies: false },
+  { id: 'caravanserai', revision: 3, fourColonies: false },
   { id: 'drumlin-field', revision: 1, fourColonies: true },
   { id: 'forts', revision: 7, fourColonies: true },
   { id: 'glacis', revision: 3, fourColonies: false },

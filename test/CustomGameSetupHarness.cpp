@@ -1309,19 +1309,26 @@ struct CustomGameSetupHarness
              screen.setup.generator.wDec == before.wDec &&
              screen.setup.generator.hDec == before.hDec && screen.setup.capacity == capacity));
       REQUIRE(validateGenerationRequest(screen.setup.generator, definition).empty());
-      // A random set the world refuses on every seed is redrawn by the preview itself, one
-      // more round of candidates per draw; give it those rounds, and a fresh click should even
-      // the last draw fail, so the check does not hang on one unlucky stream.
-      for (int click = 0; click < 6 && !screen.validMap; ++click) {
-        if (click > 0)
-          clickControl("generator/random");
-        for (int round = 0; round < CustomGameScreen::kRandomAttempts + 1 && !screen.validMap;
-             ++round)
-          preview();
-      }
-      REQUIRE((screen.validMap && screen.quality.measured &&
-             screen.quality.colonies.size() == size_t(capacity)));
-      paint();
+	  for (const auto &control : definition.controls)
+	  {
+		  const auto domain = control.searchValues();
+		  REQUIRE(std::find(domain.begin(), domain.end(), control.get(screen.setup.generator)) !=
+				  domain.end());
+	  }
+	  // A random set the world refuses on every seed is redrawn by the preview itself, one
+	  // more round of candidates per draw; give it those rounds, and a fresh click should even
+	  // the last draw fail, so the check does not hang on one unlucky stream.
+	  for (int click = 0; click < 6 && !screen.validMap; ++click)
+	  {
+		  if (click > 0)
+			  clickControl("generator/random");
+		  for (int round = 0; round < CustomGameScreen::kRandomAttempts + 1 && !screen.validMap;
+			   ++round)
+			  preview();
+	  }
+	  REQUIRE((screen.validMap && screen.quality.measured &&
+			   screen.quality.colonies.size() == size_t(capacity)));
+	  paint();
       // The start quality line under the preview: fairness and score, and its (i).
       REQUIRE((has("quality/info") && node("quality/info")->enabled()));
       capture("random-parameters-640");
@@ -1759,10 +1766,16 @@ struct CustomGameSetupHarness
                  rolled.wDec == 8 && rolled.hDec == 8));
           REQUIRE(validateGenerationRequest(rolled, GeneratorRegistry::builtins().at(rolled.method))
                      .empty());
-          anyDiffer = anyDiffer || rolled.options != shown[i].request.options;
-        }
-        REQUIRE(anyDiffer);
-      }
+
+		  for (const auto &control : GenerationRequest::controls(rolled.method))
+		  {
+			  const auto domain = control.searchValues();
+			  REQUIRE(std::find(domain.begin(), domain.end(), control.get(rolled)) != domain.end());
+		  }
+		  anyDiffer = anyDiffer || rolled.options != shown[i].request.options;
+		}
+		REQUIRE(anyDiffer);
+	  }
       globalContainer->gfx->printScreen(output + "/landscape-picker-randomized.bmp");
       // Reset to defaults puts every landscape back on its registered controls at the sheet's
       // size and colony count, and rolls the sheet again.

@@ -519,35 +519,41 @@ OldTownOptions::OldTownOptions(const GenerationRequest &r)
 GeneratorDefinition oldTownDefinition()
 {
 	return {
-			"old-town",
-			31,
-			"Old town",
-			7,
-			false,
-			// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
-			// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
-			// that one building closes; three farm plots per colony through the fields (FEEDBACK
-			// 2026-09-13 asked for about two and a half).
-			{{"city-size", "City size", 40, 90, 5, 70, ControlGroup::Layout},
-			 {"block-size", "Block size", 10, 20, 1, 14, ControlGroup::Layout},
-			 {"street-width", "Street width", 3, 7, 1, 4, ControlGroup::Terrain},
-			 {"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain},
-			 {"plazas", "Plazas", 0, 4, 1, 2, ControlGroup::Layout},
-			 {"farm-plots", "Farm plots", 0, 6, 1, 3, ControlGroup::Layout},
-			 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
-			 // both on by default so workers cross the rows rather than walking round them.
-			 waterCrossingsControl(),
-			 cropCrossingsControl(),
-			 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain),
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// The town's open spots are small ponds, not paved plazas.
-			{"terrain:urban", "feature:stone-walls", "feature:lakes", "style:tight-building"}};
+		"old-town",
+		31,
+		"Old town",
+		7,
+		false,
+		// A city of 70% of the half side leaves a belt of fields round it; blocks of 14 with
+		// streets of 4 give a 256 map about a hundred blocks and streets a column of units wide
+		// that one building closes; three farm plots per colony through the fields (FEEDBACK
+		// 2026-09-13 asked for about two and a half).
+		{GeneratorControl{"city-size", "City size", 40, 90, 5, 70, ControlGroup::Layout}
+			 .withSearchRange(55, 80),
+		 GeneratorControl{"block-size", "Block size", 10, 20, 1, 14, ControlGroup::Layout}
+			 .withSearchRange(12, 18),
+		 GeneratorControl{"street-width", "Street width", 3, 7, 1, 4, ControlGroup::Terrain}
+			 .withSearchRange(4, 6),
+		 GeneratorControl{"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain}.withSearchRange(
+			 20, 80),
+		 GeneratorControl{"plazas", "Plazas", 0, 4, 1, 2, ControlGroup::Layout}.withSearchRange(1,
+																								3),
+		 GeneratorControl{"farm-plots", "Farm plots", 0, 6, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(3, 6),
+		 // The farm rows' sand bridges over the water and lanes through the crops (FarmBridges),
+		 // both on by default so workers cross the rows rather than walking round them.
+		 waterCrossingsControl(), cropCrossingsControl(),
+		 GeneratorControl::toggle("tendrils", "Tendril roads", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// The town's open spots are small ponds, not paved plazas.
+		{"terrain:urban", "feature:stone-walls", "feature:lakes", "style:tight-building"}};
 }

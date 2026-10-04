@@ -1862,33 +1862,41 @@ GeneratorDefinition hiddenOasisDefinition()
 	// The pond's radius and its algae in tiles (the only algae on the map, so there is no algae amount);
 	// the level of the tower every colony starts with over the gorge (0 for open pads only); the gorge's
 	// width away from its pinches; how many buttes and springs the country has.
-	return {"hidden-oasis",
-			57,
-			"Hidden Oasis",
-			1,
-			false,
-			{{"pond-size", "Pond size", 5, 12, 1, 8, ControlGroup::Terrain},
-			 {"pond-algae", "Pond algae", 8, 48, 4, 24, ControlGroup::Layout},
-			 // Off leaves the ledges as open pads. The towers are level 1, the only level a colony
-			 // without a school can resupply or repair (Building::canUnitWorkHere).
-			 GeneratorControl::toggle("starting-towers", "Starting towers", true, ControlGroup::Layout),
-			 // On by default (maintainer, 2026-09-17). Off is the total lock: no school anywhere until
-			 // somebody reaches the pond.
-			 GeneratorControl::toggle("starting-school", "Starting school", true, ControlGroup::Layout),
-			 {"desert", "Desert", 0, 80, 10, 40, ControlGroup::Terrain},
-			 {"buttes", "Mesas", 0, 10, 1, 5, ControlGroup::Terrain},
-			 {"springs", "Springs", 0, 10, 1, 6, ControlGroup::Terrain},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			// The sealed basin is the contested centre and the towers over the gorge make it a siege;
-			// the massif and buttes are its stone walls. Colonies are found by a walk-band search, so
-			// no fairness tag.
-			{"terrain:natural", "feature:mountains", "feature:stone-walls", "feature:desert", "feature:oases",
-			 "style:contested-center", "style:siege"}};
+	return {
+		"hidden-oasis",
+		57,
+		"Hidden Oasis",
+		1,
+		false,
+		{GeneratorControl{"pond-size", "Pond size", 5, 12, 1, 8, ControlGroup::Terrain}
+			 .withSearchRange(7, 11),
+		 GeneratorControl{"pond-algae", "Pond algae", 8, 48, 4, 24, ControlGroup::Layout}
+			 .withSearchRange(16, 36),
+		 // Off leaves the ledges as open pads. The towers are level 1, the only level a colony
+		 // without a school can resupply or repair (Building::canUnitWorkHere).
+		 GeneratorControl::toggle("starting-towers", "Starting towers", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
+		 // On by default (maintainer, 2026-09-17). Off is the total lock: no school anywhere until
+		 // somebody reaches the pond.
+		 GeneratorControl::toggle("starting-school", "Starting school", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
+		 GeneratorControl{"desert", "Desert", 0, 80, 10, 40, ControlGroup::Terrain}.withSearchRange(
+			 20, 60),
+		 GeneratorControl{"buttes", "Mesas", 0, 10, 1, 5, ControlGroup::Terrain}.withSearchRange(2,
+																								 7),
+		 GeneratorControl{"springs", "Springs", 0, 10, 1, 6, ControlGroup::Terrain}.withSearchRange(
+			 4, 8),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		// The sealed basin is the contested centre and the towers over the gorge make it a siege;
+		// the massif and buttes are its stone walls. Colonies are found by a walk-band search, so
+		// no fairness tag.
+		{"terrain:natural", "feature:mountains", "feature:stone-walls", "feature:desert",
+		 "feature:oases", "style:contested-center", "style:siege"}};
 }

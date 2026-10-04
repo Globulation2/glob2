@@ -206,7 +206,7 @@ void screenChanged(const char *name) {
 }
 void simulationAdvanced(std::uint32_t) {}
 void matchFrame(bool) {}
-void overviewDrawn(bool) {}
+void overviewDrawn(bool, bool) {}
 void roomReady(bool) {}
 void customGameReady(bool) {}
 void controlsChanged(const void *, const char *) {}

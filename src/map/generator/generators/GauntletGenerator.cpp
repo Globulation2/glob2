@@ -591,10 +591,16 @@ GeneratorDefinition gauntletDefinition()
 			"The Gauntlet",
 			2,
 			false,
-			{{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout},
-			 {"gate-width", "Gate width", 5, 9, 2, 7, ControlGroup::Terrain},
-			 {"partition-wall", "Partition thickness", 1, 3, 1, 2, ControlGroup::Terrain},
-			 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
+			{GeneratorControl{"court-size", "Court size", 80, 120, 10, 100, ControlGroup::Layout}
+				 .withSearchRange(90, 120),
+			 GeneratorControl{"gate-width", "Gate width", 5, 9, 2, 7, ControlGroup::Terrain}
+				 .withSearchRange(7, 9),
+			 GeneratorControl{"partition-wall", "Partition thickness", 1, 3, 1, 2,
+							  ControlGroup::Terrain}
+				 .withSearchRange(1, 3),
+			 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 1,
+							  ControlGroup::Layout}
+				 .withSearchRange(0, 1),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("algae-amount", "Algae amount"),

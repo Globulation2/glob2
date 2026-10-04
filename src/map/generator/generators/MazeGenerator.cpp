@@ -149,6 +149,7 @@ struct MazeDesign
 MazeDesign designMaze(const GenerationRequest &request, GenerationContext &context)
 {
 	const MazeOptions o(request);
+	context.telemetry.choice("maze.cell-shape", o.cellShape == 0 ? "Squares" : "Hexagons");
 	MazeDesign d;
 	d.layout = mazeLayout(o, 1 << request.wDec, 1 << request.hDec, request.nbTeams);
 	MazeLayout &L = d.layout;
@@ -677,46 +678,67 @@ MazeOptions::MazeOptions(const GenerationRequest &r)
 	  fruit(r.option("fruit-amount")), sandRoads(r.option("sand-roads") != 0),
 	  treasure(r.option("dead-end-treasure") != 0)
 {
+	if (cellShape == 2)
+	{
+		std::vector<int> feasible;
+		const auto domain = GenerationRequest::control(r.method, "cell-shape").searchValues();
+		for (int shape : domain)
+		{
+			MazeOptions candidate = *this;
+			candidate.cellShape = shape;
+			if (mazeLayout(candidate, 1 << r.wDec, 1 << r.hDec, r.nbTeams).failure.empty())
+				feasible.push_back(shape);
+		}
+		// Leave the concrete layout validator to explain an incompatible shared setup.
+		cellShape = feasible.empty()
+						? domain.front()
+						: GenerationContext::choiceFromSeed(r.seed, "maze/cell-shape", feasible);
+	}
 }
 
 GeneratorDefinition mazeDefinition()
 {
 	return {
-			"maze",
-			11,
-			"Maze",
-			14,
-			false,
-			{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
-		 {"cell-size",
-		  "Cell size",
-		  24,
-		  48,
-		  1,
-		  32,
-		  ControlGroup::Layout,
-		  false,
-		  false,
-		  {24, 32, 40, 48}},
+		"maze",
+		11,
+		"Maze",
+		15,
+		false,
+		{GeneratorControl::choice("cell-shape", "Cell shape", {"Squares", "Hexagons", "Random"}, 2)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl{"cell-size",
+						  "Cell size",
+						  24,
+						  48,
+						  1,
+						  32,
+						  ControlGroup::Layout,
+						  false,
+						  false,
+						  {24, 32, 40, 48}}
+			 .withSearchValues({24, 32, 40}),
 		 // Cells snap to 24, 32, 40 or 48 tiles; the default 32 gives 64 square cells on a 256
 		 // map, enough corridors to feel like a maze without passages narrower than a small base.
 		 // Hexagons sit half as far apart again (kHexPitchPercent).
 		 // Warp moves the cells' corners by up to this share of what keeps every cell whole, so
 		 // squares and hexagons become irregular polygons; doorways never narrow past the
 		 // smallest a passage may be, so at small cells warp is gentler.
-		 {"warp", "Warp", 0, 100, 25, 0, ControlGroup::Layout},
+		 GeneratorControl{"warp", "Warp", 0, 100, 25, 0, ControlGroup::Layout}.withSearchRange(0,
+																							   75),
 		 // Open water on each side of a wall's stone line; passages widen to fill the rest.
-		 {"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout},
-		 {"loopiness",
-		  "Loopiness",
-		  0,
-		  50,
-		  1,
-		  5,
-		  ControlGroup::Layout,
-		  false,
-		  false,
-		  {0, 5, 10, 20, 35, 50}},
+		 GeneratorControl{"channel-width", "Channel width", 1, 6, 1, 2, ControlGroup::Layout}
+			 .withSearchRange(1, 3),
+		 GeneratorControl{"loopiness",
+						  "Loopiness",
+						  0,
+						  50,
+						  1,
+						  5,
+						  ControlGroup::Layout,
+						  false,
+						  false,
+						  {0, 5, 10, 20, 35, 50}}
+			 .withSearchValues({5, 10, 20}),
 		 // Loopiness is the share of non-home cells that get one extra opening: the default 5
 		 // opens about 3 walls on a 256 map, a few flanking routes without dissolving the maze.
 		 // Densities for the deposits scattered along the passages (per 256 shore tiles); homes
@@ -730,13 +752,17 @@ GeneratorDefinition mazeDefinition()
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount"),
 		 // Off, passages are grass from shore to shore, with no sand road down the middle.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // Off, the treasure's fruit is scattered along the passages' shores instead.
 		 GeneratorControl::toggle("dead-end-treasure", "Treasure in dead ends", true,
-								  ControlGroup::Resources)},
-			generate,
-			true,
-			validate,
-			validateWorld,
-			{"terrain:arena", "feature:maze", "feature:stone-walls", "style:tight-building", "style:siege"}};
+								  ControlGroup::Resources)
+			 .withSearchValues({0, 1})},
+		generate,
+		true,
+		validate,
+		validateWorld,
+		{"terrain:arena", "feature:maze", "feature:stone-walls", "style:tight-building",
+		 "style:siege"}};
 }

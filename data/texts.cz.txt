@@ -5133,4 +5133,117 @@ Základny na kolonii; základna je jeden tým mapy tak, jak byla nakreslena, s j
 [settings Record your games as MP4 videos with sound.]
 
 [settings Recording uses the full rendered resolution at 30 FPS.]
+[stat group work]
+
+[stat worker time]
+
+[stat worker time about]
+
+[stat idle workers]
+
+[stat idle workers about]
+
+[stat work by job]
+
+[stat work by job about]
+
+[stat haul distance]
+
+[stat haul distance about]
+
+[stat hauling]
+
+[stat hauling about]
+
+[stat eating time]
+
+[stat eating time about]
+
+[stat inn distance]
+
+[stat inn distance about]
+
+[stat warriors]
+
+[stat warriors about]
+
+[stat warrior level]
+
+[stat warrior level about]
+
+[stat warrior duties]
+
+[stat warrior duties about]
+
+[stat intruders]
+
+[stat intruders about]
+
+[stat home defence]
+
+[stat home defence about]
+
+[stat combat death places]
+
+[stat combat death places about]
+
+[stat band working]
+
+[stat band flag work]
+
+[stat band idle]
+
+[stat band training]
+
+[stat band unserved]
+
+[stat band swarms]
+
+[stat band inns]
+
+[stat band sites]
+
+[stat band other buildings]
+
+[stat band to resource]
+
+[stat band harvesting]
+
+[stat band carrying]
+
+[stat band delivering]
+
+[stat band walking to inn]
+
+[stat band no inn]
+
+[stat band at home]
+
+[stat band at enemy]
+
+[stat band in the open]
+
+[stat band war flag]
+
+[stat band seeking healing]
+
+[stat band free]
+
+[stat unit workers]
+
+[stat unit worker time]
+
+[stat unit working workers]
+
+[stat unit squares]
+
+[stat unit warriors]
+
+[stat unit attack level]
+
+[stat unit enemy warriors]
+
+[stat unit strength count]
+
+[stat view by place]
 

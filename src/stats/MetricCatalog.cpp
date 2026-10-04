@@ -174,6 +174,85 @@ std::vector<Metric> build()
 	add({.id = "healing", .group = Group::Food, .kind = Metric::Counter, .unitKey = "[stat unit hit points]",
 		 .value = [](const M &m) { return double(m.hpRestored); }});
 
+	// Workers' time. Every worker counts once a tick in one activity, so a rate
+	// per minute scaled by workerTicks is the workers doing it, on average.
+	const double workerTicks = 1 / TICKS_PER_MINUTE;
+	auto filling = [](const M &m) { return total(m.filling); };
+	auto workerTime = [](const M &m) { return total(m.labour) + total(m.filling); };
+	{
+		// Idle is stacked last, so it reads down from the 100% line. Time spent
+		// hungry or hurt with nowhere to go is its own band: it is waiting, and
+		// would otherwise pass for eating or healing.
+		Metric &m = add({.id = "worker time", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit workers]",
+						 .value = filling, .ratioOf = workerTime});
+		m.bands = {{"[stat band working]", filling},
+				   {"[stat band flag work]", [](const M &s) { return double(s.labour[M::FLAG_WORK]); }},
+				   {"[stat band training]", [](const M &s) { return double(s.labour[M::TRAIN_WALKING] + s.labour[M::TRAIN_INSIDE]); }},
+				   {"[stat band eating]", [](const M &s) { return double(s.labour[M::EAT_WALKING] + s.labour[M::EAT_INSIDE]); }},
+				   {"[stat band healing]", [](const M &s) { return double(s.labour[M::HEAL_WALKING] + s.labour[M::HEAL_INSIDE]); }},
+				   {"[stat band unserved]", [](const M &s) { return double(s.labour[M::EAT_NO_INN] + s.labour[M::HEAL_NO_HOSPITAL]); }},
+				   {"[stat band other]", [](const M &s) { return double(s.labour[M::OTHER_ACTIVITY]); }},
+				   {"[stat band idle]", [](const M &s) { return double(s.labour[M::IDLE]); }}};
+		m.scale = workerTicks;
+		m.composition = m.percentByDefault = m.labour = true;
+	}
+	{
+		Metric &m = add({.id = "idle workers", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit worker time]",
+						 .value = [](const M &s) { return double(s.labour[M::IDLE]); }, .ratioOf = workerTime});
+		m.labour = true;
+	}
+	{
+		Metric &m = add({.id = "work by job", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit workers]", .value = filling});
+		const char *keys[M::LABOUR_JOBS] = {"[stat band swarms]", "[stat band inns]", "[stat band sites]", "[stat band other buildings]"};
+		for (int job = 0; job < M::LABOUR_JOBS; ++job)
+			m.bands.push_back({keys[job], [job](const M &s) { return total(s.filling[job]); }});
+		m.scale = workerTicks;
+		m.composition = m.labour = true;
+	}
+	{
+		Metric &m = add({.id = "haul distance", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit squares]",
+						 .value = [](const M &s) { return total(s.harvestDistance); }, .ratioOf = [](const M &s) { return total(s.harvestSamples); }});
+		m.mean = m.labour = true;
+	}
+	{
+		// Its headline is the share of working time spent walking either way.
+		Metric &m = add({.id = "hauling", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit working workers]",
+						 .value = [](const M &s)
+						 {
+							 double walking = 0;
+							 for (const auto &job : s.filling)
+								 walking += double(job[M::TO_RESOURCE] + job[M::TO_BUILDING]);
+							 return walking;
+						 },
+						 .ratioOf = filling});
+		const char *keys[M::LABOUR_PHASES] = {"[stat band to resource]", "[stat band harvesting]", "[stat band carrying]", "[stat band delivering]"};
+		for (int phase = 0; phase < M::LABOUR_PHASES; ++phase)
+			m.bands.push_back({keys[phase], [phase](const M &s)
+							   {
+								   double sum = 0;
+								   for (const auto &job : s.filling)
+									   sum += double(job[phase]);
+								   return sum;
+							   }});
+		m.scale = workerTicks;
+		m.composition = m.labour = true;
+	}
+	{
+		// Its headline is the share of workers' time spent hungry with no inn to go to.
+		Metric &m = add({.id = "eating time", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit workers]",
+						 .value = [](const M &s) { return double(s.labour[M::EAT_NO_INN]); }, .ratioOf = workerTime});
+		m.bands = {{"[stat band walking to inn]", [](const M &s) { return double(s.labour[M::EAT_WALKING]); }},
+				   {"[stat band eating]", [](const M &s) { return double(s.labour[M::EAT_INSIDE]); }},
+				   {"[stat band no inn]", [](const M &s) { return double(s.labour[M::EAT_NO_INN]); }}};
+		m.scale = workerTicks;
+		m.composition = m.labour = true;
+	}
+	{
+		Metric &m = add({.id = "inn distance", .group = Group::Work, .kind = Metric::Counter, .unitKey = "[stat unit squares]",
+						 .value = [](const M &s) { return double(s.eatWalkDistance); }, .ratioOf = [](const M &s) { return double(s.eatWalkSamples); }});
+		m.mean = m.labour = true;
+	}
+
 	// Resources
 	{
 		Metric &m = add({.id = "gathered", .group = Group::Resources, .kind = Metric::Counter, .unitKey = "[stat unit resources]",
@@ -275,6 +354,8 @@ std::vector<Metric> build()
 	{
 		Metric &m = add({.id = "combat deaths", .group = Group::Military, .kind = Metric::Counter,
 						 .value = [](const M &s) { return deathsBy(s, M::COMBAT); }});
+		m.bands = perUnitType([](const M &s, int type) { return double(s.deaths[type][M::COMBAT]); });
+		m.splitKey = "[stat view by unit type]";
 		m.perUnits = true;
 	}
 	add({.id = "accuracy", .group = Group::Military, .kind = Metric::Counter, .unitKey = "[stat unit shots]",
@@ -287,6 +368,60 @@ std::vector<Metric> build()
 	}
 	add({.id = "skills", .group = Group::Military, .kind = Metric::Counter, .unitKey = "[stat unit skills]",
 		 .value = [](const M &m) { return total(m.abilityGains); }});
+
+	auto warriors = [](const M &m) { return total(m.warriors); };
+	{
+		Metric &m = add({.id = "warriors", .group = Group::Military, .unitKey = "[stat unit warriors]", .value = warriors});
+		const char *keys[M::PLACES] = {"[stat band at home]", "[stat band at enemy]", "[stat band in the open]"};
+		for (int place = 0; place < M::PLACES; ++place)
+			m.bands.push_back({keys[place], [place](const M &s) { return double(s.warriors[place]); }});
+		m.splitKey = "[stat view by place]";
+		m.shareable = m.labour = true;
+	}
+	{
+		// Recorded as the sum of two skills counted from 0; shown as their average
+		// on the 1 to 4 scale the game shows a unit's levels on.
+		Metric &m = add({.id = "warrior level", .group = Group::Military, .unitKey = "[stat unit attack level]",
+						 .value = [](const M &s) { return total(s.warriorLevels) + 2 * total(s.warriors); },
+						 .ratioOf = [](const M &s) { return 2 * total(s.warriors); }});
+		m.mean = m.labour = true;
+	}
+	{
+		// A hurt warrior's assignment becomes its hospital, so the two are disjoint.
+		// Its headline is the share sent to war flags.
+		Metric &m = add({.id = "warrior duties", .group = Group::Military, .unitKey = "[stat unit warriors]",
+						 .value = [](const M &s) { return double(s.warriorsFlagged); }, .ratioOf = warriors});
+		m.bands = {{"[stat band war flag]", [](const M &s) { return double(s.warriorsFlagged); }},
+				   {"[stat band seeking healing]", [](const M &s) { return double(s.warriorsHurt); }},
+				   {"[stat band free]", [](const M &s) { return std::max(0.0, total(s.warriors) - double(s.warriorsFlagged) - double(s.warriorsHurt)); }}};
+		m.composition = m.percentByDefault = m.smoothed = m.labour = true;
+	}
+	{
+		Metric &m = add({.id = "intruders", .group = Group::Military, .unitKey = "[stat unit enemy warriors]",
+						 .value = [](const M &s) { return double(s.intruders); }});
+		m.smoothed = m.labour = true;
+	}
+	{
+		// Strength counts a warrior and each of its attack levels as one.
+		Metric &m = add({.id = "home defence", .group = Group::Military, .unitKey = "[stat unit strength count]",
+						 .value = [](const M &s) { return double(s.warriors[M::HOME] + s.warriorLevels[M::HOME]); },
+						 .minus = [](const M &s) { return double(s.intruders + s.intruderLevels); }});
+		m.smoothed = m.labour = true;
+	}
+	{
+		Metric &m = add({.id = "combat death places", .group = Group::Military, .kind = Metric::Counter, .unitKey = "[stat unit deaths]",
+						 .value = [](const M &s) { return total(s.combatDeathPlace); }});
+		const char *keys[M::PLACES] = {"[stat band at home]", "[stat band at enemy]", "[stat band in the open]"};
+		for (int place = 0; place < M::PLACES; ++place)
+			m.bands.push_back({keys[place], [place](const M &s)
+							   {
+								   double sum = 0;
+								   for (const auto &type : s.combatDeathPlace)
+									   sum += double(type[place]);
+								   return sum;
+							   }});
+		m.composition = m.rare = m.labour = true;
+	}
 
 	// Map
 	{
@@ -339,8 +474,10 @@ bool covered(const Metric &metric, const View &view, const TeamHistory &history,
 		return true;
 	if (!point.measurements)
 		return false;
-	// Extended fields are zero in samples taken before a save gained them.
-	return !metric.extended || history.extendedCoverageStartTick == 0 || point.tick > history.extendedCoverageStartTick;
+	// Later additions are zero in samples taken before a save gained them.
+	if (metric.extended && history.extendedCoverageStartTick != 0 && point.tick <= history.extendedCoverageStartTick)
+		return false;
+	return !metric.labour || history.labourCoverageStartTick == 0 || point.tick > history.labourCoverageStartTick;
 }
 
 //! The samples of one team that cover a metric, read a column at a time.
@@ -377,7 +514,14 @@ struct Samples
 	std::vector<double> rateOrTotal(const Metric &metric, const View &view, std::vector<double> raw) const
 	{
 		if (metric.kind == Metric::Counter)
-			return view.total ? raw : ratePerMinute(ticks, raw, view.window);
+		{
+			if (view.total)
+				return raw;
+			auto rate = ratePerMinute(ticks, raw, view.window);
+			for (double &value : rate)
+				value *= metric.scale;
+			return rate;
+		}
 		return metric.smoothed ? movingAverage(raw, view.window) : raw;
 	}
 };
@@ -409,7 +553,10 @@ std::vector<double> lineSeries(const Metric &metric, const View &view, const Sam
 			values[i] -= minus[i];
 	}
 	if (metric.ratioOf)
-		values = ratioPercent(values, samples.rateOrTotal(metric, view, samples.measured(metric.ratioOf)));
+	{
+		const auto whole = samples.rateOrTotal(metric, view, samples.measured(metric.ratioOf));
+		values = metric.mean ? meanOf(values, whole) : ratioPercent(values, whole);
+	}
 	if (view.relative)
 	{
 		const auto population = samples.sampled(EndOfGameStat::TYPE_UNITS);
@@ -461,8 +608,10 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
 	chart.stacked = view.split;
 	chart.global = metric.global;
 	chart.ordered = view.split && metric.remainderKey;
-	chart.percent = view.share || metric.ratioOf || (view.relative && (view.split || metric.kind == Metric::Gauge));
-	chart.decimals = chart.percent || view.relative || metric.smoothed || (metric.kind == Metric::Counter && !view.total);
+	// A split metric's ratio is its headline in text panels, not what is charted.
+	const bool ratio = metric.ratioOf && !view.split;
+	chart.percent = view.share || (ratio && !metric.mean) || (view.relative && (view.split || metric.kind == Metric::Gauge));
+	chart.decimals = chart.percent || ratio || view.relative || metric.smoothed || (metric.kind == Metric::Counter && !view.total);
 	if (view.split)
 	{
 		for (const auto &band : metric.bands)
@@ -514,7 +663,7 @@ Chart chartOf(const Metric &metric, const View &view, const std::vector<TeamHist
 
 const char *groupKey(Group group)
 {
-	static const char *const keys[] = {"[stat group population]", "[stat group food]", "[stat group resources]", "[stat group buildings]",
+	static const char *const keys[] = {"[stat group population]", "[stat group food]", "[stat group work]", "[stat group resources]", "[stat group buildings]",
 									   "[stat group military]", "[stat group map]", "[stat group score]"};
 	static_assert(std::size(keys) == std::size_t(Group::Count), "one text key per group");
 	assert(group < Group::Count);
@@ -550,8 +699,9 @@ int windowMinutes(int samples)
 
 bool canTotal(const Metric &metric)
 {
-	// A ratio of two counters has no running total.
-	return metric.kind == Metric::Counter && !metric.ratioOf;
+	// A ratio of two counters has no running total, and a total of worker-ticks
+	// means nothing to a player.
+	return metric.kind == Metric::Counter && !metric.ratioOf && metric.scale == 1;
 }
 bool canSplit(const Metric &metric)
 {
@@ -577,7 +727,7 @@ View defaultView(const Metric &metric)
 	View view;
 	view.total = metric.rare;
 	view.split = metric.composition;
-	view.relative = (metric.composition && metric.remainderKey) || metric.perUnitsByDefault;
+	view.relative = (metric.composition && (metric.remainderKey || metric.percentByDefault)) || metric.perUnitsByDefault;
 	return validView(metric, view);
 }
 
@@ -586,6 +736,7 @@ TeamHistory historyOf(int team, const TeamStats &stats)
 	TeamHistory history;
 	history.team = team;
 	history.extendedCoverageStartTick = stats.extendedCoverageStartTick;
+	history.labourCoverageStartTick = stats.labourCoverageStartTick;
 	const auto &sampled = stats.getEndOfGameStats();
 	const auto &measured = stats.measurementHistory;
 	// Both are appended every sample interval, but measurements may start later

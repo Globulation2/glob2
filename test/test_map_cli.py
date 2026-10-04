@@ -81,7 +81,7 @@ def main():
 
         assert 'coral' in run('--list-map-generators')
         catalog = run('--list-map-generators', 'maze')
-        assert 'cell-shape=' in catalog and 'width=256' in catalog
+        assert 'cell-shape=2' in catalog and 'width=256' in catalog and '  search:' in catalog
         assert 'Map launch modes' in run('--generate-map', '--help')
         assert '--preview-map' in run('--help')
         config = OUT / 'maze.cfg'

@@ -289,7 +289,15 @@ profiling tool, not a timing threshold in CI.
 `build/native-tests/src/MapGeneratorProfileFixture <profile-dir> <seed> <rounds>`, which round-robins every
 registered generator for `rounds` passes with parameters (shared and generator-specific) drawn
 at random the same way `GenerationRequest::randomizeControls` does, and prints a per-generator
-attempt/success/timing table. It exists to give an external sampling profiler (macOS `sample`,
+attempt/success/timing table. It defaults to registered search domains; pass
+`--domain=legal` to sample full experimental domains, or `--domain=search` explicitly.
+For durable stress evidence, `--jsonl=/absolute/path.jsonl` records every attempted request,
+seed, outcome and generation timing. Add `--report-every=25 --telemetry` to retain periodic
+full per-colony map reports and every failure's structured diagnostic. Report analysis is
+outside the recorded generation timing. Unsupported shared settings that cannot yield an
+accepted parameter roll contribute no attempt; check each generator's actual attempt count.
+
+It exists to give an external sampling profiler (macOS `sample`,
 Linux `perf record`) a sustained, representative mix of real generation work to attach to; run it
 with a large round count in the background and sample its PID. It is not a regression test (see
 `--sweep` and `--performance` above for that) and is not wired into CI, but a fixed seed and round

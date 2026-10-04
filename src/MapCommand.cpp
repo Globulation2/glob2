@@ -121,6 +121,9 @@ void catalog(const std::string &name)
 				if (const char *label = c.valueLabel(value))
 					std::cout << "(" << label << ")";
 			}
+			std::cout << "  search:";
+			for (int value : c.searchValues())
+				std::cout << " " << c.displayValue(value);
 			std::cout << "\n";
 		}
 	}

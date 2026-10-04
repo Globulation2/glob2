@@ -757,25 +757,33 @@ AmphitheatreOptions::AmphitheatreOptions(const GenerationRequest &r)
 GeneratorDefinition amphitheatreDefinition()
 {
 	return {
-			"amphitheatre",
-			23,
-			"Amphitheatre",
-			3,
-			false,
-			// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
+		"amphitheatre",
+		23,
+		"Amphitheatre",
+		3,
+		false,
+		// Rings of wall; each ramp's width in tiles; the pit's radius and each terrace's width as
 		// shares of the half side; every colony's inland seas together as a percentage of the smallest
 		// territory; the borders' thickness in tiles.
-		{{"rings", "Rings", 2, 4, 1, 3, ControlGroup::Layout},
-		 {"ramp-width", "Ramp width", 5, 11, 2, 7, ControlGroup::Terrain},
-		 {"pit-size", "Pit size", 8, 30, 2, 16, ControlGroup::Layout},
-		 {"terrace-width", "Terrace width", 6, 20, 1, 14, ControlGroup::Layout},
-		 {"bay-size", "Bay size", 6, 24, 2, 14, ControlGroup::Terrain},
-		 {"border-wall", "Border wall", 1, 3, 1, 2, ControlGroup::Terrain},
+		{GeneratorControl{"rings", "Rings", 2, 4, 1, 3, ControlGroup::Layout}.withSearchRange(2, 4),
+		 GeneratorControl{"ramp-width", "Ramp width", 5, 11, 2, 7, ControlGroup::Terrain}
+			 .withSearchRange(9, 11),
+		 GeneratorControl{"pit-size", "Pit size", 8, 30, 2, 16, ControlGroup::Layout}
+			 .withSearchRange(12, 18),
+		 GeneratorControl{"terrace-width", "Terrace width", 6, 20, 1, 14, ControlGroup::Layout}
+			 .withSearchRange(12, 18),
+		 GeneratorControl{"bay-size", "Bay size", 6, 24, 2, 14, ControlGroup::Terrain}
+			 .withSearchRange(10, 18),
+		 GeneratorControl{"border-wall", "Border wall", 1, 3, 1, 2, ControlGroup::Terrain}
+			 .withSearchRange(1, 2),
 		 // The towers every colony starts with, all against the arena wall by its ramp: their level
 		 // (0 for none, just open pads; level 1 by default since 2026-09-14, so players upgrade
 		 // their own towers) and how many.
-		 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
-		 {"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout},
+		 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 1,
+						  ControlGroup::Layout}
+			 .withSearchRange(0, 1),
+		 GeneratorControl{"tower-count", "Towers per colony", 0, 12, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(2, 4),
 		 // Every territory's ambient fields and grove, the arena's fruit and outcrops, and the
 		 // bays' algae; every home's kit and the walls' stone are unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -783,10 +791,10 @@ GeneratorDefinition amphitheatreDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:arena", "feature:stone-walls", "feature:orchard", "style:siege",
-			 "style:contested-center", "fairness:repeated-wedge"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:arena", "feature:stone-walls", "feature:orchard", "style:siege",
+		 "style:contested-center", "fairness:repeated-wedge"}};
 }

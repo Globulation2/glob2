@@ -32,7 +32,7 @@ struct Diagnostics {
     std::string screen, screenClass, import;
     std::uint32_t tick = 0;
     unsigned frames = 0;
-    int paused = -1, torus = -1, room = -1, custom = -1;
+    int paused = -1, torus = -1, torusSettled = -1, room = -1, custom = -1;
     bool hasTick = false;
     std::map<std::uintptr_t, std::string> controls;
 };
@@ -68,6 +68,7 @@ void publishDiagnostics(bool hostTurn = false) {
         Module.glob2Frames = (Module.glob2Frames || 0) + $4;
         if ($5 >= 0) Module.glob2Paused = !!$5;
         if ($6 >= 0) Module.glob2Torus = !!$6;
+        if ($14 >= 0) Module.glob2TorusSettled = !!$14;
         if ($7 >= 0) Module.glob2RoomCanStart = !!$7;
         if ($8 >= 0) Module.glob2CustomGameReady = !!$8;
         if ($10) Module.glob2Loop = (Module.glob2Loop || 0) + 1;
@@ -78,7 +79,7 @@ void publishDiagnostics(bool hostTurn = false) {
         }
     }, d.screen.c_str(), d.import.c_str(), d.hasTick, d.tick, d.frames,
        d.paused, d.torus, d.room, d.custom, d.screenClass.c_str(), hostTurn,
-       dimensions[0], dimensions[1], dimensions[2]);
+       dimensions[0], dimensions[1], dimensions[2], d.torusSettled);
     for (const auto &[owner, json] : d.controls) {
         MAIN_THREAD_EM_ASM({
             Module.glob2Controls ||= new Map();
@@ -481,7 +482,10 @@ void controlsChanged(const void *owner, const char *json) {
     diagnostics.controls[reinterpret_cast<std::uintptr_t>(owner)] = json ? json : "";
 }
 void matchFrame(bool paused) { ++diagnostics.frames; diagnostics.paused = paused; }
-void overviewDrawn(bool drawn) { diagnostics.torus = drawn; }
+void overviewDrawn(bool drawn, bool settled) {
+    diagnostics.torus = drawn;
+    diagnostics.torusSettled = settled;
+}
 
 }
 

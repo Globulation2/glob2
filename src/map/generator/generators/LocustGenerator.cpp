@@ -245,15 +245,17 @@ GeneratorDefinition locustDefinition()
 	// a central pond, swarm and dry-side stock. Lakes are requested per 128x128 area, in 40..160
 	// corner patches; defaults are one 90-corner lake. The shared layout may omit a lake, but
 	// never shrink its exclusion zone to force one in. Resource percentages are 0..200.
-	return {
-			"locust",
+	return {"locust",
 			47,
 			"Locust",
 			4,
 			false,
-			{{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout},
-			 {"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain},
-			 {"lake-size", "Lake size", 40, 160, 10, 90, ControlGroup::Terrain},
+			{GeneratorControl{"home-size", "Home size", 16, 30, 1, 24, ControlGroup::Layout}
+				 .withSearchRange(24, 30),
+			 GeneratorControl{"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain}.withSearchRange(
+				 1, 3),
+			 GeneratorControl{"lake-size", "Lake size", 40, 160, 10, 90, ControlGroup::Terrain}
+				 .withSearchRange(60, 120),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
 			 GeneratorControl::percentage("wood-amount", "Wood amount", 200)},
 			generate,

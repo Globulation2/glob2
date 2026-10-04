@@ -1637,21 +1637,35 @@ GeneratorDefinition cityStatesDefinition()
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of
 		// islets round the map's wrap point (see the header), 0 for the one on the point alone.
-		{{"commons-size", "Commons size", 30, 65, 5, 55, ControlGroup::Terrain},
-		 {"strait-width", "Strait width", 3, 14, 1, 4, ControlGroup::Terrain},
-		 {"causeway-width", "Causeway width", 5, 11, 2, 7, ControlGroup::Layout},
+		{GeneratorControl{"commons-size", "Commons size", 30, 65, 5, 55, ControlGroup::Terrain}
+			 .withSearchRange(45, 60),
+		 GeneratorControl{"strait-width", "Strait width", 3, 14, 1, 4, ControlGroup::Terrain}
+			 .withSearchRange(3, 7),
+		 GeneratorControl{"causeway-width", "Causeway width", 5, 11, 2, 7, ControlGroup::Layout}
+			 .withSearchRange(7, 11),
 		 // Bays and headlands on every coast and the bow in the channels.
-		 {"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain},
-		 {"valleys", "Valleys", 0, 8, 1, 3, ControlGroup::Terrain},
+		 GeneratorControl{"coast-roughness", "Coast roughness", 0, 100, 5, 50,
+						  ControlGroup::Terrain}
+			 .withSearchRange(20, 70),
+		 GeneratorControl{"valleys", "Valleys", 0, 8, 1, 3, ControlGroup::Terrain}.withSearchRange(
+			 2, 5),
 		 // Patches of sand over the homes and the commons, per 64x128 tiles of land.
-		 {"sand", "Sand patches", 0, 8, 1, 3, ControlGroup::Terrain},
-		 {"islands", "Islands", 0, 4, 1, 2, ControlGroup::Terrain},
+		 GeneratorControl{"sand", "Sand patches", 0, 8, 1, 3, ControlGroup::Terrain}
+			 .withSearchRange(1, 4),
+		 // Extra rings crowd the islets' building plots against the wrap on small maps.
+		 GeneratorControl{"islands", "Islands", 0, 4, 1, 2, ControlGroup::Terrain}.withSearchRange(
+			 0, 1),
 		 // How much richer the commons' heart is than its shores.
-		 {"frontier-richness", "Frontier richness", 0, 100, 10, 60, ControlGroup::Resources},
+		 GeneratorControl{"frontier-richness", "Frontier richness", 0, 100, 10, 60,
+						  ControlGroup::Resources}
+			 .withSearchRange(40, 80),
 		 // Off, no stone: the causeways are plain roads and the homes' coasts are open.
-		 GeneratorControl::toggle("stone-walls", "Stone walls", true, ControlGroup::Layout),
+		 GeneratorControl::toggle("stone-walls", "Stone walls", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
 		 // Off, no sand roads: the causeways and the commons are grass from shore to shore.
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 // Every home's ambient fields, outcrops and grove, and the commons;
 		 // every home's kit, the islets' wheat and the causeways' stone stay as they are.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),

@@ -273,6 +273,9 @@ struct Layout
 Layout design(const GenerationRequest &request, GenerationContext &context)
 {
 	const CaravanseraiOptions o(request);
+	context.telemetry.choice("caravanserai.desert", o.desert == 0   ? "Open erg"
+													: o.desert == 1 ? "Dunes and mesas"
+																	: "Canyon country");
 	Layout L;
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
@@ -822,23 +825,32 @@ CaravanseraiOptions::CaravanseraiOptions(const GenerationRequest &r)
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
 {
+	if (desert == 3)
+		desert = GenerationContext::choiceFromSeed(
+			r.seed, "caravanserai/desert",
+			GenerationRequest::control(r.method, "desert").searchValues());
 }
 
 GeneratorDefinition caravanseraiDefinition()
 {
-	return {
-			"caravanserai",
+	return {"caravanserai",
 			41,
 			"Caravanserai",
-			2,
+			3,
 			false,
 			// Home oasis size is the town's radius: 24 holds a lake, its field ring and a town of
 			// 60-odd build sites. Two caravanserais per colony: one to each of its two nearest
 			// neighbours on a square lattice's row and column.
-			{{"oasis-size", "Home oasis size", 18, 30, 2, 24, ControlGroup::Layout},
-			 GeneratorControl::choice("oases", "Oases", {"Sparse", "Normal", "Many"}, 1),
-			 {"caravanserais", "Caravanserais per colony", 1, 3, 1, 2, ControlGroup::Layout},
-			 GeneratorControl::choice("desert", "Desert", {"Open erg", "Dunes and mesas", "Canyon country"}, 1),
+			{GeneratorControl{"oasis-size", "Home oasis size", 18, 30, 2, 24, ControlGroup::Layout}
+				 .withSearchRange(24, 30),
+			 GeneratorControl::choice("oases", "Oases", {"Sparse", "Normal", "Many"}, 1)
+				 .withSearchValues({0, 1, 2}),
+			 GeneratorControl{"caravanserais", "Caravanserais per colony", 1, 3, 1, 2,
+							  ControlGroup::Layout}
+				 .withSearchRange(1, 3),
+			 GeneratorControl::choice(
+				 "desert", "Desert", {"Open erg", "Dunes and mesas", "Canyon country", "Random"}, 3)
+				 .withSearchValues({0, 1, 2}),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

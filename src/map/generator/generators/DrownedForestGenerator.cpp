@@ -1820,24 +1820,29 @@ DrownedForestOptions::DrownedForestOptions(const GenerationRequest &r)
 }
 GeneratorDefinition drownedForestDefinition()
 {
-	return {
-		"drowned-forest",
-		67,
-		"Drowned Forest",
-		1,
-		false,
-		{{"sandbar-connections", "Sandbar connections", 0, 100, 10, 30, ControlGroup::Layout},
-		 {"wooded-neck-thickness", "Wooded neck thickness", 3, 9, 2, 5, ControlGroup::Terrain},
-		 {"neutral-clearing-size", "Neutral clearing size", 12, 24, 2, 18, ControlGroup::Layout},
-		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-		 GeneratorControl::percentage("wood-amount", "Wood amount"),
-		 GeneratorControl::percentage("stone-amount", "Stone amount"),
-		 GeneratorControl::percentage("algae-amount", "Algae amount"),
-		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-		generate,
-		true,
-		requestFailure,
-		validateWorld,
-		{"terrain:natural", "feature:islands", "feature:forest", "feature:lakes",
-		 "style:expansion"}};
+	return {"drowned-forest",
+			67,
+			"Drowned Forest",
+			1,
+			false,
+			{GeneratorControl{"sandbar-connections", "Sandbar connections", 0, 100, 10, 30,
+							  ControlGroup::Layout}
+				 .withSearchRange(20, 70),
+			 GeneratorControl{"wooded-neck-thickness", "Wooded neck thickness", 3, 9, 2, 5,
+							  ControlGroup::Terrain}
+				 .withSearchRange(3, 7),
+			 GeneratorControl{"neutral-clearing-size", "Neutral clearing size", 12, 24, 2, 18,
+							  ControlGroup::Layout}
+				 .withSearchRange(16, 24),
+			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+			 GeneratorControl::percentage("wood-amount", "Wood amount"),
+			 GeneratorControl::percentage("stone-amount", "Stone amount"),
+			 GeneratorControl::percentage("algae-amount", "Algae amount"),
+			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+			generate,
+			true,
+			requestFailure,
+			validateWorld,
+			{"terrain:natural", "feature:islands", "feature:forest", "feature:lakes",
+			 "style:expansion"}};
 }
