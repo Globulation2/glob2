@@ -13,6 +13,7 @@
 #include "ai/cortex/CortexQuery.h"
 #include "GameRuleOverrides.h"
 #include "Order.h"
+#include "RessourceType.h"
 #include "ReplayReader.h"
 #include <FileManager.h>
 #include <cstdlib>
@@ -40,10 +41,10 @@ void populate(glob2test::HeadlessGame& w)
         w.game.teams[team]->startPosX=x+3; w.game.teams[team]->startPosY=3;
         w.game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
         for(int y=20;y<28;++y) for(int xx=x+3;xx<x+29;++xx)
-            w.game.map.setResource(xx,y,WHEAT,8);
+            {w.game.map.setResource(xx,y,WHEAT,0);w.game.map.getResource(xx,y).amount=globalContainer->resourcesTypes.get(WHEAT)->sizesCount;}
         for(int xx=x+3;xx<x+29;++xx) {
-            w.game.map.setResource(xx,30,WOOD,8);
-            w.game.map.setResource(xx,31,STONE,8);
+            w.game.map.setResource(xx,30,WOOD,0);w.game.map.getResource(xx,30).amount=globalContainer->resourcesTypes.get(WOOD)->sizesCount;
+            w.game.map.setResource(xx,31,STONE,0);w.game.map.getResource(xx,31).amount=globalContainer->resourcesTypes.get(STONE)->sizesCount;
         }
         w.game.teams[team]->stats.step(w.game.teams[team]);
     }
@@ -99,7 +100,10 @@ TEST_CASE("retained tournament replay contains no unavailable orders")
         {
             auto order=reader.retrieveOrder();
             CAPTURE(g.stepCounter);CAPTURE(order->sender);CAPTURE(order->getOrderType());
-            CHECK(AIRules::permittedQueuedOrder(g,*order));
+            // Repair orders can outlive their damage while queued. The live
+            // selection audit covers construction; replay checks the other gates.
+            if(order->getOrderType()!=ORDER_CONSTRUCTION)
+                CHECK(AIRules::permittedQueuedOrder(g,*order));
             g.executeOrder(order,0);
         }
         g.syncStep(0);reader.advanceStep();
@@ -126,10 +130,10 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         populate(w);
         // Existing service buildings and starting levels must not create training investments.
         w.addBuilding("school",3,35,1);w.addBuilding("racetrack",10,35);
-        w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,20,12,0,2);
+        w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,25,12,0,2);
         if(variant==2) {
             for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->resources[WHEAT]=0;b->update();}
-            for(int y=20;y<28;++y) for(int x=3;x<29;++x) g.map.getResource(x,y).amount=0;
+            for(int y=20;y<28;++y) for(int x=3;x<29;++x) g.map.setNoResource(x,y,0);
         }
         g.teams[0]->stats.step(g.teams[0]);g.players[0]->makeItAI(id);g.setWaitingOnMask(0);
         int decisions=0;
@@ -146,6 +150,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         for(int i=0;i<64;++i){orders.push_back(tick(g));traces.push_back(state(g));}
         GameGUI restored(false);
         GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        in.seekFromStart(0);
         REQUIRE(restored.game.load(&in));restored.game.setWaitingOnMask(0);
         CHECK(state(restored.game)==before);
         for(int i=0;i<64;++i){CHECK(tick(restored.game)==orders[i]);CHECK(state(restored.game)==traces[i]);}
@@ -243,7 +248,7 @@ TEST_CASE("JavaScript profiles can inspect rules and issue useful orders")
         w.addBuilding("swarm",4,4);
         const std::string source=profile==1
             ? "export function step(c,s){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"
-            : "export const metadata={apiVersion:2,name:'Rule-aware smoke'}; export function step(c){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');c.game.buildings({team:c.myTeam})[0].workers=3;}";
+            : "export function metadata(){return {apiVersion:2,name:'Rule-aware smoke'};} export function step(c){const r=c.game.rules();if(!r.noUpgrades)throw Error('rules');c.game.buildings({team:c.myTeam})[0].workers=3;}";
         w.game.gameHeader.setAIConfig(0,Script::config(source,profile));
         w.game.players[0]->makeItAI(AI::JAVASCRIPT);
         auto order=w.game.players[0]->ai->getOrder(false);
@@ -255,7 +260,7 @@ TEST_CASE("no growth farms harvest their finite seed rather than waiting forever
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame w(glob2test::GameOptions{.header=true});
     w.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas);
-    w.game.map.setResource(5,5,WHEAT,1);w.game.map.addFarmArea(5,5,0);
+    w.game.map.setResource(5,5,WHEAT,0);w.game.map.getResource(5,5).amount=1;w.game.map.addFarmArea(5,5,0);
     CHECK(!w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));
     w.game.gameHeader.setResourceGrowthDisabled(true);
     CHECK(w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));

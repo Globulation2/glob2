@@ -1574,3 +1574,8 @@ Cortex scoring gates, rule parsing, and harvesting the last finite farm seed.
 Run `python3 test/run_tests.py --filter 'AIRules/*'` with the appropriate build directory.
 Tournament job adapter tests cover repeatable rule arguments and saved-game override
 rejection in `test/test_tournaments.py`.
+
+For retained tournament qualification, set `GLOB2_TEST_AI_RULE_AUDIT=1`. This
+opt-in assertion checks each AI order when selected and reports unavailable work
+without filtering it. A repair can finish while its order waits in the network
+queue, so replay-time building health alone cannot classify upgrade intentions.

@@ -3,6 +3,8 @@
 
 #include <PerformanceTelemetry.h>
 #include "AI.h"
+#include "AIRuleOrders.h"
+#include <cstdlib>
 #include "AIJavaScript.h"
 #include "AIMaxima.h"
 #include "Player.h"
@@ -107,6 +109,13 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 		PerformanceTelemetry::collector().actor(player->number, player->team->teamNumber,
 												implementationID, telemetrySeries->generation));
 	auto order = aiImplementation->getOrder();
+	// Qualification audits planning at selection time. A replay sees orders
+	// after the network queue, when a repair may already have finished, and
+	// cannot reliably distinguish that repair from an unavailable upgrade.
+	// This opt-in test guard reports violations; it never filters an order.
+	if (std::getenv("GLOB2_TEST_AI_RULE_AUDIT") &&
+		!AIRules::permittedQueuedOrder(*player->game, *order))
+		throw std::runtime_error("AI selected work unavailable under the match rules");
 	aiTime.stop();
 	const auto type = order->getOrderType();
 	aiImplementation->telemetry.count(AITelemetry::OrderTypes + type);
