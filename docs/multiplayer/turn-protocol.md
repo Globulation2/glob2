@@ -767,7 +767,7 @@ CI enforces what it can detect:
   record names another sim version than the tree, and when the record or its
   verification trace changed relative to the base revision while the sim version
   did not.
-- The browser/native equivalence job fails when Linux, Windows and the browsers agree
+- The browser/native equivalence job fails when Linux, Windows, macOS and the browsers agree
   on a `--verify-match` trace that differs from the committed one: the simulation
   changed.
 
@@ -916,7 +916,7 @@ once both exist it requires the copy to equal the source.
 
 `test/fixtures/multiplayer/FourSquares1.g2mr` is a short recorded match (two humans,
 Nicowar and Warrush) with its expected verification trace. The browser/native
-simulation equivalence job verifies it on Linux, Windows and in three browsers and
+simulation equivalence job verifies it on Linux, Windows, macOS and in three browsers and
 requires identical traces (see
 [headless replays](../development/headless-replays.md#verifying-a-match-record)). A
 simulation change makes it stale and must bump `SIM_REVISION`; `python3
