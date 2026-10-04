@@ -74,7 +74,7 @@ test('later packages arrive in the background and replace the core font', async 
   // The full font now has the CJK outlines the core copy leaves out.
   const size = await page.evaluate(() => FS.stat('/data/fonts/sans.ttf').size);
   expect(size).toBeGreaterThan(4e6);
-  expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.ogg').exists)).toBe(true);
+  expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.opus').exists)).toBe(true);
   // The reloaded string table still drives the menu.
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');

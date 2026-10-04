@@ -21,7 +21,7 @@ jobs:
         with:
           ref: ${{ inputs.revision || github.sha }}
       - name: Install development dependencies
-        run: brew install cmake freetype libpng jpeg-turbo scons pkgconf libvorbis libogg speex openssl@3 boost fribidi libepoxy
+        run: brew install cmake freetype libpng jpeg-turbo scons pkgconf opusfile opus libogg speex openssl@3 boost fribidi libepoxy
       - uses: ./.github/actions/sdl3
         with:
           cc: clang

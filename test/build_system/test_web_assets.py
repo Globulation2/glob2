@@ -87,9 +87,9 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(full, (ROOT / 'data/texts.ja.txt').read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
-        self.assertEqual(self.owner['data/zik/intro.ogg'], 'menu-music')
-        self.assertEqual(self.owner['data/zik/menu.ogg'], 'menu-music')
-        self.assertEqual(self.owner['data/zik/original/a1.ogg'], 'music')
+        self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
+        self.assertEqual(self.owner['data/zik/menu.opus'], 'menu-music')
+        self.assertEqual(self.owner['data/zik/original/a1.opus'], 'music')
         self.assertEqual(self.owner['data/zik/woodland/a1.ogg'], 'music-sets')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))

@@ -1,20 +1,16 @@
 import os
-    
+
 Import("env")
 Import("PackTar")
-    
+
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
-    for file in os.listdir("."):
-        if file.find(".ogg") != -1:
-            PackTar(env["TARFILE"], file)
-            env.Install(env["INSTALLDIR"]+"/glob2/data/zik", file)
-    
-    
-    PackTar(env["TARFILE"], "SConscript")
-    env.Alias("install", env["INSTALLDIR"]+"/glob2/data/zik")
-
-# Every soundtrack set is a directory of a1/a2/a3.ogg (calm/building/combat).
-# Sets other than "original" are built by tools/music; see docs/assets/music-pipeline.md.
-
-for music_set in ("original", "apple-cider", "bramble-jig", "curious-critters", "fennel-mist", "glass-garden", "moss-lanterns", "orchestral-dawn", "thistle-waltz", "woodland"):
-    SConscript(music_set + "/SConscript")
+    # Sets are discovered by directory, so new sets need no build registration.
+    for directory, _, files in os.walk("."):
+        for name in sorted(files):
+            file = os.path.normpath(os.path.join(directory, name))
+            if name.endswith(".opus"):
+                PackTar(env["TARFILE"], file)
+                env.Install(env["INSTALLDIR"] + "/glob2/data/zik/" + directory, file)
+            elif name == "SConscript":
+                PackTar(env["TARFILE"], file)
+    env.Alias("install", env["INSTALLDIR"] + "/glob2/data/zik")

@@ -5,7 +5,7 @@ Import("PackTar")
     
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     for file in os.listdir("."):
-        if file.find(".ogg") != -1:
+        if file.find(".opus") != -1:
             PackTar(env["TARFILE"], file)
             env.Install(env["INSTALLDIR"]+"/glob2/data/zik/original", file)
     

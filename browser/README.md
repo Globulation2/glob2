@@ -177,7 +177,7 @@ The browser client uses mouse and keyboard controls.
 Online play goes through the online hub, as on desktop; matches run over the
 platform's relay. LAN joining requires a certificate trusted by the browser;
 browser hosting remains unavailable. See `docs/browser/gateway.md` for the transports. Refreshing or disconnecting during a match ends that player's participation. Voice chat is a no-op; music uses the
-existing Vorbis mixer. Map fertility is staged privately before publication. Landscape previews run
+48 kHz Opus mixer. Map fertility is staged privately before publication. Landscape previews run
 on the shared native worker path in threaded builds and one candidate per UI
 timer in the serial fallback; an individual fallback roll remains synchronous. WebGL2 reuses the existing GPU renderer through Emscripten compatibility glue;
 there is no mobile UI adaptation.

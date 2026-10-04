@@ -206,9 +206,9 @@ void GlobalContainer::loadClient(void)
 		// Track slots must match the MusicTrack enum order. Engine::run may
 		// later overwrite the InGame* slots with a randomly chosen music dir.
 		loadMenuMusic();
-		mix->loadTrack("data/zik/original/a1.ogg",      MusicTrack::InGameDefault);
-		mix->loadTrack("data/zik/original/a2.ogg",      MusicTrack::BuildingEvent);
-		mix->loadTrack("data/zik/original/a3.ogg",      MusicTrack::WarEvent);
+		mix->loadTrack("data/zik/original/a1.opus",      MusicTrack::InGameDefault);
+		mix->loadTrack("data/zik/original/a2.opus",      MusicTrack::BuildingEvent);
+		mix->loadTrack("data/zik/original/a3.opus",      MusicTrack::WarEvent);
 		mix->setNextTrack(MusicTrack::Intro);
 		mix->setNextTrack(MusicTrack::Menu);
 		
@@ -354,8 +354,8 @@ bool GlobalContainer::loadMenuMusic(void)
 		return true;
 	if (!mix || !GAGCore::ApplicationHost::assetPackageReady("menu-music"))
 		return false;
-	mix->loadTrack("data/zik/intro.ogg",            MusicTrack::Intro);
-	mix->loadTrack("data/zik/menu.ogg",             MusicTrack::Menu);
+	mix->loadTrack("data/zik/intro.opus",            MusicTrack::Intro);
+	mix->loadTrack("data/zik/menu.opus",             MusicTrack::Menu);
 	menuMusic = true;
 	return true;
 }

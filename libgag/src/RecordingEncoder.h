@@ -66,7 +66,7 @@ class MediaWriter
 	MediaWriter(const MediaWriter &) = delete;
 	MediaWriter &operator=(const MediaWriter &) = delete;
 	void video(const VideoPacket &packet);
-	// Input timestamps and sample counts are stereo frames, at 44100 Hz.
+	// Input timestamps and sample counts are stereo frames, at 48000 Hz.
 	void audio(const std::int16_t *pcm, std::size_t frames, std::int64_t startFrame);
 	void silenceThrough(std::int64_t frame);
 	void finish(std::int64_t durationUs);

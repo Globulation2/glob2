@@ -59,7 +59,7 @@ EXCLUDED_DIRECTORIES = ('data/icons/', 'data/screenshots/')
 OPTIONAL = (
     ('skins', ('data/skins/',)),
     ('font-cjk', ('data/fonts/sans.ttf',)),
-    ('menu-music', ('data/zik/intro.ogg', 'data/zik/menu.ogg')),
+    ('menu-music', ('data/zik/intro.opus', 'data/zik/menu.opus')),
     ('translations', ('data/texts.',)),
     ('music', ('data/zik/original/',)),
     # Every other soundtrack set (data/zik/<set>/, built by tools/music). Matched
@@ -307,7 +307,7 @@ def category(path, game=()):
     if path in game:
         return 'game sprites'
     for prefix, label in (('data/highres/', 'high-resolution art'), ('data/zik/original/', 'in-game music'),
-                          ('data/zik/intro.ogg', 'menu music'), ('data/zik/menu.ogg', 'menu music'),
+                          ('data/zik/intro.opus', 'menu music'), ('data/zik/menu.opus', 'menu music'),
                           ('data/zik/', 'other soundtrack sets'), ('data/fonts/', 'font'), ('data/gfx/', 'menu sprites'),
                           ('data/gui/', 'interface'), ('data/menu/', 'interface'), ('data/texts.', 'translations'),
                           ('maps/', 'maps'), ('campaigns/', 'campaigns'), ('scripts/', 'scripts')):

@@ -42,7 +42,7 @@ BuildRequires:  libpng-static
 BuildRequires:  git
 BuildRequires:  alsa-lib-devel
 BuildRequires:  pulseaudio-libs-devel
-BuildRequires:  libvorbis-devel
+BuildRequires:  opusfile-devel opus-devel
 BuildRequires:  libogg-devel
 BuildRequires:  speex-devel
 BuildRequires:  boost-devel

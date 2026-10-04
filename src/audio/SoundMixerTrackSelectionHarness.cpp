@@ -12,7 +12,7 @@
 //     because it only moved `nextTrack` once actTrack was set. GlobalContainer
 //     asks for Intro then Menu at startup, so on unmute setVolume() resumed
 //     Intro and, since nextTrack had been overwritten with it too, looped it
-//     forever: menu.ogg never played. Unmuting inside a game played the menu
+//     forever: menu.opus never played. Unmuting inside a game played the menu
 //     track rather than the game track. While nothing is playing there is no
 //     "current" track, so the selection must move both.
 //
@@ -33,8 +33,13 @@
 
 #include <Environment.h>
 #include "Glob2Test.h"
+#include "ScopedEnvironment.h"
 
 #include <cstdio>
+#include <array>
+#include <algorithm>
+#include <filesystem>
+#include <fstream>
 #include <string>
 
 #include <SDL3/SDL.h>
@@ -55,7 +60,7 @@ namespace
 	// callbacks one FADE_SAMPLE_COUNT fade spans.
 	const int kDeviceFrameCount = 1024;
 	const int kCallbackBytes = kDeviceFrameCount * 2 /*channels*/ * 2 /*Sint16*/;
-	const int kCallbacksPerFade = (4096 * 8) / (kDeviceFrameCount * 2);
+	const int kCallbacksPerFade = (SoundMixer::FadeSampleCount + kDeviceFrameCount * 2 - 1) / (kDeviceFrameCount * 2);
 
 	void check(bool ok, const char *what)
 	{
@@ -95,7 +100,7 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 
 	// The dummy driver gives a real SDL_OpenAudioDeviceStream without needing hardware, so
 	// the muted-start / unmute path below is the production one.
-	GAGCore::setProcessEnvironment("SDL_AUDIODRIVER", "dummy", 1);
+	glob2test::ScopedEnvironment audio("SDL_AUDIODRIVER", "dummy");
 	REQUIRE_MESSAGE(SDL_InitSubSystem(SDL_INIT_AUDIO), (SDL_GetError()));
 
 	glob2test::ToolkitScope toolkit;
@@ -107,9 +112,9 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 		check(!mix.soundEnabled, "muted start leaves the device closed");
 
 		const char *names[] = {
-			"data/zik/intro.ogg", "data/zik/menu.ogg",
-			"data/zik/original/a1.ogg", "data/zik/original/a2.ogg",
-			"data/zik/original/a3.ogg" };
+			"data/zik/intro.opus", "data/zik/menu.opus",
+			"data/zik/original/a1.opus", "data/zik/original/a2.opus",
+			"data/zik/original/a3.opus" };
 		for (int i = 0; i < 5; i++)
 		{
 			REQUIRE_MESSAGE(mix.loadTrack(names[i], i) >= 0, "could not load " << names[i] << " from " << dataDir);
@@ -149,7 +154,7 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 			"crossfade still running one callback short of the end");
 		pump(mix, 1);
 		check(mix.mode == SoundMixer::MODE_NORMAL,
-			"crossfade lands after exactly 16 callbacks");
+			"crossfade lands after the expected callback count");
 		checkTrack(mix.actTrack, MusicTrack::BuildingEvent,
 			"crossfade hands over to the incoming track");
 
@@ -196,5 +201,60 @@ TEST_CASE("track selection while closed and queued mid-fade changes")
 	}
 
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+}
+}
+
+TEST_SUITE("SoundMixerTrackSelection")
+{
+TEST_CASE("Opus trimmed timeline looping seeking and unavailable decoder")
+{
+	glob2test::ToolkitScope toolkit;
+	GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+	SoundMixer mix(255, 255, true);
+	mix.musicVolume = 255;
+	REQUIRE(mix.loadTrack("test/fixtures/audio/trimmed.opus", 0) == 0);
+	REQUIRE(mix.loadTrack("test/fixtures/audio/trimmed.opus", 1) == 1);
+	CHECK(op_pcm_total(mix.tracks[0], -1) == 4813); // not a multiple of an Opus packet
+	CHECK(op_pcm_seek(mix.tracks[0], 4800) == 0);
+	mix.actTrack = mix.nextTrack = 0;
+	mix.mode = SoundMixer::MODE_NORMAL;
+	alignas(Sint16) std::array<Sint16, 2048> output;
+	mixaudio(&mix, reinterpret_cast<Uint8 *>(output.data()), sizeof(output));
+	CHECK(op_pcm_tell(mix.tracks[0]) == (4800 + 1024) % 4813);
+	CHECK(std::any_of(output.begin(), output.end(), [](Sint16 n) { return n != 0; }));
+	REQUIRE(op_raw_seek(mix.tracks[0], 0) == 0);
+	CHECK(op_pcm_seek(mix.tracks[0], 4700) == 0);
+	// Incoming decoder has a partially consumed packet; alignment must reset it.
+	opus_int16 partial[200];
+	REQUIRE(op_read_stereo(mix.tracks[1], partial, 200) == 100);
+	mix.nextTrack = 1;
+	mix.mode = SoundMixer::MODE_EARLY_CHANGE;
+	mix.fadePos = 0;
+	mixaudio(&mix, reinterpret_cast<Uint8 *>(output.data()), sizeof(output));
+	CHECK(op_pcm_tell(mix.tracks[0]) == op_pcm_tell(mix.tracks[1]));
+	CHECK(mix.loadTrack("test/fixtures/audio/unsupported-vorbis.ogg", 0) == -2);
+	CHECK(op_pcm_total(mix.tracks[0], -1) == 4813); // rejection leaves the old decoder
+    const auto profile = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0));
+    std::ofstream(profile / "empty.opus", std::ios::binary);
+    CHECK(mix.loadTrack("empty.opus", 0) == -2);
+    {
+        std::ifstream source(glob2test::sourceRoot() / "test/fixtures/audio/trimmed.opus", std::ios::binary);
+        char header[48]; source.read(header, sizeof(header));
+        std::ofstream(profile / "truncated.opus", std::ios::binary).write(header, sizeof(header));
+    }
+    CHECK(mix.loadTrack("truncated.opus", 0) == -2);
+    REQUIRE(mix.loadTrack("test/fixtures/audio/damaged-packet.opus", 2) == 2);
+    mix.actTrack = mix.nextTrack = 2;
+    mix.mode = SoundMixer::MODE_NORMAL;
+    for (int i = 0; i < 32; ++i)
+        mixaudio(&mix, reinterpret_cast<Uint8 *>(output.data()), sizeof(output));
+    CHECK(op_pcm_tell(mix.tracks[2]) >= 0);
+	// Missing/failed decoder must fill the whole callback and return promptly.
+	op_free(mix.tracks[0]); mix.tracks[0] = nullptr;
+	mix.actTrack = mix.nextTrack = 0;
+	mix.mode = SoundMixer::MODE_NORMAL;
+	output.fill(12345);
+	mixaudio(&mix, reinterpret_cast<Uint8 *>(output.data()), sizeof(output));
+	CHECK(std::all_of(output.begin(), output.end(), [](Sint16 n) { return n == 0; }));
 }
 }

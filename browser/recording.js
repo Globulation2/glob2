@@ -22,7 +22,7 @@ Module.glob2Recording = {
     this.frames++; this.worker.postMessage({type:'frame',bytes,width,height,time,context:details},[bytes]); return true;
   },
   pcm(pointer,count,time) {
-    if (!this.active || this.audio+count>44100*2*2) return false;
+    if (!this.active || this.audio+count>48000*2*2) return false;
     const bytes=HEAPU8.slice(pointer,pointer+count*2).buffer;
     this.audio+=count; this.worker.postMessage({type:'audio',bytes,time},[bytes]); return true;
   },

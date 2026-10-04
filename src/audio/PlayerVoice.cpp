@@ -2,17 +2,18 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "PlayerVoice.h"
+#include <AudioFormat.h>
 
 namespace
 {
 	//! Speex narrowband decoder output rate (Hz).
 	constexpr float VOICE_INPUT_RATE_HZ = 8000.0f;
 	//! SDL audio device output rate (Hz).
-	constexpr float VOICE_OUTPUT_RATE_HZ = 44100.0f;
+	constexpr float VOICE_OUTPUT_RATE_HZ = GAGCore::AudioSampleRate;
 	//! The mixer callback runs once per output *channel* sample (stereo = two
 	//! channels per frame), so each voice advances by half the input-to-output
-	//! sample-rate ratio per call. Kept as the original literal expression so
-	//! the produced audio is bit-identical to the pre-extraction mixer.
+	//! sample-rate ratio per call. The output rate is shared with
+	//! music and recording so voice duration does not depend on the codec.
 	constexpr float VOICE_INTERPOLATION_STEP =
 		(VOICE_INPUT_RATE_HZ / VOICE_OUTPUT_RATE_HZ) * 0.5f;
 }
