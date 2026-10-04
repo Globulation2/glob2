@@ -42,6 +42,15 @@ std::vector<double> ratioPercent(const std::vector<double> &values, const std::v
 	return out;
 }
 
+std::vector<double> meanOf(const std::vector<double> &values, const std::vector<double> &count)
+{
+	std::vector<double> out(values.size(), std::nan(""));
+	for (std::size_t i = 0; i < values.size() && i < count.size(); ++i)
+		if (count[i] > 0)
+			out[i] = values[i] / count[i];
+	return out;
+}
+
 std::vector<double> movingAverage(const std::vector<double> &values, int window)
 {
 	std::vector<double> out(values.size(), 0.0);

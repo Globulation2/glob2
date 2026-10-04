@@ -12,6 +12,7 @@
 #include <Toolkit.h>
 #include <algorithm>
 #include <cmath>
+#include <functional>
 using namespace GAGCore;
 
 const Color TeamStatChart::background(34, 24, 49);
@@ -265,6 +266,12 @@ struct ChartPainter
 		int x = left + pad;
 		for (std::size_t b = 0; b < chart.bandKeys.size(); ++b)
 		{
+			// A band no team ever has anything in is left out of the legend.
+			bool used = false;
+			for (const auto &team : chart.teams)
+				used |= std::any_of(team.values[b].begin(), team.values[b].end(), [](double value) { return value > 0; });
+			if (!used)
+				continue;
 			const std::string label = tr(chart.bandKeys[b]);
 			const int need = legendSwatch + 4 + text.width(label) + 12;
 			if (x + need > left + width - pad && x > left + pad)
@@ -303,6 +310,7 @@ struct ChartPainter
 		// Every panel has the same axis, so the teams can be compared.
 		const Stats::Axis axis = chart.percent ? Stats::Axis{0, 100, 25} : Stats::niceAxis(0, chart.high, std::max(2, cellH / 40), !chart.decimals);
 		const int labelW = valueLabelWidth(text, axis, chart.percent, chart.decimals);
+		std::function<void()> hovered;
 		for (int i = 0; i < count; ++i)
 		{
 			const auto &series = chart.teams[std::size_t(i)];
@@ -324,8 +332,11 @@ struct ChartPainter
 			text.surface.drawRect(plot.x, plot.y, plot.w, plot.h, grid);
 			paintTimeAxis(text, plot);
 			if (plot.contains(hoverX(), hoverY()))
-				paintPanelReadout(plot, series, team);
+				hovered = [this, plot, &series, &team] { paintPanelReadout(plot, series, team); };
 		}
+		// Last, so that no later panel's title is drawn over the readout.
+		if (hovered)
+			hovered();
 	}
 
 	//! The stacked areas of one team, filled a pixel column at a time, bottom
@@ -528,8 +539,12 @@ std::string TeamStatChart::axisTitle(const Stats::Metric &metric, const Stats::V
 	const Stats::View view = Stats::validView(metric, requested);
 	const std::string unit = tr(metric.unitKey);
 	const bool rate = metric.kind == Stats::Metric::Counter && !view.total;
+	// A split metric's ratio is its headline in text panels, not what is charted.
+	const bool ratio = metric.ratioOf && !view.split;
 	std::string text;
-	if (metric.ratioOf)
+	if (ratio && metric.mean)
+		text = "%0";
+	else if (ratio)
 		text = tr("[stat axis percent of %0]");
 	else if (view.share)
 		text = tr("[stat axis share of all teams]");
@@ -539,6 +554,9 @@ std::string TeamStatChart::axisTitle(const Stats::Metric &metric, const Stats::V
 		text = tr("[stat axis percent of units]");
 	else if (view.relative)
 		text = tr(rate ? "[stat axis %0 per minute per 100 units]" : "[stat axis %0 per 100 units]");
+	else if (rate && metric.scale != 1)
+		// Worker time: its scaled rate is a number of workers, not workers a minute.
+		text = "%0";
 	else if (rate)
 		text = tr("[stat axis %0 per minute]");
 	else if (metric.kind == Stats::Metric::Counter)
@@ -548,7 +566,7 @@ std::string TeamStatChart::axisTitle(const Stats::Metric &metric, const Stats::V
 	// Not every wording names the unit, and arg() appends what has no place.
 	if (text.find("%0") != std::string::npos)
 		text = FormattableString(text).arg(unit);
-	if (rate || metric.ratioOf || metric.smoothed)
+	if (rate || metric.smoothed)
 		text += ", " + std::string(FormattableString(tr("[stat axis %0 minute average]")).arg(Stats::windowMinutes(view.window)));
 	return text;
 }
@@ -564,6 +582,9 @@ Color TeamStatChart::bandColor(const Stats::Chart &chart, std::size_t index)
 {
 	if (chart.ordered)
 		return ordered[std::min(index, std::size(ordered) - 1)];
+	// "Other" is the same neutral grey wherever it appears, whatever its position.
+	if (index < chart.bandKeys.size() && chart.bandKeys[index] == "[stat band other]")
+		return Color(150, 148, 160);
 	return categorical[index % std::size(categorical)];
 }
 
@@ -580,7 +601,7 @@ void TeamStatChart::paintReadings(DrawableSurface &surface, int left, int top, i
 		const Stats::View view = Stats::defaultView(metric);
 		const auto reading = Stats::latestReading(metric, view, history);
 		std::string value = readingText(reading);
-		if (reading.available && metric.kind == Stats::Metric::Counter && !metric.ratioOf)
+		if (reading.available && metric.kind == Stats::Metric::Counter && !metric.ratioOf && metric.scale == 1)
 			value += perMinute;
 		const int valueWidth = text.width(value);
 		surface.drawString(left + 4, y, text.font, text.fit(title(metric), width - 12 - valueWidth));
