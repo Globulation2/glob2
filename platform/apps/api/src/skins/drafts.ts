@@ -6,7 +6,7 @@ import { body } from '../http/validate.ts';
 import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { canonicalSkinImage } from './images.ts';
-import { storedSwarmMesh } from './manifest.ts';
+import { knownSwarmMesh } from './manifest.ts';
 
 export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) {
   const { db } = app.services;
@@ -28,7 +28,7 @@ export async function skinDraftRoutes(app: FastifyInstance, identity: Identity) 
             revision: row.revision,
             name: row.name,
             buildingColor: row.building_color,
-            swarmMesh: storedSwarmMesh(row.swarm_mesh),
+            swarmMesh: knownSwarmMesh(row.swarm_mesh) ?? 'classic',
             imageBase64: row.image.toString('base64'),
           }
         : null,

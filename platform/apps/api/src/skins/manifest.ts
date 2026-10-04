@@ -28,9 +28,11 @@ export function skinManifestSha256(content: SkinContent): string {
   return sha256Hex(Buffer.from(JSON.stringify(manifest)));
 }
 
-/** A stored swarm mesh id, which the API only ever writes from the catalog. */
-export function storedSwarmMesh(value: string): SwarmMeshId {
-  const id = SWARM_MESHES.find((mesh) => mesh === value);
-  if (!id) throw new Error(`Unknown stored swarm mesh: ${value}`);
-  return id;
+/**
+ * A stored swarm mesh id, or undefined for one this API does not know: the
+ * database accepts any well-formed id, so a rolled-back release can meet rows a
+ * newer one wrote.
+ */
+export function knownSwarmMesh(value: string): SwarmMeshId | undefined {
+  return SWARM_MESHES.find((mesh) => mesh === value);
 }

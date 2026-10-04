@@ -12,7 +12,7 @@ import { SharedLimit, enforce } from '../http/rateLimits.ts';
 import { apiError } from '../errors.ts';
 import { equipSkin } from './equipment.ts';
 import { canonicalSkinImage } from './images.ts';
-import { skinManifestSha256, type SkinContent } from './manifest.ts';
+import { knownSwarmMesh, skinManifestSha256, type SkinContent } from './manifest.ts';
 
 export async function skinRoutes(app: FastifyInstance, identity: Identity) {
   const { db, blobs } = app.services;
@@ -48,7 +48,7 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
   });
   app.get('/api/v1/skins', async (request) => {
     const { account } = await requireAccount(identity, request);
-    const items = await db
+    const versions = await db
       .selectFrom('colony_skins as s')
       .innerJoin('colony_skin_versions as v', 'v.skin_id', 's.id')
       .select([
@@ -70,6 +70,8 @@ export async function skinRoutes(app: FastifyInstance, identity: Identity) {
       .orderBy('v.created_at', 'desc')
       .limit(200)
       .execute();
+    // Like match appearances, omit versions for a swarm mesh this release does not know.
+    const items = versions.filter((version) => knownSwarmMesh(version.swarmMesh));
     const equipment = await db
       .selectFrom('colony_skin_equipment')
       .select(['version_id', 'building_color'])

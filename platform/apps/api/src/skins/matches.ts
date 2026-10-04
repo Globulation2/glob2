@@ -10,7 +10,7 @@ import {
 } from '@glob2/protocol';
 import type { SigningKeys } from '../auth/keys.ts';
 import { HttpError } from '../errors.ts';
-import { storedSwarmMesh } from './manifest.ts';
+import { knownSwarmMesh } from './manifest.ts';
 import { authorizedSkin } from './equipment.ts';
 
 /** Serialize the first assignment across API replicas, freezing defaults too.
@@ -74,6 +74,9 @@ export async function matchColonySkins(
             continue;
           throw error;
         }
+        // A mesh this release cannot name cannot be signed; the team keeps classic art.
+        const swarmMesh = knownSwarmMesh(authorized.swarm_mesh);
+        if (!swarmMesh) continue;
         const version: ColonySkinVersion = {
           id: authorized.id,
           skinId: authorized.skin_id,
@@ -81,7 +84,7 @@ export async function matchColonySkins(
           manifestSha256: authorized.manifest_sha256,
           layout: authorized.layout,
           buildingColor: authorized.building_color,
-          swarmMesh: storedSwarmMesh(authorized.swarm_mesh),
+          swarmMesh,
         };
         await trx
           .insertInto('match_colony_skins')
@@ -126,7 +129,9 @@ export async function matchColonySkins(
     .where('m.match_id', '=', matchId)
     .orderBy('m.team_index')
     .execute();
-  return rows.map((row) => {
+  return rows.flatMap((row) => {
+    const swarmMesh = knownSwarmMesh(row.swarm_mesh);
+    if (!swarmMesh) return [];
     const version: ColonySkinVersion = {
       id: row.id,
       skinId: row.skin_id,
@@ -134,15 +139,17 @@ export async function matchColonySkins(
       manifestSha256: row.manifest_sha256,
       layout: row.layout,
       buildingColor: row.building_color,
-      swarmMesh: storedSwarmMesh(row.swarm_mesh),
+      swarmMesh,
     };
     // Refresh only authorization lifetime; the frozen content never changes.
-    return {
-      team: row.team_index,
-      accountId: row.account_id,
-      version,
-      buildingColor: row.chosen_color,
-      assertion: sign(row.team_index, row.account_id, version, row.chosen_color),
-    };
+    return [
+      {
+        team: row.team_index,
+        accountId: row.account_id,
+        version,
+        buildingColor: row.chosen_color,
+        assertion: sign(row.team_index, row.account_id, version, row.chosen_color),
+      },
+    ];
   });
 }
