@@ -84,7 +84,7 @@ jobs:
         \ can load the client and every harness directly.\nfor directory in build/mingw/client/release/src\
         \ build/mingw/client/release/test; do\n  cp build/sdl3-ci/prefix/bin/*.dll\
         \ \"$directory/\"\ndone\n"
-    - name: Test shutdown before worker exit
+    - name: Test send shutdown before socket close
       run: 'mkdir -p artifacts/windows-lan
 
         python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release
@@ -99,7 +99,7 @@ jobs:
 
         set +e
 
-        GLOB2_LAN_STOP_BEFORE_CLOSE=1 python3 test/run_tests.py --binary engine --build-dir
+        GLOB2_LAN_ABORTIVE_CLOSE=1 python3 test/run_tests.py --binary engine --build-dir
         build/mingw/client/release --filter ''LanMatchHarness/LAN WSS drop*'' --artifacts
         artifacts/windows-lan/before --junit artifacts/windows-lan/before.xml > artifacts/windows-lan/before.log
         2>&1
