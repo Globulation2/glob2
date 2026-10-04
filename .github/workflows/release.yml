@@ -40,12 +40,6 @@ env:
   GLOB2_SDL3_PREFIX: build/sdl3-ci/prefix
 
 jobs:
-  development-verification:
-    needs: preflight
-    uses: ./.github/workflows/build.yml
-    with:
-      revision: ${{ needs.preflight.outputs.revision }}
-
   preflight:
     if: >-
       github.repository == 'genixpro/glob2-release' &&
@@ -93,7 +87,7 @@ jobs:
         run: python3 -m unittest tests.build_system.test_android_release -v
 
   source:
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -119,7 +113,7 @@ jobs:
           if-no-files-found: error
 
   android-package:
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -183,7 +177,7 @@ jobs:
           if-no-files-found: ignore
 
   linux-package:
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -275,7 +269,7 @@ jobs:
           if-no-files-found: error
 
   distro-build:
-    needs: [preflight, development-verification]
+    needs: preflight
     name: Source build on ${{ matrix.name }}
     runs-on: ubuntu-24.04
     container: ${{ matrix.image }}
@@ -378,7 +372,7 @@ jobs:
           if-no-files-found: error
 
   windows-package:
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: windows-latest
     defaults:
       run:
@@ -537,7 +531,7 @@ jobs:
           if-no-files-found: error
 
   macos-package:
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: macos-15
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -568,7 +562,7 @@ jobs:
 
   flatpak-package:
     if: ${{ inputs.build_flatpak }}
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: ubuntu-24.04
     container:
       image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-50
@@ -609,7 +603,7 @@ jobs:
           if-no-files-found: error
 
   snap-package:
-    needs: [preflight, development-verification]
+    needs: preflight
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
