@@ -13,6 +13,7 @@ jobs:
     timeout-minutes: 45
     env:
       GLOB2_TEST_RENDERER: software
+      GLOB2_DEV_MODE: isolated
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -24,17 +25,30 @@ jobs:
           run-id: 37187146428
           github-token: ${{ github.token }}
           path: build/emscripten/client/release
+      - uses: actions/download-artifact@v4
+        with:
+          name: web-native
+          run-id: 37187008011
+          github-token: ${{ github.token }}
+          path: artifacts/ci-native
+      - name: Install the same native libraries and display as the failing shard
+        run: |
+          tar -xzf artifacts/ci-native/web-native.tar.gz
+          sudo apt-get update -qq
+          xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
+          python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
       - name: Install the pinned browser test runtime
         working-directory: browser
         run: |
-          npm ci
+          npm ci --ignore-scripts
           npx playwright install --with-deps chromium
       - name: Repeat the original storage and renderer cases with failure stack capture
         working-directory: browser
         run: |
-          for attempt in $(seq 1 30); do
-            echo "Cold-browser storage attempt $attempt"
-            npx playwright test tests/storage.spec.js --project=chromium --grep 'abort failure' || exit $?
+          for attempt in $(seq 1 5); do
+            echo "Complete shard attempt $attempt"
+            xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\.spec\.js|rendering\.spec\.js|settings-storage\.spec\.js' || exit $?
           done
       - uses: actions/upload-artifact@v4
         if: always()
