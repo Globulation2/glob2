@@ -34,6 +34,30 @@ class MusicEncodingTests(unittest.TestCase):
 
 
 class MusicPackagingTests(unittest.TestCase):
+    def test_native_install_discovers_source_sets_from_a_variant_directory(self):
+        from types import SimpleNamespace
+        script = Path(__file__).resolve().parents[2] / 'data/zik/SConscript'
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder) / 'source'; root.mkdir()
+            names = ['intro.opus', 'menu.opus'] + [f'{name}/a{i}.opus'
+                    for name in ['original', 'incoming'] for i in range(1, 4)]
+            for name in names + ['retired.ogg']:
+                path = root / name; path.parent.mkdir(exist_ok=True); path.touch()
+            installed = []
+            class Environment(dict):
+                def Dir(self, path):
+                    return SimpleNamespace(srcnode=lambda: SimpleNamespace(abspath=str(root)))
+                def Install(self, destination, source): installed.append((destination, source))
+                def Alias(self, *args): pass
+            env = Environment(INSTALLDIR='/installed', TARFILE='archive')
+            exec(compile(script.read_text(), str(script), 'exec'),
+                 dict(env=env, Import=lambda *args: None, PackTar=lambda *args: None,
+                      COMMAND_LINE_TARGETS=['install']))
+            self.assertEqual(sorted(source for _, source in installed), sorted(names))
+            self.assertEqual(sorted(str(Path(destination) / Path(source).name)
+                                    for destination, source in installed),
+                             sorted('/installed/glob2/data/zik/' + name for name in names))
+
     def test_vorbis_cannot_enter_runtime_assets(self):
         from package_assets import source_files
         with tempfile.TemporaryDirectory() as directory:

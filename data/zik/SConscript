@@ -5,7 +5,9 @@ Import("PackTar")
 
 if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
     # Sets are discovered by directory, so new sets need no build registration.
-    for directory, _, files in os.walk("."):
+    source_root = env.Dir(".").srcnode().abspath
+    for source_directory, _, files in os.walk(source_root):
+        directory = os.path.relpath(source_directory, source_root)
         for name in sorted(files):
             file = os.path.normpath(os.path.join(directory, name))
             if name.endswith(".opus"):
