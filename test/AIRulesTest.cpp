@@ -234,7 +234,8 @@ TEST_CASE("restored controller queues discard unavailable work and release prere
 TEST_CASE("Cabino migrates legacy warrior reservations only when training is disabled")
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame w(6,6,2);
+    glob2test::HeadlessGame w(glob2test::GameOptions{.wDec=6,.hDec=6,.teams=2,
+        .loadDefaultRace=true,.header=true});
     auto* flag=w.addBuilding("warflag",4,4);
     Cabino::AICabino old(w.game.players[0]);
     auto* manager=static_cast<Cabino::DistributedUnitManager*>(old.getUnitModule());
