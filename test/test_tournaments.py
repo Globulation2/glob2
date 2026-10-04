@@ -387,6 +387,20 @@ class InventoryTests(unittest.TestCase):
             if process.poll() is None:
                 process.kill(); process.wait()
 
+    def test_reap_refuses_a_reused_pid(self):
+        import subprocess
+        from tools.tournaments.inventory import reap
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(30)'])
+        try:
+            directory = self.install('reused', process.pid)
+            host = {'name': 'localhost', 'transport': 'local', 'directory': str(self.root / 'mine')}
+            with self.assertRaises(subprocess.CalledProcessError):
+                reap(host, str(directory), confirm=True, root=str(self.root))
+            self.assertIsNone(process.poll())
+        finally:
+            process.kill()
+            process.wait()
+
     def test_reap_unknown_directory_raises(self):
         from tools.tournaments.inventory import reap
         self.install('mine', 999999999)

@@ -5,20 +5,11 @@ Duels use an order-independent, unregularized Bradley–Terry fit and matching
 paired-block uncertainty. Other formats retain the two legacy estimators below.
 Only pool directories with compatible AI source, settings and map distribution.
 
-`elo` is the existing iterative rating from tools.tournaments.analysis, kept
-unchanged. It is what the tournament reports as it goes, but it understates how
-far apart the strongest and weakest actually are: a rating that walks by K per
-game cannot reach the spread implied by a matchup one side never loses, and no
-finite Elo can express a 100% win rate at all. It also depends on the order the
-games happened to be played.
-
-`strength` fits every game at once instead, by maximum likelihood over the whole
-finishing order (Plackett-Luce, the Bradley-Terry model when there are two
-sides). Order does not matter, every game informs every rating, and the ridge
-penalty keeps a competitor who has never lost at a finite number rather than
-letting it run away. It is reported on the same 400-points-per-tenfold scale as
-Elo, centred on 1500, so the two columns can be read side by side -- expect
-`strength` to be the wider and the more faithful of the two.
+Duel `ratings` use every outcome equally. Sequential values and uncertainty are
+retained under `legacy_sequential_*` keys for historical comparison. Other
+formats retain sequential Elo and the optional penalized finishing-order fit
+(`strengths`), which requires NumPy and SciPy. Those estimators are diagnostics;
+do not substitute them for an unavailable unregularized duel fit.
 
 Usage: python3 tools/tournaments_ai_leaderboard.py RESULTS_DIR [RESULTS_DIR ...] [--policy prestige] [--output report.json]
 """

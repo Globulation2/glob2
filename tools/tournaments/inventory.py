@@ -44,7 +44,8 @@ for dirpath, dirnames, filenames in os.walk(home):
     activity = None
     db_path = os.path.join(dirpath, 'queue.sqlite')
     if os.path.exists(db_path):
-        activity = os.path.getmtime(db_path)
+        activity = max(os.path.getmtime(path) for path in (db_path, db_path + '-wal')
+                       if os.path.exists(path))
         try:
             conn = sqlite3.connect(db_path)
             running = conn.execute("SELECT count(*) FROM queue WHERE state='running'").fetchone()[0]
@@ -112,7 +113,9 @@ def audit(hosts, stale_hours=24.0, root=None):
                     else None
                 )
                 install["idle_hours"] = age_hours
-                idle_no_work = not install.get("running") and not install.get("queued")
+                idle_no_work = (
+                    install.get("running") == 0 and install.get("queued") == 0
+                )
                 old_enough = age_hours is not None and age_hours >= stale_hours
                 install["stale"] = (not install["alive"]) or (
                     idle_no_work and old_enough

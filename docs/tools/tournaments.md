@@ -324,25 +324,18 @@ outbound SSH sessions. No port or service is opened on the coordinator.
 | audit --hosts FILE [--stale-hours N] | Discover every worker install found under each host's home directory, not just the ones named in FILE; read-only |
 | reap --hosts FILE --host NAME --directory DIR [--confirm] | Stop one stale install's daemon by exact PID; never deletes files; omit --confirm for a dry run |
 
-`audit` walks each host for the fixed `<directory>/workers/<package_id>/` layout
-every install shares (regardless of which package/protocol version it runs, since
-it only reads on-disk state, never that install's RPC) and flags an install stale
-when its daemon isn't running, or when it's still running but has had no
-running/queued work for `--stale-hours` (default 24) — a coordinator that died or
-a session that ended without cancelling leaves its worker idling indefinitely
-otherwise, invisible to anyone not already looking for it. `reap` stops exactly
-the PID `audit` reported for that directory, never a pattern match against
-process listings — a broad `pkill -f` risks matching its own invoking shell and
-killing the wrong session's work, which is how this tooling was actually being
-operated by hand before `audit`/`reap` existed. Deleting a stale install's files
-is a separate, deliberate decision left to a human; reap only frees the slot.
+`audit` searches up to six directory levels below each host's home for worker
+installs. It reads their persisted state across package versions. An install is
+stale when its daemon is dead, or its queue has no running/queued jobs and no
+recent database or WAL activity. Unreadable queue counts do not establish idleness.
 
-A `doctor`/`run` deployment's `configure` RPC updates a worker's `host.json` but,
-before this, had no effect on an already-running daemon: the daemon holds its own
-`Worker` instance for its whole lifetime and never re-read the file, so slot/build/
-budget changes silently didn't take effect until something else caused the daemon
-to restart. The daemon now reloads `host.json` on every tick (sub-second), so
-raising `slots` (for example) takes effect on the next tick, no restart required.
+`reap` defaults to a dry run. With `--confirm`, it checks that the recorded PID
+still names a daemon for the selected worker root before sending SIGTERM. This
+reduces stale-PID risk; the check and signal are not atomic. It leaves files and
+running game supervisors intact. Only reap installs whose work should stop.
+
+A `configure` RPC updates `host.json`; the daemon reads it on every tick, so
+slot/build/budget changes take effect without restarting the worker.
 
 Continue `run` or invoke `collect` after changing controls so connected workers
 receive them. Disconnected workers may finish before learning cancellation; those
@@ -573,7 +566,7 @@ above. Both use the same production report serializer.
 ## Ending decided games early
 
 `"win_probability_permille": 970` in an experiment design turns on the optional
-[win probability](../ai/win-probability-model.md) winning condition for its games, so a
+[win probability](../win-probability-model.md) winning condition for its games, so a
 match that is already decided is not played out. It is off by default, because it
 changes the outcome that gets measured and so must be asked for.
 

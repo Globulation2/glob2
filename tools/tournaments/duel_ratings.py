@@ -224,6 +224,8 @@ def report(rows, draws=1000, seed=1, pool_builds=False):
         detail["complete_paired_games"] = len(complete)
         try:
             uncertainty = summarize(complete, draws, seed)
+            if uncertainty["ratings"].keys() != ratings[key].keys():
+                raise ValueError("Complete pairs omit competitors from the point fit")
             detail["uncertainty"] = {
                 k: v
                 for k, v in uncertainty.items()
