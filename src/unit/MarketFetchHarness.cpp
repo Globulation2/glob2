@@ -139,6 +139,37 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 	std::puts("PASS stocked markets are goals of the fetch gradients");
 }
 
+TEST_CASE("MarketFetch/deliverer stays attached and fetches the next market delivery")
+{
+	glob2test::HeadlessGlobals globals;
+	globals->settings.rememberUnit = false;
+	Bed bed(39,39);
+	bed.market->resources[CHERRY]=30;
+	bed.hire();
+	bed.unit->arrive();
+	require(bed.unit->carriedResource==CHERRY, "first take from market");
+	bed.game.map.setGroundUnit(39,39,NOGUID);
+	bed.unit->posX=5; bed.unit->posY=5;
+	bed.game.map.setGroundUnit(5,5,bed.unit->gid);
+	bed.unit->displacement=Unit::DIS_FILLING_BUILDING;
+	bed.unit->needToRecheckMedical=true;
+	// An idle majority would release this deliverer under #254's hiring gate.
+	for (int i=0; i<4; ++i)
+	{
+		auto *idle=bed.game.addUnit(20+i,20,0,WORKER,0,0,0,0);
+		require(idle!=nullptr, "place idle worker");
+		idle->medical=Unit::MED_FREE;
+		idle->activity=Unit::ACT_RANDOM;
+	}
+	bed.unit->arrive();
+	require(bed.inn->resources[CHERRY]==10, "first delivery deposited");
+	require(bed.unit->attachedBuilding==bed.inn && bed.unit->activity==Unit::ACT_FILLING,
+	        "master hiring behavior keeps the worker attached after depositing");
+	require(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE,
+	        "next delivery uses the resource gradient");
+	require(bed.marketTile(bed.unit->targetX,bed.unit->targetY), "next target is the stocked market");
+}
+
 std::string saveMap(Map &map, bool text)
 {
 	auto *backend=new GAGCore::MemoryStreamBackend;

@@ -1663,7 +1663,7 @@ of the shipped Oggs in the disposable profile.
 ## Market fetching
 
 `MarketFetch` covers hiring and arrival at stocked markets, preference for a
-nearer natural resource, stock exhaustion, and binary/text preservation of market
+nearer natural resource, stock exhaustion, a retained worker's next delivery, and binary/text preservation of market
 fields and pending gradient publications. Non-market buildings use these fields;
 markets themselves fetch from natural resources. The market fields participate
 in the existing one-field-per-tick round robin and optional fixed-delay gradient
