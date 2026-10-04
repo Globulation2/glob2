@@ -1,0 +1,1381 @@
+﻿2026-10-04T03:08:09.6935167Z Current runner version: '2.337.0'
+2026-10-04T03:08:09.6962025Z ##[group]Runner Image Provisioner
+2026-10-04T03:08:09.6962941Z Hosted Compute Agent
+2026-10-04T03:08:09.6963572Z Version: 20260901.588
+2026-10-04T03:08:09.6964565Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T03:08:09.6965333Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T03:08:09.6966036Z Worker ID: {f25e069f-38f8-4c7b-93f0-85dc3149084a}
+2026-10-04T03:08:09.6966849Z Azure Region: westus
+2026-10-04T03:08:09.6967452Z ##[endgroup]
+2026-10-04T03:08:09.6969384Z ##[group]Operating System
+2026-10-04T03:08:09.6970058Z Ubuntu
+2026-10-04T03:08:09.6970603Z 22.04.5
+2026-10-04T03:08:09.6971213Z LTS
+2026-10-04T03:08:09.6971770Z ##[endgroup]
+2026-10-04T03:08:09.6972382Z ##[group]Runner Image
+2026-10-04T03:08:09.6973024Z Image: ubuntu-22.04
+2026-10-04T03:08:09.6973628Z Version: 20260927.309.1
+2026-10-04T03:08:09.6975258Z Included Software: https://github.com/actions/runner-images/blob/ubuntu22/20260927.309/images/ubuntu/Ubuntu2204-Readme.md
+2026-10-04T03:08:09.6976929Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu22%2F20260927.309
+2026-10-04T03:08:09.6978000Z ##[endgroup]
+2026-10-04T03:08:09.6979309Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T03:08:09.6981460Z Contents: read
+2026-10-04T03:08:09.6982162Z Metadata: read
+2026-10-04T03:08:09.6982906Z ##[endgroup]
+2026-10-04T03:08:09.6985386Z Secret source: Actions
+2026-10-04T03:08:09.6986456Z Cache mode: write
+2026-10-04T03:08:09.6987437Z Prepare workflow directory
+2026-10-04T03:08:09.7603466Z Prepare all required actions
+2026-10-04T03:08:09.7651425Z Getting action download info
+2026-10-04T03:08:10.1320667Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T03:08:10.2719958Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-04T03:08:10.6416831Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T03:08:10.8928628Z Uses: Globulation2/glob2/.github/workflows/ci-linux-build.yml@refs/heads/master (69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea)
+2026-10-04T03:08:10.8933446Z ##[group] Inputs
+2026-10-04T03:08:10.8934268Z   revision: 69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea
+2026-10-04T03:08:10.8934892Z   image: ubuntu:22.04
+2026-10-04T03:08:10.8935341Z   runner: ubuntu-22.04
+2026-10-04T03:08:10.8935788Z   compiler: g++-11
+2026-10-04T03:08:10.8936218Z   c_compiler: gcc-11
+2026-10-04T03:08:10.8937065Z   build_only: false
+2026-10-04T03:08:10.8937525Z   reuse_build: false
+2026-10-04T03:08:10.8937970Z   web_native: false
+2026-10-04T03:08:10.8938404Z   generator_only: false
+2026-10-04T03:08:10.8938864Z   coverage_profile: full
+2026-10-04T03:08:10.8939319Z   run_tests: true
+2026-10-04T03:08:10.8939755Z   runtime_packages: false
+2026-10-04T03:08:10.8940225Z   map_generators: true
+2026-10-04T03:08:10.8940679Z   validate_runtime: false
+2026-10-04T03:08:10.8941141Z   browser_only: false
+2026-10-04T03:08:10.8941613Z ##[endgroup]
+2026-10-04T03:08:10.8942275Z Complete job name: Linux GCC 11 build and tests / Linux tests (ubuntu-22.04, shard 2/4)
+2026-10-04T03:08:10.9814731Z ##[group]Run # Fetch immutable package indexes to avoid mirror-sync mismatches,
+2026-10-04T03:08:10.9815880Z [36;1m# Fetch immutable package indexes to avoid mirror-sync mismatches,[0m
+2026-10-04T03:08:10.9816810Z [36;1m# and bound network stalls without weakening signature verification.[0m
+2026-10-04T03:08:10.9817686Z [36;1msudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'[0m
+2026-10-04T03:08:10.9818378Z [36;1mAcquire::By-Hash "force";[0m
+2026-10-04T03:08:10.9818912Z [36;1mAcquire::Retries "3";[0m
+2026-10-04T03:08:10.9819432Z [36;1mAcquire::http::Timeout "30";[0m
+2026-10-04T03:08:10.9819978Z [36;1mAcquire::https::Timeout "30";[0m
+2026-10-04T03:08:10.9820492Z [36;1mEOF[0m
+2026-10-04T03:08:10.9820923Z [36;1msudo apt-get update -qq[0m
+2026-10-04T03:08:11.0570070Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:08:11.0570981Z env:
+2026-10-04T03:08:11.0571730Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:11.0572254Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:11.0572849Z   DEBIAN_FRONTEND: noninteractive
+2026-10-04T03:08:11.0573382Z ##[endgroup]
+2026-10-04T03:08:19.4798605Z ##[group]Run actions/checkout@v4
+2026-10-04T03:08:19.4798984Z with:
+2026-10-04T03:08:19.4799284Z   ref: 69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea
+2026-10-04T03:08:19.4799647Z   repository: Globulation2/glob2
+2026-10-04T03:08:19.4802205Z   token: ***
+2026-10-04T03:08:19.4802455Z   ssh-strict: true
+2026-10-04T03:08:19.4802706Z   ssh-user: git
+2026-10-04T03:08:19.4802964Z   persist-credentials: true
+2026-10-04T03:08:19.4803250Z   clean: true
+2026-10-04T03:08:19.4803504Z   sparse-checkout-cone-mode: true
+2026-10-04T03:08:19.4804023Z   fetch-depth: 1
+2026-10-04T03:08:19.4804271Z   fetch-tags: false
+2026-10-04T03:08:19.4804517Z   show-progress: true
+2026-10-04T03:08:19.4804765Z   lfs: false
+2026-10-04T03:08:19.4804997Z   submodules: false
+2026-10-04T03:08:19.4805258Z   set-safe-directory: true
+2026-10-04T03:08:19.4805572Z   allow-unsafe-pr-checkout: false
+2026-10-04T03:08:19.4805857Z env:
+2026-10-04T03:08:19.4806084Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:19.4806403Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:19.4806682Z ##[endgroup]
+2026-10-04T03:08:19.5836767Z Syncing repository: Globulation2/glob2
+2026-10-04T03:08:19.5838881Z ##[group]Getting Git version info
+2026-10-04T03:08:19.5839400Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-04T03:08:19.5854858Z [command]/usr/bin/git version
+2026-10-04T03:08:19.5983220Z git version 2.55.0
+2026-10-04T03:08:19.6011018Z ##[endgroup]
+2026-10-04T03:08:19.6029476Z Temporarily overriding HOME='/home/runner/work/_temp/ab0ad418-8a4c-4659-90e2-0f551280cc2e' before making global git config changes
+2026-10-04T03:08:19.6031021Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T03:08:19.6036588Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T03:08:19.6080158Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-04T03:08:19.6084738Z ##[group]Initializing the repository
+2026-10-04T03:08:19.6090142Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-04T03:08:19.6191215Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T03:08:19.6192592Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T03:08:19.6194361Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T03:08:19.6195650Z hint: call:
+2026-10-04T03:08:19.6196311Z hint:
+2026-10-04T03:08:19.6197234Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T03:08:19.6198111Z hint:
+2026-10-04T03:08:19.6198681Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T03:08:19.6199451Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T03:08:19.6200078Z hint:
+2026-10-04T03:08:19.6200546Z hint: 	git branch -m <name>
+2026-10-04T03:08:19.6201028Z hint:
+2026-10-04T03:08:19.6201616Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T03:08:19.6202693Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-04T03:08:19.6205639Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-04T03:08:19.6256349Z ##[endgroup]
+2026-10-04T03:08:19.6257192Z ##[group]Disabling automatic garbage collection
+2026-10-04T03:08:19.6261056Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T03:08:19.6298283Z ##[endgroup]
+2026-10-04T03:08:19.6299098Z ##[group]Setting up auth
+2026-10-04T03:08:19.6305743Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T03:08:19.6341704Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T03:08:19.6760542Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T03:08:19.6811814Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T03:08:19.7110184Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T03:08:19.7155580Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T03:08:19.7431227Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T03:08:19.7479453Z ##[endgroup]
+2026-10-04T03:08:19.7480526Z ##[group]Fetching the repository
+2026-10-04T03:08:19.7490289Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea
+2026-10-04T03:08:23.2818749Z From https://github.com/Globulation2/glob2
+2026-10-04T03:08:23.2819950Z  * branch            69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea -> FETCH_HEAD
+2026-10-04T03:08:23.2824675Z ##[endgroup]
+2026-10-04T03:08:23.2825612Z ##[group]Determining the checkout info
+2026-10-04T03:08:23.2828218Z ##[endgroup]
+2026-10-04T03:08:23.2836644Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T03:08:23.2897114Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T03:08:23.2935679Z ##[group]Checking out the ref
+2026-10-04T03:08:23.2940775Z [command]/usr/bin/git checkout --progress --force 69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea
+2026-10-04T03:08:24.3145904Z Updating files:  67% (9278/13820)
+2026-10-04T03:08:24.3238150Z Updating files:  68% (9398/13820)
+2026-10-04T03:08:24.3330336Z Updating files:  69% (9536/13820)
+2026-10-04T03:08:24.3438438Z Updating files:  70% (9674/13820)
+2026-10-04T03:08:24.3551057Z Updating files:  71% (9813/13820)
+2026-10-04T03:08:24.3652998Z Updating files:  72% (9951/13820)
+2026-10-04T03:08:24.3755003Z Updating files:  73% (10089/13820)
+2026-10-04T03:08:24.3852510Z Updating files:  74% (10227/13820)
+2026-10-04T03:08:24.4078003Z Updating files:  75% (10365/13820)
+2026-10-04T03:08:24.4171998Z Updating files:  76% (10504/13820)
+2026-10-04T03:08:24.4281009Z Updating files:  77% (10642/13820)
+2026-10-04T03:08:24.4462704Z Updating files:  78% (10780/13820)
+2026-10-04T03:08:24.4597431Z Updating files:  79% (10918/13820)
+2026-10-04T03:08:24.4704938Z Updating files:  80% (11056/13820)
+2026-10-04T03:08:24.5733188Z Updating files:  81% (11195/13820)
+2026-10-04T03:08:24.5869884Z Updating files:  82% (11333/13820)
+2026-10-04T03:08:24.5968423Z Updating files:  83% (11471/13820)
+2026-10-04T03:08:24.6031067Z Updating files:  84% (11609/13820)
+2026-10-04T03:08:24.6145004Z Updating files:  85% (11747/13820)
+2026-10-04T03:08:24.6262190Z Updating files:  86% (11886/13820)
+2026-10-04T03:08:24.6362481Z Updating files:  87% (12024/13820)
+2026-10-04T03:08:24.6527536Z Updating files:  88% (12162/13820)
+2026-10-04T03:08:24.6626619Z Updating files:  89% (12300/13820)
+2026-10-04T03:08:24.6750072Z Updating files:  90% (12438/13820)
+2026-10-04T03:08:24.6886776Z Updating files:  91% (12577/13820)
+2026-10-04T03:08:24.6993393Z Updating files:  92% (12715/13820)
+2026-10-04T03:08:24.7090518Z Updating files:  93% (12853/13820)
+2026-10-04T03:08:24.7210907Z Updating files:  94% (12991/13820)
+2026-10-04T03:08:24.7345063Z Updating files:  95% (13129/13820)
+2026-10-04T03:08:24.7723547Z Updating files:  96% (13268/13820)
+2026-10-04T03:08:24.8122328Z Updating files:  97% (13406/13820)
+2026-10-04T03:08:24.8322294Z Updating files:  98% (13544/13820)
+2026-10-04T03:08:24.8457238Z Updating files:  99% (13682/13820)
+2026-10-04T03:08:24.8457758Z Updating files: 100% (13820/13820)
+2026-10-04T03:08:24.8458211Z Updating files: 100% (13820/13820), done.
+2026-10-04T03:08:24.8570482Z Note: switching to '69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea'.
+2026-10-04T03:08:24.8571091Z 
+2026-10-04T03:08:24.8571960Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-04T03:08:24.8572755Z changes and commit them, and you can discard any commits you make in this
+2026-10-04T03:08:24.8574121Z state without impacting any branches by switching back to a branch.
+2026-10-04T03:08:24.8574873Z 
+2026-10-04T03:08:24.8575370Z If you want to create a new branch to retain commits you create, you may
+2026-10-04T03:08:24.8576420Z do so (now or later) by using -c with the switch command. Example:
+2026-10-04T03:08:24.8576826Z 
+2026-10-04T03:08:24.8576994Z   git switch -c <new-branch-name>
+2026-10-04T03:08:24.8577239Z 
+2026-10-04T03:08:24.8577379Z Or undo this operation with:
+2026-10-04T03:08:24.8577602Z 
+2026-10-04T03:08:24.8577723Z   git switch -
+2026-10-04T03:08:24.8577888Z 
+2026-10-04T03:08:24.8578200Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-04T03:08:24.8578663Z 
+2026-10-04T03:08:24.8578958Z HEAD is now at 69db1fb Repair native and browser master build failures (#676)
+2026-10-04T03:08:24.8634517Z ##[endgroup]
+2026-10-04T03:08:24.8683088Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T03:08:24.8716168Z 69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea
+2026-10-04T03:08:24.8953124Z ##[group]Run actions/download-artifact@v4
+2026-10-04T03:08:24.8953438Z with:
+2026-10-04T03:08:24.8953657Z   name: linux-test-programs-ubuntu-22.04
+2026-10-04T03:08:24.8954163Z   path: artifacts/ci-native
+2026-10-04T03:08:24.8954415Z   merge-multiple: false
+2026-10-04T03:08:24.8954650Z   repository: Globulation2/glob2
+2026-10-04T03:08:24.8954891Z   run-id: 37171997415
+2026-10-04T03:08:24.8955093Z env:
+2026-10-04T03:08:24.8955283Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:24.8955519Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:24.8955757Z ##[endgroup]
+2026-10-04T03:08:25.0647860Z Downloading single artifact
+2026-10-04T03:08:25.0812999Z (node:2526) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T03:08:25.0814291Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T03:08:25.3428101Z Preparing to download the following artifacts:
+2026-10-04T03:08:25.3429634Z - linux-test-programs-ubuntu-22.04 (ID: 11291449397, Size: 98115051, Expected Digest: sha256:049709f5917abb27e1ebcda3e4c9b08e05e94bc2f048fe18d3efc68b203b83d6)
+2026-10-04T03:08:25.5807238Z Redirecting to blob download url: https://productionresultssa16.blob.core.windows.net/actions-results/66b6b429-39fe-400b-a58b-a5e401aaf6ee/workflow-job-run-f6a719f0-407e-5052-8747-26dd76ddb006/artifacts/8cb5484f653ad1140329cf3596c350c71fc4728f011578cc6adf85b1058eeab2.zip
+2026-10-04T03:08:25.5810022Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-native
+2026-10-04T03:08:25.9156620Z (node:2526) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T03:08:29.6276887Z SHA256 digest of downloaded artifact is 049709f5917abb27e1ebcda3e4c9b08e05e94bc2f048fe18d3efc68b203b83d6
+2026-10-04T03:08:29.6278050Z Artifact download completed successfully.
+2026-10-04T03:08:29.6278622Z Total of 1 artifact(s) downloaded
+2026-10-04T03:08:29.6285210Z Download artifact has finished successfully
+2026-10-04T03:08:29.6463004Z ##[group]Run tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+2026-10-04T03:08:29.6463537Z [36;1mtar -xzf artifacts/ci-native/linux-test-programs.tar.gz[0m
+2026-10-04T03:08:29.6464396Z [36;1mecho "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"[0m
+2026-10-04T03:08:29.6538069Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:08:29.6538323Z env:
+2026-10-04T03:08:29.6538524Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:29.6538778Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:29.6539046Z ##[endgroup]
+2026-10-04T03:08:31.4270179Z ##[group]Run if [ "false" = true ]; then
+2026-10-04T03:08:31.4270562Z [36;1mif [ "false" = true ]; then[0m
+2026-10-04T03:08:31.4271308Z [36;1m  xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt[0m
+2026-10-04T03:08:31.4272206Z [36;1m  sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb[0m
+2026-10-04T03:08:31.4273032Z [36;1m  python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify[0m
+2026-10-04T03:08:31.4273482Z [36;1melse[0m
+2026-10-04T03:08:31.4274213Z [36;1msudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \[0m
+2026-10-04T03:08:31.4274835Z [36;1m  ca-certificates git g++-11 python3 python3-venv scons pkg-config ccache \[0m
+2026-10-04T03:08:31.4275820Z [36;1m  libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \[0m
+2026-10-04T03:08:31.4276598Z [36;1m  libvorbis-dev libogg-dev libspeex-dev \[0m
+2026-10-04T03:08:31.4277065Z [36;1m  libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \[0m
+2026-10-04T03:08:31.4277547Z [36;1m  zlib1g-dev libfribidi-dev libpcre3-dev \[0m
+2026-10-04T03:08:31.4278066Z [36;1m  libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb[0m
+2026-10-04T03:08:31.4278546Z [36;1mfi[0m
+2026-10-04T03:08:31.4352319Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:08:31.4352586Z env:
+2026-10-04T03:08:31.4352798Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:31.4353059Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:31.4353434Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:08:31.4354129Z ##[endgroup]
+2026-10-04T03:08:31.4995528Z Reading package lists...
+2026-10-04T03:08:31.8048967Z Building dependency tree...
+2026-10-04T03:08:31.8061236Z Reading state information...
+2026-10-04T03:08:32.0174404Z libxext-dev is already the newest version (2:1.3.4-1build1).
+2026-10-04T03:08:32.0175246Z libxext-dev set to manually installed.
+2026-10-04T03:08:32.0175917Z xauth is already the newest version (1:1.1-1build2).
+2026-10-04T03:08:32.0176566Z xauth set to manually installed.
+2026-10-04T03:08:32.0177257Z ca-certificates is already the newest version (20260601~22.04.1).
+2026-10-04T03:08:32.0178108Z g++-11 is already the newest version (11.4.0-1ubuntu1~22.04.3).
+2026-10-04T03:08:32.0178705Z g++-11 set to manually installed.
+2026-10-04T03:08:32.0179215Z libfreetype-dev is already the newest version (2.11.1+dfsg-1ubuntu0.3).
+2026-10-04T03:08:32.0179795Z libfreetype-dev set to manually installed.
+2026-10-04T03:08:32.0180302Z libgl1-mesa-dri is already the newest version (23.2.1-1ubuntu3.1~22.04.4).
+2026-10-04T03:08:32.0180791Z libgl1-mesa-dri set to manually installed.
+2026-10-04T03:08:32.0181242Z libpcre3-dev is already the newest version (2:8.39-13ubuntu0.22.04.1).
+2026-10-04T03:08:32.0181731Z libpcre3-dev set to manually installed.
+2026-10-04T03:08:32.0182149Z libx11-dev is already the newest version (2:1.7.5-1ubuntu0.3).
+2026-10-04T03:08:32.0182586Z libx11-dev set to manually installed.
+2026-10-04T03:08:32.0182970Z python3 is already the newest version (3.10.6-1~22.04.1).
+2026-10-04T03:08:32.0183476Z zlib1g-dev is already the newest version (1:1.2.11.dfsg-2ubuntu9.2).
+2026-10-04T03:08:32.0184536Z python3-venv is already the newest version (3.10.6-1~22.04.1).
+2026-10-04T03:08:32.0185128Z xvfb is already the newest version (2:21.1.4-2ubuntu1.7~22.04.16).
+2026-10-04T03:08:32.0185650Z git is already the newest version (1:2.55.0-0ppa1~ubuntu22.04.2).
+2026-10-04T03:08:32.0186139Z The following additional packages will be installed:
+2026-10-04T03:08:32.0186685Z   libasyncns0 libbabeltrace1 libboost-atomic1.74-dev libboost-atomic1.74.0
+2026-10-04T03:08:32.0187347Z   libboost-chrono1.74-dev libboost-chrono1.74.0 libboost-date-time1.74-dev
+2026-10-04T03:08:32.0188491Z   libboost-date-time1.74.0 libboost-regex1.74.0 libboost-serialization1.74-dev
+2026-10-04T03:08:32.0189615Z   libboost-serialization1.74.0 libboost-system1.74-dev libboost-system1.74.0
+2026-10-04T03:08:32.0190599Z   libboost-thread1.74-dev libboost-thread1.74.0 libboost1.74-dev
+2026-10-04T03:08:32.0191097Z   libdebuginfod-common libdebuginfod1 libegl-dev libegl-mesa0 libegl1 libflac8
+2026-10-04T03:08:32.0191616Z   libgl-dev libgles-dev libgles1 libgles2 libglu1-mesa libglvnd-core-dev
+2026-10-04T03:08:32.0192298Z   libglvnd-dev libglx-dev libhiredis0.14 libid3tag0 libimlib2 libipt2
+2026-10-04T03:08:32.0192740Z   libobrender32v5 libobt2v5 libopengl-dev libopengl0 libopus0
+2026-10-04T03:08:32.0193175Z   libpangoxft-1.0-0 libpulse-mainloop-glib0 libpulse0 libsndfile1
+2026-10-04T03:08:32.0193649Z   libsource-highlight-common libsource-highlight4v5 libspeex1 libssl3
+2026-10-04T03:08:32.0194567Z   libstartup-notification0 libvorbisenc2 libwayland-bin libxcb-shape0
+2026-10-04T03:08:32.0194994Z   libxcb-util1 libxfixes-dev libxv1 libxxf86dga1
+2026-10-04T03:08:32.0195293Z Suggested packages:
+2026-10-04T03:08:32.0195604Z   distcc | icecc gdb-doc gdbserver libasound2-doc libboost1.74-doc
+2026-10-04T03:08:32.0196114Z   libboost-container1.74-dev libboost-context1.74-dev
+2026-10-04T03:08:32.0196489Z   libboost-contract1.74-dev libboost-coroutine1.74-dev
+2026-10-04T03:08:32.0196847Z   libboost-exception1.74-dev libboost-fiber1.74-dev
+2026-10-04T03:08:32.0197206Z   libboost-filesystem1.74-dev libboost-graph1.74-dev
+2026-10-04T03:08:32.0197595Z   libboost-graph-parallel1.74-dev libboost-iostreams1.74-dev
+2026-10-04T03:08:32.0198038Z   libboost-locale1.74-dev libboost-log1.74-dev libboost-math1.74-dev
+2026-10-04T03:08:32.0198527Z   libboost-mpi1.74-dev libboost-mpi-python1.74-dev libboost-numpy1.74-dev
+2026-10-04T03:08:32.0199001Z   libboost-program-options1.74-dev libboost-python1.74-dev
+2026-10-04T03:08:32.0199465Z   libboost-random1.74-dev libboost-regex1.74-dev libboost-stacktrace1.74-dev
+2026-10-04T03:08:32.0200092Z   libboost-test1.74-dev libboost-timer1.74-dev libboost-type-erasure1.74-dev
+2026-10-04T03:08:32.0200598Z   libboost-wave1.74-dev libboost1.74-tools-dev libmpfrc++-dev libntl-dev
+2026-10-04T03:08:32.0201071Z   libboost-nowide1.74-dev opus-tools pulseaudio speex libssl-doc
+2026-10-04T03:08:32.0201546Z   libwayland-doc tint2 openbox-gnome-session openbox-kde-session mesa-utils
+2026-10-04T03:08:32.0201943Z Recommended packages:
+2026-10-04T03:08:32.0202181Z   libc-dbg obconf | obconf-qt scrot
+2026-10-04T03:08:32.0861513Z The following packages will be REMOVED:
+2026-10-04T03:08:32.0864600Z   pkgconf r-base-dev
+2026-10-04T03:08:32.0865224Z The following NEW packages will be installed:
+2026-10-04T03:08:32.0867553Z   ccache gdb libasound2-dev libasyncns0 libbabeltrace1 libboost-atomic1.74-dev
+2026-10-04T03:08:32.0868817Z   libboost-atomic1.74.0 libboost-chrono1.74-dev libboost-chrono1.74.0
+2026-10-04T03:08:32.0870076Z   libboost-date-time-dev libboost-date-time1.74-dev libboost-date-time1.74.0
+2026-10-04T03:08:32.0871322Z   libboost-regex1.74.0 libboost-serialization1.74-dev
+2026-10-04T03:08:32.0872409Z   libboost-serialization1.74.0 libboost-system-dev libboost-system1.74-dev
+2026-10-04T03:08:32.0873221Z   libboost-system1.74.0 libboost-thread-dev libboost-thread1.74-dev
+2026-10-04T03:08:32.0874689Z   libboost-thread1.74.0 libboost1.74-dev libdebuginfod-common libdebuginfod1
+2026-10-04T03:08:32.0875907Z   libegl-dev libegl-mesa0 libegl1 libepoxy-dev libflac8 libfribidi-dev
+2026-10-04T03:08:32.0877050Z   libgl-dev libgl1-mesa-dev libgles-dev libgles1 libgles2 libglu1-mesa
+2026-10-04T03:08:32.0878242Z   libglu1-mesa-dev libglvnd-core-dev libglvnd-dev libglx-dev libhiredis0.14
+2026-10-04T03:08:32.0879440Z   libid3tag0 libimlib2 libipt2 libobrender32v5 libobt2v5 libogg-dev
+2026-10-04T03:08:32.0880241Z   libopengl-dev libopengl0 libopus0 libpangoxft-1.0-0 libpulse-dev
+2026-10-04T03:08:32.0880962Z   libpulse-mainloop-glib0 libpulse0 libsndfile1 libsource-highlight-common
+2026-10-04T03:08:32.0882200Z   libsource-highlight4v5 libspeex-dev libspeex1 libstartup-notification0
+2026-10-04T03:08:32.0882757Z   libvorbis-dev libvorbisenc2 libwayland-bin libwayland-dev libxcb-shape0
+2026-10-04T03:08:32.0883395Z   libxcb-util1 libxcursor-dev libxfixes-dev libxi-dev libxkbcommon-dev
+2026-10-04T03:08:32.0895154Z   libxrandr-dev libxss-dev libxtst-dev libxv1 libxxf86dga1 openbox pkg-config
+2026-10-04T03:08:32.0895882Z   scons x11-utils
+2026-10-04T03:08:32.0896206Z The following packages will be upgraded:
+2026-10-04T03:08:32.0896481Z   libssl-dev libssl3
+2026-10-04T03:08:32.1091738Z 2 upgraded, 79 newly installed, 2 to remove and 18 not upgraded.
+2026-10-04T03:08:32.1092419Z Need to get 27.0 MB of archives.
+2026-10-04T03:08:32.1092987Z After this operation, 210 MB of additional disk space will be used.
+2026-10-04T03:08:32.1093417Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T03:08:32.2714869Z Get:2 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 pkg-config amd64 0.29.2-1ubuntu3 [48.2 kB]
+2026-10-04T03:08:32.4926814Z Get:3 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libdebuginfod-common all 0.186-1ubuntu0.1 [7996 B]
+2026-10-04T03:08:32.5688420Z Get:4 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssl-dev amd64 3.0.2-0ubuntu1.30 [2377 kB]
+2026-10-04T03:08:33.0453016Z Get:5 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libssl3 amd64 3.0.2-0ubuntu1.30 [1907 kB]
+2026-10-04T03:08:33.1561613Z Get:6 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libhiredis0.14 amd64 0.14.1-2 [32.8 kB]
+2026-10-04T03:08:33.2282428Z Get:7 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 ccache amd64 4.5.1-1 [495 kB]
+2026-10-04T03:08:33.3090186Z Get:8 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libbabeltrace1 amd64 1.5.8-2build1 [160 kB]
+2026-10-04T03:08:33.3830545Z Get:9 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libdebuginfod1 amd64 0.186-1ubuntu0.1 [12.8 kB]
+2026-10-04T03:08:33.4553196Z Get:10 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libipt2 amd64 2.0.5-1 [46.4 kB]
+2026-10-04T03:08:33.5276872Z Get:11 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libsource-highlight-common all 3.1.9-4.1build2 [64.5 kB]
+2026-10-04T03:08:33.6003975Z Get:12 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-regex1.74.0 amd64 1.74.0-14ubuntu3 [511 kB]
+2026-10-04T03:08:33.6813197Z Get:13 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libsource-highlight4v5 amd64 3.1.9-4.1build2 [207 kB]
+2026-10-04T03:08:33.7565658Z Get:14 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 gdb amd64 12.1-0ubuntu1~22.04.2 [3920 kB]
+2026-10-04T03:08:33.9163515Z Get:15 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libasound2-dev amd64 1.2.6.1-1ubuntu1.2 [110 kB]
+2026-10-04T03:08:33.9890260Z Get:16 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libasyncns0 amd64 0.8-6build2 [12.8 kB]
+2026-10-04T03:08:34.0612119Z Get:17 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost1.74-dev amd64 1.74.0-14ubuntu3 [9609 kB]
+2026-10-04T03:08:34.3498739Z Get:18 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-atomic1.74.0 amd64 1.74.0-14ubuntu3 [224 kB]
+2026-10-04T03:08:34.4253432Z Get:19 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-atomic1.74-dev amd64 1.74.0-14ubuntu3 [221 kB]
+2026-10-04T03:08:34.5013115Z Get:20 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-chrono1.74.0 amd64 1.74.0-14ubuntu3 [232 kB]
+2026-10-04T03:08:34.5771262Z Get:21 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-chrono1.74-dev amd64 1.74.0-14ubuntu3 [239 kB]
+2026-10-04T03:08:34.6529778Z Get:22 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-date-time1.74.0 amd64 1.74.0-14ubuntu3 [221 kB]
+2026-10-04T03:08:34.7285675Z Get:23 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-serialization1.74.0 amd64 1.74.0-14ubuntu3 [327 kB]
+2026-10-04T03:08:34.8062312Z Get:24 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-serialization1.74-dev amd64 1.74.0-14ubuntu3 [375 kB]
+2026-10-04T03:08:34.8855367Z Get:25 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-date-time1.74-dev amd64 1.74.0-14ubuntu3 [226 kB]
+2026-10-04T03:08:34.9614207Z Get:26 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libboost-date-time-dev amd64 1.74.0.3ubuntu7 [3248 B]
+2026-10-04T03:08:35.0336756Z Get:27 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-system1.74.0 amd64 1.74.0-14ubuntu3 [221 kB]
+2026-10-04T03:08:35.1123307Z Get:28 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-system1.74-dev amd64 1.74.0-14ubuntu3 [218 kB]
+2026-10-04T03:08:35.1876598Z Get:29 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-system-dev amd64 1.74.0.3ubuntu7 [3390 B]
+2026-10-04T03:08:35.2597612Z Get:30 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-thread1.74.0 amd64 1.74.0-14ubuntu3 [262 kB]
+2026-10-04T03:08:35.3363618Z Get:31 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-thread1.74-dev amd64 1.74.0-14ubuntu3 [272 kB]
+2026-10-04T03:08:35.4129464Z Get:32 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libboost-thread-dev amd64 1.74.0.3ubuntu7 [3266 B]
+2026-10-04T03:08:35.4851418Z Get:33 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libegl-mesa0 amd64 23.2.1-1ubuntu3.1~22.04.4 [118 kB]
+2026-10-04T03:08:35.5579584Z Get:34 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libegl1 amd64 1.4.0-1 [28.6 kB]
+2026-10-04T03:08:35.6300981Z Get:35 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libglx-dev amd64 1.4.0-1 [14.1 kB]
+2026-10-04T03:08:35.7021984Z Get:36 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libgl-dev amd64 1.4.0-1 [101 kB]
+2026-10-04T03:08:35.7750404Z Get:37 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libegl-dev amd64 1.4.0-1 [18.0 kB]
+2026-10-04T03:08:35.8473453Z Get:38 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libepoxy-dev amd64 1.5.10-1 [132 kB]
+2026-10-04T03:08:35.9204337Z Get:39 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libflac8 amd64 1.3.3-2ubuntu0.2 [111 kB]
+2026-10-04T03:08:35.9939543Z Get:40 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libfribidi-dev amd64 1.0.8-2ubuntu3.1 [64.8 kB]
+2026-10-04T03:08:36.0662277Z Get:41 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libgles1 amd64 1.4.0-1 [11.5 kB]
+2026-10-04T03:08:36.1384155Z Get:42 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libgles2 amd64 1.4.0-1 [18.0 kB]
+2026-10-04T03:08:36.2103620Z Get:43 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libgles-dev amd64 1.4.0-1 [49.4 kB]
+2026-10-04T03:08:36.2829312Z Get:44 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libopengl0 amd64 1.4.0-1 [36.5 kB]
+2026-10-04T03:08:36.3552615Z Get:45 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libglu1-mesa amd64 9.0.2-1 [145 kB]
+2026-10-04T03:08:36.4292117Z Get:46 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libglu1-mesa-dev amd64 9.0.2-1 [231 kB]
+2026-10-04T03:08:36.5048858Z Get:47 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libid3tag0 amd64 0.15.1b-14 [31.3 kB]
+2026-10-04T03:08:36.5771782Z Get:48 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libimlib2 amd64 1.7.4-1build1 [195 kB]
+2026-10-04T03:08:36.6526101Z Get:49 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libobt2v5 amd64 3.6.1-10 [35.5 kB]
+2026-10-04T03:08:36.7246824Z Get:50 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpangoxft-1.0-0 amd64 1.50.6+ds-2ubuntu1 [31.0 kB]
+2026-10-04T03:08:36.7969518Z Get:51 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 libobrender32v5 amd64 3.6.1-10 [42.4 kB]
+2026-10-04T03:08:36.8692307Z Get:52 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libogg-dev amd64 1.3.5-0ubuntu3 [161 kB]
+2026-10-04T03:08:36.9434839Z Get:53 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libopengl-dev amd64 1.4.0-1 [3400 B]
+2026-10-04T03:08:37.0150515Z Get:54 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libopus0 amd64 1.3.1-0.1build2 [203 kB]
+2026-10-04T03:08:37.0906025Z Get:55 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libvorbisenc2 amd64 1.3.7-1build2 [82.6 kB]
+2026-10-04T03:08:37.1663425Z Get:56 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libsndfile1 amd64 1.0.31-2ubuntu0.2 [196 kB]
+2026-10-04T03:08:37.2398768Z Get:57 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpulse0 amd64 1:15.99.1+dfsg1-1ubuntu2.2 [298 kB]
+2026-10-04T03:08:37.3172410Z Get:58 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpulse-mainloop-glib0 amd64 1:15.99.1+dfsg1-1ubuntu2.2 [12.4 kB]
+2026-10-04T03:08:37.3894002Z Get:59 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libpulse-dev amd64 1:15.99.1+dfsg1-1ubuntu2.2 [75.6 kB]
+2026-10-04T03:08:37.4617232Z Get:60 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libspeex1 amd64 1.2~rc1.2-1.1ubuntu3 [57.9 kB]
+2026-10-04T03:08:37.5343622Z Get:61 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libspeex-dev amd64 1.2~rc1.2-1.1ubuntu3 [72.3 kB]
+2026-10-04T03:08:37.6064964Z Get:62 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxcb-util1 amd64 0.4.0-1build2 [11.4 kB]
+2026-10-04T03:08:37.6787597Z Get:63 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libstartup-notification0 amd64 0.12-6build2 [19.5 kB]
+2026-10-04T03:08:37.7509351Z Get:64 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libvorbis-dev amd64 1.3.7-1build2 [347 kB]
+2026-10-04T03:08:37.8290793Z Get:65 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxcb-shape0 amd64 1.14-3ubuntu3 [6158 B]
+2026-10-04T03:08:37.9010219Z Get:66 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxfixes-dev amd64 1:6.0.0-1 [12.2 kB]
+2026-10-04T03:08:37.9731229Z Get:67 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxcursor-dev amd64 1:1.2.0-2build4 [28.2 kB]
+2026-10-04T03:08:38.0455069Z Get:68 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxi-dev amd64 2:1.8-1build1 [193 kB]
+2026-10-04T03:08:38.1236160Z Get:69 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxkbcommon-dev amd64 1.4.0-1 [54.9 kB]
+2026-10-04T03:08:38.1959549Z Get:70 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxrandr-dev amd64 2:1.5.2-1build1 [26.7 kB]
+2026-10-04T03:08:38.2678271Z Get:71 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxss-dev amd64 1:1.2.3-1build2 [12.3 kB]
+2026-10-04T03:08:38.3401139Z Get:72 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxtst-dev amd64 2:1.2.3-1build4 [16.3 kB]
+2026-10-04T03:08:38.4121548Z Get:73 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxv1 amd64 2:1.0.11-1build2 [11.2 kB]
+2026-10-04T03:08:38.4841712Z Get:74 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libxxf86dga1 amd64 2:1.1.5-0ubuntu3 [12.6 kB]
+2026-10-04T03:08:38.5562852Z Get:75 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 openbox amd64 3.6.1-10 [311 kB]
+2026-10-04T03:08:38.6341907Z Get:76 http://azure.archive.ubuntu.com/ubuntu jammy/universe amd64 scons all 4.0.1+dfsg-2 [469 kB]
+2026-10-04T03:08:38.7152996Z Get:77 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 x11-utils amd64 7.7+5build2 [206 kB]
+2026-10-04T03:08:38.7908842Z Get:78 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libglvnd-core-dev amd64 1.4.0-1 [12.7 kB]
+2026-10-04T03:08:38.8626206Z Get:79 http://azure.archive.ubuntu.com/ubuntu jammy/main amd64 libglvnd-dev amd64 1.4.0-1 [3162 B]
+2026-10-04T03:08:38.9355994Z Get:80 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libgl1-mesa-dev amd64 23.2.1-1ubuntu3.1~22.04.4 [7012 B]
+2026-10-04T03:08:39.0076892Z Get:81 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libwayland-bin amd64 1.20.0-1ubuntu0.1 [20.4 kB]
+2026-10-04T03:08:39.0798140Z Get:82 http://azure.archive.ubuntu.com/ubuntu jammy-updates/main amd64 libwayland-dev amd64 1.20.0-1ubuntu0.1 [69.5 kB]
+2026-10-04T03:08:39.5096328Z Preconfiguring packages ...
+2026-10-04T03:08:39.6270893Z Fetched 27.0 MB in 7s (3865 kB/s)
+2026-10-04T03:08:39.6792539Z (Reading database ... 
+2026-10-04T03:08:39.6792973Z (Reading database ... 5%
+2026-10-04T03:08:39.6793583Z (Reading database ... 10%
+2026-10-04T03:08:39.6794662Z (Reading database ... 15%
+2026-10-04T03:08:39.6795123Z (Reading database ... 20%
+2026-10-04T03:08:39.6795560Z (Reading database ... 25%
+2026-10-04T03:08:39.6796037Z (Reading database ... 30%
+2026-10-04T03:08:39.6796516Z (Reading database ... 35%
+2026-10-04T03:08:39.6796973Z (Reading database ... 40%
+2026-10-04T03:08:39.6797271Z (Reading database ... 45%
+2026-10-04T03:08:39.6797564Z (Reading database ... 50%
+2026-10-04T03:08:39.7984538Z (Reading database ... 55%
+2026-10-04T03:08:39.9993379Z (Reading database ... 60%
+2026-10-04T03:08:40.2509873Z (Reading database ... 65%
+2026-10-04T03:08:40.4529833Z (Reading database ... 70%
+2026-10-04T03:08:40.6938906Z (Reading database ... 75%
+2026-10-04T03:08:40.9508441Z (Reading database ... 80%
+2026-10-04T03:08:41.1818472Z (Reading database ... 85%
+2026-10-04T03:08:41.4581943Z (Reading database ... 90%
+2026-10-04T03:08:41.6164069Z (Reading database ... 95%
+2026-10-04T03:08:41.6164685Z (Reading database ... 100%
+2026-10-04T03:08:41.6165459Z (Reading database ... 260410 files and directories currently installed.)
+2026-10-04T03:08:41.6222053Z Removing r-base-dev (4.6.1-6.2204.0) ...
+2026-10-04T03:08:41.7225943Z dpkg: pkgconf: dependency problems, but removing anyway as you requested:
+2026-10-04T03:08:41.7226741Z  php8.1-dev depends on pkg-config; however:
+2026-10-04T03:08:41.7227286Z   Package pkg-config is not installed.
+2026-10-04T03:08:41.7227883Z   Package pkgconf which provides pkg-config is to be removed.
+2026-10-04T03:08:41.7228517Z  mono-devel depends on pkg-config; however:
+2026-10-04T03:08:41.7229059Z   Package pkg-config is not installed.
+2026-10-04T03:08:41.7229604Z   Package pkgconf which provides pkg-config is to be removed.
+2026-10-04T03:08:41.7230265Z  libmagickwand-6.q16-dev:amd64 depends on pkg-config; however:
+2026-10-04T03:08:41.7230844Z   Package pkg-config is not installed.
+2026-10-04T03:08:41.7231419Z   Package pkgconf which provides pkg-config is to be removed.
+2026-10-04T03:08:41.7232102Z  libmagickcore-6.q16-dev:amd64 depends on pkg-config; however:
+2026-10-04T03:08:41.7232696Z   Package pkg-config is not installed.
+2026-10-04T03:08:41.7233230Z   Package pkgconf which provides pkg-config is to be removed.
+2026-10-04T03:08:41.7234076Z  libglib2.0-dev:amd64 depends on pkg-config; however:
+2026-10-04T03:08:41.7234611Z   Package pkg-config is not installed.
+2026-10-04T03:08:41.7235151Z   Package pkgconf which provides pkg-config is to be removed.
+2026-10-04T03:08:41.7235789Z  libfontconfig-dev:amd64 depends on pkg-config; however:
+2026-10-04T03:08:41.7236329Z   Package pkg-config is not installed.
+2026-10-04T03:08:41.7236867Z   Package pkgconf which provides pkg-config is to be removed.
+2026-10-04T03:08:41.7237272Z 
+2026-10-04T03:08:41.7293212Z Removing pkgconf (1.8.0-1) ...
+2026-10-04T03:08:41.9016474Z Removing 'diversion of /usr/bin/pkg-config to /usr/bin/pkg-config.real by pkgconf'
+2026-10-04T03:08:41.9154788Z Removing 'diversion of /usr/share/aclocal/pkg.m4 to /usr/share/aclocal/pkg.real.m4 by pkgconf'
+2026-10-04T03:08:41.9292171Z Removing 'diversion of /usr/share/man/man1/pkg-config.1.gz to /usr/share/man/man1/pkg-config.real.1.gz by pkgconf'
+2026-10-04T03:08:41.9430726Z Removing 'diversion of /usr/share/pkg-config-crosswrapper to /usr/share/pkg-config-crosswrapper.real by pkgconf'
+2026-10-04T03:08:41.9972350Z Selecting previously unselected package pkg-config.
+2026-10-04T03:08:42.0054905Z (Reading database ... 
+2026-10-04T03:08:42.0055396Z (Reading database ... 5%
+2026-10-04T03:08:42.0055849Z (Reading database ... 10%
+2026-10-04T03:08:42.0056280Z (Reading database ... 15%
+2026-10-04T03:08:42.0056563Z (Reading database ... 20%
+2026-10-04T03:08:42.0056833Z (Reading database ... 25%
+2026-10-04T03:08:42.0057107Z (Reading database ... 30%
+2026-10-04T03:08:42.0057376Z (Reading database ... 35%
+2026-10-04T03:08:42.0057646Z (Reading database ... 40%
+2026-10-04T03:08:42.0057918Z (Reading database ... 45%
+2026-10-04T03:08:42.0059055Z (Reading database ... 50%
+2026-10-04T03:08:42.0090449Z (Reading database ... 55%
+2026-10-04T03:08:42.0120918Z (Reading database ... 60%
+2026-10-04T03:08:42.0146305Z (Reading database ... 65%
+2026-10-04T03:08:42.0259206Z (Reading database ... 70%
+2026-10-04T03:08:42.0298771Z (Reading database ... 75%
+2026-10-04T03:08:42.0368000Z (Reading database ... 80%
+2026-10-04T03:08:42.0745165Z (Reading database ... 85%
+2026-10-04T03:08:42.0765774Z (Reading database ... 90%
+2026-10-04T03:08:42.1137765Z (Reading database ... 95%
+2026-10-04T03:08:42.1138169Z (Reading database ... 100%
+2026-10-04T03:08:42.1138702Z (Reading database ... 260388 files and directories currently installed.)
+2026-10-04T03:08:42.1194464Z Preparing to unpack .../pkg-config_0.29.2-1ubuntu3_amd64.deb ...
+2026-10-04T03:08:42.1204813Z Unpacking pkg-config (0.29.2-1ubuntu3) ...
+2026-10-04T03:08:42.1481348Z Selecting previously unselected package libdebuginfod-common.
+2026-10-04T03:08:42.1690147Z Preparing to unpack .../libdebuginfod-common_0.186-1ubuntu0.1_all.deb ...
+2026-10-04T03:08:42.1698442Z Unpacking libdebuginfod-common (0.186-1ubuntu0.1) ...
+2026-10-04T03:08:42.2150036Z Preparing to unpack .../libssl-dev_3.0.2-0ubuntu1.30_amd64.deb ...
+2026-10-04T03:08:42.2172213Z Unpacking libssl-dev:amd64 (3.0.2-0ubuntu1.30) over (3.0.2-0ubuntu1.29) ...
+2026-10-04T03:08:42.3878590Z Preparing to unpack .../libssl3_3.0.2-0ubuntu1.30_amd64.deb ...
+2026-10-04T03:08:42.3971131Z Unpacking libssl3:amd64 (3.0.2-0ubuntu1.30) over (3.0.2-0ubuntu1.29) ...
+2026-10-04T03:08:42.4821376Z Setting up libssl3:amd64 (3.0.2-0ubuntu1.30) ...
+2026-10-04T03:08:42.6171059Z Selecting previously unselected package libhiredis0.14:amd64.
+2026-10-04T03:08:42.6252950Z (Reading database ... 
+2026-10-04T03:08:42.6253416Z (Reading database ... 5%
+2026-10-04T03:08:42.6254115Z (Reading database ... 10%
+2026-10-04T03:08:42.6254623Z (Reading database ... 15%
+2026-10-04T03:08:42.6255074Z (Reading database ... 20%
+2026-10-04T03:08:42.6255371Z (Reading database ... 25%
+2026-10-04T03:08:42.6255697Z (Reading database ... 30%
+2026-10-04T03:08:42.6255990Z (Reading database ... 35%
+2026-10-04T03:08:42.6256281Z (Reading database ... 40%
+2026-10-04T03:08:42.6256586Z (Reading database ... 45%
+2026-10-04T03:08:42.6256882Z (Reading database ... 50%
+2026-10-04T03:08:42.6287371Z (Reading database ... 55%
+2026-10-04T03:08:42.6315856Z (Reading database ... 60%
+2026-10-04T03:08:42.6339624Z (Reading database ... 65%
+2026-10-04T03:08:42.6450398Z (Reading database ... 70%
+2026-10-04T03:08:42.6522220Z (Reading database ... 75%
+2026-10-04T03:08:42.6554921Z (Reading database ... 80%
+2026-10-04T03:08:42.6947133Z (Reading database ... 85%
+2026-10-04T03:08:42.6967542Z (Reading database ... 90%
+2026-10-04T03:08:42.7316003Z (Reading database ... 95%
+2026-10-04T03:08:42.7316667Z (Reading database ... 100%
+2026-10-04T03:08:42.7317419Z (Reading database ... 260409 files and directories currently installed.)
+2026-10-04T03:08:42.7368286Z Preparing to unpack .../00-libhiredis0.14_0.14.1-2_amd64.deb ...
+2026-10-04T03:08:42.7377918Z Unpacking libhiredis0.14:amd64 (0.14.1-2) ...
+2026-10-04T03:08:42.7616156Z Selecting previously unselected package ccache.
+2026-10-04T03:08:42.7822314Z Preparing to unpack .../01-ccache_4.5.1-1_amd64.deb ...
+2026-10-04T03:08:42.7876038Z Unpacking ccache (4.5.1-1) ...
+2026-10-04T03:08:42.8330243Z Selecting previously unselected package libbabeltrace1:amd64.
+2026-10-04T03:08:42.8542499Z Preparing to unpack .../02-libbabeltrace1_1.5.8-2build1_amd64.deb ...
+2026-10-04T03:08:42.8551916Z Unpacking libbabeltrace1:amd64 (1.5.8-2build1) ...
+2026-10-04T03:08:42.9174267Z Selecting previously unselected package libdebuginfod1:amd64.
+2026-10-04T03:08:42.9388453Z Preparing to unpack .../03-libdebuginfod1_0.186-1ubuntu0.1_amd64.deb ...
+2026-10-04T03:08:42.9399486Z Unpacking libdebuginfod1:amd64 (0.186-1ubuntu0.1) ...
+2026-10-04T03:08:42.9640222Z Selecting previously unselected package libipt2.
+2026-10-04T03:08:42.9852768Z Preparing to unpack .../04-libipt2_2.0.5-1_amd64.deb ...
+2026-10-04T03:08:42.9860460Z Unpacking libipt2 (2.0.5-1) ...
+2026-10-04T03:08:43.0089429Z Selecting previously unselected package libsource-highlight-common.
+2026-10-04T03:08:43.0299763Z Preparing to unpack .../05-libsource-highlight-common_3.1.9-4.1build2_all.deb ...
+2026-10-04T03:08:43.0307875Z Unpacking libsource-highlight-common (3.1.9-4.1build2) ...
+2026-10-04T03:08:43.0910615Z Selecting previously unselected package libboost-regex1.74.0:amd64.
+2026-10-04T03:08:43.1123072Z Preparing to unpack .../06-libboost-regex1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:43.1178380Z Unpacking libboost-regex1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:43.1521366Z Selecting previously unselected package libsource-highlight4v5.
+2026-10-04T03:08:43.1738718Z Preparing to unpack .../07-libsource-highlight4v5_3.1.9-4.1build2_amd64.deb ...
+2026-10-04T03:08:43.1748577Z Unpacking libsource-highlight4v5 (3.1.9-4.1build2) ...
+2026-10-04T03:08:43.2009428Z Selecting previously unselected package gdb.
+2026-10-04T03:08:43.2219026Z Preparing to unpack .../08-gdb_12.1-0ubuntu1~22.04.2_amd64.deb ...
+2026-10-04T03:08:43.2251759Z Unpacking gdb (12.1-0ubuntu1~22.04.2) ...
+2026-10-04T03:08:43.3258405Z Selecting previously unselected package libasound2-dev:amd64.
+2026-10-04T03:08:43.3475083Z Preparing to unpack .../09-libasound2-dev_1.2.6.1-1ubuntu1.2_amd64.deb ...
+2026-10-04T03:08:43.3513097Z Unpacking libasound2-dev:amd64 (1.2.6.1-1ubuntu1.2) ...
+2026-10-04T03:08:43.3889835Z Selecting previously unselected package libasyncns0:amd64.
+2026-10-04T03:08:43.4098409Z Preparing to unpack .../10-libasyncns0_0.8-6build2_amd64.deb ...
+2026-10-04T03:08:43.4109925Z Unpacking libasyncns0:amd64 (0.8-6build2) ...
+2026-10-04T03:08:43.4382133Z Selecting previously unselected package libboost1.74-dev:amd64.
+2026-10-04T03:08:43.4599717Z Preparing to unpack .../11-libboost1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:43.4608242Z Unpacking libboost1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.0672691Z Selecting previously unselected package libboost-atomic1.74.0:amd64.
+2026-10-04T03:08:46.0955016Z Preparing to unpack .../12-libboost-atomic1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.0963254Z Unpacking libboost-atomic1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.1292259Z Selecting previously unselected package libboost-atomic1.74-dev:amd64.
+2026-10-04T03:08:46.1537465Z Preparing to unpack .../13-libboost-atomic1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.1543312Z Unpacking libboost-atomic1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.1862542Z Selecting previously unselected package libboost-chrono1.74.0:amd64.
+2026-10-04T03:08:46.2096751Z Preparing to unpack .../14-libboost-chrono1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.2118202Z Unpacking libboost-chrono1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.2488982Z Selecting previously unselected package libboost-chrono1.74-dev:amd64.
+2026-10-04T03:08:46.2818968Z Preparing to unpack .../15-libboost-chrono1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.2831130Z Unpacking libboost-chrono1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.3341512Z Selecting previously unselected package libboost-date-time1.74.0:amd64.
+2026-10-04T03:08:46.3570353Z Preparing to unpack .../16-libboost-date-time1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.3579180Z Unpacking libboost-date-time1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.3885660Z Selecting previously unselected package libboost-serialization1.74.0:amd64.
+2026-10-04T03:08:46.4126022Z Preparing to unpack .../17-libboost-serialization1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.4135613Z Unpacking libboost-serialization1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.4487498Z Selecting previously unselected package libboost-serialization1.74-dev:amd64.
+2026-10-04T03:08:46.4712931Z Preparing to unpack .../18-libboost-serialization1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.4721274Z Unpacking libboost-serialization1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.5099440Z Selecting previously unselected package libboost-date-time1.74-dev:amd64.
+2026-10-04T03:08:46.5330699Z Preparing to unpack .../19-libboost-date-time1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.5338840Z Unpacking libboost-date-time1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.5659547Z Selecting previously unselected package libboost-date-time-dev:amd64.
+2026-10-04T03:08:46.5902693Z Preparing to unpack .../20-libboost-date-time-dev_1.74.0.3ubuntu7_amd64.deb ...
+2026-10-04T03:08:46.5912918Z Unpacking libboost-date-time-dev:amd64 (1.74.0.3ubuntu7) ...
+2026-10-04T03:08:46.6251174Z Selecting previously unselected package libboost-system1.74.0:amd64.
+2026-10-04T03:08:46.6497081Z Preparing to unpack .../21-libboost-system1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.6506129Z Unpacking libboost-system1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.6821425Z Selecting previously unselected package libboost-system1.74-dev:amd64.
+2026-10-04T03:08:46.7051691Z Preparing to unpack .../22-libboost-system1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.7060382Z Unpacking libboost-system1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.7398497Z Selecting previously unselected package libboost-system-dev:amd64.
+2026-10-04T03:08:46.7633135Z Preparing to unpack .../23-libboost-system-dev_1.74.0.3ubuntu7_amd64.deb ...
+2026-10-04T03:08:46.7641884Z Unpacking libboost-system-dev:amd64 (1.74.0.3ubuntu7) ...
+2026-10-04T03:08:46.7875090Z Selecting previously unselected package libboost-thread1.74.0:amd64.
+2026-10-04T03:08:46.8104876Z Preparing to unpack .../24-libboost-thread1.74.0_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.8112842Z Unpacking libboost-thread1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.8428892Z Selecting previously unselected package libboost-thread1.74-dev:amd64.
+2026-10-04T03:08:46.8662331Z Preparing to unpack .../25-libboost-thread1.74-dev_1.74.0-14ubuntu3_amd64.deb ...
+2026-10-04T03:08:46.8671690Z Unpacking libboost-thread1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:46.9020748Z Selecting previously unselected package libboost-thread-dev:amd64.
+2026-10-04T03:08:46.9262154Z Preparing to unpack .../26-libboost-thread-dev_1.74.0.3ubuntu7_amd64.deb ...
+2026-10-04T03:08:46.9270824Z Unpacking libboost-thread-dev:amd64 (1.74.0.3ubuntu7) ...
+2026-10-04T03:08:46.9514626Z Selecting previously unselected package libegl-mesa0:amd64.
+2026-10-04T03:08:46.9747656Z Preparing to unpack .../27-libegl-mesa0_23.2.1-1ubuntu3.1~22.04.4_amd64.deb ...
+2026-10-04T03:08:46.9754736Z Unpacking libegl-mesa0:amd64 (23.2.1-1ubuntu3.1~22.04.4) ...
+2026-10-04T03:08:47.0014746Z Selecting previously unselected package libegl1:amd64.
+2026-10-04T03:08:47.0249329Z Preparing to unpack .../28-libegl1_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.0258864Z Unpacking libegl1:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.0518156Z Selecting previously unselected package libglx-dev:amd64.
+2026-10-04T03:08:47.0763162Z Preparing to unpack .../29-libglx-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.0772234Z Unpacking libglx-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.1070756Z Selecting previously unselected package libgl-dev:amd64.
+2026-10-04T03:08:47.1304586Z Preparing to unpack .../30-libgl-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.1311768Z Unpacking libgl-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.1593067Z Selecting previously unselected package libegl-dev:amd64.
+2026-10-04T03:08:47.1827823Z Preparing to unpack .../31-libegl-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.1836589Z Unpacking libegl-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.2095123Z Selecting previously unselected package libepoxy-dev:amd64.
+2026-10-04T03:08:47.2336396Z Preparing to unpack .../32-libepoxy-dev_1.5.10-1_amd64.deb ...
+2026-10-04T03:08:47.2344848Z Unpacking libepoxy-dev:amd64 (1.5.10-1) ...
+2026-10-04T03:08:47.2657897Z Selecting previously unselected package libflac8:amd64.
+2026-10-04T03:08:47.2885528Z Preparing to unpack .../33-libflac8_1.3.3-2ubuntu0.2_amd64.deb ...
+2026-10-04T03:08:47.2893987Z Unpacking libflac8:amd64 (1.3.3-2ubuntu0.2) ...
+2026-10-04T03:08:47.3148434Z Selecting previously unselected package libfribidi-dev:amd64.
+2026-10-04T03:08:47.3379065Z Preparing to unpack .../34-libfribidi-dev_1.0.8-2ubuntu3.1_amd64.deb ...
+2026-10-04T03:08:47.3387457Z Unpacking libfribidi-dev:amd64 (1.0.8-2ubuntu3.1) ...
+2026-10-04T03:08:47.3829516Z Selecting previously unselected package libgles1:amd64.
+2026-10-04T03:08:47.4065023Z Preparing to unpack .../35-libgles1_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.4090293Z Unpacking libgles1:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.4334651Z Selecting previously unselected package libgles2:amd64.
+2026-10-04T03:08:47.4562896Z Preparing to unpack .../36-libgles2_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.4570547Z Unpacking libgles2:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.4806356Z Selecting previously unselected package libgles-dev:amd64.
+2026-10-04T03:08:47.5039317Z Preparing to unpack .../37-libgles-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.5048465Z Unpacking libgles-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.5342688Z Selecting previously unselected package libopengl0:amd64.
+2026-10-04T03:08:47.5580504Z Preparing to unpack .../38-libopengl0_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:47.5587933Z Unpacking libopengl0:amd64 (1.4.0-1) ...
+2026-10-04T03:08:47.5834246Z Selecting previously unselected package libglu1-mesa:amd64.
+2026-10-04T03:08:47.6064375Z Preparing to unpack .../39-libglu1-mesa_9.0.2-1_amd64.deb ...
+2026-10-04T03:08:47.6072883Z Unpacking libglu1-mesa:amd64 (9.0.2-1) ...
+2026-10-04T03:08:47.6323364Z Selecting previously unselected package libglu1-mesa-dev:amd64.
+2026-10-04T03:08:47.6558290Z Preparing to unpack .../40-libglu1-mesa-dev_9.0.2-1_amd64.deb ...
+2026-10-04T03:08:47.6566029Z Unpacking libglu1-mesa-dev:amd64 (9.0.2-1) ...
+2026-10-04T03:08:47.6858856Z Selecting previously unselected package libid3tag0:amd64.
+2026-10-04T03:08:47.7101512Z Preparing to unpack .../41-libid3tag0_0.15.1b-14_amd64.deb ...
+2026-10-04T03:08:47.7111430Z Unpacking libid3tag0:amd64 (0.15.1b-14) ...
+2026-10-04T03:08:47.7422711Z Selecting previously unselected package libimlib2:amd64.
+2026-10-04T03:08:47.7658194Z Preparing to unpack .../42-libimlib2_1.7.4-1build1_amd64.deb ...
+2026-10-04T03:08:47.7666218Z Unpacking libimlib2:amd64 (1.7.4-1build1) ...
+2026-10-04T03:08:47.7974923Z Selecting previously unselected package libobt2v5.
+2026-10-04T03:08:47.8209092Z Preparing to unpack .../43-libobt2v5_3.6.1-10_amd64.deb ...
+2026-10-04T03:08:47.8217109Z Unpacking libobt2v5 (3.6.1-10) ...
+2026-10-04T03:08:47.8500896Z Selecting previously unselected package libpangoxft-1.0-0:amd64.
+2026-10-04T03:08:47.8740028Z Preparing to unpack .../44-libpangoxft-1.0-0_1.50.6+ds-2ubuntu1_amd64.deb ...
+2026-10-04T03:08:47.8748183Z Unpacking libpangoxft-1.0-0:amd64 (1.50.6+ds-2ubuntu1) ...
+2026-10-04T03:08:47.8988987Z Selecting previously unselected package libobrender32v5.
+2026-10-04T03:08:47.9222626Z Preparing to unpack .../45-libobrender32v5_3.6.1-10_amd64.deb ...
+2026-10-04T03:08:47.9231229Z Unpacking libobrender32v5 (3.6.1-10) ...
+2026-10-04T03:08:47.9460754Z Selecting previously unselected package libogg-dev:amd64.
+2026-10-04T03:08:47.9696693Z Preparing to unpack .../46-libogg-dev_1.3.5-0ubuntu3_amd64.deb ...
+2026-10-04T03:08:47.9705490Z Unpacking libogg-dev:amd64 (1.3.5-0ubuntu3) ...
+2026-10-04T03:08:48.0377434Z Selecting previously unselected package libopengl-dev:amd64.
+2026-10-04T03:08:48.0601860Z Preparing to unpack .../47-libopengl-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:48.0609643Z Unpacking libopengl-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:48.0885666Z Selecting previously unselected package libopus0:amd64.
+2026-10-04T03:08:48.1115804Z Preparing to unpack .../48-libopus0_1.3.1-0.1build2_amd64.deb ...
+2026-10-04T03:08:48.1126812Z Unpacking libopus0:amd64 (1.3.1-0.1build2) ...
+2026-10-04T03:08:48.1394757Z Selecting previously unselected package libvorbisenc2:amd64.
+2026-10-04T03:08:48.1620292Z Preparing to unpack .../49-libvorbisenc2_1.3.7-1build2_amd64.deb ...
+2026-10-04T03:08:48.1629433Z Unpacking libvorbisenc2:amd64 (1.3.7-1build2) ...
+2026-10-04T03:08:48.1910827Z Selecting previously unselected package libsndfile1:amd64.
+2026-10-04T03:08:48.2136157Z Preparing to unpack .../50-libsndfile1_1.0.31-2ubuntu0.2_amd64.deb ...
+2026-10-04T03:08:48.2144637Z Unpacking libsndfile1:amd64 (1.0.31-2ubuntu0.2) ...
+2026-10-04T03:08:48.2417008Z Selecting previously unselected package libpulse0:amd64.
+2026-10-04T03:08:48.2639750Z Preparing to unpack .../51-libpulse0_1%3a15.99.1+dfsg1-1ubuntu2.2_amd64.deb ...
+2026-10-04T03:08:48.2774451Z Unpacking libpulse0:amd64 (1:15.99.1+dfsg1-1ubuntu2.2) ...
+2026-10-04T03:08:48.3066393Z Selecting previously unselected package libpulse-mainloop-glib0:amd64.
+2026-10-04T03:08:48.3287369Z Preparing to unpack .../52-libpulse-mainloop-glib0_1%3a15.99.1+dfsg1-1ubuntu2.2_amd64.deb ...
+2026-10-04T03:08:48.3294646Z Unpacking libpulse-mainloop-glib0:amd64 (1:15.99.1+dfsg1-1ubuntu2.2) ...
+2026-10-04T03:08:48.3516334Z Selecting previously unselected package libpulse-dev:amd64.
+2026-10-04T03:08:48.3735232Z Preparing to unpack .../53-libpulse-dev_1%3a15.99.1+dfsg1-1ubuntu2.2_amd64.deb ...
+2026-10-04T03:08:48.3741316Z Unpacking libpulse-dev:amd64 (1:15.99.1+dfsg1-1ubuntu2.2) ...
+2026-10-04T03:08:48.4129703Z Selecting previously unselected package libspeex1:amd64.
+2026-10-04T03:08:48.4358504Z Preparing to unpack .../54-libspeex1_1.2~rc1.2-1.1ubuntu3_amd64.deb ...
+2026-10-04T03:08:48.4365913Z Unpacking libspeex1:amd64 (1.2~rc1.2-1.1ubuntu3) ...
+2026-10-04T03:08:48.4604530Z Selecting previously unselected package libspeex-dev:amd64.
+2026-10-04T03:08:48.4826017Z Preparing to unpack .../55-libspeex-dev_1.2~rc1.2-1.1ubuntu3_amd64.deb ...
+2026-10-04T03:08:48.4833364Z Unpacking libspeex-dev:amd64 (1.2~rc1.2-1.1ubuntu3) ...
+2026-10-04T03:08:48.5096965Z Selecting previously unselected package libxcb-util1:amd64.
+2026-10-04T03:08:48.5315562Z Preparing to unpack .../56-libxcb-util1_0.4.0-1build2_amd64.deb ...
+2026-10-04T03:08:48.5322556Z Unpacking libxcb-util1:amd64 (0.4.0-1build2) ...
+2026-10-04T03:08:48.5555649Z Selecting previously unselected package libstartup-notification0:amd64.
+2026-10-04T03:08:48.5774853Z Preparing to unpack .../57-libstartup-notification0_0.12-6build2_amd64.deb ...
+2026-10-04T03:08:48.5782603Z Unpacking libstartup-notification0:amd64 (0.12-6build2) ...
+2026-10-04T03:08:48.6028312Z Selecting previously unselected package libvorbis-dev:amd64.
+2026-10-04T03:08:48.6257160Z Preparing to unpack .../58-libvorbis-dev_1.3.7-1build2_amd64.deb ...
+2026-10-04T03:08:48.6265054Z Unpacking libvorbis-dev:amd64 (1.3.7-1build2) ...
+2026-10-04T03:08:48.6806055Z Selecting previously unselected package libxcb-shape0:amd64.
+2026-10-04T03:08:48.7029576Z Preparing to unpack .../59-libxcb-shape0_1.14-3ubuntu3_amd64.deb ...
+2026-10-04T03:08:48.7038413Z Unpacking libxcb-shape0:amd64 (1.14-3ubuntu3) ...
+2026-10-04T03:08:48.7282356Z Selecting previously unselected package libxfixes-dev:amd64.
+2026-10-04T03:08:48.7509210Z Preparing to unpack .../60-libxfixes-dev_1%3a6.0.0-1_amd64.deb ...
+2026-10-04T03:08:48.7517848Z Unpacking libxfixes-dev:amd64 (1:6.0.0-1) ...
+2026-10-04T03:08:48.7797620Z Selecting previously unselected package libxcursor-dev:amd64.
+2026-10-04T03:08:48.8019194Z Preparing to unpack .../61-libxcursor-dev_1%3a1.2.0-2build4_amd64.deb ...
+2026-10-04T03:08:48.8027066Z Unpacking libxcursor-dev:amd64 (1:1.2.0-2build4) ...
+2026-10-04T03:08:48.8285283Z Selecting previously unselected package libxi-dev:amd64.
+2026-10-04T03:08:48.8505498Z Preparing to unpack .../62-libxi-dev_2%3a1.8-1build1_amd64.deb ...
+2026-10-04T03:08:48.8512515Z Unpacking libxi-dev:amd64 (2:1.8-1build1) ...
+2026-10-04T03:08:48.8869983Z Selecting previously unselected package libxkbcommon-dev:amd64.
+2026-10-04T03:08:48.9096185Z Preparing to unpack .../63-libxkbcommon-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:48.9102649Z Unpacking libxkbcommon-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:48.9356243Z Selecting previously unselected package libxrandr-dev:amd64.
+2026-10-04T03:08:48.9582163Z Preparing to unpack .../64-libxrandr-dev_2%3a1.5.2-1build1_amd64.deb ...
+2026-10-04T03:08:48.9588454Z Unpacking libxrandr-dev:amd64 (2:1.5.2-1build1) ...
+2026-10-04T03:08:48.9837337Z Selecting previously unselected package libxss-dev:amd64.
+2026-10-04T03:08:49.0058538Z Preparing to unpack .../65-libxss-dev_1%3a1.2.3-1build2_amd64.deb ...
+2026-10-04T03:08:49.0064579Z Unpacking libxss-dev:amd64 (1:1.2.3-1build2) ...
+2026-10-04T03:08:49.0384840Z Selecting previously unselected package libxtst-dev:amd64.
+2026-10-04T03:08:49.0624417Z Preparing to unpack .../66-libxtst-dev_2%3a1.2.3-1build4_amd64.deb ...
+2026-10-04T03:08:49.0631804Z Unpacking libxtst-dev:amd64 (2:1.2.3-1build4) ...
+2026-10-04T03:08:49.0903147Z Selecting previously unselected package libxv1:amd64.
+2026-10-04T03:08:49.1132467Z Preparing to unpack .../67-libxv1_2%3a1.0.11-1build2_amd64.deb ...
+2026-10-04T03:08:49.1140843Z Unpacking libxv1:amd64 (2:1.0.11-1build2) ...
+2026-10-04T03:08:49.1379801Z Selecting previously unselected package libxxf86dga1:amd64.
+2026-10-04T03:08:49.1601141Z Preparing to unpack .../68-libxxf86dga1_2%3a1.1.5-0ubuntu3_amd64.deb ...
+2026-10-04T03:08:49.1607891Z Unpacking libxxf86dga1:amd64 (2:1.1.5-0ubuntu3) ...
+2026-10-04T03:08:49.1868832Z Selecting previously unselected package openbox.
+2026-10-04T03:08:49.2093487Z Preparing to unpack .../69-openbox_3.6.1-10_amd64.deb ...
+2026-10-04T03:08:49.2174524Z Unpacking openbox (3.6.1-10) ...
+2026-10-04T03:08:49.3863208Z Selecting previously unselected package scons.
+2026-10-04T03:08:49.4095133Z Preparing to unpack .../70-scons_4.0.1+dfsg-2_all.deb ...
+2026-10-04T03:08:49.4101773Z Unpacking scons (4.0.1+dfsg-2) ...
+2026-10-04T03:08:49.4830167Z Selecting previously unselected package x11-utils.
+2026-10-04T03:08:49.5060204Z Preparing to unpack .../71-x11-utils_7.7+5build2_amd64.deb ...
+2026-10-04T03:08:49.5068953Z Unpacking x11-utils (7.7+5build2) ...
+2026-10-04T03:08:49.5518233Z Selecting previously unselected package libglvnd-core-dev:amd64.
+2026-10-04T03:08:49.5741930Z Preparing to unpack .../72-libglvnd-core-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:49.5748872Z Unpacking libglvnd-core-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:49.5983669Z Selecting previously unselected package libglvnd-dev:amd64.
+2026-10-04T03:08:49.6206599Z Preparing to unpack .../73-libglvnd-dev_1.4.0-1_amd64.deb ...
+2026-10-04T03:08:49.6215301Z Unpacking libglvnd-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:49.6440183Z Selecting previously unselected package libgl1-mesa-dev:amd64.
+2026-10-04T03:08:49.6664176Z Preparing to unpack .../74-libgl1-mesa-dev_23.2.1-1ubuntu3.1~22.04.4_amd64.deb ...
+2026-10-04T03:08:49.6671615Z Unpacking libgl1-mesa-dev:amd64 (23.2.1-1ubuntu3.1~22.04.4) ...
+2026-10-04T03:08:49.6909586Z Selecting previously unselected package libwayland-bin.
+2026-10-04T03:08:49.7139322Z Preparing to unpack .../75-libwayland-bin_1.20.0-1ubuntu0.1_amd64.deb ...
+2026-10-04T03:08:49.7151821Z Unpacking libwayland-bin (1.20.0-1ubuntu0.1) ...
+2026-10-04T03:08:49.7387419Z Selecting previously unselected package libwayland-dev:amd64.
+2026-10-04T03:08:49.7610498Z Preparing to unpack .../76-libwayland-dev_1.20.0-1ubuntu0.1_amd64.deb ...
+2026-10-04T03:08:49.7617374Z Unpacking libwayland-dev:amd64 (1.20.0-1ubuntu0.1) ...
+2026-10-04T03:08:49.8372007Z Setting up libboost-chrono1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:49.8394515Z Setting up libboost-system1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:49.8412801Z Setting up libboost1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:49.8431578Z Setting up libboost-atomic1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:49.8450322Z Setting up libspeex1:amd64 (1.2~rc1.2-1.1ubuntu3) ...
+2026-10-04T03:08:49.8467247Z Setting up libpangoxft-1.0-0:amd64 (1.50.6+ds-2ubuntu1) ...
+2026-10-04T03:08:49.8484625Z Setting up libglvnd-core-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:49.8503512Z Setting up libdebuginfod-common (0.186-1ubuntu0.1) ...
+2026-10-04T03:08:50.0332679Z 
+2026-10-04T03:08:50.0333394Z Creating config file /etc/profile.d/debuginfod.sh with new version
+2026-10-04T03:08:50.1825276Z 
+2026-10-04T03:08:50.1826442Z Creating config file /etc/profile.d/debuginfod.csh with new version
+2026-10-04T03:08:50.2535417Z Setting up libfribidi-dev:amd64 (1.0.8-2ubuntu3.1) ...
+2026-10-04T03:08:50.2555139Z Setting up libxkbcommon-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.2575814Z Setting up libdebuginfod1:amd64 (0.186-1ubuntu0.1) ...
+2026-10-04T03:08:50.2596146Z Setting up libboost-chrono1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.2615058Z Setting up libxcb-shape0:amd64 (1.14-3ubuntu3) ...
+2026-10-04T03:08:50.2634406Z Setting up libxxf86dga1:amd64 (2:1.1.5-0ubuntu3) ...
+2026-10-04T03:08:50.2700329Z Setting up libogg-dev:amd64 (1.3.5-0ubuntu3) ...
+2026-10-04T03:08:50.2718964Z Setting up libxss-dev:amd64 (1:1.2.3-1build2) ...
+2026-10-04T03:08:50.2738318Z Setting up libsource-highlight-common (3.1.9-4.1build2) ...
+2026-10-04T03:08:50.2755759Z Setting up libopengl0:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.2775149Z Setting up libxcb-util1:amd64 (0.4.0-1build2) ...
+2026-10-04T03:08:50.2794133Z Setting up libflac8:amd64 (1.3.3-2ubuntu0.2) ...
+2026-10-04T03:08:50.2812892Z Setting up libxfixes-dev:amd64 (1:6.0.0-1) ...
+2026-10-04T03:08:50.2831694Z Setting up libid3tag0:amd64 (0.15.1b-14) ...
+2026-10-04T03:08:50.2852534Z Setting up libwayland-bin (1.20.0-1ubuntu0.1) ...
+2026-10-04T03:08:50.2871221Z Setting up libxrandr-dev:amd64 (2:1.5.2-1build1) ...
+2026-10-04T03:08:50.2890111Z Setting up libegl-mesa0:amd64 (23.2.1-1ubuntu3.1~22.04.4) ...
+2026-10-04T03:08:50.2909677Z Setting up libgles2:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.2927871Z Setting up libboost-system1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.2946360Z Setting up libgles1:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.2967653Z Setting up libboost-regex1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.2986826Z Setting up libopus0:amd64 (1.3.1-0.1build2) ...
+2026-10-04T03:08:50.3007444Z Setting up libxv1:amd64 (2:1.0.11-1build2) ...
+2026-10-04T03:08:50.3026742Z Setting up libssl-dev:amd64 (3.0.2-0ubuntu1.30) ...
+2026-10-04T03:08:50.3630371Z Setting up scons (4.0.1+dfsg-2) ...
+2026-10-04T03:08:50.7033424Z Setting up libobt2v5 (3.6.1-10) ...
+2026-10-04T03:08:50.7079129Z Setting up libspeex-dev:amd64 (1.2~rc1.2-1.1ubuntu3) ...
+2026-10-04T03:08:50.7100569Z Setting up libimlib2:amd64 (1.7.4-1build1) ...
+2026-10-04T03:08:50.7120350Z Setting up libipt2 (2.0.5-1) ...
+2026-10-04T03:08:50.7139893Z Setting up pkg-config (0.29.2-1ubuntu3) ...
+2026-10-04T03:08:50.7503917Z Setting up libbabeltrace1:amd64 (1.5.8-2build1) ...
+2026-10-04T03:08:50.7522923Z Setting up libboost-atomic1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.7545050Z Setting up libboost-serialization1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.7563925Z Setting up libasyncns0:amd64 (0.8-6build2) ...
+2026-10-04T03:08:50.7582301Z Setting up libegl1:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.7601178Z Setting up x11-utils (7.7+5build2) ...
+2026-10-04T03:08:50.7684154Z Setting up libglx-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.7701764Z Setting up libglu1-mesa:amd64 (9.0.2-1) ...
+2026-10-04T03:08:50.7720343Z Setting up libobrender32v5 (3.6.1-10) ...
+2026-10-04T03:08:50.7739172Z Setting up libopengl-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.7756495Z Setting up libboost-date-time1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.7775534Z Setting up libxi-dev:amd64 (2:1.8-1build1) ...
+2026-10-04T03:08:50.7794049Z Setting up libasound2-dev:amd64 (1.2.6.1-1ubuntu1.2) ...
+2026-10-04T03:08:50.7812190Z Setting up libgl-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.7831100Z Setting up libsource-highlight4v5 (3.1.9-4.1build2) ...
+2026-10-04T03:08:50.7850772Z Setting up libvorbisenc2:amd64 (1.3.7-1build2) ...
+2026-10-04T03:08:50.7869971Z Setting up libboost-thread1.74.0:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.7888240Z Setting up libhiredis0.14:amd64 (0.14.1-2) ...
+2026-10-04T03:08:50.7906962Z Setting up libxtst-dev:amd64 (2:1.2.3-1build4) ...
+2026-10-04T03:08:50.7927922Z Setting up libstartup-notification0:amd64 (0.12-6build2) ...
+2026-10-04T03:08:50.7948480Z Setting up libvorbis-dev:amd64 (1.3.7-1build2) ...
+2026-10-04T03:08:50.7965836Z Setting up libegl-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.7984029Z Setting up libxcursor-dev:amd64 (1:1.2.0-2build4) ...
+2026-10-04T03:08:50.8003372Z Setting up libboost-system-dev:amd64 (1.74.0.3ubuntu7) ...
+2026-10-04T03:08:50.8022682Z Setting up ccache (4.5.1-1) ...
+2026-10-04T03:08:50.8047145Z Updating symlinks in /usr/lib/ccache ...
+2026-10-04T03:08:50.8257912Z Setting up libepoxy-dev:amd64 (1.5.10-1) ...
+2026-10-04T03:08:50.8276920Z Setting up libwayland-dev:amd64 (1.20.0-1ubuntu0.1) ...
+2026-10-04T03:08:50.8295181Z Setting up gdb (12.1-0ubuntu1~22.04.2) ...
+2026-10-04T03:08:50.8321697Z Setting up openbox (3.6.1-10) ...
+2026-10-04T03:08:50.8432484Z update-alternatives: using /usr/bin/openbox to provide /usr/bin/x-window-manager (x-window-manager) in auto mode
+2026-10-04T03:08:50.8493484Z update-alternatives: using /usr/bin/openbox-session to provide /usr/bin/x-session-manager (x-session-manager) in auto mode
+2026-10-04T03:08:50.8567640Z Setting up libglu1-mesa-dev:amd64 (9.0.2-1) ...
+2026-10-04T03:08:50.8586182Z Setting up libboost-serialization1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.8605915Z Setting up libsndfile1:amd64 (1.0.31-2ubuntu0.2) ...
+2026-10-04T03:08:50.8628137Z Setting up libgles-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.8649872Z Setting up libpulse0:amd64 (1:15.99.1+dfsg1-1ubuntu2.2) ...
+2026-10-04T03:08:50.8722029Z Setting up libglvnd-dev:amd64 (1.4.0-1) ...
+2026-10-04T03:08:50.8744007Z Setting up libboost-date-time1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.8762017Z Setting up libpulse-mainloop-glib0:amd64 (1:15.99.1+dfsg1-1ubuntu2.2) ...
+2026-10-04T03:08:50.8785453Z Setting up libboost-date-time-dev:amd64 (1.74.0.3ubuntu7) ...
+2026-10-04T03:08:50.8808535Z Setting up libpulse-dev:amd64 (1:15.99.1+dfsg1-1ubuntu2.2) ...
+2026-10-04T03:08:50.8829018Z Setting up libgl1-mesa-dev:amd64 (23.2.1-1ubuntu3.1~22.04.4) ...
+2026-10-04T03:08:50.8851357Z Setting up libboost-thread1.74-dev:amd64 (1.74.0-14ubuntu3) ...
+2026-10-04T03:08:50.9137448Z Setting up libboost-thread-dev:amd64 (1.74.0.3ubuntu7) ...
+2026-10-04T03:08:50.9164074Z Processing triggers for man-db (2.10.2-1) ...
+2026-10-04T03:08:50.9187695Z Not building database; man-db/auto-update is not 'true'.
+2026-10-04T03:08:50.9200473Z Processing triggers for mailcap (3.70+nmu1ubuntu1.22.04.1) ...
+2026-10-04T03:08:51.0237605Z Processing triggers for libc-bin (2.35-0ubuntu3.15) ...
+2026-10-04T03:08:51.7491609Z 
+2026-10-04T03:08:51.7492159Z Running kernel seems to be up-to-date.
+2026-10-04T03:08:51.7492431Z 
+2026-10-04T03:08:51.7492538Z Services to be restarted:
+2026-10-04T03:08:51.7599149Z  systemctl restart packagekit.service
+2026-10-04T03:08:51.7649185Z  systemctl restart php8.1-fpm.service
+2026-10-04T03:08:51.7697846Z  systemctl restart ssh.service
+2026-10-04T03:08:51.7748691Z  systemctl restart systemd-journald.service
+2026-10-04T03:08:51.7850580Z  /etc/needrestart/restart.d/systemd-manager
+2026-10-04T03:08:51.7901498Z  systemctl restart systemd-networkd.service
+2026-10-04T03:08:51.7952335Z  systemctl restart systemd-resolved.service
+2026-10-04T03:08:51.8001782Z  systemctl restart systemd-udevd.service
+2026-10-04T03:08:51.8095417Z 
+2026-10-04T03:08:51.8097231Z Service restarts being deferred:
+2026-10-04T03:08:51.8098011Z  systemctl restart hosted-compute-agent.service
+2026-10-04T03:08:51.8098831Z  systemctl restart systemd-logind.service
+2026-10-04T03:08:51.8099629Z  systemctl restart user@1001.service
+2026-10-04T03:08:51.8100308Z  systemctl restart walinuxagent.service
+2026-10-04T03:08:51.8100785Z 
+2026-10-04T03:08:51.8101151Z No containers need to be restarted.
+2026-10-04T03:08:51.8101604Z 
+2026-10-04T03:08:51.8101996Z No user sessions are running outdated binaries.
+2026-10-04T03:08:51.8102518Z 
+2026-10-04T03:08:51.8103062Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T03:08:53.7302252Z ##[group]Run python3 test/ci_native_shard_plan.py --build-dir build/linux/client/release --timing-profile test/ci-timings/ubuntu-22.04.json --auxiliary-jobs test/ci-native-auxiliary.json --coverage-profile full --count 4
+2026-10-04T03:08:53.7304299Z [36;1mpython3 test/ci_native_shard_plan.py --build-dir build/linux/client/release --timing-profile test/ci-timings/ubuntu-22.04.json --auxiliary-jobs test/ci-native-auxiliary.json --coverage-profile full --count 4[0m
+2026-10-04T03:08:53.7379522Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:08:53.7379787Z env:
+2026-10-04T03:08:53.7379991Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:53.7380262Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:53.7380641Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:08:53.7381031Z ##[endgroup]
+2026-10-04T03:08:53.9677033Z run_the_unit_tests=4
+2026-10-04T03:08:53.9677536Z test_map_json_reports=2
+2026-10-04T03:08:53.9678104Z test_headless_map_cli_with_the_shared_preview_renderer=3
+2026-10-04T03:08:53.9678582Z test_tournament_protocol_ai_configuration_and_main_cli=1
+2026-10-04T03:08:53.9678987Z verify_save_continuation_traces=3
+2026-10-04T03:08:53.9679372Z verify_default_gradient_schedule_against_cross_platform=4
+2026-10-04T03:08:53.9679823Z verify_parallel_compute_and_save_continuation=1
+2026-10-04T03:08:53.9680269Z build_and_run_the_lan_session_regression=3
+2026-10-04T03:08:53.9680666Z test_front_end_colony_isolation_and_menu_navigation=2
+2026-10-04T03:08:53.9681065Z retain_browser_native_simulation_trace=4
+2026-10-04T03:08:53.9681306Z 
+2026-10-04T03:08:53.9810549Z ##[group]Run python3 test/run_tests.py --binary engine --coverage-profile full --write-inventory artifacts/tests/engine.inventory.json --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard 2/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/ubuntu-22.04.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json
+2026-10-04T03:08:53.9813940Z [36;1mpython3 test/run_tests.py --binary engine --coverage-profile full --write-inventory artifacts/tests/engine.inventory.json --build-dir build/linux/client/release --display-jobs 1 --fullscreen --shard 2/4 --exclude-tag map-generators --junit artifacts/tests/engine-junit.xml --timing-profile test/ci-timings/ubuntu-22.04.json --auxiliary-jobs test/ci-native-auxiliary.json --write-timings artifacts/tests/engine.timings.json[0m
+2026-10-04T03:08:53.9888549Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:08:53.9888805Z env:
+2026-10-04T03:08:53.9889039Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:08:53.9889294Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:08:53.9889684Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:08:53.9890086Z   LIBGL_ALWAYS_SOFTWARE: 1
+2026-10-04T03:08:53.9890316Z ##[endgroup]
+2026-10-04T03:08:54.1817123Z PASS AIRecoveryCoverage/Castor projects deduplicate replace and decline already satisfied requests (0.0s)
+2026-10-04T03:08:54.2055082Z PASS AIRecoveryCoverage/Nicowar defense flags materialize once and withdraw when the threat disappears (0.0s)
+2026-10-04T03:08:54.6831786Z PASS AIDecisionCoverage/Econo shared runtime survives save-load (0.5s)
+2026-10-04T03:08:54.9815189Z PASS AIStateContinuation/Cortex economy and food shortage survive save-load (0.8s)
+2026-10-04T03:08:55.0165710Z PASS AITargetTelemetrySave/Numbi reports the highest-numbered enemy its attack searches (0.0s)
+2026-10-04T03:08:55.0373344Z PASS BuildingExpel/healing is kept pro rata (0.0s)
+2026-10-04T03:08:55.0735911Z PASS BuildingFootprint/the retained fixture loads [save-format] (0.0s)
+2026-10-04T03:08:55.1025239Z PASS BuildingGradientInvalidation/centre placed inside an existing ring (0.0s)
+2026-10-04T03:08:55.1204319Z PASS BuildingGradientInvalidation/public reads resolve their inputs (0.0s)
+2026-10-04T03:08:55.1881449Z PASS CastorContinuation/binary and text snapshots preserve project fields and cache history (0.1s)
+2026-10-04T03:08:55.2087620Z PASS ClientChannels/order side effects reach the GUI as events (0.0s)
+2026-10-04T03:08:56.5474593Z PASS AIDecisionCoverage/Castor and Maxima growth and shortage resume at early and active checkpoints (2.4s)
+2026-10-04T03:08:56.5699290Z PASS CortexActionCoverage/live upgrade eligibility and worker columns drive the actual construction order (0.0s)
+2026-10-04T03:08:56.9828356Z PASS CombGenerator/cross-channel firing [artifacts] (1.8s)
+2026-10-04T03:08:57.0029255Z PASS CortexNetCoverage/truncated blobs and invalid header or layer contracts are rejected (0.0s)
+2026-10-04T03:08:57.0244988Z PASS CortexPolicyCoverage/inn upgrades retain enough feeding capacity and hospitals scale with army (0.0s)
+2026-10-04T03:08:57.0440571Z PASS CortexPolicyCoverage/worker tuning respects depletion floors settling and a shared construction budget (0.0s)
+2026-10-04T03:08:57.0904032Z PASS CortexGeometry/placement geometry matches the tile-scan oracle (0.5s)
+2026-10-04T03:08:57.4078577Z PASS CustomGameSetup/generated map snapshot launches from memory (0.3s)
+2026-10-04T03:08:59.6874821Z PASS AIStateContinuation/Warrush growth and attack preparation survive save-load (5.0s)
+2026-10-04T03:08:59.7219991Z PASS DrawableSurfaceBlend/icon masks preserve resolution alpha and bounded recolours (0.0s)
+2026-10-04T03:09:00.7570677Z PASS AIDecisionCoverage/long AI campaigns resume with identical orders state and game RNG [slow][artifacts] (6.6s)
+2026-10-04T03:09:01.1435789Z PASS CustomGameSetup/controller help is localized with the current player capacity [display] (4.1s)
+2026-10-04T03:09:01.8202828Z PASS EngineSession/serial sessions retain chat text across skipped GUI frames (0.7s)
+2026-10-04T03:09:02.9185283Z PASS CustomGameSetup/preferences screen writes then reads back [display][writes-preferences] (1.8s)
+2026-10-04T03:09:02.9390391Z PASS FarmAreas/an empty gap ends the field, so nothing is taken across it (0.0s)
+2026-10-04T03:09:02.9568342Z PASS FarmAreas/harvesting a farm takes from the ripest tile of the field, not the touched one (0.0s)
+2026-10-04T03:09:02.9744864Z PASS FarmAreas/the target emptying during the animation is not a failure while the field is in reach (0.0s)
+2026-10-04T03:09:02.9921227Z PASS FarmAreas/wood is not farmed; algae are (0.0s)
+2026-10-04T03:09:03.0099089Z PASS FetchApportionment/an empty handed unit wins all else equal (0.0s)
+2026-10-04T03:09:03.0270027Z PASS FontKerning/the bundled SDL3_ttf moves the pen for kerned pairs (0.0s)
+2026-10-04T03:09:04.0375442Z PASS EditorActionCoverage/building selection exposes matching editor controls and save retains edits [display] (1.1s)
+2026-10-04T03:09:05.1065265Z PASS GUIInteractionCoverage/unit information reflects damage hunger ownership and abilities without mutating simulation [display][artifacts] (1.1s)
+2026-10-04T03:09:06.0252999Z PASS GameDiagnostics/capped scene export survives repeated graphics lifetimes and write failures [artifacts] (0.9s)
+2026-10-04T03:09:09.8855168Z PASS FailingUnitMarkers/units a building could not hire wear the reason marker [display:1024x768][artifacts] (4.8s)
+2026-10-04T03:09:09.9042525Z PASS GameGUISelection/selection and failing-unit recording do not follow a reused gid (0.0s)
+2026-10-04T03:09:10.8043283Z PASS GUIInteractionCoverage/desktop building menu clicks queue authoritative worker and priority orders [display] (0.9s)
+2026-10-04T03:09:10.8392514Z PASS GameSpeed/presets; bounds; legacy settings and persistence (0.0s)
+2026-10-04T03:09:11.7238793Z PASS EditorActionCoverage/unit placement selection and stat edits use the action dispatcher [display] (0.9s)
+2026-10-04T03:09:12.3922619Z PASS GameDiagnostics/offscreen pass restores transformed drawing after exceptions [display] (0.7s)
+2026-10-04T03:09:12.4425063Z PASS GuardAreaBalance/an existing clump drains into a newly painted area at every refresh cadence (0.7s)
+2026-10-04T03:09:12.7615419Z PASS GuardAreaBalance/three areas are all guarded (0.4s)
+2026-10-04T03:09:12.7963191Z PASS HiveMindIntegration/Hive Mind copies the engine fog boundary and validates ownership (0.0s)
+2026-10-04T03:09:12.9132204Z PASS HungryDefeat/feeding reserves the last inn place and defeat controls hold (0.1s)
+2026-10-04T03:09:12.9331623Z PASS InnSwap/a good booking stays (0.0s)
+2026-10-04T03:09:13.4146153Z PASS GameGUITouch/scaled gameplay dialog input is translated once [display] (1.0s)
+2026-10-04T03:09:13.6322307Z PASS GameplayRecording.Integration/threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording] (0.2s)
+2026-10-04T03:09:13.6380569Z PASS JavaScriptCompatibility/Team-capacity change rejects released replays and enforces acceptance boundaries (0.2s)
+2026-10-04T03:09:13.6581734Z PASS JavaScriptIntegration/JavaScript farm areas: experiments query, farmArea order and tile field (0.0s)
+2026-10-04T03:09:13.6821171Z PASS JavaScriptIntegration/JavaScript queued edits preserve fairness cancellation and stale targets (0.0s)
+2026-10-04T03:09:13.7053232Z PASS JavaScriptIntegration/JavaScript upgrade dispatch survives tracking record growth (0.0s)
+2026-10-04T03:09:13.7797062Z PASS JavaScriptLifecycle/Scripting editor deletion and reuse never revive a reference (0.1s)
+2026-10-04T03:09:13.8181518Z PASS JavaScriptPresentation/Failed prepared map replacements preserve active globals and language (0.0s)
+2026-10-04T03:09:13.8598045Z PASS JavaScriptIntegration/JavaScript observations visibility memory pagination and stale references (0.2s)
+2026-10-04T03:09:14.0365574Z PASS JavaScriptPresentation/JavaScript presentation publishes only changed localized messages (0.2s)
+2026-10-04T03:09:14.0855704Z PASS JavaScriptSession/JavaScript deterministic scenario failure ends the engine session (0.2s)
+2026-10-04T03:09:16.3736226Z PASS JavaScriptCompatibility/JavaScript current text saves validate unused generation counters (3.4s)
+2026-10-04T03:09:16.3914614Z PASS LegacyAIState/Cortex saved policy and model supersede the current process selection (0.0s)
+2026-10-04T03:09:16.4095932Z PASS LegacyAIState/Warrush timers and constructors round-trip at boundaries (0.0s)
+2026-10-04T03:09:16.4284583Z PASS LegacyAIState/pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex (0.0s)
+2026-10-04T03:09:16.4464750Z PASS LegacyScriptCoverage/alliance levels preserve unrelated teams and apply vision masks (0.0s)
+2026-10-04T03:09:16.4644640Z PASS LegacyScriptCoverage/independent stories timers space and saved suspension resume exactly (0.0s)
+2026-10-04T03:09:16.4984443Z PASS LegacyScriptCoverage/objectives and hints resolve script numbers and persist in game snapshots (0.0s)
+2026-10-04T03:09:16.5181123Z PASS LegacyScriptCoverage/supported statements and wait forms compile (0.0s)
+2026-10-04T03:09:16.5359398Z PASS LockstepSession/flushAllOrders submits every queued local order without a checksum (0.0s)
+2026-10-04T03:09:16.8752773Z PASS JavaScriptSimulation/JavaScript economic planners and map survey execute, resume and replay 256 ticks (2.8s)
+2026-10-04T03:09:18.1576520Z PASS MapGeneratorDefaults/Bastion Keys contracts (1.6s)
+2026-10-04T03:09:21.2956653Z PASS MapGeneratorDefaults/Random design defaults resolve reproducibly without changing explicit enums (3.1s)
+2026-10-04T03:09:21.5287808Z PASS MapGeneratorDefaults/Gauntlet shapes; request rejection and final-world corruption checks (4.7s)
+2026-10-04T03:09:22.1470297Z PASS MapPreview/thumbnail codec; envelope limits and corrupt input (0.6s)
+2026-10-04T03:09:22.6729904Z PASS MapGeneratorDefaults/toolkit geometry; raster; resource and home contracts (1.4s)
+2026-10-04T03:09:22.6922465Z PASS MapTiling/wraps swimmers, buildings and team areas together across the source seam [save-format] (0.0s)
+2026-10-04T03:09:22.7173250Z PASS MatchSetup/closed seats close their team and follow every player seat (0.0s)
+2026-10-04T03:09:22.7425424Z PASS MatchSetup/unknown experiments, JavaScript AIs and unexpressible headers are refused (0.0s)
+2026-10-04T03:09:22.8605370Z PASS Maxima.Combat/defense deadband preserves coverage (0.1s)
+2026-10-04T03:09:22.9021368Z PASS Maxima.Combat/fitted history survives save (0.0s)
+2026-10-04T03:09:22.9361345Z PASS Maxima.Combat/lowered flag level survives review (0.0s)
+2026-10-04T03:09:23.0023962Z PASS Maxima.Combat/offensive control switches (0.1s)
+2026-10-04T03:09:23.0406861Z PASS Maxima.Combat/sealed target opens route (0.0s)
+2026-10-04T03:09:23.0761679Z PASS Maxima.Combat/training reservations match different levels (0.0s)
+2026-10-04T03:09:23.1441073Z PASS Maxima.Combat/wave assembly and pipeline (0.1s)
+2026-10-04T03:09:23.1801948Z PASS Maxima.Director/ally prestige (0.0s)
+2026-10-04T03:09:23.2144637Z PASS Maxima.Director/proactive protection (0.0s)
+2026-10-04T03:09:23.2484794Z PASS Maxima.Director/unified hospital capacity (0.0s)
+2026-10-04T03:09:23.2826268Z PASS Maxima.Economy/birth budget scales beyond twenty (0.0s)
+2026-10-04T03:09:23.3222020Z PASS Maxima.Economy/counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format] (0.0s)
+2026-10-04T03:09:23.3560465Z PASS Maxima.Economy/growing food funds capacity (0.0s)
+2026-10-04T03:09:23.3741085Z PASS Maxima.Economy/new buildings start staffed (0.0s)
+2026-10-04T03:09:23.4125842Z PASS Maxima.Economy/tracker logical cadence (0.0s)
+2026-10-04T03:09:23.4794087Z PASS Maxima.FarmingIntegration/expansion leaves harvest lanes open (0.1s)
+2026-10-04T03:09:23.5177932Z PASS Maxima.FarmingIntegration/initial flag staffing (0.0s)
+2026-10-04T03:09:23.5892808Z PASS Maxima.FarmingIntegration/seed survival (0.1s)
+2026-10-04T03:09:23.6232450Z PASS Maxima.Implementation/completed swarm budget regressions (0.0s)
+2026-10-04T03:09:23.6570108Z PASS Maxima.Implementation/economic resource access regressions (0.0s)
+2026-10-04T03:09:23.6970170Z PASS Maxima.Implementation/explorer swarm staffing regressions (0.0s)
+2026-10-04T03:09:23.8640748Z PASS Maxima.Implementation/gradient dependencies; payload round trips and cache expiry (0.2s)
+2026-10-04T03:09:23.9005971Z PASS Maxima.Implementation/mission force regressions (0.0s)
+2026-10-04T03:09:23.9347171Z PASS Maxima.Implementation/repair labor contract regressions (0.0s)
+2026-10-04T03:09:23.9683602Z PASS Maxima.Implementation/upgrade worker priority regressions (0.0s)
+2026-10-04T03:09:24.0345564Z PASS Maxima.Relocation/lost replacement (0.1s)
+2026-10-04T03:09:24.5018386Z PASS NetFrame/the reader hands out frames in place and stays bounded over a long stream (0.5s)
+2026-10-04T03:09:24.5186916Z PASS OnlineResult/a result waits for the players, then for the verifier, and says when it is slow (0.0s)
+2026-10-04T03:09:24.5362243Z PASS OnlineServices/pump hooks run on update and stop once removed (0.0s)
+2026-10-04T03:09:24.5536104Z PASS OnlineWording/menus read larger on big desktop windows that follow the desktop scale (0.0s)
+2026-10-04T03:09:24.7201661Z PASS OrderValidation/every order type survives random payloads through decode, check and execution [orders] (0.2s)
+2026-10-04T03:09:24.8866459Z PASS OrderValidation/orders acting for another team, player or building are rejected [orders] (0.2s)
+2026-10-04T03:09:25.0535392Z PASS PlatformRoom/a premade map is uploaded and chosen for the room, then named by the server (0.2s)
+2026-10-04T03:09:25.9223043Z PASS PortableGame/the portable renderer loads and draws a complete 50-tick game scene (0.9s)
+2026-10-04T03:09:40.1993355Z PASS HighResolutionIntegration/HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences] (26.6s)
+2026-10-04T03:09:40.2170892Z PASS RelayTransport/the transport frames what it sends and reconnects on demand (0.0s)
+2026-10-04T03:09:40.2510778Z PASS RuntimeContinuation/gradient manager state survives binary and text round trips [save-format] (0.0s)
+2026-10-04T03:09:40.2690422Z PASS SceneExtract/overlay maps match a direct computation and refresh per 25-tick window or type change (0.0s)
+2026-10-04T03:09:40.2869041Z PASS SceneExtract/stale selection generation never selects a replacement occupying the same gid (0.0s)
+2026-10-04T03:09:40.4536747Z PASS ScriptEditor/Editing legacy SGSL retains the released USL and SGSL payload pairing (0.2s)
+2026-10-04T03:09:40.6201979Z PASS ScriptEditor/JavaScript script file dialogs use js and leave loading as a draft (0.2s)
+2026-10-04T03:09:41.4006440Z PASS LanMatchHarness/LAN WSS drop, restart and host departure [network][slow][artifacts] (27.3s)
+2026-10-04T03:09:41.7254515Z PASS MapTiling/advanced controls preview, reset and accept the repeated map on touch [display][artifacts] (1.5s)
+2026-10-04T03:09:41.7607416Z PASS SettingsGraphics/legacy preferences migrate and independent effects round trip (0.0s)
+2026-10-04T03:09:41.7779989Z PASS SoftwareRenderer/fractional shared endpoints leave no seams; queued triangles obey direct writes (0.0s)
+2026-10-04T03:09:41.7951992Z PASS SoftwareRenderer/native display scaling preserves direct pixels through lazy geometry and target rotation (0.0s)
+2026-10-04T03:09:41.8138837Z PASS SoftwareRenderer/presenter rotates full frames and preserves completed pixels during partial updates (0.0s)
+2026-10-04T03:09:41.8303360Z PASS TeamLimit/dense designed maps accept thirteen through sixteen only on the largest square (0.0s)
+2026-10-04T03:09:41.9466535Z PASS TeamLimit/script generation slot counts reject missing capacity and truncated planes [save-format] (0.1s)
+2026-10-04T03:09:42.7654865Z PASS TeamStatsSave/AI telemetry continues across a save [save-format] (0.8s)
+2026-10-04T03:09:42.7833100Z PASS TeamStatsSave/defence snapshot counts warriors by place and enemy warriors at home (0.0s)
+2026-10-04T03:09:42.7944825Z PASS PortableRenderer/zone boundaries; UI transforms and portable rendering paths [display] (1.1s)
+2026-10-04T03:09:42.8139774Z PASS TeamStatsSave/places: own buildings first, then enemies; allies, flags and new buildings do not count (0.0s)
+2026-10-04T03:09:42.8170071Z PASS TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden] (0.0s)
+2026-10-04T03:09:43.1843203Z PASS TournamentCompatibility/per-player AI configuration survives construction and partial headers (0.4s)
+2026-10-04T03:09:44.9206300Z PASS TurnEngineHarness/a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts] (1.7s)
+2026-10-04T03:09:45.7460745Z PASS TurnEngineHarness/a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim] (0.8s)
+2026-10-04T03:09:46.2643293Z PASS TurnEngineHarness/one client claiming the game finished does not end it for a player who is reconnecting [network-sim] (0.5s)
+2026-10-04T03:09:47.5428502Z PASS TurnEngineHarness/voice packets do not hold up a player's orders [network-sim][artifacts] (1.3s)
+2026-10-04T03:09:49.0247740Z PASS Settings/layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences] (6.2s)
+2026-10-04T03:13:26.2849752Z PASS UIPresentation/every screen lays out; navigates and captures at tablet landscape across presentations and insets [display:1600x1400][artifacts][slow] (217.3s)
+2026-10-04T03:13:31.2642298Z PASS UnitHighResolutionCache/HD layer mappings; fallbacks; zoom and shader cache behaviour [display] (5.0s)
+2026-10-04T03:13:31.2827060Z PASS UntrustedFiles/AI tags collection counts and recursive predicates are bounded (0.0s)
+2026-10-04T03:13:31.3002911Z PASS UntrustedFiles/entity loaders reject malicious indices before using them [save-format] (0.0s)
+2026-10-04T03:13:31.3178176Z PASS UntrustedFiles/legacy saved instruction pointers must identify statement boundaries [save-format] (0.0s)
+2026-10-04T03:13:31.3349382Z PASS UntrustedFiles/untrusted names cannot escape the map output directory (0.0s)
+2026-10-04T03:13:31.3522233Z PASS WinProbability/equal alliances share chances and eliminated allies contribute nothing (0.0s)
+2026-10-04T03:18:58.1634284Z PASS UIPresentation/every screen lays out; navigates and captures at fullhd across presentations and insets [display:2200x1400][artifacts][slow] (326.9s)
+2026-10-04T03:18:58.9819963Z PASS WssTransport/a reader that stops reading resumes with every message in order (0.8s)
+2026-10-04T03:19:03.0802558Z PASS Settings/layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences] (4.9s)
+2026-10-04T03:19:34.4018999Z PASS TorusRender/game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences] (31.3s)
+2026-10-04T03:19:35.0693032Z PASS WindowResize/cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400] (0.7s)
+2026-10-04T03:19:35.0743236Z 
+2026-10-04T03:19:35.0743874Z 146 passed, 0 failed, 0 skipped (715.6s of test time)
+2026-10-04T03:19:35.0744618Z [run_tests] JUnit report: artifacts/tests/engine-junit.xml (146 cases)
+2026-10-04T03:19:35.0907974Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T03:19:35.0908280Z with:
+2026-10-04T03:19:35.0908528Z   name: ci-observation-inventory-ubuntu-22.04-2
+2026-10-04T03:19:35.0908953Z   path: artifacts/tests/*.inventory.json
+artifacts/tests/*.timings.json
+
+2026-10-04T03:19:35.0909353Z   if-no-files-found: error
+2026-10-04T03:19:35.0909588Z   compression-level: 6
+2026-10-04T03:19:35.0909803Z   overwrite: false
+2026-10-04T03:19:35.0910025Z   include-hidden-files: false
+2026-10-04T03:19:35.0910260Z env:
+2026-10-04T03:19:35.0910445Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:19:35.0910678Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:19:35.0911042Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:19:35.0911420Z ##[endgroup]
+2026-10-04T03:19:35.2789868Z (node:5258) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T03:19:35.2790871Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T03:19:35.2885397Z With the provided path, there will be 2 files uploaded
+2026-10-04T03:19:35.2887155Z Artifact name is valid!
+2026-10-04T03:19:35.2889526Z Root directory input is valid!
+2026-10-04T03:19:35.6853273Z Beginning upload of artifact content to blob storage
+2026-10-04T03:19:35.7136184Z (node:5258) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T03:19:36.0444893Z Uploaded bytes 24633
+2026-10-04T03:19:36.1165271Z Finished uploading artifact content to blob storage!
+2026-10-04T03:19:36.1166072Z SHA256 digest of uploaded artifact zip is 7b7944e12428faa4e71a81b232500fd01a8b13a2944f81356d523d9bc0065838
+2026-10-04T03:19:36.1167221Z Finalizing artifact upload
+2026-10-04T03:19:36.3875136Z Artifact ci-observation-inventory-ubuntu-22.04-2.zip successfully finalized. Artifact ID 11292616858
+2026-10-04T03:19:36.3876624Z Artifact ci-observation-inventory-ubuntu-22.04-2 has been successfully uploaded! Final size is 24633 bytes. Artifact ID is 11292616858
+2026-10-04T03:19:36.3884168Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37171997415/artifacts/11292616858
+2026-10-04T03:19:36.4039061Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T03:19:36.4039377Z with:
+2026-10-04T03:19:36.4039620Z   name: native-test-results-ubuntu-22.04-2
+2026-10-04T03:19:36.4039916Z   path: artifacts/tests/
+2026-10-04T03:19:36.4040161Z   if-no-files-found: ignore
+2026-10-04T03:19:36.4040415Z   compression-level: 6
+2026-10-04T03:19:36.4040641Z   overwrite: false
+2026-10-04T03:19:36.4040871Z   include-hidden-files: false
+2026-10-04T03:19:36.4041114Z env:
+2026-10-04T03:19:36.4041305Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:19:36.4041619Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:19:36.4042027Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:19:36.4042418Z ##[endgroup]
+2026-10-04T03:19:36.5890946Z (node:5271) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T03:19:36.5891888Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T03:19:36.7246982Z With the provided path, there will be 666 files uploaded
+2026-10-04T03:19:36.7253603Z Artifact name is valid!
+2026-10-04T03:19:36.7261530Z Root directory input is valid!
+2026-10-04T03:19:37.1532124Z Beginning upload of artifact content to blob storage
+2026-10-04T03:19:38.4437236Z (node:5271) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T03:19:39.2982067Z Uploaded bytes 8388608
+2026-10-04T03:19:39.9015653Z Uploaded bytes 16777216
+2026-10-04T03:19:39.9065059Z Uploaded bytes 25165824
+2026-10-04T03:19:40.7285925Z Uploaded bytes 33554432
+2026-10-04T03:19:41.6823213Z Uploaded bytes 41943040
+2026-10-04T03:19:42.5057493Z Uploaded bytes 50331648
+2026-10-04T03:19:43.5374336Z Uploaded bytes 58720256
+2026-10-04T03:19:44.6048211Z Uploaded bytes 67108864
+2026-10-04T03:19:45.4890010Z Uploaded bytes 75497472
+2026-10-04T03:19:46.5908615Z Uploaded bytes 83886080
+2026-10-04T03:19:47.5133310Z Uploaded bytes 92274688
+2026-10-04T03:19:48.4614260Z Uploaded bytes 100663296
+2026-10-04T03:19:49.3352232Z Uploaded bytes 109051904
+2026-10-04T03:19:50.3029492Z Uploaded bytes 117440512
+2026-10-04T03:19:51.2478128Z Uploaded bytes 125829120
+2026-10-04T03:19:52.1450491Z Uploaded bytes 134217728
+2026-10-04T03:19:53.1019464Z Uploaded bytes 142606336
+2026-10-04T03:19:54.1340111Z Uploaded bytes 150994944
+2026-10-04T03:19:55.0106526Z Uploaded bytes 159383552
+2026-10-04T03:19:55.8826696Z Uploaded bytes 167772160
+2026-10-04T03:19:56.8526453Z Uploaded bytes 176160768
+2026-10-04T03:19:57.7812591Z Uploaded bytes 184549376
+2026-10-04T03:19:58.7347865Z Uploaded bytes 192937984
+2026-10-04T03:19:59.7008033Z Uploaded bytes 201326592
+2026-10-04T03:20:00.5548561Z Uploaded bytes 209715200
+2026-10-04T03:20:01.5926518Z Uploaded bytes 218103808
+2026-10-04T03:20:02.5068721Z Uploaded bytes 226492416
+2026-10-04T03:20:03.4273234Z Uploaded bytes 234881024
+2026-10-04T03:20:04.3149397Z Uploaded bytes 243269632
+2026-10-04T03:20:05.1967357Z Uploaded bytes 251658240
+2026-10-04T03:20:06.2085223Z Uploaded bytes 260046848
+2026-10-04T03:20:07.0922830Z Uploaded bytes 268435456
+2026-10-04T03:20:08.1642347Z Uploaded bytes 276824064
+2026-10-04T03:20:09.1647445Z Uploaded bytes 285212672
+2026-10-04T03:20:10.3370208Z Uploaded bytes 293601280
+2026-10-04T03:20:11.4898801Z Uploaded bytes 301989888
+2026-10-04T03:20:12.3748651Z Uploaded bytes 310378496
+2026-10-04T03:20:13.4507574Z Uploaded bytes 318767104
+2026-10-04T03:20:14.3975368Z Uploaded bytes 327155712
+2026-10-04T03:20:16.1284623Z Uploaded bytes 335544320
+2026-10-04T03:20:16.9489764Z Uploaded bytes 343932928
+2026-10-04T03:20:17.0731368Z Uploaded bytes 345718268
+2026-10-04T03:20:17.1469166Z Finished uploading artifact content to blob storage!
+2026-10-04T03:20:17.1472459Z SHA256 digest of uploaded artifact zip is 5320df113300a104efd63bc71d41ae62890db8366167b68bd6a1205599ea6c2b
+2026-10-04T03:20:17.1477363Z Finalizing artifact upload
+2026-10-04T03:20:17.5746522Z Artifact native-test-results-ubuntu-22.04-2.zip successfully finalized. Artifact ID 11292427377
+2026-10-04T03:20:17.5747621Z Artifact native-test-results-ubuntu-22.04-2 has been successfully uploaded! Final size is 345718268 bytes. Artifact ID is 11292427377
+2026-10-04T03:20:17.5755127Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37171997415/artifacts/11292427377
+2026-10-04T03:20:17.5957830Z ##[group]Run python3 test/ci_run_commands.py \
+2026-10-04T03:20:17.5958270Z [36;1mpython3 test/ci_run_commands.py \[0m
+2026-10-04T03:20:17.5959002Z [36;1m  --check 'map report' 'python3 test/test_map_report.py build/linux/client/release/src/glob2 build/linux/client/release/test/MapReportHarness' \[0m
+2026-10-04T03:20:17.5959769Z [36;1m  --check 'map telemetry' 'python3 test/test_map_telemetry.py'[0m
+2026-10-04T03:20:17.6031658Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:20:17.6031953Z env:
+2026-10-04T03:20:17.6032177Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:20:17.6032467Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:20:17.6032891Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:20:17.6033335Z ##[endgroup]
+2026-10-04T03:20:17.6379922Z ##[group]map report
+2026-10-04T03:20:18.2231290Z PASS map JSON: schema contract, analytic distances/resources/space, the fitted fairness model, unchanged serialized state/RNG, config provenance, repeatability, old saves and output errors
+2026-10-04T03:20:18.2232816Z Artifacts: /home/runner/work/glob2/glob2/artifacts/map-report
+2026-10-04T03:20:18.2324334Z ##[endgroup]
+2026-10-04T03:20:18.2325080Z ##[group]map telemetry
+2026-10-04T03:20:18.9797247Z ..
+2026-10-04T03:20:18.9797789Z ----------------------------------------------------------------------
+2026-10-04T03:20:18.9798358Z Ran 2 tests in 0.551s
+2026-10-04T03:20:18.9798575Z 
+2026-10-04T03:20:18.9798684Z OK
+2026-10-04T03:20:18.9814861Z 5 attempts; 4 failed; results: /tmp/tmp_tm8lnzj/results
+2026-10-04T03:20:18.9908063Z ##[endgroup]
+2026-10-04T03:20:19.0043626Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T03:20:19.0044482Z with:
+2026-10-04T03:20:19.0044890Z   name: map-report-ubuntu-22.04
+2026-10-04T03:20:19.0045420Z   path: artifacts/map-report/
+2026-10-04T03:20:19.0045922Z   if-no-files-found: warn
+2026-10-04T03:20:19.0046373Z   compression-level: 6
+2026-10-04T03:20:19.0046805Z   overwrite: false
+2026-10-04T03:20:19.0047221Z   include-hidden-files: false
+2026-10-04T03:20:19.0047675Z env:
+2026-10-04T03:20:19.0048037Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:20:19.0048507Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:20:19.0049216Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:20:19.0049942Z ##[endgroup]
+2026-10-04T03:20:19.1888171Z (node:5319) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T03:20:19.1889296Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T03:20:19.2013119Z With the provided path, there will be 19 files uploaded
+2026-10-04T03:20:19.2020135Z Artifact name is valid!
+2026-10-04T03:20:19.2020792Z Root directory input is valid!
+2026-10-04T03:20:19.5972678Z Beginning upload of artifact content to blob storage
+2026-10-04T03:20:19.6569722Z (node:5319) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T03:20:20.0932647Z Uploaded bytes 107906
+2026-10-04T03:20:20.1662992Z Finished uploading artifact content to blob storage!
+2026-10-04T03:20:20.1664483Z SHA256 digest of uploaded artifact zip is 4b21502337880ed9e03f1b22516379c2b44752335b2992d368ce23352ea43a73
+2026-10-04T03:20:20.1665644Z Finalizing artifact upload
+2026-10-04T03:20:20.4647786Z Artifact map-report-ubuntu-22.04.zip successfully finalized. Artifact ID 11292447278
+2026-10-04T03:20:20.4649678Z Artifact map-report-ubuntu-22.04 has been successfully uploaded! Final size is 107906 bytes. Artifact ID is 11292447278
+2026-10-04T03:20:20.4657477Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37171997415/artifacts/11292447278
+2026-10-04T03:20:20.4860401Z ##[group]Run ./build/linux/client/release/test/MenuColonyHarness check data/menu/colony.bin
+2026-10-04T03:20:20.4861117Z [36;1m./build/linux/client/release/test/MenuColonyHarness check data/menu/colony.bin[0m
+2026-10-04T03:20:20.4861701Z [36;1m./build/linux/client/release/test/MenuColonyHarness navigation unused[0m
+2026-10-04T03:20:20.4932687Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:20:20.4932964Z env:
+2026-10-04T03:20:20.4933178Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:20:20.4933442Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:20:20.4933981Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:20:20.4934404Z   SDL_VIDEODRIVER: dummy
+2026-10-04T03:20:20.4934663Z   SDL_AUDIODRIVER: dummy
+2026-10-04T03:20:20.4934904Z ##[endgroup]
+2026-10-04T03:20:20.5097867Z Settings::load("preferences.txt") : error, can't open file.
+2026-10-04T03:20:20.8868908Z libpng warning: iCCP: known incorrect sRGB profile
+2026-10-04T03:20:20.8869989Z libpng warning: iCCP: known incorrect sRGB profile
+2026-10-04T03:20:20.9766367Z global_assets_ms=467.707
+2026-10-04T03:20:21.0211605Z theme_setup_ms=44.5591
+2026-10-04T03:20:21.0505536Z colony_load_ms=12.5574
+2026-10-04T03:20:21.3304657Z Menu colony unavailable: missing menu snapshot
+2026-10-04T03:20:21.3305227Z Menu colony unavailable: invalid menu snapshot
+2026-10-04T03:20:21.7754284Z FAIL: main menu exposes navigation and recording controls to the keyboard
+2026-10-04T03:20:21.7858483Z ##[error]Process completed with exit code 2.
+2026-10-04T03:20:21.7951395Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-04T03:20:21.7951796Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-04T03:20:21.8022880Z shell: /usr/bin/bash -e {0}
+2026-10-04T03:20:21.8023167Z env:
+2026-10-04T03:20:21.8023395Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:20:21.8023814Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:20:21.8024252Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:20:21.8036266Z   CI_STEPS_JSON: {
+  "install_dependencies": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "actions_checkout_v4_1": {
+    "outputs": {
+      "commit": "69db1fb5db1c40e8037d571b8adbcbbfe7dd04ea",
+      "ref": ""
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "download_linux_test_programs": {
+    "outputs": {
+      "download-path": "/home/runner/work/glob2/glob2/artifacts/ci-native"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "unpack_linux_test_programs": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "shard_plan": {
+    "outputs": {
+      "run_the_unit_tests": "4",
+      "test_map_json_reports": "2",
+      "test_headless_map_cli_with_the_shared_preview_renderer": "3",
+      "test_tournament_protocol_ai_configuration_and_main_cli": "1",
+      "verify_save_continuation_traces": "3",
+      "verify_default_gradient_schedule_against_cross_platform": "4",
+      "verify_parallel_compute_and_save_continuation": "1",
+      "build_and_run_the_lan_session_regression": "3",
+      "test_front_end_colony_isolation_and_menu_navigation": "2",
+      "retain_browser_native_simulation_trace": "4"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "run_the_unit_tests": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "run_the_engine_tests": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "test_map_json_reports": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "upload_map_json_reports_and_command_log": {
+    "outputs": {
+      "artifact-id": "11292447278",
+      "artifact-digest": "4b21502337880ed9e03f1b22516379c2b44752335b2992d368ce23352ea43a73",
+      "artifact-url": "https://github.com/Globulation2/glob2/actions/runs/37171997415/artifacts/11292447278"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "test_headless_map_cli_with_the_shared_preview_renderer": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "upload_map_cli_previews_and_command_log": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "test_tournament_protocol_ai_configuration_and_main_cli": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "retain_tournament_cli_compatibility_evidence": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "verify_save_continuation_traces": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "verify_default_gradient_schedule_against_cross_platform": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "verify_parallel_compute_and_save_continuation": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "build_and_run_the_lan_session_regression": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "test_front_end_colony_isolation_and_menu_navigation": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "success"
+  },
+  "retain_browser_native_simulation_trace": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "upload_artifact_1": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  }
+}
+2026-10-04T03:20:21.8046590Z ##[endgroup]
+2026-10-04T03:20:21.8358495Z ## CI check results
+2026-10-04T03:20:21.8359167Z 
+2026-10-04T03:20:21.8359502Z - Failed: `test_front_end_colony_isolation_and_menu_navigation`
+2026-10-04T03:20:21.8360311Z 
+2026-10-04T03:20:21.8398025Z ##[error]Process completed with exit code 1.
+2026-10-04T03:20:21.8467169Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T03:20:21.8467497Z with:
+2026-10-04T03:20:21.8467731Z   name: ci-observation-tests-g++-11-2
+2026-10-04T03:20:21.8468043Z   path: artifacts/ci-observation/
+2026-10-04T03:20:21.8468334Z   if-no-files-found: ignore
+2026-10-04T03:20:21.8468596Z   compression-level: 6
+2026-10-04T03:20:21.8468837Z   overwrite: false
+2026-10-04T03:20:21.8469072Z   include-hidden-files: false
+2026-10-04T03:20:21.8469324Z env:
+2026-10-04T03:20:21.8469538Z   GLOB2_DEV_MODE: isolated
+2026-10-04T03:20:21.8469802Z   CI_RUNNER_FAMILY: ubuntu-22.04
+2026-10-04T03:20:21.8470186Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T03:20:21.8470600Z ##[endgroup]
+2026-10-04T03:20:22.0433003Z (node:5342) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T03:20:22.0434342Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T03:20:22.0497951Z With the provided path, there will be 1 file uploaded
+2026-10-04T03:20:22.0502924Z Artifact name is valid!
+2026-10-04T03:20:22.0504320Z Root directory input is valid!
+2026-10-04T03:20:22.4761646Z Beginning upload of artifact content to blob storage
+2026-10-04T03:20:22.4956742Z (node:5342) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T03:20:22.7533331Z Uploaded bytes 167
+2026-10-04T03:20:22.8257717Z Finished uploading artifact content to blob storage!
+2026-10-04T03:20:22.8259252Z SHA256 digest of uploaded artifact zip is 7d8b02f1c887855a1006fe0249b31184f03316deb50df0bc1255948c944b6666
+2026-10-04T03:20:22.8260597Z Finalizing artifact upload
+2026-10-04T03:20:23.1332262Z Artifact ci-observation-tests-g++-11-2.zip successfully finalized. Artifact ID 11292272715
+2026-10-04T03:20:23.1334262Z Artifact ci-observation-tests-g++-11-2 has been successfully uploaded! Final size is 167 bytes. Artifact ID is 11292272715
+2026-10-04T03:20:23.1343037Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37171997415/artifacts/11292272715
+2026-10-04T03:20:23.1571744Z Post job cleanup.
+2026-10-04T03:20:23.2500896Z [command]/usr/bin/git version
+2026-10-04T03:20:23.2550104Z git version 2.55.0
+2026-10-04T03:20:23.2598633Z Temporarily overriding HOME='/home/runner/work/_temp/d9fddd3f-de30-4cc5-974e-cab1a3bb16f3' before making global git config changes
+2026-10-04T03:20:23.2600743Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T03:20:23.2606822Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T03:20:23.2653129Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T03:20:23.2694827Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T03:20:23.3037900Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T03:20:23.3069505Z http.https://github.com/.extraheader
+2026-10-04T03:20:23.3082916Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T03:20:23.3150865Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T03:20:23.3491754Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T03:20:23.3577751Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T03:20:23.4072384Z Cleaning up orphan processes
+2026-10-04T03:20:23.4428081Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

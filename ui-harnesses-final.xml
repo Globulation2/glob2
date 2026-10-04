@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="14" failures="0" errors="0" skipped="0"><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]" time="0" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="0.000216" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="0.000236" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="without a working encoder the hotkey and in-game control are not offered [writes-preferences]" time="0.593113" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.76273" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="3.45031" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.6501" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="4.36497" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.06258" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="6.35244" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="0.729148" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="0.831598" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.45916" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.507428" status="run" />
+  </testsuite></testsuites>

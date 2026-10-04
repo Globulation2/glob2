@@ -1,0 +1,32 @@
+{"time_us":0,"kind":"chapter","id":1,"phase":"menu","screen":"main_menu","dialog":"","match":0,"mode":"","map":"","team":-1}
+{"time_us":50000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":133333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":250000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":375259,"kind":"match_start","value":"single_player"}
+{"time_us":400000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":400000,"kind":"chapter","id":2,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":1,"era_start":0,"era_end":20}
+{"time_us":466666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":550000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":616666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":683333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":750000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":750000,"kind":"chapter","id":3,"phase":"dialog","screen":"game_session","dialog":"in_game_main","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":20}
+{"time_us":816666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":900000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":966666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1033333,"kind":"chapter","id":4,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":22,"era_start":20,"era_end":40}
+{"time_us":1083333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1150000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1216666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1283333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1366666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1366666,"kind":"chapter","id":5,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":40,"era_start":40,"era_end":60}
+{"time_us":1466666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1550000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1666666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1766666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1766666,"kind":"chapter","id":6,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":60,"era_start":60,"era_end":80}
+{"time_us":1783333,"kind":"chapter","id":7,"phase":"results","screen":"end_game","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":60}
+{"time_us":1866666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":1933333,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":2016666,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}

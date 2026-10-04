@@ -1,0 +1,6 @@
+global_assets_ms=452.672
+theme_setup_ms=33.2059
+colony_load_ms=14.2717
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+FAIL: main menu exposes navigation and recording controls to the keyboard

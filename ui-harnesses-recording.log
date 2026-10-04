@@ -1,0 +1,7 @@
+PASS GameplayRecording.Integration/without a working encoder the hotkey and in-game control are not offered [writes-preferences] (0.7s)
+PASS GameplayRecording.Integration/global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences] (1.3s)
+PASS GameplayRecording.Integration/production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording] (3.9s)
+PASS GameplayRecording.Integration/threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording] (6.0s)
+
+4 passed, 0 failed, 0 skipped (11.8s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/ui-harnesses-recording.xml (4 cases)

@@ -1,0 +1,7 @@
+global_assets_ms=428.238
+theme_setup_ms=32.2915
+colony_load_ms=13.4833
+Menu colony unavailable: missing menu snapshot
+Menu colony unavailable: invalid menu snapshot
+Map generation: fingerprint revision 4 seed 113011311 [complete]: 
+PASS: presentation, bounded text, timing, isolation, determinism, scoped style, fallback

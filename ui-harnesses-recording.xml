@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]" time="1.20487" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="3.82351" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="5.94544" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="without a working encoder the hotkey and in-game control are not offered [writes-preferences]" time="0.638102" status="run" />
+  </testsuite></testsuites>
