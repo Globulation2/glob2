@@ -20,7 +20,8 @@
     "MacScrollMonitor/*",
     "GameDiagnostics/*",
     "WinProbability/*",
-    "AIRules/*"
+    "AIRules/*",
+    "MusicSet/*"
   ],
   "unit_filters": [
     "*"

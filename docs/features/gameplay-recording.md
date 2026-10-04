@@ -133,7 +133,7 @@ Workers handle color conversion, encoding and file operations. Normal stop is
 cooperative; native application shutdown joins outstanding workers.
 
 Software uses x264 ultrafast, CRF 23, one thread, zero latency, no B-frames and a
-two-second keyframe interval. AAC is stereo at 44.1 kHz and 192 kbps. Hardware
+two-second keyframe interval. AAC is stereo at 48 kHz and 192 kbps. Hardware
 settings stay inside the adapters: low latency, no B-frames, two-second keyframes
 and variable bitrate starting at `max(1 Mbps, width × height × fps × 0.12)`.
 

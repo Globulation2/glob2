@@ -125,12 +125,12 @@ def configure(env, server_only, relay=False):
     if not server_only and (not conf.CheckLib("speex") or not conf.CheckCXXHeader("speex/speex.h")):
         print("Could not find libspeex or could not find 'speex/speex.h'")
         missing.append("speex")
-    if not server_only and not conf.CheckLib("vorbisfile"):
-        print("Could not find libvorbisfile")
-        missing.append("vorbisfile")
-    if not server_only and not conf.CheckLib("vorbis"):
-        print("Could not find libvorbis")
-        missing.append("vorbis")
+    if not server_only and (not conf.CheckLib("opusfile") or not conf.CheckCXXHeader("opusfile.h")):
+        print("Could not find libopusfile")
+        missing.append("opusfile")
+    if not server_only and not conf.CheckLib("opus"):
+        print("Could not find libopus")
+        missing.append("opus")
     if not server_only and not conf.CheckLib("ogg"):
         print("Could not find libogg")
         missing.append("ogg")
@@ -445,6 +445,8 @@ def main():
         if not (isWindowsPlatform or env['mingw']):
             # The staged private decoder is next to the executable's lib tree.
             env.Append(LINKFLAGS=[r'-Wl,-rpath,\$$ORIGIN/../lib/glob2'])
+    if not server_only:
+        env.ParseConfig("pkg-config opusfile --cflags")
     configure(env, server_only, relay)
 
     if not server_only:
@@ -479,7 +481,7 @@ def main():
     if not relay:
         env.Append(LIBS=['SDL3_net'])
     if not server_only:
-        env.Append(LIBS=['vorbisfile', 'SDL3_ttf', 'SDL3_image', 'speex'])
+        env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
     if env['release']:
         env.Append(CXXFLAGS=["-O3"])
@@ -496,7 +498,7 @@ def main():
         env.Append(LINKFLAGS=["-O3"])
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
         # TODO: Remove unneccessary dependencies for server.
-        env.Append(LIBS=['vorbis', 'ogg', 'wsock32', 'winmm'])
+        env.Append(LIBS=['wsock32', 'winmm'])
         env.Append(LINKFLAGS=['-mwindows'])
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
     elif relay:
@@ -504,9 +506,12 @@ def main():
     else:
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
     if sdl_prefix and 'install' in COMMAND_LINE_TARGETS:
-        # sdl3.pc adds -Wl,-rpath,${libdir}; installed copies use only
-        # $ORIGIN/../lib/glob2, so drop the build prefix again.
+        # Depending on SCons' parser, sdl3.pc's -Wl,-rpath,${libdir}
+        # lands in RPATH or LINKFLAGS. Installed copies use only
+        # $ORIGIN/../lib/glob2, so remove the build prefix from both.
         env['RPATH'] = [path for path in env.get('RPATH', []) if str(path) != sdl_prefix + '/lib']
+        env['LINKFLAGS'] = [flag for flag in env.get('LINKFLAGS', [])
+                            if str(flag) != '-Wl,-rpath,' + sdl_prefix + '/lib']
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"

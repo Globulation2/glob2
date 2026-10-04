@@ -46,6 +46,7 @@ write Oggs, normalise loudness or limit peaks themselves.
 The QA thresholds themselves cannot be overridden per set; see ``spec.py``.
 """
 import dataclasses
+import hashlib
 from dataclasses import dataclass, field
 import importlib.util
 import json
@@ -184,7 +185,7 @@ class BuildContext:
         set_dir: ``tools/music/sets/<id>`` (scores, patches, notes live here).
         work_dir: ``tools/music/build/<id>``, scratch space for stems and renders
             (git-ignored, safe to delete; recipes may cache expensive renders here).
-        out_dir: where the shared stages write a1/a2/a3.ogg, preview.ogg, qa.json.
+        out_dir: where the shared stages write a1/a2/a3.opus, preview.opus, qa.json.
         cache_dir: ``tools/music/cache`` (downloads, model weights).
         spec: the ``TrioSpec`` (sample rate, targets) in force.
         seed: the manifest seed, or the ``--seed`` override.
@@ -267,30 +268,48 @@ def set_spec(manifest, spec=DEFAULT_SPEC):
 
 def master_options(manifest):
     """``[master]`` options for ``master.finish`` (everything but the loudness offsets)."""
-    return {k: v for k, v in manifest.master.items() if k != 'loudness_offset_db'}
+    return {k: v for k, v in manifest.master.items() if k not in {'loudness_offset_db', 'opus_seam_ms'}}
 
 
-def encode_within_ceiling(trio, out, spec=DEFAULT_SPEC, log=None, attempts=3):
+def encode_within_ceiling(trio, out, spec=DEFAULT_SPEC, log=None, attempts=3, seam_ms=None):
     """Encode ``trio`` to ``out`` and keep every decoded file under the QA true peak.
 
-    Lossy encoding changes the waveform, and at low quality settings (the shipped
-    Vorbis q2) the decoded true peak can sit above the mastered signal: by about 1 dB
-    (1.03 dB at most over the -1.5 dBTP mastering ceiling on the shipped sets). The
-    limiter cannot know that in advance, so this measures the decoded files and, for
-    any mood above ``spec.qa.true_peak_max_dbtp`` minus a 0.2 dB margin, applies a
-    static trim of the excess and re-encodes that mood; only re-encoded moods are
-    decoded again. The largest trim on the shipped sets is 0.73 dB (woodland combat),
-    which is inaudible and changes loudness by the same amount, inside the QA loudness
-    tolerance. A mood still over after ``attempts`` trims raises ``RuntimeError``.
-    Returns the trio actually written (with any trims applied and recorded in
-    ``meta['encode_trim_db']``).
+    Preserve the existing gain preparation: measure decoded true peaks and apply
+    the established static ceiling trim for small overshoots, or the existing
+    circular peak limiter for overshoots above 0.5 dB so the loudness ladder stays
+    intact. Neither path adds loudness normalisation.
+    Returns the PCM trio written, with trims recorded in metadata.
     """
     from . import master
-    from .audio import Trio, read_audio, write_ogg, write_trio
+    from .audio import Trio, read_audio, write_opus, write_trio
+    seam_ms = dict(seam_ms or {})
+    if set(seam_ms) - set(MOODS) or any(not 0 <= float(v) <= 5 for v in seam_ms.values()):
+        raise ManifestError('opus_seam_ms must name moods with a taper of 0..5 ms')
+    def taper(y, mood):
+        frames = round(float(seam_ms.get(mood, 0)) * trio.sample_rate / 1000)
+        if not frames:
+            return y
+        if frames < 2 or frames * 2 > len(y):
+            raise ManifestError('opus_seam_ms is too short or longer than the loop')
+        y = y.copy()
+        fade = np.sin(np.linspace(0, np.pi / 2, frames)) ** 2
+        y[:frames] *= fade[:, None]
+        y[-frames:] *= fade[::-1, None]
+        return y
+    # A short, explicitly configured seam taper preserves length and mood positions.
+    trio = trio.map(taper, encode_seam_ms=seam_ms)
     limit_db = spec.qa.true_peak_max_dbtp - 0.2
-    paths = write_trio(trio, out, quality=spec.vorbis_quality)
+    # Keep lossless mastered PCM in ignored output for codec comparisons and re-encoding.
+    import soundfile as sf
+    pcm = Path(out) / 'pcm'
+    pcm.mkdir(parents=True, exist_ok=True)
+    from .spec import FILENAMES
+    for mood, y in trio.items():
+        sf.write(pcm / (Path(FILENAMES[mood]).stem + '.wav'), y, trio.sample_rate, subtype='FLOAT')
+    paths = write_trio(trio, out)
     moods = {mood: np.asarray(trio[mood]) for mood in MOODS}
     trims = {mood: 0.0 for mood in MOODS}
+    ceilings = {}
     changed = list(MOODS)               # moods whose file has not been measured yet
     for attempt in range(attempts + 1):
         over = {}
@@ -302,17 +321,48 @@ def encode_within_ceiling(trio, out, spec=DEFAULT_SPEC, log=None, attempts=3):
         if not over:
             break
         if attempt == attempts:
-            raise RuntimeError(f'{out}: decoded true peak still over {limit_db:.1f} dBTP after {attempts} trims: '
-                               + ', '.join(f'{m} +{e:.2f} dB' for m, e in over.items()))
+            # The 0.2 dB margin is a target, while the QA ceiling is mandatory.
+            # Small codec changes between retries may exhaust that margin.
+            unsafe = {m: e for m, e in over.items() if e > 0.2}
+            if unsafe:
+                raise RuntimeError(f'{out}: decoded true peak still over the QA ceiling after {attempts} corrections: '
+                                   + ', '.join(f'{m} +{e - 0.2:.2f} dB' for m, e in unsafe.items()))
+            break
         for mood, excess in over.items():
-            moods[mood] = moods[mood] * 10 ** (-excess / 20)
-            trims[mood] -= excess
-            write_ogg(moods[mood], paths[mood], quality=spec.vorbis_quality)
+            if excess > 0.5 or mood in ceilings:
+                # A large static trim would reverse the loudness ladder. Reuse
+                # the existing circular peak limiter without normalising again.
+                ceilings[mood] = ceilings.get(mood, spec.master_ceiling_dbtp) - excess
+                moods[mood] = master.limit(trio[mood], ceilings[mood])
+            else:
+                moods[mood] = moods[mood] * 10 ** (-excess / 20)
+                trims[mood] -= excess
+            write_opus(moods[mood], paths[mood], loop=True)
             if log:
                 log.info('%s: trimmed %.2f dB for the encoded true peak', mood, excess)
         changed = list(over)
     return Trio(sample_rate=trio.sample_rate,
-                meta={**trio.meta, 'encode_trim_db': trims}, **moods)
+                meta={**trio.meta, 'encode_trim_db': trims, 'encode_limiter_ceiling_dbtp': ceilings}, **moods)
+
+
+def encoding_metadata(trio, out, manifest):
+    """Source and encoder provenance saved beside generated music, never packaged."""
+    import subprocess
+    from .audio import trio_paths
+    return {
+        'encoder': subprocess.check_output(['ffmpeg', '-version'], text=True).splitlines()[0],
+        'recipe': '-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2',
+        'loop_preroll_frames': min(9600, trio.frames),
+        'sample_rate': trio.sample_rate,
+        'duration': trio.seconds,
+        'sources': [dataclasses.asdict(source) for source in manifest.sources],
+        'recipe_files': {str(path.relative_to(manifest.path.parent)): hashlib.sha256(path.read_bytes()).hexdigest()
+                         for path in sorted(manifest.path.parent.iterdir())
+                         if path.suffix in {'.py', '.toml', '.lock'}},
+        'tracks': {mood: {'file': path.name, 'bytes': path.stat().st_size,
+                          'decoded_frames': trio.frames}
+                   for mood, path in trio_paths(out).items()},
+    }
 
 
 def build_set(set_id, out_dir=None, seed=None, spec=DEFAULT_SPEC, offline=False, preview=True, check=True,
@@ -342,14 +392,16 @@ def build_set(set_id, out_dir=None, seed=None, spec=DEFAULT_SPEC, offline=False,
     if not isinstance(raw, Trio):
         raise TypeError(f'{set_id}: recipe.build must return a glob2music.audio.Trio')
     finished = master.finish(raw, spec, **master_options(manifest))
-    finished = encode_within_ceiling(finished, out, spec, log=ctx.log)
+    finished = encode_within_ceiling(finished, out, spec, log=ctx.log,
+                                     seam_ms=manifest.master.get('opus_seam_ms'))
     if preview:
-        preview_mod.make(finished, out / 'preview.ogg')
+        preview_mod.make(finished, out / 'preview.opus')
     report = None
     if check:
         report = run_checks(out, spec=spec, waivers=manifest.waivers)
         (out / 'qa.json').write_text(report.to_json())
-    meta = {'set_id': manifest.set_id, 'seed': ctx.seed, 'frames': finished.frames,
+    encoding = encoding_metadata(finished, out, manifest)
+    meta = {'encoding': encoding, 'set_id': manifest.set_id, 'seed': ctx.seed, 'frames': finished.frames,
             'seconds': round(time.time() - t0, 1), **finished.meta}
     (out / 'build.json').write_text(json.dumps(meta, indent=1, default=str))
     return finished, report

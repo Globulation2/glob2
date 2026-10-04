@@ -33,7 +33,7 @@ Dependencies
 
      apt install g++ python3 scons pkg-config \
        cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libasound2-dev libpulse-dev \
-       libvorbis-dev libogg-dev libspeex-dev \
+       libopusfile-dev libopus-dev libogg-dev libspeex-dev \
        libboost-dev libssl-dev \
        zlib1g-dev libfribidi-dev libpcre3-dev \
        libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev

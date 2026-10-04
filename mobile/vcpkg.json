@@ -21,7 +21,10 @@
       "default-features": false
     },
     "sdl3-net",
-    "libvorbis",
+    {
+      "name": "opusfile",
+      "default-features": false
+    },
     "zlib",
     "boost-date-time",
     "boost-asio",

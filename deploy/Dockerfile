@@ -24,7 +24,7 @@ COPY . /
 
 FROM ${UBUNTU_IMAGE} AS cpp-deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates git g++ make nasm python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev \
+    ca-certificates git g++ make nasm python3 scons pkg-config cmake libfreetype-dev libopusfile-dev libopus-dev libogg-dev libspeex-dev \
     libboost-dev libssl-dev zlib1g-dev \
     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev \
     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev \
@@ -167,7 +167,7 @@ FROM ${NODE_IMAGE} AS node-binary
 FROM ${UBUNTU_IMAGE} AS engine-agent
 ARG GLOB2_SIM_VERSION=
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates \
-    libfreetype6 libvorbisfile3 libvorbis0a libogg0 libspeex1 libfribidi0 libpcre3 libepoxy0 \
+    libfreetype6 libopusfile0 libopus0 libogg0 libspeex1 libfribidi0 libpcre3 libepoxy0 \
     libgl1 libglu1-mesa libssl3t64 zlib1g \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 \

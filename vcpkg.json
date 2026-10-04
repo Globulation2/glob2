@@ -18,7 +18,10 @@
     "zlib",
     "fribidi",
     "libogg",
-    "libvorbis",
+    {
+      "name": "opusfile",
+      "default-features": false
+    },
     "boost-asio",
     "boost-beast",
     "speex",

@@ -32,7 +32,7 @@ sfz, mid, wav = a[a.index('--sfz') + 1], a[a.index('--midi') + 1], a[a.index('--
 assert 'hint_ram_based=1' in open(sfz).read()
 first = not os.path.exists(wav.replace('.part.wav', '.seen'))
 open(wav.replace('.part.wav', '.seen'), 'w').close()
-t, on, y = 0, {{}}, np.zeros((44100 * 8, 2))
+t, on, y = 0, {{}}, np.zeros((48000 * 8, 2))
 for m in mido.MidiFile(mid).tracks[0]:
     t += m.time
     if m.type == 'note_on' and m.velocity:
@@ -40,9 +40,9 @@ for m in mido.MidiFile(mid).tracks[0]:
     elif m.type in ('note_off', 'note_on') and m.note in on:
         s, e = on.pop(m.note), t / 1920
         e = min(e, s + 0.3) if first else e
-        n = np.arange(int(s * 44100), int(e * 44100))
-        y[n, 0] += 0.1 * np.sin(2 * np.pi * 440 * n / 44100)
-sf.write(wav, y, 44100, subtype='PCM_16')
+        n = np.arange(int(s * 48000), int(e * 48000))
+        y[n, 0] += 0.1 * np.sin(2 * np.pi * 440 * n / 48000)
+sf.write(wav, y, 48000, subtype='PCM_16')
 '''
 
 
@@ -99,7 +99,7 @@ class RenderTest(unittest.TestCase):
             pp = perform_part(score, 'calm', Part('flute', 'flute_sus', notes, 'lead'), sfizz.INSTRUMENTS['flute_sus'], 1)
             stems = backend.render({'calm': [pp]}, score.seconds, d / 'work')
             y = stems['calm']['flute']
-            self.assertGreater(np.abs(y[int((2.0 + 0.6) * 44100):int((2.0 + 0.8) * 44100)]).max(), 0.05)
+            self.assertGreater(np.abs(y[int((2.0 + 0.6) * 48000):int((2.0 + 0.8) * 48000)]).max(), 0.05)
             wrapper = backend.sfz_path('flute_sus')
             self.assertEqual(wrapper.name, 'FluteSusVib' + sfizz.RAM_WRAPPER_SUFFIX)
             self.assertIn('#include "FluteSusVib.sfz"', wrapper.read_text())

@@ -34,6 +34,21 @@ def vst3_state(comp):
     return b'VC2!' + struct.pack('<I', len(body)) + body
 
 
+class RenderFrameContractTest(unittest.TestCase):
+    def test_fractional_seconds_do_not_drop_a_frame(self):
+        host = object.__new__(surge.SurgeHost)
+        calls = []
+        def plugin(events, *, duration, sample_rate, num_channels, buffer_size, reset):
+            frames = int(duration * sample_rate)
+            calls.append(frames)
+            return np.ones((num_channels, frames))
+        host.plugin = plugin
+        result = host.render([], 448 / SR, align_s=448 / SR)
+        self.assertEqual(calls, [448])
+        self.assertEqual(result.shape, (448, 2))
+        np.testing.assert_array_equal(result, 1)
+
+
 class StateBlobTest(unittest.TestCase):
     def test_juce_base64_matches_known_vector_and_round_trips(self):
         self.assertEqual(surge.juce_b64encode(b'\x01'), '1.A.')      # LSB-first 6-bit groups

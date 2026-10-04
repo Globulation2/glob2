@@ -87,12 +87,24 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(full, (ROOT / 'data/texts.ja.txt').read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
-        self.assertEqual(self.owner['data/zik/intro.ogg'], 'menu-music')
-        self.assertEqual(self.owner['data/zik/menu.ogg'], 'menu-music')
-        self.assertEqual(self.owner['data/zik/original/a1.ogg'], 'music')
-        self.assertEqual(self.owner['data/zik/woodland/a1.ogg'], 'music-sets')
+        self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
+        self.assertEqual(self.owner['data/zik/menu.opus'], 'menu-music')
+        self.assertEqual(self.owner['data/zik/original/a1.opus'], 'music')
+        self.assertEqual(self.owner['data/zik/woodland/a1.opus'], 'music-sets')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
+
+    def test_every_installed_music_set_is_owned_and_opus_only(self):
+        sets = [p for p in (ROOT / 'data/zik').iterdir() if p.is_dir()]
+        self.assertEqual(len(sets), 10)
+        for directory in sets:
+            package = 'music' if directory.name == 'original' else 'music-sets'
+            for slot in range(1, 4):
+                path = f'data/zik/{directory.name}/a{slot}.opus'
+                self.assertEqual(self.owner[path], package)
+            self.assertFalse(list(directory.glob('*.ogg')))
+            if directory.name != 'original':
+                self.assertEqual(self.owner[f'data/zik/{directory.name}/LICENSE.txt'], package)
 
     def test_parts_respect_the_size_limit(self):
         sizes = {'a': 3, 'b': 3, 'c': 7, 'd': 1}

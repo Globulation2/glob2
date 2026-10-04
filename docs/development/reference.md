@@ -76,7 +76,7 @@ python3 test/run_tests.py      # run them; --list, --filter, --tag, --shard
   setting a build live.
 - `scons target=web release=1` builds the WebAssembly browser client; see
   `docs/browser/adr-001-build-isolation.md` for the toolchain isolation this relies on.
-- Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Vorbis/Ogg, Speex, OpenGL/GLU, libepoxy,
+- Dependencies include pinned SDL3/SDL3_net/SDL3_ttf/SDL3_image (see `scons/sdl3-versions.json`) and WebP 1.6.0 for optimized packaged artwork, Opus/opusfile/Ogg, Speex, OpenGL/GLU, libepoxy,
   zlib, fribidi and pcre; PortAudio is optional. Builds without fribidi (Android, iOS, browser) shape and
   order Arabic and Persian text with `libgag/src/BidiText.cpp`, which the `BidiText` unit tests keep identical to
   fribidi on every Arabic and Persian catalog string. All native multiplayer builds (client and relay) require OpenSSL and the header-only
@@ -1584,3 +1584,29 @@ under `third_party/recording-sources/`, allowing offline rebuilds. Packages incl
 codec license notices and configuration. Recording capture has a
 `recording.capture` performance scope; simulation and replay checksums must match
 with recording enabled and disabled. See [gameplay footage](../features/gameplay-recording.md).
+
+### Music encoding
+
+Runtime music uses Ogg Opus (`.opus`), stereo at 48 kHz, with a 48 kbps VBR
+target for the whole stereo stream. Vorbis music is no longer supported. Music
+sets retain their directory names and contain `a1.opus`, `a2.opus`, and `a3.opus`.
+The three tracks must decode to exactly equal positive frame counts, with one
+logical stream each, so mood changes remain aligned. Intro and menu music live
+in `data/zik/intro.opus` and `data/zik/menu.opus`.
+
+Use `python3 tools/encode_music.py INPUT OUTPUT.opus` to encode from PCM masters
+or convert an existing custom Vorbis track. It uses FFmpeg/libopus with
+`-b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2`,
+resets audio timestamps to a zero-based 48 kHz sample clock, fully decodes the
+result for validation, and records the recipe and encoder
+version beside the output when `--metadata PATH` is supplied. Convert all three
+tracks before installing a custom set. Prefer encoding procedural music directly
+from rendered PCM; existing static music may be transcoded once. Encoding tools
+are development dependencies, not runtime requirements.
+
+The mixer and gameplay recorder share a 48 kHz PCM rate. Voice packets retain
+the existing Speex format and are resampled for playback. Music fade duration is
+preserved from the previous 44.1 kHz mixer. Browser builds compile checksum-pinned
+Opus, opusfile and Ogg libraries separately for serial and threaded runtimes;
+opusfile HTTP support is disabled. Native/mobile builds use their package-managed
+opusfile dependencies with libogg retained.

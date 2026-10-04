@@ -29,7 +29,7 @@ test('the loading page shows download progress and the game starts with core and
     expect(await exists(page, path), path).toBe(false);
   // In-game music follows in the background.
   await expect.poll(async () => (await snapshot(page)).assets.music, {timeout: 60000}).toBe('ready');
-  expect(await exists(page, '/data/zik/original/a1.ogg')).toBe(true);
+  expect(await exists(page, '/data/zik/original/a1.opus')).toBe(true);
   const {renderer, assets} = await snapshot(page);
   if (renderer === 'software') expect(assets.hd).toBe('skipped');
   else await expect.poll(async () => (await snapshot(page)).assets.hd, {timeout: 120000}).toBe('ready');

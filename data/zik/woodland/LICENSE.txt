@@ -1,5 +1,5 @@
 Globulation 2 soundtrack set "woodland": Woodland
-Files: a1.ogg (calm), a2.ogg (building), a3.ogg (combat)
+Files: a1.opus (calm), a2.opus (building), a3.opus (combat)
 
 Licence: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
 

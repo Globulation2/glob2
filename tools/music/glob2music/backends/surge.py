@@ -343,9 +343,13 @@ class SurgeHost:
                     if key not in params:
                         params[key] = self.plugin.parameters[key]
                     params[key].raw_value = float(value)
-            y = self.plugin(block, duration=size / SAMPLE_RATE, sample_rate=SAMPLE_RATE, num_channels=2,
+            # Pedalboard truncates duration * rate; use the middle of this frame
+            # interval so floating-point rounding cannot drop a sample at 48 kHz.
+            y = self.plugin(block, duration=(size + 0.5) / SAMPLE_RATE, sample_rate=SAMPLE_RATE, num_channels=2,
                             buffer_size=size, reset=False)
-            out[pos:pos + size] = y[:, :size].T
+            if y.shape != (2, size):
+                raise RuntimeError(f'Surge rendered {y.shape}, expected (2, {size})')
+            out[pos:pos + size] = y.T
             pos += size
         return out
 
@@ -388,7 +392,7 @@ class SurgeBackend:
                 if self.automation:
                     auto_fn = self.automation
                     auto = (lambda m, name: lambda t: auto_fn(m, name, t - PREROLL_S))(mood, part.name)
-                key = hashlib.sha256(json.dumps([part.events, repr(patch), SURGE_VERSION, BLOCK,
+                key = hashlib.sha256(json.dumps([part.events, repr(patch), SURGE_VERSION, BLOCK, SAMPLE_RATE,
                                                  [auto(i * 0.5) for i in range(int(seconds * 2))] if auto else None],
                                                 default=str).encode()).hexdigest()
                 path = work_dir / mood / f'{part.name}.npy'

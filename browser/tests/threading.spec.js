@@ -93,10 +93,14 @@ test('a real pthread worker error after the probe reloads the serial runtime', a
 });
 
 
-test('threaded audio produces PCM, keeps settings responsive and shuts down cleanly', async ({page}) => {
-  await page.goto('/?renderer=software');
+for (const variant of ['serial', 'threaded']) {
+test(`${variant} audio produces PCM, keeps settings responsive and shuts down cleanly`, async ({page}) => {
+  await page.goto(`/?renderer=software&threads=${variant}`);
   await screen(page, 'MainMenuScreen');
-  expect(await page.evaluate(() => Module.executionMode)).toBe('threaded');
+  expect(await page.evaluate(() => Module.executionMode)).toBe(variant);
+  await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().assets['menu-music'])).toBe('ready');
+  expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.opus').exists)).toBe(true);
+  expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.ogg').exists)).toBe(false);
   await clickMainMenu(page, 'settings'); await screen(page, 'SettingsScreen');
   await clickControl(page, 'nav.1'); await clickControl(page, 'audio.mute');
   await page.waitForFunction(() => Module.SDL3?.audio_playback?.scriptProcessorNode);
@@ -114,3 +118,4 @@ test('threaded audio produces PCM, keeps settings responsive and shuts down clea
   await clickControl(page, 'done'); await screen(page, 'MainMenuScreen');
   await clickMainMenu(page, 'quit'); await screen(page, 'exited');
 });
+}

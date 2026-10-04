@@ -281,7 +281,7 @@ void Session::frame(CaptureFrame frame)
 void Session::audio(const std::int16_t *samples, std::size_t count, std::int64_t time)
 {
 	if (!impl->media) return;
-	impl->media->audio(samples,count/2,(time-impl->origin-impl->segmentStart)*44100/1000000);
+	impl->media->audio(samples,count/2,(time-impl->origin-impl->segmentStart)*AudioSampleRate/1000000);
 }
 void Session::event(std::int64_t time, const std::string &kind, const std::string &value)
 {
@@ -370,7 +370,7 @@ bool Session::step(std::int64_t time)
 		return false;
 	}
 	// Leave room for device callbacks before filling muted/stopped audio with silence.
-	if (relative > 250000) s.media->silenceThrough((relative-250000)*44100/1000000);
+	if (relative > 250000) s.media->silenceThrough((relative-250000)*AudioSampleRate/1000000);
 	s.next = (++s.nextSlot)*1000000/s.options.fps;
 	if (s.next >= s.checkpoint) { s.media->checkpoint(); s.manifest(false,s.next-s.segmentStart); s.checkpoint = s.next+1000000; }
 	return false;

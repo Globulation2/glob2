@@ -404,7 +404,7 @@ void Recorder::audio(const std::int16_t *samples, std::size_t count, std::int64_
 		impl->audioSamples += n;
 		samples += n;
 		count -= n;
-		time += std::int64_t(n / 2) * 1000000 / 44100;
+		time += std::int64_t(n / 2) * 1000000 / AudioSampleRate;
 	}
 }
 void Recorder::screen(const std::string &id)
