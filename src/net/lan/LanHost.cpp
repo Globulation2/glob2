@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <random>
@@ -234,9 +235,7 @@ LanHost::LanHost(Options selected) : options(std::move(selected))
 
 LanHost::~LanHost()
 {
-	stopThread();
-	if (!closed)
-		close("cancelled");
+	close("cancelled");
 }
 
 void LanHost::serve()
@@ -949,10 +948,17 @@ void LanHost::broadcastState()
 
 void LanHost::close(const std::string& reason)
 {
-	stopThread();
-	std::lock_guard<std::recursive_mutex> guard(mutex);
-	if (closed)
-		return;
+	std::unique_lock<std::recursive_mutex> guard(mutex);
+	if (closed) { guard.unlock(); stopThread(); return; }
+	auto trace = [&](const char* stage) {
+		for (auto& [id, peer] : peers)
+			std::cerr << stage << " peer=" << id << " state=" << int(peer.link->state())
+			          << " empty=" << peer.link->outboxEmpty() << " closing=" << peer.closing
+			          << " error=" << peer.link->error() << '\n';
+	};
+	trace("before-stop");
+	if (std::getenv("GLOB2_LAN_STOP_BEFORE_CLOSE")) { guard.unlock(); stopThread(); guard.lock(); }
+	trace("before-notice");
 	closed = true;
 	const std::uint64_t now = nowMicros();
 	if (relay)
@@ -968,6 +974,7 @@ void LanHost::close(const std::string& reason)
 		sendTo(peer, notice);
 		peer.closing = true;
 	}
+	trace("after-notice");
 	if (listener)
 		listener->close();
 	broadcaster.reset();
@@ -991,6 +998,8 @@ void LanHost::close(const std::string& reason)
 		peer.link->close();
 	peers.clear();
 	changed = true;
+	guard.unlock();
+	stopThread();
 }
 
 std::vector<std::string> LanHost::takeChat()
