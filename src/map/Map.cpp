@@ -111,6 +111,20 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 	return waterSnapshot;
 }
 
+std::shared_ptr<const std::vector<Uint8>> Map::frozenMovementSnapshot() const
+{
+	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+	if (!movementSnapshot)
+	{
+		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
+		for (size_t i = 0; i < size; ++i)
+			(*snapshot)[i] = isIceTile(tiles[i].terrain) ? 2 : isCobblestoneTile(tiles[i].terrain) ? 3
+				: isWaterTile(tiles[i].terrain) ? 1 : 0;
+		movementSnapshot = std::move(snapshot);
+	}
+	return movementSnapshot;
+}
+
 Uint16 *Map::acquireBuildingGradientBuffer()
 {
 	{
@@ -162,6 +176,7 @@ void Map::clear()
 	{
 		std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 		waterSnapshot.reset();
+		movementSnapshot.reset();
 	}
 	growthCoverage.clear();
 	for (auto &counts : growthCoverageCounts) counts.clear();
@@ -169,6 +184,7 @@ void Map::clear()
 	growthCoverageValid = false;
 	topologyGeneration=1;
 	cobblestoneTiles=0;
+	iceTiles=0;
 	// A failed load can own only a subset of these arrays.
 	for (int t=0; t<Team::MAX_COUNT; ++t)
 	{
@@ -248,6 +264,7 @@ void Map::setSize(int wDec, int hDec, TerrainType terrainType)
 	
 	tiles.assign(size, Tile());
 	cobblestoneTiles = 0;
+	iceTiles = 0;
 
 	mapDiscovered.assign(size, 0);
 	

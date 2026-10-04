@@ -8,6 +8,7 @@
 #include "field/GradientCosts.h"
 
 #include <cstdlib>
+#include <algorithm>
 
 using gradient_kernel::WATER_STEP;
 static_assert(WATER_STEP[Map::SWIM_CLASS_EVEN] == GRADIENT_STEP);
@@ -30,9 +31,10 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 
 int Map::minStepCost(int swimClass) const
 {
-	if (swimClass > 0 && WATER_STEP[swimClass] < GRADIENT_STEP)
-		return WATER_STEP[swimClass];
-	return hasCobblestone() ? GRADIENT_STEP / 2 : GRADIENT_STEP;
+	int step = GRADIENT_STEP;
+	if (swimClass > 0) step = std::min(step, WATER_STEP[swimClass]);
+	if (hasCobblestone()) step = std::min(step, 5);
+	return step;
 }
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const

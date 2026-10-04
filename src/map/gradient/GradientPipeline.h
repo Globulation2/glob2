@@ -26,6 +26,7 @@ public:
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
 		std::shared_ptr<const std::vector<std::uint8_t>> water;
+		bool prototype = false;
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;

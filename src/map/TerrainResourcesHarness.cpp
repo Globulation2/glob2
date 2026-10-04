@@ -52,7 +52,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 						{
 							const TerrainType n = map.getUMTerrain(px + dx, py + dy);
 							auto pair = [&](TerrainType a, TerrainType b) { return (paint == a && n == b) || (paint == b && n == a); };
-							assert(!pair(GRASS, WATER) && !pair(COBBLESTONE, WATER));
+							REQUIRE((!pair(GRASS, WATER) && !pair(COBBLESTONE, WATER)));
 						}
 					if (paint == GRASS)
 						for (int y = py - 1; y <= py; ++y)
@@ -286,4 +286,5 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 		REQUIRE((worker->hp == workerHP - 10));
 	}
 	std::printf("Terrain rule regressions passed: ice and cobblestone placement, step costs, speed and ice damage\n");
+}
 }

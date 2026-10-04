@@ -8,6 +8,7 @@
 
 #include <cstddef>
 #include <vector>
+#include <array>
 
 class Map;
 
@@ -36,6 +37,13 @@ public:
 	const void *cacheKey() const { return sourceKey; }
 
 	size_t coordToIndex(int x, int y) const { return (size_t(y & hMask) << wDec) + (x & wMask); }
+	int prototypeTerrainLayers(int x, int y, Uint16 layers[3]) const
+	{
+		if (terrainLayerCounts.empty()) return 0;
+		const size_t i = coordToIndex(x, y);
+		for (int n = 0; n < terrainLayerCounts[i]; ++n) layers[n] = terrainLayers[i][n];
+		return terrainLayerCounts[i];
+	}
 	Uint16 getTerrain(int x, int y) const { return terrain[coordToIndex(x, y)]; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
 	const Resource &getResource(size_t pos) const { return resources[pos]; }
@@ -69,7 +77,7 @@ public:
 			for (int xi = x; xi < x + w; xi++)
 			{
 				const size_t i = coordToIndex(xi, yi);
-				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF || terrain[i] >= 16)
+				if (resources[i].type != NO_RES_TYPE || buildings[i] != 0xFFFF || !(terrain[i] < 16 || (terrain[i] >= 288 && terrain[i] < 304)))
 					return false;
 			}
 		return true;
@@ -82,6 +90,8 @@ private:
 	Uint64 sourceIdentity = 0;
 	const void *sourceKey = nullptr;
 	int displayViewportW = 0, displayViewportH = 0;
+	std::vector<std::array<Uint16, 3>> terrainLayers;
+	std::vector<Uint8> terrainLayerCounts;
 	std::vector<Uint16> terrain, groundUnits, airUnits, buildings, scriptAreas;
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;

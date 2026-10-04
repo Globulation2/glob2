@@ -244,11 +244,13 @@ normal build. This is a direct method regression, not an interactive replay test
 
 The `TerrainResources` suite (`python3 test/run_tests.py --filter 'TerrainResources/*'`)
 links the actual client objects and exercises terrain regeneration and resource clearing for all eight
-resource types, all three base terrains, overlapping strokes, and all four
+resource types, all five terrains, overlapping strokes, and all four
 wrapped map corners. A whole-map oracle checks both removal and preservation.
 It also checks the prototype ice and cobblestone rules: placement, resources, step
 costs, walking speed and ice damage. These are headless map-operation tests; they do
-not drive editor mouse events.
+not drive editor mouse events. `PrototypeTerrain/*` compares mixed-cost eager and
+resumed fields with Dijkstra, checks scene isolation, and round-trips binary/text
+saves with pending global-field publications and subsequent tick checksums.
 
 ## Map generator golden maps and colony sweep
 

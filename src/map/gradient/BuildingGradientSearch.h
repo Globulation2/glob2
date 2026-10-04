@@ -22,6 +22,7 @@ class BuildingGradientSearch
 	std::shared_ptr<const std::vector<std::uint8_t>> water;
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;
+	bool prototype = false;
 	int currentCost = 0, swimClass = 0;
 	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;

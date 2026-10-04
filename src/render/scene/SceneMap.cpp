@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SceneMap.h"
+#include <algorithm>
 
 #include "Map.h"
 
@@ -41,6 +42,16 @@ void SceneMap::extract(const Map &map, int displayW, int displayH, bool includeS
 	undermap.resize(size);
 	for (size_t i = 0; i < size; ++i)
 		undermap[i] = Uint8(map.getUMTerrain(int(i) & wMask, int(i >> wDec)));
+	terrainLayers.clear();
+	terrainLayerCounts.clear();
+	if (std::any_of(undermap.begin(), undermap.end(), [](Uint8 t) { return t > GRASS; }))
+	{
+		terrainLayers.resize(size);
+		terrainLayerCounts.resize(size);
+		for (size_t i = 0; i < size; ++i)
+			terrainLayerCounts[i] = map.prototypeTerrainLayers(int(i) & wMask, int(i >> wDec), terrainLayers[i].data());
+	}
+
 	displayViewportW = displayW;
 	displayViewportH = displayH;
 	discovered.assign(map.mapDiscovered.begin(), map.mapDiscovered.end());

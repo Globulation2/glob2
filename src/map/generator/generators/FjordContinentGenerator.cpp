@@ -979,7 +979,7 @@ GeneratorDefinition fjordContinentDefinition()
 		"fjord-continent",
 		12,
 		"Fjord continent",
-		13,
+		14,
 		false,
 		{GeneratorControl{"continent-size", "Continent size", 28, 40, 2, 34, ControlGroup::Terrain}
 			 .withSearchRange(34, 38),

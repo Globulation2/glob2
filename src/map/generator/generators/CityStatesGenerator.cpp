@@ -1638,7 +1638,7 @@ GeneratorDefinition cityStatesDefinition()
 		"city-states",
 		17,
 		"City states",
-		10,
+		11,
 		false,
 		// The commons' radius as a share of half the shorter side, the strait's width as a share of
 		// the shorter side, the causeway's road in tiles; valleys per 128x128 of commons; rings of

@@ -33,6 +33,13 @@ namespace gradient_kernel
 		return { unsigned(step), unsigned(step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP) };
 	}
 
+	// Frozen movement snapshot encoding: land, water, ice, cobblestone.
+	constexpr EntrySteps terrainSteps(unsigned terrain, int swimClass)
+	{
+		return entrySteps(terrain == 2 ? 30 : terrain == 3 ? 5
+			: terrain == 1 && swimClass > 0 ? WATER_STEP[swimClass] : GRADIENT_STEP);
+	}
+
 	constexpr EntrySteps LAND_STEPS = entrySteps(GRADIENT_STEP);
 
 	// Classes 0 and EVEN pay the land rate everywhere; the others are weighted.

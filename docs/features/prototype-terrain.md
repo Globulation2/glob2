@@ -2,7 +2,7 @@
 
 Two undermap terrain types beyond water, sand and grass, added to try their game rules
 before investing in artwork. Both are off in every existing map and generator default:
-a map without them simulates, generates and saves exactly as before.
+a map without them simulates, generates and follows the same terrain rules as before.
 
 | | Ice (`ICE`, 3) | Cobblestone (`COBBLESTONE`, 4) |
 | --- | --- | --- |
@@ -14,7 +14,7 @@ a map without them simulates, generates and saves exactly as before.
 | Resources | none placed or grown | none placed or grown |
 | May touch | anything | anything but water |
 
-Rules live in `Map::stepCost`/`minStepCost` (`src/map/gradient/MapGradientField.cpp`),
+Rules live in `Map::stepCost`/`minStepCost` (`src/map/gradient/MapGradientDirection.cpp`),
 `Unit::terrainSpeed` and `Unit::takeTerrainDamage` (`src/unit/`), `Map::checkTile`
 (`src/map/MapQuery.cpp`) and the tunables at the end of `src/unit/UnitConsts.h`. Deaths on ice
 count under the "unknown" cause: a new cause would change the saved measurement layout.
@@ -28,7 +28,7 @@ cobblestone corners is cobblestone (288-303); any other tile uses the original
 grass/sand/water lookup with cobblestone corners read as sand. Both ranges fail `isGrass`,
 `isSand` and `isWater`, which is what keeps resources off them.
 
-Drawing works from the corners instead (`Map::prototypeTerrainLayers`, used by
+Drawing works from the corners instead (`Map::prototypeTerrainLayers`, extracted into `SceneMap` for
 `Game::drawMapTerrain`): a tile touching ice or cobblestone first draws the ground beneath, the
 original tile its other corners make, then lays a cobblestone and then an ice edge sprite over
 it (304-415 ice, 416-527 cobblestone: 14 corner shapes, 8 variants). The edge sprites are cut
@@ -67,6 +67,15 @@ every AI's units off ice when a detour is short. No AI plans around ice damage o
 
 ## Compatibility
 
-Old saves, replays and maps load unchanged. `VERSION_MINOR` is not bumped yet: a map
-containing the new terrain opened by an older client would hit the renderer's unknown-tile
-assertion, so the bump belongs with merging.
+Existing save formats remain readable down to minor 58; the replay floor remains 127.
+Minor 134 permits the new undermap and rendered tile IDs and reconstructs derived terrain
+counts. Minor 133 and older loads retain their original tile bounds. Simulation revision 16
+separates clients under the current online simulation-version contract.
+
+On prototype maps, eager fields, resumed building searches and asynchronous global fields
+share mixed movement costs. Pending jobs retain a frozen movement snapshot; save/load
+retains completed pending publications and their fixed deadlines. Maps without these terrain
+types keep the existing optimized land/water path. Binary/text saves, continuation, scene
+isolation and eager/resumed fields are covered by `PrototypeTerrain/*`; terrain painting and
+rules are covered by `TerrainResources/*`. Platform checksum equivalence and human balance
+review remain separate requirements.

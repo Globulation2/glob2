@@ -89,6 +89,7 @@ class Map
 	unsigned computeExperiments = 0;
 	mutable std::mutex waterSnapshotMutex;
 	mutable std::shared_ptr<const std::vector<Uint8>> waterSnapshot;
+	mutable std::shared_ptr<const std::vector<Uint8>> movementSnapshot;
 	// Storage only: an idle building still drops its field and saved null state.
 	// A fixed slot count avoids allocations in the pool itself.
 	static constexpr std::size_t GRADIENT_BUFFER_POOL_SLOTS = 64;
@@ -100,6 +101,7 @@ class Map
 public:
 	// Immutable terrain costs shared by independent resumed searches.
 	std::shared_ptr<const std::vector<Uint8>> frozenWaterSnapshot() const;
+	std::shared_ptr<const std::vector<Uint8>> frozenMovementSnapshot() const;
 	Uint16 *acquireBuildingGradientBuffer();
 	void recycleBuildingGradientBuffer(Uint16 *buffer);
 	std::uint64_t hiringPrepasses = 0, hiringPoppedEntries = 0;
@@ -446,6 +448,15 @@ public:
 			std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 			waterSnapshot.reset();
 		}
+		if (isIceTile(tile.terrain) != isIceTile(terrain) || isCobblestoneTile(tile.terrain) != isCobblestoneTile(terrain)
+			|| isWaterTile(tile.terrain) != isWaterTile(terrain))
+		{
+			std::lock_guard<std::mutex> lock(waterSnapshotMutex);
+			movementSnapshot.reset();
+		}
+		if (isIceTile(tile.terrain) != isIceTile(terrain) || isCobblestoneTile(tile.terrain) != isCobblestoneTile(terrain))
+			bumpTopologyGeneration();
+		iceTiles += int(isIceTile(terrain)) - int(isIceTile(tile.terrain));
 		cobblestoneTiles += int(isCobblestoneTile(terrain)) - int(isCobblestoneTile(tile.terrain));
 		tile.terrain = terrain;
 	}
@@ -523,6 +534,7 @@ public:
 	static constexpr Uint16 ICE_EDGE_FIRST = 304;
 	static constexpr Uint16 COBBLESTONE_EDGE_FIRST = 416;
 	static constexpr Uint16 TERRAIN_TILE_END = 528;
+	static bool isWaterTile(Uint16 t) { return t >= 256 && t < 272; }
 	static bool isIceTile(Uint16 t) { return t >= ICE_TILE_FIRST && t < ICE_TILE_FIRST + 16; }
 	static bool isCobblestoneTile(Uint16 t) { return t >= COBBLESTONE_TILE_FIRST && t < COBBLESTONE_TILE_FIRST + 16; }
 
@@ -535,6 +547,7 @@ public:
 	bool isBuildableGround(int x, int y) const { return isBuildableTile(getTerrain(x, y)); }
 	//! Whether any tile is cobblestone, which lowers the cheapest possible step (see minStepCost).
 	bool hasCobblestone() const { return cobblestoneTiles > 0; }
+	bool hasPrototypeTerrain() const { return cobblestoneTiles > 0 || iceTiles > 0; }
 
 	bool hasSand(int x, int y) const
 	{
@@ -909,6 +922,7 @@ public:
 	Uint32 topologyGeneration;
 	//! Cobblestone tiles on the map, kept by setTerrain and load; derived, never saved.
 	int cobblestoneTiles = 0;
+	int iceTiles = 0;
 	void bumpTopologyGeneration() { topologyGeneration++; }
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };

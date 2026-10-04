@@ -31,6 +31,40 @@
 
 namespace gradient_kernel
 {
+	// Mixed ice/cobblestone maps have more than two entry costs. Complete the
+	// same positive-cost bucket layers without aliasing bucket cursors.
+	template<class StepsAt>
+	void expandBucketCosts(std::uint16_t *gradient, GradientBucket *queue, size_t &pending,
+		int cur, int limit, const field::Grid &grid, StepsAt stepsAt)
+	{
+		auto &bucket = queue[unsigned(cur) % BUCKETS];
+		const auto current = std::uint16_t(GRADIENT_AT_GOAL - cur);
+		for (size_t entry = 0; entry < bucket.size; ++entry)
+		{
+			const size_t cell = bucket.cells[entry];
+			--pending;
+			if (gradient[cell] != current) continue;
+			const auto steps = stepsAt(cell);
+			const int x = int(cell % grid.width()), y = int(cell / grid.width());
+			for (int dy = -1; dy <= 1; ++dy)
+				for (int dx = -1; dx <= 1; ++dx)
+				{
+					if (!dx && !dy) continue;
+					const unsigned cost = unsigned(cur) + (dx && dy ? steps.diagonal : steps.cardinal);
+					if (cost > unsigned(limit)) continue;
+					const size_t next = grid.index(x + dx, y + dy);
+					const auto value = std::uint16_t(GRADIENT_AT_GOAL - cost);
+					if (gradient[next] != GRADIENT_FORBIDDEN && value > gradient[next])
+					{
+						gradient[next] = value;
+						queue[cost % BUCKETS].push(std::uint32_t(next));
+						++pending;
+					}
+				}
+		}
+		bucket.clear();
+	}
+
 	// Cells expanded between capacity reservations. A cell can append at most
 	// four neighbors to one target bucket. Reserve 4 * CHUNK for every target
 	// before taking raw end pointers; no append in the inner loop may reallocate.

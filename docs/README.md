@@ -34,6 +34,7 @@ dated reports and pull-request artifacts do not belong here.
   [experimental features](features/experimental-features.md) and the
   [guard-area balancing](features/guard-area-balancing.md) and
   [farm areas](features/farm-areas.md) experiments,
+  [prototype ice and cobblestone terrain](features/prototype-terrain.md),
   [map previews](features/pre-game-map-preview.md),
   [window resizing](features/window-resizing.md), and the
   [toroidal view](features/torus-experiment.md).

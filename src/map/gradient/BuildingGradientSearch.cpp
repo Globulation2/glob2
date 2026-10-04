@@ -29,7 +29,8 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	pending = 0;
 	for (auto &bucket : buckets) bucket.clear();
 	const bool weighted = weightedClass(swim);
-	water = weighted ? map.frozenWaterSnapshot() : nullptr;
+	prototype = map.hasPrototypeTerrain();
+	water = prototype ? map.frozenMovementSnapshot() : weighted ? map.frozenWaterSnapshot() : nullptr;
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
@@ -61,12 +62,18 @@ void BuildingGradientSearch::resolve(std::size_t target)
 		{
 			assert(currentCost <= COST_LIMIT);
 			popped += buckets[currentCost % BUCKETS].size;
-			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
-				{widthMask+1, heightMask+1}, waterSteps, waterAt);
+			if constexpr (std::is_same_v<std::invoke_result_t<decltype(waterAt), size_t>, EntrySteps>)
+				gradient_kernel::expandBucketCosts(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
+					{widthMask+1, heightMask+1}, waterAt);
+			else
+				expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost, COST_LIMIT,
+					{widthMask+1, heightMask+1}, waterSteps, waterAt);
 			++currentCost;
 		}
 	};
-	if (!water)
+	if (prototype)
+		sweep(std::true_type(), LAND_STEPS, [&](size_t i) { return gradient_kernel::terrainSteps((*water)[i], swimClass); });
+	else if (!water)
 		sweep(std::false_type(), LAND_STEPS, [](size_t) { return false; });
 	else
 	{

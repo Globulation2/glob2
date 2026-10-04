@@ -18,6 +18,14 @@ static_assert(gradient_kernel::COST_LIMIT == Map::GRADIENT_COST_LIMIT);
 void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost)
 {
 	PERF_SCOPE_TIME(Propagation);
+	if (hasPrototypeTerrain())
+	{
+		auto terrain = frozenMovementSnapshot();
+		gradient_kernel::propagateField(gradient, swimClass, maxCost,
+			{getW(), getH()}, gradientRuntime->workspaces[compute.slot()].propagation,
+			[&](size_t i) { return gradient_kernel::terrainSteps((*terrain)[i], swimClass); });
+		return;
+	}
 	gradient_kernel::propagateField(gradient, swimClass, maxCost,
 		{getW(), getH()}, gradientRuntime->workspaces[compute.slot()].propagation,
 		[this](size_t i) { return isWater(static_cast<unsigned>(i)); });

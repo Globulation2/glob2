@@ -210,6 +210,14 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 							visibleTeams))
 			{
 				// draw terrain
+				Uint16 layers[3];
+				const int count = sceneMap.prototypeTerrainLayers(x+viewportX, y+viewportY, layers);
+				if (count)
+				{
+					for (int layer = 0; layer < count; ++layer)
+						globalContainer->gfx->drawSprite(x<<5, y<<5, globalContainer->terrain, layers[layer]);
+					continue;
+				}
 				int id=sceneMap.getTerrain(x+viewportX, y+viewportY);
 				Sprite *sprite;
 				if (id<Map::TERRAIN_TILE_END)

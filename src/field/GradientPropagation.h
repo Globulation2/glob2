@@ -63,11 +63,16 @@ void propagateField(std::uint16_t *gradient, int swimClass, int maxCost,
 				buckets[unsigned(cur) % BUCKETS].push(std::uint32_t(deferredSeeds[nextSeed].second));
 				pending++;
 			}
-			expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit,
-				geometry, waterSteps, waterAt);
+			if constexpr (std::is_same_v<std::invoke_result_t<decltype(waterAt), size_t>, EntrySteps>)
+				expandBucketCosts(gradient, buckets, pending, cur, limit, geometry, waterAt);
+			else
+				expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit,
+					geometry, waterSteps, waterAt);
 		}
 	};
-	if (!weightedClass(swimClass))
+	if constexpr (std::is_same_v<std::invoke_result_t<IsWater, size_t>, EntrySteps>)
+		sweep(std::true_type(), LAND_STEPS, isWater);
+	else if (!weightedClass(swimClass))
 		sweep(std::false_type(), LAND_STEPS, [](std::size_t) { return false; });
 	else
 	{
