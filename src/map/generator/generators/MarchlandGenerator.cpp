@@ -1240,24 +1240,29 @@ MarchlandOptions::MarchlandOptions(const GenerationRequest &r)
 
 GeneratorDefinition marchlandDefinition()
 {
-	return {"marchland",
-			61,
-			"Marchland",
-			2,
-			false,
-			// Levelling controls the search for contested, evenly shared prizes. Zero keeps
-			// the initial random selection; telemetry records the result at every setting.
-			{{"prizes", "Prizes on the rope", 2, 12, 1, 6, ControlGroup::Layout},
-			 {"march", "March width", 8, 40, 4, 16, ControlGroup::Layout},
-			 {"levelling", "Levelling", 0, 100, 10, 100, ControlGroup::Layout},
-			 {"lakes", "Lakes", 0, 40, 5, 10, ControlGroup::Terrain},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			requestFailure,
-			validateWorld,
-			{"terrain:natural", "feature:lakes", "style:contested-center", "fairness:solved-rope"}};
+	return {
+		"marchland",
+		61,
+		"Marchland",
+		2,
+		false,
+		// Levelling controls the search for contested, evenly shared prizes. Zero keeps
+		// the initial random selection; telemetry records the result at every setting.
+		{GeneratorControl{"prizes", "Prizes on the rope", 2, 12, 1, 6, ControlGroup::Layout}
+			 .withSearchRange(4, 9),
+		 GeneratorControl{"march", "March width", 8, 40, 4, 16, ControlGroup::Layout}
+			 .withSearchRange(12, 24),
+		 GeneratorControl{"levelling", "Levelling", 0, 100, 10, 100, ControlGroup::Layout}
+			 .withSearchRange(70, 100),
+		 GeneratorControl{"lakes", "Lakes", 0, 40, 5, 10, ControlGroup::Terrain}.withSearchRange(
+			 5, 20),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		requestFailure,
+		validateWorld,
+		{"terrain:natural", "feature:lakes", "style:contested-center", "fairness:solved-rope"}};
 }

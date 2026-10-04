@@ -737,7 +737,8 @@ GeneratorDefinition combDefinition()
 		"The Comb",
 		4,
 		false,
-		{{"peninsulas", "Peninsulas per shore", 2, 4, 1, 3, ControlGroup::Layout},
+		{GeneratorControl{"peninsulas", "Peninsulas per shore", 2, 4, 1, 3, ControlGroup::Layout}
+			 .withSearchRange(2, 4),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

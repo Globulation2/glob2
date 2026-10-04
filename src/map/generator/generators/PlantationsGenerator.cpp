@@ -1050,13 +1050,23 @@ GeneratorDefinition plantationsDefinition()
 		// left (10 is the least that seats both, 8 until 2026-09-16); 4 tiles of crops round it keep an island small enough to swim round and fertile to
 		// its middle; a strait of 4 corners is sealed against diagonal steps and out of reach of a
 		// level-2 tower (Channels.h); three islands per colony is a base's worth of plots.
-		{{"plot-size", "Plot size", kLeastPlot, 14, 1, kLeastPlot, ControlGroup::Layout},
-		 {"farm-width", "Farm width", 3, 8, 1, 4, ControlGroup::Terrain},
-		 {"strait-width", "Strait width", 4, 8, 1, 4, ControlGroup::Terrain},
-		 {"islands-per-colony", "Islands per colony", 1, 4, 1, 3, ControlGroup::Layout},
-		 {"coast-roughness", "Coast roughness", 0, 100, 10, 40, ControlGroup::Terrain},
-		 GeneratorControl::toggle("outpost-inns", "Outpost inns", true, ControlGroup::Layout),
-		 GeneratorControl::toggle("causeways", "Causeways", false, ControlGroup::Layout),
+		{GeneratorControl{"plot-size", "Plot size", kLeastPlot, 14, 1, kLeastPlot,
+						  ControlGroup::Layout}
+			 .withSearchRange(kLeastPlot, 12),
+		 GeneratorControl{"farm-width", "Farm width", 3, 8, 1, 4, ControlGroup::Terrain}
+			 .withSearchRange(4, 6),
+		 GeneratorControl{"strait-width", "Strait width", 4, 8, 1, 4, ControlGroup::Terrain}
+			 .withSearchRange(4, 6),
+		 GeneratorControl{"islands-per-colony", "Islands per colony", 1, 4, 1, 3,
+						  ControlGroup::Layout}
+			 .withSearchRange(2, 4),
+		 GeneratorControl{"coast-roughness", "Coast roughness", 0, 100, 10, 40,
+						  ControlGroup::Terrain}
+			 .withSearchRange(20, 70),
+		 GeneratorControl::toggle("outpost-inns", "Outpost inns", true, ControlGroup::Layout)
+			 .withSearchValues({1}),
+		 GeneratorControl::toggle("causeways", "Causeways", false, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

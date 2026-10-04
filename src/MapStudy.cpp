@@ -566,6 +566,11 @@ int runMapStudy(int argc, char **argv)
 				for (size_t j = 0; j < domain.size(); ++j)
 					std::printf("%s%d", j ? "," : "", domain[j]);
 				std::printf("]");
+				std::printf(",\"searchValues\":[");
+				const auto search = c.searchValues();
+				for (size_t j = 0; j < search.size(); ++j)
+					std::printf("%s%d", j ? "," : "", search[j]);
+				std::printf("]");
 				if (c.isChoice())
 				{
 					std::printf(",\"labels\":[");

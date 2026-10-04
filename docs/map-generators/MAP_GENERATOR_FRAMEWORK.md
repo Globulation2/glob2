@@ -1919,3 +1919,26 @@ cliff, so `spreadInWalkBand` on the walk to the mouth is fair for every tower's 
 is proved by flooding outwards from the basin with each pinch shut (`reachFrom`), in the design and
 again in `validateWorld`. A design that fits no ledge or no spread of colonies is drawn again before
 the request is refused.
+
+## Parameter search domains
+
+`GeneratorControl::values()` is the legal manual domain; `searchValues()` is the declared
+subset used by `GenerationRequest::randomizeControls()`. The generator registry requires a
+valid search declaration on every control. Search metadata is emitted as `searchValues` in
+both catalog APIs; the text catalog lists it after the legal values. Shared settings have
+metadata for study tools but player-facing parameter rolls preserve them.
+
+Maze, Canals, Honeycomb isle, Fingerprint (pattern and barrier), and Caravanserai (desert design)
+default to an appended Random choice. Existing concrete enum numbers are unchanged. New
+choices resolve from the map seed independently of geometry streams; geometric choices filter
+out incompatible tessellations before selection. Parameter rolls select concrete variants.
+
+Control studies accept `--domain search` (the default) and `--domain legal`. The latter retains
+experimental extremes for compatibility studies. The profiling fixture has the equivalent
+`--domain=search` and `--domain=legal` switches. A search envelope targets the generator's
+supported shared setups, rather than promising every colony count fits every map size.
+
+Search domains avoid unsuitable extremes; request and world validators still enforce each
+generator's supported geometry. Individual AI openings are diagnostic evidence, not grounds
+to discard a design variant without a reproducible parameter-related defect. Resource growth,
+AI decisions and seed variation still affect games within the search envelope.

@@ -46,8 +46,10 @@ std::vector<GeneratorControl> heightFieldResourceControls()
 			GeneratorControl::percentage("wood-amount", "Wood amount"),
 			GeneratorControl::percentage("stone-amount", "Stone amount"),
 			GeneratorControl::percentage("algae-amount", "Algae amount"),
+			// Keep structural stone out of the fertile hilltops in routine parameter rolls.
 			GeneratorControl::toggle("hilltop-stone", "Stone on hilltops", false,
-									 ControlGroup::Resources)};
+									 ControlGroup::Resources)
+				.withSearchValues({0})};
 }
 
 HeightFieldOptions HeightFieldOptions::fromRequest(const GenerationRequest &r, bool swamp)

@@ -592,34 +592,43 @@ TidalFlatsOptions::TidalFlatsOptions(const GenerationRequest &r)
 GeneratorDefinition tidalFlatsDefinition()
 {
 	return {
-			"tidal-flats",
-			18,
-			"Tidal flats",
-			6,
-			false,
-			// The home islands' radius as a share of the half side; extra islands (the oases) and
+		"tidal-flats",
+		18,
+		"Tidal flats",
+		6,
+		false,
+		// The home islands' radius as a share of the half side; extra islands (the oases) and
 		// sandbars (the green patches) per colony, six and eight since 2026-09-14; lagoons per
 		// colony; tide pools per 128x128 of flats.
-		{{"home-island-size", "Home island size", 14, 26, 1, 20, ControlGroup::Terrain},
-		 {"extra-islands", "Extra islands", 0, 10, 1, 6, ControlGroup::Terrain},
-		 {"sandbars", "Sandbars", 0, 16, 1, 8, ControlGroup::Terrain},
-		 {"tide-pools", "Tide pools", 0, 12, 1, 8, ControlGroup::Terrain},
-		 {"lagoons", "Lagoons", 0, 4, 1, 3, ControlGroup::Terrain},
-		 {"coast-roughness", "Coast roughness", 0, 100, 5, 50, ControlGroup::Terrain},
+		{GeneratorControl{"home-island-size", "Home island size", 14, 26, 1, 20,
+						  ControlGroup::Terrain}
+			 .withSearchRange(20, 23),
+		 GeneratorControl{"extra-islands", "Extra islands", 0, 10, 1, 6, ControlGroup::Terrain}
+			 .withSearchRange(4, 8),
+		 GeneratorControl{"sandbars", "Sandbars", 0, 16, 1, 8, ControlGroup::Terrain}
+			 .withSearchRange(6, 12),
+		 GeneratorControl{"tide-pools", "Tide pools", 0, 12, 1, 8, ControlGroup::Terrain}
+			 .withSearchRange(5, 10),
+		 GeneratorControl{"lagoons", "Lagoons", 0, 4, 1, 3, ControlGroup::Terrain}.withSearchRange(
+			 2, 4),
+		 GeneratorControl{"coast-roughness", "Coast roughness", 0, 100, 5, 50,
+						  ControlGroup::Terrain}
+			 .withSearchRange(35, 65),
 		 // Off, the middle of the map is flats like the rest, and there is no orchard.
-		 GeneratorControl::toggle("central-island", "Central island", true, ControlGroup::Layout),
+		 GeneratorControl::toggle("central-island", "Central island", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
 		 // Every island's ambient fields and outcrops and every prize; each home's kit is unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			// The background is exposed sand/mud, not open ocean water - "tidal" reads more
-			// accurately than "ocean" for a render, and the two share no water color in common.
-			{"terrain:natural", "feature:islands", "feature:tidal", "style:contested-center",
-			 "fairness:repeated-wedge"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		// The background is exposed sand/mud, not open ocean water - "tidal" reads more
+		// accurately than "ocean" for a render, and the two share no water color in common.
+		{"terrain:natural", "feature:islands", "feature:tidal", "style:contested-center",
+		 "fairness:repeated-wedge"}};
 }

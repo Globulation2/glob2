@@ -262,6 +262,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 {
 	const HoneycombIsleOptions o(request);
 	Layout L;
+	L.telemetry.choice("honeycomb-isle.block-shape", o.blockShape == 0 ? "Squares" : "Hexagons");
 	L.t = {1 << request.wDec, 1 << request.hDec};
 	const Torus &t = L.t;
 	const int n = t.size(), teams = std::max(1, request.nbTeams);
@@ -1181,46 +1182,59 @@ HoneycombIsleOptions::HoneycombIsleOptions(const GenerationRequest &r)
 	  stone(r.option("stone-amount")), algae(r.option("algae-amount")),
 	  fruit(r.option("fruit-amount"))
 {
+	blockShape = resolveDesignChoice<design>(r, "block-shape", 2, "honeycomb-isle/block-shape");
 }
 
 GeneratorDefinition honeycombIsleDefinition()
 {
 	return {
-			"honeycomb-isle",
-			53,
-			"Honeycomb isle",
-			1,
-			false,
-			// Blocks of 18 with streets of 3 leave a block's inside about 15 tiles across, room for
-			// a cistern garden and a swarm's neighbourhood; eleven blocks a colony leave room for
-			// ruins inside the ring of edge and riverside fields.
-			{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons"}, 1,
-									  ControlGroup::Terrain),
-			 {"block-size", "Block size", 16, 22, 1, 18, ControlGroup::Layout},
-			 {"street-width", "Street width", 2, 5, 1, 3, ControlGroup::Terrain},
-			 {"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain},
-			 {"blocks-per-colony", "Blocks per colony", 8, 16, 1, 11, ControlGroup::Layout},
-			 {"rubble", "Rubble", 20, 90, 5, 70, ControlGroup::Terrain},
-			 {"outline-gaps", "Outline gaps", 0, 100, 10, 40, ControlGroup::Terrain},
-			 {"crater-gardens", "Craters per colony", 0, 3, 1, 1, ControlGroup::Layout},
-			 GeneratorControl::choice("wheat-fields", "Wheat fields", {"Few", "Normal", "Many"}, 1,
-									  ControlGroup::Layout),
-			 // FEEDBACK 2026-09-16: the river "a bit thicker, maybe 2x" (was 6 wide, at most 12).
-			 {"river-width", "River width", 0, 20, 1, 12, ControlGroup::Terrain},
-			 {"bridges", "Bridges", 1, 6, 1, 3, ControlGroup::Layout},
-			 // Wheat fields are planted full at 100 and rubble is full at 200, so higher amounts would
-			 // change nothing (bulk study, 2026-09-16). The stone amount scales only the masonry
-			 // chunks in the rubble: ruin and landmark outlines are structural and stand at 0.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount", 100),
-			 GeneratorControl::percentage("wood-amount", "Wood amount", 200),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// The hex tiling itself reads as stylised/artificial on top of the urban ruins.
-			{"terrain:urban", "terrain:novelty", "feature:river", "feature:hexagons", "feature:ruins",
-			 "style:tight-building"}};
+		"honeycomb-isle",
+		53,
+		"Honeycomb isle",
+		2,
+		false,
+		// Blocks of 18 with streets of 3 leave a block's inside about 15 tiles across, room for
+		// a cistern garden and a swarm's neighbourhood; eleven blocks a colony leave room for
+		// ruins inside the ring of edge and riverside fields.
+		{GeneratorControl::choice("block-shape", "Block shape", {"Squares", "Hexagons", "Random"},
+								  2, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl{"block-size", "Block size", 16, 22, 1, 18, ControlGroup::Layout}
+			 .withSearchRange(18, 22),
+		 GeneratorControl{"street-width", "Street width", 2, 5, 1, 3, ControlGroup::Terrain}
+			 .withSearchRange(3, 5),
+		 GeneratorControl{"warp", "Warp", 0, 100, 10, 50, ControlGroup::Terrain}.withSearchRange(
+			 20, 80),
+		 GeneratorControl{"blocks-per-colony", "Blocks per colony", 8, 16, 1, 11,
+						  ControlGroup::Layout}
+			 .withSearchRange(10, 14),
+		 GeneratorControl{"rubble", "Rubble", 20, 90, 5, 70, ControlGroup::Terrain}.withSearchRange(
+			 45, 75),
+		 GeneratorControl{"outline-gaps", "Outline gaps", 0, 100, 10, 40, ControlGroup::Terrain}
+			 .withSearchRange(20, 70),
+		 GeneratorControl{"crater-gardens", "Craters per colony", 0, 3, 1, 1, ControlGroup::Layout}
+			 .withSearchRange(1, 3),
+		 GeneratorControl::choice("wheat-fields", "Wheat fields", {"Few", "Normal", "Many"}, 1,
+								  ControlGroup::Layout)
+			 .withSearchValues({0, 1, 2}),
+		 // FEEDBACK 2026-09-16: the river "a bit thicker, maybe 2x" (was 6 wide, at most 12).
+		 GeneratorControl{"river-width", "River width", 0, 20, 1, 12, ControlGroup::Terrain}
+			 .withSearchRange(8, 16),
+		 GeneratorControl{"bridges", "Bridges", 1, 6, 1, 3, ControlGroup::Layout}.withSearchRange(
+			 2, 5),
+		 // Wheat fields are planted full at 100 and rubble is full at 200, so higher amounts would
+		 // change nothing (bulk study, 2026-09-16). The stone amount scales only the masonry
+		 // chunks in the rubble: ruin and landmark outlines are structural and stand at 0.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 100),
+		 GeneratorControl::percentage("wood-amount", "Wood amount", 200),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// The hex tiling itself reads as stylised/artificial on top of the urban ruins.
+		{"terrain:urban", "terrain:novelty", "feature:river", "feature:hexagons", "feature:ruins",
+		 "style:tight-building"}};
 }

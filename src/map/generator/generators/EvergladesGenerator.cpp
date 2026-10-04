@@ -542,19 +542,24 @@ EvergladesOptions::EvergladesOptions(const GenerationRequest &r)
 GeneratorDefinition evergladesDefinition()
 {
 	return {
-			"everglades",
-			19,
-			"Everglades",
-			2,
-			false,
-			// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
+		"everglades",
+		19,
+		"Everglades",
+		2,
+		false,
+		// Pool spacing and pool size in tiles; sloughs is the share of pools grown and stretched
 		// into sloughs; the clearings' radius in tiles; the levee is the share of each clearing's
 		// ring that is sand.
-		{{"pool-spacing", "Pool spacing", 8, 20, 1, 15, ControlGroup::Terrain},
-		 {"pool-size", "Pool size", 2, 7, 1, 4, ControlGroup::Terrain},
-		 {"sloughs", "Sloughs", 0, 50, 5, 15, ControlGroup::Terrain},
-		 {"clearing-size", "Clearing size", 12, 18, 1, 13, ControlGroup::Layout},
-		 {"levee", "Levee", 0, 100, 10, 70, ControlGroup::Layout},
+		{GeneratorControl{"pool-spacing", "Pool spacing", 8, 20, 1, 15, ControlGroup::Terrain}
+			 .withSearchRange(12, 18),
+		 GeneratorControl{"pool-size", "Pool size", 2, 7, 1, 4, ControlGroup::Terrain}
+			 .withSearchRange(3, 5),
+		 GeneratorControl{"sloughs", "Sloughs", 0, 50, 5, 15, ControlGroup::Terrain}
+			 .withSearchRange(5, 30),
+		 GeneratorControl{"clearing-size", "Clearing size", 12, 18, 1, 13, ControlGroup::Layout}
+			 .withSearchRange(13, 18),
+		 GeneratorControl{"levee", "Levee", 0, 100, 10, 70, ControlGroup::Layout}.withSearchRange(
+			 50, 100),
 		 // The swamp's standing wood and wheat, its outcrops and groves, and the pools' algae;
 		 // every home's kit is unscaled.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
@@ -562,14 +567,14 @@ GeneratorDefinition evergladesDefinition()
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			// "style:wide-open" (from the code's own "sprawling" framing) was wrong at a glance:
-			// FEEDBACK 2026-09-17 asked for tags read off the rendered map, and this one is nearly
-			// wall-to-wall pools and sloughs, not open ground - dense and growth-pressured, not
-			// wide-open. Left with no style tag rather than a second guess; see the skill's own
-			// "A growth-pressure map can intentionally creep into bases" characterization.
-			{"terrain:natural", "feature:swamp", "feature:lakes"}};
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		// "style:wide-open" (from the code's own "sprawling" framing) was wrong at a glance:
+		// FEEDBACK 2026-09-17 asked for tags read off the rendered map, and this one is nearly
+		// wall-to-wall pools and sloughs, not open ground - dense and growth-pressured, not
+		// wide-open. Left with no style tag rather than a second guess; see the skill's own
+		// "A growth-pressure map can intentionally creep into bases" characterization.
+		{"terrain:natural", "feature:swamp", "feature:lakes"}};
 }

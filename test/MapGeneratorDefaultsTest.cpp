@@ -23,6 +23,11 @@
 #include "MapGeneratorLandscapeChecks.h"
 #include "MapGeneratorToolkitChecks.h"
 #include "NewMapScreen.h"
+#include "MazeGenerator.h"
+#include "CanalsGenerator.h"
+#include "HoneycombIsleGenerator.h"
+#include "FingerprintGenerator.h"
+#include "CaravanseraiGenerator.h"
 #include "Race.h"
 #include "Resources.h"
 #include "Sketch.h"
@@ -253,20 +258,24 @@ class MapGeneratorDefaultsTest
 			 "uniform terrain",
 			 1,
 			 false,
-			 {{"test-elevation", "Smoothing", 2, 10, 2, 6},
-			  {"test-cell",
-			   "Island size",
-			   4,
-			   16,
-			   1,
-			   8,
-			   ControlGroup::Layout,
-			   false,
-			   false,
-			   {4, 8, 16}},
-			  {"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout},
-			  GeneratorControl::choice("test-shape", "Cell shape", {"Squares", "Hexagons"}, 0),
-			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)},
+			 {GeneratorControl{"test-elevation", "Smoothing", 2, 10, 2, 6}.withSearchRange(4, 8),
+			  GeneratorControl{"test-cell",
+							   "Island size",
+							   4,
+							   16,
+							   1,
+							   8,
+							   ControlGroup::Layout,
+							   false,
+							   false,
+							   {4, 8, 16}}
+				  .withSearchValues({8, 16}),
+			  GeneratorControl{"test-gap", "Channel width", 1, 5, 2, 3, ControlGroup::Layout}
+				  .withSearchRange(3, 5),
+			  GeneratorControl::choice("test-shape", "Cell shape", {"Squares", "Hexagons"}, 0)
+				  .withSearchValues({0, 1}),
+			  GeneratorControl::toggle("test-switch", "Lake connects to fjords", false)
+				  .withSearchValues({1})},
 			 [](Game &game, GenerationContext &context)
 			 {
 				 const int elevation = context.request.option("test-elevation");
@@ -305,7 +314,8 @@ class MapGeneratorDefaultsTest
 				}
 				return false;
 			};
-			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true);
+			const auto on = GeneratorControl::toggle("switch", "Lake connects to fjords", true)
+								.withSearchValues({0, 1});
 			REQUIRE((on.isToggle() && on.defaultValue == 1 &&
 				   on.values() == std::vector<int>({0, 1})));
 			REQUIRE(!rejected(on));
@@ -313,7 +323,8 @@ class MapGeneratorDefaultsTest
 			REQUIRE((!amount.isToggle() && amount.defaultValue == 100 && !rejected(amount)));
 			// A choice stores the index of its named option and is shown by name.
 			const auto shape =
-				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1);
+				GeneratorControl::choice("shape", "Cell shape", {"Squares", "Hexagons"}, 1)
+					.withSearchValues({0, 1});
 			REQUIRE((shape.isChoice() && !shape.isToggle() && shape.defaultValue == 1 &&
 				   shape.values() == std::vector<int>({0, 1}) &&
 				   std::string(shape.valueLabel(1)) == "Hexagons" && !shape.valueLabel(2) &&
@@ -640,11 +651,234 @@ struct DefaultsFixture
 // diagnostic log, and coverage profile. No generator contract is dropped.
 TEST_SUITE("MapGeneratorDefaults")
 {
+	TEST_CASE("search domains preserve legal values and constrain deterministic rolls")
+	{
+		for (int method : GeneratorRegistry::builtins().methods())
+			for (const auto &c : D::controls(method))
+			{
+				REQUIRE(c.validSearchDomain());
+				const auto legal = c.values();
+				for (int value : c.searchValues())
+					REQUIRE(std::binary_search(legal.begin(), legal.end(), value));
+			}
+		const auto accepts = [](GeneratorControl c)
+		{
+			GeneratorDefinition d{"test-search",
+								  101,
+								  "uniform terrain",
+								  1,
+								  false,
+								  {std::move(c)},
+								  [](Game &, GenerationContext &) { return false; }};
+			d.tags = {"terrain:novelty"};
+			try
+			{
+				GeneratorRegistry registry({d});
+				return true;
+			}
+			catch (const std::invalid_argument &)
+			{
+				return false;
+			}
+		};
+		const GeneratorControl numeric{"amount", "Amount", 0, 100, 25, 50};
+		REQUIRE(!accepts(numeric));
+		REQUIRE(accepts(numeric.withSearchRange(25, 75)));
+		REQUIRE(!accepts(numeric.withSearchRange(20, 75)));
+		REQUIRE(!accepts(numeric.withSearchRange(75, 25)));
+		REQUIRE(!accepts(numeric.withSearchRange(-25, 75)));
+		REQUIRE(!accepts(numeric.withSearchValues({})));
+		REQUIRE(!accepts(numeric.withSearchValues({25, 25})));
+		REQUIRE(!accepts(numeric.withSearchValues({75, 25})));
+		REQUIRE(!accepts(numeric.withSearchValues({20, 75})));
+		REQUIRE(!accepts(numeric.withSearchRange(25, 75).withSearchValues({50})));
+		const auto toggle = GeneratorControl::toggle("switch", "Switch", true);
+		REQUIRE(accepts(toggle.withSearchValues({1})));
+		REQUIRE(!accepts(toggle.withSearchRange(0, 1)));
+		const auto choice = GeneratorControl::choice("variant", "Variant", {"A", "B", "Random"}, 2);
+		REQUIRE(accepts(choice.withSearchValues({0, 1})));
+		REQUIRE(!accepts(choice.withSearchRange(0, 1)));
+		D base;
+		base.setMethodDefaults(GeneratorRegistry::builtins().idOf("coral"));
+		base.wDec = 8;
+		base.hDec = 7;
+		base.nbTeams = 3;
+		base.nbWorkers = 5;
+		base.options["sand-roads"] = 0; // Still legal and manually selectable.
+		REQUIRE(
+			validateGenerationRequest(base, GeneratorRegistry::builtins().at(base.method)).empty());
+		for (unsigned seed = 1; seed <= 64; ++seed)
+		{
+			D a = base, b = base;
+			REQUIRE(a.randomizeControls(seed));
+			REQUIRE(b.randomizeControls(seed));
+			REQUIRE(a.options == b.options);
+			REQUIRE(a.option("sand-roads") == 1);
+			REQUIRE((a.wDec == 8 && a.hDec == 7 && a.nbTeams == 3 && a.nbWorkers == 5));
+			for (const auto &c : D::controls(a.method))
+			{
+				const auto domain = c.searchValues();
+				REQUIRE(std::binary_search(domain.begin(), domain.end(), c.get(a)));
+			}
+		}
+		D failed = base;
+		REQUIRE(!failed.randomizeControls(1, 0));
+		REQUIRE(failed.options == base.options);
+		failed.setMethodDefaults(GeneratorRegistry::builtins().idOf("maze"));
+		failed.wDec = failed.hDec = 5;
+		const D impossible = failed;
+		REQUIRE(!failed.randomizeControls(42));
+		REQUIRE(failed.options == impossible.options);
+	}
+	TEST_CASE("Random design defaults resolve reproducibly without changing explicit enums")
+	{
+		for (const std::string id :
+			 {"maze", "canals", "honeycomb-isle", "fingerprint", "caravanserai"})
+		{
+			D r;
+			r.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+			std::set<int> variants;
+			const auto resolved = [&](const D &request)
+			{
+				if (id == "maze")
+					return MazeOptions(request).cellShape;
+				if (id == "canals")
+					return CanalsOptions(request).blockShape;
+				if (id == "honeycomb-isle")
+					return HoneycombIsleOptions(request).blockShape;
+				if (id == "fingerprint")
+					return FingerprintOptions(request).pattern;
+				return CaravanseraiOptions(request).desert;
+			};
+			const std::string key = id == "maze"           ? "cell-shape"
+									: id == "fingerprint"  ? "pattern"
+									: id == "caravanserai" ? "desert"
+														   : "block-shape";
+			const int count = id == "fingerprint" || id == "caravanserai" ? 3 : 2;
+			REQUIRE(r.option(key) == count);
+			for (unsigned seed = 1; seed <= 32; ++seed)
+			{
+				r.seed = seed;
+				REQUIRE(resolved(r) == resolved(r));
+				variants.insert(resolved(r));
+			}
+			const auto domain = GenerationRequest::control(r.method, key).searchValues();
+			REQUIRE(variants == std::set<int>(domain.begin(), domain.end()));
+			for (int variant = 0; variant < count; ++variant)
+			{
+				r.options[key] = variant;
+				REQUIRE(resolved(r) == variant);
+			}
+		}
+		D fingerprint;
+		fingerprint.setMethodDefaults(GeneratorRegistry::builtins().idOf("fingerprint"));
+		REQUIRE(fingerprint.option("barrier") == 2);
+		std::set<int> barriers;
+		for (unsigned seed = 1; seed <= 32; ++seed)
+		{
+			fingerprint.seed = seed;
+			const int value = FingerprintOptions(fingerprint).barrier;
+			REQUIRE(value == FingerprintOptions(fingerprint).barrier);
+			barriers.insert(value);
+		}
+		REQUIRE(barriers == std::set<int>({0, 1}));
+		for (int value : {0, 1})
+		{
+			fingerprint.options["barrier"] = value;
+			REQUIRE(FingerprintOptions(fingerprint).barrier == value);
+		}
+		D small;
+		small.setMethodDefaults(GeneratorRegistry::builtins().idOf("maze"));
+		small.wDec = small.hDec = 6;
+		small.nbTeams = 1;
+		// Hexagons cannot fit here, but Random retains the supported square layout.
+		for (unsigned seed = 1; seed <= 8; ++seed)
+		{
+			small.seed = seed;
+			REQUIRE(MazeOptions(small).cellShape == 0);
+		}
+	}
 	TEST_CASE("toolkit geometry; raster; resource and home contracts")
 	{
 		DefaultsFixture fixture;
 		ToolkitChecks::toolkitChecks();
 		puts("PASS toolkit-only geometry, raster, resource and home contracts");
+	}
+	TEST_CASE("Random designs match explicit generated worlds on rectangles [slow]")
+	{
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		GenerationService service;
+		for (const std::string id :
+			 {"maze", "canals", "honeycomb-isle", "fingerprint", "caravanserai"})
+			for (const auto size : {std::pair{7, 8}, std::pair{8, 7}, std::pair{8, 8}})
+				for (unsigned seed : {1u, 11u})
+				{
+					D random;
+					random.setMethodDefaults(GeneratorRegistry::builtins().idOf(id));
+					random.wDec = size.first;
+					random.hDec = size.second;
+					random.seed = seed;
+					D concrete = random;
+					if (id == "maze")
+						concrete.options["cell-shape"] = MazeOptions(random).cellShape;
+					if (id == "canals")
+						concrete.options["block-shape"] = CanalsOptions(random).blockShape;
+					if (id == "honeycomb-isle")
+						concrete.options["block-shape"] = HoneycombIsleOptions(random).blockShape;
+					if (id == "fingerprint")
+					{
+						const FingerprintOptions o(random);
+						concrete.options["pattern"] = o.pattern;
+						concrete.options["barrier"] = o.barrier;
+					}
+					if (id == "caravanserai")
+						concrete.options["desert"] = CaravanseraiOptions(random).desert;
+					Game a(nullptr), b(nullptr);
+					const auto first = service.generate(a, random, true);
+					const auto second = service.generate(b, concrete, true);
+					REQUIRE_MESSAGE(bool(first) == bool(second), first.diagnostic());
+					REQUIRE_MESSAGE(bool(first), first.diagnostic());
+					REQUIRE(mapFingerprint(a) == mapFingerprint(b));
+				}
+	}
+	TEST_CASE("Explicit designs preserve pre-Random golden worlds")
+	{
+#if (defined(__APPLE__) && defined(__aarch64__)) || (defined(__linux__) && defined(__x86_64__))
+		DefaultsFixture fixture;
+		MapGeneratorDefaultsTest::globalsInit();
+		// Historical 256-square, four-colony, seed-1 rows before the appended Random values.
+		// Fingerprint's floating-point pattern has platform-specific existing goldens.
+#if defined(__APPLE__)
+		constexpr std::uint64_t fingerprint = 15850274609968439542ULL;
+#else
+		constexpr std::uint64_t fingerprint = 5648058033288605271ULL;
+#endif
+		struct Original
+		{
+			const char *id, *key;
+			int value;
+			std::uint64_t hash;
+		};
+		for (const auto original :
+			 {Original{"maze", "cell-shape", 0, 6132248727033081699ULL},
+			  Original{"fingerprint", "pattern", 0, fingerprint},
+			  Original{"canals", "block-shape", 0, 16622643961647829752ULL},
+			  Original{"caravanserai", "desert", 1, 6244602504248136250ULL},
+			  Original{"honeycomb-isle", "block-shape", 1, 5908701397362810997ULL}})
+		{
+			D request;
+			request.setMethodDefaults(GeneratorRegistry::builtins().idOf(original.id));
+			request.seed = 1;
+			request.options[original.key] = original.value;
+			if (request.method == 26)
+				request.options["barrier"] = 0;
+			Game game(nullptr);
+			const auto result = GenerationService().generate(game, request);
+			REQUIRE_MESSAGE(bool(result), result.diagnostic());
+			REQUIRE_MESSAGE(mapFingerprint(game) == original.hash, original.id);
+		}
+#endif
 	}
 	TEST_CASE("Bastion Keys contracts")
 	{

@@ -1502,31 +1502,39 @@ BajadaOptions::BajadaOptions(const GenerationRequest &r)
 GeneratorDefinition bajadaDefinition()
 {
 	return {
-			"bajada",
-			55,
-			"Bajada",
-			1,
-			false,
-			{{"range-spacing", "Range spacing", 128, 256, 16, 128, ControlGroup::Terrain},
-			 {"ridge-width", "Ridge width", 8, 16, 1, 12, ControlGroup::Terrain},
-			 {"passes", "Passes", 1, 6, 1, 2, ControlGroup::Layout},
-			 {"fans", "Fans per range", 3, 8, 1, 6, ControlGroup::Terrain},
-			 {"stream-reach", "Stream reach", 70, 150, 10, 100, ControlGroup::Terrain},
-			 {"playa", "Playa", 0, 100, 10, 80, ControlGroup::Terrain},
-			 GeneratorControl::choice("home-design", "Home design",
-									  {"Random", "Broad fan", "Long fan", "Twin springs"}, 0,
-									  ControlGroup::Layout),
-			 // Above 200% every fan and meadow is already sown (a study of 510 maps: 3,360 wheat tiles at
-			 // 200%, 3,530 at 300%).
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:natural", "feature:mountains", "feature:desert", "feature:lakes",
-			 "style:sprawling", "fairness:stamped-lattice"}};
+		"bajada",
+		55,
+		"Bajada",
+		1,
+		false,
+		{GeneratorControl{"range-spacing", "Range spacing", 128, 256, 16, 128,
+						  ControlGroup::Terrain}
+			 .withSearchRange(128, 192),
+		 GeneratorControl{"ridge-width", "Ridge width", 8, 16, 1, 12, ControlGroup::Terrain}
+			 .withSearchRange(10, 14),
+		 GeneratorControl{"passes", "Passes", 1, 6, 1, 2, ControlGroup::Layout}.withSearchRange(2,
+																								4),
+		 GeneratorControl{"fans", "Fans per range", 3, 8, 1, 6, ControlGroup::Terrain}
+			 .withSearchRange(4, 8),
+		 GeneratorControl{"stream-reach", "Stream reach", 70, 150, 10, 100, ControlGroup::Terrain}
+			 .withSearchRange(90, 130),
+		 GeneratorControl{"playa", "Playa", 0, 100, 10, 80, ControlGroup::Terrain}.withSearchRange(
+			 50, 90),
+		 GeneratorControl::choice("home-design", "Home design",
+								  {"Random", "Broad fan", "Long fan", "Twin springs"}, 0,
+								  ControlGroup::Layout)
+			 .withSearchValues({1, 2, 3}),
+		 // Above 200% every fan and meadow is already sown (a study of 510 maps: 3,360 wheat tiles at
+		 // 200%, 3,530 at 300%).
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:natural", "feature:mountains", "feature:desert", "feature:lakes",
+		 "style:sprawling", "fairness:stamped-lattice"}};
 }

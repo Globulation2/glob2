@@ -931,9 +931,13 @@ GeneratorDefinition encircledKingdomDefinition()
 		false,
 		{GeneratorControl::choice(
 			 "fortress-plan", "Fortress plan",
-			 {"Automatic", "Elongated enclosure", "Bastioned enclosure", "Paired courtyards"}, 0),
-		 {"gate-width", "Gate width", 6, 14, 2, 10, ControlGroup::Layout},
-		 {"heartland-farmland", "Heartland farmland", 75, 150, 25, 100, ControlGroup::Layout},
+			 {"Automatic", "Elongated enclosure", "Bastioned enclosure", "Paired courtyards"}, 0)
+			 .withSearchValues({1, 2, 3}),
+		 GeneratorControl{"gate-width", "Gate width", 6, 14, 2, 10, ControlGroup::Layout}
+			 .withSearchRange(8, 14),
+		 GeneratorControl{"heartland-farmland", "Heartland farmland", 75, 150, 25, 100,
+						  ControlGroup::Layout}
+			 .withSearchRange(100, 150),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),

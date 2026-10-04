@@ -1151,35 +1151,40 @@ StoneHighlandsOptions::StoneHighlandsOptions(const GenerationRequest &r)
 GeneratorDefinition stoneHighlandsDefinition()
 {
 	return {
-			"stone-highlands",
-			14,
-			"Stone highlands",
-			4,
-			false,
-			{// Average spacing between valley centres, in tiles.
-			 {"valley-size", "Valley size", 20, 44, 4, 32, ControlGroup::Layout},
-			 {"pass-width", "Pass width", 3, 5, 1, 4, ControlGroup::Layout},
-			 // Share of the ridgelines left over after the spanning tree that get a pass as well.
-			 {"loopiness", "Loopiness", 0, 100, 5, 30, ControlGroup::Layout},
-			 // Pond area as a percentage of each valley's area.
-			 {"pond-size", "Pond size", 4, 16, 2, 8, ControlGroup::Terrain},
-			 // Fruit groves per 128x128 tiles of map.
-			 // Groves per map at 100, as a percentage of kValleyFruit (a count of 0 to 12 until
-			 // 2026-09-14, when every generator's amounts became percentages).
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount"),
-			 // On, fruit groves may grow in the valleys colonies start in too.
-			 GeneratorControl::toggle("home-valley-fruit", "Fruit in home valleys", false,
-									  ControlGroup::Resources),
-			 // Wheat and wood scale the farmland around the ponds and algae the ponds' own; stone
-			 // scales how much of the ridgeline is two tiles thick (45% at 100). Every colony's
-			 // starting kit stays as it is.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount", 200),
-			 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			{"terrain:natural", "feature:stone-walls", "feature:mountains", "style:tight-building"}};
+		"stone-highlands",
+		14,
+		"Stone highlands",
+		4,
+		false,
+		{// Average spacing between valley centres, in tiles.
+		 GeneratorControl{"valley-size", "Valley size", 20, 44, 4, 32, ControlGroup::Layout}
+			 .withSearchRange(28, 40),
+		 GeneratorControl{"pass-width", "Pass width", 3, 5, 1, 4, ControlGroup::Layout}
+			 .withSearchRange(4, 5),
+		 // Share of the ridgelines left over after the spanning tree that get a pass as well.
+		 GeneratorControl{"loopiness", "Loopiness", 0, 100, 5, 30, ControlGroup::Layout}
+			 .withSearchRange(20, 60),
+		 // Pond area as a percentage of each valley's area.
+		 GeneratorControl{"pond-size", "Pond size", 4, 16, 2, 8, ControlGroup::Terrain}
+			 .withSearchRange(6, 12),
+		 // Fruit groves per 128x128 tiles of map.
+		 // Groves per map at 100, as a percentage of kValleyFruit (a count of 0 to 12 until
+		 // 2026-09-14, when every generator's amounts became percentages).
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount"),
+		 // On, fruit groves may grow in the valleys colonies start in too.
+		 GeneratorControl::toggle("home-valley-fruit", "Fruit in home valleys", false,
+								  ControlGroup::Resources)
+			 .withSearchValues({0, 1}),
+		 // Wheat and wood scale the farmland around the ponds and algae the ponds' own; stone
+		 // scales how much of the ridgeline is two tiles thick (45% at 100). Every colony's
+		 // starting kit stays as it is.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount", 200),
+		 GeneratorControl::percentage("algae-amount", "Algae amount")},
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		{"terrain:natural", "feature:stone-walls", "feature:mountains", "style:tight-building"}};
 }

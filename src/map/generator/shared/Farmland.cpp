@@ -421,13 +421,15 @@ void stampFarmPlot(TerrainSketch &sketch, const Torus &t, Farm &farm, int x0, in
 GeneratorControl waterCrossingsControl()
 {
 	return GeneratorControl::toggle("water-crossings", "Sand bridges over water", true,
-									ControlGroup::Terrain);
+									ControlGroup::Terrain)
+		.withSearchValues({1});
 }
 
 GeneratorControl cropCrossingsControl()
 {
 	return GeneratorControl::toggle("crop-crossings", "Sand lanes through crops", true,
-									ControlGroup::Terrain);
+									ControlGroup::Terrain)
+		.withSearchValues({1});
 }
 
 Farm layFarm(TerrainSketch &sketch, const Torus &t, const std::vector<unsigned char> &region,

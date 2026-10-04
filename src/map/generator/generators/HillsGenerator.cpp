@@ -484,18 +484,25 @@ HillsOptions::HillsOptions(const GenerationRequest &r)
 }
 GeneratorDefinition hillsDefinition()
 {
-	return {
-			"hills",
+	return {"hills",
 			46,
 			"Hills",
 			7,
 			false,
-			{{"extra-hills", "Unoccupied hills", 0, 4, 1, 0, ControlGroup::Layout},
-			 {"hill-radius", "Hill radius", 44, 100, 4, 60, ControlGroup::Layout},
-			 {"band-width", "Contour band width", 80, 120, 10, 100, ControlGroup::Terrain},
-			 {"stairs", "Stairs per hill", 2, 4, 1, 3, ControlGroup::Layout},
-			 {"starting-towers", "Starting tower level", 0, 3, 1, 1, ControlGroup::Layout},
-			 GeneratorControl::toggle("valley-river", "Valley river", true, ControlGroup::Terrain),
+			{GeneratorControl{"extra-hills", "Unoccupied hills", 0, 4, 1, 0, ControlGroup::Layout}
+				 .withSearchRange(0, 2),
+			 GeneratorControl{"hill-radius", "Hill radius", 44, 100, 4, 60, ControlGroup::Layout}
+				 .withSearchRange(52, 76),
+			 GeneratorControl{"band-width", "Contour band width", 80, 120, 10, 100,
+							  ControlGroup::Terrain}
+				 .withSearchRange(90, 110),
+			 GeneratorControl{"stairs", "Stairs per hill", 2, 4, 1, 3, ControlGroup::Layout}
+				 .withSearchRange(2, 4),
+			 GeneratorControl{"starting-towers", "Starting tower level", 0, 3, 1, 1,
+							  ControlGroup::Layout}
+				 .withSearchRange(0, 1),
+			 GeneratorControl::toggle("valley-river", "Valley river", true, ControlGroup::Terrain)
+				 .withSearchValues({0, 1}),
 			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 			 GeneratorControl::percentage("wood-amount", "Wood amount"),
 			 GeneratorControl::percentage("stone-amount", "Stone amount"),

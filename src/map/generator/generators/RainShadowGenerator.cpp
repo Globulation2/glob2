@@ -453,38 +453,47 @@ RainShadowOptions::RainShadowOptions(const GenerationRequest &r)
 GeneratorDefinition rainShadowDefinition()
 {
 	return {
-			"rain-shadow",
-			27,
-			"Rain shadow",
-			4,
-			false,
-			// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
+		"rain-shadow",
+		27,
+		"Rain shadow",
+		4,
+		false,
+		// Four ridges on a 256 map give 64-tile valleys: a 12-tile home, a pass every 48 tiles
 		// and a lee band of 6 leave a valley wide enough to farm and to fight in. Ridges three
 		// thick are sealed against diagonal steps and thin enough for a level-1 tower to shoot
 		// across (Walls.h's towerReach); passes five wide take a column of units and can be
 		// walled shut by whoever holds them.
-		{{"ridges", "Ridges", 2, 8, 1, 4, ControlGroup::Terrain},
-		 {"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain},
-		 {"ridge-thickness", "Ridge thickness", 2, 6, 1, 3, ControlGroup::Terrain},
-		 {"pass-spacing", "Pass spacing", 24, 96, 8, 48, ControlGroup::Terrain},
-		 {"pass-width", "Pass width", 3, 9, 1, 5, ControlGroup::Terrain},
-		 {"lee-width", "Lee width", 2, 12, 1, 6, ControlGroup::Terrain},
-		 {"home-size", "Home size", 10, 20, 1, 12, ControlGroup::Layout},
+		{GeneratorControl{"ridges", "Ridges", 2, 8, 1, 4, ControlGroup::Terrain}.withSearchRange(3,
+																								 6),
+		 GeneratorControl{"slant", "Slant", 0, 3, 1, 1, ControlGroup::Terrain}.withSearchRange(0,
+																							   3),
+		 GeneratorControl{"ridge-thickness", "Ridge thickness", 2, 6, 1, 3, ControlGroup::Terrain}
+			 .withSearchRange(2, 4),
+		 GeneratorControl{"pass-spacing", "Pass spacing", 24, 96, 8, 48, ControlGroup::Terrain}
+			 .withSearchRange(32, 64),
+		 GeneratorControl{"pass-width", "Pass width", 3, 9, 1, 5, ControlGroup::Terrain}
+			 .withSearchRange(5, 8),
+		 GeneratorControl{"lee-width", "Lee width", 2, 12, 1, 6, ControlGroup::Terrain}
+			 .withSearchRange(4, 8),
+		 GeneratorControl{"home-size", "Home size", 10, 20, 1, 12, ControlGroup::Layout}
+			 .withSearchRange(12, 18),
 		 // FEEDBACK 2026-09-13: lakes with rivers in every valley, and 6% of the valleys' grass in
 		 // sand patches.
-		 GeneratorControl::toggle("inland-lakes", "Inland lakes", true, ControlGroup::Terrain),
-		 {"sand-patches", "Sand patches", 0, 20, 2, 6, ControlGroup::Terrain},
+		 GeneratorControl::toggle("inland-lakes", "Inland lakes", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 GeneratorControl{"sand-patches", "Sand patches", 0, 20, 2, 6, ControlGroup::Terrain}
+			 .withSearchRange(2, 10),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// Identical ridge-and-valley bands repeat in parallel across the map, same mechanism
-			// as Bajada's fans.
-			{"terrain:natural", "feature:mountains", "feature:river", "feature:desert",
-			 "style:wide-open", "fairness:stamped-lattice"}};
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// Identical ridge-and-valley bands repeat in parallel across the map, same mechanism
+		// as Bajada's fans.
+		{"terrain:natural", "feature:mountains", "feature:river", "feature:desert",
+		 "style:wide-open", "fairness:stamped-lattice"}};
 }

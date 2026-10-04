@@ -525,12 +525,12 @@ DrumlinFieldOptions::DrumlinFieldOptions(const GenerationRequest &r)
 GeneratorDefinition drumlinFieldDefinition()
 {
 	return {
-			"drumlin-field",
-			43,
-			"Drumlin field",
-			1,
-			false,
-			// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
+		"drumlin-field",
+		43,
+		"Drumlin field",
+		1,
+		false,
+		// Sites 20 apart across the grain and drumlins two and a half times as long as wide give a
 		// 256 map some fifty drumlins of about 16 by 40 tiles round four homes of 22 by 55, with
 		// two fifths of the sketch land (the sweep: 28% pure grass, 16% buildable, once the beaches
 		// are laid). The water gap is in undermap corners between any two drumlins: 6 corners is
@@ -539,23 +539,31 @@ GeneratorDefinition drumlinFieldDefinition()
 		// narrowest, 4, lets a top-level tower on one drumlin shell the next; the spacing widens
 		// with the gap so the drumlins keep their size. A quarter more eskers than the tree needs
 		// gives most drumlins a second way in without making the field an open plain.
-		{GeneratorControl::choice("grain", "Grain", {"Random", "Horizontal", "Vertical", "Diagonal"},
-								  0, ControlGroup::Terrain),
-		 {"drumlin-spacing", "Drumlin spacing", 16, 32, 2, 20, ControlGroup::Terrain},
-		 {"drumlin-length", "Drumlin length", 150, 400, 25, 250, ControlGroup::Terrain},
-		 {"water-gap", "Water gap", 4, 12, 1, 6, ControlGroup::Terrain},
-		 {"home-size", "Home size", 8, 16, 1, 11, ControlGroup::Layout},
-		 {"esker-loops", "Esker loops", 0, 100, 5, 25, ControlGroup::Layout},
+		{GeneratorControl::choice("grain", "Grain",
+								  {"Random", "Horizontal", "Vertical", "Diagonal"}, 0,
+								  ControlGroup::Terrain)
+			 .withSearchValues({1, 2, 3}),
+		 GeneratorControl{"drumlin-spacing", "Drumlin spacing", 16, 32, 2, 20,
+						  ControlGroup::Terrain}
+			 .withSearchRange(18, 28),
+		 GeneratorControl{"drumlin-length", "Drumlin length", 150, 400, 25, 250,
+						  ControlGroup::Terrain}
+			 .withSearchRange(200, 325),
+		 GeneratorControl{"water-gap", "Water gap", 4, 12, 1, 6, ControlGroup::Terrain}
+			 .withSearchRange(5, 9),
+		 GeneratorControl{"home-size", "Home size", 8, 16, 1, 11, ControlGroup::Layout}
+			 .withSearchRange(11, 16),
+		 GeneratorControl{"esker-loops", "Esker loops", 0, 100, 5, 25, ControlGroup::Layout}
+			 .withSearchRange(15, 65),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			homesFailure,
-			validateWorld,
-			// Elongated islands repeat in aligned parallel rows across the whole map.
-			{"terrain:natural", "feature:lakes", "style:tight-building",
-			 "fairness:stamped-lattice"}};
+		generate,
+		true,
+		homesFailure,
+		validateWorld,
+		// Elongated islands repeat in aligned parallel rows across the whole map.
+		{"terrain:natural", "feature:lakes", "style:tight-building", "fairness:stamped-lattice"}};
 }

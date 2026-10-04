@@ -19,6 +19,27 @@ def seeded_samples(parameters, count, seed):
     return [{k: rng.choice(list(parameters[k])) for k in sorted(parameters)} for _ in range(count)]
 
 
+def generator_samples(catalog, method, count, seed, domain='search'):
+    """Sample a pinned build's domains, preserving shared game settings."""
+    if domain not in ('search', 'legal'):
+        raise ValueError('parameter_domain must be search or legal')
+    generator = next((g for g in catalog.get('generators', []) if g['method'] == method), None)
+    if generator is None:
+        raise ValueError(f'generator {method} is missing from the pinned catalog')
+    parameters = {}
+    for control in generator['controls']:
+        key = control['id']
+        if key in ('width', 'height', 'teams', 'workers'):
+            continue
+        legal = control.get('values', [])
+        values = control.get('searchValues', []) if domain == 'search' else legal
+        if (not values or any(type(v) is not int for v in values)
+                or len(set(values)) != len(values) or any(v not in legal for v in values)):
+            raise ValueError(f'generator {method}: invalid or missing {domain} domain for {key}')
+        parameters[key] = values
+    return seeded_samples(parameters, count, seed)
+
+
 def rotations(values):
     return [values[i:] + values[:i] for i in range(len(values))]
 

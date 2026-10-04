@@ -41,7 +41,7 @@ then runs again without the river, and the lagoon still supplies the water.
 
 | Control | Range (default) | Effect |
 | --- | --- | --- |
-| Block shape | Squares, Hexagons (Hexagons) | The tiling. |
+| Block shape | Squares, Hexagons, Random (Random) | The tiling; Random selects a fitting concrete layout from the map seed. |
 | Block size | 16–22 (18) | Target block size; crowded maps shrink it. |
 | Street width | 2–5 (3) | Street bands; wider streets mean less building room. |
 | Warp | 0–100 (50) | How irregular the blocks are (visual; no measurable effect on the economy). |
@@ -59,8 +59,9 @@ then runs again without the river, and the lagoon still supplies the water.
 
 ## Verification
 
-All numbers below are from the final code unless marked otherwise. Scripts and raw results were
-run from a session scratchpad and are summarised here.
+The measurements below use the earlier Hexagons default and explicit control studies; they
+predate Random-default resolution. Scripts and raw results were run from a session scratchpad
+and are summarised here.
 
 - **Reliability.** 2,628 maps: every control at its minimum and maximum alone and together, on
   128×128, 256×256 and 512×256 with 2, 4 and 8 colonies, plus 2,016 random rolls over every control,
@@ -119,3 +120,8 @@ colonies starved out.
 - Numbi and Castor stall on this map (they harvest wheat but barely breed); by the maintainer's
   decision maps are not tuned for the older AIs.
 - No human playtest of the final version has been recorded.
+
+The block-shape control defaults to Random, choosing a supported square or hexagonal layout
+from the map seed. Explicit Squares and Hexagons retain their original stored values (0 and
+1). Randomize Parameters chooses a concrete shape from the registered search subset, while
+manual controls retain their full experimental ranges.

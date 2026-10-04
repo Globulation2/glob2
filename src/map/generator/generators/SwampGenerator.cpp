@@ -52,13 +52,19 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition swampDefinition()
 {
 	std::vector<GeneratorControl> controls{
-		{"water", "Water weight", 0, 100, 1, 35, ControlGroup::Terrain, false, true},
-		{"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false, true},
-		{"smoothing", "Smoothing", 1, 8, 1, 6, ControlGroup::Terrain, false},
-		{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}};
+		GeneratorControl{"water", "Water weight", 0, 100, 1, 35, ControlGroup::Terrain, false, true}
+			.withSearchRange(25, 45),
+		GeneratorControl{"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false, true}
+			.withSearchRange(55, 85),
+		GeneratorControl{"smoothing", "Smoothing", 1, 8, 1, 6, ControlGroup::Terrain, false}
+			.withSearchRange(5, 7),
+		GeneratorControl{"fruit", "Fruit", 0, 64, 1, 4, ControlGroup::Resources, false}
+			.withSearchRange(2, 8)};
 	for (auto &c : heightFieldResourceControls())
 		controls.push_back(std::move(c));
-	controls.push_back({"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true});
+	controls.push_back(
+		GeneratorControl{"repeat", "Repeat landscape", 0, 5, 1, 0, ControlGroup::Layout, true}
+			.withSearchRange(0, 1));
 	return {
 			"swamp",
 			1,

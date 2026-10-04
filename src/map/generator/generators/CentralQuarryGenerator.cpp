@@ -1384,28 +1384,34 @@ GeneratorDefinition centralQuarryDefinition()
 	// The lake's radius as a percentage of half the shorter side, the island's as a percentage of
 	// the lake's; the quarry in tiles (the only stone on the map, so there is no stone amount); the
 	// sand bars to the island; the share of the country under woodland.
-	return {"central-quarry",
-			56,
-			"Central Quarry",
-			1,
-			false,
-			{{"lake-size", "Lake size", 14, 30, 2, 24, ControlGroup::Terrain},
-			 {"island-size", "Island size", 30, 60, 5, 45, ControlGroup::Terrain},
-			 {"quarry-size", "Quarry size", 4, 16, 1, 9, ControlGroup::Layout},
-			 {"sand-bars", "Sand bars", 1, 4, 1, 2, ControlGroup::Terrain},
-			 {"woodland", "Woodland", 0, 80, 10, 40, ControlGroup::Terrain},
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			validateRequest,
-			validateWorld,
-			// Tagged by the #336 vocabulary: the isle in its lake is the contested centre (as Contested
-			// commons' commons island); the streams read as rivers; woods are scenery here, not a
-			// forest map (Old growth, Locust). Colonies are found by a walk-band search, not a
-			// repeated module, so no fairness tag.
-			{"terrain:natural", "feature:lakes", "feature:islands", "feature:river",
-			 "style:contested-center", "style:wide-open"}};
+	return {
+		"central-quarry",
+		56,
+		"Central Quarry",
+		1,
+		false,
+		{GeneratorControl{"lake-size", "Lake size", 14, 30, 2, 24, ControlGroup::Terrain}
+			 .withSearchRange(20, 28),
+		 GeneratorControl{"island-size", "Island size", 30, 60, 5, 45, ControlGroup::Terrain}
+			 .withSearchRange(40, 55),
+		 GeneratorControl{"quarry-size", "Quarry size", 4, 16, 1, 9, ControlGroup::Layout}
+			 .withSearchRange(7, 12),
+		 GeneratorControl{"sand-bars", "Sand bars", 1, 4, 1, 2, ControlGroup::Terrain}
+			 .withSearchRange(2, 4),
+		 GeneratorControl{"woodland", "Woodland", 0, 80, 10, 40, ControlGroup::Terrain}
+			 .withSearchRange(20, 60),
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
+		generate,
+		true,
+		validateRequest,
+		validateWorld,
+		// Tagged by the #336 vocabulary: the isle in its lake is the contested centre (as Contested
+		// commons' commons island); the streams read as rivers; woods are scenery here, not a
+		// forest map (Old growth, Locust). Colonies are found by a walk-band search, not a
+		// repeated module, so no fairness tag.
+		{"terrain:natural", "feature:lakes", "feature:islands", "feature:river",
+		 "style:contested-center", "style:wide-open"}};
 }

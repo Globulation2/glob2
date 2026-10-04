@@ -1,6 +1,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GenerationContext.h"
 #include <stdexcept>
+int GenerationContext::choiceFromSeed(std::uint32_t seed, const std::string &name,
+									  const std::vector<int> &values)
+{
+	if (values.empty())
+		throw std::invalid_argument("Empty seeded variant choice");
+	std::mt19937 rng(deriveSeed(seed, name));
+	const std::uint32_t bound = std::uint32_t(values.size());
+	const std::uint32_t threshold = -bound % bound;
+	std::uint32_t value;
+	do
+	{
+		value = rng();
+	} while (value < threshold);
+	return values[value % bound];
+}
 std::uint32_t GenerationContext::deriveSeed(std::uint32_t seed, const std::string &name)
 {
 	// FNV-1a followed by an unsigned avalanche; independent of std::hash/platform.

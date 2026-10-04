@@ -457,32 +457,39 @@ AnthillOptions::AnthillOptions(const GenerationRequest &r)
 GeneratorDefinition anthillDefinition()
 {
 	return {
-			"anthill",
-			32,
-			"Anthill",
-			4,
-			false,
-			// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
+		"anthill",
+		32,
+		"Anthill",
+		4,
+		false,
+		// Chambers 28 apart give a 256 map about a hundred of them; a chamber of radius 7 holds a
 		// pond and a few buildings; a queen chamber grown to 60 building sites (overlapping 4x4
 		// footprints, the start scorer's measure) holds a swarm, an inn and a few more; tunnels
 		// three wide take a column of units and are closed by one tower; a fifth of the chambers'
 		// count in loops keeps a way round most blockades.
-		{{"chamber-spacing", "Chamber spacing", 20, 40, 2, 28, ControlGroup::Layout},
+		{GeneratorControl{"chamber-spacing", "Chamber spacing", 20, 40, 2, 28, ControlGroup::Layout}
+			 .withSearchRange(24, 34),
 		 // FEEDBACK 2026-09-13: chambers of 7 (was 5) with a pond each, queen chambers grown to
 		 // 60 sites (was 40); tunnels stay 3 wide but carry a sand road so nothing is built across.
-		 {"chamber-size", "Chamber size", 5, 10, 1, 7, ControlGroup::Layout},
-		 {"queen-room", "Queen room", 20, 160, 10, 60, ControlGroup::Layout},
-		 {"tunnel-width", "Tunnel width", 2, 4, 1, 3, ControlGroup::Terrain},
-		 {"loops", "Loops", 0, 60, 10, 20, ControlGroup::Terrain},
-		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Terrain),
+		 GeneratorControl{"chamber-size", "Chamber size", 5, 10, 1, 7, ControlGroup::Layout}
+			 .withSearchRange(7, 10),
+		 GeneratorControl{"queen-room", "Queen room", 20, 160, 10, 60, ControlGroup::Layout}
+			 .withSearchRange(60, 120),
+		 GeneratorControl{"tunnel-width", "Tunnel width", 2, 4, 1, 3, ControlGroup::Terrain}
+			 .withSearchRange(3, 4),
+		 GeneratorControl{"loops", "Loops", 0, 60, 10, 20, ControlGroup::Terrain}.withSearchRange(
+			 10, 40),
+		 // Search keeps roads open as adjacent crops and trees regrow.
+		 GeneratorControl::toggle("sand-roads", "Sand roads", true, ControlGroup::Terrain)
+			 .withSearchValues({1}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			// An organic tunnel network in open stone, not a constructed battle arena.
-			{"terrain:natural", "feature:caves", "feature:stone-walls", "style:tight-building"}};
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		// An organic tunnel network in open stone, not a constructed battle arena.
+		{"terrain:natural", "feature:caves", "feature:stone-walls", "style:tight-building"}};
 }

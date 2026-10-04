@@ -977,37 +977,45 @@ SymmetricArenaOptions::SymmetricArenaOptions(const GenerationRequest &r)
 GeneratorDefinition symmetricArenaDefinition()
 {
 	return {
-			"symmetric-arena",
-			15,
-			"Symmetric arena",
-			1,
-			false,
-			// centre-size: the orchard island's radius as a share of the shorter side (over a
-			// small floor); moat and causeway widths are in tiles; causeways per colony, one
-			// straight towards it or two flanking it; lakes as a share of the open land outside
-			// the arena; richness scales the ambient deposits, never a home's own kit.
-			{{"centre-size", "Centre size", 6, 16, 1, 10, ControlGroup::Terrain},
-			 {"moat-width", "Moat width", 3, 10, 1, 5, ControlGroup::Terrain},
-			 {"causeway-width", "Causeway width", 2, 8, 1, 4, ControlGroup::Layout},
-			 {"causeways", "Causeways", 1, 2, 1, 1, ControlGroup::Layout},
-			 {"lakes", "Lakes", 0, 40, 5, 20, ControlGroup::Terrain},
-			 {"richness", "Resource richness", 0, 200, 25, 100, ControlGroup::Resources},
-			 // Off, no water rings the orchard island; it joins the land around it.
-			 GeneratorControl::toggle("moat", "Moat", true, ControlGroup::Terrain),
-			 // Off, every grove in the orchard is fruit.
-			 GeneratorControl::toggle("orchard-stone", "Stone in the orchard", true,
-									  ControlGroup::Resources),
-			 // Each ambient layer on top of richness: the farmland's wheat and wood, stone outcrops
-			 // and algae. Fruit keeps that share of the orchard's groves nearest the centre, never
-			 // fewer than three. Every home's kit stays as it is.
-			 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
-			 GeneratorControl::percentage("wood-amount", "Wood amount"),
-			 GeneratorControl::percentage("stone-amount", "Stone amount"),
-			 GeneratorControl::percentage("algae-amount", "Algae amount"),
-			 GeneratorControl::percentage("fruit-amount", "Fruit amount", 100)},
-			generate,
-			true,
-			validate,
-			validateWorld,
-			{"terrain:arena", "feature:orchard", "style:contested-center", "fairness:exact-symmetry"}};
+		"symmetric-arena",
+		15,
+		"Symmetric arena",
+		1,
+		false,
+		// centre-size: the orchard island's radius as a share of the shorter side (over a
+		// small floor); moat and causeway widths are in tiles; causeways per colony, one
+		// straight towards it or two flanking it; lakes as a share of the open land outside
+		// the arena; richness scales the ambient deposits, never a home's own kit.
+		{GeneratorControl{"centre-size", "Centre size", 6, 16, 1, 10, ControlGroup::Terrain}
+			 .withSearchRange(8, 13),
+		 GeneratorControl{"moat-width", "Moat width", 3, 10, 1, 5, ControlGroup::Terrain}
+			 .withSearchRange(3, 7),
+		 GeneratorControl{"causeway-width", "Causeway width", 2, 8, 1, 4, ControlGroup::Layout}
+			 .withSearchRange(4, 8),
+		 GeneratorControl{"causeways", "Causeways", 1, 2, 1, 1, ControlGroup::Layout}
+			 .withSearchRange(1, 2),
+		 GeneratorControl{"lakes", "Lakes", 0, 40, 5, 20, ControlGroup::Terrain}.withSearchRange(
+			 10, 30),
+		 GeneratorControl{"richness", "Resource richness", 0, 200, 25, 100, ControlGroup::Resources}
+			 .withSearchRange(75, 125),
+		 // Off, no water rings the orchard island; it joins the land around it.
+		 GeneratorControl::toggle("moat", "Moat", true, ControlGroup::Terrain)
+			 .withSearchValues({0, 1}),
+		 // Off, every grove in the orchard is fruit.
+		 GeneratorControl::toggle("orchard-stone", "Stone in the orchard", true,
+								  ControlGroup::Resources)
+			 .withSearchValues({0, 1}),
+		 // Each ambient layer on top of richness: the farmland's wheat and wood, stone outcrops
+		 // and algae. Fruit keeps that share of the orchard's groves nearest the centre, never
+		 // fewer than three. Every home's kit stays as it is.
+		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
+		 GeneratorControl::percentage("wood-amount", "Wood amount"),
+		 GeneratorControl::percentage("stone-amount", "Stone amount"),
+		 GeneratorControl::percentage("algae-amount", "Algae amount"),
+		 GeneratorControl::percentage("fruit-amount", "Fruit amount", 100)},
+		generate,
+		true,
+		validate,
+		validateWorld,
+		{"terrain:arena", "feature:orchard", "style:contested-center", "fairness:exact-symmetry"}};
 }

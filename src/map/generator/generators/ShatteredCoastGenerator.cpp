@@ -911,28 +911,35 @@ static std::string validateWorld(const Game &game, const GenerationContext &cont
 GeneratorDefinition shatteredCoastDefinition()
 {
 	return {
-			"shattered-coast",
-			7,
-			"Old random",
-			4,
-			false,
-			// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
+		"shattered-coast",
+		7,
+		"Old random",
+		4,
+		false,
+		// The three terrain weights are relative (40/4/60 asks for 38% water, 4% sand, 58% grass
 		// before sand control adds the beaches); smoothing is the number of passes, which sets the
 		// scale of the blobs from speckle (1) to broad coasts (8).
-		{{"water", "Water weight", 0, 100, 1, 40, ControlGroup::Terrain, false, true},
-		 {"sand", "Sand weight", 0, 100, 1, 4, ControlGroup::Terrain, false, true},
-		 {"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false, true},
-		 {"smoothing", "Smoothing", 1, 8, 1, 3, ControlGroup::Terrain, false},
+		{GeneratorControl{"water", "Water weight", 0, 100, 1, 40, ControlGroup::Terrain, false,
+						  true}
+			 .withSearchRange(25, 50),
+		 GeneratorControl{"sand", "Sand weight", 0, 100, 1, 4, ControlGroup::Terrain, false, true}
+			 .withSearchRange(1, 6),
+		 GeneratorControl{"grass", "Grass weight", 0, 100, 1, 60, ControlGroup::Terrain, false,
+						  true}
+			 .withSearchRange(55, 85),
+		 GeneratorControl{"smoothing", "Smoothing", 1, 8, 1, 3, ControlGroup::Terrain, false}
+			 .withSearchRange(3, 6),
 		 // Off, colonies start in the shattered terrain rather than in a cleared meadow.
-		 GeneratorControl::toggle("colony-meadows", "Colony meadows", true, ControlGroup::Terrain),
+		 GeneratorControl::toggle("colony-meadows", "Colony meadows", true, ControlGroup::Terrain)
+			 .withSearchValues({1}),
 		 // The area of each colony's own wheat, wood, stone and algae deposits.
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount")},
-			generate,
-			true,
-			nullptr,
-			validateWorld,
-			{"terrain:natural", "feature:ocean", "style:wide-open"}};
+		generate,
+		true,
+		nullptr,
+		validateWorld,
+		{"terrain:natural", "feature:ocean", "style:wide-open"}};
 }

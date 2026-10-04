@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <string>
+#include <optional>
+#include <utility>
 #include <vector>
 struct GenerationRequest;
 class MapGenerationDescriptor;
@@ -35,6 +37,14 @@ struct GeneratorControl
 	// A choice's name for each of its values 0, 1, 2... in order, translated where shown. Empty for
 	// a number.
 	std::vector<const char *> valueLabels;
+	// The player-facing randomizer samples this domain; manual controls keep values().
+	// Exactly one declaration is required, even when the search domain is the full domain.
+	std::optional<std::pair<int, int>> searchRange;
+	std::optional<std::vector<int>> searchAllowedValues;
+	GeneratorControl withSearchRange(int low, int high) const;
+	GeneratorControl withSearchValues(std::vector<int> values) const;
+	std::vector<int> searchValues() const;
+	bool validSearchDomain() const;
 	static GeneratorControl toggle(std::string id, const char *label, bool on,
 								   ControlGroup group = ControlGroup::Layout);
 	// A resource amount as a percentage of the generator's own default, which is 100.

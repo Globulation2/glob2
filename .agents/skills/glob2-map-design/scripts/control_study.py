@@ -15,6 +15,9 @@ at every value, flags DEAD STEPS (adjacent values whose maps measure the same), 
 message, and gives each control's correlation with every metric over the random rolls. About 1,000
 maps a minute on eight cores. Copy the binary first (`--binary`) if you will rebuild while it runs.
 
+The default --domain search samples registered playable search envelopes; --domain legal
+retains the full experimental domains for compatibility and extreme-value studies.
+
 Metrics: terrain shares, resource tiles, 4x4 building sites, mean fertility, generation seconds, and the
 mean of every numeric telemetry key the generator records (docs/map-generators/TELEMETRY.md): give a
 control a telemetry measure of what it places and the report shows whether it moved.
@@ -25,10 +28,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[4]))
 from tools.map_generation_study import load_catalog, generator_definition, generate_map, report_metrics
 from concurrent.futures import ThreadPoolExecutor
 
-def controls(binary, generator, catalog=None):
+def controls(binary, generator, catalog=None, domain="legal"):
     definition = generator_definition(catalog if catalog is not None else load_catalog(binary), generator)
     selected = [c for c in definition['controls'] if c['id'] not in ('width', 'height', 'teams', 'workers')]
-    return ({c['id']: c['values'] for c in selected}, {c['id']: c['default'] for c in selected})
+    return ({c['id']: c['searchValues' if domain == 'search' else 'values'] for c in selected}, {c['id']: c['default'] for c in selected})
 
 
 def run(job):
@@ -54,13 +57,15 @@ def main():
     ap.add_argument('generator'); ap.add_argument('what', choices=['ablation', 'random', 'report'])
     ap.add_argument('--out', required=True); ap.add_argument('--binary', default='build/src/glob2')
     ap.add_argument('--jobs', type=int, default=8); ap.add_argument('--seeds', type=int, default=8)
+    ap.add_argument('--domain', choices=['search', 'legal'], default='search',
+                    help='Search envelopes for playable rolls; legal for experimental extremes')
     ap.add_argument('--timeout', type=float, default=120)
     ap.add_argument('--count', type=int, default=2000); ap.add_argument('--teams', default='2-8')
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     catalog = load_catalog(a.binary)
     definition = generator_definition(catalog, a.generator)
-    found, defaults = controls(a.binary, a.generator, catalog)
+    found, defaults = controls(a.binary, a.generator, catalog, a.domain)
     if a.what == 'report':
         return report(a, found, defaults)
     lo, hi = (int(x) for x in a.teams.split('-'))

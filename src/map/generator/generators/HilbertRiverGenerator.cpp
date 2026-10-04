@@ -227,12 +227,20 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 GeneratorDefinition hilbertRiverDefinition()
 {
 	std::vector<GeneratorControl> controls{
-		{"maximum-fold-depth", "Maximum fold depth", 1, 4, 1, 3, ControlGroup::Layout},
-		{"river-width", "River width", 4, 10, 1, 6, ControlGroup::Terrain},
-		{"minimum-land-spacing", "Minimum land spacing", 24, 40, 2, 28, ControlGroup::Terrain},
-		{"local-crossings", "Optional local crossings per parent", 0, 2, 1, 1,
-		 ControlGroup::Layout},
-		{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2, ControlGroup::Layout}};
+		GeneratorControl{"maximum-fold-depth", "Maximum fold depth", 1, 4, 1, 3,
+						 ControlGroup::Layout}
+			.withSearchRange(2, 3),
+		GeneratorControl{"river-width", "River width", 4, 10, 1, 6, ControlGroup::Terrain}
+			.withSearchRange(4, 8),
+		GeneratorControl{"minimum-land-spacing", "Minimum land spacing", 24, 40, 2, 28,
+						 ControlGroup::Terrain}
+			.withSearchRange(28, 40),
+		GeneratorControl{"local-crossings", "Optional local crossings per parent", 0, 2, 1, 1,
+						 ControlGroup::Layout}
+			.withSearchRange(1, 2),
+		GeneratorControl{"major-shortcuts", "Optional major shortcuts", 0, 4, 1, 2,
+						 ControlGroup::Layout}
+			.withSearchRange(1, 3)};
 	const auto resources = resourceControls();
 	controls.insert(controls.end(), resources.begin(), resources.end());
 	// Revision 8: one of four home garden designs per map (FractalMapSupport.h).

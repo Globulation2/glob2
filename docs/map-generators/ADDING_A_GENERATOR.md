@@ -25,6 +25,33 @@ Extract on the second use. When a routine you are about to write already exists 
 
 Each `GeneratorControl` defines `id`, translation label, minimum, maximum, step, default, group, power-of-two display formatting, whether the value participates in terrain weighting, and its `kind`. The all-zero-weight check reads this metadata, not generator-specific option names. IDs must be unique within a generator and cannot shadow shared controls. For irregular integer domains, supply a sorted, unique `allowedValues` list such as `{4, 8, 16}` with matching minimum and maximum. These are literal stored values; `powerOfTwo` instead formats stored exponents. Use `values()`, `indexOf()`, `valueAt()` and `displayValue()` in consumers, never selection-index arithmetic. Use `GeneratorControl::set()` for UI normalization. The service rejects malformed requests instead of silently changing their settings.
 
+Every registered control also declares a **search domain**, the values used by Randomize
+Parameters. Use `.withSearchRange(low, high)` for an inclusive numeric interval on the legal
+steps, or `.withSearchValues({values...})` for an explicit subset, including choices and
+toggles. Exactly one nonempty declaration is required; the registry rejects missing,
+conflicting, unsorted, duplicate, or illegal search values. The search domain may equal the
+legal domain or contain one value. It does not change normalization, manual editing, or
+request acceptance. Defaults may be outside the search domain, for example a Random choice.
+Declare restrictions beside the control, including controls returned by shared helpers.
+
+Search domains should preserve renewable food, connected building capacity, worker access,
+and lasting routes across supported shared settings. Essential sand roads and farm crossings
+stay enabled; unsafe experimental extremes remain manually selectable. The percentage
+factory declares a 75–150% search interval (capped at its legal maximum); override that
+interval by modifying its `searchRange` only when the generator's resource policy needs a
+different envelope. Tune controls together when their multipliers or space budgets interact.
+Both UI randomizers preserve width, height, colonies, and starting workers and sample concrete
+choice values uniformly, with bounded retries for request validation. A failed roll preserves
+the previous request; it never widens to the experimental domain.
+
+Design choices may have a seed-dependent Random default. Append Random after existing labels
+to preserve persisted enum meanings; exclude its sentinel from search values so parameter rolls
+show concrete designs. Resolve new choices with `GenerationContext::choiceFromSeed` and a
+stable generator-specific stream name, passing only geometry-compatible concrete variants.
+Validation, generation, and world checks must resolve the same value, and telemetry should
+record the effective design. Explicit choices must retain their previous behavior. Abundance,
+difficulty, and solver effort keep deliberate defaults.
+
 A control's `kind` is `GeneratorControl::Kind::Range` unless it is an on/off switch. Declare a switch with `GeneratorControl::toggle(id, label, on, group)`: it stores 0 or 1, the lobby draws it as a checkbox row (click it, or press Space or Return while it has focus) and the editor as a check button, and the registry rejects a toggle with any other domain, step, allowed values, power-of-two formatting or terrain weight. Every 0/1 option is a toggle. A switch should change how a map feels without breaking its invariants: the map must still generate and pass the generator's own `validateWorld` in both states.
 
 Declare a choice between named options with `GeneratorControl::choice(id, label, {"First", "Second"}, defaultIndex, group)`: it stores the option's index (0, 1, 2...), the lobby's dropdown and the editor's selector show the translated names instead of numbers, and the registry rejects a choice whose values aren't exactly 0 to the last name or that has an empty name, a step, power-of-two formatting or terrain weight. Add every name to the translation catalogs like any label. Use a choice when the options are kinds rather than amounts (Maze's cell shape).

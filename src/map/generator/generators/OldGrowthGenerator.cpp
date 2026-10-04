@@ -320,32 +320,39 @@ OldGrowthOptions::OldGrowthOptions(const GenerationRequest &r)
 GeneratorDefinition oldGrowthDefinition()
 {
 	return {
-			"old-growth",
-			28,
-			"Old growth",
-			4,
-			false,
-			// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
+		"old-growth",
+		28,
+		"Old growth",
+		4,
+		false,
+		// 90% cover reads as unbroken forest with the odd glade; one lake per 128x128 of 90
 		// tiles (four on a 256 map, each a few days' cutting from any home) keeps them rare enough
 		// to be prizes; the forest carries no wood amount, since the forest is the map.
-		{{"forest-density", "Forest density", 60, 100, 5, 90, ControlGroup::Terrain},
-		 {"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain},
-		 {"lake-size", "Lake size", 40, 160, 10, 90, ControlGroup::Terrain},
+		{GeneratorControl{"forest-density", "Forest density", 60, 100, 5, 90, ControlGroup::Terrain}
+			 .withSearchRange(70, 95),
+		 GeneratorControl{"lakes", "Lakes", 0, 4, 1, 1, ControlGroup::Terrain}.withSearchRange(1,
+																							   3),
+		 GeneratorControl{"lake-size", "Lake size", 40, 160, 10, 90, ControlGroup::Terrain}
+			 .withSearchRange(60, 120),
 		 // FEEDBACK 2026-09-13: homes of radius 24 with five pools (first 13 with one pond, then
 		 // 20; the second play wanted "just a bit bigger"); the whole clearing is within the growth
 		 // probe's reach of water.
-		 {"home-size", "Home size", 12, 30, 1, 24, ControlGroup::Layout},
-		 {"home-pools", "Home pools", 0, 8, 1, 5, ControlGroup::Layout},
-		 GeneratorControl::toggle("hidden-groves", "Hidden groves", true, ControlGroup::Layout),
+		 GeneratorControl{"home-size", "Home size", 12, 30, 1, 24, ControlGroup::Layout}
+			 .withSearchRange(24, 30),
+		 GeneratorControl{"home-pools", "Home pools", 0, 8, 1, 5, ControlGroup::Layout}
+			 .withSearchRange(4, 8),
+		 GeneratorControl::toggle("hidden-groves", "Hidden groves", true, ControlGroup::Layout)
+			 .withSearchValues({0, 1}),
 		 // On, a trail is cut from every colony to the first before the game starts.
-		 GeneratorControl::toggle("trails", "Starting trails", false, ControlGroup::Layout),
+		 GeneratorControl::toggle("trails", "Starting trails", false, ControlGroup::Layout)
+			 .withSearchValues({1}),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
 		 GeneratorControl::percentage("algae-amount", "Algae amount"),
 		 GeneratorControl::percentage("fruit-amount", "Fruit amount")},
-			generate,
-			true,
-			designFailure<design>,
-			validateWorld,
-			{"terrain:natural", "feature:forest", "style:expansion", "fairness:stamped-lattice"}};
+		generate,
+		true,
+		designFailure<design>,
+		validateWorld,
+		{"terrain:natural", "feature:forest", "style:expansion", "fairness:stamped-lattice"}};
 }

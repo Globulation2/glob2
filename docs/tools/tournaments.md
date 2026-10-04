@@ -347,6 +347,21 @@ for reusable maps; ticks 90000; timeout_seconds 3600; generation_timeout_seconds
 unless generator variation itself is the experiment. Each build needs an eligible
 host. Generator defaults/ranges are always discoverable in its pinned catalog.
 
+Set `randomize_parameters: true` to sample map controls from that pinned catalog.
+`parameter_domain` defaults to `search`; use `legal` for extreme-value compatibility
+studies. Width, height, colony count and starting workers remain at their defaults
+or explicit settings. Explicit `generator_params` and generator ablation overrides
+take precedence over sampled values. Search sampling requires `searchValues` in
+the bundle catalog; older bundles fail explicitly rather than silently sampling
+legal ranges. Explicit `grid`, `sample` and `one_parameter` lists remain unrestricted.
+Stress sweeps inherit `generator_params`; explicitly swept keys override those settings.
+
+AI comparison, fairness and ablation planners draw a reproducible parameter set
+from each map seed and reuse the map across players, rotations and build cohorts.
+Generator stress adds `samples` catalog draws per generator/build using `sample_seed`,
+alongside its baseline and explicit sweeps. Each sampled request is retained;
+unsupported combinations remain reported failures rather than being filtered out.
+
 * `ai_comparison`: ais defaults to all active selectable implementations;
   formats defaults to 1v1, 2v2, ffa. Duels pair every AI; 2v2 defaults to homogeneous
   pairs and accepts explicit two-player `rosters`; four-colony FFA balances AI

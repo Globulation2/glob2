@@ -50,6 +50,55 @@ template <auto Design> std::string designFailure(const GenerationRequest &r)
 	return Design(r, probe).failure;
 }
 
+/// Resolve a Random geometry against each concrete design's complete request contract.
+/// Concrete options bypass this helper's probing, so Design can construct its usual options
+/// without recursion. Cache the last resolution on this thread, since validation, furnishing
+/// and final-world checks all ask for the same choice. No live context's RNG is advanced.
+template <auto Design>
+int resolveDesignChoice(const GenerationRequest &r, const char *key, int randomValue,
+						const char *stream)
+{
+	if (r.option(key) != randomValue)
+		return r.option(key);
+	struct Cache
+	{
+		bool valid = false;
+		GenerationRequest request;
+		int value = 0;
+		std::string key, stream;
+		int randomValue = 0;
+	};
+	thread_local Cache cache;
+	const auto &old = cache.request;
+	if (cache.valid && cache.key == key && cache.stream == stream &&
+		cache.randomValue == randomValue && old.method == r.method && old.wDec == r.wDec &&
+		old.hDec == r.hDec && old.nbTeams == r.nbTeams && old.nbWorkers == r.nbWorkers &&
+		old.seed == r.seed && old.terrainType == r.terrainType &&
+		old.resourceAmounts == r.resourceAmounts && old.options == r.options)
+		return cache.value;
+	std::vector<int> feasible;
+	const auto domain = GenerationRequest::control(r.method, key).searchValues();
+	for (int value : domain)
+	{
+		GenerationRequest concrete = r;
+		concrete.options[key] = value;
+		GenerationContext probe(concrete);
+		if (Design(concrete, probe).failure.empty())
+			feasible.push_back(value);
+	}
+	// If nothing fits, the ordinary concrete validator retains its specific diagnostic.
+	const int value = feasible.empty()
+						  ? domain.front()
+						  : GenerationContext::choiceFromSeed(r.seed, stream, feasible);
+	cache.request = r;
+	cache.value = value;
+	cache.key = key;
+	cache.stream = stream;
+	cache.randomValue = randomValue;
+	cache.valid = true;
+	return value;
+}
+
 /// The ground a colony's swarm and workers may stand on: its own tiles of `homeOf` that are pure
 /// grass on the written map (a beach, a road or a plot's ring has spoiled the rest).
 std::vector<unsigned char> homeGrassMask(const Map &, const Torus &, const std::vector<int> &homeOf,

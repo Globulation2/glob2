@@ -679,8 +679,11 @@ GeneratorDefinition hungryMarchesDefinition()
 		"The Hungry Marches",
 		2,
 		false,
-		{{"opening-ration", "Opening ration", 20, 100, 10, 50, ControlGroup::Layout},
-		 {"central-concentration", "Central concentration", 50, 80, 5, 65, ControlGroup::Layout},
+		{GeneratorControl{"opening-ration", "Opening ration", 20, 100, 10, 50, ControlGroup::Layout}
+			 .withSearchRange(40, 80),
+		 GeneratorControl{"central-concentration", "Central concentration", 50, 80, 5, 65,
+						  ControlGroup::Layout}
+			 .withSearchRange(55, 75),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount", 200),
 		 GeneratorControl::percentage("wood-amount", "Wood amount", 200),
 		 GeneratorControl::percentage("stone-amount", "Stone amount", 200),
