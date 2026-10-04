@@ -1,0 +1,28 @@
+test_a_drawn_map_has_room_for_its_colonies (test_fairness_model.Drawing.test_a_drawn_map_has_room_for_its_colonies) ... ok
+test_best_of_k_curves_never_fall (test_fairness_model.Drawing.test_best_of_k_curves_never_fall) ... ok
+test_draws_are_deterministic_in_seed_and_round (test_fairness_model.Drawing.test_draws_are_deterministic_in_seed_and_round) ... ok
+test_a_share_term_sums_over_the_map (test_fairness_model.Emission.test_a_share_term_sums_over_the_map) ... ok
+test_derived_composites_are_the_consolidated_four (test_fairness_model.Emission.test_derived_composites_are_the_consolidated_four) ... ok
+test_diagnostics_read_absence_as_absence (test_fairness_model.Emission.test_diagnostics_read_absence_as_absence) ... ok
+test_every_measurement_the_model_may_use_has_a_cpp_expression (test_fairness_model.Emission.test_every_measurement_the_model_may_use_has_a_cpp_expression) ... ok
+test_every_shipped_label_is_a_phrase_not_code (test_fairness_model.Emission.test_every_shipped_label_is_a_phrase_not_code) ... ok
+test_header_carries_the_coefficients_and_the_function (test_fairness_model.Emission.test_header_carries_the_coefficients_and_the_function) ... ok
+test_labels_read_as_english (test_fairness_model.Emission.test_labels_read_as_english) ... ok
+test_the_legacy_factors_and_the_team_index_cannot_enter_the_model (test_fairness_model.Emission.test_the_legacy_factors_and_the_team_index_cannot_enter_the_model) ... ok
+test_transforms_all_have_a_cpp_form (test_fairness_model.Emission.test_transforms_all_have_a_cpp_form) ... ok
+test_a_single_colony_has_nobody_to_be_unfair_to (test_fairness_model.Fairness.test_a_single_colony_has_nobody_to_be_unfair_to) ... ok
+test_equal_chances_are_perfectly_fair (test_fairness_model.Fairness.test_equal_chances_are_perfectly_fair) ... ok
+test_fairness_ignores_the_unidentified_offset (test_fairness_model.Fairness.test_fairness_ignores_the_unidentified_offset) ... ok
+test_one_colony_taking_everything_is_zero_at_every_count (test_fairness_model.Fairness.test_one_colony_taking_everything_is_zero_at_every_count) ... ok
+test_sharper_differences_are_less_fair (test_fairness_model.Fairness.test_sharper_differences_are_less_fair) ... ok
+test_softmax_sums_to_one_and_ranks_with_fitness (test_fairness_model.Fairness.test_softmax_sums_to_one_and_ranks_with_fitness) ... ok
+test_a_measurement_that_decides_nothing_is_fitted_near_zero (test_fairness_model.Likelihood.test_a_measurement_that_decides_nothing_is_fitted_near_zero) ... ok
+test_cross_validation_keeps_a_map_whole (test_fairness_model.Likelihood.test_cross_validation_keeps_a_map_whole) ... ok
+test_gradient_matches_a_numeric_one (test_fairness_model.Likelihood.test_gradient_matches_a_numeric_one) ... ok
+test_predictions_are_probabilities_of_the_right_shape (test_fairness_model.Likelihood.test_predictions_are_probabilities_of_the_right_shape) ... ok
+test_the_fit_recovers_the_coefficients_it_generated (test_fairness_model.Likelihood.test_the_fit_recovers_the_coefficients_it_generated) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.463s
+
+OK

@@ -1,0 +1,21 @@
+{
+  "games": 20000,
+  "paired_blocks": 10000,
+  "generators": 60,
+  "seed": 339359,
+  "independent_mm_iterations": 74,
+  "max_elo_difference": 1.1882548278663307e-09,
+  "identical_shuffled_fits": 10,
+  "identical_bootstrap_shuffles": true,
+  "bootstrap_draws": 20,
+  "ratings": {
+    "a": 1347.4411578419197,
+    "b": 1392.5168410233807,
+    "c": 1425.181161632723,
+    "d": 1484.2630260819126,
+    "e": 1523.2721776731103,
+    "f": 1565.800574739236,
+    "g": 1606.0347399049347,
+    "h": 1655.4903211027834
+  }
+}

@@ -1,0 +1,13 @@
+test_balanced_cycle (test_duel_ratings.DuelRatingsTest.test_balanced_cycle) ... ok
+test_bootstrap_cannot_silently_omit_a_competitor (test_duel_ratings.DuelRatingsTest.test_bootstrap_cannot_silently_omit_a_competitor) ... ok
+test_bootstrap_keeps_pairs_and_is_order_independent (test_duel_ratings.DuelRatingsTest.test_bootstrap_keeps_pairs_and_is_order_independent) ... ok
+test_draw_is_half_score (test_duel_ratings.DuelRatingsTest.test_draw_is_half_score) ... ok
+test_known_two_player_odds_and_equal_weight (test_duel_ratings.DuelRatingsTest.test_known_two_player_odds_and_equal_weight) ... ok
+test_nonfinite_fit_is_explicit (test_duel_ratings.DuelRatingsTest.test_nonfinite_fit_is_explicit) ... ok
+test_pair_validation_preserves_seeds_and_rejects_duplicate_observations (test_duel_ratings.DuelRatingsTest.test_pair_validation_preserves_seeds_and_rejects_duplicate_observations) ... ok
+test_report_uses_batch_and_reports_missing_intervals (test_duel_ratings.DuelRatingsTest.test_report_uses_batch_and_reports_missing_intervals) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.028s
+
+OK
