@@ -34,7 +34,12 @@ IconRef uiIcon(UIIcon icon)
 										 "lock",           "external-link", "download",
 										 "bolt",           "hash",       "door-exit",
 										 "player-play",    "adjustments-horizontal", "loader-2",
-										 "alert-triangle", "search",   "upload",     "heart"};
+										 "alert-triangle", "search",   "upload",     "heart",
+										 "dice-5",         "restore",    "chevron-right",
+										 "chevron-down",   "mountain",   "diamond",
+										 "layout-grid",    "list-details", "list-check",
+										 "swords",         "coins",      "eye",
+										 "users-group"};
 	static_assert(names.size() == static_cast<std::size_t>(UIIcon::Count));
 	const char *name = names.at(static_cast<std::size_t>(icon));
 	if (auto asset = assets[name].lock())
@@ -154,6 +159,7 @@ Element actionButton(const MenuAction &action, bool large)
 	options.primary = action.primary;
 	options.shortcut = action.shortcut;
 	options.enabled = action.enabled;
+	options.icon = action.icon;
 	if (large)
 	{
 		options.minHeight = std::max(48.0, options.minHeight);
@@ -235,6 +241,7 @@ Element actions(std::vector<MenuAction> items, const Presentation &p)
 			options.primary = item.primary;
 			options.shortcut = item.shortcut;
 			options.enabled = item.enabled;
+			options.icon = item.icon;
 			buttons.push_back(constrained({p.pt(90), 0, Constraints::Unbounded, Constraints::Unbounded},
 										  padding(Insets::symmetric(p.pt(10), 0), button(item.key, item.label, item.action, options))));
 		}

@@ -267,8 +267,8 @@ class Toggle : public Node
 class Disclosure : public Node
 {
   public:
-	Disclosure(std::string key, std::string label, bool enabled, std::string glyph)
-		: label(std::move(label)), enabledValue(enabled), glyph(std::move(glyph))
+	Disclosure(std::string key, std::string label, bool enabled, std::string glyph, IconRef icon = {})
+		: label(std::move(label)), enabledValue(enabled), glyph(std::move(glyph)), icon(std::move(icon))
 	{
 		this->key = std::move(key);
 	}
@@ -277,9 +277,10 @@ class Disclosure : public Node
 	bool enabled() const override { return enabledValue; }
 	Size measure(const LayoutContext &ctx, Constraints c) override
 	{
-		const int natural = ctx.text.width(FontRole::Body, label) + 3 * ctx.metrics.padding;
+		const int extra = iconExtra(ctx.presentation);
+		const int natural = ctx.text.width(FontRole::Body, label) + extra + 3 * ctx.metrics.padding;
 		const int width = c.boundedW() ? c.maxW : natural;
-		const auto block = layoutText(ctx.text, FontRole::Body, label, std::max(1, width - 3 * ctx.metrics.padding + ctx.metrics.halfGap), ctx.metrics.lineGap);
+		const auto block = layoutText(ctx.text, FontRole::Body, label, std::max(1, width - extra - 3 * ctx.metrics.padding + ctx.metrics.halfGap), ctx.metrics.lineGap);
 		return c.clamp({width, std::max(ctx.metrics.control, block.height + ctx.metrics.gap)});
 	}
 	void paint(Frame &frame) override
@@ -291,24 +292,40 @@ class Disclosure : public Node
 			frame.canvas.fillRounded(bounds, mt.radius, p.hover.applyAlpha(50));
 		frame.canvas.strokeRect(bounds, p.line);
 		const int slot = mt.padding + mt.gap;
-		const Rect textRect{bounds.x + mt.gap, bounds.y, std::max(1, bounds.w - slot - mt.gap), bounds.h};
+		const int extra = iconExtra(frame.layout.presentation);
+		const GAGCore::Color ink = inkFor(frame, enabledValue, false);
+		if (extra)
+		{
+			const int side = std::min(frame.layout.presentation.pt(iconSize), bounds.h);
+			frame.canvas.drawIcon({bounds.x + mt.gap, bounds.y + (bounds.h - side) / 2, side, side}, *icon, ink);
+		}
+		const Rect textRect{bounds.x + mt.gap + extra, bounds.y, std::max(1, bounds.w - slot - mt.gap - extra), bounds.h};
 		const auto block = layoutText(frame.canvas.measurer(), FontRole::Body, label, textRect.w, mt.lineGap);
-		drawLines(frame, textRect, FontRole::Body, block.lines, TextAlign::Left, inkFor(frame, enabledValue, false), mt.lineGap);
+		drawLines(frame, textRect, FontRole::Body, block.lines, TextAlign::Left, ink, mt.lineGap);
 		const int gw = frame.canvas.measurer().width(FontRole::Support, glyph);
 		frame.canvas.text({bounds.right() - mt.gap - gw, textTop(bounds, frame.canvas.measurer().lineHeight(FontRole::Support))}, FontRole::Support, glyph, p.muted);
 	}
 
   protected:
+	static constexpr double iconSize = 20;
+	// Width the leading icon and its gap take from the label.
+	int iconExtra(const Presentation &p) const
+	{
+		return icon && icon->available() ? p.pt(iconSize) + p.pt(6) : 0;
+	}
+
 	std::string label;
 	bool enabledValue;
 	std::string glyph;
+	IconRef icon;
 };
 
 class Choice : public Disclosure
 {
   public:
 	Choice(std::string key, std::vector<std::string> options, int selected, std::function<void(int)> change, ChoiceOptions extra)
-		: Disclosure(key, extra.compactLabel.empty() ? (selected >= 0 && selected < int(options.size()) ? options[selected] : std::string()) : extra.compactLabel, extra.controlEnabled, "v"),
+		: Disclosure(key, extra.compactLabel.empty() ? (selected >= 0 && selected < int(options.size()) ? options[selected] : std::string()) : extra.compactLabel, extra.controlEnabled, "v",
+					 extra.compactLabel.empty() && selected >= 0 && selected < int(extra.icons.size()) ? extra.icons[selected] : IconRef{}),
 		  options(std::move(options)), selected(selected), change(std::move(change)), extra(std::move(extra))
 	{
 	}
@@ -319,6 +336,7 @@ class Choice : public Disclosure
 		spec.anchor = bounds;
 		spec.options = options;
 		spec.enabled = extra.enabled;
+		spec.icons = extra.icons;
 		spec.selected = std::max(0, selected);
 		spec.help = extra.help;
 		auto callback = change;
@@ -1742,7 +1760,7 @@ Element chooser(const std::string &key, const std::string &value, std::function<
 {
 	return std::make_shared<Chooser>(key, value, std::move(open), enabled);
 }
-Element segments(const std::string &key, const std::vector<std::string> &options, int selected, std::function<void(int)> change, std::vector<bool> enabled)
+Element segments(const std::string &key, const std::vector<std::string> &options, int selected, std::function<void(int)> change, std::vector<bool> enabled, std::vector<IconRef> icons)
 {
 	std::vector<Element> parts;
 	for (std::size_t i = 0; i < options.size(); ++i)
@@ -1750,6 +1768,8 @@ Element segments(const std::string &key, const std::vector<std::string> &options
 		ButtonOptions b;
 		b.selected = int(i) == selected;
 		b.enabled = enabled.empty() || enabled[i];
+		if (i < icons.size())
+			b.icon = icons[i];
 		parts.push_back(expanded(button(key + "/" + std::to_string(i), options[i], [change, i] { if (change) change(int(i)); }, b)));
 	}
 	return row(std::move(parts), {-1, CrossAlign::Stretch});
