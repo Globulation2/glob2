@@ -6,6 +6,14 @@ Random each match
 Playing: %0
 [music set failed]
 Could not load this music set.
+[settings Edge scrolling]
+Edge scrolling
+[settings Edge scrolling in fullscreen]
+Edge scrolling in fullscreen
+[settings Edge scrolling in windowed mode]
+Edge scrolling in windowed mode
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Move the game and editor maps when the mouse reaches the window edge.
 [%0 has left the game]
 %0 has quit the game.
 [start recording]

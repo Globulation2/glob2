@@ -33,6 +33,13 @@ BuildRequires:  libXext-devel
 BuildRequires:  libXcursor-devel
 BuildRequires:  libXi-devel
 BuildRequires:  libXrandr-devel
+BuildRequires:  libXScrnSaver-devel
+BuildRequires:  libXtst-devel
+BuildRequires:  wayland-devel
+BuildRequires:  libxkbcommon-devel
+BuildRequires:  libpng-devel
+BuildRequires:  libpng-static
+BuildRequires:  git
 BuildRequires:  alsa-lib-devel
 BuildRequires:  pulseaudio-libs-devel
 BuildRequires:  libvorbis-devel
@@ -41,6 +48,7 @@ BuildRequires:  speex-devel
 BuildRequires:  boost-devel
 BuildRequires:  openssl-devel
 BuildRequires:  zlib-devel
+BuildRequires:  zlib-ng-compat-static
 BuildRequires:  fribidi-devel
 BuildRequires:  pcre-devel
 BuildRequires:  mesa-libGL-devel

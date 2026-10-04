@@ -139,8 +139,10 @@ TEST_SUITE("GameplayRecording")
 		REQUIRE(recorder.status().state == State::Complete);
 		const auto raw = path.string() + ".pcm";
 		Process decode;
+		// A slow encoder startup can leave a timestamp gap before the first AAC
+		// packet. Decode against the video's zero origin, retaining that silence.
 		decode.launch({encoder, "-v", "error", "-nostdin", "-n", "-i", path.string(), "-map",
-					   "0:a:0", "-f", "s16le", "-ar", "44100", "-ac", "2", raw},
+					   "0:a:0", "-af", "aresample=first_pts=0", "-f", "s16le", "-ar", "44100", "-ac", "2", raw},
 					  path.string() + ".decode.log", false);
 		REQUIRE(decode.finish() == 0);
 		const auto pcm = read(raw);

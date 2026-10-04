@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Unit tests for test/run_tests.py: listing, selection, sharding and JUnit merging."""
 import argparse
+import io
 from types import SimpleNamespace
 import os
 import stat
@@ -20,6 +21,14 @@ import windows_crash_diagnostics  # noqa: E402
 
 
 class WindowsCrashDiagnosticsTests(unittest.TestCase):
+    def test_non_utf8_console_preserves_unencodable_diagnostics(self):
+        output = io.BytesIO()
+        console = io.TextIOWrapper(output, encoding='cp1252')
+        windows_crash_diagnostics.print_diagnostic('stack: \ufffd \u754c', console)
+        console.flush()
+        self.assertEqual(output.getvalue(), b'stack: \\ufffd \\u754c\n')
+
+
     def test_only_native_crashes_are_replayed(self):
         report = ET.fromstring('''<testsuites><testcase classname="LAN" name="crashed">
             <error>[run_tests] exit status 3221225477</error></testcase>

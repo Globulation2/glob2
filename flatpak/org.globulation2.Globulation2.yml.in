@@ -57,7 +57,7 @@ modules:
   - name: setuptools-build-tool
     buildsystem: simple
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --ignore-installed --prefix=/app .
     cleanup:
       - /lib/python*/site-packages/setuptools*
       - /lib/python*/site-packages/_distutils_hack
@@ -73,7 +73,7 @@ modules:
     # Pillow needs only this header-only project's Python build helpers/headers.
     # Installing the source directly avoids scikit-build-core in the sandbox.
     build-commands:
-      - site="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages"; mkdir -p "$site"; cp -a pybind11 "$site/"; cp -a include "$site/pybind11/"
+      - site="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages"; mkdir -p "$site"; cp -a pybind11 "$site/"; rm -rf "$site/pybind11/include"; cp -a include "$site/pybind11/include"; printf '__version__ = "3.0.2"\nversion_info = (3, 0, 2)\n' > "$site/pybind11/_version.py"
     cleanup:
       - /lib/python*/site-packages/pybind11*
       - /lib/python*/site-packages/_distutils_hack
@@ -87,7 +87,7 @@ modules:
   - name: pillow-build-tool
     buildsystem: simple
     build-commands:
-      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --prefix=/app .
+      - export PYTHONPATH="/app/lib/python$(python3 -c 'import sys; print(str(sys.version_info.major)+"."+str(sys.version_info.minor))')/site-packages${PYTHONPATH:+:$PYTHONPATH}"; python3 -m pip install --no-index --no-build-isolation --no-deps --ignore-installed --prefix=/app .
     cleanup:
       - /lib/python*/site-packages/PIL
       - /lib/python*/site-packages/pillow*

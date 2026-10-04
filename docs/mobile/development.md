@@ -810,6 +810,8 @@ when it is no longer needed; anyone with the link can request access while it is
 enabled. Install TestFlight on the iPhone, open the link and accept the invitation.
 Play a real device session before treating the build as release ready. Keep the
 App Store release step separate.
+Prepare the public product-page copy, screenshots, privacy answers and submission
+checks with the [App Store page guide](app-store.md).
 
 ### Signing fingerprints for invite links
 

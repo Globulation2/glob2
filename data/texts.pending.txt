@@ -2,3 +2,7 @@
 [settings Recording uses the full rendered resolution at 30 FPS.]
 [Upgrades]
 [Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+[settings Edge scrolling]
+[settings Edge scrolling in fullscreen]
+[settings Edge scrolling in windowed mode]
+[settings Move the game and editor maps when the mouse reaches the window edge.]

@@ -56,6 +56,13 @@ public:
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+	// Local camera controls, independent of saves and simulation.
+	bool edgeScrollFullscreen = true;
+	bool edgeScrollWindowed = false;
+	bool edgeScrollingEnabled(bool fullscreen) const
+	{
+		return fullscreen ? edgeScrollFullscreen : edgeScrollWindowed;
+	}
 	bool hiveMindEnabled;
 	bool hiveMindSupervision;
 	bool highResolutionArtwork;

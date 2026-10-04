@@ -98,7 +98,9 @@ with `version`.
   same name. While its seat is reconnecting or not yet connected, the host sends `start`
   again with the seat's ticket, and the guest fast-forwards from tick 0.
 - **Host leaving.** When the host's game ends (or the host quits), the relay finishes
-  (final bundle) and every connection gets `closed` with `host-left`. Each guest's
+  (final bundle) and every connection gets `closed` with `host-left`. Shutdown drains
+  both the LAN outbox and pending transport writes, then closes the drained send side
+  before releasing the socket so Windows preserves the final notice. Each guest's
   transport then delivers `Reject(MatchOver)`, which ends its session cleanly, and the
   room shows "The host left the game."
 - **Record.** The host writes the match record to `<user dir>/replays/lan-last.g2mr`;
