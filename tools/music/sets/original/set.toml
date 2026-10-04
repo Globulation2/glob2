@@ -1,0 +1,22 @@
+title = "Original"
+method = "reference"
+license = "GPL-3.0-or-later"
+credits = ["The original Globulation 2 in-game soundtrack, distributed with the game."]
+shipped = false
+description = """
+The soundtrack Globulation 2 has always shipped (data/zik/original, 53.475 s per
+mood). It is not built by the pipeline: there is no recipe, and `install` never
+touches it. It is kept as the reference for feel and as a calibration point for the
+QA thresholds, so it carries the waivers below to document, measure by measure, where
+it predates today's rules. Check it in place with
+`python3 -m glob2music check ../../data/zik/original` (run from tools/music).
+"""
+
+[qa.waivers]
+"loudness.calm.target" = "Mastered long before the pipeline existed: about -14 LUFS against today's -18 LUFS calm target."
+"loudness.building.target" = "Mastered long before the pipeline existed: about -13 LUFS against today's -17 LUFS building target."
+"loudness.combat.target" = "Mastered long before the pipeline existed: about -22 LUFS against today's -16 LUFS combat target."
+"loudness.ladder" = "The original inverts the loudness ladder: its drum-led combat file is the quietest of the three."
+"seam.calm" = "The original calm file clicks at its wrap (a step of 0.27 of full scale); kept unchanged as the historical reference."
+"seam.building" = "The original building file clicks at its wrap (a step of 0.12 of full scale); kept unchanged as the historical reference."
+"alignment" = "The original moods were composed as separate pieces: combat is a drum track without harmony, 13 ms off building's onsets."

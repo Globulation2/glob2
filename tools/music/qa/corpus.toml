@@ -1,0 +1,106 @@
+# Calibration corpus for glob2music.qa (python3 -m glob2music calibrate).
+#
+# Every entry is reproducible from the repository: approved sets are the files the
+# game ships (data/zik/), and rejected sets are read from a pinned commit of the
+# parked draft PR that held the first generated soundtracks (extracted into the
+# git-ignored tools/music/build/calibration/). Run calibrate before changing any
+# threshold in glob2music/spec.py: every "good" set must keep passing and every
+# "bad" set must keep failing the check that explains its rejection.
+#
+# verdict: "good" = approved by the maintainer's listening, "bad" = rejected by ear,
+# "reference" = the original soundtrack. `why` records the listening verdict.
+# A set with a sets/<id>/set.toml is checked with that manifest's spec and waivers
+# (the original's waivers live in sets/original/set.toml), exactly as `check <id>`.
+#
+# Other rejected candidates (the unfiltered synth sets, the ACE-Step folk prompts,
+# Toy Soldiers and an earlier, low-contrast adaptation of Curious Critters) were
+# never committed, so they cannot be re-measured here; their measurements are
+# recorded in docs/assets/music-pipeline.md and in the QA module docstrings.
+
+[[set]]
+id = "original"
+verdict = "reference"
+path = "data/zik/original"
+why = "The shipped 2000s soundtrack; the benchmark for feel."
+
+[[set]]
+id = "woodland"
+verdict = "good"
+path = "data/zik/woodland"
+why = "Approved (ships as woodland)."
+
+[[set]]
+id = "apple-cider"
+verdict = "good"
+path = "data/zik/apple-cider"
+why = "Approved (ships as apple-cider)."
+
+[[set]]
+id = "moss-lanterns"
+verdict = "good"
+path = "data/zik/moss-lanterns"
+why = "Approved (ships as moss-lanterns, rebuilt with the dropout fixes)."
+
+[[set]]
+id = "thistle-waltz"
+verdict = "good"
+path = "data/zik/thistle-waltz"
+why = "Approved (ships as thistle-waltz, rebuilt with the dropout fixes)."
+
+[[set]]
+id = "glass-garden"
+verdict = "good"
+path = "data/zik/glass-garden"
+why = "Approved (ships as glass-garden)."
+
+[[set]]
+id = "orchestral-dawn"
+verdict = "good"
+path = "data/zik/orchestral-dawn"
+why = "Approved (ACE-Step 1.5 + Demucs, ships as orchestral-dawn)."
+
+[[set]]
+id = "codex-seedling"
+verdict = "bad"
+git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
+git_path = "data/zik/seedling"
+why = "Rejected: about 20 s of GM-rendered material repeated."
+
+[[set]]
+id = "codex-bramble-dance"
+verdict = "bad"
+git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
+git_path = "data/zik/bramble-dance"
+why = "Rejected: about 20 s of GM-rendered material repeated."
+
+[[set]]
+id = "codex-velvet-orbit"
+verdict = "bad"
+git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
+git_path = "data/zik/velvet-orbit"
+why = "Rejected: about 20 s of GM-rendered material repeated."
+
+[[set]]
+id = "codex-tidepool"
+verdict = "bad"
+git_ref = "270ccc38f21702757dd18e770a51a63173774f03"
+git_path = "data/zik/tidepool"
+why = "Rejected: about 20 s of GM-rendered material repeated."
+
+[[set]]
+id = "fennel-mist"
+verdict = "good"
+path = "data/zik/fennel-mist"
+why = "Approved: great, the right feel."
+
+[[set]]
+id = "bramble-jig"
+verdict = "good"
+path = "data/zik/bramble-jig"
+why = "Approved: great, the right feel."
+
+[[set]]
+id = "curious-critters"
+verdict = "good"
+path = "data/zik/curious-critters"
+why = "Approved (ships): reworked for more mood contrast after an earlier adaptation was judged too uniform."

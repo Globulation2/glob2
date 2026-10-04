@@ -89,6 +89,7 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(self.owner['data/zik/intro.ogg'], 'menu-music')
         self.assertEqual(self.owner['data/zik/menu.ogg'], 'menu-music')
         self.assertEqual(self.owner['data/zik/original/a1.ogg'], 'music')
+        self.assertEqual(self.owner['data/zik/woodland/a1.ogg'], 'music-sets')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 

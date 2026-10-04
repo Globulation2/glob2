@@ -1,0 +1,20 @@
+# Soundtrack set "thistle-waltz": see composition.py for the score and its form.
+# Samples are pinned file by file in samples.lock; level references are frozen in levels.toml.
+title = "Thistle Waltz"
+method = "symbolic-acoustic"
+license = "GPL-3.0-or-later"
+ai_generated = false
+shipped = true
+# 0 keeps the approved humanisation (seeded from the set id); any other value is a new performance.
+seed = 0
+description = """An original folk waltz in D major (3/4, 126 bpm, 48 bars) for alto and tenor recorder, ocarina, kalimba, folk harp and hand drums with strings. An 8+8 tune, a B minor middle on ocarina, the tune an octave up at the climax, and a quiet coda through bVII and bVI. Calm is lead, rolled harp and kalimba; building adds a pizzicato waltz rhythm, marimba and frame drum; combat adds spiccato strings, horn, timpani and darbuka."""
+credits = [
+    "Composed for Globulation 2 as a score written in code (composition.py), performed and mixed by the glob2music pipeline.",
+    "Samples: VSCO 2 Community Edition and the Versilian Community Sample Library, Versilian Studios (Sam Gossner), CC0 1.0.",
+    "Rendered with sfizz 1.2.3 (BSD-2-Clause).",
+]
+
+# The bus chain in glob2music.score.mix already high-passes at 32 Hz; a second high-pass
+# in master.finish would only thin the low end the maintainer approved.
+[master]
+highpass_hz = 0.0

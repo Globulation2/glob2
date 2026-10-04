@@ -43,7 +43,13 @@ Stéphane Magnenat <stephane at magnenat dot net> (GUI, new water)
 *
 Music
 
-Jacques-Paul Grivaz <>
+Jacques-Paul Grivaz <> (original soundtrack)
+JC Sounds ("Woodland Music - Vol 1", CC BY 4.0, adapted as Woodland)
+Zane Little Music ("Apple Cider", CC0, adapted as Apple Cider)
+Matthew Pablo ("Curious Critters", CC BY 3.0, adapted as Curious Critters)
+Versilian Studios (VSCO 2 CE and VCSL samples, CC0)
+Moss Lanterns, Thistle Waltz, Bramble Jig, Fennel Mist and Glass Garden: scores built by the project's music pipeline
+Orchestral Dawn: AI-generated with ACE-Step 1.5, arranged by the project's music pipeline
 
 
 *

@@ -1,0 +1,13 @@
+Globulation 2 soundtrack set "fennel-mist": Fennel Mist
+Files: a1.ogg (calm), a2.ogg (building), a3.ogg (combat)
+
+Licence: GPL-3.0-or-later (https://www.gnu.org/licenses/gpl-3.0.html)
+
+Credits:
+  Composed for Globulation 2 as a score written in code (composition.py), performed and mixed by the glob2music pipeline.
+  Samples: VSCO 2 Community Edition and the Versilian Community Sample Library, Versilian Studios (Sam Gossner), CC0 1.0.
+  Rendered with sfizz 1.2.3 (BSD-2-Clause).
+
+An original slow pastoral score in E Dorian (4/4, 72 bpm, 24 bars): bassoon and horn under a flute descant, with harp and strings. Calm is the low lead, descant, harp and quiet pads; building adds semiquaver harp, pizzicato and soft hand drums; combat hands the tune to horn over a semiquaver spiccato engine, tremolo violas, tuba and a drum line.
+
+Built by tools/music/sets/fennel-mist in the Globulation 2 source tree.

@@ -1,0 +1,12 @@
+# Source separation for adapted sets (glob2music/adapt/demucs.py): Demucs htdemucs and
+# htdemucs_6s, as used to build apple-cider and curious-critters.
+#   uv pip install --python tools/music/.venv/bin/python -r tools/music/requirements-separation.txt
+# Large (torch). CPU works; a CUDA GPU separates about 20x faster
+# (GLOB2MUSIC_DEMUCS_DEVICE=cpu|cuda|cuda:N selects the device).
+# On first use Demucs 4.1.0 downloads its weights from the Hugging Face repositories
+# adefossez/HTDemucs and adefossez/HTDemucs-6s (pulled in via huggingface_hub);
+# separated stems are cached under tools/music/build/<set>/demucs/.
+-r requirements.txt
+demucs==4.1.0
+torch==2.14.1
+torchaudio==2.11.0

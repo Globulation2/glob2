@@ -366,9 +366,10 @@ function cjkInterface() { return /^(zh|ja|ko)\b/i.test(interfaceLanguage()); }
 // - menu-music, then font-cjk: the full font, so Chinese, Japanese and Korean
 //   player names and chat get their glyphs, then the other languages' full
 //   translations (English stands in for a language chosen before they arrive).
-// - music and hd: in-game music and high-resolution artwork. The game reads them
-//   again when a match starts, so a first match on a new device may still use the
-//   original artwork.
+// - music, music-sets and hd: the original in-game music, the other soundtrack sets
+//   and high-resolution artwork. The game reads them again when a match starts, so
+//   a first match on a new device may still use the original artwork, and offers
+//   only the original soundtrack until music-sets arrives.
 // Optional packages pause during matches (to leave the connection to the game) and
 // are skipped in data-saver mode; the artwork only when this device renders with
 // WebGL2 and the setting is on. Packages the game needs are retried until they arrive.
@@ -379,7 +380,7 @@ function loadStagedAssets(gpu) {
   const artworkOff = savedPreference('highResolutionArtwork') === '0';
   const required = new Set(['font-cjk', 'translations']);
   const wanted = [];
-  for (const name of ['menu-music', 'font-cjk', 'translations', 'music', 'hd']) {
+  for (const name of ['menu-music', 'font-cjk', 'translations', 'music', 'music-sets', 'hd']) {
     if (!assets.manifest.packages.some(entry => entry.name === name) || assets.states[name] === 'ready') continue;
     if (!required.has(name) && (saveData || (name === 'hd' && (!gpu || artworkOff)))) assets.states[name] = 'skipped';
     else wanted.push(name);

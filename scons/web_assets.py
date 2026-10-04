@@ -19,9 +19,9 @@ the game reads at run time into content-addressed packages under `assets/`, and
 - `translations`: the full catalogs of every language but English. Core has
   each language's name and code only; a startup package for an interface in
   another language, otherwise the game reloads its string table when it arrives.
-- `menu-music`, `music` (in-game) and `hd` (high-resolution artwork): the game
-  tolerates them being absent and loads them when they arrive or when a match
-  starts.
+- `menu-music`, `music` (the original in-game set), `music-sets` (the other
+  soundtrack sets) and `hd` (high-resolution artwork): the game tolerates them
+  being absent and loads them when they arrive or when a match starts.
 
 The build packages the verified runtime export (tools/package_assets.py, which
 re-encodes artwork and drops build scripts) when it has one, or the repository's
@@ -62,6 +62,10 @@ OPTIONAL = (
     ('menu-music', ('data/zik/intro.ogg', 'data/zik/menu.ogg')),
     ('translations', ('data/texts.',)),
     ('music', ('data/zik/original/',)),
+    # Every other soundtrack set (data/zik/<set>/, built by tools/music). Matched
+    # after menu-music and music, so this prefix only collects the extra sets.
+    # Until it arrives the game lists only the original set.
+    ('music-sets', ('data/zik/',)),
     ('hd', ('data/highres/',)),
 )
 PACKAGES = ('core', 'game') + tuple(name for name, _ in OPTIONAL)
@@ -303,7 +307,8 @@ def category(path, game=()):
     if path in game:
         return 'game sprites'
     for prefix, label in (('data/highres/', 'high-resolution art'), ('data/zik/original/', 'in-game music'),
-                          ('data/zik/', 'menu music'), ('data/fonts/', 'font'), ('data/gfx/', 'menu sprites'),
+                          ('data/zik/intro.ogg', 'menu music'), ('data/zik/menu.ogg', 'menu music'),
+                          ('data/zik/', 'other soundtrack sets'), ('data/fonts/', 'font'), ('data/gfx/', 'menu sprites'),
                           ('data/gui/', 'interface'), ('data/menu/', 'interface'), ('data/texts.', 'translations'),
                           ('maps/', 'maps'), ('campaigns/', 'campaigns'), ('scripts/', 'scripts')):
         if path.startswith(prefix):
