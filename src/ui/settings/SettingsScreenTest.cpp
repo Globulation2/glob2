@@ -8,6 +8,7 @@
 #include <iterator>
 #include "GlobalContainer.h"
 #include "SettingsScreen.h"
+#include "SoundMixer.h"
 #include "FrontendTheme.h"
 #include "GameGUIKeyActions.h"
 #include "KeyboardManager.h"
@@ -118,6 +119,15 @@ static void run(int width,int height,bool gl,bool expanded)
         REQUIRE((s.defaultFlagRadius[0]==3 && s.defaultFlagRadius[1]==4));
         screen.selectCategory(SettingsScreen::Category::Audio);
         REQUIRE(!screen.row("audio.music").enabled);
+        CHECK(screen.row("audio.set").label == "Music set");
+        CHECK(screen.row("audio.set").value == "Random each match");
+        REQUIRE(screen.changeSetting("audio.set", 1));
+        screen.finishInteraction();
+        REQUIRE(!s.musicSet.empty());
+        REQUIRE(s.musicSet == globalContainer->mix->getMusicSet());
+        REQUIRE(screen.changeSetting("audio.set", 0));
+        screen.finishInteraction();
+        REQUIRE(s.musicSet.empty());
         screen.click("audio.mute");REQUIRE(!s.mute);
         screen.key(SDLK_TAB);screen.key(SDLK_RIGHT);screen.onTimer(SDL_GetTicks()+400);
         REQUIRE(screen.changeSetting("audio.music",123));

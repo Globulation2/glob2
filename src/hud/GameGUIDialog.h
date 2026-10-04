@@ -176,6 +176,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
 	// Harness entry points mirroring the controls.
 	void setMute(bool value);
 	void setGameSpeed(int speed);
+	bool setMusicSet(const std::string &name);
 
   protected:
 	void onEscape() override { finish(OK); }
@@ -184,6 +185,7 @@ class InGameOptionScreen : public Glob2UI::InGameDialog
   private:
 	GameGUI *gameGUI;
 	void applyVolume();
+	std::string musicSetStatus;
 };
 
 //! The chat composer shown while typing a message in game: Return sends

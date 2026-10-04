@@ -1,3 +1,11 @@
+[music set]
+Music set
+[random music set]
+Random each match
+[playing music set %0]
+Playing: %0
+[music set failed]
+Could not load this music set.
 [settings Edge scrolling]
 Edge scrolling
 [settings Edge scrolling in fullscreen]
@@ -5276,3 +5284,7 @@ enemy warriors
 strength
 [stat view by place]
 By place
+[settings Music set]
+Music set
+[settings Random each match]
+Choose Random to select a soundtrack at each match start.
