@@ -506,9 +506,12 @@ def main():
     else:
         env.ParseConfig("pkg-config sdl3 --cflags --libs")
     if sdl_prefix and 'install' in COMMAND_LINE_TARGETS:
-        # sdl3.pc adds -Wl,-rpath,${libdir}; installed copies use only
-        # $ORIGIN/../lib/glob2, so drop the build prefix again.
+        # Depending on SCons' parser, sdl3.pc's -Wl,-rpath,${libdir}
+        # lands in RPATH or LINKFLAGS. Installed copies use only
+        # $ORIGIN/../lib/glob2, so remove the build prefix from both.
         env['RPATH'] = [path for path in env.get('RPATH', []) if str(path) != sdl_prefix + '/lib']
+        env['LINKFLAGS'] = [flag for flag in env.get('LINKFLAGS', [])
+                            if str(flag) != '-Wl,-rpath,' + sdl_prefix + '/lib']
     
     
     env["TARFILE"] = env.Dir("#").abspath + "/glob2-" + env["VERSION"] + ".tar.gz"
