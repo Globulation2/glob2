@@ -410,7 +410,7 @@ struct LanMatch
 		// times out, rather than reporting only that its predicate stayed false.
 		MESSAGE("LAN host state: " << hostSide().state().toJson().dump());
 		for (const auto& player : players)
-			if (const auto* guest = player->room->guestSide())
+			if (const auto* guest = player->room ? player->room->guestSide() : nullptr)
 				MESSAGE(player->name << ": phase=" << static_cast<int>(guest->phase())
 				        << " reason=" << guest->closeReason() << " detail=" << guest->closeDetail()
 				        << " map=" << guest->downloadPercent());
@@ -532,6 +532,17 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
+	GLOB2_TEST_CASE("timeout diagnostics tolerate a destroyed guest room", "[network]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		LanMatch match;
+		match.directory = glob2test::artifactDir() / "timeout-diagnostics";
+		fs::create_directories(match.directory);
+		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(0), match.directory), 101));
+		match.players.push_back(std::make_unique<LanPlayer>("Crashed guest", nullptr, 102));
+		CHECK_FALSE(match.runUntil(0, [] { return false; }));
+	}
+
 	// The case name becomes an artifact directory; leave room for the 64-byte
 	// map hash and cache suffix under Windows' legacy file-path limit.
 	GLOB2_TEST_CASE("LAN WSS drop, restart and host departure",

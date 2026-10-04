@@ -7,6 +7,11 @@
 #include <filesystem>
 #include <stdexcept>
 #include <utility>
+#ifdef _WIN32
+#include <fcntl.h>
+#include <io.h>
+#include <sys/stat.h>
+#endif
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -59,7 +64,17 @@ class NativeFile final : public RecordingFile
 	NativeFile(const std::string &path, bool write)
 	{
 #ifdef _WIN32
-		file = _wfopen(std::filesystem::u8path(path).c_str(), write ? (path.ends_with(".session.json") ? L"w+bx" : L"w+b") : L"rb");
+		// The legacy MSVCRT used by MinGW does not accept fopen's C11 x mode.
+		// Reserve the index atomically before converting its descriptor to a stream.
+		if (write && path.ends_with(".session.json"))
+		{
+			int descriptor = _wopen(std::filesystem::u8path(path).c_str(),
+			                       _O_CREAT | _O_EXCL | _O_RDWR | _O_BINARY, _S_IREAD | _S_IWRITE);
+			file = descriptor < 0 ? nullptr : _fdopen(descriptor, "w+b");
+			if (descriptor >= 0 && !file) _close(descriptor);
+		}
+		else
+			file = _wfopen(std::filesystem::u8path(path).c_str(), write ? L"w+b" : L"rb");
 #else
 		file = std::fopen(path.c_str(), write ? (path.ends_with(".session.json") ? "w+bx" : "w+b") : "rb");
 #endif
