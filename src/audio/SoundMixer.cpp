@@ -9,8 +9,11 @@
 using namespace GAGCore;
 #include <iostream>
 #include <assert.h>
-#include <array>
 #include <algorithm>
+#include <array>
+#include <cctype>
+#include <cstdint>
+#include <cstring>
 
 #ifdef HAVE_CONFIG_H
 	#include <glob2/BuildConfig.h>
@@ -64,6 +67,18 @@ static void initInterpolationTable(void)
 
 //! Ramp value for the i-th sample of a callback that starts `fadePos` samples
 //! into the fade.
+//! Open an Ogg Vorbis file from a FILE* obtained through FileManager. On MSVC the
+//! FILE* must not cross into libvorbisfile's CRT (vcpkg builds can link another
+//! one), so the stdio callbacks are compiled here instead of inside ov_open.
+static int openOggFile(FILE *fp, OggVorbis_File *oggFile)
+{
+#ifdef _MSC_VER
+	return ov_open_callbacks(fp, oggFile, NULL, 0, OV_CALLBACKS_DEFAULT);
+#else
+	return ov_open(fp, oggFile, NULL, 0);
+#endif
+}
+
 static inline int fadeValue(unsigned fadePos, unsigned i)
 {
 	unsigned p = fadePos + i;
@@ -383,11 +398,7 @@ int SoundMixer::loadTrack(const std::string name, int index)
 	// `tracks` via release(). If ov_open fails, the unique_ptr's destructor frees
 	// it on return — fixing the leak that existed when this was raw `new`.
 	auto oggFile = std::make_unique<OggVorbis_File>();
-#ifdef _MSC_VER
-	if (ov_open_callbacks(fp, oggFile.get(), NULL, 0, OV_CALLBACKS_DEFAULT) < 0)
-#else
-	if (ov_open(fp, oggFile.get(), NULL, 0) < 0)
-#endif
+	if (openOggFile(fp, oggFile.get()) < 0)
 	{
 		std::cerr << "SoundMixer : File " << name << " does not appear to be an Ogg bitstream." << std::endl;
 		fclose(fp);
@@ -477,6 +488,156 @@ void SoundMixer::setNextTrack(unsigned i, bool earlyChange)
 int SoundMixer::loadTrack(const std::string name, MusicTrack track)
 {
 	return loadTrack(name, static_cast<int>(track));
+}
+
+std::vector<std::string> SoundMixer::getMusicSets()
+{
+	auto *files = Toolkit::getFileManager();
+	files->initDirectoryListing("data/zik/", "", true);
+	std::vector<std::string> result;
+	std::string name;
+	while (!(name = files->getNextDirectoryEntry()).empty())
+	{
+		if (name == "." || name == ".." || name.find_first_of("/\\\r\n=") != std::string::npos)
+			continue;
+		const std::string directory = "data/zik/" + name;
+		if (!files->isDir(directory))
+			continue;
+		bool complete = true;
+		for (int i = 1; i <= 3; ++i)
+		{
+			FILE *file = files->openFP(directory + "/a" + std::to_string(i) + ".ogg");
+			if (file)
+				fclose(file);
+			else
+				complete = false;
+		}
+		if (complete)
+			result.push_back(name);
+	}
+	std::sort(result.begin(), result.end());
+	result.erase(std::unique(result.begin(), result.end()), result.end());
+	return result;
+}
+
+std::string SoundMixer::musicSetLabel(const std::string& name)
+{
+	std::string label = name;
+	bool capital = true;
+	for (char& c : label)
+	{
+		if (c == '-' || c == '_')
+			c = ' ';
+		else if (capital)
+			c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+		capital = (c == ' ');
+	}
+	return label;
+}
+
+namespace
+{
+	struct OggTrackCloser
+	{
+		void operator()(OggVorbis_File *track) const { ov_clear(track); delete track; }
+	};
+	using OggTrack = std::unique_ptr<OggVorbis_File, OggTrackCloser>;
+	using MusicSetTrio = std::array<OggTrack, 3>;
+
+	//! Open the three in-game tracks of `name`. They must all be 44100 Hz stereo,
+	//! one logical stream, and of equal length, so the mixer can cross over between
+	//! moods at the same position. On failure `trio` holds no usable set.
+	bool openMusicSet(const std::string& name, MusicSetTrio& trio)
+	{
+		ogg_int64_t frames = 0;
+		for (unsigned i = 0; i < trio.size(); ++i)
+		{
+			const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".ogg";
+			FILE *file = Toolkit::getFileManager()->openFP(path);
+			if (!file)
+				return false;
+			auto track = std::make_unique<OggVorbis_File>();
+			if (openOggFile(file, track.get()) < 0)
+			{
+				fclose(file);
+				std::cerr << "SoundMixer : music set " << name << " has an unreadable " << path << std::endl;
+				return false;
+			}
+			trio[i].reset(track.release());
+			const auto *info = ov_info(trio[i].get(), -1);
+			const auto length = ov_pcm_total(trio[i].get(), -1);
+			if (!info || info->rate != 44100 || info->channels != 2 || length <= 0 ||
+				(i > 0 && length != frames) || ov_streams(trio[i].get()) != 1)
+			{
+				std::cerr << "SoundMixer : music set " << name << " has an unusable " << path << std::endl;
+				return false;
+			}
+			frames = length;
+		}
+		return true;
+	}
+}
+
+bool SoundMixer::selectMusicSet(const std::string& preference)
+{
+	auto candidates = getMusicSets();
+	if (preference.empty())
+	{
+		// Discovery only checks that the files exist, so a random pick tries the
+		// sets in a random order until one opens. This is menu randomness (rand()),
+		// never the synchronized simulation generator.
+		for (size_t i = candidates.size(); i > 1; --i)
+			std::swap(candidates[i - 1], candidates[static_cast<size_t>(rand()) % i]);
+	}
+	else if (std::find(candidates.begin(), candidates.end(), preference) != candidates.end())
+		candidates.assign(1, preference);
+	else
+		return false;
+
+	MusicSetTrio replacement;
+	std::string name;
+	for (const auto& candidate : candidates)
+	{
+		if (candidate == activeMusicSet && tracks.size() >= static_cast<unsigned>(MusicTrack::Count))
+			return true;
+		MusicSetTrio opened;
+		if (openMusicSet(candidate, opened))
+		{
+			replacement = std::move(opened);
+			name = candidate;
+			break;
+		}
+	}
+	if (name.empty())
+		return false;
+
+	if (audioStream) SDL_LockAudioStream(audioStream);
+	const unsigned first = static_cast<unsigned>(MusicTrack::InGameDefault);
+	if (tracks.size() < static_cast<unsigned>(MusicTrack::Count))
+		tracks.resize(static_cast<unsigned>(MusicTrack::Count), nullptr);
+	for (unsigned i = 0; i < replacement.size(); ++i)
+	{
+		auto *old = tracks[first + i];
+		tracks[first + i] = replacement[i].release();
+		replacement[i].reset(old);
+	}
+	activeMusicSet = name;
+	if (actTrack >= static_cast<int>(first))
+	{
+		// Different sets need not share tempo or length. Start the same mood anew.
+		if (pendingTrack >= static_cast<int>(first))
+			actTrack = pendingTrack;
+		else if (mode == MODE_EARLY_CHANGE && nextTrack >= static_cast<int>(first))
+			actTrack = nextTrack;
+		nextTrack = actTrack;
+		if (mode != MODE_STOPPED)
+			mode = MODE_START;
+	}
+	fadePos = 0;
+	pendingTrack = -1;
+	if (audioStream) SDL_UnlockAudioStream(audioStream);
+	std::cerr << "selecting music dir " << name << std::endl;
+	return true;
 }
 
 void SoundMixer::setNextTrack(MusicTrack track, bool earlyChange)

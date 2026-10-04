@@ -27,17 +27,15 @@ void NewNicowar::update_farming(Runtime& runtime)
 	AddArea* mo_clearing=new AddArea(ClearingArea);
 	RemoveArea* mo_non_clearing=new RemoveArea(ClearingArea);
 	// With the farm-areas experiment, wheat near water is farmed with a farm
-	// area instead of forbidden spots: the farm keeps every tile's seed and
-	// clears wood growing into it. Wood keeps its forbidden spots.
-	MapInfo farm_info(runtime);
-	const bool farms = farm_info.farm_areas_enabled();
+	// area on the same protection pattern. Wood keeps its forbidden spots.
+	MapInfo mi(runtime);
+	const bool farms = mi.farm_areas_enabled();
 	AddArea* mo_farm=farms ? new AddArea(FarmArea) : nullptr;
 	RemoveArea* mo_non_farm=farms ? new RemoveArea(FarmArea) : nullptr;
 	AISharedRuntime::Gradients::GradientInfo gi_water;
 	gi_water.add_source(new Entities::Water);
 	Gradient& water_gradient=runtime.get_gradient_manager().get_gradient(gi_water);
 
-	MapInfo mi(runtime);
 	for(int x=0; x<mi.get_width(); ++x)
 	{
 		for(int y=0; y<mi.get_height(); ++y)
@@ -106,23 +104,8 @@ void NewNicowar::update_farming(Runtime& runtime)
 					}
 				}
 
-
-				const bool wheat_farm = farms && is_in_wheat_zone && mi.wants_farm(x, y);
-				if(farms)
-				{
-					if(wheat_farm && !mi.is_farm_area(x, y))
-						mo_farm->add_location(x, y);
-					else if(!wheat_farm && mi.is_farm_area(x, y))
-						mo_non_farm->add_location(x, y);
-					// The farm protects wheat, and forbidden paint inside it would
-					// stop the farm clearing wood: forbidden spots are for wood
-					// outside farms only.
-					if(is_wheat || wheat_farm)
-						farm_spot = false;
-				}
-
-				// A farm clears the wood inside it, so it needs no clearing area.
-				bool clear_wood = is_wood && !wheat_farm &&
+				// Preserve the existing wood-clearing rules.
+				bool clear_wood = is_wood &&
 					((is_in_wheat_zone && !is_in_wood_zone) || mi.is_resource(x-1, y, WHEAT) ||
 					 mi.is_resource(x+1, y, WHEAT) || mi.is_resource(x, y-1, WHEAT) ||
 					 mi.is_resource(x, y+1, WHEAT) || mi.is_resource(x-1, y-1, WHEAT) ||
@@ -157,6 +140,16 @@ void NewNicowar::update_farming(Runtime& runtime)
 				if(farm_spot && mi.is_sand(x,y))
 				{
 					farm_spot = false;
+				}
+
+				if(farms)
+				{
+					const bool wheat_farm = farm_spot && is_wheat && mi.can_paint_farm(x, y);
+					if(wheat_farm && !mi.is_farm_area(x, y))
+						mo_farm->add_location(x, y);
+					else if(!wheat_farm && mi.is_farm_area(x, y))
+						mo_non_farm->add_location(x, y);
+					if(is_wheat) farm_spot = false;
 				}
 
 				if(farm_spot && !mi.is_forbidden_area(x, y))

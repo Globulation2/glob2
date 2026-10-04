@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Стратегия ИИ
 [start recording]
@@ -3630,6 +3650,8 @@ OpenGL недоступен в этой сборке.
 Назад в онлайн
 [results back to room]
 Назад в комнату
+[results find another match]
+Найти ещё матч
 [results defeat]
 Поражение
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ OpenGL недоступен в этой сборке.
 Поиск карт или авторов
 [maps none found]
 Подходящих карт нет.
+[maps catalog empty]
+На этом сервере пока никто не поделился картами.
+[maps clear filters]
+Сбросить фильтры
 [maps any colonies]
 Любое число колоний
 [maps checking]

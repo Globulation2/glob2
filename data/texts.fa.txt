@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 راهبرد هوش مصنوعی
 [start recording]
@@ -3630,6 +3650,8 @@ Emoji
 بازگشت به آنلاین
 [results back to room]
 بازگشت به اتاق
+[results find another match]
+یافتن مسابقهٔ دیگر
 [results defeat]
 شکست
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Emoji
 جستجوی نقشه‌ها یا سازندگان
 [maps none found]
 نقشه‌ای پیدا نشد.
+[maps catalog empty]
+هنوز هیچ نقشه‌ای در این سرور به اشتراک گذاشته نشده است.
+[maps clear filters]
+پاک کردن فیلترها
 [maps any colonies]
 هر تعداد مستعمره
 [maps checking]

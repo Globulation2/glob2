@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Strategi AI
 [start recording]
@@ -3630,6 +3650,8 @@ keluar
 Kembali ke daring
 [results back to room]
 Kembali ke ruang
+[results find another match]
+Cari pertandingan lain
 [results defeat]
 Kekalahan
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Apa masalah peta ini?
 Cari peta atau pembuat
 [maps none found]
 Tidak ada peta yang cocok.
+[maps catalog empty]
+Belum ada peta yang dibagikan di server ini.
+[maps clear filters]
+Hapus filter
 [maps any colonies]
 Semua jumlah koloni
 [maps checking]

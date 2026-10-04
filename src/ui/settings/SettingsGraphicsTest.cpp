@@ -16,6 +16,27 @@ const std::array<bool Settings::*, 8> effects = {
 }
 TEST_SUITE("SettingsGraphics")
 {
+    TEST_CASE("edge scrolling defaults migrate and independent modes round trip")
+    {
+        glob2test::HeadlessGlobals globals;
+        const std::string file = "edge-scroll-test.txt";
+        const auto path = std::filesystem::path(GAGCore::Toolkit::getFileManager()->getDir(0)) / file;
+        { std::ofstream out(path); out << "scrollWheelEnabled=1\n"; }
+        Settings legacy; legacy.load(file);
+        CHECK(legacy.edgeScrollingEnabled(true));
+        CHECK_FALSE(legacy.edgeScrollingEnabled(false));
+        for (bool fullscreen : {false, true})
+            for (bool windowed : {false, true})
+            {
+                legacy.edgeScrollFullscreen = fullscreen;
+                legacy.edgeScrollWindowed = windowed;
+                REQUIRE(legacy.save(file));
+                Settings loaded; loaded.load(file);
+                CHECK(loaded.edgeScrollingEnabled(true) == fullscreen);
+                CHECK(loaded.edgeScrollingEnabled(false) == windowed);
+            }
+        std::filesystem::remove(path);
+    }
 	TEST_CASE("text size applies to desktop and touch independently of interface scale")
 	{
 		glob2test::HeadlessGlobals globals;

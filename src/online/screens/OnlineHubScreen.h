@@ -7,6 +7,7 @@ namespace Online
 {
 class PlatformScope;
 }
+#include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
 #include <ScreenStack.h>
 #include <functional>
@@ -83,6 +84,8 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// Harness: shows a fixed model without touching the network.
 	void preview(Model model);
 	const Model &model() const { return data; }
+	// Harnesses: show this search (a model with presentSearching) instead of the shared one.
+	void previewSearching(Online::QuickMatch &search) { previewSearch = &search; invalidate(); }
 
 	// Semantic entry points (harnesses, tests and the phone thumb block).
 	void createRoom();
@@ -107,7 +110,7 @@ class OnlineHubScreen : public Glob2UI::Screen
 	bool previewing = false;
 	std::string joinDraft;
 	int roomFilter = 0;
-	int selectedQueue = 0;
+	int selectedQueue = -1; // -1: defaultQueue()
 	bool accountMenu = false, joinField = false;
 	Uint32 lastRefresh = 0, toastAt = 0, now = 0;
 	// Every platform call and listener of this screen: destroying it with the
@@ -132,10 +135,21 @@ class OnlineHubScreen : public Glob2UI::Screen
 	// A match assigned while the quick-match search screen was in front: that
 	// screen closes first, so the match (and its results) return to this hub.
 	std::optional<Online::Json> deferredMatch;
+	// The queue of the quick match in progress, and whether its results asked to
+	// search that queue again ("Find another match") once its screens close.
+	std::string matchQueueId;
+	bool queueAgain = false;
+	SearchStrip::Ticker searchTicker;
+	Online::QuickMatch *previewSearch = nullptr;
+	Online::QuickMatch &searchModel();
 
 	Online::PlatformClient &client();
+	// The running search's screen (the strip's Details).
+	void openSearch();
 	// After the quick-match search screen closes (QuickMatchScreen result codes).
 	void quickMatchClosed(int result);
+	// Rebuilds for the search strip and turns search notices and failures into toasts.
+	void watchSearch();
 	void refresh(bool force);
 	void syncFromClient();
 	void showToast(const std::string &text);
@@ -145,6 +159,11 @@ class OnlineHubScreen : public Glob2UI::Screen
 	void openProfile();
 	void openMaps(bool mine);
 	bool canPlay() const;
+	// Guests cannot enter rated queues: the server refuses them.
+	bool canQueue(const Online::Json &queue) const;
+	// The queue offered first: the first one this account can enter.
+	int defaultQueue() const;
+	int queueIndex(const std::string &queueId) const;
 
 	Glob2UI::Element accountChip(const Glob2UI::Presentation &p);
 	Glob2UI::Element banner(const Glob2UI::Presentation &p);

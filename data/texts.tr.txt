@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 YZ stratejisi
 [start recording]
@@ -3630,6 +3650,8 @@ ayrıldı
 Çevrimiçine dön
 [results back to room]
 Odaya dön
+[results find another match]
+Başka maç bul
 [results defeat]
 Yenilgi
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Bu haritada sorun ne?
 Harita veya yapımcı ara
 [maps none found]
 Eşleşen harita yok.
+[maps catalog empty]
+Bu sunucuda henüz hiç harita paylaşılmadı.
+[maps clear filters]
+Filtreleri temizle
 [maps any colonies]
 Her koloni sayısı
 [maps checking]

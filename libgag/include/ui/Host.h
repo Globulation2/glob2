@@ -13,6 +13,8 @@ struct PopupSpec
 	Rect anchor;
 	std::vector<std::string> options;
 	std::vector<bool> enabled;
+	// Optional, one per option.
+	std::vector<IconRef> icons;
 	int selected = 0;
 	std::string help;
 	std::function<void(int)> pick;

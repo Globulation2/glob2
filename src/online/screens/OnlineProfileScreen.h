@@ -2,12 +2,14 @@
 #pragma once
 #include "OnlineResources.h"
 #include "SinglePlayerFlow.h"
+#include "QuickMatchScreen.h"
 #include "ui/FrontendUI.h"
 
 #include <map>
 #include <memory>
 #include <optional>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace GAGGUI
@@ -56,6 +58,8 @@ class OnlineProfileScreen : public Glob2UI::Screen
 		std::optional<Online::PlayerProfile> profile;
 	};
 	OnlineProfileScreen(GAGGUI::ScreenStack &screens, Data data);
+	// Back names the screen it returns to; the hub's "Back to online" by default.
+	void setBackLabel(std::string label) { backText = std::move(label); }
 	~OnlineProfileScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &p) override;
 	void onTimer(Uint32 tick) override;
@@ -92,9 +96,11 @@ class OnlineProfileScreen : public Glob2UI::Screen
 	std::string status; // replay download progress
 	Filter filter = Filter::All;
 	int selected = -1;
+	SearchStrip::Ticker searchTicker;
 	bool started = false;
 	// This screen's platform calls, cancelled when it closes (made on first use:
 	// fixture screens never touch the platform).
 	std::unique_ptr<Online::PlatformScope> scope;
 	Online::PlatformScope &calls();
+	std::string backText;
 };

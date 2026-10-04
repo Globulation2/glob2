@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 AI-aren estrategia
 [start recording]
@@ -3630,6 +3650,8 @@ joan da
 Itzuli sarera
 [results back to room]
 Itzuli gelara
+[results find another match]
+Bilatu beste partida bat
 [results defeat]
 Porrota
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Zer gertatzen da mapa honekin?
 Bilatu mapak edo egileak
 [maps none found]
 Ez dago bat datorren maparik.
+[maps catalog empty]
+Oraindik ez da maparik partekatu zerbitzari honetan.
+[maps clear filters]
+Garbitu iragazkiak
 [maps any colonies]
 Edozein kolonia kopuru
 [maps checking]

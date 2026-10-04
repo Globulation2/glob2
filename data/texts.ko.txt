@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 AI 전략
 [start recording]
@@ -3630,6 +3650,8 @@ AI
 온라인으로 돌아가기
 [results back to room]
 방으로 돌아가기
+[results find another match]
+다른 경기 찾기
 [results defeat]
 패배
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ AI 대전
 지도 또는 제작자 검색
 [maps none found]
 일치하는 지도가 없습니다.
+[maps catalog empty]
+이 서버에는 아직 공유된 지도가 없습니다.
+[maps clear filters]
+필터 지우기
 [maps any colonies]
 식민지 수 무관
 [maps checking]

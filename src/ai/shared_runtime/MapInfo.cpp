@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
 
-#include "AIFarmAreas.h"
 #include "shared_runtime/Runtime.h"
 
 using namespace AISharedRuntime;
@@ -63,9 +62,9 @@ bool MapInfo::farm_areas_enabled()
 
 
 
-bool MapInfo::wants_farm(int x, int y)
+bool MapInfo::can_paint_farm(int x, int y)
 {
-	return AIFarmAreas::wantsFarm(*runtime.player->map, x, y);
+	return runtime.player->map->canPaintFarmArea(x, y);
 }
 
 

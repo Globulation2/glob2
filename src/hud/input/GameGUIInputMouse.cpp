@@ -45,6 +45,8 @@ void GameGUI::minimapMouseToPos(int mx, int my, int *cx, int *cy, bool forScreen
 void GameGUI::handleMouseMotion(int mx, int my, int button)
 {
 	const int scrollZoneWidth = 10;
+	const bool edgeScroll = globalContainer->settings.edgeScrollingEnabled(
+		globalContainer->gfx->getOptionFlags() & GraphicContext::FULLSCREEN);
 	mouseX=mx;mouseY=my;
 	updateCamera();
 
@@ -58,7 +60,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 	}
 	else
 	{
-		if (mapPanPushed)
+		if (mapPanPushed || !edgeScroll)
 			viewportSpeedX=viewportSpeedY=0;
 		else if (mx<scrollZoneWidth)
 			viewportSpeedX=-1;
@@ -67,7 +69,7 @@ void GameGUI::handleMouseMotion(int mx, int my, int button)
 		else
 			viewportSpeedX=0;
 
-		if (mapPanPushed)
+		if (mapPanPushed || !edgeScroll)
 			viewportSpeedY=0;
 		else if (my<scrollZoneWidth)
 			viewportSpeedY=-1;

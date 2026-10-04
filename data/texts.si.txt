@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Strategija UI
 [start recording]
@@ -3630,6 +3650,8 @@ odšel
 Nazaj na splet
 [results back to room]
 Nazaj v sobo
+[results find another match]
+Poišči novo tekmo
 [results defeat]
 Poraz
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Kaj je narobe s tem zemljevidom?
 Iskanje zemljevidov ali avtorjev
 [maps none found]
 Ni ustreznih zemljevidov.
+[maps catalog empty]
+Na tem strežniku še nihče ni delil zemljevida.
+[maps clear filters]
+Počisti filtre
 [maps any colonies]
 Poljubno število kolonij
 [maps checking]

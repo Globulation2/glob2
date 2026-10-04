@@ -50,11 +50,19 @@ public:
 	bool automaticTorus; // Opt-in movement-triggered overview; local presentation only.
 	std::string language;
 	Uint32 musicVolume;
+	std::string musicSet; // Empty selects a random soundtrack at match start.
 	Uint32 voiceVolume;
 	int mute;
 	int version;
 	bool rememberUnit;
 	bool scrollWheelEnabled;
+	// Local camera controls, independent of saves and simulation.
+	bool edgeScrollFullscreen = true;
+	bool edgeScrollWindowed = false;
+	bool edgeScrollingEnabled(bool fullscreen) const
+	{
+		return fullscreen ? edgeScrollFullscreen : edgeScrollWindowed;
+	}
 	bool hiveMindEnabled;
 	bool hiveMindSupervision;
 	bool highResolutionArtwork;

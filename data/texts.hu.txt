@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 MI-stratégia
 [start recording]
@@ -3630,6 +3650,8 @@ kilépett
 Vissza az online menübe
 [results back to room]
 Vissza a szobába
+[results find another match]
+Újabb mérkőzés keresése
 [results defeat]
 Vereség
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Mi a gond ezzel a térképpel?
 Térképek vagy készítők keresése
 [maps none found]
 Nincs egyező térkép.
+[maps catalog empty]
+Ezen a szerveren még senki sem osztott meg térképet.
+[maps clear filters]
+Szűrők törlése
 [maps any colonies]
 Bármennyi kolónia
 [maps checking]

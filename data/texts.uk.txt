@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Стратегія ШІ
 [start recording]
@@ -3630,6 +3650,8 @@ OpenGL недоступний у цій збірці.
 Назад до онлайну
 [results back to room]
 Назад до кімнати
+[results find another match]
+Знайти ще матч
 [results defeat]
 Поразка
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ OpenGL недоступний у цій збірці.
 Пошук карт або авторів
 [maps none found]
 Карт не знайдено.
+[maps catalog empty]
+На цьому сервері ще ніхто не поділився картами.
+[maps clear filters]
+Скинути фільтри
 [maps any colonies]
 Будь-яка кількість колоній
 [maps checking]

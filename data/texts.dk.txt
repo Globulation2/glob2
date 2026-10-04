@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 AI-strategi
 [start recording]
@@ -3630,6 +3650,8 @@ gået
 Tilbage til online
 [results back to room]
 Tilbage til rummet
+[results find another match]
+Find en ny kamp
 [results defeat]
 Nederlag
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Hvad er der galt med dette kort?
 Søg efter kort eller forfattere
 [maps none found]
 Ingen kort matcher.
+[maps catalog empty]
+Der er endnu ikke delt nogen kort på denne server.
+[maps clear filters]
+Ryd filtre
 [maps any colonies]
 Alle koloniantal
 [maps checking]

@@ -120,35 +120,36 @@ TEST_SUITE("NicowarFarming")
 		}
 	}
 
-	TEST_CASE("with the farm-areas experiment wheat is farmed with a farm area, wood keeps forbidden spots outside it")
+	TEST_CASE("farm areas reuse wheat protection while wood keeps its existing forbidden and clearing rules")
 	{
 		glob2test::HeadlessGlobals globals;
-		Fixture f(true);
-		auto& map = f.game.map;
-		// A lake down the left edge; a wheat field beside it with a tree in it,
-		// and a wood stand on its own further along the shore.
-		for (int y=0; y<64; ++y) for (int x=0; x<6; ++x) map.setUMatPos(x, y, WATER, 1);
-		for (int y=10; y<14; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WHEAT, 0);
-		map.setResource(11, 11, WOOD, 0);
-		map.addForbidden(9, 11, 0); // stale forbidden paint from before the switch
-		for (int y=30; y<34; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WOOD, 0);
-		f.update();
-		const Uint32 me = f.game.teams[0]->me;
-		for (int y=10; y<14; ++y) for (int x=9; x<13; ++x)
+		Fixture f(true), baseline;
+		auto setup=[](Map& map) {
+			for (int y=0; y<64; ++y) for (int x=0; x<6; ++x) map.setUMatPos(x, y, WATER, 1);
+			for (int y=10; y<14; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WHEAT, 0);
+			map.setResource(11, 11, WOOD, 0);
+			map.addForbidden(9, 11, 0);
+			for (int y=30; y<34; ++y) for (int x=9; x<13; ++x) map.setResource(x, y, WOOD, 0);
+		};
+		auto& map=f.game.map;
+		setup(map); setup(baseline.game.map);
+		// Loaded prototype paint covered both parities and a surrounding ring.
+		for (int y=9; y<15; ++y) for (int x=8; x<14; ++x) map.addFarmArea(x,y,0);
+		f.update(); baseline.update();
+		const Uint32 me=f.game.teams[0]->me;
+		for (int y=9; y<15; ++y) for (int x=8; x<14; ++x)
 		{
 			CAPTURE(x); CAPTURE(y);
-			require(map.isFarmArea(x, y, me), "the wheat field is a farm area");
-			require(!map.isForbidden(x, y, me), "no forbidden paint inside the farm");
+			const bool wheat=map.getResource(x,y).type==WHEAT;
+			require(map.isFarmArea(x,y,me)==(wheat && baseline.game.map.isForbidden(x,y,me)),
+				"farm paint matches the original wheat protection pattern");
+			if(wheat) require(!map.isForbidden(x,y,me), "old wheat forbidden paint is removed");
 		}
-		require(map.isFarmArea(13, 9, me) && map.isFarmArea(13, 14, me), "the farm covers the ring the field grows into");
-		require(!map.isFarmArea(15, 11, me), "the farm ends one tile beyond the wheat");
-		require(!f.clearing(11, 11), "the farm clears its own wood, without a clearing area");
-		require(map.isForbidden(9, 31, me), "wood outside farms keeps its forbidden spots");
-		require(!map.isFarmArea(9, 31, me), "a wood stand is not farmed");
-
-		// The field is gone: the farm is released.
-		for (int y=8; y<16; ++y) for (int x=7; x<15; ++x) map.setNoResource(x, y, 0);
+		require(f.clearing(11,11), "wood beside wheat keeps its clearing area");
+		require(map.isForbidden(9,31,me), "wood keeps its forbidden spots");
+		require(!map.isFarmArea(9,31,me), "wood is not farmed");
+		for (int y=8; y<16; ++y) for (int x=7; x<15; ++x) map.setNoResource(x,y,0);
 		f.update();
-		require(!map.isFarmArea(10, 11, me), "an emptied field releases its farm");
+		require(!map.isFarmArea(9,11,me), "an emptied field releases its farm");
 	}
 }

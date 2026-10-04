@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 استراتيجية الذكاء الاصطناعي
 [start recording]
@@ -3630,6 +3650,8 @@ OpenGL غير متوفر في هذا الإصدار.
 العودة إلى اللعب عبر الإنترنت
 [results back to room]
 العودة إلى الغرفة
+[results find another match]
+ابحث عن مباراة أخرى
 [results defeat]
 هزيمة
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ OpenGL غير متوفر في هذا الإصدار.
 ابحث في الخرائط أو المؤلفين
 [maps none found]
 لا توجد خرائط مطابقة.
+[maps catalog empty]
+لم تتم مشاركة أي خرائط على هذا الخادم بعد.
+[maps clear filters]
+مسح عوامل التصفية
 [maps any colonies]
 أي عدد من المستعمرات
 [maps checking]

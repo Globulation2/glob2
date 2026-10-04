@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 AI 策略
 [start recording]
@@ -3630,6 +3650,8 @@ AI
 返回線上
 [results back to room]
 返回房間
+[results find another match]
+再找一場對局
 [results defeat]
 失敗
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ AI 補位
 搜尋地圖或作者
 [maps none found]
 沒有符合的地圖。
+[maps catalog empty]
+這個伺服器上還沒有人分享地圖。
+[maps clear filters]
+清除篩選
 [maps any colonies]
 任何殖民地數
 [maps checking]

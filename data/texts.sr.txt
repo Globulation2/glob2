@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Стратегија ВИ
 [start recording]
@@ -3630,6 +3650,8 @@ LAN домаћин није доступан. Проверите дозволу 
 Назад на мрежу
 [results back to room]
 Назад у собу
+[results find another match]
+Нађи још један меч
 [results defeat]
 Пораз
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ LAN домаћин није доступан. Проверите дозволу 
 Тражи мапе или ауторе
 [maps none found]
 Нема одговарајућих мапа.
+[maps catalog empty]
+На овом серверу још нико није поделио мапу.
+[maps clear filters]
+Обриши филтере
 [maps any colonies]
 Било који број колонија
 [maps checking]

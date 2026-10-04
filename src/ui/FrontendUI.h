@@ -68,6 +68,20 @@ enum class UIIcon
 	Search,
 	Upload,
 	Heart,
+	// Custom game setup
+	Dice,
+	Reset,
+	ChevronRight,
+	ChevronDown,
+	Terrain,
+	Resources,
+	Layout,
+	AllRules,
+	Summary,
+	Combat,
+	Economy,
+	Watch,
+	FreeForAll,
 	Count
 };
 IconRef uiIcon(UIIcon icon);
@@ -108,6 +122,8 @@ struct MenuAction
 	bool primary = false;
 	SDL_Keycode shortcut = SDLK_UNKNOWN;
 	bool enabled = true;
+	// Drawn before the label when set.
+	IconRef icon;
 };
 // A frontend menu: paints the colony background and keeps the frontend theme
 // active for its whole lifetime, so a menu created while gameplay winds down

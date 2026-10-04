@@ -1,3 +1,19 @@
+[music set]
+Music set
+[random music set]
+Random each match
+[playing music set %0]
+Playing: %0
+[music set failed]
+Could not load this music set.
+[settings Edge scrolling]
+Edge scrolling
+[settings Edge scrolling in fullscreen]
+Edge scrolling in fullscreen
+[settings Edge scrolling in windowed mode]
+Edge scrolling in windowed mode
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Move the game and editor maps when the mouse reaches the window edge.
 [%0 has left the game]
 %0 has quit the game.
 [start recording]
@@ -3642,6 +3658,8 @@ left
 Back to online
 [results back to room]
 Back to room
+[results find another match]
+Find another match
 [results defeat]
 Defeat
 [results ladder rating %0]
@@ -4252,6 +4270,10 @@ What is wrong with this map?
 Search maps or authors
 [maps none found]
 No maps match.
+[maps catalog empty]
+No maps have been shared on this server yet.
+[maps clear filters]
+Clear filters
 [maps any colonies]
 Any colonies
 [maps checking]
@@ -5272,3 +5294,7 @@ enemy warriors
 strength
 [stat view by place]
 By place
+[settings Music set]
+Music set
+[settings Random each match]
+Choose Random to select a soundtrack at each match start.

@@ -170,6 +170,16 @@ Element badge(const std::string &text, GAGCore::Color color)
 	return card(label(text, {FontRole::Caption, false, TextAlign::Center, color}), options);
 }
 
+Element emptyState(IconRef glyph, const std::string &text, std::vector<Element> actions, const Presentation &p)
+{
+	const auto &palette = frontendTheme().palette;
+	std::vector<Element> parts{row({icon(glyph, {20, palette.muted}), expanded(paragraph(text, {FontRole::Support, true}))},
+								   {p.pt(8), CrossAlign::Center})};
+	if (!actions.empty())
+		parts.push_back(wrap(std::move(actions), {p.pt(8), p.pt(140), 3, false}));
+	return padding(Insets::symmetric(p.pt(4), p.pt(6)), column(std::move(parts), {p.pt(8)}));
+}
+
 // ------------------------------------------------------------- previews
 
 PreviewImages::PreviewImages() = default;

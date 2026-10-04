@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Estratègia de la IA
 [start recording]
@@ -3630,6 +3650,8 @@ ha marxat
 Torna al joc en línia
 [results back to room]
 Torna a la sala
+[results find another match]
+Busca una altra partida
 [results defeat]
 Derrota
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Què li passa a aquest mapa?
 Cerca mapes o autors
 [maps none found]
 Cap mapa coincideix.
+[maps catalog empty]
+Encara no s'ha compartit cap mapa en aquest servidor.
+[maps clear filters]
+Esborra els filtres
 [maps any colonies]
 Qualsevol nombre de colònies
 [maps checking]

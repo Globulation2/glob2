@@ -78,6 +78,9 @@ class EndGameScreen : public GAGGUI::ui::UIScreen
 	//! Quick matches: opens (or joins) the unrated rematch room (Online::requestRematch)
 	//! and leaves the results; the room opens over the online screens.
 	void rematch();
+	//! Quick matches: leaves the results and searches the same queue again
+	//! (Online::requestQueueAgain).
+	void findAnotherMatch();
 	bool metricPickerOpen() { return host().popupOpen(); }
 	//! Online matches: the outcome banner and the rating card, updated live while
 	//! the server verifies the result (docs/multiplayer/client.md).

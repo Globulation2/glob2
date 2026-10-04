@@ -512,24 +512,15 @@ namespace Cortex
 		// Map to paint into); the observation carries only the cheap diff counts so
 		// the pure policy (CortexPolicy::wantWheatProtection) can tell whether the
 		// per-cycle wheat-forbidden pass has real work to do.
-		// With the farm-areas experiment the field is farmed instead: the work is
-		// lifting any old checkerboard plus bringing the farm up to date.
-		if (player->team->game->map.farmAreasEnabled())
-		{
-			const Cortex::WheatReconcile wr =
-				Cortex::reconcileWheatForbidden(player, openMargin, /*buildMasks=*/false, /*liftAll=*/true);
-			const Cortex::FarmReconcile fr =
-				Cortex::reconcileWheatFarm(player, wr.field, /*liftAll=*/false, /*buildMasks=*/false);
-			obs.wheatProtectAddCount = fr.addCount;
-			obs.wheatProtectDelCount = wr.delCount + fr.delCount;
-		}
-		else
-		{
-			const Cortex::WheatReconcile wr =
-				Cortex::reconcileWheatForbidden(player, openMargin, /*buildMasks=*/false);
-			obs.wheatProtectAddCount = wr.addCount;
-			obs.wheatProtectDelCount = wr.delCount;
-		}
+		const bool farms = player->team->game->map.farmAreasEnabled()
+			&& !player->game->gameHeader.isResourceGrowthDisabled();
+		const Cortex::WheatReconcile wr = Cortex::reconcileWheatForbidden(
+			player, openMargin, /*buildMasks=*/false, /*liftAll=*/false, farms);
+		obs.wheatProtectAddCount = wr.addCount;
+		obs.wheatProtectDelCount = wr.delCount;
+		if (farms)
+			obs.wheatProtectDelCount += Cortex::reconcileWheatForbidden(
+				player, openMargin, /*buildMasks=*/false, /*liftAll=*/true).delCount;
 
 		obs.valid = 1;
 		return obs;

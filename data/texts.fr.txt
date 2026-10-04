@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Stratégie IA
 [start recording]
@@ -3630,6 +3650,8 @@ parti
 Retour en ligne
 [results back to room]
 Retour au salon
+[results find another match]
+Trouver une autre partie
 [results defeat]
 Défaite
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Quel est le problème avec cette carte ?
 Chercher des cartes ou des auteurs
 [maps none found]
 Aucune carte ne correspond.
+[maps catalog empty]
+Aucune carte n'a encore été partagée sur ce serveur.
+[maps clear filters]
+Effacer les filtres
 [maps any colonies]
 Toutes colonies
 [maps checking]

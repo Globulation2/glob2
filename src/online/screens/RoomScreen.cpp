@@ -384,7 +384,11 @@ void RoomScreen::editSetup(int customGameTab)
 			if (result == RoomMapPickerScreen::MoreOptions)
 				openCustomGame(0);
 			else if (result == RoomMapPickerScreen::Catalog)
-				screens.push(std::make_unique<OnlineMapsScreen>(screens));
+			{
+				auto maps = std::make_unique<OnlineMapsScreen>(screens);
+				maps->setOrigin(OnlineMapsScreen::Origin::Room);
+				screens.push(std::move(maps));
+			}
 			else if (result == RoomMapPickerScreen::Chosen && picker.choseGenerated())
 				online->useGeneratedMap(picker.generatedSetup());
 			else if (result == RoomMapPickerScreen::Chosen)
@@ -605,6 +609,10 @@ Element RoomScreen::seats(const Presentation &p, bool phone)
 			if (current.oneVsAll() && slot.index == current.lone)
 				loneName = slot.name;
 		ChoiceOptions options;
+		for (const auto &layout : layouts)
+			options.icons.push_back(uiIcon(layout.kind == TeamLayout::Layout::FreeForAll ? UIIcon::FreeForAll
+										   : layout.kind == TeamLayout::Layout::HumansVsAI ? UIIcon::Robot
+																						   : UIIcon::Users));
 		if (selected < 0)
 			options.compactLabel = TeamLayout::label(current, false, loneName);
 		rows.push_back(field(tr("[Teams]"), choice("teams", names, selected, [this, layouts](int i) {

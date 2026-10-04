@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/audio/MusicSetTest.cpp',
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
@@ -268,6 +269,7 @@ UNIT_TESTS = [
     '#libgag/src/PerformanceTelemetryHarness.cpp',
     '#libgag/src/ScrollPhysicsTest.cpp',
     '#src/hud/GameSpeedControlTest.cpp',
+    '#src/hud/GameEventFeedTest.cpp',
     '#src/audio/SoundMixerTrackSelectionHarness.cpp',
     '#libgag/src/ui/UILayoutHarness.cpp',
     '#src/map/gradient/GlobalGradientHarness.cpp',

@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Strategie AI
 [start recording]
@@ -3630,6 +3650,8 @@ odešel
 Zpět do online hry
 [results back to room]
 Zpět do místnosti
+[results find another match]
+Najít další zápas
 [results defeat]
 Porážka
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Co je s touto mapou špatně?
 Hledat mapy nebo autory
 [maps none found]
 Žádné odpovídající mapy.
+[maps catalog empty]
+Na tomto serveru zatím nikdo nesdílel žádnou mapu.
+[maps clear filters]
+Zrušit filtry
 [maps any colonies]
 Libovolný počet kolonií
 [maps checking]

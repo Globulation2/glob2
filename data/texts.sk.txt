@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Stratégia UI
 [start recording]
@@ -3630,6 +3650,8 @@ odišiel
 Späť do online hry
 [results back to room]
 Späť do miestnosti
+[results find another match]
+Nájsť ďalší zápas
 [results defeat]
 Prehra
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Nahlásiť…
 Hľadať mapy alebo autorov
 [maps none found]
 Žiadne zodpovedajúce mapy.
+[maps catalog empty]
+Na tomto serveri zatiaľ nikto nezdieľal žiadnu mapu.
+[maps clear filters]
+Zrušiť filtre
 [maps any colonies]
 Ľubovoľný počet kolónií
 [maps checking]

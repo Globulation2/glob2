@@ -3,6 +3,7 @@
 
 import argparse
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -14,6 +15,10 @@ INVENTORY_END = ":GLOB2-OWNED-END:v1"
 def quote(value, runtime=True):
     """Escape NSIS strings, including literal dollar signs in native paths."""
     value = str(value)
+    if sys.platform == "win32":
+        # MinGW Python spells paths with "/", which NSIS's File and !include
+        # do not resolve.
+        value = value.replace("/", "\\")
     if any(character in value for character in "\r\n\x00"):
         raise ValueError("Installer paths cannot contain line breaks or NUL")
     if "${" in value:
@@ -90,9 +95,7 @@ def package(stage, output, version, compiler="makensis"):
                     ("VERSION", version),
                 )
             )
-            # Inline the script: MSYS2's makensis cannot open the checkout's
-            # path through !include, while it reads this temporary wrapper.
-            + "\n" + (ROOT / "windows/win32_installer.nsi").read_text(encoding="utf-8") + "\n",
+            + f'\n!include "{quote(ROOT / "windows/win32_installer.nsi", runtime=False)}"\n',
             encoding="utf-8",
         )
         subprocess.run([compiler, "-WX", str(wrapper)], check=True)

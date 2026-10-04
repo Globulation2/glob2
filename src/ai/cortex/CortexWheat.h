@@ -59,12 +59,12 @@ namespace Cortex
 		Sint32 openCount = 0;      //!< WC_OPEN_MARGIN tile count
 		Sint32 fieldTileCount = 0; //!< reachable WHEAT tiles (all classes)
 		Sint32 componentCount = 0; //!< connected components among reachable WHEAT
-		std::vector<int> field; //!< visible WHEAT tiles in the region, index order (farm areas)
 		// Debug overlays, sized map.getW()*map.getH() (empty unless wantDebug):
 		std::vector<Uint8>  classOf; //!< WheatClass per map index
 		std::vector<Sint16> depthOf; //!< wheat-depth per map index, -1 = none
 	};
 
+	//! `farmPaint` uses the same geometry and upkeep with farm paint instead.
 	//! Compute the desired checkerboard forbidden set for one team's wheat, plus
 	//! the ADD/DEL reconcile against the team's current paint.
 	//!
@@ -89,7 +89,7 @@ namespace Cortex
 		Map& map, Uint32 teamMask, int teamNumber,
 		const std::vector<int>& consumerSeeds,
 		int boxMinX, int boxMinY, int boxMaxX, int boxMaxY,
-		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false);
+		int openMargin, bool ignoreFOW, bool wantDebug, bool liftAll = false, bool farmPaint = false);
 
 	//! Result of the live reconcile: the diff counts plus (when buildMasks) the
 	//! two BrushAccumulators ready to hand to OrderAlterForbidden(MODE_ADD/DEL).
@@ -99,7 +99,6 @@ namespace Cortex
 		Sint32 delCount = 0; //!< tiles to un-forbid (current - desired).
 		BrushAccumulator add; //!< populated only when buildMasks == true.
 		BrushAccumulator del; //!< populated only when buildMasks == true.
-		std::vector<int> field; //!< the scan's wheat field tiles (WheatScanResult::field)
 	};
 
 	//! Live wrapper around scanWheatForbidden: derive the team mask, consumer
@@ -111,20 +110,6 @@ namespace Cortex
 	//! the whole field is un-forbidden for the wheat-blitz food burst (only the DEL
 	//! mask is non-empty). Default false keeps every existing caller unchanged.
 	WheatReconcile reconcileWheatForbidden(Player* player, int openMargin, bool buildMasks,
-	                                       bool liftAll = false);
+	                                       bool liftAll = false, bool farmPaint = false);
 
-	//! Farm-areas experiment: the farm over the scanned wheat field. The farm
-	//! covers `field` (WheatReconcile::field) and the ring it grows into
-	//! (AIFarmAreas::wantsFarm); `liftAll` (wheat blitz) wants no farm at all.
-	//! Diffed against the team's current farm paint, index-ordered and RNG-free;
-	//! masks for OrderAlterFarmArea are built only when `buildMasks`.
-	struct FarmReconcile
-	{
-		Sint32 addCount = 0;
-		Sint32 delCount = 0;
-		BrushAccumulator add;
-		BrushAccumulator del;
-	};
-	FarmReconcile reconcileWheatFarm(Player* player, const std::vector<int>& field, bool liftAll,
-	                                 bool buildMasks);
 }

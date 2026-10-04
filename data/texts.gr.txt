@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Στρατηγική ΤΝ
 [start recording]
@@ -3630,6 +3650,8 @@ CPU %0%
 Πίσω στο διαδίκτυο
 [results back to room]
 Πίσω στην αίθουσα
+[results find another match]
+Εύρεση άλλου αγώνα
 [results defeat]
 Ήττα
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ CPU %0%
 Αναζήτηση χαρτών ή δημιουργών
 [maps none found]
 Κανένας χάρτης δεν ταιριάζει.
+[maps catalog empty]
+Δεν έχουν κοινοποιηθεί ακόμη χάρτες σε αυτόν τον διακομιστή.
+[maps clear filters]
+Εκκαθάριση φίλτρων
 [maps any colonies]
 Όλες οι αποικίες
 [maps checking]

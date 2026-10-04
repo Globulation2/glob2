@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 AI 策略
 [start recording]
@@ -3630,6 +3650,8 @@ Ping
 返回在线大厅
 [results back to room]
 返回房间
+[results find another match]
+再找一场对局
 [results defeat]
 失败
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ AI 补位
 搜索地图或作者
 [maps none found]
 没有匹配的地图。
+[maps catalog empty]
+这个服务器上还没有人分享地图。
+[maps clear filters]
+清除筛选
 [maps any colonies]
 任意殖民地数
 [maps checking]

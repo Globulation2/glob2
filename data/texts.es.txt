@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Estrategia IA
 [start recording]
@@ -3630,6 +3650,8 @@ se fue
 Volver al menú en línea
 [results back to room]
 Volver a la sala
+[results find another match]
+Buscar otra partida
 [results defeat]
 Derrota
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Denunciar…
 Buscar mapas o autores
 [maps none found]
 Ningún mapa coincide.
+[maps catalog empty]
+Todavía no se ha compartido ningún mapa en este servidor.
+[maps clear filters]
+Borrar filtros
 [maps any colonies]
 Cualquier n.º de colonias
 [maps checking]

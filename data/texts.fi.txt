@@ -1,3 +1,23 @@
+[music set]
+
+[random music set]
+
+[playing music set %0]
+
+[music set failed]
+
+[settings Music set]
+
+[settings Random each match]
+
+[settings Edge scrolling]
+
+[settings Edge scrolling in fullscreen]
+
+[settings Edge scrolling in windowed mode]
+
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+
 [AI strategy]
 Tekoälyn strategia
 [start recording]
@@ -3630,6 +3650,8 @@ poistui
 Takaisin verkkopeliin
 [results back to room]
 Takaisin huoneeseen
+[results find another match]
+Etsi uusi ottelu
 [results defeat]
 Tappio
 [results ladder rating %0]
@@ -4240,6 +4262,10 @@ Mikä tässä kartassa on vialla?
 Hae karttoja tai tekijöitä
 [maps none found]
 Ei osuvia karttoja.
+[maps catalog empty]
+Tälle palvelimelle ei ole vielä jaettu karttoja.
+[maps clear filters]
+Tyhjennä suodattimet
 [maps any colonies]
 Kaikki siirtokuntamäärät
 [maps checking]
