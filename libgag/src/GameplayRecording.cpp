@@ -130,6 +130,8 @@ struct Recorder::Impl
 				published.encoder = s.value("encoder",""); published.fallbackReason = s.value("fallbackReason","");
 				published.segment = s.value("segment",0u); published.width = s.value("width",0); published.height = s.value("height",0);
 				published.sourceWidth = s.value("sourceWidth",0); published.sourceHeight = s.value("sourceHeight",0);
+				published.droppedFrames = s.value("droppedFrames",std::uint64_t(0));
+				published.droppedAudioSamples = s.value("droppedAudioSamples",std::uint64_t(0));
 				published.outputs = s.value("outputs",std::vector<std::string>{});
 				if (state != State::Failed && (state != State::Finalizing || published.state >= State::Complete)) state = published.state;
 				error = published.error; finished = state == State::Complete || state == State::Failed;

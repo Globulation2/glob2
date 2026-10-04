@@ -333,7 +333,7 @@ struct MediaWriter::Impl
 		check(avcodec_open2(audioEncoder.get(), c.codec, nullptr), "Open AAC encoder");
 		videoStream = avformat_new_stream(output.context, nullptr); audioStream = avformat_new_stream(output.context, nullptr);
 		if (!videoStream || !audioStream) throw std::bad_alloc();
-		videoStream->time_base = {1,1000000}; audioStream->time_base = c.time_base;
+		videoStream->time_base = {1,3000}; audioStream->time_base = c.time_base;
 		auto &v = *videoStream->codecpar;
 		v.codec_type = AVMEDIA_TYPE_VIDEO; v.codec_id = AV_CODEC_ID_H264;
 		v.width = description.width; v.height = description.height; v.format = AV_PIX_FMT_YUV420P;
@@ -354,6 +354,10 @@ struct MediaWriter::Impl
 		output.context->pb = storage.context; output.context->flags |= AVFMT_FLAG_CUSTOM_IO;
 		Dictionary options;
 		av_dict_set(&options.value, "movflags", "+frag_keyframe+delay_moov+default_base_moof", 0);
+		// Microsecond MP4 track ticks overflow a sample duration after about 36
+		// minutes of suspension. 3000 Hz retains exact common frame rates and
+		// sub-millisecond timing while leaving days of room for timestamp gaps.
+		av_dict_set(&options.value, "video_track_timescale", "3000", 0);
 		av_dict_set(&options.value, "frag_duration", "1000000", 0);
 		int result = avformat_write_header(output.context, &options.value);
 		check(result, "Write fragmented MP4 header");
@@ -488,6 +492,7 @@ void MediaWriter::finalize(const std::string &source, const std::string &destina
 	};
 	Dictionary options;
 	av_dict_set(&options.value,"movflags","+faststart",0);
+	av_dict_set(&options.value,"video_track_timescale","3000",0);
 	int result = avformat_write_header(output.context,&options.value);
 	check(result,"Write final MP4 header");
 	auto p = packet();

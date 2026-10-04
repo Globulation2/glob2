@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "support/Glob2Test.h"
+#include "support/RecordingValidationProcess.h"
 #include "../libgag/src/RecordingSession.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
@@ -115,6 +116,16 @@ TEST_SUITE("RecordingSession")
 		REQUIRE(session.step(3601100000)); CHECK(status.state==State::Complete);
 		CHECK(std::filesystem::file_size(path)<100000);
 		CHECK(manifest(path+".json")["duration_us"].get<std::int64_t>()>=3600000000);
+		if (const char *validator = SDL_getenv("GLOB2_TEST_FFMPEG"))
+		{
+			Process probe;
+			probe.launch({validator,"-v","error","-nostdin","-i",path,"-map","0:v:0",
+				"-c","copy","-f","null","-","-progress",path+".progress"},path+".probe.log",false);
+			REQUIRE(probe.finish()==0);
+			std::ifstream input(path+".progress"); std::string line; std::int64_t end=0;
+			while (std::getline(input,line)) if (line.starts_with("out_time_us=")) end=std::stoll(line.substr(12));
+			CHECK(end>=3600000000);
+		}
 	}
 	TEST_CASE("device failure closes its stream and starts a software segment")
 	{
@@ -151,18 +162,21 @@ TEST_SUITE("RecordingSession")
 	}
 	TEST_CASE("interrupted fragmented media recovers without a finalized trailer")
 	{
-		auto path=output("interrupted"); auto files=nativeSessionStorage(); files.reserve(path);
-		Options options; options.encoder=EncoderPreference::Software;
+		for (bool interruptedMetadata : {false,true})
 		{
-			Session session(path,options,files,[](const Status &) {});
-			for (int n=0;n<120;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time)); session.step(time+50000); }
-			CHECK(std::filesystem::file_size(path+".recording/capture.mp4")>1000);
+			auto path=output("interrupted"); auto files=nativeSessionStorage(); files.reserve(path);
+			Options options; options.encoder=EncoderPreference::Software;
+			{
+				Session session(path,options,files,[](const Status &) {});
+				for (int n=0;n<120;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time)); session.step(time+50000); }
+				CHECK(std::filesystem::file_size(path+".recording/capture.mp4")>1000);
 		}
-		SUBCASE("interrupted metadata write retains an alternating checkpoint")
+		if (interruptedMetadata)
 		{ std::ofstream(path+".recording/manifest.json",std::ios::trunc) << "{\"version\":"; }
 		recoverRecording(path,nativeSessionStorage());
 		CHECK(manifest(path+".json")["recovered"]==true);
 		CHECK(manifest(path+".json")["duration_us"].get<std::int64_t>()>=2000000);
+		}
 	}
 	TEST_CASE("publication failure retains media that can be recovered without overwriting")
 	{

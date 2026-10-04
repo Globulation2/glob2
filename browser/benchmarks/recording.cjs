@@ -119,7 +119,8 @@ async function measure(browser,runtime,width,height,scale,encoder,repeat) {
 (async()=>{
  if(!(seconds>0&&repeats>0))throw Error('Invalid benchmark duration/repetitions');
  await fs.mkdir(output,{recursive:true});
- const browser=await chromium.launch({headless:process.env.GLOB2_RECORD_HEADED!=='1',args:process.platform==='darwin'?['--use-angle=metal']:[]});
+ const launchArguments=process.env.GLOB2_RECORD_CHROMIUM_ARGS ? JSON.parse(process.env.GLOB2_RECORD_CHROMIUM_ARGS) : process.platform==='darwin'?['--use-angle=metal']:[];
+ const browser=await chromium.launch({headless:process.env.GLOB2_RECORD_HEADED!=='1',args:launchArguments});
  const systemSession=await browser.newBrowserCDPSession(),graphics=(await systemSession.send('SystemInfo.getInfo')).gpu;await systemSession.detach();
  const records=[];
  try {
@@ -127,7 +128,7 @@ async function measure(browser,runtime,width,height,scale,encoder,repeat) {
   const runtimes=(process.env.GLOB2_RECORD_RUNTIMES || 'serial,threaded').split(',');
   for(const runtime of runtimes)for(const [width,height,scale]of profiles)for(let repeat=0;repeat<repeats;++repeat)for(const encoder of ['off','auto','software']) {
    const result=await measure(browser,runtime,width,height,scale,encoder,repeat);records.push(result);console.log(JSON.stringify(result));
-   await fs.writeFile(path.join(output,'measurements.json'),JSON.stringify({schema:1,host:{platform:os.platform(),release:os.release(),cpus:os.cpus().length,memory:os.totalmem()},browser:browser.version(),graphics,fixture:{path:fixture,sha256:hash(await fs.readFile(fixture))},seconds,repeats,records},null,2)+'\n');
+   await fs.writeFile(path.join(output,'measurements.json'),JSON.stringify({schema:1,host:{platform:os.platform(),release:os.release(),cpus:os.cpus().length,memory:os.totalmem()},browser:browser.version(),launchArguments,graphics,fixture:{path:fixture,sha256:hash(await fs.readFile(fixture))},seconds,repeats,records},null,2)+'\n');
   }
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
