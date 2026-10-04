@@ -1,0 +1,26 @@
+{
+  "name": "combined-disabled-4-0",
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-input/combined-disabled-4-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-linux/combined-disabled-4-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "1a1081fce799d2f3149bebab6c7d289edcd275683d70e74898eed73f4066c6a4",
+  "trace_sha256": "1a588a9ea77c9d7635353ade318b3089f5deb125a7d26baf0ed2696a5050ea49"
+}

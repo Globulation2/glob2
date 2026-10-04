@@ -1,0 +1,1691 @@
+{
+  "name": "standard-1-0",
+  "profile": "standard",
+  "rules": {},
+  "players": [
+    "castor",
+    "warrush"
+  ],
+  "seed": 730,
+  "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+  "script": null,
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/qualification-accepted/glob2",
+    "--run-game",
+    "--map-file",
+    "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+    "--game-seed",
+    "730",
+    "--ticks",
+    "30000",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/qualification-accepted/standard-1-0",
+    "--profile",
+    "rule-qualification-standard-1-0",
+    "--save",
+    "initial",
+    "--save",
+    "final",
+    "--replay",
+    "true",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline",
+    "--player",
+    "castor",
+    "--player",
+    "warrush"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 1.5686521530151367,
+  "result": {
+    "schema_version": 1,
+    "job_type": "game",
+    "status": "completed",
+    "ticks": 10370,
+    "benchmark_setup_cpu_ns": 0,
+    "benchmark_run_cpu_ns": 0,
+    "benchmark_save_cpu_ns": 0,
+    "benchmark_measured_ticks": 0,
+    "setup_ns": 132847063,
+    "run_ns": 1325033338,
+    "gradient_pipeline": true,
+    "gradient_workers": 1,
+    "gradient_delay": 8,
+    "gradient_jobs": 10370,
+    "gradient_published": 10314,
+    "gradient_discarded": 48,
+    "gradient_max_pending": 8,
+    "gradient_wait_ns": 386034,
+    "gradient_active_elapsed_ns": 371301941,
+    "compute_active_elapsed_ns": 0,
+    "hiring_prepasses": 0,
+    "hiring_popped_entries": 0,
+    "compute_threads": 1,
+    "compute_experiments": "none",
+    "compute_batches": 0,
+    "compute_jobs": 0,
+    "compute_parallel_batches": 0,
+    "compute_batch_ns": 0,
+    "compute_wait_ns": 0,
+    "game_seed": 730,
+    "termination": "engine_end",
+    "resolved": {
+      "tick_limit": 30000,
+      "map": "SmallForTwo",
+      "save_version": 133,
+      "winning_conditions": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "experiments": [],
+      "rules": {
+        "noGrowth": 0,
+        "scarcity": 0,
+        "instantConstruction": 0,
+        "stockpile": 0,
+        "noHunger": 0,
+        "noUpgrades": 0,
+        "glassCannon": 0,
+        "fearless": 0,
+        "noPermadeath": 0,
+        "peaceful": 0,
+        "fortress": 0,
+        "suddenDeathTick": 0,
+        "winProbabilityPermille": 0
+      }
+    },
+    "players": [
+      {
+        "player": 0,
+        "team": 0,
+        "ai": "castor",
+        "runtime_values": ""
+      },
+      {
+        "player": 1,
+        "team": 1,
+        "ai": "warrush",
+        "runtime_values": ""
+      }
+    ],
+    "teams": [
+      {
+        "team": 0,
+        "alliance": 1,
+        "allies_mask": 1,
+        "start": [
+          17,
+          29
+        ],
+        "alive": false,
+        "outcome": "lost",
+        "eliminated_tick": 10366,
+        "prestige": 0,
+        "units": 4,
+        "workers": 4,
+        "explorers": 0,
+        "warriors": 0,
+        "warrior_hp": 0,
+        "warrior_attack": 0,
+        "buildings": 1,
+        "sites": 1,
+        "standard_statistics": {
+          "totalUnit": 4,
+          "numberUnitPerType": [
+            4,
+            0,
+            0
+          ],
+          "totalFree": 0,
+          "isFree": [
+            0,
+            0,
+            0
+          ],
+          "totalNeeded": 6,
+          "totalNeededPerLevel": [
+            6,
+            0,
+            0,
+            0
+          ],
+          "totalBuilding": 1,
+          "numberBuildingPerType": [
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "numberBuildingPerTypePerLevel": [
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "needFoodCritical": 1,
+          "needFoodNoInns": 1,
+          "needFood": 0,
+          "needHeal": 3,
+          "needNothing": 0,
+          "upgradeState": [
+            [
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              0,
+              0
+            ]
+          ],
+          "upgradeStatePerType": [
+            [
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ]
+            ]
+          ],
+          "totalFood": 0,
+          "totalFoodCapacity": 0,
+          "totalUnitFoodable": 0,
+          "totalUnitFooded": 0,
+          "totalHP": 906,
+          "totalAttackPower": 0,
+          "totalDefensePower": 0,
+          "happiness": [
+            4,
+            0,
+            0,
+            0
+          ]
+        },
+        "statistics": {
+          "total_units": 4,
+          "total_buildings": 1,
+          "total_hp": 906,
+          "total_attack_power": 0,
+          "total_defense_power": 0,
+          "food": 0,
+          "food_capacity": 0,
+          "need_food": 0
+        },
+        "history": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            0,
+            1501,
+            0,
+            0
+          ],
+          [
+            6,
+            1,
+            0,
+            1885,
+            0,
+            0
+          ],
+          [
+            7,
+            2,
+            0,
+            2153,
+            0,
+            0
+          ],
+          [
+            7,
+            2,
+            0,
+            2509,
+            0,
+            0
+          ],
+          [
+            7,
+            2,
+            0,
+            3093,
+            0,
+            0
+          ],
+          [
+            7,
+            4,
+            0,
+            3273,
+            0,
+            0
+          ],
+          [
+            6,
+            4,
+            0,
+            3189,
+            0,
+            0
+          ],
+          [
+            6,
+            5,
+            0,
+            3013,
+            0,
+            0
+          ],
+          [
+            6,
+            5,
+            0,
+            2834,
+            0,
+            0
+          ],
+          [
+            6,
+            5,
+            0,
+            2861,
+            0,
+            0
+          ],
+          [
+            6,
+            4,
+            0,
+            2815,
+            0,
+            0
+          ],
+          [
+            6,
+            4,
+            0,
+            2815,
+            0,
+            0
+          ],
+          [
+            6,
+            4,
+            0,
+            2949,
+            0,
+            0
+          ],
+          [
+            6,
+            4,
+            0,
+            2937,
+            0,
+            0
+          ],
+          [
+            6,
+            5,
+            0,
+            2736,
+            0,
+            0
+          ],
+          [
+            6,
+            6,
+            0,
+            2692,
+            0,
+            0
+          ],
+          [
+            6,
+            5,
+            0,
+            2432,
+            0,
+            0
+          ],
+          [
+            6,
+            3,
+            0,
+            2056,
+            0,
+            0
+          ],
+          [
+            5,
+            3,
+            0,
+            1528,
+            0,
+            0
+          ],
+          [
+            4,
+            2,
+            0,
+            1085,
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "team": 1,
+        "alliance": 2,
+        "allies_mask": 2,
+        "start": [
+          37,
+          55
+        ],
+        "alive": true,
+        "outcome": "won",
+        "eliminated_tick": -1,
+        "prestige": 0,
+        "units": 15,
+        "workers": 10,
+        "explorers": 1,
+        "warriors": 4,
+        "warrior_hp": 1000,
+        "warrior_attack": 81,
+        "buildings": 18,
+        "sites": 11,
+        "standard_statistics": {
+          "totalUnit": 15,
+          "numberUnitPerType": [
+            10,
+            1,
+            4
+          ],
+          "totalFree": 4,
+          "isFree": [
+            0,
+            0,
+            4
+          ],
+          "totalNeeded": 15,
+          "totalNeededPerLevel": [
+            15,
+            0,
+            0,
+            0
+          ],
+          "totalBuilding": 18,
+          "numberBuildingPerType": [
+            2,
+            2,
+            20,
+            3,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "numberBuildingPerTypePerLevel": [
+            [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              6,
+              14,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "needFoodCritical": 0,
+          "needFoodNoInns": 0,
+          "needFood": 1,
+          "needHeal": 0,
+          "needNothing": 14,
+          "upgradeState": [
+            [
+              15,
+              0,
+              0,
+              0
+            ],
+            [
+              15,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              7,
+              7,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              10,
+              0,
+              0,
+              0
+            ],
+            [
+              10,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              0,
+              0
+            ],
+            [
+              15,
+              0,
+              0,
+              0
+            ]
+          ],
+          "upgradeStatePerType": [
+            [
+              [
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                7,
+                3,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                10,
+                0,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                1,
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0
+              ]
+            ],
+            [
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                4,
+                0,
+                0,
+                0
+              ]
+            ]
+          ],
+          "totalFood": 0,
+          "totalFoodCapacity": 0,
+          "totalUnitFoodable": 0,
+          "totalUnitFooded": 0,
+          "totalHP": 9478,
+          "totalAttackPower": 1458,
+          "totalDefensePower": 0,
+          "happiness": [
+            15,
+            0,
+            0,
+            0
+          ]
+        },
+        "statistics": {
+          "total_units": 15,
+          "total_buildings": 18,
+          "total_hp": 9478,
+          "total_attack_power": 1458,
+          "total_defense_power": 0,
+          "food": 0,
+          "food_capacity": 0,
+          "need_food": 1
+        },
+        "history": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            1,
+            0,
+            1753,
+            0,
+            0
+          ],
+          [
+            6,
+            2,
+            0,
+            2344,
+            0,
+            0
+          ],
+          [
+            8,
+            2,
+            0,
+            3236,
+            88,
+            0
+          ],
+          [
+            9,
+            4,
+            0,
+            4045,
+            288,
+            0
+          ],
+          [
+            10,
+            5,
+            0,
+            5310,
+            288,
+            0
+          ],
+          [
+            10,
+            8,
+            0,
+            6244,
+            342,
+            0
+          ],
+          [
+            11,
+            11,
+            0,
+            7284,
+            448,
+            0
+          ],
+          [
+            11,
+            12,
+            0,
+            7860,
+            666,
+            0
+          ],
+          [
+            11,
+            12,
+            0,
+            8107,
+            684,
+            0
+          ],
+          [
+            11,
+            15,
+            0,
+            8266,
+            738,
+            0
+          ],
+          [
+            12,
+            16,
+            0,
+            8412,
+            826,
+            0
+          ],
+          [
+            13,
+            16,
+            0,
+            8432,
+            1026,
+            0
+          ],
+          [
+            13,
+            16,
+            0,
+            8273,
+            1026,
+            0
+          ],
+          [
+            13,
+            16,
+            0,
+            8093,
+            1026,
+            0
+          ],
+          [
+            13,
+            16,
+            0,
+            7975,
+            1116,
+            0
+          ],
+          [
+            13,
+            17,
+            0,
+            7970,
+            1134,
+            0
+          ],
+          [
+            12,
+            17,
+            0,
+            8118,
+            1134,
+            0
+          ],
+          [
+            13,
+            17,
+            0,
+            8458,
+            1240,
+            0
+          ],
+          [
+            14,
+            17,
+            0,
+            8723,
+            1458,
+            0
+          ],
+          [
+            15,
+            17,
+            0,
+            9392,
+            1458,
+            0
+          ]
+        ]
+      }
+    ],
+    "winning_teams": [
+      1
+    ],
+    "winning_alliances": [
+      2
+    ],
+    "unresolved": false
+  },
+  "audit_exit_code": 0
+}

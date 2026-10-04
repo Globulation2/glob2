@@ -1,0 +1,26 @@
+{
+  "name": "no-upgrades-0-0",
+  "command": [
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/build/darwin/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-input/no-upgrades-0-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-mac/no-upgrades-0-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "b6196ec44f133c285fa0e61fe41d318cf42df91d606c8667d7ddbc4a35392eb7",
+  "trace_sha256": "b36ba6e8b29a8c64ffd761c619e4aface5d8d1d15b27ceac9945a88cc17d1f8b"
+}

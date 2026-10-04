@@ -1,0 +1,26 @@
+{
+  "name": "no-hunger-0-0",
+  "command": [
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/build/darwin/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-input/no-hunger-0-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-mac/no-hunger-0-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "3c4d53dffdcb695d429b6f74fd4a1d7be74c3292221751cb91a1e6357869e2c6",
+  "trace_sha256": "7ff2fab10ae7b3dbd888442a97ec9bf760b0251877eb5c8e6cd6af9f69afe787"
+}

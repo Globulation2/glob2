@@ -1,0 +1,26 @@
+{
+  "name": "peaceful-4-0",
+  "command": [
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/build/darwin/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-input/peaceful-4-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-mac/peaceful-4-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "e7dbeeada482a089f48c775a28f14e48d9edb658b0ab68f4d02281cc54187c72",
+  "trace_sha256": "470120c5e07f356d25a034ea634535df97ae6b145a01eb8ef67ee3d856a424b7"
+}

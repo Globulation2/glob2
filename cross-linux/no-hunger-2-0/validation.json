@@ -1,0 +1,26 @@
+{
+  "name": "no-hunger-2-0",
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-input/no-hunger-2-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-linux/no-hunger-2-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "857d4eca3b0641517e0abac65be99e43665c00ec25754127093e668dcd877e57",
+  "trace_sha256": "c3cb53c90d63e68c7b6a6d7509b076e777ee77e3d41769f207535d556fd81d20"
+}

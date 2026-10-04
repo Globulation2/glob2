@@ -1,0 +1,26 @@
+{
+  "name": "peaceful-2-0",
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-input/peaceful-2-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-linux/peaceful-2-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "d475b98d0270e986dcc21e07e9cf612663a5b73a2e70bf3445afa105a45d499d",
+  "trace_sha256": "a0d3031c88e3c52ba456d29bbdcdbb29b98fa1109be3c2de1735bddbbd75314e"
+}

@@ -1,0 +1,82 @@
+[
+  {
+    "game": "standard-0-0",
+    "matched_ticks": 30000,
+    "difference": null
+  },
+  {
+    "game": "standard-0-1",
+    "matched_ticks": 30000,
+    "difference": null
+  },
+  {
+    "game": "standard-1-0",
+    "matched_ticks": 10370,
+    "difference": null
+  },
+  {
+    "game": "standard-1-1",
+    "matched_ticks": 14914,
+    "difference": null
+  },
+  {
+    "game": "standard-2-0",
+    "matched_ticks": 21922,
+    "difference": null
+  },
+  {
+    "game": "standard-2-1",
+    "matched_ticks": 26690,
+    "difference": null
+  },
+  {
+    "game": "standard-3-0",
+    "matched_ticks": 26498,
+    "difference": null
+  },
+  {
+    "game": "standard-3-1",
+    "matched_ticks": 23490,
+    "difference": null
+  },
+  {
+    "game": "standard-4-0",
+    "matched_ticks": 16930,
+    "difference": null
+  },
+  {
+    "game": "standard-4-1",
+    "matched_ticks": 30000,
+    "difference": null
+  },
+  {
+    "game": "standard-5-0",
+    "matched_ticks": 27682,
+    "difference": null
+  },
+  {
+    "game": "standard-5-1",
+    "matched_ticks": 16034,
+    "difference": null
+  },
+  {
+    "game": "standard-6-0",
+    "matched_ticks": 22242,
+    "difference": null
+  },
+  {
+    "game": "standard-6-1",
+    "matched_ticks": 25410,
+    "difference": null
+  },
+  {
+    "game": "standard-7-0",
+    "matched_ticks": 23458,
+    "difference": null
+  },
+  {
+    "game": "standard-7-1",
+    "matched_ticks": 14274,
+    "difference": null
+  }
+]

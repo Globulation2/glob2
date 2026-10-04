@@ -1,0 +1,2365 @@
+{
+  "jobs": [
+    {
+      "name": "standard-0-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-0-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-1-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-1-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-2-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-2-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-3-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-3-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-4-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-4-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-5-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-5-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-6-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-6-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-7-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-7-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "standard-javascript-0",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "standard-javascript-1",
+      "profile": "standard",
+      "rules": {},
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "no-upgrades-0-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-0-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-1-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-1-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-2-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-2-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-3-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-3-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-4-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-4-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-5-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-5-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-6-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-6-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-7-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-7-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-upgrades-javascript-0",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "no-upgrades-javascript-1",
+      "profile": "no-upgrades",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "no-hunger-0-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-0-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-1-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-1-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-2-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-2-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-3-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-3-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-4-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-4-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-5-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-5-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-6-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-6-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-7-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-7-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-hunger-javascript-0",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "no-hunger-javascript-1",
+      "profile": "no-hunger",
+      "rules": {
+        "noHunger": 1
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "peaceful-0-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-0-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-1-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-1-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-2-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-2-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-3-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-3-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-4-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-4-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-5-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-5-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-6-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-6-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-7-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-7-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "peaceful-javascript-0",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "peaceful-javascript-1",
+      "profile": "peaceful",
+      "rules": {
+        "peaceful": 1
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "no-regrowth-0-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-0-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-1-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-1-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-2-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-2-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-3-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-3-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-4-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-4-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-5-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-5-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-6-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-6-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-7-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-7-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "no-regrowth-javascript-0",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "no-regrowth-javascript-1",
+      "profile": "no-regrowth",
+      "rules": {
+        "noGrowth": 1
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "maximum-scarcity-0-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-0-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-1-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-1-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-2-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-2-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-3-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-3-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-4-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-4-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-5-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-5-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-6-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-6-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-7-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-7-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "maximum-scarcity-javascript-0",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "maximum-scarcity-javascript-1",
+      "profile": "maximum-scarcity",
+      "rules": {
+        "scarcity": 3
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "instant-construction-0-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-0-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-1-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-1-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-2-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-2-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-3-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-3-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-4-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-4-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-5-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-5-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-6-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-6-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-7-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-7-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "instant-construction-javascript-0",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "instant-construction-javascript-1",
+      "profile": "instant-construction",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "combat-modifiers-0-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-0-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-1-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-1-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-2-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-2-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-3-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-3-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-4-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-4-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-5-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-5-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-6-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-6-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-7-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-7-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": null
+    },
+    {
+      "name": "combat-modifiers-javascript-0",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "combat-modifiers-javascript-1",
+      "profile": "combat-modifiers",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/balanced_for_2.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "combined-disabled-0-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "numbi",
+        "castor"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-0-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "castor",
+        "numbi"
+      ],
+      "seed": 713,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-1-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "castor",
+        "warrush"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-1-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "warrush",
+        "castor"
+      ],
+      "seed": 730,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-2-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "warrush",
+        "econo"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-2-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "econo",
+        "warrush"
+      ],
+      "seed": 747,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-3-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "econo",
+        "nicowar"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-3-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "nicowar",
+        "econo"
+      ],
+      "seed": 764,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-4-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-4-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "seed": 781,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-5-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "cortex",
+        "cabino"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-5-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "cabino",
+        "cortex"
+      ],
+      "seed": 798,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-6-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "cabino",
+        "maxima"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-6-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "maxima",
+        "cabino"
+      ],
+      "seed": 815,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-7-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "maxima",
+        "numbi"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-7-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "numbi",
+        "maxima"
+      ],
+      "seed": 832,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": null
+    },
+    {
+      "name": "combined-disabled-javascript-0",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "javascript",
+        "numbi"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    },
+    {
+      "name": "combined-disabled-javascript-1",
+      "profile": "combined-disabled",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "players": [
+        "numbi",
+        "javascript"
+      ],
+      "seed": 977,
+      "map": "/home/bradley/glob2-ai-rules-validation/maps/SmallForTwo.map.gz",
+      "script": "/home/bradley/glob2-ai-rules-validation/examples/javascript/ai.js"
+    }
+  ],
+  "ticks": 30000,
+  "binary": "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/qualification-accepted/glob2",
+  "binary_sha256": "0d479087bf47cedb71b6cf2410a4347b3a9ea610184cc321d0318a4c204498dc"
+}

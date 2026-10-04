@@ -1,0 +1,26 @@
+{
+  "name": "combat-modifiers-0-0",
+  "command": [
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/build/darwin/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-input/combat-modifiers-0-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/9c0b/glob2/artifacts/ai-rules/cross-mac/combat-modifiers-0-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "1f679dca3cd79474e9507a0c2c324f06ab3b53c8c5998c74a49411368e14cf1e",
+  "trace_sha256": "dab93e5b8cee03d257e02005d9546824a467a9e878e6f121401bd9c00b98f277"
+}

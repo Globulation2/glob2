@@ -1,0 +1,26 @@
+{
+  "name": "no-regrowth-4-0",
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-input/no-regrowth-4-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-linux/no-regrowth-4-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "d50a72e92d9eef47228d139d0c733749aadaa3fd1a3b3c60ee53ec709ff54809",
+  "trace_sha256": "c95b93670a050934f42d134f1b49625521cd2ecc288c9c5413e4d73373fe2cc3"
+}

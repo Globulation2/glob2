@@ -1,0 +1,26 @@
+{
+  "name": "combat-modifiers-4-0",
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-input/combat-modifiers-4-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-linux/combat-modifiers-4-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "1f108dce619dca17f5c97b349b68e3cdcc609afdb958edac52bf09d946124d81",
+  "trace_sha256": "f6433a81824a1238d805d2ddd99389326d543cf59a5fe41664a9a9f67ca048f8"
+}

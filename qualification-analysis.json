@@ -1,0 +1,4000 @@
+{
+  "games": 162,
+  "native_games": 144,
+  "javascript_games": 18,
+  "failures": [],
+  "controllers_with_no_emitted_work": [],
+  "disabled_training_visit_violations": [],
+  "ticks_simulated": 3653518,
+  "profiles": [
+    "combat-modifiers",
+    "combined-disabled",
+    "instant-construction",
+    "maximum-scarcity",
+    "no-hunger",
+    "no-regrowth",
+    "no-upgrades",
+    "peaceful",
+    "standard"
+  ],
+  "games_detail": [
+    {
+      "game": "standard-0-0",
+      "rules": {},
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "28316",
+          "polls": "30000",
+          "emitted_orders": "122"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "968"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "standard-0-1",
+      "rules": {},
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "704"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "17393",
+          "polls": "30000",
+          "emitted_orders": "221"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "standard-1-0",
+      "rules": {},
+      "ticks": 10370,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "10370",
+          "polls": "10366",
+          "emitted_orders": "161"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "9885",
+          "polls": "10370",
+          "emitted_orders": "161"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-1-1",
+      "rules": {},
+      "ticks": 14914,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "14834",
+          "polls": "14914",
+          "emitted_orders": "288"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "14914",
+          "polls": "14897",
+          "emitted_orders": "563"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-2-0",
+      "rules": {},
+      "ticks": 21922,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "21584",
+          "polls": "21922",
+          "emitted_orders": "468"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "21756",
+          "polls": "21911",
+          "emitted_orders": "256"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-2-1",
+      "rules": {},
+      "ticks": 26690,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "26641",
+          "polls": "26686",
+          "emitted_orders": "239"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "25685",
+          "polls": "26690",
+          "emitted_orders": "491"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-3-0",
+      "rules": {},
+      "ticks": 26498,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "24690",
+          "polls": "26495",
+          "emitted_orders": "194"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "24555",
+          "polls": "26498",
+          "emitted_orders": "1395"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-3-1",
+      "rules": {},
+      "ticks": 23490,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "21606",
+          "polls": "23490",
+          "emitted_orders": "1257"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "22053",
+          "polls": "23475",
+          "emitted_orders": "257"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-4-0",
+      "rules": {},
+      "ticks": 16930,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "16678",
+          "polls": "16923",
+          "emitted_orders": "910"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "16921",
+          "polls": "16930",
+          "emitted_orders": "368"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-4-1",
+      "rules": {},
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29929",
+          "polls": "30000",
+          "emitted_orders": "568"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "29781",
+          "polls": "30000",
+          "emitted_orders": "2116"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "standard-5-0",
+      "rules": {},
+      "ticks": 27682,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "27433",
+          "polls": "27652",
+          "emitted_orders": "433"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "27682",
+          "polls": "27682",
+          "emitted_orders": "613"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-5-1",
+      "rules": {},
+      "ticks": 16034,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "16034",
+          "polls": "16031",
+          "emitted_orders": "471"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "14742",
+          "polls": "16034",
+          "emitted_orders": "397"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-6-0",
+      "rules": {},
+      "ticks": 22242,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "22242",
+          "polls": "22232",
+          "emitted_orders": "383"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "21978",
+          "polls": "22242",
+          "emitted_orders": "948"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-6-1",
+      "rules": {},
+      "ticks": 25410,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "25266",
+          "polls": "25410",
+          "emitted_orders": "846"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "25410",
+          "polls": "25385",
+          "emitted_orders": "547"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-7-0",
+      "rules": {},
+      "ticks": 23458,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "23415",
+          "polls": "23458",
+          "emitted_orders": "812"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "23414",
+          "polls": "23445",
+          "emitted_orders": "207"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-7-1",
+      "rules": {},
+      "ticks": 14274,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "14159",
+          "polls": "14273",
+          "emitted_orders": "82"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "14187",
+          "polls": "14274",
+          "emitted_orders": "488"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "standard-javascript-0",
+      "rules": {},
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "25789",
+          "polls": "30000",
+          "emitted_orders": "90"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "standard-javascript-1",
+      "rules": {},
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "25914",
+          "polls": "30000",
+          "emitted_orders": "92"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-upgrades-0-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 17346,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "17334",
+          "emitted_orders": "43"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "17346",
+          "polls": "17346",
+          "emitted_orders": "2009"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-0-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 7170,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "7170",
+          "polls": "7170",
+          "emitted_orders": "579"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "7142",
+          "emitted_orders": "6"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-1-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "3585"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "22885",
+          "polls": "30000",
+          "emitted_orders": "1106"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-upgrades-1-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "26934",
+          "polls": "30000",
+          "emitted_orders": "1020"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "3319"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-upgrades-2-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "28234",
+          "polls": "30000",
+          "emitted_orders": "1140"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "29913",
+          "polls": "30000",
+          "emitted_orders": "211"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-upgrades-2-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "29928",
+          "polls": "30000",
+          "emitted_orders": "327"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "29885",
+          "polls": "30000",
+          "emitted_orders": "1180"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-upgrades-3-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 20002,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "16340",
+          "polls": "19984",
+          "emitted_orders": "153"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "18212",
+          "polls": "20002",
+          "emitted_orders": "1109"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-3-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 14946,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "12422",
+          "polls": "14946",
+          "emitted_orders": "792"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "12118",
+          "polls": "14920",
+          "emitted_orders": "126"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-4-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 18882,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "18852",
+          "polls": "18858",
+          "emitted_orders": "1474"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "17915",
+          "polls": "18882",
+          "emitted_orders": "804"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-4-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 20258,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "19258",
+          "polls": "20258",
+          "emitted_orders": "790"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "19763",
+          "polls": "20235",
+          "emitted_orders": "1507"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-5-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 22722,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "22471",
+          "polls": "22722",
+          "emitted_orders": "1066"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "22722",
+          "polls": "22720",
+          "emitted_orders": "808"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-5-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 11618,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "11618",
+          "polls": "11595",
+          "emitted_orders": "144"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "10780",
+          "polls": "11618",
+          "emitted_orders": "447"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-6-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 17410,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "17410",
+          "polls": "17383",
+          "emitted_orders": "229"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "17270",
+          "polls": "17410",
+          "emitted_orders": "684"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-6-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "29613",
+          "polls": "30000",
+          "emitted_orders": "959"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "401"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-upgrades-7-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 13090,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "12805",
+          "polls": "13090",
+          "emitted_orders": "490"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "13071",
+          "emitted_orders": "10"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-7-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 15746,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "15723",
+          "emitted_orders": "62"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "15513",
+          "polls": "15746",
+          "emitted_orders": "566"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-javascript-0",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 9026,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "9026",
+          "emitted_orders": "3"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "9021",
+          "emitted_orders": "8"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-upgrades-javascript-1",
+      "rules": {
+        "noUpgrades": 1
+      },
+      "ticks": 19394,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "19390",
+          "emitted_orders": "101"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "19394",
+          "emitted_orders": "3"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-0-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "15221",
+          "polls": "30000",
+          "emitted_orders": "44"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "81"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-hunger-0-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 25090,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "25090",
+          "polls": "25090",
+          "emitted_orders": "77"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "14738",
+          "polls": "25075",
+          "emitted_orders": "43"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-1-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 8130,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "8130",
+          "polls": "8118",
+          "emitted_orders": "76"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "7685",
+          "polls": "8130",
+          "emitted_orders": "173"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-1-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 9986,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "9334",
+          "polls": "9986",
+          "emitted_orders": "267"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "9986",
+          "polls": "9984",
+          "emitted_orders": "141"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-2-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 19458,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "9434",
+          "polls": "19458",
+          "emitted_orders": "506"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "11077",
+          "polls": "19435",
+          "emitted_orders": "115"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-2-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 11778,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "11082",
+          "polls": "11756",
+          "emitted_orders": "84"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "10585",
+          "polls": "11778",
+          "emitted_orders": "253"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-3-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 23746,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "19126",
+          "polls": "23736",
+          "emitted_orders": "150"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "22953",
+          "polls": "23746",
+          "emitted_orders": "1202"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-3-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 21602,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "18164",
+          "polls": "21602",
+          "emitted_orders": "1054"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "9050",
+          "polls": "21595",
+          "emitted_orders": "111"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-4-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 15234,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "15189",
+          "polls": "15221",
+          "emitted_orders": "1112"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "14609",
+          "polls": "15234",
+          "emitted_orders": "287"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-4-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 29122,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "26887",
+          "polls": "29122",
+          "emitted_orders": "705"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "28704",
+          "polls": "29114",
+          "emitted_orders": "2353"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-5-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 16258,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "12736",
+          "polls": "16232",
+          "emitted_orders": "415"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "16258",
+          "polls": "16258",
+          "emitted_orders": "413"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-5-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 19330,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "19330",
+          "polls": "19308",
+          "emitted_orders": "420"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "14756",
+          "polls": "19330",
+          "emitted_orders": "294"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-6-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 28322,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "28322",
+          "polls": "28312",
+          "emitted_orders": "989"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "28090",
+          "polls": "28322",
+          "emitted_orders": "1422"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-6-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 16354,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "16115",
+          "polls": "16350",
+          "emitted_orders": "508"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "16354",
+          "polls": "16354",
+          "emitted_orders": "408"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-7-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 17346,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "17055",
+          "polls": "17346",
+          "emitted_orders": "653"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "13645",
+          "polls": "17316",
+          "emitted_orders": "134"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-7-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 21218,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "96",
+          "polls": "21205",
+          "emitted_orders": "8"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "20968",
+          "polls": "21218",
+          "emitted_orders": "814"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-hunger-javascript-0",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "29987",
+          "polls": "30000",
+          "emitted_orders": "64"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-hunger-javascript-1",
+      "rules": {
+        "noHunger": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "29987",
+          "polls": "30000",
+          "emitted_orders": "64"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-0-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 23906,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "23901",
+          "emitted_orders": "67"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "23906",
+          "polls": "23906",
+          "emitted_orders": "3033"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-0-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 7618,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "7618",
+          "polls": "7618",
+          "emitted_orders": "497"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "7609",
+          "emitted_orders": "6"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-1-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "3135"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "29999",
+          "polls": "30000",
+          "emitted_orders": "1337"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-1-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "29984",
+          "polls": "30000",
+          "emitted_orders": "1082"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "4243"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-2-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "29985",
+          "polls": "30000",
+          "emitted_orders": "1048"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "29869",
+          "polls": "30000",
+          "emitted_orders": "471"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-2-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "29856",
+          "polls": "30000",
+          "emitted_orders": "458"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "29999",
+          "polls": "30000",
+          "emitted_orders": "1061"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-3-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 16738,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "16593",
+          "polls": "16738",
+          "emitted_orders": "197"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "4733",
+          "polls": "16721",
+          "emitted_orders": "710"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-3-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 18050,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "4222",
+          "polls": "18047",
+          "emitted_orders": "799"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "17852",
+          "polls": "18050",
+          "emitted_orders": "256"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-4-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 17506,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "4478",
+          "polls": "17499",
+          "emitted_orders": "745"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "17491",
+          "polls": "17506",
+          "emitted_orders": "194"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-4-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 12610,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "12592",
+          "polls": "12610",
+          "emitted_orders": "114"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "4998",
+          "polls": "12578",
+          "emitted_orders": "527"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-5-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29987",
+          "polls": "30000",
+          "emitted_orders": "205"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1180"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-5-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "134"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29989",
+          "polls": "30000",
+          "emitted_orders": "264"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-6-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "322"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "29876",
+          "polls": "30000",
+          "emitted_orders": "1023"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-6-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "29174",
+          "polls": "30000",
+          "emitted_orders": "1023"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "744"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "peaceful-7-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 6914,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "6246",
+          "polls": "6914",
+          "emitted_orders": "117"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "6889",
+          "emitted_orders": "6"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-7-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 23682,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "23665",
+          "emitted_orders": "94"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "23676",
+          "polls": "23682",
+          "emitted_orders": "934"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-javascript-0",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 7874,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "7874",
+          "emitted_orders": "3"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "7845",
+          "emitted_orders": "7"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "peaceful-javascript-1",
+      "rules": {
+        "peaceful": 1
+      },
+      "ticks": 26018,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "26007",
+          "emitted_orders": "69"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "26018",
+          "emitted_orders": "3"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-0-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "23387",
+          "polls": "30000",
+          "emitted_orders": "147"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1756"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-regrowth-0-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1586"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "22843",
+          "polls": "30000",
+          "emitted_orders": "74"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-regrowth-1-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1476"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "29635",
+          "polls": "30000",
+          "emitted_orders": "94"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-regrowth-1-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 12642,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "7634",
+          "polls": "12642",
+          "emitted_orders": "64"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "12642",
+          "polls": "12618",
+          "emitted_orders": "455"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-2-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 15970,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "13934",
+          "polls": "15970",
+          "emitted_orders": "83"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "13578",
+          "polls": "15943",
+          "emitted_orders": "78"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-2-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 25954,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "18276",
+          "polls": "25950",
+          "emitted_orders": "93"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "11985",
+          "polls": "25954",
+          "emitted_orders": "54"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-3-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 18658,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "9026",
+          "polls": "18632",
+          "emitted_orders": "44"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "8771",
+          "polls": "18658",
+          "emitted_orders": "545"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-3-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 13090,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "12650",
+          "polls": "13090",
+          "emitted_orders": "404"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "12546",
+          "polls": "13082",
+          "emitted_orders": "48"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-4-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 18914,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "15850",
+          "polls": "18897",
+          "emitted_orders": "647"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "17311",
+          "polls": "18914",
+          "emitted_orders": "142"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-4-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 20962,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "11940",
+          "polls": "20962",
+          "emitted_orders": "120"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "13434",
+          "polls": "20933",
+          "emitted_orders": "512"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-5-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 20546,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "20541",
+          "polls": "20546",
+          "emitted_orders": "97"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "20546",
+          "polls": "20531",
+          "emitted_orders": "133"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-5-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 17090,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "17090",
+          "polls": "17062",
+          "emitted_orders": "243"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "16297",
+          "polls": "17090",
+          "emitted_orders": "179"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-6-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 18082,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "18082",
+          "polls": "18078",
+          "emitted_orders": "262"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "17885",
+          "polls": "18082",
+          "emitted_orders": "443"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-6-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 16130,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "15431",
+          "polls": "16130",
+          "emitted_orders": "285"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "16130",
+          "polls": "16114",
+          "emitted_orders": "195"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-7-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 17218,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "13587",
+          "polls": "17218",
+          "emitted_orders": "275"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "17138",
+          "polls": "17211",
+          "emitted_orders": "241"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-7-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 16450,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "16435",
+          "polls": "16436",
+          "emitted_orders": "102"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "15211",
+          "polls": "16450",
+          "emitted_orders": "351"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "no-regrowth-javascript-0",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "29692",
+          "polls": "30000",
+          "emitted_orders": "68"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "no-regrowth-javascript-1",
+      "rules": {
+        "noGrowth": 1
+      },
+      "ticks": 13442,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "13391",
+          "polls": "13442",
+          "emitted_orders": "34"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "13428",
+          "emitted_orders": "1"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-0-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 8546,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "8533",
+          "emitted_orders": "12"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "8546",
+          "polls": "8546",
+          "emitted_orders": "525"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-0-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 7330,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "7330",
+          "polls": "7330",
+          "emitted_orders": "561"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "7299",
+          "emitted_orders": "6"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-1-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 16578,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "16578",
+          "polls": "16568",
+          "emitted_orders": "736"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "16535",
+          "polls": "16578",
+          "emitted_orders": "344"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-1-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 13986,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "12984",
+          "polls": "13986",
+          "emitted_orders": "305"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "13986",
+          "polls": "13957",
+          "emitted_orders": "819"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-2-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 28002,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "20484",
+          "polls": "28002",
+          "emitted_orders": "786"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "27979",
+          "polls": "27990",
+          "emitted_orders": "178"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-2-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 24674,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "22367",
+          "polls": "24645",
+          "emitted_orders": "166"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "23385",
+          "polls": "24674",
+          "emitted_orders": "346"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-3-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 29794,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "29726",
+          "polls": "29794",
+          "emitted_orders": "125"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "19315",
+          "polls": "29787",
+          "emitted_orders": "1387"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-3-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "27914",
+          "polls": "30000",
+          "emitted_orders": "1466"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "28515",
+          "polls": "30000",
+          "emitted_orders": "319"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "maximum-scarcity-4-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "29824",
+          "polls": "30000",
+          "emitted_orders": "1632"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29985",
+          "polls": "30000",
+          "emitted_orders": "688"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "maximum-scarcity-4-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29478",
+          "polls": "30000",
+          "emitted_orders": "820"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "29859",
+          "polls": "30000",
+          "emitted_orders": "1786"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "maximum-scarcity-5-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "27903",
+          "polls": "30000",
+          "emitted_orders": "1267"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "668"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "maximum-scarcity-5-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 13378,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "13378",
+          "polls": "13363",
+          "emitted_orders": "128"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "9423",
+          "polls": "13378",
+          "emitted_orders": "364"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-6-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 18178,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "18178",
+          "polls": "18171",
+          "emitted_orders": "105"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "18114",
+          "polls": "18178",
+          "emitted_orders": "646"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-6-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "29194",
+          "polls": "30000",
+          "emitted_orders": "1072"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "478"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "maximum-scarcity-7-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 14242,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "13909",
+          "polls": "14242",
+          "emitted_orders": "538"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "14226",
+          "emitted_orders": "14"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-7-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 15618,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "15596",
+          "emitted_orders": "60"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "15291",
+          "polls": "15618",
+          "emitted_orders": "395"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-javascript-0",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 8322,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "8322",
+          "emitted_orders": "3"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "8293",
+          "emitted_orders": "8"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "maximum-scarcity-javascript-1",
+      "rules": {
+        "scarcity": 3
+      },
+      "ticks": 9730,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "9705",
+          "emitted_orders": "38"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "9730",
+          "emitted_orders": "3"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-0-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "25336",
+          "polls": "30000",
+          "emitted_orders": "544"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "860"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-0-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "849"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "29761",
+          "polls": "30000",
+          "emitted_orders": "489"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-1-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 7458,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "7458",
+          "polls": "7433",
+          "emitted_orders": "38"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "3435",
+          "polls": "7458",
+          "emitted_orders": "359"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-1-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 8226,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "6584",
+          "polls": "8226",
+          "emitted_orders": "406"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "8226",
+          "polls": "8224",
+          "emitted_orders": "155"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-2-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 16898,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "13934",
+          "polls": "16898",
+          "emitted_orders": "846"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "13894",
+          "polls": "16868",
+          "emitted_orders": "101"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-2-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 13026,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "11877",
+          "polls": "13025",
+          "emitted_orders": "76"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "11885",
+          "polls": "13026",
+          "emitted_orders": "653"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-3-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 20866,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "20734",
+          "polls": "20854",
+          "emitted_orders": "233"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "13835",
+          "polls": "20866",
+          "emitted_orders": "1275"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-3-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 15682,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "15539",
+          "polls": "15682",
+          "emitted_orders": "982"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "15201",
+          "polls": "15678",
+          "emitted_orders": "200"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-4-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "27677",
+          "polls": "30000",
+          "emitted_orders": "2835"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29428",
+          "polls": "30000",
+          "emitted_orders": "735"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-4-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "27949",
+          "polls": "30000",
+          "emitted_orders": "965"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "29762",
+          "polls": "30000",
+          "emitted_orders": "3095"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-5-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29984",
+          "polls": "30000",
+          "emitted_orders": "1029"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1238"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-5-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "686"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29993",
+          "polls": "30000",
+          "emitted_orders": "884"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-6-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 17890,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "17890",
+          "polls": "17887",
+          "emitted_orders": "493"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "17838",
+          "polls": "17890",
+          "emitted_orders": "841"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-6-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 18082,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "17799",
+          "polls": "18082",
+          "emitted_orders": "922"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "18082",
+          "polls": "18079",
+          "emitted_orders": "370"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-7-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 21346,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "21254",
+          "polls": "21346",
+          "emitted_orders": "1585"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "21334",
+          "polls": "21343",
+          "emitted_orders": "108"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-7-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 17314,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "17170",
+          "polls": "17293",
+          "emitted_orders": "174"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "16950",
+          "polls": "17314",
+          "emitted_orders": "1012"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "instant-construction-javascript-0",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "22582",
+          "polls": "30000",
+          "emitted_orders": "92"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "instant-construction-javascript-1",
+      "rules": {
+        "instantConstruction": 1
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "29987",
+          "polls": "30000",
+          "emitted_orders": "215"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-0-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 14370,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "14360",
+          "emitted_orders": "40"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "14370",
+          "polls": "14370",
+          "emitted_orders": "897"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combat-modifiers-0-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 7522,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "7522",
+          "polls": "7522",
+          "emitted_orders": "565"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "7493",
+          "emitted_orders": "6"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combat-modifiers-1-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "2542"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "29485",
+          "polls": "30000",
+          "emitted_orders": "624"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-1-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "24434",
+          "polls": "30000",
+          "emitted_orders": "1059"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "2955"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-2-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "29534",
+          "polls": "30000",
+          "emitted_orders": "1300"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "29889",
+          "polls": "30000",
+          "emitted_orders": "489"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-2-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "29874",
+          "polls": "30000",
+          "emitted_orders": "474"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "29935",
+          "polls": "30000",
+          "emitted_orders": "767"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-3-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "29898",
+          "polls": "30000",
+          "emitted_orders": "499"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "29417",
+          "polls": "30000",
+          "emitted_orders": "1583"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-3-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "28376",
+          "polls": "30000",
+          "emitted_orders": "1886"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "28292",
+          "polls": "30000",
+          "emitted_orders": "489"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-4-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "29902",
+          "polls": "30000",
+          "emitted_orders": "3242"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29978",
+          "polls": "30000",
+          "emitted_orders": "1298"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-4-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29990",
+          "polls": "30000",
+          "emitted_orders": "1786"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "29998",
+          "polls": "30000",
+          "emitted_orders": "4591"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-5-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29899",
+          "polls": "30000",
+          "emitted_orders": "1035"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1930"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-5-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 27170,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "27170",
+          "polls": "27161",
+          "emitted_orders": "258"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "26425",
+          "polls": "27170",
+          "emitted_orders": "1324"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combat-modifiers-6-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "400"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "29998",
+          "polls": "30000",
+          "emitted_orders": "1768"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-6-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "29998",
+          "polls": "30000",
+          "emitted_orders": "1273"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "1108"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combat-modifiers-7-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 13762,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "13249",
+          "polls": "13762",
+          "emitted_orders": "466"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "13754",
+          "emitted_orders": "10"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combat-modifiers-7-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 23394,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "23386",
+          "emitted_orders": "100"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "23377",
+          "polls": "23394",
+          "emitted_orders": "1225"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combat-modifiers-javascript-0",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 8706,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "8706",
+          "emitted_orders": "3"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "0",
+          "polls": "8675",
+          "emitted_orders": "8"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combat-modifiers-javascript-1",
+      "rules": {
+        "glassCannon": 2,
+        "fearless": 1,
+        "noPermadeath": 1,
+        "fortress": 2
+      },
+      "ticks": 16866,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "0",
+          "polls": "16862",
+          "emitted_orders": "53"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "16866",
+          "emitted_orders": "3"
+        }
+      ],
+      "unresolved": false
+    },
+    {
+      "game": "combined-disabled-0-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "18130",
+          "polls": "30000",
+          "emitted_orders": "14"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "93"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-0-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "104"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "12429",
+          "polls": "30000",
+          "emitted_orders": "14"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-1-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "87"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "19513",
+          "polls": "30000",
+          "emitted_orders": "173"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-1-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "29972",
+          "polls": "30000",
+          "emitted_orders": "521"
+        },
+        {
+          "player": "1",
+          "ai": "2",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "90"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-2-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "3",
+          "tick": "20977",
+          "polls": "30000",
+          "emitted_orders": "237"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "4004",
+          "polls": "30000",
+          "emitted_orders": "6"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-2-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "8008",
+          "polls": "30000",
+          "emitted_orders": "10"
+        },
+        {
+          "player": "1",
+          "ai": "3",
+          "tick": "22035",
+          "polls": "30000",
+          "emitted_orders": "181"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-3-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "4",
+          "tick": "4004",
+          "polls": "30000",
+          "emitted_orders": "6"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "6397",
+          "polls": "30000",
+          "emitted_orders": "784"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-3-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "5943",
+          "polls": "30000",
+          "emitted_orders": "1037"
+        },
+        {
+          "player": "1",
+          "ai": "4",
+          "tick": "4004",
+          "polls": "30000",
+          "emitted_orders": "4"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-4-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "5",
+          "tick": "5944",
+          "polls": "30000",
+          "emitted_orders": "811"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29977",
+          "polls": "30000",
+          "emitted_orders": "15"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-4-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29977",
+          "polls": "30000",
+          "emitted_orders": "9"
+        },
+        {
+          "player": "1",
+          "ai": "5",
+          "tick": "6402",
+          "polls": "30000",
+          "emitted_orders": "789"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-5-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "6",
+          "tick": "29977",
+          "polls": "30000",
+          "emitted_orders": "9"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "69"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-5-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "71"
+        },
+        {
+          "player": "1",
+          "ai": "6",
+          "tick": "29977",
+          "polls": "30000",
+          "emitted_orders": "17"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-6-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "81"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "29915",
+          "polls": "30000",
+          "emitted_orders": "541"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-6-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "29946",
+          "polls": "30000",
+          "emitted_orders": "573"
+        },
+        {
+          "player": "1",
+          "ai": "8",
+          "tick": "30000",
+          "polls": "30000",
+          "emitted_orders": "76"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-7-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "7",
+          "tick": "29962",
+          "polls": "30000",
+          "emitted_orders": "594"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "8617",
+          "polls": "30000",
+          "emitted_orders": "28"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-7-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "16240",
+          "polls": "30000",
+          "emitted_orders": "14"
+        },
+        {
+          "player": "1",
+          "ai": "7",
+          "tick": "29944",
+          "polls": "30000",
+          "emitted_orders": "568"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-javascript-0",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        },
+        {
+          "player": "1",
+          "ai": "1",
+          "tick": "22775",
+          "polls": "30000",
+          "emitted_orders": "14"
+        }
+      ],
+      "unresolved": true
+    },
+    {
+      "game": "combined-disabled-javascript-1",
+      "rules": {
+        "noUpgrades": 1,
+        "noHunger": 1,
+        "peaceful": 1,
+        "noGrowth": 1,
+        "stockpile": 3
+      },
+      "ticks": 30000,
+      "controllers": [
+        {
+          "player": "0",
+          "ai": "1",
+          "tick": "13774",
+          "polls": "30000",
+          "emitted_orders": "12"
+        },
+        {
+          "player": "1",
+          "ai": "9",
+          "tick": "0",
+          "polls": "30000",
+          "emitted_orders": "1"
+        }
+      ],
+      "unresolved": true
+    }
+  ]
+}

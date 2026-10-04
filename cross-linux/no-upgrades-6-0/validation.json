@@ -1,0 +1,26 @@
+{
+  "name": "no-upgrades-6-0",
+  "command": [
+    "/home/bradley/glob2-ai-rules-validation/build/linux/client/release/src/glob2",
+    "--run-game",
+    "--load-game",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-input/no-upgrades-6-0/initial.game.gz",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "1",
+    "--compute-experiments",
+    "none",
+    "--output-dir",
+    "/home/bradley/glob2-ai-rules-validation/artifacts/ai-rules/cross-linux/no-upgrades-6-0",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--telemetry",
+    "team-timeline"
+  ],
+  "exit_code": 0,
+  "initial_sha256": "feb32385c17f9f2c9dab8ca5fd578ec9054722abf4e088513964d00b2b97a931",
+  "trace_sha256": "4e4a8804d5fa09e3f6666b924ae9a4ede7105ecc0363cb584882bac411eec799"
+}
