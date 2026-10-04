@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <deque>
 #include <filesystem>
+#include <fstream>
 #include <map>
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -409,11 +410,27 @@ struct LanMatch
 		// Preserve connection and map-transfer errors when an asynchronous phase
 		// times out, rather than reporting only that its predicate stayed false.
 		MESSAGE("LAN host state: " << hostSide().state().toJson().dump());
+		nlohmann::json diagnostics = nlohmann::json::array();
 		for (const auto& player : players)
-			if (const auto* guest = player->room->guestSide())
-				MESSAGE(player->name << ": phase=" << static_cast<int>(guest->phase())
-				        << " reason=" << guest->closeReason() << " detail=" << guest->closeDetail()
-				        << " map=" << guest->downloadPercent());
+		{
+			nlohmann::json state = {{"name", player->name}, {"launched", player->launched},
+			                        {"stopped", player->stopped}, {"finished", player->finished.has_value()}};
+			if (const auto* guest = player->room ? player->room->guestSide() : nullptr)
+			{
+				state["guest"] = {{"phase", static_cast<int>(guest->phase())}, {"reason", guest->closeReason()},
+				                  {"detail", guest->closeDetail()}, {"map", guest->downloadPercent()},
+				                  {"endReason", guest->endReason()}};
+				MESSAGE(player->name << ": " << state["guest"].dump());
+			}
+			if (player->engine && player->engine->turnLockstep())
+			{
+				const auto& turn = player->session();
+				state["turn"] = {{"state", static_cast<int>(turn.state())}, {"tick", turn.executedTick()},
+				                 {"catchingUp", turn.catchingUp()}};
+			}
+			diagnostics.push_back(std::move(state));
+		}
+		std::ofstream(directory / "timeout.json") << diagnostics.dump(2) << '\n';
 		return false;
 	}
 };
@@ -532,6 +549,41 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
+	TEST_CASE("LAN departure waits for asynchronous transport writes")
+	{
+		class DelayedWrite final : public NetTransport
+		{
+		public:
+			std::size_t pending = 0;
+			void open(const std::string&, std::uint16_t) override {}
+			void close() override { pending = 0; }
+			State state() const override { return State::Connected; }
+			bool send(std::vector<std::uint8_t> bytes) override { pending += bytes.size(); return true; }
+			bool receive(std::vector<std::uint8_t>&) override { return false; }
+			std::size_t pendingOutgoing() const override { return pending; }
+		};
+		auto transport = std::make_unique<DelayedWrite>();
+		auto& wire = *transport;
+		Lan::LanLink link(std::move(transport));
+		CHECK(link.outboxEmpty());
+		REQUIRE(link.send(Lan::encodeJson({{"type", "closed"}, {"reason", "host-left"}})));
+		CHECK(wire.pending > 0);
+		CHECK_FALSE(link.outboxEmpty());
+		wire.pending = 0; // the platform completes the queued write
+		CHECK(link.outboxEmpty());
+	}
+
+	GLOB2_TEST_CASE("timeout diagnostics tolerate a destroyed guest room", "[network]")
+	{
+		glob2test::HeadlessGlobals globals(harnessGlobals());
+		LanMatch match;
+		match.directory = glob2test::artifactDir() / "timeout-diagnostics";
+		fs::create_directories(match.directory);
+		match.players.push_back(std::make_unique<LanPlayer>("Host", hostRoom(testPort(0), match.directory), 101));
+		match.players.push_back(std::make_unique<LanPlayer>("Crashed guest", nullptr, 102));
+		CHECK_FALSE(match.runUntil(0, [] { return false; }));
+	}
+
 	// The case name becomes an artifact directory; leave room for the 64-byte
 	// map hash and cache suffix under Windows' legacy file-path limit.
 	GLOB2_TEST_CASE("LAN WSS drop, restart and host departure",

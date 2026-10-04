@@ -88,7 +88,8 @@ namespace Lan
 		bool receive(std::vector<std::uint8_t>& payload);
 		/// Sends what the transport will take now.
 		void flush();
-		bool outboxEmpty() const { return outbox.empty(); }
+		/// Includes asynchronous writes already accepted by the transport.
+		bool outboxEmpty() const { return outbox.empty() && (!transport || transport->pendingOutgoing() == 0); }
 		/// As NetTransport::waitHandles; Ready while whole frames wait to be received.
 		NetWaitStatus waitHandles(std::vector<NetWaitHandle>& handles) const;
 		void close();

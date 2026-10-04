@@ -63,6 +63,20 @@ class FailingHardware final : public VideoEncoder
 }
 TEST_SUITE("RecordingSession")
 {
+	TEST_CASE("session index creation preserves an existing recording")
+	{
+		auto path = output("exclusive") + ".session.json";
+		const std::string original = "{\"segments\":[]}";
+		{
+			auto file = openNativeRecordingFile(path, true);
+			REQUIRE(file->write(reinterpret_cast<const unsigned char *>(original.data()), original.size()) == int(original.size()));
+			file->flush();
+		}
+		CHECK_THROWS_AS(openNativeRecordingFile(path, true), std::runtime_error);
+		std::ifstream saved(path, std::ios::binary);
+		CHECK(std::string(std::istreambuf_iterator<char>(saved), {}) == original);
+	}
+
 	TEST_CASE("resize coalescing preserves full resolution and numbers completed segments")
 	{
 		auto path=output("resize"); auto files=nativeSessionStorage(); files.reserve(path);

@@ -247,6 +247,13 @@ class WssTransport final : public NetTransport
 		}
 		void cancel()
 		{
+			// Completed writes can still be queued in Winsock. A send shutdown
+			// preserves those final bytes before the socket handle is released.
+			if (status == State::Connected && outgoingBytes == 0)
+			{
+				Error ignored;
+				beast::get_lowest_layer(socket).socket().shutdown(tcp::socket::shutdown_send, ignored);
+			}
 			status = State::Closed;
 			resolver.cancel();
 			connectDeadline.cancel();

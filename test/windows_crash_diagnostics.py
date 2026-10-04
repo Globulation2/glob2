@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
@@ -25,6 +26,13 @@ def debugger_command(debugger, binary, suite, name):
     return [debugger, '--nx', '--batch', '--quiet', '-ex', 'set pagination off',
             '-ex', 'run', '-ex', 'thread apply all bt', '--args', str(binary),
             '--no-breaks=true', '-tc=' + doctest_pattern(name), '-ts=' + doctest_pattern(suite)]
+
+
+def print_diagnostic(text, stream=None):
+    stream = sys.stdout if stream is None else stream
+    encoding = stream.encoding or 'utf-8'
+    # Keep the raw bytes in the artifact; Windows consoles may use cp1252.
+    stream.write(text.encode(encoding, errors='backslashreplace').decode(encoding) + '\n')
 
 
 def main():
@@ -56,8 +64,8 @@ def main():
                 output = (error.stdout or b'') + b'\nCrash diagnostic replay timed out.\n'
             log = args.output / f'crash-{index}.log'
             log.write_bytes(output)
-            print(f'{suite}/{name}: {log}')
-            print(output.decode('utf-8', errors='replace'))
+            print_diagnostic(f'{suite}/{name}: {log}')
+            print_diagnostic(output.decode('utf-8', errors='replace'))
 
 
 if __name__ == '__main__':
