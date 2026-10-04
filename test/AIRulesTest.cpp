@@ -2,14 +2,20 @@
 #include "EngineFixtures.h"
 #include "AI.h"
 #include "AIRules.h"
+#include "AIRuleOrders.h"
+#include "ai/cortex/AICortex.h"
 #include "AICastor.h"
 #include "AICabino.h"
 #include "AINicowar.h"
 #include "AIMaxima.h"
+#include "AIMaximaFoodSupply.h"
 #include "ai/cortex/CortexPolicy.h"
 #include "ai/cortex/CortexQuery.h"
 #include "GameRuleOverrides.h"
 #include "Order.h"
+#include "ReplayReader.h"
+#include <FileManager.h>
+#include <cstdlib>
 #include "OrderValidation.h"
 #include "Player.h"
 #include "script/ScriptObservations.h"
@@ -76,7 +82,35 @@ std::string tick(Game& g)
 }
 TEST_SUITE("AIRules")
 {
-TEST_CASE("native controllers exclude disabled work and continue after reload")
+TEST_CASE("retained tournament replay contains no unavailable orders")
+{
+    const char* path=std::getenv("GLOB2_RULE_REPLAY");
+    if(!path) return; // Optional retained evidence; ordinary fixtures run below.
+    glob2test::HeadlessGlobals globals;
+    GameGUI gui(false);auto& g=gui.game;
+    auto* stream=new GAGCore::BinaryInputStream(globalContainer->fileManager->openInflatingInputStreamBackend(path));
+    REQUIRE(gui.load(stream));
+    glob2test::BoundGameRandom random(g);
+    ReplayReader reader;REQUIRE(reader.loadReplay(stream,false));
+    g.setWaitingOnMask(0);
+    while(!reader.isFinished())
+    {
+        while(reader.hasMoreOrdersThisStep())
+        {
+            auto order=reader.retrieveOrder();
+            CAPTURE(g.stepCounter);CAPTURE(order->sender);CAPTURE(order->getOrderType());
+            CHECK(AIRules::permittedQueuedOrder(g,*order));
+            g.executeOrder(order,0);
+        }
+        g.syncStep(0);reader.advanceStep();
+    }
+    for(int team=0;team<g.mapHeader.getNumberOfTeams();++team)
+        if(g.gameHeader.isUnitUpgradesDisabled()) {
+            CHECK(g.teams[team]->stats.measurements.trainingVisits[WORKER]==0);
+            CHECK(g.teams[team]->stats.measurements.trainingVisits[WARRIOR]==0);
+        }
+}
+TEST_CASE("native controllers exclude disabled work and continue after reload [slow]")
 {
     glob2test::HeadlessGlobals globals;
     for(auto id:controllers) for(int variant=0;variant<3;++variant)
@@ -94,7 +128,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload")
         w.addBuilding("school",3,35,1);w.addBuilding("racetrack",10,35);
         w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,20,12,0,2);
         if(variant==2) {
-            for(auto* b:g.teams[0]->myBuildings) if(b) {b->resources[WHEAT]=0;b->update();}
+            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->resources[WHEAT]=0;b->update();}
             for(int y=20;y<28;++y) for(int x=3;x<29;++x) g.map.getResource(x,y).amount=0;
         }
         g.teams[0]->stats.step(g.teams[0]);g.players[0]->makeItAI(id);g.setWaitingOnMask(0);
@@ -158,6 +192,31 @@ TEST_CASE("engine prevents training and upgrades while retaining repairs and sta
     g.gameHeader.setHungerDisabled(true);worker->hungry=0;
     CHECK(!worker->isUnitHungry());
 }
+TEST_CASE("restored controller queues discard unavailable work and release prerequisites")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& g=w.game;g.gameHeader.setUnitUpgradesDisabled(true);
+    g.gameHeader.setHungerDisabled(true);g.gameHeader.setPeacefulModeEnabled(true);
+    auto* inn=w.addBuilding("inn",4,4);
+    OrderConstruction upgrade(inn->gid,2,2);
+    CHECK(!AIRules::permittedQueuedOrder(g,upgrade));
+    inn->hp-=1;CHECK(AIRules::permittedQueuedOrder(g,upgrade));inn->hp+=1;
+    const int school=globalContainer->buildingsTypes.getTypeNum("school",0,true);
+    OrderCreate training(0,20,20,school,2,2);
+    CHECK(!AIRules::permittedQueuedOrder(g,training));
+    AICortex cortex(g.players[0]);
+    cortex.orderQueue.push(std::make_shared<OrderConstruction>(inn->gid,2,2));
+    CHECK(cortex.getOrder()->getOrderType()==ORDER_NULL);CHECK(cortex.orderQueue.empty());
+    NewNicowar nicowar;
+    AISharedRuntime::Runtime runtime(nullptr,g.players[0]);
+    nicowar.placement_queue.push_back(NewNicowar::RegularSchool);
+    nicowar.construction_queue.push_back(NewNicowar::RegularInn);
+    nicowar.buildings_under_construction_per_type[NewNicowar::RegularInn]=1;
+    nicowar.order_buildings(runtime);
+    CHECK(nicowar.placement_queue.empty());CHECK(nicowar.construction_queue.empty());
+    CHECK(nicowar.buildings_under_construction_per_type[NewNicowar::RegularInn]==0);
+}
 TEST_CASE("rule parser and script observations use effective match values")
 {
     glob2test::HeadlessGlobals globals;
@@ -201,6 +260,25 @@ TEST_CASE("no growth farms harvest their finite seed rather than waiting forever
     w.game.gameHeader.setResourceGrowthDisabled(true);
     CHECK(w.game.map.takeHarvest(4,5,1,0,WHEAT,w.team->me));
     CHECK(w.game.map.getResource(5,5).amount==0);
+}
+TEST_CASE("Maxima removes disabled reserves while retaining finite production supply")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame w(glob2test::GameOptions{.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& g=w.game;
+    w.addBuilding("school",4,4);w.addBuilding("swarm",12,4);w.addBuilding("hospital",20,4);
+    for(int i=0;i<40;++i)w.addUnit(WORKER,2+i%20,15+i/20);
+    AIMaxima::Maxima maxima(g.players[0]);
+    auto enabled=maxima.observe_labour(maxima.context);
+    CHECK(enabled.trainingSlots>0);
+    g.gameHeader.setUnitUpgradesDisabled(true);
+    auto disabled=maxima.observe_labour(maxima.context);
+    CHECK(disabled.trainingSlots==0);CHECK(disabled.trainable==0);
+    CHECK(AIMaxima::Labour::plan(disabled,maxima.labour_policy(),4).trainingReserve==0);
+    CHECK(disabled.hospitals==1);CHECK(disabled.swarms==1);
+    CHECK(AIMaxima::effectiveWheatRegrowth(&g.map,800)==800);
+    g.gameHeader.setResourceScarcityLevel(3);CHECK(AIMaxima::effectiveWheatRegrowth(&g.map,800)==100);
+    g.gameHeader.setResourceGrowthDisabled(true);CHECK(AIMaxima::effectiveWheatRegrowth(&g.map,800)==0);
 }
 TEST_CASE("Cortex excludes unavailable technology from scoring and feeding prerequisites")
 {

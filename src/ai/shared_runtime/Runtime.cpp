@@ -10,6 +10,7 @@
 #include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
+#include "AIRuleOrders.h"
 #include <tuple>
 
 using namespace AISharedRuntime;
@@ -278,6 +279,7 @@ std::shared_ptr<Order> Runtime::getOrder(void)
 		other_view=player->team->sharedVisionOther;
 	}
 
+	while (!orders.empty() && !AIRules::permittedQueuedOrder(*player->game, *orders.front())) orders.erase(orders.begin());
 	if(!orders.empty())
 	{
 		std::shared_ptr<Order> order=orders.front();

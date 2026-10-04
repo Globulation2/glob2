@@ -56,7 +56,8 @@ namespace Cortex
 	/// offense behind a level we cannot reach yet.
 	static int matchedWarriors(const CortexObservation& obs)
 	{
-		int required = (cortexTuning().warPrepLevelMatch != 0)
+		// Without training, matching an enemy level is an unattainable wait.
+		int required = (!obs.upgradesDisabled && cortexTuning().warPrepLevelMatch != 0)
 			? obs.enemyWarriorLevelLatched : 0;
 		const int brkLevel  = cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK);
 		const int trainable = (brkLevel < 0) ? 0 : brkLevel + 1;

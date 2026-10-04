@@ -9,6 +9,7 @@
 #include "Brush.h"
 #include "Building.h"
 #include "Game.h"
+#include "AIRuleOrders.h"
 #include "GlobalContainer.h"
 #include "IntBuildingType.h"
 #include "Unit.h"
@@ -1254,6 +1255,7 @@ shared_ptr<Order> Context::getOrder(RuntimeAI& ai)
 		?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point();
 	buildings.observe_buildings();
 	activeAI=&ai;if(!initialized)initialize();gradients.update(player->game->stepCounter);
+	while (!orders.empty() && !AIRules::permittedQueuedOrder(*player->game, *orders.front())) orders.pop_front();
 	if(!orders.empty())
 	{
 		shared_ptr<Order> order=orders.front();orders.pop_front();

@@ -8,6 +8,7 @@
 #include "CortexWheat.h"
 
 #include "Order.h"
+#include "AIRuleOrders.h"
 #include "OrderMessages.h"
 #include "Player.h"
 #include "team/Team.h"
@@ -396,6 +397,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 	Cortex::TuningScope tuningScope(runtimeTuning);
 	policy.telemetry = telemetry;
 	// Drain any Orders queued by a prior decision cycle, one per tick.
+	while (!orderQueue.empty() && !AIRules::permittedQueuedOrder(*player->game, *orderQueue.front())) orderQueue.pop();
 	if (!orderQueue.empty())
 	{
 		shared_ptr<Order> order = orderQueue.front();
@@ -932,6 +934,7 @@ shared_ptr<Order> AICortex::getOrder(void)
 		else if (policy.wantWheatProtection(obs))
 			enqueueWheatForbidden(obs);
 
+		while (!orderQueue.empty() && !AIRules::permittedQueuedOrder(*player->game, *orderQueue.front())) orderQueue.pop();
 		if (!orderQueue.empty())
 		{
 			shared_ptr<Order> order = orderQueue.front();

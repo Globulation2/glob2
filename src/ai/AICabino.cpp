@@ -14,6 +14,7 @@
 #include "Building.h"
 #include "GlobalContainer.h"
 #include "Order.h"
+#include "AIRuleOrders.h"
 #include "Player.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -232,6 +233,7 @@ std::shared_ptr<Order>AICabino::getOrder(void)
 {
 
 	//See if there is an existing order that the AI wanted to have done
+	while (!orders.empty() && !AIRules::permittedQueuedOrder(*game, *orders.front())) orders.pop();
 	if (!orders.empty())
 	{
 		std::shared_ptr<Order> order = orders.front();
@@ -291,6 +293,7 @@ std::shared_ptr<Order>AICabino::getOrder(void)
 		}
 	};
 
+	while (!orders.empty() && !AIRules::permittedQueuedOrder(*game, *orders.front())) orders.pop();
 	if (!orders.empty())
 	{
 		std::shared_ptr<Order> order = orders.front();
@@ -1593,7 +1596,7 @@ bool GeneralsDefense::updateDefenseFlags()
 						i->flag=b->gid;
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(i->flag, eb->unitStayRange)));
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(i->flag, eb->maxUnitWorking)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, eb->minLevelToFlag)));
+						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(i->flag, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : eb->minLevelToFlag)));
 						break;
 					}
 				}
@@ -1823,7 +1826,9 @@ bool PrioritizedBuildingAttack::attack()
 	if(total>0)
 		average_unit_strength_level=static_cast<unsigned int>(average_unit_strength_level/total)-1;
 
-	unsigned int strength_level=USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level;
+	// The standing army cannot train to the barracks-derived recruitment level.
+	unsigned int strength_level=ai.game->gameHeader.isUnitUpgradesDisabled() ? 0
+		: (USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level);
 
 	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
 	if(!ai.game->gameHeader.isUnitUpgradesDisabled() && (max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0))
@@ -1995,7 +2000,7 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyFlag(b->gid, radius)));
 						ai.orders.push(std::shared_ptr<Order>(new OrderModifyBuilding(b->gid, j->assigned_units)));
-						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, j->assigned_level)));
+						ai.orders.push(std::shared_ptr<Order>(new OrderModifyMinLevelToFlag(b->gid, ai.game->gameHeader.isUnitUpgradesDisabled() ? 0 : j->assigned_level)));
 						ai.getUnitModule()->request("PrioritizedBuildingAttack", WARRIOR, ATTACK_STRENGTH, j->assigned_level+1, j->assigned_units, j->flag);
 						break;
 					}
@@ -2057,7 +2062,9 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	}
 	if(total>0)
 		average_unit_strength_level=static_cast<unsigned int>(average_unit_strength_level/total)-1;
-	unsigned int strength_level=USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level;
+	// The standing army cannot train to the barracks-derived recruitment level.
+	unsigned int strength_level=ai.game->gameHeader.isUnitUpgradesDisabled() ? 0
+		: (USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level);
 
 	//Get the number of available units, and go though the record, modifying the number of units assigned to each as
 	//neccessary in order to keep up with the defending soldiers
@@ -2475,6 +2482,8 @@ bool DistributedNewConstructionManager::constructBuildings()
 	unsigned int min_failed_height=512;
 	for(std::vector<typePercent>::iterator i = construction_priorities.begin(); i!=construction_priorities.end(); ++i)
 	{
+		if (!AIRules::usefulBuilding(ai.game->gameHeader,i->building_type)
+			|| (ai.game->gameHeader.isHungerDisabled() && i->building_type==IntBuildingType::FOOD_BUILDING)) continue;
 		std::string building_name=IntBuildingType::reverseConversionMap[i->building_type];
 		if(CabinoStatusUpdate)
 		{

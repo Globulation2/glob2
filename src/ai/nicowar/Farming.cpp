@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "AITelemetryFields.h"
+#include "Game.h"
 #include "AINicowar.h"
 #include "Building.h"
 #include "Unit.h"
@@ -17,7 +18,7 @@ using namespace AISharedRuntime::SearchTools;
 
 void NewNicowar::update_farming(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Protecting growth cells would permanently withhold resources without regrowth.
 	if (runtime.player->game->gameHeader.isResourceGrowthDisabled()) return;
 	telemetry.count(AITrace::AI5::NewNicowar_update_farming_calls);
 	//Farming wheat and wood in areas near water

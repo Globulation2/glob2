@@ -17,7 +17,7 @@ using std::shared_ptr;
 
 std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, Sint32 numberRequested)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
 	if (game->gameHeader.isPeacefulModeEnabled()) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_numberRequested, numberRequested);
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalTimeout, criticalTimeout);
@@ -282,7 +282,7 @@ std::shared_ptr<Order> tryUpgradeRung(
 // NullOrder if neither rung is eligible.
 std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigger)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (game->gameHeader.isUnitUpgradesDisabled()) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ntrigger, ntrigger);
 	telemetry.set(AITrace::AI1::AINumbi_mayUpgrade_input_ptrigger, ptrigger);

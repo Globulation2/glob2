@@ -2,6 +2,7 @@
 // Copyright (C) 2006 Bradley Arsenault
 
 #include "AITelemetryFields.h"
+#include "Game.h"
 #include "AINicowar.h"
 #include "FormatableString.h"
 #include <string>
@@ -30,7 +31,7 @@ void NewNicowar::queue_buildings(Runtime& runtime)
 
 void NewNicowar::queue_inns(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Feeding capacity cannot constrain production when units never need meals.
 	if (runtime.player->game->gameHeader.isHungerDisabled()) return;
 	//Get some statistics
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
@@ -106,7 +107,7 @@ void NewNicowar::queue_swarms(Runtime& runtime)
 
 void NewNicowar::queue_racetracks(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::WALKSPEED_BUILDING));
@@ -132,7 +133,7 @@ void NewNicowar::queue_racetracks(Runtime& runtime)
 
 void NewNicowar::queue_swimmingpools(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::SWIMSPEED_BUILDING));
@@ -158,7 +159,7 @@ void NewNicowar::queue_swimmingpools(Runtime& runtime)
 
 void NewNicowar::queue_schools(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Training cannot increase levels here; do not fund or wait for an impossible upgrade.
 	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::SCIENCE_BUILDING));
@@ -184,8 +185,9 @@ void NewNicowar::queue_schools(Runtime& runtime)
 
 void NewNicowar::queue_barracks(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
-	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()) return;
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
+	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()
+		|| runtime.player->game->gameHeader.isUnitUpgradesDisabled()) return;
 	BuildingSearch bs_finished(runtime);
 	bs_finished.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	bs_finished.add_condition(new NotUnderConstruction);
@@ -245,7 +247,7 @@ void NewNicowar::order_buildings(Runtime& runtime)
 	telemetry.count(AITrace::AI5::NewNicowar_order_buildings_calls);
 	const auto& rules=runtime.player->game->gameHeader;
 	const auto unavailable=[&](BuildingPlacement b) {
-		return (rules.isUnitUpgradesDisabled() && (b==RegularSchool || b==RegularRacetrack || b==RegularSwimmingpool))
+		return (rules.isUnitUpgradesDisabled() && (b==RegularSchool || b==RegularRacetrack || b==RegularSwimmingpool || b==RegularBarracks))
 			|| (rules.isPeacefulModeEnabled() && b==RegularBarracks)
 			|| (rules.isHungerDisabled() && (b==RegularInn || b==StarvingRecoveryInn));
 	};

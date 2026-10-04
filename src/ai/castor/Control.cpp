@@ -157,7 +157,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 
 std::shared_ptr<Order>AICastor::expandFood()
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Feeding capacity cannot constrain production when units never need meals.
 	if (game->gameHeader.isHungerDisabled()) return {};
 	telemetry.count(AITrace::AI2::AICastor_expandFood_calls);
 	if (foodSurplus
@@ -188,7 +188,7 @@ std::shared_ptr<Order>AICastor::expandFood()
 
 std::shared_ptr<Order>AICastor::controlFood()
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Feeding capacity cannot constrain production when units never need meals.
 	if (game->gameHeader.isHungerDisabled()) return {};
 	telemetry.count(AITrace::AI2::AICastor_controlFood_calls);
 	int wMask=map->wMask;
@@ -413,7 +413,7 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 
 std::shared_ptr<Order>AICastor::controlStrikes()
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
 	if (game->gameHeader.isPeacefulModeEnabled()) return {};
 	telemetry.count(AITrace::AI2::AICastor_controlStrikes_calls);
 	controlStrikesTimer=timer+AI_CASTOR_CONTROL_STRIKES_INTERVAL;

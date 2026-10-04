@@ -60,7 +60,7 @@ void NewNicowar::attack_building(Runtime& runtime)
 	bo->add_constraint(new CenterOfBuilding(building));
 	unsigned int id=runtime.add_building_order(bo);
 
-	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(runtime.player->game->gameHeader.isUnitUpgradesDisabled() ? 0 : AI_NICOWAR_WAR_FLAG_MIN_LEVEL,id);
+	ManagementOrder* mo_minimum=new ChangeFlagMinimumLevel(runtime.player->game->gameHeader.isUnitUpgradesDisabled() ? 1 : AI_NICOWAR_WAR_FLAG_MIN_LEVEL,id);
 	runtime.add_management_order(mo_minimum);
 
 	ManagementOrder* mo_destroyed_1=new DestroyBuilding(id);
@@ -77,7 +77,7 @@ void NewNicowar::attack_building(Runtime& runtime)
 
 void NewNicowar::control_attacks(Runtime& runtime)
 {
-	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	// Combat cannot damage opponents here; military work must not reserve economic labour.
 	if (runtime.player->game->gameHeader.isPeacefulModeEnabled()) return;
 	telemetry.count(AITrace::AI5::NewNicowar_control_attacks_calls);
 	choose_enemy_target(runtime);

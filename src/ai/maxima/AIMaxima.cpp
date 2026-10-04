@@ -2740,7 +2740,7 @@ void Maxima::arbitrate_policy_bids()
 			? offense.desired_warriors : 0);
 	const bool army_short=snapshot.warriors<result.desired_warriors;
 	const auto barracks=barracks_capacity(context);
-	if(army_short && snapshot.workers>=strategy.military.second_barracks_population_min)
+	if(!rules.isUnitUpgradesDisabled() && army_short && snapshot.workers>=strategy.military.second_barracks_population_min)
 	{
 		// Keep one training place per four wanted warriors. Credit the finished
 		// capacity of existing upgrade sites instead of imposing a building cap.
@@ -2775,7 +2775,7 @@ void Maxima::arbitrate_policy_bids()
 	const int training_backlog_limit=Labour::warriorBacklogLimit(
 		std::max(labour_observation.barracksSeats,barracks.second),
 		strategy.military.training_backlog_floor);
-	if(strategy.military.warrior_training_backlog_throttle_enabled
+	if(!rules.isUnitUpgradesDisabled() && strategy.military.warrior_training_backlog_throttle_enabled
 	   && untrained_warriors>=training_backlog_limit)
 	{
 		result.warrior_ratio=0;
@@ -2859,6 +2859,7 @@ void Maxima::arbitrate_policy_bids()
 	// Arbitration can add tactical minima; strip only unavailable capabilities.
 	if (rules.isUnitUpgradesDisabled())
 	{ result.desired_schools=result.desired_racetracks=result.desired_pools=0;
+	  result.desired_barracks=0;
 	  result.allow_upgrades=result.allow_level2_upgrades=false; }
 	if (rules.isHungerDisabled()) result.desired_inns=0;
 	if (rules.isPeacefulModeEnabled())
@@ -3056,7 +3057,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.tactical_review_interval=strategy.tactics.review_interval_ticks;
 	budget.tactics_enabled=strategy.tactics.enabled;
 	if(tactical_mission.flagId<0)
-		budget.tactical_flag_level=runtime.player->game->gameHeader.isUnitUpgradesDisabled() ? 0 : strategy.tactics.flag_minimum_level;
+		budget.tactical_flag_level=runtime.player->game->gameHeader.isUnitUpgradesDisabled() ? 1 : strategy.tactics.flag_minimum_level;
 	budget.tactical_siege_radius=strategy.tactics.siege_flag_radius;
 	budget.raid_flag_radius=strategy.raiding.flag_radius;
 	budget.tactical_stall_ticks=strategy.tactics.stall_ticks;
@@ -4035,7 +4036,8 @@ Maxima::collect_building_profiles() const
 					if(complete->upgrade[ability]>0&&complete->upgradeTime[ability]>0)
 						value.serviceThroughput+=complete->upgrade[ability]*100
 							/complete->upgradeTime[ability];
-			value.durability=complete->hpMax;
+			// The profile has no live Building; use the canonical effective HP scale.
+			value.durability=complete->hpMax*context.player->game->gameHeader.getBuildingHpMultiplier();
 			value.capability=complete->prestige;
 			for(int ability=0;ability<NB_ABILITY;++ability)
 				value.capability+=complete->upgrade[ability]>0;
@@ -4212,7 +4214,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 		// Resource amounts fluctuate on virtually every harvest. Placement routes,
 		// legality and blocked intents depend on resource presence, not stack size;
 		// keep live amounts for scoring without invalidating topology caches.
-		tile.fertility=cachedFertility?fertilityValues[index]:cell.fertility;
+		tile.fertility=Uint32(effectiveWheatRegrowth(map,cachedFertility?fertilityValues[index]:cell.fertility));
 		int expansionNeighbors=0;
 		if((tile.resourceType==WHEAT||tile.resourceType==WOOD)&&tile.resourceAmount>0)
 		{
@@ -5501,8 +5503,11 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 			++result.inns;
 			result.innSeats+=b->maxUnitInside;
 		}
-		const bool trains=b->type->upgrade[WALK] || b->type->upgrade[BUILD]
-			|| b->type->upgrade[HARVEST] || (swimming && b->type->upgrade[SWIM]);
+		// Idle training reserves cannot pay off when units cannot learn. Existing
+		// hospitals and barracks still provide healing, so only training seats go.
+		const bool trains=!runtime.player->game->gameHeader.isUnitUpgradesDisabled()
+			&& (b->type->upgrade[WALK] || b->type->upgrade[BUILD]
+			|| b->type->upgrade[HARVEST] || (swimming && b->type->upgrade[SWIM]));
 		if(trains)
 		{
 			schools.push_back(b);
@@ -5514,11 +5519,11 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		const Unit* u=team->myUnits[id];
 		if(!u || u->isDead) continue;
 		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
-		if(u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
+		if(!runtime.player->game->gameHeader.isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
 		if(u->typeNum!=WORKER) continue;
 		++result.workers;
 		if(u->level[WALK]==0) ++result.untrainedWalkers;
-		if(u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
+		if(!runtime.player->game->gameHeader.isHungerDisabled() && u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
 		if(u->medical==Unit::MED_DAMAGED){++result.hurt;continue;}
 		if(u->activity==Unit::ACT_UPGRADING)
 		{

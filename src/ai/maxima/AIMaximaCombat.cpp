@@ -359,6 +359,8 @@ void Maxima::plan_offense(Context& runtime)
 	// Once found, its recruitment rule is authoritative (stored zero-based).
 	int flag_level=active ? (flag ? flag->minLevelToFlag+1
 		: budget.tactical_flag_level) : strategy.tactics.flag_minimum_level;
+	// Both the muster and flag use one-based levels; disabled training recruits base-level warriors.
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) flag_level=1;
 	muster(flag_level);
 	if(!active && flag_level>1
 	   && !strength_sufficient(eligible_damage_rate))
@@ -383,7 +385,8 @@ void Maxima::plan_offense(Context& runtime)
 	for(int id=0; id<Building::MAX_COUNT; ++id)
 	{
 		const Building* b=runtime.player->team->myBuildings[id];
-		if(!b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
+		if(runtime.player->game->gameHeader.isUnitUpgradesDisabled()
+		   || !b || b->type->shortTypeNum!=IntBuildingType::ATTACK_BUILDING
 		   || b->type->isBuildingSite)continue;
 		const int capacity=b->maxUnitInside-int(b->unitsInside.size());
 		if(capacity>0){barracks.push_back(b);capacities.push_back(capacity);}

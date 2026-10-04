@@ -13,17 +13,14 @@ function step(ctx) {
   // Training-only buildings cannot help when upgrades are disabled. Keep
   // hospitals, swarms and construction staffed: their work is still useful.
   const types = ctx.game.buildingTypes();
-  const building = buildings.find(b => {
-    if (b.virtual) return false;
+  const workersFor = b => {
     const type = types.find(t => t.id === b.type);
     const trainingOnly = type && ['school', 'racetrack', 'swimmingpool'].includes(type.name);
-    const wanted = rules.noUpgrades && trainingOnly && !type.site ? 0 : 2;
-    return b.workers !== wanted;
-  });
+    return rules.noUpgrades && trainingOnly && !type.site ? 0 : 2;
+  };
+  const building = buildings.find(b => !b.virtual && b.workers !== workersFor(b));
   if (building) {
-    const type = types.find(t => t.id === building.type);
-    const trainingOnly = type && ['school', 'racetrack', 'swimmingpool'].includes(type.name);
-    return {type: 'workers', building, workers: rules.noUpgrades && trainingOnly && !type.site ? 0 : 2};
+    return {type: 'workers', building, workers: workersFor(building)};
   }
   return null;
 }

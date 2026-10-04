@@ -218,6 +218,8 @@ namespace Cortex
 	// train to attack level 1 and get healed between fights. One is enough.
 	ScoredAction CortexPolicy::scoreBarracks(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// New barracks fund training; hospitals and existing barracks retain healing.
+		if (obs.upgradesDisabled) return cortexDecline();
 		if (f.combatPhase && f.barracks == 0 && f.barracksSites == 0)
 		{
 			const int slot = firstValidCandidate(obs, CORTEX_BUILD_ATTACK);

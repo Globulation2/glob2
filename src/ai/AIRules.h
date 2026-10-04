@@ -17,7 +17,9 @@ inline bool trainingBuilding(int type)
 }
 inline bool usefulBuilding(const GameHeader& rules, int type)
 {
-    if (rules.isUnitUpgradesDisabled() && trainingBuilding(type)) return false;
+    // New barracks are a training investment in these controllers. Hospitals
+    // still provide healing; existing barracks retain their healing service.
+    if (rules.isUnitUpgradesDisabled() && (trainingBuilding(type) || type==IntBuildingType::ATTACK_BUILDING)) return false;
     if (rules.isPeacefulModeEnabled()
         && (type == IntBuildingType::ATTACK_BUILDING
             || type == IntBuildingType::DEFENSE_BUILDING

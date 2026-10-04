@@ -101,7 +101,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
 
-	if(!rules.isPeacefulModeEnabled() && stat->totalUnit>=strategy.war_preparation_phase_unit_min && (warrior_count < strategy.war_preparation_phase_trained_warrior_max || barracks_count<strategy.war_preparation_phase_barracks_max))
+	if(!rules.isPeacefulModeEnabled() && stat->totalUnit>=strategy.war_preparation_phase_unit_min && (warrior_count < strategy.war_preparation_phase_trained_warrior_max || (!rules.isUnitUpgradesDisabled() && barracks_count<strategy.war_preparation_phase_barracks_max)))
 	{
 		war_preparation=true;
 	}

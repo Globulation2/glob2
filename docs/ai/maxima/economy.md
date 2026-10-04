@@ -34,6 +34,13 @@ catchment is empty, a shared search from completed inns and swarms looks for
 reachable growing wheat and discounts remote supply by route distance. Stored
 wheat alone is not recurring supply.
 
+Custom game rules remove unavailable work before budgets are allocated. With
+upgrades disabled, training reserves and barracks expansion disappear, and
+recruitment accepts the standing army. Hospitals and existing barracks still
+provide healing. Without hunger, feeding demand does not suppress growth, while
+swarms still need wheat for production. Resource estimates scale renewable yield
+by scarcity and count only standing supply when regrowth is disabled.
+
 ## Local staffing
 
 Every completed inn and swarm samples corn stock as a share of its capacity

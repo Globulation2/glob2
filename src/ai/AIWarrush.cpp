@@ -381,7 +381,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		//build more barracks! (this also builds the first barracks...)
 		if(verbose)std::cout << "Chance to build barracks: ";
 		if(
-			!game->gameHeader.isPeacefulModeEnabled()
+			!game->gameHeader.isPeacefulModeEnabled() && !game->gameHeader.isUnitUpgradesDisabled()
 			&& allOfBuildingTypeAreCompleted(IntBuildingType::ATTACK_BUILDING)
 			&& allOfBuildingTypeAreFull(IntBuildingType::ATTACK_BUILDING)
 				)
