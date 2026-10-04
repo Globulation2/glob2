@@ -5130,3 +5130,7 @@ Markas per koloni; satu markas adalah satu tim dari peta seperti digambar, beser
 
 [Units gain levels at schools.]
 
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+

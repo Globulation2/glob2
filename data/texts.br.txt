@@ -5130,3 +5130,7 @@ Bases por colônia; uma base é um time do mapa como foi desenhado, com seus pr�
 
 [Units gain levels at schools.]
 
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+

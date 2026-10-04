@@ -5130,3 +5130,7 @@ Bases par colonie ; une base est une équipe de la carte telle que dessinée, av
 
 [Units gain levels at schools.]
 
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+

@@ -5130,3 +5130,7 @@ Basen pro Kolonie; eine Basis ist ein Team der gezeichneten Karte mit seinen Geb
 
 [Units gain levels at schools.]
 
+[settings Record your games as MP4 videos with sound.]
+
+[settings Recording uses the full rendered resolution at 30 FPS.]
+
