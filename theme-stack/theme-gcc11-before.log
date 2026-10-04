@@ -1,0 +1,7 @@
+src/ui/ThemeCatalog.cpp: In function ‘void Glob2UI::{anonymous}::readColors(const Json&, const std::pair<const char*, GAGCore::Color Struct::*> (&)[N], Struct&, const string&, std::vector<std::__cxx11::basic_string<char> >&)’:
+src/ui/ThemeCatalog.cpp:100:93: error: expected primary-expression before ‘>’ token
+  100 |                 const auto color = value.is_string() ? parseThemeColor(value.get<std::string>()) : std::nullopt;
+      |                                                                                             ^
+src/ui/ThemeCatalog.cpp:100:95: error: expected primary-expression before ‘)’ token
+  100 |                 const auto color = value.is_string() ? parseThemeColor(value.get<std::string>()) : std::nullopt;
+      |                                                                                               ^

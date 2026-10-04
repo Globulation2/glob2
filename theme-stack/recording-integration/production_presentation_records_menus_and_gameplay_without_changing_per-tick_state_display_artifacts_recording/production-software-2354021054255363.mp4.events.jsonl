@@ -1,0 +1,9 @@
+{"time_us":0,"kind":"chapter","id":1,"phase":"menu","screen":"main_menu","dialog":"","match":0,"mode":"","map":"","team":-1}
+{"time_us":591831,"kind":"match_start","value":"single_player"}
+{"time_us":600000,"kind":"chapter","id":2,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":1,"era_start":0,"era_end":20}
+{"time_us":1033333,"kind":"chapter","id":3,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":20,"era_start":20,"era_end":40}
+{"time_us":1066666,"kind":"chapter","id":4,"phase":"dialog","screen":"game_session","dialog":"in_game_main","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":20}
+{"time_us":1333333,"kind":"chapter","id":5,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":21,"era_start":20,"era_end":40}
+{"time_us":1733333,"kind":"chapter","id":6,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":40,"era_start":40,"era_end":60}
+{"time_us":2000000,"kind":"capture_gap","dropped_frames":1,"dropped_audio_samples":0}
+{"time_us":2166666,"kind":"chapter","id":7,"phase":"results","screen":"end_game","dialog":"","match":2,"mode":"single_player","map":"Recording initial state","team":0,"tick":60}

@@ -1,0 +1,40 @@
+FAIL glob2-unit-tests CortexUpgrade (5 cases) (0.0s)
+PASS TeamStatsSave/places: own buildings first, then enemies; allies, flags and new buildings do not count (0.0s)
+PASS TeamStatsSave/combat deaths are attributed by place and assignment (0.0s)
+PASS TeamStatsSave/defence snapshot counts warriors by place and enemy warriors at home (0.0s)
+PASS TeamStatsSave/every live worker-tick lands in exactly one labour bucket (0.0s)
+PASS TeamStatsSave/legacy version 84 fixture replays the golden trace [save-format][golden] (0.0s)
+PASS TeamStatsSave/legacy version 88 fixture replays the golden trace [save-format][golden] (0.0s)
+PASS TeamStatsSave/place lookup agrees with a brute-force scan of every building tile (0.1s)
+PASS TeamStatsSave/labour, combat and defence measurements survive a save [save-format] (0.1s)
+PASS TeamStatsSave/older saves load with labour coverage starting at the loaded tick [save-format] (0.1s)
+PASS TeamStatsSave/Compact team histories preserve samples across two batch boundaries (0.2s)
+PASS TeamStatsSave/AI telemetry continues across a save [save-format] (0.7s)
+PASS TeamStatsSave/Compact telemetry retains every sample across chunk boundaries (1.1s)
+FAIL TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] (1.2s)
+PASS TeamStatsSave/measurement screenshots [display][artifacts] (1.7s)
+
+===== FAIL TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/work/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "c0595e18e489dd368709f2c876412eb79361bc64", "sourceStatus": [], "sourceTreeSha256": "e3821a974a50cafe8beb275de4d49ffe67ced906764c327bb3abcecfdc0c609e"}
+AI telemetry schemas, identity, sampling, checksums, replay availability, save continuation and numeric corruption tests passed
+
+[failure] 32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]: false
+src/team/stats/TeamStatsSaveHarness.cpp:45:
+REQUIRE( static_cast<bool>(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: disabled upgrades still complete a visit without a level gain
+
+
+===== FAIL glob2-unit-tests CortexUpgrade (5 cases) =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/work/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "c0595e18e489dd368709f2c876412eb79361bc64", "sourceStatus": [], "sourceTreeSha256": "e3821a974a50cafe8beb275de4d49ffe67ced906764c327bb3abcecfdc0c609e"}
+
+[failure] VersionBump: 20, 21
+src/ai/cortex/CortexUpgradeTest.cpp:104:
+CHECK_EQ( (Uint32)20, (Uint32)OBSERVATION_VERSION ) is NOT correct!
+  values: CHECK_EQ( 20, 21 )
+
+
+13 passed, 2 failed, 0 skipped (5.2s of test time)
+[run_tests] JUnit report: artifacts/ci-repair/rules-fixtures-before.xml (19 cases)

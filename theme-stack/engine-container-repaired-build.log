@@ -1,0 +1,207 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 10.65kB done
+#1 DONE 0.0s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+#2 DONE 0.2s
+
+#3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+#3 resolve docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/ubuntu:24.04
+#4 ...
+
+#5 [internal] load metadata for docker.io/library/node:22-bookworm-slim
+#5 DONE 0.1s
+
+#4 [internal] load metadata for docker.io/library/ubuntu:24.04
+#4 DONE 0.2s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 290B done
+#6 DONE 0.0s
+
+#7 [engine-agent  1/11] FROM docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+#7 resolve docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55 0.0s done
+#7 DONE 0.0s
+
+#8 [node-deps  1/17] FROM docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c
+#8 resolve docker.io/library/node:22-bookworm-slim@sha256:43ac6c60b8f89723f746e8a92ce91abd5017e627ce1ddfe4238355d3a30b772c 0.0s done
+#8 DONE 0.0s
+
+#9 [internal] load build context
+#9 transferring context: 859.41kB 0.5s done
+#9 DONE 0.6s
+
+#10 [source 1/1] COPY . /
+#10 DONE 1.8s
+
+#11 [cpp-deps 2/4] RUN apt-get update && apt-get install -y --no-install-recommends     ca-certificates git g++ make nasm python3 scons pkg-config cmake libfreetype-dev libvorbis-dev libogg-dev libspeex-dev     libboost-dev libssl-dev zlib1g-dev     libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxfixes-dev libxss-dev libxtst-dev     libfribidi-dev libpcre3-dev libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [cpp-deps 3/4] COPY deploy/source-identity.sh /usr/local/bin/source-identity
+#12 CACHED
+
+#13 [cpp-deps 4/4] WORKDIR /source
+#13 CACHED
+
+#14 [engine-build 1/4] COPY --from=engine-source / /source
+#14 DONE 2.8s
+
+#15 [engine-build 2/4] COPY deploy/sim_version.py /usr/local/bin/glob2-sim-version
+#15 DONE 0.1s
+
+#16 [engine-build 3/4] RUN source-identity
+#16 DONE 8.7s
+
+#17 [engine-build 4/4] RUN --mount=type=cache,id=glob2-engine-build-amd64,target=/source/build,sharing=locked     python3 scons/sdl3_dependencies.py --prefix "/source/build/sdl3/prefix" --work /source/build/sdl3/sources --jobs 12 &&     scons release=1 server=0 -j12 build/linux/client/release/src/glob2 &&     mkdir -p /output/bin /output/lib/glob2 /output/share &&     cp build/linux/client/release/src/glob2 /output/bin/ && strip /output/bin/glob2 &&     cp -a build/sdl3/prefix/lib/libSDL3* /output/lib/glob2/ &&     cp -a build/sdl3/prefix/share/licenses /output/licenses &&     cp -r data maps campaigns scripts /output/share/ &&     find /output/share -name SConscript -delete &&     python3 /usr/local/bin/glob2-sim-version /source --expect "" > /output/sim-version &&     python3 /usr/local/bin/glob2-sim-version /source --hash-only > /output/sim-data-hash &&     echo "sim version $(cat /output/sim-version)"
+#17 0.479 scons: Reading SConscript files ...
+#17 0.546 Checking whether the C compiler works... (cached) yes
+#17 0.555 Checking whether the C++ compiler works... (cached) yes
+#17 0.558 Checking for C library SDL3... (cached) yes
+#17 0.564 Checking for C library SDL3_ttf... (cached) yes
+#17 0.568 Checking for C library SDL3_image... (cached) yes
+#17 0.573 Checking for C library SDL3_net... (cached) yes
+#17 0.577 Checking for C library speex... (cached) yes
+#17 0.582 Checking for C++ header file speex/speex.h... (cached) yes
+#17 0.584 Checking for C library vorbisfile... (cached) yes
+#17 0.589 Checking for C library vorbis... (cached) yes
+#17 0.594 Checking for C library ogg... (cached) yes
+#17 0.599 Checking for C++ header file zlib.h... (cached) yes
+#17 0.601 Checking for C library z... (cached) yes
+#17 0.605 Checking for C++ header file regex.h... (cached) yes
+#17 0.607 Checking for C++ header file openssl/ssl.h... (cached) yes
+#17 0.610 Checking for C library ssl... (cached) yes
+#17 0.614 Checking for C library crypto... (cached) yes
+#17 0.618 Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+#17 0.621 Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+#17 0.623 Checking for C library GL... (cached) yes
+#17 0.628 Checking for C++ header file GL/gl.h... (cached) yes
+#17 0.630 Checking for C library GLU... (cached) yes
+#17 0.635 Checking for C++ header file GL/glu.h... (cached) yes
+#17 0.637 Checking for C library epoxy... (cached) yes
+#17 0.641 Checking for C++ header file epoxy/gl.h... (cached) yes
+#17 0.644 Checking for C library fribidi... (cached) yes
+#17 0.649 Checking for C++ header file fribidi/fribidi.h... (cached) yes
+#17 0.651 Checking for C library portaudio... (cached) no
+#17 2.215 scons: done reading SConscript files.
+#17 2.219 scons: Building targets ...
+#17 4.716 scons: `build/linux/client/release/src/glob2' is up to date.
+#17 4.717 scons: done building targets.
+#17 6.453 sim version 133-54-46b2e972b94a62212fdaa415ddf27179365720014e588a4d15735681484c848b
+#17 DONE 6.9s
+
+#18 [engine-agent  9/11] COPY --from=engine-build /output/sim-version /output/sim-data-hash /opt/glob2/
+#18 CACHED
+
+#19 [node-deps  6/17] COPY platform/packages/core/package.json packages/core/
+#19 CACHED
+
+#20 [node-deps  8/17] COPY platform/packages/engine/package.json packages/engine/
+#20 CACHED
+
+#21 [platform-runtime-deps 6/8] COPY platform/apps/engine-agent apps/engine-agent
+#21 CACHED
+
+#22 [engine-agent  5/11] COPY --from=engine-build /output/bin/glob2 /opt/glob2/bin/glob2
+#22 CACHED
+
+#23 [platform-runtime-deps 5/8] COPY platform/apps/worker apps/worker
+#23 CACHED
+
+#24 [node-deps 10/17] COPY platform/packages/billing/package.json packages/billing/
+#24 CACHED
+
+#25 [engine-agent  6/11] COPY --from=engine-build /output/lib/glob2 /opt/glob2/lib/glob2
+#25 CACHED
+
+#26 [node-deps  7/17] COPY platform/packages/play/package.json packages/play/
+#26 CACHED
+
+#27 [engine-agent  4/11] COPY --from=platform-runtime-deps /app/platform /app/platform
+#27 CACHED
+
+#28 [node-deps 15/17] COPY platform/apps/engine-agent/package.json apps/engine-agent/
+#28 CACHED
+
+#29 [platform-runtime-deps 1/8] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund
+#29 CACHED
+
+#30 [platform-runtime-deps 4/8] COPY platform/apps/api apps/api
+#30 CACHED
+
+#31 [node-deps 13/17] COPY platform/apps/api/package.json apps/api/
+#31 CACHED
+
+#32 [platform-runtime-deps 3/8] COPY platform/packages packages
+#32 CACHED
+
+#33 [node-deps  3/17] COPY platform/package.json platform/package-lock.json ./
+#33 CACHED
+
+#34 [node-deps 11/17] COPY platform/packages/map-studio/package.json packages/map-studio/
+#34 CACHED
+
+#35 [platform-runtime-deps 2/8] COPY platform/tsconfig.base.json platform/tsconfig.json ./
+#35 CACHED
+
+#36 [node-deps 16/17] COPY platform/apps/web/package.json apps/web/
+#36 CACHED
+
+#37 [engine-agent  7/11] COPY --from=engine-build /output/licenses /usr/local/share/licenses
+#37 CACHED
+
+#38 [engine-agent  2/11] RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates     libfreetype6 libvorbisfile3 libvorbis0a libogg0 libspeex1 libfribidi0 libpcre3 libepoxy0     libgl1 libglu1-mesa libssl3t64 zlib1g     && rm -rf /var/lib/apt/lists/*     && groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2     && mkdir -p /var/lib/glob2/engine-agent && chown 10001:10001 /var/lib/glob2/engine-agent     && chmod 700 /var/lib/glob2/engine-agent
+#38 CACHED
+
+#39 [node-deps 17/17] RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
+#39 CACHED
+
+#40 [engine-agent  8/11] COPY --from=engine-build /output/share /opt/glob2/share
+#40 CACHED
+
+#41 [node-deps  2/17] WORKDIR /app/platform
+#41 CACHED
+
+#42 [platform-runtime-deps 8/8] RUN rm -rf packages/*/test apps/*/test &&     find packages apps -name '*.test.ts' -delete
+#42 CACHED
+
+#43 [node-deps  5/17] COPY platform/packages/db/package.json packages/db/
+#43 CACHED
+
+#44 [platform-runtime-deps 7/8] COPY platform/apps/ai-map-worker apps/ai-map-worker
+#44 CACHED
+
+#45 [node-deps  9/17] COPY platform/packages/hive/package.json packages/hive/
+#45 CACHED
+
+#46 [node-deps 14/17] COPY platform/apps/worker/package.json apps/worker/
+#46 CACHED
+
+#47 [node-deps  4/17] COPY platform/packages/protocol/package.json packages/protocol/
+#47 CACHED
+
+#48 [node-deps 12/17] COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
+#48 CACHED
+
+#49 [engine-agent  3/11] COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
+#49 CACHED
+
+#50 [engine-agent 10/11] COPY deploy/engine-agent-entrypoint.sh /usr/local/bin/glob2-engine-agent-entrypoint
+#50 CACHED
+
+#51 [engine-agent 11/11] WORKDIR /app/platform
+#51 CACHED
+
+#52 exporting to image
+#52 exporting layers done
+#52 exporting manifest sha256:ffe57e4b1fcf3c0b9b1f8e9fc350811d5b95a4d5fc2df33a667ca59cd63c42ee done
+#52 exporting config sha256:6ce93666ac3f2896fbf439c62132ecb79be5d1e8c7b102de578b403b4494ff0e done
+#52 exporting attestation manifest sha256:baa4b9d7b83cf4a3ad445eb8dabc6d7473b1fc6594feb6428d62b4fe6a32a25b 0.0s done
+#52 exporting manifest list sha256:649cebd9a646c851edfb37f6a6f6aa90cacc6c4abbf8804deb19c54cc81424d6 done
+#52 naming to docker.io/library/glob2-ci-repair-engine:47a85461 done
+#52 unpacking to docker.io/library/glob2-ci-repair-engine:47a85461 done
+#52 DONE 0.1s

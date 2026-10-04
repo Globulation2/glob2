@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="50" failures="0" errors="0" skipped="0"><testsuite name="AIRules"><testcase classname="AIRules" name="Cabino migrates legacy warrior reservations only when training is disabled" time="0.002995" status="run" />
+  <testcase classname="AIRules" name="Cortex excludes unavailable technology from scoring and feeding prerequisites" time="0" status="run" />
+  <testcase classname="AIRules" name="JavaScript profiles can inspect rules and issue useful orders" time="0.008483" status="run" />
+  <testcase classname="AIRules" name="Maxima removes disabled reserves while retaining finite production supply" time="0.005403" status="run" />
+  <testcase classname="AIRules" name="engine prevents training and upgrades while retaining repairs and starting levels" time="0.004698" status="run" />
+  <testcase classname="AIRules" name="native controllers exclude disabled work and continue after reload [slow]" time="13.2552" status="run" />
+  <testcase classname="AIRules" name="no growth farms harvest their finite seed rather than waiting forever" time="0.002235" status="run" />
+  <testcase classname="AIRules" name="restored controller queues discard unavailable work and release prerequisites" time="0.002838" status="run" />
+  <testcase classname="AIRules" name="retained tournament replay contains no unavailable orders" time="0.000214" status="run" />
+  <testcase classname="AIRules" name="rule parser and script observations use effective match values" time="0.002418" status="run" />
+  </testsuite><testsuite name="AITelemetryUI"><testcase classname="AITelemetryUI" name="telemetry full-game timings and desktop phone captures [display:1280x800] [artifacts]" time="2.44532" status="run" />
+  <testcase classname="AITelemetryUI" name="telemetry layout and painting stay bounded with full schemas" time="0.250165" status="run" />
+  <testcase classname="AITelemetryUI" name="telemetry selection filtering samples and access changes preserve safe state" time="0.128049" status="run" />
+  <testcase classname="AITelemetryUI" name="telemetry waits for touch coasting and scrolls long details independently" time="0.230218" status="run" />
+  </testsuite><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]" time="1.4897" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="4.32704" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="6.01066" status="run" />
+  </testsuite><testsuite name="MapGeneratorDefaults"><testcase classname="MapGeneratorDefaults" name="Explicit designs preserve pre-Random golden worlds" time="0.617247" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.34136" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="2.3731" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="7.50972" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.808" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="4.61723" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.79084" status="run" />
+  </testsuite><testsuite name="ThemeCatalog"><testcase classname="ThemeCatalog" name="colours parse and print as #rrggbb[aa]" time="0" status="run" />
+  <testcase classname="ThemeCatalog" name="every shipped theme keeps text readable" time="0.00175" status="run" />
+  <testcase classname="ThemeCatalog" name="inheritance, player themes and broken files" time="0.000162" status="run" />
+  <testcase classname="ThemeCatalog" name="menu and in-game slots switch independently and keep their addresses" time="0.002271" status="run" />
+  <testcase classname="ThemeCatalog" name="shipped themes load, and light and dark match the compiled defaults" time="0.001489" status="run" />
+  <testcase classname="ThemeCatalog" name="shipped themes win over player files with the same id" time="0.00014" status="run" />
+  <testcase classname="ThemeCatalog" name="theme choices persist in preferences" time="0.002951" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="0.716431" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="0.828535" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.490654" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.560006" status="run" />
+  </testsuite><testsuite name="GameplayRecording"><testcase classname="GameplayRecording" name="producer failure remains failed and a publication collision preserves foreign files [recording]" time="1.14914" status="run" />
+    <testcase classname="GameplayRecording" name="split callback audio survives as consecutive decoded PCM [recording][artifacts]" time="0" status="run" />
+    <testcase classname="GameplayRecording" name="recording rejects invalid options and never overwrites output" time="0.000348" status="run" />
+    <testcase classname="GameplayRecording" name="recording encodes audio, odd resized frames, and semantic chapters [recording]" time="1.43051" status="run" />
+    <testcase classname="GameplayRecording" name="stopping a recording before its first frame completes without hanging" time="0.001133" status="run" />
+  </testsuite><testsuite name="RecordingSession"><testcase classname="RecordingSession" name="resize coalescing preserves full resolution and numbers completed segments" time="0.01563" status="run" />
+    <testcase classname="RecordingSession" name="worker normalizes capture color layout and bottom-up orientation" time="0.005181" status="run" />
+    <testcase classname="RecordingSession" name="asynchronous encoder flush is polled before publishing the output" time="0.005275" status="run" />
+    <testcase classname="RecordingSession" name="long scheduling gaps preserve time without an encoding catch-up burst" time="0.006396" status="run" />
+    <testcase classname="RecordingSession" name="device failure closes its stream and starts a software segment" time="0.015314" status="run" />
+    <testcase classname="RecordingSession" name="hardware flush failure during resize continues with a software segment" time="0.013661" status="run" />
+    <testcase classname="RecordingSession" name="capture pressure rejects input within the three-frame budget" time="0.005628" status="run" />
+    <testcase classname="RecordingSession" name="interrupted fragmented media recovers without a finalized trailer" time="0.039776" status="run" />
+    <testcase classname="RecordingSession" name="publication failure retains media that can be recovered without overwriting" time="0.005986" status="run" />
+  </testsuite><testsuite name="TextMetrics"><testcase classname="TextMetrics" name="font metrics do not rasterize or evict rendered text" time="0.147101" status="run" />
+  </testsuite></testsuites>

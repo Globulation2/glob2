@@ -1,0 +1,4 @@
+{"time_us":0,"kind":"chapter","id":1,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Threaded recording initial state","team":0,"tick":1,"era_start":0,"era_end":20}
+{"time_us":461076,"kind":"background_gap","value":"377743"}
+{"time_us":833333,"kind":"chapter","id":2,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Threaded recording initial state","team":0,"tick":21,"era_start":20,"era_end":40}
+{"time_us":1600000,"kind":"chapter","id":3,"phase":"gameplay","screen":"game_session","dialog":"","match":2,"mode":"single_player","map":"Threaded recording initial state","team":0,"tick":40,"era_start":40,"era_end":60}

@@ -1,0 +1,644 @@
+﻿2026-10-04T04:17:30.5608593Z Current runner version: '2.337.0'
+2026-10-04T04:17:30.5624953Z ##[group]Runner Image Provisioner
+2026-10-04T04:17:30.5625516Z Hosted Compute Agent
+2026-10-04T04:17:30.5625927Z Version: 20260901.588
+2026-10-04T04:17:30.5626300Z Commit: f88ec8081b781fac6c440065ac7ff9e710ce3d0b
+2026-10-04T04:17:30.5626733Z Build Date: 2026-09-01T19:56:44Z
+2026-10-04T04:17:30.5627177Z Worker ID: {227ff34c-8dc2-46c2-9410-a4e138473434}
+2026-10-04T04:17:30.5627639Z Azure Region: centralus
+2026-10-04T04:17:30.5628223Z ##[endgroup]
+2026-10-04T04:17:30.5629136Z ##[group]Operating System
+2026-10-04T04:17:30.5629481Z Ubuntu
+2026-10-04T04:17:30.5629846Z 24.04.5
+2026-10-04T04:17:30.5630181Z LTS
+2026-10-04T04:17:30.5630509Z ##[endgroup]
+2026-10-04T04:17:30.5630843Z ##[group]Runner Image
+2026-10-04T04:17:30.5631185Z Image: ubuntu-24.04
+2026-10-04T04:17:30.5631550Z Version: 20260927.320.1
+2026-10-04T04:17:30.5632322Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-04T04:17:30.5633200Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260927.320
+2026-10-04T04:17:30.5633748Z ##[endgroup]
+2026-10-04T04:17:30.5634468Z ##[group]GITHUB_TOKEN Permissions
+2026-10-04T04:17:30.5635767Z Contents: read
+2026-10-04T04:17:30.5636162Z Metadata: read
+2026-10-04T04:17:30.5636488Z ##[endgroup]
+2026-10-04T04:17:30.5637741Z Secret source: Actions
+2026-10-04T04:17:30.5638306Z Cache mode: write
+2026-10-04T04:17:30.5639113Z Prepare workflow directory
+2026-10-04T04:17:30.5969632Z Prepare all required actions
+2026-10-04T04:17:30.5999981Z Getting action download info
+2026-10-04T04:17:30.8496307Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-04T04:17:31.0870914Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-10-04T04:17:31.5960882Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-04T04:17:32.1646497Z Uses: Globulation2/glob2/.github/workflows/ci-linux-build.yml@refs/heads/master (79cca9b700e6c9e7c54314252336d4baa3c2095a)
+2026-10-04T04:17:32.1650012Z ##[group] Inputs
+2026-10-04T04:17:32.1650630Z   revision: 79cca9b700e6c9e7c54314252336d4baa3c2095a
+2026-10-04T04:17:32.1651331Z   image: ubuntu:24.04
+2026-10-04T04:17:32.1651847Z   runner: ubuntu-24.04
+2026-10-04T04:17:32.1652362Z   compiler: g++-13
+2026-10-04T04:17:32.1652852Z   c_compiler: gcc-13
+2026-10-04T04:17:32.1653527Z   build_only: false
+2026-10-04T04:17:32.1654022Z   reuse_build: true
+2026-10-04T04:17:32.1654504Z   web_native: false
+2026-10-04T04:17:32.1655005Z   generator_only: false
+2026-10-04T04:17:32.1655533Z   coverage_profile: full
+2026-10-04T04:17:32.1656056Z   run_tests: true
+2026-10-04T04:17:32.1656546Z   runtime_packages: false
+2026-10-04T04:17:32.1657089Z   map_generators: true
+2026-10-04T04:17:32.1657621Z   validate_runtime: false
+2026-10-04T04:17:32.1658156Z   browser_only: false
+2026-10-04T04:17:32.1658783Z ##[endgroup]
+2026-10-04T04:17:32.1659604Z Complete job name: Linux GCC 13 build and tests / Linux CLI and compatibility evidence (g++-13)
+2026-10-04T04:17:32.2338752Z ##[group]Run actions/checkout@v4
+2026-10-04T04:17:32.2339783Z with:
+2026-10-04T04:17:32.2340480Z   ref: 79cca9b700e6c9e7c54314252336d4baa3c2095a
+2026-10-04T04:17:32.2341422Z   repository: Globulation2/glob2
+2026-10-04T04:17:32.2346687Z   token: ***
+2026-10-04T04:17:32.2347121Z   ssh-strict: true
+2026-10-04T04:17:32.2347568Z   ssh-user: git
+2026-10-04T04:17:32.2348026Z   persist-credentials: true
+2026-10-04T04:17:32.2348705Z   clean: true
+2026-10-04T04:17:32.2349168Z   sparse-checkout-cone-mode: true
+2026-10-04T04:17:32.2349719Z   fetch-depth: 1
+2026-10-04T04:17:32.2350187Z   fetch-tags: false
+2026-10-04T04:17:32.2350649Z   show-progress: true
+2026-10-04T04:17:32.2351107Z   lfs: false
+2026-10-04T04:17:32.2351622Z   submodules: false
+2026-10-04T04:17:32.2352087Z   set-safe-directory: true
+2026-10-04T04:17:32.2352620Z   allow-unsafe-pr-checkout: false
+2026-10-04T04:17:32.2353506Z env:
+2026-10-04T04:17:32.2353918Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:32.2354399Z ##[endgroup]
+2026-10-04T04:17:32.2999306Z Syncing repository: Globulation2/glob2
+2026-10-04T04:17:32.3000993Z ##[group]Getting Git version info
+2026-10-04T04:17:32.3001721Z Working directory is '/home/runner/work/glob2/glob2'
+2026-10-04T04:17:32.3002791Z [command]/usr/bin/git version
+2026-10-04T04:17:32.3083649Z git version 2.55.0
+2026-10-04T04:17:32.3097830Z ##[endgroup]
+2026-10-04T04:17:32.3108002Z Temporarily overriding HOME='/home/runner/work/_temp/838cd4b0-f84f-4841-8679-7543adcffcaf' before making global git config changes
+2026-10-04T04:17:32.3111323Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T04:17:32.3113122Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T04:17:32.3330483Z Deleting the contents of '/home/runner/work/glob2/glob2'
+2026-10-04T04:17:32.3334265Z ##[group]Initializing the repository
+2026-10-04T04:17:32.3337126Z [command]/usr/bin/git init /home/runner/work/glob2/glob2
+2026-10-04T04:17:32.3458827Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-04T04:17:32.3460670Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-04T04:17:32.3462272Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-04T04:17:32.3463519Z hint: call:
+2026-10-04T04:17:32.3464179Z hint:
+2026-10-04T04:17:32.3465065Z hint: 	git config --global init.defaultBranch <name>
+2026-10-04T04:17:32.3466064Z hint:
+2026-10-04T04:17:32.3467026Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-04T04:17:32.3468777Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-04T04:17:32.3470004Z hint:
+2026-10-04T04:17:32.3470676Z hint: 	git branch -m <name>
+2026-10-04T04:17:32.3471460Z hint:
+2026-10-04T04:17:32.3472532Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-04T04:17:32.3474238Z Initialized empty Git repository in /home/runner/work/glob2/glob2/.git/
+2026-10-04T04:17:32.3477103Z [command]/usr/bin/git remote add origin https://github.com/Globulation2/glob2
+2026-10-04T04:17:32.4731455Z ##[endgroup]
+2026-10-04T04:17:32.4732693Z ##[group]Disabling automatic garbage collection
+2026-10-04T04:17:32.4733381Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-04T04:17:32.5339658Z ##[endgroup]
+2026-10-04T04:17:32.5340612Z ##[group]Setting up auth
+2026-10-04T04:17:32.5351076Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T04:17:32.5373124Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T04:17:32.6085922Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T04:17:32.6116421Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T04:17:32.6303184Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T04:17:32.6330730Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T04:17:32.6506640Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-04T04:17:32.6541662Z ##[endgroup]
+2026-10-04T04:17:32.6542389Z ##[group]Fetching the repository
+2026-10-04T04:17:32.6548875Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 79cca9b700e6c9e7c54314252336d4baa3c2095a
+2026-10-04T04:17:36.6464351Z From https://github.com/Globulation2/glob2
+2026-10-04T04:17:36.6464903Z  * branch            79cca9b700e6c9e7c54314252336d4baa3c2095a -> FETCH_HEAD
+2026-10-04T04:17:36.6467360Z ##[endgroup]
+2026-10-04T04:17:36.6467647Z ##[group]Determining the checkout info
+2026-10-04T04:17:36.6473668Z ##[endgroup]
+2026-10-04T04:17:36.6481968Z [command]/usr/bin/git sparse-checkout disable
+2026-10-04T04:17:36.6520157Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-04T04:17:36.6546323Z ##[group]Checking out the ref
+2026-10-04T04:17:36.6549597Z [command]/usr/bin/git checkout --progress --force 79cca9b700e6c9e7c54314252336d4baa3c2095a
+2026-10-04T04:17:37.6214347Z Note: switching to '79cca9b700e6c9e7c54314252336d4baa3c2095a'.
+2026-10-04T04:17:37.6214683Z 
+2026-10-04T04:17:37.6214892Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-04T04:17:37.6215347Z changes and commit them, and you can discard any commits you make in this
+2026-10-04T04:17:37.6215692Z state without impacting any branches by switching back to a branch.
+2026-10-04T04:17:37.6215884Z 
+2026-10-04T04:17:37.6216106Z If you want to create a new branch to retain commits you create, you may
+2026-10-04T04:17:37.6216389Z do so (now or later) by using -c with the switch command. Example:
+2026-10-04T04:17:37.6216544Z 
+2026-10-04T04:17:37.6216620Z   git switch -c <new-branch-name>
+2026-10-04T04:17:37.6216737Z 
+2026-10-04T04:17:37.6216815Z Or undo this operation with:
+2026-10-04T04:17:37.6216931Z 
+2026-10-04T04:17:37.6216993Z   git switch -
+2026-10-04T04:17:37.6229266Z 
+2026-10-04T04:17:37.6230004Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-04T04:17:37.6230334Z 
+2026-10-04T04:17:37.6230524Z HEAD is now at 79cca9b Preserve the Clang coverage fingerprint baseline (#685)
+2026-10-04T04:17:37.6258035Z ##[endgroup]
+2026-10-04T04:17:37.6297536Z [command]/usr/bin/git log -1 --format=%H
+2026-10-04T04:17:37.6324844Z 79cca9b700e6c9e7c54314252336d4baa3c2095a
+2026-10-04T04:17:37.6509325Z ##[group]Run actions/download-artifact@v4
+2026-10-04T04:17:37.6509500Z with:
+2026-10-04T04:17:37.6509650Z   name: linux-test-programs-ubuntu-24.04
+2026-10-04T04:17:37.6509827Z   path: artifacts/ci-native
+2026-10-04T04:17:37.6509977Z   merge-multiple: false
+2026-10-04T04:17:37.6510112Z   repository: Globulation2/glob2
+2026-10-04T04:17:37.6510254Z   run-id: 37175401816
+2026-10-04T04:17:37.6510393Z env:
+2026-10-04T04:17:37.6510504Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:37.6510632Z ##[endgroup]
+2026-10-04T04:17:37.7412650Z Downloading single artifact
+2026-10-04T04:17:37.7499691Z (node:2083) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T04:17:37.7500084Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T04:17:37.9001886Z Preparing to download the following artifacts:
+2026-10-04T04:17:37.9002593Z - linux-test-programs-ubuntu-24.04 (ID: 11293841321, Size: 146808164, Expected Digest: sha256:50a4cd3ac926ce9aa322afcaab15d5367a5fa45caa409fe0508082e5375dc5b7)
+2026-10-04T04:17:38.0616565Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/088ec330-81b1-4f3e-bae3-be4e83dce78a/workflow-job-run-82015fd4-1c2f-57c8-b37a-cc6a6ca95063/artifacts/2ffd760c2f049c563b50d89625db39a4c2c0cde3effe7a3d41d2f6c36ed20785.zip
+2026-10-04T04:17:38.0617709Z Starting download of artifact to: /home/runner/work/glob2/glob2/artifacts/ci-native
+2026-10-04T04:17:38.2487286Z (node:2083) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-10-04T04:17:40.8440586Z SHA256 digest of downloaded artifact is 50a4cd3ac926ce9aa322afcaab15d5367a5fa45caa409fe0508082e5375dc5b7
+2026-10-04T04:17:40.8441092Z Artifact download completed successfully.
+2026-10-04T04:17:40.8441473Z Total of 1 artifact(s) downloaded
+2026-10-04T04:17:40.8444944Z Download artifact has finished successfully
+2026-10-04T04:17:40.8573340Z ##[group]Run tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+2026-10-04T04:17:40.8573813Z [36;1mtar -xzf artifacts/ci-native/linux-test-programs.tar.gz[0m
+2026-10-04T04:17:40.8574142Z [36;1mecho "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"[0m
+2026-10-04T04:17:40.8574414Z [36;1msudo apt-get update -qq[0m
+2026-10-04T04:17:40.8574674Z [36;1mxargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt[0m
+2026-10-04T04:17:40.8574970Z [36;1msudo apt-get install -y --no-install-recommends python3[0m
+2026-10-04T04:17:40.8792586Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:17:40.8792736Z env:
+2026-10-04T04:17:40.8792849Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:40.8792981Z ##[endgroup]
+2026-10-04T04:17:50.4202375Z Reading package lists...
+2026-10-04T04:17:50.5417678Z Building dependency tree...
+2026-10-04T04:17:50.5423211Z Reading state information...
+2026-10-04T04:17:50.6481174Z libbrotli1 is already the newest version (1.1.0-2build2).
+2026-10-04T04:17:50.6481499Z libbrotli1 set to manually installed.
+2026-10-04T04:17:50.6481758Z libbsd0 is already the newest version (0.12.1-1build1.1).
+2026-10-04T04:17:50.6482044Z libbsd0 set to manually installed.
+2026-10-04T04:17:50.6482294Z libbz2-1.0 is already the newest version (1.0.8-5.1ubuntu0.1).
+2026-10-04T04:17:50.6482553Z libbz2-1.0 set to manually installed.
+2026-10-04T04:17:50.6482787Z libc6 is already the newest version (2.39-0ubuntu8.9).
+2026-10-04T04:17:50.6483083Z libdrm2 is already the newest version (2.4.125-1ubuntu0.1~24.04.2).
+2026-10-04T04:17:50.6483352Z libdrm2 set to manually installed.
+2026-10-04T04:17:50.6483589Z libepoxy0 is already the newest version (1.5.10-1build1).
+2026-10-04T04:17:50.6483838Z libepoxy0 set to manually installed.
+2026-10-04T04:17:50.6484104Z libfreetype6 is already the newest version (2.13.2+dfsg-1ubuntu0.1).
+2026-10-04T04:17:50.6484404Z libfreetype6 set to manually installed.
+2026-10-04T04:17:50.6484679Z libfribidi0 is already the newest version (1.0.13-3build1).
+2026-10-04T04:17:50.6484966Z libfribidi0 set to manually installed.
+2026-10-04T04:17:50.6485196Z libgcc-s1 is already the newest version (14.2.0-4ubuntu2~24.04.1).
+2026-10-04T04:17:50.6485400Z libgl1 is already the newest version (1.7.0-1build1).
+2026-10-04T04:17:50.6485566Z libgl1 set to manually installed.
+2026-10-04T04:17:50.6485850Z libglvnd0 is already the newest version (1.7.0-1build1).
+2026-10-04T04:17:50.6486101Z libglvnd0 set to manually installed.
+2026-10-04T04:17:50.6486359Z libglx0 is already the newest version (1.7.0-1build1).
+2026-10-04T04:17:50.6486602Z libglx0 set to manually installed.
+2026-10-04T04:17:50.6486841Z libmd0 is already the newest version (1.1.0-2build1.1).
+2026-10-04T04:17:50.6487097Z libmd0 set to manually installed.
+2026-10-04T04:17:50.6487346Z libogg0 is already the newest version (1.3.5-3build1).
+2026-10-04T04:17:50.6487600Z libogg0 set to manually installed.
+2026-10-04T04:17:50.6487903Z libpng16-16t64 is already the newest version (1.6.43-5ubuntu0.6).
+2026-10-04T04:17:50.6488224Z libpng16-16t64 set to manually installed.
+2026-10-04T04:17:50.6488799Z libstdc++6 is already the newest version (14.2.0-4ubuntu2~24.04.1).
+2026-10-04T04:17:50.6489128Z libvorbis0a is already the newest version (1.3.7-1build3).
+2026-10-04T04:17:50.6489402Z libvorbis0a set to manually installed.
+2026-10-04T04:17:50.6489680Z libvorbisfile3 is already the newest version (1.3.7-1build3).
+2026-10-04T04:17:50.6489986Z libvorbisfile3 set to manually installed.
+2026-10-04T04:17:50.6490272Z libx11-6 is already the newest version (2:1.8.7-1build1).
+2026-10-04T04:17:50.6490545Z libx11-6 set to manually installed.
+2026-10-04T04:17:50.6490811Z libxau6 is already the newest version (1:1.0.9-1build6).
+2026-10-04T04:17:50.6491079Z libxau6 set to manually installed.
+2026-10-04T04:17:50.6491326Z libxcb1 is already the newest version (1.15-1ubuntu2).
+2026-10-04T04:17:50.6491579Z libxcb1 set to manually installed.
+2026-10-04T04:17:50.6492323Z libxdmcp6 is already the newest version (1:1.1.3-0ubuntu6).
+2026-10-04T04:17:50.6492619Z libxdmcp6 set to manually installed.
+2026-10-04T04:17:50.6493049Z zlib1g is already the newest version (1:1.3.dfsg-3.1ubuntu2.2).
+2026-10-04T04:17:50.6493372Z The following additional packages will be installed:
+2026-10-04T04:17:50.6493637Z   libssl-dev openssl
+2026-10-04T04:17:50.6493828Z Suggested packages:
+2026-10-04T04:17:50.6494004Z   speex libssl-doc
+2026-10-04T04:17:50.6494183Z Recommended packages:
+2026-10-04T04:17:50.6494376Z   va-driver-all | va-driver
+2026-10-04T04:17:50.6646269Z The following NEW packages will be installed:
+2026-10-04T04:17:50.6646808Z   libspeex1 libva-drm2 libva2
+2026-10-04T04:17:50.6650806Z The following packages will be upgraded:
+2026-10-04T04:17:50.6651900Z   libssl-dev libssl3t64 openssl
+2026-10-04T04:17:50.6770580Z 3 upgraded, 3 newly installed, 0 to remove and 22 not upgraded.
+2026-10-04T04:17:50.6770895Z Need to get 5491 kB of archives.
+2026-10-04T04:17:50.6771220Z After this operation, 411 kB of additional disk space will be used.
+2026-10-04T04:17:50.6771557Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-04T04:17:50.7425633Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl-dev amd64 3.0.13-0ubuntu3.16 [2409 kB]
+2026-10-04T04:17:50.7929608Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libssl3t64 amd64 3.0.13-0ubuntu3.16 [1945 kB]
+2026-10-04T04:17:50.8823454Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 openssl amd64 3.0.13-0ubuntu3.16 [1004 kB]
+2026-10-04T04:17:50.9623122Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libspeex1 amd64 1.2.1-2ubuntu2.24.04.1 [59.6 kB]
+2026-10-04T04:17:51.0404265Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 libva2 amd64 2.20.0-2ubuntu0.2 [66.4 kB]
+2026-10-04T04:17:51.1327719Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 libva-drm2 amd64 2.20.0-2ubuntu0.2 [7124 B]
+2026-10-04T04:17:51.3019011Z Fetched 5491 kB in 0s (11.9 MB/s)
+2026-10-04T04:17:51.3445883Z (Reading database ... 
+2026-10-04T04:17:51.3446062Z (Reading database ... 5%
+2026-10-04T04:17:51.3446271Z (Reading database ... 10%
+2026-10-04T04:17:51.3446460Z (Reading database ... 15%
+2026-10-04T04:17:51.3446604Z (Reading database ... 20%
+2026-10-04T04:17:51.3446728Z (Reading database ... 25%
+2026-10-04T04:17:51.3446856Z (Reading database ... 30%
+2026-10-04T04:17:51.3447121Z (Reading database ... 35%
+2026-10-04T04:17:51.3447316Z (Reading database ... 40%
+2026-10-04T04:17:51.3447542Z (Reading database ... 45%
+2026-10-04T04:17:51.3447737Z (Reading database ... 50%
+2026-10-04T04:17:51.3486592Z (Reading database ... 55%
+2026-10-04T04:17:51.4522240Z (Reading database ... 60%
+2026-10-04T04:17:51.6561131Z (Reading database ... 65%
+2026-10-04T04:17:51.8863088Z (Reading database ... 70%
+2026-10-04T04:17:52.0480516Z (Reading database ... 75%
+2026-10-04T04:17:52.1912583Z (Reading database ... 80%
+2026-10-04T04:17:52.3961614Z (Reading database ... 85%
+2026-10-04T04:17:52.6060977Z (Reading database ... 90%
+2026-10-04T04:17:52.7974752Z (Reading database ... 95%
+2026-10-04T04:17:52.7975015Z (Reading database ... 100%
+2026-10-04T04:17:52.7975306Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T04:17:52.8009136Z Preparing to unpack .../libssl-dev_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T04:17:52.8116685Z Unpacking libssl-dev:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T04:17:52.9720285Z Preparing to unpack .../libssl3t64_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T04:17:52.9746210Z Unpacking libssl3t64:amd64 (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T04:17:53.0376595Z Setting up libssl3t64:amd64 (3.0.13-0ubuntu3.16) ...
+2026-10-04T04:17:53.0597021Z (Reading database ... 
+2026-10-04T04:17:53.0597452Z (Reading database ... 5%
+2026-10-04T04:17:53.0598001Z (Reading database ... 10%
+2026-10-04T04:17:53.0598183Z (Reading database ... 15%
+2026-10-04T04:17:53.0598411Z (Reading database ... 20%
+2026-10-04T04:17:53.0598771Z (Reading database ... 25%
+2026-10-04T04:17:53.0598896Z (Reading database ... 30%
+2026-10-04T04:17:53.0599144Z (Reading database ... 35%
+2026-10-04T04:17:53.0599266Z (Reading database ... 40%
+2026-10-04T04:17:53.0599387Z (Reading database ... 45%
+2026-10-04T04:17:53.0599513Z (Reading database ... 50%
+2026-10-04T04:17:53.0602133Z (Reading database ... 55%
+2026-10-04T04:17:53.0661652Z (Reading database ... 60%
+2026-10-04T04:17:53.0678163Z (Reading database ... 65%
+2026-10-04T04:17:53.0691655Z (Reading database ... 70%
+2026-10-04T04:17:53.0717553Z (Reading database ... 75%
+2026-10-04T04:17:53.0737177Z (Reading database ... 80%
+2026-10-04T04:17:53.0753968Z (Reading database ... 85%
+2026-10-04T04:17:53.0848533Z (Reading database ... 90%
+2026-10-04T04:17:53.1012723Z (Reading database ... 95%
+2026-10-04T04:17:53.1012960Z (Reading database ... 100%
+2026-10-04T04:17:53.1013256Z (Reading database ... 202296 files and directories currently installed.)
+2026-10-04T04:17:53.1043796Z Preparing to unpack .../openssl_3.0.13-0ubuntu3.16_amd64.deb ...
+2026-10-04T04:17:53.1134850Z Unpacking openssl (3.0.13-0ubuntu3.16) over (3.0.13-0ubuntu3.15) ...
+2026-10-04T04:17:53.2014844Z Selecting previously unselected package libspeex1:amd64.
+2026-10-04T04:17:53.2108685Z Preparing to unpack .../libspeex1_1.2.1-2ubuntu2.24.04.1_amd64.deb ...
+2026-10-04T04:17:53.2115897Z Unpacking libspeex1:amd64 (1.2.1-2ubuntu2.24.04.1) ...
+2026-10-04T04:17:53.2285082Z Selecting previously unselected package libva2:amd64.
+2026-10-04T04:17:53.2375013Z Preparing to unpack .../libva2_2.20.0-2ubuntu0.2_amd64.deb ...
+2026-10-04T04:17:53.2381540Z Unpacking libva2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T04:17:53.2719649Z Selecting previously unselected package libva-drm2:amd64.
+2026-10-04T04:17:53.2806004Z Preparing to unpack .../libva-drm2_2.20.0-2ubuntu0.2_amd64.deb ...
+2026-10-04T04:17:53.2811981Z Unpacking libva-drm2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T04:17:53.3118635Z Setting up libspeex1:amd64 (1.2.1-2ubuntu2.24.04.1) ...
+2026-10-04T04:17:53.3138752Z Setting up libva2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T04:17:53.3156945Z Setting up libssl-dev:amd64 (3.0.13-0ubuntu3.16) ...
+2026-10-04T04:17:53.3173207Z Setting up libva-drm2:amd64 (2.20.0-2ubuntu0.2) ...
+2026-10-04T04:17:53.3187968Z Setting up openssl (3.0.13-0ubuntu3.16) ...
+2026-10-04T04:17:53.3220541Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-04T04:17:53.3237792Z Not building database; man-db/auto-update is not 'true'.
+2026-10-04T04:17:53.3246757Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-04T04:17:53.9071653Z 
+2026-10-04T04:17:53.9072267Z Running kernel seems to be up-to-date.
+2026-10-04T04:17:53.9072507Z 
+2026-10-04T04:17:53.9072591Z Restarting services...
+2026-10-04T04:17:53.9491074Z  /etc/needrestart/restart.d/systemd-manager
+2026-10-04T04:17:54.1712632Z  systemctl restart packagekit.service php8.3-fpm.service systemd-journald.service systemd-networkd.service systemd-resolved.service systemd-udevd.service udisks2.service
+2026-10-04T04:17:54.7686514Z 
+2026-10-04T04:17:54.7687222Z Service restarts being deferred:
+2026-10-04T04:17:54.7687583Z  systemctl restart hosted-compute-agent.service
+2026-10-04T04:17:54.7691891Z  systemctl restart systemd-logind.service
+2026-10-04T04:17:54.7692161Z  systemctl restart walinuxagent.service
+2026-10-04T04:17:54.7692317Z 
+2026-10-04T04:17:54.7692406Z No containers need to be restarted.
+2026-10-04T04:17:54.7692552Z 
+2026-10-04T04:17:54.7692642Z User sessions running outdated binaries:
+2026-10-04T04:17:54.7692889Z  runner @ user manager service: systemd[1014]
+2026-10-04T04:17:54.7758284Z 
+2026-10-04T04:17:54.7758654Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-04T04:17:55.6201060Z Reading package lists...
+2026-10-04T04:17:55.7382835Z Building dependency tree...
+2026-10-04T04:17:55.7387600Z Reading state information...
+2026-10-04T04:17:55.8496319Z python3 is already the newest version (3.12.3-0ubuntu2.1).
+2026-10-04T04:17:55.8497131Z 0 upgraded, 0 newly installed, 0 to remove and 22 not upgraded.
+2026-10-04T04:17:55.8542569Z ##[group]Run python3 test/ci_run_commands.py \
+2026-10-04T04:17:55.8542914Z [36;1mpython3 test/ci_run_commands.py \[0m
+2026-10-04T04:17:55.8543167Z [36;1m  --check 'translation catalog' 'python3 data/check_translations.py --strict' \[0m
+2026-10-04T04:17:55.8543461Z [36;1m  --check 'translation tests' 'python3 test/test_translations.py' \[0m
+2026-10-04T04:17:55.8543779Z [36;1m  --check 'font coverage' 'GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/test_font_coverage.py'[0m
+2026-10-04T04:17:55.8594241Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:17:55.8594382Z env:
+2026-10-04T04:17:55.8594497Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:55.8594689Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:17:55.8594896Z ##[endgroup]
+2026-10-04T04:17:55.8826116Z ##[group]translation catalog
+2026-10-04T04:17:56.2063948Z data/texts.ar.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2064453Z data/texts.br.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2064865Z data/texts.ca.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2065253Z data/texts.cz.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2065650Z data/texts.de.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2066037Z data/texts.dk.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2066420Z data/texts.en.txt: 0 untranslated (0 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2066799Z data/texts.es.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2067188Z data/texts.eo.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2067564Z data/texts.eu.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2067939Z data/texts.fa.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2068307Z data/texts.fr.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2068791Z data/texts.gr.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2069150Z data/texts.hu.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2069509Z data/texts.it.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2069871Z data/texts.nl.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2070229Z data/texts.pl.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2070602Z data/texts.pt.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2070960Z data/texts.ro.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2071324Z data/texts.ru.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2071689Z data/texts.si.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2072046Z data/texts.sk.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2072407Z data/texts.sr.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2072774Z data/texts.fi.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2073135Z data/texts.sv.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2073495Z data/texts.tr.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2073904Z data/texts.zh-tw.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2074327Z data/texts.zh-cn.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2074743Z data/texts.uk.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2075494Z data/texts.id.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2075911Z data/texts.vi.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2076451Z data/texts.ja.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2076836Z data/texts.ko.txt: 4 untranslated (4 pending), 0 missing keys, 0 obsolete keys
+2026-10-04T04:17:56.2077146Z 0 structural errors
+2026-10-04T04:17:56.2120881Z ##[endgroup]
+2026-10-04T04:17:56.2121201Z ##[group]translation tests
+2026-10-04T04:17:56.5226480Z .FFFFF...
+2026-10-04T04:17:56.5226715Z ======================================================================
+2026-10-04T04:17:56.5227389Z FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[theme ocean]')
+2026-10-04T04:17:56.5228029Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.5228222Z Traceback (most recent call last):
+2026-10-04T04:17:56.5228966Z   File "/home/runner/work/glob2/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+2026-10-04T04:17:56.5229293Z     self.assertNotEqual(value, source, 'English fallback')
+2026-10-04T04:17:56.5229490Z AssertionError: 'Ocean' == 'Ocean' : English fallback
+2026-10-04T04:17:56.5229612Z 
+2026-10-04T04:17:56.5229697Z ======================================================================
+2026-10-04T04:17:56.5230100Z FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[theme dune]')
+2026-10-04T04:17:56.5230516Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.5230697Z Traceback (most recent call last):
+2026-10-04T04:17:56.5230977Z   File "/home/runner/work/glob2/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+2026-10-04T04:17:56.5231292Z     self.assertNotEqual(value, source, 'English fallback')
+2026-10-04T04:17:56.5231486Z AssertionError: 'Dune' == 'Dune' : English fallback
+2026-10-04T04:17:56.5231601Z 
+2026-10-04T04:17:56.5231663Z ======================================================================
+2026-10-04T04:17:56.5232074Z FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[theme ocean]')
+2026-10-04T04:17:56.5232488Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.5232666Z Traceback (most recent call last):
+2026-10-04T04:17:56.5232938Z   File "/home/runner/work/glob2/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+2026-10-04T04:17:56.5233240Z     self.assertNotEqual(value, source, 'English fallback')
+2026-10-04T04:17:56.5233525Z AssertionError: 'Ocean' == 'Ocean' : English fallback
+2026-10-04T04:17:56.5248441Z 
+2026-10-04T04:17:56.5248564Z ======================================================================
+2026-10-04T04:17:56.5249201Z FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[theme ocean]')
+2026-10-04T04:17:56.5249876Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.5250167Z Traceback (most recent call last):
+2026-10-04T04:17:56.5250608Z   File "/home/runner/work/glob2/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+2026-10-04T04:17:56.5251102Z     self.assertNotEqual(value, source, 'English fallback')
+2026-10-04T04:17:56.5251414Z AssertionError: 'Ocean' == 'Ocean' : English fallback
+2026-10-04T04:17:56.5251599Z 
+2026-10-04T04:17:56.5251696Z ======================================================================
+2026-10-04T04:17:56.5252606Z FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[theme ocean]')
+2026-10-04T04:17:56.5253459Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.5253761Z Traceback (most recent call last):
+2026-10-04T04:17:56.5254223Z   File "/home/runner/work/glob2/glob2/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+2026-10-04T04:17:56.5254755Z     self.assertNotEqual(value, source, 'English fallback')
+2026-10-04T04:17:56.5255077Z AssertionError: 'Ocean' == 'Ocean' : English fallback
+2026-10-04T04:17:56.5255273Z 
+2026-10-04T04:17:56.5255406Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.5255690Z Ran 5 tests in 0.276s
+2026-10-04T04:17:56.5255809Z 
+2026-10-04T04:17:56.5255884Z FAILED (failures=5)
+2026-10-04T04:17:56.5297455Z ##[endgroup]
+2026-10-04T04:17:56.5308208Z ##[error]translation tests exited 1
+2026-10-04T04:17:56.5312469Z ##[group]font coverage
+2026-10-04T04:17:56.6750836Z .
+2026-10-04T04:17:56.6751084Z ----------------------------------------------------------------------
+2026-10-04T04:17:56.6751393Z Ran 1 test in 0.045s
+2026-10-04T04:17:56.6751513Z 
+2026-10-04T04:17:56.6751577Z OK
+2026-10-04T04:17:56.6799428Z ##[endgroup]
+2026-10-04T04:17:56.6799622Z Failed checks: translation tests (1)
+2026-10-04T04:17:56.6843510Z ##[error]Process completed with exit code 1.
+2026-10-04T04:17:56.6881239Z ##[group]Run python3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/cli-smoke --junit artifacts/cli-smoke.xml
+2026-10-04T04:17:56.6881785Z [36;1mpython3 test/test_cli_smoke.py --binary build/linux/client/release/src/glob2 --artifacts artifacts/cli-smoke --junit artifacts/cli-smoke.xml[0m
+2026-10-04T04:17:56.6931534Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:17:56.6931665Z env:
+2026-10-04T04:17:56.6931774Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:56.6931964Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:17:56.6932161Z ##[endgroup]
+2026-10-04T04:17:56.8057749Z test_corrupt_saved_game_fails_with_structured_diagnostic (__main__.CliSmoke.test_corrupt_saved_game_fails_with_structured_diagnostic) ... ok
+2026-10-04T04:17:56.8800932Z test_generated_map_image_export_import_and_preview_are_readable (__main__.CliSmoke.test_generated_map_image_export_import_and_preview_are_readable) ... ok
+2026-10-04T04:17:57.0183374Z test_headless_numeric_and_missing_input_errors_are_structured (__main__.CliSmoke.test_headless_numeric_and_missing_input_errors_are_structured) ... ok
+2026-10-04T04:17:57.4098579Z test_headless_workers_and_saved_continuation_match_complete_tick_records (__main__.CliSmoke.test_headless_workers_and_saved_continuation_match_complete_tick_records) ... ok
+2026-10-04T04:17:57.4335550Z test_help_and_catalog_describe_real_commands (__main__.CliSmoke.test_help_and_catalog_describe_real_commands) ... ok
+2026-10-04T04:17:57.4444183Z test_invalid_map_arguments_fail_before_writing_outputs (__main__.CliSmoke.test_invalid_map_arguments_fail_before_writing_outputs) ... ok
+2026-10-04T04:17:58.0105349Z test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds (__main__.CliSmoke.test_probability_rule_persists_across_save_reload_and_rejects_ambiguous_thresholds) ... ok
+2026-10-04T04:17:58.0842712Z test_structured_map_study_writes_report_map_and_manifest (__main__.CliSmoke.test_structured_map_study_writes_report_map_and_manifest) ... ok
+2026-10-04T04:17:58.0843012Z 
+2026-10-04T04:17:58.0843108Z ----------------------------------------------------------------------
+2026-10-04T04:17:58.0843299Z Ran 8 tests in 1.350s
+2026-10-04T04:17:58.0843380Z 
+2026-10-04T04:17:58.0843425Z OK
+2026-10-04T04:17:58.0963638Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T04:17:58.0963791Z with:
+2026-10-04T04:17:58.0963907Z   name: cli-linux-g++-13
+2026-10-04T04:17:58.0964066Z   path: artifacts/cli-smoke/
+artifacts/cli-smoke.xml
+
+2026-10-04T04:17:58.0964238Z   if-no-files-found: ignore
+2026-10-04T04:17:58.0964371Z   compression-level: 6
+2026-10-04T04:17:58.0964616Z   overwrite: false
+2026-10-04T04:17:58.0964738Z   include-hidden-files: false
+2026-10-04T04:17:58.0964869Z env:
+2026-10-04T04:17:58.0964973Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:58.0965160Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:17:58.0965360Z ##[endgroup]
+2026-10-04T04:17:58.1944432Z (node:2793) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T04:17:58.1944918Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T04:17:58.2371233Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-04T04:17:58.2376382Z The least common ancestor is /home/runner/work/glob2/glob2/artifacts. This will be the root directory of the artifact
+2026-10-04T04:17:58.2376894Z With the provided path, there will be 125 files uploaded
+2026-10-04T04:17:58.2378095Z Artifact name is valid!
+2026-10-04T04:17:58.2379109Z Root directory input is valid!
+2026-10-04T04:17:58.5154095Z Beginning upload of artifact content to blob storage
+2026-10-04T04:17:58.6307190Z (node:2793) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T04:17:58.9210237Z Uploaded bytes 1513652
+2026-10-04T04:17:58.9539790Z Finished uploading artifact content to blob storage!
+2026-10-04T04:17:58.9540365Z SHA256 digest of uploaded artifact zip is 93d408ed855f8546b7095a3c2d65286bfe103b3006bab06fc17516a5eff66ab0
+2026-10-04T04:17:58.9541812Z Finalizing artifact upload
+2026-10-04T04:17:59.2394620Z Artifact cli-linux-g++-13.zip successfully finalized. Artifact ID 11293092606
+2026-10-04T04:17:59.2395175Z Artifact cli-linux-g++-13 has been successfully uploaded! Final size is 1513652 bytes. Artifact ID is 11293092606
+2026-10-04T04:17:59.2398840Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37175401816/artifacts/11293092606
+2026-10-04T04:17:59.2499408Z ##[group]Run python3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus
+2026-10-04T04:17:59.2499877Z [36;1mpython3 test/check_javascript_corpus.py --build-dir build/linux/client/release --output artifacts/javascript-corpus[0m
+2026-10-04T04:17:59.2548986Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:17:59.2549120Z env:
+2026-10-04T04:17:59.2549234Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:17:59.2549426Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:17:59.2549626Z ##[endgroup]
+2026-10-04T04:17:59.8277962Z glob2-unit-tests: PASS
+2026-10-04T04:18:07.4947361Z glob2-engine-tests: PASS
+2026-10-04T04:18:07.5032146Z ##[group]Run python3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile
+2026-10-04T04:18:07.5032608Z [36;1mpython3 test/check_javascript.py build/linux/client/release/src/glob2 --output artifacts/javascript-profile[0m
+2026-10-04T04:18:07.5083216Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:18:07.5083359Z env:
+2026-10-04T04:18:07.5083476Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:18:07.5083672Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:18:07.5084012Z ##[endgroup]
+2026-10-04T04:18:08.0015416Z PASS profile1: complete tick checksums, exact 1/4-worker replay/save output, 1 saved continuations
+2026-10-04T04:18:09.3155315Z PASS realistic-profile1: complete tick checksums, exact 1/4-worker replay/save output, 5 saved continuations
+2026-10-04T04:18:09.3236896Z ##[group]Run python3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --output artifacts/released-compatibility
+2026-10-04T04:18:09.3237416Z [36;1mpython3 test/check_telemetry_simulation.py build/linux/client/release/src/glob2 --output artifacts/released-compatibility[0m
+2026-10-04T04:18:09.3289543Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:18:09.3289693Z env:
+2026-10-04T04:18:09.3289953Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:18:09.3290154Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:18:09.3290362Z ##[endgroup]
+2026-10-04T04:18:12.4591255Z PASS gd-large-4ai.game: 1024 ticks, identical checksum sidecar: f9310adcddf3da47629244166b49b28360662f13880f9db1667b1e84935888d6
+2026-10-04T04:18:12.4591788Z PASS gd-bigarena-long.game: 2048 ticks, identical checksum sidecar: 4f1c723a09dd9b0de4936d4e34184257c911255cfefa49d8225ed16ebce05181
+2026-10-04T04:18:12.4592347Z PASS numbi-castor-v121.game.gz: 2048 ticks, identical checksum sidecar: 07aa30aa3d2f2f4516ebee1a54ba0e889cb554575d6db53ba28d8ef08c403e28
+2026-10-04T04:18:12.4592761Z PASS v108 checkpoint: 256 reloaded ticks, identical eight-tick team/entity checksum records
+2026-10-04T04:18:12.4717038Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T04:18:12.4717315Z with:
+2026-10-04T04:18:12.4717517Z   name: javascript-profile-linux-g++-13
+2026-10-04T04:18:12.4717949Z   path: artifacts/javascript-profile
+artifacts/javascript-corpus
+artifacts/released-compatibility
+
+2026-10-04T04:18:12.4718739Z   if-no-files-found: warn
+2026-10-04T04:18:12.4718954Z   compression-level: 6
+2026-10-04T04:18:12.4719146Z   overwrite: false
+2026-10-04T04:18:12.4719341Z   include-hidden-files: false
+2026-10-04T04:18:12.4719557Z env:
+2026-10-04T04:18:12.4719730Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:18:12.4720031Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:18:12.4720356Z ##[endgroup]
+2026-10-04T04:18:12.5732187Z (node:3048) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T04:18:12.5732824Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T04:18:12.6438557Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-04T04:18:12.6440198Z The least common ancestor is /home/runner/work/glob2/glob2/artifacts. This will be the root directory of the artifact
+2026-10-04T04:18:12.6440912Z With the provided path, there will be 281 files uploaded
+2026-10-04T04:18:12.6443326Z Artifact name is valid!
+2026-10-04T04:18:12.6443960Z Root directory input is valid!
+2026-10-04T04:18:12.9252927Z Beginning upload of artifact content to blob storage
+2026-10-04T04:18:13.6654975Z (node:3048) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T04:18:14.0960916Z Uploaded bytes 8093472
+2026-10-04T04:18:14.1316247Z Finished uploading artifact content to blob storage!
+2026-10-04T04:18:14.1316855Z SHA256 digest of uploaded artifact zip is a0321b0ee90a57204e0b513d2abaf2d08b795374196d8e9e07d6fecf62e8f960
+2026-10-04T04:18:14.1318245Z Finalizing artifact upload
+2026-10-04T04:18:14.3580980Z Artifact javascript-profile-linux-g++-13.zip successfully finalized. Artifact ID 11292992797
+2026-10-04T04:18:14.3581753Z Artifact javascript-profile-linux-g++-13 has been successfully uploaded! Final size is 8093472 bytes. Artifact ID is 11292992797
+2026-10-04T04:18:14.3585586Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37175401816/artifacts/11292992797
+2026-10-04T04:18:14.3717027Z ##[group]Run python3 test/ci_run_commands.py \
+2026-10-04T04:18:14.3717254Z [36;1mpython3 test/ci_run_commands.py \[0m
+2026-10-04T04:18:14.3717812Z [36;1m  --check 'Maxima strategy config' 'MAXIMA_STRATEGY_DUMP=build/linux/client/release/test/MaximaStrategyDump GLOB2_BUILD_DIR=build/linux/client/release GLOB2_USER_DIR="$(mktemp -d)" python3 test/maxima/MaximaStrategyConfigTest.py' \[0m
+2026-10-04T04:18:14.3718598Z [36;1m  --check 'Maxima policy tests' 'python3 -m unittest discover -s test/maxima -p "*Test.py"'[0m
+2026-10-04T04:18:14.3772064Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:18:14.3772223Z env:
+2026-10-04T04:18:14.3772342Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:18:14.3772552Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:18:14.3772911Z ##[endgroup]
+2026-10-04T04:18:14.4013173Z ##[group]Maxima strategy config
+2026-10-04T04:18:18.6541818Z ..............
+2026-10-04T04:18:18.6542221Z ----------------------------------------------------------------------
+2026-10-04T04:18:18.6542444Z Ran 14 tests in 4.219s
+2026-10-04T04:18:18.6542536Z 
+2026-10-04T04:18:18.6542587Z OK
+2026-10-04T04:18:18.6617901Z ##[endgroup]
+2026-10-04T04:18:18.6618136Z ##[group]Maxima policy tests
+2026-10-04T04:18:23.1197689Z ......s....................................................................
+2026-10-04T04:18:23.1198126Z ----------------------------------------------------------------------
+2026-10-04T04:18:23.1198556Z Ran 75 tests in 4.417s
+2026-10-04T04:18:23.1198689Z 
+2026-10-04T04:18:23.1198763Z OK (skipped=1)
+2026-10-04T04:18:23.1275727Z ##[endgroup]
+2026-10-04T04:18:23.1360665Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-04T04:18:23.1360893Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-04T04:18:23.1412353Z shell: /usr/bin/bash -e {0}
+2026-10-04T04:18:23.1412501Z env:
+2026-10-04T04:18:23.1412624Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:18:23.1412830Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:18:23.1413694Z   CI_STEPS_JSON: {
+  "validate_translations": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "success"
+  },
+  "execute_shared_javascript_corpus": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "verify_frozen_javascript_simulation_profile": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "test_maxima_strategy_configuration_and_policies": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  }
+}
+2026-10-04T04:18:23.1414493Z ##[endgroup]
+2026-10-04T04:18:23.1639446Z ## CI check results
+2026-10-04T04:18:23.1639665Z 
+2026-10-04T04:18:23.1639736Z - Failed: `validate_translations`
+2026-10-04T04:18:23.1639852Z 
+2026-10-04T04:18:23.1669495Z ##[error]Process completed with exit code 1.
+2026-10-04T04:18:23.1703917Z ##[group]Run actions/upload-artifact@v4
+2026-10-04T04:18:23.1704225Z with:
+2026-10-04T04:18:23.1704427Z   name: ci-observation-regressions-g++-13
+2026-10-04T04:18:23.1704751Z   path: artifacts/ci-observation/
+2026-10-04T04:18:23.1704984Z   if-no-files-found: ignore
+2026-10-04T04:18:23.1705291Z   compression-level: 6
+2026-10-04T04:18:23.1705501Z   overwrite: false
+2026-10-04T04:18:23.1705768Z   include-hidden-files: false
+2026-10-04T04:18:23.1705988Z env:
+2026-10-04T04:18:23.1706227Z   GLOB2_DEV_MODE: isolated
+2026-10-04T04:18:23.1706542Z   LD_LIBRARY_PATH: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib
+2026-10-04T04:18:23.1706846Z ##[endgroup]
+2026-10-04T04:18:23.2749000Z (node:3158) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-04T04:18:23.2749592Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-04T04:18:23.2809407Z With the provided path, there will be 1 file uploaded
+2026-10-04T04:18:23.2810492Z Artifact name is valid!
+2026-10-04T04:18:23.2811015Z Root directory input is valid!
+2026-10-04T04:18:23.5587635Z Beginning upload of artifact content to blob storage
+2026-10-04T04:18:23.5738570Z (node:3158) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-04T04:18:23.6964932Z Uploaded bytes 173
+2026-10-04T04:18:23.7321927Z Finished uploading artifact content to blob storage!
+2026-10-04T04:18:23.7322541Z SHA256 digest of uploaded artifact zip is 8396a81144a77e3758954fb5e295142963effddbf49105a718d0c03d4cace772
+2026-10-04T04:18:23.7324023Z Finalizing artifact upload
+2026-10-04T04:18:23.9643956Z Artifact ci-observation-regressions-g++-13.zip successfully finalized. Artifact ID 11293147634
+2026-10-04T04:18:23.9644775Z Artifact ci-observation-regressions-g++-13 has been successfully uploaded! Final size is 173 bytes. Artifact ID is 11293147634
+2026-10-04T04:18:23.9645966Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/37175401816/artifacts/11293147634
+2026-10-04T04:18:23.9778746Z Post job cleanup.
+2026-10-04T04:18:24.0308771Z [command]/usr/bin/git version
+2026-10-04T04:18:24.0340844Z git version 2.55.0
+2026-10-04T04:18:24.0365033Z Temporarily overriding HOME='/home/runner/work/_temp/f2c111be-71a2-4fdf-9c2a-45090cb136a0' before making global git config changes
+2026-10-04T04:18:24.0365571Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-04T04:18:24.0368652Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/glob2/glob2
+2026-10-04T04:18:24.0397730Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-04T04:18:24.0423987Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-04T04:18:24.0630997Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-04T04:18:24.0656017Z http.https://github.com/.extraheader
+2026-10-04T04:18:24.0664873Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-04T04:18:24.0698554Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-04T04:18:24.0929673Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-04T04:18:24.0958457Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-04T04:18:24.1290148Z Cleaning up orphan processes
+2026-10-04T04:18:24.1542802Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
