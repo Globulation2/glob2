@@ -657,7 +657,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		const int um = map.getUMTerrain(p % t.w, p / t.w);
 		++underlying[um >= 0 && um <= 2 ? um : 3];
 		water[p] = map.isWater(p);
-		land[p] = tile < 256;
+		land[p] = !map.isWater(p);
 		const auto &r = map.getResource(p);
 		if (r.type != NO_RES_TYPE)
 		{

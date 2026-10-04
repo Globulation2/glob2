@@ -1698,6 +1698,14 @@ OpenGL در این نسخه موجود نیست.
 خشکی
 [Fords]
 گدارها
+[Frozen crossings]
+گدارهای یخ‌زده
+[Half frozen]
+نیمی یخ‌زده
+[All frozen]
+همه یخ‌زده
+[Off]
+خاموش
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 حوضهٔ آبریز برای این تعداد مستعمره دشت سیلابی بسیار کمی دارد؛ از نقشهٔ بزرگ‌تر یا مستعمره‌های کمتر استفاده کنید.
 [Stone highlands]
@@ -1904,10 +1912,18 @@ OpenGL در این نسخه موجود نیست.
 ساحل‌های دندانه‌دار
 [Sand roads]
 جاده‌های شنی
+[Road surface]
+سطح جاده
+[Sand]
+ماسه
+[Cobblestone]
+سنگفرش
 [Treasure in dead ends]
 گنج در بن‌بست‌ها
 [Fjord bank deposits]
 ذخایر کرانهٔ آبدره‌ها
+[Ice bridges]
+پل‌های یخی
 [Sandy lake shore]
 کرانهٔ شنی دریاچه
 [River delta]
@@ -2014,6 +2030,8 @@ OpenGL در این نسخه موجود نیست.
 قطعه‌های زراعی
 [Tendril roads]
 جاده‌های پیچک‌وار
+[Cobblestone streets]
+خیابان‌های سنگفرش
 [Random]
 تصادفی
 [Vertical]

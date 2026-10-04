@@ -6,106 +6,45 @@
 
 // Terrain editing & rendering: setUMatPos, regenerateMap, lookup
 
+namespace
+{
+	// The neighbours setUMatPos looks at, in its historical order.
+	constexpr int UM_NEIGHBOURS[8][2] = {{0,-1}, {0,1}, {-1,0}, {1,0}, {-1,-1}, {1,-1}, {1,1}, {-1,1}};
+}
+
+bool Map::touchesUMTerrain(int x, int y, TerrainType t) const
+{
+	for (const auto &d : UM_NEIGHBOURS)
+		if (getUMTerrain(x+d[0], y+d[1])==t)
+			return true;
+	return false;
+}
+
+// Paints t on an l by l square and repairs the corners around it that may not touch t:
+// grass and water meet through sand, and so do cobblestone and water. Ice touches anything.
 void Map::setUMatPos(int x, int y, TerrainType t, int l)
 {
+	bool repairedPrototypeTerrain = false;
 	for (int dx=x-(l>>1); dx<x+(l>>1)+1; dx++)
 		for (int dy=y-(l>>1); dy<y+(l>>1)+1; dy++)
 		{
-			if (t==GRASS)
+			for (const auto &d : UM_NEIGHBOURS)
 			{
-				if (getUMTerrain(dx,dy-1)==WATER)
+				const int nx=dx+d[0], ny=dy+d[1];
+				const TerrainType n=getUMTerrain(nx, ny);
+				if ((t==GRASS && n==WATER) || (t==WATER && n==GRASS))
+					setUMTerrain(nx, ny, SAND);
+				else if ((t==WATER && n==COBBLESTONE) || (t==COBBLESTONE && n==WATER))
 				{
-// 					setNoResource(dx, dy-1, 1);
-					setUMTerrain(dx,dy-1,SAND);
-				}
-				if (getUMTerrain(dx,dy+1)==WATER)
-				{
-// 					setNoResource(dx, dy+1, 1);
-					setUMTerrain(dx,dy+1,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy)==WATER)
-				{
-// 					setNoResource(dx-1, dy, 1);
-					setUMTerrain(dx-1,dy,SAND);
-				}
-				if (getUMTerrain(dx+1,dy)==WATER)
-				{
-// 					setNoResource(dx+1, dy, 1);
-					setUMTerrain(dx+1,dy,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy-1)==WATER)
-				{
-// 					setNoResource(dx-1, dy-1, 1);
-					setUMTerrain(dx-1,dy-1,SAND);
-				}
-				if (getUMTerrain(dx+1,dy-1)==WATER)
-				{
-// 					setNoResource(dx+1, dy-1, 1);
-					setUMTerrain(dx+1,dy-1,SAND);
-				}
-
-				if (getUMTerrain(dx+1,dy+1)==WATER)
-				{
-// 					setNoResource(dx+1, dy+1, 1);
-					setUMTerrain(dx+1,dy+1,SAND);
-				}
-				if (getUMTerrain(dx-1,dy+1)==WATER)
-				{
-// 					setNoResource(dx-1, dy+1, 1);
-					setUMTerrain(dx-1,dy+1,SAND);
-				}
-			}
-			else if (t==WATER)
-			{
-				if (getUMTerrain(dx,dy-1)==GRASS)
-				{
-// 					setNoResource(dx, dy-1, 1);
-					setUMTerrain(dx,dy-1,SAND);
-				}
-				if (getUMTerrain(dx,dy+1)==GRASS)
-				{
-// 					setNoResource(dx, dy+1, 1);
-					setUMTerrain(dx,dy+1,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy)==GRASS)
-				{
-// 					setNoResource(dx-1, dy, 1);
-					setUMTerrain(dx-1,dy,SAND);
-				}
-				if (getUMTerrain(dx+1,dy)==GRASS)
-				{
-// 					setNoResource(dx+1, dy, 1);
-					setUMTerrain(dx+1,dy,SAND);
-				}
-
-				if (getUMTerrain(dx-1,dy-1)==GRASS)
-				{
-// 					setNoResource(dx-1, dy-1, 1);
-					setUMTerrain(dx-1,dy-1,SAND);
-				}
-				if (getUMTerrain(dx+1,dy-1)==GRASS)
-				{
-// 					setNoResource(dx+1, dy-1, 1);
-					setUMTerrain(dx+1,dy-1,SAND);
-				}
-
-				if (getUMTerrain(dx+1,dy+1)==GRASS)
-				{
-// 					setNoResource(dx+1, dy+1, 1);
-					setUMTerrain(dx+1,dy+1,SAND);
-				}
-				if (getUMTerrain(dx-1,dy+1)==GRASS)
-				{
-// 					setNoResource(dx-1, dy+1, 1);
-					setUMTerrain(dx-1,dy+1,SAND);
+					setUMTerrain(nx, ny, SAND);
+					repairedPrototypeTerrain = true;
 				}
 			}
 			setUMTerrain(dx,dy,t);
 		}
-	if (t==SAND)
+	// Sand repairs nothing among the original terrains, so its redraw can stay one corner
+	// tighter; the redrawn area decides how many random tile variants are drawn.
+	if (t==SAND && !repairedPrototypeTerrain)
 		regenerateMap(x-(l>>1)-1,y-(l>>1)-1,l+1,l+1);
 	else
 		regenerateMap(x-(l>>1)-2,y-(l>>1)-2,l+3,l+3);
@@ -116,10 +55,29 @@ void Map::regenerateMap(int x, int y, int w, int h)
 {
 	for (int dx=x; dx<x+w; dx++)
 		for (int dy=y; dy<y+h; dy++)
-			setTerrain(dx, dy, lookup(getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)));
+		{
+			const TerrainType corners[4] = {getUMTerrain(dx,dy), getUMTerrain(dx+1,dy), getUMTerrain(dx,dy+1), getUMTerrain(dx+1,dy+1)};
+			// The prototype terrains have flat tiles and no transition art: a tile with any ice
+			// corner is ice, one wholly of cobblestone is cobblestone. Any other tile touching
+			// cobblestone is drawn and treated as if the cobblestone corners were sand.
+			bool ice = false, cobblestone = true;
+			Uint8 base[4];
+			for (int i = 0; i < 4; i++)
+			{
+				ice |= corners[i] == ICE;
+				cobblestone &= corners[i] == COBBLESTONE;
+				base[i] = Uint8(corners[i] == COBBLESTONE ? SAND : corners[i]);
+			}
+			if (ice)
+				setTerrain(dx, dy, ICE_TILE_FIRST + (syncRand() % 16));
+			else if (cobblestone)
+				setTerrain(dx, dy, COBBLESTONE_TILE_FIRST + (syncRand() % 16));
+			else
+				setTerrain(dx, dy, lookup(base[0], base[1], base[2], base[3]));
+		}
 }
 
-Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
+Uint16 Map::baseTerrainTile(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br, unsigned variant)
 {
 	/*
 		Value of vertice's order in square :
@@ -230,5 +188,63 @@ Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
 	br=2-br;
 	int index=tl*27+tr*9+bl*3+br;
 
-	return terrainLookupTable[index][0]+(syncRand()%terrainLookupTable[index][1]);
+	return terrainLookupTable[index][0]+(variant%terrainLookupTable[index][1]);
+}
+
+Uint16 Map::lookup(Uint8 tl, Uint8 tr, Uint8 bl, Uint8 br) const
+{
+	return baseTerrainTile(tl, tr, bl, br, syncRand());
+}
+
+int Map::prototypeTerrainLayers(int x, int y, Uint16 layers[3]) const
+{
+	const TerrainType corners[4] = {getUMTerrain(x,y), getUMTerrain(x+1,y), getUMTerrain(x,y+1), getUMTerrain(x+1,y+1)};
+	// Masks with tl=8, tr=4, bl=2, br=1, the order the edge sprites are drawn in.
+	int ice = 0, cobblestone = 0;
+	int counts[3] = {0, 0, 0};
+	for (int i = 0; i < 4; i++)
+	{
+		const int bit = 8 >> i;
+		if (corners[i] == ICE)
+			ice |= bit;
+		else if (corners[i] == COBBLESTONE)
+			cobblestone |= bit;
+		else
+			counts[corners[i]]++;
+	}
+	if (!ice && !cobblestone)
+		return 0;
+	// A variant per tile from its position, stable from frame to frame.
+	Uint32 h = Uint32(x) * 73856093u ^ Uint32(y) * 19349663u;
+	h ^= h >> 13;
+	h *= 0x5bd1e995u;
+	h ^= h >> 15;
+	int n = 0;
+	if (counts[WATER] + counts[SAND] + counts[GRASS] > 0)
+	{
+		// The ground beneath: the new corners take the commonest original terrain of the tile
+		// (sand, then grass, then water on a tie), which their edges then cover.
+		TerrainType under = SAND;
+		if (counts[GRASS] > counts[under])
+			under = GRASS;
+		if (counts[WATER] > counts[under])
+			under = WATER;
+		Uint8 base[4];
+		for (int i = 0; i < 4; i++)
+			base[i] = Uint8(corners[i] == ICE || corners[i] == COBBLESTONE ? under : corners[i]);
+		const Uint16 tile = baseTerrainTile(base[0], base[1], base[2], base[3], h);
+		if (tile < 256 || tile >= 272)
+			layers[n++] = tile;
+	}
+	else if (cobblestone)
+	{
+		// Ice and cobblestone only: cobblestone beneath, the ice's edge over it.
+		layers[n++] = COBBLESTONE_TILE_FIRST + h % 16;
+		cobblestone = 0;
+	}
+	if (cobblestone)
+		layers[n++] = cobblestone == 15 ? COBBLESTONE_TILE_FIRST + h % 16 : COBBLESTONE_EDGE_FIRST + (cobblestone - 1) * 8 + (h >> 4) % 8;
+	if (ice)
+		layers[n++] = ice == 15 ? ICE_TILE_FIRST + h % 16 : ICE_EDGE_FIRST + (ice - 1) * 8 + (h >> 8) % 8;
+	return n;
 }

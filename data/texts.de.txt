@@ -1698,6 +1698,14 @@ Dichte der Flüsse
 Trockenheit
 [Fords]
 Furten
+[Frozen crossings]
+Gefrorene Furten
+[Half frozen]
+Halb gefroren
+[All frozen]
+Alle gefroren
+[Off]
+Aus
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Das Flusseinzugsgebiet hat zu wenig Auenland für so viele Kolonien; verwenden Sie eine größere Karte oder weniger Kolonien.
 [Stone highlands]
@@ -1904,10 +1912,18 @@ Brücken über den Graben
 Zerklüftete Küsten
 [Sand roads]
 Sandwege
+[Road surface]
+Wegbelag
+[Sand]
+Sand
+[Cobblestone]
+Kopfsteinpflaster
 [Treasure in dead ends]
 Schätze in Sackgassen
 [Fjord bank deposits]
 Vorkommen an den Fjordufern
+[Ice bridges]
+Eisbrücken
 [Sandy lake shore]
 Sandiges Seeufer
 [River delta]
@@ -2014,6 +2030,8 @@ Heimatteiche
 Ackerparzellen
 [Tendril roads]
 Rankenwege
+[Cobblestone streets]
+Kopfsteinpflasterstraßen
 [Random]
 Zufällig
 [Vertical]

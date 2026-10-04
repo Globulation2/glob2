@@ -88,9 +88,9 @@ struct SandFord
 	bool covers(const Torus &, double px, double py, double alongMargin, double acrossMargin) const;
 };
 
-/// Sand on every water corner of the ford. Only water changes, so beaches already laid stay
-/// right. Run after layBeaches.
-void stampFord(TerrainSketch &, const Torus &, const SandFord &);
+/// Sand (or `surface`, such as ice) on every water corner of the ford. Only water changes, so
+/// beaches already laid stay right. Run after layBeaches.
+void stampFord(TerrainSketch &, const Torus &, const SandFord &, TerrainType surface = SAND);
 
 /// The ford across the channel at `index` of a centre line (map coordinates, a radius per point,
 /// a closed loop when `closed`): its directions from the points two either side of the index, its

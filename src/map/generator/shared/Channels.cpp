@@ -126,7 +126,7 @@ bool SandFord::covers(const Torus &t, double px, double py, double alongMargin,
 	return std::abs(along) <= halfWidth + alongMargin && std::abs(across) <= span + acrossMargin;
 }
 
-void stampFord(TerrainSketch &terrain, const Torus &t, const SandFord &f)
+void stampFord(TerrainSketch &terrain, const Torus &t, const SandFord &f, TerrainType surface)
 {
 	// Corners are tested by their offset from the ford's centre, the ford's own frame: everything
 	// within its half width along and its span across that is water becomes sand.
@@ -141,7 +141,7 @@ void stampFord(TerrainSketch &terrain, const Torus &t, const SandFord &f)
 				continue;
 			unsigned char &corner = terrain[size_t(t.at(cx + dx, cy + dy))];
 			if (corner == WATER)
-				corner = SAND;
+				corner = surface;
 		}
 }
 

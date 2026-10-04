@@ -148,6 +148,14 @@ bool MapEdit::performTerrainAction(const std::string& action, float relMouseX, f
 	{
 		beginTerrainPlacement(TerrainSelector::Water, TerrainPlacementMode::BaseTerrain);
 	}
+	else if(action=="select ice")
+	{
+		beginTerrainPlacement(TerrainSelector::Ice, TerrainPlacementMode::BaseTerrain);
+	}
+	else if(action=="select cobblestone")
+	{
+		beginTerrainPlacement(TerrainSelector::Cobblestone, TerrainPlacementMode::BaseTerrain);
+	}
 	else if(action=="select wheat")
 	{
 		beginTerrainPlacement(TerrainSelector::Wheat, TerrainPlacementMode::Resource);

@@ -82,6 +82,10 @@ void TerrainSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 128);
 	if(terrainType==Water)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, 259);
+	if(terrainType==Ice)
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, Map::ICE_TILE_FIRST);
+	if(terrainType==Cobblestone)
+		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->terrain, Map::COBBLESTONE_TILE_FIRST);
 	if(terrainType==Wheat)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 19);
 	if(terrainType==Trees)
@@ -98,7 +102,7 @@ void TerrainSelector::draw()
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 59);
 	if(terrainType==PruneTree)
 		globalContainer->gfx->drawSprite(area.x, area.y, globalContainer->resources, 64);
-	if (terrainType == Grass || terrainType == Sand || terrainType == Water)
+	if (isBaseTerrain(terrainType))
 		globalContainer->gfx->finishDrawingSprite(globalContainer->terrain, 255);
 	else
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resources, 255);

@@ -192,3 +192,6 @@ static constexpr int FILE_FORMAT_VERSION_FARM_AREA = 130;
 //! Worker time use, combat-death place and assignment, and the defence snapshot in
 //! gameplay measurements (diagnostic only; older saves start them at load).
 static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;
+
+// Ice/cobblestone terrain IDs in undermap and rendered terrain arrays.
+constexpr int FILE_FORMAT_VERSION_PROTOTYPE_TERRAIN = 134;

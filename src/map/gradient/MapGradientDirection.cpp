@@ -28,11 +28,11 @@ int Map::swimClass(int walkSpeed, int swimSpeed)
 	return best;
 }
 
-int Map::minStepCost(int swimClass)
+int Map::minStepCost(int swimClass) const
 {
 	if (swimClass > 0 && WATER_STEP[swimClass] < GRADIENT_STEP)
 		return WATER_STEP[swimClass];
-	return GRADIENT_STEP;
+	return hasCobblestone() ? GRADIENT_STEP / 2 : GRADIENT_STEP;
 }
 
 int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
@@ -40,6 +40,10 @@ int Map::stepCost(int dx, int dy, size_t targetIndex, int swimClass) const
 	int step = GRADIENT_STEP;
 	if (swimClass > 0 && isWater((unsigned)targetIndex))
 		step = WATER_STEP[swimClass];
+	else if (isIce(static_cast<unsigned>(targetIndex)))
+		step = 30;
+	else if (isCobblestone(static_cast<unsigned>(targetIndex)))
+		step = 5;
 	if (dx != 0 && dy != 0)
 		step = step * GRADIENT_DIAGONAL_STEP / GRADIENT_STEP;
 	return step;

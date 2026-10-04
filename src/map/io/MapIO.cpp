@@ -81,7 +81,8 @@ try
 	if (packed) GAGCore::PackedArray::read<Uint8>(stream,size,[&](size_t i,Uint8 v){undermap[i]=v;});
     else stream->read(undermap, size, "undermap");
 	for (size_t i = 0; i < size; ++i)
-		if (undermap[i] > GRASS) co_return false;
+		if (undermap[i] > (versionMinor >= FILE_FORMAT_VERSION_PROTOTYPE_TERRAIN ? COBBLESTONE : GRASS)) co_return false;
+	cobblestoneTiles = 0;
 	stream->readEnterSection("cases");
     if(packed)
     {
@@ -110,7 +111,8 @@ try
 		if (!packed) mapDiscovered[i] = stream->readUint32("mapDiscovered");
 
 		if (!packed) tiles[i].terrain = stream->readUint16("terrain");
-		if (tiles[i].terrain >= 272) co_return false;
+		if (tiles[i].terrain >= (versionMinor >= FILE_FORMAT_VERSION_PROTOTYPE_TERRAIN ? TERRAIN_TILE_END : 272)) co_return false;
+		cobblestoneTiles += isCobblestoneTile(tiles[i].terrain);
 		if (!packed) tiles[i].building = stream->readUint16("building");
 		if (tiles[i].building != NOGBID && tiles[i].building >= Building::MAX_COUNT * header.getNumberOfTeams())
 			co_return false;

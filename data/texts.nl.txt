@@ -1698,6 +1698,14 @@ Rivierdichtheid
 Droogte
 [Fords]
 Doorwaadplaatsen
+[Frozen crossings]
+Bevroren doorwaadplaatsen
+[Half frozen]
+Half bevroren
+[All frozen]
+Alle bevroren
+[Off]
+Uit
 [The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
 Het stroomgebied heeft te weinig overstromingsvlakte voor zoveel kolonies; gebruik een grotere kaart of minder kolonies.
 [Stone highlands]
@@ -1904,10 +1912,18 @@ Bruggen over de gracht
 Grillige kusten
 [Sand roads]
 Zandwegen
+[Road surface]
+Wegdek
+[Sand]
+Zand
+[Cobblestone]
+Kasseien
 [Treasure in dead ends]
 Schatten in doodlopende gangen
 [Fjord bank deposits]
 Voorraden langs de fjordoevers
+[Ice bridges]
+IJsbruggen
 [Sandy lake shore]
 Zandige meeroever
 [River delta]
@@ -2014,6 +2030,8 @@ Poelen bij de thuisbasis
 Akkerpercelen
 [Tendril roads]
 Rankwegen
+[Cobblestone streets]
+Kasseistraten
 [Random]
 Willekeurig
 [Vertical]

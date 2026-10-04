@@ -84,7 +84,7 @@ void Map::pathfindRandom(Unit *unit)
 				int ty=(y+tabClose[di][1])&hMask;
 				if (pass == 0 && !(tiles[coordToIndex(tx, ty)].guardArea & unit->owner->me))
 					da[di]=false;
-				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+				else if (isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me) && !isIce(tx, ty))
 				{
 					da[di]=true;
 					count++;

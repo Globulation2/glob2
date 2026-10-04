@@ -212,7 +212,7 @@ void Game::drawMapTerrain(int left, int top, int right, int bot, int viewportX, 
 				// draw terrain
 				int id=sceneMap.getTerrain(x+viewportX, y+viewportY);
 				Sprite *sprite;
-				if (id<272)
+				if (id<Map::TERRAIN_TILE_END)
 				{
 					sprite=globalContainer->terrain;
 				}

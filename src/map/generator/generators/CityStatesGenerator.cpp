@@ -1441,7 +1441,9 @@ bool generate(Game &game, GenerationContext &context)
 			terrain[i] = WATER;
 		if (L.ford[i])
 			terrain[i] = SAND;
-		if ((L.sand[i] || L.sandRoad[i]) && terrain[i] == GRASS)
+		if (L.sandRoad[i] && o.cobblestoneRoads && terrain[i] == GRASS)
+			terrain[i] = COBBLESTONE;
+		else if ((L.sand[i] || L.sandRoad[i]) && terrain[i] == GRASS)
 			terrain[i] = SAND;
 	}
 	carveValleys(terrain, L, context, o.valleys);
@@ -1542,6 +1544,9 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 			return "The causeway at " + where(i) + " is blocked.";
 		if (L.ford[i] && !walkable(i))
 			return "The ford at " + where(i) + " is blocked.";
+		if (map.getUMTerrain(i % t.w, i / t.w) == COBBLESTONE &&
+			map.touchesUMTerrain(i % t.w, i / t.w, WATER))
+			return "The cobblestone at " + where(i) + " touches water.";
 	}
 	const ColonyWalk walk = walkFromFirstColony(map, teams, "the map", "");
 	if (!walk.error.empty())
@@ -1620,7 +1625,8 @@ CityStatesOptions::CityStatesOptions(const GenerationRequest &r)
 	  causewayWidth(r.option("causeway-width")), coastRoughness(r.option("coast-roughness")),
 	  valleys(r.option("valleys")), islands(r.option("islands")), sand(r.option("sand")),
 	  frontier(r.option("frontier-richness")), stoneWalls(r.option("stone-walls") != 0),
-	  sandRoads(r.option("sand-roads") != 0), wheat(r.option("wheat-amount")),
+	  sandRoads(r.option("sand-roads") != 0), cobblestoneRoads(r.option("road-surface") == 1),
+	  wheat(r.option("wheat-amount")),
 	  wood(r.option("wood-amount")), stone(r.option("stone-amount")),
 	  algae(r.option("algae-amount")), fruit(r.option("fruit-amount"))
 {
@@ -1668,6 +1674,7 @@ GeneratorDefinition cityStatesDefinition()
 			 .withSearchValues({1}),
 		 // Every home's ambient fields, outcrops and grove, and the commons;
 		 // every home's kit, the islets' wheat and the causeways' stone stay as they are.
+		 GeneratorControl::choice("road-surface", "Road surface", {"Sand", "Cobblestone"}, 0, ControlGroup::Layout),
 		 GeneratorControl::percentage("wheat-amount", "Wheat amount"),
 		 GeneratorControl::percentage("wood-amount", "Wood amount"),
 		 GeneratorControl::percentage("stone-amount", "Stone amount"),
