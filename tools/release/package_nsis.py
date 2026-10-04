@@ -2,8 +2,8 @@
 """Compile the x64 installer from the exact portable Windows staging tree."""
 
 import argparse
-import shutil
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
@@ -15,6 +15,10 @@ INVENTORY_END = ":GLOB2-OWNED-END:v1"
 def quote(value, runtime=True):
     """Escape NSIS strings, including literal dollar signs in native paths."""
     value = str(value)
+    if sys.platform == "win32":
+        # MinGW Python spells paths with "/", which NSIS's File and !include
+        # do not resolve.
+        value = value.replace("/", "\\")
     if any(character in value for character in "\r\n\x00"):
         raise ValueError("Installer paths cannot contain line breaks or NUL")
     if "${" in value:
@@ -77,11 +81,6 @@ def package(stage, output, version, compiler="makensis"):
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="glob2-nsis-") as temporary:
         generated = Path(temporary)
-        # MSYS2's makensis reads and writes only under its temporary directory
-        # on hosted Windows runners, not the checkout; give it a private copy
-        # of the stage and an output path there.
-        stage = shutil.copytree(stage, generated / "stage", symlinks=True)
-        built = generated / output.name
         file_lists(stage, generated)
         # Definitions live in a generated wrapper, avoiding differences between
         # Unix -D and Windows /D command-line parsing and quoting.
@@ -92,17 +91,14 @@ def package(stage, output, version, compiler="makensis"):
                 for key, value in (
                     ("STAGE_DIR", Path(stage).resolve()),
                     ("LIST_DIR", generated),
-                    ("OUT_FILE", built),
+                    ("OUT_FILE", output),
                     ("VERSION", version),
                 )
             )
-            # Inline the script: MSYS2's makensis cannot open the checkout's
-            # path through !include, while it reads this temporary wrapper.
-            + "\n" + (ROOT / "windows/win32_installer.nsi").read_text(encoding="utf-8") + "\n",
+            + f'\n!include "{quote(ROOT / "windows/win32_installer.nsi", runtime=False)}"\n',
             encoding="utf-8",
         )
         subprocess.run([compiler, "-WX", str(wrapper)], check=True)
-        shutil.copy2(built, output)
     return output
 
 
