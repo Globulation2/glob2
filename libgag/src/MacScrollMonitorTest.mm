@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#import <AppKit/AppKit.h>
 #include "EngineFixtures.h"
 #include "GlobalContainer.h"
 #include <GraphicContext.h>
@@ -12,7 +13,6 @@
 #include <memory>
 #include <GestureScroll.h>
 #include "MacScrollMonitorPrivate.h"
-#import <AppKit/AppKit.h>
 // Synthetic native samples exercise the callback's phase/delta normalization.
 @interface Glob2NativeScrollSample : NSObject
 @property(assign) NSWindow *window;
