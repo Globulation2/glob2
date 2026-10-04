@@ -89,7 +89,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         '-sINITIAL_MEMORY=134217728', '-sSTACK_SIZE=8388608', '-sASSERTIONS=1',
         '-sFORCE_FILESYSTEM', '-lidbfs.js', '-lwebsocket.js',
         "'-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]'",
-        '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/recording.js', '--pre-js', 'browser/runtime.js'] + PORTS)
+        '--pre-js', 'browser/storage.js', '--pre-js', 'browser/file-selection.js', '--pre-js', 'browser/audio.js', '--pre-js', 'browser/recording.js', '--pre-js', 'browser/runtime.js',
+        '--post-js', 'browser/webgl-shaders.js'] + PORTS)
     if arguments.get('web_profile') == '1':
         # Preserve function names for browser CPU profiles without changing optimization.
         env.Append(LINKFLAGS=['--profiling-funcs'])
@@ -204,7 +205,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         production += objects[len(files):]
         harness = tests.Program(str(output / 'script-tests.js'), production + test_objects)
         tests.Depends(harness, ['browser/storage.js', 'browser/file-selection.js',
-                               'browser/audio.js', 'browser/runtime.js'])
+                               'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js'])
         env.Depends(harness, assets)
         tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'games')
                                for p in Path(directory).rglob('*') if p.is_file()])
@@ -213,7 +214,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             tests.Depends(harness, 'browser/threaded-egl.js')
         env.Alias('web-tests', harness)
 
-    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js',
+    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js', 'browser/webgl-shaders.js',
                           'browser/asset-loader.js', 'browser/toolchain.json', assets])
     if threaded:
         env.Depends(program, 'browser/threaded-egl.js')
