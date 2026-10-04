@@ -18,6 +18,11 @@
 #include "IntBuildingType.h"
 #include <cstdio>
 #include <cstdlib>
+#include "Version.h"
+#include <BinaryStream.h>
+#include <TextStream.h>
+#include <StreamBackend.h>
+#include <memory>
 
 namespace
 {
@@ -132,6 +137,56 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		std::puts("market fetch: an empty market is no source");
 	}
 	std::puts("PASS stocked markets are goals of the fetch gradients");
+}
+
+std::string saveMap(Map &map, bool text)
+{
+	auto *backend=new GAGCore::MemoryStreamBackend;
+	std::unique_ptr<GAGCore::OutputStream> out(text
+		? static_cast<GAGCore::OutputStream *>(new GAGCore::TextOutputStream(backend))
+		: static_cast<GAGCore::OutputStream *>(new GAGCore::BinaryOutputStream(backend)));
+	map.saveRuntimeState(out.get()); out->flush();
+	return backend->takeContents();
+}
+
+TEST_CASE("MarketFetch/market fields and pending publications survive binary and text saves [save-format]")
+{
+	glob2test::HeadlessGlobals globals;
+	for (bool text : {false, true})
+	{
+		Bed source(36,36), restored(36,36);
+		for (auto *bed : {&source, &restored})
+		{
+			bed->game.gameHeader.setResourceGrowthDisabled(true);
+			bed->market->resources[CHERRY]=10;
+			bed->game.map.getResourceGradient(0,CHERRY,0,true);
+		}
+		source.game.map.configureGradientPipeline(2,3);
+		// Capture each queue phase, including a market job's publication deadline.
+		for (int tick=1; tick<=12; ++tick)
+		{
+			source.game.map.advanceGradientPipeline();
+			source.game.map.syncStep(tick);
+			const auto bytes=saveMap(source.game.map,text);
+			auto *backend=new GAGCore::MemoryStreamBackend;
+			backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+			std::unique_ptr<GAGCore::InputStream> in(text
+				? static_cast<GAGCore::InputStream *>(new GAGCore::TextInputStream(backend))
+				: static_cast<GAGCore::InputStream *>(new GAGCore::BinaryInputStream(backend)));
+			restored.game.map.loadRuntimeState(in.get(),VERSION_MINOR);
+			CHECK(saveMap(restored.game.map,text)==bytes);
+			if (tick==6)
+			{
+				source.market->removeResourceFromBuilding(CHERRY);
+				restored.market->removeResourceFromBuilding(CHERRY);
+			}
+			source.game.map.advanceGradientPipeline();
+			source.game.map.syncStep(tick+1);
+			restored.game.map.advanceGradientPipeline();
+			restored.game.map.syncStep(tick+1);
+			CHECK(saveMap(restored.game.map,text)==saveMap(source.game.map,text));
+		}
+	}
 }
 
 }

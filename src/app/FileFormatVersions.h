@@ -91,9 +91,6 @@ static constexpr int FILE_FORMAT_VERSION_CONTINUATION_STATE = 91;
 
 //! A building's round-trip fields and gradient use stamps join the cached routing fields.
 static constexpr int FILE_FORMAT_VERSION_ROUND_TRIP_FIELDS = 95;
-/// The "with markets" twin of each resource gradient travels with the map
-/// runtime state, like the plain one.
-static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 135;
 
 //! The map's topology generation and each cached field's generation stamp
 //! (MapIO.cpp:350, 410, 451, 514).
@@ -198,3 +195,6 @@ static constexpr int FILE_FORMAT_VERSION_LABOUR_STATS = 133;
 
 //! Canonical terrain identities, terrain experiment requirements and exposure state.
 static constexpr int FILE_FORMAT_VERSION_TERRAIN_PROPERTIES = 134;
+
+//! Optional market resource fields and their scheduling/publication state.
+static constexpr int FILE_FORMAT_VERSION_MARKET_GRADIENTS = 135;

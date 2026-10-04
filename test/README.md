@@ -1660,3 +1660,14 @@ Audio selector and captures its layout. The mixer selection regression suite is
 `SoundMixerTrackSelection/*`. These display cases run in isolated runner processes.
 Only Original ships, so `MusicSet/*` builds its extra valid and broken sets from copies
 of the shipped Oggs in the disposable profile.
+## Market fetching
+
+`MarketFetch` covers hiring and arrival at stocked markets, preference for a
+nearer natural resource, stock exhaustion, and binary/text preservation of market
+fields and pending gradient publications. Non-market buildings use these fields;
+markets themselves fetch from natural resources. The market fields participate
+in the existing one-field-per-tick round robin and optional fixed-delay gradient
+pipeline. Stock transitions invalidate pending market snapshots and request a
+refresh. Format 134 saves these fields and their scheduling flags; older saves
+load without them and allocate them on first use. Run
+`python3 test/run_tests.py --filter 'MarketFetch/*'`.
