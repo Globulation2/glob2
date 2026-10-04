@@ -1,0 +1,719 @@
+{
+ "target": "tools/music/out/fennel-mist",
+ "status": "pass",
+ "seconds": 18.59,
+ "waivers": {},
+ "checks": [
+  {
+   "name": "format",
+   "status": "pass",
+   "value": 1,
+   "threshold": "one Opus stream",
+   "detail": "format.calm.container: a1.opus: opus#45e6eae5",
+   "measures": [
+    {
+     "name": "format.calm.container",
+     "status": "pass",
+     "value": 1,
+     "threshold": "one Opus stream",
+     "detail": "a1.opus: opus#45e6eae5",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "format.calm.rate",
+     "status": "pass",
+     "value": 48000,
+     "threshold": "== 48000",
+     "detail": "",
+     "unit": "Hz",
+     "waiver": ""
+    },
+    {
+     "name": "format.calm.channels",
+     "status": "pass",
+     "value": 2,
+     "threshold": "== 2",
+     "detail": "",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "format.building.container",
+     "status": "pass",
+     "value": 1,
+     "threshold": "one Opus stream",
+     "detail": "a2.opus: opus#81be2498",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "format.building.rate",
+     "status": "pass",
+     "value": 48000,
+     "threshold": "== 48000",
+     "detail": "",
+     "unit": "Hz",
+     "waiver": ""
+    },
+    {
+     "name": "format.building.channels",
+     "status": "pass",
+     "value": 2,
+     "threshold": "== 2",
+     "detail": "",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "format.combat.container",
+     "status": "pass",
+     "value": 1,
+     "threshold": "one Opus stream",
+     "detail": "a3.opus: opus#cb70fbcd",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "format.combat.rate",
+     "status": "pass",
+     "value": 48000,
+     "threshold": "== 48000",
+     "detail": "",
+     "unit": "Hz",
+     "waiver": ""
+    },
+    {
+     "name": "format.combat.channels",
+     "status": "pass",
+     "value": 2,
+     "threshold": "== 2",
+     "detail": "",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "format.frames",
+     "status": "pass",
+     "value": 0,
+     "threshold": "all equal",
+     "detail": "calm 3853323, building 3853323, combat 3853323",
+     "unit": "frames diff",
+     "waiver": ""
+    },
+    {
+     "name": "format.length",
+     "status": "pass",
+     "value": 80.2775625,
+     "threshold": "50-120 s",
+     "detail": "",
+     "unit": "s",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "loudness",
+   "status": "pass",
+   "value": -18.002852531114076,
+   "threshold": "-18 +- 1 LUFS",
+   "detail": "loudness.calm.target: -0.0 LU from target",
+   "measures": [
+    {
+     "name": "loudness.calm.target",
+     "status": "pass",
+     "value": -18.002852531114076,
+     "threshold": "-18 +- 1 LUFS",
+     "detail": "-0.0 LU from target",
+     "unit": "LUFS",
+     "waiver": ""
+    },
+    {
+     "name": "loudness.calm.true_peak",
+     "status": "pass",
+     "value": -3.2845633997409958,
+     "threshold": "<= -1 dBTP",
+     "detail": "",
+     "unit": "dBTP",
+     "waiver": ""
+    },
+    {
+     "name": "loudness.building.target",
+     "status": "pass",
+     "value": -16.996035134083193,
+     "threshold": "-17 +- 1 LUFS",
+     "detail": "+0.0 LU from target",
+     "unit": "LUFS",
+     "waiver": ""
+    },
+    {
+     "name": "loudness.building.true_peak",
+     "status": "pass",
+     "value": -3.683494185824655,
+     "threshold": "<= -1 dBTP",
+     "detail": "",
+     "unit": "dBTP",
+     "waiver": ""
+    },
+    {
+     "name": "loudness.combat.target",
+     "status": "pass",
+     "value": -15.997886037653045,
+     "threshold": "-16 +- 1 LUFS",
+     "detail": "+0.0 LU from target",
+     "unit": "LUFS",
+     "waiver": ""
+    },
+    {
+     "name": "loudness.combat.true_peak",
+     "status": "pass",
+     "value": -2.821017130791328,
+     "threshold": "<= -1 dBTP",
+     "detail": "",
+     "unit": "dBTP",
+     "waiver": ""
+    },
+    {
+     "name": "loudness.ladder",
+     "status": "pass",
+     "value": 0.9981490964301489,
+     "threshold": "each step >= -0.3 LU",
+     "detail": "calm -18.0 / building -17.0 / combat -16.0 LUFS",
+     "unit": "LU",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "seam",
+   "status": "pass",
+   "value": 85.62066705040482,
+   "threshold": "rank <= 99 (fail > 99.9)",
+   "detail": "seam.calm.step: wrap step 0.0189",
+   "measures": [
+    {
+     "name": "seam.calm.step",
+     "status": "pass",
+     "value": 85.62066705040482,
+     "threshold": "rank <= 99 (fail > 99.9)",
+     "detail": "wrap step 0.0189",
+     "unit": "pct",
+     "waiver": ""
+    },
+    {
+     "name": "seam.calm.flux",
+     "status": "pass",
+     "value": 99.54823279298432,
+     "threshold": "rank <= 99.6 (fail > 99.95)",
+     "detail": "wrap flux 1.330, in-file median 0.732",
+     "unit": "pct",
+     "waiver": ""
+    },
+    {
+     "name": "seam.calm.gap",
+     "status": "pass",
+     "value": 0.0,
+     "threshold": "<= 0.25 s (fail > 2)",
+     "detail": "near-silence across the wrap; longest elsewhere 0.00 s",
+     "unit": "s",
+     "waiver": ""
+    },
+    {
+     "name": "seam.building.step",
+     "status": "pass",
+     "value": 9.060026647137196,
+     "threshold": "rank <= 99 (fail > 99.9)",
+     "detail": "wrap step 0.0038",
+     "unit": "pct",
+     "waiver": ""
+    },
+    {
+     "name": "seam.building.flux",
+     "status": "pass",
+     "value": 88.14775445123571,
+     "threshold": "rank <= 99.6 (fail > 99.95)",
+     "detail": "wrap flux 1.159, in-file median 0.771",
+     "unit": "pct",
+     "waiver": ""
+    },
+    {
+     "name": "seam.building.gap",
+     "status": "pass",
+     "value": 0.0,
+     "threshold": "<= 0.25 s (fail > 2)",
+     "detail": "near-silence across the wrap; longest elsewhere 0.00 s",
+     "unit": "s",
+     "waiver": ""
+    },
+    {
+     "name": "seam.combat.step",
+     "status": "pass",
+     "value": 29.838098139735013,
+     "threshold": "rank <= 99 (fail > 99.9)",
+     "detail": "wrap step 0.0084",
+     "unit": "pct",
+     "waiver": ""
+    },
+    {
+     "name": "seam.combat.flux",
+     "status": "pass",
+     "value": 95.77464788732394,
+     "threshold": "rank <= 99.6 (fail > 99.95)",
+     "detail": "wrap flux 1.222, in-file median 0.785",
+     "unit": "pct",
+     "waiver": ""
+    },
+    {
+     "name": "seam.combat.gap",
+     "status": "pass",
+     "value": 0.0,
+     "threshold": "<= 0.25 s (fail > 2)",
+     "detail": "near-silence across the wrap; longest elsewhere 0.00 s",
+     "unit": "s",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "repetition",
+   "status": "pass",
+   "value": 0.3997649417316419,
+   "threshold": "r < 0.8 (fail >= 0.9)",
+   "detail": "repetition.calm.envelope: best lag 2.20 s",
+   "measures": [
+    {
+     "name": "repetition.calm.envelope",
+     "status": "pass",
+     "value": 0.3997649417316419,
+     "threshold": "r < 0.8 (fail >= 0.9)",
+     "detail": "best lag 2.20 s",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "repetition.calm.copy",
+     "status": "pass",
+     "value": 0.0,
+     "threshold": "< 0.25 (fail > 0.5)",
+     "detail": "no exact copies",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "repetition.building.envelope",
+     "status": "pass",
+     "value": 0.3912485799788133,
+     "threshold": "r < 0.8 (fail >= 0.9)",
+     "detail": "best lag 40.05 s",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "repetition.building.copy",
+     "status": "pass",
+     "value": 0.0,
+     "threshold": "< 0.25 (fail > 0.5)",
+     "detail": "no exact copies",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "repetition.combat.envelope",
+     "status": "pass",
+     "value": 0.43891426489981666,
+     "threshold": "r < 0.9 (fail >= 0.95)",
+     "detail": "best lag 2.50 s",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "repetition.combat.copy",
+     "status": "pass",
+     "value": 0.0,
+     "threshold": "< 0.25 (fail > 0.5)",
+     "detail": "no exact copies",
+     "unit": "",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "alignment",
+   "status": "pass",
+   "value": -0.01327302128252749,
+   "threshold": "|lag| <= 8 ms (fail > 10)",
+   "detail": "alignment.calm_building.lag: onset peak r 0.30",
+   "measures": [
+    {
+     "name": "alignment.calm_building.lag",
+     "status": "pass",
+     "value": -0.01327302128252749,
+     "threshold": "|lag| <= 8 ms (fail > 10)",
+     "detail": "onset peak r 0.30",
+     "unit": "ms",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.calm_building.drift",
+     "status": "info",
+     "value": 4.870587278821281,
+     "threshold": "",
+     "detail": "window lags -2.8 (r 0.24), -0.6 (r 0.22), +2.0 (r 0.41), -1.0 (r 0.28) ms; window peaks too weak to judge",
+     "unit": "ms",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.calm_building.harmony",
+     "status": "pass",
+     "value": 0.9508905410766602,
+     "threshold": ">= 0.5 (fail < 0.25)",
+     "detail": "mean 0.5 s chroma correlation",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.building_combat.lag",
+     "status": "pass",
+     "value": 0.5237265190398,
+     "threshold": "|lag| <= 8 ms (fail > 10)",
+     "detail": "onset peak r 0.31",
+     "unit": "ms",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.building_combat.drift",
+     "status": "info",
+     "value": 1.1913548212383396,
+     "threshold": "",
+     "detail": "window lags +1.1 (r 0.29), +0.1 (r 0.29), +0.5 (r 0.35), -0.1 (r 0.31) ms; window peaks too weak to judge",
+     "unit": "ms",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.building_combat.harmony",
+     "status": "pass",
+     "value": 0.8830384016036987,
+     "threshold": ">= 0.5 (fail < 0.25)",
+     "detail": "mean 0.5 s chroma correlation",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.calm_combat.lag",
+     "status": "pass",
+     "value": -0.0906024926183164,
+     "threshold": "|lag| <= 8 ms (fail > 10)",
+     "detail": "onset peak r 0.18",
+     "unit": "ms",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.calm_combat.drift",
+     "status": "info",
+     "value": 2.9601368577969103,
+     "threshold": "",
+     "detail": "window lags -1.2 (r 0.19), +0.1 (r 0.18), +1.8 (r 0.17), -0.7 (r 0.21) ms; window peaks too weak to judge",
+     "unit": "ms",
+     "waiver": ""
+    },
+    {
+     "name": "alignment.calm_combat.harmony",
+     "status": "pass",
+     "value": 0.8727952241897583,
+     "threshold": ">= 0.5 (fail < 0.25)",
+     "detail": "mean 0.5 s chroma correlation",
+     "unit": "",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "contrast",
+   "status": "pass",
+   "value": 3.7838516235351562,
+   "threshold": ">= 2 dB (fail < 0.75)",
+   "detail": "contrast.calm_building.distance: level-matched log-mel difference",
+   "measures": [
+    {
+     "name": "contrast.calm_building.distance",
+     "status": "pass",
+     "value": 3.7838516235351562,
+     "threshold": ">= 2 dB (fail < 0.75)",
+     "detail": "level-matched log-mel difference",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "contrast.building_combat.distance",
+     "status": "pass",
+     "value": 4.6199116706848145,
+     "threshold": ">= 2 dB (fail < 0.75)",
+     "detail": "level-matched log-mel difference",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "contrast.calm_combat.distance",
+     "status": "pass",
+     "value": 4.710801124572754,
+     "threshold": ">= 2 dB (fail < 0.75)",
+     "detail": "level-matched log-mel difference",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "contrast.escalation",
+     "status": "pass",
+     "value": 2.7728272531873683,
+     "threshold": ">= 1 (fail < 0.6)",
+     "detail": "combat/building onsets x1.30, percussive share 0.02 -> 0.06",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "contrast.percussive_ladder",
+     "status": "pass",
+     "value": 0.05243147815879434,
+     "threshold": "combat - calm >= -0.02",
+     "detail": "percussive share 0.01 / 0.02 / 0.06",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "contrast.calm_restraint",
+     "status": "pass",
+     "value": 0.011679040237671103,
+     "threshold": "percussive <= 0.15, onsets <= 5/s",
+     "detail": "calm percussive share 0.01, 0.3 onsets/s",
+     "unit": "",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "noise",
+   "status": "pass",
+   "value": -46.11581494259583,
+   "threshold": "<= -35 dB (fail > -32)",
+   "detail": "noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame",
+   "measures": [
+    {
+     "name": "noise.calm.hf_floor",
+     "status": "pass",
+     "value": -46.11581494259583,
+     "threshold": "<= -35 dB (fail > -32)",
+     "detail": "10th-pct >6 kHz energy vs median frame",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "noise.calm.hf_flatness",
+     "status": "info",
+     "value": 0.09216654734150057,
+     "threshold": "",
+     "detail": "6-16 kHz flatness, louder frames",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "noise.calm.hf10k",
+     "status": "info",
+     "value": -39.89130518228158,
+     "threshold": "",
+     "detail": "energy share above 10 kHz",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "noise.building.hf_floor",
+     "status": "pass",
+     "value": -43.122691805608014,
+     "threshold": "<= -35 dB (fail > -32)",
+     "detail": "10th-pct >6 kHz energy vs median frame",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "noise.building.hf_flatness",
+     "status": "info",
+     "value": 0.12757059757199407,
+     "threshold": "",
+     "detail": "6-16 kHz flatness, louder frames",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "noise.building.hf10k",
+     "status": "info",
+     "value": -32.73203534067025,
+     "threshold": "",
+     "detail": "energy share above 10 kHz",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "noise.combat.hf_floor",
+     "status": "pass",
+     "value": -40.59878344963823,
+     "threshold": "<= -35 dB (fail > -32)",
+     "detail": "10th-pct >6 kHz energy vs median frame",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "noise.combat.hf_flatness",
+     "status": "info",
+     "value": 0.1377851800263819,
+     "threshold": "",
+     "detail": "6-16 kHz flatness, louder frames",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "noise.combat.hf10k",
+     "status": "info",
+     "value": -38.18557661691942,
+     "threshold": "",
+     "detail": "energy share above 10 kHz",
+     "unit": "dB",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "balance",
+   "status": "pass",
+   "value": 0.20616021987636998,
+   "threshold": "<= 0.42",
+   "detail": "balance.calm.lowmid: energy share 150-500 Hz",
+   "measures": [
+    {
+     "name": "balance.calm.lowmid",
+     "status": "pass",
+     "value": 0.20616021987636998,
+     "threshold": "<= 0.42",
+     "detail": "energy share 150-500 Hz",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "balance.calm.centroid",
+     "status": "pass",
+     "value": 1251.34370233263,
+     "threshold": "<= 1600 Hz",
+     "detail": "mean frame spectral centroid",
+     "unit": "Hz",
+     "waiver": ""
+    },
+    {
+     "name": "balance.building.lowmid",
+     "status": "pass",
+     "value": 0.20009852902278866,
+     "threshold": "<= 0.42",
+     "detail": "energy share 150-500 Hz",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "balance.building.centroid",
+     "status": "pass",
+     "value": 1467.76823266803,
+     "threshold": "<= 2900 Hz",
+     "detail": "mean frame spectral centroid",
+     "unit": "Hz",
+     "waiver": ""
+    },
+    {
+     "name": "balance.combat.lowmid",
+     "status": "pass",
+     "value": 0.36007349937289657,
+     "threshold": "<= 0.42",
+     "detail": "energy share 150-500 Hz",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "balance.combat.centroid",
+     "status": "pass",
+     "value": 1330.0780572274489,
+     "threshold": "<= 2900 Hz",
+     "detail": "mean frame spectral centroid",
+     "unit": "Hz",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "audibility",
+   "status": "pass",
+   "value": -6.461913740287813,
+   "threshold": ">= -10 dB",
+   "detail": "audibility.calm.quietest_3s: at 79.5 s",
+   "measures": [
+    {
+     "name": "audibility.calm.quietest_3s",
+     "status": "pass",
+     "value": -6.461913740287813,
+     "threshold": ">= -10 dB",
+     "detail": "at 79.5 s",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "audibility.building.quietest_3s",
+     "status": "pass",
+     "value": -4.645792386156313,
+     "threshold": ">= -10 dB",
+     "detail": "at 29.5 s",
+     "unit": "dB",
+     "waiver": ""
+    },
+    {
+     "name": "audibility.combat.quietest_3s",
+     "status": "pass",
+     "value": -4.462496528607021,
+     "threshold": ">= -10 dB",
+     "detail": "at 79.5 s",
+     "unit": "dB",
+     "waiver": ""
+    }
+   ]
+  },
+  {
+   "name": "dropout",
+   "status": "pass",
+   "value": 0,
+   "threshold": "< 1",
+   "detail": "dropout.calm.events: none",
+   "measures": [
+    {
+     "name": "dropout.calm.events",
+     "status": "pass",
+     "value": 0,
+     "threshold": "< 1",
+     "detail": "none",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "dropout.building.events",
+     "status": "pass",
+     "value": 0,
+     "threshold": "< 1",
+     "detail": "none",
+     "unit": "",
+     "waiver": ""
+    },
+    {
+     "name": "dropout.combat.events",
+     "status": "pass",
+     "value": 0,
+     "threshold": "< 1",
+     "detail": "none",
+     "unit": "",
+     "waiver": ""
+    }
+   ]
+  }
+ ]
+}

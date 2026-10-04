@@ -1,0 +1,16 @@
+QA orchestral-dawn False {'encode_seam_ms': {}, 'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {'combat': -2.3615358265865556}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/orchestral-dawn
+check       status  value       threshold                  detail
+----------  ------  ----------  -------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream            format.calm.container: a1.opus: opus#06a9e4e6
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS              loudness.calm.target: +0.0 LU from target
+seam        PASS    55.7 pct    rank <= 99 (fail > 99.9)   seam.calm.step: wrap step 0.0086
+repetition  PASS    0.544       r < 0.8 (fail >= 0.9)      repetition.calm.envelope: best lag 2.55 s
+alignment   PASS    -2.403 ms   |lag| <= 8 ms (fail > 10)  alignment.calm_building.lag: onset peak r 0.80
+contrast    PASS    3.026 dB    >= 2 dB (fail < 0.75)      contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -53.7 dB    <= -35 dB (fail > -32)     noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.226       <= 0.42                    balance.calm.lowmid: energy share 150-500 Hz
+audibility  PASS    -7.240 dB   >= -10 dB                  audibility.calm.quietest_3s: at 8.0 s
+dropout     PASS    0           < 1                        dropout.calm.events: none
+overall: PASS (16.2 s)
+installed orchestral-dawn into /home/bradley/.codex/worktrees/07da/glob2/data/zik/orchestral-dawn

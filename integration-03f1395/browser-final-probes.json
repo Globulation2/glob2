@@ -1,0 +1,398 @@
+[
+  {
+    "file": "artifacts/opus/browser-final-serial-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "sha256": "ac3dc978a91b3c376a607558eb92a9e27c987ee89a44f6a29640219610aa86af",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.621000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "2.167000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-serial-results/recording-serial-interrupt-936cf-ecovers-committed-fragments-chromium/recovered.mp4",
+    "sha256": "a0b1177bbc9b224af204974a338c9e13a37f8ef8505c745538191085871ebcd9",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "2.986000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-serial-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "sha256": "940d04cd821c539548a8186fa8765ad6a0624fe67295ab9209bd50d11250d6cf",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-serial-results/recording-serial-interrupt-936cf-ecovers-committed-fragments-firefox/recovered.mp4",
+    "sha256": "923885482abcfbdb630fd09830bd1c4e9dae1b373a79263a042d92e06afa1c02",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "2.986000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-serial-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "sha256": "fbd651a1f7ab413703f875f677207869d9c0f7cb7ff4185df3f0eef3103d1535",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.833333",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.833000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.833000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-serial-results/recording-serial-interrupt-936cf-ecovers-committed-fragments-webkit/recovered.mp4",
+    "sha256": "f204507bdf6011eb0ead4c84232ff8ef9dcda32a62baf151d923451bd830d565",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "2.986000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-threaded-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "sha256": "9055703541a1c72e60fd2a968b23bbfa7be8889e308667311e2c224a976c9a11",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.866667",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.866000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.867000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-threaded-results/recording-threaded-interru-f8b5d-ecovers-committed-fragments-chromium/recovered.mp4",
+    "sha256": "4dade26e408ac70a076107119cb2c01521156591b1276c50d8493a2a2a508b5b",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "5.000000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "4.992000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "5.000000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-threaded-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "sha256": "7f8fc45b21700ae50a0795a46834e4ff8ee3beb3780bc11972b695267cf334fc",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.900000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-threaded-results/recording-threaded-interru-f8b5d-ecovers-committed-fragments-firefox/recovered.mp4",
+    "sha256": "a42b288b9653652e491ae2121160afeca16b13cd11bc294caacab0613bc3b00f",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "2.986000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-threaded-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "sha256": "43e4913c8b9e9ed59af803ec15b312414be2cdf115498204fc614ca83556a5f2",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.833333",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.833000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.833000",
+        "width": null,
+        "height": null
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-final-threaded-results/recording-threaded-interru-f8b5d-ecovers-committed-fragments-webkit/recovered.mp4",
+    "sha256": "a593b263019f6be94b3c0a6d3fc97eb360e5742ade68fcd8ebf4371a06ccb988",
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": 1200,
+        "height": 900
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "2.986000",
+        "width": null,
+        "height": null
+      },
+      {
+        "codec_name": "bin_data",
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "3.000000",
+        "width": null,
+        "height": null
+      }
+    ]
+  }
+]

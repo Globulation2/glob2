@@ -1,0 +1,43 @@
+Globulation 2 soundtrack set "curious-critters": Curious Critters
+Files: a1.opus (calm), a2.opus (building), a3.opus (combat)
+
+Licence: CC-BY-3.0 (https://creativecommons.org/licenses/by/3.0/)
+
+Credits:
+  "Curious Critters" by Matthew Pablo (http://www.matthewpablo.com), CC BY 3.0, https://opengameart.org/content/curious-critters - rearranged for Globulation 2, with added original percussion. No endorsement by the author is implied.
+
+Adapted from "Curious Critters (Extended Version)" by Matthew Pablo (CC BY 3.0), a
+cute, playful orchestral piece at 101 bpm in F major. No stems were published, so
+Demucs estimates them: htdemucs (4 stems) for drums and bass, htdemucs_6s for the
+"other" (sustained and melodic) layer used to build calm. CC BY 3.0 requires credit,
+a link to the licence and an indication of changes; the changes follow.
+
+Changes made:
+- Loop: 44 bars of the source, 16.324-120.878 s (104.55 s), with a 30 ms crossfade
+  at the wrap from the source's own continuation.
+- calm: only the 6-stem "other" layer (plus its "vocals" estimate at -6 dB),
+  high-passed at 160 Hz and low-passed at 2.8 kHz, over a 4.5 s synthetic reverb
+  bed made from that same layer (-3 dB), with slow gain riding; the ostinato, bass
+  and drums are removed.
+- building: the original mix with its percussion at -6 dB, plus a synthesised
+  quarter-note shaker and frame drum on beats 2 and 4, 11 dB under the music.
+- combat: the original mix with drums +6 dB, bass +3 dB and +4 dB below 90 Hz, plus
+  synthesised taiko and timpani (tuned F2/C2) on beats 1 and 3, frame-drum and shaker
+  eighths and three soft taiko swells every 8 bars, 3.5-4 dB under the music;
+  stereo widening x1.3 above 300 Hz, a +2 dB tilt above 3.5 kHz and a 12 kHz
+  low-pass.
+- Mastered by the shared pipeline (-18/-17/-16 LUFS, true-peak limited), with calm
+  1 dB under the shared target as in the version approved by ear ([master] below).
+
+Added material: all percussion (taiko, timpani, frame drum, shaker) and all reverbs
+are synthesised by glob2music.adapt (no samples, soundfonts or third-party impulse
+responses) and are the Globulation 2 project's own work.
+
+Separation (measured on the loop): reconstruction residual -27.6 dB (htdemucs) and
+-15.2 dB (htdemucs_6s). Demucs is MIT; its weights come from the Hugging Face
+repositories adefossez/HTDemucs and adefossez/HTDemucs-6s and are a tool only.
+
+Listening verdict: approved by the maintainer by ear, after an earlier adaptation
+with less contrast was judged too uniform across moods.
+
+Built by tools/music/sets/curious-critters in the Globulation 2 source tree.

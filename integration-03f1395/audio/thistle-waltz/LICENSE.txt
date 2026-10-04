@@ -1,0 +1,13 @@
+Globulation 2 soundtrack set "thistle-waltz": Thistle Waltz
+Files: a1.opus (calm), a2.opus (building), a3.opus (combat)
+
+Licence: GPL-3.0-or-later (https://www.gnu.org/licenses/gpl-3.0.html)
+
+Credits:
+  Composed for Globulation 2 as a score written in code (composition.py), performed and mixed by the glob2music pipeline.
+  Samples: VSCO 2 Community Edition and the Versilian Community Sample Library, Versilian Studios (Sam Gossner), CC0 1.0.
+  Rendered with sfizz 1.2.3 (BSD-2-Clause).
+
+An original folk waltz in D major (3/4, 126 bpm, 48 bars) for alto and tenor recorder, ocarina, kalimba, folk harp and hand drums with strings. An 8+8 tune, a B minor middle on ocarina, the tune an octave up at the climax, and a quiet coda through bVII and bVI. Calm is lead, rolled harp and kalimba; building adds a pizzicato waltz rhythm, marimba and frame drum; combat adds spiccato strings, horn, timpani and darbuka.
+
+Built by tools/music/sets/thistle-waltz in the Globulation 2 source tree.

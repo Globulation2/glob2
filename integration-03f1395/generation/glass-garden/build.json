@@ -1,0 +1,84 @@
+{
+  "encoding": {
+    "encoder": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+    "recipe": "-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2",
+    "loop_preroll_frames": 9600,
+    "sample_rate": 48000,
+    "duration": 80.0,
+    "sources": [],
+    "recipe_files": {
+      "composition.py": "52b0dff92594d8d8d27d5604be2c8e7dd7564a0ef6e42d5aeecb7c3b18a35193",
+      "mixdown.py": "c014439ac698e956243a72b1e4cc2daf45e302d751b8b10d834e64a571832437",
+      "patches.py": "c96030faa5cd34f5de974251f4390d3cf5a37ff06a51853784e6e4bfb05a8289",
+      "recipe.py": "cab41f4af8ad6220b6fb8be4fd2b3f09a9719e8199e79a9e58817e8039878871",
+      "set.toml": "5456a9d3f915633d4e1c5f16c146446657a941992f0e434451df00aeed487246"
+    },
+    "tracks": {
+      "calm": {
+        "file": "a1.opus",
+        "bytes": 652021,
+        "decoded_frames": 3840000
+      },
+      "building": {
+        "file": "a2.opus",
+        "bytes": 590816,
+        "decoded_frames": 3840000
+      },
+      "combat": {
+        "file": "a3.opus",
+        "bytes": 593879,
+        "decoded_frames": 3840000
+      }
+    }
+  },
+  "set_id": "glass-garden",
+  "seed": 0,
+  "frames": 3840000,
+  "seconds": 68.2,
+  "score": {
+    "title": "glass-garden",
+    "bpm": 96,
+    "bars": 32,
+    "time_signature": [
+      4,
+      4
+    ],
+    "seconds": 80.0
+  },
+  "humanisation_namespace": "glass-garden",
+  "master": {
+    "calm": {
+      "lufs": -18.0,
+      "true_peak_dbtp": -6.48,
+      "input_gain_db": 2.2,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -18.0
+    },
+    "building": {
+      "lufs": -17.0,
+      "true_peak_dbtp": -3.65,
+      "input_gain_db": 1.74,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -17.0
+    },
+    "combat": {
+      "lufs": -16.0,
+      "true_peak_dbtp": -3.16,
+      "input_gain_db": 1.42,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -16.0
+    }
+  },
+  "encode_trim_db": {
+    "calm": 0.0,
+    "building": 0.0,
+    "combat": 0.0
+  },
+  "encode_limiter_ceiling_dbtp": {}
+}

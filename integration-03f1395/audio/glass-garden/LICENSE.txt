@@ -1,0 +1,15 @@
+Globulation 2 soundtrack set "glass-garden": Glass Garden
+Files: a1.opus (calm), a2.opus (building), a3.opus (combat)
+
+Licence: GPL-3.0-or-later (https://www.gnu.org/licenses/gpl-3.0.html)
+
+Credits:
+  Composed for Globulation 2 as a score written in code (composition.py), with synthesiser patches designed for it (patches.py); performed and mixed by the glob2music pipeline.
+  Rendered with Surge XT 1.3.4 (GPL-3.0), starting every patch from its CC0 Init state; no factory presets or samples.
+  Kalimba, droplet and percussion voices are own-work NumPy synthesis (glob2music/backends/dsp.py).
+
+An original electronic score in D Dorian (4/4, 96 bpm, 32 bars, 80 s), echoing the original soundtrack's tempo, D/G minor centre, walking bass and mallet plucks in a warm synthesised voice: an FM bell lead with gliding legato, a PWM pad, a woody reed counter-line, a pulse-pluck arpeggio and a round bass on Surge XT patches designed for this set, with a modal kalimba, water-droplet blips and wooden and skin drums synthesised in NumPy. Theme, an answer cadencing in F, a development through G minor, Eb and C minor to an A7(b9) climax, and a varied return. Calm is lead, pad, kalimba and long bass notes; building adds the counter-line, a quaver arpeggio, syncopated bass and hand percussion; combat adds a semiquaver arpeggio, driving bass, frame drum, snaps, log drums, toms and taiko.
+
+Approved by the maintainer by ear (October 2026). Surge renders are made deterministic as far as Surge allows (no analog drift, retriggered oscillators, key-triggered LFOs, a fresh instance per part): rebuilds agree to about 50 dB under the signal after encoding, and the shipped Oggs are the exact reference.
+
+Built by tools/music/sets/glass-garden in the Globulation 2 source tree.

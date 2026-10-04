@@ -1,0 +1,91 @@
+{
+  "encoding": {
+    "encoder": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+    "recipe": "-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2",
+    "loop_preroll_frames": 9600,
+    "sample_rate": 48000,
+    "duration": 104.55447916666667,
+    "sources": [
+      {
+        "name": "curious-critters",
+        "url": "https://opengameart.org/sites/default/files/Curious%20Critters%20%28Extended%20Version%29%201_0.mp3",
+        "sha256": "f9b62b22db0a4ede471433ab592ddbb4cc2739a0816566424ad7f6821b7ac07a",
+        "license": "CC-BY-3.0",
+        "author": "Matthew Pablo",
+        "title": "Curious Critters (Extended Version)",
+        "filename": "curious-critters-extended.mp3",
+        "note": "Page: https://opengameart.org/content/curious-critters"
+      }
+    ],
+    "recipe_files": {
+      "recipe.py": "df074cfa0231ce79387b64e161e75662dec22dc4e5882d290e65ab573a450242",
+      "set.toml": "f2d5eeafb5a4d27ee1c0b10f1332a4328626c76a0f0f64a78ee2605b98cb3642"
+    },
+    "tracks": {
+      "calm": {
+        "file": "a1.opus",
+        "bytes": 706532,
+        "decoded_frames": 5018615
+      },
+      "building": {
+        "file": "a2.opus",
+        "bytes": 738222,
+        "decoded_frames": 5018615
+      },
+      "combat": {
+        "file": "a3.opus",
+        "bytes": 678681,
+        "decoded_frames": 5018615
+      }
+    }
+  },
+  "set_id": "curious-critters",
+  "seed": 1,
+  "frames": 5018615,
+  "seconds": 61.1,
+  "loop_frames": [
+    783534,
+    5802149
+  ],
+  "grid_bpm": 101.0,
+  "grid_beats": 176,
+  "separation": "htdemucs + htdemucs_6s, shifts=2",
+  "master": {
+    "calm": {
+      "lufs": -19.0,
+      "true_peak_dbtp": -4.33,
+      "input_gain_db": -0.14,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -19.0
+    },
+    "building": {
+      "lufs": -17.0,
+      "true_peak_dbtp": -2.81,
+      "input_gain_db": -3.65,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -17.0
+    },
+    "combat": {
+      "lufs": -16.0,
+      "true_peak_dbtp": -1.5,
+      "input_gain_db": -6.15,
+      "limited": true,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -16.0
+    }
+  },
+  "encode_trim_db": {
+    "calm": 0.0,
+    "building": 0.0,
+    "combat": 0.0
+  },
+  "encode_limiter_ceiling_dbtp": {},
+  "encode_seam_ms": {
+    "calm": 2.0
+  }
+}

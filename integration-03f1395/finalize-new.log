@@ -1,0 +1,137 @@
+QA moss-lanterns False {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/moss-lanterns
+check       status  value       threshold                   detail
+----------  ------  ----------  --------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream             format.calm.container: a1.opus: opus#2f931316
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS               loudness.calm.target: +0.0 LU from target
+seam        WARN    99.8 pct    rank <= 99.6 (fail > 99.9~  seam.calm.flux: wrap flux 1.475, in-file median 0.794
+repetition  PASS    0.414       r < 0.8 (fail >= 0.9)       repetition.calm.envelope: best lag 2.30 s
+alignment   PASS    -4.732 ms   |lag| <= 8 ms (fail > 10)   alignment.calm_building.lag: onset peak r 0.23
+contrast    PASS    6.007 dB    >= 2 dB (fail < 0.75)       contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -48.5 dB    <= -35 dB (fail > -32)      noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.236       <= 0.42                     balance.calm.lowmid: energy share 150-500 Hz
+audibility  WARN    -11.0 dB    >= -10 dB                   audibility.calm.quietest_3s: at 82.5 s
+dropout     PASS    0           < 1                         dropout.calm.events: none
+overall: WARN (19.8 s)
+installed moss-lanterns into /home/bradley/.codex/worktrees/07da/glob2/data/zik/moss-lanterns
+QA thistle-waltz False {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/thistle-waltz
+check       status  value       threshold                  detail
+----------  ------  ----------  -------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream            format.calm.container: a1.opus: opus#228aff5c
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS              loudness.calm.target: +0.0 LU from target
+seam        PASS    70.2 pct    rank <= 99 (fail > 99.9)   seam.calm.step: wrap step 0.0109
+repetition  PASS    0.575       r < 0.8 (fail >= 0.9)      repetition.calm.envelope: best lag 5.70 s
+alignment   PASS    -0.259 ms   |lag| <= 8 ms (fail > 10)  alignment.calm_building.lag: onset peak r 0.33
+contrast    PASS    6.342 dB    >= 2 dB (fail < 0.75)      contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -53.3 dB    <= -35 dB (fail > -32)     noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.249       <= 0.42                    balance.calm.lowmid: energy share 150-500 Hz
+audibility  WARN    -11.7 dB    >= -10 dB                  audibility.calm.quietest_3s: at 0.0 s
+dropout     PASS    0           < 1                        dropout.calm.events: none
+overall: WARN (15.4 s)
+installed thistle-waltz into /home/bradley/.codex/worktrees/07da/glob2/data/zik/thistle-waltz
+QA bramble-jig False {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/bramble-jig
+check       status  value       threshold                  detail
+----------  ------  ----------  -------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream            format.calm.container: a1.opus: opus#ad5ca389
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS              loudness.calm.target: +0.0 LU from target
+seam        PASS    66.5 pct    rank <= 99 (fail > 99.9)   seam.calm.step: wrap step 0.0133
+repetition  PASS    0.561       r < 0.8 (fail >= 0.9)      repetition.calm.envelope: best lag 2.60 s
+alignment   PASS    0.186 ms    |lag| <= 8 ms (fail > 10)  alignment.calm_building.lag: onset peak r 0.30
+contrast    PASS    4.243 dB    >= 2 dB (fail < 0.75)      contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -46.5 dB    <= -35 dB (fail > -32)     noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.268       <= 0.42                    balance.calm.lowmid: energy share 150-500 Hz
+audibility  PASS    -7.919 dB   >= -10 dB                  audibility.calm.quietest_3s: at 73.0 s
+dropout     PASS    0           < 1                        dropout.calm.events: none
+overall: PASS (17.1 s)
+installed bramble-jig into /home/bradley/.codex/worktrees/07da/glob2/data/zik/bramble-jig
+QA fennel-mist False {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/fennel-mist
+check       status  value       threshold                  detail
+----------  ------  ----------  -------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream            format.calm.container: a1.opus: opus#45e6eae5
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS              loudness.calm.target: -0.0 LU from target
+seam        PASS    85.6 pct    rank <= 99 (fail > 99.9)   seam.calm.step: wrap step 0.0189
+repetition  PASS    0.400       r < 0.8 (fail >= 0.9)      repetition.calm.envelope: best lag 2.20 s
+alignment   PASS    -0.013 ms   |lag| <= 8 ms (fail > 10)  alignment.calm_building.lag: onset peak r 0.30
+contrast    PASS    3.784 dB    >= 2 dB (fail < 0.75)      contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -46.1 dB    <= -35 dB (fail > -32)     noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.206       <= 0.42                    balance.calm.lowmid: energy share 150-500 Hz
+audibility  PASS    -6.462 dB   >= -10 dB                  audibility.calm.quietest_3s: at 79.5 s
+dropout     PASS    0           < 1                        dropout.calm.events: none
+overall: PASS (18.5 s)
+installed fennel-mist into /home/bradley/.codex/worktrees/07da/glob2/data/zik/fennel-mist
+QA glass-garden False {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/glass-garden
+check       status  value       threshold                   detail
+----------  ------  ----------  --------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream             format.calm.container: a1.opus: opus#ecb054da
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS               loudness.calm.target: +0.0 LU from target
+seam        WARN    99.6 pct    rank <= 99.6 (fail > 99.9~  seam.building.flux: wrap flux 4.232, in-file median 0.957
+repetition  PASS    0.569       r < 0.8 (fail >= 0.9)       repetition.calm.envelope: best lag 2.50 s
+alignment   PASS    -0.561 ms   |lag| <= 8 ms (fail > 10)   alignment.calm_building.lag: onset peak r 0.48
+contrast    PASS    8.013 dB    >= 2 dB (fail < 0.75)       contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -81.1 dB    <= -35 dB (fail > -32)      noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.319       <= 0.42                     balance.calm.lowmid: energy share 150-500 Hz
+audibility  PASS    -2.387 dB   >= -10 dB                   audibility.calm.quietest_3s: at 3.0 s
+dropout     PASS    0           < 1                         dropout.calm.events: none
+overall: WARN (20.6 s)
+installed glass-garden into /home/bradley/.codex/worktrees/07da/glob2/data/zik/glass-garden
+QA woodland False {'encode_trim_db': {'calm': 0.0, 'building': -0.42549955214908497, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {'combat': -2.4843724200600175}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/woodland
+check                 status  value       threshold                   detail
+--------------------  ------  ----------  --------------------------  ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+format                PASS    1           one Opus stream             format.calm.container: a1.opus: opus#755e821e
+loudness              PASS    -18.0 LUFS  -18 +- 1 LUFS               loudness.calm.target: -0.0 LU from target
+seam                  WARN    99.9 pct    rank <= 99.6 (fail > 99.9~  seam.calm.flux: wrap flux 1.828, in-file median 0.742
+  seam.calm.gap       waived  1.250 s     <= 0.25 s (fail > 2)        warn waived: The composer's 3-bar phrases end in a decaying synth chord, so the loop restarts after a 0.6-1.25 s rest; this is the composer's own phrasing, approved by ear.
+  seam.building.flux  warn    99.9 pct    rank <= 99.6 (fail > 99.9~  wrap flux 2.316, in-file median 0.751
+  seam.building.gap   waived  0.600 s     <= 0.25 s (fail > 2)        warn waived: The composer's 3-bar phrases end in a decaying synth chord, so the loop restarts after a 0.6-1.25 s rest; this is the composer's own phrasing, approved by ear.
+  seam.combat.gap     waived  0.600 s     <= 0.25 s (fail > 2)        warn waived: The composer's 3-bar phrases end in a decaying synth chord, so the loop restarts after a 0.6-1.25 s rest; this is the composer's own phrasing, approved by ear.
+repetition            PASS    0.518       r < 0.8 (fail >= 0.9)       repetition.calm.envelope: best lag 2.75 s
+alignment             PASS    -1.351 ms   |lag| <= 8 ms (fail > 10)   alignment.calm_building.lag: onset peak r 0.50
+contrast              PASS    3.731 dB    >= 2 dB (fail < 0.75)       contrast.calm_building.distance: level-matched log-mel difference
+noise                 PASS    -59.5 dB    <= -35 dB (fail > -32)      noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance               PASS    0.362       <= 0.42                     balance.calm.lowmid: energy share 150-500 Hz
+audibility            WARN    -19.6 dB    >= -10 dB                   audibility.calm.quietest_3s: at 107.5 s
+dropout               PASS    0           < 1                         dropout.calm.events: none
+overall: WARN (29.5 s)
+installed woodland into /home/bradley/.codex/worktrees/07da/glob2/data/zik/woodland
+QA apple-cider False {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {'combat': -3.3130572234780375}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/apple-cider
+check       status  value       threshold                  detail
+----------  ------  ----------  -------------------------  -----------------------------------------------------------------
+format      PASS    1           one Opus stream            format.calm.container: a1.opus: opus#7cb305ac
+loudness    PASS    -18.0 LUFS  -18 +- 1 LUFS              loudness.calm.target: +0.0 LU from target
+seam        PASS    68.8 pct    rank <= 99 (fail > 99.9)   seam.calm.step: wrap step 0.0137
+repetition  PASS    0.649       r < 0.8 (fail >= 0.9)      repetition.calm.envelope: best lag 4.80 s
+alignment   PASS    -1.744 ms   |lag| <= 8 ms (fail > 10)  alignment.calm_building.lag: onset peak r 0.81
+contrast    PASS    5.308 dB    >= 2 dB (fail < 0.75)      contrast.calm_building.distance: level-matched log-mel difference
+noise       PASS    -51.5 dB    <= -35 dB (fail > -32)     noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance     PASS    0.274       <= 0.42                    balance.calm.lowmid: energy share 150-500 Hz
+audibility  PASS    -5.761 dB   >= -10 dB                  audibility.calm.quietest_3s: at 9.5 s
+dropout     PASS    0           < 1                        dropout.calm.events: none
+overall: PASS (21.6 s)
+installed apple-cider into /home/bradley/.codex/worktrees/07da/glob2/data/zik/apple-cider
+QA curious-critters True {'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: tools/music/out/curious-critters
+check                           status  value       threshold                   detail
+------------------------------  ------  ----------  --------------------------  -----------------------------------------------------------------
+format                          PASS    1           one Opus stream             format.calm.container: a1.opus: opus#da43ef23
+loudness                        PASS    -19.0 LUFS  -19 +- 1 LUFS               loudness.calm.target: -0.0 LU from target
+seam                            FAIL    100.0 pct   rank <= 99 (fail > 99.9)    seam.calm.step: wrap step 0.1139
+  seam.calm.flux                warn    99.9 pct    rank <= 99.6 (fail > 99.9~  wrap flux 1.995, in-file median 0.710
+repetition                      WARN    0.851       r < 0.8 (fail >= 0.9)       repetition.building.envelope: best lag 4.75 s
+alignment                       WARN    0.410       >= 0.5 (fail < 0.25)        alignment.calm_building.harmony: mean 0.5 s chroma correlation
+  alignment.calm_combat.harmo~  warn    0.332       >= 0.5 (fail < 0.25)        mean 0.5 s chroma correlation
+contrast                        PASS    9.070 dB    >= 2 dB (fail < 0.75)       contrast.calm_building.distance: level-matched log-mel difference
+noise                           PASS    -78.9 dB    <= -35 dB (fail > -32)      noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance                         PASS    0.288       <= 0.42                     balance.calm.lowmid: energy share 150-500 Hz
+audibility                      PASS    -8.458 dB   >= -10 dB                   audibility.calm.quietest_3s: at 99.0 s
+dropout                         PASS    0           < 1                         dropout.calm.events: none
+overall: FAIL (24.9 s)
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/07da/glob2/artifacts/opus/finalize-new.py", line 24, in <module>
+    if report.failed:
+RuntimeError: curious-critters QA failed

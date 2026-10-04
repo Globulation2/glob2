@@ -1,0 +1,79 @@
+{
+  "encoding": {
+    "encoder": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+    "recipe": "-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2",
+    "loop_preroll_frames": 9600,
+    "sample_rate": 48000,
+    "duration": 70.751,
+    "sources": [],
+    "recipe_files": {
+      "recipe.py": "a0a0b216c19a54ec3d39bec4c95bce5477db6d73dd42ab4ef0fb192ca79c4433",
+      "set.toml": "704f3bf11b56b07a4e9a74f51738b88d105e4eee46e826ded0c1f427cdf6232c"
+    },
+    "tracks": {
+      "calm": {
+        "file": "a1.opus",
+        "bytes": 498889,
+        "decoded_frames": 3396048
+      },
+      "building": {
+        "file": "a2.opus",
+        "bytes": 505081,
+        "decoded_frames": 3396048
+      },
+      "combat": {
+        "file": "a3.opus",
+        "bytes": 507875,
+        "decoded_frames": 3396048
+      }
+    }
+  },
+  "set_id": "orchestral-dawn",
+  "seed": 11,
+  "frames": 3396048,
+  "seconds": 34.7,
+  "generation": "d5249fc228fd2714915b",
+  "loop_frames": [
+    1154688,
+    4550736
+  ],
+  "separation": "htdemucs_6s shifts=2 overlap=0.5",
+  "master": {
+    "calm": {
+      "lufs": -18.0,
+      "true_peak_dbtp": -3.45,
+      "input_gain_db": -0.07,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -18.0
+    },
+    "building": {
+      "lufs": -17.0,
+      "true_peak_dbtp": -2.77,
+      "input_gain_db": 0.15,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -17.0
+    },
+    "combat": {
+      "lufs": -16.0,
+      "true_peak_dbtp": -1.65,
+      "input_gain_db": -0.85,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -16.0
+    }
+  },
+  "encode_trim_db": {
+    "calm": 0.0,
+    "building": 0.0,
+    "combat": 0.0
+  },
+  "encode_seam_ms": {},
+  "encode_limiter_ceiling_dbtp": {
+    "combat": -2.3615358265865556
+  }
+}

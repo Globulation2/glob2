@@ -1,0 +1,24 @@
+QA curious-critters False {'encode_seam_ms': {'calm': 2.0}, 'encode_trim_db': {'calm': 0.0, 'building': 0.0, 'combat': 0.0}, 'encode_limiter_ceiling_dbtp': {}}
+QA report: /home/bradley/.codex/worktrees/07da/glob2/tools/music/out/curious-critters
+check                           status  value       threshold                   detail
+------------------------------  ------  ----------  --------------------------  -----------------------------------------------------------------
+format                          PASS    1           one Opus stream             format.calm.container: a1.opus: opus#47021cbd
+loudness                        PASS    -19.0 LUFS  -19 +- 1 LUFS               loudness.calm.target: -0.0 LU from target
+seam                            WARN    99.9 pct    rank <= 99.6 (fail > 99.9~  seam.calm.flux: wrap flux 1.965, in-file median 0.710
+repetition                      WARN    0.851       r < 0.8 (fail >= 0.9)       repetition.building.envelope: best lag 4.75 s
+alignment                       WARN    0.410       >= 0.5 (fail < 0.25)        alignment.calm_building.harmony: mean 0.5 s chroma correlation
+  alignment.calm_combat.harmo~  warn    0.332       >= 0.5 (fail < 0.25)        mean 0.5 s chroma correlation
+contrast                        PASS    9.070 dB    >= 2 dB (fail < 0.75)       contrast.calm_building.distance: level-matched log-mel difference
+noise                           PASS    -78.9 dB    <= -35 dB (fail > -32)      noise.calm.hf_floor: 10th-pct >6 kHz energy vs median frame
+balance                         PASS    0.288       <= 0.42                     balance.calm.lowmid: energy share 150-500 Hz
+audibility                      PASS    -8.458 dB   >= -10 dB                   audibility.calm.quietest_3s: at 99.0 s
+dropout                         PASS    0           < 1                         dropout.calm.events: none
+overall: WARN (24.8 s)
+installed curious-critters into /home/bradley/.codex/worktrees/07da/glob2/data/zik/curious-critters
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/07da/glob2/artifacts/opus/finalize-new.py", line 16, in <module>
+    finished=encode_within_ceiling(trio,out,spec,seam_ms=manifest.master.get('opus_seam_ms'))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bradley/.codex/worktrees/07da/glob2/tools/music/glob2music/manifest.py", line 324, in encode_within_ceiling
+    raise RuntimeError(f'{out}: decoded true peak still over {limit_db:.1f} dBTP after {attempts} trims: '
+RuntimeError: tools/music/out/orchestral-dawn: decoded true peak still over -1.2 dBTP after 3 trims: combat +0.14 dB

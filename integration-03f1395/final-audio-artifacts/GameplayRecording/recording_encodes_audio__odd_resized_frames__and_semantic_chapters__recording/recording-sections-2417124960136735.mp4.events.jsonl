@@ -1,0 +1,10 @@
+{"time_us":0,"kind":"chapter","id":1,"phase":"menu","screen":"main_menu","dialog":"","match":0,"mode":"","map":"","team":-1}
+{"time_us":433333,"kind":"chapter","id":2,"phase":"menu","screen":"multiplayer_game","dialog":"","match":0,"mode":"","map":"","team":-1}
+{"time_us":609971,"kind":"match_start","value":"multiplayer"}
+{"time_us":609972,"kind":"speed","value":"40"}
+{"time_us":633333,"kind":"chapter","id":3,"phase":"gameplay","screen":"game_session","dialog":"","match":1,"mode":"multiplayer","map":"chapter test","team":2,"tick":15000,"era_start":10000,"era_end":20000}
+{"time_us":766666,"kind":"chapter","id":4,"phase":"gameplay","screen":"game_session","dialog":"","match":1,"mode":"multiplayer","map":"chapter test","team":2,"tick":20000,"era_start":20000,"era_end":30000}
+{"time_us":864557,"kind":"paused","value":"true"}
+{"time_us":900000,"kind":"chapter","id":5,"phase":"dialog","screen":"game_session","dialog":"in_game_main","match":1,"mode":"multiplayer","map":"chapter test","team":2,"tick":20005}
+{"time_us":1067530,"kind":"paused","value":"false"}
+{"time_us":1350252,"kind":"resize","value":"400x240"}

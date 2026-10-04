@@ -1,0 +1,32 @@
+Globulation 2 soundtrack set "apple-cider": Apple Cider
+Files: a1.opus (calm), a2.opus (building), a3.opus (combat)
+
+Licence: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
+
+Credits:
+  "Apple Cider" by Zane Little Music (CC0), https://opengameart.org/content/apple-cider - rearranged for Globulation 2.
+
+Adapted from "Apple Cider" by Zane Little Music (CC0 1.0), a cozy autumn piece at
+about 99 bpm. No stems were published, so Demucs (htdemucs, 4 stems, shifts=2)
+estimates drums, bass, other and vocals from the mix; each mood moves those stems
+relative to the original mix, which keeps the separator's residual everywhere.
+
+Changes made (not required by CC0, recorded for provenance):
+- Loop: 40 bars of the source, 29.548-126.264 s (96.7 s), with a 10 ms crossfade
+  at the wrap from the source's own continuation.
+- calm: drums at -20 dB and low-passed at 900 Hz (a faint pulse that also masks
+  separation gaps), bass -5 dB, other and vocals -1 dB with the other stem
+  low-passed at 7 kHz.
+- building: drums -7 dB, bass -1.5 dB.
+- combat: the original mix with drums +3.5 dB, bass +1.5 dB and a +1.5 dB shelf
+  above 4 kHz.
+- Mastered by the shared pipeline (-18/-17/-16 LUFS, true-peak limited).
+
+Separation (measured on the loop): reconstruction residual -31.5 dB; drum-onset
+correlation in the non-drum remainder 0.39 against 0.19 for real stems, so faint
+drum ghosts are expected in calm. Demucs is MIT; its weights come from the
+Hugging Face repository adefossez/HTDemucs and are a tool only.
+
+Listening verdict: approved by the maintainer by ear.
+
+Built by tools/music/sets/apple-cider in the Globulation 2 source tree.

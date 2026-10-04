@@ -1,0 +1,16 @@
+
+Globulation 2 - 0.10.0.1
+
+Compiled on Oct  4 2026 at 17:31:38
+
+SDL 3.4.16
+Featuring :
+* Map version 133
+* Maps up to version 58 can still be loaded
+* Network Protocol version 54
+This program and all related materials are GPL, see COPYING for details.
+(C) 2001-2007 Stephane Magnenat, Luc-Olivier de Charriere and other contributors.
+See data/authors.txt for a full list.
+
+Type /home/bradley/.codex/worktrees/07da/glob2/artifacts/opus/final-install-bin/glob2 --help for a list of command line options.
+

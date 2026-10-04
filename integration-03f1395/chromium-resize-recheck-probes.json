@@ -1,0 +1,71 @@
+[
+  {
+    "file": "artifacts/opus/browser-chromium-resize-recheck/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "streams": [
+      {
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.800000"
+      },
+      {
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.800000"
+      },
+      {
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.800000"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-chromium-resize-recheck/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium-repeat1/recording.mp4",
+    "streams": [
+      {
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.866667"
+      },
+      {
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.866000"
+      },
+      {
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.867000"
+      }
+    ]
+  },
+  {
+    "file": "artifacts/opus/browser-chromium-resize-recheck/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium-repeat2/recording.mp4",
+    "streams": [
+      {
+        "codec_type": "video",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.766667"
+      },
+      {
+        "codec_type": "audio",
+        "sample_rate": "48000",
+        "start_time": "0.000000",
+        "duration": "1.766000"
+      },
+      {
+        "codec_type": "data",
+        "sample_rate": null,
+        "start_time": "0.000000",
+        "duration": "1.767000"
+      }
+    ]
+  }
+]

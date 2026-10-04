@@ -1,0 +1,88 @@
+{
+  "encoding": {
+    "encoder": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+    "recipe": "-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2",
+    "loop_preroll_frames": 9600,
+    "sample_rate": 48000,
+    "duration": 96.7166875,
+    "sources": [
+      {
+        "name": "apple-cider",
+        "url": "https://opengameart.org/sites/default/files/apple_cider.wav",
+        "sha256": "0c1a22074ab2b18a245f8a2e6e47473ec274f25c6d24985ddfde1b7f14aafad1",
+        "license": "CC0-1.0",
+        "author": "Zane Little Music",
+        "title": "Apple Cider",
+        "filename": "",
+        "note": "Page: https://opengameart.org/content/apple-cider"
+      }
+    ],
+    "recipe_files": {
+      "recipe.py": "2b67151ce9cdb5e442a99224860185f2278a74fa2128d979f29092b7d85ba9e9",
+      "set.toml": "0e9803063bbacccf896dd4100f4b5448304629f9e50f2074276d9bc5af454ef4"
+    },
+    "tracks": {
+      "calm": {
+        "file": "a1.opus",
+        "bytes": 686687,
+        "decoded_frames": 4642401
+      },
+      "building": {
+        "file": "a2.opus",
+        "bytes": 680922,
+        "decoded_frames": 4642401
+      },
+      "combat": {
+        "file": "a3.opus",
+        "bytes": 675904,
+        "decoded_frames": 4642401
+      }
+    }
+  },
+  "set_id": "apple-cider",
+  "seed": 1,
+  "frames": 4642401,
+  "seconds": 52.4,
+  "loop_frames": [
+    1418287,
+    6060688
+  ],
+  "separation": "htdemucs shifts=2",
+  "master": {
+    "calm": {
+      "lufs": -18.0,
+      "true_peak_dbtp": -3.18,
+      "input_gain_db": 1.06,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -18.0
+    },
+    "building": {
+      "lufs": -17.0,
+      "true_peak_dbtp": -1.98,
+      "input_gain_db": -0.31,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -17.0
+    },
+    "combat": {
+      "lufs": -16.03,
+      "true_peak_dbtp": -1.5,
+      "input_gain_db": -3.2,
+      "limited": true,
+      "rounds": 1,
+      "final_trim_db": -0.0,
+      "target_lufs": -16.0
+    }
+  },
+  "encode_trim_db": {
+    "calm": 0.0,
+    "building": 0.0,
+    "combat": 0.0
+  },
+  "encode_limiter_ceiling_dbtp": {
+    "combat": -3.3130572234780375
+  }
+}

@@ -1,3 +1,7 @@
+# Latest integration
+
+The complete nine-set migration is verified at `03f1395b99be79de2e23be711d730b35a5453162`, rebased on `11124f736befac9880dfb7b3448df79129ed9206`. See [the final integration evidence](integration-03f1395/README.md) for all 32 tracks, 38.51% size reduction, current validation and review audio. The material below is retained historical evidence for the earlier five-track revision.
+
 # Opus migration review evidence for PR #725
 
 Implementation revision: `718704ed228fb2758f6785f131d210f8ba613020`.

@@ -1,0 +1,262 @@
+{
+  "tracks": [
+    {
+      "path": "data/zik/apple-cider/a1.opus",
+      "frames": 4642401,
+      "seconds": 96.7166875,
+      "before_bytes": 1133710,
+      "after_bytes": 686687,
+      "sha256": "571ff06a9e507940281de7ceddfb460c4e88caaff2acdfcb5824ea1741071280"
+    },
+    {
+      "path": "data/zik/apple-cider/a2.opus",
+      "frames": 4642401,
+      "seconds": 96.7166875,
+      "before_bytes": 1198220,
+      "after_bytes": 680922,
+      "sha256": "482000676c3260cc2ddcf601afe2b298cfc8608f4f376d09de52fc2040b9cdfe"
+    },
+    {
+      "path": "data/zik/apple-cider/a3.opus",
+      "frames": 4642401,
+      "seconds": 96.7166875,
+      "before_bytes": 1203476,
+      "after_bytes": 675904,
+      "sha256": "77fb5b5a3c9cb3d07faf2e5183b7605aa4b99d75726d0b35ab1dff8404c26593"
+    },
+    {
+      "path": "data/zik/bramble-jig/a1.opus",
+      "frames": 3511126,
+      "seconds": 73.14845833333334,
+      "before_bytes": 808578,
+      "after_bytes": 564230,
+      "sha256": "1632e2850abf36bb6b80f256683960f6527b88538f029e669dc376a649bb9517"
+    },
+    {
+      "path": "data/zik/bramble-jig/a2.opus",
+      "frames": 3511126,
+      "seconds": 73.14845833333334,
+      "before_bytes": 849384,
+      "after_bytes": 555851,
+      "sha256": "4fa02a8818ad9acd279d84149bc7b3380b45cad9d34491b741462ad0378da1be"
+    },
+    {
+      "path": "data/zik/bramble-jig/a3.opus",
+      "frames": 3511126,
+      "seconds": 73.14845833333334,
+      "before_bytes": 829885,
+      "after_bytes": 487002,
+      "sha256": "1ee38018967f9caca0f2995ab393aa8f3b0105907b51c016a3c9356bb9ef6cf8"
+    },
+    {
+      "path": "data/zik/curious-critters/a1.opus",
+      "frames": 5018615,
+      "seconds": 104.55447916666667,
+      "before_bytes": 885521,
+      "after_bytes": 706532,
+      "sha256": "9893134111a0ef8e8221043ed914181fac327ff3f1aae95836fb977418a0c6c3"
+    },
+    {
+      "path": "data/zik/curious-critters/a2.opus",
+      "frames": 5018615,
+      "seconds": 104.55447916666667,
+      "before_bytes": 1213710,
+      "after_bytes": 738222,
+      "sha256": "0c4734ecf4e8cc55fe88173d5c1217909403e1850386f267116ae75d69b4dd02"
+    },
+    {
+      "path": "data/zik/curious-critters/a3.opus",
+      "frames": 5018615,
+      "seconds": 104.55447916666667,
+      "before_bytes": 1277034,
+      "after_bytes": 678681,
+      "sha256": "7ae789b49d8704e94766b5df79d10b2df77ff0fbbe2a9b55cc35f50c6eca622e"
+    },
+    {
+      "path": "data/zik/fennel-mist/a1.opus",
+      "frames": 3853323,
+      "seconds": 80.2775625,
+      "before_bytes": 857161,
+      "after_bytes": 596948,
+      "sha256": "12f8f742aa1f91ae00e9714ef81d03ad76b37d2a5303327ed4f280225de529a9"
+    },
+    {
+      "path": "data/zik/fennel-mist/a2.opus",
+      "frames": 3853323,
+      "seconds": 80.2775625,
+      "before_bytes": 903309,
+      "after_bytes": 613964,
+      "sha256": "0a46ace5070a6f7fab6aa2b75cd9c904ae62151ab9f805def89f1d7c28a5555f"
+    },
+    {
+      "path": "data/zik/fennel-mist/a3.opus",
+      "frames": 3853323,
+      "seconds": 80.2775625,
+      "before_bytes": 921059,
+      "after_bytes": 527515,
+      "sha256": "a163efab77d247b40e439538a2ac4dd75421c64402a71236c90b3bb4df61b135"
+    },
+    {
+      "path": "data/zik/glass-garden/a1.opus",
+      "frames": 3840000,
+      "seconds": 80.0,
+      "before_bytes": 617585,
+      "after_bytes": 652021,
+      "sha256": "46aa15ce6a4c30140b3eca8d22d2dc65a66a65632533e1484df7bf32fe66d3f1"
+    },
+    {
+      "path": "data/zik/glass-garden/a2.opus",
+      "frames": 3840000,
+      "seconds": 80.0,
+      "before_bytes": 775335,
+      "after_bytes": 590816,
+      "sha256": "5e8938aa5761094c0f965bfe6eeaf81db41af72627f4ee87885eb81dd474388f"
+    },
+    {
+      "path": "data/zik/glass-garden/a3.opus",
+      "frames": 3840000,
+      "seconds": 80.0,
+      "before_bytes": 837297,
+      "after_bytes": 593879,
+      "sha256": "2f5adf9bb213db33bed6ede2d02ecf93005d951d263de15051d0169a8e6958b3"
+    },
+    {
+      "path": "data/zik/intro.opus",
+      "frames": 720675,
+      "seconds": 15.0140625,
+      "before_bytes": 346640,
+      "after_bytes": 94336,
+      "sha256": "947b0d9d46ea3e353c12f5f52ac3ce35a8bae8508e0594a75bec941566286990"
+    },
+    {
+      "path": "data/zik/menu.opus",
+      "frames": 1152009,
+      "seconds": 24.0001875,
+      "before_bytes": 557717,
+      "after_bytes": 169761,
+      "sha256": "1a35b2ca09b21fd4dea3cc6851f70be720d784e33407e759fb173f119c7041bb"
+    },
+    {
+      "path": "data/zik/moss-lanterns/a1.opus",
+      "frames": 4023835,
+      "seconds": 83.82989583333334,
+      "before_bytes": 915904,
+      "after_bytes": 670301,
+      "sha256": "e414e18ec6fb1daa914033f0bc22210f8b944563a297c2b02ff8025992c62981"
+    },
+    {
+      "path": "data/zik/moss-lanterns/a2.opus",
+      "frames": 4023835,
+      "seconds": 83.82989583333334,
+      "before_bytes": 1004540,
+      "after_bytes": 683983,
+      "sha256": "2dfd2b11bc9b419bcf58087203209f7de5b770b8ccacb7a10b7f7b87b9e15a5f"
+    },
+    {
+      "path": "data/zik/moss-lanterns/a3.opus",
+      "frames": 4023835,
+      "seconds": 83.82989583333334,
+      "before_bytes": 960603,
+      "after_bytes": 601495,
+      "sha256": "ef8bab3db2cf8784829ed98a43e27fb82284d40387528475fc6fd41cbb41356d"
+    },
+    {
+      "path": "data/zik/orchestral-dawn/a1.opus",
+      "frames": 3396048,
+      "seconds": 70.751,
+      "before_bytes": 836248,
+      "after_bytes": 498889,
+      "sha256": "04eac2e728c66e08e4e6d42bb43f00e0f8584fd91bc959d3bd9c5694daa54ad8"
+    },
+    {
+      "path": "data/zik/orchestral-dawn/a2.opus",
+      "frames": 3396048,
+      "seconds": 70.751,
+      "before_bytes": 867051,
+      "after_bytes": 505081,
+      "sha256": "2d71ecdcfbc5f9fd5a78d67a1fa2bdf347b52348cdaf2e8f5b05ca53185f31da"
+    },
+    {
+      "path": "data/zik/orchestral-dawn/a3.opus",
+      "frames": 3396048,
+      "seconds": 70.751,
+      "before_bytes": 873288,
+      "after_bytes": 507875,
+      "sha256": "30710287667c167fde20e16db9bc1ba4d09a089b65f74f934a3009880a93c456"
+    },
+    {
+      "path": "data/zik/original/a1.opus",
+      "frames": 2566809,
+      "seconds": 53.4751875,
+      "before_bytes": 1040855,
+      "after_bytes": 398477,
+      "sha256": "ebb35ad02394d42e2710bba82fc50538ea7a9847f9e479bbe9d8727c57b3552c"
+    },
+    {
+      "path": "data/zik/original/a2.opus",
+      "frames": 2566809,
+      "seconds": 53.4751875,
+      "before_bytes": 723117,
+      "after_bytes": 476380,
+      "sha256": "f5ddfae3669f3972913888b5a1fa783c443b95243754a20dbcf3dd0c6880d40d"
+    },
+    {
+      "path": "data/zik/original/a3.opus",
+      "frames": 2566809,
+      "seconds": 53.4751875,
+      "before_bytes": 1111407,
+      "after_bytes": 377418,
+      "sha256": "99252b1194de34bd1d0f692788d0bc1deb9dc24ac59c7dcc6e85a1da2073f037"
+    },
+    {
+      "path": "data/zik/thistle-waltz/a1.opus",
+      "frames": 3303035,
+      "seconds": 68.81322916666667,
+      "before_bytes": 747657,
+      "after_bytes": 516195,
+      "sha256": "5ad8995689d76c77dedd2a20e29a6382a811eafbd6bdd7c0bfe721634fd0dc1f"
+    },
+    {
+      "path": "data/zik/thistle-waltz/a2.opus",
+      "frames": 3303035,
+      "seconds": 68.81322916666667,
+      "before_bytes": 795707,
+      "after_bytes": 509971,
+      "sha256": "25d547b480f002aaa439b12fb9eeb53993df66eb505125ff136f52ac3f5b7265"
+    },
+    {
+      "path": "data/zik/thistle-waltz/a3.opus",
+      "frames": 3303035,
+      "seconds": 68.81322916666667,
+      "before_bytes": 786045,
+      "after_bytes": 450081,
+      "sha256": "163578e1e9d60971b90813251c94502854b2ca4a42a658f2093c023a810363c2"
+    },
+    {
+      "path": "data/zik/woodland/a1.opus",
+      "frames": 5316923,
+      "seconds": 110.76922916666666,
+      "before_bytes": 1145993,
+      "after_bytes": 806544,
+      "sha256": "057bf22a132c747fc4b267a147eb09f6b1f029ddd29b00d64291e63592b1503e"
+    },
+    {
+      "path": "data/zik/woodland/a2.opus",
+      "frames": 5316923,
+      "seconds": 110.76922916666666,
+      "before_bytes": 1194636,
+      "after_bytes": 768905,
+      "sha256": "f575558b2aec6af5f669463fe761bad90dea51ec4bc5c3558c1e3833ae090728"
+    },
+    {
+      "path": "data/zik/woodland/a3.opus",
+      "frames": 5316923,
+      "seconds": 110.76922916666666,
+      "before_bytes": 1244395,
+      "after_bytes": 732014,
+      "sha256": "7bcba6131bc1e4fdc21f1b2d4bf6756ecfdcb700c5ad443917136322811e26da"
+    }
+  ],
+  "before_bytes": 29463067,
+  "after_bytes": 18116880
+}

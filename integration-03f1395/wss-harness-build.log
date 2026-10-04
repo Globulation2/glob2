@@ -1,0 +1,37 @@
+scons: Reading SConscript files ...
+Checking whether the C compiler works... (cached) yes
+Checking whether the C++ compiler works... (cached) yes
+Checking for C library SDL3... (cached) yes
+Checking for C library SDL3_ttf... (cached) yes
+Checking for C library SDL3_image... (cached) yes
+Checking for C library SDL3_net... (cached) yes
+Checking for C library speex... (cached) yes
+Checking for C++ header file speex/speex.h... (cached) yes
+Checking for C library opusfile... (cached) yes
+Checking for C++ header file opusfile.h... (cached) yes
+Checking for C library opus... (cached) yes
+Checking for C library ogg... (cached) yes
+Checking for C++ header file zlib.h... (cached) yes
+Checking for C library z... (cached) yes
+Checking for C++ header file regex.h... (cached) yes
+Checking for C++ header file openssl/ssl.h... (cached) yes
+Checking for C library ssl... (cached) yes
+Checking for C library crypto... (cached) yes
+Checking for C++ header file boost/beast/websocket.hpp... (cached) yes
+Checking for C++ header file boost/asio/ssl.hpp... (cached) yes
+Checking for C library GL... (cached) yes
+Checking for C++ header file GL/gl.h... (cached) yes
+Checking for C library GLU... (cached) yes
+Checking for C++ header file GL/glu.h... (cached) yes
+Checking for C library epoxy... (cached) yes
+Checking for C++ header file epoxy/gl.h... (cached) yes
+Checking for C library fribidi... (cached) yes
+Checking for C++ header file fribidi/fribidi.h... (cached) yes
+Checking for C library portaudio... (cached) no
+scons: done reading SConscript files.
+scons: Building targets ...
+g++-13 -o build/linux/client/release/src/WssListenerHarness.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -Ibuild/linux/client/release/recording/prefix/include -Ibuild/sdl3-opus/prefix/include -Ibuild/linux/client/release/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Ithird_party/quickjs-ng src/net/WssListenerHarness.cpp
+g++-13 -o build/linux/client/release/src/WssTransportHarness.o -c -std=gnu++20 -Wall -fPIC -O3 -s -DGLOB2_OFFICIAL_INSTANCE_ORIGIN=\"https://app.glob2online.com\" -DGLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS=\"https://glob2online.com\" -DHAVE_CONFIG_H -Ibuild/linux/client/release/recording/prefix/include -Ibuild/sdl3-opus/prefix/include -Ibuild/linux/client/release/include -I/usr/include/opus -Ilibgag/include -I. -Ilibusl/src -Isrc -Isrc/ai -Isrc/hud -Isrc/app -Isrc/game/player -Isrc/team -Isrc/common -Isrc/map -Isrc/game -Isrc/campaign -Isrc/campaign/screens -Isrc/replay -Isrc/game/screens -Isrc/render/clouds -Isrc/ui/screens -Isrc/game/rules -Isrc/game/diagnostics -Isrc/map/editor/screens -Isrc/engine -Isrc/ui -Isrc/map/preview -Isrc/app/cli -Isrc/net/lan/screens -Isrc/online -Isrc/map/tools -Isrc/scripting/map -Isrc/render/overlay -Isrc/audio -Isrc/online/screens -Isrc/game/orders -Isrc/resource -Isrc/ui/settings -Isrc/team/stats -Isrc/render/torus -Isrc/ai/simple -Isrc/ai/castor -Isrc/ai/javascript -Isrc/ai/nicowar -Isrc/ai/numbi -Isrc/ai/telemetry -Isrc/ai/warrush -Isrc/ai/maxima -Isrc/building -Isrc/building/types -Isrc/unit/types -Isrc/building/hud -Isrc/net -Isrc/hud/draw -Isrc/hud/input -Isrc/hud/touch -Isrc/net/turn -Isrc/unit -Isrc/map/editor -Isrc/map/generator -Isrc/map/generator/compatibility -Isrc/map/generator/core -Isrc/map/generator/generators -Isrc/map/generator/shared -Isrc/map/generator/shared/legacy -Isrc/map/gradient -Isrc/map/io -Isrc/net/lan -Isrc/net/message -Isrc/scripting/sgsl -Ithird_party/nlohmann-json/include -Ithird_party/quickjs-ng src/net/WssTransportHarness.cpp
+g++-13 -o build/linux/client/release/src/wss-listener-test -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -s -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/07da/glob2/build/sdl3-opus/prefix/lib -Wl,--enable-new-dtags -Wl,-rpath=/home/bradley/.codex/worktrees/07da/glob2/build/sdl3-opus/prefix/lib build/linux/client/release/src/net/NetTransport.o build/linux/client/release/src/net/TcpTransport.o build/linux/client/release/src/net/WssTransport.o build/linux/client/release/src/net/NetworkConfig.o build/linux/client/release/src/net/LanIdentity.o build/linux/client/release/src/WssListenerHarness.o -Lbuild/sdl3-opus/prefix/lib -lz -lpthread -lssl -lcrypto -lGL -lGLU -lepoxy -lfribidi build/linux/client/release/recording/prefix/lib/libavformat.a build/linux/client/release/recording/prefix/lib/libavcodec.a build/linux/client/release/recording/prefix/lib/libswscale.a build/linux/client/release/recording/prefix/lib/libswresample.a build/linux/client/release/recording/prefix/lib/libavutil.a build/linux/client/release/recording/prefix/lib/libx264.a -lva -lva-drm -ldl -lm -lSDL3_net -lopusfile -lopus -logg -lSDL3_ttf -lSDL3_image -lspeex -lSDL3
+g++-13 -o build/linux/client/release/src/wss-transport-test -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -s -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/07da/glob2/build/sdl3-opus/prefix/lib -Wl,--enable-new-dtags -Wl,-rpath=/home/bradley/.codex/worktrees/07da/glob2/build/sdl3-opus/prefix/lib build/linux/client/release/src/net/NetTransport.o build/linux/client/release/src/net/TcpTransport.o build/linux/client/release/src/net/WssTransport.o build/linux/client/release/src/net/NetworkConfig.o build/linux/client/release/src/net/LanIdentity.o build/linux/client/release/src/WssTransportHarness.o -Lbuild/sdl3-opus/prefix/lib -lz -lpthread -lssl -lcrypto -lGL -lGLU -lepoxy -lfribidi build/linux/client/release/recording/prefix/lib/libavformat.a build/linux/client/release/recording/prefix/lib/libavcodec.a build/linux/client/release/recording/prefix/lib/libswscale.a build/linux/client/release/recording/prefix/lib/libswresample.a build/linux/client/release/recording/prefix/lib/libavutil.a build/linux/client/release/recording/prefix/lib/libx264.a -lva -lva-drm -ldl -lm -lSDL3_net -lopusfile -lopus -logg -lSDL3_ttf -lSDL3_image -lspeex -lSDL3
+scons: done building targets.

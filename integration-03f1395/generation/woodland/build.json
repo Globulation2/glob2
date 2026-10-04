@@ -1,0 +1,108 @@
+{
+  "encoding": {
+    "encoder": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+    "recipe": "-c:a libopus -b:a 48k -vbr on -application audio -compression_level 10 -ar 48000 -ac 2",
+    "loop_preroll_frames": 9600,
+    "sample_rate": 48000,
+    "duration": 110.76922916666666,
+    "sources": [
+      {
+        "name": "woodland-part-1",
+        "url": "https://opengameart.org/sites/default/files/woodland_music_part_1.zip",
+        "sha256": "3631353b9be519c8d36608d73f71d2edaa21bfd037806492587612e07b052cd3",
+        "license": "CC-BY-4.0",
+        "author": "JC Sounds",
+        "title": "Woodland Music - Vol 1 (split archive, part 1 of 3)",
+        "filename": "",
+        "note": "Page: https://opengameart.org/content/woodland-music-vol-1 (attribution notice: \"CC BY 4.0 - Credit: JC Sounds\")."
+      },
+      {
+        "name": "woodland-part-2",
+        "url": "https://opengameart.org/sites/default/files/woodland_music_part_2.zip",
+        "sha256": "080e4f2639ac040d26d8e5b18f5a27a29df24232d8b084d59f91bc3958a6cca9",
+        "license": "CC-BY-4.0",
+        "author": "JC Sounds",
+        "title": "Woodland Music - Vol 1 (split archive, part 2 of 3)",
+        "filename": "",
+        "note": ""
+      },
+      {
+        "name": "woodland-part-3",
+        "url": "https://opengameart.org/sites/default/files/woodland_music_part_3.zip",
+        "sha256": "226c491a1defce6e155c7ecffe8dc8dde6dd8480d4d91763b78f018e1e93101f",
+        "license": "CC-BY-4.0",
+        "author": "JC Sounds",
+        "title": "Woodland Music - Vol 1 (split archive, part 3 of 3)",
+        "filename": "",
+        "note": ""
+      }
+    ],
+    "recipe_files": {
+      "recipe.py": "53670b472df49f513308bde83b7a9052bf7d298a142764a4a611dac8b55b1f8c",
+      "set.toml": "bcfdb31f1f2f106abccf5e3f8b840995d0e6f12d822a2b1b22dfeb9246a2f0ed"
+    },
+    "tracks": {
+      "calm": {
+        "file": "a1.opus",
+        "bytes": 806544,
+        "decoded_frames": 5316923
+      },
+      "building": {
+        "file": "a2.opus",
+        "bytes": 768905,
+        "decoded_frames": 5316923
+      },
+      "combat": {
+        "file": "a3.opus",
+        "bytes": 732014,
+        "decoded_frames": 5316923
+      }
+    }
+  },
+  "set_id": "woodland",
+  "seed": 1,
+  "frames": 5316923,
+  "seconds": 70.0,
+  "loop": "78-bar composer loop, bars 32-49 spliced out",
+  "splice_frames": [
+    2835692,
+    4430769
+  ],
+  "master": {
+    "calm": {
+      "lufs": -18.0,
+      "true_peak_dbtp": -1.93,
+      "input_gain_db": 1.27,
+      "limited": false,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -18.0
+    },
+    "building": {
+      "lufs": -17.01,
+      "true_peak_dbtp": -1.5,
+      "input_gain_db": 1.41,
+      "limited": true,
+      "rounds": 1,
+      "final_trim_db": 0.0,
+      "target_lufs": -17.0
+    },
+    "combat": {
+      "lufs": -16.02,
+      "true_peak_dbtp": -1.5,
+      "input_gain_db": 0.39,
+      "limited": true,
+      "rounds": 3,
+      "final_trim_db": 0.0,
+      "target_lufs": -16.0
+    }
+  },
+  "encode_trim_db": {
+    "calm": 0.0,
+    "building": -0.42549955214908497,
+    "combat": 0.0
+  },
+  "encode_limiter_ceiling_dbtp": {
+    "combat": -2.4843724200600175
+  }
+}
