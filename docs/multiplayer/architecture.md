@@ -233,6 +233,14 @@ creates an immutable content version; previously equipped versions and frozen
 match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
+Glob meshes share paint coordinates across matching front/back and top/bottom
+surfaces, including limb pairs exchanged by their flipping gait. Canvas and model
+painting, erasing and patterns therefore preserve symmetry automatically; no
+symmetry toggle or server-side pixel normalization is needed. The designer
+previews worker walk/swim/harvest, warrior walk/swim/fight and explorer flight,
+with direction and paused-frame controls using the same mesh bytes as the game.
+Swarm paint and the separate building color retain their own behavior.
+
 Registered active accounts can save one private working canvas with
 `PUT /api/v1/skins/draft` and restore it with `GET /api/v1/skins/draft`, without
 buying the designer unlock. Drafts use the same image validation as publishing;
