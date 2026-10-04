@@ -47,6 +47,7 @@ BuildRequires:  speex-devel
 BuildRequires:  boost-devel
 BuildRequires:  openssl-devel
 BuildRequires:  zlib-devel
+BuildRequires:  zlib-ng-compat-static
 BuildRequires:  fribidi-devel
 BuildRequires:  pcre-devel
 BuildRequires:  mesa-libGL-devel
