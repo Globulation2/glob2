@@ -532,6 +532,30 @@ DelayStats stats(std::vector<double> values)
 
 TEST_SUITE("LanMatchHarness")
 {
+	TEST_CASE("LAN departure waits for asynchronous transport writes")
+	{
+		class DelayedWrite final : public NetTransport
+		{
+		public:
+			std::size_t pending = 0;
+			void open(const std::string&, std::uint16_t) override {}
+			void close() override { pending = 0; }
+			State state() const override { return State::Connected; }
+			bool send(std::vector<std::uint8_t> bytes) override { pending += bytes.size(); return true; }
+			bool receive(std::vector<std::uint8_t>&) override { return false; }
+			std::size_t pendingOutgoing() const override { return pending; }
+		};
+		auto transport = std::make_unique<DelayedWrite>();
+		auto& wire = *transport;
+		Lan::LanLink link(std::move(transport));
+		CHECK(link.outboxEmpty());
+		REQUIRE(link.send(Lan::encodeJson({{"type", "closed"}, {"reason", "host-left"}})));
+		CHECK(wire.pending > 0);
+		CHECK_FALSE(link.outboxEmpty());
+		wire.pending = 0; // the platform completes the queued write
+		CHECK(link.outboxEmpty());
+	}
+
 	GLOB2_TEST_CASE("timeout diagnostics tolerate a destroyed guest room", "[network]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
