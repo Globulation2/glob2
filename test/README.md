@@ -136,6 +136,17 @@ rule is exact and repeatable (`libgag/src/ScrollPhysicsTest.cpp`,
 `libgag/src/ui/UILayoutHarness.cpp`, `src/hud/touch/GameGUITouchHarness.cpp`). Events without a
 timestamp carry no velocity, which is why older synthetic gestures never coast.
 
+Mac gesture scrolling uses the same injected timestamps and frame clocks. Run
+`GestureScroll/*`, `ScrollPhysics/*`, `UILayout/*`, `EventQueue/*` and
+`ScreenStack/*` with the unit runner. The Mac-only engine suite
+`MacScrollMonitor/*` uses synthetic Cocoa samples to check phase conversion,
+zero-delta termination, native momentum sequence continuity, conventional-wheel
+pass-through and teardown. The `GameGUITouch` scroll-physics display case also
+checks native HUD capture, editor tray axis selection and cancelled momentum;
+its map zoom case checks gesture wheel fallback. Synthetic checks establish event
+contracts, not physical trackpad feel: verify that separately in windowed and
+fullscreen modes, at Retina scaling, and with conventional and gesture mice.
+
 ## Python tests
 
 `test/test_*.py` are `unittest` files; those that need a build take the binary

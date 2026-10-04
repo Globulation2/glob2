@@ -173,6 +173,11 @@ double GameGUITouch::tutorialMaximum() const
 }
 void GameGUITouch::clampScroll()
 {
+	if (nativeScrolling && nativeAxis().externallyMoved(nativeOffset()))
+	{
+		nativeScroll.cancel(nativeAxis().axis);
+		nativeScrolling = false; // sync below applies the requested external offset
+	}
 	const auto content = panelContent();
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	actionAxis.sync(actionScroll,
@@ -193,6 +198,12 @@ void GameGUITouch::clampScroll()
 }
 void GameGUITouch::stopScrolling()
 {
+	if (nativeScrolling)
+	{
+		nativeScroll.cancel(nativeAxis().axis);
+		nativeAxis().publish(nativeOffset());
+		nativeScrolling = false;
+	}
 	mapMotion.interrupt();
 	panelAxis.axis.interrupt();
 	actionAxis.axis.interrupt();
@@ -214,7 +225,7 @@ void GameGUITouch::dismissMapPanels()
 
 bool GameGUITouch::scrollAnimating() const
 {
-	return mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
+	return (nativeScrolling && nativeScroll.pending()) || mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
 		   actionAxis.axis.isAnimating() || tutorialAxis.axis.isAnimating();
 }
 Uint64 GameGUITouch::eventTime(const SDL_Event &event) const
@@ -224,6 +235,7 @@ Uint64 GameGUITouch::eventTime(const SDL_Event &event) const
 void GameGUITouch::advanceScroll(Uint64 now)
 {
 	lastStepTime = now;
+	if (nativeScrolling && (!usesHUD() || activeDialog() || (nativePanel == 2 && !inspecting()))) stopScrolling();
 	if (mapMotion.isAnimating())
 	{
 		const auto [dx, dy] = mapMotion.stepDelta(now);
@@ -239,6 +251,7 @@ void GameGUITouch::advanceScroll(Uint64 now)
 	}
 	if (!usesHUD())
 		return;
+	if (nativeScrolling) nativeScroll.update(now, nativeAxis().axis);
 	for (auto *panel : {&panelAxis, &actionAxis, &tutorialAxis})
 		if (panel->axis.isAnimating())
 			panel->axis.step(now);
@@ -492,6 +505,46 @@ bool GameGUITouch::process(SDL_Event &event)
 {
 	if (dispatching)
 		return false;
+	if (auto sample = scrollGesture(event))
+	{
+		GraphicContext::translateMouseEvent(&event);
+		sample = scrollGesture(event);
+		if (sample->phase == ScrollGesturePhase::Began && sample->sequence != nativeSequence)
+		{
+			const int previousPanel = nativeScrolling ? nativePanel : 0;
+			const auto previousAxis = nativeAxis().axis;
+			stopScrolling();
+			nativeSequence = sample->sequence;
+			nativePanel = 0;
+			if (usesHUD() && gui.inputState.hasFocus() && !activeDialog())
+			{
+				const int region = interfaceRegion({sample->x, sample->y});
+				if (region == 7) nativePanel = 3;
+				else if (region == 3) nativePanel = inspecting() ? 2 : 1;
+				if (nativePanel)
+				{
+					clampScroll();
+					if (nativePanel == previousPanel)
+					{
+						nativeAxis().axis = previousAxis;
+						nativeAxis().publish(nativeOffset());
+					}
+					auto &axis = nativeAxis().axis;
+					nativeScroll.begin(*sample, axis, nativeOffset(), axis.maximum(), nativePanel == 3 ? tutorialRect().h / globalContainer->gfx->logicalUnitsPerPoint() : panelContent().h / globalContainer->gfx->logicalUnitsPerPoint());
+					nativeScrolling = true;
+				}
+			}
+		}
+		if (sample->sequence != nativeSequence) return true;
+		if (!nativePanel) return false;
+		if (nativeScrolling)
+		{
+			nativeScroll.handle(*sample, nativeAxis().axis, 1 / globalContainer->gfx->logicalUnitsPerPoint(), nativePanel == 1 ? paletteScrollSign() : 1);
+			clampScroll();
+		}
+		return true;
+	}
+	if (nativeScrolling && (event.type == SDL_EVENT_MOUSE_WHEEL || event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_FINGER_DOWN)) stopScrolling();
 	if (usesHUD() && event.type == SDL_EVENT_KEY_DOWN)
 	{
 		const auto key = event.key.key;
@@ -580,7 +633,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		return process(pointer);
 	}
 	if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type == SDL_EVENT_WINDOW_FOCUS_LOST ||
-										  event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED))
+										  event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || event.type == SDL_EVENT_WINDOW_RESIZED || event.type == SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED))
 		cancel();
 	if (event.type != SDL_EVENT_FINGER_DOWN && event.type != SDL_EVENT_FINGER_UP &&
 		event.type != SDL_EVENT_FINGER_MOTION)

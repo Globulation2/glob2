@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
+#include <GestureScroll.h>
 #include <GameplayRecording.h>
 #include <PerformanceTelemetry.h>
 #include "GraphicContextPrivate.h"
@@ -229,6 +230,8 @@ namespace GAGCore
 		sdlsurface = NULL;
 		optionFlags = DEFAULT;
 
+		// Request native Mac momentum before Cocoa registers application defaults.
+		SDL_SetHint(SDL_HINT_MAC_SCROLL_MOMENTUM, "1");
 		// Load the SDL library
 		if ( !SDL_Init(SDL_INIT_VIDEO) )
 		{
@@ -275,6 +278,7 @@ namespace GAGCore
 		if (context) { destroySkinRenderer(); destroyUnitShader(); }
 #endif
 		if (context) SDL_GL_DestroyContext(context);
+		removeMacScrollMonitor();
 		if (window) SDL_DestroyWindow(window);
 		window = nullptr;
 		_gc = nullptr;
@@ -575,6 +579,20 @@ namespace GAGCore
 
 	void GraphicContext::translateMouseEvent(SDL_Event *event)
 	{
+		if (auto sample = scrollGesture(*event))
+		{
+			if (_gc && !sample->logical)
+			{
+				float x = float(sample->x), y = float(sample->y);
+				_gc->windowToLogical(x, y);
+				sample->x = x; sample->y = y;
+				sample->dx *= _gc->logicalUnitsPerPoint();
+				sample->dy *= _gc->logicalUnitsPerPoint();
+				sample->logical = true;
+				*event = gestureScrollEvent(*sample);
+			}
+			return;
+		}
 		if (!_gc)
 			return;
 		switch (event->type)
@@ -775,6 +793,7 @@ namespace GAGCore
         portableRenderer.reset();
 		freeOwnedSurface();
 		if (window) {
+			removeMacScrollMonitor();
 			SDL_DestroyWindow(window);
 			window = nullptr;
 		}
@@ -908,6 +927,7 @@ namespace GAGCore
                 SDL_SetWindowSize(window,requestedW,requestedH);
                 optionFlags &= ~FULLSCREEN;
             }
+			installMacScrollMonitor(window);
 			eventThread = SDL_GetCurrentThreadID();
 			if (nativeDesktop && !refreshNativeWindow()) return false;
 			if (!renderer || nativeSoftware) {

@@ -115,21 +115,44 @@ void PhoneEditor::prepare()
 	for (auto &row : rows)
 		row.rect.x += tray.x - offset;
 }
-void PhoneEditor::syncTray() { trayAxis.sync(offset, maximum, tray.w); }
-void PhoneEditor::syncInspector() { inspectorAxis.sync(inspectorScroll, inspectorMaximum, inspectorBody.h); }
+void PhoneEditor::syncTray()
+{
+	if (nativeScrolling && nativeSurface == 1 && trayAxis.externallyMoved(offset))
+	{ nativeScroll.cancel(trayAxis.axis); nativeScrolling = false; }
+	trayAxis.sync(offset, maximum, tray.w);
+}
+void PhoneEditor::syncInspector()
+{
+	if (nativeScrolling && nativeSurface == 2 && inspectorAxis.externallyMoved(inspectorScroll))
+	{ nativeScroll.cancel(inspectorAxis.axis); nativeScrolling = false; }
+	inspectorAxis.sync(inspectorScroll, inspectorMaximum, inspectorBody.h);
+}
 void PhoneEditor::stopScrolling()
 {
+	if (nativeScrolling)
+	{
+		nativeScroll.cancel(nativeAxis().axis);
+		nativeAxis().publish(nativeOffset());
+		nativeScrolling = false;
+	}
 	mapMotion.interrupt();
 	trayAxis.axis.interrupt();
 	inspectorAxis.axis.interrupt();
 }
 bool PhoneEditor::animating() const
 {
-	return mapMotion.isAnimating() || trayAxis.axis.isAnimating() || inspectorAxis.axis.isAnimating();
+	return (nativeScrolling && nativeScroll.pending()) || mapMotion.isAnimating() || trayAxis.axis.isAnimating() || inspectorAxis.axis.isAnimating();
 }
 void PhoneEditor::advance(Uint32 tick)
 {
 	lastTick = tick;
+	if (nativeScrolling && (editor.hasDialog() || (nativeSurface == 2 && !inspecting()) || (nativeSurface == 1 && !tools))) stopScrolling();
+	if (nativeScrolling)
+	{
+		if (nativeSurface == 2) syncInspector(); else syncTray();
+		nativeScroll.update(tick, nativeAxis().axis);
+		nativeAxis().publish(nativeOffset());
+	}
 	if (mapMotion.isAnimating())
 	{
 		const auto [dx, dy] = mapMotion.stepDelta(tick);
@@ -660,17 +683,55 @@ bool PhoneEditor::event(SDL_Event event)
 {
 	if (editor.hasDialog())
 	{
+		if (nativeScrolling) stopScrolling();
 		GAGCore::GraphicContext::translateMouseEvent(&event);
 		editor.delegateMenu(event);
 		return true;
 	}
 	if ((event.type >= SDL_EVENT_WINDOW_FIRST && event.type <= SDL_EVENT_WINDOW_LAST) && (event.type == SDL_EVENT_WINDOW_FOCUS_LOST ||
-										  event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED))
+										  event.type == SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED || event.type == SDL_EVENT_WINDOW_RESIZED || event.type == SDL_EVENT_WINDOW_DISPLAY_SCALE_CHANGED))
 	{
 		cancel();
 		return false;
 	}
 	prepare();
+	if (auto sample = scrollGesture(event))
+	{
+		if (!editor.inputState.hasFocus()) return true;
+		GraphicContext::translateMouseEvent(&event);
+		sample = scrollGesture(event);
+		if (sample->phase == ScrollGesturePhase::Began && sample->sequence != nativeSequence)
+		{
+			const int previousSurface = nativeScrolling ? nativeSurface : 0;
+			const auto previousAxis = nativeAxis().axis;
+			stopScrolling();
+			nativeSequence = sample->sequence;
+			nativeSurface = 0;
+			const ViewPoint point{sample->x, sample->y};
+			if (inspecting() && inspectorBody.contains(point)) nativeSurface = 2;
+			else if (tools && tray.contains(point)) nativeSurface = 1;
+			if (nativeSurface)
+			{
+				if (nativeSurface == previousSurface)
+				{
+					nativeAxis().axis = previousAxis;
+					nativeAxis().publish(nativeOffset());
+				}
+				auto &axis = nativeAxis().axis;
+				nativeScroll.begin(*sample, axis, nativeOffset(), axis.maximum(), nativeSurface == 2 ? inspectorBody.h : tray.w, nativeSurface == 1);
+				nativeScrolling = true;
+			}
+		}
+		if (sample->sequence != nativeSequence) return true;
+		if (!nativeSurface) return false;
+		if (nativeScrolling)
+		{
+			nativeScroll.handle(*sample, nativeAxis().axis);
+			if (nativeSurface == 2) syncInspector(); else syncTray();
+		}
+		return true;
+	}
+	if (nativeScrolling && (event.type == SDL_EVENT_MOUSE_WHEEL || event.type == SDL_EVENT_MOUSE_BUTTON_DOWN || event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_FINGER_DOWN)) stopScrolling();
 	ViewPoint p;
 	int phase = -1;
 	SDL_TouchID device = SDL_MOUSE_TOUCHID;

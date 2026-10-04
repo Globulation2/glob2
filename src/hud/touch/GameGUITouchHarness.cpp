@@ -782,6 +782,13 @@ class GameGUITouchHarness
 #endif
 				gui.processEvent(&wheel);
 				require(gui.camera.zoom < 1.7, "Wheel on empty map zooms without Alt");
+				GAGCore::GestureScrollEvent nativeMap;
+				nativeMap.sequence = 301; nativeMap.phase = GAGCore::ScrollGesturePhase::Began;
+				nativeMap.x = x; nativeMap.y = y; nativeMap.logical = true; nativeMap.wheelY = -1;
+				const double nativeZoom = gui.camera.zoom;
+				auto nativeEvent = GAGCore::gestureScrollEvent(nativeMap);
+				gui.processEvent(&nativeEvent);
+				require(gui.camera.zoom < nativeZoom, "An unclaimed native map gesture retains wheel zoom");
 				const auto afterWheel = gui.camera.screenToWorld(x, y);
 				require(std::abs(MapCamera::wrap(wheelAnchor.first, gui.camera.mapWidth) -
 						MapCamera::wrap(afterWheel.first, gui.camera.mapWidth)) < 0.001 &&
@@ -3898,6 +3905,30 @@ class GameGUITouchHarness
 		require(gui.touch->interfaceRegion({px, py}) == 3, "The panel margin is the panel region");
 		for (float y : {along(60), py, along(-30), along(40), along(-40)})
 			require(!gui.touch->paletteItemAt({px, y}), "The gestures avoid palette items");
+		// Mac gestures capture the HUD even when the pointer later crosses the map.
+		GAGCore::GestureScrollEvent native;
+		native.sequence = 101; native.x = px; native.y = py; native.logical = true;
+		native.phase = GAGCore::ScrollGesturePhase::Began; native.timestamp = SDL_MS_TO_NS(now);
+		auto nativeEvent = GAGCore::gestureScrollEvent(native);
+		gui.processEvent(&nativeEvent);
+		const double zoomBeforeNative = gui.camera.zoom;
+		native.phase = GAGCore::ScrollGesturePhase::Changed;
+		native.dy = -40 * unit * sign;
+		native.x = 400; native.y = 100;
+		nativeEvent = GAGCore::gestureScrollEvent(native);
+		gui.processEvent(&nativeEvent);
+		require(gui.touch->panelScroll > maximum, "Native HUD scrolling stretches at its end");
+		require(gui.camera.zoom == zoomBeforeNative, "A captured HUD gesture cannot zoom the map");
+		native.phase = GAGCore::ScrollGesturePhase::Ended; native.dy = 0;
+		nativeEvent = GAGCore::gestureScrollEvent(native); gui.processEvent(&nativeEvent);
+		native.phase = GAGCore::ScrollGesturePhase::None; native.momentum = GAGCore::ScrollGesturePhase::Began;
+		native.dy = -100 * unit * sign;
+		const double nativeStretch = gui.touch->panelScroll;
+		nativeEvent = GAGCore::gestureScrollEvent(native); gui.processEvent(&nativeEvent);
+		require(gui.touch->panelScroll == nativeStretch, "Native momentum does not add another HUD overshoot");
+		for (int i = 0; i < 600 && gui.touch->scrollAnimating(); ++i) frame(16);
+		require(gui.touch->panelScroll == maximum, "The native HUD spring settles at the boundary");
+		gui.touch->cancel(); gui.touch->panelScroll = 0; gui.touch->clampScroll();
 		finger(SDL_EVENT_FINGER_DOWN, px, along(60));
 		frame(16);
 		finger(SDL_EVENT_FINGER_MOTION, px, py);
@@ -4107,6 +4138,30 @@ class GameGUITouchHarness
 		touch.chooseMode(0);
 		touch.prepare();
 		const double trayEnd = touch.maximum;
+		GAGCore::GestureScrollEvent native;
+		native.sequence = 201; native.logical = true;
+		native.x = touch.tray.x + 20 * unit; native.y = touch.tray.y + 20 * unit;
+		native.phase = GAGCore::ScrollGesturePhase::Began; native.timestamp = SDL_MS_TO_NS(tick);
+		touch.event(GAGCore::gestureScrollEvent(native));
+		native.phase = GAGCore::ScrollGesturePhase::Changed;
+		native.dx = -40 * unit; native.dy = -1;
+		touch.event(GAGCore::gestureScrollEvent(native));
+		require(touch.offset > trayEnd, "A horizontal Mac gesture stretches the editor tray");
+		native.phase = GAGCore::ScrollGesturePhase::Ended; native.dx = native.dy = 0;
+		touch.event(GAGCore::gestureScrollEvent(native));
+		for (int i = 0; i < 600 && touch.animating(); ++i) frame(16);
+		require(touch.offset == trayEnd, "The native editor tray spring settles");
+		// A vertical gesture is an alternative input for the horizontal tray.
+		native.sequence++; native.phase = GAGCore::ScrollGesturePhase::Began;
+		touch.event(GAGCore::gestureScrollEvent(native));
+		native.phase = GAGCore::ScrollGesturePhase::Changed; native.dy = -30 * unit;
+		touch.event(GAGCore::gestureScrollEvent(native));
+		require(touch.offset > trayEnd, "Vertical Mac input also scrolls the editor tray");
+		touch.cancel();
+		native.phase = GAGCore::ScrollGesturePhase::None; native.momentum = GAGCore::ScrollGesturePhase::Began;
+		require(touch.event(GAGCore::gestureScrollEvent(native)), "A cancelled tray consumes its momentum tail");
+		require(touch.offset == trayEnd, "Cancelled native input cannot restart tray movement");
+
 		const auto row = touch.rows.front().rect;
 		const GAGCore::ViewPoint at{row.x + row.w / 2, row.y + row.h / 2};
 		require(touch.hit(at) == 0, "The gesture starts on the first tray item");

@@ -271,6 +271,8 @@ void Host::writeScroll()
 
 void Host::dropScroll()
 {
+	if (scrolling && gestureScrolling) scrollGestureMotion.cancel(scrolling->axis);
+	gestureScrolling = false;
 	if (!scrolling)
 		return;
 	if (auto *node = find(scrolling->key))
@@ -470,6 +472,36 @@ bool Host::event(const SDL_Event &event)
 	if (touchMouse(event))
 		return true;
 	const GAGCore::Ticks time = (event.common.timestamp / SDL_NS_PER_MS);
+	if (auto sample = GAGCore::scrollGesture(event))
+	{
+		if (sample->phase == GAGCore::ScrollGesturePhase::Began && sample->sequence != wheelGestureSequence)
+		{
+			const auto previous = scrolling;
+			cancelInput();
+			wheelGestureSequence = sample->sequence;
+			wheelGestureClaimed = false;
+			if (auto *node = scrollableAt({int(sample->x), int(sample->y)}); node && node->inertial())
+			{
+				const bool resume = previous && previous->key == node->key && previous->lastWritten == node->scrollOffset();
+				scrolling = resume ? *previous : ActiveScroll{node->key, GAGCore::ScrollAxis(), node->scrollOffset()};
+				scrollGestureMotion.begin(*sample, scrolling->axis,
+					resume ? scrolling->axis.offset() : node->scrollOffset(), node->scrollMaximum(), node->bounds.h);
+				wheelGestureClaimed = gestureScrolling = true;
+			}
+		}
+		// A tail delivered to a newly opened screen must not acquire its content.
+		if (sample->sequence != wheelGestureSequence) return true;
+		if (!wheelGestureClaimed) return false;
+		if (!scrolling || !gestureScrolling) return true;
+		auto *node = find(scrolling->key);
+		if (!node || node->scrollOffset() != scrolling->lastWritten) { dropScroll(); return true; }
+		scrolling->axis.setBounds(0, node->scrollMaximum(), node->bounds.h);
+		scrollGestureMotion.handle(*sample, scrolling->axis);
+		writeScroll();
+		return true;
+	}
+	if (gestureScrolling && (event.type == SDL_EVENT_MOUSE_WHEEL || event.type == SDL_EVENT_MOUSE_BUTTON_DOWN ||
+		event.type == SDL_EVENT_KEY_DOWN || event.type == SDL_EVENT_FINGER_DOWN)) dropScroll();
 	switch (event.type)
 	{
 	case SDL_EVENT_FINGER_DOWN:
@@ -723,7 +755,8 @@ void Host::scrollIntoView(const std::string &key)
 void Host::update(Uint32 tick)
 {
 	lastTick = tick;
-	if (scrolling && scrolling->axis.isAnimating())
+	layoutIfNeeded();
+	if (scrolling && (gestureScrolling || scrolling->axis.isAnimating()))
 	{
 		auto *node = find(scrolling->key);
 		if (!node || node->scrollOffset() != scrolling->lastWritten)
@@ -731,10 +764,12 @@ void Host::update(Uint32 tick)
 		else
 		{
 			scrolling->axis.setBounds(0, node->scrollMaximum(), node->bounds.h);
-			scrolling->axis.step(tick);
+			if (gestureScrolling) scrollGestureMotion.update(tick, scrolling->axis);
+			else scrolling->axis.step(tick);
 			writeScroll();
-			if (scrolling && !scrolling->axis.isAnimating())
-				scrolling.reset();
+			if (scrolling && !scrolling->axis.isAnimating() && !scrolling->axis.isDragging() &&
+				(!gestureScrolling || !scrollGestureMotion.pending()))
+			{ scrolling.reset(); gestureScrolling = false; }
 		}
 	}
 	layoutIfNeeded();
@@ -859,6 +894,7 @@ Element Host::buildPopup(const PopupSpec &spec)
 
 void Host::openPopup(PopupSpec spec)
 {
+	cancelGestures();
 	popup = std::make_unique<Popup>();
 	popup->spec = std::move(spec);
 	popup->highlight = std::clamp(popup->spec.selected, 0, std::max(0, int(popup->spec.options.size()) - 1));
@@ -895,6 +931,7 @@ void Host::layoutPopup()
 
 void Host::closePopup()
 {
+	if (popup) cancelGestures();
 	popup.reset();
 	store.erase("popup/scroll");
 	if (layoutListener)

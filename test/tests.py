@@ -29,6 +29,7 @@ ENGINE_TESTS = [
     '#src/ai/AIStateContinuationTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.
     '#libgag/src/ScreenExecutionHarness.cpp',
+    ('#libgag/src/MacScrollMonitorTest.mm', dict(require={'mac'})),
     ('#src/ai/AIRecoveryCoverageTest.cpp', dict(cxxflags=['-fno-access-control'])),
 
     ('GameplayRecordingIntegrationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -266,6 +267,7 @@ UNIT_TESTS = [
     ('#mobile/MobileTemporaryFilesHarness.cpp', dict(require={'not-mingw'})),
     '#libgag/src/PerformanceTelemetryHarness.cpp',
     '#libgag/src/ScrollPhysicsTest.cpp',
+    '#libgag/src/GestureScrollTest.cpp',
     '#src/hud/GameSpeedControlTest.cpp',
     '#src/audio/SoundMixerTrackSelectionHarness.cpp',
     '#libgag/src/ui/UILayoutHarness.cpp',

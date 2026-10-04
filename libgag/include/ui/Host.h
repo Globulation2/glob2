@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include <GestureScroll.h>
 #include "Element.h"
 #include <ScrollPhysics.h>
 #include <TouchInput.h>
@@ -75,7 +76,7 @@ class Host
 	bool interacting() const { return popup != nullptr || !pressedKey.empty() || !capturedKey.empty(); }
 	// Scrolled content is coasting or bouncing after a touch; screens shorten
 	// their frame budget while this holds so the motion stays smooth.
-	bool animating() const { return scrolling && scrolling->axis.isAnimating(); }
+	bool animating() const { return scrolling && (scrolling->axis.isAnimating() || (gestureScrolling && scrollGestureMotion.pending())); }
 	void scrollIntoView(const std::string &key);
 
 	// Queries, also for harnesses.
@@ -119,6 +120,9 @@ class Host
 		int lastWritten = 0;
 	};
 	std::optional<ActiveScroll> scrolling;
+	GAGCore::GestureScrollController scrollGestureMotion;
+	Uint64 wheelGestureSequence = 0;
+	bool wheelGestureClaimed = false, gestureScrolling = false;
 	// A touch that stopped coasting content is not also a tap.
 	bool swallowTap = false;
 	void writeScroll();
