@@ -160,7 +160,7 @@ def main():
         if args.fdroid: native_command.append('--fdroid')
         (project/'glob2-build.json').write_text(json.dumps({'root':str(ROOT),'command':native_command,
             'release':args.release,'version_code':args.version_code,
-            'version_name':version_name,'arch':args.arch,'package_name':package_name,
+            'version_name':version_name,'arch':args.arch,'abis':list(arches),'package_name':package_name,
             'official_instance_host':official_instance.host(official_instance.origin())},indent=2)+'\n')
         generated=project/'app/generated'
         if generated.exists(): shutil.rmtree(generated)
