@@ -265,7 +265,7 @@ struct HeadlessRunner
 			setHeadlessEnvironment("SDL_VIDEODRIVER","dummy");
 			setHeadlessEnvironment("SDL_AUDIODRIVER","dummy");
 		}
-		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "1"), 0, 16);
+		const unsigned gradientWorkers = integer(one(options, "--gradient-workers", "2"), 0, 16);
 		const unsigned gradientDelay = integer(one(options, "--gradient-delay", "8"), 1, 16);
 		GlobalContainer globals(one(options, "--profile", "glob2-tournament").c_str());
 		globalContainer=&globals;

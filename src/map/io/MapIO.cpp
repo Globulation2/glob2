@@ -673,7 +673,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readEnterSection("gradientPipeline");
 		const unsigned delay=stream->readUint8("delay"), count=stream->readUint8("count");
 		if (delay<1 || delay>16 || count>delay) throw std::runtime_error("Invalid saved gradient queue size");
-		configureGradientPipeline(1, delay);
+		configureGradientPipeline(2, delay);
 		for (unsigned index=0; index<count; ++index) {
 			stream->readEnterSection(index);
 			const unsigned destination=stream->readUint16("destination");
