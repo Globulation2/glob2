@@ -285,7 +285,7 @@ void Maxima::plan_offense(Context& runtime)
 	budget.tactical_target_y=0;
 	budget.tactical_candidate_score=INT_MIN;
 	budget.tactical_requested_force=0;
-	if(!strategy.tactics.enabled)
+	if(runtime.player->game->gameHeader.isPeacefulModeEnabled() || !strategy.tactics.enabled)
 	{
 		offense_diagnostics.gate="blocked: warrior tactics disabled";
 		return;
@@ -1891,7 +1891,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 				// over a bigger area).
 				if (covered) {
 					Uint16 guid = runtime.player->map->getGroundUnit(nx, ny);
-					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->enemies)
+					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.player->team->attackableTeams())
 					{
 						Unit* unit = runtime.player->game->teams[Unit::GIDtoTeam(guid)]->myUnits[Unit::GIDtoID(guid)];
 						if(unit && unit->typeNum == WARRIOR)
@@ -2033,7 +2033,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					const Uint16 guid=runtime.player->map->getGroundUnit(nx, ny);
 					if(guid==NOGUID
 					   || !((1<<Unit::GIDtoTeam(guid))
-						& runtime.player->team->enemies))
+						& runtime.player->team->attackableTeams()))
 						continue;
 					Unit* enemy=runtime.player->game->teams[Unit::GIDtoTeam(guid)]
 						->myUnits[Unit::GIDtoID(guid)];
@@ -2158,7 +2158,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	if(budget.explorer_campaign_active && strike_target>=0
 	   && strike_target<Team::MAX_COUNT && runtime.player->game->teams[strike_target]
 	   && runtime.player->game->teams[strike_target]->isAlive
-	   && (runtime.player->team->enemies&runtime.player->game->teams[strike_target]->me))
+	   && (runtime.player->team->attackableTeams()&runtime.player->game->teams[strike_target]->me))
 	{
 		Unit** units = new Unit*[Unit::MAX_COUNT];
 		Unit* first = NULL;

@@ -613,6 +613,8 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	state.hungry=stat->needFood;
 	state.critical_food=stat->needFoodCritical;
 	state.unserved_food=stat->needFoodNoInns;
+	if (runtime.player->game->gameHeader.isHungerDisabled())
+		state.hungry=state.critical_food=state.unserved_food=0;
 	state.need_heal=stat->needHeal;
 	state.buildings=stat->totalBuilding;
 	state.swarms=stat->numberBuildingPerType[IntBuildingType::SWARM_BUILDING];
@@ -693,6 +695,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	state.visible_enemy_attack_explorers=intel.visibleAttackExplorers;
 	state.visible_colony_threat=intel.visibleColonyThreat;
 	state.visible_colony_explorer_threat=intel.visibleColonyExplorerThreat;
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()) state.trained_warriors=state.warriors;
 	return state;
 }
 
@@ -1215,6 +1218,8 @@ void Maxima::score_demands()
 		+(100-environment.resource_capacity)/policy.food_resource_divisor
 		+(100-environment.food_headroom)/policy.food_headroom_divisor
 		+food_pressure*policy.food_pressure_weight);
+	// Feeding pressure must disappear before it suppresses growth and military budgets.
+	if (context.player->game->gameHeader.isHungerDisabled()) demands.food=0;
 	demands.survival=clamp_score(std::max(demands.food,
 		environment.threat_pressure)+
 		(snapshot.population<policy.survival_population_threshold
@@ -2655,6 +2660,16 @@ void Maxima::build_policy_bids()
 
 void Maxima::arbitrate_policy_bids()
 {
+	const auto& rules=context.player->game->gameHeader;
+	if (rules.isUnitUpgradesDisabled())
+	{
+		policy_bids[PolicyTechnology]=PolicyBid();
+		policy_bids[PolicyAccess].desired_pools=0;
+		for (auto& bid:policy_bids) bid.request_upgrades=false;
+	}
+	if (rules.isHungerDisabled()) policy_bids[PolicySurvival].desired_inns=0;
+	if (rules.isPeacefulModeEnabled())
+	{ policy_bids[PolicyDefense]=PolicyBid(); policy_bids[PolicyOffense]=PolicyBid(); }
 	telemetry.count(AITrace::AI7::Maxima_arbitrate_policy_bids_calls);
 	DirectorPlan result;
 	const bool abundance_surge=abundance_surge_active();
@@ -2841,6 +2856,14 @@ void Maxima::arbitrate_policy_bids()
 		+(explorer_defense_emergency()
 			? strategy.scoring.priority_tower_emergency_bonus : 0);
 
+	// Arbitration can add tactical minima; strip only unavailable capabilities.
+	if (rules.isUnitUpgradesDisabled())
+	{ result.desired_schools=result.desired_racetracks=result.desired_pools=0;
+	  result.allow_upgrades=result.allow_level2_upgrades=false; }
+	if (rules.isHungerDisabled()) result.desired_inns=0;
+	if (rules.isPeacefulModeEnabled())
+	{ result.desired_barracks=result.desired_towers=0; result.warrior_ratio=0;
+	  result.attack_flags=result.attack_units=0; }
 	budget=result;
 }
 
@@ -2850,7 +2873,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	// Copy every executor-facing threshold into the immutable plan. From this
 	// point until the next strategic cadence, tactical code does not reinterpret
 	// configuration or posture.
-	budget.allow_upgrades=strategy.upgrades.enabled && budget.allow_upgrades
+	budget.allow_upgrades=!runtime.player->game->gameHeader.isUnitUpgradesDisabled() && strategy.upgrades.enabled && budget.allow_upgrades
 		&& snapshot.schools>=1
 		&& snapshot.population>=strategy.upgrades.level1_population_min;
 	budget.allow_level2_upgrades=budget.allow_upgrades
@@ -3033,7 +3056,7 @@ void Maxima::finalize_director_plan(Context& runtime)
 	budget.tactical_review_interval=strategy.tactics.review_interval_ticks;
 	budget.tactics_enabled=strategy.tactics.enabled;
 	if(tactical_mission.flagId<0)
-		budget.tactical_flag_level=strategy.tactics.flag_minimum_level;
+		budget.tactical_flag_level=runtime.player->game->gameHeader.isUnitUpgradesDisabled() ? 0 : strategy.tactics.flag_minimum_level;
 	budget.tactical_siege_radius=strategy.tactics.siege_flag_radius;
 	budget.raid_flag_radius=strategy.raiding.flag_radius;
 	budget.tactical_stall_ticks=strategy.tactics.stall_ticks;
@@ -3478,7 +3501,12 @@ void Maxima::evaluate_strategy(Context& runtime)
 			+"\tnear_colony="
 				+telemetryText(snapshot.visible_colony_explorer_threat));
 	update_opponent_models(runtime);
+	if (runtime.player->game->gameHeader.isHungerDisabled()) environment.food_headroom=100;
 	score_demands();
+	// Capability changes must reach posture selection, not only the final executor.
+	const auto& rules=runtime.player->game->gameHeader;
+	if (rules.isUnitUpgradesDisabled()) demands.technology=demands.mobility=0;
+	if (rules.isPeacefulModeEnabled()) demands.military=demands.aggression=0;
 	score_postures();
 	const StrategicPosture previous_posture=posture;
 	select_posture();
@@ -4236,7 +4264,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	for(int team=0;team<Team::MAX_COUNT;++team)
 	{
 		if(!runtime.player->game->teams[team]
-		   || !(runtime.player->team->enemies&runtime.player->game->teams[team]->me))continue;
+		   || !(runtime.player->team->attackableTeams()&runtime.player->game->teams[team]->me))continue;
 		for(int id=0;id<Building::MAX_COUNT;++id)
 		{
 			Building* enemy=runtime.player->game->teams[team]->myBuildings[id];

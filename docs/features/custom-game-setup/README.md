@@ -48,7 +48,7 @@ limits when their homes, resources or routes need more room.
 - FFA, 2 vs 2 and You vs all presets preserve explicit alliance state. Reducing
   map capacity retains hidden assignments for a later larger map.
 - AI profiles explain strategy, strengths and suggested counterplay. Cortex is
-  Medium difficulty. The seven existing AI implementations are retained;
+  Medium difficulty. All eight native AI implementations are retained.
 - All-AI matches launch live watching, with whole-map visibility, optional colony
   viewpoints, pause/speed/inspection, and no gameplay orders from the viewer.
 - Game Rules starts from a ruleset (Standard, Quick clash, Blitz, Sandbox and the
@@ -106,6 +106,29 @@ book" and "Last colony standing" as those rulesets and "Custom" as Standard, kee
 the saved rule values, so they show as changes. An id this build does not have also
 loads as Standard rather than discarding the draft. Changing a rule only changes
 that control; it must not implicitly toggle another.
+
+## AI behavior and rule corrections
+
+Native controllers retain their standard tuning, but remove unavailable training,
+building upgrades, starvation recovery and combat plans from their decision process.
+With no regrowth, farming plans cannot rely on replenishment. Healing, repairs,
+swarm production and useful fruit behavior remain independent capabilities.
+Peaceful conquest-only games may reach a tick cap without a winner.
+
+Turning **Upgrades** off now disables both unit training and building upgrades.
+The stable rule id remains `unitTraining`; existing saves remain loadable, with
+this rule's behavior intentionally broadened. Starting unit levels and existing
+higher-level buildings are preserved. Units restored while walking to training
+cancel the visit; those already inside leave without gaining levels.
+
+Two engine corrections accompany this behavior: farms with regrowth disabled
+can harvest their final finite seed, and touch construction controls compare
+against effective fortress HP when choosing between repair and upgrade. The
+latter keeps healthy fortress buildings from appearing damaged.
+
+When adding a rule, update planning and prerequisites inside each AI as well as
+engine enforcement. `src/ai/AIRules.h` records shared capability checks;
+JavaScript controllers can query effective match settings through `game.rules()`.
 
 ## Adding or tweaking a ruleset
 

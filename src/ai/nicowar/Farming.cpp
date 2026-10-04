@@ -17,6 +17,8 @@ using namespace AISharedRuntime::SearchTools;
 
 void NewNicowar::update_farming(Runtime& runtime)
 {
+	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	if (runtime.player->game->gameHeader.isResourceGrowthDisabled()) return;
 	telemetry.count(AITrace::AI5::NewNicowar_update_farming_calls);
 	//Farming wheat and wood in areas near water
 	AddArea* mo_farming=new AddArea(ForbiddenArea);

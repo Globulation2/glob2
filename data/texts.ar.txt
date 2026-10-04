@@ -5034,8 +5034,8 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 تنسحب الوحدات الجريحة
 [Units can die]
 يمكن أن تموت الوحدات
-[Unit training]
-تدريب الوحدات
+[Upgrades]
+
 [No stockpile]
 لا شيء
 [No glass cannon]
@@ -5128,8 +5128,8 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 تعود الوحدات المصابة للعلاج بدلًا من القتال حتى الموت.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 تموت الوحدات عند نفاد صحتها. عطّله لإيقافها عند نقطة صحة واحدة.
-[Units gain levels at schools.]
-تكتسب الوحدات مستويات في المدارس.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 وقت العمال
 [stat worker time]

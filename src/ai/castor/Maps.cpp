@@ -583,7 +583,7 @@ void AICastor::computeEnemyPowerMap()
 	{
 		Team *enemyTeam=game->teams[ti];
 		Uint32 me=team->me;
-		if ((team->enemies&enemyTeam->me)==0)
+		if ((team->attackableTeams()&enemyTeam->me)==0)
 			continue;
 		Building **enemyBuildings=enemyTeam->myBuildings;
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
@@ -663,7 +663,7 @@ void AICastor::computeEnemyRangeMap()
 		Team *enemyTeam=game->teams[ti];
 		Uint32 me=team->me;
 		
-		if ((team->enemies & enemyTeam->me)==0)
+		if ((team->attackableTeams() & enemyTeam->me)==0)
 			continue;
 		Building **enemyBuildings=enemyTeam->myBuildings;
 		for (int bi=0; bi<Building::MAX_COUNT; bi++)
@@ -707,7 +707,7 @@ void AICastor::computeEnemyWarriorsMap()
 		if (guid==NOGUID)
 			continue;
 		Uint32 teamMask=(1<<(guid>>AI_CASTOR_GUID_TEAM_SHIFT));
-		if ((teamMask&team->enemies)==0)
+		if ((teamMask&team->attackableTeams())==0)
 			continue;
 		gradient[i]=AI_CASTOR_ENEMY_WARRIOR_GRADIENT_SEED;
 	}

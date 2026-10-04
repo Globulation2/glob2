@@ -5034,8 +5034,8 @@ Resistencia de edificios
 Los heridos se retiran
 [Units can die]
 Las unidades pueden morir
-[Unit training]
-Entrenamiento de unidades
+[Upgrades]
+
 [No stockpile]
 Ninguna
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Los equipos pueden atacarse entre sí. Desactívalo para una partida pacífica.
 Las unidades heridas vuelven a curarse en vez de luchar hasta la muerte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Las unidades mueren cuando se quedan sin vida. Desactívalo para que se detengan en 1 PV.
-[Units gain levels at schools.]
-Las unidades suben de nivel en las escuelas.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tiempo de trabajadores
 [stat worker time]

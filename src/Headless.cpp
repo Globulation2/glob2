@@ -13,6 +13,7 @@
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
+#include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
 #include "Unit.h"
@@ -306,7 +307,7 @@ struct HeadlessRunner
 		if(!fs::is_regular_file(requested)) throw std::invalid_argument("input file does not exist");
 		if(!saved.empty())
 		{
-			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment"})
+			for(const auto &key : {"--player","--ai-param","--ai-script","--map-script","--alliance","--win-condition","--game-seed","--experiment","--rule"})
 				if(options.count(key)) throw std::invalid_argument(std::string(key)+" cannot override a saved game");
 			if(engine.initCustom(saved)!=Engine::EE_NO_ERROR) throw std::invalid_argument("cannot load saved game");
 			if(globals.automaticEndingSteps <= int(engine.gui.game.stepCounter)) throw std::invalid_argument("tick limit must exceed the saved tick");
@@ -359,6 +360,7 @@ struct HeadlessRunner
 				WinningCondition::setWinProbabilityWinCondition(header.getWinningConditions(),
 					std::optional<Uint32>(static_cast<Uint32>(permille)));
 			}
+			for (const auto& rule:many(options,"--rule")) applyGameRule(header, rule);
 			std::map<int,std::string> overrides;
 			std::set<std::pair<int,std::string>> seen;
 			for(const auto &assignment : many(options,"--ai-param"))
@@ -516,7 +518,11 @@ struct HeadlessRunner
 		result << "],\"experiments\":[";
 		comma=false;
 		for(const auto &key:game.gameHeader.getExperiments().keys()) { if(comma)result<<',';comma=true;result<<quote(key); }
-		result << "]},";
+        result << "],\"rules\":{";
+        comma=false;
+        for(const auto& [name,value]:gameRuleValues(game.gameHeader))
+        { if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
+        result << "}},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 		if(fs::exists(output/"generated/result.json"))
 		{
@@ -572,7 +578,7 @@ int runHeadlessCommand(int argc,char **argv)
 			std::cout << "}" << std::endl;return 0;
 		}
 		const std::set<std::string> common={"--output-dir","--profile"};
-		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
+		const std::set<std::string> gameKeys={"--diagnostic-fields","--diagnostic-interval","--diagnostic-png","--benchmark-warmup","--ai-script","--map-script","--map-file","--load-game","--game-seed","--player","--ai-param","--alliance","--win-condition","--win-probability","--experiment","--rule","--ticks","--compute-threads","--compute-experiments","--gradient-workers","--gradient-delay","--save","--telemetry","--replay","--generator","--map-seed","--param","--candidates"};
 		const std::set<std::string> mapKeys={"--generator","--map-seed","--param","--candidates","--rotations","--write-map","--report","--perturb"};
 		Options options;
 		for(int i=2;i<argc;++i)

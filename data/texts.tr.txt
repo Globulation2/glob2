@@ -5034,8 +5034,8 @@ Bina dayanıklılığı
 Yaralılar geri çekilir
 [Units can die]
 Birimler ölebilir
-[Unit training]
-Birim eğitimi
+[Upgrades]
+
 [No stockpile]
 Yok
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Takımlar birbirine saldırabilir. Barışçıl bir maç için kapatın.
 Yaralı birimler ölümüne savaşmak yerine iyileşmeye döner.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Birimler canları bitince ölür. 1 canda durmaları için kapatın.
-[Units gain levels at schools.]
-Birimler akademilerde seviye kazanır.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 İşçilerin zamanı
 [stat worker time]

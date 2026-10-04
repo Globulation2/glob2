@@ -1,0 +1,2 @@
+[Upgrades]
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]

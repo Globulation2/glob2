@@ -5034,8 +5034,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Рањене јединице се повлаче
 [Units can die]
 Јединице могу да умру
-[Unit training]
-Обука јединица
+[Upgrades]
+
 [No stockpile]
 Без залиха
 [No glass cannon]
@@ -5128,8 +5128,8 @@ FFmpeg није доступан, па је снимање искључено. �
 Повређене јединице се враћају на лечење уместо да се боре до смрти.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Јединице умиру када остану без животних поена. Искључите да би им остао бар 1 животни поен.
-[Units gain levels at schools.]
-Јединице стичу нивое у школама.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Време радника
 [stat worker time]

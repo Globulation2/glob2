@@ -163,7 +163,10 @@ UpgradeRepair::UpgradeRepair(int id) : id(id)
 
 void UpgradeRepair::modify(Runtime& runtime)
 {
-	runtime.push_order(shared_ptr<Order>(new OrderConstruction(runtime.get_building_register().get_building(id)->gid,1,1)));
+	auto* building=runtime.get_building_register().get_building(id);
+	if (runtime.player->game->gameHeader.isUnitUpgradesDisabled()
+		&& building->hp>=building->getEffectiveMaxHp()) return;
+	runtime.push_order(shared_ptr<Order>(new OrderConstruction(building->gid,1,1)));
 	runtime.get_building_register().set_upgrading(id);
 }
 

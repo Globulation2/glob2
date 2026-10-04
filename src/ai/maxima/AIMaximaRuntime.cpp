@@ -961,7 +961,7 @@ void enemy_team_iterator::advance()
 	for(++team;team<Team::MAX_COUNT;++team)
 	{
 		Team* candidate=context->player->game->teams[team];
-		if(candidate&&(context->player->team->enemies&candidate->me))return;
+		if(candidate&&(context->player->team->attackableTeams()&candidate->me))return;
 	}
 	ended=true;
 }
@@ -1014,7 +1014,7 @@ Context::Context(Player* player)
 
 void Context::initialize()
 {
-	buildings.initiate();detect_fruit();allies=player->team->allies;enemies=player->team->enemies;
+	buildings.initiate();detect_fruit();allies=player->team->allies;enemies=player->team->attackableTeams();
 	market_view=player->team->sharedVisionExchange;inn_view=player->team->sharedVisionFood;other_view=player->team->sharedVisionOther;initialized=true;
 }
 void Context::detect_fruit()

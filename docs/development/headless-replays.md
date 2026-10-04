@@ -70,7 +70,7 @@ Turns custom-game rules on for `-test-games` and `-test-games-nox` matches, as c
 | `instantConstruction` | 0-1 | Instant construction |
 | `stockpile` | 0-3 | Stockpile start (+50, +150, +300 of each resource) |
 | `noHunger` | 0-1 | No hunger |
-| `noUpgrades` | 0-1 | No upgrades |
+| `noUpgrades` | 0-1 | Disable unit training and building upgrades; repairs remain available |
 | `glassCannon` | 0-2 | Glass cannon (x2, x3 damage; HP and armor divided alike) |
 | `fearless` | 0-1 | Fearless |
 | `noPermadeath` | 0-1 | No permadeath |

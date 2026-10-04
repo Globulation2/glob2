@@ -5034,8 +5034,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 عقب‌نشینی افراد زخمی
 [Units can die]
 افراد می‌توانند بمیرند
-[Unit training]
-آموزش افراد
+[Upgrades]
+
 [No stockpile]
 هیچ
 [No glass cannon]
@@ -5128,8 +5128,8 @@ FFmpeg در دسترس نیست، پس ضبط خاموش است. FFmpeg را ن�
 افراد آسیب‌دیده به‌جای جنگیدن تا پای مرگ برای درمان برمی‌گردند.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 افراد وقتی سلامتی‌شان تمام شود می‌میرند. خاموش کنید تا در ۱ سلامتی متوقف شوند.
-[Units gain levels at schools.]
-افراد در مدرسه‌ها سطح می‌گیرند.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 زمان کارگرها
 [stat worker time]

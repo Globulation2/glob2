@@ -127,6 +127,18 @@ def main():
     assert unknown['status']=='invalid_request',unknown
     run('experiment-on-save',['--run-game','--load-game',str(original/'initial.game.gz'),'--ticks',str(args.ticks),
         '--experiment','guard-area-balancing'],2)
+    ruled, directory=run('custom-rules', base+['--rule','noUpgrades=1','--rule','noHunger=1',
+                                             '--rule','scarcity=3','--save','initial','--save','final'])
+    assert ruled['resolved']['rules']['noUpgrades']==1
+    assert ruled['resolved']['rules']['noHunger']==1 and ruled['resolved']['rules']['scarcity']==3
+    restored, target=run('custom-rules-reload',['--run-game','--load-game',str(directory/'initial.game.gz'),
+                        '--ticks',str(args.ticks),'--telemetry','checksums'])
+    assert restored['resolved']['rules']==ruled['resolved']['rules']
+    assert tick_records(target/'game.replay.checksums')==tick_records(directory/'game.replay.checksums')
+    run('rules-on-save',['--run-game','--load-game',str(directory/'initial.game.gz'),
+        '--ticks',str(args.ticks),'--rule','noHunger=0'],2)
+    run('invalid-rule-range',base+['--rule','scarcity=4'],2)
+    run('unknown-rule',base+['--rule','retired-rule=1'],2)
     for name in ('maxima',):
         config=['--run-game','--map-file',str(map_dir/'map-r0.map.gz'),'--player','maxima','--player','maxima',
                 '--game-seed','23','--ticks',str(args.ticks),'--telemetry','checksums',

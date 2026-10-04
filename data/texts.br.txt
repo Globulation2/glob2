@@ -5034,8 +5034,8 @@ Resistência das construções
 Feridos recuam
 [Units can die]
 Unidades podem morrer
-[Unit training]
-Treinamento de unidades
+[Upgrades]
+
 [No stockpile]
 Nenhum
 [No glass cannon]
@@ -5128,8 +5128,8 @@ As equipes podem atacar umas às outras. Desligue para uma partida pacífica.
 Unidades feridas voltam para se curar em vez de lutar até a morte.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 As unidades morrem quando a vida acaba. Desligue para que parem com 1 de vida.
-[Units gain levels at schools.]
-As unidades ganham níveis nas escolas.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Tempo dos trabalhadores
 [stat worker time]

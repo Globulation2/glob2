@@ -100,6 +100,8 @@ namespace Cortex
 	// builds on the next cycle.
 	ScoredAction CortexPolicy::scoreSchool(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		// Unfillable-jobs override: when there is open work blocked purely on worker
 		// training level (jobs at building levels above the workforce's HARVEST level —
 		// f.unfillableNeeded > 0; building/Misc.cpp:127), the first school is no longer
@@ -131,6 +133,8 @@ namespace Cortex
 	// the racetrack never races ahead of an in-progress school on a normal map).
 	ScoredAction CortexPolicy::scoreRacetrack(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		if (f.combatPhase && f.canExpand && (f.school > 0 || !obs.algaeReachable)
 		 && f.race == 0 && f.raceSites == 0)
 		{
@@ -182,6 +186,8 @@ namespace Cortex
 	// labour like the other tech builds, so the build crew comes off idle hands.
 	ScoredAction CortexPolicy::scoreSwimmingPool(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		const Sint32 pool      = cortexFinishedBuildings(obs, CORTEX_BUILD_SWIMSPEED);
 		const Sint32 poolSites = cortexBuildingSites(obs, CORTEX_BUILD_SWIMSPEED);
 		const bool swimExpandsReach = (obs.swimLandReach > 0
@@ -246,6 +252,8 @@ namespace Cortex
 	// teardown comes off idle hands, never off hauling or army production.
 	ScoredAction CortexPolicy::scoreBarracksUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		const Sint32 barracksLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_ATTACK);
 		const int attackMaxedPct   = unitsServedPct(obs.attackStrengthLevel, f.warriors, barracksLevel + 1);
 		const bool barracksUpgradeWanted = f.combatPhase && f.canExpand
@@ -277,6 +285,8 @@ namespace Cortex
 	// since been depleted).
 	ScoredAction CortexPolicy::scoreSchoolUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		const Sint32 schoolLevel = cortexMaxFinishedLevel(obs, CORTEX_BUILD_SCIENCE);
 		const int buildMaxedPct  = unitsServedPct(obs.buildLevel, obs.workers, schoolLevel + 1);
 		// Unfillable-jobs override on the spare-labour gate ONLY: when open work is
@@ -305,6 +315,8 @@ namespace Cortex
 	// speed for the window — no capability loss.
 	ScoredAction CortexPolicy::scoreRacetrackUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		const Sint32 raceLevel  = cortexMaxFinishedLevel(obs, CORTEX_BUILD_WALKSPEED);
 		const int walkMaxedPct  = unitsServedPct(obs.walkLevel, obs.workers + f.warriors, raceLevel + 1);
 		if (f.combatPhase && f.canExpand && f.race >= 1
@@ -330,6 +342,8 @@ namespace Cortex
 	// GATE_BOOTSTRAP in decide()'s gate table.
 	ScoredAction CortexPolicy::scoreInnUpgrade(const CortexObservation& obs, const DecideFacts& f) const
 	{
+		// No training/upgrades means this candidate must not enter utility selection or ML masks.
+		if (obs.upgradesDisabled) return cortexDecline();
 		const bool innUpgradeWanted = f.combatPhase && f.canExpand
 		 && obs.upgradableCount[CORTEX_BUILD_FOOD] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_FOOD) == 0;
@@ -389,7 +403,8 @@ namespace Cortex
 		if (f.economyEstablished && f.heal >= 2
 		 && obs.upgradableCount[CORTEX_BUILD_HEAL] > 0
 		 && cortexBuildingsUpgrading(obs, CORTEX_BUILD_HEAL) == 0)
-			return { SCORE_HOSPITAL_UPGRADE, makeUpgradeAction(CORTEX_BUILD_HEAL) };
+			return obs.upgradesDisabled ? cortexDecline()
+				: ScoredAction{ SCORE_HOSPITAL_UPGRADE, makeUpgradeAction(CORTEX_BUILD_HEAL) };
 		return cortexDecline();
 	}
 }

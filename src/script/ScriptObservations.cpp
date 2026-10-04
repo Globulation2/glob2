@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ScriptObservations.h"
 #include "Game.h"
+#include "GameRuleOverrides.h"
 #include "Team.h"
 #include "Unit.h"
 #include "Building.h"
@@ -236,6 +237,13 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		if (budget)
 			budget(nodes, nodes * NativeValueCost + bytes);
 	};
+    if (name == "rules")
+    {
+        Value rules=Value::object();
+        for(const auto& [key,value]:gameRuleValues(game.gameHeader))
+        { charge(1,key.size()); rules.set(key,value); }
+        return rules;
+    }
 	if (name == "experiments")
 	{
 		// Keys of the experiments this game carries (ExperimentalFeatures.h).

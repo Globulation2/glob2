@@ -5034,8 +5034,8 @@ AI 원격 측정
 부상 유닛 후퇴
 [Units can die]
 유닛 사망 가능
-[Unit training]
-유닛 훈련
+[Upgrades]
+
 [No stockpile]
 없음
 [No glass cannon]
@@ -5128,8 +5128,8 @@ AI 원격 측정
 다친 유닛은 죽을 때까지 싸우는 대신 치료하러 돌아갑니다.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 체력이 다 떨어지면 유닛이 죽습니다. 끄면 체력 1에서 멈춥니다.
-[Units gain levels at schools.]
-유닛이 학교에서 레벨을 올립니다.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 일꾼의 시간
 [stat worker time]

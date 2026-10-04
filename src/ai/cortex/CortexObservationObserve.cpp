@@ -36,6 +36,10 @@ namespace Cortex
 
 		Team* team = player->team;
 		Game* game = team->game;
+		obs.upgradesDisabled=game->gameHeader.isUnitUpgradesDisabled();
+		obs.hungerDisabled=game->gameHeader.isHungerDisabled();
+		obs.combatDisabled=game->gameHeader.isPeacefulModeEnabled();
+		obs.growthDisabled=game->gameHeader.isResourceGrowthDisabled();
 
 		obs.tick = (game != NULL) ? static_cast<Sint32>(game->stepCounter) : 0;
 
@@ -433,7 +437,7 @@ namespace Cortex
 				Team* other = game->teams[i];
 				if (other == NULL)
 					continue;
-				const bool isEnemy = (team->enemies & other->me) != 0;
+				const bool isEnemy = (team->attackableTeams() & other->me) != 0;
 				if (!isEnemy || !other->isAlive)
 					continue;
 

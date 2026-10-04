@@ -16,6 +16,7 @@
 #include "Engine.h"
 #include "EngineTiming.h"
 #include "Game.h"
+#include "GameRuleOverrides.h"
 #include "GlobalContainer.h"
 #include "Player.h"
 #include "ReplayReader.h"
@@ -249,61 +250,15 @@ namespace
 		const char* environment = getenv("GLOB2_TEST_RULES");
 		if (!environment || !*environment)
 			return;
-		struct Rule
-		{
-			const char* name;
-			long maximum;
-			std::function<void(GameHeader&, int)> apply;
-		};
-		std::vector<Rule> rules = {
-			{"noGrowth", 1, [](GameHeader& h, int v) { h.setResourceGrowthDisabled(v); }},
-			{"scarcity", 3, [](GameHeader& h, int v) { h.setResourceScarcityLevel(v); }},
-			{"instantConstruction", 1, [](GameHeader& h, int v) { h.setInstantConstructionEnabled(v); }},
-			{"stockpile", 3, [](GameHeader& h, int v) { h.setStockpileStartLevel(v); }},
-			{"noHunger", 1, [](GameHeader& h, int v) { h.setHungerDisabled(v); }},
-			{"noUpgrades", 1, [](GameHeader& h, int v) { h.setUnitUpgradesDisabled(v); }},
-			{"glassCannon", 2, [](GameHeader& h, int v) { h.setGlassCannonLevel(v); }},
-			{"fearless", 1, [](GameHeader& h, int v) { h.setUnitsFearless(v); }},
-			{"noPermadeath", 1, [](GameHeader& h, int v) { h.setPermadeathDisabled(v); }},
-			{"peaceful", 1, [](GameHeader& h, int v) { h.setPeacefulModeEnabled(v); }},
-			{"fortress", 2, [](GameHeader& h, int v) { h.setBuildingHpLevel(v); }},
-			{"suddenDeathTick", 100000000, [](GameHeader& h, int v)
-				{
-					WinningCondition::setSuddenDeathWinCondition(h.getWinningConditions(),
-						v ? std::optional<Uint32>(v) : std::nullopt);
-				}},
-			{"winProbabilityPermille", 1000, [](GameHeader& h, int v)
-				{
-					WinningCondition::setWinProbabilityWinCondition(h.getWinningConditions(),
-						v ? std::optional<Uint32>(v) : std::nullopt);
-				}},
-		};
-		// One 0/1 rule per experiment, named by its key (ExperimentalFeatures.cpp).
-		for (const auto& definition : experimentDefinitions())
-			rules.push_back({definition.key, 1, [id = definition.id](GameHeader& h, int v) { h.getExperiments().set(id, v != 0); }});
-		std::stringstream list(environment);
-		std::string item;
-		while (std::getline(list, item, ','))
-		{
-			const size_t equals = item.find('=');
-			const std::string name = item.substr(0, equals);
-			const Rule* rule = nullptr;
-			for (const Rule& candidate : rules)
-				if (name == candidate.name)
-					rule = &candidate;
-			char* end = nullptr;
-			errno = 0;
-			const long value = equals == std::string::npos ? -1 : strtol(item.c_str() + equals + 1, &end, 10);
-			if (!rule || equals == std::string::npos || errno || *end || end == item.c_str() + equals + 1
-				|| value < 0 || value > rule->maximum
-				|| (name == "winProbabilityPermille" && value != 0 && value < 501))
-			{
-				std::cerr << "GLOB2_TEST_RULES: invalid entry \"" << item << "\"" << std::endl;
-				exit(1);
-			}
-			rule->apply(header, static_cast<int>(value));
-			std::cout << "GLOB2_TEST_RULES: " << name << "=" << value << std::endl;
-		}
+        std::stringstream list(environment);
+        std::string item;
+        while (std::getline(list, item, ','))
+        {
+            try { applyGameRule(header, item); }
+            catch(const std::invalid_argument& e)
+            { std::cerr << "GLOB2_TEST_RULES: " << e.what() << std::endl; exit(1); }
+            std::cout << "GLOB2_TEST_RULES: " << item << std::endl;
+        }
 	}
 }
 

@@ -5034,8 +5034,8 @@ Trdnost zgradb
 Ranjene enote se umaknejo
 [Units can die]
 Enote lahko umrejo
-[Unit training]
-Urjenje enot
+[Upgrades]
+
 [No stockpile]
 Brez
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Ekipe se lahko napadajo. Za miroljubno tekmo izklopite.
 Poškodovane enote se gredo zdravit, namesto da se borijo do smrti.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enote umrejo, ko jim zmanjka zdravja. Izklopite, da se ustavijo pri 1 točki zdravja.
-[Units gain levels at schools.]
-Enote v šolah pridobivajo stopnje.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Čas delavcev
 [stat worker time]

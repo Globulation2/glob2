@@ -10,6 +10,7 @@
 #include "AIStateSerialization.h"
 #include "OrderMessages.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "Building.h"
 #include "GlobalContainer.h"
 #include "Order.h"
@@ -587,7 +588,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					b = getBuildingFromGid(game, map->getBuilding(x, y));
 					if (b)
 					{
-						if((b->owner->me & team->enemies) && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
+						if((b->owner->me & team->attackableTeams()) && b->posX == static_cast<int>(x) && b->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -627,7 +628,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
-						if((u->owner->me & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
+						if((u->owner->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -647,7 +648,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->getGroundUnit(x, y));
 					if (u)
 					{
-						if((u->owner->me & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
+						if((u->owner->me & team->attackableTeams()) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && u->typeNum==WARRIOR)
 						{
 							score++;
 						}
@@ -1147,6 +1148,8 @@ SimpleBuildingDefense::SimpleBuildingDefense(AICabino& ai) : ai(ai)
 
 bool SimpleBuildingDefense::perform(unsigned int time_slice_n)
 {
+	// Disabled capability must not leave strategic jobs or level waits behind.
+	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::SimpleBuildingDefense_perform_input_time_slice_n, time_slice_n);
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_perform_calls);
 	switch(time_slice_n)
@@ -1434,6 +1437,8 @@ GeneralsDefense::GeneralsDefense(AICabino& ai) : ai(ai)
 
 bool GeneralsDefense::perform(unsigned int time_slice_n)
 {
+	// Disabled capability must not leave strategic jobs or level waits behind.
+	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::GeneralsDefense_perform_input_time_slice_n, time_slice_n);
 	ai.telemetry.count(AITrace::AI8::GeneralsDefense_perform_calls);
 	switch(time_slice_n)
@@ -1514,7 +1519,7 @@ bool GeneralsDefense::findEnemyFlags()
 		Team* team = ai.game->teams[t];
 		if(team)
 		{
-			if(team->me & ai.team->enemies)
+			if(team->me & ai.team->attackableTeams())
 			{
 				for(unsigned int n=0; n<1024; ++n)
 				{
@@ -1614,6 +1619,8 @@ PrioritizedBuildingAttack::PrioritizedBuildingAttack(AICabino& ai) : ai(ai)
 
 bool PrioritizedBuildingAttack::perform(unsigned int time_slice_n)
 {
+	// Disabled capability must not leave strategic jobs or level waits behind.
+	if (ai.game->gameHeader.isPeacefulModeEnabled()) return false;
 	ai.telemetry.set(AITrace::AI8::PrioritizedBuildingAttack_perform_input_time_slice_n,
 					 time_slice_n);
 	ai.telemetry.count(AITrace::AI8::PrioritizedBuildingAttack_perform_calls);
@@ -1753,7 +1760,7 @@ bool PrioritizedBuildingAttack::targetEnemy()
 			Team* t = ai.game->teams[i];
 			if(t)
 			{
-				if((t->me & ai.team->enemies) && t->isAlive)
+				if((t->me & ai.team->attackableTeams()) && t->isAlive)
 				{
 					targets.push_back(t);
 				}
@@ -1819,7 +1826,7 @@ bool PrioritizedBuildingAttack::attack()
 	unsigned int strength_level=USE_MAX_BARRACKS_LEVEL ? max_barracks_level : average_unit_strength_level;
 
 	//If we don't have enough barracks, don't bother doing anything, otherwise, make sure where producing warriors.
-	if(max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0)
+	if(!ai.game->gameHeader.isUnitUpgradesDisabled() && (max_barracks_level<MINIMUM_BARRACKS_LEVEL+1 || found_barracks==0))
 		return ai.telemetry.returnedBool(AITrace::AI8::PrioritizedBuildingAttack_attack_result,
 										 AITrace::AI8::PrioritizedBuildingAttack_attack_true,
 										 false);
@@ -2244,7 +2251,8 @@ DistributedNewConstructionManager::upgradeData DistributedNewConstructionManager
 		building_type);
 	ai.telemetry.count(AITrace::AI8::DistributedNewConstructionManager_findMaxSize_calls);
 	std::string type = IntBuildingType::reverseConversionMap[building_type];
-	BuildingType* new_type = globalContainer->buildingsTypes.getByType(type, 2, false);
+	BuildingType* new_type = ai.game->gameHeader.isUnitUpgradesDisabled() ? nullptr
+		: globalContainer->buildingsTypes.getByType(type, 2, false);
 	BuildingType* cur_type = globalContainer->buildingsTypes.getByType(type, cur_level, false);
 	upgradeData ud;
 	if(new_type)
@@ -2660,7 +2668,9 @@ bool DistributedNewConstructionManager::calculateBuildings()
 	unsigned int total_units=ai.team->stats.getLatestStat()->totalUnit;
 	for (int i=0; i<IntBuildingType::NB_BUILDING; ++i)
 	{
-		if(UNITS_FOR_BUILDING[i]!=0)
+		if(AIRules::usefulBuilding(ai.game->gameHeader, i)
+			&& !(ai.game->gameHeader.isHungerDisabled() && i==IntBuildingType::FOOD_BUILDING)
+			&& UNITS_FOR_BUILDING[i]!=0)
 			num_buildings_wanted[i]=total_units/UNITS_FOR_BUILDING[i]+1;
 		else
 			num_buildings_wanted[i]=0;
@@ -3169,7 +3179,8 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
 					ratios[b->type->level]+=1;
 				}
 
-				else if (b->type->level!=2                                     &&
+				// Keep repair candidates above; upgrades cannot create trained-worker demand when disabled.
+				else if (!ai.game->gameHeader.isUnitUpgradesDisabled() && b->type->level!=2                                     &&
 					(b->type->shortTypeNum==IntBuildingType::FOOD_BUILDING     ||
 					b->type->shortTypeNum==IntBuildingType::HEAL_BUILDING      ||
 					b->type->shortTypeNum==IntBuildingType::WALKSPEED_BUILDING ||
@@ -3450,6 +3461,8 @@ void DistributedUnitManager::save(GAGCore::OutputStream *stream) const
 
 void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int unitType, unsigned int numUnits, unsigned int ability, unsigned int level)
 {
+	// Disabled training can supply a standing army, but cannot satisfy an attack-level request.
+	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unitType==WARRIOR) level=1;
 	level-=1;
 	module_records[moduleName].requested[unitType][ability][level]=numUnits;
 }
@@ -3459,6 +3472,7 @@ void DistributedUnitManager::changeUnits(std::string moduleName, unsigned int un
 
 unsigned int DistributedUnitManager::available(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int level, bool is_minimum)
 {
+	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) level=1;
 	TeamStatsGenerator stat(ai.team);
 	int num_available=stat.getUnits(unit_type, Unit::MED_FREE, Unit::ACT_RANDOM, ability, level, is_minimum);
 	level-=1;
@@ -3485,6 +3499,7 @@ unsigned int DistributedUnitManager::available(std::string module_name, unsigned
 
 bool DistributedUnitManager::request(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number,  int building)
 {
+	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	minimum_level-=1;
 	usageRecord ur;
@@ -3523,6 +3538,7 @@ bool DistributedUnitManager::request(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
+	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]+=number;
 }
@@ -3532,6 +3548,7 @@ void DistributedUnitManager::reserve(std::string module_name, unsigned int unit_
 
 void DistributedUnitManager::unreserve(std::string module_name, unsigned int unit_type, unsigned int ability, unsigned int minimum_level, unsigned int number)
 {
+	if (ai.game->gameHeader.isUnitUpgradesDisabled() && unit_type==WARRIOR) minimum_level=1;
 	assert(unit_type<NB_UNIT_TYPE && ability<NB_ABILITY && minimum_level>=1 && minimum_level<=NB_UNIT_LEVELS);
 	module_records[module_name].reservedUnits[unit_type][ability][minimum_level-1]-=number;
 }
@@ -3756,6 +3773,7 @@ bool BasicDistributedSwarmManager::moderateSwarms()
 		total_wanted_score+=ratios[i];
 	}
 
+	if (ai.game->gameHeader.isPeacefulModeEnabled()) ratios[WARRIOR]=0;
 	int max=*std::max_element(ratios, ratios+NB_UNIT_TYPE);
 	int devisor=1;
 	if(max>16)
@@ -4471,7 +4489,7 @@ bool HappinessHandler::adjustAlliances()
 		Team* t=ai.game->teams[i];
 		if(t)
 		{
-			if(t->me & ai.team->enemies)
+			if(t->me & ai.team->attackableTeams())
 			{
 				if(ai.team->me & t->sharedVisionFood)
 				{
@@ -4497,7 +4515,7 @@ bool HappinessHandler::adjustAlliances()
 	{
 		if(AICabino_DEBUG)
 			std::cout<<"AICabino: adjustAlliances: Adjusting food vision alliance."<<std::endl;
-		ai.orders.push(std::shared_ptr<Order>(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->enemies, ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther)));
+		ai.orders.push(std::shared_ptr<Order>(new SetAllianceOrder(ai.team->teamNumber, ai.team->allies, ai.team->attackableTeams(), ai.team->sharedVisionExchange, food_mask, ai.team->sharedVisionOther)));
 	}
 
 	return false;

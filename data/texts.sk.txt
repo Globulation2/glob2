@@ -5034,8 +5034,8 @@ Odolnosť budov
 Zranené jednotky ustupujú
 [Units can die]
 Jednotky môžu zomrieť
-[Unit training]
-Výcvik jednotiek
+[Upgrades]
+
 [No stockpile]
 Žiadne
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Tímy na seba môžu útočiť. Pre pokojný zápas vypnite.
 Zranené jednotky sa vracajú liečiť namiesto boja na život a na smrť.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Jednotky zomrú, keď im dôjde zdravie. Po vypnutí sa zastavia na 1 bode zdravia.
-[Units gain levels at schools.]
-Jednotky získavajú úrovne v školách.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Čas robotníkov
 [stat worker time]

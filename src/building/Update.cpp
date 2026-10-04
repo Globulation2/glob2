@@ -439,6 +439,8 @@ bool Building::isHardSpaceForBuildingSite(void)
 
 bool Building::isHardSpaceForBuildingSite(ConstructionResultState requestedState)
 {
+	// Also informs extracted scene controls and AI feasibility checks.
+	if (requestedState==UPGRADE && owner->game->gameHeader.isUnitUpgradesDisabled()) return false;
 	int futureBuildingTypeId=BUILDING_LEVEL_NONE;
 	if (requestedState==UPGRADE)
 		futureBuildingTypeId=type->nextLevel;

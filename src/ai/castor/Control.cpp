@@ -4,6 +4,7 @@
 #include "AITelemetryFields.h"
 #include "AICastor.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -18,7 +19,7 @@ using std::shared_ptr;
 std::shared_ptr<Order>AICastor::controlSwarms()
 {
 	telemetry.count(AITrace::AI2::AICastor_controlSwarms_calls);
-	Sint32 warriorGoal=warLevel;
+	Sint32 warriorGoal=game->gameHeader.isPeacefulModeEnabled() ? 0 : warLevel;
 	
 	int unitSum[NB_UNIT_TYPE];
 	for (int i=0; i<NB_UNIT_TYPE; i++)
@@ -43,11 +44,15 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 
 	foodWarning=((unitSumAll+AI_CASTOR_FOODWARN_OFFSET)>=(foodSum<<1));
 	foodLock=((unitSumAll+AI_CASTOR_FOODLOCK_OFFSET)>=(foodSum<<1));
+	// No hunger removes feeding pressure, but swarms still need wheat to produce.
+	if (game->gameHeader.isHungerDisabled())
+	{ foodLock=false; foodWarning=false; }
 	foodLockStats[foodLock]++;
 
-	foodSurplus=(unitSumAll+AI_CASTOR_FOODSURPLUS_OFFSET<foodSum);
+	foodSurplus=game->gameHeader.isHungerDisabled() || (unitSumAll+AI_CASTOR_FOODSURPLUS_OFFSET<foodSum);
 
 	starvingWarning=(((unitSumAll>>AI_CASTOR_STARVING_RATIO_SHIFT)+AI_CASTOR_STARVING_OFFSET)<team->stats.getStarvingUnits());
+	if (game->gameHeader.isHungerDisabled()) starvingWarning=false;
 	starvingWarningStats[starvingWarning]++;
 
 	bool realFoodLock;
@@ -57,7 +62,7 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	else
 		realFoodLock=((unitSumAll)>=(foodSum*AI_CASTOR_REAL_FOODLOCK_MULT_PEACE));
 
-	if ((timer>AI_CASTOR_FOODLOCK_GRACE_TICKS) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
+	if (!game->gameHeader.isHungerDisabled() && (timer>AI_CASTOR_FOODLOCK_GRACE_TICKS) && (realFoodLock || starvingWarning || starvingWarningStats[1]>starvingWarningStats[0]))
 	{
 		// Stop making any units!
 		Building **myBuildings=team->myBuildings;
@@ -152,6 +157,8 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 
 std::shared_ptr<Order>AICastor::expandFood()
 {
+	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	if (game->gameHeader.isHungerDisabled()) return {};
 	telemetry.count(AITrace::AI2::AICastor_expandFood_calls);
 	if (foodSurplus
 		|| (!foodWarning && !enoughFreeWorkers())
@@ -181,6 +188,8 @@ std::shared_ptr<Order>AICastor::expandFood()
 
 std::shared_ptr<Order>AICastor::controlFood()
 {
+	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	if (game->gameHeader.isHungerDisabled()) return {};
 	telemetry.count(AITrace::AI2::AICastor_controlFood_calls);
 	int wMask=map->wMask;
 	int hMask=map->hMask;
@@ -229,7 +238,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 			worstCare=wheatCare;
 	}
 	
-	if (worstCare>AI_CASTOR_WHEATCARE_STOP_THRESHOLD)
+	if (!game->gameHeader.isResourceGrowthDisabled() && worstCare>AI_CASTOR_WHEATCARE_STOP_THRESHOLD)
 	{
 		if (b->maxUnitWorking!=0)
 		{
@@ -241,7 +250,7 @@ std::shared_ptr<Order>AICastor::controlFood()
 										   shared_ptr<Order>(new OrderModifyBuilding(b->gid, 0)));
 		}
 	}
-	else if (worstCare>AI_CASTOR_WHEATCARE_LIMIT_THRESHOLD)
+	else if (!game->gameHeader.isResourceGrowthDisabled() && worstCare>AI_CASTOR_WHEATCARE_LIMIT_THRESHOLD)
 	{
 		if (b->maxUnitWorking>1)
 		{
@@ -346,6 +355,8 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 												   AI_CASTOR_CONSTRUCTION_ORDER_UNITS)));
 		}
 	}
+	// Repairs above remain useful even when upgrades are disabled.
+	if (game->gameHeader.isUnitUpgradesDisabled()) return {};
 	// Do we want to upgrade it:
 	// We compute the number of buildings satifying the strategy:
 	int shortTypeNum=b->type->shortTypeNum;
@@ -402,6 +413,8 @@ std::shared_ptr<Order>AICastor::controlUpgrades()
 
 std::shared_ptr<Order>AICastor::controlStrikes()
 {
+	// Rule capability gate: avoid investing in or waiting for unavailable work.
+	if (game->gameHeader.isPeacefulModeEnabled()) return {};
 	telemetry.count(AITrace::AI2::AICastor_controlStrikes_calls);
 	controlStrikesTimer=timer+AI_CASTOR_CONTROL_STRIKES_INTERVAL;
 
@@ -420,7 +433,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 		{
 			Team *enemyTeam=game->teams[ti];
 			Uint32 me=team->me;
-			if ((team->enemies&enemyTeam->me)==0)
+			if ((team->attackableTeams()&enemyTeam->me)==0)
 				continue;
 			Building **enemyBuildings=enemyTeam->myBuildings;
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
@@ -440,7 +453,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			int score=0;
 			Team *enemyTeam=game->teams[ti];
 			Uint32 me=team->me;
-			if ((team->enemies&enemyTeam->me)==0)
+			if ((team->attackableTeams()&enemyTeam->me)==0)
 				continue;
 			Building **enemyBuildings=enemyTeam->myBuildings;
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)

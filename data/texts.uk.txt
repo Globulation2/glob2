@@ -5034,8 +5034,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поранені відступають
 [Units can die]
 Істоти можуть гинути
-[Unit training]
-Навчання істот
+[Upgrades]
+
 [No stockpile]
 Немає
 [No glass cannon]
@@ -5128,8 +5128,8 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Поранені істоти повертаються лікуватися, а не б’ються до смерті.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Істоти гинуть, коли здоров’я закінчується. Вимкніть, щоб у них залишалася 1 одиниця здоров’я.
-[Units gain levels at schools.]
-Істоти підвищують рівень у школах.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Час робітників
 [stat worker time]

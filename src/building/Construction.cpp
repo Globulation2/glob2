@@ -98,6 +98,8 @@ void Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		}
 		else
 		{
+			// This rule disables building upgrades too; damaged buildings still repair.
+			if (owner->game->gameHeader.isUnitUpgradesDisabled()) return;
 			if ((type->nextLevel==BUILDING_LEVEL_NONE) || !isHardSpaceForBuildingSite(UPGRADE))
 				return;
 			constructionResultState=UPGRADE;

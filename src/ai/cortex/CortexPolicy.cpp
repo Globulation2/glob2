@@ -139,8 +139,8 @@ namespace Cortex
 			? (obs.starvingUnits * 100 / obs.totalUnit) : 0;
 		const Sint32 hungryPct     = (obs.totalUnit > 0)
 			? (obs.needFood * 100 / obs.totalUnit) : 0;
-		f.starving        = (starvingPct >= STARVE_HALT_PERCENT);
-		f.hungry          = (hungryPct >= HUNGRY_HALT_PERCENT);
+		f.starving        = !obs.hungerDisabled && (starvingPct >= STARVE_HALT_PERCENT);
+		f.hungry          = !obs.hungerDisabled && (hungryPct >= HUNGRY_HALT_PERCENT);
 
 		// "Established economy" gate, and also the army-pivot trigger: a self-feeding
 		// colony with a swarm + an inn and a real population, not starving. Below it
@@ -166,10 +166,10 @@ namespace Cortex
 		// colony. foodSaturated is the complementary famine slice (mature BUT starving):
 		// the population has overshot what the wheat catchment can feed. The two are
 		// mutually exclusive and partition economyEstablished by f.starving.
-		f.economyEstablished = (innEstablished
+		f.economyEstablished = ((obs.hungerDisabled || innEstablished)
 		                           && f.swarms >= COMBAT_ECON_MIN_SWARMS
 		                           && obs.totalUnit >= COMBAT_ECON_MIN_UNITS);
-		f.combatPhase   = f.economyEstablished && !f.starving;
+		f.combatPhase   = !obs.combatDisabled && f.economyEstablished && !f.starving;
 		f.foodSaturated = f.economyEstablished &&  f.starving;
 
 		// Spare labour: idle workers exist, so a tech/expansion build can be started
@@ -263,12 +263,12 @@ namespace Cortex
 		else if (obs.workers < mid)
 		{
 			f.growWorker  = cortexTuning().workerRatioTier2;
-			f.growWarrior = f.economyEstablished ? 1 : 0;
+			f.growWarrior = !obs.combatDisabled && f.economyEstablished ? 1 : 0;
 		}
 		else
 		{
 			f.growWorker  = 0;
-			f.growWarrior = f.economyEstablished ? 1 : 0;
+			f.growWarrior = !obs.combatDisabled && f.economyEstablished ? 1 : 0;
 		}
 
 		// HARD rule: the production mix is NEVER {0,0,0} (a halted swarm). If the
@@ -282,7 +282,7 @@ namespace Cortex
 		// PANIC_MAX_WARRIORS): such a colony defends through the normal path and need
 		// not derail its economy.
 		const bool underAttack = (obs.buildingsUnderAttack > 0 || obs.unitsUnderAttack > 0);
-		f.panic       = (!f.combatPhase && underAttack
+		f.panic       = (!obs.combatDisabled && !f.combatPhase && underAttack
 		                          && f.warriors <= PANIC_MAX_WARRIORS);
 
 		return f;
@@ -422,7 +422,7 @@ namespace Cortex
 		// from the shared facts, then applied declaratively per candidate via
 		// candidateGates[] below. A set bit means the gate FAILED this cycle.
 		Uint32 failedGates = 0;
-		if (f.inns < 1)
+		if (!obs.hungerDisabled && f.inns < 1)
 			failedGates |= GATE_BOOTSTRAP;
 		if (obs.freeWorkers < 1)
 			failedGates |= GATE_LABOR;
@@ -574,7 +574,7 @@ namespace Cortex
 	{
 		PERF_SCOPE_TIME(AIPlan);
 		// Same guard decide() uses: reject an unpopulated / wrong-layout observation.
-		if (obs.version != OBSERVATION_VERSION || !obs.valid)
+		if (obs.version != OBSERVATION_VERSION || !obs.valid || obs.combatDisabled)
 			return makeNoOpAction();
 
 		const DecideFacts f = computeFacts(obs);

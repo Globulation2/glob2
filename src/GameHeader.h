@@ -123,6 +123,7 @@ public:
 	///Returns the list of winning conditions. This list can be modified. Mind, though, the pecking order of winning conditions.
 	///Ones first on the list are considered first.
 	inline std::list<std::shared_ptr<WinningCondition> >& getWinningConditions() { return winningConditions; }
+	inline const std::list<std::shared_ptr<WinningCondition>>& getWinningConditions() const { return winningConditions; }
 	
 	///Returns the random generator seed thats being used
 	inline Uint32 getRandomSeed() const { return seed; }
@@ -170,10 +171,10 @@ public:
 	///Sets whether units are exempt from hunger and starvation (custom-game rule)
 	inline void setHungerDisabled(bool disabled) { hungerDisabled=disabled; }
 
-	///Returns whether units are exempt from training/upgrading at schools (custom-game rule)
+	///Returns whether unit training and building upgrades are disabled (custom-game rule)
 	inline bool isUnitUpgradesDisabled() const { return unitUpgradesDisabled; }
 
-	///Sets whether units are exempt from training/upgrading at schools (custom-game rule)
+	///Sets whether unit training and building upgrades are disabled (custom-game rule)
 	inline void setUnitUpgradesDisabled(bool disabled) { unitUpgradesDisabled=disabled; }
 
 	///Returns the "glass cannon" tier (0=off/today's balance, 1-2=progressively higher
@@ -289,7 +290,7 @@ private:
 	///Custom-game rule: units never grow hungry or starve
 	bool hungerDisabled;
 
-	///Custom-game rule: units never train/upgrade at schools
+	///Custom-game rule: unit training and building upgrades are disabled (repairs remain available)
 	bool unitUpgradesDisabled;
 
 	///Custom-game rule: 0-2 tier scaling damage dealt up and HP/armor down

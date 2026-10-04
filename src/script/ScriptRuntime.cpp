@@ -444,7 +444,7 @@ struct Environment
 		static const char *names[] = {"teams",    "units",     "buildings",    "unit",
 									  "building", "tile",      "region",       "objectives",
 									  "hints",    "interface", "buildingTypes", "wakeAgent",
-									  "experiments"};
+									  "experiments", "rules"};
 		auto &e = *static_cast<Environment *>(JS_GetContextOpaque(ctx));
 		try
 		{
@@ -475,7 +475,7 @@ struct Environment
 				return list.release();
 			}
 			auto value = e.toJS(result);
-			if (e.host->profile == 2 && JS_IsObject(value))
+			if ((e.host->profile == 2 || magic == 13) && JS_IsObject(value))
 				e.readonly(value);
 			return value;
 		}
@@ -508,9 +508,9 @@ struct Environment
 		static const char *names[] = {"teams",    "units",     "buildings",    "unit",
 									  "building", "tile",      "region",       "objectives",
 									  "hints",    "interface", "buildingTypes", "wakeAgent",
-									  "experiments"};
+									  "experiments", "rules"};
 		for (int i = 0; i < int(std::size(names)); ++i)
-			if (!host->commander || i < 7 || i == 10 || i == 12) set(i == 5 || i == 6 ? map.get() : game.get(), names[i],
+			if (!host->commander || i < 7 || i == 10 || i == 12 || i == 13) set(i == 5 || i == 6 ? map.get() : game.get(), names[i],
 				JS_NewCFunctionMagic(ctx, query, names[i], 0, JS_CFUNC_generic_magic, i));
 		if (host->commander)
 			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, 11));

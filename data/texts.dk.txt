@@ -5034,8 +5034,8 @@ Bygningers styrke
 Sårede enheder trækker sig tilbage
 [Units can die]
 Enheder kan dø
-[Unit training]
-Enhedstræning
+[Upgrades]
+
 [No stockpile]
 Intet
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Hold kan angribe hinanden. Slå fra for en fredelig kamp.
 Sårede enheder går tilbage for at blive helet i stedet for at kæmpe til døden.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enheder dør, når de løber tør for livspoint. Slå fra for at stoppe dem ved 1 livspoint.
-[Units gain levels at schools.]
-Enheder stiger i niveau på skoler.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Arbejdernes tid
 [stat worker time]

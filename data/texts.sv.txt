@@ -5034,8 +5034,8 @@ Byggnaders hållfasthet
 Sårade enheter retirerar
 [Units can die]
 Enheter kan dö
-[Unit training]
-Träning av enheter
+[Upgrades]
+
 [No stockpile]
 Inget
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Lagen kan anfalla varandra. Stäng av för en fredlig match.
 Skadade enheter går tillbaka för att läkas i stället för att slåss till döden.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Enheter dör när träffpoängen tar slut. Stäng av för att stoppa dem vid 1 träffpoäng.
-[Units gain levels at schools.]
-Enheter går upp i nivå på skolor.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Arbetarnas tid
 [stat worker time]

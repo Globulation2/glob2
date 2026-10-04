@@ -29,6 +29,33 @@ out=pathlib.Path(sys.argv[sys.argv.index('--output-dir')+1]);out.mkdir(parents=T
 '''
 
 
+class RuleJobs(unittest.TestCase):
+    def test_rules_are_repeatable_sorted_and_new_game_only(self):
+        from tools.tournaments.jobs import EngineJob
+        adapter = EngineJob('game')
+        request = job('game', 'a'*64, inputs={'map': {'sha256': 'b'*64}},
+                      seeds={'game': 713}, config={'players': ['numbi', 'castor'],
+                      'rules': {'peaceful': 1, 'noUpgrades': 1}})
+        adapter.validate(request)
+        command = adapter.command(request, {'directory': '/bundle', 'executable': 'glob2'},
+                                  '/attempt', {'map': '/map'})
+        rules = [command[i+1] for i, arg in enumerate(command) if arg == '--rule']
+        self.assertEqual(rules, ['noUpgrades=1', 'peaceful=1'])
+        request['inputs'] = {'save': {'sha256': 'b'*64}}
+        request['seeds'] = {}
+        request['config'] = {'rules': {'noUpgrades': 1}}
+        with self.assertRaisesRegex(ValueError, 'cannot override'):
+            adapter.validate(request)
+
+    def test_rules_require_integer_values(self):
+        from tools.tournaments.jobs import EngineJob
+        for rules in ([1], {'noUpgrades': True}, {'scarcity': '3'}, {1: 0}):
+            request = job('game', 'a'*64, inputs={'map': {'sha256': 'b'*64}},
+                          seeds={'game': 713}, config={'players': ['numbi', 'castor'], 'rules': rules})
+            with self.assertRaisesRegex(ValueError, 'rules must map'):
+                EngineJob('game').validate(request)
+
+
 class Fixture(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()

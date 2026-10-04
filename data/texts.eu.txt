@@ -5034,8 +5034,8 @@ Eraikinen sendotasuna
 Zaurituak erretiratzen dira
 [Units can die]
 Unitateak hil daitezke
-[Unit training]
-Unitateen entrenamendua
+[Upgrades]
+
 [No stockpile]
 Bat ere ez
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Taldeek elkarri eraso diezaiokete. Desaktibatu partida baketsu baterako.
 Unitate zaurituak sendatzera itzultzen dira hil arte borrokatu beharrean.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unitateak hil egiten dira bizi-puntuak agortzean. Desaktibatu bizi-puntu 1ean gelditzeko.
-[Units gain levels at schools.]
-Unitateek mailak irabazten dituzte eskoletan.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Langileen denbora
 [stat worker time]

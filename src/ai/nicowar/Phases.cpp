@@ -20,6 +20,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 {
 	telemetry.count(AITrace::AI5::NewNicowar_check_phases_calls);
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
+	const auto& rules=runtime.player->game->gameHeader;
 
 	///Qualifications for the growth phase:
 	///1) Less than strategy.growth_phase_unit_max units
@@ -53,7 +54,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	const int school_counts=schools.count_buildings();
 	const int trained_count=stat->upgradeState[BUILD][1] + stat->upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
-	if(stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>=strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
+	if(!rules.isUnitUpgradesDisabled() && stat->totalUnit>=strategy.upgrading_phase_1_unit_min && school_counts>=strategy.upgrading_phase_1_school_min && trained_count>strategy.upgrading_phase_1_trained_worker_min)
 	{
 		upgrading_phase_1=true;
 	}
@@ -77,7 +78,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	const int school_counts_2=schools_2.count_buildings() + schools_3.count_buildings();
 	const int trained_count_2=runtime.get_team_stats().upgradeState[BUILD][2] + stat->upgradeState[BUILD][3];
 
-	if(stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>=strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
+	if(!rules.isUnitUpgradesDisabled() && stat->totalUnit>=strategy.upgrading_phase_2_unit_min && school_counts_2>=strategy.upgrading_phase_2_school_min && trained_count_2>strategy.upgrading_phase_2_trained_worker_min)
 	{
 		upgrading_phase_2=true;
 	}
@@ -94,13 +95,13 @@ void NewNicowar::check_phases(Runtime& runtime)
 	barracks.add_condition(new SpecificBuildingType(IntBuildingType::ATTACK_BUILDING));
 	int barracks_count=barracks.count_buildings();
 
-	int warrior_count=0;
-	for(int i=strategy.minimum_warrior_level_for_trained; i<=AI_NICOWAR_MAX_UPGRADE_LEVEL; ++i)
+	int warrior_count=rules.isUnitUpgradesDisabled() ? stat->numberUnitPerType[WARRIOR] : 0;
+	for(int i=rules.isUnitUpgradesDisabled() ? AI_NICOWAR_MAX_UPGRADE_LEVEL+1 : strategy.minimum_warrior_level_for_trained; i<=AI_NICOWAR_MAX_UPGRADE_LEVEL; ++i)
 	{
 		warrior_count += stat->upgradeState[ATTACK_SPEED][i];
 	}
 
-	if(stat->totalUnit>=strategy.war_preparation_phase_unit_min && (warrior_count < strategy.war_preparation_phase_trained_warrior_max || barracks_count<strategy.war_preparation_phase_barracks_max))
+	if(!rules.isPeacefulModeEnabled() && stat->totalUnit>=strategy.war_preparation_phase_unit_min && (warrior_count < strategy.war_preparation_phase_trained_warrior_max || barracks_count<strategy.war_preparation_phase_barracks_max))
 	{
 		war_preparation=true;
 	}
@@ -111,7 +112,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 
 	///Qualifications for the war phase:
 	///At least strategy.war_phase_trained_warrior_min trained warriors
-	if(warrior_count >= strategy.war_phase_trained_warrior_min)
+	if(!rules.isPeacefulModeEnabled() && warrior_count >= strategy.war_phase_trained_warrior_min)
 	{
 		war=true;
 	}
@@ -134,7 +135,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	///Qualifications for the starving recovery phase:
 	///1) More than strategy.starvation_recovery_phase_starving_no_inn_min_percent % units hungry but not able to eat
 	///2) At least one unit (because of division by 0)
-	if(stat->totalUnit > AI_NICOWAR_STARVATION_MIN_UNITS)
+	if(!rules.isHungerDisabled() && stat->totalUnit > AI_NICOWAR_STARVATION_MIN_UNITS)
 	{
 		int total_starving_percent = stat->needFoodNoInns * 100 / stat->totalUnit;
 		if(total_starving_percent >= strategy.starvation_recovery_phase_starving_no_inn_min_percent)
@@ -188,7 +189,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	
 	///Qualifications for the defend explorers phase
 	///1) Prestige, not counting this teams prestige, is more than 0, indicating that ground attacking explorers are being created
-	if(runtime.player->game->totalPrestige - runtime.player->team->prestige > 0)
+	if(!rules.isPeacefulModeEnabled() && runtime.player->game->totalPrestige - runtime.player->team->prestige > 0)
 	{
 		defend_explorers=true;
 	}
@@ -199,7 +200,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	
 	///Qualifications for the explorer attack preparation phase
 	//1) This teams prestige greater than 0
-	if(runtime.player->team->prestige > 0)
+	if(!rules.isPeacefulModeEnabled() && !rules.isUnitUpgradesDisabled() && runtime.player->team->prestige > 0)
 	{
 		explorer_attack_preparation_phase = true;
 	}
@@ -210,7 +211,7 @@ void NewNicowar::check_phases(Runtime& runtime)
 	
 	///Qualifications for the explorer attack phase
 	//1) The minimum number of trained explorers is greater than offense_explorer_minimum
-	if(stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][AI_NICOWAR_EXPLORER_MAX_LEVEL] > strategy.offense_explorer_minimum)
+	if(!rules.isPeacefulModeEnabled() && stat->upgradeStatePerType[EXPLORER][MAGIC_ATTACK_GROUND][AI_NICOWAR_EXPLORER_MAX_LEVEL] > strategy.offense_explorer_minimum)
 	{
 		explorer_attack_phase = true;
 	}

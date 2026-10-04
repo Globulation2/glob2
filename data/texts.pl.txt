@@ -5034,8 +5034,8 @@ Wytrzymałość budynków
 Ranne jednostki się wycofują
 [Units can die]
 Jednostki mogą ginąć
-[Unit training]
-Szkolenie jednostek
+[Upgrades]
+
 [No stockpile]
 Brak
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Drużyny mogą się atakować. Wyłącz, aby mecz był pokojowy.
 Ranne jednostki wracają na leczenie, zamiast walczyć do śmierci.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Jednostki giną, gdy stracą wszystkie punkty życia. Wyłącz, aby zatrzymywały się na 1 punkcie życia.
-[Units gain levels at schools.]
-Jednostki zdobywają poziomy w szkołach.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Czas robotników
 [stat worker time]

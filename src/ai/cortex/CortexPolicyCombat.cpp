@@ -414,6 +414,7 @@ namespace Cortex
 
 	bool CortexPolicy::wantWheatProtection(const CortexObservation& obs) const
 	{
+		if (obs.growthDisabled) return false; // Finite wheat cannot replenish protected seeds.
 		// Reject an observation built against a layout this policy wasn't written
 		// for, or one that was never populated — same guard decide() uses.
 		if (obs.version != OBSERVATION_VERSION || !obs.valid)

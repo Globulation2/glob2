@@ -10,6 +10,7 @@
 #include "Building.h"
 #include "Unit.h"
 #include "Game.h"
+#include "AIRules.h"
 #include "GlobalContainer.h"
 #include "Order.h"
 #include "Player.h"
@@ -146,6 +147,7 @@ int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int val
 bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 {
 	telemetry.count(AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_calls);
+	if (game->gameHeader.isHungerDisabled()) return false;
 	//Yeah, it's a half, not a third. Weird huh? :P
 	return telemetry.returnedBool(
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_result,
@@ -286,7 +288,8 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	for (int i=0; i<Building::MAX_COUNT; i++)
 	{
 		Building *b=myBuildings[i];
-		if((b)&&(b->shortTypeNum != IntBuildingType::WAR_FLAG)&&(b->shortTypeNum != IntBuildingType::EXPLORATION_FLAG)&&(b->shortTypeNum != IntBuildingType::CLEARING_FLAG))
+		if((b)&&AIRules::usefulBuilding(game->gameHeader,b->shortTypeNum)
+            &&(b->shortTypeNum != IntBuildingType::WAR_FLAG)&&(b->shortTypeNum != IntBuildingType::EXPLORATION_FLAG)&&(b->shortTypeNum != IntBuildingType::CLEARING_FLAG))
 		{
 			++num_buildings;
 			if(b->unitsWorking.size() == (size_t)b->maxUnitWorking)
@@ -321,17 +324,17 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 	if (areaUpdatingDelay > 0)
 		areaUpdatingDelay--;
 	
-	if(game->stepCounter < AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW && game->stepCounter%AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL == 0)
+	if(!game->gameHeader.isPeacefulModeEnabled() && game->stepCounter < AI_WARRUSH_BOOTSTRAP_EXPLORE_WINDOW && game->stepCounter%AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL == 0)
 	{
 		int teamIndex = game->stepCounter / AI_WARRUSH_BOOTSTRAP_EXPLORE_INTERVAL;
 		Team *enemy_team = game->teams[teamIndex];
-		if((enemy_team)&&(team->enemies & enemy_team->me))return setupExploreFlagForTeam(enemy_team);
+		if((enemy_team)&&(team->attackableTeams() & enemy_team->me))return setupExploreFlagForTeam(enemy_team);
 	}
 
 	//keep those areas up to date
-	if(areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS*AI_WARRUSH_AREAS_PRUNE_PHASE_NUM/AI_WARRUSH_AREAS_PRUNE_PHASE_DEN)
+	if(!game->gameHeader.isPeacefulModeEnabled() && areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS*AI_WARRUSH_AREAS_PRUNE_PHASE_NUM/AI_WARRUSH_AREAS_PRUNE_PHASE_DEN)
 		return pruneGuardAreas();
-	if(areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS/AI_WARRUSH_AREAS_PLACE_PHASE_DEN)
+	if(!game->gameHeader.isPeacefulModeEnabled() && areaUpdatingDelay == AI_WARRUSH_AREAS_DELAY_TICKS/AI_WARRUSH_AREAS_PLACE_PHASE_DEN)
 		return placeGuardAreas();
 	if(areaUpdatingDelay <= 0)
 	{
@@ -346,7 +349,7 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		if(verbose)if(shouldBuildMore)std::cout << "AIWarrush is ready to build more stuff!";
 		//Build another swarm if all are swarms are working at capacity, and if we have other random stuff we should-have / need
 		if(verbose)std::cout << "Chance to build swarm: ";
-		if(shouldBuildMore && allOfBuildingTypeAreCompleted(IntBuildingType::SWARM_BUILDING) && numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) && numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) * AI_WARRUSH_INNS_PER_SWARM_RATIO)
+		if(shouldBuildMore && allOfBuildingTypeAreCompleted(IntBuildingType::SWARM_BUILDING) && numberOfExtraBuildings() >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) && (game->gameHeader.isHungerDisabled() || numberOfBuildingsOfType(IntBuildingType::FOOD_BUILDING) >= numberOfBuildingsOfType(IntBuildingType::SWARM_BUILDING) * AI_WARRUSH_INNS_PER_SWARM_RATIO))
 		{
 			if(verbose)std::cout << "TAKEN!\n";
 			return buildBuildingOfType(IntBuildingType::SWARM_BUILDING);
@@ -378,7 +381,8 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 		//build more barracks! (this also builds the first barracks...)
 		if(verbose)std::cout << "Chance to build barracks: ";
 		if(
-			allOfBuildingTypeAreCompleted(IntBuildingType::ATTACK_BUILDING)
+			!game->gameHeader.isPeacefulModeEnabled()
+			&& allOfBuildingTypeAreCompleted(IntBuildingType::ATTACK_BUILDING)
 			&& allOfBuildingTypeAreFull(IntBuildingType::ATTACK_BUILDING)
 				)
 		{
@@ -399,21 +403,27 @@ std::shared_ptr<Order> AIWarrush::getOrder(void)
 			else if(random_number < AI_WARRUSH_SWIMSPEED_PCT_THRESHOLD)type = IntBuildingType::SWIMSPEED_BUILDING;
 			else if(random_number < AI_WARRUSH_SCIENCE_PCT_THRESHOLD)type = IntBuildingType::SCIENCE_BUILDING;
 			else type = IntBuildingType::DEFENSE_BUILDING;
+			// Skip unavailable choices before committing a construction turn. A rejected
+			// barracks or school must not repeatedly preempt production and staffing.
+			if (!AIRules::usefulBuilding(game->gameHeader,type)) type=IntBuildingType::HEAL_BUILDING;
 			return buildBuildingOfType(type);
 		}
 		if(verbose)std::cout << "ignored.\n";
 	}
 
 	//If we have enough workers, we can switch to dedicated warrushing production.
-	if(numberOfUnitsWithSkillGreaterThanValue(HARVEST,0) >= AI_WARRUSH_HARVESTER_THRESHOLD)
+	// With training off, a level threshold would leave every swarm in its opening mix forever.
+	if((game->gameHeader.isUnitUpgradesDisabled() ? team->stats.getLatestStat()->numberUnitPerType[WORKER]
+		: numberOfUnitsWithSkillGreaterThanValue(HARVEST,0)) >= AI_WARRUSH_HARVESTER_THRESHOLD)
 	{
 		//This is basically a way to change all the swarms without bothering to remember
 		//anything. (It can only issue one order per tick, so it has to do it over several
 		//ticks and calculate the orders separately.)
-		Building *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, AI_WARRUSH_SWARM_RATIO_WARRIOR);
+		const int warriors=game->gameHeader.isPeacefulModeEnabled() ? 0 : AI_WARRUSH_SWARM_RATIO_WARRIOR;
+		Building *out_of_date_swarm = getSwarmWithoutSettings(AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors);
 		if(out_of_date_swarm)
 		{
-			Sint32 settings[3] = {AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, AI_WARRUSH_SWARM_RATIO_WARRIOR};
+			Sint32 settings[3] = {AI_WARRUSH_SWARM_RATIO_WORKER, AI_WARRUSH_SWARM_RATIO_EXPLORER, warriors};
 			return shared_ptr<Order>(new OrderModifySwarm(out_of_date_swarm->gid, settings));
 		}
 	}
@@ -455,7 +465,7 @@ std::shared_ptr<Order> AIWarrush::pruneGuardAreas()
 						if(map->getBuilding(x+xmod,y+ymod)!=NOGBID)
 						{
 							//...AND it's an enemy building...
-							if(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)
+							if(team->attackableTeams() & game->teams[Building::GIDtoTeam(map->getBuilding(x+xmod,y+ymod))]->me)
 							{
 								//...then we still want it guarded.
 								keep=true;
@@ -489,7 +499,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	for(int i=0;i<Team::MAX_COUNT;i++)
 	{
 		Team *t = game->teams[i];
-		if((t)&&(team->enemies & t->me))
+		if((t)&&(team->attackableTeams() & t->me))
 		{
 			for(int j=0;j<Building::MAX_COUNT;j++)
 			{
@@ -512,7 +522,7 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 									)			
 										)
 					{
-						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->enemies & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
+						if((map->getBuilding(b->posX, b->posY)!=NOGBID)&&(team->attackableTeams() & game->teams[Building::GIDtoTeam(map->getBuilding(b->posX, b->posY))]->me)) //paranoia
 						{
 							telemetry.set(AITrace::AI3::AIWarrush_placeGuardAreas_last_team, i);
 							for(int x = 0; x < bt->width; x++)
@@ -543,6 +553,8 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 	
 std::shared_ptr<Order> AIWarrush::farm()
 {
+	// Disabled capability must not leave strategic jobs or level waits behind.
+	if (game->gameHeader.isResourceGrowthDisabled()) return std::make_shared<NullOrder>();
 	telemetry.count(AITrace::AI3::AIWarrush_farm_calls);
 	// Algorithm initially stolen from Nicowar.
 	DynamicGradientMapArray water_gradient(map->w,map->h);
@@ -831,6 +843,8 @@ void AIWarrush::initializeGradientWithResource(DynamicGradientMapArray &gradient
 
 std::shared_ptr<Order> AIWarrush::buildBuildingOfType(Sint32 shortTypeNum)
 {
+	if (!AIRules::usefulBuilding(game->gameHeader, shortTypeNum)
+		|| (game->gameHeader.isHungerDisabled() && shortTypeNum==IntBuildingType::FOOD_BUILDING)) return std::make_shared<NullOrder>();
 	telemetry.set(AITrace::AI3::AIWarrush_buildBuildingOfType_input_shortTypeNum, shortTypeNum);
 	telemetry.count(AITrace::AI3::AIWarrush_buildBuildingOfType_calls);
 

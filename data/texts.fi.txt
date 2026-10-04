@@ -5034,8 +5034,8 @@ Rakennusten kestävyys
 Haavoittuneet vetäytyvät
 [Units can die]
 Yksiköt voivat kuolla
-[Unit training]
-Yksiköiden koulutus
+[Upgrades]
+
 [No stockpile]
 Ei mitään
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Joukkueet voivat hyökätä toistensa kimppuun. Poista käytöstä rauhallista o
 Loukkaantuneet yksiköt palaavat parantumaan sen sijaan, että taistelisivat kuolemaan asti.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Yksiköt kuolevat, kun niiden HP loppuu. Poista käytöstä, niin ne pysähtyvät 1 HP:hen.
-[Units gain levels at schools.]
-Yksiköt nousevat tasoja kouluissa.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Työläisten aika
 [stat worker time]

@@ -5034,8 +5034,8 @@ Kekuatan bangunan
 Unit terluka mundur
 [Units can die]
 Unit dapat mati
-[Unit training]
-Pelatihan unit
+[Upgrades]
+
 [No stockpile]
 Tidak ada
 [No glass cannon]
@@ -5128,8 +5128,8 @@ Tim dapat saling menyerang. Nonaktifkan untuk pertandingan damai.
 Unit yang terluka kembali untuk dirawat alih-alih bertarung sampai mati.
 [Units die when they run out of HP. Turn off to stop them at 1 HP.]
 Unit mati saat HP-nya habis. Nonaktifkan agar berhenti di 1 HP.
-[Units gain levels at schools.]
-Unit naik tingkat di sekolah.
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+
 [stat group work]
 Waktu pekerja
 [stat worker time]

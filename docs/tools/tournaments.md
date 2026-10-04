@@ -118,6 +118,7 @@ Game options:
 | `--alliance N` | Repeat once per team, one-based group labels; default separate alliances |
 | `--win-condition NAME` | Repeatable replacement for standard conditions: death, allies, prestige, opponents, script |
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
+| `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
 | `--compute-threads N` | Execution threads, 1–64 including main; default minimum of AI controllers, available hardware threads and 4 (at least 1) |
 | `--compute-experiments MODE` | `none`, `areas`, `initialize`, `hiring`, `ai`, `all`; default `ai`; map modes remain experimental |

@@ -17,7 +17,8 @@
     "HiveMind*/*",
     "GameplayRecording*/*",
     "GameDiagnostics/*",
-    "WinProbability/*"
+    "WinProbability/*",
+    "AIRules/*"
   ],
   "unit_filters": [
     "*"
