@@ -199,6 +199,14 @@ framework:
 
 ### Typography
 
+TrueTypeFont measures shaped text using SDL_ttf metrics at the authored font size,
+independently of bitmap rendering. Its metrics LRU is bounded to 1,024 entries and
+1 MiB of stored key text; color and drawable scale do not affect its keys. Font
+replacement/reload clears these metrics. Layout measurement neither creates
+bitmaps nor evicts rendered text. Use bounded `listView` controls for large
+fixed-height data lists, with full text in a separate details area when needed;
+wrapping every entry in a `scroll` still measures all entries during layout.
+
 Every screen uses the same scale, so menus read alike:
 
 | Use | How |

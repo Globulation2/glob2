@@ -93,7 +93,11 @@ static void verifyTouchFontRaster()
 			"Alternating UI scales must reuse glyph and font caches");
 	GAGCore::DrawableSurface offscreen(width, height);
 	offscreen.drawString(0, 0, &font, text);
-	require(font.misses() == misses, "Logical offscreen text must reuse the authored raster");
+	// Measurement no longer pre-rasterizes the authored size. Its first actual
+	// offscreen draw may create that bitmap; subsequent draws must reuse it.
+	const auto offscreenMisses = font.misses();
+	offscreen.drawString(0, 0, &font, text);
+	require(font.misses() == offscreenMisses, "Logical offscreen text must reuse the authored raster");
 }
 class GameGUITouchHarness
 {

@@ -8,6 +8,20 @@ The dialog reads immutable Scene values. The values describe the AI's own state,
 calculations and requests; emitted orders are not evidence that the engine accepted
 or completed an action.
 
+The panel lists fields alphabetically as compact name/value/unit rows. Select a
+row with a click, tap, or the arrow keys to read its full name, value, unit,
+description, and update tick below the list. The details area scrolls independently
+and uses at most one-third of the list-and-details area. Search matches field
+names, descriptions, and values without ASCII case sensitivity.
+
+Samples refresh every 32 ticks. Selection, search drafts, focus, and list scroll
+position survive refreshes; changing controllers resets the selected field and
+scroll positions. Routine refreshes wait for pointer gestures and inertial
+scrolling to finish. Changes to accessible controllers refresh immediately,
+including while paused, and remove inaccessible details and open player choices.
+The list lays out fixed-height rows and paints only visible rows, so larger
+schemas do not require wrapping every field's description.
+
 ## Collection contract
 
 Each `AIImplementation` exposes `telemetrySchema()` and `captureTelemetry()` and

@@ -267,5 +267,6 @@ class InGameAITelemetryScreen : public Glob2UI::InGameDialog
 	GameGUI *gui;
 	int player = -1;
 	Uint32 sample = ~0u, accessiblePlayers = 0;
-	std::string search;
+	std::string search, selectedField;
+	void resetFieldSelection();
 };

@@ -8,6 +8,7 @@
     "*Gradient*/*",
     "ComputeExecutor/*",
     "*Script*/*",
+    "AITelemetryUI/*",
     "*Stream*/*",
     "*Net*/*",
     "*LAN*/*",

@@ -8,7 +8,9 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include <stack>
 #include <map>
+#include <list>
 #include <string>
+#include <utility>
 
 struct SDL_Surface;
 
@@ -29,9 +31,9 @@ namespace GAGCore
 		//! and its style stack stay. Returns false (and keeps the font) on failure.
 		bool reload(void);
 		
-		//! Get the width of string with shape. Update cache
+		//! Measure shaped text at the authored size, without creating a bitmap.
 		int getStringWidth(const std::string string);
-		//! Get the height of string with shape. If string is NULL, return base value, else update cache
+		//! Measure text height; an empty string returns the font's base height.
 		int getStringHeight(const std::string string);
 		//! Whether every character of this UTF-8 string has a glyph in the loaded font
 		virtual bool hasGlyphsFor(const std::string &utf8Text);
@@ -51,6 +53,19 @@ namespace GAGCore
 		virtual Style getStyle(void) const;
 		
 	protected:
+		using MetricsKey = std::pair<std::string, int>;
+		struct MetricsData
+		{
+			int w, h;
+			std::list<MetricsKey>::iterator age;
+		};
+		std::pair<int, int> measureString(const std::string &text);
+		void clearMetrics();
+		// Both copies of key text count toward the independent metrics budget.
+		std::map<MetricsKey, MetricsData> metricsCache;
+		std::list<MetricsKey> metricsAge;
+		size_t metricsTextBytes = 0;
+
 		struct CacheKey
 		{
 			std::string text;
