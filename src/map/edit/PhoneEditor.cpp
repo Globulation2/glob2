@@ -959,7 +959,7 @@ void PhoneEditor::draw()
 	for (int i = 0; i < 4; ++i)
 	{
 		ViewRect r{safe.x + i * safe.w / 4, safe.y, safe.w / 4 - unit, 44 * unit};
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper);
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper());
 		label(r, labels[i]);
 		if (i == 1 && objects)
 			gfx->drawFilledRect(int(r.x + 4 * unit), int(r.y + r.h - 5 * unit), int(r.w - 8 * unit),
@@ -986,12 +986,12 @@ void PhoneEditor::draw()
 	if (!tools)
 	{
 		gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h),
-							InGameTouchTheme::paper);
+							InGameTouchTheme::paper());
 		label(modeBar, GAGCore::Toolkit::getStringTable()->getString("[Show palette]"));
 		return;
 	}
 	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h),
-						InGameTouchTheme::paper);
+						InGameTouchTheme::paper());
 	const std::string modes[] = {Toolkit::getStringTable()->getString("[Terrain]"),
 								 Toolkit::getStringTable()->getString("[Resources]"),
 								 Toolkit::getStringTable()->getString("[Buildings]"),
@@ -1000,7 +1000,7 @@ void PhoneEditor::draw()
 	{
 		ViewRect r{modeBar.x + i * modeBar.w / 4, modeBar.y, modeBar.w / 4 - unit, modeBar.h};
 		if (i == paletteMode && editor.panelMode != MapEdit::Teams)
-			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected);
+			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected());
 		label(r, modes[i]);
 	}
 	if (editor.panelMode == MapEdit::Teams)
@@ -1016,7 +1016,7 @@ void PhoneEditor::draw()
 			continue;
 		SDL_Rect clip{int(left), int(tray.y), int(right - left), int(tray.h)};
 		gfx->setClipRect(clip.x, clip.y, clip.w, clip.h);
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field);
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field());
 		gfx->setUITransform(row.scale, r.x + (r.w - a.width * row.scale) / 2 - a.x * row.scale,
 							r.y + (r.h - a.height * row.scale) / 2 - a.y * row.scale, &clip);
 		row.widget->draw();
@@ -1026,5 +1026,5 @@ void PhoneEditor::draw()
 	if (maximum > 0)
 		gfx->drawFilledRect(
 			int(tray.x + offset / (maximum + tray.w) * tray.w), int(tray.y + tray.h - 2 * unit),
-			int(tray.w * tray.w / (maximum + tray.w)), int(2 * unit), InGameTouchTheme::border);
+			int(tray.w * tray.w / (maximum + tray.w)), int(2 * unit), InGameTouchTheme::border());
 }

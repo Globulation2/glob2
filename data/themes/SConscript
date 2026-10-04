@@ -1,0 +1,18 @@
+import os
+
+Import("env")
+Import("PackTar")
+
+# Theme files and the assets they reference (see docs/development/ui-framework.md, "Themes").
+if 'dist' in COMMAND_LINE_TARGETS or 'install' in COMMAND_LINE_TARGETS:
+    root = env.Dir(".").srcnode().abspath
+    for folder, _, files in sorted(os.walk(root)):
+        relative = os.path.relpath(folder, root)
+        for file in sorted(files):
+            if file.endswith(".json") or file.endswith(".png"):
+                path = file if relative == "." else os.path.join(relative, file)
+                PackTar(env["TARFILE"], path)
+                env.Install(os.path.normpath(env["INSTALLDIR"] + "/glob2/data/themes/" + relative), path)
+
+    env.Alias("install", env["INSTALLDIR"] + "/glob2/data/themes")
+    PackTar(env["TARFILE"], "SConscript")

@@ -87,6 +87,9 @@ public:
 	/// higher values progressively reduce delays and then skip rendered frames.
 	int gameSpeed;
     std::string interfacePresentation = "automatic";
+    // Interface theme ids (data/themes) for menus and for matches and the editor.
+    std::string menuTheme = "light";
+    std::string gameTheme = "dark";
     // Size of all touch interface text, 100..150 percent: menus, dialogs and the
     // HUD. Local UI preference; never part of saves/orders. Replaces the former
     // mobileDialogTextPercent, which only compensated in-game dialogs and is ignored.

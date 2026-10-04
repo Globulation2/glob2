@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 #include "MainMenuScreen.h"
 #include "GlobalContainer.h"
+#include "ui/ThemeCatalog.h"
 #include <algorithm>
 #include <cmath>
 #include <ApplicationHost.h>
@@ -18,26 +19,36 @@ using namespace Glob2UI;
 MainMenuScreen::MainMenuScreen() = default;
 MainMenuScreen::~MainMenuScreen() = default;
 
-// Fit the wordmark once with the software blitter; the text heading remains
-// the fallback when the asset is missing.
+// Fit the wordmark once per width and theme with the software blitter; the
+// text heading remains the fallback when the asset is missing.
 void MainMenuScreen::loadWordmark(int logoWidth)
 {
-	if (wordmark && wordmarkWidth == logoWidth)
+	if (wordmark && wordmarkWidth == logoWidth && wordmarkTheme == themeGeneration())
 		return;
 	wordmark.reset();
 	wordmarkWidth = logoWidth;
+	wordmarkTheme = themeGeneration();
+	const auto &own = theme().backdrop.wordmark;
 	GAGCore::DrawableSurface source(1, 1);
-	if (!source.loadImage("data/gfx/menu-wordmark.png"))
+	if (!source.loadImage(own.empty() ? "data/gfx/menu-wordmark.png" : own))
 		return;
-	SDL_Rect crop{76, 232, 1956, 284};
+	// A theme's own wordmark is shown whole and as drawn.
+	SDL_Rect crop = own.empty() ? SDL_Rect{76, 232, 1956, 284} : SDL_Rect{0, 0, source.getW(), source.getH()};
 	const int logoHeight = std::max(1, logoWidth * crop.h / crop.w);
 	auto *fitted = SDL_CreateSurface(logoWidth, logoHeight, SDL_PIXELFORMAT_RGBA32);
 	if (!fitted)
 		return;
-	if (SDL_BlitSurfaceScaled(source.getSDLSurface(), &crop, fitted, nullptr, SDL_SCALEMODE_NEAREST))
+	if (!SDL_BlitSurfaceScaled(source.getSDLSurface(), &crop, fitted, nullptr, own.empty() ? SDL_SCALEMODE_NEAREST : SDL_SCALEMODE_LINEAR))
+	{
+		SDL_DestroySurface(fitted);
+		return;
+	}
+	if (own.empty())
 	{
 		// The source asset has a pale matte. Recover coverage for its two
-		// flat inks before compositing, including the letter openings.
+		// flat inks before compositing, including the letter openings, and
+		// paint them in the theme's ink and accent.
+		const auto &palette = theme().palette;
 		for (int row = 0; row < logoHeight; ++row)
 		{
 			auto *pixels = reinterpret_cast<Uint32 *>(static_cast<Uint8 *>(fitted->pixels) + row * fitted->pitch);
@@ -48,13 +59,13 @@ void MainMenuScreen::loadWordmark(int logoWidth)
 				const bool goldInk = red > green;
 				double coverage = goldInk ? (int(green) - int(blue) - 20) / 65.0 : (232 - int(red)) / 200.0;
 				coverage = coverage < 0.03 ? 0.0 : std::min(1.0, coverage);
-				pixels[col] = SDL_MapSurfaceRGBA(fitted, goldInk ? 227 : 36, goldInk ? 192 : 69,
-										  goldInk ? 119 : 49, static_cast<Uint8>(std::lround(255 * coverage)));
+				const auto &ink = goldInk ? palette.accent : palette.ink;
+				pixels[col] = SDL_MapSurfaceRGBA(fitted, ink.r, ink.g, ink.b, static_cast<Uint8>(std::lround(255 * coverage)));
 			}
 		}
-		SDL_SetSurfaceBlendMode(fitted, SDL_BLENDMODE_BLEND);
-		wordmark = std::make_unique<GAGCore::DrawableSurface>(fitted);
 	}
+	SDL_SetSurfaceBlendMode(fitted, SDL_BLENDMODE_BLEND);
+	wordmark = std::make_unique<GAGCore::DrawableSurface>(fitted);
 	SDL_DestroySurface(fitted);
 }
 
@@ -102,7 +113,7 @@ Element MainMenuScreen::build(const Presentation &p)
 		return button("menu/" + std::to_string(code), tr(key), choose(code), options);
 	};
 	CardOptions cardOptions;
-	cardOptions.color = theme().palette.panel.applyAlpha(248);
+	cardOptions.color = theme().palette.panel.applyAlpha(theme().palette.panel.a * 248 / 255);
 	cardOptions.radius = p.pt(10);
 	if (p.touch)
 	{

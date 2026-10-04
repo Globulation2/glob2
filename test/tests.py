@@ -133,6 +133,7 @@ ENGINE_TESTS = [
     'WindowResizeHarness.cpp',
     'SettingsScreenTest.cpp',
     'SettingsGraphicsTest.cpp',
+    'ThemeCatalogTest.cpp',
     'SettingsExperimentsTest.cpp',
     'SystemLanguageTest.cpp',
     'GuardAreaBalanceTest.cpp',

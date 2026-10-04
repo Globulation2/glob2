@@ -214,25 +214,77 @@ Only the main menu's launch buttons use the Heading font for buttons.
 
 ### Theme
 
-`Theme` carries a palette (ink, muted, paper, panel, field, rail, line,
-accent, selected, hover, focus, scrim, disabled, danger, success, shadow,
-pressed, backdrop, neutral, placeholder), font roles (Title, Heading, Body, Support,
-Caption mapped to toolkit font names) and metrics in points. `frontendTheme()`
-is the paper look and `inGameTheme()` the aubergine, cream and gold in-match
-look shared with the HUD (`InGameTouchTheme.h`); both use the same fonts and
-sizes. `themeFor(Surface)` in `src/ui/FrontendUI.cpp` is the single table that
-decides which look each kind of surface wears: `Frontend` (menus, lobbies,
-settings) and `Results` (the after-game statistics) use paper; `Match` (dialogs
-over a match) and `Editor` (dialogs over the map editor) use the in-match look.
-Moving a kind of surface to the other look is a one-line change there.
-Controls take colors and sizes from the theme only; a screen
-that needs a color for data (a team swatch) passes it to `swatch()` or
-`TextOptions::color`. Every colour outside gameplay's own HUD palette comes
-from one of the two themes: the old `FrontendTheme` style that paints the
-colony backdrop and paper panel reads the frontend palette rather than
-keeping its own, and screens reach the palette through `theme().palette`.
-The only literals left are data painters (map preview frames, the end-game
-chart) that draw values rather than controls.
+`Theme` carries a palette of semantic colour tokens (ink, muted, paper, panel,
+field, rail, line, accent, accentInk, selected, hover, focus, scrim, disabled,
+danger, success, warning, shadow, pressed, backdrop, neutral, placeholder), the
+HUD tokens drawn outside the controls (`hud`: ink, paper, field, selected,
+border, readout, the dial colours, destroy, erasePreview), the menu `backdrop`,
+font roles (Title, Heading, Body, Support, Caption mapped to toolkit font names)
+and metrics in points. Controls take colours and sizes from the theme only; a
+screen that needs a colour for data (a team swatch) passes it to `swatch()` or
+`TextOptions::color`. Screens reach the palette through `theme().palette`; the
+legacy `FrontendTheme` style that paints the menu backdrop and panel reads the
+menu theme rather than keeping its own colours, and `InGameTouchTheme::ink()`
+and its siblings return the in-game theme's HUD tokens. The only literals left
+are data painters (map preview frames, the end-game chart on its fixed dark plot,
+team, zone and resource colours) that draw values rather than controls, and the
+desktop sprite sidebar's own artwork.
+
+There are two theme slots. `frontendTheme()` is the player's **menu theme** and
+`inGameTheme()` their **in-game theme**; `themeFor(Surface)` in
+`src/ui/FrontendUI.cpp` is the single table that decides which slot each kind of
+surface wears: `Frontend` (menus, lobbies, settings) and `Results` (the
+after-game statistics) use the menu theme; `Match` (dialogs over a match, the
+HUD) and `Editor` (dialogs over the map editor) use the in-game theme.
+`Glob2UI::applyThemes(menuId, gameId)` (`src/ui/ThemeCatalog.h`) assigns both
+slots in place, so screens and dialogs that hold a `const Theme &` repaint in
+the new colours on their next frame; caches derived from a theme (the
+recoloured wordmark, the legacy style) compare `themeGeneration()`. Settings
+stores the choices as `menuTheme` and `gameTheme` (defaults `light` and `dark`)
+and Display → Interface appearance offers both.
+
+#### Theme files
+
+Themes are JSON files. Shipped themes live in `data/themes/<id>.json` and are
+listed, in display order, in `data/themes/index.json`; assets they use go in
+`data/themes/<id>/`. Players can add their own as `<user data>/themes/<id>.json`;
+a shipped theme wins any id clash. A broken or missing file never removes the
+compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
+`builtinDark()`), and a test keeps the shipped files identical to them.
+
+```json
+{
+	"schema": 1,
+	"id": "ocean",
+	"name": "Ocean",
+	"extends": "dark",
+	"palette": { "accent": "#ff8a65", "panel": "#0f2233f4" },
+	"hud": { "border": "#3fa7a0" },
+	"backdrop": { "kind": "colony", "veil": "#07131d70", "wordmark": "" },
+	"buttons": { "kind": "palette" },
+	"metrics": { "radius": 6, "focusRing": 2 }
+}
+```
+
+- `id` is lowercase letters, digits and dashes; it is the preference value.
+- `extends` names a theme to inherit every unset value from; without it a
+  theme starts from `light`. Colours are `#rrggbb` or `#rrggbbaa`.
+- `backdrop.kind` is `colony` (the live colony), `image` (`backdrop.image`,
+  cropped to cover), `terrain` (the original tiled grass) or `solid`
+  (`palette.backdrop` only). `veil` washes over it. `wordmark` replaces the main
+  menu wordmark with an image shown as drawn; without it the shipped wordmark is
+  recoloured with `ink` and `accent`.
+- `buttons.kind` `sprite` paints bordered buttons with a three-slice sprite set
+  (`<sprite>0..5.png`, left, middle and right with their highlights, as
+  `data/gfx/guitheme`); their labels use `ink`. Flat buttons keep the palette.
+- Asset paths must stay under `data/`. Unknown tokens and invalid values are
+  reported on standard error and leave the inherited value.
+
+Every shipped theme must keep `ink` on `paper` and on fields, and `hud.ink` on
+HUD panels, at WCAG AA (4.5:1), and `accentInk` on `accent` too;
+`test/ThemeCatalogTest.cpp` checks each one. Check a new theme in the review
+gallery: `GLOB2_MENU_THEME=<id> GLOB2_GAME_THEME=<id>` select the themes for
+`mobile-gallery` captures.
 
 ### Icons
 

@@ -2928,6 +2928,26 @@ OpenGL غير متوفر في هذا الإصدار.
 خصوم الذكاء الاصطناعي
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 يستخدم التخطيط الواسع لوحة جانبية عند توفر مساحة. يستخدم التخطيط المضغوط شريط أدوات ولوحات قابلة للفتح.
+[settings Menu theme]
+سمة القوائم
+[settings Colours and backdrop of menus, lobbies and results.]
+ألوان القوائم والردهات والنتائج وخلفيتها.
+[settings In-game theme]
+سمة اللعب
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+ألوان مربعات الحوار وواجهة اللمس أثناء اللعب وفي المحرر.
+[theme light]
+فاتح
+[theme dark]
+داكن
+[theme classic]
+كلاسيكي
+[theme ocean]
+محيط
+[theme dune]
+كثبان
+[theme high-contrast]
+تباين عالٍ
 [settings One-finger zoom]
 التكبير بإصبع واحدة
 [settings Double-tap the map, hold, then drag to zoom.]

@@ -2928,6 +2928,26 @@ Tallentaa pelin automaattisesti noin minuutin välein.
 Tekoälyvastustajat
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Väljä asettelu käyttää sivupaneelia, kun tilaa on riittävästi. Tiivis asettelu käyttää työkalupalkkia ja avattavia paneeleja.
+[settings Menu theme]
+Valikkojen teema
+[settings Colours and backdrop of menus, lobbies and results.]
+Valikkojen, aulojen ja tulosten värit ja tausta.
+[settings In-game theme]
+Pelin teema
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Valintaikkunoiden ja kosketuskäyttöliittymän värit pelin aikana ja editorissa.
+[theme light]
+Vaalea
+[theme dark]
+Tumma
+[theme classic]
+Klassinen
+[theme ocean]
+Valtameri
+[theme dune]
+Dyyni
+[theme high-contrast]
+Suuri kontrasti
 [settings One-finger zoom]
 Yhden sormen zoomaus
 [settings Double-tap the map, hold, then drag to zoom.]

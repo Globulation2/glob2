@@ -2928,6 +2928,26 @@ Guardar o jogo automaticamente a cada minuto, aproximadamente.
 Adversários de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 A disposição espaçosa usa um painel lateral quando há espaço. A compacta usa uma barra de ferramentas e painéis retráteis.
+[settings Menu theme]
+Tema dos menus
+[settings Colours and backdrop of menus, lobbies and results.]
+Cores e fundo dos menus, salas e resultados.
+[settings In-game theme]
+Tema do jogo
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Cores das caixas de diálogo e da interface tátil durante o jogo e no editor.
+[theme light]
+Claro
+[theme dark]
+Escuro
+[theme classic]
+Clássico
+[theme ocean]
+Oceano
+[theme dune]
+Duna
+[theme high-contrast]
+Alto contraste
 [settings One-finger zoom]
 Zoom com um dedo
 [settings Double-tap the map, hold, then drag to zoom.]

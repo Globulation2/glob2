@@ -2928,6 +2928,26 @@ Gem spillet automatisk cirka hvert minut.
 AI-modstandere
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rummelig bruger et sidepanel, når der er plads. Kompakt bruger en værktøjslinje og paneler, der kan foldes ud.
+[settings Menu theme]
+Menutema
+[settings Colours and backdrop of menus, lobbies and results.]
+Farver og baggrund i menuer, lobbyer og resultater.
+[settings In-game theme]
+Spiltema
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Farver på dialoger og berøringsfladen under spillet og i editoren.
+[theme light]
+Lyst
+[theme dark]
+Mørkt
+[theme classic]
+Klassisk
+[theme ocean]
+Ocean
+[theme dune]
+Klit
+[theme high-contrast]
+Høj kontrast
 [settings One-finger zoom]
 Zoom med én finger
 [settings Double-tap the map, hold, then drag to zoom.]

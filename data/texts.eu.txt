@@ -2928,6 +2928,26 @@ Gorde jokoa automatikoki minutuero, gutxi gorabehera.
 Ordenagailuko aurkariak
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Diseinu zabalak alboko panela erabiltzen du lekua dagoenean. Trinkoak tresna-barra eta panel zabalgarriak erabiltzen ditu.
+[settings Menu theme]
+Menuen gaia
+[settings Colours and backdrop of menus, lobbies and results.]
+Menuen, gelen eta emaitzen koloreak eta atzealdea.
+[settings In-game theme]
+Jokoaren gaia
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Elkarrizketa-koadroen eta ukipen-interfazearen koloreak jokoan eta editorean.
+[theme light]
+Argia
+[theme dark]
+Iluna
+[theme classic]
+Klasikoa
+[theme ocean]
+Ozeanoa
+[theme dune]
+Duna
+[theme high-contrast]
+Kontraste handia
 [settings One-finger zoom]
 Hatz bakarreko zooma
 [settings Double-tap the map, hold, then drag to zoom.]

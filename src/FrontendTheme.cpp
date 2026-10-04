@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "FrontendTheme.h"
 #include "ui/FrontendUI.h"
+#include "ui/ThemeCatalog.h"
 #include "MenuColony.h"
 #include "GlobalContainer.h"
 #include <Toolkit.h>
@@ -32,19 +33,34 @@ FrontendTheme::FrontendTheme() : original(Style::style)
 		colony->load();
 	}
 #endif
+	syncPalette();
+	for (int i = 0; i < 3; ++i)
+		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
+}
+void FrontendTheme::syncPalette()
+{
 	const auto &palette = Glob2UI::frontendTheme().palette;
 	textColor = palette.ink;
 	highlightColor = palette.hover;
 	frameColor = palette.line;
 	backColor = palette.panel;
-	for (int i = 0; i < 3; ++i)
-		originalFonts[i] = Toolkit::getFont(fontNames[i])->getStyle();
-	if (!colony->ready())
+	generation = Glob2UI::themeGeneration();
+}
+DrawableSurface *FrontendTheme::backdropImage()
+{
+	// The colony's still image, or the theme's own picture.
+	const auto &backdrop = Glob2UI::frontendTheme().backdrop;
+	const std::string path = backdrop.kind == GAGGUI::ui::Backdrop::Kind::Image ? backdrop.image
+																				 : "data/gfx/menu-colony.png";
+	if (path != fallbackPath)
 	{
+		fallbackPath = path;
+		fittedFallback.reset();
 		fallback = std::make_unique<DrawableSurface>(1, 1);
-		if (!fallback->loadImage("data/gfx/menu-colony.png"))
+		if (!fallback->loadImage(path))
 			fallback.reset();
 	}
+	return fallback.get();
 }
 FrontendTheme::~FrontendTheme()
 {
@@ -65,6 +81,10 @@ FrontendScope::~FrontendScope()
 	if (FrontendTheme::current)
 		FrontendTheme::current->colony->pause();
 }
+void FrontendScope::refresh()
+{
+	apply();
+}
 void FrontendScope::apply()
 {
 	// With no live scope, restore the presentation the theme was created over, so
@@ -74,6 +94,8 @@ void FrontendScope::apply()
 	if (!FrontendTheme::current)
 		return;
 	auto &theme = *FrontendTheme::current;
+	if (theme.generation != Glob2UI::themeGeneration())
+		theme.syncPalette();
 	const bool themed = anyScope && liveScopes.back()->enabled;
 	Style::style = themed ? &theme : theme.original;
 	for (int i = 0; i < 3; ++i)
@@ -98,8 +120,19 @@ void FrontendTheme::rounded(DrawableSurface *s, int x, int y, int w, int h, int 
 }
 void FrontendTheme::onFrame()
 {
+	if (generation != Glob2UI::themeGeneration())
+	{
+		// A new menu theme: legacy colours and the font ink follow it.
+		syncPalette();
+		FrontendScope::refresh();
+	}
 	if (!painted)
 		return; // Present the still before doing any loading work.
+	if (Glob2UI::frontendTheme().backdrop.kind != GAGGUI::ui::Backdrop::Kind::Colony)
+	{
+		colony->pause();
+		return;
+	}
 	// Hosts without startup sprites keep the still image until graphics arrive.
 	if (!attempted && globalContainer->ensureGameGraphics())
 	{
@@ -111,16 +144,37 @@ void FrontendTheme::onFrame()
 	const bool visible = window && !(SDL_GetWindowFlags(window) & SDL_WINDOW_MINIMIZED);
 	colony->update(SDL_GetTicks(), visible);
 }
+void FrontendTheme::terrain(DrawableSurface *s)
+{
+	// The original menus' grass: the same pseudo-random tiles every frame.
+	auto *sprite = globalContainer->terrain;
+	if (!sprite)
+		return;
+	unsigned seed = 1;
+	for (int y = 0; y < s->getH(); y += 32)
+		for (int x = 0; x < s->getW(); x += 32)
+		{
+			seed = seed * 69069;
+			s->drawSprite(x, y, sprite, (seed >> 16) & 0xF);
+		}
+	// The OpenGL renderer batches the tiles until the batch is finished.
+	if (auto *context = dynamic_cast<GraphicContext *>(s))
+		context->finishDrawingSprite(sprite, 255);
+}
 void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *content)
 {
 	const int w = s->getW(), h = s->getH();
-	const auto &palette = Glob2UI::frontendTheme().palette;
+	const auto &theme = Glob2UI::frontendTheme();
+	const auto &palette = theme.palette;
+	using Kind = GAGGUI::ui::Backdrop::Kind;
 	s->drawFilledRect(0, 0, w, h, palette.backdrop);
-	if (colony->ready())
+	if (theme.backdrop.kind == Kind::Terrain)
+		terrain(s);
+	else if (theme.backdrop.kind == Kind::Colony && colony->ready())
 		colony->draw(w, h);
-	else if (fallback)
+	else if (theme.backdrop.kind != Kind::Solid && backdropImage())
 	{
-		// Cache the cropped fallback at the logical viewport size.
+		// Cache the cropped image at the logical viewport size.
 		if (!fittedFallback || fittedFallback->getW() != w || fittedFallback->getH() != h)
 		{
 			const double scale =
@@ -137,7 +191,8 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 		if (fittedFallback)
 			s->drawSurface(0, 0, fittedFallback.get());
 	}
-	s->drawFilledRect(0, 0, w, h, palette.paper.applyAlpha(42));
+	if (theme.backdrop.veil.a)
+		s->drawFilledRect(0, 0, w, h, theme.backdrop.veil);
 	if (panel)
 	{
 		const SDL_Rect area = content ? *content : SDL_Rect{(w - 640) / 2, (h - 480) / 2, 640, 480};
@@ -145,7 +200,7 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 		const int pw = std::min(w, area.x + area.w + 12) - x,
 				  ph = std::min(h, area.y + area.h + 12) - y;
 		rounded(s, x + 2, y + 3, pw, ph, 10, palette.shadow);
-		rounded(s, x, y, pw, ph, 10, palette.panel.applyAlpha(248));
+		rounded(s, x, y, pw, ph, 10, palette.panel.applyAlpha(palette.panel.a * 248 / 255));
 	}
 	painted = true;
 }

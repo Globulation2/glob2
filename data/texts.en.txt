@@ -2912,6 +2912,26 @@ Compact
 Spacious
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.
+[settings Menu theme]
+Menu theme
+[settings Colours and backdrop of menus, lobbies and results.]
+Colours and backdrop of menus, lobbies and results.
+[settings In-game theme]
+In-game theme
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Colours of dialogs and the touch interface during a game and in the editor.
+[theme light]
+Light
+[theme dark]
+Dark
+[theme classic]
+Classic
+[theme ocean]
+Ocean
+[theme dune]
+Dune
+[theme high-contrast]
+High contrast
 [settings One-finger zoom]
 One-finger zoom
 [settings Double-tap the map, hold, then drag to zoom.]

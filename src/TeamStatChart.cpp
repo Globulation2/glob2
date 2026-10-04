@@ -16,6 +16,8 @@
 using namespace GAGCore;
 
 const Color TeamStatChart::background(34, 24, 49);
+const Color TeamStatChart::ink(249, 232, 187);
+const Color TeamStatChart::border(199, 165, 87);
 
 namespace
 {
@@ -206,15 +208,15 @@ void paintReadout(const Text &text, int left, int top, int width, int height, in
 	x = std::clamp(x, left + 2, std::max(left + 2, left + width - 2 - boxW));
 	const int y = top + 2;
 	text.surface.drawFilledRect(x, y, boxW, boxH, Color(20, 13, 31, 235));
-	text.surface.drawRect(x, y, boxW, boxH, InGameTouchTheme::border);
+	text.surface.drawRect(x, y, boxW, boxH, TeamStatChart::border);
 	int at = y + pad;
-	text.draw(x + pad, at, heading, InGameTouchTheme::ink);
+	text.draw(x + pad, at, heading, TeamStatChart::ink);
 	at += line;
 	for (std::size_t i = 0; i < shown; ++i, at += line)
 	{
 		text.surface.drawFilledRect(x + pad, at + (text.height - swatch) / 2, swatch, swatch, rows[i].color);
-		text.draw(x + pad + swatch + 5, at, text.fit(rows[i].name, boxW - 2 * pad - swatch - 15 - valueWidth), InGameTouchTheme::ink);
-		text.draw(x + boxW - pad - text.width(values[i]), at, values[i], InGameTouchTheme::ink);
+		text.draw(x + pad + swatch + 5, at, text.fit(rows[i].name, boxW - 2 * pad - swatch - 15 - valueWidth), TeamStatChart::ink);
+		text.draw(x + boxW - pad - text.width(values[i]), at, values[i], TeamStatChart::ink);
 	}
 	for (const auto &note : notes)
 	{
@@ -280,7 +282,7 @@ struct ChartPainter
 				y += text.height + 3;
 			}
 			text.surface.drawFilledRect(x, y + (text.height - legendSwatch) / 2, legendSwatch, legendSwatch, TeamStatChart::bandColor(chart, b));
-			text.draw(x + legendSwatch + 4, y, label, InGameTouchTheme::ink);
+			text.draw(x + legendSwatch + 4, y, label, TeamStatChart::ink);
 			x += need;
 		}
 		return y + text.height + 6;
@@ -320,7 +322,7 @@ struct ChartPainter
 			if (namesTeams())
 			{
 				text.surface.drawFilledRect(cx, cy + (text.height - legendSwatch) / 2, legendSwatch, legendSwatch, team.color);
-				text.draw(cx + legendSwatch + 4, cy, text.fit(team.name, cellW - labelW - 20), InGameTouchTheme::ink);
+				text.draw(cx + legendSwatch + 4, cy, text.fit(team.name, cellW - labelW - 20), TeamStatChart::ink);
 				titleH = text.height + 3;
 			}
 			const Plot plot{cx, cy + titleH, cellW - labelW - 6, cellH - titleH - bottomLabels() - 4, endTick, axis};
@@ -366,7 +368,7 @@ struct ChartPainter
 	{
 		const std::size_t at = nearest(series.ticks, plot.tickAt(hoverX()));
 		const int x = plot.px(series.ticks[at]);
-		text.surface.drawVertLine(x, plot.y, plot.h, InGameTouchTheme::ink);
+		text.surface.drawVertLine(x, plot.y, plot.h, TeamStatChart::ink);
 		std::vector<ReadoutRow> rows;
 		for (std::size_t b = series.values.size(); b-- > 0;)
 			rows.push_back({TeamStatChart::bandColor(chart, b), tr(chart.bandKeys[b]), series.values[b][at]});
@@ -398,7 +400,7 @@ struct ChartPainter
 			for (int dot = plot.y + 2; dot < plot.y + plot.h - 8; dot += 6)
 				text.surface.drawVertLine(x, dot, 2, faint);
 			text.surface.drawFilledRect(x - 2, plot.y + plot.h - 7, 5, 7, teamOf(marker.team).color);
-			text.surface.drawRect(x - 2, plot.y + plot.h - 7, 5, 7, InGameTouchTheme::ink);
+			text.surface.drawRect(x - 2, plot.y + plot.h - 7, 5, 7, TeamStatChart::ink);
 		}
 		paintLineEndNames(plot, paintCurves(plot));
 		if (plot.contains(hoverX(), hoverY()))
@@ -432,7 +434,7 @@ struct ChartPainter
 			const auto &series = chart.teams[order[n]];
 			const TeamStatChart::Team &team = teamOf(series.team);
 			const bool strong = anyHighlight && series.team == options.highlighted;
-			const Color color = chart.global ? InGameTouchTheme::ink : anyHighlight && !strong ? blend(team.color, TeamStatChart::background, 60) : team.color;
+			const Color color = chart.global ? TeamStatChart::ink : anyHighlight && !strong ? blend(team.color, TeamStatChart::background, 60) : team.color;
 			const auto &values = series.values[0];
 			const int phase = 8 + int(order[n]) * markerSpacing / std::max<int>(1, int(order.size()));
 			int lastMarker = plot.x - markerSpacing + phase;
@@ -483,7 +485,7 @@ struct ChartPainter
 		for (std::size_t i = 0; i < ends.size(); ++i)
 		{
 			const std::string name = text.fit(ends[i].team->name, plot.w / 4);
-			text.draw(plot.x + plot.w - text.width(name) - 4, at[i], name, InGameTouchTheme::ink);
+			text.draw(plot.x + plot.w - text.width(name) - 4, at[i], name, TeamStatChart::ink);
 		}
 	}
 
@@ -499,7 +501,7 @@ struct ChartPainter
 		const auto &reference = chart.teams[longest].ticks;
 		const Uint32 snapped = reference[nearest(reference, plot.tickAt(hoverX()))];
 		const int x = plot.px(snapped);
-		text.surface.drawVertLine(x, plot.y, plot.h, InGameTouchTheme::ink);
+		text.surface.drawVertLine(x, plot.y, plot.h, TeamStatChart::ink);
 		std::vector<ReadoutRow> rows;
 		for (const auto &series : chart.teams)
 		{
@@ -509,9 +511,9 @@ struct ChartPainter
 			if (std::isnan(series.values[0][at]))
 				continue;
 			const TeamStatChart::Team &team = teamOf(series.team);
-			const Color color = chart.global ? InGameTouchTheme::ink : team.color;
+			const Color color = chart.global ? TeamStatChart::ink : team.color;
 			text.surface.drawFilledRect(x - 3, plot.py(series.values[0][at]) - 3, 7, 7, color);
-			text.surface.drawRect(x - 3, plot.py(series.values[0][at]) - 3, 7, 7, InGameTouchTheme::ink);
+			text.surface.drawRect(x - 3, plot.py(series.values[0][at]) - 3, 7, 7, TeamStatChart::ink);
 			rows.push_back({color, chart.global ? TeamStatChart::title(metric) : team.name, series.values[0][at]});
 		}
 		std::stable_sort(rows.begin(), rows.end(), [](const ReadoutRow &a, const ReadoutRow &b) { return a.value > b.value; });
@@ -635,14 +637,14 @@ void TeamStatChart::paint(const Game &game, DrawableSurface &surface, int left, 
 	{
 		// Either the match was too short, or this save predates the measurement.
 		const bool recorded = std::any_of(histories.begin(), histories.end(), [](const auto &h) { return h.points.size() > 1; });
-		text.draw(left + pad, top + pad, tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"), InGameTouchTheme::ink);
+		text.draw(left + pad, top + pad, tr(recorded ? "[stat not recorded for this match]" : "[Not enough recorded history yet.]"), TeamStatChart::ink);
 		return;
 	}
 
 	if (!chart.any)
 	{
 		// Recorded, and nothing to draw: no trade, no prestige, nobody stranded.
-		text.draw(left + pad, top + pad, tr("[stat nothing to show]"), InGameTouchTheme::ink);
+		text.draw(left + pad, top + pad, tr("[stat nothing to show]"), TeamStatChart::ink);
 		return;
 	}
 	// Markers belong to teams; a map-wide series has none.

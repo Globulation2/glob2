@@ -2928,6 +2928,26 @@ Samodejno shrani igro približno vsako minuto.
 Nasprotniki UI
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Prostorna postavitev uporablja stransko ploščo, kadar je dovolj prostora. Strnjena uporablja orodno vrstico in izvlečne plošče.
+[settings Menu theme]
+Tema menijev
+[settings Colours and backdrop of menus, lobbies and results.]
+Barve in ozadje menijev, sob in rezultatov.
+[settings In-game theme]
+Tema igre
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Barve pogovornih oken in vmesnika na dotik med igro in v urejevalniku.
+[theme light]
+Svetla
+[theme dark]
+Temna
+[theme classic]
+Klasična
+[theme ocean]
+Ocean
+[theme dune]
+Sipina
+[theme high-contrast]
+Visok kontrast
 [settings One-finger zoom]
 Povečava z enim prstom
 [settings Double-tap the map, hold, then drag to zoom.]

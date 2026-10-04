@@ -30,9 +30,9 @@ void draw(ViewPoint contact, const std::string &text, ViewRect within)
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto r = bounds(contact, text, within);
 	gfx->setClipRect();
-	gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::readout);
+	gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::readout());
 	for (int i = 0; i < std::max(1, int(2 * unit)); ++i)
-		gfx->drawRect(int(r.x) + i, int(r.y) + i, int(r.w) - 2 * i, int(r.h) - 2 * i, InGameTouchTheme::border);
+		gfx->drawRect(int(r.x) + i, int(r.y) + i, int(r.w) - 2 * i, int(r.h) - 2 * i, InGameTouchTheme::border());
 	InGameTouchTheme::TextStyle style(font);
 	const double scale = InGameTouchTheme::readoutTextScale * gfx->textUnitsPerPoint();
 	const double textW = font->getStringWidth(text) * scale, textH = font->getStringHeight(text) * scale;

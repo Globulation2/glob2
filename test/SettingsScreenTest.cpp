@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ThemeCatalog.h"
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
 #include <vector>
@@ -155,6 +156,27 @@ static void run(int width,int height,bool gl,bool expanded)
             screen.paintFrame(SDL_GetTicks());
             screen.host().scrollIntoView("display.textsize");
             screen.capture(output+"/text-size-"+std::to_string(index)+".bmp");
+        }
+        {
+            // Menu and in-game themes are chosen apart, apply at once and persist.
+            const auto& themes=Glob2UI::ThemeCatalog::shared().themes();
+            REQUIRE(themes.size()>=6);
+            REQUIRE(screen.row("display.menutheme").choices.size()==themes.size());
+            REQUIRE(screen.row("display.menutheme").value=="Light");
+            REQUIRE(screen.row("display.gametheme").value=="Dark");
+            int classic=-1;
+            for (int i=0;i<int(themes.size());++i) if (themes[i].id=="classic") classic=i;
+            REQUIRE(classic>=0);
+            REQUIRE(screen.changeSetting("display.menutheme",classic));
+            REQUIRE((s.menuTheme=="classic" && s.gameTheme=="dark"));
+            REQUIRE(Glob2UI::frontendTheme().id=="classic");
+            REQUIRE(Glob2UI::inGameTheme().id=="dark");
+            screen.paintFrame(SDL_GetTicks());
+            screen.host().scrollIntoView("display.menutheme");
+            screen.capture(output+"/menu-theme-classic.bmp");
+            Settings savedTheme; savedTheme.load(); REQUIRE(savedTheme.menuTheme=="classic");
+            REQUIRE(screen.changeSetting("display.menutheme",0));
+            REQUIRE(Glob2UI::frontendTheme().id=="light");
         }
         REQUIRE(screen.row("graphics.renderer").kind==SettingsScreen::Kind::Choice);
         screen.activateSetting("graphics.renderer");screen.key(SDLK_ESCAPE);

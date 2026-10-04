@@ -2928,6 +2928,26 @@ Oyunu yaklaşık her dakika otomatik olarak kaydet.
 Yapay zekâ rakipleri
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Geniş düzen, yer olduğunda yan panel kullanır. Kompakt düzen, araç çubuğu ve açılır paneller kullanır.
+[settings Menu theme]
+Menü teması
+[settings Colours and backdrop of menus, lobbies and results.]
+Menülerin, odaların ve sonuçların renkleri ve arka planı.
+[settings In-game theme]
+Oyun teması
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Oyun sırasında ve düzenleyicide pencerelerin ve dokunmatik arayüzün renkleri.
+[theme light]
+Açık
+[theme dark]
+Koyu
+[theme classic]
+Klasik
+[theme ocean]
+Okyanus
+[theme dune]
+Kumul
+[theme high-contrast]
+Yüksek karşıtlık
 [settings One-finger zoom]
 Tek parmakla yakınlaştırma
 [settings Double-tap the map, hold, then drag to zoom.]

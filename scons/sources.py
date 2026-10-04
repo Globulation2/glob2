@@ -208,6 +208,8 @@ CLIENT_SOURCES = (
     'MapImage.cpp',
     'MapReport.cpp',
     'ui/FrontendUI.cpp',
+    'ui/ThemeCatalog.cpp',
+    'ui/ThemePainters.cpp',
     'ui/OnlineUI.cpp',
     'ui/FileListing.cpp',
     'Glob2Style.cpp',

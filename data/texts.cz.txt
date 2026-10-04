@@ -2928,6 +2928,26 @@ Automaticky ukládat hru přibližně každou minutu.
 Počítačoví soupeři
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Prostorné rozložení používá boční panel, pokud je dost místa. Kompaktní používá panel nástrojů a vysouvací panely.
+[settings Menu theme]
+Motiv nabídek
+[settings Colours and backdrop of menus, lobbies and results.]
+Barvy a pozadí nabídek, místností a výsledků.
+[settings In-game theme]
+Motiv hry
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Barvy dialogů a dotykového rozhraní během hry a v editoru.
+[theme light]
+Světlý
+[theme dark]
+Tmavý
+[theme classic]
+Klasický
+[theme ocean]
+Oceán
+[theme dune]
+Duna
+[theme high-contrast]
+Vysoký kontrast
 [settings One-finger zoom]
 Přiblížení jedním prstem
 [settings Double-tap the map, hold, then drag to zoom.]

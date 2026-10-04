@@ -2928,6 +2928,26 @@ Guarda la partida automáticamente cada minuto, aproximadamente.
 Oponentes de IA
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 La disposición amplia usa un panel lateral cuando hay espacio. La compacta usa una barra de herramientas y paneles desplegables.
+[settings Menu theme]
+Tema de los menús
+[settings Colours and backdrop of menus, lobbies and results.]
+Colores y fondo de los menús, las salas y los resultados.
+[settings In-game theme]
+Tema de la partida
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Colores de los diálogos y de la interfaz táctil durante la partida y en el editor.
+[theme light]
+Claro
+[theme dark]
+Oscuro
+[theme classic]
+Clásico
+[theme ocean]
+Océano
+[theme dune]
+Duna
+[theme high-contrast]
+Alto contraste
 [settings One-finger zoom]
 Zoom con un dedo
 [settings Double-tap the map, hold, then drag to zoom.]

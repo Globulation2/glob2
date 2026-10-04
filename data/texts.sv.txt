@@ -2928,6 +2928,26 @@ Spara spelet automatiskt ungefär varje minut.
 AI-motståndare
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 Rymlig layout använder en sidopanel när det finns plats. Kompakt layout använder ett verktygsfält och utfällbara paneler.
+[settings Menu theme]
+Menytema
+[settings Colours and backdrop of menus, lobbies and results.]
+Färger och bakgrund i menyer, lobbyer och resultat.
+[settings In-game theme]
+Speltema
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+Färger på dialogrutor och pekgränssnittet under spelet och i redigeraren.
+[theme light]
+Ljust
+[theme dark]
+Mörkt
+[theme classic]
+Klassiskt
+[theme ocean]
+Hav
+[theme dune]
+Dyn
+[theme high-contrast]
+Hög kontrast
 [settings One-finger zoom]
 Zooma med ett finger
 [settings Double-tap the map, hold, then drag to zoom.]

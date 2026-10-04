@@ -75,8 +75,8 @@ void GameGUITouch::drawLenses()
 	{
 		const auto &r = rects[i];
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h),
-							items[i].selected ? InGameTouchTheme::selected : InGameTouchTheme::field);
-		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border);
+							items[i].selected ? InGameTouchTheme::selected() : InGameTouchTheme::field());
+		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
 		drawPointLabel(r, items[i].label, .72);
 	}
 }
@@ -107,8 +107,8 @@ void GameGUITouch::drawOverlayLegend()
 		auto *gfx = globalContainer->gfx;
 		const double unit = gfx->logicalUnitsPerPoint();
 		const auto r = overlayLegendRect();
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::readout);
-		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border);
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::readout());
+		gfx->drawRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::border());
 		drawPointLabel({r.x, r.y, r.w, 24 * unit}, Toolkit::getStringTable()->getString(names[i]), .7);
 		// The ramp the overlay uses: more intense means more affected.
 		const auto base = OverlayArea::colorOf(types[i]);
@@ -212,7 +212,7 @@ void GameGUITouch::drawPeek()
 			y1 = std::max(y1, b.y + b.h);
 		}
 		gfx->drawFilledRect(int(x0 - 6 * unit), int(y0 - 6 * unit), int(x1 - x0 + 12 * unit),
-							int(y1 - y0 + 12 * unit), InGameTouchTheme::paper);
+							int(y1 - y0 + 12 * unit), InGameTouchTheme::paper());
 	}
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w), int(rect.h)};
 	gfx->setUITransform(rect.w / size, rect.x - (gfx->getW() - size) * rect.w / size, rect.y, &clip);
@@ -221,13 +221,13 @@ void GameGUITouch::drawPeek()
 					  int(std::ceil(gui.camera.visibleH() / 32)));
 	gfx->setUITransform();
 	gfx->setClipRect();
-	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border);
+	gfx->drawRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h), InGameTouchTheme::border());
 	const std::string labels[] = {Toolkit::getStringTable()->getString("[Done]"), "−", "+"};
 	for (int i = 0; i < 3; ++i)
 	{
 		const auto &b = buttons[i];
-		gfx->drawFilledRect(int(b.x), int(b.y), int(b.w), int(b.h), InGameTouchTheme::field);
-		gfx->drawRect(int(b.x), int(b.y), int(b.w), int(b.h), InGameTouchTheme::border);
+		gfx->drawFilledRect(int(b.x), int(b.y), int(b.w), int(b.h), InGameTouchTheme::field());
+		gfx->drawRect(int(b.x), int(b.y), int(b.w), int(b.h), InGameTouchTheme::border());
 		drawPointLabel(b, labels[i], i ? 1.2 : .9);
 	}
 }
@@ -266,12 +266,12 @@ void GameGUITouch::drawStats()
 	const double unit = gfx->logicalUnitsPerPoint();
 	const auto l = statsLayout();
 	gfx->setClipRect();
-	gfx->drawFilledRect(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), int(l.sheet.h), InGameTouchTheme::readout);
-	gfx->drawHorzLine(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), InGameTouchTheme::border);
+	gfx->drawFilledRect(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), int(l.sheet.h), InGameTouchTheme::readout());
+	gfx->drawHorzLine(int(l.sheet.x), int(l.sheet.y), int(l.sheet.w), InGameTouchTheme::border());
 	const std::pair<ViewRect, std::string> buttons[] = {{l.close, "×"}, {l.previous, "‹"}, {l.next, "›"}};
 	for (const auto &[r, text] : buttons)
 	{
-		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field);
+		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::field());
 		drawPointLabel(r, text, 1.3);
 	}
 	const auto &metrics = Stats::catalog();

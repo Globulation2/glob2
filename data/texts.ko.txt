@@ -2928,6 +2928,26 @@ Globulation 2 커서를 표시합니다.
 AI 상대
 [settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
 여유로운 배치는 공간이 충분하면 측면 패널을 사용합니다. 간결한 배치는 도구 모음과 펼칠 수 있는 패널을 사용합니다.
+[settings Menu theme]
+메뉴 테마
+[settings Colours and backdrop of menus, lobbies and results.]
+메뉴, 대기실, 결과 화면의 색과 배경입니다.
+[settings In-game theme]
+게임 테마
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+게임 중과 편집기에서 대화 상자와 터치 인터페이스의 색입니다.
+[theme light]
+밝게
+[theme dark]
+어둡게
+[theme classic]
+클래식
+[theme ocean]
+바다
+[theme dune]
+모래 언덕
+[theme high-contrast]
+고대비
 [settings One-finger zoom]
 한 손가락 확대/축소
 [settings Double-tap the map, hold, then drag to zoom.]
