@@ -9,7 +9,14 @@ const test=base.extend({page:async({page,browserName,playwright},use,info)=>{
  const context=await playwright.webkit.launchPersistentContext(directory,{headless:true,viewport:info.project.use.viewport,baseURL:info.project.use.baseURL});
  try {await use(await context.newPage());}finally{await context.close();fs.rmSync(directory,{recursive:true,force:true});}
 }});
-const {gameURL,clickControl}=require('./main-menu');
+const {gameURL,clickControl:clickPublishedControl,clickMainMenu}=require('./main-menu');
+async function clickControl(page,key) {
+ if(key.startsWith('recording/') && !await page.evaluate(key=>Boolean(glob2Diagnostics.snapshot().controls[key]),key)) {
+  await clickMainMenu(page,'settings');
+  await clickPublishedControl(page,'nav.8');
+ }
+ return clickPublishedControl(page,key);
+}
 const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen),{timeout:120000}).toContain(name);
 for (const variant of ['serial','threaded']) {
  test(`${variant} recording segments full framebuffer and exports OPFS files`,async({page},info)=>{

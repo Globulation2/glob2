@@ -142,9 +142,6 @@ Application::Application()
 	: frontend(std::make_unique<FrontendTheme>()), screens(*globalContainer->gfx),
 	  shutdownScreens(*globalContainer->gfx), singlePlayer(screens)
 {
-	// Learn early whether FFmpeg can record, so the in-game menu and hotkey are ready.
-	if (GAGCore::Recording::supported())
-		GAGCore::Recording::probeEncoder();
 	if (GAGCore::ApplicationHost::storageRestoreFailed())
 	{
 		auto &strings = *GAGCore::Toolkit::getStringTable();
