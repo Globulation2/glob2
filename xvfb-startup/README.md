@@ -1,6 +1,6 @@
 # Owned Xvfb / Openbox readiness repair
 
-Clean tested revision: `02ee9f769bdbdb6b95078cd14187475150383f5e`, base `526f607f919ea57c9aa1735944848953c8941d69`. Ubuntu 26.04 x86_64, GCC 15.2, SDL 3.4.16, Openbox 3.6.1, Xvfb/X.Org 21.1.21 (installed package details can be checked in build logs).
+Clean tested revision: `02ee9f769bdbdb6b95078cd14187475150383f5e`, base `526f607f919ea57c9aa1735944848953c8941d69`. Ubuntu 26.04 x86_64, GCC 15.2, SDL 3.4.16, Openbox 3.6.1, Xvfb/X.Org 21.1.22 (exact package details are retained in runtime-package-versions.log).
 
 ## Hosted failures
 
