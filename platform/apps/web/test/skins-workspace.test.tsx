@@ -17,11 +17,15 @@ it('keeps the paint canvas and draft fields mounted when browsing library and st
   const fillRect = vi.fn();
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
     fillRect,
+    drawImage: vi.fn(),
   } as unknown as CanvasRenderingContext2D);
   const { container } = render(<Skins />);
   const canvas = container.querySelector('canvas');
   const name = screen.getByRole('textbox', { name: /Skin name/ });
   fireEvent.change(name, { target: { value: 'My painted colony' } });
+  fireEvent.click(screen.getByRole('tab', { name: 'Warrior' }));
+  fireEvent.click(screen.getByRole('radio', { name: 'Material' }));
+  fireEvent.click(screen.getByRole('radio', { name: 'Matte' }));
   fireEvent.click(screen.getByRole('button', { name: 'Store' }));
   expect(screen.queryByRole('textbox', { name: /Skin name/ })).toBeNull();
   expect(screen.getByText('Skin store content')).toBeTruthy();
@@ -30,12 +34,15 @@ it('keeps the paint canvas and draft fields mounted when browsing library and st
   expect(screen.getByRole('textbox', { name: /Skin name/ })).toBe(name);
   expect((name as HTMLInputElement).value).toBe('My painted colony');
   expect(container.querySelector('canvas')).toBe(canvas);
+  expect(screen.getByRole('tab', { name: 'Warrior' }).getAttribute('aria-selected')).toBe('true');
+  expect((screen.getByRole('radio', { name: 'Matte' }) as HTMLInputElement).checked).toBe(true);
   expect(fillRect).toHaveBeenCalledTimes(1);
 });
 it('opens the store after returning from checkout', () => {
   window.history.replaceState(null, '', '/skins?purchase=paid');
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
     fillRect: vi.fn(),
+    drawImage: vi.fn(),
   } as unknown as CanvasRenderingContext2D);
   render(<Skins />);
   expect(screen.getByRole('region', { name: 'Skin store' })).toBeTruthy();
