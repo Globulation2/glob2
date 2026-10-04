@@ -201,6 +201,8 @@ class InviteLinkManifestTests(unittest.TestCase):
         manifest = (ROOT / "mobile/android/app/src/main/AndroidManifest.xml").read_text()
         self.assertIn('android:autoVerify="true"', manifest)
         self.assertIn('android:host="${officialInstanceHost}" android:pathPrefix="/j/"', manifest)
+        self.assertIn('android:host="${officialInstanceHost}" android:pathPrefix="/play/"', manifest)
+        self.assertIn('android:scheme="glob2" android:host="play"', manifest)
         stripped = android.without_invite_links(manifest)
         for gone in ("android.intent.action.VIEW", 'android:scheme="glob2"', "autoVerify", "officialInstanceHost"):
             self.assertNotIn(gone, stripped)

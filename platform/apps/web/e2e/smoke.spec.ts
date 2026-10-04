@@ -281,6 +281,22 @@ test('map catalog, map page and signed-in like', async ({ page }, info) => {
   await page.getByRole('button', { name: '♡ Like' }).click();
   await expect(page.getByTestId('likes')).toHaveText('1');
   await check(page, info, 'map');
+  await page.getByRole('button', { name: 'Play this map' }).click();
+  const choices = page.getByRole('dialog', { name: 'How would you like to play?' });
+  await expect(choices).toBeVisible();
+  await expect(choices.getByRole('link', { name: /Play Locally in Custom Game/ })).toHaveAttribute(
+    'href',
+    /mode=local/,
+  );
+  await expect(choices.getByRole('link', { name: /Play in Multiplayer/ })).toHaveAttribute(
+    'href',
+    /mode=multiplayer/,
+  );
+  await check(page, info, 'map-play-choices');
+  await page.keyboard.press('Escape');
+  await expect(choices).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Play this map' })).toBeFocused();
+
   await page.goto('/maps/mine');
   await expect(page.locator('main')).toContainText('You have not shared any maps yet.');
   await check(page, info, 'maps-mine');

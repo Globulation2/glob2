@@ -10,6 +10,7 @@
 #include "MusicTrack.h"
 #include "SoundMixer.h"
 #include "MainMenuScreen.h"
+#include "CustomGameScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
@@ -341,18 +342,25 @@ bool Application::frame(std::uint32_t tick, const std::vector<SDL_Event> &incomi
 		hubOpenedAt = tick;
 		screens.push(std::make_unique<OnlineHubScreen>(screens));
 	}
-	// "Play this map" on the web app: open Online and say how the map is used, once.
-	static bool roomMapAnnounced = false;
-	if (!roomMapAnnounced && Online::pendingRoomMap() && dynamic_cast<MainMenuScreen *>(screens.top()))
+	// A running frontend accepts a new launch immediately. Matches and rooms keep
+	// their current session until the player leaves it.
+	auto *custom = dynamic_cast<CustomGameScreen *>(screens.top());
+	const bool mapLaunchReady = dynamic_cast<MainMenuScreen *>(screens.top()) ||
+		dynamic_cast<OnlineHubScreen *>(screens.top()) || (custom && !custom->roomMode());
+	if (Online::pendingMapPlay() && mapLaunchReady)
 	{
-		roomMapAnnounced = true;
-		hubOpenedAt = tick;
-		screens.push(std::make_unique<OnlineHubScreen>(screens));
-		const auto &map = *Online::pendingRoomMap();
-		screens.push(std::make_unique<MessageScreen>(
-			GAGCore::FormattableString(Glob2UI::tr("[room map ready title %0]")).arg(map.title.empty() ? Glob2UI::tr("[room map ready unnamed]") : map.title),
-			Glob2UI::tr("[room map ready body]"), std::vector<std::string>{Glob2UI::tr("[ok]")}));
+		if (Online::pendingMapPlay()->mode == Online::MapPlayRequest::Mode::Local)
+		{
+			auto request = Online::takePendingMapPlay();
+			if (custom)
+				custom->loadCatalogMap(*request);
+			else
+				singlePlayer.custom(request);
+		}
+		else if (!dynamic_cast<OnlineHubScreen *>(screens.top()))
+			screens.push(std::make_unique<OnlineHubScreen>(screens));
 	}
+
 #endif
 	if (!screens.running())
 	{

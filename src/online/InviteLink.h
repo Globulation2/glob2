@@ -48,11 +48,13 @@ std::optional<InviteLink> pendingJoin();
 std::optional<InviteLink> takePendingJoin();
 void clearPendingJoin();
 
-// Accepts a launch argument or URL event text if it is an invite link,
-// making it the pending join. Returns whether it was one.
+// Accepts an invite or catalog-play URL from launch arguments or URL events,
+// keeping its destination until the frontend can open it.
 bool acceptInviteText(const std::string &text);
 // Launch arguments: invite links as bare arguments, or --join <link or code>
 // with an optional --instance <origin> (default: the official instance).
 // Returns how many arguments starting at index were consumed (0: not ours).
 int acceptLaunchArguments(int argc, char **argv, int index);
+// Catalog play links: glob2://play?... and https://<instance>/play/?...
+bool acceptMapPlayText(const std::string &text);
 } // namespace Online

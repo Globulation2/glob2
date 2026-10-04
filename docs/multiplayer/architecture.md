@@ -833,6 +833,9 @@ or saved simulation data. The saved device preference **Show colony skins** is
 available in Settings > Display and the in-game Options dialog. Turning it off
 immediately restores classic units, swarms and building colors locally; verified
 appearance refreshes continue, so turning it back on uses current authorization.
+Software rendering uses classic unit and swarm sprites tinted with the skin's
+chosen building color; zoomed-out unit markers use that color too. Without an
+authorized skin, or with colony skins hidden, normal team colors apply.
 Skin meshes are installed under `data/skins/colony-v1`; they share the web
 designer's UV layout, each model sampling its own `colony-v2` quadrant. The browser ships them in an on-demand `skins` package
 requested when visible paint is available. Classic rendering continues during

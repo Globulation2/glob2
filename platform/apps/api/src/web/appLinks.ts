@@ -1,4 +1,4 @@
-// Verified app links for invite URLs (/j/<code>), from instance config
+// Verified app links for invites and catalog map launches, from instance config
 // `appLinks`: Android App Links (/.well-known/assetlinks.json) and iOS
 // universal links (/.well-known/apple-app-site-association). Unconfigured
 // instances answer 404, so a phone never associates a self-hosted domain with
@@ -8,7 +8,7 @@ import { apiError } from '../errors.ts';
 
 export const DEFAULT_ANDROID_PACKAGE = 'org.globulation2.glob2';
 /** Paths the apps handle; everything else on the domain stays in the browser. */
-export const APP_LINK_PATHS = ['/j/*'] as const;
+export const APP_LINK_PATHS = ['/j/*', '/play/*'] as const;
 
 export async function appLinkRoutes(app: FastifyInstance): Promise<void> {
   const links = app.services.config.instance.appLinks;
@@ -40,7 +40,10 @@ export async function appLinkRoutes(app: FastifyInstance): Promise<void> {
         details: [
           {
             appIDs: ios.appIds,
-            components: APP_LINK_PATHS.map((path) => ({ '/': path, comment: 'Invite links' })),
+            components: APP_LINK_PATHS.map((path) => ({
+              '/': path,
+              comment: 'Invites and map launches',
+            })),
           },
           ...ios.appIds.map((appID) => ({ appID, paths: [...APP_LINK_PATHS] })),
         ],

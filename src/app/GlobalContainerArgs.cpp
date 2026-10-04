@@ -393,13 +393,12 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 		}
 		else if (const int consumed = Online::acceptLaunchArguments(argc, argv, i))
 		{
-			// Invite links (glob2://join?..., https://<instance>/j/<code>) and
-			// --join/--instance become the pending join for the online hub.
+			// Invite and catalog-play URLs, and --join/--instance launch arguments.
 			i += consumed - 1;
 		}
 		else if (const int consumed = Online::acceptRoomMapArguments(argc, argv, i))
 		{
-			// "Play this map" on the web app: the next room the player hosts uses it.
+			// Catalog play links open Custom Game or create an online room.
 			i += consumed - 1;
 		}
 		else
@@ -438,6 +437,7 @@ void GlobalContainer::parseArgs(int argc, char *argv[])
 			printf("-dl\tprint the directory search list\n");
 			printf("-s <width>x<height>\tset initial window size (for instance: -s 800x600\n");
 			printf("-u <username>\tspecify a user name\n");
+			printf("--local-map / --room-map <mapId> <hash> <title> [--instance <origin>]\tplay a catalog map\n");
 			printf("--join <invite link or code>\tjoin an online room (also: a glob2:// or https://<instance>/j/<code> link)\n");
 			printf("--instance <origin>\tthe instance of an invite code given to --join\n");
 			printf("-nox <game file name> \t runs the game without using the X server\n");

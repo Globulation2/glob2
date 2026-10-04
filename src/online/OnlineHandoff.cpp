@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "OnlineHandoff.h"
+#include "InstanceConfig.h"
+#include "InviteLink.h"
 
 #include <algorithm>
 #include <cctype>
@@ -16,6 +18,7 @@ struct Handoffs
 	std::optional<MatchAssignment> pendingMatch;
 	RoomMapHandler roomMap;
 	std::optional<RoomMapChoice> pendingRoomMap;
+	std::optional<MapPlayRequest> pendingMapPlay;
 	RematchHandler rematch;
 	QueueAgainHandler queueAgain;
 };
@@ -97,9 +100,39 @@ const std::optional<RoomMapChoice> &pendingRoomMap()
 	return handoffs().pendingRoomMap;
 }
 
+bool validCatalogMap(const RoomMapChoice &map)
+{
+	if (map.mapId.size() != 36 || map.hash.size() != 64)
+		return false;
+	for (std::size_t i = 0; i < map.mapId.size(); ++i)
+		if ((i == 8 || i == 13 || i == 18 || i == 23) ? map.mapId[i] != '-' : !std::isxdigit(static_cast<unsigned char>(map.mapId[i])))
+			return false;
+	return std::all_of(map.hash.begin(), map.hash.end(), [](unsigned char c) { return std::isxdigit(c); });
+}
+
+void setPendingMapPlay(const MapPlayRequest &request)
+{
+	clearPendingJoin();
+	handoffs().pendingRoomMap.reset();
+	handoffs().pendingMapPlay = request;
+}
+
+const std::optional<MapPlayRequest> &pendingMapPlay()
+{
+	return handoffs().pendingMapPlay;
+}
+
+std::optional<MapPlayRequest> takePendingMapPlay()
+{
+	auto result = std::move(handoffs().pendingMapPlay);
+	handoffs().pendingMapPlay.reset();
+	return result;
+}
+
 int acceptRoomMapArguments(int argc, char **argv, int index)
 {
-	if (std::string(argv[index]) != "--room-map")
+	const std::string flag = argv[index];
+	if (flag != "--room-map" && flag != "--local-map")
 		return 0;
 	if (index + 3 >= argc)
 		return argc - index;
@@ -107,12 +140,18 @@ int acceptRoomMapArguments(int argc, char **argv, int index)
 	choice.mapId = argv[index + 1];
 	choice.hash = argv[index + 2];
 	choice.title = std::string(argv[index + 3]).substr(0, 128);
-	const bool hex = choice.hash.size() == 64 &&
-					 std::all_of(choice.hash.begin(), choice.hash.end(), [](char c) { return std::isxdigit(static_cast<unsigned char>(c)); });
-	if (hex && !choice.mapId.empty() && choice.mapId.size() <= 64)
-		useMapInRoom(choice);
+	std::string origin = OFFICIAL_INSTANCE_ORIGIN;
+	for (int i = 1; i + 1 < argc; ++i)
+		if (std::string(argv[i]) == "--instance")
+			origin = argv[i + 1];
+	const auto normalized = normalizeOrigin(origin);
+	if (normalized && validCatalogMap(choice))
+	{
+		std::transform(choice.hash.begin(), choice.hash.end(), choice.hash.begin(), [](unsigned char c) { return char(std::tolower(c)); });
+		setPendingMapPlay({choice, currentOrigin(*normalized), flag == "--local-map" ? MapPlayRequest::Mode::Local : MapPlayRequest::Mode::Multiplayer});
+	}
 	else
-		std::fprintf(stderr, "Ignoring invalid --room-map\n");
+		std::fprintf(stderr, "Ignoring invalid %s\n", flag.c_str());
 	return 4;
 }
 

@@ -2,6 +2,7 @@
 #pragma once
 #include <ScreenStack.h>
 #include "GameLoadScreen.h"
+#include "OnlineHandoff.h"
 #include <memory>
 #include <string>
 class Engine;
@@ -12,7 +13,7 @@ class SinglePlayerFlow
 {
   public:
 	explicit SinglePlayerFlow(GAGGUI::ScreenStack &screens) : screens(screens) {}
-	void custom();
+	void custom(const std::optional<Online::MapPlayRequest> &map = std::nullopt);
 	void load();
 	void replay(const std::string &filename);
 

@@ -318,9 +318,9 @@ describe('app links', () => {
     };
     expect(association.applinks.details[0]).toMatchObject({
       appIDs: ['ABCDE12345.org.globulation2.glob2'],
-      components: [{ '/': '/j/*' }],
+      components: [{ '/': '/j/*' }, { '/': '/play/*' }],
     });
-    expect(association.applinks.details[1]).toMatchObject({ paths: ['/j/*'] });
+    expect(association.applinks.details[1]).toMatchObject({ paths: ['/j/*', '/play/*'] });
   });
 
   it('answers 404 on instances without app links', async () => {

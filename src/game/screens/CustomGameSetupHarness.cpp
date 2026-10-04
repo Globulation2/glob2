@@ -12,6 +12,9 @@
 #include "AIImplementation.h"
 #include "AINames.h"
 #include "CustomGameScreen.h"
+#include "OnlineServices.h"
+#include "InstanceConfig.h"
+#include "Sha256.h"
 #include <ScreenStack.h>
 #include "CustomGameSetup.h"
 #include "CustomGamePreferences.h"
@@ -69,6 +72,36 @@ struct CountingAI : AIImplementation {
 // Named in friend declarations, so it stays at global scope.
 struct CustomGameSetupHarness
 {
+    static void catalogLaunch()
+    {
+        Online::ServicesOwner online;
+        auto &services = online.get();
+        std::string bytes;
+        REQUIRE(Online::readMapBytes("maps/FourSquares1.map.gz", bytes));
+        const auto hash = Online::Sha256::hex(bytes);
+        REQUIRE(services.maps.insert(hash, bytes));
+        GAGGUI::ScreenStack stack(*globalContainer->gfx);
+        CustomGameScreen screen(stack);
+        screen.loadCatalogMap({{"5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", hash, "Linked map"}, Online::OFFICIAL_INSTANCE_ORIGIN, Online::MapPlayRequest::Mode::Local});
+        REQUIRE(!screen.setup.random);
+        REQUIRE(!screen.validMap);
+        REQUIRE(!screen.previewPending);
+        screen.onTimer(SDL_GetTicks());
+        REQUIRE(screen.validMap);
+        REQUIRE(screen.sourceFile() == std::filesystem::canonical(
+            std::filesystem::path(Toolkit::getFileManager()->getDir(0)) / *services.maps.path(hash)).string());
+        REQUIRE(screen.setup.premadeMap == screen.sourceFile());
+        REQUIRE(screen.getMapHeader().getNumberOfTeams() == 4);
+        REQUIRE(!screen.generatedSnapshot);
+        const auto brokenHash = Online::Sha256::hex("not a map");
+        REQUIRE(services.maps.insert(brokenHash, "not a map"));
+        screen.loadCatalogMap({{"5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c", brokenHash, "Broken map"}, Online::OFFICIAL_INSTANCE_ORIGIN, Online::MapPlayRequest::Mode::Local});
+        screen.onTimer(SDL_GetTicks());
+        REQUIRE(!screen.validMap);
+        REQUIRE(screen.sourceFile().empty());
+        REQUIRE(!screen.message.empty());
+    }
+
     static void probabilityVisual()
     {
         glob2test::HeadlessGame world({.teams = Team::MAX_COUNT, .header = true});
@@ -2429,6 +2462,12 @@ static void commonChecks()
 
 TEST_SUITE("CustomGameSetup")
 {
+    TEST_CASE("catalog local launch loads the exact cached version and rejects invalid maps [writes-preferences]")
+    {
+        glob2test::HeadlessGlobals globals(setupOptions(false));
+        CustomGameSetupHarness::catalogLaunch();
+    }
+
 	TEST_CASE("custom AI library identities and released preferences round trip")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(false));
