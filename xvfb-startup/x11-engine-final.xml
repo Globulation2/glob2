@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="17" failures="0" errors="0" skipped="0"><testsuite name="AITelemetryUI"><testcase classname="AITelemetryUI" name="telemetry full-game timings and desktop phone captures [display:1280x800] [artifacts]" time="2.50315" status="run" />
+  <testcase classname="AITelemetryUI" name="telemetry layout and painting stay bounded with full schemas" time="0.317901" status="run" />
+  <testcase classname="AITelemetryUI" name="telemetry selection filtering samples and access changes preserve safe state" time="0.126874" status="run" />
+  <testcase classname="AITelemetryUI" name="telemetry waits for touch coasting and scrolls long details independently" time="0.241957" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="a touch on or near a flag drags the flag; not the map [display]" time="0.998152" status="run" />
+  <testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="15.1491" status="run" />
+  <testcase classname="GameGUITouch" name="scaled gameplay dialog input is translated once [display]" time="1.24363" status="run" />
+  <testcase classname="GameGUITouch" name="touch scroll momentum on the map; the HUD palette and the editor [display]" time="1.05574" status="run" />
+  <testcase classname="GameGUITouch" name="unit taps have a zoom independent halo and show unit stats [display][artifacts]" time="1.51707" status="run" />
+  </testsuite><testsuite name="TorusRender"><testcase classname="TorusRender" name="game rendering at triple UI scale in OpenGL [display:1920x1440][writes-preferences]" time="25.6512" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in OpenGL [display][writes-preferences]" time="24.6987" status="run" />
+  <testcase classname="TorusRender" name="game rendering; picking and cache changes in software rendering [writes-preferences]" time="0.685774" status="run" />
+  <testcase classname="TorusRender" name="native tiled capture pixels and allocation fallback [display]" time="4.60874" status="run" />
+  </testsuite><testsuite name="WindowResize"><testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in OpenGL [display:1600x1400]" time="1.14047" status="run" />
+  <testcase classname="WindowResize" name="cache; callbacks; reflow; context lifetime; input; minimum size and recreation in software rendering [display:1600x1400]" time="1.32858" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in OpenGL [display]" time="0.583677" status="run" />
+  <testcase classname="WindowResize" name="native display and live preferences in software [display]" time="0.757009" status="run" />
+  </testsuite></testsuites>
