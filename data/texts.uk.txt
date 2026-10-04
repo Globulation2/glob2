@@ -1146,8 +1146,6 @@ Tab
 Узгоджує зростання колонії та навчені атаки, спершу руйнуючи лікування й їжу.
 [Algae]
 Водорості
-[Alliances]
-Союзи
 [Beach size]
 Розмір пляжу
 [Blue]
@@ -1156,8 +1154,6 @@ Tab
 Коричневий
 [Built-in maps]
 Вбудовані карти
-[Can change in game]
-Може змінюватися в грі
 [Closed]
 Закрито
 [Colonies]
@@ -1186,8 +1182,6 @@ Tab
 Вага пустелі
 [Easy]
 Легкий
-[Explore as you play]
-Досліджуйте під час гри
 [Extra colony assignments are retained for larger maps.]
 Додаткові призначення колоній зберігаються для великих карт.
 [Extra islands]
@@ -1230,14 +1224,10 @@ Tab
 Остання вціліла колонія
 [Layout]
 Розташування
-[Locked teams]
-Заблоковані команди
 [Magenta]
 Маджента
 [Map]
 Карта
-[Map knowledge]
-Знання карти
 [Match finished]
 Матч закінчено
 [Medium]
@@ -1284,10 +1274,6 @@ Tab
 Повторення ландшафту
 [Resources]
 Ресурси
-[Restore standard rules]
-Відновити стандартні правила
-[Revealed terrain does not reveal all enemy activity.]
-Виявлена місцевість не виявляє всієї активності противника.
 [River]
 Річка
 [River width]
@@ -1314,10 +1300,6 @@ Tab
 Команда
 [Terrain]
 Рельєф місцевості
-[Terrain revealed]
-Розкрито місцевість
-[Try a ruleset, then make it your own.]
-Спробуйте набір правил, а потім створіть його самостійно.
 [Victory]
 Перемога
 [Watch game]
@@ -1342,12 +1324,6 @@ Tab
 Ваші карти
 [colonies]
 колонії
-[* Changed from standard.]
-* Змінено зі стандартного.
-[World & diplomacy]
-Світ і дипломатія
-[Starting conditions & pace]
-Стартові умови та темп
 [Inactive]
 Неактивний
 [8 workers / 2x speed]
@@ -1370,8 +1346,6 @@ Tab
 У цій бібліотеці немає карт.
 [Premade maps retain their authored starting units.]
 Готові карти зберігають початкових юнітів, заданих автором.
-[Premade: only speed changes (2x)]
-Готова карта: змінюється лише швидкість (2x)
 [Start with terrain known]
 Почніть з відомої місцевості
 [This colony will not join the match.]
@@ -2138,38 +2112,20 @@ OpenGL недоступний у цій збірці.
 Сторінка (P)
 [Map preview choose another]
 Виберіть мапу
-[Resources never grow or spread across the map.]
-Ресурси ніколи не ростуть і не поширюються по карті.
 [Building sites complete immediately, skipping delivery.]
 Будмайданчики завершуються одразу, без етапу доставки.
-[Units never grow hungry and never starve.]
-Істоти ніколи не голодують і не вмирають від голоду.
-[Slows how often resources grow or spread across the map.]
-Уповільнює те, як часто ресурси ростуть або поширюються по карті.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Наповнює спільний запас ринку/обміну кожної команди на початку гри.
-[Grow normally]
-Звичайний ріст
 [No growth]
 Без росту
-[Normal construction]
-Звичайне будівництво
-[Instant]
-Миттєве
 [Units get hungry]
 Істоти голодують
 [No hunger]
 Без голоду
-[Off (today's growth)]
-Вимкнено (сьогоднішній ріст)
 [Scarce (2x slower)]
 Мізерні (у 2x повільніше)
 [Very scarce (4x slower)]
 Дуже мізерні (у 4x повільніше)
 [Extremely scarce (8x slower)]
 Надзвичайно мізерні (у 8x повільніше)
-[None (today's default)]
-Немає (поточне значення за замовчуванням)
 [Small (+50 each)]
 Малий (+50 кожен)
 [Medium (+150 each)]
@@ -2180,50 +2136,20 @@ OpenGL недоступний у цій збірці.
 Без росту ресурсів
 [Economy]
 Економіка
-[Scarce resources]
-Мізерні ресурси
 [Instant construction]
 Миттєве будівництво
-[Stockpile start]
-Початковий запас
-[Units still visit schools but never gain a level.]
-Істоти й далі відвідують школу, але ніколи не підвищують рівень.
-[Units fight to the death instead of retreating to heal.]
-Істоти б'ються на смерть замість того, щоб відступити для лікування.
-[Units are never permanently lost -- HP just stops at 1.]
-Істоти ніколи не втрачаються назавжди -- їхнє здоров'я просто зупиняється на 1.
-[Disables all combat between every team.]
-Вимикає будь-який бій між усіма командами.
-[Higher tiers deal more damage but have less HP and armor.]
-Вищі рівні завдають більше шкоди, але мають менше здоров'я та броні.
 [Higher tiers give every building much more HP.]
 Вищі рівні дають кожній будівлі набагато більше здоров'я.
 [Starting units spawn already leveled up. Changes the generated map.]
 Стартові істоти з'являються вже прокачаними. Змінює згенеровану карту.
-[Trains normally]
-Тренується як зазвичай
 [No upgrades]
 Без покращень
-[Retreats when damaged]
-Відступає, коли поранена
-[Fearless]
-Безстрашна
-[Can die permanently]
-Може загинути назавжди
 [No permadeath]
 Без остаточної смерті
-[Normal combat]
-Звичайний бій
-[Peaceful mode]
-Мирний режим
-[Off (today's balance)]
-Вимкнено (поточний баланс)
 [Glass cannon x2]
 Скляна гармата x2
 [Glass cannon x3]
 Скляна гармата x3
-[Off (today's HP)]
-Вимкнено (поточне здоров'я)
 [Fortress x5]
 Фортеця x5
 [Fortress x10]
@@ -2238,10 +2164,6 @@ OpenGL недоступний у цій збірці.
 Бій
 [Glass cannon]
 Скляна гармата
-[Fortress buildings]
-Укріплені будівлі
-[Veteran/Fast start]
-Ветеран/Швидкий старт
 [Match ends at the timer; highest prestige at that instant wins.]
 Матч завершується за таймером; перемагає той, у кого на цю мить найбільший престиж.
 [Off (no timer)]
@@ -2254,8 +2176,6 @@ OpenGL недоступний у цій збірці.
 45 хвилин
 [60 minutes]
 60 хвилин
-[Sudden-death timer]
-Таймер раптової смерті
 [Stats page three]
 Статистика 3/3 >
 [Stats blocked units]
@@ -2984,10 +2904,6 @@ Emoji
 Більше
 [No items]
 Немає елементів
-[Opponents]
-Суперники
-[Review]
-Огляд
 [Review & Play]
 Перевірити й грати
 [Edit opponents]
@@ -3430,8 +3346,6 @@ Emoji
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3824,21 +3738,9 @@ Emoji
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4538,20 +4440,6 @@ Emoji
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4764,3 +4652,119 @@ Emoji
 бази
 [bases per colony]
 Баз на колонію; база — це одна команда мапи в намальованому вигляді, з її будівлями та юнітами
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

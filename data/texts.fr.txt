@@ -174,12 +174,6 @@ Impossible de joindre le jeu, le port %0 est utilisé
 Impossible de joindre le jeu, le jeu a commencer
 [Can't join game, game is full]
 Impossible de joindre le jeu, le jeu est complet
-[Can't join game, missmatching game parameters]
-Ne peut pas joindre le jeu, paramètres de jeu incompatibles
-[Can't join game, timeout]
-Ne peut pas joindre le jeu, délai dépassé
-[Can't join game, wrong game version]
-Ne peut pas joindre le jeu, mauvaise version
 [cancel destroy]
 Annuler destruction
 [cancel repair]
@@ -518,8 +512,6 @@ Script de la carte
 Largeur de la carte
 [map size y]
 Hauteur de la carte
-[maps available]
-Carte disponible
 [mark map]
 Marquer la carte
 [market explanation 2]
@@ -560,8 +552,6 @@ Sans croissance
 Non
 [Number Of Buildings]
 Nombre de bâtiments
-[number of players: %0]
-%0 joueurs présents.
 [number of teams]
 nombre d'équipes
 [Number Of Units]
@@ -660,8 +650,6 @@ Piste de course
 Portée
 [ratios]
 Proportions
-[Register a new YOG user with password]
-Enregistrer le nouvel utilisateur YOG avec mot de passe. (non sécurisé)
 [remember unit]
 Mémoriser les affectations
 [remove map]
@@ -1060,8 +1048,6 @@ Regarde :
 Eau
 [Wheat]
 Blé
-[wheat]
-Blé
 [Won : you defeated your opponents]
 Gagné : vous avez vaincu vos adversaires
 [Won : you have the most prestige]
@@ -1160,8 +1146,6 @@ Stratégie principale: Répartit la production entre construction, amélioration
 Coordonne croissance et attaques entraînées, visant d'abord soins et nourriture.
 [Algae]
 Algues
-[Alliances]
-Alliances
 [Beach size]
 Taille de la plage
 [Blue]
@@ -1170,8 +1154,6 @@ Bleu
 Marron
 [Built-in maps]
 Cartes intégrées
-[Can change in game]
-Modifiables en partie
 [Closed]
 Fermé
 [Colonies]
@@ -1200,8 +1182,6 @@ Cyan
 Poids du désert
 [Easy]
 Facile
-[Explore as you play]
-Explorez en jouant
 [Extra colony assignments are retained for larger maps.]
 Les affectations de colonies supplémentaires sont conservées pour les cartes plus grandes.
 [Extra islands]
@@ -1244,14 +1224,10 @@ Paysage
 Dernière colonie survivante
 [Layout]
 Disposition
-[Locked teams]
-Équipes verrouillées
 [Magenta]
 Magenta
 [Map]
 Carte
-[Map knowledge]
-Exploration
 [Match finished]
 Partie terminée
 [Medium]
@@ -1298,10 +1274,6 @@ Rouge
 Répéter le paysage
 [Resources]
 Ressources
-[Restore standard rules]
-Restaurer les règles standards
-[Revealed terrain does not reveal all enemy activity.]
-Le terrain révélé ne révèle pas toutes les activités ennemies.
 [River]
 Rivière
 [River width]
@@ -1328,10 +1300,6 @@ Marais
 Équipe
 [Terrain]
 Terrain
-[Terrain revealed]
-Terrain révélé
-[Try a ruleset, then make it your own.]
-Essayez un ensemble de règles, puis personnalisez-le.
 [Victory]
 Victoire
 [Watch game]
@@ -1356,12 +1324,6 @@ Vous contre tous
 Vos cartes
 [colonies]
 colonies
-[* Changed from standard.]
-* Modifié par rapport aux règles standard.
-[World & diplomacy]
-Monde & diplomatie
-[Starting conditions & pace]
-Conditions de départ et rythme
 [Inactive]
 Inactif
 [8 workers / 2x speed]
@@ -1384,8 +1346,6 @@ Unités de départ définies sur la carte
 Aucune carte dans cette bibliothèque.
 [Premade maps retain their authored starting units.]
 Les cartes prédéfinies conservent les unités de départ choisies par leur auteur.
-[Premade: only speed changes (2x)]
-Carte prédéfinie : seule la vitesse change (2x)
 [Start with terrain known]
 Commencez par un terrain connu
 [This colony will not join the match.]
@@ -2152,38 +2112,20 @@ Statistiques 2/3 >
 Page suiv. (P)
 [Map preview choose another]
 Choisissez une carte
-[Resources never grow or spread across the map.]
-Les ressources ne poussent ni ne se propagent jamais sur la carte.
 [Building sites complete immediately, skipping delivery.]
 Les chantiers se terminent immédiatement, sans étape de livraison.
-[Units never grow hungry and never starve.]
-Les unités n'ont jamais faim et ne meurent jamais de faim.
-[Slows how often resources grow or spread across the map.]
-Ralentit la fréquence à laquelle les ressources poussent ou se propagent sur la carte.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Alimente la réserve commune de marché/échange de chaque équipe au début de la partie.
-[Grow normally]
-Croissance normale
 [No growth]
 Aucune croissance
-[Normal construction]
-Construction normale
-[Instant]
-Instantanée
 [Units get hungry]
 Les unités ont faim
 [No hunger]
 Pas de faim
-[Off (today's growth)]
-Désactivé (croissance actuelle)
 [Scarce (2x slower)]
 Rares (2x plus lent)
 [Very scarce (4x slower)]
 Très rares (4x plus lent)
 [Extremely scarce (8x slower)]
 Extrêmement rares (8x plus lent)
-[None (today's default)]
-Aucun (valeur actuelle)
 [Small (+50 each)]
 Petit (+50 chacune)
 [Medium (+150 each)]
@@ -2194,50 +2136,20 @@ Grand (+300 chacune)
 Aucune croissance des ressources
 [Economy]
 Économie
-[Scarce resources]
-Ressources rares
 [Instant construction]
 Construction instantanée
-[Stockpile start]
-Réserve de départ
-[Units still visit schools but never gain a level.]
-Les unités continuent d'aller à l'école, mais ne montent jamais de niveau.
-[Units fight to the death instead of retreating to heal.]
-Les unités se battent jusqu'à la mort au lieu de se replier pour se soigner.
-[Units are never permanently lost -- HP just stops at 1.]
-Les unités ne sont jamais perdues définitivement -- leurs PV s'arrêtent simplement à 1.
-[Disables all combat between every team.]
-Désactive tout combat entre toutes les équipes.
-[Higher tiers deal more damage but have less HP and armor.]
-Les niveaux supérieurs infligent plus de dégâts mais ont moins de PV et d'armure.
 [Higher tiers give every building much more HP.]
 Les niveaux supérieurs donnent beaucoup plus de PV à chaque bâtiment.
 [Starting units spawn already leveled up. Changes the generated map.]
 Les unités de départ apparaissent déjà montées en niveau. Modifie la carte générée.
-[Trains normally]
-S'entraîne normalement
 [No upgrades]
 Pas de montée en niveau
-[Retreats when damaged]
-Se replie quand elle est blessée
-[Fearless]
-Sans peur
-[Can die permanently]
-Peut mourir définitivement
 [No permadeath]
 Pas de mort définitive
-[Normal combat]
-Combat normal
-[Peaceful mode]
-Mode pacifique
-[Off (today's balance)]
-Désactivé (équilibrage actuel)
 [Glass cannon x2]
 Canon de verre x2
 [Glass cannon x3]
 Canon de verre x3
-[Off (today's HP)]
-Désactivé (PV actuels)
 [Fortress x5]
 Forteresse x5
 [Fortress x10]
@@ -2252,10 +2164,6 @@ Légendaire
 Combat
 [Glass cannon]
 Canon de verre
-[Fortress buildings]
-Bâtiments fortifiés
-[Veteran/Fast start]
-Vétéran/Départ rapide
 [Match ends at the timer; highest prestige at that instant wins.]
 La partie se termine au chronomètre ; celui qui a le plus de prestige à cet instant gagne.
 [Off (no timer)]
@@ -2268,8 +2176,6 @@ Désactivé (pas de chronomètre)
 45 minutes
 [60 minutes]
 60 minutes
-[Sudden-death timer]
-Chronomètre de mort subite
 [Stats page three]
 Statistiques 3/3 >
 [Stats blocked units]
@@ -3024,10 +2930,6 @@ Aucun calque
 Plus
 [No items]
 Aucun élément
-[Opponents]
-Adversaires
-[Review]
-Récapitulatif
 [Review & Play]
 Récapitulatif et lancement
 [Edit opponents]
@@ -3444,8 +3346,6 @@ Rebond des listes
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3838,21 +3738,9 @@ Rebond des listes
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4552,20 +4440,6 @@ Rebond des listes
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4778,3 +4652,119 @@ Répéter la carte verticalement
 bases
 [bases per colony]
 Bases par colonie ; une base est une équipe de la carte telle que dessinée, avec ses bâtiments et ses unités
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+

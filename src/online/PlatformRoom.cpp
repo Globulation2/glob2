@@ -810,7 +810,7 @@ std::string PlatformRoom::setupSummary() const
 	CustomGameSetup setup;
 	applyRulesToSetup(state.value("rules", Json::object()), setup);
 	return text(("[" + formatName(state.value("teams", Json::array())) + "]").c_str()) + " · " + mapName() + " · " +
-		   rulesetName(setup);
+		   setup.rulesetTitle(true);
 }
 
 std::string PlatformRoom::mapStatus() const

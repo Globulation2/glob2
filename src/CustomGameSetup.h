@@ -8,6 +8,13 @@
 #include <array>
 #include <optional>
 #include <string>
+#include <vector>
+
+namespace CustomGameRules
+{
+struct Rule;
+}
+struct Ruleset;
 
 // Draft state is independent of widgets and of the serialized game header.
 struct CustomGameSetup
@@ -19,79 +26,6 @@ struct CustomGameSetup
 		Shared,
 		Closed
 	};
-	struct RuleDefinition
-	{
-		const char *label;
-		const char *category;
-	};
-	static constexpr std::array<RuleDefinition, 19> ruleDefinitions = {
-		{{"Victory", "Victory"},
-		 {"Map knowledge", "World & diplomacy"},
-		 {"Alliances", "World & diplomacy"},
-		 {"Game speed", "Starting conditions & pace"},
-		 {"Starting workers", "Starting conditions & pace"},
-		 {"No resource growth", "Economy"},
-		 {"Scarce resources", "Economy"},
-		 {"Instant construction", "Economy"},
-		 {"Stockpile start", "Economy"},
-		 {"No hunger", "Economy"},
-		 {"No upgrades", "Combat"},
-		 {"Glass cannon", "Combat"},
-		 {"Fearless", "Combat"},
-		 {"No permadeath", "Combat"},
-		 {"Peaceful mode", "Combat"},
-		 {"Fortress buildings", "Combat"},
-		 {"Veteran/Fast start", "Starting conditions & pace"},
-		 {"Sudden-death timer", "Victory"},
-		 {"Probability victory", "Victory"}}};
-	bool ruleChanged(int index) const
-	{
-		switch (index)
-		{
-		case 0:
-			return !prestige;
-		case 1:
-			return revealed;
-		case 2:
-			return !locked;
-		case 3:
-			return speed != 0;
-		case 4:
-			return random &&
-				   generator.nbWorkers !=
-					   GenerationRequest::control(generator.method, "workers").defaultValue;
-		case 5:
-			return noResourceGrowth;
-		case 6:
-			return resourceScarcity != 0;
-		case 7:
-			return instantConstruction;
-		case 8:
-			return stockpileStart != 0;
-		case 9:
-			return noHunger;
-		case 10:
-			return unitUpgradesDisabled;
-		case 11:
-			return glassCannonLevel != 0;
-		case 12:
-			return unitsFearless;
-		case 13:
-			return permadeathDisabled;
-		case 14:
-			return peacefulMode;
-		case 15:
-			return buildingHpLevel != 0;
-		case 16:
-			return random && startingUnitLevel != 0;
-		case 17:
-			return suddenDeathMinutes != 0;
-		case 18:
-			return winProbabilityPermille != 0;
-		default:
-			return false;
-		}
-	}
 	struct Colony
 	{
 		Controller controller = Computer;
@@ -123,7 +57,10 @@ struct CustomGameSetup
 	// ended; 950 ends more of them and is wrong rather more often.
 	static constexpr std::array<int, 4> winProbabilityChoices = {0, 950, 970, 990};
 	int winProbabilityPermille = 0;
-	std::string format = "FFA", ruleset = "Standard";
+	std::string format = "FFA";
+	// The ruleset the rules started from (data/rulesets.json). Edits do not change it: what
+	// differs from it is derived (rulesetDiff), so undoing an edit makes the ruleset whole again.
+	std::string rulesetId = "standard";
 	std::string premadeMap;
 	unsigned mapRevision = 0;
 	CustomGameSetup()
@@ -201,42 +138,21 @@ struct CustomGameSetup
 		format = preset == 0 ? "FFA" : preset == 1 ? "2 vs 2" : "You vs all";
 		return true;
 	}
-	void presetRules(int preset)
-	{
-		prestige = preset != 3;
-		revealed = preset == 2;
-		locked = true;
-		speed = preset == 1 ? 3 : 0;
-		const auto &workerControl = GenerationRequest::control(generator.method, "workers");
-		int workers = preset == 1 ? workerControl.maximum : workerControl.defaultValue;
-		if (generator.nbWorkers != workers)
-		{
-			generator.nbWorkers = workers;
-			++mapRevision;
-		}
-		noResourceGrowth = false;
-		resourceScarcity = 0;
-		instantConstruction = false;
-		stockpileStart = 0;
-		noHunger = false;
-		unitUpgradesDisabled = false;
-		glassCannonLevel = 0;
-		unitsFearless = false;
-		permadeathDisabled = false;
-		peacefulMode = false;
-		buildingHpLevel = 0;
-		if (startingUnitLevel != 0)
-		{
-			startingUnitLevel = 0;
-			++mapRevision;
-		}
-		suddenDeathMinutes = 0;
-		winProbabilityPermille = 0;
-		ruleset = preset == 0	? "Standard"
-				  : preset == 1 ? "Quick clash"
-				  : preset == 2 ? "Open book"
-								: "Last colony standing";
-	}
+	// Rules, through the CustomGameRules registry (defined in CustomGameRules.cpp).
+	int ruleValue(const CustomGameRules::Rule &rule) const;
+	// Clamps to the rule's range. Returns true when the generated map must be regenerated
+	// (mapRevision has then been bumped).
+	bool setRule(const CustomGameRules::Rule &rule, int value);
+	// Every rule to the ruleset's values (Standard for an unknown id). Returns setRule's result.
+	bool applyRuleset(const std::string &id);
+	const Ruleset &baseRuleset() const;
+	// `room`: compare only what an online room carries and shows.
+	bool ruleCounts(const CustomGameRules::Rule &rule, bool room = false) const;
+	bool ruleChanged(const CustomGameRules::Rule &rule, bool room = false) const;
+	bool ruleNonStandard(const CustomGameRules::Rule &rule, bool room = false) const;
+	std::vector<const CustomGameRules::Rule *> rulesetDiff(bool room = false) const;
+	// "Blitz", or "Blitz + 2 changes", translated.
+	std::string rulesetTitle(bool room = false) const;
 	std::string validation() const
 	{
 		if (capacity < 1 || capacity > Team::MAX_COUNT)

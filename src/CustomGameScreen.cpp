@@ -14,6 +14,7 @@
 #include "LobbyMapCatalog.h"
 #include "LobbyMapPreview.h"
 #include "Player.h"
+#include "RulesetCatalog.h"
 #include "StartQualityScreen.h"
 #include "Unit.h"
 #include <BinaryStream.h>
@@ -893,28 +894,34 @@ Element CustomGameScreen::build(const Presentation &p)
 	const bool narrow = p.compact() || p.safe.w < p.pt(720);
 	auto speed = globalContainer->settings;
 	speed.gameSpeed = setup.speed;
-	// Phones keep the former Map / Opponents / Review flow with Back and Next.
+	// Phones keep the Map / Players / Rules flow with Back and Next.
 	const bool phoneFlow = p.compact();
-	const std::vector<std::string> titles = localized(phoneFlow ? std::vector<std::string>{"Map", "Opponents", "Review"}
-															   : std::vector<std::string>{"Map", "Players & Teams", "Game Rules"});
+	// Short landscape phones: Back and Start join the tab row, leaving the height to the tab.
+	const bool topActions = p.shortLandscape() && !phoneFlow;
+	const std::vector<std::string> titles = localized(phoneFlow || topActions ? std::vector<std::string>{"Map", "Players", "Rules"}
+																			 : std::vector<std::string>{"Map", "Players & Teams", "Game Rules"});
+	const std::string rulesetTitle = setup.rulesetTitle(forRoom);
 	const std::vector<std::string> details = {
 		setup.random ? tr(GenerationRequest::methodName(setup.generator.method)) : mapHeader.getMapName(),
-		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format), tr(setup.ruleset)};
+		std::to_string(setup.activeColonies()) + " " + tr("colonies") + " / " + tr(setup.format), rulesetTitle};
 	std::vector<Element> tabs;
 	for (int i = 0; i < 3; ++i)
 	{
 		fe::ButtonOptions options;
 		options.selected = currentTab == i;
+		// Tabs use the body font; large text on a narrow screen would break the titles mid-word.
+		if (narrow && p.textGrowth > 1.2)
+			options.role = fe::FontRole::Support;
 		auto tab = fe::button("tab/" + std::to_string(i), titles[std::size_t(i)], [this, i] { selectTab(i); }, options);
 		// Desktop tabs carry their current choice underneath, as before.
-		tabs.push_back(fe::expanded(narrow ? tab : fe::column({tab, fe::caption(details[std::size_t(i)])}, {p.pt(2)})));
+		tabs.push_back(fe::expanded(narrow || topActions ? tab : fe::column({tab, fe::caption(details[std::size_t(i)])}, {p.pt(2)})));
 	}
 	Element body = currentTab == 1 ? playersTab(p, narrow) : currentTab == 2 ? rulesTab(p, narrow) : mapTab(p, narrow);
 	std::string error = setup.validation();
 	if (!setup.random && !validMap)
 		error = tr("Select a valid map.");
 	const std::string summary = tr(setup.format) + "  /  " + std::to_string(setup.activeColonies()) + " " + tr("colonies") + "  /  " +
-								tr(setup.ruleset) + "  /  " + speed.getGameSpeedText();
+								rulesetTitle + "  /  " + speed.getGameSpeedText();
 	const std::string note = error.empty() ? (setup.random && previewBusy() ? tr("Generating preview...") : message) : tr(error);
 	bool ready = error.empty();
 	if (forRoom)
@@ -939,18 +946,29 @@ Element CustomGameScreen::build(const Presentation &p)
 		footerActions.push_back({"start", startLabel, [this] { launch(); }, true, SDLK_RETURN, ready});
 	}
 	auto actionRow = fe::actions(std::move(footerActions), p);
-	std::vector<Element> summaryParts{fe::caption(summary)};
+	// Short landscape phones keep their few lines for the tab: the tabs already say it all.
+	std::vector<Element> summaryParts{p.shortLandscape() ? nullptr : fe::caption(summary)};
 	if (!note.empty())
 		summaryParts.push_back(fe::hint(note));
 	// Experiments come from Settings, not the lobby, so say which ones this match will carry.
 	if (!globalContainer->settings.experiments.empty())
 		summaryParts.push_back(fe::hint(tr("Experiments") + ": " + experimentLabelList(globalContainer->settings.experiments)));
 	// Desktop: summary at the left, compact Back / Start at the right, as before.
-	Element footerColumn = p.touch ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
+	Element footerColumn = p.touch || narrow ? fe::column({fe::column(std::move(summaryParts), {p.pt(4)}), actionRow}, {p.pt(6)})
 								   : fe::row({fe::expanded(fe::column(std::move(summaryParts), {p.pt(4)})), actionRow}, {p.pt(8), fe::CrossAlign::Center});
 	fe::CardOptions cardOptions;
 	cardOptions.padding = p.pt(narrow ? 10 : 16);
-	auto panel = fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6)}), fe::expanded(body), fe::divider(), footerColumn}, {p.pt(8)}), cardOptions);
+	Element panel;
+	if (topActions)
+	{
+		tabs.push_back(actionRow);
+		panel = fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6), fe::CrossAlign::Center}), fe::expanded(body),
+									 note.empty() ? nullptr : fe::hint(note)},
+									{p.pt(6)}),
+						 cardOptions);
+	}
+	else
+		panel = fe::card(fe::column({fe::row(std::move(tabs), {p.pt(6)}), fe::expanded(body), fe::divider(), footerColumn}, {p.pt(8)}), cardOptions);
 	if (p.touch)
 		return fe::center(fe::maxWidth(p.pt(1120), panel));
 	// The desktop lobby fills the window inside a margin, as before.
@@ -1278,222 +1296,343 @@ Element CustomGameScreen::playersTab(const Presentation &p, bool narrow)
 	return fe::scroll("lobby/players", fe::column(std::move(parts), {p.pt(8)}));
 }
 
-Element CustomGameScreen::ruleControl(int index, const Presentation &p, std::string &help)
+// Game Rules tab ----------------------------------------------------------------------
+
+namespace
 {
-	auto apply = [this, index](int value)
+using CustomGameRules::Group;
+using CustomGameRules::Kind;
+using CustomGameRules::Rule;
+
+// A ruleset as a tappable card: its name over its one-line description. As the narrow
+// layouts' chooser it gains a disclosure mark, since it opens the list of rulesets.
+Element rulesetCard(const std::string &key, const Ruleset &ruleset, bool selected, bool chooser,
+					std::function<void()> action, const Presentation &p)
+{
+	const std::string name = fe::tr(ruleset.name), description = fe::tr(ruleset.description);
+	fe::ButtonOptions options;
+	options.selected = selected;
+	options.alignLeft = true;
+	options.minHeight = 1;
+	options.accessibleLabel = chooser ? tr("Ruleset") + ": " + name + ", " + description : name + ", " + description;
+	Element text = fe::column({fe::label(name), fe::caption(description)}, {p.pt(2)});
+	// The selection is marked by more than its fill colour.
+	Element mark = chooser ? fe::label("›") : selected ? fe::icon(fe::uiIcon(fe::UIIcon::Check), {16}) : nullptr;
+	auto content = fe::padding(fe::Insets::symmetric(p.pt(10), p.pt(5)),
+							   fe::row({fe::expanded(text), mark}, {p.pt(8), fe::CrossAlign::Center}));
+	return fe::stack({fe::button(key, "", std::move(action), options), content});
+}
+
+std::vector<std::string> optionTexts(const Rule &rule)
+{
+	std::vector<std::string> texts;
+	for (int i = 0; i < int(rule.optionIds.size()); ++i)
+		texts.push_back(CustomGameRules::optionText(rule, i));
+	return texts;
+}
+
+// A paragraph led by the warning icon, in the warning colour.
+Element warning(const std::string &text, const Presentation &p, const fe::Theme &theme)
+{
+	fe::TextOptions options{fe::FontRole::Support};
+	options.color = theme.palette.warning;
+	return fe::row({fe::icon(fe::uiIcon(fe::UIIcon::Warning)), fe::expanded(fe::paragraph(text, options))},
+				   {p.pt(8), fe::CrossAlign::Center});
+}
+} // namespace
+
+Element RulesetChoiceScreen::build(const Presentation &p)
+{
+	const auto &catalog = RulesetCatalog::shipped();
+	std::vector<Element> cards;
+	for (int i = 0; i < int(catalog.rulesets.size()); ++i)
 	{
-		if (index == 0)
-			setup.prestige = value == 0;
-		if (index == 1)
-			setup.revealed = value;
-		if (index == 2)
-			setup.locked = value == 0;
-		if (index == 3)
-			setup.speed = value;
-		if (index == 5)
-			setup.noResourceGrowth = value;
-		if (index == 6)
-			setup.resourceScarcity = value;
-		if (index == 7)
-			setup.instantConstruction = value;
-		if (index == 8)
-			setup.stockpileStart = value;
-		if (index == 9)
-			setup.noHunger = value;
-		if (index == 10)
-			setup.unitUpgradesDisabled = value;
-		if (index == 11)
-			setup.glassCannonLevel = value;
-		if (index == 12)
-			setup.unitsFearless = value;
-		if (index == 13)
-			setup.permadeathDisabled = value;
-		if (index == 14)
-			setup.peacefulMode = value;
-		if (index == 15)
-			setup.buildingHpLevel = value;
-		if (index == 17)
-			setup.suddenDeathMinutes = value;
-		if (index == 18)
-			setup.winProbabilityPermille = value;
-		setup.ruleset = "Custom";
-	};
-	const std::string id = "rule/" + std::to_string(index);
-	if (index < 3)
-	{
-		auto options = index == 0 ? localized({"Conquest or prestige", "Conquest only"})
-					   : index == 1 ? localized({"Explore as you play", "Terrain revealed"})
-									: localized({"Locked teams", "Can change in game"});
-		help = tr(index == 0 ? "Conquest only removes prestige victory; map scripts still apply."
-				  : index == 1 ? "Revealed terrain does not reveal all enemy activity."
-							   : "Choose whether teams can change during the match.");
-		return fe::segments(id, options, index == 0 ? !setup.prestige : index == 1 ? setup.revealed : !setup.locked, apply);
+		const auto &ruleset = catalog.rulesets[std::size_t(i)];
+		cards.push_back(rulesetCard("ruleset/" + ruleset.id, ruleset, ruleset.id == selected, false,
+									[this, i] { endExecute(i); }, p));
 	}
-	if (index == 3)
+	return fe::page(tr("Choose a ruleset"), fe::scroll("rulesets/list", fe::column(std::move(cards), {p.pt(6)})),
+					fe::actions({{"rulesets/back", tr("Back"), [this] { endExecute(-2); }, false, SDLK_ESCAPE}}, p), p, 720);
+}
+
+void RulesetChoiceScreen::onTimer(Uint32)
+{
+	// Once laid out, open on the current ruleset: in view and focused, so Return keeps it.
+	if (!revealed)
 	{
-		auto settings = globalContainer->settings;
-		std::vector<std::string> options;
-		for (int i = 0; i <= Settings::GAME_SPEED_MAXIMUM; ++i)
+		revealed = true;
+		host().layoutIfNeeded();
+		host().scrollIntoView("ruleset/" + selected);
+		host().focus("ruleset/" + selected, true);
+	}
+}
+
+void CustomGameScreen::selectRuleset(const std::string &id)
+{
+	if (setup.applyRuleset(id) && setup.random)
+		invalidatePreview();
+	invalidate();
+}
+
+void CustomGameScreen::setRulesView(RulesView view)
+{
+	rulesView = view;
+	invalidate();
+}
+
+void CustomGameScreen::chooseRuleset()
+{
+	// Pushed, not blocking-executed, like the AI profile chooser (browser host).
+	screens.push(std::make_unique<RulesetChoiceScreen>(setup.rulesetId),
+				 [this](GAGGUI::Screen &, int result)
+				 {
+					 const auto &rulesets = RulesetCatalog::shipped().rulesets;
+					 if (result >= 0 && result < int(rulesets.size()))
+						 selectRuleset(rulesets[std::size_t(result)].id);
+				 });
+}
+
+void CustomGameScreen::setRuleValue(const Rule &rule, int value)
+{
+	if (setup.setRule(rule, value) && setup.random)
+		invalidatePreview();
+}
+
+Element CustomGameScreen::ruleRow(const Rule &rule, const Presentation &p, bool help, bool resetColumn)
+{
+	const std::string key = std::string("rule/") + rule.id;
+	const std::string label = tr(rule.label);
+	const int value = setup.ruleValue(rule);
+	const bool applies = CustomGameRules::appliesTo(rule, setup);
+	// Combat off makes the combat tuning moot; the Combat row says so once, the rest dim.
+	const bool enabled = !rule.needsCombat || !setup.peacefulMode;
+	const bool combatOff = std::string_view(rule.id) == "combat" && setup.peacefulMode;
+	std::string note = combatOff ? tr("Combat is off, so the rules below have no effect.") : help ? tr(rule.help) : std::string();
+	if (!applies && help)
+		note = tr("Premade maps retain their authored starting units.");
+
+	auto change = [this, &rule](int v) { setRuleValue(rule, v); };
+	Element control, narrowControl;
+	if (!applies)
+		control = fe::caption(tr("Map-defined starting units"));
+	else if (rule.kind == Kind::Toggle)
+		control = fe::toggle(key, label, value != 0, [this, &rule](bool on) { setRuleValue(rule, on); }, enabled);
+	else if (rule.kind == Kind::Stepper)
+	{
+		fe::StepperOptions options;
+		options.enabled = enabled;
+		control = fe::stepper(key, value, CustomGameRules::minimum(rule, setup), CustomGameRules::maximum(rule, setup), change,
+							  options);
+	}
+	else
+	{
+		fe::ChoiceOptions options;
+		options.controlEnabled = enabled;
+		auto choice = fe::choice(key, optionTexts(rule), value, change, options);
+		// Segments read best when every option fits on a line; a narrow slot takes the menu.
+		control = rule.kind == Kind::Segments
+					  ? fe::segments(key, optionTexts(rule), value, change, std::vector<bool>(rule.optionIds.size(), enabled))
+					  : choice;
+		narrowControl = choice;
+	}
+
+	// Changed from the chosen ruleset: say so in words (not only colour), and offer a reset.
+	Element changedNote, reset;
+	if (setup.ruleChanged(rule, forRoom))
+	{
+		const auto &base = setup.baseRuleset();
+		const std::string original = CustomGameRules::optionText(rule, base.value(rule, setup));
+		fe::TextOptions marked{fe::FontRole::Support};
+		marked.color = theme().palette.warning;
+		changedNote = fe::paragraph(FormattableString(tr("Changed from %0: %1")).arg(fe::tr(base.name)).arg(original), marked);
+		fe::ButtonOptions options;
+		options.flat = !p.touch;
+		options.tooltip = FormattableString(tr("Reset to %0")).arg(original);
+		options.accessibleLabel = label + ": " + options.tooltip;
+		auto action = [this, &rule] { setRuleValue(rule, setup.baseRuleset().value(rule, setup)); };
+		// Touch: a 48-point icon; pointer hosts name the action.
+		if (p.touch)
 		{
-			settings.gameSpeed = i;
-			options.push_back(settings.getGameSpeedText());
+			options.icon = fe::uiIcon(fe::UIIcon::Back);
+			options.minHeight = 48;
+			reset = fe::button(key + "/reset", "", action, options);
 		}
-		help = tr("Changes the pace of the whole simulation.");
-		return fe::choice("rule/speed", options, setup.speed, apply);
+		else
+			reset = fe::button(key + "/reset", tr("Reset"), action, options);
 	}
-	if (index == 4)
-	{
-		help = tr(setup.random ? "More workers jump-start colony growth. Changes the generated map." : "Premade maps retain their authored starting units.");
-		if (!setup.random)
-			return fe::caption(tr("Map-defined starting units"));
-		const auto &control = GenerationRequest::control(setup.generator.method, "workers");
-		return fe::stepper("rule/workers", setup.generator.nbWorkers, control.minimum, control.maximum,
-						   [this](int v)
-						   {
-							   setup.generator.nbWorkers = v;
-							   ++setup.mapRevision;
-							   setup.ruleset = "Custom";
-							   invalidatePreview();
-						   });
-	}
-	if (index == 5 || index == 7 || index == 9)
-	{
-		auto options = index == 5 ? localized({"Grow normally", "No growth"})
-					   : index == 7 ? localized({"Normal construction", "Instant"})
-									: localized({"Units get hungry", "No hunger"});
-		const bool current = index == 5 ? setup.noResourceGrowth : index == 7 ? setup.instantConstruction : setup.noHunger;
-		help = tr(index == 5 ? "Resources never grow or spread across the map."
-				  : index == 7 ? "Building sites complete immediately, skipping delivery."
-							   : "Units never grow hungry and never starve.");
-		return fe::segments(id, options, current, apply);
-	}
-	if (index == 6 || index == 8)
-	{
-		auto options = index == 6 ? localized({"Off (today's growth)", "Scarce (2x slower)", "Very scarce (4x slower)", "Extremely scarce (8x slower)"})
-								  : localized({"None (today's default)", "Small (+50 each)", "Medium (+150 each)", "Large (+300 each)"});
-		help = tr(index == 6 ? "Slows how often resources grow or spread across the map."
-							 : "Seeds each team's shared market/exchange resource pool at game start.");
-		return fe::choice(id, options, index == 6 ? setup.resourceScarcity : setup.stockpileStart, apply);
-	}
-	if (index == 10 || index == 12 || index == 13 || index == 14)
-	{
-		auto options = index == 10 ? localized({"Trains normally", "No upgrades"})
-					   : index == 12 ? localized({"Retreats when damaged", "Fearless"})
-					   : index == 13 ? localized({"Can die permanently", "No permadeath"})
-									 : localized({"Normal combat", "Peaceful mode"});
-		const bool current = index == 10 ? setup.unitUpgradesDisabled : index == 12 ? setup.unitsFearless : index == 13 ? setup.permadeathDisabled : setup.peacefulMode;
-		help = tr(index == 10 ? "Units still visit schools but never gain a level."
-				  : index == 12 ? "Units fight to the death instead of retreating to heal."
-				  : index == 13 ? "Units are never permanently lost -- HP just stops at 1."
-								: "Disables all combat between every team.");
-		return fe::segments(id, options, current, apply);
-	}
-	if (index == 11 || index == 15)
-	{
-		auto options = index == 11 ? localized({"Off (today's balance)", "Glass cannon x2", "Glass cannon x3"})
-								   : localized({"Off (today's HP)", "Fortress x5", "Fortress x10"});
-		help = tr(index == 11 ? "Higher tiers deal more damage but have less HP and armor." : "Higher tiers give every building much more HP.");
-		return fe::choice(id, options, index == 11 ? setup.glassCannonLevel : setup.buildingHpLevel, apply);
-	}
-	if (index == 16)
-	{
-		help = tr(setup.random ? "Starting units spawn already leveled up. Changes the generated map." : "Premade maps retain their authored starting units.");
-		if (!setup.random)
-			return fe::caption(tr("Map-defined starting units"));
-		return fe::choice("rule/startingLevel", localized({"Standard", "Veteran", "Elite", "Legendary"}), setup.startingUnitLevel,
-						  [this](int v)
-						  {
-							  setup.startingUnitLevel = v;
-							  ++setup.mapRevision;
-							  setup.ruleset = "Custom";
-							  invalidatePreview();
-						  });
-	}
-	if (index == 18)
-	{
-		const auto options = localized({"Off (play it out)", "95% sure", "97% sure", "99% sure"});
-		const auto choices = CustomGameSetup::winProbabilityChoices;
-		const int current = int(std::find(choices.begin(), choices.end(), setup.winProbabilityPermille) - choices.begin());
-		help = tr("Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.");
-		return fe::choice("rule/winProbability", options, current < int(choices.size()) ? current : 0,
-			[apply, choices](int v) { apply(choices[v]); });
-	}
-	const auto &minutes = CustomGameSetup::suddenDeathMinuteChoices;
-	const int current = int(std::find(minutes.begin(), minutes.end(), setup.suddenDeathMinutes) - minutes.begin());
-	help = tr("Match ends at the timer; highest prestige at that instant wins.");
-	return fe::choice("rule/suddenDeath", localized({"Off (no timer)", "30 minutes", "45 minutes", "60 minutes", "90 minutes"}),
-					  current < int(minutes.size()) ? current : 0, [apply, minutes](int v) { apply(minutes[std::size_t(v)]); });
+	const int resetWidth = p.touch ? p.pt(48) : p.textPt(70);
+	Element noteText = note.empty() ? nullptr : fe::hint(note);
+	const bool toggle = rule.kind == Kind::Toggle && applies;
+
+	return fe::adaptive(
+		[=](const fe::LayoutContext &, fe::Size available) -> Element
+		{
+			// Every row keeps the reset column while any rule is changed, so controls align.
+			Element resetSlot = resetColumn ? fe::width(resetWidth, reset ? reset : fe::spacer()) : nullptr;
+			if (toggle)
+			{
+				// Notes line up with the toggle's text, past its box.
+				auto notes = fe::padding({p.textPt(30), 0, 0, 0}, fe::column({noteText, changedNote}, {p.pt(2)}));
+				return fe::row({fe::expanded(fe::column({control, noteText || changedNote ? notes : nullptr}, {p.pt(2)})), resetSlot},
+							   {p.pt(8), fe::CrossAlign::Center});
+			}
+			Element labelBlock = fe::column({fe::paragraph(label), noteText, changedNote}, {p.pt(2)});
+			// Label and control side by side when both fit; otherwise the control goes under
+			// its label, and segments give way to a menu if they would wrap.
+			const int controlWidth = std::min(p.textPt(270), available.w / 2);
+			if (available.w < p.textPt(460))
+			{
+				Element wide = narrowControl && available.w < p.textPt(320) ? narrowControl : control;
+				return fe::column({labelBlock, fe::row({fe::expanded(wide), resetSlot}, {p.pt(8), fe::CrossAlign::Center})}, {p.pt(4)});
+			}
+			Element fitted = narrowControl && controlWidth < p.textPt(260) ? narrowControl : control;
+			// The margin keeps wrapped help clear of the control beside it.
+			return fe::row({fe::expanded(fe::padding({0, 0, p.pt(8), 0}, labelBlock)), fe::width(controlWidth, fitted), resetSlot},
+						   {p.pt(8), fe::CrossAlign::Center});
+		});
 }
 
 Element CustomGameScreen::rulesTab(const Presentation &p, bool narrow)
 {
-	std::vector<Element> parts;
-	parts.push_back(fe::paragraph(tr("Try a ruleset, then make it your own.")));
-	const auto names = localized({"Standard", "Quick clash", "Open book", "Last colony standing"});
-	const auto effects = localized({"Classic colony building", setup.random ? "8 workers / 2x speed" : "Premade: only speed changes (2x)",
-									"Start with terrain known", "Win through conquest"});
-	std::vector<Element> tiles;
-	for (int i = 0; i < 4; ++i)
+	const auto &catalog = RulesetCatalog::shipped();
+	const auto &base = setup.baseRuleset();
+	const bool changed = !setup.rulesetDiff(forRoom).empty();
+	// Wide layouts list every ruleset beside the rules; narrower ones open the list as a screen.
+	const bool rail = !narrow && !p.shortLandscape() && p.safe.w >= p.pt(900);
+	const bool sidePanel = p.shortLandscape();
+	const bool all = rulesView == RulesView::All;
+	// Narrow All rules: one group at a time, so a phone never scrolls through every rule.
+	const bool groupFilter = all && (narrow || sidePanel);
+
+	// The rules, grouped. Summary shows the Match rules and any rule set away from Standard or
+	// from the chosen ruleset; All rules shows every rule.
+	std::vector<Element> groups;
+	int hidden = 0;
+	for (Group group : CustomGameRules::groups)
+	{
+		if (groupFilter && group != rulesGroup)
+			continue;
+		// A filtered layout's group menu already names the group.
+		std::vector<Element> rows{groupFilter ? nullptr : fe::heading(tr(CustomGameRules::groupLabel(group)))};
+		for (const auto &rule : CustomGameRules::rules())
+		{
+			if (rule.group != group || (forRoom && rule.inRooms == CustomGameRules::InRooms::Hidden))
+				continue;
+			if (!all && group != Group::Match && !setup.ruleNonStandard(rule, forRoom) && !setup.ruleChanged(rule, forRoom))
+			{
+				++hidden;
+				continue;
+			}
+			rows.push_back(ruleRow(rule, p, all && !narrow, changed));
+		}
+		if (rows.size() > 1)
+			groups.push_back(fe::column(std::move(rows), {p.pt(6)}));
+	}
+	// Groups stack with more space between them than between rows.
+	auto stackGroups = [p](std::vector<Element> blocks) { return fe::column(std::move(blocks), {p.pt(18)}); };
+	std::vector<Element> body;
+	if (!setup.prestige && setup.peacefulMode && setup.suddenDeathMinutes == 0 && setup.winProbabilityPermille == 0)
+		body.push_back(warning(tr("This match cannot end. Turn on prestige victory or set a time limit."), p, theme()));
+	else if (setup.suddenDeathMinutes == 30)
+		body.push_back(warning(tr("Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie."), p, theme()));
+	if (!setup.random && std::any_of(base.values.begin(), base.values.end(), [](const auto &v) { return v.first->affectsMap; }))
+		body.push_back(fe::hint(tr("Premade maps retain their authored starting units.")));
+	if (all && !groupFilter)
+		// Match and Economy at the left, Start and Combat at the right, when two columns fit.
+		body.push_back(fe::adaptive(
+			[groups, stackGroups, p](const fe::LayoutContext &, fe::Size available) -> Element
+			{
+				if (available.w < 2 * p.textPt(460) || groups.size() < 2)
+					return stackGroups(groups);
+				std::vector<Element> left, right;
+				for (std::size_t i = 0; i < groups.size(); ++i)
+					(i % 2 ? right : left).push_back(groups[i]);
+				return fe::row({fe::expanded(stackGroups(left)), fe::expanded(stackGroups(right))}, {p.pt(24), fe::CrossAlign::Start});
+			}));
+	else
+		body.push_back(stackGroups(std::move(groups)));
+	if (!all && hidden > 0)
+		body.push_back(fe::row({fe::expanded(fe::hint(FormattableString(tr("%0 more rules are at their Standard values.")).arg(hidden))),
+								fe::button("rules/all", tr("Show all rules"), [this] { setRulesView(RulesView::All); })},
+							   {p.pt(8), fe::CrossAlign::Center}));
+	auto rulesList = [&body, &p] { return fe::scroll("lobby/rules", fe::column(body, {p.pt(8)})); };
+
+	auto resetAll = [&]
 	{
 		fe::ButtonOptions options;
-		options.selected = tr(setup.ruleset) == names[std::size_t(i)];
-		tiles.push_back(fe::button("ruleset/" + std::to_string(i), names[std::size_t(i)] + "\n" + effects[std::size_t(i)],
-								   [this, i]
-								   {
-									   auto rev = setup.mapRevision;
-									   setup.presetRules(i);
-									   if (setup.random && rev != setup.mapRevision)
-										   invalidatePreview();
-								   },
-								   options));
-	}
-	parts.push_back(fe::wrap(std::move(tiles), {-1, p.pt(180)}));
-	// Rules are numbered in the order they were added, so a later rule can belong to an earlier
-	// category: list them grouped by category, in each category's first-appearance order.
-	std::vector<int> order;
-	for (int first = 0; first < int(CustomGameSetup::ruleDefinitions.size()); ++first)
+		options.flat = !p.touch;
+		return fe::button("rules/reset", FormattableString(tr("Reset to %0")).arg(fe::tr(base.name)),
+						  [this] { selectRuleset(setup.rulesetId); }, options);
+	};
+	auto setView = [this](int v) { setRulesView(v == 0 ? RulesView::Summary : RulesView::All); };
+	const auto views = localized({"Summary", "All rules"});
+
+	if (rail)
 	{
-		const std::string heading = CustomGameSetup::ruleDefinitions[std::size_t(first)].category;
-		bool seen = false;
-		for (int earlier = 0; earlier < first; ++earlier)
-			seen = seen || heading == CustomGameSetup::ruleDefinitions[std::size_t(earlier)].category;
-		if (!seen)
-			for (int index = first; index < int(CustomGameSetup::ruleDefinitions.size()); ++index)
-				if (heading == CustomGameSetup::ruleDefinitions[std::size_t(index)].category)
-					order.push_back(index);
+		std::vector<Element> cards{fe::caption(tr("Ruleset"))};
+		for (const auto &ruleset : catalog.rulesets)
+			cards.push_back(rulesetCard("ruleset/" + ruleset.id, ruleset, ruleset.id == base.id, false,
+										[this, id = ruleset.id] { selectRuleset(id); }, p));
+		auto header = fe::row({fe::expanded(fe::heading(setup.rulesetTitle(forRoom))), changed ? resetAll() : nullptr,
+							   fe::width(p.textPt(240), fe::segments("rules/view", views, int(rulesView), setView))},
+							  {p.pt(10), fe::CrossAlign::Center});
+		// Summary rows stay near their labels instead of spanning the whole window.
+		Element list = rulesList();
+		Element rules = all ? list
+							: fe::adaptive([list, p](const fe::LayoutContext &, fe::Size available)
+										   { return fe::row({fe::width(std::min(available.w, p.textPt(760)), list), fe::expandedSpacer()},
+															{0, fe::CrossAlign::Stretch}); });
+		return fe::row({fe::width(p.textPt(250), fe::scroll("rules/rulesets", fe::column(std::move(cards), {p.pt(6)}))),
+						fe::expanded(fe::column({header, fe::expanded(rules)}, {p.pt(8)}))},
+					   {p.pt(16), fe::CrossAlign::Stretch});
 	}
-	std::string category;
-	for (int index : order)
+
+	std::vector<Element> controls{fe::caption(tr("Ruleset")),
+								  rulesetCard("rules/ruleset", base, false, true, [this] { chooseRuleset(); }, p)};
+	if (changed)
+		controls.push_back(fe::row({fe::expanded(fe::caption(setup.rulesetTitle(forRoom))), resetAll()}, {p.pt(8), fe::CrossAlign::Center}));
+	Element groupChoice;
+	if (groupFilter)
 	{
-		const auto definition = CustomGameSetup::ruleDefinitions[std::size_t(index)];
-		if (category != definition.category)
-		{
-			category = definition.category;
-			if (category != definition.label)
-				parts.push_back(fe::padding({0, p.pt(8), 0, 0}, fe::label(tr(category))));
-		}
-		std::string help;
-		auto control = ruleControl(index, p, help);
-		const std::string label = tr(definition.label) + (setup.ruleChanged(index) ? " *" : "");
-		fe::FieldOptions fieldOptions;
-		fieldOptions.help = help;
-		fieldOptions.controlWidth = 360;
-		fe::CardOptions cardOptions;
-		cardOptions.shadow = false;
-		cardOptions.padding = p.pt(10);
-		parts.push_back(fe::card(fe::field(label, control, fieldOptions), cardOptions));
+		std::vector<std::string> names;
+		for (Group group : CustomGameRules::groups)
+			names.push_back(tr(CustomGameRules::groupLabel(group)));
+		groupChoice = fe::choice("rules/group", names, int(rulesGroup),
+								 [this](int g)
+								 {
+									 rulesGroup = CustomGameRules::groups[std::size_t(g)];
+									 invalidate();
+								 });
 	}
-	parts.push_back(fe::row({fe::button("rules/restore", tr("Restore standard rules"),
-										[this]
-										{
-											auto rev = setup.mapRevision;
-											setup.presetRules(0);
-											if (setup.random && rev != setup.mapRevision)
-												invalidatePreview();
-										}),
-							 fe::expanded(fe::caption(tr("* Changed from standard.")))},
-							{p.pt(12), fe::CrossAlign::Center}));
-	return fe::scroll("lobby/rules", fe::column(std::move(parts), {p.pt(8)}));
+	if (sidePanel)
+	{
+		// Short landscape phones: the ruleset and view at the left, the rules beside them. The
+		// view is a menu here; two segments would wrap in the narrow pane.
+		controls.push_back(fe::choice("rules/view", views, int(rulesView), setView));
+		controls.push_back(groupChoice);
+		const int side = std::min(p.textPt(230), p.safe.w * 2 / 5);
+		return fe::row({fe::width(side, fe::scroll("rules/controls", fe::column(std::move(controls), {p.pt(6)}))), fe::expanded(rulesList())},
+					   {p.pt(12), fe::CrossAlign::Stretch});
+	}
+	auto viewSegments = fe::segments("rules/view", views, int(rulesView), setView);
+	// The group menu shares the view's row when both fit, else goes under it.
+	if (groupChoice && p.safe.w < p.textPt(480))
+	{
+		controls.push_back(viewSegments);
+		controls.push_back(groupChoice);
+	}
+	else
+		controls.push_back(fe::row({fe::expanded(viewSegments), groupChoice ? fe::width(p.textPt(140), groupChoice) : nullptr},
+								   {p.pt(8), fe::CrossAlign::Center}));
+	// A short window cannot spare a fixed header: the ruleset scrolls away with the rules.
+	if (p.safe.h < p.pt(640))
+	{
+		for (auto &part : body)
+			controls.push_back(std::move(part));
+		return fe::scroll("lobby/rules", fe::column(std::move(controls), {p.pt(8)}));
+	}
+	controls.push_back(fe::expanded(rulesList()));
+	return fe::column(std::move(controls), {p.pt(6)});
 }
 
 std::vector<std::string> CustomGameScreen::aiChoices() const

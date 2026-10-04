@@ -146,54 +146,6 @@ backspace
 Ενημέρωση αποστολής
 [build %0 level %1]
 Κατασκευή: %0 επιπέδου %1
-[build barracks level 0]
-Κατασκευή Στρατώνων 1
-[build barracks level 1]
-Κατασκευή Στρατώνων 2
-[build barracks level 2]
-Κατασκευή Στρατώνων 3
-[build defencetower level 0]
-Κατασκευή Αμυντικού Πύργου 1
-[build defencetower level 1]
-Κατασκευή Αμυντικού Πύργου 2
-[build defencetower level 2]
-Κατασκευή Αμυντικού Πύργου 3
-[build hospital level 0]
-Κατασκευή Νοσοκομείου 1
-[build hospital level 1]
-Κατασκευή Νοσοκομείου 2
-[build hospital level 2]
-Κατασκευή Νοσοκομείου 3
-[build inn level 0]
-Κατασκευή Πανδοχείου 1
-[build inn level 1]
-Κατασκευή Πανδοχείου 2
-[build inn level 2]
-Κατασκευή Πανδοχείου 3
-[build market level 0]
-Κατασκευή Αγοράς
-[build racetrack level 0]
-Κατασκευή στίβου 1
-[build racetrack level 1]
-Κατασκευή στίβου 2
-[build racetrack level 2]
-Κατασκευή στίβου 3
-[build school level 0]
-Κατασκευή Σχολείου 1
-[build school level 1]
-Κατασκευή Σχολείου 2
-[build school level 2]
-Κατασκευή Σχολείου 3
-[build stonewall level 0]
-Κατασκευή πέτρινου τείχους
-[build swarm level 0]
-Κατασκευή Σμήνους
-[build swimmingpool level 0]
-Κατασκευή Πισίνας 1
-[build swimmingpool level 1]
-Κατασκευή Πισίνας 2
-[build swimmingpool level 2]
-Κατασκευή Πισίνας 3
 [Build]
 Κτίσμα
 [Building Defaults]
@@ -222,12 +174,6 @@ Ctrl + σύρσιμο = Γραμμή
 Αδύνατη η συμμετοχή: το παιχνίδι έχει ξεκινήσει
 [Can't join game, game is full]
 Αδύνατη η συμμετοχή: το παιχνίδι είναι πλήρες
-[Can't join game, missmatching game parameters]
-Δεν μπορείτε να συμμετέχετε στο παιχνίδι, κακός συνδιασμός παραμέτρων
-[Can't join game, timeout]
-Δεν μπορείτε να συμμετέχετε στο παιχνίδι, timeout
-[Can't join game, wrong game version]
-Δεν μπορείτε να συμμετέχετε στο παιχνίδι, λάθος έκδοση
 [cancel destroy]
 Ακύρωση καταστροφής
 [cancel repair]
@@ -316,12 +262,6 @@ Ctrl - Γραμμή
 εχθρικές μονάδες και κτίρια
 [defencetower explanation]
 Επιτίθεται σε κοντινές
-[defencetower level 0]
-Αμυντικός Πύργος 1
-[defencetower level 1]
-Αμυντικός Πύργος 2
-[defencetower level 2]
-Αμυντικός Πύργος 3
 [defencetower]
 Αμυντικός Πύργος
 [Defense Map]
@@ -492,12 +432,6 @@ HP
 
 [inn explanation]
 Ταΐζει τις μονάδες σας
-[inn level 0]
-Πανδοχείο 1
-[inn level 1]
-Πανδοχείο 2
-[inn level 2]
-Πανδοχείο 3
 [inn]
 Πανδοχείο
 [insert]
@@ -576,8 +510,6 @@ gr
 Πλάτος χάρτη
 [map size y]
 Μήκος χάρτη
-[maps available]
-Διαθέσιμοι Χάρτες
 [mark map]
 Σημείωση Χάρτη για Συμμάχους
 [market explanation 2]
@@ -618,8 +550,6 @@ meta-%0
 Όχι
 [Number Of Buildings]
 Αριθμός κτιρίων
-[number of players: %0]
-%0 παίκτες είναι παρώντες.
 [number of teams]
 αριθμός των ομάδων
 [Number Of Units]
@@ -718,8 +648,6 @@ print screen
 Εύρος
 [ratios]
 Αναλογίες
-[Register a new YOG user with password]
-Καταχωρήστε ένα νέο YOG χρήστη με κωδικό. (μη ασφαλές)
 [remember unit]
 Αποθ. πλήθους μονάδων
 [remove map]
@@ -906,8 +834,6 @@ V: κρατήστε πατημένο για να μιλήσετε
 
 [swarm explanation]
 Δημιουργεί νέες μονάδες
-[swarm level 0]
-Σμήνος
 [swarm]
 Σμήνος
 [Swim]
@@ -1220,8 +1146,6 @@ Cortex
 Συντονίζει ανάπτυξη και εκπαιδευμένες επιθέσεις, στοχεύοντας πρώτα περίθαλψη και τροφή.
 [Algae]
 Φύκη
-[Alliances]
-Συμμαχίες
 [Beach size]
 Μέγεθος παραλίας
 [Blue]
@@ -1230,8 +1154,6 @@ Cortex
 Καφέ
 [Built-in maps]
 Ενσωματωμένοι χάρτες
-[Can change in game]
-Μπορεί να αλλάξει στο παιχνίδι
 [Closed]
 Κλειστό
 [Colonies]
@@ -1260,8 +1182,6 @@ Cortex
 Στάθμιση ερήμου
 [Easy]
 Εύκολο
-[Explore as you play]
-Εξερευνήστε καθώς παίζετε
 [Extra colony assignments are retained for larger maps.]
 Οι επιπλέον αναθέσεις αποικιών διατηρούνται για μεγαλύτερους χάρτες.
 [Extra islands]
@@ -1304,14 +1224,10 @@ Cortex
 Τελευταία επιζώσα αποικία
 [Layout]
 Διάταξη
-[Locked teams]
-Κλειδωμένες ομάδες
 [Magenta]
 Ματζέντα
 [Map]
 Χάρτης
-[Map knowledge]
-Γνώση χάρτη
 [Match finished]
 Ο αγώνας ολοκληρώθηκε
 [Medium]
@@ -1358,10 +1274,6 @@ Cortex
 Επανάληψη τοπίου
 [Resources]
 Πόροι
-[Restore standard rules]
-Επαναφέρετε τους τυπικούς κανόνες
-[Revealed terrain does not reveal all enemy activity.]
-Το αποκαλυπτόμενο έδαφος δεν αποκαλύπτει όλη την εχθρική δραστηριότητα.
 [River]
 Ποτάμι
 [River width]
@@ -1388,10 +1300,6 @@ Cortex
 Ομάδα
 [Terrain]
 Έδαφος
-[Terrain revealed]
-Το έδαφος αποκαλύφθηκε
-[Try a ruleset, then make it your own.]
-Δοκιμάστε ένα σύνολο κανόνων και μετά κάντε το δικό σας.
 [Victory]
 Νίκη
 [Watch game]
@@ -1416,12 +1324,6 @@ Cortex
 Οι χάρτες σας
 [colonies]
 αποικίες
-[* Changed from standard.]
-* Άλλαξε από το τυπικό.
-[World & diplomacy]
-Κόσμος και διπλωματία
-[Starting conditions & pace]
-Συνθήκες και ρυθμός εκκίνησης
 [Inactive]
 Ανενεργό
 [8 workers / 2x speed]
@@ -1444,8 +1346,6 @@ Cortex
 Δεν υπάρχουν χάρτες σε αυτήν τη βιβλιοθήκη.
 [Premade maps retain their authored starting units.]
 Οι έτοιμοι χάρτες διατηρούν τις αρχικές μονάδες που όρισε ο δημιουργός τους.
-[Premade: only speed changes (2x)]
-Έτοιμος χάρτης: αλλάζει μόνο η ταχύτητα (2x)
 [Start with terrain known]
 Ξεκινήστε με γνωστό έδαφος
 [This colony will not join the match.]
@@ -2212,38 +2112,20 @@ Cortex
 Σελίδα (P)
 [Map preview choose another]
 Επιλέξτε χάρτη
-[Resources never grow or spread across the map.]
-Οι πόροι δεν αναπτύσσονται ούτε εξαπλώνονται ποτέ στον χάρτη.
 [Building sites complete immediately, skipping delivery.]
 Τα εργοτάξια ολοκληρώνονται αμέσως, χωρίς στάδιο παράδοσης.
-[Units never grow hungry and never starve.]
-Οι μονάδες δεν πεινούν ποτέ και δεν λιμοκτονούν ποτέ.
-[Slows how often resources grow or spread across the map.]
-Επιβραδύνει πόσο συχνά οι πόροι αναπτύσσονται ή εξαπλώνονται στον χάρτη.
-[Seeds each team's shared market/exchange resource pool at game start.]
-Γεμίζει το κοινό απόθεμα αγοράς/ανταλλαγής κάθε ομάδας στην έναρξη του παιχνιδιού.
-[Grow normally]
-Κανονική ανάπτυξη
 [No growth]
 Καμία ανάπτυξη
-[Normal construction]
-Κανονική κατασκευή
-[Instant]
-Άμεση
 [Units get hungry]
 Οι μονάδες πεινούν
 [No hunger]
 Χωρίς πείνα
-[Off (today's growth)]
-Ανενεργό (σημερινή ανάπτυξη)
 [Scarce (2x slower)]
 Σπάνιοι (2x πιο αργά)
 [Very scarce (4x slower)]
 Πολύ σπάνιοι (4x πιο αργά)
 [Extremely scarce (8x slower)]
 Εξαιρετικά σπάνιοι (8x πιο αργά)
-[None (today's default)]
-Κανένα (σημερινή προεπιλογή)
 [Small (+50 each)]
 Μικρό (+50 έκαστος)
 [Medium (+150 each)]
@@ -2254,50 +2136,20 @@ Cortex
 Καμία ανάπτυξη πόρων
 [Economy]
 Οικονομία
-[Scarce resources]
-Σπάνιοι πόροι
 [Instant construction]
 Άμεση κατασκευή
-[Stockpile start]
-Αρχικό απόθεμα
-[Units still visit schools but never gain a level.]
-Οι μονάδες συνεχίζουν να πηγαίνουν σχολείο, αλλά δεν ανεβαίνουν ποτέ επίπεδο.
-[Units fight to the death instead of retreating to heal.]
-Οι μονάδες πολεμούν μέχρι θανάτου αντί να υποχωρούν για να θεραπευτούν.
-[Units are never permanently lost -- HP just stops at 1.]
-Οι μονάδες δεν χάνονται ποτέ οριστικά -- τα HP απλώς σταματούν στο 1.
-[Disables all combat between every team.]
-Απενεργοποιεί κάθε μάχη μεταξύ όλων των ομάδων.
-[Higher tiers deal more damage but have less HP and armor.]
-Τα υψηλότερα επίπεδα προκαλούν περισσότερη ζημιά αλλά έχουν λιγότερα HP και θωράκιση.
 [Higher tiers give every building much more HP.]
 Τα υψηλότερα επίπεδα δίνουν σε κάθε κτίριο πολύ περισσότερα HP.
 [Starting units spawn already leveled up. Changes the generated map.]
 Οι αρχικές μονάδες εμφανίζονται ήδη ανεβασμένες επίπεδο. Αλλάζει τον παραγόμενο χάρτη.
-[Trains normally]
-Εκπαιδεύεται κανονικά
 [No upgrades]
 Χωρίς αναβαθμίσεις
-[Retreats when damaged]
-Υποχωρεί όταν τραυματιστεί
-[Fearless]
-Ατρόμητη
-[Can die permanently]
-Μπορεί να πεθάνει οριστικά
 [No permadeath]
 Χωρίς οριστικό θάνατο
-[Normal combat]
-Κανονική μάχη
-[Peaceful mode]
-Ειρηνικός τρόπος
-[Off (today's balance)]
-Ανενεργό (σημερινή ισορροπία)
 [Glass cannon x2]
 Γυάλινο κανόνι x2
 [Glass cannon x3]
 Γυάλινο κανόνι x3
-[Off (today's HP)]
-Ανενεργό (σημερινά HP)
 [Fortress x5]
 Φρούριο x5
 [Fortress x10]
@@ -2312,10 +2164,6 @@ Cortex
 Μάχη
 [Glass cannon]
 Γυάλινο κανόνι
-[Fortress buildings]
-Οχυρωμένα κτίρια
-[Veteran/Fast start]
-Βετεράνος/Γρήγορο ξεκίνημα
 [Match ends at the timer; highest prestige at that instant wins.]
 Ο αγώνας τελειώνει με το χρονόμετρο· όποιος έχει το μεγαλύτερο κύρος εκείνη τη στιγμή κερδίζει.
 [Off (no timer)]
@@ -2328,8 +2176,6 @@ Cortex
 45 λεπτά
 [60 minutes]
 60 λεπτά
-[Sudden-death timer]
-Χρονόμετρο ξαφνικού θανάτου
 [Stats page three]
 Στατιστικά 3/3 >
 [Stats blocked units]
@@ -3058,10 +2904,6 @@ Emoji
 Περισσότερα
 [No items]
 Δεν υπάρχουν στοιχεία
-[Opponents]
-Αντίπαλοι
-[Review]
-Επισκόπηση
 [Review & Play]
 Έλεγχος και παιχνίδι
 [Edit opponents]
@@ -3504,8 +3346,6 @@ CPU %0%
 
 [Use in room]
 
-[Custom rules]
-
 [conn ai]
 
 [conn behind %0]
@@ -3898,21 +3738,9 @@ CPU %0%
 
 [room remove from room]
 
-[room rule conquest]
-
-[room rule fixed]
-
-[room rule free]
-
-[room rule hidden]
-
 [room rule off]
 
 [room rule on]
-
-[room rule prestige]
-
-[room rule revealed]
 
 [room rules changed]
 
@@ -4612,20 +4440,6 @@ CPU %0%
 
 [room seats one person %0 %1]
 
-[room rule resources]
-
-[room rule construction]
-
-[room rule food]
-
-[room rule training]
-
-[room rule retreat]
-
-[room rule unit deaths]
-
-[room rule combat]
-
 [room rules otherwise standard]
 
 [room browser link]
@@ -4838,3 +4652,119 @@ CPU %0%
 βάσεις
 [bases per colony]
 Βάσεις ανά αποικία· βάση είναι μία ομάδα του χάρτη όπως σχεδιάστηκε, με τα κτίρια και τις μονάδες της
+[Match]
+
+[Time limit]
+
+[Alliances can change]
+
+[Reveal terrain]
+
+[Starting unit level]
+
+[Starting stockpile]
+
+[Regrowth]
+
+[Building strength]
+
+[Wounded units retreat]
+
+[Units can die]
+
+[Unit training]
+
+[No stockpile]
+
+[No glass cannon]
+
+[How quickly harvested resources grow back and spread.]
+
+[Units must eat to keep working.]
+
+[Summary]
+
+[All rules]
+
+[Show all rules]
+
+[Choose a ruleset]
+
+[Reset to %0]
+
+[ruleset one change %0]
+
+[ruleset changes %0 %1]
+
+[This match cannot end. Turn on prestige victory or set a time limit.]
+
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+
+[Blitz]
+
+[ruleset blitz description]
+
+[Gentle]
+
+[ruleset gentle description]
+
+[Sandbox]
+
+[ruleset sandbox description]
+
+[Bloodbath]
+
+[ruleset bloodbath description]
+
+[Siege]
+
+[ruleset siege description]
+
+[Lean years]
+
+[ruleset lean years description]
+
+[Gold rush]
+
+[ruleset gold rush description]
+
+[Elite ranks]
+
+[ruleset elite ranks description]
+
+[Shifting alliances]
+
+[ruleset shifting alliances description]
+
+[Probability victory]
+
+[Off (play it out)]
+
+[95% sure]
+
+[97% sure]
+
+[99% sure]
+
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+
+[Changed from %0: %1]
+
+[Combat is off, so the rules below have no effect.]
+
+[%0 more rules are at their Standard values.]
+
+[Players see the map's terrain from the start; enemy units stay hidden.]
+
+[Each team starts with extra resources in its shared pool.]
+
+[Units hit harder but have less HP and armor.]
+
+[Teams can attack each other. Turn off for a peaceful match.]
+
+[Hurt units go back to heal instead of fighting to the death.]
+
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+
+[Units gain levels at schools.]
+
