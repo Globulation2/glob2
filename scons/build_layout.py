@@ -6,7 +6,7 @@ import platform
 import tempfile
 
 
-PACKAGE_VERSION = "0.9.5.4"
+PACKAGE_VERSION = "0.10.0.0"
 
 def enabled(value):
     return str(value).lower() in ('1', 'true', 'yes', 'on')
