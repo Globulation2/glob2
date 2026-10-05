@@ -1,0 +1,108 @@
+{
+  "base": "e1634ecda9a2a2d31f47dfe766ddbcb40e364791",
+  "fetchedMaster": "ca788aec6f10335f037c23624af013b8114bd6ce",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "cpu": "AMD Ryzen Threadripper 2950X 16-Core Processor",
+  "sourceHashes": {
+    ".github/scripts/ci_policy.py": "8e9a5ffd2dc282b0b42f40032d77d6d3e904864989a48a1bbb267ab57501b856",
+    "browser/Audio.cpp": "5b66adff1be90434e344c86c2671e8ce866cf8db78834af42f473d873d0312a3",
+    "browser/MusicWorker.cpp": "6ca9b7d1077029af2df53755a35046835c371bed9c2d45a3a29a25def6016afc",
+    "browser/README.md": "00ca8879979e5f4f0115ef4d6f461cac3fa4a3c91d470e9c4d42bdd5556834db",
+    "browser/audio.js": "b6ef553b7592ee04a55215f3e2b8d1dc4eeb7c1ef26c5809c761da84f8530915",
+    "browser/benchmarks/audio.cjs": "b917d860e5de4ef2a9e0f7d52cc168d06b7cf8da57eaa914c08449610eaffb24",
+    "browser/music-output.js": "8c9e81e682b6ee8fbe8268a6227b6158735aefadcb058d04128e95c9088217a6",
+    "browser/music-worker.js": "cb530a6c1df420874f56da81a0ed788256d6ca18975c2c90772ac3055d701194",
+    "browser/package-static.py": "44dc54b5cd2a60124a1fd3e08f84edccf0b0417aef6950a1d39564e1b78234c6",
+    "browser/shell.html": "6bcf4af1ed07dcb5fa44d1555872fdfd365f026862fdd245ba396b2f7858d38c",
+    "browser/tests/music-audio.spec.js": "f192ae9a92af7c6c91e7cf44b5334c7de933c11c0a0a9d2d5e3bfd2751e7d1e3",
+    "browser/tests/music-game.spec.js": "753e28c18d3a30bdb00f213995a3e698f881fd4b5401b3aa3b8d8d2a66e0a6b9",
+    "browser/tests/recording.spec.js": "381017411201a265799f4398d363d23b84b74b546cbbb2474ac9134d829ac806",
+    "browser/unit/audio.test.js": "7223bda704abbe54d8619a421f90ac17438de869aa918f90bd5452079babf9f1",
+    "browser/unit/music-output.test.js": "1c9f499012383c669b2c4dfb6686c885ce16830b021b9f20eddf30943910ac67",
+    "browser/unit/music-worker.test.js": "cbec71741419300888ca304f2b845e05186f30c2753e637044d7d48b51bad4f7",
+    "docs/browser/implementation.md": "15e1607eb26b8096de923dbe3146f49212777117aabfb2753b34d44790e6bb69",
+    "docs/development/reference.md": "bf6921308370130172b0517f3ebb427a9684dbcb93a91ea4c85c8a074c0a8e15",
+    "scons/sources.py": "b854fedc9b0d95c562fedd9dff232ae5462d100658274d1c885bad8087e4e202",
+    "scons/web_build.py": "24aaff79764521bdecc14bb62e0c3119964d1a3f576d082e26f2ce9daa4ee8dd",
+    "src/audio/BrowserMusic.h": "93d3428e8cf3673195aeb2e6e90104ef093b34b565700baa8dce625a80c73a0d",
+    "src/audio/MusicBuffer.h": "e938e0ab2a996a8f9da1e91037183b9ca6a0de017b76755cf855433f5909e980",
+    "src/audio/MusicBufferTest.cpp": "c6067e1a54d51c1c6f770de4ffb98d597c6111b2d6d6263bbb2650250e951caa",
+    "src/audio/MusicProducer.cpp": "674749bb6a1f8e5a0878dc9e24913ede31c963ec3470e1933ab956868c0adae0",
+    "src/audio/MusicProducer.h": "898e9c5f204d1263b7d11e599a166722613f1d3a33690787113f20e13443dc5a",
+    "src/audio/MusicProducerTest.cpp": "871b9c6774e05e465d9cba6188ba4976951e880c69bc67e050547b6fbce0897d",
+    "src/audio/MusicSetTest.cpp": "cdea713d88a0910eb58a1e72254c667f2448228da74231041abf8117b04a3e93",
+    "src/audio/MusicStream.h": "52f78b605fd147df323f9561546de47c2aca241f44278bc276135a5a48fe2ae4",
+    "src/audio/MusicTypes.h": "33a065568111f0a2402a210c52529d96bb178aef25786da7d042187358ab53a2",
+    "src/audio/SoundMixer.cpp": "6c5329327d7055f7990028ee47f0dc0c10c2bc6b3e8da15126166a3a24c4f302",
+    "src/audio/SoundMixer.h": "dc301263e95207db6cd5d6a2d5e0ca2c37c3a8dc872a5e8ec546fc65f882ab1d",
+    "src/audio/SoundMixerTrackSelectionHarness.cpp": "d039d7b5291c1bfc8dd3a6ecb363961e603c68741753ba7903b0eb3763ab2334",
+    "src/ui/screens/MusicScreensTest.cpp": "1a2bc764dc657e8e846aad71e08df4d53d3861483c963f517118b937afb8792c",
+    "src/ui/screens/MusicSetScreen.cpp": "59a8ee996c4220cc81c54d579fa76a49cc09f17e463f68a7e69c71d4e357cebb",
+    "src/ui/screens/MusicSetScreen.h": "b3a1f05368f2b5f43c4a0122cabf8972c47b57cc0466cbf6117728572c6dc7f2",
+    "test/README.md": "8267c07ebad7a0edaceb9491c5c2c7792f2c2f26d63de4d90f4cfd55c8e49c46",
+    "test/build_system/test_browser_package.py": "43cf2c1e94a2117e14501cbdc591386efae1139f03318ada1cd99e992e843f0e",
+    "test/ci-compatibility.json": "91566cd9ea4fefcb0f4780621dae047b82b8eb1cf41015cf1f69e17565431a15",
+    "test/tests.py": "2744a2b8bfbe59d5fe9fc9037c95a468b106ccfc02389e5ec3e8e1d68179b778"
+  },
+  "pinnedBrowserToolchain": {
+    "emscripten": "4.0.15",
+    "emsdk_commit": "5eb0bde7585670252e8ba05e9d361627bffd08b5"
+  },
+  "patchSha256": "318a27820bcae21ce873b91c9e28a7adefc08126afc0751719ae420b58e37232",
+  "codecVersions": [
+    "0.12",
+    "1.6.1",
+    "1.2.1"
+  ],
+  "playwright": "1.63.0",
+  "browsers": [
+    {
+      "name": "chromium",
+      "revision": "1243",
+      "installByDefault": true,
+      "browserVersion": "153.0.8010.12",
+      "title": "Chrome for Testing"
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1243",
+      "installByDefault": true,
+      "browserVersion": "153.0.8010.12",
+      "title": "Chrome Headless Shell"
+    },
+    {
+      "name": "firefox",
+      "revision": "1543",
+      "installByDefault": true,
+      "browserVersion": "155.0",
+      "title": "Firefox"
+    },
+    {
+      "name": "webkit",
+      "revision": "2359",
+      "installByDefault": true,
+      "revisionOverrides": {
+        "mac14": "2251",
+        "mac14-arm64": "2251"
+      },
+      "browserVersion": "26.6",
+      "title": "WebKit"
+    },
+    {
+      "name": "ffmpeg",
+      "revision": "1011",
+      "installByDefault": true
+    },
+    {
+      "name": "winldd",
+      "revision": "1007",
+      "installByDefault": false
+    },
+    {
+      "name": "android",
+      "revision": "1001",
+      "installByDefault": false
+    }
+  ],
+  "finalValidation": "Two independent reviews integrated; see verification.json and review-feedback.txt. Source is the uncommitted working tree represented by changes.patch, not a new commit."
+}

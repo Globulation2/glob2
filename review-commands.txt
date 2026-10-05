@@ -1,0 +1,26 @@
+# Run from the repository root. Source and dependency hashes: source-evidence.json.
+git fetch origin master
+GLOB2_SDL3_PREFIX="$PWD/build/audio-sdl/prefix" scons release=1 -j6 tests glob2
+scons target=web release=1 -j8
+python3 test/run_tests.py --filter 'Music*/*' --filter 'SoundMixer*/*' --filter 'CommunityMusic*/*' --filter 'GameplayRecording*/*' --filter 'PlayerVoice/*' --filter 'GameMusicController/*' --filter 'Settings/*' --filter 'TurnEngineHarness/the committed match record*' --artifacts artifacts/audio/review-native --junit artifacts/audio/review-native.xml
+node --test browser/unit/*.test.js
+python3 test/build_system/test_browser_package.py
+python3 test/build_system/test_ci_policy.py
+python3 test/build_system/test_ci_tiers.py
+python3 browser/package-static.py --source build/emscripten/client/release --output artifacts/audio/review-static
+GLOB2_MUSIC_TEST_ARCHIVE="$PWD/artifacts/audio/music-fixture/music.zip" browser/node_modules/.bin/playwright test -c artifacts/audio/playwright.config.cjs music-audio.spec.js music-game.spec.js recording.spec.js --grep 'music|audio|preview|recording segments' --workers=2 --output artifacts/audio/review-browser-results
+GLOB2_MUSIC_TEST_ARCHIVE="$PWD/artifacts/audio/music-fixture/music.zip" browser/node_modules/.bin/playwright test -c artifacts/audio/playwright-static.config.cjs music-game.spec.js recording.spec.js --grep 'music|audio|preview|recording segments' --workers=2 --output artifacts/audio/review-static-results
+GLOB2_MUSIC_TEST_ARCHIVE="$PWD/artifacts/audio/music-fixture/music.zip" browser/node_modules/.bin/playwright test -c artifacts/audio/playwright-static.config.cjs music-game.spec.js --grep 'imported preview' --workers=2 --output artifacts/audio/review-preview-final-results
+# Smoke uses the unversioned server while it is running. CPU31 belongs to this host's affinity.
+taskset -c 31 node browser/benchmarks/audio.cjs http://127.0.0.1:8795 singlecore 10
+# Standalone queue/producer sanitizer cases, without the SDL device harness.
+g++ -std=c++20 -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -Itest/support -Itest/third_party -Isrc/audio artifacts/audio/test-main.cpp src/audio/MusicBufferTest.cpp src/audio/MusicProducerTest.cpp src/audio/MusicProducer.cpp src/audio/MusicStream.cpp $(pkg-config --cflags --libs opusfile) -pthread -o artifacts/audio/review-portable-asan
+artifacts/audio/review-portable-asan
+g++ -std=c++20 -g -O1 -fsanitize=thread -Itest/support -Itest/third_party -Isrc/audio artifacts/audio/test-main.cpp src/audio/MusicBufferTest.cpp -pthread -o artifacts/audio/review-buffer-tsan
+artifacts/audio/review-buffer-tsan
+python3 artifacts/audio/compare-legacy.py
+g++ -std=c++20 -O2 -Isrc/audio artifacts/audio/compare-legacy.cpp src/audio/MusicProducer.cpp src/audio/MusicStream.cpp $(pkg-config --cflags --libs opusfile) -o artifacts/audio/review-compare-legacy
+artifacts/audio/review-compare-legacy
+# Each exported recording was checked with:
+# ffmpeg -hide_banner -i PATH/recording.mp4 -vn -af volumedetect -f null -
+git diff --check

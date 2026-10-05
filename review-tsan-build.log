@@ -1,0 +1,15 @@
+In file included from /usr/include/c++/15/atomic:52,
+                 from src/audio/MusicBuffer.h:4,
+                 from src/audio/MusicBufferTest.cpp:3:
+In function ‘void std::atomic_thread_fence(memory_order)’,
+    inlined from ‘bool Music::SnapshotMailbox::read(Music::Snapshot&, unsigned int) const’ at src/audio/MusicBuffer.h:83:28,
+    inlined from ‘void DOCTEST_ANON_SUITE_2::DOCTEST_ANON_FUNC_11()’ at src/audio/MusicBufferTest.cpp:157:3:
+/usr/include/c++/15/bits/atomic_base.h:147:26: warning: ‘atomic_thread_fence’ is not supported with ‘-fsanitize=thread’ [-Wtsan]
+  147 |   { __atomic_thread_fence(int(__m)); }
+      |     ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+In function ‘void std::atomic_thread_fence(memory_order)’,
+    inlined from ‘bool Music::SnapshotMailbox::read(Music::Snapshot&, unsigned int) const’ at src/audio/MusicBuffer.h:83:28,
+    inlined from ‘void DOCTEST_ANON_SUITE_2::DOCTEST_ANON_FUNC_9()’ at src/audio/MusicBufferTest.cpp:120:3:
+/usr/include/c++/15/bits/atomic_base.h:147:26: warning: ‘atomic_thread_fence’ is not supported with ‘-fsanitize=thread’ [-Wtsan]
+  147 |   { __atomic_thread_fence(int(__m)); }
+      |     ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~

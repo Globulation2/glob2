@@ -1,0 +1,49 @@
+PipeWire 'pipewire-0' [1.6.2, bradley@therig, cookie:783032992]
+ └─ Clients:
+        33. WirePlumber                         [1.6.2, bradley@therig, pid:8906]
+        34. pipewire                            [1.6.2, bradley@therig, pid:8909]
+        40. WirePlumber [export]                [1.6.2, bradley@therig, pid:8906]
+        53. speech-dispatcher-dummy             [1.6.2, bradley@therig, pid:2863831]
+        55. wpctl                               [1.6.2, bradley@therig, pid:265446]
+        61. GNOME Shell Volume Control          [1.6.2, bradley@therig, pid:1488654]
+        63. GNOME Volume Control Media Keys     [1.6.2, bradley@therig, pid:1488762]
+        65. gnome-remote-desktop-daemon         [1.6.2, bradley@therig, pid:1489030]
+        66. Claude                              [1.6.2, bradley@therig, pid:2878624]
+        68. Chromium input                      [1.6.2, bradley@therig, pid:1633760]
+        76. gnome-shell                         [1.6.2, bradley@therig, pid:1488654]
+        82. xdg-desktop-portal                  [1.6.2, bradley@therig, pid:1489034]
+        83. Mutter                              [1.6.2, bradley@therig, pid:1488654]
+        84. gnome-shell                         [1.6.2, bradley@therig, pid:1488654]
+
+Audio
+ ├─ Devices:
+ │  
+ ├─ Sinks:
+ │  *   35. Dummy Output                        [vol: 1.00]
+ │  
+ ├─ Sources:
+ │  
+ ├─ Filters:
+ │  
+ └─ Streams:
+        52. speech-dispatcher-dummy                                     
+             60. output_FR       > Dummy Output:playback_FR	[init]
+             62. output_FL       > Dummy Output:playback_FL	[init]
+
+Video
+ ├─ Devices:
+ │  
+ ├─ Sinks:
+ │  
+ ├─ Sources:
+ │  
+ ├─ Filters:
+ │  
+ └─ Streams:
+        59. gnome-remote-desktop-daemon                                 
+             74. input_1         < gnome-shell:output_1	[active]
+        64. gnome-shell                                                 
+             48. output_1        > gnome-remote-desktop-daemon:input_1	[active]
+
+Settings
+ └─ Default Configured Devices:

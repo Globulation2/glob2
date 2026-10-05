@@ -1,0 +1,138 @@
+{
+  "scope": "Working-tree audio resilience changes after two independent sub-agent reviews; no commit or PR created.",
+  "feedback": "review-feedback.txt",
+  "commands": "review-commands.txt",
+  "source": "source-evidence.json",
+  "native": {
+    "cases": 45,
+    "log": "review-native.log",
+    "junit": "review-native.xml",
+    "asanUbsan": {
+      "cases": 10,
+      "assertions": 1254,
+      "log": "review-asan.log"
+    },
+    "threadSanitizer": {
+      "queueCases": 6,
+      "assertions": 723,
+      "log": "review-tsan.log"
+    },
+    "legacyPcmBlocks": 7818,
+    "legacyLog": "review-legacy-pcm.log",
+    "goldenReplay": "passed",
+    "recordingOnOffChecksums": "equal"
+  },
+  "browser": {
+    "unitCases": 73,
+    "unitLog": "review-browser-unit.log",
+    "protocolCases": 15,
+    "protocolLog": "review-browser.log",
+    "packagedGameCases": 18,
+    "packagedGameLog": "review-static-browser.log",
+    "finalPreviewRecheckCases": 6,
+    "finalPreviewLog": "review-preview-final.log",
+    "browsers": [
+      "Chromium",
+      "Firefox",
+      "WebKit"
+    ],
+    "runtimes": [
+      "serial",
+      "threaded"
+    ],
+    "rates": [
+      44100,
+      48000
+    ],
+    "liveRecordings": "All six exported MP4s independently decoded with ffmpeg and contain non-silent audio; review-recorded-audio-levels.json",
+    "testCorrection": "Three initial full-game preview assertions counted UI click delivery against a400ms bound. Trace showed1.3s spent in the UI helper. Replaced with cursor versus consumedFrames accounting. Packaged run passes all18; final preview rerun passes all6 after the last stale-tail fix. Other protocol and recording cases pass."
+  },
+  "packaging": {
+    "cases": 17,
+    "log": "review-package-tests.log",
+    "version": "75c106a10ea99263",
+    "logFinal": "review-static-final-package.log"
+  },
+  "builds": {
+    "native": "review-native-final-build.log",
+    "serialAndThreadedBrowser": "review-web-final-build.log",
+    "policyChecks": "review-ci-policy.log",
+    "formatChecks": "review-format-check.log"
+  },
+  "contentionSmoke": {
+    "mode": "singlecore",
+    "seconds": 10,
+    "elapsedSeconds": 10.135,
+    "workers": 2,
+    "cpus": 1,
+    "transport": "shared",
+    "before": {
+      "track": 0,
+      "next": 0,
+      "pending": -1,
+      "mode": 1,
+      "preview": false,
+      "playing": true,
+      "audition": false,
+      "failed": false,
+      "duration": 53.4751875,
+      "weights": [
+        1,
+        0,
+        0
+      ],
+      "position": 1.024,
+      "commandTime": 0,
+      "audibleAt": 0,
+      "queuedFrames": 24576,
+      "starvationFrames": 0,
+      "underruns": 0,
+      "consumedFrames": 49152,
+      "maxRenderUs": 9770,
+      "recording": false,
+      "captureFrames": 0,
+      "droppedCaptureFrames": 0,
+      "captureBuffers": 8,
+      "captureAt": 0,
+      "maxCommandLatencyUs": 0
+    },
+    "after": {
+      "track": 0,
+      "next": 0,
+      "pending": -1,
+      "mode": 1,
+      "preview": false,
+      "playing": true,
+      "audition": false,
+      "failed": false,
+      "duration": 53.4751875,
+      "weights": [
+        1,
+        0,
+        0
+      ],
+      "position": 11.157333333333334,
+      "commandTime": 0,
+      "audibleAt": 0,
+      "queuedFrames": 29696,
+      "starvationFrames": 0,
+      "underruns": 0,
+      "consumedFrames": 535552,
+      "maxRenderUs": 9770,
+      "recording": false,
+      "captureFrames": 0,
+      "droppedCaptureFrames": 0,
+      "captureBuffers": 8,
+      "captureAt": 0,
+      "maxCommandLatencyUs": 0
+    },
+    "minQueuedFrames": 24576,
+    "errors": []
+  },
+  "limits": [
+    "Only Linux x86_64 native built here; other native desktop/mobile platforms lack qualification.",
+    "Host only exposes Dummy Output: no physical listening or loopback evidence. Counters do not establish uninterrupted hardware output.",
+    "Earlier ten-minute contention runs are retained in verification-implementation.json and predate review fixes; final review changes have a10-second single-core smoke, deterministic stalls and browser integration coverage.",
+    "The final stale-tail correction was checked by both-transport unit waveform regressions and six packaged preview cases; earlier18 packaged playback/recording cases preceded that isolated correction."
+  ]
+}

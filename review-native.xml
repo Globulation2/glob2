@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="45" failures="0" errors="0" skipped="0"><testsuite name="CommunityMusic"><testcase classname="CommunityMusic" name="archive offsets and sizes cannot wrap on 32-bit targets" time="0.001732" status="run" />
+  <testcase classname="CommunityMusic" name="archive parser rejects malformed and oversized archives" time="0.000752" status="run" />
+  <testcase classname="CommunityMusic" name="computed fades preserve every entry of the original lookup table" time="0.008956" status="run" />
+  <testcase classname="CommunityMusic" name="preview storage is bounded independently of track length" time="0.000186" status="run" />
+  </testsuite><testsuite name="CommunityMusicUI"><testcase classname="CommunityMusicUI" name="desktop screens [display][artifacts]" time="1.08397" status="run" />
+  <testcase classname="CommunityMusicUI" name="new catalogue filters replace pending results [display]" time="1.06766" status="run" />
+  <testcase classname="CommunityMusicUI" name="touch screens [display][artifacts]" time="1.02193" status="run" />
+  </testsuite><testsuite name="GameplayRecording.Integration"><testcase classname="GameplayRecording.Integration" name="global recording shortcut toggles and shutdown awaits finalization [artifacts][writes-preferences]" time="1.49066" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="production presentation records menus and gameplay without changing per-tick state [display][artifacts][recording]" time="4.30706" status="run" />
+  <testcase classname="GameplayRecording.Integration" name="threaded scene recording preserves baseline per-tick checksums [display][artifacts][recording]" time="6.09565" status="run" />
+  </testsuite><testsuite name="MusicSet"><testcase classname="MusicSet" name="discovery atomic replacement queued moods and muted preferences [display][writes-preferences]" time="2.41319" status="run" />
+  </testsuite><testsuite name="Settings"><testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="4.41228" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1000x700 in software rendering [display:1600x1400][artifacts][writes-preferences]" time="2.78041" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 1280x900 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="5.43719" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.37303" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.93321" status="run" />
+  <testcase classname="Settings" name="layout; persistence; live display changes; bindings and localization with expanded wording at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]" time="3.23752" status="run" />
+  <testcase classname="Settings" name="render FPS dropdown in compact layout [display][artifacts][writes-preferences]" time="0.829755" status="run" />
+  </testsuite><testsuite name="SoundMixerTrackSelection"><testcase classname="SoundMixerTrackSelection" name="Opus trimmed timeline looping seeking and unavailable decoder" time="0.005463" status="run" />
+  <testcase classname="SoundMixerTrackSelection" name="buffered facade runs at ordinary priority and joins on shutdown" time="1.66878" status="run" />
+  <testcase classname="SoundMixerTrackSelection" name="muted preview controls and shutdown do not require a device callback" time="0.047393" status="run" />
+  <testcase classname="SoundMixerTrackSelection" name="track selection while closed and queued mid-fade changes" time="0.025769" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.36035" status="run" />
+  </testsuite><testsuite name="GameMusicController"><testcase classname="GameMusicController" name="WarEventSetsWarTrackAndTimer" time="0" status="run" />
+    <testcase classname="GameMusicController" name="GoodEventSetsBuildingTrackAndTimer" time="0" status="run" />
+    <testcase classname="GameMusicController" name="TimerDecaysToDefaultTrack" time="0" status="run" />
+    <testcase classname="GameMusicController" name="SimultaneousEventsLastWriterWins" time="0" status="run" />
+    <testcase classname="GameMusicController" name="ResetClearsTimers" time="0" status="run" />
+    <testcase classname="GameMusicController" name="NoEventNoTrack" time="0" status="run" />
+    <testcase classname="GameMusicController" name="WarEventOverridesExpiringBuildingTimer" time="0" status="run" />
+  </testsuite><testsuite name="GameplayRecording"><testcase classname="GameplayRecording" name="producer failure remains failed and a publication collision preserves foreign files [recording]" time="1.37395" status="run" />
+    <testcase classname="GameplayRecording" name="split callback audio survives as consecutive decoded PCM [recording][artifacts]" time="0" status="run" />
+    <testcase classname="GameplayRecording" name="recording rejects invalid options and never overwrites output" time="0.000557" status="run" />
+    <testcase classname="GameplayRecording" name="recording encodes audio, odd resized frames, and semantic chapters [recording]" time="1.48974" status="run" />
+    <testcase classname="GameplayRecording" name="stopping a recording before its first frame completes without hanging" time="0.001102" status="run" />
+  </testsuite><testsuite name="MusicBuffer"><testcase classname="MusicBuffer" name="ring wraps under concurrent producer and consumer without loss" time="0.016696" status="run" />
+    <testcase classname="MusicBuffer" name="prefill capacity variable requests and bounded producer stalls" time="0.001376" status="run" />
+    <testcase classname="MusicBuffer" name="exhaustion fades once and waits for full recovery" time="0.00046" status="run" />
+    <testcase classname="MusicBuffer" name="preview pause retains partial PCM and the consumed clock" time="0" status="run" />
+    <testcase classname="MusicBuffer" name="seek while preview is paused replaces stale PCM without advancing the clock" time="0" status="run" />
+    <testcase classname="MusicBuffer" name="generation replacement rejects old PCM without resetting shared cursors" time="0" status="run" />
+  </testsuite><testsuite name="MusicProducer"><testcase classname="MusicProducer" name="normal PCM matches direct Opus decoding across trimmed loops" time="0.014168" status="run" />
+    <testcase classname="MusicProducer" name="file and memory producers have identical transitions and PCM" time="0.047168" status="run" />
+    <testcase classname="MusicProducer" name="replacement is atomic and preserves latest pending mood" time="0.001402" status="run" />
+    <testcase classname="MusicProducer" name="preview ownership pause seek and close preserve gameplay cursor" time="0.001546" status="run" />
+  </testsuite></testsuites>

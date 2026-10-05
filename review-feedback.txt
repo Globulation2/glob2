@@ -1,0 +1,60 @@
+Independent review of music resilience changes
+
+Reviewers: native/producer reviewer and browser/coverage reviewer (two sub-agents).
+All confirmed findings were addressed in the working tree.
+
+Correctness findings and fixes:
+- Preview pause discarded decoder-ahead PCM. Both consumers retain queued samples
+  and their partial-block cursor. Native output ramps around pause; the browser
+  resumes the exact next prepared sample. Consumer position drives the display.
+- Preview controls could wait through a native refill. They now wake the worker
+  and interrupt refills between bounded blocks.
+- Browser reset used decoder-ahead position. A generation-checked worklet reply
+  supplies the consumed position. A one-second timeout releases the command
+  credit and restores pause state without guessing a seek position.
+- Intentional browser hide/show refill inflated starvation. Intentional silence
+  no longer counts as an underrun.
+- Repeated paused seek/reset could replay a retained pre-pause sample tail.
+  Both consumers clear that tail after entering silence. A waveform-sign test
+  covers repeated browser generations with both transports.
+- Root integration review found missing music files in static release packaging.
+  Worker, worklet, Wasm loader/module, references and Opus notices now ship
+  together with versioning, hashes and gzip validation. The browser reviewer
+  independently checked the packaging fix and found no additional blockers.
+
+Architecture and readability:
+- New MusicTypes.h separates value-only playback contracts from decoder and
+  queue implementation headers; SoundMixer documents owner-thread/lifetime rules.
+- Producer removes legacy self-pointers/macros and shares replacement commit
+  logic. Compressed bytes have unique ownership; original authorship is retained.
+- Browser audio code is formatted, control/shared indices named, and ring
+  publication/acknowledgement invariants documented.
+- Existing development/browser/test docs describe ownership, pause/reset,
+  buffer credits, deployment dependencies, diagnostics and validation limits.
+- The stress harness has bounded sampling, finite-duration validation, failure
+  reporting for competing workers and guaranteed browser/worker teardown.
+
+Validation evidence:
+- review-native.xml/log: 45 cases pass, including real producer, dummy device,
+  preview/settings/recording and golden replay/recording-on/off checksums.
+- review-browser-unit.log: 73 unit cases pass.
+- review-asan.log: 10 cases/1254 assertions pass under ASan+UBSan.
+- review-tsan.log: 6 queue cases/723 assertions pass under ThreadSanitizer.
+- review-legacy-pcm.log: 7818 blocks match legacy PCM exactly.
+- review-package-tests.log: 17 release-package tests pass.
+- review-ci-policy.log: policy/tier selectors pass.
+- review-browser.log: all 15 stall/visibility cases pass; three early preview
+  assertions failed because the test included UI click-delivery time in a 400 ms
+  bound. Trace evidence retained. The replacement assertion checks cursor
+  movement against consumedFrames, including looping, instead of wall time.
+- review-static-browser.log: all 18 packaged playback/preview/live-recording
+  cases pass in Chromium, Firefox, WebKit, both serial/threaded runtimes.
+- review-preview-final.log: all 6 packaged preview cases pass after stale-tail correction.
+- review-stress-smoke.json: 10-second one-core/two-competitor run, zero new
+  application starvation. Earlier ten-minute evidence is retained but predates
+  review changes; it is not presented as final-revision stress qualification.
+
+Qualification limits:
+Linux x86_64 only. This host exposes Dummy Output; no physical listening/loopback
+or native Windows/macOS/mobile device qualification. Queue/sanitizer tests cannot
+establish hardware output continuity. No simulation/save code or version changed.

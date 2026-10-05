@@ -1,0 +1,817 @@
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:39] "GET / HTTP/1.1" 200 -
+
+Running 33 tests using 2 workers
+
+(node:407517) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:407516) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /?threads=serial&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:41] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:42] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:42] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:42] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:42] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:43] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:43] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:43] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:43] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:43] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:43] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:44] "GET /music-output.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:44] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:44] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:44] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   2 [chromium] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 44100 Hz (8.4s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:49] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:50] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:50] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:50] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:50] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:53] "GET /music-output.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:53] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:53] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:53] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   1 [chromium] › browser/tests/music-game.spec.js:27:3 › serial game sends soundtrack and gain to independent audio (14.0s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:55] "GET /?threads=serial&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:55] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:55] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:55] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:55] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:55] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:56] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:56] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:56] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:56] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:57] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:57] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:57] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:57] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:57] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:12:57] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+  ✓   3 [chromium] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 48000 Hz (8.8s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:02] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:02] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:02] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:02] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:04] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:04] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:04] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:04] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   5 [chromium] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 44100 Hz (7.6s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:09] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:09] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:09] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:09] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   6 [chromium] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 48000 Hz (7.6s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:17] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:17] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:17] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:17] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓   7 [chromium] › browser/tests/music-audio.spec.js:101:1 › worker stalls consume the cushion and recover once after exhaustion (11.4s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:25] "GET /?threads=serial HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:25] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:25] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:25] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:25] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:25] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:26] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:26] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:26] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:26] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:27] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:27] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:27] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:27] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:27] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:27] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:34] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:34] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:34] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:34] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✘   4 [chromium] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio (32.3s)
+(node:409117) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /?threads=threaded&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:37] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /recording-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /recording-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /recording-storage.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /recording-video.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /recording-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:39] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:40] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:40] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:40] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:40] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:40] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+  ✓   8 [chromium] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (21.3s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /?threads=threaded HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:46] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:47] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:48] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:48] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:48] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:48] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:48] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:48] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:49] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:50] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+  ✓   9 [chromium] › browser/tests/music-game.spec.js:27:3 › threaded game sends soundtrack and gain to independent audio (15.0s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /?threads=threaded&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:52] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:53] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:54] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:54] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:55] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:57] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:58] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:58] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:13:58] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:01] "GET /recording-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:01] "GET /recording-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:01] "GET /recording-storage.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:01] "GET /recording-video.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:01] "GET /recording-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:03] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:03] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:03] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:03] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  10 [chromium] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (20.1s)
+(node:410373) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:09] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:10] code 404, message File not found
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:10] "GET /favicon.ico HTTP/1.1" 404 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:13] "GET /music-output.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:13] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:13] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:13] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  12 [firefox] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 44100 Hz (10.2s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:19] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:19] code 404, message File not found
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:19] "GET /favicon.ico HTTP/1.1" 404 -
+  ✘  11 [chromium] › browser/tests/music-game.spec.js:38:3 › threaded imported preview controls reach independent audio (30.2s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:23] "GET /music-output.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:23] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:23] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:23] "GET /music-runtime.wasm HTTP/1.1" 200 -
+(node:411033) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:25] "GET /?threads=serial&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:25] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:25] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:25] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:25] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:25] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:26] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:26] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:27] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+  ✓  13 [firefox] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 48000 Hz (10.4s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:32] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:32] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:32] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:32] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:33] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:33] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:33] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:33] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  15 [firefox] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 44100 Hz (7.5s)
+  ✓  14 [firefox] › browser/tests/music-game.spec.js:27:3 › serial game sends soundtrack and gain to independent audio (13.6s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:38] "GET /?threads=serial&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:38] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:38] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:38] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:38] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:38] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:39] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:39] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:39] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:39] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:40] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  16 [firefox] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 48000 Hz (8.4s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:46] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:46] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:47] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:47] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:50] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:50] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:50] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:50] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  18 [firefox] › browser/tests/music-audio.spec.js:101:1 › worker stalls consume the cushion and recover once after exhaustion (13.8s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:59] "GET /?threads=serial HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:14:59] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:00] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:00] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:00] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:00] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:01] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:02] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:02] "GET /assets/hd-1.ff600075406f96ac.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:02] "GET /assets/hd-2.7197d4c48afda7b0.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:07] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:07] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:07] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:07] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:11] "GET /recording-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:11] "GET /recording-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:11] "GET /recording-storage.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:11] "GET /recording-video.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:11] "GET /recording-runtime.wasm HTTP/1.1" 200 -
+  ✓  19 [firefox] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (19.0s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:18] "GET /?threads=threaded HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:18] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:19] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:21] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:21] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:21] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:21] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:21] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/hd-1.ff600075406f96ac.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:22] "GET /assets/hd-2.7197d4c48afda7b0.data HTTP/1.1" 200 -
+  ✘  17 [firefox] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio (40.1s)
+(node:413758) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:28] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:28] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:28] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:28] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:29] "GET /?threads=threaded&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:29] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:29] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:31] "GET /recording-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:31] "GET /recording-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:31] "GET /recording-storage.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:31] "GET /recording-video.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:31] "GET /recording-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:32] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:32] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:32] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:32] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:32] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:33] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:33] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:33] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:33] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:33] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:38] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:38] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:38] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:38] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  20 [firefox] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (23.9s)
+  ✓  21 [firefox] › browser/tests/music-game.spec.js:27:3 › threaded game sends soundtrack and gain to independent audio (14.3s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:42] "GET /?threads=threaded&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:42] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:43] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:45] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:46] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+(node:415279) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:49] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:51] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:51] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:51] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:51] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:53] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:53] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:53] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:53] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  23 [webkit] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 44100 Hz (9.9s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:15:59] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:04] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:04] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:04] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:04] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  22 [firefox] › browser/tests/music-game.spec.js:38:3 › threaded imported preview controls reach independent audio (26.4s)
+  ✓  24 [webkit] › browser/tests/music-audio.spec.js:10:5 › shared music survives 2000 ms host stalls at 48000 Hz (10.3s)
+(node:416171) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:11] "GET /?threads=serial&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:11] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:11] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:11] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:12] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:12] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:13] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:14] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:14] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:14] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:14] "GET /music-output.js HTTP/1.1" 200 -
+  ✓  25 [webkit] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 44100 Hz (8.1s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:18] "GET /music-output.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:18] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:18] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:18] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:20] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:20] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:20] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:20] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:21] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:21] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:21] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:21] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  27 [webkit] › browser/tests/music-audio.spec.js:10:5 › message music survives 400 ms host stalls at 48000 Hz (8.8s)
+  ✓  26 [webkit] › browser/tests/music-game.spec.js:27:3 › serial game sends soundtrack and gain to independent audio (16.1s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:27] "GET /?threads=serial&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:27] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:27] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:28] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:28] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:28] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:29] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:31] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:31] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:31] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:31] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:36] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:37] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:37] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:37] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  28 [webkit] › browser/tests/music-audio.spec.js:101:1 › worker stalls consume the cushion and recover once after exhaustion (13.1s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:41] "GET /?threads=serial HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:42] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:42] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:42] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:43] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:43] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:44] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:44] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/hd-1.ff600075406f96ac.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:45] "GET /assets/hd-2.7197d4c48afda7b0.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:52] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:52] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:52] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:52] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:57] "GET /recording-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:57] "GET /recording-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:57] "GET /recording-storage.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:57] "GET /recording-video.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:16:58] "GET /recording-runtime.wasm HTTP/1.1" 200 -
+  ✓  30 [webkit] › browser/tests/recording.spec.js:22:2 › serial recording segments full framebuffer and exports OPFS files (27.1s)
+  ✓  29 [webkit] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio (40.9s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:08] "GET /?threads=threaded&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /?threads=threaded HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:09] "GET /index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:10] "GET /index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:10] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:10] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:11] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:11] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:11] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:11] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/hd-2.7197d4c48afda7b0.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:12] "GET /assets/hd-1.ff600075406f96ac.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:15] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:15] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:18] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:18] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:18] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:18] "GET /music-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:20] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:20] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:20] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:20] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  32 [webkit] › browser/tests/music-game.spec.js:27:3 › threaded game sends soundtrack and gain to independent audio (13.9s)
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:22] "GET /?threads=threaded&renderer=software HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:23] "GET /loader.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:23] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:23] "GET /threaded/index.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:24] "GET /assets/core.9d8f90a48775e8e8.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:24] "GET /assets/game.fe764cde4f45eb0a.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:25] "GET /recording-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:25] "GET /recording-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:25] "GET /recording-storage.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:25] "GET /recording-video.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/menu-music.5294ed91abf32cfe.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/font-cjk.5701af4422583342.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /recording-runtime.wasm HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/translations-1.34a0cf0f9e02e3f9.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/translations-2.9c3d9ee3c69c1296.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/music.67f422aa69c5356d.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/music-sets-1.06acbfac0f6f4fc2.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/music-sets-3.f9b3c04222cf2a25.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/music-sets-4.46a8cae365994347.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/music-sets-2.7fb527140c00b0a6.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:26] "GET /assets/music-sets-5.1c7a3c9c84e8debd.data HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:30] "GET /threaded/index.js HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:30] "GET /threaded/index.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:33] "GET /music-output.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:33] "GET /music-worker.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:33] "GET /music-runtime.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [05/Oct/2026 11:17:33] "GET /music-runtime.wasm HTTP/1.1" 200 -
+  ✓  31 [webkit] › browser/tests/recording.spec.js:22:2 › threaded recording segments full framebuffer and exports OPFS files (28.1s)
+  ✓  33 [webkit] › browser/tests/music-game.spec.js:38:3 › threaded imported preview controls reach independent audio (27.1s)
+
+
+  1) [chromium] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 0.4
+    Received:   1.2906666666666666
+
+      80 |     const paused = await page.evaluate(() => Module.glob2Music.status.position);
+      81 |     // Pausing must retain the prepared cushion, not jump the cursor to its end.
+    > 82 |     expect(paused - beforePause).toBeLessThan(0.4);
+         |                                  ^
+      83 |     await page.waitForTimeout(250);
+      84 |     expect(await page.evaluate(() => Module.glob2Music.status.position)).toBe(paused);
+      85 |     await clickControl(page, 'music.play');
+        at /home/bradley/.codex/worktrees/b416/glob2/browser/tests/music-game.spec.js:82:34
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › browser/tests/music-game.spec.js:38:3 › threaded imported preview controls reach independent audio 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 0.4
+    Received:   0.4906666666666668
+
+      80 |     const afterPause = await page.evaluate(() => Module.glob2Music.status);
+      81 |     const paused = afterPause.position;
+    > 82 |     // The UI helper can take multiple frames to deliver the click under load.
+         |                                  ^
+      83 |     // Account for samples actually consumed during that time, including loops;
+      84 |     // only a jump beyond consumption indicates discarded prepared music.
+      85 |     const expectedPosition =
+        at /home/bradley/.codex/worktrees/b416/glob2/browser/tests/music-game.spec.js:82:34
+
+    Error: browserContext._wrapApiCall: file data stream has unexpected number of bytes
+
+    Error: End of central directory record signature not found. Either not a zip file, or file is truncated.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/audio/review-browser-results/music-game-threaded-import-1d2fc-ols-reach-independent-audio-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/audio/review-browser-results/music-game-threaded-import-1d2fc-ols-reach-independent-audio-chromium/error-context.md
+
+  3) [firefox] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio 
+
+    Error: expect(received).toBeLessThan(expected)
+
+    Expected: < 0.4
+    Received:   1.6053333333333333
+
+      80 |     const afterPause = await page.evaluate(() => Module.glob2Music.status);
+      81 |     const paused = afterPause.position;
+    > 82 |     // The UI helper can take multiple frames to deliver the click under load.
+         |                                  ^
+      83 |     // Account for samples actually consumed during that time, including loops;
+      84 |     // only a jump beyond consumption indicates discarded prepared music.
+      85 |     const expectedPosition =
+        at /home/bradley/.codex/worktrees/b416/glob2/browser/tests/music-game.spec.js:82:34
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-firefox/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-firefox/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace artifacts/audio/review-browser-results/music-game-serial-imported-80ff9-ols-reach-independent-audio-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio 
+    [chromium] › browser/tests/music-game.spec.js:38:3 › threaded imported preview controls reach independent audio 
+    [firefox] › browser/tests/music-game.spec.js:38:3 › serial imported preview controls reach independent audio 
+  30 passed (5.2m)

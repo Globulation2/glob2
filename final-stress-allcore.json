@@ -1,0 +1,59 @@
+{
+  "mode": "allcore",
+  "seconds": 600,
+  "workers": 32,
+  "cpus": 32,
+  "transport": "shared",
+  "before": {
+    "track": 0,
+    "next": 0,
+    "pending": -1,
+    "mode": 1,
+    "preview": false,
+    "playing": true,
+    "audition": false,
+    "failed": false,
+    "position": 1.0453333333333334,
+    "duration": 53.4751875,
+    "commandTime": 0,
+    "weights": [
+      1,
+      0,
+      0
+    ],
+    "audibleAt": 0,
+    "queuedFrames": 24576,
+    "starvationFrames": 0,
+    "underruns": 0,
+    "consumedFrames": 50176,
+    "maxRenderUs": 8580,
+    "maxCommandLatencyUs": 0
+  },
+  "after": {
+    "track": 0,
+    "next": 0,
+    "pending": -1,
+    "mode": 1,
+    "preview": false,
+    "playing": true,
+    "audition": false,
+    "failed": false,
+    "position": 42.762791666666665,
+    "duration": 53.4751875,
+    "commandTime": 0,
+    "weights": [
+      1,
+      0,
+      0
+    ],
+    "audibleAt": 0,
+    "queuedFrames": 26880,
+    "starvationFrames": 0,
+    "underruns": 0,
+    "consumedFrames": 27721472,
+    "maxRenderUs": 396080,
+    "maxCommandLatencyUs": 0
+  },
+  "minQueuedFrames": 24320,
+  "errors": []
+}

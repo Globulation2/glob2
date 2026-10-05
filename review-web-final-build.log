@@ -1,0 +1,8 @@
+scons: Reading SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+Install file: "browser/music-output.js" as "build/emscripten/client/release/music-output.js"
+scons: `build/emscripten/client/release/loader.js' is up to date.
+Packaging browser runtimes
+Building compilation database build/emscripten/client/release/compile_commands.json
+scons: done building targets.

@@ -1,0 +1,38 @@
+[
+  {
+    "file": "artifacts/audio/review-static-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "exitCode": 0,
+    "mean_volume": "-18.7 dB",
+    "max_volume": "-3.0 dB"
+  },
+  {
+    "file": "artifacts/audio/review-static-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "exitCode": 0,
+    "mean_volume": "-19.6 dB",
+    "max_volume": "-5.9 dB"
+  },
+  {
+    "file": "artifacts/audio/review-static-results/recording-serial-recording-6c834-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "exitCode": 0,
+    "mean_volume": "-19.1 dB",
+    "max_volume": "-3.0 dB"
+  },
+  {
+    "file": "artifacts/audio/review-static-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-chromium/recording.mp4",
+    "exitCode": 0,
+    "mean_volume": "-18.1 dB",
+    "max_volume": "-2.6 dB"
+  },
+  {
+    "file": "artifacts/audio/review-static-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-firefox/recording.mp4",
+    "exitCode": 0,
+    "mean_volume": "-18.4 dB",
+    "max_volume": "-2.6 dB"
+  },
+  {
+    "file": "artifacts/audio/review-static-results/recording-threaded-recordi-34116-ffer-and-exports-OPFS-files-webkit/recording.mp4",
+    "exitCode": 0,
+    "mean_volume": "-18.8 dB",
+    "max_volume": "-3.0 dB"
+  }
+]

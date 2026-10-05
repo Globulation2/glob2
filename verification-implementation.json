@@ -1,0 +1,262 @@
+{
+  "native": {
+    "focusedCases": 55,
+    "queueSanitizers": [
+      "address",
+      "undefined",
+      "thread"
+    ],
+    "legacyExactStereoBlocks": 7818,
+    "replayGolden": "passed",
+    "recordingOnOffChecksums": "equal",
+    "recordingChapterFailure": "One highly loaded run omitted era_start:20 from captured frames; checksums still equal. Isolated rerun passed. Raw logs retained.",
+    "finalIntegrationCases": 16,
+    "finalIntegrationLog": "native-control.log"
+  },
+  "browser": {
+    "unitCases": 66,
+    "protocolCases": 15,
+    "protocolResults": "All three browser engines pass both rates: shared-memory two-second host stalls, message-buffer 400 ms host stalls, and injected 100/250/400/1500 ms worker stalls with recovery.",
+    "liveRecordingCases": 6,
+    "liveRecordingResults": "Serial and threaded in Chromium, Firefox, WebKit pass with nonzero capture; all six exported MP4 audio tracks independently decoded by ffmpeg and non-silent.",
+    "recordedAudioLevels": "recorded-audio-levels.json",
+    "fullGameResults": "Music/gain and imported preview workflows pass both runtimes in all three engines.",
+    "logs": [
+      "real-isolation.log",
+      "browser-stalls-final.log",
+      "stall-recheck.log",
+      "full-browser.log",
+      "webkit-game-final.log",
+      "live-recording-fixed.log"
+    ],
+    "testInfrastructureFailure": "Earlier shared-output trace collisions rechecked in separate output directories. WebKit synthetic route.fulfill isolation lacked SAB; real HTTP isolation tests all pass."
+  },
+  "stress": {
+    "singlecore": {
+      "mode": "singlecore",
+      "seconds": 600,
+      "workers": 2,
+      "cpus": 1,
+      "transport": "shared",
+      "before": {
+        "track": 0,
+        "next": 0,
+        "pending": -1,
+        "mode": 1,
+        "preview": false,
+        "playing": true,
+        "audition": false,
+        "failed": false,
+        "position": 1.024,
+        "duration": 53.4751875,
+        "commandTime": 0,
+        "weights": [
+          1,
+          0,
+          0
+        ],
+        "audibleAt": 0,
+        "queuedFrames": 36096,
+        "starvationFrames": 0,
+        "underruns": 0,
+        "consumedFrames": 49920,
+        "maxRenderUs": 18575,
+        "maxCommandLatencyUs": 0
+      },
+      "after": {
+        "track": 0,
+        "next": 0,
+        "pending": -1,
+        "mode": 1,
+        "preview": false,
+        "playing": true,
+        "audition": false,
+        "failed": false,
+        "position": 12.7969375,
+        "duration": 53.4751875,
+        "commandTime": 0,
+        "weights": [
+          1,
+          0,
+          0
+        ],
+        "audibleAt": 0,
+        "queuedFrames": 30208,
+        "starvationFrames": 0,
+        "underruns": 0,
+        "consumedFrames": 28849664,
+        "maxRenderUs": 27825,
+        "maxCommandLatencyUs": 0
+      },
+      "minQueuedFrames": 24576,
+      "errors": []
+    },
+    "allcore": {
+      "mode": "allcore",
+      "seconds": 600,
+      "workers": 32,
+      "cpus": 32,
+      "transport": "shared",
+      "before": {
+        "track": 0,
+        "next": 0,
+        "pending": -1,
+        "mode": 1,
+        "preview": false,
+        "playing": true,
+        "audition": false,
+        "failed": false,
+        "position": 1.0453333333333334,
+        "duration": 53.4751875,
+        "commandTime": 0,
+        "weights": [
+          1,
+          0,
+          0
+        ],
+        "audibleAt": 0,
+        "queuedFrames": 24576,
+        "starvationFrames": 0,
+        "underruns": 0,
+        "consumedFrames": 50176,
+        "maxRenderUs": 8580,
+        "maxCommandLatencyUs": 0
+      },
+      "after": {
+        "track": 0,
+        "next": 0,
+        "pending": -1,
+        "mode": 1,
+        "preview": false,
+        "playing": true,
+        "audition": false,
+        "failed": false,
+        "position": 42.762791666666665,
+        "duration": 53.4751875,
+        "commandTime": 0,
+        "weights": [
+          1,
+          0,
+          0
+        ],
+        "audibleAt": 0,
+        "queuedFrames": 26880,
+        "starvationFrames": 0,
+        "underruns": 0,
+        "consumedFrames": 27721472,
+        "maxRenderUs": 396080,
+        "maxCommandLatencyUs": 0
+      },
+      "minQueuedFrames": 24320,
+      "errors": []
+    },
+    "memory": {
+      "mode": "memory",
+      "seconds": 600,
+      "workers": 4,
+      "cpus": 32,
+      "transport": "shared",
+      "before": {
+        "track": 0,
+        "next": 0,
+        "pending": -1,
+        "mode": 1,
+        "preview": false,
+        "playing": true,
+        "audition": false,
+        "failed": false,
+        "position": 1.0666666666666667,
+        "duration": 53.4751875,
+        "commandTime": 0,
+        "weights": [
+          1,
+          0,
+          0
+        ],
+        "audibleAt": 0,
+        "queuedFrames": 35840,
+        "starvationFrames": 0,
+        "underruns": 0,
+        "consumedFrames": 51200,
+        "maxRenderUs": 12605,
+        "maxCommandLatencyUs": 0
+      },
+      "after": {
+        "track": 0,
+        "next": 0,
+        "pending": -1,
+        "mode": 1,
+        "preview": false,
+        "playing": true,
+        "audition": false,
+        "failed": false,
+        "position": 43.104124999999996,
+        "duration": 53.4751875,
+        "commandTime": 0,
+        "weights": [
+          1,
+          0,
+          0
+        ],
+        "audibleAt": 0,
+        "queuedFrames": 32768,
+        "starvationFrames": 0,
+        "underruns": 0,
+        "consumedFrames": 27737088,
+        "maxRenderUs": 100600,
+        "maxCommandLatencyUs": 0
+      },
+      "minQueuedFrames": 24064,
+      "errors": []
+    }
+  },
+  "limitations": [
+    "Physical playback devices unavailable: PipeWire reports only Dummy Output. No real-device loopback/listening certification.",
+    "Windows, macOS, Android and iOS native builds/devices have not been qualified here.",
+    "Stress diagnostics establish no application underruns, not continuous device output. Allcore and memory runs consumed less audio than wall time, indicating browser clock/scheduling pauses.",
+    "A baseline before/after hardware profile was not captured; legacy/new PCM and isolated legacy render timings are recorded.",
+    "Ten-minute browser steady-state transport stress preceded final capture-bridge/export and capture-diagnostics fixes; subsequent live recording and unit tests cover those fixes. Ten-minute runs did not exercise capture."
+  ],
+  "nativeStress": {
+    "seconds": 600,
+    "ordinaryProducerPriority": true,
+    "results": {
+      "singlecore": {
+        "seconds": 600,
+        "min_queued": 24576,
+        "starvation": 0,
+        "underruns": 0,
+        "consumed": 28045312,
+        "render_us": 11404,
+        "callback_us": 11346,
+        "command_us": 818000
+      },
+      "allcore": {
+        "seconds": 600,
+        "min_queued": 23552,
+        "starvation": 0,
+        "underruns": 0,
+        "consumed": 28325888,
+        "render_us": 28269,
+        "callback_us": 22398,
+        "command_us": 825000
+      },
+      "memory": {
+        "seconds": 600,
+        "min_queued": 23552,
+        "starvation": 0,
+        "underruns": 0,
+        "consumed": 28387328,
+        "render_us": 10361,
+        "callback_us": 23142,
+        "command_us": 815000
+      }
+    },
+    "workload": "Three concurrent dummy-SDL playback processes under combined load: two ordinary-priority competitors on CPU31, 32 nice10 CPU competitors, four nice10 128 MiB memory workers. The singlecore audio process was pinned to CPU31; other two audio processes used all CPUs. These are not isolated scenarios.",
+    "launcherResult": "Parent launcher terminated with signal 15; exit-code manifest unavailable. All three child test logs independently report 600 seconds, 7 passing assertions and SUCCESS. No process exit codes inferred."
+  },
+  "builds": {
+    "native": "Linux x86_64 GCC 15.2, release, pinned SDL 3.4.16: app and tests built.",
+    "browser": "Pinned Emscripten 4.0.15: serial and threaded runtimes and separate music module built; capture-fixed-build.log."
+  }
+}
