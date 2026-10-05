@@ -214,10 +214,11 @@ heading (the static swarm has one page). Run it with white, stripes, spots and
 an isolated patch to review both geometry and paint attachment. Generated files stay
 under `artifacts/`. `python3 tools/skins/make_paint.py <DIR> [--pattern
 checker|stripes|spots|solid] [--color RRGGBB] [--material
-glossy|matte|metallic|hairy|mixed]` writes the colony-v2 pair `<DIR>/paint.png`
+glossy|matte|metallic|hairy|mixed]` writes the colony-v2 pair `<DIR>/paint.webp`
 (512x512 colour atlas, one 256x256 quadrant per model: worker top-left, warrior
-top-right, explorer bottom-left, swarm bottom-right) and `<DIR>/material.png`
-(the matching material-id map). `--pattern stripes`, `spots` and `solid` provide
+top-right, explorer bottom-left, swarm bottom-right) and `<DIR>/material.webp`
+(the matching material-id map). The generator requires Pillow with WebP support
+and also retains PNG source copies for image editing and analysis. `--pattern stripes`, `spots` and `solid` provide
 simple alternative opaque textures; omit the option for a checkerboard with a
 pink registration stripe. `--material mixed` cycles every material for shader checks.
 
@@ -353,7 +354,7 @@ keeping its paint layout; the shipped classic swarm uses no turn.
 
 For a crowded-scene comparison, run `skin-game-preview` with
 `SKIN_PREVIEW_SAVE` pointing to a two-colony save, `GLOB2_SKIN_PREVIEW_DIR`
-pointing to the exported mesh directory containing `paint.png` and `material.png`,
+pointing to the exported mesh directory containing `paint.webp` and `material.webp`,
 `SKIN_PREVIEW_CAPTURE=final.bmp`, and `SKIN_PREVIEW_BENCHMARK=crowd`.
 The tool adds ground and flying units in a 16×16 area around the first colony,
 uses two paint variants, and renders the same changing poses with classic art
@@ -405,7 +406,7 @@ the same texel density. `tools/skins/swarm_metrics.py MESH.gsk... --preview DIR
 --paint PNG` (NumPy; Blender's bundled Python has it) reports texel density,
 visible seams and UV islands as the game camera sees a static mesh, and can
 render shaded previews for review. To see a shape in a real scene, copy
-`data/skins/colony-v1/*.gsk` beside a `paint.png` under `artifacts/`, point
+`data/skins/colony-v1/*.gsk` beside a `paint.webp` under `artifacts/`, point
 `GLOB2_SKIN_PREVIEW_DIR` there and set `GLOB2_SKIN_PREVIEW_SWARM=<id>`; the
 previews above then draw team 0's swarm with that shape, painted from the
 atlas's swarm quadrant. `--paint` takes a 256px swarm paint, such as that

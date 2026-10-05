@@ -79,6 +79,7 @@ public:
 	//! Load `name` into the slot for the given enum track. Convenience wrapper
 	//! over the int-indexed overload so callers don't hard-code track numbers.
 	int loadTrack(const std::string name, MusicTrack track);
+    bool loadTracks(const std::vector<std::pair<std::string, MusicTrack>>& requests);
 
 	void setNextTrack(unsigned i, bool earlyChange=false);
 

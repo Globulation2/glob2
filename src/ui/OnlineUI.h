@@ -55,7 +55,7 @@ Element badge(const std::string &text, GAGCore::Color color);
 // (actions, usually one or two buttons; may be empty).
 Element emptyState(IconRef glyph, const std::string &text, std::vector<Element> actions, const Presentation &p);
 
-// Decoded PNG previews from the instance, by URL. Downloads go through the
+// Decoded WebP previews from the instance, by URL. Downloads go through the
 // platform client (authenticated, so private maps work); failures are kept
 // so a broken preview is not fetched every frame.
 class PreviewImages
@@ -69,8 +69,8 @@ class PreviewImages
 	// called when it arrives.
 	GAGCore::DrawableSurface *get(Online::PlatformClient *client, const std::string &url,
 								  std::function<void()> changed);
-	// PNG bytes from elsewhere (tests, a local file).
-	bool insert(const std::string &url, const std::string &png);
+	// WebP bytes from elsewhere (tests, a local file).
+	bool insert(const std::string &url, const std::string &webp);
 	bool insertFile(const std::string &url, const std::string &path);
 
   private:
@@ -80,6 +80,7 @@ class PreviewImages
 		bool pending = false, failed = false;
 	};
 	std::map<std::string, Entry> entries;
+    std::shared_ptr<void> assetLifetime = std::make_shared<int>(0);
 	// Downloads in flight, cancelled with the cache (its screen).
 	std::unique_ptr<Online::PlatformScope> scope;
 	Online::PlatformScope &scopeFor(Online::PlatformClient &client);

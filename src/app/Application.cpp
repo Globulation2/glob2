@@ -4,6 +4,7 @@
 #include "ui/ThemeCatalog.h"
 #include "FrontendTheme.h"
 #include <Toolkit.h>
+#include <AssetLoader.h>
 #include <StringTable.h>
 #include "GlobalContainer.h"
 #include "GameSessionScreen.h"
@@ -229,8 +230,10 @@ void Application::choose(int choice)
 void Application::installStagedAssets()
 {
 	const bool inMatch = dynamic_cast<GameSessionScreen *>(screens.top()) != nullptr;
-	for (const auto &package : GAGCore::ApplicationHost::takeInstalledAssetPackages())
-	{
+    GAGCore::Toolkit::pollAssets();
+    for (const auto &package : GAGCore::ApplicationHost::takeInstalledAssetPackages())
+    {
+        GAGCore::Toolkit::assets().invalidate();
 		if (package == "game")
 		{
 			// The menu colony and the settings' building artwork use them at once.

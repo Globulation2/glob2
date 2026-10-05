@@ -8,6 +8,7 @@
 #include <SoftwareFramePresenter.h>
 #include <UiScale.h>
 #include <Toolkit.h>
+#include <AssetLoader.h>
 #include <FileManager.h>
 #include <SupportFunctions.h>
 #include <InterfacePresentation.h>
@@ -853,6 +854,7 @@ namespace GAGCore
 			return false;
 		}
 		{
+			eventThread = SDL_GetCurrentThreadID();
 			_gc = this;
 			// Use the effective flags: software-only builds clear USEGPU above.
 			if (optionFlags & USEGPU)
@@ -894,7 +896,7 @@ namespace GAGCore
 			// setup title and icon
 			if (!appIcon.empty())
 			{
-				SDL_Surface *iconSurface = IMG_Load(appIcon.c_str());
+				SDL_Surface *iconSurface = Toolkit::assets().loadImageSurface(appIcon);
 				SDL_SetWindowIcon(window, iconSurface);
 				SDL_DestroySurface(iconSurface);
 			}
@@ -940,7 +942,6 @@ namespace GAGCore
                 optionFlags &= ~FULLSCREEN;
             }
 			installMacScrollMonitor(window);
-			eventThread = SDL_GetCurrentThreadID();
 			if (nativeDesktop && !refreshNativeWindow()) return false;
 			if (!renderer || nativeSoftware) {
 				SDL_AddEventWatch(watchWindow, this);

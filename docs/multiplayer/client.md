@@ -158,8 +158,8 @@ and `GET /api/v1/players/{id}/matches` (a `MatchList`) for the list;
 leaves out. Replays come from `GET /api/v1/matches/{id}/artifacts/replay` and
 open in the replay viewer; deep links go to `<origin>/players/<id>`,
 `<origin>/matches/<id>` and `<origin>/maps/<id>`. Map previews are the server's
-PNGs (`MapVersionInfo.previewUrl`), fetched with `PlatformClient::restRaw` and
-decoded with SDL_image. Uploads send the map's uncompressed bytes to
+lossless WebP renditions (`MapVersionInfo.previewUrl`), fetched with
+`PlatformClient::restRaw` and decoded through the shared asset loader. Uploads send the map's uncompressed bytes to
 `POST /api/v1/maps/{id}/versions?simVersion=<key>` and poll the version until
 `validation` is `valid` or `invalid` and the preview is no longer pending
 (`Online::MapShare`, `src/online/MapCatalog.h`).

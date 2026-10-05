@@ -445,6 +445,25 @@ static int dumpTiled(const std::string& mapName, int rx, int ry, int colonies, i
 	return 0;
 }
 
+namespace {
+class AssetStartupLoop : public GAGCore::ApplicationHost::Loop {
+    std::shared_ptr<bool> cancelled;
+public:
+    explicit AssetStartupLoop(std::shared_ptr<bool> value) : cancelled(std::move(value)) {}
+    bool frame(std::uint32_t, const std::vector<SDL_Event>& events) override {
+        for (const auto &event : events) if (event.type == SDL_EVENT_QUIT) *cancelled = true;
+        return !*cancelled && !globalContainer->finishAssetLoading();
+    }
+    std::uint32_t delay(std::uint32_t) override {
+#ifdef __EMSCRIPTEN__
+        return GAGCore::ApplicationHost::AnimationFrameDelay;
+#else
+        return 1;
+#endif
+    }
+};
+}
+
 int Glob2::run(int argc, char *argv[])
 {
 	// --generate-map has a native file/report interface and a structured job interface.
@@ -462,6 +481,7 @@ int Glob2::run(int argc, char *argv[])
 
 	globalContainer=new GlobalContainer();
 	globalContainer->parseArgs(argc, argv);
+    globalContainer->deferAssetLoading = !globalContainer->runNoX && !globalContainer->runTestGames && !globalContainer->runTestMapGeneration;
 	globalContainer->load();
 	if (!globalContainer->recordingPath.empty() || !globalContainer->videoshotName.empty())
 	{
@@ -543,11 +563,16 @@ int Glob2::run(int argc, char *argv[])
 		return ret;
 	}
 
-    GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
-        GAGCore::DrawableSurface::printFinishingText();
-        closeGameResources();
-        GAGCore::ApplicationHost::exited(0);
-    });
+    auto cancelled = std::make_shared<bool>(false);
+    auto launch = [cancelled] {
+        if (*cancelled) { closeGameResources(); GAGCore::ApplicationHost::exited(0); return; }
+        GAGCore::ApplicationHost::run(std::make_unique<Application>(), [] {
+            GAGCore::DrawableSurface::printFinishingText();
+            closeGameResources();
+            GAGCore::ApplicationHost::exited(0);
+        });
+    };
+    GAGCore::ApplicationHost::run(std::make_unique<AssetStartupLoop>(cancelled), launch);
     return HOSTED_RUN;
 
 

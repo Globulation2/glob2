@@ -1,3 +1,4 @@
+import { canonicalMaterialMap, canonicalSkinImage } from './images.ts';
 import { readFile } from 'node:fs/promises';
 import { putContent } from '@glob2/core';
 import type { ApiServices } from '../services.ts';
@@ -23,8 +24,14 @@ export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'b
   for (const preset of PRESETS) {
     const asset = (name: string) =>
       readFile(new URL(`../../assets/skins/${name}.png`, import.meta.url));
-    const texture = await putContent(blobs, await asset(preset.sku));
-    const material = await putContent(blobs, await asset(`${preset.sku}-material`));
+    const texture = await putContent(
+      blobs,
+      await canonicalSkinImage((await asset(preset.sku)).toString('base64')),
+    );
+    const material = await putContent(
+      blobs,
+      await canonicalMaterialMap((await asset(`${preset.sku}-material`)).toString('base64')),
+    );
     const content: SkinContent = {
       skinId: preset.skinId,
       textureSha256: texture.sha256,
@@ -41,7 +48,7 @@ export async function seedSkinPresets({ db, blobs }: Pick<ApiServices, 'db' | 'b
             sha256: stored.sha256,
             size: stored.size,
             storage_key: stored.key,
-            content_type: 'image/png',
+            content_type: 'image/webp',
             visibility: 'public',
           })
           .onConflict((oc) => oc.column('sha256').doNothing())

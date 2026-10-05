@@ -141,8 +141,8 @@ GlobalContainer::~GlobalContainer(void)
 
 void GlobalContainer::updateLoadProgressScreen(int value)
 {
-	// The terrain tiles come with the game sprites, which the browser installs
-	// after the main menu. Its canvas is hidden until then anyway.
+	// Terrain may still be preparing; the title remains visible while
+	// frame polling finishes the required game families.
 	if (terrain)
 	{
 		unsigned randomSeed = 1;
@@ -173,6 +173,8 @@ void GlobalContainer::loadClient(void)
 	// Native builds have every data package; the browser installs game sprites
 	// before startup and menu music afterward (scons/web_assets.py).
 	const bool gameData = GAGCore::ApplicationHost::assetPackageReady("game");
+    buildingsTypes.init();
+    IntBuildingType::init();
 	if (!runNoX)
 	{
 		// create graphic context
@@ -201,14 +203,16 @@ void GlobalContainer::loadClient(void)
 			terrain = Toolkit::getSprite("data/gfx/terrain");
 		updateLoadProgressScreen(0);
 
+        if (gameData) requestGameGraphics();
+        Toolkit::pollAssets(4);
+
 		// create mixer
 		mix = std::make_unique<SoundMixer>(settings.musicVolume, settings.voiceVolume, settings.mute);
 		// Track slots must match the MusicTrack enum order. Engine::run may
 		// later overwrite the InGame* slots with a randomly chosen music dir.
-		loadMenuMusic();
-		mix->loadTrack("data/zik/original/a1.opus",      MusicTrack::InGameDefault);
-		mix->loadTrack("data/zik/original/a2.opus",      MusicTrack::BuildingEvent);
-		mix->loadTrack("data/zik/original/a3.opus",      MusicTrack::WarEvent);
+        mix->loadTracks({{"data/zik/original/a1.opus", MusicTrack::InGameDefault},
+            {"data/zik/original/a2.opus", MusicTrack::BuildingEvent}, {"data/zik/original/a3.opus", MusicTrack::WarEvent}});
+        loadMenuMusic();
 		mix->setNextTrack(MusicTrack::Intro);
 		mix->setNextTrack(MusicTrack::Menu);
 		
@@ -218,11 +222,6 @@ void GlobalContainer::loadClient(void)
 		updateLoadProgressScreen(15);
 	}
 	
-	// initialize building types: resolve prev/next-level links for the static
-	// table baked into game/entities/buildings*.cpp (sprites come with the
-	// game graphics below).
-	buildingsTypes.init();
-	IntBuildingType::init();
 	
 	if (!runNoX)
 	{
@@ -267,13 +266,20 @@ void GlobalContainer::loadClient(void)
 		littleFont->setStyle(Font::Style(Font::STYLE_NORMAL, GAGGUI::Style::style->textColor));
 
 		updateLoadProgressScreen(50);
-		if (gameData)
-			loadGameGraphics(true);
+        if (gameData && !deferAssetLoading) {
+            while (!ensureGameGraphics()) {
+                updateLoadProgressScreen(50 + Toolkit::assetProgress() / 2);
+                SDL_PumpEvents();
+#ifndef __EMSCRIPTEN__
+                SDL_Delay(1);
+#endif
+            }
+        }
 		
 		// use custom style
 		Style::style = new Glob2Style;
 
-		updateLoadProgressScreen(100);
+		updateLoadProgressScreen(gameGraphics ? 100 : 50 + Toolkit::assetProgress() / 2);
 	}
 }
 
@@ -331,14 +337,40 @@ void GlobalContainer::loadGameGraphics(bool showProgress)
 	gameGraphics = true;
 }
 
+void GlobalContainer::requestGameGraphics()
+{
+    if (gameGraphicsRequested) return;
+    for (const char *name : {"terrain", "water", "cloud", "black", "shade", "ressource", "ressourcemini",
+        "mapicon", "area-clearing", "area-forbidden", "area-guard", "area-farm", "bullet", "explosion", "death",
+        "unit", "unitmini", "gamegui", "brush", "magiceffect", "particle", "guitheme"})
+        Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
+    for (size_t i = 0; i < buildingsTypes.size(); ++i) {
+        const auto *type = buildingsTypes.get(i);
+        if (type->type == "null") continue;
+        Toolkit::requestSprite(type->gameSprite);
+        if (type->miniSpriteImage >= 0) Toolkit::requestSprite(type->miniSprite);
+    }
+    gameGraphicsRequested = true;
+}
+bool GlobalContainer::finishAssetLoading()
+{
+    if (!ensureGameGraphics()) {
+        updateLoadProgressScreen(50 + Toolkit::assetProgress() / 2);
+        return false;
+    }
+    return true;
+}
+
 bool GlobalContainer::ensureGameGraphics(void)
 {
 	if (runNoX || gameGraphics)
 		return true;
 	if (!GAGCore::ApplicationHost::assetPackageReady("game"))
 		return false;
-	loadGameGraphics(false);
-	return true;
+    requestGameGraphics();
+    if (!Toolkit::pollAssets(4)) return false;
+    loadGameGraphics(false);
+    return true;
 }
 
 GAGCore::CooperativeTask GlobalContainer::gameGraphicsTask(void)
@@ -354,8 +386,7 @@ bool GlobalContainer::loadMenuMusic(void)
 		return true;
 	if (!mix || !GAGCore::ApplicationHost::assetPackageReady("menu-music"))
 		return false;
-	mix->loadTrack("data/zik/intro.opus",            MusicTrack::Intro);
-	mix->loadTrack("data/zik/menu.opus",             MusicTrack::Menu);
+    mix->loadTracks({{"data/zik/intro.opus", MusicTrack::Intro}, {"data/zik/menu.opus", MusicTrack::Menu}});
 	menuMusic = true;
 	return true;
 }

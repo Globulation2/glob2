@@ -7,12 +7,32 @@
 #include <StreamBackend.h>
 #include <limits>
 #include <utility>
+#include <Toolkit.h>
+#include <filesystem>
+#include <stdexcept>
 
 namespace GAGCore
 {
 namespace { std::atomic<std::uint64_t> nextIdentity{1}; }
+AssetLoader::Handle<SkinMesh> requestSkinMesh(AssetLoader& loader, const std::string& path)
+{
+    auto bytes = loader.requestBytes(path);
+    return loader.requestEstimated<SkinMesh>("mesh:" + path, {bytes.dependency()}, [bytes] {
+        auto input = bytes.get();
+        MemoryStreamBackend stream(input->data(), input->size());
+        auto mesh = std::make_shared<SkinMesh>(); std::string error;
+        if (!mesh->load(stream, error)) throw std::runtime_error(error);
+        return mesh;
+    }, [bytes] { return bytes.get()->size() * 2; });
+}
 bool SkinMesh::load(const std::string &path, std::string &error)
 {
+    if (Toolkit::getFileManager()) {
+        auto request = requestSkinMesh(Toolkit::assets(), std::filesystem::absolute(path).string());
+        auto mesh = Toolkit::assets().wait(request);
+        if (!mesh) { error = request.error(); return false; }
+        *this = *mesh; error.clear(); return true;
+    }
     FileStreamBackend input(std::fopen(path.c_str(), "rb"));
     return load(input, error);
 }

@@ -77,7 +77,7 @@ void GameGUI::requestPause(bool pause)
 
 GameGUI::~GameGUI()
 {
-	if (!globalContainer->runNoX) Sprite::setHighResolution(false);
+	if (!globalContainer->runNoX) Sprite::requestHighResolution(false);
 	for (ParticleSet::iterator it = particles.begin(); it != particles.end(); ++it)
 		delete *it;
 	if (persistPreferences && globalContainer->settings.rememberUnit)
@@ -98,7 +98,7 @@ void GameGUI::init()
 	torusView.reset();
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;
-	if (!globalContainer->runNoX) Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
+	if (!globalContainer->runNoX) Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
     touch = std::make_unique<GameGUITouch>(*this);
 	notmenu = false;
 	isRunning=true;

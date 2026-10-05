@@ -11,6 +11,7 @@
 #include <cmath>
 #include <iostream>
 #include <utility>
+#include <AssetLoader.h>
 
 #ifdef HAVE_FRIBIDI
 #include <fribidi/fribidi.h>
@@ -115,8 +116,18 @@ TTF_Font *TrueTypeFont::openFont(const std::string &filename, unsigned size)
 	static int kerningWorks = -1;
 	auto open = [&](unsigned openSize) -> TTF_Font *
 	{
-		SDL_IOStream *stream = Toolkit::getFileManager()->open(filename, "rb");
-		return stream ? TTF_OpenFontIO(stream, 1, openSize) : NULL;
+        auto source = Toolkit::assets().requestBytes(filename);
+        auto bytes = Toolkit::assets().wait(source);
+        if (!bytes) return nullptr;
+        SDL_IOStream *stream = SDL_IOFromConstMem(bytes->data(), bytes->size());
+        if (!stream) return nullptr;
+        using Source = AssetLoader::Handle<AssetLoader::Bytes>;
+        auto *owned = new Source(std::move(source));
+        if (!SDL_SetPointerPropertyWithCleanup(SDL_GetIOProperties(stream), "glob2.font-source", owned,
+                [](void*, void *value) { delete static_cast<Source*>(value); }, nullptr)) {
+            SDL_CloseIO(stream); return nullptr;
+        }
+        return TTF_OpenFontIO(stream, true, openSize);
 	};
 	TTF_Font *opened = open(size);
 	if (!opened)

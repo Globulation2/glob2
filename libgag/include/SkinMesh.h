@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <AssetLoader.h>
 
 namespace GAGCore
 {
@@ -26,6 +27,7 @@ struct SkinMesh
     bool load(const std::string &path, std::string &error);
     bool load(StreamBackend &input, std::string &error);
 };
+AssetLoader::Handle<SkinMesh> requestSkinMesh(AssetLoader& loader, const std::string& path);
 // colony-v2 skins share one 512x512 colour atlas and one material-id map per
 // team; each model's UVs map into its own quadrant (see SkinRegion).
 enum SkinRegion : std::uint8_t { SkinRegionWorker = 0, SkinRegionWarrior = 1, SkinRegionExplorer = 2, SkinRegionSwarm = 3 };

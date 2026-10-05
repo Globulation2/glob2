@@ -6,6 +6,8 @@
 #include "MusicStream.h"
 #include "Order.h"
 #include <Toolkit.h>
+#include <AssetLoader.h>
+#include <filesystem>
 #include <FileManager.h>
 using namespace GAGCore;
 #include <iostream>
@@ -84,6 +86,63 @@ static OggOpusFile *openMusicFile(FILE *fp)
 		return nullptr;
 	}
 	return track;
+}
+
+namespace {
+struct PreparedMusicTrack {
+    mutable OggOpusFile *track = nullptr;
+    explicit PreparedMusicTrack(OggOpusFile *value) : track(value) {}
+    ~PreparedMusicTrack() { if (track) op_free(track); }
+    OggOpusFile *release() const { return std::exchange(track, nullptr); }
+};
+using TrackRequest = GAGCore::AssetLoader::Handle<PreparedMusicTrack>;
+TrackRequest requestMusicTrack(const std::string& path)
+{
+    std::vector<std::string> directories;
+    auto *files = Toolkit::getFileManager();
+    for (unsigned i = 0; i < files->getDirCount(); ++i) directories.push_back(files->getDir(i));
+    static size_t sequence = 0;
+    // A streaming decoder has a mutable cursor and must never be shared between
+    // mixer slots. The service still schedules all opens on its shared read pool.
+    return Toolkit::assets().requestRead<PreparedMusicTrack>("music:" + path + ':' + std::to_string(++sequence),
+        [path, directories] {
+            FILE *file = nullptr;
+            if (std::filesystem::path(path).is_absolute()) file = std::fopen(path.c_str(), "rb");
+            else for (const auto &directory : directories)
+                if ((file = std::fopen((directory + '/' + path).c_str(), "rb"))) break;
+            if (!file) throw std::runtime_error("Cannot open music: " + path);
+            std::unique_ptr<OggOpusFile, decltype(&op_free)> track(openMusicFile(file), op_free);
+            if (!track) throw std::runtime_error("Invalid stereo Opus track: " + path);
+            auto prepared = std::make_shared<PreparedMusicTrack>(track.get());
+            track.release();
+            return prepared;
+        });
+}
+int installMusicTrack(SoundMixer& mixer, TrackRequest& request, int index)
+{
+    if (!Toolkit::assets().wait(request)) return request.error().starts_with("Cannot open music:") ? -1 : -2;
+    auto opened = request.take();
+    if (!opened) return -2;
+    // Keep ownership and the audio lock scoped until publication succeeds. A
+    // vector allocation failure must neither leak the decoder nor leave audio locked.
+    struct AudioLock {
+        SDL_AudioStream *stream;
+        explicit AudioLock(SDL_AudioStream *value) : stream(value) {
+            if (stream && !SDL_LockAudioStream(stream)) throw std::runtime_error(SDL_GetError());
+        }
+        ~AudioLock() { if (stream) SDL_UnlockAudioStream(stream); }
+    } lock(mixer.audioStream);
+    if (index < 0) {
+        mixer.tracks.push_back(opened->track);
+        index = int(mixer.tracks.size()) - 1;
+    } else {
+        if (size_t(index) >= mixer.tracks.size()) mixer.tracks.resize(index + 1, nullptr);
+        if (mixer.tracks[index]) op_free(mixer.tracks[index]);
+        mixer.tracks[index] = opened->track;
+    }
+    opened->release();
+    return index;
+}
 }
 
 // Fill native-endian, interleaved stereo samples. Decoder returns frames, not
@@ -385,44 +444,19 @@ SoundMixer::~SoundMixer()
 
 int SoundMixer::loadTrack(const std::string name, int index)
 {
-	FILE* fp = Toolkit::getFileManager()->openFP(name);
-	if (!fp)
-	{
-		std::cerr << "SoundMixer : File " << name << " can't be opened for reading." << std::endl;
-		return -1;
-	}
-
-	auto *track = openMusicFile(fp);
-	if (!track)
-	{
-		std::cerr << "SoundMixer: File " << name << " is not a usable stereo Ogg Opus stream." << std::endl;
-		return -2;
-	}
-
-	if (audioStream) SDL_LockAudioStream(audioStream);
-	if (index >= 0 && index< (int)tracks.size())
-	{
-		if (tracks[index])
-		{
-			op_free(tracks[index]);
-		}
-		tracks[index] = track;
-	}
-	else if (index >= 0)
-	{
-		// A slot whose earlier tracks are missing (the browser installs the
-		// menu music after startup) keeps its index; empty slots never play.
-		tracks.resize(index + 1, nullptr);
-		tracks[index] = track;
-	}
-	else
-	{
-		tracks.push_back(track);
-		index = (int)tracks.size()-1;
-	}
-	if (audioStream) SDL_UnlockAudioStream(audioStream);
-	
-	return index;
+    auto request = requestMusicTrack(name);
+    const int result = installMusicTrack(*this, request, index);
+    if (result < 0) std::cerr << "SoundMixer: " << request.error() << std::endl;
+    return result;
+}
+bool SoundMixer::loadTracks(const std::vector<std::pair<std::string, MusicTrack>>& requests)
+{
+    std::vector<TrackRequest> pending;
+    for (const auto &[path, track] : requests) pending.push_back(requestMusicTrack(path));
+    bool success = true;
+    for (size_t i = 0; i < pending.size(); ++i)
+        success = installMusicTrack(*this, pending[i], int(requests[i].second)) >= 0 && success;
+    return success;
 }
 
 // The track selection is kept even while the device is closed, so setVolume()
@@ -566,27 +600,18 @@ namespace
 	//! moods at the same position. On failure `trio` holds no usable set.
 	bool openMusicSet(const std::string& name, MusicSetTrio& trio)
 	{
-		ogg_int64_t frames = 0;
-		for (unsigned i = 0; i < trio.size(); ++i)
-		{
-			const std::string path = "data/zik/" + name + "/a" + std::to_string(i + 1) + ".opus";
-			FILE *file = Toolkit::getFileManager()->openFP(path);
-			if (!file)
-				return false;
-			trio[i].reset(openMusicFile(file));
-			if (!trio[i])
-			{
-				std::cerr << "SoundMixer: music set " << name << " has an unusable " << path << std::endl;
-				return false;
-			}
-			const auto length = op_pcm_total(trio[i].get(), -1);
-			if (i > 0 && length != frames)
-			{
-				std::cerr << "SoundMixer: music set " << name << " has mismatched lengths" << std::endl;
-				return false;
-			}
-			frames = length;
-		}
+        std::vector<TrackRequest> requests;
+        for (unsigned i = 0; i < trio.size(); ++i)
+            requests.push_back(requestMusicTrack("data/zik/" + name + "/a" + std::to_string(i + 1) + ".opus"));
+        ogg_int64_t frames = 0;
+        for (unsigned i = 0; i < trio.size(); ++i) {
+            if (!Toolkit::assets().wait(requests[i])) return false;
+            auto opened = requests[i].take(); if (!opened) return false;
+            trio[i].reset(opened->release());
+            const auto count = op_pcm_total(trio[i].get(), -1);
+            if (i && count != frames) return false;
+            frames = count;
+        }
 		return true;
 	}
 }

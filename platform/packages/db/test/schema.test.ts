@@ -13,6 +13,7 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  image_webp_renditions: ['source_sha256', 'webp_sha256'],
   ais: [
     'id',
     'owner_account_id',
@@ -793,6 +794,7 @@ describe('migrations', () => {
         '0038_skin_view_angle',
         '0039_music',
         '0040_ai_library',
+        '0041_image_webp_renditions',
       ]);
       expect(
         (
@@ -862,7 +864,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(18);
+      expect(upgraded).toHaveLength(19);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -996,6 +998,7 @@ describe('migrations', () => {
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
         ['0040_ai_library', 'Success'],
+        ['0041_image_webp_renditions', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1126,6 +1129,7 @@ describe('migrations', () => {
         ['0038_skin_view_angle', 'Success'],
         ['0039_music', 'Success'],
         ['0040_ai_library', 'Success'],
+        ['0041_image_webp_renditions', 'Success'],
       ]);
       expect(
         await db

@@ -37,8 +37,10 @@ public:
 private:
 	void updateLoadProgressScreen(int value);
 	void loadGameGraphics(bool showProgress);
+    void requestGameGraphics();
 	void loadGameFonts();
 	bool gameGraphics = false;
+    bool gameGraphicsRequested = false;
 	bool menuMusic = false;
 
 public:
@@ -47,6 +49,8 @@ public:
 
 	void parseArgs(int argc, char *argv[]);
 	void loadClient(void);
+    bool deferAssetLoading = false;
+    bool finishAssetLoading();
 	//! Load the in-game sprites (terrain, units, buildings, game interface) if
 	//! they are not loaded yet. Native and browser builds load them in loadClient;
 	//! hosts staging sprites later return false until

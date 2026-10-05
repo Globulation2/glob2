@@ -1,6 +1,7 @@
 // REST for the map catalog (/api/v1/maps) and its moderation
 // (/api/v1/admin/maps, /api/v1/admin/map-reports). Rules and views are in
 // catalog.ts; engine-job results are applied by the worker (play/catalog.ts).
+import { webpRendition } from '../http/webpRendition.ts';
 import { randomUUID } from 'node:crypto';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { sql } from 'kysely';
@@ -568,7 +569,7 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
   );
 
   app.get<{ Params: { id: string; hash: string } }>(
-    '/api/v1/maps/:id/versions/:hash/preview.png',
+    '/api/v1/maps/:id/versions/:hash/preview.webp',
     async (request, reply) => {
       const viewer = await viewerOf(request);
       const map = await visibleMap(db, request.params.id, viewer);
@@ -583,8 +584,8 @@ export async function mapCatalogRoutes(app: FastifyInstance, identity: Identity)
       }
       return sendBlob(
         reply,
-        row.preview_hash,
-        'image/png',
+        await webpRendition(db, blobs, row.preview_hash),
+        'image/webp',
         map.visibility !== 'private' && !map.hidden,
       );
     },

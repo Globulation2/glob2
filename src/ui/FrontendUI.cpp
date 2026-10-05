@@ -8,6 +8,7 @@
 #include <GUIStyle.h>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include <AssetLoader.h>
 #include <cstdio>
 #include <cstdlib>
 #include <array>
@@ -46,11 +47,20 @@ IconRef uiIcon(UIIcon icon)
 		return asset;
 	auto asset = std::make_shared<IconAsset>();
 	asset->name = name;
-	for (int pixels : {20, 24, 40, 48, 60, 72})
+	constexpr std::array rasterSizes{20, 24, 40, 48, 60, 72};
+	const auto rasterPath = [&](int pixels) {
+		return "data/gui/tabler-" + asset->name + "-" + std::to_string(pixels) + ".webp";
+	};
+	// Keep queued sources alive until all raster surfaces have adopted their pixels.
+	std::vector<GAGCore::AssetLoader::Handle<GAGCore::AssetImage>> pending;
+	for (int pixels : rasterSizes)
+	{
+		pending.push_back(GAGCore::Toolkit::assets().requestImage(rasterPath(pixels)));
+	}
+	for (int pixels : rasterSizes)
 	{
 		auto surface = std::make_shared<GAGCore::DrawableSurface>(1, 1);
-		const std::string path =
-			"data/gui/tabler-" + asset->name + "-" + std::to_string(pixels) + ".webp";
+		const std::string path = rasterPath(pixels);
 		if (surface->loadImage(path))
 			asset->rasters.push_back({pixels, std::move(surface)});
 		else

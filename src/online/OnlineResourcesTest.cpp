@@ -206,7 +206,7 @@ TEST_SUITE("OnlineResources")
 		CHECK(map->map.ownerName == "Alice");
 		REQUIRE(map->map.latestVersion);
 		CHECK(map->map.latestVersion->teamCount == 2);
-		CHECK(map->map.latestVersion->previewUrl.find("preview.png") != std::string::npos);
+		CHECK(map->map.latestVersion->previewUrl.find("preview.webp") != std::string::npos);
 		CHECK(map->map.plays == 12);
 		CHECK(!map->versions.empty());
 
