@@ -139,9 +139,10 @@ test('worker stalls consume the cushion and recover once after exhaustion', asyn
     .poll(() => page.evaluate(() => Module.glob2Music.status.consumedFrames || 0))
     .toBeGreaterThan(48000);
   for (const ms of [100, 250, 400, 1500]) {
+    // Wait for at least the 20-block refill cushion before injecting a stall.
     await expect
       .poll(() => page.evaluate(() => Module.glob2Music.status.queuedFrames))
-      .toBeGreaterThanOrEqual(30000);
+      .toBeGreaterThanOrEqual(20 * 1024);
     const before = await page.evaluate(() => Module.glob2Music.status);
     await page.evaluate(
       (ms) =>

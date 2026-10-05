@@ -66,9 +66,11 @@ waits for its event loop.
 | AudioWorklet | Consume prepared PCM, resample continuously to the device rate, apply gain and recovery ramps, publish bounded capture/diagnostics | Decode, perform I/O, wait for locks or allocate unbounded queues |
 
 The worker runs the same `Music::Producer` as native playback. It prepares
-1,024-frame 48 kHz stereo blocks, maintaining a 36-block (768 ms) target with a
-24-block refill threshold and a hard 48-block capacity. Volume and mute are
+1,024-frame 48 kHz stereo blocks, maintaining a 24-block (512 ms) target with a
+20-block (427 ms) refill threshold and a hard 48-block capacity. Volume and mute are
 applied at consumption, so they do not wait for the prepared queue to drain.
+The half-second target rounds up to whole blocks; the refill threshold retains
+a 400 ms producer-stall cushion when at least 20 blocks remain queued.
 
 Isolated browsers with SharedArrayBuffer use an atomic ring; other browsers use
 a direct MessageChannel with recycled transferable buffers. Shared transport has

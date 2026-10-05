@@ -20,7 +20,7 @@ function setup(rate = 48000) {
   vm.runInContext(fs.readFileSync(require.resolve('../music-output.js'), 'utf8'), context);
   const processor = new Processor();
   processor.audio = { postMessage: (m) => recycled.push(m.recycle) };
-  function fill(count = 36, value = 12000, generation = processor.generation) {
+  function fill(count = 24, value = 12000, generation = processor.generation) {
     for (let i = 0; i < count; i++) {
       const pcm = new Int16Array(2048);
       pcm.fill(value);
@@ -40,10 +40,12 @@ function setup(rate = 48000) {
   }
   return { processor, fill, render, messages, recycled };
 }
-test('400ms producer stall preserves prepared audio at both device rates', () => {
+test('400ms producer stall at the refill threshold preserves audio at both device rates', () => {
   for (const rate of [44100, 48000]) {
     const { processor: p, fill, render } = setup(rate);
     fill();
+    // Reach the producer refill threshold before withholding all further PCM.
+    while (p.count > 20) render();
     for (let n = 0; n < Math.ceil((rate * 0.4) / 128); n++) render();
     assert.equal(p.underruns, 0);
     assert.equal(p.starvationFrames, 0);
@@ -52,10 +54,10 @@ test('400ms producer stall preserves prepared audio at both device rates', () =>
 });
 test('undersupply waits for target and starvation recovers once', () => {
   const { processor: p, fill, render } = setup();
-  fill(24);
+  fill(23);
   render();
   assert.equal(p.consumedFrames, 0);
-  fill(12);
+  fill(1);
   for (let n = 0; n < 310; n++) render();
   assert.equal(p.underruns, 1);
   assert.ok(render()[0].every((n) => n === 0));
@@ -69,11 +71,11 @@ test('generation resets recycle credits and reject stale packets', () => {
   fill();
   render();
   p.receive({ reset: true, generation: 1 });
-  assert.equal(recycled.length, 36);
+  assert.equal(recycled.length, 24);
   fill(1, 1000, 0);
-  assert.equal(recycled.length, 37);
+  assert.equal(recycled.length, 25);
   assert.equal(p.count, 0);
-  fill(36, -12000, 1);
+  fill(24, -12000, 1);
   render(1024);
   render(1024);
   assert.ok(render()[0].every((n) => n < 0));
@@ -88,7 +90,7 @@ test('mute is immediate and visibility freezes consumption', () => {
   p.port.onmessage({ data: { hidden: true } });
   render();
   assert.equal(p.consumedFrames, before);
-  fill(36 - p.count);
+  fill(24 - p.count);
   p.port.onmessage({ data: { hidden: false, gain: 1 } });
   render();
   assert.ok(p.consumedFrames > before);
@@ -99,7 +101,7 @@ test('queue is bounded and resampling does not drift over block boundaries', () 
     fill(49);
     assert.equal(p.count, 48);
     for (let n = 0; n < 1000; n++) {
-      if (p.count < 24) fill(36 - p.count);
+      if (p.count <= 20) fill(24 - p.count);
       render();
     }
     assert.ok(Math.abs(p.consumedFrames - (128000 * 48000) / rate) < 2);
@@ -118,11 +120,11 @@ test('shared transport needs no message delivery to keep supplying audio', () =>
     pcm = new Int16Array(shared.pcm);
   p.port.onmessage({ data: { shared } });
   pcm.fill(10000);
-  Atomics.store(control, 1, 36);
+  Atomics.store(control, 1, 24);
   for (let n = 0; n < 2000; n++) {
     const read = Atomics.load(control, 0),
       write = Atomics.load(control, 1);
-    if (write - read < 24) Atomics.store(control, 1, read + 36);
+    if (write - read <= 20) Atomics.store(control, 1, read + 24);
     render();
   }
   assert.equal(p.underruns, 0);
@@ -157,15 +159,15 @@ test('preview pause retains the exact next sample and cursor at both rates and t
           const pcm = new Int16Array(buffers.pcm),
             metadata = new Float64Array(buffers.metadata);
           for (let i = 0; i < pcm.length; i++) pcm[i] = (i % 24000) - 12000;
-          for (let i = 0; i < 36; i++) {
+          for (let i = 0; i < 24; i++) {
             metadata[i * 16 + 4] = metadata[i * 16 + 5] = 1;
             metadata[i * 16 + 8] = (i * 1024) / 48000;
             metadata[i * 16 + 9] = 60;
           }
           p.port.onmessage({ data: { shared: buffers } });
-          Atomics.store(new Int32Array(buffers.control), 1, 36);
+          Atomics.store(new Int32Array(buffers.control), 1, 24);
         } else
-          for (let i = 0; i < 36; i++) {
+          for (let i = 0; i < 24; i++) {
             const pcm = new Int16Array(2048);
             for (let j = 0; j < pcm.length; j++) pcm[j] = ((i * 2048 + j) % 24000) - 12000;
             p.receive({
@@ -208,7 +210,7 @@ test('visibility rebuffering is intentional silence, not producer starvation', (
   render(1024);
   assert.equal(p.starvationFrames, 0);
   assert.equal(p.underruns, 0);
-  fill(36 - p.count);
+  fill(24 - p.count);
   render();
   assert.equal(p.buffering, false);
 });
@@ -227,7 +229,7 @@ test('paused generation changes never replay the old audible tail', () => {
       pcm = new Int16Array(buffers.pcm);
       p.port.onmessage({ data: { shared: buffers } });
       pcm.fill(12000);
-      Atomics.store(control, 1, 36);
+      Atomics.store(control, 1, 24);
     } else fill();
     render(1536);
     p.receive({ paused: true });
@@ -239,8 +241,8 @@ test('paused generation changes never replay the old audible tail', () => {
       render(); // acknowledge/discard before replacing shared slots
       if (shared) {
         pcm.fill(value);
-        Atomics.store(control, 1, Atomics.load(control, 0) + 36);
-      } else fill(36, value, generation);
+        Atomics.store(control, 1, Atomics.load(control, 0) + 24);
+      } else fill(24, value, generation);
       p.receive({ paused: false });
       // Startup may remain silent until prefill/fade completes; samples with the old sign
       // must never appear, even when reset is repeated while paused.
