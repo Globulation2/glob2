@@ -12,7 +12,7 @@ public:
 	bool load(const std::string& path = "data/menu/colony.bin");
 	void update(Uint64 now, bool visible = true);
 	void pause();
-	void draw(int width, int height);
+	void draw(int width, int height, bool showStatus = true);
 	bool ready() const { return bool(game); }
 	Uint32 tick() const { return game ? game->stepCounter : 0; }
 	Uint32 checksum() const;

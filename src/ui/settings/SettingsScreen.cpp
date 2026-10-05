@@ -15,7 +15,7 @@
 using namespace GAGCore;
 using namespace Glob2UI;
 
-SettingsScreen::SettingsScreen() : gameKeys(GameGUIShortcuts), editorKeys(MapEditShortcuts) {}
+SettingsScreen::SettingsScreen(GAGGUI::ScreenStack* value) : screens(value), gameKeys(GameGUIShortcuts), editorKeys(MapEditShortcuts) {}
 
 void SettingsScreen::custom(const std::string &id, std::function<Element(const Presentation &)> render)
 {

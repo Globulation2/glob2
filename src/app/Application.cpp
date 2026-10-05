@@ -202,7 +202,7 @@ void Application::choose(int choice)
 		singlePlayer.load();
 		break;
 	case MainMenuScreen::GAME_SETUP:
-		screens.push(std::make_unique<SettingsScreen>());
+		screens.push(std::make_unique<SettingsScreen>(&screens));
 		break;
 	case MainMenuScreen::CREDITS:
 		screens.push(std::make_unique<CreditScreen>());

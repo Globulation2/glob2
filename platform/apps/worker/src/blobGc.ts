@@ -42,6 +42,7 @@ export async function collectBlobs(
         AND NOT EXISTS (SELECT 1 FROM colony_skin_versions v WHERE v.texture_sha256 = c.sha256 OR v.material_sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM ai_versions v WHERE v.hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM ai_validations v WHERE v.hash = c.sha256)
+        AND NOT EXISTS (SELECT 1 FROM music_assets m WHERE m.sha256 = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM map_versions v WHERE v.hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM map_versions v WHERE v.preview_hash = c.sha256)
         AND NOT EXISTS (SELECT 1 FROM match_artifacts a WHERE a.blob_sha256 = c.sha256)

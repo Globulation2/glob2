@@ -75,6 +75,13 @@
     "MatchTicketClaims": "schemas/MatchTicketClaims.schema.json",
     "MatchTicketHeader": "schemas/MatchTicketHeader.schema.json",
     "ModerateSkinRequest": "schemas/ModerateSkinRequest.schema.json",
+    "MusicBatch": "schemas/MusicBatch.schema.json",
+    "MusicConvert": "schemas/MusicConvert.schema.json",
+    "MusicList": "schemas/MusicList.schema.json",
+    "MusicMetadata": "schemas/MusicMetadata.schema.json",
+    "MusicModerate": "schemas/MusicModerate.schema.json",
+    "MusicRelease": "schemas/MusicRelease.schema.json",
+    "MusicReport": "schemas/MusicReport.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
     "PlayerDirectory": "schemas/PlayerDirectory.schema.json",
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
@@ -235,6 +242,44 @@
       "schema": "AiProfile",
       "valid": true,
       "note": "An AI profile without games or a supported engine."
+    },
+    {
+      "file": "valid/MusicMetadata/creator-metadata.json",
+      "schema": "MusicMetadata",
+      "valid": true,
+      "note": "Portable creator metadata."
+    },
+    {
+      "file": "valid/MusicRelease/published-release.json",
+      "schema": "MusicRelease",
+      "valid": true,
+      "note": "Published portable three-mood release shared with native clients."
+    },
+    {
+      "file": "valid/MusicConvert/explicit-length-repair.json",
+      "schema": "MusicConvert",
+      "valid": true,
+      "note": "Length repair is explicit."
+    },
+    {
+      "file": "invalid/MusicConvert/implicit-repair.json",
+      "schema": "MusicConvert",
+      "valid": false,
+      "stage": "schema",
+      "note": "Length repair is explicit."
+    },
+    {
+      "file": "valid/MusicList/empty-library.json",
+      "schema": "MusicList",
+      "valid": true,
+      "note": "Public empty catalogue."
+    },
+    {
+      "file": "invalid/MusicBatch/empty-selection.json",
+      "schema": "MusicBatch",
+      "valid": false,
+      "stage": "schema",
+      "note": "At least one release is required."
     },
     {
       "file": "valid/HiveTool/investigate.json",

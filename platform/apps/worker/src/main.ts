@@ -1,3 +1,4 @@
+import { expireMusic } from '@glob2/music';
 // platform-worker: runs queued platform jobs on every replica and the
 // scheduler (maintenance, matchmaker, rating sweep) on the one replica
 // holding the leader lock.
@@ -89,6 +90,7 @@ try {
   const blobs = createBlobStore(config.blobs);
   const scheduled: ScheduledTask[] = [
     { name: 'maintenance', intervalMs: 60_000, run: () => runMaintenance(database.db) },
+    { name: 'music uploads', intervalMs: 60_000, run: () => expireMusic(database.db, blobs) },
     {
       name: 'starting matches',
       intervalMs: 30_000,

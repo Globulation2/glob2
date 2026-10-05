@@ -15,7 +15,8 @@
   inset: 0;
   z-index: -1;
 }
-.hero-art > img {
+.hero-art > img,
+.hero-art > video {
   display: block;
   width: 100%;
   height: 100%;
@@ -156,75 +157,16 @@
 
 /* ----------------------------------------------------- the living colony */
 
-.colony-life {
+.colony-video {
   position: absolute;
   inset: 0;
-  overflow: hidden;
-  pointer-events: none;
+  opacity: 0;
 }
-.walker,
-.flyer {
-  --s: 40px;
-  position: absolute;
-  left: 0;
-  top: var(--y);
-  width: var(--s);
-  height: var(--s);
-  animation: cross var(--t, 40s) linear var(--d, 0s) infinite;
-  filter: hue-rotate(var(--hue, 0deg)) drop-shadow(0 0 0 transparent);
-  will-change: transform;
+.colony-video.visible {
+  opacity: 1;
 }
-.walker.west,
-.flyer.west {
-  animation-direction: reverse;
-}
-.walker > span,
-.flyer > span > span {
-  display: block;
-  width: var(--s);
-  height: var(--s);
-  background: var(--strip) 0 0 / calc(var(--s) * 16) var(--s) no-repeat;
-  animation: frames var(--f, 0.72s) steps(16) infinite;
-}
-.flyer > span {
-  display: block;
-  animation: bob 2.6s ease-in-out infinite alternate;
-}
-@keyframes cross {
-  from {
-    transform: translateX(-80px);
-  }
-  to {
-    transform: translateX(calc(100vw + 80px));
-  }
-}
-@keyframes frames {
-  to {
-    background-position-x: calc(var(--s) * -16);
-  }
-}
-@keyframes bob {
-  to {
-    transform: translateY(14px);
-  }
-}
-.colony-life.paused *,
-.colony-life.paused {
-  animation-play-state: paused !important;
-}
-/* Without motion the globs stand still where they are parked. */
 @media (prefers-reduced-motion: reduce) {
-  .walker,
-  .flyer,
-  .walker > span,
-  .flyer > span,
-  .flyer > span > span {
-    animation: none !important;
-  }
-  .walker,
-  .flyer {
-    transform: translateX(var(--park, 50vw));
-  }
+  .colony-video,
   .motion-toggle {
     display: none !important;
   }
@@ -322,7 +264,8 @@
     padding: var(--sp-4);
     padding-bottom: 72px;
   }
-  .hero-art > img {
+  .hero-art > img,
+  .hero-art > video {
     object-position: 70% 40%;
   }
   .hero-card {
@@ -359,10 +302,6 @@
   }
   .motion-toggle {
     bottom: 20px;
-  }
-  .walker,
-  .flyer {
-    --s: 32px;
   }
 }
 

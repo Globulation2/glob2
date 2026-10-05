@@ -2,6 +2,7 @@
 // with the migrations: test/schema.test.ts writes and reads every table through
 // these types and compares the column lists with information_schema.
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
+import type { MusicMetadata, MusicRelease, MusicTrack, MusicConvert } from '@glob2/protocol';
 
 /** Column with a database default: optional on insert. */
 type Defaulted<T> = ColumnType<T, T | undefined, T>;
@@ -960,6 +961,21 @@ export interface AiReportsTable {
   resolution_note: Nullable<string>;
 }
 
+export interface MusicReleasesTable {
+  id: string;
+  owner_id: string;
+  metadata: Json<MusicMetadata>;
+  status: Defaulted<MusicRelease['status']>;
+  sources: DefaultedJson<Record<string, string>>;
+  inspection: NullableJson<NonNullable<MusicRelease['inspection']>>;
+  result: NullableJson<MusicTrack[] | Record<string, JsonValue>>;
+  options: NullableJson<MusicConvert>;
+  error: Nullable<string>;
+  hidden: Defaulted<boolean>;
+  downloads: Defaulted<number>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
 export interface Database {
   ais: AisTable;
   ai_versions: AiVersionsTable;
@@ -969,6 +985,19 @@ export interface Database {
   ai_favourites: AiSocialTable;
   ai_downloads: AiDownloadsTable;
   ai_reports: AiReportsTable;
+
+  music_releases: MusicReleasesTable;
+  music_assets: { release_id: string; kind: string; sha256: string };
+  music_likes: { release_id: string; account_id: string };
+  music_reports: {
+    id: Generated<string>;
+    release_id: string;
+    account_id: string;
+    reason: string;
+    resolved: Defaulted<boolean>;
+    created_at: Timestamp;
+  };
+
   colony_skin_reports: ColonySkinReportsTable;
   colony_skin_drafts: ColonySkinDraftsTable;
   skin_purchases: SkinPurchasesTable;

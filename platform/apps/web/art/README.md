@@ -14,7 +14,8 @@ source.
 
 | Output                                                                                                     | Source                                                                                                                                                                                                                         |
 | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `colony-960.webp`, `colony-1600.webp`, `static/colony.webp`, `static/og-colony.jpg`                        | `data/gfx/menu-colony.png`, the main menu's colony                                                                                                                                                                             |
+| `static/colony.webp`, `static/og-colony.jpg`                                                               | `data/gfx/menu-colony.png`, the main menu's colony                                                                                                                                                                             |
+| `colony-loop.mp4`, `colony-960.webp`, `colony-1600.webp`                                                   | UI-free `MenuColonyHarness` recording of `data/menu/colony.bin` (see Colony video below)                                                                                                                                       |
 | `wordmark-letters.webp`, `wordmark-two.webp`                                                               | `data/gfx/menu-wordmark.png`, split into two alpha masks (letters, gold "2") so CSS can colour them per theme                                                                                                                  |
 | `worker-east.webp`, `worker-west.webp`, `warrior-east.webp`, `explorer-west.webp`                          | Unit walk and flight cycles: `data/highres/v1/unit<N>.png` (shadow) under `unit<N>r.png` (body), every other of the 32 poses, at 64 px. Frame layout from `src/unit/render/UnitSkin.cpp` and `src/unit/render/UnitAnimation.h` |
 | `swarm`, `inn`, `school`, `racetrack`, `pool`, `hospital`, `exploration-flag`, `war-flag`, `clearing-flag` | Building and flag sprites (`data/highres/v1`, else `data/gfx`), with their team layer                                                                                                                                          |
@@ -65,3 +66,24 @@ ratios:
 
 Chart lines use team hues adjusted to at least 3.2:1 against the chart
 background (`src/colors.ts`); swatches keep the exact in-game colour.
+
+## Colony video
+
+`colony-loop.mp4` is a silent 1600 × 900, 25 fps recording of the bundled
+`data/menu/colony.bin` simulation, drawn by `MenuColony` without menus or status
+bars. It replaces the hero's separate walking/flying sprite animations. The
+60-second loop dissolves its final two seconds into the opening footage to avoid
+an abrupt reset. The two hero WebP posters are the video's opening frame.
+
+Rebuild with the native harness and FFmpeg on PATH:
+
+```sh
+scons --build=build/native-tests release=1 server=0 menu-colony-harness
+python3 tools/record_menu_colony.py --harness build/native-tests/test/MenuColonyHarness
+```
+
+Three lossless review frames stay in ignored `artifacts/menu-colony/frames`;
+pass `--keep-frames` to retain all capture frames. Commit the encoded
+video and posters. The public website's `public/brand/` receives identical copies
+of these three assets; its Astro homepage also plays the recording. Run the video
+capture after `build_art.py`, which otherwise restores the original still posters.

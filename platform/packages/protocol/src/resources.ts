@@ -237,6 +237,7 @@ export const AccountExport = Open(
         downloads: ExportRows,
       }),
     ),
+    music: Type.Optional(Open({ releases: ExportRows, likes: ExportRows, reports: ExportRows })),
     maps: Open({
       published: ExportRows,
       likes: ExportRows,

@@ -91,7 +91,7 @@ void MenuColony::update(Uint64 now, bool visible)
 	}
 }
 
-void MenuColony::draw(int width, int height)
+void MenuColony::draw(int width, int height, bool showStatus)
 {
 	if (!game) return;
 	ColonyContext context;
@@ -115,7 +115,8 @@ void MenuColony::draw(int width, int height)
 	// Place the starting settlement to the right of the front-page panel.
 	const int x = (centerX - width * 2 / 3 / 32) & game->map.getMaskW();
 	const int y = (centerY - height / 2 / 32) & game->map.getMaskH();
-	game->drawMap(0, 0, width, height, 0, 0, x, y, 0, view, Game::DRAW_WHOLE_MAP | Game::DRAW_HEALTH_FOOD_BAR);
+	game->drawMap(0, 0, width, height, 0, 0, x, y, 0, view,
+		Game::DRAW_WHOLE_MAP | (showStatus ? Game::DRAW_HEALTH_FOOD_BAR : 0));
 }
 
 Uint32 MenuColony::checksum() const

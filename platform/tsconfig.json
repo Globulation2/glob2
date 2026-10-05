@@ -9,7 +9,8 @@
     "apps/engine-agent",
     "apps/ai-map-worker",
     "apps/web/e2e",
-    "*.ts"
+    "*.ts",
+    "apps/music-worker"
   ],
   "exclude": ["**/node_modules"]
 }

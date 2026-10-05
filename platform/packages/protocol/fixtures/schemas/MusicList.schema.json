@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicList",
+  "title": "MusicList",
+  "type": "object",
+  "required": [
+    "items",
+    "next"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "ownerId",
+          "metadata",
+          "status",
+          "createdAt",
+          "frames",
+          "tracks",
+          "warnings",
+          "inspection",
+          "uploaded",
+          "coverUrl",
+          "likes",
+          "downloads",
+          "liked",
+          "hidden",
+          "error"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "ownerId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "metadata": {
+            "type": "object",
+            "required": [
+              "title",
+              "artist",
+              "description",
+              "license",
+              "credits",
+              "sources",
+              "tags",
+              "aiGenerated"
+            ],
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[^\\u0000]*$"
+              },
+              "artist": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[^\\u0000]*$"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000,
+                "pattern": "^[^\\u0000]*$"
+              },
+              "license": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "CC0-1.0"
+                  },
+                  {
+                    "type": "string",
+                    "const": "CC-BY-4.0"
+                  },
+                  {
+                    "type": "string",
+                    "const": "CC-BY-SA-4.0"
+                  }
+                ]
+              },
+              "credits": {
+                "type": "string",
+                "minLength": 0,
+                "maxLength": 4000,
+                "pattern": "^[^\\u0000]*$"
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^https?://[^\\s]+$",
+                  "maxLength": 2048
+                },
+                "maxItems": 20
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32,
+                  "pattern": "^[^\\u0000]*$"
+                },
+                "maxItems": 12,
+                "uniqueItems": true
+              },
+              "aiGenerated": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "draft"
+              },
+              {
+                "type": "string",
+                "const": "inspecting"
+              },
+              {
+                "type": "string",
+                "const": "inspected"
+              },
+              {
+                "type": "string",
+                "const": "converting"
+              },
+              {
+                "type": "string",
+                "const": "ready"
+              },
+              {
+                "type": "string",
+                "const": "published"
+              },
+              {
+                "type": "string",
+                "const": "withdrawn"
+              },
+              {
+                "type": "string",
+                "const": "failed"
+              }
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "frames": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 43200000
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "mood",
+                "sha256",
+                "bytes",
+                "url",
+                "waveform"
+              ],
+              "properties": {
+                "mood": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "calm"
+                    },
+                    {
+                      "type": "string",
+                      "const": "building"
+                    },
+                    {
+                      "type": "string",
+                      "const": "combat"
+                    }
+                  ]
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$",
+                  "description": "Lowercase hexadecimal SHA-256 digest."
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "url": {
+                  "type": "string"
+                },
+                "waveform": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "maxItems": 512
+                }
+              }
+            },
+            "maxItems": 3
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "inspection": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "frames",
+                  "seconds",
+                  "equal"
+                ],
+                "properties": {
+                  "frames": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "seconds": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                  },
+                  "equal": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            ]
+          },
+          "uploaded": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "coverUrl": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "likes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "downloads": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "liked": {
+            "type": "boolean"
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "next": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  }
+}

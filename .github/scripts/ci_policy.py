@@ -9,9 +9,12 @@ FLAGS = ('native', 'browser', 'map_generators', 'deployment', 'cross_platform',
          'android', 'windows', 'compatibility', 'variants', 'coverage', 'tsan', 'macos', 'platform',
          'platform_stack', 'music')
 # Cheap jobs that run on pull requests without `ci:run`, like the selector's own
-# contracts: they compile nothing and gate no engine verification.
-# The music pipeline (Python tooling, never shipped): its own unit-test job only.
+# contracts: they do not build the game and gate no engine verification.
+# Music tooling has inexpensive unit tests; deployed processor and shared WASM
+# inputs also select their affected runtime coverage when requested.
 MUSIC_TOOL_PATHS = ('tools/music/',)
+MUSIC_SHARED_PATHS = ('tools/music/web/', 'tools/music/build_web.py')
+MUSIC_PROCESSOR_PATHS = ('tools/music/glob2music/community.py', 'tools/encode_music.py')
 CHEAP_PATHS = {'music': MUSIC_TOOL_PATHS}
 CHEAP_FLAGS = tuple(CHEAP_PATHS)
 LABELS = {'ci:run', 'ci:full', 'ci:windows', 'ci:android', 'ci:browsers'}
@@ -47,6 +50,7 @@ PLATFORM_STACK_PATHS = (
     'deploy/', 'test/deployment/', 'src/relay/', 'platform/package-lock.json',
     'platform/packages/db/migrations/', 'platform/apps/api/src/main.ts',
     'platform/apps/worker/src/main.ts', 'platform/apps/engine-agent/src/main.ts',
+    'platform/apps/music-worker/',
 )
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
@@ -122,6 +126,12 @@ def select(paths, labels=(), known=False):
                 add(path, 'native', 'platform')
             else:
                 add(path, 'platform')
+            continue
+        if path.startswith(MUSIC_SHARED_PATHS):
+            add(path, *FLAGS)
+            continue
+        if path.startswith(MUSIC_PROCESSOR_PATHS):
+            add(path, 'music', 'platform', 'platform_stack')
             continue
         if path.startswith(MUSIC_TOOL_PATHS):
             add(path, 'music')

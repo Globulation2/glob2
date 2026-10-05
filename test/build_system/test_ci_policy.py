@@ -83,6 +83,14 @@ class PolicyTest(unittest.TestCase):
         report, _ = self.exercise('schedule', [], reused_run=123)
         self.assertFalse(report['selection']['music'])
 
+    def test_music_runtime_boundaries_select_their_consumers(self):
+        for path in ['tools/music/web/exports.cpp', 'tools/music/build_web.py']:
+            self.assertEqual(self.select([path]), policy.full())
+        for path in ['tools/music/glob2music/community.py', 'tools/encode_music.py']:
+            selected = self.select([path])
+            self.assertTrue(selected['music'] and selected['platform'] and selected['platform_stack'])
+        self.assertTrue(self.select(['platform/apps/music-worker/src/process.ts'])['platform_stack'])
+
     def test_platform_stack_smoke_follows_the_stack_inputs(self):
         for path in ['deploy/compose.yaml', 'deploy/Dockerfile', 'test/deployment/platform_stack_smoke.py',
                      'src/relay/RelayServer.cpp', 'platform/packages/db/migrations/0006_room_kicks_lost_relays.sql',

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicConvert",
+  "title": "MusicConvert",
+  "type": "object",
+  "required": [
+    "repair",
+    "master"
+  ],
+  "properties": {
+    "repair": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "none"
+        },
+        {
+          "type": "string",
+          "const": "trim"
+        },
+        {
+          "type": "string",
+          "const": "pad"
+        }
+      ]
+    },
+    "master": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

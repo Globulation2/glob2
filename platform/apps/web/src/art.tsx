@@ -4,8 +4,8 @@ import algae from './art/algae.webp';
 import clearingFlag from './art/clearing-flag.webp';
 import colony1600 from './art/colony-1600.webp';
 import colony960 from './art/colony-960.webp';
+import colonyVideo from './art/colony-loop.mp4';
 import explorationFlag from './art/exploration-flag.webp';
-import explorerWest from './art/explorer-west.webp';
 import fruit from './art/fruit.webp';
 import globIcon from './art/glob-64.png';
 import hospital from './art/hospital.webp';
@@ -17,10 +17,7 @@ import school from './art/school.webp';
 import stone from './art/stone.webp';
 import swarm from './art/swarm.webp';
 import warFlag from './art/war-flag.webp';
-import warriorEast from './art/warrior-east.webp';
 import wood from './art/wood.webp';
-import workerEast from './art/worker-east.webp';
-import workerWest from './art/worker-west.webp';
 
 export const ART = {
   algae,
@@ -41,8 +38,7 @@ export const ART = {
 export type ArtName = keyof typeof ART;
 
 export const GLOB_ICON = globIcon;
-export const COLONY = { small: colony960, large: colony1600 };
-export const STRIPS = { workerEast, workerWest, warriorEast, explorerWest };
+export const COLONY = { small: colony960, large: colony1600, video: colonyVideo };
 
 /** A decorative sprite from the game (buildings, flags, resources). */
 export function GameArt({

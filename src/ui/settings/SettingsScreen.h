@@ -11,6 +11,8 @@
 #include <memory>
 #include <vector>
 
+namespace GAGGUI { class ScreenStack; }
+
 // Settings form: category builders produce rows, and build() turns the rows
 // into a responsive page. Changes apply immediately and save automatically.
 class SettingsScreen : public Glob2UI::Screen
@@ -65,7 +67,7 @@ class SettingsScreen : public Glob2UI::Screen
 		// Table entries share a line only when the viewport is wide enough.
 		int columns = 1, column = 0;
 	};
-	SettingsScreen();
+	explicit SettingsScreen(GAGGUI::ScreenStack* screens = nullptr);
 	~SettingsScreen() override;
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
 	void onTimer(Uint32 tick) override;
@@ -99,6 +101,7 @@ class SettingsScreen : public Glob2UI::Screen
 		Restore,
 		AILibrary
 	};
+	GAGGUI::ScreenStack* screens = nullptr;
 	Category current = Category::Display;
 	Modal modal = Modal::None;
 	std::vector<Row> form;

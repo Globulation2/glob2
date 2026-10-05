@@ -272,3 +272,96 @@ source pinning, manifests, the CLI and each method's building blocks. They need
 `ffmpeg` but no network or GPU. With only `requirements.txt` installed, the Demucs
 and Surge XT render tests skip; the sfizz tests do not need a built renderer. CI runs
 this suite whenever `tools/music/` changes.
+
+## Community releases
+
+The online **Music** catalogue accepts three externally composed arrangements:
+Calm, Building and Combat. The workflow is upload → inspect → choose repairs →
+convert → audition → publish. Registered creators publish after technical
+validation; musical advice does not require moderator approval. A revision is a
+new release, with its own likes. Community licences are CC0 1.0, CC BY 4.0 and
+CC BY-SA 4.0, with credits, source links and an explicit AI disclosure.
+
+`glob2music.community` decodes supported direct media containers with FFmpeg,
+resamples to 48 kHz stereo, and compares exact frame counts. WAV, FLAC, MP3,
+AAC/M4A, Vorbis and Opus are supported when their decoders are available. Playlist,
+concat, network and ambiguous multistream inputs are rejected. Each mood must be
+10–900 seconds; the shipped soundtrack's 50–120 seconds remains guidance.
+Unequal lengths require an explicit end trim to the shortest or silence padding
+to the longest. Neither operation aligns beats or harmony. Optional mastering
+uses the existing −18/−17/−16 LUFS ladder and peak limiter. Original files must be
+uploaded again to make different processing choices after conversion. Temporary
+inputs survive transient storage or database failures for up to three worker
+attempts. Technical rejection, exhausted retries, cancellation and successful
+conversion delete them after recording the terminal state; abandoned drafts
+expire after 24 hours without activity.
+
+The loop-aware encoder in `tools/encode_music.py` produces Ogg Opus at 48 kbps
+stereo VBR. Tagging replaces the comment packet and recomputes Ogg page sequence
+numbers and CRCs without changing audio packets, pre-skip or end granules. Every
+final tagged file is fully decoded again to check frame counts. Waveform peaks,
+loop-seam and decoded-peak advice accompany the exact downloadable preview.
+Cover images are re-encoded as 512 × 512 JPEGs, at most 256 KiB; an omitted cover
+uses the music-note placeholder.
+
+### Portable file contract, version 1
+
+A release is one directory containing only `a1.opus`, `a2.opus`, `a3.opus`.
+Bulk ZIPs repeat this structure with a UUID directory per release. Calm (`a1`) is
+the authoritative source of display metadata; every track repeats identifying
+metadata. Installation needs neither a sidecar nor an online lookup.
+
+| Comment | Meaning |
+| --- | --- |
+| `TITLE`, `ALBUM`, `ARTIST` | Mood track title, set title, artist |
+| `DESCRIPTION`, `LICENSE`, `COPYRIGHT`, `SOURCE`, `GENRE` | Description, licence identifier, attribution, newline-separated source links, tags |
+| `GLOB2_SCHEMA` | `1` |
+| `GLOB2_RELEASE`, `GLOB2_ORIGIN` | Release UUID and originating instance |
+| `GLOB2_MOOD` | `calm`, `building`, or `combat` |
+| `GLOB2_FRAMES` | Exact decoded stereo frame count at 48 kHz |
+| `GLOB2_AI_GENERATED` | `0` or `1` |
+| `METADATA_BLOCK_PICTURE` | Optional base64 FLAC picture block containing JPEG bytes |
+
+Final tagged bytes are SHA-256 hashed. Imports require three distinct, correctly
+assigned moods, matching identities/origins and lengths, one stereo logical
+stream, bounded metadata, and a successful full decode. See the
+[Opus metadata API](https://opus-codec.org/docs/opusfile_api-0.12/group__header__info.html)
+and [Ogg Opus specification](https://www.rfc-editor.org/rfc/rfc7845.html).
+
+### Streaming playback and checks
+
+`src/audio/MusicStream` provides the native and website preview mixer. Three
+bounded 1024-frame stereo buffers advance from one clock; compressed files are
+retained instead of whole-song PCM. The default fade has the game's smoothstep
+curve and approximately 0.37-second duration. Preview-only controls add seeking,
+a 0–10 second test fade, continuous blend and an eight-second mood sequence.
+Gameplay uses the same decoder read/seek helpers and computes the original fade
+curve instead of retaining a lookup table. Preview suspends background music and
+restores it when its screen closes.
+
+`python3 tools/music/build_web.py` builds the website decoder with the pinned
+Opus dependencies and Emscripten SDK. The website owns the decoder in a worker,
+keeps at most eight PCM blocks queued, and feeds an AudioWorklet; resampling
+happens after synchronized mixing. Native preview feeds SDL's output conversion.
+
+Focused regression commands (FFmpeg and native Opus development headers required):
+
+```sh
+PYTHONPATH=tools/music python3 -m unittest tools.music.tests.test_community tools.music.tests.test_runtime
+scons release=1 engine-tests
+python3 test/run_tests.py --help
+```
+
+The `CommunityMusic` suite checks the legacy fade curve and input boundaries;
+`CommunityMusicUI` captures the dedicated screens. `test_runtime.py` exercises
+actual processor output through the C++ importer and player, including seek,
+loop boundaries and rapid switching. The website's `e2e/music.spec.ts` uses the
+same generated audio with the real WASM decoder. To exercise the maximum duration,
+use `make_community_fixture.py <output> --seconds 900` and the runtime probe.
+
+The browser-game import check uses a real catalogue download, passed as
+`GLOB2_MUSIC_TEST_ARCHIVE`, with `browser/tests/music-import.spec.js`. It drives
+Audio settings, the file picker, installation and selection, then reloads the
+browser to verify the persisted bytes. Its quota-failure case verifies recovery
+export and a successful retry. Without that archive, the integration cases skip
+explicitly; the platform web E2E suite can generate one.

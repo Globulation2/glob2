@@ -26,6 +26,8 @@ ENGINE_SUPPORT = [
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
     '#src/audio/MusicSetTest.cpp',
+    '#src/audio/MusicStreamTest.cpp',
+    ('#src/ui/screens/MusicScreensTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/LegacyAIStateTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/AIStateContinuationTest.cpp',
     # This fixture selects SDL's dummy driver; isolate its client context from display cases.

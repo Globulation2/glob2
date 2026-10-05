@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:MusicModerate",
+  "title": "MusicModerate",
+  "type": "object",
+  "required": [
+    "hidden",
+    "reason"
+  ],
+  "properties": {
+    "hidden": {
+      "type": "boolean"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000,
+      "pattern": "^[^\\u0000]*$"
+    }
+  },
+  "additionalProperties": false
+}

@@ -5394,3 +5394,147 @@ Download an AI, then choose it for a computer seat in a local game. Installed ve
 Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.
 [Back to results]
 Back to results
+[music 2–5 minutes]
+2–5 minutes
+[music 5–15 minutes]
+5–15 minutes
+[music AI-generated]
+AI-generated
+[music All music]
+All music
+[music All open licences]
+All open licences
+[music Any duration]
+Any duration
+[music Audition each mood for eight seconds]
+Audition each mood for eight seconds
+[music Back]
+Back
+[music Browse]
+Browse
+[music Building]
+Building
+[music Calm]
+Calm
+[music Calm → Building → Combat]
+Calm → Building → Combat
+[music Choose Building]
+Choose Building
+[music Choose Calm]
+Choose Calm
+[music Choose Combat]
+Choose Combat
+[music Choose ZIP]
+Choose ZIP
+[music Choose a music file.]
+Choose a music file.
+[music Combat]
+Combat
+[music Could not open this music set.]
+Could not open this music set.
+[music Credits, downloads and reporting]
+Credits, downloads and reporting
+[music Downloading music…]
+Downloading music…
+[music Export recovery files]
+Export recovery files
+[music Fade duration]
+Fade duration
+[music File selection cancelled or failed.]
+File selection cancelled or failed.
+[music Import ZIP]
+Import ZIP
+[music Import ZIP or three tracks]
+Import ZIP or three tracks
+[music Import music]
+Import music
+[music Import three tracks]
+Import three tracks
+[music Includes AI-generated audio]
+Includes AI-generated audio
+[music Install]
+Install
+[music Install selected]
+Install selected
+[music Installed]
+Installed
+[music Load more]
+Load more
+[music Loading music…]
+Loading music…
+[music Most downloaded]
+Most downloaded
+[music Most liked]
+Most liked
+[music Music decoding failed.]
+Music decoding failed.
+[music Music download failed.]
+Music download failed.
+[music Music installed.]
+Music installed.
+[music Music installed. It is now available in Audio settings.]
+Music installed. It is now available in Audio settings.
+[music Music is not yet saved permanently. Retry saving before leaving.]
+Music is not yet saved permanently. Retry saving before leaving.
+[music Music library]
+Music library
+[music Music request failed.]
+Music request failed.
+[music Newest]
+Newest
+[music No community music installed yet. Import files or browse the online library.]
+No community music installed yet. Import files or browse the online library.
+[music No music found.]
+No music found.
+[music Not AI-generated]
+Not AI-generated
+[music Pause]
+Pause
+[music Play]
+Play
+[music Playback position]
+Playback position
+[music Preview]
+Preview
+[music Ready to import.]
+Ready to import.
+[music Remove]
+Remove
+[music Reset to game behavior]
+Reset to game behavior
+[music Retry saving]
+Retry saving
+[music Saved.]
+Saved.
+[music Saving music…]
+Saving music…
+[music Search]
+Search
+[music Search title, artist, description…]
+Search title, artist, description…
+[music Select for installation]
+Select for installation
+[music Share music on the web]
+Share music on the web
+[music Some catalogue entries could not be read.]
+Some catalogue entries could not be read.
+[music Storage could not be saved. Retry or export your files before leaving.]
+Storage could not be saved. Retry or export your files before leaving.
+[music Tag]
+Tag
+[music Test crossfades]
+Test crossfades
+[music Up to 2 minutes]
+Up to 2 minutes
+[music Use this music]
+Use this music
+[music Validating music…]
+Validating music…
+[settings Music library · Browse, install and import]
+Music library · Browse, install and import
+[music Filters]
+Filters
+[music Leave without saving]
+Leave without saving
+[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
+Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.

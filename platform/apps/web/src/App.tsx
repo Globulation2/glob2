@@ -1,4 +1,5 @@
 import { Players } from './pages/Players.tsx';
+import './music/music.css';
 import { Skins } from './pages/Skins.tsx';
 import { CommanderCredits } from './pages/Commander.tsx';
 // The platform web app: home, leaderboards, player and match pages, the map
@@ -16,6 +17,15 @@ import { SessionProvider, isModerator, useSession } from './state.tsx';
 import { ThemeProvider, ThemeToggle } from './theme.tsx';
 
 // Pages most visitors never open load on demand.
+const MusicLibrary = lazy(() =>
+  import('./music/Library.tsx').then((m) => ({ default: m.MusicLibrary })),
+);
+const MusicDetail = lazy(() =>
+  import('./music/Library.tsx').then((m) => ({ default: m.MusicDetail })),
+);
+const MusicCreate = lazy(() =>
+  import('./music/Library.tsx').then((m) => ({ default: m.MusicCreate })),
+);
 const Admin = lazy(() => import('./admin/Admin.tsx').then((m) => ({ default: m.Admin })));
 const MapStudio = lazy(() =>
   import('./pages/MapStudio.tsx').then((m) => ({ default: m.MapStudio })),
@@ -70,6 +80,14 @@ export const ROUTES: Route[] = [
     section: 'players',
     title: 'AI player',
     render: (p) => <AiPlayer key={p['aiId']} id={p['aiId'] ?? ''} />,
+  },
+  { pattern: '/music', section: 'music', title: 'Music', render: () => <MusicLibrary /> },
+  { pattern: '/music/new', section: 'music', title: 'Share music', render: () => <MusicCreate /> },
+  {
+    pattern: '/music/:id',
+    section: 'music',
+    title: 'Music',
+    render: (p) => <MusicDetail key={p['id']} id={p['id'] ?? ''} />,
   },
   { pattern: '/skins', section: 'skins', title: 'Colony skins', render: () => <Skins /> },
   {
@@ -250,6 +268,7 @@ function Layout() {
     { to: '/matches', id: 'matches', name: 'Matches', art: 'swarm' },
     { to: '/maps', id: 'maps', name: 'Maps', art: 'explorationFlag' },
     { to: '/ais', id: 'ais', name: 'AI Library', art: 'swarm' },
+    { to: '/music', id: 'music', name: 'Music', art: 'fruit' },
     { to: '/skins', id: 'skins', name: 'Skins', art: 'swarm' },
     { to: '/map-studio', id: 'studio', name: 'AI Map Studio', art: 'explorationFlag' },
     ...(isModerator(account)
@@ -303,7 +322,7 @@ function Layout() {
             group === 'Play'
               ? ['home', 'leaderboard', 'players', 'matches'].includes(item.id)
               : group === 'Create'
-                ? ['maps', 'ais', 'skins', 'studio'].includes(item.id)
+                ? ['maps', 'ais', 'music', 'skins', 'studio'].includes(item.id)
                 : item.id === 'admin',
           );
           return items.length ? (

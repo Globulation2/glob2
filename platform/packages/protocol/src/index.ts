@@ -17,3 +17,4 @@ export * from './skins.ts';
 export * from './hive.ts';
 export * from './mapStudio.ts';
 export * from './ais.ts';
+export * from './music.ts';

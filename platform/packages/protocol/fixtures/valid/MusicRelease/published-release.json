@@ -1,0 +1,66 @@
+{
+  "id": "4f59b80a-a421-4237-8a96-c05e99a9a554",
+  "ownerId": "12345678-1234-4234-8234-123456789abc",
+  "metadata": {
+    "title": "Moss lantern",
+    "artist": "Composer",
+    "description": "Three moods",
+    "license": "CC0-1.0",
+    "credits": "Composer",
+    "sources": [],
+    "tags": [
+      "forest"
+    ],
+    "aiGenerated": false
+  },
+  "status": "published",
+  "createdAt": "2026-01-01T00:00:00.000Z",
+  "frames": 480000,
+  "tracks": [
+    {
+      "mood": "calm",
+      "sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+      "bytes": 60000,
+      "url": "/api/v1/music/4f59b80a-a421-4237-8a96-c05e99a9a554/tracks/calm",
+      "waveform": [
+        0,
+        0.5,
+        1,
+        0.5
+      ]
+    },
+    {
+      "mood": "building",
+      "sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+      "bytes": 60000,
+      "url": "/api/v1/music/4f59b80a-a421-4237-8a96-c05e99a9a554/tracks/building",
+      "waveform": [
+        0,
+        0.5,
+        1,
+        0.5
+      ]
+    },
+    {
+      "mood": "combat",
+      "sha256": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+      "bytes": 60000,
+      "url": "/api/v1/music/4f59b80a-a421-4237-8a96-c05e99a9a554/tracks/combat",
+      "waveform": [
+        0,
+        0.5,
+        1,
+        0.5
+      ]
+    }
+  ],
+  "warnings": [],
+  "inspection": null,
+  "uploaded": [],
+  "coverUrl": null,
+  "likes": 2,
+  "downloads": 3,
+  "liked": false,
+  "hidden": false,
+  "error": null
+}

@@ -4,6 +4,7 @@
 #
 #   target        image                         contents
 #   platform      glob2-platform                platform-api, platform-worker and the operator CLI
+#   music-worker  glob2-music-worker            isolated community audio conversion
 #   engine-agent  glob2-engine-agent:<simver>   engine-agent + headless glob2 + data (one per sim version)
 #   relay         glob2-relay                   glob2-relay
 #   caddy         glob2-caddy                   Caddy + Caddyfile + built apps/web
@@ -93,6 +94,8 @@ COPY platform/packages/engine/package.json packages/engine/
 COPY platform/packages/hive/package.json packages/hive/
 COPY platform/packages/billing/package.json packages/billing/
 COPY platform/packages/map-studio/package.json packages/map-studio/
+COPY platform/packages/music/package.json packages/music/
+COPY platform/apps/music-worker/package.json apps/music-worker/
 COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
 COPY platform/apps/api/package.json apps/api/
 COPY platform/apps/worker/package.json apps/worker/
@@ -100,14 +103,20 @@ COPY platform/apps/engine-agent/package.json apps/engine-agent/
 COPY platform/apps/web/package.json apps/web/
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --no-audit --no-fund
 
+FROM cpp-base AS music-web-build
+RUN apt-get update && apt-get install -y --no-install-recommends autoconf automake libtool xz-utils && rm -rf /var/lib/apt/lists/*
+RUN python3 tools/music/build_web.py
+
 FROM node-deps AS web-build
 # Optional links from the web app to a separately hosted public website and its
 # download page (docs/hosting/README.md); empty keeps the defaults.
 ARG GLOB2_WEBSITE_URL=
 ARG GLOB2_DOWNLOAD_URL=
 COPY platform/ ./
+COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.js apps/web/public/music/decoder.js
+COPY --from=music-web-build /source/platform/apps/web/public/music/decoder.wasm apps/web/public/music/decoder.wasm
 RUN VITE_WEBSITE_URL="$GLOB2_WEBSITE_URL" VITE_DOWNLOAD_URL="$GLOB2_DOWNLOAD_URL" \
-    npm run build --workspace @glob2/web
+    npm exec --workspace @glob2/web -- vite build
 
 FROM node-deps AS platform-runtime-deps
 RUN --mount=type=cache,id=glob2-npm,target=/root/.npm npm ci --omit=dev --no-audit --no-fund
@@ -115,6 +124,7 @@ COPY platform/tsconfig.base.json platform/tsconfig.json ./
 COPY platform/packages packages
 COPY platform/apps/api apps/api
 COPY platform/apps/worker apps/worker
+COPY platform/apps/music-worker apps/music-worker
 COPY platform/apps/engine-agent apps/engine-agent
 COPY platform/apps/ai-map-worker apps/ai-map-worker
 # Node strips types at run time; tests and the web sources are not needed.
@@ -208,3 +218,15 @@ USER 10001:10001
 COPY deploy/Caddyfile /etc/caddy/Caddyfile
 COPY --from=web-build /app/platform/apps/web/dist /srv/web
 # The WebAssembly client is mounted at /srv/play (see docs/hosting/README.md).
+
+# Community music conversion runs independently of simulation-version agents.
+FROM platform AS music-worker
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg python3 python3-numpy python3-scipy python3-soundfile python3-pip python3-venv && rm -rf /var/lib/apt/lists/*
+RUN python3 -m venv --system-site-packages /opt/music && /opt/music/bin/pip install --no-cache-dir pyloudnorm==0.1.1
+COPY tools/encode_music.py /app/tools/encode_music.py
+COPY tools/music/glob2music /app/tools/music/glob2music
+ENV MUSIC_PYTHON=/opt/music/bin/python
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-music-worker-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+CMD ["node", "apps/music-worker/src/main.ts"]
