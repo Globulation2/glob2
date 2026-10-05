@@ -1,0 +1,17 @@
+
+Running 6 tests using 1 worker
+
+(node:4062609) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (4.7s)
+  ✓  2 [chromium] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (5.2s)
+(node:4063282) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (4.4s)
+  ✓  4 [firefox] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (4.6s)
+(node:4063881) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  5 [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (serial) (4.1s)
+  ✓  6 [webkit] › browser/tests/studio.spec.js:106:3 › Studio source produces deterministic trace (threaded) (4.1s)
+
+  6 passed (31.1s)

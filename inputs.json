@@ -1,0 +1,6 @@
+{
+  "games/cross-replay.game.gz": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "browser/tests/fixtures/cross-replay.replay": "832983718c6162287cb479ac8180c298ae69c502cf32f3d22ec7c47791a9bc91",
+  "platform/apps/engine-agent/fixtures/ais/two.map.gz": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39",
+  "examples/javascript/studio-starter.js": "05250018bf65e479e56de794bece5b12eb6edc3be042bca21f575b4ba61172c3"
+}

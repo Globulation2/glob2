@@ -1,0 +1,81 @@
+
+Running 2 tests using 1 worker
+
+(node:4059350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [chromium] › tests/import.spec.js:92:1 › imports a complete replay and rejects a truncated command stream (1.3m)
+(node:4060940) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › tests/session-reload.spec.js:79:1 › an active replay can be loaded again through the scheduled loader @webgl2-reload-c (1.3m)
+
+
+  1) [chromium] › tests/import.spec.js:92:1 › imports a complete replay and rejects a truncated command stream 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "succeeded"
+    Received: "invalid"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      14 |   await (await chooser).setFiles({name,mimeType:'application/octet-stream',buffer:bytes});
+      15 | }
+    > 16 | async function imported(page) { await expect.poll(async () => (await state(page)).import).toBe('succeeded'); }
+         |                                                                                           ^
+      17 | async function chooseSave(page,name) {
+      18 |   const names=await page.evaluate(() => glob2Diagnostics.saves());
+      19 |   const index=names.indexOf(name);
+        at imported (/home/bradley/.codex/worktrees/repair-browser-png16/glob2/browser/tests/import.spec.js:16:91)
+        at /home/bradley/.codex/worktrees/repair-browser-png16/glob2/browser/tests/import.spec.js:97:53
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/replay-fixture/final-threaded-tests/import-imports-a-complete--d4b17--a-truncated-command-stream-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/replay-fixture/final-threaded-tests/import-imports-a-complete--d4b17--a-truncated-command-stream-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/replay-fixture/final-threaded-tests/import-imports-a-complete--d4b17--a-truncated-command-stream-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/replay-fixture/final-threaded-tests/import-imports-a-complete--d4b17--a-truncated-command-stream-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests/session-reload.spec.js:79:1 › an active replay can be loaded again through the scheduled loader @webgl2-reload-c 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "succeeded"
+    Received: "invalid"
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      86 |   await (await chooser).setFiles({name:'AAA Replay.replay',mimeType:'application/octet-stream',
+      87 |     buffer:await require('node:fs/promises').readFile(path.resolve(__dirname,'fixtures/cross-replay.replay'))});
+    > 88 |   await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
+         |                                                          ^
+      89 |   await clickListRow(page,'files',/^AAA Replay/);await clickControl(page,'ok');
+      90 |   await expect.poll(async()=>(await state(page)).screen,{timeout:loadTimeout}).toContain('match');
+      91 |   const original=(await state(page)).tick;
+        at /home/bradley/.codex/worktrees/repair-browser-png16/glob2/browser/tests/session-reload.spec.js:88:58
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/replay-fixture/final-threaded-tests/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/replay-fixture/final-threaded-tests/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/replay-fixture/final-threaded-tests/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/replay-fixture/final-threaded-tests/session-reload-an-active-r-a8445-hrough-the-scheduled-loader-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [chromium] › tests/import.spec.js:92:1 › imports a complete replay and rejects a truncated command stream 
+    [chromium] › tests/session-reload.spec.js:79:1 › an active replay can be loaded again through the scheduled loader @webgl2-reload-c 
