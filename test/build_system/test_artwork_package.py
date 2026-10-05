@@ -43,6 +43,9 @@ class ArtworkPackageTests(unittest.TestCase):
         package_runtime.assemble(self.production, self.output)
         self.assertEqual((self.output / 'inn0b0.png').read_bytes(), self.payload)
         self.assertEqual(len(list(self.output.iterdir())), 4)
+        before = {p.name: p.stat().st_mtime_ns for p in self.output.iterdir()}
+        package_runtime.assemble(self.production, self.output)
+        self.assertEqual(before, {p.name: p.stat().st_mtime_ns for p in self.output.iterdir()})
 
     def test_bad_hash_fails_before_any_output_write(self):
         (self.production / 'ai-upscaled/inn0b0.png').write_bytes(b'corrupt')

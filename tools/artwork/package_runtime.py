@@ -145,7 +145,11 @@ def assemble(production, output):
                 'Source export contains symlinked artwork')
     output.mkdir(parents=True, exist_ok=True)
     for record in records:
-        shutil.copyfile(production / record['source'], output / record['runtime'])
+        target = output / record['runtime']
+        # Keep unchanged source timestamps stable so a repeated assembly does
+        # not invalidate the shared client's asset-export build inputs.
+        if not target.is_file() or sha(target) != record['sha256']:
+            shutil.copyfile(production / record['source'], target)
     return records
 
 
