@@ -1,0 +1,142 @@
+[
+  {
+    "run": 0,
+    "enabled": 0,
+    "cpu": 0.01209,
+    "wall": 0.012091,
+    "field_bytes": 0
+  },
+  {
+    "run": 0,
+    "enabled": 1,
+    "cpu": 0.013883,
+    "wall": 0.013884,
+    "field_bytes": 458752
+  },
+  {
+    "run": 1,
+    "enabled": 0,
+    "cpu": 0.011773,
+    "wall": 0.011774,
+    "field_bytes": 0
+  },
+  {
+    "run": 1,
+    "enabled": 1,
+    "cpu": 0.014093,
+    "wall": 0.014094,
+    "field_bytes": 458752
+  },
+  {
+    "run": 2,
+    "enabled": 0,
+    "cpu": 0.012006,
+    "wall": 0.012007,
+    "field_bytes": 0
+  },
+  {
+    "run": 2,
+    "enabled": 1,
+    "cpu": 0.014121,
+    "wall": 0.014121,
+    "field_bytes": 458752
+  },
+  {
+    "run": 3,
+    "enabled": 0,
+    "cpu": 0.01216,
+    "wall": 0.012161,
+    "field_bytes": 0
+  },
+  {
+    "run": 3,
+    "enabled": 1,
+    "cpu": 0.014142,
+    "wall": 0.014141,
+    "field_bytes": 458752
+  },
+  {
+    "run": 4,
+    "enabled": 0,
+    "cpu": 0.012207,
+    "wall": 0.012208,
+    "field_bytes": 0
+  },
+  {
+    "run": 4,
+    "enabled": 1,
+    "cpu": 0.014142,
+    "wall": 0.014143,
+    "field_bytes": 458752
+  },
+  {
+    "run": 5,
+    "enabled": 0,
+    "cpu": 0.012171,
+    "wall": 0.012172,
+    "field_bytes": 0
+  },
+  {
+    "run": 5,
+    "enabled": 1,
+    "cpu": 0.0141,
+    "wall": 0.014101,
+    "field_bytes": 458752
+  },
+  {
+    "run": 6,
+    "enabled": 0,
+    "cpu": 0.012198,
+    "wall": 0.012197,
+    "field_bytes": 0
+  },
+  {
+    "run": 6,
+    "enabled": 1,
+    "cpu": 0.014127,
+    "wall": 0.014126,
+    "field_bytes": 458752
+  },
+  {
+    "run": 7,
+    "enabled": 0,
+    "cpu": 0.012222,
+    "wall": 0.012222,
+    "field_bytes": 0
+  },
+  {
+    "run": 7,
+    "enabled": 1,
+    "cpu": 0.014098,
+    "wall": 0.014099,
+    "field_bytes": 458752
+  },
+  {
+    "run": 8,
+    "enabled": 0,
+    "cpu": 0.011851,
+    "wall": 0.011852,
+    "field_bytes": 0
+  },
+  {
+    "run": 8,
+    "enabled": 1,
+    "cpu": 0.014367,
+    "wall": 0.014368,
+    "field_bytes": 458752
+  },
+  {
+    "run": 9,
+    "enabled": 0,
+    "cpu": 0.01227,
+    "wall": 0.012271,
+    "field_bytes": 0
+  },
+  {
+    "run": 9,
+    "enabled": 1,
+    "cpu": 0.014173,
+    "wall": 0.014174,
+    "field_bytes": 458752
+  }
+]

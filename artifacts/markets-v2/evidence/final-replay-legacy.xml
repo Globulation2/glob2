@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="0.107047" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="0.095721" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Terrain simulation change rejects released replays and enforces acceptance boundaries" time="0.157664" status="run" />
+  </testsuite></testsuites>

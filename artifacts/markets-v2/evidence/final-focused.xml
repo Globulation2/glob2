@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="26" failures="0" errors="0" skipped="1"><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/deliverer stays attached and fetches the next market delivery" time="0.001512" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="0.872002" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/stocked markets are resource goals, depleted markets are not" time="0.006934" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="0.696805" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="a frequently refreshed market field publishes depletion and restocking" time="0.003614" status="run" />
+  <testcase classname="MarketsV2" name="disabled fruit deliveries match master per tick [golden][save-format][artifacts]" time="0.755669" status="run" />
+  <testcase classname="MarketsV2" name="disabled gate blocks explicit fetch APIs and upgrade execution" time="0.001735" status="run" />
+  <testcase classname="MarketsV2" name="each market level accepts only its resources across all swim classes" time="0.003366" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="1.31795" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="0.051091" status="run" />
+  <testcase classname="MarketsV2" name="market repair materials do not overwrite shared stock" time="0.002417" status="run" />
+  <testcase classname="MarketsV2" name="market routes respect forbidden ground and water across swim classes" time="0.00241" status="run" />
+  <testcase classname="MarketsV2" name="upgrading cancelling and completing preserve shared stock and gate" time="0.237693" status="run" />
+  <testcase classname="MarketsV2" name="market panels show gated upgrades and shared stock [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="OrderValidation"><testcase classname="OrderValidation" name="every order type survives random payloads through decode, check and execution [orders]" time="0.18317" status="run" />
+  <testcase classname="OrderValidation" name="fields outside what the user interface produces are rejected [orders]" time="0.173304" status="run" />
+  <testcase classname="OrderValidation" name="hostile orders do not stop a game that executes them unchecked [orders]" time="0.179609" status="run" />
+  <testcase classname="OrderValidation" name="orders a client builds for its own team and buildings pass [orders]" time="0.172115" status="run" />
+  <testcase classname="OrderValidation" name="orders acting for another team, player or building are rejected [orders]" time="0.14241" status="run" />
+  <testcase classname="OrderValidation" name="orders whose building is no longer in a state they apply to are stale [orders]" time="0.17003" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="0.352484" status="run" />
+  </testsuite><testsuite name="ExperimentalFeatures"><testcase classname="ExperimentalFeatures" name="registry keys are unique kebab-case and parse back to their id" time="0" status="run" />
+    <testcase classname="ExperimentalFeatures" name="text form round trips and ignores keys this build does not know" time="0" status="run" />
+    <testcase classname="ExperimentalFeatures" name="stream round trip; a pre-124 stream reads nothing; corrupt input is refused" time="0.000412" status="run" />
+    <testcase classname="ExperimentalFeatures" name="text streams keep the set" time="0" status="run" />
+    <testcase classname="ExperimentalFeatures" name="GameHeader carries the set in its full and player-less forms and a version 123 header reads none" time="0.000157" status="run" />
+  </testsuite></testsuites>

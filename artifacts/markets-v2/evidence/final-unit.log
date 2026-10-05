@@ -1,0 +1,206 @@
+FAIL glob2-unit-tests (793 cases) (5.4s)
+
+===== FAIL glob2-unit-tests (793 cases) =====
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0xab4cbc780] Protocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
+[mp4 @ 0xab4cbc280] Starting second pass: moving the moov atom to the beginning of the file
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0xab4cbc780] Protocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0xab4cbc780] Protocol name not provided, cannot determine if input is local or a network protocol, buffers and access patterns cannot be configured optimally without knowing the protocol
+[mp4 @ 0xab4cbc280] Starting second pass: moving the moov atom to the beginning of the file
+fertility_512_us=9285 fertility_512_cpu_us=9285
+templates=10 first=0,9 second=8,9 campus_members=4
+SoundMixer: Invalid stereo Opus track: test/fixtures/audio/unsupported-vorbis.ogg
+SoundMixer: Invalid stereo Opus track: empty.opus
+SoundMixer: Invalid stereo Opus track: truncated.opus
+SoundMixer: unable to decode/loop music track 0
+OrderAlterArea::setData(dataLength=13) failure
+data[0]=0
+data[1]=0
+data[2]=0
+data[3]=0
+data[4]=0
+data[5]=0
+data[6]=0
+data[7]=0
+data[8]=0
+data[9]=0
+data[10]=0
+data[11]=0
+data[12]=0
+BasePlayer::load: invalid player type 15 (must be below 15)
+BasePlayer::load: invalid player type 4294967295 (must be below 15)
+BasePlayer::load: out-of-range player number 16 (must be in [0, 16))
+BasePlayer::load: out-of-range player number -1 (must be in [0, 16))
+BasePlayer::load: out-of-range teamNumber 16 (must be in [0, 16))
+BasePlayer::load: stream invalid or exhausted before BasePlayer record
+PASS parallel eager/lazy gradients at 1, 2, 4, 8 threads
+PASS lazy building gradients: paused terrain snapshots, query ordering, equal-cost movement, unreachable cells, toroidal geometry, independent frontiers and rebuilds
+Turn session: diverged at tick 325; reloading
+Turn session: relay refused us: The match is over
+Turn session: diverged at tick 925; reloading
+Turn session: diverged at tick 0; reloading
+Turn session: nothing from the relay for 5100 ms; reconnecting
+Turn session: relay refused protocol 2; retrying with 1
+Turn session: relay refused protocol 2; retrying with 1
+Turn session: relay refused us: 
+Turn session: too many queued orders; dropping the newest
+Turn session: relay says we sent too much; reconnecting
+Turn session: relay refused us: 
+Ignoring invalid invite: no!
+Error reading replay: Incomplete binary field: versionMajor: unspecified iostream_category error
+Error reading replay: Incomplete binary field: versionMajor: unspecified iostream_category error
+Error reading replay: Incomplete binary field: versionMinor: unspecified iostream_category error
+Error reading replay: Incomplete binary field: versionMinor: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: data: unspecified iostream_category error
+Error reading replay: Incomplete binary field: sender: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: replayStepCounter: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: size: unspecified iostream_category error
+Error reading replay: Incomplete binary field: data: unspecified iostream_category error
+Error reading replay: Incomplete binary field: sender: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: checksum: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryMagic: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryMagic: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryMagic: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryMagic: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryVersion: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryVersion: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryVersion: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryVersion: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryUntil: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryUntil: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryUntil: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryUntil: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryTruncated: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryFrames: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryFrames: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryFrames: unspecified iostream_category error
+Error reading replay: Incomplete binary field: telemetryFrames: unspecified iostream_category error
+Error reading replay: Replay counters overflow: unspecified iostream_category error
+Error in replay: checksums don't match!
+	Current game's checksum: 0x1c8
+	Checksum in replay file: 0x7b
+Error reading replay: Replay checksum mismatch: unspecified iostream_category error
+Error reading replay: Unsupported replay version: unspecified iostream_category error
+Error reading replay: Unsupported replay version: unspecified iostream_category error
+numeric-bits 3ff0c152382d7366 3ff5124271980434 3fe0c152382d7366 3ff719218313d087 3ff1b6e192ebbe44 4002d97c7f3321d2 3fe193ea7aad030a bfdaa22657537205 400e18fa0df2d9bc 401d8e64b8d4ddae 3fbaec7b35a00d3a 3fe62e42fefa39ef 3fb8663f793c46c7 3ff95c01a39fbd68 3fde8927964fd5fd 400d03cf63b6e1a0 3ff6a09e667f3bcd c0017af62e0950f8 3feed9505e1bc3d4 3ff428a2f98d728b 400cd82b446159f3
+edge-bits bfea2c16b010e385 bfe2699022adc4c1 1 c0874385446d71c3 1e60000000000000 1e60000000000000 c00921fb54442d18
+rejected: Class instances are not script data
+rejected: Symbol keys are not script data
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: Cyclic script data
+rejected: Script data requires finite numbers
+rejected: Accessors are not script data
+rejected: TypeError: Dynamic code generation is disabled
+    at Function (native)
+    at step (<glob2-script>:1:39)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: SyntaxError: RegExp are not supported
+    at <glob2-script>:1:31
+
+rejected: SyntaxError: Async functions are disabled
+    at <glob2-script>:1:27
+
+rejected: SyntaxError: Await is disabled
+    at <glob2-script>:1:5
+
+rejected: SyntaxError: BigInt is disabled
+    at <glob2-script>:1:31
+
+rejected: SyntaxError: Imports are disabled
+    at <glob2-script>:1:31
+
+rejected: SyntaxError: Imports are disabled
+    at <glob2-script>:1:1
+
+rejected: InternalError: interrupted
+    at step (<glob2-script>:1:50)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: JavaScript work budget exhausted
+rejected: InternalError: interrupted
+    at parse (native)
+    at step (<glob2-script>:1:58)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: InternalError: interrupted
+    at stringify (native)
+    at step (<glob2-script>:1:82)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: InternalError: interrupted
+    at flat (native)
+    at step (<glob2-script>:1:76)
+    at __glob2_step (<glob2-script>:3:85)
+
+rejected: InternalError: interrupted
+
+rejected: InternalError: interrupted
+
+rejected: Sparse or named arrays are not script data
+rejected: Native script data exceeds limit
+rejected: Invalid array key
+rejected: SyntaxError: variable name expected
+    at <glob2-script>:1:28
+
+JavaScript runtime tests passed
+rejected: Global functions cannot capture private local state; use top-level variables
+rejected: Global functions must be unchanged source definitions; captured local closures are not saveable
+rejected: Global functions cannot capture private local state; use top-level variables
+rejected: Persistent globals require plain objects and arrays
+rejected: Persistent globals cannot retain built-ins or function-owned objects; use independent top-level data
+rejected: Source functions cannot hide private closure or class state
+rejected: Source function properties cannot retain opaque objects
+rejected: Persistent global objects cannot have custom prototypes
+rejected: TypeError: object is not extensible
+    at step (<glob2-script>:1:17)
+    at __glob2_step (<glob2-script>:3:85)
+
+Hello, world!
+
+[failure] 16-bit RGBA rounds normalized channels to the exporter reference: -1 == 0
+libgag/src/ImageAssetTest.cpp:75:
+CHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!
+  values: CHECK( -1 == 0 )
+[failure] 16-bit RGBA rounds normalized channels to the exporter reference: -1 == 0
+libgag/src/ImageAssetTest.cpp:75:
+CHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!
+  values: CHECK( -1 == 0 )
+
+0 passed, 1 failed, 17 skipped (5.4s of test time)
+[run_tests] JUnit report: artifacts/markets-v2/final-unit.xml (810 cases)

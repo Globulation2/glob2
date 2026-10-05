@@ -1,0 +1,1733 @@
+.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF...
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ar.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.br.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ca.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.cz.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.de.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.dk.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.es.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eo.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.eu.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fa.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fr.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.gr.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.hu.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.it.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.nl.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pl.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.pt.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ro.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ru.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.si.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sk.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sr.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.fi.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.sv.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.tr.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-tw.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.zh-cn.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.uk.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.id.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.vi.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ja.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[ice]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice' == 'Ice' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[road]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road' == 'Road' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[experiment ice-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Ice terrain' == 'Ice terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[experiment ice-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' == 'Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[experiment road-terrain]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Road terrain' == 'Road terrain' : English fallback
+
+======================================================================
+FAIL: test_catalogs_do_not_reintroduce_english_fallbacks (__main__.TranslationAuditTest.test_catalogs_do_not_reintroduce_english_fallbacks) (catalog='data/texts.ko.txt', key='[experiment road-terrain help]')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/glob2-markets-baseline/test/test_translations.py", line 33, in test_catalogs_do_not_reintroduce_english_fallbacks
+    self.assertNotEqual(value, source, 'English fallback')
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' == 'Adds cobblestone roads to the map editor. Ground units move at double speed. Roads support buildings but no resources.' : English fallback
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.272s
+
+FAILED (failures=192)

@@ -1,0 +1,6 @@
+PASS JavaScriptCompatibility/JavaScript pass assigns valid identities to released saves (0.1s)
+PASS JavaScriptCompatibility/JavaScript upgrade retains genuine master124 experiments and continuation (0.1s)
+PASS JavaScriptCompatibility/Terrain simulation change rejects released replays and enforces acceptance boundaries (0.2s)
+
+3 passed, 0 failed, 0 skipped (0.5s of test time)
+[run_tests] JUnit report: artifacts/markets-v2/final-replay-legacy.xml (3 cases)

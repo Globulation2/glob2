@@ -1,0 +1,59 @@
+diff --git a/libgag/src/TextStream.cpp b/libgag/src/TextStream.cpp
+index eaa20b84d..f6da1338e 100644
+--- a/libgag/src/TextStream.cpp
++++ b/libgag/src/TextStream.cpp
+@@ -116,6 +116,7 @@ namespace GAGCore
+ 		};
+ 		
+ 		int next;
++		bool pendingColon = false;
+ 		StreamBackend *stream;
+ 		Token token;
+ 		size_t line, column;
+@@ -148,6 +149,11 @@ namespace GAGCore
+ 		
+ 		Token nextToken(void)
+ 		{
++			if (pendingColon)
++			{
++				pendingColon = false;
++				return token = Token(Token::COLON);
++			}
+ 			if (!stream->isEndOfStream())
+ 			{
+ 				switch (next)
+@@ -228,12 +234,20 @@ namespace GAGCore
+ 						if (isalnum(next) || (next == '_') || (next == '.') || (next == '-') || (next == '[') || (next == ']'))
+ 						{
+ 							std::string tempValue;
+-							do
++							for (;;)
+ 							{
+ 								tempValue += static_cast<std::string::value_type>(next);
+ 								nextChar();
++								if (next == ':')
++								{
++									// Save fields use C++ names; a single colon still denotes inheritance.
++									nextChar();
++									if (next != ':') { pendingColon = true; break; }
++									tempValue += ':';
++									continue;
++								}
++								if (!(isalnum(next) || next == '_' || next == '.' || next == '[' || next == ']')) break;
+ 							}
+-							while (isalnum(next) || (next == '_') || (next == '.') || (next == '[') || (next==']'));
+ 							token = Token(Token::VAL, tempValue);
+ 						}
+ 						else
+diff --git a/test/tests.py b/test/tests.py
+index ea6df8476..f5b6b4984 100644
+--- a/test/tests.py
++++ b/test/tests.py
+@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
+ 
+ # glob2-engine-tests: every client object except the entry point, plus these.
+ ENGINE_TESTS = [
++    '#src/unit/MarketsV2Test.cpp',
+     ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
+     '#src/audio/MusicSetTest.cpp',
+     '#src/audio/MusicStreamTest.cpp',

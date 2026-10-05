@@ -1,0 +1,4 @@
+PASS MarketsV2/disabled fruit deliveries match master per tick [golden][save-format][artifacts] (0.6s)
+
+1 passed, 0 failed, 0 skipped (0.6s of test time)
+[run_tests] JUnit report: artifacts/markets-v2/terrain-baseline.xml (1 cases)

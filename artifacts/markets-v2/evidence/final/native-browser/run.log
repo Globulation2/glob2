@@ -1,0 +1,7 @@
+Settings::load("preferences.txt") : error, can't open file.
+BuildingsTypes::init() : warning : market : hpSum(560) < hpMax(600) with hpInit=400, hpInc=10, resSum=16. Make hpInc>=13
+nox::running 1 times 1500 steps:
+nox::game started
+nox::gui.game.checkSum() = 67a08ba7
+automaticEndingGame ended: 1500 ticks, 1 minutes, 0 seconds
+GLOB2_GAME_END ticks=1500 winner_team=-1 seed=42 map="SmallForTwo" orders=49 players=team0:local,team1:Nicowar,team0:Econo

@@ -1,0 +1,29 @@
+{
+  "fixture": "games/cross-replay.game.gz",
+  "seed": 42,
+  "ticks": 1500,
+  "fixture_sha256": "28e1b5b701b877d13e02547c4d874712e1973c2457210915c83c5f4cf376e09f",
+  "trace_sha256": "5aa1523bcf33c82830a764bba54bf7ca5480daec3f0946dc4ed58cc183f758c0",
+  "command": [
+    "/Users/bradley/.codex/worktrees/ef21/glob2/build/darwin/client/release/src/glob2",
+    "--nox",
+    "/Users/bradley/.codex/worktrees/ef21/glob2/games/cross-replay.game.gz",
+    "1500",
+    "1"
+  ],
+  "verify_match": {
+    "record": "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "record_sha256": "f17eb05b2435a9508f9a32372e64df460c89e2bca323eb839bb12a2c6b46786c",
+    "trace_sha256": "62bddf77eef60e383c03f10c798b1c95abb1e1febb25e6a6830d7c2d0dada947",
+    "verdict": "verified",
+    "command": [
+      "/Users/bradley/.codex/worktrees/ef21/glob2/build/darwin/client/release/src/glob2",
+      "--verify-match",
+      "/Users/bradley/.codex/worktrees/ef21/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map",
+      "/Users/bradley/.codex/worktrees/ef21/glob2/maps/FourSquares1.map.gz",
+      "--out",
+      "/Users/bradley/.codex/worktrees/ef21/glob2/artifacts/markets-v2/final/native-browser/verify-match"
+    ]
+  }
+}
