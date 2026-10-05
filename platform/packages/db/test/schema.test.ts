@@ -52,6 +52,7 @@ const typedColumns: ColumnLists = {
     'updated_at',
     'skin_id',
     'swarm_mesh',
+    'swarm_view_angle',
   ],
   skin_purchases: [
     'id',
@@ -89,6 +90,7 @@ const typedColumns: ColumnLists = {
     'manifest_sha256',
     'created_at',
     'swarm_mesh',
+    'swarm_view_angle',
   ],
   colony_skin_equipment: ['account_id', 'version_id', 'updated_at', 'building_color'],
   match_colony_skins: [
@@ -743,7 +745,8 @@ describe('migrations', () => {
         '0035_colony_skins_v2',
         '0036_players_avatars',
         '0037_studio_events',
-        '0038_music',
+        '0038_skin_view_angle',
+        '0039_music',
       ]);
       expect(
         (
@@ -813,7 +816,7 @@ describe('migrations', () => {
         existing.db,
       );
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(16);
+      expect(upgraded).toHaveLength(17);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -944,7 +947,8 @@ describe('migrations', () => {
         ['0035_colony_skins_v2', 'Success'],
         ['0036_players_avatars', 'Success'],
         ['0037_studio_events', 'Success'],
-        ['0038_music', 'Success'],
+        ['0038_skin_view_angle', 'Success'],
+        ['0039_music', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',
@@ -1018,6 +1022,127 @@ describe('migrations', () => {
         .insertInto('colony_skin_drafts')
         .values({ ...draft, material: Buffer.alloc(262144, 1) })
         .execute();
+    } finally {
+      await existing.drop();
+    }
+  });
+
+  it('preserves legacy skin content at angle zero and keys new versions by validated angle', async () => {
+    const existing = await createTestDatabase({ migrate: false, role: 'migrator' });
+    try {
+      const db = existing.db;
+      expect((await createMigrator(db).migrateTo('0037_studio_events')).error).toBeUndefined();
+      const owner = await db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: 'Camera painter' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const skin = await db
+        .insertInto('colony_skins')
+        .values({
+          owner_account_id: owner.id,
+          kind: 'custom',
+          name: 'Existing view',
+          entitlement: 'skins:designer',
+        })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      await db
+        .insertInto('blobs')
+        .values({ sha256: HASH, size: 1, content_type: 'image/png', storage_key: 'skins/camera' })
+        .execute();
+      const content = {
+        skin_id: skin.id,
+        texture_sha256: HASH,
+        material_sha256: HASH,
+        layout: 'colony-v2' as const,
+        building_color: 7,
+        swarm_mesh: 'crown',
+      };
+      const version = await db
+        .insertInto('colony_skin_versions')
+        .values({ ...content, manifest_sha256: HASH2 })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      const draft = {
+        account_id: owner.id,
+        revision: crypto.randomUUID(),
+        skin_id: skin.id,
+        name: 'Existing draft',
+        building_color: 7,
+        swarm_mesh: 'crown',
+        image: Buffer.from([1, 2, 3]),
+        material: Buffer.from([0, 1]),
+      };
+      await db.insertInto('colony_skin_drafts').values(draft).execute();
+      expect((await migrateToLatest(db)).map((m) => [m.migrationName, m.status])).toEqual([
+        ['0038_skin_view_angle', 'Success'],
+        ['0039_music', 'Success'],
+      ]);
+      expect(
+        await db
+          .selectFrom('colony_skin_versions')
+          .select([
+            'texture_sha256',
+            'material_sha256',
+            'manifest_sha256',
+            'swarm_mesh',
+            'swarm_view_angle',
+          ])
+          .where('id', '=', version.id)
+          .executeTakeFirstOrThrow(),
+      ).toEqual({
+        texture_sha256: HASH,
+        material_sha256: HASH,
+        manifest_sha256: HASH2,
+        swarm_mesh: 'crown',
+        swarm_view_angle: 0,
+      });
+      expect(
+        await db
+          .selectFrom('colony_skin_drafts')
+          .selectAll()
+          .where('account_id', '=', owner.id)
+          .executeTakeFirstOrThrow(),
+      ).toMatchObject({
+        ...draft,
+        swarm_view_angle: 0,
+      });
+      const publishAt = (angle: number, manifest: string) =>
+        db
+          .insertInto('colony_skin_versions')
+          .values({ ...content, swarm_view_angle: angle, manifest_sha256: manifest.repeat(64) })
+          .execute();
+      // Identical paint may have another final view, while an identical angle
+      // still deduplicates and invalid angles cannot be stored directly in SQL.
+      await publishAt(359, 'e');
+      await expect(publishAt(359, 'f')).rejects.toThrow(/colony_skin_versions_content_key/);
+      await expect(publishAt(0, '1')).rejects.toThrow(/colony_skin_versions_content_key/);
+      for (const angle of [-1, 360]) {
+        await expect(publishAt(angle, '2')).rejects.toThrow(/swarm_view_angle_check/);
+        await expect(
+          db
+            .updateTable('colony_skin_drafts')
+            .set({ swarm_view_angle: angle })
+            .where('account_id', '=', owner.id)
+            .execute(),
+        ).rejects.toThrow(/swarm_view_angle_check/);
+      }
+      await db
+        .updateTable('colony_skin_drafts')
+        .set({ swarm_view_angle: 359 })
+        .where('account_id', '=', owner.id)
+        .execute();
+      expect(
+        (
+          await db
+            .selectFrom('colony_skin_drafts')
+            .select('swarm_view_angle')
+            .where('account_id', '=', owner.id)
+            .executeTakeFirstOrThrow()
+        ).swarm_view_angle,
+      ).toBe(359);
+      expect(await migrateToLatest(db)).toEqual([]);
     } finally {
       await existing.drop();
     }

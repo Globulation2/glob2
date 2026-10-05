@@ -86,6 +86,7 @@ export async function matchColonySkins(
           layout: authorized.layout,
           buildingColor: authorized.building_color,
           swarmMesh,
+          swarmViewAngle: authorized.swarm_view_angle,
         };
         await trx
           .insertInto('match_colony_skins')
@@ -127,6 +128,7 @@ export async function matchColonySkins(
       'v.layout',
       'v.building_color',
       'v.swarm_mesh',
+      'v.swarm_view_angle',
     ])
     .where('m.match_id', '=', matchId)
     .orderBy('m.team_index')
@@ -143,6 +145,7 @@ export async function matchColonySkins(
       layout: row.layout,
       buildingColor: row.building_color,
       swarmMesh,
+      swarmViewAngle: row.swarm_view_angle,
     };
     // Refresh only authorization lifetime; the frozen content never changes.
     return [

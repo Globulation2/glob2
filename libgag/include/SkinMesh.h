@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <cstdint>
+#include <array>
 #include <memory>
 #include <string>
 #include <vector>
@@ -19,6 +20,9 @@ struct SkinMesh
     std::vector<float> uv;
     std::vector<std::uint32_t> indices;
     std::vector<float> poses; // xyz, normal xyz; frame-major
+    // Cosmetic camera rotation; returns a separately identified static mesh.
+    SkinMesh rotatedView(unsigned angle, const std::array<float, 16> &inverse,
+                         const std::array<float, 16> &projection, const std::array<float, 9> &normals) const;
     bool load(const std::string &path, std::string &error);
     bool load(StreamBackend &input, std::string &error);
 };

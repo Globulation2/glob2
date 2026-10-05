@@ -1,5 +1,8 @@
 """The shipped colony paint layout stays attached across all source animations."""
 from pathlib import Path
+import hashlib
+import json
+import re
 import subprocess
 import sys
 import unittest
@@ -8,6 +11,25 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class ColonySkinAssetsTest(unittest.TestCase):
+    def test_camera_metadata_is_bound_and_native_constants_match(self):
+        folder = ROOT / 'data/skins/colony-v1'
+        header = (ROOT / 'src/online/SkinViewTransforms.h').read_text()
+        for path in folder.glob('*.gsk'):
+            sidecar = path.with_suffix('.view.json')
+            view = json.loads(sidecar.read_text())
+            self.assertEqual(view['version'], 1)
+            self.assertEqual(view['meshSha256'], hashlib.sha256(path.read_bytes()).hexdigest())
+            self.assertEqual(sidecar.read_bytes(), (ROOT / 'platform/apps/web/public/skins/models' / sidecar.name).read_bytes())
+            if path.stem.startswith('swarm'):
+                shape = path.stem.removeprefix('swarm-') if path.stem != 'swarm' else 'classic'
+                line = next(line for line in header.splitlines() if line.endswith('// ' + shape))
+                actual = [float(value) for value in re.findall(r'([-+\d.]+e[-+]\d+)f', line)]
+                expected = view['clipToModel'] + view['modelToClip'] + view['normalToModel']
+                self.assertEqual(len(actual), len(expected))
+                for a, b in zip(actual, expected):
+                    self.assertAlmostEqual(a, b, places=8)
+                self.assertEqual(view['pivot'], [0, 0, 0])
+
     def test_installed_meshes_match_their_sources_and_paint_contract(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / 'tools/skins/test_export.py'),

@@ -675,6 +675,7 @@ export interface ColonySkinVersionsTable {
   building_color: number;
   /** Validated against the protocol's SWARM_MESHES by the API. */
   swarm_mesh: Defaulted<string>;
+  swarm_view_angle: Defaulted<number>;
   manifest_sha256: string;
   created_at: Timestamp;
 }
@@ -725,6 +726,7 @@ export interface ColonySkinDraftsTable {
   name: string;
   building_color: number;
   swarm_mesh: Defaulted<string>;
+  swarm_view_angle: Defaulted<number>;
   image: Buffer;
   material: Buffer;
   updated_at: Timestamp;

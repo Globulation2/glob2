@@ -33,7 +33,13 @@ function price(product: Product) {
     product.amount / (ZERO_DECIMAL.has(product.currency) ? 1 : 100),
   );
 }
-export function SkinStore({ onChange }: { onChange: () => void }) {
+export function SkinStore({
+  onChange,
+  beforeCheckout,
+}: {
+  onChange: () => void;
+  beforeCheckout?: () => boolean;
+}) {
   const { account } = useSession();
   const [busy, setBusy] = useState(false),
     [message, setMessage] = useState(() =>
@@ -54,6 +60,10 @@ export function SkinStore({ onChange }: { onChange: () => void }) {
     [account?.id],
   );
   async function buy(sku: string) {
+    if (beforeCheckout && !beforeCheckout()) {
+      setMessage('Save your draft before leaving for checkout. Device storage is unavailable.');
+      return;
+    }
     setBusy(true);
     try {
       const checkout = await request<{ url: string }>('POST', '/api/v1/skins/checkout', {

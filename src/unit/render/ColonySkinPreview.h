@@ -49,6 +49,8 @@ private:
     std::array<std::array<bool,4>,32> hairy{};
     std::array<std::optional<std::uint32_t>,32> colors;
     std::array<int,32> swarmChoice{};
+    std::array<unsigned,32> swarmAngles{};
+    mutable std::array<GAGCore::SkinMesh,32> orientedSwarms;
     bool attemptedMeshes = false;
     std::array<GAGCore::SkinMesh, Online::SWARM_MESHES.size()> swarms;
     bool visible = true;
