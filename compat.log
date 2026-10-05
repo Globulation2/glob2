@@ -1,0 +1,4 @@
+PASS JavaScriptIntegration/JavaScript telemetry scene permissions and replay diagnostic roundtrip (0.0s)
+
+1 passed, 0 failed, 0 skipped (0.0s of test time)
+[run_tests] JUnit report: artifacts/replay-import-telemetry/compat.xml (1 cases)

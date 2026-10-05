@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="artifacts/replay-import-telemetry/fixture-integration-tests" errors="0" failures="0" tests="5" time="0.095858" timestamp="2026-10-05T09:10:56Z" doctest_version="2.4.11">
+    <testcase classname="/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/artifacts/replay-import-telemetry/fixture-integration.cpp" name="current browser replay imports with its complete telemetry footer" time="0.095858" status="run"/>
+  </testsuite>
+</testsuites>

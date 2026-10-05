@@ -1,0 +1,4 @@
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (10.1s)
+
+1 passed, 0 failed, 0 skipped (10.1s of test time)
+[run_tests] JUnit report: artifacts/replay-import-telemetry/final.xml (1 cases)

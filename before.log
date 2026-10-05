@@ -1,0 +1,43 @@
+FAIL SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (10.1s)
+
+===== FAIL SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] =====
+GLOB2_TEST_BUILD compiler=15.2.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "c2ea87b78820fbeea56c0fdacc8b5e2e2e0b167a", "sourceStatus": [" M test/SavegameSafetyHarness.cpp", "?? build-software-terrain/"], "sourceTreeSha256": "2cd754fbb5603e973c984ac4df0843741d2eb234f27c726471f3899a13f25650"}
+PASS pending construction binary/text round trips, queue order, staffing, delayed placement, empty queue and invalid reference
+PASS binary human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing human saved game continues RNG and 700 simulation steps and measurements across header replacement
+PASS binary + text routing AI saved game continues RNG and 700 simulation steps and measurements across header replacement
+FileManager::writeAtomically: /tmp/glob2-test-e2qxvhll/profile/atomic.game: injected serialization failure
+FileManager::writeAtomically: /tmp/glob2-test-e2qxvhll/profile/directory.game: File replacement failed: iostream error
+FileManager::writeAtomically: cannot create temporary file for /tmp/glob2-test-e2qxvhll/profile/missing/save.game
+PASS atomic creation/replacement, close drains pending writes, temporary-name collision, seek, serialization/open/rename failure, temporary cleanup
+PASS injected short write and buffered flush failure preserve previous bytes
+PASS chunked boundary reads/writes, seeks, gaps, overreads, capacity bound and ownership transfer
+FileManager::writeGzipAtomically: /tmp/glob2-test-e2qxvhll/profile/atomic.game.gz: injected serialization failure
+FileManager::writeGzipAtomically: /tmp/glob2-test-e2qxvhll/profile/atomic.game.gz: std::bad_alloc
+PASS gzip deterministic encoding, round trip, size limit, corruption rejection and failed atomic replacement
+FileManager::writeAtomically: cannot create temporary file for /tmp/glob2-test-e2qxvhll/profile/missing/save.game
+BackgroundFileWriter: /tmp/glob2-test-e2qxvhll/profile/missing/save.game was not replaced; the previous file is kept
+BackgroundFileWriter: std::bad_alloc
+BackgroundFileWriter: /tmp/glob2-test-e2qxvhll/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: injected chunk finalization failure
+BackgroundFileWriter: /tmp/glob2-test-e2qxvhll/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: injected snapshot failure
+BackgroundFileWriter: /tmp/glob2-test-e2qxvhll/profile/background.game was not replaced; the previous file is kept
+BackgroundFileWriter: /tmp/glob2-test-e2qxvhll/profile/background.game was not replaced; the previous file is kept
+PASS background writes keep the newest snapshot with its finish step, finish on destruction and continue after a failure
+PASS busy autosave defers capture without blocking and retains the later exact tick
+FileManager::writeAtomically: /tmp/glob2-test-e2qxvhll/profile/blocked-preferences.txt: File replacement failed: iostream error
+PASS preference/keyboard writes round trip and preserve prior files on failure
+PASS every truncated header, invalid versions/team counts/save flags rejected; previous header preserved; valid reload succeeds
+PASS campaign progress truncation/version/definition validation, monotonic merge, legacy text round trip and atomic failure preservation
+
+[failure] autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]: 3 == 2
+test/SavegameSafetyHarness.cpp:891:
+REQUIRE( validate(finished ? "ImportedFinished.replay" : "ImportedLive.replay", bytes) == FileImport::State::Succeeded ) is NOT correct!
+  values: REQUIRE( 3 == 2 )
+
+
+0 passed, 1 failed, 0 skipped (10.1s of test time)
+[run_tests] JUnit report: artifacts/replay-import-telemetry/before.xml (1 cases)

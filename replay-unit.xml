@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.000824" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000369" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite></testsuites>
