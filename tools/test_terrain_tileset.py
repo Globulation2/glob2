@@ -26,6 +26,15 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d.update(version=9),
             lambda d: d.update(version=True),
             lambda d: d.update(version=1.0),
+            lambda d: d.update(version=1),
+            lambda d: d.update(boundary_warp_q8={}),
+            lambda d: d.update(boundary_warp_q8=[0, 0]),
+            lambda d: d.update(boundary_warp_q8=[True, 0, 0]),
+            lambda d: d.update(boundary_warp_q8=[0, 1.5, 0]),
+            lambda d: d.update(boundary_warp_q8=[-1, 0, 0]),
+            lambda d: d.update(boundary_warp_q8=[1025, 0, 0]),
+            lambda d: d.update(boundary_warp_q8=[0, 385, 0]),
+            lambda d: d.update(boundary_warp_q8=[0, 0, 129]),
             lambda d: d.update(pair_treatments={}),
             lambda d: d.update(bindings=[]),
             lambda d: d.update(compiled_pack="data/terrain/wrong.json"),
@@ -45,6 +54,11 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["materials"][0]["variants"][0].update(weight=0),
             lambda d: d["materials"][0]["variants"][0].update(frame=9999),
             lambda d: d["profiles"][0]["contours_q12"][0].__setitem__(0, 1),
+            lambda d: d["profiles"][0]["contours_q12"].__setitem__(0, [0] * 6),
+            lambda d: d["profiles"][0]["contours_q12"][0].__setitem__(1, 513),
+            lambda d: d["profiles"][0].update(feather_q8=True),
+            lambda d: d["profiles"][0].update(feather_q8=127),
+            lambda d: d["profiles"][0].update(feather_q8=513),
             lambda d: d["materials"][0].update(profile="missing"),
             lambda d: d["materials"][0].update(key="sand"),
         ]
@@ -61,6 +75,28 @@ class TerrainTileset(unittest.TestCase):
                      "data/gfx/ice\\broken", "data/gfx/ice:broken", "data/gfx/ice\0broken"):
             with self.subTest(path=path), self.assertRaises(ValueError):
                 data_path(path, "Sprite")
+
+    def test_contour_resolutions_share_native_and_hd_geometry(self):
+        for count in (5, 9, 17, 33):
+            with self.subTest(count=count), tempfile.TemporaryDirectory() as tmp:
+                d = copy.deepcopy(self.document)
+                curve = [0] + [512 if i % 2 else -512 for i in range(count - 2)] + [0]
+                d["profiles"][0]["contours_q12"] = [curve] * 4
+                packed = compile_tileset(d, Path(tmp))
+                masks = packed["masks"][d["profiles"][0]["key"]]
+                self.assertEqual(masks["1"][0], masks["4"][0][::4])
+                self.assertEqual(masks["4"][0][::64 // (count - 1)], curve)
+
+    def test_version_one_catalog_remains_supported(self):
+        self.document["version"] = 1
+        self.document.pop("boundary_warp_q8")
+        for profile in self.document["profiles"]:
+            profile.pop("feather_q8")
+            profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
+        self.assertEqual(len(validate(self.document)), 80)
+        self.document["profiles"][0]["contours_q12"][0][1] = 257
+        with self.assertRaises(ValueError):
+            validate(self.document)
 
     def test_variant_borders_preserve_premultiplied_alpha_continuity(self):
         with tempfile.TemporaryDirectory() as tmp:
