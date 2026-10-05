@@ -87,7 +87,9 @@ test('account drafts restore across devices and refuse stale saves', async ({
     await expect(other.getByRole('status')).toContainText('Account draft restored.');
     await close(device);
     await expect(device.getByLabel('Skin name')).toHaveValue('Across devices');
-    expect(await saved(device)).toEqual(paint);
+    // Restoring the account draft retains its optimistic-concurrency revision;
+    // the painted document remains identical to the original device checkpoint.
+    expect(await saved(device)).toEqual({ ...paint, draftRevision: expect.any(String) });
     await device.getByLabel('Skin name').fill('Newer draft');
     await saveDialog(device);
     await other.getByRole('button', { name: 'Save to account' }).click();
