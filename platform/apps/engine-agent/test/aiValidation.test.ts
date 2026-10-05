@@ -3,6 +3,7 @@ import type * as FsPromises from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, it, vi } from 'vitest';
 import { runProcess } from '@glob2/engine/process';
+import { DEFAULT_LIMITS } from '@glob2/engine/engine';
 import type * as EngineProcess from '@glob2/engine/process';
 import { checksumRecords, createAiValidator, sameContinuation } from '../src/aiValidation.ts';
 import { pendingAiReport, passedAiReport, AI_CHECKS } from '@glob2/protocol';
@@ -62,7 +63,12 @@ async function validator(diagnostic: 'controller' | 'isolation' = 'controller') 
     };
   });
   return createAiValidator(
-    { binary: '/fake-engine', workdir: process.cwd() },
+    {
+      binary: '/fake-engine',
+      workdir: process.cwd(),
+      limits: DEFAULT_LIMITS,
+      maxOutputBytes: 64 * 1024 * 1024,
+    },
     { versionMinor: 1, netProtocol: 1, dataHash: 'a'.repeat(64) },
   );
 }

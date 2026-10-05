@@ -151,7 +151,7 @@ test('AI discovery, version details, social actions and gated publishing', async
   }
   if (
     testInfo.project.name === 'desktop' &&
-    !(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches))
+    !(await page.evaluate("matchMedia('(prefers-reduced-motion: reduce)').matches"))
   ) {
     const firstCard = page.locator('.ai-card').first();
     await firstCard.hover();
