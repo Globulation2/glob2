@@ -5538,3 +5538,9 @@ Lekuka
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Helburuko errendatze-FPS
+[settings Unlimited]
+Mugarik gabe
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Mugatu marrazketa aplikazio osoan. Balio baxuagoek errendatze-lana murrizten dute. Jokoaren abiadura ez da aldatzen.

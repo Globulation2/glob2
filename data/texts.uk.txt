@@ -5538,3 +5538,9 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Цільова частота кадрів
+[settings Unlimited]
+Без обмежень
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Обмежує малювання в усьому застосунку. Нижчі значення зменшують роботу з малювання. Швидкість гри не змінюється.

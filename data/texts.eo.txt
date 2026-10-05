@@ -5538,3 +5538,9 @@ Laŭ loko
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Cela bildfrekvenco
+[settings Unlimited]
+Senlima
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Limigu desegnadon en la tuta aplikaĵo. Pli malaltaj valoroj reduktas la desegnan laboron. La ludrapido restas senŝanĝa.

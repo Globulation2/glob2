@@ -5538,3 +5538,9 @@ Theo vị trí
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+FPS kết xuất mục tiêu
+[settings Unlimited]
+Không giới hạn
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Giới hạn việc vẽ trong toàn bộ ứng dụng. Giá trị thấp hơn làm giảm công việc kết xuất. Tốc độ trò chơi không thay đổi.

@@ -5538,3 +5538,9 @@ CPU %0%
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Στόχος καρέ ανά δευτερόλεπτο
+[settings Unlimited]
+Χωρίς όριο
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Περιορίζει τη σχεδίαση σε όλη την εφαρμογή. Οι χαμηλότερες τιμές μειώνουν την εργασία απόδοσης. Η ταχύτητα του παιχνιδιού δεν αλλάζει.

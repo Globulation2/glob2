@@ -5538,3 +5538,9 @@ Hely szerint
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+Célzott megjelenítési FPS
+[settings Unlimited]
+Korlátlan
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Korlátozza a rajzolást az egész alkalmazásban. Az alacsonyabb értékek csökkentik a megjelenítés munkáját. A játék sebessége nem változik.
