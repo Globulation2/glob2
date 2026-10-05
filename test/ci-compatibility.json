@@ -28,6 +28,8 @@
     "ColonySkinPreview/*",
     "HighResolutionIntegration/*",
     "TerrainPresentation/*",
+    "TerrainMaterials/*",
+    "TerrainValidation/*",
     "TerrainProperties/*",
     "TerrainEcology/*",
     "RuntimeContinuation/*",

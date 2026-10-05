@@ -5,6 +5,8 @@
 
 #include <PerformanceTelemetry.h>
 #include "Minimap.h"
+#include "terrain/TerrainCatalogIO.h"
+#include "terrain/TerrainCompositor.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
 #include "Ressource.h"
@@ -270,6 +272,8 @@ void Minimap::refreshPixelRows(int start, int end, int localteam)
 void Minimap::computeColors(int row, int localTeam)
 {
 	if (noX) return;
+	const auto palette =
+		TerrainVisual::minimapPalette(globalContainer->terrainCompositor().catalog());
 
 	assert(localTeam>=0);
 	assert(localTeam<Team::MAX_COUNT);
@@ -403,9 +407,9 @@ void Minimap::computeColors(int row, int localTeam)
 			lr = lg = lb = 0;
 			for (int i=0; i<TERRAIN_COUNT; i++)
 			{
-				lr += pcol[i]*TerrainPresentations[i].minimap.r;
-				lg += pcol[i]*TerrainPresentations[i].minimap.g;
-				lb += pcol[i]*TerrainPresentations[i].minimap.b;
+				lr += pcol[i]*palette[i].r;
+				lg += pcol[i]*palette[i].g;
+				lb += pcol[i]*palette[i].b;
 			}
 			for (int i=0; i<MAX_RESOURCES; i++)
 			{

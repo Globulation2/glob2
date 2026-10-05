@@ -17,7 +17,7 @@ namespace GAGCore { class DrawableSurface; }
 class SoftwareTerrainCache;
 
 //! Presentation state one map view keeps between frames: animation phases, the
-//! cloud field, the software terrain cache and scratch buffers. Owned by the
+//! cloud field, the terrain page cache and scratch buffers. Owned by the
 //! viewer (Game::ViewState), never by Game or Map, so the simulation neither
 //! reads nor writes it and each view animates independently.
 struct MapRenderState
@@ -59,10 +59,10 @@ struct MapRenderState
 	ColonySkinPreview &skinPreview();
 	// Keep match appearance while rebuilding the rest of a reconnect view.
 	void swapSkinPreview(MapRenderState &other);
-	//! The software terrain cache for map, rebuilt when the map was replaced.
+	//! The terrain page cache for map, rebuilt when the map was replaced.
 	//! May throw std::bad_alloc; callers fall back to uncached terrain.
 	SoftwareTerrainCache &terrainCache(Uint64 mapIdentity);
-	//! The current software terrain cache, or null if none was created yet.
+	//! The current terrain page cache, or null if none was created yet.
 	SoftwareTerrainCache *existingTerrainCache() const { return terrainCache_.get(); }
 
 private:

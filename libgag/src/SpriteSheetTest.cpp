@@ -100,6 +100,42 @@ TEST_CASE("sheet tiles load as the frames they were packed from") {
 	}
 }
 
+TEST_CASE("portable HD uses standalone frames without requesting GL atlases [display]") {
+    glob2test::TempDir scratch("portable-hd");
+    const auto artwork = scratch.path / "data/gfx";
+    const auto hd = scratch.path / "hd";
+    std::filesystem::create_directories(artwork);
+    std::filesystem::create_directories(hd);
+    std::filesystem::copy_file(glob2test::sourceRoot() / "test/fixtures/image-assets/native-sheet.webp",
+        artwork / "native-sheet.webp");
+    std::ofstream(artwork / "terrain.sheet") << "native-sheet.webp image 0 16 4 2\n";
+    std::ofstream frame(hd / "frame.webp", std::ios::binary);
+    frame.write(reinterpret_cast<const char*>(lossyAlphaFixture::webp), sizeof(lossyAlphaFixture::webp));
+    frame.close();
+    std::ofstream index(hd / "frames.txt");
+    index << "GLOB2_HIGHRES 1\n";
+    for (int i = 0; i < 16; ++i) index << "terrain" << i << " 4 2 4 frame.webp -\n";
+    index.close();
+    glob2test::ScopedEnvironment assets("GLOB2_ASSET_DIR", scratch.path.string().c_str());
+    glob2test::ScopedEnvironment pack("GLOB2_EXPERIMENT_TEXTURE_DIR", hd.string().c_str());
+    glob2test::ToolkitScope toolkit;
+    GAGCore::Toolkit::initGraphic(64, 64, GAGCore::GraphicContext::PORTABLEGPU, "portable HD frames");
+    GAGCore::Sprite sprite;
+    REQUIRE(sprite.load("data/gfx/terrain"));
+    // Each requested frame contributes its base image; no four GL atlas mips.
+    CHECK(GAGCore::Sprite::prefetchHighResolution("data/gfx/terrain", 16).size() == 16);
+    for (unsigned i = 0; i < 16; ++i) {
+        REQUIRE(sprite.baseFrame(i));
+        CHECK(sprite.baseFrame(i)->getW() == 16);
+        CHECK(sprite.baseFrame(i)->getH() == 8);
+        CHECK(sprite.getW(i) == 4);
+        CHECK(sprite.getH(i) == 2);
+    }
+#ifdef HAVE_OPENGL
+    CHECK(sprite.highResolutionAtlas == nullptr);
+#endif
+}
+
 #ifdef HAVE_OPENGL
 TEST_CASE("independently encoded lossy HD atlases keep exact frame alpha [display]") {
     glob2test::TempDir scratch("lossy-atlas");

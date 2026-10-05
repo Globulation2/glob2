@@ -46,8 +46,6 @@ public:
         const auto type = terrainTypeAt(x,y);
         return terrainUsesLegacyCorners(type) ? static_cast<TerrainType>(getUMTerrain(x,y)) : type;
     }
-    TerrainLayers terrainLayersAt(int x, int y, int animationTime = 0) const;
-    int terrainLayerCapacity() const { return layeredTerrain ? TerrainLayers::Capacity : 1; }
 	const Resource &getResource(int x, int y) const { return resources[coordToIndex(x, y)]; }
 	const Resource &getResource(size_t pos) const { return resources[pos]; }
 	bool isMapDiscovered(int x, int y, Uint32 visionMask) const
@@ -97,7 +95,6 @@ private:
 	std::vector<Resource> resources;
 	std::vector<Uint8> resourcesGrow, undermap;
     std::vector<TerrainType> terrainTypes;
-    bool layeredTerrain = false;
 	std::vector<Uint32> discovered, fogOfWar;
 	Utilities::BitArray forbiddenView, guardAreaView, clearAreaView, farmAreaView;
 };

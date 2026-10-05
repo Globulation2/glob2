@@ -170,9 +170,18 @@ def game_sprites(root):
     text = (root / 'src/app/GlobalContainer.cpp').read_text()
     body = text[text.index('void GlobalContainer::loadGameGraphics'):]
     names = set(SPRITE.findall(body[:body.index('\n}\n')]))
-    # Terrain atlases and backdrops are declared in the immutable registry;
-    # loadGameGraphics reads those paths instead of repeating string literals.
+    # Keep compatibility with older registry declarations. New material sources
+    # are authored in the catalog, including sprites outside data/gfx.
     names.update(SPRITE.findall((root / 'src/map/TerrainPresentation.h').read_text()))
+    catalog = root / 'data/terrain/tileset.json'
+    if catalog.exists():
+        document = json.loads(catalog.read_text())
+        if document.get('compiled_pack'):
+            names.add(str(Path(document['compiled_pack']).parent) + '/')
+        for material in document['materials']:
+            for source in (material['sprite'], material.get('backdrop', {}).get('sprite')):
+                if source:
+                    names.add(source.removeprefix('data/gfx/') if source.startswith('data/gfx/') else source)
     for path in sorted((root / 'src/building/types').glob('BuildingTypes*.cpp')):
         names.update(SPRITE.findall(path.read_text()))
     if not {'unit', 'terrain', 'gamegui', 'swarm0b'} <= names:
@@ -185,13 +194,15 @@ def game_files(paths, sprites):
     export), as Sprite::load reads them, or the export's <name>.sheet index and the
     <name>-sheet-<n>.png sheets it names."""
     files = set()
+    prefixes = {name if name.startswith('data/') else 'data/gfx/' + name for name in sprites}
     for path in paths:
-        if not path.startswith('data/gfx/') or '/' in path[len('data/gfx/'):]:
+        if any(prefix.endswith('/') and path.startswith(prefix) for prefix in prefixes):
+            files.add(path)
             continue
         # Names may end in digits themselves: inn0b's frames are inn0b0.png, inn0b1.png.
-        if any(path.startswith('data/gfx/' + name) and
-               re.fullmatch(r'(?:\d+r?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len('data/gfx/' + name):])
-               for name in sprites):
+        if any(path.startswith(prefix) and
+               re.fullmatch(r'(?:\d+r?|-sheet-\d+)\.(?:png|webp)|\.sheet', path[len(prefix):])
+               for prefix in prefixes):
             files.add(path)
     return files
 
