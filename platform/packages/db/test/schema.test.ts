@@ -13,6 +13,13 @@ type ColumnLists = { [T in keyof Database]: readonly (keyof Database[T] & string
 
 /** Every column of every table, as typed in src/schema.ts. */
 const typedColumns: ColumnLists = {
+  ais: ['id','owner_account_id','name','description','tags','visibility','hidden','hidden_reason','created_at','updated_at'],
+  ai_versions: ['id','ai_id','hash','label','notes','profile','created_at'],
+  ai_validations: ['id','hash','sim_version','suite','job_id','status','report','error','created_at'],
+  ai_uploads: ['id','owner_account_id','validation_id','expires_at','published_ai_id','published_version_id'],
+  ai_likes: ['ai_id','account_id'], ai_favourites: ['ai_id','account_id'],
+  ai_downloads: ['version_id','downloader','day'],
+  ai_reports: ['id','ai_id','reporter_account_id','reason','details','status','created_at','resolution_note'],
   colony_skin_reports: [
     'id',
     'version_id',
@@ -695,6 +702,7 @@ describe('migrations', () => {
         '0033_queue_searches',
         '0034_skin_swarm_mesh',
         '0035_colony_skins_v2',
+        '0037_ai_library',
       ]);
       expect(
         (
@@ -747,7 +755,7 @@ describe('migrations', () => {
         .returning('id')
         .executeTakeFirstOrThrow();
       const upgraded = await migrateToLatest(existing.db);
-      expect(upgraded).toHaveLength(13);
+      expect(upgraded).toHaveLength(14);
       expect(upgraded.every((migration) => migration.status === 'Success')).toBe(true);
       expect(
         await existing.db
@@ -868,6 +876,7 @@ describe('migrations', () => {
       const upgraded = await migrateToLatest(db);
       expect(upgraded.map((m) => [m.migrationName, m.status])).toEqual([
         ['0035_colony_skins_v2', 'Success'],
+        ['0037_ai_library', 'Success'],
       ]);
       for (const table of [
         'colony_skin_versions',

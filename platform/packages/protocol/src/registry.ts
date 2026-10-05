@@ -1,3 +1,4 @@
+import { aiSchemas } from './ais.ts';
 import { studioSchemas } from './mapStudio.ts';
 import { hiveSchemas } from './hive.ts';
 // Every schema exported as a JSON Schema file for non-TypeScript consumers,
@@ -168,6 +169,7 @@ export const schemaRegistry: Record<string, RegisteredSchema> = {
   ColonySkinVersion: { schema: ColonySkinVersion },
   MatchColonySkin: { schema: MatchColonySkin },
   ColonySkinClaims: { schema: ColonySkinClaims },
+  ...Object.fromEntries(Object.entries(aiSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(Object.entries(studioSchemas).map(([name, schema]) => [name, { schema }])),
   ...Object.fromEntries(Object.entries(hiveSchemas).map(([name, schema]) => [name, { schema }])),
   // Simulation and match description

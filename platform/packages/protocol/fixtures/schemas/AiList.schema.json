@@ -1,0 +1,331 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AiList",
+  "title": "AiList",
+  "type": "object",
+  "required": [
+    "items"
+  ],
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "tags",
+          "visibility",
+          "hidden",
+          "owner",
+          "createdAt",
+          "updatedAt",
+          "likes",
+          "downloads",
+          "latestVersion",
+          "liked",
+          "favourited"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "Balanced"
+                },
+                {
+                  "type": "string",
+                  "const": "Rush"
+                },
+                {
+                  "type": "string",
+                  "const": "Defensive"
+                },
+                {
+                  "type": "string",
+                  "const": "Economy"
+                },
+                {
+                  "type": "string",
+                  "const": "Expansion"
+                },
+                {
+                  "type": "string",
+                  "const": "Experimental"
+                },
+                {
+                  "type": "string",
+                  "const": "Beginner-friendly"
+                }
+              ]
+            },
+            "maxItems": 5,
+            "uniqueItems": true
+          },
+          "visibility": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "public"
+              },
+              {
+                "type": "string",
+                "const": "unlisted"
+              },
+              {
+                "type": "string",
+                "const": "private"
+              }
+            ]
+          },
+          "hidden": {
+            "type": "boolean"
+          },
+          "hiddenReason": {
+            "type": "string"
+          },
+          "owner": {
+            "type": "object",
+            "required": [
+              "id",
+              "displayName"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "displayName": {
+                "type": "string"
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "updatedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "likes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "downloads": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "latestVersion": {
+            "type": "object",
+            "required": [
+              "id",
+              "hash",
+              "label",
+              "notes",
+              "profile",
+              "createdAt",
+              "downloads",
+              "downloadUrl",
+              "validations"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "hash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hexadecimal SHA-256 digest."
+              },
+              "label": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              },
+              "profile": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2
+              },
+              "createdAt": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+                "description": "RFC 3339 date-time."
+              },
+              "downloads": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "downloadUrl": {
+                "type": "string"
+              },
+              "validations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "sourceHash",
+                    "simVersion",
+                    "suite",
+                    "valid",
+                    "checks"
+                  ],
+                  "properties": {
+                    "sourceHash": {
+                      "type": "string",
+                      "pattern": "^[0-9a-f]{64}$",
+                      "description": "Lowercase hexadecimal SHA-256 digest."
+                    },
+                    "simVersion": {
+                      "type": "string"
+                    },
+                    "suite": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "valid": {
+                      "type": "boolean"
+                    },
+                    "checks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "status"
+                        ],
+                        "properties": {
+                          "id": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "const": "file"
+                              },
+                              {
+                                "type": "string",
+                                "const": "syntax"
+                              },
+                              {
+                                "type": "string",
+                                "const": "startup"
+                              },
+                              {
+                                "type": "string",
+                                "const": "state"
+                              },
+                              {
+                                "type": "string",
+                                "const": "gameplay"
+                              },
+                              {
+                                "type": "string",
+                                "const": "determinism"
+                              },
+                              {
+                                "type": "string",
+                                "const": "continuation"
+                              }
+                            ]
+                          },
+                          "status": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "const": "pending"
+                              },
+                              {
+                                "type": "string",
+                                "const": "running"
+                              },
+                              {
+                                "type": "string",
+                                "const": "passed"
+                              },
+                              {
+                                "type": "string",
+                                "const": "failed"
+                              },
+                              {
+                                "type": "string",
+                                "const": "skipped"
+                              }
+                            ]
+                          },
+                          "message": {
+                            "type": "string",
+                            "maxLength": 2000
+                          }
+                        }
+                      },
+                      "minItems": 7,
+                      "maxItems": 7
+                    },
+                    "metadata": {
+                      "type": "object",
+                      "required": [
+                        "apiVersion",
+                        "name",
+                        "description",
+                        "version",
+                        "author"
+                      ],
+                      "properties": {
+                        "apiVersion": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 2
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "version": {
+                          "type": "string"
+                        },
+                        "author": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "liked": {
+            "type": "boolean"
+          },
+          "favourited": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "nextCursor": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AiVersion",
+  "title": "AiVersion",
+  "type": "object",
+  "required": [
+    "id",
+    "hash",
+    "label",
+    "notes",
+    "profile",
+    "createdAt",
+    "downloads",
+    "downloadUrl",
+    "validations"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID."
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Lowercase hexadecimal SHA-256 digest."
+    },
+    "label": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2
+    },
+    "createdAt": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+      "description": "RFC 3339 date-time."
+    },
+    "downloads": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "downloadUrl": {
+      "type": "string"
+    },
+    "validations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceHash",
+          "simVersion",
+          "suite",
+          "valid",
+          "checks"
+        ],
+        "properties": {
+          "sourceHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hexadecimal SHA-256 digest."
+          },
+          "simVersion": {
+            "type": "string"
+          },
+          "suite": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "status"
+              ],
+              "properties": {
+                "id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "file"
+                    },
+                    {
+                      "type": "string",
+                      "const": "syntax"
+                    },
+                    {
+                      "type": "string",
+                      "const": "startup"
+                    },
+                    {
+                      "type": "string",
+                      "const": "state"
+                    },
+                    {
+                      "type": "string",
+                      "const": "gameplay"
+                    },
+                    {
+                      "type": "string",
+                      "const": "determinism"
+                    },
+                    {
+                      "type": "string",
+                      "const": "continuation"
+                    }
+                  ]
+                },
+                "status": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "pending"
+                    },
+                    {
+                      "type": "string",
+                      "const": "running"
+                    },
+                    {
+                      "type": "string",
+                      "const": "passed"
+                    },
+                    {
+                      "type": "string",
+                      "const": "failed"
+                    },
+                    {
+                      "type": "string",
+                      "const": "skipped"
+                    }
+                  ]
+                },
+                "message": {
+                  "type": "string",
+                  "maxLength": 2000
+                }
+              }
+            },
+            "minItems": 7,
+            "maxItems": 7
+          },
+          "metadata": {
+            "type": "object",
+            "required": [
+              "apiVersion",
+              "name",
+              "description",
+              "version",
+              "author"
+            ],
+            "properties": {
+              "apiVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "author": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

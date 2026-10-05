@@ -19,6 +19,75 @@
         },
         "kind": {
           "type": "string",
+          "const": "validate-ai"
+        },
+        "simVersion": {
+          "type": "object",
+          "required": [
+            "versionMinor",
+            "netProtocol",
+            "dataHash"
+          ],
+          "properties": {
+            "versionMinor": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+            },
+            "netProtocol": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+            },
+            "dataHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Identity of a deterministic simulation build."
+        },
+        "payload": {
+          "type": "object",
+          "required": [
+            "blobHash",
+            "suite"
+          ],
+          "properties": {
+            "blobHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Lowercase hexadecimal SHA-256 digest."
+            },
+            "suite": {
+              "type": "number",
+              "const": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "jobId",
+        "kind",
+        "simVersion",
+        "payload"
+      ],
+      "properties": {
+        "jobId": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "description": "Lowercase UUID."
+        },
+        "kind": {
+          "type": "string",
           "const": "import-ai-map"
         },
         "simVersion": {

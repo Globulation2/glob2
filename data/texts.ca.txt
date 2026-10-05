@@ -5308,3 +5308,79 @@ guerrers enemics
 força
 [stat view by place]
 Per lloc
+[AI Library]
+
+[Authoring guide]
+
+[Beginner-friendly]
+
+[Defensive]
+
+[Discover]
+
+[Download & install]
+
+[Downloading AI…]
+
+[Expansion]
+
+[Experimental]
+
+[Favourite]
+
+[Favourited]
+
+[Favourites]
+
+[Got it]
+
+[How AIs work]
+
+[Install selected version]
+
+[Installed]
+
+[Invalid AI catalogue response]
+
+[JavaScript API reference]
+
+[Like]
+
+[Liked]
+
+[Loading AI library…]
+
+[Most downloaded]
+
+[Most liked]
+
+[Newest]
+
+[No AIs match these filters.]
+
+[Not validated for this game version]
+
+[Open AI Library]
+
+[Open AI page]
+
+[Passed compatibility checks]
+
+[Recently updated]
+
+[Rush]
+
+[Search]
+
+[Share your AI]
+
+[Show more]
+
+[Sign in through Online settings to like and favourite AIs.]
+
+[Starter project]
+
+[downloads of this version]
+
+[downloads]
+

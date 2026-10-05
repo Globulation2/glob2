@@ -562,6 +562,7 @@ TEST_CASE("JavaScript large world observations respect work limits" *
 }
 
 #include "ScriptLibrary.h"
+#include "Sha256.h"
 #include "ScriptServices.h"
 #include "ScriptSpatial.h"
 TEST_CASE("JavaScript custom library atomic updates and frozen source" *
@@ -1270,4 +1271,28 @@ TEST_CASE("JavaScript farm areas: experiments query, farmArea order and tile fie
 	CHECK(off.verdict == OrderValidation::Verdict::Rejected);
 	CHECK(off.state.get("keys").items.empty());
 	CHECK(off.state.get("hasField").number == 0);
+}
+
+TEST_CASE("Online AI installs verify bytes and preserve provenance on rollback" * doctest::test_suite("JavaScriptIntegration"))
+{
+ Online::MemoryStorage storage;
+ Library library(storage);
+ const std::string first = "function step() {}", second = "function step() { return null; }";
+ Script::LibraryOrigin origin{"https://example.test", "ai-id", "version-1", Online::Sha256::hex(first)};
+ CHECK_THROWS(library.put(second, "download.js", "", "", origin));
+ CHECK(library.entries().empty());
+ const auto id = library.put(first, "download.js", "", "", origin);
+ const auto frozen = library.configuration(id), before = library.checkpoint();
+ origin.versionId = "version-2"; origin.hash = Online::Sha256::hex(second);
+ CHECK(library.put(second, "update.js", id, "", origin) == id);
+ CHECK(library.get(id).online->versionId == "version-2");
+ CHECK(sourceFromConfig(frozen) == first);
+ library.rollback(before);
+ Library reloaded(storage);
+ CHECK(reloaded.get(id).online->versionId == "version-1");
+ CHECK(reloaded.configuration(id) == frozen);
+ // Ordinary imports retain the v1 registry format and drop online provenance
+ // when users replace their source locally.
+ reloaded.put(second, "local.js", id);
+ CHECK_FALSE(reloaded.get(id).online.has_value());
 }

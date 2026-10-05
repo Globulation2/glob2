@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AiCheck",
+  "title": "AiCheck",
+  "type": "object",
+  "required": [
+    "id",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "file"
+        },
+        {
+          "type": "string",
+          "const": "syntax"
+        },
+        {
+          "type": "string",
+          "const": "startup"
+        },
+        {
+          "type": "string",
+          "const": "state"
+        },
+        {
+          "type": "string",
+          "const": "gameplay"
+        },
+        {
+          "type": "string",
+          "const": "determinism"
+        },
+        {
+          "type": "string",
+          "const": "continuation"
+        }
+      ]
+    },
+    "status": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "pending"
+        },
+        {
+          "type": "string",
+          "const": "running"
+        },
+        {
+          "type": "string",
+          "const": "passed"
+        },
+        {
+          "type": "string",
+          "const": "failed"
+        },
+        {
+          "type": "string",
+          "const": "skipped"
+        }
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  }
+}

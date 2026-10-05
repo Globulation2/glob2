@@ -23,6 +23,7 @@ import {
   type EngineAgentKey,
 } from '@glob2/core';
 import {
+  AiValidationReport,
   ENGINE_LEASE_HEADER,
   EngineAgentHeartbeat,
   EngineAgentId,
@@ -110,6 +111,16 @@ export async function engineAgentRoutes(app: FastifyInstance): Promise<void> {
   }
 
   const internal = { config: { rateLimit: false } } as const;
+
+  app.post('/internal/v1/engine/ai-validation-progress', internal, async (request, reply) => {
+    const job = await heldJob(request, agentKey(request));
+    const report = body(AiValidationReport, request.body);
+    const payload = job.payload as { blobHash?: string; suite?: number };
+    if (job.kind !== 'validate-ai' || report.valid || report.sourceHash !== payload.blobHash || report.suite !== payload.suite || report.simVersion !== job.sim_version)
+      throw apiError('bad_request', 'Progress does not match the leased AI validation.');
+    await db.updateTable('ai_validations').set({ report: JSON.stringify(report) }).where('job_id', '=', job.id).where('status', '=', 'pending').execute();
+    return reply.status(204).send();
+  });
 
   app.post('/internal/v1/engine/agents/heartbeat', internal, async (request, reply) => {
     const key = agentKey(request);

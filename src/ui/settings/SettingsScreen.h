@@ -96,7 +96,8 @@ class SettingsScreen : public Glob2UI::Screen
 		None,
 		Binding,
 		Conflict,
-		Restore
+		Restore,
+		AILibrary
 	};
 	Category current = Category::Display;
 	Modal modal = Modal::None;
@@ -147,6 +148,12 @@ class SettingsScreen : public Glob2UI::Screen
 	void buildCustomAIs();
 	void pollCustomAIs();
 	bool customAIBusy() const;
+	Glob2UI::Element buildCustomAILibrary(const Glob2UI::Presentation &p);
+	void openCustomAILibrary();
+	void fetchCustomAIs(bool more = false);
+	void selectOnlineAI(const std::string &id);
+	void installOnlineAI();
+	void socialOnlineAI(bool favourite);
 	void selectCustomAIFile(bool linked, const std::string &replace = {});
 	// Settings > Online: removes a linked sign-in method (never the last one).
 	void unlinkProvider(const std::string &provider, const std::string &name);

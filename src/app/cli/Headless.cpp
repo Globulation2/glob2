@@ -9,6 +9,7 @@
 #include "GameDiagnostics.h"
 #include "GlobalContainer.h"
 #include "AINames.h"
+#include "AIJavaScript.h"
 #include "AIThreading.h"
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
@@ -526,6 +527,19 @@ struct HeadlessRunner
 		{ if(comma)result<<','; comma=true; result<<quote(name)<<':'<<value; }
 		result << "}},";
 		Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
+		result << ",\"javascriptControllers\":[";
+		bool scriptComma = false;
+		for (int i = 0; i < game.gameHeader.getNumberOfPlayers(); ++i)
+		{
+			auto *player = game.players[i];
+			if (!player || !player->ai || player->ai->implementationID != AI::JAVASCRIPT) continue;
+			auto *ai = static_cast<AIJavaScript *>(player->ai->aiImplementation);
+			if (scriptComma) result << ',';
+			scriptComma = true;
+			result << "{\"player\":" << i << ",\"disabled\":" << (ai->isDisabled() ? "true" : "false")
+				<< ",\"diagnostic\":" << quote(ai->diagnostic()) << '}';
+		}
+		result << ']';
 		if(fs::exists(output/"generated/result.json"))
 		{
 			std::ifstream generation(output/"generated/result.json");

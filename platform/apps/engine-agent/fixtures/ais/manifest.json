@@ -1,0 +1,14 @@
+[
+  {
+    "file": "two.map.gz",
+    "sha256": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39",
+    "players": 2,
+    "seed": 19
+  },
+  {
+    "file": "four.map.gz",
+    "sha256": "c29b3a51a80d70ce2a1f97462589c2948dcfcc5bf8f34906a90e882920492569",
+    "players": 4,
+    "seed": 73
+  }
+]
