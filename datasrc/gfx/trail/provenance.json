@@ -1,0 +1,65 @@
+{
+  "generator": "Built-in image_gen tool",
+  "prompt": "Use case: stylized-concept\nAsset type: seamless top-down terrain material for Globulation 2, ultimately sixteen 32x32 pixel tiles.\nGenerate a square, edge-to-edge, seamless tileable material sample of weathered Trail terrain. Mostly firm muted clay-brown compacted earth, sparse tiny rounded stones partly buried into the soil, subtle fine grit and softly worn patches. Stones are ambiguous natural remnants, never arranged as paving. Match the coarse painterly game texture, earthy palette and understated contrast of the reference terrain and organic building. Entire image is ground viewed vertically overhead, flat diffuse lighting. The texture must work both as a broad clearing and a narrow path; do not draw a path, grass borders or any specific directional shape. No fitted stone joints, slabs, curbs, wheel ruts, mud shine, large rocks, vegetation, shadows from objects, perspective, text, labels, grids or watermark. Treatment B: cooler desaturated clay-brown earth, about 95% soil and 5% embedded tiny stones, broad softly worn compacted patches with quiet contrast, visibly earthy rather than sandy. Keep fine detail readable after downscaling to 32px tiles. Reference images: grass and sand establish the game's texture style, cobblestone is the material being replaced and must NOT be imitated as paving, inn establishes the organic earthy art style.",
+  "source": "material.png",
+  "references": [
+    "data/gfx/terrain0.png",
+    "data/gfx/terrain128.png",
+    "data/gfx/terrain288.png (former cobblestone artwork)",
+    "data/gfx/inn0b0.png"
+  ],
+  "recipe": "encoder_python=\"$(python3 tools/package_assets.py --encoder-python)\"; \"$encoder_python\" tools/artwork/export_trail.py; \"$encoder_python\" tools/terrain_borders.py; \"$encoder_python\" tools/artwork/validate_trail.py",
+  "terrain_id": 4,
+  "external_name": "road",
+  "experiment_key": "road-terrain",
+  "base_slots": [
+    288,
+    303
+  ],
+  "edge_slots": [
+    319,
+    333
+  ],
+  "source_sha256": "72c86c232c8d33157a608dcb8bc27f41ebd5a3373f95a94821bb511daff33070",
+  "reference_sha256": {
+    "data/gfx/terrain0.png": "e09287e14a0919daee3260bf304aac6d2d459d936b6b4a74e21f5fc8a7cc4a41",
+    "data/gfx/terrain128.png": "f798c542c408147c8f0a82c9bf257b8214f3cf6b8544ad0bdebcf8a65de90c2c",
+    "data/gfx/terrain288.png": "2d8cff9cf5bc034682380cd46ab4dc408d241a88c2ac259793cdf97913f0c3e8",
+    "data/gfx/inn0b0.png": "b867bc6a5aa2bbd12e7d1d7fcbc5d7b83bacffe8d41fa34ec554ad09ea7bedd1"
+  },
+  "pillow": "12.2.0",
+  "runtime_sha256": {
+    "data/gfx/terrain288.png": "2b819a3b0ae2f245727c902e8eba2492e6075eb1cd9b6a256f6b7c8fbe07334a",
+    "data/gfx/terrain289.png": "01968f66bacfc290db5be3dad80d2a25bb9e03db5c067e14ca80f63f5c6f79af",
+    "data/gfx/terrain290.png": "c5d7594b80b9b47f319ae109f7ca03e08a0269553c257997757413c3a519107c",
+    "data/gfx/terrain291.png": "f47ddbb89692f14e394dc2b24ef91ae33953f421bc5be810204f213532ca663e",
+    "data/gfx/terrain292.png": "fa671b9274ef72fb44bfddefd8031dce7a5a2ed29c4a6ae908e017765858969e",
+    "data/gfx/terrain293.png": "b2aa25c95b62bf2a0f7278513b67c5bfbce12741314dc6d3252c298b15e752c1",
+    "data/gfx/terrain294.png": "d794ecdf24661017f2b6a639b507cf3eeabddbb2eb671a68a7ba0759b3177376",
+    "data/gfx/terrain295.png": "868f943ab2549ecf505360a86d095df3cd0ec4b39596f6d98793ffa9c03d9ee2",
+    "data/gfx/terrain296.png": "66874315b0b0a0e979800c179969a408f233c1e3f233d4e74ba2d0535453154e",
+    "data/gfx/terrain297.png": "258a12abebac774f25d70310830093e67ba9fce7c3c3ec6916d6946d4027d5d3",
+    "data/gfx/terrain298.png": "158a24cdd114e80e690ac7c5b95c30321e560058038e8bbf577c350cf0ba68bd",
+    "data/gfx/terrain299.png": "4882d51799a7d9ec453e99aa12ba8d1ee6e4a0d7f2bb69ebf0ce9d2001a9dcdd",
+    "data/gfx/terrain300.png": "820e9b694a232a4432d95152452131458a7078f8181a0a1d6e36173ea19b3203",
+    "data/gfx/terrain301.png": "65924fa2e0ff540418df55275681a2d8b81eefd91b3227261615b66c091f4e75",
+    "data/gfx/terrain302.png": "ecd3390f9de9414fc5ea34268a36e0085d3648a1967a9efac242bc91ceefed6a",
+    "data/gfx/terrain303.png": "46720e13e4ab12d244631f4561f4bddc8215686942dac0fe8916323ea82d433c",
+    "data/gfx/terrain319.png": "1c7017f513fb0e8f2d6afdcc02d5d1817952fdb7615959a2457b6847359d72de",
+    "data/gfx/terrain320.png": "5cd0fdb9c1c4e373a9ebe2d3147e300d19897e0ae1b5be19769c8e2b759ec12e",
+    "data/gfx/terrain321.png": "bcca08b6f44778f3187ed4769e097f70eda1bc0c791715f00bb9a70f1e9b035e",
+    "data/gfx/terrain322.png": "bbe1bca48659b54de39da47acbe58c5589983a71d709cb7fa316199b3017770d",
+    "data/gfx/terrain323.png": "6aa144566eff6d516a5707e647ee0790db9db3b65edbc6453103fe89fb71001c",
+    "data/gfx/terrain324.png": "51bfffd27d1517c9b5c46b97548178566a2d4d9b5483073ce296134a86b7d7e3",
+    "data/gfx/terrain325.png": "9af934971c98234302acb6e38e4e7a586f2133e74933063f0bbfe8cca4361b61",
+    "data/gfx/terrain326.png": "b4f2458a1d9a98011a8e789416d9b8a39700bd594a78378040dc5d7950015f35",
+    "data/gfx/terrain327.png": "cb14b728befa96cb4dcaf956f8a7c5a2ad57eaf7ff851838a5701740c8c899d2",
+    "data/gfx/terrain328.png": "aa89c66cbc4b72b75dd968af0d4b39fb909cca40fe03705ae04824c0419f9ae5",
+    "data/gfx/terrain329.png": "c71fb0025b060951ab0baae7decebdc509e4ff7a7df45290d01b4880e25e973a",
+    "data/gfx/terrain330.png": "326b8199c8e7df2e5d12eb56a5cf1ff62bb487795c9266d5b7428f0501b6d08a",
+    "data/gfx/terrain331.png": "eb2b9de34d81ce36a11b18d5a1f742deec7829f2d64224c452a65410f0b668b1",
+    "data/gfx/terrain332.png": "bd3a8f0b65ca72e1e0baaffc2b86bd60d2cab4b8e60540ac6d97e097b81cf248",
+    "data/gfx/terrain333.png": "916f669cd65d4c3aea25e3387240b2d942a548b3d1c83a3f6684f246669665df"
+  },
+  "reference_git_revision": "e1634ecda9a2a2d31f47dfe766ddbcb40e364791"
+}

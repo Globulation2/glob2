@@ -1672,7 +1672,7 @@ TEST_SUITE("Maxima.Implementation")
         geometric.add_source(new Gradients::Entities::Position(0,1));
         REQUIRE(manager.get_gradient(walking).get_height(4,1)==4);
         REQUIRE(manager.get_gradient(geometric).get_height(4,1)==4);
-        for(int x=0;x<16;++x) map.setCellTerrain(x,1,ROAD);
+        for(int x=0;x<16;++x) map.setCellTerrain(x,1,TRAIL);
         auto* memory=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(memory);
         manager.saveExecutionState(&output);output.flush();
@@ -1764,7 +1764,7 @@ TEST_SUITE("Maxima.Implementation")
 	TEST_CASE("school population scaling regressions") { glob2test::HeadlessGlobals globals; schoolPopulationScalingRegressions(); }
 }
 
-TEST_CASE("Maxima food catchments and carrier discounts follow road and ice travel costs" *
+TEST_CASE("Maxima food catchments and carrier discounts follow trail and ice travel costs" *
           doctest::test_suite("Maxima.Implementation"))
 {
     glob2test::HeadlessGlobals globals;
@@ -1790,7 +1790,7 @@ TEST_CASE("Maxima food catchments and carrier discounts follow road and ice trav
     };
     CHECK(capacity(3)==0);
     const auto neutral=distant();REQUIRE(neutral>0);
-    for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,ROAD);
+    for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,TRAIL);
     CHECK(capacity(2)>0);
     CHECK(distant()>neutral);
     for(int dx=0;dx<4;++dx)map.setCellTerrain(sx+dx,sy,ICE);

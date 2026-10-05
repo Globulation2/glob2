@@ -1334,7 +1334,7 @@ TEST_CASE("JavaScript path fields use terrain travel costs and invalidate speed-
         return spatial.query("fieldValue",{handle,Value(4),Value(1)},{}).get("distance").number;
     };
     CHECK_EQ(sample(spec),4);
-    for(int x=0;x<16;++x) map.setCellTerrain(x,1,ROAD);
+    for(int x=0;x<16;++x) map.setCellTerrain(x,1,TRAIL);
     ++world.game.stepCounter;
     CHECK_EQ(sample(spec),2);
     for(int x=0;x<16;++x) map.setCellTerrain(x,1,ICE);
@@ -1359,7 +1359,7 @@ TEST_CASE("JavaScript path diagonals retain the neutral strategic metric" *
         return spatial.query("fieldValue",{handle,Value(3),Value(3)},{}).get("distance").number;
     };
     CHECK_EQ(sample(),3);
-    world.game.map.setCellTerrain(8,8,ROAD);
+    world.game.map.setCellTerrain(8,8,TRAIL);
     ++world.game.stepCounter;
     CHECK_EQ(sample(),3);
 }

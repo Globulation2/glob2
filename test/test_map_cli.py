@@ -65,14 +65,23 @@ def main():
         preferences = profile / 'preferences.txt'
         preferences.write_text('rememberUnit=1\n')
         before = preferences.read_bytes(), preferences.stat().st_mtime_ns
-        env = dict(os.environ, GLOB2_USER_DIR=str(profile), SDL_AUDIODRIVER='invalid', SDL_VIDEODRIVER='invalid')
+        env = dict(os.environ, GLOB2_USER_DATA_DIR=str(profile), SDL_AUDIODRIVER='invalid', SDL_VIDEODRIVER='invalid')
 
         def run(*args, ok=True):
             args = list(map(str,args))
             if args[0] in ('--generate-map', '--preview-map') and len(args) >= 2 and '--help' not in args:
                 args[2:2] = ['-d', str(ROOT)]
-            result = subprocess.run([str(BINARY), *args], cwd=profile, env=env,
-                                    capture_output=True, text=True, timeout=90)
+            try:
+                result = subprocess.run([str(BINARY), *args], cwd=profile, env=env,
+                                        capture_output=True, text=True, timeout=90)
+            except subprocess.TimeoutExpired as error:
+                # TimeoutExpired carries bytes even when text=True. Preserve the
+                # failing command and output alongside preceding successful calls.
+                log.append({'args': args, 'exit': None, 'timeout_seconds': error.timeout,
+                            'stdout': (error.stdout or b'').decode('utf-8', errors='replace'),
+                            'stderr': (error.stderr or b'').decode('utf-8', errors='replace')})
+                (OUT/'commands.json').write_text(json.dumps(log,indent=2)+'\n')
+                raise
             log.append({'args': list(map(str,args)), 'exit': result.returncode,
                         'stdout': result.stdout, 'stderr': result.stderr})
             (OUT/'commands.json').write_text(json.dumps(log,indent=2)+'\n')

@@ -29,6 +29,7 @@ inline constexpr auto TerrainPresentations = []
 		{"sand", "[sand]", {170, 170, 0}, {182, 168, 48}, {240, 220, 140}},
 		{"grass", "[grass]", {0, 90, 0}, {30, 113, 30}, {0, 128, 0}},
 		{"ice", "[ice]", {190, 225, 240}, {190, 225, 240}, {190, 225, 240}},
+		// Trail retains its legacy external name/key for scripts and files.
 		{"road", "[road]", {176, 138, 98}, {176, 138, 98}, {176, 138, 98}},
 		{"grass_sand_border", "[sand]", {85, 130, 0}, {106, 140, 39}, {240, 220, 140}},
 		{"sand_water_border", "[sand]", {85, 105, 60}, {126, 109, 119}, {240, 220, 140}},

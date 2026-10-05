@@ -5547,15 +5547,15 @@ Rajoita piirtämistä koko sovelluksessa. Pienemmät arvot vähentävät piirron
 [ice]
 Jää
 [road]
-Tie
+Polku
 [experiment ice-terrain]
 Jäämaasto
 [experiment ice-terrain help]
 Lisää jäätä karttaeditoriin. Maayksiköt liikkuvat puolella nopeudella ja menettävät yhden terveyspisteen jokaista 32 jäällä vietettyä simulaatioaskelta kohti. Jäälle ei voi sijoittaa rakennuksia tai resursseja.
 [experiment road-terrain]
-Tiemaasto
+Polkumaasto
 [experiment road-terrain help]
-Lisää mukulakiviteitä karttaeditoriin. Maayksiköt liikkuvat kaksinkertaisella nopeudella. Teille voi sijoittaa rakennuksia mutta ei resursseja.
+Lisää karttaeditoriin kuluneita polkuja. Maayksiköt liikkuvat kaksinkertaisella nopeudella. Poluille voi rakentaa rakennuksia, mutta niillä ei voi olla resursseja. Lentäviin yksiköihin tämä ei vaikuta.
 [experiment markets-v2]
 Markkinat V2
 [experiment markets-v2 help]

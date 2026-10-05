@@ -43,9 +43,9 @@ inline constexpr auto TERRAIN_PROPERTIES = [] {
 	ice.walkable = true;
 	ice.groundSpeedQ8 = 128;
 	ice.groundHealthQ8 = -8;
-	auto& road = definitions[ROAD];
-	road.walkable = road.buildable = true;
-	road.groundSpeedQ8 = 512;
+	auto& trail = definitions[TRAIL];
+	trail.walkable = trail.buildable = true;
+	trail.groundSpeedQ8 = 512;
 	definitions[GRASS_SAND_SHORE].walkable = definitions[GRASS_SAND_SHORE].shoreline = true;
 	definitions[SAND_WATER_SHORE].walkable = definitions[SAND_WATER_SHORE].shoreline = true;
 	return definitions;

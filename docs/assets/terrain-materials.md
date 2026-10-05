@@ -32,7 +32,14 @@ variation. Changing a key deliberately changes its visual seed.
 To add more variety to an existing terrain, add frames and weights to that
 material. To replace its appearance, add a material and change the corresponding
 binding. These edits require no new renderer switch statement or save migration.
-The shipped catalog reuses the existing sixteen interior variants per terrain.
+The shipped catalog reuses the existing sixteen interior variants per terrain. The
+`road` binding is terrain ID 4, now named Trail by the engine. This pack retains
+the requested cobblestone appearance in `data/gfx/terrain-cobblestone0…15.png`,
+copied unchanged from frames 288–303 at revision
+`e1634ecda9a2a2d31f47dfe766ddbcb40e364791`. The engine's newer dirt Trail textures
+remain in those original saved-frame slots. To use them visually, set the `road`
+material's sprite back to `data/gfx/terrain` and its variants to frames 288–303;
+no engine, save or renderer change is needed.
 
 ## Boundaries and masks
 

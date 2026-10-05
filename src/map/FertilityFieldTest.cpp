@@ -312,7 +312,7 @@ TEST_CASE("cached ecology changes after canonical terrain mutation")
     map.makeWater(9,8);
     const auto watered=map.resourceGrowthField().landField().at(8,8);
     CHECK(watered>initial);
-    map.setCellTerrain(8,8,ROAD);
+    map.setCellTerrain(8,8,TRAIL);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)==0);
     map.setCellTerrain(8,8,GRASS);
     CHECK(map.resourceGrowthField().rate(map.coordToIndex(8,8),WHEAT)>0);

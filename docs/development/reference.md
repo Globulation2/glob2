@@ -853,6 +853,11 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   boundary profiles, asset validation and cache behavior. New gameplay terrain
   still requires a stable enum, properties, compatibility descriptor and experiment
   registration. Visual catalog changes must not change saved frames or RNG use.
+- Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
+  (`TrailTerrain`). Its external name, translation keys and serialized experiment
+  key remain `road` / `road-terrain` for scripting, reports, editor actions and
+  existing files. Classic frames 288–303 come from `datasrc/gfx/trail/`; the
+  material catalog independently chooses the detailed appearance for that ID.
 - Ecology rebuilds cached land and aquatic fields when canonical terrain changes.
   The weighted kernels preserve the classic paired water/inhibition and rotated
   shoreline probes; growth reads their cached results. Fields use Q16 integers,

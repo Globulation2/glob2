@@ -50,6 +50,10 @@ pack. Historical experiments are excluded from Git and are not the
 original-source archive. Sixty world frames (ten from the second archive, ten trees, eight wheat frames, three layered buildings, five papyrus and 24 area markers) use verified original-derived artwork. The pack also includes 1,792 unit poses rendered from original Blender rigs. See [export recipes and coverage](RECOVERED-RUNTIME.md).
 Other layered buildings and remaining resources still need runtime migration; the two final ripe wheat color states still lack larger originals.
 
+The classic Trail terrain is a separate AI-generated material, retained under
+[`trail/`](trail/) with its prompt, provenance and deterministic 32px export
+recipe. It does not change the original-derived HD pack described above.
+
 ## Provenance and preservation
 
 Stéphane supplied [glob2-highres.zip](https://h.magnenat.net/~steph/glob2-highres.zip)

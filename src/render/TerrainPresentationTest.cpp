@@ -88,7 +88,7 @@ void layeredCache(bool gpu, bool hd = false)
 			if ((x + y * 3) % 7 == 0)
 				map.setCellTerrain(x, y, ICE);
 			else if ((x * 5 + y) % 11 == 0)
-				map.setCellTerrain(x, y, ROAD);
+				map.setCellTerrain(x, y, TRAIL);
 		}
 	SceneMap scene;
 	scene.extract(map);
@@ -145,7 +145,7 @@ void layeredCache(bool gpu, bool hd = false)
 		CHECK(cache.cacheHits() > 0);
 	auto &compositor = globals->terrainCompositor();
 	const auto before = compositor.describe(scene, 0, 0);
-	map.setCellTerrain(0, 0, ROAD);
+	map.setCellTerrain(0, 0, TRAIL);
 	CHECK(compositor.describe(scene, 0, 0) == before);
 	scene.extract(map);
 	compare();
@@ -188,11 +188,11 @@ TEST_SUITE("TerrainPresentation")
 		};
 		paint(0, 0, 64, 64, GRASS);
 		paint(4, 4, 12, 12, WATER);
-		paint(8, 8, 1, 1, ROAD);
+		paint(8, 8, 1, 1, TRAIL);
 		paint(0, 8, 3, 8, WATER);
 		paint(60, 8, 4, 8, WATER);
 		paint(0, 10, 1, 1, ICE);
-		paint(20, 10, 1, 1, ROAD);
+		paint(20, 10, 1, 1, TRAIL);
 		image.drawFilledRect(45, 45, 2, 2, 255, 255, 255);
 		const auto filename = (glob2test::artifactDir() / "terrain-import-edges.png").string();
 		REQUIRE(IMG_SavePNG(image.getSDLSurface(), filename.c_str()));
@@ -203,14 +203,14 @@ TEST_SUITE("TerrainPresentation")
 		MapImageImportReport report;
 		importMapImage(fixture.game, filename, request, 1, report, 0);
 		const auto &map = fixture.game.map;
-		CHECK(map.terrainTypeAt(8, 8) == ROAD);
+		CHECK(map.terrainTypeAt(8, 8) == TRAIL);
 		CHECK(map.terrainTypeAt(7, 8) == WATER);
 		CHECK(map.terrainTypeAt(8, 7) == WATER);
 		CHECK(map.terrainTypeAt(7, 7) == WATER);
 		CHECK_FALSE(map.terrainPropertiesAt(7, 8).walkable);
 		CHECK(map.terrainTypeAt(0, 10) == ICE);
 		CHECK(map.terrainTypeAt(63, 10) == WATER);
-		CHECK(map.terrainTypeAt(20, 10) == ROAD);
+		CHECK(map.terrainTypeAt(20, 10) == TRAIL);
 		CHECK(map.terrainTypeAt(19, 10) == GRASS);
 		CHECK(map.terrainPropertiesAt(19, 10).buildable);
 		// An ordinary grass/water boundary still receives the legacy shore repair.
@@ -228,7 +228,7 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .teams = 0});
 		auto &map = fixture.game.map;
 		map.setCellTerrain(1, 1, ICE);
-		map.setCellTerrain(2, 1, ROAD);
+		map.setCellTerrain(2, 1, TRAIL);
 		const auto filename = (glob2test::artifactDir() / "terrain-colors.png").string();
 		exportMapImage(fixture.game, filename);
 		auto *source = IMG_Load(filename.c_str());
@@ -238,7 +238,7 @@ TEST_SUITE("TerrainPresentation")
 		REQUIRE(image);
 		for (int x = 1; x <= 2; ++x)
 		{
-			const auto c = terrainPresentation(x == 1 ? ICE : ROAD).image;
+			const auto c = terrainPresentation(x == 1 ? ICE : TRAIL).image;
 			const auto *pixel = static_cast<Uint8 *>(image->pixels) + image->pitch + x * 4;
 			CHECK(pixel[0] == c.r);
 			CHECK(pixel[1] == c.g);
@@ -272,10 +272,10 @@ TEST_SUITE("TerrainValidation")
 				if ((x - 17) * (x - 17) + (y - 10) * (y - 10) < 42)
 					map.setCellTerrain(x, y, ICE);
 				if (y == 20 || x == 25 || (x > 9 && x < 24 && y == x - 5))
-					map.setCellTerrain(x, y, ROAD);
+					map.setCellTerrain(x, y, TRAIL);
 			}
 		map.setCellTerrain(31, 0, ICE);
-		map.setCellTerrain(0, 0, ROAD);
+		map.setCellTerrain(0, 0, TRAIL);
 		fixture.addUnit(WORKER, 17, 10);
 		fixture.addUnit(WORKER, 25, 20);
 		std::ofstream trace(glob2test::artifactDir() / "checksums.txt");
@@ -316,7 +316,7 @@ TEST_SUITE("TerrainValidation")
 				{
 					map.setCellTerrain(
 						x, y,
-						pattern ? ((x + y) % 3 == 0 ? ICE : ((x * 3 + y) % 5 == 0 ? ROAD : GRASS))
+						pattern ? ((x + y) % 3 == 0 ? ICE : ((x * 3 + y) % 5 == 0 ? TRAIL : GRASS))
 								: GRASS);
 				}
 			scene.extract(map);

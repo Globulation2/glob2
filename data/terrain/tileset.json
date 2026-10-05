@@ -416,7 +416,7 @@
     },
     {
       "key": "road",
-      "sprite": "data/gfx/terrain",
+      "sprite": "data/gfx/terrain-cobblestone",
       "profile": "cobblestone",
       "ocean": false,
       "preview": [
@@ -426,67 +426,67 @@
       ],
       "variants": [
         {
-          "frame": 288,
+          "frame": 0,
           "weight": 1
         },
         {
-          "frame": 289,
+          "frame": 1,
           "weight": 1
         },
         {
-          "frame": 290,
+          "frame": 2,
           "weight": 1
         },
         {
-          "frame": 291,
+          "frame": 3,
           "weight": 1
         },
         {
-          "frame": 292,
+          "frame": 4,
           "weight": 1
         },
         {
-          "frame": 293,
+          "frame": 5,
           "weight": 1
         },
         {
-          "frame": 294,
+          "frame": 6,
           "weight": 1
         },
         {
-          "frame": 295,
+          "frame": 7,
           "weight": 1
         },
         {
-          "frame": 296,
+          "frame": 8,
           "weight": 1
         },
         {
-          "frame": 297,
+          "frame": 9,
           "weight": 1
         },
         {
-          "frame": 298,
+          "frame": 10,
           "weight": 1
         },
         {
-          "frame": 299,
+          "frame": 11,
           "weight": 1
         },
         {
-          "frame": 300,
+          "frame": 12,
           "weight": 1
         },
         {
-          "frame": 301,
+          "frame": 13,
           "weight": 1
         },
         {
-          "frame": 302,
+          "frame": 14,
           "weight": 1
         },
         {
-          "frame": 303,
+          "frame": 15,
           "weight": 1
         }
       ]

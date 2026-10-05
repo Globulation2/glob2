@@ -239,7 +239,7 @@ void Map::finishTerrainEdit()
 					gradientUpdated[team][resource][swim] = false;
 				}
 				// Escape fields have no dirty flag. Their scheduled seed comparison
-				// cannot detect a cost-only change such as grass becoming road.
+				// cannot detect a cost-only change such as grass becoming trail.
 				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, swim);
 			}
 	}
