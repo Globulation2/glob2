@@ -4,6 +4,7 @@
 #
 #   target        image                         contents
 #   platform      glob2-platform                platform-api, platform-worker and the operator CLI
+#   music-worker  glob2-music-worker            isolated community audio conversion
 #   engine-agent  glob2-engine-agent:<simver>   engine-agent + headless glob2 + data (one per sim version)
 #   relay         glob2-relay                   glob2-relay
 #   caddy         glob2-caddy                   Caddy + Caddyfile + built apps/web

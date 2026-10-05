@@ -1,4 +1,6 @@
-import { afterAll, beforeAll, expect, it } from 'vitest';
+import { afterAll, beforeAll, expect, it, vi } from 'vitest';
+import { randomUUID } from 'node:crypto';
+import { sql } from 'kysely';
 import { putContent } from '@glob2/core';
 import { registeredPlayer, guestPlayer, type Player } from './playSupport.ts';
 import { createHarness, type Harness, type Instance } from './support.ts';
@@ -223,8 +225,8 @@ it('cleans technically failed jobs and safely ignores cancelled jobs', async () 
       ).toBe(200);
     expect((await call('POST', `/api/v1/music/${id}/inspect`, owner)).status).toBe(200);
     if (cancel) expect((await call('DELETE', `/api/v1/music/${id}`, owner)).status).toBe(200);
-    await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true);
-    await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true);
+    await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true, true);
+    await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true, true);
     const row = await harness.database.db
       .selectFrom('music_releases')
       .selectAll()
@@ -330,6 +332,238 @@ it('cancels an active decoder and removes its nested temporary PCM', async () =>
     if (old === undefined) delete process.env['MUSIC_PYTHON'];
     else process.env['MUSIC_PYTHON'] = old;
     await rm(directory, { recursive: true, force: true });
+  }
+});
+
+it('retains sources across transient processing failures and cleans only a final failed attempt', async () => {
+  const { processMusic } = await import('../../music-worker/src/process.ts');
+  const id = randomUUID();
+  const wav = Buffer.alloc(44 + 48000 * 10 * 4);
+  wav.write('RIFF');
+  wav.writeUInt32LE(wav.length - 8, 4);
+  wav.write('WAVEfmt ', 8);
+  wav.writeUInt32LE(16, 16);
+  wav.writeUInt16LE(1, 20);
+  wav.writeUInt16LE(2, 22);
+  wav.writeUInt32LE(48000, 24);
+  wav.writeUInt32LE(192000, 28);
+  wav.writeUInt16LE(4, 32);
+  wav.writeUInt16LE(16, 34);
+  wav.write('data', 36);
+  wav.writeUInt32LE(wav.length - 44, 40);
+  const sources = Object.fromEntries(
+    ['calm', 'building', 'combat'].map((mood) => [mood, `music-uploads/${id}/${mood}-fixture`]),
+  );
+  for (const key of Object.values(sources)) await harness.blobs.put(key, wav);
+  await harness.database.db
+    .insertInto('music_releases')
+    .values({
+      id,
+      owner_id: owner.accountId,
+      metadata: JSON.stringify(metadata),
+      status: 'inspecting',
+      sources: JSON.stringify(sources),
+    })
+    .execute();
+  const get = vi
+    .spyOn(harness.blobs, 'get')
+    .mockRejectedValueOnce(new Error('Temporary object store outage'));
+  await expect(
+    processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true),
+  ).rejects.toThrow('Temporary object store outage');
+  get.mockRestore();
+  let row = await harness.database.db
+    .selectFrom('music_releases')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirstOrThrow();
+  expect(row.status).toBe('inspecting');
+  expect(row.sources).toEqual(sources);
+  for (const key of Object.values(sources)) expect(await harness.blobs.size(key)).toBe(wav.length);
+  await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true);
+  row = await harness.database.db
+    .selectFrom('music_releases')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirstOrThrow();
+  expect(row.status).toBe('inspected');
+  await harness.database.db
+    .updateTable('music_releases')
+    .set({ status: 'inspecting' })
+    .where('id', '=', id)
+    .execute();
+  const lastGet = vi
+    .spyOn(harness.blobs, 'get')
+    .mockRejectedValueOnce(new Error('Persistent object store outage'));
+  await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true, true);
+  lastGet.mockRestore();
+  row = await harness.database.db
+    .selectFrom('music_releases')
+    .selectAll()
+    .where('id', '=', id)
+    .executeTakeFirstOrThrow();
+  expect(row.status).toBe('failed');
+  expect(row.sources).toEqual({});
+  for (const key of Object.values(sources)) expect(await harness.blobs.size(key)).toBeUndefined();
+}, 90_000);
+
+it('retries unexpected processor exits and records exhausted scratch setup failures', async () => {
+  const { processMusic } = await import('../../music-worker/src/process.ts');
+  const { mkdtemp, writeFile, chmod, rm } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const directory = await mkdtemp(join(tmpdir(), 'music-retry-test-'));
+  const id = randomUUID(),
+    key = `music-uploads/${id}/calm-fixture`;
+  await harness.blobs.put(key, Buffer.from('input'));
+  await harness.database.db
+    .insertInto('music_releases')
+    .values({
+      id,
+      owner_id: other.accountId,
+      metadata: JSON.stringify(metadata),
+      status: 'inspecting',
+      sources: JSON.stringify({ calm: key }),
+    })
+    .execute();
+  const executable = join(directory, 'processor');
+  await writeFile(executable, '#!/bin/sh\nprintf "No space left on device" >&2\nexit 1\n');
+  await chmod(executable, 0o755);
+  const oldPython = process.env['MUSIC_PYTHON'],
+    oldTmp = process.env['TMPDIR'];
+  try {
+    process.env['MUSIC_PYTHON'] = executable;
+    await expect(
+      processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true),
+    ).rejects.toThrow('No space left on device');
+    expect(await harness.blobs.size(key)).toBe(5);
+    // A non-directory temporary root simulates failed readdir/mkdtemp on every
+    // remaining attempt; the final attempt still records a terminal state.
+    process.env['TMPDIR'] = executable;
+    await processMusic(harness.database.db, harness.blobs, 'http://music.test', id, true, true);
+    const row = await harness.database.db
+      .selectFrom('music_releases')
+      .selectAll()
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
+    expect(row.status).toBe('failed');
+    expect(row.sources).toEqual({});
+    expect(await harness.blobs.size(key)).toBeUndefined();
+  } finally {
+    if (oldPython === undefined) delete process.env['MUSIC_PYTHON'];
+    else process.env['MUSIC_PYTHON'] = oldPython;
+    if (oldTmp === undefined) delete process.env['TMPDIR'];
+    else process.env['TMPDIR'] = oldTmp;
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+it('rolls back the processing state if the durable queue insertion fails', async () => {
+  const id = randomUUID();
+  const setup = harness.database.as('admin').db;
+  await harness.database.db
+    .insertInto('music_releases')
+    .values({
+      id,
+      owner_id: other.accountId,
+      metadata: JSON.stringify(metadata),
+      sources: JSON.stringify({ calm: 'a', building: 'b', combat: 'c' }),
+    })
+    .execute();
+  await sql`CREATE FUNCTION reject_music_test_job() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.payload->>'id' = '${sql.raw(id)}' THEN RAISE EXCEPTION 'simulated queue outage'; END IF; RETURN NEW; END $$`.execute(
+    setup,
+  );
+  await sql`CREATE TRIGGER reject_music_test_job BEFORE INSERT ON graphile_worker._private_jobs FOR EACH ROW EXECUTE FUNCTION reject_music_test_job()`.execute(
+    setup,
+  );
+  try {
+    expect((await call('POST', `/api/v1/music/${id}/inspect`, other)).status).toBe(500);
+    const row = await harness.database.db
+      .selectFrom('music_releases')
+      .select('status')
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
+    expect(row.status).toBe('draft');
+  } finally {
+    await sql`DROP TRIGGER reject_music_test_job ON graphile_worker._private_jobs`.execute(setup);
+    await sql`DROP FUNCTION reject_music_test_job()`.execute(setup);
+  }
+  expect((await call('POST', `/api/v1/music/${id}/inspect`, other)).status).toBe(200);
+  const queued = await sql<{
+    count: number;
+  }>`SELECT count(*)::integer AS count FROM graphile_worker.jobs WHERE key = ${`music-${id}-inspect`}`.execute(
+    setup,
+  );
+  expect(queued.rows[0]?.count).toBe(1);
+});
+
+it('keeps the committed replacement upload when obsolete source cleanup fails', async () => {
+  const id = randomUUID();
+  const oldKey = `music-uploads/${id}/calm-old`;
+  await harness.blobs.put(oldKey, Buffer.from('old'));
+  await harness.database.db
+    .insertInto('music_releases')
+    .values({
+      id,
+      owner_id: other.accountId,
+      metadata: JSON.stringify(metadata),
+      sources: JSON.stringify({ calm: oldKey }),
+    })
+    .execute();
+  const deletion = vi
+    .spyOn(harness.blobs, 'delete')
+    .mockRejectedValueOnce(new Error('Temporary delete failure'));
+  try {
+    expect(
+      (await call('PUT', `/api/v1/music/${id}/uploads/calm`, other, new Uint8Array([4, 5, 6])))
+        .status,
+    ).toBe(200);
+    const row = await harness.database.db
+      .selectFrom('music_releases')
+      .selectAll()
+      .where('id', '=', id)
+      .executeTakeFirstOrThrow();
+    expect(row.sources['calm']).not.toBe(oldKey);
+    expect(await harness.blobs.size(row.sources['calm']!)).toBe(3);
+  } finally {
+    deletion.mockRestore();
+  }
+});
+
+it('retains older sources while a resumed draft is active and sweeps unreferenced uploads', async () => {
+  const { expireMusic } = await import('@glob2/music');
+  const id = randomUUID(),
+    key = `music-uploads/${id}/calm-original`,
+    orphan = `music-uploads/${id}/calm-orphan`;
+  await harness.blobs.put(key, Buffer.from('active'));
+  await harness.blobs.put(orphan, Buffer.from('orphan'));
+  await harness.database.db
+    .insertInto('music_releases')
+    .values({
+      id,
+      owner_id: other.accountId,
+      metadata: JSON.stringify(metadata),
+      sources: JSON.stringify({ calm: key }),
+    })
+    .execute();
+  // The store exposes timestamps through list(); override only the age so this
+  // remains independent of its filesystem implementation.
+  const list = harness.blobs.list.bind(harness.blobs);
+  const oldList = vi.spyOn(harness.blobs, 'list').mockImplementation(async function* (prefix) {
+    for await (const blob of list(prefix))
+      yield {
+        ...blob,
+        modifiedAt: [key, orphan].includes(blob.key)
+          ? new Date(Date.now() - 25 * 3600_000)
+          : blob.modifiedAt,
+      };
+  });
+  try {
+    await expireMusic(harness.database.db, harness.blobs);
+    expect(await harness.blobs.size(key)).toBe(6);
+    expect(await harness.blobs.size(orphan)).toBeUndefined();
+  } finally {
+    oldList.mockRestore();
   }
 });
 

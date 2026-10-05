@@ -88,6 +88,17 @@ test('catalogue, bounded WASM playback, fades and bulk selection', async ({ page
   await page.getByRole('slider', { name: /Manual blend/ }).fill('0.5');
   await expect(page.getByRole('button', { name: 'Crossfade to Calm' })).toContainText('50%');
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
+  const position = page.getByRole('slider', { name: 'Playback position' });
+  // Pause must stop the audible clock without dropping the decoder's look-ahead.
+  await page.waitForTimeout(100);
+  const pausedAt = Number(await position.inputValue());
+  await page.waitForTimeout(250);
+  expect(Number(await position.inputValue())).toBeCloseTo(pausedAt, 2);
+  await page.getByRole('button', { name: 'Play', exact: true }).click();
+  await expect
+    .poll(async () => Number(await position.inputValue()))
+    .toBeGreaterThan(pausedAt + 0.1);
+  await page.getByRole('button', { name: 'Pause', exact: true }).click();
   for (const theme of ['light', 'dark']) {
     await page.evaluate('document.documentElement.dataset.theme = ' + JSON.stringify(theme));
     const result = await new AxeBuilder({ page })

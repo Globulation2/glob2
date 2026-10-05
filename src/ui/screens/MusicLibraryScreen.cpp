@@ -69,8 +69,21 @@ void MusicLibraryScreen::refreshInstalled()
 }
 void MusicLibraryScreen::reload(bool more)
 {
-	if (!onlineEnabled() || fetch || job || persistence)
+	if (!onlineEnabled())
 		return;
+	// A newer query replaces a pending catalogue request; downloads and saving
+	// must finish before applying filter changes.
+	if (fetch && kind == FetchKind::Catalog && !more)
+	{
+		fetch->cancel();
+		fetch.reset();
+	}
+	if (fetch || job || persistence || persistenceFailed)
+	{
+		pendingReload = pendingReload || !more;
+		return;
+	}
+	pendingReload = false;
 	requested = true;
 	append = more;
 	kind = FetchKind::Catalog;
@@ -87,7 +100,13 @@ void MusicLibraryScreen::reload(bool more)
 	if (duration == 3)
 		path += "&min=300";
 	if (more)
-		path += "&cursor=" + Online::urlEncode(next);
+		path = catalogPath + "&cursor=" + Online::urlEncode(next);
+	else
+	{
+		catalogPath = path;
+		next.clear();
+		items = Json::array();
+	}
 	fetch = HttpFetch::start(requestFor(origin, path));
 	notice = musicText("Loading music…");
 	invalidate();
@@ -177,7 +196,7 @@ void MusicLibraryScreen::onTimer(Uint32)
 		}
 	}
 
-	if (!requested && tab == 0)
+	if ((!requested && tab == 0) || pendingReload)
 		reload();
 	if (persistence && persistence->state() != AH::PersistenceState::Pending)
 	{
@@ -263,91 +282,90 @@ void MusicLibraryScreen::onTimer(Uint32)
 Element MusicLibraryScreen::build(const Presentation &p)
 {
 	std::vector<Element> body;
-	body.push_back(segments("music.tabs", {musicText("Browse"), musicText("Installed")}, tab,
-							[this](int v)
-							{
-								tab = v;
-								refreshInstalled();
-								invalidate();
-							}));
-	body.push_back(button("music.import", musicText("Import ZIP or three tracks"),
-						  [this]
-						  {
-							  screens.push(std::make_unique<MusicImportScreen>(),
-										   [this](GAGGUI::Screen &, int) { refreshInstalled(); });
-						  }));
+	const bool idle = !fetch && !job && !persistence && !persistenceFailed;
+	auto tabs = segments("music.tabs", {musicText("Browse"), musicText("Installed")}, tab,
+						 [this](int v)
+						 {
+							 tab = v;
+							 refreshInstalled();
+							 invalidate();
+						 });
+	auto importButton =
+		button("music.import", musicText("Import ZIP or three tracks"),
+			   [this]
+			   {
+				   screens.push(std::make_unique<MusicImportScreen>(),
+								[this](GAGGUI::Screen &, int) { refreshInstalled(); });
+			   },
+			   {.enabled = idle});
 	if (tab == 0 && onlineEnabled())
 	{
-		body.push_back(textField(
+		auto searchField = textField(
 			"music.search", search, [this](const std::string &value) { search = value; },
-			{.maxLength = 200, .placeholder = musicText("Search title, artist, description…")}));
-		body.push_back(textField("music.tag", tag,
-								 [this](const std::string &value) { tag = value; },
-								 {.maxLength = 32, .placeholder = musicText("Tag")}));
-		body.push_back(choice(
+			{.maxLength = 200, .placeholder = musicText("Search title, artist, description…")});
+		auto tagField =
+			textField("music.tag", tag, [this](const std::string &value) { tag = value; },
+					  {.maxLength = 32, .placeholder = musicText("Tag")});
+		auto sortChoice = choice(
 			"music.sort",
 			{musicText("Most liked"), musicText("Newest"), musicText("Most downloaded")}, sort,
 			[this](int v)
 			{
 				sort = v;
 				reload();
-			}));
-		body.push_back(choice(
+			});
+		auto licenseChoice = choice(
 			"music.license",
 			{musicText("All open licences"), "CC0-1.0", "CC-BY-4.0", "CC-BY-SA-4.0"}, license,
 			[this](int v)
 			{
 				license = v;
 				reload();
-			}));
-		body.push_back(choice(
+			});
+		auto aiChoice = choice(
 			"music.ai",
 			{musicText("All music"), musicText("Not AI-generated"), musicText("AI-generated")}, ai,
 			[this](int v)
 			{
 				ai = v;
 				reload();
-			}));
-		body.push_back(choice("music.duration",
-							  {musicText("Any duration"), musicText("Up to 2 minutes"),
-							   musicText("2–5 minutes"), musicText("5–15 minutes")},
-							  duration,
-							  [this](int v)
-							  {
-								  duration = v;
-								  reload();
-							  }));
-		body.push_back(
-			button("music.find", musicText("Search"), [this] { reload(); }, {.enabled = !fetch}));
+			});
+		auto durationChoice = choice("music.duration",
+									 {musicText("Any duration"), musicText("Up to 2 minutes"),
+									  musicText("2–5 minutes"), musicText("5–15 minutes")},
+									 duration,
+									 [this](int v)
+									 {
+										 duration = v;
+										 reload();
+									 });
+		auto searchButton = button("music.find", musicText("Search"), [this] { reload(); });
 
 		// Keep catalogue results visible without scrolling past a tall filter form.
-		auto controls = body;
-		body.clear();
 		const bool wide = p.safe.w > p.pt(700);
 		if (wide)
 		{
-			body.push_back(row({expanded(controls[0]), controls[1]}, {p.pt(8)}));
+			body.push_back(row({expanded(tabs), importButton}, {p.pt(8)}));
 			body.push_back(
-				row({expanded(controls[2]), expanded(controls[4]), controls[8]}, {p.pt(8)}));
-			body.push_back(row({expanded(controls[3]), expanded(controls[5]), expanded(controls[6]),
-								expanded(controls[7])},
+				row({expanded(searchField), expanded(sortChoice), searchButton}, {p.pt(8)}));
+			body.push_back(row({expanded(tagField), expanded(licenseChoice), expanded(aiChoice),
+								expanded(durationChoice)},
 							   {p.pt(8)}));
 		}
 		else
 		{
-			body.push_back(controls[0]);
-			body.push_back(controls[1]);
-			body.push_back(row({expanded(controls[2]), controls[8]}, {p.pt(8)}));
-			body.push_back(row({expanded(controls[4]), button("music.filters", musicText("Filters"),
-															  [this]
-															  {
-																  filters = !filters;
-																  invalidate();
-															  })},
+			body.push_back(tabs);
+			body.push_back(importButton);
+			body.push_back(row({expanded(searchField), searchButton}, {p.pt(8)}));
+			body.push_back(row({expanded(sortChoice), button("music.filters", musicText("Filters"),
+															 [this]
+															 {
+																 filters = !filters;
+																 invalidate();
+															 })},
 							   {p.pt(8)}));
 			if (filters)
-				for (unsigned i : {3u, 5u, 6u, 7u})
-					body.push_back(controls[i]);
+				body.insert(body.end(), {tagField, licenseChoice, aiChoice, durationChoice});
 		}
 		for (const auto &release : items)
 		{
@@ -374,12 +392,11 @@ Element MusicLibraryScreen::build(const Presentation &p)
 							cardBody.front() = previewPicture(cover, p.pt(96));
 				}
 				cardBody.push_back(
-					row({button("music.preview." + id, musicText("Preview"),
-								[this, release] { startDownload(release, true); },
-								{.enabled = !fetch && !job && !persistence}),
+					row({button("music.preview." + id, musicText("Preview"), [this, release]
+								{ startDownload(release, true); }, {.enabled = idle}),
 						 button("music.install." + id, musicText(exists ? "Installed" : "Install"),
 								[this, release] { startDownload(release, false); },
-								{.enabled = !exists && !fetch && !job && !persistence})},
+								{.enabled = !exists && idle})},
 						{p.pt(8)}));
 				cardBody.push_back(toggle("music.select." + id,
 										  musicText("Select for installation"),
@@ -433,17 +450,18 @@ Element MusicLibraryScreen::build(const Presentation &p)
 							   startDownload(item, false);
 						   }
 					   },
-					   {.enabled = !fetch && !job && !persistence}));
+					   {.enabled = idle}));
 		body.push_back(button("music.create", musicText("Share music on the web"),
 							  [this] { AH::openUrl(origin + "/music/new"); }));
 	}
 	else
 	{
+		body.insert(body.end(), {tabs, importButton});
 		for (const auto &entry : installed)
 			body.push_back(card(column(
 				{heading(entry.info.title), paragraph(entry.info.artist),
 				 row({button("music.use." + entry.directory, musicText("Use this music"),
-							 [this, entry] { selectInstalled(entry); }),
+							 [this, entry] { selectInstalled(entry); }, {.enabled = idle}),
 					  button("music.play." + entry.directory, musicText("Preview"),
 							 [this, entry]
 							 {
@@ -455,7 +473,8 @@ Element MusicLibraryScreen::build(const Presentation &p)
 												  if (result == 1)
 													  selectInstalled(entry);
 											  });
-							 }),
+							 },
+							 {.enabled = idle}),
 					  button("music.remove." + entry.directory, musicText("Remove"),
 							 [this, entry]
 							 {
@@ -476,7 +495,8 @@ Element MusicLibraryScreen::build(const Presentation &p)
 								 {
 									 notice = e.what();
 								 }
-							 })},
+							 },
+							 {.enabled = idle})},
 					 {p.pt(8)})},
 				{p.pt(8)})));
 		if (installed.empty())

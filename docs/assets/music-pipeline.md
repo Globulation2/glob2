@@ -290,7 +290,11 @@ concat, network and ambiguous multistream inputs are rejected. Each mood must be
 Unequal lengths require an explicit end trim to the shortest or silence padding
 to the longest. Neither operation aligns beats or harmony. Optional mastering
 uses the existing −18/−17/−16 LUFS ladder and peak limiter. Original files must be
-uploaded again to make different processing choices after conversion.
+uploaded again to make different processing choices after conversion. Temporary
+inputs survive transient storage or database failures for up to three worker
+attempts. Technical rejection, exhausted retries, cancellation and successful
+conversion delete them after recording the terminal state; abandoned drafts
+expire after 24 hours without activity.
 
 The loop-aware encoder in `tools/encode_music.py` produces Ogg Opus at 48 kbps
 stereo VBR. Tagging replaces the comment packet and recomputes Ogg page sequence

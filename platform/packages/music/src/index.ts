@@ -84,7 +84,18 @@ export async function expireMusic(db: Kysely<Database>, blobs: BlobStore): Promi
   // and failed deletes after a completed/cancelled job. Active inputs live <24h.
   if (blobs.list)
     for await (const blob of blobs.list('music-uploads/')) {
-      if (blob.modifiedAt.getTime() < Date.now() - 24 * 60 * 60_000) await blobs.delete(blob.key);
+      if (blob.modifiedAt.getTime() >= Date.now() - 24 * 60 * 60_000) continue;
+      // Resuming a draft refreshes its idle timeout, but not the stored files'
+      // timestamps. Keep every source still owned by an active release.
+      const active = await db
+        .selectFrom('music_releases')
+        .select('id')
+        .where('status', 'in', ['draft', 'inspected', 'inspecting', 'converting'])
+        .where(
+          sql<boolean>`EXISTS (SELECT 1 FROM jsonb_each_text(sources) AS source WHERE source.value = ${blob.key})`,
+        )
+        .executeTakeFirst();
+      if (!active) await blobs.delete(blob.key);
     }
 }
 export { zipStream } from './zip.ts';

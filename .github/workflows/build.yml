@@ -1346,7 +1346,7 @@ jobs:
           npm run migrate -- latest
           npm run migrate -- status
 
-  # The soundtrack pipeline (tools/music/, Python tooling that never ships): its unit
+  # The soundtrack pipeline and deployed community converter (tools/music/): unit
   # tests with only the core requirements. Tests of the optional extras (sfizz, Surge
   # XT, Demucs) skip without them. A cheap job: it also runs on pull requests that
   # did not request hosted verification.
@@ -1371,7 +1371,7 @@ jobs:
         id: install_ffmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ffmpeg
+          sudo apt-get install -y --no-install-recommends ffmpeg g++ pkg-config libopusfile-dev zlib1g-dev
       - name: Create the pipeline venv from requirements.txt
         id: create_the_pipeline_venv
         run: |

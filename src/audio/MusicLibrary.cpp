@@ -37,13 +37,19 @@ std::string tag(const OpusTags *tags, const char *name, size_t maximum = 4096)
 			"Music metadata is too large.");
 	return value;
 }
+void requireSpan(size_t offset, size_t length, size_t end)
+{
+	// ZIP offsets are attacker-controlled uint32 values; addition can wrap on wasm32.
+	require(offset <= end && length <= end - offset, "Invalid ZIP bounds.");
+}
 std::uint16_t u16(const std::vector<unsigned char> &b, size_t p)
 {
-	require(p + 2 <= b.size(), "Truncated ZIP.");
+	requireSpan(p, 2, b.size());
 	return b[p] | b[p + 1] << 8;
 }
 std::uint32_t u32(const std::vector<unsigned char> &b, size_t p)
 {
+	requireSpan(p, 4, b.size());
 	return u16(b, p) | std::uint32_t(u16(b, p + 2)) << 16;
 }
 std::vector<unsigned char> readFile(const fs::path &p)
@@ -228,17 +234,20 @@ unpackZip(const std::vector<unsigned char> &bytes)
 			"Split archives are unsupported.");
 	unsigned count = u16(bytes, end + 10);
 	require(count > 0 && count <= 30, "An archive must contain 1–10 complete sets.");
-	size_t pos = u32(bytes, end + 16), total = 0;
-	require(pos + u32(bytes, end + 12) == end, "Invalid ZIP directory bounds.");
+	const size_t directory = u32(bytes, end + 16);
+	size_t pos = directory, total = 0;
+	requireSpan(directory, u32(bytes, end + 12), end);
+	require(u32(bytes, end + 12) == end - directory, "Invalid ZIP directory bounds.");
 	std::map<std::string, std::array<std::vector<unsigned char>, 3>> sets;
 	for (unsigned i = 0; i < count; ++i)
 	{
+		requireSpan(pos, 46, end);
 		require(u32(bytes, pos) == 0x02014b50, "Invalid ZIP entry.");
 		auto flags = u16(bytes, pos + 8), method = u16(bytes, pos + 10);
 		auto packed = u32(bytes, pos + 20), unpacked = u32(bytes, pos + 24),
 			 attrs = u32(bytes, pos + 38);
 		auto n = u16(bytes, pos + 28), extra = u16(bytes, pos + 30), comment = u16(bytes, pos + 32);
-		require(pos + 46 + n + extra + comment <= end, "Invalid ZIP member bounds.");
+		requireSpan(pos + 46, size_t(n) + extra + comment, end);
 		require(!(flags & ~std::uint16_t(0x080e)) && (method == 0 || method == 8) &&
 					(attrs >> 16 & 0170000) != 0120000,
 				"Encrypted files, links, and this compression method are unsupported.");
@@ -253,11 +262,14 @@ unpackZip(const std::vector<unsigned char> &bytes)
 		require(unpacked > 0 && unpacked <= MaxTrack && (total += unpacked) <= MaxArchive,
 				"Archive expands beyond the music limits.");
 		size_t local = u32(bytes, pos + 42);
+		requireSpan(local, 30, directory);
 		require(u32(bytes, local) == 0x04034b50 && u16(bytes, local + 6) == flags &&
 					u16(bytes, local + 8) == method,
 				"Invalid local ZIP header.");
-		size_t data = local + 30 + u16(bytes, local + 26) + u16(bytes, local + 28);
-		require(data + packed <= u32(bytes, end + 16), "Invalid ZIP data bounds.");
+		size_t headerExtra = size_t(u16(bytes, local + 26)) + u16(bytes, local + 28);
+		requireSpan(local + 30, headerExtra, directory);
+		size_t data = local + 30 + headerExtra;
+		requireSpan(data, packed, directory);
 		require(u16(bytes, local + 26) == n &&
 					std::equal(name.begin(), name.end(), bytes.begin() + local + 30),
 				"ZIP filenames disagree.");

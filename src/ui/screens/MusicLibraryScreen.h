@@ -35,10 +35,10 @@ class MusicLibraryScreen : public Glob2UI::Screen
 	std::unique_ptr<Music::Library> temporary;
 	std::unique_ptr<Music::ImportJob> job;
 	std::vector<Music::Installed> installed;
-	std::string origin, search, tag, notice, next;
+	std::string origin, search, tag, notice, next, catalogPath;
 	int tab = 0, sort = 0, license = 0, ai = 0, duration = 0;
 	bool filters = false;
-	bool requested = false, append = false, previewOnly = false;
+	bool requested = false, append = false, previewOnly = false, pendingReload = false;
 	nlohmann::json items = nlohmann::json::array(), active;
 	std::map<std::string, nlohmann::json> selected;
 	std::deque<nlohmann::json> queue;

@@ -15,6 +15,18 @@
 #include <filesystem>
 namespace
 {
+class PendingCatalogue final : public HttpFetch::Fetch
+{
+	bool &cancelled;
+	HttpFetch::Response value;
+
+  public:
+	explicit PendingCatalogue(bool &cancelled) : cancelled(cancelled) {}
+	HttpFetch::State state() override { return HttpFetch::State::Pending; }
+	const HttpFetch::Response &response() const override { return value; }
+	std::string error() const override { return {}; }
+	void cancel() override { cancelled = true; }
+};
 void capture(Glob2UI::Screen &screen, const std::string &name)
 {
 	screen.beginExecution(globalContainer->gfx);
@@ -76,6 +88,32 @@ TEST_SUITE("CommunityMusicUI")
 	{
 		views(480, 800);
 	}
+	TEST_CASE("new catalogue filters replace pending results [display]")
+	{
+		glob2test::ScopedEnvironment audio("SDL_AUDIODRIVER", "dummy");
+		glob2test::HeadlessGlobals globals(
+			glob2test::GlobalsOptions{.display = true, .loadStrings = true});
+		GAGGUI::ScreenStack stack(*globalContainer->gfx);
+		MusicLibraryScreen screen(stack);
+		bool cancelled = false;
+		screen.fetch = std::make_unique<PendingCatalogue>(cancelled);
+		screen.next = "old page";
+		screen.items.push_back({{"id", "old result"}});
+		screen.search = "new search";
+		screen.sort = 1;
+		screen.reload();
+		CHECK(cancelled);
+		CHECK(screen.items.empty());
+		CHECK(screen.next.empty());
+		CHECK(screen.catalogPath.find("q=new%20search") != std::string::npos);
+		CHECK(screen.catalogPath.find("sort=recent") != std::string::npos);
+		const auto submitted = screen.catalogPath;
+		screen.fetch.reset();
+		screen.search = "unsubmitted edit";
+		screen.next = "next page";
+		screen.reload(true);
+		CHECK(screen.catalogPath == submitted);
+	}
 	TEST_CASE("web release imports and becomes selectable [display]" *
 			  doctest::skip(std::getenv("GLOB2_MUSIC_TEST_ARCHIVE") == nullptr))
 	{
@@ -94,6 +132,24 @@ TEST_SUITE("CommunityMusicUI")
 		Music::Library library(GAGCore::Toolkit::getFileManager()->getDir(0));
 		auto sets = library.importZip(bytes);
 		REQUIRE(sets.size() == 1);
+		// Recovery must export the loose trio being installed, even when a ZIP
+		// was selected earlier in the same import screen.
+		MusicImportScreen importer;
+		importer.archive = bytes;
+		auto paths = library.paths(sets.front().directory);
+		for (unsigned i = 0; i < 3; ++i)
+		{
+			std::ifstream audioFile(paths[i], std::ios::binary);
+			importer.tracks[i] = {std::istreambuf_iterator<char>(audioFile), {}};
+		}
+		importer.selected = 0;
+		importer.install();
+		REQUIRE(importer.job);
+		while (!importer.job->finished())
+			importer.job->advance();
+		CHECK(importer.job->error().empty());
+		CHECK(importer.archive.empty());
+		CHECK(!importer.tracks[0].empty());
 		CHECK(sets.front().info.title == "Moss lantern");
 		CHECK(SoundMixer::musicSetLabel(sets.front().directory) == "Moss lantern");
 		REQUIRE(globalContainer->mix->selectMusicSet(sets.front().directory));

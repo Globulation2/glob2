@@ -70,21 +70,23 @@ const musicRunner =
           logger: createLogger('music-e2e', 'silent'),
           concurrency: 1,
           tasks: {
-            'music-inspect': async (payload: unknown) =>
+            'music-inspect': async (payload: unknown, helpers) =>
               processMusic(
                 harness.database.db,
                 harness.blobs,
                 origin,
                 (payload as { id: string }).id,
                 true,
+                helpers.job.attempts >= helpers.job.max_attempts,
               ),
-            'music-convert': async (payload: unknown) =>
+            'music-convert': async (payload: unknown, helpers) =>
               processMusic(
                 harness.database.db,
                 harness.blobs,
                 origin,
                 (payload as { id: string }).id,
                 false,
+                helpers.job.attempts >= helpers.job.max_attempts,
               ),
           },
         });

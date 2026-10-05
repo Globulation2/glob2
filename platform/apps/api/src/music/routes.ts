@@ -24,7 +24,7 @@ import { body } from '../http/validate.ts';
 import { enforce, SharedLimit } from '../http/rateLimits.ts';
 
 export async function musicRoutes(app: FastifyInstance, identity: Identity): Promise<void> {
-  const { db, blobs, jobs } = app.services;
+  const { db, blobs } = app.services;
   const creates = new SharedLimit(db, 'music-create', 6, 86400000);
   const uploads = new SharedLimit(db, 'music-upload', 24, 3600000);
   let receivingUpload = false;
@@ -202,34 +202,36 @@ export async function musicRoutes(app: FastifyInstance, identity: Identity): Pro
         throw apiError('bad_request', 'Upload an audio file, or cover art up to 8 MiB.');
       const key = sourceKey(id, kind, randomUUID());
       await blobs.put(key, request.body);
-      try {
-        let old: string | undefined;
-        await db.transaction().execute(async (trx) => {
-          const row = await trx
-            .selectFrom('music_releases')
-            .selectAll()
-            .where('id', '=', id)
-            .forUpdate()
-            .executeTakeFirstOrThrow();
-          if (!['draft', 'inspected'].includes(row.status))
-            throw apiError('bad_request', 'This release no longer accepts uploads.');
-          old = row.sources[kind];
-          await trx
-            .updateTable('music_releases')
-            .set({
-              sources: JSON.stringify({ ...row.sources, [kind]: key }),
-              status: 'draft',
-              inspection: null,
-              updated_at: new Date(),
-            })
-            .where('id', '=', id)
-            .execute();
-        });
-        if (old) await blobs.delete(old);
-      } catch (error) {
-        await blobs.delete(key);
-        throw error;
-      }
+      let old: string | undefined;
+      // Failed transactions leave their unreferenced upload for the sweeper.
+      // A lost COMMIT acknowledgement may mean the key is already referenced.
+      await db.transaction().execute(async (trx) => {
+        const row = await trx
+          .selectFrom('music_releases')
+          .selectAll()
+          .where('id', '=', id)
+          .forUpdate()
+          .executeTakeFirstOrThrow();
+        if (!['draft', 'inspected'].includes(row.status))
+          throw apiError('bad_request', 'This release no longer accepts uploads.');
+        old = row.sources[kind];
+        await trx
+          .updateTable('music_releases')
+          .set({
+            sources: JSON.stringify({ ...row.sources, [kind]: key }),
+            status: 'draft',
+            inspection: null,
+            updated_at: new Date(),
+          })
+          .where('id', '=', id)
+          .execute();
+      });
+      // The new key is already committed. A failed obsolete-file cleanup must
+      // never delete the current upload; the source sweeper also retries it.
+      if (old)
+        await blobs
+          .delete(old)
+          .catch((error: unknown) => app.log.warn({ err: error }, 'Music source cleanup failed'));
       return view(await visible(id, request, true), request);
     },
   );
@@ -240,34 +242,29 @@ export async function musicRoutes(app: FastifyInstance, identity: Identity): Pro
       if (!['calm', 'building', 'combat'].every((m) => row.sources[m]))
         throw apiError('bad_request', 'Upload all three moods first.');
       const status = action === 'inspect' ? 'inspecting' : 'converting';
-      const updated = await db
-        .updateTable('music_releases')
-        .set({
-          status,
-          options: options ? JSON.stringify(options) : null,
-          error: null,
-          updated_at: new Date(),
-        })
-        .where('id', '=', row.id)
-        .where('status', '=', action === 'inspect' ? 'draft' : 'inspected')
-        .returningAll()
-        .executeTakeFirst();
-      if (!updated) throw apiError('bad_request', 'The upload is not ready for this action.');
-      try {
-        await jobs.enqueue(
-          action === 'inspect' ? MUSIC_INSPECT : MUSIC_CONVERT,
-          { id: row.id },
-          { jobKey: `music-${row.id}-${action}`, maxAttempts: 3 },
-        );
-      } catch (error) {
-        await db
+      const updated = await db.transaction().execute(async (trx) => {
+        const changed = await trx
           .updateTable('music_releases')
-          .set({ status: row.status })
+          .set({
+            status,
+            options: options ? JSON.stringify(options) : null,
+            error: null,
+            updated_at: new Date(),
+          })
           .where('id', '=', row.id)
-          .where('status', '=', status)
-          .execute();
-        throw error;
-      }
+          .where('status', '=', action === 'inspect' ? 'draft' : 'inspected')
+          .returningAll()
+          .executeTakeFirst();
+        if (!changed) throw apiError('bad_request', 'The upload is not ready for this action.');
+        // Commit the state transition and durable job together, including when
+        // this API process exits before replying to the creator.
+        await sql`SELECT graphile_worker.add_job(
+          identifier => ${action === 'inspect' ? MUSIC_INSPECT : MUSIC_CONVERT}::text,
+          payload => ${JSON.stringify({ id: row.id })}::json,
+          job_key => ${`music-${row.id}-${action}`}::text,
+          max_attempts => 3)`.execute(trx);
+        return changed;
+      });
       return view(updated, request);
     });
   app.post<Id>('/api/v1/music/:id/publish', async (request) => {

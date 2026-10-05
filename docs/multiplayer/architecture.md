@@ -1006,6 +1006,11 @@ rating, with one row per account/release. Search covers title, artist, descripti
 and tags, with tag, licence, AI and duration filters. Pagination orders by score,
 creation time and UUID; clients retain selected UUIDs across result pages.
 
+Processing state changes and Graphile job insertion commit in one transaction.
+Transient failures retain source references for up to three attempts; terminal
+state is committed before source cleanup. The sweeper protects active draft
+references while collecting abandoned uploads after 24 hours without activity.
+
 `apps/music-worker` independently consumes `music-inspect` and `music-convert`
 Graphile jobs. It never leases simulation-version engine jobs. It stages sources
 from the private `music-uploads/` namespace, invokes `glob2music.community`, then

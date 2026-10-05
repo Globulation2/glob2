@@ -1285,8 +1285,12 @@ round trip. Inspect queue/status totals and stored byte counts at
 worker health, conversion failures, oldest pending jobs and blob-volume capacity.
 A cancelled job stops its decoder group and removes temporary PCM. Retries remove
 interrupted attempt directories for that release before starting again. The
-platform scheduler expires abandoned sources after 24 hours and collects orphan
-source files; successful conversion retains only final outputs.
+platform scheduler expires drafts after 24 hours without activity and collects
+unreferenced source files older than 24 hours. Resumed drafts retain all their
+referenced inputs, including files uploaded before their last activity.
+Transient storage/database failures preserve inputs and retry up to three times;
+technical failures and exhausted retries record failure before deleting sources.
+Successful conversion retains only final outputs.
 
 Back up music with the existing PostgreSQL dump and `blobs` volume backup: both
 metadata/references and media are necessary. Converted audio, artwork, waveform

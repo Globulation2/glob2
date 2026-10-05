@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import type { MusicList, MusicMetadata, MusicRelease } from '@glob2/protocol';
+import type { MusicMetadata, MusicRelease } from '@glob2/protocol';
 import { request } from '../api.ts';
 import { Link, useRouter } from '../router.tsx';
 import { useLoad, useSession } from '../state.tsx';
 import { MOODS, MusicPlayer } from './Player.tsx';
+import { useMusicCatalogue } from './useMusicCatalogue.ts';
 
 export function Cover({ release }: { release: MusicRelease }) {
   return release.coverUrl ? (
@@ -54,9 +55,7 @@ export function MusicLibrary() {
   const [min, setMin] = useState(10),
     [max, setMax] = useState(900),
     [mine, setMine] = useState(false);
-  const [items, setItems] = useState<MusicRelease[]>([]),
-    [next, setNext] = useState<string | null>(null),
-    [selected, setSelected] = useState<Map<string, string>>(new Map());
+  const [selected, setSelected] = useState<Map<string, string>>(new Map());
   const [preview, setPreview] = useState<MusicRelease | null>(null),
     [notice, setNotice] = useState(''),
     [busy, setBusy] = useState(false);
@@ -70,45 +69,7 @@ export function MusicLibrary() {
     max: String(max),
     mine: mine ? '1' : '0',
   }).toString();
-  useEffect(() => {
-    const controller = new AbortController();
-    const timer = setTimeout(() => {
-      setBusy(true);
-      request<MusicList>('GET', `/api/v1/music?${filters}`, { signal: controller.signal })
-        .then((data) => {
-          if (!controller.signal.aborted) {
-            setItems(data.items);
-            setNext(data.next);
-            setNotice('');
-          }
-        })
-        .catch((e) => {
-          if (!controller.signal.aborted) setNotice(errorText(e));
-        })
-        .finally(() => {
-          if (!controller.signal.aborted) setBusy(false);
-        });
-    }, 200);
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
-  }, [filters]);
-  async function more() {
-    setBusy(true);
-    try {
-      const data = await request<MusicList>(
-        'GET',
-        `/api/v1/music?${filters}&cursor=${encodeURIComponent(next ?? '')}`,
-      );
-      setItems((old) => [...old, ...data.items]);
-      setNext(data.next);
-    } catch (e) {
-      setNotice(errorText(e));
-    } finally {
-      setBusy(false);
-    }
-  }
+  const { items, setItems, next, loading, error, more } = useMusicCatalogue(filters);
   async function downloadSelected() {
     setBusy(true);
     setNotice('');
@@ -223,8 +184,8 @@ export function MusicLibrary() {
           </label>
         )}
       </div>
-      {notice && <p role="alert">{notice}</p>}
-      {busy && <p role="status">Loading…</p>}
+      {(notice || error) && <p role="alert">{notice || error}</p>}
+      {(busy || loading) && <p role="status">Loading…</p>}
       <div className="music-grid">
         {items.map((release) => (
           <article key={release.id} className="music-card">
@@ -247,7 +208,13 @@ export function MusicLibrary() {
                   Preview
                 </button>
                 <button
-                  disabled={!account || release.status !== 'published'}
+                  disabled={account?.kind !== 'registered' || release.status !== 'published'}
+                  aria-label={`${release.liked ? 'Unlike' : 'Like'} ${release.metadata.title} · ${release.likes} likes`}
+                  title={
+                    account?.kind !== 'registered'
+                      ? 'Sign in with a registered account to like music'
+                      : undefined
+                  }
                   aria-pressed={release.liked}
                   onClick={() => void like(release)}
                 >
@@ -281,11 +248,11 @@ export function MusicLibrary() {
           </article>
         ))}
       </div>
-      {!busy && !items.length && (
+      {!busy && !loading && !items.length && (
         <p>No music found. Try different filters, or share the first set.</p>
       )}
       {next && (
-        <button onClick={() => void more()} disabled={busy}>
+        <button onClick={() => void more()} disabled={busy || loading}>
           Load more
         </button>
       )}

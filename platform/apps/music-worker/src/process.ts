@@ -10,6 +10,8 @@ import { putContent, type BlobStore } from '@glob2/core';
 import type { Database } from '@glob2/db';
 import type { ConversionResult } from '@glob2/music';
 
+class TerminalMusicError extends Error {}
+
 const root = resolve(fileURLToPath(new URL('../../../..', import.meta.url)));
 async function python(
   request: string,
@@ -48,7 +50,9 @@ async function python(
     child.stderr.on('data', (chunk: Buffer) => {
       error = (error + chunk.toString()).slice(-4000);
     });
+    let timedOut = false;
     const timer = setTimeout(() => {
+      timedOut = true;
       if (child.pid)
         try {
           process.kill(-child.pid, 'SIGKILL');
@@ -65,12 +69,15 @@ async function python(
       clearTimeout(timer);
       signal.removeEventListener('abort', cancel);
       if (code === 0) accept();
+      else if (signal.aborted) reject(signal.reason);
+      else if (timedOut)
+        reject(new TerminalMusicError('Music processing exceeded its resource limit.'));
+      // A decoder exit can mean corrupt input or an infrastructure failure
+      // such as ENOSPC/missing libraries. Preserve inputs until retries exhaust.
       else
         reject(
           new Error(
-            exitSignal
-              ? 'Music processing exceeded its resource limit.'
-              : error || 'Music processing failed.',
+            error || (exitSignal ? 'Music processor was interrupted.' : 'Music processing failed.'),
           ),
         );
     });
@@ -83,6 +90,7 @@ export async function processMusic(
   origin: string,
   id: string,
   inspect: boolean,
+  finalAttempt = false,
 ): Promise<void> {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(id))
     throw new Error('Invalid music job');
@@ -101,11 +109,7 @@ export async function processMusic(
       .executeTakeFirst();
     if (!row || row.status !== expected) return;
     const prefix = `glob2-music-${id}-`;
-    // An interrupted attempt may have left PCM behind. The release advisory
-    // lock proves no other live attempt for this release owns these directories.
-    for (const name of await readdir(tmpdir()))
-      if (name.startsWith(prefix)) await rm(join(tmpdir(), name), { recursive: true, force: true });
-    const work = await mkdtemp(join(tmpdir(), prefix));
+    let work: string | undefined;
     const cancellation = new AbortController();
     const check = setInterval(() => {
       void db
@@ -114,12 +118,20 @@ export async function processMusic(
         .where('id', '=', id)
         .executeTakeFirst()
         .then((active) => {
-          if (active?.status !== expected) cancellation.abort();
+          if (active?.status !== expected)
+            cancellation.abort(new TerminalMusicError('Music processing was cancelled.'));
         })
-        .catch(() => cancellation.abort());
+        .catch((error: unknown) => cancellation.abort(error));
     }, 1000);
-    let retainSources = false;
+    // Preserve retry inputs unless a terminal state is durably recorded.
+    let retainSources = true;
     try {
+      // An interrupted attempt may have left PCM behind. The release advisory
+      // lock proves no other live attempt for this release owns these directories.
+      for (const name of await readdir(tmpdir()))
+        if (name.startsWith(prefix))
+          await rm(join(tmpdir(), name), { recursive: true, force: true });
+      work = await mkdtemp(join(tmpdir(), prefix));
       const sources: Record<string, string> = {};
       let cover: string | undefined;
       for (const [kind, key] of Object.entries(row.sources)) {
@@ -127,9 +139,9 @@ export async function processMusic(
           !['calm', 'building', 'combat', 'cover'].includes(kind) ||
           !key.startsWith(`music-uploads/${id}/`)
         )
-          throw new Error('Invalid source reference');
+          throw new TerminalMusicError('Invalid source reference');
         const stream = await blobs.get(key);
-        if (!stream) throw new Error('Source upload expired. Upload the files again.');
+        if (!stream) throw new TerminalMusicError('Source upload expired. Upload the files again.');
         const path = join(work, kind);
         await pipeline(stream, createWriteStream(path, { flags: 'wx' }));
         if (kind === 'cover') cover = path;
@@ -231,8 +243,10 @@ export async function processMusic(
             .where('id', '=', id)
             .execute();
         });
+        retainSources = false;
       }
     } catch (error) {
+      if (!(error instanceof TerminalMusicError) && !finalAttempt) throw error;
       await db
         .updateTable('music_releases')
         .set({
@@ -244,10 +258,14 @@ export async function processMusic(
         .where('id', '=', id)
         .where('status', '=', expected)
         .execute();
+      retainSources = false;
     } finally {
       clearInterval(check);
-      await rm(work, { recursive: true, force: true });
-      if (!retainSources) for (const key of Object.values(row.sources)) await blobs.delete(key);
+      if (work) await rm(work, { recursive: true, force: true });
+      // Failed cleanup is retried by the source sweeper; it must not undo a
+      // completed conversion or turn an inspection into a failed job.
+      if (!retainSources)
+        await Promise.allSettled(Object.values(row.sources).map((key) => blobs.delete(key)));
     }
   });
 }

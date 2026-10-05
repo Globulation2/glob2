@@ -21,6 +21,13 @@ void MusicImportScreen::install()
 {
 	try
 	{
+		// Retain only the source of this installation for persistence recovery.
+		// A previously selected ZIP must not mask a later loose-track import.
+		if (selected < 0)
+			for (auto &file : tracks)
+				file.clear();
+		else
+			archive.clear();
 		job = selected < 0 ? std::make_unique<Music::ImportJob>(library, archive)
 						   : std::make_unique<Music::ImportJob>(library, tracks);
 		notice = musicText("Validating music…");

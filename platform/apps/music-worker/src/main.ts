@@ -8,6 +8,7 @@ import {
   prepareJobQueue,
   Shutdown,
   startJobRunner,
+  type Task,
 } from '@glob2/core';
 import { MUSIC_CONVERT, MUSIC_INSPECT } from '@glob2/music';
 import { processMusic } from './process.ts';
@@ -22,11 +23,20 @@ const database = createDatabase({
 shutdown.add('database', () => database.close());
 await prepareJobQueue(database.pool, logger);
 const blobs = createBlobStore(config.blobs);
-const task = (inspect: boolean) => async (payload: unknown) => {
-  const id = (payload as { id?: unknown })?.id;
-  if (typeof id !== 'string') throw new Error('Missing music release id');
-  await processMusic(database.db, blobs, config.publicOrigin, id, inspect);
-};
+const task =
+  (inspect: boolean): Task =>
+  async (payload, helpers) => {
+    const id = (payload as { id?: unknown })?.id;
+    if (typeof id !== 'string') throw new Error('Missing music release id');
+    await processMusic(
+      database.db,
+      blobs,
+      config.publicOrigin,
+      id,
+      inspect,
+      helpers.job.attempts >= helpers.job.max_attempts,
+    );
+  };
 const runner = await startJobRunner({
   pool: database.pool,
   logger,

@@ -3,11 +3,14 @@ import createDecoder from './decoder.js';
 let module,
   port,
   ready = false,
+  playing = false,
+  duration = 0,
   credits = 0,
   generation = 0;
-async function initialize(tracks, audioPort) {
+async function initialize(tracks, audioPort, frames) {
   module = await createDecoder();
   port = audioPort;
+  duration = frames / 48000;
   for (let mood = 0; mood < 3; mood++) {
     const response = await fetch(tracks[mood].url, { credentials: 'same-origin' });
     if (!response.ok) throw new Error('A music track is no longer available.');
@@ -57,8 +60,10 @@ async function initialize(tracks, audioPort) {
   pump();
 }
 function pump() {
-  while (ready && credits > 0) {
+  while (ready && playing && credits > 0) {
     credits--;
+    const position = module._music_position();
+    const weights = [0, 1, 2].map((i) => module._music_weight(i));
     const ptr = module._music_render();
     if (module._music_failed()) {
       ready = false;
@@ -67,25 +72,21 @@ function pump() {
     }
     const pcm = new Float32Array(2048);
     for (let i = 0; i < 2048; i++) pcm[i] = module.HEAP16[ptr / 2 + i] / 32768;
-    port.postMessage({ pcm, generation }, [pcm.buffer]);
+    port.postMessage({ pcm, generation, position, weights, duration }, [pcm.buffer]);
   }
-  if (module)
-    postMessage({
-      position: module._music_position(),
-      weights: [0, 1, 2].map((i) => module._music_weight(i)),
-    });
 }
 onmessage = (event) => {
   if (event.data.tracks)
-    initialize(event.data.tracks, event.data.port).catch((error) =>
+    initialize(event.data.tracks, event.data.port, event.data.frames).catch((error) =>
       postMessage({ error: error.message }),
     );
   else if (module) {
     module._music_command(event.data.command, event.data.value || 0);
-    if (event.data.command === 2 || event.data.command === 0) {
+    if (event.data.command === 0) playing = event.data.value !== 0;
+    if (event.data.command === 2) {
       generation++;
       credits = 8;
-      port.postMessage({ reset: true, generation });
+      port.postMessage({ reset: true, generation, position: module._music_position() });
     }
     pump();
   }

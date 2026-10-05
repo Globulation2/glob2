@@ -86,19 +86,17 @@ static OggOpusFile *openMusicFile(FILE *fp)
 	return track;
 }
 
-// opusfile 0.12's short forward seek can retain PCM buffered before the seek.
-// Reset that buffer first; then PCM seek retains pre-roll and trimmed positions.
-// This is necessary when switching into a mood previously played in this loop.
 // Fill native-endian, interleaved stereo samples. Decoder returns frames, not
 // interleaved sample counts. Bound holes and EOFs without progress so malformed
 // streams cannot spin indefinitely on the audio thread.
 static void readMusic(SoundMixer &mixer, Sint16 *output, int count, int &index, bool advance)
 {
-	if (!advance && index >= 0 && static_cast<size_t>(index) < mixer.tracks.size()) {
-        Music::read(mixer.tracks[index], output, unsigned(count)/2);
-        return;
-    }
-    int failures = 0;
+	if (!advance && index >= 0 && static_cast<size_t>(index) < mixer.tracks.size())
+	{
+		Music::read(mixer.tracks[index], output, unsigned(count) / 2);
+		return;
+	}
+	int failures = 0;
 	while (count > 0)
 	{
 		auto *track = index >= 0 && static_cast<size_t>(index) < mixer.tracks.size()
@@ -291,12 +289,12 @@ static void SDLCALL streamAudio(void *userdata, SDL_AudioStream *stream, int add
         const int count = std::min(additional, static_cast<int>(buffer.size()));
         const int aligned = (count + 3) & ~3;
         if (mixer->preview) {
-            auto* samples = reinterpret_cast<Sint16*>(buffer.data());
+            auto *samples = reinterpret_cast<Sint16 *>(buffer.data());
             mixer->preview->render(samples, aligned / 4);
-            for(int i=0;i<aligned/2;++i) {
-                int value=(int(samples[i])*int(mixer->musicVolume))>>8;
-                mixer->handleVoiceInsertion(&value,int(mixer->voiceVolume));
-                samples[i]=Sint16(value);
+            for (int i = 0; i < aligned / 2; ++i) {
+                int value = (int(samples[i]) * int(mixer->musicVolume)) >> 8;
+                mixer->handleVoiceInsertion(&value, int(mixer->voiceVolume));
+                samples[i] = Sint16(value);
             }
         }
         else if (mixer->mode == SoundMixer::MODE_STOPPED || mixer->actTrack < 0)
@@ -526,19 +524,22 @@ std::vector<std::string> SoundMixer::getMusicSets()
 
 std::string SoundMixer::musicSetLabel(const std::string& name)
 {
-	if (name.rfind("community-", 0) == 0) {
-        FILE* fp=Toolkit::getFileManager()->openFP("data/zik/"+name+"/a1.opus");
-        if(fp) {
-            auto* track=openMusicFile(fp);
-            if(track) {
-                auto* album=opus_tags_query(op_tags(track,0),"ALBUM",0);
-                std::string title=album?std::string(album).substr(0,512):std::string();
-                op_free(track);
-                if(!title.empty()) return title;
-            }
-        }
-    }
-    std::string label = name;
+	if (name.rfind("community-", 0) == 0)
+	{
+		FILE *fp = Toolkit::getFileManager()->openFP("data/zik/" + name + "/a1.opus");
+		if (fp)
+		{
+			auto *track = openMusicFile(fp);
+			if (track)
+			{
+				const char *album = opus_tags_query(op_tags(track, 0), "ALBUM", 0);
+				std::string title = album ? std::string(album).substr(0, 512) : std::string();
+				op_free(track);
+				if (!title.empty()) return title;
+			}
+		}
+	}
+	std::string label = name;
 	bool capital = true;
 	for (char& c : label)
 	{
@@ -757,14 +758,15 @@ void SoundMixer::addVoiceData(std::shared_ptr<OrderVoiceData> order)
 #endif
 }
 
-void SoundMixer::setPreview(Music::Preview* value)
+void SoundMixer::setPreview(Music::Preview *value)
 {
-    if(value && !audioStream && musicVolume) openAudio();
-    if(audioStream) SDL_LockAudioStream(audioStream);
-    preview=value;
-    if(audioStream) {
-        SDL_ClearAudioStream(audioStream);
-        SDL_UnlockAudioStream(audioStream);
-        if(value) SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(audioStream));
-    }
+	if (value && !audioStream && musicVolume) openAudio();
+	if (audioStream) SDL_LockAudioStream(audioStream);
+	preview = value;
+	if (audioStream)
+	{
+		SDL_ClearAudioStream(audioStream);
+		SDL_UnlockAudioStream(audioStream);
+		if (value) SDL_ResumeAudioDevice(SDL_GetAudioStreamDevice(audioStream));
+	}
 }

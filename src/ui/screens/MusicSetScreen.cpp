@@ -76,12 +76,7 @@ void MusicSetScreen::onTimer(Uint32)
 bool MusicSetScreen::interceptEvent(const SDL_Event &event)
 {
 	if (event.type == SDL_EVENT_WINDOW_FOCUS_LOST || event.type == SDL_EVENT_DID_ENTER_BACKGROUND)
-		control(
-			[this]
-			{
-				suspended = preview.playing;
-				preview.playing = false;
-			});
+		control([this] { preview.playing = false; });
 	return false;
 }
 Element MusicSetScreen::build(const Presentation &p)
@@ -120,6 +115,9 @@ Element MusicSetScreen::build(const Presentation &p)
 		body.push_back(paragraph(notice));
 	std::vector<Element> moods;
 	const char *names[] = {"Calm", "Building", "Combat"};
+	const std::array<GAGCore::Color, 3> moodColors{GAGCore::Color(155, 205, 170),
+												   GAGCore::Color(237, 199, 120),
+												   GAGCore::Color(234, 160, 153)};
 	for (unsigned i = 0; i < 3; ++i)
 		moods.push_back(expanded(column(
 			{button("music.mood." + std::to_string(i), musicText(names[i]),
@@ -129,27 +127,30 @@ Element MusicSetScreen::build(const Presentation &p)
 
 	body.push_back(row(std::move(moods), {p.pt(8)}));
 	auto waveforms = info.waveforms;
-	body.push_back(canvas("music.waveforms", {p.pt(600), p.pt(120)},
-						  [waveforms, position, duration](Canvas &canvas, Rect rect, const Frame &)
-						  {
-							  canvas.fillRounded(rect, 8, GAGCore::Color(23, 40, 31));
-							  const GAGCore::Color colors[] = {GAGCore::Color(155, 205, 170),
-															   GAGCore::Color(237, 199, 120),
-															   GAGCore::Color(234, 160, 153)};
-							  for (unsigned mood = 0; mood < 3; ++mood)
-							  {
-								  int middle = rect.y + (rect.h / 3) * mood + rect.h / 6;
-								  for (size_t i = 0; i < waveforms[mood].size(); ++i)
-								  {
-									  int x = rect.x + int(i) * rect.w / 512;
-									  int h = int(waveforms[mood][i] * rect.h / 6);
-									  canvas.line({x, middle - h}, {x, middle + h}, colors[mood]);
-								  }
-							  }
-							  int x = rect.x + int(position / std::max(1.0, duration) * rect.w);
-							  canvas.line({x, rect.y}, {x, rect.y + rect.h},
-										  GAGCore::Color(230, 220, 180));
-						  }));
+	body.push_back(canvas(
+		"music.waveforms", {p.pt(600), p.pt(120)},
+		[waveforms, position, duration, moodColors, labelWidth = p.pt(84)](Canvas &canvas,
+																		   Rect rect, const Frame &)
+		{
+			canvas.fillRounded(rect, 8, GAGCore::Color(23, 40, 31));
+			for (unsigned mood = 0; mood < 3; ++mood)
+			{
+				int middle = rect.y + (rect.h / 3) * mood + rect.h / 6;
+				canvas.text(
+					{rect.x + 6, middle - 8}, FontRole::Support,
+					musicText(std::array<const char *, 3>{"Calm", "Building", "Combat"}[mood]),
+					moodColors[mood]);
+				for (size_t i = 0; i < waveforms[mood].size(); ++i)
+				{
+					int x = rect.x + labelWidth + int(i) * (rect.w - labelWidth) / 512;
+					int h = int(waveforms[mood][i] * rect.h / 6);
+					canvas.line({x, middle - h}, {x, middle + h}, moodColors[mood]);
+				}
+			}
+			int x = rect.x + labelWidth +
+					int(position / std::max(1.0, duration) * (rect.w - labelWidth));
+			canvas.line({x, rect.y}, {x, rect.y + rect.h}, GAGCore::Color(230, 220, 180));
+		}));
 	body.push_back(slider(
 		"music.position", int(position * 10), 0, std::max(1, int(duration * 10)),
 		[this](int v) { control([&] { preview.seekTo(v / 10.0); }); },

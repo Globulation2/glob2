@@ -30,6 +30,5 @@ class MusicSetScreen : public Glob2UI::Screen
 	unsigned waveformMood = 0;
 	std::int64_t waveformFrame = 0;
 	Glob2UI::PreviewImages images;
-	bool suspended = false;
 	void control(const std::function<void()> &fn);
 };

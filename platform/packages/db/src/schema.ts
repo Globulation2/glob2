@@ -2,6 +2,7 @@
 // with the migrations: test/schema.test.ts writes and reads every table through
 // these types and compares the column lists with information_schema.
 import type { ColumnType, Generated, Insertable, Selectable, Updateable } from 'kysely';
+import type { MusicMetadata, MusicRelease, MusicTrack, MusicConvert } from '@glob2/protocol';
 
 /** Column with a database default: optional on insert. */
 type Defaulted<T> = ColumnType<T, T | undefined, T>;
@@ -897,12 +898,12 @@ export interface StudioAttemptsTable {
 export interface MusicReleasesTable {
   id: string;
   owner_id: string;
-  metadata: Json<import('@glob2/protocol').MusicMetadata>;
-  status: Defaulted<import('@glob2/protocol').MusicRelease['status']>;
+  metadata: Json<MusicMetadata>;
+  status: Defaulted<MusicRelease['status']>;
   sources: DefaultedJson<Record<string, string>>;
-  inspection: NullableJson<NonNullable<import('@glob2/protocol').MusicRelease['inspection']>>;
-  result: NullableJson<import('@glob2/protocol').MusicTrack[] | Record<string, JsonValue>>;
-  options: NullableJson<import('@glob2/protocol').MusicConvert>;
+  inspection: NullableJson<NonNullable<MusicRelease['inspection']>>;
+  result: NullableJson<MusicTrack[] | Record<string, JsonValue>>;
+  options: NullableJson<MusicConvert>;
   error: Nullable<string>;
   hidden: Defaulted<boolean>;
   downloads: Defaulted<number>;
