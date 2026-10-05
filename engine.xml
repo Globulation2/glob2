@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="33" failures="0" errors="0" skipped="0"><testsuite name="ColonySkinPreview"><testcase classname="ColonySkinPreview" name="expired and cancelled subscribers cannot affect another owner [display:64x64]" time="0.326127" status="run" />
+  <testcase classname="ColonySkinPreview" name="shared images retain each owner's fresh appearance [display:64x64]" time="0.282961" status="run" />
+  </testsuite><testsuite name="CommunityMusic"><testcase classname="CommunityMusic" name="archive offsets and sizes cannot wrap on 32-bit targets" time="0.0032" status="run" />
+  <testcase classname="CommunityMusic" name="archive parser rejects malformed and oversized archives" time="0.000745" status="run" />
+  <testcase classname="CommunityMusic" name="computed fades preserve every entry of the original lookup table" time="0.003286" status="run" />
+  <testcase classname="CommunityMusic" name="preview storage is bounded independently of track length" time="0.000153" status="run" />
+  </testsuite><testsuite name="CommunityMusicUI"><testcase classname="CommunityMusicUI" name="desktop screens [display][artifacts]" time="1.00439" status="run" />
+  <testcase classname="CommunityMusicUI" name="new catalogue filters replace pending results [display]" time="0.801069" status="run" />
+  <testcase classname="CommunityMusicUI" name="touch screens [display][artifacts]" time="0.904534" status="run" />
+  </testsuite><testsuite name="CustomGameSetup"><testcase classname="CustomGameSetup" name="landscape preview performance [display][artifacts]" time="2.63632" status="run" />
+  <testcase classname="CustomGameSetup" name="landscape preview stays responsive [display][artifacts]" time="2.93749" status="run" />
+  <testcase classname="CustomGameSetup" name="preview queue priority and restart" time="0.185707" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="3.27575" status="run" />
+  </testsuite><testsuite name="FontKerning"><testcase classname="FontKerning" name="kerned words have no gap wider than the same words unkerned" time="0.048124" status="run" />
+  <testcase classname="FontKerning" name="pair advances equal the glyph advances plus kerning" time="0.045572" status="run" />
+  <testcase classname="FontKerning" name="the bundled SDL3_ttf moves the pen for kerned pairs" time="0.00197" status="run" />
+  </testsuite><testsuite name="GameGUITouch"><testcase classname="GameGUITouch" name="actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences]" time="17.4348" status="run" />
+  </testsuite><testsuite name="HighResolutionIntegration"><testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in OpenGL [display:1024x768][artifacts][writes-preferences]" time="32.8812" status="run" />
+  <testcase classname="HighResolutionIntegration" name="HD artwork; cursor scaling and replay fixture in software rendering [display:1024x768][artifacts]" time="1.06333" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="native widget events and custom lobby captures [display][artifacts]" time="1.80656" status="run" />
+  <testcase classname="MapPreview" name="preview geometry" time="0.165099" status="run" />
+  <testcase classname="MapPreview" name="thumbnail codec; envelope limits and corrupt input" time="0.482184" status="run" />
+  </testsuite><testsuite name="MapTiling"><testcase classname="MapTiling" name="advanced controls preview, reset and accept the repeated map on touch [display][artifacts]" time="1.75033" status="run" />
+  </testsuite><testsuite name="MusicSet"><testcase classname="MusicSet" name="discovery atomic replacement queued moods and muted preferences [display][writes-preferences]" time="2.63476" status="run" />
+  </testsuite><testsuite name="ScreenExecution"><testcase classname="ScreenExecution" name="screen phases; completion; reuse; quit and compatibility host" time="0.496168" status="run" />
+  </testsuite><testsuite name="SettingsGraphics"><testcase classname="SettingsGraphics" name="edge scrolling defaults migrate and independent modes round trip" time="0.003757" status="run" />
+  <testcase classname="SettingsGraphics" name="legacy preferences migrate and independent effects round trip" time="0.004448" status="run" />
+  <testcase classname="SettingsGraphics" name="render ceiling defaults migrates validates and round trips" time="0.003929" status="run" />
+  <testcase classname="SettingsGraphics" name="text size applies to desktop and touch independently of interface scale" time="0.001627" status="run" />
+  </testsuite><testsuite name="UIIcons"><testcase classname="UIIcons" name="aliases share live assets and the cache releases unused graphics resources" time="0.007836" status="run" />
+  <testcase classname="UIIcons" name="all semantic icons have the pinned raster sizes" time="0.088471" status="run" />
+  </testsuite><testsuite name="UnitHighResolutionCache"><testcase classname="UnitHighResolutionCache" name="HD layer mappings and fallbacks in software rendering" time="0.1981" status="run" />
+  <testcase classname="UnitHighResolutionCache" name="HD layer mappings; fallbacks; zoom and shader cache behaviour [display]" time="4.83982" status="run" />
+  </testsuite></testsuites>

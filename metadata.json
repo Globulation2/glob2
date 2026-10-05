@@ -1,0 +1,62 @@
+{
+  "revision": "2071eea124e51054d4a1ee5065fc75bac7988e0d",
+  "base": "857b69530254983efe1659b85467a17fa1973dfb",
+  "status": "",
+  "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "architecture": "x86_64",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "threads": "32",
+  "native_dependency_manifest": {
+    "configuration": 11,
+    "threaded": false,
+    "versions": {
+      "webp": {
+        "version": "1.6.0",
+        "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",
+        "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+        "archive": "libwebp-1.6.0.tar.gz"
+      },
+      "SDL": {
+        "version": "3.4.16",
+        "url": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz",
+        "sha256": "7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68",
+        "archive": "SDL3-3.4.16.tar.gz"
+      },
+      "SDL_image": {
+        "version": "3.4.6",
+        "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz",
+        "sha256": "d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01",
+        "archive": "SDL3_image-3.4.6.tar.gz"
+      },
+      "SDL_ttf": {
+        "version": "3.2.2",
+        "url": "https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz",
+        "sha256": "63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d",
+        "archive": "SDL3_ttf-3.2.2.tar.gz"
+      },
+      "SDL_net": {
+        "version": "3.2.0",
+        "url": "https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz",
+        "sha256": "098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41",
+        "archive": "SDL3_net-3.2.0.tar.gz"
+      }
+    },
+    "emscripten": null,
+    "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "source_patches": {
+      "x11-reparent-race.patch": "7ebad866971a36c2c833d6d91977d2628f13c82a0eeae11fd917e5ee8f7dcfab",
+      "x11-map-notify.patch": "a7ce2e7bc6773243ccda0282926ea92a9cce3023efa9289c81cc9dad0937f202",
+      "png16-preserve-channels.patch": "cfa402516b9692a8e50394e5f1dc659e5a7443cd99a4cbb59af2ac5d0fc05aee",
+      "kerning-moves-pen.patch": "40885a6f8dd3018cd01721197b263b363bbb26c4b55ef21e0ad919823ac7bd4c"
+    }
+  },
+  "build_command": "GLOB2_SDL3_PREFIX=\"$PWD/artifacts/asset-loader/native-prefix\" scons -j8 release=1 unit-tests engine-tests asset-loading-benchmark skin-preview skin-game-preview online-screens-probe build/linux/client/release/src/glob2",
+  "reviewers": [
+    "review_loader",
+    "review_integration",
+    "review_protocol"
+  ],
+  "review_rounds": 2,
+  "additional_integration": "Render FPS master857b69530; startup separate draw/visibility handling"
+}
