@@ -1,0 +1,85 @@
+
+> glob2-online-website@0.1.0 build
+> astro build && pagefind --site dist
+
+21:06:03 [content] Syncing content
+21:06:03 [content] Synced content
+21:06:03 [types] Generated 852ms
+21:06:03 [build] output: "static"
+21:06:03 [build] mode: "static"
+21:06:03 [build] directory: /Users/bradley/glob2-online-website/dist/
+21:06:03 [build] Collecting build info...
+21:06:03 [build] ✓ Completed in 908ms.
+21:06:03 [build] Building static entrypoints...
+21:06:03 [vite] ✓ built in 433ms
+21:06:03 [vite] ✓ built in 52ms
+21:06:03 [build] Rearranging server assets...
+
+ generating static routes 
+21:06:03   ├─ /404.html (+9ms) 
+21:06:03   ├─ /archive/index.html (+5ms) 
+21:06:03   ├─ /archive/legacy-strategy/index.html (+3ms) 
+21:06:03   ├─ /archive/legacy-translations/index.html (+3ms) 
+21:06:03   ├─ /community/index.html (+3ms) 
+21:06:03   ├─ /competition/index.html (+3ms) 
+21:06:03   ├─ /credits/index.html (+3ms) 
+21:06:04   ├─ /design/colony/index.html (+4ms) 
+21:06:04   ├─ /design/field-guide/index.html (+4ms) 
+21:06:04   ├─ /downloads/index.html (+3ms) 
+21:06:04   ├─ /events/index.html (+2ms) 
+21:06:04   ├─ /game/index.html (+3ms) 
+21:06:04   ├─ /history/index.html (+2ms) 
+21:06:04   ├─ /history/project-history/index.html (+2ms) 
+21:06:04   ├─ /learn/index.html (+5ms) 
+21:06:04   ├─ /learn/browser-and-multiplayer/index.html (+3ms) 
+21:06:04   ├─ /learn/defending-your-colony/index.html (+2ms) 
+21:06:04   ├─ /learn/fruit-and-conversion/index.html (+2ms) 
+21:06:04   ├─ /learn/getting-started/index.html (+2ms) 
+21:06:04   ├─ /learn/jobs-and-flags/index.html (+1ms) 
+21:06:04   ├─ /learn/sustainable-food/index.html (+2ms) 
+21:06:04   ├─ /news/index.html (+3ms) 
+21:06:04   ├─ /news/browser-development/index.html (+2ms) 
+21:06:04   ├─ /privacy/index.html (+3ms) 
+21:06:04   ├─ /search/index.html (+2ms) 
+21:06:04   ├─ /index.html (+3ms) 
+21:06:04 ✓ Completed in 106ms.
+
+21:06:04 [build] ✓ Completed in 642ms.
+21:06:04 [@astrojs/sitemap] `sitemap-index.xml` created at `dist`
+21:06:04 [build] 26 page(s) built in 1.60s
+21:06:04 [build] Complete!
+
+Running Pagefind v1.5.2 (Extended)
+Running from: "/Users/bradley/glob2-online-website"
+Source:       "dist"
+Output:       "dist/pagefind"
+
+[Walking source directory]
+Found 26 files matching **/*.{html}
+
+[Parsing files]
+Found a data-pagefind-body element on the site.
+↳ Ignoring pages without this tag.
+
+[Reading languages]
+Discovered 1 language: en
+
+[Building search indexes]
+Total: 
+  Indexed 1 language
+  Indexed 23 pages
+  Indexed 834 words
+  Indexed 1 filter
+  Indexed 0 sorts
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  Pagefind found references to the Default UI (pagefind-ui.js)           │
+│  on your site. The Default UI is supported and will continue            │
+│  to work.                                                               │
+│                                                                         │
+│  As of 1.5.0, if you are setting up a new integration, use the          │
+│  Component UI instead. It includes a search modal, better               │
+│  accessibility and customization: https://pagefind.app/docs/search-ui/  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+Finished in 0.047 seconds

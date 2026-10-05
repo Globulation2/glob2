@@ -1,0 +1,159 @@
+verify	Run npm test	﻿2026-10-05T00:48:46.8383926Z ##[group]Run npm test
+verify	Run npm test	2026-10-05T00:48:46.8384443Z ^[[36;1mnpm test^[[0m
+verify	Run npm test	2026-10-05T00:48:46.8451155Z shell: /usr/bin/bash -e {0}
+verify	Run npm test	2026-10-05T00:48:46.8451525Z ##[endgroup]
+verify	Run npm test	2026-10-05T00:48:46.9552331Z 
+verify	Run npm test	2026-10-05T00:48:46.9553063Z > glob2-online-website@0.1.0 test
+verify	Run npm test	2026-10-05T00:48:46.9553719Z > playwright test
+verify	Run npm test	2026-10-05T00:48:46.9553996Z 
+verify	Run npm test	2026-10-05T00:48:47.8523280Z 
+verify	Run npm test	2026-10-05T00:48:47.8524004Z Running 114 tests using 2 workers
+verify	Run npm test	2026-10-05T00:48:47.8524312Z 
+verify	Run npm test	2026-10-05T00:48:49.3961382Z   ✓    1 [chromium] › tests/colony.spec.ts:18:1 › reduced motion never requests the video and failure retains a poster (765ms)
+verify	Run npm test	2026-10-05T00:48:49.5520540Z   ✓    2 [chromium] › tests/colony.spec.ts:3:1 › real colony video pauses and respects reduced motion (899ms)
+verify	Run npm test	2026-10-05T00:48:51.1299759Z   ✓    4 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /game/ (light) (1.4s)
+verify	Run npm test	2026-10-05T00:48:51.1416581Z   ✓    3 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible / (light) (1.6s)
+verify	Run npm test	2026-10-05T00:48:52.3731236Z   ✓    5 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /learn/ (light) (1.2s)
+verify	Run npm test	2026-10-05T00:48:52.4174461Z   ✓    6 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /community/ (light) (1.2s)
+verify	Run npm test	2026-10-05T00:48:53.4967521Z   ✓    8 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /news/ (light) (1.1s)
+verify	Run npm test	2026-10-05T00:48:53.5133967Z   ✓    7 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /competition/ (light) (1.1s)
+verify	Run npm test	2026-10-05T00:48:54.5644859Z   ✓    9 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /downloads/ (light) (1.0s)
+verify	Run npm test	2026-10-05T00:48:54.5813212Z   ✓   10 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /history/ (light) (1.0s)
+verify	Run npm test	2026-10-05T00:48:55.6411933Z   ✓   11 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /archive/ (light) (1.1s)
+verify	Run npm test	2026-10-05T00:48:55.6597470Z   ✓   12 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /search/ (light) (1.1s)
+verify	Run npm test	2026-10-05T00:48:56.9372333Z   ✓   14 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /game/ (dark) (1.2s)
+verify	Run npm test	2026-10-05T00:48:57.3745411Z   ✓   13 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible / (dark) (1.7s)
+verify	Run npm test	2026-10-05T00:48:58.0475848Z   ✓   15 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /learn/ (dark) (1.1s)
+verify	Run npm test	2026-10-05T00:48:58.4398307Z   ✓   16 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /community/ (dark) (1.1s)
+verify	Run npm test	2026-10-05T00:48:59.0956199Z   ✓   17 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /competition/ (dark) (1.0s)
+verify	Run npm test	2026-10-05T00:48:59.4057631Z   ✓   18 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /news/ (dark) (949ms)
+verify	Run npm test	2026-10-05T00:49:00.1124325Z   ✓   19 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /downloads/ (dark) (1.0s)
+verify	Run npm test	2026-10-05T00:49:00.4405234Z   ✓   20 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /history/ (dark) (1.0s)
+verify	Run npm test	2026-10-05T00:49:01.0990710Z   ✓   21 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /archive/ (dark) (970ms)
+verify	Run npm test	2026-10-05T00:49:01.4910940Z   ✓   22 [chromium] › tests/journeys.spec.ts:4:75 › usable and accessible /search/ (dark) (1.0s)
+verify	Run npm test	2026-10-05T00:49:01.5443781Z   ✓   23 [chromium] › tests/journeys.spec.ts:12:1 › homepage is lightweight and handoff explicit (428ms)
+verify	Run npm test	2026-10-05T00:49:02.0027339Z   ✓   24 [chromium] › tests/journeys.spec.ts:27:1 › live data pages hand off to the app (493ms)
+verify	Run npm test	2026-10-05T00:49:02.5941235Z   ✓   26 [chromium] › tests/journeys.spec.ts:42:1 › keyboard skip link and reduced motion (572ms)
+verify	Run npm test	2026-10-05T00:49:02.9860803Z   ✓   25 [chromium] › tests/journeys.spec.ts:33:1 › mobile and zoom reflow (1.4s)
+verify	Run npm test	2026-10-05T00:49:03.4571320Z   ✓   27 [chromium] › tests/journeys.spec.ts:46:1 › guides history and events are honest (838ms)
+verify	Run npm test	2026-10-05T00:49:03.7897819Z   ✓   28 [chromium] › tests/journeys.spec.ts:52:1 › static search can find current and historical content (780ms)
+verify	Run npm test	2026-10-05T00:49:04.1911284Z   ✓   30 [chromium] › tests/journeys.spec.ts:62:91 › rankings fresh (379ms)
+verify	Run npm test	2026-10-05T00:49:04.3641326Z   ✓   29 [chromium] › tests/journeys.spec.ts:56:1 › content remains browsable without JavaScript (888ms)
+verify	Run npm test	2026-10-05T00:49:04.5458482Z   ✓   31 [chromium] › tests/journeys.spec.ts:62:91 › rankings stale (333ms)
+verify	Run npm test	2026-10-05T00:49:04.7182880Z   ✓   32 [chromium] › tests/journeys.spec.ts:62:91 › rankings empty (334ms)
+verify	Run npm test	2026-10-05T00:49:04.8544026Z   ✓   33 [chromium] › tests/journeys.spec.ts:62:91 › rankings invalid (289ms)
+verify	Run npm test	2026-10-05T00:49:05.0392797Z   ✓   34 [chromium] › tests/journeys.spec.ts:62:91 › rankings unavailable (304ms)
+verify	Run npm test	2026-10-05T00:49:05.2254060Z   ✓   35 [chromium] › tests/journeys.spec.ts:62:91 › rankings unsafe (352ms)
+verify	Run npm test	2026-10-05T00:49:05.6016216Z   ✓   37 [chromium] › tests/journeys.spec.ts:84:1 › search box has a visible label (359ms)
+verify	Run npm test	2026-10-05T00:49:05.6093784Z   ✓   36 [chromium] › tests/journeys.spec.ts:75:1 › dark mode follows the system and keeps the game look (548ms)
+verify	Run npm test	2026-10-05T00:49:06.0395635Z   ✓   38 [chromium] › tests/journeys.spec.ts:88:1 › phone navigation targets are thumb-sized (425ms)
+verify	Run npm test	2026-10-05T00:49:09.6435502Z   ✓   39 [firefox] › tests/colony.spec.ts:3:1 › real colony video pauses and respects reduced motion (2.8s)
+verify	Run npm test	2026-10-05T00:49:10.0123578Z   ✓   40 [firefox] › tests/colony.spec.ts:18:1 › reduced motion never requests the video and failure retains a poster (2.6s)
+verify	Run npm test	2026-10-05T00:49:12.1578677Z   ✓   42 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /game/ (light) (2.0s)
+verify	Run npm test	2026-10-05T00:49:12.2350837Z   ✓   41 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible / (light) (2.5s)
+verify	Run npm test	2026-10-05T00:49:13.8582228Z   ✓   43 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /learn/ (light) (1.7s)
+verify	Run npm test	2026-10-05T00:49:13.9557828Z   ✓   44 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /community/ (light) (1.7s)
+verify	Run npm test	2026-10-05T00:49:15.5825514Z   ✓   45 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /competition/ (light) (1.7s)
+verify	Run npm test	2026-10-05T00:49:15.6212325Z   ✓   46 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /news/ (light) (1.7s)
+verify	Run npm test	2026-10-05T00:49:17.5861113Z   ✓   47 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /downloads/ (light) (2.0s)
+verify	Run npm test	2026-10-05T00:49:17.5891197Z   ✓   48 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /history/ (light) (1.9s)
+verify	Run npm test	2026-10-05T00:49:19.1741828Z   ✓   49 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /archive/ (light) (1.6s)
+verify	Run npm test	2026-10-05T00:49:19.2872953Z   ✓   50 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /search/ (light) (1.7s)
+verify	Run npm test	2026-10-05T00:49:21.2594338Z   ✓   52 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /game/ (dark) (2.0s)
+verify	Run npm test	2026-10-05T00:49:21.8351126Z   ✓   51 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible / (dark) (2.6s)
+verify	Run npm test	2026-10-05T00:49:23.0564643Z   ✓   53 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /learn/ (dark) (1.8s)
+verify	Run npm test	2026-10-05T00:49:23.5166856Z   ✓   54 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /community/ (dark) (1.7s)
+verify	Run npm test	2026-10-05T00:49:24.7652385Z   ✓   55 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /competition/ (dark) (1.7s)
+verify	Run npm test	2026-10-05T00:49:25.3018718Z   ✓   56 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /news/ (dark) (1.7s)
+verify	Run npm test	2026-10-05T00:49:28.1898025Z   ✓   57 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /downloads/ (dark) (3.4s)
+verify	Run npm test	2026-10-05T00:49:28.3812563Z   ✓   58 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /history/ (dark) (3.1s)
+verify	Run npm test	2026-10-05T00:49:29.8179232Z   ✓   59 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /archive/ (dark) (1.6s)
+verify	Run npm test	2026-10-05T00:49:30.1571301Z   ✓   60 [firefox] › tests/journeys.spec.ts:4:75 › usable and accessible /search/ (dark) (1.8s)
+verify	Run npm test	2026-10-05T00:49:30.6744854Z   ✓   61 [firefox] › tests/journeys.spec.ts:12:1 › homepage is lightweight and handoff explicit (832ms)
+verify	Run npm test	2026-10-05T00:49:31.0818577Z   ✓   62 [firefox] › tests/journeys.spec.ts:27:1 › live data pages hand off to the app (899ms)
+verify	Run npm test	2026-10-05T00:49:32.1343694Z   ✓   64 [firefox] › tests/journeys.spec.ts:42:1 › keyboard skip link and reduced motion (1.0s)
+verify	Run npm test	2026-10-05T00:49:32.7401032Z   ✓   63 [firefox] › tests/journeys.spec.ts:33:1 › mobile and zoom reflow (2.0s)
+verify	Run npm test	2026-10-05T00:49:33.4799920Z   ✓   65 [firefox] › tests/journeys.spec.ts:46:1 › guides history and events are honest (1.3s)
+verify	Run npm test	2026-10-05T00:49:33.9557505Z   ✓   66 [firefox] › tests/journeys.spec.ts:52:1 › static search can find current and historical content (1.2s)
+verify	Run npm test	2026-10-05T00:49:34.7145024Z   ✓   68 [firefox] › tests/journeys.spec.ts:62:91 › rankings fresh (734ms)
+verify	Run npm test	2026-10-05T00:49:34.8779585Z   ✓   67 [firefox] › tests/journeys.spec.ts:56:1 › content remains browsable without JavaScript (1.4s)
+verify	Run npm test	2026-10-05T00:49:35.3650941Z   ✓   69 [firefox] › tests/journeys.spec.ts:62:91 › rankings stale (630ms)
+verify	Run npm test	2026-10-05T00:49:35.6350100Z   ✓   70 [firefox] › tests/journeys.spec.ts:62:91 › rankings empty (736ms)
+verify	Run npm test	2026-10-05T00:49:36.0432771Z   ✓   71 [firefox] › tests/journeys.spec.ts:62:91 › rankings invalid (655ms)
+verify	Run npm test	2026-10-05T00:49:36.2056262Z   ✓   72 [firefox] › tests/journeys.spec.ts:62:91 › rankings unavailable (551ms)
+verify	Run npm test	2026-10-05T00:49:36.7611235Z   ✓   73 [firefox] › tests/journeys.spec.ts:62:91 › rankings unsafe (694ms)
+verify	Run npm test	2026-10-05T00:49:36.9081108Z   ✓   74 [firefox] › tests/journeys.spec.ts:75:1 › dark mode follows the system and keeps the game look (679ms)
+verify	Run npm test	2026-10-05T00:49:37.4815354Z   ✓   75 [firefox] › tests/journeys.spec.ts:84:1 › search box has a visible label (681ms)
+verify	Run npm test	2026-10-05T00:49:38.0041555Z   ✓   76 [firefox] › tests/journeys.spec.ts:88:1 › phone navigation targets are thumb-sized (1.1s)
+verify	Run npm test	2026-10-05T00:49:44.2343636Z   ✓   78 [webkit] › tests/colony.spec.ts:18:1 › reduced motion never requests the video and failure retains a poster (4.8s)
+verify	Run npm test	2026-10-05T00:49:47.0842772Z   ✓   79 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible / (light) (2.7s)
+verify	Run npm test	2026-10-05T00:49:49.3470855Z   ✓   80 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /game/ (light) (2.2s)
+verify	Run npm test	2026-10-05T00:49:52.0538701Z   ✓   81 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /learn/ (light) (2.7s)
+verify	Run npm test	2026-10-05T00:49:54.7857007Z   ✓   82 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /community/ (light) (2.7s)
+verify	Run npm test	2026-10-05T00:49:57.1940781Z   ✓   83 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /competition/ (light) (2.4s)
+verify	Run npm test	2026-10-05T00:49:59.9064187Z   ✓   84 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /news/ (light) (2.7s)
+verify	Run npm test	2026-10-05T00:50:01.3372699Z   ✓   85 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /downloads/ (light) (1.4s)
+verify	Run npm test	2026-10-05T00:50:02.6657808Z   ✓   86 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /history/ (light) (1.3s)
+verify	Run npm test	2026-10-05T00:50:03.9659957Z   ✓   87 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /archive/ (light) (1.3s)
+verify	Run npm test	2026-10-05T00:50:05.2170406Z   ✓   88 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /search/ (light) (1.2s)
+verify	Run npm test	2026-10-05T00:50:07.0147852Z   ✓   89 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible / (dark) (1.8s)
+verify	Run npm test	2026-10-05T00:50:08.4376640Z   ✓   90 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /game/ (dark) (1.4s)
+verify	Run npm test	2026-10-05T00:50:10.0184805Z   ✓   91 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /learn/ (dark) (1.6s)
+verify	Run npm test	2026-10-05T00:50:11.7055753Z   ✘   77 [webkit] › tests/colony.spec.ts:3:1 › real colony video pauses and respects reduced motion (31.2s)
+verify	Run npm test	2026-10-05T00:50:11.7538359Z   ✓   92 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /community/ (dark) (1.7s)
+verify	Run npm test	2026-10-05T00:50:13.9218818Z   ✓   93 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /news/ (dark) (2.1s)
+verify	Run npm test	2026-10-05T00:50:15.2711611Z   ✓   94 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /competition/ (dark) (2.5s)
+verify	Run npm test	2026-10-05T00:50:16.3367865Z   ✓   95 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /downloads/ (dark) (2.4s)
+verify	Run npm test	2026-10-05T00:50:17.6573777Z   ✓   96 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /history/ (dark) (2.4s)
+verify	Run npm test	2026-10-05T00:50:18.9371120Z   ✓   97 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /archive/ (dark) (2.5s)
+verify	Run npm test	2026-10-05T00:50:19.8352734Z   ✓   99 [webkit] › tests/journeys.spec.ts:12:1 › homepage is lightweight and handoff explicit (886ms)
+verify	Run npm test	2026-10-05T00:50:19.9396185Z   ✓   98 [webkit] › tests/journeys.spec.ts:4:75 › usable and accessible /search/ (dark) (2.2s)
+verify	Run npm test	2026-10-05T00:50:20.7450764Z   ✓  100 [webkit] › tests/journeys.spec.ts:27:1 › live data pages hand off to the app (883ms)
+verify	Run npm test	2026-10-05T00:50:21.6851113Z   ✓  102 [webkit] › tests/journeys.spec.ts:42:1 › keyboard skip link and reduced motion (912ms)
+verify	Run npm test	2026-10-05T00:50:21.9455677Z   ✓  101 [webkit] › tests/journeys.spec.ts:33:1 › mobile and zoom reflow (2.0s)
+verify	Run npm test	2026-10-05T00:50:23.2845699Z   ✓  104 [webkit] › tests/journeys.spec.ts:52:1 › static search can find current and historical content (1.3s)
+verify	Run npm test	2026-10-05T00:50:24.9410875Z   ✓  105 [webkit] › tests/journeys.spec.ts:56:1 › content remains browsable without JavaScript (1.6s)
+verify	Run npm test	2026-10-05T00:50:25.0651321Z   ✓  103 [webkit] › tests/journeys.spec.ts:46:1 › guides history and events are honest (3.4s)
+verify	Run npm test	2026-10-05T00:50:25.9330912Z   ✓  106 [webkit] › tests/journeys.spec.ts:62:91 › rankings fresh (966ms)
+verify	Run npm test	2026-10-05T00:50:26.1510488Z   ✓  107 [webkit] › tests/journeys.spec.ts:62:91 › rankings stale (1.1s)
+verify	Run npm test	2026-10-05T00:50:27.0281369Z   ✓  108 [webkit] › tests/journeys.spec.ts:62:91 › rankings empty (1.1s)
+verify	Run npm test	2026-10-05T00:50:27.0305625Z   ✓  109 [webkit] › tests/journeys.spec.ts:62:91 › rankings invalid (866ms)
+verify	Run npm test	2026-10-05T00:50:28.0245234Z   ✓  111 [webkit] › tests/journeys.spec.ts:62:91 › rankings unsafe (971ms)
+verify	Run npm test	2026-10-05T00:50:28.1980285Z   ✓  110 [webkit] › tests/journeys.spec.ts:62:91 › rankings unavailable (1.2s)
+verify	Run npm test	2026-10-05T00:50:29.2460431Z   ✓  113 [webkit] › tests/journeys.spec.ts:84:1 › search box has a visible label (1.0s)
+verify	Run npm test	2026-10-05T00:50:29.3266659Z   ✓  112 [webkit] › tests/journeys.spec.ts:75:1 › dark mode follows the system and keeps the game look (1.3s)
+verify	Run npm test	2026-10-05T00:50:30.3959659Z   ✓  114 [webkit] › tests/journeys.spec.ts:88:1 › phone navigation targets are thumb-sized (1.1s)
+verify	Run npm test	2026-10-05T00:50:59.8447903Z 
+verify	Run npm test	2026-10-05T00:50:59.8456304Z 
+verify	Run npm test	2026-10-05T00:50:59.8467687Z   1) [webkit] › tests/colony.spec.ts:3:1 › real colony video pauses and respects reduced motion ────
+verify	Run npm test	2026-10-05T00:50:59.8468561Z 
+verify	Run npm test	2026-10-05T00:50:59.8471065Z     Test timeout of 30000ms exceeded.
+verify	Run npm test	2026-10-05T00:50:59.8471610Z 
+verify	Run npm test	2026-10-05T00:50:59.8472245Z     Error: locator.click: Test timeout of 30000ms exceeded.
+verify	Run npm test	2026-10-05T00:50:59.8473178Z     Call log:
+verify	Run npm test	2026-10-05T00:50:59.8473941Z       - waiting for getByRole('button', { name: /Let the globs roam/ })
+verify	Run npm test	2026-10-05T00:50:59.8474434Z 
+verify	Run npm test	2026-10-05T00:50:59.8474446Z 
+verify	Run npm test	2026-10-05T00:50:59.8474919Z        8 |   await page.getByRole('button', { name: /Pause the globs/ }).click();
+verify	Run npm test	2026-10-05T00:50:59.8475999Z        9 |   expect(await video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+verify	Run npm test	2026-10-05T00:50:59.8477187Z     > 10 |   await page.getByRole('button', { name: /Let the globs roam/ }).click();
+verify	Run npm test	2026-10-05T00:50:59.8478063Z          |                                                                  ^
+verify	Run npm test	2026-10-05T00:50:59.8479317Z       11 |   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
+verify	Run npm test	2026-10-05T00:50:59.8480386Z       12 |   await page.emulateMedia({ reducedMotion: 'reduce' });
+verify	Run npm test	2026-10-05T00:50:59.8481448Z       13 |   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
+verify	Run npm test	2026-10-05T00:50:59.8482729Z         at /home/runner/work/glob2-online-website/glob2-online-website/tests/colony.spec.ts:10:66
+verify	Run npm test	2026-10-05T00:50:59.8483431Z 
+verify	Run npm test	2026-10-05T00:50:59.8484320Z     Error Context: test-results/colony-real-colony-video-pauses-and-respects-reduced-motion-webkit/error-context.md
+verify	Run npm test	2026-10-05T00:50:59.8485265Z 
+verify	Run npm test	2026-10-05T00:50:59.8486162Z     attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+verify	Run npm test	2026-10-05T00:50:59.8487951Z     test-results/colony-real-colony-video-pauses-and-respects-reduced-motion-webkit/trace.zip
+verify	Run npm test	2026-10-05T00:50:59.8488865Z     Usage:
+verify	Run npm test	2026-10-05T00:50:59.8489336Z 
+verify	Run npm test	2026-10-05T00:50:59.8490262Z         npx playwright show-trace test-results/colony-real-colony-video-pauses-and-respects-reduced-motion-webkit/trace.zip
+verify	Run npm test	2026-10-05T00:50:59.8491223Z 
+verify	Run npm test	2026-10-05T00:50:59.8491978Z     ────────────────────────────────────────────────────────────────────────────────────────────────
+verify	Run npm test	2026-10-05T00:50:59.8492531Z 
+verify	Run npm test	2026-10-05T00:50:59.8492704Z   1 failed
+verify	Run npm test	2026-10-05T00:50:59.8493680Z     [webkit] › tests/colony.spec.ts:3:1 › real colony video pauses and respects reduced motion ─────
+verify	Run npm test	2026-10-05T00:50:59.8494531Z   113 passed (2.2m)
+verify	Run npm test	2026-10-05T00:50:59.9914644Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,13 @@
+
+> glob2-online-website@0.1.0 check
+> astro check
+
+21:05:55 [content] Syncing content
+21:05:55 [content] Synced content
+21:05:55 [types] Generated 802ms
+21:05:55 [check] Getting diagnostics for Astro files in /Users/bradley/glob2-online-website...
+Result (42 files): 
+- 0 errors
+- 0 warnings
+- 0 hints
+

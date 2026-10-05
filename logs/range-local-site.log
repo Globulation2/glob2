@@ -1,0 +1,35 @@
+[WebServer] (node:11121) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 4 workers
+
+(node:11124) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11125) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11123) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11122) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › tests/colony.spec.ts:3:1 › colony video supports byte ranges used by media playback (81ms)
+(node:11129) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [firefox] › tests/colony.spec.ts:3:1 › colony video supports byte ranges used by media playback (77ms)
+  ✓   2 [chromium] › tests/colony.spec.ts:49:1 › pause keeps the resume control when a pending play is cancelled (771ms)
+  ✓   4 [chromium] › tests/colony.spec.ts:34:1 › reduced motion never requests the video and failure retains a poster (823ms)
+  ✓   3 [chromium] › tests/colony.spec.ts:19:1 › real colony video pauses and respects reduced motion (870ms)
+(node:11141) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11142) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11143) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [webkit] › tests/colony.spec.ts:3:1 › colony video supports byte ranges used by media playback (153ms)
+  ✓  10 [webkit] › tests/colony.spec.ts:19:1 › real colony video pauses and respects reduced motion (1.3s)
+  ✓  11 [webkit] › tests/colony.spec.ts:34:1 › reduced motion never requests the video and failure retains a poster (592ms)
+  ✓  12 [webkit] › tests/colony.spec.ts:49:1 › pause keeps the resume control when a pending play is cancelled (667ms)
+  ✓   6 [firefox] › tests/colony.spec.ts:19:1 › real colony video pauses and respects reduced motion (4.7s)
+  ✓   7 [firefox] › tests/colony.spec.ts:49:1 › pause keeps the resume control when a pending play is cancelled (3.8s)
+  ✓   9 [firefox] › tests/colony.spec.ts:34:1 › reduced motion never requests the video and failure retains a poster (3.5s)
+
+  12 passed (10.1s)

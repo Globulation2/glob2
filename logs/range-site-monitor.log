@@ -1,0 +1,12 @@
+✔ empty current ratings remain healthy, with exact stale boundary (3.975375ms)
+✔ malformed, unsupported and future snapshots fail (0.200958ms)
+✔ canonical app metadata detects a hostname regression (0.54825ms)
+✔ HTTP failures, redirects and bounded requests are enforced (34.751ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 159.190792

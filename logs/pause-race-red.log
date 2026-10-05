@@ -1,0 +1,123 @@
+
+> glob2-online-website@0.1.0 test
+> playwright test --grep pending play
+
+[WebServer] (node:7631) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 3 workers
+
+(node:7642) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7641) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:7643) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [chromium] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled (4.0s)
+  ✘  1 [webkit] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled (8.1s)
+  ✘  3 [firefox] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled (14.6s)
+
+
+  1) [chromium] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: /Let the globs roam/ })
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: /Let the globs roam/ }) with timeout 2000ms
+      - waiting for getByRole('button', { name: /Let the globs roam/ })
+
+
+      54 |   await expect(video).toHaveAttribute('data-play-aborted', 'true');
+      55 |   const resume = page.getByRole('button', { name: /Let the globs roam/ });
+    > 56 |   await expect(resume).toBeVisible({ timeout: 2000 });
+         |                        ^
+      57 |   await resume.click();
+      58 |   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
+      59 | });
+        at /Users/bradley/glob2-online-website/tests/colony.spec.ts:56:24
+
+    Error Context: test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [firefox] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: /Let the globs roam/ })
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: /Let the globs roam/ }) with timeout 2000ms
+      - waiting for getByRole('button', { name: /Let the globs roam/ })
+
+
+      54 |   await expect(video).toHaveAttribute('data-play-aborted', 'true');
+      55 |   const resume = page.getByRole('button', { name: /Let the globs roam/ });
+    > 56 |   await expect(resume).toBeVisible({ timeout: 2000 });
+         |                        ^
+      57 |   await resume.click();
+      58 |   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
+      59 | });
+        at /Users/bradley/glob2-online-website/tests/colony.spec.ts:56:24
+
+    Error Context: test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-firefox/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-firefox/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-firefox/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [webkit] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: /Let the globs roam/ })
+    Expected: visible
+    Timeout: 2000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('button', { name: /Let the globs roam/ }) with timeout 2000ms
+      - waiting for getByRole('button', { name: /Let the globs roam/ })
+
+
+      54 |   await expect(video).toHaveAttribute('data-play-aborted', 'true');
+      55 |   const resume = page.getByRole('button', { name: /Let the globs roam/ });
+    > 56 |   await expect(resume).toBeVisible({ timeout: 2000 });
+         |                        ^
+      57 |   await resume.click();
+      58 |   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(false);
+      59 | });
+        at /Users/bradley/glob2-online-website/tests/colony.spec.ts:56:24
+
+    Error Context: test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-webkit/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/colony-pause-keeps-the-res-6d4c9-a-pending-play-is-cancelled-webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [chromium] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled 
+    [firefox] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled 
+    [webkit] › tests/colony.spec.ts:32:1 › pause keeps the resume control when a pending play is cancelled 
