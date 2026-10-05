@@ -1,13 +1,13 @@
 {
-  "revision": "a3bad6216571cc8c6007a42275bef4c657ee49b9",
+  "revision": "aa8d4e3c6a03feb13faee38f872201d44ec3b5e3",
   "base": "723be2c4f2056c9c0932d0fdc1abd4ba7ec3bd2c",
-  "latestObservedMaster": "723be2c4f2056c9c0932d0fdc1abd4ba7ec3bd2c",
+  "latestObservedMaster": "90dac517fdbea079171307606cd7e824200383e4",
   "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
   "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
   "node": "v22.22.1",
   "build": "GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX=$PWD/artifacts/ai-library/deps/recording scons -j8 release=1 server=0 unit-tests engine-tests",
-  "nativeBuildRevision": "a3bad6216571cc8c6007a42275bef4c657ee49b9",
+  "nativeBuildRevision": "c074b0722467dde685f47a7670590c12c0d98c6c",
   "nativeInputsUnchangedSinceBuild": true,
   "postgres": "16.15",
-  "engineBinaryBuildRevision": "1921cb6c3"
+  "engineBinaryBuildRevision": "c074b0722467dde685f47a7670590c12c0d98c6c"
 }

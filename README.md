@@ -1,53 +1,64 @@
-# JavaScript AI library verification
+# JavaScript AI library: reviewed implementation
 
-Source revision: `a3bad6216571cc8c6007a42275bef4c657ee49b9`.
-Integrated base: `723be2c4f2056c9c0932d0fdc1abd4ba7ec3bd2c`. Integrated the current community music library and menu-background changes. The AI migration follows music as 0040.
+Final source: `aa8d4e3c6a03feb13faee38f872201d44ec3b5e3`.
+Integrated base: `723be2c4f2056c9c0932d0fdc1abd4ba7ec3bd2c`.
+Master fetched before final verification: `90dac517f` (its additional Colony resume-control change does not touch the AI library).
 
-Linux x86_64, GCC 15.2.0, Node 22.22.1, TypeScript 6.0.3, PostgreSQL 16.15.
-Native release client uses the SDL3 prefix and fingerprint-checked recording dependencies shown in revision.json and the build logs. No simulation rules, save layout, replay acceptance, or network format changed. New controller diagnostics are observational and excluded from serialization/checksums.
+Linux x86_64, GCC 15.2.0, Node 22.22.1, TypeScript 6.0.3, PostgreSQL 16.15. Release client, SDL3 prefix and fingerprint-checked recording dependencies are recorded in revision.json and build logs. Production binary and both native harnesses were rebuilt after all native changes. Later commits changed CSS, browser assertions, TypeScript test fixtures, and native whitespace only; native production inputs used by the final tests are unchanged.
 
-## Integration refresh
+## Independent reviews and improvements
 
-The music merge added a SoundMixer dependency missing from the unit link list. Adding MusicStream.cpp repaired that harness; both test binaries were rebuilt, and the broad unit suite passed. Missing music translation placeholders were reconciled with the shared catalogue and marked pending, retaining English fallback.
+Three sub-agents reviewed backend correctness/security, native code/storage/runtime, and UI/UX. Two rounds of review and improvements concluded with no remaining blockers in those scopes. The parent reviewed the combined changes and ran final integration verification.
 
-## Results
+- Social actions preserve the selected release and AI, including delayed responses; per-AI serialization avoids stale counters.
+- Controller rejection diagnostics distinguish invalid decisions from valid construction later destroyed during ordinary play. Diagnostic flags are excluded from saved state/checksums.
+- Native catalogue panes scroll independently; 24-result desktop and compact fixtures exercise selection, authors/tags, compatible older versions, installation and failures.
+- Website filters, pagination, view and focus survive detail navigation and Back. Bounded URL restoration still permits browsing the whole catalogue via cursor segments.
+- Edit/report forms restore keyboard focus. The introduction is concise, with permanent authoring details. Mobile file-picker overflow found during visual review is fixed.
+- Abandoned pending validation jobs no longer retain private blobs indefinitely. Active leases, published evidence and in-flight results are preserved. Failed published validations retry even after old jobs are collected.
+- Script-authored Bubblewrap text and invalid UTF-8 are classified correctly.
+- Batched catalogue projections replace per-card queries; browse URL handling and maintenance cleanup have dedicated helpers; migration and touched native code were cleaned up.
 
-- 98 focused native cases pass (native-final.xml): JavaScript runtime, numeric corpus, save compatibility, continuation, replay, worker-count equality, local storage rollback/provenance, platform parsing, and desktop/compact library presentation. The native harnesses were rebuilt after integration at the source revision above. The engine command binary was built at 1921cb6c3; subsequent changes only repair unit-harness linkage and a TypeScript type import, leaving production native inputs unchanged. A broader headless unit run also passed 739 cases; 14 display-only cases were skipped there, with Settings and AI presentation covered by the separate focused run.
-- Focused platform suite: 106 passing tests; 5 existing opt-in map-generator binary tests skipped. AI publishing, concurrent retries, duplicate labels/source, substituted reports, privacy, social idempotency, immutable versions, exact downloads, cleanup, account export/deletion, schema migrations, worker dispatch/retry, and protocol fixtures are included. The web checklist suite has 3 passing cases included in the focused run.
-- Desktop and Pixel 7 Chromium flows pass: catalogue, light/dark WCAG axe checks, older-version selection, favourites, gated publishing, and no horizontal overflow. Screenshot evidence is in screenshots/.
-- Real isolated AI jobs: valid profiles 1 and 2 pass all seven checks on both pinned maps. Unsupported profiles, syntax errors, startup errors, missing callbacks, unsavable initial globals, execution-budget exhaustion and invalid orders fail with dependent checks skipped. Reports and the reproduction harness are included.
-- Isolation preflight refuses unbounded host scratch. The production runner also probes the engine inside Bubblewrap and does not advertise validate-ai on failure.
-- TypeScript checks, focused ESLint, strict translation structure audit and production web build pass. The build retains existing large-chunk warnings.
+## Final verification
+
+- **739 headless unit cases passed**, 14 display cases omitted from this broad run. **98 focused native cases passed**, including display presentation, JavaScript save/replay/continuation/worker-count regressions, source-hash/provenance rollback, settings, music, and protocol parsing. See review/review-unit-final.xml and review/review-native-final.xml.
+- **124 platform cases passed** across two focused runs (95 + 29). Five existing opt-in map-generator binary cases were skipped. Coverage includes publication, ownership/privacy, immutable bytes, per-version statistics, social idempotency, validation lifecycle, worker leases/retries, account lifecycle, schema/protocol contracts, music integration and web state. Logs: review-platform-final.log and review-job-integration.log.
+- Desktop and Pixel 7 Chromium flows passed with **normal and reduced motion**. Axe checks cover catalogue, detail, editing, reporting and publishing. Browser Back, filter/focus restoration, older release preservation after favouriting, upload gating and file-picker containment are exercised. Screenshots, normal-motion videos and contact sheets are included.
+- The UI reviewer manually inspected screenshots and normal-motion video frames: restrained hover movement, stable geometry, readable form transitions, and corrected native scroll layout. This is emulated-device review, not physical-device/full gameplay review.
+- Real isolated jobs passed all seven checks for **profiles 1 and 2** on both pinned maps. Unsupported profile, syntax, startup, missing callback, invalid state, exhausted budget and invalid order inputs failed with dependent checks skipped. See reports/ and review-isolated-final.log.
+- Full TypeScript checks, ESLint for all 35 changed TypeScript files, strict translation structure audit, CI-policy tests and production website build passed. Existing large-chunk warnings remain.
 
 ## Reproduction
 
-From the repository root, with the same dependencies:
+From the repository root with dependencies described in revision.json:
 
 ```sh
 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX="$PWD/artifacts/ai-library/deps/recording" scons -j8 release=1 server=0 unit-tests engine-tests
 GLOB2_SDL3_PREFIX=/tmp/glob2-sdl3/prefix GLOB2_RECORDING_PREFIX="$PWD/artifacts/ai-library/deps/recording" scons -j8 release=1 server=0
-python3 test/run_tests.py --filter 'Settings*/*' --filter 'JavaScript*/*' --filter 'OnlineResources/*' --filter 'PlatformProtocol/*' --filter 'Music*/*' --artifacts artifacts/ai-library/native-final --junit artifacts/ai-library/native-final.xml
+python3 test/run_tests.py --filter 'Settings*/*' --filter 'JavaScript*/*' --filter 'OnlineResources/*' --filter 'PlatformProtocol/*' --filter 'Music*/*' --artifacts artifacts/ai-library/review-native-final --junit artifacts/ai-library/review-native-final.xml
+python3 test/run_tests.py --binary unit --no-display --artifacts artifacts/ai-library/review-unit-final --junit artifacts/ai-library/review-unit-final.xml
 python3 data/check_translations.py --strict
+python3 -m unittest discover -s test/build_system -p 'test_ci*.py'
 cd platform
 npm run typecheck
-npx vitest run apps/api/test/ais.test.ts apps/api/test/accountExport.test.ts apps/api/test/deletion.test.ts packages/db/test/schema.test.ts apps/engine-agent/test apps/web/test/ais.test.tsx packages/protocol/test
+npx vitest run apps/api/test/ais.test.ts apps/api/test/accountExport.test.ts apps/api/test/deletion.test.ts packages/db/test/schema.test.ts apps/engine-agent/test apps/web/test/ais.test.tsx apps/web/test/aiBrowse.test.ts packages/protocol/test
+npx vitest run packages/core/test/engineJobs.test.ts apps/api/test/engine.test.ts apps/worker/test/reliability.test.ts apps/worker/test/worker.test.ts apps/api/test/music.test.ts
 npx playwright test -c ../artifacts/ai-library/playwright.config.ts
+npx playwright test -c ../artifacts/ai-library/playwright-review.config.ts
 npm run --workspace @glob2/web build
 ```
 
-The browser configuration starts Vite on 4287 and uses the committed API-mocked AI flow, with Desktop Chrome (1280×860) and Pixel 7 projects and reduced motion. API/database tests separately exercise real PostgreSQL and HTTP.
-
-For the isolated reproduction, put validation-harness.mts at artifacts/ai-library/validate.mts and run:
+Put validation-harness.mts at artifacts/ai-library/validate.mts, then run:
 
 ```sh
 mkdir -p artifacts/ai-library/scratch
 unshare --user --map-root-user --mount sh -c 'mount -t tmpfs -o size=1g tmpfs artifacts/ai-library/scratch && ENGINE_AI_LIBRARY_PATH=/tmp/glob2-sdl3/prefix/lib npx --yes tsx artifacts/ai-library/validate.mts'
 ```
 
-The temporary mount is private to that process namespace. The harness runs the real production validator; the controller child has a separate network/user/PID/mount namespace and no credentials. Native saved games, replays and per-tick traces are in native-saves-replays-traces.tar.gz.
+The scratch mount is private to that process namespace. Controller processes have separate network/user/PID/mount namespaces and no credentials. Current native saves, replays and per-tick traces are in review/native-scripting-evidence.tar.gz. The older top-level native archive and unprefixed logs preserve the first implementation's verification history; review-prefixed logs and review/ are authoritative for this review cycle.
 
-## Coverage limits and rollout
+## Limits and rollout
 
-No Windows, macOS, Android, iOS or browser-WASM native build/checksum comparison was available. No production rollout or hosted expensive CI was requested. Visual review covered the captured desktop/compact layouts and both themes; full manual playing feel and normal-motion animation assessment remain review work. New native strings have English fallback entries and are tracked as pending translations.
+No Windows, macOS, Android, iOS or browser-WASM build/checksum comparison was available. No production rollout/container-policy verification, physical-device testing, or full manual playing-feel assessment was performed. Simulation rules, save layout and network/replay acceptance are unchanged; SIM_REVISION is unchanged. New native text uses tracked English fallbacks pending translation.
 
-Deploy migration 0040, the worker and a namespace-capable engine agent before enabling publishing. The current Compose host policy may prevent nested namespaces; the startup probe fails closed, and there is no privileged/unsandboxed fallback. Local execution keeps existing JavaScript trust limits. Passed compatibility checks are not a safety certification. Tournament and multiplayer custom-AI behaviour remain out of scope.
+Deploy migration 0040, the worker and an engine agent whose isolation probe passes before publishing becomes available. A host that disallows nested namespaces fails closed; there is no unsandboxed fallback. Passed compatibility checks are not a safety certification. Multiplayer custom AIs and tournaments remain out of scope.

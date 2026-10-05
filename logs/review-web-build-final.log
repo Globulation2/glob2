@@ -1,0 +1,59 @@
+
+> @glob2/web@0.1.0 build
+> python3 ../../../tools/music/build_web.py && vite build
+
+vite v8.3.2 building client environment for production...
+transforming...
+✓ 818 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                          1.32 kB │ gzip:   0.61 kB
+dist/assets/hospital-CZ8mxl8H.webp                       4.16 kB
+dist/assets/glob-64-DRYAgOz9.png                         4.51 kB
+dist/assets/school-3kPEHozp.webp                         4.60 kB
+dist/assets/war-flag-ClpBapaP.webp                       4.61 kB
+dist/assets/exploration-flag-DEYVuIyb.webp               5.54 kB
+dist/assets/wood-BvhIq-A_.webp                           5.59 kB
+dist/assets/clearing-flag-Dr2FX3nZ.webp                  5.94 kB
+dist/assets/stone-CR7HLFDE.webp                          6.14 kB
+dist/assets/racetrack-BEfp0i51.webp                      6.45 kB
+dist/assets/inn-pEFHk1BY.webp                            6.51 kB
+dist/assets/fruit-C8P4nJfl.webp                          7.36 kB
+dist/assets/papyrus-sl-e5iDV.webp                        7.49 kB
+dist/assets/algae-Cf7k497T.webp                          7.53 kB
+dist/assets/swarm-C7Cw-oud.webp                          9.26 kB
+dist/assets/wordmark-letters-Cs-rHGsD.webp              14.87 kB
+dist/assets/studio-demo-ready-6TPlwnsP.png              15.58 kB
+dist/assets/studio-river-LCG01wyA.webp                  18.11 kB
+dist/assets/worker-east-Bqinqqlq.webp                   22.38 kB
+dist/assets/studio-islands-I4eUbnJe.webp                26.99 kB
+dist/assets/nunito-latin-wght-normal-BzFMHfZw.woff2     39.12 kB
+dist/assets/studio-demo-layout-DGT4ihyt.png             58.33 kB
+dist/assets/studio-demo-crop-CdI6sdAV.png               58.96 kB
+dist/assets/studio-hills-JCRT_X_C.webp                 116.12 kB
+dist/assets/colony-960-DI2K-hM_.webp                   159.77 kB
+dist/assets/colony-1600-yR11DKDO.webp                  385.40 kB
+dist/assets/colony-loop-DySpPHVm.mp4                 6,831.27 kB
+dist/assets/Account-BY2xzm8t.css                         1.05 kB │ gzip:   0.43 kB
+dist/assets/Ais-Cl7SnRIn.css                             3.00 kB │ gzip:   1.10 kB
+dist/assets/MapStudio-eGnNSmWg.css                      31.80 kB │ gzip:   6.80 kB
+dist/assets/index-7UUiK2vr.css                          72.89 kB │ gzip:  18.73 kB
+dist/assets/LineChart-ykK4MjPP.js                        4.36 kB │ gzip:   1.91 kB │ map:    16.65 kB
+dist/assets/art-Bpjqng09.js                              6.06 kB │ gzip:   4.46 kB │ map:    10.17 kB
+dist/assets/Player-BWa1ICVe.js                           8.91 kB │ gzip:   3.01 kB │ map:    26.65 kB
+dist/assets/Admin-CU-e-scb.js                           12.13 kB │ gzip:   3.79 kB │ map:    35.67 kB
+dist/assets/Match-D0ZK4YF7.js                           16.02 kB │ gzip:   5.14 kB │ map:    46.48 kB
+dist/assets/state-B4YXvFxR.js                           16.40 kB │ gzip:   6.10 kB │ map:    55.25 kB
+dist/assets/Maps-D8xpxcqC.js                            19.04 kB │ gzip:   5.80 kB │ map:    56.17 kB
+dist/assets/Library-CjueUniW.js                         19.22 kB │ gzip:   6.08 kB │ map:    58.90 kB
+dist/assets/Ais-TdYcnoNP.js                             20.69 kB │ gzip:   6.70 kB │ map:    63.68 kB
+dist/assets/Account-Pvc73iX0.js                         33.60 kB │ gzip:  10.18 kB │ map:   110.30 kB
+dist/assets/MapStudio-CE8a0phe.js                       41.61 kB │ gzip:  12.82 kB │ map:   129.19 kB
+dist/assets/index-BNCCS8HQ.js                          505.65 kB │ gzip: 155.30 kB │ map: 2,531.63 kB
+
+✓ built in 801ms
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.

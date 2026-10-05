@@ -1,0 +1,5 @@
+[codex/javascript-ai-library c074b0722] Refine AI library browsing and harden validation after review
+ 25 files changed, 1299 insertions(+), 302 deletions(-)
+ create mode 100644 platform/apps/api/src/ais/catalogViews.ts
+ create mode 100644 platform/apps/web/src/aiBrowse.ts
+ create mode 100644 platform/apps/web/test/aiBrowse.test.ts

@@ -1,0 +1,35 @@
+
+ RUN  v5.0.3 /home/bradley/.codex/worktrees/4d06/glob2/platform
+
+ ❯ apps/api/test/ais.test.ts (13 tests | 1 failed) 3766ms
+   × retries published validation errors after their old engine jobs have been collected 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  apps/api/test/ais.test.ts > retries published validation errors after their old engine jobs have been collected
+AssertionError: {"code":"rate_limited","message":"Too many uploads; wait a while.","details":{"retryAfterSeconds":3599}}: expected 429 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 429
+
+ ❯ upload apps/api/test/ais.test.ts:62:58
+     60|   const bytes = Buffer.from(`let n=${next++}; function step(){n++;}`),
+     61|     response = await call('POST', '/api/v1/ai-uploads', owner, bytes);
+     62|   expect(response.status, await response.clone().text()).toBe(201);
+       |                                                          ^
+     63|   const u = (await response.json()) as AiUpload;
+     64|   const row = await harness.database.db
+ ❯ publish apps/api/test/ais.test.ts:100:24
+ ❯ apps/api/test/ais.test.ts:416:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 11 passed | 1 skipped (13)
+      Tests  1 failed | 84 passed | 5 skipped (90)
+   Start at  21:14:09
+   Duration  9.60s (tests 54%, import 28%, transform 18%)
+
