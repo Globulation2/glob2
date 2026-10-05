@@ -174,10 +174,11 @@ TEST_SUITE("PlatformRoom")
 		CHECK(r->uploadingMap());
 		CHECK(r->waitingFor() == GAGCore::Toolkit::getStringTable()->getString("[room uploading map]"));
 		f.client.update();
-		auto upload = f.world.http.pending("&fileName=balanced%20for%202.map");
+		auto upload = f.world.http.pending("/api/v1/uploads");
 		REQUIRE(upload);
 		CHECK(upload->request.method == HttpFetch::Method::Post);
 		CHECK(upload->request.url.find("/api/v1/uploads?format=map&simVersion=") != std::string::npos);
+		CHECK(upload->request.url.ends_with("&fileName=balanced%20for%202.map"));
 		CHECK(upload->request.body == bytes);
 		CHECK(upload->header("Content-Type") == "application/octet-stream");
 		upload->reply(201, Json{{"id", "00000000-0000-4000-8000-0000000000ff"},
