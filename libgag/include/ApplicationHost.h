@@ -20,6 +20,9 @@ class Loop
 	virtual ~Loop() = default;
 	virtual bool frame(std::uint32_t tick, const std::vector<SDL_Event> &events) = 0;
 	virtual std::uint32_t delay(std::uint32_t now) = 0;
+    // Browser host calls painting separately on animation frames. Native hosts
+    // retain the combined frame callback. Timer callbacks never block on paint.
+    virtual void draw() {}
 };
 // Own the loop until it completes; destroy it before the completion callback.
 // Native hosts return after completion; browser hosts return after scheduling.

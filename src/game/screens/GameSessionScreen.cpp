@@ -89,7 +89,6 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	bool running = false;
 	if (finishingSession)
 	{
-		frameStarted = tick;
 		const bool pending = engine->advancePendingSave(input.events());
 		input.clear();
 		if (pending) return;
@@ -98,7 +97,6 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 	{
 		// Input and GUI logic every frame, with the simulation parked between ticks;
 		// the simulation thread paces itself.
-		frameStarted = tick;
 		engine->resumeSimulation(clock);
 		try { running = engine->threadedClientFrame(clock, input.events()); }
 		catch (...) { engine->abortSession(); throw; }
@@ -239,10 +237,10 @@ Uint32 GameSessionScreen::executionDelay(Uint32 now, Uint32 fallback)
     // display pacing; ordinary zero-delay loading jobs still use timers.
     if (!engine->turnLockstep()) return GAGCore::ApplicationHost::AnimationFrameDelay;
 #endif
-	// Threaded: draw at display rate (presentation paces with vsync where enabled);
-	// cap at about 120 frames per second otherwise, counting the frame's own time.
-	if (engine->simulationThreaded())
-		return Engine::threadedFrameWait(now - frameStarted);
+	// Keep client/network updates responsive between capped drawing frames.
+    // Unlimited removes the drawing wait; no fixed 120 FPS ceiling remains.
+    if (engine->simulationThreaded())
+        return std::min(Uint32(8), globalContainer->gfx->renderFrameWait());
 	return engine->sessionPollDelay(clock + static_cast<Uint32>(now - lastTick));
 }
 

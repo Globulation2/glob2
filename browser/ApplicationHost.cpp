@@ -12,7 +12,6 @@
 #include <GraphicContext.h>
 #include <emscripten.h>
 #include <stdexcept>
-#include <algorithm>
 
 namespace GAGCore::ApplicationHost
 {
@@ -91,7 +90,7 @@ void publishDiagnostics(bool hostTurn = false) {
     d = {};
 }
 // Capture DOM-owned state once; consumers use it only during this host frame.
-void sampleHostState()
+void sampleHostState(bool consume = true)
 {
     // Tests may hold a host turn without assuming its timer's JavaScript realm.
     auto &host = hostState;
@@ -105,33 +104,66 @@ void sampleHostState()
         if (lost) Module.gpuLost = true;
         const hidden = !!(document.hidden || Module.gpuLost);
         HEAPF64[offset + 2] = Module.visibilityPending || Module.hostHidden !== hidden ? +hidden : -1;
-        Module.visibilityPending = false;
-        Module.hostHidden = hidden;
+        if ($3) {
+            Module.visibilityPending = false;
+            Module.hostHidden = hidden;
+        }
         const size = Module.pendingViewport;
         // A hidden application returns before consuming viewport changes.
         // Retain them until its first visible turn.
         if (!hidden && size && size.width > 0 && size.height > 0) {
             HEAPF64[offset + 3] = size.width;
             HEAPF64[offset + 4] = size.height;
-            Module.pendingViewport = null;
+            if ($3) Module.pendingViewport = null;
         }
         const v = Module.presentationMetrics;
         if (v) HEAPF64.set([v.width,v.height,v.safe.left,v.safe.top,v.safe.right,v.safe.bottom,
             v.keyboardInset,+v.touch,+v.pointer,+v.hover], offset + 5);
-    }, host.values, EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }), HostState::Count);
+    }, host.values, EM_ASM_INT({ return typeof GLctx !== 'undefined' && GLctx && GLctx.isContextLost() ? 1 : 0; }), HostState::Count, consume);
 }
 struct HostFrameScope {
     HostFrameScope() { hostState.active = true; }
     ~HostFrameScope() { hostState.active = false; }
 };
-struct ScheduledLoop { std::unique_ptr<Loop> loop; std::function<void()> complete; };
+struct ScheduledLoop {
+    std::unique_ptr<Loop> loop;
+    std::function<void()> complete;
+    bool drawScheduled = false;
+};
+// Timer and animation-frame callbacks can both be queued when the loop ends.
+// Each callback retains the state; completion clears the loop so a late callback
+// becomes a no-op instead of touching a destroyed application.
+using ScheduledReference = std::shared_ptr<ScheduledLoop>;
+void schedule(void (*callback)(void *), const ScheduledReference &state, int delay)
+{
+    emscripten_async_call(callback, new ScheduledReference(state), delay);
+}
+void scheduledDraw(void *opaque)
+{
+    std::unique_ptr<ScheduledReference> reference(static_cast<ScheduledReference *>(opaque));
+    auto &state = **reference;
+    state.drawScheduled = false;
+    if (!state.loop) return;
+    // Painting must not consume resize/visibility edges owned by update turns,
+    // nor race the update callback that restores graphics after context loss.
+    sampleHostState(false);
+    if (hostState.values[HostState::FrameGate] || hostState.values[HostState::RestorePending] ||
+        hostState.values[HostState::Visibility] >= 0 || hostState.values[HostState::Width] > 0) return;
+    const HostFrameScope scope;
+    state.loop->draw();
+    publishDiagnostics();
+    // Painting follows display callbacks independently of screen/job timers.
+    state.drawScheduled = true;
+    schedule(scheduledDraw, *reference, -1);
+}
 void scheduledFrame(void* opaque)
 {
-    auto* state = static_cast<ScheduledLoop*>(opaque);
+    std::unique_ptr<ScheduledReference> reference(static_cast<ScheduledReference *>(opaque));
+    auto state = *reference;
     sampleHostState();
     auto &host = hostState;
     if (host.values[HostState::FrameGate]) {
-        emscripten_async_call(scheduledFrame, state, 10);
+        schedule(scheduledFrame, state, 10);
         return;
     }
     EM_ASM({
@@ -191,7 +223,6 @@ void scheduledFrame(void* opaque)
         state->loop.reset();
         {
             auto complete = std::move(state->complete);
-            delete state;
             complete();
         }
         Glob2Browser::releaseApplicationThread();
@@ -199,15 +230,21 @@ void scheduledFrame(void* opaque)
     }
     // Each callback completes before the next frame is scheduled. Browser UI
     // transitions and loading jobs must return control to this host.
+    if (!state->drawScheduled) {
+        state->drawScheduled = true;
+        schedule(scheduledDraw, state, -1);
+    }
     const auto delay = state->loop->delay(SDL_GetTicks());
-    emscripten_async_call(scheduledFrame, state, delay == AnimationFrameDelay ? -1 : int(delay));
+    schedule(scheduledFrame, state, delay == AnimationFrameDelay ? -1 : int(delay));
 }
 }
 void run(std::unique_ptr<Loop> loop, std::function<void()> complete)
 {
     Glob2Browser::hosted = true;
-    auto* state = new ScheduledLoop{std::move(loop), std::move(complete)};
-    emscripten_async_call(scheduledFrame, state, 0);
+    auto state = std::make_shared<ScheduledLoop>();
+    state->loop = std::move(loop);
+    state->complete = std::move(complete);
+    schedule(scheduledFrame, state, 0);
 }
 
 void wait(std::uint32_t)

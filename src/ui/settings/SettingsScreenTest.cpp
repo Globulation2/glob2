@@ -100,6 +100,22 @@ static void run(int width,int height,bool gl,bool expanded)
             screen.capture(output+"/category-"+std::to_string(int(category))+".bmp");
         }
         screen.selectCategory(SettingsScreen::Category::Display);
+        REQUIRE(screen.row("graphics.fps").label.starts_with("Target render FPS"));
+        REQUIRE(screen.row("graphics.fps").choices.back() == "Unlimited");
+        REQUIRE(screen.row("graphics.fps").value == "60 FPS");
+        REQUIRE(screen.changeSetting("graphics.fps", 0));
+        REQUIRE(s.targetRenderFps == 25);
+        Settings fpsLoaded; fpsLoaded.load();
+        REQUIRE(fpsLoaded.targetRenderFps == 25);
+        screen.host().scrollIntoView("graphics.fps");
+        screen.activateSetting("graphics.fps");
+        screen.capture(output+"/target-render-fps.bmp");
+        screen.key(SDLK_ESCAPE);
+        screen.host().state("settings/0").scroll = 0;
+        REQUIRE(screen.changeSetting("graphics.fps", 8));
+        REQUIRE(s.targetRenderFps == 0);
+        REQUIRE(screen.changeSetting("graphics.fps", 2));
+        REQUIRE_FALSE(screen.restartRequired());
         const auto windowMode=screen.row("display.mode").number;
         screen.activateSetting("display.mode");
         REQUIRE(screen.row("graphics.torus").kind==SettingsScreen::Kind::Toggle);
@@ -332,6 +348,32 @@ static void run(int width,int height,bool gl,bool expanded)
 // sizes, one software renderer and the expanded English wording.
 TEST_SUITE("Settings")
 {
+    TEST_CASE("render FPS dropdown in compact layout [display][artifacts][writes-preferences]")
+    {
+        glob2test::ScopedEnvironment compact("GLOB2_MOBILE_UI", "1");
+        glob2test::GlobalsOptions options{.display=true,.loadStrings=true,.width=640,.height=480};
+        options.beforeLoad=[](GlobalContainer &g) { g.settings.language="en"; };
+        glob2test::HeadlessGlobals globals(options);
+        FrontendTheme theme;
+        FrontendScope frontend;
+        NativeSettings screen;
+        screen.selectCategory(SettingsScreen::Category::Display);
+        REQUIRE(screen.row("graphics.fps").kind == SettingsScreen::Kind::Choice);
+        REQUIRE(screen.row("graphics.fps").label.starts_with("Target render FPS"));
+        REQUIRE(screen.row("graphics.fps").choices.back() == "Unlimited");
+        REQUIRE(screen.row("graphics.fps").value == "60 FPS");
+        REQUIRE(screen.changeSetting("graphics.fps", 8));
+        REQUIRE(globalContainer->settings.targetRenderFps == 0);
+        Settings loaded; loaded.load();
+        REQUIRE(loaded.targetRenderFps == 0);
+        REQUIRE(screen.changeSetting("graphics.fps", 2));
+        screen.host().scrollIntoView("graphics.fps");
+        screen.activateSetting("graphics.fps");
+        screen.capture((glob2test::artifactDir()/"target-render-fps-compact.bmp").string());
+        screen.key(SDLK_ESCAPE);
+        screen.done();
+    }
+
 	TEST_CASE("layout; persistence; live display changes; bindings and localization at 640x480 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(640, 480, true, false); }
 	TEST_CASE("layout; persistence; live display changes; bindings and localization at 800x600 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(800, 600, true, false); }
 	TEST_CASE("layout; persistence; live display changes; bindings and localization at 1000x700 in OpenGL [display:1600x1400][artifacts][writes-preferences]") { run(1000, 700, true, false); }

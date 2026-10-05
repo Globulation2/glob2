@@ -72,6 +72,39 @@ GAGCore::CooperativeSlice fixedSlice()
 
 TEST_SUITE("EngineSession")
 {
+    TEST_CASE("render ceilings preserve per tick simulation checksums [display][artifacts]")
+    {
+        glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD", "0");
+        glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display=true,.loadStrings=true,.width=800,.height=600});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
+        globalContainer->automaticEndingGame = false;
+        std::vector<Uint32> baseline;
+        for (int fps : {25, 60, 120, 0}) {
+            INFO("render ceiling=" << fps);
+            setSyncRandSeed(123);
+            Engine engine;
+            REQUIRE(engine.initCampaign("maps/balanced.map") == Engine::EE_NO_ERROR);
+            globalContainer->gfx->setTargetRenderFps(fps);
+            engine.beginSession(1000);
+            std::vector<Uint32> checksums;
+            std::ofstream evidence(glob2test::artifactDir()/ ("fps-" + std::to_string(fps) + ".checksums"));
+            for (unsigned tick = 0; tick < 128; ++tick) {
+                REQUIRE(engine.stepSession(1000 + tick * 40, {}));
+                const Uint32 checksum = engine.gui.game.checkSum();
+                if (globalContainer->gfx->beginRenderFrame()) engine.drawSession();
+                CHECK(engine.gui.game.checkSum() == checksum);
+                checksums.push_back(checksum);
+                evidence << engine.gui.game.stepCounter << " " << checksum << '\n';
+            }
+            if (baseline.empty()) baseline = checksums;
+            else CHECK(checksums == baseline);
+            engine.gui.isRunning = false;
+            CHECK_FALSE(engine.finishSession());
+        }
+    }
+
 	TEST_CASE("momentum uses the SDL clock after session suspension [display][artifacts]")
 	{
 		glob2test::ScopedEnvironment desktopUI("GLOB2_MOBILE_UI", "0");

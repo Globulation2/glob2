@@ -907,6 +907,32 @@ bounded software target. Asset loading is shared with normal game startup.
   tool's placement preview also draw from the Scene (`ScenePanels`, `SceneMap`). Input
   handlers still act on the game, and validate against it before issuing an order.
 
+### Target render FPS
+
+**Settings > Display & graphics > Advanced graphics > Target render FPS** sets a
+local drawing ceiling for games, replays, menus, dialogs and the editor. Presets
+are 25, 30, 60, 90, 120, 144, 165 and 240 FPS, plus Unlimited. The default is
+60 FPS, including profiles without the new `targetRenderFps` preference; `0`
+means Unlimited. Unsupported or malformed values load as 60. Changes apply at
+once and are independent of graphics detail presets. The previous threaded
+native game loop capped drawing at approximately 120 FPS. The lower default
+reduces rendering work and can reduce camera and interpolated animation smoothness.
+
+`RenderFramePacer` uses nanosecond drawing-start deadlines associated with the
+graphics context. Screen hosts skip painting while still dispatching input,
+advancing jobs and servicing game/network updates. Browser hosts paint separately
+on animation-frame callbacks, including while timer-driven jobs are running.
+Sub-frame scheduling jitter retains the target clock phase; a missed full frame
+discards the backlog. Foreground resume and graphics recreation
+reset pacing. Display refresh, rendering cost and existing slower screen cadences
+can keep the actual rate below the selected ceiling. Unlimited removes this
+limiter, without overriding display synchronization or screen update scheduling.
+
+Simulation speed, save/replay formats and network contracts are independent of
+this preference. Headless runs, offline image exports and renderer benchmarks do
+not opt into the interactive limiter. Recording output FPS remains independent;
+recordings cannot gain new visual detail from frames the application did not draw.
+
 ### Simulation thread
 
 Interactive sessions run the simulation on its own thread (`src/engine/sim/SimulationRunner`)
@@ -918,7 +944,7 @@ also remains the headless default and the equivalence reference.
   (`Engine::simulationStep`: orders, network, `Game::syncStep`). After a tick, if the main
   thread has taken the previous Scene, it extracts the next one into a `SceneBuffer`
   (lock-free triple buffer), so fast-forward extracts at most once per drawn frame.
-- The main thread draws the newest Scene every frame. Work that reads or writes the game —
+- The main thread draws the newest Scene when the render ceiling permits a frame. Work that reads or writes the game —
   input, `GameGUI::step`, consuming `ClientEvents`, checking the selection, script
   highlights — runs in `SimulationRunner::withGame`, which parks the simulation between
   ticks (immediately when it is sleeping between ticks).

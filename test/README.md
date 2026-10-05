@@ -18,6 +18,12 @@ programs and the map generator study tools). The per-harness
 aliases documented below are kept as `LEGACY_ALIASES` for one release; they build
 the binary that now contains the test.
 
+The `RenderFramePacer` unit suite checks drawing deadlines, frame-cost accounting,
+live changes, resume and Unlimited with explicit timestamps. `SettingsGraphics`
+checks FPS preference migration and validation; `Settings` covers the native and
+compact dropdown, persistence and screenshots. `ScreenExecution` checks that
+update-only callbacks and capped drawing retain input and screen lifecycle behavior.
+
 ## Build and run
 
 ```sh
