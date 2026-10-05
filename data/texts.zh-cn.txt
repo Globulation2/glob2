@@ -5547,15 +5547,15 @@ AI 遥测
 [ice]
 冰
 [road]
-道路
+小径
 [experiment ice-terrain]
 冰地形
 [experiment ice-terrain help]
 在地图编辑器中添加冰。地面单位以一半速度移动，在冰上每经过32个模拟步就损失1点生命值。冰上不能放置建筑或资源。
 [experiment road-terrain]
-道路地形
+小径地形
 [experiment road-terrain help]
-在地图编辑器中添加石板道路。地面单位以两倍速度移动。道路上可以放置建筑，但不能放置资源。
+在地图编辑器中加入风化的小径。地面单位以两倍速度移动。小径允许建筑，但不允许资源。飞行单位不受影响。
 [experiment markets-v2]
 市场 V2
 [experiment markets-v2 help]

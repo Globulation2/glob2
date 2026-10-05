@@ -519,7 +519,7 @@ std::vector<TerrainType> applyImportedTerrain(Map &map, const std::vector<int> &
 	map.rebuildTerrain();
     // Whole-cell materials are not sand corners. Restore neighboring uniform
     // legacy cells whose only foreign corner was an authored material, so a
-    // road in an ocean does not create walkable shores outside the road cell.
+    // trail in an ocean does not create walkable shores outside the trail cell.
     // Genuinely mixed classic corners retain the existing shore adapter.
     for (int y=0; y<h; ++y) for (int x=0; x<w; ++x) {
         const int i=y*w+x;

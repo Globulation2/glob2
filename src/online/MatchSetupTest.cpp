@@ -292,12 +292,12 @@ TEST_SUITE("MatchSetup")
 		MapHeader map = mapWithTeams(4);
 		GameHeader header = setup.toGameHeader(map);
 		map.requiredTerrainExperiments.set(ExperimentId::IceTerrain);
-		map.requiredTerrainExperiments.set(ExperimentId::RoadTerrain);
+		map.requiredTerrainExperiments.set(ExperimentId::TrailTerrain);
 		CHECK_THROWS_AS(setup.toGameHeader(map),MatchSetupError);
 		const MatchSetup required = MatchSetup::fromGameHeader(header,map,setup.map,setup.simVersion);
 		const GameHeader restored = required.toGameHeader(map);
 		CHECK(restored.hasExperiment(ExperimentId::IceTerrain));
-		CHECK(restored.hasExperiment(ExperimentId::RoadTerrain));
+		CHECK(restored.hasExperiment(ExperimentId::TrailTerrain));
 	}
 
 	TEST_CASE("closed seats close their team and follow every player seat")

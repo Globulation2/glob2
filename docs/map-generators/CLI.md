@@ -230,9 +230,9 @@ which implies water. The palette is:
 | Prune | `#8000FF` |
 | Colony marker | `#FFFFFF` |
 | Ice | `#BEE1F0` |
-| Road | `#B08A62` |
+| Trail (legacy name `road`) | `#B08A62` |
 
-Ice and road are whole-cell materials. Import retains them after legacy shore
+Ice and Trail are whole-cell materials. Import retains them after legacy shore
 repair and records their required terrain experiments in the map; adjacent water
 is not converted into sand. Their colors are distinct from resource colors.
 

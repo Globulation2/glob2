@@ -103,10 +103,11 @@ and movement connectivity use **eight neighbors**, including diagonals. All wrap
 ## Terrain, resources, space, and fertility
 
 `terrain` partitions every tile by its canonical gameplay material: `grass`,
-`grass_sand_border`, `sand`, `sand_water_border`, `water`, `ice`, or `road`.
+`grass_sand_border`, `sand`, `sand_water_border`, `water`, `ice`, or `road`
+(the legacy report key for Trail).
 The retained `unknown` key is zero for validated maps. Each value is coverage;
 counts sum to `map.tiles`. Resource/building occupancy does not change this
-classification. Legacy borders remain whole mixed tiles. Ice and road each
+classification. Legacy borders remain whole mixed tiles. Ice and Trail each
 occupy a whole gameplay cell; decorative edge blending does not change its type.
 The additive `ice` and `road` coverage keys are optional in the version-2 schema
 so reports produced before those materials remain readable; current writers
@@ -118,7 +119,7 @@ The schema permits these namespaced keys; IDs and display names are not keys.
 into `grass`, `sand`, `water`, and `unknown`, using coverage objects. It need not
 match the visible terrain percentages: visible tiles combine adjacent terrain
 corners and therefore include border classes. This grid is a legacy editor
-representation; authored ice/road cells override its gameplay and appearance.
+representation; authored ice/Trail cells override its gameplay and appearance.
 
 `resources.occupied` counts all resource-bearing tiles, including unknown types.
 `unknown_type_tiles` counts resource IDs outside 0–7, excluding the no-resource

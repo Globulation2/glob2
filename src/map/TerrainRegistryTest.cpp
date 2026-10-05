@@ -168,7 +168,7 @@ TEST_SUITE("TerrainRegistry")
 	{
 		auto registry = TerrainRegistry::builtins()->importJson(
 			source(Json::array({definition("test:slow", "water", {{"groundSpeedQ8", 64}})})));
-		std::vector<TerrainType> ids(1024, ROAD);
+		std::vector<TerrainType> ids(1024, TRAIL);
 		std::vector<std::uint16_t> seeds(1024, 1);
 		seeds[0] = GRADIENT_AT_GOAL;
 		auto expected = oracle(seeds, 32, 32, 6, 500, ids, *registry);

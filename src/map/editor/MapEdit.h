@@ -212,7 +212,7 @@ public:
         RegisteredBegin,
         // Compatibility aliases for callers selecting the example materials.
         Ice = RegisteredBegin + ICE,
-        Road = RegisteredBegin + ROAD,
+        Trail = RegisteredBegin + TRAIL,
     };
     static bool isBaseTerrain(TerrainType type)
     {
