@@ -281,9 +281,10 @@ match appearances retain their paint. Equipping the new version is a separate
 choice. “Make a separate design” publishes the current canvas under a new identity.
 
 The `/skins` route opens Colony Studio, a full-window mesh painting workspace.
-Brush, eraser and eyedropper operate directly on visible geometry. Right-drag,
-Alt-drag or the Orbit tool navigates; touch uses explicit Paint/Orbit tools and
-two-finger navigation. The view menu and +/− keys also adjust inspection zoom.
+Brush and eraser paint every surface underneath the cursor, including hidden
+surfaces. The eyedropper samples visible geometry. Horizontal right-drag,
+Alt-drag or the Rotate tool turns the model; touch uses explicit Paint/Rotate tools and
+two-finger pinch zoom. The view menu and +/− keys also adjust inspection zoom.
 Animation starts paused and painting freezes its displayed
 pose. Each stroke and accepted pattern is one undo transaction. The toolbox,
 material swatches, model and pose strips float over the viewport; shop, saved
@@ -293,9 +294,10 @@ following the device setting or saved preference. Skin settings includes the sha
 theme control; changing themes preserves paint and editing state.
 
 Glob meshes share paint coordinates across matching front/back and top/bottom
-surfaces, including limb pairs exchanged by their flipping gait. A depth-tested
-projection excludes hidden geometry, but changing a shared texel still changes
-all matching surfaces. The closest visible contributor wins deterministically.
+surfaces, including limb pairs exchanged by their flipping gait. Brush coverage
+includes every projected contributor to a texel, applying its strongest coverage
+once. Changing a shared texel changes all matching surfaces.
+Eyedropper and projected patterns use the closest visible contributor deterministically.
 Pattern previews always render the baked atlas, including this repetition.
 Camera-projected stripes, spots, checker, chevrons, waves and speckles use the
 paused pose and chosen inspection angle. Curated solid, mirrored bands/spots and
@@ -303,7 +305,8 @@ mottled fills use per-mesh rest-space compatibility charts, with limited sizes a
 densities. Both keep the existing atlas layouts. No UV painting UI or layers are
 exposed. Copying raw paint between models is a separate action with a result preview.
 
-Paint cameras freely orbit, including above and below the model. The swarm's
+The inspection camera stays at a fixed height and angle while the model rotates
+around its upright axis; vertical drags do not tilt it. The swarm's
 separate **Choose final view** mode changes only azimuth around its standardized
 camera ring; accepting it restores the inspection camera. Unit game rendering
 continues to select animation directions normally. Building color is separate

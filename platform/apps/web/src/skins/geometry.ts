@@ -16,8 +16,8 @@ export type ViewTransform = {
   pivot: number[];
   radius: number;
 };
-export type Camera = { yaw: number; pitch: number; zoom: number; game: boolean; angle: number };
-export const DEFAULT_CAMERA: Camera = { yaw: 0, pitch: 0, zoom: 1, game: false, angle: 0 };
+export type Camera = { yaw: number; zoom: number; game: boolean; angle: number };
+export const DEFAULT_CAMERA: Camera = { yaw: 0, zoom: 1, game: false, angle: 0 };
 export const ACTIONS = {
   worker: ['walk', 'swim', 'harvest'],
   warrior: ['walk', 'swim', 'fight'],
@@ -149,9 +149,7 @@ export function projectPose(
   // Framing is fixed from the rest pose, cached across camera and animation updates.
   const { center, radius } = inspectionFit(mesh, view);
   const sy = Math.sin(camera.yaw),
-    cy = Math.cos(camera.yaw),
-    sp = Math.sin(camera.pitch),
-    cp = Math.cos(camera.pitch);
+    cy = Math.cos(camera.yaw);
   const ca = Math.cos((-camera.angle * Math.PI) / 180),
     sa = Math.sin((-camera.angle * Math.PI) / 180);
   const factor = (camera.zoom * 0.82) / radius;
@@ -178,10 +176,11 @@ export function projectPose(
       position[1] = (position[1]! / 1.25) * Math.min(1, aspect);
     } else {
       const rotate = (a: number[]) => {
-        const b = [0, 1, 2].map((k) => n[k]! * a[0]! + n[k + 3]! * a[1]! + n[k + 6]! * a[2]!);
-        const x = cy * b[0]! + sy * b[2]!,
-          z = -sy * b[0]! + cy * b[2]!;
-        return [x, cp * b[1]! - sp * z, sp * b[1]! + cp * z];
+        // Turn around model-space Z (upright), then use the fixed exported
+        // camera basis. Rotating projected axes would tilt the model as it turns.
+        const x = cy * a[0]! - sy * a[1]!,
+          y = sy * a[0]! + cy * a[1]!;
+        return [0, 1, 2].map((k) => n[k]! * x + n[k + 3]! * y + n[k + 6]! * a[2]!);
       };
       position = rotate(p.map((v, k) => v - center[k]!));
       position = [

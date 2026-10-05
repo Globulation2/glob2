@@ -309,7 +309,7 @@ function SkinStudio() {
                   ['brush', 'Brush', 'B'],
                   ['erase', 'Eraser', 'E'],
                   ['pick', 'Eyedropper', 'I'],
-                  ['orbit', 'Orbit', ''],
+                  ['orbit', 'Rotate', ''],
                 ] as const
               ).map(([id, label, key]) => (
                 <button
@@ -403,8 +403,9 @@ function SkinStudio() {
                 <details>
                   <summary>Paint repeats on matching surfaces</summary>
                   <p>
-                    Some front/back and top/bottom surfaces share paint. A stroke may appear on
-                    their matching side too, keeping the glob’s flips seamless.
+                    Brush and eraser reach hidden surfaces underneath the cursor. Some front/back
+                    and top/bottom surfaces share paint. A stroke may appear on their matching side
+                    too, keeping the glob’s flips seamless.
                   </p>
                 </details>
               </div>
@@ -436,16 +437,14 @@ function SkinStudio() {
                     }));
                     return;
                   }
-                  const views: Record<string, [number, number]> = {
-                    front: [0, 0],
-                    back: [Math.PI, 0],
-                    left: [-Math.PI / 2, 0],
-                    right: [Math.PI / 2, 0],
-                    top: [0, Math.PI / 2],
-                    bottom: [0, -Math.PI / 2],
+                  const views: Record<string, number> = {
+                    front: 0,
+                    back: Math.PI,
+                    left: -Math.PI / 2,
+                    right: Math.PI / 2,
                   };
-                  const p = views[e.target.value];
-                  if (p) setCamera({ ...camera, yaw: p[0], pitch: p[1], game: false });
+                  const yaw = views[e.target.value];
+                  if (yaw !== undefined) setCamera({ ...camera, yaw, game: false });
                 }}
               >
                 <option value="" disabled>
@@ -455,7 +454,7 @@ function SkinStudio() {
                   <option value="zoom-in">Zoom in (+)</option>
                   <option value="zoom-out">Zoom out (−)</option>
                 </optgroup>
-                {['front', 'back', 'left', 'right', 'top', 'bottom'].map((v) => (
+                {['front', 'back', 'left', 'right'].map((v) => (
                   <option key={v} value={v}>
                     {v[0]!.toUpperCase() + v.slice(1)}
                   </option>
@@ -616,8 +615,8 @@ function SkinStudio() {
           {finalView
             ? 'Drag to turn · fixed height and scale'
             : tool === 'orbit'
-              ? 'Drag to orbit · scroll or pinch to zoom'
-              : 'Drag to paint · Orbit tool to turn · scroll or pinch to zoom'}
+              ? 'Drag horizontally to rotate · scroll or pinch to zoom'
+              : 'Drag to paint · Rotate tool to turn · scroll or pinch to zoom'}
         </div>
         {doc.message && (
           <div className="skin-toast" role="status" aria-label="Designer status">
