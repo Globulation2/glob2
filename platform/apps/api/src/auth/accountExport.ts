@@ -860,7 +860,11 @@ export async function exportAccount(
             ...clean(draft),
             imageBase64: image.toString('base64'),
             materialBase64: material.toString('base64'),
-            contentType: 'image/png',
+            // Export stored bytes unchanged, including pre-migration PNG drafts.
+            contentType:
+              image.toString('ascii', 0, 4) === 'RIFF' && image.toString('ascii', 8, 12) === 'WEBP'
+                ? 'image/webp'
+                : 'image/png',
           })),
           matches: rows(skinMatches),
           purchases: rows(skinPurchases),

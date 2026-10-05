@@ -8,6 +8,18 @@ The game-side bindings in `src/ui/FrontendUI.h` (namespace `Glob2UI`) add the
 two themes, translation and shared page builders. Screens contain a model and a
 `build()` function, nothing else.
 
+The shared screen stack separates updates from painting. `frame(tick, events,
+false)` dispatches input and advances screen work without drawing;
+`draw()` paints when the graphics context's render ceiling permits it. Native
+hosts normally use the combined `frame()` call. Browser hosts call `Loop::draw()`
+on animation frames separately from timer-driven updates; render deadlines never
+shorten browser update timers. Screen logic must not
+require a paint to advance loading, networking, input handling or persistence.
+DOM text-field changes and actions are delivered in `frame()` before transitions
+and SDL events; `draw()` must not dispatch input or admit screen transitions.
+The **Target render FPS** preference applies to screen and dialog drawing as well
+as matches and the editor; see [render pacing](reference.md#target-render-fps).
+
 ## Rules
 
 1. **Build, do not lay out.** A screen implements
@@ -359,9 +371,9 @@ numeric choices remain readable. The gameplay action strip retains its
 game-specific sprites and labels, which distinguish construction, flags and team tools.
 
 Original SVGs and a source manifest live in `datasrc/icons/tabler/`, pinned to
-Tabler v3.48.0. Generated PNGs live in `data/gui/`; the distributed MIT notice is
-`data/tabler-icons-license.txt`. Ordinary builds use the committed PNGs and need
-no SVG renderer or network access. To regenerate with the pinned development tool:
+Tabler v3.48.0. Generated PNG sources live in `data/gui/`; the distributed MIT notice is
+`data/tabler-icons-license.txt`. Ordinary builds convert the committed sources to
+WebP in the runtime tree and need no SVG renderer or network access. To regenerate with the pinned development tool:
 
 ```sh
 npm install --prefix artifacts/tabler/tooling --no-audit --no-fund @resvg/resvg-js@2.6.2

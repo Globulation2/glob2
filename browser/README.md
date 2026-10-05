@@ -224,7 +224,9 @@ real pointer and keyboard events.
 The maintained Playwright suite starts an isolated local HTTP server and uses
 fresh browser profiles for every test. It covers page startup, a custom match,
 pause over multiple observed engine frames, save persistence across reload,
-loading and audio activation. Player actions use real mouse/keyboard input;
+loading and audio activation. `render-fps.spec.js` checks desktop and compact FPS
+selection, durable persistence and update-only DOM text dispatch; `pacing.spec.js` compares per-tick execution
+with a headless reference at different rendering caps. Player actions use real mouse/keyboard input;
 assertions read `glob2Diagnostics` without changing game state.
 
 ```sh

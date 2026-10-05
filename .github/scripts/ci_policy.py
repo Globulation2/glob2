@@ -25,7 +25,7 @@ PRESENTATION = ('src/hud/', 'src/render/', 'src/unit/render/', 'src/building/hud
 UNCLASSIFIED = ('src/render/torus/', 'src/render/clouds/', 'src/render/overlay/', 'src/unit/types/',
                 'src/building/types/', 'src/team/stats/', 'src/map/preview/', 'src/map/tools/',
                 'src/net/lan/screens/')
-UNCLASSIFIED_FILES = {'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
+UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
                       'src/map/Brush.cpp', 'src/map/BrushCoverage.cpp', 'src/unit/UnitDisplayNames.cpp',
                       'src/net/ConnectionOverlay.cpp', 'src/net/turn/TurnMatchPresenter.cpp',
                       'src/map/editor/screens/EditorMainMenu.cpp'}
@@ -41,7 +41,8 @@ SIMULATION_FILES = {'src/game/Game_sync.cpp', 'src/game/Game.cpp', 'src/engine/E
                     'src/engine/Engine.cpp', 'src/replay/ReplayReader.cpp', 'src/replay/ReplayWriter.cpp'}
 THREAD_FILES = {'src/game/diagnostics/GameDiagnostics.cpp', 'src/engine/Engine.cpp', 'src/engine/EngineRun.cpp', 'src/game/screens/GameSessionScreen.cpp',
                 'src/hud/draw/GameGUIDraw.cpp', 'src/hud/GameGUIStep.cpp', 'src/hud/GameGUIOrders.cpp',
-                'libgag/src/PerformanceTelemetry.cpp'}
+                'libgag/src/PerformanceTelemetry.cpp', 'libgag/src/AssetLoader.cpp',
+                'libgag/include/AssetLoader.h', 'libgag/src/SpriteLoad.cpp'}
 # Paths whose changes rebuild and smoke-test the whole self-hosted stack
 # (deploy/compose.yaml). Its images compile the engine, so engine changes that
 # do not otherwise select every check skip it rather than adding a second

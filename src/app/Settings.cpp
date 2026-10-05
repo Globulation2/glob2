@@ -12,6 +12,8 @@
 #include <StringTable.h>
 #include <string>
 #include <algorithm>
+#include <charconv>
+#include <iterator>
 #include <StreamBackend.h>
 
 using namespace GAGCore;
@@ -111,6 +113,7 @@ void Settings::setTextSizePercent(int percent)
 
 void Settings::load(std::string filename)
 {
+    targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
 	setGraphicsDetail(false);
 #else
@@ -152,6 +155,15 @@ void Settings::load(std::string filename)
 		READ_PARSED_INT(screenHeight);
 		READ_PARSED_INT(screenFlags);
 		READ_PARSED_INT(uiScale);
+        if (const auto value = parsed.find("targetRenderFps"); value != parsed.end())
+        {
+            int fps = -1;
+            const auto &text = value->second;
+            const auto result = std::from_chars(text.data(), text.data() + text.size(), fps);
+            if (result.ec == std::errc{} && result.ptr == text.data() + text.size() &&
+                std::find(std::begin(RENDER_FPS_PRESETS), std::end(RENDER_FPS_PRESETS), fps) != std::end(RENDER_FPS_PRESETS))
+                targetRenderFps = fps;
+        }
         READ_PARSED_STRING(interfacePresentation);
         READ_PARSED_STRING(menuTheme);
         READ_PARSED_STRING(gameTheme);
@@ -289,6 +301,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "smoothProgressIndicators=%d\n", smoothProgressIndicators);
 		Utilities::streamprintf(stream, "decorativeAnimations=%d\n", decorativeAnimations);
 		Utilities::streamprintf(stream, "unitInterpolation=%d\n", unitInterpolation);
+        Utilities::streamprintf(stream, "targetRenderFps=%d\n", targetRenderFps);
 		Utilities::streamprintf(stream, "adaptiveZoomDetail=%d\n", adaptiveZoomDetail);
 		Utilities::streamprintf(stream, "smoothFog=%d\n", smoothFog);
 		Utilities::streamprintf(stream, "autosaveGames=%d\n", autosaveGames);

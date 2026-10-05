@@ -8,11 +8,26 @@
 #include <iostream>
 #include <stdexcept>
 #include "TrueTypeFont.h"
+#include <AssetLoader.h>
+#include <memory>
+#include <SpriteLoad.h>
+#include <chrono>
+#include <algorithm>
 
 #include <GraphicContext.h>
 
 namespace GAGCore
 {
+	namespace {
+        std::unique_ptr<AssetLoader> assetLoader;
+        std::map<std::string, std::unique_ptr<SpriteLoad>> loadingSprites;
+        size_t completedSpriteLoads = 0, submittedSpriteLoads = 0;
+    }
+	AssetLoader &Toolkit::assets()
+	{
+		if (!assetLoader) assetLoader = std::make_unique<AssetLoader>(*fileManager, AssetLoader::Options::environment());
+		return *assetLoader;
+	}
 	Toolkit::SpriteMap Toolkit::spriteMap;
 	Toolkit::FontMap Toolkit::fontMap;
 	GraphicContext *Toolkit::gc = NULL;
@@ -38,6 +53,9 @@ namespace GAGCore
 	
 	void Toolkit::close(void)
 	{
+        loadingSprites.clear();
+		assetLoader.reset();
+        completedSpriteLoads = submittedSpriteLoads = 0;
 		for (SpriteMap::iterator it=spriteMap.begin(); it!=spriteMap.end(); ++it)
 			delete (*it).second;
 		spriteMap.clear();
@@ -60,26 +78,54 @@ namespace GAGCore
 		}
 	}
 	
-	Sprite *Toolkit::getSprite(const std::string name)
-	{
-		assert(name.size());
-		if (spriteMap.find(name) == spriteMap.end())
-		{
-			Sprite *sprite = new Sprite();
-			if (sprite->load(name))
-			{
-				spriteMap[std::string(name)] = sprite;
-			}
-			else
-			{
-				delete sprite;
-				std::cerr << "GAG : Can't load sprite " << name << std::endl;
-				return NULL;
-			}
-		}
-		return spriteMap[std::string(name)];
-	}
-	
+    void Toolkit::requestSprite(const std::string& name, bool variableAtlas)
+    {
+        if (spriteMap.contains(name) || loadingSprites.contains(name)) return;
+        loadingSprites[name] = std::make_unique<SpriteLoad>(name, variableAtlas);
+        ++submittedSpriteLoads;
+    }
+    Sprite *Toolkit::findSprite(const std::string& name)
+    {
+        auto found = spriteMap.find(name);
+        return found == spriteMap.end() ? nullptr : found->second;
+    }
+    bool Toolkit::pollAssets(unsigned budgetMs)
+    {
+        const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(budgetMs);
+        auto remaining = [&] {
+            return std::max(std::chrono::milliseconds::zero(),
+                std::chrono::ceil<std::chrono::milliseconds>(deadline - std::chrono::steady_clock::now()));
+        };
+        if (remaining().count()) assets().poll(remaining());
+        for (auto it = loadingSprites.begin(); it != loadingSprites.end() && remaining().count();) {
+            if (it->second->pollUntil(deadline)) {
+                auto sprite = it->second->take();
+                if (sprite) spriteMap[it->first] = sprite.release();
+                else std::cerr << it->second->error() << std::endl;
+                ++completedSpriteLoads;
+                it = loadingSprites.erase(it);
+            } else ++it;
+        }
+        const bool reloaded = Sprite::pollHighResolutionUntil(deadline);
+        return loadingSprites.empty() && reloaded;
+    }
+    unsigned Toolkit::assetProgress()
+    {
+        return submittedSpriteLoads ? unsigned(completedSpriteLoads * 100 / submittedSpriteLoads) : 100;
+    }
+    Sprite *Toolkit::getSprite(const std::string name)
+    {
+        if (auto *sprite = findSprite(name)) return sprite;
+        requestSprite(name);
+        while (loadingSprites.contains(name)) {
+            pollAssets();
+#ifndef __EMSCRIPTEN__
+            SDL_Delay(1);
+#endif
+        }
+        return findSprite(name);
+    }
+
 	void Toolkit::releaseSprite(const std::string name)
 	{
 		assert(name.size());
@@ -133,5 +179,4 @@ namespace GAGCore
 		fontMap.erase(it);
 	}
 }
-
 

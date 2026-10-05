@@ -231,3 +231,46 @@ test('startup downloads core and game together and waits for both installations'
   assert.equal(environment.files.get('/data/unit.txt'), 'xyz');
   assert.equal(environment.requests.length, 2, 'startup does not fetch either package twice');
 });
+
+test('part concurrency is bounded globally across packages and duplicate loads share work', async () => {
+  const environment = host();
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  let active = 0, peak = 0, started = 0;
+  environment.fetch = async () => {
+    peak = Math.max(peak, ++active); started++;
+    await gate; active--;
+    return response(['x']);
+  };
+  const packages = ['one', 'two'].map(name => ({name, optional:true,
+    parts:Array.from({length:5}, (_, i) => ({url:name + i, size:1, files:[['/' + name + i, 0, 1]]}))}));
+  const loader = new Loader({packages}, environment);
+  const first = loader.load('one');
+  assert.equal(loader.load('one'), first);
+  const second = loader.load('two');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(started, 4);
+  assert.equal(environment.files.size, 0);
+  release(); await Promise.all([first, second]);
+  assert.equal(started, 10); assert.equal(peak, 4);
+  assert.equal(environment.files.size, 10);
+});
+
+test('out-of-order downloads preserve package replacement order', async () => {
+  const environment = host();
+  let release;
+  const gate = new Promise(resolve => { release = resolve; });
+  environment.fetch = async url => {
+    if (url.endsWith('first')) { await gate; return response(['old']); }
+    return response(['new']);
+  };
+  const packages = ['first', 'second'].map(name => ({name, optional:true,
+    parts:[{url:name, size:3, files:[['/data/shared', 0, 3]]}]}));
+  const loader = new Loader({packages}, environment);
+  const first = loader.load('first'), second = loader.load('second');
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(environment.files.size, 0);
+  release(); await Promise.all([first, second]);
+  assert.equal(environment.files.get('/data/shared'), 'new');
+  assert.deepEqual(loader.takeInstalled(), ['first', 'second']);
+});

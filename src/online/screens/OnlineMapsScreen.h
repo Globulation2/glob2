@@ -30,7 +30,7 @@ class MapPreview;
 // The map catalog in the game (multiplayer mock-ups, screen group 7 B and C):
 // Browse public maps (search, size, colonies, sort, detail with preview, Use
 // in a room, Like, map page, Report) and My maps (upload, validation status,
-// visibility, update, delete). Previews are the engine's PNGs from the
+// visibility, update, delete). Previews are lossless WebP renditions from the
 // server; "Use in a room" downloads the map into the content-addressed map
 // cache and hands it to the room screen (Online::useMapInRoom).
 class OnlineMapsScreen : public Glob2UI::Screen
@@ -65,7 +65,7 @@ class OnlineMapsScreen : public Glob2UI::Screen
 		std::string instance;
 		std::vector<Online::MapInfo> browse, mine;
 		std::map<std::string, Online::MapDetail> details; // by map id
-		std::map<std::string, std::string> previewFiles;  // preview URL -> local PNG
+		std::map<std::string, std::string> previewFiles;  // preview URL -> local WebP
 		bool signedIn = true, guest = false;
 		std::int64_t now = 0;
 	};

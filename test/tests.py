@@ -25,6 +25,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/unit/render/ColonySkinPreviewTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/audio/MusicSetTest.cpp',
     '#src/audio/MusicStreamTest.cpp',
     ('#src/ui/screens/MusicScreensTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -158,6 +159,9 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#libgag/src/AssetLoaderTest.cpp',
+    '#libgag/src/SpriteLoadTest.cpp',
+    '#libgag/src/RenderFramePacerTest.cpp',
     '#libgag/src/FontMetricsTest.cpp',
     '#libgag/src/PackedArrayTest.cpp',
     '#libgag/src/EventQueueTest.cpp',
@@ -400,6 +404,7 @@ PROGRAMS = [
     ('MapReportHarness', '#src/map/tools/MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', '#src/ai/maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),
+    ('AssetLoadingBenchmark', '#tools/AssetLoadingBenchmark.cpp', 'asset-loading-benchmark', 'tools'),
     ('SoftwareRenderBenchmark', '#src/render/SoftwareRenderBenchmark.cpp', 'software-render-benchmark', 'tools'),
     ('torus-render-benchmark', '#src/render/torus/TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),
 ]

@@ -1,0 +1,14 @@
+--- a/src/video/stb_image.h
++++ b/src/video/stb_image.h
+@@ -1297,8 +1297,10 @@
+    reduced = (stbi_uc *) stbi__malloc(img_len);
+    if (reduced == NULL) return stbi__errpuc("outofmem", "Out of memory");
+ 
++   // Glob2 portability fix: match SDL's normalized channel rounding instead
++   // of truncating, including alpha and RGB hidden by transparent pixels.
+    for (i = 0; i < img_len; ++i)
+-      reduced[i] = (stbi_uc)((orig[i] >> 8) & 0xFF); // top half of each byte is sufficient approx of 16->8 bit scaling
++      reduced[i] = (stbi_uc)(((unsigned int)orig[i] + 128u) / 257u);
+ 
+    STBI_FREE(orig);
+    return reduced;

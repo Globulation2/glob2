@@ -18,6 +18,12 @@ programs and the map generator study tools). The per-harness
 aliases documented below are kept as `LEGACY_ALIASES` for one release; they build
 the binary that now contains the test.
 
+The `RenderFramePacer` unit suite checks drawing deadlines, frame-cost accounting,
+live changes, resume and Unlimited with explicit timestamps. `SettingsGraphics`
+checks FPS preference migration and validation; `Settings` covers the native and
+compact dropdown, persistence and screenshots. `ScreenExecution` checks that
+update-only callbacks and capped drawing retain input and screen lifecycle behavior.
+
 ## Build and run
 
 ```sh
@@ -31,6 +37,16 @@ python3 test/run_tests.py --binary engine --shard 2/4 --junit artifacts/tests/ju
 python3 test/run_tests.py --binary engine --in-process     # fast local loop, no isolation
 python3 test/run_tests.py --update-fixtures --filter 'WinningConditions/*'
 ```
+
+`ColonySkinPreview` checks shared image preparation with independent appearance
+authorization, refresh, expiry and cancellation across preview owners.
+
+Asset pipeline checks live in `AssetLoader` and `SpriteLoad`, including independent
+continuation cancellation, cache metadata cleanup and variable atlas admission.
+`SpriteSheets` also checks renderer readiness and atomic HD reload publication. Build the
+`asset-loading-benchmark` target to compare worker configurations against the same
+runtime assets. See [asset loading](../docs/development/reference.md#release-asset-and-bundle-sizes)
+for worker controls, scratch accounting and measurement limits.
 
 `test/run_tests.py` lists the cases with doctest's `-ltc`, applies `--filter`
 (suite/name globs), `--tag`, `--exclude-tag`, `--quick` and `--shard K/N`

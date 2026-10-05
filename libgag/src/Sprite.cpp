@@ -6,13 +6,14 @@
 #include <Toolkit.h>
 #include <FileManager.h>
 #include <assert.h>
-#include <SDL3_image/SDL_image.h>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
 #include <cstring>
+#include <SpriteLoad.h>
+#include <AssetLoader.h>
 
 #include <memory>
 using std::make_unique;
@@ -40,32 +41,36 @@ using std::make_unique;
 
 namespace GAGCore
 {
-    namespace {
-    SDL_Surface *loadArtwork(SDL_IOStream *stream, bool close)
-    {
-        SDL_Surface *surface = IMG_LoadWEBP_IO(stream);
-        if (close) SDL_CloseIO(stream);
-        return surface;
-    }
-    }
-
 	static std::set<Sprite*> loadedSprites;
 	static bool highResolutionEnabled = false;
     static std::string packDirectory, packText;
     static bool packRead=false;
+    static size_t packGeneration = 0;
+    struct PackEntry { int width, height, scale; std::string base, team; };
+    static std::unordered_map<std::string, PackEntry> packEntries;
+    static AssetLoader::Handle<AssetLoader::Bytes> packSource;
+    struct HighResolutionReload {
+        std::vector<AssetLoader::Handle<AssetImage>> inputs;
+        std::unique_ptr<Sprite> prepared;
+        size_t frame = 0;
+    };
+    static std::map<Sprite*, HighResolutionReload> pendingHighResolution;
     static bool readPack(const std::string &directory)
     {
-        if(packRead && packDirectory==directory)return !packText.empty();
+        const auto generation = Toolkit::assets().sourceGeneration();
+        if(packRead && packDirectory==directory && packGeneration==generation)return !packText.empty();
+        packGeneration= generation;
         packRead=true;packDirectory=directory;packText.clear();
-        auto input=Toolkit::getFileManager()->open((directory+"/frames.txt").c_str(),"rb");
-        if(!input){std::cerr<<"High-resolution pack unavailable: "<<directory<<std::endl;return false;}
-        const auto size=SDL_GetIOSize(input);
-        if(size<=0||size>1024*1024){SDL_CloseIO(input);std::cerr<<"Invalid high-resolution manifest size"<<std::endl;return false;}
-        std::string text(static_cast<size_t>(size),'\0');
-        const auto count=SDL_ReadIO(input,text.data(),text.size());SDL_CloseIO(input);
-        if(count!=text.size())return false;
+        packEntries.clear();
+        packSource = Toolkit::assets().requestBytes(directory + "/frames.txt");
+        auto bytes = Toolkit::assets().wait(packSource);
+        if (!bytes || bytes->empty() || bytes->size() > 1024 * 1024) return false;
+        std::string text(bytes->begin(), bytes->end());
         std::istringstream header(text);std::string magic;int version=0;header>>magic>>version;
         if(magic!="GLOB2_HIGHRES"||version!=1){std::cerr<<"Unsupported high-resolution pack"<<std::endl;return false;}
+        std::string id; PackEntry entry;
+        while (header >> id >> entry.width >> entry.height >> entry.scale >> entry.base >> entry.team)
+            packEntries.emplace(id, entry);
         packText=std::move(text);return true;
     }
 
@@ -78,195 +83,36 @@ namespace GAGCore
 		}
 	}
 	
-	namespace
-	{
-		//! One line of a sprite's sheet index: a grid of equally sized tiles
-		//! holding a contiguous run of frames of one layer.
-		struct SheetEntry
-		{
-			std::string file;
-			bool rotatedLayer;
-			unsigned first;
-			unsigned count;
-			int tileW;
-			int tileH;
-		};
-
-		//! Read <filename>.sheet, return false if it is absent or unusable
-		bool readSheetIndex(const std::string &filename, std::vector<SheetEntry> &entries)
-		{
-			SDL_IOStream *input = Toolkit::getFileManager()->open(filename + ".sheet", "rb");
-			if (!input)
-				return false;
-			const Sint64 size = SDL_GetIOSize(input);
-			std::string text(size > 0 && size <= 1024 * 1024 ? static_cast<size_t>(size) : 0, '\0');
-			const size_t read = text.empty() ? 0 : SDL_ReadIO(input, text.data(), text.size());
-			SDL_CloseIO(input);
-			if (text.empty() || read != text.size())
-			{
-				std::cerr << "Sprite " << filename << ": unreadable sheet index" << std::endl;
-				return false;
-			}
-			std::istringstream lines(text);
-			std::string line;
-			while (std::getline(lines, line))
-			{
-				// Accept an index saved with Windows line endings.
-				if (!line.empty() && line.back() == '\r')
-					line.pop_back();
-				if (line.empty() || line[0] == '#')
-					continue;
-				SheetEntry entry;
-				std::string layer;
-				std::istringstream fields(line);
-				fields >> entry.file >> layer >> entry.first >> entry.count >> entry.tileW >> entry.tileH;
-				if (!fields || (layer != "image" && layer != "rotated")
-					|| !entry.file.ends_with(".webp")
-					|| entry.file.find_first_of("/\\:") != std::string::npos
-					|| !entry.count || entry.count > 65536 || entry.first > 65536
-					|| entry.tileW <= 0 || entry.tileH <= 0 || entry.tileW > 4096 || entry.tileH > 4096)
-				{
-					std::cerr << "Sprite " << filename << ": bad sheet index line \"" << line << "\"" << std::endl;
-					return false;
-				}
-				entry.rotatedLayer = layer == "rotated";
-				entries.push_back(entry);
-			}
-			return !entries.empty();
-		}
-	}
-
-	bool Sprite::loadSheets(const std::string &filename)
-	{
-		std::vector<SheetEntry> entries;
-		if (!readSheetIndex(filename, entries))
-			return false;
-
-		size_t frameCount = 0;
-		for (const SheetEntry &entry : entries)
-			frameCount = std::max(frameCount, static_cast<size_t>(entry.first) + entry.count);
-		std::vector<DrawableSurface *> sheetImages(frameCount, nullptr);
-		std::vector<RotatedImage *> sheetRotated(frameCount, nullptr);
-		auto discard = [&]()
-		{
-			for (DrawableSurface *image : sheetImages)
-				delete image;
-			for (RotatedImage *image : sheetRotated)
-				delete image;
-			return false;
-		};
-
-		const std::string directory = filename.substr(0, filename.rfind('/') + 1);
-		for (const SheetEntry &entry : entries)
-		{
-			// Sheet indices name the exact WebP artwork.
-			SDL_IOStream *stream = Toolkit::getFileManager()->openImage(directory + entry.file);
-			SDL_Surface *sheet = stream ? loadArtwork(stream, true) : nullptr;
-			if (sheet && sheet->format != SDL_PIXELFORMAT_RGBA32)
-			{
-				SDL_Surface *converted = SDL_ConvertSurface(sheet, SDL_PIXELFORMAT_RGBA32);
-				SDL_DestroySurface(sheet);
-				sheet = converted;
-			}
-			const int columns = sheet && sheet->w % entry.tileW == 0 ? sheet->w / entry.tileW : 0;
-			if (!columns || static_cast<Sint64>((entry.count + columns - 1) / columns) * entry.tileH > sheet->h)
-			{
-				std::cerr << "Sprite " << filename << ": cannot cut " << entry.count << " "
-					<< entry.tileW << "x" << entry.tileH << " tiles out of " << entry.file << std::endl;
-				if (sheet)
-					SDL_DestroySurface(sheet);
-				return discard();
-			}
-			for (unsigned i = 0; i < entry.count; ++i)
-			{
-				const unsigned frame = entry.first + i;
-				if (entry.rotatedLayer ? sheetRotated[frame] != nullptr : sheetImages[frame] != nullptr)
-				{
-					std::cerr << "Sprite " << filename << ": frame " << frame << " is in two sheets" << std::endl;
-					SDL_DestroySurface(sheet);
-					return discard();
-				}
-				// A view into the sheet; DrawableSurface copies the tile's pixels.
-				const int x = (i % columns) * entry.tileW, y = (i / columns) * entry.tileH;
-				SDL_Surface *tile = SDL_CreateSurfaceFrom(entry.tileW, entry.tileH, SDL_PIXELFORMAT_RGBA32,
-					static_cast<Uint8 *>(sheet->pixels) + y * sheet->pitch + x * 4, sheet->pitch);
-				assert(tile);
-				DrawableSurface *surface = new DrawableSurface(tile);
-				SDL_DestroySurface(tile);
-				if (entry.rotatedLayer)
-					sheetRotated[frame] = new RotatedImage(surface);
-				else
-					sheetImages[frame] = surface;
-			}
-			SDL_DestroySurface(sheet);
-		}
-		images = std::move(sheetImages);
-		rotated = std::move(sheetRotated);
-		return true;
-	}
-
-	bool Sprite::load(const std::string filename)
-	{
-		this->fileName = filename;
-		loadedSprites.insert(this);
-
-		// The unit sprite sheet is shared by world units, portraits, editor
-		// previews, offscreen indicators and credits (see UnitSkin.cpp,
-		// GlobalContainer.cpp). Marking it here, once, before any frame loads,
-		// routes all of them through the same GPU shader / bounded CPU cache
-		// team-coloring implementation, and lets loadExperimentFrame (called
-		// below, per frame) recognize this sprite's fixed-size HD layer.
-		if (fileName == "data/gfx/unit")
-			dynamicTeamColor = true;
-
-		// Packaged builds pack some sprites into sheets named by <name>.sheet
-		// (tools/package_assets.py); the source tree keeps one file per frame.
-		if (loadSheets(filename))
-		{
-			for (size_t i = 0; i < images.size(); ++i)
-				loadExperimentFrame(filename + std::to_string(i) + ".webp", filename + std::to_string(i) + "r.webp");
-		}
-		else
-		{
-			SDL_IOStream *frameStream;
-			SDL_IOStream *rotatedStream;
-			unsigned i = 0;
-
-			while (true)
-			{
-				std::ostringstream frameName;
-				frameName << filename << i << ".webp";
-				frameStream = Toolkit::getFileManager()->openImage(frameName.str());
-
-				std::ostringstream frameNameRot;
-				frameNameRot << filename << i << "r.webp";
-				rotatedStream = Toolkit::getFileManager()->openImage(frameNameRot.str());
-
-				if (!((frameStream) || (rotatedStream)))
-					break;
-
-				const bool loaded = loadFrame(frameStream, rotatedStream);
-
-				if (frameStream)
-					SDL_CloseIO(frameStream);
-				if (rotatedStream)
-					SDL_CloseIO(rotatedStream);
-				if (!loaded) return false;
-				loadExperimentFrame(frameName.str(), frameNameRot.str());
-				i++;
-			}
-		}
-		// TODO: How to cache rotated images?
-		if (std::any_of(images.begin(), images.end(), [](DrawableSurface *s) {return s != nullptr; }) &&
-			std::all_of(rotated.begin(), rotated.end(), [](RotatedImage *s) {return s == nullptr; }))
-		{
-			createTextureAtlas();
-		}
-
-		recomputeBlockCompleteHD();
-		createHighResolutionAtlas();
-		return getFrameCount() > 0;
-	}
+    void Sprite::registerLoaded() { loadedSprites.insert(this); }
+    void Sprite::adoptLoaded(Sprite& prepared)
+    {
+        assert(images.empty() && rotated.empty());
+        fileName = std::move(prepared.fileName);
+        dynamicTeamColor = prepared.dynamicTeamColor;
+        images.swap(prepared.images); rotated.swap(prepared.rotated);
+        experimentImages.swap(prepared.experimentImages); experimentRotated.swap(prepared.experimentRotated);
+        highResolutionAtlas = std::move(prepared.highResolutionAtlas);
+        blockCompleteHD = std::move(prepared.blockCompleteHD);
+#ifdef HAVE_OPENGL
+        atlas = std::move(prepared.atlas);
+        vbo = std::exchange(prepared.vbo, 0); texCoordBuffer = std::exchange(prepared.texCoordBuffer, 0);
+        for (auto *image : images) if (image && image->textureInfo) image->textureInfo->sprite = this;
+#endif
+        registerLoaded();
+    }
+    bool Sprite::load(const std::string filename)
+    {
+        SpriteLoad loading(filename);
+        while (!loading.poll()) {
+#ifndef __EMSCRIPTEN__
+            SDL_Delay(1);
+#endif
+        }
+        auto result = loading.take();
+        if (!result) return false;
+        adoptLoaded(*result);
+        return getFrameCount() > 0;
+    }
 
 #ifdef DEBUG_SPRITE_NOT_DRAWN
 	std::vector<Sprite*> Sprite::sprites;
@@ -521,26 +367,57 @@ namespace GAGCore
         return stats;
     }
 
-	void Sprite::setHighResolution(bool enabled)
-	{
-		highResolutionEnabled = enabled;
-		packRead=false;packText.clear();
-		for (auto sprite : loadedSprites) sprite->reloadHighResolution();
-	}
-
-	void Sprite::reloadHighResolution()
-	{
-		// A pack reload invalidates any cached team colors, native and HD alike.
-		clearTeamColorCache();
-		highResolutionAtlas.reset();
-		for (auto p : experimentImages) delete p;
-		for (auto p : experimentRotated) delete p;
-		experimentImages.clear(); experimentRotated.clear();
-		for (size_t i=0;i<images.size();++i)
-			loadExperimentFrame(fileName+std::to_string(i)+".webp",fileName+std::to_string(i)+"r.webp");
-		recomputeBlockCompleteHD();
-		createHighResolutionAtlas();
-	}
+    void Sprite::requestHighResolution(bool enabled)
+    {
+        highResolutionEnabled = enabled;
+        packRead = false; packText.clear(); packEntries.clear(); packSource = {};
+        pendingHighResolution.clear();
+        Toolkit::assets().invalidate();
+        for (auto *sprite : loadedSprites) {
+            auto prepared = std::make_unique<Sprite>();
+            prepared->fileName = sprite->fileName;
+            prepared->dynamicTeamColor = sprite->dynamicTeamColor;
+            pendingHighResolution.emplace(sprite, HighResolutionReload{
+                prefetchHighResolution(sprite->fileName, sprite->images.size()), std::move(prepared)});
+        }
+    }
+    bool Sprite::pollHighResolution(unsigned budgetMs)
+    {
+        return pollHighResolutionUntil(std::chrono::steady_clock::now() + std::chrono::milliseconds(budgetMs));
+    }
+    bool Sprite::pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline)
+    {
+        for (auto it = pendingHighResolution.begin(); it != pendingHighResolution.end();) {
+            if (std::chrono::steady_clock::now() >= deadline) break;
+            auto *sprite = it->first;
+            auto &reload = it->second;
+            if (std::any_of(reload.inputs.begin(), reload.inputs.end(), [](const auto& handle) { return handle.pending(); })) { ++it; continue; }
+            // Read native dimensions from the live sprite, but build every HD
+            // layer and its atlas in a private target until publication.
+            while (reload.frame < sprite->images.size()) {
+                sprite->appendHighResolutionFrame(reload.frame++, *reload.prepared);
+                if (std::chrono::steady_clock::now() >= deadline) return false;
+            }
+            reload.prepared->createHighResolutionAtlas();
+            sprite->clearTeamColorCache();
+            sprite->highResolutionAtlas.swap(reload.prepared->highResolutionAtlas);
+            sprite->experimentImages.swap(reload.prepared->experimentImages);
+            sprite->experimentRotated.swap(reload.prepared->experimentRotated);
+            sprite->recomputeBlockCompleteHD();
+            it = pendingHighResolution.erase(it);
+        }
+        return pendingHighResolution.empty();
+    }
+    void Sprite::setHighResolution(bool enabled)
+    {
+        requestHighResolution(enabled);
+        while (!pollHighResolution(4)) {
+            Toolkit::assets().poll();
+#ifndef __EMSCRIPTEN__
+            SDL_Delay(1);
+#endif
+        }
+    }
 
     void Sprite::flushBatches(GraphicContext *gc)
     {
@@ -572,14 +449,12 @@ namespace GAGCore
         std::vector<std::unique_ptr<DrawableSurface>> levels;
         for(int mip=0;mip<4;++mip)
         {
-            auto rw=Toolkit::getFileManager()->openImage(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp");
-            if(!rw){reject();return;}
-            auto s=loadArtwork(rw,1);if(!s){reject();return;}
+            auto s=Toolkit::assets().loadImageSurface(directory+"/"+prefix+"-atlas-mip"+std::to_string(mip)+".webp");
+            if(!s){reject();return;}
             if(s->w!=(atlasW>>mip)||s->h!=(atlasH>>mip)){SDL_DestroySurface(s);reject();return;}
-            levels.emplace_back(new DrawableSurface(s));SDL_DestroySurface(s);
+            levels.emplace_back(new DrawableSurface(s, DrawableSurface::AdoptPixels{}));
         }
-        // The exporter verifies exact source atlas placement. Independently encoded
-        // lossy WebP frames and atlases may differ in RGB, but alpha stays exact.
+        // The atlas must correspond to this pack's validated frame layers.
         for(int i=0;i<count;++i)for(int y=0;y<experimentImages[i]->getH();++y)
         {
             auto source=static_cast<unsigned char*>(experimentImages[i]->sdlsurface->pixels)+y*experimentImages[i]->sdlsurface->pitch;
@@ -635,48 +510,63 @@ namespace GAGCore
 #endif
     }
 
-	void Sprite::loadExperimentFrame(const std::string &frameName, const std::string &rotatedName)
-	{
-		const size_t index=experimentImages.size();
-		experimentImages.push_back(nullptr); experimentRotated.push_back(nullptr);
-		const char *overrideDir=std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
-		if ((!highResolutionEnabled && !overrideDir) || !Toolkit::gc || !(Toolkit::gc->getOptionFlags() & GraphicContext::USEGPU)) return;
-		std::string directory=overrideDir ? overrideDir : "data/highres/v1";
-        if(!readPack(directory))return;
-        std::istringstream stream(packText);std::string magic,id,base,team;int version,w,h,scale;
-        stream>>magic>>version;
-		std::string wanted=frameName.substr(frameName.find_last_of('/')+1);wanted.resize(wanted.find_last_of('.'));
-		while(stream>>id>>w>>h>>scale>>base>>team)
-		{
-			if(id!=wanted)continue;
-			// Every unit HD layer renders onto a fixed highResolutionTextureSize
-			// canvas regardless of native size, so frames.txt carries a scale
-			// sentinel of 0 for unit rows rather than a (possibly fractional,
-			// unparseable-as-int) native-to-HD ratio; every other sprite keeps
-			// its exact original scale==4 layout.
-			if(w!=getW(index)||h!=getH(index)||scale!=(dynamicTeamColor?0:4)){std::cerr<<"High-resolution dimensions rejected: "<<id<<std::endl;return;}
-			auto load=[&](const std::string &name,DrawableSurface *original)->DrawableSurface*
-			{
-				if(name=="-" || !name.ends_with(".webp"))return nullptr;
-				if(name.find_first_of("/\\:")!=std::string::npos || name.find("..")!=std::string::npos)return nullptr;
-				SDL_IOStream *rw=Toolkit::getFileManager()->openImage(directory+"/"+name);
-				if(!rw)return nullptr;
-				SDL_Surface *surface=loadArtwork(rw,1);if(!surface)return nullptr;
-				int lw=original?original->getW():w,lh=original?original->getH():h;
-				int expectedW=dynamicTeamColor?highResolutionTextureSize:lw*scale;
-				int expectedH=dynamicTeamColor?highResolutionTextureSize:lh*scale;
-				if(surface->w!=expectedW||surface->h!=expectedH){SDL_DestroySurface(surface);return nullptr;}
-				auto result=new DrawableSurface(surface);result->highResolutionSampling=true;SDL_DestroySurface(surface);return result;
-			};
-			auto normal=load(base,images[index]);
-			auto colored=load(team,rotated[index]?rotated[index]->orig:nullptr);
-			if((base!="-"&&!normal)||(team!="-"&&!colored)||(images[index]&&base=="-")||(rotated[index]&&team=="-"))
-			{delete normal;delete colored;std::cerr<<"High-resolution frame rejected: "<<id<<std::endl;return;}
-			experimentImages.back()=normal;
-			if(colored)experimentRotated.back()=new RotatedImage(colored);
-			return;
-		}
-	}
+    std::vector<AssetLoader::Handle<AssetImage>> Sprite::prefetchHighResolution(const std::string& name, size_t frames)
+    {
+        std::vector<AssetLoader::Handle<AssetImage>> handles;
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        if ((!highResolutionEnabled && !overrideDir) || !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return handles;
+        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        if (!readPack(directory)) return handles;
+        const auto prefix = name.substr(name.find_last_of('/') + 1);
+        for (size_t i = 0; i < frames; ++i) {
+            auto found = packEntries.find(prefix + std::to_string(i));
+            if (found == packEntries.end()) continue;
+            for (const auto &file : {found->second.base, found->second.team}) {
+                if (file == "-" || file.find_first_of("/\\:") != std::string::npos || file.find("..") != std::string::npos) continue;
+                handles.push_back(Toolkit::assets().requestImage(directory + '/' + file, AssetLoader::Priority::Required, true));
+            }
+        }
+        if (prefix == "terrain" || prefix == "ressource")
+            for (int mip = 0; mip < 4; ++mip)
+                handles.push_back(Toolkit::assets().requestImage(directory + '/' + prefix + "-atlas-mip" + std::to_string(mip) + ".webp"));
+        return handles;
+    }
+    void Sprite::appendHighResolutionFrame(size_t index, Sprite& target)
+    {
+        assert(target.experimentImages.size() == index && target.experimentRotated.size() == index);
+        target.experimentImages.push_back(nullptr); target.experimentRotated.push_back(nullptr);
+        const char *overrideDir = std::getenv("GLOB2_EXPERIMENT_TEXTURE_DIR");
+        if ((!highResolutionEnabled && !overrideDir) || !_gc || !(_gc->getOptionFlags() & GraphicContext::USEGPU)) return;
+        const std::string directory = overrideDir ? overrideDir : "data/highres/v1";
+        if (!readPack(directory)) return;
+        const auto wanted = fileName.substr(fileName.find_last_of('/') + 1) + std::to_string(index);
+        auto found = packEntries.find(wanted); if (found == packEntries.end()) return;
+        const auto &entry = found->second;
+        if (entry.width != getW(index) || entry.height != getH(index) || entry.scale != (dynamicTeamColor ? 0 : 4)) return;
+        auto load = [&](const std::string& name, DrawableSurface *original) -> DrawableSurface* {
+            if (name == "-" || name.find_first_of("/\\:") != std::string::npos || name.find("..") != std::string::npos) return nullptr;
+            // A partial pack may have no usable prepacked atlas. Every accepted
+            // layer needs a ready standalone texture for that fallback.
+            auto handle = Toolkit::assets().requestImage(directory + '/' + name, AssetLoader::Priority::Required, true);
+            auto decoded = Toolkit::assets().wait(handle); if (!decoded) return nullptr;
+            auto *surface = decoded->surface;
+            const int width = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getW() : entry.width) * entry.scale;
+            const int height = dynamicTeamColor ? highResolutionTextureSize : (original ? original->getH() : entry.height) * entry.scale;
+            if (surface->w != width || surface->h != height) return nullptr;
+            auto result = DrawableSurface::fromAssetImage(*decoded);
+            result->highResolutionSampling = true;
+            result->prepareTexture();
+            return result.release();
+        };
+        auto *normal = load(entry.base, images[index]);
+        auto *colored = load(entry.team, rotated[index] ? rotated[index]->orig : nullptr);
+        if ((entry.base != "-" && !normal) || (entry.team != "-" && !colored) ||
+            (images[index] && entry.base == "-") || (rotated[index] && entry.team == "-")) {
+            delete normal; delete colored; return;
+        }
+        target.experimentImages.back() = normal;
+        if (colored) target.experimentRotated.back() = new RotatedImage(colored);
+    }
 
 	DrawableSurface *Sprite::prepareDrawSurface(unsigned index, bool teamColor, bool experiment)
 	{
@@ -708,7 +598,9 @@ namespace GAGCore
 
 	Sprite::~Sprite()
 	{
-        loadedSprites.erase(this);
+        // Private reload staging sprites were never published. Their destruction
+        // must not re-enter the pending map while it destroys its own entries.
+        if (loadedSprites.erase(this)) pendingHighResolution.erase(this);
 #ifdef HAVE_OPENGL
         if(vbo)glDeleteBuffers(1,&vbo);
         if(texCoordBuffer)glDeleteBuffers(1,&texCoordBuffer);
@@ -729,22 +621,6 @@ namespace GAGCore
 		}
 	}
 	
-	bool Sprite::loadFrame(SDL_IOStream *frameStream, SDL_IOStream *rotatedStream)
-	{
-        SDL_Surface *plain = frameStream ? loadArtwork(frameStream, false) : nullptr;
-        SDL_Surface *team = rotatedStream ? loadArtwork(rotatedStream, false) : nullptr;
-        if ((frameStream && !plain) || (rotatedStream && !team))
-        {
-            SDL_DestroySurface(plain);
-            SDL_DestroySurface(team);
-            return false;
-        }
-        images.push_back(plain ? new DrawableSurface(plain) : nullptr);
-        rotated.push_back(team ? new RotatedImage(new DrawableSurface(team)) : nullptr);
-        SDL_DestroySurface(plain);
-        SDL_DestroySurface(team);
-        return true;
-	}
 
 	int Sprite::getW(int index)
 	{

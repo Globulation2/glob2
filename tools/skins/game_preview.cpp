@@ -101,12 +101,12 @@ int main(int argc, char **argv)
                 if (!appearance.ready) throw std::runtime_error("Benchmark meshes unavailable");
                 // Team 1 reuses the preview atlas with the left half of every
                 // model quadrant repainted, and the preview material map.
-                auto paint = std::make_unique<GAGCore::DrawableSurface>(std::string(assets)+"/paint.png");
+                auto paint = std::make_unique<GAGCore::DrawableSurface>(std::string(assets)+"/paint.webp");
                 for (int quadrant : {0,256}) paint->drawFilledRect(quadrant,0,128,512,GAGCore::Color(100,190,80));
-                auto material = GAGCore::loadSkinMaterialMap(std::string(assets)+"/material.png");
+                auto material = GAGCore::loadSkinMaterialMap(std::string(assets)+"/material.webp");
                 if (!material) material = std::make_unique<GAGCore::DrawableSurface>(512,512);
                 if (!appearance.install(1, std::move(paint), std::move(material)))
-                    throw std::runtime_error("Benchmark needs a 512x512 paint.png (and material.png when present)");
+                    throw std::runtime_error("Benchmark needs a 512x512 paint.webp (and material.webp when present)");
                 globalContainer->settings.clouds = false;
                 globalContainer->settings.cloudShadows = false;
                 globalContainer->settings.unitInterpolation = false;

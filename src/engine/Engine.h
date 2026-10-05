@@ -196,9 +196,6 @@ public:
     //! Main-thread GUI step with the simulation parked; rethrows simulation
     //! failures. Returns false once the session has ended.
     bool threadedClientFrame(Uint64 now, const std::vector<SDL_Event>& events);
-    //! Milliseconds to wait after a threaded frame that took `elapsed` ms, capping
-    //! drawing at about 120 frames per second without adding to vsync pacing.
-    static Uint32 threadedFrameWait(Uint64 elapsed) { return elapsed >= 8 ? 0 : Uint32(8 - elapsed); }
     //! Keep the simulation parked while the host is in the background.
     void suspendSimulation();
     void resumeSimulation(Uint64 now);

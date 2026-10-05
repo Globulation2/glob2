@@ -188,14 +188,20 @@ struct Http
 		exchanges.push_back(exchange);
 		return std::make_unique<FakeFetch>(exchange);
 	}
-	// The oldest unanswered request whose URL ends with path.
+	// Match path suffixes independently of cache-key queries. A suffix that
+    // includes '?' still matches the complete URL for query-specific checks.
+    static bool matches(const std::string &url, const std::string &path)
+    {
+        const auto end = path.find('?') == std::string::npos ? url.find('?') : std::string::npos;
+        const auto target = url.substr(0, end);
+        return target.size() >= path.size() && target.compare(target.size() - path.size(), path.size(), path) == 0;
+    }
+    // The oldest unanswered request whose path ends with the given suffix.
 	std::shared_ptr<Exchange> pending(const std::string &path) const
 	{
 		for (const auto &exchange : exchanges)
 			if (exchange->state == HttpFetch::State::Pending &&
-				exchange->request.url.size() >= path.size() &&
-				exchange->request.url.compare(exchange->request.url.size() - path.size(),
-											  path.size(), path) == 0)
+				matches(exchange->request.url, path))
 				return exchange;
 		return nullptr;
 	}
@@ -203,9 +209,7 @@ struct Http
 	{
 		int n = 0;
 		for (const auto &exchange : exchanges)
-			if (exchange->request.url.size() >= path.size() &&
-				exchange->request.url.compare(exchange->request.url.size() - path.size(),
-											  path.size(), path) == 0)
+			if (matches(exchange->request.url, path))
 				++n;
 		return n;
 	}

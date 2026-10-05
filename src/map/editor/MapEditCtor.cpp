@@ -25,7 +25,7 @@ MapEdit::MapEdit()
             128, // height
             Minimap::HideFOW)
 {
-	Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
+	Sprite::requestHighResolution(globalContainer->settings.highResolutionArtwork);
     const bool usePhone=GAGCore::phonePresentationRequested();
     if(usePhone && globalContainer->gfx->hasPortableRenderer()) phone=std::make_unique<PhoneEditor>(*this);
 	doQuit=false;
@@ -315,7 +315,7 @@ MapEdit::MapEdit()
 
 MapEdit::~MapEdit()
 {
-	Sprite::setHighResolution(false);
+	Sprite::requestHighResolution(false);
 	// The toolkit owns this shared cache entry; other staging editors may use it.
 	for(std::vector<MapEditorWidget*>::iterator i=mew.begin(); i!=mew.end(); ++i)
 	{

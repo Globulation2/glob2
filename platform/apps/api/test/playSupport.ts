@@ -1,3 +1,4 @@
+import sharp from 'sharp';
 // Fixtures for room, match and relay tests: a fake engine agent, signed-in
 // sockets, relay calls and ticket verification against the JWKS.
 import { createPublicKey, randomBytes } from 'node:crypto';
@@ -158,7 +159,14 @@ export class FakeEngine {
       if (!text.startsWith('GLOB2MAP:')) {
         return { ok: false, error: { code: 'bad_request', message: 'cannot load the map' } };
       }
-      const png = await putContent(this.blobs, Buffer.from(`PNG:${mapHash}`));
+      const png = await putContent(
+        this.blobs,
+        await sharp({
+          create: { width: maxSizePx, height: maxSizePx, channels: 3, background: '#214355' },
+        })
+          .png()
+          .toBuffer(),
+      );
       return {
         ok: true,
         result: {

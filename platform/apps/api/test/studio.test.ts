@@ -1,3 +1,4 @@
+import sharp from 'sharp';
 import { randomUUID } from 'node:crypto';
 import { beforeAll, afterAll, it, expect, vi } from 'vitest';
 import { createHarness, postJson, type Harness, type Instance } from './support.ts';
@@ -123,7 +124,12 @@ it('keeps studio history and previews private while supporting owner download, r
     );
     const row = (await studio.request(generation.id))!;
     const mapHash = await blobs.write(fakeMapBytes(4, 791), 'application/x-glob2-map');
-    const previewHash = await blobs.write(Buffer.from('private-preview'), 'image/png');
+    const previewHash = await blobs.write(
+      await sharp({ create: { width: 512, height: 256, channels: 3, background: '#214355' } })
+        .png()
+        .toBuffer(),
+      'image/png',
+    );
     await studio.finish(row, {
       mapHash,
       previewHash,
@@ -141,9 +147,9 @@ it('keeps studio history and previews private while supporting owner download, r
     expect(
       (await call('GET', `/api/v1/map-studio/threads/${thread}`, other.accessToken)).status,
     ).toBe(404);
-    expect((await call('GET', path + '/preview.png')).status).toBe(404);
-    expect((await call('GET', path + '/preview.png', other.accessToken)).status).toBe(404);
-    expect((await call('GET', path + '/preview.png', owner.accessToken)).status).toBe(200);
+    expect((await call('GET', path + '/preview.webp')).status).toBe(404);
+    expect((await call('GET', path + '/preview.webp', other.accessToken)).status).toBe(404);
+    expect((await call('GET', path + '/preview.webp', owner.accessToken)).status).toBe(200);
     expect((await call('GET', path + '/file', owner.accessToken)).status).toBe(200);
     expect((await call('GET', `/api/v1/blobs/maps/${mapHash}`, other.accessToken)).status).toBe(
       404,
@@ -174,7 +180,7 @@ it('keeps studio history and previews private while supporting owner download, r
         })
       ).status,
     ).toBe(200);
-    expect((await call('GET', path + '/preview.png')).status).toBe(200);
+    expect((await call('GET', path + '/preview.webp')).status).toBe(200);
     expect((await call('GET', `/api/v1/blobs/maps/${mapHash}`)).status).toBe(200);
     expect(
       (await call('GET', `/api/v1/map-studio/threads/${thread}`, other.accessToken)).status,

@@ -3,7 +3,7 @@
 // file system. Core and game are run dependencies: main() starts only after
 // both are installed, exactly as with Emscripten's --preload-file. Optional packages
 // (in-game music, high-resolution artwork) are fetched only when the page asks,
-// part by part, and become visible to the game all at once when complete.
+// with bounded parallel transfers, and become visible to the game all at once when complete.
 //
 // Package URLs are content-addressed, so a downloaded part is kept in the Cache
 // Storage API and reused on later visits without touching the network. Where Cache
@@ -18,6 +18,11 @@ class Glob2AssetLoader {
     this.cacheReady = null;
     this.installed = [];
     this.retryAfter = {};
+    this.inFlight = new Map();
+    this.installing = Promise.resolve();
+    this.activeParts = 0;
+    this.partWaiters = [];
+    this.partConcurrency = Math.max(1, Math.min(16, host.partConcurrency || 4));
     for (const entry of manifest.packages) this.states[entry.name] = entry.optional ? 'idle' : 'pending';
   }
   static cacheName = 'glob2-assets-v1';
@@ -42,7 +47,23 @@ class Glob2AssetLoader {
   wire(part, encoding) {
     return this.host.wireSize?.(part.url, encoding) || part.size;
   }
-  async fetchPart(part, counted, sized) {
+  async acquirePart() {
+    if (this.activeParts < this.partConcurrency) { this.activeParts++; return; }
+    await new Promise(resolve => this.partWaiters.push(resolve));
+  }
+  releasePart() {
+    const next = this.partWaiters.shift();
+    if (next) next(); else this.activeParts--;
+  }
+  async fetchPart(part, counted, sized, between) {
+    await this.acquirePart();
+    try {
+      await between?.();
+      return await this.readPart(part, counted, sized);
+    }
+    finally { this.releasePart(); }
+  }
+  async readPart(part, counted, sized) {
     await this.openCache();
     const url = this.host.resolve(part.url);
     if (this.cache) {
@@ -97,15 +118,21 @@ class Glob2AssetLoader {
     const total = () => totals.reduce((sum, size) => sum + size, 0);
     let loaded = 0;
     this.report(name, 0, total());
-    for (const [index, part] of entry.parts.entries()) {
-      await between?.();
-      const start = loaded;
-      const counted = count => { loaded += count; this.report(name, loaded, total()); };
-      // A cached part counts as its expected size, reached at once.
-      const {cached, bytes} = await this.fetchPart(part, counted, size => { totals[index] = size; });
-      if (cached) { loaded = start + totals[index]; this.report(name, loaded, total()); }
-      contents.push(bytes);
-    }
+    const progress = entry.parts.map(() => 0);
+    await Promise.all(entry.parts.map(async (part, index) => {
+      const counted = count => {
+        progress[index] += count;
+        loaded = progress.reduce((sum, value) => sum + value, 0);
+        this.report(name, loaded, total());
+      };
+      const {cached, bytes} = await this.fetchPart(part, counted, size => { totals[index] = size; }, between);
+      if (cached) {
+        progress[index] = totals[index];
+        loaded = progress.reduce((sum, value) => sum + value, 0);
+        this.report(name, loaded, total());
+      }
+      contents[index] = bytes;
+    }));
     return contents;
   }
   install(name, contents) {
@@ -139,15 +166,22 @@ class Glob2AssetLoader {
     this.retryAfter[name] = now + 10000;
     void this.load(name).catch(() => {}); // state() exposes failure; gameplay continues.
   }
-  async load(name, between) {
-    if (this.states[name] === 'ready') return;
+  load(name, between) {
+    if (this.states[name] === 'ready') return Promise.resolve();
+    if (this.inFlight.has(name)) return this.inFlight.get(name);
     this.states[name] = 'downloading';
-    try {
-      this.install(name, await this.download(name, between));
-    } catch (error) {
-      this.states[name] = 'failed';
-      throw error;
-    }
+    const downloaded = this.download(name, between);
+    downloaded.catch(() => {});
+    // Downloads overlap, installation follows request order so replacements win
+    // consistently regardless of which package finishes first.
+    const installed = this.installing.then(async () => {
+      try { this.install(name, await downloaded); }
+      catch (error) { this.states[name] = 'failed'; throw error; }
+    });
+    this.installing = installed.catch(() => {});
+    const pending = installed.finally(() => this.inFlight.delete(name));
+    this.inFlight.set(name, pending);
+    return pending;
   }
   // Remove cached parts that the current manifest no longer lists.
   async prune() {

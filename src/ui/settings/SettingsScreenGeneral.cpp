@@ -189,6 +189,22 @@ void SettingsScreen::buildGeneral()
 				   commit();
 			   });
 		section("Advanced graphics");
+        {
+            const auto &presets = Settings::RENDER_FPS_PRESETS;
+            std::vector<std::string> labels;
+            for (int fps : presets) labels.push_back(fps ? std::to_string(fps) + " FPS" : tr("Unlimited"));
+            const auto selected = std::find(std::begin(presets), std::end(presets), s.targetRenderFps);
+            choice("graphics.fps", "Target render FPS",
+                   "Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.",
+                   selected == std::end(presets) ? 2 : int(selected - std::begin(presets)), labels,
+                   [this](int v) {
+                       if (v < 0 || v >= int(std::size(Settings::RENDER_FPS_PRESETS))) return;
+                       auto &settings = globalContainer->settings;
+                       settings.targetRenderFps = Settings::RENDER_FPS_PRESETS[v];
+                       globalContainer->gfx->setTargetRenderFps(settings.targetRenderFps);
+                       commit();
+                   });
+        }
 		appearance("graphics.paths", "Path lines", "Choose translucent or opaque unit path lines.", &Settings::translucentPathLines, "Opaque", "Translucent");
 		effect("graphics.indicators", "Smooth progress indicators", "Smooth the moving edges of progress indicators.", &Settings::smoothProgressIndicators);
 		effect("graphics.animation", "Decorative interface animation", "Animate victory artwork. Reduced motion also disables this animation.", &Settings::decorativeAnimations);

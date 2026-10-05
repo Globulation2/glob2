@@ -254,9 +254,9 @@ int maps(Probe &probe, const std::string &file, const std::string &simKey)
 		Json line = {{"step", "detail"}, {"ok", bool(parsed)}, {"title", map.title}, {"versions", parsed ? parsed->versions.size() : 0}};
 		if (map.latestVersion && !map.latestVersion->previewUrl.empty())
 		{
-			auto png = probe.raw(HttpFetch::Method::Get, map.latestVersion->previewUrl);
-			line["preview"] = {{"ok", png.ok}, {"bytes", png.body.size()}, {"png", png.body.rfind("\x89PNG", 0) == 0},
-							   {"contentType", png.contentType}};
+			auto preview = probe.raw(HttpFetch::Method::Get, map.latestVersion->previewUrl);
+			line["preview"] = {{"ok", preview.ok}, {"bytes", preview.body.size()}, {"webp", preview.body.size() >= 12 && preview.body.compare(0, 4, "RIFF") == 0 && preview.body.compare(8, 4, "WEBP") == 0},
+							   {"contentType", preview.contentType}};
 		}
 		say(line);
 		break;
@@ -300,8 +300,8 @@ int maps(Probe &probe, const std::string &file, const std::string &simKey)
 	say({{"step", "mine"}, {"ok", mine.ok}, {"count", parseMapList(mine.result).items.size()}});
 	if (!version->previewUrl.empty())
 	{
-		auto png = probe.raw(HttpFetch::Method::Get, version->previewUrl);
-		say({{"step", "preview"}, {"ok", png.ok}, {"bytes", png.body.size()}, {"png", png.body.rfind("\x89PNG", 0) == 0}});
+		auto preview = probe.raw(HttpFetch::Method::Get, version->previewUrl);
+		say({{"step", "preview"}, {"ok", preview.ok}, {"bytes", preview.body.size()}, {"webp", preview.body.size() >= 12 && preview.body.compare(0, 4, "RIFF") == 0 && preview.body.compare(8, 4, "WEBP") == 0}});
 	}
 	auto blob = probe.raw(HttpFetch::Method::Get, "/api/v1/blobs/maps/" + version->hash);
 	say({{"step", "download"}, {"ok", blob.ok}, {"bytes", blob.body.size()}, {"error", blob.error.message}});

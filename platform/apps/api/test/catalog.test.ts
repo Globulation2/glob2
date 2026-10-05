@@ -183,7 +183,7 @@ describe('creating maps and uploading versions', () => {
       simVersion: SIM,
       fileTitle: 'Uploaded map',
       preview: 'ready',
-      previewUrl: `${ORIGIN}/api/v1/maps/${map.id}/versions/${pending['hash']}/preview.png`,
+      previewUrl: `${ORIGIN}/api/v1/maps/${map.id}/versions/${pending['hash']}/preview.webp`,
     });
     expect(detail['viewer']).toEqual({
       owner: true,
@@ -200,10 +200,10 @@ describe('creating maps and uploading versions', () => {
     // The preview and the file are served.
     const preview = await api(
       'GET',
-      `/api/v1/maps/${map.id}/versions/${pending['hash']}/preview.png`,
+      `/api/v1/maps/${map.id}/versions/${pending['hash']}/preview.webp`,
     );
     expect(preview.status).toBe(200);
-    expect(preview.headers.get('content-type')).toBe('image/png');
+    expect(preview.headers.get('content-type')).toBe('image/webp');
     const file = await api('GET', `/api/v1/maps/${map.id}/versions/${pending['hash']}/file`);
     expect(file.status).toBe(200);
     expect(Buffer.from(await file.arrayBuffer()).equals(bytes)).toBe(true);
@@ -398,7 +398,7 @@ describe('visibility', () => {
     const file = (m: { id: string; hash: string }) =>
       `/api/v1/maps/${m.id}/versions/${m.hash}/file`;
     const preview = (m: { id: string; hash: string }) =>
-      `/api/v1/maps/${m.id}/versions/${m.hash}/preview.png`;
+      `/api/v1/maps/${m.id}/versions/${m.hash}/preview.webp`;
     const blob = (m: { hash: string }) => `/api/v1/blobs/maps/${m.hash}`;
     for (const path of [
       file(maps.unlisted),

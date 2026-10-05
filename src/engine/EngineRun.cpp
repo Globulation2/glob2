@@ -981,8 +981,12 @@ void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::
 								? globalContainer->settings.getGameSpeedRenderInterval()
 								: 1;
 	const auto budget = globalContainer->runNoX ? 0ULL : std::uint64_t(st.speed) * 1000000ULL;
-	// Threaded drawing presents every display frame; budget it against 60 Hz.
-	const auto frameBudget = gui.simulationThreaded ? 16666667ULL : budget * renderRatio;
+    // Intentional render limiting must not count as a missed presentation budget.
+    const int fps = globalContainer->settings.targetRenderFps;
+    const auto renderBudget = globalContainer->runNoX || fps == 0 ? 0ULL
+        : (1000000000ULL + fps - 1) / fps;
+    const auto frameBudget = gui.simulationThreaded ? renderBudget
+        : std::max(renderBudget, budget * renderRatio);
 	perf.configure(gui.game.stepCounter, budget, frameBudget,
 				   paused                       ? "paused"
 				   : globalContainer->runNoX    ? "headless"
@@ -1113,11 +1117,10 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
     if (startSimulationThread(SDL_GetTicks()))
     {
         // The simulation runs on its own thread; this thread handles input and draws
-        // at up to about 120 frames per second. Headless runs get here only with the
+        // at the configured render ceiling. Headless runs get here only with the
         // GLOB2_SIM_THREAD test switch and then only take scenes.
         for (;;)
         {
-            const Uint64 frameStarted = SDL_GetTicks();
             GAGCore::EventQueue events;
             if (!globalContainer->runNoX)
             {
@@ -1134,8 +1137,8 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
             }
             else
             {
-                drawSession();
-                GAGCore::ApplicationHost::wait(threadedFrameWait(SDL_GetTicks() - frameStarted));
+                if (globalContainer->gfx->beginRenderFrame()) drawSession();
+                GAGCore::ApplicationHost::wait(std::min(Uint32(8), globalContainer->gfx->renderFrameWait()));
             }
         }
         doRunOnceAgain = finishSession();
@@ -1143,7 +1146,7 @@ void Engine::runOneGameSession(bool& doRunOnceAgain)
     }
     while (gui.isRunning) {
         stepSession(SDL_GetTicks());
-        drawSession();
+        if (globalContainer->runNoX || globalContainer->gfx->beginRenderFrame()) drawSession();
         if (!globalContainer->runNoX) {
             PerformanceTelemetry::Scope delayTime(waitingOnNetwork()
                 ? PerformanceTelemetry::Id::NetworkSleep : PerformanceTelemetry::Id::Sleep);

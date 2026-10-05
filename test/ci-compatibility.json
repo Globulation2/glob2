@@ -23,7 +23,12 @@
     "WinProbability/*",
     "AIRules/*",
     "MusicSet/*",
-    "CommunityMusic/*"
+    "CommunityMusic/*",
+    "ColonySkinPreview/*",
+    "HighResolutionIntegration/*",
+    "UnitHighResolutionCache/*",
+    "ScreenExecution/*",
+    "SettingsGraphics/*"
   ],
   "unit_filters": [
     "*"

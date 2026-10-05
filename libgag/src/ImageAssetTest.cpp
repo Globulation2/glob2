@@ -2,6 +2,9 @@
 #include "Glob2Test.h"
 #include "LossyAlphaFixture.h"
 #include <FileManager.h>
+#include <GraphicContext.h>
+#include <AssetLoader.h>
+#include <stdexcept>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <filesystem>
@@ -17,6 +20,25 @@ std::string read(SDL_IOStream *stream) {
 }
 }
 TEST_SUITE("ImageAssets") {
+TEST_CASE("prepared image adoption separates shared pixels and transfers exclusive pixels") {
+    auto *pixels = SDL_CreateSurface(2, 1, SDL_PIXELFORMAT_ARGB8888);
+    REQUIRE(pixels != nullptr);
+    auto *row = static_cast<Uint32*>(pixels->pixels);
+    row[0] = 0x00112233u; row[1] = 0x80445566u;
+    GAGCore::AssetImage image(pixels);
+    auto shared = GAGCore::DrawableSurface::fromAssetImage(image, false, false);
+    CHECK(image.surface == pixels);
+    CHECK(shared->getSDLSurface() != pixels);
+    CHECK(static_cast<Uint32*>(shared->getSDLSurface()->pixels)[0] == row[0]);
+    static_cast<Uint32*>(shared->getSDLSurface()->pixels)[0] = 0;
+    CHECK(row[0] == 0x00112233u);
+    auto exclusive = GAGCore::DrawableSurface::fromAssetImage(image, true, false);
+    CHECK(image.surface == nullptr);
+    CHECK(exclusive->getSDLSurface() == pixels);
+    CHECK(static_cast<Uint32*>(exclusive->getSDLSurface()->pixels)[1] == 0x80445566u);
+    GAGCore::AssetImage missing(nullptr);
+    CHECK_THROWS_AS(GAGCore::DrawableSurface::fromAssetImage(missing, true, false), std::runtime_error);
+}
 TEST_CASE("WebP decoder preserves exact RGBA including transparent RGB") {
     auto stream=SDL_IOFromConstMem(webp,sizeof(webp)); REQUIRE(stream!=nullptr);
     auto surface=IMG_Load_IO(stream,1); REQUIRE(surface!=nullptr);
@@ -39,15 +61,20 @@ TEST_CASE("Q90 lossy WebP preserves dimensions and exact alpha") {
     SDL_DestroySurface(surface);
 }
 TEST_CASE("16-bit RGBA rounds normalized channels to the exporter reference") {
-    auto surface = IMG_Load_IO(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
-    REQUIRE(surface != nullptr);
-    auto rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
-    REQUIRE(rgba != nullptr);
-    CHECK(rgba->w == 2); CHECK(rgba->h == 2);
-    for (int y = 0; y < 2; ++y)
-        CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch,
-                          rgba16Fixture::rgba + y * 8, 8) == 0);
-    SDL_DestroySurface(rgba); SDL_DestroySurface(surface);
+    // Keep one JUnit result for the strict native selection inventory while
+    // exercising both production decoder paths against the same reference.
+    for (const auto decoder : {IMG_Load_IO, SDL_LoadPNG_IO}) {
+        auto surface = decoder(SDL_IOFromConstMem(rgba16Fixture::png, sizeof(rgba16Fixture::png)), true);
+
+        REQUIRE(surface != nullptr);
+        auto rgba = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
+        REQUIRE(rgba != nullptr);
+        CHECK(rgba->w == 2); CHECK(rgba->h == 2);
+        for (int y = 0; y < 2; ++y)
+            CHECK(std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch,
+                              rgba16Fixture::rgba + y * 8, 8) == 0);
+        SDL_DestroySurface(rgba); SDL_DestroySurface(surface);
+    }
 }
 #ifndef __EMSCRIPTEN__
 TEST_CASE("Native PNG and JPEG loading and saving remain available") {

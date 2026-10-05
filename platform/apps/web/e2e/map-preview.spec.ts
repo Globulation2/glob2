@@ -12,10 +12,10 @@ const detail = JSON.parse(
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/api/v1/maps/*', (route) => route.fulfill({ json: detail }));
-  await page.route('https://play.example.org/**/preview.png', (route) =>
+  await page.route('https://play.example.org/**/preview.webp', (route) =>
     route.fulfill({
-      contentType: 'image/png',
-      body: readFileSync(join(import.meta.dirname, 'fixtures/maps/river.png')),
+      contentType: 'image/webp',
+      body: readFileSync(join(import.meta.dirname, 'fixtures/maps/river.webp')),
     }),
   );
   await page.goto(`/maps/${detail.map.id}`);
@@ -90,7 +90,7 @@ test('touch panning works at full-map scale and cancellation ends the drag', asy
 });
 
 test('rectangular maps retain their proportions', async ({ page }) => {
-  await page.route('https://play.example.org/**/preview.png', (route) =>
+  await page.route('https://play.example.org/**/preview.webp', (route) =>
     route.fulfill({
       contentType: 'image/svg+xml',
       body: '<svg xmlns="http://www.w3.org/2000/svg" width="512" height="256"><rect width="512" height="256" fill="green"/><rect width="128" height="128" fill="blue"/></svg>',
