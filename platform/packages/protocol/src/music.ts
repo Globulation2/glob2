@@ -39,6 +39,9 @@ export const MusicTrack = Open({
 });
 export type MusicTrack = Static<typeof MusicTrack>;
 export const MusicRelease = Open({
+  timelineId: Type.Optional(Sha256Hex),
+  validation: Type.Optional(Type.Array(Type.Unknown())),
+  generated: Type.Optional(Type.Boolean()),
   id: Uuid,
   ownerId: Uuid,
   metadata: MusicMetadata,

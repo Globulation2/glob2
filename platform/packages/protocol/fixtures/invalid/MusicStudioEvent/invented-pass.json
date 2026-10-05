@@ -1,0 +1,13 @@
+{
+  "id": "45",
+  "requestId": "9f8e7d6c-5b4a-4392-8170-6f5e4d3c2b1a",
+  "createdAt": "2026-10-01T12:00:00Z",
+  "type": "check",
+  "payload": {
+    "id": "2:seam",
+    "label": "seam",
+    "attempt": 2,
+    "status": "perfect",
+    "measures": []
+  }
+}

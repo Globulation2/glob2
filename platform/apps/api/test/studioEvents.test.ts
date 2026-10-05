@@ -3,7 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Studio } from '@glob2/map-studio';
 import type { StudioEvent, StudioThread } from '@glob2/protocol';
 import { afterEach, expect, it, vi } from 'vitest';
-import { streamStudioEvents } from '../src/maps/studioEvents.ts';
+import { streamStudioEvents } from '../src/http/studioEvents.ts';
 
 function fixture() {
   const raw = Object.assign(new EventEmitter(), {
@@ -28,6 +28,7 @@ function fixture() {
   };
   const reply = { raw, hijack: vi.fn() };
   const options = {
+    channel: 'map-studio-updated',
     studio: studio as unknown as Studio,
     pubsub,
     request: { log: { info: vi.fn() } } as unknown as FastifyRequest,

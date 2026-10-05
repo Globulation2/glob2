@@ -16,7 +16,7 @@ import { body } from '../http/validate.ts';
 import type { RoomService } from '../play/rooms.ts';
 import { supportedSimVersions } from '../app.ts';
 import { apiError } from '../errors.ts';
-import { streamStudioEvents } from './studioEvents.ts';
+import { streamStudioEvents } from '../http/studioEvents.ts';
 export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
   const studio = new Studio(app.services.db),
     config = app.services.config.instance.mapStudio;
@@ -156,6 +156,7 @@ export async function studioRoutes(app: FastifyInstance, rooms: RoomService) {
       const cursor = typeof header === 'string' ? header : (query.cursor ?? '0');
       return streamStudioEvents({
         studio,
+        channel: STUDIO_CHANNEL,
         pubsub: app.services.pubsub,
         request,
         reply,

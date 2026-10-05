@@ -4,6 +4,8 @@ import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { contentKey } from '@glob2/core';
 import {
   MusicMetadata,
+  MusicLicense,
+  Strict,
   MusicConvert,
   MusicBatch,
   MusicReport,
@@ -171,6 +173,7 @@ export async function musicRoutes(app: FastifyInstance, identity: Identity): Pro
         const account = await registered(request);
         await enforce(uploads, account.id, reply);
         const row = await visible(request.params.id, request, true);
+        if (row.authoring) throw apiError('conflict', 'Revise generated music in Music Studio.');
         if (!['draft', 'inspected'].includes(row.status))
           throw apiError('bad_request', 'This release no longer accepts uploads.');
         if (!['calm', 'building', 'combat', 'cover'].includes(request.params.kind))
@@ -238,6 +241,7 @@ export async function musicRoutes(app: FastifyInstance, identity: Identity): Pro
   for (const action of ['inspect', 'convert'] as const)
     app.post<Id>(`/api/v1/music/:id/${action}`, async (request) => {
       const row = await visible(request.params.id, request, true);
+      if (row.authoring) throw apiError('conflict', 'Revise generated music in Music Studio.');
       const options = action === 'convert' ? body(MusicConvert, request.body) : null;
       if (!['calm', 'building', 'combat'].every((m) => row.sources[m]))
         throw apiError('bad_request', 'Upload all three moods first.');
@@ -270,9 +274,18 @@ export async function musicRoutes(app: FastifyInstance, identity: Identity): Pro
   app.post<Id>('/api/v1/music/:id/publish', async (request) => {
     await registered(request);
     const row = await visible(request.params.id, request, true);
+    const publication = row.authoring
+      ? body(Strict({ license: MusicLicense }), request.body)
+      : null;
+    if (publication && publication.license !== row.metadata.license)
+      throw apiError('bad_request', 'Confirm the license chosen when composing this version.');
+    if (publication && row.status === 'published' && !row.hidden) return view(row, request);
+    const metadata = publication
+      ? { ...row.metadata, license: publication.license, aiGenerated: true }
+      : row.metadata;
     const updated = await db
       .updateTable('music_releases')
-      .set({ status: 'published', updated_at: new Date() })
+      .set({ status: 'published', metadata: JSON.stringify(metadata), updated_at: new Date() })
       .where('id', '=', row.id)
       .where('status', '=', 'ready')
       .where('hidden', '=', false)

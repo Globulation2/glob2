@@ -31,6 +31,18 @@
           "error"
         ],
         "properties": {
+          "timelineId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hexadecimal SHA-256 digest."
+          },
+          "validation": {
+            "type": "array",
+            "items": {}
+          },
+          "generated": {
+            "type": "boolean"
+          },
           "id": {
             "type": "string",
             "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",

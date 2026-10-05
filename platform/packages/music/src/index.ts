@@ -7,6 +7,7 @@ export const MUSIC_CONVERT = 'music-convert';
 export const MUSIC_UPLOAD_BYTES = 512 * 1024 * 1024;
 export type ReleaseRow = Selectable<Database['music_releases']>;
 export interface ConversionResult {
+  timelineId?: string;
   frames: number;
   tracks: MusicTrack[];
   warnings: string[];
@@ -37,6 +38,9 @@ export async function releaseView(
   const result = row.result as unknown as ConversionResult | null;
   const prefix = `/api/v1/music/${row.id}`;
   return {
+    generated: !!row.authoring,
+    ...(row.authoring && result?.timelineId ? { timelineId: result.timelineId } : {}),
+    ...(row.authoring ? { validation: (row.authoring['checks'] ?? []) as unknown[] } : {}),
     id: row.id,
     ownerId: row.owner_id,
     metadata: row.metadata,

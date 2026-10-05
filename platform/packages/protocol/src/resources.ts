@@ -227,6 +227,20 @@ export const AccountExport = Open(
         artifacts: Type.Optional(ExportRows),
       }),
     ),
+    musicStudio: Type.Optional(
+      Open({
+        wallets: ExportRows,
+        ledger: ExportRows,
+        calls: ExportRows,
+        purchases: ExportRows,
+        threads: ExportRows,
+        messages: ExportRows,
+        requests: ExportRows,
+        attempts: ExportRows,
+        events: Type.Optional(ExportRows),
+        artifacts: Type.Optional(ExportRows),
+      }),
+    ),
     ais: Type.Optional(
       Open({
         published: ExportRows,

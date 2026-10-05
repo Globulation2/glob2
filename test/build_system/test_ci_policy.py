@@ -86,10 +86,12 @@ class PolicyTest(unittest.TestCase):
     def test_music_runtime_boundaries_select_their_consumers(self):
         for path in ['tools/music/web/exports.cpp', 'tools/music/build_web.py']:
             self.assertEqual(self.select([path]), policy.full())
-        for path in ['tools/music/glob2music/community.py', 'tools/encode_music.py']:
+        for path in ['tools/music/glob2music/community.py', 'tools/music/glob2music/studio/score.py',
+                     'tools/encode_music.py']:
             selected = self.select([path])
             self.assertTrue(selected['music'] and selected['platform'] and selected['platform_stack'])
         self.assertTrue(self.select(['platform/apps/music-worker/src/process.ts'])['platform_stack'])
+        self.assertTrue(self.select(['platform/apps/ai-music-worker/src/runner.ts'])['platform_stack'])
 
     def test_platform_stack_smoke_follows_the_stack_inputs(self):
         for path in ['deploy/compose.yaml', 'deploy/Dockerfile', 'test/deployment/platform_stack_smoke.py',

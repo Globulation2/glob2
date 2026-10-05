@@ -193,6 +193,12 @@ export class AdminService {
         .where('account_id', '=', id)
         .forUpdate()
         .execute();
+      await tx
+        .selectFrom('music_wallets')
+        .select('account_id')
+        .where('account_id', '=', id)
+        .forUpdate()
+        .execute();
       // Skin publication and draft saves lock this account before committing.
       const current = await tx
         .selectFrom('accounts')
@@ -233,6 +239,36 @@ export class AdminService {
           )
           .execute();
       }
+      const musicStudioRequests = await tx
+        .selectFrom('music_studio_requests')
+        .select(['id', 'kind', 'status'])
+        .where('account_id', '=', id)
+        .orderBy('id')
+        .forUpdate()
+        .execute();
+      const reservedMusic = musicStudioRequests.filter(
+        (r) => r.kind === 'generate' && !['ready', 'failed'].includes(r.status),
+      );
+      if (reservedMusic.length) {
+        await tx
+          .updateTable('music_wallets')
+          .set({ reserved: sql`reserved - ${reservedMusic.length}` })
+          .where('account_id', '=', id)
+          .execute();
+        await tx
+          .insertInto('music_ledger')
+          .values(
+            reservedMusic.map((r) => ({
+              id: `generation:${r.id}`,
+              account_id: id,
+              amount: 0,
+              kind: 'usage' as const,
+              details: { requestId: r.id, delivered: false, returned: true, accountDeleted: true },
+            })),
+          )
+          .execute();
+      }
+      await tx.deleteFrom('music_studio_threads').where('account_id', '=', id).execute();
       await sql`DELETE FROM engine_jobs WHERE kind='import-ai-map' AND id::text IN (SELECT checkpoints->>'importJob' FROM studio_requests WHERE account_id=${id})`.execute(
         tx,
       );

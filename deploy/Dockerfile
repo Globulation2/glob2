@@ -95,6 +95,8 @@ COPY platform/packages/hive/package.json packages/hive/
 COPY platform/packages/billing/package.json packages/billing/
 COPY platform/packages/map-studio/package.json packages/map-studio/
 COPY platform/packages/music/package.json packages/music/
+COPY platform/packages/music-studio/package.json packages/music-studio/
+COPY platform/apps/ai-music-worker/package.json apps/ai-music-worker/
 COPY platform/apps/music-worker/package.json apps/music-worker/
 COPY platform/apps/ai-map-worker/package.json apps/ai-map-worker/
 COPY platform/apps/api/package.json apps/api/
@@ -127,6 +129,7 @@ COPY platform/apps/worker apps/worker
 COPY platform/apps/music-worker apps/music-worker
 COPY platform/apps/engine-agent apps/engine-agent
 COPY platform/apps/ai-map-worker apps/ai-map-worker
+COPY platform/apps/ai-music-worker apps/ai-music-worker
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \
     find packages apps -name '*.test.ts' -delete
@@ -230,3 +233,34 @@ ENV MUSIC_PYTHON=/opt/music/bin/python
 USER 10001:10001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-music-worker-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
 CMD ["node", "apps/music-worker/src/main.ts"]
+
+# Optional CPU-only composition service. No models, CUDA, or engine binary.
+FROM ${UBUNTU_IMAGE} AS ai-music-runtime
+USER root
+ARG TARGETARCH
+RUN test "$TARGETARCH" = amd64 && apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg python3 python3-pip python3-venv bubblewrap util-linux cmake g++ make pkg-config \
+    libsndfile1-dev libx11-6 libxext6 libfreetype6 libfontconfig1 libglib2.0-0 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY tools/music/requirements.txt tools/music/requirements-synth.txt /tmp/music-requirements/
+RUN python3 -m venv /opt/music && /opt/music/bin/pip install --no-cache-dir -r /tmp/music-requirements/requirements-synth.txt
+COPY tools/music/glob2music /app/tools/music/glob2music
+COPY tools/music/sets /app/tools/music/sets
+COPY tools/music/requirements.txt tools/music/requirements-synth.txt /app/tools/music/
+COPY tools/encode_music.py /app/tools/encode_music.py
+COPY docs/assets/music-style-guide.md /app/docs/assets/music-style-guide.md
+ENV PYTHONPATH=/app/tools/music MUSIC_ROOT=/app/tools/music MUSIC_ASSETS=/opt/music-assets MUSIC_PYTHON=/opt/music/bin/python
+RUN --mount=type=cache,id=glob2-music-assets,target=/var/cache/glob2music \
+    /opt/music/bin/python -m glob2music.studio.install_assets /var/cache/glob2music && \
+    cp -a /var/cache/glob2music /opt/music-assets
+
+FROM ai-music-runtime AS ai-music-worker
+COPY --from=node-binary /usr/local/bin/node /usr/local/bin/node
+RUN groupadd --gid 10001 glob2 && useradd --uid 10001 --gid 10001 --no-create-home --home-dir /nonexistent glob2 && \
+    mkdir -p /var/lib/glob2/blobs && chown 10001:10001 /var/lib/glob2/blobs
+COPY --from=platform-runtime-deps /app/platform /app/platform
+ENV NODE_ENV=production BLOB_STORE=fs BLOB_DIR=/var/lib/glob2/blobs
+WORKDIR /app/platform
+USER 10001:10001
+HEALTHCHECK --interval=30s --timeout=5s --start-period=120s CMD node -e "const t=Number(require('fs').readFileSync('/tmp/glob2-ai-music-health','utf8'));process.exit(Date.now()-t<90000?0:1)"
+CMD ["node", "apps/ai-music-worker/src/main.ts"]
