@@ -68,6 +68,11 @@ export const EXPORTED_ACCOUNT_COLUMNS: Record<string, string[]> = {
   map_purchases: ['account_id'],
   studio_threads: ['account_id'],
   studio_requests: ['account_id'],
+  ai_studio_projects: ['account_id'],
+  ai_studio_wallets: ['account_id'],
+  ai_studio_ledger: ['account_id'],
+  ai_studio_calls: ['account_id'],
+  ai_studio_purchases: ['account_id'],
 };
 
 /**
@@ -644,6 +649,28 @@ export async function exportAccount(
         .orderBy('p.id')
         .execute();
 
+      const aiStudio: Record<string, Row[]> = {};
+      for (const name of ['wallets', 'ledger', 'calls', 'purchases']) {
+        aiStudio[name] = rows(
+          (
+            await sql<Row>`SELECT * FROM ${sql.table('ai_studio_' + name)} WHERE account_id=${id}`.execute(
+              tx,
+            )
+          ).rows,
+        );
+      }
+      aiStudio['projects'] = rows(
+        (await sql<Row>`SELECT * FROM ai_studio_projects WHERE account_id=${id}`.execute(tx)).rows,
+      );
+      for (const name of ['revisions', 'requests', 'events', 'runs']) {
+        aiStudio[name] = rows(
+          (
+            await sql<Row>`SELECT r.* FROM ${sql.table('ai_studio_' + name)} r JOIN ai_studio_projects p ON p.id=r.project_id WHERE p.account_id=${id}`.execute(
+              tx,
+            )
+          ).rows,
+        );
+      }
       const studioWallets = await tx
         .selectFrom('map_wallets')
         .select(['balance', 'reserved'])
@@ -901,6 +928,7 @@ export async function exportAccount(
           operations: rows(hiveOperations),
           programs: rows(hivePrograms),
         },
+        aiStudio,
         mapStudio: {
           wallets: rows(studioWallets),
           ledger: rows(studioLedger),

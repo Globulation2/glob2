@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { sql, type Kysely, type Transaction } from 'kysely';
 import type { Database } from '@glob2/db';
 import Stripe from 'stripe';
-import { HiveError, integer, type CreditProduct } from './credits.ts';
+import { CREDIT_PRODUCTS, HiveError, integer, type CreditProduct } from './credits.ts';
 export interface CreditPack {
   id: string;
   priceId: string;
@@ -22,7 +22,7 @@ export interface Purchase {
 export class Checkout {
   readonly product: CreditProduct;
   private table(name: string) {
-    return sql.table(`${this.product === 'maps' ? 'map' : this.product}_${name}`);
+    return sql.table(`${CREDIT_PRODUCTS[this.product].prefix}_${name}`);
   }
   readonly db: Kysely<Database>;
   readonly stripe: Stripe;
@@ -57,28 +57,56 @@ export class Checkout {
         throw new Error('Invalid credit pack.');
     }
   }
-  async begin(account: string, packId: string) {
-    const pack = this.packs.find((p) => p.id === packId);
-    if (!pack) throw new HiveError('bad_request', 'Unknown credit pack.');
-    const id = randomUUID();
-    await sql`INSERT INTO ${this.table('purchases')}(id,account_id,pack) VALUES(${id},${account},${JSON.stringify(pack)}::jsonb)`.execute(
-      this.db,
-    );
+  async begin(account: string, packId: string, requestId: string = randomUUID()) {
+    const load = async () =>
+      (
+        await sql<
+          Purchase & { retryable: boolean }
+        >`SELECT *,created_at>now()-interval '23 hours' AS retryable FROM ${this.table('purchases')} WHERE id=${requestId}`.execute(
+          this.db,
+        )
+      ).rows[0];
+    let purchase = await load();
+    if (!purchase) {
+      const configuredPack = this.packs.find((p) => p.id === packId);
+      if (!configuredPack) throw new HiveError('bad_request', 'Unknown credit pack.');
+      // The caller may retain this ID after a lost response. Keep the original
+      // pack even if its price changes or the operator removes it from sale.
+      await sql`INSERT INTO ${this.table('purchases')}(id,account_id,pack) VALUES(${requestId},${account},${JSON.stringify(configuredPack)}::jsonb) ON CONFLICT(id) DO NOTHING`.execute(
+        this.db,
+      );
+      purchase = await load();
+    }
+    if (!purchase || purchase.account_id !== account || purchase.pack.id !== packId)
+      throw new HiveError('conflict', 'Checkout identifier was already used.');
+    if (purchase.paid) throw new HiveError('conflict', 'This purchase is already complete.');
+    if (purchase.checkout_id) {
+      const session = await this.stripe.checkout.sessions.retrieve(purchase.checkout_id);
+      if (!session.url || session.status !== 'open')
+        throw new HiveError('conflict', 'This checkout has ended. Start a new purchase.');
+      return { url: session.url };
+    }
+    // Stripe can prune idempotency keys after 24h. Never redispatch an older
+    // unknown outcome; an operator can reconcile it from the purchase metadata.
+    if (!purchase.retryable)
+      throw new HiveError('conflict', 'This checkout outcome needs reconciliation.');
+    const pack = purchase.pack;
     const session = await this.stripe.checkout.sessions.create(
       {
         mode: 'payment',
         line_items: [{ price: pack.priceId, quantity: 1 }],
-        client_reference_id: id,
-        metadata: { purchaseId: id, creditProduct: this.product },
-        payment_intent_data: { metadata: { purchaseId: id, creditProduct: this.product } },
-        success_url: `${this.origin}/${this.product === 'hive' ? 'commander' : this.product === 'maps' ? 'map-studio' : 'music-studio'}?payment=returned`,
-        cancel_url: `${this.origin}/${this.product === 'hive' ? 'commander' : this.product === 'maps' ? 'map-studio' : 'music-studio'}?payment=cancelled`,
+        client_reference_id: requestId,
+        metadata: { purchaseId: requestId, creditProduct: this.product },
+        payment_intent_data: { metadata: { purchaseId: requestId, creditProduct: this.product } },
+        success_url: `${this.origin}/${CREDIT_PRODUCTS[this.product].path}?payment=returned`,
+        cancel_url: `${this.origin}/${CREDIT_PRODUCTS[this.product].path}?payment=cancelled`,
       },
-      { idempotencyKey: `${this.product}:${id}` },
+      { idempotencyKey: `${this.product}:${requestId}` },
     );
-    await sql`UPDATE ${this.table('purchases')} SET checkout_id=${session.id} WHERE id=${id}`.execute(
+    await sql`UPDATE ${this.table('purchases')} SET checkout_id=${session.id} WHERE id=${requestId}`.execute(
       this.db,
     );
+    if (!session.url) throw new HiveError('conflict', 'This checkout has ended.');
     return { url: session.url };
   }
   async fulfill(session: Stripe.Checkout.Session, connection?: Transaction<Database>) {

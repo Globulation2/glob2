@@ -9,6 +9,9 @@
 #include <Toolkit.h>
 #include <StringTable.h>
 #include <stdexcept>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <ApplicationHost.h>
 
 namespace
@@ -41,6 +44,9 @@ void GameSessionScreen::updateExecution(Uint32 tick)
 	}
 	catch (const Script::SessionFailure &failure)
 	{
+#ifdef __EMSCRIPTEN__
+        MAIN_THREAD_EM_ASM({ globalThis.glob2Studio?.send('error', {text:UTF8ToString($0).slice(0,2000)}); }, failure.what());
+#endif
 		engine->abortSession();
 		engine->restoreCursor();
 		started = false;

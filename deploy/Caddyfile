@@ -9,9 +9,9 @@
 #
 # Security headers: HSTS, nosniff and a Referrer-Policy everywhere; a
 # Content-Security-Policy with frame-ancestors 'none' for the web app, the
-# WebAssembly client and the API (pages the API renders itself, such as
-# /signin and /j/<code>, keep their stricter policy: `?` only fills a header
-# the response does not already have).
+# WebAssembly client and the API, except the same-origin Studio frame. Pages the
+# API renders itself, such as /signin and /j/<code>, keep their stricter policy:
+# `?` only fills a header the response does not already have.
 (tls-auto) {
 }
 (tls-internal) {
@@ -36,7 +36,7 @@
 		Strict-Transport-Security "max-age={$GLOB2_HSTS_MAX_AGE:31536000}"
 		X-Content-Type-Options nosniff
 		?Referrer-Policy strict-origin-when-cross-origin
-		# Nothing here may be framed (clickjacking of the admin and account pages).
+		# Studio explicitly allows same-origin framing; admin/account pages remain protected.
 		?X-Frame-Options DENY
 		-Server
 	}
@@ -95,7 +95,11 @@
 		# WebAssembly runtime ('wasm-unsafe-eval'), pthread and probe workers
 		# (blob:), and connections to whichever instance and relays the player
 		# chooses (https:, wss:).
-		header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		@standardPlay not path /studio.html
+		header @standardPlay Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		@studioEmbed path /studio.html
+		header @studioEmbed X-Frame-Options "SAMEORIGIN"
+		header @studioEmbed Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
 		# Serve the Brotli or gzip copy written at build time (browser/precompress.py)
 		# when the browser accepts it. This rewrites to the copy instead of using
 		# file_server's `precompressed`, which in Caddy 2.10 answers plain requests
@@ -128,7 +132,13 @@
 	handle {
 		root * /srv/web
 		# The web app: its own scripts, styles and fonts; data from this origin.
-		header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+		header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+		@aiStudio path /ai-studio /ai-studio/*
+		header @aiStudio Cross-Origin-Opener-Policy "same-origin"
+		header @aiStudio Cross-Origin-Embedder-Policy "require-corp"
+		# Dedicated Monaco workers inherit the isolated Studio document policy.
+		@studioWorkers path_regexp ^/assets/(editor|ts)\.worker-[^/]+\.js$
+		header @studioWorkers Cross-Origin-Embedder-Policy "require-corp"
 		@assets path /assets/*
 		header @assets Cache-Control "public, max-age=31536000, immutable"
 		try_files {path} /index.html

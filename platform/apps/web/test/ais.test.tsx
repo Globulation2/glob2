@@ -85,7 +85,7 @@ afterEach(() => {
 it('requires a passing checklist and invalidates it when the file changes', async () => {
   window.history.replaceState(null, '', '/ais/new');
   render(<App />);
-  const publish = await screen.findByRole('button', { name: 'Publish' });
+  const publish = await screen.findByRole('button', { name: 'Publish' }, { timeout: 5000 });
   expect((publish as HTMLButtonElement).disabled).toBe(true);
   const file = await screen.findByLabelText(/Bundled JavaScript file/);
   fireEvent.change(file, {

@@ -193,6 +193,9 @@ export function Ais({ view = 'discover' }: { view?: 'discover' | 'mine' | 'favou
           <h1>AI Library</h1>
           <p className="sub">Discover a new opponent. Find a new way to play.</p>
         </div>
+        <Link className="btn" to="/ai-studio">
+          Build in AI Studio
+        </Link>
         <Link className="btn primary" to="/ais/new">
           Share your AI
         </Link>
@@ -633,6 +636,11 @@ function AiDetails({ detail, reload }: { detail: AiDetail; reload: () => void })
               Download JavaScript (.js)
             </a>
             <p className="caption">Import in Settings → Custom AIs to use in local games.</p>
+            {detail.viewer.owner && (
+              <Link className="btn" to={'/ai-studio?version=' + v.id}>
+                Edit in AI Studio
+              </Link>
+            )}
             {v.validations.map((report) => (
               <details key={report.simVersion + '-' + report.suite} className="ai-validation">
                 <summary>

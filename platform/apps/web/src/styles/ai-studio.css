@@ -1,0 +1,217 @@
+.as-page {
+  max-width: 1600px;
+  margin: auto;
+}
+.as-page .page-head {
+  margin-bottom: 1rem;
+}
+.as-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 0;
+}
+.as-toolbar input[type='number'] {
+  width: 7rem;
+}
+.as-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.as-workspace {
+  display: grid;
+  min-height: 70vh;
+  border: 1px solid #52605b;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #151f1c;
+  color: #ecf2ee;
+}
+.as-chat,
+.as-code-pane {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 0.65rem;
+}
+.as-chat-history {
+  height: 48vh;
+  overflow: auto;
+  flex: 1;
+  min-height: 240px;
+}
+.as-chat-history article {
+  margin: 0 0 1.7rem;
+}
+.as-user {
+  background: #30483e;
+  border-radius: 12px;
+  padding: 0.8rem;
+  white-space: pre-wrap;
+}
+.as-response {
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+.as-chat form textarea {
+  width: 100%;
+  min-height: 100px;
+  margin: 0.5rem 0;
+}
+.as-chat small {
+  color: #adc5b8;
+}
+.as-chat details {
+  font-size: 0.85rem;
+}
+.as-welcome {
+  padding: 1.5rem 0.5rem;
+  line-height: 1.7;
+  color: #bdd0c5;
+}
+.as-divider {
+  background: #24372e;
+  cursor: col-resize;
+  touch-action: none;
+}
+.as-divider:hover,
+.as-divider:focus {
+  background: #719881;
+  outline: 2px solid #b9e4c6;
+  outline-offset: -2px;
+}
+.as-editor {
+  height: 58vh;
+  min-height: 350px;
+  flex: 1;
+}
+.as-source {
+  font-family: monospace;
+  width: 100%;
+  min-height: 55vh;
+  white-space: pre;
+  tab-size: 2;
+  background: #1e1e1e;
+  color: #f0f0f0;
+}
+.as-playtest iframe {
+  border: 0;
+  width: 100%;
+  height: 55vh;
+  min-height: 360px;
+  background: #101510;
+}
+.as-playtest pre,
+.as-chat pre {
+  white-space: pre-wrap;
+  max-height: 230px;
+  overflow: auto;
+}
+.as-checks {
+  border-top: 1px solid #52605b;
+  padding-top: 1rem;
+}
+.as-projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.as-page input[type='file'] {
+  max-width: 180px;
+  font-size: 0.8rem;
+}
+.as-code-pane .seg {
+  margin: 0;
+  background: #25372e;
+}
+.as-code-pane .seg button[aria-pressed='true'] {
+  background: #b2e6bb;
+  color: #16271d;
+}
+.as-workspace button,
+.as-workspace input,
+.as-workspace select,
+.as-workspace textarea {
+  color: inherit;
+}
+.as-workspace input,
+.as-workspace select,
+.as-workspace textarea {
+  background: #25372e;
+}
+.as-workspace button {
+  background: #30483e;
+  border-color: #718d7d;
+}
+.as-workspace .primary {
+  background: #b2e6bb;
+  color: #16271d;
+}
+.as-page :disabled {
+  opacity: 0.5;
+}
+@media (max-width: 760px) {
+  .as-chat {
+    border-bottom: 1px solid #52605b;
+  }
+  .as-chat-history {
+    max-height: 40vh;
+  }
+  .as-toolbar {
+    font-size: 0.85rem;
+  }
+  .as-page h1 {
+    font-size: 1.6rem;
+  }
+}
+
+.as-workspace textarea::placeholder {
+  color: #afc2b6;
+  opacity: 1;
+}
+.as-workspace .btn {
+  background: #30483e;
+  color: #ecf2ee;
+  border-color: #718d7d;
+}
+.as-page .btn input[type='file'] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+}
+.as-page .btn:focus-within {
+  outline: 2px solid #b9e4c6;
+  outline-offset: 3px;
+}
+
+.as-welcome h2 {
+  color: #ecf2ee;
+}
+@media (min-width: 761px) {
+  .as-workspace {
+    height: calc(100dvh - 255px);
+    min-height: 620px;
+  }
+  .as-chat,
+  .as-code-pane {
+    min-height: 0;
+  }
+  .as-code-pane {
+    overflow: auto;
+  }
+  .as-chat-history {
+    height: auto;
+    min-height: 160px;
+  }
+  .as-playtest iframe {
+    height: calc(100dvh - 550px);
+    min-height: 300px;
+  }
+}

@@ -44,6 +44,10 @@
 #include "sim/SimulationRunner.h"
 #include "scripting/javascript/ScriptRuntime.h"
 #include <stdexcept>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include "AIJavaScript.h"
+#endif
 
 using std::shared_ptr;
 
@@ -969,6 +973,23 @@ void Engine::clientStep(const std::vector<SDL_Event>& events)
         // Match SDL input timestamps, not the suspendable simulation clock.
         gui.threadedClientStep(events, SDL_GetTicks());
     handleExitRequest();
+    // Read Studio diagnostics only while the simulation is parked for client work.
+#ifdef __EMSCRIPTEN__
+    if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
+        auto &game = gui.game;
+        auto *player = game.players[0];
+        auto *ai = player && player->ai && player->ai->implementationID == AI::JAVASCRIPT
+            ? static_cast<AIJavaScript *>(player->ai->aiImplementation) : nullptr;
+        auto *team = game.teams[0];
+        const std::string diagnostic = ai ? ai->diagnostic().substr(0, 2000) : "";
+        MAIN_THREAD_EM_ASM({
+            const now = performance.now();
+            if (!$1 && !$2 && now - (Module.studioProgressTime || 0) < 1000) return;
+            Module.studioProgressTime = now;
+            globalThis.glob2Studio?.progress($0, $1, $2, UTF8ToString($3), $4, $5);
+        }, game.stepCounter, !gui.isRunning || game.isGameEnded, ai && ai->isDisabled(), diagnostic.c_str(), team && team->hasWon, team && team->hasLost);
+    }
+#endif
 }
 
 void Engine::configureSessionTelemetry(MainLoopState& st, PerformanceTelemetry::Collector& perf)

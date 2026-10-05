@@ -213,6 +213,7 @@ export const AccountExport = Open(
         programs: ExportRows,
       }),
     ),
+    aiStudio: Type.Optional(Type.Record(Type.String(), ExportRows)),
     mapStudio: Type.Optional(
       Open({
         wallets: ExportRows,

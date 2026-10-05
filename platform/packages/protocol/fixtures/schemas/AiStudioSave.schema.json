@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AiStudioSave",
+  "title": "AiStudioSave",
+  "type": "object",
+  "required": [
+    "expectedRevision"
+  ],
+  "properties": {
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 131072
+    },
+    "restoreRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "manual"
+        },
+        {
+          "type": "string",
+          "const": "import"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

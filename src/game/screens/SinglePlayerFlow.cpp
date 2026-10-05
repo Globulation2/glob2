@@ -6,6 +6,13 @@
 #include "GameSessionScreen.h"
 #include "MessageScreen.h"
 #include <Toolkit.h>
+#include "scripting/javascript/ScriptCommand.h"
+#include "scripting/javascript/ScriptRuntime.h"
+#include <cstdlib>
+#include <stdexcept>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 #include <StringTable.h>
 
 void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repeatCustom,
@@ -26,7 +33,13 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 									 custom();
 							 });
 			else if (result == 2)
-			{
+            {
+#ifdef __EMSCRIPTEN__
+                if (std::getenv("GLOB2_STUDIO_PLAYTEST")) {
+                    const auto error = static_cast<GameLoadScreen &>(screen).failureMessage();
+                    MAIN_THREAD_EM_ASM({ globalThis.glob2Studio?.send('error', {text:UTF8ToString($0).slice(0,2000)}); }, error.c_str());
+                }
+#endif
 				auto &strings = *GAGCore::Toolkit::getStringTable();
 				screens.push(std::make_unique<MessageScreen>(
 								 static_cast<GameLoadScreen &>(screen).failureMessage(),
@@ -95,4 +108,32 @@ void SinglePlayerFlow::load()
 void SinglePlayerFlow::replay(const std::string &filename)
 {
 	launch([filename](Engine &engine) { return engine.loadReplayTask(filename); }, false);
+}
+
+void SinglePlayerFlow::studio()
+{
+    // The browser bridge has already checked the source size, pinned map and setup.
+    // Repeat native validation at the engine boundary; no library installation occurs.
+    launch([](Engine &engine) -> GAGCore::CooperativeTask {
+        const std::string path = "/tmp/studio.map.gz";
+        auto map = Engine::loadMapHeader(path);
+        if (map.getNumberOfTeams() != 2) throw std::invalid_argument("Studio requires a two-team map");
+        const char *seedText = std::getenv("GLOB2_STUDIO_SEED");
+        const char *opponentText = std::getenv("GLOB2_STUDIO_OPPONENT");
+        if (!seedText || !opponentText) throw std::invalid_argument("Missing Studio setup");
+        const std::string seedString(seedText), opponent(opponentText);
+        if (seedString.empty() || seedString.find_first_not_of("0123456789") != std::string::npos)
+            throw std::invalid_argument("Invalid Studio seed");
+        const auto seed = std::stoull(seedString);
+        if (seed > 0xffffffffULL || (opponent != "numbi" && opponent != "nicowar"))
+            throw std::invalid_argument("Invalid Studio setup");
+        const auto source = Script::readSource("/tmp/studio.js");
+        GameHeader header;
+        header.setNumberOfPlayers(2);
+        header.setRandomSeed(static_cast<Uint32>(seed));
+        header.getBasePlayer(0) = BasePlayer(0, "Your AI", 0, BasePlayer::playerTypeFromImplementationID(AI::JAVASCRIPT));
+        header.getBasePlayer(1) = BasePlayer(1, opponent, 1, BasePlayer::playerTypeFromImplementationID(opponent == "numbi" ? AI::NUMBI : AI::NICOWAR));
+        header.setAIConfig(0, Script::config(source, Script::inspectAI(source).apiVersion));
+        co_return co_await engine.initCustomTask(map, header, 0, -1, path);
+    }, false);
 }

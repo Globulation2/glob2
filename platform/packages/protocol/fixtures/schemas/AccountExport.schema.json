@@ -400,6 +400,20 @@
         }
       }
     },
+    "aiStudio": {
+      "type": "object",
+      "patternProperties": {
+        "^.*$": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "patternProperties": {
+              "^.*$": {}
+            }
+          }
+        }
+      }
+    },
     "mapStudio": {
       "type": "object",
       "required": [

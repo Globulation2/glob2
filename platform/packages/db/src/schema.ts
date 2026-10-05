@@ -983,7 +983,64 @@ export interface MusicReleasesTable {
   created_at: Timestamp;
   updated_at: Timestamp;
 }
+export interface AiStudioProjectsTable {
+  id: Generated<string>;
+  account_id: string;
+  title: string;
+  revision: Defaulted<number>;
+  created_at: Timestamp;
+  updated_at: Timestamp;
+}
+export interface AiStudioRevisionsTable {
+  project_id: string;
+  revision: number;
+  source: string;
+  hash: string;
+  reason: string;
+  created_at: Timestamp;
+}
+export interface AiStudioRequestsTable {
+  id: string;
+  project_id: string;
+  base_revision: number;
+  prompt: string;
+  diagnostics: Defaulted<string>;
+  budget: number;
+  status: Defaulted<string>;
+  response: Defaulted<string>;
+  error: Nullable<string>;
+  cancelled: Defaulted<boolean>;
+  lease_until: NullableTimestamp;
+  created_at: Timestamp;
+  provider_result: NullableJson<JsonValue>;
+}
+export interface AiStudioEventsTable {
+  id: Generated<number>;
+  project_id: string;
+  request_id: Nullable<string>;
+  kind: string;
+  body: Json<JsonValue>;
+  created_at: Timestamp;
+}
+export interface AiStudioRunsTable {
+  id: string;
+  project_id: string;
+  revision: number;
+  seed: number;
+  opponent: string;
+  summary: Defaulted<string>;
+  created_at: Timestamp;
+}
 export interface Database {
+  ai_studio_projects: AiStudioProjectsTable;
+  ai_studio_revisions: AiStudioRevisionsTable;
+  ai_studio_requests: AiStudioRequestsTable;
+  ai_studio_events: AiStudioEventsTable;
+  ai_studio_runs: AiStudioRunsTable;
+  ai_studio_wallets: HiveWalletsTable;
+  ai_studio_ledger: HiveLedgerTable;
+  ai_studio_calls: HiveCallsTable;
+  ai_studio_purchases: HivePurchasesTable;
   ais: AisTable;
   ai_versions: AiVersionsTable;
   ai_validations: AiValidationsTable;

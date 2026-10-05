@@ -86,6 +86,8 @@ def package(source, destination):
         thread_script = thread_script.replace('"index.wasm"', f'"{names["wasm"]}"')
         contents["threaded/" + names["js"]] = thread_script.encode()
         contents["threaded/" + names["wasm"]] = files["threaded/wasm"]
+    # The Studio entry uses the identical runtime but a temporary profile and bridge.
+    contents["studio.html"] = contents["index.html"]
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
         prefix="browser-static-", dir=destination.parent
@@ -193,7 +195,7 @@ def verify(directory):
     marker = json.loads((directory / MARKER).read_text())
     if marker["policy"] != POLICY.decode().rstrip("\0"):
         raise ValueError("Unknown static package policy")
-    names = ["index.html"] + [
+    names = ["index.html", "studio.html"] + [
         f"index-{marker['version']}.{ext}" for ext in ("js", "wasm")
     ]
     names += [

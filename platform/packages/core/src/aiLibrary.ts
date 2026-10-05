@@ -107,6 +107,7 @@ async function collectAbandonedAiValidations(db: Kysely<Database>) {
       .where('v.created_at', '<', sql<Date>`now() - interval '7 days'`)
       .where(sql<boolean>`NOT EXISTS (SELECT 1 FROM ai_uploads u WHERE u.validation_id=v.id)`)
       .where(sql<boolean>`NOT EXISTS (SELECT 1 FROM ai_versions r WHERE r.hash=v.hash)`)
+      .where(sql<boolean>`NOT EXISTS (SELECT 1 FROM ai_studio_revisions r WHERE r.hash=v.hash)`)
       .orderBy('v.created_at')
       .limit(1000)
       .forUpdate()

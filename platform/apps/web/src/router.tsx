@@ -38,6 +38,11 @@ export function RouterProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
   const navigate = useCallback((to: string, options: { replace?: boolean } = {}) => {
+    // Studio needs document-level COOP/COEP headers before embedding the threaded game.
+    if (to.startsWith('/ai-studio') !== window.location.pathname.startsWith('/ai-studio')) {
+      window.location.assign(to);
+      return;
+    }
     if (options.replace) window.history.replaceState(null, '', to);
     else window.history.pushState(null, '', to);
     setLocation(current());

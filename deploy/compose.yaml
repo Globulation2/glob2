@@ -112,6 +112,9 @@ services:
     <<: [*hardening, *platform-image]
     command: [node, apps/api/src/main.ts]
     environment:
+      AI_STUDIO_OPENAI_API_KEY: ${AI_STUDIO_OPENAI_API_KEY:-}
+      AI_STUDIO_STRIPE_SECRET_KEY: ${AI_STUDIO_STRIPE_SECRET_KEY:-}
+      AI_STUDIO_STRIPE_WEBHOOK_SECRET: ${AI_STUDIO_STRIPE_WEBHOOK_SECRET:-}
       <<: *platform-environment
       DATABASE_URL: postgres://glob2_api@postgres:5432/glob2
       DATABASE_PASSWORD_FILE: /var/lib/glob2/db/api/password
