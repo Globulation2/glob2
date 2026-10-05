@@ -16,6 +16,7 @@
 
 namespace
 {
+constexpr const char* MEAL_DEMAND_NAMES[]={"feeding_workers","feeding_explorers","feeding_warriors"};
 constexpr Uint32 MAXIMA_LEGACY_OPPONENT_COUNT = 12; // Historical wire layout, never raise with the live cap.
 static_assert(MAXIMA_LEGACY_OPPONENT_COUNT <= Team::MAX_COUNT);
 }
@@ -184,6 +185,10 @@ template<class Archive> void Maxima::executionState(Archive& a)
 	a("last_food_retirement_tick",last_food_retirement_tick);
 	a("food_supported_inns",food_supported_inns);
 	a("food_supported_swarms",food_supported_swarms);
+    if(a.version()>=FILE_FORMAT_VERSION_BUILDING_CATALOG) {
+        a("food_birth_crop_rate",food_birth_crop_rate);
+        if(food_birth_crop_rate<0)throw std::runtime_error("Invalid saved production crop budget");
+    }
 	a("food_ledger_valid",food_ledger_valid);
 
 	a("relocation_since",relocation_since);
@@ -310,10 +315,12 @@ void Maxima::saveDirector(GAGCore::OutputStream* stream) const
 #define WRITE_SNAPSHOT(field) stream->writeSint32(snapshot.field,#field);
 	MAXIMA_SNAPSHOT_FIELDS(WRITE_SNAPSHOT)
 #undef WRITE_SNAPSHOT
+    for(int unit=0;unit<3;++unit)stream->writeSint32(snapshot.feeding_demand[unit],MEAL_DEMAND_NAMES[unit]);
 	stream->writeLeaveSection();stream->writeEnterSection("previous_snapshot");
 #define WRITE_PREVIOUS(field) stream->writeSint32(previous_snapshot.field,#field);
 	MAXIMA_SNAPSHOT_FIELDS(WRITE_PREVIOUS)
 #undef WRITE_PREVIOUS
+    for(int unit=0;unit<3;++unit)stream->writeSint32(previous_snapshot.feeding_demand[unit],MEAL_DEMAND_NAMES[unit]);
 	stream->writeLeaveSection();
 	stream->writeEnterSection("trends");stream->writeSint32(trends.population,"population");stream->writeSint32(trends.workers,"workers");stream->writeSint32(trends.warriors,"warriors");stream->writeSint32(trends.food_pressure,"food_pressure");stream->writeSint32(trends.colony_pressure,"colony_pressure");stream->writeLeaveSection();
 #define MAXIMA_ENV_FIELDS(DO) DO(known_tiles) DO(accessible_corn) DO(accessible_wood) DO(accessible_stone) DO(accessible_algae) DO(buildable_tiles) DO(water_tiles) DO(feeding_capacity) DO(food_headroom) DO(resource_capacity) DO(space_capacity) DO(food_security) DO(abundance) DO(terrain_abundance) DO(connected_abundance) DO(mobility_opportunity) DO(economic_momentum) DO(mobility_constraint) DO(topology_complexity) DO(threat_pressure) DO(confidence)
@@ -395,10 +402,18 @@ bool Maxima::loadDirector(GAGCore::InputStream* stream,
 #define READ_SNAPSHOT(field) snapshot.field=stream->readSint32(#field);
 	MAXIMA_SNAPSHOT_FIELDS(READ_SNAPSHOT)
 #undef READ_SNAPSHOT
+    if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG)for(int unit=0;unit<3;++unit) {
+        snapshot.feeding_demand[unit]=stream->readSint32(MEAL_DEMAND_NAMES[unit]);
+        if(snapshot.feeding_demand[unit]<0)throw std::runtime_error("Invalid saved recurring meal demand");
+    }
 	stream->readLeaveSection();stream->readEnterSection("previous_snapshot");
 #define READ_PREVIOUS(field) previous_snapshot.field=stream->readSint32(#field);
 	MAXIMA_SNAPSHOT_FIELDS(READ_PREVIOUS)
 #undef READ_PREVIOUS
+    if(versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG)for(int unit=0;unit<3;++unit) {
+        previous_snapshot.feeding_demand[unit]=stream->readSint32(MEAL_DEMAND_NAMES[unit]);
+        if(previous_snapshot.feeding_demand[unit]<0)throw std::runtime_error("Invalid saved recurring meal demand");
+    }
 	stream->readLeaveSection();
 
 	stream->readEnterSection("trends");trends.population=stream->readSint32("population");trends.workers=stream->readSint32("workers");trends.warriors=stream->readSint32("warriors");trends.food_pressure=stream->readSint32("food_pressure");trends.colony_pressure=stream->readSint32("colony_pressure");stream->readLeaveSection();

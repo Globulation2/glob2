@@ -1241,11 +1241,11 @@ TEST_CASE("projectile profiles reserve ammunition workers and cache nominal feed
     const auto* profile=ai.profile_variant(tower,1);REQUIRE(profile);
     CHECK(profile->operatingResources[STONE]>0);
     CHECK(profile->serviceRates[AIMaximaBuildings::ProjectileDefense]>0);
-    const auto* cached=ai.development_feeding_capacity.data();
+    const auto* cached=ai.development_feeding_visit_rate.data();
     const int capacity=ai.feeding_capacity(inn,1);
     REQUIRE(capacity>0);
     for(int read=0;read<100;++read)CHECK(ai.feeding_capacity(inn,1)==capacity);
-    CHECK(ai.development_feeding_capacity.data()==cached);
+    CHECK(ai.development_feeding_visit_rate.data()==cached);
 }
 
 TEST_CASE("feeding budget scaling handles maximum seats without overflowing intermediate products" * doctest::test_suite("Maxima.Economy"))
@@ -1421,4 +1421,97 @@ TEST_CASE("feeding colonies join overlapping catchments transitively and preserv
     const int root=f.game.buildingCapabilities().lineageRoot(id);
     REQUIRE(world.profile(root));
     CHECK_FALSE(world.profile(root)->levels.front().foodRetirable);
+}
+
+TEST_CASE("recipient meal demand follows saved hunger and external action clocks" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto& ai=*f.ai;ai.ensure_strategy();
+    auto* worker=f.game.addUnit(10,10,0,WORKER,0,0,0,0);REQUIRE(worker);
+    auto* stat=f.player.team->stats.getLatestStat();stat->totalUnit=stat->numberUnitPerType[WORKER]=1;
+    ai.collect_building_profiles();
+    worker->hungriness=425;
+    ai.snapshot=ai.collect_snapshot(ai.context);
+    const int initialDemand=ai.snapshot.feeding_demand[WORKER];
+    const int inn=f.game.buildingsTypes.getPlaceableTypeNum("inn");
+    const int capacity425=ai.feeding_capacity(inn,1);
+    REQUIRE(initialDemand>0);REQUIRE(capacity425>0);
+    worker->hungriness=700; // SmallForTwo's persisted race, not modern defaults.
+    ai.snapshot=ai.collect_snapshot(ai.context);
+    CHECK(ai.snapshot.feeding_demand[WORKER]>initialDemand);
+    CHECK(ai.feeding_capacity(inn,1)<capacity425);
+    const auto recurring=ai.recipient_meal_rate(*worker);
+    worker->hungry=Unit::HUNGRY_MAX;worker->speed=256;worker->displacement=Unit::DIS_INSIDE;
+    CHECK(ai.recipient_meal_rate(*worker)==recurring); // service state cannot erase recurring demand
+    worker->displacement=Unit::DIS_RANDOM;worker->performance[WALK]=24;
+    CHECK(ai.recipient_meal_rate(*worker)>recurring);
+    worker->hungriness=0;CHECK(ai.recipient_meal_rate(*worker)==0);
+    worker->hungriness=700;f.game.gameHeader.setHungerDisabled(true);
+    CHECK(ai.recipient_meal_rate(*worker)==0);
+    f.game.gameHeader.setHungerDisabled(false);
+    const auto slow=AIMaxima::recipientMealRate(150000,37500,1,1,WALK,16,534);
+    CHECK(slow>0); // fractional population demand survives until aggregation
+    const auto shortVisit=AIMaxima::recipientMealRate(150000,37500,700,16,WALK,16,214);
+    const auto longVisit=AIMaxima::recipientMealRate(150000,37500,700,16,WALK,16,534);
+    CHECK(longVisit<shortVisit); // hunger pauses once during actual service
+}
+
+TEST_CASE("mechanical production ceilings are separate from planned carrier throughput" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;const auto* producer=f.game.buildingsTypes.get(f.game.buildingsTypes.getFinishedTypeNum("swarm"));
+    AIMaxima::FeedingPlan plan{8,16*23,105,11759};plan.productionMask=1u<<WORKER;
+    const auto planned=AIMaxima::estimateFeeding(*producer,plan);
+    plan.constrainHauling=false;
+    const auto ceiling=AIMaxima::estimateFeeding(*producer,plan);
+    const auto& recipe=producer->semantics.production.recipes[WORKER];
+    const auto raw=AIMaxima::FeedingEstimate::Scale/(recipe.duration+1);
+    CHECK(ceiling.productionRates[WORKER]==raw*1000/AIMaxima::FeedingEstimate::Scale);
+    CHECK(ceiling.productionResourcePackets[WHEAT]==raw*recipe.cost[WHEAT]/producer->multiplierResource[WHEAT]);
+    CHECK(ceiling.productionRates[WORKER]>planned.productionRates[WORKER]);
+    plan.carriers=1;plan.oneWayTravelTicks=1000;
+    const auto distant=AIMaxima::estimateFeeding(*producer,plan);
+    CHECK(distant.productionRates==ceiling.productionRates);
+    CHECK(distant.productionResourcePackets==ceiling.productionResourcePackets);
+    plan.constrainHauling=true;
+    CHECK(AIMaxima::estimateFeeding(*producer,plan).productionRates[WORKER]<planned.productionRates[WORKER]);
+    f.ai->ensure_strategy();
+    const auto* profile=f.ai->profile_variant(f.game.buildingsTypes.getPlaceableTypeNum("swarm"));
+    REQUIRE(profile);
+    CHECK(profile->productionResources[WHEAT]>planned.productionResourcePackets[WHEAT]);
+}
+
+TEST_CASE("birth funding counts production packets without independent hybrid service costs" * doctest::test_suite("Maxima.Economy"))
+{
+    glob2test::HeadlessGlobals globals;
+    Fixture f;auto& ai=*f.ai;ai.ensure_strategy();
+    using namespace AIMaximaPlacement;
+    WorldState world;world.reset(16,16);
+    for(auto& tile:world.tiles)tile.discovered=tile.walkable=tile.foodTraversable=tile.buildable=true;
+    world.tile(8,8).protectedYield=3000;
+    BuildingProfile profile;profile.buildingType=0;
+    BuildingLevelProfile variant;variant.level=1;variant.engineType=0;variant.completedType=0;
+    variant.footprint=Footprint(0,0,1,1);variant.roles=AIMaximaBuildings::roleBit(AIMaximaBuildings::Production);
+    variant.productionUnitMask=1u<<WORKER;variant.productionResources[WHEAT]=1000;
+    variant.operatingResources[WHEAT]=3000; // independent training consumes remaining2000
+    profile.levels.push_back(variant);world.profiles.push_back(profile);
+    WorldBuilding building;building.id=building.gid=1;building.buildingType=0;building.level=1;building.centerX=7;building.centerY=8;world.buildings.push_back(building);
+    ai.development_building_profiles=world.profiles;ai.development_profiles_initialized=true;
+    ai.development_profile_index.assign(f.game.buildingsTypes.size(),-1);ai.development_profile_index[0]=0;
+    ai.development_planner.mutablePolicy().foodLedgerEnabled=true;
+    ai.development_planner.mutablePolicy().foodSwarmDemand=1000;
+    ai.development_planner.configure(world.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+        AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
+    ai.update_food_retirement(ai.context,world);
+    CHECK(ai.food_supported_swarms==1);
+    CHECK(ai.food_birth_crop_rate==1000);
+    CHECK(ai.birth_food_acreage()==1000LL*ai.strategy.food.growth_period_ticks*65536/AIMaximaFoodLedger::RateScale);
+    world.profiles[0].levels[0].productionUnitMask=0;
+    world.profiles[0].levels[0].productionResources[WHEAT]=0;
+    ai.development_building_profiles=world.profiles;
+    ai.development_planner.configure(world.profiles,AIMaximaBuildings::Feeding,AIMaximaBuildings::Healing,
+        AIMaximaBuildings::ConstructionTraining,AIMaximaBuildings::CombatTraining,AIMaximaBuildings::ProjectileDefense,AIMaximaBuildings::Production);
+    ai.update_food_retirement(ai.context,world);
+    CHECK(ai.food_supported_swarms==0);
+    CHECK(ai.food_birth_crop_rate==0);
 }

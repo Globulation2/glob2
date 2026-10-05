@@ -2556,7 +2556,7 @@ void Planner::prepareRetrySignature(const WorldState& world)
 			hashValue(signature,level.feedingRate);hashValue(signature,level.feedingMask);hashValue(signature,level.foodRetirable);
             for(int r=0;r<8;++r) {
                 hashValue(signature,level.constructionResources[r]);
-                hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);
+                hashValue(signature,level.operatingResources[r]);hashValue(signature,level.feedingResources[r]);hashValue(signature,level.productionResources[r]);
             }
 		}
 	}

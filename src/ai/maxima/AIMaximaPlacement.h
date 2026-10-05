@@ -186,7 +186,8 @@ struct BuildingLevelProfile
 	int operatingResources[8]{}; // recurring carried packets, FoodLedger::RateScale per tick
 	int feedingRate=0; // visits per tick, FoodLedger::RateScale
     unsigned feedingMask=0;
-    int feedingResources[8]{}; // component already included in operatingResources
+    int feedingResources[8]{};
+    int productionResources[8]{}; // mechanical production-only packet ceiling // component already included in operatingResources
 	int seats=0;
 	int assignmentLimit=20;
 	int requiredWorkerLevel=0;

@@ -108,6 +108,7 @@ private:
 		int hungry;
 		int critical_food;
 		int unserved_food;
+        int feeding_demand[3]{}; // recurring meals/tick, FoodLedger RateScale
 		int need_heal;
 		int buildings;
 		int building_sites;
@@ -624,6 +625,9 @@ private:
 	bool profile_serves(int root,int role,int position=1) const;
 	int preferred_profile(int role) const;
 	int feeding_capacity(int root,int position) const;
+    int feeding_capacity_for_type(int concreteType) const;
+    long long recipient_meal_rate(const Unit& unit) const;
+    long long birth_food_acreage() const;
 	const std::vector<AIMaximaPlacement::BuildingProfile>&
 		collect_building_profiles() const;
 	std::vector<AIMaximaPlacement::DevelopmentIntent>
@@ -645,7 +649,8 @@ private:
 	mutable std::vector<AIMaximaPlacement::BuildingProfile>
 		development_building_profiles;
 	mutable std::vector<int> development_profile_index;
-	mutable std::vector<int> development_feeding_capacity;
+	mutable std::vector<int> development_feeding_visit_rate; // planned visits/tick, not headcount
+    mutable std::array<int,3> development_feeding_pause{};
 	mutable bool development_profiles_initialized=false;
 	AIMaximaPlacement::Planner development_planner;
 	bool development_planner_initialized;
@@ -701,6 +706,7 @@ private:
 	///game plans from the same numbers as the run that saved it.
 	int food_supported_inns;
 	int food_supported_swarms;
+    int food_birth_crop_rate=0; // recurring wheat packets/tick, FoodLedger RateScale
 	bool food_ledger_valid;
 	void update_food_retirement(AIMaximaRuntime::Context& runtime,
 		const AIMaximaPlacement::WorldState& world);

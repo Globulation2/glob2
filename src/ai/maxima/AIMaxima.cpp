@@ -22,6 +22,7 @@
 #include "AIMaxima.h"
 #include "AIMaximaBuildings.h"
 #include "AIMaximaFeedingEstimate.h"
+#include "AIMaximaFeedingDemand.h"
 #include "AIMaximaWorldHelpers.h"
 #include "AIMaximaSwarmController.h"
 #include "AIMaximaFoodSupply.h"
@@ -55,9 +56,10 @@ namespace
 {
 	const int PREEMPTIVE_UNREACHABLE=-1;
 
-    FeedingEstimate operatingEstimate(const BuildingType& type,const MaximaStrategy& strategy,const GameHeader& rules)
+    FeedingEstimate operatingEstimate(const BuildingType& type,const MaximaStrategy& strategy,const GameHeader& rules,bool constrainHauling=true)
     {
         FeedingPlan plan;
+        plan.constrainHauling=constrainHauling;
         // The same physical staffing request supports every active recipe.
         // The feedback controller may later adjust it; temporary shortfalls are
         // represented by coverage, not by inventing demand for another building.
@@ -619,6 +621,8 @@ void Maxima::emit_ablation_opportunities(Context& runtime) const
 Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 {
 	StrategicSnapshot state;
+    collect_building_profiles();
+    std::array<long long,3> recurringMeals{};
 	state.tick=timer;
 	TeamStat* stat=runtime.player->team->stats.getLatestStat();
 	state.population=stat->totalUnit;
@@ -678,6 +682,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
 		Unit* unit=runtime.player->team->myUnits[i];
+        if(unit && !unit->isDead)recurringMeals[unit->typeNum]+=recipient_meal_rate(*unit);
 		if(unit && unit->underAttackTimer)
 			state.own_units_under_attack+=1;
 		if(unit && unit->typeNum==EXPLORER
@@ -685,6 +690,7 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		   && unit->performance[MAGIC_ATTACK_GROUND]>0)
 			state.amphibious_attack_explorers+=1;
 	}
+    for(int unit=0;unit<3;++unit)state.feeding_demand[unit]=int(std::min<long long>(INT_MAX,(recurringMeals[unit]+MealRatePrecision/2)/MealRatePrecision));
 
 	for(int i=0; i<Building::MAX_COUNT; ++i)
 	{
@@ -1002,7 +1008,7 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.feeding_capacity=0;
 	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.player->team->myBuildings[id];
 	 if(!b||b->type->isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(*runtime.player->game,*b->type,AIMaximaBuildings::Feeding))continue;
-     observed.feeding_capacity+=development_feeding_capacity[b->typeNum];
+     observed.feeding_capacity+=feeding_capacity_for_type(b->typeNum);
 	}
 	observed.terrain_abundance=global_terrain_abundance;
 	observed.connected_abundance=global_connected_abundance;
@@ -2446,7 +2452,7 @@ void Maxima::build_policy_bids()
 			nominal_service_inns+1);
 	const int sustainable_inns=std::max(strategy.economy.sustainable_inn_floor,
 		std::max(environment.accessible_corn,
-			strategy.food.enabled && food_ledger_valid ? 6*food_supported_swarms : 0)
+			strategy.food.enabled && food_ledger_valid ? int(std::min<long long>(INT_MAX,birth_food_acreage()/65536)) : 0)
 			/strategy.economy.sustainable_inn_corn_divisor
 			+strategy.economy.sustainable_inn_offset);
 	int demographic_inns=(snapshot.population
@@ -2482,9 +2488,9 @@ void Maxima::build_policy_bids()
 	// Food funds births. The local acreage is what existing buildings can
 	// reach; the ledger's supported swarms say what the discovered wheat as a
 	// whole could feed, including stacks a colony would have to move to. A
-	// swarm's full demand is about six full tiles of regrowth.
+	// Production has its own packet budget; provider counts are not acreage.
 	const long long ledger_food=strategy.food.enabled && food_ledger_valid
-		? 6LL*65536*std::max(0, food_supported_swarms) : 0;
+        ? birth_food_acreage() : 0;
 	const SwarmController::Plan birth=SwarmController::plan(snapshot.workers,
 		snapshot.population, snapshot.critical_food, snapshot.unserved_food,
 		std::max(ledger_food,
@@ -4016,11 +4022,16 @@ Maxima::collect_building_profiles() const
  if(development_profiles_initialized)return development_building_profiles;
  const auto& game=*context.player->game;
  development_profile_index.assign(game.buildingsTypes.size(),-1);
- development_feeding_capacity.assign(game.buildingsTypes.size(),0);
+ development_feeding_visit_rate.assign(game.buildingsTypes.size(),0);
+ development_feeding_pause.fill(INT_MAX);
  std::vector<FeedingEstimate> operations(game.buildingsTypes.size());
  for(size_t id=0;id<game.buildingsTypes.size();++id) {
-  operations[id]=operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader);
-  development_feeding_capacity[id]=operations[id].supportedUnits;
+  // Recipe/seat ceilings describe potential work. A separate shared hauling
+  // plan predicts usable feeding throughput; staffing feedback owns actual
+  // carrier requests and placement prices the local route independently.
+  operations[id]=operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader,false);
+  development_feeding_visit_rate[id]=int(std::min<long long>(INT_MAX,
+      operatingEstimate(*game.buildingsTypes.get(id),strategy,game.gameHeader,true).visitsPerTick));
  }
  development_profiles_initialized=true;
  for(size_t root=0;root<game.buildingsTypes.size();++root) {
@@ -4047,6 +4058,14 @@ Maxima::collect_building_profiles() const
    v.feedingRate=int(std::min<long long>(INT_MAX,operation.visitsPerTick));
    v.feedingMask=semantic.feeding.unitMask&semantic.admittedUnitMask;
    std::copy(operation.feedingResourcePackets.begin(),operation.feedingResourcePackets.end(),v.feedingResources);
+   std::copy(operation.productionResourcePackets.begin(),operation.productionResourcePackets.end(),v.productionResources);
+   const int otherWheat=std::max(0,v.operatingResources[WHEAT]-v.feedingResources[WHEAT]-v.productionResources[WHEAT]);
+   v.feedingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.feedingResources[WHEAT])*strategy.food.inn_demand_percent/100));
+   v.productionResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(v.productionResources[WHEAT])*strategy.food.swarm_demand_percent/100));
+   v.operatingResources[WHEAT]=int(std::min<long long>(INT_MAX,static_cast<long long>(otherWheat)+v.feedingResources[WHEAT]+v.productionResources[WHEAT]));
+   if(position==1 && v.available && semantic.feeding.enabled && complete->maxUnitInside>0)
+       for(int unit=0;unit<3;++unit)if(v.feedingMask&(1u<<unit))
+           development_feeding_pause[unit]=std::min(development_feeding_pause[unit],serviceTicks(*complete,semantic.feeding.duration));
    std::copy(operation.services.begin(),operation.services.end(),v.serviceRates);
    for(int unit=0;unit<3;++unit)if(semantic.production.recipes[unit].enabled) {
     v.productionUnitMask|=1u<<unit;
@@ -4065,6 +4084,7 @@ Maxima::collect_building_profiles() const
   }
   if(!profile.levels.empty()) {development_profile_index[root]=int(development_building_profiles.size());development_building_profiles.push_back(profile);}
  }
+ for(auto& pause:development_feeding_pause)if(pause==INT_MAX)pause=0;
  return development_building_profiles;
 }
 
@@ -4083,7 +4103,52 @@ int Maxima::feeding_capacity(int root,int position) const
 {
  const auto* v=profile_variant(root,position);if(!v||!(v->roles&AIMaximaBuildings::roleBit(AIMaximaBuildings::Feeding)))return 0;
  const auto* b=context.player->game->buildingsTypes.get(v->completedType);if(!b)return 0;
- return development_feeding_capacity[v->completedType];
+ return feeding_capacity_for_type(v->completedType);
+}
+
+long long Maxima::recipient_meal_rate(const Unit& unit) const
+{
+ if(context.player->game->gameHeader.isHungerDisabled())return 0;
+ const int action=unit.performance[FLY]>0?FLY:WALK;
+ return recipientMealRate(Unit::HUNGRY_MAX,unit.trigHungry,unit.hungriness,
+     unit.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit.typeNum]);
+}
+
+int Maxima::feeding_capacity_for_type(int type) const
+{
+ collect_building_profiles();
+ const auto* definition=context.player->game->buildingsTypes.get(type);
+ if(!definition || size_t(type)>=development_feeding_visit_rate.size())return 0;
+ const unsigned admitted=definition->semantics.feeding.unitMask&definition->semantics.admittedUnitMask;
+ const int populations[3]={snapshot.workers,snapshot.explorers,snapshot.warriors};
+ long long demand=0,population=0;
+ for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
+     population+=populations[unit];demand+=snapshot.feeding_demand[unit];
+ }
+ if(!demand) {
+     population=0;
+     // Future recipients use the loaded game's race, including historical
+     // hunger and movement values; an empty colony is not a zero-cost meal.
+     for(int unit=0;unit<3;++unit)if(admitted&(1u<<unit)) {
+         const auto* base=context.player->team->race.getUnitType(unit,0);
+         const int action=base->performance[FLY]>0?FLY:WALK;
+         const int trigger=unit==WARRIOR?Unit::HUNGRY_MAX*UNIT_HUNGRY_TRIG_NUM_WARRIOR/UNIT_HUNGRY_TRIG_DEN:Unit::HUNGRY_MAX/UNIT_HUNGRY_TRIG_DIVISOR_DEFAULT;
+         const long long rate=recipientMealRate(Unit::HUNGRY_MAX,trigger,Race::hungriness,
+             base->performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit]);
+         const int count=std::max(1,populations[unit]);
+         demand+=rate*count;population+=count;
+     }
+     demand=(demand+MealRatePrecision/2)/MealRatePrecision;
+ }
+ if(!demand || !population)return 0;
+ return int(std::min<long long>(1000000,static_cast<long long>(development_feeding_visit_rate[type])*population/demand));
+}
+
+long long Maxima::birth_food_acreage() const
+{
+ const long long crop=static_cast<long long>(std::max(0,food_birth_crop_rate))*strategy.food.growth_period_ticks;
+ return (crop/AIMaximaFoodLedger::RateScale)*65536
+     +(crop%AIMaximaFoodLedger::RateScale)*65536/AIMaximaFoodLedger::RateScale;
 }
 
 int Maxima::preferred_profile(int role) const
@@ -4188,7 +4253,7 @@ void Maxima::configure_development_planner()
 	// constant: a swarm's wheat per produced unit, and an inn's modelled
 	// population times the rate at which a fed unit eats.
 	const auto* swarmProfile=profile_variant(preferred_profile(AIMaximaBuildings::Production));
-	policy.foodSwarmDemand=swarmProfile?swarmProfile->operatingResources[WHEAT]:0;
+	policy.foodSwarmDemand=swarmProfile?swarmProfile->productionResources[WHEAT]:0;
     // Historical tier arrays remain serialized by old formats only. Live
     // demand is the same per-variant operating plan used for feeding capacity.
     std::fill(std::begin(policy.foodInnDemand),std::end(policy.foodInnDemand),0);
@@ -4387,14 +4452,11 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
         const int y=world.buildings.empty()?0:world.buildings.front().centerY;
         world.feedingColonies.push_back({x,y,{}});
     }
-    std::vector<std::array<int,3>> colonyPopulations(world.feedingColonies.size());
-    if(!runtime.player->game->gameHeader.isHungerDisabled())
-        for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.player->team->myUnits[id]) {
-            ++colonyPopulations[world.feedingColonyAt(u->posX,u->posY)][u->typeNum];
-        }
+    std::vector<std::array<long long,3>> colonyMeals(world.feedingColonies.size());
+    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.player->team->myUnits[id];u && !u->isDead)
+        colonyMeals[world.feedingColonyAt(u->posX,u->posY)][u->typeNum]+=recipient_meal_rate(*u);
     for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(int unit=0;unit<3;++unit)
-        world.feedingColonies[colony].demand[unit]=int(static_cast<long long>(colonyPopulations[colony][unit])
-            *AIMaximaFoodLedger::RateScale/std::max(1,strategy.food.ticks_per_meal));
+        world.feedingColonies[colony].demand[unit]=int(std::min<long long>(INT_MAX,(colonyMeals[colony][unit]+MealRatePrecision/2)/MealRatePrecision));
     for(const auto& colony:world.feedingColonies) {
         add_preemptive_hash(worldSignature,Uint32(colony.x));add_preemptive_hash(worldSignature,Uint32(colony.y));
         for(int unit=0;unit<3;++unit)add_preemptive_hash(worldSignature,Uint32(colony.demand[unit]));
@@ -5054,14 +5116,25 @@ void Maxima::update_food_retirement(Context& runtime,
 	const int inn_burden=budget.food_inn_burden_percent;
 	const int swarm_burden=budget.food_swarm_burden_percent;
 	int supported_inns=0, supported_swarms=0;
+    long long productionClaim=0;
 	std::set<int> present;
 	for(size_t i=0;i<ledger.consumers.size();++i)
 	{
 		const AIMaximaFoodLedger::ConsumerResult& value=ledger.consumers[i];
+        const AIMaximaPlacement::BuildingLevelProfile* definition=nullptr;
+        if(const auto* building=world.building(value.key))definition=profile_variant(building->buildingType,std::max(1,building->level));
+        else if(value.key<0) {
+            const auto action=development_planner.actions().find(-value.key-1);
+            if(action!=development_planner.actions().end())definition=profile_variant(action->second.buildingType,std::max(1,action->second.targetLevel));
+        }
+        const bool workerProducer=definition && (definition->productionUnitMask&(1u<<WORKER));
+        if(workerProducer && value.demand>0)
+            productionClaim+=std::min<long long>(value.claimed,value.claimed*definition->productionResources[WHEAT]/value.demand);
 		const int burden=value.kind==AIMaximaFoodLedger::InnConsumer ? inn_burden : swarm_burden;
 		if(value.coveragePercent>=burden)
 		{
-			if(value.kind==AIMaximaFoodLedger::InnConsumer)++supported_inns; else ++supported_swarms;
+			if(value.kind==AIMaximaFoodLedger::InnConsumer)++supported_inns;
+            if(workerProducer)++supported_swarms;
 		}
 		if(value.key<0) continue;
 		present.insert(value.key);
@@ -5087,6 +5160,11 @@ void Maxima::update_food_retirement(Context& runtime,
 	if(swarm_cost>0)
 		supported_swarms+=int(std::min<long long>(INT_MAX,
 			ledger.bestSiteResidual/swarm_cost));
+    if(swarm_cost==0) {
+        const auto* producer=profile_variant(preferred_profile(AIMaximaBuildings::Production));
+        if(producer && (producer->productionUnitMask&(1u<<WORKER)))supported_swarms=Building::MAX_COUNT;
+    }
+    food_birth_crop_rate=int(std::min<long long>(INT_MAX,productionClaim+ledger.bestSiteResidual));
 	food_supported_inns=supported_inns;
 	food_supported_swarms=supported_swarms;
 

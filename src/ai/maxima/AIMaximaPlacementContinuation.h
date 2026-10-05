@@ -26,10 +26,10 @@ template<class A> void fields(A& a, BuildingLevelProfile& value)
 	 a("completedType",value.completedType);a("roles",value.roles);a("serviceRates",value.serviceRates);
 	 a("productionUnitMask",value.productionUnitMask);a("productionRates",value.productionRates);
 	 a("operatingResources",value.operatingResources);
-     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);a("feedingResources",value.feedingResources);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
+     a("feedingRate",value.feedingRate);a("feedingMask",value.feedingMask);a("feedingResources",value.feedingResources);a("productionResources",value.productionResources);a("foodRetirable",value.foodRetirable);a("seats",value.seats);a("assignmentLimit",value.assignmentLimit);
 	 a("requiredWorkerLevel",value.requiredWorkerLevel);a("repairable",value.repairable);a("available",value.available);
      if(value.feedingRate<0 || value.feedingMask>7)throw std::runtime_error("Invalid saved feeding profile");
-     for(int r=0;r<8;++r)if(value.feedingResources[r]<0 || value.feedingResources[r]>value.operatingResources[r])
+     for(int r=0;r<8;++r)if(value.feedingResources[r]<0 || value.feedingResources[r]>value.operatingResources[r] || value.productionResources[r]<0 || value.productionResources[r]>value.operatingResources[r])
          throw std::runtime_error("Invalid saved feeding resource component");
 	}
 }

@@ -4,9 +4,32 @@
 #include <array>
 #include <bit>
 #include <vector>
+#include "UnitTiming.h"
+#include "AIMaximaFoodLedger.h"
 
 namespace AIMaxima
 {
+// Retain fractional rates while summing a population, including very slow
+// hunger clocks. The external workload is uniform compass-direction travel:
+// cardinal and diagonal actions have equal weight and use engine quantization.
+// Hungry travel to the provider continues consuming food; service/entry/exit
+// pause hunger. Include that excursion once, independently of carried stock.
+inline constexpr long long MealRatePrecision=1024;
+// Return units are FoodLedger::RateScale * MealRatePrecision meals/tick.
+inline long long recipientMealRate(int hungerMaximum,int hungerTrigger,int hungriness,
+    int movementSpeed,int movementAction,int approachTiles,int servicePauseTicks)
+{
+    if(hungriness<=0 || hungerTrigger>=hungerMaximum)return 0;
+    constexpr long long precision=MealRatePrecision;
+    const long long actions=(static_cast<long long>(hungerMaximum)-std::max(0,hungerTrigger)+hungriness-1)/hungriness;
+    const int straight=std::clamp(movementSpeed,1,UNIT_DELTA_QUANTUM);
+    const int diagonal=std::clamp(unitActionStepSpeed(straight,movementAction,1,1),1,UNIT_DELTA_QUANTUM);
+    const long long actionTicks=(UNIT_DELTA_QUANTUM*precision/straight+UNIT_DELTA_QUANTUM*precision/diagonal)/2;
+    const long long cycle=(actions+std::max(0,approachTiles)+2)*actionTicks
+        +static_cast<long long>(std::max(0,servicePauseTicks))*precision;
+    return AIMaximaFoodLedger::RateScale*precision*precision/std::max(precision,cycle);
+}
+
 struct FeedingProvider
 {
     int colony=0;

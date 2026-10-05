@@ -12,21 +12,40 @@ yield = fertility / 65536 / food.growth_period_ticks
 ```
 
 Full resource stacks, buildings and unsuitable terrain cannot absorb growth.
-Transient units do not affect this standing estimate. Production demand comes from the available recipes. Feeding capacity and
-resource claims use one per-variant operating estimate: reserved-seat occupancy
-includes service time and travel, while replenishment uses a separate hauling
-cycle. Concurrent services share seats and all resource-consuming recipes share
-one planned carrier allowance for the physical building. A nominal production
-mix gives each permitted output equal job weight and uses the sum of complete
-job durations. Training forecasts separate recipient classes and exclude
-unlearnable or rule-disabled courses. Stock consumption and carried packets
-are distinct: storage multipliers convert consumption into hauling and farm
-claims. Free services consume
-no hauling allowance. `food.ticks_per_meal` converts meal throughput to supported
-population; coverage and the existing reliability margin then express shortages.
-Temporary carrier shortages do not reduce the nominal estimate and trigger
-additional building demand. These rates remain strategy estimates, not promises
-that a colony can sustain the theoretical maximum.
+Transient units do not affect this standing estimate. Immutable profiles describe
+mechanical recipe and shared-seat ceilings. Production demand is the recipe cost
+divided by its complete job duration; it is not permanently throttled to a new
+building's initial carrier request at a generic maximum route length. Existing
+staffing feedback allocates actual workers, and placement prices local hauling.
+A separate planned hauling estimate bounds usable feeding throughput and shares
+one carrier allowance across all resource-consuming services on that building.
+Free services consume no hauling allowance.
+
+A nominal production mix gives each permitted output equal job weight and uses
+the sum of complete job durations. Training forecasts separate recipient classes
+and exclude unlearnable or rule-disabled courses. Stock consumption and carried
+packets are distinct: storage multipliers convert consumption into hauling and
+farm claims. Feeding and production costs remain separate components on hybrids;
+`food.inn_demand_percent` and `food.swarm_demand_percent` scale their respective
+wheat claims, without changing the mechanical recipe rates.
+
+Recurring recipient demand uses each saved unit's hunger decrement, hunger
+trigger and movement performance. Its stable nominal workload is travel with
+equal cardinal and diagonal direction weight, using the engine's quantized action
+clock. The meal cycle adds the configured approach distance, entry/exit actions,
+and one service pause from the fastest available initial feeding provider for
+that class. It does not use a unit's transient inside speed or current hunger
+deficit: a recently fed or currently eating unit still has recurring needs.
+Higher-precision rates are summed before rounding per recipient class and colony.
+Future recipients use the loaded race's base unit properties. This preserves
+historical map-specific hunger rates and movement tables.
+
+The same admitted-recipient rates convert planned visits per tick into headcount
+for capacity, headroom and retirement checks. The existing reliability margin
+remains a strategy policy. These rates are workload forecasts, not guarantees of
+static survival under every mixture of idling, working, travel and combat.
+`food.ticks_per_meal` remains accepted for historical configurations and diagnostic
+comparisons; it no longer supplies the live recipient clock.
 
 ## Claims and placement
 
@@ -34,8 +53,8 @@ The ledger is rebuilt from current buildings, explicit upgrade stages, planned
 orders, population and wheat. Feeding throughput is a ceiling, not a new source
 of demand for every building. Each colony counts its workers, explorers and
 warriors once. Overlapping worker-production catchments form connected colonies;
-units join the nearest representative. The nominal meal interval converts each
-class count into a meal budget. Available providers divide that budget according
+units join the nearest representative. The saved recipient properties convert each
+class into a recurring meal budget. Available providers divide that budget according
 to admission and capacity, giving scarce classes and less flexible providers
 priority. A free feeder can take meals without claiming wheat. Production,
 healing, training and ammunition costs retain their independent shares on mixed
@@ -59,17 +78,20 @@ own settlement rule. Upgrades release and retake their building's claim at the
 new level. A summed-area upper bound rejects impossible candidates before the
 exact route search.
 
-Production targets are capped by supplied buildings plus capacity reachable from
-the best available site. Feeding demand also responds to observed hungry and
+Production targets are capped by supplied worker-producing buildings plus capacity
+reachable from the best available site. Birth funding sums their claimed
+production-only packet rates and reachable residual crop yield, then converts
+that rate to acreage using the configured regrowth period. Independent hybrid
+feeding or training costs and buildings without worker production do not create
+birth funding. Free or non-wheat recipes do not invent wheat acreage. Feeding demand also responds to observed hungry and
 unserved units: an optimistic nominal throughput forecast must not impose a
 second coarse limit on additional feeders. Each proposed location still needs
 its allocated meal claim covered by reachable farm supply. Scattered residual
 supply that no single building can reach does not fund another building.
 
-The nominal meal interval was measured in ordinary mixed games. Idle or
-warrior-heavy stress scenes can eat substantially more often, and a planned
-carrier allowance counts concurrent hauling work rather than a fixed set of
-workers who never need food themselves. Validation therefore separates historical
+Activity and service pauses change actual meal timing. A planned carrier
+allowance counts concurrent hauling work rather than a fixed set of workers who
+never need food themselves. Validation therefore separates historical
 stock-population survival, deliberate overload measurements, and adaptive hunger
 recovery against matched static controls. Reactive recovery can still lose units
 before sufficient service becomes available; the recovery check also measures

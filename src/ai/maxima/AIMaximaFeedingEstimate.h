@@ -20,6 +20,7 @@ struct FeedingPlan
     bool training=true;
     bool projectiles=true;
     unsigned productionMask=7;
+    bool constrainHauling=true;
 };
 struct FeedingEstimate
 {
@@ -29,6 +30,7 @@ struct FeedingEstimate
     long long projectileRate=0; // fixed point Scale shots/tick
     int supportedUnits=0;
     std::array<int,8> resources{}; // stock units, not carried packets
+    std::array<int,8> productionResourcePackets{}; // independent production component
     std::array<int,8> feedingResourcePackets{}; // feeding component of recurring packets
     std::array<int,8> resourcePackets{}; // natural-source/hauling denominations
     std::array<int,NB_UNIT_TYPE> productionRates{}; // per 1000 ticks
@@ -151,11 +153,11 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
         return quotient;
     };
     FeedingEstimate result;
-    std::array<long long,8> feedingStock{},totalStock{};
+    std::array<long long,8> feedingStock{},productionStock{},totalStock{};
     for(int i=0;i<flowCount;++i) {
         auto f=flows[i];
         const bool usesCarrier=std::any_of(f.cost.begin(),f.cost.end(),[](int n){return n>0;});
-        if(usesCarrier && requested>budget)f.rate=scaled(f.rate,budget,requested);
+        if(plan.constrainHauling && usesCarrier && requested>budget)f.rate=scaled(f.rate,budget,requested);
         const auto output=f.rate*f.outputMultiplier;
         if(f.roles&roleBit(Feeding))result.visitsPerTick+=output;
         if(f.roles&roleBit(ProjectileDefense))result.projectileRate+=output;
@@ -166,6 +168,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
             const auto demand=f.rate*f.cost[resource];
             totalStock[resource]+=demand;
             if(f.roles&roleBit(Feeding))feedingStock[resource]+=demand;
+            if(f.productionClass>=0)productionStock[resource]+=demand;
             result.resources[resource]=int(std::min<long long>(INT_MAX,static_cast<long long>(result.resources[resource])+demand));
             result.haulingWorkerTicks=sum(result.haulingWorkerTicks,hauling(demand,resource));
         }
@@ -173,6 +176,7 @@ inline FeedingEstimate estimateFeeding(const BuildingType& type,const FeedingPla
     for(int resource=0;resource<8;++resource)
         {
         result.resourcePackets[resource]=int(std::min<long long>(INT_MAX,totalStock[resource]/std::max(1,type.multiplierResource[resource])));
+        result.productionResourcePackets[resource]=int(std::min<long long>(INT_MAX,productionStock[resource]/std::max(1,type.multiplierResource[resource])));
         result.feedingResourcePackets[resource]=int(std::min<long long>(INT_MAX,feedingStock[resource]/std::max(1,type.multiplierResource[resource])));
     }
     result.supportedUnits=int(std::min<long long>(1000000,result.visitsPerTick*std::max(1,plan.ticksPerMeal)/FeedingEstimate::Scale));
