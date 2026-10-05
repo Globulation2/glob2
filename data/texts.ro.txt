@@ -5538,3 +5538,9 @@ După loc
 
 [music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
 
+[settings Target render FPS]
+FPS țintă pentru randare
+[settings Unlimited]
+Fără limită
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+Limitează desenarea în întreaga aplicație. Valorile mai mici reduc efortul de randare. Viteza jocului nu se schimbă.

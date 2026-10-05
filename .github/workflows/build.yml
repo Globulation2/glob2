@@ -455,6 +455,12 @@ jobs:
       run:
         shell: msys2 {0}
     steps:
+      # MinGW Python builds the engine; standard CPython supplies compatible
+      # binary wheels for the private, pinned build-time asset encoder.
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        id: asset_encoder_python
+        with:
+          python-version: '3.12'
       - uses: msys2/setup-msys2@v2
         id: msys2_setup_msys2_v2_1
         with:
@@ -486,6 +492,13 @@ jobs:
         id: actions_checkout_v4_1
         with:
           ref: ${{ inputs.revision || github.sha }}
+
+      - name: Prepare pinned asset encoder
+        shell: pwsh
+        run: |
+          $encoder = & "${{ steps.asset_encoder_python.outputs.python-path }}" tools/package_assets.py --encoder-python
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "GLOB2_ASSET_ENCODER_PYTHON=$encoder" >> $env:GITHUB_ENV
 
       # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
       # newline handling and reports unchanged CRLF source files as modifications.
