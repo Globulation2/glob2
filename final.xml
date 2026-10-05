@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build-software-terrain/test/glob2-engine-tests" errors="0" failures="0" tests="12" time="62.2879" timestamp="2026-10-05T11:23:29Z" doctest_version="2.4.11">
+    <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="Explicit designs preserve pre-Random golden worlds" time="0.609727" status="run"/>
+    <testcase classname="src/map/generator/MapGeneratorDefaultsTest.cpp" name="Drowned Forest contracts [slow]" time="61.6782" status="run"/>
+  </testsuite>
+</testsuites>
