@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#ifdef HAVE_CONFIG_H
+#include <glob2/BuildConfig.h>
+#endif
 #if !defined(__EMSCRIPTEN__) && !defined(GLOB2_MOBILE)
 #include "SkinRenderRecipe.h"
 #else
 #define SKIN_RENDER_REVISION "unavailable"
 #define SKIN_WEBP_VERSION "1.6.0"
-#endif
-#ifdef HAVE_CONFIG_H
-#include <glob2/BuildConfig.h>
 #endif
 #include <algorithm>
 #include "online/Sha256.h"
