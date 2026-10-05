@@ -277,10 +277,10 @@ TEST_CASE("export readback matches live compositing for every pose and rotated s
     for(const auto &name:{"texture","material"}) {
         const auto hex=source[std::string(name)+"Hex"].get<std::string>();std::string bytes;
         for(std::size_t i=0;i<hex.size();i+=2)bytes.push_back(char(std::stoul(hex.substr(i,2),nullptr,16)));
-        glob2test::writeFile(files.path/(std::string(name)+".png"),bytes);
+        glob2test::writeFile(files.path/(std::string(name)+".webp"),bytes);
     }
-    GAGCore::DrawableSurface paint((files.path/"texture.png").string());
-    auto material=GAGCore::loadSkinMaterialMap((files.path/"material.png").string());REQUIRE(material);
+    GAGCore::DrawableSurface paint((files.path/"texture.webp").string());
+    auto material=GAGCore::loadSkinMaterialMap((files.path/"material.webp").string());REQUIRE(material);
     nlohmann::json bundle;const char *exportPath=std::getenv("GLOB2_SKIN_EXPORT_DIR");
     if(exportPath)bundle=nlohmann::json::parse(glob2test::readFile(std::filesystem::path(exportPath)/"manifest.json"));
     std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> exported(nullptr,SDL_DestroySurface);
