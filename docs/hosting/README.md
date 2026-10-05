@@ -1229,8 +1229,13 @@ mark a confirmed unrecoverable request failed using
 `POST /api/v1/admin/map-studio/requests/<id>/fail`; this releases the credit and
 records an audit entry. Never re-dispatch an uncertain paid provider request.
 
-Deploy the additive studio-event migration before updating the API, authoring
-worker and web client. Keep the previous long-poll route during client rollout.
+Deploy the additive studio-event migration first, then replace and drain all old
+authoring workers before updating the API and web client. The migration backfills
+anonymous daily provider-call totals and counts subsequent journal inserts
+transactionally, including calls from old workers. Updated workers enforce their
+budget against these totals; old workers still count private journal rows, which
+the updated API removes on account deletion. Do not enable the updated deletion
+path while old workers remain. Keep the previous long-poll route during client rollout.
 The stage event journal and authorized artifact records are retained with each
 thread; do not prune their cursor history independently of the thread.
 

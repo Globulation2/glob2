@@ -329,3 +329,138 @@ describe('app links', () => {
     expect((await fetch(`${plain.url}/.well-known/apple-app-site-association`)).status).toBe(404);
   });
 });
+
+describe('player discovery and AI profiles', () => {
+  it('searches registered active players and configured AIs, with stable filtered pagination', async () => {
+    const result = await ok('/api/v1/players', 'PlayerDirectory');
+    const humans = result['items'].filter((p: Doc) => p.kind === 'account');
+    expect(humans.map((p: Doc) => p.account.id)).not.toContain(seed.accounts.guest);
+    expect(humans.map((p: Doc) => p.account.id)).not.toContain(seed.accounts.banned);
+    expect(result['items'].some((p: Doc) => p.kind === 'ai' && p.ai === 'nicowar')).toBe(true);
+    const found = await ok('/api/v1/players?q=NICOWAR', 'PlayerDirectory');
+    expect(found['items'][0]).toMatchObject({ kind: 'ai', ai: 'nicowar' });
+    const first = await ok('/api/v1/players?participants=humans&limit=2', 'PlayerDirectory');
+    const next = await ok(
+      `/api/v1/players?participants=humans&limit=2&cursor=${first['nextCursor']}`,
+      'PlayerDirectory',
+    );
+    expect(next['items'].map((p: Doc) => p.account.id)).not.toContain(first['items'][0].account.id);
+    expect((await get(`/api/v1/players?q=changed&cursor=${first['nextCursor']}`)).status).toBe(400);
+    expect((await get('/api/v1/players?participants=invalid')).status).toBe(400);
+  });
+  it('orders exact, prefix and substring matches and keeps cursor boundaries stable after insertion', async () => {
+    const db = harness.database.db;
+    const added = await db
+      .insertInto('accounts')
+      .values([
+        { kind: 'registered', display_name: 'Nicowar' },
+        { kind: 'registered', display_name: 'Nicowar fan' },
+        { kind: 'registered', display_name: 'A nicowar fan' },
+        { kind: 'registered', display_name: 'Nicowar deleted', status: 'deleted' },
+      ])
+      .returning('id')
+      .execute();
+    try {
+      const result = await ok('/api/v1/players?q=NICOWAR', 'PlayerDirectory');
+      expect(
+        result['items'].map((p: Doc) => (p.kind === 'ai' ? p.displayName : p.account.displayName)),
+      ).toEqual(['Nicowar', 'Nicowar', 'Nicowar fan', 'A nicowar fan']);
+      const first = await ok('/api/v1/players?participants=humans&limit=2', 'PlayerDirectory');
+      const extra = await db
+        .insertInto('accounts')
+        .values({ kind: 'registered', display_name: '000 New arrival' })
+        .returning('id')
+        .executeTakeFirstOrThrow();
+      added.push(extra);
+      const next = await ok(
+        `/api/v1/players?participants=humans&limit=2&cursor=${first['nextCursor']}`,
+        'PlayerDirectory',
+      );
+      const ids = first['items'].map((p: Doc) => p.account.id);
+      expect(next['items'].every((p: Doc) => !ids.includes(p.account.id))).toBe(true);
+      const exact = await ok('/api/v1/players?q=nicowar&limit=1', 'PlayerDirectory');
+      const after = await ok(
+        `/api/v1/players?q=nicowar&limit=1&cursor=${exact['nextCursor']}`,
+        'PlayerDirectory',
+      );
+      expect(exact['items'][0].kind).toBe('account');
+      expect(after['items'][0].kind).toBe('ai');
+    } finally {
+      await db
+        .deleteFrom('accounts')
+        .where(
+          'id',
+          'in',
+          added.map((r) => r.id),
+        )
+        .execute();
+    }
+  });
+  it('defaults to the most recently introduced supported build when version numbers tie', async () => {
+    const db = harness.database.db;
+    const version = { ...seed.sim, dataHash: 'ef'.repeat(32) };
+    const key = `${version.versionMinor}-${version.netProtocol}-${version.dataHash}`;
+    await db
+      .insertInto('engine_agents')
+      .values({
+        id: 'newest-directory-build',
+        sim_version: key,
+        kinds: ['verify-match'],
+        build: 'test',
+        started_at: new Date(Date.now() + 1000),
+      })
+      .execute();
+    try {
+      const profile = await ok('/api/v1/players/ai/nicowar', 'AiProfile');
+      expect(profile['simVersion']).toEqual(version);
+      const directory = await ok('/api/v1/players?participants=ai', 'PlayerDirectory');
+      expect(directory['items'][0].simVersion).toEqual(version);
+    } finally {
+      await db.deleteFrom('engine_agents').where('id', '=', 'newest-directory-build').execute();
+    }
+  });
+  it('keeps legacy leaderboards human-only and includes played current AIs in the combined view', async () => {
+    const legacy = await ok('/api/v1/leaderboards/ranked-1v1', 'LeaderboardPage');
+    expect(legacy['entries'].every((e: Doc) => e.entity.kind === 'account')).toBe(true);
+    const all = await ok('/api/v1/leaderboards/ranked-1v1?participants=all', 'LeaderboardPage');
+    expect(all['entries'].some((e: Doc) => e.entity.kind === 'ai')).toBe(true);
+    expect(all['entries'].map((e: Doc) => e.rank)).toEqual(
+      all['entries'].map((_: Doc, i: number) => i + 1),
+    );
+    for (const e of all['entries'].filter((e: Doc) => e.entity.kind === 'account')) {
+      const profile = await ok(`/api/v1/players/${e.entity.account.id}`, 'PlayerProfile');
+      expect(profile['ratings'].find((r: Doc) => r.ladder === 'ranked-1v1').overallRank).toBe(
+        e.rank,
+      );
+    }
+  });
+  it('provides version-isolated AI profiles, verified statistics, and match history', async () => {
+    const profile = await ok('/api/v1/players/ai/nicowar', 'AiProfile');
+    expect(profile['versions'].length).toBeGreaterThan(0);
+    const sim = profile['simVersion'];
+    const key = `${sim.versionMinor}-${sim.netProtocol}-${sim.dataHash}`;
+    const matches = await ok(`/api/v1/players/ai/nicowar/matches?simVersion=${key}`, 'MatchList');
+    for (const match of matches['items']) {
+      expect(match.simVersion).toEqual(sim);
+      expect(match.origin).toBe('queue');
+      expect(match.participants.some((p: Doc) => p.ai === 'nicowar')).toBe(true);
+    }
+    expect(profile['aggregates'].games).toBeGreaterThan(0);
+    await harness.database.db
+      .insertInto('rating_entities')
+      .values({ kind: 'ai', ai_id: 'nicowar', ai_sim_version: `125-49-${'cd'.repeat(32)}` })
+      .execute();
+    const updated = await ok('/api/v1/players/ai/nicowar', 'AiProfile');
+    const other = updated['versions'].find((v: Doc) => v.simVersion.dataHash !== sim.dataHash);
+    expect(other).toBeDefined();
+    const old = await ok(
+      `/api/v1/players/ai/nicowar?simVersion=${other.simVersion.versionMinor}-${other.simVersion.netProtocol}-${other.simVersion.dataHash}`,
+      'AiProfile',
+    );
+    expect(old['simVersion']).toEqual(other.simVersion);
+    expect((await get('/api/v1/players/ai/nicowar?simVersion=unknown')).status).toBe(404);
+    expect((await get('/api/v1/players/ai/none')).status).toBe(404);
+    const empty = await ok('/api/v1/players/ai/castor', 'AiProfile');
+    expect(empty['aggregates'].games).toBe(0);
+  });
+});

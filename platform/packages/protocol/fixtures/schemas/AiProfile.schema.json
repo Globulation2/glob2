@@ -1,0 +1,704 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "glob2-protocol:AiProfile",
+  "title": "AiProfile",
+  "type": "object",
+  "required": [
+    "ai",
+    "displayName",
+    "versions",
+    "ratings",
+    "ratingHistory",
+    "recentMatches",
+    "aggregates"
+  ],
+  "properties": {
+    "ai": {
+      "anyOf": [
+        {
+          "type": "string",
+          "const": "none"
+        },
+        {
+          "type": "string",
+          "const": "numbi"
+        },
+        {
+          "type": "string",
+          "const": "castor"
+        },
+        {
+          "type": "string",
+          "const": "warrush"
+        },
+        {
+          "type": "string",
+          "const": "econo"
+        },
+        {
+          "type": "string",
+          "const": "nicowar"
+        },
+        {
+          "type": "string",
+          "const": "cortex"
+        },
+        {
+          "type": "string",
+          "const": "maxima"
+        },
+        {
+          "type": "string",
+          "const": "cabino"
+        }
+      ],
+      "description": "AI implementation, by its stable CLI name (src/ai/AINames.cpp)."
+    },
+    "displayName": {
+      "type": "string"
+    },
+    "simVersion": {
+      "type": "object",
+      "required": [
+        "versionMinor",
+        "netProtocol",
+        "dataHash"
+      ],
+      "properties": {
+        "versionMinor": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+        },
+        "netProtocol": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535,
+          "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+        },
+        "dataHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Identity of a deterministic simulation build."
+    },
+    "versions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "simVersion",
+          "current"
+        ],
+        "properties": {
+          "simVersion": {
+            "type": "object",
+            "required": [
+              "versionMinor",
+              "netProtocol",
+              "dataHash"
+            ],
+            "properties": {
+              "versionMinor": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535,
+                "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+              },
+              "netProtocol": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535,
+                "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+              },
+              "dataHash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+              }
+            },
+            "additionalProperties": false,
+            "description": "Identity of a deterministic simulation build."
+          },
+          "current": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "ratings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ladder",
+          "rating",
+          "mu",
+          "sigma",
+          "games",
+          "wins",
+          "provisional"
+        ],
+        "properties": {
+          "overallRank": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "ladder": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "rating": {
+            "type": "number",
+            "description": "Displayed rating: ordinal scaled around 1500."
+          },
+          "mu": {
+            "type": "number"
+          },
+          "sigma": {
+            "type": "number"
+          },
+          "games": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "wins": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "provisional": {
+            "type": "boolean"
+          },
+          "rank": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Position among registered players of the ladder (provisional included)."
+          }
+        }
+      }
+    },
+    "ratingHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ladder",
+          "matchId",
+          "at",
+          "result",
+          "before",
+          "after",
+          "provisional"
+        ],
+        "properties": {
+          "ladder": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "matchId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "result": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "won"
+              },
+              {
+                "type": "string",
+                "const": "lost"
+              }
+            ]
+          },
+          "before": {
+            "type": "number"
+          },
+          "after": {
+            "type": "number"
+          },
+          "provisional": {
+            "type": "boolean",
+            "description": "Provisional after this match."
+          }
+        }
+      }
+    },
+    "recentMatches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "simVersion",
+          "origin",
+          "rated",
+          "status",
+          "verification",
+          "mapHash",
+          "participants"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Lowercase UUID."
+          },
+          "simVersion": {
+            "type": "object",
+            "required": [
+              "versionMinor",
+              "netProtocol",
+              "dataHash"
+            ],
+            "properties": {
+              "versionMinor": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535,
+                "description": "VERSION_MINOR in src/app/Version.h (save and simulation format)."
+              },
+              "netProtocol": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535,
+                "description": "NET_PROTOCOL_VERSION in src/app/Version.h."
+              },
+              "dataHash": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Lowercase hex SHA-256 over the build's simulation data files, as computed by the engine."
+              }
+            },
+            "additionalProperties": false,
+            "description": "Identity of a deterministic simulation build."
+          },
+          "origin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "room"
+              },
+              {
+                "type": "string",
+                "const": "queue"
+              }
+            ]
+          },
+          "queueId": {
+            "type": "string"
+          },
+          "queueName": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "The queue as players know it (\"Casual 1v1\"), from the instance config."
+          },
+          "rated": {
+            "type": "boolean"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "starting"
+              },
+              {
+                "type": "string",
+                "const": "running"
+              },
+              {
+                "type": "string",
+                "const": "ended"
+              },
+              {
+                "type": "string",
+                "const": "cancelled"
+              }
+            ]
+          },
+          "endReason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "completed"
+              },
+              {
+                "type": "string",
+                "const": "abandoned"
+              },
+              {
+                "type": "string",
+                "const": "aborted"
+              }
+            ],
+            "description": "Why an ended match ended. aborted: the match was lost (for example with its relay) and changes no rating."
+          },
+          "verification": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "pending"
+              },
+              {
+                "type": "string",
+                "const": "verified"
+              },
+              {
+                "type": "string",
+                "const": "diverged"
+              },
+              {
+                "type": "string",
+                "const": "unverifiable"
+              },
+              {
+                "type": "string",
+                "const": "not_applicable"
+              },
+              {
+                "type": "string",
+                "const": "failed"
+              }
+            ],
+            "description": "failed: the server could not run its check (the verify job failed or was lost); the match is not rated unless an operator re-runs verification. Clients that do not know a value treat it as pending."
+          },
+          "mapHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Lowercase hexadecimal SHA-256 digest."
+          },
+          "mapTitle": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "startedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "endedAt": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?(Z|[+-]\\d{2}:\\d{2})$",
+            "description": "RFC 3339 date-time."
+          },
+          "durationTicks": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "seat",
+                "team",
+                "kind",
+                "displayName",
+                "disconnects"
+              ],
+              "properties": {
+                "seat": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 11
+                },
+                "team": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 11
+                },
+                "kind": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "human"
+                    },
+                    {
+                      "type": "string",
+                      "const": "ai"
+                    }
+                  ]
+                },
+                "displayName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32,
+                  "pattern": "^[^\\u0000-\\u001f\\u007f]+$",
+                  "description": "Display name; at most 32 UTF-8 bytes (checked semantically)."
+                },
+                "accountId": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                  "description": "Lowercase UUID."
+                },
+                "ai": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "none"
+                    },
+                    {
+                      "type": "string",
+                      "const": "numbi"
+                    },
+                    {
+                      "type": "string",
+                      "const": "castor"
+                    },
+                    {
+                      "type": "string",
+                      "const": "warrush"
+                    },
+                    {
+                      "type": "string",
+                      "const": "econo"
+                    },
+                    {
+                      "type": "string",
+                      "const": "nicowar"
+                    },
+                    {
+                      "type": "string",
+                      "const": "cortex"
+                    },
+                    {
+                      "type": "string",
+                      "const": "maxima"
+                    },
+                    {
+                      "type": "string",
+                      "const": "cabino"
+                    }
+                  ],
+                  "description": "AI implementation, by its stable CLI name (src/ai/AINames.cpp)."
+                },
+                "outcome": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "const": "won"
+                    },
+                    {
+                      "type": "string",
+                      "const": "lost"
+                    },
+                    {
+                      "type": "string",
+                      "const": "draw"
+                    },
+                    {
+                      "type": "string",
+                      "const": "unresolved"
+                    },
+                    {
+                      "type": "string",
+                      "const": "abandoned"
+                    }
+                  ],
+                  "description": "draw: a win shared by teams of more than one alliance (a prestige or sudden-death tie at the top). Draws are not rated."
+                },
+                "disconnects": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "rating": {
+                  "type": "object",
+                  "required": [
+                    "ladder",
+                    "before",
+                    "after",
+                    "provisional"
+                  ],
+                  "properties": {
+                    "ladder": {
+                      "type": "string",
+                      "maxLength": 64
+                    },
+                    "before": {
+                      "type": "number"
+                    },
+                    "after": {
+                      "type": "number"
+                    },
+                    "provisional": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "One match in a history list."
+      }
+    },
+    "aggregates": {
+      "type": "object",
+      "required": [
+        "windowDays",
+        "games",
+        "wins",
+        "losses",
+        "winRates"
+      ],
+      "properties": {
+        "windowDays": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "games": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "losses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "winRates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "dimension",
+              "key",
+              "games",
+              "wins",
+              "winRate"
+            ],
+            "properties": {
+              "dimension": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "queue"
+                  },
+                  {
+                    "type": "string",
+                    "const": "map"
+                  },
+                  {
+                    "type": "string",
+                    "const": "generator"
+                  }
+                ]
+              },
+              "key": {
+                "type": "string",
+                "maxLength": 128
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 128,
+                "description": "Queue name, catalog map title or generator id."
+              },
+              "mapId": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+                "description": "Lowercase UUID."
+              },
+              "games": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "wins": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "winRate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        "medianTicks": {
+          "type": "number",
+          "minimum": 0
+        },
+        "meanTicks": {
+          "type": "number",
+          "minimum": 0
+        },
+        "economy": {
+          "type": "object",
+          "required": [
+            "matchId",
+            "seat",
+            "points"
+          ],
+          "properties": {
+            "matchId": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+              "description": "Lowercase UUID."
+            },
+            "seat": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 11
+            },
+            "points": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "tick",
+                  "units",
+                  "buildings",
+                  "prestige",
+                  "averageUnits",
+                  "averageBuildings",
+                  "averagePrestige",
+                  "gamesAtTick"
+                ],
+                "properties": {
+                  "tick": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "units": {
+                    "type": "integer"
+                  },
+                  "buildings": {
+                    "type": "integer"
+                  },
+                  "prestige": {
+                    "type": "integer"
+                  },
+                  "averageUnits": {
+                    "type": "number"
+                  },
+                  "averageBuildings": {
+                    "type": "number"
+                  },
+                  "averagePrestige": {
+                    "type": "number"
+                  },
+                  "gamesAtTick": {
+                    "type": "integer",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

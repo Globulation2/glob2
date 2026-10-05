@@ -3,6 +3,8 @@
   "linked": false,
   "session": {
     "account": {
+      "avatarUrl": "/api/v1/accounts/0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b/avatar?v=2",
+      "avatarSource": "uploaded",
       "id": "0b8f6f2e-3c4d-4e5f-8a9b-0c1d2e3f4a5b",
       "displayName": "Alice",
       "kind": "registered",

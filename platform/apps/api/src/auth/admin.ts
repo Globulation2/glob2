@@ -20,6 +20,7 @@ export function hasRole(account: Account, role: Role): boolean {
 }
 
 export interface AdminEffects {
+  removeAvatars?(keys: string[]): Promise<void>;
   /** Ends every session of the account (tokens, web sessions, sockets). */
   endSessions(accountId: string, reason: string): Promise<void>;
 }
@@ -184,14 +185,58 @@ export class AdminService {
     if (target.status === 'deleted') throw apiError('not_found', 'No such account.');
     const result = await this.db.transaction().execute(async (tx) => {
       const id = target.id;
+      // Studio delivery takes the wallet before locking its request. Match that
+      // order before taking the account lock used by publication and deletion.
+      await tx
+        .selectFrom('map_wallets')
+        .select('account_id')
+        .where('account_id', '=', id)
+        .forUpdate()
+        .execute();
       // Skin publication and draft saves lock this account before committing.
       const current = await tx
         .selectFrom('accounts')
-        .select('status')
+        .select(['status', 'avatar_key', 'gravatar_key'])
         .where('id', '=', id)
         .forUpdate()
         .executeTakeFirstOrThrow();
       if (current.status === 'deleted') throw apiError('not_found', 'No such account.');
+      // Fence leased workers before removing their private state. A completion
+      // that already holds the wallet finishes first; later completions can no
+      // longer find a request or publish a map. Keep financial audit rows.
+      const studioRequests = await tx
+        .selectFrom('studio_requests')
+        .select(['id', 'kind', 'status'])
+        .where('account_id', '=', id)
+        .orderBy('id')
+        .forUpdate()
+        .execute();
+      const reservedGenerations = studioRequests.filter(
+        (r) => r.kind === 'generate' && !['ready', 'failed'].includes(r.status),
+      );
+      if (reservedGenerations.length) {
+        await tx
+          .updateTable('map_wallets')
+          .set({ reserved: sql`reserved - ${reservedGenerations.length}` })
+          .where('account_id', '=', id)
+          .execute();
+        await tx
+          .insertInto('map_ledger')
+          .values(
+            reservedGenerations.map((r) => ({
+              id: `generation:${r.id}`,
+              account_id: id,
+              amount: 0,
+              kind: 'usage' as const,
+              details: { requestId: r.id, delivered: false, returned: true, accountDeleted: true },
+            })),
+          )
+          .execute();
+      }
+      await sql`DELETE FROM engine_jobs WHERE kind='import-ai-map' AND id::text IN (SELECT checkpoints->>'importJob' FROM studio_requests WHERE account_id=${id})`.execute(
+        tx,
+      );
+      await tx.deleteFrom('studio_threads').where('account_id', '=', id).execute();
       // Every name the account went by: now, in its matches, and in renames.
       const pastNames = await tx
         .selectFrom('match_participants')
@@ -299,6 +344,11 @@ export class AdminService {
       const account = await tx
         .updateTable('accounts')
         .set({
+          avatar_source: 'initials',
+          avatar_key: null,
+          gravatar_key: null,
+          gravatar_fingerprint: null,
+          gravatar_checked_at: null,
           status: 'deleted',
           role: 'user',
           display_name: DELETED_NAME,
@@ -328,10 +378,17 @@ export class AdminService {
       if (nameList.length > 0) {
         await sql`SELECT scrub_audit_log_account(${id}::uuid, ${nameList}::text[])`.execute(tx);
       }
-      return { account, removedMaps };
+      return {
+        account,
+        removedMaps,
+        avatarKeys: [current.avatar_key, current.gravatar_key].filter(
+          (key): key is string => key !== null,
+        ),
+      };
     });
+    await this.effects.removeAvatars?.(result.avatarKeys);
     await this.effects.endSessions(target.id, 'deleted');
-    return result;
+    return { account: result.account, removedMaps: result.removedMaps };
   }
 
   async rename(actor: Account | undefined, target: Account, name: string, reason?: string) {

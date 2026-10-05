@@ -45,6 +45,7 @@ export const AccountStatus = Type.Union([
 
 export const PublicAccount = Open(
   {
+    avatarUrl: Type.Optional(Type.String()),
     id: Uuid,
     displayName: DisplayName,
     kind: AccountKind,
@@ -62,6 +63,10 @@ export const LinkedIdentity = Open({
 
 export const SelfAccount = Open(
   {
+    avatarUrl: Type.Optional(Type.String()),
+    avatarSource: Type.Optional(
+      Type.Union([Type.Literal('automatic'), Type.Literal('uploaded'), Type.Literal('initials')]),
+    ),
     id: Uuid,
     displayName: DisplayName,
     kind: AccountKind,

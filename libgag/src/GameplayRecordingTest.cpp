@@ -27,19 +27,19 @@ void draw(Recorder &recorder, SDL_Surface *pixels, int milliseconds)
 {
 	const auto deadline =
 		std::chrono::steady_clock::now() + std::chrono::milliseconds(milliseconds);
-	std::int16_t samples[882];
+	std::int16_t samples[AudioSampleRate / 100 * 2];
 	std::uint64_t index = 0;
 	while (std::chrono::steady_clock::now() < deadline)
 	{
 		if (recorder.wantsFrame())
 			recorder.frame(*pixels);
-		for (int i = 0; i < 441; ++i)
+		for (int i = 0; i < AudioSampleRate / 100; ++i)
 		{
 			auto sample =
-				std::int16_t(std::sin(2 * 3.14159265358979323846 * 440 * index++ / 44100) * 12000);
+				std::int16_t(std::sin(2 * 3.14159265358979323846 * 440 * index++ / AudioSampleRate) * 12000);
 			samples[2 * i] = samples[2 * i + 1] = sample;
 		}
-		recorder.audio(samples, 882);
+		recorder.audio(samples, AudioSampleRate / 100 * 2);
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 }
@@ -142,7 +142,7 @@ TEST_SUITE("GameplayRecording")
 		// A slow encoder startup can leave a timestamp gap before the first AAC
 		// packet. Decode against the video's zero origin, retaining that silence.
 		decode.launch({encoder, "-v", "error", "-nostdin", "-n", "-i", path.string(), "-map",
-					   "0:a:0", "-af", "aresample=first_pts=0", "-f", "s16le", "-ar", "44100", "-ac", "2", raw},
+					   "0:a:0", "-af", "aresample=first_pts=0", "-f", "s16le", "-ar", "48000", "-ac", "2", raw},
 					  path.string() + ".decode.log", false);
 		REQUIRE(decode.finish() == 0);
 		const auto pcm = read(raw);

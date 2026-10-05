@@ -9,7 +9,7 @@
 // drive a voice all the way to empty and assert the drain reports exhaustion
 // without ever touching front() of an empty queue.
 //
-// Links only ../src/audio/PlayerVoice.cpp — no SDL / speex / vorbis.
+// Links only ../src/audio/PlayerVoice.cpp — no SDL / speex / opusfile.
 
 #include "Glob2Test.h"
 #include <cmath>
@@ -19,10 +19,10 @@
 namespace
 {
 	// The cursor step the mixer advances per output-channel sample:
-	// (8000/44100)*0.5. A rollover (subIndex > 1) happens roughly every
+	// (8000/48000)*0.5. A rollover (subIndex > 1) happens roughly every
 	// ceil(1 / step) advances; this many advances guarantees several rollovers
 	// and therefore several pops, draining any small queue to empty.
-	constexpr int STEP_ADVANCES_PER_ROLLOVER = 12; // 1 / ((8000/44100)*0.5) ~= 11.03
+	constexpr int STEP_ADVANCES_PER_ROLLOVER = 13; // strictly greater than 1 / ((8000/48000)*0.5) = 12
 
 	PlayerVoice makeVoice(int sampleCount, float fill)
 	{
@@ -120,4 +120,22 @@ TEST_SUITE("PlayerVoiceDrain")
 	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "SingleSampleQueueDrainsOnFirstRollover") { testSingleSampleQueueDrainsOnFirstRollover(); }
 	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "NoRolloverKeepsQueueIntact") { testNoRolloverKeepsQueueIntact(); }
 	TEST_CASE_FIXTURE(PlayerVoiceDrainTest, "ContributionUsesPreAdvanceState") { testContributionUsesPreAdvanceState(); }
+}
+
+TEST_SUITE("PlayerVoiceDrain")
+{
+TEST_CASE("one second of Speex PCM lasts one second at the mixer rate")
+{
+    PlayerVoice voice;
+    for (int i = 0; i < 8000; ++i) voice.voiceData.push(1.0f);
+    bool exhausted = false;
+    int samples = 0;
+    while (!exhausted && samples < 100000)
+    {
+        voice.advanceOutputSample(exhausted);
+        ++samples;
+    }
+    REQUIRE(exhausted);
+    CHECK(std::abs(samples - 96000) <= 12);
+}
 }

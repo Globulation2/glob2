@@ -48,7 +48,7 @@ jobs:
       - name: Install macOS build dependencies
         run: |
           brew install cmake freetype libpng jpeg-turbo scons pkgconf    \
-            libvorbis libogg speex openssl@3 boost fribidi libepoxy
+            opusfile opus libogg speex openssl@3 boost fribidi libepoxy
           xcodebuild -version
           sdk_version="$(xcrun --sdk macosx --show-sdk-version)"
           test "${sdk_version%%.*}" -ge 26

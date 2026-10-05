@@ -147,7 +147,7 @@ class TrioAudio:
 
     @classmethod
     def load(cls, directory):
-        """Decode ``a1/a2/a3.ogg`` from ``directory``; unreadable files are recorded
+        """Decode ``a1/a2/a3.opus`` from ``directory``; unreadable files are recorded
         in ``errors`` and left out of ``moods``."""
         directory = Path(directory)
         moods, errors = {}, {}

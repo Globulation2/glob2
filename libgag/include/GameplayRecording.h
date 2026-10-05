@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include <SDL3/SDL.h>
+#include <AudioFormat.h>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -8,7 +9,7 @@
 
 namespace GAGCore::Recording
 {
-inline constexpr int AudioSampleRate = 44100;
+inline constexpr int AudioSampleRate = GAGCore::AudioSampleRate;
 inline constexpr int AudioChannels = 2;
 enum class EncoderPreference { Auto, Software };
 struct Options
@@ -57,7 +58,7 @@ class Recorder
 	bool active() const;
 	bool wantsFrame() const;
 	void frame(const SDL_Surface &pixels, bool bottomUp = false);
-	// Interleaved signed stereo samples at 44100 Hz; count includes both channels.
+	// Interleaved signed stereo samples at 48000 Hz; count includes both channels.
 	// Timestamp the first chunk once, then advance by frames for split SDL refills.
 	void audio(const std::int16_t *samples, std::size_t count, std::int64_t startUs);
 	void audio(const std::int16_t *samples, std::size_t count);

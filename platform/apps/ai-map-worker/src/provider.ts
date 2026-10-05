@@ -157,7 +157,7 @@ export class Attempts {
         (
           await sql<{
             n: number;
-          }>`SELECT count(*)::int AS n FROM studio_attempts WHERE created_at>=date_trunc('day',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC'`.execute(
+          }>`SELECT calls::int AS n FROM studio_provider_usage WHERE day=(now() AT TIME ZONE 'UTC')::date`.execute(
             db,
           )
         ).rows[0]?.n ?? 0;

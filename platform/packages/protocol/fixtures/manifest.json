@@ -12,6 +12,7 @@
     "AdminRenameRequest": "schemas/AdminRenameRequest.schema.json",
     "AdminRoleRequest": "schemas/AdminRoleRequest.schema.json",
     "AiLeaderboard": "schemas/AiLeaderboard.schema.json",
+    "AiProfile": "schemas/AiProfile.schema.json",
     "AuthTokens": "schemas/AuthTokens.schema.json",
     "ClientNetworkSummary": "schemas/ClientNetworkSummary.schema.json",
     "ColonySkinClaims": "schemas/ColonySkinClaims.schema.json",
@@ -66,6 +67,7 @@
     "MatchTicketHeader": "schemas/MatchTicketHeader.schema.json",
     "ModerateSkinRequest": "schemas/ModerateSkinRequest.schema.json",
     "PlatformJwks": "schemas/PlatformJwks.schema.json",
+    "PlayerDirectory": "schemas/PlayerDirectory.schema.json",
     "PlayerProfile": "schemas/PlayerProfile.schema.json",
     "PublicAccount": "schemas/PublicAccount.schema.json",
     "PublishSkinRequest": "schemas/PublishSkinRequest.schema.json",
@@ -172,6 +174,18 @@
     "VerifyVerdict": "schemas/VerifyVerdict.schema.json"
   },
   "fixtures": [
+    {
+      "file": "valid/PlayerDirectory/ai.json",
+      "schema": "PlayerDirectory",
+      "valid": true,
+      "note": "Configured AI before its first game."
+    },
+    {
+      "file": "valid/AiProfile/unplayed.json",
+      "schema": "AiProfile",
+      "valid": true,
+      "note": "An AI profile without games or a supported engine."
+    },
     {
       "file": "valid/HiveTool/investigate.json",
       "schema": "HiveTool",
@@ -877,7 +891,7 @@
       "file": "valid/PlayerProfile/registered.json",
       "schema": "PlayerProfile",
       "valid": true,
-      "note": "A registered player with a rating, its history and aggregates."
+      "note": "A registered player with an avatar, human and overall ranks, history and aggregates."
     },
     {
       "file": "valid/PlayerProfile/guest.json",

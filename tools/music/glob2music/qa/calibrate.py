@@ -50,10 +50,18 @@ def materialise(entry):
         dest = out / FILENAMES[mood]
         if not dest.exists():
             out.mkdir(parents=True, exist_ok=True)
-            blob = subprocess.run(['git', '-C', str(REPO_ROOT), 'show',
-                                   f"{entry['git_ref']}:{entry['git_path']}/{FILENAMES[mood]}"],
-                                  capture_output=True, check=True).stdout
-            dest.write_bytes(blob)
+            # Historical rejected sets remain Vorbis source evidence, never runtime assets.
+            source = out / (dest.stem + '.source.ogg')
+            source.write_bytes(subprocess.run(['git', '-C', str(REPO_ROOT), 'show',
+                               f"{entry['git_ref']}:{entry['git_path']}/{dest.stem}.ogg"],
+                              capture_output=True, check=True).stdout)
+            from ..audio import read_audio, write_opus
+            from scipy.signal import resample_poly
+            y, rate = read_audio(source)
+            from math import gcd
+            divisor = gcd(rate, DEFAULT_SPEC.sample_rate)
+            y = resample_poly(y, DEFAULT_SPEC.sample_rate // divisor, rate // divisor, axis=0)
+            write_opus(y, dest)
     return out
 
 

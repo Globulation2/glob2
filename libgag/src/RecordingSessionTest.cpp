@@ -192,6 +192,35 @@ TEST_SUITE("RecordingSession")
 			CHECK(manifest(path+".json")["duration_us"].get<std::int64_t>()>=2000000);
 		}
 	}
+	TEST_CASE("legacy 44.1 kHz recording recovery preserves its audio rate [recording][artifacts]")
+	{
+		const char *ffmpeg = SDL_getenv("GLOB2_TEST_FFMPEG");
+		if (!ffmpeg) return;
+		const auto ffprobe = std::filesystem::path(ffmpeg).parent_path() / "ffprobe";
+		if (!std::filesystem::exists(ffprobe)) return;
+		const auto path = output("legacy-audio");
+		auto files = nativeSessionStorage(); files.reserve(path);
+		Process generate;
+		generate.launch({ffmpeg, "-v", "error", "-nostdin", "-f", "lavfi", "-i",
+			"color=c=blue:s=64x64:r=30", "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=44100",
+			"-t", "0.5", "-c:v", "libx264", "-c:a", "aac", "-ar", "44100", "-ac", "2",
+			"-movflags", "+frag_keyframe+empty_moov", path + ".recording/capture.mp4"},
+			path + ".generate.log", false);
+		REQUIRE(generate.finish() == 0);
+		std::ofstream(path + ".recording/manifest.json") << nlohmann::json{
+			{"version", 1}, {"video", std::filesystem::path(path).filename().string()},
+			{"chapters", nlohmann::json::array()}};
+		std::ofstream(path + ".recording/events.jsonl");
+		recoverRecording(path, files);
+		CHECK(manifest(path + ".json")["recovered"] == true);
+		Process probe;
+		probe.launch({ffprobe.string(), "-v", "error", "-select_streams", "a:0",
+			"-show_entries", "stream=sample_rate", "-of", "default=nw=1:nk=1", path},
+			path + ".probe.log", false);
+		REQUIRE(probe.finish() == 0);
+		std::ifstream rate(path + ".probe.log"); std::string value; rate >> value;
+		CHECK(value == "44100");
+	}
 	TEST_CASE("publication failure retains media that can be recovered without overwriting")
 	{
 		auto path=output("recover"); auto files=nativeSessionStorage(); files.reserve(path);

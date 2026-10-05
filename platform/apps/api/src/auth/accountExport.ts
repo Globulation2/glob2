@@ -647,6 +647,8 @@ export async function exportAccount(
         exportedAt: new Date().toISOString(),
         instance: origin,
         account: clean({
+          avatar_source: account.avatar_source,
+          avatar_url: `${origin}/api/v1/accounts/${account.id}/avatar`,
           id: account.id,
           kind: account.kind,
           display_name: account.display_name,

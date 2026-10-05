@@ -5,8 +5,8 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_audio.h>
-#include <vorbis/codec.h>
-#include <vorbis/vorbisfile.h>
+#include <opusfile.h>
+#include <AudioFormat.h>
 #include <vector>
 #include <queue>
 #include <map>
@@ -21,6 +21,8 @@ class OrderVoiceData;
 class SoundMixer
 {
 public:
+	//! Preserve the original fade duration (16384 frames at 44100 Hz).
+	static constexpr unsigned FadeSampleCount = 2 * ((16384 * GAGCore::AudioSampleRate + 22050) / 44100);
 	enum MusicMode
 	{
 		MODE_STOPPED = 0,
@@ -29,7 +31,7 @@ public:
 		MODE_STOP,
 		MODE_START
 	} mode;
-	std::vector<OggVorbis_File *> tracks;
+	std::vector<OggOpusFile *> tracks;
 	int actTrack, nextTrack;
 	//! How far the current fade has advanced, in Sint16 samples. Carried
 	//! across callbacks so a fade lasts the same time whatever the device
@@ -63,11 +65,11 @@ public:
 
 	~SoundMixer();
 
-	//! Load an ogg file and add (or replace at `index`) into the track list.
+	//! Load an Ogg Opus file and add (or replace at `index`) into the track list.
 	//! Returns the resulting track index on success, -1 if the file cannot be
-	//! opened, or -2 if it is not a valid ogg bitstream. On success the
-	//! OggVorbis_File takes ownership of the underlying FILE* and closes it via
-	//! ov_clear in ~SoundMixer.
+	//! opened, or -2 if it is not a usable Ogg Opus stream. On success the
+	//! OggOpusFile takes ownership of the underlying FILE* and closes it via
+	//! op_free in ~SoundMixer.
 	int loadTrack(const std::string name, int index = -1);
 
 	//! Load `name` into the slot for the given enum track. Convenience wrapper

@@ -21,6 +21,12 @@ export type JsonValue =
   string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 export interface AccountsTable {
+  avatar_source: Defaulted<'automatic' | 'uploaded' | 'initials'>;
+  avatar_key: Nullable<string>;
+  avatar_revision: Defaulted<number>;
+  gravatar_fingerprint: Nullable<string>;
+  gravatar_checked_at: NullableTimestamp;
+  gravatar_key: Nullable<string>;
   id: Generated<string>;
   kind: 'guest' | 'registered';
   display_name: string;
@@ -826,6 +832,10 @@ export interface StudioEventsTable {
   payload: Json<JsonValue>;
   created_at: Timestamp;
 }
+export interface StudioProviderUsageTable {
+  day: string;
+  calls: number;
+}
 export interface StudioArtifactsTable {
   id: Generated<string>;
   thread_id: string;
@@ -893,6 +903,7 @@ export interface Database {
   match_colony_skins: MatchColonySkinsTable;
 
   studio_events: StudioEventsTable;
+  studio_provider_usage: StudioProviderUsageTable;
   studio_artifacts: StudioArtifactsTable;
   studio_threads: StudioThreadsTable;
   studio_messages: StudioMessagesTable;

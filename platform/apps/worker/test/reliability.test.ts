@@ -387,6 +387,36 @@ describe('retention', () => {
 });
 
 describe('blob garbage collection', () => {
+  it('collects abandoned avatar files while keeping both uploaded and Gravatar images', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'glob2-avatar-gc-'));
+    try {
+      const store = new FsBlobStore(dir);
+      const owner = await createAccount(database.db, 'Avatar owner');
+      const keys = [
+        'avatars/test/upload.webp',
+        'avatars/test/gravatar.webp',
+        'avatars/test/orphan.webp',
+        'avatars/test/fresh.webp',
+      ];
+      for (const key of keys) await store.put(key, Buffer.from('photo'));
+      const old = new Date(Date.now() - 30 * 86_400_000);
+      for (const key of keys.slice(0, 3)) utimesSync(join(dir, key), old, old);
+      await database
+        .as('api')
+        .db.updateTable('accounts')
+        .set({ avatar_key: keys[0], gravatar_key: keys[1] })
+        .where('id', '=', owner)
+        .execute();
+      const collected = await collectBlobs(database.db, store);
+      expect(collected.deletedOrphanFiles).toBe(1);
+      expect(await store.size(keys[0]!)).toBe(5);
+      expect(await store.size(keys[1]!)).toBe(5);
+      expect(await store.size(keys[2]!)).toBeUndefined();
+      expect(await store.size(keys[3]!)).toBe(5);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
   it('deletes unreferenced old blobs and unrecorded files, and keeps everything in use', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'glob2-gc-'));
     try {

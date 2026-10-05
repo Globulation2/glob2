@@ -133,16 +133,27 @@ export class Studio {
   async create(account: string, title: string, id: string = randomUUID()) {
     // A client keeps this UUID before sending its first prompt, so an unknown
     // HTTP outcome can retry without creating a duplicate project.
-    const row = (
-      await sql<{ id: string }>`INSERT INTO studio_threads(id,account_id,title)
+    return this.db.transaction().execute(async (db) => {
+      // Serialize creation with account deletion even if HTTP authentication
+      // completed before the deletion began. The shared lock also permits other
+      // project creations while preventing a deleted account gaining new data.
+      const owner = (
+        await sql<{
+          status: string;
+        }>`SELECT status FROM accounts WHERE id=${account} FOR SHARE`.execute(db)
+      ).rows[0];
+      if (owner?.status !== 'active') throw new HiveError('not_found', 'No such active account.');
+      const row = (
+        await sql<{ id: string }>`INSERT INTO studio_threads(id,account_id,title)
       VALUES(${id},${account},${title.trim() || 'New map'})
       ON CONFLICT(id) DO UPDATE SET id=EXCLUDED.id
       WHERE studio_threads.account_id=EXCLUDED.account_id AND studio_threads.title=EXCLUDED.title
-      RETURNING id`.execute(this.db)
-    ).rows[0];
-    if (!row)
-      throw new HiveError('conflict', 'The retry identifier belongs to another map project.');
-    return row;
+      RETURNING id`.execute(db)
+      ).rows[0];
+      if (!row)
+        throw new HiveError('conflict', 'The retry identifier belongs to another map project.');
+      return row;
+    });
   }
   async get(
     account: string,

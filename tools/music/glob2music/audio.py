@@ -3,30 +3,24 @@
 
 Pipeline role: a recipe (``sets/<id>/recipe.py``) builds three float arrays and
 returns them as a ``Trio``; ``master.finish`` turns that into a mastered ``Trio``;
-``write_trio`` alone writes the Ogg Vorbis files the game loads. Keeping one writer
+``write_trio`` alone writes the Ogg Opus files the game loads. Keeping one writer
 means every set gets the same encoder, quality and frame-count guarantee.
 
 Array convention, used throughout the package: ``float32`` (or float64 while
-processing), shape ``(frames, 2)``, 44100 Hz, nominal full scale +-1.0. One array is
+processing), shape ``(frames, 2)``, 48000 Hz, nominal full scale +-1.0. One array is
 exactly one loop: frame ``n - 1`` is followed by frame ``0`` when the game wraps.
 
-Decoding uses libsndfile (``soundfile``), which reads Vorbis through libvorbis and
-reports the same PCM frame count as the game's ``ov_pcm_total``. Encoding uses
-ffmpeg's libvorbis encoder, which writes an exact end granule position, so the
-decoded length equals the array length to the frame (``write_ogg`` verifies this).
-libsndfile's own Vorbis encoder is the fallback when ffmpeg is missing; it is also
-frame-exact but must be fed in small blocks (large single writes crash 1.2.2).
+Encoding uses the shared FFmpeg libopus recipe at 48 kbps VBR stereo. Every
+file is completely decoded before publication, including pre-skip/end trimming.
 """
 from dataclasses import dataclass, field
 from pathlib import Path
-import shutil
 import struct
-import subprocess
 
 import numpy as np
 import soundfile as sf
 
-from .spec import CHANNELS, FILENAMES, MOODS, SAMPLE_RATE, DEFAULT_SPEC
+from .spec import CHANNELS, FILENAMES, MOODS, SAMPLE_RATE
 
 
 class AudioFormatError(ValueError):
@@ -114,7 +108,7 @@ class Trio:
 def read_audio(path):
     """Decode any libsndfile-readable file to ``(float32 (frames, 2), sample_rate)``.
 
-    No resampling happens here: callers that need 44.1 kHz must check the rate.
+    No resampling happens here: callers that need 48 kHz must check the rate.
     """
     y, sr = sf.read(str(path), dtype='float32', always_2d=True)
     if y.shape[1] == 1:
@@ -123,7 +117,7 @@ def read_audio(path):
 
 
 def trio_paths(directory):
-    """``{mood: Path}`` of ``a1.ogg``/``a2.ogg``/``a3.ogg`` inside ``directory``."""
+    """``{mood: Path}`` of ``a1.opus``/``a2.opus``/``a3.opus`` inside ``directory``."""
     directory = Path(directory)
     return {mood: directory / FILENAMES[mood] for mood in MOODS}
 
@@ -143,8 +137,8 @@ def ogg_streams(path):
     """Describe the logical streams of an Ogg file by walking its pages.
 
     Returns a list of ``{'serial', 'codec', 'pages', 'last_granule'}`` dicts, in the
-    order the streams start. The game requires exactly one Vorbis stream
-    (``ov_streams() == 1``); chained or multiplexed files are refused. This is a
+    order the streams start. Opus decoded length is last_granule minus pre_skip. The game requires exactly one Opus stream
+    (``op_link_count() == 1``); chained or multiplexed files are refused. This is a
     pure-Python parse of the page headers (RFC 3533), so QA needs no ffprobe.
     Raises ``AudioFormatError`` if the file is not an Ogg stream at all.
     """
@@ -159,9 +153,13 @@ def ogg_streams(path):
             raise AudioFormatError(f'{path}: truncated page header at byte {pos}')
         header_type = data[pos + 5]
         granule, serial, _seq, _crc, nseg = struct.unpack_from('<qIIIB', data, pos + 6)
+        if pos + 27 + nseg > len(data):
+            raise AudioFormatError(f'{path}: truncated lacing table')
         lacing = data[pos + 27:pos + 27 + nseg]
         body_start = pos + 27 + nseg
         body_len = sum(lacing)
+        if body_start + body_len > len(data):
+            raise AudioFormatError(f'{path}: truncated page body')
         # A beginning-of-stream page always opens a new logical stream, even when a
         # chained file reuses the serial number of the previous link.
         if header_type & 0x02 or serial not in streams:
@@ -170,9 +168,11 @@ def ogg_streams(path):
             key = len(order)
             streams[serial] = key
             order.append({'serial': serial, 'codec': codec, 'pages': 0, 'last_granule': -1,
+                          'pre_skip': struct.unpack_from('<H', data, body_start + 10)[0] if codec == 'opus' and body_len >= 19 else 0,
                           'bos': bool(header_type & 0x02)})
         entry = order[streams[serial]]
         entry['pages'] += 1
+        entry['eos'] = bool(header_type & 0x04)
         if granule >= 0:
             entry['last_granule'] = granule
         pos = body_start + body_len
@@ -183,62 +183,37 @@ def ogg_streams(path):
 
 # ----------------------------------------------------------------------------- writing
 
-def _encode_ffmpeg(y, path, quality):
-    cmd = ['ffmpeg', '-v', 'error', '-y', '-f', 'f32le', '-ar', str(SAMPLE_RATE), '-ac', str(CHANNELS),
-           '-i', '-', '-c:a', 'libvorbis', '-q:a', f'{quality:g}', '-map_metadata', '-1', str(path)]
-    subprocess.run(cmd, input=y.astype('<f4').tobytes(), check=True)
-
-
-def _encode_libsndfile(y, path, quality):
-    # libsndfile maps compression_level 0..1 onto Vorbis quality 1.0..0.0 (i.e. q10..q0).
-    level = min(1.0, max(0.0, 1.0 - quality / 10.0))
-    with sf.SoundFile(str(path), 'w', SAMPLE_RATE, CHANNELS, format='OGG', subtype='VORBIS',
-                      compression_level=level) as out:
-        for start in range(0, len(y), 8192):
-            out.write(y[start:start + 8192])
-
-
-def write_ogg(y, path, quality=DEFAULT_SPEC.vorbis_quality, encoder='auto'):
-    """Encode one loop to Ogg Vorbis and verify the decoded frame count.
-
-    ``y`` is clipped to +-1 (mastering keeps it well inside). ``encoder`` is
-    ``'ffmpeg'``, ``'libsndfile'`` or ``'auto'`` (ffmpeg when on PATH). Writes to a
-    temporary name first so a failed encode never leaves a half-written file under
-    the real name. Returns the path.
-    """
-    y = as_stereo(y, str(path))
-    y = np.clip(y, -1.0, 1.0)
+def write_opus(y, path, loop=False):
+    """Encode PCM with the repository's fixed recipe; verify complete decoding."""
+    import importlib.util
+    import tempfile
+    module_path = Path(__file__).resolve().parents[2] / 'encode_music.py'
+    spec = importlib.util.spec_from_file_location('glob2_encode_music', module_path)
+    encoder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(encoder)
+    y = np.clip(as_stereo(y, str(path)), -1.0, 1.0)
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_name(path.name + '.part.ogg')
-    if encoder == 'auto':
-        encoder = 'ffmpeg' if shutil.which('ffmpeg') else 'libsndfile'
-    if encoder == 'ffmpeg':
-        _encode_ffmpeg(y, tmp, quality)
-    elif encoder == 'libsndfile':
-        _encode_libsndfile(y, tmp, quality)
-    else:
-        raise ValueError(f'unknown encoder {encoder!r}')
-    frames = sf.info(str(tmp)).frames
-    if frames != len(y):
-        tmp.unlink(missing_ok=True)
-        raise AudioFormatError(f'{path}: encoder wrote {frames} frames, expected {len(y)}')
-    tmp.replace(path)
+    with tempfile.TemporaryDirectory(prefix='.pcm-', dir=path.parent) as tmp:
+        wav = Path(tmp) / 'rendered.wav'
+        sf.write(wav, y, SAMPLE_RATE, subtype='FLOAT')
+        encoder.encode(wav, path, expected_frames=len(y), loop=loop)
     return path
 
 
-def write_trio(trio, directory, quality=DEFAULT_SPEC.vorbis_quality, encoder='auto'):
-    """Write ``a1.ogg``/``a2.ogg``/``a3.ogg`` for ``trio`` into ``directory``.
-
-    The only function in the pipeline that produces game files. Each file is
-    verified to decode to exactly ``trio.frames`` frames. Returns ``{mood: Path}``.
-    """
+def write_trio(trio, directory):
+    """Stage and fully validate all three loops before publishing any file."""
+    import tempfile
     if not isinstance(trio, Trio):
         raise TypeError('write_trio expects a Trio')
-    paths = trio_paths(directory)
-    for mood, path in paths.items():
-        write_ogg(trio[mood], path, quality=quality, encoder=encoder)
-    return paths
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='.trio-', dir=directory) as tmp:
+        for mood, path in trio_paths(tmp).items():
+            write_opus(trio[mood], path, loop=True)
+        for mood, path in trio_paths(tmp).items():
+            path.replace(directory / FILENAMES[mood])
+    return trio_paths(directory)
 
 
 # ----------------------------------------------------------------------------- helpers

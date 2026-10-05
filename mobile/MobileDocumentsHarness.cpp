@@ -7,6 +7,7 @@
 
 using namespace GAGCore::ApplicationHost;
 namespace MobileDocuments {
+bool platformExportPath(const std::string&, const std::string&) { return false; }
 Request opened = 0, cancelled = 0;
 bool accepting = true;
 bool platformOpen(Request request, const std::string&) { opened = request; return accepting; }

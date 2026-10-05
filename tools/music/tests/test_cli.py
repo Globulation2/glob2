@@ -15,7 +15,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from glob2music import cli  # noqa: E402
-from glob2music.audio import AudioFormatError, ogg_streams, write_ogg  # noqa: E402
+from glob2music.audio import AudioFormatError, ogg_streams, write_opus  # noqa: E402
 from glob2music.genai import acestep  # noqa: E402
 from glob2music.manifest import ManifestError, load_manifest, parse_manifest  # noqa: E402
 from glob2music.qa import CHECK_NAMES  # noqa: E402
@@ -73,7 +73,7 @@ class ResolveTest(unittest.TestCase):
             tmp = Path(tmp)
             plain = tmp / 'candidate'
             plain.mkdir()
-            (plain / 'a1.ogg').write_bytes(b'')
+            (plain / 'a1.opus').write_bytes(b'')
             self.assertEqual(cli._resolve(str(plain)), (plain, None))
             out, repo = tmp / 'out', tmp / 'repo'
             (repo / 'data' / 'zik' / 'woodland').mkdir(parents=True)
@@ -82,11 +82,11 @@ class ResolveTest(unittest.TestCase):
                 self.assertEqual(cli._resolve('original')[0], repo / 'data' / 'zik' / 'original')
                 # A shipped set not built locally falls back to data/zik only when installed.
                 self.assertEqual(cli._resolve('woodland')[0], out / 'woodland')
-                (repo / 'data' / 'zik' / 'woodland' / 'a1.ogg').write_bytes(b'')
+                (repo / 'data' / 'zik' / 'woodland' / 'a1.opus').write_bytes(b'')
                 directory, m = cli._resolve('woodland')
                 self.assertEqual((directory, m.set_id), (repo / 'data' / 'zik' / 'woodland', 'woodland'))
                 (out / 'woodland').mkdir(parents=True)
-                (out / 'woodland' / 'a1.ogg').write_bytes(b'')
+                (out / 'woodland' / 'a1.opus').write_bytes(b'')
                 self.assertEqual(cli._resolve('woodland')[0], out / 'woodland')
             with self.assertRaises(FileNotFoundError):
                 cli._resolve(str(tmp / 'no-such-set'))
@@ -121,6 +121,13 @@ class RegisterAndInstallTest(unittest.TestCase):
             with self.assertRaises(ManifestError):
                 cli._register_set(Path(tmp) / 'missing', 'woodland')
 
+    def test_recursive_discovery_needs_no_registration_edit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            text = (Path(__file__).resolve().parents[3] / 'data/zik/SConscript').read_text()
+            zik = self.zik(tmp, text)
+            cli._register_set(zik, 'new-set')
+            self.assertEqual((zik / 'SConscript').read_text(), text)
+
     def install(self, tmp, zik, failed=False, shipped=True):
         set_dir = Path(tmp) / 'sets' / 'test-set'
         set_dir.mkdir(parents=True)
@@ -129,7 +136,7 @@ class RegisterAndInstallTest(unittest.TestCase):
             f'shipped = {"true" if shipped else "false"}\ndescription = "A test."\n')
         out = Path(tmp) / 'out'
         (out / 'test-set').mkdir(parents=True)
-        for name in ('a1.ogg', 'a2.ogg', 'a3.ogg'):
+        for name in ('a1.opus', 'a2.opus', 'a3.opus'):
             (out / 'test-set' / name).write_bytes(name.encode())
         report = Report('test')
         cr = CheckResult('format')
@@ -145,7 +152,7 @@ class RegisterAndInstallTest(unittest.TestCase):
             zik = self.zik(tmp)
             self.assertEqual(self.install(tmp, zik), 0)
             dest = zik / 'test-set'
-            self.assertEqual((dest / 'a2.ogg').read_bytes(), b'a2.ogg')
+            self.assertEqual((dest / 'a2.opus').read_bytes(), b'a2.opus')
             self.assertEqual((dest / 'SConscript').read_text(), cli.SCONSCRIPT)
             self.assertIn('Licence: CC0-1.0', (dest / 'LICENSE.txt').read_text())
             self.assertIn('"test-set"', (zik / 'SConscript').read_text())
@@ -163,7 +170,7 @@ class CheckArgumentsTest(unittest.TestCase):
     def test_only_rejects_unknown_check_names(self):
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr), tempfile.TemporaryDirectory() as tmp:
-            (Path(tmp) / 'a1.ogg').write_bytes(b'')
+            (Path(tmp) / 'a1.opus').write_bytes(b'')
             self.assertEqual(cli.main(['check', tmp, '--only', 'seam,loudnes']), 2)
         self.assertIn('loudnes', stderr.getvalue())
         for name in CHECK_NAMES:
@@ -191,21 +198,21 @@ class OggStreamsTest(unittest.TestCase):
     def test_single_chained_and_invalid_files(self):
         y = np.zeros((SR // 2, 2), dtype=np.float32)
         with tempfile.TemporaryDirectory() as tmp:
-            a, b = Path(tmp) / 'a.ogg', Path(tmp) / 'b.ogg'
-            write_ogg(y, a)
-            write_ogg(y, b)
+            a, b = Path(tmp) / 'a.opus', Path(tmp) / 'b.opus'
+            write_opus(y, a)
+            write_opus(y, b)
             streams = ogg_streams(a)
             self.assertEqual(len(streams), 1)
-            self.assertEqual(streams[0]['codec'], 'vorbis')
-            self.assertEqual(streams[0]['last_granule'], len(y))
-            chained = Path(tmp) / 'chained.ogg'
+            self.assertEqual(streams[0]['codec'], 'opus')
+            self.assertEqual(streams[0]['last_granule'] - streams[0]['pre_skip'], len(y))
+            chained = Path(tmp) / 'chained.opus'
             chained.write_bytes(a.read_bytes() + b.read_bytes())
-            self.assertEqual([s['codec'] for s in ogg_streams(chained)], ['vorbis', 'vorbis'])
-            junk = Path(tmp) / 'junk.ogg'
+            self.assertEqual([s['codec'] for s in ogg_streams(chained)], ['opus', 'opus'])
+            junk = Path(tmp) / 'junk.opus'
             junk.write_bytes(b'RIFF....WAVE')
             with self.assertRaises(AudioFormatError):
                 ogg_streams(junk)
-            empty = Path(tmp) / 'empty.ogg'
+            empty = Path(tmp) / 'empty.opus'
             empty.write_bytes(b'')
             with self.assertRaises(AudioFormatError):
                 ogg_streams(empty)

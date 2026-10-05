@@ -1,8 +1,11 @@
 // Self-service account deletion: confirmation, sign-out everywhere, and the
 // player's names scrubbed from match setups, chat, room names and the audit
 // log (ids kept), with unsettled matches finished later by the worker.
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { randomUUID } from 'node:crypto';
 import { sql } from 'kysely';
+import { Studio } from '@glob2/map-studio';
+import { Attempts } from '../../ai-map-worker/src/provider.ts';
 import { DEFAULT_INSTANCE_CONFIG } from '@glob2/core';
 import { scrubSettledMatchNames } from '@glob2/play';
 import { registeredPlayer, type Player } from './playSupport.ts';
@@ -109,6 +112,180 @@ async function seatNames(matchId: string) {
 }
 
 describe('deleting my account', () => {
+  it('purges private studio history, fences leased work, and retains financial audit records', async () => {
+    const db = harness.database.db;
+    const player = await registeredPlayer(api, 'LeavingDesigner');
+    const friend = await registeredPlayer(api, 'KeepingDesigner');
+    const studio = new Studio(db);
+    const thread = await studio.create(player.accountId, 'Private landscape');
+    const other = await studio.create(friend.accountId, 'Keep this project');
+    const request = randomUUID(),
+      finished = randomUUID(),
+      job = randomUUID(),
+      otherJob = randomUUID();
+    await sql`INSERT INTO map_wallets(account_id,balance,reserved) VALUES(${player.accountId},3,1)`.execute(
+      db,
+    );
+    await sql`INSERT INTO map_ledger(id,account_id,amount,kind) VALUES(${randomUUID()},${player.accountId},3,'purchase')`.execute(
+      db,
+    );
+    await sql`INSERT INTO map_calls(id,account_id,reserved,status,rate) VALUES(${randomUUID()},${player.accountId},1,'settled','{}')`.execute(
+      db,
+    );
+    await sql`INSERT INTO map_purchases(id,account_id,pack,paid) VALUES(${randomUUID()},${player.accountId},'{}',true)`.execute(
+      db,
+    );
+    await sql`INSERT INTO studio_messages(id,thread_id,role,text) VALUES(${randomUUID()},${thread.id},'user','My private prompt')`.execute(
+      db,
+    );
+    await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,status,input,checkpoints,lease) VALUES(${request},${thread.id},${player.accountId},'generate','importing','{}',${JSON.stringify({ importJob: job })}::jsonb,${randomUUID()}),(${finished},${thread.id},${player.accountId},'generate','ready','{}','{}',null)`.execute(
+      db,
+    );
+    for (const id of [job, otherJob])
+      await sql`INSERT INTO engine_jobs(id,kind,sim_version,payload) VALUES(${id},'import-ai-map',${SIM_KEY},'{}')`.execute(
+        db,
+      );
+    const row = (await studio.request(request))!;
+    await studio.stage(row, 'build', 'running');
+    const hash = randomUUID().replaceAll('-', '').repeat(2);
+    await sql`INSERT INTO blobs(sha256,size,storage_key,content_type,visibility) VALUES(${hash},12,${hash},'image/png','private')`.execute(
+      db,
+    );
+    await studio.artifact(row, { stage: 'build', kind: 'crop', label: 'Private crop', hash });
+    await new Attempts(studio, 100).run(
+      row,
+      'image',
+      'fixture',
+      { prompt: 'private' },
+      async () => ({ image: 'private' }),
+    );
+    const dailyCalls = async () =>
+      Number(
+        (
+          await sql<{
+            calls: number;
+          }>`SELECT calls FROM studio_provider_usage WHERE day=(now() AT TIME ZONE 'UTC')::date`.execute(
+            db,
+          )
+        ).rows[0]?.calls ?? 0,
+      );
+    const calls = await dailyCalls();
+    await expect(
+      db.transaction().execute(async (tx) => {
+        await sql`INSERT INTO studio_attempts(id,request_id,stage,model,status,input) VALUES(${randomUUID()},${request},'rollback','fixture','dispatched','{}')`.execute(
+          tx,
+        );
+        throw new Error('Rollback fixture');
+      }),
+    ).rejects.toThrow('Rollback fixture');
+    expect(await dailyCalls()).toBe(calls);
+    const deleted = await deleteMe(player, player.displayName);
+    expect(deleted.status).toBe(204);
+    for (const table of [
+      'studio_messages',
+      'studio_requests',
+      'studio_events',
+      'studio_artifacts',
+    ] as const) {
+      expect(
+        await db.selectFrom(table).selectAll().where('thread_id', '=', thread.id).execute(),
+      ).toEqual([]);
+    }
+    expect(
+      await db
+        .selectFrom('studio_attempts')
+        .selectAll()
+        .where('request_id', '=', request)
+        .execute(),
+    ).toEqual([]);
+    expect(await studio.list(player.accountId)).toEqual([]);
+    expect(await dailyCalls()).toBe(calls);
+    const blockedId = randomUUID();
+    await sql`INSERT INTO studio_requests(id,thread_id,account_id,kind,status,input,lease) VALUES(${blockedId},${other.id},${friend.accountId},'chat','preparing','{}',${randomUUID()})`.execute(
+      db,
+    );
+    const provider = vi.fn(async () => ({ text: 'Never dispatched' }));
+    await expect(
+      new Attempts(studio, calls).run(
+        (await studio.request(blockedId))!,
+        'chat',
+        'fixture',
+        {},
+        provider,
+      ),
+    ).rejects.toThrow('daily service limit');
+    expect(provider).not.toHaveBeenCalled();
+    expect(await studio.own(friend.accountId, other.id)).toMatchObject({
+      title: 'Keep this project',
+    });
+    expect(
+      await db.selectFrom('engine_jobs').select('id').where('id', 'in', [job, otherJob]).execute(),
+    ).toEqual([{ id: otherJob }]);
+    expect(
+      await db
+        .selectFrom('map_wallets')
+        .select(['balance', 'reserved'])
+        .where('account_id', '=', player.accountId)
+        .executeTakeFirstOrThrow(),
+    ).toEqual({ balance: 3, reserved: 0 });
+    expect(
+      await db
+        .selectFrom('map_ledger')
+        .select(['amount', 'kind', 'details'])
+        .where('id', '=', `generation:${request}`)
+        .executeTakeFirstOrThrow(),
+    ).toMatchObject({
+      amount: 0,
+      kind: 'usage',
+      details: { delivered: false, returned: true, accountDeleted: true },
+    });
+    for (const table of ['map_calls', 'map_purchases'] as const)
+      expect(
+        await db.selectFrom(table).selectAll().where('account_id', '=', player.accountId).execute(),
+      ).toHaveLength(1);
+    await expect(studio.checkpoint(row, 'processing', {})).rejects.toThrow('lease expired');
+    await expect(studio.finish(row, { text: 'Late private reply' })).rejects.toThrow();
+    expect(
+      await db
+        .selectFrom('maps')
+        .select('id')
+        .where('owner_account_id', '=', player.accountId)
+        .execute(),
+    ).toEqual([]);
+    expect((await deleteMe(player, player.displayName)).status).toBe(401);
+    await expect(studio.create(player.accountId, 'Late project')).rejects.toThrow(
+      'No such active account',
+    );
+    expect(
+      await db
+        .selectFrom('map_ledger')
+        .select('id')
+        .where('id', '=', `generation:${request}`)
+        .execute(),
+    ).toHaveLength(1);
+    player.client.close();
+    friend.client.close();
+  });
+
+  it('cannot recreate a project while account deletion races an authenticated request', async () => {
+    const player = await registeredPlayer(api, 'RacingDesigner');
+    const studio = new Studio(harness.database.db);
+    const creates = Array.from({ length: 8 }, (_, i) =>
+      studio.create(player.accountId, `Concurrent project ${i}`),
+    );
+    const deletion = deleteMe(player, player.displayName);
+    const outcomes = await Promise.allSettled(creates);
+    expect((await deletion).status).toBe(204);
+    for (const outcome of outcomes)
+      if (outcome.status === 'rejected')
+        expect(String(outcome.reason)).toContain('No such active account');
+    expect(await studio.list(player.accountId)).toEqual([]);
+    await expect(studio.create(player.accountId, 'Late project')).rejects.toThrow(
+      'No such active account',
+    );
+    player.client.close();
+  });
+
   it('needs the display name typed exactly', async () => {
     const player = await registeredPlayer(api, 'Careful');
     const wrong = await deleteMe(player, 'careful');

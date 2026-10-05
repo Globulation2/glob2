@@ -25,7 +25,7 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	std::filesystem::create_directories(fixture);
 	for (int i = 1; i <= 3; ++i)
 	{
-		const auto file = "a" + std::to_string(i) + ".ogg";
+		const auto file = "a" + std::to_string(i) + ".opus";
 		std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original" / file, fixture / file,
 			std::filesystem::copy_options::overwrite_existing);
 	}
@@ -43,7 +43,7 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 	mixer.mode = SoundMixer::MODE_EARLY_CHANGE;
 	REQUIRE(mixer.selectMusicSet("original"));
 	REQUIRE((mixer.actTrack == 2 && mixer.nextTrack == 2 && mixer.mode == SoundMixer::MODE_START));
-	REQUIRE(ov_pcm_tell(mixer.tracks[2]) == 0);
+	REQUIRE(op_pcm_tell(mixer.tracks[2]) == 0);
 	mixer.mode = SoundMixer::MODE_EARLY_CHANGE;
 	mixer.nextTrack = 4;
 	mixer.pendingTrack = 3;
@@ -60,18 +60,18 @@ TEST_CASE("discovery atomic replacement queued moods and muted preferences [disp
 
 	const auto incomplete = profile / "data/zik/test-incomplete";
 	std::filesystem::create_directories(incomplete);
-	std::ofstream(incomplete / "a1.ogg") << "invalid";
+	std::ofstream(incomplete / "a1.opus") << "invalid";
 	const auto discovered = SoundMixer::getMusicSets();
 	REQUIRE(std::find(discovered.begin(), discovered.end(), "test-incomplete") == discovered.end());
 	const auto broken = profile / "data/zik/test-broken";
 	std::filesystem::create_directories(broken);
 	for (int i = 1; i <= 2; ++i)
-		std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original/a1.ogg", broken / ("a" + std::to_string(i) + ".ogg"));
-	std::ofstream(broken / "a3.ogg") << "invalid";
+		std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/original/a1.opus", broken / ("a" + std::to_string(i) + ".opus"));
+	std::ofstream(broken / "a3.opus") << "invalid";
 	REQUIRE(!mixer.selectMusicSet("test-broken"));
 	REQUIRE((mixer.getMusicSet() == "original" && mixer.tracks[2] == current));
-	// A valid 44.1 kHz stereo stream whose length differs from the other two.
-	std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/menu.ogg", broken / "a3.ogg", std::filesystem::copy_options::overwrite_existing);
+	// A valid 48 kHz stereo stream whose length differs from the other two.
+	std::filesystem::copy_file(glob2test::sourceRoot() / "data/zik/menu.opus", broken / "a3.opus", std::filesystem::copy_options::overwrite_existing);
 	REQUIRE(!mixer.selectMusicSet("test-broken"));
 	REQUIRE((mixer.getMusicSet() == "original" && mixer.tracks[2] == current));
 	{

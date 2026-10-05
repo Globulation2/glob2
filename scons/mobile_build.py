@@ -70,7 +70,7 @@ def build_mobile(directory, identity, arguments):
 #define GLOB2_NO_VOICE 1
 ''' + ('#define GLOB2_CHINA_RELEASE 1\n' if identity.get('china') else '')
         + ('#define GLOB2_AMAZON_RELEASE 1\n' if identity.get('amazon') else ''))
-    env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
+    env.Append(CPPPATH=["#third_party/quickjs-ng", str(output / 'include'), str(prefix / 'include'), str(prefix / 'include/opus'), str(prefix / 'include/SDL3')] + list(INCLUDE_DIRECTORIES),
         CPPDEFINES=['HAVE_CONFIG_H'] + official_instance.cppdefines(official_instance.origin(arguments)), CCFLAGS=toolchain['cflags'] + ['-g', '-O2' if identity['mode'] == 'release' else '-O0'],
         CXXFLAGS=['-std=gnu++20', '-fexceptions'], LINKFLAGS=toolchain['ldflags'], LIBS=[env.File(path) for path in libraries])
     from recording_dependencies import build as build_recording, attach as attach_recording
@@ -111,7 +111,8 @@ def build_mobile(directory, identity, arguments):
             sys.path.insert(0, os.path.abspath('test'))  # SCons runs from the repository root
             import tests as registry
             tests = env.Clone()
-            tests['CPPDEFINES'] = ['HAVE_CONFIG_H']  # TestMain.cpp defines SDL_MAIN_HANDLED itself
+            # Retain build definitions (including the official origin).
+            # TestMain.cpp defines SDL_MAIN_HANDLED itself.
             tests.Append(CPPPATH=['test', 'test/support', 'libgag/src'])
             by_source = dict(zip(files, objects))
             client_objects = [obj for name, obj in by_source.items() if name != 'src/app/Glob2.cpp'] + script_objects

@@ -74,7 +74,7 @@ test('later packages arrive in the background and replace the core font', async 
   // The full font now has the CJK outlines the core copy leaves out.
   const size = await page.evaluate(() => FS.stat('/data/fonts/sans.ttf').size);
   expect(size).toBeGreaterThan(4e6);
-  expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.ogg').exists)).toBe(true);
+  expect(await page.evaluate(() => FS.analyzePath('/data/zik/menu.opus').exists)).toBe(true);
   // The reloaded string table still drives the menu.
   await clickMainMenu(page, 'custom');
   await screen(page, 'CustomGameScreen');
@@ -121,3 +121,18 @@ test('an interface in another language downloads its translations before the gam
   await expect.poll(async () => (await labels()).length).toBeGreaterThan(0);
   expect(await labels()).not.toBe(english);
 });
+
+for (const variant of ['serial', 'threaded']) {
+  test(`${variant} all soundtrack sets arrive as Opus in background packages`, async ({page}) => {
+    await page.goto(`/?renderer=software&threads=${variant}`);
+    await screen(page, 'MainMenuScreen');
+    for (const name of ['music', 'music-sets'])
+      await expect.poll(async () => (await snapshot(page)).assets[name], {timeout:120000}).toBe('ready');
+    const sets = ['original', 'apple-cider', 'bramble-jig', 'curious-critters', 'fennel-mist',
+      'glass-garden', 'moss-lanterns', 'orchestral-dawn', 'thistle-waltz', 'woodland'];
+    const inventory = await page.evaluate(sets => sets.map(set => ({set,
+      files:FS.readdir(`/data/zik/${set}`).filter(file => /\.(opus|ogg)$/.test(file)).sort()
+    })), sets);
+    for (const item of inventory) expect(item.files, item.set).toEqual(['a1.opus', 'a2.opus', 'a3.opus']);
+  });
+}

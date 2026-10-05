@@ -7,7 +7,7 @@ the stereo mix. Either way the three moods are re-balanced mixes of the *same*
 material, so they share one timeline by construction and the game can crossfade
 between them at any position. This module holds the steps the adapted recipes share:
 
-1. ``decode`` the pinned source files to float64 stereo at 44.1 kHz.
+1. ``decode`` the pinned source files to float64 stereo at 48 kHz.
 2. Re-balance per mood:
 
    * ``remix`` -- for *estimated* stems: start from the original mix and add
@@ -46,7 +46,7 @@ SR = SAMPLE_RATE
 # ----------------------------------------------------------------------------- inputs
 
 def decode(path):
-    """Decode an audio file with ffmpeg to float64 ``(frames, 2)`` at 44.1 kHz.
+    """Decode an audio file with ffmpeg to float64 ``(frames, 2)`` at 48 kHz.
 
     ffmpeg rather than libsndfile: it removes the MP3 encoder delay (LAME gapless
     info) the way the approved sets were made, and reads WAV and MP3 alike. Mono

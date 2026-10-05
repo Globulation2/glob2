@@ -56,6 +56,9 @@ def source_files(root, platform):
             if p.is_symlink():
                 raise ValueError("Asset symlinks are not supported: " + str(p))
             if p.is_file() and include_asset(p.relative_to(root), platform):
+                relative = p.relative_to(root)
+                if relative.parts[:2] == ('data', 'zik') and p.suffix == '.ogg':
+                    raise ValueError('Convert Vorbis music to .opus before packaging: ' + str(relative))
                 yield p
 
 

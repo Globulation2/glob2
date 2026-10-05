@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "RecordingEncoder.h"
+#include <AudioFormat.h>
 #include <algorithm>
 #include <cerrno>
 #include <cstdio>
@@ -343,7 +344,7 @@ struct MediaWriter::Impl
 	Impl(const std::string &path, const VideoDescription &description, OpenRecordingFile open) : storage(open(path,true),true)
 	{
 		auto &c = *audioEncoder;
-		c.sample_rate = 44100; c.sample_fmt = AV_SAMPLE_FMT_FLTP; c.time_base = {1,44100}; c.bit_rate = 192000;
+		c.sample_rate = AudioSampleRate; c.sample_fmt = AV_SAMPLE_FMT_FLTP; c.time_base = {1,AudioSampleRate}; c.bit_rate = 192000;
 		av_channel_layout_default(&c.ch_layout, 2); c.flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 		check(avcodec_open2(audioEncoder.get(), c.codec, nullptr), "Open AAC encoder");
 		videoStream = avformat_new_stream(output.context, nullptr); audioStream = avformat_new_stream(output.context, nullptr);
@@ -363,7 +364,7 @@ struct MediaWriter::Impl
 		check(av_frame_get_buffer(samples.get(), 0), "Allocate AAC frame");
 		AVChannelLayout stereo = AV_CHANNEL_LAYOUT_STEREO;
 		SwrContext *swr = nullptr;
-		check(swr_alloc_set_opts2(&swr, &stereo, AV_SAMPLE_FMT_FLTP, 44100, &stereo, AV_SAMPLE_FMT_S16, 44100, 0, nullptr), "Create audio converter");
+		check(swr_alloc_set_opts2(&swr, &stereo, AV_SAMPLE_FMT_FLTP, AudioSampleRate, &stereo, AV_SAMPLE_FMT_S16, AudioSampleRate, 0, nullptr), "Create audio converter");
 		converter.reset(swr); check(swr_init(swr), "Initialize audio converter");
 		pending.reserve(std::size_t(c.frame_size)*2);
 		output.context->pb = storage.context; output.context->flags |= AVFMT_FLAG_CUSTOM_IO;
@@ -427,7 +428,7 @@ void MediaWriter::silenceThrough(std::int64_t end)
 {
 	// A suspended application may return minutes later. Preserve the timestamp
 	// discontinuity instead of encoding minutes of synthetic PCM in a catch-up burst.
-	if (end-impl->written > 44100/2)
+	if (end-impl->written > AudioSampleRate/2)
 	{
 		if (!impl->pending.empty()) { impl->pending.resize(std::size_t(impl->samples->nb_samples)*2,0); impl->encode(); }
 		impl->written = impl->audioPts = end;
@@ -437,7 +438,7 @@ void MediaWriter::silenceThrough(std::int64_t end)
 }
 void MediaWriter::audio(const std::int16_t *pcm, std::size_t frames, std::int64_t start)
 {
-	if (start >= 0 && std::abs(start-impl->written) < 44100/50) start = impl->written;
+	if (start >= 0 && std::abs(start-impl->written) < AudioSampleRate/50) start = impl->written;
 	const auto end = start + std::int64_t(frames);
 	silenceThrough(std::max<std::int64_t>(0,start));
 	if (end <= impl->written) return;
@@ -448,7 +449,7 @@ void MediaWriter::checkpoint() { impl->storage.flush(); }
 void MediaWriter::finish(std::int64_t durationUs)
 {
 	if (impl->finished) return;
-	silenceThrough(av_rescale(durationUs,44100,1000000));
+	silenceThrough(av_rescale(durationUs,AudioSampleRate,1000000));
 	if (!impl->pending.empty())
 	{
 		impl->pending.resize(std::size_t(impl->samples->nb_samples)*2,0);

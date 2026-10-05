@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """glob2music: build and check Globulation 2 soundtrack sets.
 
-A *set* is three position-aligned, seamlessly looping Ogg Vorbis files (calm,
+A *set* is three position-aligned, seamlessly looping Ogg Opus files (calm,
 building, combat) that the game's ``SoundMixer`` crossfades between at the same
 playback position. This package turns per-set recipes into such trios and checks
 them automatically. Run it from ``tools/music``: ``python3 -m glob2music --help``.
@@ -10,7 +10,7 @@ Module map (the shared core; ``score/``, ``backends/``, ``adapt/`` and ``genai/`
 add method-specific tools on top of it):
 
 * ``spec``      -- the trio format, mastering targets and every QA threshold;
-* ``audio``     -- ``Trio`` type, decoding, frame-exact Vorbis encoding (``write_trio``);
+* ``audio``     -- ``Trio`` type, decoding, frame-exact Opus encoding (``write_trio``);
 * ``master``    -- loop-aware filters, loudness normalisation, true-peak limiting
   (``finish(trio, spec) -> Trio``);
 * ``loop``      -- folding render tails, seam crossfades, loop-point search;

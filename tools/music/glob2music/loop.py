@@ -109,7 +109,7 @@ def splice(y, cut_a, cut_b, crossfade_s=0.012, pre_s=0.010):
 
 # ----------------------------------------------------------------------------- loop search
 
-_HOP = 1024     # feature hop at 44.1 kHz
+_HOP = 1024     # feature hop at 48 kHz
 
 
 def _features(mono):
